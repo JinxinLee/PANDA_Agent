@@ -9,6 +9,11 @@
 
 > **适用边界：** 当前实现是可信本地 Bundle prototype。Bundle 没有数字签名、在线下载、多版本切换、自动回滚或公开分发安全机制。只使用来自可信维护者的 Bundle。
 
+本文同时支持 Windows 10/11（PowerShell）、macOS（Bash/zsh）和 Linux（Bash）。
+Windows 命令保留在原有小节中；macOS/Linux 使用紧随其后的 Bash/zsh 小节。
+三种平台都需要 Python 3.12 或更高版本、Docker Compose v2，以及可用的 Google
+Cloud Application Default Credentials（ADC）。
+
 ## 0. 从已发布 Release 获取 Bundle
 
 当前可直接使用的预构建 Bundle 发布在：
@@ -34,7 +39,35 @@ D:\panda-bundles\panda-kb-prototype-v1.0.0\
 └── fastembed-runtime.zip
 ```
 
+macOS/Linux 的目录示例：
+
+```text
+$HOME/panda-bundles/panda-kb-prototype-v1.0.0/
+├── bundle_manifest.json
+├── postgres.dump
+├── qdrant.snapshot
+└── fastembed-runtime.zip
+```
+
+也可以使用 GitHub CLI 下载 Release 资产（浏览器下载同样适用）：
+
+```bash
+mkdir -p "$HOME/panda-bundles/panda-kb-prototype-v1.0.0"
+gh release download panda-kb-prototype-v1.0.0 \
+  --repo JinxinLee/PANDA_Agent \
+  --dir "$HOME/panda-bundles/panda-kb-prototype-v1.0.0" \
+  --pattern 'bundle_manifest.json' \
+  --pattern 'postgres.dump' \
+  --pattern 'qdrant.snapshot' \
+  --pattern 'fastembed-runtime.zip'
+```
+
+Windows 用户也可以使用同一条 `gh release download` 命令；如果使用浏览器，直接把
+四个资产保存到同一个 Bundle 目录即可。
+
 `fastembed-runtime.zip` 不能直接保留为压缩包而跳过解压。必须在 Bundle 根目录执行：
+
+Windows PowerShell：
 
 ```powershell
 $bundlePath = (Resolve-Path 'D:\panda-bundles\panda-kb-prototype-v1.0.0').Path
@@ -52,6 +85,36 @@ D:\panda-bundles\panda-kb-prototype-v1.0.0\
     └── fastembed\
         └── bm25\
 ```
+
+macOS/Linux：
+
+Release 中的 zip 资产包含 Windows 风格的反斜杠路径。某些 macOS/Linux `unzip`
+版本会把它们当作普通字符，产生不可读的目录；建议使用下面的路径规范化解压脚本：
+
+```bash
+export BUNDLE_PATH="$HOME/panda-bundles/panda-kb-prototype-v1.0.0"
+python3 - "$BUNDLE_PATH/fastembed-runtime.zip" "$BUNDLE_PATH" <<'PY'
+from pathlib import Path
+import sys
+import zipfile
+
+archive = Path(sys.argv[1])
+destination = Path(sys.argv[2]).resolve()
+with zipfile.ZipFile(archive) as bundle:
+    for item in bundle.infolist():
+        relative = item.filename.replace("\\", "/").lstrip("/")
+        if not relative or relative.endswith("/"):
+            continue
+        target = (destination / relative).resolve()
+        if not target.is_relative_to(destination):
+            raise SystemExit(f"unsafe archive path: {item.filename}")
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(bundle.read(item))
+        target.chmod(0o644)
+PY
+```
+
+解压后确认 `$BUNDLE_PATH/runtime_assets/fastembed/bm25/` 存在。
 
 最终 Bundle 目录必须同时包含 `bundle_manifest.json`、`postgres.dump`、
 `qdrant.snapshot` 和 `runtime_assets/fastembed/bm25/`。仅下载前三个文件，或只保留
@@ -97,9 +160,11 @@ panda-kb-bundle/
 
 ## 2. 前置条件
 
-- Windows 10/11 与 PowerShell；
+- Windows 10/11、PowerShell 和 Docker Desktop；
+- macOS、Bash/zsh 和 Docker Desktop 或 Colima；
+- Linux、Bash 和 Docker Engine + Docker Compose v2（当前用户必须能访问 Docker daemon）；
 - Python 3.12 或更高版本；
-- Docker Desktop，且 `docker compose version` 可正常执行；
+- `docker compose version` 可正常执行；
 - QA 阶段需要可以调用 Vertex AI 的 Google Cloud 项目和 Application Default Credentials（ADC）；
 - 建议至少预留 5 GB 可用磁盘空间，用于 Bundle、数据库和 Qdrant 恢复数据。
 
@@ -108,6 +173,8 @@ panda-kb-bundle/
 ## 3. 创建 Python 环境
 
 进入 `PANDA_Agent` 项目根目录：
+
+Windows PowerShell：
 
 ```powershell
 Set-Location C:\path\to\PANDA_Agent
@@ -121,6 +188,16 @@ py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -e ".[qa]"
 ```
 
+macOS/Linux（Bash/zsh）：
+
+```bash
+cd /path/to/PANDA_Agent
+python3 --version  # 必须是 3.12 或更高版本
+python3 -m venv .venv
+.venv/bin/python -m pip install --upgrade pip
+.venv/bin/python -m pip install -e '.[qa]'
+```
+
 不需要安装 `ingestion` extra，也不要运行：
 
 ```text
@@ -132,10 +209,19 @@ panda-qa-index resume
 
 ## 4. 配置本地服务和 Vertex
 
+Windows PowerShell：
+
 复制环境变量模板：
 
 ```powershell
 Copy-Item .env.example .env
+```
+
+macOS/Linux：
+
+```bash
+cp .env.example .env
+${EDITOR:-vi} .env
 ```
 
 编辑 `.env`，至少确认以下配置：
@@ -152,21 +238,28 @@ PANDA_DATABASE_URL=postgresql://panda:choose-one-local-password@127.0.0.1:55432/
 PANDA_QDRANT_URL=http://127.0.0.1:6333
 PANDA_QDRANT_COLLECTION=panda_knowledge_v1
 PANDA_FASTEMBED_MODEL_PATH=data/runtime/fastembed/bm25
+COMPOSE_PROJECT_NAME=panda_qa_bundle
 ```
 
 `PANDA_POSTGRES_PASSWORD` 与 `PANDA_DATABASE_URL` 中的密码必须一致。不要提交 `.env`。
 
-在运行 QA 前配置 ADC：
+在运行 QA 前配置 ADC（所有平台）：
 
-```powershell
+```console
 gcloud auth application-default login
 ```
+
+`docker compose` 会自动读取项目根目录的 `.env`；Python CLI 也会自动加载它。
+只有直接运行 `alembic` 或其他原始脚本时，才需要在 Bash 中先执行
+`set -a; source .env; set +a`。
 
 如果组织使用其他 ADC 配置方式，请遵循组织的 Google Cloud 权限策略；不要把凭据文件复制进仓库。
 
 ## 5. 在恢复前检查 Bundle
 
 将 Bundle 放在任意本地目录，并解析为绝对路径：
+
+Windows PowerShell：
 
 ```powershell
 $bundlePath = (Resolve-Path 'D:\panda-bundles\panda-kb-v1').Path
@@ -178,6 +271,13 @@ $bundlePath = (Resolve-Path 'D:\panda-bundles\panda-kb-v1').Path
 .\.venv\Scripts\panda-qa-kb.exe inspect --bundle $bundlePath
 ```
 
+macOS/Linux：
+
+```bash
+export BUNDLE_PATH="$(cd "$HOME/panda-bundles/panda-kb-v1" && pwd)"
+.venv/bin/panda-qa-kb inspect --bundle "$BUNDLE_PATH"
+```
+
 `inspect` 会验证 manifest schema、文件大小、SHA-256 和本地 BM25 资产是否存在。它不会连接数据库、Qdrant 或 Vertex。
 
 如果出现 hash mismatch、文件缺失或 manifest 校验失败，应停止并重新获取可信 Bundle，不要继续恢复。
@@ -186,8 +286,18 @@ $bundlePath = (Resolve-Path 'D:\panda-bundles\panda-kb-v1').Path
 
 为本次恢复设置一个固定的 Compose project 名称：
 
+Windows PowerShell：
+
 ```powershell
 $env:COMPOSE_PROJECT_NAME = 'panda_qa_bundle'
+docker compose up -d --wait postgres qdrant
+docker compose ps
+```
+
+macOS/Linux：
+
+```bash
+export COMPOSE_PROJECT_NAME=panda_qa_bundle
 docker compose up -d --wait postgres qdrant
 docker compose ps
 ```
@@ -204,12 +314,22 @@ docker compose ps
 
 ## 7. 恢复预构建知识库
 
-在保持相同 PowerShell 会话和 `COMPOSE_PROJECT_NAME` 的情况下执行：
+在保持相同终端会话和 `COMPOSE_PROJECT_NAME` 的情况下执行：
+
+Windows PowerShell：
 
 ```powershell
 .\.venv\Scripts\panda-qa-kb.exe restore `
   --bundle $bundlePath `
   --project-root (Get-Location)
+```
+
+macOS/Linux：
+
+```bash
+.venv/bin/panda-qa-kb restore \
+  --bundle "$BUNDLE_PATH" \
+  --project-root "$PWD"
 ```
 
 恢复过程会依次：
@@ -225,10 +345,20 @@ prototype 没有跨 PostgreSQL/Qdrant 的分布式事务。如果 PostgreSQL 恢
 
 ## 8. 验证恢复结果
 
+Windows PowerShell：
+
 ```powershell
 .\.venv\Scripts\panda-qa-kb.exe verify `
   --bundle $bundlePath `
   --project-root (Get-Location)
+```
+
+macOS/Linux：
+
+```bash
+.venv/bin/panda-qa-kb verify \
+  --bundle "$BUNDLE_PATH" \
+  --project-root "$PWD"
 ```
 
 成功结果应满足：
@@ -258,14 +388,30 @@ prototype 没有跨 PostgreSQL/Qdrant 的分布式事务。如果 PostgreSQL 恢
 
 ## 9. 运行第一个问题
 
+Windows PowerShell：
+
 ```powershell
 .\.venv\Scripts\panda-qa.exe ask "Where is PndPidCorrelator defined?"
 ```
 
+macOS/Linux：
+
+```bash
+.venv/bin/panda-qa ask "Where is PndPidCorrelator defined?"
+```
+
 也可以使用 Python 模块入口：
+
+Windows PowerShell：
 
 ```powershell
 .\.venv\Scripts\python.exe -m panda_agent.cli.qa ask "How is event_poca used?"
+```
+
+macOS/Linux：
+
+```bash
+.venv/bin/python -m panda_agent.cli.qa ask "How is event_poca used?"
 ```
 
 正常返回是 JSON，主要字段包括：
@@ -279,27 +425,56 @@ prototype 没有跨 PostgreSQL/Qdrant 的分布式事务。如果 PostgreSQL 恢
 
 建议首先运行以下 smoke questions：
 
+Windows PowerShell：
+
 ```powershell
 .\.venv\Scripts\panda-qa.exe ask "How is event_poca used?"
 .\.venv\Scripts\panda-qa.exe ask "Where is PndPidCorrelator defined?"
 .\.venv\Scripts\panda-qa.exe ask "What inputs and outputs connect the target generator to the RestgasDetermination analysis?"
 ```
 
+macOS/Linux：
+
+```bash
+.venv/bin/panda-qa ask "How is event_poca used?"
+.venv/bin/panda-qa ask "Where is PndPidCorrelator defined?"
+.venv/bin/panda-qa ask "What inputs and outputs connect the target generator to the RestgasDetermination analysis?"
+```
+
 ## 10. 停止和重新启动
 
 停止服务但保留恢复数据：
+
+Windows PowerShell：
 
 ```powershell
 $env:COMPOSE_PROJECT_NAME = 'panda_qa_bundle'
 docker compose stop
 ```
 
+macOS/Linux：
+
+```bash
+export COMPOSE_PROJECT_NAME=panda_qa_bundle
+docker compose stop
+```
+
 以后重新启动同一知识库：
+
+Windows PowerShell：
 
 ```powershell
 $env:COMPOSE_PROJECT_NAME = 'panda_qa_bundle'
 docker compose up -d --wait postgres qdrant
 .\.venv\Scripts\panda-qa-kb.exe verify --bundle $bundlePath --project-root (Get-Location)
+```
+
+macOS/Linux：
+
+```bash
+export COMPOSE_PROJECT_NAME=panda_qa_bundle
+docker compose up -d --wait postgres qdrant
+.venv/bin/panda-qa-kb verify --bundle "$BUNDLE_PATH" --project-root "$PWD"
 ```
 
 > **破坏性操作：** `docker compose down -v` 会删除恢复后的 PostgreSQL/Qdrant volumes。只有明确准备丢弃这个具名、隔离环境时才可以执行。
@@ -324,20 +499,22 @@ Bundle 文件损坏或不属于该 manifest。停止恢复并重新取得完整 
 
 ### Docker Engine permission denied
 
-确认 Docker Desktop 已启动，并在当前终端运行：
+Windows PowerShell/macOS：确认 Docker Desktop 已启动（macOS 也可使用 Colima），并在当前终端运行：
 
-```powershell
+```console
 docker version
 docker compose version
 ```
+
+Linux：确认 Docker Engine 正在运行，且当前用户可以访问 Docker daemon，然后运行同样的两条命令。
 
 如果普通终端可用而受限执行环境不可用，这是执行环境的 Docker named-pipe 权限问题，不代表 Bundle 损坏。
 
 ### ADC 或 Vertex 调用失败
 
-先确认：
+所有平台先确认：
 
-```powershell
+```console
 gcloud auth application-default print-access-token
 ```
 
@@ -350,6 +527,7 @@ gcloud auth application-default print-access-token
 ## 12. 新用户启动检查表
 
 - [ ] 代码和 Bundle 均来自可信来源；
+- [ ] Docker Desktop/Colima（macOS）或 Docker Engine（Linux）可用；
 - [ ] Python 3.12 环境安装了 `.[qa]`；
 - [ ] `.env` 中 PostgreSQL密码与 URL 一致；
 - [ ] `inspect` 成功；
