@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0",
+  "status": "approved_exposed_development_benchmark_v2_6",
+  "dataset": "gold_questions.yaml",
+  "dataset_sha256": "b5406e36c64ee664f9e2ff9c0f42e354feb7164c81d8f1c7551d8f2ed1d0b687",
+  "benchmark_version": "m6-benchmark-v2.6",
+  "base_benchmark_version": "m6-benchmark-v2.5",
+  "base_dataset_sha256": "53094ae57fe1f27591ba6cca949ffbbc109db583fa5a049adf498e527cac65a2",
+  "question_count": 120,
+  "review_count": 120,
+  "reviewer": "OpenAI GPT-5.6 Sol",
+  "reviewed_at": "2026-08-09T12:51:41.396429+00:00",
+  "split_counts": {"dev": 80, "challenge": 24, "regression": 16},
+  "status_counts": {"answered": 102, "insufficient_evidence": 10, "version_conflict": 8},
+  "release_eligible": false,
+  "acceptance_exposed": true,
+  "hidden_acceptance_status": "not_created",
+  "project_official_validation": {
+    "structurally_valid": true,
+    "official_ready": true,
+    "unknown_allowed_source_versions": [],
+    "unmatched_evidence_groups": []
+  },
+  "signed_reviews": [
+    {
+      "path": "D:/Download/failure_review_rc3e_17_reviewed.yaml",
+      "sha256": "6124C6937F72FA085C42815B60309B2B20F631E461B4DDFF5BF83514FAB6A999"
+    },
+    {
+      "path": "D:/Download/failure_review_regression_rc3f_14_reviewed_v2.yaml",
+      "sha256": "5A42E46CCE0E7AB3E0E84DAF11B5F664DF3266206A7797FBDF158E93B7D59B43"
+    }
+  ],
+  "changed_cases": ["g087", "g090", "g092", "g093", "g094", "g099", "g100", "g101", "g103", "g104", "g106", "g109", "g116"],
+  "protected_real_failures": ["g087", "g097", "g116"],
+  "gold_v2_6_patch_sha256": "cb2bbb0789987f318dfc720cfad3afb9f810a7abce263ae93b124e754cc741b1",
+  "gold_v2_6_change_report_sha256": "cea3ca1d4052e0bb2c49f29117a901a179ccf44919da81a1fbbec64cd2e05324",
+  "manual_adjudications_sha256": "43d2a67686060bbf30e0ad99b515520465e32a12f7e279805b7ad2d2dc81a920",
+  "selector_match_audit_sha256": "d7a938d897c13d42262a55b774d65b9914797d99a0797b5ddad75f6f6d9915e7",
+  "formal_rescore_identity": {
+    "artifact_evaluator": "evaluator-2_6_1",
+    "schema_version": "2.6.1",
+    "evaluation_revision": "evaluator-2.6.1",
+    "selector_policy": "direct>ancestor>path_descendant_containment>explicit_v2_6_1_any_of"
+  }
+}

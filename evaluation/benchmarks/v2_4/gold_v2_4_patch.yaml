@@ -1,0 +1,13 @@
+schema_version: "1.0"
+benchmark_version: m6-benchmark-v2.4
+base_benchmark_version: m6-benchmark-v2.3
+base_dataset_sha256: 33f0bfb6888c33bf58965911b6982426cb2a4a401a0fa8abf94a530a989a0f7c
+source_review_sha256: 5aea6967f0c58b0bc64ff14bcebfa7dda1073cbc053fb919898ff5e7658c06fa
+operations:
+  - case_id: g023
+    add_selectors:
+      g023.e2:
+        - object_id: object.3e790d97468c8387c1831cf2
+  - case_id: g073
+    add_accepted_intents:
+      - module_structure

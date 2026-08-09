@@ -1,0 +1,58 @@
+schema_version: "1.0"
+
+repositories:
+  - repo_id: luminosityfit
+    name: LuminosityFit
+    url: https://github.com/JinxinLee/LuminosityFit.git
+    ref: master
+    commit_sha: ddd83dcd1a74093bf48ef259a2849a67f9413f32
+    role: Upper-level luminosity fitting and analysis framework with a PandaRoot adapter.
+
+  - repo_id: pandaroot
+    name: PandaRoot
+    url: https://github.com/JinxinLee/PandaRoot.git
+    ref: dev
+    commit_sha: 18c09e91100db27867ded30e708b4dae95bd8357
+    role: Upstream simulation, reconstruction, PID, analysis, and macro framework.
+
+  - repo_id: restgas_determination
+    name: RestgasDetermination
+    url: https://github.com/JinxinLee/RestgasDetermination.git
+    ref: oct19
+    commit_sha: 11f1edc49dcbaeb61d707491a6d3bbec390fcd42
+    role: PandaRoot-based extension for restgas measurement and off-IP reconstruction.
+    base_repo_id: pandaroot
+    feature_start_commit: ef9a564
+
+papers:
+  - doc_id: li_2026
+    title: Luminosity Determination with Restgas Background from the Target for the PANDA Experiment
+    path: raw_pdf/thesis.pdf
+    sha256: 9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a
+    related_repositories: [luminosityfit, pandaroot, restgas_determination]
+
+  - doc_id: karavdina_2015
+    title: Preparation for the Accurate Luminosity Measurement by Antiproton-Proton Elastic Scattering
+    path: raw_pdf/Diss_2015_Karavdina_Anastasia.pdf
+    sha256: 422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b
+    related_repositories: [luminosityfit, pandaroot]
+
+  - doc_id: pflueger_2017
+    title: Precise Determination of the Luminosity with the PANDA-Luminosity-Detector
+    path: raw_pdf/Diss_2017_Pflueger_Stefan.pdf
+    sha256: 1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3
+    related_repositories: [luminosityfit, pandaroot]
+
+web_documents:
+  - doc_id: pandaroot_sphinx_2023_08_25_dev
+    name: PandaRoot Sphinx Documentation 2023-08-25-dev
+    url: https://webdocs.gsi.de/~pandacc/documentation/2023-08-25-dev/sphinx/index.html
+    snapshot_date: "2026-07-30"
+    expected_snapshot_hash: 5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87
+    expected_html_page_count: 75
+    expected_asset_count: 118
+    required_paths:
+      - sphinx/index.html
+    role: Operational documentation for generic PandaRoot installation and workflows.
+    authoritative_for_refs: [dev]
+    not_authoritative_for_refs: [oct19]

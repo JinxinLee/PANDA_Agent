@@ -1,0 +1,9 @@
+questions 120 splits Counter({'dev': 80, 'challenge': 24, 'regression': 16}) status Counter({'answered': 102, 'insufficient_evidence': 10, 'version_conflict': 8})
+approved Counter({'approved': 120})
+point count distribution Counter({1: 46, 3: 37, 2: 16, 4: 15, 5: 5, 7: 1})
+roles generic 0
+selector match max 20 selectors >20 0 selectors >10 52
+source type distribution Counter({('code',): 38, ('paper', 'code'): 21, ('documentation',): 18, ('paper',): 15, ('documentation', 'code'): 10, ('code', 'workflow'): 9, ('code', 'graph'): 3, ('paper', 'code', 'workflow'): 2, ('documentation', 'code', 'workflow'): 2, ('documentation', 'workflow'): 2})
+g043 [('g043.e1', [{'object_id': None, 'source_id': 'karavdina_2015', 'source_version_id': None, 'object_type': 'thesis_section', 'path': None, 'symbol': None, 'start_line': None, 'end_line': None, 'pdf_page': 112, 'pdf_page_end': None, 'title_contains': None, 'section_contains': None}])]
+g087 query PndLmdTrackQ* appears in adapter code. How should this pointer type be normalized, and where is the underlying PndLmdTrackQ product consumed by PndLmdCombinedDataReader?
+VALIDATION_OK

@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0",
+  "status": "approved_exposed_development_benchmark_v2_5",
+  "dataset": "gold_questions.yaml",
+  "dataset_sha256": "53094ae57fe1f27591ba6cca949ffbbc109db583fa5a049adf498e527cac65a2",
+  "benchmark_version": "m6-benchmark-v2.5",
+  "base_benchmark_version": "m6-benchmark-v2.4",
+  "base_dataset_sha256": "8293af80e596e0072049d530f735aeea196a9f815f41fecbe55c20d5dc7375d9",
+  "question_count": 120,
+  "review_count": 120,
+  "reviewer": "OpenAI GPT-5.6 Sol",
+  "reviewed_at": "2026-08-08T23:01:29.388185+00:00",
+  "split_counts": {"dev": 80, "challenge": 24, "regression": 16},
+  "status_counts": {"answered": 102, "insufficient_evidence": 10, "version_conflict": 8},
+  "release_eligible": false,
+  "acceptance_exposed": true,
+  "hidden_acceptance_status": "not_created",
+  "project_official_validation": {
+    "structurally_valid": true,
+    "official_ready": true,
+    "unknown_allowed_source_versions": [],
+    "unmatched_evidence_groups": []
+  },
+  "signed_review": {
+    "path": "D:/Download/failure_review_rc3e_17_reviewed.yaml",
+    "sha256": "6124C6937F72FA085C42815B60309B2B20F631E461B4DDFF5BF83514FAB6A999"
+  },
+  "changed_cases": ["g001", "g005", "g007", "g011", "g028", "g060", "g066", "g068", "g073", "g079", "g081", "g089", "g105"],
+  "protected_real_failures": ["g047", "g078", "g112", "g114"],
+  "gold_v2_5_patch_sha256": "37fc48e5bc274212196de9950712c1ec34aa0f732fedaff4f9508d7d451c7b5d",
+  "gold_v2_5_change_report_sha256": "93d2bc8fd852e1d53b0877b6800fa4db39334e0cb95f25ee7167e2e4da381e6c",
+  "manual_adjudications_sha256": "c07a454bd305db601f155763ec020cfd8c40afcafc1e08e27f7e5362bd11f60f",
+  "selector_match_audit_sha256": "db555b938cd28f39119f1e5bc5110784c23aaef6e19a5de7397d987d3f9777ee",
+  "formal_rescore_identity": {
+    "artifact_evaluator": "evaluator-2_5_1",
+    "schema_version": "2.5.1",
+    "evaluation_revision": "evaluator-2.5.1",
+    "selector_policy": "direct>ancestor>path_descendant_containment>explicit_v2_5_1_any_of"
+  }
+}

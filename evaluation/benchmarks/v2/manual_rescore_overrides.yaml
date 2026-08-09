@@ -1,0 +1,73 @@
+schema_version: '1.0'
+source_run_id: m6-qa-dev-candidate-v8
+review_decision_sha256: 301ec5827b128b9a582583838461b692b5172c7b5661637130ed82abc84afc73
+overrides:
+  g001:
+    final_evidence_recall: 1.0
+    unsupported_claim_ids: []
+  g003:
+    unsupported_claim_ids: []
+  g007:
+    final_evidence_recall: null
+  g013:
+    answer_point_coverage: 0.6666666666666666
+    covered_point_ids:
+    - p1
+    - p2
+    critical_answer_points_missing:
+    - p3
+    unsupported_claim_ids: []
+  g016:
+    unsupported_claim_ids: []
+  g018:
+    gold_recall_at_10: 1.0
+    final_evidence_recall: 1.0
+  g019:
+    gold_recall_at_10: 1.0
+    final_evidence_recall: 1.0
+  g021:
+    unsupported_claim_ids: []
+  g027:
+    answer_point_coverage: 0.3333333333333333
+    covered_point_ids:
+    - p1
+    critical_answer_points_missing:
+    - p2
+    - p3
+  g079:
+    hallucinated_identifiers: []
+    major_identifier_hallucinations: []
+  g085:
+    final_evidence_recall: 1.0
+  g087:
+    gold_recall_at_10: 1.0
+    final_evidence_recall: 1.0
+    hallucinated_identifiers: []
+    major_identifier_hallucinations: []
+  g089:
+    gold_recall_at_10: 1.0
+    final_evidence_recall: 1.0
+  g098:
+    answer_point_coverage: 0.6666666666666666
+    covered_point_ids:
+    - p1
+    - p2
+    critical_answer_points_missing:
+    - p3
+  g101:
+    answer_point_coverage: 1.0
+    covered_point_ids:
+    - p1
+    critical_answer_points_missing: []
+  g112:
+    answer_point_coverage: 0.0
+    covered_point_ids: []
+    critical_answer_points_missing:
+    - p1
+    - p2
+    - p3
+    - p4
+  g113:
+    gold_recall_at_10: 1.0
+    final_evidence_recall: 1.0
+policy: Only human-reviewed metric corrections are applied; original records remain immutable.

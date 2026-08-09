@@ -1,0 +1,26 @@
+schema_version: "1.0"
+
+aliases:
+  - alias_text: restgas_profile.txt
+    target_object_id: configuration.restgas_profile
+    alias_kind: generic_user_term
+    source_id: restgas_determination
+    source_version_id: restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42
+    review_status: accepted
+    provenance_paths:
+      - README.md
+      - macro/target/README.md
+    correction_message: >-
+      The locked corpus contains no literal file named restgas_profile.txt;
+      it uses the restgas_profile configuration key and concrete
+      restgas_16012024_*.txt profile files.
+
+  - alias_text: "*_pid_final.root"
+    target_object_id: data_product.restgas.pid_final_root
+    alias_kind: file_pattern
+    source_id: restgas_determination
+    source_version_id: restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42
+    review_status: accepted
+    provenance_paths:
+      - README.md
+      - macro/target/README.md

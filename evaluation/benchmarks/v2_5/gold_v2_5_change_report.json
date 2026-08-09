@@ -1,0 +1,12 @@
+{
+  "benchmark_version": "m6-benchmark-v2.5",
+  "base_benchmark_version": "m6-benchmark-v2.4",
+  "base_dataset_sha256": "8293af80e596e0072049d530f735aeea196a9f815f41fecbe55c20d5dc7375d9",
+  "signed_review_sha256": "6124C6937F72FA085C42815B60309B2B20F631E461B4DDFF5BF83514FAB6A999",
+  "changed_cases": ["g001", "g005", "g007", "g011", "g028", "g060", "g066", "g068", "g073", "g079", "g081", "g089", "g105"],
+  "rescore_cases": ["g001", "g005", "g011", "g028", "g060", "g066", "g068", "g073", "g079", "g081", "g089"],
+  "waiver_cases": ["g007", "g105"],
+  "protected_real_failures": ["g047", "g078", "g112", "g114"],
+  "semantic_selector_deltas": [],
+  "policy": "Closed per-case v2.5 adjudication contract; no global threshold or generic gate relaxation. Formal composite rescoring uses evaluator-2.5.1 and is always diagnostic-only."
+}

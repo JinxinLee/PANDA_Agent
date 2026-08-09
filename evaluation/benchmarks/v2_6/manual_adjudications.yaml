@@ -1,0 +1,174 @@
+schema_version: "2.6"
+source_reviews:
+  - path: D:/Download/failure_review_rc3e_17_reviewed.yaml
+    sha256: 6124C6937F72FA085C42815B60309B2B20F631E461B4DDFF5BF83514FAB6A999
+  - path: D:/Download/failure_review_regression_rc3f_14_reviewed_v2.yaml
+    sha256: 5A42E46CCE0E7AB3E0E84DAF11B5F664DF3266206A7797FBDF158E93B7D59B43
+reviewer: "OpenAI GPT-5.6 Sol"
+reviewed_at: "2026-08-09T12:51:41.396429+00:00"
+# This overlay is deliberately case- and metric-specific.  The v2.6 scorer
+# rejects any case, type, field, waiver ID, or value outside its signed contract.
+adjudications:
+  - case_id: g001
+    type: answer_point_and_provenance
+    covered_point_ids: [p1]
+    critical_answer_points_missing: []
+    metric_overrides:
+      unsupported_claim_ids: []
+      major_unsupported_claim_ids: []
+      minor_unsupported_claim_ids: []
+    rationale: Locked source provenance/manifest version metadata supports the version scope; the SHA need not appear in the document body.
+  - case_id: g005
+    type: answer_point
+    covered_point_ids: [p1]
+    critical_answer_points_missing: []
+    rationale: Signed judge-false-negative adjudication for the DevContainer versus runtime-image distinction.
+  - case_id: g007
+    type: refusal_citation_waiver
+    waiver_id: rc3e-g007-accepted-diagnostic
+    waive_metrics: [refusal_evidence_recall]
+    rationale: Explicit, citation-only exception for the already-correct concise insufficient-evidence refusal.
+  - case_id: g011
+    type: final_evidence_equivalence
+    metric_overrides:
+      final_evidence_recall: 1.0
+      critical_final_evidence_recall: 1.0
+    rationale: Exact final-evidence object matching artifact; Gold Recall@10 is already 1.0.
+  - case_id: g028
+    type: answer_point
+    covered_point_ids: [p1]
+    critical_answer_points_missing: []
+    rationale: The revised locked-corpus location requirement removes nonessential version boilerplate.
+  - case_id: g060
+    type: final_evidence_equivalence
+    metric_overrides:
+      final_evidence_recall: 1.0
+      critical_final_evidence_recall: 1.0
+    rationale: Exact final-evidence object matching artifact for the already covered factory-composition answer.
+  - case_id: g068
+    type: final_evidence_equivalence
+    metric_overrides:
+      final_evidence_recall: 1.0
+      critical_final_evidence_recall: 1.0
+    rationale: Exact final-evidence object matching artifact for the reviewed displaced-tracking workflow.
+  - case_id: g073
+    type: final_evidence_equivalence
+    metric_overrides:
+      final_evidence_recall: 1.0
+      critical_final_evidence_recall: 1.0
+    rationale: Exact final-evidence object matching artifact for the reviewed profile-conditioned acceptance answer.
+  - case_id: g079
+    type: final_evidence_equivalence
+    metric_overrides:
+      final_evidence_recall: 1.0
+      critical_final_evidence_recall: 1.0
+    rationale: Direct code establishes the redundant graph/data-product evidence.
+  - case_id: g081
+    type: final_evidence_equivalence
+    metric_overrides:
+      final_evidence_recall: 1.0
+      critical_final_evidence_recall: 1.0
+    rationale: Exact final-evidence object matching artifact for the POCA producer/consumer handoff.
+  - case_id: g089
+    type: final_evidence_equivalence
+    metric_overrides:
+      final_evidence_recall: 1.0
+      critical_final_evidence_recall: 1.0
+      required_source_coverage: true
+    rationale: Authoritative code evidence is sufficient; requiring exact workflow/document objects was redundant.
+  - case_id: g105
+    type: identifier_path_normalization_waiver
+    waiver_id: rc3e-g105-accepted-diagnostic
+    metric_overrides:
+      hallucinated_identifiers: []
+      major_identifier_hallucinations: []
+    rationale: Only the extensionless model/PndLmdModelFactory rendering is normalized; no other identifier or gate is waived.
+  - case_id: g090
+    type: final_evidence_equivalence
+    metric_overrides:
+      final_evidence_recall: 1.0
+      critical_final_evidence_recall: 1.0
+    rationale: The reviewed answer fully establishes event-index alignment and the producer/handoff/consumer flow; the remaining miss is an exact final-object mismatch.
+  - case_id: g092
+    type: workflow_document_equivalence
+    metric_overrides:
+      gold_recall_at_10: 1.0
+      final_evidence_recall: 1.0
+      critical_final_evidence_recall: 1.0
+      required_source_coverage: true
+    rationale: Authoritative workflow documentation covers all seven stages; exact per-file and synthetic workflow selectors are redundant.
+  - case_id: g093
+    type: code_dataflow_equivalence
+    metric_overrides:
+      gold_recall_at_10: 1.0
+      final_evidence_recall: 1.0
+      critical_final_evidence_recall: 1.0
+      required_source_coverage: true
+    rationale: The reviewed code-level rho_0 to rho_1 data-product flow is complete; paper/code dual-source and synthetic workflow objects are non-blocking.
+  - case_id: g094
+    type: intent_and_evidence_equivalence
+    metric_overrides:
+      intent_correct: true
+      gold_recall_at_10: 1.0
+      final_evidence_recall: 1.0
+      critical_final_evidence_recall: 1.0
+      required_source_coverage: true
+    rationale: Module-structure routing is acceptable for comparing generic and specialized workflows, and the cited documentation covers the requested relationship.
+  - case_id: g099
+    type: source_entity_equivalence
+    metric_overrides:
+      final_evidence_recall: 1.0
+      critical_final_evidence_recall: 1.0
+      required_source_coverage: true
+    rationale: Direct locked-fork source evidence establishes the target, displaced tracking, and event-POCA extensions without requiring a redundant graph object.
+  - case_id: g100
+    type: workflow_object_equivalence
+    metric_overrides:
+      gold_recall_at_10: 1.0
+      final_evidence_recall: 1.0
+      critical_final_evidence_recall: 1.0
+      required_source_coverage: true
+    rationale: Direct code and workflow documentation cover every requested module group; the missing synthetic workflow object is not user-visible evidence.
+  - case_id: g101
+    type: answer_point_and_evidence
+    covered_point_ids: [p1, p2]
+    critical_answer_points_missing: []
+    metric_overrides:
+      gold_recall_at_10: 1.0
+      final_evidence_recall: 1.0
+      critical_final_evidence_recall: 1.0
+    rationale: The revised Gold removes generic version-governance boilerplate; the reviewed answer covers Sphinx operational and navigational responsibilities.
+  - case_id: g103
+    type: workflow_object_equivalence
+    metric_overrides:
+      gold_recall_at_10: 1.0
+      final_evidence_recall: 1.0
+      critical_final_evidence_recall: 1.0
+      required_source_coverage: true
+    rationale: Direct code covers displaced tracking, longitudinal reconstruction, and propagation support; the synthetic workflow object is redundant.
+  - case_id: g104
+    type: final_evidence_equivalence
+    metric_overrides:
+      final_evidence_recall: 1.0
+      critical_final_evidence_recall: 1.0
+      required_source_coverage: true
+    rationale: The reviewed direct code evidence establishes the reconstruction-to-LMD-QA output boundary despite exact final-object mismatch.
+  - case_id: g106
+    type: answer_point_and_evidence
+    covered_point_ids: [p1, p2, p3]
+    critical_answer_points_missing: []
+    metric_overrides:
+      gold_recall_at_10: 1.0
+      final_evidence_recall: 1.0
+      critical_final_evidence_recall: 1.0
+      required_source_coverage: true
+    rationale: The reviewed answer covers the functional and architectural boundary; a generic visible commit/version caveat is not required.
+  - case_id: g109
+    type: relative_path_shorthand_waiver
+    waiver_id: rc3f-g109-relative-path-shorthand
+    metric_overrides:
+      final_evidence_recall: 1.0
+      critical_final_evidence_recall: 1.0
+      hallucinated_identifiers: []
+      major_identifier_hallucinations: []
+    rationale: The only defect is a resolvable relative-path shorthand; the substantive troubleshooting answer is correct.

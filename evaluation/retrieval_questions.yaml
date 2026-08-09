@@ -1,0 +1,32 @@
+schema_version: "1.0"
+questions:
+  - {id: r01, intent: installation, query: "How do I install PandaRoot?"}
+  - {id: r02, intent: installation, query: "PandaRoot Docker 安装流程是什么？"}
+  - {id: r03, intent: installation, query: "Which environment variables are required by PandaRoot?"}
+  - {id: r04, intent: usage, query: "How do I run a PandaRoot simulation macro?"}
+  - {id: r05, intent: usage, query: "如何运行 runSimulationReconstruction.py？"}
+  - {id: r06, intent: usage, query: "What does createLmdFitData produce?"}
+  - {id: r07, intent: api, query: "Locate PndTargetGenerator."}
+  - {id: r08, intent: api, query: "Where is PndLmdCombinedDataReader defined?"}
+  - {id: r09, intent: api, query: "Find PndPidCorrelator and its call sites."}
+  - {id: r10, intent: api, query: "What is PndLmdAcceptance used for?"}
+  - {id: r11, intent: algorithm_theory, query: "Explain the DPM elastic scattering model."}
+  - {id: r12, intent: algorithm_theory, query: "Why is detector resolution convolved in luminosity fitting?"}
+  - {id: r13, intent: algorithm_theory, query: "解释 restgas profile efficiency correction 的原理。"}
+  - {id: r14, intent: algorithm_implementation, query: "How is beam divergence implemented in LuminosityFit?"}
+  - {id: r15, intent: algorithm_implementation, query: "How is LMD track back propagation to the IP implemented?"}
+  - {id: r16, intent: algorithm_implementation, query: "How are Target Spectrometer tracks propagated to event POCA?"}
+  - {id: r17, intent: algorithm_implementation, query: "How is restgas effective acceptance implemented?"}
+  - {id: r18, intent: data_flow, query: "Trace Lumi_TrksQA into LuminosityFit."}
+  - {id: r19, intent: data_flow, query: "Trace restgas_profile.txt to corrected rho(z)."}
+  - {id: r20, intent: data_flow, query: "What produces and consumes event_poca?"}
+  - {id: r21, intent: data_flow, query: "Trace *_pid.root to *_pid_final.root."}
+  - {id: r22, intent: module_structure, query: "Describe the LuminosityFit model layer."}
+  - {id: r23, intent: module_structure, query: "How does RestgasDetermination extend PandaRoot?"}
+  - {id: r24, intent: module_structure, query: "Which modules implement off-IP tracking?"}
+  - {id: r25, intent: troubleshooting, query: "Why can PandaRoot dev documentation disagree with oct19 code?"}
+  - {id: r26, intent: troubleshooting, query: "Why is event_poca missing during second-pass PID?"}
+  - {id: r27, intent: troubleshooting, query: "Why does POCA_VERTEX_FILE fail?"}
+  - {id: r28, intent: algorithm_implementation, query: "Distinguish angular acceptance from longitudinal efficiency."}
+  - {id: r29, intent: algorithm_implementation, query: "Distinguish point-like acceptance from restgas effective acceptance."}
+  - {id: r30, intent: algorithm_implementation, query: "Compare LMD-to-IP propagation with Target-track-to-event-POCA propagation."}

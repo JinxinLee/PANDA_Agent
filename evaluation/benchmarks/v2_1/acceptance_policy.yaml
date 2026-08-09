@@ -1,0 +1,23 @@
+schema_version: '1.0'
+status: not_created
+ownership: independent_domain_reviewer
+question_count: 64
+intent_distribution:
+  algorithm_implementation: 8
+  algorithm_theory: 8
+  api: 8
+  data_flow: 8
+  installation: 8
+  module_structure: 8
+  troubleshooting: 8
+  usage: 8
+status_distribution:
+  answered: 52
+  insufficient_evidence: 6
+  version_conflict: 6
+rules:
+- Must be cluster-disjoint from all exposed development, challenge, and regression
+  questions.
+- Must not be inspected or used for tuning before the release candidate is frozen.
+- A consumed acceptance set cannot be reused after acceptance-driven implementation
+  changes.

@@ -1,0 +1,59 @@
+[build-system]
+requires = ["setuptools>=75", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "panda-research-qa-agent"
+version = "0.1.0"
+description = "Version-aware, evidence-grounded QA agent for PANDA research software"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+  "google-genai>=2.13,<3",
+  "pydantic>=2.13,<3",
+  "python-dotenv>=1.2,<2",
+  "requests>=2.32,<3",
+  "PyYAML>=6,<7",
+]
+
+[project.optional-dependencies]
+qa = [
+  "alembic>=1.16,<2",
+  "fastapi>=0.115,<1",
+  "langgraph>=1,<2",
+  "psycopg[binary]>=3.2,<4",
+  "qdrant-client[fastembed]>=1.15,<1.16",
+  "sqlalchemy>=2,<3",
+  "uvicorn>=0.34,<1",
+]
+ingestion = [
+  "beautifulsoup4>=4.13,<5",
+  "docling>=2,<3",
+  "pymupdf>=1.25,<2",
+  "tree-sitter>=0.25,<0.26",
+  "tree-sitter-bash>=0.25,<1",
+  "tree-sitter-cpp>=0.23,<1",
+]
+dev = [
+  "pytest>=8,<10",
+  "ruff>=0.12,<1",
+]
+
+[project.scripts]
+panda-qa-health = "panda_agent.cli.healthcheck:main"
+panda-qa-source = "panda_agent.cli.source:main"
+panda-qa-ingest = "panda_agent.cli.ingest:main"
+panda-qa-index = "panda_agent.cli.index:main"
+panda-qa-retrieve = "panda_agent.cli.retrieve:main"
+panda-qa = "panda_agent.cli.qa:main"
+panda-qa-eval = "panda_agent.cli.evaluate:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"

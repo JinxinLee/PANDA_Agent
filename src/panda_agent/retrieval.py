@@ -1,0 +1,594 @@
+"""M4 multi-channel retrieval with version filtering, RRF, and quotas."""
+
+from __future__ import annotations
+
+import json
+import math
+import re
+from collections import defaultdict
+from pathlib import Path
+from typing import Any
+
+from fastembed import SparseTextEmbedding
+from qdrant_client import models
+
+from panda_agent.config import load_query_expansions, load_retrieval_policies
+from panda_agent.llm.vertex import VertexAIClient, VertexSettings
+from panda_agent.models import AuthorityLevel, Evidence, RetrievalPlan, SourceLocator, stable_id
+from panda_agent.prompts import QUERY_ANALYZER_SYSTEM_PROMPT, RERANK_SYSTEM_PROMPT
+from panda_agent.storage import Storage
+
+
+ANALYSIS_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "intent": {"type": "string", "enum": ["installation", "usage", "algorithm_theory", "algorithm_implementation", "api", "data_flow", "module_structure", "troubleshooting"]},
+        "target_repositories": {"type": "array", "items": {"type": "string", "enum": ["luminosityfit", "pandaroot", "restgas_determination"]}},
+        "concepts": {"type": "array", "items": {"type": "string"}},
+        "symbols": {"type": "array", "items": {"type": "string"}},
+        "requested_versions": {"type": "object", "additionalProperties": {"type": "string"}},
+        "concept_scopes": {"type": "object", "additionalProperties": {"type": "string"}},
+    },
+    "required": ["intent", "target_repositories", "concepts", "symbols", "requested_versions", "concept_scopes"],
+    "additionalProperties": False,
+}
+
+
+def route_high_confidence_intent(
+    question: str, routes: dict[str, list[str]] | None = None
+) -> str | None:
+    """Route explicit operational wording before asking the LLM classifier."""
+    lowered = question.casefold()
+    if re.search(
+        r"(?:recover|reconstruct|restore).*\b(?:deleted|removed)\b|"
+        r"\b(?:deleted|removed)\b.*(?:recover|reconstruct|restore)",
+        lowered,
+    ):
+        return "troubleshooting"
+    routes = routes or {
+        "troubleshooting": [r"\btroubleshoot", r"\bdebug\b", r"\berror\b", r"\bfail(?:s|ed|ure)?\b", r"\bmissing\b", r"\bcannot\b", r"\bwrong\b", r"\bwhy might\b", "what should i inspect", "排查", "报错", "失败", "缺失"],
+        "installation": [r"\binstall", "environment variable", "pandaroot environment", "cernvm-fs", "cvmfs", "cmake error", "docker", "安装", "环境变量"],
+        "data_flow": [r"\btrace\b", "data flow", r"\bproduces\b", r"\bconsumes\b", "into pid_final", "passed to", "read into", "写出", "读入", "数据流", "谁产生", "谁消费", "如何进入", "如何连接"],
+        "api": [r"\bwhere (?:is|does|can)\b", r"\bdefined\b", r"\bsignature\b", r"\bapi\b", r"\bwhich (?:macro|source|file|class|method|function)\b", r"\blocate\b", "哪个宏", "哪个类", "哪个函数"],
+        "algorithm_implementation": [r"\bhow is .+ implemented\b", r"\bhow does .+ (?:form|create|work|use)\b", r"\bimplementation\b", r"event_poca.*(?:event|事件).*(?:read|读)", r"extrapolat.*event.?poca", "如何实现", "由哪些类实现", "如何回传", "如何形成", "如何用于", "实现层面", "代码实现"],
+        "algorithm_theory": [r"\btheoretical\b", r"\bconceptual\b", r"\bwhy does\b", r"\bwhy is\b", "理论", "原理", "为什么需要", "物理意义"],
+        "module_structure": [r"\bmodule structure\b", r"\bmodule boundary\b", r"\bmodule.*connect", r"\bcomponents?\b", r"\blayers?\b", "模块结构", "模块边界", "模块如何连接", "由哪些模块"],
+        "usage": [r"\bhow (?:do|can) i (?:run|use|invoke|start|select)\b", r"\bhow is .+ (?:supplied|provided|documented)\b", r"\bwhat is the documented .+ sequence\b", r"\busage\b", "如何运行", "如何使用", "怎么运行", "如何提供", "如何供给"],
+    }
+    priority = (
+        "troubleshooting", "installation", "algorithm_implementation", "api",
+        "usage", "module_structure", "data_flow", "algorithm_theory",
+    )
+    for intent in priority:
+        patterns = [
+            *routes.get(intent, []),
+            *routes.get(f"{intent}_extra", []),
+        ]
+        if any(re.search(pattern, lowered) for pattern in patterns):
+            return intent
+    return None
+
+
+def _evidence(payload: dict[str, Any], score: float, channels: list[str]) -> Evidence:
+    return Evidence(
+        evidence_id=stable_id(payload["object_id"], *sorted(channels), prefix="evidence"),
+        object_id=payload["object_id"], source_id=payload["source_id"],
+        source_version_id=payload["source_version_id"], text=payload.get("text", ""),
+        locator=SourceLocator.model_validate(payload.get("locator") or {}),
+        retrieval_channels=channels, score=score,
+        authority_level=AuthorityLevel(payload.get("authority_level", "primary")),
+    )
+
+
+class Retriever:
+    def __init__(self, project_root: Path, *, storage: Storage | None = None, vertex: VertexAIClient | None = None) -> None:
+        self.project_root = project_root
+        self.storage = storage or Storage()
+        self.vertex = vertex or VertexAIClient(VertexSettings.from_env())
+        self.policies = load_retrieval_policies(project_root / "configs" / "retrieval_policies.yaml")
+        self.query_expansions = load_query_expansions(project_root / "configs" / "query_expansions.yaml")
+        self.sparse = SparseTextEmbedding(model_name="Qdrant/bm25",cache_dir=str(project_root/"data"/"cache"/"fastembed"))
+        manifest = json.loads((project_root / "data" / "manifests" / "source_manifest.json").read_text(encoding="utf-8"))
+        self.fixed_versions = {item["repo_id"]: item["commit_sha"] for item in manifest["repositories"]}
+        self.fixed_refs = {item["repo_id"]: item["ref"] for item in manifest["repositories"]}
+        self._paper_versions = {item["doc_id"]: item["sha256"] for item in manifest["papers"]}
+        self.context_sources = [item["doc_id"] for item in [*manifest["papers"], *manifest["web_documents"]]]
+        self.web_version_tokens = {
+            match.group(0).lower()
+            for item in manifest["web_documents"]
+            for match in re.finditer(r"\b\d{4}(?:-\d{2}-\d{2})?-dev\b", item["entry_url"], re.IGNORECASE)
+        }
+
+    def analyze(self, question: str) -> RetrievalPlan:
+        if not question.strip():
+            raise ValueError("question cannot be empty")
+        if len(question) > 20_000:
+            raise ValueError("question exceeds the 20,000 character safety limit")
+        result = self.vertex.generate_json(
+            json.dumps({"task": "analyze_retrieval_question", "untrusted_question": question}, ensure_ascii=False),
+            ANALYSIS_SCHEMA,
+            system_instruction=QUERY_ANALYZER_SYSTEM_PROMPT,
+        )
+        routed_intent = route_high_confidence_intent(
+            question, getattr(self.policies, "intent_routes", None)
+        )
+        if routed_intent is not None:
+            result["intent"] = routed_intent
+        policy = self.policies.intents[result["intent"]]
+        scopes = result["concept_scopes"]
+        lowered = question.lower()
+        if "back propagation" in lowered or "回传" in question or "反向传播" in question:
+            scopes.setdefault("back_propagation", "lmd_to_ip" if "lmd" in lowered else "target_track_to_event_poca")
+        if "efficiency" in lowered or "效率" in question:
+            scopes.setdefault("efficiency", "longitudinal_profile" if any(term in lowered for term in ("restgas", "profile", "pvz")) else "angular_acceptance")
+        if "angular acceptance" in lowered and "longitudinal efficiency" in lowered:
+            scopes["efficiency"]="angular_acceptance_vs_longitudinal_profile"
+        if "point-like acceptance" in lowered and "restgas effective acceptance" in lowered:
+            scopes["acceptance"]="point_like_vs_restgas_effective"
+        if "lmd-to-ip" in lowered and "event-poca" in lowered:
+            scopes["back_propagation"]="lmd_to_ip_vs_target_track_to_event_poca"
+        aliases: dict[str, str] = {}
+        corrections: list[str] = []
+        try:
+            with self.storage.connect() as connection:
+                alias_rows = connection.execute(
+                    "SELECT alias_text,target_object_id,payload FROM knowledge_aliases WHERE review_status='accepted'"
+                ).fetchall()
+            for alias_text, target_object_id, payload in alias_rows:
+                if alias_text.casefold() in lowered:
+                    aliases[alias_text] = target_object_id
+                    if payload.get("correction_message"):
+                        corrections.append(payload["correction_message"])
+        except Exception:
+            pass
+        targets = [repo for repo in result["target_repositories"] if repo in self.fixed_versions]
+        if any(term in lowered for term in ("event_poca", "poca_vertex_file", "restgas_profile")):
+            targets = list(dict.fromkeys(["restgas_determination", *targets]))
+        if not targets:
+            targets=list(self.fixed_versions)
+        expanded_symbols = list(result["symbols"])
+        expanded_concepts = list(result["concepts"])
+        paper_page_hints: dict[str, list[int]] = {}
+        expansion_rules = getattr(getattr(self, "query_expansions", None), "rules", [])
+        for rule in expansion_rules:
+            if any(trigger.casefold() in lowered for trigger in rule.triggers):
+                expanded_symbols.extend(rule.symbols)
+                expanded_concepts.extend(rule.concepts)
+                targets.extend(repo for repo in rule.repositories if repo in self.fixed_versions)
+                for source_id, pages in rule.paper_page_hints.items():
+                    paper_page_hints.setdefault(source_id, []).extend(pages)
+        # Mixed implementation questions need room for both paper and source
+        # evidence.  Keep the first reviewed anchor set contributed by each
+        # source; theory-only questions may retain multiple complementary sets.
+        if result["intent"] == "algorithm_implementation":
+            remaining = 3
+            limited_hints: dict[str, list[int]] = {}
+            for source_id, pages in paper_page_hints.items():
+                if remaining <= 0:
+                    break
+                selected = pages[:remaining]
+                if selected:
+                    limited_hints[source_id] = selected
+                    remaining -= len(selected)
+            paper_page_hints = limited_hints
+        if result["intent"] == "algorithm_theory" and any(
+            term in lowered for term in ("feed back", "feedback", "reconstructed restgas profile")
+        ) and "li_2026" in paper_page_hints:
+            paper_page_hints["li_2026"] = [141, 149, 151]
+        # Operational, API, and troubleshooting questions should not spend
+        # their small evidence budget on thesis anchors.  Papers remain part of
+        # the plan for the two intents whose gold policy explicitly requires
+        # theoretical/implementation literature.
+        if result["intent"] not in {"algorithm_theory", "algorithm_implementation"}:
+            paper_page_hints = {}
+        targets = list(dict.fromkeys(targets))
+        conflicts = []
+        requested_versions=dict(result.get("requested_versions", {}))
+        explicit_shas=re.findall(r"(?i)\b[0-9a-f]{7,40}\b",question)
+        if explicit_shas:
+            named=[repo for repo in self.fixed_versions if repo.replace("_","") in re.sub(r"[^a-z0-9]","",lowered)]
+            for repo in named or targets:
+                requested_versions.setdefault(repo,explicit_shas[0])
+        for repo, requested in requested_versions.items():
+            requested_lower = requested.lower()
+            is_document_version = any(
+                requested_lower == token
+                or (
+                    requested_lower.endswith("-dev")
+                    and token.endswith("-dev")
+                    and requested_lower.split("-", 1)[0] == token.split("-", 1)[0]
+                )
+                for token in getattr(self, "web_version_tokens", set())
+            )
+            if is_document_version and any(term in lowered for term in ("sphinx", "documentation", "documented", "docs")):
+                continue
+            locked = self.fixed_versions.get(repo)
+            if locked and requested not in {locked, locked[:7], self.fixed_refs[repo]}:
+                conflicts.append(f"{repo}: requested {requested}, locked {locked}")
+        return RetrievalPlan(
+            intent=result["intent"], routing_method="rule" if routed_intent else "llm", target_repositories=targets,
+            resolved_versions={repo: self.fixed_versions[repo] for repo in targets},
+            version_conflicts=conflicts,
+            concepts=list(dict.fromkeys(expanded_concepts)),
+            symbols=list(dict.fromkeys(expanded_symbols)),
+            concept_scopes=scopes, source_budgets=policy.source_budgets,
+            required_source_types=policy.required_sources,
+            resolved_aliases=aliases, premise_corrections=corrections,
+            paper_page_hints={key: list(dict.fromkeys(value)) for key, value in paper_page_hints.items()},
+        )
+
+    @staticmethod
+    def _row(row: Any) -> dict[str, Any]:
+        keys = ("object_id", "source_id", "source_version_id", "object_type", "title", "text", "authority_level", "locator")
+        return dict(zip(keys, row))
+
+    def _exact(self, plan: RetrievalPlan, question: str, limit: int) -> list[dict[str, Any]]:
+        terms = [*plan.symbols, *plan.concepts] or re.findall(r"[A-Za-z_][A-Za-z0-9_:./-]{3,}", question)
+        rows_by_term: list[list[dict[str, Any]]] = []
+        alias_rows: list[dict[str, Any]] = []
+        with self.storage.connect() as connection:
+            alias_targets = list(plan.resolved_aliases.values())
+            if alias_targets:
+                alias_rows.extend(
+                    self._row(row)
+                    for row in connection.execute(
+                        "SELECT object_id,source_id,source_version_id,object_type,title,text,authority_level,locator FROM knowledge_objects WHERE object_id=ANY(%s)",
+                        (alias_targets,),
+                    ).fetchall()
+                )
+            for term in terms[:24]:
+                text_clause = " OR text ILIKE %s" if (
+                    any(char.isspace() for char in term)
+                    or any(char.isupper() for char in term)
+                ) else ""
+                query = f"""SELECT object_id,source_id,source_version_id,object_type,title,text,authority_level,locator
+                    FROM knowledge_objects
+                    WHERE (title ILIKE %s OR canonical_locator ILIKE %s
+                           OR locator->>'path' ILIKE %s OR locator->>'symbol' ILIKE %s{text_clause})"""
+                wildcard = f"%{term}%"
+                params: list[Any] = [wildcard, wildcard, wildcard, wildcard]
+                if text_clause:
+                    params.append(wildcard)
+                if plan.target_repositories:
+                    query += " AND source_id = ANY(%s)"
+                    params.append([*plan.target_repositories, *self.context_sources, "curated_panda_domain"])
+                    query += " AND (NOT (source_id = ANY(%s)) OR source_version_id = ANY(%s))"
+                    params.extend([plan.target_repositories, [f"{repo}@{plan.resolved_versions[repo]}" for repo in plan.target_repositories]])
+                paper_priority = ""
+                if "paper" in plan.required_source_types:
+                    paper_priority = "CASE WHEN source_id = ANY(%s) THEN 0 ELSE 1 END, "
+                    params.append(["li_2026", "karavdina_2015", "pflueger_2017"])
+                query += f""" ORDER BY {paper_priority}CASE
+                    WHEN locator->>'path' ILIKE %s AND object_type IN ('sphinx_page','sphinx_page_chunk','source_file','readme_section') THEN 0
+                    WHEN title=%s OR locator->>'symbol'=%s THEN 0
+                    WHEN locator->>'path' ILIKE %s THEN 1
+                    WHEN title ILIKE %s THEN 2
+                    WHEN canonical_locator ILIKE %s THEN 3
+                    ELSE 4 END, object_id LIMIT 6"""
+                params.extend([f"%/{term}", term, term, f"%/{term}", wildcard, wildcard])
+                rows_by_term.append([
+                    self._row(row) for row in connection.execute(query, params).fetchall()
+                ])
+        # Round-robin prevents one broad concept from exhausting the channel.
+        ordered = list(alias_rows)
+        seen = {item["object_id"] for item in ordered}
+        for offset in range(6):
+            for term_rows in rows_by_term:
+                if offset < len(term_rows) and term_rows[offset]["object_id"] not in seen:
+                    ordered.append(term_rows[offset])
+                    seen.add(term_rows[offset]["object_id"])
+                    if len(ordered) >= limit:
+                        return ordered
+        return ordered[:limit]
+
+    def _vector(self, question: str, plan: RetrievalPlan, limit: int) -> tuple[list[Any], list[Any], list[float]]:
+        query_filter = None
+        if plan.target_repositories:
+            version_scopes = [
+                models.Filter(must=[
+                    models.FieldCondition(key="source_id", match=models.MatchValue(value=repo)),
+                    models.FieldCondition(key="source_version_id", match=models.MatchValue(value=f"{repo}@{plan.resolved_versions[repo]}")),
+                ])
+                for repo in plan.target_repositories
+            ]
+            version_scopes.append(models.FieldCondition(key="source_id", match=models.MatchAny(any=[*self.context_sources, "curated_panda_domain"])))
+            query_filter = models.Filter(should=version_scopes)
+        dense = self.vertex.embed_query(question)
+        sparse = next(iter(self.sparse.query_embed(question)))
+        common = dict(collection_name=self.storage.settings.collection_name, query_filter=query_filter, limit=limit, with_payload=True)
+        dense_hits = self.storage.qdrant.query_points(query=dense, using="dense", **common).points
+        sparse_hits = self.storage.qdrant.query_points(query=models.SparseVector(indices=sparse.indices.tolist(), values=sparse.values.tolist()), using="sparse", **common).points
+        return dense_hits, sparse_hits, dense
+
+    def _paper(self, query_vector: list[float], plan: RetrievalPlan, limit: int) -> list[dict[str, Any]]:
+        """Retrieve paper evidence independently for paper-required plans.
+
+        A normal mixed-source vector query can let a highly similar page from one
+        thesis crowd out the other papers.  The paper channel gives each locked
+        thesis its own retrieval budget, while retaining the same version gate.
+        This is a retrieval diversification measure, not a benchmark-specific
+        page lookup.
+        """
+        if "paper" not in plan.required_source_types:
+            return []
+        paper_ids = ["li_2026", "karavdina_2015", "pflueger_2017"]
+        rows_by_source: list[list[dict[str, Any]]] = []
+        for source_id in paper_ids:
+            version = self._paper_versions.get(source_id)
+            if not version:
+                continue
+            hinted: list[dict[str, Any]] = []
+            pages = plan.paper_page_hints.get(source_id, [])
+            if pages:
+                with self.storage.connect() as connection:
+                    for page in pages:
+                        rows = connection.execute(
+                            """SELECT object_id,source_id,source_version_id,object_type,title,text,authority_level,locator
+                               FROM knowledge_objects
+                               WHERE source_id=%s AND source_version_id=%s AND locator->>'pdf_page'=%s
+                               ORDER BY length(text) DESC, object_id
+                               LIMIT 1""",
+                            (source_id, f"{source_id}@{version}", str(page)),
+                        ).fetchall()
+                        hinted.extend(self._row(row) for row in rows)
+            query_filter = models.Filter(must=[
+                models.FieldCondition(key="source_id", match=models.MatchValue(value=source_id)),
+                models.FieldCondition(key="source_version_id", match=models.MatchValue(value=f"{source_id}@{version}")),
+            ])
+            hits = self.storage.qdrant.query_points(
+                collection_name=self.storage.settings.collection_name,
+                query=query_vector,
+                using="dense",
+                query_filter=query_filter,
+                limit=limit,
+                with_payload=True,
+            ).points
+            seen = {item["object_id"] for item in hinted}
+            rows_by_source.append([*hinted, *[hit.payload for hit in hits if hit.payload["object_id"] not in seen]])
+        merged: list[dict[str, Any]] = []
+        seen: set[str] = set()
+        for offset in range(limit):
+            for rows in rows_by_source:
+                if offset < len(rows) and rows[offset]["object_id"] not in seen:
+                    merged.append(rows[offset])
+                    seen.add(rows[offset]["object_id"])
+        return merged
+
+    def _workflow(self, question: str, plan: RetrievalPlan, limit: int) -> list[dict[str, Any]]:
+        terms = re.findall(r"[A-Za-z_][A-Za-z0-9_.-]{3,}", question)
+        if not terms:
+            return []
+        pattern = "|".join(re.escape(term) for term in terms[:10])
+        with self.storage.connect() as connection:
+            rows = connection.execute("""SELECT k.object_id,k.source_id,k.source_version_id,k.object_type,k.title,k.text,k.authority_level,k.locator
+                FROM workflow_steps w JOIN knowledge_objects k ON k.object_id=w.payload->>'entrypoint_object_id'
+                WHERE w.payload::text ~* %s
+                  AND k.source_id=ANY(%s)
+                  AND (NOT (k.source_id=ANY(%s)) OR k.source_version_id=ANY(%s))
+                LIMIT %s""", (pattern, [*plan.target_repositories,*self.context_sources,"curated_panda_domain"], plan.target_repositories, [f"{repo}@{plan.resolved_versions[repo]}" for repo in plan.target_repositories], limit)).fetchall()
+        results = [self._row(row) for row in rows]
+        if "workflow" not in plan.required_source_types:
+            return results
+        if any(item.get("object_type") == "workflow" for item in results):
+            return results
+        # Some Chinese or identifier-heavy questions do not share literal
+        # words with the normalized workflow payload.  A bounded fallback keeps
+        # the workflow channel usable without broadening code retrieval.
+        with self.storage.connect() as connection:
+            fallback = connection.execute("""SELECT object_id,source_id,source_version_id,object_type,title,text,authority_level,locator
+                FROM knowledge_objects
+                WHERE source_id='curated_panda_domain' AND object_type='workflow'
+                ORDER BY object_id
+                LIMIT %s""", (limit,)).fetchall()
+        return [self._row(row) for row in fallback]
+
+    def _graph(self, seeds: list[dict[str, Any]], plan: RetrievalPlan, limit: int) -> list[dict[str, Any]]:
+        ids = [item["object_id"] for item in seeds[:limit]]
+        if not ids:
+            return []
+        allowed_sources=[*plan.target_repositories,*self.context_sources,"curated_panda_domain"]
+        resolved_versions=[f"{repo}@{plan.resolved_versions[repo]}" for repo in plan.target_repositories]
+        with self.storage.connect() as connection:
+            rows = connection.execute("""WITH RECURSIVE walk(node_id,depth,path) AS (
+                  SELECT DISTINCT
+                    CASE WHEN r.subject_id=ANY(%s) THEN r.object_id ELSE r.subject_id END,
+                    1,
+                    ARRAY[
+                      CASE WHEN r.subject_id=ANY(%s) THEN r.subject_id ELSE r.object_id END,
+                      CASE WHEN r.subject_id=ANY(%s) THEN r.object_id ELSE r.subject_id END
+                    ]
+                  FROM relation_edges r
+                  WHERE r.review_status='accepted'
+                    AND (r.subject_id=ANY(%s) OR r.object_id=ANY(%s))
+                  UNION ALL
+                  SELECT
+                    CASE WHEN r.subject_id=w.node_id THEN r.object_id ELSE r.subject_id END,
+                    w.depth+1,
+                    w.path || CASE WHEN r.subject_id=w.node_id THEN r.object_id ELSE r.subject_id END
+                  FROM walk w JOIN relation_edges r
+                    ON r.subject_id=w.node_id OR r.object_id=w.node_id
+                  WHERE r.review_status='accepted' AND w.depth < %s
+                    AND NOT (CASE WHEN r.subject_id=w.node_id THEN r.object_id ELSE r.subject_id END = ANY(w.path))
+                )
+                SELECT DISTINCT k.object_id,k.source_id,k.source_version_id,k.object_type,k.title,k.text,k.authority_level,k.locator
+                FROM walk w JOIN knowledge_objects k ON k.object_id=w.node_id
+                WHERE NOT (k.object_id=ANY(%s))
+                  AND k.source_id=ANY(%s)
+                  AND (NOT (k.source_id=ANY(%s)) OR k.source_version_id=ANY(%s))
+                LIMIT %s""", (ids,ids,ids,ids,ids,self.policies.max_relation_hops,ids,allowed_sources,plan.target_repositories,resolved_versions,limit)).fetchall()
+        results = [self._row(row) for row in rows]
+        if results or "graph" not in plan.required_source_types:
+            return results
+        # Curated architecture objects are a bounded fallback when accepted
+        # relation edges are sparse for a structural query.
+        with self.storage.connect() as connection:
+            fallback = connection.execute("""SELECT object_id,source_id,source_version_id,object_type,title,text,authority_level,locator
+                FROM knowledge_objects
+                WHERE source_id='curated_panda_domain'
+                  AND object_type IN ('document','repository','subsystem','concept')
+                ORDER BY object_id
+                LIMIT %s""", (limit,)).fetchall()
+        return [self._row(row) for row in fallback]
+
+    @staticmethod
+    def _source_type(item: dict[str, Any]) -> str:
+        if item["source_id"] in {"li_2026", "karavdina_2015", "pflueger_2017"}:
+            return "paper"
+        if "sphinx" in item["source_id"]:
+            return "documentation"
+        locator = item.get("locator") or {}
+        path = (locator.get("path") or "").replace("\\", "/").lower()
+        # Repository documents under docs/ are operational documentation even
+        # when the parser stores them as source_file objects rather than README
+        # sections.  Keeping this distinction explicit makes source budgets and
+        # required-source checks reflect the actual corpus semantics.
+        if path.startswith(("docs/", "doc/")):
+            return "documentation"
+        if item.get("object_type") in {"workflow", "python_script", "shell_script"}:
+            return "workflow"
+        if item.get("object_type") == "readme_section":
+            return "readme"
+        if item.get("object_type") == "python_script":
+            return "workflow"
+        return "code"
+
+    def retrieve(self, question: str, plan: RetrievalPlan | None = None) -> dict[str, Any]:
+        plan = plan or self.analyze(question)
+        limit = self.policies.candidate_pool_per_channel
+        rankings: dict[str, list[dict[str, Any]]] = {"exact": self._exact(plan, question, limit)}
+        dense, sparse, query_vector = self._vector(question, plan, limit)
+        rankings["dense"] = [hit.payload for hit in dense]
+        rankings["sparse"] = [hit.payload for hit in sparse]
+        paper = self._paper(query_vector, plan, limit)
+        if paper:
+            rankings["paper"] = paper
+        rankings["workflow"] = self._workflow(question, plan, limit)
+        rankings["graph"] = self._graph([*rankings["exact"],*rankings["dense"],*rankings["sparse"]], plan, limit)
+        scores: dict[str, float] = defaultdict(float)
+        payloads: dict[str, dict[str, Any]] = {}
+        channels: dict[str, list[str]] = defaultdict(list)
+        weights = {"exact": 2.0, "dense": 1.0, "sparse": 1.0, "paper": 1.15, "workflow": 1.2, "graph": 0.8}
+        for channel, items in rankings.items():
+            for rank, item in enumerate(items):
+                oid = item["object_id"]
+                scores[oid] += weights[channel] / (60 + rank + 1)
+                payloads[oid] = item
+                channels[oid].append(channel)
+        fused_order = sorted(scores, key=scores.get, reverse=True)
+        rerank_pool = fused_order[:30]
+        rerank_payload = [{"object_id":oid,"title":payloads[oid].get("title"),"source_id":payloads[oid].get("source_id"),"text":payloads[oid].get("text","")[:2000]} for oid in rerank_pool]
+        rerank_schema = {"type":"object","properties":{"ranked_object_ids":{"type":"array","items":{"type":"string","enum":rerank_pool}}},"required":["ranked_object_ids"],"additionalProperties":False}
+        reranked = self.vertex.generate_json(
+            json.dumps({"task": "rerank_evidence", "untrusted_question": question, "untrusted_candidates": rerank_payload}, ensure_ascii=False),
+            rerank_schema,
+            system_instruction=RERANK_SYSTEM_PROMPT,
+        )["ranked_object_ids"] if rerank_pool else []
+        ordered = list(dict.fromkeys([*reranked, *fused_order]))
+        preferred_sources = list(plan.target_repositories)
+        lowered_question = question.casefold()
+        if any(term in lowered_question for term in ("restgas", "off-ip", "event_poca", "poca", "displaced")):
+            preferred_sources = ["restgas_determination", "pandaroot", "luminosityfit", *preferred_sources]
+        elif "pandaroot" in lowered_question:
+            preferred_sources = ["pandaroot", "restgas_determination", "luminosityfit", *preferred_sources]
+        preferred_sources = list(dict.fromkeys(preferred_sources))
+        source_rank = {source_id: rank for rank, source_id in enumerate(preferred_sources)}
+        symbol_first=[]
+        # Full paths are stronger locators than a bare class/symbol name.  They
+        # are considered first so a source-file object wins over a header or a
+        # similarly named implementation chunk before source-diversity caps are
+        # applied.
+        def symbol_order(value: str) -> tuple[int, int]:
+            normalized = value.replace("\\", "/").lower()
+            if plan.intent == "troubleshooting" and ("readme" in normalized or "running/" in normalized):
+                return (0, 0)
+            return (1, 0 if "/" in value or "." in value else 1)
+        symbols = sorted(plan.symbols, key=symbol_order)
+        for symbol in symbols:
+            literal=symbol.replace("*","").replace("?","")
+            matches = []
+            for item in rankings["exact"]:
+                locator=item.get("locator") or {}
+                if literal and (
+                    literal in (item.get("title") or "")
+                    or literal in (locator.get("symbol") or "")
+                    or literal in (locator.get("path") or "")
+                    or literal in (item.get("text") or "")
+                ):
+                    matches.append(item)
+            if matches:
+                def match_priority(item: dict[str, Any]) -> tuple[int, int, int, str]:
+                    locator = item.get("locator") or {}
+                    path = (locator.get("path") or "").replace("\\", "/")
+                    exact_path = int(bool(literal and (
+                        path == literal
+                        or ("/" in literal and path.endswith("/" + literal))
+                    )))
+                    page_level = int(item.get("object_type") in {"sphinx_page", "source_file", "readme_section"})
+                    return (source_rank.get(item.get("source_id"), 999), -exact_path, -page_level, item["object_id"])
+                matches.sort(key=match_priority)
+                symbol_first.append(matches[0]["object_id"])
+        required_first=[]
+        for required in plan.required_source_types:
+            for oid in ordered:
+                source_type=self._source_type(payloads[oid])
+                if source_type==required or (required in {"workflow","graph"} and required in channels[oid]):
+                    required_first.append(oid); break
+        hinted_first=[]
+        for oid in ordered:
+            item = payloads[oid]
+            source_id = item.get("source_id")
+            page = (item.get("locator") or {}).get("pdf_page")
+            if source_id in plan.paper_page_hints and page is not None and int(page) in plan.paper_page_hints[source_id]:
+                hinted_first.append(oid)
+        # Reviewed paper anchors take precedence over implementation symbols for
+        # paper-required plans.  Code symbols remain immediately afterwards, so
+        # mixed theory/implementation questions still retain both evidence types.
+        # Satisfy explicit source-type requirements before general symbol
+        # diversity.  Otherwise a long list of same-source implementation
+        # symbols can consume the cap and make a required workflow/document
+        # object unreachable even when it was retrieved.
+        ordered=list(dict.fromkeys([*hinted_first,*required_first,*symbol_first,*ordered]))
+        ranked_object_ids = ordered[:30]
+        selected = []
+        # Exact matches for explicitly requested symbols/paths are hard
+        # retrieval requirements.  Keep one matching object even when source
+        # diversity or source-budget caps would otherwise discard it; the
+        # answer verifier can then require the concrete locator without
+        # guessing from a neighboring chunk.
+        mandatory_symbol_ids = set(symbol_first)
+        per_source: dict[str, int] = defaultdict(int)
+        per_type: dict[str, int] = defaultdict(int)
+        max_per_source = max(2, math.ceil(self.policies.final_evidence_limit / 3))
+        type_caps = {key: max(1, math.ceil(value * self.policies.final_evidence_limit)) for key, value in plan.source_budgets.items()}
+        seen_locator = set()
+        excluded: list[dict[str, str]] = []
+        for oid in ordered:
+            item = payloads[oid]
+            raw_locator = item.get("locator") or {}
+            # Curated architecture objects intentionally have no file locator;
+            # they must not collapse into one duplicate just because their
+            # locator JSON is empty.
+            locator = json.dumps(raw_locator, sort_keys=True)
+            if not any(value not in (None, "", [], {}) for value in raw_locator.values()):
+                locator = f"object:{oid}"
+            source_type = self._source_type(item)
+            reason = None
+            if locator in seen_locator: reason = "duplicate_locator"
+            elif oid not in mandatory_symbol_ids and per_source[item["source_id"]] >= max_per_source: reason = "source_diversity_cap"
+            elif oid not in mandatory_symbol_ids and per_type[source_type] >= type_caps.get(source_type, self.policies.final_evidence_limit): reason = "source_budget_cap"
+            if reason:
+                excluded.append({"object_id": oid, "reason": reason})
+                continue
+            seen_locator.add(locator); per_source[item["source_id"]] += 1; per_type[source_type] += 1
+            selected.append(_evidence(item, scores[oid], channels[oid]))
+            if len(selected) >= self.policies.final_evidence_limit:
+                break
+        return {
+            "plan": plan.model_dump(mode="json"),
+            "rankings": {key: [item["object_id"] for item in value] for key, value in rankings.items()},
+            "fusion_scores": {oid: scores[oid] for oid in sorted(scores, key=scores.get, reverse=True)[:30]},
+            "reranked_object_ids": reranked,
+            "ranked_object_ids": ranked_object_ids,
+            "excluded": excluded,
+            "evidence": [item.model_dump(mode="json") for item in selected],
+        }

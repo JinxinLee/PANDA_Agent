@@ -1,0 +1,26 @@
+{
+  "benchmark_version": "m6-benchmark-v2.4",
+  "base_benchmark_version": "m6-benchmark-v2.3",
+  "base_dataset_sha256": "33f0bfb6888c33bf58965911b6982426cb2a4a401a0fa8abf94a530a989a0f7c",
+  "dataset_sha256": "8293af80e596e0072049d530f735aeea196a9f815f41fecbe55c20d5dc7375d9",
+  "patch_sha256": "be31f48a897f1b382663897331113e28abd0523f6cc4cc48c87c220a704a9368",
+  "manual_adjudications_sha256": "4f59ac9cf9f6777caa78af88fe3be6853e12522a373c743ee420f056990cffce",
+  "selector_audit_sha256": "5b005db5647c66af251051e13fbb9e659ce6d1441a7e82e73fe1e5022372ced6",
+  "source_review_sha256": "5aea6967f0c58b0bc64ff14bcebfa7dda1073cbc053fb919898ff5e7658c06fa",
+  "question_count": 120,
+  "approved_count": 120,
+  "changed_cases": ["g023", "g073"],
+  "human_answer_point_adjudications": ["g005", "g039", "g088"],
+  "rubric_deltas": {
+    "g023": {
+      "g023.e2": ["object.3e790d97468c8387c1831cf2"]
+    },
+    "g073": {
+      "accepted_intents_added": ["module_structure"]
+    }
+  },
+  "selector_audit": {
+    "selector_count": 380,
+    "unmatched_selectors": 0
+  }
+}

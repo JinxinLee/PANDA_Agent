@@ -1,0 +1,42 @@
+schema_version: "1.0"
+candidate_pool_per_channel: 20
+final_evidence_limit: 12
+max_relation_hops: 1
+max_targeted_retrievals: 1
+fusion_method: rrf
+intent_routes:
+  troubleshooting: ["\\btroubleshoot", "\\bdebug\\b", "\\berror\\b", "\\bfail(?:s|ed|ure)?\\b", "\\bmissing\\b", "\\bcannot\\b", "\\bwrong\\b", "\\bwhy might\\b", "what should i inspect", "排查", "报错", "失败", "缺失"]
+  installation: ["\\binstall", "environment variable", "pandaroot environment", "cernvm-fs", "cvmfs", "cmake error", "docker", "安装", "环境变量"]
+  data_flow: ["\\btrace\\b", "data flow", "\\bproduces\\b", "\\bconsumes\\b", "into pid_final", "passed to", "read into", "写出", "读入", "数据流", "谁产生", "谁消费", "如何进入", "如何连接"]
+  api: ["\\bwhere (?:is|does|can)\\b", "\\bdefined\\b", "\\bsignature\\b", "\\bapi\\b", "\\bwhich (?:macro|source|file|class|method|function)\\b", "\\blocate\\b", "哪个宏", "哪个类", "哪个函数"]
+  algorithm_implementation: ["\\bhow is .+ implemented\\b", "\\bhow does .+ (?:form|create|work|use)\\b", "\\bimplementation\\b", "event_poca.*(?:event|事件).*(?:read|读)", "extrapolat.*event.?poca", "如何实现", "由哪些类实现", "如何回传", "如何形成", "如何用于", "实现层面", "代码实现"]
+  algorithm_implementation_extra: ["如何配合", "如何协同", "work together"]
+  algorithm_theory: ["\\btheoretical\\b", "\\bconceptual\\b", "\\bwhy does\\b", "\\bwhy is\\b", "理论", "原理", "为什么需要", "物理意义"]
+  module_structure: ["\\bmodule structure\\b", "\\bmodule boundary\\b", "\\bmodule.*connect", "\\bcomponents?\\b", "\\blayers?\\b", "模块结构", "模块边界", "模块如何连接", "由哪些模块"]
+  usage: ["\\bhow (?:do|can) i (?:run|use|invoke|start|select)\\b", "\\bhow is .+ (?:supplied|provided|documented)\\b", "\\bwhat is the documented .+ sequence\\b", "\\busage\\b", "如何运行", "如何使用", "怎么运行", "如何提供", "如何供给"]
+
+intents:
+  installation:
+    source_budgets: {documentation: 0.50, readme: 0.25, code: 0.15, paper: 0.05, graph: 0.05}
+    required_sources: [documentation]
+  usage:
+    source_budgets: {documentation: 0.30, readme: 0.25, code: 0.25, workflow: 0.15, paper: 0.05}
+    required_sources: [documentation, code]
+  algorithm_theory:
+    source_budgets: {paper: 0.55, documentation: 0.10, code: 0.15, graph: 0.10, workflow: 0.10}
+    required_sources: [paper]
+  algorithm_implementation:
+    source_budgets: {paper: 0.30, code: 0.40, graph: 0.15, documentation: 0.10, workflow: 0.05}
+    required_sources: [paper, code]
+  api:
+    source_budgets: {code: 0.55, documentation: 0.20, readme: 0.10, graph: 0.10, paper: 0.05}
+    required_sources: [code]
+  data_flow:
+    source_budgets: {workflow: 0.35, code: 0.30, graph: 0.20, readme: 0.10, paper: 0.05}
+    required_sources: [workflow, code]
+  module_structure:
+    source_budgets: {code: 0.35, graph: 0.30, workflow: 0.15, documentation: 0.10, readme: 0.10}
+    required_sources: [code, graph]
+  troubleshooting:
+    source_budgets: {documentation: 0.30, code: 0.30, readme: 0.20, workflow: 0.15, graph: 0.05}
+    required_sources: [documentation, code]

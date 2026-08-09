@@ -1,0 +1,392 @@
+schema_version: "1.0"
+rules:
+  - rule_id: lmd_fit_data_chain
+    triggers: ["lumi_trksqa", "luminosity result", "luminosityfit 最终"]
+    repositories: [pandaroot, luminosityfit]
+    symbols:
+      - detectors/lmd/LmdQA/PndLmdTrackQ.cxx
+      - data/PndLmdCombinedDataReader.cxx
+      - apps/createLmdFitData.cxx
+      - apps/runLmdFit.cxx
+      - apps/extractLuminosityValues.cxx
+    concepts: [LMD reconstruction output, luminosity fit data chain]
+
+  - rule_id: event_poca_handoff
+    triggers: ["event_poca", "poca_vertex_file", "second-pass pid", "第二遍 pid"]
+    repositories: [restgas_determination, pandaroot]
+    symbols: [macro/target/ana_dpm.C, macro/target/prod_aod_complete.C, POCA_VERTEX_FILE, PndPidCorrelator]
+    concepts: [event POCA handoff, event-aligned second-pass propagation]
+    paper_page_hints:
+      li_2026: [131, 138]
+
+  - rule_id: restgas_profile_workflow
+    triggers: ["restgas_profile", "restgas profile", "corrected rho", "修正后的 rho"]
+    repositories: [restgas_determination, pandaroot]
+    symbols: [pgenerators/Target/PndTargetGenerator.cxx, macro/target/prod_sim_hvmaps.C, macro/target/reco_complete.C, macro/target/ana_complete.C, macro/target/correction/efficiency_correction_2.C]
+    concepts: [distributed target generation, longitudinal profile correction]
+
+  - rule_id: pid_two_pass_files
+    triggers: ["*_pid.root", "*_pid_final.root", "pid_final.root"]
+    repositories: [restgas_determination]
+    symbols: [macro/target/pid_complete.C, macro/target/ana_dpm.C, macro/target/prod_aod_complete.C]
+    concepts: [two-pass PID workflow]
+
+  - rule_id: luminosityfit_model_layers
+    triggers: ["luminosityfit model", "model layer", "模型层"]
+    repositories: [luminosityfit]
+    symbols: [model/PndLmdDPMAngModel1D.cxx, model/PndLmdDPMAngModel2D.cxx, model/PndLmdDivergenceSmearingModel2D.cxx, model/PndLmdDifferentialSmearingConvolutionModel2D.cxx, model/PndLmdSmearingConvolutionModel2D.cxx, model/PndLmdModelFactory.cxx]
+    concepts: [cross section model, divergence smearing, detector resolution convolution]
+
+  - rule_id: resolution_models
+    triggers: ["detector resolution", "resolution smearing", "smearing convolution", "分辨率卷积", "探测器分辨率"]
+    repositories: [luminosityfit]
+    symbols: [model/PndLmdDifferentialSmearingConvolutionModel2D.cxx, model/PndLmdSmearingConvolutionModel2D.cxx, model/PndLmdModelFactory.cxx]
+    concepts: [detector resolution, resolution smearing, convolution model]
+    paper_page_hints:
+      pflueger_2017: [65, 70, 71]
+
+  - rule_id: resolution_api_locator
+    triggers: ["detector-resolution convolution"]
+    repositories: [luminosityfit]
+    symbols: [model/PndLmdSmearingConvolutionModel2D.cxx, model/PndLmdDifferentialSmearingConvolutionModel2D.cxx]
+    concepts: [detector-resolution convolution implementation]
+
+  - rule_id: displaced_tracking
+    triggers: ["off-ip", "off ip", "displaced tracking", "displaced-track", "离轴跟踪"]
+    repositories: [restgas_determination, pandaroot]
+    symbols: [tracking/PndApolloniusTripletTrackFinder/PndApolloniusTripletTrackFinderTask.cxx, tracking/PzFinder/PndSttSkewStrawPzFinderTask.cxx, macro/target/reco_complete.C]
+    concepts: [displaced-vertex track reconstruction]
+
+  - rule_id: angular_acceptance
+    triggers: ["angular acceptance", "acceptance class", "角接受度", "接受度类"]
+    repositories: [luminosityfit]
+    symbols: [data/PndLmdAcceptance.cxx]
+    concepts: [LMD angular acceptance]
+    paper_page_hints:
+      pflueger_2017: [57, 58, 62]
+
+  - rule_id: longitudinal_efficiency
+    triggers: ["pvz efficiency", "longitudinal efficiency", "纵向效率"]
+    repositories: [restgas_determination]
+    symbols: [macro/target/correction/efficiency_correction_2.C, macro/target/correction/efficiency_correction_steps.C]
+    concepts: [restgas longitudinal reconstruction efficiency]
+    paper_page_hints:
+      li_2026: [138, 142, 147]
+
+  - rule_id: nonexistent_restgas_deconvolver
+    triggers: ["PndUniversalRestgasDeconvolver"]
+    repositories: [restgas_determination]
+    symbols: [macro/target/correction/efficiency_correction_2.C]
+    concepts: [restgas longitudinal reconstruction efficiency]
+    paper_page_hints:
+      li_2026: [142, 147]
+
+  - rule_id: lmd_reconstruction_to_qa
+    triggers: ["lmd qa output", "lmd reconstruction module", "lmd reconstruction 模块"]
+    repositories: [pandaroot]
+    symbols:
+      - detectors/lmd/LmdTrack/PndLmdTrackFinderCATask.cxx
+      - detectors/lmd/LmdTrack/PndLmdGeaneTask.cxx
+      - detectors/lmd/LmdQA/PndLmdTrackQ.cxx
+    concepts: [LMD reconstruction to QA data flow]
+    paper_page_hints:
+      karavdina_2015: [94, 100, 104]
+
+  - rule_id: target_pid_pipeline
+    triggers: ["pid processing", "pid pipeline", "pid_final", "pid final", "target pid", "PID处理", "PID流程"]
+    repositories: [restgas_determination]
+    symbols: [macro/target/pid_complete.C, macro/target/ana_dpm.C, macro/target/prod_aod_complete.C, macro/target/ana_complete.C]
+    concepts: [two-pass target PID pipeline]
+
+  - rule_id: profile_generation_and_correction
+    triggers: ["generated z profile", "epsilon_reco", "reconstruction efficiency", "efficiency correction", "restgas density", "profile correction", "生成 z profile", "重建效率"]
+    repositories: [restgas_determination]
+    symbols: [macro/target/prod_sim_hvmaps.C, macro/target/ana_complete.C, macro/target/correction/efficiency_correction_2.C]
+    concepts: [generated target profile, reconstructed profile, efficiency correction]
+    paper_page_hints:
+      li_2026: [138, 142, 147]
+
+  - rule_id: event_alignment
+    triggers: ["event id alignment", "event alignment", "particle identification", "event ID对齐", "事件对齐"]
+    repositories: [restgas_determination]
+    symbols: [macro/target/ana_dpm.C, macro/target/prod_aod_complete.C, POCA_VERTEX_FILE, event_poca]
+    concepts: [event ID aligned POCA handoff]
+    paper_page_hints:
+      li_2026: [131, 138]
+
+  - rule_id: luminosity_extraction_results
+    triggers: ["extract luminosity", "extract luminosity values", "completed fit results", "luminosity fit results"]
+    repositories: [luminosityfit]
+    symbols: [apps/extractLuminosityValues.cxx, README.md]
+    concepts: [luminosity extraction result workflow]
+
+  - rule_id: target_track_to_poca
+    triggers: ["target spectrometer", "track extrapolation", "event poca", "轨迹回传", "track to event poca"]
+    repositories: [restgas_determination]
+    symbols: [macro/target/ana_dpm.C, macro/target/prod_aod_complete.C]
+    concepts: [Target Spectrometer track extrapolation to event POCA]
+
+  - rule_id: effective_acceptance_pipeline
+    triggers: ["effective acceptance", "restgas acceptance", "acceptance calculation", "有效接受度", "有效接受度"]
+    repositories: [restgas_determination, luminosityfit]
+    symbols: [macro/target/prod_sim_hvmaps.C, data/PndLmdAcceptance.cxx, model/PndLmdModelFactory.cxx]
+    concepts: [profile-dependent effective acceptance pipeline]
+    paper_page_hints:
+      li_2026: [83, 86, 89]
+
+  - rule_id: vertex_fit_boundary
+    triggers: ["vertex fit", "poca pass", "final vertex", "最终 vertex fit", "原始 poca"]
+    repositories: [restgas_determination]
+    symbols: [macro/target/ana_dpm.C, macro/target/ana_complete.C]
+    concepts: [raw POCA pass versus final vertex fit]
+
+  - rule_id: reconstructed_profile_to_acceptance
+    triggers: ["reconstructed rho", "reconstructed rho(z)", "acceptance calculation", "effective acceptance", "restgas density"]
+    repositories: [restgas_determination, luminosityfit]
+    symbols: [macro/target/prod_sim_hvmaps.C, data/PndLmdAcceptance.cxx]
+    concepts: [reconstructed profile to effective acceptance]
+    paper_page_hints:
+      li_2026: [141, 149, 151]
+
+  - rule_id: panda_luminosityfit_boundary
+    triggers: ["dependency boundary", "pandaroot integration", "luminosityfit integration", "依赖边界"]
+    repositories: [pandaroot, luminosityfit]
+    symbols: [detectors/lmd/LmdQA/PndLmdTrackQ.cxx, data/PndLmdCombinedDataReader.cxx, model/PndLmdModelFactory.cxx]
+    concepts: [PandaRoot adapter and LuminosityFit model boundary]
+
+  - rule_id: restgas_pandaroot_extension
+    triggers: ["RestgasDetermination", "PandaRoot extension", "pandaroot integration", "扩展 PandaRoot"]
+    repositories: [restgas_determination]
+    symbols: [pgenerators/Target/PndTargetGenerator.cxx, tracking/PndApolloniusTripletTrackFinder/PndApolloniusTripletTrackFinderTask.cxx, tracking/PzFinder/PndSttSkewStrawPzFinderTask.cxx, pid/PidCorr/PndPidCorrelator.cxx]
+    concepts: [RestgasDetermination custom extension modules]
+
+  - rule_id: target_macro_workflow_grouping
+    triggers: ["macro/target", "workflow grouping", "target macro", "宏模块", "workflow 分组"]
+    repositories: [restgas_determination]
+    symbols: [macro/target/prod_sim_hvmaps.C, macro/target/reco_complete.C, macro/target/pid_complete.C, macro/target/ana_dpm.C, macro/target/prod_aod_complete.C, macro/target/ana_complete.C, macro/target/correction/efficiency_correction_2.C]
+    concepts: [target macro workflow stages]
+
+  - rule_id: sphinx_operational_architecture
+    triggers: ["Sphinx documentation", "knowledge architecture", "Sphinx 2023-dev", "docs disagree", "Sphinx 文档"]
+    repositories: [pandaroot]
+    symbols: [Installation/Installation.html, Installation/Install_PandaRoot.html, Running/Running.html, Running/MasterTasks.html, Running/Macros.html]
+    concepts: [PandaRoot operational documentation and version scope]
+
+  - rule_id: fit_data_troubleshooting
+    triggers: ["no acceptance", "fit input", "prepared data", "data path", "file matching", "fit data path", "empty bins", "没有 acceptance", "空 bin"]
+    repositories: [luminosityfit, restgas_determination]
+    symbols: [docs/apps/createLmdFitData.md, apps/createLmdFitData.cxx, data/PndLmdDataReader.cxx, apps/runLmdFit.cxx, macro/target/correction/efficiency_correction_2.C, macro/target/correction/efficiency_correction_steps.C]
+    concepts: [fit input assumptions and efficiency correction diagnostics, empty-bin binning and profile compatibility]
+
+  - rule_id: root_macro_usage
+    triggers: ["ROOT macro", "macro execution", "run a ROOT macro"]
+    repositories: [pandaroot]
+    symbols: [Running/Macros.html, tools/MasterTasks/PndMasterRunSim.cxx]
+    concepts: [PandaRoot macro invocation]
+
+  - rule_id: restgas_workflow_usage
+    triggers: ["two-pass reconstruction workflow", "restgas two-pass reconstruction"]
+    repositories: [restgas_determination, pandaroot]
+    symbols: [macro/target/README.md, macro/target/runall_prod_hvmaps.py, Running/Running.html]
+    concepts: [Restgas two-pass reconstruction workflow]
+
+  - rule_id: installation_requirements
+    triggers: ["GPU memory", "minimum GPU memory", "installation requirements", "install PandaRoot"]
+    repositories: [pandaroot]
+    symbols: [Installation/Installation.html, Installation/Install_PandaRoot.html]
+    concepts: [PandaRoot installation requirements]
+
+  - rule_id: simulation_configuration_usage
+    triggers: ["simulation configuration", "configure a simulation", "PndMasterRunSim"]
+    repositories: [pandaroot]
+    symbols: [tools/MasterTasks/PndMasterRunSim.cxx, Tools/PndMasterTasks/PndMasterRunSim.html, Running/MasterTasks.html]
+    concepts: [PndMasterRunSim simulation configuration]
+
+  - rule_id: fit_data_usage
+    triggers: ["createLmdFitData", "fit data creation", "data categories", "a/e/r/v"]
+    repositories: [luminosityfit]
+    symbols: [docs/apps/createLmdFitData.md, apps/createLmdFitData.cxx]
+    concepts: [createLmdFitData invocation and data categories]
+
+  - rule_id: run_fit_usage
+    triggers: ["run a luminosity fit", "running fit", "runLmdFit", "prepared fit data"]
+    repositories: [luminosityfit]
+    symbols: [docs/apps/createLmdFitData.md, apps/runLmdFit.cxx, python/runLmdFit.sh, README.md]
+    concepts: [LuminosityFit execution after fit-data preparation]
+
+  - rule_id: acceptance_model_boundary
+    triggers: ["PndLmdAcceptance", "acceptance into PndLmdModelFactory", "data objects"]
+    repositories: [luminosityfit]
+    symbols: [data/PndLmdAcceptance.cxx, model/PndLmdModelFactory.cxx]
+    concepts: [acceptance data object to model factory boundary]
+
+  - rule_id: event_poca_troubleshooting
+    triggers: ["event ID", "event ID alignment", "event_poca is missing", "POCA_VERTEX_FILE", "second-pass PID"]
+    repositories: [restgas_determination]
+    symbols: [macro/target/README.md, macro/target/pid_complete.C, macro/target/ana_dpm.C, macro/target/prod_aod_complete.C, pid/PidCorr/PndPidCorrelator.cxx, Running/Running.html]
+    concepts: [event POCA troubleshooting and event alignment, first-pass PID input and prefix context]
+
+  - rule_id: acceptance_efficiency_disambiguation
+    triggers: ["pvz efficiency", "LMD angular acceptance be confused"]
+    repositories: [pandaroot]
+    symbols: [Running/Running.html]
+    concepts: [angular acceptance versus longitudinal efficiency documentation]
+
+  - rule_id: version_mismatch_troubleshooting
+    triggers: ["docs disagree", "version divergence", "oct19-derived", "disagree with RestgasDetermination"]
+    repositories: [restgas_determination, pandaroot]
+    symbols: [macro/target/README.md, Running/Running.html]
+    concepts: [documentation and branch version mismatch]
+
+  - rule_id: luminosity_equation_theory
+    triggers: ["luminosity-extraction equation", "cross section, acceptance, and resolution"]
+    repositories: [luminosityfit, pandaroot]
+    concepts: [luminosity extraction equation, cross section, acceptance, resolution]
+    paper_page_hints:
+      karavdina_2015: [60, 65, 71]
+
+  - rule_id: beam_divergence_theory
+    triggers: ["beam divergence", "divergence smearing"]
+    repositories: [luminosityfit]
+    symbols: [model/PndLmdDivergenceSmearingModel2D.cxx, model/PndLmdModelFactory.cxx]
+    concepts: [beam divergence, divergence smearing]
+    paper_page_hints:
+      pflueger_2017: [74, 78, 84]
+
+  - rule_id: lmd_backpropagation_theory
+    triggers: ["propagated back toward an interaction point", "LMD tracks propagated", "LMD 轨迹如何回传"]
+    repositories: [pandaroot]
+    symbols: [detectors/lmd/LmdTrack/PndLmdGeaneTask.cxx]
+    concepts: [LMD back propagation to interaction point]
+    paper_page_hints:
+      karavdina_2015: [94, 100, 104]
+
+  - rule_id: restgas_poca_theory
+    triggers: ["event-by-event POCA", "restgas method use an event", "event POCA"]
+    repositories: [restgas_determination]
+    symbols: [macro/target/ana_dpm.C, macro/target/prod_aod_complete.C]
+    concepts: [event-by-event POCA, Target Spectrometer track extrapolation]
+    paper_page_hints:
+      li_2026: [127, 131, 138]
+
+  - rule_id: pointlike_vs_restgas_acceptance
+    triggers: ["point-like angular acceptance", "restgas effective acceptance"]
+    repositories: [luminosityfit, restgas_determination]
+    concepts: [point-like acceptance versus restgas effective acceptance]
+    paper_page_hints:
+      pflueger_2017: [57, 62]
+      li_2026: [83, 86, 89]
+
+  - rule_id: hv_maps_vertex_resolution
+    triggers: ["HV-MAPS relevant for longitudinal vertex resolution", "HV-MAPS", "material budget"]
+    repositories: [pandaroot, restgas_determination]
+    symbols: [macro/target/prod_sim_hvmaps.C]
+    concepts: [HV-MAPS material budget and longitudinal vertex resolution]
+    paper_page_hints:
+      li_2026: [103, 109, 123]
+
+  - rule_id: model_factory_theory
+    triggers: ["PndLmdModelFactory", "DPM、acceptance 和 resolution", "DPM acceptance resolution"]
+    repositories: [luminosityfit]
+    symbols: [model/PndLmdDPMAngModel1D.cxx, model/PndLmdDPMAngModel2D.cxx, model/PndLmdModelFactory.cxx]
+    concepts: [DPM model acceptance resolution composition]
+    paper_page_hints:
+      pflueger_2017: [51, 57, 65]
+
+  - rule_id: dpm_model_theory
+    triggers: ["DPM elastic-scattering model", "theoretical purpose of the DPM"]
+    repositories: [luminosityfit]
+    concepts: [DPM elastic scattering model]
+    paper_page_hints:
+      pflueger_2017: [51, 52, 54]
+
+  - rule_id: target_generator_theory
+    triggers: ["distributed restgas target", "PndTargetGenerator 如何用于"]
+    repositories: [restgas_determination]
+    symbols: [pgenerators/Target/PndTargetGenerator.cxx, macro/target/prod_sim_hvmaps.C]
+    concepts: [distributed target generation]
+    paper_page_hints:
+      li_2026: [128, 132]
+
+  - rule_id: displaced_tracking_theory
+    triggers: ["Apollonius task", "skew-straw pz finder", "displaced tracking"]
+    repositories: [restgas_determination]
+    symbols: [tracking/PndApolloniusTripletTrackFinder/PndApolloniusTripletTrackFinderTask.cxx, tracking/PzFinder/PndSttSkewStrawPzFinderTask.cxx, macro/target/reco_complete.C]
+    concepts: [displaced tracking reconstruction stages]
+    paper_page_hints:
+      li_2026: [127, 131]
+
+  - rule_id: vertex_fit_boundary_theory
+    triggers: ["final vertex fit", "raw POCA pass", "原始 POCA pass"]
+    repositories: [restgas_determination]
+    symbols: [macro/target/ana_dpm.C, macro/target/ana_complete.C]
+    concepts: [raw POCA pass versus final vertex fit]
+    paper_page_hints:
+      li_2026: [131, 138]
+
+  - rule_id: similarly_named_track_finders
+    triggers: ["class name match", "wrong implementation", "类名匹配", "错误实现"]
+    repositories: [pandaroot, restgas_determination]
+    symbols:
+      - tracking/PndApolloniusTripletTrackFinder/PndApolloniusTripletTrackFinderTask.cxx
+      - detectors/lmd/LmdTrack/PndLmdTrackFinderCATask.cxx
+    concepts: [detector-scoped track finder disambiguation]
+
+  - rule_id: dpm_angular_models
+    triggers: ["DPM 1D", "DPM 2D", "2D angular model", "DPM 1D 与 2D"]
+    repositories: [luminosityfit]
+    symbols: [model/PndLmdDPMAngModel1D.cxx, model/PndLmdDPMAngModel2D.cxx]
+    concepts: [DPM one-dimensional and two-dimensional angular models]
+    paper_page_hints:
+      pflueger_2017: [51, 54]
+
+  # ASCII aliases keep workflow routing stable for natural-language variants
+  # that do not contain the literal ROOT-tree/file names.
+  - rule_id: event_poca_workflow_alias
+    triggers: ["event poca", "two-pass reconstruction workflow", "restgas two-pass reconstruction workflow"]
+    repositories: [restgas_determination, pandaroot]
+    symbols: [macro/target/ana_dpm.C, macro/target/prod_aod_complete.C, event_poca, POCA_VERTEX_FILE, PndPidCorrelator]
+    concepts: [event POCA handoff, event-aligned second-pass propagation]
+
+  - rule_id: reconstructed_profile_factory_alias
+    triggers: ["reconstructed rho(z) to restgas effective acceptance", "reconstructed rho to effective acceptance"]
+    repositories: [restgas_determination, luminosityfit]
+    symbols: [macro/target/prod_sim_hvmaps.C, data/PndLmdAcceptance.cxx, model/PndLmdModelFactory.cxx]
+    concepts: [reconstructed profile to effective acceptance pipeline]
+
+  # These anchors describe reusable cross-repository interfaces, rather than
+  # evaluation cases.  They keep identifier-heavy operational questions from
+  # relying on an LLM to infer the documentation, lifecycle, or factory method.
+  - rule_id: master_reconstruction_workflow
+    triggers: ["PndMasterRecoTask", "master reconstruction task", "master reconstruction workflow"]
+    repositories: [pandaroot]
+    symbols: [Running/Running.html, Running/MasterTasks.html, Tools/PndMasterTasks/PndMasterRecoTask.html, tools/MasterTasks/PndMasterRecoTask.cxx]
+    concepts: [PandaRoot running sequence, master reconstruction task workflow]
+
+  - rule_id: target_generator_sampling_data_flow
+    # A bare PndMasterRunSim question is a PandaRoot simulation-configuration
+    # question and must not pull in the Restgas target-generator domain.  The
+    # cross-repository expansion is intentionally gated by an explicit target
+    # generator/sampling cue; this keeps the data-flow anchors precise while
+    # retaining the full PndMasterRunSim -> PndTargetGenerator path for joint
+    # questions such as g089.
+    triggers: ["PndTargetGenerator", "target generator data flow", "interaction vertex sampling", "SampleInteractionVertex"]
+    repositories: [pandaroot, restgas_determination]
+    symbols: [tools/MasterTasks/PndMasterRunSim.cxx, pgenerators/Target/PndTargetGenerator.cxx, PndTargetGenerator::SampleInteractionVertex, Tools/PndMasterTasks/PndMasterRunSim.html, Running/Running.html, Running/MasterTasks.html]
+    concepts: [simulation master task to target-generator data flow, interaction-vertex sampling lifecycle, PandaRoot operational documentation, generic PandaRoot workflow]
+
+  - rule_id: model_factory_acceptance_methods
+    triggers: ["PndLmdModelFactory", "factory acceptance", "effective acceptance factory", "divergence factory"]
+    repositories: [luminosityfit]
+    symbols: [model/PndLmdModelFactory.cxx, PndLmdModelFactory::setAcceptance, PndLmdModelFactory::generate2DModel]
+    concepts: [acceptance injection and two-dimensional model generation]
+
+  - rule_id: restgas_longitudinal_efficiency_contrast
+    triggers: ["longitudinal restgas efficiency", "restgas longitudinal efficiency", "restgas profile efficiency", "pvz efficiency"]
+    repositories: [restgas_determination]
+    # Keep the distinction as a planning concept, but do not inject the
+    # angular-acceptance implementation file into longitudinal-efficiency
+    # retrieval. Acceptance/model-factory source anchors belong to the
+    # dedicated effective-acceptance rules below.
+    symbols: [macro/target/correction/efficiency_correction_2.C, macro/target/correction/efficiency_correction_steps.C]
+    concepts: [restgas longitudinal reconstruction efficiency, angular acceptance versus longitudinal efficiency distinction]

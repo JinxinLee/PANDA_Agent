@@ -1,0 +1,9 @@
+{
+  "benchmark_version": "m6-benchmark-v2.5",
+  "base_benchmark_version": "m6-benchmark-v2.4",
+  "base_selector_audit_sha256": "5b005db5647c66af251051e13fbb9e659ce6d1441a7e82e73fe1e5022372ced6",
+  "selector_count": 380,
+  "selector_changes": [],
+  "unmatched_selectors": [],
+  "status": "unchanged_selector_set_reuses_v2_4_zero-unmatched audit; v2.5 corrections are signed scoring/adjudication deltas"
+}

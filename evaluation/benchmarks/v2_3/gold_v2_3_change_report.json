@@ -1,0 +1,18 @@
+{
+  "benchmark_version": "m6-benchmark-v2.3",
+  "base_benchmark_version": "m6-benchmark-v2.2",
+  "base_dataset_sha256": "d65783d4712676af60a1d1b69f7a344d9898ae9c86914c7629c6daaffe4fe156",
+  "dataset_sha256": "33f0bfb6888c33bf58965911b6982426cb2a4a401a0fa8abf94a530a989a0f7c",
+  "patch_sha256": "0ce759fd8aeda5f762c112fe46609e3d4bb06d279aba66c9b0a6efb0de320fd1",
+  "manual_adjudications_sha256": "4f59ac9cf9f6777caa78af88fe3be6853e12522a373c743ee420f056990cffce",
+  "selector_audit_sha256": "0df2deb647eaa2c19afff55c868e423d18caf1046a59ca942d65eaf915e138a7",
+  "source_review_sha256": "5aea6967f0c58b0bc64ff14bcebfa7dda1073cbc053fb919898ff5e7658c06fa",
+  "question_count": 120,
+  "approved_count": 120,
+  "changed_cases": ["g057", "g078", "g088", "g089"],
+  "human_answer_point_adjudications": ["g005", "g039", "g088"],
+  "selector_audit": {
+    "selector_count": 379,
+    "unmatched_selectors": 0
+  }
+}

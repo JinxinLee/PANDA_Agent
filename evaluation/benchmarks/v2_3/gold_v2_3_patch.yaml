@@ -1,0 +1,31 @@
+schema_version: "1.0"
+benchmark_version: m6-benchmark-v2.3
+base_benchmark_version: m6-benchmark-v2.2
+base_dataset_sha256: d65783d4712676af60a1d1b69f7a344d9898ae9c86914c7629c6daaffe4fe156
+source_review_sha256: 5aea6967f0c58b0bc64ff14bcebfa7dda1073cbc053fb919898ff5e7658c06fa
+operations:
+  - case_id: g057
+    add_selectors:
+      g057.e1:
+        - object_id: object.b37ac0e03e942ca965dbad72
+  - case_id: g078
+    add_selectors:
+      g078.e1:
+        - object_id: object.7922c4010c073df3d3e7dbdd
+  - case_id: g088
+    add_groups:
+      - group_id: g088.e3
+        role: acceptance_model_construction
+        any_of:
+          - object_id: object.30fd51f18f0e397439c78234
+          - source_id: luminosityfit
+            source_version_id: luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32
+            object_type: function
+            path: model/PndLmdModelFactory.cxx
+            symbol: generate1DModel
+  - case_id: g089
+    add_selectors:
+      g089.e1:
+        - object_id: object.3e790d97468c8387c1831cf2
+      g089.workflow:
+        - object_id: object.79b75480980719256f8b7937

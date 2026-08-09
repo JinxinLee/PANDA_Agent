@@ -1,0 +1,26 @@
+schema_version: "1.0"
+benchmark_version: m6-benchmark-v2.6
+base_benchmark_version: m6-benchmark-v2.5
+base_dataset_sha256: 53094ae57fe1f27591ba6cca949ffbbc109db583fa5a049adf498e527cac65a2
+signed_review:
+  path: D:/Download/failure_review_regression_rc3f_14_reviewed_v2.yaml
+  sha256: 5A42E46CCE0E7AB3E0E84DAF11B5F664DF3266206A7797FBDF158E93B7D59B43
+semantic_case_deltas:
+  g087: accept API routing and direct code evidence for the pointer-normalization and adapter boundary without requiring a redundant synthetic graph object
+  g090: signed exact final-evidence equivalence
+  g092: signed workflow-document equivalence
+  g093: make code the blocking source and remove the paper/workflow dual-source requirement
+  g094: signed intent and evidence equivalence
+  g099: signed source/entity equivalence
+  g100: signed workflow-object equivalence
+  g101: remove generic visible version-governance boilerplate
+  g103: signed workflow-object equivalence
+  g104: signed final-evidence/source equivalence
+  g106: replace generic version caveat with a functional responsibility boundary
+  g109: explicit relative-path shorthand waiver
+protected_real_failures: [g087, g097, g116]
+selector_changes:
+  - case_id: g087
+    change: remove the redundant synthetic Lumi_TrksQA graph group after the protected normalization behavior is supplied
+  - case_id: g116
+    change: accept the locked PandaRoot copy of the reviewed Apollonius implementation path as an explicit equivalent selector

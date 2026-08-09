@@ -1,0 +1,327 @@
+{
+  "benchmark_version": "m6-benchmark-v2.1",
+  "base_dataset_sha256": "2c412a501c2ae45ff4d605562f4b56f9afa0a6a14067f402fc0a45bd09020ec1",
+  "dataset_sha256": "1fea656c1ea05ac2cf4bbb78e8e712fec3c09e40c31f5d77a914fa7cadbd9d22",
+  "patch_sha256": "d089d58c7bbc712ba3fd77849a99971c87fd76c2ff7be71022568f25e6ef4304",
+  "source_review_sha256": "2e7ee94257afa32620745b6e5f8f4ba1ae49f27b4827c3f2980ba4b21f699a97",
+  "question_count": 120,
+  "approved_count": 120,
+  "split_counts": {
+    "challenge": 24,
+    "dev": 80,
+    "regression": 16
+  },
+  "status_counts": {
+    "answered": 102,
+    "insufficient_evidence": 10,
+    "version_conflict": 8
+  },
+  "accepted_intent_cases": [
+    "g010"
+  ],
+  "operations": [
+    {
+      "case_id": "g003",
+      "add_selectors": {
+        "g003.e1": [
+          {
+            "source_id": "pandaroot",
+            "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+            "path": "docs/Installation/CVMFS.rst"
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "g010",
+      "accepted_intents": [
+        "usage"
+      ],
+      "add_selectors": {
+        "g010.e1": [
+          {
+            "source_id": "pandaroot",
+            "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+            "path": "docs/Jupyter/Jupyter.rst"
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "g013",
+      "required_source_types": [
+        "documentation"
+      ],
+      "add_selectors": {
+        "g013.e1": [
+          {
+            "source_id": "pandaroot_sphinx_2023_08_25_dev",
+            "source_version_id": "pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87",
+            "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Running/MasterTasks.html"
+          },
+          {
+            "source_id": "pandaroot_sphinx_2023_08_25_dev",
+            "source_version_id": "pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87",
+            "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tools/PndMasterTasks/PndMasterRunSim.html"
+          }
+        ],
+        "g013.e2": [
+          {
+            "source_id": "pandaroot_sphinx_2023_08_25_dev",
+            "source_version_id": "pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87",
+            "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tools/PndMasterTasks/PndMasterRunSim.html"
+          },
+          {
+            "source_id": "pandaroot",
+            "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+            "path": "macro/master/Readme.md"
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "g014",
+      "add_selectors": {
+        "g014.e2": [
+          {
+            "source_id": "pandaroot_sphinx_2023_08_25_dev",
+            "source_version_id": "pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87",
+            "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Running/Running.html"
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "g015",
+      "add_selectors": {
+        "g015.e2": [
+          {
+            "source_id": "pandaroot",
+            "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+            "path": "tools/MasterTasks/PndMasterRunSim.cxx"
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "g016",
+      "add_selectors": {
+        "g016.e2": [
+          {
+            "source_id": "pandaroot",
+            "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+            "path": "tools/MasterTasks/PndMasterRunSim.h"
+          },
+          {
+            "source_id": "pandaroot_sphinx_2023_08_25_dev",
+            "source_version_id": "pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87",
+            "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tools/PndMasterTasks/PndMasterRunSim.html"
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "g017",
+      "remove_groups": [
+        "g017.e1"
+      ],
+      "required_source_types": [
+        "code"
+      ]
+    },
+    {
+      "case_id": "g031",
+      "add_selectors": {
+        "g031.e1": [
+          {
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "path": "model/PndLmdModelFactory.cxx"
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "g041",
+      "add_selectors": {
+        "g041.e1": [
+          {
+            "source_id": "pandaroot",
+            "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+            "path": "pid/PidCorr/PndPidCorrelator.h"
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "g047",
+      "add_selectors": {
+        "g047.e1": [
+          {
+            "source_id": "li_2026",
+            "source_version_id": "li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a",
+            "pdf_page": 66
+          },
+          {
+            "source_id": "li_2026",
+            "source_version_id": "li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a",
+            "pdf_page": 67
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "g051",
+      "add_selectors": {
+        "g051.e1": [
+          {
+            "source_id": "li_2026",
+            "source_version_id": "li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a",
+            "pdf_page": 86
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "g059",
+      "remove_groups": [
+        "g059.e1"
+      ],
+      "required_source_types": [
+        "code"
+      ]
+    },
+    {
+      "case_id": "g066",
+      "remove_groups": [
+        "g066.e1"
+      ],
+      "required_source_types": [
+        "code"
+      ]
+    },
+    {
+      "case_id": "g068",
+      "add_selectors": {
+        "g068.e1": [
+          {
+            "source_id": "li_2026",
+            "source_version_id": "li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a",
+            "pdf_page": 130
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "g069",
+      "remove_groups": [
+        "g069.e1"
+      ],
+      "required_source_types": [
+        "code"
+      ]
+    },
+    {
+      "case_id": "g070",
+      "remove_groups": [
+        "g070.e1"
+      ],
+      "required_source_types": [
+        "code"
+      ],
+      "add_selectors": {
+        "g070.e3": [
+          {
+            "source_id": "restgas_determination",
+            "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+            "path": "README.md"
+          },
+          {
+            "source_id": "restgas_determination",
+            "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+            "path": "tools/MasterTasks/PndMasterMultiPidTask.cxx"
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "g072",
+      "remove_groups": [
+        "g072.e2"
+      ]
+    },
+    {
+      "case_id": "g078",
+      "add_selectors": {
+        "g078.e1": [
+          {
+            "source_id": "li_2026",
+            "source_version_id": "li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a",
+            "pdf_page": 73
+          }
+        ],
+        "g078.e3": [
+          {
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "path": "model/PndLmdModelFactory.cxx"
+          },
+          {
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "path": "model/PndLmdModelFactory.h"
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "g102",
+      "add_selectors": {
+        "g102.e2": [
+          {
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "path": "model/PndLmdModelFactory.cxx"
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "g105",
+      "add_selectors": {
+        "g105.e2": [
+          {
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "path": "model/PndLmdModelFactory.h"
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "g112",
+      "add_selectors": {
+        "g112.e3": [
+          {
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "path": "data/PndLmdDataReader.cxx"
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "g119",
+      "add_selectors": {
+        "g119.e1": [
+          {
+            "source_id": "restgas_determination",
+            "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+            "path": "macro/target/ana_dpm.C"
+          }
+        ]
+      }
+    }
+  ],
+  "selector_audit_sha256": "3a36c6a26d4a40c928fac973f204901363a6aeac707b83b4e46b6dff2e08056d"
+}

@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0",
+  "status": "approved_exposed_development_benchmark_v2_3",
+  "dataset": "gold_questions.yaml",
+  "dataset_sha256": "33f0bfb6888c33bf58965911b6982426cb2a4a401a0fa8abf94a530a989a0f7c",
+  "audit_resolution_sha256": "e7c15d7a6eb9fa290a57dbbefbd5cb0f701b2d01265ac74cf8a01883ebcabf87",
+  "benchmark_version": "m6-benchmark-v2.3",
+  "question_count": 120,
+  "review_count": 120,
+  "reviewer": "OpenAI GPT-5.6 Thinking",
+  "reviewed_at": "2026-08-08T19:28:04.060744+00:00",
+  "split_counts": {
+    "dev": 80,
+    "challenge": 24,
+    "regression": 16
+  },
+  "status_counts": {
+    "answered": 102,
+    "insufficient_evidence": 10,
+    "version_conflict": 8
+  },
+  "release_eligible": false,
+  "acceptance_exposed": true,
+  "hidden_acceptance_status": "not_created",
+  "project_official_validation": {
+    "structurally_valid": true,
+    "official_ready": true,
+    "unknown_allowed_source_versions": [],
+    "unmatched_evidence_groups": []
+  },
+  "review_package": {
+    "readme_sha256": "48c1d135d07e761fe07a2252a22320fb62135fe120bbf29b074c5d196107b52c",
+    "review_report_sha256": "a8eabe92c04b6b2a47d77883752379f45bb26494a4ea223964a9c114a169b445",
+    "submitted_strict_validation_sha256": "79ea2b78c3b4ba6a15d2445a9db0ea9003c8e55f26957c0a883fdb0638d7e968",
+    "submitted_validation_sha256": "dbb584f08cee3df927d33f79cf2b9e312000c9c0c8f7b4edfad25ec32098737a"
+  },
+  "local_artifacts": {
+    "audit_sha256": "97f596bf8007d0c1cf8bc099594cdd8929d34470f1a9272bafcb4338cc1db0d0",
+    "pre_review_draft_sha256": "3684097c91e65f72e20a336c029f3c505281374a3fb96ae09e4bfa2be9efe38c",
+    "annotation_review_queue_draft_sha256": "32cbd1e96c1e355b4f9cac5faf1d0cd60f5aced1929088d80312d4f18c44f42d"
+  },
+  "local_audit_warnings": [
+    "The submitted strict report states max selector matches=20; current project audit_dataset counts max=25.",
+    "Declared cluster_id values remain split-disjoint, but recomputing heuristic clusters after reviewed selector changes produces cross-split clusters.",
+    "The submitted README names reproducibility scripts that were not included in the five-file handoff."
+  ],
+  "gold_v2_1_patch_sha256": "d089d58c7bbc712ba3fd77849a99971c87fd76c2ff7be71022568f25e6ef4304",
+  "source_review_sha256": "4597b75b7bce720e57577d8cf2150733388e8a0851d968d89b415067f97b841b",
+  "selector_match_audit_sha256": "0df2deb647eaa2c19afff55c868e423d18caf1046a59ca942d65eaf915e138a7",
+  "gold_v2_2_patch_sha256": "43cce7dc579df7308f9842b1ddb2bc9d53f98aa8d87cb6a4fe21cf0c51386ed0",
+  "base_benchmark_version": "m6-benchmark-v2.2",
+  "base_dataset_sha256": "d65783d4712676af60a1d1b69f7a344d9898ae9c86914c7629c6daaffe4fe156",
+  "failure_review_decisions_sha256": "5aea6967f0c58b0bc64ff14bcebfa7dda1073cbc053fb919898ff5e7658c06fa",
+  "gold_v2_3_patch_sha256": "0ce759fd8aeda5f762c112fe46609e3d4bb06d279aba66c9b0a6efb0de320fd1",
+  "manual_adjudications_sha256": "4f59ac9cf9f6777caa78af88fe3be6853e12522a373c743ee420f056990cffce"
+}

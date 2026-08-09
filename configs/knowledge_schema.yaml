@@ -1,0 +1,62 @@
+schema_version: "1.0"
+
+object_types:
+  literature:
+    - thesis
+    - thesis_chapter
+    - thesis_section
+    - equation
+    - figure
+    - table
+    - scientific_claim
+    - validation_result
+  code:
+    - repository_version
+    - source_file
+    - class
+    - function
+    - method
+    - macro
+    - executable
+    - python_script
+    - shell_script
+    - cmake_target
+    - configuration_key
+    - environment_variable
+    - root_tree
+    - root_branch
+    - data_product
+    - file_pattern
+    - workflow_step
+    - workflow
+    - subsystem
+  documentation:
+    - sphinx_page
+    - sphinx_section
+    - readme_section
+    - installation_instruction
+    - api_reference
+    - tutorial
+  concept:
+    - physics_concept
+    - algorithm
+    - detector_component
+    - document_reference
+
+derived_type_suffixes:
+  - _chunk
+
+required_base_fields:
+  - object_id
+  - object_type
+  - source_id
+  - source_version_id
+  - title
+  - text
+  - authority_level
+  - metadata
+
+stable_id_components:
+  - source_version_id
+  - object_type
+  - canonical_locator

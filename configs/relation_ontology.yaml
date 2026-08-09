@@ -1,0 +1,49 @@
+schema_version: "1.0"
+
+predicates:
+  - name: THEORETICAL_BASIS_FOR
+    description: A paper section supplies the theoretical basis for an implementation or workflow.
+  - name: FORMALIZES
+    description: A source gives a formal mathematical or software formulation of a concept.
+  - name: IMPLEMENTS
+    description: A code object directly implements a documented concept.
+  - name: IMPLEMENTED_AS_PIPELINE
+    description: A concept is realized by multiple ordered workflow steps rather than one class.
+  - name: EXTENDS
+    description: A subject adds behavior or scope to an existing object.
+  - name: PRODUCES
+    description: A workflow or code object produces a data product.
+  - name: CONSUMES
+    description: A workflow or code object consumes a data product.
+  - name: PRODUCES_INPUT_FOR
+    description: A workflow produces an input used by another subsystem.
+  - name: PRODUCES_PROFILE_FOR
+    description: A reconstruction workflow produces a target profile used downstream.
+  - name: GENERATES_CALIBRATION_FOR
+    description: A data product parameterizes or calibrates a downstream result.
+  - name: PARAMETERIZES
+    description: A value or data object provides parameters for another object.
+  - name: CORRECTS
+    description: A correction object adjusts an observable or data product.
+  - name: CALLS
+    description: A code symbol calls another symbol.
+  - name: INCLUDES
+    description: A source file includes another source or external header.
+  - name: INHERITS
+    description: A class derives from another class.
+  - name: DEPENDS_ON
+    description: A build target declares a dependency on another target.
+  - name: READS
+    description: A code object reads a file, tree, branch, or configuration value.
+  - name: WRITES
+    description: A code object writes a file, tree, branch, or result.
+  - name: CONFIGURES
+    description: A configuration object controls another object.
+  - name: RUNS_BEFORE
+    description: A workflow step precedes another step.
+  - name: OPERATIONALLY_DOCUMENTS
+    description: Documentation explains how to operate a system without defining its theory.
+  - name: FORKED_FROM
+    description: A repository or version derives from another repository or version.
+  - name: VERSION_INCOMPATIBLE_WITH
+    description: A statement or interface must not be applied to the specified version.

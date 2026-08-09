@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0",
+  "captured_at": "2026-07-30",
+  "postgres": {
+    "image": "postgres:17-alpine",
+    "digest": "sha256:742f40ea20b9ff2ff31db5458d127452988a2164df9e17441e191f3b72252193",
+    "migration": "0002"
+  },
+  "qdrant": {
+    "image": "qdrant/qdrant:v1.15.5",
+    "digest": "sha256:0fb8897412abc81d1c0430a899b9a81eb8328aa634e7242d1bc804c1fe8fe863",
+    "client_version": "1.15.1",
+    "collection": "panda_knowledge_v1",
+    "dense_dimensions": 3072,
+    "distance": "cosine",
+    "sparse_model": "Qdrant/bm25"
+  }
+}

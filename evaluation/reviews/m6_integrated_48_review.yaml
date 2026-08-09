@@ -1,0 +1,286 @@
+schema_version: '1.0'
+review_id: m6-integrated-48-review-2026-08-04
+generated_at: '2026-08-04T17:34:01.7238983Z'
+scope:
+  original_run_id: m6-v2-36-qa-dev-rc2b
+  latest_focused_run_id: m6-v2-36-synthetic-noise-fix-6-v1
+  benchmark: m6-benchmark-v2.2
+  total_cases: 48
+  case_groups:
+    previously_corrected_scoring_cases: 31
+    newly_reviewed_mixed_cases: 6
+    previously_unprocessed_real_failures: 11
+source_artifacts:
+  - path: data/evaluation/runs/m6-v2-36-qa-dev-rc2b/failure_review_decisions.yaml
+    sha256: 07c934e0be0e853511f13e2231e8fa954e99279d3ef64df41dedb85b3b6ff34d
+    role: signed_original_48_case_decisions
+  - path: data/evaluation/rescores/m6-v2-36-qa-dev-rc2b-evaluator-2_1-1fea656c1ea0/rescore_manifest.json
+    sha256: bf7e2e2fba18d829209bd71b4aaab341c3ab9d1c38e09da80f76d099a7b54164
+    role: completed_31_case_resolution
+  - path: data/evaluation/runs/m6-v2-36-synthetic-noise-fix-6-v1/manifest.json
+    sha256: ddf0041c636f4b2db930ca81a09d75a3e5c819c2dabf651da618d405fe76df7e
+    role: six_case_focused_rerun
+  - path: data/evaluation/runs/m6-v2-36-synthetic-noise-fix-6-v1/failure_review.yaml
+    sha256: 3be7942f48529067bd0cfc07b62cfdfcff49f04725174b2db7715d876a2d38ea
+    role: generated_six_case_failure_review
+  - path: evaluation/benchmarks/v2_2/gold_questions.yaml
+    sha256: d65783d4712676af60a1d1b69f7a344d9898ae9c86914c7629c6daaffe4fe156
+    role: signed_gold_v2_2
+  - path: evaluation/benchmarks/v2_2/gold_v2_2_patch.yaml
+    sha256: 43cce7dc579df7308f9842b1ddb2bc9d53f98aa8d87cb6a4fe21cf0c51386ed0
+    role: narrow_three_case_gold_patch
+  - path: data/evaluation/rescores/m6-v2-36-qa-dev-rc2b-evaluator-2_2-d65783d47126-90547a6958bf/rescore_manifest.json
+    sha256: 38a0165c12977c4cf5c61949d0a9f30ed0a3d2a20f98ade921be048a933cb83b
+    role: evaluator_2_2_68_case_composite_manifest
+  - path: data/evaluation/rescores/m6-v2-36-qa-dev-rc2b-evaluator-2_2-d65783d47126-90547a6958bf/report.json
+    sha256: 451d5f30518abafdc764208f98f570f9778bace573ec78baf989fc62ca1471da
+    role: evaluator_2_2_68_case_composite_report
+current_summary:
+  resolved: 36
+  pending_offline_rescore: 0
+  pending_fix_and_rerun: 12
+  waiver: 0
+  m6_gate_passed: false
+  full_dev_rerun_authorized: false
+  regression_authorized: false
+  acceptance_authorized: false
+current_classification_counts:
+  resolved_metric_false_positive: 34
+  clean_pass: 2
+  metric_false_positive_pending_rescore: 0
+  real_failure_pending_fix: 12
+diagnostic_composite_rescore:
+  output_dir: data/evaluation/rescores/m6-v2-36-qa-dev-rc2b-evaluator-2_2-d65783d47126-90547a6958bf/
+  evaluator_revision: evaluator-2.2
+  gold_dataset: evaluation/benchmarks/v2_2/gold_questions.yaml
+  gold_dataset_sha256: d65783d4712676af60a1d1b69f7a344d9898ae9c86914c7629c6daaffe4fe156
+  cases: 68
+  excluded_case_ids: [g023, g025, g039, g057, g060, g063, g073, g088, g089, g095, g110, g114]
+  replacement_sources:
+    - run_id: m6-v2-36-status-fix-31-retry1
+      case_ids: [g041, g119]
+    - run_id: m6-v2-36-synthetic-noise-fix-6-v1
+      case_ids: [g011, g074, g079, g085, g086]
+  g089_replacement_included: false
+  rescore_model_calls: 0
+  rescore_token_usage: 0
+  diagnostic_composite_runtime: true
+  uniform_candidate_identity: false
+  complete_v2_dev: false
+  development_gate_passed: false
+  development_gate_blocker: complete_full_dev
+policy:
+  - Offline scoring or Gold changes must use existing records and must not call Vertex.
+  - Real behavior fixes run only the affected cases and direct deterministic sentinels.
+  - A complete 80-case dev run is allowed only after a new candidate is fully frozen.
+  - Acceptance remains unavailable and must never be used for targeted tuning.
+
+groups:
+  previously_corrected_scoring_cases:
+    count: 31
+    group_status: resolved
+    resolution:
+      gold_revision: m6-benchmark-v2.1
+      evaluator_revision: evaluator-2.1
+      uniform_rescore: data/evaluation/rescores/m6-v2-36-qa-dev-rc2b-evaluator-2_1-1fea656c1ea0/
+      replacement_run: m6-v2-36-status-fix-31-retry1
+      model_calls_for_uniform_rescore: 0
+    cases:
+      - {case_id: g003, status: resolved, action_taken: offline_rescore, note: final-evidence scoring was inconsistent with the cited supported answer}
+      - {case_id: g005, status: resolved, action_taken: offline_rescore_with_human_adjudication, note: answer-point judge missed the native/container distinction}
+      - {case_id: g010, status: resolved, action_taken: gold_intent_and_offline_rescore, note: usage is accepted in addition to installation and the cited Jupyter evidence is valid}
+      - {case_id: g012, status: resolved, action_taken: metric_applicability_rescore, note: correct version-conflict refusal does not require ordinary recall}
+      - {case_id: g013, status: resolved, action_taken: selector_rescore, note: lifecycle and environment answer was complete}
+      - {case_id: g014, status: resolved, action_taken: selector_rescore, note: full simulation-to-analysis order was covered}
+      - {case_id: g015, status: resolved, action_taken: selector_rescore, note: PndMasterRunSim responsibility and lifecycle were covered}
+      - {case_id: g016, status: resolved, action_taken: selector_rescore, note: DPM generator configuration was correctly identified}
+      - {case_id: g017, status: resolved, action_taken: source_and_selector_rescore, note: CLI and a/e/r/v modes were correctly covered}
+      - {case_id: g020, status: resolved, action_taken: source_coverage_rescore, note: two-pass workflow was complete}
+      - {case_id: g026, status: resolved, action_taken: metric_applicability_rescore, note: correct version-conflict refusal}
+      - {case_id: g031, status: resolved, action_taken: selector_rescore, note: PndLmdModelFactory files and generate methods were correctly located}
+      - {case_id: g041, status: resolved, action_taken: agent_status_fix_and_rescore, note: nonexistent SetMagicRestgasSeed now returns insufficient_evidence with verified partial help}
+      - {case_id: g042, status: resolved, action_taken: metric_applicability_rescore, note: correct version-conflict refusal does not require implementation identifiers}
+      - {case_id: g047, status: resolved, action_taken: final_evidence_rescore, note: theoretical answer point and paper support were present}
+      - {case_id: g051, status: resolved, action_taken: equivalent_evidence_rescore, note: point-like and profile-dependent acceptance were correctly distinguished}
+      - {case_id: g058, status: resolved, action_taken: metric_applicability_rescore, note: correct refusal does not require ordinary recall or dual source}
+      - {case_id: g059, status: resolved, action_taken: source_and_selector_rescore, note: response data, smearing, and factory generation were covered}
+      - {case_id: g066, status: resolved, action_taken: source_requirement_rescore, note: implementation locator question does not require blocking paper evidence}
+      - {case_id: g068, status: resolved, action_taken: equivalent_evidence_rescore, note: Apollonius and skew-straw collaboration points were covered}
+      - {case_id: g069, status: resolved, action_taken: source_and_dual_source_rescore, note: run manager, profile loading, and vertex sampling chain was answered}
+      - {case_id: g070, status: resolved, action_taken: source_and_dual_source_rescore, note: event_poca writer and second-pass handoff were covered}
+      - {case_id: g072, status: resolved, action_taken: selector_rescore, note: angular acceptance and longitudinal efficiency were correctly distinguished}
+      - {case_id: g076, status: resolved, action_taken: metric_applicability_rescore, note: nonexistent class was refused and real macro implementation was located}
+      - {case_id: g078, status: resolved, action_taken: identifier_catalog_rescore, note: PndLmdAcceptance is real in the locked corpus}
+      - {case_id: g096, status: resolved, action_taken: metric_applicability_rescore, note: correct version-conflict refusal}
+      - {case_id: g102, status: resolved, action_taken: selector_rescore, note: data objects, factory inputs, and generated components were covered}
+      - {case_id: g105, status: resolved, action_taken: selector_rescore, note: model, data, and apps responsibilities were mapped correctly}
+      - {case_id: g108, status: resolved, action_taken: metric_applicability_rescore, note: correct version-conflict refusal}
+      - {case_id: g112, status: resolved, action_taken: identifier_catalog_rescore, note: troubleshooting points were covered and PndLmdAcceptance is not hallucinated}
+      - {case_id: g119, status: resolved, action_taken: agent_status_fix_and_rescore, note: deleted runtime data is now refused while verified schema help is retained}
+
+  newly_reviewed_mixed_cases:
+    count: 6
+    reviewer: user_domain_expert
+    reviewed_at: '2026-08-04'
+    cases:
+      - case_id: g011
+        original_classification: mixed_evaluation_and_answer_quality
+        current_classification: clean_pass
+        status: resolved
+        action: none
+        decision: All case-level metrics pass and visible internal-claim leakage is zero.
+        evidence:
+          gold_recall_at_10: 1.0
+          final_evidence_recall: 1.0
+          required_source_coverage: true
+          answer_point_coverage: 1.0
+          visible_internal_claim_leaks: 0
+      - case_id: g074
+        original_classification: mixed_evaluation_and_answer_quality
+        current_classification: metric_false_positive
+        status: resolved
+        action: offline_rescore
+        resolution: scorer_v2.2_pass
+        prior_status: pending_offline_rescore
+        prior_action: rescore
+        target_layer: gold_and_evaluation
+        decision: Adapter source fully answers the implementation question; blocking paper and upstream implementation evidence are unnecessary.
+        required_change:
+          - Change required_source_types to code only, or make paper and upstream PndLmdTrackQ implementation non-critical.
+          - Correct the intent verdict; algorithm_implementation is valid.
+        rescore_evidence:
+          evaluator_revision: evaluator-2.2
+          gold_revision: m6-benchmark-v2.2
+          intent: pass
+          gold_recall: pass
+          final_evidence: pass
+          required_source: pass
+          answer_points: pass
+          citation: pass
+          wrong_version: 0
+          major_unsupported: 0
+      - case_id: g079
+        original_classification: mixed_evaluation_and_answer_quality
+        current_classification: metric_false_positive
+        status: resolved
+        action: offline_rescore
+        resolution: scorer_v2.2_pass
+        prior_status: pending_offline_rescore
+        prior_action: rescore
+        target_layer: selector_and_evaluation
+        decision: Direct PandaRoot and LuminosityFit code proves the same data product as the derived graph object.
+        required_change:
+          - Allow direct code evidence to satisfy the Lumi_TrksQA data-product group.
+          - Make graph/data-product evidence non-blocking when equivalent direct evidence is cited.
+        rescore_evidence:
+          evaluator_revision: evaluator-2.2
+          gold_revision: m6-benchmark-v2.2
+          intent: pass
+          gold_recall: pass
+          final_evidence: pass
+          required_source: pass
+          answer_points: pass
+          citation: pass
+          wrong_version: 0
+          major_unsupported: 0
+        equivalence_scope: signed_direct_code_only_for_g079_data_product_group
+      - case_id: g085
+        original_classification: mixed_evaluation_and_answer_quality
+        current_classification: clean_pass
+        status: resolved
+        action: none
+        decision: All metrics pass; curated metadata and locator filler are absent and visible internal-claim leakage is zero.
+        evidence:
+          gold_recall_at_10: 1.0
+          final_evidence_recall: 1.0
+          required_source_coverage: true
+          answer_point_coverage: 1.0
+          visible_internal_claim_leaks: 0
+      - case_id: g086
+        original_classification: mixed_evaluation_and_answer_quality
+        current_classification: metric_false_positive
+        status: resolved
+        action: offline_rescore
+        resolution: scorer_v2.2_pass
+        prior_status: pending_offline_rescore
+        prior_action: rescore
+        target_layer: gold_and_evaluation
+        decision: Direct implementation source authoritatively covers all a/e/r/v modes; the generated documentation page is redundant.
+        required_change:
+          - Make documentation optional or diagnostic for this code-semantics question.
+          - Preserve code as the blocking source type.
+        rescore_evidence:
+          evaluator_revision: evaluator-2.2
+          gold_revision: m6-benchmark-v2.2
+          intent: pass
+          gold_recall: pass
+          final_evidence: pass
+          required_source: pass
+          answer_points: pass
+          citation: pass
+          wrong_version: 0
+          major_unsupported: 0
+        documentation_role: optional_diagnostic
+      - case_id: g089
+        original_classification: mixed_evaluation_and_answer_quality
+        current_classification: real_failure
+        status: pending_fix_and_rerun
+        action: fix_and_rerun
+        target_layer: qa_generation_and_final_evidence_selection
+        decision: The answer explains run-manager parameter injection but omits how PndTargetGenerator samples the interaction vertex.
+        required_answer_addition:
+          - PndTargetGenerator::ReadDensityFile() loads the longitudinal density profile into its internal distribution representation.
+          - PndTargetGenerator::SampleInteractionVertex() samples an interaction vertex from that profile together with transverse beam parameters.
+          - The sampled vertex is returned to the primary event-generation flow as the event interaction vertex.
+        rerun_scope:
+          cases: [g089]
+          sentinels: [g069]
+
+  previously_unprocessed_real_failures:
+    count: 11
+    group_status: pending_fix_and_rerun
+    cases:
+      - case_id: g023
+        target_layer: qa_generation
+        missing: Explicitly place reconstruction after digitization and before PID.
+      - case_id: g025
+        target_layer: qa_status_and_refusal
+        missing: Explicitly refuse a future runLmdFit output SHA-256 instead of returning implementation metadata.
+      - case_id: g039
+        target_layer: qa_generation
+        missing: Distinguish longitudinal restgas efficiency correction from angular PndLmdAcceptance.
+      - case_id: g057
+        target_layer: qa_guardrail
+        missing: Limit convergence claims to tested profiles; the corpus does not prove convergence for every possible gas profile.
+      - case_id: g060
+        target_layer: qa_generation
+        missing: Explain how PndLmdModelFactory composes divergence smearing into the final fit model.
+      - case_id: g063
+        target_layer: qa_generation
+        missing: Explain how acceptance is passed into PndLmdModelFactory and enters the final model.
+      - case_id: g073
+        target_layer: qa_generation
+        missing: State that PndLmdModelFactory consumes the reusable PndLmdAcceptance object.
+      - case_id: g088
+        target_layer: qa_generation_and_relevance
+        missing: Explain actual acceptance use during model construction and remove unrelated metadata/locator filler.
+      - case_id: g095
+        target_layer: qa_status_and_refusal
+        missing: Explicitly refuse a future event_poca checksum instead of only describing production and consumption.
+      - case_id: g110
+        target_layer: qa_troubleshooting
+        missing: Check ana_dpm.C upstream first-pass PID input file, prefix, and path.
+      - case_id: g114
+        target_layer: qa_troubleshooting
+        missing: Check histogram binning and profile-range compatibility before applying the correction.
+
+next_actions:
+  - order: 1
+    action: Keep g089 and the other 11 real failures pending; fix only their affected behavior layers and run focused cases plus direct sentinels.
+    model_calls_allowed: focused_only
+  - order: 2
+    action: Do not schedule a complete dev, regression, challenge, acceptance, M7 or M8 run from this diagnostic composite.
+  - order: 3
+    action: Generate a new human failure review for any failed focused cases before further fixes.
+  - order: 4
+    action: Freeze a new candidate only after all focused gates pass; only then may one complete 80-case dev run be scheduled.

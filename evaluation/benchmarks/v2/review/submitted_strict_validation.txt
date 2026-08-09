@@ -1,0 +1,9 @@
+STRICT_VALIDATION
+questions: 120
+approved: 120
+selectors: 361 max_matches: 20 zero_matches: 0 >20: 0
+multi_point_questions: 74
+generic_roles: 0
+source_type_mismatches: 0
+warnings: 0
+STRICT_VALIDATION_OK

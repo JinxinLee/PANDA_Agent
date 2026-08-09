@@ -1,0 +1,26 @@
+schema_version: "1.0"
+questions:
+  - {id: q01, intent: installation, query: "How do I install PandaRoot?"}
+  - {id: q02, intent: installation, query: "How do I use the documented PandaRoot container?"}
+  - {id: q03, intent: installation, query: "Which environment variables are needed to run PandaRoot?"}
+  - {id: q04, intent: usage, query: "How do I run a simulation macro?"}
+  - {id: q05, intent: usage, query: "How is createLmdFitData used?"}
+  - {id: q06, intent: usage, query: "How do I run the restgas two-pass workflow?"}
+  - {id: q07, intent: api, query: "Where is PndTargetGenerator defined and used?"}
+  - {id: q08, intent: api, query: "What does PndLmdCombinedDataReader read?"}
+  - {id: q09, intent: api, query: "Where is PndPidCorrelator configured?"}
+  - {id: q10, intent: algorithm_theory, query: "Explain luminosity extraction with acceptance and resolution."}
+  - {id: q11, intent: algorithm_theory, query: "Why is restgas reconstruction efficiency profile dependent?"}
+  - {id: q12, intent: algorithm_theory, query: "Explain the POCA step in restgas profile measurement."}
+  - {id: q13, intent: algorithm_implementation, query: "How is detector-resolution smearing implemented in LuminosityFit?"}
+  - {id: q14, intent: algorithm_implementation, query: "How is event POCA handed to second-pass PID?"}
+  - {id: q15, intent: algorithm_implementation, query: "How is restgas effective acceptance implemented across repositories?"}
+  - {id: q16, intent: data_flow, query: "Trace Lumi_TrksQA into the luminosity fit result."}
+  - {id: q17, intent: data_flow, query: "Trace restgas_profile.txt into the corrected profile."}
+  - {id: q18, intent: data_flow, query: "Trace event_poca into *_pid_final.root."}
+  - {id: q19, intent: module_structure, query: "Describe the boundary between PandaRoot and LuminosityFit."}
+  - {id: q20, intent: module_structure, query: "Describe the RestgasDetermination workflow modules."}
+  - {id: q21, intent: module_structure, query: "Which components form the LuminosityFit model layer?"}
+  - {id: q22, intent: troubleshooting, query: "Why can 2023-dev Sphinx APIs differ from the locked oct19-derived code?"}
+  - {id: q23, intent: troubleshooting, query: "What should I check when event_poca is missing?"}
+  - {id: q24, intent: troubleshooting, query: "Why might POCA_VERTEX_FILE not be consumed?"}

@@ -1,0 +1,27 @@
+schema_version: "1.0"
+status: accepted_for_exposed_benchmark
+reviewed_at: "2026-08-02T19:49:00+02:00"
+reviewer: "OpenAI GPT-5.6 Thinking"
+dataset_sha256: f58ab7f55717aaa5b6205403dfcc78533b941e7fa2d082051848990a21c0af9d
+decisions:
+  selector_match_width:
+    decision: accept_current_project_object_count
+    observed_max: 25
+    rationale: >-
+      The signed validation package used a different counting implementation. The current audit counts
+      page, section, and subsection KnowledgeObjects independently; no required evidence group is unmatched.
+  cluster_assignment:
+    decision: signed_cluster_ids_are_authoritative
+    rationale: >-
+      The signed cluster_id values are split-disjoint. Heuristic reclustering after selector edits is
+      diagnostic only and must not rewrite the approved partition.
+  future_acceptance:
+    decision: independent_strict_validation_required
+    rationale: >-
+      A future hidden acceptance set must be validated against all exposed questions with frozen selector
+      matching, near-duplicate, evidence-overlap, and cluster-disjoint rules before it is consumed.
+scope:
+  release_eligible: false
+  acceptance_exposed: true
+  applies_to: [dev, challenge, regression]
+  does_not_authorize: [acceptance, release, m7]

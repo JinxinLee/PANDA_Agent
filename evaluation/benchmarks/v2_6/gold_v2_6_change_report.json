@@ -1,0 +1,15 @@
+{
+  "benchmark_version": "m6-benchmark-v2.6",
+  "base_benchmark_version": "m6-benchmark-v2.5",
+  "base_dataset_sha256": "53094ae57fe1f27591ba6cca949ffbbc109db583fa5a049adf498e527cac65a2",
+  "signed_review_sha256": "5A42E46CCE0E7AB3E0E84DAF11B5F664DF3266206A7797FBDF158E93B7D59B43",
+  "gold_changed_cases": ["g087", "g093", "g101", "g106"],
+  "rescore_cases": ["g090", "g092", "g093", "g094", "g099", "g100", "g101", "g103", "g104", "g106"],
+  "waiver_cases": ["g109"],
+  "protected_real_failures": ["g087", "g097", "g116"],
+  "semantic_selector_deltas": [
+    "g087: direct code evidence replaces a redundant synthetic data-product graph requirement",
+    "g116: the locked PandaRoot Apollonius implementation path is an explicit equivalent selector"
+  ],
+  "policy": "Closed signed regression-review contract; source/version provenance remains strict internally and no global threshold is relaxed."
+}

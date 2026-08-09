@@ -1,0 +1,91 @@
+schema_version: "1.0"
+
+objects:
+  - object_id: paper.karavdina_2015.chapter_4
+    object_type: document_reference
+    title: Karavdina 2015 Chapter 4
+    text: Curated reference to the LMD reconstruction chapter in the Karavdina thesis.
+  - object_id: workflow.pandaroot.lmd_reconstruction
+    object_type: workflow
+    title: PandaRoot LMD reconstruction
+    text: Curated workflow entity for LMD hit, track, fit, and propagation reconstruction.
+  - object_id: data_product.pandaroot.lumi_trks_qa
+    object_type: data_product
+    title: Lumi_TrksQA
+    text: PandaRoot LMD reconstruction data product consumed by LuminosityFit adapters.
+  - object_id: subsystem.luminosityfit.panda_data_io
+    object_type: subsystem
+    title: LuminosityFit Panda data I/O
+    text: PandaRoot adapter subsystem that reads LMD reconstruction products.
+  - object_id: paper.pflueger_2017.chapter_4
+    object_type: document_reference
+    title: Pflueger 2017 Chapter 4
+    text: Curated reference to the LuminosityFit model and fitting framework chapter.
+  - object_id: subsystem.luminosityfit.model_and_fit
+    object_type: subsystem
+    title: LuminosityFit model and fit subsystem
+    text: Model composition, smearing, acceptance, and fitting subsystem.
+  - object_id: concept.li_2026.restgas_effective_acceptance
+    object_type: physics_concept
+    title: Restgas effective acceptance
+    text: Profile-dependent angular acceptance concept described in the Li thesis.
+  - object_id: workflow.restgas_aware_luminosity_acceptance
+    object_type: workflow
+    title: Restgas-aware luminosity acceptance workflow
+    text: Workflow that regenerates LMD acceptance from a measured restgas profile.
+  - object_id: workflow.restgas_profile_reconstruction
+    object_type: workflow
+    title: Restgas profile reconstruction workflow
+    text: Two-pass reconstruction and longitudinal efficiency correction workflow.
+  - object_id: concept.restgas_longitudinal_efficiency
+    object_type: physics_concept
+    title: Restgas longitudinal reconstruction efficiency
+    text: Reconstruction efficiency as a function of longitudinal interaction position.
+  - object_id: data_product.reconstructed_restgas_profile
+    object_type: data_product
+    title: Reconstructed restgas profile
+    text: Corrected longitudinal restgas density profile used downstream.
+  - object_id: repository.restgas_determination.oct19
+    object_type: repository_version
+    title: RestgasDetermination oct19
+    text: Curated repository-version entity for the locked oct19-derived implementation.
+  - object_id: repository.pandaroot.oct19
+    object_type: repository_version
+    title: PandaRoot oct19
+    text: Curated upstream repository-version entity for RestgasDetermination provenance.
+  - object_id: document.pandaroot_sphinx_2023_08_25_dev
+    object_type: document_reference
+    title: PandaRoot Sphinx 2023-08-25-dev
+    text: Curated reference to the locked generic PandaRoot operational documentation.
+  - object_id: workflow.pandaroot.generic
+    object_type: workflow
+    title: Generic PandaRoot workflow
+    text: Generic simulation, digitization, reconstruction, PID, and analysis workflow.
+  - object_id: configuration.restgas_profile
+    object_type: configuration_key
+    title: restgas_profile
+    text: Configuration key selecting a concrete longitudinal restgas density profile file; it is not itself a fixed filename.
+  - object_id: file_pattern.restgas_profile_input
+    object_type: file_pattern
+    title: restgas_16012024_*.txt
+    text: Pattern representing the concrete restgas profile input files documented by the locked RestgasDetermination corpus.
+  - object_id: data_product.restgas.event_poca
+    object_type: root_tree
+    title: event_poca
+    text: Event-indexed ROOT tree produced during first-pass POCA analysis and consumed by second-pass PID propagation.
+  - object_id: data_product.restgas.boost_root
+    object_type: data_product
+    title: "*_boost.root"
+    text: First-pass analysis output containing the event_poca tree.
+  - object_id: data_product.restgas.pid_root
+    object_type: data_product
+    title: "*_pid.root"
+    text: First-pass PID data product consumed by the POCA analysis.
+  - object_id: data_product.restgas.pid_final_root
+    object_type: data_product
+    title: "*_pid_final.root"
+    text: Second-pass PID output generated after event-specific POCA propagation.
+  - object_id: workflow.restgas.second_pass_pid
+    object_type: workflow
+    title: Restgas second-pass PID workflow
+    text: Workflow that reads event_poca through POCA_VERTEX_FILE and writes the final PID product.

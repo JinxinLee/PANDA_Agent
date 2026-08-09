@@ -1,0 +1,104 @@
+# Credentials and local environment files
+.env
+.env.local
+.env.*
+.envrc
+.secrets/
+secrets/
+*.secret
+*.secrets
+*.pem
+*.key
+*.p12
+*.pfx
+credentials*.json
+*-credentials.json
+service-account*.json
+application_default_credentials.json
+
+# Python caches, virtual environments, and test/coverage output
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+.nox/
+.tox/
+.venv/
+venv/
+env/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+
+# Build and packaging output
+build/
+dist/
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+*.whl
+
+# IDE, editor, and OS metadata
+.idea/
+.vscode/
+*.code-workspace
+.spyproject/
+.project
+.settings/
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+*.out
+*.pid
+*.pid.lock
+*.bak
+*.orig
+tmp/
+temp/
+
+# Root-level local diagnostic scripts (for example, _debug_judge.py)
+/_*.py
+
+# User-supplied raw PDF corpus; keep raw_pdf/README.md tracked.
+/raw_pdf/**/*.pdf
+
+# Large generated corpus, service, index, cache, and evaluation data
+/data/sources/
+/data/snapshots/
+/data/indexes/
+/data/services/
+/data/cache/
+/data/normalized/
+/data/evaluation/
+/data/tmp/
+
+# Evaluation runtime output directories; static assets remain tracked.
+/evaluation/runs/
+/evaluation/results/
+/evaluation/reports/
+/evaluation/outputs/
+/evaluation/runtime/
+/evaluation/tmp/
+
+# Explicitly retained repository metadata and static assets
+!.env.example
+!/raw_pdf/README.md
+!/data/manifests/
+!/data/manifests/*.json
+!/evaluation/benchmarks/
+!/evaluation/candidates/
+!/evaluation/reviews/
+!/evaluation/scripts/

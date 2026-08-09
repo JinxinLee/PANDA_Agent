@@ -1,0 +1,23 @@
+schema_version: "1.0"
+benchmark_version: m6-benchmark-v2.5
+base_benchmark_version: m6-benchmark-v2.4
+base_dataset_sha256: 8293af80e596e0072049d530f735aeea196a9f815f41fecbe55c20d5dc7375d9
+signed_review:
+  path: D:/Download/failure_review_rc3e_17_reviewed.yaml
+  sha256: 6124C6937F72FA085C42815B60309B2B20F631E461B4DDFF5BF83514FAB6A999
+semantic_case_deltas:
+  g001: signed answer-point/provenance adjudication
+  g005: signed answer-point judge-false-negative adjudication
+  g007: explicit refusal-citation waiver only
+  g011: signed exact final-evidence equivalence
+  g028: remove nonessential generic version boilerplate from p1
+  g060: signed exact final-evidence equivalence
+  g066: accept module_structure as the reviewed actual intent
+  g068: signed exact final-evidence equivalence
+  g073: signed exact final-evidence equivalence
+  g079: signed exact final-evidence equivalence
+  g081: signed exact final-evidence equivalence
+  g089: signed exact final-evidence/source-coverage equivalence
+  g105: explicit extensionless identifier-path normalization waiver only
+protected_real_failures: [g047, g078, g112, g114]
+selector_changes: []

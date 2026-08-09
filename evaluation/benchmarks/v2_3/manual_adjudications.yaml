@@ -1,0 +1,33 @@
+schema_version: "1.0"
+source_review_sha256: 5aea6967f0c58b0bc64ff14bcebfa7dda1073cbc053fb919898ff5e7658c06fa
+adjudications:
+  - case_id: g005
+    type: answer_point
+    covered_point_ids: [p1]
+    critical_answer_points_missing: []
+    rationale: >-
+      The signed review confirms that the response distinguishes development/build in the VSCode
+      DevContainer from the runtime-only dependency container. This is an evaluator adjudication;
+      no judge call is repeated.
+    reviewer: "OpenAI GPT-5.6 Thinking"
+    reviewed_at: "2026-08-03T22:06:45.985480+00:00"
+  - case_id: g039
+    type: answer_point
+    covered_point_ids: [p1]
+    critical_answer_points_missing: []
+    rationale: >-
+      Reviewed answer-point adjudication: the answer locates both correction macros and
+      explicitly distinguishes longitudinal profile efficiency from angular acceptance.
+      The judge's 0.0 is not retained.
+    reviewer: "OpenAI GPT-5.6 Sol"
+    reviewed_at: "2026-08-08T19:28:04.060744+00:00"
+  - case_id: g088
+    type: answer_point
+    covered_point_ids: [p1]
+    critical_answer_points_missing: [p2]
+    rationale: >-
+      Reviewed failure adjudication: the answer identifies the setter/storage handoff but
+      does not explain where the stored acceptance is converted or applied in construction.
+      This preserves the real p2 failure after Gold gains construction evidence.
+    reviewer: "OpenAI GPT-5.6 Sol"
+    reviewed_at: "2026-08-08T19:28:04.060744+00:00"

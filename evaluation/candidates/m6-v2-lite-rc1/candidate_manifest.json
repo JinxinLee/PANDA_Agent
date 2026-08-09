@@ -1,0 +1,89 @@
+{
+  "audit_resolution_hash": "e7c15d7a6eb9fa290a57dbbefbd5cb0f701b2d01265ac74cf8a01883ebcabf87",
+  "candidate_id": "m6-v2-lite-rc1",
+  "config_tree_hash": "0feb2d76c5337c15a35965e129ff0d58bdd11dc095c11a484e426aa0b8495040",
+  "docker": {
+    "images": [
+      {
+        "ContainerName": "panda_agent-qdrant-1",
+        "Created": "2025-09-30T10:22:27.172938385Z",
+        "ID": "sha256:0fb8897412abc81d1c0430a899b9a81eb8328aa634e7242d1bc804c1fe8fe863",
+        "LastTagTime": "2026-07-30T01:15:47.067647435Z",
+        "Platform": "linux/amd64",
+        "Repository": "qdrant/qdrant",
+        "Size": 66291663,
+        "Tag": "v1.15.5"
+      },
+      {
+        "ContainerName": "panda_agent-postgres-1",
+        "Created": "2026-07-07T17:46:32.727573082Z",
+        "ID": "sha256:742f40ea20b9ff2ff31db5458d127452988a2164df9e17441e191f3b72252193",
+        "LastTagTime": "2026-07-30T01:15:50.346396952Z",
+        "Platform": "linux/amd64",
+        "Repository": "postgres",
+        "Size": 117165949,
+        "Tag": "17-alpine"
+      }
+    ],
+    "status": "ok"
+  },
+  "embedding_dimensions": 3072,
+  "embedding_model_id": "gemini-embedding-2",
+  "evaluation_judge_model_id": "gemini-3.6-flash",
+  "frozen_at": "2026-08-02T20:02:12.269072+00:00",
+  "gold_dataset_hash": "f58ab7f55717aaa5b6205403dfcc78533b941e7fa2d082051848990a21c0af9d",
+  "index_fingerprint": "c527bbf1d10c88969da02745d678c640a4544757258584110a5ddd7744be3cf2",
+  "index_identity": "c527bbf1d10c88969da02745d678c640a4544757258584110a5ddd7744be3cf2",
+  "index_identity_payload": {
+    "distance": "cosine",
+    "embedding_dimensions": 3072,
+    "embedding_model": "gemini-embedding-2",
+    "index_schema_version": "2",
+    "sparse_model": "Qdrant/bm25"
+  },
+  "migration_tree_hash": "0680a7e8d34fb238d459863645e7db3261fb5cd7bd02a34637dc1e3f9346db24",
+  "normalized_output_hashes": {
+    "aliases": "2e59201f5bcb7f5c515ec6c573af1f15f18e8a8bd97dbd34ceb54aa0fc1fe7da",
+    "errors": "ea0b09cc07dc78ae83851fb247a31514350cd6ae1abd7fcdd03c61e4a20e1d7d",
+    "objects": "7ee7b3a3be3d3fceac5f01230137942c9a0d0ff60969bf9e58696aa58d2b4876",
+    "relation_candidates": "b45264ff7451573c63c7d1e0b9fc169f79a97c5e256f3f70fd996517dfb80048",
+    "relations": "609fd869c8bc7613df4e84fbde95c172c0fce9ad1296ba32f939ab2d9b8136a9",
+    "workflows": "27bc6e4fcda3debff056f2217a468b8ce27f4469fd85dc84feee9de8ab5b6c24"
+  },
+  "normalized_report_hash": "c27a18caa03c9a643aa6aacc3329021c027bf23d064bdbf7ddb3705923cd3ec7",
+  "package_versions": {
+    "google-genai": "2.13.0",
+    "langgraph": "1.2.10",
+    "panda-research-qa-agent": "0.1.0",
+    "psycopg": "3.3.4",
+    "python": "3.12.13",
+    "qdrant-client": "1.15.1"
+  },
+  "prompt_hash": "b6768aafc8f933ac82ab642a23901ccae90ed7fbcd03cd3f61cd7b474ffc45df",
+  "prompt_version": "3.0.1",
+  "protected_file_hashes": {
+    ".env.example": "a5375c5e26c57f7f91690b02fdf8372e7405865e465b04c83e6bc79dae5b7385",
+    "audit_resolution.yaml": "e7c15d7a6eb9fa290a57dbbefbd5cb0f701b2d01265ac74cf8a01883ebcabf87",
+    "gold_questions.yaml": "f58ab7f55717aaa5b6205403dfcc78533b941e7fa2d082051848990a21c0af9d",
+    "pyproject.toml": "fde6c7e697601706ccb06be53e60a7e48fc78566eae8a33b717ef17f9ab99e4d",
+    "query_expansions.yaml": "24db86ab808928daa825e86dd13eedd5e6434725fff335ce6a5e5ecabeeb7d1f",
+    "retrieval_policies.yaml": "ebe4cb1099caca7a6dafd8ff08a57fb5fd8ca2cec3119834ce04bd3c67ff1407"
+  },
+  "python_version": "3.12.13",
+  "qdrant": {
+    "collection_name": "panda_knowledge_v1",
+    "dense_dimensions": 3072,
+    "dimensions_match": true,
+    "expected_dense_dimensions": 3072,
+    "points_count": 80698,
+    "status": "ok"
+  },
+  "query_expansion_hash": "24db86ab808928daa825e86dd13eedd5e6434725fff335ce6a5e5ecabeeb7d1f",
+  "retrieval_policy_hash": "ebe4cb1099caca7a6dafd8ff08a57fb5fd8ca2cec3119834ce04bd3c67ff1407",
+  "runtime_generation_model_id": "gemini-3.5-flash-lite",
+  "schema_version": "1.0",
+  "source_manifest_hash": "9925ec31a6122e05388806990f79aae036f3b0989c4584d24f2092bc4edb3d94",
+  "source_tree_hash": "18e0e4fe5e08a4a72438df4ffa9ab82a23666523f7dbe20c554e99eae5da4902",
+  "status": "frozen",
+  "vertex_location": "global"
+}

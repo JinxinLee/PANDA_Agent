@@ -1,0 +1,64 @@
+{
+  "benchmark_version": "m6-benchmark-v2.2",
+  "base_dataset_sha256": "1fea656c1ea05ac2cf4bbb78e8e712fec3c09e40c31f5d77a914fa7cadbd9d22",
+  "dataset_sha256": "d65783d4712676af60a1d1b69f7a344d9898ae9c86914c7629c6daaffe4fe156",
+  "patch_sha256": "43cce7dc579df7308f9842b1ddb2bc9d53f98aa8d87cb6a4fe21cf0c51386ed0",
+  "source_review_sha256": "4597b75b7bce720e57577d8cf2150733388e8a0851d968d89b415067f97b841b",
+  "question_count": 120,
+  "approved_count": 120,
+  "split_counts": {
+    "challenge": 24,
+    "dev": 80,
+    "regression": 16
+  },
+  "status_counts": {
+    "answered": 102,
+    "insufficient_evidence": 10,
+    "version_conflict": 8
+  },
+  "operations": [
+    {
+      "case_id": "g074",
+      "accepted_intents": [
+        "data_flow"
+      ],
+      "required_source_types": [
+        "code"
+      ],
+      "remove_groups": [
+        "g074.e1",
+        "g074.e3"
+      ]
+    },
+    {
+      "case_id": "g079",
+      "required_source_types": [
+        "code"
+      ],
+      "add_selectors": {
+        "g079.data_product": [
+          {
+            "source_id": "pandaroot",
+            "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+            "path": "detectors/lmd/LmdQA/PndLmdTrackQ.cxx"
+          },
+          {
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "path": "data/PndLmdCombinedDataReader.cxx"
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "g086",
+      "required_source_types": [
+        "code"
+      ],
+      "remove_groups": [
+        "g086.e1"
+      ]
+    }
+  ],
+  "selector_audit_sha256": "dc21ad1f960f51182cb0755528ff4dfad1164c453e2e4efc02afa806f4e6e355"
+}

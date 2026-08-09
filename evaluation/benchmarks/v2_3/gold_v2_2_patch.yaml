@@ -1,0 +1,32 @@
+schema_version: "1.0"
+benchmark_version: m6-benchmark-v2.2
+# This is the signed, narrow rubric change for the three cases classified as
+# metric false positives in m6_integrated_48_review.yaml.  It deliberately
+# does not alter queries, source-version allowlists, split, or cluster IDs.
+source_review_sha256: 4597b75b7bce720e57577d8cf2150733388e8a0851d968d89b415067f97b841b
+operations:
+  - case_id: g074
+    accepted_intents: [data_flow]
+    required_source_types: [code]
+    # The adapter implementation is sufficient for this implementation
+    # question.  The paper and upstream PndLmdTrackQ implementation were
+    # reviewer-confirmed as useful context, not blocking final evidence.
+    remove_groups: [g074.e1, g074.e3]
+  - case_id: g079
+    required_source_types: [code]
+    # An explicit, human-approved equivalence only: either direct code
+    # locator can satisfy the derived Lumi_TrksQA data-product group.  This is
+    # not a general graph-to-code heuristic.
+    add_selectors:
+      g079.data_product:
+        - source_id: pandaroot
+          source_version_id: pandaroot@18c09e91100db27867ded30e708b4dae95bd8357
+          path: detectors/lmd/LmdQA/PndLmdTrackQ.cxx
+        - source_id: luminosityfit
+          source_version_id: luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32
+          path: data/PndLmdCombinedDataReader.cxx
+  - case_id: g086
+    required_source_types: [code]
+    # The generated documentation duplicates the authoritative implementation
+    # for the a/e/r/v code-semantics question and is not blocking evidence.
+    remove_groups: [g086.e1]

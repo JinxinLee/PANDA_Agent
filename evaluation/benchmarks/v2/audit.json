@@ -1,0 +1,1188 @@
+{
+  "dataset": "C:\\Users\\Jinxin.DESKTOP-H6SSTQH\\Desktop\\Agent_learn\\PANDA_Agent\\evaluation\\benchmarks\\v2\\gold_questions.yaml",
+  "question_count": 120,
+  "release_eligible": false,
+  "acceptance_exposed": true,
+  "split_counts": {
+    "dev": 80,
+    "challenge": 24,
+    "regression": 16
+  },
+  "status_by_split": {
+    "challenge": {
+      "answered": 20,
+      "insufficient_evidence": 3,
+      "version_conflict": 1
+    },
+    "dev": {
+      "answered": 66,
+      "insufficient_evidence": 7,
+      "version_conflict": 7
+    },
+    "regression": {
+      "answered": 16
+    }
+  },
+  "selector_count": 361,
+  "unique_selector_count": 119,
+  "selector_match_width": {
+    "mean": 4.648199445983379,
+    "median": 2,
+    "max": 25
+  },
+  "broad_selectors": [
+    {
+      "case_id": "g023",
+      "group_id": "g023.e1",
+      "role": "pnd_master_reco_task_documentation",
+      "selector": {
+        "source_id": "pandaroot_sphinx_2023_08_25_dev",
+        "title_contains": "PndMasterRecoTask"
+      },
+      "matches": 25
+    },
+    {
+      "case_id": "g010",
+      "group_id": "g010.e1",
+      "role": "jupyter_notebooks_documentation",
+      "selector": {
+        "source_id": "pandaroot_sphinx_2023_08_25_dev",
+        "title_contains": "Jupyter Notebooks"
+      },
+      "matches": 23
+    },
+    {
+      "case_id": "g020",
+      "group_id": "g020.e2",
+      "role": "runall_prod_hvmaps_implementation",
+      "selector": {
+        "source_id": "restgas_determination",
+        "path": "macro/target/runall_prod_hvmaps.py"
+      },
+      "matches": 20
+    },
+    {
+      "case_id": "g092",
+      "group_id": "g092.e1",
+      "role": "runall_prod_hvmaps_implementation",
+      "selector": {
+        "source_id": "restgas_determination",
+        "path": "macro/target/runall_prod_hvmaps.py"
+      },
+      "matches": 20
+    },
+    {
+      "case_id": "g117",
+      "group_id": "g117.e1",
+      "role": "runall_prod_hvmaps_implementation",
+      "selector": {
+        "source_id": "restgas_determination",
+        "path": "macro/target/runall_prod_hvmaps.py"
+      },
+      "matches": 20
+    },
+    {
+      "case_id": "g118",
+      "group_id": "g118.e1",
+      "role": "runall_prod_hvmaps_implementation",
+      "selector": {
+        "source_id": "restgas_determination",
+        "path": "macro/target/runall_prod_hvmaps.py"
+      },
+      "matches": 20
+    },
+    {
+      "case_id": "g022",
+      "group_id": "g022.e1",
+      "role": "data_access_documentation",
+      "selector": {
+        "source_id": "pandaroot_sphinx_2023_08_25_dev",
+        "title_contains": "Data Access"
+      },
+      "matches": 18
+    },
+    {
+      "case_id": "g024",
+      "group_id": "g024.e1",
+      "role": "analysis_in_a_task_documentation",
+      "selector": {
+        "source_id": "pandaroot_sphinx_2023_08_25_dev",
+        "title_contains": "Analysis in a Task"
+      },
+      "matches": 18
+    },
+    {
+      "case_id": "g038",
+      "group_id": "g038.e1",
+      "role": "ana_complete_implementation",
+      "selector": {
+        "source_id": "restgas_determination",
+        "path": "macro/target/ana_complete.C"
+      },
+      "matches": 17
+    },
+    {
+      "case_id": "g071",
+      "group_id": "g071.e3",
+      "role": "ana_complete_implementation",
+      "selector": {
+        "source_id": "restgas_determination",
+        "path": "macro/target/ana_complete.C"
+      },
+      "matches": 17
+    },
+    {
+      "case_id": "g080",
+      "group_id": "g080.e4",
+      "role": "ana_complete_implementation",
+      "selector": {
+        "source_id": "restgas_determination",
+        "path": "macro/target/ana_complete.C"
+      },
+      "matches": 17
+    },
+    {
+      "case_id": "g083",
+      "group_id": "g083.e2",
+      "role": "ana_complete_implementation",
+      "selector": {
+        "source_id": "restgas_determination",
+        "path": "macro/target/ana_complete.C"
+      },
+      "matches": 17
+    },
+    {
+      "case_id": "g084",
+      "group_id": "g084.e2",
+      "role": "ana_complete_implementation",
+      "selector": {
+        "source_id": "restgas_determination",
+        "path": "macro/target/ana_complete.C"
+      },
+      "matches": 17
+    },
+    {
+      "case_id": "g092",
+      "group_id": "g092.e7",
+      "role": "ana_complete_implementation",
+      "selector": {
+        "source_id": "restgas_determination",
+        "path": "macro/target/ana_complete.C"
+      },
+      "matches": 17
+    },
+    {
+      "case_id": "g100",
+      "group_id": "g100.e6",
+      "role": "ana_complete_implementation",
+      "selector": {
+        "source_id": "restgas_determination",
+        "path": "macro/target/ana_complete.C"
+      },
+      "matches": 17
+    },
+    {
+      "case_id": "g013",
+      "group_id": "g013.e1",
+      "role": "macros_documentation",
+      "selector": {
+        "source_id": "pandaroot_sphinx_2023_08_25_dev",
+        "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Running/Macros.html"
+      },
+      "matches": 16
+    },
+    {
+      "case_id": "g016",
+      "group_id": "g016.e1",
+      "role": "dpmgenerator_documentation",
+      "selector": {
+        "source_id": "pandaroot_sphinx_2023_08_25_dev",
+        "title_contains": "DPMGenerator"
+      },
+      "matches": 16
+    },
+    {
+      "case_id": "g085",
+      "group_id": "g085.e1",
+      "role": "profile_feedback_theory",
+      "selector": {
+        "source_id": "li_2026",
+        "pdf_page": 141,
+        "pdf_page_end": 152
+      },
+      "matches": 16
+    },
+    {
+      "case_id": "g001",
+      "group_id": "g001.installation",
+      "role": "locked_developer_installation",
+      "selector": {
+        "source_id": "pandaroot_sphinx_2023_08_25_dev",
+        "title_contains": "Installation of PandaRoot for Developers"
+      },
+      "matches": 15
+    },
+    {
+      "case_id": "g002",
+      "group_id": "g002.e1",
+      "role": "installing_running_panda_root_documentation",
+      "selector": {
+        "source_id": "pandaroot_sphinx_2023_08_25_dev",
+        "title_contains": "Installing & running PandaRoot"
+      },
+      "matches": 15
+    },
+    {
+      "case_id": "g006",
+      "group_id": "g006.e1",
+      "role": "installing_running_panda_root_documentation",
+      "selector": {
+        "source_id": "pandaroot_sphinx_2023_08_25_dev",
+        "title_contains": "Installing & running PandaRoot"
+      },
+      "matches": 15
+    },
+    {
+      "case_id": "g008",
+      "group_id": "g008.e1",
+      "role": "installing_running_panda_root_documentation",
+      "selector": {
+        "source_id": "pandaroot_sphinx_2023_08_25_dev",
+        "title_contains": "Installing & running PandaRoot"
+      },
+      "matches": 15
+    },
+    {
+      "case_id": "g009",
+      "group_id": "g009.e1",
+      "role": "installation_of_panda_root_for_developers_documentation",
+      "selector": {
+        "source_id": "pandaroot_sphinx_2023_08_25_dev",
+        "title_contains": "Installation of PandaRoot for Developers"
+      },
+      "matches": 15
+    },
+    {
+      "case_id": "g011",
+      "group_id": "g011.e1",
+      "role": "installing_running_panda_root_documentation",
+      "selector": {
+        "source_id": "pandaroot_sphinx_2023_08_25_dev",
+        "title_contains": "Installing & running PandaRoot"
+      },
+      "matches": 15
+    },
+    {
+      "case_id": "g011",
+      "group_id": "g011.e1",
+      "role": "installing_running_panda_root_documentation",
+      "selector": {
+        "source_id": "pandaroot_sphinx_2023_08_25_dev",
+        "title_contains": "Installation of PandaRoot for Developers"
+      },
+      "matches": 15
+    },
+    {
+      "case_id": "g027",
+      "group_id": "g027.pandaroot",
+      "role": "upstream_target_generator_definition",
+      "selector": {
+        "source_id": "pandaroot",
+        "path": "pgenerators/Target/PndTargetGenerator.h"
+      },
+      "matches": 15
+    },
+    {
+      "case_id": "g027",
+      "group_id": "g027.restgas_fork",
+      "role": "fork_target_generator_definition",
+      "selector": {
+        "source_id": "restgas_determination",
+        "path": "pgenerators/Target/PndTargetGenerator.h"
+      },
+      "matches": 15
+    },
+    {
+      "case_id": "g089",
+      "group_id": "g089.e3",
+      "role": "target_generator_interface_or_sampling",
+      "selector": {
+        "source_id": "pandaroot",
+        "path": "pgenerators/Target/PndTargetGenerator.h"
+      },
+      "matches": 15
+    },
+    {
+      "case_id": "g039",
+      "group_id": "g039.e1",
+      "role": "efficiency_correction_2_implementation",
+      "selector": {
+        "source_id": "restgas_determination",
+        "path": "macro/target/correction/efficiency_correction_2.C"
+      },
+      "matches": 14
+    },
+    {
+      "case_id": "g040",
+      "group_id": "g040.e1",
+      "role": "pnd_apollonius_triplet_track_finder_task_implementation",
+      "selector": {
+        "source_id": "restgas_determination",
+        "path": "tracking/PndApolloniusTripletTrackFinder/PndApolloniusTripletTrackFinderTask.cxx"
+      },
+      "matches": 14
+    }
+  ],
+  "cross_split_similarity_pairs": [
+    {
+      "left": "g065",
+      "right": "g078",
+      "left_split": "challenge",
+      "right_split": "dev",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 1.0,
+      "shared_identifiers": [
+        "pndlmdacceptance"
+      ],
+      "cluster_linked": true
+    },
+    {
+      "left": "g081",
+      "right": "g082",
+      "left_split": "dev",
+      "right_split": "challenge",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.8,
+      "shared_identifiers": [
+        "event_poca"
+      ],
+      "cluster_linked": true
+    },
+    {
+      "left": "g081",
+      "right": "g090",
+      "left_split": "dev",
+      "right_split": "regression",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.8,
+      "shared_identifiers": [
+        "event_poca"
+      ],
+      "cluster_linked": true
+    },
+    {
+      "left": "g062",
+      "right": "g070",
+      "left_split": "challenge",
+      "right_split": "dev",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.6667,
+      "shared_identifiers": [
+        "event_poca",
+        "poca_vertex_file"
+      ],
+      "cluster_linked": false
+    },
+    {
+      "left": "g070",
+      "right": "g071",
+      "left_split": "dev",
+      "right_split": "challenge",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.6667,
+      "shared_identifiers": [],
+      "cluster_linked": false
+    },
+    {
+      "left": "g082",
+      "right": "g090",
+      "left_split": "challenge",
+      "right_split": "regression",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.6667,
+      "shared_identifiers": [
+        "event_poca"
+      ],
+      "cluster_linked": false
+    },
+    {
+      "left": "g062",
+      "right": "g077",
+      "left_split": "challenge",
+      "right_split": "dev",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.6,
+      "shared_identifiers": [
+        "event_poca"
+      ],
+      "cluster_linked": false
+    },
+    {
+      "left": "g077",
+      "right": "g082",
+      "left_split": "dev",
+      "right_split": "challenge",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.6,
+      "shared_identifiers": [
+        "event_poca"
+      ],
+      "cluster_linked": false
+    },
+    {
+      "left": "g077",
+      "right": "g090",
+      "left_split": "dev",
+      "right_split": "regression",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.6,
+      "shared_identifiers": [
+        "event_poca"
+      ],
+      "cluster_linked": false
+    },
+    {
+      "left": "g090",
+      "right": "g110",
+      "left_split": "regression",
+      "right_split": "dev",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.6,
+      "shared_identifiers": [
+        "event_poca"
+      ],
+      "cluster_linked": false
+    },
+    {
+      "left": "g020",
+      "right": "g107",
+      "left_split": "dev",
+      "right_split": "challenge",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.5,
+      "shared_identifiers": [],
+      "cluster_linked": false
+    },
+    {
+      "left": "g020",
+      "right": "g117",
+      "left_split": "dev",
+      "right_split": "challenge",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.5,
+      "shared_identifiers": [],
+      "cluster_linked": false
+    },
+    {
+      "left": "g020",
+      "right": "g118",
+      "left_split": "dev",
+      "right_split": "challenge",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.5,
+      "shared_identifiers": [],
+      "cluster_linked": false
+    },
+    {
+      "left": "g037",
+      "right": "g120",
+      "left_split": "dev",
+      "right_split": "challenge",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.5,
+      "shared_identifiers": [],
+      "cluster_linked": false
+    },
+    {
+      "left": "g040",
+      "right": "g116",
+      "left_split": "dev",
+      "right_split": "regression",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.5,
+      "shared_identifiers": [],
+      "cluster_linked": false
+    },
+    {
+      "left": "g058",
+      "right": "g061",
+      "left_split": "dev",
+      "right_split": "challenge",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.5,
+      "shared_identifiers": [],
+      "cluster_linked": false
+    },
+    {
+      "left": "g062",
+      "right": "g081",
+      "left_split": "challenge",
+      "right_split": "dev",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.5,
+      "shared_identifiers": [
+        "event_poca",
+        "poca_vertex_file"
+      ],
+      "cluster_linked": false
+    },
+    {
+      "left": "g068",
+      "right": "g103",
+      "left_split": "dev",
+      "right_split": "regression",
+      "query_jaccard": 0.1,
+      "evidence_jaccard": 0.5,
+      "shared_identifiers": [],
+      "cluster_linked": false
+    },
+    {
+      "left": "g080",
+      "right": "g100",
+      "left_split": "challenge",
+      "right_split": "regression",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.5,
+      "shared_identifiers": [],
+      "cluster_linked": false
+    },
+    {
+      "left": "g107",
+      "right": "g109",
+      "left_split": "challenge",
+      "right_split": "regression",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.5,
+      "shared_identifiers": [],
+      "cluster_linked": false
+    },
+    {
+      "left": "g084",
+      "right": "g100",
+      "left_split": "challenge",
+      "right_split": "regression",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.4444,
+      "shared_identifiers": [],
+      "cluster_linked": false
+    },
+    {
+      "left": "g062",
+      "right": "g090",
+      "left_split": "challenge",
+      "right_split": "regression",
+      "query_jaccard": 0.1,
+      "evidence_jaccard": 0.4286,
+      "shared_identifiers": [
+        "event_poca"
+      ],
+      "cluster_linked": false
+    },
+    {
+      "left": "g070",
+      "right": "g082",
+      "left_split": "dev",
+      "right_split": "challenge",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.4286,
+      "shared_identifiers": [
+        "event_poca"
+      ],
+      "cluster_linked": false
+    },
+    {
+      "left": "g070",
+      "right": "g090",
+      "left_split": "dev",
+      "right_split": "regression",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.4286,
+      "shared_identifiers": [
+        "event_poca"
+      ],
+      "cluster_linked": false
+    },
+    {
+      "left": "g079",
+      "right": "g087",
+      "left_split": "dev",
+      "right_split": "regression",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.4286,
+      "shared_identifiers": [
+        "pndlmdcombineddatareader",
+        "pndlmdtrackq"
+      ],
+      "cluster_linked": false
+    },
+    {
+      "left": "g036",
+      "right": "g062",
+      "left_split": "dev",
+      "right_split": "challenge",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.4,
+      "shared_identifiers": [
+        "event_poca"
+      ],
+      "cluster_linked": false
+    },
+    {
+      "left": "g036",
+      "right": "g071",
+      "left_split": "dev",
+      "right_split": "challenge",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.4,
+      "shared_identifiers": [
+        "ana_dpm.c"
+      ],
+      "cluster_linked": false
+    },
+    {
+      "left": "g036",
+      "right": "g082",
+      "left_split": "dev",
+      "right_split": "challenge",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.4,
+      "shared_identifiers": [
+        "event_poca"
+      ],
+      "cluster_linked": false
+    },
+    {
+      "left": "g036",
+      "right": "g090",
+      "left_split": "dev",
+      "right_split": "regression",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.4,
+      "shared_identifiers": [
+        "event_poca"
+      ],
+      "cluster_linked": false
+    },
+    {
+      "left": "g045",
+      "right": "g059",
+      "left_split": "challenge",
+      "right_split": "dev",
+      "query_jaccard": 0.1111,
+      "evidence_jaccard": 0.4,
+      "shared_identifiers": [],
+      "cluster_linked": false
+    },
+    {
+      "left": "g045",
+      "right": "g074",
+      "left_split": "challenge",
+      "right_split": "dev",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.4,
+      "shared_identifiers": [],
+      "cluster_linked": false
+    },
+    {
+      "left": "g046",
+      "right": "g060",
+      "left_split": "challenge",
+      "right_split": "dev",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.4,
+      "shared_identifiers": [],
+      "cluster_linked": false
+    },
+    {
+      "left": "g062",
+      "right": "g095",
+      "left_split": "challenge",
+      "right_split": "dev",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.4,
+      "shared_identifiers": [
+        "event_poca"
+      ],
+      "cluster_linked": false
+    },
+    {
+      "left": "g062",
+      "right": "g119",
+      "left_split": "challenge",
+      "right_split": "dev",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.4,
+      "shared_identifiers": [
+        "event_poca"
+      ],
+      "cluster_linked": false
+    },
+    {
+      "left": "g065",
+      "right": "g088",
+      "left_split": "challenge",
+      "right_split": "dev",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.4,
+      "shared_identifiers": [
+        "pndlmdacceptance"
+      ],
+      "cluster_linked": false
+    },
+    {
+      "left": "g071",
+      "right": "g095",
+      "left_split": "challenge",
+      "right_split": "dev",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.4,
+      "shared_identifiers": [],
+      "cluster_linked": false
+    },
+    {
+      "left": "g071",
+      "right": "g119",
+      "left_split": "challenge",
+      "right_split": "dev",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.4,
+      "shared_identifiers": [],
+      "cluster_linked": false
+    },
+    {
+      "left": "g074",
+      "right": "g098",
+      "left_split": "dev",
+      "right_split": "regression",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.4,
+      "shared_identifiers": [],
+      "cluster_linked": false
+    },
+    {
+      "left": "g082",
+      "right": "g092",
+      "left_split": "challenge",
+      "right_split": "regression",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.4,
+      "shared_identifiers": [],
+      "cluster_linked": false
+    },
+    {
+      "left": "g082",
+      "right": "g095",
+      "left_split": "challenge",
+      "right_split": "dev",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.4,
+      "shared_identifiers": [
+        "event_poca"
+      ],
+      "cluster_linked": false
+    },
+    {
+      "left": "g082",
+      "right": "g100",
+      "left_split": "challenge",
+      "right_split": "regression",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.4,
+      "shared_identifiers": [],
+      "cluster_linked": false
+    },
+    {
+      "left": "g082",
+      "right": "g119",
+      "left_split": "challenge",
+      "right_split": "dev",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.4,
+      "shared_identifiers": [
+        "event_poca"
+      ],
+      "cluster_linked": false
+    },
+    {
+      "left": "g090",
+      "right": "g095",
+      "left_split": "regression",
+      "right_split": "dev",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.4,
+      "shared_identifiers": [
+        "event_poca"
+      ],
+      "cluster_linked": false
+    },
+    {
+      "left": "g090",
+      "right": "g119",
+      "left_split": "regression",
+      "right_split": "dev",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.4,
+      "shared_identifiers": [
+        "event_poca"
+      ],
+      "cluster_linked": false
+    },
+    {
+      "left": "g090",
+      "right": "g120",
+      "left_split": "regression",
+      "right_split": "challenge",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.4,
+      "shared_identifiers": [],
+      "cluster_linked": false
+    },
+    {
+      "left": "g065",
+      "right": "g072",
+      "left_split": "challenge",
+      "right_split": "dev",
+      "query_jaccard": 0.1111,
+      "evidence_jaccard": 0.375,
+      "shared_identifiers": [
+        "pndlmdacceptance"
+      ],
+      "cluster_linked": false
+    },
+    {
+      "left": "g080",
+      "right": "g092",
+      "left_split": "challenge",
+      "right_split": "regression",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.3636,
+      "shared_identifiers": [],
+      "cluster_linked": false
+    },
+    {
+      "left": "g014",
+      "right": "g101",
+      "left_split": "dev",
+      "right_split": "regression",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.3333,
+      "shared_identifiers": [],
+      "cluster_linked": false
+    },
+    {
+      "left": "g020",
+      "right": "g109",
+      "left_split": "dev",
+      "right_split": "regression",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.3333,
+      "shared_identifiers": [],
+      "cluster_linked": false
+    },
+    {
+      "left": "g020",
+      "right": "g120",
+      "left_split": "dev",
+      "right_split": "challenge",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.3333,
+      "shared_identifiers": [],
+      "cluster_linked": false
+    },
+    {
+      "left": "g021",
+      "right": "g080",
+      "left_split": "dev",
+      "right_split": "challenge",
+      "query_jaccard": 0.1429,
+      "evidence_jaccard": 0.3333,
+      "shared_identifiers": [
+        "pndtargetgenerator"
+      ],
+      "cluster_linked": false
+    },
+    {
+      "left": "g029",
+      "right": "g098",
+      "left_split": "dev",
+      "right_split": "regression",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.3333,
+      "shared_identifiers": [],
+      "cluster_linked": false
+    },
+    {
+      "left": "g037",
+      "right": "g083",
+      "left_split": "dev",
+      "right_split": "challenge",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.3333,
+      "shared_identifiers": [],
+      "cluster_linked": false
+    },
+    {
+      "left": "g037",
+      "right": "g111",
+      "left_split": "dev",
+      "right_split": "regression",
+      "query_jaccard": 0.0769,
+      "evidence_jaccard": 0.3333,
+      "shared_identifiers": [
+        "poca_vertex_file"
+      ],
+      "cluster_linked": false
+    },
+    {
+      "left": "g044",
+      "right": "g065",
+      "left_split": "dev",
+      "right_split": "challenge",
+      "query_jaccard": 0.0909,
+      "evidence_jaccard": 0.3333,
+      "shared_identifiers": [],
+      "cluster_linked": false
+    },
+    {
+      "left": "g049",
+      "right": "g068",
+      "left_split": "challenge",
+      "right_split": "dev",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.3333,
+      "shared_identifiers": [],
+      "cluster_linked": false
+    },
+    {
+      "left": "g049",
+      "right": "g070",
+      "left_split": "challenge",
+      "right_split": "dev",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.3333,
+      "shared_identifiers": [],
+      "cluster_linked": false
+    },
+    {
+      "left": "g052",
+      "right": "g093",
+      "left_split": "dev",
+      "right_split": "regression",
+      "query_jaccard": 0.0833,
+      "evidence_jaccard": 0.3333,
+      "shared_identifiers": [],
+      "cluster_linked": false
+    },
+    {
+      "left": "g057",
+      "right": "g093",
+      "left_split": "dev",
+      "right_split": "regression",
+      "query_jaccard": 0.0714,
+      "evidence_jaccard": 0.3333,
+      "shared_identifiers": [],
+      "cluster_linked": false
+    },
+    {
+      "left": "g058",
+      "right": "g075",
+      "left_split": "dev",
+      "right_split": "challenge",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.3333,
+      "shared_identifiers": [],
+      "cluster_linked": false
+    },
+    {
+      "left": "g062",
+      "right": "g110",
+      "left_split": "challenge",
+      "right_split": "dev",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.3333,
+      "shared_identifiers": [
+        "event_poca"
+      ],
+      "cluster_linked": false
+    },
+    {
+      "left": "g063",
+      "right": "g065",
+      "left_split": "dev",
+      "right_split": "challenge",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.3333,
+      "shared_identifiers": [
+        "pndlmdacceptance"
+      ],
+      "cluster_linked": false
+    },
+    {
+      "left": "g065",
+      "right": "g102",
+      "left_split": "challenge",
+      "right_split": "dev",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.3333,
+      "shared_identifiers": [
+        "pndlmdacceptance"
+      ],
+      "cluster_linked": false
+    },
+    {
+      "left": "g071",
+      "right": "g077",
+      "left_split": "challenge",
+      "right_split": "dev",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.3333,
+      "shared_identifiers": [],
+      "cluster_linked": false
+    },
+    {
+      "left": "g071",
+      "right": "g110",
+      "left_split": "challenge",
+      "right_split": "dev",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.3333,
+      "shared_identifiers": [],
+      "cluster_linked": false
+    },
+    {
+      "left": "g074",
+      "right": "g087",
+      "left_split": "dev",
+      "right_split": "regression",
+      "query_jaccard": 0.0588,
+      "evidence_jaccard": 0.3333,
+      "shared_identifiers": [
+        "pndlmdcombineddatareader",
+        "pndlmdtrackq"
+      ],
+      "cluster_linked": false
+    },
+    {
+      "left": "g076",
+      "right": "g093",
+      "left_split": "dev",
+      "right_split": "regression",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.3333,
+      "shared_identifiers": [],
+      "cluster_linked": false
+    },
+    {
+      "left": "g077",
+      "right": "g092",
+      "left_split": "dev",
+      "right_split": "regression",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.3333,
+      "shared_identifiers": [],
+      "cluster_linked": false
+    },
+    {
+      "left": "g077",
+      "right": "g100",
+      "left_split": "dev",
+      "right_split": "regression",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.3333,
+      "shared_identifiers": [],
+      "cluster_linked": false
+    },
+    {
+      "left": "g082",
+      "right": "g110",
+      "left_split": "challenge",
+      "right_split": "dev",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.3333,
+      "shared_identifiers": [
+        "event_poca"
+      ],
+      "cluster_linked": false
+    },
+    {
+      "left": "g083",
+      "right": "g092",
+      "left_split": "challenge",
+      "right_split": "regression",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.3333,
+      "shared_identifiers": [],
+      "cluster_linked": false
+    },
+    {
+      "left": "g083",
+      "right": "g100",
+      "left_split": "challenge",
+      "right_split": "regression",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.3333,
+      "shared_identifiers": [],
+      "cluster_linked": false
+    },
+    {
+      "left": "g107",
+      "right": "g110",
+      "left_split": "challenge",
+      "right_split": "dev",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.3333,
+      "shared_identifiers": [],
+      "cluster_linked": false
+    },
+    {
+      "left": "g109",
+      "right": "g120",
+      "left_split": "regression",
+      "right_split": "challenge",
+      "query_jaccard": 0.0625,
+      "evidence_jaccard": 0.3333,
+      "shared_identifiers": [],
+      "cluster_linked": false
+    },
+    {
+      "left": "g058",
+      "right": "g120",
+      "left_split": "dev",
+      "right_split": "challenge",
+      "query_jaccard": 0.3077,
+      "evidence_jaccard": 0.0,
+      "shared_identifiers": [],
+      "cluster_linked": false
+    },
+    {
+      "left": "g081",
+      "right": "g092",
+      "left_split": "dev",
+      "right_split": "regression",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.3,
+      "shared_identifiers": [],
+      "cluster_linked": false
+    },
+    {
+      "left": "g081",
+      "right": "g100",
+      "left_split": "dev",
+      "right_split": "regression",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.3,
+      "shared_identifiers": [],
+      "cluster_linked": false
+    },
+    {
+      "left": "g084",
+      "right": "g092",
+      "left_split": "challenge",
+      "right_split": "regression",
+      "query_jaccard": 0.0,
+      "evidence_jaccard": 0.3,
+      "shared_identifiers": [],
+      "cluster_linked": false
+    }
+  ]
+}
