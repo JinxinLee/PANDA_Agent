@@ -12,7 +12,7 @@ from typing import Any
 from fastembed import SparseTextEmbedding
 from qdrant_client import models
 
-from panda_agent.config import load_query_expansions, load_retrieval_policies
+from panda_agent.config import FastEmbedSettings, load_query_expansions, load_retrieval_policies
 from panda_agent.llm.vertex import VertexAIClient, VertexSettings
 from panda_agent.models import AuthorityLevel, Evidence, RetrievalPlan, SourceLocator, stable_id
 from panda_agent.prompts import QUERY_ANALYZER_SYSTEM_PROMPT, RERANK_SYSTEM_PROMPT
@@ -82,13 +82,19 @@ def _evidence(payload: dict[str, Any], score: float, channels: list[str]) -> Evi
 
 class Retriever:
     def __init__(self, project_root: Path, *, storage: Storage | None = None, vertex: VertexAIClient | None = None) -> None:
-        self.project_root = project_root
+        self.project_root = Path(project_root).resolve()
         self.storage = storage or Storage()
         self.vertex = vertex or VertexAIClient(VertexSettings.from_env())
-        self.policies = load_retrieval_policies(project_root / "configs" / "retrieval_policies.yaml")
-        self.query_expansions = load_query_expansions(project_root / "configs" / "query_expansions.yaml")
-        self.sparse = SparseTextEmbedding(model_name="Qdrant/bm25",cache_dir=str(project_root/"data"/"cache"/"fastembed"))
-        manifest = json.loads((project_root / "data" / "manifests" / "source_manifest.json").read_text(encoding="utf-8"))
+        self.policies = load_retrieval_policies(self.project_root / "configs" / "retrieval_policies.yaml")
+        self.query_expansions = load_query_expansions(self.project_root / "configs" / "query_expansions.yaml")
+        fastembed = FastEmbedSettings.from_env(self.project_root)
+        self.sparse = SparseTextEmbedding(
+            model_name=fastembed.model_name,
+            specific_model_path=str(fastembed.model_path),
+            local_files_only=fastembed.local_files_only,
+            language=fastembed.language,
+        )
+        manifest = json.loads((self.project_root / "data" / "manifests" / "source_manifest.json").read_text(encoding="utf-8"))
         self.fixed_versions = {item["repo_id"]: item["commit_sha"] for item in manifest["repositories"]}
         self.fixed_refs = {item["repo_id"]: item["ref"] for item in manifest["repositories"]}
         self._paper_versions = {item["doc_id"]: item["sha256"] for item in manifest["papers"]}

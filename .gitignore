@@ -84,6 +84,7 @@ temp/
 /data/normalized/
 /data/evaluation/
 /data/tmp/
+/data/runtime/
 
 # Evaluation runtime output directories; static assets remain tracked.
 /evaluation/runs/

@@ -27,6 +27,8 @@
 
 本文直接依据当前仓库的源码、配置、迁移、测试、CLI 帮助信息和本地运行态编写。`QA_AGENT.md` 是 M1–M5 的工程决策与实施记录；本文关注“代码实际上怎样运行”。父目录 `Agent_learn/` 中的 `ReActAgent.py`、`PlanSolveAgent.py`、`Reflection.py`、`ToolExecutor.py` 等是较早的通用 Agent 学习原型，当前 `panda_agent` 包没有导入它们，因此不属于本问答 Agent 的运行链。
 
+> **Knowledge bundle prototype:** The implemented `panda-qa-kb export|inspect|restore|verify` workflow is documented in [docs/KNOWLEDGE_BUNDLE_PROTOTYPE.md](docs/KNOWLEDGE_BUNDLE_PROTOTYPE.md). The 2026-08-09 round2 record is a real live export → inspect → isolated restore → verify → three-smoke PASS for the fixed local PostgreSQL/Qdrant hand-off. It remains a prototype-only acceptance record: no public/release security gate, signing/download/multi-bundle/rollback/GC facility, or offline Vertex dense-query replacement is claimed.
+
 > **阅读约定：** 文中“已实现”表示当前代码存在真实调用路径；“建议”或“扩展示例”表示尚未进入仓库的设计；“伪代码”只用于解释控制流。
 
 > **P0 实施更新（2026-07-30）：** 本文最初审查发现的四项 P0 已按 Phase 0→6 完成修复：Sphinx configured snapshot 强门禁、关系端点解析与真实图遍历、claim-first 确定性答案、Prompt 不可信数据边界。当前运行态为 Alembic `0003`、102,868 objects、64,554 accepted relations、372,139 relation candidates、374 workflows、80,691 Qdrant points。若后文章节仍以“旧审查发现”回顾这些问题，应以本段和 `QA_AGENT.md` 的最新验证记录为准。
@@ -855,7 +857,7 @@ python -m panda_agent.cli.source verify
 python -m panda_agent.cli.ingest
 
 # 启动真实服务并迁移
-docker compose up -d --wait
+docker compose up -d --wait postgres qdrant
 alembic upgrade head
 
 # 预估、应用并核对索引
@@ -1176,7 +1178,7 @@ python -m panda_agent.cli.retrieve "<problem question>"
 
 **排查步骤：** `docker compose ps`、`alembic current`。
 
-**解决方法：** `docker compose up -d --wait`，再 `alembic upgrade head`。
+**解决方法：** `docker compose up -d --wait postgres qdrant`，再 `alembic upgrade head`。
 
 ### RAG 找不到内容
 

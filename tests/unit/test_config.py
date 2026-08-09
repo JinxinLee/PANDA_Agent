@@ -1,15 +1,23 @@
 from __future__ import annotations
 
+import os
+import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from panda_agent.config import (
+    DEFAULT_FASTEMBED_MODEL_PATH,
+    FASTEMBED_MODEL_PATH_ENV,
+    FastEmbedConfigurationError,
+    FastEmbedSettings,
     load_corpora,
     load_knowledge_schema,
     load_query_expansions,
     load_relation_ontology,
     load_retrieval_policies,
     load_seed_relations,
+    resolve_fastembed_model_path,
     validate_seed_predicates,
 )
 
@@ -19,6 +27,40 @@ CONFIG_DIR = PROJECT_ROOT / "configs"
 
 
 class ConfigTests(unittest.TestCase):
+    def test_fastembed_path_is_project_root_relative_even_when_cwd_differs(self) -> None:
+        with tempfile.TemporaryDirectory() as project, tempfile.TemporaryDirectory() as cwd:
+            root = Path(project)
+            expected = root / DEFAULT_FASTEMBED_MODEL_PATH
+            expected.mkdir(parents=True)
+            with patch.dict(os.environ, {}, clear=True):
+                with patch("panda_agent.config.Path.cwd", return_value=Path(cwd)):
+                    settings = FastEmbedSettings.from_env(root)
+            self.assertEqual(settings.model_path, expected.resolve())
+            self.assertTrue(settings.model_path.is_absolute())
+            self.assertEqual(resolve_fastembed_model_path(root), expected.resolve())
+
+    def test_fastembed_path_override_is_resolved_from_project_root(self) -> None:
+        with tempfile.TemporaryDirectory() as project:
+            root = Path(project)
+            expected = root / "mounted" / "bm25"
+            expected.mkdir(parents=True)
+            with patch.dict(
+                os.environ,
+                {FASTEMBED_MODEL_PATH_ENV: "mounted/bm25"},
+                clear=True,
+            ):
+                self.assertEqual(resolve_fastembed_model_path(root), expected.resolve())
+
+    def test_fastembed_missing_runtime_asset_fails_closed(self) -> None:
+        with tempfile.TemporaryDirectory() as project:
+            with patch.dict(
+                os.environ,
+                {FASTEMBED_MODEL_PATH_ENV: "missing/bm25"},
+                clear=True,
+            ):
+                with self.assertRaises(FastEmbedConfigurationError):
+                    FastEmbedSettings.from_env(Path(project))
+
     def test_corpora_references_existing_pdfs_and_known_repositories(self) -> None:
         corpora = load_corpora(CONFIG_DIR / "corpora.yaml")
         self.assertEqual(

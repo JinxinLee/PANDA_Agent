@@ -1,4 +1,5 @@
 import json
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -18,14 +19,43 @@ class NoStorage:
 
 
 class FakeRetriever:
-    def __init__(self, bundle):
+    def __init__(self, bundle, storage=None):
         self.bundle = bundle
-        self.storage = NoStorage()
+        self.storage = storage or CatalogStorage([])
         self.calls = 0
 
     def retrieve(self, question, plan=None):
         self.calls += 1
         return self.bundle
+
+
+class CatalogConnection:
+    def __init__(self, rows):
+        self.rows = rows
+        self.queries = []
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        return False
+
+    def execute(self, query, params=None):
+        self.queries.append((query, params))
+        return self
+
+    def fetchall(self):
+        return self.rows
+
+
+class CatalogStorage:
+    def __init__(self, rows):
+        self.connection = CatalogConnection(rows)
+        self.connect_calls = 0
+
+    def connect(self):
+        self.connect_calls += 1
+        return self.connection
 
 
 def code_evidence(
@@ -291,6 +321,36 @@ class QATests(unittest.TestCase):
         # tested on-disk locked-symbol catalog.
         agent._locked_identifier_symbols = {"symbols": set(), "paths": set()}
         return agent
+
+    def test_locked_symbol_catalog_uses_cached_read_only_database_when_normalized_file_is_absent(self):
+        storage = CatalogStorage([
+            ({"symbol": "PndDbCatalog", "path": "pid\\PndDbCatalog.h"}, "class PndTextCatalog {};"),
+            ({"path": "macro/catalog.C"}, "struct CatalogRecord {}; enum CatalogMode { kDefault };"),
+        ])
+        retriever = FakeRetriever(bundle_for(code_evidence()))
+        retriever.storage = storage
+        with tempfile.TemporaryDirectory() as directory:
+            project_root = Path(directory)
+            self.assertFalse((project_root / "data" / "normalized" / "knowledge_objects.jsonl").exists())
+            agent = QAAgent(project_root, retriever=retriever, vertex=FakeVertex())
+            catalog = agent._locked_symbols()
+            self.assertEqual(catalog["symbols"], {"PndDbCatalog", "PndTextCatalog", "CatalogRecord", "CatalogMode"})
+            self.assertEqual(catalog["paths"], {"pid/PndDbCatalog.h", "macro/catalog.C"})
+            self.assertIs(catalog, agent._locked_symbols())
+
+        self.assertEqual(storage.connect_calls, 1)
+        self.assertEqual(len(storage.connection.queries), 1)
+        query, params = storage.connection.queries[0]
+        self.assertIsNone(params)
+        self.assertTrue(query.lstrip().upper().startswith("SELECT"))
+        self.assertNotRegex(query.upper(), r"\b(?:INSERT|UPDATE|DELETE|CREATE|ALTER|DROP)\b")
+
+    def test_locked_symbol_catalog_fails_closed_when_database_is_unavailable(self):
+        retriever = FakeRetriever(bundle_for(code_evidence()), storage=NoStorage())
+        with tempfile.TemporaryDirectory() as directory:
+            agent = QAAgent(Path(directory), retriever=retriever, vertex=FakeVertex())
+            with self.assertRaisesRegex(RuntimeError, "locked identifier catalog database is unavailable"):
+                agent._locked_symbols()
 
     def test_exact_future_runtime_guard_refuses_english_and_chinese(self):
         bundle = bundle_for(code_evidence())

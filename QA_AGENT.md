@@ -27,6 +27,19 @@
 
 本文记录问答 Agent 的架构决策、真实实现、运行命令、测试标准和最新结果。若本文与历史对话冲突，以当前源码、`data/manifests/source_manifest.json` 和本文最新基线为准。
 
+## Knowledge bundle prototype
+
+`panda-qa-kb export|inspect|restore|verify` is the implemented local
+knowledge-bundle prototype for the fixed `panda_qa` database and
+`panda_knowledge_v1` collection. Its maintainer export, clean-target restore,
+local verification, three smoke questions, and explicit non-goals are recorded
+in [docs/KNOWLEDGE_BUNDLE_PROTOTYPE.md](docs/KNOWLEDGE_BUNDLE_PROTOTYPE.md).
+The 2026-08-09 round2 record is a real live export → inspect → isolated restore
+→ verify → three-smoke PASS, with exact artifact hashes, counts, clean-target
+proof, and `errors=[]` summaries. This remains a local prototype acceptance
+only: it does not claim public security/release readiness or replace Vertex
+dense query embedding (the normal QA query path still calls Vertex).
+
 ## P1 实施更新（Phase 0 → Phase 6）
 
 P1 已严格按六个阶段完成，旧章节中把下列项目列为“P1 待办”的内容均由本节取代。
@@ -357,7 +370,7 @@ Collection：`panda_knowledge_v1`。
 ..\.venv\Scripts\python.exe -m panda_agent.cli.ingest
 
 # 服务、迁移与索引
-docker compose up -d --wait
+docker compose up -d --wait postgres qdrant
 ..\.venv\Scripts\alembic.exe upgrade head
 ..\.venv\Scripts\python.exe -m panda_agent.cli.index plan
 ..\.venv\Scripts\python.exe -m panda_agent.cli.index apply

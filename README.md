@@ -15,7 +15,7 @@ From the `Agent_learn` workspace root:
 ```powershell
 Set-Location .\PANDA_Agent
 ..\.venv\Scripts\python.exe -m pip install -e ".[qa,ingestion,dev]"
-docker compose up -d --wait
+docker compose up -d --wait postgres qdrant
 ..\.venv\Scripts\alembic.exe upgrade head
 ..\.venv\Scripts\python.exe -m panda_agent.cli.source verify
 ..\.venv\Scripts\python.exe -m panda_agent.cli.index plan
@@ -34,6 +34,32 @@ The health check uses Application Default Credentials and the existing
 `GCP_PROJECT_ID`/`GCP_LOCATION` values. Model IDs can be overridden with
 `QA_GENERATION_MODEL_ID` and `QA_EMBEDDING_MODEL_ID`.
 The current index contract also requires `QA_EMBEDDING_DIMENSIONS=3072`.
+
+## Knowledge bundle prototype
+
+The local prototype can export, inspect, restore, and verify one fixed
+PostgreSQL/Qdrant knowledge state with `panda-qa-kb`. The maintainer/user
+workflow, exact manifest checks, clean-target preconditions, and current
+limitations are documented in
+[docs/KNOWLEDGE_BUNDLE_PROTOTYPE.md](docs/KNOWLEDGE_BUNDLE_PROTOTYPE.md).
+New users who receive the code and a prebuilt bundle should follow the
+[Chinese first-run guide](docs/NEW_USER_BUNDLE_GUIDE.md); it does not require
+corpus parsing, document embedding, or indexing.
+The 2026-08-09 round2 record is a real live export → inspect → isolated restore
+→ verify → three-smoke PASS. It is still a local prototype acceptance only,
+not a public/release security gate or an offline replacement for Vertex dense
+query embedding; see the linked document for exact hashes, counts, paths, and
+smoke summaries.
+
+From the project checkout (use a disposable target for restore), the command shape is:
+
+```powershell
+$bundlePath = 'D:\panda-bundles\panda-kb-v1-YYYYMMDD'
+..\.venv\Scripts\panda-qa-kb.exe export --bundle $bundlePath --project-root (Get-Location)
+..\.venv\Scripts\panda-qa-kb.exe inspect --bundle $bundlePath
+..\.venv\Scripts\panda-qa-kb.exe restore --bundle $bundlePath --project-root (Get-Location)
+..\.venv\Scripts\panda-qa-kb.exe verify --bundle $bundlePath --project-root (Get-Location)
+```
 
 ## M6 benchmark gate
 

@@ -47,6 +47,7 @@ panda-qa-index = "panda_agent.cli.index:main"
 panda-qa-retrieve = "panda_agent.cli.retrieve:main"
 panda-qa = "panda_agent.cli.qa:main"
 panda-qa-eval = "panda_agent.cli.evaluate:main"
+panda-qa-kb = "panda_agent.cli.kb:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}

@@ -931,16 +931,21 @@ class QAAgent:
         return {"bundle": {**state["bundle"], "evidence": list(merged.values())[:12]}, "retrieval_count": state.get("retrieval_count", 0) + 1}
 
     def _locked_symbols(self) -> dict[str, set[str]]:
-        """Load the normalized locked identifier catalog once per Agent."""
+        """Load the restored database identifier catalog once per Agent."""
         if self._locked_identifier_symbols is None:
-            # Imported lazily to avoid the evaluation-runner -> QAAgent import
-            # cycle during module initialization.
-            from panda_agent.evaluation_runner import load_object_lookup
-
             symbols: set[str] = set()
             paths: set[str] = set()
-            for item in load_object_lookup(self.project_root).values():
-                locator = item.get("locator") or {}
+            try:
+                with self.retriever.storage.connect() as connection:
+                    rows = connection.execute(
+                        "SELECT locator,text FROM knowledge_objects"
+                    ).fetchall()
+            except Exception as exc:
+                raise RuntimeError(
+                    "locked identifier catalog database is unavailable"
+                ) from exc
+            for locator, text in rows:
+                locator = locator or {}
                 symbol = str(locator.get("symbol") or "")
                 if symbol:
                     symbols.add(symbol)
@@ -949,7 +954,7 @@ class QAAgent:
                     paths.add(path)
                 for match in re.finditer(
                     r"\b(?:class|struct|enum)\s+([A-Za-z_][A-Za-z0-9_]*)",
-                    str(item.get("text") or ""),
+                    str(text or ""),
                 ):
                     symbols.add(match.group(1))
             self._locked_identifier_symbols = {"symbols": symbols, "paths": paths}

@@ -6,6 +6,8 @@ from pathlib import Path
 from typing import Any
 import hashlib
 import json
+import os
+from dataclasses import dataclass
 
 import yaml
 from pydantic import BaseModel, ConfigDict, Field, model_validator
@@ -13,6 +15,48 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 class StrictModel(BaseModel):
     model_config = ConfigDict(extra="forbid")
+
+
+FASTEMBED_MODEL_PATH_ENV = "PANDA_FASTEMBED_MODEL_PATH"
+DEFAULT_FASTEMBED_MODEL_PATH = Path("data/runtime/fastembed/bm25")
+
+
+class FastEmbedConfigurationError(ValueError):
+    """Raised when the local FastEmbed runtime asset is unavailable."""
+
+
+def resolve_fastembed_model_path(project_root: str | Path) -> Path:
+    """Resolve the configured BM25 model directory from the project root.
+
+    Relative values are intentionally joined to ``project_root`` rather than
+    the process working directory.  The runtime is local-only, so a missing
+    model directory is a configuration error instead of a signal to download
+    or fall back to another model.
+    """
+    root = Path(project_root).expanduser().resolve()
+    configured = os.getenv(FASTEMBED_MODEL_PATH_ENV)
+    raw_path = Path(configured).expanduser() if configured else DEFAULT_FASTEMBED_MODEL_PATH
+    model_path = raw_path if raw_path.is_absolute() else root / raw_path
+    model_path = model_path.resolve()
+    if not model_path.is_dir():
+        raise FastEmbedConfigurationError(
+            f"FastEmbed model path does not exist or is not a directory: {model_path}"
+        )
+    return model_path
+
+
+@dataclass(frozen=True)
+class FastEmbedSettings:
+    """Typed, fail-closed settings for the local FastEmbed BM25 model."""
+
+    model_path: Path
+    model_name: str = "Qdrant/bm25"
+    language: str = "english"
+    local_files_only: bool = True
+
+    @classmethod
+    def from_env(cls, project_root: str | Path) -> "FastEmbedSettings":
+        return cls(model_path=resolve_fastembed_model_path(project_root))
 
 
 class RepositoryConfig(StrictModel):

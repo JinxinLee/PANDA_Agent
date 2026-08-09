@@ -1,8 +1,11 @@
 from pathlib import Path
 from types import SimpleNamespace
+import os
+import tempfile
 import unittest
+from unittest.mock import patch
 
-from panda_agent.config import load_query_expansions
+from panda_agent.config import FASTEMBED_MODEL_PATH_ENV, load_query_expansions
 from panda_agent.retrieval import Retriever
 
 
@@ -20,6 +23,22 @@ class FakeVertex:
 
 
 class RetrievalTests(unittest.TestCase):
+    def test_init_uses_absolute_local_only_fastembed_runtime_path(self):
+        with tempfile.TemporaryDirectory() as model_dir:
+            with patch.dict(os.environ, {FASTEMBED_MODEL_PATH_ENV: model_dir}, clear=False):
+                with patch("panda_agent.retrieval.SparseTextEmbedding") as sparse:
+                    Retriever(
+                        PROJECT_ROOT,
+                        storage=SimpleNamespace(),
+                        vertex=FakeVertex(),
+                    )
+            sparse.assert_called_once_with(
+                model_name="Qdrant/bm25",
+                specific_model_path=str(Path(model_dir).resolve()),
+                local_files_only=True,
+                language="english",
+            )
+
     def make_retriever(self):
         value=Retriever.__new__(Retriever)
         value.vertex=FakeVertex()
