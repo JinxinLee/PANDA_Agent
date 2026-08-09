@@ -9,6 +9,61 @@
 
 > **适用边界：** 当前实现是可信本地 Bundle prototype。Bundle 没有数字签名、在线下载、多版本切换、自动回滚或公开分发安全机制。只使用来自可信维护者的 Bundle。
 
+## 0. 从已发布 Release 获取 Bundle
+
+当前可直接使用的预构建 Bundle 发布在：
+
+[PANDA Knowledge Bundle Prototype v1.0.0](https://github.com/JinxinLee/PANDA_Agent/releases/tag/panda-kb-prototype-v1.0.0)
+
+在 Release 页面下载下面四个资产，并放入同一个本地目录：
+
+| 文件 | 用途 | 大小 |
+|---|---|---:|
+| `bundle_manifest.json` | Bundle schema、语料身份、数据库/向量库配置和 SHA-256 清单 | 27,235 B |
+| `postgres.dump` | 预构建 PostgreSQL 知识库 | 70,915,643 B |
+| `qdrant.snapshot` | `panda_knowledge_v1` Qdrant 向量索引快照 | 1,269,908,992 B |
+| `fastembed-runtime.zip` | 本地 BM25 runtime 资产 | 13,162 B |
+
+例如，下载后目录暂时应为：
+
+```text
+D:\panda-bundles\panda-kb-prototype-v1.0.0\
+├── bundle_manifest.json
+├── postgres.dump
+├── qdrant.snapshot
+└── fastembed-runtime.zip
+```
+
+`fastembed-runtime.zip` 不能直接保留为压缩包而跳过解压。必须在 Bundle 根目录执行：
+
+```powershell
+$bundlePath = (Resolve-Path 'D:\panda-bundles\panda-kb-prototype-v1.0.0').Path
+Expand-Archive `
+  -LiteralPath (Join-Path $bundlePath 'fastembed-runtime.zip') `
+  -DestinationPath $bundlePath `
+  -Force
+```
+
+解压后应确认目录存在：
+
+```text
+D:\panda-bundles\panda-kb-prototype-v1.0.0\
+└── runtime_assets\
+    └── fastembed\
+        └── bm25\
+```
+
+最终 Bundle 目录必须同时包含 `bundle_manifest.json`、`postgres.dump`、
+`qdrant.snapshot` 和 `runtime_assets/fastembed/bm25/`。仅下载前三个文件，或只保留
+`fastembed-runtime.zip` 而不解压，都会导致 `inspect` 失败。
+
+本次 Release 的关键 SHA-256 如下；`inspect` 会再次根据 manifest 自动检查前两个大文件：
+
+```text
+postgres.dump     aadff5c1397317544160c6472d84e91994f7613466558116f589ef57bba21c64
+qdrant.snapshot   da592bb445f83d7ce7ee87e9e669831faa27b0f85942753719146bb81d1928c1
+```
+
 ## 1. 你应当拿到什么
 
 代码目录中应存在：
@@ -35,6 +90,10 @@ panda-kb-bundle/
 ```
 
 缺少任一 Bundle 文件时不要执行恢复。
+
+如果目录中还保留 `fastembed-runtime.zip`，这是允许的；恢复程序只使用已经解压的
+`runtime_assets/fastembed/bm25/`。不要把 `fastembed-runtime.zip` 解压到额外的嵌套目录，
+例如 `runtime_assets/runtime_assets/fastembed/bm25/`，否则运行时路径无法匹配。
 
 ## 2. 前置条件
 
