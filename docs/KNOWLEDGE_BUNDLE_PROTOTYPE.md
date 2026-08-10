@@ -6,6 +6,14 @@ run, followed by all three fixed QA smoke questions. This is a local prototype
 acceptance record only: it is not a public/release security gate, a signed
 distribution, or an offline replacement for Vertex dense query embedding.
 
+The schema-v2 runtime state is published as
+[PANDA Knowledge Bundle Prototype v2.0.0](https://github.com/JinxinLee/PANDA_Agent/releases/tag/panda-kb-prototype-v2.0.0).
+Its five assets contain the manifest, PostgreSQL dump, Qdrant snapshot,
+portable BM25/evaluator assets, and SHA-256 checksums. The ZIP uses POSIX paths
+and Unix directory permissions so it can be extracted directly on Windows,
+macOS, and Linux. See [NEW_USER_BUNDLE_GUIDE.md](NEW_USER_BUNDLE_GUIDE.md) for
+the exact download, hash-check, extraction, restore, and verification sequence.
+
 This prototype is a trusted, local hand-off for one PANDA knowledge index. It
 is intentionally small and explicit so that a maintainer can export a known
 state and a user can restore it into a clean local target.

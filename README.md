@@ -45,6 +45,8 @@ limitations are documented in
 New users who receive the code and a prebuilt bundle should follow the
 [Chinese first-run guide](docs/NEW_USER_BUNDLE_GUIDE.md); it does not require
 corpus parsing, document embedding, or indexing.
+The matching public runtime package is
+[PANDA Knowledge Bundle Prototype v2.0.0](https://github.com/JinxinLee/PANDA_Agent/releases/tag/panda-kb-prototype-v2.0.0).
 The 2026-08-09 round2 record is a real live export → inspect → isolated restore
 → verify → three-smoke PASS. It is still a local prototype acceptance only,
 not a public/release security gate or an offline replacement for Vertex dense
@@ -54,7 +56,7 @@ smoke summaries.
 From the project checkout (use a disposable target for restore), the command shape is:
 
 ```powershell
-$bundlePath = 'D:\panda-bundles\panda-kb-v1-YYYYMMDD'
+$bundlePath = 'D:\panda-bundles\panda-kb-prototype-v2.0.0'
 ..\.venv\Scripts\panda-qa-kb.exe export --bundle $bundlePath --project-root (Get-Location)
 ..\.venv\Scripts\panda-qa-kb.exe inspect --bundle $bundlePath
 ..\.venv\Scripts\panda-qa-kb.exe restore --bundle $bundlePath --project-root (Get-Location)

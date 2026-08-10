@@ -40,15 +40,101 @@ panda-kb-bundle-v2/
 KnowledgeObject 等价的完整 evaluator lookup，使恢复环境不需要
 `data/normalized/*/knowledge_objects.jsonl` 也能执行 Gold selector 验证和迁移后评估。
 
-当前文档不假设固定的 v2 下载地址；拿到 Bundle 后应以目录中的
-`bundle_manifest.json` 为唯一 artifact 清单，并先执行 `inspect`。如果只有下面的历史
-v1 Release，请使用对应 tag，而不是当前 `main`。
+当前 v2 Release：
+
+[PANDA Knowledge Bundle Prototype v2.0.0](https://github.com/JinxinLee/PANDA_Agent/releases/tag/panda-kb-prototype-v2.0.0)
+
+拿到 Bundle 后仍应以目录中的 `bundle_manifest.json` 为唯一 artifact 清单，并先执行
+`inspect`。如果只有下面的历史 v1 Release，请使用对应 tag，而不是当前 `main`。
 
 > **版本兼容性：** Bundle schema 必须与代码匹配。当前 `main` 不接受缺少 evaluator
 > catalog 的 v1 manifest，也不能把 v1 的 manifest、dump、snapshot 与 v2 catalog
 > 混合使用。`panda-qa-kb inspect` 会在连接数据库前拒绝这种组合。
 
-### 0.1 历史 v1.0.0 Release（仅与对应 tag 配套）
+### 0.1 当前 v2.0.0 Release
+
+在 v2.0.0 Release 页面下载以下五个资产：
+
+| 文件 | 用途 | 大小 | SHA-256 |
+|---|---|---:|---|
+| `bundle_manifest.json` | v2 schema、语料身份、存储配置、100 个跨库验证样本 | 27,656 B | `1d05dd018b828c3c4c9512240ed63c2536a2e47887f6078edb62c70b10c63b06` |
+| `postgres.dump` | 预构建 PostgreSQL 知识库 | 70,915,643 B | `fcb9e2d555081c93ba1197e91e0907353c98097b3ce48c6e781ca5edc06f180e` |
+| `qdrant.snapshot` | 80,698 points 的 `panda_knowledge_v1` 快照 | 1,269,908,992 B | `f568d297068655ee252717f7a76f7bb3cf7a4d495aac5918da52741300956002` |
+| `portable-assets-v2.zip` | BM25 本地模型资产和 evaluator lookup catalog | 61,524,843 B | `a653fc2c1236e17d89504d010064c24192ca0b19205825586c66d163596ca61b` |
+| `SHA256SUMS.txt` | 前四个资产的下载后校验清单 | 338 B | `982ba55ee9ee68ee47ce3d80b83051048663741bf537179d399d09b4b76c32d4` |
+
+使用 GitHub CLI 下载全部资产：
+
+Windows PowerShell：
+
+```powershell
+$bundlePath = 'D:\panda-bundles\panda-kb-prototype-v2.0.0'
+New-Item -ItemType Directory -Force $bundlePath | Out-Null
+gh release download panda-kb-prototype-v2.0.0 `
+  --repo JinxinLee/PANDA_Agent `
+  --dir $bundlePath
+
+Get-FileHash `
+  (Join-Path $bundlePath 'bundle_manifest.json'), `
+  (Join-Path $bundlePath 'postgres.dump'), `
+  (Join-Path $bundlePath 'qdrant.snapshot'), `
+  (Join-Path $bundlePath 'portable-assets-v2.zip') `
+  -Algorithm SHA256
+
+Expand-Archive `
+  -LiteralPath (Join-Path $bundlePath 'portable-assets-v2.zip') `
+  -DestinationPath $bundlePath `
+  -Force
+```
+
+macOS/Linux（Bash/zsh）：
+
+```bash
+export BUNDLE_PATH="$HOME/panda-bundles/panda-kb-prototype-v2.0.0"
+mkdir -p "$BUNDLE_PATH"
+gh release download panda-kb-prototype-v2.0.0 \
+  --repo JinxinLee/PANDA_Agent \
+  --dir "$BUNDLE_PATH"
+
+cd "$BUNDLE_PATH"
+sha256sum -c SHA256SUMS.txt       # macOS 可使用：shasum -a 256 -c SHA256SUMS.txt
+unzip portable-assets-v2.zip
+```
+
+v2 ZIP 使用 POSIX `/` 路径，并为目录写入 Unix `0755` 权限；macOS/Linux 可直接使用
+`unzip`，不需要 v1 的路径规范化脚本。解压后目录应为：
+
+```text
+panda-kb-prototype-v2.0.0/
+├── bundle_manifest.json
+├── postgres.dump
+├── qdrant.snapshot
+├── portable-assets-v2.zip
+├── SHA256SUMS.txt
+├── evaluator/
+│   └── evaluator_lookup_catalog.json
+└── runtime_assets/
+    └── fastembed/
+        └── bm25/
+```
+
+完成解压后，在项目根目录执行离线预检：
+
+Windows PowerShell：
+
+```powershell
+.\.venv\Scripts\python.exe -m panda_agent.cli.kb inspect --bundle $bundlePath
+```
+
+macOS/Linux：
+
+```bash
+.venv/bin/python -m panda_agent.cli.kb inspect --bundle "$BUNDLE_PATH"
+```
+
+`inspect` 成功后再进入本文后续的基础设施启动、`restore` 和 `verify` 步骤。
+
+### 0.2 历史 v1.0.0 Release（仅与对应 tag 配套）
 
 以下公开 Release 是历史 v1 Bundle，只能与 Git tag
 `panda-kb-prototype-v1.0.0` 对应的代码配套使用，不能直接用于当前 `main`：
