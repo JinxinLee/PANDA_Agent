@@ -1,4 +1,5 @@
 import json
+import inspect
 import tempfile
 import unittest
 from pathlib import Path
@@ -1178,6 +1179,18 @@ class QATests(unittest.TestCase):
         self.assertEqual(retriever.calls, 1)
         self.assertEqual(result.answer, "PndPidCorrelator is present. [e1]")
         self.assertEqual(result.claims[0].model_dump().keys(), {"claim_id", "claim_text", "evidence_ids"})
+
+    def test_agent_core_run_has_no_service_import_or_database_persistence(self):
+        storage = CatalogStorage([])
+        agent = QAAgent(
+            Path.cwd(), retriever=FakeRetriever(bundle_for(code_evidence()), storage=storage), vertex=FakeVertex()
+        )
+        result = agent.run("Where is PndPidCorrelator?")
+
+        self.assertEqual(result.status, QAStatus.ANSWERED)
+        self.assertNotIn("panda_agent.service", inspect.getsource(QAAgent))
+        self.assertTrue(storage.connection.queries)
+        self.assertTrue(all(query.lstrip().upper().startswith("SELECT") for query, _ in storage.connection.queries))
 
     def test_version_conflict_refuses_without_generation(self):
         bundle = bundle_for(

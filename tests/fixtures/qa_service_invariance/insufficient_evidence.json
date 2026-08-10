@@ -1,0 +1,18 @@
+{
+  "diagnostics": {
+    "intent": "usage",
+    "retrieval_count": 1,
+    "revision_count": 0,
+    "selected_evidence_ids": ["e1"],
+    "targeted_retrieval_count": 1,
+    "verification_error_codes": ["missing_evidence"]
+  },
+  "result": {
+    "answer": "The evidence is insufficient for a verifiable, definitive answer.",
+    "claims": [],
+    "errors": ["missing_evidence"],
+    "evidence_ids": [],
+    "resolved_versions": {"pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357"},
+    "status": "insufficient_evidence"
+  }
+}

@@ -1,12 +1,12 @@
 # PANDA 科研代码库问答 Agent：代码导读、架构说明与开发教程
 
-> **当前评估状态（2026-08-09）：** 默认 Gold 已更新到 v2.6，formal evaluator identity 为 2.6.1。签署的 RC3f regression 审查已处理：3 个真实行为缺口通过 focused run，2 个 sentinel 无回归；16 题 reviewed composite 的全部质量检查通过。由于结果由原始 run 与 3 个 replacement 构成，它是诊断性 composite，不是统一冻结 candidate 的 formal regression gate。详见 `docs/M6_REGRESSION_RC3F_REVIEW_FIX_RESULT.md`。
+> **历史评估诊断（2026-08-09）：** 默认 Gold 已更新到 v2.6，formal evaluator identity 为 2.6.1。签署的 RC3f regression 审查已处理：3 个真实行为缺口通过 focused run，2 个 sentinel 无回归；16 题 reviewed composite 的全部质量检查通过。由于结果由原始 run 与 3 个 replacement 构成，它是诊断性 composite，不是统一冻结 candidate 的 formal regression gate。详见 `docs/M6_REGRESSION_RC3F_REVIEW_FIX_RESULT.md`。
 
-> **evaluator-2.2 当前诊断（2026-08-04）：** Gold v2.2 的三题窄规则已落地：`g074` code-only + accepted `data_flow`，`g079` 仅使用签署的直接代码等价 selector，`g086` code-only 且文档 optional/diagnostic。68-case composite rescore 新增 0 calls/0 tokens，当前 48 题为 36 resolved、12 real failure pending；subset 不完整，不能通过 dev gate、冻结 candidate 或解锁 regression/acceptance/M7。详见 `docs/M6_68_NON_REAL_RESCORE_RESULT.md`。
+> **历史 evaluator-2.2 诊断（2026-08-04）：** Gold v2.2 的三题窄规则已落地：`g074` code-only + accepted `data_flow`，`g079` 仅使用签署的直接代码等价 selector，`g086` code-only 且文档 optional/diagnostic。68-case composite rescore 新增 0 calls/0 tokens，48 题当时为 36 resolved、12 real failure pending；该历史 subset 不完整，不能冻结 candidate 或解锁后续阶段。详见 `docs/M6_68_NON_REAL_RESCORE_RESULT.md`。
 
 > **历史快照：48 题统一审查（rescore 前，2026-08-04）：** `evaluation/reviews/m6_integrated_48_review.yaml` 与 `.md` 当时为 33 resolved、3 pending offline rescore（g074/g079/g086）和 12 pending fix-and-rerun。后续状态以 canonical YAML 和上方 evaluator-2.2 结果为准。
 
-> **当前 runtime 更新（2026-08-03）：** runtime generation 与 M6 evaluation judge 均使用各自独立客户端上的 `gemini-3.6-flash`；embedding 为 `gemini-embedding-2`。12 道 dev 焦点题及 regression sentinel `g098` 已通过指定的 status、citation、version、identifier、critical answer point 与 unsupported-claim 检查。候选 `m6-v2-36-rc2b` 已冻结并验证；随后完整 80 题 dev 已运行 80/80，但 development gate 未通过，因此没有运行完整 16 题 regression、challenge、acceptance 或 M7。历史 Lite 候选结果仍保留用于追溯。
+> **历史 runtime 更新（2026-08-03）：** runtime generation 与 M6 evaluation judge 均使用各自独立客户端上的 `gemini-3.6-flash`；embedding 为 `gemini-embedding-2`。12 道 dev 焦点题及 regression sentinel `g098` 已通过指定的 status、citation、version、identifier、critical answer point 与 unsupported-claim 检查。候选 `m6-v2-36-rc2b` 已冻结并验证；随后完整 80 题 dev 已运行 80/80，但 development gate 未通过，因此在该历史 candidate 记录中没有运行完整 16 题 regression、challenge、acceptance 或 M7。历史 Lite 候选结果仍保留用于追溯。
 
 > **31 题评分修正（2026-08-04）：** Gold v2.1 与 evaluator-2.1 已按人工审查落地。29 题离线重算，g041/g119 通过 `m6-v2-36-status-fix-31-retry1` 最小重跑，g031/g112 仅作 sentinel；统一 80 题诊断结果见 `docs/M6_31_CASE_RESCORE_RESULT.md`。原 RC2b records 不可变，rescore 模型调用为 0；六道 mixed 在该 31 题轮次尚未进入，随后已按下方独立修复记录处理；11 道 real failure 仍未处理。
 
@@ -18,7 +18,9 @@
 
 > **历史 Lite RC1 快照（2026-08-02）：** 当时 runtime generation 使用 `gemini-3.5-flash-lite`，evaluation judge 使用独立的 `gemini-3.6-flash`，embedding 为 `gemini-embedding-2`。该候选的完整 dev 已完成 80/80，但 development gate 未通过（Recall@10 `0.790625`、final evidence recall `0.538095`、answer-point coverage `0.711458`）。该段仅用于追溯，不代表当前 runtime。
 
-> 本段是当前状态，覆盖本文后方仍写作“等待人工审查”的 M6 历史快照。
+> 上述带日期内容均为 M6 历史评估/诊断记录；它们不覆盖下面的当前验收口径。
+
+> **当前权威状态（按用户当前验收决定，2026-08-10）：** M6 视为达标；M7 P0 已实现并验证；M7 整体尚未通过（P1 与四道真实 smoke 尚未完成）；M8 尚未开始。不虚构 hidden acceptance 或尚未运行的 formal gate。
 
 > 文档基线：2026-07-30 当前工作区代码  
 > 适用项目：`PANDA_Agent/`（Python 包名：`panda_agent`）  
@@ -37,13 +39,22 @@ are documented in
 Bundle on another machine: it separates clean restore, deterministic storage
 replay, evaluator lookup parity, and model-driven QA A/B. The latest report is
 `data/evaluation/migration/v1/report_v3/migration_report.md`; it records
-`runtime_equivalent_but_model_variance_observed`, not a full M6 or release gate.
+`runtime_equivalent_but_model_variance_observed`; this dated diagnostic is not a
+formal M6 or release gate and does not override the user's current M6 acceptance decision.
 
 > **阅读约定：** 文中“已实现”表示当前代码存在真实调用路径；“建议”或“扩展示例”表示尚未进入仓库的设计；“伪代码”只用于解释控制流。
 
 > **P0 实施更新（2026-07-30）：** 本文最初审查发现的四项 P0 已按 Phase 0→6 完成修复：Sphinx configured snapshot 强门禁、关系端点解析与真实图遍历、claim-first 确定性答案、Prompt 不可信数据边界。当前运行态为 Alembic `0003`、102,868 objects、64,554 accepted relations、372,139 relation candidates、374 workflows、80,691 Qdrant points。若后文章节仍以“旧审查发现”回顾这些问题，应以本段和 `QA_AGENT.md` 的最新验证记录为准。
 
 > **P1 实施更新（2026-07-30）：** P1 Phase 0→6 也已完成。当前运行态为 Alembic `0004`、102,875 objects、64,561 accepted relations、372,139 relation candidates、2 aliases、374 workflows、80,698 Qdrant points；`panda-qa-index verify` 为 `valid=true`。已实现 data-product/alias 物化、流式 relation candidate spool、索引身份、失败/恢复生命周期、配置驱动 intent route、逐题可恢复评估及 localhost 安全绑定。后文旧审查表中相应 P1 项目视为历史问题，最新实现和测试细节以 `QA_AGENT.md` 的 P1 更新为准。
+
+> **M7 P0 实施更新（2026-08-10）：** 当前工作树已实现 Bundle 与 runtime 的独立验证、`0005` 服务迁移、共享 `QAService`、P0 `qa_runs` 脱敏 trace、进程内并发 gate 和 loopback-only FastAPI。完整顺序、路由、错误码、限制及验证边界见 [`docs/M7_P0_IMPLEMENTATION.md`](docs/M7_P0_IMPLEMENTATION.md)。**M7 P0 implemented ≠ M7 passed**：真实四题 smoke、P1 deadline/504、model-usage、JSON logging 和 M8 UI 仍未完成。
+
+> **P0 本地证据：** assembled v2 Bundle（补装 evaluator asset）`kb verify` 为
+> `valid=true/runtime_status=not_registered`；Alembic 从 `0004` 到 `0005` 成功；
+> registration/runtime verify 全 checks 为 `true`；非沙箱 ADC probe 为 `true`；
+> `load_dotenv()` 后 FastAPI live/ready/version 为 `200/200/200`。未调用模型或执行
+> `/v1/qa`，所以不替代四题 smoke 或 M7 overall gate。
 
 > **M6 历史记录（2026-08-02）：** retrieval 旧基线、v8 与 Lite RC1 结果保留在 retrospective；Lite 候选的完整 80 题 dev 已失败，实际指标和人工审查表见 `docs/M6_PHASE6_0_7_RESULT.md` 与 `data/evaluation/runs/m6-v2-lite-qa-dev-rc1/failure_review.yaml`。
 
@@ -99,7 +110,7 @@ replay, evaluator lookup parity, and model-driven QA A/B. The latest report is
 
 尚未实现：
 
-- FastAPI、REST API、Web UI、Notebook 或完整 Docker 化 Agent 服务；
+- Web UI、Notebook 或完整 Docker 化 Agent 服务；M7 P0 的 FastAPI/REST 仅 loopback、本地单进程；
 - Coding Agent、Debug Agent 和能修改/执行科研代码的工具；
 - 标准 LLM Tool Calling/function calling；
 - 对话历史、用户记忆、LangGraph checkpoint 和中断恢复；
@@ -176,10 +187,10 @@ replay, evaluator lookup parity, and model-driven QA A/B. The latest report is
 | unittest | 当前 24 项包内单元测试 | `tests/unit/` | 标准库、确定性 | pytest |
 | pytest | `dev` extra 中声明，测试未使用 pytest 特性 | `pyproject.toml` | 可作为更友好的测试运行器 | 保持 unittest |
 | Ruff | 配置了代码检查，但当前环境未安装 | `pyproject.toml` | 快速 lint/format | Black + Flake8 |
-| FastAPI/Uvicorn | 已声明但**当前没有 API 代码** | 仅 `pyproject.toml` | 为后续接口预留 | Flask、Litestar |
+| FastAPI/Uvicorn | M7 P0 loopback-only API 与本地服务启动 | `api.py`、`cli/api.py` | 复用 `QAService`，提供健康、版本和 QA 路由 | Flask、Litestar |
 | `langgraph-checkpoint-postgres` | 未安装、未接入 | 不在当前 `pyproject.toml` | 当前项目没有多轮恢复需求 | 自定义 checkpoint 或未来单独引入 |
 
-> **依赖审查：** `source.py` 直接 `import requests`，但 `requests` 没有直接写入 `pyproject.toml`，当前仅因其他包的传递依赖而可用。FastAPI、Uvicorn 和 LangGraph PostgreSQL checkpoint 是尚未使用的预留依赖。当前环境也没有安装 `dev` extra 中的 pytest/ruff，尽管包内 unittest 不受影响。
+> **依赖审查：** `requests`、FastAPI 和 Uvicorn 已由当前运行路径使用并在对应 extra 中声明。LangGraph PostgreSQL checkpoint 仍未接入；当前环境也可能没有安装 `dev` extra 中的 pytest/ruff，尽管包内 unittest 不受影响。
 
 ---
 
@@ -210,7 +221,11 @@ PANDA_Agent/
 │   └── evaluation/                # 评估输出
 ├── migrations/
 │   ├── env.py
-│   └── versions/0001_*.py, 0002_*.py, 0003_*.py
+│   ├── versions/0001_initial_schema.py
+│   ├── versions/0002_bound_fts_input.py
+│   ├── versions/0003_relation_resolution.py
+│   ├── versions/0004_aliases_and_index_identity.py
+│   └── versions/0005_qa_service_runtime.py
 ├── evaluation/
 │   ├── retrieval_questions.yaml   # 30 道 M4 问题
 │   ├── qa_questions.yaml          # 24 道 M5 问题
@@ -225,8 +240,11 @@ PANDA_Agent/
 │   ├── indexing.py                # M3 索引、缓存和一致性
 │   ├── retrieval.py               # M4 查询分析和多路检索
 │   ├── qa.py                      # M5 LangGraph Agent
+│   ├── service.py                 # M7 P0 QAService boundary
+│   ├── runtime.py                 # M7 P0 runtime receipt/readiness
+│   ├── api.py                     # M7 P0 FastAPI app
 │   ├── llm/vertex.py              # Vertex 模型适配器
-│   └── cli/                       # health/source/ingest/index/retrieve/qa
+│   └── cli/                       # health/source/ingest/index/retrieve/qa/kb/runtime/api
 └── tests/
     ├── unit/                      # 24 项无真实模型成本测试
     └── live/                      # Vertex、storage、reconciliation 门控测试
@@ -234,7 +252,8 @@ PANDA_Agent/
 
 ### 4.1 重要文件之间的依赖
 
-- `cli/qa.py` → `qa.QAAgent` → `retrieval.Retriever` → `storage.Storage` 与 `llm.VertexAIClient`。
+- `cli/qa.py` → `service.QAService` → `qa.QAAgent` → `retrieval.Retriever` → `storage.Storage` 与 `llm.VertexAIClient`；API 通过同一 `QAService`。
+- `cli/kb.py` → `kb_bundle`；`cli/runtime.py` → `runtime.register_runtime/verify_runtime`；`cli/api.py` → `api.create_app`。
 - `cli/ingest.py` → `ingestion.ingest` → `source.verify_manifest`、所有 parser 和 `models.py`。
 - `cli/index.py` → `indexing.apply_index` → `storage.py`、Vertex embedding 和 FastEmbed。
 - `migrations/0001_initial_schema.py` 直接导入 `storage.SCHEMA_SQL`，因此 migration 与运行时代码存在隐式耦合。
@@ -247,22 +266,23 @@ PANDA_Agent/
 | 当前运行代码 | `src/panda_agent/`、`configs/`、`migrations/`、CLI | 被 entry point 或模块直接调用 |
 | 辅助代码 | `evaluation/`、`tests/`、`docling_worker.py` | 用于评估、验证或子进程解析 |
 | 生成数据 | `data/` | 由 M1–M3 产生；不是手写源码 |
-| 预留但未使用 | FastAPI/Uvicorn/checkpoint 依赖；部分 schema object type | 没有当前调用点或实际产物 |
+| 预留但未使用 | PostgreSQL checkpoint、部分 schema object type | 没有当前调用点或实际产物；FastAPI/Uvicorn 已用于 M7 P0 |
 | 父目录实验代码 | `../ReActAgent.py` 等 | `panda_agent` 内无 import；仅兼容回归测试涉及 |
 | 已废弃代码 | 当前代码中没有明确 `deprecated` 标记的包内模块 | **当前代码中无法完全确认这一点。** 需要 Git 历史和维护者决策才能判断是否可删除 |
 
 ### 推荐代码阅读顺序
 
-1. `README.md`：先知道怎样调用。
-2. `src/panda_agent/cli/qa.py`：找到正式请求入口。
-3. `src/panda_agent/qa.py`：看图的节点、状态和退出条件。
-4. `src/panda_agent/models.py`：理解节点之间传什么数据。
-5. `src/panda_agent/retrieval.py`：理解 Agent 怎样找证据。
-6. `src/panda_agent/llm/vertex.py`：理解模型调用和 structured output。
-7. `src/panda_agent/storage.py` 与 `indexing.py`：理解证据存在哪里。
-8. `src/panda_agent/ingestion.py` 与 `source.py`：理解知识怎样进入索引。
-9. `configs/*.yaml`：理解哪些行为可配置。
-10. `tests/unit/test_qa.py`、`test_retrieval.py`：用最小 fake 看懂关键分支。
+1. `README.md` 与 `docs/M7_P0_IMPLEMENTATION.md`：先知道 Bundle/runtime/API 怎样启动。
+2. `src/panda_agent/cli/kb.py`、`kb_bundle.py`：理解知识验证与恢复边界。
+3. `src/panda_agent/runtime.py`、`cli/runtime.py`：理解 receipt 和独立 readiness gate。
+4. `src/panda_agent/service.py`、`cli/qa.py`：理解共享请求生命周期、并发和 `qa_runs`。
+5. `src/panda_agent/api.py`、`cli/api.py`：理解 FastAPI 路由与 HTTP 错误映射。
+6. `src/panda_agent/qa.py`：看图的节点、状态和退出条件。
+7. `src/panda_agent/models.py`：理解节点之间传什么数据。
+8. `src/panda_agent/retrieval.py`：理解 Agent 怎样找证据。
+9. `src/panda_agent/llm/vertex.py`、`storage.py` 与 `indexing.py`：理解模型和存储。
+10. `src/panda_agent/ingestion.py`、`source.py`、`configs/*.yaml`：理解知识和配置。
+11. `tests/unit/test_runtime.py`、`tests/unit/test_service.py`、`tests/unit/test_api.py`、`tests/unit/test_qa.py`、`tests/unit/test_retrieval.py`：用 fake 看懂关键分支。
 
 ---
 
@@ -280,8 +300,9 @@ flowchart LR
         E --> QD[("Qdrant")]
     end
 
-    subgraph Online["在线问答 M4-M5"]
-        U["用户 / CLI"] --> A["QAAgent LangGraph"]
+    subgraph Online["在线问答 M4-M7 P0"]
+        U["用户 / CLI / API"] --> SVC["QAService"]
+        SVC --> A["QAAgent LangGraph"]
         A --> R["Retriever.analyze"]
         R --> GM["Gemini query analyzer"]
         A --> MR["exact / dense / sparse / workflow / graph"]
@@ -295,7 +316,8 @@ flowchart LR
         VER -->|"失败，最多一次"| GEN
         VER --> OUT["QAResult JSON"]
         OUT --> PG
-        OUT --> U
+        OUT --> SVC
+        SVC --> U
     end
 ```
 
@@ -304,8 +326,9 @@ flowchart LR
 1. M1–M3 是离线构建链；普通问答不会重新抓 GitHub 或 Sphinx。
 2. 在线检索需要 PostgreSQL、Qdrant 和 Vertex AI。
 3. 模型不自由选择工具；Python 固定执行检索通道。
-4. `QAResult` 写入 `qa_runs` 是 best-effort 运行记录，不会被后续问题读取。
-5. 当前没有显式应用日志器；主要可观察输出是 CLI JSON、Alembic 日志、Docker 日志和数据库记录。
+4. M7 P0 的 `QAService` 写入 `qa_runs` 完整 question 和脱敏 trace；它不会被后续问题读取，也不是 Memory。
+5. `/health/live` 不依赖 runtime；`/health/ready` 每次刷新 runtime probe 且不调用模型；API 仅 loopback、workers=1。
+6. P0 没有 deadline/504、model-usage 统计或 JSON logging；这些属于 M7 P1。
 
 ---
 
@@ -313,20 +336,22 @@ flowchart LR
 
 ### 6.1 启动与初始化
 
-正式 CLI entry point 在 `pyproject.toml`：
+正式 CLI/API entry point 在 `pyproject.toml`：
 
 ```toml
 panda-qa = "panda_agent.cli.qa:main"
+panda-qa-api = "panda_agent.cli.api:main"
+panda-qa-runtime = "panda_agent.cli.runtime:main"
 ```
 
-文件：`src/panda_agent/cli/qa.py`
+文件：`src/panda_agent/cli/qa.py`、`src/panda_agent/cli/api.py`、`src/panda_agent/cli/runtime.py`
 
 ```python
 load_dotenv()
-print(QAAgent(args.project_root.resolve()).run(" ".join(args.question)).model_dump_json(indent=2))
+print(QAService(args.project_root.resolve(), origin="cli").run(" ".join(args.question)).model_dump_json(indent=2))
 ```
 
-这段真实代码完成四件事：加载 `.env`、解析 `ask` 子命令、创建 `QAAgent`、把 Pydantic 结果打印为 JSON。它是同步的一次性进程，不是持续运行的聊天服务器。
+CLI 真实路径加载 `.env`、解析 `ask` 子命令、创建共享 `QAService` 并把 Pydantic 结果打印为 JSON；它是同步的一次性进程。`panda-qa-api` 则在 lifespan 中初始化一次 `QAService`，通过 loopback-only FastAPI 提供持续 HTTP 服务。
 
 `QAAgent.__init__()` 使用依赖注入：调用方可以传 fake `Retriever`/`VertexAIClient` 做测试；生产路径则从环境创建真实客户端。构造函数同时创建并 `compile()` LangGraph。
 
@@ -336,6 +361,8 @@ print(QAAgent(args.project_root.resolve()).run(" ".join(args.question)).model_du
 sequenceDiagram
     actor U as User
     participant CLI as cli/qa.py
+    participant API as FastAPI /v1/qa
+    participant S as QAService
     participant G as QAAgent LangGraph
     participant R as Retriever
     participant V as Vertex AI
@@ -343,7 +370,10 @@ sequenceDiagram
     participant Q as Qdrant
 
     U->>CLI: panda-qa ask QUESTION
-    CLI->>G: run(question)
+    CLI->>S: execute(question)
+    U->>API: POST /v1/qa QUESTION
+    API->>S: execute(question)
+    S->>G: run_detailed(question)
     G->>R: retrieve(question)
     R->>V: structured query analysis
     V-->>R: RetrievalPlan fields
@@ -370,9 +400,11 @@ sequenceDiagram
             V-->>G: revised claims only
         end
     end
-    G->>P: best-effort INSERT qa_runs
-    G-->>CLI: QAResult
+    S->>P: INSERT/UPDATE qa_runs (full question + safe trace)
+    S-->>CLI: QAResult
+    S-->>API: QAServiceEnvelope
     CLI-->>U: JSON
+    API-->>U: HTTP JSON
 ```
 
 > **实现纠正：** 当前多路检索代码是按 `_exact → _vector → _workflow → _graph` 顺序同步执行；dense 和 sparse Qdrant 查询也依次执行。它在逻辑上是多通道，但不是并行调用。
@@ -397,6 +429,19 @@ sequenceDiagram
 ### 6.4 状态变化
 
 初始只有 `question`。`retrieve` 写入 `bundle` 并清零两个计数；`sufficiency` 写入 `sufficient/errors`；`answer` 写入 `draft`；`verify` 覆盖 `errors`；`revise` 替换 `draft` 并增加 `revision_count`；`finalize` 写入 `result`。LangGraph 默认按字典更新字段，不会自动把 list 追加合并。
+
+### 6.5 M7 P0 服务边界
+
+Bundle/runtime 的恢复顺序、`0005` 迁移和 receipt 语义见
+[`docs/M7_P0_IMPLEMENTATION.md`](docs/M7_P0_IMPLEMENTATION.md)。服务层的关键约定：
+
+- `GET /health/live` 始终只表示进程存活；`GET /health/ready` 每次刷新 runtime probe，
+  未注册或 probe 失败返回 503，且不调用模型；`GET /version` 返回版本和 receipt 摘要。
+- `POST /v1/qa` 只接受 1–10,000 字符 `question`，成功 HTTP 200 中的
+  `result.status` 可为 `answered`、`insufficient_evidence` 或 `version_conflict`。
+  422/429/503/500 分别表示校验、进程内 gate、未 ready 和内部错误；P0 没有 504。
+- 默认 `PANDA_API_MAX_CONCURRENCY=1`，gate 只在一个进程内生效；`qa_runs` 保存完整
+  question，但 trace 仅保存 ID、计数器和脱敏 error code，不保存 Prompt/Evidence 正文、凭据或 stack；P0 `model_usage` 仅为空对象占位。
 
 ---
 
@@ -562,9 +607,9 @@ data fields.
 | `retrieval_count` | `int` | 0 | retrieve、targeted | sufficiency 路由 | 限制补检索一次 |
 | `result` | `dict` | 无 | finalize | run | 最终可验证数据 |
 
-当前状态只在内存中存在一次请求的生命周期。图没有 checkpointer，不能恢复；没有 session/user ID，也不支持多轮对话。多个 CLI 进程彼此独立，数据库连接与 Qdrant 客户端可同时使用，但当前代码没有对高并发、连接池或用户隔离做保证。
+图状态仍只在内存中存在一次请求的生命周期；没有 session/user ID，也不支持多轮对话。M7 P0 的 `QAService` 在 API/CLI 外层提供一次请求的 worker thread 和进程内 gate；多个进程彼此独立，不能提供跨进程并发协调、连接池或用户隔离。
 
-`qa_runs` 保存问题、状态以及包含 evidence 的 trace，但 `QAAgent` 不读取它；因此它是审计记录，不是 Memory。写入异常被 `except Exception: pass` 静默吞掉，记录缺失不会影响用户回答。
+`qa_runs` 保存完整 question、status、耗时、intent、错误码、节点耗时和脱敏 trace，但 `QAAgent` 不读取它；因此它是审计记录，不是 Memory。P0 的 `QAService` 将记录失败分类为 `persistence_error`，不会把 stack 或凭据返回给用户。
 
 ---
 
@@ -631,11 +676,11 @@ flowchart TD
 | 长期用户记忆 | 未实现 | 没有 user/session schema |
 | Checkpoint | 未实现 | graph compile 时未传 checkpointer |
 | 知识库存储 | 已实现 | PostgreSQL/Qdrant 保存固定语料，不等于用户记忆 |
-| QA 审计记录 | 部分实现 | `qa_runs` 保存 question/status/trace，不用于下一轮 |
+| QA 审计记录 | P0 已实现 | `QAService` 保存 question/status/脱敏 trace，不用于下一轮 |
 | 摘要压缩 | 未实现 | 没有历史，自然也无 history summary |
 | Token 截断 | 明确禁止 embedding 自动截断 | `auto_truncate=False`；生成 prompt 无显式预算 |
 
-程序重启不会丢失索引和 `qa_runs`，但会丢失正在执行的图状态。对话过长不是当前问题，因为 CLI 不传历史；单个超长问题或证据 bundle 仍可能超过模型限制。
+程序重启不会丢失索引和已提交的 `qa_runs`，但会丢失正在执行的图状态。API question 上限为 10,000 字符；证据 bundle 仍可能超过模型限制。
 
 未来若增加多轮会话，可在 `QAState` 加 `session_id/messages`，再单独选择并引入 checkpoint 存储（例如 PostgreSQL 适配器），并给 `qa_runs` 增加用户/租户、保留期限和访问控制。不要直接把所有历史无上限拼入 Prompt。
 
@@ -712,18 +757,18 @@ flowchart LR
 | Git/PDF/hash 错误 | `source.py` | `SourceGateError`，M2 不启动 | 无替代语料 | 符合门禁原则 |
 | Docling 慢/失败 | `parse_pdf` | 子进程 300 秒；缓存 failure；PyMuPDF fallback | 有 fallback | failure cache 会永久阻止自动重试；需显式清理命令 |
 | Python 语法错误 | `parse_python` | 静默跳过 symbol，仍保留 file | 无 | 应写入 `parse_errors.jsonl` |
-| PostgreSQL/Qdrant 不可用 | Storage/Retriever | 异常向上传播，CLI traceback | 无 | 加健康检查、友好错误、连接池和 timeout |
+| PostgreSQL/Qdrant 不可用 | Storage/Retriever/runtime probe | CLI 失败；API readiness 为 503 或 QA 为稳定 500 envelope | 无 | P1 deadline/结构化日志和生产连接池仍待完成 |
 | Index 中途失败 | `apply_index` | 异常退出；run 可能保持 `running` | 重跑会利用 cache | 应在 `finally/except` 写 `failed` 和 error |
 | 检索为空 | `_sufficiency` | 最多补检索一次后拒答 | 1 次 targeted retrieval | 行为有界且安全 |
 | 版本冲突 | `analyze/_sufficiency` | 不生成答案，返回 `version_conflict` | 无 | 正确；应加入 ref/alias 更系统解析 |
 | Structured Output 内容不合法 | SDK/`QAResult` | JSON decode 或 Pydantic 校验异常 | QA revision 只处理证据错误 | 可在模型层增加 schema retry |
 | 引用不完整 | `_verify` | 记录错误并最多修订一次 | 1 次 revision | 二次失败安全拒答；answer 仅由已验证 claims 渲染 |
-| QA 审计写入失败 | `QAAgent.run` | `except Exception: pass` | 无 | 用户不知道 trace 丢失；至少 warning/metric |
-| 超长问题/Prompt | analyzer/rerank/answer | 问题超过 20,000 字符时拒绝 | 无 | 继续增加真实 token budget 和证据压缩 |
+| QA 审计写入失败 | `service.QAService` | 分类为 `persistence_error`，API 返回 500，不泄露 stack | 无 | P1 JSON logging/model-usage |
+| 超长问题/Prompt | `api.QARequest` | API question 超过 10,000 字符返回 422；CLI 仍由 graph/模型约束 | 无 | 继续增加真实 token budget 和证据压缩 |
 | 无限循环 | LangGraph | 两个计数器硬上限 | 不适用 | 已避免；配置值和硬编码应统一 |
-| 并发冲突 | CLI/DB | 没有显式会话共享；upsert 幂等 | PostgreSQL/Qdrant 自身事务 | 全量 prune 与并发 index 可能互相影响，应加 advisory lock |
+| 并发冲突 | `service.QAService` | 默认进程内 gate=1；占用时 API 返回 429；不跨进程 | PostgreSQL/Qdrant 自身事务 | 仍无用户隔离、分布式 gate 或队列 |
 
-业务拒答会成为 `QAResult`；基础设施异常则通常以 Python traceback 结束，两者目前没有统一错误协议。
+业务拒答会成为 `QAResult`（API HTTP 200）；API 基础设施异常使用 422/429/503/500 稳定错误 envelope，CLI 仍以非零异常结束。
 
 ---
 
@@ -748,8 +793,8 @@ flowchart LR
 | Prompt Injection | 用户问题和 README/PDF/网页原文可能包含伪指令 | 已放入 untrusted JSON 数据边界，System Prompt 要求不得遵循，并有对抗测试；未来继续扩充攻击集 |
 | 默认数据库密码 | Compose 和默认 URL 都是 `panda:panda` | 只限本机开发；生产用 secret、网络隔离、TLS |
 | 端口暴露 | PostgreSQL 55432、Qdrant 6333/6334 映射到宿主；Qdrant 无认证 | 生产不公开端口，启用鉴权/网络策略 |
-| Trace 隐私 | `qa_runs.trace` 保存原始问题和完整证据 | 增加脱敏、访问控制、保留期限；不要用于敏感问题 |
-| 输入大小 | 没有限制 question 长度 | CLI/API 层限制字符/token，拒绝异常大输入 |
+| Trace 隐私 | P0 `qa_runs.question` 保存完整问题；`trace` 仅保存 ID/计数器/脱敏 error code | 仍需访问控制和保留期限；不把 trace 用作 Memory |
+| 输入大小 | API question 为 1–10,000 字符；CLI 无同等 HTTP schema | 继续增加真实 token budget 和证据压缩 |
 | SSRF | crawler 对配置 URL 有边界，但配置本身由本地维护者控制 | 配置变更审查；必要时设 host allowlist |
 | 文件访问 | M1/M2 读取 manifest/config 指向的本地路径 | 对 manifest path 做项目根 containment 检查，避免人工篡改后越界 |
 | 关系可信度 | static parser 可能产生 ambiguous/unresolved target | linker 唯一解析后才 accepted；其余写入 `relation_candidates` 审计表 |
@@ -774,9 +819,10 @@ flowchart LR
 | `QA_EMBEDDING_MODEL_ID` | 否 | `gemini-embedding-2` | embedding 模型 | 同上；但索引 cache 元数据仍硬编码 |
 | `QA_VERTEX_TIMEOUT_MS` | 否 | `120000` | SDK HTTP timeout | 同上 |
 | `QA_EMBEDDING_CONCURRENCY` | 否 | `16` | 文档 embedding 线程数 | `VertexAIClient._embed` |
-| `PANDA_DATABASE_URL` | 否 | `postgresql://panda:panda@localhost:55432/panda_qa` | PostgreSQL | `StorageSettings`、Alembic |
-| `PANDA_QDRANT_URL` | 否 | `http://localhost:6333` | Qdrant | `StorageSettings` |
+| `PANDA_DATABASE_URL` | 否 | `postgresql://panda:panda@127.0.0.1:55432/panda_qa` | PostgreSQL | `StorageSettings`、Alembic |
+| `PANDA_QDRANT_URL` | 否 | `http://127.0.0.1:6333` | Qdrant | `StorageSettings` |
 | `PANDA_QDRANT_COLLECTION` | 否 | `panda_knowledge_v1` | collection 名 | `StorageSettings` |
+| `PANDA_API_MAX_CONCURRENCY` | 否 | `1` | API 进程内 QAService gate；必须为正整数 | `api._max_concurrency_from_env` |
 | `RUN_VERTEX_LIVE_TESTS` | 测试时可选 | 未设置 | 启用真实 Vertex test | `tests/live/test_vertex_health.py` |
 | `RUN_STORAGE_LIVE_TESTS` | 测试时可选 | 未设置 | 启用 storage test | `tests/live/test_storage_live.py` |
 | `RUN_RECONCILIATION_LIVE_TESTS` | 测试时可选 | 未设置 | 启用会写入再清理 stale 数据的 test | `tests/live/test_reconciliation_live.py` |
@@ -786,7 +832,7 @@ flowchart LR
 
 ### 16.2 建议的项目 `.env.example`
 
-当前父目录 `.env.example` 没有列出 QA 专用变量。建议在 `PANDA_Agent/.env.example` 增加以下内容；这是文档建议，尚未创建文件：
+项目根目录 `.env.example` 已列出当前 QA 专用变量；复制为 `.env` 后按部署环境修改：
 
 ```env
 QA_GCP_PROJECT_ID=your-gcp-project-id
@@ -797,9 +843,10 @@ QA_EMBEDDING_MODEL_ID=gemini-embedding-2
 QA_VERTEX_TIMEOUT_MS=120000
 QA_EMBEDDING_CONCURRENCY=16
 
-PANDA_DATABASE_URL=postgresql://panda:replace-me@localhost:55432/panda_qa
-PANDA_QDRANT_URL=http://localhost:6333
+PANDA_DATABASE_URL=postgresql://panda:replace-me@127.0.0.1:55432/panda_qa
+PANDA_QDRANT_URL=http://127.0.0.1:6333
 PANDA_QDRANT_COLLECTION=panda_knowledge_v1
+PANDA_API_MAX_CONCURRENCY=1
 ```
 
 YAML 配置由 `config.py` 严格读取。未知字段会失败，但部分字段目前只被验证、不被执行逻辑消费，例如 `fusion_method`、`max_relation_hops` 和 `max_targeted_retrievals` 的可配置性不完整。项目没有 development/test/production 配置 profile；当前默认值明显面向单机开发，生产环境必须由部署系统覆盖数据库凭证、网络、身份和观测配置。
@@ -835,13 +882,13 @@ python -m pip install -e ".[qa,ingestion,dev]"
 python -m pip check
 ```
 
-当前 `pyproject.toml` 漏掉 `requests` 直接依赖。如果全新环境没有因其他包自动安装它，M1 会 import 失败；修复依赖声明前可显式安装 `requests>=2,<3`，但长期方案应修改 `pyproject.toml`。
+当前 `pyproject.toml` 已直接声明 `requests`；安装 `.[qa,ingestion,dev]` 后应使用 `python -m pip check` 检查依赖一致性。
 
 ### 17.3 配置 Vertex
 
 ```powershell
 gcloud auth application-default login
-Copy-Item .env.example .env   # 仅当按第 16.2 节先创建了建议文件
+Copy-Item .env.example .env
 ```
 
 编辑 `.env`，不要提交真实凭证。然后验证真实模型：
@@ -852,7 +899,28 @@ python -m panda_agent.cli.healthcheck
 
 预期 JSON 的 `status` 为 `ok`，query/document embedding 维度一致；当前配置预期 3072。
 
-### 17.4 初始化语料、数据库和索引
+### 17.4 新用户：恢复 Bundle、迁移并启动 M7 P0
+
+收到预构建 Bundle 时，不要先运行 source/ingest/index。严格按以下顺序执行：
+
+```powershell
+docker compose up -d --wait postgres qdrant
+$bundlePath = 'D:\panda-bundles\panda-kb-prototype-v2.0.0'
+panda-qa-kb restore --bundle $bundlePath --project-root (Get-Location)
+panda-qa-kb verify --bundle $bundlePath --project-root (Get-Location)
+# 注册前 runtime_status=not_registered 仍可 valid=true、exit 0
+python -m alembic upgrade head
+panda-qa-runtime register-runtime --bundle $bundlePath --project-root (Get-Location)
+panda-qa-runtime verify --project-root (Get-Location)
+panda-qa-api --project-root (Get-Location)
+```
+
+只启动 PostgreSQL/Qdrant；API 默认绑定 `127.0.0.1:8000` 且 `workers=1`。若
+`panda-qa-runtime verify` 不返回 `valid=true`/`runtime_status=registered`，先修复
+Bundle、迁移或 live identity，不要启动 API 以绕过 readiness。完整 HTTP route、
+422/429/503/500 错误和 P0 非目标见 [`docs/M7_P0_IMPLEMENTATION.md`](docs/M7_P0_IMPLEMENTATION.md)。
+
+### 17.5 从源码初始化语料、数据库和索引
 
 首次安装：
 
@@ -880,9 +948,9 @@ python -m panda_agent.cli.index verify
 
 > **注意：** 全量 indexing 会调用大量真实 embedding。不要把 `index apply` 当成普通启动步骤反复执行；有 cache 时可跳过已存在向量，但首次成本和时间较大。
 
-### 17.5 启动并验证问答
+### 17.6 启动并验证问答
 
-Agent 是一次性 CLI，不需要另开 server：
+CLI 仍可作为一次性调用；需要 HTTP 时先按 17.4 启动 `panda-qa-api`：
 
 ```powershell
 python -m panda_agent.cli.qa ask "How is event_poca used?"
@@ -951,10 +1019,10 @@ print(result.status, result.answer)
 
 ### 18.4 其他接口
 
-- REST API：未实现。
+- REST API：M7 P0 已实现 loopback-only FastAPI；运行 `panda-qa-api` 后可用 `/health/live`、`/health/ready`、`/version`、`/v1/qa`、`/docs` 和 `/openapi.json`。问题长度为 1–10,000；P0 错误为 422/429/503/500，没有 504。
 - Web UI：未实现。
 - Notebook：未实现专用集成；可手动使用 Python API。
-- Docker：只容器化 PostgreSQL/Qdrant，没有 Agent 镜像。
+- Docker：只容器化 PostgreSQL/Qdrant；Agent API 由本地 `panda-qa-api` 进程启动，没有 Agent 镜像。
 
 ---
 
@@ -1027,7 +1095,12 @@ weights["configuration"] = 1.3
 
 ### 19.7 添加 API 或 Web UI
 
-FastAPI/Uvicorn 已在 extra 中，但没有应用。建议 API 层只负责请求验证、身份、timeout 和调用 `QAAgent`；不要复制 QA 逻辑。由于当前全部同步且每次初始化 Retriever/FastEmbed，服务化前应考虑生命周期管理、连接复用、并发限制和任务队列。
+M7 P0 已提供 `api.create_app()` 与 `panda-qa-api`。API 层只负责 question 校验、
+loopback host、readiness probe、稳定错误 envelope 和调用共享 `QAService`；不要复制
+`QAAgent` 逻辑。当前 lifespan 初始化一次服务，默认 `workers=1` 和进程内
+`PANDA_API_MAX_CONCURRENCY=1`；它仍没有鉴权、租户隔离、跨进程 gate、deadline/504 或
+Web UI。后续实现应先补 P1 deadline/model-usage/JSON logging，再考虑连接池、任务队列
+和 UI。
 
 ---
 
@@ -1279,7 +1352,7 @@ python -m panda_agent.cli.retrieve "<problem question>"
 | 错误处理 | 多模块 | exception + 业务拒答 | 不降级模型 | 基础设施错误不统一 | 部分专用异常 | 统一错误码、日志、retry |
 | 运行记录 | `qa_runs` | best-effort PostgreSQL | 留下 trace | 隐私/丢写 | 异常吞掉 | 脱敏、强观测、保留策略 |
 | 测试 | `tests/` | fake/unit + gated live | 低成本且可重复 | LLM 不确定性 | 结构/次数断言 | gold evidence 与对抗评测 |
-| 部署 | Compose | 仅 DB/Qdrant | 本地简单 | Agent 未服务化 | CLI | API 容器、鉴权、监控 |
+| 部署 | Compose + `panda-qa-api` | DB/Qdrant 容器；Agent API 本地 loopback 进程 | 本地简单、workers=1 | 无鉴权/跨进程 gate/production observability | CLI/API | API 容器、鉴权、监控 |
 
 ---
 
@@ -1314,7 +1387,7 @@ python -m panda_agent.cli.retrieve "<problem question>"
 | Python parser 静默吞 SyntaxError | `ingestion.py::parse_python` | parse report 不完整 | 记录错误并保留 file object | P2 |
 | PDF schema 功能多于实现 | `knowledge_schema.yaml`、`parse_pdf` | 无独立 equation/figure/table 检索 | 解析 Docling item type 并建立 parent edge | P2 |
 | 缺少正式应用日志、耗时和 token/cost 指标 | 全局 | 生产调试困难 | 结构化日志、trace ID、节点 metrics | P2 |
-| FastAPI/Uvicorn/checkpoint/pytest 当前未使用 | `pyproject.toml` | 安装变重、误导能力边界 | 移至更细 extra 或实现后再保留 | P2 |
+| FastAPI/Uvicorn 已用于 M7 P0；checkpoint/pytest 仍未接入 | `api.py`、`cli/api.py`、`pyproject.toml` | API 仍为 loopback 单进程，checkpoint 未实现 | P1 补 deadline/usage/logging；后续再接 checkpoint/UI | P1/P2 |
 
 ### 24.3 文档与代码不一致/无法确认项
 
@@ -1330,7 +1403,7 @@ python -m panda_agent.cli.retrieve "<problem question>"
 - **P0 正确性/安全性：** 本轮四项已完成并通过 executable contracts/live tests。
 - **P1 稳定性/维护性：** data-product/alias 物化、embedding 配置一致性、run failure、流式 linker、依赖与 secret/网络安全。
 - **P2 开发体验：** Prompt 管理、日志、真正 resume/并行、parser 错误报告、清理未用依赖。
-- **P3 未来扩展：** API/UI、多轮 memory/checkpoint、受限 Tool Calling、Coding/Debug Agent。
+- **P3 未来扩展：** Web UI、多轮 memory/checkpoint、受限 Tool Calling、Coding/Debug Agent；loopback API 已在 M7 P0 落地，生产化仍需鉴权与观测。
 
 ---
 
@@ -1448,7 +1521,7 @@ python -m panda_agent.cli.retrieve "<problem question>"
 4. StateGraph 的价值在于让补检索、修订和退出条件可见、可测、有上限。
 5. “已写出关系边”不等于“关系图可用”；实体解析和真实端点连接必须验证。
 
-四项 P0 已完成。下一步最值得做的工作不是先上 Web UI，而是补 `event_poca`/profile data-product 与 alias ontology、降低 M2 linker 内存、完善 ingestion run 失败状态和 gold evidence Recall@K；这些 P1 稳定后，再服务化、加入 checkpoint 和受限工具。
+四项历史 P0 和 M7 P0 服务边界已完成。下一步仍应补 `event_poca`/profile data-product 与 alias ontology、降低 M2 linker 内存、完善 ingestion run 失败状态和 gold evidence Recall@K，并完成 M7 P1 deadline/usage/logging；Web UI、checkpoint 和受限工具属于后续扩展。
 
 ---
 

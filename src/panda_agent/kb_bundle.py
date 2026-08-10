@@ -22,11 +22,9 @@ from panda_agent.evaluator_catalog import (
     LOOKUP_CONTRACT,
     EvaluatorCatalogError,
     catalog_receipt,
-    load_evaluator_catalog,
     write_evaluator_catalog,
 )
-from panda_agent.evaluation import load_gold_dataset
-from panda_agent.evaluation_runner import default_gold_dataset_path, validate_gold_dataset
+from panda_agent.evaluation_runner import default_gold_dataset_path
 from panda_agent.indexing import normalized_dir, verify_index
 from panda_agent.storage import Storage, StorageSettings
 
@@ -44,6 +42,8 @@ INSTALLED_EVALUATOR_CATALOG_PATH = Path("data") / "runtime" / "evaluator" / CATA
 CANONICAL_GOLD_SHA256 = "b5406e36c64ee664f9e2ff9c0f42e354feb7164c81d8f1c7551d8f2ed1d0b687"
 SAMPLE_SIZE = 100
 SAMPLE_CANDIDATE_POOL_SIZE = SAMPLE_SIZE * 10
+KNOWLEDGE_REVISION = "0004"
+SUPPORTED_SERVICE_MIGRATIONS = frozenset({"0005"})
 SELECTED_TABLES = (
     "source_versions", "knowledge_objects", "knowledge_aliases", "relation_edges", "workflow_steps",
     "index_identities",
@@ -184,6 +184,8 @@ def preflight_bundle(bundle_dir: Path) -> BundleManifest:
         or receipt.count != manifest.evaluator_catalog.count
     ):
         raise BundleError("evaluator catalog receipt mismatch")
+    if manifest.postgres.revision != KNOWLEDGE_REVISION:
+        raise BundleError(f"bundle knowledge revision must be {KNOWLEDGE_REVISION}")
     return manifest
 
 
@@ -377,7 +379,6 @@ def _copy_runtime_to_bundle(project_root: Path, bundle_dir: Path) -> None:
 
 
 def _canonical_gold_path(project_root: Path) -> Path:
-    """Require the signed v2.6 Gold selected by the evaluator contract."""
     path = default_gold_dataset_path(project_root)
     if path != project_root / "evaluation" / "benchmarks" / "v2_6" / "gold_questions.yaml":
         raise BundleError("canonical v2.6 Gold selector is unavailable")
@@ -393,14 +394,10 @@ def _export_evaluator_catalog(project_root: Path, bundle_dir: Path) -> Evaluator
         receipt = write_evaluator_catalog(source, destination)
     except EvaluatorCatalogError as exc:
         raise BundleError(f"cannot export evaluator catalog: {exc}") from exc
-    gold_path = _canonical_gold_path(project_root)
     return EvaluatorCatalogState(
-        path=EVALUATOR_CATALOG_PATH.as_posix(),
-        schema_version=receipt.schema_version,
-        lookup_contract=receipt.lookup_contract,
-        sha256=receipt.sha256,
-        count=receipt.count,
-        source_gold_sha256=sha256_file(gold_path),
+        path=EVALUATOR_CATALOG_PATH.as_posix(), schema_version=receipt.schema_version,
+        lookup_contract=receipt.lookup_contract, sha256=receipt.sha256, count=receipt.count,
+        source_gold_sha256=sha256_file(_canonical_gold_path(project_root)),
     )
 
 
@@ -481,10 +478,11 @@ def _export_preflight(project_root: Path, storage: Storage) -> PostgresState:
     if running:
         raise BundleError("cannot export while an ingestion run is running")
     state = postgres_state(storage)
-    expected_revision = migration_head(project_root)
-    if state.revision == "unversioned" or state.revision != expected_revision:
-        raise BundleError(f"PostgreSQL revision {state.revision!r} does not match Alembic head {expected_revision!r}")
-    return state
+    if state.revision not in {KNOWLEDGE_REVISION, *SUPPORTED_SERVICE_MIGRATIONS}:
+        raise BundleError(f"PostgreSQL revision {state.revision!r} is not bundle-compatible")
+    # 0005 is a service-only migration.  A knowledge bundle is permanently a
+    # 0004 receipt even when it is exported from a 0005 service database.
+    return state.model_copy(update={"revision": KNOWLEDGE_REVISION})
 
 
 def export_bundle(
@@ -552,12 +550,6 @@ def _restore_qdrant(bundle_dir: Path, storage: Storage, session: requests.Sessio
     response.raise_for_status()
 
 
-def _installed_marker(project_root: Path, manifest: BundleManifest) -> None:
-    path = project_root / "data" / "runtime" / "installed_bundle.json"
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(_canonical_json({"schema_version": manifest.schema_version, "created_at": manifest.created_at}) + "\n", encoding="utf-8")
-
-
 def restore_bundle(
     bundle_dir: Path, *, project_root: Path, settings: StorageSettings | None = None,
     session: requests.Session | None = None, runner: Callable[..., Any] = subprocess.run,
@@ -572,7 +564,6 @@ def restore_bundle(
     _restore_qdrant(bundle_dir, storage, session)
     _install_runtime_from_bundle(bundle_dir, project_root)
     _install_evaluator_catalog_from_bundle(bundle_dir, project_root)
-    _installed_marker(project_root, manifest)
     return manifest
 
 
@@ -598,7 +589,7 @@ def verify_bundle(
     bundle_dir: Path, *, project_root: Path, settings: StorageSettings | None = None,
     session: requests.Session | None = None,
 ) -> dict[str, Any]:
-    """Verify the restored local target; it never reads the excluded embedding receipt."""
+    """Verify knowledge/distribution state without making runtime readiness a gate."""
     manifest = preflight_bundle(bundle_dir)
     project_root = project_root.resolve()
     storage = Storage(settings)
@@ -606,36 +597,23 @@ def verify_bundle(
     pg = postgres_state(storage)
     qdrant = qdrant_state(session, storage.settings.qdrant_url, storage.settings.collection_name)
     sample_checks = [_verify_sample(storage, sample) for sample in manifest.verification_samples]
-    catalog_path = project_root / INSTALLED_EVALUATOR_CATALOG_PATH
+    migration_compatible = (
+        manifest.postgres.revision == KNOWLEDGE_REVISION
+        and pg.revision in {KNOWLEDGE_REVISION, *SUPPORTED_SERVICE_MIGRATIONS}
+    )
+    installed_catalog = project_root / INSTALLED_EVALUATOR_CATALOG_PATH
     try:
-        receipt = catalog_receipt(catalog_path)
-        catalog_lookup = load_evaluator_catalog(catalog_path)
-        catalog_identity = (
-            receipt.schema_version == manifest.evaluator_catalog.schema_version
-            and receipt.lookup_contract == manifest.evaluator_catalog.lookup_contract
-            and receipt.sha256 == manifest.evaluator_catalog.sha256
-            and receipt.count == manifest.evaluator_catalog.count
+        catalog = catalog_receipt(installed_catalog)
+        installed_catalog_identity = (
+            catalog.schema_version == manifest.evaluator_catalog.schema_version
+            and catalog.lookup_contract == manifest.evaluator_catalog.lookup_contract
+            and catalog.sha256 == manifest.evaluator_catalog.sha256
+            and catalog.count == manifest.evaluator_catalog.count
         )
-    except EvaluatorCatalogError:
-        catalog_lookup = None
-        catalog_identity = False
-    gold_selector = False
-    if catalog_lookup is not None:
-        try:
-            gold_path = _canonical_gold_path(project_root)
-            gold = load_gold_dataset(gold_path)
-            gold_validation = validate_gold_dataset(
-                project_root, gold_path, evaluator_catalog_path=catalog_path,
-            )
-            gold_selector = (
-                bool(gold.questions)
-                and sha256_file(gold_path) == manifest.evaluator_catalog.source_gold_sha256
-                and gold_validation["structurally_valid"]
-            )
-        except (BundleError, OSError, ValueError):
-            gold_selector = False
+    except (EvaluatorCatalogError, OSError, ValueError):
+        installed_catalog_identity = False
     checks = {
-        "postgres_revision": pg.revision == manifest.postgres.revision,
+        "migration_compatible": migration_compatible,
         "postgres_table_counts": pg.table_counts == manifest.postgres.table_counts,
         "postgres_fingerprint": pg.index_fingerprint == manifest.postgres.index_fingerprint,
         "qdrant_green": True,
@@ -644,10 +622,16 @@ def verify_bundle(
         "qdrant_sparse_config": qdrant.sparse_config == manifest.qdrant.sparse_config,
         "qdrant_payload_indexes": qdrant.payload_indexes == manifest.qdrant.payload_indexes,
         "qdrant_version": qdrant.version == manifest.qdrant.version,
-        "fastembed": fastembed_state(qdrant) == manifest.fastembed,
+        "fastembed_distribution": fastembed_state(qdrant) == manifest.fastembed,
         "runtime_bm25": _verify_runtime(project_root),
+        "evaluator_catalog_distribution": installed_catalog_identity,
         "verification_samples": len(sample_checks) == SAMPLE_SIZE and all(sample_checks),
-        "evaluator_catalog_round_trip": catalog_identity,
-        "gold_selector": gold_selector,
     }
-    return {"valid": all(checks.values()), "checks": checks, "sample_count": len(sample_checks)}
+    identity_path = project_root / "data" / "runtime" / "runtime_identity.json"
+    runtime_status = "registered" if identity_path.is_file() else "not_registered"
+    return {
+        "valid": all(checks.values()),
+        "checks": checks,
+        "sample_count": len(sample_checks),
+        "runtime_status": runtime_status,
+    }

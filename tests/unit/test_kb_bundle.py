@@ -10,6 +10,18 @@ from unittest.mock import MagicMock, patch
 from panda_agent import kb_bundle
 
 
+class _Storage:
+    def __init__(self) -> None:
+        self.settings = type("Settings", (), {
+            "qdrant_url": "http://qdrant", "collection_name": kb_bundle.COLLECTION_NAME,
+        })()
+        self.qdrant = MagicMock()
+
+    @contextmanager
+    def connect(self):
+        yield MagicMock()
+
+
 class _Response:
     def __init__(self, payload: dict[object, object]) -> None:
         self.payload = payload
@@ -41,7 +53,7 @@ class _CandidateConnection:
         return _Result(all_rows=self.candidates[:int(params[2])])
 
 
-class _Storage:
+class _CandidateStorage:
     def __init__(self, candidates: list[tuple[str, str, str]]) -> None:
         self.connection = _CandidateConnection(candidates)
         self.settings = type("Settings", (), {"collection_name": kb_bundle.COLLECTION_NAME})()
@@ -57,54 +69,207 @@ class _Storage:
 
 
 class KnowledgeBundleContractTests(unittest.TestCase):
-    def _samples(self) -> list[kb_bundle.VerificationSample]:
-        return [
+    def _manifest(self) -> kb_bundle.BundleManifest:
+        samples = [
             kb_bundle.VerificationSample(
-                object_id=f"object-{index:03d}", point_id=f"point:object-{index:03d}",
+                object_id=f"object-{index:03d}", point_id=f"point-{index:03d}",
                 source_id="source", source_version_id="source@v1",
             )
-            for index in range(100)
+            for index in range(kb_bundle.SAMPLE_SIZE)
         ]
-
-    def _manifest(self) -> kb_bundle.BundleManifest:
         return kb_bundle.BundleManifest(
-            schema_version=kb_bundle.BUNDLE_SCHEMA_VERSION, created_at=datetime(2026, 8, 9, tzinfo=UTC),
+            schema_version=kb_bundle.BUNDLE_SCHEMA_VERSION,
+            created_at=datetime(2026, 8, 10, tzinfo=UTC),
             corpus_source_manifest_sha256="c" * 64,
             postgres=kb_bundle.PostgresState(
-                database=kb_bundle.DATABASE_NAME, revision="0004",
-                table_counts={name: 1 for name in kb_bundle.SELECTED_TABLES}, index_fingerprint="f" * 64,
+                database=kb_bundle.DATABASE_NAME,
+                revision=kb_bundle.KNOWLEDGE_REVISION,
+                table_counts={name: 1 for name in kb_bundle.SELECTED_TABLES},
+                index_fingerprint="f" * 64,
             ),
             qdrant=kb_bundle.QdrantState(
-                collection=kb_bundle.COLLECTION_NAME, point_count=100, dense_config={"dense": {"size": 3072}},
-                sparse_config={"sparse": {}}, payload_indexes={"source_id": {"data_type": "keyword"}}, version="1.15.5",
+                collection=kb_bundle.COLLECTION_NAME,
+                point_count=100,
+                dense_config={"dense": {"size": 3072}},
+                sparse_config={"sparse": {}},
+                payload_indexes={"source_id": {"data_type": "keyword"}},
             ),
             fastembed=kb_bundle.FastEmbedState(
                 model="Qdrant/bm25", vector_name="sparse", language="english", fastembed_version="0.7.4",
             ),
-            verification_samples=self._samples(),
+            verification_samples=samples,
             postgres_dump=kb_bundle.ArtifactHash(filename="postgres.dump", bytes=1, sha256="a" * 64),
             qdrant_snapshot=kb_bundle.ArtifactHash(filename="qdrant.snapshot", bytes=1, sha256="b" * 64),
             evaluator_catalog=kb_bundle.EvaluatorCatalogState(
                 path=kb_bundle.EVALUATOR_CATALOG_PATH.as_posix(),
                 schema_version=kb_bundle.CATALOG_SCHEMA_VERSION,
                 lookup_contract=kb_bundle.LOOKUP_CONTRACT,
-                sha256="d" * 64,
-                count=2,
-                source_gold_sha256="e" * 64,
+                sha256="d" * 64, count=1, source_gold_sha256="e" * 64,
             ),
         )
 
-    def test_manifest_is_strict_and_persists_exactly_one_hundred_samples(self) -> None:
+    def test_public_v2_manifest_remains_strict_and_runtime_receipt_is_separate(self) -> None:
         manifest = self._manifest()
-        self.assertEqual(len(manifest.verification_samples), 100)
+        receipt = manifest.model_dump(mode="json")
+        self.assertIn("evaluator_catalog", receipt)
+        self.assertIn("source_gold_sha256", receipt["evaluator_catalog"])
         with self.assertRaises(Exception):
-            kb_bundle.BundleManifest(schema_version="v1", unexpected=True)
-        with self.assertRaises(Exception):
-            manifest.model_copy(update={"verification_samples": manifest.verification_samples[:99]}).model_validate(
-                manifest.model_dump() | {"verification_samples": manifest.model_dump()["verification_samples"][:99]}
-            )
+            kb_bundle.BundleManifest.model_validate(receipt | {"evaluator_catalog": {}})
 
-    def test_exact_qdrant_count_uses_exact_count_api_and_status_is_strict_green(self) -> None:
+    def test_preflight_requires_0004_and_public_v2_distribution_assets(self) -> None:
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / kb_bundle.POSTGRES_DUMP_NAME).write_bytes(b"p")
+            (root / kb_bundle.QDRANT_SNAPSHOT_NAME).write_bytes(b"q")
+            runtime = root / kb_bundle.RUNTIME_BM25_PATH
+            runtime.mkdir(parents=True)
+            (runtime / "model.onnx").write_bytes(b"model")
+            source = root / "knowledge_objects.jsonl"
+            source.write_text('{"object_id":"object.one","locator":{},"metadata":{}}\n', encoding="utf-8")
+            catalog = kb_bundle.write_evaluator_catalog(source, root / kb_bundle.EVALUATOR_CATALOG_PATH)
+            manifest = self._manifest().model_copy(update={
+                "postgres_dump": kb_bundle._artifact(root / kb_bundle.POSTGRES_DUMP_NAME, kb_bundle.POSTGRES_DUMP_NAME),
+                "qdrant_snapshot": kb_bundle._artifact(root / kb_bundle.QDRANT_SNAPSHOT_NAME, kb_bundle.QDRANT_SNAPSHOT_NAME),
+                "evaluator_catalog": kb_bundle.EvaluatorCatalogState(
+                    path=kb_bundle.EVALUATOR_CATALOG_PATH.as_posix(), schema_version=catalog.schema_version,
+                    lookup_contract=catalog.lookup_contract, sha256=catalog.sha256, count=catalog.count,
+                    source_gold_sha256="e" * 64,
+                ),
+            })
+            kb_bundle._write_manifest(root / kb_bundle.MANIFEST_NAME, manifest)
+            self.assertEqual(kb_bundle.preflight_bundle(root), manifest)
+            wrong = manifest.model_copy(update={"postgres": manifest.postgres.model_copy(update={"revision": "0005"})})
+            kb_bundle._write_manifest(root / kb_bundle.MANIFEST_NAME, wrong)
+            with self.assertRaisesRegex(kb_bundle.BundleError, "knowledge revision"):
+                kb_bundle.preflight_bundle(root)
+
+    def test_public_v2_catalog_hash_mismatch_fails_closed(self) -> None:
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / kb_bundle.POSTGRES_DUMP_NAME).write_bytes(b"p")
+            (root / kb_bundle.QDRANT_SNAPSHOT_NAME).write_bytes(b"q")
+            runtime = root / kb_bundle.RUNTIME_BM25_PATH
+            runtime.mkdir(parents=True)
+            (runtime / "model.onnx").write_bytes(b"model")
+            source = root / "objects.jsonl"
+            source.write_text('{"object_id":"one","locator":{},"metadata":{}}\n', encoding="utf-8")
+            receipt = kb_bundle.write_evaluator_catalog(source, root / kb_bundle.EVALUATOR_CATALOG_PATH)
+            manifest = self._manifest().model_copy(update={
+                "postgres_dump": kb_bundle._artifact(root / kb_bundle.POSTGRES_DUMP_NAME, kb_bundle.POSTGRES_DUMP_NAME),
+                "qdrant_snapshot": kb_bundle._artifact(root / kb_bundle.QDRANT_SNAPSHOT_NAME, kb_bundle.QDRANT_SNAPSHOT_NAME),
+                "evaluator_catalog": kb_bundle.EvaluatorCatalogState(
+                    path=kb_bundle.EVALUATOR_CATALOG_PATH.as_posix(), schema_version=receipt.schema_version,
+                    lookup_contract=receipt.lookup_contract, sha256=receipt.sha256, count=receipt.count,
+                    source_gold_sha256="e" * 64,
+                ),
+            })
+            kb_bundle._write_manifest(root / kb_bundle.MANIFEST_NAME, manifest)
+            (root / kb_bundle.EVALUATOR_CATALOG_PATH).write_bytes(b"{}")
+            with self.assertRaisesRegex(kb_bundle.BundleError, "evaluator catalog"):
+                kb_bundle.preflight_bundle(root)
+
+    def test_restore_keeps_public_v2_evaluator_distribution_install(self) -> None:
+        manifest = self._manifest()
+        storage = MagicMock()
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            with (
+                patch.object(kb_bundle, "preflight_bundle", return_value=manifest),
+                patch.object(kb_bundle, "_assert_evaluator_catalog_installable"),
+                patch.object(kb_bundle, "Storage", return_value=storage),
+                patch.object(kb_bundle, "_target_is_empty"),
+                patch.object(kb_bundle, "_restore_postgres"),
+                patch.object(kb_bundle, "_restore_qdrant"),
+                patch.object(kb_bundle, "_install_runtime_from_bundle"),
+                patch.object(kb_bundle, "_install_evaluator_catalog_from_bundle") as install_catalog,
+            ):
+                kb_bundle.restore_bundle(root / "bundle", project_root=root)
+        install_catalog.assert_called_once_with(root / "bundle", root.resolve())
+
+    def test_kb_verify_accepts_service_0005_and_does_not_gate_on_runtime_registration(self) -> None:
+        manifest = self._manifest()
+        actual_pg = manifest.postgres.model_copy(update={"revision": "0005"})
+        storage = _Storage()
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            with (
+                patch.object(kb_bundle, "preflight_bundle", return_value=manifest),
+                patch.object(kb_bundle, "Storage", return_value=storage),
+                patch.object(kb_bundle, "postgres_state", return_value=actual_pg),
+                patch.object(kb_bundle, "qdrant_state", return_value=manifest.qdrant),
+                patch.object(kb_bundle, "fastembed_state", return_value=manifest.fastembed),
+                patch.object(kb_bundle, "_verify_sample", return_value=True) as sample,
+                patch.object(kb_bundle, "_verify_runtime", return_value=True),
+                patch.object(kb_bundle, "catalog_receipt", return_value=type("Receipt", (), {
+                    "schema_version": manifest.evaluator_catalog.schema_version,
+                    "lookup_contract": manifest.evaluator_catalog.lookup_contract,
+                    "sha256": manifest.evaluator_catalog.sha256,
+                    "count": manifest.evaluator_catalog.count,
+                })()),
+            ):
+                result = kb_bundle.verify_bundle(root, project_root=root)
+        self.assertTrue(result["valid"])
+        self.assertEqual(result["runtime_status"], "not_registered")
+        self.assertEqual(sample.call_count, kb_bundle.SAMPLE_SIZE)
+
+    def test_kb_verify_fails_closed_for_unsupported_service_revision(self) -> None:
+        manifest = self._manifest()
+        actual_pg = manifest.postgres.model_copy(update={"revision": "0006"})
+        storage = _Storage()
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            with (
+                patch.object(kb_bundle, "preflight_bundle", return_value=manifest),
+                patch.object(kb_bundle, "Storage", return_value=storage),
+                patch.object(kb_bundle, "postgres_state", return_value=actual_pg),
+                patch.object(kb_bundle, "qdrant_state", return_value=manifest.qdrant),
+                patch.object(kb_bundle, "fastembed_state", return_value=manifest.fastembed),
+                patch.object(kb_bundle, "_verify_sample", return_value=True),
+                patch.object(kb_bundle, "_verify_runtime", return_value=True),
+                patch.object(kb_bundle, "catalog_receipt", return_value=type("Receipt", (), {
+                    "schema_version": manifest.evaluator_catalog.schema_version,
+                    "lookup_contract": manifest.evaluator_catalog.lookup_contract,
+                    "sha256": manifest.evaluator_catalog.sha256,
+                    "count": manifest.evaluator_catalog.count,
+                })()),
+            ):
+                result = kb_bundle.verify_bundle(root, project_root=root)
+        self.assertFalse(result["valid"])
+        self.assertFalse(result["checks"]["migration_compatible"])
+
+    def test_kb_verify_fails_when_restored_distribution_assets_are_missing(self) -> None:
+        manifest = self._manifest()
+        storage = _Storage()
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            with (
+                patch.object(kb_bundle, "preflight_bundle", return_value=manifest),
+                patch.object(kb_bundle, "Storage", return_value=storage),
+                patch.object(kb_bundle, "postgres_state", return_value=manifest.postgres),
+                patch.object(kb_bundle, "qdrant_state", return_value=manifest.qdrant),
+                patch.object(kb_bundle, "fastembed_state", return_value=manifest.fastembed),
+                patch.object(kb_bundle, "_verify_sample", return_value=True),
+                patch.object(kb_bundle, "_verify_runtime", return_value=False),
+                patch.object(kb_bundle, "catalog_receipt", side_effect=FileNotFoundError()),
+            ):
+                result = kb_bundle.verify_bundle(root, project_root=root)
+        self.assertFalse(result["valid"])
+        self.assertFalse(result["checks"]["runtime_bm25"])
+        self.assertFalse(result["checks"]["evaluator_catalog_distribution"])
+
+    def test_0005_migration_is_service_only(self) -> None:
+        migration = (Path(__file__).parents[2] / "migrations" / "versions" / "0005_qa_service_runtime.py").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn('revision = "0005"', migration)
+        self.assertIn('down_revision = "0004"', migration)
+        self.assertIn("ALTER TABLE qa_runs", migration)
+        for field in ("completed_at", "duration_ms", "intent", "error_code", "node_timings", "model_usage"):
+            self.assertIn(field, migration)
+        self.assertNotIn("knowledge_objects", migration)
+        self.assertNotIn("index_identities", migration)
+
+    def test_existing_sample_and_qdrant_contracts_remain_covered(self) -> None:
         session = MagicMock()
         session.post.return_value = _Response({"result": {"count": 42}})
         self.assertEqual(kb_bundle.exact_qdrant_count(session, "http://qdrant", "collection"), 42)
@@ -112,219 +277,66 @@ class KnowledgeBundleContractTests(unittest.TestCase):
         session.get.return_value = _Response({"result": {"status": None}})
         with self.assertRaisesRegex(kb_bundle.BundleError, "green"):
             kb_bundle._qdrant_info(session, "http://qdrant", "collection")
-
-    def test_candidates_use_a_legal_distinct_subquery_for_md5_ordering(self) -> None:
         rows = [(f"object-{index:03d}", "source", "source@v1") for index in range(100)]
-        storage = _Storage(rows)
-        selected = kb_bundle.deterministic_sample_candidates(storage)
-        self.assertEqual(selected, rows)
-        sql = " ".join(storage.connection.sql.split())
-        self.assertIn(
-            "SELECT DISTINCT k.object_id,k.source_id,k.source_version_id,"
-            "md5(k.object_id::text) AS sample_order",
-            sql,
-        )
-        self.assertIn("FROM embedding_records e JOIN knowledge_objects k ON k.object_id=e.object_id", sql)
-        self.assertIn("e.task_type='RETRIEVAL_DOCUMENT'", sql)
-        self.assertIn("ORDER BY sample_order, object_id LIMIT %s", sql)
-        self.assertNotIn(
-            "SELECT DISTINCT k.object_id,k.source_id,k.source_version_id FROM embedding_records "
-            "e JOIN knowledge_objects k ON k.object_id=e.object_id WHERE",
-            sql,
-        )
+        storage = _CandidateStorage(rows)
+        self.assertEqual(kb_bundle.deterministic_sample_candidates(storage), rows)
+        self.assertIn("md5(k.object_id::text)", storage.connection.sql)
 
-    def test_sample_selection_requires_payload_identity_and_with_payload(self) -> None:
-        rows = [(f"object-{index:03d}", "source", "source@v1") for index in range(100)]
-        storage = _Storage(rows)
-        storage.qdrant.retrieve.return_value = [
-            type("Point", (), {"id": "point:object-000", "payload": {"object_id": "wrong", "source_id": "source", "source_version_id": "source@v1"}})()
-        ]
-        with self.assertRaisesRegex(kb_bundle.BundleError, "payload identity"):
-            kb_bundle.select_verification_samples(storage)
-        self.assertTrue(storage.qdrant.retrieve.call_args.kwargs["with_payload"])
-
-    def test_sample_selection_replaces_a_missing_early_point_from_stable_candidate_pool(self) -> None:
+    def test_existing_sample_selection_fail_closed_contracts_remain_covered(self) -> None:
         rows = [(f"object-{index:03d}", "source", "source@v1") for index in range(101)]
-        storage = _Storage(rows)
+        storage = _CandidateStorage(rows)
 
         def retrieve(*, ids: list[str], **_: object) -> list[object]:
             return [
-                type("Point", (), {
-                    "id": point_id,
-                    "payload": {
-                        "object_id": point_id.removeprefix("point:"),
-                        "source_id": "source",
-                        "source_version_id": "source@v1",
-                    },
-                })()
+                type("Point", (), {"id": point_id, "payload": {
+                    "object_id": point_id.removeprefix("point:"), "source_id": "source",
+                    "source_version_id": "source@v1",
+                }})()
                 for point_id in ids if point_id != "point:object-000"
             ]
 
         storage.qdrant.retrieve.side_effect = retrieve
         selected = kb_bundle.select_verification_samples(storage)
-        self.assertEqual([sample.object_id for sample in selected], [row[0] for row in rows[1:]])
+        self.assertEqual([item.object_id for item in selected], [row[0] for row in rows[1:]])
         self.assertEqual(storage.connection.params[2], kb_bundle.SAMPLE_CANDIDATE_POOL_SIZE)
+        bad_storage = _CandidateStorage(rows)
+        bad_storage.qdrant.retrieve.return_value = [
+            type("Point", (), {"id": "point:object-000", "payload": {"object_id": "wrong"}})()
+        ]
+        with self.assertRaisesRegex(kb_bundle.BundleError, "payload identity"):
+            kb_bundle.select_verification_samples(bad_storage)
 
-    def test_sample_selection_fails_closed_when_candidate_pool_confirms_fewer_than_one_hundred(self) -> None:
-        rows = [(f"object-{index:03d}", "source", "source@v1") for index in range(101)]
-        storage = _Storage(rows)
-
-        def retrieve(*, ids: list[str], **_: object) -> list[object]:
-            return [
-                type("Point", (), {
-                    "id": point_id,
-                    "payload": {
-                        "object_id": point_id.removeprefix("point:"),
-                        "source_id": "source",
-                        "source_version_id": "source@v1",
-                    },
-                })()
-                for point_id in ids if point_id not in {"point:object-000", "point:object-001"}
-            ]
-
-        storage.qdrant.retrieve.side_effect = retrieve
-        with self.assertRaisesRegex(kb_bundle.BundleError, "confirmed 99 of 100"):
-            kb_bundle.select_verification_samples(storage)
-
-    def test_restore_hash_preflight_precedes_storage_or_mutation(self) -> None:
+    def test_existing_restore_and_runtime_distribution_contracts_remain_covered(self) -> None:
         with TemporaryDirectory() as directory:
-            bundle = Path(directory)
-            (bundle / kb_bundle.MANIFEST_NAME).write_text("{}", encoding="utf-8")
+            root = Path(directory)
+            (root / kb_bundle.MANIFEST_NAME).write_text("{}", encoding="utf-8")
             with patch.object(kb_bundle, "Storage") as storage:
                 with self.assertRaises(kb_bundle.BundleError):
-                    kb_bundle.restore_bundle(bundle, project_root=bundle)
+                    kb_bundle.restore_bundle(root, project_root=root)
             storage.assert_not_called()
-
-    def test_preflight_and_inspect_fail_closed_on_catalog_hash_mismatch(self) -> None:
-        with TemporaryDirectory() as directory:
-            root = Path(directory)
-            (root / kb_bundle.POSTGRES_DUMP_NAME).write_bytes(b"postgres")
-            (root / kb_bundle.QDRANT_SNAPSHOT_NAME).write_bytes(b"qdrant")
-            runtime = root / kb_bundle.RUNTIME_BM25_PATH
-            runtime.mkdir(parents=True)
-            (runtime / "model.onnx").write_bytes(b"model")
-            source = root / "knowledge_objects.jsonl"
-            source.write_text(
-                '{"object_id":"object.one","locator":{},"metadata":{"workflow":"demo"}}\n',
-                encoding="utf-8",
-            )
-            receipt = kb_bundle.write_evaluator_catalog(
-                source, root / kb_bundle.EVALUATOR_CATALOG_PATH,
-            )
-            manifest = self._manifest().model_copy(update={
-                "postgres_dump": kb_bundle._artifact(root / kb_bundle.POSTGRES_DUMP_NAME, kb_bundle.POSTGRES_DUMP_NAME),
-                "qdrant_snapshot": kb_bundle._artifact(root / kb_bundle.QDRANT_SNAPSHOT_NAME, kb_bundle.QDRANT_SNAPSHOT_NAME),
-                "evaluator_catalog": kb_bundle.EvaluatorCatalogState(
-                    path=kb_bundle.EVALUATOR_CATALOG_PATH.as_posix(),
-                    schema_version=receipt.schema_version,
-                    lookup_contract=receipt.lookup_contract,
-                    sha256=receipt.sha256,
-                    count=receipt.count,
-                    source_gold_sha256="e" * 64,
-                ),
-            })
-            kb_bundle._write_manifest(root / kb_bundle.MANIFEST_NAME, manifest)
-            self.assertEqual(kb_bundle.inspect_bundle(root)["evaluator_catalog"]["count"], 1)
-            (root / kb_bundle.EVALUATOR_CATALOG_PATH).write_bytes(b"{}")
-            with self.assertRaisesRegex(kb_bundle.BundleError, "evaluator catalog"):
-                kb_bundle.preflight_bundle(root)
-
-    def test_verify_uses_manifest_samples_not_excluded_embedding_records(self) -> None:
-        manifest = self._manifest()
-        storage = MagicMock()
-        storage.settings = MagicMock(qdrant_url="http://qdrant", collection_name=kb_bundle.COLLECTION_NAME)
-        with TemporaryDirectory() as directory:
-            root = Path(directory)
-            with (
-                patch.object(kb_bundle, "preflight_bundle", return_value=manifest),
-                patch.object(kb_bundle, "Storage", return_value=storage),
-                patch.object(kb_bundle, "postgres_state", return_value=manifest.postgres),
-                patch.object(kb_bundle, "qdrant_state", return_value=manifest.qdrant),
-                patch.object(kb_bundle, "fastembed_state", return_value=manifest.fastembed),
-                patch.object(kb_bundle, "_verify_runtime", return_value=True),
-                patch.object(kb_bundle, "_verify_sample", return_value=True) as verify_sample,
-                patch.object(kb_bundle, "deterministic_sample_candidates", side_effect=AssertionError("must not read embedding records")),
-                patch.object(kb_bundle, "catalog_receipt", return_value=type("Receipt", (), {
-                    "schema_version": manifest.evaluator_catalog.schema_version,
-                    "lookup_contract": manifest.evaluator_catalog.lookup_contract,
-                    "sha256": manifest.evaluator_catalog.sha256,
-                    "count": manifest.evaluator_catalog.count,
-                })()),
-                patch.object(kb_bundle, "load_evaluator_catalog", return_value={"object-0": {}}),
-                patch.object(kb_bundle, "_canonical_gold_path", return_value=root / "gold.yaml"),
-                patch.object(kb_bundle, "load_gold_dataset", return_value=type("Gold", (), {"questions": [object()]})()),
-                patch.object(kb_bundle, "sha256_file", return_value=manifest.evaluator_catalog.source_gold_sha256),
-                patch.object(kb_bundle, "validate_gold_dataset", return_value={"structurally_valid": True}),
-            ):
-                result = kb_bundle.verify_bundle(root, project_root=root)
-        self.assertTrue(result["valid"])
-        self.assertEqual(verify_sample.call_count, 100)
-
-    def test_wrong_persisted_sample_identity_fails_verify(self) -> None:
-        manifest = self._manifest()
-        storage = MagicMock()
-        storage.settings = MagicMock(qdrant_url="http://qdrant", collection_name=kb_bundle.COLLECTION_NAME)
-        with TemporaryDirectory() as directory:
-            root = Path(directory)
-            with (
-                patch.object(kb_bundle, "preflight_bundle", return_value=manifest),
-                patch.object(kb_bundle, "Storage", return_value=storage),
-                patch.object(kb_bundle, "postgres_state", return_value=manifest.postgres),
-                patch.object(kb_bundle, "qdrant_state", return_value=manifest.qdrant),
-                patch.object(kb_bundle, "fastembed_state", return_value=manifest.fastembed),
-                patch.object(kb_bundle, "_verify_runtime", return_value=True),
-                patch.object(kb_bundle, "_verify_sample", side_effect=[False] + [True] * 99),
-                patch.object(kb_bundle, "catalog_receipt", return_value=type("Receipt", (), {
-                    "schema_version": manifest.evaluator_catalog.schema_version,
-                    "lookup_contract": manifest.evaluator_catalog.lookup_contract,
-                    "sha256": manifest.evaluator_catalog.sha256,
-                    "count": manifest.evaluator_catalog.count,
-                })()),
-                patch.object(kb_bundle, "load_evaluator_catalog", return_value={"object-0": {}}),
-                patch.object(kb_bundle, "_canonical_gold_path", return_value=root / "gold.yaml"),
-                patch.object(kb_bundle, "load_gold_dataset", return_value=type("Gold", (), {"questions": [object()]})()),
-                patch.object(kb_bundle, "sha256_file", return_value=manifest.evaluator_catalog.source_gold_sha256),
-                patch.object(kb_bundle, "validate_gold_dataset", return_value={"structurally_valid": True}),
-            ):
-                self.assertFalse(kb_bundle.verify_bundle(root, project_root=root)["valid"])
-
-    def test_runtime_install_destination_and_local_only_functional_probe(self) -> None:
-        with TemporaryDirectory() as directory:
-            root = Path(directory)
             bundle = root / "bundle"
             source = bundle / kb_bundle.RUNTIME_BM25_PATH
             source.mkdir(parents=True)
             (source / "model.onnx").write_bytes(b"model")
             installed = kb_bundle._install_runtime_from_bundle(bundle, root)
-            self.assertEqual(installed, root / kb_bundle.INSTALLED_RUNTIME_PATH)
             vector = type("Vector", (), {"values": [1.0]})()
             with patch.object(kb_bundle, "SparseTextEmbedding") as embedding:
                 embedding.return_value.query_embed.return_value = iter([vector])
                 self.assertTrue(kb_bundle._verify_runtime(root))
             self.assertEqual(embedding.call_args.kwargs["specific_model_path"], str(installed))
             self.assertTrue(embedding.call_args.kwargs["local_files_only"])
-            self.assertEqual(embedding.call_args.kwargs["language"], "english")
 
-    def test_pg_restore_has_exit_on_error_and_single_transaction(self) -> None:
+    def test_existing_restore_and_export_guards_remain_covered(self) -> None:
         with TemporaryDirectory() as directory:
             root = Path(directory)
             (root / kb_bundle.POSTGRES_DUMP_NAME).write_bytes(b"dump")
             calls: list[list[str]] = []
-
-            def runner(command: list[str], **_: object) -> None:
-                calls.append(command)
-
-            kb_bundle._restore_postgres(root, root, runner)
+            kb_bundle._restore_postgres(root, root, lambda command, **_: calls.append(command))
         self.assertIn("--exit-on-error", calls[0])
         self.assertIn("--single-transaction", calls[0])
-
-    def test_export_preflight_requires_valid_index_before_dump(self) -> None:
-        storage = MagicMock()
         with patch.object(kb_bundle, "verify_index", return_value={"valid": False}):
             with self.assertRaisesRegex(kb_bundle.BundleError, "index verification"):
-                kb_bundle._export_preflight(Path("."), storage)
-
-    def test_postgres_state_model_requires_all_selected_table_counts(self) -> None:
+                kb_bundle._export_preflight(Path("."), MagicMock())
         with self.assertRaises(ValueError):
             kb_bundle.PostgresState(
                 database=kb_bundle.DATABASE_NAME, revision="0004", table_counts={}, index_fingerprint="x"

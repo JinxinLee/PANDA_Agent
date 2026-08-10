@@ -10,30 +10,56 @@ commits, hashes, architecture decisions, commands, and verified results.
 
 ## Quick start
 
-From the `Agent_learn` workspace root:
+From the `Agent_learn` workspace root, activate a Python 3.12 environment and
+install the QA extra. The normal new-user path uses a prebuilt Bundle; it does
+not rebuild the corpus or index.
 
 ```powershell
 Set-Location .\PANDA_Agent
-..\.venv\Scripts\python.exe -m pip install -e ".[qa,ingestion,dev]"
+..\.venv\Scripts\python.exe -m pip install -e ".[qa]"
+Copy-Item .env.example .env
+
+# Start only the PostgreSQL and Qdrant dependencies.
 docker compose up -d --wait postgres qdrant
-..\.venv\Scripts\alembic.exe upgrade head
-..\.venv\Scripts\python.exe -m panda_agent.cli.source verify
-..\.venv\Scripts\python.exe -m panda_agent.cli.index plan
-..\.venv\Scripts\python.exe -m panda_agent.cli.index apply
-..\.venv\Scripts\python.exe -m panda_agent.cli.index verify
-..\.venv\Scripts\python.exe -m panda_agent.cli.qa ask "How is event_poca used?"
+
+$bundlePath = 'D:\panda-bundles\panda-kb-prototype-v2.0.0'
+panda-qa-kb restore --bundle $bundlePath --project-root (Get-Location)
+panda-qa-kb verify --bundle $bundlePath --project-root (Get-Location)
+# Before registration, verify may report runtime_status=not_registered and still exit 0.
+python -m alembic upgrade head
+panda-qa-runtime register-runtime --bundle $bundlePath --project-root (Get-Location)
+panda-qa-runtime verify --project-root (Get-Location)
+panda-qa-api --project-root (Get-Location)
 ```
 
-If an index process was interrupted, inspect `ingestion_runs` and resume it:
+`panda-qa-api` listens on loopback `127.0.0.1:8000` with one Uvicorn worker.
+After it is ready, send a question to `POST /v1/qa` (the input question is
+trimmed and must be 1–10,000 characters):
+
+```powershell
+Invoke-RestMethod http://127.0.0.1:8000/v1/qa -Method Post `
+  -ContentType 'application/json' -Body (@{question='How is event_poca used?'} | ConvertTo-Json)
+```
+
+The migration, registration receipt, route/error contract, and P0 limitations
+are documented in [docs/M7_P0_IMPLEMENTATION.md](docs/M7_P0_IMPLEMENTATION.md).
+M7 P0 is implemented in this working tree, but M7 overall is not passed: the
+real four-question smoke and M7 P1 deadline/504, model-usage, and JSON-logging
+checks remain outstanding. M8 has not started.
+
+For a source-building workflow (which performs network crawling and indexing),
+inspect the existing commands in [QA_AGENT.md](QA_AGENT.md) after the Bundle
+quickstart. If an index process was interrupted, inspect `ingestion_runs` and
+resume it:
 
 ```powershell
 ..\.venv\Scripts\python.exe -m panda_agent.cli.index resume --run-id <RUN_ID>
 ```
 
-The health check uses Application Default Credentials and the existing
-`GCP_PROJECT_ID`/`GCP_LOCATION` values. Model IDs can be overridden with
-`QA_GENERATION_MODEL_ID` and `QA_EMBEDDING_MODEL_ID`.
-The current index contract also requires `QA_EMBEDDING_DIMENSIONS=3072`.
+The health check uses Application Default Credentials and the
+`QA_GCP_PROJECT_ID`/`QA_VERTEX_LOCATION` values. Model IDs can be overridden with
+`QA_GENERATION_MODEL_ID` and `QA_EMBEDDING_MODEL_ID`; the fixed embedding
+contract requires `QA_EMBEDDING_DIMENSIONS=3072`.
 
 ## Knowledge bundle prototype
 
@@ -72,13 +98,14 @@ The latest run found `runtime_equivalent_but_model_variance_observed`: replay an
 selector parity passed, and both 10-question QA roles completed without an
 exception. This diagnostic does not replace the 80-question development gate.
 
-## M6 benchmark gate
+## M6 benchmark record and current milestone status
 
-The 120-question Gold dataset has been human-reviewed and all 120 questions are
-approved. `validate --official` succeeds. The first 80-question development
-retrieval run is retained as a failed quality baseline (Recall@10 `0.45`, intent
-accuracy `0.80`), so M6 has not passed and M7/M8 remain gated while retrieval is
-being corrected and rerun.
+按用户当前验收决定，M6 视为达标。120-question Gold dataset 已人工审核，
+`validate --official` succeeds；下面的首次 80-question development run（Recall@10
+`0.45`、intent accuracy `0.80`）仅作为历史质量基线保留，不改写当前验收口径。
+
+当前状态统一为：M7 P0 已实现并验证；M7 整体尚未通过（M7 P1 与四道真实 smoke
+尚未完成）；M8 尚未开始。这里不虚构 hidden acceptance 或尚未运行的 formal gate。
 
 ```powershell
 ..\.venv\Scripts\panda-qa-eval.exe validate

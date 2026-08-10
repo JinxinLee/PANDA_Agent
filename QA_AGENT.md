@@ -1,26 +1,26 @@
 # PANDA 科研代码库问答 Agent：架构决策、实施与验证记录
 
-> **RC3f regression 审查修复（2026-08-09）：** Gold v2.6 与 evaluator 2.6.1 已落地；`g087/g097/g116` 的窄范围 completeness 修复及 `g098/g111` sentinel 全部通过。按评估策略未重跑完整 16 题；13 个已接受原始结果与 3 个 replacement 的 reviewed composite 为 16/16，所有 regression 质量检查通过。因 mixed runtime provenance，该结果不冒充单一冻结 candidate 的 formal gate。详见 `docs/M6_REGRESSION_RC3F_REVIEW_FIX_RESULT.md`。
+> **历史 RC3f regression 审查修复（2026-08-09）：** Gold v2.6 与 evaluator 2.6.1 已落地；`g087/g097/g116` 的窄范围 completeness 修复及 `g098/g111` sentinel 全部通过。按评估策略未重跑完整 16 题；13 个已接受原始结果与 3 个 replacement 的 reviewed composite 为 16/16，所有 regression 质量检查通过。因 mixed runtime provenance，该历史结果不冒充单一冻结 candidate 的 formal gate。详见 `docs/M6_REGRESSION_RC3F_REVIEW_FIX_RESULT.md`。
 
-> **evaluator-2.2 当前结果（2026-08-04）：** Gold v2.2 已对 `g074/g079/g086` 做窄修正并完成 68-case 零模型调用 diagnostic composite rescore；三题均 scorer v2.2/pass。48 题审查现为 36 resolved、12 real failure pending；替换不含 `g089`。rescore 新增 0 calls/0 tokens，历史 405 calls/4,126,750 tokens 不属于新增成本。因 subset 不完整，`complete_v2_dev=false`、development gate=false，不能冻结 candidate 或解锁后续阶段。详见 `docs/M6_68_NON_REAL_RESCORE_RESULT.md`。
+> **历史 evaluator-2.2 诊断（2026-08-04）：** Gold v2.2 已对 `g074/g079/g086` 做窄修正并完成 68-case 零模型调用 diagnostic composite rescore；三题均 scorer v2.2/pass。48 题审查当时为 36 resolved、12 real failure pending；替换不含 `g089`。rescore 新增 0 calls/0 tokens，历史 405 calls/4,126,750 tokens 不属于新增成本。因该历史 subset 不完整，`complete_v2_dev=false`、development gate=false，不能冻结 candidate 或解锁后续阶段；这不改写按用户当前验收决定的 M6 达标口径。详见 `docs/M6_68_NON_REAL_RESCORE_RESULT.md`。
 
-> **历史快照：48 题统一人工审查（rescore 前，2026-08-04）：** 原 31 道已修正评分题、最新 6 道 mixed 审查和原 11 道未处理真实失败曾合并到 `evaluation/reviews/m6_integrated_48_review.yaml` 与 `.md`；当时为 33 resolved、3 pending offline rescore 和 12 pending fix-and-rerun。当前状态以本文件上方 evaluator-2.2 记录和 canonical YAML 为准。
+> **历史快照：48 题统一人工审查（rescore 前，2026-08-04）：** 原 31 道已修正评分题、最新 6 道 mixed 审查和原 11 道未处理真实失败曾合并到 `evaluation/reviews/m6_integrated_48_review.yaml` 与 `.md`；当时为 33 resolved、3 pending offline rescore 和 12 pending fix-and-rerun。该快照不代表当前验收状态。
 
-> **3.6 RC2b 执行结果（2026-08-03）：** `QA_GENERATION_MODEL_ID` 默认值已恢复为 `gemini-3.6-flash`，evaluation judge 仍为独立的 `gemini-3.6-flash`，embedding 保持 `gemini-embedding-2`。12 道 dev 焦点题及 regression sentinel `g098` 通过；候选 `m6-v2-36-rc2b` 已冻结并验证。随后唯一一次完整 80 道 dev 运行完成 80/80，但 development gate 未通过，因此没有运行完整 16 道 regression、challenge、acceptance 或 M7。详见 `data/evaluation/runs/m6-v2-36-qa-dev-rc2b/` 和 `docs/M6_PHASE6_0_7_RESULT.md`。
+> **历史 3.6 RC2b 执行结果（2026-08-03）：** `QA_GENERATION_MODEL_ID` 默认值已恢复为 `gemini-3.6-flash`，evaluation judge 仍为独立的 `gemini-3.6-flash`，embedding 保持 `gemini-embedding-2`。12 道 dev 焦点题及 regression sentinel `g098` 通过；候选 `m6-v2-36-rc2b` 已冻结并验证。随后唯一一次完整 80 道 dev 运行完成 80/80，但当时 development gate 未通过，因此没有运行完整 16 道 regression、challenge、acceptance 或 M7；这不改写当前 M6 验收决定。详见 `data/evaluation/runs/m6-v2-36-qa-dev-rc2b/` 和 `docs/M6_PHASE6_0_7_RESULT.md`。
 
-> **31 题评分修正（2026-08-04）：** Gold v2.1、evaluator-2.1 和人工 adjudication 已落地。29 题只做离线重算；g041/g119 通过 `m6-v2-36-status-fix-31-retry1` 最小重跑，g031/g112 作为防过度拒答 sentinel。完整 80 题统一结果见 `docs/M6_31_CASE_RESCORE_RESULT.md`；该结果是开发诊断基线，不是新的 candidate，也不代表 M6 gate 通过。
+> **历史 31 题评分修正（2026-08-04）：** Gold v2.1、evaluator-2.1 和人工 adjudication 已落地。29 题只做离线重算；g041/g119 通过 `m6-v2-36-status-fix-31-retry1` 最小重跑，g031/g112 作为防过度拒答 sentinel。完整 80 题统一结果见 `docs/M6_31_CASE_RESCORE_RESULT.md`；该结果是历史开发诊断基线，不是新的 candidate，也不改写当前 M6 验收决定。
 
-> **六道 mixed claim-noise 修复（2026-08-04）：** `g011`、`g074`、`g079`、`g085`、`g086`、`g089` 在 `data/evaluation/runs/m6-v2-36-synthetic-noise-fix-6-v1/` 做了唯一一次焦点行为运行，6/6 `answered`。`scope_*`、`required_workflow`、`required_code`、`dataflow_locator_*` 和包含 `curated_panda_domain` 的文本现在只保留在内部 `claim_audit`，不进入用户可见 `answer/claims`；每个 rendered claim 的 audit 映射为 `question_core`。本次结果及逐题噪声审计见 `docs/M6_6_MIXED_CLAIM_NOISE_RESULT.md`。
+> **历史六道 mixed claim-noise 修复（2026-08-04）：** `g011`、`g074`、`g079`、`g085`、`g086`、`g089` 在 `data/evaluation/runs/m6-v2-36-synthetic-noise-fix-6-v1/` 做了唯一一次焦点行为运行，6/6 `answered`。`scope_*`、`required_workflow`、`required_code`、`dataflow_locator_*` 和包含 `curated_panda_domain` 的文本现在只保留在内部 `claim_audit`，不进入用户可见 `answer/claims`；每个 rendered claim 的 audit 映射为 `question_core`。本次历史结果及逐题噪声审计见 `docs/M6_6_MIXED_CLAIM_NOISE_RESULT.md`。
 
 > **历史焦点快照（rescore 前）：** 本次运行 40 次模型调用、410,412 tokens（runtime 34/362,661；judge 6/47,751），耗时 343.7 s。用户可见泄漏为 0，citation integrity、expected status、wrong-version/forbidden evidence、identifier hallucination、major unsupported 和 contradiction 均为通过；answer-point coverage 为 94.44%，但 `g089` 仍有 judge 标记的 p2 missing，且当时 `g074`、`g079`、`g086`、`g089` 尚有 source/final-evidence 或 selector 评分差异待人工处置。focused development gate=false，不代表完整 M6 gate 通过。原 RC2b records 不变；当前源码/Prompt 变更后，RC2b 不再代表当前行为。11 道 real failure 仍未处理。
 
-> **M6 Benchmark v2 更新（2026-08-02）：** v8 的 17 项人工失败审查已导入（13 rescore、4 fix、0 waiver）。v2 的 120 题现已全部人工批准并原样导入，SHA-256 为 `f58ab7f55717aaa5b6205403dfcc78533b941e7fa2d082051848990a21c0af9d`。它仍是已暴露的 80 dev / 24 challenge / 16 regression benchmark，不是 hidden acceptance；新的 blind acceptance 尚未创建。导入审计及统计口径差异见 `evaluation/benchmarks/v2/review/local_import_validation.md`。
+> **历史 M6 Benchmark v2 记录（2026-08-02）：** v8 的 17 项人工失败审查已导入（13 rescore、4 fix、0 waiver）。v2 的 120 题现已全部人工批准并原样导入，SHA-256 为 `f58ab7f55717aaa5b6205403dfcc78533b941e7fa2d082051848990a21c0af9d`。它是当时已暴露的 80 dev / 24 challenge / 16 regression benchmark，不是 hidden acceptance；该历史记录不改写当前 M6 验收决定。导入审计及统计口径差异见 `evaluation/benchmarks/v2/review/local_import_validation.md`。
 
 > **历史 Lite RC1 更新（2026-08-02）：** 当时 runtime 使用 `gemini-3.5-flash-lite`，evaluation judge 使用 `gemini-3.6-flash`。Lite 候选的完整 dev 已完成 80/80，但 development gate 未通过（Recall@10 79.06%、final evidence recall 53.81%、answer-point coverage 71.15%）。该段只保留历史运行事实，当前配置以上方 2026-08-03 更新为准。
 
 > 本更新覆盖本文后方关于“等待 v8 首次人工失败审查”和旧 Prompt 版本的历史描述；当前 Prompt 版本为 `3.1.0`。
 
-> 当前基线：2026-07-30，P0 与 P1 Phase 0–6 已完成；M6 正在开发集检索修复阶段  
+> 当前权威状态：按用户当前验收决定，M6 视为达标；M7 P0 已实现并验证；M7 整体尚未通过（P1 与四道真实 smoke 尚未完成）；M8 尚未开始。下方带日期的 M6 结果均为历史运行记录。
 > 项目目录：`PANDA_Agent/`  
 > Python 包：`panda_agent`  
 > 本文不修改父目录的 `agent.md`
@@ -39,6 +39,36 @@ The 2026-08-09 round2 record is a real live export → inspect → isolated rest
 proof, and `errors=[]` summaries. This remains a local prototype acceptance
 only: it does not claim public security/release readiness or replace Vertex
 dense query embedding (the normal QA query path still calls Vertex).
+
+## M7 P0 实施更新：runtime、QAService 与 loopback API
+
+M7 P0 已在当前工作树实现，但 **M7 overall 尚未通过**。架构、迁移、注册顺序、
+HTTP route/error contract、审计 trace 和限制详见
+[`docs/M7_P0_IMPLEMENTATION.md`](docs/M7_P0_IMPLEMENTATION.md)。实现入口为：
+
+- `runtime.py`：`register_runtime()` 对照 Bundle/live PostgreSQL、Qdrant、BM25 和
+  `gemini-embedding-2`/3072 identity，并原子写入
+  `data/runtime/runtime_identity.json`；`verify_runtime()` 是独立 readiness gate；
+- `service.py`：`QAService` 统一 CLI/API，使用进程内 gate、worker thread 和
+  `qa_runs` 生命周期；question 完整保存，trace 不保存 Prompt/Evidence 正文、凭据或
+  stack；
+- `api.py`：`create_app()` 提供 loopback-only FastAPI，`/health/live`、
+  `/health/ready`、`/version`、`/v1/qa`、`/docs` 和 `/openapi.json`；
+- `migrations/versions/0005_qa_service_runtime.py`：增加 P0 运行记录字段；
+  `panda-qa-runtime` 与 `panda-qa-api` 是对应 CLI。
+
+新用户顺序固定为：只启动 `postgres qdrant` → `panda-qa-kb restore` →
+`panda-qa-kb verify`（注册前 `runtime_status=not_registered` 仍可 `valid=true`、
+exit 0）→ `python -m alembic upgrade head` → `panda-qa-runtime register-runtime`
+→ `panda-qa-runtime verify` → `panda-qa-api`。默认监听 `127.0.0.1:8000`、
+`workers=1`，`PANDA_API_MAX_CONCURRENCY=1` 为进程内并发 gate；P0 没有 deadline/504、
+model-usage/JSON logging 或 M8 UI。
+
+assembled v2 Bundle 的本地证据为：补装 evaluator asset 后知识 verify 为
+`valid=true/runtime_status=not_registered`；Alembic 成功从 `0004` 到 `0005`；
+registration 与独立 runtime verify 的全部 checks 均为 `true`；非沙箱 ADC probe 为
+`true`；`load_dotenv()` 后真实 FastAPI 的 live/ready/version 为 HTTP `200/200/200`。
+该验证未调用模型、未执行 `/v1/qa` 问题，因此不等于真实四题 smoke 或 M7 overall gate。
 
 ## P1 实施更新（Phase 0 → Phase 6）
 
@@ -80,9 +110,15 @@ compares normalized and portable evaluator lookup, and only then runs the two
 `runtime_equivalent_but_model_variance_observed`; it is not a new M6 gate or a
 replacement for a full development run.
 
-## M6 实施状态：120 题已审核，开发集门禁修复中
+## M6 历史评估记录与当前验收状态
 
-120 题已经人工审核并全部批准，`panda-qa-eval validate --official` 已通过。Retrieval 开发门禁已经通过；QA candidate-v8 已完成 80/80，但仍未通过开发门禁，因此没有进入 acceptance、M7 或 M8。完整运行演进、问题分类和优化记录见 `docs/M6_EVALUATION_RETROSPECTIVE.md`。
+按用户当前验收决定，M6 视为达标。120 题已经人工审核并全部批准，
+`panda-qa-eval validate --official` 已通过。以下 retrieval/QA candidate 数据和
+development-gate 结论均为历史运行记录，不覆盖当前验收决定；M7 P0 实现状态见本文
+上方的实施更新。当前里程碑为：M7 整体尚未通过（P1 与四道真实 smoke 尚未完成），
+M8 尚未开始。完整运行演进、问题分类和优化记录见 `docs/M6_EVALUATION_RETROSPECTIVE.md`。
+
+### 历史质量基线（保留，不代表当前状态）
 
 已实现：
 
@@ -98,9 +134,9 @@ replacement for a full development run.
 
 已验证：120 题的 intent/split/language/status 分布完全符合计划；所有 Gold evidence group 均能在 102,875 个锁定对象中找到真实匹配；当前 54 项单元测试通过。Gold 数据集 hash 为 `2ed63e9af9df3c0dce0c1a71e046b5785e19e40d4292c1da8ba5d46a53b22034`，`official_ready=true`。
 
-第一次正式开发集 retrieval run `m6-retrieval-dev-approved` 完成 80/80，无运行异常，但 Recall@10 为 `0.45`、intent accuracy 为 `0.80`，未达到 `0.85` 与 `0.90` 门槛。经过父页面 Evidence lineage、高置信 intent 路由、逐 symbol exact、可审核 query expansion、独立 paper channel、mandatory anchors 和来源配额修复，`m6-retrieval-dev-approved-v7` 达到 Recall@10 `0.9792`、intent accuracy `0.9875`、required-source coverage `1.0`。
+历史第一次正式开发集 retrieval run `m6-retrieval-dev-approved` 完成 80/80，无运行异常，但 Recall@10 为 `0.45`、intent accuracy 为 `0.80`，未达到当时的 `0.85` 与 `0.90` 门槛。经过父页面 Evidence lineage、高置信 intent 路由、逐 symbol exact、可审核 query expansion、独立 paper channel、mandatory anchors 和来源配额修复，历史 run `m6-retrieval-dev-approved-v7` 达到 Recall@10 `0.9792`、intent accuracy `0.9875`、required-source coverage `1.0`。
 
-QA 完整开发集从 candidate-v1 的 answer coverage `0.5823`、17 个 unsupported claims、27 个 identifier missing，改进到 candidate-v8 的 answer coverage `0.9375`、Recall@10 `0.9771`、intent `1.0`、citation `1.0`。v8 从 53/80 原子恢复并完成 80/80，但仍有 5 个 unsupported claims、1 个 required identifier missing，answered required-source coverage 为 `0.9873`，因此开发门禁未通过。
+历史 QA 完整开发集从 candidate-v1 的 answer coverage `0.5823`、17 个 unsupported claims、27 个 identifier missing，改进到 candidate-v8 的 answer coverage `0.9375`、Recall@10 `0.9771`、intent `1.0`、citation `1.0`。历史 v8 从 53/80 原子恢复并完成 80/80，但仍有 5 个 unsupported claims、1 个 required identifier missing，answered required-source coverage 为 `0.9873`，因此当时的开发门禁未通过；这不改写当前 M6 验收口径。
 
 评估流程现已增加 mode-aware `development_gate.json` 和失败人工审查表。完整 dev 未通过时会生成 `failure_review.yaml`/`.md`；人工必须先判定 `rescore`、`fix` 或 `waiver`，再只运行受影响层。完整 80 题只用于冻结候选，acceptance 只在全部配置冻结后运行且不能用于针对性调参。
 
@@ -114,7 +150,7 @@ QA 完整开发集从 candidate-v1 的 answer coverage `0.5823`、17 个 unsuppo
 - Li、Karavdina、Pflüger 三篇固定 PDF；
 - PandaRoot `2023-08-25-dev` Sphinx 固定网页快照。
 
-支持 installation、usage、API、algorithm theory、algorithm implementation、data flow、module structure 和 troubleshooting 八类问题。当前正式入口是 CLI；FastAPI、Coding Agent、Debug Agent、多轮会话和长期 Memory 尚未实现。
+支持 installation、usage、API、algorithm theory、algorithm implementation、data flow、module structure 和 troubleshooting 八类问题。`panda-qa` 仍是一次性 CLI 入口；M7 P0 另提供通过共享 `QAService` 的 loopback-only FastAPI/REST 边界（`panda-qa-api`）。Coding Agent、Debug Agent、多轮会话和长期 Memory 尚未实现。
 
 ## 2. 总体架构
 
@@ -429,17 +465,17 @@ QA_EMBEDDING_CONCURRENCY=16
 
 ### P2
 
-- 增加结构化日志、trace ID、模型调用耗时和 token/cost 观测。
+- 增加结构化日志、模型调用耗时和 token/cost 观测；M7 P0 已有 request ID 和脱敏 `qa_runs` trace，但 JSON logging/model-usage 仍属 M7 P1。
 - 为 Prompt 增加显式版本号和 snapshot tests。
 - 评估 runner 应逐题 checkpoint，并支持按 ID 合并 resume 结果；本次中途崩溃暴露了“只在末尾保存”的问题。
-- 补 FastAPI、并发限制、用户隔离和 PostgreSQL checkpoint 后再支持多轮会话。
+- 补 M7 P1 deadline/504、JSON logging/model-usage、用户隔离和 PostgreSQL checkpoint 后再支持多轮会话；M7 P0 的 loopback FastAPI、进程内并发限制和 `QAService` 已实现。
 
 ## 12. 不在当前实现中的能力
 
 - 无标准 LLM Tool Calling；检索通道由 Python 固定执行。
 - 无多轮对话 Memory、用户级长期记忆或 LangGraph checkpoint。
-- 无 REST API/Web UI。
+- 有 loopback-only REST API（FastAPI，`panda-qa-api`）；无 Web UI。
 - 无代码写入、命令执行、自动 debug 或实验运行权限。
-- M6 的 120 题 schema、人工批准和评估器已完成；retrieval 开发门禁已通过，QA candidate-v8 正等待失败结果人工审查，正式 acceptance 尚未运行。
+- M6 的 120 题 schema、人工批准和评估器已完成；retrieval/QA candidate-v8 的失败审查与 acceptance 状态属于历史记录，不代表当前验收决定。当前 M6 按用户决定视为达标；M7 P0 已实现并验证，M7 整体尚未通过（P1 与四道真实 smoke 尚未完成），M8 尚未开始。
 
 这些能力不得在文档或回答中描述成已经实现。

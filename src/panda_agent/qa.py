@@ -3,14 +3,11 @@
 from __future__ import annotations
 
 import json
-import logging
 import re
-import uuid
 from pathlib import Path
 from typing import Any, TypedDict
 
 from langgraph.graph import END, START, StateGraph
-from psycopg.types.json import Jsonb
 
 from panda_agent.llm.vertex import VertexAIClient, VertexSettings
 from panda_agent.models import ClaimCitation, QAResult, QAStatus, RetrievalPlan
@@ -20,9 +17,6 @@ from panda_agent.prompts import (
     REVISION_SYSTEM_PROMPT,
 )
 from panda_agent.retrieval import Retriever
-
-LOGGER = logging.getLogger(__name__)
-
 
 ANSWER_SCHEMA = {
     "type": "object",
@@ -1959,17 +1953,9 @@ class QAAgent:
         return QAResult.model_validate(self.run_detailed(question)["result"])
 
     def run_detailed(self, question: str) -> dict[str, Any]:
-        """Run once and expose sanitized retrieval/workflow diagnostics."""
+        """Execute only the QA graph and expose sanitized workflow diagnostics."""
         state = self.graph.invoke({"question": question})
         result = QAResult.model_validate(state["result"])
-        try:
-            with self.retriever.storage.connect() as connection:
-                connection.execute(
-                    "INSERT INTO qa_runs(run_id,question,status,trace) VALUES(%s,%s,%s,%s)",
-                    (uuid.uuid4(), question, result.status.value, Jsonb({"bundle": state.get("bundle"), "errors": state.get("errors", [])})),
-                )
-        except Exception:
-            LOGGER.debug("failed to persist QA trace", exc_info=True)
         bundle = state.get("bundle", {})
         diagnostics = {
             "plan": bundle.get("plan", {}),

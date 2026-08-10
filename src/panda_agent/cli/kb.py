@@ -29,6 +29,8 @@ def main() -> None:
     else:
         output = verify_bundle(args.bundle, project_root=args.project_root)
     print(json.dumps(output, indent=2, sort_keys=True, default=str))
+    if args.command == "verify" and not output["valid"]:
+        raise SystemExit(1)
 
 
 if __name__ == "__main__":
