@@ -29,6 +29,16 @@
 
 > **Knowledge bundle prototype:** The implemented `panda-qa-kb export|inspect|restore|verify` workflow is documented in [docs/KNOWLEDGE_BUNDLE_PROTOTYPE.md](docs/KNOWLEDGE_BUNDLE_PROTOTYPE.md). The 2026-08-09 round2 record is a real live export → inspect → isolated restore → verify → three-smoke PASS for the fixed local PostgreSQL/Qdrant hand-off. It remains a prototype-only acceptance record: no public/release security gate, signing/download/multi-bundle/rollback/GC facility, or offline Vertex dense-query replacement is claimed.
 
+### Migration and post-migration evaluation
+
+The frozen ten-case migration suite and its reproducible evaluation procedure
+are documented in
+`docs/KNOWLEDGE_BUNDLE_MIGRATION_EVALUATION.md`. Read it when validating a
+Bundle on another machine: it separates clean restore, deterministic storage
+replay, evaluator lookup parity, and model-driven QA A/B. The latest report is
+`data/evaluation/migration/v1/report_v3/migration_report.md`; it records
+`runtime_equivalent_but_model_variance_observed`, not a full M6 or release gate.
+
 > **阅读约定：** 文中“已实现”表示当前代码存在真实调用路径；“建议”或“扩展示例”表示尚未进入仓库的设计；“伪代码”只用于解释控制流。
 
 > **P0 实施更新（2026-07-30）：** 本文最初审查发现的四项 P0 已按 Phase 0→6 完成修复：Sphinx configured snapshot 强门禁、关系端点解析与真实图遍历、claim-first 确定性答案、Prompt 不可信数据边界。当前运行态为 Alembic `0003`、102,868 objects、64,554 accepted relations、372,139 relation candidates、374 workflows、80,691 Qdrant points。若后文章节仍以“旧审查发现”回顾这些问题，应以本段和 `QA_AGENT.md` 的最新验证记录为准。

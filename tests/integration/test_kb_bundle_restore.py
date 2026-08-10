@@ -77,6 +77,14 @@ class BundleRestoreHarnessTests(unittest.TestCase):
             ],
             postgres_dump=kb_bundle.ArtifactHash(filename="postgres.dump", bytes=1, sha256="a" * 64),
             qdrant_snapshot=kb_bundle.ArtifactHash(filename="qdrant.snapshot", bytes=1, sha256="b" * 64),
+            evaluator_catalog=kb_bundle.EvaluatorCatalogState(
+                path=kb_bundle.EVALUATOR_CATALOG_PATH.as_posix(),
+                schema_version=kb_bundle.CATALOG_SCHEMA_VERSION,
+                lookup_contract=kb_bundle.LOOKUP_CONTRACT,
+                sha256="d" * 64,
+                count=2,
+                source_gold_sha256="e" * 64,
+            ),
         )
         events: list[str] = []
         storage = MagicMock()
@@ -87,10 +95,11 @@ class BundleRestoreHarnessTests(unittest.TestCase):
             patch.object(kb_bundle, "_restore_postgres", side_effect=lambda *_: events.append("postgres")),
             patch.object(kb_bundle, "_restore_qdrant", side_effect=lambda *_: events.append("qdrant")),
             patch.object(kb_bundle, "_install_runtime_from_bundle", side_effect=lambda *_: events.append("runtime")),
+            patch.object(kb_bundle, "_install_evaluator_catalog_from_bundle", side_effect=lambda *_: events.append("catalog")),
             patch.object(kb_bundle, "_installed_marker", side_effect=lambda *_: events.append("marker")),
         ):
             kb_bundle.restore_bundle(Path("bundle"), project_root=Path("project"), session=MagicMock())
-        self.assertEqual(events, ["preflight", "empty", "postgres", "qdrant", "runtime", "marker"])
+        self.assertEqual(events, ["preflight", "empty", "postgres", "qdrant", "runtime", "catalog", "marker"])
 
 
 if __name__ == "__main__":

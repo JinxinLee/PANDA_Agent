@@ -5,7 +5,7 @@
 1. `PANDA_Agent` 代码；
 2. 维护者预先生成的 PANDA Knowledge Bundle。
 
-按照本指南启动时，不需要重新下载或解析论文、网页和代码仓库，也不需要生成文档向量或重建索引。首次启动只恢复 PostgreSQL、Qdrant 和本地 BM25 运行资产。
+按照本指南启动时，不需要重新下载或解析论文、网页和代码仓库，也不需要生成文档向量或重建索引。首次启动只恢复 PostgreSQL、Qdrant、本地 BM25 运行资产和 evaluator lookup catalog。
 
 > **适用边界：** 当前实现是可信本地 Bundle prototype。Bundle 没有数字签名、在线下载、多版本切换、自动回滚或公开分发安全机制。只使用来自可信维护者的 Bundle。
 
@@ -14,9 +14,44 @@ Windows 命令保留在原有小节中；macOS/Linux 使用紧随其后的 Bash/
 三种平台都需要 Python 3.12 或更高版本、Docker Compose v2，以及可用的 Google
 Cloud Application Default Credentials（ADC）。
 
-## 0. 从已发布 Release 获取 Bundle
+## 0. 获取与代码版本匹配的 Bundle
 
-当前可直接使用的预构建 Bundle 发布在：
+当前 `main` 分支使用：
+
+```text
+panda-knowledge-bundle/v2
+```
+
+v2 Bundle 必须由维护者完整提供，并至少包含：
+
+```text
+panda-kb-bundle-v2/
+├── bundle_manifest.json
+├── postgres.dump
+├── qdrant.snapshot
+├── evaluator/
+│   └── evaluator_lookup_catalog.json
+└── runtime_assets/
+    └── fastembed/
+        └── bm25/
+```
+
+`evaluator_lookup_catalog.json` 是 v2 新增的正式运行资产。它保存与 normalized
+KnowledgeObject 等价的完整 evaluator lookup，使恢复环境不需要
+`data/normalized/*/knowledge_objects.jsonl` 也能执行 Gold selector 验证和迁移后评估。
+
+当前文档不假设固定的 v2 下载地址；拿到 Bundle 后应以目录中的
+`bundle_manifest.json` 为唯一 artifact 清单，并先执行 `inspect`。如果只有下面的历史
+v1 Release，请使用对应 tag，而不是当前 `main`。
+
+> **版本兼容性：** Bundle schema 必须与代码匹配。当前 `main` 不接受缺少 evaluator
+> catalog 的 v1 manifest，也不能把 v1 的 manifest、dump、snapshot 与 v2 catalog
+> 混合使用。`panda-qa-kb inspect` 会在连接数据库前拒绝这种组合。
+
+### 0.1 历史 v1.0.0 Release（仅与对应 tag 配套）
+
+以下公开 Release 是历史 v1 Bundle，只能与 Git tag
+`panda-kb-prototype-v1.0.0` 对应的代码配套使用，不能直接用于当前 `main`：
 
 [PANDA Knowledge Bundle Prototype v1.0.0](https://github.com/JinxinLee/PANDA_Agent/releases/tag/panda-kb-prototype-v1.0.0)
 
@@ -164,12 +199,15 @@ panda-kb-bundle/
 ├── bundle_manifest.json
 ├── postgres.dump
 ├── qdrant.snapshot
+├── evaluator/
+│   └── evaluator_lookup_catalog.json
 └── runtime_assets/
     └── fastembed/
         └── bm25/
 ```
 
-缺少任一 Bundle 文件时不要执行恢复。
+缺少任一 Bundle 文件时不要执行恢复。对于当前 `main`，缺少
+`evaluator/evaluator_lookup_catalog.json` 也属于不完整 Bundle。
 
 如果目录中还保留 `fastembed-runtime.zip`，这是允许的；恢复程序只使用已经解压的
 `runtime_assets/fastembed/bm25/`。不要把 `fastembed-runtime.zip` 解压到额外的嵌套目录，
@@ -279,7 +317,7 @@ gcloud auth application-default login
 Windows PowerShell：
 
 ```powershell
-$bundlePath = (Resolve-Path 'D:\panda-bundles\panda-kb-v1').Path
+$bundlePath = (Resolve-Path 'D:\panda-bundles\panda-kb-v2').Path
 ```
 
 执行本地完整性检查：
@@ -291,11 +329,13 @@ $bundlePath = (Resolve-Path 'D:\panda-bundles\panda-kb-v1').Path
 macOS/Linux：
 
 ```bash
-export BUNDLE_PATH="$(cd "$HOME/panda-bundles/panda-kb-v1" && pwd)"
+export BUNDLE_PATH="$(cd "$HOME/panda-bundles/panda-kb-v2" && pwd)"
 .venv/bin/panda-qa-kb inspect --bundle "$BUNDLE_PATH"
 ```
 
-`inspect` 会验证 manifest schema、文件大小、SHA-256 和本地 BM25 资产是否存在。它不会连接数据库、Qdrant 或 Vertex。
+`inspect` 会验证 manifest schema、PostgreSQL/Qdrant artifact 的文件大小与
+SHA-256、本地 BM25 资产，以及 evaluator catalog 的 schema、完整对象数和 canonical
+SHA-256。它不会连接数据库、Qdrant 或 Vertex。
 
 如果出现 hash mismatch、文件缺失或 manifest 校验失败，应停止并重新获取可信 Bundle，不要继续恢复。
 
@@ -326,6 +366,7 @@ docker compose ps
 - PostgreSQL 中不存在 `knowledge_objects` 表；
 - Qdrant 中不存在 `panda_knowledge_v1` collection；
 - 项目中不存在 `data/runtime/fastembed/bm25`。
+- 项目中不存在 `data/runtime/evaluator/evaluator_lookup_catalog.json`。
 
 如果目标不是空的，`restore` 会拒绝继续。不要使用强制覆盖。
 
@@ -356,7 +397,8 @@ macOS/Linux：
 3. 使用单事务和 `--exit-on-error` 恢复 PostgreSQL；
 4. 上传并恢复 Qdrant snapshot；
 5. 安装 `data/runtime/fastembed/bm25`；
-6. 写入 `data/runtime/installed_bundle.json`。
+6. 安装 `data/runtime/evaluator/evaluator_lookup_catalog.json`；
+7. 写入 `data/runtime/installed_bundle.json`。
 
 prototype 没有跨 PostgreSQL/Qdrant 的分布式事务。如果 PostgreSQL 恢复成功而后续步骤失败，不要直接重复恢复；保留错误输出并在隔离环境中重新建立空目标。
 
@@ -396,12 +438,21 @@ macOS/Linux：
     "qdrant_version": true,
     "fastembed": true,
     "runtime_bm25": true,
-    "verification_samples": true
+    "verification_samples": true,
+    "evaluator_catalog_round_trip": true,
+    "gold_selector": true
   }
 }
 ```
 
 只要任一检查为 `false`，就不要开始 QA。
+
+其中：
+
+- `evaluator_catalog_round_trip` 证明恢复后的 catalog 与 Bundle manifest 中的
+  schema、lookup contract、对象数和 SHA-256 一致；
+- `gold_selector` 证明当前代码中的签署 Gold 与 Bundle 记录的 Gold hash 一致，且所有
+  selector 可以用 portable catalog 完成确定性验证。
 
 ## 9. 运行第一个问题
 
@@ -457,6 +508,45 @@ macOS/Linux：
 .venv/bin/panda-qa ask "Where is PndPidCorrelator defined?"
 .venv/bin/panda-qa ask "What inputs and outputs connect the target generator to the RestgasDetermination analysis?"
 ```
+
+## 9.1 可选：执行迁移后等价性验收
+
+普通新用户完成 `verify` 和三道 smoke question 即可使用 Agent。若你同时保留迁移前
+原始运行态和恢复后的运行态，可以使用冻结的 10 题迁移集进一步区分：
+
+1. PostgreSQL/Qdrant 是否等价；
+2. portable evaluator catalog 是否与原 normalized lookup 等价；
+3. QA 差异是 Bundle 迁移造成，还是模型 planning/reranking 的正常波动。
+
+先验证冻结测试集与 Gold v2.6 的身份：
+
+Windows PowerShell：
+
+```powershell
+.\.venv\Scripts\panda-qa-migration.exe `
+  --project-root (Get-Location) validate-suite `
+  --suite evaluation\migration\v1\suite.json `
+  --canonical-gold evaluation\benchmarks\v2_6\gold_questions.yaml
+```
+
+macOS/Linux：
+
+```bash
+.venv/bin/panda-qa-migration \
+  --project-root "$PWD" validate-suite \
+  --suite evaluation/migration/v1/suite.json \
+  --canonical-gold evaluation/benchmarks/v2_6/gold_questions.yaml
+```
+
+完整流程依次执行 deterministic replay、evaluator lookup A/B 和两组各 10 题的 QA
+A/B。前两层新增模型调用为 0；只有 live capture 和 QA A/B 会调用 Vertex。不要把它
+扩展成完整 80 题或 16 题 benchmark，也不要因为一次模型证据选择差异而重新 indexing。
+
+命令、门禁、报告字段和本次实测结果见
+[KNOWLEDGE_BUNDLE_MIGRATION_EVALUATION.md](KNOWLEDGE_BUNDLE_MIGRATION_EVALUATION.md)。
+本次结果为 `runtime_equivalent_but_model_variance_observed`：10/10 replay 和 evaluator
+selector parity 通过，两侧 QA 均 10/10 无异常，没有检测到迁移特有的 safety failure
+或相对退化。
 
 ## 10. 停止和重新启动
 
@@ -514,6 +604,17 @@ Bundle 文件损坏或不属于该 manifest。停止恢复并重新取得完整 
 
 `data/runtime/fastembed/bm25` 已存在。确认是否已经恢复过 Bundle。prototype 不支持覆盖或自动回滚。
 
+### `evaluator catalog destination already exists`
+
+`data/runtime/evaluator/evaluator_lookup_catalog.json` 已存在。确认当前目录是否已经恢复过
+Bundle；不要手工覆盖 catalog，也不要把另一个 Bundle 的 catalog 复制到当前运行态。
+
+### `evaluator_catalog_round_trip` 或 `gold_selector` 为 `false`
+
+前者表示安装后的 evaluator catalog 与 manifest identity 不一致；后者通常表示代码中的
+Gold 版本/hash 与 Bundle 不匹配，或 selector 无法在 catalog 中解析。确认代码 checkout
+与 Bundle schema/version 配套，不要通过修改 manifest 或 Gold 绕过检查。
+
 ### Docker Engine permission denied
 
 Windows PowerShell/macOS：确认 Docker Desktop 已启动（macOS 也可使用 Colima），并在当前终端运行：
@@ -551,8 +652,13 @@ gcloud auth application-default print-access-token
 - [ ] 只启动了 PostgreSQL 和 Qdrant；
 - [ ] `restore` 成功；
 - [ ] `verify` 返回 `valid=true` 和 `sample_count=100`；
+- [ ] `evaluator_catalog_round_trip=true`；
+- [ ] `gold_selector=true`；
 - [ ] ADC 与 Vertex 配置可用；
 - [ ] 第一条 QA 返回结构化状态和 Evidence；
 - [ ] 没有运行 parsing、ingestion、document embedding 或 indexing。
 
-维护者实现细节、真实 round2 验收哈希和 prototype 非目标见 [KNOWLEDGE_BUNDLE_PROTOTYPE.md](KNOWLEDGE_BUNDLE_PROTOTYPE.md)。
+维护者实现细节、真实 round2 验收哈希和 prototype 非目标见
+[KNOWLEDGE_BUNDLE_PROTOTYPE.md](KNOWLEDGE_BUNDLE_PROTOTYPE.md)。迁移等价性测试集、
+deterministic replay、evaluator A/B 和 QA 对比报告见
+[KNOWLEDGE_BUNDLE_MIGRATION_EVALUATION.md](KNOWLEDGE_BUNDLE_MIGRATION_EVALUATION.md)。

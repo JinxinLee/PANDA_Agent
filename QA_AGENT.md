@@ -70,6 +70,16 @@ P1 已严格按六个阶段完成，旧章节中把下列项目列为“P1 待�
 
 > **剩余性能债务：** M3 已将 relations/candidates 改成流式 JSONL，索引进程工作集从约 1.98 GB 降到约 179 MB；但 PostgreSQL 全量 upsert/prune 仍较慢，未来应使用 `COPY + merge` 或按 ingestion run 分区切换。
 
+## Bundle migration evaluation
+
+The post-restore equivalence workflow is recorded in
+`docs/KNOWLEDGE_BUNDLE_MIGRATION_EVALUATION.md`. It freezes ten v2.6 Gold
+questions, compares original and restored storage with zero-model replay,
+compares normalized and portable evaluator lookup, and only then runs the two
+10-question QA roles. The latest diagnostic result is
+`runtime_equivalent_but_model_variance_observed`; it is not a new M6 gate or a
+replacement for a full development run.
+
 ## M6 实施状态：120 题已审核，开发集门禁修复中
 
 120 题已经人工审核并全部批准，`panda-qa-eval validate --official` 已通过。Retrieval 开发门禁已经通过；QA candidate-v8 已完成 80/80，但仍未通过开发门禁，因此没有进入 acceptance、M7 或 M8。完整运行演进、问题分类和优化记录见 `docs/M6_EVALUATION_RETROSPECTIVE.md`。

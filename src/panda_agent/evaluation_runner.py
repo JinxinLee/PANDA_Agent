@@ -28,6 +28,7 @@ from panda_agent.evaluation import (
     load_gold_dataset,
     validate_v25_adjudication_document,
 )
+from panda_agent.evaluator_catalog import catalog_receipt, load_evaluator_catalog
 from panda_agent.indexing import IndexIdentity, normalized_dir
 from panda_agent.llm.vertex import VertexAIClient, VertexSettings
 from panda_agent.prompts import (
@@ -412,7 +413,12 @@ def build_evaluation_manifest(
     }
 
 
-def load_object_lookup(project_root: Path) -> dict[str, dict[str, Any]]:
+def load_object_lookup(
+    project_root: Path, *, evaluator_catalog_path: Path | None = None,
+) -> dict[str, dict[str, Any]]:
+    """Load the evaluator's full canonical lookup from normalized data or a catalog."""
+    if evaluator_catalog_path is not None:
+        return load_evaluator_catalog(evaluator_catalog_path)
     path = normalized_dir(project_root) / "knowledge_objects.jsonl"
     return {item["object_id"]: item for item in iter_jsonl(path)}
 
@@ -447,6 +453,7 @@ def validate_gold_dataset(
     dataset_path: Path,
     *,
     require_approved: bool = False,
+    evaluator_catalog_path: Path | None = None,
 ) -> dict[str, Any]:
     dataset = load_gold_dataset(dataset_path)
     approval_error: str | None = None
@@ -455,7 +462,11 @@ def validate_gold_dataset(
             dataset.require_approved()
         except ValueError as exc:
             approval_error = str(exc)
-    objects = list(load_object_lookup(project_root).values())
+    objects = list(
+        load_object_lookup(
+            project_root, evaluator_catalog_path=evaluator_catalog_path,
+        ).values()
+    )
     known_source_versions = {item["source_version_id"] for item in objects}
     unmatched: list[dict[str, Any]] = []
     unknown_allowed_versions: list[dict[str, Any]] = []
@@ -1332,8 +1343,18 @@ def run_evaluation(
     max_model_calls: int | None = None,
     max_token_usage: int | None = None,
     deadline_minutes: float | None = None,
+    evaluator_catalog_path: Path | None = None,
 ) -> Path:
     dataset_path = (dataset_path or default_gold_dataset_path(project_root)).resolve()
+    evaluator_catalog = None
+    if evaluator_catalog_path is not None:
+        receipt = catalog_receipt(evaluator_catalog_path)
+        evaluator_catalog = {
+            "schema_version": receipt.schema_version,
+            "lookup_contract": receipt.lookup_contract,
+            "sha256": receipt.sha256,
+            "count": receipt.count,
+        }
     dataset = load_gold_dataset(dataset_path)
     if split == "acceptance":
         if dataset.acceptance_exposed:
@@ -1376,6 +1397,12 @@ def run_evaluation(
     manifest["max_model_calls"] = max_model_calls
     manifest["max_token_usage"] = max_token_usage
     manifest["deadline_minutes"] = deadline_minutes
+    # The path is operational metadata only.  Resume comparison uses this
+    # immutable receipt so a changed catalog at the same physical path fails.
+    manifest["evaluator_catalog_path"] = (
+        str(evaluator_catalog_path.resolve()) if evaluator_catalog_path is not None else None
+    )
+    manifest["evaluator_catalog"] = evaluator_catalog
     if resume:
         existing_manifest_path = (
             project_root
@@ -1388,6 +1415,8 @@ def run_evaluation(
         existing_manifest = json.loads(
             existing_manifest_path.read_text(encoding="utf-8")
         )
+        if existing_manifest.get("evaluator_catalog") != evaluator_catalog:
+            raise ValueError("evaluation resume evaluator catalog receipt mismatch")
         manifest["run_started_at"] = existing_manifest["run_started_at"]
     else:
         manifest["run_started_at"] = datetime.now(UTC).isoformat()
@@ -1408,7 +1437,9 @@ def run_evaluation(
                 runtime_vertex.settings.evaluation_judge_model
             )
         )
-    object_lookup = load_object_lookup(project_root)
+    object_lookup = load_object_lookup(
+        project_root, evaluator_catalog_path=evaluator_catalog_path,
+    )
     existing_records = load_run_records(store.run_dir)
     cumulative_calls = sum(int(item.get("model_calls", 0)) for item in existing_records)
     cumulative_tokens = sum(int(item.get("token_usage", 0)) for item in existing_records)
@@ -1697,5 +1728,8 @@ def resume_evaluation(project_root: Path, run_id: str) -> Path:
         deadline_minutes=manifest.get("deadline_minutes"),
         dataset_path=Path(manifest["gold_dataset_path"])
         if manifest.get("gold_dataset_path")
+        else None,
+        evaluator_catalog_path=Path(manifest["evaluator_catalog_path"])
+        if manifest.get("evaluator_catalog_path")
         else None,
     )

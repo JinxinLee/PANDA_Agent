@@ -84,6 +84,14 @@ class KnowledgeBundleContractTests(unittest.TestCase):
             verification_samples=self._samples(),
             postgres_dump=kb_bundle.ArtifactHash(filename="postgres.dump", bytes=1, sha256="a" * 64),
             qdrant_snapshot=kb_bundle.ArtifactHash(filename="qdrant.snapshot", bytes=1, sha256="b" * 64),
+            evaluator_catalog=kb_bundle.EvaluatorCatalogState(
+                path=kb_bundle.EVALUATOR_CATALOG_PATH.as_posix(),
+                schema_version=kb_bundle.CATALOG_SCHEMA_VERSION,
+                lookup_contract=kb_bundle.LOOKUP_CONTRACT,
+                sha256="d" * 64,
+                count=2,
+                source_gold_sha256="e" * 64,
+            ),
         )
 
     def test_manifest_is_strict_and_persists_exactly_one_hundred_samples(self) -> None:
@@ -187,6 +195,40 @@ class KnowledgeBundleContractTests(unittest.TestCase):
                     kb_bundle.restore_bundle(bundle, project_root=bundle)
             storage.assert_not_called()
 
+    def test_preflight_and_inspect_fail_closed_on_catalog_hash_mismatch(self) -> None:
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / kb_bundle.POSTGRES_DUMP_NAME).write_bytes(b"postgres")
+            (root / kb_bundle.QDRANT_SNAPSHOT_NAME).write_bytes(b"qdrant")
+            runtime = root / kb_bundle.RUNTIME_BM25_PATH
+            runtime.mkdir(parents=True)
+            (runtime / "model.onnx").write_bytes(b"model")
+            source = root / "knowledge_objects.jsonl"
+            source.write_text(
+                '{"object_id":"object.one","locator":{},"metadata":{"workflow":"demo"}}\n',
+                encoding="utf-8",
+            )
+            receipt = kb_bundle.write_evaluator_catalog(
+                source, root / kb_bundle.EVALUATOR_CATALOG_PATH,
+            )
+            manifest = self._manifest().model_copy(update={
+                "postgres_dump": kb_bundle._artifact(root / kb_bundle.POSTGRES_DUMP_NAME, kb_bundle.POSTGRES_DUMP_NAME),
+                "qdrant_snapshot": kb_bundle._artifact(root / kb_bundle.QDRANT_SNAPSHOT_NAME, kb_bundle.QDRANT_SNAPSHOT_NAME),
+                "evaluator_catalog": kb_bundle.EvaluatorCatalogState(
+                    path=kb_bundle.EVALUATOR_CATALOG_PATH.as_posix(),
+                    schema_version=receipt.schema_version,
+                    lookup_contract=receipt.lookup_contract,
+                    sha256=receipt.sha256,
+                    count=receipt.count,
+                    source_gold_sha256="e" * 64,
+                ),
+            })
+            kb_bundle._write_manifest(root / kb_bundle.MANIFEST_NAME, manifest)
+            self.assertEqual(kb_bundle.inspect_bundle(root)["evaluator_catalog"]["count"], 1)
+            (root / kb_bundle.EVALUATOR_CATALOG_PATH).write_bytes(b"{}")
+            with self.assertRaisesRegex(kb_bundle.BundleError, "evaluator catalog"):
+                kb_bundle.preflight_bundle(root)
+
     def test_verify_uses_manifest_samples_not_excluded_embedding_records(self) -> None:
         manifest = self._manifest()
         storage = MagicMock()
@@ -202,6 +244,17 @@ class KnowledgeBundleContractTests(unittest.TestCase):
                 patch.object(kb_bundle, "_verify_runtime", return_value=True),
                 patch.object(kb_bundle, "_verify_sample", return_value=True) as verify_sample,
                 patch.object(kb_bundle, "deterministic_sample_candidates", side_effect=AssertionError("must not read embedding records")),
+                patch.object(kb_bundle, "catalog_receipt", return_value=type("Receipt", (), {
+                    "schema_version": manifest.evaluator_catalog.schema_version,
+                    "lookup_contract": manifest.evaluator_catalog.lookup_contract,
+                    "sha256": manifest.evaluator_catalog.sha256,
+                    "count": manifest.evaluator_catalog.count,
+                })()),
+                patch.object(kb_bundle, "load_evaluator_catalog", return_value={"object-0": {}}),
+                patch.object(kb_bundle, "_canonical_gold_path", return_value=root / "gold.yaml"),
+                patch.object(kb_bundle, "load_gold_dataset", return_value=type("Gold", (), {"questions": [object()]})()),
+                patch.object(kb_bundle, "sha256_file", return_value=manifest.evaluator_catalog.source_gold_sha256),
+                patch.object(kb_bundle, "validate_gold_dataset", return_value={"structurally_valid": True}),
             ):
                 result = kb_bundle.verify_bundle(root, project_root=root)
         self.assertTrue(result["valid"])
@@ -221,6 +274,17 @@ class KnowledgeBundleContractTests(unittest.TestCase):
                 patch.object(kb_bundle, "fastembed_state", return_value=manifest.fastembed),
                 patch.object(kb_bundle, "_verify_runtime", return_value=True),
                 patch.object(kb_bundle, "_verify_sample", side_effect=[False] + [True] * 99),
+                patch.object(kb_bundle, "catalog_receipt", return_value=type("Receipt", (), {
+                    "schema_version": manifest.evaluator_catalog.schema_version,
+                    "lookup_contract": manifest.evaluator_catalog.lookup_contract,
+                    "sha256": manifest.evaluator_catalog.sha256,
+                    "count": manifest.evaluator_catalog.count,
+                })()),
+                patch.object(kb_bundle, "load_evaluator_catalog", return_value={"object-0": {}}),
+                patch.object(kb_bundle, "_canonical_gold_path", return_value=root / "gold.yaml"),
+                patch.object(kb_bundle, "load_gold_dataset", return_value=type("Gold", (), {"questions": [object()]})()),
+                patch.object(kb_bundle, "sha256_file", return_value=manifest.evaluator_catalog.source_gold_sha256),
+                patch.object(kb_bundle, "validate_gold_dataset", return_value={"structurally_valid": True}),
             ):
                 self.assertFalse(kb_bundle.verify_bundle(root, project_root=root)["valid"])
 

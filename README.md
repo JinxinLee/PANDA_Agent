@@ -61,6 +61,15 @@ $bundlePath = 'D:\panda-bundles\panda-kb-v1-YYYYMMDD'
 ..\.venv\Scripts\panda-qa-kb.exe verify --bundle $bundlePath --project-root (Get-Location)
 ```
 
+### Migration equivalence test
+
+The frozen 10-question migration suite, clean-restore procedure, deterministic
+replay gate, evaluator lookup A/B, and the two-role QA comparison are documented
+in [docs/KNOWLEDGE_BUNDLE_MIGRATION_EVALUATION.md](docs/KNOWLEDGE_BUNDLE_MIGRATION_EVALUATION.md).
+The latest run found `runtime_equivalent_but_model_variance_observed`: replay and
+selector parity passed, and both 10-question QA roles completed without an
+exception. This diagnostic does not replace the 80-question development gate.
+
 ## M6 benchmark gate
 
 The 120-question Gold dataset has been human-reviewed and all 120 questions are
