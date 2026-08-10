@@ -62,8 +62,21 @@ gh release download panda-kb-prototype-v1.0.0 \
   --pattern 'fastembed-runtime.zip'
 ```
 
-Windows 用户也可以使用同一条 `gh release download` 命令；如果使用浏览器，直接把
-四个资产保存到同一个 Bundle 目录即可。
+Windows PowerShell：
+
+```powershell
+$bundlePath = 'D:\panda-bundles\panda-kb-prototype-v1.0.0'
+New-Item -ItemType Directory -Force $bundlePath | Out-Null
+gh release download panda-kb-prototype-v1.0.0 `
+  --repo JinxinLee/PANDA_Agent `
+  --dir $bundlePath `
+  --pattern 'bundle_manifest.json' `
+  --pattern 'postgres.dump' `
+  --pattern 'qdrant.snapshot' `
+  --pattern 'fastembed-runtime.zip'
+```
+
+如果使用浏览器下载，直接把四个资产保存到同一个 Bundle 目录即可。
 
 `fastembed-runtime.zip` 不能直接保留为压缩包而跳过解压。必须在 Bundle 根目录执行：
 
@@ -93,6 +106,8 @@ Release 中的 zip 资产包含 Windows 风格的反斜杠路径。某些 macOS/
 
 ```bash
 export BUNDLE_PATH="$HOME/panda-bundles/panda-kb-prototype-v1.0.0"
+# 如果之前尝试过 unzip 并出现 warning 或 Permission denied，先清理不完整目录。
+rm -rf "$BUNDLE_PATH/runtime_assets"
 python3 - "$BUNDLE_PATH/fastembed-runtime.zip" "$BUNDLE_PATH" <<'PY'
 from pathlib import Path
 import sys
@@ -115,6 +130,8 @@ PY
 ```
 
 解压后确认 `$BUNDLE_PATH/runtime_assets/fastembed/bm25/` 存在。
+脚本会重新创建带有执行权限的目录，并将运行时文件设置为可读；不要继续使用之前
+由 macOS `unzip` 生成的权限异常目录。
 
 最终 Bundle 目录必须同时包含 `bundle_manifest.json`、`postgres.dump`、
 `qdrant.snapshot` 和 `runtime_assets/fastembed/bm25/`。仅下载前三个文件，或只保留
