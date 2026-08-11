@@ -165,6 +165,25 @@ class FakeVertex:
         }
 
 
+class ObservedVertex(FakeVertex):
+    def __init__(self):
+        self.stats = {
+            "model_calls": 0,
+            "token_usage": 0,
+            "generation_calls": 0,
+            "embedding_calls": 0,
+        }
+
+    def generate_json(self, prompt, schema, **kwargs):
+        self.stats["model_calls"] += 1
+        self.stats["generation_calls"] += 1
+        self.stats["token_usage"] += 7
+        return super().generate_json(prompt, schema, **kwargs)
+
+    def stats_snapshot(self):
+        return dict(self.stats)
+
+
 class InstallationVertex(FakeVertex):
     def generate_json(self, prompt, schema, **kwargs):
         if "supported" in schema.get("properties", {}):
@@ -316,6 +335,26 @@ class ExternalIdentifierVertex(FakeVertex):
 
 
 class QATests(unittest.TestCase):
+    def test_run_detailed_reports_per_request_workflow_and_model_usage(self):
+        bundle = bundle_for(code_evidence())
+        detailed = QAAgent(Path.cwd(), retriever=FakeRetriever(bundle), vertex=ObservedVertex()).run_detailed(
+            "Where is PndPidCorrelator?"
+        )
+
+        self.assertGreaterEqual(detailed["node_timings_ms"]["workflow"], 0)
+        self.assertTrue(
+            {"retrieve", "sufficiency", "answer", "verify", "finalize"}.issubset(
+                detailed["node_timings_ms"]
+            )
+        )
+        self.assertGreater(detailed["model_usage"]["model_calls"], 0)
+        self.assertEqual(
+            detailed["model_usage"]["model_calls"],
+            detailed["model_usage"]["generation_calls"],
+        )
+        self.assertEqual(detailed["model_usage"]["embedding_calls"], 0)
+        self.assertGreater(detailed["model_usage"]["token_usage"], 0)
+
     def _guard_agent(self, bundle):
         agent = QAAgent(Path.cwd(), retriever=FakeRetriever(bundle), vertex=FakeVertex())
         # Guard tests concern only request answerability, not the separately
@@ -421,6 +460,10 @@ class QATests(unittest.TestCase):
             ["workflow_order", "complete_dataflow_handoff"],
         )
         self.assertEqual(
+            ids("Why must event IDs align before second-pass PID?", {"intent": "data_flow"}),
+            ["complete_dataflow_handoff"],
+        )
+        self.assertEqual(
             ids("How does the factory use input setter values to construct the output?", {"intent": "usage"}),
             ["factory_composition"],
         )
@@ -442,6 +485,28 @@ class QATests(unittest.TestCase):
                 {"intent": "algorithm_implementation", "symbols": ["PndLmdModelFactory::setAcceptance", "PndLmdModelFactory::generate2DModel"]},
             ),
             ["factory_composition", "acceptance_factory_application"],
+        )
+        self.assertEqual(
+            ids(
+                "How does point-like angular acceptance differ from restgas effective acceptance?",
+                {
+                    "intent": "algorithm_theory",
+                    "symbols": ["PndLmdModelFactory::setAcceptance"],
+                    "concepts": ["longitudinal_profile", "PndLmdAcceptance"],
+                },
+            ),
+            ["longitudinal_vs_angular_acceptance"],
+        )
+        self.assertEqual(
+            ids(
+                "Map model/ vs data/ vs apps/ in LuminosityFit with PndLmdModelFactory and createLmdFitData.",
+                {
+                    "intent": "module_structure",
+                    "symbols": ["PndLmdModelFactory::setAcceptance", "createLmdFitData"],
+                    "concepts": ["acceptance"],
+                },
+            ),
+            [],
         )
         self.assertEqual(
             ids(
@@ -750,6 +815,17 @@ class QATests(unittest.TestCase):
                 "explicit_compatibility_check",
                 "efficiency_empty_bin_diagnosis",
             ],
+        )
+        self.assertNotIn(
+            "efficiency_empty_bin_diagnosis",
+            ids(
+                "createLmdFitData returns no acceptance: which data mode, input/tree assumptions, selection filters, and accepted/generated histogram filling should I inspect?",
+                {
+                    "intent": "troubleshooting",
+                    "symbols": ["PndLmdDataReader", "createLmdFitData"],
+                    "concepts": ["empty bins", "efficiency profile"],
+                },
+            ),
         )
         self.assertEqual(
             ids("Where is PndLmdDataReader defined?", {"intent": "api", "symbols": ["PndLmdDataReader"]}),

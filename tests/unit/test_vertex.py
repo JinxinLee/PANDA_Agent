@@ -108,6 +108,18 @@ class VertexTests(unittest.TestCase):
         self.assertEqual(stats["embedding_calls"], 1)
         self.assertNotIn("secret prompt", json.dumps(stats))
 
+    def test_model_call_statistics_delta_has_all_observability_fields(self) -> None:
+        before = self.client.stats_snapshot()
+        self.client.generate_json(
+            "health", {"type": "object", "properties": {"status": {"type": "string"}}}
+        )
+        self.client.embed_query("query")
+
+        self.assertEqual(
+            self.client.stats_delta(before),
+            {"model_calls": 2, "token_usage": 0, "generation_calls": 1, "embedding_calls": 1},
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

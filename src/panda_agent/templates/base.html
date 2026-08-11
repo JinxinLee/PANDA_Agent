@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="PANDA research code knowledge assistant">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'">
+  <meta name="htmx-config" content='{"includeIndicatorStyles":false,"selfRequestsOnly":true}'>
+  <title>{% block title %}PANDA Research QA{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', path='ui.css') }}">
+  <script src="{{ url_for('static', path='vendor/htmx.min.js') }}" defer></script>
+  <script src="{{ url_for('static', path='ui.js') }}" defer></script>
+</head>
+<body>
+  {% block body %}{% endblock %}
+</body>
+</html>

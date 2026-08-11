@@ -1,12 +1,18 @@
 import json
 import sys
 import threading
+import time
 import unittest
 from uuid import UUID
 from pathlib import Path
 from unittest.mock import Mock, patch
 
-from panda_agent.service import QAService, QAServiceBusyError, QAServiceError
+from panda_agent.service import (
+    QAService,
+    QAServiceBusyError,
+    QAServiceDeadlineError,
+    QAServiceError,
+)
 
 
 class RecordingConnection:
@@ -35,6 +41,32 @@ class RecordingStorage:
         return self.connection
 
 
+class DeadlineOrderingConnection(RecordingConnection):
+    def __init__(self):
+        super().__init__()
+        self.deadline_update_started = threading.Event()
+        self.release_deadline_update = threading.Event()
+        self.cleanup_started = threading.Event()
+
+    def execute(self, query, params=None):
+        self.calls.append((query, params))
+        if query.startswith("UPDATE qa_runs SET status="):
+            self.deadline_update_started.set()
+            if not self.release_deadline_update.wait(timeout=2):
+                raise RuntimeError("deadline update was not released")
+        elif query.startswith("UPDATE qa_runs SET node_timings="):
+            self.cleanup_started.set()
+        return self
+
+
+class DeadlineOrderingStorage:
+    def __init__(self):
+        self.connection = DeadlineOrderingConnection()
+
+    def connect(self):
+        return self.connection
+
+
 class StaticGraph:
     def __init__(self, state):
         self.state = state
@@ -55,10 +87,12 @@ class BlockingGraph:
         self.state = state
         self.started = threading.Event()
         self.release = threading.Event()
+        self.finished = threading.Event()
 
     def invoke(self, _input):
         self.started.set()
         self.release.wait(timeout=5)
+        self.finished.set()
         return self.state
 
 
@@ -99,6 +133,165 @@ def answered_state():
 
 
 class QAServiceContractTests(unittest.TestCase):
+    def test_deadline_cleanup_waits_for_client_terminal_persistence(self):
+        storage = DeadlineOrderingStorage()
+        state = answered_state()
+        state["node_timings_ms"] = {"retrieve": 7, "finalize": 3, "workflow": 12}
+        state["model_usage"] = {"model_calls": 2, "generation_calls": 2, "token_usage": 11}
+        graph = BlockingGraph(state)
+        service = QAService(
+            agent=FakeAgent(graph, storage), origin="api", deadline_seconds=0.01
+        )
+        outcome = {}
+        caller = threading.Thread(
+            target=lambda: outcome.setdefault("error", self._capture_error(service, "deadline race"))
+        )
+        caller.start()
+        self.assertTrue(graph.started.wait(timeout=2))
+        self.assertTrue(storage.connection.deadline_update_started.wait(timeout=2))
+
+        try:
+            graph.release.set()
+            self.assertTrue(graph.finished.wait(timeout=2))
+            self.assertFalse(storage.connection.cleanup_started.wait(timeout=0.2))
+        finally:
+            storage.connection.release_deadline_update.set()
+            caller.join(timeout=2)
+            self.assertFalse(caller.is_alive())
+            self.assertTrue(storage.connection.cleanup_started.wait(timeout=2))
+            self.assertTrue(service._gate.acquire(timeout=2))
+            service._gate.release()
+
+        self.assertIsInstance(outcome["error"], QAServiceDeadlineError)
+        self.assertEqual(len(storage.connection.calls), 3)
+        self.assertTrue(storage.connection.calls[1][0].startswith("UPDATE qa_runs SET status="))
+        self.assertTrue(storage.connection.calls[2][0].startswith("UPDATE qa_runs SET node_timings="))
+        self.assertEqual(storage.connection.calls[2][1][0].obj["retrieve"], 7)
+        self.assertEqual(storage.connection.calls[2][1][1].obj["model_calls"], 2)
+        self.assertIsNotNone(storage.connection.calls[2][1][2].obj["worker_completed_at"])
+
+    @staticmethod
+    def _capture_error(service, question):
+        try:
+            service.execute(question)
+        except QAServiceError as error:
+            return error
+        raise AssertionError("deadline request unexpectedly succeeded")
+
+    def test_deadline_persistence_failure_returns_persistence_error_and_keeps_gate_held(self):
+        storage = RecordingStorage(fail_at=2)
+        graph = BlockingGraph(answered_state())
+        service = QAService(
+            agent=FakeAgent(graph, storage), origin="api", deadline_seconds=0.01
+        )
+
+        with self.assertRaises(QAServiceError) as raised:
+            service.execute("deadline persistence failure")
+
+        try:
+            self.assertNotIsInstance(raised.exception, QAServiceDeadlineError)
+            self.assertEqual(raised.exception.code, "persistence_error")
+            with self.assertRaises(QAServiceBusyError):
+                service.execute("still busy")
+        finally:
+            graph.release.set()
+            self.assertTrue(graph.finished.wait(timeout=2))
+            end = time.monotonic() + 2
+            while not service._gate.acquire(blocking=False):
+                if time.monotonic() >= end:
+                    self.fail("deadline worker did not restore the process gate")
+                time.sleep(0.01)
+            service._gate.release()
+
+        end = time.monotonic() + 2
+        while True:
+            try:
+                response = service.execute("after cleanup")
+                break
+            except QAServiceBusyError:
+                if time.monotonic() >= end:
+                    raise
+                time.sleep(0.01)
+        self.assertEqual(response.result.status.value, "answered")
+
+    def test_execution_and_persistence_failures_emit_allowlisted_terminal_events(self):
+        cases = (
+            (FakeAgent(FailingGraph(), RecordingStorage()), "execution_error"),
+            (FakeAgent(StaticGraph(answered_state()), RecordingStorage(fail_at=1)), "persistence_error"),
+            (FakeAgent(StaticGraph(answered_state()), RecordingStorage(fail_at=2)), "persistence_error"),
+        )
+        allowed = {"request_id", "origin", "event", "status", "count", "timing_ms"}
+        for agent, expected_status in cases:
+            with self.subTest(status=expected_status), self.assertLogs("panda_agent.service", level="INFO") as captured:
+                with self.assertRaises(QAServiceError):
+                    QAService(agent=agent, origin="api").execute("never log this question")
+            terminal = [
+                json.loads(record.getMessage())
+                for record in captured.records
+                if json.loads(record.getMessage())["event"] == "terminal"
+            ]
+            self.assertEqual(len(terminal), 1)
+            self.assertEqual(terminal[0]["status"], expected_status)
+            self.assertTrue(set(terminal[0]) <= allowed)
+
+    def test_deadline_latches_client_error_and_holds_gate_until_worker_cleanup(self):
+        storage = RecordingStorage()
+        graph = BlockingGraph(answered_state())
+        service = QAService(
+            agent=FakeAgent(graph, storage), origin="api", deadline_seconds=0.01
+        )
+
+        with self.assertRaises(QAServiceDeadlineError) as raised:
+            service.execute("deadline")
+
+        self.assertEqual(raised.exception.code, "deadline_exceeded")
+        self.assertEqual(raised.exception.request_id, storage.connection.calls[0][1][0])
+        client_finish = storage.connection.calls[1]
+        self.assertEqual(client_finish[1][0], "error")
+        self.assertEqual(client_finish[1][3], "deadline_exceeded")
+        self.assertIn("completed_at=now(),duration_ms=%s", client_finish[0])
+        with self.assertRaises(QAServiceBusyError):
+            service.execute("still busy")
+
+        graph.release.set()
+        self.assertTrue(graph.finished.wait(timeout=2))
+        end = time.monotonic() + 2
+        while True:
+            try:
+                response = service.execute("after cleanup")
+                break
+            except QAServiceBusyError:
+                if time.monotonic() >= end:
+                    raise
+                time.sleep(0.01)
+        self.assertEqual(response.result.status.value, "answered")
+        deadline_updates = [
+            call for call in storage.connection.calls
+            if call[1] and call[1][-1] == raised.exception.request_id
+        ]
+        self.assertEqual(len(deadline_updates), 2)
+        self.assertIn("UPDATE qa_runs SET node_timings=%s,model_usage=%s,trace=%s", deadline_updates[-1][0])
+        self.assertNotIn("status=", deadline_updates[-1][0])
+        self.assertNotIn("completed_at=", deadline_updates[-1][0])
+        self.assertIsNone(client_finish[1][6].obj["worker_completed_at"])
+        self.assertEqual(deadline_updates[-1][1][2].obj["cleanup_status"], "completed_after_deadline")
+        self.assertIsNotNone(deadline_updates[-1][1][2].obj["worker_completed_at"])
+        self.assertEqual(deadline_updates[-1][1][2].obj["selected_evidence_ids"], [])
+
+    def test_lifecycle_logs_are_json_allowlisted_and_exclude_request_contents(self):
+        with self.assertLogs("panda_agent.service", level="INFO") as captured:
+            QAService(
+                agent=FakeAgent(StaticGraph(answered_state()), RecordingStorage()), origin="api"
+            ).execute("do not log this question or private source body")
+
+        payloads = [json.loads(record.getMessage()) for record in captured.records]
+        allowed = {"request_id", "origin", "event", "status", "count", "timing_ms"}
+        self.assertTrue(payloads)
+        self.assertTrue(all(set(payload) <= allowed for payload in payloads))
+        rendered = json.dumps(payloads)
+        self.assertNotIn("do not log this question", rendered)
+        self.assertNotIn("private source body", rendered)
+
     def test_service_owns_request_lifecycle_in_a_worker_and_persists_allowlisted_trace(self):
         storage = RecordingStorage()
         graph = StaticGraph(answered_state())
@@ -116,7 +309,13 @@ class QAServiceContractTests(unittest.TestCase):
         self.assertEqual(update[1][0], "answered")
         self.assertEqual(update[1][2], "usage")
         self.assertIsNone(update[1][3])
-        self.assertEqual(update[1][5].obj, {})
+        self.assertEqual(response.node_timings, update[1][4].obj)
+        self.assertIn("workflow", response.node_timings)
+        self.assertEqual(response.model_usage, update[1][5].obj)
+        self.assertEqual(
+            update[1][5].obj,
+            {"model_calls": 0, "token_usage": 0, "generation_calls": 0, "embedding_calls": 0},
+        )
         trace = update[1][6].obj
         self.assertEqual(
             set(trace),

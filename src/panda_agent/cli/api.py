@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import argparse
 import ipaddress
+import logging
+import os
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -28,11 +30,25 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def _configure_panda_agent_logging() -> None:
+    level_name = os.getenv("PANDA_LOG_LEVEL", "INFO").upper()
+    level = logging.getLevelName(level_name)
+    if not isinstance(level, int):
+        raise ValueError("PANDA_LOG_LEVEL must be a valid logging level")
+    logger = logging.getLogger("panda_agent")
+    logger.setLevel(level)
+    logger.propagate = False
+    handler = logging.StreamHandler()
+    handler.setFormatter(logging.Formatter("%(message)s"))
+    logger.handlers[:] = [handler]
+
+
 def main() -> None:
     load_dotenv()
     args = parse_args()
     if not _loopback_host(args.host):
         raise SystemExit("panda-qa-api accepts loopback hosts only")
+    _configure_panda_agent_logging()
     import uvicorn
 
     uvicorn.run(create_app(args.project_root), host=args.host, port=args.port, workers=1)

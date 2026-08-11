@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import re
+import time
 from pathlib import Path
 from typing import Any, TypedDict
 
@@ -311,10 +312,16 @@ def _answer_requirements(question: str, plan: dict[str, Any]) -> list[dict[str, 
     def add(requirement_id: str, instruction: str) -> None:
         requirements.append({"id": requirement_id, "instruction": instruction})
 
+    event_alignment_question = (
+        intent == "data_flow"
+        and _contains_any(text, ("event id", "event_id"))
+        and "pid" in text
+        and not _contains_any(text, _ANSWER_REQUIREMENT_TERMS["workflow_order"])
+    )
     workflow_triggered = (
         intent in {"workflow", "data_flow", "lifecycle"}
         or _contains_any(text, _ANSWER_REQUIREMENT_TERMS["workflow_order"])
-    )
+    ) and not event_alignment_question
     if workflow_triggered:
         add(
             "workflow_order",
@@ -326,14 +333,25 @@ def _answer_requirements(question: str, plan: dict[str, Any]) -> list[dict[str, 
             "Describe each evidence-backed handoff completely: producer, named intermediate input/product, and next consumer, including a second hop when the question asks for downstream flow.",
         )
 
-    factory_triggered = _contains_any(
+    module_mapping_question = (
+        intent == "module_structure"
+        and _contains_any(text, ("map ", " vs ", "directory", "directories", "folder", "目录", "文件夹"))
+        and not _contains_any(text, ("construct", "compose", "composition", "setter", "build", "构造", "组合", "设置器"))
+    )
+    explicit_factory_triggered = not module_mapping_question and _contains_any(
         text,
         ("factory", "composition", "compose", "construct", "constructor", "setter", "工厂", "组合", "构造", "设置器"),
-    ) or _contains_any(plan_text, ("factory", "setacceptance", "generate2dmodel")) or (
+    ) or (
         _contains_any(text, ("input", "输入"))
         and _contains_any(text, ("output", "输出"))
         and _contains_any(text, ("create", "build", "make", "生成", "创建"))
     )
+    plan_factory_triggered = (
+        intent in {"algorithm_implementation", "api", "data_flow", "module_structure"}
+        and not module_mapping_question
+        and _contains_any(plan_text, ("factory", "setacceptance", "generate2dmodel"))
+    )
+    factory_triggered = explicit_factory_triggered or plan_factory_triggered
     if factory_triggered:
         add(
             "factory_composition",
@@ -440,7 +458,16 @@ def _answer_requirements(question: str, plan: dict[str, Any]) -> list[dict[str, 
                 "explicit_compatibility_check",
                 "State the evidence-backed empty-bin, binning, profile-range, or efficiency compatibility condition explicitly; do not replace it with a generic troubleshooting conclusion.",
             )
-        if _contains_any(text + " " + plan_text, ("empty bin", "empty-bin")) and _contains_any(
+        empty_bin_diagnosis_triggered = _contains_any(
+            text, ("empty bin", "empty-bin", "空 bin", "空bin")
+        ) or (
+            _contains_any(plan_text, ("empty bin", "empty-bin", "空 bin", "空bin"))
+            and not _contains_any(
+                text,
+                ("accepted/generated", "accepted and generated", "histogram filling", "selection filters"),
+            )
+        )
+        if empty_bin_diagnosis_triggered and _contains_any(
             text + " " + plan_text, ("efficiency", "profile", "denominator")
         ):
             add(
@@ -864,6 +891,7 @@ class QAState(TypedDict, total=False):
     claim_audit: list[dict[str, Any]]
     revision_count: int
     retrieval_count: int
+    node_timings_ms: dict[str, int]
     result: dict[str, Any]
 
 
@@ -883,7 +911,7 @@ class QAAgent:
             ("revise", self._revise),
             ("finalize", self._finalize),
         ):
-            graph.add_node(name, node)
+            graph.add_node(name, self._timed_node(name, node))
         graph.add_edge(START, "retrieve")
         graph.add_edge("retrieve", "sufficiency")
         graph.add_conditional_edges(
@@ -1954,7 +1982,10 @@ class QAAgent:
 
     def run_detailed(self, question: str) -> dict[str, Any]:
         """Execute only the QA graph and expose sanitized workflow diagnostics."""
+        started = time.perf_counter()
+        stats_before = self._stats_snapshot()
         state = self.graph.invoke({"question": question})
+        duration_ms = int(round((time.perf_counter() - started) * 1000))
         result = QAResult.model_validate(state["result"])
         bundle = state.get("bundle", {})
         diagnostics = {
@@ -1975,4 +2006,38 @@ class QAAgent:
             "verification_errors": state.get("errors", []),
             "claim_audit": state.get("claim_audit", []),
         }
-        return {"result": result.model_dump(mode="json"), "diagnostics": diagnostics}
+        return {
+            "result": result.model_dump(mode="json"),
+            "diagnostics": diagnostics,
+            "node_timings_ms": {**state.get("node_timings_ms", {}), "workflow": duration_ms},
+            "model_usage": self._model_usage_delta(stats_before),
+        }
+
+    def _stats_snapshot(self) -> dict[str, int]:
+        snapshot = getattr(self.vertex, "stats_snapshot", None)
+        return dict(snapshot()) if callable(snapshot) else {}
+
+    def _model_usage_delta(self, before: dict[str, int]) -> dict[str, int]:
+        delta = getattr(self.vertex, "stats_delta", None)
+        if callable(delta):
+            usage = dict(delta(before))
+        else:
+            after = self._stats_snapshot()
+            usage = {key: after.get(key, 0) - before.get(key, 0) for key in after}
+        for key in ("model_calls", "token_usage", "generation_calls", "embedding_calls"):
+            usage.setdefault(key, 0)
+        return usage
+
+    @staticmethod
+    def _timed_node(name: str, node: Any) -> Any:
+        """Preserve node behavior while recording cumulative execution time."""
+        def timed(state: QAState) -> dict[str, Any]:
+            started = time.perf_counter()
+            output = node(state)
+            timings = dict(state.get("node_timings_ms", {}))
+            timings[name] = timings.get(name, 0) + int(
+                round((time.perf_counter() - started) * 1000)
+            )
+            return {**output, "node_timings_ms": timings}
+
+        return timed

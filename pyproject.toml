@@ -20,6 +20,7 @@ dependencies = [
 qa = [
   "alembic>=1.16,<2",
   "fastapi>=0.115,<1",
+  "jinja2>=3.1,<4",
   "langgraph>=1,<2",
   "psycopg[binary]>=3.2,<4",
   "qdrant-client[fastembed]>=1.15,<1.16",
@@ -35,6 +36,7 @@ ingestion = [
   "tree-sitter-cpp>=0.23,<1",
 ]
 dev = [
+  "playwright>=1.55,<2",
   "pytest>=8,<10",
   "ruff>=0.12,<1",
 ]
@@ -50,6 +52,7 @@ panda-qa-eval = "panda_agent.cli.evaluate:main"
 panda-qa-kb = "panda_agent.cli.kb:main"
 panda-qa-migration = "panda_agent.cli.migration:main"
 panda-qa-api = "panda_agent.cli.api:main"
+panda-qa-ui = "panda_agent.cli.ui:main"
 panda-qa-runtime = "panda_agent.cli.runtime:main"
 
 [tool.setuptools]
@@ -57,6 +60,9 @@ package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+panda_agent = ["templates/**/*.html", "static/**"]
 
 [tool.ruff]
 line-length = 100

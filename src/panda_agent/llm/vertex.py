@@ -125,7 +125,18 @@ class VertexAIClient:
     def stats_snapshot(self) -> dict[str, int]:
         """Return cumulative request counters without exposing prompts or credentials."""
         with self._stats_lock:
-            return dict(self._stats)
+            return {
+                key: self._stats.get(key, 0)
+                for key in ("model_calls", "token_usage", "generation_calls", "embedding_calls")
+            } | dict(self._stats)
+
+    def stats_delta(self, previous: dict[str, int]) -> dict[str, int]:
+        """Return one request's counter delta from a prior cumulative snapshot."""
+        current = self.stats_snapshot()
+        return {
+            key: current.get(key, 0) - previous.get(key, 0)
+            for key in current.keys() | previous.keys()
+        }
 
     def generate_json(
         self,

@@ -1,0 +1,30 @@
+{% set response_code = (error.status_code | default(status_code | default(500, true), true)) | int %}
+{% set error_code = error.error_code | default(error_code | default('', true), true) %}
+{% if response_code == 400 or error_code in ('bad_request', 'invalid_request') %}
+  {% set title = 'The request is invalid' %}
+  {% set message = 'Check that the question is present and within the allowed length, then try again.' %}
+{% elif response_code == 403 or error_code in ('forbidden', 'origin_forbidden') %}
+  {% set title = 'This request is not allowed' %}
+  {% set message = 'Use the local PANDA QA page or API origin to submit the question.' %}
+{% elif response_code == 422 or error_code in ('validation_error', 'unprocessable_entity') %}
+  {% set title = 'The question could not be accepted' %}
+  {% set message = 'Enter a non-empty question of no more than 10,000 characters, then try again.' %}
+{% elif response_code == 429 or error_code == 'busy' %}
+  {% set title = 'The agent is busy' %}
+  {% set message = 'Another question is being processed. Please wait for it to finish, then try again.' %}
+{% elif response_code == 503 or error_code == 'service_unavailable' %}
+  {% set title = 'The local runtime is not ready' %}
+  {% set message = 'Start the locked knowledge services and check readiness before asking again.' %}
+{% elif response_code == 504 or error_code == 'deadline_exceeded' %}
+  {% set title = 'The request timed out' %}
+  {% set message = 'The request reached its local deadline. No answer was returned; please try again.' %}
+{% else %}
+  {% set title = 'The request could not be completed' %}
+  {% set message = 'The local QA service returned an internal error. Check the service log and try again.' %}
+{% endif %}
+<article class="error-card card" role="alert" data-error-code="{{ error_code }}">
+  <span class="status-badge status-badge--error">Error {{ response_code }}</span>
+  <h2>{{ title }}</h2>
+  <p>{{ message }}</p>
+  {% if request_id is defined and request_id %}<p class="request-reference">Request <code>{{ request_id }}</code></p>{% endif %}
+</article>

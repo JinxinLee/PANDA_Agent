@@ -654,6 +654,18 @@ docker compose stop
 
 以后重新启动同一知识库：
 
+已完成 Bundle restore、Alembic `0005` 和 runtime registration 后，可以在项目根目录
+用一条跨平台命令启动依赖、验证运行态、打开浏览器并运行 UI：
+
+```console
+panda-qa-ui --project-root .
+```
+
+UI 地址为 `http://127.0.0.1:8000/ui`。命令占用当前终端；按 `Ctrl+C` 停止 UI，
+PostgreSQL 与 Qdrant 保持运行。无图形浏览器时增加 `--no-browser`。
+
+以下命令保留用于只重启和验证基础设施、不启动 UI 的场景。
+
 Windows PowerShell：
 
 ```powershell

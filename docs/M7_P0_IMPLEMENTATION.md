@@ -1,19 +1,21 @@
 # M7 P0：本地运行时、QAService 与 Loopback API
 
-> **状态（2026-08-10）：M7 P0 已实现，不等于 M7 已通过。** 当前工作树已经有
+> **状态（2026-08-11）：M7 P0 已实现，M7 overall 已通过。** 当前工作树已经有
 > P0 的本地运行时注册、持久化审计、并发门控、统一 `QAService` 和 FastAPI
-> loopback 边界；M7 overall 仍未通过。173 个确定性单元测试、`compileall`、
-> `pip check` 和离线 Alembic SQL 检查已通过。真实四题 smoke、M7 P1 的 deadline/
-> `504`、model-usage、JSON logging，以及 M8 UI 尚未运行或实现。
+> loopback 边界；M7 P1 也已实现并完成确定性验证。四题真实 API smoke 已通过；M8
+> 已解锁但尚未开始。逐题结果见 [`M7_OVERALL_RESULT.md`](M7_OVERALL_RESULT.md)。
 
 本文只描述当前源码中的 M7 P0 行为。M6 的质量结果和历史运行记录仍以
 [`QA_AGENT.md`](../QA_AGENT.md)、[`AGENT_GUIDE.md`](../AGENT_GUIDE.md) 和
 [`docs/EVALUATION_STATUS.md`](EVALUATION_STATUS.md) 中带日期的记录为准；它们不因
 P0 实现而自动变成通过。
 
-当前验收口径按用户当前决定统一为：M6 视为达标；M7 P0 已实现并验证；M7 整体尚未
-通过（M7 P1 与四道真实 smoke 尚未完成）；M8 尚未开始。本文不虚构 hidden
-acceptance 或尚未运行的 formal gate。
+当前验收口径按用户当前决定统一为：M6 视为达标；M7 P0+P1 已实现并完成确定性
+验证，四道真实 API smoke 已通过，M7 overall PASS；M8 已解锁但尚未开始。本文不虚构
+hidden acceptance 或尚未运行的 formal gate。
+
+本文其余章节保留 P0 的历史边界和迁移记录；deadline/504、逐节点 timings、usage、
+JSON lifecycle logging 和 readiness TTL 的当前实现见 [`M7_P1_IMPLEMENTATION.md`](M7_P1_IMPLEMENTATION.md)。
 
 ## 1. P0 的边界和代码入口
 
@@ -135,7 +137,7 @@ Bundle 路径和 Vertex/ADC 配置。安装 QA extra 后，严格按以下顺序
 | 方法和路径 | 行为 |
 |---|---|
 | `GET /health/live` | 只表示进程存活，返回 `200 {"status":"live"}`；不调用模型。 |
-| `GET /health/ready` | 每次刷新 runtime probe；ready 返回 200，未注册、ADC/存储不满足或服务初始化失败返回 503。无模型调用。 |
+| `GET /health/ready` | 按 `PANDA_READINESS_TTL_SECONDS`（默认 5 秒）缓存 runtime probe；ready 返回 200，未注册、ADC/存储不满足或服务初始化失败返回 503。无模型调用。 |
 | `GET /version` | 返回 package/model IDs、Prompt set、retrieval policy schema 和 runtime receipt 摘要。 |
 | `POST /v1/qa` | 统一 QA 请求边界；成功返回 `request_id`、`result` 和 `timings_ms.total`。 |
 | `GET /docs`、`GET /openapi.json` | FastAPI 生成的本地交互文档和 schema。 |
@@ -151,18 +153,21 @@ Bundle 路径和 Vertex/ADC 配置。安装 QA extra 后，严格按以下顺序
 | 429 | `busy` | 进程内 gate 已被另一个请求占用。 |
 | 503 | `service_unavailable` | readiness probe 未通过；请求不会进入 QA graph。 |
 | 500 | `persistence_error`、`execution_error`、`internal_error` | 记录、worker 或未知内部错误；不返回 stack。 |
+| 504 | `deadline_exceeded` | M7 P1 deadline 到期；worker 可能仍在运行，客户端终态已锁存。 |
 
-P0 **没有 504 deadline 行为**：worker 会等待当前 QA 执行结束；deadline、504、
-model usage 统计和 JSON logging 属于尚未完成的 M7 P1，不应在 P0 文档或 smoke
-结果中宣称已经具备。
+本节的 route/error 表最初是 P0 边界记录；当前 M7 P1 已增加 `504 deadline_exceeded`、
+model usage、逐节点 timings、JSON lifecycle logging 和 readiness TTL，完整契约见
+[`M7_P1_IMPLEMENTATION.md`](M7_P1_IMPLEMENTATION.md)。P0 历史记录不应被解释为当前
+源码仍缺少这些能力，也不构成 M7 overall smoke 结果。
 
 ### 4.2 QAService、并发和审计
 
-`QAService.execute()` 为每个请求生成 UUID request ID，先写入 `qa_runs` 的完整
+`QAService.execute()` 为每个请求生成 UUID request ID；该 API `request_id` 映射到
+`qa_runs.run_id`（当前 schema 没有独立的 `request_id` 列）。服务先写入 `qa_runs` 的完整
 `question` 和 `running` 状态，再在 worker thread 中调用 `QAAgent.run_detailed()`；
 完成或失败后更新 status、completed_at、duration_ms、intent、error_code、
-node_timings、model_usage 和 trace；P0 的 `model_usage` 当前写入空对象占位，统计属
-M7 P1。CLI `panda-qa ask` 与 API 都使用这个服务边界。
+node_timings、model_usage 和 trace；当前 P1 会按四项白名单记录 model usage。CLI
+`panda-qa ask` 与 API 都使用这个服务边界。
 
 默认 `PANDA_API_MAX_CONCURRENCY=1`。gate 是进程内 `threading.BoundedSemaphore`，
 同一进程的第二个同时请求立即得到 429；它不跨进程、不替代分布式队列或租户隔离。
@@ -170,20 +175,24 @@ M7 P1。CLI `panda-qa ask` 与 API 都使用这个服务边界。
 `qa_runs.trace` 只允许 schema version、origin、selected evidence IDs、计数器、
 脱敏 verification error codes、worker 时间和 cleanup status。它不保存 Prompt 正文、
 Evidence 正文、凭据或 stack trace；完整 `question` 只保存在 `qa_runs.question`。
+当前 P1 还写入逐节点 `node_timings` 和四项 usage 白名单
+(`model_calls`、`token_usage`、`generation_calls`、`embedding_calls`)；deadline 时
+客户端锁存的 `status/error_code/completed_at/duration_ms` 不会被 worker cleanup 改写。
 
 ## 5. 限制、非目标和 M7 状态
 
-- P0 是 loopback-only、本地单进程服务，没有认证、TLS、租户隔离或跨进程并发协调。
+- P0 是 loopback-only、本地单进程服务，没有认证、TLS、租户隔离或跨进程并发协调；
+  P1 deadline/usage/logging/TTL 已在同一边界内实现。
 - P0 API 没有 Web UI；M8 尚未开始（因此 UI 尚未实现）。
 - P0 没有多轮对话、长期 Memory、LangGraph checkpoint、Coding/Debug Agent 或工具调用。
 - QA 仍需要 Vertex dense query embedding 和回答生成；Bundle verify/registration 不
   代替模型调用，也不提供离线 dense-query fallback。
-- 真实四题 smoke 尚未运行；173 deterministic tests、`compileall`、`pip check` 和
-  offline Alembic SQL 已通过，但这些离线证据不等于 M7 overall gate。
+- 四题真实 API smoke 已通过；P0/P1 deterministic tests、`compileall`、`pip check`
+  和 offline Alembic SQL 也已完成。逐题 live 记录见 [`M7_OVERALL_RESULT.md`](M7_OVERALL_RESULT.md)。
 
-因此，**“M7 P0 implemented” 只表示上述代码路径和离线契约已经落地；它不表示
-M7 已通过、API 已完成生产部署，或 M8 已解锁。** 后续 P1/P2 结果应追加到带日期的
-实施或评估记录，不要改写历史 M6 结果。
+因此，**“M7 P0 implemented” 表示 P0 基础代码路径已经落地；本轮四题 live smoke
+已使 M7 overall 通过，但不表示 API 已完成生产部署。M8 已解锁但尚未开始。** 后续
+M8/P2 结果应追加到带日期的实施或评估记录，不要改写历史 M6 结果。
 
 ## 6. 阅读和验证入口
 
@@ -199,8 +208,8 @@ M7 已通过、API 已完成生产部署，或 M8 已解锁。** 后续 P1/P2 �
   `valid=true`、`runtime_status=registered`，所有 live checks 全部为 `true`；
 - 非沙箱 runtime probe 的 ADC check 为 `true`；调用 `load_dotenv()` 后，真实 FastAPI
   `/health/live`、`/health/ready`、`/version` 分别返回 HTTP `200/200/200`；
-- 上述 API 健康验证没有执行 `/v1/qa`，也没有产生 Vertex model call，因此不能替代
-  真实四题 smoke 或 M7 overall gate。
+- 上述 API 健康验证之外，四题真实 `/v1/qa` smoke 已完成并通过；完整请求 ID、状态、
+  model usage 和脱敏 trace 检查见 [`M7_OVERALL_RESULT.md`](M7_OVERALL_RESULT.md)。
 
 新用户先读本文件第 3 节和 [`docs/NEW_USER_BUNDLE_GUIDE.md`](NEW_USER_BUNDLE_GUIDE.md)，
 然后看 [`README.md`](../README.md) 的 quickstart。架构/实现阅读顺序为：
@@ -220,5 +229,6 @@ python -m compileall -q src tests/unit
 python -m pip check
 ```
 
-这些命令不启动 PostgreSQL/Qdrant、不调用 Vertex；真实 Bundle smoke 和 M7 P1 gate
-必须单独记录运行态、模型、题目和时间，不能用本节离线检查替代。
+这些命令不启动 PostgreSQL/Qdrant、不调用 Vertex；真实 Bundle smoke 和 M7 overall
+gate 必须单独记录运行态、模型、题目和时间，不能用本节离线检查替代。P1 的针对性
+确定性检查入口与边界见 [`M7_P1_IMPLEMENTATION.md`](M7_P1_IMPLEMENTATION.md)。

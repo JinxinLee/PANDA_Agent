@@ -20,7 +20,7 @@
 
 > 本更新覆盖本文后方关于“等待 v8 首次人工失败审查”和旧 Prompt 版本的历史描述；当前 Prompt 版本为 `3.1.0`。
 
-> 当前权威状态：按用户当前验收决定，M6 视为达标；M7 P0 已实现并验证；M7 整体尚未通过（P1 与四道真实 smoke 尚未完成）；M8 尚未开始。下方带日期的 M6 结果均为历史运行记录。
+> 当前权威状态：按用户当前验收决定，M6 视为达标；M7 P0+P1 已实现并完成确定性验证，四道真实 API smoke 已通过，因此 **M7 overall PASS**；M8 P0/P1 已实现并完成确定性验证，真实 Edge E2E 与经授权的八意图 UI smoke 已通过，因此 **M8 overall PASS，M8 complete**。完整 M8 证据见 [`docs/M8_OVERALL_RESULT.md`](docs/M8_OVERALL_RESULT.md)，P0/P1 实现分别见 [`docs/M8_P0_IMPLEMENTATION.md`](docs/M8_P0_IMPLEMENTATION.md) 与 [`docs/M8_P1_IMPLEMENTATION.md`](docs/M8_P1_IMPLEMENTATION.md)。下方带日期的 M6 结果均为历史运行记录。
 > 项目目录：`PANDA_Agent/`  
 > Python 包：`panda_agent`  
 > 本文不修改父目录的 `agent.md`
@@ -42,7 +42,7 @@ dense query embedding (the normal QA query path still calls Vertex).
 
 ## M7 P0 实施更新：runtime、QAService 与 loopback API
 
-M7 P0 已在当前工作树实现，但 **M7 overall 尚未通过**。架构、迁移、注册顺序、
+M7 P0 已在当前工作树实现，且 **M7 overall 已通过**。架构、迁移、注册顺序、
 HTTP route/error contract、审计 trace 和限制详见
 [`docs/M7_P0_IMPLEMENTATION.md`](docs/M7_P0_IMPLEMENTATION.md)。实现入口为：
 
@@ -61,18 +61,58 @@ HTTP route/error contract、审计 trace 和限制详见
 `panda-qa-kb verify`（注册前 `runtime_status=not_registered` 仍可 `valid=true`、
 exit 0）→ `python -m alembic upgrade head` → `panda-qa-runtime register-runtime`
 → `panda-qa-runtime verify` → `panda-qa-api`。默认监听 `127.0.0.1:8000`、
-`workers=1`，`PANDA_API_MAX_CONCURRENCY=1` 为进程内并发 gate；P0 没有 deadline/504、
-model-usage/JSON logging 或 M8 UI。
+`workers=1`，`PANDA_API_MAX_CONCURRENCY=1` 为进程内并发 gate。旧 P0 记录只覆盖
+基础服务边界；当前 deadline/504、model-usage、JSON logging 和 readiness TTL 由
+M7 P1 提供，详见 [`docs/M7_P1_IMPLEMENTATION.md`](docs/M7_P1_IMPLEMENTATION.md)。
 
 assembled v2 Bundle 的本地证据为：补装 evaluator asset 后知识 verify 为
 `valid=true/runtime_status=not_registered`；Alembic 成功从 `0004` 到 `0005`；
 registration 与独立 runtime verify 的全部 checks 均为 `true`；非沙箱 ADC probe 为
 `true`；`load_dotenv()` 后真实 FastAPI 的 live/ready/version 为 HTTP `200/200/200`。
-该验证未调用模型、未执行 `/v1/qa` 问题，因此不等于真实四题 smoke 或 M7 overall gate。
+随后真实四题 API smoke 也已通过；逐题状态、请求记录和持久化审计见
+[`docs/M7_OVERALL_RESULT.md`](docs/M7_OVERALL_RESULT.md)。
+
+## M7 P1 实施更新：deadline、观测与 readiness TTL
+
+M7 P1 已在当前工作树实现并完成确定性验证；实现、配置、状态机、调试入口和限制
+集中记录在 [`docs/M7_P1_IMPLEMENTATION.md`](docs/M7_P1_IMPLEMENTATION.md)。要点如下：
+
+- `PANDA_QA_DEADLINE_SECONDS` 默认 `300`；超时由 `QAService` 抛出
+  `QAServiceDeadlineError`，API 返回 HTTP 504、`error_code=deadline_exceeded`。
+- deadline 客户端终态会锁存 `qa_runs.status/error_code/completed_at/duration_ms`；
+  Python thread 不能强制取消，worker 退出后只补 `node_timings`、`model_usage`、
+  `trace`，并在退出后释放进程 gate。
+- `QAAgent.run_detailed()` 返回逐节点 `node_timings_ms`；usage 白名单为
+  `model_calls`、`token_usage`、`generation_calls`、`embedding_calls`。
+- `panda-qa-api` 使用 `PANDA_LOG_LEVEL`（默认 `INFO`）发出不含 question、证据、
+  Prompt、凭据或 stack 的单行 JSON 生命周期日志。
+- `PANDA_READINESS_TTL_SECONDS` 默认 `5`；`0` 禁用缓存，`/health/ready` 与 `/v1/qa`
+  共用 TTL probe。M7 overall 已通过，但服务仍是 loopback、本地单进程能力，不是生产级
+  取消或远程多用户服务。
+
+## M8 P0/P1 实施更新：服务端渲染 Web UI、诊断与浏览器验收
+
+M8 P0/P1 已实现并完成确定性验证，当前状态为：`M8 overall PASS`、`M8 complete`。
+P0 的历史边界和阶段性验证见 [`docs/M8_P0_IMPLEMENTATION.md`](docs/M8_P0_IMPLEMENTATION.md)，
+P1 的当前实现见 [`docs/M8_P1_IMPLEMENTATION.md`](docs/M8_P1_IMPLEMENTATION.md)，整体
+八意图记录、审计保留与结论见 [`docs/M8_OVERALL_RESULT.md`](docs/M8_OVERALL_RESULT.md)。
+
+- `api.py::create_app()` 提供 `/` → `/ui`、`/ui`、`/ui/qa`、`/ui/health`、
+  `/v1/qa` 与 `/v1/qa/diagnose`；UI、JSON API、diagnose 均通过同一个进程内
+  `QAService.execute()` 一次执行，不复制检索或生成流程。
+- 页面使用 Jinja2 默认 autoescape、本地 HTMX 2.0.7 和五个诊断 tabs（Query Plan、
+  Retrieval Channels、Fusion & Rerank、Exclusions、Workflow Trace），支持 Copy answer
+  与 Download JSON；不保存会话历史。
+- same-origin `Origin`、loopback-only、CSP、`nosniff`、`no-referrer` 和 HTTPS-only
+  外部 evidence links 已验证；不提供多轮、账户、远程、上传、代码/命令执行、Coding/Debug
+  Agent 或公开部署。
+- 全部 unit **198/198**，UI **11/11**，diagnostics **3/3**，真实 Edge Playwright
+  **1/1**，`compileall`、`pip check` 和 `git diff --check` 均通过。真实 Vertex/`qa_runs`
+  smoke 仅由 `tests/live/test_m8_ui_live.py` 的显式 opt-in 运行负责。
 
 ## P1 实施更新（Phase 0 → Phase 6）
 
-P1 已严格按六个阶段完成，旧章节中把下列项目列为“P1 待办”的内容均由本节取代。
+P1 已严格按六个阶段完成；旧章节中的对应边界描述均由本节取代。
 
 | 阶段 | 已完成实现 | 验证结果 |
 |---|---|---|
@@ -114,9 +154,10 @@ replacement for a full development run.
 
 按用户当前验收决定，M6 视为达标。120 题已经人工审核并全部批准，
 `panda-qa-eval validate --official` 已通过。以下 retrieval/QA candidate 数据和
-development-gate 结论均为历史运行记录，不覆盖当前验收决定；M7 P0 实现状态见本文
-上方的实施更新。当前里程碑为：M7 整体尚未通过（P1 与四道真实 smoke 尚未完成），
-M8 尚未开始。完整运行演进、问题分类和优化记录见 `docs/M6_EVALUATION_RETROSPECTIVE.md`。
+development-gate 结论均为历史运行记录，不覆盖当前验收决定；M7 P0+P1 实现状态见本文
+上方的实施更新。当前里程碑为：M7 overall 已通过，M8 overall PASS 且 M8 complete。完整运行演进、
+问题分类和优化记录见 `docs/M6_EVALUATION_RETROSPECTIVE.md`；M7 live 验收见
+`docs/M7_OVERALL_RESULT.md`。
 
 ### 历史质量基线（保留，不代表当前状态）
 
@@ -150,7 +191,7 @@ M8 尚未开始。完整运行演进、问题分类和优化记录见 `docs/M6_E
 - Li、Karavdina、Pflüger 三篇固定 PDF；
 - PandaRoot `2023-08-25-dev` Sphinx 固定网页快照。
 
-支持 installation、usage、API、algorithm theory、algorithm implementation、data flow、module structure 和 troubleshooting 八类问题。`panda-qa` 仍是一次性 CLI 入口；M7 P0 另提供通过共享 `QAService` 的 loopback-only FastAPI/REST 边界（`panda-qa-api`）。Coding Agent、Debug Agent、多轮会话和长期 Memory 尚未实现。
+支持 installation、usage、API、algorithm theory、algorithm implementation、data flow、module structure 和 troubleshooting 八类问题。`panda-qa` 仍是一次性 CLI 入口；M7 P0+P1 另提供通过共享 `QAService` 的 loopback-only FastAPI/REST 边界（`panda-qa-api`）。Coding Agent、Debug Agent、多轮会话和长期 Memory 尚未实现。
 
 ## 2. 总体架构
 
@@ -454,7 +495,10 @@ QA_EMBEDDING_CONCURRENCY=16
 
 ## 11. 当前 P1/P2 技术债务
 
-### P1
+### 历史 P1 技术债务快照（M7 P1 前，保留记录）
+
+下列条目记录 P1 实施前的缺口；Phase 0–6 的当前实现和确定性验证见上方
+“M7 P1 实施更新”及 [`docs/M7_P1_IMPLEMENTATION.md`](docs/M7_P1_IMPLEMENTATION.md)。
 
 - 将 `event_poca`、具体 restgas profile 文件、输入/输出 ROOT tree 和 data product 物化为一级对象，并建立 producer/consumer 关系。
 - 为实际 profile 文件和用户常用泛称建立带 provenance 的 alias，不允许无证据猜测。
@@ -463,19 +507,20 @@ QA_EMBEDDING_CONCURRENCY=16
 - 为 30 道检索题补 gold evidence，计算 Recall@10，而不仅是运行成功率。
 - 调整 deterministic intent override 或扩充分类评估；当前 intent 命中 23/30。
 
-### P2
+### 当前 P2 技术债务
 
-- 增加结构化日志、模型调用耗时和 token/cost 观测；M7 P0 已有 request ID 和脱敏 `qa_runs` trace，但 JSON logging/model-usage 仍属 M7 P1。
+- M7 P1 已提供单行 JSON 生命周期日志、逐节点耗时和四项 model-usage 计数；后续仍可增加跨请求指标、成本聚合和正式 metrics backend。
 - 为 Prompt 增加显式版本号和 snapshot tests。
 - 评估 runner 应逐题 checkpoint，并支持按 ID 合并 resume 结果；本次中途崩溃暴露了“只在末尾保存”的问题。
-- 补 M7 P1 deadline/504、JSON logging/model-usage、用户隔离和 PostgreSQL checkpoint 后再支持多轮会话；M7 P0 的 loopback FastAPI、进程内并发限制和 `QAService` 已实现。
+- M7 P1 deadline/504、JSON logging/model-usage 和 readiness TTL 已实现；用户隔离、PostgreSQL checkpoint、多轮会话、认证/TLS 与生产级取消仍未实现。M7 P0+P1 的 loopback FastAPI、进程内并发限制和 `QAService` 已实现。
 
 ## 12. 不在当前实现中的能力
 
 - 无标准 LLM Tool Calling；检索通道由 Python 固定执行。
 - 无多轮对话 Memory、用户级长期记忆或 LangGraph checkpoint。
-- 有 loopback-only REST API（FastAPI，`panda-qa-api`）；无 Web UI。
+- 有 loopback-only REST API（FastAPI，`panda-qa-api`）和同进程的 M8 P0/P1 服务端渲染 Web UI；
+  UI 仍是本机单用户能力，不是远程多用户前端。
 - 无代码写入、命令执行、自动 debug 或实验运行权限。
-- M6 的 120 题 schema、人工批准和评估器已完成；retrieval/QA candidate-v8 的失败审查与 acceptance 状态属于历史记录，不代表当前验收决定。当前 M6 按用户决定视为达标；M7 P0 已实现并验证，M7 整体尚未通过（P1 与四道真实 smoke 尚未完成），M8 尚未开始。
+- M6 的 120 题 schema、人工批准和评估器已完成；retrieval/QA candidate-v8 的失败审查与 acceptance 状态属于历史记录，不代表当前验收决定。当前 M6 按用户决定视为达标；M7 P0+P1 已实现并完成确定性验证，四道真实 API smoke 已通过，M7 overall PASS；M8 P0/P1 已实现并完成确定性验证，M8 overall PASS、M8 complete。详见 `docs/M7_OVERALL_RESULT.md`、`docs/M8_P1_IMPLEMENTATION.md` 与 `docs/M8_OVERALL_RESULT.md`。
 
 这些能力不得在文档或回答中描述成已经实现。

@@ -20,9 +20,9 @@
 
 > 上述带日期内容均为 M6 历史评估/诊断记录；它们不覆盖下面的当前验收口径。
 
-> **当前权威状态（按用户当前验收决定，2026-08-10）：** M6 视为达标；M7 P0 已实现并验证；M7 整体尚未通过（P1 与四道真实 smoke 尚未完成）；M8 尚未开始。不虚构 hidden acceptance 或尚未运行的 formal gate。
+> **当前权威状态（按用户当前验收决定，2026-08-11）：** M6 视为达标；M7 P0+P1 已实现并完成确定性验证，四道真实 API smoke 已通过，因此 **M7 overall PASS**；M8 P0/P1 已实现并完成确定性验证，真实 Edge E2E 与经授权的八意图 UI smoke 已通过，因此 **M8 overall PASS，M8 complete**。不把本机结果扩展为多轮、账户、远程、上传、Coding/Debug Agent 或公开部署。M8 证据见 [`docs/M8_OVERALL_RESULT.md`](docs/M8_OVERALL_RESULT.md)，实现见 [`docs/M8_P0_IMPLEMENTATION.md`](docs/M8_P0_IMPLEMENTATION.md) 与 [`docs/M8_P1_IMPLEMENTATION.md`](docs/M8_P1_IMPLEMENTATION.md)。
 
-> 文档基线：2026-07-30 当前工作区代码  
+> 文档基线：2026-08-11 当前工作区代码
 > 适用项目：`PANDA_Agent/`（Python 包名：`panda_agent`）  
 > 当前版本：`0.1.0`  
 > 文档性质：README、架构文档、使用手册、代码审查报告和扩展教程
@@ -48,13 +48,27 @@ formal M6 or release gate and does not override the user's current M6 acceptance
 
 > **P1 实施更新（2026-07-30）：** P1 Phase 0→6 也已完成。当前运行态为 Alembic `0004`、102,875 objects、64,561 accepted relations、372,139 relation candidates、2 aliases、374 workflows、80,698 Qdrant points；`panda-qa-index verify` 为 `valid=true`。已实现 data-product/alias 物化、流式 relation candidate spool、索引身份、失败/恢复生命周期、配置驱动 intent route、逐题可恢复评估及 localhost 安全绑定。后文旧审查表中相应 P1 项目视为历史问题，最新实现和测试细节以 `QA_AGENT.md` 的 P1 更新为准。
 
-> **M7 P0 实施更新（2026-08-10）：** 当前工作树已实现 Bundle 与 runtime 的独立验证、`0005` 服务迁移、共享 `QAService`、P0 `qa_runs` 脱敏 trace、进程内并发 gate 和 loopback-only FastAPI。完整顺序、路由、错误码、限制及验证边界见 [`docs/M7_P0_IMPLEMENTATION.md`](docs/M7_P0_IMPLEMENTATION.md)。**M7 P0 implemented ≠ M7 passed**：真实四题 smoke、P1 deadline/504、model-usage、JSON logging 和 M8 UI 仍未完成。
+> **M7 P0 实施更新（2026-08-10）：** 当前工作树已实现 Bundle 与 runtime 的独立验证、`0005` 服务迁移、共享 `QAService`、P0 `qa_runs` 脱敏 trace、进程内并发 gate 和 loopback-only FastAPI。完整顺序、路由、错误码、限制及验证边界见 [`docs/M7_P0_IMPLEMENTATION.md`](docs/M7_P0_IMPLEMENTATION.md)。P0 基础验证已完成；四题真实 smoke 已在 M7 overall 验收中通过。P1 当前实现见下方独立文档。
+
+> **M7 P1 实施更新（2026-08-11）：** deadline/504、逐节点 timings、四项 model-usage、
+> JSON lifecycle logging 和 readiness TTL 已在当前代码实现并完成确定性验证。配置、状态机、
+> API error envelope、日志白名单、运行/调试入口和限制见 [`docs/M7_P1_IMPLEMENTATION.md`](docs/M7_P1_IMPLEMENTATION.md)。
+> timeout 后 Python worker 不能强制取消；`qa_runs` 的 deadline 终态锁存，worker 退出后仅补 timings/usage/trace 并释放 gate。M7 overall 已通过；M8 P0/P1 已实现并完成确定性验证，M8 overall PASS 且 M8 complete。
+
+> **M8 P0/P1 实施更新（2026-08-11）：** FastAPI 同进程提供 Jinja2 + 本地 HTMX 2.0.7
+> 页面：`GET /` → `/ui`、`GET /ui`、`POST /ui/qa`、`GET /ui/health` 和
+> `/v1/qa/diagnose`。UI、JSON API 和 diagnose 共用一次 `QAService.execute()`；结果页
+> 有五个 diagnostics tabs、Copy answer 和 Download JSON。全 unit 198/198、UI 11/11、
+> diagnostics 3/3、真实 Edge Playwright 1/1，compileall、pip check 和 diff check 均通过。
+> 安全边界为 loopback、CSP、autoescape、same-origin、HTTPS-only evidence link 和脱敏诊断。
+> 真实 Vertex/`qa_runs` smoke 仅由 `PANDA_RUN_LIVE_M8_UI=1` 显式启用；详见
+> [`docs/M8_P1_IMPLEMENTATION.md`](docs/M8_P1_IMPLEMENTATION.md) 与 [`docs/M8_OVERALL_RESULT.md`](docs/M8_OVERALL_RESULT.md)。
 
 > **P0 本地证据：** assembled v2 Bundle（补装 evaluator asset）`kb verify` 为
 > `valid=true/runtime_status=not_registered`；Alembic 从 `0004` 到 `0005` 成功；
 > registration/runtime verify 全 checks 为 `true`；非沙箱 ADC probe 为 `true`；
-> `load_dotenv()` 后 FastAPI live/ready/version 为 `200/200/200`。未调用模型或执行
-> `/v1/qa`，所以不替代四题 smoke 或 M7 overall gate。
+> `load_dotenv()` 后 FastAPI live/ready/version 为 `200/200/200`；随后四题真实 `/v1/qa`
+> smoke 已通过。逐题状态、请求记录和脱敏持久化见 [`docs/M7_OVERALL_RESULT.md`](docs/M7_OVERALL_RESULT.md)。
 
 > **M6 历史记录（2026-08-02）：** retrieval 旧基线、v8 与 Lite RC1 结果保留在 retrospective；Lite 候选的完整 80 题 dev 已失败，实际指标和人工审查表见 `docs/M6_PHASE6_0_7_RESULT.md` 与 `data/evaluation/runs/m6-v2-lite-qa-dev-rc1/failure_review.yaml`。
 
@@ -108,14 +122,14 @@ formal M6 or release gate and does not override the user's current M6 acceptance
 - CLI、Python 类接口、离线/实时测试及评估脚本。
 - M6 的 120 题 approved Gold、可恢复评估 CLI、分层 development gate 和 failure-review 人工表。
 
-尚未实现：
+尚未实现（不属于 M8 完成范围）：
 
-- Web UI、Notebook 或完整 Docker 化 Agent 服务；M7 P0 的 FastAPI/REST 仅 loopback、本地单进程；
+- 完整 Docker 化 Agent 服务；M7 P0+P1 的 FastAPI/REST 与 M8 P0+P1 Web UI 仅 loopback、本地单进程；
 - Coding Agent、Debug Agent 和能修改/执行科研代码的工具；
 - 标准 LLM Tool Calling/function calling；
 - 对话历史、用户记忆、LangGraph checkpoint 和中断恢复；
 - 多用户身份、鉴权、配额和生产级观测；
-- Phase 6.0–6.7 的 Lite 迁移、焦点回归、候选冻结、完整 dev 和 16 题 regression 尚未全部完成；当前环境门禁阻塞，正式 hidden acceptance 尚未创建。
+- 生产级 metrics/cost backend、公开部署安全 gate 和正式 hidden acceptance；M8 的诊断 tabs、浏览器端到端、截图与 live smoke 已完成。
 
 ---
 
@@ -184,10 +198,10 @@ formal M6 or release gate and does not override the user's current M6 acceptance
 | python-dotenv | CLI 加载 `.env` | 多数在线 CLI | 本地开发方便 | 系统环境/Secret Manager |
 | argparse | 六个 CLI 入口 | `src/panda_agent/cli/` | 标准库、零额外依赖 | Typer、Click |
 | Docker Compose | 启动 PostgreSQL/Qdrant | `docker-compose.yml` | 本地可复现服务 | 本机服务、Kubernetes |
-| unittest | 当前 24 项包内单元测试 | `tests/unit/` | 标准库、确定性 | pytest |
+| unittest | 当前 198 项包内单元测试（M8 验收 198/198） | `tests/unit/` | 标准库、确定性 | pytest |
 | pytest | `dev` extra 中声明，测试未使用 pytest 特性 | `pyproject.toml` | 可作为更友好的测试运行器 | 保持 unittest |
 | Ruff | 配置了代码检查，但当前环境未安装 | `pyproject.toml` | 快速 lint/format | Black + Flake8 |
-| FastAPI/Uvicorn | M7 P0 loopback-only API 与本地服务启动 | `api.py`、`cli/api.py` | 复用 `QAService`，提供健康、版本和 QA 路由 | Flask、Litestar |
+| FastAPI/Uvicorn | M7 P0+P1 loopback-only API 与本地服务启动 | `api.py`、`cli/api.py` | 复用 `QAService`，提供健康、版本、QA、deadline/504 和 readiness TTL | Flask、Litestar |
 | `langgraph-checkpoint-postgres` | 未安装、未接入 | 不在当前 `pyproject.toml` | 当前项目没有多轮恢复需求 | 自定义 checkpoint 或未来单独引入 |
 
 > **依赖审查：** `requests`、FastAPI 和 Uvicorn 已由当前运行路径使用并在对应 extra 中声明。LangGraph PostgreSQL checkpoint 仍未接入；当前环境也可能没有安装 `dev` extra 中的 pytest/ruff，尽管包内 unittest 不受影响。
@@ -240,19 +254,21 @@ PANDA_Agent/
 │   ├── indexing.py                # M3 索引、缓存和一致性
 │   ├── retrieval.py               # M4 查询分析和多路检索
 │   ├── qa.py                      # M5 LangGraph Agent
-│   ├── service.py                 # M7 P0 QAService boundary
+│   ├── service.py                 # M7 P0+P1 QAService boundary
 │   ├── runtime.py                 # M7 P0 runtime receipt/readiness
-│   ├── api.py                     # M7 P0 FastAPI app
+│   ├── api.py                     # M7 P0+P1 FastAPI JSON/UI app
+│   ├── templates/                 # M8 P0/P1 Jinja2 pages and HTML partials
+│   ├── static/                    # M8 P0/P1 local CSS/JS/HTMX assets
 │   ├── llm/vertex.py              # Vertex 模型适配器
 │   └── cli/                       # health/source/ingest/index/retrieve/qa/kb/runtime/api
 └── tests/
-    ├── unit/                      # 24 项无真实模型成本测试
+    ├── unit/                      # deterministic tests, including test_ui.py
     └── live/                      # Vertex、storage、reconciliation 门控测试
 ```
 
 ### 4.1 重要文件之间的依赖
 
-- `cli/qa.py` → `service.QAService` → `qa.QAAgent` → `retrieval.Retriever` → `storage.Storage` 与 `llm.VertexAIClient`；API 通过同一 `QAService`。
+- `cli/qa.py` → `service.QAService` → `qa.QAAgent` → `retrieval.Retriever` → `storage.Storage` 与 `llm.VertexAIClient`；API 与 M8 P0/P1 `templates/` UI 通过同一 `QAService`。
 - `cli/kb.py` → `kb_bundle`；`cli/runtime.py` → `runtime.register_runtime/verify_runtime`；`cli/api.py` → `api.create_app`。
 - `cli/ingest.py` → `ingestion.ingest` → `source.verify_manifest`、所有 parser 和 `models.py`。
 - `cli/index.py` → `indexing.apply_index` → `storage.py`、Vertex embedding 和 FastEmbed。
@@ -266,17 +282,17 @@ PANDA_Agent/
 | 当前运行代码 | `src/panda_agent/`、`configs/`、`migrations/`、CLI | 被 entry point 或模块直接调用 |
 | 辅助代码 | `evaluation/`、`tests/`、`docling_worker.py` | 用于评估、验证或子进程解析 |
 | 生成数据 | `data/` | 由 M1–M3 产生；不是手写源码 |
-| 预留但未使用 | PostgreSQL checkpoint、部分 schema object type | 没有当前调用点或实际产物；FastAPI/Uvicorn 已用于 M7 P0 |
+| 预留但未使用 | PostgreSQL checkpoint、部分 schema object type | 没有当前调用点或实际产物；FastAPI/Uvicorn 已用于 M7 P0+P1 |
 | 父目录实验代码 | `../ReActAgent.py` 等 | `panda_agent` 内无 import；仅兼容回归测试涉及 |
 | 已废弃代码 | 当前代码中没有明确 `deprecated` 标记的包内模块 | **当前代码中无法完全确认这一点。** 需要 Git 历史和维护者决策才能判断是否可删除 |
 
 ### 推荐代码阅读顺序
 
-1. `README.md` 与 `docs/M7_P0_IMPLEMENTATION.md`：先知道 Bundle/runtime/API 怎样启动。
+1. `README.md`、`docs/M7_P0_IMPLEMENTATION.md`、`docs/M7_P1_IMPLEMENTATION.md`、`docs/M8_P0_IMPLEMENTATION.md`、`docs/M8_P1_IMPLEMENTATION.md` 与 `docs/M8_OVERALL_RESULT.md`：先知道 Bundle/runtime/API/UI 怎样启动、诊断及验收边界。
 2. `src/panda_agent/cli/kb.py`、`kb_bundle.py`：理解知识验证与恢复边界。
 3. `src/panda_agent/runtime.py`、`cli/runtime.py`：理解 receipt 和独立 readiness gate。
 4. `src/panda_agent/service.py`、`cli/qa.py`：理解共享请求生命周期、并发和 `qa_runs`。
-5. `src/panda_agent/api.py`、`cli/api.py`：理解 FastAPI 路由与 HTTP 错误映射。
+5. `src/panda_agent/api.py`、`cli/api.py`、`templates/`、`static/`：理解 FastAPI JSON/UI 路由、Jinja2 partial、HTMX 更新和 HTTP 错误映射。
 6. `src/panda_agent/qa.py`：看图的节点、状态和退出条件。
 7. `src/panda_agent/models.py`：理解节点之间传什么数据。
 8. `src/panda_agent/retrieval.py`：理解 Agent 怎样找证据。
@@ -300,8 +316,9 @@ flowchart LR
         E --> QD[("Qdrant")]
     end
 
-    subgraph Online["在线问答 M4-M7 P0"]
-        U["用户 / CLI / API"] --> SVC["QAService"]
+    subgraph Online["在线问答 M4-M8"]
+        U["用户 / CLI / REST / Web UI"] --> SVC["QAService"]
+        UI["Jinja2 + HTMX /ui"] --> SVC
         SVC --> A["QAAgent LangGraph"]
         A --> R["Retriever.analyze"]
         R --> GM["Gemini query analyzer"]
@@ -318,6 +335,7 @@ flowchart LR
         OUT --> PG
         OUT --> SVC
         SVC --> U
+        SVC --> UI
     end
 ```
 
@@ -326,9 +344,12 @@ flowchart LR
 1. M1–M3 是离线构建链；普通问答不会重新抓 GitHub 或 Sphinx。
 2. 在线检索需要 PostgreSQL、Qdrant 和 Vertex AI。
 3. 模型不自由选择工具；Python 固定执行检索通道。
-4. M7 P0 的 `QAService` 写入 `qa_runs` 完整 question 和脱敏 trace；它不会被后续问题读取，也不是 Memory。
-5. `/health/live` 不依赖 runtime；`/health/ready` 每次刷新 runtime probe 且不调用模型；API 仅 loopback、workers=1。
-6. P0 没有 deadline/504、model-usage 统计或 JSON logging；这些属于 M7 P1。
+4. M7 P0+P1 的 `QAService` 写入 `qa_runs` 完整 question、脱敏 trace、逐节点 timings 和四项 usage；它不会被后续问题读取，也不是 Memory。
+5. `/health/live` 不依赖 runtime；`/health/ready` 按 `PANDA_READINESS_TTL_SECONDS`（默认 5 秒）缓存 runtime probe 且不调用模型；API 仅 loopback、workers=1。
+6. M7 P1 在共享 `QAService` 上提供 `PANDA_QA_DEADLINE_SECONDS`（默认 300）的 deadline/504、逐节点 timings、四项 model-usage 和 `PANDA_LOG_LEVEL` 控制的 JSON lifecycle logging；详见 [`docs/M7_P1_IMPLEMENTATION.md`](docs/M7_P1_IMPLEMENTATION.md)。
+7. M8 P0/P1 的 `/ui` 使用同一个 `QAService`；HTMX 只替换 HTML result/error partial，
+   `/ui/health` 与 `/v1/qa/diagnose` 也复用同一执行；五个诊断 tabs、复制/下载、Edge E2E
+   和经授权 live smoke 已完成，详见 [`docs/M8_OVERALL_RESULT.md`](docs/M8_OVERALL_RESULT.md)。
 
 ---
 
@@ -362,6 +383,7 @@ sequenceDiagram
     actor U as User
     participant CLI as cli/qa.py
     participant API as FastAPI /v1/qa
+    participant UI as Jinja2 + HTMX /ui
     participant S as QAService
     participant G as QAAgent LangGraph
     participant R as Retriever
@@ -372,7 +394,9 @@ sequenceDiagram
     U->>CLI: panda-qa ask QUESTION
     CLI->>S: execute(question)
     U->>API: POST /v1/qa QUESTION
+    U->>UI: Browser POST /ui/qa QUESTION
     API->>S: execute(question)
+    UI->>S: execute(question)
     S->>G: run_detailed(question)
     G->>R: retrieve(question)
     R->>V: structured query analysis
@@ -403,8 +427,10 @@ sequenceDiagram
     S->>P: INSERT/UPDATE qa_runs (full question + safe trace)
     S-->>CLI: QAResult
     S-->>API: QAServiceEnvelope
+    S-->>UI: result.html/error.html partial
     CLI-->>U: JSON
     API-->>U: HTTP JSON
+    UI-->>U: HTMX HTML swap
 ```
 
 > **实现纠正：** 当前多路检索代码是按 `_exact → _vector → _workflow → _graph` 顺序同步执行；dense 和 sparse Qdrant 查询也依次执行。它在逻辑上是多通道，但不是并行调用。
@@ -435,13 +461,18 @@ sequenceDiagram
 Bundle/runtime 的恢复顺序、`0005` 迁移和 receipt 语义见
 [`docs/M7_P0_IMPLEMENTATION.md`](docs/M7_P0_IMPLEMENTATION.md)。服务层的关键约定：
 
-- `GET /health/live` 始终只表示进程存活；`GET /health/ready` 每次刷新 runtime probe，
-  未注册或 probe 失败返回 503，且不调用模型；`GET /version` 返回版本和 receipt 摘要。
+- `GET /health/live` 始终只表示进程存活；`GET /health/ready` 按
+  `PANDA_READINESS_TTL_SECONDS`（默认 5 秒）缓存 runtime probe，未注册或 probe 失败
+  返回 503，且不调用模型；`GET /version` 返回版本和 receipt 摘要。
 - `POST /v1/qa` 只接受 1–10,000 字符 `question`，成功 HTTP 200 中的
   `result.status` 可为 `answered`、`insufficient_evidence` 或 `version_conflict`。
-  422/429/503/500 分别表示校验、进程内 gate、未 ready 和内部错误；P0 没有 504。
+  422/429/503/500/504 分别表示校验、进程内 gate、未 ready、内部错误和
+  `deadline_exceeded`；完整 P1 contract 见 [`docs/M7_P1_IMPLEMENTATION.md`](docs/M7_P1_IMPLEMENTATION.md)。
 - 默认 `PANDA_API_MAX_CONCURRENCY=1`，gate 只在一个进程内生效；`qa_runs` 保存完整
-  question，但 trace 仅保存 ID、计数器和脱敏 error code，不保存 Prompt/Evidence 正文、凭据或 stack；P0 `model_usage` 仅为空对象占位。
+  question，但 trace 仅保存 ID、计数器和脱敏 error code，不保存 Prompt/Evidence 正文、凭据或 stack；
+  P1 记录逐节点 `node_timings` 和 `model_usage` 白名单（`model_calls`、`token_usage`、
+  `generation_calls`、`embedding_calls`）。deadline 后 worker 只补 timings/usage/trace，
+  不改写锁存的终态，并在 worker 退出后释放 gate；Python thread 不能强制取消。
 
 ---
 
@@ -607,7 +638,7 @@ data fields.
 | `retrieval_count` | `int` | 0 | retrieve、targeted | sufficiency 路由 | 限制补检索一次 |
 | `result` | `dict` | 无 | finalize | run | 最终可验证数据 |
 
-图状态仍只在内存中存在一次请求的生命周期；没有 session/user ID，也不支持多轮对话。M7 P0 的 `QAService` 在 API/CLI 外层提供一次请求的 worker thread 和进程内 gate；多个进程彼此独立，不能提供跨进程并发协调、连接池或用户隔离。
+图状态仍只在内存中存在一次请求的生命周期；没有 session/user ID，也不支持多轮对话。M7 P0+P1 的 `QAService` 在 API/CLI 外层提供一次请求的 worker thread、deadline 和进程内 gate；多个进程彼此独立，不能提供跨进程并发协调、连接池或用户隔离。
 
 `qa_runs` 保存完整 question、status、耗时、intent、错误码、节点耗时和脱敏 trace，但 `QAAgent` 不读取它；因此它是审计记录，不是 Memory。P0 的 `QAService` 将记录失败分类为 `persistence_error`，不会把 stack 或凭据返回给用户。
 
@@ -757,13 +788,13 @@ flowchart LR
 | Git/PDF/hash 错误 | `source.py` | `SourceGateError`，M2 不启动 | 无替代语料 | 符合门禁原则 |
 | Docling 慢/失败 | `parse_pdf` | 子进程 300 秒；缓存 failure；PyMuPDF fallback | 有 fallback | failure cache 会永久阻止自动重试；需显式清理命令 |
 | Python 语法错误 | `parse_python` | 静默跳过 symbol，仍保留 file | 无 | 应写入 `parse_errors.jsonl` |
-| PostgreSQL/Qdrant 不可用 | Storage/Retriever/runtime probe | CLI 失败；API readiness 为 503 或 QA 为稳定 500 envelope | 无 | P1 deadline/结构化日志和生产连接池仍待完成 |
+| PostgreSQL/Qdrant 不可用 | Storage/Retriever/runtime probe | CLI 失败；API readiness 为 503 或 QA 为稳定 500 envelope | 无 | P1 deadline/结构化日志已实现；生产连接池、指标和部署仍待完成 |
 | Index 中途失败 | `apply_index` | 异常退出；run 可能保持 `running` | 重跑会利用 cache | 应在 `finally/except` 写 `failed` 和 error |
 | 检索为空 | `_sufficiency` | 最多补检索一次后拒答 | 1 次 targeted retrieval | 行为有界且安全 |
 | 版本冲突 | `analyze/_sufficiency` | 不生成答案，返回 `version_conflict` | 无 | 正确；应加入 ref/alias 更系统解析 |
 | Structured Output 内容不合法 | SDK/`QAResult` | JSON decode 或 Pydantic 校验异常 | QA revision 只处理证据错误 | 可在模型层增加 schema retry |
 | 引用不完整 | `_verify` | 记录错误并最多修订一次 | 1 次 revision | 二次失败安全拒答；answer 仅由已验证 claims 渲染 |
-| QA 审计写入失败 | `service.QAService` | 分类为 `persistence_error`，API 返回 500，不泄露 stack | 无 | P1 JSON logging/model-usage |
+| QA 审计写入失败 | `service.QAService` | 分类为 `persistence_error`，API 返回 500，不泄露 stack | 无 | P1 JSON logging/model-usage 已实现；保留策略和正式 metrics 仍待完成 |
 | 超长问题/Prompt | `api.QARequest` | API question 超过 10,000 字符返回 422；CLI 仍由 graph/模型约束 | 无 | 继续增加真实 token budget 和证据压缩 |
 | 无限循环 | LangGraph | 两个计数器硬上限 | 不适用 | 已避免；配置值和硬编码应统一 |
 | 并发冲突 | `service.QAService` | 默认进程内 gate=1；占用时 API 返回 429；不跨进程 | PostgreSQL/Qdrant 自身事务 | 仍无用户隔离、分布式 gate 或队列 |
@@ -918,7 +949,9 @@ panda-qa-api --project-root (Get-Location)
 只启动 PostgreSQL/Qdrant；API 默认绑定 `127.0.0.1:8000` 且 `workers=1`。若
 `panda-qa-runtime verify` 不返回 `valid=true`/`runtime_status=registered`，先修复
 Bundle、迁移或 live identity，不要启动 API 以绕过 readiness。完整 HTTP route、
-422/429/503/500 错误和 P0 非目标见 [`docs/M7_P0_IMPLEMENTATION.md`](docs/M7_P0_IMPLEMENTATION.md)。
+422/429/503/500 错误和 P0 基础边界见 [`docs/M7_P0_IMPLEMENTATION.md`](docs/M7_P0_IMPLEMENTATION.md)；
+P1 的 `PANDA_QA_DEADLINE_SECONDS=300`、`PANDA_READINESS_TTL_SECONDS=5`、
+`PANDA_LOG_LEVEL=INFO`、504、timings/usage 和 JSON 日志见 [`docs/M7_P1_IMPLEMENTATION.md`](docs/M7_P1_IMPLEMENTATION.md)。
 
 ### 17.5 从源码初始化语料、数据库和索引
 
@@ -1019,8 +1052,10 @@ print(result.status, result.answer)
 
 ### 18.4 其他接口
 
-- REST API：M7 P0 已实现 loopback-only FastAPI；运行 `panda-qa-api` 后可用 `/health/live`、`/health/ready`、`/version`、`/v1/qa`、`/docs` 和 `/openapi.json`。问题长度为 1–10,000；P0 错误为 422/429/503/500，没有 504。
-- Web UI：未实现。
+- REST API：M7 P0+P1 已实现 loopback-only FastAPI；运行 `panda-qa-api` 后可用 `/health/live`、`/health/ready`、`/version`、`/v1/qa`、`/docs` 和 `/openapi.json`。问题长度为 1–10,000；错误为 422/429/503/500/504，其中 504 的 `error_code=deadline_exceeded`。P1 细节见 [`docs/M7_P1_IMPLEMENTATION.md`](docs/M7_P1_IMPLEMENTATION.md)。
+- Web UI：M8 P0/P1 已实现服务端渲染 Jinja2 + 本地 HTMX 页面；运行 `panda-qa-api` 后打开
+  `/ui`。`/ui/health`、`/v1/qa/diagnose`、五个诊断 tabs、复制/下载和 Edge E2E 均已验收；
+  M8 overall PASS、M8 complete，详见 [`docs/M8_OVERALL_RESULT.md`](docs/M8_OVERALL_RESULT.md)。
 - Notebook：未实现专用集成；可手动使用 Python API。
 - Docker：只容器化 PostgreSQL/Qdrant；Agent API 由本地 `panda-qa-api` 进程启动，没有 Agent 镜像。
 
@@ -1098,9 +1133,13 @@ weights["configuration"] = 1.3
 M7 P0 已提供 `api.create_app()` 与 `panda-qa-api`。API 层只负责 question 校验、
 loopback host、readiness probe、稳定错误 envelope 和调用共享 `QAService`；不要复制
 `QAAgent` 逻辑。当前 lifespan 初始化一次服务，默认 `workers=1` 和进程内
-`PANDA_API_MAX_CONCURRENCY=1`；它仍没有鉴权、租户隔离、跨进程 gate、deadline/504 或
-Web UI。后续实现应先补 P1 deadline/model-usage/JSON logging，再考虑连接池、任务队列
-和 UI。
+`PANDA_API_MAX_CONCURRENCY=1`；M7 P1 已在该边界实现 deadline/504、model-usage、
+逐节点 timings、JSON logging 和 readiness TTL（见 [`docs/M7_P1_IMPLEMENTATION.md`](docs/M7_P1_IMPLEMENTATION.md)）。
+M8 P0/P1 在同一个 `create_app()` 上提供 Jinja2 + 本地 HTMX `/ui`、`/ui/health` 和
+`/v1/qa/diagnose`；UI 只调用共享 `QAService` 并渲染结果/error partial，不复制 Agent。
+五个诊断 tabs、复制/下载、真实 Edge 验收与 opt-in live harness 已完成。仍没有鉴权、
+租户隔离、跨进程 gate、生产级取消或远程公开部署；实现细节见
+[`docs/M8_P1_IMPLEMENTATION.md`](docs/M8_P1_IMPLEMENTATION.md)。
 
 ---
 
@@ -1117,7 +1156,12 @@ Web UI。后续实现应先补 P1 deadline/model-usage/JSON logging，再考虑�
 | `test_vertex.py` | mock 单元 | structured output、embedding task type、health result |
 | `test_retrieval.py` | fake 单元 | fixed version、冲突、概念 scope、source type |
 | `test_qa.py` | fake 单元 | answered 与 version-conflict 有界路径 |
+| `test_ui.py` | FastAPI TestClient 单元 | UI/API 共享 Service、partial、escaping、origin、headers 和错误状态 |
+| `test_ui_assets.py` | 模板/静态资源单元 | Jinja2 模板、五 tabs、复制/下载和本地 HTMX 资源 |
+| `test_diagnostics.py` | FastAPI 单元 | `/ui/health`、`/v1/qa/diagnose` 与脱敏投影 |
+| `tests/e2e/test_ui_playwright.py` | 真实 Edge E2E | HTMX、tabs、键盘、复制/下载、安全和窄屏 |
 | `test_evaluation_data.py` | 单元 | 30/24 题覆盖 8 intent |
+| `tests/live/test_m8_ui_live.py` | live/有写入（显式授权） | 八意图真实 UI、Vertex、锁定版本和 `qa_runs` |
 | `tests/live/test_vertex_health.py` | live | 真实生成和两种 embedding role |
 | `tests/live/test_storage_live.py` | live | Alembic、SQL 数量、Qdrant schema |
 | `tests/live/test_reconciliation_live.py` | live/有写入 | stale SQL/Qdrant 同步删除 |
@@ -1368,7 +1412,11 @@ python -m panda_agent.cli.retrieve "<problem question>"
 - CLI 将诊断检索和最终问答分开，便于定位问题。
 - 当前真实 SQL/Qdrant 状态完整：80,691 expected/actual，0 missing/stale。
 
-### 24.2 代码审查中发现的问题
+### 24.2 代码审查中发现的问题（历史快照；M7 P1 前的 P1 条目不代表当前缺失）
+
+本表保留原始审查记录，便于追溯；data-product/alias、流式 linker、索引身份、失败
+恢复等旧 P1 条目已在既有 P1 Phase 0–6 中处理。M7 deadline/usage/logging/TTL 的
+当前实现以 [`docs/M7_P1_IMPLEMENTATION.md`](docs/M7_P1_IMPLEMENTATION.md) 为准。
 
 | 问题 | 代码位置 | 影响 | 建议 | 优先级 |
 |---|---|---|---|---|
@@ -1386,8 +1434,8 @@ python -m panda_agent.cli.retrieve "<problem question>"
 | Prompt 已集中但无版本/snapshot test | `prompts.py` | 难比较 Prompt 变更效果 | 增加版本常量和 snapshot tests | P2 |
 | Python parser 静默吞 SyntaxError | `ingestion.py::parse_python` | parse report 不完整 | 记录错误并保留 file object | P2 |
 | PDF schema 功能多于实现 | `knowledge_schema.yaml`、`parse_pdf` | 无独立 equation/figure/table 检索 | 解析 Docling item type 并建立 parent edge | P2 |
-| 缺少正式应用日志、耗时和 token/cost 指标 | 全局 | 生产调试困难 | 结构化日志、trace ID、节点 metrics | P2 |
-| FastAPI/Uvicorn 已用于 M7 P0；checkpoint/pytest 仍未接入 | `api.py`、`cli/api.py`、`pyproject.toml` | API 仍为 loopback 单进程，checkpoint 未实现 | P1 补 deadline/usage/logging；后续再接 checkpoint/UI | P1/P2 |
+| 缺少跨请求 metrics/cost 聚合与生产观测 backend | 全局 | 生产调试和成本汇总仍有限 | 在 P1 JSON lifecycle logging/节点 timings/usage 之上增加 metrics backend | P2 |
+| FastAPI/Uvicorn 已用于 M7 P0+P1 与 M8 P0/P1；checkpoint/pytest 仍未接入 | `api.py`、`cli/api.py`、`pyproject.toml` | API/UI 仍为 loopback 单进程，checkpoint 未实现 | 后续再接 checkpoint | P1/P2 |
 
 ### 24.3 文档与代码不一致/无法确认项
 
@@ -1401,9 +1449,10 @@ python -m panda_agent.cli.retrieve "<problem question>"
 ### 24.4 技术债务优先级
 
 - **P0 正确性/安全性：** 本轮四项已完成并通过 executable contracts/live tests。
-- **P1 稳定性/维护性：** data-product/alias 物化、embedding 配置一致性、run failure、流式 linker、依赖与 secret/网络安全。
-- **P2 开发体验：** Prompt 管理、日志、真正 resume/并行、parser 错误报告、清理未用依赖。
-- **P3 未来扩展：** Web UI、多轮 memory/checkpoint、受限 Tool Calling、Coding/Debug Agent；loopback API 已在 M7 P0 落地，生产化仍需鉴权与观测。
+- **P1 稳定性/维护性（已完成的历史项）：** data-product/alias 物化、embedding 配置一致性、run failure、流式 linker、依赖与 secret/网络安全；M7 P1 deadline/usage/logging/TTL 也已实现。
+- **P2 开发体验：** 跨请求 metrics/cost 聚合、Prompt 管理、真正 resume/并行、parser 错误报告、清理未用依赖。
+- **P3 未来扩展：** 多轮 memory/checkpoint、受限 Tool Calling、Coding/Debug Agent；M7
+  loopback API 与 M8 P0/P1 UI 已落地，生产化仍需鉴权、跨进程协调和正式观测。
 
 ---
 
@@ -1521,25 +1570,21 @@ python -m panda_agent.cli.retrieve "<problem question>"
 4. StateGraph 的价值在于让补检索、修订和退出条件可见、可测、有上限。
 5. “已写出关系边”不等于“关系图可用”；实体解析和真实端点连接必须验证。
 
-四项历史 P0 和 M7 P0 服务边界已完成。下一步仍应补 `event_poca`/profile data-product 与 alias ontology、降低 M2 linker 内存、完善 ingestion run 失败状态和 gold evidence Recall@K，并完成 M7 P1 deadline/usage/logging；Web UI、checkpoint 和受限工具属于后续扩展。
+四项历史 P0、M7 P0/P1 和 M8 P0/P1 服务边界已完成并通过确定性验证。下一步仍应补跨请求
+metrics/cost 聚合、生产鉴权与跨进程协调；checkpoint 和受限工具属于后续扩展。
 
 ---
 
 ## 附录 A：本次文档自检基线
 
-本次审查实际执行并确认：
+本附录保留早期审查基线，不能替代当前 M8 验收。当前 M8 证据为：
 
-- `python -m unittest discover -s tests\unit -v`：35/35 通过；
-- storage、graph、reconciliation、Vertex health live tests：全部通过；
-- 父目录 ReAct/PlanSolve/Reflection：12 + 8 + 7 = 27 项通过；
-- `python -m compileall -q src tests evaluation`：通过；
-- `python -m pip check`：无 broken requirements；
-- `panda_agent.cli.source verify`：`corpus_locked=true`；
-- `panda_agent.cli.index verify`：80,691 expected/actual，0 missing/stale；
-- Alembic：`0003 (head)`；
-- PostgreSQL：102,868 objects、64,554 accepted relations、372,139 relation candidates、374 workflows；
-- Qdrant/PostgreSQL 容器运行；
-- Ruff：当前环境未安装，因此没有宣称 lint 通过；
-- 30 题 live retrieval：30/30 非空 Evidence；24 题 live QA 最新为 22 answered、2 justified insufficient evidence。
+- 全部 `tests/unit`：198/198；UI 单元：11/11；diagnostics：3/3；
+- 真实 Microsoft Edge Playwright E2E：1/1；
+- `python -m compileall -q src tests evaluation`、`python -m pip check`、`git diff --check`：通过；
+- 八意图真实 UI smoke：最新八条 `qa_runs` 均 answered/completed，intent、锁定版本、claims、
+  evidence、timings、usage 和空 verification errors 均通过，逐题 request ID 与耗时见
+  [`docs/M8_OVERALL_RESULT.md`](docs/M8_OVERALL_RESULT.md)。
 
-P0 Phase 0–6 同时修改了 Python、YAML、migration、测试和本文档；完整变更与测试记录见 `QA_AGENT.md`。
+live harness 默认跳过；只有 `PANDA_RUN_LIVE_M8_UI=1`（可选
+`PANDA_M8_LIVE_CASE_IDS`）才会发送问题/锁定片段至 Vertex 并写入 `qa_runs`。

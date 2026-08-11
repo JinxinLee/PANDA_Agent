@@ -1,15 +1,21 @@
 from __future__ import annotations
 
+from contextlib import redirect_stderr
+import io
+import logging
+import os
 import threading
 import tomllib
 from tempfile import TemporaryDirectory
 import unittest
 from pathlib import Path
+from types import SimpleNamespace
+from unittest.mock import patch
 
 from fastapi.testclient import TestClient
 
 from panda_agent.models import QAResult
-from panda_agent.service import QAServiceBusyError, QAServiceEnvelope, QAServiceError
+from panda_agent.service import QAServiceBusyError, QAServiceDeadlineError, QAServiceEnvelope, QAServiceError
 
 
 def answered_envelope() -> QAServiceEnvelope:
@@ -39,14 +45,14 @@ class APITestClientContractTests(unittest.TestCase):
 
         runtime = runtime or {"valid": True, "runtime_status": "registered", "checks": {"registered": True}}
         service = service or FakeService()
-        creations: list[tuple[Path, str, int]] = []
+        creations: list[tuple[Path, str, int, float]] = []
 
         def runtime_probe(*, project_root: Path):
             self.assertEqual(project_root, Path(".").resolve())
             return runtime
 
-        def service_factory(project_root: Path, *, origin: str, max_concurrency: int):
-            creations.append((project_root, origin, max_concurrency))
+        def service_factory(project_root: Path, *, origin: str, max_concurrency: int, deadline_seconds: float):
+            creations.append((project_root, origin, max_concurrency, deadline_seconds))
             return service
 
         return create_app(
@@ -85,11 +91,24 @@ class APITestClientContractTests(unittest.TestCase):
         self.assertEqual(service.calls, [("What is PANDA?", service.calls[0][1])])
         self.assertNotEqual(service.calls[0][1], threading.current_thread().name)
         self.assertEqual(len(creations), 1)
-        self.assertEqual(creations[0][1:], ("api", 1))
+        self.assertEqual(creations[0][1:], ("api", 1, 300.0))
         paths = {route.path for route in app.routes}
         self.assertEqual(
             paths,
-            {"/health/live", "/health/ready", "/version", "/v1/qa", "/docs", "/openapi.json"},
+            {
+                "/",
+                "/ui",
+                "/ui/qa",
+                "/ui/health",
+                "/static",
+                "/health/live",
+                "/health/ready",
+                "/version",
+                "/v1/qa",
+                "/v1/qa/diagnose",
+                "/docs",
+                "/openapi.json",
+            },
         )
 
     def test_unready_runtime_keeps_live_but_blocks_qa(self) -> None:
@@ -147,6 +166,100 @@ class APITestClientContractTests(unittest.TestCase):
             self.assertNotIn("private", response.text)
             self.assertNotIn("secret", response.text)
 
+    def test_deadline_error_has_safe_504_contract_and_openapi_schema(self) -> None:
+        deadline = QAServiceDeadlineError("00000000-0000-0000-0000-000000000504")
+        app, _, _ = self.make_app(service=FakeService(deadline))
+        with TestClient(app) as client:
+            response = client.post("/v1/qa", json={"question": "hello"})
+            openapi = client.get("/openapi.json").json()
+        self.assertEqual(response.status_code, 504)
+        self.assertEqual(response.json(), {
+            "request_id": deadline.request_id,
+            "error_code": "deadline_exceeded",
+            "message": "Request deadline exceeded",
+        })
+        self.assertEqual(
+            openapi["paths"]["/v1/qa"]["post"]["responses"]["504"],
+            {"description": "Gateway Timeout", "content": {
+                "application/json": {"schema": {"$ref": "#/components/schemas/ErrorResponse"}}
+            }},
+        )
+
+    def test_deadline_configuration_is_passed_to_service_and_invalid_values_fail_closed(self) -> None:
+        with patch.dict(os.environ, {"PANDA_QA_DEADLINE_SECONDS": "12.5"}):
+            app, _, creations = self.make_app()
+            with TestClient(app):
+                pass
+        self.assertEqual(creations[0][3], 12.5)
+
+        from panda_agent.api import create_app
+
+        for name, raw in (
+            ("PANDA_QA_DEADLINE_SECONDS", "private-invalid-value"),
+            ("PANDA_QA_DEADLINE_SECONDS", "0"),
+            ("PANDA_READINESS_TTL_SECONDS", "private-invalid-value"),
+            ("PANDA_READINESS_TTL_SECONDS", "-1"),
+        ):
+            with patch.dict(os.environ, {name: raw}):
+                with self.assertRaises(ValueError) as raised:
+                    create_app(project_root=Path("."), runtime_probe=lambda **_kwargs: {"valid": False})
+            self.assertNotIn(raw, str(raised.exception))
+
+    def test_readiness_ttl_reuses_startup_probe_and_zero_disables_cache(self) -> None:
+        state = {"valid": True, "runtime_status": "registered", "checks": {"registered": True}}
+        calls: list[Path] = []
+        service = FakeService()
+
+        def probe(*, project_root: Path):
+            calls.append(project_root)
+            return dict(state)
+
+        from panda_agent.api import create_app
+
+        with patch.dict(os.environ, {"PANDA_READINESS_TTL_SECONDS": "5"}):
+            app = create_app(project_root=Path("."), runtime_probe=probe, service_factory=lambda *_args, **_kwargs: service)
+            with TestClient(app) as client:
+                self.assertEqual(client.get("/health/ready").status_code, 200)
+                self.assertEqual(client.post("/v1/qa", json={"question": "cached"}).status_code, 200)
+        self.assertEqual(len(calls), 1)
+
+        calls.clear()
+        with patch.dict(os.environ, {"PANDA_READINESS_TTL_SECONDS": "0"}):
+            app = create_app(project_root=Path("."), runtime_probe=probe, service_factory=lambda *_args, **_kwargs: service)
+            with TestClient(app) as client:
+                self.assertEqual(client.get("/health/ready").status_code, 200)
+                self.assertEqual(client.post("/v1/qa", json={"question": "uncached"}).status_code, 200)
+        self.assertEqual(len(calls), 3)
+
+    def test_readiness_ttl_reprobes_at_expiry_without_rebuilding_service(self) -> None:
+        calls: list[Path] = []
+        creations: list[object] = []
+        clock = [100.0]
+        service = FakeService()
+
+        def probe(*, project_root: Path):
+            calls.append(project_root)
+            return {"valid": True, "runtime_status": "registered", "checks": {"registered": True}}
+
+        def factory(*_args, **_kwargs):
+            creations.append(object())
+            return service
+
+        from panda_agent.api import create_app
+
+        with (
+            patch.dict(os.environ, {"PANDA_READINESS_TTL_SECONDS": "5"}),
+            patch("panda_agent.api.time", SimpleNamespace(monotonic=lambda: clock[0])),
+        ):
+            app = create_app(project_root=Path("."), runtime_probe=probe, service_factory=factory)
+            with TestClient(app) as client:
+                self.assertEqual(client.get("/health/ready").status_code, 200)
+                self.assertEqual(len(calls), 1)
+                clock[0] = 105.0
+                self.assertEqual(client.get("/health/ready").status_code, 200)
+        self.assertEqual(len(calls), 2)
+        self.assertEqual(len(creations), 1)
+
     def test_readiness_refresh_blocks_qa_after_dependency_flip_without_rebuilding_service(self) -> None:
         state = {"valid": True, "runtime_status": "registered", "checks": {"registered": True}}
         calls: list[Path] = []
@@ -162,16 +275,17 @@ class APITestClientContractTests(unittest.TestCase):
             creations.append(object())
             return service
 
-        app = create_app(project_root=Path("."), runtime_probe=probe, service_factory=factory)
-        with TestClient(app) as client:
-            self.assertEqual(client.get("/health/ready").status_code, 200)
-            state["valid"] = False
-            state["runtime_status"] = "qdrant_unavailable"
-            self.assertEqual(client.get("/health/ready").status_code, 503)
-            self.assertEqual(client.post("/v1/qa", json={"question": "blocked"}).status_code, 503)
-            state["valid"] = True
-            state["runtime_status"] = "registered"
-            self.assertEqual(client.post("/v1/qa", json={"question": "restored"}).status_code, 200)
+        with patch.dict(os.environ, {"PANDA_READINESS_TTL_SECONDS": "0"}):
+            app = create_app(project_root=Path("."), runtime_probe=probe, service_factory=factory)
+            with TestClient(app) as client:
+                self.assertEqual(client.get("/health/ready").status_code, 200)
+                state["valid"] = False
+                state["runtime_status"] = "qdrant_unavailable"
+                self.assertEqual(client.get("/health/ready").status_code, 503)
+                self.assertEqual(client.post("/v1/qa", json={"question": "blocked"}).status_code, 503)
+                state["valid"] = True
+                state["runtime_status"] = "registered"
+                self.assertEqual(client.post("/v1/qa", json={"question": "restored"}).status_code, 200)
         self.assertGreaterEqual(len(calls), 5)
         self.assertEqual(len(creations), 1)
         self.assertEqual([question for question, _ in service.calls], ["restored"])
@@ -243,7 +357,7 @@ class APITestClientContractTests(unittest.TestCase):
         self.assertEqual(len(creations), 1)
 
     def test_cli_loopback_guard_and_declared_entry_points(self) -> None:
-        from panda_agent.cli.api import _loopback_host
+        from panda_agent.cli.api import _configure_panda_agent_logging, _loopback_host
 
         self.assertTrue(_loopback_host("127.0.0.1"))
         self.assertTrue(_loopback_host("::1"))
@@ -254,6 +368,20 @@ class APITestClientContractTests(unittest.TestCase):
             scripts = tomllib.load(stream)["project"]["scripts"]
         self.assertEqual(scripts["panda-qa-api"], "panda_agent.cli.api:main")
         self.assertEqual(scripts["panda-qa-runtime"], "panda_agent.cli.runtime:main")
+
+        logger = logging.getLogger("panda_agent")
+        previous = (logger.level, logger.propagate, list(logger.handlers))
+        output = io.StringIO()
+        try:
+            with patch.dict(os.environ, {"PANDA_LOG_LEVEL": "DEBUG"}), redirect_stderr(output):
+                _configure_panda_agent_logging()
+                logger.debug('{"event":"started"}')
+            self.assertEqual(logger.level, logging.DEBUG)
+            self.assertEqual(output.getvalue(), '{"event":"started"}\n')
+        finally:
+            logger.handlers[:] = previous[2]
+            logger.setLevel(previous[0])
+            logger.propagate = previous[1]
 
 
 if __name__ == "__main__":

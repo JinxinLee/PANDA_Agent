@@ -1,0 +1,23 @@
+{% set health_data = health | default({}, true) %}
+{% set runtime_data = runtime | default(health_data.runtime | default({}, true), true) %}
+{% set health_ready = health_data.ready | default(false, true) %}
+{% set health_status = health_data.status | default('', true) %}
+{% set ready_state = ready | default(health_ready or health_status == 'ready', true) %}
+{% set package_version = health_data.package_version | default('', true) %}
+{% set runtime_status = runtime_data.status | default('', true) %}
+{% set knowledge_revision = runtime_data.knowledge_revision | default('', true) %}
+{% set service_revision = runtime_data.service_revision | default('', true) %}
+{% set generation_model = runtime_data.generation_model | default('', true) %}
+{% set embedding_model = runtime_data.embedding_model | default('', true) %}
+{% set prompt_version = health_data.prompt_version | default('', true) %}
+<div class="health-partial" role="status" aria-live="polite" data-ready="{{ 'true' if ready_state else 'false' }}">
+  <span class="status-dot {% if ready_state %}status-dot--ready{% endif %}" aria-hidden="true"></span>
+  <span class="health-label">{% if ready_state %}Ready{% else %}Not ready{% endif %}</span>
+  {% if package_version %}<small>Package {{ package_version }}</small>{% endif %}
+  {% if runtime_status %}<small>Runtime {{ runtime_status }}</small>{% endif %}
+  {% if knowledge_revision %}<small>Knowledge {{ knowledge_revision }}</small>{% endif %}
+  {% if service_revision %}<small>Service {{ service_revision }}</small>{% endif %}
+  {% if generation_model %}<small>Generation {{ generation_model }}</small>{% endif %}
+  {% if embedding_model %}<small>Embedding {{ embedding_model }}</small>{% endif %}
+  {% if prompt_version %}<small>Prompt {{ prompt_version }}</small>{% endif %}
+</div>

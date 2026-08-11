@@ -1,0 +1,160 @@
+{% set result_status = result.status.value | default(result.status, true) %}
+{% set status_label = {
+  'answered': 'Answered',
+  'insufficient_evidence': 'Insufficient evidence',
+  'version_conflict': 'Version conflict',
+  'clarification_required': 'Clarification required'
+}.get(result_status, result_status | replace('_', ' ') | title) %}
+<article class="result-card card" data-status="{{ result_status }}" data-result-json="{{ result_json | default('{}', true) }}">
+  <div class="result-heading">
+    <div>
+      <p class="eyebrow">Agent result</p>
+      <h2>Response</h2>
+    </div>
+    <span class="status-badge status-badge--{{ result_status | replace('_', '-') }}" role="status">{{ status_label }}</span>
+  </div>
+
+  <div class="result-actions" aria-label="Result actions">
+    {% if request_id is defined and request_id %}<span class="request-reference">Request <code>{{ request_id }}</code></span>{% endif %}
+    {% if timings_ms is defined and timings_ms.total is defined %}<span class="request-reference">{{ timings_ms.total }} ms</span>{% endif %}
+    <button type="button" class="secondary-action" data-copy-answer>Copy answer</button>
+    <button type="button" class="secondary-action" data-download-json>Download JSON</button>
+    <span class="sr-only" data-action-status role="status" aria-live="polite"></span>
+  </div>
+
+  {% if result.answer %}
+    <div class="answer" aria-label="Answer">{{ result.answer }}</div>
+  {% endif %}
+
+  {% if result.resolved_versions %}
+    <details class="compact-details">
+      <summary>Resolved source versions</summary>
+      <dl class="key-value-list">
+        {% for source_id, source_version in result.resolved_versions.items() %}
+          <div><dt>{{ source_id }}</dt><dd><code>{{ source_version }}</code></dd></div>
+        {% endfor %}
+      </dl>
+    </details>
+  {% endif %}
+
+  {% if result.claims %}
+    <section class="claims-section" aria-labelledby="claims-heading">
+      <h3 id="claims-heading">Claims</h3>
+      <ol class="claims-list">
+        {% for claim in result.claims %}
+          <li class="claim" id="{{ claim.claim_id }}">
+            <p>{{ claim.claim_text }}</p>
+            {% if claim.evidence_ids %}
+              <div class="claim-citations" aria-label="Evidence cited by {{ claim.claim_id }}">
+                {% for evidence_id in claim.evidence_ids %}
+                  <a href="#evidence-{{ evidence_id }}" class="citation-link">{{ evidence_id }}</a>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ol>
+    </section>
+  {% endif %}
+
+  {% if result.evidence %}
+    <section class="evidence-section" aria-labelledby="evidence-heading">
+      <div class="section-heading-row">
+        <h3 id="evidence-heading">Evidence</h3>
+        <span class="count-label">{{ result.evidence | length }} item{% if result.evidence | length != 1 %}s{% endif %}</span>
+      </div>
+      <div class="evidence-list">
+        {% for item in result.evidence %}
+          {% set locator = item.locator %}
+          {% set authority = item.authority_level.value | default(item.authority_level, true) %}
+          <article class="evidence-card" id="evidence-{{ item.evidence_id }}">
+            <header class="evidence-header">
+              <div>
+                <p class="evidence-kicker">{{ item.evidence_id }}</p>
+                <h4>{{ item.source_id }}</h4>
+              </div>
+              {% if authority %}<span class="authority-label">{{ authority }}</span>{% endif %}
+            </header>
+            <dl class="evidence-meta">
+              <div><dt>Version</dt><dd><code>{{ item.source_version_id }}</code></dd></div>
+              {% if locator.path %}<div><dt>Path</dt><dd><code>{{ locator.path }}</code></dd></div>{% endif %}
+              {% if locator.symbol %}<div><dt>Symbol</dt><dd><code>{{ locator.symbol }}</code></dd></div>{% endif %}
+              {% if locator.start_line %}
+                <div><dt>Lines</dt><dd><code>{{ locator.start_line }}{% if locator.end_line %}–{{ locator.end_line }}{% endif %}</code></dd></div>
+              {% endif %}
+              {% if locator.pdf_page %}<div><dt>PDF page</dt><dd>{{ locator.pdf_page }}{% if locator.printed_page %} ({{ locator.printed_page }}){% endif %}</dd></div>{% endif %}
+              {% if locator.section_path %}<div><dt>Section</dt><dd>{{ locator.section_path | join(' › ') }}</dd></div>{% endif %}
+              {% if locator.url %}
+                <div><dt>URL</dt><dd>
+                  {% if locator.url.startswith('https://') %}
+                    <a href="{{ locator.url }}" target="_blank" rel="noopener noreferrer">{{ locator.url }}</a>
+                  {% else %}
+                    <span>{{ locator.url }}</span>
+                  {% endif %}
+                </dd></div>
+              {% endif %}
+            </dl>
+            <details class="evidence-excerpt">
+              <summary>Show excerpt</summary>
+              <pre>{{ item.text }}</pre>
+            </details>
+            {% if item.retrieval_channels %}<p class="evidence-footnote">Retrieved via {{ item.retrieval_channels | join(', ') }}</p>{% endif %}
+          </article>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+
+  {% if result.verification_errors %}
+    <section class="verification-errors" aria-labelledby="verification-heading" role="alert">
+      <h3 id="verification-heading">Verification notes</h3>
+      <ul>{% for error in result.verification_errors %}<li>{{ error }}</li>{% endfor %}</ul>
+    </section>
+  {% endif %}
+
+  {% if diagnostics is defined and diagnostics %}
+    {% set plan = diagnostics.plan | default({}, true) %}
+    <section class="diagnostics" aria-labelledby="diagnostics-heading">
+      <div class="section-heading-row">
+        <h3 id="diagnostics-heading">Retrieval diagnostics</h3>
+        <span class="count-label">Internal-safe summary</span>
+      </div>
+      <div class="diagnostic-tabs" data-tabs>
+        <div class="tab-list" role="tablist" aria-label="Retrieval diagnostic sections">
+          {% for tab_id, tab_label in [('query-plan', 'Query Plan'), ('retrieval-channels', 'Retrieval Channels'), ('fusion-rerank', 'Fusion & Rerank'), ('exclusions', 'Exclusions'), ('workflow-trace', 'Workflow Trace')] %}
+            <button type="button" class="tab-button{% if loop.first %} is-active{% endif %}" id="tab-{{ tab_id }}" role="tab" aria-controls="panel-{{ tab_id }}" aria-selected="{{ 'true' if loop.first else 'false' }}" tabindex="{{ '0' if loop.first else '-1' }}" data-tab-target="{{ tab_id }}">{{ tab_label }}</button>
+          {% endfor %}
+        </div>
+        <div class="tab-panels">
+          <section class="tab-panel{% if plan %} is-active{% endif %}" id="panel-query-plan" role="tabpanel" aria-labelledby="tab-query-plan" tabindex="0" data-tab-panel="query-plan">
+            {% if plan %}
+              <dl class="key-value-list">
+                {% for key, label in [('intent', 'Intent'), ('routing_method', 'Routing'), ('target_repositories', 'Target repositories'), ('resolved_versions', 'Resolved versions'), ('concept_scopes', 'Concept scopes'), ('resolved_aliases', 'Alias corrections'), ('alias_corrections', 'Alias corrections'), ('source_budgets', 'Source budgets'), ('required_source_types', 'Required source types')] %}
+                  {% if plan[key] is defined and plan[key] %}<div><dt>{{ label }}</dt><dd>{{ plan[key] }}</dd></div>{% endif %}
+                {% endfor %}
+              </dl>
+            {% else %}<p class="empty-state">No query plan was recorded.</p>{% endif %}
+          </section>
+          <section class="tab-panel" id="panel-retrieval-channels" role="tabpanel" aria-labelledby="tab-retrieval-channels" tabindex="0" data-tab-panel="retrieval-channels" hidden>
+            {% set channels = diagnostics.channels | default({}, true) %}
+            {% if channels %}<div class="diagnostic-table-wrap"><table class="diagnostic-table"><caption class="sr-only">Retrieval channel results</caption><thead><tr><th scope="col">Channel</th><th scope="col">Objects</th><th scope="col">Top objects</th></tr></thead><tbody>{% for channel in ['exact', 'dense', 'sparse', 'paper', 'workflow', 'graph'] %}{% set items = channels[channel] | default([], true) %}<tr><th scope="row">{{ channel }}</th><td>{{ items | length }}</td><td>{% if items %}{% for item in items[:5] %}<code>{{ item.object_id | default(item.id | default('object', true), true) }}</code>{% if not loop.last %}, {% endif %}{% endfor %}{% else %}<span class="empty-state">none</span>{% endif %}</td></tr>{% endfor %}</tbody></table></div>{% else %}<p class="empty-state">No retrieval channel details were recorded.</p>{% endif %}
+          </section>
+          <section class="tab-panel" id="panel-fusion-rerank" role="tabpanel" aria-labelledby="tab-fusion-rerank" tabindex="0" data-tab-panel="fusion-rerank" hidden>
+            {% set fusion = diagnostics.fusion | default([], true) %}
+            {% if fusion %}<div class="diagnostic-table-wrap"><table class="diagnostic-table"><caption class="sr-only">Fusion and rerank results</caption><thead><tr><th scope="col">Object</th><th scope="col">Fusion score</th><th scope="col">Rerank</th><th scope="col">Final</th></tr></thead><tbody>{% for item in fusion %}<tr><th scope="row">{{ item.object_id | default('object', true) }}</th><td>{{ item.score | default('—', true) }}</td><td>{{ item.rerank_rank | default('—', true) }}</td><td>{{ item.final_rank | default('—', true) }}</td></tr>{% endfor %}</tbody></table></div>{% else %}<p class="empty-state">No fusion or rerank details were recorded.</p>{% endif %}
+            {% set selected_ids = diagnostics.selected_evidence_ids | default([], true) %}
+            {% if selected_ids %}<p class="diagnostic-note"><strong>Final evidence:</strong> {{ selected_ids | join(', ') }}</p>{% endif %}
+          </section>
+          <section class="tab-panel" id="panel-exclusions" role="tabpanel" aria-labelledby="tab-exclusions" tabindex="0" data-tab-panel="exclusions" hidden>
+            {% set exclusions = diagnostics.exclusions | default([], true) %}
+            {% if exclusions %}<ul class="diagnostic-list">{% for item in exclusions %}<li><code>{{ item.object_id | default(item.id | default('object', true), true) }}</code> — {{ item.reason | default('excluded', true) }}</li>{% endfor %}</ul>{% else %}<p class="empty-state">No evidence was excluded after fusion.</p>{% endif %}
+          </section>
+          <section class="tab-panel" id="panel-workflow-trace" role="tabpanel" aria-labelledby="tab-workflow-trace" tabindex="0" data-tab-panel="workflow-trace" hidden>
+            {% set trace = diagnostics.workflow_trace | default({}, true) %}
+            {% if trace %}<dl class="key-value-list">{% for key, label in [('retrieval_count', 'Retrievals'), ('targeted_retrieval_count', 'Targeted retrievals'), ('revision_count', 'Revisions'), ('verification_error_codes', 'Verifier codes'), ('node_timings', 'Node timings'), ('node_timings_ms', 'Node timings'), ('model_usage', 'Model usage')] %}{% if trace[key] is defined %}<div><dt>{{ label }}</dt><dd>{{ trace[key] }}</dd></div>{% endif %}{% endfor %}</dl>{% else %}<p class="empty-state">No workflow trace was recorded.</p>{% endif %}
+          </section>
+        </div>
+      </div>
+    </section>
+  {% endif %}
+</article>

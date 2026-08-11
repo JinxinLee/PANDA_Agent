@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}PANDA Research QA{% endblock %}
+
+{% block body %}
+<main class="app-shell">
+  <header class="app-header">
+    <div>
+      <p class="eyebrow">PANDA research software</p>
+      <h1>Evidence-grounded QA</h1>
+      <p class="lede">Ask about the locked code, documentation, and papers.</p>
+    </div>
+    <aside id="runtime-status" class="runtime-status" aria-label="Runtime status"
+           hx-get="/ui/health" hx-trigger="load, every 30s" hx-target="#runtime-status"
+           hx-swap="innerHTML">
+      {% include "partials/health.html" with context %}
+    </aside>
+  </header>
+  <section class="card question-card" aria-labelledby="question-heading">
+    <h2 id="question-heading">Ask a question</h2>
+    <form method="post" action="/ui/qa" hx-post="/ui/qa" hx-target="#qa-result" hx-swap="innerHTML" hx-disabled-elt="find button" hx-indicator="#request-indicator">
+      <label for="question">Question</label>
+      <textarea id="question" name="question" rows="4" maxlength="10000" required placeholder="How is event_poca passed to second-pass PID?"></textarea>
+      <div class="form-actions">
+        <button type="submit">Ask the agent</button>
+        <span id="request-indicator" class="request-indicator" role="status" aria-live="polite">Working…</span>
+      </div>
+    </form>
+    <div class="examples" aria-labelledby="examples-heading">
+      <h3 id="examples-heading">Try an example</h3>
+      <div class="example-list">
+        {% if example_questions is defined and example_questions %}
+          {% for example in example_questions %}
+            <button type="button" class="example-question" data-fill-question="{{ example }}">{{ example }}</button>
+          {% endfor %}
+        {% else %}
+          <button type="button" class="example-question" data-fill-question="How is event_poca passed to second-pass PID?">How is event_poca passed to second-pass PID?</button>
+          <button type="button" class="example-question" data-fill-question="What does PndLmdCombinedDataReader do?">What does PndLmdCombinedDataReader do?</button>
+          <button type="button" class="example-question" data-fill-question="How do I install PandaRoot from the documentation?">How do I install PandaRoot?</button>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+  <section id="qa-result" aria-live="polite" aria-atomic="false">
+    {% if result is defined and result %}{% include "partials/result.html" %}{% endif %}
+    {% if error is defined and error %}{% include "partials/error.html" %}{% endif %}
+  </section>
+  <div id="ui-live-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+</main>
+{% endblock %}
