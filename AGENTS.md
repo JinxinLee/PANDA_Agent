@@ -1,202 +1,57 @@
 # PANDA Agent — Codex Development Instructions
 
-This file defines how Codex should work in this repository during ordinary development.
+This repository is an English-only, evidence-grounded PANDA QA system. Keep code, prompts, datasets, technical documentation, identifiers, and machine-readable artifacts in English.
 
-The repository is under active prototype development. The default objective is to make the requested functionality work with the smallest useful change and the minimum validation needed to support the next development decision.
+## Sources of truth
 
-Formal benchmark evaluation is a separate workflow. Do not enter it automatically.
+- `AGENTS.md`: stable development and stop rules.
+- `docs/GENERALIZATION_ROADMAP.md`: Generalization Phase architecture and task cards.
+- `docs/EVALUATION_POLICY.md`: evaluation tiers, failure taxonomy, cost controls, and gates.
+- `docs/EVALUATION_STATUS.md`: one current status followed by labelled historical records.
 
-## 1. Sources of truth
+Code and actual artifacts are authoritative when documentation is stale.
 
-Use the following files for different purposes:
+## Development scope
 
-- `AGENTS.md` — day-to-day development behavior and validation defaults.
-- `docs/EVALUATION_POLICY.md` — stable rules for formal evaluation, candidate freezing, rescoring, gates, and acceptance.
-- `docs/EVALUATION_STATUS.md` — current benchmark/evaluator/candidate state and historical evaluation results.
-
-Do not copy transient candidate status, hashes, case lists, token counts, or dated evaluation results into this file.
-
-For ordinary implementation tasks, do not read `docs/EVALUATION_STATUS.md` unless the task depends on the current evaluation state.
-
-## 2. Default development mode: prototype first
-
-For ordinary development tasks:
-
-- Implement the requested change directly.
-- Prefer the smallest reasonable change.
+- Implement only the roadmap task explicitly requested by the user, then stop. Do not automatically start the next task.
+- Prefer the smallest general mechanism that addresses the observed failure class.
+- Avoid unrelated refactoring and do not introduce future roadmap architecture early.
 - Preserve existing behavior outside the requested scope where practical.
-- Avoid unrelated refactoring, cleanup, formatting churn, or architectural redesign.
-- Prefer an existing abstraction over creating a new one unless the current task clearly needs it.
-- Do not add speculative compatibility layers, wrappers, retries, fallbacks, migration code, generalized validators, or broad exception handling for hypothetical future failures.
-- Handle observed and likely runtime failures; do not harden every theoretical edge case during prototype work.
-- Do not proactively add logging, instrumentation, benchmarks, documentation, or tests unrelated to the requested change.
-- Once the requested behavior works and minimum useful validation is complete, stop.
+- Do not add multilingual or Chinese-query support unless product scope is explicitly changed.
 
-When a possible production-hardening concern is discovered but is not required for the current task, mention it briefly rather than implementing it automatically.
+## Generalization safety
 
-## 3. Validation must be proportional to the change
+Evaluation questions are measurement data, not implementation specifications. Do not add question-specific trigger phrases, expected symbols, paths, PDF pages, answers, source quotas, weights, or special-case guards solely because they occur in a failing evaluation question.
 
-Use the smallest validation surface that can meaningfully detect an error caused by the current change.
+Every behavior change must be justified for a class of unseen questions. Repair the layer where the failure originates:
 
-### 3.1 Documentation, comments, UI text, report formatting
+- candidate-recall failure → retrieval;
+- entity-resolution failure → resolver;
+- decomposition failure → decomposition;
+- answer or verification failure → the corresponding answer layer.
 
-Default:
+Do not compensate at a downstream layer for an upstream failure.
 
-- inspect the diff;
-- run a formatter/link/markup check only if directly relevant.
+## Evaluation and cost
 
-Do not automatically run:
+- Follow `docs/EVALUATION_POLICY.md` and use the smallest tier that can test the current hypothesis.
+- “Run tests”, “verify the change”, “make sure it works”, and “check regressions” do not authorize a full benchmark.
+- T5 requires an explicit user instruction containing `T5` or `release evaluation`.
+- T3 requires explicit authorization in the current task. A complete dataset or a request to establish/freeze A3 baseline does not authorize T3.
+- Do not regenerate hashes merely because files changed.
+- Do not perform a full reindex unless technically required.
+- Reuse compatible embeddings and frozen intermediate artifacts.
+- Do not call answer generation to test retrieval or an external judge to test runtime QA.
 
-- Python compilation;
-- the full unit-test suite;
-- retrieval evaluation;
-- QA evaluation;
-- Vertex/model calls;
-- hash verification;
-- candidate freezing.
+## Completion
 
-### 3.2 Small local code change
+After each roadmap task:
 
-Examples: one function, one condition, one parser branch, one UI behavior, one configuration value.
-
-Default:
-
-1. inspect the changed code;
-2. run the smallest directly relevant deterministic test/check if one exists;
-3. stop if that provides sufficient confidence.
-
-Do not automatically run project-wide validation.
-
-### 3.3 Agent behavior change
-
-Examples: query analysis, routing, retrieval, reranking, answer generation, sufficiency, claim verification, revision, prompt behavior.
-
-Default:
-
-1. run the directly affected case first;
-2. if it fails, iterate on that case;
-3. once it passes, optionally run 1–2 closely related cases or sentinels when useful;
-4. stop.
-
-Do not automatically expand a normal development edit into a 5–20 case regression.
-
-A broader focused regression is a checkpoint operation, not the default inner development loop.
-
-### 3.4 Cross-cutting or high-risk change
-
-For changes that genuinely affect shared interfaces, multiple major modules, model configuration, index identity, or repository-wide behavior:
-
-- run targeted deterministic tests for the affected modules;
-- run a small representative focused evaluation when behavior is model-backed;
-- expand validation only when evidence from the targeted checks justifies it.
-
-## 4. Expensive model calls
-
-Treat every Vertex/model-backed evaluation as expensive.
-
-Before making additional model calls, ask:
-
-> Will this result materially affect the next development decision?
-
-If not, skip the call.
-
-Prefer, in order:
-
-1. static inspection;
-2. deterministic local checks;
-3. one affected case;
-4. 1–2 related sentinels;
-5. a focused checkpoint set;
-6. a full benchmark run.
-
-Do not move to a more expensive level merely for reassurance.
-
-Reuse existing records whenever the relevant runtime identity has not changed and the evaluation policy permits reuse.
-
-## 5. Tests are not automatically cumulative
-
-A small change does not imply that all lower and higher validation layers must run.
-
-For example, a local answer-rendering fix does not automatically require:
-
-- corpus verification;
-- index verification;
-- the full retrieval suite;
-- every intent sentinel;
-- the full QA dev split;
-- regression/challenge;
-- acceptance.
-
-Run only the affected dependency closure.
-
-## 6. Hashes and candidate identity
-
-Do not calculate, compare, record, or verify repository/file/model/prompt/index hashes during ordinary prototype work merely to prove that nothing changed.
-
-Hashing and identity freezing belong to formal evaluation when they are required for reproducibility.
-
-Hash/identity work is appropriate only when:
-
-- explicitly requested;
-- creating or verifying a frozen candidate;
-- performing a formal full-dev/regression/acceptance run;
-- the application itself depends on the hash;
-- a specific reproducibility/debugging question requires it.
-
-Do not begin an ordinary coding task by checking hashes or candidate manifests.
-
-## 7. Formal evaluation is opt-in
-
-Enter the formal evaluation workflow only when one of the following is true:
-
-- the user explicitly requests an evaluation/checkpoint/gate/freeze/release run;
-- a major development milestone is complete and the task specifically asks to validate it;
-- the task is about evaluation infrastructure itself.
-
-When formal evaluation is required, follow `docs/EVALUATION_POLICY.md`.
-
-Do not infer that a code edit automatically authorizes:
-
-- candidate freezing;
-- full dev;
-- full regression;
-- challenge;
-- hidden acceptance;
-- M7/M8;
-- release gating.
-
-## 8. Evaluation-infrastructure changes
-
-If a change affects only deterministic evaluation logic, such as:
-
-- scorer/judge post-processing;
-- Gold schema interpretation;
-- selector matching;
-- report generation;
-- gate calculation;
-- deterministic verifier logic;
-
-prefer unit tests and offline recomputation/rescore of existing records.
-
-Do not regenerate model answers unless answer-generation behavior actually changed.
-
-## 9. Evaluation status
-
-When a task depends on the currently approved Gold, evaluator version, unresolved failures, candidate identity, or which runs are authorized, read:
-
-`docs/EVALUATION_STATUS.md`
-
-Treat the newest section marked **Current authoritative state** as authoritative over older historical records.
-
-Do not silently promote a diagnostic subset/composite into a complete benchmark result.
-
-## 10. Completion rule
-
-After completing a requested development change:
-
-- summarize what changed;
-- state the validation actually performed;
-- mention any important broader validation deliberately not run;
-- stop.
-
-Do not continue with speculative hardening, cleanup, refactoring, hashing, benchmarking, report generation, or additional tests after the task is complete.
+1. summarize implementation;
+2. list changed files;
+3. report every evaluation actually performed and its cost;
+4. report before/after metrics where applicable;
+5. state exactly `PASS`, `FAIL`, or `INCONCLUSIVE`;
+6. list concrete limitations;
+7. name the next roadmap task only;
+8. stop.

@@ -1,492 +1,163 @@
-# PANDA QA Agent — Evaluation Policy
+# PANDA Agent — Evaluation Policy
 
-This document defines the stable evaluation rules for PANDA Agent.
+This document defines stable evaluation rules for the Generalization Phase. Current candidates, runs, metrics, and limitations belong in `docs/EVALUATION_STATUS.md`.
 
-It intentionally excludes transient candidate status, dated benchmark results, current failure counts, current hashes, and token totals. Those belong in `docs/EVALUATION_STATUS.md`.
+## 1. Evaluation integrity
 
-The purpose of this policy is to preserve evaluation integrity while keeping the normal development loop fast and economical.
+1. Evaluation questions are measurement data, not implementation specifications.
+2. A change must address a general failure class and must be repaired at the layer where it originates.
+3. Benchmark, novel development, novel validation, and protected holdout data have different exposure rules and must not be silently combined.
+4. Measured results must be distinguished from planned acceptance targets.
+5. Diagnostic subsets and mixed-provenance composites are not complete gates.
+6. Immutable records and compatible intermediate artifacts should be reused instead of regenerating model output.
+7. English is the product language. Do not add multilingual models, aliases, tokenization, or query rules without an explicit scope change.
 
----
+Do not add question-specific trigger phrases, expected symbols, answer paths, thesis/PDF pages, expected answers, source quotas, weights, or guards merely to make an exposed question pass. Stable domain terminology may be represented as curated corpus knowledge, accepted aliases, entities, or relations when independently justified.
 
-## 1. Core principles
+## 2. Failure taxonomy and ownership
 
-1. **Development and formal evaluation are different activities.**
-   Ordinary development optimizes iteration speed. Formal evaluation measures a deliberately frozen candidate.
+Assign one primary classification and optional secondary notes:
 
-2. **Modify one layer, validate the affected layer.**
-   Test the direct dependency closure of the change, not the whole system by default.
-
-3. **Model-backed evaluation is expensive.**
-   Use deterministic/offline checks whenever they can answer the question.
-
-4. **Full benchmark runs are checkpoint operations.**
-   A full dev run is not a routine post-edit test.
-
-5. **Acceptance is not a development set.**
-   Hidden acceptance results must never be used for targeted tuning.
-
-6. **Existing immutable records are valuable.**
-   If behavior did not change, rescore/recompute offline instead of regenerating answers.
-
-7. **Diagnostic subsets are not complete gates.**
-   A subset, composite, focused run, or incomplete run can diagnose behavior but cannot represent a complete development/acceptance result.
-
----
-
-## 2. Evaluation layers
-
-Use the following validation ladder.
-
-### Level 0 — Static inspection
-
-Examples:
-
-- inspect `git diff`;
-- syntax/format checks directly relevant to the change;
-- deterministic schema/config validation;
-- targeted unit tests.
-
-Model calls: **0**.
-
-Use this by default for non-behavioral changes.
-
-### Level 1 — Single affected case
-
-For a local model-backed behavior change, run the most directly affected Gold case.
-
-Model calls: minimal.
-
-This is the default inner-loop validation for prototype debugging.
-
-### Level 2 — Small sentinel check
-
-After the affected case passes, optionally add **1–2 directly related cases/sentinels** when there is a meaningful regression risk.
-
-Do not add sentinels mechanically.
-
-### Level 3 — Focused checkpoint regression
-
-Use a broader focused set when:
-
-- a feature/debugging batch is complete;
-- several related cases were changed;
-- the change affects shared behavior;
-- a prompt/model/routing/retrieval change has wider scope;
-- the user explicitly asks for a checkpoint.
-
-Typical size: **5–12 cases**.
-
-Expand up to **20 cases** only for genuinely broad cross-module, global-prompt, model-configuration, or multi-intent changes.
-
-A focused checkpoint is still diagnostic and does not pass a complete development gate.
-
-### Level 4 — Frozen-candidate full dev
-
-Run the complete dev split only after a candidate is intentionally frozen for formal measurement.
-
-### Level 5 — Regression/challenge
-
-Run only when authorized by the current benchmark lifecycle and the preceding required gate has passed.
-
-### Level 6 — Hidden acceptance
-
-Run only against a fully frozen release candidate under the acceptance rules in this document.
-
----
-
-## 3. Change-to-validation matrix
-
-| Change | Default validation | Optional downstream validation | Do not automatically run |
-|---|---|---|---|
-| Documentation/comments/report formatting/UI text | diff + directly relevant format/link check | none | model calls, hashes, QA/retrieval |
-| Deterministic evaluator/scorer/report/gate | targeted unit tests + offline report/rescore | broader deterministic tests if needed | regenerate answers |
-| Gold schema/selector/status policy | validation + offline rescore of existing records | targeted deterministic sentinels | full QA generation |
-| Corpus/parser/manifest | affected parser/storage checks | affected retrieval case(s) | full QA |
-| Index schema/embedding/index identity | rebuild/verify only the affected index | targeted retrieval + a few QA sentinels | direct acceptance |
-| Query analyzer/intent/query expansion/planner | affected case first | 1–2 adjacent-intent sentinels; checkpoint set if broad | full dev |
-| Retrieval channel/fusion/rerank/graph/workflow | affected evidence-group case first | 1–2 QA downstream sentinels; checkpoint set if broad | full QA |
-| Answer prompt/sufficiency/claim verifier/revision/rendering | affected QA case first | 1–2 cross-intent sentinels; checkpoint set if broad | full retrieval/full dev |
-| Generation model/major generation parameters | representative per-intent checkpoint | expand up to 20 if needed | full dev before freeze |
-| Shared architecture/cross-cutting behavior | targeted unit/module tests + representative checkpoint | broader targeted regression | automatic acceptance |
-
-“Optional” means run it only when it can change the next development decision.
-
----
-
-## 4. Deterministic changes and offline rescore
-
-If a change only affects deterministic evaluation behavior, prefer existing immutable records.
-
-Examples include:
-
-- evaluator/scorer logic;
-- selector matching;
-- Gold/rubric interpretation;
-- status accounting;
-- identifier catalog validation;
-- report generation;
-- gate calculation;
-- deterministic evidence checks.
-
-Required approach:
-
-1. preserve original run records;
-2. apply the approved deterministic change;
-3. validate the change with targeted unit tests;
-4. rescore/recompute existing records offline;
-5. record that the rescore generated no new model answers.
-
-Do not call Vertex merely because evaluation code changed.
-
-If a case's generated answer must change, that is an Agent behavior change and requires a targeted rerun instead of a pure offline rescore.
-
----
-
-## 5. Focused development workflow
-
-For an observed behavioral failure:
-
-1. identify the failing/affected case;
-2. identify the owning layer;
-3. change only the relevant layer unless evidence shows a wider cause;
-4. rerun the affected case;
-5. iterate until the case behaves correctly;
-6. optionally run 1–2 related sentinels;
-7. stop.
-
-Do not automatically add:
-
-- every previous failure;
-- one sentinel from every intent;
-- every downstream suite.
-
-A 5–12 case focused regression should normally be run only after a meaningful batch of fixes or before a candidate checkpoint.
-
-Focused success means only:
-
-> the tested affected surface has no observed regression.
-
-It does **not** mean that the candidate, M6, release gate, regression gate, challenge, or acceptance has passed.
-
----
-
-## 6. Formal candidate lifecycle
-
-A formal candidate cycle is entered deliberately.
-
-```mermaid
-flowchart TD
-    A[Prototype development] --> B[Single affected case / small sentinels]
-    B --> C{Feature or fix batch ready for checkpoint?}
-    C -- No --> A
-    C -- Yes --> D[Focused checkpoint regression]
-    D --> E{Focused checkpoint acceptable?}
-    E -- No --> A
-    E -- Yes --> F[Freeze candidate identity]
-    F --> G[Run complete dev split once]
-    G --> H{Development gate passes?}
-    H -- No --> I[Generate failure review]
-    I --> J[Human classification: rescore / fix / waiver]
-    J --> A
-    H -- Yes --> K[Authorized regression/challenge if required]
-    K --> L[Freeze release/acceptance manifest]
-    L --> M[Run hidden acceptance once]
-    M --> N[Report and archive only]
-```
-
-The phrase “once” means once for a particular frozen identity. A new behavior-changing edit creates a new candidate identity.
-
----
-
-## 7. Candidate freezing
-
-Before a formal complete-dev run, freeze only the identities required for reproducibility.
-
-The candidate manifest should record, as applicable:
-
-- source/repository identity;
-- source/corpus manifest identity;
-- normalized output identity;
-- index identity;
-- generation model ID and location;
-- embedding model ID, location, and dimensions;
-- prompt identity/version;
-- query-expansion policy identity;
-- retrieval policy identity;
-- approved Gold dataset identity;
-- package/runtime versions.
-
-### Important
-
-Do **not** perform these hash/identity checks during ordinary development.
-
-Candidate hashing is a formal-evaluation operation, not a routine coding preflight.
-
-If code/prompt/model/index behavior changes after freezing, the frozen candidate is historical and a new candidate must be created before another complete formal run.
-
----
-
-## 8. Full development run
-
-A complete dev run is allowed when:
-
-- the intended fix/feature batch has passed the chosen focused checkpoint;
-- the candidate is explicitly being measured as a formal checkpoint;
-- required candidate identities are frozen.
-
-Rules:
-
-- use a new formal run ID tied to the candidate;
-- use resume after interruption;
-- do not repeat already completed cases in the same immutable run;
-- generate a complete development report/gate only from the complete declared split;
-- incomplete, subset, or composite runs cannot pass a complete development gate.
-
-If the complete dev gate fails, do not immediately rerun the entire dev split after each fix. Enter the failure-review workflow and return to targeted development.
-
----
-
-## 9. Failure review after a failed complete dev run
-
-When a complete dev run fails its development gate, generate:
-
-```text
-data/evaluation/runs/<RUN_ID>/failure_review.yaml
-data/evaluation/runs/<RUN_ID>/failure_review.md
-```
-
-The YAML file is the canonical editable review. The Markdown file is the readable snapshot.
-
-Each reviewed case should contain enough information to determine:
-
-- failed metric(s);
-- expected and actual status;
-- answer and atomic claims;
-- verification errors;
-- supporting/cited Evidence IDs;
-- source version and locator;
-- relevant evidence excerpts;
-- suspected target layer;
-- human classification;
-- action;
-- rationale;
-- reviewer/time if required by the workflow.
-
-Classify each failure as:
-
-| Classification | Action | Meaning |
+| Code | Failure | Owning layer |
 |---|---|---|
-| `metric_false_positive` | `rescore` | Generated behavior is acceptable; deterministic evaluation is wrong |
-| `real_failure` | `fix` | Retrieval/answer/infrastructure behavior is genuinely wrong |
-| `acceptable_exception` | `waiver` | Explicitly approved auditable exception |
+| `Q1` | Query-understanding failure | deterministic parser or analyzer |
+| `Q2` | Entity-resolution failure | concept/entity resolver |
+| `R1` | Candidate-recall failure | retrieval channel or index |
+| `R2` | Fusion/ranking failure | fusion or reranker |
+| `R3` | Evidence-selection failure | final evidence selector |
+| `D1` | Question-decomposition failure | answer-point decomposition |
+| `A1` | Answer-generation failure | bounded answer generation |
+| `V1` | Verification false rejection | verifier |
+| `V2` | Verification false acceptance | verifier |
+| `C1` | Corpus/evidence genuinely insufficient | corpus or explicit refusal |
 
-Do not silently relax a global threshold to make a failing case pass.
+An `R1` failure must not be repaired with an answer-prompt instruction. A `Q2` failure must not be repaired with a fixed page hint. A `D1` failure must not be repaired with one benchmark-specific answer requirement. If evidence shows the initial classification was wrong, reclassify it explicitly before changing another layer.
 
-The following are not waived by default:
+## 3. Evaluation modes
 
-- citation-integrity failure;
-- wrong-version evidence;
-- genuine contradiction;
-- genuine unsupported claim;
-- unhandled exception.
+Every run records its mode and pipeline boundaries.
 
-If one of these is actually a metric mistake, classify it as `metric_false_positive` and provide evidence.
+### `retrieval`
 
-After review:
+Runs current query analysis, all production retrieval channels, fusion/reranking, and evidence selection. It writes a structured retrieval trace. It must not call answer generation, runtime claim verification/revision, or the external rubric judge.
 
-- `rescore` cases: change evaluation logic and recompute existing records offline;
-- `fix` cases: change the target layer and run only affected cases first;
-- `waiver` cases: require an explicit waiver identifier and rationale.
+### `qa`
 
-A complete dev rerun is a **new candidate checkpoint**, not the next automatic step after every case fix.
+Runs retrieval plus production answer generation and runtime verification/revision. It must not automatically call the external evaluation judge. Use it for targeted behavior checks and small stratified E2E baselines.
 
----
+### `full`
 
-## 10. Rescore and replacement rules
+Runs the complete E2E path and the configured external judge. This preserves the former judged-QA behavior and is reserved for tiers that explicitly need external scoring.
 
-`rescore` must operate on immutable existing records plus approved overlays/replacements.
+Changing evaluation mode must not change production retrieval or QA behavior; it changes only which evaluation stages are entered.
 
-General rules:
+## 4. Evaluation pyramid
 
-- original source run records are never overwritten;
-- replacement provenance must be explicit;
-- replacement case IDs must be non-empty and non-overlapping;
-- a replacement case must exist in the relevant source/subset;
-- strict candidate/manifest mismatches must be rejected unless the policy explicitly allows a diagnostic mismatch;
-- allowed mismatches must be recorded, never silently merged;
-- offline rescore must report its own new `model_calls=0` and `token_usage=0`.
+### T0 — Deterministic, unit, and integrity
 
-Historical model usage embedded in source records must not be described as the cost of a zero-call rescore.
+Use frequently. Vertex use is zero or negligible. Examples include schema validation, serialization, frozen-candidate fusion, index identity, parser and locator fixtures, deterministic verifier logic, and offline rescore.
 
----
+### T1 — Small targeted smoke
 
-## 11. Subsets and diagnostic composites
+Use roughly 5–12 relevant cases, or fewer when one case is sufficient. Select only cases that test the current subsystem and stop when the hypothesis is answered.
 
-A subset/composite is always diagnostic unless it exactly satisfies the complete split contract and uniform candidate identity requirements.
+### T2 — Targeted regression
 
-A diagnostic subset/composite manifest should record:
+Use roughly 10–30 relevant cases. Examples include a lexical/rare-identifier subset for BM25, a semantic/paraphrase subset for dense query construction, or a multi-part subset for decomposition.
 
-- included case IDs;
-- excluded case IDs;
-- replacement provenance;
-- relevant identity mismatches;
-- whether candidate identity is uniform;
-- `subset_diagnostic_only=true`;
-- the appropriate `complete_<split>=false` flag.
+### T3 — Full retrieval-only
 
-A diagnostic subset/composite:
+Run a complete relevant dataset in `retrieval` mode at phase boundaries. T3 requires explicit authorization in the current task. The existence of a complete dataset, “establish a baseline”, “create a frozen baseline”, or completion of A3 does not authorize T3. Do not call answer generation, runtime verification/revision, or the external judge.
 
-- cannot pass a complete development gate;
-- cannot freeze a candidate;
-- cannot unlock regression/challenge/acceptance;
-- cannot be represented as a complete benchmark run.
+### T4 — Small stratified E2E
 
----
+Normally use approximately 20 benchmark plus 20 trustworthy novel questions where available. Run `qa`: retrieval, answer generation, and runtime verification/revision. Invoke the external judge only when separately and explicitly justified.
 
-## 12. Permanent claim/provenance rendering rule
+### T5 — Full release evaluation
 
-Internal coverage/provenance claims are diagnostic metadata, not user-facing answers.
+Run full benchmark E2E, full novel E2E, protected holdout, external judging, release metrics, and required ablations. T5 is rare and requires an explicit user instruction containing `T5` or `release evaluation`.
 
-The following internal claim classes must not appear in `QAResult.answer` or user-facing `QAResult.claims` merely to satisfy evaluation bookkeeping:
+The phrases “run tests”, “verify the change”, “make sure it works”, and “check regressions” do not authorize T5.
 
-- `scope_*`;
-- `required_workflow`;
-- `required_code`;
-- `dataflow_locator_*`;
-- claims containing `curated_panda_domain`.
+### A3 bootstrap default
 
-They may remain in internal `claim_audit`.
+A3 is not a phase-boundary T3. It should normally use 20–30 deterministically stratified benchmark questions in `retrieval`, 10–20 representative benchmark questions in `qa`, and any trustworthy human-authored novel questions already available. Full retrieval-only evaluation requires separate explicit authorization or an explicitly authorized phase-boundary T3.
 
-Generated user-facing claims must map to the runtime `question_core` answer points.
+Persist A3 retrieval and QA case IDs in a versioned fixed manifest and reuse them unchanged for before/after comparisons. Call the current package an **English Gold Stratified Bootstrap Baseline** and state every English Gold intent with no eligible approved case as unevaluated; do not describe it as a complete generalization or all-intent baseline.
 
-A claim must not render when it:
+## 5. Cost decision
 
-- has no valid answer-point mapping;
-- is marked by evidence review as irrelevant;
-- is an internal audit/provenance marker.
+Before every evaluation, answer:
 
-For refusal states such as `insufficient_evidence` or `version_conflict`, use the refusal behavior defined by the runtime contract. Do not add filler claims merely to satisfy source-type, workflow, or identifier coverage.
+1. What hypothesis is being tested?
+2. What is the smallest dataset that can test it?
+3. Which model calls are required?
 
-Changes to rendering, claim verification, answer-point mapping, or relevance policy should first be validated on affected cases, not by automatically running the complete dev split.
+Prefer static inspection, then T0, one affected case, a few sentinels, T2, T3, T4, and finally T5. Do not escalate merely for reassurance. Do not call answer generation to test BM25, call the judge to test retrieval, rerun an analyzer when a compatible frozen plan answers the hypothesis, recompute embeddings when a compatible cache exists, or run unrelated tests because they are available.
 
----
+Record per run: purpose, mode, dataset/subset, question count, Vertex invocation, model-call count, token usage, exceptions, and measured metrics. Environment or quota failures are not quality pass/fail evidence.
 
-## 13. Status-sensitive scoring
+## 6. Novel dataset exposure
 
-Status-aware evaluation must avoid scoring metrics that are not applicable to a valid refusal.
+- `novel_dev` may be inspected and used for detailed development analysis.
+- `novel_validation` is primarily for phase-level validation; do not tune individual cases.
+- `novel_holdout` should load from an external path and should not expose Gold evidence to normal Codex development sessions.
 
-For a correctly classified `version_conflict` or `insufficient_evidence` response, metrics that require a normal answered response may be N/A according to the approved evaluator contract.
+A trivial paraphrase of an exposed benchmark question is not novel. Generated questions are untrusted drafts until human review and are never a protected holdout. Do not report retrieval metrics when reviewed Gold evidence does not exist.
 
-A false refusal does not receive those exemptions.
+## 7. Change-impact and reindex policy
 
-Identifier evaluation should distinguish:
+| Change | Dense document re-embed | Sparse/index rebuild |
+|---|---:|---:|
+| Prompt | No | No |
+| Query analyzer | No | No |
+| Fusion/reranking | No | No |
+| Answer/verifier/composer | No | No |
+| Locator metadata only | Generally no | Only if the deployed payload/index requires it |
+| BM25 IDF/index modifier | No | Yes, where required |
+| Sparse model/configuration | No | Yes |
+| Chunk text | Affected objects where practical | Affected objects where practical |
+| Embedding model | Yes | No, unless independently changed |
+| Embedding dimensions | Yes | No, unless independently changed |
+| Embedding text construction | Affected or all dense objects as required | Only if sparse input also changes |
 
-1. whether the identifier exists in the allowed locked source/version catalog; and
-2. whether the generated claim using that identifier is actually supported by evidence.
+Changing `index_schema_version` alone does not require dense regeneration when the cached dense embedding identity remains valid.
 
-Do not infer a general scoring heuristic from a case-specific approved equivalence. Case-specific Gold/evaluator exceptions must remain narrow.
+## 8. Frozen records, traces, and resume
 
----
+- Persist run manifests, atomic case records, structured retrieval traces, metrics, model usage, and exceptions.
+- Resume interrupted runs without repeating completed cases.
+- Reuse analyzer plans, channel candidates, selected evidence, claims, and verified claims only when their upstream behavior identity is compatible with the hypothesis.
+- Original run records are immutable. Offline rescore produces new provenance and reports zero new model calls/tokens.
+- Frozen traces may be loaded for fusion/evidence analysis without rerunning QA.
+- Do not calculate gratuitous per-file hashes. Use Git, dataset, prompt/policy, corpus/index, and model identities where sufficient.
 
-## 14. Acceptance protection
+## 9. Formal candidate and gate rules
 
-Hidden acceptance is allowed only when all required conditions are satisfied:
+Freeze behavior-affecting identities before a formal complete run: repository/corpus/index, models and dimensions, prompts, retrieval/query policies, approved dataset, and relevant runtime packages. A behavior-changing edit creates a new candidate identity.
 
-1. the complete development gate required by the release process has passed;
-2. code and behavior-affecting configuration are frozen;
-3. model configuration is frozen;
-4. prompt/query-expansion/retrieval policies are frozen;
-5. index/corpus identity is frozen;
-6. the approved acceptance manifest exists;
-7. the execution environment passes readiness checks.
+A complete split is complete only when its declared approved questions are present under one compatible identity. A subset, focused run, interrupted run, or mixed-provenance composite is diagnostic and cannot pass a full development, regression, acceptance, or release gate.
 
-The acceptance manifest should record the identities required to prove which frozen candidate was tested.
+Hidden acceptance results may be used only for reporting, archival, and release decisions. They must not be used for targeted prompt, routing, retrieval, Gold, model, or scoring tuning.
 
-Acceptance results may be used for:
+## 10. Failure review and rescore
 
-- final gate calculation;
-- reporting;
-- archival;
-- release decision.
+After a failed complete gate, create an auditable review containing failed metrics, expected/actual status, answer and claims, verification errors, evidence and locators, suspected owning layer, classification, action, rationale, and reviewer metadata.
 
-Acceptance results must **not** be used for targeted prompt, routing, retrieval, model, Gold, or scoring tuning.
+Allowed review actions:
 
-If behavior is modified after acceptance, create a new candidate and return to the development workflow. The old acceptance result remains historical.
+- `rescore`: deterministic evaluator error; preserve model output and recompute offline;
+- `fix`: genuine system failure; return to targeted development at the owning layer;
+- `waiver`: explicitly approved exception with identifier and rationale.
 
----
+Do not silently relax global thresholds. Citation-integrity failures, wrong-version evidence, contradictions, unsupported claims, and unhandled exceptions are not waived by default.
 
-## 15. Regression and challenge
+## 11. Completion and stop rule
 
-Regression/challenge splits are exposed evaluation assets, not hidden acceptance.
-
-Run them only when the current benchmark lifecycle authorizes them.
-
-They must not be treated as a substitute for hidden acceptance, and focused/subset success must not be treated as equivalent to a complete regression/challenge result.
-
-Exact split sizes and current authorization state belong in `docs/EVALUATION_STATUS.md` or the relevant benchmark manifest.
-
----
-
-## 16. Caching, resume, and API budget
-
-- Persist case results under a run identity/manifest.
-- Resume interrupted runs without repeating already completed cases.
-- Reuse existing records when behavior identity is unchanged and the current operation permits reuse.
-- Record model calls, token usage, latency, and exceptions for model-backed runs.
-- Distinguish environment failures from model-quality failures.
-- Do not convert ADC/network/service failures into quality pass/fail conclusions.
-- If a deterministic change can be evaluated offline, do not regenerate answers.
-- Do not add acceptance cases to development splits.
-- Do not use acceptance feedback to update prompts or retrieval policy.
-
----
-
-## 17. Suggested command patterns
-
-Use commands appropriate to the current repository implementation. Typical patterns are:
-
-```powershell
-# Targeted deterministic checks
-..\.venv\Scripts\python.exe -m compileall -q src
-..\.venv\Scripts\panda-qa-eval.exe validate --official
-
-# One directly affected QA case
-..\.venv\Scripts\panda-qa-eval.exe run qa --split dev `
-  --run-id m6-qa-targeted-<candidate> `
-  --case-id <CASE_ID>
-
-# Small or checkpoint focused set
-..\.venv\Scripts\panda-qa-eval.exe run qa --split dev `
-  --run-id m6-qa-focused-<candidate> `
-  --case-id <CASE_1> --case-id <CASE_2>
-
-# Formal complete dev — only for an explicitly frozen candidate
-..\.venv\Scripts\panda-qa-eval.exe run qa --split dev `
-  --run-id m6-qa-dev-<frozen-candidate>
-
-..\.venv\Scripts\panda-qa-eval.exe report `
-  --run-id m6-qa-dev-<frozen-candidate>
-
-# Failure review
-..\.venv\Scripts\panda-qa-eval.exe review `
-  --run-id m6-qa-dev-<frozen-candidate>
-
-..\.venv\Scripts\panda-qa-eval.exe review `
-  --run-id m6-qa-dev-<frozen-candidate> --check
-```
-
-Running a command because it appears in this document is not mandatory. The validation level must first be justified by the current task.
-
----
-
-## 18. Stop rule
-
-Formal evaluation should stop at the boundary authorized by the current lifecycle.
-
-Ordinary development should stop as soon as the requested behavior works and the smallest useful validation has passed.
+Report implementation, changed files, every evaluation and its cost, measured before/after metrics, exactly `PASS`/`FAIL`/`INCONCLUSIVE`, concrete limitations, and only the next roadmap task. Stop at the authorized tier and task boundary.
 
 Do not automatically escalate:
 
-`single case -> sentinels -> focused set -> full dev -> regression -> challenge -> acceptance`
+`affected case → sentinels → T2 → T3 → T4 → T5`
 
-Each escalation requires an actual reason.
+Each escalation requires a decision-relevant reason, and T5 requires explicit authorization.

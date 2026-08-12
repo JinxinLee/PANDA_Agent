@@ -244,8 +244,16 @@ class GoldIdentifierRequirement(StrictModel):
 
 
 class GoldQuestion(StrictModel):
-    id: str = Field(pattern=r"^g\d{3}$")
-    split: Literal["dev", "challenge", "regression", "acceptance"]
+    id: str = Field(pattern=r"^[gn]\d{3}$")
+    split: Literal[
+        "dev",
+        "challenge",
+        "regression",
+        "acceptance",
+        "novel_dev",
+        "novel_validation",
+        "novel_holdout",
+    ]
     language: Literal["en", "zh", "mixed"]
     intent: str
     accepted_intents: list[str] = Field(default_factory=list)
@@ -731,7 +739,17 @@ def deterministic_case_metrics(
     diagnostics: dict[str, Any],
     object_lookup: dict[str, dict[str, Any]],
 ) -> dict[str, Any]:
-    top_ids = ranked_object_ids(diagnostics, 10)
+    ranked_ids = ranked_object_ids(diagnostics, 20)
+    top5_ids = ranked_ids[:5]
+    top_ids = ranked_ids[:10]
+    top20_ids = ranked_ids[:20]
+    combined_candidate_ids = list(
+        dict.fromkeys(
+            object_id
+            for object_ids in (diagnostics.get("rankings") or {}).values()
+            for object_id in object_ids
+        )
+    )
     evidence = result.get("evidence", [])
     final_ids = [item["object_id"] for item in evidence if item.get("object_id")]
     # A rescore must be able to reproduce a frozen record even if the active
@@ -852,9 +870,25 @@ def deterministic_case_metrics(
         if any(selector.matches(item) for selector in case.forbidden_evidence)
     ]
     critical_groups = [group for group in case.required_evidence_groups if group.critical]
+    top5_recall, top5_provenance = _matched_evidence_groups(
+        case.required_evidence_groups, top5_ids, object_lookup
+    )
     top_recall, top_provenance = _matched_evidence_groups(
         case.required_evidence_groups, top_ids, object_lookup
     )
+    top20_recall, top20_provenance = _matched_evidence_groups(
+        case.required_evidence_groups, top20_ids, object_lookup
+    )
+    combined_recall, combined_provenance = _matched_evidence_groups(
+        case.required_evidence_groups, combined_candidate_ids, object_lookup
+    )
+    rank_by_object_id = {object_id: rank for rank, object_id in enumerate(ranked_ids, 1)}
+    relevant_ranks = [
+        rank_by_object_id[item["object_id"]]
+        for item in top20_provenance
+        if item.get("object_id") in rank_by_object_id
+    ]
+    reciprocal_rank = 1.0 / min(relevant_ranks) if relevant_ranks else 0.0
     final_recall, final_provenance = _matched_evidence_groups(
         case.required_evidence_groups, final_ids, final_evidence_lookup
     )
@@ -876,7 +910,11 @@ def deterministic_case_metrics(
         else None
     )
     metric_applicability = {
+        "gold_recall_at_5": ordinary_applicable,
         "gold_recall_at_10": ordinary_applicable,
+        "gold_recall_at_20": ordinary_applicable,
+        "mrr": ordinary_applicable,
+        "combined_candidate_recall": ordinary_applicable,
         "final_evidence_recall": ordinary_applicable,
         "critical_final_evidence_recall": ordinary_applicable,
         "required_source_coverage": ordinary_applicable,
@@ -893,7 +931,11 @@ def deterministic_case_metrics(
         in {case.intent, *case.accepted_intents},
         "expected_status_correct": status_correct,
         "correct_refusal": correct_refusal,
+        "gold_recall_at_5": top5_recall if ordinary_applicable else None,
         "gold_recall_at_10": top_recall if ordinary_applicable else None,
+        "gold_recall_at_20": top20_recall if ordinary_applicable else None,
+        "mrr": reciprocal_rank if ordinary_applicable else None,
+        "combined_candidate_recall": combined_recall if ordinary_applicable else None,
         "final_evidence_recall": final_recall if ordinary_applicable else None,
         "critical_final_evidence_recall": critical_recall if ordinary_applicable else None,
         "refusal_evidence_recall": refusal_recall,
@@ -927,7 +969,10 @@ def deterministic_case_metrics(
             else None
         ),
         "evidence_match_provenance": {
+            "gold_recall_at_5": top5_provenance,
             "gold_recall_at_10": top_provenance,
+            "gold_recall_at_20": top20_provenance,
+            "combined_candidate_recall": combined_provenance,
             "final_evidence_recall": final_provenance,
             "critical_final_evidence_recall": critical_provenance,
         },
@@ -963,7 +1008,11 @@ def aggregate_metrics(records: list[dict[str, Any]]) -> dict[str, Any]:
         intent: {
             "cases": len(values),
             "intent_accuracy": mean("intent_correct", values),
+            "gold_recall_at_5": mean("gold_recall_at_5", values),
             "gold_recall_at_10": mean("gold_recall_at_10", values),
+            "gold_recall_at_20": mean("gold_recall_at_20", values),
+            "mrr": mean("mrr", values),
+            "combined_candidate_recall": mean("combined_candidate_recall", values),
             "gold_recall_at_10_denominator": denominator("gold_recall_at_10", values),
             "final_evidence_recall": mean("final_evidence_recall", values),
             "final_evidence_recall_denominator": denominator("final_evidence_recall", values),
@@ -1002,8 +1051,18 @@ def aggregate_metrics(records: list[dict[str, Any]]) -> dict[str, Any]:
         "cases_completed": len(records),
         "scored_cases": len(scored),
         "intent_accuracy": mean("intent_correct", all_metrics),
+        "gold_recall_at_5": mean("gold_recall_at_5", all_metrics),
+        "gold_recall_at_5_denominator": denominator("gold_recall_at_5", all_metrics),
         "gold_recall_at_10": mean("gold_recall_at_10", all_metrics),
         "gold_recall_at_10_denominator": denominator("gold_recall_at_10", all_metrics),
+        "gold_recall_at_20": mean("gold_recall_at_20", all_metrics),
+        "gold_recall_at_20_denominator": denominator("gold_recall_at_20", all_metrics),
+        "mrr": mean("mrr", all_metrics),
+        "mrr_denominator": denominator("mrr", all_metrics),
+        "combined_candidate_recall": mean("combined_candidate_recall", all_metrics),
+        "combined_candidate_recall_denominator": denominator(
+            "combined_candidate_recall", all_metrics
+        ),
         "final_evidence_recall": mean("final_evidence_recall", all_metrics),
         "final_evidence_recall_denominator": denominator("final_evidence_recall", all_metrics),
         "critical_final_evidence_recall": mean(
@@ -1249,7 +1308,7 @@ def evaluate_development_gate(
         >= 0.97,
         "unhandled_exceptions": metrics.get("unhandled_exception_count", 0) == 0,
     }
-    if mode == "qa":
+    if mode in {"qa", "full"}:
         checks.update(
             {
                 "citation_integrity": metrics.get("citation_integrity", 0.0) == 1.0,

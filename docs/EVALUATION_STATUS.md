@@ -5,11 +5,93 @@ This file records transient evaluation state: current Gold/evaluator versions, c
 Stable evaluation rules belong in `docs/EVALUATION_POLICY.md`.
 Day-to-day Codex behavior belongs in `AGENTS.md`.
 
-When records conflict, use the newest section explicitly marked **Current authoritative state**.
+When records conflict, use the single section explicitly marked **Current authoritative state**.
 
 ---
 
-# Current authoritative state — 2026-08-09
+# Current authoritative state — 2026-08-13
+
+## Current implementation identity
+
+- Git HEAD: `e132accefc8181abba76e8d818a621dd03cd1c9c`.
+- Working tree at baseline freeze: dirty because A1–A3 and governance changes were uncommitted.
+- Prompt set: `3.6.0`.
+- Generation and runtime verifier role: `gemini-3.6-flash`.
+- Evaluation judge configuration: `gemini-3.6-flash`; it was not invoked by the current retrieval or small QA baseline.
+- Dense embeddings: `gemini-embedding-2`, configured 3072 dimensions.
+- Sparse encoder: `Qdrant/bm25`, English, local-files-only.
+- Index identity: `c527bbf1d10c88969da02745d678c640a4544757258584110a5ddd7744be3cf2` (`index_schema_version=2`).
+- Gold: v2.6, identity `b5406e36c64ee664f9e2ff9c0f42e354feb7164c81d8f1c7551d8f2ed1d0b687`.
+
+## Generalization Phase status
+
+- Bootstrap tasks A1, A2, and A3: `PASS`.
+- Evaluation modes: `retrieval`, `qa`, and `full` have explicit recorded boundaries.
+- Structured retrieval traces are persisted as atomic JSON and JSONL and can be loaded without rerunning QA.
+- A3 was corrected from a possible full-retrieval interpretation to a stratified low-cost bootstrap baseline. No T3 or full 120-question retrieval/E2E run was performed.
+- Later architecture tasks B1–F6 remain `NOT_STARTED`.
+
+## Historical full E2E reference
+
+The newest trustworthy complete E2E artifact selected for historical reference is:
+
+`data/evaluation/runs/m6-v2-36-qa-dev-rc3e`
+
+It is a complete 80-question dev run with 514 model calls and 6,389,043 tokens. Measured metrics include `gold_recall_at_10=1.0`, `final_evidence_recall=0.9482323232`, `critical_final_evidence_recall=0.9482323232`, `answer_point_coverage=0.9458333333`, `citation_integrity=1.0`, `intent_accuracy=0.9875`, and `expected_status_accuracy=1.0`.
+
+It does **not** match current HEAD exactly: the historical manifest predates explicit Git commit recording and used Gold v2.4 plus prompt set 3.5.0. It is historical evidence, not a current release claim.
+
+## English Gold Stratified Bootstrap Baseline
+
+Frozen package:
+
+`evaluation/baselines/english-gold-stratified-bootstrap-v1-20260813`
+
+Fixed selection manifest:
+
+`evaluation/baselines/manifests/english_gold_stratified_bootstrap_v1.json`
+
+This is a low-cost English Gold reference, not a complete generalization, complete benchmark, or all-intent baseline. Future before/after comparisons must reuse the fixed 24 retrieval and 16 QA IDs unchanged; a different selection requires a new manifest identity.
+
+### Current stratified retrieval baseline
+
+- Run: `generalization-a3-stratified-retrieval-20260813`.
+- Mode/cases: `retrieval`, 24 approved English Gold questions.
+- Cost: 72 runtime model calls, 482,907 tokens, 0 external-judge calls.
+- Measured: Recall@5 `0.8416666667`; Recall@10 `0.9`; Recall@20 `0.9`; MRR `0.6866666667`; combined candidate recall `0.95`; final-evidence recall `0.9`; intent accuracy `1.0`; no exceptions.
+
+### Current small E2E baseline
+
+- Run: `generalization-a3-stratified-qa-20260813`.
+- Mode/cases: `qa`, 16 approved English Gold questions; runtime generation and verification enabled, external judge disabled.
+- Cost: 76 runtime model calls, 819,872 tokens, 0 external-judge calls.
+- Measured: Recall@5 `0.6041666667`; Recall@10 `0.75`; Recall@20 `0.75`; MRR `0.65`; combined candidate recall `0.875`; final-evidence recall `0.7083333333`; expected-status accuracy `1.0`; citation integrity `1.0`; identifier hallucination rate `0.0`; no exceptions.
+- Answer-point coverage was not measured because the external rubric judge was deliberately disabled. The deterministic placeholder value must not be interpreted as answer quality.
+
+## Novel dataset state
+
+- `novel_dev`: 0.
+- `novel_validation`: 0.
+- `novel_holdout`: not created; the runner supports loading it from an external path.
+- Human-curated: no trustworthy human-authored novel dataset is currently available.
+- Empty novel JSONL artifacts are schema/placeholders, not measured results.
+
+## Known limitations
+
+- Gold v2.6 has no eligible approved English questions for `data_flow`, `module_structure`, or `troubleshooting`; these intents are unevaluated in this bootstrap baseline.
+- `algorithm_implementation` has only two eligible approved English questions, so that stratum is exhausted rather than evenly sized.
+- The current baseline measures exposed English Gold behavior, not genuinely novel-question generalization.
+- Historical E2E and current baseline identities differ, so their metric differences are not a controlled before/after comparison.
+
+## Next authorized roadmap task
+
+`B1 — Correct sparse BM25 / Qdrant IDF contract`
+
+---
+
+# Historical records
+
+## Historical authoritative snapshot — 2026-08-09
 
 Gold v2.6 (`b5406e36…b687`) 与 evaluator 2.6.1 已按签署的 RC3f regression 人工审查落地。`g087/g097/g116` 及 `g098/g111` 两个 sentinel 的 focused run 全部通过；没有重跑完整 16 题。将 13 个已接受原始结果与 3 个 replacement 合成后，16/16 的 Gold recall、final evidence、source coverage、answer-point coverage、citation integrity 和 intent/status accuracy 均为 1.0，错误计数均为 0。
 
@@ -17,7 +99,7 @@ Gold v2.6 (`b5406e36…b687`) 与 evaluator 2.6.1 已按签署的 RC3f regressio
 
 ---
 
-# Current authoritative state
+## Historical authoritative snapshot — 2026-08-04
 
 **Status date:** 2026-08-04
 

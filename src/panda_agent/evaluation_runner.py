@@ -7,6 +7,7 @@ import importlib.metadata
 import json
 import platform
 import re
+import subprocess
 import time
 from datetime import UTC, datetime
 from pathlib import Path
@@ -42,11 +43,21 @@ from panda_agent.prompts import (
 )
 from panda_agent.qa import QAAgent
 from panda_agent.retrieval import Retriever
+from panda_agent.retrieval_trace import build_retrieval_trace, write_retrieval_trace
 from panda_agent.storage import Storage, iter_jsonl
 
 
-EvaluationMode = Literal["retrieval", "qa"]
-EvaluationSplit = Literal["dev", "challenge", "regression", "acceptance", "all"]
+EvaluationMode = Literal["retrieval", "qa", "full"]
+EvaluationSplit = Literal[
+    "dev",
+    "challenge",
+    "regression",
+    "acceptance",
+    "novel_dev",
+    "novel_validation",
+    "novel_holdout",
+    "all",
+]
 
 # Human review exports may use more descriptive action labels than the
 # generated review schema.  Keep the raw labels in the imported overlay, but
@@ -64,6 +75,36 @@ REVIEW_CLASSIFICATIONS = {
     "acceptable_exception",
     "mixed_evaluation_and_answer_quality",
 }
+
+
+def evaluation_mode_boundaries(mode: EvaluationMode) -> dict[str, bool]:
+    """Declare the pipeline stages that an evaluation mode is allowed to enter."""
+    if mode not in {"retrieval", "qa", "full"}:
+        raise ValueError(f"unsupported evaluation mode: {mode}")
+    return {
+        "answer_generation": mode in {"qa", "full"},
+        "runtime_verification": mode in {"qa", "full"},
+        "external_judge": mode == "full",
+    }
+
+
+def repository_identity(project_root: Path) -> dict[str, Any]:
+    """Record Git identity without producing a per-file integrity manifest."""
+    commit = subprocess.run(
+        ["git", "rev-parse", "HEAD"],
+        cwd=project_root,
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+    status = subprocess.run(
+        ["git", "status", "--porcelain"],
+        cwd=project_root,
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout
+    return {"commit": commit, "dirty": bool(status.strip())}
 
 
 def default_gold_dataset_path(project_root: Path) -> Path:
@@ -379,8 +420,10 @@ def build_evaluation_manifest(
     return {
         "schema_version": "1.0",
         "mode": mode,
+        "pipeline_boundaries": evaluation_mode_boundaries(mode),
         "split": split,
         "official": official,
+        "repository_identity": repository_identity(project_root),
         "source_manifest_hash": sha256_file(source_manifest_path),
         "normalized_manifest_hash": normalized.name,
         "normalized_output_hashes": report["output_hashes"],
@@ -1426,11 +1469,12 @@ def run_evaluation(
         manifest,
         resume=resume,
     )
+    boundaries = evaluation_mode_boundaries(mode)
     engine: Retriever | QAAgent = (
-        Retriever(project_root) if mode == "retrieval" else QAAgent(project_root)
+        Retriever(project_root) if not boundaries["answer_generation"] else QAAgent(project_root)
     )
     judge_vertex: VertexAIClient | None = None
-    if mode == "qa":
+    if boundaries["external_judge"]:
         runtime_vertex = engine.vertex
         judge_vertex = VertexAIClient(
             runtime_vertex.settings.for_generation_model(
@@ -1480,7 +1524,7 @@ def run_evaluation(
             "completed_at": datetime.now(UTC).isoformat(),
         }
         try:
-            if mode == "retrieval":
+            if not boundaries["answer_generation"]:
                 diagnostics = engine.retrieve(case.query)
                 result = _retrieval_result(diagnostics)
             else:
@@ -1490,7 +1534,7 @@ def run_evaluation(
             metrics = deterministic_case_metrics(
                 case, result, diagnostics, object_lookup
             )
-            if mode == "qa":
+            if boundaries["external_judge"]:
                 if judge_vertex is None:
                     raise RuntimeError("evaluation judge client is not initialized")
                 metrics.update(judge_answer(case, result, judge_vertex))
@@ -1502,6 +1546,16 @@ def run_evaluation(
                         "unsupported_claim_ids": [],
                     }
                 )
+            trace = build_retrieval_trace(
+                question_id=case.id,
+                run_id=run_id,
+                question=case.query,
+                diagnostics=diagnostics,
+                manifest=manifest,
+                object_lookup=object_lookup,
+                result=result,
+            )
+            write_retrieval_trace(store.run_dir, trace)
             record.update(
                 {
                     "result": result,
@@ -1609,7 +1663,7 @@ def report_evaluation(project_root: Path, run_id: str) -> dict[str, Any]:
     )
     complete_full_regression = (
         manifest.get("official") is True
-        and manifest.get("mode") == "qa"
+        and manifest.get("mode") == "full"
         and manifest.get("split") == "regression"
         and manifest.get("limit") is None
         and not manifest.get("case_ids")
@@ -1624,7 +1678,7 @@ def report_evaluation(project_root: Path, run_id: str) -> dict[str, Any]:
     )
     official_gate_run = (
         manifest.get("official") is True
-        and manifest.get("mode") == "qa"
+        and manifest.get("mode") == "full"
         and manifest.get("split") == "acceptance"
         and manifest.get("limit") is None
         and not manifest.get("case_ids")

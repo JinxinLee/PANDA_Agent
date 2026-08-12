@@ -1995,6 +1995,7 @@ class QAAgent:
             "reranked_object_ids": bundle.get("reranked_object_ids", []),
             "ranked_object_ids": bundle.get("ranked_object_ids", []),
             "excluded": bundle.get("excluded", []),
+            "selected_evidence": bundle.get("evidence", []),
             "selected_evidence_ids": [
                 item.get("evidence_id") for item in bundle.get("evidence", [])
             ],

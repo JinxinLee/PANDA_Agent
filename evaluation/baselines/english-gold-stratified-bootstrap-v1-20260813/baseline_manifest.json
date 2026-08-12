@@ -1,0 +1,115 @@
+{
+  "baseline_id": "english-gold-stratified-bootstrap-v1-20260813",
+  "benchmark_retrieval_run_id": "generalization-a3-stratified-retrieval-20260813",
+  "created_at": "2026-08-12T23:12:11.685477+00:00",
+  "display_name": "English Gold Stratified Bootstrap Baseline",
+  "external_judge_used_for_small_e2e": false,
+  "fixed_selection_manifest": "C:\\Users\\Jinxin.DESKTOP-H6SSTQH\\Desktop\\Agent_learn\\PANDA_Agent\\evaluation\\baselines\\manifests\\english_gold_stratified_bootstrap_v1.json",
+  "full_120_question_e2e_rerun": false,
+  "full_120_question_retrieval_run": false,
+  "historical_e2e_run_id": "m6-v2-36-qa-dev-rc3e",
+  "measured_metrics": {
+    "benchmark_retrieval": {
+      "cases_completed": 24,
+      "citation_integrity": 1.0,
+      "combined_candidate_recall": 0.95,
+      "critical_final_evidence_recall": 0.9,
+      "expected_status_accuracy": 0.8333333333333334,
+      "final_evidence_recall": 0.9,
+      "gold_recall_at_10": 0.9,
+      "gold_recall_at_20": 0.9,
+      "gold_recall_at_5": 0.8416666666666666,
+      "intent_accuracy": 1.0,
+      "mrr": 0.6866666666666666,
+      "unhandled_exception_count": 0
+    },
+    "novel_retrieval": null,
+    "small_e2e": {
+      "cases_completed": 16,
+      "citation_integrity": 1.0,
+      "combined_candidate_recall": 0.875,
+      "critical_final_evidence_recall": 0.7083333333333334,
+      "expected_status_accuracy": 1.0,
+      "final_evidence_recall": 0.7083333333333334,
+      "gold_recall_at_10": 0.75,
+      "gold_recall_at_20": 0.75,
+      "gold_recall_at_5": 0.6041666666666666,
+      "intent_accuracy": 1.0,
+      "mrr": 0.65,
+      "unhandled_exception_count": 0
+    }
+  },
+  "novel_retrieval_run_id": null,
+  "question_counts": {
+    "benchmark_retrieval": 24,
+    "historical_e2e": 80,
+    "novel_retrieval": 0,
+    "small_e2e": 16
+  },
+  "schema_version": "1.0",
+  "run_usage": {
+    "benchmark_retrieval": {
+      "model_calls": 72,
+      "token_usage": 482907
+    },
+    "novel_retrieval": null,
+    "small_e2e": {
+      "model_calls": 76,
+      "token_usage": 819872
+    }
+  },
+  "scope": "Low-cost bootstrap reference; not a complete generalization, complete benchmark, or all-intent baseline.",
+  "selected_question_ids": {
+    "benchmark_retrieval": [
+      "g001",
+      "g002",
+      "g003",
+      "g007",
+      "g012",
+      "g013",
+      "g014",
+      "g015",
+      "g025",
+      "g026",
+      "g027",
+      "g028",
+      "g029",
+      "g038",
+      "g041",
+      "g042",
+      "g043",
+      "g044",
+      "g045",
+      "g047",
+      "g057",
+      "g058",
+      "g059",
+      "g060"
+    ],
+    "novel_retrieval": [],
+    "small_e2e": [
+      "g001",
+      "g007",
+      "g012",
+      "g013",
+      "g025",
+      "g026",
+      "g027",
+      "g038",
+      "g041",
+      "g042",
+      "g043",
+      "g044",
+      "g057",
+      "g058",
+      "g059",
+      "g060"
+    ]
+  },
+  "small_e2e_run_id": "generalization-a3-stratified-qa-20260813",
+  "unevaluated_intents": {
+    "data_flow": "No eligible approved English Gold question exists in v2.6.",
+    "module_structure": "No eligible approved English Gold question exists in v2.6.",
+    "troubleshooting": "No eligible approved English Gold question exists in v2.6."
+  }
+}

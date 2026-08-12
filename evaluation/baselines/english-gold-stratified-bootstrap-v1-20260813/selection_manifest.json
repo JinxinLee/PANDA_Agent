@@ -1,0 +1,89 @@
+{
+  "baseline_id": "english-gold-stratified-bootstrap-v1",
+  "dataset": "evaluation/benchmarks/v2_6/gold_questions.yaml",
+  "dataset_identity": "b5406e36c64ee664f9e2ff9c0f42e354feb7164c81d8f1c7551d8f2ed1d0b687",
+  "display_name": "English Gold Stratified Bootstrap Baseline",
+  "novel_question_count": 0,
+  "novel_question_limitation": "No trustworthy human-authored novel dataset is currently available.",
+  "qa": {
+    "case_count": 16,
+    "case_ids": [
+      "g001",
+      "g007",
+      "g012",
+      "g013",
+      "g025",
+      "g026",
+      "g027",
+      "g038",
+      "g041",
+      "g042",
+      "g043",
+      "g044",
+      "g057",
+      "g058",
+      "g059",
+      "g060"
+    ],
+    "external_judge": false,
+    "intent_counts": {
+      "algorithm_implementation": 2,
+      "algorithm_theory": 4,
+      "api": 4,
+      "installation": 3,
+      "usage": 3
+    },
+    "mode": "qa"
+  },
+  "retrieval": {
+    "case_count": 24,
+    "case_ids": [
+      "g001",
+      "g002",
+      "g003",
+      "g007",
+      "g012",
+      "g013",
+      "g014",
+      "g015",
+      "g025",
+      "g026",
+      "g027",
+      "g028",
+      "g029",
+      "g038",
+      "g041",
+      "g042",
+      "g043",
+      "g044",
+      "g045",
+      "g047",
+      "g057",
+      "g058",
+      "g059",
+      "g060"
+    ],
+    "intent_counts": {
+      "algorithm_implementation": 2,
+      "algorithm_theory": 6,
+      "api": 6,
+      "installation": 5,
+      "usage": 5
+    },
+    "mode": "retrieval"
+  },
+  "schema_version": "1.0",
+  "scope": "Low-cost bootstrap reference; not a complete generalization, complete benchmark, or all-intent baseline.",
+  "selection_contract": {
+    "language": "en",
+    "method": "Round-robin intents; within each intent round-robin expected_status and split; stable case-id order.",
+    "reuse_rule": "Future before/after comparisons must reuse these IDs unchanged. Changing the IDs requires a new baseline ID and manifest.",
+    "review_status": "approved",
+    "version": "1.0"
+  },
+  "unevaluated_intents": {
+    "data_flow": "No eligible approved English Gold question exists in v2.6.",
+    "module_structure": "No eligible approved English Gold question exists in v2.6.",
+    "troubleshooting": "No eligible approved English Gold question exists in v2.6."
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0",
+  "baseline_id": "english-gold-stratified-bootstrap-v1",
+  "display_name": "English Gold Stratified Bootstrap Baseline",
+  "scope": "Low-cost bootstrap reference; not a complete generalization, complete benchmark, or all-intent baseline.",
+  "dataset": "evaluation/benchmarks/v2_6/gold_questions.yaml",
+  "dataset_identity": "b5406e36c64ee664f9e2ff9c0f42e354feb7164c81d8f1c7551d8f2ed1d0b687",
+  "selection_contract": {
+    "language": "en",
+    "review_status": "approved",
+    "method": "Round-robin intents; within each intent round-robin expected_status and split; stable case-id order.",
+    "version": "1.0",
+    "reuse_rule": "Future before/after comparisons must reuse these IDs unchanged. Changing the IDs requires a new baseline ID and manifest."
+  },
+  "retrieval": {
+    "mode": "retrieval",
+    "case_ids": [
+      "g001", "g002", "g003", "g007", "g012", "g013", "g014", "g015",
+      "g025", "g026", "g027", "g028", "g029", "g038", "g041", "g042",
+      "g043", "g044", "g045", "g047", "g057", "g058", "g059", "g060"
+    ],
+    "case_count": 24,
+    "intent_counts": {
+      "algorithm_implementation": 2,
+      "algorithm_theory": 6,
+      "api": 6,
+      "installation": 5,
+      "usage": 5
+    }
+  },
+  "qa": {
+    "mode": "qa",
+    "external_judge": false,
+    "case_ids": [
+      "g001", "g007", "g012", "g013", "g025", "g026", "g027", "g038",
+      "g041", "g042", "g043", "g044", "g057", "g058", "g059", "g060"
+    ],
+    "case_count": 16,
+    "intent_counts": {
+      "algorithm_implementation": 2,
+      "algorithm_theory": 4,
+      "api": 4,
+      "installation": 3,
+      "usage": 3
+    }
+  },
+  "unevaluated_intents": {
+    "data_flow": "No eligible approved English Gold question exists in v2.6.",
+    "module_structure": "No eligible approved English Gold question exists in v2.6.",
+    "troubleshooting": "No eligible approved English Gold question exists in v2.6."
+  },
+  "novel_question_count": 0,
+  "novel_question_limitation": "No trustworthy human-authored novel dataset is currently available."
+}

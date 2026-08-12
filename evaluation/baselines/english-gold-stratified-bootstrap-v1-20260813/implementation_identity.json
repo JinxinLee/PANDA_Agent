@@ -1,0 +1,34 @@
+{
+  "baseline_id": "english-gold-stratified-bootstrap-v1-20260813",
+  "created_at": "2026-08-12T23:12:11.685477+00:00",
+  "current_repository_identity_at_freeze": {
+    "commit": "e132accefc8181abba76e8d818a621dd03cd1c9c",
+    "dirty": true
+  },
+  "dataset_identity": "b5406e36c64ee664f9e2ff9c0f42e354feb7164c81d8f1c7551d8f2ed1d0b687",
+  "dataset_path": "C:\\Users\\Jinxin.DESKTOP-H6SSTQH\\Desktop\\Agent_learn\\PANDA_Agent\\evaluation\\benchmarks\\v2_6\\gold_questions.yaml",
+  "display_name": "English Gold Stratified Bootstrap Baseline",
+  "embedding_dimensions": 3072,
+  "embedding_model": "gemini-embedding-2",
+  "evaluation_judge_model": "gemini-3.6-flash",
+  "evaluation_mode": "retrieval",
+  "generation_model": "gemini-3.6-flash",
+  "index_identity": "c527bbf1d10c88969da02745d678c640a4544757258584110a5ddd7744be3cf2",
+  "index_identity_payload": {
+    "distance": "cosine",
+    "embedding_dimensions": 3072,
+    "embedding_model": "gemini-embedding-2",
+    "index_schema_version": "2",
+    "sparse_model": "Qdrant/bm25"
+  },
+  "prompt_set_version": "3.6.0",
+  "query_expansion_identity": "dad22d19e5cadc714df778274d9183b39d00eff970664c10660f2f658224ada3",
+  "repository_identity": {
+    "commit": "e132accefc8181abba76e8d818a621dd03cd1c9c",
+    "dirty": true
+  },
+  "retrieval_policy_identity": "ebe4cb1099caca7a6dafd8ff08a57fb5fd8ca2cec3119834ce04bd3c67ff1407",
+  "runtime_verifier_model_role": "gemini-3.6-flash",
+  "schema_version": "1.0",
+  "sparse_configuration": "Qdrant/bm25"
+}

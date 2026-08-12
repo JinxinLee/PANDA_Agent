@@ -4,6 +4,31 @@ from panda_agent.evaluation import GoldQuestion, deterministic_case_metrics
 
 
 class EvaluationTests(unittest.TestCase):
+    def test_novel_question_contract_accepts_external_novel_splits(self) -> None:
+        case = GoldQuestion.model_validate(
+            {
+                "id": "n001",
+                "split": "novel_dev",
+                "language": "en",
+                "intent": "api",
+                "query": "Which component owns this API boundary?",
+                "expected_status": "answered",
+                "allowed_source_versions": ["pandaroot@abc"],
+                "required_evidence_groups": [
+                    {
+                        "group_id": "n001.e1",
+                        "role": "api_boundary",
+                        "any_of": [{"source_id": "pandaroot"}],
+                    }
+                ],
+                "required_answer_points": [
+                    {"point_id": "p1", "text": "Identify the owning component."}
+                ],
+            }
+        )
+        self.assertEqual(case.id, "n001")
+        self.assertEqual(case.split, "novel_dev")
+
     def test_accepted_intent_allows_a_reviewed_plan_intent(self) -> None:
         case = GoldQuestion.model_validate(
             {
