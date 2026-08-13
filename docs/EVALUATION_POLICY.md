@@ -125,6 +125,8 @@ Changing `index_schema_version` alone does not require dense regeneration when t
 
 ## 8. Frozen records, traces, and resume
 
+During prototype roadmap development, normal Git commits are sufficient history. Working-tree tests and dirty-working-tree diagnostic evaluations are allowed; their provenance is the recorded base commit plus the then-current changes. They do not require a clean-tree rerun, frozen candidate, per-file integrity manifest, or hash regeneration. Strict immutable implementation identity is reserved for an explicitly authorized formal phase-boundary, T5/release, acceptance/release-candidate comparison, or explicit frozen-candidate request.
+
 - Persist run manifests, atomic case records, structured retrieval traces, metrics, model usage, and exceptions.
 - Resume interrupted runs without repeating completed cases.
 - Reuse analyzer plans, channel candidates, selected evidence, claims, and verified claims only when their upstream behavior identity is compatible with the hypothesis.

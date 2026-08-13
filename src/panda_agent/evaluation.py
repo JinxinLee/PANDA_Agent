@@ -981,6 +981,95 @@ def deterministic_case_metrics(
     }
 
 
+JUDGE_METRIC_FIELDS = (
+    "answer_point_coverage",
+    "covered_point_ids",
+    "critical_answer_points_missing",
+    "contradictions",
+    "unsupported_claim_ids",
+    "major_unsupported_claim_ids",
+    "minor_unsupported_claim_ids",
+    "claim_verdicts",
+)
+
+ANSWER_STAGE_METRIC_FIELDS = (
+    "citation_integrity",
+    "missing_identifiers",
+    "identifier_mentions",
+    "identifier_mentions_by_kind",
+    "identifier_exists_in_locked_corpus",
+    "identifier_supported_by_claim_evidence",
+    "unsupported_identifiers",
+    "hallucinated_identifiers",
+    "major_identifier_hallucinations",
+)
+
+
+def apply_mode_metric_semantics(
+    metrics: dict[str, Any],
+    *,
+    mode: Literal["retrieval", "qa", "full"],
+    external_judge: bool,
+) -> dict[str, Any]:
+    """Mark only metrics produced by stages that actually ran as applicable."""
+    updated = dict(metrics)
+    applicability = dict(updated.get("metric_applicability") or {})
+    denominators = dict(updated.get("metric_denominators") or {})
+
+    def set_applicable(field: str, applicable: bool) -> None:
+        applicability[field] = applicable
+        denominators[field] = int(applicable)
+
+    answer_stage_ran = mode in {"qa", "full"}
+    set_applicable("citation_integrity", answer_stage_ran)
+    set_applicable(
+        "required_identifiers",
+        answer_stage_ran and applicability.get("required_identifiers", True),
+    )
+    set_applicable(
+        "identifier_hallucination_rate",
+        answer_stage_ran and applicability.get("identifier_hallucination_rate", True),
+    )
+    if not answer_stage_ran:
+        for field in ANSWER_STAGE_METRIC_FIELDS:
+            updated.pop(field, None)
+
+    for field in JUDGE_METRIC_FIELDS:
+        set_applicable(field, external_judge)
+        if not external_judge:
+            updated.pop(field, None)
+
+    updated["metric_applicability"] = applicability
+    updated["metric_denominators"] = denominators
+    return updated
+
+
+def normalize_run_records(
+    records: list[dict[str, Any]], manifest: dict[str, Any]
+) -> list[dict[str, Any]]:
+    """Apply current applicability semantics without mutating source records."""
+    mode = manifest.get("mode")
+    if mode not in {"retrieval", "qa", "full"}:
+        raise ValueError(f"unsupported evaluation mode: {mode}")
+    boundaries = manifest.get("pipeline_boundaries") or {}
+    external_judge = (
+        bool(boundaries.get("external_judge"))
+        if "external_judge" in boundaries
+        else mode in {"qa", "full"}
+    )
+    normalized: list[dict[str, Any]] = []
+    for record in records:
+        updated = dict(record)
+        if record.get("metrics"):
+            updated["metrics"] = apply_mode_metric_semantics(
+                record["metrics"],
+                mode=mode,
+                external_judge=external_judge,
+            )
+        normalized.append(updated)
+    return normalized
+
+
 def aggregate_metrics(records: list[dict[str, Any]]) -> dict[str, Any]:
     scored = [item for item in records if item.get("metrics")]
     if not scored:
@@ -989,18 +1078,63 @@ def aggregate_metrics(records: list[dict[str, Any]]) -> dict[str, Any]:
     for item in scored:
         intents[item["intent"]].append(item["metrics"])
 
-    def mean(field: str, values: list[dict[str, Any]]) -> float:
-        defined = [item.get(field) for item in values if item.get(field) is not None]
-        return sum(float(value) for value in defined) / len(defined) if defined else 1.0
+    def applicable(field: str, item: dict[str, Any]) -> bool:
+        legacy_fields = {
+            "required_identifiers": ("missing_identifiers",),
+            "identifier_hallucination_rate": (
+                "identifier_mentions",
+                "hallucinated_identifiers",
+            ),
+        }
+        inferred = field in item and item.get(field) is not None
+        if field in legacy_fields:
+            inferred = any(value in item for value in legacy_fields[field])
+        return bool(
+            (item.get("metric_applicability") or {}).get(
+                field, inferred
+            )
+        )
+
+    def mean(field: str, values: list[dict[str, Any]]) -> float | None:
+        defined = [
+            item.get(field)
+            for item in values
+            if applicable(field, item) and item.get(field) is not None
+        ]
+        return sum(float(value) for value in defined) / len(defined) if defined else None
 
     def denominator(field: str, values: list[dict[str, Any]]) -> int:
         return sum(
             int(
-                (item.get("metric_applicability") or {}).get(
-                    field, item.get(field) is not None
-                )
+                applicable(field, item)
             )
             for item in values
+        )
+
+    def list_count(
+        field: str,
+        values: list[dict[str, Any]],
+        *,
+        fallback_field: str | None = None,
+    ) -> tuple[int | None, int]:
+        measured = [
+            item
+            for item in values
+            if applicable(field, item)
+            or (fallback_field is not None and applicable(fallback_field, item))
+        ]
+        if not measured:
+            return None, 0
+        return (
+            sum(
+                len(
+                    item.get(field)
+                    if item.get(field) is not None
+                    else item.get(fallback_field, []) if fallback_field else []
+                )
+                for item in measured
+            ),
+            len(measured),
         )
 
     all_metrics = [item["metrics"] for item in scored]
@@ -1020,9 +1154,7 @@ def aggregate_metrics(records: list[dict[str, Any]]) -> dict[str, Any]:
         for intent, values in sorted(intents.items())
     }
     identifier_applicable = [
-        item
-        for item in all_metrics
-        if (item.get("metric_applicability") or {}).get("identifier_hallucination_rate", True)
+        item for item in all_metrics if applicable("identifier_hallucination_rate", item)
     ]
     identifier_mentions = sum(len(item.get("identifier_mentions", [])) for item in identifier_applicable)
     hallucinated_identifiers = sum(
@@ -1047,6 +1179,26 @@ def aggregate_metrics(records: list[dict[str, Any]]) -> dict[str, Any]:
         for item in scored
         if item.get("duration_ms") is not None
     )
+    contradiction_count, contradiction_denominator = list_count(
+        "contradictions", all_metrics
+    )
+    unsupported_claim_count, unsupported_claim_denominator = list_count(
+        "unsupported_claim_ids", all_metrics
+    )
+    major_unsupported_claim_count, major_unsupported_claim_denominator = list_count(
+        "major_unsupported_claim_ids",
+        all_metrics,
+        fallback_field="unsupported_claim_ids",
+    )
+    minor_unsupported_claim_count, minor_unsupported_claim_denominator = list_count(
+        "minor_unsupported_claim_ids", all_metrics
+    )
+    critical_answer_point_miss_count, critical_answer_point_denominator = list_count(
+        "critical_answer_points_missing", all_metrics
+    )
+    answer_point_denominator = denominator("answer_point_coverage", all_metrics)
+    citation_denominator = denominator("citation_integrity", all_metrics)
+    identifier_miss_denominator = denominator("required_identifiers", all_metrics)
     return {
         "cases_completed": len(records),
         "scored_cases": len(scored),
@@ -1077,12 +1229,13 @@ def aggregate_metrics(records: list[dict[str, Any]]) -> dict[str, Any]:
         ),
         "expected_status_accuracy": mean("expected_status_correct", all_metrics),
         "citation_integrity": mean("citation_integrity", all_metrics),
+        "citation_integrity_denominator": citation_denominator,
         "required_source_coverage": mean("required_source_coverage", all_metrics),
         "required_source_coverage_denominator": denominator(
             "required_source_coverage", all_metrics
         ),
         "required_source_coverage_answered": (
-            mean("required_source_coverage", answered_cases) if answered_cases else 1.0
+            mean("required_source_coverage", answered_cases) if answered_cases else None
         ),
         "required_source_coverage_answered_denominator": denominator(
             "required_source_coverage", answered_cases
@@ -1093,33 +1246,32 @@ def aggregate_metrics(records: list[dict[str, Any]]) -> dict[str, Any]:
         "forbidden_evidence_count": sum(
             len(item.get("forbidden_evidence", [])) for item in all_metrics
         ),
-        "identifier_miss_count": sum(
-            len(item.get("missing_identifiers") or []) for item in all_metrics
+        "identifier_miss_count": (
+            sum(len(item.get("missing_identifiers") or []) for item in identifier_applicable)
+            if identifier_applicable
+            else None
         ),
-        "identifier_miss_denominator": denominator("required_identifiers", all_metrics),
+        "identifier_miss_denominator": identifier_miss_denominator,
         "identifier_mentions": identifier_mentions,
         "identifier_hallucination_count": hallucinated_identifiers,
         "identifier_hallucination_denominator": identifier_mentions,
         "identifier_hallucination_rate": (
-            hallucinated_identifiers / identifier_mentions if identifier_mentions else 0.0
+            hallucinated_identifiers / identifier_mentions
+            if identifier_mentions
+            else 0.0 if identifier_applicable else None
         ),
         "answer_point_coverage": mean("answer_point_coverage", all_metrics),
-        "contradiction_count": sum(
-            len(item.get("contradictions", [])) for item in all_metrics
-        ),
-        "unsupported_claim_count": sum(
-            len(item.get("unsupported_claim_ids", [])) for item in all_metrics
-        ),
-        "major_unsupported_claim_count": sum(
-            len(item.get("major_unsupported_claim_ids", item.get("unsupported_claim_ids", [])))
-            for item in all_metrics
-        ),
-        "minor_unsupported_claim_count": sum(
-            len(item.get("minor_unsupported_claim_ids", [])) for item in all_metrics
-        ),
-        "critical_answer_point_miss_count": sum(
-            len(item.get("critical_answer_points_missing", [])) for item in all_metrics
-        ),
+        "answer_point_coverage_denominator": answer_point_denominator,
+        "contradiction_count": contradiction_count,
+        "contradiction_count_denominator": contradiction_denominator,
+        "unsupported_claim_count": unsupported_claim_count,
+        "unsupported_claim_count_denominator": unsupported_claim_denominator,
+        "major_unsupported_claim_count": major_unsupported_claim_count,
+        "major_unsupported_claim_count_denominator": major_unsupported_claim_denominator,
+        "minor_unsupported_claim_count": minor_unsupported_claim_count,
+        "minor_unsupported_claim_count_denominator": minor_unsupported_claim_denominator,
+        "critical_answer_point_miss_count": critical_answer_point_miss_count,
+        "critical_answer_point_miss_count_denominator": critical_answer_point_denominator,
         "paper_code_dual_source_rate": (
             mean("paper_code_dual_source", dual_source_cases)
             if dual_source_cases
@@ -1175,8 +1327,29 @@ def aggregate_metrics(records: list[dict[str, Any]]) -> dict[str, Any]:
                 ),
             },
         },
+        "metric_applicability": {
+            "citation_integrity": citation_denominator > 0,
+            "required_identifiers": identifier_miss_denominator > 0,
+            "identifier_hallucination_rate": bool(identifier_applicable),
+            "answer_point_coverage": answer_point_denominator > 0,
+            "contradictions": contradiction_denominator > 0,
+            "unsupported_claim_ids": unsupported_claim_denominator > 0,
+            "major_unsupported_claim_ids": major_unsupported_claim_denominator > 0,
+            "minor_unsupported_claim_ids": minor_unsupported_claim_denominator > 0,
+            "critical_answer_points_missing": critical_answer_point_denominator > 0,
+        },
         "per_intent": per_intent,
     }
+
+
+def _metric_at_least(metrics: dict[str, Any], field: str, threshold: float) -> bool:
+    value = metrics.get(field)
+    return value is not None and float(value) >= threshold
+
+
+def _metric_below(metrics: dict[str, Any], field: str, threshold: float) -> bool:
+    value = metrics.get(field)
+    return value is not None and float(value) < threshold
 
 
 def evaluate_quality_gate(
@@ -1200,23 +1373,25 @@ def evaluate_quality_gate(
     checks = {
         "official_run": official,
         "all_questions_approved": all_questions_approved,
-        "gold_recall_at_10": metrics.get("gold_recall_at_10", 0.0) >= 0.95,
-        "final_evidence_recall": metrics.get("final_evidence_recall", 0.0) >= 0.90,
-        "critical_evidence_coverage": metrics.get(
-            "critical_final_evidence_recall", 0.0
-        )
-        == 1.0,
-        "intent_accuracy": metrics.get("intent_accuracy", 0.0) >= 0.90,
+        "gold_recall_at_10": _metric_at_least(metrics, "gold_recall_at_10", 0.95),
+        "final_evidence_recall": _metric_at_least(
+            metrics, "final_evidence_recall", 0.90
+        ),
+        "critical_evidence_coverage": _metric_at_least(
+            metrics, "critical_final_evidence_recall", 1.0
+        ),
+        "intent_accuracy": _metric_at_least(metrics, "intent_accuracy", 0.90),
         "per_intent_recall": all(
-            item.get("gold_recall_at_10", 0.0) >= 0.75
+            _metric_at_least(item, "gold_recall_at_10", 0.75)
             for item in metrics.get("per_intent", {}).values()
         ),
         "per_intent_accuracy": all(
-            item.get("intent_accuracy", 0.0) >= 0.80
+            _metric_at_least(item, "intent_accuracy", 0.80)
             for item in metrics.get("per_intent", {}).values()
         ),
-        "expected_status_accuracy": metrics.get("expected_status_accuracy", 0.0)
-        >= 0.975,
+        "expected_status_accuracy": _metric_at_least(
+            metrics, "expected_status_accuracy", 0.975
+        ),
         "all_version_conflicts_rejected": bool(version_cases) and all(
             item.get("metrics", {}).get("expected_status_correct")
             for item in version_cases
@@ -1224,21 +1399,26 @@ def evaluate_quality_gate(
         "citation_integrity": metrics.get("citation_integrity", 0.0) == 1.0,
         "wrong_version_evidence": metrics.get("wrong_version_evidence_count", 0) == 0,
         "forbidden_evidence": metrics.get("forbidden_evidence_count", 0) == 0,
-        "required_source_coverage": metrics.get(
-            "required_source_coverage_answered", 0.0
-        )
-        >= 0.97,
+        "required_source_coverage": _metric_at_least(
+            metrics, "required_source_coverage_answered", 0.97
+        ),
         "required_identifiers": metrics.get("identifier_miss_count", 0) == 0,
-        "identifier_hallucination_rate": metrics.get(
-            "identifier_hallucination_rate", 1.0
-        )
-        < 0.03,
+        "identifier_hallucination_rate": _metric_below(
+            metrics, "identifier_hallucination_rate", 0.03
+        ),
         "paper_code_dual_source": metrics.get("paper_code_dual_source_rate", 0.0)
         == 1.0,
-        "answer_point_coverage": metrics.get("answer_point_coverage", 0.0) >= 0.90,
-        "critical_answer_points": metrics.get("critical_answer_point_miss_count", 0) == 0,
-        "no_contradictions": metrics.get("contradiction_count", 0) == 0,
-        "no_major_unsupported_claims": metrics.get("major_unsupported_claim_count", 0) == 0,
+        "answer_point_coverage": _metric_at_least(
+            metrics, "answer_point_coverage", 0.90
+        ),
+        "critical_answer_points": metrics.get("critical_answer_point_miss_count")
+        is not None
+        and metrics["critical_answer_point_miss_count"] == 0,
+        "no_contradictions": metrics.get("contradiction_count") is not None
+        and metrics["contradiction_count"] == 0,
+        "no_major_unsupported_claims": metrics.get("major_unsupported_claim_count")
+        is not None
+        and metrics["major_unsupported_claim_count"] == 0,
         "unhandled_exceptions": metrics.get("unhandled_exception_count", 0) == 0,
     }
     return {
@@ -1259,17 +1439,17 @@ def evaluate_development_gate(
     metrics: dict[str, Any],
     records: list[dict[str, Any]],
     *,
-    mode: Literal["retrieval", "qa"],
+    mode: Literal["retrieval", "qa", "full"],
     complete_full_dev: bool,
     all_questions_approved: bool,
 ) -> dict[str, Any]:
-    """Evaluate a frozen 80-case development candidate without acceptance rules.
+    """Evaluate an 80-case development run without acceptance rules.
 
     The formal M6 release gate remains acceptance-only.  This separate gate is
     intentionally mode-aware: retrieval changes are not forced through answer
     generation metrics, while QA candidates inherit the retrieval checks and
-    add answer/claim checks.  Focused runs can report metrics, but can never be
-    mistaken for a frozen development candidate.
+    add deterministic answer checks. Only ``full`` adds external-judge checks.
+    Focused runs can report metrics, but can never pass the complete gate.
     """
     version_cases = [
         item
@@ -1279,33 +1459,34 @@ def evaluate_development_gate(
     checks = {
         "complete_full_dev": complete_full_dev,
         "all_questions_approved": all_questions_approved,
-        "gold_recall_at_10": metrics.get("gold_recall_at_10", 0.0) >= 0.95,
-        "final_evidence_recall": metrics.get("final_evidence_recall", 0.0) >= 0.90,
-        "critical_evidence_coverage": metrics.get(
-            "critical_final_evidence_recall", 0.0
-        )
-        == 1.0,
-        "intent_accuracy": metrics.get("intent_accuracy", 0.0) >= 0.90,
+        "gold_recall_at_10": _metric_at_least(metrics, "gold_recall_at_10", 0.95),
+        "final_evidence_recall": _metric_at_least(
+            metrics, "final_evidence_recall", 0.90
+        ),
+        "critical_evidence_coverage": _metric_at_least(
+            metrics, "critical_final_evidence_recall", 1.0
+        ),
+        "intent_accuracy": _metric_at_least(metrics, "intent_accuracy", 0.90),
         "per_intent_recall": all(
-            item.get("gold_recall_at_10", 0.0) >= 0.75
+            _metric_at_least(item, "gold_recall_at_10", 0.75)
             for item in metrics.get("per_intent", {}).values()
         ),
         "per_intent_accuracy": all(
-            item.get("intent_accuracy", 0.0) >= 0.80
+            _metric_at_least(item, "intent_accuracy", 0.80)
             for item in metrics.get("per_intent", {}).values()
         ),
-        "expected_status_accuracy": metrics.get("expected_status_accuracy", 0.0)
-        >= 0.975,
+        "expected_status_accuracy": _metric_at_least(
+            metrics, "expected_status_accuracy", 0.975
+        ),
         "dev_version_conflicts_rejected": bool(version_cases) and all(
             item.get("metrics", {}).get("expected_status_correct")
             for item in version_cases
         ),
         "wrong_version_evidence": metrics.get("wrong_version_evidence_count", 0) == 0,
         "forbidden_evidence": metrics.get("forbidden_evidence_count", 0) == 0,
-        "required_source_coverage": metrics.get(
-            "required_source_coverage_answered", 0.0
-        )
-        >= 0.97,
+        "required_source_coverage": _metric_at_least(
+            metrics, "required_source_coverage_answered", 0.97
+        ),
         "unhandled_exceptions": metrics.get("unhandled_exception_count", 0) == 0,
     }
     if mode in {"qa", "full"}:
@@ -1313,30 +1494,40 @@ def evaluate_development_gate(
             {
                 "citation_integrity": metrics.get("citation_integrity", 0.0) == 1.0,
                 "required_identifiers": metrics.get("identifier_miss_count", 0) == 0,
-                "identifier_hallucination_rate": metrics.get(
-                    "identifier_hallucination_rate", 1.0
-                )
-                < 0.03,
+                "identifier_hallucination_rate": _metric_below(
+                    metrics, "identifier_hallucination_rate", 0.03
+                ),
                 "paper_code_dual_source": metrics.get(
                     "paper_code_dual_source_rate", 0.0
                 )
                 == 1.0,
-                "answer_point_coverage": metrics.get("answer_point_coverage", 0.0)
-                >= 0.90,
-                "critical_answer_points": metrics.get("critical_answer_point_miss_count", 0)
-                == 0,
-                "no_contradictions": metrics.get("contradiction_count", 0) == 0,
-                "no_major_unsupported_claims": metrics.get(
-                    "major_unsupported_claim_count", 0
+            }
+        )
+    if mode == "full":
+        checks.update(
+            {
+                "answer_point_coverage": _metric_at_least(
+                    metrics, "answer_point_coverage", 0.90
+                ),
+                "critical_answer_points": metrics.get(
+                    "critical_answer_point_miss_count"
                 )
-                == 0,
+                is not None
+                and metrics["critical_answer_point_miss_count"] == 0,
+                "no_contradictions": metrics.get("contradiction_count") is not None
+                and metrics["contradiction_count"] == 0,
+                "no_major_unsupported_claims": metrics.get(
+                    "major_unsupported_claim_count"
+                )
+                is not None
+                and metrics["major_unsupported_claim_count"] == 0,
             }
         )
     return {
         "passed": all(checks.values()),
         "checks": checks,
         "note": (
-            "Frozen 80-case development candidate gate."
+            "Complete 80-case development gate."
             if complete_full_dev
             else "Focused or incomplete run: it can diagnose a layer but cannot pass the development gate."
         ),
@@ -1354,24 +1545,31 @@ def evaluate_regression_gate(
     checks = {
         "complete_full_regression": complete_full_regression,
         "all_questions_approved": all_questions_approved,
-        "gold_recall_at_10": metrics.get("gold_recall_at_10", 0.0) >= 0.95,
-        "final_evidence_recall": metrics.get("final_evidence_recall", 0.0) >= 0.90,
+        "gold_recall_at_10": _metric_at_least(metrics, "gold_recall_at_10", 0.95),
+        "final_evidence_recall": _metric_at_least(
+            metrics, "final_evidence_recall", 0.90
+        ),
         "citation_integrity": metrics.get("citation_integrity", 0.0) == 1.0,
-        "required_source_coverage": metrics.get(
-            "required_source_coverage_answered", 0.0
-        ) >= 0.97,
+        "required_source_coverage": _metric_at_least(
+            metrics, "required_source_coverage_answered", 0.97
+        ),
         "required_identifiers": metrics.get("identifier_miss_count", 0) == 0,
-        "identifier_hallucination_rate": metrics.get(
-            "identifier_hallucination_rate", 1.0
-        ) < 0.03,
+        "identifier_hallucination_rate": _metric_below(
+            metrics, "identifier_hallucination_rate", 0.03
+        ),
         "wrong_version_evidence": metrics.get("wrong_version_evidence_count", 0) == 0,
         "forbidden_evidence": metrics.get("forbidden_evidence_count", 0) == 0,
-        "answer_point_coverage": metrics.get("answer_point_coverage", 0.0) >= 0.90,
-        "critical_answer_points": metrics.get("critical_answer_point_miss_count", 0) == 0,
-        "no_contradictions": metrics.get("contradiction_count", 0) == 0,
-        "no_major_unsupported_claims": metrics.get(
-            "major_unsupported_claim_count", 0
-        ) == 0,
+        "answer_point_coverage": _metric_at_least(
+            metrics, "answer_point_coverage", 0.90
+        ),
+        "critical_answer_points": metrics.get("critical_answer_point_miss_count")
+        is not None
+        and metrics["critical_answer_point_miss_count"] == 0,
+        "no_contradictions": metrics.get("contradiction_count") is not None
+        and metrics["contradiction_count"] == 0,
+        "no_major_unsupported_claims": metrics.get("major_unsupported_claim_count")
+        is not None
+        and metrics["major_unsupported_claim_count"] == 0,
         "unhandled_exceptions": metrics.get("unhandled_exception_count", 0) == 0,
     }
     return {

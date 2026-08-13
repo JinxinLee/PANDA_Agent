@@ -7,9 +7,17 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-from panda_agent.evaluation import GoldQuestion, load_gold_dataset, load_run_records
-from panda_agent.evaluation_runner import repository_identity
+from panda_agent.evaluation import (
+    GoldQuestion,
+    aggregate_metrics,
+    load_gold_dataset,
+    load_run_records,
+    normalize_run_records,
+)
 from panda_agent.retrieval_trace import load_retrieval_traces
+
+
+BOOTSTRAP_DEVELOPMENT_SPLITS = frozenset({"dev", "challenge", "regression"})
 
 
 def select_stratified_case_ids(dataset_path: Path, size: int) -> list[str]:
@@ -22,6 +30,7 @@ def select_stratified_case_ids(dataset_path: Path, size: int) -> list[str]:
             item
             for item in dataset.questions
             if item.language == "en" and item.review_status == "approved"
+            and item.split in BOOTSTRAP_DEVELOPMENT_SPLITS
         ),
         key=lambda item: item.id,
     )
@@ -62,20 +71,21 @@ def _run_payload(project_root: Path, run_id: str) -> dict[str, Any]:
     if not run_dir.is_dir():
         raise FileNotFoundError(f"evaluation run does not exist: {run_id}")
     manifest = json.loads((run_dir / "manifest.json").read_text(encoding="utf-8"))
-    metrics = json.loads((run_dir / "metrics.json").read_text(encoding="utf-8"))
     status_path = run_dir / "run_status.json"
     status = (
         json.loads(status_path.read_text(encoding="utf-8"))
         if status_path.is_file()
         else {}
     )
+    manifest_records = load_run_records(run_dir)
+    records = normalize_run_records(manifest_records, manifest)
     return {
         "run_id": run_id,
         "run_dir": run_dir,
         "manifest": manifest,
-        "metrics": metrics,
+        "metrics": aggregate_metrics(records),
         "status": status,
-        "records": load_run_records(run_dir),
+        "records": records,
         "traces": load_retrieval_traces(run_dir),
     }
 
@@ -97,6 +107,99 @@ def _write_jsonl(path: Path, values: list[dict[str, Any]]) -> None:
     )
 
 
+def _portable_path(project_root: Path, value: str | Path | None) -> str | None:
+    if value is None:
+        return None
+    path = Path(value)
+    try:
+        return path.resolve().relative_to(project_root.resolve()).as_posix()
+    except ValueError:
+        return path.as_posix()
+
+
+def _portable_manifest(project_root: Path, manifest: dict[str, Any]) -> dict[str, Any]:
+    portable = json.loads(json.dumps(manifest))
+    for field in ("gold_dataset_path", "evaluator_catalog_path"):
+        if portable.get(field):
+            portable[field] = _portable_path(project_root, portable[field])
+    return portable
+
+
+def _record_ids(payload: dict[str, Any], label: str) -> list[str]:
+    ids = [str(item["id"]) for item in payload["records"]]
+    if len(ids) != len(set(ids)):
+        raise ValueError(f"{label} baseline records contain duplicate IDs")
+    return ids
+
+
+def _trace_ids(payload: dict[str, Any], label: str) -> list[str]:
+    ids = [str(trace.question_id) for trace in payload["traces"]]
+    if len(ids) != len(set(ids)):
+        raise ValueError(f"{label} retrieval traces contain duplicate question IDs")
+    return ids
+
+
+def validate_baseline_consistency(
+    selection_manifest: dict[str, Any] | None,
+    benchmark: dict[str, Any],
+    small_e2e: dict[str, Any],
+) -> None:
+    """Validate package inputs without rerunning or modifying measured output."""
+    if benchmark["manifest"].get("mode") != "retrieval":
+        raise ValueError("benchmark retrieval baseline must use retrieval mode")
+    if small_e2e["manifest"].get("mode") != "qa":
+        raise ValueError("small E2E baseline must use qa mode")
+    boundaries = small_e2e["manifest"].get("pipeline_boundaries") or {}
+    if boundaries.get("external_judge") is not False:
+        raise ValueError(
+            "small E2E qa manifest must explicitly set pipeline_boundaries.external_judge=false"
+        )
+
+    retrieval_ids = _record_ids(benchmark, "retrieval")
+    qa_ids = _record_ids(small_e2e, "QA")
+    retrieval_trace_ids = _trace_ids(benchmark, "retrieval")
+    qa_trace_ids = _trace_ids(small_e2e, "QA")
+    if len(retrieval_trace_ids) != len(retrieval_ids) or set(retrieval_trace_ids) != set(
+        retrieval_ids
+    ):
+        raise ValueError("retrieval trace IDs/count do not match retrieval record IDs/count")
+    if len(qa_trace_ids) != len(qa_ids) or set(qa_trace_ids) != set(qa_ids):
+        raise ValueError("QA trace IDs/count do not match QA record IDs/count")
+
+    if selection_manifest is not None:
+        fixed_retrieval = [str(value) for value in selection_manifest["retrieval"]["case_ids"]]
+        fixed_qa = [str(value) for value in selection_manifest["qa"]["case_ids"]]
+        if len(fixed_retrieval) != len(set(fixed_retrieval)):
+            raise ValueError("fixed retrieval manifest contains duplicate IDs")
+        if len(fixed_qa) != len(set(fixed_qa)):
+            raise ValueError("fixed QA manifest contains duplicate IDs")
+        if selection_manifest["retrieval"].get("case_count") != len(fixed_retrieval):
+            raise ValueError("fixed retrieval manifest case_count does not match its IDs")
+        if selection_manifest["qa"].get("case_count") != len(fixed_qa):
+            raise ValueError("fixed QA manifest case_count does not match its IDs")
+        if set(fixed_retrieval) != set(retrieval_ids) or len(fixed_retrieval) != len(
+            retrieval_ids
+        ):
+            raise ValueError("retrieval record IDs/count do not match the fixed manifest")
+        if set(fixed_qa) != set(qa_ids) or len(fixed_qa) != len(qa_ids):
+            raise ValueError("QA record IDs/count do not match the fixed manifest")
+        if selection_manifest["qa"].get("mode") != "qa":
+            raise ValueError("fixed QA manifest must declare mode=qa")
+        if selection_manifest["qa"].get("external_judge") is not False:
+            raise ValueError("fixed QA manifest must explicitly set external_judge=false")
+
+    breakdowns = [
+        item["model_call_breakdown"]
+        for item in small_e2e["records"]
+        if "model_call_breakdown" in item
+    ]
+    if breakdowns and any(
+        int((breakdown.get("judge") or {}).get("model_calls", 0)) != 0
+        for breakdown in breakdowns
+    ):
+        raise ValueError("unjudged QA bootstrap records must have judge model_calls=0")
+
+
 def _measured_metrics(
     metrics: dict[str, Any], manifest: dict[str, Any]
 ) -> dict[str, Any]:
@@ -114,7 +217,11 @@ def _measured_metrics(
         "citation_integrity",
         "unhandled_exception_count",
     )
-    values = {key: metrics.get(key) for key in keys if key in metrics}
+    values = {
+        key: metrics[key]
+        for key in keys
+        if key in metrics and metrics.get(key) is not None
+    }
     boundaries = manifest.get("pipeline_boundaries") or {}
     external_judge = (
         boundaries.get("external_judge")
@@ -123,10 +230,11 @@ def _measured_metrics(
     )
     if external_judge and "answer_point_coverage" in metrics:
         values["answer_point_coverage"] = metrics["answer_point_coverage"]
+    values["metric_applicability"] = dict(metrics.get("metric_applicability") or {})
     return values
 
 
-def freeze_generalization_baseline(
+def package_generalization_baseline(
     project_root: Path,
     *,
     baseline_id: str,
@@ -135,51 +243,51 @@ def freeze_generalization_baseline(
     small_e2e_run_id: str,
     novel_retrieval_run_id: str | None = None,
     selection_manifest_path: Path | None = None,
+    overwrite: bool = False,
 ) -> Path:
-    """Freeze measured runs without rerunning any model-backed stage."""
+    """Package existing measured runs without rerunning any model-backed stage."""
     historical = _run_payload(project_root, historical_run_id)
     benchmark = _run_payload(project_root, benchmark_retrieval_run_id)
     small_e2e = _run_payload(project_root, small_e2e_run_id)
     novel = _run_payload(project_root, novel_retrieval_run_id) if novel_retrieval_run_id else None
     if historical["manifest"].get("mode") not in {"qa", "full"}:
         raise ValueError("historical E2E reference must be a QA/full run")
-    if benchmark["manifest"].get("mode") != "retrieval":
-        raise ValueError("benchmark retrieval baseline must use retrieval mode")
-    if small_e2e["manifest"].get("mode") != "qa":
-        raise ValueError("small E2E baseline must use qa mode without the external judge")
     if novel and novel["manifest"].get("mode") != "retrieval":
         raise ValueError("novel retrieval baseline must use retrieval mode")
     selection_manifest: dict[str, Any] | None = None
     if selection_manifest_path is not None:
         selection_manifest = json.loads(selection_manifest_path.read_text(encoding="utf-8"))
-        expected_retrieval = set(selection_manifest["retrieval"]["case_ids"])
-        expected_qa = set(selection_manifest["qa"]["case_ids"])
-        actual_retrieval = {item["id"] for item in benchmark["records"]}
-        actual_qa = {item["id"] for item in small_e2e["records"]}
-        if actual_retrieval != expected_retrieval:
-            raise ValueError("retrieval run IDs do not match the fixed selection manifest")
-        if actual_qa != expected_qa:
-            raise ValueError("QA run IDs do not match the fixed selection manifest")
+    validate_baseline_consistency(selection_manifest, benchmark, small_e2e)
 
     output = project_root / "evaluation" / "baselines" / baseline_id
-    if output.exists():
+    if output.exists() and not overwrite:
         raise FileExistsError(f"baseline package already exists: {baseline_id}")
-    output.mkdir(parents=True)
-    created_at = datetime.now(UTC).isoformat()
-    current_repository = repository_identity(project_root)
+    existing_manifest_path = output / "baseline_manifest.json"
+    existing_manifest = (
+        json.loads(existing_manifest_path.read_text(encoding="utf-8"))
+        if overwrite and existing_manifest_path.is_file()
+        else {}
+    )
+    output.mkdir(parents=True, exist_ok=True)
+    created_at = existing_manifest.get("created_at") or datetime.now(UTC).isoformat()
     current_manifest = benchmark["manifest"]
+    measured_repository = current_manifest.get("repository_identity") or {}
+    display_name = (
+        selection_manifest.get("display_name")
+        if selection_manifest
+        else existing_manifest.get("display_name", "Generalization bootstrap baseline")
+    )
     implementation_identity = {
         "schema_version": "1.0",
         "baseline_id": baseline_id,
-        "display_name": (
-            selection_manifest.get("display_name")
-            if selection_manifest
-            else "Generalization bootstrap baseline"
-        ),
+        "display_name": display_name,
         "created_at": created_at,
         "evaluation_mode": "retrieval",
-        "repository_identity": current_manifest.get("repository_identity", current_repository),
-        "current_repository_identity_at_freeze": current_repository,
+        "measured_execution_provenance": {
+            "base_git_commit": measured_repository.get("commit"),
+            "working_tree_dirty": measured_repository.get("dirty"),
+            "interpretation": "The measurement represents the base Git commit plus the then-current working-tree changes.",
+        },
         "prompt_set_version": current_manifest.get("prompt_version"),
         "embedding_model": current_manifest.get("embedding_model_id"),
         "embedding_dimensions": current_manifest.get("embedding_dimensions"),
@@ -194,26 +302,29 @@ def freeze_generalization_baseline(
         "retrieval_policy_identity": current_manifest.get("retrieval_policy_hash"),
         "query_expansion_identity": current_manifest.get("query_expansion_hash"),
         "dataset_identity": current_manifest.get("gold_dataset_hash"),
-        "dataset_path": current_manifest.get("gold_dataset_path"),
+        "dataset_path": _portable_path(
+            project_root, current_manifest.get("gold_dataset_path")
+        ),
     }
     _write_json(output / "implementation_identity.json", implementation_identity)
     if selection_manifest:
         _write_json(output / "selection_manifest.json", selection_manifest)
 
-    historical_identity = historical["manifest"].get("repository_identity")
+    historical_manifest = _portable_manifest(project_root, historical["manifest"])
+    historical_identity = historical_manifest.get("repository_identity")
     historical_record = {
         "schema_version": "1.0",
         "role": "historical_e2e_baseline",
         "source_run_id": historical_run_id,
-        "source_manifest": historical["manifest"],
+        "source_manifest": historical_manifest,
         "measured_metrics": _measured_metrics(
             historical["metrics"], historical["manifest"]
         ),
-        "matches_current_head_exactly": bool(
+        "matches_a3_measured_execution_exactly": bool(
             historical_identity
-            and historical_identity.get("commit") == current_repository["commit"]
+            and historical_identity.get("commit") == measured_repository.get("commit")
             and historical_identity.get("dirty") is False
-            and current_repository.get("dirty") is False
+            and measured_repository.get("dirty") is False
         ),
         "identity_limitation": (
             None
@@ -247,10 +358,14 @@ def freeze_generalization_baseline(
         "baseline_id": baseline_id,
         "display_name": implementation_identity["display_name"],
         "scope": (
-            selection_manifest.get("scope") if selection_manifest else None
+            selection_manifest.get("scope")
+            if selection_manifest
+            else existing_manifest.get("scope")
         ),
         "fixed_selection_manifest": (
-            str(selection_manifest_path.resolve()) if selection_manifest_path else None
+            _portable_path(project_root, selection_manifest_path)
+            if selection_manifest_path
+            else None
         ),
         "created_at": created_at,
         "historical_e2e_run_id": historical_run_id,
@@ -260,6 +375,10 @@ def freeze_generalization_baseline(
         "full_120_question_e2e_rerun": False,
         "full_120_question_retrieval_run": False,
         "external_judge_used_for_small_e2e": False,
+        "artifact_semantics": {
+            "measurement_changed": False,
+            "representation_or_provenance_metadata_corrected": overwrite,
+        },
         "question_counts": {
             "historical_e2e": len(historical["records"]),
             "benchmark_retrieval": len(benchmark["records"]),
@@ -308,12 +427,26 @@ def freeze_generalization_baseline(
             else {}
         ),
     }
+    if existing_manifest.get("superseded_by"):
+        package_manifest["superseded_by"] = existing_manifest["superseded_by"]
     _write_json(output / "baseline_manifest.json", package_manifest)
     report = [
         f"# {implementation_identity['display_name']}",
         "",
         "This package separates measured historical E2E evidence, current retrieval behavior, and current small-scale E2E behavior.",
         "It is not a complete generalization, complete benchmark, or all-intent baseline.",
+        "The source measurements are unchanged; this package corrects only metric applicability, portable paths, consistency metadata, and provenance wording.",
+        "",
+        (
+            "## A3 measured execution provenance"
+            if selection_manifest
+            else "## Measured execution provenance"
+        ),
+        "",
+        f"- Base Git commit: `{measured_repository.get('commit')}`.",
+        f"- Working tree dirty: `{measured_repository.get('dirty')}`.",
+        "- In prototype development this truthfully identifies the measured execution as the base commit plus the then-current working-tree changes; it is not a frozen candidate identity.",
+        "- A later commit or newer HEAD does not invalidate this diagnostic baseline and does not require a rerun.",
         "",
         "## Measured artifacts",
         "",
@@ -328,6 +461,7 @@ def freeze_generalization_baseline(
         "- No full 120-question retrieval-only evaluation or T3 was run for this package.",
         "- The empty novel artifacts are schemas/placeholders, not measured results.",
         "- Planned roadmap acceptance targets are not baseline measurements.",
+        "- External-rubric answer-point, contradiction, and unsupported-claim metrics are N/A for the unjudged QA run.",
         "- `data_flow`, `module_structure`, and `troubleshooting` are unevaluated because v2.6 has no eligible approved English Gold questions for those intents.",
         "",
         "## Fixed comparison sets",

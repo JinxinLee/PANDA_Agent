@@ -1,8 +1,19 @@
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
+from unittest.mock import patch
 
-from panda_agent.evaluation_runner import evaluation_mode_boundaries
+from panda_agent.evaluation import (
+    GoldQuestion,
+    aggregate_metrics,
+    apply_mode_metric_semantics,
+    evaluate_development_gate,
+    evaluate_quality_gate,
+)
+from panda_agent.evaluation_runner import (
+    _execute_evaluation_case,
+    evaluation_mode_boundaries,
+)
 from panda_agent.retrieval_trace import (
     build_retrieval_trace,
     load_retrieval_trace,
@@ -12,6 +23,26 @@ from panda_agent.retrieval_trace import (
 
 
 class EvaluationModeBoundaryTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.case = GoldQuestion.model_validate(
+            {
+                "id": "g001",
+                "split": "dev",
+                "language": "en",
+                "intent": "installation",
+                "query": "How is PandaRoot installed?",
+                "expected_status": "answered",
+                "allowed_source_versions": ["pandaroot@test"],
+                "required_evidence_groups": [
+                    {"group_id": "e1", "any_of": [{"object_id": "object.test"}]}
+                ],
+                "required_answer_points": [
+                    {"point_id": "p1", "text": "Explain installation."}
+                ],
+            }
+        )
+
     def test_modes_do_not_cross_declared_pipeline_boundaries(self) -> None:
         self.assertEqual(
             evaluation_mode_boundaries("retrieval"),
@@ -37,6 +68,111 @@ class EvaluationModeBoundaryTests(unittest.TestCase):
                 "external_judge": True,
             },
         )
+
+    @staticmethod
+    def _diagnostics(intent: str) -> dict:
+        return {
+            "plan": {"intent": intent, "resolved_versions": {}},
+            "rankings": {},
+            "reranked_object_ids": [],
+            "selected_evidence": [],
+            "evidence": [],
+        }
+
+    def test_retrieval_executes_retriever_only(self) -> None:
+        class FakeRetriever:
+            def __init__(self, diagnostics: dict) -> None:
+                self.diagnostics = diagnostics
+                self.retrieve_calls = 0
+
+            def retrieve(self, query: str) -> dict:
+                self.retrieve_calls += 1
+                return self.diagnostics
+
+            def run_detailed(self, query: str) -> dict:
+                raise AssertionError("retrieval mode entered QAAgent.run_detailed")
+
+        engine = FakeRetriever(self._diagnostics(self.case.intent))
+        with patch("panda_agent.evaluation_runner.judge_answer") as judge:
+            _, _, metrics = _execute_evaluation_case(
+                engine, None, mode="retrieval", case=self.case, object_lookup={}
+            )
+        self.assertEqual(engine.retrieve_calls, 1)
+        judge.assert_not_called()
+        self.assertNotIn("citation_integrity", metrics)
+        self.assertFalse(metrics["metric_applicability"]["answer_point_coverage"])
+
+    def test_qa_executes_qa_agent_without_external_judge(self) -> None:
+        class FakeQAAgent:
+            run_detailed_calls = 0
+
+            def run_detailed(self, query: str) -> dict:
+                self.run_detailed_calls += 1
+                return {
+                    "result": {
+                        "status": "insufficient_evidence",
+                        "answer": "",
+                        "claims": [],
+                        "evidence": [],
+                        "resolved_versions": {},
+                        "verification_errors": [],
+                    },
+                    "diagnostics": EvaluationModeBoundaryTests._diagnostics(
+                        EvaluationModeBoundaryTests.case.intent
+                    ),
+                }
+
+        engine = FakeQAAgent()
+        with patch("panda_agent.evaluation_runner.judge_answer") as judge:
+            _, _, metrics = _execute_evaluation_case(
+                engine, None, mode="qa", case=self.case, object_lookup={}
+            )
+        self.assertEqual(engine.run_detailed_calls, 1)
+        judge.assert_not_called()
+        self.assertIn("citation_integrity", metrics)
+        self.assertNotIn("answer_point_coverage", metrics)
+
+    def test_full_executes_qa_agent_and_external_judge(self) -> None:
+        class FakeQAAgent:
+            run_detailed_calls = 0
+
+            def run_detailed(self, query: str) -> dict:
+                self.run_detailed_calls += 1
+                return {
+                    "result": {
+                        "status": "insufficient_evidence",
+                        "answer": "",
+                        "claims": [],
+                        "evidence": [],
+                        "resolved_versions": {},
+                        "verification_errors": [],
+                    },
+                    "diagnostics": EvaluationModeBoundaryTests._diagnostics(
+                        EvaluationModeBoundaryTests.case.intent
+                    ),
+                }
+
+        judged = {
+            "answer_point_coverage": 1.0,
+            "covered_point_ids": [],
+            "critical_answer_points_missing": [],
+            "contradictions": [],
+            "unsupported_claim_ids": [],
+            "major_unsupported_claim_ids": [],
+            "minor_unsupported_claim_ids": [],
+            "claim_verdicts": [],
+        }
+        engine = FakeQAAgent()
+        with patch(
+            "panda_agent.evaluation_runner.judge_answer", return_value=judged
+        ) as judge:
+            _, _, metrics = _execute_evaluation_case(
+                engine, object(), mode="full", case=self.case, object_lookup={}
+            )
+        self.assertEqual(engine.run_detailed_calls, 1)
+        judge.assert_called_once()
+        self.assertEqual(metrics["answer_point_coverage"], 1.0)
+        self.assertTrue(metrics["metric_applicability"]["contradictions"])
 
 
 class RetrievalTraceTests(unittest.TestCase):
@@ -101,6 +237,116 @@ class RetrievalTraceTests(unittest.TestCase):
             path = write_retrieval_trace(run_dir, trace)
             self.assertEqual(load_retrieval_trace(path), trace)
             self.assertEqual(load_retrieval_traces(run_dir), [trace])
+
+
+class MetricApplicabilityTests(unittest.TestCase):
+    @staticmethod
+    def _record(metrics: dict) -> dict:
+        return {
+            "id": "g001",
+            "intent": "installation",
+            "expected_status": "answered",
+            "required_source_types": [],
+            "metrics": metrics,
+        }
+
+    def test_unjudged_metrics_are_not_synthetic_failures_or_clean_passes(self) -> None:
+        metrics = apply_mode_metric_semantics(
+            {
+                "intent_correct": True,
+                "expected_status_correct": True,
+                "citation_integrity": True,
+                "missing_identifiers": [],
+                "identifier_mentions": [],
+                "hallucinated_identifiers": [],
+                "answer_point_coverage": 0.0,
+                "contradictions": [],
+                "unsupported_claim_ids": [],
+            },
+            mode="qa",
+            external_judge=False,
+        )
+        aggregate = aggregate_metrics([self._record(metrics)])
+        self.assertNotIn("answer_point_coverage", metrics)
+        self.assertNotIn("contradictions", metrics)
+        self.assertNotIn("unsupported_claim_ids", metrics)
+        self.assertIsNone(aggregate["answer_point_coverage"])
+        self.assertEqual(aggregate["answer_point_coverage_denominator"], 0)
+        self.assertIsNone(aggregate["contradiction_count"])
+        self.assertIsNone(aggregate["unsupported_claim_count"])
+        self.assertFalse(aggregate["metric_applicability"]["contradictions"])
+        development_gate = evaluate_development_gate(
+            aggregate,
+            [self._record(metrics)],
+            mode="qa",
+            complete_full_dev=False,
+            all_questions_approved=True,
+        )
+        self.assertNotIn("answer_point_coverage", development_gate["checks"])
+        self.assertNotIn("no_contradictions", development_gate["checks"])
+
+    def test_full_judged_metrics_retain_measured_clean_zero_semantics(self) -> None:
+        metrics = apply_mode_metric_semantics(
+            {
+                "intent_correct": True,
+                "expected_status_correct": True,
+                "citation_integrity": True,
+                "missing_identifiers": [],
+                "identifier_mentions": [],
+                "hallucinated_identifiers": [],
+                "answer_point_coverage": 1.0,
+                "covered_point_ids": ["p1"],
+                "critical_answer_points_missing": [],
+                "contradictions": [],
+                "unsupported_claim_ids": [],
+                "major_unsupported_claim_ids": [],
+                "minor_unsupported_claim_ids": [],
+                "claim_verdicts": [],
+            },
+            mode="full",
+            external_judge=True,
+        )
+        aggregate = aggregate_metrics([self._record(metrics)])
+        self.assertEqual(aggregate["answer_point_coverage"], 1.0)
+        self.assertEqual(aggregate["answer_point_coverage_denominator"], 1)
+        self.assertEqual(aggregate["contradiction_count"], 0)
+        self.assertEqual(aggregate["unsupported_claim_count"], 0)
+        self.assertTrue(aggregate["metric_applicability"]["contradictions"])
+        development_gate = evaluate_development_gate(
+            aggregate,
+            [self._record(metrics)],
+            mode="full",
+            complete_full_dev=False,
+            all_questions_approved=True,
+        )
+        self.assertIn("answer_point_coverage", development_gate["checks"])
+        self.assertTrue(development_gate["checks"]["no_contradictions"])
+
+    def test_retrieval_answer_metrics_are_explicitly_not_applicable(self) -> None:
+        metrics = apply_mode_metric_semantics(
+            {
+                "intent_correct": True,
+                "expected_status_correct": True,
+                "citation_integrity": True,
+                "missing_identifiers": [],
+                "identifier_mentions": [],
+                "hallucinated_identifiers": [],
+            },
+            mode="retrieval",
+            external_judge=False,
+        )
+        aggregate = aggregate_metrics([self._record(metrics)])
+        self.assertNotIn("citation_integrity", metrics)
+        self.assertIsNone(aggregate["citation_integrity"])
+        self.assertIsNone(aggregate["identifier_hallucination_rate"])
+        self.assertFalse(aggregate["metric_applicability"]["citation_integrity"])
+        formal_gate = evaluate_quality_gate(
+            aggregate,
+            [self._record(metrics)],
+            official=False,
+            all_questions_approved=True,
+        )
+        self.assertFalse(formal_gate["passed"])
 
 
 if __name__ == "__main__":

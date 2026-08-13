@@ -20,6 +20,7 @@ from panda_agent.evaluation import (
     GoldDataset,
     GoldQuestion,
     aggregate_metrics,
+    apply_mode_metric_semantics,
     apply_signed_rescore_adjudication,
     deterministic_case_metrics,
     evaluate_development_gate,
@@ -27,6 +28,7 @@ from panda_agent.evaluation import (
     evaluate_quality_gate,
     load_run_records,
     load_gold_dataset,
+    normalize_run_records,
     validate_v25_adjudication_document,
 )
 from panda_agent.evaluator_catalog import catalog_receipt, load_evaluator_catalog
@@ -867,6 +869,37 @@ def _retrieval_result(bundle: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _execute_evaluation_case(
+    engine: Retriever | QAAgent,
+    judge_vertex: VertexAIClient | None,
+    *,
+    mode: EvaluationMode,
+    case: GoldQuestion,
+    object_lookup: dict[str, dict[str, Any]],
+) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
+    """Execute one case while enforcing the selected orchestration boundary."""
+    boundaries = evaluation_mode_boundaries(mode)
+    if boundaries["answer_generation"]:
+        detailed = engine.run_detailed(case.query)
+        result = detailed["result"]
+        diagnostics = detailed["diagnostics"]
+    else:
+        diagnostics = engine.retrieve(case.query)
+        result = _retrieval_result(diagnostics)
+
+    metrics = deterministic_case_metrics(case, result, diagnostics, object_lookup)
+    if boundaries["external_judge"]:
+        if judge_vertex is None:
+            raise RuntimeError("evaluation judge client is not initialized")
+        metrics.update(judge_answer(case, result, judge_vertex))
+    metrics = apply_mode_metric_semantics(
+        metrics,
+        mode=mode,
+        external_judge=boundaries["external_judge"],
+    )
+    return result, diagnostics, metrics
+
+
 def _review_issues(record: dict[str, Any], mode: EvaluationMode) -> list[dict[str, Any]]:
     """Return case-level imperfections that require human classification.
 
@@ -936,7 +969,7 @@ def _review_issues(record: dict[str, Any], mode: EvaluationMode) -> list[dict[st
             "1.0 refusal-support evidence recall",
             "diagnostic",
         )
-    if mode == "qa":
+    if mode in {"qa", "full"}:
         if metrics.get("citation_integrity") is False:
             add("citation_integrity", False, "true")
         if metric_applicability.get("required_identifiers", True) and metrics.get("missing_identifiers"):
@@ -948,18 +981,31 @@ def _review_issues(record: dict[str, Any], mode: EvaluationMode) -> list[dict[st
                 "[]; aggregate rate < 0.03",
                 "diagnostic",
             )
-        if float(metrics.get("answer_point_coverage", 0.0)) < 1.0:
+        if (
+            metric_applicability.get(
+                "answer_point_coverage",
+                metrics.get("answer_point_coverage") is not None,
+            )
+            and metrics.get("answer_point_coverage") is not None
+            and float(metrics["answer_point_coverage"]) < 1.0
+        ):
             add(
                 "answer_point_coverage",
                 metrics.get("answer_point_coverage"),
                 "1.0 per case for a perfect result; aggregate gate >= 0.85",
                 "diagnostic",
             )
-        if metrics.get("contradictions"):
+        if metric_applicability.get(
+            "contradictions", "contradictions" in metrics
+        ) and metrics.get("contradictions"):
             add("contradictions", metrics["contradictions"], "[]")
-        if metrics.get("unsupported_claim_ids"):
+        if metric_applicability.get(
+            "unsupported_claim_ids", "unsupported_claim_ids" in metrics
+        ) and metrics.get("unsupported_claim_ids"):
             add("unsupported_claim_ids", metrics["unsupported_claim_ids"], "[]")
-        if metrics.get("major_unsupported_claim_ids"):
+        if metric_applicability.get(
+            "major_unsupported_claim_ids", "major_unsupported_claim_ids" in metrics
+        ) and metrics.get("major_unsupported_claim_ids"):
             add(
                 "major_unsupported_claim_ids",
                 metrics["major_unsupported_claim_ids"],
@@ -987,7 +1033,7 @@ def _suggest_review_layer(issues: list[dict[str, Any]], mode: EvaluationMode) ->
         "forbidden_evidence",
     }:
         return "retrieval"
-    if mode == "qa" and names:
+    if mode in {"qa", "full"} and names:
         return "qa"
     return "evaluation"
 
@@ -1524,28 +1570,13 @@ def run_evaluation(
             "completed_at": datetime.now(UTC).isoformat(),
         }
         try:
-            if not boundaries["answer_generation"]:
-                diagnostics = engine.retrieve(case.query)
-                result = _retrieval_result(diagnostics)
-            else:
-                detailed = engine.run_detailed(case.query)
-                result = detailed["result"]
-                diagnostics = detailed["diagnostics"]
-            metrics = deterministic_case_metrics(
-                case, result, diagnostics, object_lookup
+            result, diagnostics, metrics = _execute_evaluation_case(
+                engine,
+                judge_vertex,
+                mode=mode,
+                case=case,
+                object_lookup=object_lookup,
             )
-            if boundaries["external_judge"]:
-                if judge_vertex is None:
-                    raise RuntimeError("evaluation judge client is not initialized")
-                metrics.update(judge_answer(case, result, judge_vertex))
-            else:
-                metrics.update(
-                    {
-                        "answer_point_coverage": 0.0,
-                        "contradictions": [],
-                        "unsupported_claim_ids": [],
-                    }
-                )
             trace = build_retrieval_trace(
                 question_id=case.id,
                 run_id=run_id,
@@ -1639,7 +1670,8 @@ def report_evaluation(project_root: Path, run_id: str) -> dict[str, Any]:
         raise FileNotFoundError(f"evaluation run does not exist: {run_id}")
     manifest = json.loads((run_dir / "manifest.json").read_text(encoding="utf-8"))
     records = load_run_records(run_dir)
-    metrics = aggregate_metrics(records)
+    records_for_metrics = normalize_run_records(records, manifest)
+    metrics = aggregate_metrics(records_for_metrics)
     metrics["result_content_hash"] = result_content_hash(records)
     manifest_dataset_path = manifest.get("gold_dataset_path")
     dataset = load_gold_dataset(

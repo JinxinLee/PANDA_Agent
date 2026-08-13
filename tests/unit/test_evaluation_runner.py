@@ -1,9 +1,15 @@
 from pathlib import Path
+from copy import deepcopy
+from types import SimpleNamespace
 import unittest
 
 from panda_agent.evaluation import load_gold_dataset
 from panda_agent.evaluation_runner import default_gold_dataset_path, dry_rescore_run
-from panda_agent.baseline import select_stratified_case_ids
+from panda_agent.baseline import (
+    BOOTSTRAP_DEVELOPMENT_SPLITS,
+    select_stratified_case_ids,
+    validate_baseline_consistency,
+)
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -21,11 +27,16 @@ class EvaluationRunnerTests(unittest.TestCase):
         counts: dict[str, int] = {}
         eligible_counts: dict[str, int] = {}
         for item in questions.values():
-            if item.language == "en" and item.review_status == "approved":
+            if (
+                item.language == "en"
+                and item.review_status == "approved"
+                and item.split in BOOTSTRAP_DEVELOPMENT_SPLITS
+            ):
                 eligible_counts[item.intent] = eligible_counts.get(item.intent, 0) + 1
         for case_id in first:
             item = questions[case_id]
             self.assertEqual(item.language, "en")
+            self.assertIn(item.split, BOOTSTRAP_DEVELOPMENT_SPLITS)
             counts[item.intent] = counts.get(item.intent, 0) + 1
         self.assertEqual(set(counts), set(eligible_counts))
         depleted = {
@@ -34,6 +45,71 @@ class EvaluationRunnerTests(unittest.TestCase):
         self.assertEqual(depleted, {"algorithm_implementation"})
         balanced_counts = [count for intent, count in counts.items() if intent not in depleted]
         self.assertLessEqual(max(balanced_counts) - min(balanced_counts), 1)
+
+    @staticmethod
+    def _baseline_payloads() -> tuple[dict, dict, dict]:
+        retrieval = {
+            "manifest": {
+                "mode": "retrieval",
+                "pipeline_boundaries": {"external_judge": False},
+            },
+            "records": [{"id": "r1"}, {"id": "r2"}],
+            "traces": [
+                SimpleNamespace(question_id="r1"),
+                SimpleNamespace(question_id="r2"),
+            ],
+        }
+        qa = {
+            "manifest": {
+                "mode": "qa",
+                "pipeline_boundaries": {"external_judge": False},
+            },
+            "records": [
+                {
+                    "id": "q1",
+                    "model_call_breakdown": {"judge": {"model_calls": 0}},
+                }
+            ],
+            "traces": [SimpleNamespace(question_id="q1")],
+        }
+        fixed = {
+            "retrieval": {"mode": "retrieval", "case_ids": ["r1", "r2"], "case_count": 2},
+            "qa": {
+                "mode": "qa",
+                "external_judge": False,
+                "case_ids": ["q1"],
+                "case_count": 1,
+            },
+        }
+        return fixed, retrieval, qa
+
+    def test_baseline_consistency_accepts_matching_fixed_records_and_traces(self) -> None:
+        fixed, retrieval, qa = self._baseline_payloads()
+        validate_baseline_consistency(fixed, retrieval, qa)
+
+    def test_baseline_consistency_rejects_boundary_id_trace_and_judge_mismatches(self) -> None:
+        mutations = {
+            "fixed IDs": lambda fixed, retrieval, qa: fixed["qa"]["case_ids"].append("q2"),
+            "retrieval trace": lambda fixed, retrieval, qa: retrieval["traces"].pop(),
+            "QA trace": lambda fixed, retrieval, qa: setattr(
+                qa["traces"][0], "question_id", "wrong"
+            ),
+            "QA mode": lambda fixed, retrieval, qa: qa["manifest"].update(
+                {"mode": "full"}
+            ),
+            "external judge boundary": lambda fixed, retrieval, qa: qa[
+                "manifest"
+            ]["pipeline_boundaries"].update({"external_judge": True}),
+            "judge calls": lambda fixed, retrieval, qa: qa["records"][0][
+                "model_call_breakdown"
+            ]["judge"].update({"model_calls": 1}),
+        }
+        for label, mutate in mutations.items():
+            with self.subTest(label=label):
+                fixed, retrieval, qa = deepcopy(self._baseline_payloads())
+                mutate(fixed, retrieval, qa)
+                with self.assertRaises(ValueError):
+                    validate_baseline_consistency(fixed, retrieval, qa)
 
     def test_v26_is_default_and_signed_dry_rescore_preserves_real_failures(self) -> None:
         dataset = ROOT / "evaluation" / "benchmarks" / "v2_6" / "gold_questions.yaml"

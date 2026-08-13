@@ -2,6 +2,22 @@
 
 This repository is an English-only, evidence-grounded PANDA QA system. Keep code, prompts, datasets, technical documentation, identifiers, and machine-readable artifacts in English.
 
+Prototype development does not require freezing every implementation state.
+
+Do not create frozen candidates, integrity manifests, per-file hashes, or
+clean-tree checkpoints during ordinary roadmap-task development.
+
+Use normal Git commits as the primary development history.
+
+A strict frozen implementation identity is required only when:
+- the user explicitly requests a frozen candidate;
+- an authorized T3/T5 or formal phase-boundary evaluation requires one;
+- a release or acceptance comparison requires immutable provenance.
+
+Small targeted tests and ordinary before/after development checks may run
+against the current working tree. Record relevant changes and limitations,
+but do not turn them into formal frozen candidates.
+
 ## Sources of truth
 
 - `AGENTS.md`: stable development and stop rules.

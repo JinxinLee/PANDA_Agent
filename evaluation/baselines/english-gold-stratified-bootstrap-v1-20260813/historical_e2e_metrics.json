@@ -1,6 +1,6 @@
 {
   "identity_limitation": "The historical manifest predates explicit Git commit recording.",
-  "matches_current_head_exactly": false,
+  "matches_a3_measured_execution_exactly": false,
   "measured_metrics": {
     "answer_point_coverage": 0.9458333333333334,
     "cases_completed": 80,
@@ -10,6 +10,17 @@
     "final_evidence_recall": 0.9482323232323233,
     "gold_recall_at_10": 1.0,
     "intent_accuracy": 0.9875,
+    "metric_applicability": {
+      "answer_point_coverage": true,
+      "citation_integrity": true,
+      "contradictions": true,
+      "critical_answer_points_missing": true,
+      "identifier_hallucination_rate": true,
+      "major_unsupported_claim_ids": true,
+      "minor_unsupported_claim_ids": true,
+      "required_identifiers": true,
+      "unsupported_claim_ids": true
+    },
     "unhandled_exception_count": 0
   },
   "role": "historical_e2e_baseline",
@@ -24,7 +35,7 @@
     "generation_model_id": "gemini-3.6-flash",
     "gold_acceptance_exposed": true,
     "gold_dataset_hash": "8293af80e596e0072049d530f735aeea196a9f815f41fecbe55c20d5dc7375d9",
-    "gold_dataset_path": "C:\\Users\\Jinxin.DESKTOP-H6SSTQH\\Desktop\\Agent_learn\\PANDA_Agent\\evaluation\\benchmarks\\v2_4\\gold_questions.yaml",
+    "gold_dataset_path": "evaluation/benchmarks/v2_4/gold_questions.yaml",
     "gold_expected_split_counts": {
       "challenge": 24,
       "dev": 80,

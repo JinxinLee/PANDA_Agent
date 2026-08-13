@@ -11,10 +11,12 @@ When records conflict, use the single section explicitly marked **Current author
 
 # Current authoritative state — 2026-08-13
 
-## Current implementation identity
+## A3 measured execution provenance
 
-- Git HEAD: `e132accefc8181abba76e8d818a621dd03cd1c9c`.
-- Working tree at baseline freeze: dirty because A1–A3 and governance changes were uncommitted.
+- Base Git commit when the A3 measurements started: `e132accefc8181abba76e8d818a621dd03cd1c9c`.
+- Working tree: dirty because A1–A3 and governance changes were then uncommitted.
+- The measurements therefore represent that base commit plus the then-current working-tree changes. This is valid prototype diagnostic provenance, not a frozen candidate identity.
+- A later user-created commit or newer repository HEAD does not rewrite this measured execution identity and does not require an evaluation rerun.
 - Prompt set: `3.6.0`.
 - Generation and runtime verifier role: `gemini-3.6-flash`.
 - Evaluation judge configuration: `gemini-3.6-flash`; it was not invoked by the current retrieval or small QA baseline.
@@ -39,11 +41,11 @@ The newest trustworthy complete E2E artifact selected for historical reference i
 
 It is a complete 80-question dev run with 514 model calls and 6,389,043 tokens. Measured metrics include `gold_recall_at_10=1.0`, `final_evidence_recall=0.9482323232`, `critical_final_evidence_recall=0.9482323232`, `answer_point_coverage=0.9458333333`, `citation_integrity=1.0`, `intent_accuracy=0.9875`, and `expected_status_accuracy=1.0`.
 
-It does **not** match current HEAD exactly: the historical manifest predates explicit Git commit recording and used Gold v2.4 plus prompt set 3.5.0. It is historical evidence, not a current release claim.
+It does **not** match the A3 measured execution provenance exactly: the historical manifest predates explicit Git commit recording and used Gold v2.4 plus prompt set 3.5.0. It is historical evidence, not a current release claim.
 
 ## English Gold Stratified Bootstrap Baseline
 
-Frozen package:
+Versioned package:
 
 `evaluation/baselines/english-gold-stratified-bootstrap-v1-20260813`
 
@@ -66,7 +68,10 @@ This is a low-cost English Gold reference, not a complete generalization, comple
 - Mode/cases: `qa`, 16 approved English Gold questions; runtime generation and verification enabled, external judge disabled.
 - Cost: 76 runtime model calls, 819,872 tokens, 0 external-judge calls.
 - Measured: Recall@5 `0.6041666667`; Recall@10 `0.75`; Recall@20 `0.75`; MRR `0.65`; combined candidate recall `0.875`; final-evidence recall `0.7083333333`; expected-status accuracy `1.0`; citation integrity `1.0`; identifier hallucination rate `0.0`; no exceptions.
-- Answer-point coverage was not measured because the external rubric judge was deliberately disabled. The deterministic placeholder value must not be interpreted as answer quality.
+- Answer-point coverage is N/A because the external rubric judge was deliberately disabled.
+- External-rubric contradiction and unsupported-claim metrics were likewise not measured; corrected package artifacts represent all three metric families as N/A rather than synthetic zero/clean values.
+
+The retrieval and QA measurements are unchanged. A3.1 corrects only metric representation, portable artifact paths, consistency metadata, and measured-execution provenance wording; historical model outputs remain untouched.
 
 ## Novel dataset state
 

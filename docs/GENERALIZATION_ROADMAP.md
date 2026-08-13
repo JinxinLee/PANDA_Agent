@@ -8,7 +8,7 @@ The Generalization Phase moves PANDA Agent from benchmark-dependent fixes toward
 
 Statuses describe implementation state; acceptance targets remain planned until measured. Each task ends with a report and stop. Future tasks are `NOT_STARTED`.
 
-## Phase A — Evaluation infrastructure and frozen baseline
+## Phase A — Evaluation infrastructure and versioned baseline
 
 ### A1 — Explicit evaluation modes
 
@@ -47,7 +47,7 @@ Statuses describe implementation state; acceptance targets remain planned until 
 - **Goal:** Create the smallest representative baseline that verifies the infrastructure, provides a current before/after reference for early Generalization tasks, estimates retrieval/QA behavior, and reuses historical full-run evidence.
 - **Why this stage:** All later work needs a stable comparison point before B1 changes index semantics.
 - **Intended design:** Reuse the newest trustworthy complete prior E2E split; select approximately 20–30 benchmark questions deterministically across API/symbol, implementation, data flow, workflow, theory, troubleshooting, usage, and cross-repository classes for `retrieval`; select approximately 10–20 for `qa`; include only trustworthy human-authored novel questions that already exist; package identities, selected IDs, records, traces, metrics, and a report.
-- **Functional requirements:** Record the deterministic selection method and IDs; record Git/dirty state, prompts, models/dimensions, sparse/index identity, generation/verifier/judge roles, retrieval policy, dataset, timestamp, mode, usage, and exact run provenance; freeze artifacts without rerunning source runs; state whether historical evidence matches HEAD.
+- **Functional requirements:** Record the deterministic selection method and IDs; record Git/dirty state, prompts, models/dimensions, sparse/index identity, generation/verifier/judge roles, retrieval policy, dataset, timestamp, mode, usage, and exact run provenance; package artifacts without rerunning source runs; state whether historical evidence matches the A3 measured execution provenance.
 - **Baseline naming and reuse:** Report this package as the **English Gold Stratified Bootstrap Baseline**, never as a complete generalization, complete benchmark, or all-intent baseline. Persist versioned fixed retrieval/QA ID manifests and reuse them unchanged for future before/after comparisons; a changed selection requires a new manifest identity.
 - **Explicit out of scope:** T3, any full 120-question retrieval or E2E run, T5, full novel E2E, generated pseudo-Gold, repeated judges, dense re-embedding, candidate release, or B1.
 - **Dependencies:** A1, A2, current infrastructure, existing run artifacts, and reviewed benchmark Gold.

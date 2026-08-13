@@ -23,7 +23,7 @@ from panda_agent.evaluation_runner import (
 )
 from panda_agent.benchmark_v2 import audit_dataset, build_v2_draft, rescore_run
 from panda_agent.candidate import freeze_candidate, verify_candidate
-from panda_agent.baseline import freeze_generalization_baseline, select_stratified_case_ids
+from panda_agent.baseline import package_generalization_baseline, select_stratified_case_ids
 
 
 def _root(value: str | None) -> Path:
@@ -133,13 +133,14 @@ def main() -> None:
     verify_candidate_command = commands.add_parser("verify-candidate")
     verify_candidate_command.add_argument("--candidate-id", required=True)
 
-    freeze_baseline = commands.add_parser("freeze-baseline")
-    freeze_baseline.add_argument("--baseline-id", required=True)
-    freeze_baseline.add_argument("--historical-run-id", required=True)
-    freeze_baseline.add_argument("--benchmark-retrieval-run-id", required=True)
-    freeze_baseline.add_argument("--novel-retrieval-run-id")
-    freeze_baseline.add_argument("--small-e2e-run-id", required=True)
-    freeze_baseline.add_argument("--selection-manifest", type=Path)
+    package_baseline = commands.add_parser("package-baseline")
+    package_baseline.add_argument("--baseline-id", required=True)
+    package_baseline.add_argument("--historical-run-id", required=True)
+    package_baseline.add_argument("--benchmark-retrieval-run-id", required=True)
+    package_baseline.add_argument("--novel-retrieval-run-id")
+    package_baseline.add_argument("--small-e2e-run-id", required=True)
+    package_baseline.add_argument("--selection-manifest", type=Path)
+    package_baseline.add_argument("--overwrite", action="store_true")
 
     select_baseline = commands.add_parser("select-baseline-cases")
     select_baseline.add_argument("--dataset", type=Path)
@@ -157,8 +158,12 @@ def main() -> None:
         try:
             value = {
                 "schema_version": "1.0",
-                "dataset": str(dataset_path),
-                "method": "approved English cases; round-robin intents; within each intent round-robin expected_status and split; stable case-id order",
+                "dataset": (
+                    dataset_path.relative_to(project_root).as_posix()
+                    if dataset_path.is_relative_to(project_root)
+                    else str(dataset_path)
+                ),
+                "method": "approved English development cases (dev/challenge/regression only); round-robin intents; within each intent round-robin expected_status and split; stable case-id order",
                 "retrieval_case_ids": select_stratified_case_ids(
                     dataset_path, args.retrieval_size
                 ),
@@ -169,9 +174,9 @@ def main() -> None:
             raise SystemExit(2) from exc
         print(json.dumps(value, ensure_ascii=False, sort_keys=True, indent=2))
         return
-    if args.command == "freeze-baseline":
+    if args.command == "package-baseline":
         try:
-            value = freeze_generalization_baseline(
+            value = package_generalization_baseline(
                 project_root,
                 baseline_id=args.baseline_id,
                 historical_run_id=args.historical_run_id,
@@ -181,6 +186,7 @@ def main() -> None:
                 selection_manifest_path=(
                     args.selection_manifest.resolve() if args.selection_manifest else None
                 ),
+                overwrite=args.overwrite,
             )
         except (FileExistsError, FileNotFoundError, ValueError) as exc:
             print(f"error: {exc}", file=sys.stderr)

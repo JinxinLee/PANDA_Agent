@@ -1,17 +1,20 @@
 {
+  "artifact_semantics": {
+    "measurement_changed": false,
+    "representation_or_provenance_metadata_corrected": true
+  },
   "baseline_id": "english-gold-stratified-bootstrap-v1-20260813",
   "benchmark_retrieval_run_id": "generalization-a3-stratified-retrieval-20260813",
   "created_at": "2026-08-12T23:12:11.685477+00:00",
   "display_name": "English Gold Stratified Bootstrap Baseline",
   "external_judge_used_for_small_e2e": false,
-  "fixed_selection_manifest": "C:\\Users\\Jinxin.DESKTOP-H6SSTQH\\Desktop\\Agent_learn\\PANDA_Agent\\evaluation\\baselines\\manifests\\english_gold_stratified_bootstrap_v1.json",
+  "fixed_selection_manifest": "evaluation/baselines/manifests/english_gold_stratified_bootstrap_v1.json",
   "full_120_question_e2e_rerun": false,
   "full_120_question_retrieval_run": false,
   "historical_e2e_run_id": "m6-v2-36-qa-dev-rc3e",
   "measured_metrics": {
     "benchmark_retrieval": {
       "cases_completed": 24,
-      "citation_integrity": 1.0,
       "combined_candidate_recall": 0.95,
       "critical_final_evidence_recall": 0.9,
       "expected_status_accuracy": 0.8333333333333334,
@@ -20,6 +23,17 @@
       "gold_recall_at_20": 0.9,
       "gold_recall_at_5": 0.8416666666666666,
       "intent_accuracy": 1.0,
+      "metric_applicability": {
+        "answer_point_coverage": false,
+        "citation_integrity": false,
+        "contradictions": false,
+        "critical_answer_points_missing": false,
+        "identifier_hallucination_rate": false,
+        "major_unsupported_claim_ids": false,
+        "minor_unsupported_claim_ids": false,
+        "required_identifiers": false,
+        "unsupported_claim_ids": false
+      },
       "mrr": 0.6866666666666666,
       "unhandled_exception_count": 0
     },
@@ -35,6 +49,17 @@
       "gold_recall_at_20": 0.75,
       "gold_recall_at_5": 0.6041666666666666,
       "intent_accuracy": 1.0,
+      "metric_applicability": {
+        "answer_point_coverage": false,
+        "citation_integrity": true,
+        "contradictions": false,
+        "critical_answer_points_missing": false,
+        "identifier_hallucination_rate": true,
+        "major_unsupported_claim_ids": false,
+        "minor_unsupported_claim_ids": false,
+        "required_identifiers": true,
+        "unsupported_claim_ids": false
+      },
       "mrr": 0.65,
       "unhandled_exception_count": 0
     }
@@ -46,7 +71,6 @@
     "novel_retrieval": 0,
     "small_e2e": 16
   },
-  "schema_version": "1.0",
   "run_usage": {
     "benchmark_retrieval": {
       "model_calls": 72,
@@ -58,6 +82,7 @@
       "token_usage": 819872
     }
   },
+  "schema_version": "1.0",
   "scope": "Low-cost bootstrap reference; not a complete generalization, complete benchmark, or all-intent baseline.",
   "selected_question_ids": {
     "benchmark_retrieval": [
