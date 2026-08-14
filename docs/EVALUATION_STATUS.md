@@ -38,7 +38,7 @@ When records conflict, use the single section explicitly marked **Current author
 - Evaluation modes: `retrieval`, `qa`, and `full` have explicit recorded boundaries.
 - Structured retrieval traces are persisted as atomic JSON and JSONL and can be loaded without rerunning QA.
 - A3 was corrected from a possible full-retrieval interpretation to a stratified low-cost bootstrap baseline. No T3 or full 120-question retrieval/E2E run was performed.
-- Later architecture tasks B2–F6 remain `NOT_STARTED`.
+- B2: `PASS`; later architecture tasks B3–F6 remain `NOT_STARTED`.
 
 ## Historical full E2E reference
 
@@ -80,6 +80,14 @@ This is a low-cost English Gold reference, not a complete generalization, comple
 - First-relevant-rank comparison: improved `3`, unchanged `14`, regressed `3`. Improvements were `g025` (14 → 4), `g028` (9 → 8), and `g029` (no hit → 2); regressions were `g002` (7 → 9), `g015` (1 → 3), and `g060` (10 → 12). Recall improved without a broad systematic regression; MRR was effectively flat and slightly lower.
 - Limitation: this is an exposed English Gold bootstrap comparison with a small identifier-heavy subset, not a complete benchmark or novel-question generalization result.
 
+### Current B2 dense embedding dimensionality contract result
+
+- Verification revision: `ec692735e0623b256a40fe384a9f865e8cdb58c0` (B1 committed).
+- Installed API: `google-genai 2.13.0`; `EmbedContentConfig.output_dimensionality` is explicitly set to 3072 for the shared query/document `_embed` path, and every returned vector is checked for count, non-empty values, and exact length before use.
+- Cache/index impact: cache key remains unchanged; SQL reuse requires `dimensions=3072`, and all `70102` existing rows already match. Stale receipts update only after a real re-embed. `IndexIdentity` already includes dimensions, so schema 3 and fingerprint `5f0f9ffe6149091e6c42d650f3a7576466d82b8eb86af0567d9c57a81bb8a937` are unchanged.
+- Live collection: Qdrant size is 3072 with `80698` points; three sampled vectors are length 3072. No collection/index migration, dense-vector migration, or re-embedding was needed.
+- Verification cost: T0 final suite `50` tests passed, along with `compileall` and `git diff --check`; live embedding smoke was skipped because ADC raised `DefaultCredentialsError`, with zero Vertex, generation, and token calls.
+
 ### Current small E2E baseline
 
 - Run: `generalization-a3-stratified-qa-20260813`.
@@ -108,7 +116,7 @@ The retrieval and QA measurements are unchanged. A3.1 corrects only metric repre
 
 ## Next authorized roadmap task
 
-`B2 — Explicit dense embedding dimensionality contract`
+`B3 — Unified sparse encoder identity/factory`
 
 ---
 

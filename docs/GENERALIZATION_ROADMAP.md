@@ -77,17 +77,17 @@ Statuses describe implementation state; acceptance targets remain planned until 
 
 ### B2 — Explicit dense embedding dimensionality contract
 
-- **Status:** NOT_STARTED
+- **Status:** PASS
 - **Problem:** Configuration, embedding API output, and Qdrant collection dimensions can drift when the API default is implicit.
 - **Goal:** Make dimensions explicit from request through vector validation and collection identity.
 - **Why this stage:** Once sparse correctness is established, dense reproducibility must be secured before changing chunking or semantic queries.
-- **Intended design:** Pass configured dimensions where supported; validate every returned vector; bind dimensions to collection/index identity; fail clearly on mismatch.
+- **Intended design:** Pass configured dimensions where supported; validate every returned vector; bind dimensions to collection/index identity; fail clearly on mismatch. The verified implementation uses `google-genai 2.13.0` `EmbedContentConfig.output_dimensionality`; shared query/document `_embed` requests explicitly use 3072 and fail closed on count, non-empty, or exact-length violations.
 - **Functional requirements:** Single, small-batch, and indexing-batch paths request/validate the same dimension; mismatch stops before storage; health/identity output exposes dimensions.
 - **Explicit out of scope:** Changing embedding model, semantic query text, chunking, fusion, or answer behavior.
 - **Dependencies:** B1 identity conventions, active embedding API, Qdrant collection schema.
 - **Authorized evaluation tier:** T0 and minimal integration tests; a tiny live embedding smoke only when needed.
 - **Primary metrics:** Percentage of vectors matching configured dimension (target 100%), mismatch detection, and zero partial writes.
-- **Acceptance criteria:** All representative paths validate exact size; mismatches fail fast with stage/model context; identity is reproducible.
+- **Acceptance criteria:** All representative paths validate exact size; mismatches fail fast with stage/model context; identity is reproducible. PASS: the cache key is unchanged, SQL cache reuse requires `dimensions=3072`, and all `70102` existing rows already have 3072 dimensions; stale receipts are updated only after an actual re-embed. `IndexIdentity` already carries dimensions, so no field/schema/fingerprint change was needed; schema 3 and fingerprint `5f0f9ffe6149091e6c42d650f3a7576466d82b8eb86af0567d9c57a81bb8a937` remain unchanged. The live Qdrant collection remains size 3072 with `80698` points and three sampled vectors of length 3072, requiring no collection/index/dense-vector migration or re-embedding. T0 final verification passed 50 tests plus `compileall` and `git diff --check`; the live embedding smoke was skipped because ADC raised `DefaultCredentialsError`, with zero Vertex, generation, and token calls.
 - **Failure handling:** Do not silently fall back to another model/dimension. Preserve the existing model and report access/API incompatibility; stop after B2.
 
 ### B3 — Unified sparse encoder identity/factory

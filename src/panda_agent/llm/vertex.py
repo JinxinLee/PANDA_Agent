@@ -216,16 +216,27 @@ class VertexAIClient:
                 config=types.EmbedContentConfig(
                     task_type=task_type,
                     title=title,
+                    output_dimensionality=self.settings.embedding_dimensions,
                     auto_truncate=False,
                 ),
             )
             self._record_usage(response)
             embeddings = getattr(response, "embeddings", None) or []
             vectors = [list(item.values or []) for item in embeddings]
-            if len(vectors) != len(texts) or any(not vector for vector in vectors):
+            if len(vectors) != len(texts):
                 raise ValueError(
-                    f"expected {len(texts)} non-empty embeddings, got {len(vectors)}"
+                    "embedding count mismatch: "
+                    f"expected {len(texts)}, actual {len(vectors)}"
                 )
+            expected_dimensions = self.settings.embedding_dimensions
+            for index, vector in enumerate(vectors):
+                actual_dimensions = len(vector)
+                if actual_dimensions != expected_dimensions:
+                    raise ValueError(
+                        "embedding dimension mismatch "
+                        f"for vector {index}: expected {expected_dimensions}, "
+                        f"actual {actual_dimensions}"
+                    )
             return vectors
           except Exception as exc:
             last_error=exc; message=str(exc).lower()

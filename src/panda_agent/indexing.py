@@ -51,6 +51,41 @@ class IndexIdentity(BaseModel):
         )
 
 
+def _compatible_cache_keys(
+    connection: Any, cache_keys: list[str], expected_dimensions: int
+) -> set[str]:
+    """Return cache receipts that match the active dense-vector contract."""
+    return {
+        row[0]
+        for row in connection.execute(
+            "SELECT cache_key FROM embedding_records "
+            "WHERE cache_key=ANY(%s) AND dimensions=%s",
+            (cache_keys, expected_dimensions),
+        ).fetchall()
+    }
+
+
+def _record_embedding_cache(
+    connection: Any,
+    *,
+    cache_key: str,
+    object_id: str,
+    model: str,
+    task_type: str,
+    text_hash: str,
+    dimensions: int,
+) -> None:
+    """Record the dimensions for a completed dense-vector write."""
+    connection.execute(
+        "INSERT INTO embedding_records(cache_key,object_id,model,task_type,text_hash,dimensions) "
+        "VALUES(%s,%s,%s,%s,%s,%s) "
+        "ON CONFLICT(cache_key) DO UPDATE SET "
+        "object_id=excluded.object_id,model=excluded.model,task_type=excluded.task_type,"
+        "text_hash=excluded.text_hash,dimensions=excluded.dimensions,indexed_at=now()",
+        (cache_key, object_id, model, task_type, text_hash, dimensions),
+    )
+
+
 def normalized_dir(project_root: Path) -> Path:
     reports = list((project_root / "data" / "normalized").glob("*/ingestion_report.json"))
     if not reports: raise RuntimeError("M2 output not found")
@@ -132,7 +167,9 @@ def _apply_index(
             text=f"{item['title']}\n{item['text']}"; text_hash=hashlib.sha256(text.encode()).hexdigest()
             cache_keys.append(hashlib.sha256(f"{identity.embedding_model}\x1fRETRIEVAL_DOCUMENT\x1f{text_hash}".encode()).hexdigest())
         with storage.connect() as connection:
-            cached={row[0] for row in connection.execute("SELECT cache_key FROM embedding_records WHERE cache_key=ANY(%s)",(cache_keys,)).fetchall()}
+            cached = _compatible_cache_keys(
+                connection, cache_keys, identity.embedding_dimensions
+            )
         point_ids=[storage.point_id(item["object_id"]) for item in selected]
         existing=set()
         for start in range(0,len(point_ids),256):
@@ -165,7 +202,15 @@ def _apply_index(
         with storage.connect() as connection:
             for item, text in zip(batch, texts):
                 text_hash = hashlib.sha256(text.encode()).hexdigest(); cache_key = hashlib.sha256(f"{identity.embedding_model}\x1fRETRIEVAL_DOCUMENT\x1f{text_hash}".encode()).hexdigest()
-                connection.execute("INSERT INTO embedding_records(cache_key,object_id,model,task_type,text_hash,dimensions) VALUES(%s,%s,%s,%s,%s,%s) ON CONFLICT(cache_key) DO NOTHING", (cache_key,item["object_id"],identity.embedding_model,"RETRIEVAL_DOCUMENT",text_hash,identity.embedding_dimensions))
+                _record_embedding_cache(
+                    connection,
+                    cache_key=cache_key,
+                    object_id=item["object_id"],
+                    model=identity.embedding_model,
+                    task_type="RETRIEVAL_DOCUMENT",
+                    text_hash=text_hash,
+                    dimensions=identity.embedding_dimensions,
+                )
     deleted_vectors=0
     if limit is None and offset == 0:
         valid_ids={storage.point_id(item["object_id"]) for item in eligible}; stale=[]; cursor=None
