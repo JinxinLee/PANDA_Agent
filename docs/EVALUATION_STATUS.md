@@ -86,7 +86,7 @@ This is a low-cost English Gold reference, not a complete generalization, comple
 - Installed API: `google-genai 2.13.0`; `EmbedContentConfig.output_dimensionality` is explicitly set to 3072 for the shared query/document `_embed` path, and every returned vector is checked for count, non-empty values, and exact length before use.
 - Cache/index impact: cache key remains unchanged; SQL reuse requires `dimensions=3072`, and all `70102` existing rows already match. Stale receipts update only after a real re-embed. `IndexIdentity` already includes dimensions, so schema 3 and fingerprint `5f0f9ffe6149091e6c42d650f3a7576466d82b8eb86af0567d9c57a81bb8a937` are unchanged.
 - Live collection: Qdrant size is 3072 with `80698` points; three sampled vectors are length 3072. No collection/index migration, dense-vector migration, or re-embedding was needed.
-- Verification cost: T0 final suite `50` tests passed, along with `compileall` and `git diff --check`; live embedding smoke was skipped because ADC raised `DefaultCredentialsError`, with zero Vertex, generation, and token calls.
+- Verification cost: T0 final suite `50` tests passed, along with `compileall` and `git diff --check`. The supplemental live endpoint smoke then used the production `VertexAIClient` for exactly one `RETRIEVAL_QUERY` and one `RETRIEVAL_DOCUMENT` request; both explicitly requested and returned 3072 dimensions with `gemini-embedding-2` in `global`. Cost was two embedding calls, zero generation/judge calls, and no token usage metadata returned by the embedding API.
 
 ### Current small E2E baseline
 
