@@ -31,10 +31,14 @@ class P1ContractTests(unittest.TestCase):
             embedding_dimensions=3072,
             distance="cosine",
             sparse_model="Qdrant/bm25",
-            index_schema_version="2",
+            sparse_vector_name="sparse",
+            sparse_modifier="idf",
+            index_schema_version="3",
         )
         second = first.model_copy(update={"embedding_dimensions": 768})
         self.assertNotEqual(first.fingerprint(), second.fingerprint())
+        modifier_changed = first.model_copy(update={"sparse_modifier": "none"})
+        self.assertNotEqual(first.fingerprint(), modifier_changed.fingerprint())
 
     def test_high_confidence_intent_router(self):
         from panda_agent.retrieval import route_high_confidence_intent

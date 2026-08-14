@@ -19,6 +19,10 @@ class StrictModel(BaseModel):
 
 FASTEMBED_MODEL_PATH_ENV = "PANDA_FASTEMBED_MODEL_PATH"
 DEFAULT_FASTEMBED_MODEL_PATH = Path("data/runtime/fastembed/bm25")
+SPARSE_VECTOR_NAME = "sparse"
+SPARSE_VECTOR_MODIFIER = "idf"
+BM25_MODEL_NAME = "Qdrant/bm25"
+BM25_LANGUAGE = "english"
 
 
 class FastEmbedConfigurationError(ValueError):
@@ -50,8 +54,9 @@ class FastEmbedSettings:
     """Typed, fail-closed settings for the local FastEmbed BM25 model."""
 
     model_path: Path
-    model_name: str = "Qdrant/bm25"
-    language: str = "english"
+    model_name: str = BM25_MODEL_NAME
+    language: str = BM25_LANGUAGE
+    vector_name: str = SPARSE_VECTOR_NAME
     local_files_only: bool = True
 
     @classmethod

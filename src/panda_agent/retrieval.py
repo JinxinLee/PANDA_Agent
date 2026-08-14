@@ -94,6 +94,7 @@ class Retriever:
             local_files_only=fastembed.local_files_only,
             language=fastembed.language,
         )
+        self.sparse_vector_name = fastembed.vector_name
         manifest = json.loads((self.project_root / "data" / "manifests" / "source_manifest.json").read_text(encoding="utf-8"))
         self.fixed_versions = {item["repo_id"]: item["commit_sha"] for item in manifest["repositories"]}
         self.fixed_refs = {item["repo_id"]: item["ref"] for item in manifest["repositories"]}
@@ -303,7 +304,7 @@ class Retriever:
         sparse = next(iter(self.sparse.query_embed(question)))
         common = dict(collection_name=self.storage.settings.collection_name, query_filter=query_filter, limit=limit, with_payload=True)
         dense_hits = self.storage.qdrant.query_points(query=dense, using="dense", **common).points
-        sparse_hits = self.storage.qdrant.query_points(query=models.SparseVector(indices=sparse.indices.tolist(), values=sparse.values.tolist()), using="sparse", **common).points
+        sparse_hits = self.storage.qdrant.query_points(query=models.SparseVector(indices=sparse.indices.tolist(), values=sparse.values.tolist()), using=self.sparse_vector_name, **common).points
         return dense_hits, sparse_hits, dense
 
     def _paper(self, query_vector: list[float], plan: RetrievalPlan, limit: int) -> list[dict[str, Any]]:

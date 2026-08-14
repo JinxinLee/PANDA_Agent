@@ -9,7 +9,7 @@ When records conflict, use the single section explicitly marked **Current author
 
 ---
 
-# Current authoritative state — 2026-08-13
+# Current authoritative state — 2026-08-14
 
 ## A3 measured execution provenance
 
@@ -25,13 +25,20 @@ When records conflict, use the single section explicitly marked **Current author
 - Index identity: `c527bbf1d10c88969da02745d678c640a4544757258584110a5ddd7744be3cf2` (`index_schema_version=2`).
 - Gold: v2.6, identity `b5406e36c64ee664f9e2ff9c0f42e354feb7164c81d8f1c7551d8f2ed1d0b687`.
 
+## Current runtime defaults after B1
+
+- Base Git commit for the current prototype state: `422246c` (`Finish A3.1`); the working tree is dirty and remains valid prototype provenance.
+- Current generation and evaluation-judge defaults: `gemini-3.7-flash`.
+- Dense embedding remains `gemini-embedding-2`, configured at 3072 dimensions.
+- These current defaults do not rewrite the A3 measured provenance above, which remains `gemini-3.6-flash` with index schema 2 and identity `c527bbf1d10c88969da02745d678c640a4544757258584110a5ddd7744be3cf2`.
+
 ## Generalization Phase status
 
-- Bootstrap tasks A1, A2, and A3: `PASS`.
+- Bootstrap tasks A1–A3: `PASS`; A3.1 hardening: `PASS`; B1: `PASS`.
 - Evaluation modes: `retrieval`, `qa`, and `full` have explicit recorded boundaries.
 - Structured retrieval traces are persisted as atomic JSON and JSONL and can be loaded without rerunning QA.
 - A3 was corrected from a possible full-retrieval interpretation to a stratified low-cost bootstrap baseline. No T3 or full 120-question retrieval/E2E run was performed.
-- Later architecture tasks B1–F6 remain `NOT_STARTED`.
+- Later architecture tasks B2–F6 remain `NOT_STARTED`.
 
 ## Historical full E2E reference
 
@@ -62,6 +69,17 @@ This is a low-cost English Gold reference, not a complete generalization, comple
 - Cost: 72 runtime model calls, 482,907 tokens, 0 external-judge calls.
 - Measured: Recall@5 `0.8416666667`; Recall@10 `0.9`; Recall@20 `0.9`; MRR `0.6866666667`; combined candidate recall `0.95`; final-evidence recall `0.9`; intent accuracy `1.0`; no exceptions.
 
+### Current B1 sparse BM25/Qdrant IDF result
+
+- Installed contract: FastEmbed `0.7.4`, Qdrant client `1.15.1`, live Qdrant server `1.15.5`; `SparseVectorParams()` exposed a null modifier, while FastEmbed BM25 requires server-side IDF.
+- Deployed identity: explicit sparse modifier `idf`, index schema `3`, fingerprint `5f0f9ffe6149091e6c42d650f3a7576466d82b8eb86af0567d9c57a81bb8a937`.
+- Migration: in-place update of `80698` points before/after; no collection recreation, sparse-vector regeneration, dense reinsertion, dense embedding recomputation, or Vertex calls.
+- Cost: 24 sparse encodings and 24 Qdrant sparse queries; analyzer, dense embedding, reranker, answer, verifier, judge, and token usage were all `0`.
+- Fixed 24-query sparse-only comparison (applicable denominator 20; the four `version_conflict` cases remain excluded): Recall@5 `0.375` → `0.475` (`+0.1`), Recall@10 `0.5166666667` → `0.6` (`+0.0833333333`), MRR `0.4212698413` → `0.4201388889` (`-0.0011309524`).
+- Explicit identifier-heavy IDs: `g015,g027,g028,g029,g038,g041,g042,g059,g060`; applicable denominator 8. Recall@5 `0.125` → `0.25` (`+0.125`), Recall@10 `0.2916666667` → `0.375` (`+0.0833333333`), MRR `0.1513888889` → `0.1302083333` (`-0.0211805556`).
+- First-relevant-rank comparison: improved `3`, unchanged `14`, regressed `3`. Improvements were `g025` (14 → 4), `g028` (9 → 8), and `g029` (no hit → 2); regressions were `g002` (7 → 9), `g015` (1 → 3), and `g060` (10 → 12). Recall improved without a broad systematic regression; MRR was effectively flat and slightly lower.
+- Limitation: this is an exposed English Gold bootstrap comparison with a small identifier-heavy subset, not a complete benchmark or novel-question generalization result.
+
 ### Current small E2E baseline
 
 - Run: `generalization-a3-stratified-qa-20260813`.
@@ -90,7 +108,7 @@ The retrieval and QA measurements are unchanged. A3.1 corrects only metric repre
 
 ## Next authorized roadmap task
 
-`B1 — Correct sparse BM25 / Qdrant IDF contract`
+`B2 — Explicit dense embedding dimensionality contract`
 
 ---
 

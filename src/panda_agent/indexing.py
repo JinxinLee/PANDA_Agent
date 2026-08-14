@@ -12,6 +12,12 @@ from pydantic import BaseModel, ConfigDict
 from fastembed import SparseTextEmbedding
 from qdrant_client import models
 
+from panda_agent.config import (
+    BM25_MODEL_NAME,
+    SPARSE_VECTOR_MODIFIER,
+    SPARSE_VECTOR_NAME,
+    FastEmbedSettings,
+)
 from panda_agent.llm.vertex import VertexAIClient, VertexSettings
 from panda_agent.storage import Storage, iter_jsonl, load_jsonl
 
@@ -24,6 +30,8 @@ class IndexIdentity(BaseModel):
     embedding_dimensions: int
     distance: str
     sparse_model: str
+    sparse_vector_name: str
+    sparse_modifier: str
     index_schema_version: str
 
     def fingerprint(self) -> str:
@@ -36,8 +44,10 @@ class IndexIdentity(BaseModel):
             embedding_model=settings.embedding_model,
             embedding_dimensions=settings.embedding_dimensions,
             distance="cosine",
-            sparse_model="Qdrant/bm25",
-            index_schema_version="2",
+            sparse_model=BM25_MODEL_NAME,
+            sparse_vector_name=SPARSE_VECTOR_NAME,
+            sparse_modifier=SPARSE_VECTOR_MODIFIER,
+            index_schema_version="3",
         )
 
 
@@ -129,16 +139,28 @@ def _apply_index(
             existing.update(str(point.id) for point in storage.qdrant.retrieve(collection_name=storage.settings.collection_name,ids=point_ids[start:start+256],with_payload=False,with_vectors=False))
         selected=[item for item,key in zip(selected,cache_keys) if not (key in cached and storage.point_id(item["object_id"]) in existing)]
     vertex = VertexAIClient(vertex_settings) if selected else None
-    sparse_model = SparseTextEmbedding(model_name="Qdrant/bm25",cache_dir=str(project_root/"data"/"cache"/"fastembed")) if selected else None
+    fastembed = FastEmbedSettings.from_env(project_root) if selected else None
+    sparse_model = (
+        SparseTextEmbedding(
+            model_name=fastembed.model_name,
+            specific_model_path=str(fastembed.model_path),
+            local_files_only=fastembed.local_files_only,
+            language=fastembed.language,
+        )
+        if fastembed is not None
+        else None
+    )
     indexed = 0
     batch_size=64
     for start in range(0, len(selected), batch_size):
+        assert fastembed is not None
+        assert sparse_model is not None
         batch = selected[start:start+batch_size]; texts = [f"{item['title']}\n{item['text']}" for item in batch]
         dense = vertex.embed_documents(texts)
         sparse = list(sparse_model.embed(texts))
         points = []
         for item, dense_vector, sparse_vector, text in zip(batch, dense, sparse, texts):
-            points.append(models.PointStruct(id=storage.point_id(item["object_id"]), vector={"dense": dense_vector, "sparse": models.SparseVector(indices=sparse_vector.indices.tolist(), values=sparse_vector.values.tolist())}, payload={"object_id":item["object_id"],"source_id":item["source_id"],"source_version_id":item["source_version_id"],"object_type":item["object_type"],"title":item["title"],"authority_level":item["authority_level"],"locator":item["locator"],"text":item["text"]}))
+            points.append(models.PointStruct(id=storage.point_id(item["object_id"]), vector={"dense": dense_vector, fastembed.vector_name: models.SparseVector(indices=sparse_vector.indices.tolist(), values=sparse_vector.values.tolist())}, payload={"object_id":item["object_id"],"source_id":item["source_id"],"source_version_id":item["source_version_id"],"object_type":item["object_type"],"title":item["title"],"authority_level":item["authority_level"],"locator":item["locator"],"text":item["text"]}))
         storage.qdrant.upsert(collection_name=storage.settings.collection_name, points=points, wait=True); indexed += len(points)
         with storage.connect() as connection:
             for item, text in zip(batch, texts):

@@ -27,8 +27,8 @@ class VertexCallError(RuntimeError):
 class VertexSettings:
     project: str
     location: str = "global"
-    generation_model: str = "gemini-3.6-flash"
-    evaluation_judge_model: str = "gemini-3.6-flash"
+    generation_model: str = "gemini-3.7-flash"
+    evaluation_judge_model: str = "gemini-3.7-flash"
     embedding_model: str = "gemini-embedding-2"
     embedding_dimensions: int = 3072
     timeout_ms: int = 120_000
@@ -48,10 +48,10 @@ class VertexSettings:
                 or "global"
             ),
             generation_model=os.getenv(
-                "QA_GENERATION_MODEL_ID", "gemini-3.6-flash"
+                "QA_GENERATION_MODEL_ID", "gemini-3.7-flash"
             ),
             evaluation_judge_model=os.getenv(
-                "QA_EVALUATION_JUDGE_MODEL_ID", "gemini-3.6-flash"
+                "QA_EVALUATION_JUDGE_MODEL_ID", "gemini-3.7-flash"
             ),
             embedding_model=os.getenv(
                 "QA_EMBEDDING_MODEL_ID", "gemini-embedding-2"

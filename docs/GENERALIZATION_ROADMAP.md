@@ -61,17 +61,18 @@ Statuses describe implementation state; acceptance targets remain planned until 
 
 ### B1 — Correct sparse BM25 / Qdrant IDF contract
 
-- **Status:** NOT_STARTED
+- **Status:** PASS
 - **Problem:** The deployed FastEmbed/Qdrant BM25 path may omit the server-side IDF modifier expected by its sparse scoring contract, weakening rare-identifier discrimination.
 - **Goal:** Confirm installed-version behavior and make indexing/query scoring use the correct BM25/IDF contract.
 - **Why this stage:** Sparse correctness is foundational; tuning queries or fusion before fixing scoring would confound later measurements.
-- **Intended design:** Inspect installed APIs and live collection configuration; apply the correct modifier; update immutable index identity/schema when necessary; rebuild only required sparse/index structures while reusing valid dense embeddings.
+- **Intended design:** Inspect installed APIs and live collection configuration; apply the correct modifier; update immutable index identity/schema when necessary; rebuild only required sparse/index structures while reusing valid dense embeddings. The verified contract uses FastEmbed `0.7.4`, Qdrant client `1.15.1`, live Qdrant server `1.15.5`, and an explicit server-side `idf` modifier.
 - **Functional requirements:** Index/query contracts agree; identity records scoring modifier/model; migration/rebuild is explicit and auditable; dense vectors remain unchanged.
 - **Explicit out of scope:** Dense model/dimensions, analyzer, query expansion, fusion weights, answer logic, aliases, or benchmark-specific compensation.
 - **Dependencies:** A3 baseline, installed FastEmbed/Qdrant versions, index identity, compatible caches.
 - **Authorized evaluation tier:** T0 contract/config tests, T1 live correctness smoke, and targeted T2 lexical/rare-identifier retrieval; no T5.
 - **Primary metrics:** Sparse Recall@5/@10, sparse MRR, rare-identifier retrieval, scoring-contract correctness, rebuild/model-call cost.
-- **Acceptance criteria:** Deployed sparse configuration follows the installed-version IDF contract; indexer/retriever remain compatible; dense embeddings are reused; benchmark/novel effects are reported, not forced.
+- **Acceptance criteria:** Deployed sparse configuration follows the installed-version IDF contract; indexer/retriever remain compatible; dense embeddings are reused; benchmark/novel effects are reported, not forced. PASS: `SparseVectorParams()` previously exposed a null modifier, while the deployed contract now records `modifier=idf`; the immutable identity is schema 3 with fingerprint `5f0f9ffe6149091e6c42d650f3a7576466d82b8eb86af0567d9c57a81bb8a937`. An in-place migration preserved all `80698` points before and after without collection recreation, sparse-vector regeneration, dense reinsertion, dense embedding recomputation, or Vertex calls.
+- **Measured comparison:** On the fixed 24-question sparse-only set (applicable denominator 20), Recall@5 changed from `0.375` to `0.475` (`+0.1`), Recall@10 from `0.5166666667` to `0.6` (`+0.0833333333`), and MRR from `0.4212698413` to `0.4201388889` (`-0.0011309524`). The explicit identifier-heavy subset (9 fixed IDs, applicable denominator 8) changed from Recall@5 `0.125` to `0.25` (`+0.125`), Recall@10 `0.2916666667` to `0.375` (`+0.0833333333`), and MRR `0.1513888889` to `0.1302083333` (`-0.0211805556`). Per-question first-relevant-rank outcomes were improved `3`, unchanged `14`, and regressed `3`; no broad systematic regression was observed.
 - **Failure handling:** Do not add aliases, query phrases, weights, or guards to hide weak sparse results. If API/collection migration is ambiguous, stop before destructive rebuild and report the exact blocker; stop after B1.
 
 ### B2 — Explicit dense embedding dimensionality contract

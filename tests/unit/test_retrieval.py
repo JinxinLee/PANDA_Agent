@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from panda_agent.config import FASTEMBED_MODEL_PATH_ENV, load_query_expansions
+from panda_agent.config import FASTEMBED_MODEL_PATH_ENV, SPARSE_VECTOR_NAME, load_query_expansions
 from panda_agent.retrieval import Retriever
 
 
@@ -27,7 +27,7 @@ class RetrievalTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as model_dir:
             with patch.dict(os.environ, {FASTEMBED_MODEL_PATH_ENV: model_dir}, clear=False):
                 with patch("panda_agent.retrieval.SparseTextEmbedding") as sparse:
-                    Retriever(
+                    retriever = Retriever(
                         PROJECT_ROOT,
                         storage=SimpleNamespace(),
                         vertex=FakeVertex(),
@@ -38,6 +38,39 @@ class RetrievalTests(unittest.TestCase):
                 local_files_only=True,
                 language="english",
             )
+            self.assertEqual(retriever.sparse_vector_name, SPARSE_VECTOR_NAME)
+
+    def test_sparse_query_uses_configured_sparse_vector_name(self):
+        class Values:
+            def __init__(self, values):
+                self.values = values
+
+            def tolist(self):
+                return self.values
+
+        calls = []
+
+        class Qdrant:
+            def query_points(self, **kwargs):
+                calls.append(kwargs)
+                return SimpleNamespace(points=[])
+
+        retriever = Retriever.__new__(Retriever)
+        retriever.vertex = SimpleNamespace(embed_query=lambda question: [0.1])
+        retriever.sparse = SimpleNamespace(
+            query_embed=lambda question: iter(
+                [SimpleNamespace(indices=Values([1]), values=Values([0.5]))]
+            )
+        )
+        retriever.sparse_vector_name = SPARSE_VECTOR_NAME
+        retriever.context_sources = []
+        retriever.storage = SimpleNamespace(
+            settings=SimpleNamespace(collection_name="collection"), qdrant=Qdrant()
+        )
+
+        retriever._vector("identifier", SimpleNamespace(target_repositories=[]), 5)
+
+        self.assertEqual(calls[1]["using"], SPARSE_VECTOR_NAME)
 
     def make_retriever(self):
         value=Retriever.__new__(Retriever)

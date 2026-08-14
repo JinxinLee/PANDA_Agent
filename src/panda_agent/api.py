@@ -37,7 +37,7 @@ from panda_agent.service import (
 
 
 PACKAGE_NAME = "panda-research-qa-agent"
-DEFAULT_GENERATION_MODEL = "gemini-3.6-flash"
+DEFAULT_GENERATION_MODEL = "gemini-3.7-flash"
 PACKAGE_ROOT = Path(__file__).resolve().parent
 MAX_UI_FORM_BODY_BYTES = 65_536
 CONTENT_SECURITY_POLICY = (

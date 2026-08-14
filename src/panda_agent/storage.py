@@ -13,6 +13,8 @@ import psycopg
 from psycopg.types.json import Jsonb
 from qdrant_client import QdrantClient, models
 
+from panda_agent.config import SPARSE_VECTOR_MODIFIER, SPARSE_VECTOR_NAME
+
 
 SCHEMA_SQL = """
 CREATE TABLE IF NOT EXISTS source_versions (
@@ -97,6 +99,17 @@ class Storage:
         return psycopg.connect(self.settings.database_url)
 
     def initialize(self, index_identity: Any | None = None) -> None:
+        if index_identity is not None and (
+            index_identity.sparse_vector_name != SPARSE_VECTOR_NAME
+            or index_identity.sparse_modifier != SPARSE_VECTOR_MODIFIER
+        ):
+            raise RuntimeError(
+                "index identity sparse contract mismatch: "
+                f"vector_name={index_identity.sparse_vector_name!r}, "
+                f"modifier={index_identity.sparse_modifier!r}; "
+                "use the supported B1 sparse contract or perform an explicit migration"
+            )
+        payload = None
         with self.connect() as connection:
             connection.execute(SCHEMA_SQL)
             if index_identity is not None:
@@ -109,17 +122,16 @@ class Storage:
                     raise RuntimeError(
                         "index identity mismatch; use a new collection or perform an explicit migration"
                     )
-                connection.execute(
-                    "INSERT INTO index_identities(collection_name,fingerprint,payload) VALUES(%s,%s,%s) "
-                    "ON CONFLICT(collection_name) DO UPDATE SET fingerprint=excluded.fingerprint,payload=excluded.payload,updated_at=now()",
-                    (self.settings.collection_name, index_identity.fingerprint(), Jsonb(payload)),
-                )
         dimensions = index_identity.embedding_dimensions if index_identity is not None else 3072
         if not self.qdrant.collection_exists(self.settings.collection_name):
             self.qdrant.create_collection(
                 collection_name=self.settings.collection_name,
                 vectors_config={"dense": models.VectorParams(size=dimensions, distance=models.Distance.COSINE)},
-                sparse_vectors_config={"sparse": models.SparseVectorParams()},
+                sparse_vectors_config={
+                    SPARSE_VECTOR_NAME: models.SparseVectorParams(
+                        modifier=models.Modifier(SPARSE_VECTOR_MODIFIER)
+                    )
+                },
             )
         collection=self.qdrant.get_collection(self.settings.collection_name)
         dense_config = collection.config.params.vectors.get("dense")
@@ -127,6 +139,23 @@ class Storage:
             raise RuntimeError(
                 f"Qdrant dense dimension mismatch: existing={dense_config.size}, configured={dimensions}"
             )
+        sparse_config = collection.config.params.sparse_vectors
+        sparse_vector = (sparse_config or {}).get(SPARSE_VECTOR_NAME)
+        modifier = getattr(sparse_vector, "modifier", None)
+        modifier_value = getattr(modifier, "value", modifier)
+        if modifier_value != SPARSE_VECTOR_MODIFIER:
+            raise RuntimeError(
+                "Qdrant sparse modifier mismatch: "
+                f"existing={modifier_value!r}, configured={SPARSE_VECTOR_MODIFIER!r}; "
+                "use a new collection or perform an explicit migration"
+            )
+        if index_identity is not None:
+            with self.connect() as connection:
+                connection.execute(
+                    "INSERT INTO index_identities(collection_name,fingerprint,payload) VALUES(%s,%s,%s) "
+                    "ON CONFLICT(collection_name) DO UPDATE SET fingerprint=excluded.fingerprint,payload=excluded.payload,updated_at=now()",
+                    (self.settings.collection_name, index_identity.fingerprint(), Jsonb(payload)),
+                )
         for field in ("source_id","source_version_id","object_type","authority_level"):
             if field not in collection.payload_schema:
                 self.qdrant.create_payload_index(collection_name=self.settings.collection_name,field_name=field,field_schema=models.PayloadSchemaType.KEYWORD,wait=True)

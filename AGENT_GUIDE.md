@@ -143,7 +143,7 @@ formal M6 or release gate and does not override the user's current M6 acceptance
 
 | 概念 | 通俗解释 | 当前项目中的体现 |
 |---|---|---|
-| Model | 负责理解和生成内容的模型 | Vertex AI runtime 与 M6 judge 使用独立客户端上的 `gemini-3.6-flash`；代码在 `llm/vertex.py` |
+| Model | 负责理解和生成内容的模型 | Vertex AI runtime 与 M6 judge 使用独立客户端上的 `gemini-3.7-flash`；代码在 `llm/vertex.py` |
 | Prompt | 发给模型的指令与上下文 | System instructions 集中在 `prompts.py`；动态 JSON payload 在 `retrieval.py`、`qa.py` 中构造 |
 | Tool | Agent 可调用的外部能力 | 没有标准 LLM Tool Calling；检索通道是由 Python 固定调用的内部能力 |
 | State | 一次任务在各步骤间传递的数据 | `qa.py::QAState` |
@@ -178,8 +178,8 @@ formal M6 or release gate and does not override the user's current M6 acceptance
 | Python `>=3.12` | 全部实现；当前环境 3.12.13 | `pyproject.toml` | 类型系统、科研生态、SDK 支持 | 其他语言需要重写解析与 SDK 层 |
 | LangGraph `1.x` | 构建有界 QA 状态图 | `qa.py::QAAgent.__init__` | 条件分支和循环清晰 | 普通函数状态机、Temporal |
 | Google Gen AI SDK | Vertex structured output 与 embedding | `llm/vertex.py` | 同一客户端支持 Gemini 生成和 embedding | Vertex REST、其他模型适配层 |
-| Gemini 3.5 Flash-Lite | 查询分析、重排、回答、复核 | `VertexSettings.generation_model` | 当前运行链的速度/成本优化 | 兼容 JSON Schema 的其他 Gemini 模型 |
-| Gemini 3.6 Flash | M6 evaluation judge | `VertexSettings.evaluation_judge_model` | 保留较强模型进行门禁评分 | 其他稳定的结构化输出模型 |
+| Gemini 3.7 Flash | 查询分析、重排、回答、复核 | `VertexSettings.generation_model` | 当前运行链的生成模型 | 兼容 JSON Schema 的其他 Gemini 模型 |
+| Gemini 3.7 Flash | M6 evaluation judge | `VertexSettings.evaluation_judge_model` | 当前门禁评分模型 | 其他稳定的结构化输出模型 |
 | Gemini Embedding 2 | 3072 维 dense embedding | `VertexSettings.embedding_model` | 多语言和代码语义检索；用户指定 | 其他 Vertex embedding 或本地模型 |
 | Pydantic 2 | 严格数据契约和验证 | `models.py`、`config.py` | 防止未知字段和非法范围 | dataclass + 手写验证、attrs |
 | PostgreSQL 17 | 元数据、对象、关系、workflow、运行记录 | `storage.py`、`migrations/` | 强查询、JSONB、FTS、事务 | 其他关系数据库 |
@@ -845,8 +845,8 @@ flowchart LR
 | `GCP_PROJECT_ID` | 同上 | 无 | 兼容通用环境命名 | 同上 |
 | `QA_VERTEX_LOCATION` | 否 | `GCP_LOCATION` 或 `global` | Vertex region | 同上 |
 | `GCP_LOCATION` | 否 | `global` | 通用 region fallback | 同上 |
-| `QA_GENERATION_MODEL_ID` | 否 | `gemini-3.6-flash` | runtime 生成模型 | 同上 |
-| `QA_EVALUATION_JUDGE_MODEL_ID` | 否 | `gemini-3.6-flash` | M6 evaluation judge | 同上 |
+| `QA_GENERATION_MODEL_ID` | 否 | `gemini-3.7-flash` | runtime 生成模型 | 同上 |
+| `QA_EVALUATION_JUDGE_MODEL_ID` | 否 | `gemini-3.7-flash` | M6 evaluation judge | 同上 |
 | `QA_EMBEDDING_MODEL_ID` | 否 | `gemini-embedding-2` | embedding 模型 | 同上；但索引 cache 元数据仍硬编码 |
 | `QA_VERTEX_TIMEOUT_MS` | 否 | `120000` | SDK HTTP timeout | 同上 |
 | `QA_EMBEDDING_CONCURRENCY` | 否 | `16` | 文档 embedding 线程数 | `VertexAIClient._embed` |
@@ -868,8 +868,8 @@ flowchart LR
 ```env
 QA_GCP_PROJECT_ID=your-gcp-project-id
 QA_VERTEX_LOCATION=global
-QA_GENERATION_MODEL_ID=gemini-3.6-flash
-QA_EVALUATION_JUDGE_MODEL_ID=gemini-3.6-flash
+QA_GENERATION_MODEL_ID=gemini-3.7-flash
+QA_EVALUATION_JUDGE_MODEL_ID=gemini-3.7-flash
 QA_EMBEDDING_MODEL_ID=gemini-embedding-2
 QA_VERTEX_TIMEOUT_MS=120000
 QA_EMBEDDING_CONCURRENCY=16

@@ -8,9 +8,12 @@ from unittest.mock import patch
 
 from panda_agent.config import (
     DEFAULT_FASTEMBED_MODEL_PATH,
+    BM25_LANGUAGE,
+    BM25_MODEL_NAME,
     FASTEMBED_MODEL_PATH_ENV,
     FastEmbedConfigurationError,
     FastEmbedSettings,
+    SPARSE_VECTOR_NAME,
     load_corpora,
     load_knowledge_schema,
     load_query_expansions,
@@ -37,6 +40,9 @@ class ConfigTests(unittest.TestCase):
                     settings = FastEmbedSettings.from_env(root)
             self.assertEqual(settings.model_path, expected.resolve())
             self.assertTrue(settings.model_path.is_absolute())
+            self.assertEqual(settings.model_name, BM25_MODEL_NAME)
+            self.assertEqual(settings.language, BM25_LANGUAGE)
+            self.assertEqual(settings.vector_name, SPARSE_VECTOR_NAME)
             self.assertEqual(resolve_fastembed_model_path(root), expected.resolve())
 
     def test_fastembed_path_override_is_resolved_from_project_root(self) -> None:

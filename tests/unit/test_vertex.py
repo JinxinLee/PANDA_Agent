@@ -51,24 +51,24 @@ class VertexTests(unittest.TestCase):
             os.environ,
             {
                 "QA_GCP_PROJECT_ID": "test-project",
-                "QA_GENERATION_MODEL_ID": "gemini-3.6-flash",
-                "QA_EVALUATION_JUDGE_MODEL_ID": "gemini-3.6-flash",
+                "QA_GENERATION_MODEL_ID": "gemini-3.7-flash",
+                "QA_EVALUATION_JUDGE_MODEL_ID": "gemini-3.7-flash",
                 "QA_EMBEDDING_MODEL_ID": "gemini-embedding-2",
             },
             clear=True,
         ):
             settings = VertexSettings.from_env()
-        self.assertEqual(settings.generation_model, "gemini-3.6-flash")
-        self.assertEqual(settings.evaluation_judge_model, "gemini-3.6-flash")
+        self.assertEqual(settings.generation_model, "gemini-3.7-flash")
+        self.assertEqual(settings.evaluation_judge_model, "gemini-3.7-flash")
         self.assertEqual(
             settings.for_generation_model(settings.evaluation_judge_model).generation_model,
-            "gemini-3.6-flash",
+            "gemini-3.7-flash",
         )
 
     def test_generation_health_check_reports_model_role(self) -> None:
         result = self.client.generation_health_check()
         self.assertEqual(result["status"], "ok")
-        self.assertEqual(result["generation_model"], "gemini-3.6-flash")
+        self.assertEqual(result["generation_model"], "gemini-3.7-flash")
 
     def test_generate_json_uses_constrained_json_output(self) -> None:
         result = self.client.generate_json(

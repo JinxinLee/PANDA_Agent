@@ -69,7 +69,7 @@ class UIAssetTests(unittest.TestCase):
                 "status": "registered",
                 "knowledge_revision": "knowledge-v1",
                 "service_revision": "0005",
-                "generation_model": "gemini-3.6-flash",
+                "generation_model": "gemini-3.7-flash",
                 "embedding_model": "gemini-embedding-2",
             },
         )
