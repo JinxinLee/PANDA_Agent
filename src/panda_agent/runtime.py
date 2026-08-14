@@ -18,6 +18,7 @@ import requests
 from pydantic import BaseModel, ConfigDict, Field
 
 from panda_agent import kb_bundle
+from panda_agent.sparse import sparse_receipt, sparse_settings
 from panda_agent.storage import Storage, StorageSettings
 
 
@@ -73,10 +74,14 @@ def _dense_dimensions(qdrant: kb_bundle.QdrantState) -> int | None:
 
 
 def _collect_actual(
-    settings: StorageSettings | None, session: requests.Session | None,
+    settings: StorageSettings | None, session: requests.Session | None, project_root: Path,
 ) -> tuple[kb_bundle.PostgresState, kb_bundle.QdrantState, kb_bundle.FastEmbedState, EmbeddingIdentity]:
     storage = Storage(settings)
     session = session or requests.Session()
+    receipt = sparse_receipt(
+        sparse_settings(project_root, model_path=project_root / kb_bundle.INSTALLED_RUNTIME_PATH)
+    )
+    storage.require_sparse_receipt(receipt)
     postgres = kb_bundle.postgres_state(storage)
     qdrant = kb_bundle.qdrant_state(session, storage.settings.qdrant_url, storage.settings.collection_name)
     return postgres, qdrant, kb_bundle.fastembed_state(qdrant), _embedding_identity(storage)
@@ -134,7 +139,7 @@ def validate_runtime_state_without_receipt(
 ) -> dict[str, Any]:
     """Validate live runtime state without reading any prior runtime receipt."""
     manifest = kb_bundle.preflight_bundle(bundle_dir)
-    actual = _collect_actual(settings, session)
+    actual = _collect_actual(settings, session, project_root.resolve())
     checks = _registration_checks(manifest, actual, project_root.resolve())
     return {"valid": all(checks.values()), "checks": checks, "manifest": manifest, "actual": actual}
 
@@ -185,7 +190,7 @@ def verify_runtime(
         return {"valid": False, "runtime_status": "not_registered", "checks": {"registered": False}}
     try:
         identity = _load_identity(path)
-        actual = _collect_actual(settings, session)
+        actual = _collect_actual(settings, session, project_root.resolve())
         postgres, qdrant, fastembed, embedding = actual
         checks = {
             "registered": True,

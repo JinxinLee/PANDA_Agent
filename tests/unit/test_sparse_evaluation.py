@@ -18,6 +18,7 @@ from panda_agent.sparse_evaluation import (
     identifier_heavy,
     rank_metrics,
 )
+from panda_agent.sparse import SparseEncoderReceipt
 
 
 def _case(case_id: str, *, status: QAStatus = QAStatus.ANSWERED, identifier: str | None = None):
@@ -67,6 +68,15 @@ class _Qdrant:
 
 
 class SparseEvaluationTests(unittest.TestCase):
+    @staticmethod
+    def _receipt() -> SparseEncoderReceipt:
+        return SparseEncoderReceipt(
+            model_name="Qdrant/bm25", language="english", vector_name="sparse", modifier="idf",
+            k=1.2, b=0.75, avg_len=256, token_max_length=40, disable_stemmer=False,
+            tokenizer="SimpleTokenizer", stemmer="SnowballStemmer", hash_function="mmh3.hash",
+            fastembed_version="0.7.4", mmh3_version="5.2.1", py_rust_stemmers_version="0.1.8",
+            stopwords_sha256="a" * 64,
+        )
     def test_rank_metrics_and_identifier_rule(self) -> None:
         case = _case("g001", identifier="PndTask")
         lookup = {
@@ -157,12 +167,15 @@ class SparseEvaluationTests(unittest.TestCase):
             )()
             qdrant = _Qdrant()
             encoder = _SparseEncoder()
-            with patch("panda_agent.llm.vertex.VertexAIClient") as vertex:
+            receipt = self._receipt()
+            with (
+                patch("panda_agent.llm.vertex.VertexAIClient") as vertex,
+                patch("panda_agent.sparse_evaluation.create_sparse_encoder", return_value=(encoder, receipt)) as factory,
+            ):
                 result = evaluate_sparse(
                     root,
                     baseline_dir,
                     qdrant=qdrant,
-                    embedder=encoder,
                     collection_name="test",
                     context_sources=["li_2026"],
                     gold_dataset=dataset,
@@ -182,6 +195,8 @@ class SparseEvaluationTests(unittest.TestCase):
                     },
                 )
             vertex.assert_not_called()
+            factory.assert_called_once()
+            self.assertTrue(factory.call_args.args[0].samefile(root))
             self.assertEqual(len(qdrant.calls), 2)
             self.assertEqual(len(encoder.queries), 2)
             self.assertEqual(result["call_accounting"]["sparse_queries"], 2)
@@ -197,6 +212,7 @@ class SparseEvaluationTests(unittest.TestCase):
             self.assertEqual(result["cases"][1]["applicability_reason"], "expected_status=version_conflict; frozen_result_status=version_conflict")
             self.assertEqual(result["cases"][0]["new"]["first_relevant_rank"], 1)
             self.assertEqual(qdrant.calls[0]["using"], "sparse")
+            self.assertEqual(result["sparse_vector_name"], receipt.vector_name)
 
     def test_trace_ids_must_match_manifest_exactly(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
@@ -227,6 +243,7 @@ class SparseEvaluationTests(unittest.TestCase):
                     baseline_dir,
                     qdrant=_Qdrant(),
                     embedder=_SparseEncoder(),
+                    sparse_receipt=self._receipt(),
                     collection_name="test",
                     gold_dataset=type("Dataset", (), {"questions": []})(),
                     object_lookup={},

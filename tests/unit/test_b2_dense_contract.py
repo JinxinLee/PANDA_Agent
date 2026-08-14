@@ -12,6 +12,7 @@ from panda_agent.indexing import (
     _compatible_cache_keys,
     _record_embedding_cache,
 )
+from panda_agent.sparse import SparseEncoderReceipt
 from panda_agent.storage import Storage, StorageSettings
 
 
@@ -84,10 +85,18 @@ def _identity(dimensions: int) -> IndexIdentity:
         embedding_model="gemini-embedding-2",
         embedding_dimensions=dimensions,
         distance="cosine",
-        sparse_model="Qdrant/bm25",
-        sparse_vector_name="sparse",
-        sparse_modifier="idf",
-        index_schema_version="3",
+        sparse=_sparse_receipt(),
+        index_schema_version="4",
+    )
+
+
+def _sparse_receipt() -> SparseEncoderReceipt:
+    return SparseEncoderReceipt(
+        model_name="Qdrant/bm25", language="english", vector_name="sparse", modifier="idf",
+        k=1.2, b=0.75, avg_len=256, token_max_length=40, disable_stemmer=False,
+        tokenizer="SimpleTokenizer", stemmer="SnowballStemmer", hash_function="mmh3.hash",
+        fastembed_version="0.7.4", mmh3_version="5.2.1", py_rust_stemmers_version="0.1.8",
+        stopwords_sha256="a" * 64,
     )
 
 

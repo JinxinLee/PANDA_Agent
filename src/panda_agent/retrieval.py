@@ -9,13 +9,13 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
-from fastembed import SparseTextEmbedding
 from qdrant_client import models
 
-from panda_agent.config import FastEmbedSettings, load_query_expansions, load_retrieval_policies
+from panda_agent.config import load_query_expansions, load_retrieval_policies
 from panda_agent.llm.vertex import VertexAIClient, VertexSettings
 from panda_agent.models import AuthorityLevel, Evidence, RetrievalPlan, SourceLocator, stable_id
 from panda_agent.prompts import QUERY_ANALYZER_SYSTEM_PROMPT, RERANK_SYSTEM_PROMPT
+from panda_agent.sparse import create_sparse_encoder
 from panda_agent.storage import Storage
 
 
@@ -87,14 +87,9 @@ class Retriever:
         self.vertex = vertex or VertexAIClient(VertexSettings.from_env())
         self.policies = load_retrieval_policies(self.project_root / "configs" / "retrieval_policies.yaml")
         self.query_expansions = load_query_expansions(self.project_root / "configs" / "query_expansions.yaml")
-        fastembed = FastEmbedSettings.from_env(self.project_root)
-        self.sparse = SparseTextEmbedding(
-            model_name=fastembed.model_name,
-            specific_model_path=str(fastembed.model_path),
-            local_files_only=fastembed.local_files_only,
-            language=fastembed.language,
-        )
-        self.sparse_vector_name = fastembed.vector_name
+        self.sparse, self.sparse_receipt = create_sparse_encoder(self.project_root)
+        self.storage.require_sparse_receipt(self.sparse_receipt)
+        self.sparse_vector_name = self.sparse_receipt.vector_name
         manifest = json.loads((self.project_root / "data" / "manifests" / "source_manifest.json").read_text(encoding="utf-8"))
         self.fixed_versions = {item["repo_id"]: item["commit_sha"] for item in manifest["repositories"]}
         self.fixed_refs = {item["repo_id"]: item["ref"] for item in manifest["repositories"]}

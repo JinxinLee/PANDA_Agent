@@ -15,10 +15,8 @@ from pathlib import Path
 from statistics import fmean
 from typing import Any, Mapping, Sequence
 
-from fastembed import SparseTextEmbedding
 from qdrant_client import models
 
-from panda_agent.config import FastEmbedSettings, SPARSE_VECTOR_NAME
 from panda_agent.evaluation import (
     GoldDataset,
     GoldQuestion,
@@ -28,6 +26,7 @@ from panda_agent.evaluation import (
 )
 from panda_agent.evaluation_runner import load_object_lookup
 from panda_agent.retrieval_trace import RetrievalTrace
+from panda_agent.sparse import SparseEncoderReceipt, create_sparse_encoder
 from panda_agent.storage import Storage, StorageSettings
 
 
@@ -160,6 +159,7 @@ def query_sparse_ranking(
     *,
     collection_name: str,
     vector: models.SparseVector,
+    vector_name: str,
     query_filter: models.Filter | None,
     limit: int = QUERY_LIMIT,
 ) -> list[str]:
@@ -167,7 +167,7 @@ def query_sparse_ranking(
     result = qdrant.query_points(
         collection_name=collection_name,
         query=vector,
-        using=SPARSE_VECTOR_NAME,
+        using=vector_name,
         query_filter=query_filter,
         limit=limit,
         with_payload=True,
@@ -326,22 +326,13 @@ def _metric_outcomes(cases: Sequence[dict[str, Any]], metric: str) -> dict[str, 
     return counts
 
 
-def _default_embedder(project_root: Path) -> SparseTextEmbedding:
-    settings = FastEmbedSettings.from_env(project_root)
-    return SparseTextEmbedding(
-        model_name=settings.model_name,
-        specific_model_path=str(settings.model_path),
-        local_files_only=settings.local_files_only,
-        language=settings.language,
-    )
-
-
 def evaluate_sparse(
     project_root: str | Path,
     baseline_dir: str | Path,
     *,
     qdrant: Any | None = None,
     embedder: Any | None = None,
+    sparse_receipt: SparseEncoderReceipt | None = None,
     collection_name: str | None = None,
     context_sources: Sequence[str] | None = None,
     gold_dataset: GoldDataset | None = None,
@@ -387,7 +378,9 @@ def evaluate_sparse(
     elif collection_name is None:
         collection_name = StorageSettings.from_env().collection_name
     if embedder is None:
-        embedder = _default_embedder(root)
+        embedder, sparse_receipt = create_sparse_encoder(root)
+    if sparse_receipt is None:
+        raise ValueError("an injected sparse evaluator embedder requires its SparseEncoderReceipt")
     sources = list(context_sources) if context_sources is not None else _context_sources(root)
 
     cases: list[dict[str, Any]] = []
@@ -403,6 +396,7 @@ def evaluate_sparse(
             qdrant,
             collection_name=collection_name,
             vector=vector,
+            vector_name=sparse_receipt.vector_name,
             query_filter=query_filter,
             limit=QUERY_LIMIT,
         )
@@ -450,7 +444,7 @@ def evaluate_sparse(
         "baseline_manifest": str(manifest_path),
         "baseline_dir": str(baseline_path),
         "gold_dataset": str(dataset_path),
-        "sparse_vector_name": SPARSE_VECTOR_NAME,
+        "sparse_vector_name": sparse_receipt.vector_name,
         "query_limit": QUERY_LIMIT,
         "identifier_heavy": {
             "rule": IDENTIFIER_HEAVY_RULE,

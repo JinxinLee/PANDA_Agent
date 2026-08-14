@@ -23,6 +23,14 @@ SPARSE_VECTOR_NAME = "sparse"
 SPARSE_VECTOR_MODIFIER = "idf"
 BM25_MODEL_NAME = "Qdrant/bm25"
 BM25_LANGUAGE = "english"
+BM25_K = 1.2
+BM25_B = 0.75
+BM25_AVG_LEN = 256.0
+BM25_TOKEN_MAX_LENGTH = 40
+BM25_DISABLE_STEMMER = False
+BM25_TOKENIZER = "SimpleTokenizer"
+BM25_STEMMER = "SnowballStemmer"
+BM25_HASH = "mmh3.hash"
 
 
 class FastEmbedConfigurationError(ValueError):
@@ -58,6 +66,11 @@ class FastEmbedSettings:
     language: str = BM25_LANGUAGE
     vector_name: str = SPARSE_VECTOR_NAME
     local_files_only: bool = True
+    k: float = BM25_K
+    b: float = BM25_B
+    avg_len: float = BM25_AVG_LEN
+    token_max_length: int = BM25_TOKEN_MAX_LENGTH
+    disable_stemmer: bool = BM25_DISABLE_STEMMER
 
     @classmethod
     def from_env(cls, project_root: str | Path) -> "FastEmbedSettings":

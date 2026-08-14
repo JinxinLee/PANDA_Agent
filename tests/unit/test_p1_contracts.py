@@ -25,19 +25,26 @@ class P1ContractTests(unittest.TestCase):
 
     def test_index_identity_changes_with_model_or_dimensions(self):
         from panda_agent.indexing import IndexIdentity
+        from panda_agent.sparse import SparseEncoderReceipt
+
+        sparse = SparseEncoderReceipt(
+            model_name="Qdrant/bm25", language="english", vector_name="sparse", modifier="idf",
+            k=1.2, b=0.75, avg_len=256, token_max_length=40, disable_stemmer=False,
+            tokenizer="SimpleTokenizer", stemmer="SnowballStemmer", hash_function="mmh3.hash",
+            fastembed_version="0.7.4", mmh3_version="5.2.1", py_rust_stemmers_version="0.1.8",
+            stopwords_sha256="a" * 64,
+        )
 
         first = IndexIdentity(
             embedding_model="gemini-embedding-2",
             embedding_dimensions=3072,
             distance="cosine",
-            sparse_model="Qdrant/bm25",
-            sparse_vector_name="sparse",
-            sparse_modifier="idf",
-            index_schema_version="3",
+            sparse=sparse,
+            index_schema_version="4",
         )
         second = first.model_copy(update={"embedding_dimensions": 768})
         self.assertNotEqual(first.fingerprint(), second.fingerprint())
-        modifier_changed = first.model_copy(update={"sparse_modifier": "none"})
+        modifier_changed = first.model_copy(update={"sparse": sparse.model_copy(update={"modifier": "none"})})
         self.assertNotEqual(first.fingerprint(), modifier_changed.fingerprint())
 
     def test_high_confidence_intent_router(self):

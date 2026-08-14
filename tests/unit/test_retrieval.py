@@ -3,10 +3,11 @@ from types import SimpleNamespace
 import os
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from panda_agent.config import FASTEMBED_MODEL_PATH_ENV, SPARSE_VECTOR_NAME, load_query_expansions
 from panda_agent.retrieval import Retriever
+from panda_agent.sparse import SparseEncoderReceipt
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -26,18 +27,25 @@ class RetrievalTests(unittest.TestCase):
     def test_init_uses_absolute_local_only_fastembed_runtime_path(self):
         with tempfile.TemporaryDirectory() as model_dir:
             with patch.dict(os.environ, {FASTEMBED_MODEL_PATH_ENV: model_dir}, clear=False):
-                with patch("panda_agent.retrieval.SparseTextEmbedding") as sparse:
+                receipt = SparseEncoderReceipt(
+                    model_name="Qdrant/bm25", language="english", vector_name="sparse", modifier="idf",
+                    k=1.2, b=0.75, avg_len=256, token_max_length=40, disable_stemmer=False,
+                    tokenizer="SimpleTokenizer", stemmer="SnowballStemmer", hash_function="mmh3.hash",
+                    fastembed_version="0.7.4", mmh3_version="5.2.1", py_rust_stemmers_version="0.1.8",
+                    stopwords_sha256="a" * 64,
+                )
+                sparse = Mock()
+                storage = SimpleNamespace(require_sparse_receipt=Mock())
+                with (
+                    patch("panda_agent.retrieval.create_sparse_encoder", return_value=(sparse, receipt)) as factory,
+                ):
                     retriever = Retriever(
                         PROJECT_ROOT,
-                        storage=SimpleNamespace(),
+                        storage=storage,
                         vertex=FakeVertex(),
                     )
-            sparse.assert_called_once_with(
-                model_name="Qdrant/bm25",
-                specific_model_path=str(Path(model_dir).resolve()),
-                local_files_only=True,
-                language="english",
-            )
+            factory.assert_called_once_with(PROJECT_ROOT.resolve())
+            storage.require_sparse_receipt.assert_called_once_with(receipt)
             self.assertEqual(retriever.sparse_vector_name, SPARSE_VECTOR_NAME)
 
     def test_sparse_query_uses_configured_sparse_vector_name(self):

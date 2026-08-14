@@ -4,26 +4,51 @@ from __future__ import annotations
 
 import hashlib
 import json
+import struct
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict
+from psycopg.types.json import Jsonb
 
-from fastembed import SparseTextEmbedding
 from qdrant_client import models
 
-from panda_agent.config import (
-    BM25_MODEL_NAME,
-    SPARSE_VECTOR_MODIFIER,
-    SPARSE_VECTOR_NAME,
-    FastEmbedSettings,
-)
+from panda_agent.config import BM25_MODEL_NAME, SPARSE_VECTOR_MODIFIER, SPARSE_VECTOR_NAME
 from panda_agent.llm.vertex import VertexAIClient, VertexSettings
+from panda_agent.sparse import SparseEncoderReceipt, create_sparse_encoder, sparse_receipt, sparse_settings
 from panda_agent.storage import Storage, iter_jsonl, load_jsonl
 
 
 class IndexIdentity(BaseModel):
     """Immutable vector-index contract; any field change requires migration."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+    embedding_model: str
+    embedding_dimensions: int
+    distance: str
+    sparse: SparseEncoderReceipt
+    index_schema_version: Literal["4"]
+
+    def fingerprint(self) -> str:
+        payload = self.model_dump_json(exclude_none=False)
+        return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+    @classmethod
+    def from_settings(
+        cls, settings: VertexSettings, project_root: Path | None = None,
+    ) -> "IndexIdentity":
+        root = (project_root or Path(__file__).resolve().parents[2]).resolve()
+        return cls(
+            embedding_model=settings.embedding_model,
+            embedding_dimensions=settings.embedding_dimensions,
+            distance="cosine",
+            sparse=sparse_receipt(sparse_settings(root)),
+            index_schema_version="4",
+        )
+
+
+class LegacyIndexIdentity(BaseModel):
+    """Exact schema-3 identity accepted only by the B3 metadata migration."""
 
     model_config = ConfigDict(extra="forbid", frozen=True)
     embedding_model: str
@@ -35,11 +60,10 @@ class IndexIdentity(BaseModel):
     index_schema_version: str
 
     def fingerprint(self) -> str:
-        payload = self.model_dump_json(exclude_none=False)
-        return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+        return hashlib.sha256(self.model_dump_json(exclude_none=False).encode("utf-8")).hexdigest()
 
     @classmethod
-    def from_settings(cls, settings: VertexSettings) -> "IndexIdentity":
+    def from_settings(cls, settings: VertexSettings) -> "LegacyIndexIdentity":
         return cls(
             embedding_model=settings.embedding_model,
             embedding_dimensions=settings.embedding_dimensions,
@@ -114,6 +138,130 @@ def verify_index(project_root:Path)->dict[str,Any]:
     return {"valid":expected==actual and sql_counts==expected_sql,"expected_points":len(expected),"actual_points":len(actual),"missing_points":len(expected-actual),"stale_points":len(actual-expected),"sql_counts":sql_counts,"expected_sql_counts":expected_sql}
 
 
+def _list_values(value: Any) -> list[Any]:
+    return list(value.tolist()) if hasattr(value, "tolist") else list(value)
+
+
+def _float32_equal(left: Any, right: Any) -> bool:
+    return struct.pack("<f", float(left)) == struct.pack("<f", float(right))
+
+
+def _assert_sparse_vector_equal(expected: Any, actual: Any) -> None:
+    if actual is None:
+        raise RuntimeError("B3 migration sample is missing its sparse vector")
+    def values_by_index(vector: Any) -> dict[int, Any]:
+        indices = [int(value) for value in _list_values(vector.indices)]
+        values = _list_values(vector.values)
+        if len(indices) != len(values) or len(indices) != len(set(indices)):
+            raise RuntimeError("B3 migration sparse vector has duplicate or malformed indices")
+        return dict(zip(indices, values))
+
+    expected_values = values_by_index(expected)
+    actual_values = values_by_index(actual)
+    if set(expected_values) != set(actual_values):
+        raise RuntimeError("B3 migration sparse vector index mismatch")
+    if any(
+        not _float32_equal(expected_values[index], actual_values[index])
+        for index in expected_values
+    ):
+        raise RuntimeError("B3 migration sparse vector float32 value mismatch")
+
+
+def _migration_sparse_samples(storage: Storage, vector_name: str) -> list[Any]:
+    """Take the first eight Qdrant points in native deterministic scroll order."""
+    cursor = None
+    samples: list[Any] = []
+    while len(samples) < 8:
+        points, cursor = storage.qdrant.scroll(
+            collection_name=storage.settings.collection_name,
+            limit=8 - len(samples),
+            offset=cursor,
+            with_payload=True,
+            with_vectors=[vector_name],
+        )
+        samples.extend(points)
+        if cursor is None:
+            break
+    if len(samples) != 8:
+        raise RuntimeError(f"B3 metadata migration requires exactly 8 deterministic Qdrant points, got {len(samples)}")
+    return samples
+
+
+def migrate_b3_sparse_identity(project_root: Path, *, run: bool = False) -> dict[str, Any]:
+    """Validate eight existing vectors, then optionally replace only schema-3 metadata."""
+    root = project_root.resolve()
+    storage = Storage()
+    vertex_settings = VertexSettings.from_env()
+    expected_legacy = LegacyIndexIdentity.from_settings(vertex_settings)
+    identity = IndexIdentity.from_settings(vertex_settings, root)
+    with storage.connect() as connection:
+        row = connection.execute(
+            "SELECT fingerprint,payload FROM index_identities WHERE collection_name=%s",
+            (storage.settings.collection_name,),
+        ).fetchone()
+    if row is None:
+        raise RuntimeError("B3 metadata migration requires an existing schema-3 index identity")
+    payload = row[1] if isinstance(row[1], dict) else json.loads(row[1])
+    legacy = LegacyIndexIdentity.model_validate(payload)
+    if (
+        legacy != expected_legacy
+        or payload != expected_legacy.model_dump(mode="json")
+        or row[0] != expected_legacy.fingerprint()
+    ):
+        raise RuntimeError("B3 metadata migration requires the exact expected schema-3 identity")
+    collection = storage._verify_qdrant_sparse_config(identity.sparse)
+    dense = collection.config.params.vectors.get("dense")
+    if dense is None or dense.size != identity.embedding_dimensions:
+        raise RuntimeError("B3 metadata migration requires the expected dense Qdrant contract")
+    samples = _migration_sparse_samples(storage, identity.sparse.vector_name)
+    model, receipt = create_sparse_encoder(root)
+    if receipt != identity.sparse:
+        raise RuntimeError("B3 metadata migration sparse factory receipt changed during validation")
+    texts: list[str] = []
+    sample_point_ids: list[str] = []
+    for point in samples:
+        payload = point.payload or {}
+        title, text = payload.get("title"), payload.get("text")
+        if not isinstance(title, str) or not isinstance(text, str):
+            raise RuntimeError(f"B3 migration sample payload lacks exact title/text: {point.id}")
+        sample_point_ids.append(str(point.id))
+        texts.append(f"{title}\n{text}")
+    embedded = list(model.embed(texts))
+    if len(embedded) != len(samples):
+        raise RuntimeError("B3 metadata migration sparse encoder returned an unexpected sample count")
+    for point, vector in zip(samples, embedded):
+        vectors = point.vector or {}
+        actual = vectors.get(identity.sparse.vector_name) if isinstance(vectors, dict) else None
+        _assert_sparse_vector_equal(vector, actual)
+    report = {
+        "valid": True,
+        "dry_run": not run,
+        "migration": "b3_sparse_identity_schema3_to_schema4",
+        "sample_count": len(samples),
+        "sampling_rule": "first 8 Qdrant points in native scroll order with payload and sparse vector",
+        "sample_point_ids": sample_point_ids,
+        "old_fingerprint": expected_legacy.fingerprint(),
+        "new_fingerprint": identity.fingerprint(),
+        "vectors_changed": 0,
+    }
+    if not run:
+        return report
+    with storage.connect() as connection:
+        updated = connection.execute(
+            "UPDATE index_identities SET fingerprint=%s,payload=%s,updated_at=now() "
+            "WHERE collection_name=%s AND fingerprint=%s RETURNING fingerprint",
+            (
+                identity.fingerprint(),
+                Jsonb(identity.model_dump(mode="json")),
+                storage.settings.collection_name,
+                expected_legacy.fingerprint(),
+            ),
+        ).fetchone()
+    if updated is None:
+        raise RuntimeError("B3 metadata migration lost the expected schema-3 identity before update")
+    return {**report, "dry_run": False, "updated": True}
+
+
 def _apply_index(
     project_root: Path,
     *,
@@ -123,7 +271,7 @@ def _apply_index(
 ) -> dict[str, Any]:
     root = normalized_dir(project_root); storage = Storage()
     vertex_settings = VertexSettings.from_env()
-    identity = IndexIdentity.from_settings(vertex_settings)
+    identity = IndexIdentity.from_settings(vertex_settings, project_root)
     storage.initialize(identity)
     with storage.connect() as connection:
         connection.execute(
@@ -176,28 +324,19 @@ def _apply_index(
             existing.update(str(point.id) for point in storage.qdrant.retrieve(collection_name=storage.settings.collection_name,ids=point_ids[start:start+256],with_payload=False,with_vectors=False))
         selected=[item for item,key in zip(selected,cache_keys) if not (key in cached and storage.point_id(item["object_id"]) in existing)]
     vertex = VertexAIClient(vertex_settings) if selected else None
-    fastembed = FastEmbedSettings.from_env(project_root) if selected else None
-    sparse_model = (
-        SparseTextEmbedding(
-            model_name=fastembed.model_name,
-            specific_model_path=str(fastembed.model_path),
-            local_files_only=fastembed.local_files_only,
-            language=fastembed.language,
-        )
-        if fastembed is not None
-        else None
-    )
+    sparse_model, sparse_identity = create_sparse_encoder(project_root) if selected else (None, identity.sparse)
+    if sparse_identity != identity.sparse:
+        raise RuntimeError("sparse factory receipt changed during index initialization")
     indexed = 0
     batch_size=64
     for start in range(0, len(selected), batch_size):
-        assert fastembed is not None
         assert sparse_model is not None
         batch = selected[start:start+batch_size]; texts = [f"{item['title']}\n{item['text']}" for item in batch]
         dense = vertex.embed_documents(texts)
-        sparse = list(sparse_model.embed(texts))
+        sparse_vectors = list(sparse_model.embed(texts))
         points = []
-        for item, dense_vector, sparse_vector, text in zip(batch, dense, sparse, texts):
-            points.append(models.PointStruct(id=storage.point_id(item["object_id"]), vector={"dense": dense_vector, fastembed.vector_name: models.SparseVector(indices=sparse_vector.indices.tolist(), values=sparse_vector.values.tolist())}, payload={"object_id":item["object_id"],"source_id":item["source_id"],"source_version_id":item["source_version_id"],"object_type":item["object_type"],"title":item["title"],"authority_level":item["authority_level"],"locator":item["locator"],"text":item["text"]}))
+        for item, dense_vector, sparse_vector, text in zip(batch, dense, sparse_vectors, texts):
+            points.append(models.PointStruct(id=storage.point_id(item["object_id"]), vector={"dense": dense_vector, sparse_identity.vector_name: models.SparseVector(indices=sparse_vector.indices.tolist(), values=sparse_vector.values.tolist())}, payload={"object_id":item["object_id"],"source_id":item["source_id"],"source_version_id":item["source_version_id"],"object_type":item["object_type"],"title":item["title"],"authority_level":item["authority_level"],"locator":item["locator"],"text":item["text"]}))
         storage.qdrant.upsert(collection_name=storage.settings.collection_name, points=points, wait=True); indexed += len(points)
         with storage.connect() as connection:
             for item, text in zip(batch, texts):

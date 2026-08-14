@@ -126,8 +126,10 @@ class SparseContractTests(unittest.TestCase):
         )
         identity = SimpleNamespace(
             embedding_dimensions=3072,
-            sparse_vector_name=SPARSE_VECTOR_NAME,
-            sparse_modifier="idf",
+            sparse=SimpleNamespace(
+                model_name="Qdrant/bm25", language="english", vector_name=SPARSE_VECTOR_NAME,
+                modifier="idf",
+            ),
             fingerprint=lambda: "new",
             model_dump=lambda **kwargs: {},
         )
@@ -146,8 +148,10 @@ class SparseContractTests(unittest.TestCase):
         )
         identity = SimpleNamespace(
             embedding_dimensions=3072,
-            sparse_vector_name=SPARSE_VECTOR_NAME,
-            sparse_modifier="none",
+            sparse=SimpleNamespace(
+                model_name="Qdrant/bm25", language="english", vector_name=SPARSE_VECTOR_NAME,
+                modifier="none",
+            ),
             fingerprint=lambda: "bad",
             model_dump=lambda **kwargs: {},
         )

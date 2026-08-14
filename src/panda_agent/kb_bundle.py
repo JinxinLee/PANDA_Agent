@@ -12,7 +12,6 @@ import subprocess
 from typing import Any, Callable, Literal, Sequence
 
 import fastembed
-from fastembed import SparseTextEmbedding
 import requests
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
@@ -25,7 +24,9 @@ from panda_agent.evaluator_catalog import (
     write_evaluator_catalog,
 )
 from panda_agent.evaluation_runner import default_gold_dataset_path
+from panda_agent.config import BM25_LANGUAGE, BM25_MODEL_NAME
 from panda_agent.indexing import normalized_dir, verify_index
+from panda_agent.sparse import create_sparse_encoder
 from panda_agent.storage import Storage, StorageSettings
 
 
@@ -243,7 +244,7 @@ def fastembed_state(qdrant: QdrantState) -> FastEmbedState:
     if modifier is not None and not isinstance(modifier, str):
         raise BundleError("Qdrant sparse modifier must be a string or null")
     return FastEmbedState(
-        model="Qdrant/bm25", vector_name=names[0], language="english", modifier=modifier,
+        model=BM25_MODEL_NAME, vector_name=names[0], language=BM25_LANGUAGE, modifier=modifier,
         fastembed_version=str(getattr(fastembed, "__version__", "unknown")),
     )
 
@@ -431,9 +432,7 @@ def _verify_runtime(project_root: Path) -> bool:
     if not model_path.is_dir() or not any(model_path.iterdir()):
         return False
     try:
-        model = SparseTextEmbedding(
-            model_name="Qdrant/bm25", specific_model_path=str(model_path), local_files_only=True, language="english",
-        )
+        model, _ = create_sparse_encoder(project_root, model_path=model_path)
         vector = next(iter(model.query_embed("PANDA local runtime verification")))
         values = getattr(vector, "values", vector)
         return len(values) > 0

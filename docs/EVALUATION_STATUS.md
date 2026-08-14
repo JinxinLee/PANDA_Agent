@@ -34,11 +34,11 @@ When records conflict, use the single section explicitly marked **Current author
 
 ## Generalization Phase status
 
-- Bootstrap tasks A1–A3: `PASS`; A3.1 hardening: `PASS`; B1: `PASS`.
+- Bootstrap tasks A1–A3: `PASS`; A3.1 hardening: `PASS`; B1: `PASS`; B2: `PASS`; B3: `PASS`.
 - Evaluation modes: `retrieval`, `qa`, and `full` have explicit recorded boundaries.
 - Structured retrieval traces are persisted as atomic JSON and JSONL and can be loaded without rerunning QA.
 - A3 was corrected from a possible full-retrieval interpretation to a stratified low-cost bootstrap baseline. No T3 or full 120-question retrieval/E2E run was performed.
-- B2: `PASS`; later architecture tasks B3–F6 remain `NOT_STARTED`.
+- B4–F6 remain `NOT_STARTED`; B4 is the next authorized roadmap task.
 
 ## Historical full E2E reference
 
@@ -88,6 +88,14 @@ This is a low-cost English Gold reference, not a complete generalization, comple
 - Live collection: Qdrant size is 3072 with `80698` points; three sampled vectors are length 3072. No collection/index migration, dense-vector migration, or re-embedding was needed.
 - Verification cost: T0 final suite `50` tests passed, along with `compileall` and `git diff --check`. The supplemental live endpoint smoke then used the production `VertexAIClient` for exactly one `RETRIEVAL_QUERY` and one `RETRIEVAL_DOCUMENT` request; both explicitly requested and returned 3072 dimensions with `gemini-embedding-2` in `global`. Cost was two embedding calls, zero generation/judge calls, and no token usage metadata returned by the embedding API.
 
+### Current B3 unified sparse encoder identity/factory result
+
+- Implementation: the former independent sparse construction paths in `src/panda_agent/indexing.py`, `retrieval.py`, `sparse_evaluation.py`, and `kb_bundle.py` now use the sole `create_sparse_encoder` factory and `SparseEncoderReceipt` contract in `src/panda_agent/sparse.py`.
+- Portable receipt: `Qdrant/bm25`, English, vector `sparse`, modifier `idf`, `k=1.2`, `b=0.75`, `avg_len=256.0`, `token_max_length=40`, `disable_stemmer=false`, `SimpleTokenizer`, `SnowballStemmer`, `mmh3.hash`, FastEmbed `0.7.4`, `mmh3` `5.2.1`, `py-rust-stemmers` `0.1.8`, and English stopwords `english.txt` SHA-256 `019f104ba2ed07436d05f9cdd3383034ad66014edc27fc651f837e1a038b6451`.
+- Identity boundary: machine-specific `model_path`, `local_files_only`, `threads`, and `device` are excluded from portable semantic identity because they describe installation or runtime policy; `local_files_only` is nevertheless mandatory and fail-closed. Semantic receipt or Qdrant/persisted-contract mismatches reject startup/migration rather than degrade silently.
+- Schema/migration: schema 3 fingerprint `5f0f9ffe6149091e6c42d650f3a7576466d82b8eb86af0567d9c57a81bb8a937` migrated to schema 4 fingerprint `8172f9a640e62977be6e911bfb4848ce3aecd0994f1f3ba51a0985bffec62cb9`. Dry-run and `--run` sampled the first eight points in native Qdrant scroll order, re-encoded `title + "\n" + text`, matched point sets and sparse index sets, and found float32 bit-exact sparse values for 8/8 points with `mismatch=0`.
+- Migration effect and cost: the only write was one metadata-only PostgreSQL single-row CAS update. Qdrant remains at `80698` points with dense size `3072` and sparse `idf`; no collection rebuild, sparse/dense vector regeneration or reinsertion, dense embedding recomputation, or Vertex call occurred. T0 final verification passed `63` tests plus `compileall`, `git diff --check`, and one constructor smoke. T1 local FastEmbed used eight dry-run and eight `--run` document encodes (16 total), two Qdrant scroll/read rounds, and one SQL identity update; generation, analyzer, embedding, reranker, QA, verifier, judge, token, benchmark, Retriever/QA, T3+ work were all zero/not run.
+
 ### Current small E2E baseline
 
 - Run: `generalization-a3-stratified-qa-20260813`.
@@ -116,7 +124,7 @@ The retrieval and QA measurements are unchanged. A3.1 corrects only metric repre
 
 ## Next authorized roadmap task
 
-`B3 — Unified sparse encoder identity/factory`
+`B4 — Precise derived-chunk locators` (B4 remains `NOT_STARTED`)
 
 ---
 

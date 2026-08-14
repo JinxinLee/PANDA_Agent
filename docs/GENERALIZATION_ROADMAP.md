@@ -92,17 +92,19 @@ Statuses describe implementation state; acceptance targets remain planned until 
 
 ### B3 — Unified sparse encoder identity/factory
 
-- **Status:** NOT_STARTED
+- **Status:** PASS
 - **Problem:** Indexer and retriever independently constructing sparse encoders can silently diverge in model, language, tokenizer, or scoring configuration.
 - **Goal:** Establish one authoritative construction/identity path and fail closed on mismatch.
 - **Why this stage:** B1 defines scoring and B2 completes dense identity; B3 consolidates sparse reproducibility before ingestion/chunk changes.
-- **Intended design:** Reuse a shared factory/configuration receipt; include model, language where relevant, scoring modifier, and meaningful tokenizer/model settings in index identity.
-- **Functional requirements:** Index/query encoder receipts match; startup/index compatibility check rejects mismatch; offline local-model behavior remains fail-closed.
+- **Intended design:** Reuse `src/panda_agent/sparse.py` as the sole factory and receipt path; include model, language, scoring modifier, and meaningful tokenizer/model settings in index identity.
+- **Functional requirements:** Index/query encoder receipts match; startup/index compatibility checks reject mismatch; offline local-model behavior remains fail-closed. The former independent `SparseTextEmbedding` construction in `indexing.py`, `retrieval.py`, `sparse_evaluation.py`, and `kb_bundle.py` now delegates to `create_sparse_encoder`.
 - **Explicit out of scope:** Multilingual sparse models, Chinese tokenization, new aliases, retrieval tuning, or dense changes.
 - **Dependencies:** B1 sparse contract, current configuration and index identity.
 - **Authorized evaluation tier:** T0 identity/factory tests and minimal integration compatibility smoke.
 - **Primary metrics:** Identity equality across indexing/retrieval and deterministic mismatch rejection.
-- **Acceptance criteria:** No independent divergent construction path remains; relevant sparse identity is persisted; mismatch cannot degrade silently.
+- **Acceptance criteria:** PASS: `SparseEncoderReceipt` and `create_sparse_encoder` are the authoritative contract. The receipt binds `Qdrant/bm25`, English, `sparse`, `idf`, `k=1.2`, `b=0.75`, `avg_len=256.0`, `token_max_length=40`, `disable_stemmer=false`, `SimpleTokenizer`, `SnowballStemmer`, `mmh3.hash`, FastEmbed `0.7.4`, `mmh3` `5.2.1`, `py-rust-stemmers` `0.1.8`, and the English stopword asset SHA-256 `019f104ba2ed07436d05f9cdd3383034ad66014edc27fc651f837e1a038b6451`. Machine-specific `model_path`, `local_files_only`, `threads`, and `device` are excluded from portable semantic identity: the path and execution settings are environment/runtime concerns, while `local_files_only` is enforced as a fail-closed loading policy. Persisted/Qdrant receipt mismatch and sparse modifier/schema mismatch fail closed.
+- **Measured verification:** The schema-3 identity migrated to schema 4, changing fingerprint `5f0f9ffe6149091e6c42d650f3a7576466d82b8eb86af0567d9c57a81bb8a937` to `8172f9a640e62977be6e911bfb4848ce3aecd0994f1f3ba51a0985bffec62cb9`. Both dry-run and `--run` validated the first eight points in native Qdrant scroll order by re-encoding `title + "\n" + text`; point sets and sparse index sets matched, and sparse values were float32 bit-exact for 8/8 points with zero mismatches. The run performed one metadata-only PostgreSQL single-row CAS update; Qdrant remained at 80,698 points with dense size 3072 and sparse `idf`, with no collection rebuild, vector regeneration/reinsertion, dense re-embedding, or Vertex call.
+- **Evaluation cost and limitation:** T0 final verification passed 63 tests, `compileall`, `git diff --check`, and one constructor smoke. T1 used local FastEmbed only: eight document encodes in dry-run plus eight in `--run` (16 total), two Qdrant scroll/read passes, and one SQL identity update. Generation, analyzer, dense embedding, reranker, answer, verifier, judge, Retriever/QA, token usage, benchmark, T3, and higher evaluations were not run.
 - **Failure handling:** Do not add warnings-and-continue or model fallbacks. Report missing local assets/version incompatibility; stop after B3.
 
 ### B4 — Precise derived-chunk locators

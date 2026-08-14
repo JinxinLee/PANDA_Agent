@@ -43,6 +43,9 @@ class ConfigTests(unittest.TestCase):
             self.assertEqual(settings.model_name, BM25_MODEL_NAME)
             self.assertEqual(settings.language, BM25_LANGUAGE)
             self.assertEqual(settings.vector_name, SPARSE_VECTOR_NAME)
+            self.assertEqual((settings.k, settings.b, settings.avg_len), (1.2, 0.75, 256))
+            self.assertIsInstance(settings.avg_len, float)
+            self.assertEqual((settings.token_max_length, settings.disable_stemmer), (40, False))
             self.assertEqual(resolve_fastembed_model_path(root), expected.resolve())
 
     def test_fastembed_path_override_is_resolved_from_project_root(self) -> None:

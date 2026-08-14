@@ -320,11 +320,10 @@ class KnowledgeBundleContractTests(unittest.TestCase):
             (source / "model.onnx").write_bytes(b"model")
             installed = kb_bundle._install_runtime_from_bundle(bundle, root)
             vector = type("Vector", (), {"values": [1.0]})()
-            with patch.object(kb_bundle, "SparseTextEmbedding") as embedding:
-                embedding.return_value.query_embed.return_value = iter([vector])
+            embedding = type("Embedding", (), {"query_embed": lambda self, text: iter([vector])})()
+            with patch.object(kb_bundle, "create_sparse_encoder", return_value=(embedding, object())) as factory:
                 self.assertTrue(kb_bundle._verify_runtime(root))
-            self.assertEqual(embedding.call_args.kwargs["specific_model_path"], str(installed))
-            self.assertTrue(embedding.call_args.kwargs["local_files_only"])
+            self.assertEqual(factory.call_args.kwargs["model_path"], installed)
 
     def test_existing_restore_and_export_guards_remain_covered(self) -> None:
         with TemporaryDirectory() as directory:

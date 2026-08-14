@@ -3,13 +3,38 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from types import SimpleNamespace
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from panda_agent import kb_bundle, runtime
 
 
 class RuntimeContractTests(unittest.TestCase):
+    def test_collect_actual_rejects_runtime_sparse_receipt_before_registration(self) -> None:
+        receipt = object()
+        storage = SimpleNamespace(require_sparse_receipt=Mock(), settings=SimpleNamespace(
+            qdrant_url="http://qdrant", collection_name="collection"
+        ))
+        postgres = object()
+        qdrant = object()
+        fastembed = object()
+        embedding = runtime.EmbeddingIdentity(model="gemini-embedding-2", dimensions=3072)
+        with (
+            TemporaryDirectory() as directory,
+            patch.object(runtime, "Storage", return_value=storage),
+            patch.object(runtime, "sparse_settings", return_value=object()) as settings,
+            patch.object(runtime, "sparse_receipt", return_value=receipt),
+            patch.object(kb_bundle, "postgres_state", return_value=postgres),
+            patch.object(kb_bundle, "qdrant_state", return_value=qdrant),
+            patch.object(kb_bundle, "fastembed_state", return_value=fastembed),
+            patch.object(runtime, "_embedding_identity", return_value=embedding),
+        ):
+            actual = runtime._collect_actual(None, object(), Path(directory))
+        self.assertEqual(actual, (postgres, qdrant, fastembed, embedding))
+        storage.require_sparse_receipt.assert_called_once_with(receipt)
+        self.assertEqual(settings.call_args.kwargs["model_path"], Path(directory) / kb_bundle.INSTALLED_RUNTIME_PATH)
+
     def _manifest(self) -> kb_bundle.BundleManifest:
         samples = [
             kb_bundle.VerificationSample(

@@ -13,7 +13,8 @@ import psycopg
 from psycopg.types.json import Jsonb
 from qdrant_client import QdrantClient, models
 
-from panda_agent.config import SPARSE_VECTOR_MODIFIER, SPARSE_VECTOR_NAME
+from panda_agent.config import BM25_LANGUAGE, BM25_MODEL_NAME, SPARSE_VECTOR_MODIFIER, SPARSE_VECTOR_NAME
+from panda_agent.sparse import SparseEncoderReceipt
 
 
 SCHEMA_SQL = """
@@ -98,17 +99,62 @@ class Storage:
     def connect(self):
         return psycopg.connect(self.settings.database_url)
 
-    def initialize(self, index_identity: Any | None = None) -> None:
-        if index_identity is not None and (
-            index_identity.sparse_vector_name != SPARSE_VECTOR_NAME
-            or index_identity.sparse_modifier != SPARSE_VECTOR_MODIFIER
+    @staticmethod
+    def _require_authoritative_sparse_receipt(receipt: SparseEncoderReceipt) -> None:
+        if (
+            receipt.model_name != BM25_MODEL_NAME
+            or receipt.language != BM25_LANGUAGE
+            or receipt.vector_name != SPARSE_VECTOR_NAME
+            or receipt.modifier != SPARSE_VECTOR_MODIFIER
         ):
             raise RuntimeError(
-                "index identity sparse contract mismatch: "
-                f"vector_name={index_identity.sparse_vector_name!r}, "
-                f"modifier={index_identity.sparse_modifier!r}; "
-                "use the supported B1 sparse contract or perform an explicit migration"
+                "index identity sparse contract mismatch: receipt does not match the authoritative B3 contract; "
+                "use an explicit migration for a semantic sparse change"
             )
+
+    def _verify_qdrant_sparse_config(self, receipt: SparseEncoderReceipt) -> Any:
+        collection = self.qdrant.get_collection(self.settings.collection_name)
+        sparse_config = collection.config.params.sparse_vectors
+        sparse_vector = (sparse_config or {}).get(receipt.vector_name)
+        modifier = getattr(sparse_vector, "modifier", None)
+        modifier_value = getattr(modifier, "value", modifier)
+        if modifier_value != receipt.modifier:
+            raise RuntimeError(
+                "Qdrant sparse modifier mismatch: "
+                f"existing={modifier_value!r}, configured={receipt.modifier!r}; "
+                "use a new collection or perform an explicit migration"
+            )
+        return collection
+
+    def require_sparse_receipt(self, receipt: SparseEncoderReceipt) -> None:
+        """Bind runtime sparse assets to the persisted index before serving traffic."""
+        self._require_authoritative_sparse_receipt(receipt)
+        with self.connect() as connection:
+            row = connection.execute(
+                "SELECT fingerprint,payload FROM index_identities WHERE collection_name=%s",
+                (self.settings.collection_name,),
+            ).fetchone()
+        if row is None:
+            raise RuntimeError("index identity is missing; runtime cannot verify sparse assets")
+        fingerprint, raw_payload = row
+        try:
+            from panda_agent.indexing import IndexIdentity
+
+            payload = raw_payload if isinstance(raw_payload, dict) else json.loads(raw_payload)
+            identity = IndexIdentity.model_validate(payload)
+        except (ImportError, TypeError, ValueError) as exc:
+            raise RuntimeError("persisted index identity schema is invalid") from exc
+        if (
+            identity.model_dump(mode="json") != payload
+            or identity.fingerprint() != fingerprint
+            or identity.sparse != receipt
+        ):
+            raise RuntimeError("persisted sparse receipt does not match local runtime assets")
+        self._verify_qdrant_sparse_config(receipt)
+
+    def initialize(self, index_identity: Any | None = None) -> None:
+        if index_identity is not None:
+            self._require_authoritative_sparse_receipt(index_identity.sparse)
         payload = None
         with self.connect() as connection:
             connection.execute(SCHEMA_SQL)
@@ -139,16 +185,19 @@ class Storage:
             raise RuntimeError(
                 f"Qdrant dense dimension mismatch: existing={dense_config.size}, configured={dimensions}"
             )
-        sparse_config = collection.config.params.sparse_vectors
-        sparse_vector = (sparse_config or {}).get(SPARSE_VECTOR_NAME)
-        modifier = getattr(sparse_vector, "modifier", None)
-        modifier_value = getattr(modifier, "value", modifier)
-        if modifier_value != SPARSE_VECTOR_MODIFIER:
-            raise RuntimeError(
-                "Qdrant sparse modifier mismatch: "
-                f"existing={modifier_value!r}, configured={SPARSE_VECTOR_MODIFIER!r}; "
-                "use a new collection or perform an explicit migration"
-            )
+        if index_identity is not None:
+            self._verify_qdrant_sparse_config(index_identity.sparse)
+        else:
+            sparse_config = collection.config.params.sparse_vectors
+            sparse_vector = (sparse_config or {}).get(SPARSE_VECTOR_NAME)
+            modifier = getattr(sparse_vector, "modifier", None)
+            modifier_value = getattr(modifier, "value", modifier)
+            if modifier_value != SPARSE_VECTOR_MODIFIER:
+                raise RuntimeError(
+                    "Qdrant sparse modifier mismatch: "
+                    f"existing={modifier_value!r}, configured={SPARSE_VECTOR_MODIFIER!r}; "
+                    "use a new collection or perform an explicit migration"
+                )
         if index_identity is not None:
             with self.connect() as connection:
                 connection.execute(
