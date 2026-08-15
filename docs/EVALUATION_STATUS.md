@@ -34,11 +34,11 @@ When records conflict, use the single section explicitly marked **Current author
 
 ## Generalization Phase status
 
-- Bootstrap tasks A1–A3: `PASS`; A3.1 hardening: `PASS`; B1: `PASS`; B2: `PASS`; B3: `PASS`.
+- Bootstrap tasks A1–A3: `PASS`; A3.1 hardening: `PASS`; B1: `PASS`; B2: `PASS`; B3: `PASS`; B4: `PASS`.
 - Evaluation modes: `retrieval`, `qa`, and `full` have explicit recorded boundaries.
 - Structured retrieval traces are persisted as atomic JSON and JSONL and can be loaded without rerunning QA.
 - A3 was corrected from a possible full-retrieval interpretation to a stratified low-cost bootstrap baseline. No T3 or full 120-question retrieval/E2E run was performed.
-- B4–F6 remain `NOT_STARTED`; B4 is the next authorized roadmap task.
+- B5–F6 remain `NOT_STARTED`; B5 is the next authorized roadmap task.
 
 ## Historical full E2E reference
 
@@ -96,6 +96,16 @@ This is a low-cost English Gold reference, not a complete generalization, comple
 - Schema/migration: schema 3 fingerprint `5f0f9ffe6149091e6c42d650f3a7576466d82b8eb86af0567d9c57a81bb8a937` migrated to schema 4 fingerprint `8172f9a640e62977be6e911bfb4848ce3aecd0994f1f3ba51a0985bffec62cb9`. Dry-run and `--run` sampled the first eight points in native Qdrant scroll order, re-encoded `title + "\n" + text`, matched point sets and sparse index sets, and found float32 bit-exact sparse values for 8/8 points with `mismatch=0`.
 - Migration effect and cost: the only write was one metadata-only PostgreSQL single-row CAS update. Qdrant remains at `80698` points with dense size `3072` and sparse `idf`; no collection rebuild, sparse/dense vector regeneration or reinsertion, dense embedding recomputation, or Vertex call occurred. T0 final verification passed `63` tests plus `compileall`, `git diff --check`, and one constructor smoke. T1 local FastEmbed used eight dry-run and eight `--run` document encodes (16 total), two Qdrant scroll/read rounds, and one SQL identity update; generation, analyzer, embedding, reranker, QA, verifier, judge, token, benchmark, Retriever/QA, T3+ work were all zero/not run.
 
+### Current B4 precise derived-chunk locator result
+
+- Root cause confirmed: derived embedding chunks reused parent-wide locators; truncated file objects claimed lines beyond their stored prefixes; README sections lacked heading hierarchy; Sphinx pages used a flattened first-heading slice and sections kept only a title; PDF chunks inherited page-wide provenance. Existing parser-native C/C++, Python, CMake, and shell coordinates were already precise and remain authoritative.
+- Implementation: chunk derivation now carries deterministic source spans while splitting and derives inclusive child line ranges from those offsets. It does not recover spans with ambiguous `str.find()`, and it preserves the exact pre-B4 chunk text, boundaries, IDs, titles, canonical locators, token counts, embedding eligibility, source/version identity, and parent/chunk lineage. Truncated file locators are bounded to the represented prefix. README paths are hierarchical; Sphinx sections use deterministic heading ancestry and stable anchors where available; PDF provenance remains conservative page/section metadata without fabricated line numbers.
+- Semantic invariance: normalized artifacts remain at `102875` objects before and after. IDs added `0`, IDs removed `0`, and changes to text, title, object type, source/version identity, canonical locator, token count, embedding eligibility, and parent/chunk lineage were all `0`. Locator changes totaled `28010`, concentrated in derived function/class/script/README chunks and truncated source-file records.
+- Locator audit: `16352` derived chunks checked with `0` parent-containment violations and `0` invalid line ranges; `652` truncated file objects corrected with `0` remaining overbroad ranges; `281` README hierarchy cases checked; `314` Sphinx sections checked, including `241` stable anchor fragments and `0` synthetic fragment URLs; PDF page/section cases had `0` fabricated line locators. Duplicate-text, blank-line, CRLF, first/final-line, and mid-line span fixtures passed.
+- Live metadata impact: normalized artifacts were updated. The initial dry-run planned and the explicit metadata-only apply updated `28010` PostgreSQL locator rows and `22856` Qdrant payload locators; the post-apply dry-run planned `0` changes. Every update was gated by object ID, source/version, Qdrant point mapping, unchanged text/content hash, and current B3 identity.
+- Vector/index impact: Qdrant vector content changed `0`; dense vectors reinserted `0`; sparse vectors regenerated `0`; dense embeddings recomputed `0`; Vertex/model calls `0`. Index schema remained `4`; fingerprint remained `8172f9a640e62977be6e911bfb4848ce3aecd0994f1f3ba51a0985bffec62cb9`.
+- Verification cost: T0 passed `10` ingestion locator tests, `7` metadata-sync tests, and `11` B3 sparse-factory regression tests. T1 ingestion took `239.387s`; live metadata dry-run, apply, and post-apply checks passed. No retrieval baseline, QA baseline, generation, analyzer, reranker, verifier, judge, T3, T4, or T5 run was performed.
+
 ### Current small E2E baseline
 
 - Run: `generalization-a3-stratified-qa-20260813`.
@@ -124,7 +134,7 @@ The retrieval and QA measurements are unchanged. A3.1 corrects only metric repre
 
 ## Next authorized roadmap task
 
-`B4 — Precise derived-chunk locators` (B4 remains `NOT_STARTED`)
+`B5 — Structure-aware, token-aware chunking and source-file coverage`
 
 ---
 

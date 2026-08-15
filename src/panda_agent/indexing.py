@@ -19,6 +19,12 @@ from panda_agent.sparse import SparseEncoderReceipt, create_sparse_encoder, spar
 from panda_agent.storage import Storage, iter_jsonl, load_jsonl
 
 
+B4_EXPECTED_INDEX_FINGERPRINT = (
+    "8172f9a640e62977be6e911bfb4848ce3aecd0994f1f3ba51a0985bffec62cb9"
+)
+B4_LOCATOR_SYNC_BATCH_SIZE = 256
+
+
 class IndexIdentity(BaseModel):
     """Immutable vector-index contract; any field change requires migration."""
 
@@ -136,6 +142,290 @@ def verify_index(project_root:Path)->dict[str,Any]:
         sql_counts={"objects":connection.execute("select count(1) from knowledge_objects").fetchone()[0],"relations":connection.execute("select count(1) from relation_edges").fetchone()[0],"relation_candidates":connection.execute("select count(1) from relation_candidates").fetchone()[0],"aliases":connection.execute("select count(1) from knowledge_aliases").fetchone()[0],"workflows":connection.execute("select count(1) from workflow_steps").fetchone()[0]}
     expected_sql={"objects":report["object_count"],"relations":report["relation_count"],"relation_candidates":report["relation_candidate_count"],"aliases":report.get("alias_count",0),"workflows":report["workflow_count"]}
     return {"valid":expected==actual and sql_counts==expected_sql,"expected_points":len(expected),"actual_points":len(actual),"missing_points":len(expected-actual),"stale_points":len(actual-expected),"sql_counts":sql_counts,"expected_sql_counts":expected_sql}
+
+
+def _b4_batches(records: Any, size: int = B4_LOCATOR_SYNC_BATCH_SIZE) -> Any:
+    batch: list[dict[str, Any]] = []
+    for record in records:
+        batch.append(record)
+        if len(batch) == size:
+            yield batch
+            batch = []
+    if batch:
+        yield batch
+
+
+def _b4_json(value: Any) -> dict[str, Any]:
+    if value is None:
+        raise RuntimeError("B4 locator sync encountered a missing locator JSON value")
+    if isinstance(value, dict):
+        return value
+    if isinstance(value, str):
+        parsed = json.loads(value)
+        if isinstance(parsed, dict):
+            return parsed
+    raise RuntimeError("B4 locator sync encountered a non-object JSON value")
+
+
+def _b4_embedding_eligible(item: dict[str, Any]) -> bool:
+    return bool(
+        item.get("embedding_eligible")
+        and 10 <= item.get("token_count", 0) <= 1800
+        and len(item["title"]) + 1 + len(item["text"]) <= 4000
+    )
+
+
+def _b4_require_identity(storage: Storage, identity: IndexIdentity) -> Any:
+    """Read-only B4 gate for the exact B3 vector-index identity."""
+    if (
+        identity.index_schema_version != "4"
+        or identity.fingerprint() != B4_EXPECTED_INDEX_FINGERPRINT
+    ):
+        raise RuntimeError(
+            "B4 locator sync requires the exact schema-4 B3 index identity; "
+            f"expected={B4_EXPECTED_INDEX_FINGERPRINT}, actual={identity.fingerprint()}"
+        )
+    with storage.connect() as connection:
+        row = connection.execute(
+            "SELECT fingerprint,payload FROM index_identities WHERE collection_name=%s",
+            (storage.settings.collection_name,),
+        ).fetchone()
+    if row is None:
+        raise RuntimeError("B4 locator sync requires a persisted index identity")
+    fingerprint, raw_payload = row
+    payload = _b4_json(raw_payload)
+    if (
+        fingerprint != B4_EXPECTED_INDEX_FINGERPRINT
+        or payload != identity.model_dump(mode="json")
+    ):
+        raise RuntimeError(
+            "B4 locator sync found a persisted index identity mismatch; "
+            "metadata-only synchronization is unsafe"
+        )
+    collection = storage._verify_qdrant_sparse_config(identity.sparse)
+    dense = collection.config.params.vectors.get("dense")
+    if dense is None or dense.size != identity.embedding_dimensions:
+        raise RuntimeError(
+            "B4 locator sync found a Qdrant dense contract mismatch; "
+            f"expected={identity.embedding_dimensions}, actual={getattr(dense, 'size', None)}"
+        )
+    return collection
+
+
+def _b4_sql_rows(storage: Storage, object_ids: list[str]) -> dict[str, tuple[Any, ...]]:
+    with storage.connect() as connection:
+        rows = connection.execute(
+            "SELECT object_id,object_type,source_id,source_version_id,title,text,authority_level,"
+            "locator,canonical_locator,token_count,embedding_eligible,content_hash "
+            "FROM knowledge_objects WHERE object_id=ANY(%s)",
+            (object_ids,),
+        ).fetchall()
+    return {str(row[0]): row for row in rows}
+
+
+def _b4_validate_sql_item(item: dict[str, Any], row: tuple[Any, ...]) -> dict[str, Any]:
+    object_id, object_type, source_id, source_version_id, title, text, authority, locator, canonical, tokens, eligible, content_hash = row
+    expected = (
+        item["object_id"], item["object_type"], item["source_id"], item["source_version_id"],
+        item["title"], item["text"], item["authority_level"], item.get("canonical_locator"), item.get("token_count", 0),
+        item.get("embedding_eligible", True),
+    )
+    actual = (
+        object_id, object_type, source_id, source_version_id, title, text, authority, canonical, tokens, eligible,
+    )
+    if actual != expected:
+        raise RuntimeError(
+            f"B4 locator sync semantic mismatch for {item['object_id']}; "
+            "only locator changes are permitted"
+        )
+    expected_hash = hashlib.sha256(item["text"].encode()).hexdigest()
+    if content_hash != expected_hash:
+        raise RuntimeError(
+            f"B4 locator sync content hash mismatch for {item['object_id']}; "
+            "only locator changes are permitted"
+        )
+    return _b4_json(locator)
+
+
+def _b4_qdrant_rows(storage: Storage, point_ids: list[str]) -> dict[str, Any]:
+    points = storage.qdrant.retrieve(
+        collection_name=storage.settings.collection_name,
+        ids=point_ids,
+        with_payload=True,
+        with_vectors=False,
+    )
+    return {str(point.id): point for point in points}
+
+
+def sync_b4_locator_metadata(project_root: Path, *, run: bool = False) -> dict[str, Any]:
+    """Synchronize only normalized locators after a complete read-only preflight.
+
+    This deliberately bypasses ``apply_index``: its embedding cache correctly avoids
+    vector writes, but therefore cannot refresh an existing Qdrant payload.
+    """
+    root = project_root.resolve()
+    normalized = normalized_dir(root)
+    storage = Storage()
+    identity = IndexIdentity.from_settings(VertexSettings.from_env(), root)
+    _b4_require_identity(storage, identity)
+
+    with storage.connect() as connection:
+        sql_object_count = int(
+            connection.execute("SELECT count(1) FROM knowledge_objects").fetchone()[0]
+        )
+
+    seen_ids: set[str] = set()
+    object_count = 0
+    eligible_count = 0
+    sql_changes: list[dict[str, Any]] = []
+    qdrant_changes: list[dict[str, Any]] = []
+    for batch in _b4_batches(iter_jsonl(normalized / "knowledge_objects.jsonl")):
+        object_ids = [str(item["object_id"]) for item in batch]
+        if len(object_ids) != len(set(object_ids)) or any(
+            object_id in seen_ids for object_id in object_ids
+        ):
+            raise RuntimeError("B4 locator sync found duplicate normalized object IDs")
+        seen_ids.update(object_ids)
+        object_count += len(batch)
+        sql_rows = _b4_sql_rows(storage, object_ids)
+        if set(sql_rows) != set(object_ids):
+            missing = sorted(set(object_ids) - set(sql_rows))
+            raise RuntimeError(
+                "B4 locator sync SQL object identity mismatch; "
+                f"missing={missing[:3]}"
+            )
+
+        eligible_items: list[tuple[dict[str, Any], dict[str, Any]]] = []
+        for item in batch:
+            sql_locator = _b4_validate_sql_item(item, sql_rows[item["object_id"]])
+            if _b4_embedding_eligible(item):
+                eligible_count += 1
+                eligible_items.append((item, sql_locator))
+            elif sql_locator != item["locator"]:
+                sql_changes.append({"item": item, "sql_locator": sql_locator})
+
+        if eligible_items:
+            point_ids = [storage.point_id(item["object_id"]) for item, _ in eligible_items]
+            qdrant_rows = _b4_qdrant_rows(storage, point_ids)
+            if set(qdrant_rows) != set(point_ids):
+                missing = sorted(set(point_ids) - set(qdrant_rows))
+                raise RuntimeError(
+                    "B4 locator sync Qdrant point mapping mismatch; "
+                    f"missing={missing[:3]}"
+                )
+            for (item, sql_locator), point_id in zip(eligible_items, point_ids):
+                payload = qdrant_rows[point_id].payload or {}
+                expected_payload = {
+                    "object_id": item["object_id"],
+                    "object_type": item["object_type"],
+                    "source_id": item["source_id"],
+                    "source_version_id": item["source_version_id"],
+                    "title": item["title"],
+                    "text": item["text"],
+                }
+                if any(payload.get(key) != value for key, value in expected_payload.items()):
+                    raise RuntimeError(
+                        f"B4 locator sync Qdrant payload mismatch for {item['object_id']}; "
+                        "metadata-only synchronization is unsafe"
+                    )
+                point_locator = _b4_json(payload.get("locator"))
+                if point_locator != sql_locator and point_locator != item["locator"]:
+                    raise RuntimeError(
+                        f"B4 locator sync Qdrant locator mismatch for {item['object_id']}; "
+                        "it matches neither SQL nor normalized state"
+                    )
+                if sql_locator != item["locator"]:
+                    sql_changes.append({"item": item, "sql_locator": sql_locator})
+                if point_locator != item["locator"]:
+                    qdrant_changes.append({"item": item, "point_id": point_id})
+
+    if object_count != sql_object_count:
+        raise RuntimeError(
+            "B4 locator sync object-count mismatch; "
+            f"normalized={object_count}, sql={sql_object_count}"
+        )
+    qdrant_count = int(
+        storage.qdrant.count(storage.settings.collection_name, exact=True).count
+    )
+    if qdrant_count != eligible_count:
+        raise RuntimeError(
+            "B4 locator sync Qdrant count mismatch; "
+            f"eligible={eligible_count}, qdrant={qdrant_count}"
+        )
+
+    changed_object_ids = {
+        change["item"]["object_id"] for change in [*sql_changes, *qdrant_changes]
+    }
+    report = {
+        "valid": True,
+        "dry_run": not run,
+        "normalized_dir": normalized.name,
+        "object_count": object_count,
+        "eligible_count": eligible_count,
+        "locator_changes": len(changed_object_ids),
+        "planned_sql_rows": len(sql_changes),
+        "planned_qdrant_payloads": len(qdrant_changes),
+        "sql_rows_changed": 0,
+        "qdrant_payloads_changed": 0,
+        "vectors_changed": 0,
+        "index_identity": identity.fingerprint(),
+    }
+    if not run or not changed_object_ids:
+        return report
+
+    for batch in _b4_batches(qdrant_changes):
+        storage.qdrant.batch_update_points(
+            collection_name=storage.settings.collection_name,
+            update_operations=[
+                models.SetPayloadOperation(
+                    set_payload=models.SetPayload(
+                        payload={"locator": change["item"]["locator"]},
+                        points=[change["point_id"]],
+                    )
+                )
+                for change in batch
+            ],
+            wait=True,
+        )
+        points = _b4_qdrant_rows(
+            storage, [change["point_id"] for change in batch]
+        )
+        for change in batch:
+            point_id = change["point_id"]
+            if _b4_json((points[point_id].payload or {}).get("locator")) != change["item"]["locator"]:
+                raise RuntimeError(
+                    f"B4 locator sync Qdrant update did not persist for {change['item']['object_id']}"
+                )
+
+    sql = """UPDATE knowledge_objects SET locator=%s
+        WHERE object_id=%s AND object_type=%s AND source_id=%s AND source_version_id=%s
+          AND title=%s AND text=%s AND authority_level=%s
+          AND canonical_locator IS NOT DISTINCT FROM %s AND token_count=%s
+          AND embedding_eligible=%s AND content_hash=%s RETURNING object_id"""
+    with storage.connect() as connection:
+        for change in sql_changes:
+            item = change["item"]
+            row = connection.execute(
+                sql,
+                (
+                    Jsonb(item["locator"]), item["object_id"], item["object_type"],
+                    item["source_id"], item["source_version_id"], item["title"], item["text"],
+                    item["authority_level"], item.get("canonical_locator"), item.get("token_count", 0),
+                    item.get("embedding_eligible", True),
+                    hashlib.sha256(item["text"].encode()).hexdigest(),
+                ),
+            ).fetchone()
+            if row is None:
+                raise RuntimeError(
+                    f"B4 locator sync SQL update lost semantic invariance for {item['object_id']}"
+                )
+
+    return {
+        **report,
+        "dry_run": False,
+        "sql_rows_changed": len(sql_changes),
+        "qdrant_payloads_changed": len(qdrant_changes),
+    }
 
 
 def _list_values(value: Any) -> list[Any]:

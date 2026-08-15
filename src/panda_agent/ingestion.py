@@ -54,6 +54,50 @@ def _token_count(text: str) -> int:
     return len(re.findall(r"\w+|[^\w\s]", text, flags=re.UNICODE))
 
 
+def _represented_end_line(text: str) -> int:
+    """Return the inclusive final line represented by ``text``.
+
+    A trailing newline terminates the preceding line; it does not make an
+    otherwise unrepresented following blank line part of a truncated object.
+    This deliberately counts ``\n`` so it gives the same line semantics for
+    LF and CRLF source text.
+    """
+    if not text:
+        return 1
+    return text.count("\n", 0, len(text) - 1) + 1
+
+
+def _truncated_file_locator(path: str, text: str, limit: int) -> SourceLocator:
+    """Locate exactly the prefix stored on a bounded file-level object."""
+    represented = text[:limit]
+    return SourceLocator(
+        path=path,
+        start_line=1,
+        end_line=_represented_end_line(represented),
+    )
+
+
+def _derived_chunk_locator(
+    parent: SourceLocator,
+    parent_text: str,
+    start_offset: int,
+    end_offset: int,
+) -> SourceLocator:
+    """Copy a parent locator and narrow it from deterministic text offsets.
+
+    The offsets are produced while splitting the parent text from left to
+    right.  They are intentionally not reconstructed from chunk text: a
+    repeated paragraph must never select an earlier equal occurrence.
+    """
+    if parent.start_line is None or parent.end_line is None or end_offset <= start_offset:
+        return parent
+    start_line = parent.start_line + parent_text.count("\n", 0, start_offset)
+    end_line = parent.start_line + parent_text.count("\n", 0, end_offset - 1)
+    start_line = min(max(start_line, parent.start_line), parent.end_line)
+    end_line = min(max(end_line, start_line), parent.end_line)
+    return parent.model_copy(update={"start_line": start_line, "end_line": end_line})
+
+
 def _without_nul(value: Any) -> Any:
     if isinstance(value,str): return value.replace("\x00","\ufffd")
     if isinstance(value,list): return [_without_nul(item) for item in value]
@@ -127,7 +171,7 @@ def parse_cpp(path: Path, relative: str, source_id: str, version: str) -> tuple[
     file_text = data.decode("utf-8", "replace")
     file_obj = _object(
         object_type="source_file", source_id=source_id, version=version,
-        title=relative, text=file_text[:20000], locator=SourceLocator(path=relative, start_line=1, end_line=max(1, file_text.count("\n") + 1)),
+        title=relative, text=file_text[:20000], locator=_truncated_file_locator(relative, file_text, 20000),
         canonical=relative, metadata={"language": "cpp"},
     )
     objects.append(file_obj)
@@ -195,7 +239,7 @@ def parse_cpp(path: Path, relative: str, source_id: str, version: str) -> tuple[
 def parse_python(path: Path, relative: str, source_id: str, version: str) -> tuple[list[KnowledgeObject], list[RelationCandidate], list[WorkflowStep]]:
     text = path.read_text(encoding="utf-8", errors="replace")
     file_obj = _object(object_type="python_script", source_id=source_id, version=version, title=relative, text=text[:20000],
-        locator=SourceLocator(path=relative, start_line=1, end_line=max(1, text.count("\n") + 1)), canonical=relative, metadata={"language": "python"})
+        locator=_truncated_file_locator(relative, text, 20000), canonical=relative, metadata={"language": "python"})
     objects = [file_obj]
     try:
         tree = ast.parse(text)
@@ -217,16 +261,21 @@ def parse_generic(path: Path, relative: str, source_id: str, version: str) -> tu
     text = path.read_text(encoding="utf-8", errors="replace")
     kind = "readme_section" if path.name.lower().startswith("readme") else ("cmake_target" if path.name == "CMakeLists.txt" or path.suffix == ".cmake" else "source_file")
     obj = _object(object_type=kind, source_id=source_id, version=version, title=relative, text=text[:30000],
-        locator=SourceLocator(path=relative, start_line=1, end_line=max(1, text.count("\n") + 1)), canonical=relative,
+        locator=_truncated_file_locator(relative, text, 30000), canonical=relative,
         authority=AuthorityLevel.OPERATIONAL if kind == "readme_section" else AuthorityLevel.PRIMARY)
     objects=[obj]
     if kind=="readme_section":
         matches=list(re.finditer(r'(?m)^(#{1,6})\s+(.+?)\s*$',text))
+        heading_stack: list[tuple[int, str]] = []
         for index,match in enumerate(matches):
             end=matches[index+1].start() if index+1<len(matches) else len(text); section=text[match.start():end].strip()
             if section:
-                line=text[:match.start()].count("\n")+1; title=match.group(2).strip()
-                objects.append(_object(object_type="readme_section",source_id=source_id,version=version,title=title,text=section,parent=obj.object_id,canonical=f"{relative}#{title}:{line}",locator=SourceLocator(path=relative,start_line=line,end_line=line+section.count("\n")),authority=AuthorityLevel.OPERATIONAL))
+                line=text[:match.start()].count("\n")+1; title=match.group(2).strip(); level=len(match.group(1))
+                while heading_stack and heading_stack[-1][0] >= level:
+                    heading_stack.pop()
+                section_path=[item[1] for item in heading_stack] + [title]
+                heading_stack.append((level, title))
+                objects.append(_object(object_type="readme_section",source_id=source_id,version=version,title=title,text=section,parent=obj.object_id,canonical=f"{relative}#{title}:{line}",locator=SourceLocator(path=relative,start_line=line,end_line=line+section.count("\n"),section_path=section_path),authority=AuthorityLevel.OPERATIONAL))
     return objects, [], []
 
 
@@ -395,18 +444,36 @@ def parse_web(web: dict[str, Any], project_root: Path) -> list[KnowledgeObject]:
         page_obj=_object(object_type="sphinx_page", source_id=source_id, version=version,
             title=soup.title.get_text(" ", strip=True) if soup.title else record["url"], text=text, canonical=record["url"],
             authority=AuthorityLevel.OPERATIONAL,
-            locator=SourceLocator(path=record["path"], url=record["url"], snapshot_date=web["captured_at"][:10], section_path=headings[:8]),
+            locator=SourceLocator(path=record["path"], url=record["url"], snapshot_date=web["captured_at"][:10]),
             metadata={"snapshot_hash": web["snapshot_hash"], "headings": headings, "links": [urljoin(record["url"], a.get("href")) for a in soup.find_all("a", href=True)]})
         objects.append(page_obj)
         seen_sections=set()
+
+        def section_heading(container: Any) -> Any | None:
+            return container.find(re.compile("^h[1-6]$"), recursive=False) or container.find(re.compile("^h[1-6]$"))
+
+        def section_path(container: Any, heading: Any) -> list[str]:
+            ancestors = [
+                item
+                for item in reversed(container.find_parents())
+                if item.name == "section" or (item.name == "div" and "section" in (item.get("class") or []))
+            ]
+            path: list[str] = []
+            for item in [*ancestors, container]:
+                item_heading = heading if item is container else section_heading(item)
+                if item_heading:
+                    path.append(item_heading.get_text(" ", strip=True))
+            return path
+
         for index,container in enumerate(soup.select("section, div.section")):
-            heading=container.find(re.compile("^h[1-6]$"),recursive=False) or container.find(re.compile("^h[1-6]$"))
+            heading=section_heading(container)
             if not heading: continue
-            title=heading.get_text(" ",strip=True); anchor=container.get("id") or heading.get("id") or f"section-{index}"
+            title=heading.get_text(" ",strip=True); explicit_anchor=container.get("id") or heading.get("id"); anchor=explicit_anchor or f"section-{index}"
             if anchor in seen_sections: continue
             seen_sections.add(anchor); section_text=container.get_text("\n",strip=True)
             if not section_text: continue
-            objects.append(_object(object_type="sphinx_section",source_id=source_id,version=version,title=title,text=section_text,parent=page_obj.object_id,canonical=f"{record['url']}#{anchor}",authority=AuthorityLevel.OPERATIONAL,locator=SourceLocator(path=record["path"],url=record["url"],snapshot_date=web["captured_at"][:10],section_path=[title]),metadata={"snapshot_hash":web["snapshot_hash"],"anchor":anchor}))
+            locator_url=f"{record['url']}#{anchor}" if explicit_anchor else record["url"]
+            objects.append(_object(object_type="sphinx_section",source_id=source_id,version=version,title=title,text=section_text,parent=page_obj.object_id,canonical=f"{record['url']}#{anchor}",authority=AuthorityLevel.OPERATIONAL,locator=SourceLocator(path=record["path"],url=locator_url,snapshot_date=web["captured_at"][:10],section_path=section_path(container, heading)),metadata={"snapshot_hash":web["snapshot_hash"],"anchor":anchor}))
     return objects
 
 
@@ -677,17 +744,35 @@ def expand_embedding_chunks(objects:list[KnowledgeObject],max_chars:int=3500)->l
         expanded.append(item.model_copy(update={"embedding_eligible":False}))
         if item.object_type=="source_file":
             continue
-        paragraphs=re.split(r"\n\s*\n",item.text); chunks=[]; current=""
-        for paragraph in paragraphs:
-            pieces=[paragraph[index:index+max_chars] for index in range(0,len(paragraph),max_chars)] or [""]
-            for piece in pieces:
+        paragraphs=[]; cursor=0
+        for separator in re.finditer(r"\n\s*\n", item.text):
+            paragraphs.append((item.text[cursor:separator.start()], cursor))
+            cursor=separator.end()
+        paragraphs.append((item.text[cursor:], cursor))
+        chunks: list[tuple[str, int, int]]=[]; current=""; current_start=0; current_end=0
+        for paragraph, paragraph_start in paragraphs:
+            pieces=[(paragraph[index:index+max_chars], paragraph_start+index) for index in range(0,len(paragraph),max_chars)] or [("", paragraph_start)]
+            for piece, piece_start in pieces:
+                piece_end=piece_start+len(piece)
                 candidate=(current+"\n\n"+piece).strip() if current else piece
                 if current and len(candidate)>max_chars:
-                    chunks.append(current); current=piece
-                else: current=candidate
-        if current: chunks.append(current)
-        for index,text in enumerate(chunks,1):
-            expanded.append(_object(object_type=f"{item.object_type}_chunk",source_id=item.source_id,version=item.source_version_id,title=f"{item.title} [{index}/{len(chunks)}]",text=text,parent=item.object_id,canonical=f"{item.canonical_locator or item.object_id}:chunk:{index}",authority=item.authority_level,locator=item.locator,metadata={"derived_from":item.object_id,"chunk_index":index,"chunk_count":len(chunks)}))
+                    chunks.append((current, current_start, current_end)); current=piece; current_start=piece_start; current_end=piece_end
+                else:
+                    if not current:
+                        current_start=piece_start; current_end=piece_end
+                    else:
+                        if current.strip():
+                            current_start += len(current) - len(current.lstrip())
+                        else:
+                            current_start = piece_start + len(piece) - len(piece.lstrip())
+                        if piece.strip():
+                            current_end = piece_end - (len(piece) - len(piece.rstrip()))
+                        else:
+                            current_end -= len(current) - len(current.rstrip())
+                    current=candidate
+        if current: chunks.append((current, current_start, current_end))
+        for index,(text,start_offset,end_offset) in enumerate(chunks,1):
+            expanded.append(_object(object_type=f"{item.object_type}_chunk",source_id=item.source_id,version=item.source_version_id,title=f"{item.title} [{index}/{len(chunks)}]",text=text,parent=item.object_id,canonical=f"{item.canonical_locator or item.object_id}:chunk:{index}",authority=item.authority_level,locator=_derived_chunk_locator(item.locator, item.text, start_offset, end_offset),metadata={"derived_from":item.object_id,"chunk_index":index,"chunk_count":len(chunks)}))
     return expanded
 
 
