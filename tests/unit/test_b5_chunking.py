@@ -5,7 +5,13 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from panda_agent.chunking import ChunkingPolicy
-from panda_agent.ingestion import expand_embedding_chunks, parse_cmake, parse_cpp, parse_python
+from panda_agent.ingestion import (
+    expand_embedding_chunks,
+    parse_cmake,
+    parse_cpp,
+    parse_generic,
+    parse_python,
+)
 from panda_agent.models import AuthorityLevel, KnowledgeObject, SourceLocator
 
 
@@ -123,3 +129,59 @@ class ChunkingPolicyTests(unittest.TestCase):
         for child in expand_embedding_chunks([parent], policy=policy)[1:]:
             self.assertGreaterEqual(child.locator.start_line or 0, 10)
             self.assertLessEqual(child.locator.end_line or 0, 21)
+
+    def test_generic_text_paragraph_regions_cover_configuration(self) -> None:
+        with TemporaryDirectory() as temporary:
+            path = Path(temporary) / "settings.yaml"
+            path.write_text("option_a: true\n\ntimeout_ms: 5000\nretries: 3\n", encoding="utf-8")
+            objects, _, _ = parse_generic(path, "settings.yaml", "repo", "repo@sha", full_source=True)
+        regions = [item for item in objects if item.metadata.get("region_kind") == "generic_text_block"]
+        self.assertEqual(len(regions), 2)
+        self.assertTrue(all(item.parent_object_id == objects[0].object_id for item in regions))
+        self.assertIn("timeout_ms: 5000", regions[1].text)
+
+    def test_full_source_locator_does_not_count_trailing_newline(self) -> None:
+        with TemporaryDirectory() as temporary:
+            path = Path(temporary) / "module.py"
+            path.write_text("import os\nVALUE = 3\n", encoding="utf-8")
+            objects, _, _ = parse_python(path, "module.py", "repo", "repo@sha", full_source=True)
+        self.assertEqual(objects[0].locator.end_line, 2)
+
+    def test_no_sliding_overlap_between_hard_fallback_chunks(self) -> None:
+        policy = ChunkingPolicy(max_embedding_input_chars=120)
+        text = " ".join("word" for _ in range(80))
+        parent = KnowledgeObject(
+            object_id="object.b5-overlap", object_type="script", source_id="repo", source_version_id="repo@sha",
+            title="script", text=text, authority_level=AuthorityLevel.PRIMARY,
+            locator=SourceLocator(path="run.sh", start_line=1, end_line=1), canonical_locator="run.sh",
+        )
+        children = expand_embedding_chunks([parent], policy=policy)[1:]
+        ordered = "".join(item.text for item in children)
+        self.assertEqual(ordered, text)
+
+    def test_readme_section_hierarchy_survives_chunking(self) -> None:
+        policy = ChunkingPolicy(max_embedding_input_chars=120)
+        section = KnowledgeObject(
+            object_id="object.b5-readme", object_type="readme_section", source_id="repo", source_version_id="repo@sha",
+            title="Setup", text=("alpha beta gamma delta epsilon zeta eta theta\n" * 12),
+            authority_level=AuthorityLevel.OPERATIONAL,
+            locator=SourceLocator(path="README.md", start_line=3, end_line=14, section_path=["Guide", "Setup"]),
+            canonical_locator="README.md#Setup:3",
+        )
+        result = expand_embedding_chunks([section], policy=policy)
+        self.assertFalse(result[0].embedding_eligible)
+        self.assertTrue(all(child.locator.section_path == ["Guide", "Setup"] for child in result[1:]))
+        self.assertTrue(all(child.parent_object_id == section.object_id for child in result[1:]))
+
+    def test_pdf_page_provenance_remains_honest_in_chunks(self) -> None:
+        policy = ChunkingPolicy(max_embedding_input_chars=100)
+        page = KnowledgeObject(
+            object_id="object.b5-pdf", object_type="thesis_section", source_id="doc", source_version_id="doc@sha",
+            title="thesis PDF page 4", text=("one two three four five six seven eight nine ten\n" * 12),
+            authority_level=AuthorityLevel.PRIMARY,
+            locator=SourceLocator(path="thesis.pdf", pdf_page=4, section_path=["Introduction"]),
+            canonical_locator="pdf:doc:page:4",
+        )
+        for child in expand_embedding_chunks([page], policy=policy)[1:]:
+            self.assertEqual(child.locator.pdf_page, 4)
+            self.assertIsNone(child.locator.start_line)

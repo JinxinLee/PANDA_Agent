@@ -164,6 +164,41 @@ def _meaningful_gap(text: str) -> bool:
     return bool(re.search(r"[A-Za-z0-9_#]", text))
 
 
+def _region_object(
+    *,
+    parent: KnowledgeObject,
+    text: str,
+    start: int,
+    end: int,
+    index: int,
+    object_type: str,
+    source_id: str,
+    version: str,
+    language: str,
+    region_kind: str,
+) -> KnowledgeObject:
+    """One deterministic, parent-bounded source region object."""
+    locator = _derived_chunk_locator(parent.locator, text, start, end)
+    line = locator.start_line or 1
+    return _object(
+        object_type=object_type,
+        source_id=source_id,
+        version=version,
+        title=f"{parent.title} [top-level region {index}]",
+        text=text[start:end],
+        parent=parent.object_id,
+        canonical=f"{parent.canonical_locator or parent.object_id}:top-level-gap:{line}:{index}",
+        authority=parent.authority_level,
+        locator=locator,
+        metadata={
+            "language": language,
+            "region_kind": region_kind,
+            "b5_source_gap": True,
+            "parent_source_file": parent.object_id,
+        },
+    )
+
+
 def _text_gap_objects(
     *,
     parent: KnowledgeObject,
@@ -195,28 +230,44 @@ def _text_gap_objects(
     gap_start, gap_end = _trim_span(text, cursor, len(text))
     if gap_start < gap_end and _meaningful_gap(text[gap_start:gap_end]):
         gaps.append((gap_start, gap_end))
-    result: list[KnowledgeObject] = []
-    for index, (start, end) in enumerate(gaps, 1):
-        locator = _derived_chunk_locator(parent.locator, text, start, end)
-        line = locator.start_line or 1
-        result.append(_object(
-            object_type=object_type,
-            source_id=source_id,
-            version=version,
-            title=f"{parent.title} [top-level region {index}]",
-            text=text[start:end],
-            parent=parent.object_id,
-            canonical=f"{parent.canonical_locator or parent.object_id}:top-level-gap:{line}:{index}",
-            authority=parent.authority_level,
-            locator=locator,
-            metadata={
-                "language": language,
-                "region_kind": region_kind,
-                "b5_source_gap": True,
-                "parent_source_file": parent.object_id,
-            },
-        ))
-    return result
+    return [
+        _region_object(
+            parent=parent, text=text, start=start, end=end, index=index,
+            object_type=object_type, source_id=source_id, version=version,
+            language=language, region_kind=region_kind,
+        )
+        for index, (start, end) in enumerate(gaps, 1)
+    ]
+
+
+def _paragraph_region_objects(
+    *,
+    parent: KnowledgeObject,
+    text: str,
+    source_id: str,
+    version: str,
+    language: str,
+    region_kind: str,
+) -> list[KnowledgeObject]:
+    """Represent blank-line paragraph blocks of a generic text/config file."""
+    spans: list[tuple[int, int]] = []
+    cursor = 0
+    for separator in re.finditer(r"\n\s*\n", text):
+        start, end = _trim_span(text, cursor, separator.start())
+        if start < end and _meaningful_gap(text[start:end]):
+            spans.append((start, end))
+        cursor = separator.end()
+    start, end = _trim_span(text, cursor, len(text))
+    if start < end and _meaningful_gap(text[start:end]):
+        spans.append((start, end))
+    return [
+        _region_object(
+            parent=parent, text=text, start=start, end=end, index=index,
+            object_type="source_file_chunk", source_id=source_id, version=version,
+            language=language, region_kind=region_kind,
+        )
+        for index, (start, end) in enumerate(spans, 1)
+    ]
 
 
 def parse_cpp(path: Path, relative: str, source_id: str, version: str, *, full_source: bool = False) -> tuple[list[KnowledgeObject], list[RelationCandidate]]:
@@ -232,7 +283,7 @@ def parse_cpp(path: Path, relative: str, source_id: str, version: str, *, full_s
     file_obj = _object(
         object_type="source_file", source_id=source_id, version=version,
         title=relative, text=file_text if full_source else file_text[:20000],
-        locator=(SourceLocator(path=relative, start_line=1, end_line=max(1, file_text.count("\n") + 1))
+        locator=(SourceLocator(path=relative, start_line=1, end_line=_represented_end_line(file_text))
                  if full_source else _truncated_file_locator(relative, file_text, 20000)),
         canonical=relative, metadata={"language": "cpp"},
     )
@@ -314,7 +365,7 @@ def parse_cpp(path: Path, relative: str, source_id: str, version: str, *, full_s
 def parse_python(path: Path, relative: str, source_id: str, version: str, *, full_source: bool = False) -> tuple[list[KnowledgeObject], list[RelationCandidate], list[WorkflowStep]]:
     text = path.read_text(encoding="utf-8", errors="replace")
     file_obj = _object(object_type="python_script", source_id=source_id, version=version, title=relative, text=text if full_source else text[:20000],
-        locator=(SourceLocator(path=relative, start_line=1, end_line=max(1, text.count("\n") + 1)) if full_source else _truncated_file_locator(relative, text, 20000)), canonical=relative, metadata={"language": "python"})
+        locator=(SourceLocator(path=relative, start_line=1, end_line=_represented_end_line(text)) if full_source else _truncated_file_locator(relative, text, 20000)), canonical=relative, metadata={"language": "python"})
     objects = [file_obj]
     try:
         tree = ast.parse(text)
@@ -349,7 +400,7 @@ def parse_generic(path: Path, relative: str, source_id: str, version: str, *, fu
     text = path.read_text(encoding="utf-8", errors="replace")
     kind = "readme_section" if path.name.lower().startswith("readme") else ("cmake_target" if path.name == "CMakeLists.txt" or path.suffix == ".cmake" else "source_file")
     obj = _object(object_type=kind, source_id=source_id, version=version, title=relative, text=text if full_source else text[:30000],
-        locator=(SourceLocator(path=relative, start_line=1, end_line=max(1, text.count("\n") + 1)) if full_source else _truncated_file_locator(relative, text, 30000)), canonical=relative,
+        locator=(SourceLocator(path=relative, start_line=1, end_line=_represented_end_line(text)) if full_source else _truncated_file_locator(relative, text, 30000)), canonical=relative,
         authority=AuthorityLevel.OPERATIONAL if kind == "readme_section" else AuthorityLevel.PRIMARY)
     objects=[obj]
     if kind=="readme_section":
@@ -364,6 +415,15 @@ def parse_generic(path: Path, relative: str, source_id: str, version: str, *, fu
                 section_path=[item[1] for item in heading_stack] + [title]
                 heading_stack.append((level, title))
                 objects.append(_object(object_type="readme_section",source_id=source_id,version=version,title=title,text=section,parent=obj.object_id,canonical=f"{relative}#{title}:{line}",locator=SourceLocator(path=relative,start_line=line,end_line=line+section.count("\n"),section_path=section_path),authority=AuthorityLevel.OPERATIONAL))
+    else:
+        # B5: close the generic text/config source-file coverage hole with
+        # deterministic blank-line paragraph regions.  The parent stays a
+        # non-embedding-eligible provenance container when oversized.
+        objects.extend(_paragraph_region_objects(
+            parent=obj, text=text, source_id=source_id, version=version,
+            language=path.suffix.lstrip(".").lower() or "text",
+            region_kind="generic_text_block",
+        ))
     return objects, [], []
 
 

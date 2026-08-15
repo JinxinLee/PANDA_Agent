@@ -4,7 +4,7 @@ import hashlib
 import unittest
 import uuid
 
-from panda_agent.indexing import plan_b5_reindex_impact_from_records
+from panda_agent.indexing import _b5_validate_reuse_locators, plan_b5_reindex_impact_from_records
 
 
 def _object(object_id: str, text: str, *, eligible: bool = True) -> dict[str, object]:
@@ -79,3 +79,11 @@ class B5ImpactPlanTests(unittest.TestCase):
     def test_planner_never_calls_a_model(self) -> None:
         result = plan_b5_reindex_impact_from_records([], [])
         self.assertEqual(result["model_calls"], 0)
+
+    def test_reuse_locator_disagreement_is_rejected(self) -> None:
+        snapshot_item = _before(_object("same", "one two three four five six seven eight nine ten eleven twelve"))
+        snapshot_item["locator"] = {"path": "a.cc", "start_line": 1, "end_line": 9}
+        corpus_item = _object("same", "one two three four five six seven eight nine ten eleven twelve")
+        corpus_item["locator"] = {"path": "a.cc", "start_line": 1, "end_line": 10}
+        with self.assertRaises(RuntimeError):
+            _b5_validate_reuse_locators([snapshot_item], [corpus_item], ["same"])

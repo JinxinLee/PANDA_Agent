@@ -292,6 +292,275 @@ def plan_b5_reindex_impact(
     return report
 
 
+B5_EXPECTED_B4_SQL_OBJECTS = 102875
+B5_EXPECTED_B4_QDRANT_POINTS = 80698
+B5_EMBEDDING_BATCH_SIZE = 64
+
+
+def _b5_validate_reuse_locators(
+    snapshot: list[dict[str, Any]], objects: list[dict[str, Any]], reuse_ids: list[str],
+) -> None:
+    """A reused vector must keep its B4 payload locator byte-for-byte."""
+    before = {item["object_id"]: item for item in snapshot}
+    after = {item["object_id"]: item for item in objects}
+    mismatched = [
+        object_id for object_id in reuse_ids
+        if before[object_id].get("locator") != after[object_id].get("locator")
+    ]
+    if mismatched:
+        raise RuntimeError(
+            "B5 reuse locator disagreement: reusing these vectors would leave a "
+            f"stale Qdrant payload locator ({len(mismatched)} objects); "
+            f"first={mismatched[:3]}"
+        )
+
+
+def apply_b5_selective_index(project_root: Path, *, run: bool = False) -> dict[str, Any]:
+    """Selectively deploy the B5 normalized corpus over the live B4 index.
+
+    Unchanged live points are preserved byte-for-byte and never re-embedded;
+    cache-receipt absence alone never triggers re-embedding.  Only genuinely
+    changed/new embedding inputs receive new dense and sparse vectors, and
+    stale points are removed after the new points are verified.
+    """
+    root = project_root.resolve()
+    storage = Storage()
+    identity = IndexIdentity.from_settings(VertexSettings.from_env(), root)
+    _b4_require_identity(storage, identity)
+
+    snapshot_path = root / "data" / "tmp" / "b5" / "b4_point_snapshot.jsonl"
+    normalized = normalized_dir(root)
+    snapshot = load_jsonl(snapshot_path)
+    objects = load_jsonl(normalized / "knowledge_objects.jsonl")
+    plan = plan_b5_reindex_impact_from_records(snapshot, objects, batch_size=B5_EMBEDDING_BATCH_SIZE)
+
+    with storage.connect() as connection:
+        sql_objects = int(
+            connection.execute("SELECT count(1) FROM knowledge_objects").fetchone()[0]
+        )
+    qdrant_points = int(storage.qdrant.count(storage.settings.collection_name, exact=True).count)
+
+    reuse_ids = plan["vectors"]["reuse_object_ids"]
+    reembed_ids = plan["vectors"]["reembed_object_ids"]
+    stale_point_ids = plan["vectors"]["stale_point_ids"]
+    expected_final_points = len(reuse_ids) + len(reembed_ids)
+    if sql_objects not in {B5_EXPECTED_B4_SQL_OBJECTS, len(objects)}:
+        raise RuntimeError(
+            "B5 selective apply found an unexpected SQL object count: "
+            f"actual={sql_objects}, expected B4={B5_EXPECTED_B4_SQL_OBJECTS} or B5={len(objects)}"
+        )
+    if qdrant_points < B5_EXPECTED_B4_QDRANT_POINTS or qdrant_points > B5_EXPECTED_B4_QDRANT_POINTS + len(reembed_ids):
+        raise RuntimeError(
+            "B5 selective apply found an unexpected Qdrant point count: "
+            f"actual={qdrant_points}, expected within "
+            f"[{B5_EXPECTED_B4_QDRANT_POINTS}, {B5_EXPECTED_B4_QDRANT_POINTS + len(reembed_ids)}]"
+        )
+    _b5_validate_reuse_locators(snapshot, objects, reuse_ids)
+
+    report = {
+        "dry_run": not run,
+        "planner": plan["planner"],
+        "normalized_dir": normalized.name,
+        "b4_snapshot_path": str(snapshot_path),
+        "index_identity": identity.fingerprint(),
+        "index_schema": identity.index_schema_version,
+        "sql_objects_before": sql_objects,
+        "qdrant_points_before": qdrant_points,
+        "categories": plan["categories"],
+        "vectors": {
+            "reuse_object_ids": len(reuse_ids),
+            "reembed_object_ids": len(reembed_ids),
+            "stale_point_ids": len(stale_point_ids),
+            "dense_documents": plan["vectors"]["dense_documents"],
+            "sparse_documents": plan["vectors"]["sparse_documents"],
+            "batches": plan["vectors"]["batches"],
+            "receipt_missing_unchanged_reused": plan["vectors"]["receipt_missing_unchanged_reused"],
+        },
+        "expected_final_points": expected_final_points,
+        "sql_inserts": len(plan["sql"]["insert_object_ids"]),
+        "sql_deletes": len(plan["sql"]["delete_object_ids"]),
+        "sql_upserts": len(plan["sql"]["upsert_object_ids"]),
+    }
+    if not run:
+        return report
+
+    after = {item["object_id"]: item for item in objects}
+    with storage.connect() as connection:
+        connection.execute(
+            "UPDATE ingestion_runs SET status='interrupted',completed_at=now(),"
+            "report=report || '{\"error\":\"orphaned running process\"}'::jsonb WHERE status='running'"
+        )
+        run_id = connection.execute(
+            "INSERT INTO ingestion_runs(manifest_hash,status,report) VALUES(%s,'running',%s) RETURNING run_id",
+            (normalized.name, json.dumps({"kind": "b5_selective"})),
+        ).fetchone()[0]
+
+    try:
+        manifest = json.loads((root / "data" / "manifests" / "source_manifest.json").read_text(encoding="utf-8"))
+        storage.upsert_source_versions(manifest)
+        storage.upsert_objects(iter_jsonl(normalized / "knowledge_objects.jsonl"))
+        storage.upsert_aliases(iter_jsonl(normalized / "knowledge_aliases.jsonl"))
+        storage.upsert_relations(iter_jsonl(normalized / "relation_edges.jsonl"))
+        storage.upsert_relation_candidates(iter_jsonl(normalized / "relation_candidates.jsonl"))
+        storage.upsert_workflows(load_jsonl(normalized / "workflow_steps.jsonl"))
+        deleted_sql = 0
+        deleted_sql += storage.prune_table("knowledge_objects", "object_id", (item["object_id"] for item in objects))
+        deleted_sql += storage.prune_table("relation_edges", "edge_id", (item["edge_id"] for item in iter_jsonl(normalized / "relation_edges.jsonl")))
+        deleted_sql += storage.prune_table("relation_candidates", "candidate_id", (item["candidate_id"] for item in iter_jsonl(normalized / "relation_candidates.jsonl")))
+        deleted_sql += storage.prune_table("workflow_steps", "step_id", (item["step_id"] for item in load_jsonl(normalized / "workflow_steps.jsonl")))
+        deleted_sql += storage.prune_table("knowledge_aliases", "alias_id", (item["alias_id"] for item in iter_jsonl(normalized / "knowledge_aliases.jsonl")))
+
+        with storage.connect() as connection:
+            relation_count = int(
+                connection.execute("SELECT count(1) FROM relation_edges").fetchone()[0]
+            )
+        ingestion_report = json.loads((normalized / "ingestion_report.json").read_text(encoding="utf-8"))
+        if relation_count != int(ingestion_report["relation_count"]):
+            raise RuntimeError(
+                f"B5 selective apply relation count changed unexpectedly: {relation_count}"
+            )
+
+        selected = [after[object_id] for object_id in reembed_ids]
+        cached: set[str] = set()
+        if selected:
+            cache_keys = []
+            for item in selected:
+                text = f"{item['title']}\n{item['text']}"
+                text_hash = hashlib.sha256(text.encode()).hexdigest()
+                cache_keys.append(hashlib.sha256(
+                    f"{identity.embedding_model}\x1fRETRIEVAL_DOCUMENT\x1f{text_hash}".encode()
+                ).hexdigest())
+            with storage.connect() as connection:
+                cached = _compatible_cache_keys(connection, cache_keys, identity.embedding_dimensions)
+            point_ids = [storage.point_id(item["object_id"]) for item in selected]
+            existing: set[str] = set()
+            for start in range(0, len(point_ids), 256):
+                existing.update(
+                    str(point.id)
+                    for point in storage.qdrant.retrieve(
+                        collection_name=storage.settings.collection_name,
+                        ids=point_ids[start:start + 256],
+                        with_payload=False,
+                        with_vectors=False,
+                    )
+                )
+            selected = [
+                item for item, key in zip(selected, cache_keys)
+                if not (key in cached and storage.point_id(item["object_id"]) in existing)
+            ]
+
+        vertex = VertexAIClient(vertex_settings) if selected else None
+        sparse_model, sparse_identity = create_sparse_encoder(root) if selected else (None, identity.sparse)
+        if sparse_identity != identity.sparse:
+            raise RuntimeError("sparse factory receipt changed during B5 selective apply")
+        indexed = 0
+        for start in range(0, len(selected), B5_EMBEDDING_BATCH_SIZE):
+            assert sparse_model is not None
+            batch = selected[start:start + B5_EMBEDDING_BATCH_SIZE]
+            texts = [f"{item['title']}\n{item['text']}" for item in batch]
+            dense = vertex.embed_documents(texts)
+            sparse_vectors = list(sparse_model.embed(texts))
+            points = []
+            for item, dense_vector, sparse_vector, text in zip(batch, dense, sparse_vectors, texts):
+                points.append(models.PointStruct(
+                    id=storage.point_id(item["object_id"]),
+                    vector={
+                        "dense": dense_vector,
+                        sparse_identity.vector_name: models.SparseVector(
+                            indices=sparse_vector.indices.tolist(),
+                            values=sparse_vector.values.tolist(),
+                        ),
+                    },
+                    payload={
+                        "object_id": item["object_id"],
+                        "source_id": item["source_id"],
+                        "source_version_id": item["source_version_id"],
+                        "object_type": item["object_type"],
+                        "title": item["title"],
+                        "authority_level": item["authority_level"],
+                        "locator": item["locator"],
+                        "text": item["text"],
+                    },
+                ))
+            storage.qdrant.upsert(
+                collection_name=storage.settings.collection_name, points=points, wait=True
+            )
+            indexed += len(points)
+            with storage.connect() as connection:
+                for item, text in zip(batch, texts):
+                    text_hash = hashlib.sha256(text.encode()).hexdigest()
+                    cache_key = hashlib.sha256(
+                        f"{identity.embedding_model}\x1fRETRIEVAL_DOCUMENT\x1f{text_hash}".encode()
+                    ).hexdigest()
+                    _record_embedding_cache(
+                        connection,
+                        cache_key=cache_key,
+                        object_id=item["object_id"],
+                        model=identity.embedding_model,
+                        task_type="RETRIEVAL_DOCUMENT",
+                        text_hash=text_hash,
+                        dimensions=identity.embedding_dimensions,
+                    )
+
+        deleted_vectors = 0
+        if stale_point_ids:
+            storage.qdrant.delete(
+                collection_name=storage.settings.collection_name,
+                points_selector=models.PointIdsList(points=stale_point_ids),
+                wait=True,
+            )
+            deleted_vectors = len(stale_point_ids)
+
+        final_points = int(storage.qdrant.count(storage.settings.collection_name, exact=True).count)
+        if final_points != expected_final_points:
+            raise RuntimeError(
+                "B5 selective apply final Qdrant count mismatch: "
+                f"actual={final_points}, expected={expected_final_points}"
+            )
+        with storage.connect() as connection:
+            final_sql_objects = int(
+                connection.execute("SELECT count(1) FROM knowledge_objects").fetchone()[0]
+            )
+        if final_sql_objects != len(objects):
+            raise RuntimeError(
+                "B5 selective apply final SQL object count mismatch: "
+                f"actual={final_sql_objects}, expected={len(objects)}"
+            )
+
+        result = {
+            **report,
+            "dry_run": False,
+            "run_id": run_id,
+            "sql_objects_after": final_sql_objects,
+            "qdrant_points_after": final_points,
+            "sql_records_deleted": deleted_sql,
+            "dense_vectors_written": indexed,
+            "sparse_vectors_written": indexed,
+            "unchanged_vectors_reused": len(reuse_ids),
+            "stale_vectors_deleted": deleted_vectors,
+            "collection_recreated": False,
+            "dense_model": identity.embedding_model,
+            "dense_dimensions": identity.embedding_dimensions,
+        }
+        with storage.connect() as connection:
+            connection.execute(
+                "UPDATE ingestion_runs SET status='completed',completed_at=now(),report=%s WHERE run_id=%s",
+                (json.dumps(result), run_id),
+            )
+        return result
+    except BaseException as exc:
+        try:
+            with storage.connect() as connection:
+                connection.execute(
+                    "UPDATE ingestion_runs SET status='failed',completed_at=now(),report=report || %s::jsonb "
+                    "WHERE run_id=(SELECT run_id FROM ingestion_runs WHERE status='running' ORDER BY run_id DESC LIMIT 1)",
+                    (json.dumps({"error": type(exc).__name__, "message": str(exc)[:2000]}),),
+                )
+        except Exception:
+            pass
+        raise
+
+
 def _b4_require_identity(storage: Storage, identity: IndexIdentity) -> Any:
     """Read-only B4 gate for the exact B3 vector-index identity."""
     if (
