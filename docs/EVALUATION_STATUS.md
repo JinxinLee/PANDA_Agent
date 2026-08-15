@@ -34,11 +34,11 @@ When records conflict, use the single section explicitly marked **Current author
 
 ## Generalization Phase status
 
-- Bootstrap tasks A1–A3: `PASS`; A3.1 hardening: `PASS`; B1: `PASS`; B2: `PASS`; B3: `PASS`; B4: `PASS`.
+- Bootstrap tasks A1–A3: `PASS`; A3.1 hardening: `PASS`; B1: `PASS`; B2: `PASS`; B3: `PASS`; B4: `PASS`; B5: `INCONCLUSIVE` (static implementation, corpus regeneration, impact planning, and T0 complete; live deployment skipped by user decision, so post-B5 T2 and live T1 were not run).
 - Evaluation modes: `retrieval`, `qa`, and `full` have explicit recorded boundaries.
 - Structured retrieval traces are persisted as atomic JSON and JSONL and can be loaded without rerunning QA.
 - A3 was corrected from a possible full-retrieval interpretation to a stratified low-cost bootstrap baseline. No T3 or full 120-question retrieval/E2E run was performed.
-- B5–F6 remain `NOT_STARTED`; B5 is the next authorized roadmap task.
+- C1 remains `NOT_STARTED` and is the next authorized roadmap task.
 
 ## Historical full E2E reference
 
@@ -106,6 +106,21 @@ This is a low-cost English Gold reference, not a complete generalization, comple
 - Vector/index impact: Qdrant vector content changed `0`; dense vectors reinserted `0`; sparse vectors regenerated `0`; dense embeddings recomputed `0`; Vertex/model calls `0`. Index schema remained `4`; fingerprint remained `8172f9a640e62977be6e911bfb4848ce3aecd0994f1f3ba51a0985bffec62cb9`.
 - Verification cost: T0 passed `10` ingestion locator tests, `7` metadata-sync tests, and `11` B3 sparse-factory regression tests. T1 ingestion took `239.387s`; live metadata dry-run, apply, and post-apply checks passed. No retrieval baseline, QA baseline, generation, analyzer, reranker, verifier, judge, T3, T4, or T5 run was performed.
 
+### Current B5 structure-aware chunking and source-file coverage result
+
+- Status: `INCONCLUSIVE`. Static implementation is complete and committed (`ec98911`); live deployment was skipped by user decision.
+- Chunking contract: `ChunkingPolicy` in `src/panda_agent/chunking.py` is the single shared validity contract for ingestion and index eligibility: `min_tokens=10`, `max_tokens=1800`, `max_embedding_input_chars=4000`, deterministic regex token counting, version `b5-v1`. Splitting order: paragraph/block boundaries, then source lines, then deterministic hard fallback; no sliding overlap; deterministic IDs and parent lineage.
+- Source coverage: parser-native regions `cpp_top_level_gap` 26092, `cmake_configuration_gap` 638, `python_module_gap` 96, plus `generic_text_block` paragraph regions 2164 for `.txt`/`.rst`/`.md`/`.yml`. Oversized parent files remain non-eligible provenance containers. Only 8 trivial (<10-token) containers remain uncovered.
+- Locator guarantees: full-source parents again use B4 trailing-newline semantics; reuse-locator mismatches 0; parent/child containment violations 0; fabricated PDF line locators 0.
+- Normalized corpus (B5, local only): `133144` objects (`+30269`), `105045` embedding-eligible (`+24347`), output hash `b2466dc128ff7cd2a578393280b3a4ad55c63be2e97b9e93a0751a8bffd9144d`; relations invariant (`64561` edges, `372139` candidates).
+- Static impact plan: reuse `64423` (including `11233` receipt-missing unchanged points that are never re-embedded), re-embed `40622` dense + sparse documents in `635` batches, stale removals `2586`, SQL upsert/insert/delete `133144`/`32888`/`2619`; identity unchanged schema 4 / `8172f9a640e62977be6e911bfb4848ce3aecd0994f1f3ba51a0985bffec62cb9`; collection never recreated. The `b5-apply` dry-run passed against the live B4 index; live apply was not executed.
+- Live state: unchanged B4 index — PostgreSQL `102875` objects, Qdrant `80698` points, dense 3072, sparse `idf`, schema 4. No live writes, no Vertex calls, no collection recreation.
+- Pre-B5 T2: run `b5-pre-retrieval-20260815`, mode `retrieval`, fixed 16 A3 IDs (`g001,g007,g012,g013,g025,g026,g027,g038,g041,g042,g043,g044,g057,g058,g059,g060`); 48 runtime model calls, 290495 tokens, 0 judge calls, 0 exceptions. Recall@5 `0.6944444444`; Recall@10 `0.8333333333`; Recall@20 `0.8333333333`; MRR `0.6`; combined candidate recall `0.9166666667`; final evidence recall `0.8333333333`; intent accuracy `0.9375` (applicable denominator 12; 4 version-conflict cases excluded). Selection manifest: `evaluation/baselines/manifests/b5_t2_retrieval_v1.json`.
+- Post-B5 T2: `NOT RUN` because the live B5 index was not deployed.
+- T0 verification: `26` B5 chunking/migration tests pass; full unit suite `282` tests with 2 pre-existing M6 gate failures that also fail on the pre-B5 tree.
+- Novel retrieval: `UNMEASURED` — no trustworthy human-authored novel dataset exists.
+- Phase-B T3 retrieval-only comparison: `NOT RUN` — requires explicit user authorization.
+
 ### Current small E2E baseline
 
 - Run: `generalization-a3-stratified-qa-20260813`.
@@ -134,7 +149,7 @@ The retrieval and QA measurements are unchanged. A3.1 corrects only metric repre
 
 ## Next authorized roadmap task
 
-`B5 — Structure-aware, token-aware chunking and source-file coverage`
+`C1 — Deterministic parsing before expensive LLM analysis`
 
 ---
 
