@@ -1,0 +1,32 @@
+{
+  "manifest_id": "b5_t2_retrieval_v1",
+  "phase": "B5",
+  "purpose": "Fixed pre/post B5 retrieval-only T2 regression selection",
+  "source_selection": "Pre-existing fixed A3 small stratified QA selection",
+  "mode": "retrieval",
+  "case_ids": [
+    "g001",
+    "g007",
+    "g012",
+    "g013",
+    "g025",
+    "g026",
+    "g027",
+    "g038",
+    "g041",
+    "g042",
+    "g043",
+    "g044",
+    "g057",
+    "g058",
+    "g059",
+    "g060"
+  ],
+  "case_count": 16,
+  "forbidden_runtime_stages": [
+    "answer_generation",
+    "answer_verification",
+    "revision",
+    "external_judge"
+  ]
+}

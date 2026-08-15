@@ -41,6 +41,7 @@ from panda_agent.config import (
     validate_seed_predicates,
 )
 from panda_agent.source import sha256_file, verify_manifest
+from panda_agent.chunking import ChunkingPolicy, DEFAULT_CHUNKING_POLICY
 
 
 TEXT_EXTENSIONS = {
@@ -51,7 +52,7 @@ EXCLUDED_PARTS = {".git", "build", "__pycache__", ".cache", "third_party", "exte
 
 
 def _token_count(text: str) -> int:
-    return len(re.findall(r"\w+|[^\w\s]", text, flags=re.UNICODE))
+    return DEFAULT_CHUNKING_POLICY.token_count(text)
 
 
 def _represented_end_line(text: str) -> int:
@@ -159,7 +160,66 @@ def _node_name(node: Any, data: bytes) -> str:
     return data[selected.start_byte:selected.end_byte].decode("utf-8", "replace") if selected else "anonymous"
 
 
-def parse_cpp(path: Path, relative: str, source_id: str, version: str) -> tuple[list[KnowledgeObject], list[RelationCandidate]]:
+def _meaningful_gap(text: str) -> bool:
+    return bool(re.search(r"[A-Za-z0-9_#]", text))
+
+
+def _text_gap_objects(
+    *,
+    parent: KnowledgeObject,
+    text: str,
+    covered: list[tuple[int, int]],
+    object_type: str,
+    source_id: str,
+    version: str,
+    language: str,
+    region_kind: str,
+) -> list[KnowledgeObject]:
+    """Represent non-symbol source spans without copying symbol bodies."""
+    merged: list[tuple[int, int]] = []
+    for start, end in sorted(covered):
+        start, end = max(0, start), min(len(text), end)
+        if start >= end:
+            continue
+        if merged and start <= merged[-1][1]:
+            merged[-1] = (merged[-1][0], max(merged[-1][1], end))
+        else:
+            merged.append((start, end))
+    gaps: list[tuple[int, int]] = []
+    cursor = 0
+    for start, end in merged:
+        gap_start, gap_end = _trim_span(text, cursor, start)
+        if gap_start < gap_end and _meaningful_gap(text[gap_start:gap_end]):
+            gaps.append((gap_start, gap_end))
+        cursor = end
+    gap_start, gap_end = _trim_span(text, cursor, len(text))
+    if gap_start < gap_end and _meaningful_gap(text[gap_start:gap_end]):
+        gaps.append((gap_start, gap_end))
+    result: list[KnowledgeObject] = []
+    for index, (start, end) in enumerate(gaps, 1):
+        locator = _derived_chunk_locator(parent.locator, text, start, end)
+        line = locator.start_line or 1
+        result.append(_object(
+            object_type=object_type,
+            source_id=source_id,
+            version=version,
+            title=f"{parent.title} [top-level region {index}]",
+            text=text[start:end],
+            parent=parent.object_id,
+            canonical=f"{parent.canonical_locator or parent.object_id}:top-level-gap:{line}:{index}",
+            authority=parent.authority_level,
+            locator=locator,
+            metadata={
+                "language": language,
+                "region_kind": region_kind,
+                "b5_source_gap": True,
+                "parent_source_file": parent.object_id,
+            },
+        ))
+    return result
+
+
+def parse_cpp(path: Path, relative: str, source_id: str, version: str, *, full_source: bool = False) -> tuple[list[KnowledgeObject], list[RelationCandidate]]:
     from tree_sitter import Language, Parser
     import tree_sitter_cpp
 
@@ -171,14 +231,18 @@ def parse_cpp(path: Path, relative: str, source_id: str, version: str) -> tuple[
     file_text = data.decode("utf-8", "replace")
     file_obj = _object(
         object_type="source_file", source_id=source_id, version=version,
-        title=relative, text=file_text[:20000], locator=_truncated_file_locator(relative, file_text, 20000),
+        title=relative, text=file_text if full_source else file_text[:20000],
+        locator=(SourceLocator(path=relative, start_line=1, end_line=max(1, file_text.count("\n") + 1))
+                 if full_source else _truncated_file_locator(relative, file_text, 20000)),
         canonical=relative, metadata={"language": "cpp"},
     )
     objects.append(file_obj)
+    covered_spans: list[tuple[int, int]] = []
     for node in _walk(tree.root_node):
         type_map = {"function_definition": "function", "class_specifier": "class", "struct_specifier": "class"}
         if node.type not in type_map:
             continue
+        covered_spans.append((node.start_byte, node.end_byte))
         name = _node_name(node, data)
         text = data[node.start_byte:node.end_byte].decode("utf-8", "replace")
         canonical = f"{relative}:{name}:{node.start_point.row + 1}"
@@ -207,6 +271,17 @@ def parse_cpp(path: Path, relative: str, source_id: str, version: str) -> tuple[
                         version=version, resolution_scope="symbol", confidence=0.9,
                         metadata={"subject_path": relative},
                     ))
+    # The byte spans are converted after decoding only for the overwhelmingly
+    # UTF-8 source corpus. Parser-native line locators remain authoritative.
+    character_spans = [
+        (len(data[:start].decode("utf-8", "replace")), len(data[:end].decode("utf-8", "replace")))
+        for start, end in covered_spans
+    ]
+    objects.extend(_text_gap_objects(
+        parent=file_obj, text=file_text, covered=character_spans,
+        object_type="source_file_chunk", source_id=source_id, version=version,
+        language="cpp", region_kind="cpp_top_level_gap",
+    ))
     for include in re.finditer(r'^\s*#\s*include\s*[<"]([^>"]+)[>"]', file_text, re.MULTILINE):
         target = include.group(1)
         relations.append(_relation_candidate(
@@ -236,13 +311,18 @@ def parse_cpp(path: Path, relative: str, source_id: str, version: str) -> tuple[
     return objects, relations
 
 
-def parse_python(path: Path, relative: str, source_id: str, version: str) -> tuple[list[KnowledgeObject], list[RelationCandidate], list[WorkflowStep]]:
+def parse_python(path: Path, relative: str, source_id: str, version: str, *, full_source: bool = False) -> tuple[list[KnowledgeObject], list[RelationCandidate], list[WorkflowStep]]:
     text = path.read_text(encoding="utf-8", errors="replace")
-    file_obj = _object(object_type="python_script", source_id=source_id, version=version, title=relative, text=text[:20000],
-        locator=_truncated_file_locator(relative, text, 20000), canonical=relative, metadata={"language": "python"})
+    file_obj = _object(object_type="python_script", source_id=source_id, version=version, title=relative, text=text if full_source else text[:20000],
+        locator=(SourceLocator(path=relative, start_line=1, end_line=max(1, text.count("\n") + 1)) if full_source else _truncated_file_locator(relative, text, 20000)), canonical=relative, metadata={"language": "python"})
     objects = [file_obj]
     try:
         tree = ast.parse(text)
+        lines = text.splitlines(keepends=True)
+        offsets = [0]
+        for line in lines:
+            offsets.append(offsets[-1] + len(line))
+        covered: list[tuple[int, int]] = []
         for node in ast.walk(tree):
             if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
                 kind = "class" if isinstance(node, ast.ClassDef) else "function"
@@ -250,6 +330,14 @@ def parse_python(path: Path, relative: str, source_id: str, version: str) -> tup
                 objects.append(_object(object_type=kind, source_id=source_id, version=version, title=node.name, text=segment,
                     parent=file_obj.object_id, canonical=f"{relative}:{node.name}:{node.lineno}",
                     locator=SourceLocator(path=relative, symbol=node.name, start_line=node.lineno, end_line=getattr(node, "end_lineno", node.lineno)), metadata={"language": "python"}))
+                end_line = getattr(node, "end_lineno", node.lineno)
+                end_column = getattr(node, "end_col_offset", 0)
+                covered.append((offsets[node.lineno - 1] + node.col_offset, offsets[end_line - 1] + end_column))
+        objects.extend(_text_gap_objects(
+            parent=file_obj, text=text, covered=covered,
+            object_type="python_script_chunk", source_id=source_id, version=version,
+            language="python", region_kind="python_module_gap",
+        ))
     except SyntaxError:
         pass
     inputs = sorted(set(re.findall(r'["\']([^"\']+\.(?:root|json|txt|yaml))["\']', text)))
@@ -257,11 +345,11 @@ def parse_python(path: Path, relative: str, source_id: str, version: str) -> tup
     return objects, [], workflows
 
 
-def parse_generic(path: Path, relative: str, source_id: str, version: str) -> tuple[list[KnowledgeObject], list[RelationCandidate], list[WorkflowStep]]:
+def parse_generic(path: Path, relative: str, source_id: str, version: str, *, full_source: bool = False) -> tuple[list[KnowledgeObject], list[RelationCandidate], list[WorkflowStep]]:
     text = path.read_text(encoding="utf-8", errors="replace")
     kind = "readme_section" if path.name.lower().startswith("readme") else ("cmake_target" if path.name == "CMakeLists.txt" or path.suffix == ".cmake" else "source_file")
-    obj = _object(object_type=kind, source_id=source_id, version=version, title=relative, text=text[:30000],
-        locator=_truncated_file_locator(relative, text, 30000), canonical=relative,
+    obj = _object(object_type=kind, source_id=source_id, version=version, title=relative, text=text if full_source else text[:30000],
+        locator=(SourceLocator(path=relative, start_line=1, end_line=max(1, text.count("\n") + 1)) if full_source else _truncated_file_locator(relative, text, 30000)), canonical=relative,
         authority=AuthorityLevel.OPERATIONAL if kind == "readme_section" else AuthorityLevel.PRIMARY)
     objects=[obj]
     if kind=="readme_section":
@@ -283,7 +371,9 @@ def parse_cmake(path:Path,relative:str,source_id:str,version:str)->tuple[list[Kn
     text=path.read_text(encoding="utf-8",errors="replace"); objects=[]; relations=[]
     file_obj=_object(object_type="source_file",source_id=source_id,version=version,title=relative,text=text,locator=SourceLocator(path=relative,start_line=1,end_line=max(1,text.count("\n")+1)),canonical=relative,metadata={"language":"cmake"}); objects.append(file_obj)
     pattern=re.compile(r'(?ims)^\s*(add_library|add_executable|target_link_libraries|add_subdirectory)\s*\((.*?)\)')
+    covered: list[tuple[int, int]] = []
     for match in pattern.finditer(text):
+        covered.append((match.start(), match.end()))
         args=re.findall(r'[^\s"\']+|"[^"]*"|\'[^\']*\'',match.group(2));
         if not args: continue
         command,target=match.group(1).lower(),args[0].strip("\"'"); line=text[:match.start()].count("\n")+1
@@ -294,6 +384,11 @@ def parse_cmake(path:Path,relative:str,source_id:str,version:str)->tuple[list[Kn
                 version=version, resolution_scope="cmake_target", confidence=1.0,
                 metadata={"subject_path": relative},
             ))
+    objects.extend(_text_gap_objects(
+        parent=file_obj, text=text, covered=covered,
+        object_type="source_file_chunk", source_id=source_id, version=version,
+        language="cmake", region_kind="cmake_configuration_gap",
+    ))
     return objects,relations,[]
 
 
@@ -321,15 +416,15 @@ def parse_repository(
         relative = str(path.relative_to(root)).replace("\\", "/")
         try:
             if path.suffix.lower() in {".c", ".cc", ".cpp", ".cxx", ".h", ".hh", ".hpp", ".hxx"} or path.suffix == ".C":
-                o, r = parse_cpp(path, relative, source_id, version); w = []
+                o, r = parse_cpp(path, relative, source_id, version, full_source=True); w = []
             elif path.suffix == ".py":
-                o, r, w = parse_python(path, relative, source_id, version)
+                o, r, w = parse_python(path, relative, source_id, version, full_source=True)
             elif path.suffix.lower() in {".sh",".bash"}:
                 o,r,w=parse_shell(path,relative,source_id,version)
             elif path.name == "CMakeLists.txt" or path.suffix == ".cmake":
                 o,r,w=parse_cmake(path,relative,source_id,version)
             else:
-                o, r, w = parse_generic(path, relative, source_id, version)
+                o, r, w = parse_generic(path, relative, source_id, version, full_source=True)
             objects.extend(o)
             if candidate_sink is None:
                 relations.extend(r)
@@ -593,7 +688,9 @@ class RelationResolver:
     """Reusable resolver whose indexes are built once per ingestion run."""
 
     def __init__(self, objects: Iterable[KnowledgeObject]) -> None:
-        objects = list(objects)
+        # B5 coverage gaps are evidence only; they must not alter the B4
+        # entity-resolution candidate set or relation identities.
+        objects = [item for item in objects if not item.metadata.get("b5_source_gap")]
         self.object_map = {item.object_id: item for item in objects}
         self.by_title: dict[tuple[str, str, str], list[str]] = {}
         self.by_path: dict[tuple[str, str], list[str]] = {}
@@ -736,7 +833,8 @@ def write_jsonl(path: Path, records: Iterable[dict[str, Any]]) -> str:
     return sha256_file(path)
 
 
-def expand_embedding_chunks(objects:list[KnowledgeObject],max_chars:int=3500)->list[KnowledgeObject]:
+def _legacy_expand_embedding_chunks(objects: list[KnowledgeObject], max_chars: int) -> list[KnowledgeObject]:
+    """Retain B4's explicit-size fixture behavior outside the production path."""
     expanded=[]
     for item in objects:
         if len(item.title)+1+len(item.text)<=max_chars:
@@ -773,6 +871,169 @@ def expand_embedding_chunks(objects:list[KnowledgeObject],max_chars:int=3500)->l
         if current: chunks.append((current, current_start, current_end))
         for index,(text,start_offset,end_offset) in enumerate(chunks,1):
             expanded.append(_object(object_type=f"{item.object_type}_chunk",source_id=item.source_id,version=item.source_version_id,title=f"{item.title} [{index}/{len(chunks)}]",text=text,parent=item.object_id,canonical=f"{item.canonical_locator or item.object_id}:chunk:{index}",authority=item.authority_level,locator=_derived_chunk_locator(item.locator, item.text, start_offset, end_offset),metadata={"derived_from":item.object_id,"chunk_index":index,"chunk_count":len(chunks)}))
+    return expanded
+
+
+def _trim_span(text: str, start: int, end: int) -> tuple[int, int]:
+    while start < end and text[start].isspace():
+        start += 1
+    while end > start and text[end - 1].isspace():
+        end -= 1
+    return start, end
+
+
+def _hard_split_span(
+    title: str, text: str, start: int, end: int, policy: ChunkingPolicy
+) -> list[tuple[int, int]]:
+    """Last-resort source-ordered splitting for one pathological line/block."""
+    result: list[tuple[int, int]] = []
+    cursor = start
+    maximum = policy.max_text_chars(title)
+    while cursor < end:
+        candidate_end = min(end, cursor + maximum)
+        while candidate_end > cursor and not policy.embedding_input_is_valid(
+            title, text[cursor:candidate_end]
+        ):
+            candidate_end -= 1
+        if candidate_end == cursor:
+            # A single token can exceed the input ceiling. Preserve it only on
+            # the non-eligible parent; no invalid child may be emitted.
+            return result
+        result.append((cursor, candidate_end))
+        cursor = candidate_end
+    return result
+
+
+def _line_or_hard_spans(
+    title: str, text: str, start: int, end: int, policy: ChunkingPolicy
+) -> list[tuple[int, int]]:
+    """Split an oversized block at source lines before the hard fallback."""
+    spans: list[tuple[int, int]] = []
+    line_starts = [start]
+    line_starts.extend(index + 1 for index in range(start, end) if text[index] == "\n")
+    line_starts.append(end)
+    current_start: int | None = None
+    current_end: int | None = None
+    for line_start, line_end in zip(line_starts, line_starts[1:]):
+        candidate_start = line_start if current_start is None else current_start
+        candidate_end = line_end
+        if policy.embedding_input_is_valid(title, text[candidate_start:candidate_end]):
+            current_start, current_end = candidate_start, candidate_end
+            continue
+        if current_start is not None:
+            spans.append((current_start, current_end or current_start))
+            current_start = None
+            current_end = None
+        line_start, line_end = _trim_span(text, line_start, line_end)
+        if line_start >= line_end:
+            continue
+        if policy.embedding_input_is_valid(title, text[line_start:line_end]):
+            current_start, current_end = line_start, line_end
+        else:
+            spans.extend(_hard_split_span(title, text, line_start, line_end, policy))
+    if current_start is not None:
+        spans.append((current_start, current_end or current_start))
+    return spans
+
+
+def _structure_first_spans(title: str, text: str, policy: ChunkingPolicy) -> list[tuple[int, int]]:
+    """Prefer paragraph/block boundaries, then source lines, then hard pieces."""
+    blocks: list[tuple[int, int]] = []
+    cursor = 0
+    for separator in re.finditer(r"\n\s*\n", text):
+        start, end = _trim_span(text, cursor, separator.start())
+        if start < end:
+            blocks.append((start, end))
+        cursor = separator.end()
+    start, end = _trim_span(text, cursor, len(text))
+    if start < end:
+        blocks.append((start, end))
+
+    atoms: list[tuple[int, int]] = []
+    for start, end in blocks:
+        if policy.embedding_input_is_valid(title, text[start:end]):
+            atoms.append((start, end))
+        else:
+            atoms.extend(_line_or_hard_spans(title, text, start, end, policy))
+
+    chunks: list[tuple[int, int]] = []
+    current_start: int | None = None
+    current_end: int | None = None
+    for start, end in atoms:
+        candidate_start = start if current_start is None else current_start
+        candidate_end = end
+        if policy.embedding_input_is_valid(title, text[candidate_start:candidate_end]):
+            current_start, current_end = candidate_start, candidate_end
+        else:
+            if current_start is not None:
+                chunks.append((current_start, current_end or current_start))
+            current_start, current_end = start, end
+    if current_start is not None:
+        chunks.append((current_start, current_end or current_start))
+    return chunks
+
+
+def expand_embedding_chunks(
+    objects: list[KnowledgeObject],
+    max_chars: int | None = None,
+    *,
+    policy: ChunkingPolicy = DEFAULT_CHUNKING_POLICY,
+) -> list[KnowledgeObject]:
+    """Produce only embedding-eligible children that satisfy ``policy``.
+
+    ``max_chars`` is retained solely for pre-B5 locator fixtures. Production
+    ingestion calls this function without it and therefore has one shared
+    token/input contract with indexing.
+    """
+    if max_chars is not None:
+        return _legacy_expand_embedding_chunks(objects, max_chars)
+    expanded: list[KnowledgeObject] = []
+    for item in objects:
+        token_count = policy.token_count(item.text)
+        valid = policy.embedding_input_is_valid(item.title, item.text, token_count)
+        normalized = item.model_copy(update={
+            "token_count": token_count,
+            "embedding_eligible": valid,
+        })
+        if valid:
+            expanded.append(normalized)
+            continue
+        expanded.append(normalized)
+        if token_count < policy.min_tokens or item.object_type == "source_file":
+            continue
+        span_title = f"{item.title} [9999/9999]"
+        spans = _structure_first_spans(span_title, item.text, policy)
+        eligible_spans = [
+            span for span in spans
+            if policy.embedding_input_is_valid(span_title, item.text[span[0]:span[1]])
+        ]
+        for index, (start, end) in enumerate(eligible_spans, 1):
+            chunk_text = item.text[start:end]
+            title = f"{item.title} [{index}/{len(eligible_spans)}]"
+            # The title is part of the authoritative input; shrink no further
+            # only when the structural span already remains valid with it.
+            if not policy.embedding_input_is_valid(title, chunk_text):
+                continue
+            expanded.append(_object(
+                object_type=f"{item.object_type}_chunk",
+                source_id=item.source_id,
+                version=item.source_version_id,
+                title=title,
+                text=chunk_text,
+                parent=item.object_id,
+                canonical=f"{item.canonical_locator or item.object_id}:chunk:{index}",
+                authority=item.authority_level,
+                locator=_derived_chunk_locator(item.locator, item.text, start, end),
+                metadata={
+                    "derived_from": item.object_id,
+                    "chunk_index": index,
+                    "chunk_count": len(eligible_spans),
+                    "chunking_policy": policy.version,
+                },
+            ).model_copy(update={
+                "token_count": policy.token_count(chunk_text),
+                "embedding_eligible": True,
+            }))
     return expanded
 
 

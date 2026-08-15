@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import struct
+import uuid
 from pathlib import Path
 from typing import Any, Literal
 
@@ -14,6 +15,7 @@ from psycopg.types.json import Jsonb
 from qdrant_client import models
 
 from panda_agent.config import BM25_MODEL_NAME, SPARSE_VECTOR_MODIFIER, SPARSE_VECTOR_NAME
+from panda_agent.chunking import DEFAULT_CHUNKING_POLICY
 from panda_agent.llm.vertex import VertexAIClient, VertexSettings
 from panda_agent.sparse import SparseEncoderReceipt, create_sparse_encoder, sparse_receipt, sparse_settings
 from panda_agent.storage import Storage, iter_jsonl, load_jsonl
@@ -122,17 +124,28 @@ def normalized_dir(project_root: Path) -> Path:
     return max(reports, key=lambda path: path.stat().st_mtime).parent
 
 
+def embedding_input(item: dict[str, Any]) -> str:
+    """The one dense-input construction shared by B5 ingestion and indexing."""
+    return DEFAULT_CHUNKING_POLICY.embedding_input(item["title"], item["text"])
+
+
+def embedding_eligible(item: dict[str, Any]) -> bool:
+    return bool(item.get("embedding_eligible")) and DEFAULT_CHUNKING_POLICY.embedding_input_is_valid(
+        item["title"], item["text"], int(item.get("token_count", 0))
+    )
+
+
 def index_plan(project_root: Path) -> dict[str, int]:
     root = normalized_dir(project_root)
     objects = load_jsonl(root / "knowledge_objects.jsonl")
-    eligible = [item for item in objects if item.get("embedding_eligible") and 10 <= item.get("token_count",0) <= 1800 and len(item["title"])+1+len(item["text"])<=4000]
+    eligible = [item for item in objects if embedding_eligible(item)]
     return {"objects": len(objects), "embedding_eligible": len(eligible), "relations": len(load_jsonl(root / "relation_edges.jsonl")), "relation_candidates": len(load_jsonl(root / "relation_candidates.jsonl")), "aliases": len(load_jsonl(root / "knowledge_aliases.jsonl")), "workflows": len(load_jsonl(root / "workflow_steps.jsonl"))}
 
 
 def verify_index(project_root:Path)->dict[str,Any]:
     root=normalized_dir(project_root); storage=Storage(); objects=load_jsonl(root/"knowledge_objects.jsonl")
     report=json.loads((root/"ingestion_report.json").read_text(encoding="utf-8"))
-    eligible=[item for item in objects if item.get("embedding_eligible") and 10<=item.get("token_count",0)<=1800 and len(item["title"])+1+len(item["text"])<=4000]
+    eligible=[item for item in objects if embedding_eligible(item)]
     expected={storage.point_id(item["object_id"]) for item in eligible}; actual=set(); cursor=None
     while True:
         points,cursor=storage.qdrant.scroll(collection_name=storage.settings.collection_name,limit=256,offset=cursor,with_payload=False,with_vectors=False)
@@ -168,11 +181,115 @@ def _b4_json(value: Any) -> dict[str, Any]:
 
 
 def _b4_embedding_eligible(item: dict[str, Any]) -> bool:
-    return bool(
-        item.get("embedding_eligible")
-        and 10 <= item.get("token_count", 0) <= 1800
-        and len(item["title"]) + 1 + len(item["text"]) <= 4000
-    )
+    return embedding_eligible(item)
+
+
+def _input_sha256(item: dict[str, Any]) -> str:
+    return hashlib.sha256(embedding_input(item).encode("utf-8")).hexdigest()
+
+
+def plan_b5_reindex_impact_from_records(
+    b4_records: list[dict[str, Any]], b5_objects: list[dict[str, Any]], *, batch_size: int = 64,
+) -> dict[str, Any]:
+    """Classify a B5 normalized corpus without contacting SQL, Qdrant, or Vertex.
+
+    A current point is reusable solely when its exact dense input remains the
+    same.  Cache-receipt absence is deliberately not a re-embedding trigger.
+    """
+    before = {item["object_id"]: item for item in b4_records}
+    after = {item["object_id"]: item for item in b5_objects}
+    if len(before) != len(b4_records) or len(after) != len(b5_objects):
+        raise ValueError("impact planning requires unique object IDs")
+    unchanged_eligible: list[str] = []
+    changed_eligible: list[str] = []
+    new_eligible: list[str] = []
+    eligibility_gained: list[str] = []
+    eligibility_lost: list[str] = []
+    unchanged_noneligible: list[str] = []
+    stale_point_ids: list[str] = []
+    receipt_missing_reused: list[str] = []
+    for object_id in sorted(after):
+        current = after[object_id]
+        current_eligible = embedding_eligible(current)
+        previous = before.get(object_id)
+        if previous is None:
+            if current_eligible:
+                new_eligible.append(object_id)
+            continue
+        old_eligible = bool(previous.get("effective_embedding_eligibility"))
+        old_input = previous.get("embedding_input_sha256")
+        new_input = _input_sha256(current)
+        point_exists = bool(previous.get("qdrant_point_exists"))
+        if current_eligible and old_eligible and point_exists and old_input == new_input:
+            unchanged_eligible.append(object_id)
+            if not previous.get("embedding_receipt_exists"):
+                receipt_missing_reused.append(object_id)
+        elif current_eligible and old_eligible:
+            changed_eligible.append(object_id)
+        elif current_eligible:
+            eligibility_gained.append(object_id)
+        elif old_eligible:
+            eligibility_lost.append(object_id)
+        elif previous.get("text_sha256") == hashlib.sha256(current["text"].encode("utf-8")).hexdigest():
+            unchanged_noneligible.append(object_id)
+    expected_live_ids = {
+        previous["deterministic_point_id"] for previous in before.values()
+        if previous.get("qdrant_point_exists")
+    }
+    desired_ids = {
+        str(uuid.uuid5(uuid.NAMESPACE_URL, f"panda-qa:{object_id}"))
+        for object_id, item in after.items() if embedding_eligible(item)
+    }
+    stale_point_ids = sorted(expected_live_ids - desired_ids)
+    selected_ids = sorted(changed_eligible + new_eligible + eligibility_gained)
+    type_counts: dict[str, int] = {}
+    for object_id in selected_ids:
+        key = after[object_id]["object_type"]
+        type_counts[key] = type_counts.get(key, 0) + 1
+    return {
+        "planner": "b5-selective-static-v1",
+        "model_calls": 0,
+        "network_calls": 0,
+        "batch_size": batch_size,
+        "categories": {
+            "unchanged_eligible_reuse": len(unchanged_eligible),
+            "changed_eligible_reembed": len(changed_eligible),
+            "new_eligible_reembed": len(new_eligible),
+            "eligibility_gained_reembed": len(eligibility_gained),
+            "eligibility_lost_remove": len(eligibility_lost),
+            "unchanged_noneligible": len(unchanged_noneligible),
+            "stale_live_points_remove": len(stale_point_ids),
+        },
+        "sql": {
+            "insert_object_ids": sorted(set(after) - set(before)),
+            "delete_object_ids": sorted(set(before) - set(after)),
+            "upsert_object_ids": sorted(set(after)),
+        },
+        "vectors": {
+            "reuse_object_ids": unchanged_eligible,
+            "reembed_object_ids": selected_ids,
+            "stale_point_ids": stale_point_ids,
+            "dense_documents": len(selected_ids),
+            "sparse_documents": len(selected_ids),
+            "batches": (len(selected_ids) + batch_size - 1) // batch_size,
+            "receipt_missing_unchanged_reused": len(receipt_missing_reused),
+            "receipt_missing_unchanged_reuse_ids": receipt_missing_reused,
+            "selected_by_object_type": dict(sorted(type_counts.items())),
+        },
+    }
+
+
+def plan_b5_reindex_impact(
+    project_root: Path, *, snapshot_path: Path | None = None, batch_size: int = 64,
+) -> dict[str, Any]:
+    snapshot = snapshot_path or project_root / "data" / "tmp" / "b5" / "b4_point_snapshot.jsonl"
+    objects = load_jsonl(normalized_dir(project_root) / "knowledge_objects.jsonl")
+    report = plan_b5_reindex_impact_from_records(load_jsonl(snapshot), objects, batch_size=batch_size)
+    report["b4_snapshot_path"] = str(snapshot)
+    report["normalized_dir"] = str(normalized_dir(project_root))
+    report["b4_records"] = len(load_jsonl(snapshot))
+    report["b5_objects"] = len(objects)
+    return report
 
 
 def _b4_require_identity(storage: Storage, identity: IndexIdentity) -> Any:
