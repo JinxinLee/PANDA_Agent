@@ -71,7 +71,7 @@ Run a complete relevant dataset in `retrieval` mode at phase boundaries. T3 requ
 
 Retrieval mode does not execute the production sufficiency/refusal decision, so `expected_status_accuracy` is N/A in retrieval-mode formal gates. Version-conflict rejection remains a hard retrieval responsibility. Ordinary Recall/MRR/final-evidence metrics apply only to Gold `answered` questions; Gold `insufficient_evidence` cases are not converted into ordinary answered retrieval cases merely because a synthetic retrieval status says answered.
 
-Formal product-scope gates use a deterministic declared selector from the approved dataset (for example `split == dev`, `language == en`, `review_status == approved`) and require the exact complete selector ID set. Multilingual questions remain valid diagnostic assets but are outside the formal English product gate. Arbitrary hand-picked subsets cannot be declared complete.
+Formal product-scope gates use a deterministic declared selector from the approved dataset plus a versioned reviewed product-language calibration when present (for example `split == dev`, reviewed `effective_product_language == en`, `review_status == approved`) and require the exact complete selector ID set. Raw benchmark language metadata may be overridden by the reviewed calibration without mutating historical Gold; code identifiers, symbols, paths, and hashes do not make an otherwise English query mixed. Multilingual questions remain valid diagnostic assets but are outside the formal English product gate. Arbitrary hand-picked subsets cannot be declared complete, and completeness is ID-set based, not fixed-count based.
 
 ### T4 — Small stratified E2E
 

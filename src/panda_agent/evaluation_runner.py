@@ -23,9 +23,12 @@ from panda_agent.evaluation import (
     apply_mode_metric_semantics,
     apply_signed_rescore_adjudication,
     deterministic_case_metrics,
+    english_product_case_ids,
     evaluate_development_gate,
+    evaluate_product_development_gate,
     evaluate_regression_gate,
     evaluate_quality_gate,
+    load_product_language_calibration,
     load_run_records,
     load_gold_dataset,
     normalize_run_records,
@@ -1708,6 +1711,31 @@ def report_evaluation(project_root: Path, run_id: str) -> dict[str, Any]:
         complete_full_dev=complete_full_dev,
         all_questions_approved=all_approved,
     )
+    calibration = load_product_language_calibration(project_root)
+    product_development_gate = None
+    if (
+        calibration is not None
+        and manifest.get("official") is True
+        and manifest.get("split") == "dev"
+        and manifest.get("limit") is None
+        and not manifest.get("case_ids")
+    ):
+        product_ids = set(
+            english_product_case_ids(dataset, "dev", calibration=calibration)
+        )
+        product_records = [
+            record
+            for record in records_for_metrics
+            if str(record.get("id")) in product_ids
+        ]
+        product_metrics = aggregate_metrics(product_records)
+        product_development_gate = evaluate_product_development_gate(
+            product_metrics,
+            product_records,
+            dataset,
+            mode=manifest["mode"],
+            calibration=calibration,
+        )
     official_gate_run = (
         manifest.get("official") is True
         and manifest.get("mode") == "full"
@@ -1737,6 +1765,7 @@ def report_evaluation(project_root: Path, run_id: str) -> dict[str, Any]:
         "manifest": manifest,
         "metrics": metrics,
         "development_gate": development_gate,
+        "product_development_gate": product_development_gate,
         "gate": gate,
         "regression_gate": regression_gate,
     }
@@ -1753,6 +1782,14 @@ def report_evaluation(project_root: Path, run_id: str) -> dict[str, Any]:
         + "\n",
         encoding="utf-8",
     )
+    if product_development_gate is not None:
+        (run_dir / "product_development_gate.json").write_text(
+            json.dumps(
+                product_development_gate, ensure_ascii=False, sort_keys=True, indent=2
+            )
+            + "\n",
+            encoding="utf-8",
+        )
     (run_dir / "regression_gate.json").write_text(
         json.dumps(regression_gate, ensure_ascii=False, sort_keys=True, indent=2)
         + "\n",
@@ -1768,6 +1805,7 @@ def report_evaluation(project_root: Path, run_id: str) -> dict[str, Any]:
         f"- Official: `{manifest['official']}`",
         f"- Completed: `{len(records)}/{len(selected)}`",
         f"- Development gate passed: `{development_gate['passed']}`",
+        f"- Product development gate passed: `{product_development_gate['passed'] if product_development_gate is not None else 'N/A'}`",
         f"- Gate passed: `{gate['passed']}`",
         "",
         "## Metrics",

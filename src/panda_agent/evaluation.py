@@ -1588,13 +1588,100 @@ def evaluate_development_gate(
     }
 
 
-def english_product_case_ids(dataset: GoldDataset, split: str = "dev") -> list[str]:
-    """Return the deterministic approved English product-scope IDs for a split."""
+def effective_product_language(
+    question: GoldQuestion, calibration: dict[str, Any] | None
+) -> str:
+    """Return reviewed effective product language, falling back to raw Gold."""
+    if calibration:
+        for override in calibration.get("reviewed_overrides", []):
+            if str(override.get("case_id")) == str(question.id):
+                value = override.get("effective_product_language")
+                if value in {"en", "non_en"}:
+                    return value
+    return question.language
+
+
+def english_product_case_ids(
+    dataset: GoldDataset,
+    split: str = "dev",
+    calibration: dict[str, Any] | None = None,
+) -> list[str]:
+    """Return the deterministic approved English product-scope IDs for a split.
+
+    Effective product language comes from the reviewed calibration when an
+    override exists; otherwise raw Gold language is used.
+    """
     return [
         str(item.id)
         for item in dataset.questions
-        if item.split == split and item.language == "en" and item.review_status == "approved"
+        if item.split == split
+        and item.review_status == "approved"
+        and effective_product_language(item, calibration) == "en"
     ]
+
+
+def validate_product_language_calibration(calibration: dict[str, Any]) -> None:
+    """Validate the reviewed product-language calibration artifact structure."""
+    required = {
+        "calibration_id",
+        "source_gold",
+        "source_t3_manifest",
+        "source_run_id",
+        "scope",
+        "classification_rule",
+        "raw_language_distribution",
+        "reviewed_overrides",
+        "formal_english_ids",
+        "non_english_ids",
+        "counts",
+    }
+    missing = sorted(required - set(calibration))
+    if missing:
+        raise ValueError(f"product-language calibration missing fields: {missing}")
+    overrides = calibration.get("reviewed_overrides", [])
+    if not isinstance(overrides, list):
+        raise ValueError("reviewed_overrides must be a list")
+    ids = [str(item.get("case_id")) for item in overrides]
+    if len(ids) != len(set(ids)):
+        raise ValueError("reviewed_overrides must have unique case IDs")
+    for item in overrides:
+        if item.get("effective_product_language") not in {"en", "non_en"}:
+            raise ValueError(
+                f"invalid effective_product_language for {item.get('case_id')}"
+            )
+    english_ids = [str(item) for item in calibration.get("formal_english_ids", [])]
+    non_english_ids = [
+        str(item) for item in calibration.get("non_english_ids", [])
+    ]
+    if len(english_ids) != len(set(english_ids)):
+        raise ValueError("formal_english_ids must be unique")
+    if len(non_english_ids) != len(set(non_english_ids)):
+        raise ValueError("non_english_ids must be unique")
+    if set(english_ids) & set(non_english_ids):
+        raise ValueError("formal_english_ids and non_english_ids must be disjoint")
+    if int(calibration.get("counts", {}).get("formal_english")) != len(english_ids):
+        raise ValueError("counts.formal_english does not match formal_english_ids")
+    if int(calibration.get("counts", {}).get("non_english")) != len(non_english_ids):
+        raise ValueError("counts.non_english does not match non_english_ids")
+
+
+def load_product_language_calibration(
+    project_root: Path,
+    path: Path | None = None,
+) -> dict[str, Any] | None:
+    """Load and validate the reviewed product-language calibration artifact."""
+    calibration_path = path or (
+        project_root
+        / "evaluation"
+        / "baselines"
+        / "manifests"
+        / "phase_b_t3_product_language_scope_v2.json"
+    )
+    if not calibration_path.is_file():
+        return None
+    calibration = json.loads(calibration_path.read_text(encoding="utf-8"))
+    validate_product_language_calibration(calibration)
+    return calibration
 
 
 def evaluate_product_development_gate(
@@ -1603,14 +1690,18 @@ def evaluate_product_development_gate(
     dataset: GoldDataset,
     *,
     mode: Literal["retrieval", "qa", "full"] = "retrieval",
+    calibration: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Evaluate a formal English product-scope development gate.
 
-    Completeness is derived from the approved dataset selector, not from a
-    hard-coded question count or an arbitrary caller-supplied case list.  A
-    hand-picked subset therefore cannot masquerade as a complete product gate.
+    Completeness is derived from the reviewed calibration + approved dataset
+    selector, not from a hard-coded question count or an arbitrary caller-
+    supplied case list.  A hand-picked subset therefore cannot masquerade as a
+    complete product gate.
     """
-    expected_ids = english_product_case_ids(dataset)
+    expected_ids = english_product_case_ids(
+        dataset, split="dev", calibration=calibration
+    )
     actual_ids = [str(record.get("id")) for record in records]
     complete = (
         len(actual_ids) == len(set(actual_ids))
@@ -1626,9 +1717,10 @@ def evaluate_product_development_gate(
     gate["product_scope"] = {
         "selector": {
             "split": "dev",
-            "language": "en",
             "review_status": "approved",
+            "effective_product_language": "en",
         },
+        "calibration_id": (calibration or {}).get("calibration_id"),
         "expected_ids": expected_ids,
         "actual_ids": sorted(actual_ids),
         "complete": complete,

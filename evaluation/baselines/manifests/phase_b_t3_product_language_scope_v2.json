@@ -1,0 +1,165 @@
+{
+  "calibration_id": "phase_b_t3_product_language_scope_v2",
+  "source_gold": {
+    "version": "m6-benchmark-v2.6",
+    "sha256": "b5406e36c64ee664f9e2ff9c0f42e354feb7164c81d8f1c7551d8f2ed1d0b687",
+    "path": "evaluation/benchmarks/v2_6/gold_questions.yaml"
+  },
+  "source_t3_manifest": "phase_b_t3_retrieval_v1",
+  "source_run_id": "phase-b-t3-retrieval-20260816",
+  "scope": {
+    "split": "dev"
+  },
+  "classification_rule": "Natural-language grammar determines product language. Code identifiers, class names, paths, filenames, acronyms, repository names, symbols, commit hashes, and English technical tokens do not make an otherwise English query mixed; English identifiers embedded in Chinese grammar do not make the query English.",
+  "raw_language_distribution": {
+    "en": 51,
+    "zh": 20,
+    "mixed": 9
+  },
+  "reviewed_overrides": [
+    {
+      "case_id": "g102",
+      "raw_language": "mixed",
+      "effective_product_language": "non_en",
+      "reason": "Chinese natural-language grammar; English code identifiers do not make the query English."
+    },
+    {
+      "case_id": "g105",
+      "raw_language": "mixed",
+      "effective_product_language": "en",
+      "reason": "Query is English natural language with English technical terms."
+    },
+    {
+      "case_id": "g108",
+      "raw_language": "mixed",
+      "effective_product_language": "en",
+      "reason": "Query is English natural language."
+    },
+    {
+      "case_id": "g110",
+      "raw_language": "mixed",
+      "effective_product_language": "en",
+      "reason": "Query is English natural language."
+    },
+    {
+      "case_id": "g112",
+      "raw_language": "mixed",
+      "effective_product_language": "en",
+      "reason": "Query is English natural language."
+    },
+    {
+      "case_id": "g113",
+      "raw_language": "mixed",
+      "effective_product_language": "en",
+      "reason": "Query is English natural language."
+    },
+    {
+      "case_id": "g114",
+      "raw_language": "mixed",
+      "effective_product_language": "en",
+      "reason": "Query is English natural language."
+    },
+    {
+      "case_id": "g115",
+      "raw_language": "mixed",
+      "effective_product_language": "en",
+      "reason": "Query is English natural language."
+    },
+    {
+      "case_id": "g119",
+      "raw_language": "mixed",
+      "effective_product_language": "en",
+      "reason": "Query is English natural language."
+    }
+  ],
+  "formal_english_ids": [
+    "g001",
+    "g002",
+    "g003",
+    "g004",
+    "g005",
+    "g006",
+    "g007",
+    "g008",
+    "g009",
+    "g010",
+    "g011",
+    "g012",
+    "g013",
+    "g014",
+    "g015",
+    "g016",
+    "g017",
+    "g018",
+    "g019",
+    "g020",
+    "g021",
+    "g022",
+    "g023",
+    "g024",
+    "g025",
+    "g026",
+    "g027",
+    "g028",
+    "g029",
+    "g030",
+    "g031",
+    "g032",
+    "g033",
+    "g034",
+    "g035",
+    "g036",
+    "g037",
+    "g039",
+    "g040",
+    "g041",
+    "g042",
+    "g044",
+    "g047",
+    "g050",
+    "g051",
+    "g052",
+    "g055",
+    "g057",
+    "g058",
+    "g059",
+    "g060",
+    "g105",
+    "g108",
+    "g110",
+    "g112",
+    "g113",
+    "g114",
+    "g115",
+    "g119"
+  ],
+  "non_english_ids": [
+    "g063",
+    "g066",
+    "g067",
+    "g068",
+    "g069",
+    "g070",
+    "g072",
+    "g073",
+    "g074",
+    "g076",
+    "g077",
+    "g078",
+    "g079",
+    "g081",
+    "g085",
+    "g086",
+    "g088",
+    "g089",
+    "g095",
+    "g096",
+    "g102"
+  ],
+  "counts": {
+    "formal_english": 59,
+    "non_english": 21
+  },
+  "reviewed_at": "2026-08-16T00:00:00Z",
+  "provenance": "Manual review of the exact 80 Phase-B T3 development query texts against Gold v2.6; raw Gold language labels were not modified."
+}

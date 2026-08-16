@@ -34,11 +34,11 @@ When records conflict, use the single section explicitly marked **Current author
 
 ## Generalization Phase status
 
-- Bootstrap tasks A1–A3: `PASS`; A3.1 hardening: `PASS`; B1: `PASS`; B2: `PASS`; B3: `PASS`; B4: `PASS`; B5: `PASS` (B5.1R2 static closeout and B5.2 live migration/T1/post-B5 T2 completed); Phase-B T3 full 80-question dev retrieval-only original mechanical gate: `FAIL`; T3.1 evaluator semantics correction: `PASS`; corrected English product-scope Phase-B T3 gate: `FAIL` (critical evidence coverage remains below 1.0).
+- Bootstrap tasks A1–A3: `PASS`; A3.1 hardening: `PASS`; B1: `PASS`; B2: `PASS`; B3: `PASS`; B4: `PASS`; B5: `PASS` (B5.1R2 static closeout and B5.2 live migration/T1/post-B5 T2 completed); Phase-B T3 full 80-question dev retrieval-only original mechanical gate: `FAIL`; T3.1 evaluator semantics correction: `PASS`; T3.1R1 product-language calibration: `PASS`; recalibrated formal English product-scope Phase-B T3 gate: `FAIL` (critical evidence coverage remains below 1.0).
 - Evaluation modes: `retrieval`, `qa`, and `full` have explicit recorded boundaries.
 - Structured retrieval traces are persisted as atomic JSON and JSONL and can be loaded without rerunning QA.
 - A3 was corrected from a possible full-retrieval interpretation to a stratified low-cost bootstrap baseline. Phase-B T3 (complete 80-question dev retrieval-only) was performed on `2026-08-16`; no full 120-question retrieval/E2E run was performed.
-- C1 remains `NOT_STARTED`; it is not the active task because the corrected English product-scope T3 gate still has a genuine critical-evidence blocker.
+- C1 remains `NOT_STARTED`; it is not the active task because the recalibrated English product-scope T3 gate still has a genuine critical-evidence blocker.
 
 ## Historical full E2E reference
 
@@ -150,6 +150,22 @@ This is a low-cost English Gold reference, not a complete generalization, comple
 - Multilingual separation: `g072` (zh, R2) and `g085` (zh, R3) remain recorded as all-language diagnostics and no longer participate in the English product gate.
 - Next roadmap task: targeted critical-evidence investigation for the two English formal blockers (`g011` R3 and `g016` R2); do not start C1.
 
+### Phase-B T3.1R1 product-language recalibration and 59-case rescore
+
+- Calibration artifact: `evaluation/baselines/manifests/phase_b_t3_product_language_scope_v2.json`.
+- Rescore artifact: `evaluation/baselines/manifests/phase_b_t3_1r1_product_rescore_v1.json`.
+- Source run: `phase-b-t3-retrieval-20260816`; source records immutable; zero additional model calls/tokens.
+- Language audit: raw Gold dev distribution `en=51`, `zh=20`, `mixed=9`. The 9 raw mixed IDs are `g102,g105,g108,g110,g112,g113,g114,g115,g119`. Reviewed effective language: `g102 = non_en` (Chinese grammar with English identifiers); `g105,g108,g110,g112,g113,g114,g115,g119 = en` (pure English natural language). All 20 raw `zh` cases are non-English; no unexpected raw-zh English mislabel was found.
+- Effective formal English product scope: `59` cases (`51` raw English + `8` recalibrated mixed-to-English). Non-English dev scope: `21` (`20` raw zh + `g102`).
+- Recalibrated status counts: answered `49`, insufficient-evidence `5`, version-conflict `5`.
+- Recalibrated product metrics: Recall@5 `0.9047619048`; Recall@10 `0.9693877551`; Recall@20 `0.9795918367`; MRR `0.7625850340`; combined candidate recall `1.0`; final evidence recall `0.9795918367`; critical final evidence recall `0.9795918367`; intent accuracy `0.9830508475`; expected-status accuracy `N/A`.
+- Formal product gate: `FAIL` — only `critical_evidence_coverage` remains below `1.0`.
+- Failure taxonomy (actual failures only): Q1 `1` (`g025` diagnostic), Q2 `0`, R1 `0`, R2 `2` (`g006`, `g016`), R3 `1` (`g011`), unclassified `0`.
+- Genuine critical evidence misses: `g011.e1` (R3; final selection drops a top-10 critical object) and `g016.e2` (R2; critical object is reranked at 1-based rank 10, just outside top-10 and not selected). Rank presentation now distinguishes 0-based index from 1-based human rank.
+- Reporting-path integration: `report_evaluation()` now emits `product_development_gate` for compatible official full-dev runs when a reviewed calibration artifact is present; the all-language `development_gate` remains as diagnostic.
+- Multilingual separation: all `21` non-English dev cases remain diagnostic; `g072`/`g085` (zh) and `g102` (mixed→non_en) do not participate in the formal English gate.
+- Next roadmap task: `T3.2 — Critical-evidence mechanism investigation` for the final calibrated formal blockers `g011` and `g016`; do not start C1.
+
 ### Current small E2E baseline
 
 - Run: `generalization-a3-stratified-qa-20260813`.
@@ -177,7 +193,7 @@ The retrieval and QA measurements are unchanged. A3.1 corrects only metric repre
 
 ## Next authorized roadmap task
 
-`Targeted critical-evidence investigation for English formal blockers g011 (R3) and g016 (R2) — pending explicit user authorization (do not implement C1)`
+`T3.2 — Critical-evidence mechanism investigation for final calibrated formal blockers g011 (R3) and g016 (R2) — pending explicit user authorization (do not implement C1)`
 
 ---
 
