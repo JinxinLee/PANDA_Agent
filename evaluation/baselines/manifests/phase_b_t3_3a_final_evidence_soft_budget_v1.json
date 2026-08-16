@@ -1,0 +1,151 @@
+{
+  "manifest_id": "phase_b_t3_3a_final_evidence_soft_budget_v1",
+  "source_run_id": "phase-b-t3-retrieval-20260816",
+  "source_result_content_hash": "98acb1f9009ea0accf278719e5b8cacc193b0547aad8e87560f1d3184f9fb274",
+  "calibration_id": "phase_b_t3_product_language_scope_v2",
+  "formal_english_scope_count": 59,
+  "zero_call_provenance": {
+    "model_calls": 0,
+    "token_usage": 0,
+    "retriever_calls": 0,
+    "analyzer_calls": 0,
+    "reranker_calls": 0,
+    "query_embeddings": 0,
+    "document_embeddings": 0,
+    "qa_verifier_judge": 0,
+    "sql_qdrant_writes": 0,
+    "index_mutation": 0
+  },
+  "stage0_budget_quantification": {
+    "source_diversity_cap": {
+      "affected_unique_cases": 57,
+      "exclusion_events": 2208
+    },
+    "source_budget_cap": {
+      "affected_unique_cases": 50,
+      "exclusion_events": 738
+    },
+    "duplicate_locator": {
+      "affected_unique_cases": 22,
+      "exclusion_events": 34
+    }
+  },
+  "candidate_policy_variants": [
+    {
+      "id": "A",
+      "rule": "Current hard source/type budgets",
+      "g011": "missed",
+      "g016": "missed",
+      "critical_regressions": 0,
+      "diversity_impact": "baseline"
+    },
+    {
+      "id": "B",
+      "rule": "Soft overflow within top-12 for any distinct candidate",
+      "g011": "missed",
+      "g016": "missed",
+      "critical_regressions": 0,
+      "diversity_impact": "smaller than C but did not recover blockers"
+    },
+    {
+      "id": "C",
+      "rule": "Soft overflow within top-12 only for required-source-type distinct candidates; total limit unchanged",
+      "g011": "recovered",
+      "g016": "recovered",
+      "critical_regressions": 0,
+      "diversity_impact": "mean unique sources 2.90 -> 2.76; 8 cases lose a source, 2 gain"
+    }
+  ],
+  "selected_policy": {
+    "name": "required-source soft-budget within final evidence window",
+    "rule": "When a hard source/type cap would reject a candidate, allow it if the candidate is within the first final_evidence_limit canonical ranks, has a distinct locator, belongs to a required source type, and the total evidence budget is not yet full.",
+    "runtime_signals": [
+      "canonical rank",
+      "source_id",
+      "source_type",
+      "locator",
+      "required_source_types",
+      "final_evidence_limit"
+    ],
+    "gold_used": false,
+    "benchmark_specific": false
+  },
+  "production_diff_summary": {
+    "files_changed": [
+      "src/panda_agent/retrieval.py"
+    ],
+    "logic": "Extracted final-evidence selection into select_final_evidence(); added bounded soft-budget admission for high-ranked required-source candidates before the evidence limit is reached. Duplicate-locator and mandatory exact-symbol behavior preserved.",
+    "ranking_fusion_reranker_changed": false,
+    "final_evidence_limit_unchanged": true,
+    "reindex_reembedding_required": false
+  },
+  "pre_metrics": {
+    "final_evidence_recall": 0.9591836734693877,
+    "critical_final_evidence_recall": 0.9591836734693877,
+    "required_source_coverage": 1.0,
+    "wrong_version_evidence": 0,
+    "forbidden_evidence": 0,
+    "critical_miss_ids": [
+      "g006",
+      "g011",
+      "g016"
+    ],
+    "exclusion_reason_counts": {
+      "source_diversity_cap": 661,
+      "source_budget_cap": 271,
+      "duplicate_locator": 23
+    }
+  },
+  "post_metrics": {
+    "final_evidence_recall": 0.9795918367346939,
+    "critical_final_evidence_recall": 0.9795918367346939,
+    "required_source_coverage": 1.0,
+    "wrong_version_evidence": 0,
+    "forbidden_evidence": 0,
+    "critical_miss_ids": [
+      "g006"
+    ],
+    "exclusion_reason_counts": {
+      "source_diversity_cap": 491,
+      "source_budget_cap": 121,
+      "duplicate_locator": 19
+    }
+  },
+  "ranking_metrics_unchanged": {
+    "Recall@5": "unchanged",
+    "Recall@10": "unchanged",
+    "Recall@20": "unchanged",
+    "MRR": "unchanged",
+    "combined_candidate_recall": "unchanged",
+    "intent_accuracy": "unchanged"
+  },
+  "diversity_diagnostics": {
+    "pre": {
+      "mean_evidence": 8.673469387755102,
+      "mean_unique_sources": 2.8979591836734695,
+      "median_unique_sources": 3,
+      "mean_source_types": 2.857142857142857
+    },
+    "post": {
+      "mean_evidence": 11.306122448979592,
+      "mean_unique_sources": 2.7551020408163267,
+      "median_unique_sources": 3,
+      "mean_source_types": 2.489795918367347
+    },
+    "cases_losing_source": 8,
+    "cases_gaining_source": 2,
+    "duplicate_locator_protection": "preserved"
+  },
+  "g011_outcome": {
+    "recovered": true,
+    "reason": "object.2de0c11066dd97bc1177de1c is admitted via the required-source soft budget because it is rank 9, distinct, required documentation, and the evidence budget is not yet full."
+  },
+  "g016_outcome": {
+    "canonical_rank_remains_11": true,
+    "selector_side_pre": "missed",
+    "selector_side_post": "selected",
+    "critical_evidence_now_selected": true,
+    "symbol_first_still_gate_blocker": false
+  },
+  "next_task_decision": "T3.3B is no longer a formal gate blocker in deterministic replay; it becomes optional ranking-quality debt requiring separate authorization."
+}

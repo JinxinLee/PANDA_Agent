@@ -34,7 +34,7 @@ When records conflict, use the single section explicitly marked **Current author
 
 ## Generalization Phase status
 
-- Bootstrap tasks A1–A3: `PASS`; A3.1 hardening: `PASS`; B1: `PASS`; B2: `PASS`; B3: `PASS`; B4: `PASS`; B5: `PASS` (B5.1R2 static closeout and B5.2 live migration/T1/post-B5 T2 completed); Phase-B T3 full 80-question dev retrieval-only original mechanical gate: `FAIL`; T3.1 evaluator semantics correction: `PASS`; T3.1R1 product-language calibration: `PASS`; T3.1R2 calibration-binding/rank-stage closeout: `PASS`; T3.1R3 frozen fused-rank provenance & dynamic dev-completeness closeout: `PASS`; T3.2 critical-evidence mechanism investigation: `PASS`; recalibrated formal English product-scope Phase-B T3 gate remains `FAIL` (critical evidence coverage remains below 1.0).
+- Bootstrap tasks A1–A3: `PASS`; A3.1 hardening: `PASS`; B1: `PASS`; B2: `PASS`; B3: `PASS`; B4: `PASS`; B5: `PASS` (B5.1R2 static closeout and B5.2 live migration/T1/post-B5 T2 completed); Phase-B T3 full 80-question dev retrieval-only original mechanical gate: `FAIL`; T3.1 evaluator semantics correction: `PASS`; T3.1R1 product-language calibration: `PASS`; T3.1R2 calibration-binding/rank-stage closeout: `PASS`; T3.1R3 frozen fused-rank provenance & dynamic dev-completeness closeout: `PASS`; T3.2 critical-evidence mechanism investigation: `PASS`; T3.3A final-evidence soft-budget correction: `PASS` (deterministic replay recovers g011 and g016; formal live gate remains `FAIL` until an explicitly authorized re-evaluation).
 - Evaluation modes: `retrieval`, `qa`, and `full` have explicit recorded boundaries.
 - Structured retrieval traces are persisted as atomic JSON and JSONL and can be loaded without rerunning QA.
 - A3 was corrected from a possible full-retrieval interpretation to a stratified low-cost bootstrap baseline. Phase-B T3 (complete 80-question dev retrieval-only) was performed on `2026-08-16`; no full 120-question retrieval/E2E run was performed.
@@ -201,6 +201,17 @@ This is a low-cost English Gold reference, not a complete generalization, comple
 - Recommended next tasks: `T3.3A` (generic final-evidence selection coverage awareness, recommended first) and `T3.3B` (generic post-rerank deterministic-ordering coverage awareness). No production fix was implemented.
 - Formal metrics/gate remain unchanged: 59-case metrics identical; formal product gate remains `FAIL`.
 
+### Phase-B T3.3A final-evidence soft-budget correction
+
+- Artifact: `evaluation/baselines/manifests/phase_b_t3_3a_final_evidence_soft_budget_v1.json`.
+- Production change: `src/panda_agent/retrieval.py` — final evidence selection extracted to `select_final_evidence()`; added a bounded soft-budget rule: a high-ranked (within `final_evidence_limit`), distinct candidate from a required source type may be admitted before the evidence budget is full, even when a hard source/type cap would otherwise reject it. Total evidence limit remains 12; duplicate-locator protection and mandatory exact-symbol guarantees are preserved.
+- Stage 0 quantification: `source_diversity_cap` affected 57 unique cases / 2208 events; `source_budget_cap` affected 50 / 738; `duplicate_locator` affected 22 / 34.
+- Counterfactual variants considered: current hard caps (g011/g016 missed), unbounded top-12 soft overflow (still missed), required-source soft-budget within top-12 (both recovered, selected).
+- Deterministic replay (canonical top-30 snapshot): PRE final/critical evidence recall `0.9591836735`; POST `0.9795918367`; g011 recovered; g016 recovered; no wrong-version/forbidden evidence; required source coverage `1.0`.
+- Diversity tradeoff: mean unique sources `2.90 -> 2.76`; median remains 3; 8 cases lose a source, 2 gain; mean evidence count increases `8.67 -> 11.31`.
+- Ranking metrics unchanged (Recall@5/10/20, MRR, combined candidate recall, intent accuracy).
+- Formal live gate remains `FAIL` because this is a deterministic counterfactual replay, not a new authorized live T3. T3.3B is no longer a formal selector-side gate blocker in replay; it becomes optional ranking-quality debt.
+
 ### Current small E2E baseline
 
 - Run: `generalization-a3-stratified-qa-20260813`.
@@ -228,7 +239,7 @@ The retrieval and QA measurements are unchanged. A3.1 corrects only metric repre
 
 ## Next authorized roadmap task
 
-`T3.3A — Generic final-evidence selection coverage-awareness investigation (recommended first), then T3.3B — Generic post-rerank deterministic-ordering coverage-awareness investigation — pending explicit user authorization (do not implement C1)`
+`Explicitly authorized formal Phase-B retrieval re-evaluation after T3.3A (projected PASS from deterministic replay; not yet authoritative) — T3.3B becomes optional ranking-quality debt — do not implement C1`
 
 ---
 

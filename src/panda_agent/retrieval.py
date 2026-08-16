@@ -80,6 +80,95 @@ def _evidence(payload: dict[str, Any], score: float, channels: list[str]) -> Evi
     )
 
 
+def _source_type_of(item: dict[str, Any]) -> str:
+    if item["source_id"] in {"li_2026", "karavdina_2015", "pflueger_2017"}:
+        return "paper"
+    if "sphinx" in item["source_id"]:
+        return "documentation"
+    locator = item.get("locator") or {}
+    path = (locator.get("path") or "").replace("\\", "/").lower()
+    if path.startswith(("docs/", "doc/")):
+        return "documentation"
+    if item.get("object_type") in {"workflow", "python_script", "shell_script"}:
+        return "workflow"
+    if item.get("object_type") == "readme_section":
+        return "readme"
+    if item.get("object_type") == "python_script":
+        return "workflow"
+    return "code"
+
+
+def select_final_evidence(
+    ordered: list[str],
+    payloads: dict[str, dict[str, Any]],
+    scores: dict[str, float],
+    channels: dict[str, list[str]],
+    plan: RetrievalPlan,
+    final_evidence_limit: int,
+    mandatory_symbol_ids: set[str],
+) -> tuple[list[Evidence], list[dict[str, Any]]]:
+    """Select final evidence under hard budgets plus one bounded soft correction.
+
+    The generic invariant is: a high-ranked (within the final evidence limit),
+    distinct candidate from a required source type may replace a lower-ranked
+    selected candidate when a hard source/type budget would otherwise reject
+    it.  Duplicate-locator protection, mandatory exact-symbol guarantees, and
+    the total evidence limit are preserved.
+    """
+    selected: list[Evidence] = []
+    per_source: dict[str, int] = defaultdict(int)
+    per_type: dict[str, int] = defaultdict(int)
+    max_per_source = max(2, math.ceil(final_evidence_limit / 3))
+    type_caps = {
+        key: max(1, math.ceil(value * final_evidence_limit))
+        for key, value in plan.source_budgets.items()
+    }
+    required_types = set(plan.required_source_types)
+    seen_locator: set[str] = set()
+    excluded: list[dict[str, Any]] = []
+    for rank, object_id in enumerate(ordered, 1):
+        item = payloads[object_id]
+        raw_locator = item.get("locator") or {}
+        locator = json.dumps(raw_locator, sort_keys=True)
+        if not any(value not in (None, "", [], {}) for value in raw_locator.values()):
+            locator = f"object:{object_id}"
+        source_type = _source_type_of(item)
+        reason = None
+        if locator in seen_locator:
+            reason = "duplicate_locator"
+        elif object_id not in mandatory_symbol_ids and per_source[item["source_id"]] >= max_per_source:
+            reason = "source_diversity_cap"
+        elif object_id not in mandatory_symbol_ids and per_type[source_type] >= type_caps.get(
+            source_type, final_evidence_limit
+        ):
+            reason = "source_budget_cap"
+        if reason:
+            # Soft-budget correction: a bounded, high-ranked, distinct candidate
+            # from a required source type may still be admitted when the total
+            # evidence budget has not yet been filled, even if a hard source/type
+            # cap would otherwise reject it.  Once the evidence limit is reached,
+            # hard caps apply; duplicate locators remain hard exclusions.
+            if (
+                reason != "duplicate_locator"
+                and rank <= final_evidence_limit
+                and source_type in required_types
+                and len(selected) < final_evidence_limit
+            ):
+                excluded.append(
+                    {"object_id": object_id, "reason": reason, "soft_budget": True}
+                )
+            else:
+                excluded.append({"object_id": object_id, "reason": reason})
+                continue
+        seen_locator.add(locator)
+        per_source[item["source_id"]] += 1
+        per_type[source_type] += 1
+        selected.append(_evidence(item, scores[object_id], channels[object_id]))
+        if len(selected) >= final_evidence_limit:
+            break
+    return selected, excluded
+
+
 class Retriever:
     def __init__(self, project_root: Path, *, storage: Storage | None = None, vertex: VertexAIClient | None = None) -> None:
         self.project_root = Path(project_root).resolve()
@@ -434,25 +523,7 @@ class Retriever:
 
     @staticmethod
     def _source_type(item: dict[str, Any]) -> str:
-        if item["source_id"] in {"li_2026", "karavdina_2015", "pflueger_2017"}:
-            return "paper"
-        if "sphinx" in item["source_id"]:
-            return "documentation"
-        locator = item.get("locator") or {}
-        path = (locator.get("path") or "").replace("\\", "/").lower()
-        # Repository documents under docs/ are operational documentation even
-        # when the parser stores them as source_file objects rather than README
-        # sections.  Keeping this distinction explicit makes source budgets and
-        # required-source checks reflect the actual corpus semantics.
-        if path.startswith(("docs/", "doc/")):
-            return "documentation"
-        if item.get("object_type") in {"workflow", "python_script", "shell_script"}:
-            return "workflow"
-        if item.get("object_type") == "readme_section":
-            return "readme"
-        if item.get("object_type") == "python_script":
-            return "workflow"
-        return "code"
+        return _source_type_of(item)
 
     def retrieve(self, question: str, plan: RetrievalPlan | None = None) -> dict[str, Any]:
         plan = plan or self.analyze(question)
@@ -551,40 +622,15 @@ class Retriever:
         # object unreachable even when it was retrieved.
         ordered=list(dict.fromkeys([*hinted_first,*required_first,*symbol_first,*ordered]))
         ranked_object_ids = ordered[:30]
-        selected = []
-        # Exact matches for explicitly requested symbols/paths are hard
-        # retrieval requirements.  Keep one matching object even when source
-        # diversity or source-budget caps would otherwise discard it; the
-        # answer verifier can then require the concrete locator without
-        # guessing from a neighboring chunk.
-        mandatory_symbol_ids = set(symbol_first)
-        per_source: dict[str, int] = defaultdict(int)
-        per_type: dict[str, int] = defaultdict(int)
-        max_per_source = max(2, math.ceil(self.policies.final_evidence_limit / 3))
-        type_caps = {key: max(1, math.ceil(value * self.policies.final_evidence_limit)) for key, value in plan.source_budgets.items()}
-        seen_locator = set()
-        excluded: list[dict[str, str]] = []
-        for oid in ordered:
-            item = payloads[oid]
-            raw_locator = item.get("locator") or {}
-            # Curated architecture objects intentionally have no file locator;
-            # they must not collapse into one duplicate just because their
-            # locator JSON is empty.
-            locator = json.dumps(raw_locator, sort_keys=True)
-            if not any(value not in (None, "", [], {}) for value in raw_locator.values()):
-                locator = f"object:{oid}"
-            source_type = self._source_type(item)
-            reason = None
-            if locator in seen_locator: reason = "duplicate_locator"
-            elif oid not in mandatory_symbol_ids and per_source[item["source_id"]] >= max_per_source: reason = "source_diversity_cap"
-            elif oid not in mandatory_symbol_ids and per_type[source_type] >= type_caps.get(source_type, self.policies.final_evidence_limit): reason = "source_budget_cap"
-            if reason:
-                excluded.append({"object_id": oid, "reason": reason})
-                continue
-            seen_locator.add(locator); per_source[item["source_id"]] += 1; per_type[source_type] += 1
-            selected.append(_evidence(item, scores[oid], channels[oid]))
-            if len(selected) >= self.policies.final_evidence_limit:
-                break
+        selected, excluded = select_final_evidence(
+            ordered,
+            payloads,
+            scores,
+            channels,
+            plan,
+            self.policies.final_evidence_limit,
+            set(symbol_first),
+        )
         return {
             "plan": plan.model_dump(mode="json"),
             "rankings": {key: [item["object_id"] for item in value] for key, value in rankings.items()},
