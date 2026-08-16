@@ -529,12 +529,16 @@ def stage_trace_for_object(
     diagnostics: dict[str, Any],
     result: dict[str, Any],
     object_id: str,
+    *,
+    fused_candidates: list[Any] | None = None,
 ) -> dict[str, Any]:
     """Return explicit stage positions for one object from an immutable trace.
 
     Stages are intentionally distinct:
       - combined/fused candidate pool: union of channel rankings;
-      - fused order: sorted ``fusion_scores`` keys;
+      - fused order: only an authoritative frozen ordered ``fused_candidates``
+        list may provide fused rank; persisted ``fusion_scores`` dict key order
+        is NOT valid historical rank after key-sorted serialization;
       - LLM reranker order: ``reranked_object_ids``;
       - final deterministic ranked order: ``ranked_object_ids`` (the same
         stage the evaluator uses for Recall@K);
@@ -548,7 +552,14 @@ def stage_trace_for_object(
             for object_id in object_ids
         )
     )
-    fused_ids = list((diagnostics.get("fusion_scores") or {}).keys())
+    fused_ids: list[str] = []
+    fused_rank_source = "unavailable"
+    if fused_candidates is not None:
+        fused_ids = [
+            str(candidate.get("object_id") if isinstance(candidate, dict) else candidate.object_id)
+            for candidate in fused_candidates
+        ]
+        fused_rank_source = "retrieval_trace_fused_candidates"
     reranked_ids = diagnostics.get("reranked_object_ids") or []
     final_ranked_ids = diagnostics.get("ranked_object_ids") or []
     final_evidence_ids = [
@@ -571,6 +582,7 @@ def stage_trace_for_object(
         "object_id": object_id,
         "combined_candidate_present": object_id in combined_candidate_ids,
         "fused_rank_1based": None if fused_idx is None else fused_idx + 1,
+        "fused_rank_source": fused_rank_source,
         "reranker_index_0based": reranked_idx,
         "reranker_rank_1based": None if reranked_idx is None else reranked_idx + 1,
         "final_ranked_index_0based": final_ranked_idx,

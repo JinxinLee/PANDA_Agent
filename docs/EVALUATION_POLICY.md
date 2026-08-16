@@ -77,6 +77,10 @@ A reviewed product-language calibration is applied only when it is compatible wi
 
 Formal top-K retrieval metrics (Recall@5/@10/@20) use the canonical final-ranked stage (`diagnostics.ranked_object_ids` when present), not the LLM reranker output. Reranker rank and final-ranked rank are distinct diagnostic concepts and must be reported separately with explicit 0-based/1-based fields.
 
+Persisted `fusion_scores` dictionary key order is not valid historical fused-rank provenance after key-sorted serialization. Formal fused rank may only come from an authoritative frozen ordered fusion trace (for example `RetrievalTrace.fused_candidates`); when no such ordered artifact exists, fused rank must be reported `N/A`, not reconstructed from dict key order or score sorting.
+
+Complete formal development execution is derived from exact dataset-approved ID sets, not from a hard-coded question count. No fixed `80`/`59` or other number defines completeness.
+
 ### T4 — Small stratified E2E
 
 Normally use approximately 20 benchmark plus 20 trustworthy novel questions where available. Run `qa`: retrieval, answer generation, and runtime verification/revision. Invoke the external judge only when separately and explicitly justified.

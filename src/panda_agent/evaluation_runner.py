@@ -1695,13 +1695,17 @@ def report_evaluation(project_root: Path, run_id: str) -> dict[str, Any]:
         if item.split == "dev" and item.review_status == "approved"
     }
     requested_case_ids = set(manifest.get("case_ids") or [])
+    record_ids = [str(record.get("id")) for record in records]
+    selected_ids = {str(item.id) for item in selected}
     explicit_complete_dev = bool(requested_case_ids) and requested_case_ids == all_dev_ids
     full_dev_execution = (
         manifest.get("official") is True
         and manifest.get("split") == "dev"
         and manifest.get("limit") is None
         and (not requested_case_ids or explicit_complete_dev)
-        and len(records) == len(selected) == 80
+        and len(record_ids) == len(set(record_ids))
+        and set(record_ids) == all_dev_ids
+        and selected_ids == all_dev_ids
     )
     complete_full_dev = full_dev_execution
     complete_full_regression = (

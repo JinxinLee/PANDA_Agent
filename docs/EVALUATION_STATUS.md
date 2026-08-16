@@ -34,7 +34,7 @@ When records conflict, use the single section explicitly marked **Current author
 
 ## Generalization Phase status
 
-- Bootstrap tasks A1–A3: `PASS`; A3.1 hardening: `PASS`; B1: `PASS`; B2: `PASS`; B3: `PASS`; B4: `PASS`; B5: `PASS` (B5.1R2 static closeout and B5.2 live migration/T1/post-B5 T2 completed); Phase-B T3 full 80-question dev retrieval-only original mechanical gate: `FAIL`; T3.1 evaluator semantics correction: `PASS`; T3.1R1 product-language calibration: `PASS`; T3.1R2 calibration-binding/rank-stage closeout: `PASS`; recalibrated formal English product-scope Phase-B T3 gate: `FAIL` (critical evidence coverage remains below 1.0).
+- Bootstrap tasks A1–A3: `PASS`; A3.1 hardening: `PASS`; B1: `PASS`; B2: `PASS`; B3: `PASS`; B4: `PASS`; B5: `PASS` (B5.1R2 static closeout and B5.2 live migration/T1/post-B5 T2 completed); Phase-B T3 full 80-question dev retrieval-only original mechanical gate: `FAIL`; T3.1 evaluator semantics correction: `PASS`; T3.1R1 product-language calibration: `PASS`; T3.1R2 calibration-binding/rank-stage closeout: `PASS`; T3.1R3 frozen fused-rank provenance & dynamic dev-completeness closeout: `PASS`; recalibrated formal English product-scope Phase-B T3 gate: `FAIL` (critical evidence coverage remains below 1.0).
 - Evaluation modes: `retrieval`, `qa`, and `full` have explicit recorded boundaries.
 - Structured retrieval traces are persisted as atomic JSON and JSONL and can be loaded without rerunning QA.
 - A3 was corrected from a possible full-retrieval interpretation to a stratified low-cost bootstrap baseline. Phase-B T3 (complete 80-question dev retrieval-only) was performed on `2026-08-16`; no full 120-question retrieval/E2E run was performed.
@@ -177,6 +177,17 @@ This is a low-cost English Gold reference, not a complete generalization, comple
   - `g016.e2` / `object.f516ef98aeecd335607ac0f6`: combined present; fused rank `30`; reranker rank `10`; final ranked rank `11`; final top-10 `false`; final selected `false` → R2 (post-rerank deterministic ordering drops it just outside top-10).
 - Formal metrics unchanged: Recall@5 `0.9047619048`; Recall@10 `0.9693877551`; Recall@20 `0.9795918367`; MRR `0.7625850340`; combined candidate recall `1.0`; final evidence recall `0.9795918367`; critical final evidence recall `0.9795918367`; intent accuracy `0.9830508475`.
 - Formal product gate remains `FAIL` because critical evidence coverage `< 1.0`.
+
+### Phase-B T3.1R3 frozen fused-rank provenance and dynamic dev-completeness closeout
+
+- Closeout artifact: `evaluation/baselines/manifests/phase_b_t3_1r3_fused_rank_dev_completeness_closeout_v1.json`.
+- Frozen fusion-rank audit: persisted `fusion_scores` dict key order is not authoritative after key-sorted serialization. `stage_trace_for_object()` now uses only frozen `RetrievalTrace.fused_candidates` for fused rank; when unavailable, `fused_rank_1based = null` and `fused_rank_source = unavailable`.
+- Corrected stage traces for final formal blockers:
+  - `g011.e1` / `object.2de0c11066dd97bc1177de1c`: combined present; fused rank `27` (authoritative trace); reranker rank `9`; final ranked rank `9`; final top-10 `true`; final selected `false` → R3.
+  - `g016.e2` / `object.f516ef98aeecd335607ac0f6`: combined present; fused rank `22` (authoritative trace); reranker rank `10`; final ranked rank `11`; final top-10 `false`; final selected `false` → R2 with diagnostic substage `R2_post_rerank_deterministic_ordering`.
+- Dynamic dev completeness: full official dev execution is now derived from exact approved dataset ID sets; the hard-coded `80` check is removed and replaced by data-derived completeness. A synthetic non-80 (5-case) dev test proves no hidden count dependency.
+- Formal metrics remain unchanged: Recall@5 `0.9047619048`; Recall@10 `0.9693877551`; Recall@20 `0.9795918367`; MRR `0.7625850340`; combined candidate recall `1.0`; final evidence recall `0.9795918367`; critical final evidence recall `0.9795918367`; intent accuracy `0.9830508475`.
+- Formal product gate remains `FAIL` because critical evidence coverage `< 1.0`; failure taxonomy remains Q1 `1`, Q2 `0`, R1 `0`, R2 `2`, R3 `1`, unclassified `0`.
 
 ### Current small E2E baseline
 

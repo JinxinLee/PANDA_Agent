@@ -188,8 +188,8 @@ class T31R2RankSemanticsTests(unittest.TestCase):
         self.assertEqual(stage["final_ranked_rank_1based"], 3)
 
     def test_reranker_rank_10_but_final_ranked_rank_11(self) -> None:
-        reranked = [f"obj.{i}" for i in range(1, 11)] + ["obj.target"]
-        final_ranked = [f"obj.{i}" for i in range(1, 11)] + ["obj.other", "obj.target"]
+        reranked = [f"obj.{i}" for i in range(1, 10)] + ["obj.target", "obj.10"]
+        final_ranked = [f"obj.{i}" for i in range(1, 11)] + ["obj.target"]
         trace = {
             "rankings": {"dense": ["obj.target"]},
             "fusion_scores": {oid: 1.0 for oid in final_ranked},
@@ -197,8 +197,10 @@ class T31R2RankSemanticsTests(unittest.TestCase):
             "ranked_object_ids": final_ranked,
         }
         stage = stage_trace_for_object(trace, {"evidence": []}, "obj.target")
-        self.assertEqual(stage["reranker_rank_1based"], 11)
-        self.assertEqual(stage["final_ranked_rank_1based"], 12)
+        self.assertEqual(stage["reranker_index_0based"], 9)
+        self.assertEqual(stage["reranker_rank_1based"], 10)
+        self.assertEqual(stage["final_ranked_index_0based"], 10)
+        self.assertEqual(stage["final_ranked_rank_1based"], 11)
         self.assertFalse(stage["final_top10"])
         self.assertTrue(stage["final_top20"])
 
