@@ -34,11 +34,11 @@ When records conflict, use the single section explicitly marked **Current author
 
 ## Generalization Phase status
 
-- Bootstrap tasks A1–A3: `PASS`; A3.1 hardening: `PASS`; B1: `PASS`; B2: `PASS`; B3: `PASS`; B4: `PASS`; B5: `INCONCLUSIVE` (static implementation, corpus regeneration, impact planning, and T0 complete; live deployment skipped by user decision, so post-B5 T2 and live T1 were not run).
+- Bootstrap tasks A1–A3: `PASS`; A3.1 hardening: `PASS`; B1: `PASS`; B2: `PASS`; B3: `PASS`; B4: `PASS`; B5: `INCONCLUSIVE` (B5.1R2 pre-migration static closeout `PASS`; live migration, T1, and post-B5 T2 belong to B5.2 and have not been run).
 - Evaluation modes: `retrieval`, `qa`, and `full` have explicit recorded boundaries.
 - Structured retrieval traces are persisted as atomic JSON and JSONL and can be loaded without rerunning QA.
 - A3 was corrected from a possible full-retrieval interpretation to a stratified low-cost bootstrap baseline. No T3 or full 120-question retrieval/E2E run was performed.
-- C1 remains `NOT_STARTED` and is the next authorized roadmap task.
+- C1 remains `NOT_STARTED` and is not the active task while B5 completion work continues.
 
 ## Historical full E2E reference
 
@@ -108,16 +108,15 @@ This is a low-cost English Gold reference, not a complete generalization, comple
 
 ### Current B5 structure-aware chunking and source-file coverage result
 
-- Status: `INCONCLUSIVE`. Static implementation is complete and committed (`ec98911`); live deployment was skipped by user decision.
-- Chunking contract: `ChunkingPolicy` in `src/panda_agent/chunking.py` is the single shared validity contract for ingestion and index eligibility: `min_tokens=10`, `max_tokens=1800`, `max_embedding_input_chars=4000`, deterministic regex token counting, version `b5-v1`. Splitting order: paragraph/block boundaries, then source lines, then deterministic hard fallback; no sliding overlap; deterministic IDs and parent lineage.
-- Source coverage: parser-native regions `cpp_top_level_gap` 26092, `cmake_configuration_gap` 638, `python_module_gap` 96, plus `generic_text_block` paragraph regions 2164 for `.txt`/`.rst`/`.md`/`.yml`. Oversized parent files remain non-eligible provenance containers. Only 8 trivial (<10-token) containers remain uncovered.
-- Locator guarantees: full-source parents again use B4 trailing-newline semantics; reuse-locator mismatches 0; parent/child containment violations 0; fabricated PDF line locators 0.
-- Normalized corpus (B5, local only): `133144` objects (`+30269`), `105045` embedding-eligible (`+24347`), output hash `b2466dc128ff7cd2a578393280b3a4ad55c63be2e97b9e93a0751a8bffd9144d`; relations invariant (`64561` edges, `372139` candidates).
-- Static impact plan: reuse `64423` (including `11233` receipt-missing unchanged points that are never re-embedded), re-embed `40622` dense + sparse documents in `635` batches, stale removals `2586`, SQL upsert/insert/delete `133144`/`32888`/`2619`; identity unchanged schema 4 / `8172f9a640e62977be6e911bfb4848ce3aecd0994f1f3ba51a0985bffec62cb9`; collection never recreated. The `b5-apply` dry-run passed against the live B4 index; live apply was not executed.
-- Live state: unchanged B4 index — PostgreSQL `102875` objects, Qdrant `80698` points, dense 3072, sparse `idf`, schema 4. No live writes, no Vertex calls, no collection recreation.
-- Pre-B5 T2: run `b5-pre-retrieval-20260815`, mode `retrieval`, fixed 16 A3 IDs (`g001,g007,g012,g013,g025,g026,g027,g038,g041,g042,g043,g044,g057,g058,g059,g060`); 48 runtime model calls, 290495 tokens, 0 judge calls, 0 exceptions. Recall@5 `0.6944444444`; Recall@10 `0.8333333333`; Recall@20 `0.8333333333`; MRR `0.6`; combined candidate recall `0.9166666667`; final evidence recall `0.8333333333`; intent accuracy `0.9375` (applicable denominator 12; 4 version-conflict cases excluded). Selection manifest: `evaluation/baselines/manifests/b5_t2_retrieval_v1.json`.
-- Post-B5 T2: `NOT RUN` because the live B5 index was not deployed.
-- T0 verification: `26` B5 chunking/migration tests pass; full unit suite `282` tests with 2 pre-existing M6 gate failures that also fail on the pre-B5 tree.
+- Status: `INCONCLUSIVE` overall; **B5.1R2 (pre-migration static closeout): `PASS`**. Live migration, T1 integrity verification, and post-B5 T2 are B5.2 work and have not been run.
+- B5.1R2 fixes (commits `23a42fd` and earlier): intermediate upper-bounds validity (`ChunkingPolicy.within_upper_bounds`, no minimum) is now distinct from final eligibility (`embedding_input_is_valid`), so sub-minimum paragraphs/lines merge in source order into valid chunks instead of being dropped; unmergeable sub-minimum residuals remain on the non-eligible parent and are audit-visible. A coverage-based structural-container rule stops broad parents with structured searchable children (`source_file`, `python_script`, README roots, `sphinx_page`) from producing broad duplicate embedding chunks; README roots gain a preamble gap region; generic `.txt`/`.rst`/`.md`/`.yml` files keep paragraph/block → lines → hard-fallback coverage, including content beyond the legacy 20000/30000-character boundaries (fixture-proven). Curated alias provenance and `RelationResolver` exclude `b5_source_gap` objects. `apply_b5_selective_index` runtime bug fixed (`vertex_settings` constructed once and passed to `VertexAIClient`); read-only preflight validates settings, sparse factory receipt, schema-4 identity, artifacts, plan closures, reuse locators, selected inputs, and live counts before any mutation; a fully mocked `run=True` orchestration test covers reuse/changed/stale handling with stale deletion only after replacement writes.
+- Final normalized candidate (local only, not deployed): `133075` objects, `104973` embedding-eligible, output hash `ff7f6102542bd68775caefba19d19d9ba0bb2452fe05a234344db40284538e73` (reproduced across two full ingestion runs); relations invariant (`64561` edges, `372139` candidates). Integrity: duplicate IDs 0, missing parents 0, orphan relation endpoints 0, locator containment violations 0, invalid line ranges 0, fabricated PDF lines 0, policy-invalid eligible 0. Source coverage (B4 trusted → final): C/C++ uncovered 1281 → 0 (gap regions 26092); build/config 44 → 0 (gap regions 638); Python 0 → 0 (gap regions 96); shell 0 → 0; README/Sphinx 0 → 0; PDF 0 → 0; generic long-file paragraph regions 1756; whole-corpus hard-fallback chunks 2; sub-minimum residuals 0.
+- Churn attribution: every planned re-embed object has exactly one primary cause; `unknown/unclassified = 0`; cause total == dense total == `40547` (`new_source_gap_coverage` 19296, `intentional_structural_rechunk` 17492, `new_generic_file_coverage` 1756, `eligibility_gain` 2003). Supplementary: title-only 0; text changes 13572 (whitespace-only 1535, a B4-boundary-stripping artifact); same-ID input changes 13572; new coverage 25003; removed old derived chunks 2764; eligibility gained 2003 / lost 0; unchanged reused 64426; missing-receipt unchanged reused 11235.
+- Revised selective impact plan: reuse `64426`; changed `13541`; new `25003`; eligibility gained `2003`; eligibility lost `0`; stale points `2731`; dense documents `40547`; sparse documents `40547`; batches `634`; rebuild ratio ≈ `0.502` of the B4 live points (all churn explained, no threshold tuning); identity unchanged schema 4 / `8172f9a640e62977be6e911bfb4848ce3aecd0994f1f3ba51a0985bffec62cb9`; collection never recreated. `b5-apply` dry-run preflight passed against the live B4 index.
+- Live state: untouched B4 index throughout — PostgreSQL `102875` objects, Qdrant `80698` points, dense 3072, sparse `idf`, schema 4. Vertex embedding calls 0, sparse migration encodes 0, live PostgreSQL writes 0, live Qdrant writes 0.
+- Pre-B5 T2 remains the authoritative before-state: run `b5-pre-retrieval-20260815`, mode `retrieval`, fixed 16 A3 IDs; Recall@5 `0.6944444444`; Recall@10 `0.8333333333`; Recall@20 `0.8333333333`; MRR `0.6`; combined candidate recall `0.9166666667`; final evidence recall `0.8333333333`; intent accuracy `0.9375`; exceptions 0 (applicable denominator 12). Selection manifest: `evaluation/baselines/manifests/b5_t2_retrieval_v1.json`. It was not rerun.
+- Post-B5 T2: `NOT RUN` — belongs to B5.2 after the live B5 index is deployed.
+- T0 verification: `40` B5 chunking/migration tests pass; full unit suite `297` tests with only the 2 pre-existing M6 gate failures; `compileall` and `git diff --check` clean.
 - Novel retrieval: `UNMEASURED` — no trustworthy human-authored novel dataset exists.
 - Phase-B T3 retrieval-only comparison: `NOT RUN` — requires explicit user authorization.
 
@@ -149,7 +148,7 @@ The retrieval and QA measurements are unchanged. A3.1 corrects only metric repre
 
 ## Next authorized roadmap task
 
-`C1 — Deterministic parsing before expensive LLM analysis`
+`B5.2 — Selective live index migration, T1 integrity verification, and controlled post-B5 T2 retrieval`
 
 ---
 
