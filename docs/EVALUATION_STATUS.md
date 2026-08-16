@@ -34,7 +34,7 @@ When records conflict, use the single section explicitly marked **Current author
 
 ## Generalization Phase status
 
-- Bootstrap tasks A1–A3: `PASS`; A3.1 hardening: `PASS`; B1: `PASS`; B2: `PASS`; B3: `PASS`; B4: `PASS`; B5: `PASS` (B5.1R2 static closeout and B5.2 live migration/T1/post-B5 T2 completed); Phase-B T3 full 80-question dev retrieval-only original mechanical gate: `FAIL`; T3.1 evaluator semantics correction: `PASS`; T3.1R1 product-language calibration: `PASS`; recalibrated formal English product-scope Phase-B T3 gate: `FAIL` (critical evidence coverage remains below 1.0).
+- Bootstrap tasks A1–A3: `PASS`; A3.1 hardening: `PASS`; B1: `PASS`; B2: `PASS`; B3: `PASS`; B4: `PASS`; B5: `PASS` (B5.1R2 static closeout and B5.2 live migration/T1/post-B5 T2 completed); Phase-B T3 full 80-question dev retrieval-only original mechanical gate: `FAIL`; T3.1 evaluator semantics correction: `PASS`; T3.1R1 product-language calibration: `PASS`; T3.1R2 calibration-binding/rank-stage closeout: `PASS`; recalibrated formal English product-scope Phase-B T3 gate: `FAIL` (critical evidence coverage remains below 1.0).
 - Evaluation modes: `retrieval`, `qa`, and `full` have explicit recorded boundaries.
 - Structured retrieval traces are persisted as atomic JSON and JSONL and can be loaded without rerunning QA.
 - A3 was corrected from a possible full-retrieval interpretation to a stratified low-cost bootstrap baseline. Phase-B T3 (complete 80-question dev retrieval-only) was performed on `2026-08-16`; no full 120-question retrieval/E2E run was performed.
@@ -165,6 +165,18 @@ This is a low-cost English Gold reference, not a complete generalization, comple
 - Reporting-path integration: `report_evaluation()` now emits `product_development_gate` for compatible official full-dev runs when a reviewed calibration artifact is present; the all-language `development_gate` remains as diagnostic.
 - Multilingual separation: all `21` non-English dev cases remain diagnostic; `g072`/`g085` (zh) and `g102` (mixed→non_en) do not participate in the formal English gate.
 - Next roadmap task: `T3.2 — Critical-evidence mechanism investigation` for the final calibrated formal blockers `g011` and `g016`; do not start C1.
+
+### Phase-B T3.1R2 calibration binding and rank-stage closeout
+
+- Closeout artifact: `evaluation/baselines/manifests/phase_b_t3_1r2_calibration_rank_closeout_v1.json`.
+- Calibration binding: calibration `phase_b_t3_product_language_scope_v2` is compatible with active Gold v2.6 (`b5406e36c64ee664f9e2ff9c0f42e354feb7164c81d8f1c7551d8f2ed1d0b687`) and `split=dev`; override IDs/raw languages validated; declared `formal_english_ids`/`non_english_ids` exactly equal independently derived ID sets (`59` / `21`).
+- Reporting completeness: official full-dev runs now support both no-`case_ids` and explicit complete all-dev `case_ids`; incomplete subsets and arbitrary English-only subsets cannot produce a complete formal product gate.
+- Rank-stage semantics: channel candidates (`rankings`), fused order (`fusion_scores`), LLM reranker (`reranked_object_ids`), final deterministic ranked stage (`ranked_object_ids`), and final evidence selection are now explicit and distinct. Recall@K uses `ranked_object_ids` (final ranked stage).
+- Stage traces for final formal blockers:
+  - `g011.e1` / `object.2de0c11066dd97bc1177de1c`: combined present; fused rank `7`; reranker rank `9`; final ranked rank `9`; final top-10 `true`; final selected `false` → R3.
+  - `g016.e2` / `object.f516ef98aeecd335607ac0f6`: combined present; fused rank `30`; reranker rank `10`; final ranked rank `11`; final top-10 `false`; final selected `false` → R2 (post-rerank deterministic ordering drops it just outside top-10).
+- Formal metrics unchanged: Recall@5 `0.9047619048`; Recall@10 `0.9693877551`; Recall@20 `0.9795918367`; MRR `0.7625850340`; combined candidate recall `1.0`; final evidence recall `0.9795918367`; critical final evidence recall `0.9795918367`; intent accuracy `0.9830508475`.
+- Formal product gate remains `FAIL` because critical evidence coverage `< 1.0`.
 
 ### Current small E2E baseline
 

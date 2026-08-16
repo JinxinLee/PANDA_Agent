@@ -1689,13 +1689,21 @@ def report_evaluation(project_root: Path, run_id: str) -> dict[str, Any]:
     if manifest.get("limit") is not None:
         selected = selected[: int(manifest["limit"])]
     all_approved = bool(selected) and all(item.review_status == "approved" for item in selected)
-    complete_full_dev = (
+    all_dev_ids = {
+        str(item.id)
+        for item in dataset.questions
+        if item.split == "dev" and item.review_status == "approved"
+    }
+    requested_case_ids = set(manifest.get("case_ids") or [])
+    explicit_complete_dev = bool(requested_case_ids) and requested_case_ids == all_dev_ids
+    full_dev_execution = (
         manifest.get("official") is True
         and manifest.get("split") == "dev"
         and manifest.get("limit") is None
-        and not manifest.get("case_ids")
+        and (not requested_case_ids or explicit_complete_dev)
         and len(records) == len(selected) == 80
     )
+    complete_full_dev = full_dev_execution
     complete_full_regression = (
         manifest.get("official") is True
         and manifest.get("mode") == "full"
@@ -1713,29 +1721,35 @@ def report_evaluation(project_root: Path, run_id: str) -> dict[str, Any]:
     )
     calibration = load_product_language_calibration(project_root)
     product_development_gate = None
-    if (
-        calibration is not None
-        and manifest.get("official") is True
-        and manifest.get("split") == "dev"
-        and manifest.get("limit") is None
-        and not manifest.get("case_ids")
-    ):
-        product_ids = set(
-            english_product_case_ids(dataset, "dev", calibration=calibration)
-        )
-        product_records = [
-            record
-            for record in records_for_metrics
-            if str(record.get("id")) in product_ids
-        ]
-        product_metrics = aggregate_metrics(product_records)
-        product_development_gate = evaluate_product_development_gate(
-            product_metrics,
-            product_records,
-            dataset,
-            mode=manifest["mode"],
-            calibration=calibration,
-        )
+    if calibration is not None and full_dev_execution:
+        try:
+            product_ids = set(
+                english_product_case_ids(dataset, "dev", calibration=calibration)
+            )
+            product_records = [
+                record
+                for record in records_for_metrics
+                if str(record.get("id")) in product_ids
+            ]
+            product_metrics = aggregate_metrics(product_records)
+            product_development_gate = evaluate_product_development_gate(
+                product_metrics,
+                product_records,
+                dataset,
+                mode=manifest["mode"],
+                calibration=calibration,
+                dataset_path=(
+                    Path(manifest_dataset_path)
+                    if manifest_dataset_path
+                    else project_root / "evaluation" / "gold_questions.yaml"
+                ),
+            )
+        except ValueError as exc:
+            product_development_gate = {
+                "compatible": False,
+                "reason": str(exc),
+                "passed": None,
+            }
     official_gate_run = (
         manifest.get("official") is True
         and manifest.get("mode") == "full"
@@ -1805,7 +1819,7 @@ def report_evaluation(project_root: Path, run_id: str) -> dict[str, Any]:
         f"- Official: `{manifest['official']}`",
         f"- Completed: `{len(records)}/{len(selected)}`",
         f"- Development gate passed: `{development_gate['passed']}`",
-        f"- Product development gate passed: `{product_development_gate['passed'] if product_development_gate is not None else 'N/A'}`",
+        f"- Product development gate passed: `{product_development_gate.get('passed', 'N/A') if product_development_gate is not None else 'N/A'}`",
         f"- Gate passed: `{gate['passed']}`",
         "",
         "## Metrics",

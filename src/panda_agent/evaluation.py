@@ -14,6 +14,7 @@ import yaml
 from pydantic import Field, field_validator, model_validator
 
 from panda_agent.models import QAStatus, StrictModel
+from panda_agent.source import sha256_file
 
 
 INTENTS = {
@@ -522,6 +523,63 @@ def ranked_object_ids(bundle: dict[str, Any], limit: int = 10) -> list[str]:
             ]
         )
     )[:limit]
+
+
+def stage_trace_for_object(
+    diagnostics: dict[str, Any],
+    result: dict[str, Any],
+    object_id: str,
+) -> dict[str, Any]:
+    """Return explicit stage positions for one object from an immutable trace.
+
+    Stages are intentionally distinct:
+      - combined/fused candidate pool: union of channel rankings;
+      - fused order: sorted ``fusion_scores`` keys;
+      - LLM reranker order: ``reranked_object_ids``;
+      - final deterministic ranked order: ``ranked_object_ids`` (the same
+        stage the evaluator uses for Recall@K);
+      - final evidence selection: ``result.evidence`` object IDs.
+    """
+    rankings = diagnostics.get("rankings") or {}
+    combined_candidate_ids = list(
+        dict.fromkeys(
+            object_id
+            for object_ids in rankings.values()
+            for object_id in object_ids
+        )
+    )
+    fused_ids = list((diagnostics.get("fusion_scores") or {}).keys())
+    reranked_ids = diagnostics.get("reranked_object_ids") or []
+    final_ranked_ids = diagnostics.get("ranked_object_ids") or []
+    final_evidence_ids = [
+        item.get("object_id")
+        for item in (result.get("evidence") or [])
+        if item.get("object_id")
+    ]
+
+    def index_of(values: list[str]) -> int | None:
+        try:
+            return values.index(object_id)
+        except ValueError:
+            return None
+
+    fused_idx = index_of(fused_ids)
+    reranked_idx = index_of(reranked_ids)
+    final_ranked_idx = index_of(final_ranked_ids)
+    final_ranked_rank = None if final_ranked_idx is None else final_ranked_idx + 1
+    return {
+        "object_id": object_id,
+        "combined_candidate_present": object_id in combined_candidate_ids,
+        "fused_rank_1based": None if fused_idx is None else fused_idx + 1,
+        "reranker_index_0based": reranked_idx,
+        "reranker_rank_1based": None if reranked_idx is None else reranked_idx + 1,
+        "final_ranked_index_0based": final_ranked_idx,
+        "final_ranked_rank_1based": final_ranked_rank,
+        "final_top5": final_ranked_rank is not None and final_ranked_rank <= 5,
+        "final_top10": final_ranked_rank is not None and final_ranked_rank <= 10,
+        "final_top20": final_ranked_rank is not None and final_ranked_rank <= 20,
+        "final_selected": object_id in final_evidence_ids,
+    }
 
 
 def _lineage(
@@ -1684,6 +1742,88 @@ def load_product_language_calibration(
     return calibration
 
 
+def derive_product_language_ids(
+    dataset: GoldDataset, calibration: dict[str, Any]
+) -> tuple[list[str], list[str]]:
+    """Derive formal/non-English IDs from raw Gold + reviewed overrides."""
+    split = calibration.get("scope", {}).get("split", "dev")
+    scope_ids = {
+        str(item.id)
+        for item in dataset.questions
+        if item.split == split and item.review_status == "approved"
+    }
+    english: list[str] = []
+    non_english: list[str] = []
+    for item in dataset.questions:
+        if str(item.id) not in scope_ids:
+            continue
+        if effective_product_language(item, calibration) == "en":
+            english.append(str(item.id))
+        else:
+            non_english.append(str(item.id))
+    return sorted(english), sorted(non_english)
+
+
+def calibration_compatibility(
+    calibration: dict[str, Any],
+    dataset: GoldDataset,
+    dataset_path: Path | None = None,
+) -> dict[str, Any]:
+    """Verify a reviewed calibration is compatible with the active dataset."""
+    result: dict[str, Any] = {
+        "calibration_id": calibration.get("calibration_id"),
+        "compatible": True,
+        "reason": None,
+    }
+    cal_gold = calibration.get("source_gold") or {}
+    cal_version = cal_gold.get("version")
+    cal_sha = cal_gold.get("sha256")
+    if cal_version != dataset.benchmark_version:
+        result.update(compatible=False, reason="calibration Gold version does not match active dataset")
+        return result
+    if dataset_path is not None:
+        active_sha = sha256_file(dataset_path)
+        if cal_sha != active_sha:
+            result.update(compatible=False, reason="calibration Gold SHA-256 does not match active dataset file")
+            return result
+    split = calibration.get("scope", {}).get("split")
+    if split != "dev":
+        result.update(compatible=False, reason="calibration scope split is not dev")
+        return result
+    question_by_id = {str(item.id): item for item in dataset.questions}
+    for override in calibration.get("reviewed_overrides", []):
+        case_id = str(override.get("case_id"))
+        question = question_by_id.get(case_id)
+        if question is None or question.split != split or question.review_status != "approved":
+            result.update(compatible=False, reason=f"override references unknown/out-of-scope ID {case_id}")
+            return result
+        if question.language != override.get("raw_language"):
+            result.update(
+                compatible=False,
+                reason=f"override raw_language for {case_id} disagrees with Gold",
+            )
+            return result
+    derived_en, derived_non = derive_product_language_ids(dataset, calibration)
+    declared_en = sorted(str(item) for item in calibration.get("formal_english_ids", []))
+    declared_non = sorted(str(item) for item in calibration.get("non_english_ids", []))
+    if set(declared_en) != set(derived_en):
+        result.update(compatible=False, reason="declared formal_english_ids differ from derived IDs")
+        return result
+    if set(declared_non) != set(derived_non):
+        result.update(compatible=False, reason="declared non_english_ids differ from derived IDs")
+        return result
+    scope_ids = {
+        str(item.id)
+        for item in dataset.questions
+        if item.split == split and item.review_status == "approved"
+    }
+    union = set(declared_en) | set(declared_non)
+    if union != scope_ids:
+        result.update(compatible=False, reason="calibration IDs do not exactly partition approved scope")
+        return result
+    return result
+
+
 def evaluate_product_development_gate(
     metrics: dict[str, Any],
     records: list[dict[str, Any]],
@@ -1691,6 +1831,7 @@ def evaluate_product_development_gate(
     *,
     mode: Literal["retrieval", "qa", "full"] = "retrieval",
     calibration: dict[str, Any] | None = None,
+    dataset_path: Path | None = None,
 ) -> dict[str, Any]:
     """Evaluate a formal English product-scope development gate.
 
@@ -1699,9 +1840,21 @@ def evaluate_product_development_gate(
     supplied case list.  A hand-picked subset therefore cannot masquerade as a
     complete product gate.
     """
-    expected_ids = english_product_case_ids(
-        dataset, split="dev", calibration=calibration
-    )
+    compatibility: dict[str, Any] | None = None
+    if calibration is not None:
+        compatibility = calibration_compatibility(
+            calibration, dataset, dataset_path=dataset_path
+        )
+        if not compatibility["compatible"]:
+            raise ValueError(
+                f"incompatible product-language calibration: {compatibility['reason']}"
+            )
+        derived_en, _ = derive_product_language_ids(dataset, calibration)
+        expected_ids = derived_en
+    else:
+        expected_ids = english_product_case_ids(
+            dataset, split="dev", calibration=None
+        )
     actual_ids = [str(record.get("id")) for record in records]
     complete = (
         len(actual_ids) == len(set(actual_ids))
@@ -1721,6 +1874,7 @@ def evaluate_product_development_gate(
             "effective_product_language": "en",
         },
         "calibration_id": (calibration or {}).get("calibration_id"),
+        "calibration_compatibility": compatibility,
         "expected_ids": expected_ids,
         "actual_ids": sorted(actual_ids),
         "complete": complete,

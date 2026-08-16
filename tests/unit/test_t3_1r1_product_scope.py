@@ -220,9 +220,15 @@ class T31R1ProductScopeTests(unittest.TestCase):
         self.assertFalse(rescored[0]["metrics"]["metric_applicability"]["expected_status_correct"])
 
     def test_report_evaluation_emits_product_development_gate(self) -> None:
+        from panda_agent.evaluation import load_gold_dataset
         from panda_agent.evaluation_runner import report_evaluation
 
         real_root = Path(__file__).resolve().parents[2]
+        gold_path = real_root / "evaluation" / "benchmarks" / "v2_6" / "gold_questions.yaml"
+        dataset = load_gold_dataset(gold_path)
+        dev_ids = [
+            str(item.id) for item in dataset.questions if item.split == "dev"
+        ]
         with tempfile.TemporaryDirectory() as tmp:
             run_dir = Path(tmp) / "data" / "evaluation" / "runs" / "product-gate-test"
             run_dir.mkdir(parents=True)
@@ -232,12 +238,33 @@ class T31R1ProductScopeTests(unittest.TestCase):
                 "official": True,
                 "limit": None,
                 "case_ids": None,
-                "gold_dataset_path": str(
-                    real_root / "evaluation" / "benchmarks" / "v2_6" / "gold_questions.yaml"
-                ),
+                "gold_dataset_path": str(gold_path),
             }
             (run_dir / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
-            (run_dir / "results.jsonl").write_text("", encoding="utf-8")
+            lines = []
+            for cid in dev_ids:
+                lines.append(
+                    json.dumps(
+                        {
+                            "id": cid,
+                            "intent": "api",
+                            "expected_status": "answered",
+                            "required_source_types": ["code"],
+                            "duration_ms": 1,
+                            "metrics": {
+                                "intent_correct": True,
+                                "gold_recall_at_10": 1.0,
+                                "final_evidence_recall": 1.0,
+                                "critical_final_evidence_recall": 1.0,
+                                "required_source_coverage": True,
+                                "wrong_version_evidence": [],
+                                "forbidden_evidence": [],
+                                "expected_status_correct": True,
+                            },
+                        }
+                    )
+                )
+            (run_dir / "results.jsonl").write_text("\n".join(lines) + "\n", encoding="utf-8")
             calibration = _calibration([], [], [])
             sentinel = {"passed": True, "product_scope": {"complete": True}}
             with mock.patch(

@@ -73,6 +73,10 @@ Retrieval mode does not execute the production sufficiency/refusal decision, so 
 
 Formal product-scope gates use a deterministic declared selector from the approved dataset plus a versioned reviewed product-language calibration when present (for example `split == dev`, reviewed `effective_product_language == en`, `review_status == approved`) and require the exact complete selector ID set. Raw benchmark language metadata may be overridden by the reviewed calibration without mutating historical Gold; code identifiers, symbols, paths, and hashes do not make an otherwise English query mixed. Multilingual questions remain valid diagnostic assets but are outside the formal English product gate. Arbitrary hand-picked subsets cannot be declared complete, and completeness is ID-set based, not fixed-count based.
 
+A reviewed product-language calibration is applied only when it is compatible with the exact active Gold identity/scope: benchmark version, file SHA-256, split, override IDs, and raw-language claims must match Gold, and the calibration's declared formal/non-English ID sets must equal the IDs independently derived from Gold + reviewed overrides. Incompatible calibrations are never silently applied.
+
+Formal top-K retrieval metrics (Recall@5/@10/@20) use the canonical final-ranked stage (`diagnostics.ranked_object_ids` when present), not the LLM reranker output. Reranker rank and final-ranked rank are distinct diagnostic concepts and must be reported separately with explicit 0-based/1-based fields.
+
 ### T4 — Small stratified E2E
 
 Normally use approximately 20 benchmark plus 20 trustworthy novel questions where available. Run `qa`: retrieval, answer generation, and runtime verification/revision. Invoke the external judge only when separately and explicitly justified.
