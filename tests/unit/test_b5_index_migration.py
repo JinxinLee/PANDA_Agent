@@ -10,6 +10,8 @@ from types import SimpleNamespace
 from unittest import mock
 
 from panda_agent.indexing import (
+    _b5_filter_resume_selected,
+    _b5_point_payload_matches_current,
     _b5_validate_reuse_locators,
     apply_b5_selective_index,
     plan_b5_reindex_impact_from_records,
@@ -35,6 +37,34 @@ def _before(item: dict[str, object], *, point: bool = True, receipt: bool = True
         "qdrant_point_exists": point,
         "embedding_receipt_exists": receipt,
     }
+
+
+def _full_object(object_id: str, text: str, **overrides: object) -> dict[str, object]:
+    value = _object(object_id, text)
+    value.update(
+        {
+            "source_id": "repo",
+            "source_version_id": "repo@sha",
+            "authority_level": "primary",
+            "locator": {"path": "a.cc", "start_line": 1, "end_line": 1},
+            "metadata": {},
+            "canonical_locator": f"a.cc:{object_id}:1",
+        }
+    )
+    value.update(overrides)
+    return value
+
+
+def _embedding_cache_key(identity: object, item: dict[str, object]) -> str:
+    text = f"{item['title']}\n{item['text']}"
+    text_hash = hashlib.sha256(text.encode()).hexdigest()
+    return hashlib.sha256(
+        f"{identity.embedding_model}\x1fRETRIEVAL_DOCUMENT\x1f{text_hash}".encode()
+    ).hexdigest()
+
+
+def _point_id_storage() -> SimpleNamespace:
+    return SimpleNamespace(point_id=_FakeStorage.point_id)
 
 
 class B5ImpactPlanTests(unittest.TestCase):
@@ -98,6 +128,83 @@ class B5ImpactPlanTests(unittest.TestCase):
             _b5_validate_reuse_locators([snapshot_item], [corpus_item], ["same"])
 
 
+class B5ResumeSafetyTests(unittest.TestCase):
+    def _payload(self, item: dict[str, object], **overrides: object) -> dict[str, object]:
+        payload = {
+            "object_id": item["object_id"],
+            "source_id": item["source_id"],
+            "source_version_id": item["source_version_id"],
+            "object_type": item["object_type"],
+            "title": item["title"],
+            "text": item["text"],
+            "locator": item["locator"],
+        }
+        payload.update(overrides)
+        return payload
+
+    def test_old_point_with_compatible_cache_is_not_skipped(self) -> None:
+        item = _full_object("sel", "current text one two three four five six seven eight nine ten")
+        identity = SimpleNamespace(embedding_model="gemini-embedding-2")
+        key = _embedding_cache_key(identity, item)
+        point_id = _FakeStorage.point_id(item["object_id"])
+        point = SimpleNamespace(id=point_id, payload=self._payload(item, text="old b4 text"))
+        kept, skipped = _b5_filter_resume_selected(
+            [item], [key], {key: item["object_id"]}, {point_id: point}, _point_id_storage()
+        )
+        self.assertEqual(skipped, 0)
+        self.assertEqual(kept, [item])
+
+    def test_current_payload_with_same_object_receipt_may_be_skipped(self) -> None:
+        item = _full_object("sel", "current text one two three four five six seven eight nine ten")
+        identity = SimpleNamespace(embedding_model="gemini-embedding-2")
+        key = _embedding_cache_key(identity, item)
+        point_id = _FakeStorage.point_id(item["object_id"])
+        point = SimpleNamespace(id=point_id, payload=self._payload(item))
+        kept, skipped = _b5_filter_resume_selected(
+            [item], [key], {key: item["object_id"]}, {point_id: point}, _point_id_storage()
+        )
+        self.assertEqual(skipped, 1)
+        self.assertEqual(kept, [])
+
+    def test_other_object_receipt_with_stale_payload_is_not_skipped(self) -> None:
+        item = _full_object("sel", "current text one two three four five six seven eight nine ten")
+        identity = SimpleNamespace(embedding_model="gemini-embedding-2")
+        key = _embedding_cache_key(identity, item)
+        point_id = _FakeStorage.point_id(item["object_id"])
+        point = SimpleNamespace(id=point_id, payload=self._payload(item, text="old b4 text"))
+        kept, skipped = _b5_filter_resume_selected(
+            [item], [key], {key: "other-object"}, {point_id: point}, _point_id_storage()
+        )
+        self.assertEqual(skipped, 0)
+        self.assertEqual(kept, [item])
+
+    def test_missing_receipt_with_current_payload_reembeds(self) -> None:
+        item = _full_object("sel", "current text one two three four five six seven eight nine ten")
+        identity = SimpleNamespace(embedding_model="gemini-embedding-2")
+        key = _embedding_cache_key(identity, item)
+        point_id = _FakeStorage.point_id(item["object_id"])
+        point = SimpleNamespace(id=point_id, payload=self._payload(item))
+        kept, skipped = _b5_filter_resume_selected(
+            [item], [key], {}, {point_id: point}, _point_id_storage()
+        )
+        self.assertEqual(skipped, 0)
+        self.assertEqual(kept, [item])
+
+    def test_unchanged_reuse_never_requires_cache_receipts(self) -> None:
+        item = _full_object("same", "one two three four five six seven eight nine ten eleven twelve")
+        snapshot = _before(item, receipt=False)
+        result = plan_b5_reindex_impact_from_records([snapshot], [item])
+        self.assertEqual(result["categories"]["unchanged_eligible_reuse"], 1)
+        self.assertNotIn(item["object_id"], result["vectors"]["reembed_object_ids"])
+        self.assertEqual(result["vectors"]["dense_documents"], 0)
+        self.assertEqual(result["vectors"]["receipt_missing_unchanged_reused"], 1)
+
+    def test_payload_matcher_requires_all_resume_fields(self) -> None:
+        item = _full_object("sel", "current text one two three four five six seven eight nine ten")
+        point = SimpleNamespace(id=_FakeStorage.point_id(item["object_id"]), payload=self._payload(item, locator={"path": "other"}))
+        self.assertFalse(_b5_point_payload_matches_current(item, point))
+
+
 class _FakeList(list):
     def tolist(self):
         return list(self)
@@ -151,6 +258,7 @@ class _FakeCursor:
                 self._storage.object_ids.add(row[0])
             elif "INSERT INTO embedding_records" in sql:
                 self._storage.cache_keys.add(row[0])
+                self._storage.cache_owners[row[0]] = row[1]
 
     def copy(self, _statement):
         return _FakeCopy(self._storage.pending_valid_ids)
@@ -162,6 +270,17 @@ class _EmptyRows:
 
     def fetchall(self):
         return []
+
+
+class _Rows:
+    def __init__(self, rows) -> None:
+        self._rows = list(rows)
+
+    def fetchone(self):
+        return self._rows[0] if self._rows else None
+
+    def fetchall(self):
+        return self._rows
 
 
 class _FakeConnection:
@@ -184,10 +303,11 @@ class _FakeConnection:
             return _SingleRow(self._storage.sql_objects)
         if "SELECT count(1) FROM relation_edges" in sql:
             return _SingleRow(self._storage.relation_count)
-        if "SELECT cache_key FROM embedding_records" in sql:
-            return _EmptyRows()
+        if "SELECT cache_key, object_id FROM embedding_records" in sql:
+            return _Rows(self._storage.cache_owners.items())
         if "INSERT INTO embedding_records" in sql:
             self._storage.cache_keys.add(params[0])
+            self._storage.cache_owners[params[0]] = params[1]
         if "INSERT INTO ingestion_runs" in sql:
             self._storage.log.append(("sql", "insert_ingestion_run"))
             return _SingleRow(99)
@@ -212,8 +332,9 @@ class _SingleRow:
 
 
 class _FakeQdrant:
-    def __init__(self, initial_point_ids) -> None:
+    def __init__(self, initial_point_ids, payloads=None) -> None:
         self.point_ids = set(initial_point_ids)
+        self.payloads = dict(payloads or {})
         self.count_value = len(initial_point_ids)
         self.log: list[tuple] = []
 
@@ -228,11 +349,17 @@ class _FakeQdrant:
             vectors={"dense": dense}, sparse_vectors={"sparse": sparse})))
 
     def retrieve(self, collection_name=None, ids=None, with_payload=False, with_vectors=False):
-        return [SimpleNamespace(id=point_id) for point_id in ids if point_id in self.point_ids]
+        return [
+            SimpleNamespace(id=point_id, payload=self.payloads.get(point_id))
+            for point_id in ids
+            if point_id in self.point_ids
+        ]
 
     def upsert(self, collection_name=None, points=None, wait=True):
         new_ids = [str(point.id) for point in points if str(point.id) not in self.point_ids]
-        self.point_ids.update(str(point.id) for point in points)
+        for point in points:
+            self.point_ids.add(str(point.id))
+            self.payloads[str(point.id)] = point.payload
         self.count_value += len(new_ids)
         self.log.append(("upsert", [str(point.id) for point in points]))
 
@@ -240,6 +367,8 @@ class _FakeQdrant:
         ids = list(points_selector.points)
         removed = [point_id for point_id in ids if point_id in self.point_ids]
         self.point_ids.difference_update(ids)
+        for point_id in ids:
+            self.payloads.pop(point_id, None)
         self.count_value -= len(removed)
         self.log.append(("delete", ids))
 
@@ -253,6 +382,7 @@ class _FakeStorage:
         self.relation_count = 64561
         self.object_ids = set()
         self.cache_keys = set()
+        self.cache_owners: dict[str, str] = {}
         self.pending_valid_ids = set()
         self.log: list[tuple] = []
 
@@ -433,6 +563,138 @@ class B5MockedApplyTests(unittest.TestCase):
                     mock.patch("panda_agent.indexing.B5_EXPECTED_B4_QDRANT_POINTS", 3):
                 result = apply_b5_selective_index(root, run=True)
             return result, storage, qdrant, vertex, sparse_model, changed_new_text
+
+    def _build_single_changed_env(self):
+        from dotenv import load_dotenv
+        load_dotenv()
+        from panda_agent.indexing import IndexIdentity, VertexSettings
+        from panda_agent.sparse import sparse_receipt, sparse_settings
+
+        real_root = Path(__file__).resolve().parents[2]
+        real_settings = sparse_settings(real_root)
+        real_receipt = sparse_receipt(real_settings)
+        tmp = TemporaryDirectory()
+        root = Path(tmp.name)
+        normalized = root / "data" / "normalized" / "hash01"
+        normalized.mkdir(parents=True)
+        (root / "data" / "manifests").mkdir(parents=True)
+        (root / "data" / "tmp" / "b5").mkdir(parents=True)
+        (root / "data" / "manifests" / "source_manifest.json").write_text("{}", encoding="utf-8")
+
+        identity = IndexIdentity.from_settings(VertexSettings.from_env(), real_root)
+        point_id = _FakeStorage.point_id
+        old_text = "old text words one two three four five six seven eight nine ten"
+        new_text = "new text words one two three four five six seven eight nine ten"
+        locator = {"path": "a.cc", "start_line": 1, "end_line": 1}
+        snapshot = [{
+            "object_id": "obj.changed",
+            "object_type": "function",
+            "title": "changed",
+            "text": old_text,
+            "effective_embedding_eligibility": True,
+            "embedding_input_sha256": hashlib.sha256(f"changed\n{old_text}".encode()).hexdigest(),
+            "text_sha256": hashlib.sha256(old_text.encode()).hexdigest(),
+            "locator": locator,
+            "deterministic_point_id": point_id("obj.changed"),
+            "qdrant_point_exists": True,
+            "embedding_receipt_exists": True,
+        }]
+        objects = [{
+            "object_id": "obj.changed",
+            "object_type": "function",
+            "source_id": "repo",
+            "source_version_id": "repo@sha",
+            "title": "changed",
+            "text": new_text,
+            "authority_level": "primary",
+            "locator": locator,
+            "metadata": {},
+            "canonical_locator": "a.cc:changed:2",
+            "token_count": 12,
+            "embedding_eligible": True,
+        }]
+        with open(normalized / "knowledge_objects.jsonl", "w", encoding="utf-8") as stream:
+            for item in objects:
+                stream.write(json.dumps(item) + "\n")
+        with open(root / "data" / "tmp" / "b5" / "b4_point_snapshot.jsonl", "w", encoding="utf-8") as stream:
+            for item in snapshot:
+                stream.write(json.dumps(item) + "\n")
+        for name in ("relation_edges.jsonl", "relation_candidates.jsonl", "knowledge_aliases.jsonl", "workflow_steps.jsonl"):
+            (normalized / name).write_text("", encoding="utf-8")
+        (normalized / "ingestion_report.json").write_text(json.dumps({
+            "manifest_hash": "hash01", "object_count": 1, "relation_count": 0,
+            "relation_candidate_count": 0, "alias_count": 0, "workflow_count": 0,
+            "parse_errors": [], "output_hashes": {},
+        }), encoding="utf-8")
+
+        qdrant = _FakeQdrant({point_id("obj.changed")})
+        storage = _FakeStorage(identity, qdrant)
+        storage.sql_objects = 1
+        storage.relation_count = 0
+        return tmp, root, storage, qdrant, identity, real_settings, real_receipt, new_text
+
+    def test_vertex_constructor_failure_happens_before_live_mutation(self) -> None:
+        tmp, root, storage, qdrant, identity, real_settings, real_receipt, _ = self._build_single_changed_env()
+        try:
+            with mock.patch("panda_agent.indexing.Storage", return_value=storage), \
+                    mock.patch("panda_agent.indexing.VertexAIClient", side_effect=RuntimeError("vertex config failed")), \
+                    mock.patch("panda_agent.indexing.sparse_settings", return_value=real_settings), \
+                    mock.patch("panda_agent.indexing.sparse_receipt", return_value=real_receipt), \
+                    mock.patch("panda_agent.indexing.create_sparse_encoder", return_value=(_FakeSparseModel(), real_receipt)), \
+                    mock.patch("panda_agent.indexing.B5_EXPECTED_B4_SQL_OBJECTS", 1), \
+                    mock.patch("panda_agent.indexing.B5_EXPECTED_B4_QDRANT_POINTS", 1):
+                with self.assertRaises(RuntimeError):
+                    apply_b5_selective_index(root, run=True)
+            self.assertEqual(
+                [entry for entry in storage.log if entry[0] != "update_ingestion_run"],
+                [],
+            )
+            self.assertEqual(qdrant.log, [])
+            self.assertEqual(storage.sql_objects, 1)
+        finally:
+            tmp.cleanup()
+
+    def test_sparse_constructor_failure_happens_before_live_mutation(self) -> None:
+        tmp, root, storage, qdrant, identity, real_settings, real_receipt, _ = self._build_single_changed_env()
+        try:
+            with mock.patch("panda_agent.indexing.Storage", return_value=storage), \
+                    mock.patch("panda_agent.indexing.VertexAIClient", return_value=_FakeVertex(None)), \
+                    mock.patch("panda_agent.indexing.sparse_settings", return_value=real_settings), \
+                    mock.patch("panda_agent.indexing.sparse_receipt", return_value=real_receipt), \
+                    mock.patch("panda_agent.indexing.create_sparse_encoder", side_effect=RuntimeError("sparse constructor failed")), \
+                    mock.patch("panda_agent.indexing.B5_EXPECTED_B4_SQL_OBJECTS", 1), \
+                    mock.patch("panda_agent.indexing.B5_EXPECTED_B4_QDRANT_POINTS", 1):
+                with self.assertRaises(RuntimeError):
+                    apply_b5_selective_index(root, run=True)
+            self.assertEqual(
+                [entry for entry in storage.log if entry[0] != "update_ingestion_run"],
+                [],
+            )
+            self.assertEqual(qdrant.log, [])
+            self.assertEqual(storage.sql_objects, 1)
+        finally:
+            tmp.cleanup()
+
+    def test_sparse_receipt_mismatch_happens_before_live_mutation(self) -> None:
+        tmp, root, storage, qdrant, identity, real_settings, real_receipt, _ = self._build_single_changed_env()
+        try:
+            with mock.patch("panda_agent.indexing.Storage", return_value=storage), \
+                    mock.patch("panda_agent.indexing.VertexAIClient", return_value=_FakeVertex(None)), \
+                    mock.patch("panda_agent.indexing.sparse_settings", return_value=real_settings), \
+                    mock.patch("panda_agent.indexing.sparse_receipt", return_value=real_receipt), \
+                    mock.patch("panda_agent.indexing.create_sparse_encoder", return_value=(_FakeSparseModel(), SimpleNamespace())), \
+                    mock.patch("panda_agent.indexing.B5_EXPECTED_B4_SQL_OBJECTS", 1), \
+                    mock.patch("panda_agent.indexing.B5_EXPECTED_B4_QDRANT_POINTS", 1):
+                with self.assertRaises(RuntimeError):
+                    apply_b5_selective_index(root, run=True)
+            self.assertEqual(
+                [entry for entry in storage.log if entry[0] != "update_ingestion_run"],
+                [],
+            )
+            self.assertEqual(qdrant.log, [])
+            self.assertEqual(storage.sql_objects, 1)
+        finally:
+            tmp.cleanup()
 
     def test_mocked_run_true_apply_orchestration(self) -> None:
         result, storage, qdrant, vertex, sparse_model, changed_new_text = self._apply_mocked()

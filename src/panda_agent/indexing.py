@@ -83,18 +83,32 @@ class LegacyIndexIdentity(BaseModel):
         )
 
 
-def _compatible_cache_keys(
+def _compatible_cache_receipts(
     connection: Any, cache_keys: list[str], expected_dimensions: int
-) -> set[str]:
-    """Return cache receipts that match the active dense-vector contract."""
+) -> dict[str, str]:
+    """Return compatible dense receipts keyed by cache_key, with owning object_id.
+
+    The cache_key is content-addressed, so the owning object_id is retained for
+    resume-safety: a compatible receipt is only strong evidence for a selected
+    object when that object_id also matches.
+    """
     return {
-        row[0]
+        str(row[0]): str(row[1])
         for row in connection.execute(
-            "SELECT cache_key FROM embedding_records "
+            "SELECT cache_key, object_id FROM embedding_records "
             "WHERE cache_key=ANY(%s) AND dimensions=%s",
             (cache_keys, expected_dimensions),
         ).fetchall()
     }
+
+
+def _compatible_cache_keys(
+    connection: Any, cache_keys: list[str], expected_dimensions: int
+) -> set[str]:
+    """Return cache receipts that match the active dense-vector contract."""
+    return set(
+        _compatible_cache_receipts(connection, cache_keys, expected_dimensions)
+    )
 
 
 def _record_embedding_cache(
@@ -436,6 +450,66 @@ def _b5_validate_selected_inputs(objects_map: dict[str, dict[str, Any]], selecte
         )
 
 
+B5_RESUME_PAYLOAD_FIELDS = (
+    "object_id",
+    "source_id",
+    "source_version_id",
+    "object_type",
+    "title",
+    "text",
+    "locator",
+)
+
+
+def _b5_point_payload_matches_current(item: dict[str, Any], point: Any) -> bool:
+    """Return whether a Qdrant point payload already represents the B5 object.
+
+    This is the smallest safe payload proof: exact equality of the fields that
+    determine the embedding input and the object identity/locator written by a
+    successful B5 selected-vector write.
+    """
+    payload = getattr(point, "payload", None)
+    if not isinstance(payload, dict):
+        return False
+    return all(
+        payload.get(field) == item.get(field) for field in B5_RESUME_PAYLOAD_FIELDS
+    )
+
+
+def _b5_filter_resume_selected(
+    selected: list[dict[str, Any]],
+    cache_keys: list[str],
+    receipts: dict[str, str],
+    existing_points: dict[str, Any],
+    storage: Any,
+) -> tuple[list[dict[str, Any]], int]:
+    """Keep selected objects unless a completed B5 write is proven.
+
+    A selected object may be skipped only when all of the following hold:
+      1. the current Qdrant point exists;
+      2. its payload exactly matches the current B5 object;
+      3. title/text equality therefore proves the exact embedding input;
+      4. a compatible receipt exists and is bound to this same object_id.
+
+    Any uncertainty (missing receipt, mismatched payload, or receipt owned by a
+    different object with identical input) causes a safe re-embed.
+    """
+    kept: list[dict[str, Any]] = []
+    resume_skipped = 0
+    for item, cache_key in zip(selected, cache_keys):
+        point = existing_points.get(storage.point_id(item["object_id"]))
+        if (
+            cache_key in receipts
+            and point is not None
+            and receipts[cache_key] == item["object_id"]
+            and _b5_point_payload_matches_current(item, point)
+        ):
+            resume_skipped += 1
+        else:
+            kept.append(item)
+    return kept, resume_skipped
+
+
 def _b5_preflight(
     root: Path,
 ) -> tuple[dict[str, Any], IndexIdentity, VertexSettings, Storage, Path, list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
@@ -553,6 +627,17 @@ def apply_b5_selective_index(project_root: Path, *, run: bool = False) -> dict[s
     stale_point_ids = plan["vectors"]["stale_point_ids"]
     expected_final_points = report["expected_final_points"]
     after = {item["object_id"]: item for item in objects}
+
+    # Deterministic client/encoder construction must happen before any live SQL
+    # or Qdrant mutation.  This preflight intentionally makes no embedding calls.
+    vertex = None
+    sparse_model = None
+    if reembed_ids:
+        vertex = VertexAIClient(vertex_settings)
+        sparse_model, sparse_identity = create_sparse_encoder(root)
+        if sparse_identity != identity.sparse:
+            raise RuntimeError("sparse factory receipt changed during B5 selective apply")
+
     with storage.connect() as connection:
         connection.execute(
             "UPDATE ingestion_runs SET status='interrupted',completed_at=now(),"
@@ -589,7 +674,7 @@ def apply_b5_selective_index(project_root: Path, *, run: bool = False) -> dict[s
             )
 
         selected = [after[object_id] for object_id in reembed_ids]
-        cached: set[str] = set()
+        resume_skipped = 0
         if selected:
             cache_keys = []
             for item in selected:
@@ -599,31 +684,28 @@ def apply_b5_selective_index(project_root: Path, *, run: bool = False) -> dict[s
                     f"{identity.embedding_model}\x1fRETRIEVAL_DOCUMENT\x1f{text_hash}".encode()
                 ).hexdigest())
             with storage.connect() as connection:
-                cached = _compatible_cache_keys(connection, cache_keys, identity.embedding_dimensions)
-            point_ids = [storage.point_id(item["object_id"]) for item in selected]
-            existing: set[str] = set()
-            for start in range(0, len(point_ids), 256):
-                existing.update(
-                    str(point.id)
-                    for point in storage.qdrant.retrieve(
-                        collection_name=storage.settings.collection_name,
-                        ids=point_ids[start:start + 256],
-                        with_payload=False,
-                        with_vectors=False,
-                    )
+                receipts = _compatible_cache_receipts(
+                    connection, cache_keys, identity.embedding_dimensions
                 )
-            selected = [
-                item for item, key in zip(selected, cache_keys)
-                if not (key in cached and storage.point_id(item["object_id"]) in existing)
-            ]
+            point_ids = [storage.point_id(item["object_id"]) for item in selected]
+            existing_points: dict[str, Any] = {}
+            for start in range(0, len(point_ids), 256):
+                for point in storage.qdrant.retrieve(
+                    collection_name=storage.settings.collection_name,
+                    ids=point_ids[start:start + 256],
+                    with_payload=True,
+                    with_vectors=False,
+                ):
+                    existing_points[str(point.id)] = point
+            selected, resume_skipped = _b5_filter_resume_selected(
+                selected, cache_keys, receipts, existing_points, storage
+            )
 
-        vertex = VertexAIClient(vertex_settings) if selected else None
-        sparse_model, sparse_identity = create_sparse_encoder(root) if selected else (None, identity.sparse)
-        if sparse_identity != identity.sparse:
-            raise RuntimeError("sparse factory receipt changed during B5 selective apply")
         indexed = 0
+        batches_processed = 0
         for start in range(0, len(selected), B5_EMBEDDING_BATCH_SIZE):
             assert sparse_model is not None
+            batches_processed += 1
             batch = selected[start:start + B5_EMBEDDING_BATCH_SIZE]
             texts = [f"{item['title']}\n{item['text']}" for item in batch]
             dense = vertex.embed_documents(texts)
@@ -695,6 +777,12 @@ def apply_b5_selective_index(project_root: Path, *, run: bool = False) -> dict[s
                 f"actual={final_sql_objects}, expected={len(objects)}"
             )
 
+        vertex_stats: dict[str, int] = {}
+        if vertex is not None:
+            snapshot = getattr(vertex, "stats_snapshot", None)
+            if callable(snapshot):
+                vertex_stats = snapshot()
+
         result = {
             **report,
             "dry_run": False,
@@ -702,13 +790,23 @@ def apply_b5_selective_index(project_root: Path, *, run: bool = False) -> dict[s
             "sql_objects_after": final_sql_objects,
             "qdrant_points_after": final_points,
             "sql_records_deleted": deleted_sql,
+            "planned_selected_documents": len(reembed_ids),
+            "resume_verified_selected_skipped": resume_skipped,
+            "dense_documents_embedded": indexed,
+            "sparse_documents_encoded": indexed,
+            "qdrant_points_upserted": indexed,
+            "application_batches_processed": batches_processed,
             "dense_vectors_written": indexed,
             "sparse_vectors_written": indexed,
             "unchanged_vectors_reused": len(reuse_ids),
+            "unchanged_missing_receipt_reused": len(
+                plan["vectors"]["receipt_missing_unchanged_reuse_ids"]
+            ),
             "stale_vectors_deleted": deleted_vectors,
             "collection_recreated": False,
             "dense_model": identity.embedding_model,
             "dense_dimensions": identity.embedding_dimensions,
+            "vertex_stats": vertex_stats,
         }
         with storage.connect() as connection:
             connection.execute(
