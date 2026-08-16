@@ -799,7 +799,10 @@ def deterministic_case_metrics(
 
     status_correct = result.get("status") == case.expected_status.value
     correct_refusal = case.expected_status != QAStatus.ANSWERED and status_correct
-    ordinary_applicable = not correct_refusal
+    # Metric applicability must be determined by Gold semantics, not by whether
+    # the system happened to predict the correct status.  Ordinary answer-
+    # oriented retrieval metrics apply only to Gold answered questions.
+    ordinary_applicable = case.expected_status == QAStatus.ANSWERED
     refusal_applicable = (
         case.expected_status == QAStatus.INSUFFICIENT_EVIDENCE and status_correct
     )
@@ -922,6 +925,7 @@ def deterministic_case_metrics(
         "identifier_hallucination_rate": ordinary_applicable,
         "paper_code_dual_source": ordinary_applicable,
         "refusal_evidence_recall": refusal_applicable,
+        "expected_status_correct": True,
     }
     metric_denominators = {
         key: int(value) for key, value in metric_applicability.items()
@@ -1030,6 +1034,16 @@ def apply_mode_metric_semantics(
         "identifier_hallucination_rate",
         answer_stage_ran and applicability.get("identifier_hallucination_rate", True),
     )
+    # Retrieval mode does not run the production sufficiency/refusal decision,
+    # so it must not claim a QA expected-status measurement.  QA/full preserve
+    # expected-status measurement and gating.
+    set_applicable("expected_status_correct", answer_stage_ran)
+    # Refusal evidence recall is a downstream sufficiency metric; in retrieval
+    # mode it is not measured.  QA/full keep their existing semantics.
+    set_applicable(
+        "refusal_evidence_recall",
+        answer_stage_ran and applicability.get("refusal_evidence_recall", False),
+    )
     if not answer_stage_ran:
         for field in ANSWER_STAGE_METRIC_FIELDS:
             updated.pop(field, None)
@@ -1068,6 +1082,43 @@ def normalize_run_records(
             )
         normalized.append(updated)
     return normalized
+
+
+def offline_rescore_records(
+    records: list[dict[str, Any]],
+    dataset: GoldDataset,
+    object_lookup: dict[str, dict[str, Any]],
+    *,
+    mode: Literal["retrieval", "qa", "full"] = "retrieval",
+) -> list[dict[str, Any]]:
+    """Recompute evaluator metrics from immutable records with zero model calls.
+
+    Source ``result``/``diagnostics`` are not modified; only per-record metrics
+    are rebuilt under the current evaluator semantics.
+    """
+    questions = {str(item.id): item for item in dataset.questions}
+    rescored: list[dict[str, Any]] = []
+    for record in records:
+        question = questions.get(str(record.get("id")))
+        if question is None:
+            continue
+        metrics = deterministic_case_metrics(
+            question,
+            record.get("result") or {},
+            record.get("diagnostics") or {},
+            object_lookup,
+        )
+        metrics = apply_mode_metric_semantics(
+            metrics,
+            mode=mode,
+            external_judge=False,
+        )
+        updated = dict(record)
+        updated["metrics"] = metrics
+        updated["intent"] = question.intent
+        updated["expected_status"] = question.expected_status.value
+        rescored.append(updated)
+    return rescored
 
 
 def aggregate_metrics(records: list[dict[str, Any]]) -> dict[str, Any]:
@@ -1228,6 +1279,9 @@ def aggregate_metrics(records: list[dict[str, Any]]) -> dict[str, Any]:
             "refusal_evidence_recall", all_metrics
         ),
         "expected_status_accuracy": mean("expected_status_correct", all_metrics),
+        "expected_status_accuracy_denominator": denominator(
+            "expected_status_correct", all_metrics
+        ),
         "citation_integrity": mean("citation_integrity", all_metrics),
         "citation_integrity_denominator": citation_denominator,
         "required_source_coverage": mean("required_source_coverage", all_metrics),
@@ -1475,9 +1529,6 @@ def evaluate_development_gate(
             _metric_at_least(item, "intent_accuracy", 0.80)
             for item in metrics.get("per_intent", {}).values()
         ),
-        "expected_status_accuracy": _metric_at_least(
-            metrics, "expected_status_accuracy", 0.975
-        ),
         "dev_version_conflicts_rejected": bool(version_cases) and all(
             item.get("metrics", {}).get("expected_status_correct")
             for item in version_cases
@@ -1492,6 +1543,9 @@ def evaluate_development_gate(
     if mode in {"qa", "full"}:
         checks.update(
             {
+                "expected_status_accuracy": _metric_at_least(
+                    metrics, "expected_status_accuracy", 0.975
+                ),
                 "citation_integrity": metrics.get("citation_integrity", 0.0) == 1.0,
                 "required_identifiers": metrics.get("identifier_miss_count", 0) == 0,
                 "identifier_hallucination_rate": _metric_below(
@@ -1527,11 +1581,59 @@ def evaluate_development_gate(
         "passed": all(checks.values()),
         "checks": checks,
         "note": (
-            "Complete 80-case development gate."
+            "Complete declared development gate."
             if complete_full_dev
             else "Focused or incomplete run: it can diagnose a layer but cannot pass the development gate."
         ),
     }
+
+
+def english_product_case_ids(dataset: GoldDataset, split: str = "dev") -> list[str]:
+    """Return the deterministic approved English product-scope IDs for a split."""
+    return [
+        str(item.id)
+        for item in dataset.questions
+        if item.split == split and item.language == "en" and item.review_status == "approved"
+    ]
+
+
+def evaluate_product_development_gate(
+    metrics: dict[str, Any],
+    records: list[dict[str, Any]],
+    dataset: GoldDataset,
+    *,
+    mode: Literal["retrieval", "qa", "full"] = "retrieval",
+) -> dict[str, Any]:
+    """Evaluate a formal English product-scope development gate.
+
+    Completeness is derived from the approved dataset selector, not from a
+    hard-coded question count or an arbitrary caller-supplied case list.  A
+    hand-picked subset therefore cannot masquerade as a complete product gate.
+    """
+    expected_ids = english_product_case_ids(dataset)
+    actual_ids = [str(record.get("id")) for record in records]
+    complete = (
+        len(actual_ids) == len(set(actual_ids))
+        and set(actual_ids) == set(expected_ids)
+    )
+    gate = evaluate_development_gate(
+        metrics,
+        records,
+        mode=mode,
+        complete_full_dev=complete,
+        all_questions_approved=True,
+    )
+    gate["product_scope"] = {
+        "selector": {
+            "split": "dev",
+            "language": "en",
+            "review_status": "approved",
+        },
+        "expected_ids": expected_ids,
+        "actual_ids": sorted(actual_ids),
+        "complete": complete,
+    }
+    return gate
 
 
 def evaluate_regression_gate(

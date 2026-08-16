@@ -34,11 +34,11 @@ When records conflict, use the single section explicitly marked **Current author
 
 ## Generalization Phase status
 
-- Bootstrap tasks A1–A3: `PASS`; A3.1 hardening: `PASS`; B1: `PASS`; B2: `PASS`; B3: `PASS`; B4: `PASS`; B5: `PASS` (B5.1R2 static closeout and B5.2 live migration/T1/post-B5 T2 completed); Phase-B T3 full 80-question dev retrieval-only: `FAIL` (complete run valid, but the existing retrieval-mode development gate is not satisfied).
+- Bootstrap tasks A1–A3: `PASS`; A3.1 hardening: `PASS`; B1: `PASS`; B2: `PASS`; B3: `PASS`; B4: `PASS`; B5: `PASS` (B5.1R2 static closeout and B5.2 live migration/T1/post-B5 T2 completed); Phase-B T3 full 80-question dev retrieval-only original mechanical gate: `FAIL`; T3.1 evaluator semantics correction: `PASS`; corrected English product-scope Phase-B T3 gate: `FAIL` (critical evidence coverage remains below 1.0).
 - Evaluation modes: `retrieval`, `qa`, and `full` have explicit recorded boundaries.
 - Structured retrieval traces are persisted as atomic JSON and JSONL and can be loaded without rerunning QA.
 - A3 was corrected from a possible full-retrieval interpretation to a stratified low-cost bootstrap baseline. Phase-B T3 (complete 80-question dev retrieval-only) was performed on `2026-08-16`; no full 120-question retrieval/E2E run was performed.
-- C1 remains `NOT_STARTED` and is not the active task while B5 completion work continues.
+- C1 remains `NOT_STARTED`; it is not the active task because the corrected English product-scope T3 gate still has a genuine critical-evidence blocker.
 
 ## Historical full E2E reference
 
@@ -137,6 +137,19 @@ This is a low-cost English Gold reference, not a complete generalization, comple
 - Cost: `240` runtime model calls (`0` judge), `1403061` tokens, `0` document embeddings, `0` QA/verifier/judge calls.
 - Systematic ranking assessment: `NO EVIDENCE OF SYSTEMATIC REGRESSION` — high Recall@10/20, combined candidate recall `1.0`, R1 `0`, rank-1 fraction `0.534`, and per-intent MRR do not indicate a broad Phase-B ranking regression. The T3 `FAIL` is a development-gate failure, not a systematic-ranking regression signal.
 
+### Phase-B T3.1 evaluator semantics and English product-scope rescore
+
+- Artifact: `evaluation/baselines/manifests/phase_b_t3_1_retrieval_semantics_v1.json`.
+- Source run: `phase-b-t3-retrieval-20260816`; source records immutable; zero additional model calls/tokens.
+- Evaluator defect confirmed: retrieval mode synthesizes `answered` whenever evidence exists, so 7 Gold `insufficient_evidence` dev cases were scored as ordinary answered cases and caused original `expected_status_accuracy = 0.9125`.
+- Retrieval-mode semantic fix: `expected_status_accuracy` is now N/A in retrieval mode; version-conflict rejection remains hard; ordinary Recall/MRR/final-evidence metrics apply only to Gold `answered` cases; `insufficient_evidence` cases are no longer ordinary retrieval cases. QA/full expected-status measurement/gating is unchanged.
+- Product language scope: Gold dev distribution `en=51`, `zh=20`, `mixed=9`; deterministic English product selector is `split=dev AND language=en AND review_status=approved`; exact English count `51`; zh/mixed (`29`) remain diagnostic outside the formal English gate. Gold was not modified.
+- Corrected all-language diagnostic: `80` source records; ordinary answered-applicable `66`; insufficient-evidence `7`; version-conflict `7`; Recall@5 `0.8674242424`; Recall@10 `0.9722222222`; Recall@20 `0.9848484848`; MRR `0.7426767677`; combined candidate recall `1.0`; final evidence recall `0.9810606061`; critical final evidence recall `0.9810606061`; intent accuracy `0.9875`; expected-status accuracy `N/A`; version-conflict rejection `true`; corrected diagnostic gate `FAIL` (critical evidence coverage < 1.0).
+- English product-scope T3: `51` cases; answered-applicable `43`; insufficient-evidence `4`; version-conflict `4`; Recall@5 `0.9147286822`; Recall@10 `0.9651162791`; Recall@20 `0.9767441860`; MRR `0.7953488372`; combined candidate recall `1.0`; final evidence recall `0.9767441860`; critical final evidence recall `0.9767441860`; intent accuracy `0.9803921569`; expected-status accuracy `N/A`; formal product gate `FAIL` (critical evidence coverage < 1.0).
+- English failure ownership: Q1 `1` diagnostic (`g025`, an `insufficient_evidence` case outside ordinary retrieval metrics), Q2 `0`, R1 `0`, R2 `2` (`g006`, `g016`), R3 `1` (`g011`). Exact formal critical blockers: `g011.e1` (R3, final evidence drops a top-10 critical object) and `g016.e2` (R2, critical object ranked 11/10 and not selected).
+- Multilingual separation: `g072` (zh, R2) and `g085` (zh, R3) remain recorded as all-language diagnostics and no longer participate in the English product gate.
+- Next roadmap task: targeted critical-evidence investigation for the two English formal blockers (`g011` R3 and `g016` R2); do not start C1.
+
 ### Current small E2E baseline
 
 - Run: `generalization-a3-stratified-qa-20260813`.
@@ -164,7 +177,7 @@ The retrieval and QA measurements are unchanged. A3.1 corrects only metric repre
 
 ## Next authorized roadmap task
 
-`Targeted R2/fusion-ranking and R3/evidence-selection investigation — pending explicit user authorization (do not implement C1 as the dominant T3 failure layer)`
+`Targeted critical-evidence investigation for English formal blockers g011 (R3) and g016 (R2) — pending explicit user authorization (do not implement C1)`
 
 ---
 

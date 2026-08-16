@@ -69,6 +69,10 @@ Use roughly 10–30 relevant cases. Examples include a lexical/rare-identifier s
 
 Run a complete relevant dataset in `retrieval` mode at phase boundaries. T3 requires explicit authorization in the current task. The existence of a complete dataset, “establish a baseline”, “create a frozen baseline”, or completion of A3 does not authorize T3. Do not call answer generation, runtime verification/revision, or the external judge.
 
+Retrieval mode does not execute the production sufficiency/refusal decision, so `expected_status_accuracy` is N/A in retrieval-mode formal gates. Version-conflict rejection remains a hard retrieval responsibility. Ordinary Recall/MRR/final-evidence metrics apply only to Gold `answered` questions; Gold `insufficient_evidence` cases are not converted into ordinary answered retrieval cases merely because a synthetic retrieval status says answered.
+
+Formal product-scope gates use a deterministic declared selector from the approved dataset (for example `split == dev`, `language == en`, `review_status == approved`) and require the exact complete selector ID set. Multilingual questions remain valid diagnostic assets but are outside the formal English product gate. Arbitrary hand-picked subsets cannot be declared complete.
+
 ### T4 — Small stratified E2E
 
 Normally use approximately 20 benchmark plus 20 trustworthy novel questions where available. Run `qa`: retrieval, answer generation, and runtime verification/revision. Invoke the external judge only when separately and explicitly justified.
