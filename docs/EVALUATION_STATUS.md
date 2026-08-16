@@ -34,7 +34,7 @@ When records conflict, use the single section explicitly marked **Current author
 
 ## Generalization Phase status
 
-- Bootstrap tasks A1–A3: `PASS`; A3.1 hardening: `PASS`; B1: `PASS`; B2: `PASS`; B3: `PASS`; B4: `PASS`; B5: `PASS` (B5.1R2 static closeout and B5.2 live migration/T1/post-B5 T2 completed); Phase-B T3 full 80-question dev retrieval-only original mechanical gate: `FAIL`; T3.1 evaluator semantics correction: `PASS`; T3.1R1 product-language calibration: `PASS`; T3.1R2 calibration-binding/rank-stage closeout: `PASS`; T3.1R3 frozen fused-rank provenance & dynamic dev-completeness closeout: `PASS`; recalibrated formal English product-scope Phase-B T3 gate: `FAIL` (critical evidence coverage remains below 1.0).
+- Bootstrap tasks A1–A3: `PASS`; A3.1 hardening: `PASS`; B1: `PASS`; B2: `PASS`; B3: `PASS`; B4: `PASS`; B5: `PASS` (B5.1R2 static closeout and B5.2 live migration/T1/post-B5 T2 completed); Phase-B T3 full 80-question dev retrieval-only original mechanical gate: `FAIL`; T3.1 evaluator semantics correction: `PASS`; T3.1R1 product-language calibration: `PASS`; T3.1R2 calibration-binding/rank-stage closeout: `PASS`; T3.1R3 frozen fused-rank provenance & dynamic dev-completeness closeout: `PASS`; T3.2 critical-evidence mechanism investigation: `PASS`; recalibrated formal English product-scope Phase-B T3 gate remains `FAIL` (critical evidence coverage remains below 1.0).
 - Evaluation modes: `retrieval`, `qa`, and `full` have explicit recorded boundaries.
 - Structured retrieval traces are persisted as atomic JSON and JSONL and can be loaded without rerunning QA.
 - A3 was corrected from a possible full-retrieval interpretation to a stratified low-cost bootstrap baseline. Phase-B T3 (complete 80-question dev retrieval-only) was performed on `2026-08-16`; no full 120-question retrieval/E2E run was performed.
@@ -189,6 +189,18 @@ This is a low-cost English Gold reference, not a complete generalization, comple
 - Formal metrics remain unchanged: Recall@5 `0.9047619048`; Recall@10 `0.9693877551`; Recall@20 `0.9795918367`; MRR `0.7625850340`; combined candidate recall `1.0`; final evidence recall `0.9795918367`; critical final evidence recall `0.9795918367`; intent accuracy `0.9830508475`.
 - Formal product gate remains `FAIL` because critical evidence coverage `< 1.0`; failure taxonomy remains Q1 `1`, Q2 `0`, R1 `0`, R2 `2`, R3 `1`, unclassified `0`.
 
+### Phase-B T3.2 critical-evidence mechanism investigation
+
+- Investigation artifact: `evaluation/baselines/manifests/phase_b_t3_2_critical_evidence_mechanism_investigation_v1.json`.
+- Production stage map: channel candidates → fusion → LLM reranker → deterministic post-rerank ordering (`hinted_first` + `required_first` + `symbol_first` + reranked/fused) → `ranked_object_ids` → final evidence selection (duplicate locator, per-source cap, per-type budget, limit 12) → evidence.
+- g011 mechanism: final-selection `source_diversity_cap` (`max_per_source=4`). `object.2de0c11066dd97bc1177de1c` is final ranked rank 9 but four same-source objects were already selected, so it is excluded with `source_diversity_cap`; critical-group coverage is not visible to the selector. Primary class `R3_source_diversity_cap`.
+- g016 mechanism: post-rerank `symbol_first` promotion. `object.24323bf526f94cd30b58ab41` (PndDpmGenerator.cxx source-gap chunk) is reranker rank 14 but promoted to final rank 3 by exact-symbol priority, displacing `object.f516ef98aeecd335607ac0f6` from reranker rank 10 to final rank 11. Primary class `R2_post_rerank_deterministic_ordering`; the displacer is not the Gold-critical object.
+- Cross-case scan (49 applicable formal English cases): 40 cases have reranker/final top-10 composition changes; 8 Gold-relevant promotions into top-10, 2 Gold-relevant demotions out of top-10; 5 critical promotions, 1 critical demotion; 1 R3-like case (`g011`); selector preserves all critical evidence in 47 cases and drops critical evidence in 2 (`g011`, `g016`).
+- Shared-root-cause assessment: partially shared — both are deterministic priority/budget mechanisms without coverage awareness, but they operate in different production stages (final evidence selection vs post-rerank ordering).
+- Mechanism classification: both are intended generic tradeoffs, not implementation bugs or evaluator artifacts.
+- Recommended next tasks: `T3.3A` (generic final-evidence selection coverage awareness, recommended first) and `T3.3B` (generic post-rerank deterministic-ordering coverage awareness). No production fix was implemented.
+- Formal metrics/gate remain unchanged: 59-case metrics identical; formal product gate remains `FAIL`.
+
 ### Current small E2E baseline
 
 - Run: `generalization-a3-stratified-qa-20260813`.
@@ -216,7 +228,7 @@ The retrieval and QA measurements are unchanged. A3.1 corrects only metric repre
 
 ## Next authorized roadmap task
 
-`T3.2 — Critical-evidence mechanism investigation for final calibrated formal blockers g011 (R3) and g016 (R2) — pending explicit user authorization (do not implement C1)`
+`T3.3A — Generic final-evidence selection coverage-awareness investigation (recommended first), then T3.3B — Generic post-rerank deterministic-ordering coverage-awareness investigation — pending explicit user authorization (do not implement C1)`
 
 ---
 

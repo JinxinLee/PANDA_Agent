@@ -1,0 +1,132 @@
+{
+  "manifest_id": "phase_b_t3_2_critical_evidence_mechanism_investigation_v1",
+  "source_run_id": "phase-b-t3-retrieval-20260816",
+  "source_result_content_hash": "98acb1f9009ea0accf278719e5b8cacc193b0547aad8e87560f1d3184f9fb274",
+  "calibration_id": "phase_b_t3_product_language_scope_v2",
+  "formal_english_scope_count": 59,
+  "zero_call_provenance": {
+    "model_calls": 0,
+    "token_usage": 0,
+    "retriever_calls": 0,
+    "analyzer_calls": 0,
+    "reranker_calls": 0,
+    "query_embeddings": 0,
+    "document_embeddings": 0,
+    "qa_verifier_judge": 0,
+    "sql_qdrant_writes": 0,
+    "index_mutation": 0
+  },
+  "production_stage_map": {
+    "channel_candidates": "retrieval.py retrieve(): rankings dict per channel (exact/dense/sparse/paper/workflow/graph)",
+    "fusion": "retrieval.py retrieve(): weighted score accumulation; fused_order = sorted(scores, key=scores.get, reverse=True)",
+    "llm_reranker": "retrieval.py retrieve(): vertex.generate_json rerank_evidence over rerank_pool[:30] -> reranked_object_ids",
+    "post_rerank_deterministic_ordering": "retrieval.py retrieve(): ordered = hinted_first + required_first + symbol_first + reranked+fused; then ranked_object_ids = ordered[:30]",
+    "canonical_ranked_object_ids": "diagnostics['ranked_object_ids'] used by evaluator Recall@K",
+    "final_evidence_selection": "retrieval.py retrieve(): loop over ordered with duplicate_locator, source_diversity_cap, source_budget_cap, final_evidence_limit=12",
+    "evidence": "result['evidence']"
+  },
+  "g011_mechanism": {
+    "authoritative_stage_trace": {
+      "combined_candidate_present": true,
+      "fused_rank_1based": 27,
+      "fused_rank_source": "retrieval_trace_fused_candidates",
+      "reranker_rank_1based": 9,
+      "final_ranked_rank_1based": 9,
+      "final_top10": true,
+      "final_selected": false
+    },
+    "primary_cause": "R3_source_diversity_cap",
+    "causal_rule": "Final evidence selection enforces max_per_source = max(2, ceil(12/3)) = 4. By the time object.2de0c11066dd97bc1177de1c is reached at final ranked rank 9, four objects from pandaroot_sphinx_2023_08_25_dev have already been selected (ranks 1,2,3,5). The target is therefore excluded with reason source_diversity_cap before the evidence budget is exhausted.",
+    "secondary_contributors": [
+      "No critical/required evidence-group coverage signal is visible to the production selector; selection is rank/source/type based only.",
+      "Same-source Docker documentation objects occupy the per-source slots before the native installation critical object."
+    ],
+    "critical_group_coverage_visible_to_selector": false,
+    "excluded_reason_from_trace": "source_diversity_cap"
+  },
+  "g016_mechanism": {
+    "authoritative_stage_trace": {
+      "combined_candidate_present": true,
+      "fused_rank_1based": 22,
+      "fused_rank_source": "retrieval_trace_fused_candidates",
+      "reranker_rank_1based": 10,
+      "final_ranked_rank_1based": 11,
+      "final_top10": false,
+      "final_top20": true,
+      "final_selected": false
+    },
+    "primary_cause": "R2_post_rerank_deterministic_ordering",
+    "direct_displacer": {
+      "object_id": "object.24323bf526f94cd30b58ab41",
+      "reranker_rank_1based": 14,
+      "final_ranked_rank_1based": 3,
+      "source_id": "pandaroot",
+      "object_type": "source_file_chunk",
+      "locator_path": "pgenerators/FileReaders/PndDpmGenerator.cxx",
+      "promotion_rule": "symbol_first",
+      "promotion_reason": "Exact symbol PndDpmGenerator matched in exact channel; symbol-first promotion moves it ahead of object.f516ef98aeecd335607ac0f6.",
+      "gold_relevant": false
+    },
+    "explanation_10_to_11": "object.24323bf526f94cd30b58ab41 is reranker rank 14 but is promoted to final ranked rank 3 by symbol_first. This displaces object.f516ef98aeecd335607ac0f6 from reranker rank 10 to final ranked rank 11, causing canonical Recall@10 to miss it. The target is later also excluded from final evidence by source_budget_cap (code cap 3), but the formal top-10 loss is caused by the post-rerank promotion.",
+    "diagnostic_substage": "R2_post_rerank_deterministic_ordering"
+  },
+  "cross_case_mechanism_scan": {
+    "formal_applicable_cases": 49,
+    "cases_with_reranker_final_top10_change": 40,
+    "gold_relevant_promotions_into_top10": 8,
+    "gold_relevant_demotions_out_of_top10": 2,
+    "critical_promotions_into_top10": 5,
+    "critical_demotions_out_of_top10": 1,
+    "r3_like_cases_final_top10_not_selected": 1,
+    "selector_preserves_all_critical": 47,
+    "selector_drops_critical": 2,
+    "affected_question_ids": [
+      "g015",
+      "g016",
+      "g020",
+      "g023",
+      "g044",
+      "g052",
+      "g060",
+      "g105"
+    ],
+    "affected_intents": {
+      "usage": 5,
+      "algorithm_theory": 2,
+      "algorithm_implementation": 2,
+      "module_structure": 1
+    },
+    "exclusion_reason_counts_formal_scope": {
+      "source_diversity_cap": 2208,
+      "source_budget_cap": 738,
+      "duplicate_locator": 34
+    }
+  },
+  "shared_root_cause_assessment": "partially shared",
+  "shared_root_cause_explanation": "Both cases involve deterministic priority/budget mechanisms that are not coverage-aware: g011 is a per-source diversity cap in final evidence selection; g016 is a symbol-first promotion in post-rerank ordering. They are different production stages, but they share the general property that fixed quotas/priorities can displace critical evidence without any representation of required evidence coverage.",
+  "mechanism_classification": {
+    "g011": "intended tradeoff",
+    "g016": "intended tradeoff"
+  },
+  "recommended_next_tasks": [
+    {
+      "task": "T3.3A - Generic final-evidence selection coverage-awareness investigation",
+      "layer": "final evidence selection",
+      "generic_invariant": "Preserve required-source/coverage-critical evidence when applying per-source and per-type budgets, without using Gold at runtime.",
+      "regression_risk": "Medium: changing budget/priority could reduce source diversity in non-critical cases.",
+      "tests": "T0 synthetic selector fixtures plus small T1/T2 targeted retrieval checks.",
+      "reindex_required": false,
+      "initial_evaluation_level": "T1/T2 targeted retrieval"
+    },
+    {
+      "task": "T3.3B - Generic post-rerank deterministic-ordering coverage-awareness investigation",
+      "layer": "post-rerank deterministic ordering",
+      "generic_invariant": "When symbol/source promotions reorder candidates, preserve canonical top-K coverage for required evidence classes without using Gold at runtime.",
+      "regression_risk": "Medium: symbol-first priority is valuable for exact-identifier questions; changes must not weaken exact-match recall.",
+      "tests": "T0 deterministic ordering fixtures plus small T1/T2 targeted retrieval checks.",
+      "reindex_required": false,
+      "initial_evaluation_level": "T1/T2 targeted retrieval"
+    }
+  ],
+  "recommended_first_task": "T3.3A - Generic final-evidence selection coverage-awareness investigation (g011 is the only formal top-10-to-final-evidence loss; lower risk than altering symbol-first ordering)."
+}
