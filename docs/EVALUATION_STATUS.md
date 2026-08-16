@@ -34,10 +34,10 @@ When records conflict, use the single section explicitly marked **Current author
 
 ## Generalization Phase status
 
-- Bootstrap tasks A1–A3: `PASS`; A3.1 hardening: `PASS`; B1: `PASS`; B2: `PASS`; B3: `PASS`; B4: `PASS`; B5: `PASS` (B5.1R2 static closeout and B5.2 live migration/T1/post-B5 T2 completed).
+- Bootstrap tasks A1–A3: `PASS`; A3.1 hardening: `PASS`; B1: `PASS`; B2: `PASS`; B3: `PASS`; B4: `PASS`; B5: `PASS` (B5.1R2 static closeout and B5.2 live migration/T1/post-B5 T2 completed); Phase-B T3 full 80-question dev retrieval-only: `FAIL` (complete run valid, but the existing retrieval-mode development gate is not satisfied).
 - Evaluation modes: `retrieval`, `qa`, and `full` have explicit recorded boundaries.
 - Structured retrieval traces are persisted as atomic JSON and JSONL and can be loaded without rerunning QA.
-- A3 was corrected from a possible full-retrieval interpretation to a stratified low-cost bootstrap baseline. No T3 or full 120-question retrieval/E2E run was performed.
+- A3 was corrected from a possible full-retrieval interpretation to a stratified low-cost bootstrap baseline. Phase-B T3 (complete 80-question dev retrieval-only) was performed on `2026-08-16`; no full 120-question retrieval/E2E run was performed.
 - C1 remains `NOT_STARTED` and is not the active task while B5 completion work continues.
 
 ## Historical full E2E reference
@@ -120,7 +120,22 @@ This is a low-cost English Gold reference, not a complete generalization, comple
 - Post-B5 T2: run `b5-post-retrieval-20260816`, mode `retrieval`, same fixed 16 IDs; applicable denominator 12 (4 `version_conflict` excluded). Recall@5 `0.7361111111`; Recall@10 `0.8333333333`; Recall@20 `0.8333333333`; MRR `0.5375`; combined candidate recall `1.0`; final evidence recall `0.8333333333`; intent accuracy `0.9375`; exceptions 0; model calls `48`; token usage `283871`. First-relevant-rank movement among supported applicable cases: improved `0`, unchanged `8`, regressed `2` (`g001` 1→2, `g013` 2→4); two applicable cases (`g038`, `g043`) had no first-relevant hit in either run and are not rank-supported. No index-integrity/migration defect was indicated; regression is a generic retrieval/ranking effect, not a deployment defect.
 - T0 verification: `20` B5 migration/safety tests pass in `test_b5_index_migration.py`, plus `11` B3 sparse-factory tests and `7` B4 locator tests; `compileall` and `git diff --check` clean.
 - Novel retrieval: `UNMEASURED` — no trustworthy human-authored novel dataset exists.
-- Phase-B T3 retrieval-only comparison: `NOT RUN` — requires explicit user authorization.
+- Phase-B T3 retrieval-only comparison: `FAIL` — complete valid 80-question dev run; existing retrieval-mode development gate not satisfied (see T3 section below).
+
+### Phase-B T3 full retrieval-only result
+
+- Manifest: `evaluation/baselines/manifests/phase_b_t3_retrieval_v1.json`.
+- Run: `phase-b-t3-retrieval-20260816`, mode `retrieval`, split `dev`, 80 approved development questions; applicable `73`, excluded `7` (`g012,g026,g042,g058,g077,g096,g108`, all `version_conflict`). No acceptance/holdout questions were used.
+- Candidate identity: Git `2341a2e2dc5960212c4b335fd97513633e375012` (dirty: docs-only wording), corpus `133075` objects / `104973` eligible, object hash `ff7f6102542bd68775caefba19d19d9ba0bb2452fe05a234344db40284538e73`, index schema `4` / fingerprint `8172f9a640e62977be6e911bfb4848ce3aecd0994f1f3ba51a0985bffec62cb9`, dense `gemini-embedding-2` / `3072`, sparse `Qdrant/bm25` / `sparse` / `idf`, analyzer/reranker `gemini-3.7-flash`, Gold v2.6 hash `b5406e36c64ee664f9e2ff9c0f42e354feb7164c81d8f1c7551d8f2ed1d0b687`.
+- Overall metrics: Recall@5 `0.8801369863`; Recall@10 `0.9748858447`; Recall@20 `0.9863013699`; MRR `0.7285388128`; combined candidate recall `1.0`; final evidence recall `0.9828767123`; critical final evidence recall `0.9828767123`; intent accuracy `0.9875`; expected-status accuracy `0.9125`; exceptions `0`.
+- Rank distribution (question-level first relevant rank, applicable 73): rank1 `39`, rank2 `22`, rank3 `7`, rank4–5 `4`, rank6–10 `0`, rank11–20 `0`, no top-20 hit `1`; rank-1 fraction `0.5342`, median `1`, mean `1.708`.
+- Failure taxonomy: Q1 `1`, Q2 `0`, R1 `0`, R2 `3`, R3 `2`, unclassified `0`. Material Recall@10/final-evidence misses: `g006` (R2), `g011` (R3), `g016` (R2), `g025` (Q1), `g072` (R2), `g085` (R3).
+- Identifier-heavy predeclared subset (dev intersection of B1 set): `g015,g027,g028,g029,g041,g042,g059,g060`; applicable `7`; Recall@5 `0.8333`, Recall@10 `1.0`, Recall@20 `1.0`, MRR `0.7190`, combined candidate recall `1.0`, no R1/R2/R3 failures.
+- B5 coverage diagnostic: B5-added coverage objects appear in candidate pools in `71/73` applicable questions, top-5 in `19/73`, final evidence in `32/73`, and are relevant Gold hits in `3/73` (causal attribution limited).
+- T2 overlap stability: `g001` T3 rank `2` (same as post-B5 T2), `g013` T3 rank `2` (post-B5 T2 was `4`; variance observed, not a tuning target).
+- Development gate: `passed=false`; failing checks are `critical_evidence_coverage` (`0.9829 < 1.0`) and `expected_status_accuracy` (`0.9125 < 0.975`). Other retrieval-mode development checks pass.
+- Cost: `240` runtime model calls (`0` judge), `1403061` tokens, `0` document embeddings, `0` QA/verifier/judge calls.
+- Systematic ranking assessment: `NO EVIDENCE OF SYSTEMATIC REGRESSION` — high Recall@10/20, combined candidate recall `1.0`, R1 `0`, rank-1 fraction `0.534`, and per-intent MRR do not indicate a broad Phase-B ranking regression. The T3 `FAIL` is a development-gate failure, not a systematic-ranking regression signal.
 
 ### Current small E2E baseline
 
@@ -143,14 +158,13 @@ The retrieval and QA measurements are unchanged. A3.1 corrects only metric repre
 
 ## Known limitations
 
-- Gold v2.6 has no eligible approved English questions for `data_flow`, `module_structure`, or `troubleshooting`; these intents are unevaluated in this bootstrap baseline.
-- `algorithm_implementation` has only two eligible approved English questions, so that stratum is exhausted rather than evenly sized.
+- The A3 stratified bootstrap baseline does not cover every intent in depth; Phase-B T3 now measures all approved development intents, including `data_flow`, `module_structure`, and `troubleshooting`.
 - The current baseline measures exposed English Gold behavior, not genuinely novel-question generalization.
 - Historical E2E and current baseline identities differ, so their metric differences are not a controlled before/after comparison.
 
 ## Next authorized roadmap task
 
-`Phase-B T3 retrieval-only comparison — pending explicit user authorization`
+`Targeted R2/fusion-ranking and R3/evidence-selection investigation — pending explicit user authorization (do not implement C1 as the dominant T3 failure layer)`
 
 ---
 
