@@ -1,0 +1,102 @@
+{
+  "manifest_id": "phase_b_t3_3a_r1_bounded_soft_budget_closeout_v1",
+  "source_run_id": "phase-b-t3-retrieval-20260816",
+  "source_result_content_hash": "98acb1f9009ea0accf278719e5b8cacc193b0547aad8e87560f1d3184f9fb274",
+  "source_t3_3a_commit": "82c068e9ecc33792094ec64d823b248781d6a785",
+  "calibration_id": "phase_b_t3_product_language_scope_v2",
+  "zero_call_provenance": {
+    "model_calls": 0,
+    "token_usage": 0,
+    "retriever_calls": 0,
+    "analyzer_calls": 0,
+    "reranker_calls": 0,
+    "query_embeddings": 0,
+    "document_embeddings": 0,
+    "qa_verifier_judge": 0,
+    "sql_qdrant_writes": 0,
+    "index_mutation": 0
+  },
+  "bounded_rule": {
+    "source_soft_overflow_allowance": 1,
+    "type_soft_overflow_allowance": 1,
+    "both_cap_semantics": "A candidate violating both caps consumes both allowances; a later candidate cannot reuse either exhausted allowance.",
+    "runtime_eligibility": [
+      "non-duplicate locator",
+      "canonical rank <= final_evidence_limit",
+      "source type in required_source_types",
+      "selected evidence not full",
+      "required overflow allowance available"
+    ]
+  },
+  "diagnostic_semantics": {
+    "excluded_candidates": "rejected candidates only",
+    "soft_budget_admissions": "successfully admitted exception candidates; not present in excluded_candidates"
+  },
+  "production_diff_summary": {
+    "files_changed": [
+      "src/panda_agent/retrieval.py",
+      "src/panda_agent/retrieval_trace.py"
+    ],
+    "logic": "Bounded soft overflow counters per source and per source type; both-cap interaction consumes both; soft admissions returned separately and persisted in RetrievalTrace.soft_budget_admissions.",
+    "ranking_fusion_reranker_changed": false,
+    "final_evidence_limit_unchanged": true
+  },
+  "frozen_selector_local_replay": {
+    "scope": "formal English cases with available canonical top-30 snapshot",
+    "pre_final_evidence_recall": 0.9591836734693877,
+    "pre_critical_final_evidence_recall": 0.9591836734693877,
+    "post_final_evidence_recall": 0.9591836734693877,
+    "post_critical_final_evidence_recall": 0.9591836734693877,
+    "g011_local_outcome": "not recovered",
+    "g016_local_outcome": "not recovered",
+    "local_critical_misses": [
+      "g006",
+      "g011",
+      "g016"
+    ],
+    "not_a_formal_t3": true
+  },
+  "replay_baseline_fidelity": {
+    "authoritative_pre_final_evidence_recall": 0.9795918367,
+    "replay_pre_final_evidence_recall": 0.9591836734693877,
+    "authoritative_pre_critical_final_evidence_recall": 0.9795918367,
+    "replay_pre_critical_final_evidence_recall": 0.9591836734693877,
+    "authoritative_blocker_ids": [
+      "g011.e1",
+      "g016.e2"
+    ],
+    "replay_blocker_ids": [
+      "g006",
+      "g011",
+      "g016"
+    ],
+    "baseline_faithful": false,
+    "reason": "The persisted canonical top-30 snapshot omits candidates beyond rank 30 that the original selector sometimes reached, so replay PRE does not reproduce the authoritative 0.9795918367 measurement."
+  },
+  "diversity_diagnostics": {
+    "pre": {
+      "mean_evidence": 8.673469387755102,
+      "mean_unique_sources": 2.8979591836734695,
+      "median_unique_sources": 3,
+      "mean_source_types": 2.857142857142857
+    },
+    "post_bounded": {
+      "mean_evidence": 9.346938775510203,
+      "mean_unique_sources": 2.877551020408163,
+      "median_unique_sources": 3,
+      "mean_source_types": 2.7551020408163267
+    },
+    "cases_losing_source": 2,
+    "cases_gaining_source": 1,
+    "soft_admission_events": {
+      "source": 26,
+      "type": 17,
+      "both": 10
+    },
+    "soft_admission_unique_cases": 44
+  },
+  "authoritative_formal_gate": "FAIL",
+  "deterministic_post_fix_formal_gate_projection": "INCONCLUSIVE",
+  "t3_3b_gate_blocker_status": "INCONCLUSIVE",
+  "result": "INCONCLUSIVE"
+}
