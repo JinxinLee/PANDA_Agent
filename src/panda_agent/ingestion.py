@@ -399,22 +399,34 @@ def parse_python(path: Path, relative: str, source_id: str, version: str, *, ful
 def parse_generic(path: Path, relative: str, source_id: str, version: str, *, full_source: bool = False) -> tuple[list[KnowledgeObject], list[RelationCandidate], list[WorkflowStep]]:
     text = path.read_text(encoding="utf-8", errors="replace")
     kind = "readme_section" if path.name.lower().startswith("readme") else ("cmake_target" if path.name == "CMakeLists.txt" or path.suffix == ".cmake" else "source_file")
+    is_readme_root = kind == "readme_section"
     obj = _object(object_type=kind, source_id=source_id, version=version, title=relative, text=text if full_source else text[:30000],
         locator=(SourceLocator(path=relative, start_line=1, end_line=_represented_end_line(text)) if full_source else _truncated_file_locator(relative, text, 30000)), canonical=relative,
-        authority=AuthorityLevel.OPERATIONAL if kind == "readme_section" else AuthorityLevel.PRIMARY)
+        authority=AuthorityLevel.OPERATIONAL if kind == "readme_section" else AuthorityLevel.PRIMARY,
+        metadata={"readme_root": True} if is_readme_root else None)
     objects=[obj]
     if kind=="readme_section":
         matches=list(re.finditer(r'(?m)^(#{1,6})\s+(.+?)\s*$',text))
         heading_stack: list[tuple[int, str]] = []
+        covered: list[tuple[int, int]] = []
         for index,match in enumerate(matches):
             end=matches[index+1].start() if index+1<len(matches) else len(text); section=text[match.start():end].strip()
             if section:
+                covered.append((match.start(), end))
                 line=text[:match.start()].count("\n")+1; title=match.group(2).strip(); level=len(match.group(1))
                 while heading_stack and heading_stack[-1][0] >= level:
                     heading_stack.pop()
                 section_path=[item[1] for item in heading_stack] + [title]
                 heading_stack.append((level, title))
                 objects.append(_object(object_type="readme_section",source_id=source_id,version=version,title=title,text=section,parent=obj.object_id,canonical=f"{relative}#{title}:{line}",locator=SourceLocator(path=relative,start_line=line,end_line=line+section.count("\n"),section_path=section_path),authority=AuthorityLevel.OPERATIONAL))
+        # The README root is a provenance container: section objects cover the
+        # heading hierarchy, and a preamble gap region covers any meaningful
+        # text before the first heading. No broad whole-file duplicate chunks.
+        objects.extend(_text_gap_objects(
+            parent=obj, text=text, covered=covered,
+            object_type="source_file_chunk", source_id=source_id, version=version,
+            language="markdown", region_kind="readme_preamble_gap",
+        ))
     else:
         # B5: close the generic text/config source-file coverage hole with
         # deterministic blank-line paragraph regions.  The parent stays a
@@ -722,6 +734,9 @@ def seed_knowledge_aliases(
                 for obj in object_list
                 if obj.source_id == item.source_id
                 and (obj.locator.path or "").replace("\\", "/") in wanted
+                # B5 coverage-only gap regions share a source path with their
+                # parent and must not change curated alias provenance.
+                and not obj.metadata.get("b5_source_gap")
             }
         )
         if not provenance:
@@ -944,14 +959,18 @@ def _trim_span(text: str, start: int, end: int) -> tuple[int, int]:
 
 def _hard_split_span(
     title: str, text: str, start: int, end: int, policy: ChunkingPolicy
-) -> list[tuple[int, int]]:
-    """Last-resort source-ordered splitting for one pathological line/block."""
-    result: list[tuple[int, int]] = []
+) -> list[tuple[int, int, str]]:
+    """Last-resort source-ordered splitting for one pathological line/block.
+
+    Intermediate pieces use the upper-bounds contract only: sub-minimum
+    pieces stay alive so the later merging pass can combine them.
+    """
+    result: list[tuple[int, int, str]] = []
     cursor = start
     maximum = policy.max_text_chars(title)
     while cursor < end:
         candidate_end = min(end, cursor + maximum)
-        while candidate_end > cursor and not policy.embedding_input_is_valid(
+        while candidate_end > cursor and not policy.within_upper_bounds(
             title, text[cursor:candidate_end]
         ):
             candidate_end -= 1
@@ -959,16 +978,20 @@ def _hard_split_span(
             # A single token can exceed the input ceiling. Preserve it only on
             # the non-eligible parent; no invalid child may be emitted.
             return result
-        result.append((cursor, candidate_end))
+        result.append((cursor, candidate_end, "hard"))
         cursor = candidate_end
     return result
 
 
 def _line_or_hard_spans(
     title: str, text: str, start: int, end: int, policy: ChunkingPolicy
-) -> list[tuple[int, int]]:
-    """Split an oversized block at source lines before the hard fallback."""
-    spans: list[tuple[int, int]] = []
+) -> list[tuple[int, int, str]]:
+    """Split an oversized block at source lines before the hard fallback.
+
+    Line grouping also uses the intermediate upper-bounds contract so short
+    lines survive into the source-ordered merging pass.
+    """
+    spans: list[tuple[int, int, str]] = []
     line_starts = [start]
     line_starts.extend(index + 1 for index in range(start, end) if text[index] == "\n")
     line_starts.append(end)
@@ -977,27 +1000,85 @@ def _line_or_hard_spans(
     for line_start, line_end in zip(line_starts, line_starts[1:]):
         candidate_start = line_start if current_start is None else current_start
         candidate_end = line_end
-        if policy.embedding_input_is_valid(title, text[candidate_start:candidate_end]):
+        if policy.within_upper_bounds(title, text[candidate_start:candidate_end]):
             current_start, current_end = candidate_start, candidate_end
             continue
         if current_start is not None:
-            spans.append((current_start, current_end or current_start))
+            spans.append((current_start, current_end or current_start, "line"))
             current_start = None
             current_end = None
         line_start, line_end = _trim_span(text, line_start, line_end)
         if line_start >= line_end:
             continue
-        if policy.embedding_input_is_valid(title, text[line_start:line_end]):
+        if policy.within_upper_bounds(title, text[line_start:line_end]):
             current_start, current_end = line_start, line_end
         else:
             spans.extend(_hard_split_span(title, text, line_start, line_end, policy))
     if current_start is not None:
-        spans.append((current_start, current_end or current_start))
+        spans.append((current_start, current_end or current_start, "line"))
     return spans
 
 
-def _structure_first_spans(title: str, text: str, policy: ChunkingPolicy) -> list[tuple[int, int]]:
-    """Prefer paragraph/block boundaries, then source lines, then hard pieces."""
+def _merge_atoms_into_chunks(
+    title: str,
+    text: str,
+    atoms: list[tuple[int, int, str]],
+    policy: ChunkingPolicy,
+) -> tuple[list[tuple[int, int]], list[set[str]], list[tuple[int, int]]]:
+    """Merge intermediate atoms in source order into final embedding units.
+
+    Sub-minimum atoms are absorbed greedily while the merged span stays within
+    upper bounds; a final trailing (or otherwise isolated) sub-minimum span is
+    merged back into the previous chunk when that remains a valid embedding
+    input, and is otherwise reported as an unsearchable sub-minimum residual
+    that stays on the non-eligible parent.
+    """
+    raw: list[tuple[int, int, set[str]]] = []
+    current_start: int | None = None
+    current_end: int | None = None
+    current_kinds: set[str] = set()
+    for start, end, kind in atoms:
+        candidate_start = start if current_start is None else current_start
+        candidate_end = end
+        if policy.within_upper_bounds(title, text[candidate_start:candidate_end]):
+            current_start, current_end = candidate_start, candidate_end
+            current_kinds.add(kind)
+        else:
+            if current_start is not None:
+                raw.append((current_start, current_end or current_start, current_kinds))
+            current_start, current_end = start, end
+            current_kinds = {kind}
+    if current_start is not None:
+        raw.append((current_start, current_end or current_start, current_kinds))
+
+    chunks: list[tuple[int, int]] = []
+    kinds: list[set[str]] = []
+    residuals: list[tuple[int, int]] = []
+    for start, end, atom_kinds in raw:
+        if policy.embedding_input_is_valid(title, text[start:end]):
+            chunks.append((start, end))
+            kinds.append(atom_kinds)
+            continue
+        # Sub-minimum span: merge with the previous chunk when possible.
+        if chunks and policy.embedding_input_is_valid(
+            title, text[chunks[-1][0]:end]
+        ):
+            previous_start, _ = chunks[-1]
+            chunks[-1] = (previous_start, end)
+            kinds[-1] = kinds[-1] | atom_kinds
+            continue
+        residuals.append((start, end))
+    return chunks, kinds, residuals
+
+
+def _structure_first_atoms(
+    title: str, text: str, policy: ChunkingPolicy
+) -> tuple[list[tuple[int, int]], list[set[str]], list[tuple[int, int]]]:
+    """Prefer paragraph/block boundaries, then source lines, then hard pieces.
+
+    Returns final chunks, their originating split kinds, and any unsearchable
+    sub-minimum residual spans.
+    """
     blocks: list[tuple[int, int]] = []
     cursor = 0
     for separator in re.finditer(r"\n\s*\n", text):
@@ -1009,28 +1090,37 @@ def _structure_first_spans(title: str, text: str, policy: ChunkingPolicy) -> lis
     if start < end:
         blocks.append((start, end))
 
-    atoms: list[tuple[int, int]] = []
+    atoms: list[tuple[int, int, str]] = []
     for start, end in blocks:
-        if policy.embedding_input_is_valid(title, text[start:end]):
-            atoms.append((start, end))
+        if policy.within_upper_bounds(title, text[start:end]):
+            atoms.append((start, end, "block"))
         else:
             atoms.extend(_line_or_hard_spans(title, text, start, end, policy))
 
-    chunks: list[tuple[int, int]] = []
-    current_start: int | None = None
-    current_end: int | None = None
-    for start, end in atoms:
-        candidate_start = start if current_start is None else current_start
-        candidate_end = end
-        if policy.embedding_input_is_valid(title, text[candidate_start:candidate_end]):
-            current_start, current_end = candidate_start, candidate_end
-        else:
-            if current_start is not None:
-                chunks.append((current_start, current_end or current_start))
-            current_start, current_end = start, end
-    if current_start is not None:
-        chunks.append((current_start, current_end or current_start))
-    return chunks
+    return _merge_atoms_into_chunks(title, text, atoms, policy)
+
+
+def _structure_first_spans(
+    title: str, text: str, policy: ChunkingPolicy
+) -> tuple[list[tuple[int, int]], list[tuple[int, int]]]:
+    """Compatibility wrapper returning chunks and residuals only."""
+    chunks, _, residuals = _structure_first_atoms(title, text, policy)
+    return chunks, residuals
+
+
+def _is_structural_container(item: KnowledgeObject, children: list[KnowledgeObject]) -> bool:
+    """A broad provenance parent already covered by structured searchable children.
+
+    The rule is coverage-based, not a bare object-type allowlist: a broad
+    parent only stops producing duplicate embedding chunks when structured
+    children (parser symbols, gaps, sections, or paragraph regions) actually
+    exist. Parents without children keep their searchable rechunking.
+    """
+    if item.object_type in {"source_file", "python_script", "sphinx_page"}:
+        return bool(children)
+    if item.object_type == "readme_section" and item.metadata.get("readme_root"):
+        return bool(children)
+    return False
 
 
 def expand_embedding_chunks(
@@ -1047,6 +1137,10 @@ def expand_embedding_chunks(
     """
     if max_chars is not None:
         return _legacy_expand_embedding_chunks(objects, max_chars)
+    children_by_parent: dict[str, list[KnowledgeObject]] = {}
+    for item in objects:
+        if item.parent_object_id:
+            children_by_parent.setdefault(item.parent_object_id, []).append(item)
     expanded: list[KnowledgeObject] = []
     for item in objects:
         token_count = policy.token_count(item.text)
@@ -1059,15 +1153,23 @@ def expand_embedding_chunks(
             expanded.append(normalized)
             continue
         expanded.append(normalized)
-        if token_count < policy.min_tokens or item.object_type == "source_file":
+        if token_count < policy.min_tokens:
+            continue
+        children = children_by_parent.get(item.object_id, [])
+        if _is_structural_container(item, children):
+            # Provenance container only: its meaningful content is already
+            # represented by structured children/gaps. No broad duplicates.
             continue
         span_title = f"{item.title} [9999/9999]"
-        spans = _structure_first_spans(span_title, item.text, policy)
-        eligible_spans = [
-            span for span in spans
-            if policy.embedding_input_is_valid(span_title, item.text[span[0]:span[1]])
-        ]
-        for index, (start, end) in enumerate(eligible_spans, 1):
+        spans, kinds, _ = _structure_first_atoms(span_title, item.text, policy)
+        eligible_spans = []
+        eligible_kinds: list[set[str]] = []
+        for span, kind_set in zip(spans, kinds):
+            if policy.embedding_input_is_valid(span_title, item.text[span[0]:span[1]]):
+                eligible_spans.append(span)
+                eligible_kinds.append(kind_set)
+        for index, (span, kind_set) in enumerate(zip(eligible_spans, eligible_kinds), 1):
+            start, end = span
             chunk_text = item.text[start:end]
             title = f"{item.title} [{index}/{len(eligible_spans)}]"
             # The title is part of the authoritative input; shrink no further
@@ -1089,6 +1191,7 @@ def expand_embedding_chunks(
                     "chunk_index": index,
                     "chunk_count": len(eligible_spans),
                     "chunking_policy": policy.version,
+                    "split_kinds": sorted(kind_set),
                 },
             ).model_copy(update={
                 "token_count": policy.token_count(chunk_text),

@@ -4,8 +4,9 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from panda_agent.chunking import ChunkingPolicy
+from panda_agent.chunking import DEFAULT_CHUNKING_POLICY, ChunkingPolicy
 from panda_agent.ingestion import (
+    _structure_first_spans,
     expand_embedding_chunks,
     parse_cmake,
     parse_cpp,
@@ -107,7 +108,7 @@ class ChunkingPolicyTests(unittest.TestCase):
         policy = ChunkingPolicy(max_tokens=3)
         self.assertFalse(policy.embedding_input_is_valid("t", "one two three four", 4))
 
-    def test_oversized_source_file_remains_nonsearchable_parent(self) -> None:
+    def test_oversized_source_file_without_children_stays_searchable(self) -> None:
         policy = ChunkingPolicy(max_embedding_input_chars=80)
         source = KnowledgeObject(
             object_id="object.b5-file", object_type="source_file", source_id="repo", source_version_id="repo@sha",
@@ -115,8 +116,9 @@ class ChunkingPolicyTests(unittest.TestCase):
             locator=SourceLocator(path="file.cc", start_line=1, end_line=1), canonical_locator="file.cc",
         )
         result = expand_embedding_chunks([source], policy=policy)
-        self.assertEqual(len(result), 1)
         self.assertFalse(result[0].embedding_eligible)
+        self.assertTrue(all(item.embedding_eligible for item in result[1:]))
+        self.assertTrue(all(item.parent_object_id == source.object_id for item in result[1:]))
 
     def test_derived_chunk_locator_is_contained_by_parent(self) -> None:
         policy = ChunkingPolicy(max_embedding_input_chars=80)
@@ -185,3 +187,241 @@ class ChunkingPolicyTests(unittest.TestCase):
         for child in expand_embedding_chunks([page], policy=policy)[1:]:
             self.assertEqual(child.locator.pdf_page, 4)
             self.assertIsNone(child.locator.start_line)
+
+    def test_two_submin_paragraphs_merge_into_one_valid_chunk(self) -> None:
+        policy = ChunkingPolicy()
+        text = "alpha beta gamma delta epsilon\n\nzeta eta theta iota kappa"
+        spans, residuals = _structure_first_spans("guide [9999/9999]", text, policy)
+        self.assertEqual(spans, [(0, len(text))])
+        self.assertEqual(residuals, [])
+        self.assertTrue(policy.embedding_input_is_valid("guide [9999/9999]", text))
+
+    def test_multiple_short_lines_merge_into_one_valid_chunk(self) -> None:
+        policy = ChunkingPolicy()
+        text = "one two\nthree four\nfive six\nseven eight\nnine ten"
+        spans, residuals = _structure_first_spans("guide [9999/9999]", text, policy)
+        self.assertEqual(spans, [(0, len(text))])
+        self.assertEqual(residuals, [])
+
+    def test_trailing_submin_residual_merges_into_previous_chunk(self) -> None:
+        policy = ChunkingPolicy(max_embedding_input_chars=200)
+        body = "word " * 30
+        tail = "tail one two three four"
+        text = f"{body}\n\n{tail}"
+        spans, residuals = _structure_first_spans("guide [9999/9999]", text, policy)
+        self.assertEqual(residuals, [])
+        self.assertEqual(len(spans), 1)
+        self.assertIn("tail", text[spans[0][0]:spans[0][1]])
+
+    def test_unmergeable_submin_residual_is_reported_not_emitted(self) -> None:
+        policy = ChunkingPolicy(max_embedding_input_chars=60, max_tokens=30)
+        text = "w1 w2 w3 w4 w5 w6 w7 w8 w9 w10 w11 w12 w13 w14 w15"
+        spans, residuals = _structure_first_spans("guide [9999/9999]", text, policy)
+        self.assertGreater(len(residuals), 0)
+        self.assertGreater(len(spans), 0)
+        covered = "".join(text[start:end] for start, end in spans)
+        residual_text = "".join(text[start:end] for start, end in residuals)
+        self.assertEqual(covered + residual_text, text)
+        self.assertTrue(all(
+            policy.embedding_input_is_valid("guide [9999/9999]", text[start:end])
+            for start, end in spans
+        ))
+
+    def test_emitted_children_locators_are_ordered_and_contained(self) -> None:
+        policy = ChunkingPolicy(max_embedding_input_chars=200)
+        text = "\n\n".join(f"paragraph {index} " + "content " * 15 for index in range(12))
+        parent = KnowledgeObject(
+            object_id="object.b5-ordered", object_type="guide", source_id="repo", source_version_id="repo@sha",
+            title="guide", text=text, authority_level=AuthorityLevel.PRIMARY,
+            locator=SourceLocator(path="guide.md", start_line=5, end_line=30), canonical_locator="guide.md",
+        )
+        children = expand_embedding_chunks([parent], policy=policy)[1:]
+        starts = [child.locator.start_line for child in children]
+        self.assertEqual(starts, sorted(starts))
+        for child in children:
+            self.assertGreaterEqual(child.locator.start_line or 0, 5)
+            self.assertLessEqual(child.locator.end_line or 0, 30)
+
+    def test_submin_merge_is_deterministic_across_runs(self) -> None:
+        policy = ChunkingPolicy()
+        text = ("alpha beta gamma\n\nzeta eta theta\n\n"
+                + "\n\n".join(f"para {index} " + "word " * 12 for index in range(6)))
+        first = _structure_first_spans("guide [9999/9999]", text, policy)
+        second = _structure_first_spans("guide [9999/9999]", text, policy)
+        self.assertEqual(first, second)
+
+    def test_python_parent_with_children_is_container_not_rechunked(self) -> None:
+        with TemporaryDirectory() as temporary:
+            path = Path(temporary) / "big_module.py"
+            body = "# module documentation line\n" * 400
+            body += "GLOBAL_VALUE = 42\n\ndef work():\n    return GLOBAL_VALUE\n"
+            path.write_text(body, encoding="utf-8")
+            objects, _, _ = parse_python(path, "big_module.py", "repo", "repo@sha", full_source=True)
+        expanded = expand_embedding_chunks(objects)
+        parent = expanded[0]
+        self.assertFalse(parent.embedding_eligible)
+        module_chunks = [
+            item for item in expanded
+            if item.object_type == "python_script_chunk" and item.metadata.get("derived_from") == parent.object_id
+        ]
+        self.assertEqual(module_chunks, [])
+        gap_children = [
+            item for item in expanded
+            if item.parent_object_id == parent.object_id and item.metadata.get("region_kind") == "python_module_gap"
+        ]
+        self.assertGreater(len(gap_children), 0)
+
+    def test_readme_root_with_sections_is_container_with_preamble_gap(self) -> None:
+        with TemporaryDirectory() as temporary:
+            path = Path(temporary) / "README.md"
+            text = "preamble line with meaning\n" * 400
+            text += "# Section One\nsection body words\n\n## Sub\nsub body words\n"
+            path.write_text(text, encoding="utf-8")
+            objects, _, _ = parse_generic(path, "README.md", "repo", "repo@sha", full_source=True)
+        expanded = expand_embedding_chunks(objects)
+        root = expanded[0]
+        self.assertTrue(root.metadata.get("readme_root"))
+        self.assertFalse(root.embedding_eligible)
+        root_chunks = [
+            item for item in expanded
+            if item.parent_object_id == root.object_id and item.metadata.get("derived_from") == root.object_id
+        ]
+        self.assertEqual(root_chunks, [])
+        preamble = [item for item in expanded if item.metadata.get("region_kind") == "readme_preamble_gap"]
+        self.assertEqual(len(preamble), 1)
+        self.assertIn("preamble line with meaning", preamble[0].text)
+
+    def test_generic_long_file_keeps_eligible_children(self) -> None:
+        with TemporaryDirectory() as temporary:
+            path = Path(temporary) / "long.txt"
+            text = "\n\n".join(f"documentation paragraph {index} " + "word " * 60 for index in range(30))
+            path.write_text(text, encoding="utf-8")
+            objects, _, _ = parse_generic(path, "long.txt", "repo", "repo@sha", full_source=True)
+        expanded = expand_embedding_chunks(objects)
+        eligible_children = [
+            item for item in expanded
+            if item.parent_object_id == expanded[0].object_id and item.embedding_eligible
+        ]
+        self.assertGreater(len(eligible_children), 0)
+        self.assertTrue(all(
+            DEFAULT_CHUNKING_POLICY.embedding_input_is_valid(item.title, item.text, item.token_count)
+            for item in eligible_children
+        ))
+
+    def test_python_tail_beyond_20000_chars_is_searchable(self) -> None:
+        with TemporaryDirectory() as temporary:
+            path = Path(temporary) / "tail_module.py"
+            filler = "# filler documentation line\n" * 750  # > 20000 chars
+            text = filler + "TAIL_MARKER_CONSTANT = 12345\n"
+            path.write_text(text, encoding="utf-8")
+            objects, _, _ = parse_python(path, "tail_module.py", "repo", "repo@sha", full_source=True)
+        parent = objects[0]
+        self.assertGreater(len(parent.text), 20000)
+        expanded = expand_embedding_chunks(objects)
+        searchable = [
+            item for item in expanded
+            if item.embedding_eligible and "TAIL_MARKER_CONSTANT" in item.text
+        ]
+        self.assertGreater(len(searchable), 0)
+        self.assertGreater(searchable[0].locator.start_line or 0, 700)
+
+    def test_generic_tail_beyond_30000_chars_is_searchable(self) -> None:
+        with TemporaryDirectory() as temporary:
+            path = Path(temporary) / "long_data.txt"
+            filler = "filler line with words for length\n" * 900  # > 30000 chars
+            text = filler + "TAIL_MARKER_SECTION = end-of-file configuration\n"
+            path.write_text(text, encoding="utf-8")
+            objects, _, _ = parse_generic(path, "long_data.txt", "repo", "repo@sha", full_source=True)
+        parent = objects[0]
+        self.assertGreater(len(parent.text), 30000)
+        expanded = expand_embedding_chunks(objects)
+        searchable = [
+            item for item in expanded
+            if item.embedding_eligible and "TAIL_MARKER_SECTION" in item.text
+        ]
+        self.assertGreater(len(searchable), 0)
+        self.assertGreaterEqual(searchable[0].locator.end_line or 0, 900)
+
+    def test_b5_gaps_do_not_change_relation_resolution(self) -> None:
+        from panda_agent.ingestion import RelationResolver
+        from panda_agent.models import RelationCandidate, ResolutionStatus
+        file_obj = KnowledgeObject(
+            object_id="object.rel-file", object_type="source_file", source_id="repo", source_version_id="repo@sha",
+            title="src/module.cc", text="x", authority_level=AuthorityLevel.PRIMARY,
+            locator=SourceLocator(path="src/module.cc", start_line=1, end_line=1), canonical_locator="src/module.cc",
+        )
+        function = KnowledgeObject(
+            object_id="object.rel-func", object_type="function", source_id="repo", source_version_id="repo@sha",
+            title="helper", text="void helper() {}", parent_object_id=file_obj.object_id,
+            authority_level=AuthorityLevel.PRIMARY,
+            locator=SourceLocator(path="src/module.cc", symbol="helper", start_line=2, end_line=2),
+            canonical_locator="src/module.cc:helper:2",
+        )
+        gap = KnowledgeObject(
+            object_id="object.rel-gap", object_type="source_file_chunk", source_id="repo", source_version_id="repo@sha",
+            title="src/module.cc [top-level region 1]", text="int global = 1;",
+            parent_object_id=file_obj.object_id, authority_level=AuthorityLevel.PRIMARY,
+            locator=SourceLocator(path="src/module.cc", start_line=1, end_line=1),
+            canonical_locator="src/module.cc:top-level-gap:1:1",
+            metadata={"b5_source_gap": True, "region_kind": "cpp_top_level_gap"},
+        )
+        candidate = RelationCandidate(
+            candidate_id="candidate.rel-call", subject_id=function.object_id, predicate="CALLS",
+            raw_target="helper", source_version_ids=["repo@sha"], resolution_scope="symbol",
+            confidence=0.8,
+        )
+        without_gap = RelationResolver([file_obj, function]).resolve(candidate)
+        with_gap = RelationResolver([file_obj, function, gap]).resolve(candidate)
+        self.assertEqual(without_gap, with_gap)
+        self.assertEqual(with_gap[0].object_id if with_gap[0] else None, function.object_id)
+
+    def test_b5_gaps_do_not_change_curated_alias_provenance(self) -> None:
+        import yaml
+        from panda_agent.ingestion import seed_knowledge_aliases
+        with TemporaryDirectory() as temporary:
+            fake_root = Path(temporary)
+            (fake_root / "configs").mkdir()
+            (fake_root / "configs" / "aliases.yaml").write_text(
+                "schema_version: \"1.0\"\n"
+                "aliases:\n"
+                "  - alias_text: restgas_profile.txt\n"
+                "    target_object_id: configuration.restgas_profile\n"
+                "    alias_kind: generic_user_term\n"
+                "    source_id: restgas_determination\n"
+                "    source_version_id: restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42\n"
+                "    review_status: accepted\n"
+                "    provenance_paths:\n"
+                "      - README.md\n"
+                "    correction_message: fixture\n",
+                encoding="utf-8",
+            )
+            target = KnowledgeObject(
+                object_id="configuration.restgas_profile", object_type="configuration_key",
+                source_id="restgas_determination", source_version_id="repo@sha", title="restgas_profile",
+                text="restgas profile configuration", authority_level=AuthorityLevel.PRIMARY,
+                locator=SourceLocator(path="README.md", start_line=1, end_line=1),
+                canonical_locator="configuration.restgas_profile",
+            )
+            parent = KnowledgeObject(
+                object_id="object.alias-parent", object_type="source_file",
+                source_id="restgas_determination", source_version_id="repo@sha", title="README.md",
+                text="profile docs", authority_level=AuthorityLevel.PRIMARY,
+                locator=SourceLocator(path="README.md", start_line=1, end_line=1),
+                canonical_locator="README.md",
+            )
+            gap = KnowledgeObject(
+                object_id="object.alias-gap", object_type="source_file_chunk",
+                source_id="restgas_determination", source_version_id="repo@sha",
+                title="README.md [top-level region 1]", text="int global = 1;",
+                parent_object_id=parent.object_id, authority_level=AuthorityLevel.PRIMARY,
+                locator=SourceLocator(path="README.md", start_line=1, end_line=1),
+                canonical_locator="README.md:top-level-gap:1:1",
+                metadata={"b5_source_gap": True, "region_kind": "cpp_top_level_gap"},
+            )
+            without_gap = seed_knowledge_aliases(fake_root, [target, parent])
+            with_gap = seed_knowledge_aliases(fake_root, [target, parent, gap])
+        self.assertEqual(
+            without_gap[0].provenance_object_ids,
+            with_gap[0].provenance_object_ids,
+        )
+        self.assertNotIn(gap.object_id, with_gap[0].provenance_object_ids)

@@ -246,6 +246,10 @@ def plan_b5_reindex_impact_from_records(
     for object_id in selected_ids:
         key = after[object_id]["object_type"]
         type_counts[key] = type_counts.get(key, 0) + 1
+    before_live_points = sum(
+        1 for previous in before.values() if previous.get("qdrant_point_exists")
+    )
+    b5_eligible_total = sum(1 for item in after.values() if embedding_eligible(item))
     return {
         "planner": "b5-selective-static-v1",
         "model_calls": 0,
@@ -259,6 +263,18 @@ def plan_b5_reindex_impact_from_records(
             "eligibility_lost_remove": len(eligibility_lost),
             "unchanged_noneligible": len(unchanged_noneligible),
             "stale_live_points_remove": len(stale_point_ids),
+        },
+        "closures": {
+            "before_live_points": before_live_points,
+            "reuse_plus_changed_plus_stale": len(unchanged_eligible) + len(changed_eligible) + len(stale_point_ids),
+            "b5_eligible_total": b5_eligible_total,
+            "reuse_plus_changed_plus_gained_plus_new": (
+                len(unchanged_eligible) + len(changed_eligible) + len(eligibility_gained) + len(new_eligible)
+            ),
+            "sql_before_plus_inserts_minus_deletes": (
+                len(before) + len(set(after) - set(before)) - len(set(before) - set(after))
+            ),
+            "sql_after": len(after),
         },
         "sql": {
             "insert_object_ids": sorted(set(after) - set(before)),
@@ -276,6 +292,96 @@ def plan_b5_reindex_impact_from_records(
             "receipt_missing_unchanged_reuse_ids": receipt_missing_reused,
             "selected_by_object_type": dict(sorted(type_counts.items())),
         },
+    }
+
+
+B5_CHURN_CAUSE_ORDER = [
+    "new_source_gap_coverage",
+    "new_generic_file_coverage",
+    "intentional_structural_rechunk",
+    "eligibility_gain",
+    "structural_container_policy_change",
+    "full_source_parent_effect",
+    "title_only_change",
+    "text_boundary_change",
+    "object_identity_churn",
+    "other_explained",
+]
+
+
+def _text_sha256(text: str) -> str:
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def _whitespace_only_change(before_text: str | None, after_text: str) -> bool:
+    return before_text is not None and before_text.split() == after_text.split() and before_text != after_text
+
+
+def classify_b5_reembed_cause(
+    previous: dict[str, Any] | None, current: dict[str, Any]
+) -> str:
+    """Exactly one deterministic primary cause for one re-embedding object.
+
+    ``previous`` must carry the B4 title/text (for new objects it is None);
+    the classification never depends on benchmark results.
+    """
+    metadata = current.get("metadata") or {}
+    if previous is None:
+        if metadata.get("b5_source_gap"):
+            if metadata.get("region_kind") == "generic_text_block":
+                return "new_generic_file_coverage"
+            return "new_source_gap_coverage"
+        if metadata.get("derived_from"):
+            return "intentional_structural_rechunk"
+        return "other_explained"
+    old_eligible = bool(previous.get("effective_embedding_eligibility"))
+    if not old_eligible and embedding_eligible(current):
+        return "eligibility_gain"
+    before_title = previous.get("title")
+    before_text = previous.get("text")
+    if before_title != current.get("title") and before_text == current.get("text"):
+        return "title_only_change"
+    if before_text != current.get("text"):
+        if before_text is not None and current["text"].startswith(before_text) and current["object_type"] in {"source_file", "python_script"}:
+            return "full_source_parent_effect"
+        if current["object_type"].endswith("_chunk") or metadata.get("derived_from"):
+            return "intentional_structural_rechunk"
+        return "text_boundary_change"
+    return "other_explained"
+
+
+def b5_churn_attribution(
+    before: list[dict[str, Any]], after: list[dict[str, Any]], reembed_ids: list[str],
+) -> dict[str, Any]:
+    """Offline primary-cause attribution; every re-embed ID gets exactly one cause."""
+    before_map = {item["object_id"]: item for item in before}
+    after_map = {item["object_id"]: item for item in after}
+    causes: dict[str, list[str]] = {cause: [] for cause in B5_CHURN_CAUSE_ORDER}
+    for object_id in reembed_ids:
+        cause = classify_b5_reembed_cause(before_map.get(object_id), after_map[object_id])
+        if cause not in causes:
+            raise RuntimeError(f"unknown B5 churn cause: {cause}")
+        causes[cause].append(object_id)
+    by_type: dict[tuple[str, str], int] = {}
+    for cause, ids in causes.items():
+        for object_id in ids:
+            key = (cause, after_map[object_id]["object_type"])
+            by_type[key] = by_type.get(key, 0) + 1
+    return {
+        "model_calls": 0,
+        "network_calls": 0,
+        "reembed_total": len(reembed_ids),
+        "unknown_or_unclassified": len(causes["other_explained"]),
+        "cause_counts": {
+            cause: len(ids) for cause, ids in causes.items() if ids
+        },
+        "cause_by_object_type": {
+            f"{cause}|{object_type}": count
+            for (cause, object_type), count in sorted(by_type.items())
+        },
+        "cause_object_ids": causes,
+        "attributed_total": sum(len(ids) for ids in causes.values()),
+        "closure": f"cause_total == reembed_total: {sum(len(ids) for ids in causes.values())} == {len(reembed_ids)}",
     }
 
 
@@ -315,34 +421,70 @@ def _b5_validate_reuse_locators(
         )
 
 
-def apply_b5_selective_index(project_root: Path, *, run: bool = False) -> dict[str, Any]:
-    """Selectively deploy the B5 normalized corpus over the live B4 index.
+def _b5_validate_selected_inputs(objects_map: dict[str, dict[str, Any]], selected_ids: list[str]) -> None:
+    """Every re-embed candidate must itself satisfy the shared embedding contract."""
+    invalid = [
+        object_id for object_id in selected_ids
+        if not embedding_eligible(objects_map[object_id])
+        or not str(objects_map[object_id].get("title", "")).strip()
+        or not str(objects_map[object_id].get("text", "")).strip()
+    ]
+    if invalid:
+        raise RuntimeError(
+            f"B5 selective apply selected policy-invalid embedding inputs ({len(invalid)}); "
+            f"first={invalid[:3]}"
+        )
 
-    Unchanged live points are preserved byte-for-byte and never re-embedded;
-    cache-receipt absence alone never triggers re-embedding.  Only genuinely
-    changed/new embedding inputs receive new dense and sparse vectors, and
-    stale points are removed after the new points are verified.
+
+def _b5_preflight(
+    root: Path,
+) -> tuple[dict[str, Any], IndexIdentity, VertexSettings, Storage, Path, list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
+    """Deterministic read-only preflight; must fail before any live mutation.
+
+    Returns (report, identity, vertex_settings, storage, normalized,
+    snapshot, objects, plan). No Vertex embedding is invoked here.
     """
-    root = project_root.resolve()
+    # 1. Settings and index identity are constructed exactly once.
+    vertex_settings = VertexSettings.from_env()
+    identity = IndexIdentity.from_settings(vertex_settings, root)
+    # 2. Static sparse factory receipt must match the active identity before
+    #    anything reads or writes the live index.
+    if sparse_receipt(sparse_settings(root)) != identity.sparse:
+        raise RuntimeError("B5 selective apply sparse factory receipt mismatch")
     storage = Storage()
-    identity = IndexIdentity.from_settings(VertexSettings.from_env(), root)
     _b4_require_identity(storage, identity)
 
     snapshot_path = root / "data" / "tmp" / "b5" / "b4_point_snapshot.jsonl"
     normalized = normalized_dir(root)
+    # 3. Normalized artifacts must be fully readable and internally consistent.
     snapshot = load_jsonl(snapshot_path)
     objects = load_jsonl(normalized / "knowledge_objects.jsonl")
+    ingestion_report = json.loads((normalized / "ingestion_report.json").read_text(encoding="utf-8"))
+    if int(ingestion_report["object_count"]) != len(objects):
+        raise RuntimeError("B5 selective apply ingestion report object count mismatch")
+    json.loads((root / "data" / "manifests" / "source_manifest.json").read_text(encoding="utf-8"))
     plan = plan_b5_reindex_impact_from_records(snapshot, objects, batch_size=B5_EMBEDDING_BATCH_SIZE)
+    closures = plan["closures"]
+    if closures["before_live_points"] != closures["reuse_plus_changed_plus_stale"]:
+        raise RuntimeError("B5 selective apply B4 point closure mismatch")
+    if closures["b5_eligible_total"] != closures["reuse_plus_changed_plus_gained_plus_new"]:
+        raise RuntimeError("B5 selective apply B5 eligible closure mismatch")
+    if closures["sql_before_plus_inserts_minus_deletes"] != closures["sql_after"]:
+        raise RuntimeError("B5 selective apply SQL object closure mismatch")
+
+    reuse_ids = plan["vectors"]["reuse_object_ids"]
+    reembed_ids = plan["vectors"]["reembed_object_ids"]
+    _b5_validate_reuse_locators(snapshot, objects, reuse_ids)
+    after_map = {item["object_id"]: item for item in objects}
+    _b5_validate_selected_inputs(after_map, reembed_ids)
+    if len(reembed_ids) != len(set(reembed_ids)):
+        raise RuntimeError("B5 selective apply duplicate re-embed object IDs")
 
     with storage.connect() as connection:
         sql_objects = int(
             connection.execute("SELECT count(1) FROM knowledge_objects").fetchone()[0]
         )
     qdrant_points = int(storage.qdrant.count(storage.settings.collection_name, exact=True).count)
-
-    reuse_ids = plan["vectors"]["reuse_object_ids"]
-    reembed_ids = plan["vectors"]["reembed_object_ids"]
-    stale_point_ids = plan["vectors"]["stale_point_ids"]
     expected_final_points = len(reuse_ids) + len(reembed_ids)
     if sql_objects not in {B5_EXPECTED_B4_SQL_OBJECTS, len(objects)}:
         raise RuntimeError(
@@ -355,10 +497,8 @@ def apply_b5_selective_index(project_root: Path, *, run: bool = False) -> dict[s
             f"actual={qdrant_points}, expected within "
             f"[{B5_EXPECTED_B4_QDRANT_POINTS}, {B5_EXPECTED_B4_QDRANT_POINTS + len(reembed_ids)}]"
         )
-    _b5_validate_reuse_locators(snapshot, objects, reuse_ids)
 
     report = {
-        "dry_run": not run,
         "planner": plan["planner"],
         "normalized_dir": normalized.name,
         "b4_snapshot_path": str(snapshot_path),
@@ -370,20 +510,48 @@ def apply_b5_selective_index(project_root: Path, *, run: bool = False) -> dict[s
         "vectors": {
             "reuse_object_ids": len(reuse_ids),
             "reembed_object_ids": len(reembed_ids),
-            "stale_point_ids": len(stale_point_ids),
+            "stale_point_ids": len(plan["vectors"]["stale_point_ids"]),
             "dense_documents": plan["vectors"]["dense_documents"],
             "sparse_documents": plan["vectors"]["sparse_documents"],
             "batches": plan["vectors"]["batches"],
             "receipt_missing_unchanged_reused": plan["vectors"]["receipt_missing_unchanged_reused"],
+            "selected_by_object_type": plan["vectors"]["selected_by_object_type"],
         },
         "expected_final_points": expected_final_points,
         "sql_inserts": len(plan["sql"]["insert_object_ids"]),
         "sql_deletes": len(plan["sql"]["delete_object_ids"]),
         "sql_upserts": len(plan["sql"]["upsert_object_ids"]),
     }
+    return report, identity, vertex_settings, storage, normalized, snapshot, objects, plan
+
+
+def apply_b5_selective_index(project_root: Path, *, run: bool = False) -> dict[str, Any]:
+    """Selectively deploy the B5 normalized corpus over the live B4 index.
+
+    Unchanged live points are preserved byte-for-byte and never re-embedded;
+    cache-receipt absence alone never triggers re-embedding.  Only genuinely
+    changed/new embedding inputs receive new dense and sparse vectors, and
+    stale points are removed after the new points are verified.
+    """
+    root = project_root.resolve()
+    (
+        report,
+        identity,
+        vertex_settings,
+        storage,
+        normalized,
+        snapshot,
+        objects,
+        plan,
+    ) = _b5_preflight(root)
+    report["dry_run"] = True
     if not run:
         return report
 
+    reuse_ids = plan["vectors"]["reuse_object_ids"]
+    reembed_ids = plan["vectors"]["reembed_object_ids"]
+    stale_point_ids = plan["vectors"]["stale_point_ids"]
+    expected_final_points = report["expected_final_points"]
     after = {item["object_id"]: item for item in objects}
     with storage.connect() as connection:
         connection.execute(
