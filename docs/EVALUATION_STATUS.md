@@ -34,7 +34,7 @@ When records conflict, use the single section explicitly marked **Current author
 
 ## Generalization Phase status
 
-- Bootstrap tasks A1–A3: `PASS`; A3.1 hardening: `PASS`; B1: `PASS`; B2: `PASS`; B3: `PASS`; B4: `PASS`; B5: `PASS` (B5.1R2 static closeout and B5.2 live migration/T1/post-B5 T2 completed); Phase-B T3 full 80-question dev retrieval-only original mechanical gate: `FAIL`; T3.1 evaluator semantics correction: `PASS`; T3.1R1 product-language calibration: `PASS`; T3.1R2 calibration-binding/rank-stage closeout: `PASS`; T3.1R3 frozen fused-rank provenance & dynamic dev-completeness closeout: `PASS`; T3.2 critical-evidence mechanism investigation: `PASS`; T3.3A first implementation attempt: `SUPERSEDED`; T3.3A-R1 bounded soft-budget closeout: `INCONCLUSIVE` (boundedness and diagnostics corrected, but local frozen replay does not recover g011/g016 and baseline fidelity is false; authoritative formal Phase-B product T3 remains `FAIL`).
+- Bootstrap tasks A1–A3: `PASS`; A3.1 hardening: `PASS`; B1: `PASS`; B2: `PASS`; B3: `PASS`; B4: `PASS`; B5: `PASS` (B5.1R2 static closeout and B5.2 live migration/T1/post-B5 T2 completed); Phase-B T3 full 80-question dev retrieval-only original mechanical gate: `FAIL`; T3.1 evaluator semantics correction: `PASS`; T3.1R1 product-language calibration: `PASS`; T3.1R2 calibration-binding/rank-stage closeout: `PASS`; T3.1R3 frozen fused-rank provenance & dynamic dev-completeness closeout: `PASS`; T3.2 critical-evidence mechanism investigation: `PASS`; T3.3A first implementation attempt: `SUPERSEDED`; T3.3A-R1 bounded soft-budget closeout: `INCONCLUSIVE`; T3.3A-R2 two-pass backfill closeout: `INCONCLUSIVE` (g016 locally recovered, g011 not recovered; authoritative formal Phase-B product T3 remains `FAIL`).
 - Evaluation modes: `retrieval`, `qa`, and `full` have explicit recorded boundaries.
 - Structured retrieval traces are persisted as atomic JSON and JSONL and can be loaded without rerunning QA.
 - A3 was corrected from a possible full-retrieval interpretation to a stratified low-cost bootstrap baseline. Phase-B T3 (complete 80-question dev retrieval-only) was performed on `2026-08-16`; no full 120-question retrieval/E2E run was performed.
@@ -213,6 +213,15 @@ This is a low-cost English Gold reference, not a complete generalization, comple
 - Ranking metrics unchanged (Recall@5/10/20, MRR, combined candidate recall, intent accuracy).
 - Authoritative formal Phase-B product T3 remains `FAIL`; deterministic post-fix formal-gate projection is `INCONCLUSIVE`; T3.3B gate-blocker status is `INCONCLUSIVE`.
 
+### Phase-B T3.3A-R2 two-pass backfill closeout
+
+- T3.3A-R2 artifact: `evaluation/baselines/manifests/phase_b_t3_3a_r2_two_pass_backfill_closeout_v1.json`.
+- Production change: `src/panda_agent/retrieval.py` now uses a two-pass selector: Pass 1 applies hard budgets only; Pass 2 backfills Pass-1 budget-rejected required-source candidates in canonical rank order using only unused total evidence capacity. `retrieval_trace.py` persists `backfill_admissions`.
+- Frozen selector-local replay: PRE final/critical evidence recall `0.9591836735`; POST `0.9693877551020`; g016 locally recovered; g011 **not recovered** because Pass 1 already filled the full evidence limit with lower-ranked candidates, leaving no unused capacity for backfill.
+- Replay baseline fidelity remains false (`0.9591836735` vs authoritative `0.9795918367`); therefore deterministic post-fix formal-gate projection is `INCONCLUSIVE`.
+- Diversity: hard-pass evidence fully preserved; final mean unique sources `2.94`, median `3`; 0 cases lose source diversity, 2 gain; backfill events `133`, unique affected cases `36`, mean per affected case `3.69`, max `8`.
+- Authoritative formal Phase-B product T3 remains `FAIL`; T3.3B gate-blocker status remains `INCONCLUSIVE`.
+
 ### Current small E2E baseline
 
 - Run: `generalization-a3-stratified-qa-20260813`.
@@ -240,7 +249,7 @@ The retrieval and QA measurements are unchanged. A3.1 corrects only metric repre
 
 ## Next authorized roadmap task
 
-`T3.3A-R1 remains active: bounded soft-budget corrected but local replay does not recover g011/g016; next step requires either a broader bounded selector invariant or an explicitly authorized formal re-evaluation — do not implement C1`
+`T3.3A-R2 remains active: two-pass backfill is implemented and locally recovers g016 but not g011; the unresolved g011 mechanism needs either a replacement-aware generic selector invariant or explicit re-ownership to Phase E coverage-aware decomposition — do not implement C1`
 
 ---
 

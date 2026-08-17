@@ -42,6 +42,7 @@ class RetrievalTrace(StrictModel):
     final_evidence: list[dict[str, Any]] = Field(default_factory=list)
     excluded_candidates: list[dict[str, Any]] = Field(default_factory=list)
     soft_budget_admissions: list[dict[str, Any]] = Field(default_factory=list)
+    backfill_admissions: list[dict[str, Any]] = Field(default_factory=list)
 
 
 def _identity_from_manifest(manifest: dict[str, Any]) -> dict[str, Any]:
@@ -146,6 +147,7 @@ def build_retrieval_trace(
         final_evidence=final_evidence,
         excluded_candidates=list(diagnostics.get("excluded") or []),
         soft_budget_admissions=list(diagnostics.get("soft_budget_admissions") or []),
+        backfill_admissions=list(diagnostics.get("backfill_admissions") or []),
     )
 
 

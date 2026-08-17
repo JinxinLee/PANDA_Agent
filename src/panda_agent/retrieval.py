@@ -107,22 +107,18 @@ def select_final_evidence(
     final_evidence_limit: int,
     mandatory_symbol_ids: set[str],
 ) -> tuple[list[Evidence], list[dict[str, Any]], list[dict[str, Any]]]:
-    """Select final evidence under hard budgets plus one bounded soft correction.
+    """Select final evidence with a two-pass hard-budget plus required backfill.
 
-    The generic invariant is: a high-ranked (within the final evidence limit),
-    distinct candidate from a required source type may be admitted when a hard
-    source/type budget would otherwise reject it, subject to an explicit bounded
-    allowance of at most ONE soft overflow per source and at most ONE per source
-    type in a single selection pass.  If both caps are violated, both allowances
-    must be available and both are consumed.  Duplicate-locator protection,
-    mandatory exact-symbol guarantees, and the total evidence limit are
-    preserved.
+    Pass 1 applies the original hard budgets (duplicate locator, per-source cap,
+    per-type cap, mandatory exact-symbol exemption) without any soft admission.
+    Pass 2 runs only when the hard pass left unused evidence capacity; it backfills
+    Pass-1 budget-rejected candidates in original canonical order if they are
+    high-ranked, distinct, and from a required source type.  Backfill count is
+    naturally bounded by ``final_evidence_limit - hard_pass_selected_count``.
     """
     selected: list[Evidence] = []
     per_source: dict[str, int] = defaultdict(int)
     per_type: dict[str, int] = defaultdict(int)
-    soft_source_used: dict[str, int] = defaultdict(int)
-    soft_type_used: dict[str, int] = defaultdict(int)
     max_per_source = max(2, math.ceil(final_evidence_limit / 3))
     type_caps = {
         key: max(1, math.ceil(value * final_evidence_limit))
@@ -130,8 +126,10 @@ def select_final_evidence(
     }
     required_types = set(plan.required_source_types)
     seen_locator: set[str] = set()
-    excluded: list[dict[str, Any]] = []
-    soft_budget_admissions: list[dict[str, Any]] = []
+    hard_rejected: list[dict[str, Any]] = []
+    duplicate_rejected: list[dict[str, Any]] = []
+
+    # Pass 1: hard-budget allocation only.
     for rank, object_id in enumerate(ordered, 1):
         item = payloads[object_id]
         raw_locator = item.get("locator") or {}
@@ -140,7 +138,7 @@ def select_final_evidence(
             locator = f"object:{object_id}"
         source_type = _source_type_of(item)
         if locator in seen_locator:
-            excluded.append({"object_id": object_id, "reason": "duplicate_locator"})
+            duplicate_rejected.append({"object_id": object_id, "reason": "duplicate_locator"})
             continue
         source_violated = (
             object_id not in mandatory_symbol_ids
@@ -151,55 +149,71 @@ def select_final_evidence(
             and per_type[source_type] >= type_caps.get(source_type, final_evidence_limit)
         )
         if source_violated or type_violated:
-            eligible = (
-                rank <= final_evidence_limit
-                and source_type in required_types
-                and len(selected) < final_evidence_limit
+            reason = (
+                "source_diversity_cap_and_source_budget_cap"
+                if source_violated and type_violated
+                else "source_diversity_cap"
+                if source_violated
+                else "source_budget_cap"
             )
-            if eligible:
-                if source_violated and soft_source_used[item["source_id"]] >= 1:
-                    eligible = False
-                if type_violated and soft_type_used[source_type] >= 1:
-                    eligible = False
-            if eligible:
-                if source_violated:
-                    soft_source_used[item["source_id"]] += 1
-                if type_violated:
-                    soft_type_used[source_type] += 1
-                soft_budget_admissions.append(
-                    {
-                        "object_id": object_id,
-                        "canonical_rank": rank,
-                        "original_block_reason": (
-                            "source_diversity_cap_and_source_budget_cap"
-                            if source_violated and type_violated
-                            else "source_diversity_cap"
-                            if source_violated
-                            else "source_budget_cap"
-                        ),
-                        "source_id": item["source_id"],
-                        "source_type": source_type,
-                        "consumed_source_overflow": source_violated,
-                        "consumed_type_overflow": type_violated,
-                    }
-                )
-            else:
-                reason = (
-                    "source_diversity_cap_and_source_budget_cap"
-                    if source_violated and type_violated
-                    else "source_diversity_cap"
-                    if source_violated
-                    else "source_budget_cap"
-                )
-                excluded.append({"object_id": object_id, "reason": reason})
-                continue
+            hard_rejected.append(
+                {
+                    "object_id": object_id,
+                    "canonical_rank": rank,
+                    "original_block_reason": reason,
+                    "source_id": item["source_id"],
+                    "source_type": source_type,
+                }
+            )
+            continue
         seen_locator.add(locator)
         per_source[item["source_id"]] += 1
         per_type[source_type] += 1
         selected.append(_evidence(item, scores[object_id], channels[object_id]))
         if len(selected) >= final_evidence_limit:
             break
-    return selected, excluded, soft_budget_admissions
+
+    # Pass 2: required-source backfill using only unused total evidence capacity.
+    backfill_admissions: list[dict[str, Any]] = []
+    if len(selected) < final_evidence_limit:
+        backfill_admitted_ids: set[str] = set()
+        for rejected in hard_rejected:
+            if len(selected) >= final_evidence_limit:
+                break
+            object_id = rejected["object_id"]
+            if rejected["canonical_rank"] > final_evidence_limit:
+                continue
+            if rejected["source_type"] not in required_types:
+                continue
+            item = payloads[object_id]
+            raw_locator = item.get("locator") or {}
+            locator = json.dumps(raw_locator, sort_keys=True)
+            if not any(value not in (None, "", [], {}) for value in raw_locator.values()):
+                locator = f"object:{object_id}"
+            if locator in seen_locator:
+                continue
+            seen_locator.add(locator)
+            per_source[item["source_id"]] += 1
+            per_type[rejected["source_type"]] += 1
+            selected.append(_evidence(item, scores[object_id], channels[object_id]))
+            backfill_admitted_ids.add(object_id)
+            backfill_admissions.append(
+                {
+                    "object_id": object_id,
+                    "canonical_rank": rejected["canonical_rank"],
+                    "original_block_reason": rejected["original_block_reason"],
+                    "source_id": item["source_id"],
+                    "source_type": rejected["source_type"],
+                    "admission_phase": "required_source_backfill",
+                }
+            )
+
+    final_excluded = duplicate_rejected + [
+        rejected
+        for rejected in hard_rejected
+        if rejected["object_id"] not in {admission["object_id"] for admission in backfill_admissions}
+    ]
+    return selected, final_excluded, backfill_admissions
 
 
 class Retriever:
@@ -655,7 +669,7 @@ class Retriever:
         # object unreachable even when it was retrieved.
         ordered=list(dict.fromkeys([*hinted_first,*required_first,*symbol_first,*ordered]))
         ranked_object_ids = ordered[:30]
-        selected, excluded, soft_budget_admissions = select_final_evidence(
+        selected, excluded, backfill_admissions = select_final_evidence(
             ordered,
             payloads,
             scores,
@@ -671,6 +685,6 @@ class Retriever:
             "reranked_object_ids": reranked,
             "ranked_object_ids": ranked_object_ids,
             "excluded": excluded,
-            "soft_budget_admissions": soft_budget_admissions,
+            "backfill_admissions": backfill_admissions,
             "evidence": [item.model_dump(mode="json") for item in selected],
         }
