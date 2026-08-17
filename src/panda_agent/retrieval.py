@@ -35,6 +35,23 @@ ANALYSIS_SCHEMA = {
 }
 
 
+def _analysis_schema(*, intent_is_fixed: bool) -> dict[str, Any]:
+    """Return the smallest response contract for the remaining analyzer work."""
+    properties = dict(ANALYSIS_SCHEMA["properties"])
+    required = list(ANALYSIS_SCHEMA["required"])
+    if intent_is_fixed:
+        properties.pop("intent")
+        required.remove("intent")
+    return {**ANALYSIS_SCHEMA, "properties": properties, "required": required}
+
+
+def _has_explicit_repository_reference(question: str, repository: str) -> bool:
+    """Match a manifest repository ID without accepting a larger containing token."""
+    parts = [re.escape(part) for part in repository.split("_")]
+    pattern = rf"(?<![a-z0-9]){'[\\s_-]?'.join(parts)}(?![a-z0-9])"
+    return re.search(pattern, question, re.IGNORECASE) is not None
+
+
 @dataclass
 class DeterministicQueryParse:
     """Known query facts extracted without semantic inference."""
@@ -46,36 +63,65 @@ class DeterministicQueryParse:
     version_repositories: list[str] = field(default_factory=list)
     symbols: list[str] = field(default_factory=list)
     concepts: list[str] = field(default_factory=list)
-    concept_scopes: dict[str, str] = field(default_factory=dict)
+    fixed_concept_scopes: dict[str, str] = field(default_factory=dict)
+    fallback_concept_scopes: dict[str, str] = field(default_factory=dict)
     resolved_aliases: dict[str, str] = field(default_factory=dict)
     premise_corrections: list[str] = field(default_factory=list)
     paper_page_hints: dict[str, list[int]] = field(default_factory=dict)
     matched_expansion_rules: list[str] = field(default_factory=list)
     provenance: dict[str, list[dict[str, str]]] = field(default_factory=dict)
 
-    def record(self, field_name: str, *, source: str, rule: str, value: str | None = None) -> None:
+    def record(
+        self, field_name: str, *, source: str, rule: str, value: str | None = None,
+        ownership: str | None = None,
+    ) -> None:
         entry = {"source": source, "rule": rule}
         if value is not None:
             entry["value"] = value
+        if ownership is not None:
+            entry["ownership"] = ownership
         self.provenance.setdefault(field_name, []).append(entry)
 
-    def analyzer_context(self, unresolved_fields: list[str]) -> dict[str, Any]:
+    def analyzer_context(self, semantic_output_fields: list[str]) -> dict[str, Any]:
+        fixed: dict[str, Any] = {}
+        if self.intent is not None:
+            fixed["intent"] = self.intent
+        if self.fixed_concept_scopes:
+            fixed["concept_scopes"] = self.fixed_concept_scopes
+        for field_name, value in {
+            "requested_versions": self.requested_versions,
+            "explicit_sha_tokens": self.explicit_shas,
+            "resolved_aliases": self.resolved_aliases,
+            "premise_corrections": self.premise_corrections,
+            "matched_expansion_rules": self.matched_expansion_rules,
+            "paper_page_hints": self.paper_page_hints,
+        }.items():
+            if value:
+                fixed[field_name] = value
+        known_partial = {
+            "target_repositories": self.target_repositories,
+            "symbols": self.symbols,
+            "concepts": self.concepts,
+        }
+        known_partial = {key: value for key, value in known_partial.items() if value}
+        unresolved_semantics: dict[str, str] = {}
+        for field_name in semantic_output_fields:
+            if field_name in known_partial:
+                unresolved_semantics[field_name] = "augment_known_partial"
+            elif field_name == "requested_versions" and self.requested_versions:
+                unresolved_semantics[field_name] = "augment_fixed_keys"
+            elif field_name == "concept_scopes" and self.fixed_concept_scopes:
+                unresolved_semantics[field_name] = "resolve_remaining_scope_keys_after_fixed_constraints"
+            elif field_name == "concept_scopes" and self.fallback_concept_scopes:
+                unresolved_semantics[field_name] = "resolve_remaining_scope_keys_with_fallback"
+            else:
+                unresolved_semantics[field_name] = "resolve"
         return {
-            "fixed": {"intent": self.intent} if self.intent is not None else {},
-            "known": {
-                "target_repositories": self.target_repositories,
-                "requested_versions": self.requested_versions,
-                "explicit_sha_tokens": self.explicit_shas,
-                "symbols": self.symbols,
-                "concepts": self.concepts,
-                "concept_scopes": self.concept_scopes,
-                "resolved_aliases": self.resolved_aliases,
-                "premise_corrections": self.premise_corrections,
-                "matched_expansion_rules": self.matched_expansion_rules,
-                "paper_page_hints": self.paper_page_hints,
-            },
-            "fixed_fields_must_be_preserved": ["intent"] if self.intent is not None else [],
-            "unresolved_fields": unresolved_fields,
+            "fixed": fixed,
+            "fallback": {"concept_scopes": self.fallback_concept_scopes},
+            "known_partial": known_partial,
+            "semantic_output_fields": semantic_output_fields,
+            "unresolved_semantics": unresolved_semantics,
             "provenance": self.provenance,
         }
 
@@ -287,44 +333,43 @@ class Retriever:
         """Collect only existing raw-query and reviewed knowledge before analysis."""
         parsed = DeterministicQueryParse()
         lowered = question.casefold()
-        normalized = re.sub(r"[^a-z0-9]", "", lowered)
 
         routed_intent = route_high_confidence_intent(
             question, getattr(self.policies, "intent_routes", None)
         )
         if routed_intent is not None:
             parsed.intent = routed_intent
-            parsed.record("intent", source="deterministic_route", rule=routed_intent, value=routed_intent)
+            parsed.record("intent", source="deterministic_route", rule=routed_intent, value=routed_intent, ownership="fixed")
 
         named_repositories = [
             repo for repo in self.fixed_versions
-            if repo.replace("_", "") in normalized
+            if _has_explicit_repository_reference(question, repo)
         ]
         for repo in named_repositories:
             parsed.target_repositories.append(repo)
-            parsed.record("target_repositories", source="explicit_query_reference", rule="manifest_repo_id", value=repo)
+            parsed.record("target_repositories", source="explicit_query_reference", rule="manifest_repo_id", value=repo, ownership="known_partial")
 
         if any(term in lowered for term in ("event_poca", "poca_vertex_file", "restgas_profile")):
             parsed.target_repositories.append("restgas_determination")
-            parsed.record("target_repositories", source="legacy_query_rule", rule="restgas_event_poca_terms", value="restgas_determination")
+            parsed.record("target_repositories", source="legacy_query_rule", rule="restgas_event_poca_terms", value="restgas_determination", ownership="known_partial")
 
         if "back propagation" in lowered or "回传" in question or "反向传播" in question:
             value = "lmd_to_ip" if "lmd" in lowered else "target_track_to_event_poca"
-            parsed.concept_scopes["back_propagation"] = value
-            parsed.record("concept_scopes", source="deterministic_scope", rule="back_propagation", value=value)
+            parsed.fallback_concept_scopes["back_propagation"] = value
+            parsed.record("concept_scopes", source="deterministic_scope", rule="back_propagation", value=value, ownership="fallback")
         if "efficiency" in lowered or "效率" in question:
             value = "longitudinal_profile" if any(term in lowered for term in ("restgas", "profile", "pvz")) else "angular_acceptance"
-            parsed.concept_scopes["efficiency"] = value
-            parsed.record("concept_scopes", source="deterministic_scope", rule="efficiency", value=value)
+            parsed.fallback_concept_scopes["efficiency"] = value
+            parsed.record("concept_scopes", source="deterministic_scope", rule="efficiency", value=value, ownership="fallback")
         if "angular acceptance" in lowered and "longitudinal efficiency" in lowered:
-            parsed.concept_scopes["efficiency"] = "angular_acceptance_vs_longitudinal_profile"
-            parsed.record("concept_scopes", source="deterministic_scope", rule="acceptance_efficiency_comparison", value="angular_acceptance_vs_longitudinal_profile")
+            parsed.fixed_concept_scopes["efficiency"] = "angular_acceptance_vs_longitudinal_profile"
+            parsed.record("concept_scopes", source="deterministic_scope", rule="acceptance_efficiency_comparison", value="angular_acceptance_vs_longitudinal_profile", ownership="fixed")
         if "point-like acceptance" in lowered and "restgas effective acceptance" in lowered:
-            parsed.concept_scopes["acceptance"] = "point_like_vs_restgas_effective"
-            parsed.record("concept_scopes", source="deterministic_scope", rule="point_like_restgas_comparison", value="point_like_vs_restgas_effective")
+            parsed.fixed_concept_scopes["acceptance"] = "point_like_vs_restgas_effective"
+            parsed.record("concept_scopes", source="deterministic_scope", rule="point_like_restgas_comparison", value="point_like_vs_restgas_effective", ownership="fixed")
         if "lmd-to-ip" in lowered and "event-poca" in lowered:
-            parsed.concept_scopes["back_propagation"] = "lmd_to_ip_vs_target_track_to_event_poca"
-            parsed.record("concept_scopes", source="deterministic_scope", rule="back_propagation_comparison", value="lmd_to_ip_vs_target_track_to_event_poca")
+            parsed.fixed_concept_scopes["back_propagation"] = "lmd_to_ip_vs_target_track_to_event_poca"
+            parsed.record("concept_scopes", source="deterministic_scope", rule="back_propagation_comparison", value="lmd_to_ip_vs_target_track_to_event_poca", ownership="fixed")
 
         try:
             with self.storage.connect() as connection:
@@ -334,10 +379,10 @@ class Retriever:
             for alias_text, target_object_id, payload in alias_rows:
                 if alias_text.casefold() in lowered:
                     parsed.resolved_aliases[alias_text] = target_object_id
-                    parsed.record("resolved_aliases", source="accepted_alias", rule="review_status=accepted", value=alias_text)
+                    parsed.record("resolved_aliases", source="accepted_alias", rule="review_status=accepted", value=alias_text, ownership="fixed")
                     if payload.get("correction_message"):
                         parsed.premise_corrections.append(payload["correction_message"])
-                        parsed.record("premise_corrections", source="accepted_alias", rule="correction_message", value=alias_text)
+                        parsed.record("premise_corrections", source="accepted_alias", rule="correction_message", value=alias_text, ownership="fixed")
         except Exception:
             pass
 
@@ -349,14 +394,14 @@ class Retriever:
                 parsed.target_repositories.extend(repo for repo in rule.repositories if repo in self.fixed_versions)
                 for source_id, pages in rule.paper_page_hints.items():
                     parsed.paper_page_hints.setdefault(source_id, []).extend(pages)
-                parsed.record("query_expansions", source="reviewed_expansion", rule=rule.rule_id)
+                parsed.record("query_expansions", source="reviewed_expansion", rule=rule.rule_id, ownership="fixed_reviewed_rule")
 
         parsed.explicit_shas = re.findall(r"(?i)\b[0-9a-f]{7,40}\b", question)
         parsed.version_repositories = named_repositories
         if parsed.explicit_shas:
             for repo in named_repositories:
                 parsed.requested_versions[repo] = parsed.explicit_shas[0]
-                parsed.record("requested_versions", source="explicit_version_token", rule="commit_sha", value=repo)
+                parsed.record("requested_versions", source="explicit_version_token", rule="commit_sha", value=repo, ownership="fixed")
 
         parsed.target_repositories = list(dict.fromkeys(parsed.target_repositories))
         parsed.symbols = list(dict.fromkeys(parsed.symbols))
@@ -374,25 +419,30 @@ class Retriever:
         if len(question) > 20_000:
             raise ValueError("question exceeds the 20,000 character safety limit")
         parsed = self._preparse(question)
-        unresolved_fields = [
+        semantic_output_fields = [
             field_name for field_name in ANALYSIS_SCHEMA["required"]
             if field_name != "intent" or parsed.intent is None
         ]
+        response_schema = _analysis_schema(intent_is_fixed=parsed.intent is not None)
         result = self.vertex.generate_json(
             json.dumps(
                 {
                     "task": "analyze_retrieval_question",
                     "untrusted_question": question,
-                    "deterministic_context": parsed.analyzer_context(unresolved_fields),
+                    "deterministic_context": parsed.analyzer_context(semantic_output_fields),
                 },
                 ensure_ascii=False,
             ),
-            ANALYSIS_SCHEMA,
+            response_schema,
             system_instruction=QUERY_ANALYZER_SYSTEM_PROMPT,
         )
         intent = parsed.intent or result["intent"]
         policy = self.policies.intents[intent]
-        scopes = {**result["concept_scopes"], **parsed.concept_scopes}
+        scopes = {
+            **parsed.fallback_concept_scopes,
+            **result["concept_scopes"],
+            **parsed.fixed_concept_scopes,
+        }
         lowered = question.casefold()
         targets = [
             *parsed.target_repositories,
@@ -463,9 +513,9 @@ class Retriever:
             resolved_aliases=parsed.resolved_aliases, premise_corrections=parsed.premise_corrections,
             paper_page_hints={key: list(dict.fromkeys(value)) for key, value in paper_page_hints.items()},
             analysis_diagnostics={
-                "deterministic_parse": parsed.analyzer_context(unresolved_fields),
+                "deterministic_parse": parsed.analyzer_context(semantic_output_fields),
                 "analyzer_llm_called": True,
-                "analyzer_unresolved_fields": unresolved_fields,
+                "analyzer_unresolved_fields": semantic_output_fields,
                 "analyzer_final": {
                     "intent": intent,
                     "target_repositories": targets,

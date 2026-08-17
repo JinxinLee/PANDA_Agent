@@ -1,0 +1,170 @@
+{
+  "manifest_id": "phase_c_c1_r1_fixed_fallback_ownership_closeout_v1",
+  "phase": "C",
+  "task": "C1-R1",
+  "source_c1_commit": "ae567aeeccd9cbc835e0f2803c3641358c1dce3b",
+  "source_state": {
+    "working_tree": "dirty",
+    "r1_changed_paths": [
+      "src/panda_agent/retrieval.py",
+      "tests/unit/test_retrieval.py"
+    ],
+    "original_c1_artifact": "evaluation/baselines/manifests/phase_c_c1_deterministic_preparse_v1.json",
+    "original_c1_artifact_modified": false
+  },
+  "review_outcome": {
+    "initial_c1_implementation": "INCONCLUSIVE after review",
+    "c1_r1_result": "PASS",
+    "c1_overall_result": "PASS",
+    "reviewed_defects": [
+      "Weak setdefault scope fallbacks became fixed overrides.",
+      "Fixed intent remained required in the analyzer response schema.",
+      "Diagnostics conflated partial, fixed, and unresolved ownership.",
+      "Normalized repository substring matching over-triggered larger tokens."
+    ]
+  },
+  "ownership_contract": {
+    "precedence": [
+      "fixed",
+      "LLM",
+      "fallback"
+    ],
+    "states": {
+      "fixed": "Deterministic values or reviewed rule matches are authoritative and are not overwritten by analyzer output; semantic contributions from matched reviewed rules remain known-partial and additive.",
+      "known_partial": "Deterministic values are known but may be augmented by LLM output.",
+      "unresolved": "No deterministic value is available; the field remains LLM-owned.",
+      "fallback": "A deterministic fallback is used only when fixed and LLM values are absent.",
+      "mixed": "A field may contain fixed keys, known-partial values, and unresolved semantics; each entry retains ownership provenance."
+    },
+    "field_contract": {
+      "intent": "Fixed when a high-confidence route matches; otherwise unresolved and LLM-owned.",
+      "target_repositories": "Known-partial deterministic references are augmented by valid LLM repositories; unresolved repository meaning remains LLM-owned.",
+      "requested_versions": "Explicit repository+SHA values are fixed for matching repositories; unresolved version values remain LLM-owned.",
+      "symbols": "Symbols contributed by a matched reviewed expansion are known_partial additive values; the reviewed rule match is fixed_reviewed_rule and LLM output may augment symbols.",
+      "concepts": "Concepts contributed by a matched reviewed expansion are known_partial additive values; the reviewed rule match is fixed_reviewed_rule and LLM output may augment concepts.",
+      "concept_scopes": "Fallback scopes are merged first, LLM scopes next, and fixed deterministic scopes last so fixed > LLM > fallback holds.",
+      "resolved_aliases": "Accepted aliases and correction messages are fixed with provenance.",
+      "reviewed_expansions": "Reviewed expansion rule identifiers/matches are fixed_reviewed_rule; symbols, concepts, and repositories contributed by a matched rule are known_partial additive inputs.",
+      "version_conflicts": "Plan conflicts are evaluated after the fixed/LLM version merge and remain observable."
+    }
+  },
+  "intent_schema_contract": {
+    "fixed_intent": {
+      "response_schema_properties_contains_intent": false,
+      "response_schema_required_contains_intent": false,
+      "ownership": "fixed"
+    },
+    "ambiguous_intent": {
+      "response_schema_properties_contains_intent": true,
+      "response_schema_required_contains_intent": true,
+      "ownership": "unresolved/LLM"
+    }
+  },
+  "diagnostic_contract": {
+    "deterministic_context_states": [
+      "fixed",
+      "fallback",
+      "known_partial",
+      "unresolved_semantics",
+      "provenance"
+    ],
+    "ownership_provenance_shape": "Each provenance entry records source and rule, optional value, and ownership.",
+    "merge_precedence": "fixed > LLM > fallback",
+    "diagnostic_location": "RetrievalPlan.analysis_diagnostics"
+  },
+  "repository_boundary_contract": {
+    "matcher": "_has_explicit_repository_reference",
+    "accepts": [
+      "PandaRoot"
+    ],
+    "rejects": [
+      "PandaRootedConfiguration"
+    ],
+    "reason": "Repository matching uses token boundaries and does not accept a larger containing token."
+  },
+  "preserved_contracts": [
+    "Explicit repository+SHA handling",
+    "Accepted aliases and reviewed-expansion rule matching",
+    "Additive reviewed-expansion semantic contributions",
+    "Prompt-security untrusted-question handling",
+    "Version-conflict detection",
+    "RetrievalPlan compatibility semantics"
+  ],
+  "verification": {
+    "targeted_unittest": {
+      "commands": [
+        "C:\\Users\\Jinxin.DESKTOP-H6SSTQH\\Desktop\\Agent_learn\\.venv\\Scripts\\python.exe -m unittest discover -s tests/unit -p \"test_retrieval.py\" -v",
+        "C:\\Users\\Jinxin.DESKTOP-H6SSTQH\\Desktop\\Agent_learn\\.venv\\Scripts\\python.exe -m unittest discover -s tests/unit -p \"test_prompt_security.py\" -v"
+      ],
+      "status": "PASS",
+      "passed": 22,
+      "failed": 0,
+      "invocations": [
+        {
+          "command": "C:\\Users\\Jinxin.DESKTOP-H6SSTQH\\Desktop\\Agent_learn\\.venv\\Scripts\\python.exe -m unittest discover -s tests/unit -p \"test_retrieval.py\" -v",
+          "status": "PASS",
+          "passed": 19,
+          "failed": 0
+        },
+        {
+          "command": "C:\\Users\\Jinxin.DESKTOP-H6SSTQH\\Desktop\\Agent_learn\\.venv\\Scripts\\python.exe -m unittest discover -s tests/unit -p \"test_prompt_security.py\" -v",
+          "status": "PASS",
+          "passed": 3,
+          "failed": 0
+        }
+      ]
+    },
+    "compileall": {
+      "command": "C:\\Users\\Jinxin.DESKTOP-H6SSTQH\\Desktop\\Agent_learn\\.venv\\Scripts\\python.exe -m compileall -q src/panda_agent/retrieval.py tests/unit/test_retrieval.py tests/unit/test_prompt_security.py",
+      "status": "PASS",
+      "files": 3
+    },
+    "diff_check": {
+      "command": "git diff --check",
+      "status": "PASS"
+    },
+    "live_smoke": {
+      "status": "NOT_RUN",
+      "calls": 0,
+      "tokens": 0
+    }
+  },
+  "cost": {
+    "external_calls": 0,
+    "model_calls": 0,
+    "token_usage": 0,
+    "retriever_calls": 0,
+    "reranker_calls": 0,
+    "embedding_calls": 0,
+    "qa_calls": 0,
+    "verifier_calls": 0,
+    "judge_calls": 0,
+    "sql_writes": 0,
+    "qdrant_writes": 0,
+    "index_mutation": 0,
+    "benchmark_runs": 0
+  },
+  "index_impact": {
+    "retrieval_execution": false,
+    "ranking_changed": false,
+    "reranker_changed": false,
+    "selector_changed": false,
+    "embedding_changed": false,
+    "sql_changed": false,
+    "qdrant_changed": false,
+    "index_mutation": false,
+    "qa_changed": false,
+    "reindex": false,
+    "reembedding": false
+  },
+  "known_deferred_items": [
+    "C2 is next and NOT_STARTED.",
+    "C3-C8 remain NOT_STARTED.",
+    "Phase D and Phase E remain NOT_STARTED.",
+    "The Phase-E downstream contract remains design-only; no E0 or Phase-E implementation is created.",
+    "Novel retrieval generalization remains UNMEASURED because no trustworthy human-authored novel dataset exists.",
+    "The original C1 artifact remains byte-unchanged and is not overwritten."
+  ],
+  "benchmark_metrics": "not_collected",
+  "result": "PASS"
+}

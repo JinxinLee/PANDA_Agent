@@ -34,11 +34,11 @@ When records conflict, use the single section explicitly marked **Current author
 
 ## Generalization Phase status
 
-- Bootstrap tasks A1–A3: `PASS`; A3.1 hardening: `PASS`; B1: `PASS`; B2: `PASS`; B3: `PASS`; B4: `PASS`; B5: `PASS` (B5.1R2 static closeout and B5.2 live migration/T1/post-B5 T2 completed); Phase-B T3 full 80-question dev retrieval-only original mechanical gate: `FAIL`; T3.1 evaluator semantics correction: `PASS`; T3.1R1 product-language calibration: `PASS`; T3.1R2 calibration-binding/rank-stage closeout: `PASS`; T3.1R3 frozen fused-rank provenance & dynamic dev-completeness closeout: `PASS`; T3.2 critical-evidence mechanism investigation: `PASS`; T3.3A first implementation attempt: `SUPERSEDED`; T3.3A-R1 bounded soft-budget closeout: `INCONCLUSIVE`; T3.3A-R2 two-pass backfill closeout: `INCONCLUSIVE` (g016 locally recovered, g011 not recovered; heuristic iteration stopped; authoritative formal Phase-B product T3 remains `FAIL`); C1 deterministic pre-parse: `PASS`.
+- Bootstrap tasks A1–A3: `PASS`; A3.1 hardening: `PASS`; B1: `PASS`; B2: `PASS`; B3: `PASS`; B4: `PASS`; B5: `PASS` (B5.1R2 static closeout and B5.2 live migration/T1/post-B5 T2 completed); Phase-B T3 full 80-question dev retrieval-only original mechanical gate: `FAIL`; T3.1 evaluator semantics correction: `PASS`; T3.1R1 product-language calibration: `PASS`; T3.1R2 calibration-binding/rank-stage closeout: `PASS`; T3.1R3 frozen fused-rank provenance & dynamic dev-completeness closeout: `PASS`; T3.2 critical-evidence mechanism investigation: `PASS`; T3.3A first implementation attempt: `SUPERSEDED`; T3.3A-R1 bounded soft-budget closeout: `INCONCLUSIVE`; T3.3A-R2 two-pass backfill closeout: `INCONCLUSIVE` (g016 locally recovered, g011 not recovered; heuristic iteration stopped; authoritative formal Phase-B product T3 remains `FAIL`); C1 initial implementation: `INCONCLUSIVE` after review; C1-R1: `PASS`; C1 overall: `PASS`.
 - Evaluation modes: `retrieval`, `qa`, and `full` have explicit recorded boundaries.
 - Structured retrieval traces are persisted as atomic JSON and JSONL and can be loaded without rerunning QA.
 - A3 was corrected from a possible full-retrieval interpretation to a stratified low-cost bootstrap baseline. Phase-B T3 (complete 80-question dev retrieval-only) was performed on `2026-08-16`; no full 120-question retrieval/E2E run was performed.
-- Phase C is started by C1 (`PASS`); C2 is next and `NOT_STARTED`, while C3-C8 remain `NOT_STARTED`. The Phase-B T3.3A-R2/g011 blocker remains deferred to generic Phase-E coverage-aware architecture; optional T3.3B ranking debt is deferred. Phase D and Phase E remain `NOT_STARTED`.
+- Phase C is started by C1; its initial implementation was `INCONCLUSIVE` after review, C1-R1 is `PASS`, and C1 overall is `PASS`. C2 is next and `NOT_STARTED`, while C3-C8 remain `NOT_STARTED`. The Phase-B T3.3A-R2/g011 blocker remains deferred to generic Phase-E coverage-aware architecture; optional T3.3B ranking debt is deferred. Phase D and Phase E remain `NOT_STARTED`.
 
 ## Historical full E2E reference
 
@@ -226,12 +226,21 @@ This is a low-cost English Gold reference, not a complete generalization, comple
 
 - Artifact: `evaluation/baselines/manifests/phase_c_c1_deterministic_preparse_v1.json`.
 - Source commit: `22cde4a761c28b0e6b5ae7cba185395e233aeba3`; the worktree also contains the four verified C1 code/test changes owned by Terra.
-- Result: `PASS`. `DeterministicQueryParse` and per-field provenance run before `generate_json`; `deterministic_context` carries fixed intent, known deterministic fields, unresolved fields, and provenance. A fixed high-confidence intent is authoritative. Existing repository/SHA/version, scope, accepted-alias, and reviewed-expansion signals are pre-parsed; unresolved free-form semantic fields remain LLM-owned. Diagnostics are exposed in `RetrievalPlan.analysis_diagnostics`.
+- Initial implementation direction: `INCONCLUSIVE` after review. `DeterministicQueryParse` and per-field provenance run before `generate_json`; `deterministic_context` carries fixed intent, known deterministic fields, unresolved fields, and provenance. A fixed high-confidence intent is authoritative. Existing repository/SHA/version, scope, accepted-alias, and reviewed-expansion signals are pre-parsed; unresolved free-form semantic fields remain LLM-owned. Diagnostics are exposed in `RetrievalPlan.analysis_diagnostics`.
 - Measured boundary: C1 reuses these existing deterministic signals; it does not claim a new free-form path/`Class::method` parser or a new benchmark-specific route.
 - Analyzer-call policy: no valid current query skips the analyzer because unresolved free-form semantic fields remain; each valid current query makes one analyzer call. This is the observed C1 behavior, not a claim of analyzer-call reduction.
 - Verification: `18` targeted unittest tests passed (`15` retrieval and `3` prompt-security); `compileall` and `git diff --check` passed. Live analyzer smoke was not run. Calls and tokens were `0`; ranking, reranking, index, storage, embedding, QA, and selector behavior were not changed.
 - Scope boundary: this is a T0 implementation check only; no benchmark metrics were collected and no live service was called.
 - Novel retrieval generalization: `UNMEASURED`; no trustworthy human-authored novel dataset exists.
+
+### Phase-C C1-R1 fixed/fallback ownership closeout
+
+- Artifact: `evaluation/baselines/manifests/phase_c_c1_r1_fixed_fallback_ownership_closeout_v1.json`.
+- Source C1 commit before R1: `ae567aeeccd9cbc835e0f2803c3641358c1dce3b`; the dirty R1 candidate changes only `src/panda_agent/retrieval.py` and `tests/unit/test_retrieval.py`.
+- Reviewed defects: weak `setdefault` scope fallbacks became fixed overrides; fixed intent remained required in the analyzer schema; diagnostics conflated partial/fixed/unresolved ownership; normalized repository substring matching over-triggered larger tokens.
+- Final contract: fixed > LLM > fallback; fixed intent is removed from actual response-schema properties/required, while ambiguous intent remains required and LLM-owned. Fixed, fallback, known-partial, unresolved, and mixed states align with per-entry provenance ownership. The repository boundary matcher accepts explicit `PandaRoot` and rejects `PandaRootedConfiguration`.
+- Preserved behavior: explicit repository+SHA, aliases/expansions, prompt security, version conflicts, and plan semantics remain intact. C1-R1 is `PASS`; C1 overall is `PASS`.
+- Verification and cost: `22` targeted tests passed (`19` retrieval and `3` prompt-security); exact discover commands, three-file `compileall`, and `git diff --check` passed. External/model/token, Retriever, reranker, embedding, QA, SQL, Qdrant, index, benchmark, and live-smoke counts are all `0` or not run.
 
 ### Current small E2E baseline
 
@@ -260,7 +269,7 @@ The retrieval and QA measurements are unchanged. A3.1 corrects only metric repre
 
 ## Next authorized roadmap task
 
-`C2 — Narrow and auditable query-analyzer contract` is next; C1 is `PASS`, C3-C8 and Phase D/E remain `NOT_STARTED`. T3.3A-R2 remains `INCONCLUSIVE`/partial, g016 is locally recovered but g011 is not, heuristic iteration is stopped, and the unresolved g011 mechanism is deferred to generic Phase-E coverage-aware architecture; optional T3.3B ranking debt is deferred.
+`C2 — Narrow and auditable query-analyzer contract` is next; C1 initial implementation was `INCONCLUSIVE` after review, C1-R1 is `PASS`, and C1 overall is `PASS`; C3-C8 and Phase D/E remain `NOT_STARTED`. T3.3A-R2 remains `INCONCLUSIVE`/partial, g016 is locally recovered but g011 is not, heuristic iteration is stopped, and the unresolved g011 mechanism is deferred to generic Phase-E coverage-aware architecture; optional T3.3B ranking debt is deferred.
 
 ---
 

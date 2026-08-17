@@ -26,6 +26,7 @@ class FakeVertex:
 class CapturingVertex(FakeVertex):
     def __init__(self, result=None):
         self.calls = []
+        self.schemas = []
         self.result = result or {
             "intent": "api", "target_repositories": ["pandaroot"],
             "concepts": [], "symbols": [], "requested_versions": {}, "concept_scopes": {},
@@ -35,6 +36,7 @@ class CapturingVertex(FakeVertex):
         import json
 
         self.calls.append(json.loads(prompt))
+        self.schemas.append(schema)
         return self.result
 
 
@@ -124,11 +126,16 @@ class RetrievalTests(unittest.TestCase):
         retriever = self.make_retriever()
         retriever.vertex = CapturingVertex()
 
-        plan = retriever.analyze("Explain PndTargetGenerator in this codebase.")
+        plan = retriever.analyze("Describe this pipeline.")
 
         context = retriever.vertex.calls[0]["deterministic_context"]
         self.assertEqual(context["fixed"], {})
-        self.assertIn("intent", context["unresolved_fields"])
+        self.assertIn("intent", context["unresolved_semantics"])
+        self.assertIn("intent", retriever.vertex.schemas[0]["required"])
+        self.assertNotIn("target_repositories", context["known_partial"])
+        self.assertNotIn("concepts", context["known_partial"])
+        self.assertEqual(context["unresolved_semantics"]["target_repositories"], "resolve")
+        self.assertEqual(context["unresolved_semantics"]["concepts"], "resolve")
         self.assertEqual(plan.intent, "api")
         self.assertEqual(plan.analysis_diagnostics["analyzer_llm_called"], True)
 
@@ -143,8 +150,13 @@ class RetrievalTests(unittest.TestCase):
         plan = retriever.analyze("Use PandaRoot commit deadbeef for PndTargetGenerator")
 
         context = retriever.vertex.calls[0]["deterministic_context"]
-        self.assertIn("pandaroot", context["known"]["target_repositories"])
-        self.assertEqual(context["known"]["requested_versions"]["pandaroot"], "deadbeef")
+        self.assertIn("pandaroot", context["known_partial"]["target_repositories"])
+        self.assertEqual(context["fixed"]["requested_versions"]["pandaroot"], "deadbeef")
+        self.assertNotIn("requested_versions", context["known_partial"])
+        self.assertEqual(context["unresolved_semantics"]["target_repositories"], "augment_known_partial")
+        self.assertEqual(context["unresolved_semantics"]["requested_versions"], "augment_fixed_keys")
+        self.assertEqual(context["provenance"]["target_repositories"][0]["ownership"], "known_partial")
+        self.assertEqual(context["provenance"]["requested_versions"][0]["ownership"], "fixed")
         self.assertEqual(plan.analysis_diagnostics["analyzer_final"]["requested_versions"]["pandaroot"], "deadbeef")
         self.assertTrue(plan.version_conflicts)
 
@@ -235,9 +247,16 @@ class RetrievalTests(unittest.TestCase):
 
         parsed = plan.analysis_diagnostics["deterministic_parse"]
         self.assertEqual(plan.resolved_aliases, {"POCA": "object.event_poca"})
-        self.assertIn("master_reconstruction_workflow", parsed["known"]["matched_expansion_rules"])
+        self.assertIn("master_reconstruction_workflow", parsed["fixed"]["matched_expansion_rules"])
+        self.assertNotIn("matched_expansion_rules", parsed["known_partial"])
+        self.assertIn("tools/MasterTasks/PndMasterRecoTask.cxx", parsed["known_partial"]["symbols"])
+        self.assertIn("PandaRoot running sequence", parsed["known_partial"]["concepts"])
+        self.assertEqual(parsed["fixed"]["resolved_aliases"], {"POCA": "object.event_poca"})
+        self.assertNotIn("resolved_aliases", parsed["known_partial"])
         self.assertEqual(parsed["provenance"]["resolved_aliases"][0]["source"], "accepted_alias")
         self.assertEqual(parsed["provenance"]["query_expansions"][0]["source"], "reviewed_expansion")
+        self.assertEqual(parsed["provenance"]["resolved_aliases"][0]["ownership"], "fixed")
+        self.assertEqual(parsed["provenance"]["query_expansions"][0]["ownership"], "fixed_reviewed_rule")
 
     def test_near_match_does_not_route_intent_deterministically(self):
         retriever = self.make_retriever()
@@ -246,8 +265,87 @@ class RetrievalTests(unittest.TestCase):
         retriever.analyze("Where could PndTargetGenerator perhaps be mentioned?")
 
         context = retriever.vertex.calls[0]["deterministic_context"]
-        self.assertEqual(context["fixed"], {})
-        self.assertIn("intent", context["unresolved_fields"])
+        self.assertNotIn("intent", context["fixed"])
+        self.assertIn("intent", context["unresolved_semantics"])
+
+    def test_scope_fallbacks_yield_to_explicit_llm_scopes(self):
+        cases = [
+            ("Explain back propagation.", "back_propagation", "target_track_to_event_poca"),
+            ("Explain efficiency.", "efficiency", "angular_acceptance"),
+        ]
+        for question, scope_key, fallback_value in cases:
+            with self.subTest(question=question):
+                retriever = self.make_retriever()
+                retriever.vertex = CapturingVertex({
+                    "intent": "algorithm_implementation", "target_repositories": ["pandaroot"],
+                    "concepts": [], "symbols": [], "requested_versions": {},
+                    "concept_scopes": {scope_key: "llm_specific_scope"},
+                })
+
+                plan = retriever.analyze(question)
+
+                self.assertEqual(plan.concept_scopes[scope_key], "llm_specific_scope")
+                context = retriever.vertex.calls[0]["deterministic_context"]
+                self.assertEqual(context["fallback"]["concept_scopes"][scope_key], fallback_value)
+                self.assertNotIn("concept_scopes", context["fixed"])
+                self.assertEqual(
+                    context["unresolved_semantics"]["concept_scopes"],
+                    "resolve_remaining_scope_keys_with_fallback",
+                )
+                self.assertEqual(context["provenance"]["concept_scopes"][0]["ownership"], "fallback")
+
+    def test_fixed_intent_uses_schema_without_intent(self):
+        retriever = self.make_retriever()
+        retriever.vertex = CapturingVertex({
+            "target_repositories": ["pandaroot"], "concepts": [], "symbols": [],
+            "requested_versions": {}, "concept_scopes": {},
+        })
+
+        plan = retriever.analyze("Where is PndTargetGenerator defined?")
+
+        self.assertEqual(plan.intent, "api")
+        self.assertNotIn("intent", retriever.vertex.schemas[0]["properties"])
+        self.assertNotIn("intent", retriever.vertex.schemas[0]["required"])
+        self.assertEqual(
+            retriever.vertex.calls[0]["deterministic_context"]["provenance"]["intent"][0]["ownership"],
+            "fixed",
+        )
+
+    def test_repository_near_match_respects_boundaries(self):
+        retriever = self.make_retriever()
+        retriever.vertex = CapturingVertex({
+            "intent": "api", "target_repositories": ["luminosityfit"],
+            "concepts": [], "symbols": [], "requested_versions": {}, "concept_scopes": {},
+        })
+
+        plan = retriever.analyze("Explain PandaRootedConfiguration.")
+
+        self.assertNotIn("pandaroot", plan.target_repositories)
+
+    def test_fixed_scope_comparisons_override_contradictory_llm_scopes(self):
+        cases = [
+            ("Compare angular acceptance with longitudinal efficiency.", "efficiency", "angular_acceptance_vs_longitudinal_profile"),
+            ("Compare point-like acceptance with restgas effective acceptance.", "acceptance", "point_like_vs_restgas_effective"),
+            ("Compare lmd-to-ip with event-poca.", "back_propagation", "lmd_to_ip_vs_target_track_to_event_poca"),
+        ]
+        for question, scope_key, expected in cases:
+            with self.subTest(question=question):
+                retriever = self.make_retriever()
+                retriever.vertex = CapturingVertex({
+                    "intent": "algorithm_theory", "target_repositories": ["pandaroot"],
+                    "concepts": [], "symbols": [], "requested_versions": {},
+                    "concept_scopes": {scope_key: "contradictory_llm_scope"},
+                })
+
+                plan = retriever.analyze(question)
+
+                self.assertEqual(plan.concept_scopes[scope_key], expected)
+                context = retriever.vertex.calls[0]["deterministic_context"]
+                self.assertEqual(context["fixed"]["concept_scopes"][scope_key], expected)
+                self.assertEqual(
+                    context["unresolved_semantics"]["concept_scopes"],
+                    "resolve_remaining_scope_keys_after_fixed_constraints",
+                )
 
     def test_source_types_are_not_conflated(self):
         self.assertEqual(Retriever._source_type({"source_id":"li_2026","object_type":"thesis_section"}),"paper")

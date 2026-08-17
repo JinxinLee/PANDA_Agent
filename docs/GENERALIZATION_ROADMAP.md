@@ -154,11 +154,11 @@ Statuses describe implementation state; acceptance targets remain planned until 
 
 ## Phase C — Retrieval generalization
 
-Phase C is started by C1. C2 is the next authorized task; C3-C8 remain `NOT_STARTED`.
+Phase C is started by C1. The initial C1 implementation was `INCONCLUSIVE` after review; C1-R1 is `PASS`, making C1 overall `PASS`. C2 is the next authorized task; C3-C8 remain `NOT_STARTED`.
 
 ### C1 — Deterministic parsing before expensive LLM analysis
 
-- **Status:** PASS
+- **Status:** PASS (C1-R1 `PASS`; C1 overall `PASS`; initial implementation `INCONCLUSIVE` after review)
 - **Problem:** The LLM analyzer may infer syntax that is already deterministically recognizable and then be overridden by routing rules, adding cost and variance.
 - **Goal:** Extract unambiguous identifiers, `Class::method`, paths, repositories, refs/versions, and genuinely generic high-confidence intents before LLM analysis.
 - **Why this stage:** With index/chunk correctness established, query understanding is the first retrieval-side generalization layer and can reduce cost without changing downstream architecture.
@@ -173,6 +173,9 @@ Phase C is started by C1. C2 is the next authorized task; C3-C8 remain `NOT_STAR
 - **Measured boundary:** C1 reuses these existing deterministic signals; it does not claim a new free-form path/`Class::method` parser or a new benchmark-specific route.
 - **Analyzer-call policy:** A skip is permitted only when no analyzer-required semantic field remains unresolved. Every valid current query still makes exactly one analyzer call because free-form semantic fields remain unresolved; C1 does not claim an analyzer-call reduction for this query contract.
 - **Verification result:** `18` targeted unittest tests passed (`15` retrieval and `3` prompt-security); `compileall` and `git diff --check` passed. Live analyzer smoke was not run. Calls and tokens were `0`; no ranking, index, or selector behavior changed.
+- **Initial implementation review:** The initial direction is retained as a historical implementation record but is classified `INCONCLUSIVE` after review because scope fallbacks could override analyzer output, fixed intent remained in the analyzer response contract, diagnostics conflated fixed/partial/unresolved ownership, and normalized repository matching could over-trigger larger tokens.
+- **C1-R1 closeout:** `PASS`, artifact `evaluation/baselines/manifests/phase_c_c1_r1_fixed_fallback_ownership_closeout_v1.json`. The final precedence is fixed > LLM > fallback; fixed intent is removed from the actual response schema while ambiguous intent remains required and LLM-owned; diagnostics distinguish fixed, fallback, known-partial, unresolved, and mixed ownership with per-entry provenance. Repository boundary matching accepts explicit `PandaRoot` and rejects `PandaRootedConfiguration`. Explicit repository+SHA, aliases/expansions, prompt security, version conflicts, and plan semantics remain preserved.
+- **C1-R1 verification:** `22` targeted unittest tests passed (`19` retrieval and `3` prompt-security); the exact two discover commands, three-file `compileall`, and `git diff --check` passed. No live smoke, external/model/token, Retriever, reranker, embedding, QA, SQL, Qdrant, index, or benchmark operation was run.
 - **Failure handling:** Narrow ambiguous parsing and defer to the analyzer; never force a low-confidence deterministic guess. Stop after C1.
 
 ### C2 — Narrow and auditable query-analyzer contract
