@@ -150,13 +150,15 @@ Statuses describe implementation state; acceptance targets remain planned until 
 - **T3.1R3 frozen fused-rank provenance and dynamic dev-completeness closeout:** persisted `fusion_scores` dict key order is no longer treated as authoritative fused rank; only frozen `RetrievalTrace.fused_candidates` provides fused rank, and unavailable ranks are `N/A`. Corrected authoritative fused ranks: `g011.e1` fused rank `27`, `g016.e2` fused rank `22`; reliable reranker/final-ranked positions are unchanged (`g011` 9/9, `g016` 10/11). Full official dev completeness is now data-derived from exact approved dev ID sets; the hard-coded `80` check is removed and a synthetic 5-case test proves dynamic completeness. Formal 59-case metrics and gate remain unchanged (`FAIL` due to critical evidence coverage `< 1.0`).
 - **T3.2 critical-evidence mechanism investigation:** g011 is caused by final-selection `source_diversity_cap` (`R3_source_diversity_cap`): the critical object is final ranked rank 9 but four same-source objects are already selected, so it is excluded before the evidence budget fills. g016 is caused by post-rerank `symbol_first` promotion (`R2_post_rerank_deterministic_ordering`): `object.24323bf526f94cd30b58ab41` is promoted from reranker rank 14 to final rank 3, displacing the Gold-critical object from reranker rank 10 to final rank 11. Cross-case scan: 40/49 applicable cases change reranker/final top-10 composition; 8 Gold-relevant promotions, 2 demotions; 5 critical promotions, 1 critical demotion; 1 R3-like case; selector preserves all critical evidence in 47/49. Root causes are partially shared (priority/budget mechanisms without coverage awareness) but operate in different stages. No production fix was implemented.
 - **T3.3A-R2 two-pass backfill closeout:** replaced greedy bounded overflow with a two-pass selector: Pass 1 hard budgets only; Pass 2 backfills Pass-1 required-source rejected candidates in canonical order using only unused evidence capacity. `RetrievalTrace.backfill_admissions` persists the new diagnostics. Frozen local replay: PRE final/critical `0.9591836735`, POST `0.9693877551`; g016 locally recovered, g011 **not recovered** because Pass 1 filled the full limit with lower-ranked candidates, leaving no unused capacity. Baseline fidelity remains false (`0.9591836735` vs authoritative `0.9795918367`); deterministic post-fix formal-gate projection is `INCONCLUSIVE`; T3.3B status remains `INCONCLUSIVE`.
-- **Remaining B5 work:** none. Phase-B T3.3A-R2 is `INCONCLUSIVE`; the two-pass selector is implemented and preserves hard-pass diversity, but g011 remains unresolved because the hard pass fills all slots before backfill can run. Next step requires either a replacement-aware generic selector invariant or explicit re-ownership to Phase E coverage-aware decomposition; do not implement T3.3B and do not start C1.
+- **Remaining B5 work:** none. Phase-B T3.3A-R2 remains `INCONCLUSIVE`/partial; heuristic iteration is stopped. The unresolved `g011` mechanism is deferred to a generic Phase-E coverage-aware architecture, and optional T3.3B ranking debt is deferred. Phase C may proceed with its generic query-understanding work.
 
 ## Phase C — Retrieval generalization
 
+Phase C is started by C1. C2 is the next authorized task; C3-C8 remain `NOT_STARTED`.
+
 ### C1 — Deterministic parsing before expensive LLM analysis
 
-- **Status:** NOT_STARTED
+- **Status:** PASS
 - **Problem:** The LLM analyzer may infer syntax that is already deterministically recognizable and then be overridden by routing rules, adding cost and variance.
 - **Goal:** Extract unambiguous identifiers, `Class::method`, paths, repositories, refs/versions, and genuinely generic high-confidence intents before LLM analysis.
 - **Why this stage:** With index/chunk correctness established, query understanding is the first retrieval-side generalization layer and can reduce cost without changing downstream architecture.
@@ -167,6 +169,10 @@ Statuses describe implementation state; acceptance targets remain planned until 
 - **Authorized evaluation tier:** T0 parser fixtures, T1/T2 explicit-symbol and intent subsets.
 - **Primary metrics:** Explicit-symbol recall, intent accuracy, analyzer-call reduction, latency, and query-understanding failures.
 - **Acceptance criteria:** Deterministic extraction preserves/improves correctness, avoids unnecessary calls, and adds no benchmark-specific route.
+- **Implementation result:** `DeterministicQueryParse` and per-field provenance are constructed before `generate_json`. The analyzer receives a structured `deterministic_context` containing fixed fields, known deterministic fields, unresolved fields, and provenance. A high-confidence deterministic intent is authoritative; existing repository, SHA/version, scope, accepted-alias, and reviewed-expansion signals are pre-parsed. Unresolved free-form semantic fields remain LLM-owned. Final ownership and provenance are persisted in `RetrievalPlan.analysis_diagnostics`.
+- **Measured boundary:** C1 reuses these existing deterministic signals; it does not claim a new free-form path/`Class::method` parser or a new benchmark-specific route.
+- **Analyzer-call policy:** A skip is permitted only when no analyzer-required semantic field remains unresolved. Every valid current query still makes exactly one analyzer call because free-form semantic fields remain unresolved; C1 does not claim an analyzer-call reduction for this query contract.
+- **Verification result:** `18` targeted unittest tests passed (`15` retrieval and `3` prompt-security); `compileall` and `git diff --check` passed. Live analyzer smoke was not run. Calls and tokens were `0`; no ranking, index, or selector behavior changed.
 - **Failure handling:** Narrow ambiguous parsing and defer to the analyzer; never force a low-confidence deterministic guess. Stop after C1.
 
 ### C2 — Narrow and auditable query-analyzer contract
@@ -274,7 +280,13 @@ Statuses describe implementation state; acceptance targets remain planned until 
 - **Acceptance criteria:** Missing evidence found by the targeted pass survives final selection, while good initial evidence is not unnecessarily displaced.
 - **Failure handling:** Narrow global merge/rerank logic and retain safe initial evidence; do not privilege a case-specific candidate. Stop after C8 and do not run T5.
 
+## Phase C status
+
+C1 is `PASS`; C2 is next and `NOT_STARTED`; C3-C8 are `NOT_STARTED`.
+
 ## Phase D — Concept and entity knowledge abstraction
+
+Phase D remains `NOT_STARTED`.
 
 ### D1 — Concept/entity schema
 
@@ -337,6 +349,19 @@ Statuses describe implementation state; acceptance targets remain planned until 
 - **Failure handling:** Pause the batch and retain prior compatibility behavior; repair the generic mechanism at its owning layer. Stop after each requested D4 batch.
 
 ## Phase E — Answer generalization
+
+Phase E remains `NOT_STARTED`; no E0 is created.
+
+### Phase-E downstream contract
+
+The unresolved Phase-B `g011` mechanism motivates a future coverage-aware downstream contract, but that contract is generic and benchmark-independent. It treats the following production-observable structures as stable interfaces:
+
+- `RetrievalPlan` intent/routing, repository and version scope, `source_budgets`, `required_source_types`, concepts, symbols, concept scopes, accepted-alias corrections, paper hints, and version conflicts;
+- `KnowledgeObject`/`Evidence` identity and provenance: stable `object_id`/`evidence_id`, `source_id`/`source_version_id`, `object_type`, and precise `SourceLocator`/canonical locators;
+- `RelationEdge`/`RelationCandidate` and `WorkflowStep` structure: stable endpoints or candidate targets, predicates, relation provenance, workflow entrypoints, inputs/outputs, and predecessor/successor links;
+- `RetrievalPlan.analysis_diagnostics.deterministic_parse`, including fixed/known/unresolved analyzer context and per-field provenance, plus `analyzer_unresolved_fields`, `analyzer_llm_called`, and `analyzer_final` for audit of remaining semantic ownership.
+
+Phase C and Phase D must not flatten these source/source-type constraints, evidence identifiers/locators, relation edges, workflow structure, or versioned provenance into undifferentiated text. C3/C4 must preserve the semantic-versus-lexical query distinction and its raw-query observability; C5 must perform explicit entity-first work against stable identifiers and accepted aliases; Phase D must preserve stable versioned identities and relation/workflow provenance. This note does not create E0 and does not implement Phase E. E1-E3 remain `NOT_STARTED`.
 
 ### E1 — Dynamic question decomposition
 

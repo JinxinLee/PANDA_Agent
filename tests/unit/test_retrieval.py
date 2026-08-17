@@ -23,6 +23,21 @@ class FakeVertex:
         return {"intent":"algorithm_implementation","target_repositories":["pandaroot"],"concepts":["back propagation"],"symbols":["PndPidCorrelator"],"requested_versions":{},"concept_scopes":{}}
 
 
+class CapturingVertex(FakeVertex):
+    def __init__(self, result=None):
+        self.calls = []
+        self.result = result or {
+            "intent": "api", "target_repositories": ["pandaroot"],
+            "concepts": [], "symbols": [], "requested_versions": {}, "concept_scopes": {},
+        }
+
+    def generate_json(self, prompt, schema, **kwargs):
+        import json
+
+        self.calls.append(json.loads(prompt))
+        return self.result
+
+
 class RetrievalTests(unittest.TestCase):
     def test_init_uses_absolute_local_only_fastembed_runtime_path(self):
         with tempfile.TemporaryDirectory() as model_dir:
@@ -104,6 +119,135 @@ class RetrievalTests(unittest.TestCase):
     def test_explicit_wrong_sha_creates_conflict(self):
         plan=self.make_retriever().analyze("Use PandaRoot commit deadbeef for PndTargetGenerator")
         self.assertTrue(plan.version_conflicts)
+
+    def test_ambiguous_intent_remains_analyzer_owned(self):
+        retriever = self.make_retriever()
+        retriever.vertex = CapturingVertex()
+
+        plan = retriever.analyze("Explain PndTargetGenerator in this codebase.")
+
+        context = retriever.vertex.calls[0]["deterministic_context"]
+        self.assertEqual(context["fixed"], {})
+        self.assertIn("intent", context["unresolved_fields"])
+        self.assertEqual(plan.intent, "api")
+        self.assertEqual(plan.analysis_diagnostics["analyzer_llm_called"], True)
+
+    def test_explicit_repository_and_sha_are_preparsed_before_merge(self):
+        retriever = self.make_retriever()
+        retriever.vertex = CapturingVertex({
+            "intent": "api", "target_repositories": ["luminosityfit"],
+            "concepts": [], "symbols": [],
+            "requested_versions": {"pandaroot": "18c09e9"}, "concept_scopes": {},
+        })
+
+        plan = retriever.analyze("Use PandaRoot commit deadbeef for PndTargetGenerator")
+
+        context = retriever.vertex.calls[0]["deterministic_context"]
+        self.assertIn("pandaroot", context["known"]["target_repositories"])
+        self.assertEqual(context["known"]["requested_versions"]["pandaroot"], "deadbeef")
+        self.assertEqual(plan.analysis_diagnostics["analyzer_final"]["requested_versions"]["pandaroot"], "deadbeef")
+        self.assertTrue(plan.version_conflicts)
+
+    def test_c1_plan_compatibility_for_deterministic_and_llm_owned_intents(self):
+        policies = SimpleNamespace(intents={
+            "api": SimpleNamespace(
+                source_budgets={"code": 0.7, "documentation": 0.3},
+                required_sources=["code"],
+            ),
+            "installation": SimpleNamespace(
+                source_budgets={"documentation": 1.0}, required_sources=["documentation"],
+            ),
+            "data_flow": SimpleNamespace(
+                source_budgets={"workflow": 0.6, "code": 0.4},
+                required_sources=["workflow", "code"],
+            ),
+        })
+        cases = [
+            {
+                "name": "deterministic_api_route",
+                "question": "Where is PndTargetGenerator defined?",
+                "analyzer": {
+                    "intent": "installation", "target_repositories": ["pandaroot"],
+                    "concepts": [], "symbols": [],
+                    "requested_versions": {"pandaroot": "dev"}, "concept_scopes": {},
+                },
+                "intent": "api",
+                "repositories": ["pandaroot", "restgas_determination"],
+                "requested_versions": {"pandaroot": "dev"},
+                "source_budgets": {"code": 0.7, "documentation": 0.3},
+                "required_sources": ["code"],
+            },
+            {
+                "name": "ambiguous_llm_route",
+                "question": "Describe this pipeline.",
+                "analyzer": {
+                    "intent": "data_flow", "target_repositories": ["restgas_determination"],
+                    "concepts": ["pipeline"], "symbols": [],
+                    "requested_versions": {"restgas_determination": "oct19"}, "concept_scopes": {},
+                },
+                "intent": "data_flow",
+                "repositories": ["restgas_determination"],
+                "requested_versions": {"restgas_determination": "oct19"},
+                "source_budgets": {"workflow": 0.6, "code": 0.4},
+                "required_sources": ["workflow", "code"],
+            },
+        ]
+
+        for case in cases:
+            with self.subTest(case=case["name"]):
+                retriever = self.make_retriever()
+                retriever.policies = policies
+                retriever.vertex = CapturingVertex(case["analyzer"])
+
+                plan = retriever.analyze(case["question"])
+
+                self.assertEqual(plan.intent, case["intent"])
+                self.assertEqual(plan.target_repositories, case["repositories"])
+                self.assertEqual(
+                    plan.analysis_diagnostics["analyzer_final"]["requested_versions"],
+                    case["requested_versions"],
+                )
+                self.assertEqual(
+                    plan.resolved_versions,
+                    {repo: TEST_REPOSITORIES[repo] for repo in case["repositories"]},
+                )
+                self.assertEqual(plan.required_source_types, case["required_sources"])
+                self.assertEqual(plan.source_budgets, case["source_budgets"])
+
+    def test_alias_and_reviewed_expansion_have_preparse_provenance(self):
+        class AliasConnection:
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *args):
+                return False
+
+            def execute(self, query):
+                return SimpleNamespace(fetchall=lambda: [
+                    ("POCA", "object.event_poca", {"correction_message": "Use event POCA."}),
+                ])
+
+        retriever = self.make_retriever()
+        retriever.vertex = CapturingVertex()
+        retriever.storage = SimpleNamespace(connect=lambda: AliasConnection())
+
+        plan = retriever.analyze("Explain POCA and the PndMasterRecoTask master reconstruction workflow.")
+
+        parsed = plan.analysis_diagnostics["deterministic_parse"]
+        self.assertEqual(plan.resolved_aliases, {"POCA": "object.event_poca"})
+        self.assertIn("master_reconstruction_workflow", parsed["known"]["matched_expansion_rules"])
+        self.assertEqual(parsed["provenance"]["resolved_aliases"][0]["source"], "accepted_alias")
+        self.assertEqual(parsed["provenance"]["query_expansions"][0]["source"], "reviewed_expansion")
+
+    def test_near_match_does_not_route_intent_deterministically(self):
+        retriever = self.make_retriever()
+        retriever.vertex = CapturingVertex()
+
+        retriever.analyze("Where could PndTargetGenerator perhaps be mentioned?")
+
+        context = retriever.vertex.calls[0]["deterministic_context"]
+        self.assertEqual(context["fixed"], {})
+        self.assertIn("intent", context["unresolved_fields"])
 
     def test_source_types_are_not_conflated(self):
         self.assertEqual(Retriever._source_type({"source_id":"li_2026","object_type":"thesis_section"}),"paper")

@@ -6,6 +6,7 @@ import json
 import math
 import re
 from collections import defaultdict
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
@@ -32,6 +33,51 @@ ANALYSIS_SCHEMA = {
     "required": ["intent", "target_repositories", "concepts", "symbols", "requested_versions", "concept_scopes"],
     "additionalProperties": False,
 }
+
+
+@dataclass
+class DeterministicQueryParse:
+    """Known query facts extracted without semantic inference."""
+
+    intent: str | None = None
+    target_repositories: list[str] = field(default_factory=list)
+    requested_versions: dict[str, str] = field(default_factory=dict)
+    explicit_shas: list[str] = field(default_factory=list)
+    version_repositories: list[str] = field(default_factory=list)
+    symbols: list[str] = field(default_factory=list)
+    concepts: list[str] = field(default_factory=list)
+    concept_scopes: dict[str, str] = field(default_factory=dict)
+    resolved_aliases: dict[str, str] = field(default_factory=dict)
+    premise_corrections: list[str] = field(default_factory=list)
+    paper_page_hints: dict[str, list[int]] = field(default_factory=dict)
+    matched_expansion_rules: list[str] = field(default_factory=list)
+    provenance: dict[str, list[dict[str, str]]] = field(default_factory=dict)
+
+    def record(self, field_name: str, *, source: str, rule: str, value: str | None = None) -> None:
+        entry = {"source": source, "rule": rule}
+        if value is not None:
+            entry["value"] = value
+        self.provenance.setdefault(field_name, []).append(entry)
+
+    def analyzer_context(self, unresolved_fields: list[str]) -> dict[str, Any]:
+        return {
+            "fixed": {"intent": self.intent} if self.intent is not None else {},
+            "known": {
+                "target_repositories": self.target_repositories,
+                "requested_versions": self.requested_versions,
+                "explicit_sha_tokens": self.explicit_shas,
+                "symbols": self.symbols,
+                "concepts": self.concepts,
+                "concept_scopes": self.concept_scopes,
+                "resolved_aliases": self.resolved_aliases,
+                "premise_corrections": self.premise_corrections,
+                "matched_expansion_rules": self.matched_expansion_rules,
+                "paper_page_hints": self.paper_page_hints,
+            },
+            "fixed_fields_must_be_preserved": ["intent"] if self.intent is not None else [],
+            "unresolved_fields": unresolved_fields,
+            "provenance": self.provenance,
+        }
 
 
 def route_high_confidence_intent(
@@ -237,36 +283,49 @@ class Retriever:
             for match in re.finditer(r"\b\d{4}(?:-\d{2}-\d{2})?-dev\b", item["entry_url"], re.IGNORECASE)
         }
 
-    def analyze(self, question: str) -> RetrievalPlan:
-        if not question.strip():
-            raise ValueError("question cannot be empty")
-        if len(question) > 20_000:
-            raise ValueError("question exceeds the 20,000 character safety limit")
-        result = self.vertex.generate_json(
-            json.dumps({"task": "analyze_retrieval_question", "untrusted_question": question}, ensure_ascii=False),
-            ANALYSIS_SCHEMA,
-            system_instruction=QUERY_ANALYZER_SYSTEM_PROMPT,
-        )
+    def _preparse(self, question: str) -> DeterministicQueryParse:
+        """Collect only existing raw-query and reviewed knowledge before analysis."""
+        parsed = DeterministicQueryParse()
+        lowered = question.casefold()
+        normalized = re.sub(r"[^a-z0-9]", "", lowered)
+
         routed_intent = route_high_confidence_intent(
             question, getattr(self.policies, "intent_routes", None)
         )
         if routed_intent is not None:
-            result["intent"] = routed_intent
-        policy = self.policies.intents[result["intent"]]
-        scopes = result["concept_scopes"]
-        lowered = question.lower()
+            parsed.intent = routed_intent
+            parsed.record("intent", source="deterministic_route", rule=routed_intent, value=routed_intent)
+
+        named_repositories = [
+            repo for repo in self.fixed_versions
+            if repo.replace("_", "") in normalized
+        ]
+        for repo in named_repositories:
+            parsed.target_repositories.append(repo)
+            parsed.record("target_repositories", source="explicit_query_reference", rule="manifest_repo_id", value=repo)
+
+        if any(term in lowered for term in ("event_poca", "poca_vertex_file", "restgas_profile")):
+            parsed.target_repositories.append("restgas_determination")
+            parsed.record("target_repositories", source="legacy_query_rule", rule="restgas_event_poca_terms", value="restgas_determination")
+
         if "back propagation" in lowered or "回传" in question or "反向传播" in question:
-            scopes.setdefault("back_propagation", "lmd_to_ip" if "lmd" in lowered else "target_track_to_event_poca")
+            value = "lmd_to_ip" if "lmd" in lowered else "target_track_to_event_poca"
+            parsed.concept_scopes["back_propagation"] = value
+            parsed.record("concept_scopes", source="deterministic_scope", rule="back_propagation", value=value)
         if "efficiency" in lowered or "效率" in question:
-            scopes.setdefault("efficiency", "longitudinal_profile" if any(term in lowered for term in ("restgas", "profile", "pvz")) else "angular_acceptance")
+            value = "longitudinal_profile" if any(term in lowered for term in ("restgas", "profile", "pvz")) else "angular_acceptance"
+            parsed.concept_scopes["efficiency"] = value
+            parsed.record("concept_scopes", source="deterministic_scope", rule="efficiency", value=value)
         if "angular acceptance" in lowered and "longitudinal efficiency" in lowered:
-            scopes["efficiency"]="angular_acceptance_vs_longitudinal_profile"
+            parsed.concept_scopes["efficiency"] = "angular_acceptance_vs_longitudinal_profile"
+            parsed.record("concept_scopes", source="deterministic_scope", rule="acceptance_efficiency_comparison", value="angular_acceptance_vs_longitudinal_profile")
         if "point-like acceptance" in lowered and "restgas effective acceptance" in lowered:
-            scopes["acceptance"]="point_like_vs_restgas_effective"
+            parsed.concept_scopes["acceptance"] = "point_like_vs_restgas_effective"
+            parsed.record("concept_scopes", source="deterministic_scope", rule="point_like_restgas_comparison", value="point_like_vs_restgas_effective")
         if "lmd-to-ip" in lowered and "event-poca" in lowered:
-            scopes["back_propagation"]="lmd_to_ip_vs_target_track_to_event_poca"
-        aliases: dict[str, str] = {}
-        corrections: list[str] = []
+            parsed.concept_scopes["back_propagation"] = "lmd_to_ip_vs_target_track_to_event_poca"
+            parsed.record("concept_scopes", source="deterministic_scope", rule="back_propagation_comparison", value="lmd_to_ip_vs_target_track_to_event_poca")
+
         try:
             with self.storage.connect() as connection:
                 alias_rows = connection.execute(
@@ -274,31 +333,83 @@ class Retriever:
                 ).fetchall()
             for alias_text, target_object_id, payload in alias_rows:
                 if alias_text.casefold() in lowered:
-                    aliases[alias_text] = target_object_id
+                    parsed.resolved_aliases[alias_text] = target_object_id
+                    parsed.record("resolved_aliases", source="accepted_alias", rule="review_status=accepted", value=alias_text)
                     if payload.get("correction_message"):
-                        corrections.append(payload["correction_message"])
+                        parsed.premise_corrections.append(payload["correction_message"])
+                        parsed.record("premise_corrections", source="accepted_alias", rule="correction_message", value=alias_text)
         except Exception:
             pass
-        targets = [repo for repo in result["target_repositories"] if repo in self.fixed_versions]
-        if any(term in lowered for term in ("event_poca", "poca_vertex_file", "restgas_profile")):
-            targets = list(dict.fromkeys(["restgas_determination", *targets]))
-        if not targets:
-            targets=list(self.fixed_versions)
-        expanded_symbols = list(result["symbols"])
-        expanded_concepts = list(result["concepts"])
-        paper_page_hints: dict[str, list[int]] = {}
-        expansion_rules = getattr(getattr(self, "query_expansions", None), "rules", [])
-        for rule in expansion_rules:
+
+        for rule in getattr(getattr(self, "query_expansions", None), "rules", []):
             if any(trigger.casefold() in lowered for trigger in rule.triggers):
-                expanded_symbols.extend(rule.symbols)
-                expanded_concepts.extend(rule.concepts)
-                targets.extend(repo for repo in rule.repositories if repo in self.fixed_versions)
+                parsed.matched_expansion_rules.append(rule.rule_id)
+                parsed.symbols.extend(rule.symbols)
+                parsed.concepts.extend(rule.concepts)
+                parsed.target_repositories.extend(repo for repo in rule.repositories if repo in self.fixed_versions)
                 for source_id, pages in rule.paper_page_hints.items():
-                    paper_page_hints.setdefault(source_id, []).extend(pages)
+                    parsed.paper_page_hints.setdefault(source_id, []).extend(pages)
+                parsed.record("query_expansions", source="reviewed_expansion", rule=rule.rule_id)
+
+        parsed.explicit_shas = re.findall(r"(?i)\b[0-9a-f]{7,40}\b", question)
+        parsed.version_repositories = named_repositories
+        if parsed.explicit_shas:
+            for repo in named_repositories:
+                parsed.requested_versions[repo] = parsed.explicit_shas[0]
+                parsed.record("requested_versions", source="explicit_version_token", rule="commit_sha", value=repo)
+
+        parsed.target_repositories = list(dict.fromkeys(parsed.target_repositories))
+        parsed.symbols = list(dict.fromkeys(parsed.symbols))
+        parsed.concepts = list(dict.fromkeys(parsed.concepts))
+        parsed.premise_corrections = list(dict.fromkeys(parsed.premise_corrections))
+        parsed.paper_page_hints = {
+            source_id: list(dict.fromkeys(pages))
+            for source_id, pages in parsed.paper_page_hints.items()
+        }
+        return parsed
+
+    def analyze(self, question: str) -> RetrievalPlan:
+        if not question.strip():
+            raise ValueError("question cannot be empty")
+        if len(question) > 20_000:
+            raise ValueError("question exceeds the 20,000 character safety limit")
+        parsed = self._preparse(question)
+        unresolved_fields = [
+            field_name for field_name in ANALYSIS_SCHEMA["required"]
+            if field_name != "intent" or parsed.intent is None
+        ]
+        result = self.vertex.generate_json(
+            json.dumps(
+                {
+                    "task": "analyze_retrieval_question",
+                    "untrusted_question": question,
+                    "deterministic_context": parsed.analyzer_context(unresolved_fields),
+                },
+                ensure_ascii=False,
+            ),
+            ANALYSIS_SCHEMA,
+            system_instruction=QUERY_ANALYZER_SYSTEM_PROMPT,
+        )
+        intent = parsed.intent or result["intent"]
+        policy = self.policies.intents[intent]
+        scopes = {**result["concept_scopes"], **parsed.concept_scopes}
+        lowered = question.casefold()
+        targets = [
+            *parsed.target_repositories,
+            *(repo for repo in result["target_repositories"] if repo in self.fixed_versions),
+        ]
+        if not targets:
+            targets = list(self.fixed_versions)
+        expanded_symbols = [*result["symbols"], *parsed.symbols]
+        expanded_concepts = [*result["concepts"], *parsed.concepts]
+        paper_page_hints = {
+            source_id: list(pages)
+            for source_id, pages in parsed.paper_page_hints.items()
+        }
         # Mixed implementation questions need room for both paper and source
         # evidence.  Keep the first reviewed anchor set contributed by each
         # source; theory-only questions may retain multiple complementary sets.
-        if result["intent"] == "algorithm_implementation":
+        if intent == "algorithm_implementation":
             remaining = 3
             limited_hints: dict[str, list[int]] = {}
             for source_id, pages in paper_page_hints.items():
@@ -309,7 +420,7 @@ class Retriever:
                     limited_hints[source_id] = selected
                     remaining -= len(selected)
             paper_page_hints = limited_hints
-        if result["intent"] == "algorithm_theory" and any(
+        if intent == "algorithm_theory" and any(
             term in lowered for term in ("feed back", "feedback", "reconstructed restgas profile")
         ) and "li_2026" in paper_page_hints:
             paper_page_hints["li_2026"] = [141, 149, 151]
@@ -317,16 +428,14 @@ class Retriever:
         # their small evidence budget on thesis anchors.  Papers remain part of
         # the plan for the two intents whose gold policy explicitly requires
         # theoretical/implementation literature.
-        if result["intent"] not in {"algorithm_theory", "algorithm_implementation"}:
+        if intent not in {"algorithm_theory", "algorithm_implementation"}:
             paper_page_hints = {}
         targets = list(dict.fromkeys(targets))
         conflicts = []
-        requested_versions=dict(result.get("requested_versions", {}))
-        explicit_shas=re.findall(r"(?i)\b[0-9a-f]{7,40}\b",question)
-        if explicit_shas:
-            named=[repo for repo in self.fixed_versions if repo.replace("_","") in re.sub(r"[^a-z0-9]","",lowered)]
-            for repo in named or targets:
-                requested_versions.setdefault(repo,explicit_shas[0])
+        requested_versions = {**result.get("requested_versions", {}), **parsed.requested_versions}
+        if parsed.explicit_shas:
+            for repo in parsed.version_repositories or targets:
+                requested_versions[repo] = parsed.explicit_shas[0]
         for repo, requested in requested_versions.items():
             requested_lower = requested.lower()
             is_document_version = any(
@@ -344,15 +453,28 @@ class Retriever:
             if locked and requested not in {locked, locked[:7], self.fixed_refs[repo]}:
                 conflicts.append(f"{repo}: requested {requested}, locked {locked}")
         return RetrievalPlan(
-            intent=result["intent"], routing_method="rule" if routed_intent else "llm", target_repositories=targets,
+            intent=intent, routing_method="rule" if parsed.intent else "llm", target_repositories=targets,
             resolved_versions={repo: self.fixed_versions[repo] for repo in targets},
             version_conflicts=conflicts,
             concepts=list(dict.fromkeys(expanded_concepts)),
             symbols=list(dict.fromkeys(expanded_symbols)),
             concept_scopes=scopes, source_budgets=policy.source_budgets,
             required_source_types=policy.required_sources,
-            resolved_aliases=aliases, premise_corrections=corrections,
+            resolved_aliases=parsed.resolved_aliases, premise_corrections=parsed.premise_corrections,
             paper_page_hints={key: list(dict.fromkeys(value)) for key, value in paper_page_hints.items()},
+            analysis_diagnostics={
+                "deterministic_parse": parsed.analyzer_context(unresolved_fields),
+                "analyzer_llm_called": True,
+                "analyzer_unresolved_fields": unresolved_fields,
+                "analyzer_final": {
+                    "intent": intent,
+                    "target_repositories": targets,
+                    "concepts": list(dict.fromkeys(expanded_concepts)),
+                    "symbols": list(dict.fromkeys(expanded_symbols)),
+                    "requested_versions": requested_versions,
+                    "concept_scopes": scopes,
+                },
+            },
         )
 
     @staticmethod

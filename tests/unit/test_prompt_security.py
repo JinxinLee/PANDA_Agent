@@ -10,10 +10,7 @@ from panda_agent.retrieval import Retriever
 class CapturingVertex:
     def __init__(self) -> None:
         self.calls = []
-
-    def generate_json(self, prompt, schema, **kwargs):
-        self.calls.append((json.loads(prompt), kwargs.get("system_instruction")))
-        return {
+        self.result = {
             "intent": "api",
             "target_repositories": ["pandaroot"],
             "concepts": [],
@@ -21,6 +18,10 @@ class CapturingVertex:
             "requested_versions": {},
             "concept_scopes": {},
         }
+
+    def generate_json(self, prompt, schema, **kwargs):
+        self.calls.append((json.loads(prompt), kwargs.get("system_instruction")))
+        return self.result
 
 
 class PromptSecurityTests(unittest.TestCase):
@@ -30,9 +31,22 @@ class PromptSecurityTests(unittest.TestCase):
         value.fixed_versions = {"pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357"}
         value.fixed_refs = {"pandaroot": "dev"}
         value.policies = SimpleNamespace(
-            intents={"api": SimpleNamespace(source_budgets={"code": 1.0}, required_sources=["code"])}
+            intents={
+                "api": SimpleNamespace(source_budgets={"code": 1.0}, required_sources=["code"]),
+                "installation": SimpleNamespace(source_budgets={"documentation": 1.0}, required_sources=["documentation"]),
+            }
         )
         return value
+
+    def test_fixed_intent_is_preparsed_and_constrains_contradictory_analyzer(self):
+        retriever = self.make_retriever()
+        retriever.vertex.result["intent"] = "installation"
+
+        plan = retriever.analyze("Where is PndTargetGenerator defined?")
+
+        payload, _ = retriever.vertex.calls[0]
+        self.assertEqual(payload["deterministic_context"]["fixed"]["intent"], "api")
+        self.assertEqual(plan.intent, "api")
 
     def test_injected_instruction_remains_untrusted_question_data(self):
         retriever = self.make_retriever()

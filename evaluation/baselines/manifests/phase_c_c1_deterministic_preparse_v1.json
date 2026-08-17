@@ -1,0 +1,204 @@
+{
+  "manifest_id": "phase_c_c1_deterministic_preparse_v1",
+  "phase": "C",
+  "task": "C1",
+  "source_commit": "22cde4a761c28b0e6b5ae7cba185395e233aeba3",
+  "source_state": {
+    "working_tree": "dirty",
+    "implementation_paths": [
+      "src/panda_agent/models.py",
+      "src/panda_agent/retrieval.py",
+      "tests/unit/test_prompt_security.py",
+      "tests/unit/test_retrieval.py"
+    ],
+    "implementation_scope": "C1 deterministic pre-parse and diagnostics only"
+  },
+  "deterministic_parse": {
+    "class": "DeterministicQueryParse",
+    "fields": [
+      "intent",
+      "target_repositories",
+      "requested_versions",
+      "explicit_shas",
+      "version_repositories",
+      "symbols",
+      "concepts",
+      "concept_scopes",
+      "resolved_aliases",
+      "premise_corrections",
+      "paper_page_hints",
+      "matched_expansion_rules",
+      "provenance"
+    ],
+    "execution_order": "pre-parse before vertex.generate_json"
+  },
+  "ownership_map": {
+    "pre_c1": {
+      "intent": "LLM analyzer result, with an existing post-call high-confidence route override",
+      "routing_method": "post-call route check or LLM fallback",
+      "target_repositories": "LLM result, then post-call fixed-version filtering and existing expansion rules",
+      "resolved_versions": "post-call fixed-version mapping from selected repositories",
+      "requested_versions": "LLM result, then post-call raw SHA extraction",
+      "explicit_shas": "post-call raw-query regular-expression extraction",
+      "version_repositories": "implicit post-call repository matching",
+      "symbols": "LLM result, then post-call reviewed expansion additions",
+      "concepts": "LLM result, then post-call reviewed expansion additions",
+      "concept_scopes": "LLM result, then post-call deterministic scope additions",
+      "resolved_aliases": "post-call accepted-alias lookup",
+      "premise_corrections": "post-call accepted-alias correction lookup",
+      "paper_page_hints": "LLM-independent post-call reviewed expansion hints",
+      "matched_expansion_rules": "not persisted as an explicit ownership/provenance field",
+      "provenance": "not persisted per field",
+      "unresolved_fields": "not exposed",
+      "analyzer_final": "not exposed as a structured diagnostic",
+      "source_budgets": "policy selected after the resulting intent",
+      "required_source_types": "policy selected after the resulting intent",
+      "version_conflicts": "post-call comparison of requested and locked versions"
+    },
+    "post_c1": {
+      "intent": "deterministic high-confidence route is authoritative; otherwise LLM-owned",
+      "routing_method": "deterministic route when fixed, otherwise LLM",
+      "target_repositories": "deterministic explicit/legacy/reviewed signals plus valid LLM repository output",
+      "resolved_versions": "deterministic fixed-version mapping after merged repository scope",
+      "requested_versions": "deterministic explicit SHA for named repositories overrides; unresolved values remain LLM-owned",
+      "explicit_shas": "deterministic raw-query extraction",
+      "version_repositories": "deterministic named-repository extraction",
+      "symbols": "LLM-owned semantic symbols plus deterministic reviewed-expansion symbols",
+      "concepts": "LLM-owned semantic concepts plus deterministic reviewed-expansion concepts",
+      "concept_scopes": "deterministic recognized scopes override LLM scopes; unresolved scopes remain LLM-owned",
+      "resolved_aliases": "deterministic accepted-alias lookup with review-status provenance",
+      "premise_corrections": "deterministic accepted-alias correction lookup",
+      "paper_page_hints": "deterministic reviewed-expansion hints, then existing intent filtering",
+      "matched_expansion_rules": "deterministic reviewed-expansion rule identifiers",
+      "provenance": "deterministic per-field lists of source/rule/value entries",
+      "unresolved_fields": "explicit analyzer-required fields passed in deterministic_context",
+      "analyzer_final": "merged diagnostic showing deterministic and LLM-owned final values",
+      "source_budgets": "policy selected from the authoritative final intent",
+      "required_source_types": "policy selected from the authoritative final intent",
+      "version_conflicts": "deterministic comparison after explicit-version merge"
+    }
+  },
+  "provenance_representation": {
+    "storage": "DeterministicQueryParse.provenance",
+    "shape": "provenance[field_name] is a list of objects with source and rule, plus optional value",
+    "recorded_sources": [
+      "deterministic_route",
+      "explicit_query_reference",
+      "legacy_query_rule",
+      "deterministic_scope",
+      "accepted_alias",
+      "reviewed_expansion",
+      "explicit_version_token"
+    ],
+    "deterministic_context_keys": [
+      "fixed",
+      "known",
+      "fixed_fields_must_be_preserved",
+      "unresolved_fields",
+      "provenance"
+    ],
+    "diagnostic_location": "RetrievalPlan.analysis_diagnostics"
+  },
+  "llm_owned_unresolved_fields": {
+    "semantic_fields": [
+      "target_repositories",
+      "concepts",
+      "symbols",
+      "requested_versions",
+      "concept_scopes"
+    ],
+    "intent": "LLM-owned when no high-confidence deterministic route matches",
+    "rule": "Do not force a deterministic guess while a free-form semantic field remains unresolved"
+  },
+  "analyzer_call_policy": {
+    "skip_condition": "A skip is permitted only when no analyzer-required semantic field remains unresolved",
+    "current_behavior": "Every valid current query makes exactly one analyzer call because free-form semantic fields remain unresolved",
+    "diagnostic_fields": [
+      "analyzer_llm_called",
+      "analyzer_unresolved_fields",
+      "analyzer_final"
+    ],
+    "call_reduction_claim": false
+  },
+  "measured_boundary": {
+    "reuses_existing_signals": true,
+    "new_free_form_path_or_class_method_parser": false,
+    "new_benchmark_specific_route": false
+  },
+  "verification": {
+    "targeted_unittest": {
+      "commands": [
+        "python -m unittest discover -s tests/unit -p test_retrieval.py",
+        "python -m unittest discover -s tests/unit -p test_prompt_security.py"
+      ],
+      "status": "PASS",
+      "passed": 18,
+      "failed": 0,
+      "invocations": [
+        {
+          "command": "python -m unittest discover -s tests/unit -p test_retrieval.py",
+          "status": "PASS",
+          "passed": 15,
+          "failed": 0
+        },
+        {
+          "command": "python -m unittest discover -s tests/unit -p test_prompt_security.py",
+          "status": "PASS",
+          "passed": 3,
+          "failed": 0
+        }
+      ],
+      "breakdown": {
+        "tests.unit.test_retrieval": 15,
+        "tests.unit.test_prompt_security": 3
+      }
+    },
+    "compileall": {
+      "command": "python -m compileall -q src/panda_agent/models.py src/panda_agent/retrieval.py tests/unit/test_prompt_security.py tests/unit/test_retrieval.py",
+      "status": "PASS"
+    },
+    "diff_check": {
+      "command": "git diff --check",
+      "status": "PASS"
+    },
+    "live_analyzer_smoke": {
+      "status": "NOT_RUN",
+      "model_calls": 0,
+      "tokens": 0
+    }
+  },
+  "cost": {
+    "external_calls": 0,
+    "tokens": 0,
+    "live_analyzer_smoke": "NOT_RUN"
+  },
+  "index_impact": {
+    "retrieval_execution": false,
+    "query_understanding_logic_changed": true,
+    "ranking_or_selection_logic_changed": false,
+    "index_behavior_changed": false,
+    "ranking_changed": false,
+    "reranker_changed": false,
+    "selector_changed": false,
+    "embedding_changed": false,
+    "sql_writes": false,
+    "qdrant_writes": false,
+    "index_mutation": false,
+    "qa_or_judge_run": false
+  },
+  "known_deferred_items": [
+    "C2 is next and NOT_STARTED; C3-C8 remain NOT_STARTED",
+    "Phase D and Phase E remain NOT_STARTED; no E0 is created",
+    "T3.3A-R2 remains INCONCLUSIVE/partial; heuristic iteration is stopped",
+    "The unresolved g011 mechanism is deferred to generic Phase-E coverage-aware architecture",
+    "Optional T3.3B ranking debt is deferred",
+    "Live analyzer smoke was not run",
+    "Novel retrieval generalization remains UNMEASURED because no trustworthy human-authored novel dataset exists"
+  ],
+  "novel_retrieval_generalization": {
+    "status": "UNMEASURED",
+    "reason": "No trustworthy human-authored novel dataset exists"
+  },
+  "benchmark_metrics": "not_collected",
+  "result": "PASS"
+}

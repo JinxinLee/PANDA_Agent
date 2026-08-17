@@ -168,6 +168,7 @@ class RetrievalPlan(StrictModel):
     resolved_aliases: dict[str, str] = Field(default_factory=dict)
     premise_corrections: list[str] = Field(default_factory=list)
     paper_page_hints: dict[str, list[int]] = Field(default_factory=dict)
+    analysis_diagnostics: dict[str, Any] = Field(default_factory=dict)
 
     @model_validator(mode="after")
     def validate_source_budgets(self) -> "RetrievalPlan":
