@@ -154,7 +154,7 @@ Statuses describe implementation state; acceptance targets remain planned until 
 
 ## Phase C — Retrieval generalization
 
-Phase C is started by C1. The initial C1 implementation was `INCONCLUSIVE` after review; C1-R1 is `PASS`, making C1 overall `PASS`. C2 is the next authorized task; C3-C8 remain `NOT_STARTED`.
+Phase C is started by C1. The initial C1 implementation was `INCONCLUSIVE` after review; C1-R1 is `PASS`, making C1 overall `PASS`. C2 is `PASS`; C3 is the next authorized task and `NOT_STARTED`; C4-C8 remain `NOT_STARTED`.
 
 ### C1 — Deterministic parsing before expensive LLM analysis
 
@@ -180,17 +180,23 @@ Phase C is started by C1. The initial C1 implementation was `INCONCLUSIVE` after
 
 ### C2 — Narrow and auditable query-analyzer contract
 
-- **Status:** NOT_STARTED
+- **Status:** PASS
 - **Problem:** A broad analyzer can become an opaque answer-location oracle, emit exact files/pages, and cause query drift.
-- **Goal:** Restrict LLM analysis to intent/confidence, concepts, entities, semantic/lexical terms, and unresolved ambiguity.
+- **Goal:** Restrict LLM analysis to a grounded semantic delta for unresolved intent, concepts, symbols, repository additions, version mentions, and concept scopes.
 - **Why this stage:** C1 removes deterministic work; C2 makes the remaining semantic contract safe before query builders consume it.
-- **Intended design:** Merge deterministic fields with bounded LLM output; preserve explicit symbols; reject ordinary answer paths/pages/benchmark shortcuts; persist field provenance and confidence.
+- **Intended design:** Return an additive `AnalyzerSemanticDelta`, merge it with deterministic fields using fixed > LLM > fallback ownership, preserve explicit symbols and support spans, reject unsupported items, and keep unbound version tokens auditable.
 - **Functional requirements:** Validate known intents, limited concepts, non-speculative terms, explicit-symbol preservation, and complete trace output.
 - **Explicit out of scope:** Building semantic/lexical queries, resolving the full entity graph, tuning individual outputs to Gold evidence, or ranking changes.
 - **Dependencies:** C1 and reviewed analyzer fixtures.
 - **Authorized evaluation tier:** T0 contract tests and T2 analyzer/paraphrase set.
 - **Primary metrics:** Intent accuracy, explicit-symbol recall, core-concept recall, spurious-concept rate, and analyzer cost.
 - **Acceptance criteria:** High-confidence question understanding is retained without answer-location shortcuts; audit traces explain output sources.
+- **Implementation result:** Fixed deterministic intent is omitted from the analyzer response schema, unresolved intent remains analyzer-owned, and the final plan is built from an additive semantic delta rather than a model-produced `RetrievalPlan`. Exact symbols are retained; query-supported concepts, repository additions, version mentions, and scopes carry support spans; unsupported items are rejected; bare versions remain unbound without explicit repository association.
+- **Diagnostics and provenance:** `RetrievalPlan.analysis_diagnostics` records `deterministic_parse`, `analyzer_llm_called`, `analyzer_semantic_output_fields`, `analyzer_raw_semantic_delta`, `analyzer_accepted_semantic_delta`, `analyzer_rejected_items`, `analyzer_item_support`, `unbound_version_tokens`, and `analyzer_final`. The old `analyzer_unresolved_fields` key is removed.
+- **Evaluation result:** T0 passed `39/39` checks (retrieval `34/34`, prompt-security `4/4`, exact QA prompt `1/1`) with zero external/model calls. Analyzer-only T2 passed `10/10` cases on `gemini-3.7-flash` in `global`: analyzer model calls `10`, tokens `17173`, mean `1717.3` tokens/call, failures `0`, retries `0`. ADC/harness pre-request failures are environment history only and contributed `0` remote calls and `0` tokens; Sol's final review and a local replay of `90` stored sections passed with `0` mismatches.
+- **Impact:** Retriever/reranker/query embeddings/document embeddings/QA/verifier/judge/SQL/Qdrant/index mutation `0`; reindex/reembedding `no`. Query-understanding analyzer contract changed `yes`; dense/sparse query construction changed `no`; retrieval ranking intentionally changed `no`; selector/index/corpus changed `no`.
+- **Artifact:** `evaluation/baselines/manifests/phase_c_c2_narrow_auditable_analyzer_v1.json`; source/base commit SHA `c2f933b287e52d76947a3865e2527d2349e5ec27`; prompt version `3.7.0`.
+- **Limitations:** This is a narrow analyzer-only T2 result, not a global cost-saving claim or pseudo-Gold result; no `g011`/`g016` targeting was introduced, no T3/T4/T5, retrieval benchmark, or index work was run, and no novel human-authored dataset was available. Stop after C2; C3 remains `NOT_STARTED`.
 - **Failure handling:** Reduce speculative output or preserve raw question ambiguity; do not add expected files/pages. Stop after C2.
 
 ### C3 — SemanticQueryBuilder for dense retrieval
@@ -285,7 +291,7 @@ Phase C is started by C1. The initial C1 implementation was `INCONCLUSIVE` after
 
 ## Phase C status
 
-C1 is `PASS`; C2 is next and `NOT_STARTED`; C3-C8 are `NOT_STARTED`.
+C1 is `PASS`; C2 is `PASS`; C3 is next and `NOT_STARTED`; C4-C8 are `NOT_STARTED`.
 
 ## Phase D — Concept and entity knowledge abstraction
 
@@ -362,7 +368,7 @@ The unresolved Phase-B `g011` mechanism motivates a future coverage-aware downst
 - `RetrievalPlan` intent/routing, repository and version scope, `source_budgets`, `required_source_types`, concepts, symbols, concept scopes, accepted-alias corrections, paper hints, and version conflicts;
 - `KnowledgeObject`/`Evidence` identity and provenance: stable `object_id`/`evidence_id`, `source_id`/`source_version_id`, `object_type`, and precise `SourceLocator`/canonical locators;
 - `RelationEdge`/`RelationCandidate` and `WorkflowStep` structure: stable endpoints or candidate targets, predicates, relation provenance, workflow entrypoints, inputs/outputs, and predecessor/successor links;
-- `RetrievalPlan.analysis_diagnostics.deterministic_parse`, including fixed/known/unresolved analyzer context and per-field provenance, plus `analyzer_unresolved_fields`, `analyzer_llm_called`, and `analyzer_final` for audit of remaining semantic ownership.
+- `RetrievalPlan.analysis_diagnostics.deterministic_parse`, including fixed/known_partial/fallback/semantic_output_fields/unresolved_semantics and per-field provenance, plus `analyzer_llm_called`, `analyzer_semantic_output_fields`, `analyzer_raw_semantic_delta`, `analyzer_accepted_semantic_delta`, `analyzer_rejected_items`, `analyzer_item_support`, `unbound_version_tokens`, and `analyzer_final`; the old `analyzer_unresolved_fields` key is removed.
 
 Phase C and Phase D must not flatten these source/source-type constraints, evidence identifiers/locators, relation edges, workflow structure, or versioned provenance into undifferentiated text. C3/C4 must preserve the semantic-versus-lexical query distinction and its raw-query observability; C5 must perform explicit entity-first work against stable identifiers and accepted aliases; Phase D must preserve stable versioned identities and relation/workflow provenance. This note does not create E0 and does not implement Phase E. E1-E3 remain `NOT_STARTED`.
 

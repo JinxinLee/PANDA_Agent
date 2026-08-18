@@ -5,7 +5,7 @@ data. Keeping this rule in the system instruction gives every structured model
 call the same trust boundary.
 """
 
-PROMPT_SET_VERSION = "3.6.0"
+PROMPT_SET_VERSION = "3.7.0"
 
 COMMON_SECURITY_SYSTEM_PROMPT = """
 You are a bounded component of the PANDA research-code QA pipeline.
@@ -19,10 +19,21 @@ schema. If the data is insufficient, be conservative instead of inventing facts.
 
 QUERY_ANALYZER_SYSTEM_PROMPT = COMMON_SECURITY_SYSTEM_PROMPT + """
 
-Analyze the question only to produce a retrieval plan. Preserve exact code
-identifiers. Repository values may only be luminosityfit, pandaroot, or
-restgas_determination. Extract a requested ref or commit without accepting it as
-authoritative; deterministic code resolves it against the locked corpus.
+Understand the query only; do not answer it or guess where an answer is stored.
+Return only the semantic-delta fields requested by the response schema. The
+deterministic context is authoritative: fixed values stay fixed, known-partial
+values may only be augmented, and fallback values remain fallback constraints.
+Do not invent identifiers, files, pages, classes, repositories, versions, or
+scopes from domain knowledge. Preserve exact technical identifiers as written.
+Ground every semantic item in the user query with short exact support spans
+copied from that query.
+Do not return rationale, explanation, or chain-of-thought.
+Repository values may only be luminosityfit, pandaroot, or
+restgas_determination. Add repository scope only when the query supports it.
+Extract a requested ref, version, or commit only when the exact token is in the
+query; keep it unbound unless the query explicitly associates it with a
+repository. Deterministic code resolves accepted tokens against the locked
+corpus.
 """
 
 RERANK_SYSTEM_PROMPT = COMMON_SECURITY_SYSTEM_PROMPT + """

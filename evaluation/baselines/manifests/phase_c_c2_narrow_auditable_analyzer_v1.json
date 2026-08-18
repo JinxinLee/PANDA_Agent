@@ -1,0 +1,2568 @@
+{
+  "manifest_id": "phase_c_c2_narrow_auditable_analyzer_v1",
+  "phase": "C",
+  "task": "C2",
+  "evaluation_tier": "T2",
+  "preregistration_status": "locked_before_first_live_call",
+  "source_commit": "c2f933b287e52d76947a3865e2527d2349e5ec27",
+  "prompt_version": "3.7.0",
+  "source_state": {
+    "base_commit": "c2f933b287e52d76947a3865e2527d2349e5ec27",
+    "working_tree": "dirty",
+    "prior_changed_paths": [
+      "src/panda_agent/prompts.py",
+      "src/panda_agent/retrieval.py",
+      "tests/unit/test_prompt_security.py",
+      "tests/unit/test_qa.py",
+      "tests/unit/test_retrieval.py"
+    ],
+    "changed_paths_expected_total": 6,
+    "this_task_write_scope": [
+      "evaluation/baselines/manifests/phase_c_c2_narrow_auditable_analyzer_v1.json"
+    ]
+  },
+  "scope_boundary": {
+    "authorized": [
+      "C2 analyzer semantic-delta preregistration",
+      "analyzer-only live T2 after T0 passes"
+    ],
+    "forbidden": [
+      "retrieval calls",
+      "reranker calls",
+      "query embeddings",
+      "document embeddings",
+      "QA, verifier, or judge calls",
+      "SQL writes",
+      "Qdrant writes",
+      "index mutation",
+      "reindexing",
+      "reembedding",
+      "T3",
+      "T4",
+      "T5",
+      "C3, C4, C5, C6, C7, or C8 implementation"
+    ],
+    "this_preregistration_makes_no_model_or_external_calls": true
+  },
+  "pre_c2_analyzer_ownership": {
+    "summary": "C1 established deterministic pre-parse ownership, but the analyzer response still represented broad semantic field state and could be read as a RetrievalPlan draft rather than an auditable semantic delta.",
+    "precedence": [
+      "fixed",
+      "LLM",
+      "fallback"
+    ],
+    "fields": {
+      "intent": {
+        "ownership": "fixed_when_high_confidence_route_matches_otherwise_unresolved_llm",
+        "classification": "fixed-key-plus-llm-remainder",
+        "pre_c2_behavior": "Fixed deterministic intent is omitted from the analyzer schema; unresolved intent remains analyzer-owned."
+      },
+      "target_repositories": {
+        "ownership": "mixed",
+        "classification": "known-partial-deterministic-plus-llm-additions",
+        "pre_c2_behavior": "Explicit deterministic repository references are retained while analyzer output can add semantic repository values."
+      },
+      "concepts": {
+        "ownership": "mixed",
+        "classification": "known-partial-reviewed-expansions-plus-llm-values",
+        "pre_c2_behavior": "Reviewed deterministic concepts and analyzer concepts are merged, but the analyzer field is not yet explicitly represented as additive semantic output."
+      },
+      "symbols": {
+        "ownership": "mixed",
+        "classification": "known-partial-reviewed-expansions-plus-llm-values",
+        "pre_c2_behavior": "Reviewed deterministic symbols and analyzer symbols are merged, with the remaining contract requiring explicit query grounding and non-invention."
+      },
+      "requested_versions": {
+        "ownership": "mixed",
+        "classification": "fixed-explicit-repository-sha-plus-llm-unresolved-remainder",
+        "pre_c2_behavior": "Explicit repository-plus-version values are deterministic; unresolved analyzer version values remain semantic output and must not be invented or silently associated."
+      },
+      "concept_scopes": {
+        "ownership": "mixed",
+        "classification": "fixed-reviewed-scope-plus-llm-plus-fallback",
+        "pre_c2_behavior": "Deterministic scope, analyzer scope, and fallback scope are merged with fixed > LLM > fallback precedence."
+      }
+    },
+    "plan_draft_debt": [
+      "Analyzer fields could be interpreted as complete authoritative field state instead of additive unresolved semantics.",
+      "Item-level query support and provenance were not yet the explicit contract for every analyzer semantic item.",
+      "The analyzer_unresolved_fields name did not clearly distinguish unresolved semantic inputs from final merged state.",
+      "A bare SHA could be confused with a repository-associated version when no repository was explicit in the question."
+    ],
+    "c1_debts_addressed_by_c2": [
+      "Replace the plan-draft interpretation with AnalyzerSemanticDelta.",
+      "Require compact query-support and provenance for accepted analyzer items.",
+      "Separate version-token extraction from repository association, including bare-SHA unbound behavior.",
+      "Expose deterministic ownership, analyzer semantic output, and final merged state under unambiguous diagnostics names."
+    ]
+  },
+  "post_c2_semantic_delta_contract": {
+    "representation": "AnalyzerSemanticDelta",
+    "authority": "additive semantic information only; never an authoritative complete RetrievalPlan or replacement for deterministic pre-parse values",
+    "response_schema": {
+      "fully_fixed_fields": "omitted dynamically",
+      "fixed_intent": {
+        "properties_contains_intent": false,
+        "required_contains_intent": false,
+        "ownership": "fixed"
+      },
+      "unresolved_intent": {
+        "properties_contains_intent": true,
+        "required_contains_intent": true,
+        "allowed_values": "existing intent categories only",
+        "ownership": "unresolved_llm"
+      },
+      "returns_retrieval_plan": false,
+      "free_form_reasoning": false
+    },
+    "fields": {
+      "intent": {
+        "shape": "optional single allowed intent",
+        "semantics": "Only emitted when deterministic intent is unresolved; classifies the requested operation, not an answer location."
+      },
+      "repository_additions": {
+        "shape": "list of auditable semantic items",
+        "semantics": "Additive repository scope only when supported by the query or deterministic C1 context; never a corpus-derived guess."
+      },
+      "concepts": {
+        "shape": "list of auditable semantic items",
+        "semantics": "Smallest useful query-grounded concepts; no answer hypotheses, source locations, or broad domain filler."
+      },
+      "symbols": {
+        "shape": "list of auditable semantic items",
+        "semantics": "Exact technical identifiers from the query or reviewed deterministic context; no invented classes, functions, files, paths, branches, or macros."
+      },
+      "version_mentions": {
+        "shape": "list of token mentions with optional repository association",
+        "semantics": "Every token must occur in the query; explicit repository association is retained, otherwise the token remains unbound."
+      },
+      "concept_scopes": {
+        "shape": "list of auditable scope items",
+        "semantics": "Additive unresolved scope semantics merged below fixed deterministic scope and above fallback scope."
+      }
+    },
+    "item_support_and_provenance": {
+      "required_for": [
+        "intent",
+        "repository_additions",
+        "concepts",
+        "symbols",
+        "version_mentions",
+        "concept_scopes"
+      ],
+      "item_shape": {
+        "item_fields": [
+          "value",
+          "support_spans"
+        ],
+        "value": "semantic value",
+        "support_spans": "short exact substrings copied from the user question or explicitly supplied deterministic context"
+      },
+      "semantic_delta_field_shapes": {
+        "version_mentions": "uses its actual version-token field; repository association is represented separately and may remain unbound",
+        "concept_scopes": "uses its actual scope field; no extra per-item provenance field is implied"
+      },
+      "enclosing_diagnostics": {
+        "llm_ownership": "analyzer_semantic_output_fields",
+        "accepted_items": "analyzer_accepted_semantic_delta",
+        "rejected_items": "analyzer_rejected_items",
+        "deterministic_provenance": "deterministic_parse.provenance",
+        "item_support": "analyzer_item_support"
+      },
+      "support_rule": "Accepted semantic items must be traceable to the current query or deterministic C1 context, never to likely corpus contents.",
+      "item_provenance_rule": "LLM ownership, accepted/rejected disposition, and deterministic provenance are recorded in enclosing diagnostics; the item itself does not carry an additional provenance field.",
+      "reasoning_storage": "none; no reasoning, rationale, explanation, or chain-of-thought is requested or stored"
+    },
+    "ownership_merge": {
+      "fixed": "authoritative deterministic values and reviewed rule matches are not overwritten",
+      "known_partial": "deterministic values may be augmented by valid analyzer semantic additions",
+      "unresolved": "no deterministic value is available; the semantic delta may supply a grounded value",
+      "fallback": "used only when fixed and valid analyzer values are absent",
+      "precedence": "fixed > LLM > fallback",
+      "final_plan": "constructed deterministically by application code after semantic-delta validation and merge"
+    },
+    "bare_sha_contract": {
+      "explicit_repository_and_sha": "remains deterministic and repository-associated",
+      "bare_sha": "preserve the exact token as an unbound version mention",
+      "unsupported_association": "must not bind a bare SHA to an analyzer-inferred repository",
+      "version_conflict": "evaluate conflicts only after the deterministic explicit-version merge; do not fabricate a conflict from unsupported association"
+    }
+  },
+  "diagnostics_contract": {
+    "location": "RetrievalPlan.analysis_diagnostics",
+    "required_sections": {
+      "deterministic_parse": {
+        "fixed": "deterministic authoritative values and fixed reviewed rules",
+        "known_partial": "deterministic values that may receive additive semantic contributions",
+        "fallback": "deterministic fallback values used after fixed and analyzer values",
+        "semantic_output_fields": "semantic fields still requiring analyzer interpretation",
+        "unresolved_semantics": "unresolved semantic inputs passed to the analyzer",
+        "provenance": "deterministic field-level provenance entries"
+      },
+      "analyzer_llm_called": "whether the analyzer was invoked",
+      "analyzer_semantic_output_fields": "validated analyzer semantic output field names",
+      "analyzer_raw_semantic_delta": "raw AnalyzerSemanticDelta returned before accepted-item filtering",
+      "analyzer_accepted_semantic_delta": "accepted query-grounded additive semantic items",
+      "analyzer_rejected_items": "unsupported or invalid analyzer items rejected by contract validation",
+      "analyzer_item_support": "query support spans for analyzer semantic items",
+      "unbound_version_tokens": "exact version tokens with no explicit repository association",
+      "analyzer_final": "final analyzer-aware merged state and ownership diagnostics"
+    },
+    "analyzer_unresolved_fields": {
+      "status": "removed",
+      "authoritative_replacement": "analyzer_semantic_output_fields",
+      "meaning": "This runtime key is removed; unresolved semantic inputs and accepted analyzer output are represented by the exact runtime keys above."
+    }
+  },
+  "t0_evidence": {
+    "evidence_source": "controller-supplied T0 evidence before live analyzer evaluation",
+    "checks": [
+      {
+        "name": "retrieval",
+        "passed": 34,
+        "total": 34,
+        "status": "PASS"
+      },
+      {
+        "name": "prompt-security",
+        "passed": 4,
+        "total": 4,
+        "status": "PASS"
+      },
+      {
+        "name": "exact QA prompt test",
+        "passed": 1,
+        "total": 1,
+        "status": "PASS"
+      }
+    ],
+    "total": {
+      "passed": 39,
+      "total": 39,
+      "status": "PASS"
+    },
+    "analyzer_calls": 0,
+    "external_calls": 0,
+    "model_calls": 0,
+    "precondition_for_live_t2": "T0 passed; the preregistered analyzer-only T2 set may be run later under the stated guardrails."
+  },
+  "live_t2_preregistration": {
+    "mode": "analyzer_only",
+    "live_status": "complete",
+    "generation_model": "gemini-3.7-flash",
+    "location": "global",
+    "batch_result": "PASS",
+    "initial_case_count": 10,
+    "max_analyzer_calls": 12,
+    "calls_used": 10,
+    "calls_remaining": 2,
+    "directly_affected_rerun_budget": 2,
+    "directly_affected_reruns_used": 0,
+    "total_tokens": 17173,
+    "mean_tokens_per_call": 1717.3,
+    "failures": 0,
+    "retries": 0,
+    "escalation": {
+      "requested": true,
+      "status": "rejected_before_execution",
+      "additional_model_calls": 0,
+      "reason": "External-permission retry was rejected before process execution; no workaround was attempted."
+    },
+    "resume_escalation": {
+      "requested": true,
+      "requested_cases": [
+        "c2t2_api_symbol",
+        "c2t2_ambiguous_pipeline"
+      ],
+      "status": "rejected_before_execution",
+      "additional_generation_attempts": 0,
+      "additional_model_calls": 0,
+      "reason": "The approved resume command was rejected by the execution policy before process execution; no retry or workaround was attempted."
+    },
+    "remote_execution": {
+      "status": "complete",
+      "generation_model": "gemini-3.7-flash",
+      "location": "global",
+      "remote_generation_calls": 10,
+      "successful_structured_responses": 10,
+      "remote_failures": 0,
+      "tokens": 17173,
+      "mean_tokens_per_call": 1717.3,
+      "retries": 0
+    },
+    "local_pre_request_failures": {
+      "adc_credential_failures": 10,
+      "harness_validation_failures": 2,
+      "remote_model_calls": 0,
+      "tokens": 0,
+      "counted_in_remote_cost_budget": false,
+      "note": "These failures occurred before the authorized remote batch and are retained as environment history only."
+    },
+    "no_retrieval_or_downstream_calls": true,
+    "cases": [
+      {
+        "case_id": "c2t2_api_symbol",
+        "question": "Where is PndTargetGenerator declared, and what API role does it expose?",
+        "allowed_intent": [
+          "api"
+        ],
+        "required_exact_tokens": [
+          "PndTargetGenerator"
+        ],
+        "contract_properties": [
+          "Preserve the exact symbol PndTargetGenerator.",
+          "Do not invent a symbol, file, path, class, or answer location.",
+          "Repository scope may remain ambiguous and no repository addition is required without query support."
+        ],
+        "status": "PASS",
+        "result": "PASS",
+        "attempts": 1,
+        "retries": 0,
+        "errors": [],
+        "local_pre_request_failures": [
+          {
+            "kind": "adc_credentials",
+            "type": "VertexCallError",
+            "message": "structured generation failed for gemini-3.7-flash in global: Your default credentials were not found.",
+            "remote_model_calls": 0,
+            "tokens": 0
+          }
+        ],
+        "model_call_delta": {
+          "model_calls": 1,
+          "token_usage": 1791,
+          "embedding_calls": 0,
+          "generation_calls": 1
+        },
+        "deterministic_parse": {
+          "fixed": {
+            "intent": "api",
+            "matched_expansion_rules": [
+              "target_generator_sampling_data_flow"
+            ]
+          },
+          "fallback": {
+            "concept_scopes": {}
+          },
+          "known_partial": {
+            "target_repositories": [
+              "pandaroot",
+              "restgas_determination"
+            ],
+            "symbols": [
+              "tools/MasterTasks/PndMasterRunSim.cxx",
+              "pgenerators/Target/PndTargetGenerator.cxx",
+              "PndTargetGenerator::SampleInteractionVertex",
+              "Tools/PndMasterTasks/PndMasterRunSim.html",
+              "Running/Running.html",
+              "Running/MasterTasks.html"
+            ],
+            "concepts": [
+              "simulation master task to target-generator data flow",
+              "interaction-vertex sampling lifecycle",
+              "PandaRoot operational documentation",
+              "generic PandaRoot workflow"
+            ]
+          },
+          "semantic_output_fields": [
+            "repository_additions",
+            "concepts",
+            "symbols",
+            "version_mentions",
+            "concept_scopes"
+          ],
+          "unresolved_semantics": {
+            "repository_additions": "augment_known_partial",
+            "target_repositories": "augment_known_partial",
+            "concepts": "augment_known_partial",
+            "symbols": "augment_known_partial",
+            "version_mentions": "resolve",
+            "concept_scopes": "resolve"
+          },
+          "provenance": {
+            "intent": [
+              {
+                "source": "deterministic_route",
+                "rule": "api",
+                "value": "api",
+                "ownership": "fixed"
+              }
+            ],
+            "query_expansions": [
+              {
+                "source": "reviewed_expansion",
+                "rule": "target_generator_sampling_data_flow",
+                "ownership": "fixed_reviewed_rule"
+              }
+            ]
+          }
+        },
+        "unbound_version_tokens": [],
+        "analyzer_final": {
+          "intent": "api",
+          "target_repositories": [
+            "pandaroot",
+            "restgas_determination"
+          ],
+          "concepts": [
+            "API role",
+            "simulation master task to target-generator data flow",
+            "interaction-vertex sampling lifecycle",
+            "PandaRoot operational documentation",
+            "generic PandaRoot workflow"
+          ],
+          "symbols": [
+            "PndTargetGenerator",
+            "tools/MasterTasks/PndMasterRunSim.cxx",
+            "pgenerators/Target/PndTargetGenerator.cxx",
+            "PndTargetGenerator::SampleInteractionVertex",
+            "Tools/PndMasterTasks/PndMasterRunSim.html",
+            "Running/Running.html",
+            "Running/MasterTasks.html"
+          ],
+          "requested_versions": {},
+          "concept_scopes": {}
+        },
+        "plan_summary": {
+          "intent": "api",
+          "target_repositories": [
+            "pandaroot",
+            "restgas_determination"
+          ],
+          "symbols": [
+            "PndTargetGenerator",
+            "tools/MasterTasks/PndMasterRunSim.cxx",
+            "pgenerators/Target/PndTargetGenerator.cxx",
+            "PndTargetGenerator::SampleInteractionVertex",
+            "Tools/PndMasterTasks/PndMasterRunSim.html",
+            "Running/Running.html",
+            "Running/MasterTasks.html"
+          ],
+          "concepts": [
+            "API role",
+            "simulation master task to target-generator data flow",
+            "interaction-vertex sampling lifecycle",
+            "PandaRoot operational documentation",
+            "generic PandaRoot workflow"
+          ],
+          "concept_scopes": {},
+          "resolved_versions": {
+            "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357",
+            "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+          },
+          "version_conflicts": []
+        },
+        "manual_evaluation": {
+          "result": "PASS",
+          "critical_contract_failures": [],
+          "reason": "No invented path or symbol; exact central symbol preserved. Deterministic reviewed paths and expansion contributions are not analyzer inventions."
+        },
+        "analyzer_semantic_output_fields": [
+          "repository_additions",
+          "concepts",
+          "symbols",
+          "version_mentions",
+          "concept_scopes"
+        ],
+        "analyzer_raw_semantic_delta": {
+          "repository_additions": [],
+          "concepts": [
+            {
+              "value": "API role",
+              "support_spans": [
+                "API role"
+              ]
+            },
+            {
+              "value": "declaration",
+              "support_spans": [
+                "declared"
+              ]
+            }
+          ],
+          "symbols": [
+            {
+              "value": "PndTargetGenerator",
+              "support_spans": [
+                "PndTargetGenerator"
+              ]
+            }
+          ],
+          "version_mentions": [],
+          "concept_scopes": []
+        },
+        "analyzer_accepted_semantic_delta": {
+          "repository_additions": [],
+          "concepts": [
+            {
+              "value": "API role",
+              "support_spans": [
+                "API role"
+              ]
+            }
+          ],
+          "symbols": [
+            {
+              "value": "PndTargetGenerator",
+              "support_spans": [
+                "PndTargetGenerator"
+              ]
+            }
+          ],
+          "version_mentions": [],
+          "concept_scopes": []
+        },
+        "analyzer_rejected_items": [
+          {
+            "field": "concepts",
+            "item": {
+              "value": "declaration",
+              "support_spans": [
+                "declared"
+              ]
+            },
+            "reason": "unsupported_concept"
+          }
+        ],
+        "analyzer_item_support": {
+          "repository_additions": [],
+          "concepts": [
+            {
+              "value": "API role",
+              "support_spans": [
+                "API role"
+              ]
+            }
+          ],
+          "symbols": [
+            {
+              "value": "PndTargetGenerator",
+              "support_spans": [
+                "PndTargetGenerator"
+              ]
+            }
+          ],
+          "version_mentions": [],
+          "concept_scopes": []
+        }
+      },
+      {
+        "case_id": "c2t2_installation_unusual",
+        "question": "What is the cleanest way to set up PandaRoot on a fresh workstation?",
+        "allowed_intent": [
+          "installation"
+        ],
+        "required_exact_tokens": [
+          "PandaRoot"
+        ],
+        "contract_properties": [
+          "Retain the explicit PandaRoot repository token.",
+          "Do not invent a path, class, version, or installation answer location.",
+          "Concepts must remain relevant to installation and query-grounded."
+        ],
+        "status": "PASS",
+        "result": "PASS",
+        "attempts": 1,
+        "retries": 0,
+        "errors": [],
+        "local_pre_request_failures": [
+          {
+            "kind": "adc_credentials",
+            "type": "VertexCallError",
+            "message": "structured generation failed for gemini-3.7-flash in global: Your default credentials were not found.",
+            "remote_model_calls": 0,
+            "tokens": 0
+          }
+        ],
+        "model_call_delta": {
+          "model_calls": 1,
+          "token_usage": 1631,
+          "embedding_calls": 0,
+          "generation_calls": 1
+        },
+        "deterministic_parse": {
+          "fixed": {},
+          "fallback": {
+            "concept_scopes": {}
+          },
+          "known_partial": {
+            "target_repositories": [
+              "pandaroot"
+            ]
+          },
+          "semantic_output_fields": [
+            "intent",
+            "repository_additions",
+            "concepts",
+            "symbols",
+            "version_mentions",
+            "concept_scopes"
+          ],
+          "unresolved_semantics": {
+            "intent": "resolve",
+            "repository_additions": "augment_known_partial",
+            "target_repositories": "augment_known_partial",
+            "concepts": "resolve",
+            "symbols": "resolve",
+            "version_mentions": "resolve",
+            "concept_scopes": "resolve"
+          },
+          "provenance": {
+            "target_repositories": [
+              {
+                "source": "explicit_query_reference",
+                "rule": "manifest_repo_id",
+                "value": "pandaroot",
+                "ownership": "known_partial"
+              }
+            ]
+          }
+        },
+        "unbound_version_tokens": [],
+        "analyzer_final": {
+          "intent": "installation",
+          "target_repositories": [
+            "pandaroot"
+          ],
+          "concepts": [
+            "set up",
+            "fresh workstation"
+          ],
+          "symbols": [],
+          "requested_versions": {},
+          "concept_scopes": {}
+        },
+        "plan_summary": {
+          "intent": "installation",
+          "target_repositories": [
+            "pandaroot"
+          ],
+          "symbols": [],
+          "concepts": [
+            "set up",
+            "fresh workstation"
+          ],
+          "concept_scopes": {},
+          "resolved_versions": {
+            "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357"
+          },
+          "version_conflicts": []
+        },
+        "manual_evaluation": {
+          "result": "PASS",
+          "critical_contract_failures": [],
+          "reason": "Explicit PandaRoot retained; concepts are query-grounded and no path, class, or version was invented."
+        },
+        "analyzer_semantic_output_fields": [
+          "intent",
+          "repository_additions",
+          "concepts",
+          "symbols",
+          "version_mentions",
+          "concept_scopes"
+        ],
+        "analyzer_raw_semantic_delta": {
+          "intent": {
+            "value": "installation",
+            "support_spans": [
+              "set up"
+            ]
+          },
+          "repository_additions": [
+            {
+              "value": "pandaroot",
+              "support_spans": [
+                "PandaRoot"
+              ]
+            }
+          ],
+          "concepts": [
+            {
+              "value": "set up",
+              "support_spans": [
+                "set up"
+              ]
+            },
+            {
+              "value": "fresh workstation",
+              "support_spans": [
+                "fresh workstation"
+              ]
+            }
+          ],
+          "symbols": [],
+          "version_mentions": [],
+          "concept_scopes": []
+        },
+        "analyzer_accepted_semantic_delta": {
+          "repository_additions": [
+            {
+              "value": "pandaroot",
+              "support_spans": [
+                "PandaRoot"
+              ]
+            }
+          ],
+          "concepts": [
+            {
+              "value": "set up",
+              "support_spans": [
+                "set up"
+              ]
+            },
+            {
+              "value": "fresh workstation",
+              "support_spans": [
+                "fresh workstation"
+              ]
+            }
+          ],
+          "symbols": [],
+          "version_mentions": [],
+          "concept_scopes": [],
+          "intent": {
+            "value": "installation",
+            "support_spans": [
+              "set up"
+            ]
+          }
+        },
+        "analyzer_rejected_items": [],
+        "analyzer_item_support": {
+          "repository_additions": [
+            {
+              "value": "pandaroot",
+              "support_spans": [
+                "PandaRoot"
+              ]
+            }
+          ],
+          "concepts": [
+            {
+              "value": "set up",
+              "support_spans": [
+                "set up"
+              ]
+            },
+            {
+              "value": "fresh workstation",
+              "support_spans": [
+                "fresh workstation"
+              ]
+            }
+          ],
+          "symbols": [],
+          "version_mentions": [],
+          "concept_scopes": [],
+          "intent": [
+            {
+              "value": "installation",
+              "support_spans": [
+                "set up"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "case_id": "c2t2_usage_repo_version",
+        "question": "How should I use LuminosityFit at ref dev to run an ordinary fit?",
+        "allowed_intent": [
+          "usage"
+        ],
+        "required_exact_tokens": [
+          "LuminosityFit",
+          "dev"
+        ],
+        "contract_properties": [
+          "Retain the explicit LuminosityFit token and the exact version token dev.",
+          "Associate the version with a repository only if the question makes that association explicit and auditable.",
+          "Do not invent a path, class, repository, or version."
+        ],
+        "status": "PASS",
+        "result": "PASS",
+        "attempts": 1,
+        "retries": 0,
+        "errors": [],
+        "local_pre_request_failures": [
+          {
+            "kind": "adc_credentials",
+            "type": "VertexCallError",
+            "message": "structured generation failed for gemini-3.7-flash in global: Your default credentials were not found.",
+            "remote_model_calls": 0,
+            "tokens": 0
+          }
+        ],
+        "model_call_delta": {
+          "model_calls": 1,
+          "token_usage": 1864,
+          "embedding_calls": 0,
+          "generation_calls": 1
+        },
+        "deterministic_parse": {
+          "fixed": {},
+          "fallback": {
+            "concept_scopes": {}
+          },
+          "known_partial": {
+            "target_repositories": [
+              "luminosityfit"
+            ]
+          },
+          "semantic_output_fields": [
+            "intent",
+            "repository_additions",
+            "concepts",
+            "symbols",
+            "version_mentions",
+            "concept_scopes"
+          ],
+          "unresolved_semantics": {
+            "intent": "resolve",
+            "repository_additions": "augment_known_partial",
+            "target_repositories": "augment_known_partial",
+            "concepts": "resolve",
+            "symbols": "resolve",
+            "version_mentions": "resolve",
+            "concept_scopes": "resolve"
+          },
+          "provenance": {
+            "target_repositories": [
+              {
+                "source": "explicit_query_reference",
+                "rule": "manifest_repo_id",
+                "value": "luminosityfit",
+                "ownership": "known_partial"
+              }
+            ]
+          }
+        },
+        "unbound_version_tokens": [
+          "dev"
+        ],
+        "analyzer_final": {
+          "intent": "usage",
+          "target_repositories": [
+            "luminosityfit"
+          ],
+          "concepts": [
+            "ordinary fit"
+          ],
+          "symbols": [],
+          "requested_versions": {},
+          "concept_scopes": {}
+        },
+        "plan_summary": {
+          "intent": "usage",
+          "target_repositories": [
+            "luminosityfit"
+          ],
+          "symbols": [],
+          "concepts": [
+            "ordinary fit"
+          ],
+          "concept_scopes": {},
+          "resolved_versions": {
+            "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          "version_conflicts": []
+        },
+        "manual_evaluation": {
+          "result": "PASS",
+          "critical_contract_failures": [],
+          "reason": "Exact dev token preserved; unsupported repository association was rejected and dev remained unbound as allowed by contract."
+        },
+        "analyzer_semantic_output_fields": [
+          "intent",
+          "repository_additions",
+          "concepts",
+          "symbols",
+          "version_mentions",
+          "concept_scopes"
+        ],
+        "analyzer_raw_semantic_delta": {
+          "intent": {
+            "value": "usage",
+            "support_spans": [
+              "How should I use",
+              "to run"
+            ]
+          },
+          "repository_additions": [
+            {
+              "value": "luminosityfit",
+              "support_spans": [
+                "LuminosityFit"
+              ]
+            }
+          ],
+          "concepts": [
+            {
+              "value": "ordinary fit",
+              "support_spans": [
+                "ordinary fit"
+              ]
+            }
+          ],
+          "symbols": [],
+          "version_mentions": [
+            {
+              "token": "dev",
+              "repository": "luminosityfit",
+              "support_spans": [
+                "dev"
+              ]
+            }
+          ],
+          "concept_scopes": []
+        },
+        "analyzer_accepted_semantic_delta": {
+          "repository_additions": [
+            {
+              "value": "luminosityfit",
+              "support_spans": [
+                "LuminosityFit"
+              ]
+            }
+          ],
+          "concepts": [
+            {
+              "value": "ordinary fit",
+              "support_spans": [
+                "ordinary fit"
+              ]
+            }
+          ],
+          "symbols": [],
+          "version_mentions": [
+            {
+              "token": "dev",
+              "support_spans": [
+                "dev"
+              ]
+            }
+          ],
+          "concept_scopes": [],
+          "intent": {
+            "value": "usage",
+            "support_spans": [
+              "How should I use",
+              "to run"
+            ]
+          }
+        },
+        "analyzer_rejected_items": [
+          {
+            "field": "version_mentions",
+            "item": {
+              "token": "dev",
+              "repository": "luminosityfit",
+              "support_spans": [
+                "dev"
+              ]
+            },
+            "reason": "ambiguous_version_repository"
+          }
+        ],
+        "analyzer_item_support": {
+          "repository_additions": [
+            {
+              "value": "luminosityfit",
+              "support_spans": [
+                "LuminosityFit"
+              ]
+            }
+          ],
+          "concepts": [
+            {
+              "value": "ordinary fit",
+              "support_spans": [
+                "ordinary fit"
+              ]
+            }
+          ],
+          "symbols": [],
+          "version_mentions": [
+            {
+              "token": "dev",
+              "support_spans": [
+                "dev"
+              ]
+            }
+          ],
+          "concept_scopes": [],
+          "intent": [
+            {
+              "value": "usage",
+              "support_spans": [
+                "How should I use",
+                "to run"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "case_id": "c2t2_troubleshooting_efficiency",
+        "question": "Why might an efficiency calculation yield empty bins, and what should I inspect first?",
+        "allowed_intent": [
+          "troubleshooting"
+        ],
+        "contract_properties": [
+          "Keep efficiency and empty-bin concepts relevant and non-speculative.",
+          "Do not guess an answer location or invent a symbol.",
+          "Scope must be limited to concepts supported by the question."
+        ],
+        "status": "PASS",
+        "result": "PASS",
+        "attempts": 1,
+        "retries": 0,
+        "errors": [],
+        "local_pre_request_failures": [
+          {
+            "kind": "adc_credentials",
+            "type": "VertexCallError",
+            "message": "structured generation failed for gemini-3.7-flash in global: Your default credentials were not found.",
+            "remote_model_calls": 0,
+            "tokens": 0
+          }
+        ],
+        "model_call_delta": {
+          "model_calls": 1,
+          "token_usage": 1803,
+          "embedding_calls": 0,
+          "generation_calls": 1
+        },
+        "deterministic_parse": {
+          "fixed": {
+            "intent": "troubleshooting",
+            "matched_expansion_rules": [
+              "fit_data_troubleshooting"
+            ]
+          },
+          "fallback": {
+            "concept_scopes": {
+              "efficiency": "angular_acceptance"
+            }
+          },
+          "known_partial": {
+            "target_repositories": [
+              "luminosityfit",
+              "restgas_determination"
+            ],
+            "symbols": [
+              "docs/apps/createLmdFitData.md",
+              "apps/createLmdFitData.cxx",
+              "data/PndLmdDataReader.cxx",
+              "apps/runLmdFit.cxx",
+              "macro/target/correction/efficiency_correction_2.C",
+              "macro/target/correction/efficiency_correction_steps.C"
+            ],
+            "concepts": [
+              "fit input assumptions and efficiency correction diagnostics",
+              "empty-bin binning and profile compatibility"
+            ]
+          },
+          "semantic_output_fields": [
+            "repository_additions",
+            "concepts",
+            "symbols",
+            "version_mentions",
+            "concept_scopes"
+          ],
+          "unresolved_semantics": {
+            "repository_additions": "augment_known_partial",
+            "target_repositories": "augment_known_partial",
+            "concepts": "augment_known_partial",
+            "symbols": "augment_known_partial",
+            "version_mentions": "resolve",
+            "concept_scopes": "resolve_remaining_scope_keys_with_fallback"
+          },
+          "provenance": {
+            "intent": [
+              {
+                "source": "deterministic_route",
+                "rule": "troubleshooting",
+                "value": "troubleshooting",
+                "ownership": "fixed"
+              }
+            ],
+            "concept_scopes": [
+              {
+                "source": "deterministic_scope",
+                "rule": "efficiency",
+                "value": "angular_acceptance",
+                "ownership": "fallback"
+              }
+            ],
+            "query_expansions": [
+              {
+                "source": "reviewed_expansion",
+                "rule": "fit_data_troubleshooting",
+                "ownership": "fixed_reviewed_rule"
+              }
+            ]
+          }
+        },
+        "unbound_version_tokens": [],
+        "analyzer_final": {
+          "intent": "troubleshooting",
+          "target_repositories": [
+            "luminosityfit",
+            "restgas_determination"
+          ],
+          "concepts": [
+            "efficiency calculation",
+            "empty bins",
+            "fit input assumptions and efficiency correction diagnostics",
+            "empty-bin binning and profile compatibility"
+          ],
+          "symbols": [
+            "docs/apps/createLmdFitData.md",
+            "apps/createLmdFitData.cxx",
+            "data/PndLmdDataReader.cxx",
+            "apps/runLmdFit.cxx",
+            "macro/target/correction/efficiency_correction_2.C",
+            "macro/target/correction/efficiency_correction_steps.C"
+          ],
+          "requested_versions": {},
+          "concept_scopes": {
+            "efficiency": "angular_acceptance"
+          }
+        },
+        "plan_summary": {
+          "intent": "troubleshooting",
+          "target_repositories": [
+            "luminosityfit",
+            "restgas_determination"
+          ],
+          "symbols": [
+            "docs/apps/createLmdFitData.md",
+            "apps/createLmdFitData.cxx",
+            "data/PndLmdDataReader.cxx",
+            "apps/runLmdFit.cxx",
+            "macro/target/correction/efficiency_correction_2.C",
+            "macro/target/correction/efficiency_correction_steps.C"
+          ],
+          "concepts": [
+            "efficiency calculation",
+            "empty bins",
+            "fit input assumptions and efficiency correction diagnostics",
+            "empty-bin binning and profile compatibility"
+          ],
+          "concept_scopes": {
+            "efficiency": "angular_acceptance"
+          },
+          "resolved_versions": {
+            "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+          },
+          "version_conflicts": []
+        },
+        "manual_evaluation": {
+          "result": "PASS",
+          "critical_contract_failures": [],
+          "reason": "Efficiency and empty-bin semantics are query-grounded; no invented identifier or answer location was emitted."
+        },
+        "analyzer_semantic_output_fields": [
+          "repository_additions",
+          "concepts",
+          "symbols",
+          "version_mentions",
+          "concept_scopes"
+        ],
+        "analyzer_raw_semantic_delta": {
+          "repository_additions": [],
+          "concepts": [
+            {
+              "value": "efficiency calculation",
+              "support_spans": [
+                "efficiency calculation"
+              ]
+            },
+            {
+              "value": "empty bins",
+              "support_spans": [
+                "empty bins"
+              ]
+            }
+          ],
+          "symbols": [],
+          "version_mentions": [],
+          "concept_scopes": [
+            {
+              "key": "efficiency",
+              "value": "angular_acceptance",
+              "support_spans": [
+                "efficiency"
+              ]
+            }
+          ]
+        },
+        "analyzer_accepted_semantic_delta": {
+          "repository_additions": [],
+          "concepts": [
+            {
+              "value": "efficiency calculation",
+              "support_spans": [
+                "efficiency calculation"
+              ]
+            },
+            {
+              "value": "empty bins",
+              "support_spans": [
+                "empty bins"
+              ]
+            }
+          ],
+          "symbols": [],
+          "version_mentions": [],
+          "concept_scopes": [
+            {
+              "key": "efficiency",
+              "value": "angular_acceptance",
+              "support_spans": [
+                "efficiency"
+              ]
+            }
+          ]
+        },
+        "analyzer_rejected_items": [],
+        "analyzer_item_support": {
+          "repository_additions": [],
+          "concepts": [
+            {
+              "value": "efficiency calculation",
+              "support_spans": [
+                "efficiency calculation"
+              ]
+            },
+            {
+              "value": "empty bins",
+              "support_spans": [
+                "empty bins"
+              ]
+            }
+          ],
+          "symbols": [],
+          "version_mentions": [],
+          "concept_scopes": [
+            {
+              "key": "efficiency",
+              "value": "angular_acceptance",
+              "support_spans": [
+                "efficiency"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "case_id": "c2t2_theory",
+        "question": "Explain the theory behind luminosity extraction from elastic scattering.",
+        "allowed_intent": [
+          "algorithm_theory"
+        ],
+        "contract_properties": [
+          "Use faithful query-grounded theory concepts.",
+          "Do not invent a repository, path, symbol, version, or answer location.",
+          "Do not turn domain knowledge into unsupported repository semantics."
+        ],
+        "status": "PASS",
+        "result": "PASS",
+        "attempts": 1,
+        "retries": 0,
+        "errors": [],
+        "local_pre_request_failures": [
+          {
+            "kind": "adc_credentials",
+            "type": "VertexCallError",
+            "message": "structured generation failed for gemini-3.7-flash in global: Your default credentials were not found.",
+            "remote_model_calls": 0,
+            "tokens": 0
+          }
+        ],
+        "model_call_delta": {
+          "model_calls": 1,
+          "token_usage": 1475,
+          "embedding_calls": 0,
+          "generation_calls": 1
+        },
+        "deterministic_parse": {
+          "fixed": {},
+          "fallback": {
+            "concept_scopes": {}
+          },
+          "known_partial": {},
+          "semantic_output_fields": [
+            "intent",
+            "repository_additions",
+            "concepts",
+            "symbols",
+            "version_mentions",
+            "concept_scopes"
+          ],
+          "unresolved_semantics": {
+            "intent": "resolve",
+            "repository_additions": "resolve",
+            "target_repositories": "resolve",
+            "concepts": "resolve",
+            "symbols": "resolve",
+            "version_mentions": "resolve",
+            "concept_scopes": "resolve"
+          },
+          "provenance": {}
+        },
+        "unbound_version_tokens": [],
+        "analyzer_final": {
+          "intent": "algorithm_theory",
+          "target_repositories": [
+            "luminosityfit",
+            "pandaroot",
+            "restgas_determination"
+          ],
+          "concepts": [
+            "luminosity extraction",
+            "elastic scattering"
+          ],
+          "symbols": [],
+          "requested_versions": {},
+          "concept_scopes": {}
+        },
+        "plan_summary": {
+          "intent": "algorithm_theory",
+          "target_repositories": [
+            "luminosityfit",
+            "pandaroot",
+            "restgas_determination"
+          ],
+          "symbols": [],
+          "concepts": [
+            "luminosity extraction",
+            "elastic scattering"
+          ],
+          "concept_scopes": {},
+          "resolved_versions": {
+            "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357",
+            "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+          },
+          "version_conflicts": []
+        },
+        "manual_evaluation": {
+          "result": "PASS",
+          "critical_contract_failures": [],
+          "reason": "Theory concepts are faithful to the query with no repository, path, symbol, version, or answer-location invention."
+        },
+        "analyzer_semantic_output_fields": [
+          "intent",
+          "repository_additions",
+          "concepts",
+          "symbols",
+          "version_mentions",
+          "concept_scopes"
+        ],
+        "analyzer_raw_semantic_delta": {
+          "intent": {
+            "value": "algorithm_theory",
+            "support_spans": [
+              "Explain the theory behind"
+            ]
+          },
+          "repository_additions": [],
+          "concepts": [
+            {
+              "value": "luminosity extraction",
+              "support_spans": [
+                "luminosity extraction"
+              ]
+            },
+            {
+              "value": "elastic scattering",
+              "support_spans": [
+                "elastic scattering"
+              ]
+            }
+          ],
+          "symbols": [],
+          "version_mentions": [],
+          "concept_scopes": []
+        },
+        "analyzer_accepted_semantic_delta": {
+          "repository_additions": [],
+          "concepts": [
+            {
+              "value": "luminosity extraction",
+              "support_spans": [
+                "luminosity extraction"
+              ]
+            },
+            {
+              "value": "elastic scattering",
+              "support_spans": [
+                "elastic scattering"
+              ]
+            }
+          ],
+          "symbols": [],
+          "version_mentions": [],
+          "concept_scopes": [],
+          "intent": {
+            "value": "algorithm_theory",
+            "support_spans": [
+              "Explain the theory behind"
+            ]
+          }
+        },
+        "analyzer_rejected_items": [],
+        "analyzer_item_support": {
+          "repository_additions": [],
+          "concepts": [
+            {
+              "value": "luminosity extraction",
+              "support_spans": [
+                "luminosity extraction"
+              ]
+            },
+            {
+              "value": "elastic scattering",
+              "support_spans": [
+                "elastic scattering"
+              ]
+            }
+          ],
+          "symbols": [],
+          "version_mentions": [],
+          "concept_scopes": [],
+          "intent": [
+            {
+              "value": "algorithm_theory",
+              "support_spans": [
+                "Explain the theory behind"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "case_id": "c2t2_implementation_backprop",
+        "question": "How is back propagation implemented for target tracks?",
+        "allowed_intent": [
+          "algorithm_implementation"
+        ],
+        "contract_properties": [
+          "Preserve the back-propagation implementation concept and query scope when supported.",
+          "Do not invent a class, path, repository, or version.",
+          "Do not guess an implementation location."
+        ],
+        "status": "PASS",
+        "result": "PASS",
+        "attempts": 1,
+        "retries": 0,
+        "errors": [],
+        "local_pre_request_failures": [
+          {
+            "kind": "adc_credentials",
+            "type": "VertexCallError",
+            "message": "structured generation failed for gemini-3.7-flash in global: Your default credentials were not found.",
+            "remote_model_calls": 0,
+            "tokens": 0
+          }
+        ],
+        "model_call_delta": {
+          "model_calls": 1,
+          "token_usage": 1878,
+          "embedding_calls": 0,
+          "generation_calls": 1
+        },
+        "deterministic_parse": {
+          "fixed": {
+            "intent": "algorithm_implementation"
+          },
+          "fallback": {
+            "concept_scopes": {
+              "back_propagation": "target_track_to_event_poca"
+            }
+          },
+          "known_partial": {},
+          "semantic_output_fields": [
+            "repository_additions",
+            "concepts",
+            "symbols",
+            "version_mentions",
+            "concept_scopes"
+          ],
+          "unresolved_semantics": {
+            "repository_additions": "resolve",
+            "target_repositories": "resolve",
+            "concepts": "resolve",
+            "symbols": "resolve",
+            "version_mentions": "resolve",
+            "concept_scopes": "resolve_remaining_scope_keys_with_fallback"
+          },
+          "provenance": {
+            "intent": [
+              {
+                "source": "deterministic_route",
+                "rule": "algorithm_implementation",
+                "value": "algorithm_implementation",
+                "ownership": "fixed"
+              }
+            ],
+            "concept_scopes": [
+              {
+                "source": "deterministic_scope",
+                "rule": "back_propagation",
+                "value": "target_track_to_event_poca",
+                "ownership": "fallback"
+              }
+            ]
+          }
+        },
+        "unbound_version_tokens": [],
+        "analyzer_final": {
+          "intent": "algorithm_implementation",
+          "target_repositories": [
+            "luminosityfit",
+            "pandaroot",
+            "restgas_determination"
+          ],
+          "concepts": [
+            "back propagation",
+            "target tracks"
+          ],
+          "symbols": [],
+          "requested_versions": {},
+          "concept_scopes": {
+            "back_propagation": "target_track_to_event_poca"
+          }
+        },
+        "plan_summary": {
+          "intent": "algorithm_implementation",
+          "target_repositories": [
+            "luminosityfit",
+            "pandaroot",
+            "restgas_determination"
+          ],
+          "symbols": [],
+          "concepts": [
+            "back propagation",
+            "target tracks"
+          ],
+          "concept_scopes": {
+            "back_propagation": "target_track_to_event_poca"
+          },
+          "resolved_versions": {
+            "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357",
+            "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+          },
+          "version_conflicts": []
+        },
+        "manual_evaluation": {
+          "result": "PASS",
+          "critical_contract_failures": [],
+          "reason": "Back-propagation and target-track concepts are query-grounded; fallback scope is preserved without invented implementation location."
+        },
+        "analyzer_semantic_output_fields": [
+          "repository_additions",
+          "concepts",
+          "symbols",
+          "version_mentions",
+          "concept_scopes"
+        ],
+        "analyzer_raw_semantic_delta": {
+          "repository_additions": [],
+          "concepts": [
+            {
+              "value": "back propagation",
+              "support_spans": [
+                "back propagation"
+              ]
+            },
+            {
+              "value": "target tracks",
+              "support_spans": [
+                "target tracks"
+              ]
+            }
+          ],
+          "symbols": [],
+          "version_mentions": [],
+          "concept_scopes": []
+        },
+        "analyzer_accepted_semantic_delta": {
+          "repository_additions": [],
+          "concepts": [
+            {
+              "value": "back propagation",
+              "support_spans": [
+                "back propagation"
+              ]
+            },
+            {
+              "value": "target tracks",
+              "support_spans": [
+                "target tracks"
+              ]
+            }
+          ],
+          "symbols": [],
+          "version_mentions": [],
+          "concept_scopes": []
+        },
+        "analyzer_rejected_items": [],
+        "analyzer_item_support": {
+          "repository_additions": [],
+          "concepts": [
+            {
+              "value": "back propagation",
+              "support_spans": [
+                "back propagation"
+              ]
+            },
+            {
+              "value": "target tracks",
+              "support_spans": [
+                "target tracks"
+              ]
+            }
+          ],
+          "symbols": [],
+          "version_mentions": [],
+          "concept_scopes": []
+        }
+      },
+      {
+        "case_id": "c2t2_ambiguous_pipeline",
+        "question": "Describe how this pipeline works from input to output.",
+        "allowed_intent": [
+          "data_flow"
+        ],
+        "contract_properties": [
+          "Use data-flow semantics only when supported by the query.",
+          "Do not speculate about a repository, symbol, path, or version.",
+          "An empty repository addition is acceptable because the repository is ambiguous."
+        ],
+        "status": "PASS",
+        "result": "PASS",
+        "attempts": 1,
+        "retries": 0,
+        "errors": [],
+        "local_pre_request_failures": [
+          {
+            "kind": "adc_credentials",
+            "type": "VertexCallError",
+            "message": "structured generation failed for gemini-3.7-flash in global: Your default credentials were not found.",
+            "remote_model_calls": 0,
+            "tokens": 0
+          }
+        ],
+        "model_call_delta": {
+          "model_calls": 1,
+          "token_usage": 1608,
+          "embedding_calls": 0,
+          "generation_calls": 1
+        },
+        "deterministic_parse": {
+          "fixed": {},
+          "fallback": {
+            "concept_scopes": {}
+          },
+          "known_partial": {},
+          "semantic_output_fields": [
+            "intent",
+            "repository_additions",
+            "concepts",
+            "symbols",
+            "version_mentions",
+            "concept_scopes"
+          ],
+          "unresolved_semantics": {
+            "intent": "resolve",
+            "repository_additions": "resolve",
+            "target_repositories": "resolve",
+            "concepts": "resolve",
+            "symbols": "resolve",
+            "version_mentions": "resolve",
+            "concept_scopes": "resolve"
+          },
+          "provenance": {}
+        },
+        "unbound_version_tokens": [],
+        "analyzer_final": {
+          "intent": "data_flow",
+          "target_repositories": [
+            "luminosityfit",
+            "pandaroot",
+            "restgas_determination"
+          ],
+          "concepts": [
+            "pipeline",
+            "input",
+            "output"
+          ],
+          "symbols": [],
+          "requested_versions": {},
+          "concept_scopes": {}
+        },
+        "plan_summary": {
+          "intent": "data_flow",
+          "target_repositories": [
+            "luminosityfit",
+            "pandaroot",
+            "restgas_determination"
+          ],
+          "symbols": [],
+          "concepts": [
+            "pipeline",
+            "input",
+            "output"
+          ],
+          "concept_scopes": {},
+          "resolved_versions": {
+            "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357",
+            "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+          },
+          "version_conflicts": []
+        },
+        "manual_evaluation": {
+          "result": "PASS",
+          "critical_contract_failures": [],
+          "reason": "No speculative analyzer repository, symbol, path, or version was added; default targets came from deterministic fallback."
+        },
+        "analyzer_semantic_output_fields": [
+          "intent",
+          "repository_additions",
+          "concepts",
+          "symbols",
+          "version_mentions",
+          "concept_scopes"
+        ],
+        "analyzer_raw_semantic_delta": {
+          "intent": {
+            "value": "data_flow",
+            "support_spans": [
+              "how this pipeline works from input to output"
+            ]
+          },
+          "repository_additions": [],
+          "concepts": [
+            {
+              "value": "pipeline",
+              "support_spans": [
+                "pipeline"
+              ]
+            },
+            {
+              "value": "input",
+              "support_spans": [
+                "input"
+              ]
+            },
+            {
+              "value": "output",
+              "support_spans": [
+                "output"
+              ]
+            }
+          ],
+          "symbols": [],
+          "version_mentions": [],
+          "concept_scopes": []
+        },
+        "analyzer_accepted_semantic_delta": {
+          "repository_additions": [],
+          "concepts": [
+            {
+              "value": "pipeline",
+              "support_spans": [
+                "pipeline"
+              ]
+            },
+            {
+              "value": "input",
+              "support_spans": [
+                "input"
+              ]
+            },
+            {
+              "value": "output",
+              "support_spans": [
+                "output"
+              ]
+            }
+          ],
+          "symbols": [],
+          "version_mentions": [],
+          "concept_scopes": [],
+          "intent": {
+            "value": "data_flow",
+            "support_spans": [
+              "how this pipeline works from input to output"
+            ]
+          }
+        },
+        "analyzer_rejected_items": [],
+        "analyzer_item_support": {
+          "repository_additions": [],
+          "concepts": [
+            {
+              "value": "pipeline",
+              "support_spans": [
+                "pipeline"
+              ]
+            },
+            {
+              "value": "input",
+              "support_spans": [
+                "input"
+              ]
+            },
+            {
+              "value": "output",
+              "support_spans": [
+                "output"
+              ]
+            }
+          ],
+          "symbols": [],
+          "version_mentions": [],
+          "concept_scopes": [],
+          "intent": [
+            {
+              "value": "data_flow",
+              "support_spans": [
+                "how this pipeline works from input to output"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "case_id": "c2t2_bare_sha",
+        "question": "Use commit deadbeef for this behavior.",
+        "allowed_intent": [
+          "usage"
+        ],
+        "required_exact_tokens": [
+          "deadbeef"
+        ],
+        "contract_properties": [
+          "Preserve deadbeef exactly as a version token.",
+          "Keep deadbeef unbound because no repository is explicit.",
+          "Do not bind deadbeef to an inferred repository or fabricate a version conflict."
+        ],
+        "status": "PASS",
+        "result": "PASS",
+        "attempts": 1,
+        "retries": 0,
+        "errors": [],
+        "local_pre_request_failures": [
+          {
+            "kind": "adc_credentials",
+            "type": "VertexCallError",
+            "message": "structured generation failed for gemini-3.7-flash in global: Your default credentials were not found.",
+            "remote_model_calls": 0,
+            "tokens": 0
+          }
+        ],
+        "model_call_delta": {
+          "model_calls": 1,
+          "token_usage": 1517,
+          "embedding_calls": 0,
+          "generation_calls": 1
+        },
+        "deterministic_parse": {
+          "fixed": {
+            "explicit_sha_tokens": [
+              "deadbeef"
+            ]
+          },
+          "fallback": {
+            "concept_scopes": {}
+          },
+          "known_partial": {},
+          "semantic_output_fields": [
+            "intent",
+            "repository_additions",
+            "concepts",
+            "symbols",
+            "version_mentions",
+            "concept_scopes"
+          ],
+          "unresolved_semantics": {
+            "intent": "resolve",
+            "repository_additions": "resolve",
+            "target_repositories": "resolve",
+            "concepts": "resolve",
+            "symbols": "resolve",
+            "version_mentions": "resolve",
+            "concept_scopes": "resolve"
+          },
+          "provenance": {}
+        },
+        "unbound_version_tokens": [
+          "deadbeef"
+        ],
+        "analyzer_final": {
+          "intent": "usage",
+          "target_repositories": [
+            "luminosityfit",
+            "pandaroot",
+            "restgas_determination"
+          ],
+          "concepts": [
+            "behavior"
+          ],
+          "symbols": [],
+          "requested_versions": {},
+          "concept_scopes": {}
+        },
+        "plan_summary": {
+          "intent": "usage",
+          "target_repositories": [
+            "luminosityfit",
+            "pandaroot",
+            "restgas_determination"
+          ],
+          "symbols": [],
+          "concepts": [
+            "behavior"
+          ],
+          "concept_scopes": {},
+          "resolved_versions": {
+            "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357",
+            "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+          },
+          "version_conflicts": []
+        },
+        "manual_evaluation": {
+          "result": "PASS",
+          "critical_contract_failures": [],
+          "reason": "deadbeef was preserved exactly and remained unbound; no repository binding or false conflict was fabricated."
+        },
+        "analyzer_semantic_output_fields": [
+          "intent",
+          "repository_additions",
+          "concepts",
+          "symbols",
+          "version_mentions",
+          "concept_scopes"
+        ],
+        "analyzer_raw_semantic_delta": {
+          "intent": {
+            "value": "usage",
+            "support_spans": [
+              "Use"
+            ]
+          },
+          "repository_additions": [],
+          "concepts": [
+            {
+              "value": "behavior",
+              "support_spans": [
+                "behavior"
+              ]
+            }
+          ],
+          "symbols": [],
+          "version_mentions": [
+            {
+              "token": "deadbeef",
+              "support_spans": [
+                "deadbeef"
+              ]
+            }
+          ],
+          "concept_scopes": []
+        },
+        "analyzer_accepted_semantic_delta": {
+          "repository_additions": [],
+          "concepts": [
+            {
+              "value": "behavior",
+              "support_spans": [
+                "behavior"
+              ]
+            }
+          ],
+          "symbols": [],
+          "version_mentions": [
+            {
+              "token": "deadbeef",
+              "support_spans": [
+                "deadbeef"
+              ]
+            }
+          ],
+          "concept_scopes": [],
+          "intent": {
+            "value": "usage",
+            "support_spans": [
+              "Use"
+            ]
+          }
+        },
+        "analyzer_rejected_items": [],
+        "analyzer_item_support": {
+          "repository_additions": [],
+          "concepts": [
+            {
+              "value": "behavior",
+              "support_spans": [
+                "behavior"
+              ]
+            }
+          ],
+          "symbols": [],
+          "version_mentions": [
+            {
+              "token": "deadbeef",
+              "support_spans": [
+                "deadbeef"
+              ]
+            }
+          ],
+          "concept_scopes": [],
+          "intent": [
+            {
+              "value": "usage",
+              "support_spans": [
+                "Use"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "case_id": "c2t2_multi_repository",
+        "question": "How does data move from PandaRoot into RestgasDetermination?",
+        "allowed_intent": [
+          "data_flow"
+        ],
+        "required_exact_tokens": [
+          "PandaRoot",
+          "RestgasDetermination"
+        ],
+        "contract_properties": [
+          "Retain both explicit repository tokens.",
+          "Do not invent a third repository, path, symbol, or version.",
+          "Represent the data-flow scope without adding unsupported answer-location semantics."
+        ],
+        "status": "PASS",
+        "result": "PASS",
+        "attempts": 1,
+        "retries": 0,
+        "errors": [],
+        "local_pre_request_failures": [
+          {
+            "kind": "adc_credentials",
+            "type": "VertexCallError",
+            "message": "structured generation failed for gemini-3.7-flash in global: Your default credentials were not found.",
+            "remote_model_calls": 0,
+            "tokens": 0
+          }
+        ],
+        "model_call_delta": {
+          "model_calls": 1,
+          "token_usage": 1864,
+          "embedding_calls": 0,
+          "generation_calls": 1
+        },
+        "deterministic_parse": {
+          "fixed": {
+            "matched_expansion_rules": [
+              "restgas_pandaroot_extension"
+            ]
+          },
+          "fallback": {
+            "concept_scopes": {}
+          },
+          "known_partial": {
+            "target_repositories": [
+              "pandaroot",
+              "restgas_determination"
+            ],
+            "symbols": [
+              "pgenerators/Target/PndTargetGenerator.cxx",
+              "tracking/PndApolloniusTripletTrackFinder/PndApolloniusTripletTrackFinderTask.cxx",
+              "tracking/PzFinder/PndSttSkewStrawPzFinderTask.cxx",
+              "pid/PidCorr/PndPidCorrelator.cxx"
+            ],
+            "concepts": [
+              "RestgasDetermination custom extension modules"
+            ]
+          },
+          "semantic_output_fields": [
+            "intent",
+            "repository_additions",
+            "concepts",
+            "symbols",
+            "version_mentions",
+            "concept_scopes"
+          ],
+          "unresolved_semantics": {
+            "intent": "resolve",
+            "repository_additions": "augment_known_partial",
+            "target_repositories": "augment_known_partial",
+            "concepts": "augment_known_partial",
+            "symbols": "augment_known_partial",
+            "version_mentions": "resolve",
+            "concept_scopes": "resolve"
+          },
+          "provenance": {
+            "target_repositories": [
+              {
+                "source": "explicit_query_reference",
+                "rule": "manifest_repo_id",
+                "value": "pandaroot",
+                "ownership": "known_partial"
+              },
+              {
+                "source": "explicit_query_reference",
+                "rule": "manifest_repo_id",
+                "value": "restgas_determination",
+                "ownership": "known_partial"
+              }
+            ],
+            "query_expansions": [
+              {
+                "source": "reviewed_expansion",
+                "rule": "restgas_pandaroot_extension",
+                "ownership": "fixed_reviewed_rule"
+              }
+            ]
+          }
+        },
+        "unbound_version_tokens": [],
+        "analyzer_final": {
+          "intent": "data_flow",
+          "target_repositories": [
+            "pandaroot",
+            "restgas_determination"
+          ],
+          "concepts": [
+            "data move",
+            "RestgasDetermination custom extension modules"
+          ],
+          "symbols": [
+            "pgenerators/Target/PndTargetGenerator.cxx",
+            "tracking/PndApolloniusTripletTrackFinder/PndApolloniusTripletTrackFinderTask.cxx",
+            "tracking/PzFinder/PndSttSkewStrawPzFinderTask.cxx",
+            "pid/PidCorr/PndPidCorrelator.cxx"
+          ],
+          "requested_versions": {},
+          "concept_scopes": {}
+        },
+        "plan_summary": {
+          "intent": "data_flow",
+          "target_repositories": [
+            "pandaroot",
+            "restgas_determination"
+          ],
+          "symbols": [
+            "pgenerators/Target/PndTargetGenerator.cxx",
+            "tracking/PndApolloniusTripletTrackFinder/PndApolloniusTripletTrackFinderTask.cxx",
+            "tracking/PzFinder/PndSttSkewStrawPzFinderTask.cxx",
+            "pid/PidCorr/PndPidCorrelator.cxx"
+          ],
+          "concepts": [
+            "data move",
+            "RestgasDetermination custom extension modules"
+          ],
+          "concept_scopes": {},
+          "resolved_versions": {
+            "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357",
+            "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+          },
+          "version_conflicts": []
+        },
+        "manual_evaluation": {
+          "result": "PASS",
+          "critical_contract_failures": [],
+          "reason": "Both explicit repositories and data-flow semantics were retained; no third repository, symbol, path, or version was invented."
+        },
+        "analyzer_semantic_output_fields": [
+          "intent",
+          "repository_additions",
+          "concepts",
+          "symbols",
+          "version_mentions",
+          "concept_scopes"
+        ],
+        "analyzer_raw_semantic_delta": {
+          "intent": {
+            "value": "data_flow",
+            "support_spans": [
+              "How does data move"
+            ]
+          },
+          "repository_additions": [
+            {
+              "value": "pandaroot",
+              "support_spans": [
+                "PandaRoot"
+              ]
+            },
+            {
+              "value": "restgas_determination",
+              "support_spans": [
+                "RestgasDetermination"
+              ]
+            }
+          ],
+          "concepts": [
+            {
+              "value": "data move",
+              "support_spans": [
+                "data move"
+              ]
+            }
+          ],
+          "symbols": [],
+          "version_mentions": [],
+          "concept_scopes": []
+        },
+        "analyzer_accepted_semantic_delta": {
+          "repository_additions": [
+            {
+              "value": "pandaroot",
+              "support_spans": [
+                "PandaRoot"
+              ]
+            },
+            {
+              "value": "restgas_determination",
+              "support_spans": [
+                "RestgasDetermination"
+              ]
+            }
+          ],
+          "concepts": [
+            {
+              "value": "data move",
+              "support_spans": [
+                "data move"
+              ]
+            }
+          ],
+          "symbols": [],
+          "version_mentions": [],
+          "concept_scopes": [],
+          "intent": {
+            "value": "data_flow",
+            "support_spans": [
+              "How does data move"
+            ]
+          }
+        },
+        "analyzer_rejected_items": [],
+        "analyzer_item_support": {
+          "repository_additions": [
+            {
+              "value": "pandaroot",
+              "support_spans": [
+                "PandaRoot"
+              ]
+            },
+            {
+              "value": "restgas_determination",
+              "support_spans": [
+                "RestgasDetermination"
+              ]
+            }
+          ],
+          "concepts": [
+            {
+              "value": "data move",
+              "support_spans": [
+                "data move"
+              ]
+            }
+          ],
+          "symbols": [],
+          "version_mentions": [],
+          "concept_scopes": [],
+          "intent": [
+            {
+              "value": "data_flow",
+              "support_spans": [
+                "How does data move"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "case_id": "c2t2_natural_paraphrase",
+        "question": "Could you sketch the nuts and bolts of acceptance correction without guessing any code names?",
+        "allowed_intent": [
+          "algorithm_theory",
+          "algorithm_implementation"
+        ],
+        "contract_properties": [
+          "Retain relevant acceptance-correction semantics.",
+          "Do not invent a symbol, path, repository, version, or code name.",
+          "Do not add answer content or an answer location as query semantics."
+        ],
+        "status": "PASS",
+        "result": "PASS",
+        "attempts": 1,
+        "retries": 0,
+        "errors": [],
+        "local_pre_request_failures": [
+          {
+            "kind": "adc_credentials",
+            "type": "VertexCallError",
+            "message": "structured generation failed for gemini-3.7-flash in global: Your default credentials were not found.",
+            "remote_model_calls": 0,
+            "tokens": 0
+          }
+        ],
+        "model_call_delta": {
+          "model_calls": 1,
+          "token_usage": 1742,
+          "embedding_calls": 0,
+          "generation_calls": 1
+        },
+        "deterministic_parse": {
+          "fixed": {},
+          "fallback": {
+            "concept_scopes": {}
+          },
+          "known_partial": {},
+          "semantic_output_fields": [
+            "intent",
+            "repository_additions",
+            "concepts",
+            "symbols",
+            "version_mentions",
+            "concept_scopes"
+          ],
+          "unresolved_semantics": {
+            "intent": "resolve",
+            "repository_additions": "resolve",
+            "target_repositories": "resolve",
+            "concepts": "resolve",
+            "symbols": "resolve",
+            "version_mentions": "resolve",
+            "concept_scopes": "resolve"
+          },
+          "provenance": {}
+        },
+        "unbound_version_tokens": [],
+        "analyzer_final": {
+          "intent": "algorithm_theory",
+          "target_repositories": [
+            "luminosityfit",
+            "pandaroot",
+            "restgas_determination"
+          ],
+          "concepts": [
+            "acceptance correction"
+          ],
+          "symbols": [],
+          "requested_versions": {},
+          "concept_scopes": {}
+        },
+        "plan_summary": {
+          "intent": "algorithm_theory",
+          "target_repositories": [
+            "luminosityfit",
+            "pandaroot",
+            "restgas_determination"
+          ],
+          "symbols": [],
+          "concepts": [
+            "acceptance correction"
+          ],
+          "concept_scopes": {},
+          "resolved_versions": {
+            "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357",
+            "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+          },
+          "version_conflicts": []
+        },
+        "manual_evaluation": {
+          "result": "PASS",
+          "critical_contract_failures": [],
+          "reason": "Acceptance-correction semantics were retained without any invented code name, path, repository, version, or answer location."
+        },
+        "analyzer_semantic_output_fields": [
+          "intent",
+          "repository_additions",
+          "concepts",
+          "symbols",
+          "version_mentions",
+          "concept_scopes"
+        ],
+        "analyzer_raw_semantic_delta": {
+          "intent": {
+            "value": "algorithm_theory",
+            "support_spans": [
+              "sketch the nuts and bolts of acceptance correction"
+            ]
+          },
+          "repository_additions": [],
+          "concepts": [
+            {
+              "value": "acceptance correction",
+              "support_spans": [
+                "acceptance correction"
+              ]
+            }
+          ],
+          "symbols": [],
+          "version_mentions": [],
+          "concept_scopes": []
+        },
+        "analyzer_accepted_semantic_delta": {
+          "repository_additions": [],
+          "concepts": [
+            {
+              "value": "acceptance correction",
+              "support_spans": [
+                "acceptance correction"
+              ]
+            }
+          ],
+          "symbols": [],
+          "version_mentions": [],
+          "concept_scopes": [],
+          "intent": {
+            "value": "algorithm_theory",
+            "support_spans": [
+              "sketch the nuts and bolts of acceptance correction"
+            ]
+          }
+        },
+        "analyzer_rejected_items": [],
+        "analyzer_item_support": {
+          "repository_additions": [],
+          "concepts": [
+            {
+              "value": "acceptance correction",
+              "support_spans": [
+                "acceptance correction"
+              ]
+            }
+          ],
+          "symbols": [],
+          "version_mentions": [],
+          "concept_scopes": [],
+          "intent": [
+            {
+              "value": "algorithm_theory",
+              "support_spans": [
+                "sketch the nuts and bolts of acceptance correction"
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "observed_outputs_present": true,
+    "raw_outputs_present": true
+  },
+  "structural_checks": {
+    "exactly_ten_cases": true,
+    "unique_case_ids": true,
+    "all_case_statuses_pending": false,
+    "all_case_results_pending": false,
+    "all_case_results_recorded": true,
+    "all_case_results_pass": true,
+    "calls_used": 10,
+    "max_analyzer_calls": 12,
+    "calls_remaining": 2,
+    "case_results_or_raw_outputs_recorded": true,
+    "raw_structured_responses_recorded": true
+  },
+  "cost_guardrails": {
+    "live_analyzer_calls_max": 12,
+    "initial_cases": 10,
+    "directly_affected_reruns_max": 2,
+    "counters_at_preregistration": {
+      "analyzer_calls": 0,
+      "external_calls": 0,
+      "model_calls": 0,
+      "tokens": 0,
+      "retriever_calls": 0,
+      "reranker_calls": 0,
+      "query_embedding_calls": 0,
+      "document_embedding_calls": 0,
+      "qa_calls": 0,
+      "verifier_calls": 0,
+      "judge_calls": 0,
+      "sql_writes": 0,
+      "qdrant_writes": 0,
+      "index_mutation": 0,
+      "benchmark_runs": 0,
+      "reindex": "no",
+      "reembedding": "no"
+    },
+    "live_t2_downstream_maxima": {
+      "retriever_calls": 0,
+      "reranker_calls": 0,
+      "query_embedding_calls": 0,
+      "document_embedding_calls": 0,
+      "qa_calls": 0,
+      "verifier_calls": 0,
+      "judge_calls": 0,
+      "sql_writes": 0,
+      "qdrant_writes": 0,
+      "index_mutation": 0,
+      "reindex": "no",
+      "reembedding": "no"
+    },
+    "live_t2_observed": {
+      "analyzer_calls": 10,
+      "external_calls": 10,
+      "model_calls": 10,
+      "tokens": 17173,
+      "mean_tokens_per_call": 1717.3,
+      "retriever_calls": 0,
+      "reranker_calls": 0,
+      "query_embedding_calls": 0,
+      "document_embedding_calls": 0,
+      "qa_calls": 0,
+      "verifier_calls": 0,
+      "judge_calls": 0,
+      "sql_writes": 0,
+      "qdrant_writes": 0,
+      "index_mutation": 0,
+      "reindex": "no",
+      "reembedding": "no"
+    }
+  },
+  "retrieval_index_impact": {
+    "query_understanding_analyzer_contract_changed": true,
+    "dense_query_construction_changed": false,
+    "sparse_query_construction_changed": false,
+    "exact_retrieval_changed": false,
+    "retrieval_ranking_intentionally_changed": false,
+    "reranker_changed": false,
+    "final_evidence_selector_changed": false,
+    "qdrant_changed": false,
+    "postgresql_corpus_changed": false,
+    "index_changed": false,
+    "reindex": false,
+    "reembedding": false
+  },
+  "known_limitations": [
+    "Ten sandbox ADC failures and two local harness validation failures are retained as pre-request environment history; they are excluded from remote model calls and token cost.",
+    "The authorized remote batch produced ten successful structured responses; two remaining calls stayed unused and no further reruns are permitted.",
+    "The usage case conservatively leaves the explicit dev token unbound after rejecting an ambiguous repository association; this is allowed by the preregistered contract.",
+    "The small T2 set can use at most 12 analyzer calls, including at most 2 directly affected reruns.",
+    "No gold question IDs, including g011 or g016, are used, and no pseudo-answer evidence is recorded.",
+    "No production-wide analyzer cost reduction is inferred from this preregistration.",
+    "C3 SemanticQueryBuilder remains NOT_STARTED and dense query construction is untouched.",
+    "C4 LexicalQueryBuilder and C5 entity-first resolution remain NOT_STARTED.",
+    "C6-C8, Phase D, and Phase E remain NOT_STARTED.",
+    "Novel retrieval generalization remains UNMEASURED because no trustworthy human-authored novel dataset exists."
+  ],
+  "c2_result": "PASS"
+}

@@ -1,6 +1,7 @@
 from pathlib import Path
 from types import SimpleNamespace
 import os
+import re
 import tempfile
 import unittest
 from unittest.mock import Mock, patch
@@ -18,9 +19,86 @@ TEST_REPOSITORIES = {
 }
 
 
+def _query_span(question, value):
+    if not isinstance(value, str) or not value:
+        return []
+    match = re.search(re.escape(value), question, re.IGNORECASE)
+    return [question[match.start():match.end()]] if match else []
+
+
+def _legacy_delta(result, question, deterministic_context):
+    if "repository_additions" in result:
+        return result
+    delta = {
+        "repository_additions": [],
+        "concepts": [],
+        "symbols": [],
+        "version_mentions": [],
+        "concept_scopes": [],
+    }
+    if deterministic_context.get("fixed", {}).get("intent") is None and result.get("intent"):
+        delta["intent"] = {
+            "value": result["intent"],
+            "support_spans": [question[: min(24, len(question))]],
+        }
+    repository_aliases = {
+        "pandaroot": "PandaRoot",
+        "luminosityfit": "LuminosityFit",
+        "restgas_determination": "RestgasDetermination",
+    }
+    for repository in result.get("target_repositories", []):
+        span = _query_span(question, repository_aliases.get(repository, repository))
+        if span:
+            delta["repository_additions"].append({"value": repository, "support_spans": span})
+    for field_name in ("concepts", "symbols"):
+        for value in result.get(field_name, []):
+            span = _query_span(question, value)
+            if span:
+                delta[field_name].append({"value": value, "support_spans": span})
+    for repository, token in result.get("requested_versions", {}).items():
+        span = _query_span(question, token)
+        if span:
+            delta["version_mentions"].append({
+                "token": token,
+                "repository": repository,
+                "support_spans": span,
+            })
+    for key, value in result.get("concept_scopes", {}).items():
+        delta["concept_scopes"].append({
+            "key": key,
+            "value": value,
+            "support_spans": [question[: min(24, len(question))]],
+        })
+    return delta
+
+
 class FakeVertex:
     def generate_json(self, prompt, schema, **kwargs):
-        return {"intent":"algorithm_implementation","target_repositories":["pandaroot"],"concepts":["back propagation"],"symbols":["PndPidCorrelator"],"requested_versions":{},"concept_scopes":{}}
+        import json
+
+        payload = json.loads(prompt)
+        question = payload["untrusted_question"]
+        result = {
+            "repository_additions": [],
+            "concepts": [],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": [],
+        }
+        if payload["deterministic_context"]["fixed"].get("intent") is None:
+            result["intent"] = {
+                "value": "algorithm_implementation",
+                "support_spans": [question[: min(24, len(question))]],
+            }
+        if "back propagation" in question.casefold():
+            result["concepts"].append({
+                "value": "back propagation", "support_spans": ["back propagation"],
+            })
+        if "PndPidCorrelator" in question:
+            result["symbols"].append({
+                "value": "PndPidCorrelator", "support_spans": ["PndPidCorrelator"],
+            })
+        return result
 
 
 class CapturingVertex(FakeVertex):
@@ -35,9 +113,14 @@ class CapturingVertex(FakeVertex):
     def generate_json(self, prompt, schema, **kwargs):
         import json
 
-        self.calls.append(json.loads(prompt))
+        payload = json.loads(prompt)
+        self.calls.append(payload)
         self.schemas.append(schema)
-        return self.result
+        return _legacy_delta(
+            self.result,
+            payload["untrusted_question"],
+            payload["deterministic_context"],
+        )
 
 
 class RetrievalTests(unittest.TestCase):
@@ -154,7 +237,8 @@ class RetrievalTests(unittest.TestCase):
         self.assertEqual(context["fixed"]["requested_versions"]["pandaroot"], "deadbeef")
         self.assertNotIn("requested_versions", context["known_partial"])
         self.assertEqual(context["unresolved_semantics"]["target_repositories"], "augment_known_partial")
-        self.assertEqual(context["unresolved_semantics"]["requested_versions"], "augment_fixed_keys")
+        self.assertNotIn("version_mentions", context["semantic_output_fields"])
+        self.assertNotIn("requested_versions", context["unresolved_semantics"])
         self.assertEqual(context["provenance"]["target_repositories"][0]["ownership"], "known_partial")
         self.assertEqual(context["provenance"]["requested_versions"][0]["ownership"], "fixed")
         self.assertEqual(plan.analysis_diagnostics["analyzer_final"]["requested_versions"]["pandaroot"], "deadbeef")
@@ -185,7 +269,7 @@ class RetrievalTests(unittest.TestCase):
                 },
                 "intent": "api",
                 "repositories": ["pandaroot", "restgas_determination"],
-                "requested_versions": {"pandaroot": "dev"},
+                "requested_versions": {},
                 "source_budgets": {"code": 0.7, "documentation": 0.3},
                 "required_sources": ["code"],
             },
@@ -198,8 +282,8 @@ class RetrievalTests(unittest.TestCase):
                     "requested_versions": {"restgas_determination": "oct19"}, "concept_scopes": {},
                 },
                 "intent": "data_flow",
-                "repositories": ["restgas_determination"],
-                "requested_versions": {"restgas_determination": "oct19"},
+                "repositories": list(TEST_REPOSITORIES),
+                "requested_versions": {},
                 "source_budgets": {"workflow": 0.6, "code": 0.4},
                 "required_sources": ["workflow", "code"],
             },
@@ -270,21 +354,32 @@ class RetrievalTests(unittest.TestCase):
 
     def test_scope_fallbacks_yield_to_explicit_llm_scopes(self):
         cases = [
-            ("Explain back propagation.", "back_propagation", "target_track_to_event_poca"),
-            ("Explain efficiency.", "efficiency", "angular_acceptance"),
+            (
+                "Explain back propagation from LMD to IP rather than target track to event POCA.",
+                "back_propagation", "lmd_to_ip", "target_track_to_event_poca",
+                "back propagation", "target track to event POCA",
+            ),
+            (
+                "Explain efficiency as angular acceptance rather than longitudinal profile.",
+                "efficiency", "longitudinal_profile", "angular_acceptance",
+                "efficiency", "angular acceptance",
+            ),
         ]
-        for question, scope_key, fallback_value in cases:
+        for question, scope_key, fallback_value, llm_value, intent_span, scope_span in cases:
             with self.subTest(question=question):
                 retriever = self.make_retriever()
-                retriever.vertex = CapturingVertex({
-                    "intent": "algorithm_implementation", "target_repositories": ["pandaroot"],
-                    "concepts": [], "symbols": [], "requested_versions": {},
-                    "concept_scopes": {scope_key: "llm_specific_scope"},
+                retriever.vertex = SemanticDeltaVertex({
+                    "intent": {"value": "algorithm_implementation", "support_spans": [intent_span]},
+                    "repository_additions": [], "concepts": [], "symbols": [],
+                    "version_mentions": [],
+                    "concept_scopes": [{
+                        "key": scope_key, "value": llm_value, "support_spans": [scope_span],
+                    }],
                 })
 
                 plan = retriever.analyze(question)
 
-                self.assertEqual(plan.concept_scopes[scope_key], "llm_specific_scope")
+                self.assertEqual(plan.concept_scopes[scope_key], llm_value)
                 context = retriever.vertex.calls[0]["deterministic_context"]
                 self.assertEqual(context["fallback"]["concept_scopes"][scope_key], fallback_value)
                 self.assertNotIn("concept_scopes", context["fixed"])
@@ -320,7 +415,9 @@ class RetrievalTests(unittest.TestCase):
 
         plan = retriever.analyze("Explain PandaRootedConfiguration.")
 
-        self.assertNotIn("pandaroot", plan.target_repositories)
+        self.assertEqual(plan.target_repositories, list(TEST_REPOSITORIES))
+        context = retriever.vertex.calls[0]["deterministic_context"]
+        self.assertNotIn("pandaroot", context["known_partial"].get("target_repositories", []))
 
     def test_fixed_scope_comparisons_override_contradictory_llm_scopes(self):
         cases = [
@@ -354,7 +451,12 @@ class RetrievalTests(unittest.TestCase):
 
     def test_sphinx_snapshot_label_is_not_treated_as_repository_ref(self):
         retriever=self.make_retriever()
-        retriever.vertex.generate_json=lambda prompt,schema,**kwargs: {"intent":"algorithm_implementation","target_repositories":["pandaroot"],"concepts":[],"symbols":[],"requested_versions":{"pandaroot":"2023-dev"},"concept_scopes":{}}
+        retriever.vertex.generate_json=lambda prompt,schema,**kwargs: {
+            "intent": {"value": "algorithm_implementation", "support_spans": ["2023-dev"]},
+            "repository_additions": [], "concepts": [], "symbols": [],
+            "version_mentions": [{"token": "2023-dev", "support_spans": ["2023-dev"]}],
+            "concept_scopes": [],
+        }
         plan=retriever.analyze("Why can 2023-dev Sphinx documentation differ from code?")
         self.assertEqual(plan.version_conflicts,[])
 
@@ -412,6 +514,340 @@ class RetrievalTests(unittest.TestCase):
         self.assertNotIn("pgenerators/Target/PndTargetGenerator.cxx", plan.symbols)
         self.assertNotIn("PndTargetGenerator::SampleInteractionVertex", plan.symbols)
         self.assertNotIn("simulation master task to target-generator data flow", plan.concepts)
+
+
+class SemanticDeltaVertex:
+    def __init__(self, result):
+        self.result = result
+        self.calls = []
+        self.schemas = []
+
+    def generate_json(self, prompt, schema, **kwargs):
+        import json
+
+        self.calls.append(json.loads(prompt))
+        self.schemas.append(schema)
+        return self.result
+
+
+class SemanticDeltaTests(unittest.TestCase):
+    def make_retriever(self, result):
+        retriever = RetrievalTests().make_retriever()
+        retriever.vertex = SemanticDeltaVertex(result)
+        return retriever
+
+    @staticmethod
+    def delta(**overrides):
+        result = {
+            "repository_additions": [],
+            "concepts": [],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": [],
+        }
+        result.update(overrides)
+        return result
+
+    def test_invented_symbol_path_is_rejected_with_item_diagnostic(self):
+        retriever = self.make_retriever(self.delta(symbols=[
+            {"value": "PndTargetGenerator", "support_spans": ["PndTargetGenerator"]},
+            {"value": "PndTargetGenerator.cxx", "support_spans": ["PndTargetGenerator"]},
+        ]))
+
+        plan = retriever.analyze("Where is PndTargetGenerator defined?")
+
+        self.assertIn("PndTargetGenerator", plan.symbols)
+        self.assertNotIn("PndTargetGenerator.cxx", plan.symbols)
+        diagnostics = plan.analysis_diagnostics
+        self.assertIn("analyzer_semantic_output_fields", diagnostics)
+        self.assertNotIn("analyzer_unresolved_fields", diagnostics)
+        self.assertEqual(diagnostics["analyzer_raw_semantic_delta"]["symbols"][1]["value"],
+                         "PndTargetGenerator.cxx")
+        self.assertEqual(
+            diagnostics["analyzer_accepted_semantic_delta"]["symbols"][0]["support_spans"],
+            ["PndTargetGenerator"],
+        )
+        self.assertTrue(diagnostics["analyzer_item_support"]["symbols"])
+        self.assertIn("analyzer_final", diagnostics)
+        self.assertTrue(any(
+            item["field"] == "symbols" and item["reason"] == "unsupported_symbol"
+            for item in diagnostics["analyzer_rejected_items"]
+        ))
+
+    def test_symbol_substring_requires_complete_technical_token(self):
+        retriever = self.make_retriever(self.delta(
+            intent={"value": "usage", "support_spans": ["use"]},
+            symbols=[{
+                "value": "PndTarget",
+                "support_spans": ["PndTargetGenerator"],
+            }],
+        ))
+
+        plan = retriever.analyze("How do PandaRoot developers use PndTargetGenerator?")
+
+        self.assertNotIn("PndTarget", plan.symbols)
+        self.assertTrue(any(
+            item["field"] == "symbols" and item["reason"] == "unsupported_symbol"
+            for item in plan.analysis_diagnostics["analyzer_rejected_items"]
+        ))
+
+    def test_version_substring_requires_complete_technical_token(self):
+        retriever = self.make_retriever(self.delta(
+            intent={"value": "usage", "support_spans": ["use"]},
+            version_mentions=[{
+                "token": "dev",
+                "support_spans": ["developers"],
+            }],
+        ))
+
+        plan = retriever.analyze("How do PandaRoot developers use PndTargetGenerator?")
+
+        self.assertEqual(plan.analysis_diagnostics["analyzer_final"]["requested_versions"], {})
+        self.assertNotIn("dev", plan.analysis_diagnostics["unbound_version_tokens"])
+        self.assertTrue(any(
+            item["field"] == "version_mentions" and item["reason"] == "unsupported_version"
+            for item in plan.analysis_diagnostics["analyzer_rejected_items"]
+        ))
+
+    def test_complete_symbol_and_version_tokens_remain_accepted(self):
+        retriever = self.make_retriever(self.delta(
+            intent={"value": "usage", "support_spans": ["Use"]},
+            symbols=[{
+                "value": "PndTargetGenerator",
+                "support_spans": ["PndTargetGenerator"],
+            }],
+            version_mentions=[
+                {"token": "deadbeef", "support_spans": ["deadbeef"]},
+                {"token": "2023-dev", "support_spans": ["2023-dev"]},
+            ],
+        ))
+
+        plan = retriever.analyze(
+            "Use PndTargetGenerator at 2023-dev with commit deadbeef."
+        )
+
+        self.assertIn("PndTargetGenerator", plan.symbols)
+        accepted_versions = plan.analysis_diagnostics["analyzer_accepted_semantic_delta"]["version_mentions"]
+        self.assertEqual([item["token"] for item in accepted_versions], ["deadbeef", "2023-dev"])
+
+    def test_speculative_concept_is_rejected(self):
+        retriever = self.make_retriever(self.delta(
+            intent={"value": "algorithm_theory", "support_spans": ["efficiency"]},
+            concepts=[
+            {"value": "efficiency", "support_spans": ["efficiency"]},
+            {"value": "answer location in source file", "support_spans": ["efficiency"]},
+            ],
+            concept_scopes=[{
+                "key": "answer_location",
+                "value": "source_file",
+                "support_spans": ["efficiency"],
+            }],
+        ))
+
+        plan = retriever.analyze("Explain efficiency.")
+
+        self.assertEqual(plan.concepts, ["efficiency"])
+        self.assertTrue(any(
+            item["field"] == "concepts" and item["reason"] == "unsupported_concept"
+            for item in plan.analysis_diagnostics["analyzer_rejected_items"]
+        ))
+        self.assertTrue(any(
+            item["field"] == "concept_scopes" and item["reason"] == "unsupported_scope"
+            for item in plan.analysis_diagnostics["analyzer_rejected_items"]
+        ))
+
+    def test_speculative_concept_suffix_is_rejected(self):
+        retriever = self.make_retriever(self.delta(
+            intent={"value": "algorithm_theory", "support_spans": ["efficiency"]},
+            concepts=[{
+                "value": "efficiency source file",
+                "support_spans": ["efficiency"],
+            }],
+        ))
+
+        plan = retriever.analyze("Explain efficiency.")
+
+        self.assertNotIn("efficiency source file", plan.concepts)
+        self.assertTrue(any(
+            item["field"] == "concepts" and item["reason"] == "unsupported_concept"
+            for item in plan.analysis_diagnostics["analyzer_rejected_items"]
+        ))
+
+    def test_unsupported_repository_addition_is_rejected(self):
+        retriever = self.make_retriever(self.delta(
+            intent={"value": "usage", "support_spans": ["used"]},
+            repository_additions=[
+                {"value": "luminosityfit", "support_spans": ["PandaRoot"]},
+            ],
+        ))
+
+        plan = retriever.analyze("How is PandaRoot used?")
+
+        self.assertEqual(plan.target_repositories, ["pandaroot"])
+        self.assertTrue(any(
+            item["field"] == "repository_additions" and item["reason"] == "unsupported_repository"
+            for item in plan.analysis_diagnostics["analyzer_rejected_items"]
+        ))
+
+    def test_bare_sha_stays_unbound_without_false_conflict(self):
+        retriever = self.make_retriever(self.delta(
+            intent={"value": "usage", "support_spans": ["behavior"]},
+            repository_additions=[{"value": "pandaroot", "support_spans": ["behavior"]}],
+            version_mentions=[{
+                "token": "deadbeef", "repository": "pandaroot", "support_spans": ["deadbeef"],
+            }],
+        ))
+
+        plan = retriever.analyze("Use commit deadbeef for this behavior.")
+
+        self.assertEqual(plan.version_conflicts, [])
+        self.assertEqual(plan.analysis_diagnostics["unbound_version_tokens"], ["deadbeef"])
+        self.assertEqual(plan.analysis_diagnostics["analyzer_final"]["requested_versions"], {})
+
+    def test_ambiguous_multi_repository_sha_does_not_bind(self):
+        retriever = self.make_retriever(self.delta(
+            intent={"value": "usage", "support_spans": ["commit"]},
+            version_mentions=[{
+                "token": "deadbeef", "repository": "pandaroot", "support_spans": ["deadbeef", "PandaRoot"],
+            }],
+        ))
+
+        plan = retriever.analyze("Use commit deadbeef with PandaRoot and LuminosityFit.")
+
+        self.assertEqual(plan.target_repositories, ["pandaroot", "luminosityfit"])
+        self.assertEqual(plan.analysis_diagnostics["unbound_version_tokens"], ["deadbeef"])
+        self.assertEqual(plan.analysis_diagnostics["analyzer_final"]["requested_versions"], {})
+        self.assertEqual(plan.version_conflicts, [])
+
+    def test_single_repo_sha_without_explicit_association_stays_unbound(self):
+        retriever = self.make_retriever(self.delta(
+            intent={"value": "usage", "support_spans": ["behavior"]},
+            version_mentions=[{
+                "token": "deadbeef",
+                "repository": "pandaroot",
+                "support_spans": ["PandaRoot", "deadbeef"],
+            }],
+        ))
+
+        plan = retriever.analyze(
+            "Compare PandaRoot behavior with commit deadbeef from another checkout."
+        )
+
+        self.assertEqual(plan.analysis_diagnostics["analyzer_final"]["requested_versions"], {})
+        self.assertEqual(plan.analysis_diagnostics["unbound_version_tokens"], ["deadbeef"])
+        self.assertEqual(plan.version_conflicts, [])
+
+    def test_fixed_intent_is_omitted_and_unresolved_intent_is_grounded(self):
+        fixed = self.make_retriever(self.delta(
+            intent={"value": "installation", "support_spans": ["defined"]},
+            symbols=[
+                {"value": "PndTargetGenerator", "support_spans": ["PndTargetGenerator"]},
+            ],
+        ))
+        fixed_plan = fixed.analyze("Where is PndTargetGenerator defined?")
+        self.assertNotIn("intent", fixed.vertex.schemas[0]["properties"])
+        self.assertNotIn("intent", fixed.vertex.schemas[0]["required"])
+        self.assertNotIn("intent", fixed_plan.analysis_diagnostics["analyzer_accepted_semantic_delta"])
+        self.assertTrue(any(
+            item["field"] == "intent" and item["reason"] == "fixed_intent_output"
+            for item in fixed_plan.analysis_diagnostics["analyzer_rejected_items"]
+        ))
+
+        unresolved = self.make_retriever(self.delta(
+            intent={"value": "data_flow", "support_spans": ["pipeline"]},
+        ))
+        plan = unresolved.analyze("Describe this pipeline.")
+        self.assertEqual(plan.intent, "data_flow")
+        self.assertIn("intent", unresolved.vertex.schemas[0]["required"])
+        self.assertEqual(
+            plan.analysis_diagnostics["analyzer_accepted_semantic_delta"]["intent"]["support_spans"],
+            ["pipeline"],
+        )
+
+    def test_supported_items_retain_query_support(self):
+        retriever = self.make_retriever(self.delta(
+            intent={"value": "algorithm_implementation", "support_spans": ["back propagation"]},
+            repository_additions=[{"value": "pandaroot", "support_spans": ["PandaRoot"]}],
+            concepts=[{"value": "back propagation", "support_spans": ["back propagation"]}],
+            symbols=[{"value": "PndPidCorrelator", "support_spans": ["PndPidCorrelator"]}],
+            version_mentions=[{"token": "2023-dev", "support_spans": ["2023-dev"]}],
+            concept_scopes=[{
+                "key": "back_propagation", "value": "target_track_to_event_poca",
+                "support_spans": ["back propagation", "target track to event POCA"],
+            }],
+        ))
+
+        plan = retriever.analyze(
+            "How does PndPidCorrelator implement back propagation in PandaRoot at 2023-dev "
+            "for target track to event POCA?"
+        )
+
+        accepted = plan.analysis_diagnostics["analyzer_accepted_semantic_delta"]
+        self.assertTrue(accepted["intent"]["support_spans"])
+        self.assertTrue(accepted["repository_additions"][0]["support_spans"])
+        self.assertTrue(accepted["concepts"][0]["support_spans"])
+        self.assertTrue(accepted["symbols"][0]["support_spans"])
+        self.assertTrue(accepted["version_mentions"][0]["support_spans"])
+        self.assertTrue(accepted["concept_scopes"][0]["support_spans"])
+        self.assertTrue(plan.analysis_diagnostics["analyzer_item_support"]["intent"])
+        self.assertTrue(plan.analysis_diagnostics["analyzer_item_support"]["repository_additions"])
+        self.assertTrue(plan.analysis_diagnostics["analyzer_item_support"]["concepts"])
+        self.assertTrue(plan.analysis_diagnostics["analyzer_item_support"]["symbols"])
+        self.assertTrue(plan.analysis_diagnostics["analyzer_item_support"]["version_mentions"])
+        self.assertTrue(plan.analysis_diagnostics["analyzer_item_support"]["concept_scopes"])
+        self.assertEqual(plan.concept_scopes["back_propagation"], "target_track_to_event_poca")
+        self.assertEqual(retriever.vertex.calls[0]["untrusted_question"],
+                         "How does PndPidCorrelator implement back propagation in PandaRoot at 2023-dev "
+                         "for target track to event POCA?")
+
+    def test_explicit_multi_repository_query_and_plan_compatibility(self):
+        retriever = self.make_retriever(self.delta(
+            intent={"value": "data_flow", "support_spans": ["Trace"]},
+            concepts=[{"value": "data flow", "support_spans": ["data flow"]}],
+        ))
+
+        plan = retriever.analyze(
+            "Trace data flow through PandaRoot and RestgasDetermination."
+        )
+
+        self.assertEqual(plan.target_repositories, ["pandaroot", "restgas_determination"])
+        self.assertEqual(plan.intent, "data_flow")
+        self.assertIn("data flow", plan.concepts)
+        self.assertIn("resolved_versions", plan.model_dump())
+
+    def test_explicit_repository_sha_remains_fixed_and_conflicts(self):
+        retriever = self.make_retriever(self.delta(
+            intent={"value": "usage", "support_spans": ["commit"]},
+            version_mentions=[{
+                "token": "deadbeef", "repository": "pandaroot", "support_spans": ["deadbeef", "PandaRoot"],
+            }],
+        ))
+
+        plan = retriever.analyze("Use PandaRoot commit deadbeef for PndTargetGenerator.")
+
+        self.assertEqual(plan.analysis_diagnostics["analyzer_final"]["requested_versions"],
+                         {"pandaroot": "deadbeef"})
+        self.assertTrue(plan.version_conflicts)
+
+    def test_unrequested_fixed_field_is_rejected_even_if_fake_bypasses_schema(self):
+        retriever = self.make_retriever(self.delta(
+            intent={"value": "usage", "support_spans": ["commit"]},
+            version_mentions=[{
+                "token": "deadbeef", "repository": "pandaroot",
+                "support_spans": ["deadbeef", "PandaRoot"],
+            }],
+        ))
+
+        plan = retriever.analyze("Use PandaRoot commit deadbeef for PndTargetGenerator.")
+
+        self.assertEqual(
+            plan.analysis_diagnostics["analyzer_accepted_semantic_delta"]["version_mentions"],
+            [],
+        )
+        self.assertTrue(any(
+            item["field"] == "version_mentions" and item["reason"] == "unrequested_delta_field"
+            for item in plan.analysis_diagnostics["analyzer_rejected_items"]
+        ))
 
 
 if __name__ == "__main__": unittest.main()

@@ -9,7 +9,7 @@ When records conflict, use the single section explicitly marked **Current author
 
 ---
 
-# Current authoritative state — 2026-08-17
+# Current authoritative state — 2026-08-18
 
 ## A3 measured execution provenance
 
@@ -34,11 +34,11 @@ When records conflict, use the single section explicitly marked **Current author
 
 ## Generalization Phase status
 
-- Bootstrap tasks A1–A3: `PASS`; A3.1 hardening: `PASS`; B1: `PASS`; B2: `PASS`; B3: `PASS`; B4: `PASS`; B5: `PASS` (B5.1R2 static closeout and B5.2 live migration/T1/post-B5 T2 completed); Phase-B T3 full 80-question dev retrieval-only original mechanical gate: `FAIL`; T3.1 evaluator semantics correction: `PASS`; T3.1R1 product-language calibration: `PASS`; T3.1R2 calibration-binding/rank-stage closeout: `PASS`; T3.1R3 frozen fused-rank provenance & dynamic dev-completeness closeout: `PASS`; T3.2 critical-evidence mechanism investigation: `PASS`; T3.3A first implementation attempt: `SUPERSEDED`; T3.3A-R1 bounded soft-budget closeout: `INCONCLUSIVE`; T3.3A-R2 two-pass backfill closeout: `INCONCLUSIVE` (g016 locally recovered, g011 not recovered; heuristic iteration stopped; authoritative formal Phase-B product T3 remains `FAIL`); C1 initial implementation: `INCONCLUSIVE` after review; C1-R1: `PASS`; C1 overall: `PASS`.
+- Bootstrap tasks A1–A3: `PASS`; A3.1 hardening: `PASS`; B1: `PASS`; B2: `PASS`; B3: `PASS`; B4: `PASS`; B5: `PASS` (B5.1R2 static closeout and B5.2 live migration/T1/post-B5 T2 completed); Phase-B T3 full 80-question dev retrieval-only original mechanical gate: `FAIL`; T3.1 evaluator semantics correction: `PASS`; T3.1R1 product-language calibration: `PASS`; T3.1R2 calibration-binding/rank-stage closeout: `PASS`; T3.1R3 frozen fused-rank provenance & dynamic dev-completeness closeout: `PASS`; T3.2 critical-evidence mechanism investigation: `PASS`; T3.3A first implementation attempt: `SUPERSEDED`; T3.3A-R1 bounded soft-budget closeout: `INCONCLUSIVE`; T3.3A-R2 two-pass backfill closeout: `INCONCLUSIVE` (g016 locally recovered, g011 not recovered; heuristic iteration stopped; authoritative formal Phase-B product T3 remains `FAIL`); C1 initial implementation: `INCONCLUSIVE` after review; C1-R1: `PASS`; C1 overall: `PASS`; C2: `PASS`.
 - Evaluation modes: `retrieval`, `qa`, and `full` have explicit recorded boundaries.
 - Structured retrieval traces are persisted as atomic JSON and JSONL and can be loaded without rerunning QA.
 - A3 was corrected from a possible full-retrieval interpretation to a stratified low-cost bootstrap baseline. Phase-B T3 (complete 80-question dev retrieval-only) was performed on `2026-08-16`; no full 120-question retrieval/E2E run was performed.
-- Phase C is started by C1; its initial implementation was `INCONCLUSIVE` after review, C1-R1 is `PASS`, and C1 overall is `PASS`. C2 is next and `NOT_STARTED`, while C3-C8 remain `NOT_STARTED`. The Phase-B T3.3A-R2/g011 blocker remains deferred to generic Phase-E coverage-aware architecture; optional T3.3B ranking debt is deferred. Phase D and Phase E remain `NOT_STARTED`.
+- Phase C is started by C1; its initial implementation was `INCONCLUSIVE` after review, C1-R1 is `PASS`, C1 overall is `PASS`, and C2 is `PASS`. C3 is next and `NOT_STARTED`, while C4-C8 remain `NOT_STARTED`. The Phase-B T3.3A-R2/g011 blocker remains deferred to generic Phase-E coverage-aware architecture; optional T3.3B ranking debt is deferred. Phase D and Phase E remain `NOT_STARTED`.
 
 ## Historical full E2E reference
 
@@ -242,6 +242,17 @@ This is a low-cost English Gold reference, not a complete generalization, comple
 - Preserved behavior: explicit repository+SHA, aliases/expansions, prompt security, version conflicts, and plan semantics remain intact. C1-R1 is `PASS`; C1 overall is `PASS`.
 - Verification and cost: `22` targeted tests passed (`19` retrieval and `3` prompt-security); exact discover commands, three-file `compileall`, and `git diff --check` passed. External/model/token, Retriever, reranker, embedding, QA, SQL, Qdrant, index, benchmark, and live-smoke counts are all `0` or not run.
 
+### Phase-C C2 narrow and auditable query-analyzer contract
+
+- **Status:** `PASS`; artifact: `evaluation/baselines/manifests/phase_c_c2_narrow_auditable_analyzer_v1.json`.
+- **Source and prompt identity:** source/base commit SHA `c2f933b287e52d76947a3865e2527d2349e5ec27`; prompt version `3.7.0`.
+- **Implementation contract:** The analyzer returns an additive `AnalyzerSemanticDelta`, not a `RetrievalPlan`. Fixed deterministic intent is omitted from the response schema; unresolved intent remains analyzer-owned; merge precedence is fixed > LLM > fallback. Query-grounded concepts, symbols, repository additions, version mentions, and scopes retain support spans. Exact symbols are preserved, unsupported items are rejected, and bare version tokens remain unbound unless the query explicitly associates them with a repository.
+- **Ownership and diagnostics:** `deterministic_parse`, `analyzer_llm_called`, `analyzer_semantic_output_fields`, `analyzer_raw_semantic_delta`, `analyzer_accepted_semantic_delta`, `analyzer_rejected_items`, `analyzer_item_support`, `unbound_version_tokens`, and `analyzer_final` are persisted in `RetrievalPlan.analysis_diagnostics`. The old `analyzer_unresolved_fields` key is removed.
+- **T0 evidence:** `39/39 PASS` (retrieval `34/34`, prompt-security `4/4`, exact QA prompt `1/1`), with zero external/model calls.
+- **Analyzer-only T2 evidence:** `10/10 PASS` using `gemini-3.7-flash` in `global`; analyzer model calls `10`, successful structured responses `10`, tokens `17173`, mean `1717.3` tokens/call, failures `0`, retries `0`. ADC and harness pre-request failures are environment history only: `0` remote calls and `0` tokens.
+- **Cost and impact:** Retriever/reranker/query embeddings/document embeddings/QA/verifier/judge/SQL/Qdrant/index mutation `0`; reindex/reembedding `no`. The query-understanding analyzer contract changed `yes`; dense/sparse query construction changed `no`; retrieval ranking intentionally changed `no`; selector/index/corpus changed `no`.
+- **Review and limitations:** Sol's final live review was `PASS`; deterministic local replay compared `90` stored sections with `0` mismatches. This is an analyzer-only T2 result, not a global cost-saving claim or pseudo-Gold result; no `g011`/`g016` targeting was introduced, no T3/T4/T5, retrieval benchmark, or index work was run, and C3 remains deferred.
+
 ### Current small E2E baseline
 
 - Run: `generalization-a3-stratified-qa-20260813`.
@@ -269,7 +280,7 @@ The retrieval and QA measurements are unchanged. A3.1 corrects only metric repre
 
 ## Next authorized roadmap task
 
-`C2 — Narrow and auditable query-analyzer contract` is next; C1 initial implementation was `INCONCLUSIVE` after review, C1-R1 is `PASS`, and C1 overall is `PASS`; C3-C8 and Phase D/E remain `NOT_STARTED`. T3.3A-R2 remains `INCONCLUSIVE`/partial, g016 is locally recovered but g011 is not, heuristic iteration is stopped, and the unresolved g011 mechanism is deferred to generic Phase-E coverage-aware architecture; optional T3.3B ranking debt is deferred.
+`C3 — SemanticQueryBuilder for dense retrieval` is next and `NOT_STARTED`; C1 initial implementation was `INCONCLUSIVE` after review, C1-R1 is `PASS`, C1 overall is `PASS`, and C2 is `PASS`; C4-C8 and Phase D/E remain `NOT_STARTED`. T3.3A-R2 remains `INCONCLUSIVE`/partial, g016 is locally recovered but g011 is not, heuristic iteration is stopped, and the unresolved g011 mechanism is deferred to generic Phase-E coverage-aware architecture; optional T3.3B ranking debt is deferred.
 
 ---
 

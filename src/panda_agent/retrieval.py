@@ -20,29 +20,253 @@ from panda_agent.sparse import create_sparse_encoder
 from panda_agent.storage import Storage
 
 
-ANALYSIS_SCHEMA = {
+_ANALYZER_INTENTS = [
+    "installation",
+    "usage",
+    "algorithm_theory",
+    "algorithm_implementation",
+    "api",
+    "data_flow",
+    "module_structure",
+    "troubleshooting",
+]
+_REPOSITORY_IDS = ["luminosityfit", "pandaroot", "restgas_determination"]
+_SUPPORT_SPANS_SCHEMA = {"type": "array", "items": {"type": "string"}}
+_SEMANTIC_ITEM_SCHEMA = {
     "type": "object",
     "properties": {
-        "intent": {"type": "string", "enum": ["installation", "usage", "algorithm_theory", "algorithm_implementation", "api", "data_flow", "module_structure", "troubleshooting"]},
-        "target_repositories": {"type": "array", "items": {"type": "string", "enum": ["luminosityfit", "pandaroot", "restgas_determination"]}},
-        "concepts": {"type": "array", "items": {"type": "string"}},
-        "symbols": {"type": "array", "items": {"type": "string"}},
-        "requested_versions": {"type": "object", "additionalProperties": {"type": "string"}},
-        "concept_scopes": {"type": "object", "additionalProperties": {"type": "string"}},
+        "value": {"type": "string"},
+        "support_spans": _SUPPORT_SPANS_SCHEMA,
     },
-    "required": ["intent", "target_repositories", "concepts", "symbols", "requested_versions", "concept_scopes"],
+    "required": ["value", "support_spans"],
+    "additionalProperties": False,
+}
+_INTENT_ITEM_SCHEMA = {
+    **_SEMANTIC_ITEM_SCHEMA,
+    "properties": {
+        "value": {"type": "string", "enum": _ANALYZER_INTENTS},
+        "support_spans": _SUPPORT_SPANS_SCHEMA,
+    },
+}
+_VERSION_MENTION_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "token": {"type": "string"},
+        "repository": {"type": "string", "enum": _REPOSITORY_IDS},
+        "support_spans": _SUPPORT_SPANS_SCHEMA,
+    },
+    "required": ["token", "support_spans"],
+    "additionalProperties": False,
+}
+_CONCEPT_SCOPE_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "key": {"type": "string"},
+        "value": {"type": "string"},
+        "support_spans": _SUPPORT_SPANS_SCHEMA,
+    },
+    "required": ["key", "value", "support_spans"],
     "additionalProperties": False,
 }
 
 
-def _analysis_schema(*, intent_is_fixed: bool) -> dict[str, Any]:
-    """Return the smallest response contract for the remaining analyzer work."""
+ANALYSIS_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "intent": _INTENT_ITEM_SCHEMA,
+        "repository_additions": {
+            "type": "array",
+            "items": {
+                **_SEMANTIC_ITEM_SCHEMA,
+                "properties": {
+                    "value": {"type": "string", "enum": _REPOSITORY_IDS},
+                    "support_spans": _SUPPORT_SPANS_SCHEMA,
+                },
+            },
+        },
+        "concepts": {"type": "array", "items": _SEMANTIC_ITEM_SCHEMA},
+        "symbols": {"type": "array", "items": _SEMANTIC_ITEM_SCHEMA},
+        "version_mentions": {"type": "array", "items": _VERSION_MENTION_SCHEMA},
+        "concept_scopes": {"type": "array", "items": _CONCEPT_SCOPE_SCHEMA},
+    },
+    "required": [
+        "intent",
+        "repository_additions",
+        "concepts",
+        "symbols",
+        "version_mentions",
+        "concept_scopes",
+    ],
+    "additionalProperties": False,
+}
+
+
+def _analysis_schema(
+    *, intent_is_fixed: bool, semantic_output_fields: list[str] | None = None
+) -> dict[str, Any]:
+    """Return the explicit response contract for the remaining semantic delta."""
     properties = dict(ANALYSIS_SCHEMA["properties"])
     required = list(ANALYSIS_SCHEMA["required"])
     if intent_is_fixed:
-        properties.pop("intent")
-        required.remove("intent")
+        properties.pop("intent", None)
+        if "intent" in required:
+            required.remove("intent")
+    if semantic_output_fields is not None:
+        allowed = set(semantic_output_fields)
+        properties = {key: value for key, value in properties.items() if key in allowed}
+        required = [key for key in required if key in allowed]
     return {**ANALYSIS_SCHEMA, "properties": properties, "required": required}
+
+
+@dataclass(frozen=True)
+class AnalyzerSemanticItem:
+    value: str
+    support_spans: tuple[str, ...]
+
+    def as_dict(self) -> dict[str, Any]:
+        return {"value": self.value, "support_spans": list(self.support_spans)}
+
+
+@dataclass(frozen=True)
+class AnalyzerVersionMention:
+    token: str
+    support_spans: tuple[str, ...]
+    repository: str | None = None
+
+    def as_dict(self) -> dict[str, Any]:
+        result = {"token": self.token, "support_spans": list(self.support_spans)}
+        if self.repository is not None:
+            result["repository"] = self.repository
+        return result
+
+
+@dataclass(frozen=True)
+class AnalyzerScopeItem:
+    key: str
+    value: str
+    support_spans: tuple[str, ...]
+
+    def as_dict(self) -> dict[str, Any]:
+        return {
+            "key": self.key,
+            "value": self.value,
+            "support_spans": list(self.support_spans),
+        }
+
+
+@dataclass
+class AnalyzerSemanticDelta:
+    intent: AnalyzerSemanticItem | None = None
+    repository_additions: list[AnalyzerSemanticItem] = field(default_factory=list)
+    concepts: list[AnalyzerSemanticItem] = field(default_factory=list)
+    symbols: list[AnalyzerSemanticItem] = field(default_factory=list)
+    version_mentions: list[AnalyzerVersionMention] = field(default_factory=list)
+    concept_scopes: list[AnalyzerScopeItem] = field(default_factory=list)
+
+    def as_dict(self) -> dict[str, Any]:
+        result: dict[str, Any] = {
+            "repository_additions": [item.as_dict() for item in self.repository_additions],
+            "concepts": [item.as_dict() for item in self.concepts],
+            "symbols": [item.as_dict() for item in self.symbols],
+            "version_mentions": [item.as_dict() for item in self.version_mentions],
+            "concept_scopes": [item.as_dict() for item in self.concept_scopes],
+        }
+        if self.intent is not None:
+            result["intent"] = self.intent.as_dict()
+        return result
+
+
+@dataclass
+class AnalyzerDeltaValidation:
+    delta: AnalyzerSemanticDelta
+    rejected_items: list[dict[str, Any]] = field(default_factory=list)
+    unbound_version_tokens: list[str] = field(default_factory=list)
+
+
+def _query_tokens(value: str) -> set[str]:
+    return {token.casefold() for token in re.findall(r"[A-Za-z0-9]+", value)}
+
+
+def _complete_technical_token(
+    token: str, text: str, *, case_sensitive: bool = True
+) -> str | None:
+    """Return a query substring only when token boundaries are technically complete."""
+    if not token or not isinstance(text, str):
+        return None
+    flags = 0 if case_sensitive else re.IGNORECASE
+
+    def continues(index: int, direction: int) -> bool:
+        char = text[index]
+        if char.isalnum() or char in "_:/@":
+            return True
+        if char in ".-":
+            neighbor = index + direction
+            return (
+                0 <= neighbor < len(text)
+                and (text[neighbor].isalnum() or text[neighbor] == "_")
+            )
+        return False
+
+    for match in re.finditer(re.escape(token), text, flags):
+        start, end = match.span()
+        if start and continues(start - 1, -1):
+            continue
+        if end < len(text) and continues(end, 1):
+            continue
+        return text[start:end]
+    return None
+
+
+def _concept_is_query_grounded(value: str, support_spans: tuple[str, ...], question: str) -> bool:
+    value_tokens = _query_tokens(value)
+    grounded_tokens = _query_tokens(question) | _query_tokens(" ".join(support_spans))
+    if not value_tokens or not grounded_tokens:
+        return False
+    return all(
+        any(
+            value_token == grounded_token
+            or (
+                len(value_token) >= 5
+                and len(grounded_token) >= 5
+                and (
+                    value_token.startswith(grounded_token)
+                    or grounded_token.startswith(value_token)
+                )
+            )
+            for grounded_token in grounded_tokens
+        )
+        for value_token in value_tokens
+    )
+
+
+def _scope_is_query_grounded(
+    key: str,
+    value: str,
+    support_spans: tuple[str, ...],
+    question: str,
+    parsed: DeterministicQueryParse,
+) -> bool:
+    """Require both the scope concept and normalized value to be grounded."""
+    normalized_key = re.sub(r"[_-]+", " ", key)
+    key_grounded = _concept_is_query_grounded(normalized_key, support_spans, question)
+    normalized_key = re.sub(r"\s+", " ", normalized_key).strip().casefold()
+    normalized_value = re.sub(r"[_-]+", " ", value)
+    normalized_value = re.sub(r"\s+", " ", normalized_value).strip().casefold()
+    known_value = False
+    for known_scopes in (parsed.fixed_concept_scopes, parsed.fallback_concept_scopes):
+        for known_key, known_scope_value in known_scopes.items():
+            known_key_normalized = re.sub(r"[_-]+", " ", known_key)
+            known_key_normalized = re.sub(r"\s+", " ", known_key_normalized).strip().casefold()
+            if known_key_normalized == normalized_key:
+                key_grounded = True
+                known_value = known_value or (
+                    re.sub(r"[_-]+", " ", known_scope_value)
+                    .strip()
+                    .casefold()
+                    == normalized_value
+                )
+    value_grounded = _concept_is_query_grounded(value, support_spans, question)
+    return key_grounded and (value_grounded or known_value)
 
 
 def _has_explicit_repository_reference(question: str, repository: str) -> bool:
@@ -50,6 +274,23 @@ def _has_explicit_repository_reference(question: str, repository: str) -> bool:
     parts = [re.escape(part) for part in repository.split("_")]
     pattern = rf"(?<![a-z0-9]){'[\\s_-]?'.join(parts)}(?![a-z0-9])"
     return re.search(pattern, question, re.IGNORECASE) is not None
+
+
+def _has_explicit_version_repository_binding(
+    question: str, repository: str, token: str
+) -> bool:
+    """Require explicit repository/version syntax before fixing a SHA association."""
+    repository_parts = [re.escape(part) for part in repository.split("_")]
+    repository_pattern = rf"(?<![a-z0-9]){'[\\s_-]?'.join(repository_parts)}(?![a-z0-9])"
+    token_pattern = rf"(?<![a-z0-9]){re.escape(token)}(?![a-z0-9])"
+    qualifier = r"(?:commit|sha|version|ref)"
+    separator = r"[\s:=-]+"
+    patterns = (
+        rf"{repository_pattern}{separator}{qualifier}{separator}{token_pattern}",
+        rf"{repository_pattern}\s*@\s*{token_pattern}",
+        rf"{qualifier}{separator}{token_pattern}{separator}(?:for|of|in){separator}{repository_pattern}",
+    )
+    return any(re.search(pattern, question, re.IGNORECASE) for pattern in patterns)
 
 
 @dataclass
@@ -106,10 +347,17 @@ class DeterministicQueryParse:
         known_partial = {key: value for key, value in known_partial.items() if value}
         unresolved_semantics: dict[str, str] = {}
         for field_name in semantic_output_fields:
-            if field_name in known_partial:
+            if field_name == "repository_additions" and self.target_repositories:
                 unresolved_semantics[field_name] = "augment_known_partial"
-            elif field_name == "requested_versions" and self.requested_versions:
-                unresolved_semantics[field_name] = "augment_fixed_keys"
+                unresolved_semantics["target_repositories"] = "augment_known_partial"
+            elif field_name == "repository_additions":
+                unresolved_semantics[field_name] = "resolve"
+                unresolved_semantics["target_repositories"] = "resolve"
+            elif field_name in known_partial:
+                unresolved_semantics[field_name] = "augment_known_partial"
+            elif field_name == "version_mentions" and self.requested_versions:
+                unresolved_semantics[field_name] = "preserve_fixed_version_keys"
+                unresolved_semantics["requested_versions"] = "augment_fixed_keys"
             elif field_name == "concept_scopes" and self.fixed_concept_scopes:
                 unresolved_semantics[field_name] = "resolve_remaining_scope_keys_after_fixed_constraints"
             elif field_name == "concept_scopes" and self.fallback_concept_scopes:
@@ -124,6 +372,225 @@ class DeterministicQueryParse:
             "unresolved_semantics": unresolved_semantics,
             "provenance": self.provenance,
         }
+
+
+def _validate_analyzer_delta(
+    question: str,
+    parsed: DeterministicQueryParse,
+    result: Any,
+    semantic_output_fields: list[str],
+) -> AnalyzerDeltaValidation:
+    """Validate and normalize the query-grounded semantic delta."""
+    validation = AnalyzerDeltaValidation(delta=AnalyzerSemanticDelta())
+    if not isinstance(result, dict):
+        validation.rejected_items.append(
+            {"field": "root", "value": result, "reason": "malformed_delta"}
+        )
+        return validation
+
+    def reject(field_name: str, item: Any, reason: str, **extra: Any) -> None:
+        entry = {"field": field_name, "item": item, "reason": reason}
+        entry.update(extra)
+        validation.rejected_items.append(entry)
+
+    def grounded_item(
+        field_name: str,
+        item: Any,
+        *,
+        value_key: str = "value",
+        allowed_keys: set[str] | None = None,
+    ) -> tuple[str, tuple[str, ...]] | None:
+        allowed = allowed_keys or {value_key, "support_spans"}
+        if not isinstance(item, dict):
+            reject(field_name, item, "malformed_item")
+            return None
+        if set(item) - allowed:
+            reject(field_name, item, "unexpected_item_properties")
+            return None
+        value = item.get(value_key)
+        support_spans = item.get("support_spans")
+        if not isinstance(value, str) or not value.strip():
+            reject(field_name, item, "missing_value")
+            return None
+        if (
+            not isinstance(support_spans, list)
+            or not support_spans
+            or any(not isinstance(span, str) or not span or span not in question for span in support_spans)
+        ):
+            reject(field_name, item, "unsupported_query_support")
+            return None
+        return value, tuple(support_spans)
+
+    def item_list(field_name: str) -> list[Any]:
+        raw_items = result.get(field_name, [])
+        if raw_items is None:
+            return []
+        if not isinstance(raw_items, list):
+            reject(field_name, raw_items, "malformed_field")
+            return []
+        return raw_items
+
+    if parsed.intent is None:
+        raw_intent = result.get("intent")
+        if raw_intent is None:
+            reject("intent", raw_intent, "missing_intent")
+        else:
+            grounded = grounded_item("intent", raw_intent)
+            if grounded is not None:
+                value, support_spans = grounded
+                if value not in _ANALYZER_INTENTS:
+                    reject("intent", raw_intent, "unsupported_intent")
+                else:
+                    validation.delta.intent = AnalyzerSemanticItem(value, support_spans)
+    elif "intent" in result:
+        reject("intent", result["intent"], "fixed_intent_output")
+
+    repository_items = item_list("repository_additions")
+    if "repository_additions" not in semantic_output_fields and repository_items:
+        for raw_item in repository_items:
+            reject("repository_additions", raw_item, "unrequested_delta_field")
+        repository_items = []
+    for raw_item in repository_items:
+        grounded = grounded_item("repository_additions", raw_item)
+        if grounded is None:
+            continue
+        value, support_spans = grounded
+        repository = value.casefold()
+        if (
+            repository not in _REPOSITORY_IDS
+            or not _has_explicit_repository_reference(question, repository)
+            or not any(
+                _has_explicit_repository_reference(span, repository)
+                for span in support_spans
+            )
+        ):
+            reject("repository_additions", raw_item, "unsupported_repository")
+            continue
+        validation.delta.repository_additions.append(
+            AnalyzerSemanticItem(repository, support_spans)
+        )
+
+    concept_items = item_list("concepts")
+    if "concepts" not in semantic_output_fields and concept_items:
+        for raw_item in concept_items:
+            reject("concepts", raw_item, "unrequested_delta_field")
+        concept_items = []
+    for raw_item in concept_items:
+        grounded = grounded_item("concepts", raw_item)
+        if grounded is None:
+            continue
+        value, support_spans = grounded
+        if not _concept_is_query_grounded(value, support_spans, question):
+            reject("concepts", raw_item, "unsupported_concept")
+            continue
+        validation.delta.concepts.append(AnalyzerSemanticItem(value, support_spans))
+
+    symbol_items = item_list("symbols")
+    if "symbols" not in semantic_output_fields and symbol_items:
+        for raw_item in symbol_items:
+            reject("symbols", raw_item, "unrequested_delta_field")
+        symbol_items = []
+    for raw_item in symbol_items:
+        grounded = grounded_item("symbols", raw_item)
+        if grounded is None:
+            continue
+        value, support_spans = grounded
+        if (
+            _complete_technical_token(value, question) is None
+            or not any(
+                _complete_technical_token(value, span) is not None
+                for span in support_spans
+            )
+        ):
+            reject("symbols", raw_item, "unsupported_symbol")
+            continue
+        validation.delta.symbols.append(AnalyzerSemanticItem(value, support_spans))
+
+    fixed_version_tokens = {
+        value.casefold() for value in parsed.requested_versions.values()
+    }
+    version_items = item_list("version_mentions")
+    if "version_mentions" not in semantic_output_fields and version_items:
+        for raw_item in version_items:
+            reject("version_mentions", raw_item, "unrequested_delta_field")
+        version_items = []
+    for raw_item in version_items:
+        grounded = grounded_item(
+            "version_mentions",
+            raw_item,
+            value_key="token",
+            allowed_keys={"token", "repository", "support_spans"},
+        )
+        if grounded is None:
+            continue
+        token, support_spans = grounded
+        repository: str | None = None
+        requested_repository = raw_item.get("repository")
+        if "repository" in raw_item:
+            if (
+                not isinstance(requested_repository, str)
+                or requested_repository.casefold() not in _REPOSITORY_IDS
+            ):
+                reject("version_mentions", raw_item, "unsupported_repository")
+            elif (
+                len(parsed.version_repositories) == 1
+                and requested_repository.casefold() == parsed.version_repositories[0]
+                and any(
+                    _has_explicit_repository_reference(span, requested_repository)
+                    for span in support_spans
+                )
+            ):
+                repository = requested_repository.casefold()
+            else:
+                reject("version_mentions", raw_item, "ambiguous_version_repository")
+        query_token = _complete_technical_token(token, question, case_sensitive=False)
+        if query_token is None or not any(
+            _complete_technical_token(token, span, case_sensitive=False) is not None
+            for span in support_spans
+        ):
+            reject("version_mentions", raw_item, "unsupported_version")
+            continue
+        validation.delta.version_mentions.append(
+            AnalyzerVersionMention(query_token, support_spans, repository)
+        )
+        if repository is None and query_token.casefold() not in fixed_version_tokens:
+            validation.unbound_version_tokens.append(query_token)
+
+    scope_items = item_list("concept_scopes")
+    if "concept_scopes" not in semantic_output_fields and scope_items:
+        for raw_item in scope_items:
+            reject("concept_scopes", raw_item, "unrequested_delta_field")
+        scope_items = []
+    for raw_item in scope_items:
+        if not isinstance(raw_item, dict):
+            reject("concept_scopes", raw_item, "malformed_item")
+            continue
+        grounded = grounded_item(
+            "concept_scopes",
+            raw_item,
+            allowed_keys={"key", "value", "support_spans"},
+        )
+        if grounded is None:
+            continue
+        _, support_spans = grounded
+        key = raw_item.get("key")
+        value = raw_item.get("value")
+        if not isinstance(key, str) or not key.strip() or not isinstance(value, str) or not value.strip():
+            reject("concept_scopes", raw_item, "missing_scope_value")
+            continue
+        if not _scope_is_query_grounded(key, value, support_spans, question, parsed):
+            reject("concept_scopes", raw_item, "unsupported_scope")
+            continue
+        validation.delta.concept_scopes.append(
+            AnalyzerScopeItem(key, value, support_spans)
+        )
+
+    allowed_output_fields = set(ANALYSIS_SCHEMA["properties"])
+    for field_name, raw_value in result.items():
+        if field_name not in allowed_output_fields:
+            reject(field_name, raw_value, "unexpected_delta_field")
+    validation.unbound_version_tokens = list(dict.fromkeys(validation.unbound_version_tokens))
+    return validation
 
 
 def route_high_confidence_intent(
@@ -397,11 +864,15 @@ class Retriever:
                 parsed.record("query_expansions", source="reviewed_expansion", rule=rule.rule_id, ownership="fixed_reviewed_rule")
 
         parsed.explicit_shas = re.findall(r"(?i)\b[0-9a-f]{7,40}\b", question)
-        parsed.version_repositories = named_repositories
-        if parsed.explicit_shas:
-            for repo in named_repositories:
+        if parsed.explicit_shas and len(named_repositories) == 1:
+            repo = named_repositories[0]
+            parsed.version_repositories = []
+            if _has_explicit_version_repository_binding(question, repo, parsed.explicit_shas[0]):
+                parsed.version_repositories = [repo]
                 parsed.requested_versions[repo] = parsed.explicit_shas[0]
                 parsed.record("requested_versions", source="explicit_version_token", rule="commit_sha", value=repo, ownership="fixed")
+        else:
+            parsed.version_repositories = named_repositories if len(named_repositories) == 1 else []
 
         parsed.target_repositories = list(dict.fromkeys(parsed.target_repositories))
         parsed.symbols = list(dict.fromkeys(parsed.symbols))
@@ -413,18 +884,31 @@ class Retriever:
         }
         return parsed
 
+    def _semantic_output_fields(self, parsed: DeterministicQueryParse) -> list[str]:
+        """Return only the semantic-delta fields that can still add query meaning."""
+        fields: list[str] = []
+        if parsed.intent is None:
+            fields.append("intent")
+        if len(parsed.target_repositories) < len(self.fixed_versions):
+            fields.append("repository_additions")
+        fields.extend(("concepts", "symbols"))
+        if not (parsed.explicit_shas and parsed.version_repositories):
+            fields.append("version_mentions")
+        fields.append("concept_scopes")
+        return fields
+
     def analyze(self, question: str) -> RetrievalPlan:
         if not question.strip():
             raise ValueError("question cannot be empty")
         if len(question) > 20_000:
             raise ValueError("question exceeds the 20,000 character safety limit")
         parsed = self._preparse(question)
-        semantic_output_fields = [
-            field_name for field_name in ANALYSIS_SCHEMA["required"]
-            if field_name != "intent" or parsed.intent is None
-        ]
-        response_schema = _analysis_schema(intent_is_fixed=parsed.intent is not None)
-        result = self.vertex.generate_json(
+        semantic_output_fields = self._semantic_output_fields(parsed)
+        response_schema = _analysis_schema(
+            intent_is_fixed=parsed.intent is not None,
+            semantic_output_fields=semantic_output_fields,
+        )
+        raw_result = self.vertex.generate_json(
             json.dumps(
                 {
                     "task": "analyze_retrieval_question",
@@ -436,22 +920,32 @@ class Retriever:
             response_schema,
             system_instruction=QUERY_ANALYZER_SYSTEM_PROMPT,
         )
-        intent = parsed.intent or result["intent"]
+        validation = _validate_analyzer_delta(
+            question, parsed, raw_result, semantic_output_fields
+        )
+        delta = validation.delta
+        if parsed.intent is not None:
+            intent = parsed.intent
+        elif delta.intent is not None:
+            intent = delta.intent.value
+        else:
+            raise ValueError("analyzer semantic delta did not provide a grounded intent")
         policy = self.policies.intents[intent]
         scopes = {
             **parsed.fallback_concept_scopes,
-            **result["concept_scopes"],
+            **{item.key: item.value for item in delta.concept_scopes},
             **parsed.fixed_concept_scopes,
         }
         lowered = question.casefold()
         targets = [
             *parsed.target_repositories,
-            *(repo for repo in result["target_repositories"] if repo in self.fixed_versions),
+            *(item.value for item in delta.repository_additions),
         ]
         if not targets:
             targets = list(self.fixed_versions)
-        expanded_symbols = [*result["symbols"], *parsed.symbols]
-        expanded_concepts = [*result["concepts"], *parsed.concepts]
+        targets = list(dict.fromkeys(targets))
+        expanded_symbols = [item.value for item in delta.symbols] + parsed.symbols
+        expanded_concepts = [item.value for item in delta.concepts] + parsed.concepts
         paper_page_hints = {
             source_id: list(pages)
             for source_id, pages in parsed.paper_page_hints.items()
@@ -480,12 +974,23 @@ class Retriever:
         # theoretical/implementation literature.
         if intent not in {"algorithm_theory", "algorithm_implementation"}:
             paper_page_hints = {}
-        targets = list(dict.fromkeys(targets))
         conflicts = []
-        requested_versions = {**result.get("requested_versions", {}), **parsed.requested_versions}
-        if parsed.explicit_shas:
-            for repo in parsed.version_repositories or targets:
-                requested_versions[repo] = parsed.explicit_shas[0]
+        requested_versions = dict(parsed.requested_versions)
+        unbound_version_tokens = [
+            *validation.unbound_version_tokens,
+            *(
+                token
+                for token in parsed.explicit_shas
+                if token.casefold()
+                not in {value.casefold() for value in parsed.requested_versions.values()}
+            ),
+        ]
+        for mention in delta.version_mentions:
+            if mention.repository is not None:
+                requested_versions.setdefault(mention.repository, mention.token)
+            else:
+                unbound_version_tokens.append(mention.token)
+        unbound_version_tokens = list(dict.fromkeys(unbound_version_tokens))
         for repo, requested in requested_versions.items():
             requested_lower = requested.lower()
             is_document_version = any(
@@ -515,7 +1020,22 @@ class Retriever:
             analysis_diagnostics={
                 "deterministic_parse": parsed.analyzer_context(semantic_output_fields),
                 "analyzer_llm_called": True,
-                "analyzer_unresolved_fields": semantic_output_fields,
+                "analyzer_semantic_output_fields": semantic_output_fields,
+                "analyzer_raw_semantic_delta": raw_result,
+                "analyzer_accepted_semantic_delta": delta.as_dict(),
+                "analyzer_rejected_items": validation.rejected_items,
+                "analyzer_item_support": {
+                    field_name: (
+                        [values]
+                        if isinstance(values, dict) and values.get("support_spans")
+                        else [item for item in values if item.get("support_spans")]
+                    )
+                    for field_name, values in delta.as_dict().items()
+                    if (
+                        isinstance(values, dict) and values.get("support_spans")
+                    ) or isinstance(values, list)
+                },
+                "unbound_version_tokens": unbound_version_tokens,
                 "analyzer_final": {
                     "intent": intent,
                     "target_repositories": targets,
