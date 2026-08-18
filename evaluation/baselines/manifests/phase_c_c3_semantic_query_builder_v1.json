@@ -1,0 +1,13 @@
+{
+  "phase": "C",
+  "task": "C3",
+  "name": "SemanticQueryBuilder for dense retrieval",
+  "version": "1.0",
+  "status": "PASS",
+  "description": "Deterministic provenance-aware semantic query builder isolated to the dense vector channel.",
+  "components": [
+    "SemanticQueryComponent",
+    "SemanticQuery",
+    "build_semantic_query"
+  ]
+}

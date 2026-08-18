@@ -34,7 +34,12 @@ When records conflict, use the single section explicitly marked **Current author
 
 ## Generalization Phase status
 
-- Bootstrap tasks A1–A3: `PASS`; A3.1 hardening: `PASS`; B1: `PASS`; B2: `PASS`; B3: `PASS`; B4: `PASS`; B5: `PASS` (B5.1R2 static closeout and B5.2 live migration/T1/post-B5 T2 completed); Phase-B T3 full 80-question dev retrieval-only original mechanical gate: `FAIL`; T3.1 evaluator semantics correction: `PASS`; T3.1R1 product-language calibration: `PASS`; T3.1R2 calibration-binding/rank-stage closeout: `PASS`; T3.1R3 frozen fused-rank provenance & dynamic dev-completeness closeout: `PASS`; T3.2 critical-evidence mechanism investigation: `PASS`; T3.3A first implementation attempt: `SUPERSEDED`; T3.3A-R1 bounded soft-budget closeout: `INCONCLUSIVE`; T3.3A-R2 two-pass backfill closeout: `INCONCLUSIVE` (g016 locally recovered, g011 not recovered; heuristic iteration stopped; authoritative formal Phase-B product T3 remains `FAIL`); C1 initial implementation: `INCONCLUSIVE` after review; C1-R1: `PASS`; C1 overall: `PASS`; C2: `PASS`.
+# Current Evaluation Status
+
+**Phase C, C3 — SemanticQueryBuilder for dense retrieval**: `PASS` (T2 Dense A/B Evaluated, T0 Unit Tests Passed)
+**Phase C, C2 — QueryAnalyzer implementation**: `PASS`
+**Phase C, C1 — Retriever entrypoint and channels**: `INCONCLUSIVE`
+**Phase C, C1 — Retriever entrypoint and channels**: `INCONCLUSIVE`; T3.3A-R2 two-pass backfill closeout: `INCONCLUSIVE` (g016 locally recovered, g011 not recovered; heuristic iteration stopped; authoritative formal Phase-B product T3 remains `FAIL`); C1 initial implementation: `INCONCLUSIVE` after review; C1-R1: `PASS`; C1 overall: `PASS`; C2: `PASS`.
 - Evaluation modes: `retrieval`, `qa`, and `full` have explicit recorded boundaries.
 - Structured retrieval traces are persisted as atomic JSON and JSONL and can be loaded without rerunning QA.
 - A3 was corrected from a possible full-retrieval interpretation to a stratified low-cost bootstrap baseline. Phase-B T3 (complete 80-question dev retrieval-only) was performed on `2026-08-16`; no full 120-question retrieval/E2E run was performed.

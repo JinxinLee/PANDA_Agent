@@ -201,7 +201,7 @@ Phase C is started by C1. The initial C1 implementation was `INCONCLUSIVE` after
 
 ### C3 — SemanticQueryBuilder for dense retrieval
 
-- **Status:** NOT_STARTED
+- **Status:** PASS
 - **Problem:** Dense retrieval uses mainly the raw question even when the analyzer identifies useful concepts, while free-form rewriting risks answer-oriented drift.
 - **Goal:** Build a semantic query in which the original question remains primary and a small number of high-confidence concepts are supplementary.
 - **Why this stage:** C1/C2 create trustworthy inputs; dense construction must be isolated before sparse construction or fusion tuning.

@@ -775,6 +775,80 @@ def select_final_evidence(
     return selected, final_excluded, backfill_admissions
 
 
+@dataclass(frozen=True)
+class SemanticQueryComponent:
+    kind: str
+    value: str
+    provenance: str
+
+@dataclass
+class SemanticQuery:
+    text: str
+    raw_question: str
+    components: list[SemanticQueryComponent]
+    excluded_component_classes: list[str]
+
+    def as_dict(self) -> dict[str, Any]:
+        return {
+            "text": self.text,
+            "raw_question": self.raw_question,
+            "components": [{"kind": c.kind, "value": c.value, "provenance": c.provenance} for c in self.components],
+            "excluded_component_classes": self.excluded_component_classes,
+        }
+
+def build_semantic_query(question: str, plan: RetrievalPlan) -> SemanticQuery:
+    components: list[SemanticQueryComponent] = []
+    excluded = ["rejected_analyzer_items", "reviewed_expansions", "repository_metadata", "version_metadata"]
+    
+    diag = plan.analysis_diagnostics
+    accepted = diag.get("analyzer_accepted_semantic_delta", {})
+    lowered_question = question.casefold()
+
+    concepts = accepted.get("concepts", [])
+    for concept in concepts:
+        val = concept.get("value")
+        if val and val.casefold() not in lowered_question:
+            components.append(SemanticQueryComponent(kind="analyzer_concept", value=val, provenance="analyzer_accepted"))
+
+    deterministic_parse = diag.get("deterministic_parse", {})
+    fixed_scopes = deterministic_parse.get("fixed", {}).get("concept_scopes", {})
+    
+    for k, v in fixed_scopes.items():
+        if v.casefold() not in lowered_question:
+            components.append(SemanticQueryComponent(kind="deterministic_fixed_scope", value=f"{k}={v}", provenance="fixed"))
+
+    accepted_scopes = accepted.get("concept_scopes", [])
+    for scope in accepted_scopes:
+        k = scope.get("key")
+        v = scope.get("value")
+        if k not in fixed_scopes and v and v.casefold() not in lowered_question:
+            components.append(SemanticQueryComponent(kind="analyzer_scope", value=f"{k}={v}", provenance="analyzer_accepted"))
+
+    text = question
+    if components:
+        text += "\n\nSemantic focus:\n"
+        seen = set()
+        unique_components = []
+        for c in components:
+            if c.value not in seen:
+                seen.add(c.value)
+                unique_components.append(c)
+        def sort_key(c: SemanticQueryComponent) -> tuple[int, str]:
+            order = {"analyzer_concept": 0, "analyzer_scope": 1, "deterministic_fixed_scope": 2}
+            return (order.get(c.kind, 99), c.value)
+        unique_components.sort(key=sort_key)
+        for comp in unique_components:
+            text += f"{comp.value}\n"
+        text = text.strip()
+    
+    return SemanticQuery(
+        text=text,
+        raw_question=question,
+        components=components,
+        excluded_component_classes=excluded
+    )
+
+
 class Retriever:
     def __init__(self, project_root: Path, *, storage: Storage | None = None, vertex: VertexAIClient | None = None) -> None:
         self.project_root = Path(project_root).resolve()
@@ -1111,7 +1185,7 @@ class Retriever:
                         return ordered
         return ordered[:limit]
 
-    def _vector(self, question: str, plan: RetrievalPlan, limit: int) -> tuple[list[Any], list[Any], list[float]]:
+    def _vector(self, question: str, plan: RetrievalPlan, limit: int) -> tuple[list[Any], list[Any], list[float], SemanticQuery]:
         query_filter = None
         if plan.target_repositories:
             version_scopes = [
@@ -1123,12 +1197,13 @@ class Retriever:
             ]
             version_scopes.append(models.FieldCondition(key="source_id", match=models.MatchAny(any=[*self.context_sources, "curated_panda_domain"])))
             query_filter = models.Filter(should=version_scopes)
-        dense = self.vertex.embed_query(question)
+        semantic_query = build_semantic_query(question, plan)
+        dense = self.vertex.embed_query(semantic_query.text)
         sparse = next(iter(self.sparse.query_embed(question)))
         common = dict(collection_name=self.storage.settings.collection_name, query_filter=query_filter, limit=limit, with_payload=True)
         dense_hits = self.storage.qdrant.query_points(query=dense, using="dense", **common).points
         sparse_hits = self.storage.qdrant.query_points(query=models.SparseVector(indices=sparse.indices.tolist(), values=sparse.values.tolist()), using=self.sparse_vector_name, **common).points
-        return dense_hits, sparse_hits, dense
+        return dense_hits, sparse_hits, dense, semantic_query
 
     def _paper(self, query_vector: list[float], plan: RetrievalPlan, limit: int) -> list[dict[str, Any]]:
         """Retrieve paper evidence independently for paper-required plans.
@@ -1268,7 +1343,7 @@ class Retriever:
         plan = plan or self.analyze(question)
         limit = self.policies.candidate_pool_per_channel
         rankings: dict[str, list[dict[str, Any]]] = {"exact": self._exact(plan, question, limit)}
-        dense, sparse, query_vector = self._vector(question, plan, limit)
+        dense, sparse, query_vector, semantic_query = self._vector(question, plan, limit)
         rankings["dense"] = [hit.payload for hit in dense]
         rankings["sparse"] = [hit.payload for hit in sparse]
         paper = self._paper(query_vector, plan, limit)
@@ -1372,6 +1447,7 @@ class Retriever:
         )
         return {
             "plan": plan.model_dump(mode="json"),
+            "semantic_query": semantic_query.as_dict(),
             "rankings": {key: [item["object_id"] for item in value] for key, value in rankings.items()},
             "fusion_scores": {oid: scores[oid] for oid in sorted(scores, key=scores.get, reverse=True)[:30]},
             "reranked_object_ids": reranked,
