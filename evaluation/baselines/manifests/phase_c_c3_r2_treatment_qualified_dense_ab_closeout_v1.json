@@ -1,0 +1,967 @@
+{
+  "schema_version": "1.0",
+  "task": "C3-R2",
+  "artifact_id": "phase_c_c3_r2_treatment_qualified_dense_ab_closeout_v1",
+  "status": "closed",
+  "result": "INCONCLUSIVE",
+  "purpose": "Treatment-qualified dense PRE/POST shadow evaluation of the frozen C3 SemanticQueryBuilder.",
+  "source_commit": "e8b53e605e1cd9d34b3b77247b039b15fc822c02",
+  "c3_r1_baseline_commit": "e8b53e605e1cd9d34b3b77247b039b15fc822c02",
+  "history": {
+    "c1_overall": "PASS",
+    "c2": "PASS",
+    "c3_production_implementation": "accepted",
+    "c3_initial_evaluation": "invalid / superseded",
+    "c3_r1": "INCONCLUSIVE",
+    "c3_r1_artifact": "evaluation/baselines/manifests/phase_c_c3_r1_dense_ab_evaluation_integrity_closeout_v1.json",
+    "c3_r1_treatment_coverage": "2/16",
+    "c3_overall_before_c3_r2": "INCONCLUSIVE",
+    "c4": "NOT_STARTED"
+  },
+  "worktree_provenance": {
+    "head_at_preregistration": "e8b53e605e1cd9d34b3b77247b039b15fc822c02",
+    "working_tree_clean_before_preregistration": true,
+    "preregistration_created_before_remote_calls": true,
+    "remote_calls_before_preregistration": 0,
+    "production_strategy_frozen": true,
+    "authorized_changes": [
+      "evaluation/baselines/manifests/phase_c_c3_r2_treatment_qualified_dense_ab_closeout_v1.json",
+      "docs/EVALUATION_STATUS.md",
+      "docs/GENERALIZATION_ROADMAP.md"
+    ]
+  },
+  "candidate_pool": {
+    "source_calibration": "evaluation/baselines/manifests/phase_b_t3_product_language_scope_v2.json",
+    "source_gold": "evaluation/benchmarks/v2_6/gold_questions.yaml",
+    "eligibility_rule": "effective_product_language=en; split=dev; review_status=approved; expected_status=answered; required_evidence_groups and required_answer_points present",
+    "pool_size_after_c3_r1_and_known_exclusions": 31,
+    "excluded_ids": [
+      "g001",
+      "g002",
+      "g003",
+      "g011",
+      "g013",
+      "g014",
+      "g015",
+      "g016",
+      "g027",
+      "g028",
+      "g029",
+      "g044",
+      "g047",
+      "g050",
+      "g059",
+      "g060",
+      "g105",
+      "g110"
+    ],
+    "remaining_ids": [
+      "g004",
+      "g005",
+      "g006",
+      "g008",
+      "g009",
+      "g010",
+      "g017",
+      "g018",
+      "g019",
+      "g020",
+      "g021",
+      "g022",
+      "g023",
+      "g024",
+      "g030",
+      "g031",
+      "g032",
+      "g033",
+      "g034",
+      "g035",
+      "g036",
+      "g037",
+      "g039",
+      "g040",
+      "g051",
+      "g052",
+      "g055",
+      "g112",
+      "g113",
+      "g114",
+      "g115"
+    ]
+  },
+  "screening_preregistration": {
+    "locked_at": "2026-08-19T00:36:39.4503253+02:00",
+    "status": "locked_before_first_remote_call",
+    "selection_algorithm": {
+      "description": "Group remaining eligible cases by Gold intent, sort IDs lexicographically within each intent, then emit one ID from each non-empty intent queue per round using the fixed intent order until all candidates have a deterministic position.",
+      "intent_order": [
+        "installation",
+        "usage",
+        "algorithm_theory",
+        "algorithm_implementation",
+        "api",
+        "data_flow",
+        "module_structure",
+        "troubleshooting"
+      ],
+      "remaining_ids_by_intent": {
+        "installation": [
+          "g004",
+          "g005",
+          "g006",
+          "g008",
+          "g009",
+          "g010"
+        ],
+        "usage": [
+          "g017",
+          "g018",
+          "g019",
+          "g020",
+          "g021",
+          "g022",
+          "g023",
+          "g024"
+        ],
+        "algorithm_theory": [
+          "g051",
+          "g052",
+          "g055"
+        ],
+        "algorithm_implementation": [],
+        "api": [
+          "g030",
+          "g031",
+          "g032",
+          "g033",
+          "g034",
+          "g035",
+          "g036",
+          "g037",
+          "g039",
+          "g040"
+        ],
+        "data_flow": [],
+        "module_structure": [],
+        "troubleshooting": [
+          "g112",
+          "g113",
+          "g114",
+          "g115"
+        ]
+      },
+      "complete_screening_order": [
+        "g004",
+        "g017",
+        "g051",
+        "g030",
+        "g112",
+        "g005",
+        "g018",
+        "g052",
+        "g031",
+        "g113",
+        "g006",
+        "g019",
+        "g055",
+        "g032",
+        "g114",
+        "g008",
+        "g020",
+        "g033",
+        "g115",
+        "g009",
+        "g021",
+        "g034",
+        "g010",
+        "g022",
+        "g035",
+        "g023",
+        "g036",
+        "g024",
+        "g037",
+        "g039",
+        "g040"
+      ]
+    },
+    "maximum_screening_cases": 20,
+    "treatment_qualification": "SemanticQuery.text != raw_question",
+    "target_qualified_count": 6,
+    "screening_stop_rule": "Stop immediately after the sixth treatment-qualified case; never inspect retrieval outcomes during screening.",
+    "insufficient_activation_rule": "If fewer than six qualified cases are found in the first 20 screening positions, C3-R2 is INCONCLUSIVE and Stage B does not run.",
+    "stage_a_allowed": [
+      "question",
+      "deterministic preparse",
+      "C2 analyzer result",
+      "RetrievalPlan",
+      "SemanticQuery"
+    ],
+    "stage_a_forbidden": [
+      "dense embeddings",
+      "Qdrant rankings",
+      "required evidence ranks",
+      "PRE/POST retrieval outcomes",
+      "reranker output",
+      "Gold retrieval performance"
+    ]
+  },
+  "model_contract": {
+    "analyzer_model": "gemini-3.7-flash",
+    "analyzer_location": "global",
+    "embedding_model": "gemini-embedding-2",
+    "embedding_task": "RETRIEVAL_QUERY",
+    "embedding_dimensions": 3072,
+    "prompt_set_version": "3.7.0",
+    "query_analyzer_system_prompt_changed": false,
+    "response_schema": "production _analysis_schema derived from deterministic semantic output fields",
+    "deterministic_context": "production DeterministicQueryParse.analyzer_context(semantic_output_fields)"
+  },
+  "live_index_preflight": {
+    "performed_before_remote_calls": true,
+    "collection": "panda_knowledge_v1",
+    "qdrant_url": "http://127.0.0.1:6333",
+    "exists": true,
+    "status": "green",
+    "points_count": 104973,
+    "dense_dimensions": 3072,
+    "dense_distance": "Cosine",
+    "sample_count": 1,
+    "sample_payload_keys": [
+      "authority_level",
+      "locator",
+      "object_id",
+      "object_type",
+      "source_id",
+      "source_version_id",
+      "text",
+      "title"
+    ],
+    "object_id_payload_available": true,
+    "index_identity": {
+      "fingerprint": "8172f9a640e62977be6e911bfb4848ce3aecd0994f1f3ba51a0985bffec62cb9",
+      "index_schema_version": "4",
+      "embedding_model": "gemini-embedding-2",
+      "embedding_dimensions": 3072,
+      "distance": "cosine"
+    },
+    "writes": 0,
+    "preflight_gate": "PASS"
+  },
+  "stage_b_contract": {
+    "pre_query_text": "exact raw Gold question",
+    "post_query_text": "exact SemanticQuery.text produced during Stage A",
+    "same_plan_reused": true,
+    "filter_built_once_per_case": true,
+    "same_filter_pre_post_required": true,
+    "collection": "panda_knowledge_v1",
+    "vector_name": "dense",
+    "top_k": 20,
+    "metrics": [
+      "Recall@5",
+      "Recall@10",
+      "Recall@20",
+      "MRR",
+      "critical coverage where applicable"
+    ],
+    "critical_coverage_semantics": "Existing critical required-evidence-group labels; N/A when not applicable.",
+    "rank_classifications": [
+      "improved",
+      "unchanged",
+      "regressed",
+      "no-hit-both",
+      "recovered-hit",
+      "lost-hit"
+    ],
+    "directional_guard": "negative_direction_count <= positive_direction_count",
+    "recall_guard": "POST Recall@20 >= PRE Recall@20",
+    "critical_guard": "No new critical evidence miss",
+    "contamination_guard": "No reviewed-expansion-only identifiers, paths/files/pages, rejected analyzer items, Gold/evidence identifiers, or hidden repository/version metadata in augmentation.",
+    "pass_rule": "All preregistered C3-R2 gates pass; no formal T3/T4/T5.",
+    "inconclusive_rules": [
+      "fewer than six qualified cases in first 20 screenings",
+      "plan/filter reuse cannot be proved",
+      "POST Recall@20 below PRE",
+      "new critical miss",
+      "negative_direction_count > positive_direction_count",
+      "contamination",
+      "strategy/index mutation or downstream channel work required"
+    ]
+  },
+  "call_budget": {
+    "screening_analyzer_max": 20,
+    "qualified_case_target": 6,
+    "stage_b_query_embedding_calls": 12,
+    "stage_b_dense_qdrant_reads": 12,
+    "document_embedding_calls": 0,
+    "sparse_calls": 0,
+    "reranker_calls": 0,
+    "qa_verifier_judge_calls": 0,
+    "sql_writes": 0,
+    "qdrant_writes": 0,
+    "index_mutation": 0,
+    "reindex_or_reembedding": "no"
+  },
+  "execution": {
+    "status": "completed_inconclusive",
+    "screening_order": [
+      "g004",
+      "g017",
+      "g051",
+      "g030",
+      "g112",
+      "g005",
+      "g018",
+      "g052",
+      "g031",
+      "g113",
+      "g006",
+      "g019",
+      "g055",
+      "g032",
+      "g114",
+      "g008",
+      "g020",
+      "g033",
+      "g115",
+      "g009",
+      "g021",
+      "g034",
+      "g010",
+      "g022",
+      "g035",
+      "g023",
+      "g036",
+      "g024",
+      "g037",
+      "g039",
+      "g040"
+    ],
+    "screening_cases_executed": 20,
+    "screening_results": [
+      {
+        "case_id": "g004",
+        "intent": "installation",
+        "query": "How do I start PandaRoot with its documented Docker containers?",
+        "plan_intent": "installation",
+        "semantic_query_changed": false,
+        "semantic_query_text": "How do I start PandaRoot with its documented Docker containers?",
+        "semantic_components": [],
+        "augmentation_component_count": 0,
+        "treatment_qualified": false,
+        "analyzer_call_delta": {
+          "generation_calls": 1,
+          "model_calls": 1,
+          "token_usage": 1724
+        }
+      },
+      {
+        "case_id": "g017",
+        "intent": "usage",
+        "query": "How should createLmdFitData be invoked and what categories can it create?",
+        "plan_intent": "usage",
+        "semantic_query_changed": false,
+        "semantic_query_text": "How should createLmdFitData be invoked and what categories can it create?",
+        "semantic_components": [],
+        "augmentation_component_count": 0,
+        "treatment_qualified": false,
+        "analyzer_call_delta": {
+          "generation_calls": 1,
+          "model_calls": 1,
+          "token_usage": 1842
+        }
+      },
+      {
+        "case_id": "g051",
+        "intent": "algorithm_theory",
+        "query": "How does point-like angular acceptance differ from restgas effective acceptance?",
+        "plan_intent": "algorithm_theory",
+        "semantic_query_changed": false,
+        "semantic_query_text": "How does point-like angular acceptance differ from restgas effective acceptance?",
+        "semantic_components": [],
+        "augmentation_component_count": 0,
+        "treatment_qualified": false,
+        "analyzer_call_delta": {
+          "generation_calls": 1,
+          "model_calls": 1,
+          "token_usage": 2073
+        }
+      },
+      {
+        "case_id": "g030",
+        "intent": "api",
+        "query": "Which class represents angular acceptance in LuminosityFit?",
+        "plan_intent": "api",
+        "semantic_query_changed": false,
+        "semantic_query_text": "Which class represents angular acceptance in LuminosityFit?",
+        "semantic_components": [],
+        "augmentation_component_count": 0,
+        "treatment_qualified": false,
+        "analyzer_call_delta": {
+          "generation_calls": 1,
+          "model_calls": 1,
+          "token_usage": 1815
+        }
+      },
+      {
+        "case_id": "g112",
+        "intent": "troubleshooting",
+        "query": "createLmdFitData returns no acceptance: which data mode, Lumi_TrksQA input/tree assumptions, selection filters, and accepted/generated histogram filling should I inspect?",
+        "plan_intent": "troubleshooting",
+        "semantic_query_changed": false,
+        "semantic_query_text": "createLmdFitData returns no acceptance: which data mode, Lumi_TrksQA input/tree assumptions, selection filters, and accepted/generated histogram filling should I inspect?",
+        "semantic_components": [],
+        "augmentation_component_count": 0,
+        "treatment_qualified": false,
+        "analyzer_call_delta": {
+          "generation_calls": 1,
+          "model_calls": 1,
+          "token_usage": 2318
+        }
+      },
+      {
+        "case_id": "g005",
+        "intent": "installation",
+        "query": "How is a PandaRoot developer environment used inside Docker?",
+        "plan_intent": "installation",
+        "semantic_query_changed": false,
+        "semantic_query_text": "How is a PandaRoot developer environment used inside Docker?",
+        "semantic_components": [],
+        "augmentation_component_count": 0,
+        "treatment_qualified": false,
+        "analyzer_call_delta": {
+          "generation_calls": 1,
+          "model_calls": 1,
+          "token_usage": 1677
+        }
+      },
+      {
+        "case_id": "g018",
+        "intent": "usage",
+        "query": "How do I run a luminosity fit after preparing fit data?",
+        "plan_intent": "usage",
+        "semantic_query_changed": true,
+        "semantic_query_text": "How do I run a luminosity fit after preparing fit data?\n\nSemantic focus:\nrun luminosity fit",
+        "semantic_components": [
+          {
+            "kind": "analyzer_concept",
+            "value": "run luminosity fit",
+            "provenance": "analyzer_accepted"
+          }
+        ],
+        "augmentation_component_count": 1,
+        "treatment_qualified": true,
+        "analyzer_call_delta": {
+          "generation_calls": 1,
+          "model_calls": 1,
+          "token_usage": 1800
+        }
+      },
+      {
+        "case_id": "g052",
+        "intent": "algorithm_theory",
+        "query": "Why does a reconstructed restgas profile feed back into effective acceptance?",
+        "plan_intent": "algorithm_theory",
+        "semantic_query_changed": false,
+        "semantic_query_text": "Why does a reconstructed restgas profile feed back into effective acceptance?",
+        "semantic_components": [],
+        "augmentation_component_count": 0,
+        "treatment_qualified": false,
+        "analyzer_call_delta": {
+          "generation_calls": 1,
+          "model_calls": 1,
+          "token_usage": 1798
+        }
+      },
+      {
+        "case_id": "g031",
+        "intent": "api",
+        "query": "Where does PndLmdModelFactory assemble the fit model?",
+        "plan_intent": "api",
+        "semantic_query_changed": false,
+        "semantic_query_text": "Where does PndLmdModelFactory assemble the fit model?",
+        "semantic_components": [],
+        "augmentation_component_count": 0,
+        "treatment_qualified": false,
+        "analyzer_call_delta": {
+          "generation_calls": 1,
+          "model_calls": 1,
+          "token_usage": 1716
+        }
+      },
+      {
+        "case_id": "g113",
+        "intent": "troubleshooting",
+        "query": "runLmdFit cannot find prepared data; how do I trace the mismatch?",
+        "plan_intent": "troubleshooting",
+        "semantic_query_changed": true,
+        "semantic_query_text": "runLmdFit cannot find prepared data; how do I trace the mismatch?\n\nSemantic focus:\ntrace mismatch",
+        "semantic_components": [
+          {
+            "kind": "analyzer_concept",
+            "value": "trace mismatch",
+            "provenance": "analyzer_accepted"
+          }
+        ],
+        "augmentation_component_count": 1,
+        "treatment_qualified": true,
+        "analyzer_call_delta": {
+          "generation_calls": 1,
+          "model_calls": 1,
+          "token_usage": 1829
+        }
+      },
+      {
+        "case_id": "g006",
+        "intent": "installation",
+        "query": "Which setup step makes PandaRoot commands available in a shell?",
+        "plan_intent": "installation",
+        "semantic_query_changed": false,
+        "semantic_query_text": "Which setup step makes PandaRoot commands available in a shell?",
+        "semantic_components": [],
+        "augmentation_component_count": 0,
+        "treatment_qualified": false,
+        "analyzer_call_delta": {
+          "generation_calls": 1,
+          "model_calls": 1,
+          "token_usage": 1833
+        }
+      },
+      {
+        "case_id": "g019",
+        "intent": "usage",
+        "query": "How do I extract luminosity values from completed fit results?",
+        "plan_intent": "usage",
+        "semantic_query_changed": false,
+        "semantic_query_text": "How do I extract luminosity values from completed fit results?",
+        "semantic_components": [],
+        "augmentation_component_count": 0,
+        "treatment_qualified": false,
+        "analyzer_call_delta": {
+          "generation_calls": 1,
+          "model_calls": 1,
+          "token_usage": 1751
+        }
+      },
+      {
+        "case_id": "g055",
+        "intent": "algorithm_theory",
+        "query": "How should angular acceptance be distinguished from longitudinal efficiency?",
+        "plan_intent": "algorithm_theory",
+        "semantic_query_changed": true,
+        "semantic_query_text": "How should angular acceptance be distinguished from longitudinal efficiency?\n\nSemantic focus:\nefficiency=angular_acceptance_vs_longitudinal_profile",
+        "semantic_components": [
+          {
+            "kind": "deterministic_fixed_scope",
+            "value": "efficiency=angular_acceptance_vs_longitudinal_profile",
+            "provenance": "fixed"
+          }
+        ],
+        "augmentation_component_count": 1,
+        "treatment_qualified": true,
+        "analyzer_call_delta": {
+          "generation_calls": 1,
+          "model_calls": 1,
+          "token_usage": 2095
+        }
+      },
+      {
+        "case_id": "g032",
+        "intent": "api",
+        "query": "Which source implements the 1D DPM angular model?",
+        "plan_intent": "api",
+        "semantic_query_changed": false,
+        "semantic_query_text": "Which source implements the 1D DPM angular model?",
+        "semantic_components": [],
+        "augmentation_component_count": 0,
+        "treatment_qualified": false,
+        "analyzer_call_delta": {
+          "generation_calls": 1,
+          "model_calls": 1,
+          "token_usage": 1413
+        }
+      },
+      {
+        "case_id": "g114",
+        "intent": "troubleshooting",
+        "query": "Why might restgas efficiency correction have empty bins?",
+        "plan_intent": "troubleshooting",
+        "semantic_query_changed": true,
+        "semantic_query_text": "Why might restgas efficiency correction have empty bins?\n\nSemantic focus:\nefficiency=longitudinal_profile",
+        "semantic_components": [
+          {
+            "kind": "analyzer_scope",
+            "value": "efficiency=longitudinal_profile",
+            "provenance": "analyzer_accepted"
+          }
+        ],
+        "augmentation_component_count": 1,
+        "treatment_qualified": true,
+        "analyzer_call_delta": {
+          "generation_calls": 1,
+          "model_calls": 1,
+          "token_usage": 1969
+        }
+      },
+      {
+        "case_id": "g008",
+        "intent": "installation",
+        "query": "How can I verify that the PandaRoot environment is ready before running a macro?",
+        "plan_intent": "installation",
+        "semantic_query_changed": false,
+        "semantic_query_text": "How can I verify that the PandaRoot environment is ready before running a macro?",
+        "semantic_components": [],
+        "augmentation_component_count": 0,
+        "treatment_qualified": false,
+        "analyzer_call_delta": {
+          "generation_calls": 1,
+          "model_calls": 1,
+          "token_usage": 1648
+        }
+      },
+      {
+        "case_id": "g020",
+        "intent": "usage",
+        "query": "How is the restgas two-pass reconstruction workflow run?",
+        "plan_intent": "usage",
+        "semantic_query_changed": false,
+        "semantic_query_text": "How is the restgas two-pass reconstruction workflow run?",
+        "semantic_components": [],
+        "augmentation_component_count": 0,
+        "treatment_qualified": false,
+        "analyzer_call_delta": {
+          "generation_calls": 1,
+          "model_calls": 1,
+          "token_usage": 1898
+        }
+      },
+      {
+        "case_id": "g033",
+        "intent": "api",
+        "query": "Which source implements the 2D DPM angular model?",
+        "plan_intent": "api",
+        "semantic_query_changed": false,
+        "semantic_query_text": "Which source implements the 2D DPM angular model?",
+        "semantic_components": [],
+        "augmentation_component_count": 0,
+        "treatment_qualified": false,
+        "analyzer_call_delta": {
+          "generation_calls": 1,
+          "model_calls": 1,
+          "token_usage": 1372
+        }
+      },
+      {
+        "case_id": "g115",
+        "intent": "troubleshooting",
+        "query": "Why might LMD angular acceptance be confused with pvz efficiency?",
+        "plan_intent": "troubleshooting",
+        "semantic_query_changed": true,
+        "semantic_query_text": "Why might LMD angular acceptance be confused with pvz efficiency?\n\nSemantic focus:\nefficiency=longitudinal_profile",
+        "semantic_components": [
+          {
+            "kind": "analyzer_scope",
+            "value": "efficiency=longitudinal_profile",
+            "provenance": "analyzer_accepted"
+          }
+        ],
+        "augmentation_component_count": 1,
+        "treatment_qualified": true,
+        "analyzer_call_delta": {
+          "generation_calls": 1,
+          "model_calls": 1,
+          "token_usage": 2012
+        }
+      },
+      {
+        "case_id": "g009",
+        "intent": "installation",
+        "query": "Which installation page should a source-code contributor read?",
+        "plan_intent": "installation",
+        "semantic_query_changed": false,
+        "semantic_query_text": "Which installation page should a source-code contributor read?",
+        "semantic_components": [],
+        "augmentation_component_count": 0,
+        "treatment_qualified": false,
+        "analyzer_call_delta": {
+          "generation_calls": 1,
+          "model_calls": 1,
+          "token_usage": 1515
+        }
+      }
+    ],
+    "screening_stop_reason": "Exhausted the first 20 preregistered positions with only five treatment-qualified cases; target six was not reached.",
+    "treatment_qualified_found": 5,
+    "stage_a_stats": {
+      "model_calls": 20,
+      "generation_calls": 20,
+      "embedding_calls": 0,
+      "token_usage": 36098
+    },
+    "qualified_case_ids": [
+      "g018",
+      "g113",
+      "g055",
+      "g114",
+      "g115"
+    ],
+    "qualified_plan_semantic_summaries": [
+      {
+        "case_id": "g018",
+        "intent": "usage",
+        "plan_intent": "usage",
+        "treatment_qualified": true,
+        "semantic_query_text": "How do I run a luminosity fit after preparing fit data?\n\nSemantic focus:\nrun luminosity fit",
+        "semantic_components": [
+          {
+            "kind": "analyzer_concept",
+            "value": "run luminosity fit",
+            "provenance": "analyzer_accepted"
+          }
+        ],
+        "semantic_ownership_summary": {
+          "activation_sources": [
+            "analyzer_accepted"
+          ],
+          "accepted_or_fixed_component_values": [
+            "run luminosity fit"
+          ],
+          "full_retrieval_plan_snapshot_persisted": false,
+          "snapshot_note": "Stage B did not run because the six-case qualification target was not reached."
+        }
+      },
+      {
+        "case_id": "g113",
+        "intent": "troubleshooting",
+        "plan_intent": "troubleshooting",
+        "treatment_qualified": true,
+        "semantic_query_text": "runLmdFit cannot find prepared data; how do I trace the mismatch?\n\nSemantic focus:\ntrace mismatch",
+        "semantic_components": [
+          {
+            "kind": "analyzer_concept",
+            "value": "trace mismatch",
+            "provenance": "analyzer_accepted"
+          }
+        ],
+        "semantic_ownership_summary": {
+          "activation_sources": [
+            "analyzer_accepted"
+          ],
+          "accepted_or_fixed_component_values": [
+            "trace mismatch"
+          ],
+          "full_retrieval_plan_snapshot_persisted": false,
+          "snapshot_note": "Stage B did not run because the six-case qualification target was not reached."
+        }
+      },
+      {
+        "case_id": "g055",
+        "intent": "algorithm_theory",
+        "plan_intent": "algorithm_theory",
+        "treatment_qualified": true,
+        "semantic_query_text": "How should angular acceptance be distinguished from longitudinal efficiency?\n\nSemantic focus:\nefficiency=angular_acceptance_vs_longitudinal_profile",
+        "semantic_components": [
+          {
+            "kind": "deterministic_fixed_scope",
+            "value": "efficiency=angular_acceptance_vs_longitudinal_profile",
+            "provenance": "fixed"
+          }
+        ],
+        "semantic_ownership_summary": {
+          "activation_sources": [
+            "fixed"
+          ],
+          "accepted_or_fixed_component_values": [
+            "efficiency=angular_acceptance_vs_longitudinal_profile"
+          ],
+          "full_retrieval_plan_snapshot_persisted": false,
+          "snapshot_note": "Stage B did not run because the six-case qualification target was not reached."
+        }
+      },
+      {
+        "case_id": "g114",
+        "intent": "troubleshooting",
+        "plan_intent": "troubleshooting",
+        "treatment_qualified": true,
+        "semantic_query_text": "Why might restgas efficiency correction have empty bins?\n\nSemantic focus:\nefficiency=longitudinal_profile",
+        "semantic_components": [
+          {
+            "kind": "analyzer_scope",
+            "value": "efficiency=longitudinal_profile",
+            "provenance": "analyzer_accepted"
+          }
+        ],
+        "semantic_ownership_summary": {
+          "activation_sources": [
+            "analyzer_accepted"
+          ],
+          "accepted_or_fixed_component_values": [
+            "efficiency=longitudinal_profile"
+          ],
+          "full_retrieval_plan_snapshot_persisted": false,
+          "snapshot_note": "Stage B did not run because the six-case qualification target was not reached."
+        }
+      },
+      {
+        "case_id": "g115",
+        "intent": "troubleshooting",
+        "plan_intent": "troubleshooting",
+        "treatment_qualified": true,
+        "semantic_query_text": "Why might LMD angular acceptance be confused with pvz efficiency?\n\nSemantic focus:\nefficiency=longitudinal_profile",
+        "semantic_components": [
+          {
+            "kind": "analyzer_scope",
+            "value": "efficiency=longitudinal_profile",
+            "provenance": "analyzer_accepted"
+          }
+        ],
+        "semantic_ownership_summary": {
+          "activation_sources": [
+            "analyzer_accepted"
+          ],
+          "accepted_or_fixed_component_values": [
+            "efficiency=longitudinal_profile"
+          ],
+          "full_retrieval_plan_snapshot_persisted": false,
+          "snapshot_note": "Stage B did not run because the six-case qualification target was not reached."
+        }
+      }
+    ],
+    "stage_b": {
+      "executed": false,
+      "reason": "Insufficient treatment activation: 5 qualified cases found in 20 screenings, below target 6.",
+      "query_embedding_remote_calls": 0,
+      "dense_qdrant_read_queries": 0,
+      "metrics": "N/A — Stage B did not run",
+      "plan_reuse_applicable": false
+    },
+    "metrics": null,
+    "rank_counts": null,
+    "directional_guard": null,
+    "contamination_audit": {
+      "qualified_cases": {
+        "g018": {
+          "audited": true,
+          "contamination": [],
+          "components": [
+            {
+              "kind": "analyzer_concept",
+              "value": "run luminosity fit",
+              "provenance": "analyzer_accepted"
+            }
+          ]
+        },
+        "g113": {
+          "audited": true,
+          "contamination": [],
+          "components": [
+            {
+              "kind": "analyzer_concept",
+              "value": "trace mismatch",
+              "provenance": "analyzer_accepted"
+            }
+          ]
+        },
+        "g055": {
+          "audited": true,
+          "contamination": [],
+          "components": [
+            {
+              "kind": "deterministic_fixed_scope",
+              "value": "efficiency=angular_acceptance_vs_longitudinal_profile",
+              "provenance": "fixed"
+            }
+          ]
+        },
+        "g114": {
+          "audited": true,
+          "contamination": [],
+          "components": [
+            {
+              "kind": "analyzer_scope",
+              "value": "efficiency=longitudinal_profile",
+              "provenance": "analyzer_accepted"
+            }
+          ]
+        },
+        "g115": {
+          "audited": true,
+          "contamination": [],
+          "components": [
+            {
+              "kind": "analyzer_scope",
+              "value": "efficiency=longitudinal_profile",
+              "provenance": "analyzer_accepted"
+            }
+          ]
+        }
+      },
+      "all_clear": true,
+      "stage_b_not_run": true
+    },
+    "cost": {
+      "screening_analyzer_remote_calls": 20,
+      "analyzer_tokens": 36098,
+      "query_embedding_remote_calls": 0,
+      "query_embedding_tokens": "N/A",
+      "dense_qdrant_read_queries": 0,
+      "document_embedding_calls": 0,
+      "sparse_encoder_calls": 0,
+      "sparse_qdrant_queries": 0,
+      "exact_retrieval_calls": 0,
+      "paper_retrieval_calls": 0,
+      "workflow_retrieval_calls": 0,
+      "graph_retrieval_calls": 0,
+      "fusion_calls": 0,
+      "reranker_calls": 0,
+      "selector_calls": 0,
+      "qa_verifier_judge_calls": 0,
+      "sql_writes": 0,
+      "qdrant_writes": 0,
+      "index_mutation": 0,
+      "reindex_or_reembedding": "no"
+    },
+    "remote_attempts": [
+      {
+        "environment": "escalated",
+        "stage": "Stage A analyzer-only screening",
+        "status": "completed",
+        "exit_code": 0,
+        "valid_screening_available": true,
+        "capture_source": "Codex rollout JSONL 2026-08-17T02-26-45-01a00d1d-162d-7c80-894b-0bfe42351fd2.jsonl",
+        "capture_event": "custom_tool_call_output timestamp 2026-08-18T22:42:11Z",
+        "effective_remote_model_calls": 20,
+        "analyzer_calls": 20,
+        "analyzer_tokens": 36098,
+        "query_embedding_calls": 0,
+        "dense_qdrant_read_queries": 0,
+        "writes": 0
+      }
+    ],
+    "session_remote_calls_outside_authoritative_run": "unknown / not fully auditable",
+    "capture": {
+      "run_id": "c3-r2-stage-a-20260819",
+      "exit_code": 0,
+      "valid_screening_available": true,
+      "no_stage_b_execution": true,
+      "extraction": "read-only extraction from completed TTY output; no rerun"
+    }
+  },
+  "closeout": {
+    "artifact_status": "FINAL_INCONCLUSIVE",
+    "final_c3_status": "INCONCLUSIVE",
+    "decision_reason": "Only five of the first 20 preregistered candidates changed SemanticQuery.text; the target of six was not reached, so the preregistered rule stops before Stage B and C3-R2 is INCONCLUSIVE.",
+    "next_roadmap_task": "C3-R2 treatment-qualified follow-up; C4 remains NOT_STARTED.",
+    "known_limitations": [
+      "C3-R2 is treatment-qualified and does not estimate population-level activation frequency.",
+      "The current C3 treatment activated in 5/20 screened cases, below the six-case Stage-B target.",
+      "No dense A/B metrics are applicable because Stage B did not run.",
+      "C2 semantic concepts remain conservative and incomplete.",
+      "The raw question remains first-class by design.",
+      "Reviewed expansions remain outside the C3 builder.",
+      "This is a screening-stage dense-only shadow evaluation, not formal T3.",
+      "C4-C8, Phase D, and Phase E are out of scope and remain NOT_STARTED.",
+      "g011 coverage-aware ownership remains deferred to Phase E.",
+      "Novel retrieval generalization remains UNMEASURED."
+    ]
+  }
+}

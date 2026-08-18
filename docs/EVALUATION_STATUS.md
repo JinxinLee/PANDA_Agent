@@ -36,14 +36,14 @@ When records conflict, use the single section explicitly marked **Current author
 
 # Current Evaluation Status
 
-**Phase C, C3-R1 — SemanticQueryBuilder for dense retrieval**: `INCONCLUSIVE` (completed TTY dense A/B closeout; 16 cases, 2 changed, 3 required)
+**Phase C, C3-R2 — SemanticQueryBuilder for dense retrieval**: `INCONCLUSIVE` (treatment-qualified screening reached 5/6 after 20 analyzer-only cases; Stage B not run)
 **Phase C, C2 — QueryAnalyzer implementation**: `PASS`
 **Phase C, C1 — Retriever entrypoint and channels**: `PASS` (C1-R1 closeout; initial implementation was `INCONCLUSIVE` after review)
 **Phase C, C4 — LexicalQueryBuilder for sparse retrieval**: `NOT_STARTED`
 - Evaluation modes: `retrieval`, `qa`, and `full` have explicit recorded boundaries.
 - Structured retrieval traces are persisted as atomic JSON and JSONL and can be loaded without rerunning QA.
 - A3 was corrected from a possible full-retrieval interpretation to a stratified low-cost bootstrap baseline. Phase-B T3 (complete 80-question dev retrieval-only) was performed on `2026-08-16`; no full 120-question retrieval/E2E run was performed.
-- Phase C is started by C1; its initial implementation was `INCONCLUSIVE` after review, C1-R1 is `PASS`, C1 overall is `PASS`, and C2 is `PASS`. The completed C3-R1 TTY dense-only closeout is `INCONCLUSIVE` because only 2/16 cases changed `SemanticQuery.text` against a preregistered minimum of 3; C4-C8 remain `NOT_STARTED`. The Phase-B T3.3A-R2/g011 blocker remains deferred to generic Phase-E coverage-aware architecture; optional T3.3B ranking debt is deferred. Phase D and Phase E remain `NOT_STARTED`.
+- Phase C is started by C1; its initial implementation was `INCONCLUSIVE` after review, C1-R1 is `PASS`, C1 overall is `PASS`, and C2 is `PASS`. C3-R1 remains historical `INCONCLUSIVE` because only 2/16 cases changed `SemanticQuery.text`; C3-R2 is also `INCONCLUSIVE` because only 5/20 fixed-order analyzer screenings qualified, below the target of 6, so dense Stage B did not run. C4-C8 remain `NOT_STARTED`. The Phase-B T3.3A-R2/g011 blocker remains deferred to generic Phase-E coverage-aware architecture; optional T3.3B ranking debt is deferred. Phase D and Phase E remain `NOT_STARTED`.
 
 ## Historical full E2E reference
 
@@ -256,7 +256,7 @@ This is a low-cost English Gold reference, not a complete generalization, comple
 - **T0 evidence:** `39/39 PASS` (retrieval `34/34`, prompt-security `4/4`, exact QA prompt `1/1`), with zero external/model calls.
 - **Analyzer-only T2 evidence:** `10/10 PASS` using `gemini-3.7-flash` in `global`; analyzer model calls `10`, successful structured responses `10`, tokens `17173`, mean `1717.3` tokens/call, failures `0`, retries `0`. ADC and harness pre-request failures are environment history only: `0` remote calls and `0` tokens.
 - **Cost and impact:** Retriever/reranker/query embeddings/document embeddings/QA/verifier/judge/SQL/Qdrant/index mutation `0`; reindex/reembedding `no`. The query-understanding analyzer contract changed `yes`; dense/sparse query construction changed `no`; retrieval ranking intentionally changed `no`; selector/index/corpus changed `no`.
-- **Review and limitations:** Sol's final live review was `PASS`; deterministic local replay compared `90` stored sections with `0` mismatches. This is an analyzer-only T2 result, not a global cost-saving claim or pseudo-Gold result; no `g011`/`g016` targeting was introduced, no T3/T4/T5, retrieval benchmark, or index work was run. C3-R1 is now closed `INCONCLUSIVE`; C4 remains `NOT_STARTED`.
+- **Review and limitations:** Sol's final live review was `PASS`; deterministic local replay compared `90` stored sections with `0` mismatches. This is an analyzer-only T2 result, not a global cost-saving claim or pseudo-Gold result; no `g011`/`g016` targeting was introduced, no T3/T4/T5, retrieval benchmark, or index work was run. C3-R1 remains historical `INCONCLUSIVE`; C3-R2 is now `INCONCLUSIVE`; C4 remains `NOT_STARTED`.
 
 ### Phase-C C3-R1 dense-only TTY closeout
 
@@ -266,7 +266,15 @@ This is a low-cost English Gold reference, not a complete generalization, comple
 - Treatment coverage: 12 primary cases and 4 reserves; `SemanticQuery.text` changed for `g110` and `g050` only (`2/16`), while `14/16` remained unchanged. The preregistered minimum is 3 changed cases, so the treatment gate is not met.
 - Retrieval metrics (PRE → POST): Recall@5 `0.5208333333 → 0.5208333333`; Recall@10 `0.6979166667 → 0.6979166667`; Recall@20 `0.6979166667 → 0.6979166667`; MRR `0.3059771825 → 0.2872271825`; critical coverage `0.6979166667 → 0.6979166667`; new critical misses `0`.
 - Isolation and cost: all 16 cases reused the same analyzer plan and canonical-equivalent PRE/POST filters; analyzer calls `16` (`29101` tokens), query embeddings `32`, dense Qdrant reads `32`, and sparse/reranker/judge/write/index-mutation operations `0`.
-- Final result: `INCONCLUSIVE`, not `PASS`, solely because treatment coverage is `2/16 < 3`. C4 remains `NOT_STARTED`; the next authorized work is a coverage-valid C3-R1 follow-up decision, without an automatic C4 start.
+- Final result: `INCONCLUSIVE`, not `PASS`, solely because treatment coverage is `2/16 < 3`. At that historical boundary C4 remained `NOT_STARTED`; the subsequent authorized follow-up was C3-R2.
+
+### Phase-C C3-R2 treatment-qualified screening closeout
+
+- Artifact: `evaluation/baselines/manifests/phase_c_c3_r2_treatment_qualified_dense_ab_closeout_v1.json`; C3-R1 artifact and historical result remain preserved unchanged.
+- Screening evidence: the completed TTY run used the preregistered fixed order, executed exactly 20 analyzer-only cases, and stopped at the absolute screening limit. Five cases qualified (`g018,g113,g055,g114,g115`), below the target of six; no dense embedding or Qdrant ranking was inspected during screening.
+- Qualified activations: `g018` accepted concept `run luminosity fit`; `g113` accepted concept `trace mismatch`; `g055` fixed scope `efficiency=angular_acceptance_vs_longitudinal_profile`; `g114` and `g115` accepted scope `efficiency=longitudinal_profile`. No contamination was observed.
+- Cost and isolation: analyzer calls `20`, analyzer tokens `36098`, query embeddings `0`, dense Qdrant reads `0`, and all sparse/exact/paper/workflow/graph/fusion/reranker/selector/QA/judge/write/index-mutation operations `0`. The live index preflight passed with 104973 points, schema `4`, dense 3072, `gemini-embedding-2`, and the expected fingerprint.
+- Final result: `INCONCLUSIVE`, not `PASS`, because the preregistered six-case treatment target was not reached within 20 screenings. Stage B metrics are intentionally N/A; C4 remains `NOT_STARTED`.
 
 ### Current small E2E baseline
 
@@ -295,7 +303,7 @@ The retrieval and QA measurements are unchanged. A3.1 corrects only metric repre
 
 ## Next authorized roadmap task
 
-`C3-R1` is `INCONCLUSIVE` after the completed TTY closeout; a coverage-valid C3-R1 follow-up is next, while C4-C8 and Phase D/E remain `NOT_STARTED`. C1 initial implementation was `INCONCLUSIVE` after review, C1-R1 is `PASS`, C1 overall is `PASS`, and C2 is `PASS`. T3.3A-R2 remains `INCONCLUSIVE`/partial, g016 is locally recovered but g011 is not, heuristic iteration is stopped, and the unresolved g011 mechanism is deferred to generic Phase-E coverage-aware architecture; optional T3.3B ranking debt is deferred.
+`C3-R2` is `INCONCLUSIVE` after the completed treatment-qualified screening closeout; C3 remains active and C4-C8 and Phase D/E remain `NOT_STARTED`. C3-R1 remains historical `INCONCLUSIVE`. C1 initial implementation was `INCONCLUSIVE` after review, C1-R1 is `PASS`, C1 overall is `PASS`, and C2 is `PASS`. T3.3A-R2 remains `INCONCLUSIVE`/partial, g016 is locally recovered but g011 is not, heuristic iteration is stopped, and the unresolved g011 mechanism is deferred to generic Phase-E coverage-aware architecture; optional T3.3B ranking debt is deferred.
 
 ---
 
