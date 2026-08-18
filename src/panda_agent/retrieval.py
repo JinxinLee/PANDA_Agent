@@ -825,6 +825,7 @@ def build_semantic_query(question: str, plan: RetrievalPlan) -> SemanticQuery:
             components.append(SemanticQueryComponent(kind="analyzer_scope", value=f"{k}={v}", provenance="analyzer_accepted"))
 
     text = question
+    included_components: list[SemanticQueryComponent] = []
     if components:
         text += "\n\nSemantic focus:\n"
         seen = set()
@@ -840,11 +841,12 @@ def build_semantic_query(question: str, plan: RetrievalPlan) -> SemanticQuery:
         for comp in unique_components:
             text += f"{comp.value}\n"
         text = text.strip()
+        included_components = unique_components
     
     return SemanticQuery(
         text=text,
         raw_question=question,
-        components=components,
+        components=included_components,
         excluded_component_classes=excluded
     )
 

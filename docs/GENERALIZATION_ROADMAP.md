@@ -154,7 +154,7 @@ Statuses describe implementation state; acceptance targets remain planned until 
 
 ## Phase C — Retrieval generalization
 
-Phase C is started by C1. The initial C1 implementation was `INCONCLUSIVE` after review; C1-R1 is `PASS`, making C1 overall `PASS`. C2 is `PASS`; C3 is the next authorized task and `NOT_STARTED`; C4-C8 remain `NOT_STARTED`.
+Phase C is started by C1. The initial C1 implementation was `INCONCLUSIVE` after review; C1-R1 is `PASS`, making C1 overall `PASS`. C2 is `PASS`; C3-R1 is `INCONCLUSIVE` after the completed TTY dense-only closeout; C4-C8 remain `NOT_STARTED`.
 
 ### C1 — Deterministic parsing before expensive LLM analysis
 
@@ -196,12 +196,12 @@ Phase C is started by C1. The initial C1 implementation was `INCONCLUSIVE` after
 - **Evaluation result:** T0 passed `39/39` checks (retrieval `34/34`, prompt-security `4/4`, exact QA prompt `1/1`) with zero external/model calls. Analyzer-only T2 passed `10/10` cases on `gemini-3.7-flash` in `global`: analyzer model calls `10`, tokens `17173`, mean `1717.3` tokens/call, failures `0`, retries `0`. ADC/harness pre-request failures are environment history only and contributed `0` remote calls and `0` tokens; Sol's final review and a local replay of `90` stored sections passed with `0` mismatches.
 - **Impact:** Retriever/reranker/query embeddings/document embeddings/QA/verifier/judge/SQL/Qdrant/index mutation `0`; reindex/reembedding `no`. Query-understanding analyzer contract changed `yes`; dense/sparse query construction changed `no`; retrieval ranking intentionally changed `no`; selector/index/corpus changed `no`.
 - **Artifact:** `evaluation/baselines/manifests/phase_c_c2_narrow_auditable_analyzer_v1.json`; source/base commit SHA `c2f933b287e52d76947a3865e2527d2349e5ec27`; prompt version `3.7.0`.
-- **Limitations:** This is a narrow analyzer-only T2 result, not a global cost-saving claim or pseudo-Gold result; no `g011`/`g016` targeting was introduced, no T3/T4/T5, retrieval benchmark, or index work was run, and no novel human-authored dataset was available. Stop after C2; C3 remains `NOT_STARTED`.
+- **Limitations:** This is a narrow analyzer-only T2 result, not a global cost-saving claim or pseudo-Gold result; no `g011`/`g016` targeting was introduced, no T3/T4/T5, retrieval benchmark, or index work was run, and no novel human-authored dataset was available. C3-R1 is now `INCONCLUSIVE`; C4 remains `NOT_STARTED`.
 - **Failure handling:** Reduce speculative output or preserve raw question ambiguity; do not add expected files/pages. Stop after C2.
 
 ### C3 — SemanticQueryBuilder for dense retrieval
 
-- **Status:** PASS
+- **Status:** `INCONCLUSIVE` (C3-R1 closeout)
 - **Problem:** Dense retrieval uses mainly the raw question even when the analyzer identifies useful concepts, while free-form rewriting risks answer-oriented drift.
 - **Goal:** Build a semantic query in which the original question remains primary and a small number of high-confidence concepts are supplementary.
 - **Why this stage:** C1/C2 create trustworthy inputs; dense construction must be isolated before sparse construction or fusion tuning.
@@ -212,6 +212,11 @@ Phase C is started by C1. The initial C1 implementation was `INCONCLUSIVE` after
 - **Authorized evaluation tier:** T0, targeted T2 dense/paraphrase subset; no full E2E.
 - **Primary metrics:** Dense Recall@5/@10, MRR, identifier-free novel retrieval, English paraphrase robustness, and query-drift rate.
 - **Acceptance criteria:** Novel dense retrieval improves meaningfully or robustly across expression types while targeted benchmark recall stays within tolerance.
+- **C3-R1 closeout:** Artifact `evaluation/baselines/manifests/phase_c_c3_r1_dense_ab_evaluation_integrity_closeout_v1.json` records the completed TTY dense-only A/B run with `exit_code=0`; no Vertex/Qdrant/remote evaluation was rerun during closeout. The locked primary IDs were `g001,g013,g044,g059,g027,g105,g110,g002,g014,g047,g060,g028`; all reserves `g003,g015,g050,g029` ran in order; exclusions `g011,g016` remained excluded.
+- **C3-R1 evidence:** The artifact preserves all 16 complete per-case JSON records: raw query, semantic components, `semantic_query_changed`, canonical PRE/POST filter, same analyzer plan, top-20 object IDs, per-case Recall@5/@10/@20/MRR/critical coverage, rank effect, and contamination audit. All 16 cases had equal PRE/POST filters and the same plan.
+- **C3-R1 metrics:** PRE → POST Recall@5 `0.5208333333 → 0.5208333333`, Recall@10 `0.6979166667 → 0.6979166667`, Recall@20 `0.6979166667 → 0.6979166667`, MRR `0.3059771825 → 0.2872271825`, and critical coverage `0.6979166667 → 0.6979166667`; new critical misses `0`.
+- **C3-R1 treatment and cost:** `SemanticQuery.text` changed for `2/16` cases (`g110`, `g050`) and stayed unchanged for `14/16`; the preregistered minimum is `3`, so the treatment gate is not met. Analyzer calls/tokens were `16/29101`, query embeddings `32`, dense reads `32`, and sparse/reranker/judge/write/index-mutation operations `0`.
+- **C3-R1 decision:** `INCONCLUSIVE`, not `PASS`, because treatment coverage is `2/16 < 3`. The next authorized work is a coverage-valid C3-R1 follow-up; C4 remains `NOT_STARTED`.
 - **Failure handling:** Reduce/remove the generic supplementary concept mechanism when drift occurs; never add more benchmark-specific terms. Stop after C3.
 
 ### C4 — LexicalQueryBuilder for sparse retrieval
@@ -291,7 +296,7 @@ Phase C is started by C1. The initial C1 implementation was `INCONCLUSIVE` after
 
 ## Phase C status
 
-C1 is `PASS`; C2 is `PASS`; C3 is next and `NOT_STARTED`; C4-C8 are `NOT_STARTED`.
+C1 is `PASS`; C2 is `PASS`; C3-R1 is `INCONCLUSIVE`; C4-C8 are `NOT_STARTED`.
 
 ## Phase D — Concept and entity knowledge abstraction
 

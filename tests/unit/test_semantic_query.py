@@ -85,6 +85,69 @@ def test_t0_scopes():
     assert "acceptance=point_like_vs_restgas_effective" in sq.text
     assert "some_llm_value" not in sq.text
 
+def test_t0_accepted_llm_only_scope_is_semantic_augmentation():
+    question = "Explain efficiency for longitudinal acceptance."
+    plan = RetrievalPlan(
+        intent="algorithm_theory",
+        source_budgets={"code": 1.0},
+        analysis_diagnostics={
+            "deterministic_parse": {"fallback": {"concept_scopes": {"efficiency": "angular_acceptance"}}},
+            "analyzer_accepted_semantic_delta": {
+                "concept_scopes": [{
+                    "key": "efficiency",
+                    "value": "longitudinal_profile",
+                    "support_spans": ["longitudinal acceptance"],
+                }]
+            },
+        },
+    )
+
+    sq = build_semantic_query(question, plan)
+
+    assert "efficiency=longitudinal_profile" in sq.text
+    assert [(item.kind, item.provenance) for item in sq.components] == [
+        ("analyzer_scope", "analyzer_accepted")
+    ]
+
+def test_t0_fallback_only_scope_is_excluded_from_semantic_augmentation():
+    question = "Explain efficiency."
+    plan = RetrievalPlan(
+        intent="algorithm_theory",
+        source_budgets={"code": 1.0},
+        analysis_diagnostics={
+            "deterministic_parse": {
+                "fallback": {"concept_scopes": {"efficiency": "angular_acceptance"}}
+            },
+            "analyzer_accepted_semantic_delta": {},
+        },
+    )
+
+    sq = build_semantic_query(question, plan)
+
+    assert sq.text == question
+    assert sq.components == []
+
+def test_t0_components_match_deduplicated_semantic_query():
+    question = "Explain the acceptance."
+    plan = RetrievalPlan(
+        intent="algorithm_theory",
+        source_budgets={"code": 1.0},
+        analysis_diagnostics={
+            "analyzer_accepted_semantic_delta": {
+                "concepts": [
+                    {"value": "angular acceptance", "support_spans": ["acceptance"]},
+                    {"value": "angular acceptance", "support_spans": ["acceptance"]},
+                ]
+            }
+        },
+    )
+
+    sq = build_semantic_query(question, plan)
+
+    assert sq.text.count("angular acceptance") == 1
+    assert len(sq.components) == 1
+    assert sq.components[0].value == "angular acceptance"
+
 def test_t0_symbol_duplication():
     question = "Where is PndTargetGenerator?"
     plan = RetrievalPlan(
@@ -202,4 +265,3 @@ def test_t0_channel_isolation(monkeypatch):
     assert "mock_concept" in retriever.vertex.last_query
     
     assert retriever.sparse.last_query == question
-

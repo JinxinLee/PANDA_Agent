@@ -1,0 +1,2473 @@
+{
+  "schema_version": "1.0",
+  "task": "C3-R1",
+  "artifact_id": "phase_c_c3_r1_dense_ab_evaluation_integrity_closeout_v1",
+  "status": "closed",
+  "result": "INCONCLUSIVE",
+  "purpose": "Close the invalid initial C3 dense-only evaluation with a preregistered, read-only, dense PRE/POST shadow comparison that isolates SemanticQueryBuilder text construction.",
+  "source_commit": "21355cfeee123afebc321ba79b1bb1c10197e245",
+  "parent_c2_commit": "fd78ec6db176b43d70aba56d51453331918e4094",
+  "worktree_provenance": {
+    "head_at_preregistration": "21355cfeee123afebc321ba79b1bb1c10197e245",
+    "preexisting_worktree_clean": true,
+    "preregistration_created_before_remote_calls": true,
+    "remote_calls_before_preregistration": 0,
+    "local_changes_at_preregistration": [
+      "src/panda_agent/retrieval.py",
+      "tests/unit/test_semantic_query.py"
+    ]
+  },
+  "initial_c3_review": {
+    "implementation_status": "accepted",
+    "initial_evaluation_claim": "invalid / INCONCLUSIVE after review",
+    "findings": {
+      "A": "The initial dense-only T2 ran without the authoritative populated dense index.",
+      "B": "PRE and POST retrieval metrics were both zero and could not evaluate C3 behavior.",
+      "C": "The committed root runner computed only MRR while the completion report claimed Recall@5, Recall@10, Recall@20, and critical evidence coverage.",
+      "D": "Unmeasured metrics were incorrectly reported as 0.0 instead of N/A.",
+      "E": "The committed C3 artifact was a minimal 13-line implementation-status record without preregistration, metrics, provenance, or cost information.",
+      "F": "The initial case list included excluded case g016.",
+      "G": "The initial case IDs were hardcoded without a durable preregistration artifact.",
+      "H": "docs/EVALUATION_STATUS.md contained contradictory C3 PASS/NOT_STARTED and C1 INCONCLUSIVE/overall PASS claims.",
+      "I": "Tracked user_input.txt was an accidental transcript artifact."
+    },
+    "historical_artifact_preserved": "evaluation/baselines/manifests/phase_c_c3_semantic_query_builder_v1.json"
+  },
+  "live_index_preflight": {
+    "performed_before_remote_calls": true,
+    "collection": "panda_knowledge_v1",
+    "qdrant_url": "http://127.0.0.1:6333",
+    "exists": true,
+    "status": "green",
+    "points_count": 104973,
+    "dense_dimensions": 3072,
+    "dense_distance": "Cosine",
+    "sample_count": 1,
+    "sample_payload_keys": [
+      "authority_level",
+      "locator",
+      "object_id",
+      "object_type",
+      "source_id",
+      "source_version_id",
+      "text",
+      "title"
+    ],
+    "object_id_payload_available": true,
+    "repository_filter_probe": {
+      "source_id": "luminosityfit",
+      "matching_points": 2144
+    },
+    "index_identity": {
+      "fingerprint": "8172f9a640e62977be6e911bfb4848ce3aecd0994f1f3ba51a0985bffec62cb9",
+      "index_schema_version": "4",
+      "embedding_model": "gemini-embedding-2",
+      "embedding_dimensions": 3072,
+      "distance": "cosine",
+      "sparse_contract_present_but_untouched": true
+    },
+    "writes": 0,
+    "preflight_gate": "PASS"
+  },
+  "preregistration": {
+    "locked_at": "2026-08-18T23:42:14.1242677+02:00",
+    "status": "locked_before_first_remote_call",
+    "gold_dataset": "evaluation/benchmarks/v2_6/gold_questions.yaml",
+    "language_calibration": "evaluation/baselines/manifests/phase_b_t3_product_language_scope_v2.json",
+    "eligible_set_rule": "effective_product_language=en under the reviewed calibration; split=dev; review_status=approved; expected_status=answered; required_evidence_groups and required_answer_points are present",
+    "eligible_count": 47,
+    "selection_algorithm": {
+      "description": "Group eligible cases by Gold intent, sort case IDs within each intent, iterate a fixed intent order, and take one case per non-empty intent per round until primary has 12; continue the same untouched queues for four preregistered reserves.",
+      "intent_order": [
+        "installation",
+        "usage",
+        "algorithm_theory",
+        "algorithm_implementation",
+        "api",
+        "data_flow",
+        "module_structure",
+        "troubleshooting"
+      ],
+      "eligible_ids_by_intent": {
+        "installation": [
+          "g001",
+          "g002",
+          "g003",
+          "g004",
+          "g005",
+          "g006",
+          "g008",
+          "g009",
+          "g010"
+        ],
+        "usage": [
+          "g013",
+          "g014",
+          "g015",
+          "g017",
+          "g018",
+          "g019",
+          "g020",
+          "g021",
+          "g022",
+          "g023",
+          "g024"
+        ],
+        "algorithm_theory": [
+          "g044",
+          "g047",
+          "g050",
+          "g051",
+          "g052",
+          "g055"
+        ],
+        "algorithm_implementation": [
+          "g059",
+          "g060"
+        ],
+        "api": [
+          "g027",
+          "g028",
+          "g029",
+          "g030",
+          "g031",
+          "g032",
+          "g033",
+          "g034",
+          "g035",
+          "g036",
+          "g037",
+          "g039",
+          "g040"
+        ],
+        "data_flow": [],
+        "module_structure": [
+          "g105"
+        ],
+        "troubleshooting": [
+          "g110",
+          "g112",
+          "g113",
+          "g114",
+          "g115"
+        ]
+      },
+      "selection_sequence": [
+        "g001",
+        "g013",
+        "g044",
+        "g059",
+        "g027",
+        "g105",
+        "g110",
+        "g002",
+        "g014",
+        "g047",
+        "g060",
+        "g028",
+        "g003",
+        "g015",
+        "g050",
+        "g029"
+      ]
+    },
+    "primary_case_ids": [
+      "g001",
+      "g013",
+      "g044",
+      "g059",
+      "g027",
+      "g105",
+      "g110",
+      "g002",
+      "g014",
+      "g047",
+      "g060",
+      "g028"
+    ],
+    "reserve_case_ids": [
+      "g003",
+      "g015",
+      "g050",
+      "g029"
+    ],
+    "exclusions": [
+      "g011",
+      "g016"
+    ],
+    "primary_intent_distribution": {
+      "installation": 2,
+      "usage": 2,
+      "algorithm_theory": 2,
+      "algorithm_implementation": 2,
+      "api": 2,
+      "data_flow": 0,
+      "module_structure": 1,
+      "troubleshooting": 1
+    },
+    "reserve_intent_distribution": {
+      "installation": 1,
+      "usage": 1,
+      "algorithm_theory": 1,
+      "algorithm_implementation": 0,
+      "api": 1,
+      "data_flow": 0,
+      "module_structure": 0,
+      "troubleshooting": 0
+    },
+    "reserve_policy": "Run primary cases first. Run reserve IDs only in locked order if fewer than three primary cases have SemanticQuery.text != raw question, stopping once three changed cases are observed or all reserves are exhausted.",
+    "applicability": {
+      "ordinary_metrics": "Gold expected_status=answered only; Recall@5/10/20 and MRR use existing required-evidence-group matching semantics.",
+      "critical_coverage": "Use existing critical required-evidence-group labels when applicable; otherwise record N/A. Do not infer criticality from prior failures.",
+      "excluded_statuses": [
+        "insufficient_evidence",
+        "version_conflict"
+      ]
+    },
+    "pre_condition": {
+      "query_text": "exact raw Gold question",
+      "plan": "one analyzer RetrievalPlan reused for both conditions",
+      "embedding_task": "RETRIEVAL_QUERY",
+      "collection": "panda_knowledge_v1",
+      "vector_name": "dense",
+      "dimensions": 3072,
+      "filter": "case-specific plan target repository/version filter constructed once"
+    },
+    "post_condition": {
+      "query_text": "build_semantic_query(question, same_plan).text",
+      "plan": "same in-memory analyzer RetrievalPlan as PRE",
+      "embedding_task": "RETRIEVAL_QUERY",
+      "collection": "panda_knowledge_v1",
+      "vector_name": "dense",
+      "dimensions": 3072,
+      "filter": "same object or canonical-equivalent filter as PRE"
+    },
+    "metrics": [
+      "Recall@5",
+      "Recall@10",
+      "Recall@20",
+      "MRR"
+    ],
+    "treatment_coverage_requirement": "At least three executed cases must have SemanticQuery.text != raw question; otherwise C3-R1 is INCONCLUSIVE.",
+    "acceptance_rules": [
+      "Use the populated authoritative dense index.",
+      "PRE and POST reuse exactly one analyzer plan per case.",
+      "PRE and POST filters are identical.",
+      "g011 and g016 remain excluded.",
+      "All required metrics are genuinely calculated; unmeasured values are N/A.",
+      "POST aggregate Recall@20 is not below PRE aggregate Recall@20.",
+      "No applicable critical-evidence coverage regression occurs.",
+      "Raw question remains first-class and no expansion-only contamination occurs.",
+      "No writes, document embeddings, reindexing, sparse, fusion, reranker, selector, QA, or judge calls occur.",
+      "All-zero PRE and POST Recall@20 across applicable cases is INCONCLUSIVE."
+    ],
+    "maximum_remote_calls": {
+      "primary_analyzer": 12,
+      "primary_query_embeddings": 24,
+      "absolute_analyzer": 16,
+      "absolute_query_embeddings": 32,
+      "generation_beyond_analyzer": 0,
+      "document_embeddings": 0
+    }
+  },
+  "model_contract": {
+    "analyzer_model": "gemini-3.7-flash",
+    "analyzer_location": "global",
+    "embedding_model": "gemini-embedding-2",
+    "embedding_task": "RETRIEVAL_QUERY",
+    "embedding_dimensions": 3072,
+    "prompt_set_version": "3.7.0",
+    "query_analyzer_system_prompt_changed": false,
+    "response_schema": "production _analysis_schema derived from the deterministic semantic output fields",
+    "deterministic_context": "production DeterministicQueryParse.analyzer_context(semantic_output_fields)"
+  },
+  "t0": {
+    "status": "PASS",
+    "execution": "focused local no-remote harness; pytest package unavailable, so each test function was invoked equivalently with a local monkeypatch shim where needed",
+    "tests_executed": 12,
+    "tests_passed": 12,
+    "checks": [
+      "raw question preservation",
+      "accepted analyzer concept augmentation",
+      "reviewed-expansion contamination guard",
+      "flattened plan provenance guard",
+      "deterministic fixed scope inclusion",
+      "accepted LLM-only scope inclusion",
+      "deterministic fallback-only scope exclusion",
+      "symbol duplication avoidance",
+      "repository/version metadata non-injection",
+      "dense/sparse channel isolation",
+      "deterministic ordering",
+      "SemanticQuery.components matches deduplicated included query augmentation"
+    ],
+    "compileall": "PASS",
+    "diff_check": "PASS"
+  },
+  "execution": {
+    "remote_attempts": [
+      {
+        "environment": "sandbox",
+        "stage": "analyzer pre-request",
+        "status": "local_pre_request_failure",
+        "error": "DefaultCredentialsError",
+        "effective_remote_model_calls": 0
+      },
+      {
+        "environment": "escalated",
+        "stage": "full dense-only runner",
+        "status": "process_completed_without_recoverable_stdout_or_exit_code",
+        "valid_metrics_available": false,
+        "duplicate_run_requires_explicit_user_confirmation": true
+      },
+      {
+        "environment": "escalated",
+        "stage": "full dense-only runner (TTY capture)",
+        "status": "completed",
+        "exit_code": 0,
+        "valid_metrics_available": true,
+        "capture_source": "Codex rollout JSONL 2026-08-17T02-26-45-01a00d1d-162d-7c80-894b-0bfe42351fd2.jsonl",
+        "capture_event": "custom_tool_call_output timestamp 2026-08-18T21:59:50Z",
+        "effective_remote_model_calls": 48,
+        "analyzer_calls": 16,
+        "query_embedding_calls": 32,
+        "dense_qdrant_read_queries": 32,
+        "writes": 0
+      }
+    ],
+    "primary_case_ids_executed": [
+      "g001",
+      "g013",
+      "g044",
+      "g059",
+      "g027",
+      "g105",
+      "g110",
+      "g002",
+      "g014",
+      "g047",
+      "g060",
+      "g028"
+    ],
+    "reserve_case_ids_executed": [
+      "g003",
+      "g015",
+      "g050",
+      "g029"
+    ],
+    "all_case_results": [
+      {
+        "case_id": "g001",
+        "intent": "installation",
+        "query": "How do I install the locked PandaRoot development snapshot?",
+        "plan_intent": "installation",
+        "target_repositories": [
+          "pandaroot"
+        ],
+        "resolved_versions": {
+          "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357"
+        },
+        "semantic_query_changed": false,
+        "semantic_query_text": "How do I install the locked PandaRoot development snapshot?",
+        "semantic_components": [],
+        "augmentation_component_count": 0,
+        "pre_filter": "{\"min_should\":null,\"must\":null,\"must_not\":null,\"should\":[{\"min_should\":null,\"must\":[{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"value\":\"pandaroot\"},\"range\":null,\"values_count\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_version_id\",\"match\":{\"value\":\"pandaroot@18c09e91100db27867ded30e708b4dae95bd8357\"},\"range\":null,\"values_count\":null}],\"must_not\":null,\"should\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"any\":[\"li_2026\",\"karavdina_2015\",\"pflueger_2017\",\"pandaroot_sphinx_2023_08_25_dev\",\"curated_panda_domain\"]},\"range\":null,\"values_count\":null}]}",
+        "post_filter": "{\"min_should\":null,\"must\":null,\"must_not\":null,\"should\":[{\"min_should\":null,\"must\":[{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"value\":\"pandaroot\"},\"range\":null,\"values_count\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_version_id\",\"match\":{\"value\":\"pandaroot@18c09e91100db27867ded30e708b4dae95bd8357\"},\"range\":null,\"values_count\":null}],\"must_not\":null,\"should\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"any\":[\"li_2026\",\"karavdina_2015\",\"pflueger_2017\",\"pandaroot_sphinx_2023_08_25_dev\",\"curated_panda_domain\"]},\"range\":null,\"values_count\":null}]}",
+        "filter_equal": true,
+        "same_analyzer_plan": true,
+        "pre": {
+          "recall_at_5": 0,
+          "recall_at_10": 1,
+          "recall_at_20": 1,
+          "first_relevant_rank": 10,
+          "mrr": 0.1,
+          "critical_applicable": true,
+          "critical_coverage": 1,
+          "matched_group_ids": [
+            "g001.installation"
+          ],
+          "top20_object_ids": [
+            "object.cebfa491c0b5b1500c832d48",
+            "object.1904af36be705225b8c161c0",
+            "object.1be53c1e8673ca40c241ae8b",
+            "object.4ef08446ce5a9484852bceec",
+            "object.b132a7f1195b73ae51a06801",
+            "document.pandaroot_sphinx_2023_08_25_dev",
+            "object.10b4317f137471e9c53a6d29",
+            "object.8861da989d3957f9a9670ab4",
+            "object.8af1dbfc98e0d90dbf6ce274",
+            "object.2de0c11066dd97bc1177de1c",
+            "object.03f178141a15fff8cf689261",
+            "object.3f695bf388d11068f5fd5f9e",
+            "object.44b0f675894302dac874b912",
+            "object.46a402db5638385c2ffdb61b",
+            "object.c6a3fe714fc10a07536aa321",
+            "object.830bb48b780040edd4191ccf",
+            "object.fa0e885f5a61cc8109d26363",
+            "object.8bba0d73a7a1dec21bcc7a69",
+            "object.4d4fc2824e37ab150ec2da1f",
+            "object.1fb50ceec6adf4d7ec53ca15"
+          ]
+        },
+        "post": {
+          "recall_at_5": 0,
+          "recall_at_10": 1,
+          "recall_at_20": 1,
+          "first_relevant_rank": 10,
+          "mrr": 0.1,
+          "critical_applicable": true,
+          "critical_coverage": 1,
+          "matched_group_ids": [
+            "g001.installation"
+          ],
+          "top20_object_ids": [
+            "object.cebfa491c0b5b1500c832d48",
+            "object.1904af36be705225b8c161c0",
+            "object.1be53c1e8673ca40c241ae8b",
+            "object.4ef08446ce5a9484852bceec",
+            "object.b132a7f1195b73ae51a06801",
+            "document.pandaroot_sphinx_2023_08_25_dev",
+            "object.10b4317f137471e9c53a6d29",
+            "object.8861da989d3957f9a9670ab4",
+            "object.8af1dbfc98e0d90dbf6ce274",
+            "object.2de0c11066dd97bc1177de1c",
+            "object.03f178141a15fff8cf689261",
+            "object.3f695bf388d11068f5fd5f9e",
+            "object.44b0f675894302dac874b912",
+            "object.46a402db5638385c2ffdb61b",
+            "object.c6a3fe714fc10a07536aa321",
+            "object.830bb48b780040edd4191ccf",
+            "object.fa0e885f5a61cc8109d26363",
+            "object.8bba0d73a7a1dec21bcc7a69",
+            "object.4d4fc2824e37ab150ec2da1f",
+            "object.1fb50ceec6adf4d7ec53ca15"
+          ]
+        },
+        "rank_effect": "unchanged",
+        "rank_delta": 0,
+        "new_critical_misses": [],
+        "recovered_critical_evidence": [],
+        "contamination_audit": {
+          "audited": true,
+          "contamination": [],
+          "expansion_only_known_partial": []
+        },
+        "remote_call_deltas": {
+          "analyzer_calls": 1,
+          "analyzer_tokens": 1817,
+          "pre_embedding_calls": 1,
+          "pre_embedding_tokens": 0,
+          "post_embedding_calls": 1,
+          "post_embedding_tokens": 0
+        }
+      },
+      {
+        "case_id": "g013",
+        "intent": "usage",
+        "query": "How do I set up the terminal and run a ROOT simulation macro in PandaRoot, and how does the master run task participate in the lifecycle?",
+        "plan_intent": "usage",
+        "target_repositories": [
+          "pandaroot"
+        ],
+        "resolved_versions": {
+          "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357"
+        },
+        "semantic_query_changed": false,
+        "semantic_query_text": "How do I set up the terminal and run a ROOT simulation macro in PandaRoot, and how does the master run task participate in the lifecycle?",
+        "semantic_components": [],
+        "augmentation_component_count": 0,
+        "pre_filter": "{\"min_should\":null,\"must\":null,\"must_not\":null,\"should\":[{\"min_should\":null,\"must\":[{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"value\":\"pandaroot\"},\"range\":null,\"values_count\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_version_id\",\"match\":{\"value\":\"pandaroot@18c09e91100db27867ded30e708b4dae95bd8357\"},\"range\":null,\"values_count\":null}],\"must_not\":null,\"should\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"any\":[\"li_2026\",\"karavdina_2015\",\"pflueger_2017\",\"pandaroot_sphinx_2023_08_25_dev\",\"curated_panda_domain\"]},\"range\":null,\"values_count\":null}]}",
+        "post_filter": "{\"min_should\":null,\"must\":null,\"must_not\":null,\"should\":[{\"min_should\":null,\"must\":[{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"value\":\"pandaroot\"},\"range\":null,\"values_count\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_version_id\",\"match\":{\"value\":\"pandaroot@18c09e91100db27867ded30e708b4dae95bd8357\"},\"range\":null,\"values_count\":null}],\"must_not\":null,\"should\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"any\":[\"li_2026\",\"karavdina_2015\",\"pflueger_2017\",\"pandaroot_sphinx_2023_08_25_dev\",\"curated_panda_domain\"]},\"range\":null,\"values_count\":null}]}",
+        "filter_equal": true,
+        "same_analyzer_plan": true,
+        "pre": {
+          "recall_at_5": 1,
+          "recall_at_10": 1,
+          "recall_at_20": 1,
+          "first_relevant_rank": 2,
+          "mrr": 0.5,
+          "critical_applicable": true,
+          "critical_coverage": 1,
+          "matched_group_ids": [
+            "g013.e1",
+            "g013.e2"
+          ],
+          "top20_object_ids": [
+            "object.da1ad101d632353feae20589",
+            "object.262d4647ef2dc9eb9bb47ffa",
+            "object.6b0c9215ab982da22a88e619",
+            "object.ff7cfb4368ad1cece3846beb",
+            "object.9ad5cdfc275c654b6786f8c1",
+            "object.b132a7f1195b73ae51a06801",
+            "object.74537a9551eb84182e296062",
+            "object.79b75480980719256f8b7937",
+            "object.3f695bf388d11068f5fd5f9e",
+            "object.5b16c90fb3cf53b515b1a429",
+            "object.bc8333ad0e15ee02eab751a9",
+            "object.deeebf203a3e05a3f55df26d",
+            "object.bf3c6a6ada2f342cdef1920b",
+            "object.830bb48b780040edd4191ccf",
+            "object.c3eee933ac929d11f5fcc2f7",
+            "object.9fe2ad0d5a45339d8246947a",
+            "object.ca109e2b1428c6c9ca222cf7",
+            "object.92db2633c32ebebc76b46e4a",
+            "object.93000e883ad773fdf817d2bc",
+            "object.8a83d356db6d84627d3ac5fc"
+          ]
+        },
+        "post": {
+          "recall_at_5": 1,
+          "recall_at_10": 1,
+          "recall_at_20": 1,
+          "first_relevant_rank": 2,
+          "mrr": 0.5,
+          "critical_applicable": true,
+          "critical_coverage": 1,
+          "matched_group_ids": [
+            "g013.e1",
+            "g013.e2"
+          ],
+          "top20_object_ids": [
+            "object.da1ad101d632353feae20589",
+            "object.262d4647ef2dc9eb9bb47ffa",
+            "object.6b0c9215ab982da22a88e619",
+            "object.ff7cfb4368ad1cece3846beb",
+            "object.9ad5cdfc275c654b6786f8c1",
+            "object.b132a7f1195b73ae51a06801",
+            "object.74537a9551eb84182e296062",
+            "object.79b75480980719256f8b7937",
+            "object.3f695bf388d11068f5fd5f9e",
+            "object.5b16c90fb3cf53b515b1a429",
+            "object.bc8333ad0e15ee02eab751a9",
+            "object.deeebf203a3e05a3f55df26d",
+            "object.bf3c6a6ada2f342cdef1920b",
+            "object.830bb48b780040edd4191ccf",
+            "object.c3eee933ac929d11f5fcc2f7",
+            "object.9fe2ad0d5a45339d8246947a",
+            "object.ca109e2b1428c6c9ca222cf7",
+            "object.92db2633c32ebebc76b46e4a",
+            "object.93000e883ad773fdf817d2bc",
+            "object.8a83d356db6d84627d3ac5fc"
+          ]
+        },
+        "rank_effect": "unchanged",
+        "rank_delta": 0,
+        "new_critical_misses": [],
+        "recovered_critical_evidence": [],
+        "contamination_audit": {
+          "audited": true,
+          "contamination": [],
+          "expansion_only_known_partial": []
+        },
+        "remote_call_deltas": {
+          "analyzer_calls": 1,
+          "analyzer_tokens": 2244,
+          "pre_embedding_calls": 1,
+          "pre_embedding_tokens": 0,
+          "post_embedding_calls": 1,
+          "post_embedding_tokens": 0
+        }
+      },
+      {
+        "case_id": "g044",
+        "intent": "algorithm_theory",
+        "query": "Why is angular acceptance needed in a luminosity fit?",
+        "plan_intent": "algorithm_theory",
+        "target_repositories": [
+          "luminosityfit"
+        ],
+        "resolved_versions": {
+          "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+        },
+        "semantic_query_changed": false,
+        "semantic_query_text": "Why is angular acceptance needed in a luminosity fit?",
+        "semantic_components": [],
+        "augmentation_component_count": 0,
+        "pre_filter": "{\"min_should\":null,\"must\":null,\"must_not\":null,\"should\":[{\"min_should\":null,\"must\":[{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"value\":\"luminosityfit\"},\"range\":null,\"values_count\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_version_id\",\"match\":{\"value\":\"luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32\"},\"range\":null,\"values_count\":null}],\"must_not\":null,\"should\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"any\":[\"li_2026\",\"karavdina_2015\",\"pflueger_2017\",\"pandaroot_sphinx_2023_08_25_dev\",\"curated_panda_domain\"]},\"range\":null,\"values_count\":null}]}",
+        "post_filter": "{\"min_should\":null,\"must\":null,\"must_not\":null,\"should\":[{\"min_should\":null,\"must\":[{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"value\":\"luminosityfit\"},\"range\":null,\"values_count\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_version_id\",\"match\":{\"value\":\"luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32\"},\"range\":null,\"values_count\":null}],\"must_not\":null,\"should\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"any\":[\"li_2026\",\"karavdina_2015\",\"pflueger_2017\",\"pandaroot_sphinx_2023_08_25_dev\",\"curated_panda_domain\"]},\"range\":null,\"values_count\":null}]}",
+        "filter_equal": true,
+        "same_analyzer_plan": true,
+        "pre": {
+          "recall_at_5": 1,
+          "recall_at_10": 1,
+          "recall_at_20": 1,
+          "first_relevant_rank": 4,
+          "mrr": 0.25,
+          "critical_applicable": true,
+          "critical_coverage": 1,
+          "matched_group_ids": [
+            "g044.e1"
+          ],
+          "top20_object_ids": [
+            "object.5be9f5d32628670f1791e4d5",
+            "subsystem.luminosityfit.model_and_fit",
+            "object.4a77e2204a3a19915740b987",
+            "object.c38228ebdd1d1c855848f503",
+            "object.7922c4010c073df3d3e7dbdd",
+            "object.c1ad0b79e21c18ef44e5281d",
+            "object.f982904e8d8040e83ff64f39",
+            "object.faaced8bd5058b2a19ba9528",
+            "object.557d3c23dd41029ce0e7e202",
+            "object.ee281e4c5367639ebafb3a96",
+            "object.3e1cca8f5774ac47303ce116",
+            "object.859ef2a9f925145aba4725a6",
+            "object.f790444d3977745b662fd773",
+            "object.057ed32d24926653c4667f2d",
+            "object.e0f2bbab4964c4be5a9ee42b",
+            "object.c06a65fa1ec351534ab16d70",
+            "object.ed678c6f83d2b65a9ba71ca7",
+            "object.eaf32ea81629d33ede837c41",
+            "object.7ac68edc1e39fad0b413a516",
+            "object.255be62ee47d31a2eaf335b3"
+          ]
+        },
+        "post": {
+          "recall_at_5": 1,
+          "recall_at_10": 1,
+          "recall_at_20": 1,
+          "first_relevant_rank": 4,
+          "mrr": 0.25,
+          "critical_applicable": true,
+          "critical_coverage": 1,
+          "matched_group_ids": [
+            "g044.e1"
+          ],
+          "top20_object_ids": [
+            "object.5be9f5d32628670f1791e4d5",
+            "subsystem.luminosityfit.model_and_fit",
+            "object.4a77e2204a3a19915740b987",
+            "object.c38228ebdd1d1c855848f503",
+            "object.7922c4010c073df3d3e7dbdd",
+            "object.c1ad0b79e21c18ef44e5281d",
+            "object.f982904e8d8040e83ff64f39",
+            "object.faaced8bd5058b2a19ba9528",
+            "object.557d3c23dd41029ce0e7e202",
+            "object.ee281e4c5367639ebafb3a96",
+            "object.3e1cca8f5774ac47303ce116",
+            "object.859ef2a9f925145aba4725a6",
+            "object.f790444d3977745b662fd773",
+            "object.057ed32d24926653c4667f2d",
+            "object.e0f2bbab4964c4be5a9ee42b",
+            "object.c06a65fa1ec351534ab16d70",
+            "object.ed678c6f83d2b65a9ba71ca7",
+            "object.eaf32ea81629d33ede837c41",
+            "object.7ac68edc1e39fad0b413a516",
+            "object.255be62ee47d31a2eaf335b3"
+          ]
+        },
+        "rank_effect": "unchanged",
+        "rank_delta": 0,
+        "new_critical_misses": [],
+        "recovered_critical_evidence": [],
+        "contamination_audit": {
+          "audited": true,
+          "contamination": [],
+          "expansion_only_known_partial": [
+            "LMD angular acceptance",
+            "data/PndLmdAcceptance.cxx"
+          ]
+        },
+        "remote_call_deltas": {
+          "analyzer_calls": 1,
+          "analyzer_tokens": 1682,
+          "pre_embedding_calls": 1,
+          "pre_embedding_tokens": 0,
+          "post_embedding_calls": 1,
+          "post_embedding_tokens": 0
+        }
+      },
+      {
+        "case_id": "g059",
+        "intent": "algorithm_implementation",
+        "query": "How is detector-resolution smearing implemented in LuminosityFit?",
+        "plan_intent": "algorithm_implementation",
+        "target_repositories": [
+          "luminosityfit"
+        ],
+        "resolved_versions": {
+          "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+        },
+        "semantic_query_changed": false,
+        "semantic_query_text": "How is detector-resolution smearing implemented in LuminosityFit?",
+        "semantic_components": [],
+        "augmentation_component_count": 0,
+        "pre_filter": "{\"min_should\":null,\"must\":null,\"must_not\":null,\"should\":[{\"min_should\":null,\"must\":[{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"value\":\"luminosityfit\"},\"range\":null,\"values_count\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_version_id\",\"match\":{\"value\":\"luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32\"},\"range\":null,\"values_count\":null}],\"must_not\":null,\"should\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"any\":[\"li_2026\",\"karavdina_2015\",\"pflueger_2017\",\"pandaroot_sphinx_2023_08_25_dev\",\"curated_panda_domain\"]},\"range\":null,\"values_count\":null}]}",
+        "post_filter": "{\"min_should\":null,\"must\":null,\"must_not\":null,\"should\":[{\"min_should\":null,\"must\":[{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"value\":\"luminosityfit\"},\"range\":null,\"values_count\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_version_id\",\"match\":{\"value\":\"luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32\"},\"range\":null,\"values_count\":null}],\"must_not\":null,\"should\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"any\":[\"li_2026\",\"karavdina_2015\",\"pflueger_2017\",\"pandaroot_sphinx_2023_08_25_dev\",\"curated_panda_domain\"]},\"range\":null,\"values_count\":null}]}",
+        "filter_equal": true,
+        "same_analyzer_plan": true,
+        "pre": {
+          "recall_at_5": 0,
+          "recall_at_10": 0,
+          "recall_at_20": 0,
+          "first_relevant_rank": null,
+          "mrr": 0,
+          "critical_applicable": true,
+          "critical_coverage": 0,
+          "matched_group_ids": [],
+          "top20_object_ids": [
+            "object.086846aef68dccf5e066a34b",
+            "subsystem.luminosityfit.model_and_fit",
+            "object.c38228ebdd1d1c855848f503",
+            "object.4a77e2204a3a19915740b987",
+            "object.faaced8bd5058b2a19ba9528",
+            "object.859ef2a9f925145aba4725a6",
+            "object.5be9f5d32628670f1791e4d5",
+            "object.3e1cca8f5774ac47303ce116",
+            "object.17be0e2f5b4f2fad78261618",
+            "object.f982904e8d8040e83ff64f39",
+            "object.e77f22cf1393ca8d2281c29d",
+            "object.345496dbcf699d2f59ade4ab",
+            "object.7922c4010c073df3d3e7dbdd",
+            "object.b3877ddf768ffcfa77c4157c",
+            "object.c1ad0b79e21c18ef44e5281d",
+            "object.4dfef0ea16523c5f472f6079",
+            "object.6e39ac23e0899086b500141e",
+            "object.098a80f588d7cb6fc31926e4",
+            "object.760a25f4170d730f136cfdbe",
+            "object.557d3c23dd41029ce0e7e202"
+          ]
+        },
+        "post": {
+          "recall_at_5": 0,
+          "recall_at_10": 0,
+          "recall_at_20": 0,
+          "first_relevant_rank": null,
+          "mrr": 0,
+          "critical_applicable": true,
+          "critical_coverage": 0,
+          "matched_group_ids": [],
+          "top20_object_ids": [
+            "object.086846aef68dccf5e066a34b",
+            "subsystem.luminosityfit.model_and_fit",
+            "object.c38228ebdd1d1c855848f503",
+            "object.4a77e2204a3a19915740b987",
+            "object.faaced8bd5058b2a19ba9528",
+            "object.859ef2a9f925145aba4725a6",
+            "object.5be9f5d32628670f1791e4d5",
+            "object.3e1cca8f5774ac47303ce116",
+            "object.17be0e2f5b4f2fad78261618",
+            "object.f982904e8d8040e83ff64f39",
+            "object.e77f22cf1393ca8d2281c29d",
+            "object.345496dbcf699d2f59ade4ab",
+            "object.7922c4010c073df3d3e7dbdd",
+            "object.b3877ddf768ffcfa77c4157c",
+            "object.c1ad0b79e21c18ef44e5281d",
+            "object.4dfef0ea16523c5f472f6079",
+            "object.6e39ac23e0899086b500141e",
+            "object.098a80f588d7cb6fc31926e4",
+            "object.760a25f4170d730f136cfdbe",
+            "object.557d3c23dd41029ce0e7e202"
+          ]
+        },
+        "rank_effect": "no-hit-both",
+        "rank_delta": null,
+        "new_critical_misses": [],
+        "recovered_critical_evidence": [],
+        "contamination_audit": {
+          "audited": true,
+          "contamination": [],
+          "expansion_only_known_partial": [
+            "convolution model",
+            "detector resolution",
+            "model/PndLmdDifferentialSmearingConvolutionModel2D.cxx",
+            "model/PndLmdModelFactory.cxx",
+            "model/PndLmdSmearingConvolutionModel2D.cxx"
+          ]
+        },
+        "remote_call_deltas": {
+          "analyzer_calls": 1,
+          "analyzer_tokens": 1875,
+          "pre_embedding_calls": 1,
+          "pre_embedding_tokens": 0,
+          "post_embedding_calls": 1,
+          "post_embedding_tokens": 0
+        }
+      },
+      {
+        "case_id": "g027",
+        "intent": "api",
+        "query": "Where is PndTargetGenerator defined in the locked PandaRoot snapshot and the RestgasDetermination fork, and why does version scope matter?",
+        "plan_intent": "api",
+        "target_repositories": [
+          "pandaroot",
+          "restgas_determination"
+        ],
+        "resolved_versions": {
+          "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357",
+          "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+        },
+        "semantic_query_changed": false,
+        "semantic_query_text": "Where is PndTargetGenerator defined in the locked PandaRoot snapshot and the RestgasDetermination fork, and why does version scope matter?",
+        "semantic_components": [],
+        "augmentation_component_count": 0,
+        "pre_filter": "{\"min_should\":null,\"must\":null,\"must_not\":null,\"should\":[{\"min_should\":null,\"must\":[{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"value\":\"pandaroot\"},\"range\":null,\"values_count\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_version_id\",\"match\":{\"value\":\"pandaroot@18c09e91100db27867ded30e708b4dae95bd8357\"},\"range\":null,\"values_count\":null}],\"must_not\":null,\"should\":null},{\"min_should\":null,\"must\":[{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"value\":\"restgas_determination\"},\"range\":null,\"values_count\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_version_id\",\"match\":{\"value\":\"restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42\"},\"range\":null,\"values_count\":null}],\"must_not\":null,\"should\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"any\":[\"li_2026\",\"karavdina_2015\",\"pflueger_2017\",\"pandaroot_sphinx_2023_08_25_dev\",\"curated_panda_domain\"]},\"range\":null,\"values_count\":null}]}",
+        "post_filter": "{\"min_should\":null,\"must\":null,\"must_not\":null,\"should\":[{\"min_should\":null,\"must\":[{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"value\":\"pandaroot\"},\"range\":null,\"values_count\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_version_id\",\"match\":{\"value\":\"pandaroot@18c09e91100db27867ded30e708b4dae95bd8357\"},\"range\":null,\"values_count\":null}],\"must_not\":null,\"should\":null},{\"min_should\":null,\"must\":[{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"value\":\"restgas_determination\"},\"range\":null,\"values_count\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_version_id\",\"match\":{\"value\":\"restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42\"},\"range\":null,\"values_count\":null}],\"must_not\":null,\"should\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"any\":[\"li_2026\",\"karavdina_2015\",\"pflueger_2017\",\"pandaroot_sphinx_2023_08_25_dev\",\"curated_panda_domain\"]},\"range\":null,\"values_count\":null}]}",
+        "filter_equal": true,
+        "same_analyzer_plan": true,
+        "pre": {
+          "recall_at_5": 0,
+          "recall_at_10": 1,
+          "recall_at_20": 1,
+          "first_relevant_rank": 8,
+          "mrr": 0.125,
+          "critical_applicable": true,
+          "critical_coverage": 1,
+          "matched_group_ids": [
+            "g027.pandaroot",
+            "g027.restgas_fork"
+          ],
+          "top20_object_ids": [
+            "object.bd7592458a975c9ee0f8a95b",
+            "object.3576b26b0bb39bfd932c1899",
+            "object.0adda01879ed6bf22197f4e2",
+            "object.e2a6545a7a626cc30395c556",
+            "object.4be150276b8b7e958033cedf",
+            "object.4e2bf3318be9d234c717b6cc",
+            "repository.pandaroot.oct19",
+            "object.1a428b4c8e1fa007369238eb",
+            "object.5978fda4c0738683d07a655f",
+            "object.1711cae770a045bcfa993f5d",
+            "object.e15b106282fecc7c3b7f9de6",
+            "object.63c354d36b19d4cf2664764a",
+            "object.75da3d033817aa0777a7800b",
+            "object.ca739fc369ae10e1e2cfe0c6",
+            "object.56141088b486599ee6c30771",
+            "object.19c40ff0bbe0b096e7a8be02",
+            "object.80b4fbeb07f499350c264560",
+            "object.b19bd4c75115ec1675e3c366",
+            "object.4f8e5c4a23c2d79d1c39541c",
+            "object.dbe61d69c0a70ed69dc384ce"
+          ]
+        },
+        "post": {
+          "recall_at_5": 0,
+          "recall_at_10": 1,
+          "recall_at_20": 1,
+          "first_relevant_rank": 8,
+          "mrr": 0.125,
+          "critical_applicable": true,
+          "critical_coverage": 1,
+          "matched_group_ids": [
+            "g027.pandaroot",
+            "g027.restgas_fork"
+          ],
+          "top20_object_ids": [
+            "object.bd7592458a975c9ee0f8a95b",
+            "object.3576b26b0bb39bfd932c1899",
+            "object.0adda01879ed6bf22197f4e2",
+            "object.e2a6545a7a626cc30395c556",
+            "object.4be150276b8b7e958033cedf",
+            "object.4e2bf3318be9d234c717b6cc",
+            "repository.pandaroot.oct19",
+            "object.1a428b4c8e1fa007369238eb",
+            "object.5978fda4c0738683d07a655f",
+            "object.1711cae770a045bcfa993f5d",
+            "object.e15b106282fecc7c3b7f9de6",
+            "object.63c354d36b19d4cf2664764a",
+            "object.75da3d033817aa0777a7800b",
+            "object.ca739fc369ae10e1e2cfe0c6",
+            "object.56141088b486599ee6c30771",
+            "object.19c40ff0bbe0b096e7a8be02",
+            "object.80b4fbeb07f499350c264560",
+            "object.b19bd4c75115ec1675e3c366",
+            "object.4f8e5c4a23c2d79d1c39541c",
+            "object.dbe61d69c0a70ed69dc384ce"
+          ]
+        },
+        "rank_effect": "unchanged",
+        "rank_delta": 0,
+        "new_critical_misses": [],
+        "recovered_critical_evidence": [],
+        "contamination_audit": {
+          "audited": true,
+          "contamination": [],
+          "expansion_only_known_partial": [
+            "PandaRoot operational documentation",
+            "PndTargetGenerator::SampleInteractionVertex",
+            "RestgasDetermination custom extension modules",
+            "Running/MasterTasks.html",
+            "Running/Running.html",
+            "Tools/PndMasterTasks/PndMasterRunSim.html",
+            "generic PandaRoot workflow",
+            "interaction-vertex sampling lifecycle",
+            "pgenerators/Target/PndTargetGenerator.cxx",
+            "pid/PidCorr/PndPidCorrelator.cxx",
+            "simulation master task to target-generator data flow",
+            "tools/MasterTasks/PndMasterRunSim.cxx",
+            "tracking/PndApolloniusTripletTrackFinder/PndApolloniusTripletTrackFinderTask.cxx",
+            "tracking/PzFinder/PndSttSkewStrawPzFinderTask.cxx"
+          ]
+        },
+        "remote_call_deltas": {
+          "analyzer_calls": 1,
+          "analyzer_tokens": 2177,
+          "pre_embedding_calls": 1,
+          "pre_embedding_tokens": 0,
+          "post_embedding_calls": 1,
+          "post_embedding_tokens": 0
+        }
+      },
+      {
+        "case_id": "g105",
+        "intent": "module_structure",
+        "query": "Map model/ vs data/ vs apps/ in LuminosityFit with PndLmdModelFactory and createLmdFitData.",
+        "plan_intent": "module_structure",
+        "target_repositories": [
+          "luminosityfit"
+        ],
+        "resolved_versions": {
+          "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+        },
+        "semantic_query_changed": false,
+        "semantic_query_text": "Map model/ vs data/ vs apps/ in LuminosityFit with PndLmdModelFactory and createLmdFitData.",
+        "semantic_components": [],
+        "augmentation_component_count": 0,
+        "pre_filter": "{\"min_should\":null,\"must\":null,\"must_not\":null,\"should\":[{\"min_should\":null,\"must\":[{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"value\":\"luminosityfit\"},\"range\":null,\"values_count\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_version_id\",\"match\":{\"value\":\"luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32\"},\"range\":null,\"values_count\":null}],\"must_not\":null,\"should\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"any\":[\"li_2026\",\"karavdina_2015\",\"pflueger_2017\",\"pandaroot_sphinx_2023_08_25_dev\",\"curated_panda_domain\"]},\"range\":null,\"values_count\":null}]}",
+        "post_filter": "{\"min_should\":null,\"must\":null,\"must_not\":null,\"should\":[{\"min_should\":null,\"must\":[{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"value\":\"luminosityfit\"},\"range\":null,\"values_count\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_version_id\",\"match\":{\"value\":\"luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32\"},\"range\":null,\"values_count\":null}],\"must_not\":null,\"should\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"any\":[\"li_2026\",\"karavdina_2015\",\"pflueger_2017\",\"pandaroot_sphinx_2023_08_25_dev\",\"curated_panda_domain\"]},\"range\":null,\"values_count\":null}]}",
+        "filter_equal": true,
+        "same_analyzer_plan": true,
+        "pre": {
+          "recall_at_5": 0.3333333333333333,
+          "recall_at_10": 0.3333333333333333,
+          "recall_at_20": 0.3333333333333333,
+          "first_relevant_rank": 4,
+          "mrr": 0.25,
+          "critical_applicable": true,
+          "critical_coverage": 0.3333333333333333,
+          "matched_group_ids": [
+            "g105.e2"
+          ],
+          "top20_object_ids": [
+            "object.b2e07a85116c39c498d24ff5",
+            "object.4321d4e41f520bc60247a99f",
+            "object.902539efbc82c2217186dab4",
+            "object.d884768f7fab1286c9e52448",
+            "object.219626563921ae3487d99b13",
+            "object.eaf32ea81629d33ede837c41",
+            "object.602c9651dab5bc7ad8afb33a",
+            "object.c80d698ee3bbe3d920f1aa61",
+            "object.630393ee6d957db4a9de62d9",
+            "object.522529e0e459dda8bef1015d",
+            "object.e10dc434ca918da467fc57db",
+            "object.5fcb10cef4b08392147aee48",
+            "object.aa7c1db883dacb54534ad9f5",
+            "object.4f5c95574c630c332fba613d",
+            "object.9f027c1fec433c6dd6c95a94",
+            "subsystem.luminosityfit.model_and_fit",
+            "object.264ebb5c58a0843ae16839b3",
+            "object.ef3d3a84aac8209ad8b68b6c",
+            "object.12ad8acb24bb97a5f59babcc",
+            "object.c1ad0b79e21c18ef44e5281d"
+          ]
+        },
+        "post": {
+          "recall_at_5": 0.3333333333333333,
+          "recall_at_10": 0.3333333333333333,
+          "recall_at_20": 0.3333333333333333,
+          "first_relevant_rank": 4,
+          "mrr": 0.25,
+          "critical_applicable": true,
+          "critical_coverage": 0.3333333333333333,
+          "matched_group_ids": [
+            "g105.e2"
+          ],
+          "top20_object_ids": [
+            "object.b2e07a85116c39c498d24ff5",
+            "object.4321d4e41f520bc60247a99f",
+            "object.902539efbc82c2217186dab4",
+            "object.d884768f7fab1286c9e52448",
+            "object.219626563921ae3487d99b13",
+            "object.eaf32ea81629d33ede837c41",
+            "object.602c9651dab5bc7ad8afb33a",
+            "object.c80d698ee3bbe3d920f1aa61",
+            "object.630393ee6d957db4a9de62d9",
+            "object.522529e0e459dda8bef1015d",
+            "object.e10dc434ca918da467fc57db",
+            "object.5fcb10cef4b08392147aee48",
+            "object.aa7c1db883dacb54534ad9f5",
+            "object.4f5c95574c630c332fba613d",
+            "object.9f027c1fec433c6dd6c95a94",
+            "subsystem.luminosityfit.model_and_fit",
+            "object.264ebb5c58a0843ae16839b3",
+            "object.ef3d3a84aac8209ad8b68b6c",
+            "object.12ad8acb24bb97a5f59babcc",
+            "object.c1ad0b79e21c18ef44e5281d"
+          ]
+        },
+        "rank_effect": "unchanged",
+        "rank_delta": 0,
+        "new_critical_misses": [],
+        "recovered_critical_evidence": [],
+        "contamination_audit": {
+          "audited": true,
+          "contamination": [],
+          "expansion_only_known_partial": [
+            "DPM model acceptance resolution composition",
+            "PndLmdModelFactory::generate2DModel",
+            "PndLmdModelFactory::setAcceptance",
+            "acceptance injection and two-dimensional model generation",
+            "apps/createLmdFitData.cxx",
+            "createLmdFitData invocation and data categories",
+            "docs/apps/createLmdFitData.md",
+            "model/PndLmdDPMAngModel1D.cxx",
+            "model/PndLmdDPMAngModel2D.cxx",
+            "model/PndLmdModelFactory.cxx"
+          ]
+        },
+        "remote_call_deltas": {
+          "analyzer_calls": 1,
+          "analyzer_tokens": 2249,
+          "pre_embedding_calls": 1,
+          "pre_embedding_tokens": 0,
+          "post_embedding_calls": 1,
+          "post_embedding_tokens": 0
+        }
+      },
+      {
+        "case_id": "g110",
+        "intent": "troubleshooting",
+        "query": "event_poca is missing: what should I inspect first?",
+        "plan_intent": "troubleshooting",
+        "target_repositories": [
+          "restgas_determination",
+          "pandaroot"
+        ],
+        "resolved_versions": {
+          "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357"
+        },
+        "semantic_query_changed": true,
+        "semantic_query_text": "event_poca is missing: what should I inspect first?\n\nSemantic focus:\nmissing event poca",
+        "semantic_components": [
+          {
+            "kind": "analyzer_concept",
+            "value": "missing event poca",
+            "provenance": "analyzer_accepted"
+          }
+        ],
+        "augmentation_component_count": 1,
+        "pre_filter": "{\"min_should\":null,\"must\":null,\"must_not\":null,\"should\":[{\"min_should\":null,\"must\":[{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"value\":\"restgas_determination\"},\"range\":null,\"values_count\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_version_id\",\"match\":{\"value\":\"restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42\"},\"range\":null,\"values_count\":null}],\"must_not\":null,\"should\":null},{\"min_should\":null,\"must\":[{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"value\":\"pandaroot\"},\"range\":null,\"values_count\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_version_id\",\"match\":{\"value\":\"pandaroot@18c09e91100db27867ded30e708b4dae95bd8357\"},\"range\":null,\"values_count\":null}],\"must_not\":null,\"should\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"any\":[\"li_2026\",\"karavdina_2015\",\"pflueger_2017\",\"pandaroot_sphinx_2023_08_25_dev\",\"curated_panda_domain\"]},\"range\":null,\"values_count\":null}]}",
+        "post_filter": "{\"min_should\":null,\"must\":null,\"must_not\":null,\"should\":[{\"min_should\":null,\"must\":[{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"value\":\"restgas_determination\"},\"range\":null,\"values_count\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_version_id\",\"match\":{\"value\":\"restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42\"},\"range\":null,\"values_count\":null}],\"must_not\":null,\"should\":null},{\"min_should\":null,\"must\":[{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"value\":\"pandaroot\"},\"range\":null,\"values_count\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_version_id\",\"match\":{\"value\":\"pandaroot@18c09e91100db27867ded30e708b4dae95bd8357\"},\"range\":null,\"values_count\":null}],\"must_not\":null,\"should\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"any\":[\"li_2026\",\"karavdina_2015\",\"pflueger_2017\",\"pandaroot_sphinx_2023_08_25_dev\",\"curated_panda_domain\"]},\"range\":null,\"values_count\":null}]}",
+        "filter_equal": true,
+        "same_analyzer_plan": true,
+        "pre": {
+          "recall_at_5": 0,
+          "recall_at_10": 0,
+          "recall_at_20": 0,
+          "first_relevant_rank": null,
+          "mrr": 0,
+          "critical_applicable": true,
+          "critical_coverage": 0,
+          "matched_group_ids": [],
+          "top20_object_ids": [
+            "data_product.restgas.event_poca",
+            "object.a34ec3de4e23a2dab4611c1a",
+            "object.7bae1da47ac5db280351cd30",
+            "object.feff65c5c63ea93346477d7f",
+            "object.e6aa1272a60f4a98cd40a4c9",
+            "data_product.restgas.boost_root",
+            "object.d08569eac44dc23639dd31ce",
+            "object.853eba014e7cad605a5f81fc",
+            "object.25bfb752235ce4c8c1672151",
+            "object.ad26301f215bd2e3a8ee38fd",
+            "object.4f0a3994bda204a0bf47252c",
+            "object.53f9c0d0a93ca8a238c26741",
+            "object.3bd67061cc2cf464aa3bdc44",
+            "object.1c1e2f39bfe2c562b057e69f",
+            "object.85abaa0e5cbabce24cf8a12d",
+            "object.6a72bf9df87e9a5810015881",
+            "object.0023bf9fc540cd492bb505e2",
+            "object.5aa1892d222068704449234f",
+            "object.47cbae1427b19a16064fee1e",
+            "object.27bcbf653d909cbe20fe4a6a"
+          ]
+        },
+        "post": {
+          "recall_at_5": 0,
+          "recall_at_10": 0,
+          "recall_at_20": 0,
+          "first_relevant_rank": null,
+          "mrr": 0,
+          "critical_applicable": true,
+          "critical_coverage": 0,
+          "matched_group_ids": [],
+          "top20_object_ids": [
+            "data_product.restgas.event_poca",
+            "object.a34ec3de4e23a2dab4611c1a",
+            "object.e6aa1272a60f4a98cd40a4c9",
+            "object.feff65c5c63ea93346477d7f",
+            "object.7bae1da47ac5db280351cd30",
+            "data_product.restgas.boost_root",
+            "object.d08569eac44dc23639dd31ce",
+            "object.dde8754834f32257131db24b",
+            "object.ad26301f215bd2e3a8ee38fd",
+            "object.89e0af30bf3e82d5a3455d3a",
+            "object.4f0a3994bda204a0bf47252c",
+            "object.3bd67061cc2cf464aa3bdc44",
+            "object.13964cd999e9f05a58ed257a",
+            "object.c1c937ed87d77b9e94c9d963",
+            "object.253fb302f7e28f9d6d8d373c",
+            "object.5ede384ca88980b53063ded5",
+            "object.9ed3af2b7106136e261102ed",
+            "object.0023bf9fc540cd492bb505e2",
+            "object.85abaa0e5cbabce24cf8a12d",
+            "object.c17c634f96ff43466d30400b"
+          ]
+        },
+        "rank_effect": "no-hit-both",
+        "rank_delta": null,
+        "new_critical_misses": [],
+        "recovered_critical_evidence": [],
+        "contamination_audit": {
+          "audited": true,
+          "contamination": [],
+          "expansion_only_known_partial": [
+            "POCA_VERTEX_FILE",
+            "PndPidCorrelator",
+            "Running/Running.html",
+            "event POCA handoff",
+            "event POCA troubleshooting and event alignment",
+            "event-aligned second-pass propagation",
+            "first-pass PID input and prefix context",
+            "macro/target/README.md",
+            "macro/target/ana_dpm.C",
+            "macro/target/pid_complete.C",
+            "macro/target/prod_aod_complete.C",
+            "pid/PidCorr/PndPidCorrelator.cxx"
+          ]
+        },
+        "remote_call_deltas": {
+          "analyzer_calls": 1,
+          "analyzer_tokens": 1696,
+          "pre_embedding_calls": 1,
+          "pre_embedding_tokens": 0,
+          "post_embedding_calls": 1,
+          "post_embedding_tokens": 0
+        }
+      },
+      {
+        "case_id": "g002",
+        "intent": "installation",
+        "query": "What are the documented prerequisites before building PandaRoot?",
+        "plan_intent": "installation",
+        "target_repositories": [
+          "pandaroot"
+        ],
+        "resolved_versions": {
+          "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357"
+        },
+        "semantic_query_changed": false,
+        "semantic_query_text": "What are the documented prerequisites before building PandaRoot?",
+        "semantic_components": [],
+        "augmentation_component_count": 0,
+        "pre_filter": "{\"min_should\":null,\"must\":null,\"must_not\":null,\"should\":[{\"min_should\":null,\"must\":[{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"value\":\"pandaroot\"},\"range\":null,\"values_count\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_version_id\",\"match\":{\"value\":\"pandaroot@18c09e91100db27867ded30e708b4dae95bd8357\"},\"range\":null,\"values_count\":null}],\"must_not\":null,\"should\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"any\":[\"li_2026\",\"karavdina_2015\",\"pflueger_2017\",\"pandaroot_sphinx_2023_08_25_dev\",\"curated_panda_domain\"]},\"range\":null,\"values_count\":null}]}",
+        "post_filter": "{\"min_should\":null,\"must\":null,\"must_not\":null,\"should\":[{\"min_should\":null,\"must\":[{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"value\":\"pandaroot\"},\"range\":null,\"values_count\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_version_id\",\"match\":{\"value\":\"pandaroot@18c09e91100db27867ded30e708b4dae95bd8357\"},\"range\":null,\"values_count\":null}],\"must_not\":null,\"should\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"any\":[\"li_2026\",\"karavdina_2015\",\"pflueger_2017\",\"pandaroot_sphinx_2023_08_25_dev\",\"curated_panda_domain\"]},\"range\":null,\"values_count\":null}]}",
+        "filter_equal": true,
+        "same_analyzer_plan": true,
+        "pre": {
+          "recall_at_5": 1,
+          "recall_at_10": 1,
+          "recall_at_20": 1,
+          "first_relevant_rank": 4,
+          "mrr": 0.25,
+          "critical_applicable": true,
+          "critical_coverage": 1,
+          "matched_group_ids": [
+            "g002.e1"
+          ],
+          "top20_object_ids": [
+            "object.03f178141a15fff8cf689261",
+            "object.83bb338e3857444aa4cfcd31",
+            "object.1fb50ceec6adf4d7ec53ca15",
+            "object.8af1dbfc98e0d90dbf6ce274",
+            "object.4ef08446ce5a9484852bceec",
+            "object.cebfa491c0b5b1500c832d48",
+            "object.1be53c1e8673ca40c241ae8b",
+            "object.63a82b14ca62a4704bc83ca8",
+            "object.1904af36be705225b8c161c0",
+            "object.b132a7f1195b73ae51a06801",
+            "object.05f509defc3a0a04209f2205",
+            "object.a39258617af51b03b5421218",
+            "object.748d6657afaae5e33dd48c4d",
+            "object.d1db57c131ea6aee57038263",
+            "object.26479a1a180bf3d6de0820e2",
+            "object.e222ac4ece421730a7f45258",
+            "object.74537a9551eb84182e296062",
+            "object.44b0f675894302dac874b912",
+            "object.2c1a67d7404cc59854658a02",
+            "object.92e6da6cf7cea6b7b102157c"
+          ]
+        },
+        "post": {
+          "recall_at_5": 1,
+          "recall_at_10": 1,
+          "recall_at_20": 1,
+          "first_relevant_rank": 4,
+          "mrr": 0.25,
+          "critical_applicable": true,
+          "critical_coverage": 1,
+          "matched_group_ids": [
+            "g002.e1"
+          ],
+          "top20_object_ids": [
+            "object.03f178141a15fff8cf689261",
+            "object.83bb338e3857444aa4cfcd31",
+            "object.1fb50ceec6adf4d7ec53ca15",
+            "object.8af1dbfc98e0d90dbf6ce274",
+            "object.4ef08446ce5a9484852bceec",
+            "object.cebfa491c0b5b1500c832d48",
+            "object.1be53c1e8673ca40c241ae8b",
+            "object.63a82b14ca62a4704bc83ca8",
+            "object.1904af36be705225b8c161c0",
+            "object.b132a7f1195b73ae51a06801",
+            "object.05f509defc3a0a04209f2205",
+            "object.a39258617af51b03b5421218",
+            "object.748d6657afaae5e33dd48c4d",
+            "object.d1db57c131ea6aee57038263",
+            "object.26479a1a180bf3d6de0820e2",
+            "object.e222ac4ece421730a7f45258",
+            "object.74537a9551eb84182e296062",
+            "object.44b0f675894302dac874b912",
+            "object.2c1a67d7404cc59854658a02",
+            "object.92e6da6cf7cea6b7b102157c"
+          ]
+        },
+        "rank_effect": "unchanged",
+        "rank_delta": 0,
+        "new_critical_misses": [],
+        "recovered_critical_evidence": [],
+        "contamination_audit": {
+          "audited": true,
+          "contamination": [],
+          "expansion_only_known_partial": []
+        },
+        "remote_call_deltas": {
+          "analyzer_calls": 1,
+          "analyzer_tokens": 1724,
+          "pre_embedding_calls": 1,
+          "pre_embedding_tokens": 0,
+          "post_embedding_calls": 1,
+          "post_embedding_tokens": 0
+        }
+      },
+      {
+        "case_id": "g014",
+        "intent": "usage",
+        "query": "What is the documented PandaRoot simulation-to-analysis sequence?",
+        "plan_intent": "usage",
+        "target_repositories": [
+          "pandaroot"
+        ],
+        "resolved_versions": {
+          "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357"
+        },
+        "semantic_query_changed": false,
+        "semantic_query_text": "What is the documented PandaRoot simulation-to-analysis sequence?",
+        "semantic_components": [],
+        "augmentation_component_count": 0,
+        "pre_filter": "{\"min_should\":null,\"must\":null,\"must_not\":null,\"should\":[{\"min_should\":null,\"must\":[{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"value\":\"pandaroot\"},\"range\":null,\"values_count\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_version_id\",\"match\":{\"value\":\"pandaroot@18c09e91100db27867ded30e708b4dae95bd8357\"},\"range\":null,\"values_count\":null}],\"must_not\":null,\"should\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"any\":[\"li_2026\",\"karavdina_2015\",\"pflueger_2017\",\"pandaroot_sphinx_2023_08_25_dev\",\"curated_panda_domain\"]},\"range\":null,\"values_count\":null}]}",
+        "post_filter": "{\"min_should\":null,\"must\":null,\"must_not\":null,\"should\":[{\"min_should\":null,\"must\":[{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"value\":\"pandaroot\"},\"range\":null,\"values_count\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_version_id\",\"match\":{\"value\":\"pandaroot@18c09e91100db27867ded30e708b4dae95bd8357\"},\"range\":null,\"values_count\":null}],\"must_not\":null,\"should\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"any\":[\"li_2026\",\"karavdina_2015\",\"pflueger_2017\",\"pandaroot_sphinx_2023_08_25_dev\",\"curated_panda_domain\"]},\"range\":null,\"values_count\":null}]}",
+        "filter_equal": true,
+        "same_analyzer_plan": true,
+        "pre": {
+          "recall_at_5": 1,
+          "recall_at_10": 1,
+          "recall_at_20": 1,
+          "first_relevant_rank": 1,
+          "mrr": 1,
+          "critical_applicable": true,
+          "critical_coverage": 1,
+          "matched_group_ids": [
+            "g014.e1",
+            "g014.e2"
+          ],
+          "top20_object_ids": [
+            "object.72498a7b4b01f4432b19431a",
+            "object.3c5d8b7d8dd083f4d7a5d54a",
+            "object.79b75480980719256f8b7937",
+            "object.748d6657afaae5e33dd48c4d",
+            "object.deeebf203a3e05a3f55df26d",
+            "object.d6050fb3d2b276c41f75826c",
+            "object.5b16c90fb3cf53b515b1a429",
+            "object.006e2c0eab28e25fc87968b2",
+            "workflow.pandaroot.generic",
+            "object.a800d438d6eabed84f3e0e30",
+            "object.df83068e7c840c216ecf55a9",
+            "object.93000e883ad773fdf817d2bc",
+            "object.b90305162d41f54cd1fc9634",
+            "object.830bb48b780040edd4191ccf",
+            "object.3f695bf388d11068f5fd5f9e",
+            "object.8c1cf6c9ae1c6ade14a4fe62",
+            "object.8a83d356db6d84627d3ac5fc",
+            "object.b132a7f1195b73ae51a06801",
+            "document.pandaroot_sphinx_2023_08_25_dev",
+            "object.c061a553d5a9d4b6a8243182"
+          ]
+        },
+        "post": {
+          "recall_at_5": 1,
+          "recall_at_10": 1,
+          "recall_at_20": 1,
+          "first_relevant_rank": 1,
+          "mrr": 1,
+          "critical_applicable": true,
+          "critical_coverage": 1,
+          "matched_group_ids": [
+            "g014.e1",
+            "g014.e2"
+          ],
+          "top20_object_ids": [
+            "object.72498a7b4b01f4432b19431a",
+            "object.3c5d8b7d8dd083f4d7a5d54a",
+            "object.79b75480980719256f8b7937",
+            "object.748d6657afaae5e33dd48c4d",
+            "object.deeebf203a3e05a3f55df26d",
+            "object.d6050fb3d2b276c41f75826c",
+            "object.5b16c90fb3cf53b515b1a429",
+            "object.006e2c0eab28e25fc87968b2",
+            "workflow.pandaroot.generic",
+            "object.a800d438d6eabed84f3e0e30",
+            "object.df83068e7c840c216ecf55a9",
+            "object.93000e883ad773fdf817d2bc",
+            "object.b90305162d41f54cd1fc9634",
+            "object.830bb48b780040edd4191ccf",
+            "object.3f695bf388d11068f5fd5f9e",
+            "object.8c1cf6c9ae1c6ade14a4fe62",
+            "object.8a83d356db6d84627d3ac5fc",
+            "object.b132a7f1195b73ae51a06801",
+            "document.pandaroot_sphinx_2023_08_25_dev",
+            "object.c061a553d5a9d4b6a8243182"
+          ]
+        },
+        "rank_effect": "unchanged",
+        "rank_delta": 0,
+        "new_critical_misses": [],
+        "recovered_critical_evidence": [],
+        "contamination_audit": {
+          "audited": true,
+          "contamination": [],
+          "expansion_only_known_partial": []
+        },
+        "remote_call_deltas": {
+          "analyzer_calls": 1,
+          "analyzer_tokens": 1611,
+          "pre_embedding_calls": 1,
+          "pre_embedding_tokens": 0,
+          "post_embedding_calls": 1,
+          "post_embedding_tokens": 0
+        }
+      },
+      {
+        "case_id": "g047",
+        "intent": "algorithm_theory",
+        "query": "What is the theoretical purpose of the DPM elastic-scattering model?",
+        "plan_intent": "algorithm_theory",
+        "target_repositories": [
+          "luminosityfit"
+        ],
+        "resolved_versions": {
+          "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+        },
+        "semantic_query_changed": false,
+        "semantic_query_text": "What is the theoretical purpose of the DPM elastic-scattering model?",
+        "semantic_components": [],
+        "augmentation_component_count": 0,
+        "pre_filter": "{\"min_should\":null,\"must\":null,\"must_not\":null,\"should\":[{\"min_should\":null,\"must\":[{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"value\":\"luminosityfit\"},\"range\":null,\"values_count\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_version_id\",\"match\":{\"value\":\"luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32\"},\"range\":null,\"values_count\":null}],\"must_not\":null,\"should\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"any\":[\"li_2026\",\"karavdina_2015\",\"pflueger_2017\",\"pandaroot_sphinx_2023_08_25_dev\",\"curated_panda_domain\"]},\"range\":null,\"values_count\":null}]}",
+        "post_filter": "{\"min_should\":null,\"must\":null,\"must_not\":null,\"should\":[{\"min_should\":null,\"must\":[{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"value\":\"luminosityfit\"},\"range\":null,\"values_count\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_version_id\",\"match\":{\"value\":\"luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32\"},\"range\":null,\"values_count\":null}],\"must_not\":null,\"should\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"any\":[\"li_2026\",\"karavdina_2015\",\"pflueger_2017\",\"pandaroot_sphinx_2023_08_25_dev\",\"curated_panda_domain\"]},\"range\":null,\"values_count\":null}]}",
+        "filter_equal": true,
+        "same_analyzer_plan": true,
+        "pre": {
+          "recall_at_5": 1,
+          "recall_at_10": 1,
+          "recall_at_20": 1,
+          "first_relevant_rank": 3,
+          "mrr": 0.3333333333333333,
+          "critical_applicable": true,
+          "critical_coverage": 1,
+          "matched_group_ids": [
+            "g047.e1"
+          ],
+          "top20_object_ids": [
+            "object.da3c44d15f5b5402c156a3d6",
+            "object.6186443f8f63cc299ec5a4da",
+            "object.21ade3bc1b265169efad5300",
+            "object.e9235f675f4091a57f6ce7cd",
+            "object.5fc0020a59573b7cb8a6e9da",
+            "object.faaced8bd5058b2a19ba9528",
+            "object.0c1d954791a22370e7405c8a",
+            "object.fdce122aee775d9038f08328",
+            "object.89eab2fef654d8c95fd2e678",
+            "object.a6aab90b5fb2abbb3324b995",
+            "object.84d4cae9b1ce4009dfe06a25",
+            "object.06ae95ed10b6aca597d4fccb",
+            "object.592cca415aea807b5ec237c9",
+            "object.0dcda102de4e75e62bac8833",
+            "object.3309fe258de9784cc45b1d58",
+            "object.92506820306fcdf90ad5dbc6",
+            "object.bc24ec6d79c17497c2fedfb1",
+            "object.1d303f30d6df274d88614428",
+            "object.fece95ea367536bd9d736eb0",
+            "object.9c5492389739d04650b0c1ab"
+          ]
+        },
+        "post": {
+          "recall_at_5": 1,
+          "recall_at_10": 1,
+          "recall_at_20": 1,
+          "first_relevant_rank": 3,
+          "mrr": 0.3333333333333333,
+          "critical_applicable": true,
+          "critical_coverage": 1,
+          "matched_group_ids": [
+            "g047.e1"
+          ],
+          "top20_object_ids": [
+            "object.da3c44d15f5b5402c156a3d6",
+            "object.6186443f8f63cc299ec5a4da",
+            "object.21ade3bc1b265169efad5300",
+            "object.e9235f675f4091a57f6ce7cd",
+            "object.5fc0020a59573b7cb8a6e9da",
+            "object.faaced8bd5058b2a19ba9528",
+            "object.0c1d954791a22370e7405c8a",
+            "object.fdce122aee775d9038f08328",
+            "object.89eab2fef654d8c95fd2e678",
+            "object.a6aab90b5fb2abbb3324b995",
+            "object.84d4cae9b1ce4009dfe06a25",
+            "object.06ae95ed10b6aca597d4fccb",
+            "object.592cca415aea807b5ec237c9",
+            "object.0dcda102de4e75e62bac8833",
+            "object.3309fe258de9784cc45b1d58",
+            "object.92506820306fcdf90ad5dbc6",
+            "object.bc24ec6d79c17497c2fedfb1",
+            "object.1d303f30d6df274d88614428",
+            "object.fece95ea367536bd9d736eb0",
+            "object.9c5492389739d04650b0c1ab"
+          ]
+        },
+        "rank_effect": "unchanged",
+        "rank_delta": 0,
+        "new_critical_misses": [],
+        "recovered_critical_evidence": [],
+        "contamination_audit": {
+          "audited": true,
+          "contamination": [],
+          "expansion_only_known_partial": [
+            "DPM elastic scattering model"
+          ]
+        },
+        "remote_call_deltas": {
+          "analyzer_calls": 1,
+          "analyzer_tokens": 1603,
+          "pre_embedding_calls": 1,
+          "pre_embedding_tokens": 0,
+          "post_embedding_calls": 1,
+          "post_embedding_tokens": 0
+        }
+      },
+      {
+        "case_id": "g060",
+        "intent": "algorithm_implementation",
+        "query": "How is beam-divergence smearing implemented in LuminosityFit?",
+        "plan_intent": "algorithm_implementation",
+        "target_repositories": [
+          "luminosityfit"
+        ],
+        "resolved_versions": {
+          "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+        },
+        "semantic_query_changed": false,
+        "semantic_query_text": "How is beam-divergence smearing implemented in LuminosityFit?",
+        "semantic_components": [],
+        "augmentation_component_count": 0,
+        "pre_filter": "{\"min_should\":null,\"must\":null,\"must_not\":null,\"should\":[{\"min_should\":null,\"must\":[{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"value\":\"luminosityfit\"},\"range\":null,\"values_count\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_version_id\",\"match\":{\"value\":\"luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32\"},\"range\":null,\"values_count\":null}],\"must_not\":null,\"should\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"any\":[\"li_2026\",\"karavdina_2015\",\"pflueger_2017\",\"pandaroot_sphinx_2023_08_25_dev\",\"curated_panda_domain\"]},\"range\":null,\"values_count\":null}]}",
+        "post_filter": "{\"min_should\":null,\"must\":null,\"must_not\":null,\"should\":[{\"min_should\":null,\"must\":[{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"value\":\"luminosityfit\"},\"range\":null,\"values_count\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_version_id\",\"match\":{\"value\":\"luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32\"},\"range\":null,\"values_count\":null}],\"must_not\":null,\"should\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"any\":[\"li_2026\",\"karavdina_2015\",\"pflueger_2017\",\"pandaroot_sphinx_2023_08_25_dev\",\"curated_panda_domain\"]},\"range\":null,\"values_count\":null}]}",
+        "filter_equal": true,
+        "same_analyzer_plan": true,
+        "pre": {
+          "recall_at_5": 0,
+          "recall_at_10": 0.3333333333333333,
+          "recall_at_20": 0.3333333333333333,
+          "first_relevant_rank": 7,
+          "mrr": 0.14285714285714285,
+          "critical_applicable": true,
+          "critical_coverage": 0.3333333333333333,
+          "matched_group_ids": [
+            "g060.e1"
+          ],
+          "top20_object_ids": [
+            "object.8556abfb92c2e4b7e4f732a8",
+            "subsystem.luminosityfit.model_and_fit",
+            "object.4dfef0ea16523c5f472f6079",
+            "object.b3877ddf768ffcfa77c4157c",
+            "object.760a25f4170d730f136cfdbe",
+            "object.6fbf617f311a47f9eeb24903",
+            "object.94c8b2244725f71b312bf99f",
+            "object.19a7263bbc2ca815fe93a35c",
+            "object.fc690314895a094fd0ce0991",
+            "object.3e1cca8f5774ac47303ce116",
+            "object.086846aef68dccf5e066a34b",
+            "object.faaced8bd5058b2a19ba9528",
+            "object.6e39ac23e0899086b500141e",
+            "object.45d818e73d049bdcf5844ca7",
+            "object.4fa0687444b6c840d2080970",
+            "object.c1ad0b79e21c18ef44e5281d",
+            "object.fde66734d91da2e992f9824d",
+            "object.77062e66ae72348355ab9120",
+            "object.54b5cf78ac656b14878ac4b6",
+            "object.4a77e2204a3a19915740b987"
+          ]
+        },
+        "post": {
+          "recall_at_5": 0,
+          "recall_at_10": 0.3333333333333333,
+          "recall_at_20": 0.3333333333333333,
+          "first_relevant_rank": 7,
+          "mrr": 0.14285714285714285,
+          "critical_applicable": true,
+          "critical_coverage": 0.3333333333333333,
+          "matched_group_ids": [
+            "g060.e1"
+          ],
+          "top20_object_ids": [
+            "object.8556abfb92c2e4b7e4f732a8",
+            "subsystem.luminosityfit.model_and_fit",
+            "object.4dfef0ea16523c5f472f6079",
+            "object.b3877ddf768ffcfa77c4157c",
+            "object.760a25f4170d730f136cfdbe",
+            "object.6fbf617f311a47f9eeb24903",
+            "object.94c8b2244725f71b312bf99f",
+            "object.19a7263bbc2ca815fe93a35c",
+            "object.fc690314895a094fd0ce0991",
+            "object.3e1cca8f5774ac47303ce116",
+            "object.086846aef68dccf5e066a34b",
+            "object.faaced8bd5058b2a19ba9528",
+            "object.6e39ac23e0899086b500141e",
+            "object.45d818e73d049bdcf5844ca7",
+            "object.4fa0687444b6c840d2080970",
+            "object.c1ad0b79e21c18ef44e5281d",
+            "object.fde66734d91da2e992f9824d",
+            "object.77062e66ae72348355ab9120",
+            "object.54b5cf78ac656b14878ac4b6",
+            "object.4a77e2204a3a19915740b987"
+          ]
+        },
+        "rank_effect": "unchanged",
+        "rank_delta": 0,
+        "new_critical_misses": [],
+        "recovered_critical_evidence": [],
+        "contamination_audit": {
+          "audited": true,
+          "contamination": [],
+          "expansion_only_known_partial": [
+            "beam divergence",
+            "model/PndLmdDivergenceSmearingModel2D.cxx",
+            "model/PndLmdModelFactory.cxx"
+          ]
+        },
+        "remote_call_deltas": {
+          "analyzer_calls": 1,
+          "analyzer_tokens": 2155,
+          "pre_embedding_calls": 1,
+          "pre_embedding_tokens": 0,
+          "post_embedding_calls": 1,
+          "post_embedding_tokens": 0
+        }
+      },
+      {
+        "case_id": "g028",
+        "intent": "api",
+        "query": "Where is PndPidCorrelator implemented?",
+        "plan_intent": "api",
+        "target_repositories": [
+          "luminosityfit",
+          "pandaroot",
+          "restgas_determination"
+        ],
+        "resolved_versions": {
+          "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+          "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357",
+          "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+        },
+        "semantic_query_changed": false,
+        "semantic_query_text": "Where is PndPidCorrelator implemented?",
+        "semantic_components": [],
+        "augmentation_component_count": 0,
+        "pre_filter": "{\"min_should\":null,\"must\":null,\"must_not\":null,\"should\":[{\"min_should\":null,\"must\":[{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"value\":\"luminosityfit\"},\"range\":null,\"values_count\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_version_id\",\"match\":{\"value\":\"luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32\"},\"range\":null,\"values_count\":null}],\"must_not\":null,\"should\":null},{\"min_should\":null,\"must\":[{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"value\":\"pandaroot\"},\"range\":null,\"values_count\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_version_id\",\"match\":{\"value\":\"pandaroot@18c09e91100db27867ded30e708b4dae95bd8357\"},\"range\":null,\"values_count\":null}],\"must_not\":null,\"should\":null},{\"min_should\":null,\"must\":[{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"value\":\"restgas_determination\"},\"range\":null,\"values_count\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_version_id\",\"match\":{\"value\":\"restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42\"},\"range\":null,\"values_count\":null}],\"must_not\":null,\"should\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"any\":[\"li_2026\",\"karavdina_2015\",\"pflueger_2017\",\"pandaroot_sphinx_2023_08_25_dev\",\"curated_panda_domain\"]},\"range\":null,\"values_count\":null}]}",
+        "post_filter": "{\"min_should\":null,\"must\":null,\"must_not\":null,\"should\":[{\"min_should\":null,\"must\":[{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"value\":\"luminosityfit\"},\"range\":null,\"values_count\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_version_id\",\"match\":{\"value\":\"luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32\"},\"range\":null,\"values_count\":null}],\"must_not\":null,\"should\":null},{\"min_should\":null,\"must\":[{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"value\":\"pandaroot\"},\"range\":null,\"values_count\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_version_id\",\"match\":{\"value\":\"pandaroot@18c09e91100db27867ded30e708b4dae95bd8357\"},\"range\":null,\"values_count\":null}],\"must_not\":null,\"should\":null},{\"min_should\":null,\"must\":[{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"value\":\"restgas_determination\"},\"range\":null,\"values_count\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_version_id\",\"match\":{\"value\":\"restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42\"},\"range\":null,\"values_count\":null}],\"must_not\":null,\"should\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"any\":[\"li_2026\",\"karavdina_2015\",\"pflueger_2017\",\"pandaroot_sphinx_2023_08_25_dev\",\"curated_panda_domain\"]},\"range\":null,\"values_count\":null}]}",
+        "filter_equal": true,
+        "same_analyzer_plan": true,
+        "pre": {
+          "recall_at_5": 0,
+          "recall_at_10": 0,
+          "recall_at_20": 0,
+          "first_relevant_rank": null,
+          "mrr": 0,
+          "critical_applicable": true,
+          "critical_coverage": 0,
+          "matched_group_ids": [],
+          "top20_object_ids": [
+            "object.de8952db46a8b52154456ee0",
+            "object.cb48d182871465e7867ef8fb",
+            "object.6ff05220ac1e98115d58e537",
+            "object.be47b58f25953bf754afeb6c",
+            "object.4d52138bf15850586a1b313f",
+            "object.1d40a47e37d275ae3fc8e87d",
+            "object.b545349030372fd5e174613c",
+            "object.101e856bb2eadbc4236fcd31",
+            "object.5e0ffc709e9a7c1b50901f6d",
+            "object.fd84e91ad7ab7dd0c21dae13",
+            "object.15412361ed0393ba268948a5",
+            "object.0b8dfcafdd495154dd777e15",
+            "object.2227ea507bf8df394f97e4a7",
+            "object.17afb85b9f551633ec031f51",
+            "object.49a023aed29fd47d07604c19",
+            "object.36085eb3cfdc546bc16c9bb8",
+            "object.37f80ac8b56795f62b51ef6b",
+            "object.7aaa90fccf15ecfb14608ab2",
+            "object.8f262e4b0cf6ffa116f96207",
+            "object.1f7d9bbc547febbc53118ba0"
+          ]
+        },
+        "post": {
+          "recall_at_5": 0,
+          "recall_at_10": 0,
+          "recall_at_20": 0,
+          "first_relevant_rank": null,
+          "mrr": 0,
+          "critical_applicable": true,
+          "critical_coverage": 0,
+          "matched_group_ids": [],
+          "top20_object_ids": [
+            "object.de8952db46a8b52154456ee0",
+            "object.cb48d182871465e7867ef8fb",
+            "object.6ff05220ac1e98115d58e537",
+            "object.be47b58f25953bf754afeb6c",
+            "object.4d52138bf15850586a1b313f",
+            "object.1d40a47e37d275ae3fc8e87d",
+            "object.b545349030372fd5e174613c",
+            "object.101e856bb2eadbc4236fcd31",
+            "object.5e0ffc709e9a7c1b50901f6d",
+            "object.fd84e91ad7ab7dd0c21dae13",
+            "object.15412361ed0393ba268948a5",
+            "object.0b8dfcafdd495154dd777e15",
+            "object.2227ea507bf8df394f97e4a7",
+            "object.17afb85b9f551633ec031f51",
+            "object.49a023aed29fd47d07604c19",
+            "object.36085eb3cfdc546bc16c9bb8",
+            "object.37f80ac8b56795f62b51ef6b",
+            "object.7aaa90fccf15ecfb14608ab2",
+            "object.8f262e4b0cf6ffa116f96207",
+            "object.1f7d9bbc547febbc53118ba0"
+          ]
+        },
+        "rank_effect": "no-hit-both",
+        "rank_delta": null,
+        "new_critical_misses": [],
+        "recovered_critical_evidence": [],
+        "contamination_audit": {
+          "audited": true,
+          "contamination": [],
+          "expansion_only_known_partial": []
+        },
+        "remote_call_deltas": {
+          "analyzer_calls": 1,
+          "analyzer_tokens": 1427,
+          "pre_embedding_calls": 1,
+          "pre_embedding_tokens": 0,
+          "post_embedding_calls": 1,
+          "post_embedding_tokens": 0
+        }
+      },
+      {
+        "case_id": "g003",
+        "intent": "installation",
+        "query": "How can I use CernVM-FS for a PandaRoot environment?",
+        "plan_intent": "installation",
+        "target_repositories": [
+          "pandaroot"
+        ],
+        "resolved_versions": {
+          "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357"
+        },
+        "semantic_query_changed": false,
+        "semantic_query_text": "How can I use CernVM-FS for a PandaRoot environment?",
+        "semantic_components": [],
+        "augmentation_component_count": 0,
+        "pre_filter": "{\"min_should\":null,\"must\":null,\"must_not\":null,\"should\":[{\"min_should\":null,\"must\":[{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"value\":\"pandaroot\"},\"range\":null,\"values_count\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_version_id\",\"match\":{\"value\":\"pandaroot@18c09e91100db27867ded30e708b4dae95bd8357\"},\"range\":null,\"values_count\":null}],\"must_not\":null,\"should\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"any\":[\"li_2026\",\"karavdina_2015\",\"pflueger_2017\",\"pandaroot_sphinx_2023_08_25_dev\",\"curated_panda_domain\"]},\"range\":null,\"values_count\":null}]}",
+        "post_filter": "{\"min_should\":null,\"must\":null,\"must_not\":null,\"should\":[{\"min_should\":null,\"must\":[{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"value\":\"pandaroot\"},\"range\":null,\"values_count\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_version_id\",\"match\":{\"value\":\"pandaroot@18c09e91100db27867ded30e708b4dae95bd8357\"},\"range\":null,\"values_count\":null}],\"must_not\":null,\"should\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"any\":[\"li_2026\",\"karavdina_2015\",\"pflueger_2017\",\"pandaroot_sphinx_2023_08_25_dev\",\"curated_panda_domain\"]},\"range\":null,\"values_count\":null}]}",
+        "filter_equal": true,
+        "same_analyzer_plan": true,
+        "pre": {
+          "recall_at_5": 1,
+          "recall_at_10": 1,
+          "recall_at_20": 1,
+          "first_relevant_rank": 1,
+          "mrr": 1,
+          "critical_applicable": true,
+          "critical_coverage": 1,
+          "matched_group_ids": [
+            "g003.e1"
+          ],
+          "top20_object_ids": [
+            "object.13eadb1b7eec327988d2f049",
+            "object.2ca2040b33a7bff16284a38b",
+            "object.b132a7f1195b73ae51a06801",
+            "object.fa0e885f5a61cc8109d26363",
+            "object.feeb2cedac2dd7f336b968e7",
+            "document.pandaroot_sphinx_2023_08_25_dev",
+            "object.2de0c11066dd97bc1177de1c",
+            "object.4d4fc2824e37ab150ec2da1f",
+            "object.a624ff51caae574bcf6a112b",
+            "object.830bb48b780040edd4191ccf",
+            "object.6dc0df95cb751d1138161081",
+            "object.47edb3259639343dc7d95833",
+            "object.4ef08446ce5a9484852bceec",
+            "object.8af1dbfc98e0d90dbf6ce274",
+            "object.1fb50ceec6adf4d7ec53ca15",
+            "object.1be53c1e8673ca40c241ae8b",
+            "object.3f695bf388d11068f5fd5f9e",
+            "object.748d6657afaae5e33dd48c4d",
+            "object.125956499883f545fcb3296b",
+            "object.e4f54cb4330ba4f63876b9ca"
+          ]
+        },
+        "post": {
+          "recall_at_5": 1,
+          "recall_at_10": 1,
+          "recall_at_20": 1,
+          "first_relevant_rank": 1,
+          "mrr": 1,
+          "critical_applicable": true,
+          "critical_coverage": 1,
+          "matched_group_ids": [
+            "g003.e1"
+          ],
+          "top20_object_ids": [
+            "object.13eadb1b7eec327988d2f049",
+            "object.2ca2040b33a7bff16284a38b",
+            "object.b132a7f1195b73ae51a06801",
+            "object.fa0e885f5a61cc8109d26363",
+            "object.feeb2cedac2dd7f336b968e7",
+            "document.pandaroot_sphinx_2023_08_25_dev",
+            "object.2de0c11066dd97bc1177de1c",
+            "object.4d4fc2824e37ab150ec2da1f",
+            "object.a624ff51caae574bcf6a112b",
+            "object.830bb48b780040edd4191ccf",
+            "object.6dc0df95cb751d1138161081",
+            "object.47edb3259639343dc7d95833",
+            "object.4ef08446ce5a9484852bceec",
+            "object.8af1dbfc98e0d90dbf6ce274",
+            "object.1fb50ceec6adf4d7ec53ca15",
+            "object.1be53c1e8673ca40c241ae8b",
+            "object.3f695bf388d11068f5fd5f9e",
+            "object.748d6657afaae5e33dd48c4d",
+            "object.125956499883f545fcb3296b",
+            "object.e4f54cb4330ba4f63876b9ca"
+          ]
+        },
+        "rank_effect": "unchanged",
+        "rank_delta": 0,
+        "new_critical_misses": [],
+        "recovered_critical_evidence": [],
+        "contamination_audit": {
+          "audited": true,
+          "contamination": [],
+          "expansion_only_known_partial": []
+        },
+        "remote_call_deltas": {
+          "analyzer_calls": 1,
+          "analyzer_tokens": 1657,
+          "pre_embedding_calls": 1,
+          "pre_embedding_tokens": 0,
+          "post_embedding_calls": 1,
+          "post_embedding_tokens": 0
+        }
+      },
+      {
+        "case_id": "g015",
+        "intent": "usage",
+        "query": "How is PndMasterRunSim used to configure a simulation?",
+        "plan_intent": "usage",
+        "target_repositories": [
+          "pandaroot"
+        ],
+        "resolved_versions": {
+          "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357"
+        },
+        "semantic_query_changed": false,
+        "semantic_query_text": "How is PndMasterRunSim used to configure a simulation?",
+        "semantic_components": [],
+        "augmentation_component_count": 0,
+        "pre_filter": "{\"min_should\":null,\"must\":null,\"must_not\":null,\"should\":[{\"min_should\":null,\"must\":[{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"value\":\"pandaroot\"},\"range\":null,\"values_count\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_version_id\",\"match\":{\"value\":\"pandaroot@18c09e91100db27867ded30e708b4dae95bd8357\"},\"range\":null,\"values_count\":null}],\"must_not\":null,\"should\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"any\":[\"li_2026\",\"karavdina_2015\",\"pflueger_2017\",\"pandaroot_sphinx_2023_08_25_dev\",\"curated_panda_domain\"]},\"range\":null,\"values_count\":null}]}",
+        "post_filter": "{\"min_should\":null,\"must\":null,\"must_not\":null,\"should\":[{\"min_should\":null,\"must\":[{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"value\":\"pandaroot\"},\"range\":null,\"values_count\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_version_id\",\"match\":{\"value\":\"pandaroot@18c09e91100db27867ded30e708b4dae95bd8357\"},\"range\":null,\"values_count\":null}],\"must_not\":null,\"should\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"any\":[\"li_2026\",\"karavdina_2015\",\"pflueger_2017\",\"pandaroot_sphinx_2023_08_25_dev\",\"curated_panda_domain\"]},\"range\":null,\"values_count\":null}]}",
+        "filter_equal": true,
+        "same_analyzer_plan": true,
+        "pre": {
+          "recall_at_5": 0,
+          "recall_at_10": 0.5,
+          "recall_at_20": 0.5,
+          "first_relevant_rank": 9,
+          "mrr": 0.1111111111111111,
+          "critical_applicable": true,
+          "critical_coverage": 0.5,
+          "matched_group_ids": [
+            "g015.e2"
+          ],
+          "top20_object_ids": [
+            "object.c111a025d1e7c73575df2012",
+            "object.3a7b248d277d6e5ffccc2771",
+            "object.4012a0e4990fb3facd23dbe2",
+            "object.2ce046e06f0fe1ba16651a04",
+            "object.a1f4837652936eb2c22de1fa",
+            "object.aaa2b02a1d16d8782e500a8b",
+            "object.110ee9ca5795b022917068a7",
+            "object.24abb9a3ba45e11d3485ca8a",
+            "object.6b01c3acc4340ab2c3e8026e",
+            "object.f516ef98aeecd335607ac0f6",
+            "object.35b5b29d9d6876f2efe2f5fc",
+            "object.afe54c5f5060f32fdcdd55f9",
+            "object.4d8f1f5bf167c00af89413ba",
+            "object.04fb2ca5dab02921334b71ca",
+            "object.0b44c7f3ac9060c3848fb7b6",
+            "object.41ad14d2fb9f169e3a24e4de",
+            "object.3881dc12af9e4593d338ec04",
+            "object.e3c0a0ede105206ec8370f05",
+            "object.05d9dacc817bc9a89f6192e3",
+            "object.11d8bd6e27038cc92df75d67"
+          ]
+        },
+        "post": {
+          "recall_at_5": 0,
+          "recall_at_10": 0.5,
+          "recall_at_20": 0.5,
+          "first_relevant_rank": 9,
+          "mrr": 0.1111111111111111,
+          "critical_applicable": true,
+          "critical_coverage": 0.5,
+          "matched_group_ids": [
+            "g015.e2"
+          ],
+          "top20_object_ids": [
+            "object.c111a025d1e7c73575df2012",
+            "object.3a7b248d277d6e5ffccc2771",
+            "object.4012a0e4990fb3facd23dbe2",
+            "object.2ce046e06f0fe1ba16651a04",
+            "object.a1f4837652936eb2c22de1fa",
+            "object.aaa2b02a1d16d8782e500a8b",
+            "object.110ee9ca5795b022917068a7",
+            "object.24abb9a3ba45e11d3485ca8a",
+            "object.6b01c3acc4340ab2c3e8026e",
+            "object.f516ef98aeecd335607ac0f6",
+            "object.35b5b29d9d6876f2efe2f5fc",
+            "object.afe54c5f5060f32fdcdd55f9",
+            "object.4d8f1f5bf167c00af89413ba",
+            "object.04fb2ca5dab02921334b71ca",
+            "object.0b44c7f3ac9060c3848fb7b6",
+            "object.41ad14d2fb9f169e3a24e4de",
+            "object.3881dc12af9e4593d338ec04",
+            "object.e3c0a0ede105206ec8370f05",
+            "object.05d9dacc817bc9a89f6192e3",
+            "object.11d8bd6e27038cc92df75d67"
+          ]
+        },
+        "rank_effect": "unchanged",
+        "rank_delta": 0,
+        "new_critical_misses": [],
+        "recovered_critical_evidence": [],
+        "contamination_audit": {
+          "audited": true,
+          "contamination": [],
+          "expansion_only_known_partial": [
+            "PndMasterRunSim simulation configuration",
+            "Running/MasterTasks.html",
+            "Tools/PndMasterTasks/PndMasterRunSim.html",
+            "tools/MasterTasks/PndMasterRunSim.cxx"
+          ]
+        },
+        "remote_call_deltas": {
+          "analyzer_calls": 1,
+          "analyzer_tokens": 1710,
+          "pre_embedding_calls": 1,
+          "pre_embedding_tokens": 0,
+          "post_embedding_calls": 1,
+          "post_embedding_tokens": 0
+        }
+      },
+      {
+        "case_id": "g050",
+        "intent": "algorithm_theory",
+        "query": "Why is restgas longitudinal reconstruction efficiency profile dependent?",
+        "plan_intent": "algorithm_theory",
+        "target_repositories": [
+          "restgas_determination"
+        ],
+        "resolved_versions": {
+          "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+        },
+        "semantic_query_changed": true,
+        "semantic_query_text": "Why is restgas longitudinal reconstruction efficiency profile dependent?\n\nSemantic focus:\nefficiency=longitudinal_profile",
+        "semantic_components": [
+          {
+            "kind": "analyzer_scope",
+            "value": "efficiency=longitudinal_profile",
+            "provenance": "analyzer_accepted"
+          }
+        ],
+        "augmentation_component_count": 1,
+        "pre_filter": "{\"min_should\":null,\"must\":null,\"must_not\":null,\"should\":[{\"min_should\":null,\"must\":[{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"value\":\"restgas_determination\"},\"range\":null,\"values_count\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_version_id\",\"match\":{\"value\":\"restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42\"},\"range\":null,\"values_count\":null}],\"must_not\":null,\"should\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"any\":[\"li_2026\",\"karavdina_2015\",\"pflueger_2017\",\"pandaroot_sphinx_2023_08_25_dev\",\"curated_panda_domain\"]},\"range\":null,\"values_count\":null}]}",
+        "post_filter": "{\"min_should\":null,\"must\":null,\"must_not\":null,\"should\":[{\"min_should\":null,\"must\":[{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"value\":\"restgas_determination\"},\"range\":null,\"values_count\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_version_id\",\"match\":{\"value\":\"restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42\"},\"range\":null,\"values_count\":null}],\"must_not\":null,\"should\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"any\":[\"li_2026\",\"karavdina_2015\",\"pflueger_2017\",\"pandaroot_sphinx_2023_08_25_dev\",\"curated_panda_domain\"]},\"range\":null,\"values_count\":null}]}",
+        "filter_equal": true,
+        "same_analyzer_plan": true,
+        "pre": {
+          "recall_at_5": 1,
+          "recall_at_10": 1,
+          "recall_at_20": 1,
+          "first_relevant_rank": 2,
+          "mrr": 0.5,
+          "critical_applicable": true,
+          "critical_coverage": 1,
+          "matched_group_ids": [
+            "g050.e1"
+          ],
+          "top20_object_ids": [
+            "workflow.restgas_profile_reconstruction",
+            "object.279d3eb459004b09876f0152",
+            "object.a551a3fe9648e02298f07911",
+            "object.bb329e5c85f66664d5c82352",
+            "object.0931608a5774da2fcf0750bc",
+            "object.3e8d11603d748d53854b2610",
+            "object.64407e20e9e1ea3e57ea1236",
+            "object.0e2f3063c8f53b4572d2f071",
+            "object.eb2c22536338c3faa80165bc",
+            "object.f790444d3977745b662fd773",
+            "object.bf65582281a2d82f1436c15d",
+            "object.2b0de43748b178f9af62aeb9",
+            "object.fe4314945c0cc48881c35c51",
+            "object.255be62ee47d31a2eaf335b3",
+            "object.fa45d615c6fd65b81069e2a2",
+            "object.9d6c1d9d1f94394b4e20c732",
+            "configuration.restgas_profile",
+            "object.ea6fc3d992f5b4e0eff5e8c4",
+            "object.4ae6940438d16bb63702e1f6",
+            "object.f742b78c4455541cc039d47d"
+          ]
+        },
+        "post": {
+          "recall_at_5": 1,
+          "recall_at_10": 1,
+          "recall_at_20": 1,
+          "first_relevant_rank": 5,
+          "mrr": 0.2,
+          "critical_applicable": true,
+          "critical_coverage": 1,
+          "matched_group_ids": [
+            "g050.e1"
+          ],
+          "top20_object_ids": [
+            "concept.restgas_longitudinal_efficiency",
+            "object.0d8f329ab417557502c0a134",
+            "workflow.restgas_profile_reconstruction",
+            "object.eb2c22536338c3faa80165bc",
+            "object.279d3eb459004b09876f0152",
+            "object.fc6e82b184f603398dde3bce",
+            "configuration.restgas_profile",
+            "object.64407e20e9e1ea3e57ea1236",
+            "object.a551a3fe9648e02298f07911",
+            "object.bb329e5c85f66664d5c82352",
+            "object.2b0de43748b178f9af62aeb9",
+            "object.4e2bf3318be9d234c717b6cc",
+            "object.ea6fc3d992f5b4e0eff5e8c4",
+            "concept.li_2026.restgas_effective_acceptance",
+            "object.3e8d11603d748d53854b2610",
+            "object.75c6c5772a7053fcc41cdb47",
+            "object.8bf8f929e2aa2c3b3963c49c",
+            "object.f2ce270fc4c23a83908b5c6e",
+            "object.fa45d615c6fd65b81069e2a2",
+            "object.b91d38c995afd4a4e43c344b"
+          ]
+        },
+        "rank_effect": "regressed",
+        "rank_delta": 3,
+        "new_critical_misses": [],
+        "recovered_critical_evidence": [],
+        "contamination_audit": {
+          "audited": true,
+          "contamination": [],
+          "expansion_only_known_partial": [
+            "efficiency correction",
+            "generated target profile",
+            "macro/target/ana_complete.C",
+            "macro/target/correction/efficiency_correction_2.C",
+            "macro/target/prod_sim_hvmaps.C",
+            "reconstructed profile"
+          ]
+        },
+        "remote_call_deltas": {
+          "analyzer_calls": 1,
+          "analyzer_tokens": 2074,
+          "pre_embedding_calls": 1,
+          "pre_embedding_tokens": 0,
+          "post_embedding_calls": 1,
+          "post_embedding_tokens": 0
+        }
+      },
+      {
+        "case_id": "g029",
+        "intent": "api",
+        "query": "Where is PndLmdCombinedDataReader defined and what data boundary does it implement?",
+        "plan_intent": "api",
+        "target_repositories": [
+          "luminosityfit",
+          "pandaroot",
+          "restgas_determination"
+        ],
+        "resolved_versions": {
+          "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+          "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357",
+          "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+        },
+        "semantic_query_changed": false,
+        "semantic_query_text": "Where is PndLmdCombinedDataReader defined and what data boundary does it implement?",
+        "semantic_components": [],
+        "augmentation_component_count": 0,
+        "pre_filter": "{\"min_should\":null,\"must\":null,\"must_not\":null,\"should\":[{\"min_should\":null,\"must\":[{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"value\":\"luminosityfit\"},\"range\":null,\"values_count\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_version_id\",\"match\":{\"value\":\"luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32\"},\"range\":null,\"values_count\":null}],\"must_not\":null,\"should\":null},{\"min_should\":null,\"must\":[{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"value\":\"pandaroot\"},\"range\":null,\"values_count\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_version_id\",\"match\":{\"value\":\"pandaroot@18c09e91100db27867ded30e708b4dae95bd8357\"},\"range\":null,\"values_count\":null}],\"must_not\":null,\"should\":null},{\"min_should\":null,\"must\":[{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"value\":\"restgas_determination\"},\"range\":null,\"values_count\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_version_id\",\"match\":{\"value\":\"restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42\"},\"range\":null,\"values_count\":null}],\"must_not\":null,\"should\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"any\":[\"li_2026\",\"karavdina_2015\",\"pflueger_2017\",\"pandaroot_sphinx_2023_08_25_dev\",\"curated_panda_domain\"]},\"range\":null,\"values_count\":null}]}",
+        "post_filter": "{\"min_should\":null,\"must\":null,\"must_not\":null,\"should\":[{\"min_should\":null,\"must\":[{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"value\":\"luminosityfit\"},\"range\":null,\"values_count\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_version_id\",\"match\":{\"value\":\"luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32\"},\"range\":null,\"values_count\":null}],\"must_not\":null,\"should\":null},{\"min_should\":null,\"must\":[{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"value\":\"pandaroot\"},\"range\":null,\"values_count\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_version_id\",\"match\":{\"value\":\"pandaroot@18c09e91100db27867ded30e708b4dae95bd8357\"},\"range\":null,\"values_count\":null}],\"must_not\":null,\"should\":null},{\"min_should\":null,\"must\":[{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"value\":\"restgas_determination\"},\"range\":null,\"values_count\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_version_id\",\"match\":{\"value\":\"restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42\"},\"range\":null,\"values_count\":null}],\"must_not\":null,\"should\":null},{\"geo_bounding_box\":null,\"geo_polygon\":null,\"geo_radius\":null,\"is_empty\":null,\"is_null\":null,\"key\":\"source_id\",\"match\":{\"any\":[\"li_2026\",\"karavdina_2015\",\"pflueger_2017\",\"pandaroot_sphinx_2023_08_25_dev\",\"curated_panda_domain\"]},\"range\":null,\"values_count\":null}]}",
+        "filter_equal": true,
+        "same_analyzer_plan": true,
+        "pre": {
+          "recall_at_5": 1,
+          "recall_at_10": 1,
+          "recall_at_20": 1,
+          "first_relevant_rank": 3,
+          "mrr": 0.3333333333333333,
+          "critical_applicable": true,
+          "critical_coverage": 1,
+          "matched_group_ids": [
+            "g029.e1"
+          ],
+          "top20_object_ids": [
+            "object.c60a8a86eb1b0578b83a8fa2",
+            "object.6b11d6572ed2a0d0e134b3ff",
+            "object.04b079cb4f083d29d694e47a",
+            "object.f92307a514a08dcaca0e4ff0",
+            "object.51d27b5249b868cb31557338",
+            "object.9f027c1fec433c6dd6c95a94",
+            "object.cb536dd8c6286ba174a0a23f",
+            "object.a4d14aa0476453780cdbc0cf",
+            "object.5b6de2f6e17c28f23a0642bf",
+            "object.db220dad50d97d33d91a8312",
+            "object.fb56ae4b1d5e18b2efd00b0f",
+            "object.5c1a92f0d1d7919f079637e3",
+            "object.9e5adc14a9cfbab00e1cb66c",
+            "object.6cb2a0994269257ca81387e6",
+            "object.273280fc0198bac00a9c0682",
+            "object.8e61ba30c8734807a19de9f6",
+            "object.11fedd23bfceb37efa151f9e",
+            "object.902539efbc82c2217186dab4",
+            "object.0c2a848ef454b33f2180d0ce",
+            "object.c72d428824bd304b0f615543"
+          ]
+        },
+        "post": {
+          "recall_at_5": 1,
+          "recall_at_10": 1,
+          "recall_at_20": 1,
+          "first_relevant_rank": 3,
+          "mrr": 0.3333333333333333,
+          "critical_applicable": true,
+          "critical_coverage": 1,
+          "matched_group_ids": [
+            "g029.e1"
+          ],
+          "top20_object_ids": [
+            "object.c60a8a86eb1b0578b83a8fa2",
+            "object.6b11d6572ed2a0d0e134b3ff",
+            "object.04b079cb4f083d29d694e47a",
+            "object.f92307a514a08dcaca0e4ff0",
+            "object.51d27b5249b868cb31557338",
+            "object.9f027c1fec433c6dd6c95a94",
+            "object.cb536dd8c6286ba174a0a23f",
+            "object.a4d14aa0476453780cdbc0cf",
+            "object.5b6de2f6e17c28f23a0642bf",
+            "object.db220dad50d97d33d91a8312",
+            "object.fb56ae4b1d5e18b2efd00b0f",
+            "object.5c1a92f0d1d7919f079637e3",
+            "object.9e5adc14a9cfbab00e1cb66c",
+            "object.6cb2a0994269257ca81387e6",
+            "object.273280fc0198bac00a9c0682",
+            "object.8e61ba30c8734807a19de9f6",
+            "object.11fedd23bfceb37efa151f9e",
+            "object.902539efbc82c2217186dab4",
+            "object.0c2a848ef454b33f2180d0ce",
+            "object.c72d428824bd304b0f615543"
+          ]
+        },
+        "rank_effect": "unchanged",
+        "rank_delta": 0,
+        "new_critical_misses": [],
+        "recovered_critical_evidence": [],
+        "contamination_audit": {
+          "audited": true,
+          "contamination": [],
+          "expansion_only_known_partial": []
+        },
+        "remote_call_deltas": {
+          "analyzer_calls": 1,
+          "analyzer_tokens": 1400,
+          "pre_embedding_calls": 1,
+          "pre_embedding_tokens": 0,
+          "post_embedding_calls": 1,
+          "post_embedding_tokens": 0
+        }
+      }
+    ],
+    "filter_identity_all_cases": "PASS",
+    "same_plan_all_cases": "PASS",
+    "treatment_coverage": {
+      "primary_cases_executed": 12,
+      "reserve_cases_executed": 4,
+      "total_cases_executed": 16,
+      "semantic_query_changed": 2,
+      "semantic_query_unchanged": 14
+    },
+    "metrics": {
+      "pre": {
+        "recall_at_5": {
+          "sum": 8.333333333333334,
+          "denominator": 16,
+          "mean": 0.5208333333333334,
+          "per_case": [
+            0,
+            1,
+            1,
+            0,
+            0,
+            0.3333333333333333,
+            0,
+            1,
+            1,
+            1,
+            0,
+            0,
+            1,
+            0,
+            1,
+            1
+          ]
+        },
+        "recall_at_10": {
+          "sum": 11.166666666666666,
+          "denominator": 16,
+          "mean": 0.6979166666666666,
+          "per_case": [
+            1,
+            1,
+            1,
+            0,
+            1,
+            0.3333333333333333,
+            0,
+            1,
+            1,
+            1,
+            0.3333333333333333,
+            0,
+            1,
+            0.5,
+            1,
+            1
+          ]
+        },
+        "recall_at_20": {
+          "sum": 11.166666666666666,
+          "denominator": 16,
+          "mean": 0.6979166666666666,
+          "per_case": [
+            1,
+            1,
+            1,
+            0,
+            1,
+            0.3333333333333333,
+            0,
+            1,
+            1,
+            1,
+            0.3333333333333333,
+            0,
+            1,
+            0.5,
+            1,
+            1
+          ]
+        },
+        "mrr": {
+          "sum": 4.895634920634921,
+          "denominator": 16,
+          "mean": 0.30597718253968254,
+          "per_case": [
+            0.1,
+            0.5,
+            0.25,
+            0,
+            0.125,
+            0.25,
+            0,
+            0.25,
+            1,
+            0.3333333333333333,
+            0.14285714285714285,
+            0,
+            1,
+            0.1111111111111111,
+            0.5,
+            0.3333333333333333
+          ]
+        },
+        "critical_coverage": {
+          "sum": 11.166666666666666,
+          "denominator": 16,
+          "mean": 0.6979166666666666,
+          "per_case": [
+            1,
+            1,
+            1,
+            0,
+            1,
+            0.3333333333333333,
+            0,
+            1,
+            1,
+            1,
+            0.3333333333333333,
+            0,
+            1,
+            0.5,
+            1,
+            1
+          ]
+        }
+      },
+      "post": {
+        "recall_at_5": {
+          "sum": 8.333333333333334,
+          "denominator": 16,
+          "mean": 0.5208333333333334,
+          "per_case": [
+            0,
+            1,
+            1,
+            0,
+            0,
+            0.3333333333333333,
+            0,
+            1,
+            1,
+            1,
+            0,
+            0,
+            1,
+            0,
+            1,
+            1
+          ]
+        },
+        "recall_at_10": {
+          "sum": 11.166666666666666,
+          "denominator": 16,
+          "mean": 0.6979166666666666,
+          "per_case": [
+            1,
+            1,
+            1,
+            0,
+            1,
+            0.3333333333333333,
+            0,
+            1,
+            1,
+            1,
+            0.3333333333333333,
+            0,
+            1,
+            0.5,
+            1,
+            1
+          ]
+        },
+        "recall_at_20": {
+          "sum": 11.166666666666666,
+          "denominator": 16,
+          "mean": 0.6979166666666666,
+          "per_case": [
+            1,
+            1,
+            1,
+            0,
+            1,
+            0.3333333333333333,
+            0,
+            1,
+            1,
+            1,
+            0.3333333333333333,
+            0,
+            1,
+            0.5,
+            1,
+            1
+          ]
+        },
+        "mrr": {
+          "sum": 4.595634920634921,
+          "denominator": 16,
+          "mean": 0.28722718253968255,
+          "per_case": [
+            0.1,
+            0.5,
+            0.25,
+            0,
+            0.125,
+            0.25,
+            0,
+            0.25,
+            1,
+            0.3333333333333333,
+            0.14285714285714285,
+            0,
+            1,
+            0.1111111111111111,
+            0.2,
+            0.3333333333333333
+          ]
+        },
+        "critical_coverage": {
+          "sum": 11.166666666666666,
+          "denominator": 16,
+          "mean": 0.6979166666666666,
+          "per_case": [
+            1,
+            1,
+            1,
+            0,
+            1,
+            0.3333333333333333,
+            0,
+            1,
+            1,
+            1,
+            0.3333333333333333,
+            0,
+            1,
+            0.5,
+            1,
+            1
+          ]
+        }
+      }
+    },
+    "cost": {
+      "stats": {
+        "model_calls": 48,
+        "token_usage": 29101,
+        "generation_calls": 16,
+        "embedding_calls": 32
+      },
+      "analyzer_remote_calls": 16,
+      "analyzer_tokens": 29101,
+      "query_embedding_remote_calls": 32,
+      "query_embedding_tokens": "N/A",
+      "dense_qdrant_read_queries": 32,
+      "sparse_encoder_calls": 0,
+      "sparse_qdrant_queries": 0,
+      "document_embedding_calls": 0,
+      "reranker_calls": 0,
+      "qa_verifier_judge_calls": 0,
+      "sql_writes": 0,
+      "qdrant_writes": 0,
+      "index_mutation": 0,
+      "reindex_or_reembedding": "no"
+    },
+    "capture": {
+      "run_id": "c3-r1-tty-capture-20260818",
+      "capture_source": "Codex rollout JSONL 2026-08-17T02-26-45-01a00d1d-162d-7c80-894b-0bfe42351fd2.jsonl",
+      "capture_event": "custom_tool_call_output timestamp 2026-08-18T21:59:50Z",
+      "extraction": "read-only extraction from completed TTY output; no evaluation rerun",
+      "exit_code": 0,
+      "valid_metrics_available": true,
+      "model": {
+        "project": "gen-lang-client-0694751367",
+        "location": "global",
+        "generation_model": "gemini-3.7-flash",
+        "embedding_model": "gemini-embedding-2",
+        "embedding_dimensions": 3072
+      },
+      "primary_case_ids": [
+        "g001",
+        "g013",
+        "g044",
+        "g059",
+        "g027",
+        "g105",
+        "g110",
+        "g002",
+        "g014",
+        "g047",
+        "g060",
+        "g028"
+      ],
+      "reserve_case_ids": [
+        "g003",
+        "g015",
+        "g050",
+        "g029"
+      ],
+      "primary_case_ids_executed": [
+        "g001",
+        "g013",
+        "g044",
+        "g059",
+        "g027",
+        "g105",
+        "g110",
+        "g002",
+        "g014",
+        "g047",
+        "g060",
+        "g028"
+      ],
+      "reserve_case_ids_executed": [
+        "g003",
+        "g015",
+        "g050",
+        "g029"
+      ],
+      "checks": {
+        "filter_equal": true,
+        "same_analyzer_plan": true,
+        "all_zero_recall_at_20": false,
+        "post_recall_at_20_not_below_pre": true,
+        "critical_regression": false,
+        "contamination_cases": {},
+        "treatment_requirement_met": false
+      }
+    }
+  },
+  "closeout": {
+    "artifact_status": "FINAL_INCONCLUSIVE",
+    "final_c3_status": "INCONCLUSIVE",
+    "known_limitations": [
+      "C2 concepts remain conservative and incomplete.",
+      "The raw question remains first-class by design.",
+      "Reviewed expansions still exist outside the C3 builder.",
+      "This is a small dense-only shadow evaluation, not formal T3.",
+      "C5-C8 remain NOT_STARTED.",
+      "g011 coverage-aware ownership remains deferred to Phase E.",
+      "Novel retrieval generalization remains UNMEASURED.",
+      "The completed TTY capture changed SemanticQuery.text in only 2/16 cases (g110 and g050), below the preregistered minimum of 3.",
+      "The result is a valid dense-only diagnostic closeout but is INCONCLUSIVE for C3-R1; no rerun is authorized in this closeout.",
+      "C4 remains NOT_STARTED until a coverage-valid C3-R1 decision is made."
+    ],
+    "decision_reason": "The completed TTY run is valid and has 16 complete case records, but only 2/16 cases changed SemanticQuery.text; the preregistered minimum treatment coverage is 3, so C3-R1 cannot be declared PASS.",
+    "next_roadmap_task": "C3-R1 coverage-valid follow-up; C4 remains NOT_STARTED."
+  }
+}
