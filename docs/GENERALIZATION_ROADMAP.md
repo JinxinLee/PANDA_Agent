@@ -154,7 +154,7 @@ Statuses describe implementation state; acceptance targets remain planned until 
 
 ## Phase C — Retrieval generalization
 
-Phase C is started by C1. The initial C1 implementation was `INCONCLUSIVE` after review; C1-R1 is `PASS`, making C1 overall `PASS`. C2 is `PASS`; C3-R1 and C3-R2 remain historical `INCONCLUSIVE`, C3-R3 is `INCONCLUSIVE` after the final targeted treatment-qualified closeout, and targeted C3 sampling is exhausted; C4-C8 remain `NOT_STARTED`.
+Phase C is started by C1. The initial C1 implementation was `INCONCLUSIVE` after review; C1-R1 is `PASS`, making C1 overall `PASS`. C2 is `PASS`; C3-R1 and C3-R2 remain historical `INCONCLUSIVE`. C3-R3 is `INCONCLUSIVE` after resuming the existing closeout from an earlier attempt that was environment-blocked before Stage A; no new C3-R4 or Gold sampling round was started, and C4-C8 remain `NOT_STARTED`.
 
 ### C1 — Deterministic parsing before expensive LLM analysis
 
@@ -201,7 +201,7 @@ Phase C is started by C1. The initial C1 implementation was `INCONCLUSIVE` after
 
 ### C3 — SemanticQueryBuilder for dense retrieval
 
-- **Status:** `INCONCLUSIVE` (C3-R3 closeout; targeted sampling exhausted; Stage A remaining screening and Stage B not run)
+- **Status:** `INCONCLUSIVE` (resumed C3-R3; earlier attempt was environment-blocked before Stage A; all locked Stage-A screening ran and dense-only Stage B completed with evidence-integrity gaps and failed observed gates)
 - **Problem:** Dense retrieval uses mainly the raw question even when the analyzer identifies useful concepts, while free-form rewriting risks answer-oriented drift.
 - **Goal:** Build a semantic query in which the original question remains primary and a small number of high-confidence concepts are supplementary.
 - **Why this stage:** C1/C2 create trustworthy inputs; dense construction must be isolated before sparse construction or fusion tuning.
@@ -222,10 +222,12 @@ Phase C is started by C1. The initial C1 implementation was `INCONCLUSIVE` after
 - **C3-R2 cost and boundary:** Analyzer tokens were `36098`; query embeddings and dense reads were `0`; all sparse, exact, paper, workflow, graph, fusion, reranker, selector, QA/judge, SQL/Qdrant writes, and index mutation were `0`. The live dense preflight passed; no Stage-B metrics are fabricated.
 - **C3-R2 decision:** `INCONCLUSIVE`, not `PASS`, solely because fewer than six qualified cases were found in the first 20 screenings. The final authorized targeted closeout was C3-R3; C4 remained `NOT_STARTED`.
 - **C3 history preservation:** The C3 production implementation remains `accepted`; the initial C3 evaluation remains `invalid / superseded`; C3-R1 and C3-R2 remain historical `INCONCLUSIVE`, with their artifacts and results unchanged.
-- **C3-R3 preregistration and T0:** Artifact `evaluation/baselines/manifests/phase_c_c3_r3_exhaustive_treatment_qualified_dense_evaluation_v1.json` records the final targeted closeout at source HEAD `9f856044b062fb666cd0b357982399c7f59a6161`. The focused T0 direct-check passed `12/12` using the bundled-Python in-memory path because the standard `pytest` package was unavailable; the frozen C3 semantic strategy was unchanged.
-- **C3-R3 live-index preflight:** Two read-only preflight attempts against target collection `panda_knowledge_v1` at `127.0.0.1:6333` were actively refused. Collection metadata, point count, sample payload, schema, fingerprint, and dense identity were therefore unavailable; no dense retrieval read was performed.
-- **C3-R3 stop boundary and cost:** Because the populated authoritative dense index was unavailable, all remaining Stage-A screening IDs (`11`) and Stage B were `NOT RUN`; no Stage-B cohort was frozen and no `11`-case completion or new sampling result is claimed. Analyzer, analyzer-token, query-embedding, dense-read, downstream/model, SQL-write, Qdrant-write, index-mutation, document-embedding, and reindex/reembedding counts were all `0`; retrieval metrics and gates remain `N/A`/`NOT RUN`.
-- **C3-R3 decision:** `INCONCLUSIVE`, not `PASS`, because the required populated dense index was unavailable at preflight. C3 overall remains `INCONCLUSIVE`; targeted C3 evaluation is exhausted, and the next decision must be architectural rather than another sampling round. C4 remains `NOT_STARTED`.
+- **C3-R3 preregistration and T0:** Artifact `evaluation/baselines/manifests/phase_c_c3_r3_exhaustive_treatment_qualified_dense_evaluation_v1.json` remains the unchanged preregistration at source commit `9f856044b062fb666cd0b357982399c7f59a6161`; resumed execution was observed from source HEAD `59b2decab9ed661c77b482f46b18b4d86836a270`. The focused T0 direct-check passed `12/12` using the bundled-Python in-memory path because the standard `pytest` package was unavailable; the frozen C3 semantic strategy was unchanged.
+- **C3-R3 earlier attempt and resume preflight:** The earlier attempt was **environment-blocked before Stage A** when `http://127.0.0.1:6333` was unavailable. On resume, `panda_knowledge_v1` was reachable and populated (`green`, `104973` points, dense `3072`/`Cosine`, schema `4`, fingerprint `8172f9a640e62977be6e911bfb4848ce3aecd0994f1f3ba51a0985bffec62cb9`), with `object_id` payloads and compatible index identity. No empty substitute collection was used.
+- **C3-R3 Stage A:** The same locked order (`g021,g034,g010,g022,g035,g023,g036,g024,g037,g039,g040`) was screened exactly once with analyzer and `build_semantic_query()` only. All `11` completed; `g039` was the only new treatment-qualified case. Analyzer calls were `11` (`19878` tokens); three uncredentialed sandbox attempts produced no valid remote result and were not counted. The first nine valid results lost plan snapshots after runner serialization; no duplicate calls were made.
+- **C3-R3 carried-forward reconstruction and Stage B:** Five allowed reconstruction calls consumed `9839` tokens. `g113,g055,g114,g115` matched the frozen R2 snapshots; `g018` did not, so its historical text was retained and the mismatch remains an evidence-integrity limitation. The six required cases (`g018,g113,g055,g114,g115,g039`) were frozen before embeddings. Dense-only PRE/POST used the raw question versus frozen `SemanticQuery.text`, identical plan/filter/collection/model/dimensions, `12` query embeddings, and `12` dense reads; all sparse/exact/paper/workflow/graph/fusion/reranker/selector/QA/judge/write operations were `0`.
+- **C3-R3 Stage-B metrics and gates:** PRE → POST Recall@5 `0.0833333333 → 0.0833333333`, Recall@10 `0.1666666667 → 0.0833333333`, Recall@20 `0.3333333333 → 0.25`, MRR `0.0873737374 → 0.0754385965`, critical coverage `0.3333333333 → 0.25`; rank counts improved `0`, recovered `0`, unchanged `1`, no-hit-both `3`, regressed `2`, lost-hit `0`; informative `3/6`; contamination `0`. Raw gates: Recall@20 `FAIL`, critical evidence `FAIL`, lost-hit `PASS`, directional rank `FAIL`, informativeness `PASS`, contamination `PASS`.
+- **C3-R3 decision:** `INCONCLUSIVE`, not a complete `PASS`/`FAIL` closeout, because the first nine Stage-A plan snapshots were lost after valid analyzer calls and `g018` could not be semantically reconstructed to its blinded snapshot; the observed Stage-B gates were also not met. C3 overall remains `INCONCLUSIVE`. No C3-R4 or new Gold sampling round was started automatically; evidence-integrity review or repair requires separate authorization. C4 remains `NOT_STARTED`.
 - **Failure handling:** Reduce/remove the generic supplementary concept mechanism when drift occurs; never add more benchmark-specific terms. Stop after C3.
 
 ### C4 — LexicalQueryBuilder for sparse retrieval
@@ -305,7 +307,7 @@ Phase C is started by C1. The initial C1 implementation was `INCONCLUSIVE` after
 
 ## Phase C status
 
-C1 is `PASS`; C2 is `PASS`; C3-R1 and C3-R2 remain historical `INCONCLUSIVE`; C3-R3 and C3 overall are `INCONCLUSIVE`; targeted C3 sampling is exhausted; C4-C8 are `NOT_STARTED`.
+C1 is `PASS`; C2 is `PASS`; C3-R1 and C3-R2 remain historical `INCONCLUSIVE`; C3-R3 and C3 overall are `INCONCLUSIVE` after the resumed closeout. No new C3-R4 or Gold sampling round was started; evidence-integrity review or repair requires separate authorization. C4-C8 are `NOT_STARTED`.
 
 ## Phase D — Concept and entity knowledge abstraction
 
