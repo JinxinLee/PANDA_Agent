@@ -7,7 +7,7 @@ import os
 from pathlib import Path
 from typing import Any
 
-from pydantic import Field
+from pydantic import Field, model_validator
 
 from panda_agent.models import SourceLocator, StrictModel
 
@@ -23,6 +23,44 @@ class TraceCandidate(StrictModel):
     channels: list[str] = Field(default_factory=list)
 
 
+def _normalize_dense_queries(value: dict[str, Any] | None, question: str) -> dict[str, Any]:
+    payload = dict(value or {})
+    raw = dict(payload.get("raw") or {})
+    raw["text"] = question
+    raw["provenance"] = "user_raw"
+    raw["active"] = True
+    semantic = payload.get("semantic")
+    if semantic is None:
+        return {
+            "raw": raw,
+            "semantic": None,
+            "semantic_active": False,
+            "semantic_executed": False,
+        }
+    semantic = dict(semantic)
+    semantic.setdefault("text", question)
+    semantic.setdefault("components", [])
+    semantic.setdefault("provenance", "semantic_query")
+    semantic.setdefault("active", True)
+    semantic.setdefault("executed", False)
+    return {
+        "raw": raw,
+        "semantic": semantic,
+        "semantic_active": bool(payload.get("semantic_active", semantic["active"])),
+        "semantic_executed": bool(payload.get("semantic_executed", semantic["executed"])),
+    }
+
+
+def _normalize_dense_candidates(value: dict[str, Any] | None) -> dict[str, Any]:
+    payload = dict(value or {})
+    raw = payload.get("raw")
+    semantic = payload.get("semantic")
+    return {
+        "raw": list(raw or []),
+        "semantic": None if semantic is None else list(semantic),
+    }
+
+
 class RetrievalTrace(StrictModel):
     schema_version: str = "1.0"
     question_id: str
@@ -33,6 +71,8 @@ class RetrievalTrace(StrictModel):
     original_retrieval_query: str
     dense_query_text: str
     sparse_query_text: str
+    dense_queries: dict[str, Any] | None = None
+    dense_candidates: dict[str, Any] | None = None
     query_construction: str = "raw_question"
     resolved_concepts: list[str] = Field(default_factory=list)
     resolved_symbols: list[str] = Field(default_factory=list)
@@ -43,6 +83,12 @@ class RetrievalTrace(StrictModel):
     excluded_candidates: list[dict[str, Any]] = Field(default_factory=list)
     soft_budget_admissions: list[dict[str, Any]] = Field(default_factory=list)
     backfill_admissions: list[dict[str, Any]] = Field(default_factory=list)
+
+    @model_validator(mode="after")
+    def normalize_dense_contract(self) -> "RetrievalTrace":
+        self.dense_queries = _normalize_dense_queries(self.dense_queries, self.raw_question)
+        self.dense_candidates = _normalize_dense_candidates(self.dense_candidates)
+        return self
 
 
 def _identity_from_manifest(manifest: dict[str, Any]) -> dict[str, Any]:
@@ -95,6 +141,31 @@ def build_retrieval_trace(
     """Build a faithful trace without changing or rerunning retrieval."""
     plan = dict(diagnostics.get("plan") or {})
     rankings = diagnostics.get("rankings") or {}
+    dense_queries_payload = diagnostics.get("dense_queries")
+    if dense_queries_payload is None:
+        semantic_query = diagnostics.get("semantic_query") or {}
+        semantic_text = semantic_query.get("text")
+        if semantic_text and semantic_text != question:
+            dense_queries_payload = {
+                "raw": {"text": question, "provenance": "user_raw", "active": True},
+                "semantic": {
+                    "text": semantic_text,
+                    "components": list(semantic_query.get("components") or []),
+                    "provenance": "semantic_query",
+                    "excluded_component_classes": list(
+                        semantic_query.get("excluded_component_classes") or []
+                    ),
+                    "active": True,
+                    "executed": False,
+                },
+                "semantic_active": True,
+                "semantic_executed": False,
+            }
+    dense_queries = _normalize_dense_queries(dense_queries_payload, question)
+    dense_candidates = diagnostics.get("dense_candidates")
+    if dense_candidates is None:
+        dense_candidates = {"raw": list(rankings.get("dense") or []), "semantic": None}
+    dense_candidates = _normalize_dense_candidates(dense_candidates)
     channel_candidates = {
         channel: [
             _candidate(object_id, rank, object_lookup, channels=[channel])
@@ -139,6 +210,8 @@ def build_retrieval_trace(
         original_retrieval_query=question,
         dense_query_text=question,
         sparse_query_text=question,
+        dense_queries=dense_queries,
+        dense_candidates=dense_candidates,
         resolved_concepts=list(plan.get("concepts") or []),
         resolved_symbols=list(plan.get("symbols") or []),
         channel_candidates=channel_candidates,

@@ -154,7 +154,7 @@ Statuses describe implementation state; acceptance targets remain planned until 
 
 ## Phase C — Retrieval generalization
 
-Phase C is started by C1. The initial C1 implementation was `INCONCLUSIVE` after review; C1-R1 is `PASS`, making C1 overall `PASS`. C2 is `PASS`; C3-R1 and C3-R2 remain historical `INCONCLUSIVE`. C3-R3 is `INCONCLUSIVE` after resuming the existing closeout from an earlier attempt that was environment-blocked before Stage A; no new C3-R4 or Gold sampling round was started, and C4-C8 remain `NOT_STARTED`.
+Phase C is started by C1. The initial C1 implementation was `INCONCLUSIVE` after review; C1-R1 is `PASS`, making C1 overall `PASS`. C2 is `PASS`. The legacy C3-R1/R2/R3 evaluations remain historical `INCONCLUSIVE`, while the revised C3-A1 raw-preserving contract is `PASS` and C3-A2 is `INCONCLUSIVE` because credential-visible Vertex execution was denied before external calls. C3-A overall is `INCONCLUSIVE`, so current C3 remains active; C4-C8 remain `NOT_STARTED` and no C4 work was started or claimed.
 
 ### C1 — Deterministic parsing before expensive LLM analysis
 
@@ -199,19 +199,23 @@ Phase C is started by C1. The initial C1 implementation was `INCONCLUSIVE` after
 - **Limitations:** This is a narrow analyzer-only T2 result, not a global cost-saving claim or pseudo-Gold result; no `g011`/`g016` targeting was introduced, no T3/T4/T5, retrieval benchmark, or index work was run, and no novel human-authored dataset was available. C3-R1 remains historical `INCONCLUSIVE`; C3-R2 is now `INCONCLUSIVE`; C4 remains `NOT_STARTED`.
 - **Failure handling:** Reduce speculative output or preserve raw question ambiguity; do not add expected files/pages. Stop after C2.
 
-### C3 — SemanticQueryBuilder for dense retrieval
+### C3 — Dense query architecture (RawDense + SemanticDense)
 
-- **Status:** `INCONCLUSIVE` (resumed C3-R3; earlier attempt was environment-blocked before Stage A; all locked Stage-A screening ran and dense-only Stage B completed with evidence-integrity gaps and failed observed gates)
-- **Problem:** Dense retrieval uses mainly the raw question even when the analyzer identifies useful concepts, while free-form rewriting risks answer-oriented drift.
-- **Goal:** Build a semantic query in which the original question remains primary and a small number of high-confidence concepts are supplementary.
-- **Why this stage:** C1/C2 create trustworthy inputs; dense construction must be isolated before sparse construction or fusion tuning.
-- **Intended design:** Combine the untouched question with capped, high-confidence resolved concepts; exclude file/page hints; retain raw-question representation for audit and ablation.
-- **Functional requirements:** Confidence/cap rules, deterministic composition, trace persistence, raw-versus-semantic ablation, and no replacement of explicit user meaning.
-- **Explicit out of scope:** Sparse query design, exact/entity-first retrieval, fusion weights, answer prompts, or benchmark concept injection.
-- **Dependencies:** C2, A2 traces, B2 embedding contract.
-- **Authorized evaluation tier:** T0, targeted T2 dense/paraphrase subset; no full E2E.
-- **Primary metrics:** Dense Recall@5/@10, MRR, identifier-free novel retrieval, English paraphrase robustness, and query-drift rate.
-- **Acceptance criteria:** Novel dense retrieval improves meaningfully or robustly across expression types while targeted benchmark recall stays within tolerance.
+- **Status:** `INCONCLUSIVE` (C3-A1 `PASS`; C3-A2 `INCONCLUSIVE` because credential-visible Vertex execution was denied before external calls; C3-A overall `INCONCLUSIVE`; current C3 remains active)
+- **Legacy status:** The initial C3 evaluation is `invalid / superseded`; C3-R1, C3-R2, and C3-R3 remain historical `INCONCLUSIVE` with their artifacts and conclusions preserved. The legacy C3 production implementation remains accepted as an implementation, but its single-vector semantic replacement behavior is `SUPERSEDED / NOT ACCEPTED FOR PRODUCTION`.
+- **Problem:** C1/C2 semantic information is useful, but the legacy single-vector SemanticQuery replacement could displace the raw-question dense representation and risk query drift.
+- **Goal:** Expose independent dense query views so the exact raw question remains authoritative while the existing semantic view remains auditable and available for explicit shadow evaluation.
+- **Why this stage:** C1/C2 create structured, provenance-aware semantic state; C3-A isolates dense channels before sparse construction, exact retrieval, or fusion evaluation.
+- **Current C3-A sequence:** `C3-A1` — Raw-preserving dense-query contract (`PASS`); `C3-A2` — Shadow dual-dense verification (`INCONCLUSIVE`); `C3-A3` — Architectural closeout (recorded; overall `INCONCLUSIVE`).
+- **Architecture contract:** `RawDense` always contains the exact original user question with `user_raw` provenance and is production-authoritative. `SemanticDense` is present only when the existing frozen `SemanticQuery.text` differs from the raw question; it retains the existing provenance-aware semantic components and is auxiliary/experimental.
+- **Production behavior:** The default dense embedding/query uses `RawDense.text`. `SemanticDense` must not replace or modify `RawDense`, and its default embedding/Qdrant cost is zero. SemanticDense execution is explicit shadow-only in C3-A; its candidate stream is separately labeled and never merged into production fusion.
+- **Channel isolation:** RawDense/SemanticDense construction and optional SemanticDense execution do not alter sparse, exact, paper, workflow, graph, reranker, selector, answer generation, or verifier behavior. Structured C1/C2 concepts, entities, scopes, support spans, and version provenance remain available to later D/E consumers.
+- **C3-A ownership:** RawDense and SemanticDense representations, provenance/trace separation, RawDense production authority, explicit shadow execution, channel isolation, and architecture documentation. C3-A does not own sparse lexical query construction, entity-first exact retrieval, candidate union policy, source quotas, fusion weights, reranking, selector behavior, answer generation, or verifier behavior.
+- **C3-A artifact:** `evaluation/baselines/manifests/phase_c_c3a_raw_preserving_auxiliary_semantic_dense_v1.json` records source HEAD `15458286d22f32f2dacdb782635b8e154503ef7d`, the contracts, T0 evidence, live preflight, fixed cases, call ledger, and the final `C3-A1=PASS`, `C3-A2=INCONCLUSIVE`, overall `INCONCLUSIVE` results.
+- **C3-A1 verification:** The final bundled-Python in-memory direct checks passed `20/20` (`16/16` semantic contract, including the request-interleaving concurrency regression, and `4/4` trace contract, including the faithful-trace regression), with AST/import checks `6/6` each and zero external/model/Qdrant/SQL calls. The existing semantic policy was not tuned.
+- **C3-A2 preflight:** Read-only `panda_knowledge_v1` preflight passed (`green`, `104973` points, dense `3072`/`Cosine`, schema `4`, fingerprint `8172f9a640e62977be6e911bfb4848ce3aecd0994f1f3ba51a0985bffec62cb9`, `gemini-embedding-2` in `global`). Writes and index mutation were `0`.
+- **C3-A2 execution boundary:** The local credential probe failed before a valid embedding, and both credential-visible escalation requests were denied before process start. No valid external query embedding or dense read was produced for the fixed cases `g113,g055,g114,g115,g039`; no candidate streams or live shadow ranking are claimed, and no results were fabricated. A2 is therefore `INCONCLUSIVE`, not a SemanticDense performance result.
+- **Deferred fusion decision:** SemanticDense retrieval quality is not accepted as a production improvement. Whether it contributes unique relevant candidates, is enabled for all or selected intents, receives fusion weight, is candidate-expansion-only, or remains disabled is `UNVALIDATED` and owned by C6.
 - **C3-R1 closeout:** Artifact `evaluation/baselines/manifests/phase_c_c3_r1_dense_ab_evaluation_integrity_closeout_v1.json` records the completed TTY dense-only A/B run with `exit_code=0`; no Vertex/Qdrant/remote evaluation was rerun during closeout. The locked primary IDs were `g001,g013,g044,g059,g027,g105,g110,g002,g014,g047,g060,g028`; all reserves `g003,g015,g050,g029` ran in order; exclusions `g011,g016` remained excluded.
 - **C3-R1 evidence:** The artifact preserves all 16 complete per-case JSON records: raw query, semantic components, `semantic_query_changed`, canonical PRE/POST filter, same analyzer plan, top-20 object IDs, per-case Recall@5/@10/@20/MRR/critical coverage, rank effect, and contamination audit. All 16 cases had equal PRE/POST filters and the same plan.
 - **C3-R1 metrics:** PRE → POST Recall@5 `0.5208333333 → 0.5208333333`, Recall@10 `0.6979166667 → 0.6979166667`, Recall@20 `0.6979166667 → 0.6979166667`, MRR `0.3059771825 → 0.2872271825`, and critical coverage `0.6979166667 → 0.6979166667`; new critical misses `0`.
@@ -221,7 +225,7 @@ Phase C is started by C1. The initial C1 implementation was `INCONCLUSIVE` after
 - **C3-R2 screening result:** `20` analyzer calls produced `5` treatment-qualified cases (`g018,g113,g055,g114,g115`), below the preregistered target of `6`. Screening inspected only analyzer/plan/SemanticQuery state; no embedding, Qdrant ranking, or retrieval outcome was used for selection.
 - **C3-R2 cost and boundary:** Analyzer tokens were `36098`; query embeddings and dense reads were `0`; all sparse, exact, paper, workflow, graph, fusion, reranker, selector, QA/judge, SQL/Qdrant writes, and index mutation were `0`. The live dense preflight passed; no Stage-B metrics are fabricated.
 - **C3-R2 decision:** `INCONCLUSIVE`, not `PASS`, solely because fewer than six qualified cases were found in the first 20 screenings. The final authorized targeted closeout was C3-R3; C4 remained `NOT_STARTED`.
-- **C3 history preservation:** The C3 production implementation remains `accepted`; the initial C3 evaluation remains `invalid / superseded`; C3-R1 and C3-R2 remain historical `INCONCLUSIVE`, with their artifacts and results unchanged.
+- **C3 history preservation:** The legacy C3 production implementation remains accepted as an implementation, while its single-vector semantic replacement behavior is `SUPERSEDED / NOT ACCEPTED FOR PRODUCTION`; the initial C3 evaluation remains `invalid / superseded`; C3-R1 and C3-R2 remain historical `INCONCLUSIVE`, with their artifacts and results unchanged.
 - **C3-R3 preregistration and T0:** Artifact `evaluation/baselines/manifests/phase_c_c3_r3_exhaustive_treatment_qualified_dense_evaluation_v1.json` remains the unchanged preregistration at source commit `9f856044b062fb666cd0b357982399c7f59a6161`; resumed execution was observed from source HEAD `59b2decab9ed661c77b482f46b18b4d86836a270`. The focused T0 direct-check passed `12/12` using the bundled-Python in-memory path because the standard `pytest` package was unavailable; the frozen C3 semantic strategy was unchanged.
 - **C3-R3 earlier attempt and resume preflight:** The earlier attempt was **environment-blocked before Stage A** when `http://127.0.0.1:6333` was unavailable. On resume, `panda_knowledge_v1` was reachable and populated (`green`, `104973` points, dense `3072`/`Cosine`, schema `4`, fingerprint `8172f9a640e62977be6e911bfb4848ce3aecd0994f1f3ba51a0985bffec62cb9`), with `object_id` payloads and compatible index identity. No empty substitute collection was used.
 - **C3-R3 Stage A:** The same locked order (`g021,g034,g010,g022,g035,g023,g036,g024,g037,g039,g040`) was screened exactly once with analyzer and `build_semantic_query()` only. All `11` completed; `g039` was the only new treatment-qualified case. Analyzer calls were `11` (`19878` tokens); three uncredentialed sandbox attempts produced no valid remote result and were not counted. The first nine valid results lost plan snapshots after runner serialization; no duplicate calls were made.
@@ -260,20 +264,23 @@ Phase C is started by C1. The initial C1 implementation was `INCONCLUSIVE` after
 - **Acceptance criteria:** Canonical exact lookup improves descriptive retrieval while preserving literal-symbol performance and version safety.
 - **Failure handling:** Return ambiguity or use lexical fallback instead of guessing; do not manufacture aliases for failures. Stop after C5.
 
-### C6 — Fusion evaluation and intent-aware tuning
+### C6 — Multi-channel fusion evaluation
 
 - **Status:** NOT_STARTED
-- **Problem:** Static weights may fit exposed questions and not generalize across exact, dense, sparse, paper, workflow, and graph channels.
-- **Goal:** Select fusion behavior from aggregate benchmark-plus-novel evidence rather than single-case nudging.
-- **Why this stage:** Each channel/query path is now independently correct and measurable, so fusion effects are interpretable.
-- **Intended design:** Replay frozen channel candidates and compare current, exact-heavy, semantic-heavy, sparse-heavy, and carefully justified intent-aware strategies; retain application-side multi-channel fusion where appropriate.
-- **Functional requirements:** Fixed development data, frozen-candidate replay, per-intent and aggregate reports, stable configuration identity, and no leakage from validation/holdout.
-- **Explicit out of scope:** Migrating all fusion into Qdrant for neatness, per-question weights, answer changes, or query-rule additions.
-- **Dependencies:** C3–C5, A2 reusable candidates, curated novel_dev.
+- **Problem:** Static fusion choices may fit exposed questions and may not generalize across independently observable retrieval channels.
+- **Goal:** Select fusion behavior from aggregate benchmark-plus-novel evidence rather than single-case nudging, while keeping every channel and decision auditable.
+- **Why this stage:** C3-A isolates the dense views and C4/C5 are intended to isolate lexical and exact retrieval before fusion effects are measured.
+- **Explicit channel set:** `exact`, `raw_dense`, `semantic_dense`, `sparse`, `paper`, `workflow`, and `graph`.
+- **Intended design:** Replay frozen, separately labeled channel candidates and compare current, exact-heavy, raw-dense, semantic-dense, sparse-heavy, and carefully justified intent-aware strategies; retain application-side multi-channel fusion where appropriate.
+- **C6 owns the SemanticDense decisions:** whether SemanticDense contributes candidate recall or useful unique relevant candidates; whether it is enabled for all intents or selected intents; whether it receives fusion weight; whether it is candidate-expansion-only; and whether it remains disabled. C6 also owns candidate-union behavior, fusion weights, intent-aware use, and semantic candidate-expansion policy.
+- **C3-A boundary:** C3-A does not make any SemanticDense fusion decision, merge raw and semantic candidate streams, or change production fusion inputs.
+- **Functional requirements:** Fixed development data, frozen-candidate replay, per-intent and aggregate reports, stable configuration identity, explicit channel provenance, and no leakage from validation/holdout.
+- **Explicit out of scope:** Migrating all fusion into Qdrant for neatness, per-question weights, answer changes, query-rule additions, or production SemanticDense use before C6 evidence.
+- **Dependencies:** C3-A, C4, C5, A2 reusable candidates, and curated novel_dev.
 - **Authorized evaluation tier:** T0 replay and targeted T2; broader retrieval only after strategy selection.
-- **Primary metrics:** Combined Candidate Recall@20, fused Recall@10, MRR, final-evidence recall, novel/benchmark gap.
-- **Acceptance criteria:** One strategy is selected by aggregate evidence and remains auditable; no manual one-failure weight nudges.
-- **Failure handling:** Retain current weights if alternatives lack robust evidence; report inconclusive rather than overfit. Stop after C6.
+- **Primary metrics:** Combined Candidate Recall@20, fused Recall@10, MRR, final-evidence recall, unique-relevant candidate contribution, and novel/benchmark gap.
+- **Acceptance criteria:** One strategy is selected by aggregate evidence and remains auditable; no manual one-failure weight nudges; SemanticDense production use is not accepted without the C6 decision evidence.
+- **Failure handling:** Retain current weights or keep SemanticDense disabled if alternatives lack robust evidence; report inconclusive rather than overfit. Stop after C6.
 
 ### C7 — Clear source constraints and evidence diversity
 
@@ -307,7 +314,7 @@ Phase C is started by C1. The initial C1 implementation was `INCONCLUSIVE` after
 
 ## Phase C status
 
-C1 is `PASS`; C2 is `PASS`; C3-R1 and C3-R2 remain historical `INCONCLUSIVE`; C3-R3 and C3 overall are `INCONCLUSIVE` after the resumed closeout. No new C3-R4 or Gold sampling round was started; evidence-integrity review or repair requires separate authorization. C4-C8 are `NOT_STARTED`.
+C1 is `PASS`; C2 is `PASS`. Legacy C3-R1, C3-R2, and C3-R3 remain historical `INCONCLUSIVE`, with their artifacts and conclusions preserved. Revised C3-A1 is `PASS`; C3-A2 is `INCONCLUSIVE` because credential-visible Vertex execution was denied before external calls; C3-A overall and current C3 are `INCONCLUSIVE`, so C3 remains active. `RawDense` is production-authoritative; `SemanticDense` is auxiliary/experimental, explicit shadow-only in C3-A, and its production fusion efficacy is `UNVALIDATED` and deferred to C6. No C3-R4 or new Gold sampling round was started. C4-C8 are `NOT_STARTED`; no C4 work was started or claimed while C3 remains active.
 
 ## Phase D — Concept and entity knowledge abstraction
 

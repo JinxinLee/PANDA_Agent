@@ -796,6 +796,68 @@ class SemanticQuery:
             "excluded_component_classes": self.excluded_component_classes,
         }
 
+
+@dataclass(frozen=True)
+class RawDenseQuery:
+    """The production-authoritative dense view of the user's raw question."""
+
+    text: str
+    provenance: str = "user_raw"
+
+    def as_dict(self) -> dict[str, Any]:
+        return {"text": self.text, "provenance": self.provenance, "active": True}
+
+
+@dataclass(frozen=True)
+class SemanticDenseQuery:
+    """An optional, independently observable dense view from SemanticQuery."""
+
+    text: str
+    components: list[SemanticQueryComponent]
+    provenance: str = "semantic_query"
+    excluded_component_classes: list[str] = field(default_factory=list)
+
+    def as_dict(self, *, executed: bool = False) -> dict[str, Any]:
+        return {
+            "text": self.text,
+            "components": [
+                {"kind": c.kind, "value": c.value, "provenance": c.provenance}
+                for c in self.components
+            ],
+            "provenance": self.provenance,
+            "excluded_component_classes": list(self.excluded_component_classes),
+            "active": True,
+            "executed": executed,
+        }
+
+
+@dataclass(frozen=True)
+class DenseQueryBundle:
+    """RawDense plus an optional auxiliary SemanticDense view."""
+
+    raw: RawDenseQuery
+    semantic: SemanticDenseQuery | None
+
+    @classmethod
+    def from_semantic_query(cls, question: str, semantic_query: SemanticQuery) -> "DenseQueryBundle":
+        semantic = None
+        if semantic_query.text != question:
+            semantic = SemanticDenseQuery(
+                text=semantic_query.text,
+                components=list(semantic_query.components),
+                excluded_component_classes=list(semantic_query.excluded_component_classes),
+            )
+        return cls(raw=RawDenseQuery(text=question), semantic=semantic)
+
+    def as_dict(self, *, semantic_executed: bool = False) -> dict[str, Any]:
+        return {
+            "raw": self.raw.as_dict(),
+            "semantic": self.semantic.as_dict(executed=semantic_executed) if self.semantic is not None else None,
+            "semantic_active": self.semantic is not None,
+            "semantic_executed": semantic_executed and self.semantic is not None,
+        }
+
+
 def build_semantic_query(question: str, plan: RetrievalPlan) -> SemanticQuery:
     components: list[SemanticQueryComponent] = []
     excluded = ["rejected_analyzer_items", "reviewed_expansions", "repository_metadata", "version_metadata"]
@@ -849,6 +911,11 @@ def build_semantic_query(question: str, plan: RetrievalPlan) -> SemanticQuery:
         components=included_components,
         excluded_component_classes=excluded
     )
+
+
+def build_dense_query_bundle(question: str, plan: RetrievalPlan) -> DenseQueryBundle:
+    """Build the raw-authoritative dense views from the existing semantic policy."""
+    return DenseQueryBundle.from_semantic_query(question, build_semantic_query(question, plan))
 
 
 class Retriever:
@@ -1187,7 +1254,7 @@ class Retriever:
                         return ordered
         return ordered[:limit]
 
-    def _vector(self, question: str, plan: RetrievalPlan, limit: int) -> tuple[list[Any], list[Any], list[float], SemanticQuery]:
+    def _query_filter(self, plan: RetrievalPlan) -> models.Filter | None:
         query_filter = None
         if plan.target_repositories:
             version_scopes = [
@@ -1199,13 +1266,61 @@ class Retriever:
             ]
             version_scopes.append(models.FieldCondition(key="source_id", match=models.MatchAny(any=[*self.context_sources, "curated_panda_domain"])))
             query_filter = models.Filter(should=version_scopes)
+
+        return query_filter
+
+    def _dense_query(
+        self,
+        text: str,
+        query_filter: models.Filter | None,
+        limit: int,
+    ) -> tuple[list[Any], list[float]]:
+        vector = self.vertex.embed_query(text)
+        common = dict(
+            collection_name=self.storage.settings.collection_name,
+            query_filter=query_filter,
+            limit=limit,
+            with_payload=True,
+        )
+        hits = self.storage.qdrant.query_points(query=vector, using="dense", **common).points
+        return hits, vector
+
+    def _vector(self, question: str, plan: RetrievalPlan, limit: int) -> tuple[list[Any], list[Any], list[float], SemanticQuery]:
+        query_filter = self._query_filter(plan)
         semantic_query = build_semantic_query(question, plan)
-        dense = self.vertex.embed_query(semantic_query.text)
+        dense_bundle = DenseQueryBundle.from_semantic_query(question, semantic_query)
+        dense_hits, dense = self._dense_query(dense_bundle.raw.text, query_filter, limit)
         sparse = next(iter(self.sparse.query_embed(question)))
         common = dict(collection_name=self.storage.settings.collection_name, query_filter=query_filter, limit=limit, with_payload=True)
-        dense_hits = self.storage.qdrant.query_points(query=dense, using="dense", **common).points
         sparse_hits = self.storage.qdrant.query_points(query=models.SparseVector(indices=sparse.indices.tolist(), values=sparse.values.tolist()), using=self.sparse_vector_name, **common).points
         return dense_hits, sparse_hits, dense, semantic_query
+
+    def shadow_dense(
+        self,
+        question: str,
+        plan: RetrievalPlan | None = None,
+        limit: int | None = None,
+    ) -> dict[str, Any]:
+        """Execute RawDense and optional SemanticDense without other channels."""
+        if plan is None:
+            raise ValueError("shadow_dense requires an existing RetrievalPlan")
+        limit = limit if limit is not None else self.policies.candidate_pool_per_channel
+        query_filter = self._query_filter(plan)
+        semantic_query = build_semantic_query(question, plan)
+        dense_bundle = DenseQueryBundle.from_semantic_query(question, semantic_query)
+
+        raw_hits, _ = self._dense_query(dense_bundle.raw.text, query_filter, limit)
+        semantic_hits: list[Any] = []
+        if dense_bundle.semantic is not None:
+            semantic_hits, _ = self._dense_query(dense_bundle.semantic.text, query_filter, limit)
+
+        return {
+            "dense_queries": dense_bundle.as_dict(semantic_executed=dense_bundle.semantic is not None),
+            "dense_candidates": {
+                "raw": [hit.payload for hit in raw_hits],
+                "semantic": [hit.payload for hit in semantic_hits] if dense_bundle.semantic is not None else None,
+            },
+        }
 
     def _paper(self, query_vector: list[float], plan: RetrievalPlan, limit: int) -> list[dict[str, Any]]:
         """Retrieve paper evidence independently for paper-required plans.
@@ -1450,6 +1565,11 @@ class Retriever:
         return {
             "plan": plan.model_dump(mode="json"),
             "semantic_query": semantic_query.as_dict(),
+            "dense_queries": DenseQueryBundle.from_semantic_query(question, semantic_query).as_dict(),
+            "dense_candidates": {
+                "raw": rankings["dense"],
+                "semantic": None,
+            },
             "rankings": {key: [item["object_id"] for item in value] for key, value in rankings.items()},
             "fusion_scores": {oid: scores[oid] for oid in sorted(scores, key=scores.get, reverse=True)[:30]},
             "reranked_object_ids": reranked,

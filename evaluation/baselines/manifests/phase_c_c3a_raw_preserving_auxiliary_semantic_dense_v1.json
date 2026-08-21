@@ -1,0 +1,1054 @@
+{
+  "schema_version": "1.0",
+  "artifact_id": "phase_c_c3a_raw_preserving_auxiliary_semantic_dense_v1",
+  "status": "INCONCLUSIVE",
+  "source_head": "15458286d22f32f2dacdb782635b8e154503ef7d",
+  "historical_status": {
+    "c1": "PASS",
+    "c2": "PASS",
+    "legacy_c3_production_implementation": "accepted as an implementation",
+    "legacy_c3_initial_evaluation": "invalid / superseded",
+    "c3_r1": "INCONCLUSIVE",
+    "c3_r2": "INCONCLUSIVE",
+    "c3_r3": "INCONCLUSIVE",
+    "legacy_c3_single_vector_replacement": "SUPERSEDED / NOT ACCEPTED FOR PRODUCTION",
+    "c4": "NOT_STARTED"
+  },
+  "architectural_decision": {
+    "raw_dense": "independent and production-authoritative",
+    "semantic_dense": "independent auxiliary / experimental view",
+    "semantic_dense_replaces_raw_dense": false,
+    "semantic_dense_modifies_raw_dense": false,
+    "semantic_dense_production_fusion": "UNVALIDATED; deferred to C6",
+    "c3_a_scope": "query-time channel separation and auditable shadow observability",
+    "semantic_query_policy_tuned": false
+  },
+  "production_files_changed": [
+    "src/panda_agent/retrieval.py",
+    "src/panda_agent/retrieval_trace.py",
+    "tests/unit/test_semantic_query.py",
+    "tests/unit/test_retrieval_trace.py"
+  ],
+  "t0_evidence": {
+    "mechanism": "bundled Python in-memory direct check",
+    "pytest_available": false,
+    "pytest_install_attempted": false,
+    "semantic_contract_checks": {
+      "passed": 16,
+      "total": 16,
+      "status": "PASS"
+    },
+    "trace_contract_checks": {
+      "passed": 4,
+      "total": 4,
+      "status": "PASS"
+    },
+    "combined_status": "20/20 PASS",
+    "request_interleaving_regression": {
+      "passed": 1,
+      "total": 1,
+      "status": "PASS",
+      "coverage": "request-local diagnostics remain correct under interleaved requests"
+    },
+    "faithful_trace_coverage": "PASS",
+    "ast_parse_checks": {
+      "passed": 6,
+      "total": 6,
+      "status": "PASS"
+    },
+    "import_checks": {
+      "passed": 6,
+      "total": 6,
+      "status": "PASS"
+    },
+    "baseline_semantic_builder_ast_identity": "PASS",
+    "external_model_qdrant_sql_calls": 0,
+    "notes": [
+      "The focused T0 direct check used the repository environment because pytest was unavailable.",
+      "The final candidate T0 evidence is semantic 16/16 plus trace 4/4 for 20/20 PASS.",
+      "The T0 checks covered raw preservation, optional semantic view, provenance exclusions, channel isolation, deterministic construction, shadow separation, request-local interleaving behavior, and faithful trace normalization."
+    ]
+  },
+  "contracts": {
+    "representation": {
+      "raw": "RawDenseQuery",
+      "semantic": "SemanticDenseQuery",
+      "bundle": "DenseQueryBundle"
+    },
+    "raw_dense": {
+      "always_present": true,
+      "text": "exact original user question",
+      "provenance": "user_raw",
+      "production_authority": true
+    },
+    "semantic_dense": {
+      "present_when": "SemanticQuery.text != raw question",
+      "text": "existing frozen SemanticQuery.text",
+      "components": "existing provenance-aware SemanticQuery components",
+      "provenance": "semantic_query",
+      "production_authority": false,
+      "shadow_execution": "explicit only"
+    },
+    "default_production_behavior": {
+      "embedding_input": "RawDense.text",
+      "semantic_embedding_calls": 0,
+      "semantic_qdrant_reads": 0,
+      "fusion_input_changed": false,
+      "sparse_and_downstream_inputs_changed": false
+    },
+    "shadow_behavior": {
+      "raw_stream": "raw question -> RETRIEVAL_QUERY embedding -> dense Qdrant read",
+      "semantic_stream": "frozen SemanticQuery.text -> RETRIEVAL_QUERY embedding -> dense Qdrant read",
+      "streams_merged": false,
+      "production_fusion_called": false
+    }
+  },
+  "live_preflight": {
+    "status": "PASS",
+    "endpoint": "http://127.0.0.1:6333",
+    "collection": "panda_knowledge_v1",
+    "collection_status": "green",
+    "optimizer_status": "ok",
+    "point_count": 104973,
+    "dense_vector_name": "dense",
+    "dense_dimensions": 3072,
+    "dense_distance": "Cosine",
+    "sparse_vector_name": "sparse",
+    "payload_schema": [
+      "source_id",
+      "authority_level",
+      "object_type",
+      "source_version_id"
+    ],
+    "sample_payload_keys": [
+      "authority_level",
+      "locator",
+      "object_id",
+      "object_type",
+      "source_id",
+      "source_version_id",
+      "text",
+      "title"
+    ],
+    "schema_version": "4",
+    "fingerprint": "8172f9a640e62977be6e911bfb4848ce3aecd0994f1f3ba51a0985bffec62cb9",
+    "embedding_model": "gemini-embedding-2",
+    "embedding_location": "global",
+    "identity_matches_c3_r3": true,
+    "read_only": true,
+    "preflight_operations": [
+      {
+        "operation": "get_collection",
+        "status": "PASS"
+      },
+      {
+        "operation": "count_exact",
+        "status": "PASS"
+      },
+      {
+        "operation": "scroll_sample",
+        "status": "PASS"
+      },
+      {
+        "operation": "sql_index_identity_select",
+        "status": "PASS"
+      }
+    ],
+    "preflight_qdrant_reads": 3,
+    "preflight_sql_reads": 1,
+    "writes": 0,
+    "index_mutation": 0
+  },
+  "fixed_case_set": {
+    "included": [
+      "g113",
+      "g055",
+      "g114",
+      "g115",
+      "g039"
+    ],
+    "excluded": [
+      {
+        "case_id": "g018",
+        "reason": "C3-R3 carried-forward semantic reconstruction had an evidence-integrity mismatch"
+      }
+    ],
+    "snapshot_provenance": {
+      "artifact": "evaluation/baselines/manifests/phase_c_c3_r3_exhaustive_treatment_qualified_dense_evaluation_v1.json",
+      "artifact_id": "phase_c_c3_r3_exhaustive_treatment_qualified_dense_evaluation_v1",
+      "artifact_source_commit": "9f856044b062fb666cd0b357982399c7f59a6161",
+      "source_section": "stage_b_actual.cohort_cases",
+      "analyzer_calls_for_a2": 0,
+      "semantic_state_reconstructed": false,
+      "replacement_cases_used": false,
+      "historical_index_identity": {
+        "point_count": 104973,
+        "dimensions": 3072,
+        "schema_version": "4",
+        "embedding_model": "gemini-embedding-2",
+        "fingerprint": "8172f9a640e62977be6e911bfb4848ce3aecd0994f1f3ba51a0985bffec62cb9"
+      }
+    }
+  },
+  "shadow_execution": {
+    "status": "INCONCLUSIVE",
+    "execution_mode": "luna_only",
+    "top_k": 20,
+    "query_filter_contract": "per-case canonical_filter copied from frozen C3-R3 cohort_cases",
+    "model_contract": {
+      "model": "gemini-embedding-2",
+      "location": "global",
+      "task_type": "RETRIEVAL_QUERY",
+      "dimensions": 3072,
+      "vector_name": "dense",
+      "collection": "panda_knowledge_v1"
+    },
+    "execution_block": {
+      "reason": "The sandbox credential-visible Vertex path failed before a valid embedding result. The original bounded read-only user authorization and the repair-attempt justification both cited the explicit C3-A2 allowance, but both credential-visible escalation requests were rejected by safety review before process start.",
+      "valid_embedding_results": 0,
+      "valid_dense_query_results": 0,
+      "credential_visible_remote_calls": 0,
+      "fabricated_results": false
+    },
+    "credential_visibility_ledger": [
+      {
+        "operation": "VertexAIClient.embed_query",
+        "case_id": "g113",
+        "channel": "raw",
+        "model": "gemini-embedding-2",
+        "location": "global",
+        "attempted": 1,
+        "status": "ERROR",
+        "error_class": "DefaultCredentialsError",
+        "error": "Your default credentials were not found.",
+        "valid_result": false,
+        "dense_qdrant_reads": 0
+      },
+      {
+        "operation": "authorized credential-visible C3-A2 execution",
+        "attempt_number": 0,
+        "status": "DENIED_BY_SAFETY_REVIEW",
+        "attempted": 0,
+        "remote_calls": 0,
+        "authorization_cited": true,
+        "authorization_basis": "user authorized one bounded read-only C3-A2 shadow verification with up to 10 query embeddings and up to 10 dense Qdrant reads, forbidding writes and downstream calls",
+        "reason": "require_escalated execution rejected before process start; explicit user approval was still required by the safety review"
+      },
+      {
+        "operation": "authorized credential-visible C3-A2 execution",
+        "attempt_number": 1,
+        "status": "DENIED_BY_SAFETY_REVIEW",
+        "attempted": 0,
+        "remote_calls": 0,
+        "authorization_cited": true,
+        "authorization_basis": "the same current-task bounded read-only C3-A2 authorization was explicitly cited in the repair justification",
+        "reason": "require_escalated execution was rejected before process start because the safety review did not accept the transcript as trusted user authorization"
+      }
+    ],
+    "cases": [
+      {
+        "case_id": "g113",
+        "frozen_state_available": true,
+        "execution_status": "UNAVAILABLE",
+        "qualification_source": "C3-R2",
+        "plan_reconstructed": true,
+        "raw_question": "runLmdFit cannot find prepared data; how do I trace the mismatch?",
+        "semantic_query_text": "runLmdFit cannot find prepared data; how do I trace the mismatch?\n\nSemantic focus:\ntrace mismatch",
+        "semantic_query_components": [
+          {
+            "kind": "analyzer_concept",
+            "value": "trace mismatch",
+            "provenance": "analyzer_accepted"
+          }
+        ],
+        "retrieval_plan": {
+          "intent": "troubleshooting",
+          "target_repositories": [
+            "luminosityfit",
+            "restgas_determination"
+          ],
+          "resolved_versions": {
+            "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+          }
+        },
+        "canonical_filter": {
+          "min_should": null,
+          "must": null,
+          "must_not": null,
+          "should": [
+            {
+              "min_should": null,
+              "must": [
+                {
+                  "key": "source_id",
+                  "match": {
+                    "value": "luminosityfit"
+                  }
+                },
+                {
+                  "key": "source_version_id",
+                  "match": {
+                    "value": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+                  }
+                }
+              ],
+              "must_not": null,
+              "should": null
+            },
+            {
+              "min_should": null,
+              "must": [
+                {
+                  "key": "source_id",
+                  "match": {
+                    "value": "restgas_determination"
+                  }
+                },
+                {
+                  "key": "source_version_id",
+                  "match": {
+                    "value": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+                  }
+                }
+              ],
+              "must_not": null,
+              "should": null
+            },
+            {
+              "key": "source_id",
+              "match": {
+                "any": [
+                  "li_2026",
+                  "karavdina_2015",
+                  "pflueger_2017",
+                  "pandaroot_sphinx_2023_08_25_dev",
+                  "curated_panda_domain"
+                ]
+              }
+            }
+          ]
+        },
+        "call_ledger": [
+          {
+            "channel": "raw",
+            "operation": "query_embedding",
+            "attempted": 1,
+            "status": "ERROR",
+            "valid_result": false
+          },
+          {
+            "channel": "semantic",
+            "operation": "query_embedding",
+            "attempted": 0,
+            "status": "NOT_ATTEMPTED"
+          },
+          {
+            "channel": "raw",
+            "operation": "dense_qdrant_read",
+            "attempted": 0,
+            "status": "NOT_ATTEMPTED"
+          },
+          {
+            "channel": "semantic",
+            "operation": "dense_qdrant_read",
+            "attempted": 0,
+            "status": "NOT_ATTEMPTED"
+          }
+        ],
+        "raw_top20": null,
+        "semantic_top20": null,
+        "diagnostics": {
+          "overlap_at_20": "N/A",
+          "raw_unique_at_20": "N/A",
+          "semantic_unique_at_20": "N/A",
+          "semantic_unique_relevant_at_20": "N/A"
+        },
+        "historical_pre_top20": [
+          "object.c1ad0b79e21c18ef44e5281d",
+          "object.d15d2f1bf8575d3d2340647e",
+          "object.e0b66a2dd8700a87ca726948",
+          "object.c025f12845c4ff2f44ffc3d7",
+          "object.51c654cec571770bdcbb9f68",
+          "object.930a8f1ec52dc58612477847",
+          "object.522529e0e459dda8bef1015d",
+          "object.a24175d8310e1cb1ae26c537",
+          "object.b2c8b1fcfff473e78559a572",
+          "object.d3f6fe61508eeac9041bf2f5",
+          "object.545258a2b01fa3c539f760ec",
+          "object.5fcb10cef4b08392147aee48",
+          "object.12ceffee47125058638e43b1",
+          "object.2691843aa70f72ba8de5cd3c",
+          "object.602c9651dab5bc7ad8afb33a",
+          "object.902539efbc82c2217186dab4",
+          "object.9bf527dcde4d67d4b697eaec",
+          "object.e175ccd97b7f7da696cd7f64",
+          "object.33713a2b6a3b8889de889222",
+          "object.19c40e23853c72e935530382"
+        ],
+        "raw_vs_historical_pre": {
+          "status": "NOT_RUN",
+          "reason": "no valid RawDense result"
+        }
+      },
+      {
+        "case_id": "g055",
+        "frozen_state_available": true,
+        "execution_status": "UNAVAILABLE",
+        "qualification_source": "C3-R2",
+        "plan_reconstructed": true,
+        "raw_question": "How should angular acceptance be distinguished from longitudinal efficiency?",
+        "semantic_query_text": "How should angular acceptance be distinguished from longitudinal efficiency?\n\nSemantic focus:\nefficiency=angular_acceptance_vs_longitudinal_profile",
+        "semantic_query_components": [
+          {
+            "kind": "deterministic_fixed_scope",
+            "value": "efficiency=angular_acceptance_vs_longitudinal_profile",
+            "provenance": "fixed"
+          }
+        ],
+        "retrieval_plan": {
+          "intent": "algorithm_theory",
+          "target_repositories": [
+            "luminosityfit",
+            "restgas_determination"
+          ],
+          "resolved_versions": {
+            "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+          }
+        },
+        "canonical_filter": {
+          "min_should": null,
+          "must": null,
+          "must_not": null,
+          "should": [
+            {
+              "min_should": null,
+              "must": [
+                {
+                  "key": "source_id",
+                  "match": {
+                    "value": "luminosityfit"
+                  }
+                },
+                {
+                  "key": "source_version_id",
+                  "match": {
+                    "value": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+                  }
+                }
+              ],
+              "must_not": null,
+              "should": null
+            },
+            {
+              "min_should": null,
+              "must": [
+                {
+                  "key": "source_id",
+                  "match": {
+                    "value": "restgas_determination"
+                  }
+                },
+                {
+                  "key": "source_version_id",
+                  "match": {
+                    "value": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+                  }
+                }
+              ],
+              "must_not": null,
+              "should": null
+            },
+            {
+              "key": "source_id",
+              "match": {
+                "any": [
+                  "li_2026",
+                  "karavdina_2015",
+                  "pflueger_2017",
+                  "pandaroot_sphinx_2023_08_25_dev",
+                  "curated_panda_domain"
+                ]
+              }
+            }
+          ]
+        },
+        "call_ledger": [
+          {
+            "channel": "raw",
+            "operation": "query_embedding",
+            "attempted": 0,
+            "status": "NOT_ATTEMPTED"
+          },
+          {
+            "channel": "semantic",
+            "operation": "query_embedding",
+            "attempted": 0,
+            "status": "NOT_ATTEMPTED"
+          },
+          {
+            "channel": "raw",
+            "operation": "dense_qdrant_read",
+            "attempted": 0,
+            "status": "NOT_ATTEMPTED"
+          },
+          {
+            "channel": "semantic",
+            "operation": "dense_qdrant_read",
+            "attempted": 0,
+            "status": "NOT_ATTEMPTED"
+          }
+        ],
+        "raw_top20": null,
+        "semantic_top20": null,
+        "diagnostics": {
+          "overlap_at_20": "N/A",
+          "raw_unique_at_20": "N/A",
+          "semantic_unique_at_20": "N/A",
+          "semantic_unique_relevant_at_20": "N/A"
+        },
+        "historical_pre_top20": [
+          "concept.restgas_longitudinal_efficiency",
+          "concept.li_2026.restgas_effective_acceptance",
+          "object.86b7c9f862f3e5c328823444",
+          "object.0d8f329ab417557502c0a134",
+          "object.4a77e2204a3a19915740b987",
+          "object.345496dbcf699d2f59ade4ab",
+          "object.c12d31981b2dd78ce4a2eb27",
+          "object.5ed031901c2bbdde358d6f78",
+          "object.cd9121780180c2714919f66f",
+          "workflow.restgas_profile_reconstruction",
+          "object.279d3eb459004b09876f0152",
+          "object.82667fef75b2f7519874de8e",
+          "object.eb2c22536338c3faa80165bc",
+          "object.f742b78c4455541cc039d47d",
+          "object.fc6e82b184f603398dde3bce",
+          "object.7fa64532794cc0194d6cbe10",
+          "object.19210fd996b337547d1b1184",
+          "object.54b5cf78ac656b14878ac4b6",
+          "object.e3d39bbf70a208587e3d58b1",
+          "object.154aca68c3c8533132f343fd"
+        ],
+        "raw_vs_historical_pre": {
+          "status": "NOT_RUN",
+          "reason": "no valid RawDense result"
+        }
+      },
+      {
+        "case_id": "g114",
+        "frozen_state_available": true,
+        "execution_status": "UNAVAILABLE",
+        "qualification_source": "C3-R2",
+        "plan_reconstructed": true,
+        "raw_question": "Why might restgas efficiency correction have empty bins?",
+        "semantic_query_text": "Why might restgas efficiency correction have empty bins?\n\nSemantic focus:\nefficiency=longitudinal_profile",
+        "semantic_query_components": [
+          {
+            "kind": "analyzer_scope",
+            "value": "efficiency=longitudinal_profile",
+            "provenance": "analyzer_accepted"
+          }
+        ],
+        "retrieval_plan": {
+          "intent": "troubleshooting",
+          "target_repositories": [
+            "restgas_determination",
+            "luminosityfit"
+          ],
+          "resolved_versions": {
+            "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+            "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          }
+        },
+        "canonical_filter": {
+          "min_should": null,
+          "must": null,
+          "must_not": null,
+          "should": [
+            {
+              "min_should": null,
+              "must": [
+                {
+                  "key": "source_id",
+                  "match": {
+                    "value": "restgas_determination"
+                  }
+                },
+                {
+                  "key": "source_version_id",
+                  "match": {
+                    "value": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+                  }
+                }
+              ],
+              "must_not": null,
+              "should": null
+            },
+            {
+              "min_should": null,
+              "must": [
+                {
+                  "key": "source_id",
+                  "match": {
+                    "value": "luminosityfit"
+                  }
+                },
+                {
+                  "key": "source_version_id",
+                  "match": {
+                    "value": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+                  }
+                }
+              ],
+              "must_not": null,
+              "should": null
+            },
+            {
+              "key": "source_id",
+              "match": {
+                "any": [
+                  "li_2026",
+                  "karavdina_2015",
+                  "pflueger_2017",
+                  "pandaroot_sphinx_2023_08_25_dev",
+                  "curated_panda_domain"
+                ]
+              }
+            }
+          ]
+        },
+        "call_ledger": [
+          {
+            "channel": "raw",
+            "operation": "query_embedding",
+            "attempted": 0,
+            "status": "NOT_ATTEMPTED"
+          },
+          {
+            "channel": "semantic",
+            "operation": "query_embedding",
+            "attempted": 0,
+            "status": "NOT_ATTEMPTED"
+          },
+          {
+            "channel": "raw",
+            "operation": "dense_qdrant_read",
+            "attempted": 0,
+            "status": "NOT_ATTEMPTED"
+          },
+          {
+            "channel": "semantic",
+            "operation": "dense_qdrant_read",
+            "attempted": 0,
+            "status": "NOT_ATTEMPTED"
+          }
+        ],
+        "raw_top20": null,
+        "semantic_top20": null,
+        "diagnostics": {
+          "overlap_at_20": "N/A",
+          "raw_unique_at_20": "N/A",
+          "semantic_unique_at_20": "N/A",
+          "semantic_unique_relevant_at_20": "N/A"
+        },
+        "historical_pre_top20": [
+          "concept.restgas_longitudinal_efficiency",
+          "object.eb2c22536338c3faa80165bc",
+          "workflow.restgas_profile_reconstruction",
+          "object.fc6e82b184f603398dde3bce",
+          "object.0d8f329ab417557502c0a134",
+          "object.279d3eb459004b09876f0152",
+          "object.ea6fc3d992f5b4e0eff5e8c4",
+          "object.2b0de43748b178f9af62aeb9",
+          "object.917707faea55cb8db41ec856",
+          "object.c1870f3282377aa3e2dd9226",
+          "object.75c6c5772a7053fcc41cdb47",
+          "object.0f8abcf01883ada15169b536",
+          "object.8e708f891a7c8a92cd3bca56",
+          "object.07c9611ecddf46218f7ac576",
+          "object.041de4a8059a79567086c42f",
+          "object.7b59495bf11d751ad32b6a6c",
+          "object.6882c17756a7337b4b5511f2",
+          "object.32f0f8e5c390c7e664f1ba58",
+          "object.1065624c8c37880d41369b7d",
+          "object.60b508b61bec2bb4d6bc2845"
+        ],
+        "raw_vs_historical_pre": {
+          "status": "NOT_RUN",
+          "reason": "no valid RawDense result"
+        }
+      },
+      {
+        "case_id": "g115",
+        "frozen_state_available": true,
+        "execution_status": "UNAVAILABLE",
+        "qualification_source": "C3-R2",
+        "plan_reconstructed": true,
+        "raw_question": "Why might LMD angular acceptance be confused with pvz efficiency?",
+        "semantic_query_text": "Why might LMD angular acceptance be confused with pvz efficiency?\n\nSemantic focus:\nefficiency=longitudinal_profile",
+        "semantic_query_components": [
+          {
+            "kind": "analyzer_scope",
+            "value": "efficiency=longitudinal_profile",
+            "provenance": "analyzer_accepted"
+          }
+        ],
+        "retrieval_plan": {
+          "intent": "troubleshooting",
+          "target_repositories": [
+            "luminosityfit",
+            "restgas_determination",
+            "pandaroot"
+          ],
+          "resolved_versions": {
+            "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+            "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357"
+          }
+        },
+        "canonical_filter": {
+          "min_should": null,
+          "must": null,
+          "must_not": null,
+          "should": [
+            {
+              "min_should": null,
+              "must": [
+                {
+                  "key": "source_id",
+                  "match": {
+                    "value": "luminosityfit"
+                  }
+                },
+                {
+                  "key": "source_version_id",
+                  "match": {
+                    "value": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+                  }
+                }
+              ],
+              "must_not": null,
+              "should": null
+            },
+            {
+              "min_should": null,
+              "must": [
+                {
+                  "key": "source_id",
+                  "match": {
+                    "value": "restgas_determination"
+                  }
+                },
+                {
+                  "key": "source_version_id",
+                  "match": {
+                    "value": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+                  }
+                }
+              ],
+              "must_not": null,
+              "should": null
+            },
+            {
+              "min_should": null,
+              "must": [
+                {
+                  "key": "source_id",
+                  "match": {
+                    "value": "pandaroot"
+                  }
+                },
+                {
+                  "key": "source_version_id",
+                  "match": {
+                    "value": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357"
+                  }
+                }
+              ],
+              "must_not": null,
+              "should": null
+            },
+            {
+              "key": "source_id",
+              "match": {
+                "any": [
+                  "li_2026",
+                  "karavdina_2015",
+                  "pflueger_2017",
+                  "pandaroot_sphinx_2023_08_25_dev",
+                  "curated_panda_domain"
+                ]
+              }
+            }
+          ]
+        },
+        "call_ledger": [
+          {
+            "channel": "raw",
+            "operation": "query_embedding",
+            "attempted": 0,
+            "status": "NOT_ATTEMPTED"
+          },
+          {
+            "channel": "semantic",
+            "operation": "query_embedding",
+            "attempted": 0,
+            "status": "NOT_ATTEMPTED"
+          },
+          {
+            "channel": "raw",
+            "operation": "dense_qdrant_read",
+            "attempted": 0,
+            "status": "NOT_ATTEMPTED"
+          },
+          {
+            "channel": "semantic",
+            "operation": "dense_qdrant_read",
+            "attempted": 0,
+            "status": "NOT_ATTEMPTED"
+          }
+        ],
+        "raw_top20": null,
+        "semantic_top20": null,
+        "diagnostics": {
+          "overlap_at_20": "N/A",
+          "raw_unique_at_20": "N/A",
+          "semantic_unique_at_20": "N/A",
+          "semantic_unique_relevant_at_20": "N/A"
+        },
+        "historical_pre_top20": [
+          "object.5e7cf30b81e712b0214a897e",
+          "object.86b7c9f862f3e5c328823444",
+          "object.5379cb3cbfc4c28d3d75bad9",
+          "object.e3d39bbf70a208587e3d58b1",
+          "object.e80add864de8624a79473cbd",
+          "object.709ad3f8f7868432e52a9c7e",
+          "object.ff5ad395cd0798c04b800a44",
+          "object.f790444d3977745b662fd773",
+          "object.ceb6fcb1b6d41072044906e0",
+          "object.cd9121780180c2714919f66f",
+          "object.3ae39283f7d4069b943a683b",
+          "object.05b214d785dc56451e8ff7a7",
+          "object.99ba607ea8eb473aea9dd40d",
+          "object.255be62ee47d31a2eaf335b3",
+          "object.cbe802878dd3db61ed44c25b",
+          "object.3da5b85fcd54fdf0c6a0d2e2",
+          "object.54b5cf78ac656b14878ac4b6",
+          "object.7fa64532794cc0194d6cbe10",
+          "object.2467ed0e2c497391eb7e09d9",
+          "object.f9b74aaa19c0400776c80fd0"
+        ],
+        "raw_vs_historical_pre": {
+          "status": "NOT_RUN",
+          "reason": "no valid RawDense result"
+        }
+      },
+      {
+        "case_id": "g039",
+        "frozen_state_available": true,
+        "execution_status": "UNAVAILABLE",
+        "qualification_source": "C3-R3",
+        "plan_reconstructed": false,
+        "raw_question": "Where is longitudinal restgas efficiency correction implemented?",
+        "semantic_query_text": "Where is longitudinal restgas efficiency correction implemented?\n\nSemantic focus:\nefficiency=longitudinal_profile",
+        "semantic_query_components": [
+          {
+            "kind": "analyzer_scope",
+            "value": "efficiency=longitudinal_profile",
+            "provenance": "analyzer_accepted"
+          }
+        ],
+        "retrieval_plan": {
+          "intent": "api",
+          "target_repositories": [
+            "restgas_determination"
+          ],
+          "resolved_versions": {
+            "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+          }
+        },
+        "canonical_filter": {
+          "min_should": null,
+          "must": null,
+          "must_not": null,
+          "should": [
+            {
+              "min_should": null,
+              "must": [
+                {
+                  "key": "source_id",
+                  "match": {
+                    "value": "restgas_determination"
+                  }
+                },
+                {
+                  "key": "source_version_id",
+                  "match": {
+                    "value": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+                  }
+                }
+              ],
+              "must_not": null,
+              "should": null
+            },
+            {
+              "key": "source_id",
+              "match": {
+                "any": [
+                  "li_2026",
+                  "karavdina_2015",
+                  "pflueger_2017",
+                  "pandaroot_sphinx_2023_08_25_dev",
+                  "curated_panda_domain"
+                ]
+              }
+            }
+          ]
+        },
+        "call_ledger": [
+          {
+            "channel": "raw",
+            "operation": "query_embedding",
+            "attempted": 0,
+            "status": "NOT_ATTEMPTED"
+          },
+          {
+            "channel": "semantic",
+            "operation": "query_embedding",
+            "attempted": 0,
+            "status": "NOT_ATTEMPTED"
+          },
+          {
+            "channel": "raw",
+            "operation": "dense_qdrant_read",
+            "attempted": 0,
+            "status": "NOT_ATTEMPTED"
+          },
+          {
+            "channel": "semantic",
+            "operation": "dense_qdrant_read",
+            "attempted": 0,
+            "status": "NOT_ATTEMPTED"
+          }
+        ],
+        "raw_top20": null,
+        "semantic_top20": null,
+        "diagnostics": {
+          "overlap_at_20": "N/A",
+          "raw_unique_at_20": "N/A",
+          "semantic_unique_at_20": "N/A",
+          "semantic_unique_relevant_at_20": "N/A"
+        },
+        "historical_pre_top20": [
+          "concept.restgas_longitudinal_efficiency",
+          "object.eb2c22536338c3faa80165bc",
+          "workflow.restgas_profile_reconstruction",
+          "object.0d8f329ab417557502c0a134",
+          "object.279d3eb459004b09876f0152",
+          "object.4e2bf3318be9d234c717b6cc",
+          "object.2b0de43748b178f9af62aeb9",
+          "object.fc6e82b184f603398dde3bce",
+          "configuration.restgas_profile",
+          "object.ea6fc3d992f5b4e0eff5e8c4",
+          "concept.li_2026.restgas_effective_acceptance",
+          "object.64407e20e9e1ea3e57ea1236",
+          "object.0931608a5774da2fcf0750bc",
+          "object.a551a3fe9648e02298f07911",
+          "object.c1870f3282377aa3e2dd9226",
+          "object.f742b78c4455541cc039d47d",
+          "object.a96176599794058d0d5ecfa8",
+          "object.f2ce270fc4c23a83908b5c6e",
+          "object.7164ea07c429754b040e9610",
+          "object.0e2f3063c8f53b4572d2f071"
+        ],
+        "raw_vs_historical_pre": {
+          "status": "NOT_RUN",
+          "reason": "no valid RawDense result"
+        }
+      }
+    ]
+  },
+  "cost_and_isolation": {
+    "budgets": {
+      "query_embedding_requests_max": 10,
+      "dense_qdrant_query_reads_max": 10
+    },
+    "actual": {
+      "query_embedding_requests_attempted": 1,
+      "local_credential_probe_attempts": 1,
+      "credential_visible_escalation_attempts": 2,
+      "credential_visible_path_invocations": 0,
+      "valid_external_query_embeddings": 0,
+      "query_embedding_valid_results": 0,
+      "dense_qdrant_query_reads": 0,
+      "valid_external_dense_qdrant_reads": 0,
+      "analyzer_calls": 0,
+      "analyzer_tokens": 0,
+      "document_embedding_calls": 0,
+      "embedding_tokens": 0,
+      "sparse": 0,
+      "exact": 0,
+      "paper": 0,
+      "workflow": 0,
+      "graph": 0,
+      "fusion": 0,
+      "reranker": 0,
+      "selector": 0,
+      "qa_verifier_judge": 0,
+      "sql_writes": 0,
+      "qdrant_writes": 0,
+      "index_mutation": 0,
+      "reindex": false,
+      "document_reembedding": false
+    },
+    "downstream_zero_call_confirmation": true,
+    "channel_isolation_verified_from_t0": true,
+    "vertex_stats": {
+      "model_calls": 1,
+      "embedding_calls": 1,
+      "generation_calls": 0,
+      "token_usage": 0
+    }
+  },
+  "results": {
+    "c3_a1": "PASS",
+    "c3_a2": "INCONCLUSIVE",
+    "c3_a_overall": "INCONCLUSIVE",
+    "raw_dense_production_authority": true,
+    "semantic_dense_auxiliary_only": true,
+    "semantic_dense_fusion": "UNVALIDATED; C6 owns the decision"
+  },
+  "known_limitations": [
+    "No valid live RawDense or SemanticDense embedding was produced in this run.",
+    "The authoritative Qdrant index was available, but credential-visible Vertex execution was not established.",
+    "SemanticDense retrieval quality is not accepted as a production improvement.",
+    "SemanticDense fusion efficacy remains unvalidated.",
+    "C3-A does not prove novel generalization.",
+    "No new Gold sample was created.",
+    "Semantic rendering itself was not redesigned.",
+    "C4 remains NOT_STARTED.",
+    "Actual multi-channel value is deferred to C6.",
+    "g011 remains deferred to Phase E.",
+    "Novel retrieval generalization remains UNMEASURED."
+  ],
+  "deferred_ownership": {
+    "owner": "C6",
+    "questions": [
+      "whether SemanticDense contributes useful unique relevant candidates",
+      "whether SemanticDense should be enabled for all or selected intents",
+      "whether SemanticDense receives fusion weight",
+      "whether SemanticDense is candidate-expansion-only",
+      "whether SemanticDense remains disabled"
+    ],
+    "explicit_channel_set": [
+      "raw_dense",
+      "semantic_dense",
+      "sparse",
+      "exact",
+      "paper",
+      "workflow",
+      "graph"
+    ]
+  }
+}

@@ -1,5 +1,7 @@
+from types import SimpleNamespace
+
 import pytest
-from panda_agent.retrieval import build_semantic_query, Retriever
+from panda_agent.retrieval import DenseQueryBundle, Retriever, build_semantic_query
 from panda_agent.models import RetrievalPlan
 
 def test_t0_raw_question_preservation():
@@ -14,6 +16,11 @@ def test_t0_raw_question_preservation():
     sq = build_semantic_query(question, plan)
     assert sq.text == question
     assert sq.raw_question == question
+
+    bundle = DenseQueryBundle.from_semantic_query(question, sq)
+    assert bundle.raw.text == question
+    assert bundle.raw.provenance == "user_raw"
+    assert bundle.semantic is None
 
 def test_t0_accepted_analyzer_concept_augmentation():
     question = "Where is the function defined?"
@@ -32,6 +39,13 @@ def test_t0_accepted_analyzer_concept_augmentation():
     assert len(sq.components) == 1
     assert sq.components[0].kind == "analyzer_concept"
     assert sq.components[0].value == "PndTargetGenerator"
+
+    bundle = DenseQueryBundle.from_semantic_query(question, sq)
+    assert bundle.raw.text == question
+    assert bundle.semantic is not None
+    assert bundle.semantic.text == sq.text
+    assert bundle.semantic.provenance == "semantic_query"
+    assert bundle.semantic.components == sq.components
 
 def test_t0_reviewed_expansion_contamination_guard():
     question = "How to generate targets?"
@@ -126,6 +140,7 @@ def test_t0_fallback_only_scope_is_excluded_from_semantic_augmentation():
 
     assert sq.text == question
     assert sq.components == []
+    assert DenseQueryBundle.from_semantic_query(question, sq).semantic is None
 
 def test_t0_components_match_deduplicated_semantic_query():
     question = "Explain the acceptance."
@@ -196,6 +211,34 @@ def test_t0_determinism():
     assert sq1.text == sq2.text
     assert sq1.text.endswith("A=X")
 
+
+def test_t0_dense_bundle_keeps_policy_exclusions_out_of_semantic_dense():
+    question = "How to generate targets?"
+    plan = RetrievalPlan(
+        intent="usage",
+        source_budgets={"code": 1.0},
+        symbols=["reviewed/path.py"],
+        analysis_diagnostics={
+            "analyzer_accepted_semantic_delta": {
+                "concepts": [{"value": "target generation", "support_spans": ["generate targets"]}],
+            },
+            "deterministic_parse": {
+                "fallback": {"concept_scopes": {"efficiency": "fallback_only"}},
+            },
+        },
+    )
+
+    semantic_query = build_semantic_query(question, plan)
+    bundle = DenseQueryBundle.from_semantic_query(question, semantic_query)
+
+    assert bundle.raw.text == question
+    assert "target generation" not in bundle.raw.text
+    assert bundle.semantic is not None
+    assert "target generation" in bundle.semantic.text
+    assert "reviewed/path.py" not in bundle.semantic.text
+    assert "fallback_only" not in bundle.semantic.text
+    assert bundle.semantic.excluded_component_classes == semantic_query.excluded_component_classes
+
 def test_t0_channel_isolation(monkeypatch):
     question = "test question"
     plan = RetrievalPlan(
@@ -212,8 +255,11 @@ def test_t0_channel_isolation(monkeypatch):
     from pathlib import Path
     
     class MockVertex:
+        def __init__(self):
+            self.queries = []
+
         def embed_query(self, text):
-            self.last_query = text
+            self.queries.append(text)
             return [0.1]
     
     class MockSparse:
@@ -260,8 +306,128 @@ def test_t0_channel_isolation(monkeypatch):
     monkeypatch.setattr(retriever, '_graph', lambda *args, **kwargs: [])
     
     retriever._vector(question, plan, 10)
-    
-    assert retriever.vertex.last_query != question
-    assert "mock_concept" in retriever.vertex.last_query
-    
+
+    assert retriever.vertex.queries == [question]
+    assert not hasattr(retriever, "_last_dense_query_bundle")
+
     assert retriever.sparse.last_query == question
+
+
+def test_t0_shadow_dense_is_independent_and_separately_labelled(monkeypatch):
+    question = "Where is the function defined?"
+    plan = RetrievalPlan(
+        intent="api",
+        source_budgets={"code": 1.0},
+        analysis_diagnostics={
+            "analyzer_accepted_semantic_delta": {
+                "concepts": [{"value": "PndTargetGenerator", "support_spans": ["function"]}],
+            },
+        },
+    )
+
+    class MockVertex:
+        def __init__(self):
+            self.queries = []
+
+        def embed_query(self, text):
+            self.queries.append(text)
+            return [float(len(self.queries))]
+
+    class MockQdrant:
+        def __init__(self):
+            self.calls = []
+
+        def query_points(self, **kwargs):
+            self.calls.append(kwargs)
+            label = "raw" if kwargs["query"] == [1.0] else "semantic"
+            return SimpleNamespace(points=[SimpleNamespace(payload={"object_id": label})])
+
+    vertex = MockVertex()
+    qdrant = MockQdrant()
+    retriever = Retriever.__new__(Retriever)
+    retriever.vertex = vertex
+    retriever.context_sources = []
+    retriever.storage = SimpleNamespace(
+        settings=SimpleNamespace(collection_name="collection"), qdrant=qdrant
+    )
+    retriever.policies = SimpleNamespace(candidate_pool_per_channel=10)
+
+    result = retriever.shadow_dense(question, plan=plan, limit=10)
+
+    semantic_text = build_semantic_query(question, plan).text
+    assert vertex.queries == [question, semantic_text]
+    assert [call["using"] for call in qdrant.calls] == ["dense", "dense"]
+    assert result["dense_queries"]["raw"]["text"] == question
+    assert result["dense_queries"]["semantic"]["text"] == semantic_text
+    assert result["dense_queries"]["semantic_executed"] is True
+    assert result["dense_candidates"]["raw"] == [{"object_id": "raw"}]
+    assert result["dense_candidates"]["semantic"] == [{"object_id": "semantic"}]
+
+
+def test_t0_shadow_dense_skips_absent_semantic_stream():
+    question = "How does this work?"
+    plan = RetrievalPlan(
+        intent="algorithm_theory",
+        source_budgets={"code": 1.0},
+        analysis_diagnostics={"analyzer_accepted_semantic_delta": {}},
+    )
+
+    queries = []
+    qdrant_calls = []
+
+    class MockQdrant:
+        def query_points(self, **kwargs):
+            qdrant_calls.append(kwargs)
+            return SimpleNamespace(points=[])
+
+    retriever = Retriever.__new__(Retriever)
+    retriever.vertex = SimpleNamespace(embed_query=lambda text: queries.append(text) or [0.1])
+    retriever.context_sources = []
+    retriever.storage = SimpleNamespace(
+        settings=SimpleNamespace(collection_name="collection"), qdrant=MockQdrant()
+    )
+    retriever.policies = SimpleNamespace(candidate_pool_per_channel=10)
+
+    result = retriever.shadow_dense(question, plan=plan, limit=10)
+
+    assert queries == [question]
+    assert len(qdrant_calls) == 1
+    assert result["dense_queries"]["semantic"] is None
+    assert result["dense_candidates"]["semantic"] is None
+
+
+def test_t0_dense_diagnostics_are_request_local_under_interleaving(monkeypatch):
+    first_question = "What does the first request retrieve?"
+    second_question = "What does the second request retrieve?"
+    plan = RetrievalPlan(
+        intent="algorithm_theory",
+        source_budgets={"code": 1.0},
+        analysis_diagnostics={"analyzer_accepted_semantic_delta": {}},
+    )
+
+    retriever = Retriever.__new__(Retriever)
+    retriever.policies = SimpleNamespace(candidate_pool_per_channel=10, final_evidence_limit=1)
+    monkeypatch.setattr(retriever, "_exact", lambda *args, **kwargs: [])
+    monkeypatch.setattr(retriever, "_paper", lambda *args, **kwargs: [])
+    monkeypatch.setattr(retriever, "_workflow", lambda *args, **kwargs: [])
+    monkeypatch.setattr(retriever, "_graph", lambda *args, **kwargs: [])
+
+    shared_name = "_last_" + "dense_query_bundle"
+    nested_results = []
+    nested = False
+
+    def interleaving_vector(question, current_plan, limit):
+        nonlocal nested
+        semantic_query = build_semantic_query(question, current_plan)
+        setattr(retriever, shared_name, DenseQueryBundle.from_semantic_query(question, semantic_query))
+        if question == first_question and not nested:
+            nested = True
+            nested_results.append(retriever.retrieve(second_question, plan=plan))
+        return [], [], [], semantic_query
+
+    monkeypatch.setattr(retriever, "_vector", interleaving_vector)
+
+    first_result = retriever.retrieve(first_question, plan=plan)
+
+    assert nested_results[0]["dense_queries"]["raw"]["text"] == second_question
+    assert first_result["dense_queries"]["raw"]["text"] == first_question

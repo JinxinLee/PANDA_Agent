@@ -15,6 +15,7 @@ from panda_agent.evaluation_runner import (
     evaluation_mode_boundaries,
 )
 from panda_agent.retrieval_trace import (
+    RetrievalTrace,
     build_retrieval_trace,
     load_retrieval_trace,
     load_retrieval_traces,
@@ -237,6 +238,101 @@ class RetrievalTraceTests(unittest.TestCase):
             path = write_retrieval_trace(run_dir, trace)
             self.assertEqual(load_retrieval_trace(path), trace)
             self.assertEqual(load_retrieval_traces(run_dir), [trace])
+
+    def test_trace_default_marks_semantic_absent_and_keeps_raw_candidates(self) -> None:
+        question = "How does the raw dense path work?"
+        trace = build_retrieval_trace(
+            question_id="g002",
+            run_id="trace-default",
+            question=question,
+            diagnostics={
+                "plan": {},
+                "rankings": {"dense": ["raw-1"], "exact": []},
+                "fusion_scores": {"raw-1": 0.4},
+                "dense_candidates": {"raw": ["raw-1"], "semantic": None},
+            },
+            manifest={},
+            object_lookup={},
+        )
+
+        self.assertEqual(trace.dense_query_text, question)
+        self.assertEqual(trace.dense_queries["raw"]["text"], question)
+        self.assertEqual(trace.dense_queries["raw"]["provenance"], "user_raw")
+        self.assertIsNone(trace.dense_queries["semantic"])
+        self.assertFalse(trace.dense_queries["semantic_active"])
+        self.assertFalse(trace.dense_queries["semantic_executed"])
+        self.assertEqual(trace.dense_candidates["raw"], ["raw-1"])
+        self.assertIsNone(trace.dense_candidates["semantic"])
+
+    def test_trace_shadow_candidates_and_contamination_remain_observable(self) -> None:
+        question = "Where is the function defined?"
+        raw_payload = {"object_id": "raw-1", "score": 0.9}
+        semantic_payload = {"object_id": "semantic-only", "score": 0.8}
+        diagnostics = {
+            "plan": {},
+            "dense_queries": {
+                "raw": {"text": question, "provenance": "user_raw", "active": True},
+                "semantic": {
+                    "text": f"{question}\n\nSemantic focus:\nfunction",
+                    "components": [
+                        {"kind": "analyzer_concept", "value": "function", "provenance": "analyzer_accepted"}
+                    ],
+                    "provenance": "semantic_query",
+                    "active": True,
+                    "executed": True,
+                },
+                "semantic_active": True,
+                "semantic_executed": True,
+            },
+            "dense_candidates": {"raw": [raw_payload], "semantic": [semantic_payload]},
+            "rankings": {"dense": ["raw-1", "semantic-only"], "exact": []},
+            "fusion_scores": {"raw-1": 0.9, "semantic-only": 0.8},
+            "reranked_object_ids": ["semantic-only", "raw-1"],
+        }
+        trace = build_retrieval_trace(
+            question_id="g003",
+            run_id="trace-shadow",
+            question=question,
+            diagnostics=diagnostics,
+            manifest={},
+            object_lookup={},
+        )
+
+        self.assertEqual(trace.dense_queries["raw"]["text"], question)
+        self.assertEqual(trace.dense_queries["semantic"]["text"], diagnostics["dense_queries"]["semantic"]["text"])
+        self.assertEqual(trace.dense_candidates["raw"], [raw_payload])
+        self.assertEqual(trace.dense_candidates["semantic"], [semantic_payload])
+        self.assertEqual(
+            [item.object_id for item in trace.channel_candidates["dense"]],
+            ["raw-1", "semantic-only"],
+        )
+        self.assertEqual(
+            [item.object_id for item in trace.fused_candidates],
+            ["raw-1", "semantic-only"],
+        )
+        self.assertEqual(
+            [item.object_id for item in trace.reranked_candidates],
+            ["semantic-only", "raw-1"],
+        )
+
+    def test_legacy_trace_without_dense_fields_remains_loadable(self) -> None:
+        legacy = {
+            "question_id": "legacy",
+            "run_id": "run",
+            "implementation_identity": {},
+            "raw_question": "legacy question",
+            "retrieval_plan": {},
+            "original_retrieval_query": "legacy question",
+            "dense_query_text": "legacy question",
+            "sparse_query_text": "legacy question",
+        }
+
+        trace = RetrievalTrace.model_validate(legacy)
+
+        self.assertEqual(trace.dense_query_text, trace.raw_question)
+        self.assertEqual(trace.dense_queries["raw"]["text"], trace.raw_question)
+        self.assertIsNone(trace.dense_queries["semantic"])
+        self.assertIsNone(trace.dense_candidates["semantic"])
 
 
 class MetricApplicabilityTests(unittest.TestCase):
