@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0",
   "artifact_id": "phase_c_c3a_raw_preserving_auxiliary_semantic_dense_v1",
-  "status": "INCONCLUSIVE",
-  "source_head": "15458286d22f32f2dacdb782635b8e154503ef7d",
+  "status": "PASS",
+  "source_head": "687dee5d6c6f648aa7ad739f9049441628ccd811",
   "historical_status": {
     "c1": "PASS",
     "c2": "PASS",
@@ -1009,19 +1009,513 @@
       "embedding_calls": 1,
       "generation_calls": 0,
       "token_usage": 0
+    },
+    "authoritative_resume": {
+      "credential_preflight": {
+        "separate_from_case_budget": true,
+        "embedding_attempts": 1,
+        "valid_external_embeddings": 1
+      },
+      "case_execution": {
+        "query_embedding_attempts": 10,
+        "valid_external_query_embeddings": 10,
+        "dense_qdrant_query_reads": 10,
+        "valid_external_dense_qdrant_reads": 10
+      },
+      "analyzer_calls": 0,
+      "sparse": 0,
+      "exact": 0,
+      "paper": 0,
+      "workflow": 0,
+      "graph": 0,
+      "fusion": 0,
+      "reranker": 0,
+      "selector": 0,
+      "qa_verifier_judge": 0,
+      "document_embedding_calls": 0,
+      "sql_writes": 0,
+      "qdrant_writes": 0,
+      "index_mutation": 0,
+      "reindex": false,
+      "document_reembedding": false
     }
   },
   "results": {
     "c3_a1": "PASS",
-    "c3_a2": "INCONCLUSIVE",
-    "c3_a_overall": "INCONCLUSIVE",
+    "c3_a2": "PASS",
+    "c3_a_overall": "PASS",
+    "current_c3": "PASS",
+    "architecture": "revised raw-preserving architecture",
     "raw_dense_production_authority": true,
     "semantic_dense_auxiliary_only": true,
     "semantic_dense_fusion": "UNVALIDATED; C6 owns the decision"
   },
+  "resume_execution": {
+    "status": "PASS",
+    "authoritative": true,
+    "source_head": "687dee5d6c6f648aa7ad739f9049441628ccd811",
+    "baseline": {
+      "head": "687dee5d6c6f648aa7ad739f9049441628ccd811",
+      "worktree_clean": true,
+      "write_scope": [
+        "evaluation/baselines/manifests/phase_c_c3a_raw_preserving_auxiliary_semantic_dense_v1.json",
+        "docs/EVALUATION_STATUS.md",
+        "docs/GENERALIZATION_ROADMAP.md"
+      ]
+    },
+    "static_identity_checks": {
+      "ast_parse": "3/3 PASS",
+      "imports": "PASS",
+      "raw_authoritative_vector_path": "PASS",
+      "shadow_stream_separation": "PASS",
+      "model": "gemini-embedding-2",
+      "location": "global",
+      "dimensions": 3072,
+      "collection": "panda_knowledge_v1"
+    },
+    "qdrant_preflight": {
+      "status": "PASS",
+      "endpoint": "http://127.0.0.1:6333",
+      "collection": "panda_knowledge_v1",
+      "collection_status": "green",
+      "optimizer_status": "ok",
+      "point_count": 104973,
+      "dense_vector_name": "dense",
+      "dense_dimensions": 3072,
+      "dense_distance": "Cosine",
+      "sparse_vector_name": "sparse",
+      "schema_version": "4",
+      "fingerprint": "8172f9a640e62977be6e911bfb4848ce3aecd0994f1f3ba51a0985bffec62cb9",
+      "embedding_model": "gemini-embedding-2",
+      "embedding_location": "global",
+      "reads": {
+        "get_collection": 1,
+        "count_exact": 1,
+        "scroll_sample": 1,
+        "sql_index_identity_select": 1
+      },
+      "writes": 0,
+      "index_mutation": 0
+    },
+    "credential_preflight": {
+      "status": "PASS",
+      "operation": "VertexAIClient.embed_query",
+      "text": "C3-A2 credential-visible query embedding preflight",
+      "model": "gemini-embedding-2",
+      "location": "global",
+      "task_type": "RETRIEVAL_QUERY",
+      "dimensions": 3072,
+      "valid_result": true,
+      "embedding_calls": 1,
+      "generation_calls": 0,
+      "token_usage": 0
+    },
+    "interim_blocked_attempt": {
+      "historical": true,
+      "superseded_by": "case_execution",
+      "status": "ENVIRONMENT_BLOCKED",
+      "process_started": false,
+      "case_embedding_calls": 0,
+      "dense_qdrant_reads": 0,
+      "reason": "The credential-visible five-case command was rejected before process start because the safety review did not accept the transcript as trusted user authorization for sending the five frozen evaluation questions and derived semantic queries to Vertex.",
+      "retry_or_workaround_attempted": false
+    },
+    "case_execution": {
+      "status": "PASS",
+      "authoritative": true,
+      "process_started": true,
+      "fixed_case_order": [
+        "g113",
+        "g055",
+        "g114",
+        "g115",
+        "g039"
+      ],
+      "model": "gemini-embedding-2",
+      "location": "global",
+      "task_type": "RETRIEVAL_QUERY",
+      "dimensions": 3072,
+      "collection": "panda_knowledge_v1",
+      "vector_name": "dense",
+      "top_k": 20,
+      "same_frozen_filter": true,
+      "same_frozen_retrieval_plan": true,
+      "frozen_input_source": "shadow_execution.cases[case_id]",
+      "case_embedding_calls": 10,
+      "dense_qdrant_reads": 10,
+      "valid_external_query_embeddings": 10,
+      "valid_external_dense_qdrant_reads": 10,
+      "fusion_calls": 0,
+      "downstream_calls": 0,
+      "analyzer_calls": 0,
+      "sparse_calls": 0,
+      "exact_calls": 0,
+      "paper_calls": 0,
+      "workflow_calls": 0,
+      "graph_calls": 0,
+      "reranker_calls": 0,
+      "selector_calls": 0,
+      "qa_verifier_judge_calls": 0,
+      "sql_writes": 0,
+      "qdrant_writes": 0,
+      "index_mutation": 0,
+      "document_embedding_calls": 0,
+      "reindex": false,
+      "document_reembedding": false,
+      "semantic_unique_relevant_policy": "N/A; no authoritative relevant-object set was available for C3-A2",
+      "cases": [
+        {
+          "case_id": "g113",
+          "raw_question": "runLmdFit cannot find prepared data; how do I trace the mismatch?",
+          "semantic_query_text": "runLmdFit cannot find prepared data; how do I trace the mismatch?\n\nSemantic focus:\ntrace mismatch",
+          "semantic_query_components": [
+            {
+              "kind": "analyzer_concept",
+              "value": "trace mismatch",
+              "provenance": "analyzer_accepted"
+            }
+          ],
+          "execution_status": "PASS",
+          "raw_top20": [
+            "object.c1ad0b79e21c18ef44e5281d",
+            "object.d15d2f1bf8575d3d2340647e",
+            "object.e0b66a2dd8700a87ca726948",
+            "object.c025f12845c4ff2f44ffc3d7",
+            "object.51c654cec571770bdcbb9f68",
+            "object.930a8f1ec52dc58612477847",
+            "object.522529e0e459dda8bef1015d",
+            "object.a24175d8310e1cb1ae26c537",
+            "object.b2c8b1fcfff473e78559a572",
+            "object.d3f6fe61508eeac9041bf2f5",
+            "object.545258a2b01fa3c539f760ec",
+            "object.5fcb10cef4b08392147aee48",
+            "object.12ceffee47125058638e43b1",
+            "object.2691843aa70f72ba8de5cd3c",
+            "object.602c9651dab5bc7ad8afb33a",
+            "object.902539efbc82c2217186dab4",
+            "object.9bf527dcde4d67d4b697eaec",
+            "object.e175ccd97b7f7da696cd7f64",
+            "object.33713a2b6a3b8889de889222",
+            "object.19c40e23853c72e935530382"
+          ],
+          "semantic_top20": [
+            "object.c1ad0b79e21c18ef44e5281d",
+            "object.d15d2f1bf8575d3d2340647e",
+            "object.e0b66a2dd8700a87ca726948",
+            "object.c025f12845c4ff2f44ffc3d7",
+            "object.51c654cec571770bdcbb9f68",
+            "object.930a8f1ec52dc58612477847",
+            "object.9bf527dcde4d67d4b697eaec",
+            "object.12ceffee47125058638e43b1",
+            "object.e175ccd97b7f7da696cd7f64",
+            "object.b2c8b1fcfff473e78559a572",
+            "object.a24175d8310e1cb1ae26c537",
+            "object.545258a2b01fa3c539f760ec",
+            "object.522529e0e459dda8bef1015d",
+            "object.d3f6fe61508eeac9041bf2f5",
+            "object.5fcb10cef4b08392147aee48",
+            "object.e2437af540e6332c4d3909e9",
+            "object.219626563921ae3487d99b13",
+            "object.ef59f2e1d98d82c476885cef",
+            "object.602c9651dab5bc7ad8afb33a",
+            "object.2691843aa70f72ba8de5cd3c"
+          ],
+          "diagnostics": {
+            "overlap_at_20": 17,
+            "raw_unique_at_20": 3,
+            "semantic_unique_at_20": 3,
+            "semantic_unique_relevant_at_20": "N/A"
+          },
+          "call_ledger": [
+            {"channel": "raw", "operation": "query_embedding", "attempted": 1, "status": "PASS", "valid_result": true},
+            {"channel": "raw", "operation": "dense_qdrant_read", "attempted": 1, "status": "PASS", "valid_result": true, "top_k": 20},
+            {"channel": "semantic", "operation": "query_embedding", "attempted": 1, "status": "PASS", "valid_result": true},
+            {"channel": "semantic", "operation": "dense_qdrant_read", "attempted": 1, "status": "PASS", "valid_result": true, "top_k": 20}
+          ]
+        },
+        {
+          "case_id": "g055",
+          "raw_question": "How should angular acceptance be distinguished from longitudinal efficiency?",
+          "semantic_query_text": "How should angular acceptance be distinguished from longitudinal efficiency?\n\nSemantic focus:\nefficiency=angular_acceptance_vs_longitudinal_profile",
+          "semantic_query_components": [
+            {
+              "kind": "deterministic_fixed_scope",
+              "value": "efficiency=angular_acceptance_vs_longitudinal_profile",
+              "provenance": "fixed"
+            }
+          ],
+          "execution_status": "PASS",
+          "raw_top20": [
+            "concept.restgas_longitudinal_efficiency",
+            "concept.li_2026.restgas_effective_acceptance",
+            "object.86b7c9f862f3e5c328823444",
+            "object.0d8f329ab417557502c0a134",
+            "object.4a77e2204a3a19915740b987",
+            "object.345496dbcf699d2f59ade4ab",
+            "object.c12d31981b2dd78ce4a2eb27",
+            "object.5ed031901c2bbdde358d6f78",
+            "object.cd9121780180c2714919f66f",
+            "workflow.restgas_profile_reconstruction",
+            "object.279d3eb459004b09876f0152",
+            "object.82667fef75b2f7519874de8e",
+            "object.eb2c22536338c3faa80165bc",
+            "object.f742b78c4455541cc039d47d",
+            "object.fc6e82b184f603398dde3bce",
+            "object.7fa64532794cc0194d6cbe10",
+            "object.19210fd996b337547d1b1184",
+            "object.54b5cf78ac656b14878ac4b6",
+            "object.e3d39bbf70a208587e3d58b1",
+            "object.154aca68c3c8533132f343fd"
+          ],
+          "semantic_top20": [
+            "concept.restgas_longitudinal_efficiency",
+            "concept.li_2026.restgas_effective_acceptance",
+            "object.86b7c9f862f3e5c328823444",
+            "workflow.restgas_profile_reconstruction",
+            "object.eb2c22536338c3faa80165bc",
+            "object.0d8f329ab417557502c0a134",
+            "object.2dc3fb8fac95490986546581",
+            "object.5ed031901c2bbdde358d6f78",
+            "object.154aca68c3c8533132f343fd",
+            "object.4a77e2204a3a19915740b987",
+            "object.7fa64532794cc0194d6cbe10",
+            "object.279d3eb459004b09876f0152",
+            "object.19210fd996b337547d1b1184",
+            "object.c12d31981b2dd78ce4a2eb27",
+            "object.3ae39283f7d4069b943a683b",
+            "object.1d3d81a66a903da66325faac",
+            "object.345496dbcf699d2f59ade4ab",
+            "object.cd9121780180c2714919f66f",
+            "object.82667fef75b2f7519874de8e",
+            "object.288f159d1c07fcc5ec273b20"
+          ],
+          "diagnostics": {
+            "overlap_at_20": 16,
+            "raw_unique_at_20": 4,
+            "semantic_unique_at_20": 4,
+            "semantic_unique_relevant_at_20": "N/A"
+          },
+          "call_ledger": [
+            {"channel": "raw", "operation": "query_embedding", "attempted": 1, "status": "PASS", "valid_result": true},
+            {"channel": "raw", "operation": "dense_qdrant_read", "attempted": 1, "status": "PASS", "valid_result": true, "top_k": 20},
+            {"channel": "semantic", "operation": "query_embedding", "attempted": 1, "status": "PASS", "valid_result": true},
+            {"channel": "semantic", "operation": "dense_qdrant_read", "attempted": 1, "status": "PASS", "valid_result": true, "top_k": 20}
+          ]
+        },
+        {
+          "case_id": "g114",
+          "raw_question": "Why might restgas efficiency correction have empty bins?",
+          "semantic_query_text": "Why might restgas efficiency correction have empty bins?\n\nSemantic focus:\nefficiency=longitudinal_profile",
+          "semantic_query_components": [
+            {
+              "kind": "analyzer_scope",
+              "value": "efficiency=longitudinal_profile",
+              "provenance": "analyzer_accepted"
+            }
+          ],
+          "execution_status": "PASS",
+          "raw_top20": [
+            "concept.restgas_longitudinal_efficiency",
+            "object.eb2c22536338c3faa80165bc",
+            "workflow.restgas_profile_reconstruction",
+            "object.fc6e82b184f603398dde3bce",
+            "object.0d8f329ab417557502c0a134",
+            "object.279d3eb459004b09876f0152",
+            "object.ea6fc3d992f5b4e0eff5e8c4",
+            "object.2b0de43748b178f9af62aeb9",
+            "object.917707faea55cb8db41ec856",
+            "object.c1870f3282377aa3e2dd9226",
+            "object.75c6c5772a7053fcc41cdb47",
+            "object.0f8abcf01883ada15169b536",
+            "object.8e708f891a7c8a92cd3bca56",
+            "object.07c9611ecddf46218f7ac576",
+            "object.041de4a8059a79567086c42f",
+            "object.7b59495bf11d751ad32b6a6c",
+            "object.6882c17756a7337b4b5511f2",
+            "object.32f0f8e5c390c7e664f1ba58",
+            "object.1065624c8c37880d41369b7d",
+            "object.60b508b61bec2bb4d6bc2845"
+          ],
+          "semantic_top20": [
+            "concept.restgas_longitudinal_efficiency",
+            "object.eb2c22536338c3faa80165bc",
+            "workflow.restgas_profile_reconstruction",
+            "object.0d8f329ab417557502c0a134",
+            "object.fc6e82b184f603398dde3bce",
+            "object.279d3eb459004b09876f0152",
+            "configuration.restgas_profile",
+            "concept.li_2026.restgas_effective_acceptance",
+            "object.2b0de43748b178f9af62aeb9",
+            "object.75c6c5772a7053fcc41cdb47",
+            "object.ea6fc3d992f5b4e0eff5e8c4",
+            "object.6b20287d8250ff2e55fa01af",
+            "object.86b7c9f862f3e5c328823444",
+            "object.0931608a5774da2fcf0750bc",
+            "object.cd9121780180c2714919f66f",
+            "object.b37ac0e03e942ca965dbad72",
+            "object.917707faea55cb8db41ec856",
+            "object.0f8abcf01883ada15169b536",
+            "object.3c6cdc248f79283f6df7e03e",
+            "object.64407e20e9e1ea3e57ea1236"
+          ],
+          "diagnostics": {
+            "overlap_at_20": 11,
+            "raw_unique_at_20": 9,
+            "semantic_unique_at_20": 9,
+            "semantic_unique_relevant_at_20": "N/A"
+          },
+          "call_ledger": [
+            {"channel": "raw", "operation": "query_embedding", "attempted": 1, "status": "PASS", "valid_result": true},
+            {"channel": "raw", "operation": "dense_qdrant_read", "attempted": 1, "status": "PASS", "valid_result": true, "top_k": 20},
+            {"channel": "semantic", "operation": "query_embedding", "attempted": 1, "status": "PASS", "valid_result": true},
+            {"channel": "semantic", "operation": "dense_qdrant_read", "attempted": 1, "status": "PASS", "valid_result": true, "top_k": 20}
+          ]
+        },
+        {
+          "case_id": "g115",
+          "raw_question": "Why might LMD angular acceptance be confused with pvz efficiency?",
+          "semantic_query_text": "Why might LMD angular acceptance be confused with pvz efficiency?\n\nSemantic focus:\nefficiency=longitudinal_profile",
+          "semantic_query_components": [
+            {
+              "kind": "analyzer_scope",
+              "value": "efficiency=longitudinal_profile",
+              "provenance": "analyzer_accepted"
+            }
+          ],
+          "execution_status": "PASS",
+          "raw_top20": [
+            "object.5e7cf30b81e712b0214a897e",
+            "object.86b7c9f862f3e5c328823444",
+            "object.5379cb3cbfc4c28d3d75bad9",
+            "object.e3d39bbf70a208587e3d58b1",
+            "object.e80add864de8624a79473cbd",
+            "object.709ad3f8f7868432e52a9c7e",
+            "object.ff5ad395cd0798c04b800a44",
+            "object.f790444d3977745b662fd773",
+            "object.ceb6fcb1b6d41072044906e0",
+            "object.cd9121780180c2714919f66f",
+            "object.3ae39283f7d4069b943a683b",
+            "object.05b214d785dc56451e8ff7a7",
+            "object.99ba607ea8eb473aea9dd40d",
+            "object.255be62ee47d31a2eaf335b3",
+            "object.cbe802878dd3db61ed44c25b",
+            "object.3da5b85fcd54fdf0c6a0d2e2",
+            "object.54b5cf78ac656b14878ac4b6",
+            "object.7fa64532794cc0194d6cbe10",
+            "object.2467ed0e2c497391eb7e09d9",
+            "object.f9b74aaa19c0400776c80fd0"
+          ],
+          "semantic_top20": [
+            "object.86b7c9f862f3e5c328823444",
+            "object.cd9121780180c2714919f66f",
+            "object.5e7cf30b81e712b0214a897e",
+            "object.54b5cf78ac656b14878ac4b6",
+            "object.e3d39bbf70a208587e3d58b1",
+            "object.f742b78c4455541cc039d47d",
+            "object.5379cb3cbfc4c28d3d75bad9",
+            "object.0d8f329ab417557502c0a134",
+            "concept.restgas_longitudinal_efficiency",
+            "object.f790444d3977745b662fd773",
+            "object.a5b7f4c7ff382dc4767c879e",
+            "object.709ad3f8f7868432e52a9c7e",
+            "object.cfa869a704c527cf4e2232a1",
+            "object.ceb6fcb1b6d41072044906e0",
+            "object.3ae39283f7d4069b943a683b",
+            "object.2dc3fb8fac95490986546581",
+            "object.345496dbcf699d2f59ade4ab",
+            "object.cdf8ef76891d987bea6a8ab4",
+            "object.eb2c22536338c3faa80165bc",
+            "object.fc6e82b184f603398dde3bce"
+          ],
+          "diagnostics": {
+            "overlap_at_20": 10,
+            "raw_unique_at_20": 10,
+            "semantic_unique_at_20": 10,
+            "semantic_unique_relevant_at_20": "N/A"
+          },
+          "call_ledger": [
+            {"channel": "raw", "operation": "query_embedding", "attempted": 1, "status": "PASS", "valid_result": true},
+            {"channel": "raw", "operation": "dense_qdrant_read", "attempted": 1, "status": "PASS", "valid_result": true, "top_k": 20},
+            {"channel": "semantic", "operation": "query_embedding", "attempted": 1, "status": "PASS", "valid_result": true},
+            {"channel": "semantic", "operation": "dense_qdrant_read", "attempted": 1, "status": "PASS", "valid_result": true, "top_k": 20}
+          ]
+        },
+        {
+          "case_id": "g039",
+          "raw_question": "Where is longitudinal restgas efficiency correction implemented?",
+          "semantic_query_text": "Where is longitudinal restgas efficiency correction implemented?\n\nSemantic focus:\nefficiency=longitudinal_profile",
+          "semantic_query_components": [
+            {
+              "kind": "analyzer_scope",
+              "value": "efficiency=longitudinal_profile",
+              "provenance": "analyzer_accepted"
+            }
+          ],
+          "execution_status": "PASS",
+          "raw_top20": [
+            "concept.restgas_longitudinal_efficiency",
+            "object.eb2c22536338c3faa80165bc",
+            "workflow.restgas_profile_reconstruction",
+            "object.0d8f329ab417557502c0a134",
+            "object.279d3eb459004b09876f0152",
+            "object.4e2bf3318be9d234c717b6cc",
+            "object.2b0de43748b178f9af62aeb9",
+            "object.fc6e82b184f603398dde3bce",
+            "configuration.restgas_profile",
+            "object.ea6fc3d992f5b4e0eff5e8c4",
+            "concept.li_2026.restgas_effective_acceptance",
+            "object.64407e20e9e1ea3e57ea1236",
+            "object.0931608a5774da2fcf0750bc",
+            "object.a551a3fe9648e02298f07911",
+            "object.c1870f3282377aa3e2dd9226",
+            "object.f742b78c4455541cc039d47d",
+            "object.a96176599794058d0d5ecfa8",
+            "object.f2ce270fc4c23a83908b5c6e",
+            "object.7164ea07c429754b040e9610",
+            "object.0e2f3063c8f53b4572d2f071"
+          ],
+          "semantic_top20": [
+            "concept.restgas_longitudinal_efficiency",
+            "object.eb2c22536338c3faa80165bc",
+            "workflow.restgas_profile_reconstruction",
+            "object.0d8f329ab417557502c0a134",
+            "configuration.restgas_profile",
+            "object.279d3eb459004b09876f0152",
+            "object.4e2bf3318be9d234c717b6cc",
+            "concept.li_2026.restgas_effective_acceptance",
+            "object.2b0de43748b178f9af62aeb9",
+            "object.fc6e82b184f603398dde3bce",
+            "workflow.restgas_aware_luminosity_acceptance",
+            "object.75c6c5772a7053fcc41cdb47",
+            "object.86b7c9f862f3e5c328823444",
+            "object.a551a3fe9648e02298f07911",
+            "object.e5136c8d8f90cb0add63ec47",
+            "object.c50a3f00dd154303ff8ff5da",
+            "object.f2ce270fc4c23a83908b5c6e",
+            "object.7164ea07c429754b040e9610",
+            "object.b91d38c995afd4a4e43c344b",
+            "object.65b289b5d6e6f20ebbf14474"
+          ],
+          "diagnostics": {
+            "overlap_at_20": 13,
+            "raw_unique_at_20": 7,
+            "semantic_unique_at_20": 7,
+            "semantic_unique_relevant_at_20": "N/A"
+          },
+          "call_ledger": [
+            {"channel": "raw", "operation": "query_embedding", "attempted": 1, "status": "PASS", "valid_result": true},
+            {"channel": "raw", "operation": "dense_qdrant_read", "attempted": 1, "status": "PASS", "valid_result": true, "top_k": 20},
+            {"channel": "semantic", "operation": "query_embedding", "attempted": 1, "status": "PASS", "valid_result": true},
+            {"channel": "semantic", "operation": "dense_qdrant_read", "attempted": 1, "status": "PASS", "valid_result": true, "top_k": 20}
+          ]
+        }
+      ],
+      "retry_or_workaround_attempted": false
+    }
+  },
   "known_limitations": [
-    "No valid live RawDense or SemanticDense embedding was produced in this run.",
-    "The authoritative Qdrant index was available, but credential-visible Vertex execution was not established.",
+    "semantic_unique_relevant_at_20 remains N/A because no authoritative relevant-object set was available for C3-A2.",
+    "The five-case result is a descriptive raw-versus-semantic shadow observation; SemanticDense retrieval quality is not accepted as a production improvement.",
     "SemanticDense retrieval quality is not accepted as a production improvement.",
     "SemanticDense fusion efficacy remains unvalidated.",
     "C3-A does not prove novel generalization.",
