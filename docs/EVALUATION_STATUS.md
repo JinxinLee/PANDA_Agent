@@ -9,7 +9,7 @@ When records conflict, use the single section explicitly marked **Current author
 
 ---
 
-# Current authoritative state — 2026-08-19
+# Current authoritative state — 2026-08-21
 
 ## A3 measured execution provenance
 
@@ -36,14 +36,15 @@ When records conflict, use the single section explicitly marked **Current author
 
 # Current Evaluation Status
 
-**Phase C, C3-R2 — SemanticQueryBuilder for dense retrieval**: `INCONCLUSIVE` (treatment-qualified screening reached 5/6 after 20 analyzer-only cases; Stage B not run)
+**Phase C, C3-R3 — SemanticQueryBuilder for dense retrieval**: `INCONCLUSIVE` (the authoritative dense index was unavailable at read-only preflight; T0 passed 12/12, but the remaining 11-case screening and dense Stage B were not run)
+**Phase C, C3 overall**: `INCONCLUSIVE` (targeted C3 sampling is exhausted; the next decision is architectural)
 **Phase C, C2 — QueryAnalyzer implementation**: `PASS`
 **Phase C, C1 — Retriever entrypoint and channels**: `PASS` (C1-R1 closeout; initial implementation was `INCONCLUSIVE` after review)
 **Phase C, C4 — LexicalQueryBuilder for sparse retrieval**: `NOT_STARTED`
 - Evaluation modes: `retrieval`, `qa`, and `full` have explicit recorded boundaries.
 - Structured retrieval traces are persisted as atomic JSON and JSONL and can be loaded without rerunning QA.
 - A3 was corrected from a possible full-retrieval interpretation to a stratified low-cost bootstrap baseline. Phase-B T3 (complete 80-question dev retrieval-only) was performed on `2026-08-16`; no full 120-question retrieval/E2E run was performed.
-- Phase C is started by C1; its initial implementation was `INCONCLUSIVE` after review, C1-R1 is `PASS`, C1 overall is `PASS`, and C2 is `PASS`. C3-R1 remains historical `INCONCLUSIVE` because only 2/16 cases changed `SemanticQuery.text`; C3-R2 is also `INCONCLUSIVE` because only 5/20 fixed-order analyzer screenings qualified, below the target of 6, so dense Stage B did not run. C4-C8 remain `NOT_STARTED`. The Phase-B T3.3A-R2/g011 blocker remains deferred to generic Phase-E coverage-aware architecture; optional T3.3B ranking debt is deferred. Phase D and Phase E remain `NOT_STARTED`.
+- Phase C is started by C1; the C3 production implementation remains `accepted`, while the initial C3 evaluation is `invalid / superseded`. C1-R1 is `PASS`, C1 overall is `PASS`, and C2 is `PASS`. C3-R1 and C3-R2 remain historical `INCONCLUSIVE`; their artifacts and outcomes are preserved unchanged. C3-R3 is the final targeted closeout and is `INCONCLUSIVE` because the authoritative dense index was unavailable at the required read-only preflight, so no analyzer, embedding, or dense retrieval stage was attempted. C3 overall remains `INCONCLUSIVE`, targeted C3 sampling is exhausted, and no novel retrieval generalization claim is made. No formal T3, T4, or T5 was run. C4-C8 remain `NOT_STARTED`. The Phase-B T3.3A-R2/g011 blocker remains deferred to generic Phase-E coverage-aware architecture; optional T3.3B ranking debt is deferred. Phase D and Phase E remain `NOT_STARTED`.
 
 ## Historical full E2E reference
 
@@ -276,6 +277,18 @@ This is a low-cost English Gold reference, not a complete generalization, comple
 - Cost and isolation: analyzer calls `20`, analyzer tokens `36098`, query embeddings `0`, dense Qdrant reads `0`, and all sparse/exact/paper/workflow/graph/fusion/reranker/selector/QA/judge/write/index-mutation operations `0`. The live index preflight passed with 104973 points, schema `4`, dense 3072, `gemini-embedding-2`, and the expected fingerprint.
 - Final result: `INCONCLUSIVE`, not `PASS`, because the preregistered six-case treatment target was not reached within 20 screenings. Stage B metrics are intentionally N/A; C4 remains `NOT_STARTED`.
 
+### Phase-C C3-R3 exhaustive treatment-qualified dense closeout — 2026-08-21
+
+- Artifact: `evaluation/baselines/manifests/phase_c_c3_r3_exhaustive_treatment_qualified_dense_evaluation_v1.json`; source HEAD `9f856044b062fb666cd0b357982399c7f59a6161`; artifact status `CLOSED_INCONCLUSIVE`, result `INCONCLUSIVE`. C3-R1 and C3-R2 artifacts and outcomes remain preserved and are excluded from the C3-R3 aggregate denominator.
+- Preregistration was locked before the first remote call. It preserved the C3 history, carried forward the five blinded qualified cases (`g018,g113,g055,g114,g115`), locked the remaining 11 IDs (`g021,g034,g010,g022,g035,g023,g036,g024,g037,g039,g040`), set no treatment-count threshold, and froze the dense-only PRE/POST gates. The C3 semantic strategy, prompt, and production implementation were not changed.
+- T0 regression verification used the bundled-Python in-memory direct-check because standard pytest was unavailable: `12/12 PASS`, with no dependency installation and no external/model calls. Raw-question preservation, analyzer concept/scope ownership, contamination/provenance guards, fixed/LLM/fallback scope handling, metadata non-injection, dense/sparse isolation, deterministic output, deduplication, and symbol-duplication checks passed.
+- The required read-only preflight of `http://127.0.0.1:6333` for collection `panda_knowledge_v1` was `UNAVAILABLE` after two connection-refused attempts. Collection status, point count, dense dimensions, schema, fingerprint, payload identity, and authoritative embedding identity were `N/A`; writes were `0`. Because the populated authoritative dense index was not observable, execution stopped before the remote analyzer stage.
+- Stage A did not run. Each remaining ID (`g021,g034,g010,g022,g035,g023,g036,g024,g037,g039,g040`) is recorded as `NOT_RUN`; new screening cases `0`, new qualified cases `0`, analyzer calls `0`, and analyzer tokens `0`. The historical residual 31-case activation count is `N/A`; the prior C3-R2 result remains the historical `5/20` screening record, not a completed 31-case count.
+- The five carried-forward cases remain blinded treatment-qualified cases with no dense outcome observed. Known carried-forward qualified minimum = `5`; the complete fresh treatment population before eligibility checks is `N/A` because the remaining 11 cases were `NOT_RUN`; final Stage-B cohort size is `N/A — no cohort was frozen`. No embeddings, dense reads, or PRE/POST A/B retrieval were run. PRE/POST Recall@5/10/20, MRR, and critical coverage are `N/A`; all Stage-B gates are `NOT_RUN`. Rank classifications and direction counts are `NOT_RUN`, not measured zero safety outcomes. Same plan/filter, collection, and model/dimension checks are `NOT_RUN`; no POST contamination audit was applicable.
+- Actual authoritative evaluation cost was zero for new analyzer calls, carried-forward reconstruction analyzer calls, query embeddings, dense Qdrant reads, document embeddings, sparse/exact/paper/workflow/graph/fusion/reranker/selector/QA/verifier/judge calls, SQL writes, Qdrant writes, and index mutation. Read-only preflight accounting is explicit: `1` Luna preflight attempt inside the authoritative evaluation run plus `1` host-provided sandbox-external read-only verification outside that run, total `2`; model/analyzer, embedding, dense-retrieval, and write counts remained `0`. Query-embedding tokens are `N/A`; reindex/reembedding was `no`. No formal T3, T4, or T5 was run.
+- Historical C3-R1 diagnostics remain separate and are not in the R3 denominator: `g110` no-hit → no-hit and `g050` rank `2` → `5`. C3-R3 therefore closes `INCONCLUSIVE`; C3 overall remains `INCONCLUSIVE`, targeted C3 sampling is exhausted, and no further C3 Gold sampling is authorized. The next decision is architectural rather than another sampling round; C4 remains `NOT_STARTED`.
+- Limitations remain: C2 concepts are conservative; the raw question is mandatory and first-class; C3 activation is sparse; this is a conditional dense-only shadow evaluation rather than formal T3 and does not measure novel retrieval generalization; reviewed expansions remain elsewhere in retrieval; `g011` remains deferred to Phase E; no C4 work was started.
+
 ### Current small E2E baseline
 
 - Run: `generalization-a3-stratified-qa-20260813`.
@@ -303,7 +316,7 @@ The retrieval and QA measurements are unchanged. A3.1 corrects only metric repre
 
 ## Next authorized roadmap task
 
-`C3-R2` is `INCONCLUSIVE` after the completed treatment-qualified screening closeout; C3 remains active and C4-C8 and Phase D/E remain `NOT_STARTED`. C3-R1 remains historical `INCONCLUSIVE`. C1 initial implementation was `INCONCLUSIVE` after review, C1-R1 is `PASS`, C1 overall is `PASS`, and C2 is `PASS`. T3.3A-R2 remains `INCONCLUSIVE`/partial, g016 is locally recovered but g011 is not, heuristic iteration is stopped, and the unresolved g011 mechanism is deferred to generic Phase-E coverage-aware architecture; optional T3.3B ranking debt is deferred.
+`C3-R3` and C3 overall are `INCONCLUSIVE` after the final targeted treatment-qualified closeout; targeted C3 sampling is exhausted, the next decision must be architectural rather than another sampling round, and C4-C8 and Phase D/E remain `NOT_STARTED`. C3-R1 and C3-R2 remain historical `INCONCLUSIVE`, with their artifacts and outcomes preserved. C3 production implementation remains `accepted` and the initial C3 evaluation remains `invalid / superseded`. C1 initial implementation was `INCONCLUSIVE` after review, C1-R1 is `PASS`, C1 overall is `PASS`, and C2 is `PASS`. T3.3A-R2 remains `INCONCLUSIVE`/partial, g016 is locally recovered but g011 is not, heuristic iteration is stopped, and the unresolved g011 mechanism is deferred to generic Phase-E coverage-aware architecture; optional T3.3B ranking debt is deferred. No formal T3, T4, or T5 was run.
 
 ---
 
