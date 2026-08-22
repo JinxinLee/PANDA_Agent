@@ -1,0 +1,140 @@
+{
+ "schema_version": 1,
+ "task": "C6-A1R2 semantic-cohort eligibility correction",
+ "artifact_id": "phase_c_c6_a1r2_semantic_cohort_correction_v1",
+ "phase": "C6",
+ "recorded_on": "2026-08-22T15:31:00.919702+00:00",
+ "source_head": "4d1f71dfd4a6f47d102f94f4bb0c6033715ee2c9",
+ "correction_timing": "before any C6-A2 relevance outcome (C6-A2 was never executed)",
+ "references": {
+  "original_preregistration": "evaluation/baselines/manifests/phase_c_c6_a0_a1_fusion_replay_preregistration_v1.json",
+  "provenance_repair": "evaluation/baselines/manifests/phase_c_c6_a1r2_provenance_repair_v1.json",
+  "authoritative_replay": "evaluation/baselines/replay/phase_c_c6_current_plan_candidate_replay_v2.jsonl"
+ },
+ "original_semantic_preregistration_rule": {
+  "rule": "all SEMANTIC_REPLAY cases up to 20, deterministic by intent + case ID",
+  "minimum_for_substantive_semanticdense_evidence": 8,
+  "minimum_represented_intents": 2,
+  "separately_authorized_coverage_expansion_allowance": "5 available < 8 minimum -> semantic_a2_evidence_eligible = false; the SemanticDense production-role decision must remain EVIDENCE_INSUFFICIENT unless a separately authorized candidate-coverage task expands the frozen semantic cohort"
+ },
+ "accidental_a1r2_restriction": {
+  "conditions": [
+   "case_id in original_live_capture_cohort",
+   "row_role != supplemental_coverage"
+  ],
+  "introduced_in": "repair_c6_a1r2_build_v2.py verification 5",
+  "why_not_authoritative": "Both conditions belong to global A2 core bookkeeping (CORE_POLICY_COHORT membership for P0-P3). The original C6-A1 semantic rule contains neither; its current_status explicitly allows a separately authorized candidate-coverage task to expand the frozen semantic cohort, and the A1R2 refresh plus provenance repair was such a task. A replay-v2 case can be supplemental for the global cohort while remaining eligible for the independent Semantic Policy Cohort."
+ },
+ "semantic_eligibility_structural_rule": [
+  "formal_english_scope = true (inherited formal-English product scope)",
+  "faithful current C2 prompt-3.7 plan provenance (frozen_plan_prompt_version = 3.7.0 with an explicit frozen_plan_source)",
+  "authoritative structurally valid replay-v2 row",
+  "semantic_view_active = true",
+  "semantic_dense execution_status = OK",
+  "semantic_dense availability PRESENT_NONEMPTY or PRESENT_EMPTY",
+  "all six CURRENT production channels (exact, raw_dense, sparse, paper, workflow, graph) PRESENT_NONEMPTY or PRESENT_EMPTY",
+  "source/index identity compatible (identity gate MATCH from the provenance repair)",
+  "captured before any C6-A2 relevance outcome",
+  "no relevance information used for membership"
+ ],
+ "mechanically_derived_eligible_case_ids": [
+  "g050",
+  "g055",
+  "g039",
+  "g008",
+  "g110",
+  "g113",
+  "g114",
+  "g115"
+ ],
+ "deterministic_semantic_cohort_order": {
+  "rule": "intent ascending, then case ID ascending (all eligible cases up to 20)",
+  "ordered_ids": [
+   "g050",
+   "g055",
+   "g039",
+   "g008",
+   "g110",
+   "g113",
+   "g114",
+   "g115"
+  ]
+ },
+ "semantic_cohort_count": 8,
+ "semantic_intent_distribution": {
+  "algorithm_theory": 2,
+  "api": 1,
+  "installation": 1,
+  "troubleshooting": 4
+ },
+ "represented_intent_count": 4,
+ "case_exclusions": {
+  "g040": "semantic view inactive (semantic_view_active=false)"
+ },
+ "g040_exclusion_reason": "semantic view inactive (semantic_view_active=false)",
+ "minimum_case_threshold": 8,
+ "minimum_intent_threshold": 2,
+ "gate": {
+  "case_count_ge_8": true,
+  "represented_intents_ge_2": true
+ },
+ "semantic_a2_evidence_eligible": true,
+ "global_core_count": 30,
+ "global_core_ids_unchanged": true,
+ "supplemental_not_added_to_global_core": true,
+ "replay_v2_unchanged": true,
+ "candidate_recapture": 0,
+ "relevance_outcomes_inspected": 0,
+ "live_retrieval_calls": 0,
+ "banned_field_hits_in_replay_v2": [],
+ "production_behavior_unchanged": true,
+ "novel_replay_status": "ABSENT",
+ "semantic_eligibility_scope_note": "semantic_a2_evidence_eligible = true only authorizes substantive P4/P5 evaluation coverage in C6-A2; it does not mean SemanticDense is beneficial or production-bound, and novel corroboration remains required for any new production fusion policy",
+ "historical_record_preserved": {
+  "phase_c_c6_a1r2_provenance_repair_v1.semantic_a2": {
+   "cohort_ids": [
+    "g008",
+    "g050",
+    "g110",
+    "g113",
+    "g114",
+    "g115"
+   ],
+   "count": 6,
+   "represented_intents": [
+    "algorithm_theory",
+    "installation",
+    "troubleshooting"
+   ],
+   "semantic_a2_evidence_eligible": false,
+   "threshold_unchanged": ">=8 cases and >=2 intents; mechanically derived, no relevance",
+   "no_semanticdense_production_decision": true,
+   "note": "the repaired faithful plans expand the structural semantic-active set within the original live cohort from 4 to 6, still below 8; supplemental g039/g055 are semantic-active but excluded as supplemental coverage"
+  },
+  "note": "The repair artifact's six-case derivation (semantic_a2_evidence_eligible = false) remains an auditable historical record; this correction supersedes only the Semantic Policy Cohort membership/eligibility interpretation for future C6-A2 use"
+ },
+ "global_vs_semantic_cohort_contract": {
+  "GLOBAL_POLICY_COHORT": {
+   "count": 30,
+   "used_for": [
+    "P0 CURRENT",
+    "P1 RAW_DENSE_CENTERED",
+    "P2 EXACT_HEAVY",
+    "P3 SPARSE_HEAVY"
+   ],
+   "membership": "frozen original 30-case core; unchanged"
+  },
+  "SEMANTIC_POLICY_COHORT": {
+   "count": 8,
+   "used_for": [
+    "P4 SEMANTIC_AUXILIARY_25",
+    "P5 SEMANTIC_EXPANSION_ONLY"
+   ],
+   "membership": "mechanically derived current faithful semantic cases; independent of global-core membership"
+  }
+ },
+ "c6_a2_execution_eligibility": {
+  "global_policy_evidence_eligible": true,
+  "semantic_policy_evidence_eligible": true
+ }
+}

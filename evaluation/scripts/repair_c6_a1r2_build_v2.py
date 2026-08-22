@@ -158,18 +158,16 @@ def main() -> None:
         else:
             parity_fail.append(case_id)
 
-    # --- verification 5: semantic cohort (structural; original live-cohort
-    # membership retained, new supplemental coverage excluded) ---
+    # --- verification 5: semantic cohort per the original C6-A1 rule
+    # (all structural semantic-active cases up to 20; global live-cohort
+    # membership and row_role are NOT semantic eligibility conditions) ---
     intent_by_case = {**a1r2["intent_by_case"]}
     for row in v2_rows:
         intent_by_case.setdefault(row["case_id"], row["intent"])
-    original_live = set(a1r2["live_capture_cohort"])
     semantic_cohort = sorted(
         row["case_id"]
         for row in v2_rows
-        if row["case_id"] in original_live
-        and row["row_role"] != "supplemental_coverage"
-        and row["channels"]["semantic_dense"].get("semantic_view_active") is True
+        if row["channels"]["semantic_dense"].get("semantic_view_active") is True
         and row["channels"]["semantic_dense"]["availability_state"] in {"PRESENT_NONEMPTY", "PRESENT_EMPTY"}
         and row["channels"]["semantic_dense"].get("execution_status") == "OK"
         and all(
