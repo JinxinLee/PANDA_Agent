@@ -1,0 +1,1221 @@
+{
+ "schema_version": "c6-a1r1-product-scope-plan-fidelity-1",
+ "task": "C6-A1R1",
+ "artifact_id": "phase_c_c6_a1r1_product_scope_plan_fidelity_v1",
+ "phase": "C6",
+ "recorded_on": "2026-08-22",
+ "source_head": "51de55f6192e7f835cab633c88ee6346e83bff8d",
+ "references": {
+  "original_preregistration": "evaluation/baselines/manifests/phase_c_c6_a0_a1_fusion_replay_preregistration_v1.json (preserved unchanged; this artifact additively supersedes only the C6-A2 source-population/provenance-eligibility clauses)",
+  "formal_english_scope_source": "evaluation/baselines/manifests/phase_b_t3_product_language_scope_v2.json (calibration_id phase_b_t3_product_language_scope_v2, reviewed_at 2026-08-16, source_run_id phase-b-t3-retrieval-20260816)"
+ },
+ "correction_timing": "before any C6-A2 relevance outcome (A2 never executed)",
+ "status_ledger": {
+  "c6_a0": "PASS",
+  "c6_a1": "PASS",
+  "c6_a1r1": "PASS",
+  "c6_a2": "NOT_ELIGIBLE",
+  "c6_a3": "NOT_STARTED"
+ },
+ "purpose": "Two methodological corrections before C6-A2: (A) inherit the previously adjudicated 59-case formal-English product scope instead of treating all 80 historical dev cases as the C6-A2 product population; (B) audit whether the Phase-B T3 prompt-3.6.0 candidate streams are structurally representative of current C2 prompt-3.7.0 RetrievalPlan inputs. Scope/provenance audit only; no fusion-policy evaluation, no relevance metric.",
+ "part_a_formal_english_scope": {
+  "authoritative_source": "evaluation/baselines/manifests/phase_b_t3_product_language_scope_v2.json",
+  "source_scope": "manual review of the exact 80 Phase-B T3 development query texts against Gold v2.6; natural-language grammar rule; 9 reviewed overrides of raw en/cn/mix labels; reviewed_at 2026-08-16 (predates C6-A2)",
+  "formal_english_scope_count": 59,
+  "formal_english_scope_case_ids": [
+   "g001",
+   "g002",
+   "g003",
+   "g004",
+   "g005",
+   "g006",
+   "g007",
+   "g008",
+   "g009",
+   "g010",
+   "g011",
+   "g012",
+   "g013",
+   "g014",
+   "g015",
+   "g016",
+   "g017",
+   "g018",
+   "g019",
+   "g020",
+   "g021",
+   "g022",
+   "g023",
+   "g024",
+   "g025",
+   "g026",
+   "g027",
+   "g028",
+   "g029",
+   "g030",
+   "g031",
+   "g032",
+   "g033",
+   "g034",
+   "g035",
+   "g036",
+   "g037",
+   "g039",
+   "g040",
+   "g041",
+   "g042",
+   "g044",
+   "g047",
+   "g050",
+   "g051",
+   "g052",
+   "g055",
+   "g057",
+   "g058",
+   "g059",
+   "g060",
+   "g105",
+   "g108",
+   "g110",
+   "g112",
+   "g113",
+   "g114",
+   "g115",
+   "g119"
+  ],
+  "formal_english_scope_missing_from_historical_replay": 0,
+  "subset_verification": "59/59 IDs exist in the 80-case historical replay set; formal-English and non-English (21) partition the 80 cases exactly",
+  "language_scope_rule": "inherit the previously adjudicated formal-English scope; the raw en/cn/mix metadata labels were NOT used as the product filter; mix was NOT globally excluded (8 raw-labelled mixed cases are inside the inherited scope as pure-English questions); no new language adjudication was performed",
+  "raw_language_metadata_distribution_80": {
+   "en": 51,
+   "zh": 20,
+   "mixed": 9
+  },
+  "raw_language_metadata_distribution_59": {
+   "en": 51,
+   "mixed": 8
+  },
+  "metadata_note": "diagnostic metadata only; membership is inherited from the authoritative calibration, not derived from these labels"
+ },
+ "historical_replay_preservation": {
+  "historical_replay_scope_count": 80,
+  "historical_replay_scope_preserved": true,
+  "replay_data_unchanged": true,
+  "parity_result_preserved": "80/80 exact order+score CURRENT replay parity remains the valid historical A1 result",
+  "why_preserved": "The 80-case population remains valid for channel inventory, replay parity, and historical trace provenance. Only the C6-A2 product-evaluation source population is corrected."
+ },
+ "terminology": {
+  "HISTORICAL_REPLAY_SCOPE": 80,
+  "FORMAL_ENGLISH_PRODUCT_SCOPE": 59,
+  "CURRENT_PLAN_COMPATIBLE_PRODUCT_SCOPE": 0,
+  "C6_A2_POLICY_COHORT": 0,
+  "SEMANTIC_A2_POLICY_COHORT": 0
+ },
+ "part_b_plan_fidelity_audit": {
+  "historical_plan_source": "data/evaluation/runs/phase-b-t3-retrieval-20260816/traces/*.json retrieval_plan (prompt_version 3.6.0)",
+  "current_c2_plan_sources": [
+   "evaluation/baselines/manifests/phase_c_c4_a2r1_frozen_plan_coverage_completion_v1.json (40 analyzer-only captures, prompt 3.7.0, faithful)",
+   "evaluation/baselines/manifests/phase_c_c4_lexical_query_builder_sparse_v1.json normalized_screening_records (6 faithful records: g039 g040 g055 g113 g114 g115)",
+   "excluded: g018 unfaithful reconstruction; g011/g016 have no current plans (outside the C4 capture pool)"
+  ],
+  "analyzer_rerun": 0,
+  "channel_input_dependency_map": {
+   "exact": [
+    "question",
+    "symbols",
+    "concepts",
+    "resolved_aliases",
+    "target_repositories",
+    "resolved_versions",
+    "required_source_types(paper-priority branch)"
+   ],
+   "raw_dense": [
+    "question (exact raw text)",
+    "target_repositories + resolved_versions (source/version filter)"
+   ],
+   "sparse": [
+    "question (exact raw text)",
+    "target_repositories + resolved_versions (source/version filter)"
+   ],
+   "paper": [
+    "question (via raw dense query vector)",
+    "required_source_types (\"paper\" gate)",
+    "paper_page_hints (per-source hinted pages)"
+   ],
+   "workflow": [
+    "question (regex terms)",
+    "target_repositories + resolved_versions",
+    "required_source_types (\"workflow\" fallback)"
+   ],
+   "graph": [
+    "seeds = exact+raw_dense+sparse outputs (their inputs)",
+    "target_repositories + resolved_versions",
+    "required_source_types (\"graph\" fallback)"
+   ],
+   "source_basis": "static inspection of src/panda_agent/retrieval.py (_exact, _vector/_dense_query/_sparse_query, _query_filter, _paper, _workflow, _graph); diagnostic-only plan fields (analysis_diagnostics, premise_corrections display, secondary_intents) are not candidate-generation dependencies"
+  },
+  "comparison_rule": "only channel-consumed fields plus exact question text were compared; prompt version, diagnostics, rejected analyzer items, and provenance text were NOT treated as changes",
+  "case_status_counts": {
+   "COMPATIBLE_IDENTICAL": 0,
+   "COMPATIBLE_EQUIVALENT": 0,
+   "MATERIAL_INPUT_CHANGE": 46,
+   "CURRENT_PLAN_UNAVAILABLE": 13,
+   "HISTORICAL_INPUT_UNAVAILABLE": 0,
+   "INCOMPATIBLE_PROVENANCE": 0
+  },
+  "per_channel_compatibility_counts": {
+   "exact": {
+    "COMPATIBLE_IDENTICAL": 0,
+    "COMPATIBLE_EQUIVALENT": 0,
+    "MATERIAL_INPUT_CHANGE": 46,
+    "CURRENT_PLAN_UNAVAILABLE": 13,
+    "HISTORICAL_INPUT_UNAVAILABLE": 0,
+    "INCOMPATIBLE_PROVENANCE": 0
+   },
+   "raw_dense": {
+    "COMPATIBLE_IDENTICAL": 24,
+    "COMPATIBLE_EQUIVALENT": 0,
+    "MATERIAL_INPUT_CHANGE": 22,
+    "CURRENT_PLAN_UNAVAILABLE": 13,
+    "HISTORICAL_INPUT_UNAVAILABLE": 0,
+    "INCOMPATIBLE_PROVENANCE": 0
+   },
+   "sparse": {
+    "COMPATIBLE_IDENTICAL": 24,
+    "COMPATIBLE_EQUIVALENT": 0,
+    "MATERIAL_INPUT_CHANGE": 22,
+    "CURRENT_PLAN_UNAVAILABLE": 13,
+    "HISTORICAL_INPUT_UNAVAILABLE": 0,
+    "INCOMPATIBLE_PROVENANCE": 0
+   },
+   "paper": {
+    "COMPATIBLE_IDENTICAL": 40,
+    "COMPATIBLE_EQUIVALENT": 0,
+    "MATERIAL_INPUT_CHANGE": 6,
+    "CURRENT_PLAN_UNAVAILABLE": 13,
+    "HISTORICAL_INPUT_UNAVAILABLE": 0,
+    "INCOMPATIBLE_PROVENANCE": 0
+   },
+   "workflow": {
+    "COMPATIBLE_IDENTICAL": 24,
+    "COMPATIBLE_EQUIVALENT": 0,
+    "MATERIAL_INPUT_CHANGE": 22,
+    "CURRENT_PLAN_UNAVAILABLE": 13,
+    "HISTORICAL_INPUT_UNAVAILABLE": 0,
+    "INCOMPATIBLE_PROVENANCE": 0
+   },
+   "graph": {
+    "COMPATIBLE_IDENTICAL": 24,
+    "COMPATIBLE_EQUIVALENT": 0,
+    "MATERIAL_INPUT_CHANGE": 22,
+    "CURRENT_PLAN_UNAVAILABLE": 13,
+    "HISTORICAL_INPUT_UNAVAILABLE": 0,
+    "INCOMPATIBLE_PROVENANCE": 0
+   }
+  },
+  "current_plan_available_count": 46,
+  "current_plan_compatible_count": 0,
+  "material_input_change_count": 46,
+  "unavailable_or_unknown_count": 13,
+  "current_plan_compatible_case_ids": [],
+  "current_plan_unavailable_case_ids": [
+   "g007",
+   "g011",
+   "g012",
+   "g016",
+   "g018",
+   "g025",
+   "g026",
+   "g041",
+   "g042",
+   "g057",
+   "g058",
+   "g108",
+   "g119"
+  ],
+  "material_change_case_ids": [
+   "g001",
+   "g002",
+   "g003",
+   "g004",
+   "g005",
+   "g006",
+   "g008",
+   "g009",
+   "g010",
+   "g013",
+   "g014",
+   "g015",
+   "g017",
+   "g019",
+   "g020",
+   "g021",
+   "g022",
+   "g023",
+   "g024",
+   "g027",
+   "g028",
+   "g029",
+   "g030",
+   "g031",
+   "g032",
+   "g033",
+   "g034",
+   "g035",
+   "g036",
+   "g037",
+   "g039",
+   "g040",
+   "g044",
+   "g047",
+   "g050",
+   "g051",
+   "g052",
+   "g055",
+   "g059",
+   "g060",
+   "g105",
+   "g110",
+   "g112",
+   "g113",
+   "g114",
+   "g115"
+  ],
+  "material_change_reasons_by_channel": {
+   "g001": {
+    "exact": [
+     "concepts"
+    ],
+    "raw_dense": [],
+    "sparse": [],
+    "paper": [],
+    "workflow": [],
+    "graph": []
+   },
+   "g002": {
+    "exact": [
+     "concepts"
+    ],
+    "raw_dense": [],
+    "sparse": [],
+    "paper": [],
+    "workflow": [],
+    "graph": []
+   },
+   "g003": {
+    "exact": [
+     "concepts"
+    ],
+    "raw_dense": [],
+    "sparse": [],
+    "paper": [],
+    "workflow": [],
+    "graph": []
+   },
+   "g004": {
+    "exact": [
+     "concepts"
+    ],
+    "raw_dense": [],
+    "sparse": [],
+    "paper": [],
+    "workflow": [],
+    "graph": []
+   },
+   "g005": {
+    "exact": [
+     "concepts"
+    ],
+    "raw_dense": [],
+    "sparse": [],
+    "paper": [],
+    "workflow": [],
+    "graph": []
+   },
+   "g006": {
+    "exact": [
+     "concepts"
+    ],
+    "raw_dense": [],
+    "sparse": [],
+    "paper": [],
+    "workflow": [],
+    "graph": []
+   },
+   "g008": {
+    "exact": [
+     "concepts"
+    ],
+    "raw_dense": [],
+    "sparse": [],
+    "paper": [],
+    "workflow": [],
+    "graph": []
+   },
+   "g009": {
+    "exact": [
+     "concepts"
+    ],
+    "raw_dense": [],
+    "sparse": [],
+    "paper": [],
+    "workflow": [],
+    "graph": []
+   },
+   "g010": {
+    "exact": [
+     "concepts"
+    ],
+    "raw_dense": [],
+    "sparse": [],
+    "paper": [],
+    "workflow": [],
+    "graph": []
+   },
+   "g013": {
+    "exact": [
+     "concepts",
+     "symbols"
+    ],
+    "raw_dense": [],
+    "sparse": [],
+    "paper": [],
+    "workflow": [],
+    "graph": []
+   },
+   "g014": {
+    "exact": [
+     "concepts"
+    ],
+    "raw_dense": [],
+    "sparse": [],
+    "paper": [],
+    "workflow": [],
+    "graph": []
+   },
+   "g015": {
+    "exact": [
+     "concepts"
+    ],
+    "raw_dense": [],
+    "sparse": [],
+    "paper": [],
+    "workflow": [],
+    "graph": []
+   },
+   "g017": {
+    "exact": [
+     "concepts"
+    ],
+    "raw_dense": [],
+    "sparse": [],
+    "paper": [],
+    "workflow": [],
+    "graph": []
+   },
+   "g019": {
+    "exact": [
+     "concepts"
+    ],
+    "raw_dense": [],
+    "sparse": [],
+    "paper": [],
+    "workflow": [],
+    "graph": []
+   },
+   "g020": {
+    "exact": [
+     "concepts"
+    ],
+    "raw_dense": [],
+    "sparse": [],
+    "paper": [],
+    "workflow": [],
+    "graph": []
+   },
+   "g021": {
+    "exact": [
+     "concepts",
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "raw_dense": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "sparse": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "paper": [],
+    "workflow": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "graph": [
+     "resolved_versions",
+     "target_repositories"
+    ]
+   },
+   "g022": {
+    "exact": [
+     "concepts",
+     "resolved_versions",
+     "symbols",
+     "target_repositories"
+    ],
+    "raw_dense": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "sparse": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "paper": [],
+    "workflow": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "graph": [
+     "resolved_versions",
+     "target_repositories"
+    ]
+   },
+   "g023": {
+    "exact": [
+     "concepts"
+    ],
+    "raw_dense": [],
+    "sparse": [],
+    "paper": [],
+    "workflow": [],
+    "graph": []
+   },
+   "g024": {
+    "exact": [
+     "concepts",
+     "resolved_versions",
+     "symbols",
+     "target_repositories"
+    ],
+    "raw_dense": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "sparse": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "paper": [],
+    "workflow": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "graph": [
+     "resolved_versions",
+     "target_repositories"
+    ]
+   },
+   "g027": {
+    "exact": [
+     "concepts"
+    ],
+    "raw_dense": [],
+    "sparse": [],
+    "paper": [],
+    "workflow": [],
+    "graph": []
+   },
+   "g028": {
+    "exact": [
+     "concepts",
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "raw_dense": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "sparse": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "paper": [],
+    "workflow": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "graph": [
+     "resolved_versions",
+     "target_repositories"
+    ]
+   },
+   "g029": {
+    "exact": [
+     "concepts",
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "raw_dense": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "sparse": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "paper": [],
+    "workflow": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "graph": [
+     "resolved_versions",
+     "target_repositories"
+    ]
+   },
+   "g030": {
+    "exact": [
+     "concepts"
+    ],
+    "raw_dense": [],
+    "sparse": [],
+    "paper": [],
+    "workflow": [],
+    "graph": []
+   },
+   "g031": {
+    "exact": [
+     "concepts",
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "raw_dense": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "sparse": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "paper": [],
+    "workflow": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "graph": [
+     "resolved_versions",
+     "target_repositories"
+    ]
+   },
+   "g032": {
+    "exact": [
+     "concepts",
+     "resolved_versions",
+     "symbols",
+     "target_repositories"
+    ],
+    "raw_dense": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "sparse": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "paper": [],
+    "workflow": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "graph": [
+     "resolved_versions",
+     "target_repositories"
+    ]
+   },
+   "g033": {
+    "exact": [
+     "concepts",
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "raw_dense": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "sparse": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "paper": [],
+    "workflow": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "graph": [
+     "resolved_versions",
+     "target_repositories"
+    ]
+   },
+   "g034": {
+    "exact": [
+     "concepts"
+    ],
+    "raw_dense": [],
+    "sparse": [],
+    "paper": [],
+    "workflow": [],
+    "graph": []
+   },
+   "g035": {
+    "exact": [
+     "concepts",
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "raw_dense": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "sparse": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "paper": [],
+    "workflow": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "graph": [
+     "resolved_versions",
+     "target_repositories"
+    ]
+   },
+   "g036": {
+    "exact": [
+     "concepts",
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "raw_dense": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "sparse": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "paper": [],
+    "workflow": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "graph": [
+     "resolved_versions",
+     "target_repositories"
+    ]
+   },
+   "g037": {
+    "exact": [
+     "concepts",
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "raw_dense": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "sparse": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "paper": [],
+    "workflow": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "graph": [
+     "resolved_versions",
+     "target_repositories"
+    ]
+   },
+   "g039": {
+    "exact": [
+     "concepts",
+     "required_source_types",
+     "resolved_versions",
+     "symbols",
+     "target_repositories"
+    ],
+    "raw_dense": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "sparse": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "paper": [
+     "required_source_types"
+    ],
+    "workflow": [
+     "required_source_types",
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "graph": [
+     "required_source_types",
+     "resolved_versions",
+     "target_repositories"
+    ]
+   },
+   "g040": {
+    "exact": [
+     "concepts",
+     "required_source_types",
+     "resolved_versions",
+     "symbols",
+     "target_repositories"
+    ],
+    "raw_dense": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "sparse": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "paper": [
+     "required_source_types"
+    ],
+    "workflow": [
+     "required_source_types",
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "graph": [
+     "required_source_types",
+     "resolved_versions",
+     "target_repositories"
+    ]
+   },
+   "g044": {
+    "exact": [
+     "concepts"
+    ],
+    "raw_dense": [],
+    "sparse": [],
+    "paper": [],
+    "workflow": [],
+    "graph": []
+   },
+   "g047": {
+    "exact": [
+     "concepts",
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "raw_dense": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "sparse": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "paper": [],
+    "workflow": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "graph": [
+     "resolved_versions",
+     "target_repositories"
+    ]
+   },
+   "g050": {
+    "exact": [
+     "concepts",
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "raw_dense": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "sparse": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "paper": [],
+    "workflow": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "graph": [
+     "resolved_versions",
+     "target_repositories"
+    ]
+   },
+   "g051": {
+    "exact": [
+     "concepts"
+    ],
+    "raw_dense": [],
+    "sparse": [],
+    "paper": [],
+    "workflow": [],
+    "graph": []
+   },
+   "g052": {
+    "exact": [
+     "concepts",
+     "target_repositories"
+    ],
+    "raw_dense": [
+     "target_repositories"
+    ],
+    "sparse": [
+     "target_repositories"
+    ],
+    "paper": [],
+    "workflow": [
+     "target_repositories"
+    ],
+    "graph": [
+     "target_repositories"
+    ]
+   },
+   "g055": {
+    "exact": [
+     "concepts",
+     "required_source_types",
+     "resolved_versions",
+     "symbols",
+     "target_repositories"
+    ],
+    "raw_dense": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "sparse": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "paper": [
+     "paper_page_hints",
+     "required_source_types"
+    ],
+    "workflow": [
+     "required_source_types",
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "graph": [
+     "required_source_types",
+     "resolved_versions",
+     "target_repositories"
+    ]
+   },
+   "g059": {
+    "exact": [
+     "concepts"
+    ],
+    "raw_dense": [],
+    "sparse": [],
+    "paper": [],
+    "workflow": [],
+    "graph": []
+   },
+   "g060": {
+    "exact": [
+     "concepts"
+    ],
+    "raw_dense": [],
+    "sparse": [],
+    "paper": [],
+    "workflow": [],
+    "graph": []
+   },
+   "g105": {
+    "exact": [
+     "concepts",
+     "symbols"
+    ],
+    "raw_dense": [],
+    "sparse": [],
+    "paper": [],
+    "workflow": [],
+    "graph": []
+   },
+   "g110": {
+    "exact": [
+     "concepts",
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "raw_dense": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "sparse": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "paper": [],
+    "workflow": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "graph": [
+     "resolved_versions",
+     "target_repositories"
+    ]
+   },
+   "g112": {
+    "exact": [
+     "concepts",
+     "target_repositories"
+    ],
+    "raw_dense": [
+     "target_repositories"
+    ],
+    "sparse": [
+     "target_repositories"
+    ],
+    "paper": [],
+    "workflow": [
+     "target_repositories"
+    ],
+    "graph": [
+     "target_repositories"
+    ]
+   },
+   "g113": {
+    "exact": [
+     "concepts",
+     "required_source_types",
+     "resolved_versions",
+     "symbols",
+     "target_repositories"
+    ],
+    "raw_dense": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "sparse": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "paper": [
+     "required_source_types"
+    ],
+    "workflow": [
+     "required_source_types",
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "graph": [
+     "required_source_types",
+     "resolved_versions",
+     "target_repositories"
+    ]
+   },
+   "g114": {
+    "exact": [
+     "concepts",
+     "required_source_types",
+     "resolved_versions",
+     "symbols",
+     "target_repositories"
+    ],
+    "raw_dense": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "sparse": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "paper": [
+     "required_source_types"
+    ],
+    "workflow": [
+     "required_source_types",
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "graph": [
+     "required_source_types",
+     "resolved_versions",
+     "target_repositories"
+    ]
+   },
+   "g115": {
+    "exact": [
+     "concepts",
+     "required_source_types",
+     "resolved_versions",
+     "symbols",
+     "target_repositories"
+    ],
+    "raw_dense": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "sparse": [
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "paper": [
+     "required_source_types"
+    ],
+    "workflow": [
+     "required_source_types",
+     "resolved_versions",
+     "target_repositories"
+    ],
+    "graph": [
+     "required_source_types",
+     "resolved_versions",
+     "target_repositories"
+    ]
+   }
+  },
+  "dominant_change_mechanisms": [
+   "exact channel: analyzer concepts differ on 46/46 comparable cases (the C2 3.7.0 additive semantic-delta contract reconstructs plan.concepts differently from the 3.6.0 merged-field era); symbols differ on 11; required_source_types on 6",
+   "raw_dense/sparse/workflow/graph: plan.target_repositories differs on 22/46 cases (3.7.0 accepts analyzer repository additions only with explicit query grounding, so current plans often target fewer repositories, e.g. g021 3->2, g022 2->1); resolved_versions differs on 20 cases purely as a follower of the target set (the per-repository locks themselves are unchanged)",
+   "paper: paper_page_hints differ on 1 case and required_source_types on 6"
+  ],
+  "no_gold_use": "Gold evidence IDs and relevance were never inspected for any compatibility decision"
+ },
+ "plan_fidelity_state": "PLAN_FIDELITY_BLOCKED",
+ "plan_fidelity_interpretation": "PLAN_FIDELITY_BLOCKED: zero formal-English cases have proven current-plan-compatible historical candidate streams, below the preregistered minimum of 12. The 80/80 replay parity remains valid \u2014 it proves faithful replay of the historical fusion \u2014 but the historical 3.6.0-era channel inputs (exact terms and repository scopes) are not representative of current 3.7.0 RetrievalPlan inputs, so the frozen streams cannot support a formal CURRENT-product C6-A2 policy comparison.",
+ "corrected_a2_source_population": {
+  "formal_english_scope_count": 59,
+  "current_plan_compatible_formal_english_count": 0,
+  "case_ids": []
+ },
+ "corrected_a2_policy_cohort": {
+  "rule": "unchanged from original A1 (max 30; within-intent case-ID ascending; fixed repository intent-cycle round-robin; never inspect relevance)",
+  "source_population_count": 0,
+  "cohort_count": 0,
+  "cohort_case_ids": [],
+  "selection_used_relevance": false
+ },
+ "intent_distributions": {
+  "historical_80": {
+   "installation": 11,
+   "usage": 14,
+   "algorithm_theory": 8,
+   "algorithm_implementation": 12,
+   "api": 15,
+   "data_flow": 10,
+   "module_structure": 4,
+   "troubleshooting": 6
+  },
+  "formal_english_59": {
+   "algorithm_implementation": 2,
+   "algorithm_theory": 8,
+   "api": 15,
+   "data_flow": 1,
+   "installation": 11,
+   "module_structure": 2,
+   "troubleshooting": 6,
+   "usage": 14
+  },
+  "compatible_product": {},
+  "final_a2_cohort": {},
+  "labels_source": "historical trace retrieval_plan.intent (trusted existing metadata; analyzer not rerun)"
+ },
+ "intent_aware_rule_unchanged": "SUFFICIENTLY_REPRESENTED iff >=4 cases in the final C6_A2_POLICY_COHORT; with an empty cohort no intent is sufficiently represented",
+ "semantic_cohort": {
+  "semantic_historical_case_ids": [
+   "g039",
+   "g055",
+   "g113",
+   "g114",
+   "g115"
+  ],
+  "semantic_formal_english_case_ids": [
+   "g039",
+   "g055",
+   "g113",
+   "g114",
+   "g115"
+  ],
+  "semantic_current_plan_compatible_case_ids": [],
+  "semantic_a2_evidence_eligible": false,
+  "gate_unchanged": ">=8 cases and >=2 intents; derived mechanically"
+ },
+ "novel_gate": {
+  "novel_replay_status": "ABSENT",
+  "unchanged": true
+ },
+ "preregistration_preservation": {
+  "policies_unchanged": true,
+  "weights_unchanged": true,
+  "rrf_k_unchanged": true,
+  "metrics_unchanged": true,
+  "gates_unchanged": true,
+  "semanticdense_decision_tree_unchanged": true,
+  "intent_aware_rules_unchanged": true,
+  "novel_gate_unchanged": true,
+  "note": "C6-A1R1 corrects only the evaluation population and current-plan provenance eligibility; no fusion behavior, policy, metric, or gate changed"
+ },
+ "future_possible_task": {
+  "name": "C6 candidate-coverage refresh",
+  "status": "RECORDED_NOT_EXECUTED",
+  "description": "a separately authorized task capturing current-plan candidate streams for the minimum current formal-English cohort needed (not an automatic rerun of all 80/120 cases); live retrieval in C6-A1R1 was not performed"
+ },
+ "production_behavior_unchanged": true,
+ "zero_relevance_outcome_ledger": {
+  "recall_mrr_critical_computed": false,
+  "gold_relevance_inspected": false,
+  "policies_executed_on_gold": false,
+  "policy_winner_derived": false
+ },
+ "zero_live_call_ledger": {
+  "analyzer_calls": 0,
+  "vertex_calls": 0,
+  "embedding_calls": 0,
+  "exact_live_retrieval": 0,
+  "raw_dense_live_retrieval": 0,
+  "semantic_dense_live_retrieval": 0,
+  "sparse_live_retrieval": 0,
+  "paper_live_retrieval": 0,
+  "workflow_live_retrieval": 0,
+  "graph_live_retrieval": 0,
+  "reranker": 0,
+  "selector": 0,
+  "qa_verifier_judge": 0,
+  "postgresql_candidate_reads": 0,
+  "qdrant_reads": 0,
+  "qdrant_writes": 0,
+  "sql_writes": 0,
+  "index_mutations": 0,
+  "reindex": "no",
+  "sparse_rebuild": "no",
+  "dense_reembedding": "no",
+  "repository_file_reads_only": true
+ },
+ "c6_a2_execution_eligibility": {
+  "state": "NOT_ELIGIBLE",
+  "blocker": "insufficient current-plan-compatible formal-English frozen candidates: 0 compatible < 12 minimum (46 of 59 formal-English cases have current 3.7.0 plans but every one shows material channel-input changes versus the frozen 3.6.0-era streams; 13 have no faithful current plan)",
+  "conditions_check": {
+   "formal_english_scope_located_and_verified": true,
+   "all_59_ids_map_to_historical_replay": true,
+   "plan_fidelity_audit_methodologically_valid": true,
+   "at_least_12_current_plan_compatible": false,
+   "cohort_freezable_without_relevance_inspection": true,
+   "current_replay_infrastructure_valid": true
+  }
+ },
+ "c6_a1r1_result": "PASS",
+ "known_limitations": [
+  "the audit is structural only: it proves the frozen 3.6.0-era streams are not current-plan representative; it does not measure how much the candidates would actually change",
+  "13 formal-English cases (including g011 and g016, which were outside the C4 capture pool) have no faithful current 3.7.0 plans",
+  "g011 remains deferred to Phase E; C4/C5 remain CLOSED_INCONCLUSIVE"
+ ]
+}
