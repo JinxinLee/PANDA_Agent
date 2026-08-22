@@ -139,6 +139,32 @@ def candidate_relevant_groups(object_id: str, groups: list, lookup: dict) -> lis
     ]
 
 
+def critical_group_delta(
+    p0_group_first_ranks: dict,
+    policy_group_first_ranks: dict,
+    critical_group_ids: list[str],
+    top_k: int,
+) -> tuple[list[str], list[str]]:
+    """Critical evidence-GROUP identity delta vs P0 (Gate-5 semantics).
+
+    A new critical miss is a specific P0-hit critical group the policy loses;
+    recovered groups are reported separately and never cancel losses.
+    """
+    def hit(ranks: dict, group_id: str) -> bool:
+        rank = ranks.get(group_id)
+        return rank is not None and rank <= top_k
+
+    newly_lost = [
+        g for g in critical_group_ids
+        if hit(p0_group_first_ranks, g) and not hit(policy_group_first_ranks, g)
+    ]
+    newly_recovered = [
+        g for g in critical_group_ids
+        if not hit(p0_group_first_ranks, g) and hit(policy_group_first_ranks, g)
+    ]
+    return newly_lost, newly_recovered
+
+
 def evaluate_policy_on_case(policy, case, gold_case, lookup) -> dict:
     receipt = policy.apply(case)
     receipt_repeat = policy.apply(case)
@@ -402,15 +428,22 @@ def main() -> None:
             for r in per_policy[policy_key]:
                 p0 = p0_by_case[r["case_id"]]
                 r["direction"] = classify_case(p0["first_relevant_rank"], r["first_relevant_rank"])
-                p0_crit = p0["critical_evidence_coverage"]
-                r["new_critical_miss"] = bool(
-                    p0_crit is not None
-                    and r["critical_evidence_coverage"] is not None
-                    and r["critical_evidence_coverage"] < p0_crit
+                critical_ids = [
+                    g.group_id
+                    for g in gold_by_id[r["case_id"]].required_evidence_groups
+                    if g.critical
+                ]
+                lost, recovered = critical_group_delta(
+                    p0["group_first_ranks"], r["group_first_ranks"], critical_ids, TOP_K
                 )
+                r["new_critical_miss"] = bool(lost)
+                r["new_critical_group_miss_ids"] = lost
+                r["recovered_critical_group_ids"] = recovered
             for r in p0_rows:
                 r["direction"] = "baseline"
                 r["new_critical_miss"] = False
+                r["new_critical_group_miss_ids"] = []
+                r["recovered_critical_group_ids"] = []
         for policy_key in policy_keys:
             for r in per_policy[policy_key]:
                 receipts.append(
@@ -433,6 +466,8 @@ def main() -> None:
                         "combined_candidate_recall_at_20": r["combined_candidate_recall_at_20"],
                         "direction": r["direction"],
                         "new_critical_miss": r["new_critical_miss"],
+                        "new_critical_group_miss_ids": r["new_critical_group_miss_ids"],
+                        "recovered_critical_group_ids": r["recovered_critical_group_ids"],
                         "fused_top20_ids": r["top20_ids"],
                         "wrong_version_fused": r["wrong_version_fused"],
                     }

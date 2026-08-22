@@ -1,0 +1,2996 @@
+{
+ "schema_version": 1,
+ "task": "C6-A2R1 critical-miss semantics audit and Gate-5 correction",
+ "artifact_id": "phase_c_c6_a2_critical_miss_semantics_audit_v1",
+ "phase": "C6",
+ "recorded_on": "2026-08-22T19:05:51.471659+00:00",
+ "source_head": "83db6bbde148642738e8dc763acf1e1f69b4d0fb",
+ "audit_timing": "after A2 evaluation, before A3",
+ "reason_for_audit": "post-A2 review found Gate 5 was implemented as aggregate critical-coverage decline (policy critical_evidence_coverage < P0), which can miss a critical-group swap where coverage stays equal but a specific P0-hit critical group is lost",
+ "references": {
+  "a2_manifest": "evaluation/baselines/manifests/phase_c_c6_a2_frozen_fusion_policy_comparison_v1.json",
+  "a2_receipts": "evaluation/baselines/replay/phase_c_c6_a2_policy_receipts_v1.jsonl",
+  "gold_v2_6": "evaluation/benchmarks/v2_6/gold_questions.yaml"
+ },
+ "old_gate5_definition": "per-case policy critical_evidence_coverage < P0 critical_evidence_coverage (aggregate coverage decline)",
+ "corrected_gate5_definition": "per-case critical evidence-GROUP identity loss: a new critical miss exists iff Gold required_evidence_groups[*].critical group g has P0 group_first_rank <= TOP_K and policy group_first_rank None or > TOP_K; Gate 5 PASS iff the cohort total of new critical group misses is 0; recovered groups never cancel lost groups",
+ "top_k": 20,
+ "critical_group_source": "gold_questions.yaml required_evidence_groups[*].critical (exact Gold group IDs)",
+ "audited_policies": [
+  "P1_RAW_DENSE_CENTERED",
+  "P2_EXACT_HEAVY",
+  "P3_SPARSE_HEAVY",
+  "P4_SEMANTIC_AUXILIARY_25"
+ ],
+ "p5_note": "P5 has no ordinary Gate-5 entry: its scored prefix is P0-identical on 8/8 cases",
+ "policy_audits": {
+  "P1_RAW_DENSE_CENTERED": {
+   "policy_key": "P1_RAW_DENSE_CENTERED",
+   "policy_id": "c6.raw_dense_centered.v1",
+   "old_gate_5": "FAIL",
+   "corrected_gate_5": "FAIL",
+   "total_new_critical_group_misses": 2,
+   "total_newly_recovered_critical_groups": 1,
+   "affected_cases": [
+    {
+     "case_id": "g059",
+     "lost_group_ids": [
+      "g059.e2",
+      "g059.e3"
+     ]
+    }
+   ],
+   "recovered_cases": [
+    {
+     "case_id": "g002",
+     "recovered_group_ids": [
+      "g002.e1"
+     ]
+    }
+   ],
+   "old_vs_corrected_case_classification": {
+    "SAME_PASS": 29,
+    "SAME_FAIL": 1,
+    "OLD_FALSE_NEGATIVE": [],
+    "OLD_FALSE_POSITIVE": []
+   },
+   "corrected_gate_matrix": {
+    "gates": {
+     "1 replay inputs identical except policy": "PASS",
+     "2 no candidate stream regenerated": "PASS",
+     "3 Fused Recall@20 >= CURRENT": "PASS",
+     "4 Fused Recall@10 >= CURRENT": "PASS",
+     "5 no new critical evidence miss": "FAIL",
+     "6 lost_hit = 0": "FAIL",
+     "7 negative_direction_count <= positive_direction_count": "FAIL",
+     "8 no version/source violation introduced by replay": "PASS",
+     "9 no benchmark-specific channel rule": "PASS",
+     "10 policy was preregistered in A1": "PASS"
+    },
+    "ALL_HARD_GATES_PASS": false
+   }
+  },
+  "P2_EXACT_HEAVY": {
+   "policy_key": "P2_EXACT_HEAVY",
+   "policy_id": "c6.exact_heavy.v1",
+   "old_gate_5": "FAIL",
+   "corrected_gate_5": "FAIL",
+   "total_new_critical_group_misses": 1,
+   "total_newly_recovered_critical_groups": 0,
+   "affected_cases": [
+    {
+     "case_id": "g105",
+     "lost_group_ids": [
+      "g105.e2"
+     ]
+    }
+   ],
+   "recovered_cases": [],
+   "old_vs_corrected_case_classification": {
+    "SAME_PASS": 29,
+    "SAME_FAIL": 1,
+    "OLD_FALSE_NEGATIVE": [],
+    "OLD_FALSE_POSITIVE": []
+   },
+   "corrected_gate_matrix": {
+    "gates": {
+     "1 replay inputs identical except policy": "PASS",
+     "2 no candidate stream regenerated": "PASS",
+     "3 Fused Recall@20 >= CURRENT": "FAIL",
+     "4 Fused Recall@10 >= CURRENT": "PASS",
+     "5 no new critical evidence miss": "FAIL",
+     "6 lost_hit = 0": "PASS",
+     "7 negative_direction_count <= positive_direction_count": "FAIL",
+     "8 no version/source violation introduced by replay": "PASS",
+     "9 no benchmark-specific channel rule": "PASS",
+     "10 policy was preregistered in A1": "PASS"
+    },
+    "ALL_HARD_GATES_PASS": false
+   }
+  },
+  "P3_SPARSE_HEAVY": {
+   "policy_key": "P3_SPARSE_HEAVY",
+   "policy_id": "c6.sparse_heavy.v1",
+   "old_gate_5": "PASS",
+   "corrected_gate_5": "PASS",
+   "total_new_critical_group_misses": 0,
+   "total_newly_recovered_critical_groups": 1,
+   "affected_cases": [],
+   "recovered_cases": [
+    {
+     "case_id": "g002",
+     "recovered_group_ids": [
+      "g002.e1"
+     ]
+    }
+   ],
+   "old_vs_corrected_case_classification": {
+    "SAME_PASS": 30,
+    "SAME_FAIL": 0,
+    "OLD_FALSE_NEGATIVE": [],
+    "OLD_FALSE_POSITIVE": []
+   },
+   "corrected_gate_matrix": {
+    "gates": {
+     "1 replay inputs identical except policy": "PASS",
+     "2 no candidate stream regenerated": "PASS",
+     "3 Fused Recall@20 >= CURRENT": "PASS",
+     "4 Fused Recall@10 >= CURRENT": "PASS",
+     "5 no new critical evidence miss": "PASS",
+     "6 lost_hit = 0": "PASS",
+     "7 negative_direction_count <= positive_direction_count": "PASS",
+     "8 no version/source violation introduced by replay": "PASS",
+     "9 no benchmark-specific channel rule": "PASS",
+     "10 policy was preregistered in A1": "PASS"
+    },
+    "ALL_HARD_GATES_PASS": true
+   }
+  },
+  "P4_SEMANTIC_AUXILIARY_25": {
+   "policy_key": "P4_SEMANTIC_AUXILIARY_25",
+   "policy_id": "c6.semantic_aux25.v1",
+   "old_gate_5": "FAIL",
+   "corrected_gate_5": "FAIL",
+   "total_new_critical_group_misses": 1,
+   "total_newly_recovered_critical_groups": 0,
+   "affected_cases": [
+    {
+     "case_id": "g055",
+     "lost_group_ids": [
+      "g055.e2"
+     ]
+    }
+   ],
+   "recovered_cases": [],
+   "old_vs_corrected_case_classification": {
+    "SAME_PASS": 7,
+    "SAME_FAIL": 1,
+    "OLD_FALSE_NEGATIVE": [],
+    "OLD_FALSE_POSITIVE": []
+   },
+   "corrected_gate_matrix": {
+    "gates": {
+     "1 replay inputs identical except policy": "PASS",
+     "2 no candidate stream regenerated": "PASS",
+     "3 Fused Recall@20 >= CURRENT": "FAIL",
+     "4 Fused Recall@10 >= CURRENT": "PASS",
+     "5 no new critical evidence miss": "FAIL",
+     "6 lost_hit = 0": "PASS",
+     "7 negative_direction_count <= positive_direction_count": "FAIL",
+     "8 no version/source violation introduced by replay": "PASS",
+     "9 no benchmark-specific channel rule": "PASS",
+     "10 policy was preregistered in A1": "PASS"
+    },
+    "ALL_HARD_GATES_PASS": false
+   }
+  }
+ },
+ "case_level_audit_receipts": {
+  "P1_RAW_DENSE_CENTERED": [
+   {
+    "scope": "global",
+    "case_id": "g001",
+    "intent": "installation",
+    "policy_id": "c6.raw_dense_centered.v1",
+    "critical_group_ids": [
+     "g001.installation"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g001.installation",
+      "p0_first_rank": 6,
+      "policy_first_rank": 2,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g002",
+    "intent": "installation",
+    "policy_id": "c6.raw_dense_centered.v1",
+    "critical_group_ids": [
+     "g002.e1"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g002.e1",
+      "p0_first_rank": null,
+      "policy_first_rank": 11,
+      "p0_hit_at_20": false,
+      "policy_hit_at_20": true,
+      "status": "newly_recovered"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [
+     "g002.e1"
+    ],
+    "recovered_critical_group_count": 1
+   },
+   {
+    "scope": "global",
+    "case_id": "g003",
+    "intent": "installation",
+    "policy_id": "c6.raw_dense_centered.v1",
+    "critical_group_ids": [
+     "g003.e1"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g003.e1",
+      "p0_first_rank": 1,
+      "policy_first_rank": 1,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g004",
+    "intent": "installation",
+    "policy_id": "c6.raw_dense_centered.v1",
+    "critical_group_ids": [
+     "g004.e1"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g004.e1",
+      "p0_first_rank": 1,
+      "policy_first_rank": 1,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g005",
+    "intent": "installation",
+    "policy_id": "c6.raw_dense_centered.v1",
+    "critical_group_ids": [
+     "g005.e1"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g005.e1",
+      "p0_first_rank": 1,
+      "policy_first_rank": 1,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g006",
+    "intent": "installation",
+    "policy_id": "c6.raw_dense_centered.v1",
+    "critical_group_ids": [
+     "g006.e1"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g006.e1",
+      "p0_first_rank": 20,
+      "policy_first_rank": 6,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g010",
+    "intent": "usage",
+    "policy_id": "c6.raw_dense_centered.v1",
+    "critical_group_ids": [
+     "g010.e1"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g010.e1",
+      "p0_first_rank": 2,
+      "policy_first_rank": 2,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g013",
+    "intent": "usage",
+    "policy_id": "c6.raw_dense_centered.v1",
+    "critical_group_ids": [
+     "g013.e1",
+     "g013.e2"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g013.e1",
+      "p0_first_rank": 1,
+      "policy_first_rank": 1,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g013.e2",
+      "p0_first_rank": 3,
+      "policy_first_rank": 3,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g014",
+    "intent": "usage",
+    "policy_id": "c6.raw_dense_centered.v1",
+    "critical_group_ids": [
+     "g014.e1",
+     "g014.e2"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g014.e1",
+      "p0_first_rank": 1,
+      "policy_first_rank": 1,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g014.e2",
+      "p0_first_rank": 2,
+      "policy_first_rank": 2,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g015",
+    "intent": "usage",
+    "policy_id": "c6.raw_dense_centered.v1",
+    "critical_group_ids": [
+     "g015.e1",
+     "g015.e2"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g015.e1",
+      "p0_first_rank": 1,
+      "policy_first_rank": 1,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g015.e2",
+      "p0_first_rank": 2,
+      "policy_first_rank": 2,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g017",
+    "intent": "usage",
+    "policy_id": "c6.raw_dense_centered.v1",
+    "critical_group_ids": [
+     "g017.e2"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g017.e2",
+      "p0_first_rank": 2,
+      "policy_first_rank": 2,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g019",
+    "intent": "usage",
+    "policy_id": "c6.raw_dense_centered.v1",
+    "critical_group_ids": [
+     "g019.e1"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g019.e1",
+      "p0_first_rank": 1,
+      "policy_first_rank": 1,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g027",
+    "intent": "api",
+    "policy_id": "c6.raw_dense_centered.v1",
+    "critical_group_ids": [
+     "g027.pandaroot",
+     "g027.restgas_fork"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g027.pandaroot",
+      "p0_first_rank": 3,
+      "policy_first_rank": 7,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g027.restgas_fork",
+      "p0_first_rank": 2,
+      "policy_first_rank": 4,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g028",
+    "intent": "api",
+    "policy_id": "c6.raw_dense_centered.v1",
+    "critical_group_ids": [
+     "g028.e1"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g028.e1",
+      "p0_first_rank": 3,
+      "policy_first_rank": 3,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g029",
+    "intent": "api",
+    "policy_id": "c6.raw_dense_centered.v1",
+    "critical_group_ids": [
+     "g029.e1"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g029.e1",
+      "p0_first_rank": 2,
+      "policy_first_rank": 2,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g030",
+    "intent": "api",
+    "policy_id": "c6.raw_dense_centered.v1",
+    "critical_group_ids": [
+     "g030.e1"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g030.e1",
+      "p0_first_rank": 2,
+      "policy_first_rank": 7,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g031",
+    "intent": "api",
+    "policy_id": "c6.raw_dense_centered.v1",
+    "critical_group_ids": [
+     "g031.e1"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g031.e1",
+      "p0_first_rank": 1,
+      "policy_first_rank": 1,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g044",
+    "intent": "algorithm_theory",
+    "policy_id": "c6.raw_dense_centered.v1",
+    "critical_group_ids": [
+     "g044.e1"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g044.e1",
+      "p0_first_rank": 3,
+      "policy_first_rank": 2,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g047",
+    "intent": "algorithm_theory",
+    "policy_id": "c6.raw_dense_centered.v1",
+    "critical_group_ids": [
+     "g047.e1"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g047.e1",
+      "p0_first_rank": 2,
+      "policy_first_rank": 2,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g050",
+    "intent": "algorithm_theory",
+    "policy_id": "c6.raw_dense_centered.v1",
+    "critical_group_ids": [
+     "g050.e1"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g050.e1",
+      "p0_first_rank": 1,
+      "policy_first_rank": 1,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g051",
+    "intent": "algorithm_theory",
+    "policy_id": "c6.raw_dense_centered.v1",
+    "critical_group_ids": [
+     "g051.e1",
+     "g051.e2"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g051.e1",
+      "p0_first_rank": 5,
+      "policy_first_rank": 5,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g051.e2",
+      "p0_first_rank": 2,
+      "policy_first_rank": 2,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g052",
+    "intent": "algorithm_theory",
+    "policy_id": "c6.raw_dense_centered.v1",
+    "critical_group_ids": [
+     "g052.e1"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g052.e1",
+      "p0_first_rank": 3,
+      "policy_first_rank": 4,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g059",
+    "intent": "algorithm_implementation",
+    "policy_id": "c6.raw_dense_centered.v1",
+    "critical_group_ids": [
+     "g059.e2",
+     "g059.e3"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g059.e2",
+      "p0_first_rank": 14,
+      "policy_first_rank": null,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": false,
+      "status": "newly_lost"
+     },
+     {
+      "group_id": "g059.e3",
+      "p0_first_rank": 15,
+      "policy_first_rank": null,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": false,
+      "status": "newly_lost"
+     }
+    ],
+    "new_critical_group_miss_ids": [
+     "g059.e2",
+     "g059.e3"
+    ],
+    "new_critical_group_miss_count": 2,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g060",
+    "intent": "algorithm_implementation",
+    "policy_id": "c6.raw_dense_centered.v1",
+    "critical_group_ids": [
+     "g060.e1",
+     "g060.e2",
+     "g060.e3"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g060.e1",
+      "p0_first_rank": 6,
+      "policy_first_rank": 6,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g060.e2",
+      "p0_first_rank": 13,
+      "policy_first_rank": 18,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g060.e3",
+      "p0_first_rank": 14,
+      "policy_first_rank": 19,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g105",
+    "intent": "module_structure",
+    "policy_id": "c6.raw_dense_centered.v1",
+    "critical_group_ids": [
+     "g105.e1",
+     "g105.e2",
+     "g105.e3"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g105.e1",
+      "p0_first_rank": 1,
+      "policy_first_rank": 1,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g105.e2",
+      "p0_first_rank": 7,
+      "policy_first_rank": 3,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g105.e3",
+      "p0_first_rank": 2,
+      "policy_first_rank": 2,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g110",
+    "intent": "troubleshooting",
+    "policy_id": "c6.raw_dense_centered.v1",
+    "critical_group_ids": [
+     "g110.e1",
+     "g110.e2"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g110.e1",
+      "p0_first_rank": 4,
+      "policy_first_rank": 5,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g110.e2",
+      "p0_first_rank": 8,
+      "policy_first_rank": 9,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g112",
+    "intent": "troubleshooting",
+    "policy_id": "c6.raw_dense_centered.v1",
+    "critical_group_ids": [
+     "g112.e2",
+     "g112.e3"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g112.e2",
+      "p0_first_rank": 6,
+      "policy_first_rank": 3,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g112.e3",
+      "p0_first_rank": 12,
+      "policy_first_rank": 13,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g113",
+    "intent": "troubleshooting",
+    "policy_id": "c6.raw_dense_centered.v1",
+    "critical_group_ids": [
+     "g113.e1",
+     "g113.e2"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g113.e1",
+      "p0_first_rank": 6,
+      "policy_first_rank": 6,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g113.e2",
+      "p0_first_rank": 2,
+      "policy_first_rank": 2,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g114",
+    "intent": "troubleshooting",
+    "policy_id": "c6.raw_dense_centered.v1",
+    "critical_group_ids": [
+     "g114.e1",
+     "g114.e2"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g114.e1",
+      "p0_first_rank": 6,
+      "policy_first_rank": 11,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g114.e2",
+      "p0_first_rank": 15,
+      "policy_first_rank": 16,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g115",
+    "intent": "troubleshooting",
+    "policy_id": "c6.raw_dense_centered.v1",
+    "critical_group_ids": [
+     "g115.e1",
+     "g115.e2"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g115.e1",
+      "p0_first_rank": 1,
+      "policy_first_rank": 1,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g115.e2",
+      "p0_first_rank": 3,
+      "policy_first_rank": 6,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   }
+  ],
+  "P2_EXACT_HEAVY": [
+   {
+    "scope": "global",
+    "case_id": "g001",
+    "intent": "installation",
+    "policy_id": "c6.exact_heavy.v1",
+    "critical_group_ids": [
+     "g001.installation"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g001.installation",
+      "p0_first_rank": 6,
+      "policy_first_rank": 12,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g002",
+    "intent": "installation",
+    "policy_id": "c6.exact_heavy.v1",
+    "critical_group_ids": [
+     "g002.e1"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g002.e1",
+      "p0_first_rank": null,
+      "policy_first_rank": null,
+      "p0_hit_at_20": false,
+      "policy_hit_at_20": false,
+      "status": "missed_by_both"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g003",
+    "intent": "installation",
+    "policy_id": "c6.exact_heavy.v1",
+    "critical_group_ids": [
+     "g003.e1"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g003.e1",
+      "p0_first_rank": 1,
+      "policy_first_rank": 1,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g004",
+    "intent": "installation",
+    "policy_id": "c6.exact_heavy.v1",
+    "critical_group_ids": [
+     "g004.e1"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g004.e1",
+      "p0_first_rank": 1,
+      "policy_first_rank": 1,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g005",
+    "intent": "installation",
+    "policy_id": "c6.exact_heavy.v1",
+    "critical_group_ids": [
+     "g005.e1"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g005.e1",
+      "p0_first_rank": 1,
+      "policy_first_rank": 1,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g006",
+    "intent": "installation",
+    "policy_id": "c6.exact_heavy.v1",
+    "critical_group_ids": [
+     "g006.e1"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g006.e1",
+      "p0_first_rank": 20,
+      "policy_first_rank": 20,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g010",
+    "intent": "usage",
+    "policy_id": "c6.exact_heavy.v1",
+    "critical_group_ids": [
+     "g010.e1"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g010.e1",
+      "p0_first_rank": 2,
+      "policy_first_rank": 2,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g013",
+    "intent": "usage",
+    "policy_id": "c6.exact_heavy.v1",
+    "critical_group_ids": [
+     "g013.e1",
+     "g013.e2"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g013.e1",
+      "p0_first_rank": 1,
+      "policy_first_rank": 1,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g013.e2",
+      "p0_first_rank": 3,
+      "policy_first_rank": 3,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g014",
+    "intent": "usage",
+    "policy_id": "c6.exact_heavy.v1",
+    "critical_group_ids": [
+     "g014.e1",
+     "g014.e2"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g014.e1",
+      "p0_first_rank": 1,
+      "policy_first_rank": 1,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g014.e2",
+      "p0_first_rank": 2,
+      "policy_first_rank": 2,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g015",
+    "intent": "usage",
+    "policy_id": "c6.exact_heavy.v1",
+    "critical_group_ids": [
+     "g015.e1",
+     "g015.e2"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g015.e1",
+      "p0_first_rank": 1,
+      "policy_first_rank": 1,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g015.e2",
+      "p0_first_rank": 2,
+      "policy_first_rank": 2,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g017",
+    "intent": "usage",
+    "policy_id": "c6.exact_heavy.v1",
+    "critical_group_ids": [
+     "g017.e2"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g017.e2",
+      "p0_first_rank": 2,
+      "policy_first_rank": 2,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g019",
+    "intent": "usage",
+    "policy_id": "c6.exact_heavy.v1",
+    "critical_group_ids": [
+     "g019.e1"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g019.e1",
+      "p0_first_rank": 1,
+      "policy_first_rank": 1,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g027",
+    "intent": "api",
+    "policy_id": "c6.exact_heavy.v1",
+    "critical_group_ids": [
+     "g027.pandaroot",
+     "g027.restgas_fork"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g027.pandaroot",
+      "p0_first_rank": 3,
+      "policy_first_rank": 3,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g027.restgas_fork",
+      "p0_first_rank": 2,
+      "policy_first_rank": 2,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g028",
+    "intent": "api",
+    "policy_id": "c6.exact_heavy.v1",
+    "critical_group_ids": [
+     "g028.e1"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g028.e1",
+      "p0_first_rank": 3,
+      "policy_first_rank": 3,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g029",
+    "intent": "api",
+    "policy_id": "c6.exact_heavy.v1",
+    "critical_group_ids": [
+     "g029.e1"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g029.e1",
+      "p0_first_rank": 2,
+      "policy_first_rank": 2,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g030",
+    "intent": "api",
+    "policy_id": "c6.exact_heavy.v1",
+    "critical_group_ids": [
+     "g030.e1"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g030.e1",
+      "p0_first_rank": 2,
+      "policy_first_rank": 2,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g031",
+    "intent": "api",
+    "policy_id": "c6.exact_heavy.v1",
+    "critical_group_ids": [
+     "g031.e1"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g031.e1",
+      "p0_first_rank": 1,
+      "policy_first_rank": 1,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g044",
+    "intent": "algorithm_theory",
+    "policy_id": "c6.exact_heavy.v1",
+    "critical_group_ids": [
+     "g044.e1"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g044.e1",
+      "p0_first_rank": 3,
+      "policy_first_rank": 4,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g047",
+    "intent": "algorithm_theory",
+    "policy_id": "c6.exact_heavy.v1",
+    "critical_group_ids": [
+     "g047.e1"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g047.e1",
+      "p0_first_rank": 2,
+      "policy_first_rank": 2,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g050",
+    "intent": "algorithm_theory",
+    "policy_id": "c6.exact_heavy.v1",
+    "critical_group_ids": [
+     "g050.e1"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g050.e1",
+      "p0_first_rank": 1,
+      "policy_first_rank": 1,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g051",
+    "intent": "algorithm_theory",
+    "policy_id": "c6.exact_heavy.v1",
+    "critical_group_ids": [
+     "g051.e1",
+     "g051.e2"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g051.e1",
+      "p0_first_rank": 5,
+      "policy_first_rank": 11,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g051.e2",
+      "p0_first_rank": 2,
+      "policy_first_rank": 4,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g052",
+    "intent": "algorithm_theory",
+    "policy_id": "c6.exact_heavy.v1",
+    "critical_group_ids": [
+     "g052.e1"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g052.e1",
+      "p0_first_rank": 3,
+      "policy_first_rank": 3,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g059",
+    "intent": "algorithm_implementation",
+    "policy_id": "c6.exact_heavy.v1",
+    "critical_group_ids": [
+     "g059.e2",
+     "g059.e3"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g059.e2",
+      "p0_first_rank": 14,
+      "policy_first_rank": 7,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g059.e3",
+      "p0_first_rank": 15,
+      "policy_first_rank": 8,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g060",
+    "intent": "algorithm_implementation",
+    "policy_id": "c6.exact_heavy.v1",
+    "critical_group_ids": [
+     "g060.e1",
+     "g060.e2",
+     "g060.e3"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g060.e1",
+      "p0_first_rank": 6,
+      "policy_first_rank": 11,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g060.e2",
+      "p0_first_rank": 13,
+      "policy_first_rank": 8,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g060.e3",
+      "p0_first_rank": 14,
+      "policy_first_rank": 9,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g105",
+    "intent": "module_structure",
+    "policy_id": "c6.exact_heavy.v1",
+    "critical_group_ids": [
+     "g105.e1",
+     "g105.e2",
+     "g105.e3"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g105.e1",
+      "p0_first_rank": 1,
+      "policy_first_rank": 1,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g105.e2",
+      "p0_first_rank": 7,
+      "policy_first_rank": null,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": false,
+      "status": "newly_lost"
+     },
+     {
+      "group_id": "g105.e3",
+      "p0_first_rank": 2,
+      "policy_first_rank": 2,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [
+     "g105.e2"
+    ],
+    "new_critical_group_miss_count": 1,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g110",
+    "intent": "troubleshooting",
+    "policy_id": "c6.exact_heavy.v1",
+    "critical_group_ids": [
+     "g110.e1",
+     "g110.e2"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g110.e1",
+      "p0_first_rank": 4,
+      "policy_first_rank": 3,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g110.e2",
+      "p0_first_rank": 8,
+      "policy_first_rank": 7,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g112",
+    "intent": "troubleshooting",
+    "policy_id": "c6.exact_heavy.v1",
+    "critical_group_ids": [
+     "g112.e2",
+     "g112.e3"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g112.e2",
+      "p0_first_rank": 6,
+      "policy_first_rank": 6,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g112.e3",
+      "p0_first_rank": 12,
+      "policy_first_rank": 10,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g113",
+    "intent": "troubleshooting",
+    "policy_id": "c6.exact_heavy.v1",
+    "critical_group_ids": [
+     "g113.e1",
+     "g113.e2"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g113.e1",
+      "p0_first_rank": 6,
+      "policy_first_rank": 6,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g113.e2",
+      "p0_first_rank": 2,
+      "policy_first_rank": 2,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g114",
+    "intent": "troubleshooting",
+    "policy_id": "c6.exact_heavy.v1",
+    "critical_group_ids": [
+     "g114.e1",
+     "g114.e2"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g114.e1",
+      "p0_first_rank": 6,
+      "policy_first_rank": 4,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g114.e2",
+      "p0_first_rank": 15,
+      "policy_first_rank": 9,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g115",
+    "intent": "troubleshooting",
+    "policy_id": "c6.exact_heavy.v1",
+    "critical_group_ids": [
+     "g115.e1",
+     "g115.e2"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g115.e1",
+      "p0_first_rank": 1,
+      "policy_first_rank": 1,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g115.e2",
+      "p0_first_rank": 3,
+      "policy_first_rank": 2,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   }
+  ],
+  "P3_SPARSE_HEAVY": [
+   {
+    "scope": "global",
+    "case_id": "g001",
+    "intent": "installation",
+    "policy_id": "c6.sparse_heavy.v1",
+    "critical_group_ids": [
+     "g001.installation"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g001.installation",
+      "p0_first_rank": 6,
+      "policy_first_rank": 1,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g002",
+    "intent": "installation",
+    "policy_id": "c6.sparse_heavy.v1",
+    "critical_group_ids": [
+     "g002.e1"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g002.e1",
+      "p0_first_rank": null,
+      "policy_first_rank": 14,
+      "p0_hit_at_20": false,
+      "policy_hit_at_20": true,
+      "status": "newly_recovered"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [
+     "g002.e1"
+    ],
+    "recovered_critical_group_count": 1
+   },
+   {
+    "scope": "global",
+    "case_id": "g003",
+    "intent": "installation",
+    "policy_id": "c6.sparse_heavy.v1",
+    "critical_group_ids": [
+     "g003.e1"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g003.e1",
+      "p0_first_rank": 1,
+      "policy_first_rank": 1,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g004",
+    "intent": "installation",
+    "policy_id": "c6.sparse_heavy.v1",
+    "critical_group_ids": [
+     "g004.e1"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g004.e1",
+      "p0_first_rank": 1,
+      "policy_first_rank": 1,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g005",
+    "intent": "installation",
+    "policy_id": "c6.sparse_heavy.v1",
+    "critical_group_ids": [
+     "g005.e1"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g005.e1",
+      "p0_first_rank": 1,
+      "policy_first_rank": 1,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g006",
+    "intent": "installation",
+    "policy_id": "c6.sparse_heavy.v1",
+    "critical_group_ids": [
+     "g006.e1"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g006.e1",
+      "p0_first_rank": 20,
+      "policy_first_rank": 7,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g010",
+    "intent": "usage",
+    "policy_id": "c6.sparse_heavy.v1",
+    "critical_group_ids": [
+     "g010.e1"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g010.e1",
+      "p0_first_rank": 2,
+      "policy_first_rank": 2,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g013",
+    "intent": "usage",
+    "policy_id": "c6.sparse_heavy.v1",
+    "critical_group_ids": [
+     "g013.e1",
+     "g013.e2"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g013.e1",
+      "p0_first_rank": 1,
+      "policy_first_rank": 1,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g013.e2",
+      "p0_first_rank": 3,
+      "policy_first_rank": 3,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g014",
+    "intent": "usage",
+    "policy_id": "c6.sparse_heavy.v1",
+    "critical_group_ids": [
+     "g014.e1",
+     "g014.e2"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g014.e1",
+      "p0_first_rank": 1,
+      "policy_first_rank": 1,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g014.e2",
+      "p0_first_rank": 2,
+      "policy_first_rank": 2,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g015",
+    "intent": "usage",
+    "policy_id": "c6.sparse_heavy.v1",
+    "critical_group_ids": [
+     "g015.e1",
+     "g015.e2"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g015.e1",
+      "p0_first_rank": 1,
+      "policy_first_rank": 1,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g015.e2",
+      "p0_first_rank": 2,
+      "policy_first_rank": 2,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g017",
+    "intent": "usage",
+    "policy_id": "c6.sparse_heavy.v1",
+    "critical_group_ids": [
+     "g017.e2"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g017.e2",
+      "p0_first_rank": 2,
+      "policy_first_rank": 2,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g019",
+    "intent": "usage",
+    "policy_id": "c6.sparse_heavy.v1",
+    "critical_group_ids": [
+     "g019.e1"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g019.e1",
+      "p0_first_rank": 1,
+      "policy_first_rank": 1,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g027",
+    "intent": "api",
+    "policy_id": "c6.sparse_heavy.v1",
+    "critical_group_ids": [
+     "g027.pandaroot",
+     "g027.restgas_fork"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g027.pandaroot",
+      "p0_first_rank": 3,
+      "policy_first_rank": 7,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g027.restgas_fork",
+      "p0_first_rank": 2,
+      "policy_first_rank": 4,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g028",
+    "intent": "api",
+    "policy_id": "c6.sparse_heavy.v1",
+    "critical_group_ids": [
+     "g028.e1"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g028.e1",
+      "p0_first_rank": 3,
+      "policy_first_rank": 1,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g029",
+    "intent": "api",
+    "policy_id": "c6.sparse_heavy.v1",
+    "critical_group_ids": [
+     "g029.e1"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g029.e1",
+      "p0_first_rank": 2,
+      "policy_first_rank": 2,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g030",
+    "intent": "api",
+    "policy_id": "c6.sparse_heavy.v1",
+    "critical_group_ids": [
+     "g030.e1"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g030.e1",
+      "p0_first_rank": 2,
+      "policy_first_rank": 7,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g031",
+    "intent": "api",
+    "policy_id": "c6.sparse_heavy.v1",
+    "critical_group_ids": [
+     "g031.e1"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g031.e1",
+      "p0_first_rank": 1,
+      "policy_first_rank": 1,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g044",
+    "intent": "algorithm_theory",
+    "policy_id": "c6.sparse_heavy.v1",
+    "critical_group_ids": [
+     "g044.e1"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g044.e1",
+      "p0_first_rank": 3,
+      "policy_first_rank": 3,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g047",
+    "intent": "algorithm_theory",
+    "policy_id": "c6.sparse_heavy.v1",
+    "critical_group_ids": [
+     "g047.e1"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g047.e1",
+      "p0_first_rank": 2,
+      "policy_first_rank": 2,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g050",
+    "intent": "algorithm_theory",
+    "policy_id": "c6.sparse_heavy.v1",
+    "critical_group_ids": [
+     "g050.e1"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g050.e1",
+      "p0_first_rank": 1,
+      "policy_first_rank": 1,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g051",
+    "intent": "algorithm_theory",
+    "policy_id": "c6.sparse_heavy.v1",
+    "critical_group_ids": [
+     "g051.e1",
+     "g051.e2"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g051.e1",
+      "p0_first_rank": 5,
+      "policy_first_rank": 5,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g051.e2",
+      "p0_first_rank": 2,
+      "policy_first_rank": 2,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g052",
+    "intent": "algorithm_theory",
+    "policy_id": "c6.sparse_heavy.v1",
+    "critical_group_ids": [
+     "g052.e1"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g052.e1",
+      "p0_first_rank": 3,
+      "policy_first_rank": 3,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g059",
+    "intent": "algorithm_implementation",
+    "policy_id": "c6.sparse_heavy.v1",
+    "critical_group_ids": [
+     "g059.e2",
+     "g059.e3"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g059.e2",
+      "p0_first_rank": 14,
+      "policy_first_rank": 17,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g059.e3",
+      "p0_first_rank": 15,
+      "policy_first_rank": 18,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g060",
+    "intent": "algorithm_implementation",
+    "policy_id": "c6.sparse_heavy.v1",
+    "critical_group_ids": [
+     "g060.e1",
+     "g060.e2",
+     "g060.e3"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g060.e1",
+      "p0_first_rank": 6,
+      "policy_first_rank": 6,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g060.e2",
+      "p0_first_rank": 13,
+      "policy_first_rank": 16,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g060.e3",
+      "p0_first_rank": 14,
+      "policy_first_rank": 17,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g105",
+    "intent": "module_structure",
+    "policy_id": "c6.sparse_heavy.v1",
+    "critical_group_ids": [
+     "g105.e1",
+     "g105.e2",
+     "g105.e3"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g105.e1",
+      "p0_first_rank": 1,
+      "policy_first_rank": 1,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g105.e2",
+      "p0_first_rank": 7,
+      "policy_first_rank": 3,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g105.e3",
+      "p0_first_rank": 2,
+      "policy_first_rank": 2,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g110",
+    "intent": "troubleshooting",
+    "policy_id": "c6.sparse_heavy.v1",
+    "critical_group_ids": [
+     "g110.e1",
+     "g110.e2"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g110.e1",
+      "p0_first_rank": 4,
+      "policy_first_rank": 5,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g110.e2",
+      "p0_first_rank": 8,
+      "policy_first_rank": 9,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g112",
+    "intent": "troubleshooting",
+    "policy_id": "c6.sparse_heavy.v1",
+    "critical_group_ids": [
+     "g112.e2",
+     "g112.e3"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g112.e2",
+      "p0_first_rank": 6,
+      "policy_first_rank": 4,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g112.e3",
+      "p0_first_rank": 12,
+      "policy_first_rank": 12,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g113",
+    "intent": "troubleshooting",
+    "policy_id": "c6.sparse_heavy.v1",
+    "critical_group_ids": [
+     "g113.e1",
+     "g113.e2"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g113.e1",
+      "p0_first_rank": 6,
+      "policy_first_rank": 6,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g113.e2",
+      "p0_first_rank": 2,
+      "policy_first_rank": 2,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g114",
+    "intent": "troubleshooting",
+    "policy_id": "c6.sparse_heavy.v1",
+    "critical_group_ids": [
+     "g114.e1",
+     "g114.e2"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g114.e1",
+      "p0_first_rank": 6,
+      "policy_first_rank": 11,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g114.e2",
+      "p0_first_rank": 15,
+      "policy_first_rank": 16,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "global",
+    "case_id": "g115",
+    "intent": "troubleshooting",
+    "policy_id": "c6.sparse_heavy.v1",
+    "critical_group_ids": [
+     "g115.e1",
+     "g115.e2"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g115.e1",
+      "p0_first_rank": 1,
+      "policy_first_rank": 1,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g115.e2",
+      "p0_first_rank": 3,
+      "policy_first_rank": 6,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   }
+  ],
+  "P4_SEMANTIC_AUXILIARY_25": [
+   {
+    "scope": "semantic",
+    "case_id": "g050",
+    "intent": "algorithm_theory",
+    "policy_id": "c6.semantic_aux25.v1",
+    "critical_group_ids": [
+     "g050.e1"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g050.e1",
+      "p0_first_rank": 1,
+      "policy_first_rank": 1,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "semantic",
+    "case_id": "g055",
+    "intent": "algorithm_theory",
+    "policy_id": "c6.semantic_aux25.v1",
+    "critical_group_ids": [
+     "g055.e1",
+     "g055.e2"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g055.e1",
+      "p0_first_rank": 4,
+      "policy_first_rank": 4,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g055.e2",
+      "p0_first_rank": 14,
+      "policy_first_rank": null,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": false,
+      "status": "newly_lost"
+     }
+    ],
+    "new_critical_group_miss_ids": [
+     "g055.e2"
+    ],
+    "new_critical_group_miss_count": 1,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "semantic",
+    "case_id": "g039",
+    "intent": "api",
+    "policy_id": "c6.semantic_aux25.v1",
+    "critical_group_ids": [
+     "g039.e1"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g039.e1",
+      "p0_first_rank": 7,
+      "policy_first_rank": 8,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "semantic",
+    "case_id": "g008",
+    "intent": "installation",
+    "policy_id": "c6.semantic_aux25.v1",
+    "critical_group_ids": [
+     "g008.e1",
+     "g008.e2"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g008.e1",
+      "p0_first_rank": 1,
+      "policy_first_rank": 1,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g008.e2",
+      "p0_first_rank": 1,
+      "policy_first_rank": 1,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "semantic",
+    "case_id": "g110",
+    "intent": "troubleshooting",
+    "policy_id": "c6.semantic_aux25.v1",
+    "critical_group_ids": [
+     "g110.e1",
+     "g110.e2"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g110.e1",
+      "p0_first_rank": 4,
+      "policy_first_rank": 4,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g110.e2",
+      "p0_first_rank": 8,
+      "policy_first_rank": 8,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "semantic",
+    "case_id": "g113",
+    "intent": "troubleshooting",
+    "policy_id": "c6.semantic_aux25.v1",
+    "critical_group_ids": [
+     "g113.e1",
+     "g113.e2"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g113.e1",
+      "p0_first_rank": 6,
+      "policy_first_rank": 6,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g113.e2",
+      "p0_first_rank": 2,
+      "policy_first_rank": 2,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "semantic",
+    "case_id": "g114",
+    "intent": "troubleshooting",
+    "policy_id": "c6.semantic_aux25.v1",
+    "critical_group_ids": [
+     "g114.e1",
+     "g114.e2"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g114.e1",
+      "p0_first_rank": 6,
+      "policy_first_rank": 6,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g114.e2",
+      "p0_first_rank": 15,
+      "policy_first_rank": 15,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   },
+   {
+    "scope": "semantic",
+    "case_id": "g115",
+    "intent": "troubleshooting",
+    "policy_id": "c6.semantic_aux25.v1",
+    "critical_group_ids": [
+     "g115.e1",
+     "g115.e2"
+    ],
+    "critical_groups": [
+     {
+      "group_id": "g115.e1",
+      "p0_first_rank": 1,
+      "policy_first_rank": 1,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     },
+     {
+      "group_id": "g115.e2",
+      "p0_first_rank": 3,
+      "policy_first_rank": 4,
+      "p0_hit_at_20": true,
+      "policy_hit_at_20": true,
+      "status": "retained"
+     }
+    ],
+    "new_critical_group_miss_ids": [],
+    "new_critical_group_miss_count": 0,
+    "recovered_critical_group_ids": [],
+    "recovered_critical_group_count": 0
+   }
+  ]
+ },
+ "corrected_global_policy_labels": {
+  "P1_RAW_DENSE_CENTERED": "FAIL_HARD_GATES",
+  "P2_EXACT_HEAVY": "FAIL_HARD_GATES",
+  "P3_SPARSE_HEAVY": "PASS_ALL_GATES"
+ },
+ "corrected_global_passing_policy_set": [
+  "P3_SPARSE_HEAVY"
+ ],
+ "corrected_p4_label": "FAIL_HARD_GATES",
+ "corrected_intent_critical_group_miss_counts": {
+  "algorithm_theory": {
+   "P1_RAW_DENSE_CENTERED": 0,
+   "P2_EXACT_HEAVY": 0,
+   "P3_SPARSE_HEAVY": 0
+  },
+  "api": {
+   "P1_RAW_DENSE_CENTERED": 0,
+   "P2_EXACT_HEAVY": 0,
+   "P3_SPARSE_HEAVY": 0
+  },
+  "installation": {
+   "P1_RAW_DENSE_CENTERED": 0,
+   "P2_EXACT_HEAVY": 0,
+   "P3_SPARSE_HEAVY": 0
+  },
+  "troubleshooting": {
+   "P1_RAW_DENSE_CENTERED": 0,
+   "P2_EXACT_HEAVY": 0,
+   "P3_SPARSE_HEAVY": 0
+  },
+  "usage": {
+   "P1_RAW_DENSE_CENTERED": 0,
+   "P2_EXACT_HEAVY": 0,
+   "P3_SPARSE_HEAVY": 0
+  }
+ },
+ "corrected_preferred_policy_by_intent": {
+  "algorithm_theory": "P0_CURRENT",
+  "api": "P0_CURRENT",
+  "installation": "P3_SPARSE_HEAVY",
+  "troubleshooting": "P2_EXACT_HEAVY",
+  "usage": "P0_CURRENT"
+ },
+ "corrected_intent_aware_conditions": {
+  "1_at_least_3_sufficient_intents": true,
+  "2_each_sufficient_intent_ge_4_cases": true,
+  "3_at_least_2_intents_different_preferred_families": true,
+  "4_preferred_improves_r10_or_mrr_without_r20_loss_or_critical_miss": true,
+  "5_positive_gt_negative_within_intent": true,
+  "6_preference_from_preregistered_global_policies_only": true
+ },
+ "corrected_INTENT_AWARE_ELIGIBLE": true,
+ "corrected_C6_INTENT_AWARE_V1": {
+  "algorithm_implementation": "P0_CURRENT",
+  "algorithm_theory": "P0_CURRENT",
+  "api": "P0_CURRENT",
+  "installation": "P3_SPARSE_HEAVY",
+  "module_structure": "P0_CURRENT",
+  "troubleshooting": "P2_EXACT_HEAVY",
+  "usage": "P0_CURRENT"
+ },
+ "semanticdense_conclusion_unchanged": true,
+ "semanticdense_boundary_note": "the SemanticDense meaningful-contribution result (N_sem=8, threshold 2, observed unique relevant case count 1 -> INSUFFICIENT / KEEP_DISABLED) is independent of Gate 5 and was not recalculated; P4 also independently fails Recall@20 vs P0",
+ "yield_label_note": "A1 freezes the metric name 'semantic unique relevant yield' but not a denominator formula; the A2 value 1/160 counts relevant / all semantic candidates (8x20), while relevant / semantic-unique candidates = 1/41; both are recorded descriptively and the meaningful-contribution gate uses unique relevant CASE count, not yield",
+ "ranking_metrics_unchanged": true,
+ "directional_counts_unchanged": true,
+ "cohort_unchanged": true,
+ "policy_definitions_unchanged": true,
+ "replay_v2_unchanged": true,
+ "no_fusion_rerun": true,
+ "live_model_call_ledger": "all zero (static file reads only)",
+ "a2_methodology_verdict_after_audit": "PASS",
+ "critical_miss_semantics_audit": "PASS",
+ "a3_execution_eligibility": "NEXT_ELIGIBLE / NOT_STARTED"
+}

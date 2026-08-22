@@ -1384,5 +1384,101 @@
   "matcher_provenance": "panda_agent.evaluation (C3-R3-frozen authoritative semantics)",
   "zero_live_calls": true
  },
- "c6_a3_execution_eligibility": "NEXT_ELIGIBLE / NOT_STARTED"
+ "c6_a3_execution_eligibility": "NEXT_ELIGIBLE / NOT_STARTED",
+ "critical_miss_semantics_correction": {
+  "audit_artifact": "evaluation/baselines/manifests/phase_c_c6_a2_critical_miss_semantics_audit_v1.json",
+  "superseded_gate5_interpretation": "per-case policy critical_evidence_coverage < P0 critical_evidence_coverage (aggregate coverage decline)",
+  "corrected_gate5_interpretation": "per-case critical evidence-GROUP identity loss: a new critical miss exists iff Gold required_evidence_groups[*].critical group g has P0 group_first_rank <= TOP_K and policy group_first_rank None or > TOP_K; Gate 5 PASS iff the cohort total of new critical group misses is 0; recovered groups never cancel lost groups",
+  "corrected_global_gate_matrices": {
+   "P1_RAW_DENSE_CENTERED": {
+    "gates": {
+     "1 replay inputs identical except policy": "PASS",
+     "2 no candidate stream regenerated": "PASS",
+     "3 Fused Recall@20 >= CURRENT": "PASS",
+     "4 Fused Recall@10 >= CURRENT": "PASS",
+     "5 no new critical evidence miss": "FAIL",
+     "6 lost_hit = 0": "FAIL",
+     "7 negative_direction_count <= positive_direction_count": "FAIL",
+     "8 no version/source violation introduced by replay": "PASS",
+     "9 no benchmark-specific channel rule": "PASS",
+     "10 policy was preregistered in A1": "PASS"
+    },
+    "ALL_HARD_GATES_PASS": false
+   },
+   "P2_EXACT_HEAVY": {
+    "gates": {
+     "1 replay inputs identical except policy": "PASS",
+     "2 no candidate stream regenerated": "PASS",
+     "3 Fused Recall@20 >= CURRENT": "FAIL",
+     "4 Fused Recall@10 >= CURRENT": "PASS",
+     "5 no new critical evidence miss": "FAIL",
+     "6 lost_hit = 0": "PASS",
+     "7 negative_direction_count <= positive_direction_count": "FAIL",
+     "8 no version/source violation introduced by replay": "PASS",
+     "9 no benchmark-specific channel rule": "PASS",
+     "10 policy was preregistered in A1": "PASS"
+    },
+    "ALL_HARD_GATES_PASS": false
+   },
+   "P3_SPARSE_HEAVY": {
+    "gates": {
+     "1 replay inputs identical except policy": "PASS",
+     "2 no candidate stream regenerated": "PASS",
+     "3 Fused Recall@20 >= CURRENT": "PASS",
+     "4 Fused Recall@10 >= CURRENT": "PASS",
+     "5 no new critical evidence miss": "PASS",
+     "6 lost_hit = 0": "PASS",
+     "7 negative_direction_count <= positive_direction_count": "PASS",
+     "8 no version/source violation introduced by replay": "PASS",
+     "9 no benchmark-specific channel rule": "PASS",
+     "10 policy was preregistered in A1": "PASS"
+    },
+    "ALL_HARD_GATES_PASS": true
+   }
+  },
+  "corrected_p4_gate_matrix": {
+   "gates": {
+    "1 replay inputs identical except policy": "PASS",
+    "2 no candidate stream regenerated": "PASS",
+    "3 Fused Recall@20 >= CURRENT": "FAIL",
+    "4 Fused Recall@10 >= CURRENT": "PASS",
+    "5 no new critical evidence miss": "FAIL",
+    "6 lost_hit = 0": "PASS",
+    "7 negative_direction_count <= positive_direction_count": "FAIL",
+    "8 no version/source violation introduced by replay": "PASS",
+    "9 no benchmark-specific channel rule": "PASS",
+    "10 policy was preregistered in A1": "PASS"
+   },
+   "ALL_HARD_GATES_PASS": false
+  },
+  "corrected_policy_result_labels": {
+   "P1_RAW_DENSE_CENTERED": "FAIL_HARD_GATES",
+   "P2_EXACT_HEAVY": "FAIL_HARD_GATES",
+   "P3_SPARSE_HEAVY": "PASS_ALL_GATES",
+   "P4_SEMANTIC_AUXILIARY_25": "FAIL_HARD_GATES"
+  },
+  "corrected_global_passing_policy_set": [
+   "P3_SPARSE_HEAVY"
+  ],
+  "corrected_preferred_policy_by_intent": {
+   "algorithm_theory": "P0_CURRENT",
+   "api": "P0_CURRENT",
+   "installation": "P3_SPARSE_HEAVY",
+   "troubleshooting": "P2_EXACT_HEAVY",
+   "usage": "P0_CURRENT"
+  },
+  "corrected_INTENT_AWARE_ELIGIBLE": true,
+  "corrected_C6_INTENT_AWARE_V1": {
+   "algorithm_implementation": "P0_CURRENT",
+   "algorithm_theory": "P0_CURRENT",
+   "api": "P0_CURRENT",
+   "installation": "P3_SPARSE_HEAVY",
+   "module_structure": "P0_CURRENT",
+   "troubleshooting": "P2_EXACT_HEAVY",
+   "usage": "P0_CURRENT"
+  },
+  "old_vs_corrected_changed_any_gate_or_label": false,
+  "historical_note": "the original A2 implementation used the aggregate-coverage Gate-5 reading; that record is preserved above and superseded only for Gate 5 and its dependent labels",
+  "authoritative_after_audit": true
+ }
 }
