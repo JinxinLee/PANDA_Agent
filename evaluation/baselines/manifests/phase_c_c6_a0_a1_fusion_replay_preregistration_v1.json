@@ -1,0 +1,295 @@
+{
+  "schema_version": "c6-a0-a1-fusion-replay-preregistration-1",
+  "task": "C6-A0/A1",
+  "artifact_id": "phase_c_c6_a0_a1_fusion_replay_preregistration_v1",
+  "phase": "C6",
+  "recorded_on": "2026-08-22",
+  "source_head": "dfc4ff8541cab3c88f544216658fa6da0a69f24b",
+  "purpose": "C6-A0 channel inventory, C6-A1 frozen-candidate fusion replay infrastructure, and the complete preregistration of C6-A2/A3 policies, cohorts, metrics, gates, and decision rules. This artifact contains no C6-A2 relevance outcome; no policy was executed on Gold relevance.",
+
+  "current_phase_state": {
+    "c1": "PASS", "c2": "PASS", "c3": "PASS",
+    "c4": {"evaluation_verdict": "INCONCLUSIVE", "lifecycle": "CLOSED_INCONCLUSIVE"},
+    "c5": {"evaluation_verdict": "INCONCLUSIVE", "lifecycle": "CLOSED_INCONCLUSIVE"},
+    "c6": "ACTIVE",
+    "c7": "NOT_STARTED", "c8": "NOT_STARTED"
+  },
+  "authoritative_channel_set": ["exact", "raw_dense", "semantic_dense", "sparse", "paper", "workflow", "graph"],
+  "current_production_channel_roles": {
+    "exact": "LEGACY_EXACT (production-valid)",
+    "raw_dense": "production-authoritative",
+    "semantic_dense": "auxiliary/shadow; production efficacy UNVALIDATED; final role owned by C6",
+    "sparse": "exact raw question (production-valid)",
+    "paper": "existing production channel",
+    "workflow": "existing production channel",
+    "graph": "existing production channel"
+  },
+
+  "c6_a0_inventory": {
+    "sources_searched": [
+      "data/evaluation/runs/phase-b-t3-retrieval-20260816/traces/*.json (80 cases; channel_candidates + fused_candidates)",
+      "data/evaluation/runs/b5-pre-retrieval-20260815 and b5-post-retrieval-20260816 traces (16 cases each)",
+      "data/evaluation/runs/generalization-a3-stratified-retrieval-20260813 (24 cases) and generalization-a3-stratified-qa-20260813 (16 cases)",
+      "data/evaluation/runs/generalization-a1-*-host (1 case)",
+      "evaluation/baselines/english-gold-stratified-bootstrap-v1-20260813 (24 cases, benchmark + small_e2e JSONL)",
+      "evaluation/baselines/generalization-a3-bootstrap-20260813-limited (1 case)",
+      "evaluation/baselines/manifests/phase_c_c3a_raw_preserving_auxiliary_semantic_dense_v1.json (C3-A resume semantic_dense streams)",
+      "evaluation/novel/ (novel dataset search)"
+    ],
+    "primary_source_decision": "phase-b-t3-retrieval-20260816 is the single homogeneous core source: the newest complete 80-case dev retrieval run with all six production channels recorded per case (channel_candidates with object_id/rank/score/channels/source/version/locator) and recorded fused order+scores. b5/a3 runs cover case subsets of t3 with the same trace schema and were used as cross-checks only; combining per-case streams across runs was unnecessary for core replay.",
+    "missing_vs_empty_rule": {
+      "paper_channel": "PRESENT_EMPTY when the trace has no paper key: the production source always executes _paper and only omits empty results from the rankings dict, so absence of the key in an otherwise complete trace records an explicitly-executed empty channel.",
+      "semantic_dense_channel": "MISSING_NOT_CAPTURED for the 75 t3 cases without any captured semantic stream (SemanticDense did not exist in the t3 execution path)."
+    },
+    "trace_version_and_source_safety": {
+      "t3_identity": "prompt_version 3.6.0, index_identity 8172f9a640e62977be6e911bfb4848ce3aecd0994f1f3ba51a0985bffec62cb9, embedding gemini-embedding-2 3072, gold v2.6 b5406e36…",
+      "cross_run_semantic_compatibility": "C3-A resume semantic streams (5 cases) were combined with t3 core streams only because the C3-A raw_dense top-20 was verified object-identical (order included) to the t3 dense stream for every one of the 5 cases (same question text, same index fingerprint, same embedding model, filter-equivalent results), so compatibility is established without guessing.",
+      "incompatible_combinations": "none required; no other cross-run combination was accepted"
+    },
+    "coverage_matrix_location": "evaluation/baselines/replay/phase_c_c6_frozen_channel_replay_v1.jsonl (mechanically normalized from existing frozen traces only; no relevance labels, no new retrieval)",
+    "per_channel_coverage_counts": {
+      "exact": {"PRESENT_NONEMPTY": 77, "PRESENT_EMPTY": 3},
+      "raw_dense": {"PRESENT_NONEMPTY": 80, "PRESENT_EMPTY": 0},
+      "sparse": {"PRESENT_NONEMPTY": 79, "PRESENT_EMPTY": 1},
+      "paper": {"PRESENT_NONEMPTY": 20, "PRESENT_EMPTY": 60},
+      "workflow": {"PRESENT_NONEMPTY": 68, "PRESENT_EMPTY": 12},
+      "graph": {"PRESENT_NONEMPTY": 74, "PRESENT_EMPTY": 6},
+      "semantic_dense": {"PRESENT_NONEMPTY": 5, "MISSING_NOT_CAPTURED": 75}
+    },
+    "cohort_counts": {
+      "core_production_replay": 80,
+      "semantic_replay": 5,
+      "intent_diagnostic_replay": 80,
+      "novel_replay": 0
+    },
+    "semantic_replay_case_ids": ["g039", "g055", "g113", "g114", "g115"],
+    "intent_distribution_80": {
+      "installation": 11, "usage": 14, "algorithm_theory": 8, "algorithm_implementation": 12,
+      "api": 15, "data_flow": 10, "module_structure": 4, "troubleshooting": 6
+    },
+    "novel_replay_status": "ABSENT",
+    "novel_replay_case_ids": [],
+    "novel_absence_evidence": "evaluation/novel/README.md states no novel question is currently committed; no novel_dev dataset exists in the repository.",
+    "invalid_or_unfaithful_records": [],
+    "coverage_state": "COVERAGE_READY",
+    "a0_result": "PASS",
+    "a0_note": "The inventory is complete, provenance-safe, and auditable; every core channel state for all 80 cases is authoritative (PRESENT_NONEMPTY/PRESENT_EMPTY). Semantic coverage is limited to 5 faithful cases and is recorded as such, which does not block core A2."
+  },
+
+  "current_production_fusion_identity": {
+    "source": "src/panda_agent/retrieval.py Retriever.retrieve",
+    "algorithm": "application-side weighted reciprocal-rank fusion",
+    "formula": "fused_score(object) = sum over enabled channels of channel_weight / (60 + 1-based channel rank)",
+    "rrf_k": 60,
+    "rank_convention": "channel candidates are 0-based enumerated in production and divided by (60 + rank + 1), identical to 1-based ranks over RRF_K=60; trace candidates carry 1-based ranks",
+    "channel_weights": {"exact": 2.0, "dense": 1.0, "sparse": 1.0, "paper": 1.15, "workflow": 1.2, "graph": 0.8},
+    "enabled_production_channels": ["exact", "dense", "sparse", "paper", "workflow", "graph"],
+    "candidate_limits": "policies.candidate_pool_per_channel per channel (frozen traces already reflect it); fused pool top-30 recorded",
+    "deduplication": "object_id string identity (production scores dict keyed by object_id)",
+    "tie_breaking": "Python stable sort over the insertion-ordered score map: equal-score objects keep production dict-insertion order (channel iteration order exact->dense->sparse->paper->workflow->graph, then first-seen candidate order)",
+    "empty_or_skipped_channels": "empty channels contribute nothing (production omits empty paper results from the rankings dict); there is no plan-level channel skip in the current production path"
+  },
+
+  "c6_a1_replay_implementation": {
+    "module": "src/panda_agent/fusion_replay.py (pure, evaluation-only; production retrieval does not import it; import scan confirms no psycopg/QdrantClient/VertexAIClient/requests usage)",
+    "data_structures": ["FrozenChannelCandidate", "FrozenChannelStream", "FusionReplayCase", "ChannelContribution", "FusedCandidate", "FusionReceipt", "FusionPolicy"],
+    "candidate_identity": "object_id, matching production fusion semantics exactly",
+    "channel_name_mapping": "historical trace channel 'dense' is replayed as the C6 authoritative channel 'raw_dense'",
+    "fusing_states": ["PRESENT_NONEMPTY", "PRESENT_EMPTY"],
+    "eligible_states_for_cohorts": ["PRESENT_NONEMPTY", "PRESENT_EMPTY", "SKIPPED_BY_PLAN"],
+    "fusion_receipt_contents": "final fused rank, fused score, contributing channels, per-channel rank/weight/contribution, channel count, unique-channel flag, expansion pool for P5, policy id/version, case id, enabled channels",
+    "p5_expansion_semantics": "CURRENT scored ranking is recomputed identically and never altered by semantic_dense; semantic-only unique candidates are appended to an explicit expansion pool in semantic rank order",
+    "t0_tests": {
+      "file": "tests/unit/test_fusion_replay.py",
+      "passed": "23/23",
+      "coverage": [
+        "single-channel fusion", "multi-channel fusion with cross-channel contributions",
+        "stable object_id deduplication", "production rank convention (weight/(60+1-based rank))",
+        "CURRENT weights/RRF identity", "deterministic tie behavior + repeated replay determinism",
+        "disabled channel contributes zero", "semantic candidate exists without changing CURRENT",
+        "receipt contribution sum equals fused score", "provenance/source/version/locator round-trip",
+        "trace alias dense->raw_dense", "PRESENT_EMPTY valid and zero-contribution",
+        "SKIPPED_BY_PLAN valid", "MISSING_NOT_CAPTURED blocks eligibility",
+        "INVALID_OR_UNFAITHFUL blocks eligibility", "missing required channel blocks eligibility",
+        "preregistered policy IDs/weights frozen", "P5 preserves CURRENT ranking and builds expansion pool",
+        "no Gold/evidence fields required", "no model/retrieval symbols in module source",
+        "normalized data loads with expected 80/5 cohorts", "CURRENT replay parity on real traces (>=3 required)",
+        "no forbidden library usage in module import"
+      ],
+      "model_calls": 0,
+      "retrieval_calls": 0
+    },
+    "parity_evidence": {
+      "parity_eligible_cases": 80,
+      "cases_checked": 80,
+      "exact_structural_matches": 80,
+      "order_match": 80,
+      "score_match": 80,
+      "equal_score_tie_equivalent_cases": 0,
+      "mismatches": 0,
+      "cross_check_runs": "b5-pre (16/16), b5-post (16/16), generalization-a3-stratified-retrieval (24/24) also reproduce order+score exactly with the CURRENT parameters, confirming those runs share the production fusion identity",
+      "comparison_target": "historical pre-reranker fused candidate order and recorded fusion scores (fused_candidates); reranked output and selected evidence were never compared"
+    },
+    "a1_result": "PASS"
+  },
+
+  "preregistered_c6_a2_policies": {
+    "frozen_before_any_a2_outcome": true,
+    "P0_CURRENT": {
+      "policy_id": "c6.current.v1", "policy_version": "v1",
+      "enabled_channels": ["exact", "raw_dense", "sparse", "paper", "workflow", "graph"],
+      "weights": {"exact": 2.0, "raw_dense": 1.0, "sparse": 1.0, "paper": 1.15, "workflow": 1.2, "graph": 0.8},
+      "semantic_dense": "disabled", "score_rule": "weighted RRF K=60", "tie_rule": "production stable insertion order", "candidate_union_rule": "object_id dedup across enabled channels"
+    },
+    "P1_RAW_DENSE_CENTERED": {
+      "policy_id": "c6.raw_dense_centered.v1", "policy_version": "v1",
+      "delta": "raw_dense weight = 1.5 x CURRENT (1.5); all other CURRENT weights unchanged; semantic_dense disabled"
+    },
+    "P2_EXACT_HEAVY": {
+      "policy_id": "c6.exact_heavy.v1", "policy_version": "v1",
+      "delta": "exact weight = 1.5 x CURRENT (3.0); all other CURRENT weights unchanged; semantic_dense disabled"
+    },
+    "P3_SPARSE_HEAVY": {
+      "policy_id": "c6.sparse_heavy.v1", "policy_version": "v1",
+      "delta": "sparse weight = 1.5 x CURRENT (1.5); all other CURRENT weights unchanged; semantic_dense disabled"
+    },
+    "P4_SEMANTIC_AUXILIARY_25": {
+      "policy_id": "c6.semantic_aux25.v1", "policy_version": "v1",
+      "enabled_channels": ["exact", "raw_dense", "semantic_dense", "sparse", "paper", "workflow", "graph"],
+      "delta": "dense-family total weight preserved: raw_dense = 0.75 x CURRENT (0.75), semantic_dense = 0.25 x CURRENT (0.25); all non-dense CURRENT weights unchanged"
+    },
+    "P5_SEMANTIC_EXPANSION_ONLY": {
+      "policy_id": "c6.semantic_expansion_only.v1", "policy_version": "v1",
+      "mode": "expansion_only", "base_policy": "c6.current.v1",
+      "delta": "CURRENT scored fusion unchanged; semantic_dense contributes no weighted-RRF score and may only append unique candidates to an explicit expansion pool in semantic rank order; evaluated primarily for candidate-union recall and unique relevant contribution, not as an ordinary weighted fused-ranking policy"
+    },
+    "no_more_global_policies_after_a2_outcomes": true
+  },
+
+  "preregistered_cohort_rules": {
+    "CORE_POLICY_COHORT": {
+      "available_core_cases": 80,
+      "rule": "maximum 30 cases selected deterministically when more are available: within each intent sort case IDs ascending, then round-robin one case per intent in the fixed repository intent cycle (installation, usage, algorithm_theory, algorithm_implementation, api, data_flow, module_structure, troubleshooting) until 30 cases are reached; selection uses only structural replay availability and never inspects relevance",
+      "minimum_for_comparative_global_policy_evidence": 12,
+      "preferred_represented_intents": 4,
+      "if_below_12": "A2 may run diagnostics only; production-policy selection evidence is insufficient"
+    },
+    "SEMANTIC_POLICY_COHORT": {
+      "available_semantic_cases": 5,
+      "rule": "all SEMANTIC_REPLAY cases up to 20, deterministic by intent + case ID",
+      "minimum_for_substantive_semanticdense_evidence": 8,
+      "minimum_represented_intents": 2,
+      "current_status": "5 available < 8 minimum -> semantic_a2_evidence_eligible = false; the SemanticDense production-role decision must remain EVIDENCE_INSUFFICIENT unless a separately authorized candidate-coverage task expands the frozen semantic cohort",
+      "live_capture_in_a0_a1": "none"
+    },
+    "INTENT_DIAGNOSTIC_REPLAY": {
+      "rule": "CORE_POLICY_COHORT cases with faithful intent labels; an intent is SUFFICIENTLY_REPRESENTED only if >=4 CORE_POLICY_COHORT cases carry it; intents below 4 are descriptive only and cannot drive C6-A3 intent-aware policy construction; unrelated intents are never merged to satisfy counts"
+    },
+    "NOVEL_REPLAY": {"status": "ABSENT", "rule": "no novel data may be created inside C6"}
+  },
+
+  "preregistered_a2_metrics": {
+    "aggregate_per_policy": ["Combined Candidate Recall@20", "Fused Recall@5", "Fused Recall@10", "Fused Recall@20", "MRR", "critical evidence coverage where Gold supports it", "first relevant rank per case", "improved", "recovered_hit", "unchanged", "no_hit_both", "regressed", "lost_hit"],
+    "channel_contribution": ["per-channel candidate count", "per-channel relevant candidate count", "per-channel unique candidate count", "per-channel unique relevant candidate count", "unique relevant case count", "multi-channel support count"],
+    "semanticdense_additional": ["semantic/raw overlap@20", "semantic unique candidate count", "semantic unique relevant candidate count", "semantic unique relevant case count", "semantic unique critical case count", "semantic marginal candidate-recall contribution", "semantic unique relevant yield"],
+    "per_intent": ["same core ranking metrics where intent sample size is sufficient"],
+    "frozen": true
+  },
+
+  "preregistered_global_policy_safety_gates": [
+    "1 replay inputs identical except policy",
+    "2 no candidate stream regenerated",
+    "3 Fused Recall@20 >= CURRENT",
+    "4 Fused Recall@10 >= CURRENT",
+    "5 no new critical evidence miss",
+    "6 lost_hit = 0",
+    "7 negative_direction_count <= positive_direction_count",
+    "8 no version/source violation introduced by replay",
+    "9 no benchmark-specific channel rule",
+    "10 policy was preregistered in A1"
+  ],
+  "gate_notes": "MRR and Recall@5 are required diagnostics; a materially lower MRR requires explicit review even if the hard recall gates pass; no new gate may be defined after A2.",
+
+  "novel_corroboration_gate": {
+    "novel_replay_status": "ABSENT",
+    "rule": "a new production fusion policy must not be activated solely because it wins on the exposed Gold development cohort; if trustworthy human-authored NOVEL_REPLAY data existed, corroboration would be required (no Recall@10/20 regression, no new critical miss, no obvious policy-direction reversal)",
+    "consequence": "NEW_PRODUCTION_POLICY_ACTIVATION = NOT_AUTHORIZED_BY_C6_A2_ALONE; C6-A3 must either retain CURRENT production fusion or remain INCONCLUSIVE pending independent corroboration; no novel data may be created inside C6 to bypass this gate"
+  },
+
+  "preregistered_semanticdense_decision_tree": {
+    "n_sem": "SEMANTIC_POLICY_COHORT size",
+    "meaningful_marginal_recall_condition": "N_sem >= 8 AND semantic_unique_relevant_case_count >= max(2, ceil(0.10 * N_sem))",
+    "if_condition_fails": "SemanticDense production role = KEEP_DISABLED (lack of contribution) or EVIDENCE_INSUFFICIENT (lack of cohort coverage)",
+    "if_meaningful_and_P4_passes_all_global_gates_and_directionally_at_least_current": "C6-A3 may consider SemanticDense weighted production participation",
+    "if_meaningful_but_P4_harms_ranking_while_P5_improves_candidate_union_coverage_without_changing_current_scored_prefix": "C6-A3 may consider SemanticDense = CANDIDATE_EXPANSION_ONLY, subject to downstream compatibility and novel corroboration",
+    "if_no_meaningful_unique_relevant_evidence": "keep SemanticDense disabled",
+    "thresholds_frozen": true,
+    "current_cohort_consequence": "with 5 semantic cases (<8), the SemanticDense decision defaults to EVIDENCE_INSUFFICIENT regardless of A2 diagnostics"
+  },
+
+  "preregistered_intent_aware_rules": {
+    "eligibility_conditions": [
+      "1 at least 3 intents SUFFICIENTLY_REPRESENTED (>=4 CORE_POLICY_COHORT cases each)",
+      "2 each such intent has >=4 cases",
+      "3 at least 2 sufficiently represented intents show different preferred preregistered global policy families",
+      "4 a preferred policy for an intent must improve Fused Recall@10 or MRR relative to CURRENT without reducing Recall@20 and without a new critical miss",
+      "5 within that intent positive_direction_count > negative_direction_count",
+      "6 preference must derive from a preregistered global policy, never a newly invented weight combination"
+    ],
+    "if_not_met": "intent_aware = NOT_JUSTIFIED and C6-A3 must not create one",
+    "construction_rule": "C6_INTENT_AWARE_V1 maps each sufficiently represented intent to one preregistered global policy by deterministic priority: highest Fused Recall@10, then highest Recall@20, then highest MRR, then prefer CURRENT; intents without sufficient evidence use CURRENT; no new weight vectors, no per-intent weight tuning",
+    "intent_aware_policy_evaluated_yet": false
+  },
+
+  "a3_production_decision_boundary": {
+    "c6_a3_may": ["retain CURRENT", "activate one preregistered global policy (subject to the novel corroboration gate)", "assign SemanticDense candidate-expansion-only", "assign SemanticDense weighted participation", "evaluate/activate C6_INTENT_AWARE_V1 if eligible", "close C6 INCONCLUSIVE"],
+    "c6_a3_may_not": ["create new arbitrary weights", "grid-search", "modify query builders", "modify retrieval channels", "add per-question rules", "repair C5", "repair selector behavior", "change reranker prompts"]
+  },
+
+  "selection_layer_debt_rule": "If C6-A2 shows relevant evidence well-ranked in the fused pool but removed by reranker/selector, record downstream rerank/selection debt; do not alter fusion to compensate. C7 owns evidence-selection constraints; C8 owns targeted-retrieval global merge/rerank.",
+
+  "a2_eligibility": {
+    "c6_a2": "ELIGIBLE",
+    "requirements_check": {
+      "c6_a0_pass": true,
+      "c6_a1_pass": true,
+      "core_policy_cohort_available": 80,
+      "core_minimum_12_satisfied": true,
+      "current_replay_fidelity_established": "80/80 exact order+score parity"
+    },
+    "semantic_a2_evidence_eligible": false,
+    "semantic_reason": "SEMANTIC_POLICY_COHORT = 5 < 8 minimum; A2 may evaluate core policies but must not make a substantive SemanticDense production claim"
+  },
+
+  "zero_live_call_ledger": {
+    "analyzer_calls": 0,
+    "vertex_generation_calls": 0,
+    "embedding_calls": 0,
+    "exact_sql_retrieval_reads": 0,
+    "dense_retrieval_reads": 0,
+    "sparse_retrieval_reads": 0,
+    "paper_retrieval": 0,
+    "workflow_retrieval": 0,
+    "graph_retrieval": 0,
+    "reranker": 0,
+    "selector": 0,
+    "qa_verifier_judge": 0,
+    "qdrant_reads": 0,
+    "qdrant_writes": 0,
+    "sql_writes": 0,
+    "index_mutations": 0,
+    "schema_migration": "no",
+    "reindex": "no",
+    "sparse_rebuild": "no",
+    "dense_reembedding": "no",
+    "production_code_changes": 0,
+    "production_behavior": "UNCHANGED (fusion_replay.py is evaluation-only and not imported by production retrieval)"
+  },
+
+  "known_limitations": [
+    "semantic_dense frozen coverage is 5 cases, below the preregistered substantive-evidence minimum of 8",
+    "novel corroboration data is ABSENT, so no new production fusion policy may be activated by C6-A2 alone",
+    "frozen core traces date from the phase-b t3 run (prompt 3.6.0 era); the fused candidate streams themselves are implementation-faithful (parity proven), but the frozen RetrievalPlans are not the C2 3.7.0 plans",
+    "g011 remains deferred to Phase E; C4/C5 remain CLOSED_INCONCLUSIVE and are not reopened by C6"
+  ]
+}
