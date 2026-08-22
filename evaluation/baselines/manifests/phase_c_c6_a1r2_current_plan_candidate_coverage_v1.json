@@ -1,0 +1,388 @@
+{
+ "schema_version": "c6-a1r2-current-plan-candidate-coverage-1",
+ "task": "C6-A1R2",
+ "artifact_id": "phase_c_c6_a1r2_current_plan_candidate_coverage_v1",
+ "phase": "C6",
+ "recorded_on": "2026-08-22",
+ "source_head": "3b450cc43d88581040116b9411acc337f0dda1d8",
+ "references": {
+  "c6_a0_a1_artifact": "evaluation/baselines/manifests/phase_c_c6_a0_a1_fusion_replay_preregistration_v1.json",
+  "c6_a1r1_artifact": "evaluation/baselines/manifests/phase_c_c6_a1r1_product_scope_plan_fidelity_v1.json",
+  "formal_english_scope_artifact": "evaluation/baselines/manifests/phase_b_t3_product_language_scope_v2.json",
+  "historical_replay_data": "evaluation/baselines/replay/phase_c_c6_frozen_channel_replay_v1.jsonl (historical, not overwritten)"
+ },
+ "capture_timing": "before any C6-A2 relevance outcome (A2 never executed)",
+ "status_ledger_before_capture": {
+  "c6_a0": "PASS",
+  "c6_a1": "PASS",
+  "c6_a1r1": "PASS",
+  "c6_a2": "NOT_ELIGIBLE (pre-refresh)",
+  "c6_a3": "NOT_STARTED"
+ },
+ "pre_capture_preregistration": {
+  "frozen_at": "2026-08-22T14:19:47.153039+00:00",
+  "frozen_before_any_live_retrieval": true,
+  "no_relevance_rule": "Gold relevance, evidence IDs, answer requirements, and all retrieval metrics are never inspected; candidate IDs/ranks/scores are retrieval outputs and are never joined with relevance labels",
+  "no_replacement_after_results_rule": "cohort IDs are frozen before any retrieval output; a failed frozen case may only be retried/resumed as itself, never replaced",
+  "current_plan_capture_pool": {
+   "count": 46,
+   "case_ids": [
+    "g001",
+    "g002",
+    "g003",
+    "g004",
+    "g005",
+    "g006",
+    "g008",
+    "g009",
+    "g010",
+    "g013",
+    "g014",
+    "g015",
+    "g017",
+    "g019",
+    "g020",
+    "g021",
+    "g022",
+    "g023",
+    "g024",
+    "g027",
+    "g028",
+    "g029",
+    "g030",
+    "g031",
+    "g032",
+    "g033",
+    "g034",
+    "g035",
+    "g036",
+    "g037",
+    "g039",
+    "g040",
+    "g044",
+    "g047",
+    "g050",
+    "g051",
+    "g052",
+    "g055",
+    "g059",
+    "g060",
+    "g105",
+    "g110",
+    "g112",
+    "g113",
+    "g114",
+    "g115"
+   ],
+   "intent_distribution": {
+    "algorithm_implementation": 2,
+    "algorithm_theory": 6,
+    "api": 13,
+    "installation": 8,
+    "module_structure": 1,
+    "troubleshooting": 5,
+    "usage": 11
+   },
+   "definition": "the 46 formal-English cases with faithful current C2 prompt-3.7.0 RetrievalPlans (C6-A1R1 audit; the 13 current-plan-unavailable cases are excluded; g018 is never reconstructed)"
+  },
+  "core_capture_cohort": {
+   "count": 30,
+   "case_ids": [
+    "g001",
+    "g010",
+    "g044",
+    "g059",
+    "g027",
+    "g105",
+    "g110",
+    "g002",
+    "g013",
+    "g047",
+    "g060",
+    "g028",
+    "g112",
+    "g003",
+    "g014",
+    "g050",
+    "g029",
+    "g113",
+    "g004",
+    "g015",
+    "g051",
+    "g030",
+    "g114",
+    "g005",
+    "g017",
+    "g052",
+    "g031",
+    "g115",
+    "g006",
+    "g019"
+   ],
+   "intent_distribution": {
+    "algorithm_implementation": 2,
+    "algorithm_theory": 5,
+    "api": 5,
+    "installation": 6,
+    "module_structure": 1,
+    "troubleshooting": 5,
+    "usage": 6
+   },
+   "selection_rule": "unchanged C6-A1 preregistered algorithm: within-intent case-ID ascending, fixed repository intent-cycle round-robin, maximum 30, source population = CURRENT_PLAN_CAPTURE_POOL"
+  },
+  "semantic_structural_activation": {
+   "method": "pure build_semantic_query(question, plan) + DenseQueryBundle.from_semantic_query; SEMANTIC_VIEW_ACTIVE iff SemanticQuery.text != raw question; no model, no retrieval, no Gold",
+   "active_count_among_46": 4,
+   "active_case_ids": [
+    "g008",
+    "g050",
+    "g110",
+    "g113"
+   ],
+   "inactive_count_among_46": 42,
+   "active_intent_distribution": {
+    "algorithm_theory": 1,
+    "installation": 1,
+    "troubleshooting": 2
+   },
+   "active_within_core": [
+    "g050",
+    "g110",
+    "g113"
+   ],
+   "active_within_core_count": 3,
+   "active_core_intent_count": 2
+  },
+  "semantic_supplement_cohort": {
+   "count": 1,
+   "case_ids": [
+    "g008"
+   ],
+   "rule": "minimum deterministic supplement from pool-minus-core to reach >=8 semantic-active cases and >=2 intents (prefer an unrepresented intent first, then the fixed intent cycle, case-ID ascending within intent; maximum 8); the pool contains only 4 semantic-active cases in total, so the reachable supplement is the single remaining active case outside core"
+  },
+  "live_capture_cohort": {
+   "count": 31,
+   "case_ids": [
+    "g001",
+    "g010",
+    "g044",
+    "g059",
+    "g027",
+    "g105",
+    "g110",
+    "g002",
+    "g013",
+    "g047",
+    "g060",
+    "g028",
+    "g112",
+    "g003",
+    "g014",
+    "g050",
+    "g029",
+    "g113",
+    "g004",
+    "g015",
+    "g051",
+    "g030",
+    "g114",
+    "g005",
+    "g017",
+    "g052",
+    "g031",
+    "g115",
+    "g006",
+    "g019",
+    "g008"
+   ],
+   "maximum": 38
+  },
+  "capture_channel_set": [
+   "exact",
+   "raw_dense",
+   "sparse",
+   "paper",
+   "workflow",
+   "graph",
+   "semantic_dense (only when structurally active)"
+  ],
+  "production_channels_untouched": {
+   "exact": "LEGACY_EXACT",
+   "sparse": "RAW_QUESTION",
+   "semantic_dense": "auxiliary/shadow"
+  },
+  "candidate_limit": 20,
+  "forbidden_paths": [
+   "Retriever.analyze()",
+   "Retriever.retrieve() (invokes reranker)",
+   "reranker",
+   "selector",
+   "final evidence selection",
+   "QA/verifier/judge"
+  ]
+ },
+ "capture_identity": {
+  "source_manifest_repositories": {
+   "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+   "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357",
+   "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+  },
+  "qdrant_collection": "panda_knowledge_v1",
+  "qdrant_points": 104973,
+  "index_identity_fingerprint": "8172f9a640e62977be6e911bfb4848ce3aecd0994f1f3ba51a0985bffec62cb9",
+  "dense_vector": "size=3072 distance=Cosine name=dense",
+  "sparse_vector": "name=sparse modifier=idf",
+  "embedding_model": "gemini-embedding-2 (3072 dimensions)",
+  "sparse_encoder_receipt": "Qdrant/bm25 english sparse idf fastembed 0.7.4",
+  "candidate_pool_per_channel": 20,
+  "compatibility_check": "locked repository versions match the frozen 3.7.0 plans' resolved_versions; index identity and sparse receipt match the authoritative B-series contract"
+ },
+ "capture_results": {
+  "per_case_capture_status": {
+   "g001": "CAPTURE_COMPLETE",
+   "g010": "CAPTURE_COMPLETE",
+   "g044": "CAPTURE_COMPLETE",
+   "g059": "CAPTURE_COMPLETE",
+   "g027": "CAPTURE_COMPLETE",
+   "g105": "CAPTURE_COMPLETE",
+   "g110": "CAPTURE_COMPLETE",
+   "g002": "CAPTURE_COMPLETE",
+   "g013": "CAPTURE_COMPLETE",
+   "g047": "CAPTURE_COMPLETE",
+   "g060": "CAPTURE_COMPLETE",
+   "g028": "CAPTURE_COMPLETE",
+   "g112": "CAPTURE_COMPLETE",
+   "g003": "CAPTURE_COMPLETE",
+   "g014": "CAPTURE_COMPLETE",
+   "g050": "CAPTURE_COMPLETE",
+   "g029": "CAPTURE_COMPLETE",
+   "g113": "CAPTURE_COMPLETE",
+   "g004": "CAPTURE_COMPLETE",
+   "g015": "CAPTURE_COMPLETE",
+   "g051": "CAPTURE_COMPLETE",
+   "g030": "CAPTURE_COMPLETE",
+   "g114": "CAPTURE_COMPLETE",
+   "g005": "CAPTURE_COMPLETE",
+   "g017": "CAPTURE_COMPLETE",
+   "g052": "CAPTURE_COMPLETE",
+   "g031": "CAPTURE_COMPLETE",
+   "g115": "CAPTURE_COMPLETE",
+   "g006": "CAPTURE_COMPLETE",
+   "g019": "CAPTURE_COMPLETE",
+   "g008": "CAPTURE_COMPLETE"
+  },
+  "capture_complete_count": 31,
+  "capture_failed_count": 0,
+  "core_completion_gate": {
+   "core_case_count": 30,
+   "all_core_complete_with_authoritative_streams": true,
+   "no_core_channel_missing_or_invalid_or_failed": true
+  },
+  "per_channel_availability_counts": {
+   "exact": {
+    "PRESENT_NONEMPTY": 27,
+    "PRESENT_EMPTY": 4
+   },
+   "raw_dense": {
+    "PRESENT_NONEMPTY": 31
+   },
+   "sparse": {
+    "PRESENT_NONEMPTY": 31
+   },
+   "paper": {
+    "PRESENT_EMPTY": 24,
+    "PRESENT_NONEMPTY": 7
+   },
+   "workflow": {
+    "PRESENT_NONEMPTY": 25,
+    "PRESENT_EMPTY": 6
+   },
+   "graph": {
+    "PRESENT_NONEMPTY": 24,
+    "PRESENT_EMPTY": 7
+   },
+   "semantic_dense": {
+    "SKIPPED_BY_PLAN": 27,
+    "PRESENT_NONEMPTY": 4
+   }
+  },
+  "current_candidate_dataset": {
+   "path": "evaluation/baselines/replay/phase_c_c6_current_plan_candidate_replay_v1.jsonl",
+   "case_count": 31,
+   "no_gold_or_relevance_fields": true,
+   "static_banned_field_scan": "relevance / expected_evidence / required_evidence / critical_evidence / answer_requirement / gold_label / evidence_group -> none present",
+   "plan_provenance": "frozen_plan_source per row: C4-A2R1 plan_snapshots or the C4 original faithful records; prompt_version 3.7.0",
+   "object_identity": "object_id (production fusion semantics; no title/path/symbol/canonical-locator dedup; no C5 entity equivalence)"
+  },
+  "p0_replay_integrity": {
+   "core_cases_checked": 30,
+   "deterministic_and_valid": 30,
+   "failures": 0,
+   "checks": "deterministic repeated replay; contribution sums equal fused scores; no unavailable channel contributes; semantic_dense contributes zero under c6.current.v1; object_id dedup preserved",
+   "result": "100% over complete core cases"
+  }
+ },
+ "cost_and_isolation": {
+  "analyzer_generation_calls": 0,
+  "reranker_generation_calls": 0,
+  "qa_verifier_judge_calls": 0,
+  "raw_dense_query_embeddings": 31,
+  "semantic_dense_query_embeddings": 4,
+  "embedding_calls_total": 35,
+  "generation_calls_total": 0,
+  "sparse_encodes": 31,
+  "qdrant_reads": 87,
+  "sql_reads_all_read_only_asserted": 282,
+  "sql_writes": 0,
+  "qdrant_writes": 0,
+  "index_mutations": 0,
+  "schema_migration": "no",
+  "reindex": "no",
+  "sparse_rebuild": "no",
+  "corpus_dense_reembedding": "no",
+  "write_guard": "the capture connection asserted no INSERT/UPDATE/DELETE/CREATE/ALTER/DROP/UPSERT statement"
+ },
+ "semantic_a2_derivation": {
+  "semantic_current_stream_count": 4,
+  "semantic_a2_policy_cohort_ids": [
+   "g008",
+   "g050",
+   "g110",
+   "g113"
+  ],
+  "semantic_represented_intents": [
+   "algorithm_theory",
+   "installation",
+   "troubleshooting"
+  ],
+  "semantic_a2_evidence_eligible": false,
+  "threshold_unchanged": ">=8 cases and >=2 intents; derived mechanically without relevance",
+  "note": "only 4 of 46 capture-pool cases are structurally semantic-active under the frozen 3.7.0 plans (the C2 additive-delta contract rarely produces a SemanticQuery.text different from the raw question), so the substantive-evidence minimum of 8 cannot be met from current frozen coverage",
+  "no_semanticdense_production_decision_made": true
+ },
+ "final_results": {
+  "c6_a1r2_result": "PASS",
+  "c6_a2_execution_eligibility": {
+   "state": "ELIGIBLE",
+   "conditions_check": {
+    "1_core_frozen_before_retrieval_outcomes": true,
+    "2_all_core_cases_complete_six_channels": true,
+    "3_faithful_c2_3_7_plans": true,
+    "4_capture_source_index_identity_coherent": true,
+    "5_no_gold_or_relevance_used": true,
+    "6_p0_replay_integrity_100_percent": true,
+    "7_core_cohort_size": 30,
+    "core_minimum_12_satisfied": true
+   }
+  },
+  "result_semantics": "C6-A1R2 PASS means a methodologically valid current-plan frozen candidate dataset exists for C6-A2; it does NOT mean current fusion is good, that any policy is better, that SemanticDense is beneficial, or that C6 = PASS.",
+  "resolution_of_prior_blocker": "PLAN_FIDELITY_BLOCKED remains a true statement about reusing the historical 3.6.0-era streams; it is resolved for the newly captured C6-A2 cohort because current 3.7.0-plan candidate streams were newly captured under the current retrieval implementation and locked index state (the historical streams did not 'become compatible')",
+  "production_behavior_unchanged": true,
+  "novel_replay_status": "ABSENT (unchanged)",
+  "known_limitations": [
+   "only 4 semantic-active cases exist in current frozen coverage, so semantic_a2_evidence_eligible stays false and the SemanticDense substantive decision remains EVIDENCE_INSUFFICIENT",
+   "13 formal-English cases still lack faithful current plans and are absent from the captured cohort",
+   "the capture reflects current production channel semantics at HEAD 3b450cc with the locked index state"
+  ]
+ }
+}
