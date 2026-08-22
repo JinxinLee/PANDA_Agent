@@ -1,0 +1,1509 @@
+{
+ "schema_version": "c5-entity-first-exact-retrieval-1",
+ "task": "C5",
+ "artifact_id": "phase_c_c5_entity_first_exact_retrieval_v1",
+ "phase": "C5",
+ "recorded_on": "2026-08-22",
+ "source_head": "db4edfb7835802e6af3f69e11bf32fc9a9cb3cc5",
+ "c4_closeout_baseline": {
+  "c4_evaluation_verdict": "INCONCLUSIVE",
+  "c4_lifecycle_state": "CLOSED_INCONCLUSIVE",
+  "c4_a3": "PASS",
+  "production_sparse": "exact raw question (untouched by C5)",
+  "lexical_query": "retained experimental/shadow (untouched by C5)"
+ },
+ "purpose": "Entity-first exact retrieval: a query-time entity-resolution contract in front of the unchanged legacy exact fallback, evaluated by an exact-only PRE/POST A/B over the frozen C4-A2R1 plans. C5 performs no model calls, no alias creation, no SQL/Qdrant writes, and no fusion decisions.",
+ "c5_a0_generic_inventory": {
+  "read_only": true,
+  "accepted_alias_count": 2,
+  "accepted_aliases": [
+   {
+    "alias_text": "*_pid_final.root",
+    "target_object_id": "data_product.restgas.pid_final_root",
+    "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+   },
+   {
+    "alias_text": "restgas_profile.txt",
+    "target_object_id": "configuration.restgas_profile",
+    "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+   }
+  ],
+  "normalized_duplicate_alias_count": 0,
+  "multi_target_alias_count": 0,
+  "dangling_alias_target_count": 0,
+  "object_count": 133075,
+  "object_type_distribution_top": {
+   "function": 60510,
+   "source_file_chunk": 28917,
+   "function_chunk": 12290,
+   "source_file": 11908,
+   "class": 11030
+  },
+  "source_distribution": {
+   "pandaroot": 70487,
+   "restgas_determination": 58680,
+   "luminosityfit": 2737,
+   "pandaroot_sphinx_2023_08_25_dev": 522,
+   "karavdina_2015": 239,
+   "pflueger_2017": 211,
+   "li_2026": 177,
+   "curated_panda_domain": 22
+  },
+  "target_repo_version_locking": "each target repository has exactly one locked version in storage",
+  "exact_fields_available": [
+   "object_id",
+   "title",
+   "canonical_locator",
+   "locator.path",
+   "locator.symbol"
+  ],
+  "null_canonical_locator_count": 0,
+  "locator_symbol_present_count": 86183,
+  "locator_path_present_count": 132360,
+  "existing_index_support": [
+   "knowledge_alias_normalized_idx",
+   "knowledge_source_idx(source_id,source_version_id,object_type)",
+   "knowledge_title_idx(lower(title))",
+   "knowledge_text_fts_idx GIN tsvector english"
+  ],
+  "fts_trigram_availability": "English GIN FTS already installed; pg_trgm is available but NOT installed and is deliberately not added for C5",
+  "relation_predicate_inventory": {
+   "accepted": [
+    "CALLS",
+    "CORRECTS",
+    "DEPENDS_ON",
+    "FORKED_FROM",
+    "FORMALIZES",
+    "IMPLEMENTED_AS_PIPELINE",
+    "INCLUDES",
+    "INHERITS",
+    "OPERATIONALLY_DOCUMENTS",
+    "PARAMETERIZES",
+    "PRODUCES",
+    "PRODUCES_INPUT_FOR",
+    "PRODUCES_PROFILE_FOR",
+    "READS",
+    "THEORETICAL_BASIS_FOR"
+   ]
+  },
+  "identity_safe_relation_support": "NOT_AVAILABLE \u2014 no existing predicate unambiguously means entity identity/equivalence/canonical aliasing; Phase D owns richer relation semantics"
+ },
+ "c5_data_contract": {
+  "module": "src/panda_agent/entity_resolution.py",
+  "structures": [
+   "EntityMention",
+   "EntityCandidate",
+   "EntityResolution",
+   "EntityResolutionReceipt",
+   "AcceptedAlias"
+  ],
+  "statuses": [
+   "RESOLVED_UNIQUE",
+   "RESOLVED_MULTIPLE",
+   "AMBIGUOUS",
+   "UNRESOLVED",
+   "REJECTED_VERSION",
+   "REJECTED_SCOPE",
+   "MISSING_TARGET"
+  ],
+  "match_kinds_priority": [
+   "accepted_alias",
+   "exact_symbol",
+   "exact_title",
+   "exact_path",
+   "identity_relation(NOT_AVAILABLE)"
+  ],
+  "mention_sources_allowed": [
+   "A explicit technical identifiers completely present in the raw question (boundary-safe technical-token extraction)",
+   "B C2 accepted analyzer symbols from analysis_diagnostics.analyzer_accepted_semantic_delta.symbols with complete in-question support and technical-identifier shape",
+   "C accepted aliases (knowledge_aliases.review_status='accepted') matched with boundary-safe deterministic patterns",
+   "D plan.resolved_aliases consumed only as compatibility evidence; targets independently validated for existence, ambiguity, and version/scope safety"
+  ],
+  "mention_sources_forbidden": [
+   "reviewed query-expansion symbols",
+   "matched query-expansion rules",
+   "flat plan.symbols without provenance",
+   "flat plan.concepts",
+   "Gold evidence objects",
+   "required evidence IDs",
+   "answer requirements",
+   "paper page hints",
+   "benchmark-specific phrase rules",
+   "rejected analyzer items",
+   "fallback concept scopes",
+   "hidden answer-location metadata",
+   "per-question aliases"
+  ],
+  "alias_matching_policy": "boundary-safe deterministic regex: case-insensitive, complete-token boundaries, multi-word with stable internal whitespace, literal characters only (no glob broadening)",
+  "ambiguity_policy": "multiple distinct valid targets => AMBIGUOUS/RESOLVED_MULTIPLE with no selection and legacy fallback preserved; object_id ordering is never used as disambiguation; no LLM choice",
+  "version_policy": "target-repository candidates must match plan.resolved_versions locks; context/curated sources follow existing allowed-source semantics; rejections recorded as REJECTED_VERSION/REJECTED_SCOPE",
+  "fallback_policy": "POST = canonical entity-first prefix + unchanged legacy _exact fallback with stable object_id deduplication; legacy fallback is never removed",
+  "production_safety": "production _exact() unchanged during C5-A1 and C5-A2; entity-first execution is shadow-only via Retriever.shadow_exact(question, plan)"
+ },
+ "c5_a1_t0_evidence": {
+  "test_file": "tests/unit/test_entity_resolution.py",
+  "new_tests": 27,
+  "c4_boundary_regression_tests": "tests/unit/test_lexical_query.py + tests/unit/test_c4_sparse_evaluation.py rerun with the C5 module present",
+  "total_passed": "63/63",
+  "coverage_map": [
+   "complete raw technical symbol resolution",
+   "exact symbol beats broad substring match",
+   "alias matching boundary safety (fit/profit)",
+   "multi-word alias matching with stable whitespace",
+   "case-insensitive accepted alias matching",
+   "ambiguous alias does not select one target",
+   "duplicate alias targets deduplicate safely",
+   "missing alias target reported (MISSING_TARGET)",
+   "version-mismatched target rejected (REJECTED_VERSION)",
+   "out-of-scope source target rejected (REJECTED_SCOPE)",
+   "context-source target allowed",
+   "accepted unique alias resolves canonical object",
+   "unreviewed/unaccepted aliases ignored by loader filter",
+   "reviewed query-expansion symbols cannot become mentions (flat plan fields unused)",
+   "rejected analyzer symbols cannot become mentions (support/shape checks)",
+   "flat plan.symbols/concepts cannot bypass provenance rules",
+   "exact path matching deterministic",
+   "exact title matching deterministic",
+   "legacy fallback remains available (merge without prefix)",
+   "entity-first candidates precede fallback (merge order)",
+   "candidate deduplication stable",
+   "ambiguity triggers fallback rather than guessing",
+   "resolution receipt contains provenance/reasons",
+   "resolver performs only read-only queries (no write verbs)",
+   "deterministic repeated execution",
+   "lexical builder unchanged (C4 boundary)",
+   "production _exact untouched (shadow-only implementation)"
+  ],
+  "external_model_qdrant_calls": 0,
+  "implementation_smoke_disclosure": "One live implementation smoke (g023) verified SQL connectivity of shadow_exact before preregistration. It produced RESOLVED_MULTIPLE for PndMasterRecoTask with fallback preserved; no Gold-relevance judgment, metric, cohort, or rule decision was taken from it."
+ },
+ "c5_a2_preregistration": {
+  "created_before_first_exact_ab_outcome": true,
+  "frozen_plan_source": "evaluation/baselines/manifests/phase_c_c4_a2r1_frozen_plan_coverage_completion_v1.json (40 analyzer-captured plans) plus the 6 original faithful records in phase_c_c4_lexical_query_builder_sparse_v1.json",
+  "screenable_pool": "the same locked 47-case C4-A2 pool minus g018 (historically unfaithful plan) = 46 faithful plans",
+  "excluded_cases": {
+   "g018": "historically unfaithful plan (C4 rule preserved)",
+   "g011": "Phase E (outside pool)",
+   "g016": "explicit exclusion (outside pool)"
+  },
+  "analyzer_calls": 0,
+  "treatment_qualification_rule": "A case is treatment-qualified iff the frozen C5 resolver detects at least one of: (1) an explicit query-grounded exact technical entity mention; (2) a matching accepted alias; (3) a safe canonical resolution that changes the entity-first candidate prefix versus legacy exact behavior. Gold relevance and PRE/POST rankings are never inspected during screening.",
+  "strata_rule": "DESCRIPTIVE_OR_ALIAS primary when an accepted-alias mention drives resolution; otherwise EXPLICIT_IDENTIFIER. Both recorded for diagnostics; primary stratum is deterministic.",
+  "cohort_procedure": "DESCRIPTIVE_OR_ALIAS cases sorted by question ID first, then EXPLICIT_IDENTIFIER cases sorted by question ID, alternating strata where possible up to 12; cases are never replaced after exact outcomes are observed.",
+  "minimum_total_qualified": 6,
+  "minimum_descriptive_alias": 2,
+  "cohort_maximum": 12,
+  "below_minimum_rule": "fewer than 6 qualified => C5-A2 INCONCLUSIVE and no live A/B; >=6 total but <2 descriptive/alias => the A/B may run for diagnostics but production acceptance remains INCONCLUSIVE",
+  "pre_protocol": "legacy _exact(plan, question, 20) \u2014 the current production exact channel",
+  "post_protocol": "EntityFirstExact = canonical entity-first prefix + same legacy fallback, top-20, stable dedup",
+  "isolation_requirements": "identical question, RetrievalPlan, allowed sources, locked versions, and channel limit; the only intended difference is entity-first canonical resolution and ordering before fallback; no other channel may be called",
+  "metrics": [
+   "Recall@5",
+   "Recall@10",
+   "Recall@20",
+   "MRR",
+   "critical evidence coverage where defined",
+   "per-case first relevant rank PRE/POST",
+   "classification improved/recovered_hit/unchanged/no_hit_both/regressed/lost_hit",
+   "per-stratum aggregation"
+  ],
+  "entity_resolution_metrics": [
+   "treatment_case_count",
+   "explicit_identifier_case_count",
+   "descriptive_alias_case_count",
+   "unique_resolution_count",
+   "ambiguous_resolution_count",
+   "unresolved_count",
+   "alias_unique_resolution_count",
+   "alias_ambiguous_count",
+   "canonical_target_present_at_5",
+   "canonical_target_present_at_10",
+   "false_resolution_count",
+   "version_violation_count",
+   "out_of_scope_promotion_count",
+   "fallback_used_count"
+  ],
+  "pass_gates": [
+   "1 C5-A1 PASS",
+   "2 treatment-qualified cohort >= 6",
+   "3 descriptive/alias cohort >= 2",
+   "4 exact PRE/POST isolation valid",
+   "5 POST Recall@10 >= PRE Recall@10",
+   "6 POST Recall@20 >= PRE Recall@20",
+   "7 no new critical evidence miss",
+   "8 lost_hit = 0",
+   "9 explicit_identifier_lost_hit = 0",
+   "10 version_violation_count = 0",
+   "11 out_of_scope_promotion_count = 0",
+   "12 false_unique_resolution_from_ambiguous_alias = 0",
+   "13 false_resolution_count = 0",
+   "14 at least one DESCRIPTIVE_OR_ALIAS case improved/recovered_hit or materially upward canonical target",
+   "15 no benchmark-specific alias/entity rule introduced",
+   "16 no SQL/Qdrant/index mutation"
+  ],
+  "result_semantics": "PASS only if all gates pass; INCONCLUSIVE for insufficient cohort/coverage, infrastructure blocks, mixed ranking evidence, or non-contract gate failures (production exact remains legacy); FAIL reserved for generic contract defects (wrong canonical target, ambiguous alias guessed uniquely, version-incompatible promotion, forbidden provenance leakage, structural explicit-symbol regression, nondeterministic resolution, broken isolation)."
+ },
+ "treatment_screening": {
+  "rule": "mention-layer qualification without ranking or Gold-relevance inspection",
+  "screenable_case_count": 46,
+  "treatment_qualified_count": 39,
+  "explicit_identifier_count": 39,
+  "descriptive_alias_count": 0,
+  "per_case_records": [
+   {
+    "case_id": "g001",
+    "intent": "installation",
+    "raw_question": "How do I install the locked PandaRoot development snapshot?",
+    "mentions": [
+     {
+      "text": "PandaRoot",
+      "kind": "explicit_identifier",
+      "provenance": "user_raw_technical_token",
+      "support_span": "PandaRoot"
+     }
+    ],
+    "has_explicit_identifier_mention": true,
+    "has_accepted_alias_mention": false,
+    "qualified": true,
+    "primary_stratum": "EXPLICIT_IDENTIFIER",
+    "qualification_reasons": [
+     "explicit_query_grounded_technical_mention"
+    ]
+   },
+   {
+    "case_id": "g002",
+    "intent": "installation",
+    "raw_question": "What are the documented prerequisites before building PandaRoot?",
+    "mentions": [
+     {
+      "text": "PandaRoot",
+      "kind": "explicit_identifier",
+      "provenance": "user_raw_technical_token",
+      "support_span": "PandaRoot"
+     }
+    ],
+    "has_explicit_identifier_mention": true,
+    "has_accepted_alias_mention": false,
+    "qualified": true,
+    "primary_stratum": "EXPLICIT_IDENTIFIER",
+    "qualification_reasons": [
+     "explicit_query_grounded_technical_mention"
+    ]
+   },
+   {
+    "case_id": "g003",
+    "intent": "installation",
+    "raw_question": "How can I use CernVM-FS for a PandaRoot environment?",
+    "mentions": [
+     {
+      "text": "CernVM-FS",
+      "kind": "explicit_identifier",
+      "provenance": "user_raw_technical_token",
+      "support_span": "CernVM-FS"
+     },
+     {
+      "text": "PandaRoot",
+      "kind": "explicit_identifier",
+      "provenance": "user_raw_technical_token",
+      "support_span": "PandaRoot"
+     }
+    ],
+    "has_explicit_identifier_mention": true,
+    "has_accepted_alias_mention": false,
+    "qualified": true,
+    "primary_stratum": "EXPLICIT_IDENTIFIER",
+    "qualification_reasons": [
+     "explicit_query_grounded_technical_mention"
+    ]
+   },
+   {
+    "case_id": "g004",
+    "intent": "installation",
+    "raw_question": "How do I start PandaRoot with its documented Docker containers?",
+    "mentions": [
+     {
+      "text": "PandaRoot",
+      "kind": "explicit_identifier",
+      "provenance": "user_raw_technical_token",
+      "support_span": "PandaRoot"
+     }
+    ],
+    "has_explicit_identifier_mention": true,
+    "has_accepted_alias_mention": false,
+    "qualified": true,
+    "primary_stratum": "EXPLICIT_IDENTIFIER",
+    "qualification_reasons": [
+     "explicit_query_grounded_technical_mention"
+    ]
+   },
+   {
+    "case_id": "g005",
+    "intent": "installation",
+    "raw_question": "How is a PandaRoot developer environment used inside Docker?",
+    "mentions": [
+     {
+      "text": "PandaRoot",
+      "kind": "explicit_identifier",
+      "provenance": "user_raw_technical_token",
+      "support_span": "PandaRoot"
+     }
+    ],
+    "has_explicit_identifier_mention": true,
+    "has_accepted_alias_mention": false,
+    "qualified": true,
+    "primary_stratum": "EXPLICIT_IDENTIFIER",
+    "qualification_reasons": [
+     "explicit_query_grounded_technical_mention"
+    ]
+   },
+   {
+    "case_id": "g006",
+    "intent": "installation",
+    "raw_question": "Which setup step makes PandaRoot commands available in a shell?",
+    "mentions": [
+     {
+      "text": "PandaRoot",
+      "kind": "explicit_identifier",
+      "provenance": "user_raw_technical_token",
+      "support_span": "PandaRoot"
+     }
+    ],
+    "has_explicit_identifier_mention": true,
+    "has_accepted_alias_mention": false,
+    "qualified": true,
+    "primary_stratum": "EXPLICIT_IDENTIFIER",
+    "qualification_reasons": [
+     "explicit_query_grounded_technical_mention"
+    ]
+   },
+   {
+    "case_id": "g008",
+    "intent": "installation",
+    "raw_question": "How can I verify that the PandaRoot environment is ready before running a macro?",
+    "mentions": [
+     {
+      "text": "PandaRoot",
+      "kind": "explicit_identifier",
+      "provenance": "user_raw_technical_token",
+      "support_span": "PandaRoot"
+     }
+    ],
+    "has_explicit_identifier_mention": true,
+    "has_accepted_alias_mention": false,
+    "qualified": true,
+    "primary_stratum": "EXPLICIT_IDENTIFIER",
+    "qualification_reasons": [
+     "explicit_query_grounded_technical_mention"
+    ]
+   },
+   {
+    "case_id": "g009",
+    "intent": "installation",
+    "raw_question": "Which installation page should a source-code contributor read?",
+    "mentions": [
+     {
+      "text": "source-code",
+      "kind": "explicit_identifier",
+      "provenance": "user_raw_technical_token",
+      "support_span": "source-code"
+     }
+    ],
+    "has_explicit_identifier_mention": true,
+    "has_accepted_alias_mention": false,
+    "qualified": true,
+    "primary_stratum": "EXPLICIT_IDENTIFIER",
+    "qualification_reasons": [
+     "explicit_query_grounded_technical_mention"
+    ]
+   },
+   {
+    "case_id": "g010",
+    "intent": "installation",
+    "raw_question": "Is a Jupyter-based PandaRoot workflow documented, and where?",
+    "mentions": [
+     {
+      "text": "Jupyter-based",
+      "kind": "explicit_identifier",
+      "provenance": "user_raw_technical_token",
+      "support_span": "Jupyter-based"
+     },
+     {
+      "text": "PandaRoot",
+      "kind": "explicit_identifier",
+      "provenance": "user_raw_technical_token",
+      "support_span": "PandaRoot"
+     }
+    ],
+    "has_explicit_identifier_mention": true,
+    "has_accepted_alias_mention": false,
+    "qualified": true,
+    "primary_stratum": "EXPLICIT_IDENTIFIER",
+    "qualification_reasons": [
+     "explicit_query_grounded_technical_mention"
+    ]
+   },
+   {
+    "case_id": "g013",
+    "intent": "usage",
+    "raw_question": "How do I set up the terminal and run a ROOT simulation macro in PandaRoot, and how does the master run task participate in the lifecycle?",
+    "mentions": [
+     {
+      "text": "ROOT",
+      "kind": "explicit_identifier",
+      "provenance": "user_raw_technical_token",
+      "support_span": "ROOT"
+     },
+     {
+      "text": "PandaRoot",
+      "kind": "explicit_identifier",
+      "provenance": "user_raw_technical_token",
+      "support_span": "PandaRoot"
+     }
+    ],
+    "has_explicit_identifier_mention": true,
+    "has_accepted_alias_mention": false,
+    "qualified": true,
+    "primary_stratum": "EXPLICIT_IDENTIFIER",
+    "qualification_reasons": [
+     "explicit_query_grounded_technical_mention"
+    ]
+   },
+   {
+    "case_id": "g014",
+    "intent": "usage",
+    "raw_question": "What is the documented PandaRoot simulation-to-analysis sequence?",
+    "mentions": [
+     {
+      "text": "PandaRoot",
+      "kind": "explicit_identifier",
+      "provenance": "user_raw_technical_token",
+      "support_span": "PandaRoot"
+     },
+     {
+      "text": "simulation-to-analysis",
+      "kind": "explicit_identifier",
+      "provenance": "user_raw_technical_token",
+      "support_span": "simulation-to-analysis"
+     }
+    ],
+    "has_explicit_identifier_mention": true,
+    "has_accepted_alias_mention": false,
+    "qualified": true,
+    "primary_stratum": "EXPLICIT_IDENTIFIER",
+    "qualification_reasons": [
+     "explicit_query_grounded_technical_mention"
+    ]
+   },
+   {
+    "case_id": "g015",
+    "intent": "usage",
+    "raw_question": "How is PndMasterRunSim used to configure a simulation?",
+    "mentions": [
+     {
+      "text": "PndMasterRunSim",
+      "kind": "analyzer_symbol",
+      "provenance": "analyzer_accepted",
+      "support_span": "PndMasterRunSim"
+     }
+    ],
+    "has_explicit_identifier_mention": true,
+    "has_accepted_alias_mention": false,
+    "qualified": true,
+    "primary_stratum": "EXPLICIT_IDENTIFIER",
+    "qualification_reasons": [
+     "explicit_query_grounded_technical_mention"
+    ]
+   },
+   {
+    "case_id": "g017",
+    "intent": "usage",
+    "raw_question": "How should createLmdFitData be invoked and what categories can it create?",
+    "mentions": [
+     {
+      "text": "createLmdFitData",
+      "kind": "analyzer_symbol",
+      "provenance": "analyzer_accepted",
+      "support_span": "createLmdFitData"
+     }
+    ],
+    "has_explicit_identifier_mention": true,
+    "has_accepted_alias_mention": false,
+    "qualified": true,
+    "primary_stratum": "EXPLICIT_IDENTIFIER",
+    "qualification_reasons": [
+     "explicit_query_grounded_technical_mention"
+    ]
+   },
+   {
+    "case_id": "g019",
+    "intent": "usage",
+    "raw_question": "How do I extract luminosity values from completed fit results?",
+    "mentions": [],
+    "has_explicit_identifier_mention": false,
+    "has_accepted_alias_mention": false,
+    "qualified": false,
+    "primary_stratum": null,
+    "qualification_reasons": []
+   },
+   {
+    "case_id": "g020",
+    "intent": "usage",
+    "raw_question": "How is the restgas two-pass reconstruction workflow run?",
+    "mentions": [
+     {
+      "text": "two-pass",
+      "kind": "explicit_identifier",
+      "provenance": "user_raw_technical_token",
+      "support_span": "two-pass"
+     }
+    ],
+    "has_explicit_identifier_mention": true,
+    "has_accepted_alias_mention": false,
+    "qualified": true,
+    "primary_stratum": "EXPLICIT_IDENTIFIER",
+    "qualification_reasons": [
+     "explicit_query_grounded_technical_mention"
+    ]
+   },
+   {
+    "case_id": "g021",
+    "intent": "usage",
+    "raw_question": "How is restgas_profile supplied to distributed-target simulation?",
+    "mentions": [
+     {
+      "text": "restgas_profile",
+      "kind": "analyzer_symbol",
+      "provenance": "analyzer_accepted",
+      "support_span": "restgas_profile"
+     },
+     {
+      "text": "distributed-target",
+      "kind": "explicit_identifier",
+      "provenance": "user_raw_technical_token",
+      "support_span": "distributed-target"
+     }
+    ],
+    "has_explicit_identifier_mention": true,
+    "has_accepted_alias_mention": false,
+    "qualified": true,
+    "primary_stratum": "EXPLICIT_IDENTIFIER",
+    "qualification_reasons": [
+     "explicit_query_grounded_technical_mention"
+    ]
+   },
+   {
+    "case_id": "g022",
+    "intent": "usage",
+    "raw_question": "Which documented RHO pages cover data access and particle identification?",
+    "mentions": [
+     {
+      "text": "RHO",
+      "kind": "analyzer_symbol",
+      "provenance": "analyzer_accepted",
+      "support_span": "RHO"
+     }
+    ],
+    "has_explicit_identifier_mention": true,
+    "has_accepted_alias_mention": false,
+    "qualified": true,
+    "primary_stratum": "EXPLICIT_IDENTIFIER",
+    "qualification_reasons": [
+     "explicit_query_grounded_technical_mention"
+    ]
+   },
+   {
+    "case_id": "g023",
+    "intent": "usage",
+    "raw_question": "How do I use PndMasterRecoTask in the generic workflow?",
+    "mentions": [
+     {
+      "text": "PndMasterRecoTask",
+      "kind": "analyzer_symbol",
+      "provenance": "analyzer_accepted",
+      "support_span": "PndMasterRecoTask"
+     }
+    ],
+    "has_explicit_identifier_mention": true,
+    "has_accepted_alias_mention": false,
+    "qualified": true,
+    "primary_stratum": "EXPLICIT_IDENTIFIER",
+    "qualification_reasons": [
+     "explicit_query_grounded_technical_mention"
+    ]
+   },
+   {
+    "case_id": "g024",
+    "intent": "usage",
+    "raw_question": "How do I perform analysis inside a FairTask-style task?",
+    "mentions": [
+     {
+      "text": "FairTask-style",
+      "kind": "explicit_identifier",
+      "provenance": "user_raw_technical_token",
+      "support_span": "FairTask-style"
+     }
+    ],
+    "has_explicit_identifier_mention": true,
+    "has_accepted_alias_mention": false,
+    "qualified": true,
+    "primary_stratum": "EXPLICIT_IDENTIFIER",
+    "qualification_reasons": [
+     "explicit_query_grounded_technical_mention"
+    ]
+   },
+   {
+    "case_id": "g027",
+    "intent": "api",
+    "raw_question": "Where is PndTargetGenerator defined in the locked PandaRoot snapshot and the RestgasDetermination fork, and why does version scope matter?",
+    "mentions": [
+     {
+      "text": "PndTargetGenerator",
+      "kind": "analyzer_symbol",
+      "provenance": "analyzer_accepted",
+      "support_span": "PndTargetGenerator"
+     },
+     {
+      "text": "PandaRoot",
+      "kind": "explicit_identifier",
+      "provenance": "user_raw_technical_token",
+      "support_span": "PandaRoot"
+     },
+     {
+      "text": "RestgasDetermination",
+      "kind": "explicit_identifier",
+      "provenance": "user_raw_technical_token",
+      "support_span": "RestgasDetermination"
+     }
+    ],
+    "has_explicit_identifier_mention": true,
+    "has_accepted_alias_mention": false,
+    "qualified": true,
+    "primary_stratum": "EXPLICIT_IDENTIFIER",
+    "qualification_reasons": [
+     "explicit_query_grounded_technical_mention"
+    ]
+   },
+   {
+    "case_id": "g028",
+    "intent": "api",
+    "raw_question": "Where is PndPidCorrelator implemented?",
+    "mentions": [
+     {
+      "text": "PndPidCorrelator",
+      "kind": "analyzer_symbol",
+      "provenance": "analyzer_accepted",
+      "support_span": "PndPidCorrelator"
+     }
+    ],
+    "has_explicit_identifier_mention": true,
+    "has_accepted_alias_mention": false,
+    "qualified": true,
+    "primary_stratum": "EXPLICIT_IDENTIFIER",
+    "qualification_reasons": [
+     "explicit_query_grounded_technical_mention"
+    ]
+   },
+   {
+    "case_id": "g029",
+    "intent": "api",
+    "raw_question": "Where is PndLmdCombinedDataReader defined and what data boundary does it implement?",
+    "mentions": [
+     {
+      "text": "PndLmdCombinedDataReader",
+      "kind": "analyzer_symbol",
+      "provenance": "analyzer_accepted",
+      "support_span": "PndLmdCombinedDataReader"
+     }
+    ],
+    "has_explicit_identifier_mention": true,
+    "has_accepted_alias_mention": false,
+    "qualified": true,
+    "primary_stratum": "EXPLICIT_IDENTIFIER",
+    "qualification_reasons": [
+     "explicit_query_grounded_technical_mention"
+    ]
+   },
+   {
+    "case_id": "g030",
+    "intent": "api",
+    "raw_question": "Which class represents angular acceptance in LuminosityFit?",
+    "mentions": [
+     {
+      "text": "LuminosityFit",
+      "kind": "explicit_identifier",
+      "provenance": "user_raw_technical_token",
+      "support_span": "LuminosityFit"
+     }
+    ],
+    "has_explicit_identifier_mention": true,
+    "has_accepted_alias_mention": false,
+    "qualified": true,
+    "primary_stratum": "EXPLICIT_IDENTIFIER",
+    "qualification_reasons": [
+     "explicit_query_grounded_technical_mention"
+    ]
+   },
+   {
+    "case_id": "g031",
+    "intent": "api",
+    "raw_question": "Where does PndLmdModelFactory assemble the fit model?",
+    "mentions": [
+     {
+      "text": "PndLmdModelFactory",
+      "kind": "analyzer_symbol",
+      "provenance": "analyzer_accepted",
+      "support_span": "PndLmdModelFactory"
+     }
+    ],
+    "has_explicit_identifier_mention": true,
+    "has_accepted_alias_mention": false,
+    "qualified": true,
+    "primary_stratum": "EXPLICIT_IDENTIFIER",
+    "qualification_reasons": [
+     "explicit_query_grounded_technical_mention"
+    ]
+   },
+   {
+    "case_id": "g032",
+    "intent": "api",
+    "raw_question": "Which source implements the 1D DPM angular model?",
+    "mentions": [
+     {
+      "text": "DPM",
+      "kind": "explicit_identifier",
+      "provenance": "user_raw_technical_token",
+      "support_span": "DPM"
+     }
+    ],
+    "has_explicit_identifier_mention": true,
+    "has_accepted_alias_mention": false,
+    "qualified": true,
+    "primary_stratum": "EXPLICIT_IDENTIFIER",
+    "qualification_reasons": [
+     "explicit_query_grounded_technical_mention"
+    ]
+   },
+   {
+    "case_id": "g033",
+    "intent": "api",
+    "raw_question": "Which source implements the 2D DPM angular model?",
+    "mentions": [
+     {
+      "text": "DPM",
+      "kind": "explicit_identifier",
+      "provenance": "user_raw_technical_token",
+      "support_span": "DPM"
+     }
+    ],
+    "has_explicit_identifier_mention": true,
+    "has_accepted_alias_mention": false,
+    "qualified": true,
+    "primary_stratum": "EXPLICIT_IDENTIFIER",
+    "qualification_reasons": [
+     "explicit_query_grounded_technical_mention"
+    ]
+   },
+   {
+    "case_id": "g034",
+    "intent": "api",
+    "raw_question": "Where is detector-resolution convolution implemented in LuminosityFit?",
+    "mentions": [
+     {
+      "text": "detector-resolution",
+      "kind": "explicit_identifier",
+      "provenance": "user_raw_technical_token",
+      "support_span": "detector-resolution"
+     },
+     {
+      "text": "LuminosityFit",
+      "kind": "explicit_identifier",
+      "provenance": "user_raw_technical_token",
+      "support_span": "LuminosityFit"
+     }
+    ],
+    "has_explicit_identifier_mention": true,
+    "has_accepted_alias_mention": false,
+    "qualified": true,
+    "primary_stratum": "EXPLICIT_IDENTIFIER",
+    "qualification_reasons": [
+     "explicit_query_grounded_technical_mention"
+    ]
+   },
+   {
+    "case_id": "g035",
+    "intent": "api",
+    "raw_question": "Where is beam-divergence smearing implemented?",
+    "mentions": [
+     {
+      "text": "beam-divergence",
+      "kind": "explicit_identifier",
+      "provenance": "user_raw_technical_token",
+      "support_span": "beam-divergence"
+     }
+    ],
+    "has_explicit_identifier_mention": true,
+    "has_accepted_alias_mention": false,
+    "qualified": true,
+    "primary_stratum": "EXPLICIT_IDENTIFIER",
+    "qualification_reasons": [
+     "explicit_query_grounded_technical_mention"
+    ]
+   },
+   {
+    "case_id": "g036",
+    "intent": "api",
+    "raw_question": "Which macro produces event_poca?",
+    "mentions": [
+     {
+      "text": "event_poca",
+      "kind": "analyzer_symbol",
+      "provenance": "analyzer_accepted",
+      "support_span": "event_poca"
+     }
+    ],
+    "has_explicit_identifier_mention": true,
+    "has_accepted_alias_mention": false,
+    "qualified": true,
+    "primary_stratum": "EXPLICIT_IDENTIFIER",
+    "qualification_reasons": [
+     "explicit_query_grounded_technical_mention"
+    ]
+   },
+   {
+    "case_id": "g037",
+    "intent": "api",
+    "raw_question": "Which macro consumes POCA_VERTEX_FILE for the second pass?",
+    "mentions": [
+     {
+      "text": "POCA_VERTEX_FILE",
+      "kind": "analyzer_symbol",
+      "provenance": "analyzer_accepted",
+      "support_span": "POCA_VERTEX_FILE"
+     }
+    ],
+    "has_explicit_identifier_mention": true,
+    "has_accepted_alias_mention": false,
+    "qualified": true,
+    "primary_stratum": "EXPLICIT_IDENTIFIER",
+    "qualification_reasons": [
+     "explicit_query_grounded_technical_mention"
+    ]
+   },
+   {
+    "case_id": "g039",
+    "intent": "api",
+    "raw_question": "Where is longitudinal restgas efficiency correction implemented?",
+    "mentions": [],
+    "has_explicit_identifier_mention": false,
+    "has_accepted_alias_mention": false,
+    "qualified": false,
+    "primary_stratum": null,
+    "qualification_reasons": []
+   },
+   {
+    "case_id": "g040",
+    "intent": "api",
+    "raw_question": "Where is the displaced-track Apollonius task implemented in the restgas fork?",
+    "mentions": [
+     {
+      "text": "displaced-track",
+      "kind": "explicit_identifier",
+      "provenance": "user_raw_technical_token",
+      "support_span": "displaced-track"
+     }
+    ],
+    "has_explicit_identifier_mention": true,
+    "has_accepted_alias_mention": false,
+    "qualified": true,
+    "primary_stratum": "EXPLICIT_IDENTIFIER",
+    "qualification_reasons": [
+     "explicit_query_grounded_technical_mention"
+    ]
+   },
+   {
+    "case_id": "g044",
+    "intent": "algorithm_theory",
+    "raw_question": "Why is angular acceptance needed in a luminosity fit?",
+    "mentions": [],
+    "has_explicit_identifier_mention": false,
+    "has_accepted_alias_mention": false,
+    "qualified": false,
+    "primary_stratum": null,
+    "qualification_reasons": []
+   },
+   {
+    "case_id": "g047",
+    "intent": "algorithm_theory",
+    "raw_question": "What is the theoretical purpose of the DPM elastic-scattering model?",
+    "mentions": [
+     {
+      "text": "DPM",
+      "kind": "explicit_identifier",
+      "provenance": "user_raw_technical_token",
+      "support_span": "DPM"
+     },
+     {
+      "text": "elastic-scattering",
+      "kind": "explicit_identifier",
+      "provenance": "user_raw_technical_token",
+      "support_span": "elastic-scattering"
+     }
+    ],
+    "has_explicit_identifier_mention": true,
+    "has_accepted_alias_mention": false,
+    "qualified": true,
+    "primary_stratum": "EXPLICIT_IDENTIFIER",
+    "qualification_reasons": [
+     "explicit_query_grounded_technical_mention"
+    ]
+   },
+   {
+    "case_id": "g050",
+    "intent": "algorithm_theory",
+    "raw_question": "Why is restgas longitudinal reconstruction efficiency profile dependent?",
+    "mentions": [],
+    "has_explicit_identifier_mention": false,
+    "has_accepted_alias_mention": false,
+    "qualified": false,
+    "primary_stratum": null,
+    "qualification_reasons": []
+   },
+   {
+    "case_id": "g051",
+    "intent": "algorithm_theory",
+    "raw_question": "How does point-like angular acceptance differ from restgas effective acceptance?",
+    "mentions": [
+     {
+      "text": "point-like",
+      "kind": "explicit_identifier",
+      "provenance": "user_raw_technical_token",
+      "support_span": "point-like"
+     }
+    ],
+    "has_explicit_identifier_mention": true,
+    "has_accepted_alias_mention": false,
+    "qualified": true,
+    "primary_stratum": "EXPLICIT_IDENTIFIER",
+    "qualification_reasons": [
+     "explicit_query_grounded_technical_mention"
+    ]
+   },
+   {
+    "case_id": "g052",
+    "intent": "algorithm_theory",
+    "raw_question": "Why does a reconstructed restgas profile feed back into effective acceptance?",
+    "mentions": [],
+    "has_explicit_identifier_mention": false,
+    "has_accepted_alias_mention": false,
+    "qualified": false,
+    "primary_stratum": null,
+    "qualification_reasons": []
+   },
+   {
+    "case_id": "g055",
+    "intent": "algorithm_theory",
+    "raw_question": "How should angular acceptance be distinguished from longitudinal efficiency?",
+    "mentions": [],
+    "has_explicit_identifier_mention": false,
+    "has_accepted_alias_mention": false,
+    "qualified": false,
+    "primary_stratum": null,
+    "qualification_reasons": []
+   },
+   {
+    "case_id": "g059",
+    "intent": "algorithm_implementation",
+    "raw_question": "How is detector-resolution smearing implemented in LuminosityFit?",
+    "mentions": [
+     {
+      "text": "detector-resolution",
+      "kind": "explicit_identifier",
+      "provenance": "user_raw_technical_token",
+      "support_span": "detector-resolution"
+     },
+     {
+      "text": "LuminosityFit",
+      "kind": "explicit_identifier",
+      "provenance": "user_raw_technical_token",
+      "support_span": "LuminosityFit"
+     }
+    ],
+    "has_explicit_identifier_mention": true,
+    "has_accepted_alias_mention": false,
+    "qualified": true,
+    "primary_stratum": "EXPLICIT_IDENTIFIER",
+    "qualification_reasons": [
+     "explicit_query_grounded_technical_mention"
+    ]
+   },
+   {
+    "case_id": "g060",
+    "intent": "algorithm_implementation",
+    "raw_question": "How is beam-divergence smearing implemented in LuminosityFit?",
+    "mentions": [
+     {
+      "text": "beam-divergence",
+      "kind": "explicit_identifier",
+      "provenance": "user_raw_technical_token",
+      "support_span": "beam-divergence"
+     },
+     {
+      "text": "LuminosityFit",
+      "kind": "explicit_identifier",
+      "provenance": "user_raw_technical_token",
+      "support_span": "LuminosityFit"
+     }
+    ],
+    "has_explicit_identifier_mention": true,
+    "has_accepted_alias_mention": false,
+    "qualified": true,
+    "primary_stratum": "EXPLICIT_IDENTIFIER",
+    "qualification_reasons": [
+     "explicit_query_grounded_technical_mention"
+    ]
+   },
+   {
+    "case_id": "g105",
+    "intent": "module_structure",
+    "raw_question": "Map model/ vs data/ vs apps/ in LuminosityFit with PndLmdModelFactory and createLmdFitData.",
+    "mentions": [
+     {
+      "text": "LuminosityFit",
+      "kind": "explicit_identifier",
+      "provenance": "user_raw_technical_token",
+      "support_span": "LuminosityFit"
+     },
+     {
+      "text": "PndLmdModelFactory",
+      "kind": "analyzer_symbol",
+      "provenance": "analyzer_accepted",
+      "support_span": "PndLmdModelFactory"
+     },
+     {
+      "text": "createLmdFitData",
+      "kind": "analyzer_symbol",
+      "provenance": "analyzer_accepted",
+      "support_span": "createLmdFitData"
+     },
+     {
+      "text": "model/",
+      "kind": "analyzer_symbol",
+      "provenance": "analyzer_accepted",
+      "support_span": "model/"
+     },
+     {
+      "text": "data/",
+      "kind": "analyzer_symbol",
+      "provenance": "analyzer_accepted",
+      "support_span": "data/"
+     },
+     {
+      "text": "apps/",
+      "kind": "analyzer_symbol",
+      "provenance": "analyzer_accepted",
+      "support_span": "apps/"
+     }
+    ],
+    "has_explicit_identifier_mention": true,
+    "has_accepted_alias_mention": false,
+    "qualified": true,
+    "primary_stratum": "EXPLICIT_IDENTIFIER",
+    "qualification_reasons": [
+     "explicit_query_grounded_technical_mention"
+    ]
+   },
+   {
+    "case_id": "g110",
+    "intent": "troubleshooting",
+    "raw_question": "event_poca is missing: what should I inspect first?",
+    "mentions": [
+     {
+      "text": "event_poca",
+      "kind": "analyzer_symbol",
+      "provenance": "analyzer_accepted",
+      "support_span": "event_poca"
+     }
+    ],
+    "has_explicit_identifier_mention": true,
+    "has_accepted_alias_mention": false,
+    "qualified": true,
+    "primary_stratum": "EXPLICIT_IDENTIFIER",
+    "qualification_reasons": [
+     "explicit_query_grounded_technical_mention"
+    ]
+   },
+   {
+    "case_id": "g112",
+    "intent": "troubleshooting",
+    "raw_question": "createLmdFitData returns no acceptance: which data mode, Lumi_TrksQA input/tree assumptions, selection filters, and accepted/generated histogram filling should I inspect?",
+    "mentions": [
+     {
+      "text": "createLmdFitData",
+      "kind": "analyzer_symbol",
+      "provenance": "analyzer_accepted",
+      "support_span": "createLmdFitData"
+     },
+     {
+      "text": "Lumi_TrksQA",
+      "kind": "analyzer_symbol",
+      "provenance": "analyzer_accepted",
+      "support_span": "Lumi_TrksQA"
+     },
+     {
+      "text": "input/tree",
+      "kind": "explicit_identifier",
+      "provenance": "user_raw_technical_token",
+      "support_span": "input/tree"
+     },
+     {
+      "text": "accepted/generated",
+      "kind": "explicit_identifier",
+      "provenance": "user_raw_technical_token",
+      "support_span": "accepted/generated"
+     }
+    ],
+    "has_explicit_identifier_mention": true,
+    "has_accepted_alias_mention": false,
+    "qualified": true,
+    "primary_stratum": "EXPLICIT_IDENTIFIER",
+    "qualification_reasons": [
+     "explicit_query_grounded_technical_mention"
+    ]
+   },
+   {
+    "case_id": "g113",
+    "intent": "troubleshooting",
+    "raw_question": "runLmdFit cannot find prepared data; how do I trace the mismatch?",
+    "mentions": [
+     {
+      "text": "runLmdFit",
+      "kind": "analyzer_symbol",
+      "provenance": "analyzer_accepted",
+      "support_span": "runLmdFit"
+     }
+    ],
+    "has_explicit_identifier_mention": true,
+    "has_accepted_alias_mention": false,
+    "qualified": true,
+    "primary_stratum": "EXPLICIT_IDENTIFIER",
+    "qualification_reasons": [
+     "explicit_query_grounded_technical_mention"
+    ]
+   },
+   {
+    "case_id": "g114",
+    "intent": "troubleshooting",
+    "raw_question": "Why might restgas efficiency correction have empty bins?",
+    "mentions": [],
+    "has_explicit_identifier_mention": false,
+    "has_accepted_alias_mention": false,
+    "qualified": false,
+    "primary_stratum": null,
+    "qualification_reasons": []
+   },
+   {
+    "case_id": "g115",
+    "intent": "troubleshooting",
+    "raw_question": "Why might LMD angular acceptance be confused with pvz efficiency?",
+    "mentions": [
+     {
+      "text": "LMD",
+      "kind": "explicit_identifier",
+      "provenance": "user_raw_technical_token",
+      "support_span": "LMD"
+     }
+    ],
+    "has_explicit_identifier_mention": true,
+    "has_accepted_alias_mention": false,
+    "qualified": true,
+    "primary_stratum": "EXPLICIT_IDENTIFIER",
+    "qualification_reasons": [
+     "explicit_query_grounded_technical_mention"
+    ]
+   }
+  ]
+ },
+ "cohort": {
+  "frozen_before_outcomes": true,
+  "selection_procedure": "DESCRIPTIVE_OR_ALIAS sorted by ID first, then EXPLICIT_IDENTIFIER sorted by ID, alternating where possible up to 12; none replaced after outcomes",
+  "cohort_ids": [
+   "g001",
+   "g002",
+   "g003",
+   "g004",
+   "g005",
+   "g006",
+   "g008",
+   "g009",
+   "g010",
+   "g013",
+   "g014",
+   "g015"
+  ],
+  "cohort_size": 12,
+  "descriptive_alias_ids": [],
+  "explicit_identifier_ids_in_cohort": [
+   "g001",
+   "g002",
+   "g003",
+   "g004",
+   "g005",
+   "g006",
+   "g008",
+   "g009",
+   "g010",
+   "g013",
+   "g014",
+   "g015"
+  ],
+  "note": "zero DESCRIPTIVE_OR_ALIAS cases exist, so the cohort is the first 12 EXPLICIT_IDENTIFIER cases by ID"
+ },
+ "exact_ab_results": {
+  "status": "RUN_DIAGNOSTIC_ONLY",
+  "protocol": "PRE = legacy _exact(plan, question, 20); POST = entity-first canonical prefix + same legacy fallback, top-20, stable dedup; identical question/plan/allowed sources/locked versions/limit",
+  "pre_recall_at_5": 0.25,
+  "post_recall_at_5": 0.25,
+  "pre_recall_at_10": 0.3333333333333333,
+  "post_recall_at_10": 0.3333333333333333,
+  "pre_recall_at_20": 0.3333333333333333,
+  "post_recall_at_20": 0.3333333333333333,
+  "pre_mrr": 0.2222222222222222,
+  "post_mrr": 0.1369047619047619,
+  "pre_critical_coverage": 0.3333333333333333,
+  "post_critical_coverage": 0.3333333333333333,
+  "critical_new_misses": 0,
+  "classification": {
+   "improved": 0,
+   "recovered_hit": 0,
+   "unchanged": 1,
+   "no_hit_both": 8,
+   "regressed": 3,
+   "lost_hit": 0,
+   "positive_direction_count": 0,
+   "negative_direction_count": 3,
+   "informative_case_count": 4
+  },
+  "by_stratum": {
+   "EXPLICIT_IDENTIFIER": {
+    "case_count": 12,
+    "classification_counts": {
+     "improved": 0,
+     "recovered_hit": 0,
+     "unchanged": 1,
+     "no_hit_both": 8,
+     "regressed": 3,
+     "lost_hit": 0,
+     "informative": 4,
+     "positive": 0,
+     "negative": 3,
+     "informative_case_count": 4,
+     "positive_direction_count": 0,
+     "negative_direction_count": 3
+    },
+    "pre_recall_at_10": 0.3333333333333333,
+    "post_recall_at_10": 0.3333333333333333
+   },
+   "DESCRIPTIVE_OR_ALIAS": {
+    "case_count": 0,
+    "classification_counts": {},
+    "pre_recall_at_10": null,
+    "post_recall_at_10": null
+   }
+  },
+  "per_case": [
+   {
+    "case_id": "g001",
+    "stratum": "EXPLICIT_IDENTIFIER",
+    "pre_first_relevant_rank": null,
+    "post_first_relevant_rank": null,
+    "classification": "no_hit_both",
+    "canonical_prefix_ids": [
+     "object.748d6657afaae5e33dd48c4d"
+    ]
+   },
+   {
+    "case_id": "g002",
+    "stratum": "EXPLICIT_IDENTIFIER",
+    "pre_first_relevant_rank": null,
+    "post_first_relevant_rank": null,
+    "classification": "no_hit_both",
+    "canonical_prefix_ids": [
+     "object.748d6657afaae5e33dd48c4d"
+    ]
+   },
+   {
+    "case_id": "g003",
+    "stratum": "EXPLICIT_IDENTIFIER",
+    "pre_first_relevant_rank": 1,
+    "post_first_relevant_rank": 2,
+    "classification": "regressed",
+    "canonical_prefix_ids": [
+     "object.748d6657afaae5e33dd48c4d"
+    ]
+   },
+   {
+    "case_id": "g004",
+    "stratum": "EXPLICIT_IDENTIFIER",
+    "pre_first_relevant_rank": 1,
+    "post_first_relevant_rank": 2,
+    "classification": "regressed",
+    "canonical_prefix_ids": [
+     "object.748d6657afaae5e33dd48c4d"
+    ]
+   },
+   {
+    "case_id": "g005",
+    "stratum": "EXPLICIT_IDENTIFIER",
+    "pre_first_relevant_rank": 6,
+    "post_first_relevant_rank": 7,
+    "classification": "regressed",
+    "canonical_prefix_ids": [
+     "object.748d6657afaae5e33dd48c4d"
+    ]
+   },
+   {
+    "case_id": "g006",
+    "stratum": "EXPLICIT_IDENTIFIER",
+    "pre_first_relevant_rank": null,
+    "post_first_relevant_rank": null,
+    "classification": "no_hit_both",
+    "canonical_prefix_ids": [
+     "object.748d6657afaae5e33dd48c4d"
+    ]
+   },
+   {
+    "case_id": "g008",
+    "stratum": "EXPLICIT_IDENTIFIER",
+    "pre_first_relevant_rank": null,
+    "post_first_relevant_rank": null,
+    "classification": "no_hit_both",
+    "canonical_prefix_ids": [
+     "object.748d6657afaae5e33dd48c4d"
+    ]
+   },
+   {
+    "case_id": "g009",
+    "stratum": "EXPLICIT_IDENTIFIER",
+    "pre_first_relevant_rank": null,
+    "post_first_relevant_rank": null,
+    "classification": "no_hit_both",
+    "canonical_prefix_ids": []
+   },
+   {
+    "case_id": "g010",
+    "stratum": "EXPLICIT_IDENTIFIER",
+    "pre_first_relevant_rank": null,
+    "post_first_relevant_rank": null,
+    "classification": "no_hit_both",
+    "canonical_prefix_ids": [
+     "object.748d6657afaae5e33dd48c4d"
+    ]
+   },
+   {
+    "case_id": "g013",
+    "stratum": "EXPLICIT_IDENTIFIER",
+    "pre_first_relevant_rank": null,
+    "post_first_relevant_rank": null,
+    "classification": "no_hit_both",
+    "canonical_prefix_ids": [
+     "object.748d6657afaae5e33dd48c4d"
+    ]
+   },
+   {
+    "case_id": "g014",
+    "stratum": "EXPLICIT_IDENTIFIER",
+    "pre_first_relevant_rank": null,
+    "post_first_relevant_rank": null,
+    "classification": "no_hit_both",
+    "canonical_prefix_ids": [
+     "object.748d6657afaae5e33dd48c4d"
+    ]
+   },
+   {
+    "case_id": "g015",
+    "stratum": "EXPLICIT_IDENTIFIER",
+    "pre_first_relevant_rank": 2,
+    "post_first_relevant_rank": 2,
+    "classification": "unchanged",
+    "canonical_prefix_ids": []
+   }
+  ],
+  "mrr_decrease_explanation": "MRR fell 0.2222 -> 0.1369 because the unique title match for the product name PandaRoot resolves the repository Readme object and the entity-first prefix places it at rank 1 in 10/12 cases, displacing the previously rank-1 Gold evidence to rank 2 (g003/g004 MRR 1.0 -> 0.5, g005 6 -> 7). The resolution itself is correct (the question mentions PandaRoot and the Readme title is PandaRoot); the signal is that a unique canonical resolution is not necessarily a retrieval-valuable promotion for generic product-name mentions. No ranking rule was changed in response to this observation.",
+  "full_case_records_file": "data/tmp/c5_exact_ab_results_v1.json (receipts and full rankings preserved there and summarized here)"
+ },
+ "entity_resolution_safety": {
+  "treatment_case_count": 39,
+  "explicit_identifier_case_count": 39,
+  "descriptive_alias_case_count": 0,
+  "unique_resolution_count": 10,
+  "ambiguous_resolution_count": 1,
+  "unresolved_count": 5,
+  "alias_unique_resolution_count": 0,
+  "alias_ambiguous_count": 0,
+  "canonical_target_present_at_5": 10,
+  "canonical_target_present_at_10": 10,
+  "false_resolution_count": 0,
+  "version_violation_count": 0,
+  "out_of_scope_promotion_count": 0,
+  "false_unique_resolution_from_ambiguous_alias": 0,
+  "fallback_used_count": 2
+ },
+ "cost_and_isolation": {
+  "analyzer_calls": 0,
+  "vertex_calls": 0,
+  "embedding_calls": 0,
+  "exact_sql_reads": 55,
+  "dense_reads": 0,
+  "sparse_reads_or_encodes": 0,
+  "paper_workflow_graph": 0,
+  "fusion_reranker_selector": 0,
+  "qa_verifier_judge": 0,
+  "sql_writes": 0,
+  "qdrant_reads": 0,
+  "qdrant_writes": 0,
+  "index_mutations": 0,
+  "write_guard": "the evaluation connection asserted no INSERT/UPDATE/DELETE/CREATE/ALTER/DROP statement was issued",
+  "reindex_reembedding": "no"
+ },
+ "production_activation": {
+  "production_exact": "LEGACY_EXACT",
+  "reason": "Final C5 is INCONCLUSIVE: descriptive/alias evidence is zero (gate 3 fails) and no DESCRIPTIVE_OR_ALIAS improvement exists (gate 14 fails). Production _exact() remains the untouched legacy implementation; Retriever.shadow_exact stays available as the explicit entity-first shadow path."
+ },
+ "final_results": {
+  "c5_a1_result": "PASS",
+  "c5_a2_result": "INCONCLUSIVE",
+  "final_c5_result": "INCONCLUSIVE",
+  "gate_ledger": {
+   "1_c5_a1_pass": "PASS",
+   "2_cohort_ge_6": "PASS (39 qualified, 12 frozen)",
+   "3_descriptive_alias_ge_2": "FAIL (0)",
+   "4_pre_post_isolation": "PASS",
+   "5_recall_at_10": "PASS (0.3333 >= 0.3333)",
+   "6_recall_at_20": "PASS (0.3333 >= 0.3333)",
+   "7_no_new_critical_miss": "PASS",
+   "8_lost_hit_zero": "PASS",
+   "9_explicit_identifier_lost_hit_zero": "PASS",
+   "10_version_violation_zero": "PASS",
+   "11_out_of_scope_promotion_zero": "PASS",
+   "12_false_unique_from_ambiguous_alias_zero": "PASS",
+   "13_false_resolution_zero": "PASS",
+   "14_descriptive_improvement": "FAIL (no descriptive case exists)",
+   "15_no_benchmark_specific_rule": "PASS",
+   "16_no_sql_qdrant_index_mutation": "PASS"
+  },
+  "architectural_signals": [
+   "The accepted-alias corpus (2 rows) provides no descriptive-resolution surface for the locked English pool; descriptive evidence requires the Phase-D systematic alias migration, not C5 alias creation.",
+   "Unique canonical resolution of generic product-name mentions (PandaRoot -> repository Readme) is correct as resolution but harmful as a rank-1 promotion for installation questions; any future production activation needs an explicit ordering policy for generic-entity prefixes."
+  ]
+ },
+ "known_limitations": [
+  "no mass alias creation; only the 2 existing accepted aliases are usable",
+  "no full ontology/resolver; Phase D owns richer entity schema and systematic alias migration",
+  "relation identity is not used because no existing predicate unambiguously means identity",
+  "C4 remains CLOSED_INCONCLUSIVE; production sparse remains the raw question",
+  "SemanticDense production efficacy remains C6-owned",
+  "no new Gold dataset; no novel human-authored dataset",
+  "no T3/T4/T5; g011 remains Phase E",
+  "C5-A2 ran as diagnostics only under the preregistered below-minimum-descriptive rule; production acceptance is INCONCLUSIVE"
+ ]
+}

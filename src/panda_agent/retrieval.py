@@ -13,6 +13,7 @@ from typing import Any
 from qdrant_client import models
 
 from panda_agent.config import load_query_expansions, load_retrieval_policies
+from panda_agent.entity_resolution import EntityResolver, merge_exact_streams
 from panda_agent.lexical_query import build_lexical_query
 from panda_agent.llm.vertex import VertexAIClient, VertexSettings
 from panda_agent.models import AuthorityLevel, Evidence, RetrievalPlan, SourceLocator, stable_id
@@ -1254,6 +1255,33 @@ class Retriever:
                     if len(ordered) >= limit:
                         return ordered
         return ordered[:limit]
+
+    def shadow_exact(
+        self, question: str, plan: RetrievalPlan
+    ) -> dict[str, Any]:
+        """C5 shadow: legacy versus entity-first exact, without other channels.
+
+        Requires an explicit RetrievalPlan so the shadow never triggers an
+        analyzer call.  Returns the legacy PRE stream, the entity-first POST
+        stream, and the entity-resolution receipt; production ``_exact`` is
+        untouched.
+        """
+
+        limit = 20
+        resolver = EntityResolver(self.storage, context_sources=self.context_sources)
+        receipt, canonical_prefix = resolver.resolve(
+            question,
+            plan.model_dump(mode="json") if isinstance(plan, RetrievalPlan) else plan,
+        )
+        legacy_rows = self._exact(plan, question, limit)
+        post_rows = merge_exact_streams(canonical_prefix, legacy_rows, limit)
+        return {
+            "pre": legacy_rows,
+            "legacy_exact_candidates": legacy_rows,
+            "post": post_rows,
+            "entity_first_exact_candidates": post_rows,
+            "entity_resolution_receipt": receipt.as_dict(),
+        }
 
     def _query_filter(self, plan: RetrievalPlan) -> models.Filter | None:
         query_filter = None
