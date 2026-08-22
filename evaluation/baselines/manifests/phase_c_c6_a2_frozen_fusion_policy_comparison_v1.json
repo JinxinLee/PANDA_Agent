@@ -1,0 +1,1388 @@
+{
+ "schema_version": 1,
+ "task": "C6-A2 frozen global + semantic fusion policy comparison",
+ "artifact_id": "phase_c_c6_a2_frozen_fusion_policy_comparison_v1",
+ "phase": "C6",
+ "recorded_on": "2026-08-22T17:28:07.926524+00:00",
+ "source_head": "f3229b30fb87d1f674e347c5e7d02faef7a53392",
+ "execution_timing": "after the C6-A1R2 semantic-cohort correction; first and only C6-A2 relevance evaluation",
+ "status": "COMPLETE",
+ "pre_outcome_lock": {
+  "locked_at": "2026-08-22T17:28:07.067788+00:00",
+  "source_head": "f3229b30fb87d1f674e347c5e7d02faef7a53392",
+  "replay_v2_path": "evaluation/baselines/replay/phase_c_c6_current_plan_candidate_replay_v2.jsonl",
+  "replay_v2_row_count": 34,
+  "global_core_cohort": {
+   "count": 30,
+   "ids": [
+    "g001",
+    "g002",
+    "g003",
+    "g004",
+    "g005",
+    "g006",
+    "g010",
+    "g013",
+    "g014",
+    "g015",
+    "g017",
+    "g019",
+    "g027",
+    "g028",
+    "g029",
+    "g030",
+    "g031",
+    "g044",
+    "g047",
+    "g050",
+    "g051",
+    "g052",
+    "g059",
+    "g060",
+    "g105",
+    "g110",
+    "g112",
+    "g113",
+    "g114",
+    "g115"
+   ]
+  },
+  "semantic_policy_cohort": {
+   "count": 8,
+   "ids": [
+    "g050",
+    "g055",
+    "g039",
+    "g008",
+    "g110",
+    "g113",
+    "g114",
+    "g115"
+   ]
+  },
+  "policy_definitions": {
+   "P0_CURRENT": {
+    "policy_id": "c6.current.v1",
+    "mode": "weighted_rrf",
+    "base_policy_id": null,
+    "enabled_channels": [
+     "exact",
+     "raw_dense",
+     "sparse",
+     "paper",
+     "workflow",
+     "graph"
+    ],
+    "weights": {
+     "exact": 2.0,
+     "raw_dense": 1.0,
+     "sparse": 1.0,
+     "paper": 1.15,
+     "workflow": 1.2,
+     "graph": 0.8
+    }
+   },
+   "P1_RAW_DENSE_CENTERED": {
+    "policy_id": "c6.raw_dense_centered.v1",
+    "mode": "weighted_rrf",
+    "base_policy_id": null,
+    "enabled_channels": [
+     "exact",
+     "raw_dense",
+     "sparse",
+     "paper",
+     "workflow",
+     "graph"
+    ],
+    "weights": {
+     "exact": 2.0,
+     "raw_dense": 1.5,
+     "sparse": 1.0,
+     "paper": 1.15,
+     "workflow": 1.2,
+     "graph": 0.8
+    }
+   },
+   "P2_EXACT_HEAVY": {
+    "policy_id": "c6.exact_heavy.v1",
+    "mode": "weighted_rrf",
+    "base_policy_id": null,
+    "enabled_channels": [
+     "exact",
+     "raw_dense",
+     "sparse",
+     "paper",
+     "workflow",
+     "graph"
+    ],
+    "weights": {
+     "exact": 3.0,
+     "raw_dense": 1.0,
+     "sparse": 1.0,
+     "paper": 1.15,
+     "workflow": 1.2,
+     "graph": 0.8
+    }
+   },
+   "P3_SPARSE_HEAVY": {
+    "policy_id": "c6.sparse_heavy.v1",
+    "mode": "weighted_rrf",
+    "base_policy_id": null,
+    "enabled_channels": [
+     "exact",
+     "raw_dense",
+     "sparse",
+     "paper",
+     "workflow",
+     "graph"
+    ],
+    "weights": {
+     "exact": 2.0,
+     "raw_dense": 1.0,
+     "sparse": 1.5,
+     "paper": 1.15,
+     "workflow": 1.2,
+     "graph": 0.8
+    }
+   },
+   "P4_SEMANTIC_AUXILIARY_25": {
+    "policy_id": "c6.semantic_aux25.v1",
+    "mode": "weighted_rrf",
+    "base_policy_id": null,
+    "enabled_channels": [
+     "exact",
+     "raw_dense",
+     "sparse",
+     "paper",
+     "workflow",
+     "graph",
+     "semantic_dense"
+    ],
+    "weights": {
+     "exact": 2.0,
+     "raw_dense": 0.75,
+     "sparse": 1.0,
+     "paper": 1.15,
+     "workflow": 1.2,
+     "graph": 0.8,
+     "semantic_dense": 0.25
+    }
+   },
+   "P5_SEMANTIC_EXPANSION_ONLY": {
+    "policy_id": "c6.semantic_expansion_only.v1",
+    "mode": "expansion_only",
+    "base_policy_id": "c6.current.v1",
+    "enabled_channels": [
+     "exact",
+     "raw_dense",
+     "sparse",
+     "paper",
+     "workflow",
+     "graph"
+    ],
+    "weights": {
+     "exact": 2.0,
+     "raw_dense": 1.0,
+     "sparse": 1.0,
+     "paper": 1.15,
+     "workflow": 1.2,
+     "graph": 0.8
+    }
+   }
+  },
+  "rrf_k": 60,
+  "candidate_identity": "object_id",
+  "gold_dataset": {
+   "path": "evaluation/benchmarks/v2_6/gold_questions.yaml",
+   "sha256": "b5406e36c64ee664f9e2ff9c0f42e354feb7164c81d8f1c7551d8f2ed1d0b687"
+  },
+  "object_lookup": {
+   "source": "data/normalized/9925ec31a6122e05388806990f79aae036f3b0989c4584d24f2092bc4edb3d94/knowledge_objects.jsonl",
+   "selection_rule": "evaluator-canonical mtime-max normalized ingestion dir (load_object_lookup rule)",
+   "object_count": 133075,
+   "replay_v2_candidate_coverage_missing": 0
+  },
+  "relevance_matcher_provenance": {
+   "module": "panda_agent.evaluation",
+   "functions": [
+    "_matched_evidence_groups",
+    "GoldEvidenceSelector.matches",
+    "_selector_match_provenance"
+   ],
+   "semantics": "Existing authoritative required-evidence-group matching semantics from panda_agent.evaluation (frozen by the C3-R3 artifact metric_definitions; the same matcher produced the trusted Gold v2.6 Recall@K/MRR/critical metrics)",
+   "tiers": [
+    "direct",
+    "ancestor (parent lineage)",
+    "path_descendant_containment"
+   ]
+  },
+  "metric_implementation_provenance": {
+   "recall_at_k": "mean per-case fraction of required evidence groups matched within fused top-k (k in 5/10/20)",
+   "mrr": "mean reciprocal rank of the first top-20 relevant hit; 0 when none",
+   "first_relevant_rank": "one-based rank of the first top-20 object satisfying a required-evidence-group match; null when no hit",
+   "critical_evidence_coverage": "mean per-case fraction of critical groups matched within fused top-20; null when no critical labels",
+   "combined_candidate_recall_at_20": "evidence-group recall over the deduplicated union of the policy's enabled fusing channel candidate streams",
+   "direction_classification": "classify_case semantics from panda_agent.c4_sparse_evaluation (P0 = PRE, policy = POST, first-relevant-rank within top-20)",
+   "source": "C3-R3 frozen metric_definitions + panda_agent.evaluation matcher; no parallel evaluator definition"
+  },
+  "safety_gates": [
+   "1 replay inputs identical except policy",
+   "2 no candidate stream regenerated",
+   "3 Fused Recall@20 >= CURRENT",
+   "4 Fused Recall@10 >= CURRENT",
+   "5 no new critical evidence miss",
+   "6 lost_hit = 0",
+   "7 negative_direction_count <= positive_direction_count",
+   "8 no version/source violation introduced by replay",
+   "9 no benchmark-specific channel rule",
+   "10 policy was preregistered in A1"
+  ],
+  "semanticdense_thresholds": {
+   "n_sem": "SEMANTIC_POLICY_COHORT size",
+   "meaningful_marginal_recall_condition": "N_sem >= 8 AND semantic_unique_relevant_case_count >= max(2, ceil(0.10 * N_sem))",
+   "if_condition_fails": "SemanticDense production role = KEEP_DISABLED (lack of contribution) or EVIDENCE_INSUFFICIENT (lack of cohort coverage)",
+   "if_meaningful_and_P4_passes_all_global_gates_and_directionally_at_least_current": "C6-A3 may consider SemanticDense weighted production participation",
+   "if_meaningful_but_P4_harms_ranking_while_P5_improves_candidate_union_coverage_without_changing_current_scored_prefix": "C6-A3 may consider SemanticDense = CANDIDATE_EXPANSION_ONLY, subject to downstream compatibility and novel corroboration",
+   "if_no_meaningful_unique_relevant_evidence": "keep SemanticDense disabled",
+   "thresholds_frozen": true,
+   "current_cohort_consequence": "with 5 semantic cases (<8), the SemanticDense decision defaults to EVIDENCE_INSUFFICIENT regardless of A2 diagnostics"
+  },
+  "intent_aware_rules": {
+   "eligibility_conditions": [
+    "1 at least 3 intents SUFFICIENTLY_REPRESENTED (>=4 CORE_POLICY_COHORT cases each)",
+    "2 each such intent has >=4 cases",
+    "3 at least 2 sufficiently represented intents show different preferred preregistered global policy families",
+    "4 a preferred policy for an intent must improve Fused Recall@10 or MRR relative to CURRENT without reducing Recall@20 and without a new critical miss",
+    "5 within that intent positive_direction_count > negative_direction_count",
+    "6 preference must derive from a preregistered global policy, never a newly invented weight combination"
+   ],
+   "if_not_met": "intent_aware = NOT_JUSTIFIED and C6-A3 must not create one",
+   "construction_rule": "C6_INTENT_AWARE_V1 maps each sufficiently represented intent to one preregistered global policy by deterministic priority: highest Fused Recall@10, then highest Recall@20, then highest MRR, then prefer CURRENT; intents without sufficient evidence use CURRENT; no new weight vectors, no per-intent weight tuning",
+   "intent_aware_policy_evaluated_yet": false
+  },
+  "novel_replay_status": "ABSENT",
+  "gate_notes": "MRR and Recall@5 are required diagnostics; a materially lower MRR requires explicit review even if the hard recall gates pass; no new gate may be defined after A2."
+ },
+ "authoritative_input_paths": {
+  "a1_preregistration": "evaluation/baselines/manifests/phase_c_c6_a0_a1_fusion_replay_preregistration_v1.json",
+  "a1r2_coverage": "evaluation/baselines/manifests/phase_c_c6_a1r2_current_plan_candidate_coverage_v1.json",
+  "semantic_cohort_correction": "evaluation/baselines/manifests/phase_c_c6_a1r2_semantic_cohort_correction_v1.json",
+  "replay_v2": "evaluation/baselines/replay/phase_c_c6_current_plan_candidate_replay_v2.jsonl",
+  "gold_v2_6": "evaluation/benchmarks/v2_6/gold_questions.yaml"
+ },
+ "cohorts": {
+  "global_policy_cohort": {
+   "count": 30,
+   "ids": [
+    "g001",
+    "g002",
+    "g003",
+    "g004",
+    "g005",
+    "g006",
+    "g010",
+    "g013",
+    "g014",
+    "g015",
+    "g017",
+    "g019",
+    "g027",
+    "g028",
+    "g029",
+    "g030",
+    "g031",
+    "g044",
+    "g047",
+    "g050",
+    "g051",
+    "g052",
+    "g059",
+    "g060",
+    "g105",
+    "g110",
+    "g112",
+    "g113",
+    "g114",
+    "g115"
+   ],
+   "used_for": [
+    "P0",
+    "P1",
+    "P2",
+    "P3"
+   ]
+  },
+  "semantic_policy_cohort": {
+   "count": 8,
+   "ids": [
+    "g050",
+    "g055",
+    "g039",
+    "g008",
+    "g110",
+    "g113",
+    "g114",
+    "g115"
+   ],
+   "used_for": [
+    "P0 semantic baseline",
+    "P4",
+    "P5"
+   ]
+  }
+ },
+ "policy_definitions": {
+  "P0_CURRENT": {
+   "policy_id": "c6.current.v1",
+   "mode": "weighted_rrf",
+   "base_policy_id": null,
+   "enabled_channels": [
+    "exact",
+    "raw_dense",
+    "sparse",
+    "paper",
+    "workflow",
+    "graph"
+   ],
+   "weights": {
+    "exact": 2.0,
+    "raw_dense": 1.0,
+    "sparse": 1.0,
+    "paper": 1.15,
+    "workflow": 1.2,
+    "graph": 0.8
+   }
+  },
+  "P1_RAW_DENSE_CENTERED": {
+   "policy_id": "c6.raw_dense_centered.v1",
+   "mode": "weighted_rrf",
+   "base_policy_id": null,
+   "enabled_channels": [
+    "exact",
+    "raw_dense",
+    "sparse",
+    "paper",
+    "workflow",
+    "graph"
+   ],
+   "weights": {
+    "exact": 2.0,
+    "raw_dense": 1.5,
+    "sparse": 1.0,
+    "paper": 1.15,
+    "workflow": 1.2,
+    "graph": 0.8
+   }
+  },
+  "P2_EXACT_HEAVY": {
+   "policy_id": "c6.exact_heavy.v1",
+   "mode": "weighted_rrf",
+   "base_policy_id": null,
+   "enabled_channels": [
+    "exact",
+    "raw_dense",
+    "sparse",
+    "paper",
+    "workflow",
+    "graph"
+   ],
+   "weights": {
+    "exact": 3.0,
+    "raw_dense": 1.0,
+    "sparse": 1.0,
+    "paper": 1.15,
+    "workflow": 1.2,
+    "graph": 0.8
+   }
+  },
+  "P3_SPARSE_HEAVY": {
+   "policy_id": "c6.sparse_heavy.v1",
+   "mode": "weighted_rrf",
+   "base_policy_id": null,
+   "enabled_channels": [
+    "exact",
+    "raw_dense",
+    "sparse",
+    "paper",
+    "workflow",
+    "graph"
+   ],
+   "weights": {
+    "exact": 2.0,
+    "raw_dense": 1.0,
+    "sparse": 1.5,
+    "paper": 1.15,
+    "workflow": 1.2,
+    "graph": 0.8
+   }
+  },
+  "P4_SEMANTIC_AUXILIARY_25": {
+   "policy_id": "c6.semantic_aux25.v1",
+   "mode": "weighted_rrf",
+   "base_policy_id": null,
+   "enabled_channels": [
+    "exact",
+    "raw_dense",
+    "sparse",
+    "paper",
+    "workflow",
+    "graph",
+    "semantic_dense"
+   ],
+   "weights": {
+    "exact": 2.0,
+    "raw_dense": 0.75,
+    "sparse": 1.0,
+    "paper": 1.15,
+    "workflow": 1.2,
+    "graph": 0.8,
+    "semantic_dense": 0.25
+   }
+  },
+  "P5_SEMANTIC_EXPANSION_ONLY": {
+   "policy_id": "c6.semantic_expansion_only.v1",
+   "mode": "expansion_only",
+   "base_policy_id": "c6.current.v1",
+   "enabled_channels": [
+    "exact",
+    "raw_dense",
+    "sparse",
+    "paper",
+    "workflow",
+    "graph"
+   ],
+   "weights": {
+    "exact": 2.0,
+    "raw_dense": 1.0,
+    "sparse": 1.0,
+    "paper": 1.15,
+    "workflow": 1.2,
+    "graph": 0.8
+   }
+  }
+ },
+ "global_aggregate_results": {
+  "P0_CURRENT": {
+   "case_count": 30,
+   "combined_candidate_recall_at_20": 1.0,
+   "fused_recall_at_5": 0.7222222222222222,
+   "fused_recall_at_10": 0.8444444444444444,
+   "fused_recall_at_20": 0.9666666666666667,
+   "mrr": 0.567936507936508,
+   "critical_evidence_coverage": 0.9666666666666667,
+   "critical_applicable_cases": 30
+  },
+  "P1_RAW_DENSE_CENTERED": {
+   "case_count": 30,
+   "combined_candidate_recall_at_20": 1.0,
+   "fused_recall_at_5": 0.7166666666666667,
+   "fused_recall_at_10": 0.861111111111111,
+   "fused_recall_at_20": 0.9666666666666667,
+   "mrr": 0.5674891774891775,
+   "critical_evidence_coverage": 0.9666666666666667,
+   "critical_applicable_cases": 30
+  },
+  "P2_EXACT_HEAVY": {
+   "case_count": 30,
+   "combined_candidate_recall_at_20": 1.0,
+   "fused_recall_at_5": 0.7222222222222222,
+   "fused_recall_at_10": 0.861111111111111,
+   "fused_recall_at_20": 0.9555555555555556,
+   "mrr": 0.5605952380952381,
+   "critical_evidence_coverage": 0.9555555555555556,
+   "critical_applicable_cases": 30
+  },
+  "P3_SPARSE_HEAVY": {
+   "case_count": 30,
+   "combined_candidate_recall_at_20": 1.0,
+   "fused_recall_at_5": 0.7166666666666667,
+   "fused_recall_at_10": 0.861111111111111,
+   "fused_recall_at_20": 1.0,
+   "mrr": 0.6013402936932349,
+   "critical_evidence_coverage": 1.0,
+   "critical_applicable_cases": 30
+  }
+ },
+ "global_direction_counts": {
+  "P1_RAW_DENSE_CENTERED": {
+   "improved": 4,
+   "recovered_hit": 1,
+   "unchanged": 19,
+   "no_hit_both": 0,
+   "regressed": 5,
+   "lost_hit": 1,
+   "positive_direction_count": 5,
+   "negative_direction_count": 6
+  },
+  "P2_EXACT_HEAVY": {
+   "improved": 3,
+   "recovered_hit": 0,
+   "unchanged": 22,
+   "no_hit_both": 1,
+   "regressed": 4,
+   "lost_hit": 0,
+   "positive_direction_count": 3,
+   "negative_direction_count": 4
+  },
+  "P3_SPARSE_HEAVY": {
+   "improved": 4,
+   "recovered_hit": 1,
+   "unchanged": 20,
+   "no_hit_both": 0,
+   "regressed": 5,
+   "lost_hit": 0,
+   "positive_direction_count": 5,
+   "negative_direction_count": 5
+  }
+ },
+ "global_policy_deltas_vs_p0": {
+  "P1_RAW_DENSE_CENTERED": {
+   "combined_candidate_recall_at_20": 0.0,
+   "fused_recall_at_5": -0.005555555555555536,
+   "fused_recall_at_10": 0.016666666666666607,
+   "fused_recall_at_20": 0.0,
+   "mrr": -0.000447330447330474,
+   "critical_evidence_coverage": 0.0
+  },
+  "P2_EXACT_HEAVY": {
+   "combined_candidate_recall_at_20": 0.0,
+   "fused_recall_at_5": 0.0,
+   "fused_recall_at_10": 0.016666666666666607,
+   "fused_recall_at_20": -0.011111111111111072,
+   "mrr": -0.007341269841269815,
+   "critical_evidence_coverage": -0.011111111111111072
+  },
+  "P3_SPARSE_HEAVY": {
+   "combined_candidate_recall_at_20": 0.0,
+   "fused_recall_at_5": -0.005555555555555536,
+   "fused_recall_at_10": 0.016666666666666607,
+   "fused_recall_at_20": 0.033333333333333326,
+   "mrr": 0.03340378575672698,
+   "critical_evidence_coverage": 0.033333333333333326
+  }
+ },
+ "global_hard_gate_matrix": {
+  "P1_RAW_DENSE_CENTERED": {
+   "gates": {
+    "1 replay inputs identical except policy": "PASS",
+    "2 no candidate stream regenerated": "PASS",
+    "3 Fused Recall@20 >= CURRENT": "PASS",
+    "4 Fused Recall@10 >= CURRENT": "PASS",
+    "5 no new critical evidence miss": "FAIL",
+    "6 lost_hit = 0": "FAIL",
+    "7 negative_direction_count <= positive_direction_count": "FAIL",
+    "8 no version/source violation introduced by replay": "PASS",
+    "9 no benchmark-specific channel rule": "PASS",
+    "10 policy was preregistered in A1": "PASS"
+   },
+   "ALL_HARD_GATES_PASS": false
+  },
+  "P2_EXACT_HEAVY": {
+   "gates": {
+    "1 replay inputs identical except policy": "PASS",
+    "2 no candidate stream regenerated": "PASS",
+    "3 Fused Recall@20 >= CURRENT": "FAIL",
+    "4 Fused Recall@10 >= CURRENT": "PASS",
+    "5 no new critical evidence miss": "FAIL",
+    "6 lost_hit = 0": "PASS",
+    "7 negative_direction_count <= positive_direction_count": "FAIL",
+    "8 no version/source violation introduced by replay": "PASS",
+    "9 no benchmark-specific channel rule": "PASS",
+    "10 policy was preregistered in A1": "PASS"
+   },
+   "ALL_HARD_GATES_PASS": false
+  },
+  "P3_SPARSE_HEAVY": {
+   "gates": {
+    "1 replay inputs identical except policy": "PASS",
+    "2 no candidate stream regenerated": "PASS",
+    "3 Fused Recall@20 >= CURRENT": "PASS",
+    "4 Fused Recall@10 >= CURRENT": "PASS",
+    "5 no new critical evidence miss": "PASS",
+    "6 lost_hit = 0": "PASS",
+    "7 negative_direction_count <= positive_direction_count": "PASS",
+    "8 no version/source violation introduced by replay": "PASS",
+    "9 no benchmark-specific channel rule": "PASS",
+    "10 policy was preregistered in A1": "PASS"
+   },
+   "ALL_HARD_GATES_PASS": true
+  }
+ },
+ "global_policy_result_labels": {
+  "P1_RAW_DENSE_CENTERED": "FAIL_HARD_GATES",
+  "P2_EXACT_HEAVY": "FAIL_HARD_GATES",
+  "P3_SPARSE_HEAVY": "PASS_ALL_GATES"
+ },
+ "global_passing_policy_set": [
+  "P3_SPARSE_HEAVY"
+ ],
+ "current_undominated_under_hard_gates": false,
+ "mrr_recall5_diagnostics": {
+  "P1_RAW_DENSE_CENTERED": {
+   "mrr_delta": -0.000447330447330474,
+   "fused_recall_at_5_delta": -0.005555555555555536,
+   "note": "raw deltas reported; no post-outcome MRR materiality threshold exists in project conventions"
+  },
+  "P2_EXACT_HEAVY": {
+   "mrr_delta": -0.007341269841269815,
+   "fused_recall_at_5_delta": 0.0,
+   "note": "raw deltas reported; no post-outcome MRR materiality threshold exists in project conventions"
+  },
+  "P3_SPARSE_HEAVY": {
+   "mrr_delta": 0.03340378575672698,
+   "fused_recall_at_5_delta": -0.005555555555555536,
+   "note": "raw deltas reported; no post-outcome MRR materiality threshold exists in project conventions"
+  }
+ },
+ "semantic_baseline_p0_results": {
+  "case_count": 8,
+  "combined_candidate_recall_at_20": 1.0,
+  "fused_recall_at_5": 0.5625,
+  "fused_recall_at_10": 0.875,
+  "fused_recall_at_20": 1.0,
+  "mrr": 0.5386904761904762,
+  "critical_evidence_coverage": 1.0,
+  "critical_applicable_cases": 8
+ },
+ "semantic_p4_results": {
+  "result_label": "FAIL_HARD_GATES",
+  "aggregates": {
+   "case_count": 8,
+   "combined_candidate_recall_at_20": 1.0,
+   "fused_recall_at_5": 0.5625,
+   "fused_recall_at_10": 0.875,
+   "fused_recall_at_20": 0.9375,
+   "mrr": 0.5364583333333334,
+   "critical_evidence_coverage": 0.9375,
+   "critical_applicable_cases": 8
+  },
+  "direction_counts": {
+   "improved": 0,
+   "recovered_hit": 0,
+   "unchanged": 7,
+   "no_hit_both": 0,
+   "regressed": 1,
+   "lost_hit": 0,
+   "positive_direction_count": 0,
+   "negative_direction_count": 1
+  },
+  "gate_matrix": {
+   "gates": {
+    "1 replay inputs identical except policy": "PASS",
+    "2 no candidate stream regenerated": "PASS",
+    "3 Fused Recall@20 >= CURRENT": "FAIL",
+    "4 Fused Recall@10 >= CURRENT": "PASS",
+    "5 no new critical evidence miss": "FAIL",
+    "6 lost_hit = 0": "PASS",
+    "7 negative_direction_count <= positive_direction_count": "FAIL",
+    "8 no version/source violation introduced by replay": "PASS",
+    "9 no benchmark-specific channel rule": "PASS",
+    "10 policy was preregistered in A1": "PASS"
+   },
+   "ALL_HARD_GATES_PASS": false
+  }
+ },
+ "semantic_p5_results": {
+  "SCORED_PREFIX_IDENTITY": "PASS",
+  "EXPANSION_CONTRIBUTION": "NOT_MEANINGFUL",
+  "scored_prefix_identity": {
+   "equal_cases": 8,
+   "total": 8,
+   "result": "PASS"
+  },
+  "expansion_pool_totals": {
+   "cases_with_expansion": 8,
+   "expansion_candidate_count": 41,
+   "expansion_relevant_candidate_count": 1,
+   "candidate_union_coverage_improves": false,
+   "marginal_contribution_by_case": {
+    "g050": 0.0,
+    "g055": 0.0,
+    "g039": 0.0,
+    "g008": 0.0,
+    "g110": 0.0,
+    "g113": 0.0,
+    "g114": 0.0,
+    "g115": 0.0
+   }
+  }
+ },
+ "semantic_channel_contribution": [
+  {
+   "case_id": "g050",
+   "semantic_candidate_count": 20,
+   "raw_candidate_count": 20,
+   "semantic_raw_overlap_at_20": 11,
+   "semantic_raw_overlap_ratio": 0.55,
+   "semantic_unique_candidate_count": 4,
+   "semantic_unique_candidate_ids": [
+    "concept.li_2026.restgas_effective_acceptance",
+    "object.75c6c5772a7053fcc41cdb47",
+    "object.8bf8f929e2aa2c3b3963c49c",
+    "object.b91d38c995afd4a4e43c344b"
+   ],
+   "semantic_unique_relevant_candidate_count": 0,
+   "semantic_unique_relevant": {},
+   "semantic_unique_relevant_case": false,
+   "semantic_unique_critical_case": false,
+   "semantic_marginal_candidate_recall_contribution": 0.0,
+   "combined_recall_with_semantic": 1.0,
+   "combined_recall_without_semantic": 1.0
+  },
+  {
+   "case_id": "g055",
+   "semantic_candidate_count": 20,
+   "raw_candidate_count": 20,
+   "semantic_raw_overlap_at_20": 16,
+   "semantic_raw_overlap_ratio": 0.8,
+   "semantic_unique_candidate_count": 3,
+   "semantic_unique_candidate_ids": [
+    "object.2dc3fb8fac95490986546581",
+    "object.1d3d81a66a903da66325faac",
+    "object.288f159d1c07fcc5ec273b20"
+   ],
+   "semantic_unique_relevant_candidate_count": 0,
+   "semantic_unique_relevant": {},
+   "semantic_unique_relevant_case": false,
+   "semantic_unique_critical_case": false,
+   "semantic_marginal_candidate_recall_contribution": 0.0,
+   "combined_recall_with_semantic": 1.0,
+   "combined_recall_without_semantic": 1.0
+  },
+  {
+   "case_id": "g039",
+   "semantic_candidate_count": 20,
+   "raw_candidate_count": 20,
+   "semantic_raw_overlap_at_20": 13,
+   "semantic_raw_overlap_ratio": 0.65,
+   "semantic_unique_candidate_count": 5,
+   "semantic_unique_candidate_ids": [
+    "workflow.restgas_aware_luminosity_acceptance",
+    "object.75c6c5772a7053fcc41cdb47",
+    "object.86b7c9f862f3e5c328823444",
+    "object.e5136c8d8f90cb0add63ec47",
+    "object.b91d38c995afd4a4e43c344b"
+   ],
+   "semantic_unique_relevant_candidate_count": 0,
+   "semantic_unique_relevant": {},
+   "semantic_unique_relevant_case": false,
+   "semantic_unique_critical_case": false,
+   "semantic_marginal_candidate_recall_contribution": 0.0,
+   "combined_recall_with_semantic": 1.0,
+   "combined_recall_without_semantic": 1.0
+  },
+  {
+   "case_id": "g008",
+   "semantic_candidate_count": 20,
+   "raw_candidate_count": 20,
+   "semantic_raw_overlap_at_20": 15,
+   "semantic_raw_overlap_ratio": 0.75,
+   "semantic_unique_candidate_count": 5,
+   "semantic_unique_candidate_ids": [
+    "object.27654cf118f243639d269aea",
+    "object.89bedb46659ca455bcf52fca",
+    "object.ac3bca664173654d2cee88f9",
+    "object.9234a38f73ce2ac00fc11fc9",
+    "object.4ef08446ce5a9484852bceec"
+   ],
+   "semantic_unique_relevant_candidate_count": 0,
+   "semantic_unique_relevant": {},
+   "semantic_unique_relevant_case": false,
+   "semantic_unique_critical_case": false,
+   "semantic_marginal_candidate_recall_contribution": 0.0,
+   "combined_recall_with_semantic": 1.0,
+   "combined_recall_without_semantic": 1.0
+  },
+  {
+   "case_id": "g110",
+   "semantic_candidate_count": 20,
+   "raw_candidate_count": 20,
+   "semantic_raw_overlap_at_20": 12,
+   "semantic_raw_overlap_ratio": 0.6,
+   "semantic_unique_candidate_count": 8,
+   "semantic_unique_candidate_ids": [
+    "object.89e0af30bf3e82d5a3455d3a",
+    "object.dde8754834f32257131db24b",
+    "object.4a5c3ed1fb5c62efb4f8dbfe",
+    "object.68ca799b7074d532e22b6736",
+    "object.90db5517cf7e05cc33e80a65",
+    "object.20082097dac14fe7023df014",
+    "object.c17c634f96ff43466d30400b",
+    "object.253fb302f7e28f9d6d8d373c"
+   ],
+   "semantic_unique_relevant_candidate_count": 0,
+   "semantic_unique_relevant": {},
+   "semantic_unique_relevant_case": false,
+   "semantic_unique_critical_case": false,
+   "semantic_marginal_candidate_recall_contribution": 0.0,
+   "combined_recall_with_semantic": 1.0,
+   "combined_recall_without_semantic": 1.0
+  },
+  {
+   "case_id": "g113",
+   "semantic_candidate_count": 20,
+   "raw_candidate_count": 20,
+   "semantic_raw_overlap_at_20": 17,
+   "semantic_raw_overlap_ratio": 0.85,
+   "semantic_unique_candidate_count": 3,
+   "semantic_unique_candidate_ids": [
+    "object.e2437af540e6332c4d3909e9",
+    "object.219626563921ae3487d99b13",
+    "object.ef59f2e1d98d82c476885cef"
+   ],
+   "semantic_unique_relevant_candidate_count": 0,
+   "semantic_unique_relevant": {},
+   "semantic_unique_relevant_case": false,
+   "semantic_unique_critical_case": false,
+   "semantic_marginal_candidate_recall_contribution": 0.0,
+   "combined_recall_with_semantic": 1.0,
+   "combined_recall_without_semantic": 1.0
+  },
+  {
+   "case_id": "g114",
+   "semantic_candidate_count": 20,
+   "raw_candidate_count": 20,
+   "semantic_raw_overlap_at_20": 11,
+   "semantic_raw_overlap_ratio": 0.55,
+   "semantic_unique_candidate_count": 7,
+   "semantic_unique_candidate_ids": [
+    "configuration.restgas_profile",
+    "concept.li_2026.restgas_effective_acceptance",
+    "object.6b20287d8250ff2e55fa01af",
+    "object.86b7c9f862f3e5c328823444",
+    "object.0931608a5774da2fcf0750bc",
+    "object.cd9121780180c2714919f66f",
+    "object.3c6cdc248f79283f6df7e03e"
+   ],
+   "semantic_unique_relevant_candidate_count": 1,
+   "semantic_unique_relevant": {
+    "object.3c6cdc248f79283f6df7e03e": [
+     "g114.e1"
+    ]
+   },
+   "semantic_unique_relevant_case": true,
+   "semantic_unique_critical_case": true,
+   "semantic_marginal_candidate_recall_contribution": 0.0,
+   "combined_recall_with_semantic": 1.0,
+   "combined_recall_without_semantic": 1.0
+  },
+  {
+   "case_id": "g115",
+   "semantic_candidate_count": 20,
+   "raw_candidate_count": 20,
+   "semantic_raw_overlap_at_20": 10,
+   "semantic_raw_overlap_ratio": 0.5,
+   "semantic_unique_candidate_count": 6,
+   "semantic_unique_candidate_ids": [
+    "object.0d8f329ab417557502c0a134",
+    "object.a5b7f4c7ff382dc4767c879e",
+    "object.cfa869a704c527cf4e2232a1",
+    "object.2dc3fb8fac95490986546581",
+    "object.cdf8ef76891d987bea6a8ab4",
+    "object.fc6e82b184f603398dde3bce"
+   ],
+   "semantic_unique_relevant_candidate_count": 0,
+   "semantic_unique_relevant": {},
+   "semantic_unique_relevant_case": false,
+   "semantic_unique_critical_case": false,
+   "semantic_marginal_candidate_recall_contribution": 0.0,
+   "combined_recall_with_semantic": 1.0,
+   "combined_recall_without_semantic": 1.0
+  }
+ ],
+ "meaningful_semantic_contribution": {
+  "n_sem": 8,
+  "threshold_rule": "max(2, ceil(0.10 * N_sem))",
+  "threshold": 2,
+  "semantic_unique_relevant_case_count": 1,
+  "meaningful_semantic_marginal_recall": false
+ },
+ "semantic_decision_tree": {
+  "SEMANTIC_WEIGHTED_PARTICIPATION_EVIDENCE": "NOT_SUPPORTED",
+  "SEMANTIC_EXPANSION_ONLY_EVIDENCE": "NOT_SUPPORTED",
+  "SEMANTIC_CONTRIBUTION": "INSUFFICIENT",
+  "semantic_production_role_evidence": "KEEP_DISABLED",
+  "no_production_activation_in_a2": true
+ },
+ "intent_diagnostics": {
+  "intent_distribution_frozen_labels": {
+   "algorithm_implementation": 2,
+   "algorithm_theory": 5,
+   "api": 5,
+   "installation": 6,
+   "module_structure": 1,
+   "troubleshooting": 5,
+   "usage": 6
+  },
+  "sufficiently_represented_intents": [
+   "algorithm_theory",
+   "api",
+   "installation",
+   "troubleshooting",
+   "usage"
+  ],
+  "per_intent_metrics": {
+   "algorithm_theory": {
+    "case_count": 5,
+    "metrics": {
+     "P0_CURRENT": {
+      "case_count": 5,
+      "combined_candidate_recall_at_20": 1.0,
+      "fused_recall_at_5": 1.0,
+      "fused_recall_at_10": 1.0,
+      "fused_recall_at_20": 1.0,
+      "mrr": 0.5333333333333333,
+      "critical_evidence_coverage": 1.0,
+      "critical_applicable_cases": 5,
+      "directions": null,
+      "new_critical_miss_count": 0
+     },
+     "P1_RAW_DENSE_CENTERED": {
+      "case_count": 5,
+      "combined_candidate_recall_at_20": 1.0,
+      "fused_recall_at_5": 1.0,
+      "fused_recall_at_10": 1.0,
+      "fused_recall_at_20": 1.0,
+      "mrr": 0.55,
+      "critical_evidence_coverage": 1.0,
+      "critical_applicable_cases": 5,
+      "directions": {
+       "improved": 1,
+       "recovered_hit": 0,
+       "unchanged": 3,
+       "no_hit_both": 0,
+       "regressed": 1,
+       "lost_hit": 0,
+       "positive_direction_count": 1,
+       "negative_direction_count": 1
+      },
+      "new_critical_miss_count": 0
+     },
+     "P2_EXACT_HEAVY": {
+      "case_count": 5,
+      "combined_candidate_recall_at_20": 1.0,
+      "fused_recall_at_5": 0.9,
+      "fused_recall_at_10": 0.9,
+      "fused_recall_at_20": 1.0,
+      "mrr": 0.4666666666666667,
+      "critical_evidence_coverage": 1.0,
+      "critical_applicable_cases": 5,
+      "directions": {
+       "improved": 0,
+       "recovered_hit": 0,
+       "unchanged": 3,
+       "no_hit_both": 0,
+       "regressed": 2,
+       "lost_hit": 0,
+       "positive_direction_count": 0,
+       "negative_direction_count": 2
+      },
+      "new_critical_miss_count": 0
+     },
+     "P3_SPARSE_HEAVY": {
+      "case_count": 5,
+      "combined_candidate_recall_at_20": 1.0,
+      "fused_recall_at_5": 1.0,
+      "fused_recall_at_10": 1.0,
+      "fused_recall_at_20": 1.0,
+      "mrr": 0.5333333333333333,
+      "critical_evidence_coverage": 1.0,
+      "critical_applicable_cases": 5,
+      "directions": {
+       "improved": 0,
+       "recovered_hit": 0,
+       "unchanged": 5,
+       "no_hit_both": 0,
+       "regressed": 0,
+       "lost_hit": 0,
+       "positive_direction_count": 0,
+       "negative_direction_count": 0
+      },
+      "new_critical_miss_count": 0
+     }
+    }
+   },
+   "api": {
+    "case_count": 5,
+    "metrics": {
+     "P0_CURRENT": {
+      "case_count": 5,
+      "combined_candidate_recall_at_20": 1.0,
+      "fused_recall_at_5": 1.0,
+      "fused_recall_at_10": 1.0,
+      "fused_recall_at_20": 1.0,
+      "mrr": 0.5666666666666667,
+      "critical_evidence_coverage": 1.0,
+      "critical_applicable_cases": 5,
+      "directions": null,
+      "new_critical_miss_count": 0
+     },
+     "P1_RAW_DENSE_CENTERED": {
+      "case_count": 5,
+      "combined_candidate_recall_at_20": 1.0,
+      "fused_recall_at_5": 0.7,
+      "fused_recall_at_10": 1.0,
+      "fused_recall_at_20": 1.0,
+      "mrr": 0.44523809523809527,
+      "critical_evidence_coverage": 1.0,
+      "critical_applicable_cases": 5,
+      "directions": {
+       "improved": 0,
+       "recovered_hit": 0,
+       "unchanged": 3,
+       "no_hit_both": 0,
+       "regressed": 2,
+       "lost_hit": 0,
+       "positive_direction_count": 0,
+       "negative_direction_count": 2
+      },
+      "new_critical_miss_count": 0
+     },
+     "P2_EXACT_HEAVY": {
+      "case_count": 5,
+      "combined_candidate_recall_at_20": 1.0,
+      "fused_recall_at_5": 1.0,
+      "fused_recall_at_10": 1.0,
+      "fused_recall_at_20": 1.0,
+      "mrr": 0.5666666666666667,
+      "critical_evidence_coverage": 1.0,
+      "critical_applicable_cases": 5,
+      "directions": {
+       "improved": 0,
+       "recovered_hit": 0,
+       "unchanged": 5,
+       "no_hit_both": 0,
+       "regressed": 0,
+       "lost_hit": 0,
+       "positive_direction_count": 0,
+       "negative_direction_count": 0
+      },
+      "new_critical_miss_count": 0
+     },
+     "P3_SPARSE_HEAVY": {
+      "case_count": 5,
+      "combined_candidate_recall_at_20": 1.0,
+      "fused_recall_at_5": 0.7,
+      "fused_recall_at_10": 1.0,
+      "fused_recall_at_20": 1.0,
+      "mrr": 0.5785714285714285,
+      "critical_evidence_coverage": 1.0,
+      "critical_applicable_cases": 5,
+      "directions": {
+       "improved": 1,
+       "recovered_hit": 0,
+       "unchanged": 2,
+       "no_hit_both": 0,
+       "regressed": 2,
+       "lost_hit": 0,
+       "positive_direction_count": 1,
+       "negative_direction_count": 2
+      },
+      "new_critical_miss_count": 0
+     }
+    }
+   },
+   "installation": {
+    "case_count": 6,
+    "metrics": {
+     "P0_CURRENT": {
+      "case_count": 6,
+      "combined_candidate_recall_at_20": 1.0,
+      "fused_recall_at_5": 0.5,
+      "fused_recall_at_10": 0.6666666666666666,
+      "fused_recall_at_20": 0.8333333333333334,
+      "mrr": 0.5361111111111111,
+      "critical_evidence_coverage": 0.8333333333333334,
+      "critical_applicable_cases": 6,
+      "directions": null,
+      "new_critical_miss_count": 0
+     },
+     "P1_RAW_DENSE_CENTERED": {
+      "case_count": 6,
+      "combined_candidate_recall_at_20": 1.0,
+      "fused_recall_at_5": 0.6666666666666666,
+      "fused_recall_at_10": 0.8333333333333334,
+      "fused_recall_at_20": 1.0,
+      "mrr": 0.6262626262626263,
+      "critical_evidence_coverage": 1.0,
+      "critical_applicable_cases": 6,
+      "directions": {
+       "improved": 2,
+       "recovered_hit": 1,
+       "unchanged": 3,
+       "no_hit_both": 0,
+       "regressed": 0,
+       "lost_hit": 0,
+       "positive_direction_count": 3,
+       "negative_direction_count": 0
+      },
+      "new_critical_miss_count": 0
+     },
+     "P2_EXACT_HEAVY": {
+      "case_count": 6,
+      "combined_candidate_recall_at_20": 1.0,
+      "fused_recall_at_5": 0.5,
+      "fused_recall_at_10": 0.5,
+      "fused_recall_at_20": 0.8333333333333334,
+      "mrr": 0.5222222222222223,
+      "critical_evidence_coverage": 0.8333333333333334,
+      "critical_applicable_cases": 6,
+      "directions": {
+       "improved": 0,
+       "recovered_hit": 0,
+       "unchanged": 4,
+       "no_hit_both": 1,
+       "regressed": 1,
+       "lost_hit": 0,
+       "positive_direction_count": 0,
+       "negative_direction_count": 1
+      },
+      "new_critical_miss_count": 0
+     },
+     "P3_SPARSE_HEAVY": {
+      "case_count": 6,
+      "combined_candidate_recall_at_20": 1.0,
+      "fused_recall_at_5": 0.6666666666666666,
+      "fused_recall_at_10": 0.8333333333333334,
+      "fused_recall_at_20": 1.0,
+      "mrr": 0.7023809523809524,
+      "critical_evidence_coverage": 1.0,
+      "critical_applicable_cases": 6,
+      "directions": {
+       "improved": 2,
+       "recovered_hit": 1,
+       "unchanged": 3,
+       "no_hit_both": 0,
+       "regressed": 0,
+       "lost_hit": 0,
+       "positive_direction_count": 3,
+       "negative_direction_count": 0
+      },
+      "new_critical_miss_count": 0
+     }
+    }
+   },
+   "troubleshooting": {
+    "case_count": 5,
+    "metrics": {
+     "P0_CURRENT": {
+      "case_count": 5,
+      "combined_candidate_recall_at_20": 1.0,
+      "fused_recall_at_5": 0.4,
+      "fused_recall_at_10": 0.8,
+      "fused_recall_at_20": 1.0,
+      "mrr": 0.4166666666666667,
+      "critical_evidence_coverage": 1.0,
+      "critical_applicable_cases": 5,
+      "directions": null,
+      "new_critical_miss_count": 0
+     },
+     "P1_RAW_DENSE_CENTERED": {
+      "case_count": 5,
+      "combined_candidate_recall_at_20": 1.0,
+      "fused_recall_at_5": 0.4,
+      "fused_recall_at_10": 0.7,
+      "fused_recall_at_20": 1.0,
+      "mrr": 0.4248484848484848,
+      "critical_evidence_coverage": 1.0,
+      "critical_applicable_cases": 5,
+      "directions": {
+       "improved": 1,
+       "recovered_hit": 0,
+       "unchanged": 2,
+       "no_hit_both": 0,
+       "regressed": 2,
+       "lost_hit": 0,
+       "positive_direction_count": 1,
+       "negative_direction_count": 2
+      },
+      "new_critical_miss_count": 0
+     },
+     "P2_EXACT_HEAVY": {
+      "case_count": 5,
+      "combined_candidate_recall_at_20": 1.0,
+      "fused_recall_at_5": 0.5,
+      "fused_recall_at_10": 1.0,
+      "fused_recall_at_20": 1.0,
+      "mrr": 0.45,
+      "critical_evidence_coverage": 1.0,
+      "critical_applicable_cases": 5,
+      "directions": {
+       "improved": 2,
+       "recovered_hit": 0,
+       "unchanged": 3,
+       "no_hit_both": 0,
+       "regressed": 0,
+       "lost_hit": 0,
+       "positive_direction_count": 2,
+       "negative_direction_count": 0
+      },
+      "new_critical_miss_count": 0
+     },
+     "P3_SPARSE_HEAVY": {
+      "case_count": 5,
+      "combined_candidate_recall_at_20": 1.0,
+      "fused_recall_at_5": 0.4,
+      "fused_recall_at_10": 0.7,
+      "fused_recall_at_20": 1.0,
+      "mrr": 0.4081818181818182,
+      "critical_evidence_coverage": 1.0,
+      "critical_applicable_cases": 5,
+      "directions": {
+       "improved": 1,
+       "recovered_hit": 0,
+       "unchanged": 2,
+       "no_hit_both": 0,
+       "regressed": 2,
+       "lost_hit": 0,
+       "positive_direction_count": 1,
+       "negative_direction_count": 2
+      },
+      "new_critical_miss_count": 0
+     }
+    }
+   },
+   "usage": {
+    "case_count": 6,
+    "metrics": {
+     "P0_CURRENT": {
+      "case_count": 6,
+      "combined_candidate_recall_at_20": 1.0,
+      "fused_recall_at_5": 1.0,
+      "fused_recall_at_10": 1.0,
+      "fused_recall_at_20": 1.0,
+      "mrr": 0.8333333333333334,
+      "critical_evidence_coverage": 1.0,
+      "critical_applicable_cases": 6,
+      "directions": null,
+      "new_critical_miss_count": 0
+     },
+     "P1_RAW_DENSE_CENTERED": {
+      "case_count": 6,
+      "combined_candidate_recall_at_20": 1.0,
+      "fused_recall_at_5": 1.0,
+      "fused_recall_at_10": 1.0,
+      "fused_recall_at_20": 1.0,
+      "mrr": 0.8333333333333334,
+      "critical_evidence_coverage": 1.0,
+      "critical_applicable_cases": 6,
+      "directions": {
+       "improved": 0,
+       "recovered_hit": 0,
+       "unchanged": 6,
+       "no_hit_both": 0,
+       "regressed": 0,
+       "lost_hit": 0,
+       "positive_direction_count": 0,
+       "negative_direction_count": 0
+      },
+      "new_critical_miss_count": 0
+     },
+     "P2_EXACT_HEAVY": {
+      "case_count": 6,
+      "combined_candidate_recall_at_20": 1.0,
+      "fused_recall_at_5": 1.0,
+      "fused_recall_at_10": 1.0,
+      "fused_recall_at_20": 1.0,
+      "mrr": 0.8333333333333334,
+      "critical_evidence_coverage": 1.0,
+      "critical_applicable_cases": 6,
+      "directions": {
+       "improved": 0,
+       "recovered_hit": 0,
+       "unchanged": 6,
+       "no_hit_both": 0,
+       "regressed": 0,
+       "lost_hit": 0,
+       "positive_direction_count": 0,
+       "negative_direction_count": 0
+      },
+      "new_critical_miss_count": 0
+     },
+     "P3_SPARSE_HEAVY": {
+      "case_count": 6,
+      "combined_candidate_recall_at_20": 1.0,
+      "fused_recall_at_5": 1.0,
+      "fused_recall_at_10": 1.0,
+      "fused_recall_at_20": 1.0,
+      "mrr": 0.8333333333333334,
+      "critical_evidence_coverage": 1.0,
+      "critical_applicable_cases": 6,
+      "directions": {
+       "improved": 0,
+       "recovered_hit": 0,
+       "unchanged": 6,
+       "no_hit_both": 0,
+       "regressed": 0,
+       "lost_hit": 0,
+       "positive_direction_count": 0,
+       "negative_direction_count": 0
+      },
+      "new_critical_miss_count": 0
+     }
+    }
+   }
+  },
+  "preferred_policy_by_intent": {
+   "algorithm_theory": "P0_CURRENT",
+   "api": "P0_CURRENT",
+   "installation": "P3_SPARSE_HEAVY",
+   "troubleshooting": "P2_EXACT_HEAVY",
+   "usage": "P0_CURRENT"
+  },
+  "intent_aware_eligibility_conditions": {
+   "1_at_least_3_sufficient_intents": true,
+   "2_each_sufficient_intent_ge_4_cases": true,
+   "3_at_least_2_intents_different_preferred_families": true,
+   "4_preferred_improves_r10_or_mrr_without_r20_loss_or_critical_miss": true,
+   "5_positive_gt_negative_within_intent": true,
+   "6_preference_from_preregistered_global_policies_only": true
+  },
+  "INTENT_AWARE_ELIGIBLE": true,
+  "C6_INTENT_AWARE_V1": {
+   "algorithm_implementation": "P0_CURRENT",
+   "algorithm_theory": "P0_CURRENT",
+   "api": "P0_CURRENT",
+   "installation": "P3_SPARSE_HEAVY",
+   "module_structure": "P0_CURRENT",
+   "troubleshooting": "P2_EXACT_HEAVY",
+   "usage": "P0_CURRENT"
+  }
+ },
+ "novel_gate": {
+  "novel_replay_status": "ABSENT",
+  "NEW_PRODUCTION_POLICY_ACTIVATION": "NOT_AUTHORIZED_BY_C6_A2_ALONE"
+ },
+ "production_activation_authorized": false,
+ "selection_layer_debt": "not assessed in A2 (no reranker/selector execution); C7/C8 own downstream layers",
+ "receipts_path": "evaluation/baselines/replay/phase_c_c6_a2_policy_receipts_v1.jsonl",
+ "receipts_row_count": 144,
+ "cost_and_isolation": {
+  "analyzer": 0,
+  "embeddings": 0,
+  "sparse_encodes": 0,
+  "live_retrieval": 0,
+  "qdrant_reads": 0,
+  "qdrant_writes": 0,
+  "sql_candidate_reads": 0,
+  "sql_writes": 0,
+  "reranker": 0,
+  "selector": 0,
+  "qa": 0,
+  "verifier": 0,
+  "judge": 0,
+  "index_mutation": 0,
+  "gold_file_reads_authorized": 1
+ },
+ "a2_methodology_result": "PASS",
+ "a2_methodology_basis": {
+  "policies_match_a1_artifact": true,
+  "cohorts_verified": true,
+  "all_replays_deterministic": true,
+  "p5_scored_prefix_identity": "8/8",
+  "receipts_aggregate_recompute": true,
+  "matcher_provenance": "panda_agent.evaluation (C3-R3-frozen authoritative semantics)",
+  "zero_live_calls": true
+ },
+ "c6_a3_execution_eligibility": "NEXT_ELIGIBLE / NOT_STARTED"
+}
