@@ -61,6 +61,61 @@ def _normalize_dense_candidates(value: dict[str, Any] | None) -> dict[str, Any]:
     }
 
 
+def _normalize_sparse_queries(value: dict[str, Any] | None, question: str) -> dict[str, Any]:
+    payload = dict(value or {})
+    raw = dict(payload.get("raw") or {})
+    raw["text"] = question
+    raw["provenance"] = "user_raw"
+    raw["active"] = True
+    lexical_value = payload.get("lexical")
+    if lexical_value is None:
+        return {
+            "raw": raw,
+            "lexical": None,
+            "lexical_active": False,
+            "lexical_executed": False,
+        }
+
+    lexical = dict(lexical_value)
+    lexical.setdefault("text", question)
+    lexical.setdefault("raw_question", question)
+    components = []
+    for component in list(lexical.get("components") or []):
+        if not isinstance(component, dict):
+            components.append(component)
+            continue
+        normalized_component = dict(component)
+        normalized_component["support_spans"] = list(
+            normalized_component.get("support_spans") or []
+        )
+        normalized_component["appended"] = bool(normalized_component.get("appended", False))
+        components.append(normalized_component)
+    lexical["components"] = components
+    lexical["excluded_component_classes"] = list(
+        lexical.get("excluded_component_classes") or []
+    )
+    lexical_active = bool(lexical.get("active", payload.get("lexical_active", True)))
+    lexical_executed = bool(lexical.get("executed", payload.get("lexical_executed", False)))
+    lexical["active"] = lexical_active
+    lexical["executed"] = lexical_executed
+    return {
+        "raw": raw,
+        "lexical": lexical,
+        "lexical_active": lexical_active,
+        "lexical_executed": lexical_executed,
+    }
+
+
+def _normalize_sparse_candidates(value: dict[str, Any] | None) -> dict[str, Any]:
+    payload = dict(value or {})
+    raw = payload.get("raw")
+    lexical = payload.get("lexical")
+    return {
+        "raw": list(raw or []),
+        "lexical": None if lexical is None else list(lexical),
+    }
+
+
 class RetrievalTrace(StrictModel):
     schema_version: str = "1.0"
     question_id: str
@@ -73,6 +128,8 @@ class RetrievalTrace(StrictModel):
     sparse_query_text: str
     dense_queries: dict[str, Any] | None = None
     dense_candidates: dict[str, Any] | None = None
+    sparse_queries: dict[str, Any] | None = None
+    sparse_candidates: dict[str, Any] | None = None
     query_construction: str = "raw_question"
     resolved_concepts: list[str] = Field(default_factory=list)
     resolved_symbols: list[str] = Field(default_factory=list)
@@ -86,8 +143,11 @@ class RetrievalTrace(StrictModel):
 
     @model_validator(mode="after")
     def normalize_dense_contract(self) -> "RetrievalTrace":
+        self.original_retrieval_query = self.raw_question
         self.dense_queries = _normalize_dense_queries(self.dense_queries, self.raw_question)
         self.dense_candidates = _normalize_dense_candidates(self.dense_candidates)
+        self.sparse_queries = _normalize_sparse_queries(self.sparse_queries, self.raw_question)
+        self.sparse_candidates = _normalize_sparse_candidates(self.sparse_candidates)
         return self
 
 
@@ -166,6 +226,30 @@ def build_retrieval_trace(
     if dense_candidates is None:
         dense_candidates = {"raw": list(rankings.get("dense") or []), "semantic": None}
     dense_candidates = _normalize_dense_candidates(dense_candidates)
+    sparse_queries_payload = diagnostics.get("sparse_queries")
+    lexical_payload = diagnostics.get("lexical_query")
+    if sparse_queries_payload is None:
+        sparse_queries_payload = {
+            "raw": {"text": question, "provenance": "user_raw", "active": True},
+            "lexical": lexical_payload,
+            "lexical_active": lexical_payload is not None,
+            "lexical_executed": False,
+        }
+    elif lexical_payload is not None and "lexical" not in sparse_queries_payload:
+        sparse_queries_payload = dict(sparse_queries_payload)
+        sparse_queries_payload["lexical"] = lexical_payload
+    sparse_queries = _normalize_sparse_queries(sparse_queries_payload, question)
+    sparse_candidates = diagnostics.get("sparse_candidates")
+    if sparse_candidates is None:
+        sparse_candidates = {"raw": list(rankings.get("sparse") or []), "lexical": None}
+    sparse_candidates = _normalize_sparse_candidates(sparse_candidates)
+    sparse_query_text = diagnostics.get("sparse_query_text")
+    if not isinstance(sparse_query_text, str):
+        raw_sparse_query = sparse_queries_payload.get("raw")
+        raw_query_text = raw_sparse_query.get("text") if isinstance(raw_sparse_query, dict) else None
+        sparse_query_text = (
+            raw_query_text if isinstance(raw_query_text, str) else sparse_queries["raw"]["text"]
+        )
     channel_candidates = {
         channel: [
             _candidate(object_id, rank, object_lookup, channels=[channel])
@@ -209,9 +293,11 @@ def build_retrieval_trace(
         retrieval_plan=plan,
         original_retrieval_query=question,
         dense_query_text=question,
-        sparse_query_text=question,
+        sparse_query_text=sparse_query_text,
         dense_queries=dense_queries,
         dense_candidates=dense_candidates,
+        sparse_queries=sparse_queries,
+        sparse_candidates=sparse_candidates,
         resolved_concepts=list(plan.get("concepts") or []),
         resolved_symbols=list(plan.get("symbols") or []),
         channel_candidates=channel_candidates,

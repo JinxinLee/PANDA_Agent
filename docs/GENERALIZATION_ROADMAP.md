@@ -154,7 +154,7 @@ Statuses describe implementation state; acceptance targets remain planned until 
 
 ## Phase C — Retrieval generalization
 
-Phase C is started by C1. The initial C1 implementation was `INCONCLUSIVE` after review; C1-R1 is `PASS`, making C1 overall `PASS`. C2 is `PASS`. The legacy C3-R1/R2/R3 evaluations remain historical `INCONCLUSIVE`, while the revised C3-A1 raw-preserving contract, C3-A2 shadow verification, C3-A overall, and current C3 are `PASS` for the revised raw-preserving architecture. The separate credential preflight passed once, and the authoritative five-case run completed with 10 query embeddings and 10 dense reads under the fixed budget. RawDense remains production-authoritative; SemanticDense remains auxiliary/experimental and explicit shadow-only, with production efficacy unvalidated and deferred to C6. C4 is the next eligible roadmap task and remains `NOT_STARTED`; no C4 work was started or claimed.
+Phase C is started by C1. The initial C1 implementation was `INCONCLUSIVE` after review; C1-R1 is `PASS`, making C1 overall `PASS`. C2 is `PASS`. The legacy C3-R1/R2/R3 evaluations remain historical `INCONCLUSIVE`, while the revised C3-A1 raw-preserving contract, C3-A2 shadow verification, C3-A overall, and current C3 are `PASS` for the revised raw-preserving architecture. The separate credential preflight passed once, and the authoritative five-case run completed with 10 query embeddings and 10 dense reads under the fixed budget. RawDense remains production-authoritative; SemanticDense remains auxiliary/experimental and explicit shadow-only, with production efficacy unvalidated and deferred to C6. C4-A1 is `PASS`, while C4-A2 and final C4 are `INCONCLUSIVE`: offline preregistration found only one treatment-qualified frozen case, so no live sparse preflight, encoding, reads, rankings, or outcome metrics ran. Production sparse remains the exact raw question and `LexicalQuery` remains explicit shadow-only. C5-C8 remain `NOT_STARTED`; no C5 work was authorized or begun, and C5 is not eligible while C4 remains active.
 
 ### C1 — Deterministic parsing before expensive LLM analysis
 
@@ -237,7 +237,11 @@ Phase C is started by C1. The initial C1 implementation was `INCONCLUSIVE` after
 
 ### C4 — LexicalQueryBuilder for sparse retrieval
 
-- **Status:** NOT_STARTED
+- **Status:** `INCONCLUSIVE` (`C4-A1` `PASS`; `C4-A2` `INCONCLUSIVE`; C4 remains active)
+- **Current closeout — 2026-08-22:** The authoritative artifact is `evaluation/baselines/manifests/phase_c_c4_lexical_query_builder_sparse_v1.json`, based on baseline HEAD `c258a670f91c5ca11344eb0022287f43fb2e17fe` plus the reviewed seven-file C4-A1 diff, with artifact state `PREREGISTERED_NO_SPARSE_OUTCOMES`.
+- **Builder and A1 evidence:** The English-only raw-first builder preserves the exact raw question and may append only accepted analyzer-supported symbols/concepts and accepted alias keys, bounded to `<=6` components and `<=32` tokens. Rejected/reviewed/fallback items, hidden metadata, Gold fields, flat plan fields, and C5 lookup are excluded; alias targets are unread. C4-A1 aggregate checks passed `54/54` (`23` lexical, `14` trace, `13` C4 evaluator, `4` existing sparse), with AST `7/7`, imports `4/4`, and external/model/Qdrant/SQL calls `0`.
+- **Offline preregistration evidence:** The qualifying Gold pool was `49` before excluding `g011` and `g016`, and `47` after exclusion. Complete frozen plan records were `g018,g039,g040,g055,g113,g114,g115`; six were faithful C2-compatible prompt `3.7.0` records, while `g018` was excluded for a semantic reconstruction mismatch. The current builder changed only `g113`, leaving treatment-qualified cohort `[g113]`, `1 < 6`.
+- **Final boundary:** C4-A2 and final C4 are `INCONCLUSIVE` because the minimum cohort was not reached. No live sparse preflight, encoding, reads, rankings, or outcome metrics ran. Production sparse remains the exact raw question with a single encode/read; raw-versus-lexical shadow execution is isolated with the same non-text parameters and no fusion or downstream calls. Artifact-local writes were `1`; analyzer/Vertex, dense, live sparse, downstream, SQL/Qdrant, index mutation, reindex, and reembedding operations were `0`/not run. No sparse benefit is claimed. Canonical alias/entity target resolution remains C5; `g011` remains Phase E; no novel dataset, novel generalization result, T3, T4, or T5 was run.
 - **Problem:** Sparse BM25 should emphasize lexical anchors and need not consume the same text as dense retrieval.
 - **Goal:** Build a bounded lexical query from explicit symbols, canonical entities, accepted aliases, and reliable technical terminology.
 - **Why this stage:** Dense behavior has been isolated and B1/B3 secured sparse correctness/identity, enabling independent lexical measurement.
@@ -252,7 +256,7 @@ Phase C is started by C1. The initial C1 implementation was `INCONCLUSIVE` after
 
 ### C5 — Entity-first exact retrieval
 
-- **Status:** NOT_STARTED
+- **Status:** `NOT_STARTED` (not eligible while C4 remains active)
 - **Problem:** Broad ILIKE lookup handles literal identifiers but poorly resolves descriptive references to canonical technical entities.
 - **Goal:** Resolve exact symbols and accepted aliases to canonical objects before robust lexical fallbacks.
 - **Why this stage:** C1–C4 supply explicit and semantic/lexical terms; C5 creates the interface later expanded by Phase D.
@@ -315,7 +319,7 @@ Phase C is started by C1. The initial C1 implementation was `INCONCLUSIVE` after
 
 ## Phase C status
 
-C1 is `PASS`; C2 is `PASS`. Legacy C3-R1, C3-R2, and C3-R3 remain historical `INCONCLUSIVE`, with their artifacts and conclusions preserved. Revised C3-A1, C3-A2, C3-A overall, and current C3 are `PASS` for the revised raw-preserving architecture. `RawDense` is production-authoritative; `SemanticDense` is auxiliary/experimental, explicit shadow-only in C3-A, and its production fusion efficacy is `UNVALIDATED` and deferred to C6. No C3-R4 or new Gold sampling round was started. C4 is the next eligible roadmap task and remains `NOT_STARTED`; C5-C8 are `NOT_STARTED`; no C4 work was started or claimed.
+C1 is `PASS`; C2 is `PASS`. Legacy C3-R1, C3-R2, and C3-R3 remain historical `INCONCLUSIVE`, with their artifacts and conclusions preserved. Revised C3-A1, C3-A2, C3-A overall, and current C3 are `PASS` for the revised raw-preserving architecture. `RawDense` is production-authoritative; `SemanticDense` is auxiliary/experimental, explicit shadow-only in C3-A, and its production fusion efficacy is `UNVALIDATED` and deferred to C6. No C3-R4 or new Gold sampling round was started. C4-A1 is `PASS`; C4-A2 and final C4 are `INCONCLUSIVE` because offline preregistration found only one treatment-qualified frozen case and no live sparse stage or outcome metrics ran. Production sparse remains the exact raw question and `LexicalQuery` is explicit shadow-only; no sparse benefit is claimed. C5-C8 are `NOT_STARTED`; no C5 work was authorized or begun, and C5 is not eligible while C4 remains active.
 
 ## Phase D — Concept and entity knowledge abstraction
 

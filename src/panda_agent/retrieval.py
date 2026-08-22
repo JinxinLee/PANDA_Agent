@@ -13,6 +13,7 @@ from typing import Any
 from qdrant_client import models
 
 from panda_agent.config import load_query_expansions, load_retrieval_policies
+from panda_agent.lexical_query import build_lexical_query
 from panda_agent.llm.vertex import VertexAIClient, VertexSettings
 from panda_agent.models import AuthorityLevel, Evidence, RetrievalPlan, SourceLocator, stable_id
 from panda_agent.prompts import QUERY_ANALYZER_SYSTEM_PROMPT, RERANK_SYSTEM_PROMPT
@@ -1285,14 +1286,43 @@ class Retriever:
         hits = self.storage.qdrant.query_points(query=vector, using="dense", **common).points
         return hits, vector
 
+    def _sparse_query(
+        self,
+        text: str,
+        query_filter: models.Filter | None,
+        limit: int,
+    ) -> list[Any]:
+        """Encode and query one sparse text with the authoritative index contract."""
+        encoded = next(iter(self.sparse.query_embed(text)))
+        indices = (
+            encoded.indices.tolist()
+            if hasattr(encoded.indices, "tolist")
+            else list(encoded.indices)
+        )
+        values = (
+            encoded.values.tolist()
+            if hasattr(encoded.values, "tolist")
+            else list(encoded.values)
+        )
+        common = dict(
+            collection_name=self.storage.settings.collection_name,
+            query_filter=query_filter,
+            limit=limit,
+            with_payload=True,
+        )
+        return self.storage.qdrant.query_points(
+            query=models.SparseVector(indices=indices, values=values),
+            using=self.sparse_vector_name,
+            **common,
+        ).points
+
     def _vector(self, question: str, plan: RetrievalPlan, limit: int) -> tuple[list[Any], list[Any], list[float], SemanticQuery]:
         query_filter = self._query_filter(plan)
         semantic_query = build_semantic_query(question, plan)
         dense_bundle = DenseQueryBundle.from_semantic_query(question, semantic_query)
         dense_hits, dense = self._dense_query(dense_bundle.raw.text, query_filter, limit)
-        sparse = next(iter(self.sparse.query_embed(question)))
-        common = dict(collection_name=self.storage.settings.collection_name, query_filter=query_filter, limit=limit, with_payload=True)
-        sparse_hits = self.storage.qdrant.query_points(query=models.SparseVector(indices=sparse.indices.tolist(), values=sparse.values.tolist()), using=self.sparse_vector_name, **common).points
+        # RawSparse remains production-authoritative until C4 acceptance.
+        sparse_hits = self._sparse_query(question, query_filter, limit)
         return dense_hits, sparse_hits, dense, semantic_query
 
     def shadow_dense(
@@ -1319,6 +1349,37 @@ class Retriever:
             "dense_candidates": {
                 "raw": [hit.payload for hit in raw_hits],
                 "semantic": [hit.payload for hit in semantic_hits] if dense_bundle.semantic is not None else None,
+            },
+        }
+
+    def shadow_sparse(
+        self,
+        question: str,
+        plan: RetrievalPlan | None = None,
+        limit: int | None = None,
+    ) -> dict[str, Any]:
+        """Execute RawSparse and LexicalSparse independently without other channels."""
+        if plan is None:
+            raise ValueError("shadow_sparse requires an existing RetrievalPlan")
+        limit = limit if limit is not None else self.policies.candidate_pool_per_channel
+        query_filter = self._query_filter(plan)
+        lexical_query = build_lexical_query(question, plan)
+        lexical_payload = lexical_query.as_dict()
+
+        raw_hits = self._sparse_query(question, query_filter, limit)
+        lexical_hits = self._sparse_query(lexical_query.text, query_filter, limit)
+
+        return {
+            "lexical_query": lexical_payload,
+            "sparse_queries": {
+                "raw": {"text": question, "provenance": "user_raw", "active": True},
+                "lexical": lexical_payload,
+                "lexical_active": True,
+                "lexical_executed": True,
+            },
+            "sparse_candidates": {
+                "raw": [hit.payload for hit in raw_hits],
+                "lexical": [hit.payload for hit in lexical_hits],
             },
         }
 
@@ -1562,13 +1623,26 @@ class Retriever:
             self.policies.final_evidence_limit,
             set(symbol_first),
         )
+        lexical_query = build_lexical_query(question, plan)
+        lexical_payload = lexical_query.as_dict()
         return {
             "plan": plan.model_dump(mode="json"),
             "semantic_query": semantic_query.as_dict(),
+            "lexical_query": lexical_payload,
             "dense_queries": DenseQueryBundle.from_semantic_query(question, semantic_query).as_dict(),
             "dense_candidates": {
                 "raw": rankings["dense"],
                 "semantic": None,
+            },
+            "sparse_queries": {
+                "raw": {"text": question, "provenance": "user_raw", "active": True},
+                "lexical": lexical_payload,
+                "lexical_active": True,
+                "lexical_executed": False,
+            },
+            "sparse_candidates": {
+                "raw": rankings["sparse"],
+                "lexical": None,
             },
             "rankings": {key: [item["object_id"] for item in value] for key, value in rankings.items()},
             "fusion_scores": {oid: scores[oid] for oid in sorted(scores, key=scores.get, reverse=True)[:30]},

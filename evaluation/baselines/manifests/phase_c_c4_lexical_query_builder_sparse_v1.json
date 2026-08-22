@@ -1,0 +1,287 @@
+{
+  "schema_version": "c4-lexical-query-builder-sparse-preregistration-1",
+  "task": "C4-T6-preregistration",
+  "artifact_id": "phase_c_c4_lexical_query_builder_sparse_v1",
+  "phase": "C4",
+  "status": "PREREGISTERED_NO_SPARSE_OUTCOMES",
+  "result": "C4-A2 INCONCLUSIVE",
+  "c4_a1_status": "PASS",
+  "c4_a2_status": "INCONCLUSIVE",
+  "final_c4_status": "INCONCLUSIVE",
+  "recorded_on": "2026-08-22",
+  "purpose": "Offline preregistration and frozen screening checkpoint for the C4-A1 lexical query builder. This artifact contains no sparse outcome.",
+  "preregistration": {
+    "occurred_before_sparse_preflight_or_outcomes": true,
+    "sparse_preflight_performed": false,
+    "sparse_encoding_performed": false,
+    "sparse_reads_or_rankings_performed": false,
+    "sparse_outcome_fields_present": false,
+    "selection_locked_before_any_sparse_operation": true,
+    "live_stage_authorized": false,
+    "production_remains_raw": true
+  },
+  "source_candidate": {
+    "head": "c258a670f91c5ca11344eb0022287f43fb2e17fe",
+    "identity": "HEAD c258a670f91c5ca11344eb0022287f43fb2e17fe plus current working-tree C4-A1 diff",
+    "changed_paths_preserved": [
+      "src/panda_agent/retrieval.py",
+      "src/panda_agent/retrieval_trace.py",
+      "tests/unit/test_retrieval_trace.py",
+      "src/panda_agent/c4_sparse_evaluation.py",
+      "src/panda_agent/lexical_query.py",
+      "tests/unit/test_c4_sparse_evaluation.py",
+      "tests/unit/test_lexical_query.py"
+    ],
+    "diff_description": "C4-A1 adds the pure provenance-aware lexical_query builder and offline C4 evaluator; retrieval and trace changes preserve raw production behavior. No source code was changed by this preregistration.",
+    "c4_a1_evidence": {
+      "status": "PASS",
+      "host_aggregate": "54/54",
+      "ast_checks": "7/7",
+      "import_checks": "4/4",
+      "external_calls": 0,
+      "verification_basis": "Host verified the current seven-file snapshot before artifact creation."
+    }
+  },
+  "frozen_sources": {
+    "code": [
+      {"path": "src/panda_agent/lexical_query.py", "role": "authoritative current build_lexical_query(raw, plan)"},
+      {"path": "src/panda_agent/c4_sparse_evaluation.py", "role": "authoritative C4 eligibility and fixed-order selection; read-only"}
+    ],
+    "gold": {
+      "path": "evaluation/benchmarks/v2_6/gold_questions.yaml",
+      "manifest": "evaluation/benchmarks/v2_6/benchmark_manifest.json",
+      "benchmark_version": "m6-benchmark-v2.6",
+      "required_rule": "approved + dev + effective English + answered + required_evidence_groups + required_answer_points"
+    },
+    "language_calibration": {
+      "path": "evaluation/baselines/manifests/phase_b_t3_product_language_scope_v2.json",
+      "effective_product_language": "en",
+      "overrides_used": ["g113", "g114", "g115"]
+    },
+    "c2_prompt_contract": {
+      "path": "evaluation/baselines/manifests/phase_c_c2_narrow_auditable_analyzer_v1.json",
+      "source_commit": "c2f933b287e52d76947a3865e2527d2349e5ec27",
+      "prompt_identity": "3.7.0"
+    },
+    "c3_artifacts": [
+      {"path": "evaluation/baselines/manifests/phase_c_c3_r1_dense_ab_evaluation_integrity_closeout_v1.json", "source_commit": "21355cfeee123afebc321ba79b1bb1c10197e245"},
+      {"path": "evaluation/baselines/manifests/phase_c_c3_r2_treatment_qualified_dense_ab_closeout_v1.json", "source_commit": "e8b53e605e1cd9d34b3b77247b039b15fc822c02"},
+      {"path": "evaluation/baselines/manifests/phase_c_c3_r3_exhaustive_treatment_qualified_dense_evaluation_v1.json", "source_commit": "9f856044b062fb666cd0b357982399c7f59a6161"},
+      {"path": "evaluation/baselines/manifests/phase_c_c3a_raw_preserving_auxiliary_semantic_dense_v1.json", "source_head": "687dee5d6c6f648aa7ad739f9049441628ccd811", "status": "PASS"}
+    ]
+  },
+  "selection_rules": {
+    "allowed_inputs": [
+      "approved Gold metadata",
+      "dev split",
+      "effective English calibration",
+      "answered status",
+      "authoritative required-evidence semantics",
+      "explicit faithful RetrievalPlan proof",
+      "explicit C2-compatible proof",
+      "analyzer prompt identity exactly 3.7.0",
+      "current build_lexical_query(raw, plan).text != raw"
+    ],
+    "forbidden_inputs": [
+      "sparse PRE/POST",
+      "dense rankings",
+      "final evidence outcomes",
+      "prior failure status",
+      "semantic performance"
+    ],
+    "excluded_case_ids": ["g011", "g016"],
+    "intent_cycle": ["installation", "usage", "algorithm_theory", "algorithm_implementation", "api", "data_flow", "module_structure", "troubleshooting"],
+    "order_rule": "Sort IDs within intent and round-robin through the fixed intent cycle.",
+    "maximum_cases": 12,
+    "minimum_treatment_qualified": 6,
+    "treatment_qualification": "build_lexical_query(raw_question, frozen_plan).text != raw_question"
+  },
+  "candidate_pool": {
+    "gold_pool_before_exclusions_count": 49,
+    "explicit_exclusion_count": 2,
+    "gold_pool_after_exclusions_count": 47,
+    "ids_by_intent": {
+      "installation": ["g001", "g002", "g003", "g004", "g005", "g006", "g008", "g009", "g010"],
+      "usage": ["g013", "g014", "g015", "g017", "g018", "g019", "g020", "g021", "g022", "g023", "g024"],
+      "algorithm_theory": ["g044", "g047", "g050", "g051", "g052", "g055"],
+      "algorithm_implementation": ["g059", "g060"],
+      "api": ["g027", "g028", "g029", "g030", "g031", "g032", "g033", "g034", "g035", "g036", "g037", "g039", "g040"],
+      "data_flow": [],
+      "module_structure": ["g105"],
+      "troubleshooting": ["g110", "g112", "g113", "g114", "g115"]
+    },
+    "explicit_exclusions": [
+      {"case_id": "g011", "reason": "explicit C4 exclusion before plan screening"},
+      {"case_id": "g016", "reason": "explicit C4 exclusion before plan screening"}
+    ],
+    "normalized_plan_record_count": 7,
+    "normalized_record_ids": ["g018", "g039", "g040", "g055", "g113", "g114", "g115"],
+    "faithful_c2_compatible_plan_count": 6,
+    "unfaithful_plan_ids": ["g018"],
+    "missing_explicit_plan_proof_count": 40,
+    "missing_plan_proof_ids": ["g001", "g002", "g003", "g004", "g005", "g006", "g008", "g009", "g010", "g013", "g014", "g015", "g017", "g019", "g020", "g021", "g022", "g023", "g024", "g027", "g028", "g029", "g030", "g031", "g032", "g033", "g034", "g035", "g036", "g037", "g044", "g047", "g050", "g051", "g052", "g059", "g060", "g105", "g110", "g112"],
+    "missing_plan_reason": "No complete explicit RetrievalPlan snapshot with faithful and C2-compatible proof exists in the authoritative C3 artifacts; records are excluded rather than reconstructed."
+  },
+  "normalized_screening_records": [
+    {
+      "case_id": "g018",
+      "raw_question": "How do I run a luminosity fit after preparing fit data?",
+      "gold": {"split": "dev", "intent": "usage", "effective_product_language": "en", "review_status": "approved", "expected_status": "answered", "authoritative_required_evidence": {"present": true, "group_ids": ["g018.e1"], "critical_group_ids": ["g018.e1"]}},
+      "plan_proof": {"present": true, "faithful": false, "c2_compatible": true, "prompt_identity": "3.7.0", "source": "C3-R3 stage_b_actual.cohort_cases[g018]", "reason": "C3-R3 marks the carried-forward reconstruction INCLUDED_WITH_SEMANTIC_RECONSTRUCTION_MISMATCH; C3-A excludes g018."},
+      "retrieval_plan_inputs": {"intent": "usage", "resolved_aliases": {}, "analysis_diagnostics": {"analyzer_accepted_semantic_delta": {"concepts": [{"value": "luminosity fit", "support_spans": ["luminosity fit"]}, {"value": "preparing fit data", "support_spans": ["preparing fit data"]}], "symbols": []}}},
+      "lexical_activation": {"raw_text": "How do I run a luminosity fit after preparing fit data?", "lexical_text": "How do I run a luminosity fit after preparing fit data?", "changed": false, "appended_components": []},
+      "selection_status": "EXCLUDED_UNFAITHFUL_PLAN"
+    },
+    {
+      "case_id": "g039",
+      "raw_question": "Where is longitudinal restgas efficiency correction implemented?",
+      "gold": {"split": "dev", "intent": "api", "effective_product_language": "en", "review_status": "approved", "expected_status": "answered", "authoritative_required_evidence": {"present": true, "group_ids": ["g039.e1"], "critical_group_ids": ["g039.e1"], "roles": ["efficiency_correction_2_implementation"]}, "required_identifiers": ["efficiency_correction_2.C"]},
+      "plan_proof": {"present": true, "faithful": true, "c2_compatible": true, "prompt_identity": "3.7.0", "source": "C3-R3 stage_a_actual.screening_cases[g039]"},
+      "retrieval_plan_inputs": {"intent": "api", "resolved_aliases": {}, "analysis_diagnostics": {"analyzer_accepted_semantic_delta": {"concepts": [{"value": "longitudinal restgas efficiency correction", "support_spans": ["longitudinal restgas efficiency correction"]}], "symbols": []}}},
+      "lexical_activation": {"raw_text": "Where is longitudinal restgas efficiency correction implemented?", "lexical_text": "Where is longitudinal restgas efficiency correction implemented?", "changed": false, "appended_components": []},
+      "selection_status": "EXCLUDED_LEXICAL_QUERY_UNCHANGED"
+    },
+    {
+      "case_id": "g040",
+      "raw_question": "Where is the displaced-track Apollonius task implemented in the restgas fork?",
+      "gold": {"split": "dev", "intent": "api", "effective_product_language": "en", "review_status": "approved", "expected_status": "answered", "authoritative_required_evidence": {"present": true, "group_ids": ["g040.e1"], "critical_group_ids": ["g040.e1"]}},
+      "plan_proof": {"present": true, "faithful": true, "c2_compatible": true, "prompt_identity": "3.7.0", "source": "C3-R3 stage_a_actual.screening_cases[g040]"},
+      "retrieval_plan_inputs": {"intent": "api", "resolved_aliases": {}, "analysis_diagnostics": {"analyzer_accepted_semantic_delta": {"concepts": [{"value": "displaced-track", "support_spans": ["displaced-track"]}, {"value": "Apollonius task", "support_spans": ["Apollonius task"]}], "symbols": []}}},
+      "lexical_activation": {"raw_text": "Where is the displaced-track Apollonius task implemented in the restgas fork?", "lexical_text": "Where is the displaced-track Apollonius task implemented in the restgas fork?", "changed": false, "raw_identifiers": ["displaced-track"], "appended_components": []},
+      "selection_status": "EXCLUDED_LEXICAL_QUERY_UNCHANGED"
+    },
+    {
+      "case_id": "g055",
+      "raw_question": "How should angular acceptance be distinguished from longitudinal efficiency?",
+      "gold": {"split": "dev", "intent": "algorithm_theory", "effective_product_language": "en", "review_status": "approved", "expected_status": "answered", "authoritative_required_evidence": {"present": true, "group_ids": ["g055.e1", "g055.e2"], "critical_group_ids": ["g055.e1", "g055.e2"], "roles": ["pflueger_2017_page_57_theory", "li_2026_page_142_theory"]}},
+      "plan_proof": {"present": true, "faithful": true, "c2_compatible": true, "prompt_identity": "3.7.0", "source": "C3-R3 stage_b_actual.cohort_cases[g055]", "reason": "C3-R3 records the carried-forward C3-R2 plan reconstruction as matched to the frozen semantic snapshot."},
+      "retrieval_plan_inputs": {"intent": "algorithm_theory", "resolved_aliases": {}, "analysis_diagnostics": {"analyzer_accepted_semantic_delta": {"concepts": [{"value": "angular acceptance", "support_spans": ["angular acceptance"]}, {"value": "longitudinal efficiency", "support_spans": ["longitudinal efficiency"]}], "symbols": []}}},
+      "lexical_activation": {"raw_text": "How should angular acceptance be distinguished from longitudinal efficiency?", "lexical_text": "How should angular acceptance be distinguished from longitudinal efficiency?", "changed": false, "appended_components": []},
+      "selection_status": "EXCLUDED_LEXICAL_QUERY_UNCHANGED"
+    },
+    {
+      "case_id": "g113",
+      "raw_question": "runLmdFit cannot find prepared data; how do I trace the mismatch?",
+      "gold": {"split": "dev", "intent": "troubleshooting", "raw_language": "mixed", "effective_product_language": "en", "language_calibration_override": true, "review_status": "approved", "expected_status": "answered", "authoritative_required_evidence": {"present": true, "group_ids": ["g113.e1", "g113.e2"], "critical_group_ids": ["g113.e1", "g113.e2"], "roles": ["create_lmd_fit_data_implementation", "run_lmd_fit_implementation"], "source_paths": ["apps/createLmdFitData.cxx", "apps/runLmdFit.cxx"]}, "required_identifiers": ["runLmdFit"]},
+      "plan_proof": {"present": true, "faithful": true, "c2_compatible": true, "prompt_identity": "3.7.0", "source": "C3-R3 stage_b_actual.cohort_cases[g113]", "reason": "C3-R3 records the carried-forward C3-R2 plan reconstruction as matched to the frozen semantic snapshot."},
+      "retrieval_plan_inputs": {"intent": "troubleshooting", "resolved_aliases": {}, "analysis_diagnostics": {"analyzer_accepted_semantic_delta": {"concepts": [{"value": "prepared data", "support_spans": ["prepared data"]}, {"value": "trace mismatch", "support_spans": ["trace the mismatch"]}], "symbols": [{"value": "runLmdFit", "support_spans": ["runLmdFit"]}]}}},
+      "lexical_activation": {"raw_text": "runLmdFit cannot find prepared data; how do I trace the mismatch?", "lexical_text": "runLmdFit cannot find prepared data; how do I trace the mismatch? trace mismatch", "changed": true, "raw_identifiers": ["runLmdFit"], "appended_components": [{"kind": "analyzer_concept", "value": "trace mismatch", "provenance": "analyzer_accepted", "support_spans": ["trace the mismatch"]}]},
+      "selection_status": "SELECTED_TREATMENT_QUALIFIED"
+    },
+    {
+      "case_id": "g114",
+      "raw_question": "Why might restgas efficiency correction have empty bins?",
+      "gold": {"split": "dev", "intent": "troubleshooting", "raw_language": "mixed", "effective_product_language": "en", "language_calibration_override": true, "review_status": "approved", "expected_status": "answered", "authoritative_required_evidence": {"present": true, "group_ids": ["g114.e1", "g114.e2"], "critical_group_ids": ["g114.e1", "g114.e2"], "roles": ["efficiency_correction_2_implementation", "efficiency_correction_steps_implementation"], "source_paths": ["macro/target/correction/efficiency_correction_2.C", "macro/target/correction/efficiency_correction_steps.C"]}},
+      "plan_proof": {"present": true, "faithful": true, "c2_compatible": true, "prompt_identity": "3.7.0", "source": "C3-R3 stage_b_actual.cohort_cases[g114]", "reason": "C3-R3 records the carried-forward C3-R2 plan reconstruction as matched to the frozen semantic snapshot."},
+      "retrieval_plan_inputs": {"intent": "troubleshooting", "resolved_aliases": {}, "analysis_diagnostics": {"analyzer_accepted_semantic_delta": {"concepts": [{"value": "restgas efficiency correction", "support_spans": ["restgas efficiency correction"]}, {"value": "empty bins", "support_spans": ["empty bins"]}], "symbols": []}}},
+      "lexical_activation": {"raw_text": "Why might restgas efficiency correction have empty bins?", "lexical_text": "Why might restgas efficiency correction have empty bins?", "changed": false, "appended_components": []},
+      "selection_status": "EXCLUDED_LEXICAL_QUERY_UNCHANGED"
+    },
+    {
+      "case_id": "g115",
+      "raw_question": "Why might LMD angular acceptance be confused with pvz efficiency?",
+      "gold": {"split": "dev", "intent": "troubleshooting", "raw_language": "mixed", "effective_product_language": "en", "language_calibration_override": true, "review_status": "approved", "expected_status": "answered", "authoritative_required_evidence": {"present": true, "group_ids": ["g115.e1", "g115.e2"], "critical_group_ids": ["g115.e1", "g115.e2"], "roles": ["pnd_lmd_acceptance_implementation", "efficiency_correction_2_implementation"], "source_paths": ["data/PndLmdAcceptance.cxx", "macro/target/correction/efficiency_correction_2.C"]}},
+      "plan_proof": {"present": true, "faithful": true, "c2_compatible": true, "prompt_identity": "3.7.0", "source": "C3-R3 stage_b_actual.cohort_cases[g115]", "reason": "C3-R3 records the carried-forward C3-R2 plan reconstruction as matched to the frozen semantic snapshot."},
+      "retrieval_plan_inputs": {"intent": "troubleshooting", "resolved_aliases": {}, "analysis_diagnostics": {"analyzer_accepted_semantic_delta": {"concepts": [{"value": "LMD angular acceptance", "support_spans": ["LMD angular acceptance"]}, {"value": "pvz efficiency", "support_spans": ["pvz efficiency"]}], "symbols": []}}},
+      "lexical_activation": {"raw_text": "Why might LMD angular acceptance be confused with pvz efficiency?", "lexical_text": "Why might LMD angular acceptance be confused with pvz efficiency?", "changed": false, "raw_identifiers": ["LMD"], "appended_components": []},
+      "selection_status": "EXCLUDED_LEXICAL_QUERY_UNCHANGED"
+    }
+  ],
+  "candidate_ledger": {
+    "faithful_c2_compatible_plan_ids": ["g039", "g040", "g055", "g113", "g114", "g115"],
+    "unfaithful_plan_ids": ["g018"],
+    "missing_explicit_plan_proof_ids": ["g001", "g002", "g003", "g004", "g005", "g006", "g008", "g009", "g010", "g013", "g014", "g015", "g017", "g019", "g020", "g021", "g022", "g023", "g024", "g027", "g028", "g029", "g030", "g031", "g032", "g033", "g034", "g035", "g036", "g037", "g044", "g047", "g050", "g051", "g052", "g059", "g060", "g105", "g110", "g112"],
+    "missing_proof_reason": "Missing complete explicit RetrievalPlan, faithful proof, or C2-compatible proof; excluded without reconstruction.",
+    "lexical_unchanged_ids": ["g039", "g040", "g055", "g114", "g115"],
+    "lexical_active_ids": ["g113"],
+    "active_intent_by_case": {"g113": "troubleshooting"},
+    "fixed_intent_round_robin_queues_after_all_gates": {"installation": [], "usage": [], "algorithm_theory": [], "algorithm_implementation": [], "api": [], "data_flow": [], "module_structure": [], "troubleshooting": ["g113"]},
+    "fixed_intent_round_robin_order_after_all_gates": ["g113"],
+    "explicit_exclusion_ids": ["g011", "g016"]
+  },
+  "screening_counts": {
+    "gold_pool_before_explicit_exclusions": 49,
+    "gold_pool_after_explicit_exclusions": 47,
+    "normalized_plan_records": 7,
+    "faithful_plan_records": 6,
+    "c2_compatible_plan_records": 6,
+    "lexical_query_changed_records": 1,
+    "treatment_qualified_count": 1,
+    "activation_count": 1,
+    "minimum_required_for_A2": 6,
+    "screening_maximum": 12,
+    "final_frozen_cohort_size": 1,
+    "production_sparse_query": "raw question"
+  },
+  "final_frozen_cohort": {
+    "cohort_frozen": true,
+    "cohort_ids": ["g113"],
+    "cohort_size": 1,
+    "selection_order": ["g113"],
+    "immutable": true,
+    "frozen_before_sparse_preflight": true,
+    "frozen_before_sparse_encoding": true,
+    "live_stage_authorized": false,
+    "freeze_reason": "Only g113 satisfies every offline gate; one treatment-qualified case is below the minimum of six.",
+    "production_decision": "Raw sparse remains production-authoritative."
+  },
+  "protocol": {
+    "offline_stage": {"status": "COMPLETED", "analyzer_calls": 0, "vertex_calls": 0, "dense_operations": 0, "sparse_operations": 0, "artifact_file_writes": 1, "external_state_writes": 0},
+    "conditional_live_sparse_stage": {
+      "status": "NOT_RUN",
+      "live_preflight": "NOT_RUN",
+      "live_encodes": 0,
+      "live_reads": 0,
+      "activation_condition": "treatment_qualified_count >= 6",
+      "reason_not_run": "treatment_qualified_count=1 < 6",
+      "top_k": 20,
+      "raw_and_lexical_encodes_per_case": 2,
+      "raw_and_lexical_reads_per_case": 2,
+      "same_non_text_parameters_required": true,
+      "same_plan_filter_required": true
+    },
+    "gate_rules": [
+      "sparse preflight must prove collection, vector, modifier, index identity, and encoder identity",
+      "raw and lexical queries must reuse the same plan filter and non-text parameters",
+      "no identifier loss or provenance contamination",
+      "no critical miss, lost hit, or retrieval regression",
+      "at least half of the cohort must be informative"
+    ]
+  },
+  "budget": {
+    "reserved_maximum": {"screening_cases": 12, "sparse_encoder_calls": 24, "sparse_reads": 24, "analyzer_calls": 0, "vertex_calls": 0, "dense_embedding_calls": 0, "dense_reads": 0, "downstream_calls": 0, "sql_writes": 0, "qdrant_writes": 0},
+    "actual_this_preregistration": {"screening_records_read": 7, "artifact_file_writes": 1, "external_state_writes": 0, "analyzer_calls": 0, "vertex_calls": 0, "dense_embedding_calls": 0, "dense_reads": 0, "sparse_encoder_calls": 0, "sparse_reads": 0, "downstream_calls": 0, "sql_writes": 0, "qdrant_writes": 0, "index_mutation": 0, "reindex_or_reembedding": false}
+  },
+  "zero_call_and_zero_write_ledger": {
+    "artifact_file_writes": 1,
+    "external_state_writes": 0,
+    "analyzer": 0,
+    "vertex": 0,
+    "dense_embedding": 0,
+    "dense_reads": 0,
+    "sparse_encoding": 0,
+    "sparse_reads": 0,
+    "exact": 0,
+    "paper": 0,
+    "workflow": 0,
+    "graph": 0,
+    "fusion": 0,
+    "reranker": 0,
+    "selector": 0,
+    "qa_verifier_judge": 0,
+    "sql_writes": 0,
+    "qdrant_writes": 0,
+    "index_mutation": 0,
+    "sparse_preflight": 0,
+    "external_services": 0
+  },
+  "known_limits": [
+    "This is an offline preregistration checkpoint, not a sparse retrieval result.",
+    "Forty Gold-eligible records lack complete explicit plan proof and are excluded rather than reconstructed.",
+    "g018 is excluded because C3-R3 records a semantic reconstruction mismatch and C3-A excludes it.",
+    "The current lexical builder does not append concepts already literally present in the raw question; concept scopes are not lexical inputs.",
+    "No sparse preflight, encoding, Qdrant read, ranking, analyzer, Vertex, dense, downstream, or external-state write stage was run.",
+    "C4-A2 is INCONCLUSIVE until an authorized run has at least six treatment-qualified records; production remains raw sparse."
+  ],
+  "next_stage": "No live stage is authorized by this artifact. A separately authorized C4-A2 run requires at least six treatment-qualified records."
+}

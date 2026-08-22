@@ -263,6 +263,142 @@ class RetrievalTraceTests(unittest.TestCase):
         self.assertFalse(trace.dense_queries["semantic_executed"])
         self.assertEqual(trace.dense_candidates["raw"], ["raw-1"])
         self.assertIsNone(trace.dense_candidates["semantic"])
+        self.assertEqual(trace.sparse_queries["raw"]["text"], question)
+        self.assertEqual(trace.sparse_queries["raw"]["provenance"], "user_raw")
+        self.assertIsNone(trace.sparse_queries["lexical"])
+        self.assertFalse(trace.sparse_queries["lexical_active"])
+        self.assertFalse(trace.sparse_queries["lexical_executed"])
+        self.assertEqual(trace.sparse_candidates["raw"], [])
+        self.assertIsNone(trace.sparse_candidates["lexical"])
+
+    def test_production_sparse_trace_keeps_raw_query_and_lexical_contract(self) -> None:
+        question = "Where is PndLmdTrackQ implemented?"
+        lexical_payload = {
+            "text": f"{question} track quality",
+            "raw_question": question,
+            "components": [
+                {
+                    "kind": "raw_identifier",
+                    "value": "PndLmdTrackQ",
+                    "provenance": "user_raw",
+                    "support_spans": ["PndLmdTrackQ"],
+                    "appended": False,
+                },
+                {
+                    "kind": "analyzer_concept",
+                    "value": "track quality",
+                    "provenance": "analyzer_accepted",
+                    "support_spans": ["track"],
+                    "appended": True,
+                },
+            ],
+            "excluded_component_classes": ["repository_metadata", "version_metadata"],
+        }
+        raw_payload = {"object_id": "raw-1", "score": 0.9}
+        trace = build_retrieval_trace(
+            question_id="g004",
+            run_id="trace-production-sparse",
+            question=question,
+            diagnostics={
+                "plan": {},
+                "lexical_query": lexical_payload,
+                "sparse_queries": {
+                    "raw": {"text": question, "provenance": "user_raw", "active": True},
+                    "lexical": lexical_payload,
+                    "lexical_active": True,
+                    "lexical_executed": False,
+                },
+                "sparse_candidates": {"raw": [raw_payload], "lexical": None},
+                "rankings": {"sparse": ["raw-1"]},
+            },
+            manifest={},
+            object_lookup={},
+        )
+
+        self.assertEqual(trace.sparse_query_text, question)
+        self.assertEqual(trace.original_retrieval_query, question)
+        lexical = trace.sparse_queries["lexical"]
+        self.assertEqual(lexical["text"], lexical_payload["text"])
+        self.assertEqual(lexical["components"], lexical_payload["components"])
+        self.assertEqual(lexical["components"][1]["support_spans"], ["track"])
+        self.assertTrue(lexical["components"][1]["appended"])
+        self.assertEqual(
+            lexical["excluded_component_classes"],
+            ["repository_metadata", "version_metadata"],
+        )
+        self.assertTrue(lexical["active"])
+        self.assertFalse(lexical["executed"])
+        self.assertEqual(trace.sparse_candidates["raw"], [raw_payload])
+        self.assertIsNone(trace.sparse_candidates["lexical"])
+        with TemporaryDirectory() as temporary:
+            path = write_retrieval_trace(Path(temporary), trace)
+            loaded = load_retrieval_trace(path)
+        self.assertEqual(loaded.sparse_queries, trace.sparse_queries)
+        self.assertEqual(loaded.sparse_candidates, trace.sparse_candidates)
+
+    def test_shadow_sparse_trace_separates_raw_and_lexical_candidates(self) -> None:
+        question = "Where is the function defined?"
+        raw_payload = {"object_id": "raw-1", "score": 0.9}
+        lexical_payload = {"object_id": "lexical-1", "score": 0.8}
+        lexical_query = {
+            "text": f"{question} function",
+            "components": [
+                {
+                    "kind": "analyzer_concept",
+                    "value": "function",
+                    "provenance": "analyzer_accepted",
+                    "support_spans": ["function"],
+                    "appended": True,
+                }
+            ],
+            "excluded_component_classes": ["repository_metadata"],
+        }
+        trace = build_retrieval_trace(
+            question_id="g005",
+            run_id="trace-shadow-sparse",
+            question=question,
+            diagnostics={
+                "plan": {},
+                "sparse_queries": {
+                    "raw": {"text": question, "provenance": "user_raw", "active": True},
+                    "lexical": lexical_query,
+                    "lexical_active": True,
+                    "lexical_executed": True,
+                },
+                "sparse_candidates": {
+                    "raw": [raw_payload],
+                    "lexical": [lexical_payload],
+                },
+                "rankings": {"sparse": ["raw-1"]},
+            },
+            manifest={},
+            object_lookup={},
+        )
+
+        self.assertEqual(trace.sparse_query_text, question)
+        self.assertEqual(trace.sparse_queries["lexical"]["text"], lexical_query["text"])
+        self.assertTrue(trace.sparse_queries["lexical"]["executed"])
+        self.assertEqual(trace.sparse_candidates["raw"], [raw_payload])
+        self.assertEqual(trace.sparse_candidates["lexical"], [lexical_payload])
+
+    def test_trace_load_normalizes_original_query_to_exact_raw_question(self) -> None:
+        legacy = {
+            "question_id": "legacy-raw",
+            "run_id": "run",
+            "implementation_identity": {},
+            "raw_question": "exact raw question\n",
+            "retrieval_plan": {},
+            "original_retrieval_query": "polluted lexical query",
+            "dense_query_text": "exact raw question\n",
+            "sparse_query_text": "exact raw question\n",
+        }
+
+        trace = RetrievalTrace.model_validate(legacy)
+
+        self.assertEqual(trace.original_retrieval_query, legacy["raw_question"])
+        self.assertEqual(trace.sparse_queries["raw"]["text"], legacy["raw_question"])
+        self.assertEqual(trace.sparse_queries["raw"]["provenance"], "user_raw")
+        self.assertEqual(trace.sparse_candidates, {"raw": [], "lexical": None})
 
     def test_trace_shadow_candidates_and_contamination_remain_observable(self) -> None:
         question = "Where is the function defined?"
