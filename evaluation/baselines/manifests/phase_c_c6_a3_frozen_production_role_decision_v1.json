@@ -1,0 +1,234 @@
+{
+  "schema_version": 1,
+  "artifact_id": "phase_c_c6_a3_frozen_production_role_decision_v1",
+  "task": "C6-A3 frozen fusion production-role decision",
+  "phase": "C6",
+  "source_head": "200d8d51c2dce164de5d027751be97b371551fc3",
+  "recorded_on": "2026-08-22",
+  "decision_timing": {
+    "after": [
+      "C6-A2 = PASS (frozen global + semantic fusion policy comparison)",
+      "critical-miss semantics audit = PASS (corrected Gate-5 group-identity semantics)"
+    ],
+    "prior_a3_executions": 0,
+    "prior_a3_state": "NEXT_ELIGIBLE / NOT_STARTED"
+  },
+  "authoritative_input_artifacts": [
+    "evaluation/baselines/manifests/phase_c_c6_a0_a1_fusion_replay_preregistration_v1.json",
+    "evaluation/baselines/manifests/phase_c_c6_a1r2_provenance_repair_v1.json",
+    "evaluation/baselines/manifests/phase_c_c6_a1r2_semantic_cohort_correction_v1.json",
+    "evaluation/baselines/manifests/phase_c_c6_a2_frozen_fusion_policy_comparison_v1.json",
+    "evaluation/baselines/manifests/phase_c_c6_a2_critical_miss_semantics_audit_v1.json"
+  ],
+  "authoritative_receipts_reference": {
+    "path": "evaluation/baselines/replay/phase_c_c6_a2_policy_receipts_v1.jsonl",
+    "use": "reference only; no factual cross-check required during A3; not re-read for new outcomes",
+    "superseded_input_excluded": "historical superseded candidate replay v1 is not decision evidence"
+  },
+  "no_new_outcome_measurement": true,
+  "novel_replay_status": "ABSENT",
+  "production_activation_authorized": false,
+  "new_production_policy_activation": "NOT_AUTHORIZED_BY_C6_A2_ALONE",
+  "current_production_policy": {
+    "policy_id": "c6.current.v1",
+    "label": "P0_CURRENT",
+    "rrf_k": 60,
+    "enabled_channels": [
+      "exact",
+      "raw_dense",
+      "sparse",
+      "paper",
+      "workflow",
+      "graph"
+    ],
+    "weights": {
+      "exact": 2.0,
+      "raw_dense": 1.0,
+      "sparse": 1.0,
+      "paper": 1.15,
+      "workflow": 1.2,
+      "graph": 0.8
+    },
+    "semantic_dense": "disabled from scored production fusion (auxiliary/shadow only)",
+    "source_of_truth": "src/panda_agent/fusion_replay.py CURRENT_POLICY_ID / CURRENT_WEIGHTS / PRODUCTION_CHANNEL_ORDER (read-only reference; unchanged by A3)"
+  },
+  "role_vocabulary": {
+    "PRODUCTION_AUTHORITATIVE": "currently active production behavior",
+    "DEVELOPMENT_SUPPORTED_CANDIDATE": "supported by frozen exposed-development evidence, but not production-authorized",
+    "EVALUATION_ONLY_CANDIDATE": "useful as an evaluation/shadow policy, but not production-authorized",
+    "KEEP_DISABLED": "current evidence does not support participation",
+    "REJECTED_BY_A2": "preregistered alternative failed relevant hard gates and has no justified active role"
+  },
+  "role_decisions": {
+    "P0_CURRENT": {
+      "role": "PRODUCTION_AUTHORITATIVE",
+      "evidence_basis": "current production fusion policy; A2 measured it as the global baseline (R@10 0.8444, R@20 0.9667, MRR 0.5679, critical coverage 0.9667); A3 is not authorized to activate a replacement and novel corroboration is ABSENT",
+      "blocker_to_production": null,
+      "note": "P3's development advantage does not demote P0; production fusion remains unchanged"
+    },
+    "P1_RAW_DENSE_CENTERED": {
+      "role": "REJECTED_BY_A2",
+      "evidence_basis": "global FAIL_HARD_GATES: gates 5/6/7 FAIL (1 lost_hit; newly lost critical groups g059.e2 and g059.e3 per the corrected group-identity audit despite recovering g002.e1; 6 negative vs 5 positive directions)",
+      "blocker_to_production": "hard-gate failure with critical-group loss; not retained as a global production candidate",
+      "future_reconsideration_condition": "only via a separately preregistered future policy revision; historical metrics remain available for diagnostics"
+    },
+    "P2_EXACT_HEAVY": {
+      "role": "REJECTED_BY_A2",
+      "evidence_basis": "global standalone FAIL_HARD_GATES: gates 3/5/7 FAIL (Fused Recall@20 regression to 0.9556; newly lost critical group g105.e2; directional safety failure)",
+      "blocker_to_production": "global hard-gate failure; no standalone global production role",
+      "component_use_note": "P2 remains used only inside the preregistered evaluation-only C6_INTENT_AWARE_V1 mapping for troubleshooting; that is evaluation evidence, not a production activation of P2",
+      "future_reconsideration_condition": "only via a separately preregistered future policy revision"
+    },
+    "P3_SPARSE_HEAVY": {
+      "role": "DEVELOPMENT_SUPPORTED_CANDIDATE",
+      "evidence_basis": "global PASS_ALL_GATES (10/10 hard gates; corrected critical-group-identity Gate 5 PASS with zero newly lost critical groups and recovery of g002.e1): Fused Recall@20 1.0, critical coverage 1.0, MRR 0.6013 (+0.0334 vs P0), lost_hit 0; strongest global development-policy candidate identified by C6",
+      "blocker_to_production": "novel corroboration ABSENT (NEW_PRODUCTION_POLICY_ACTIVATION = NOT_AUTHORIZED_BY_C6_A2_ALONE); development evidence is not independent corroboration",
+      "future_reconsideration_condition": "independent or novel question evidence evaluated without reusing the exposed development outcomes for tuning, under the same frozen candidate/policy semantics or a separately preregistered future policy revision, with no regression of critical evidence safety"
+    },
+    "P4_SEMANTIC_AUXILIARY_25": {
+      "role": "REJECTED_BY_A2",
+      "evidence_basis": "semantic cohort FAIL_HARD_GATES: gates 3/5/7 FAIL (Recall@20 regression; critical-group loss g055.e2; directional regression); SemanticDense meaningful-contribution threshold also fails substantively",
+      "blocker_to_production": "hard-gate failure plus insufficient semantic contribution; weighted SemanticDense participation is not an active production candidate",
+      "future_reconsideration_condition": "not reopenable within C6 (no further SemanticDense tuning justified); only a future, separately preregistered and independently motivated semantic evaluation could revisit it"
+    },
+    "P5_SEMANTIC_EXPANSION_ONLY": {
+      "role": "EVALUATION_ONLY_CANDIDATE",
+      "evidence_basis": "SCORED_PREFIX_IDENTITY = PASS (8/8 cases identical to P0 scored output) but EXPANSION_CONTRIBUTION = NOT_MEANINGFUL (41 expansion candidates, 1 relevant, marginal candidate-recall contribution 0.0 on every evaluated semantic case)",
+      "blocker_to_production": "no meaningful expansion evidence; no production role justified",
+      "note": "prefix-safe, non-harmful expansion mechanism retained in fusion_replay as an evaluation/diagnostic construct only; production role: none"
+    },
+    "SemanticDense": {
+      "role": "KEEP_DISABLED",
+      "evidence_basis": "N_sem = 8, meaningful threshold max(2, ceil(0.10 * 8)) = 2, observed semantic unique relevant case count = 1, meaningful_semantic_marginal_recall = false; SEMANTIC_CONTRIBUTION = INSUFFICIENT; both weighted (P4) and expansion-only (P5) evidence NOT_SUPPORTED",
+      "blocker_to_production": "contribution below the preregistered meaningful threshold for scored production fusion",
+      "note": "current auxiliary/shadow implementation may remain available for research or future independently motivated evaluation; no further C6 SemanticDense tuning is justified; weight unchanged; no new semantic policy; P4/P5 not reopened; threshold not lowered"
+    },
+    "C6_INTENT_AWARE_V1": {
+      "role": "DEVELOPMENT_SUPPORTED_CANDIDATE",
+      "evidence_basis": "INTENT_AWARE_ELIGIBLE = true; all six preregistered intent-aware eligibility conditions PASS on 5 sufficiently represented intents; frozen mapping: installation -> P3_SPARSE_HEAVY, troubleshooting -> P2_EXACT_HEAVY, all other intents -> P0_CURRENT; confirmed unchanged by the critical-miss audit (zero new critical-group misses at intent level for P1/P2/P3)",
+      "blocker_to_production": "novel corroboration ABSENT; must not become production-authoritative in A3",
+      "note": "intent-aware architecture is supported for future independent corroboration; mapping frozen as the current evaluation candidate; not tuned and not extended with additional intent-specific policies",
+      "future_reconsideration_condition": "same independent/novel corroboration boundary as P3"
+    }
+  },
+  "decision_receipt_table": [
+    {"item": "P0_CURRENT", "evidence": "current production baseline", "role": "PRODUCTION_AUTHORITATIVE"},
+    {"item": "P1_RAW_DENSE_CENTERED", "evidence": "global hard-gate FAIL (5/6/7)", "role": "REJECTED_BY_A2"},
+    {"item": "P2_EXACT_HEAVY", "evidence": "global hard-gate FAIL (3/5/7)", "role": "REJECTED_BY_A2", "note": "remains used only inside C6_INTENT_AWARE_V1 evaluation candidate"},
+    {"item": "P3_SPARSE_HEAVY", "evidence": "PASS_ALL_GATES (10/10)", "role": "DEVELOPMENT_SUPPORTED_CANDIDATE", "blocker": "novel corroboration absent"},
+    {"item": "P4_SEMANTIC_AUXILIARY_25", "evidence": "hard-gate FAIL (3/5/7)", "role": "REJECTED_BY_A2"},
+    {"item": "P5_SEMANTIC_EXPANSION_ONLY", "evidence": "prefix-safe (8/8) but contribution not meaningful", "role": "EVALUATION_ONLY_CANDIDATE", "production_role": "none"},
+    {"item": "SemanticDense", "evidence": "unique relevant case count 1 < threshold 2", "role": "KEEP_DISABLED"},
+    {"item": "C6_INTENT_AWARE_V1", "evidence": "intent-aware eligibility conditions 1-6 PASS", "role": "DEVELOPMENT_SUPPORTED_CANDIDATE", "blocker": "novel corroboration absent"}
+  ],
+  "global_development_candidate": "P3_SPARSE_HEAVY",
+  "intent_aware_development_candidate": "C6_INTENT_AWARE_V1",
+  "semantic_production_role": "KEEP_DISABLED",
+  "global_vs_intent_aware_hypotheses": {
+    "H1_global": "P3_SPARSE_HEAVY (globally passes all 10 hard gates)",
+    "H2_intent_aware": "C6_INTENT_AWARE_V1 (satisfies preregistered intent-aware eligibility conditions)",
+    "decision": "kept as two distinct development hypotheses for future independent corroboration; no composite rule, tie-break, or winner selection performed in A3; neither is production-activated"
+  },
+  "no_winner_metric_invented": true,
+  "production_state_after_a3": {
+    "production_fusion_policy": "P0_CURRENT (c6.current.v1)",
+    "exact": "LEGACY_EXACT",
+    "sparse_query": "RAW_QUESTION",
+    "raw_dense": "production-authoritative dense query",
+    "semantic_dense": "disabled from scored production fusion; auxiliary/shadow only",
+    "intent_aware_routing": "not production activated",
+    "production_fusion_changed": false,
+    "production_code_changed": false
+  },
+  "downstream_phase_ownership": {
+    "C7": "evidence selection constraints/diversity after fusion",
+    "C8": "global targeted-retrieval pool merge/rerank",
+    "phase_d": "entity/schema/resolver work",
+    "phase_e": "decomposition/answer-point coverage/targeted retrieval logic",
+    "boundary_note": "A2 selection-layer debt (not assessed in A2; no reranker/selector execution) is recorded as downstream debt owned by C7/C8; C6 fusion is not changed to compensate"
+  },
+  "future_corroboration_boundary": {
+    "executable_in_a3": false,
+    "required_before_any_production_activation": [
+      "independent or novel question evidence",
+      "evaluated without reusing the exposed development outcomes for tuning",
+      "same frozen candidate/policy semantics or a separately preregistered future policy revision",
+      "no regression of critical evidence safety"
+    ],
+    "not_done_here": [
+      "no novel dataset designed or generated",
+      "no evaluation scheduled (no T3/T4/T5)",
+      "future evaluation design to be separately preregistered if/when authorized"
+    ]
+  },
+  "internal_consistency_checks": {
+    "a2_methodology_result": "PASS",
+    "critical_miss_semantics_audit": "PASS",
+    "corrected_global_passing_set": ["P3_SPARSE_HEAVY"],
+    "p1_p2_p4_labels": {
+      "P1_RAW_DENSE_CENTERED": "FAIL_HARD_GATES",
+      "P2_EXACT_HEAVY": "FAIL_HARD_GATES",
+      "P4_SEMANTIC_AUXILIARY_25": "FAIL_HARD_GATES"
+    },
+    "p5": {"SCORED_PREFIX_IDENTITY": "PASS", "EXPANSION_CONTRIBUTION": "NOT_MEANINGFUL"},
+    "semanticdense": {
+      "n_sem": 8,
+      "threshold": 2,
+      "semantic_unique_relevant_case_count": 1,
+      "SEMANTIC_CONTRIBUTION": "INSUFFICIENT",
+      "production_role_evidence": "KEEP_DISABLED"
+    },
+    "intent_aware": {
+      "INTENT_AWARE_ELIGIBLE": true,
+      "mapping_a2_manifest_equals_audit": true,
+      "mapping": {
+        "algorithm_implementation": "P0_CURRENT",
+        "algorithm_theory": "P0_CURRENT",
+        "api": "P0_CURRENT",
+        "installation": "P3_SPARSE_HEAVY",
+        "module_structure": "P0_CURRENT",
+        "troubleshooting": "P2_EXACT_HEAVY",
+        "usage": "P0_CURRENT"
+      }
+    },
+    "novel_gate": {"novel_replay_status": "ABSENT", "NEW_PRODUCTION_POLICY_ACTIVATION": "NOT_AUTHORIZED_BY_C6_A2_ALONE"},
+    "contradictions_found": 0,
+    "inconclusive_trigger": false
+  },
+  "c6_closeout": {
+    "intended_questions": [
+      "current multi-channel fusion evaluated (P0 baseline + global P1-P3 alternatives, frozen replay)",
+      "simple preregistered global weight alternatives evaluated (P1/P2/P3; one passes all hard gates)",
+      "SemanticDense participation evaluated (P4 weighted, P5 expansion-only; contribution INSUFFICIENT)",
+      "possible intent-aware evidence evaluated (C6_INTENT_AWARE_V1 eligible, evaluation-only)",
+      "production-role safety under the novel corroboration gate enforced (no activation; P0 remains authoritative)"
+    ],
+    "all_resolved_methodologically": true,
+    "c6_lifecycle_status": "COMPLETE"
+  },
+  "cost_and_isolation": {
+    "gold_reads": 0,
+    "relevance_evaluations": 0,
+    "policy_apply_calls": 0,
+    "fusion_replays": 0,
+    "analyzer": 0,
+    "embeddings": 0,
+    "sparse_encoding": 0,
+    "live_retrieval": 0,
+    "qdrant_reads": 0,
+    "sql_candidate_reads": 0,
+    "reranker": 0,
+    "selector": 0,
+    "qa_verifier_judge": 0,
+    "db_or_index_writes": 0,
+    "production_code_changes": 0
+  },
+  "c6_a3_verdict": "PASS",
+  "c6_a3_verdict_basis": "authoritative A2 evidence internally consistent; roles assigned without new outcome selection; novel corroboration gate respected; no unauthorized production activation; production behavior unchanged; C6 cleanly closed",
+  "next_roadmap_owner": {
+    "task": "C7 — Clear source constraints and evidence diversity",
+    "status": "NEXT_ELIGIBLE / NOT_STARTED",
+    "dependency_check": "C7 depends on C6 ranked pools and A2 traces; both exist and C6 is now COMPLETE; Phase D follows Phase C in roadmap ordering and does not precede C7",
+    "executed_in_a3": false
+  }
+}
