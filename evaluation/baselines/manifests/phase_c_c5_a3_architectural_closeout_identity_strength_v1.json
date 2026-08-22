@@ -1,0 +1,260 @@
+{
+  "schema_version": "c5-a3-architectural-closeout-identity-strength-1",
+  "task": "C5-A3",
+  "artifact_id": "phase_c_c5_a3_architectural_closeout_identity_strength_v1",
+  "phase": "C5",
+  "recorded_on": "2026-08-22",
+  "source_head": "08a43f944b247da4447d83a4b32e0ff34bf6ebca",
+  "purpose": "Architectural closeout of C5 with the identity-strength boundary finding. This artifact records lifecycle governance and architecture findings only: it does not reopen or rerun any C5 evaluation, does not modify any resolver code, and makes no retrieval-performance or fusion claim.",
+
+  "references": {
+    "c5_evaluation_artifact": "evaluation/baselines/manifests/phase_c_c5_entity_first_exact_retrieval_v1.json",
+    "c4_closeout_artifact": "evaluation/baselines/manifests/phase_c_c4_a3_architectural_closeout_v1.json",
+    "historical_results_unchanged": true
+  },
+
+  "status_ledger": {
+    "c5_a0": "DONE",
+    "c5_a1": "PASS",
+    "c5_a2": "INCONCLUSIVE",
+    "c5_a3": "PASS",
+    "c5_evaluation_verdict": "INCONCLUSIVE",
+    "c5_lifecycle_state": "CLOSED_INCONCLUSIVE"
+  },
+
+  "status_distinction": {
+    "note": "C5-A1 PASS means the resolver implementation satisfied its preregistered architecture/safety contract; it does NOT mean every unique exact match is semantically sufficient canonical identity. C5-A3 PASS means this architectural/governance closeout was completed correctly. The C5 evaluation verdict remains INCONCLUSIVE and the lifecycle becomes CLOSED_INCONCLUSIVE, which is intentionally neither C5 = PASS nor C5 = FAIL.",
+    "c5_a1_not_retroactively_failed": true,
+    "c5_pass_or_fail_claim_made": false
+  },
+
+  "closeout_blockers": {
+    "blocker_a_descriptive_resolution_evidence_unavailable": {
+      "accepted_aliases_in_corpus": 2,
+      "descriptive_or_alias_evaluation_cases": 0,
+      "statement": "The central intended capability (descriptive human terminology -> canonical technical entity -> better exact retrieval) could not be evaluated because no accepted alias occurs whole in the locked English pool. Creating aliases now from the exposed Gold pool would be benchmark fitting and is not authorized.",
+      "descriptive_evidence_status": "UNAVAILABLE"
+    },
+    "blocker_b_identity_strength_underspecified": {
+      "statement": "A unique exact database match is not sufficient evidence that an object deserves unconditional canonical-prefix promotion.",
+      "representative_observed_mechanism": {
+        "query_mention": "PandaRoot",
+        "unique_exact_title_match": "PandaRoot repository README object",
+        "resolver_status": "RESOLVED_UNIQUE",
+        "entity_first_merge": "README object promoted to rank 1",
+        "outcome": "relevant evidence was displaced; MRR decreased"
+      },
+      "interpretation": "This is not evidence that the string match was incorrect. It is evidence that unique retrieval match != strong canonical entity identity != automatic retrieval-priority entitlement."
+    }
+  },
+
+  "canonicality_review_finding": {
+    "authoritative_finding": "Exact-match uniqueness alone is insufficient evidence of canonical entity identity for all object types.",
+    "specifically": [
+      "exact title",
+      "path basename",
+      "generic repository/product/document name"
+    ],
+    "semantics": "These may identify a relevant database object without proving that the object itself is the canonical entity representation intended by the user mention.",
+    "a1_status_recorded_as": "C5-A1 = PASS under its original preregistered contract",
+    "post_evaluation_architecture_finding": "the original canonicality contract was too permissive for weak identity evidence"
+  },
+
+  "identity_strength_boundary": {
+    "scope": "governance/design documentation only; NOT implemented in production code by C5-A3",
+    "implemented_in_code": false,
+    "strong_identity_evidence_examples": [
+      "accepted alias -> validated canonical target",
+      "exact locator.symbol when the object representation genuinely carries symbol identity",
+      "explicit stable canonical entity identifier if/when such schema exists",
+      "future identity/equivalence relation only when relation semantics unambiguously mean identity",
+      "future Phase-D canonical entity record"
+    ],
+    "weak_retrieval_match_examples": [
+      "exact title",
+      "exact path basename",
+      "generic repository name",
+      "generic product name",
+      "README/document title",
+      "page/section title",
+      "documentation object sharing the queried name"
+    ],
+    "rule": "Weak matches may be useful retrieval candidates. They must NOT automatically imply canonical identity or unconditional rank-1 prefix promotion."
+  },
+
+  "canonical_locator_finding": {
+    "status": "DEFERRED_FOR_GENERIC_REVIEW",
+    "statement": "The C5-A0 inventory identified canonical_locator as an available exact field, but the current resolver's exact lookup primarily uses locator.symbol, title, locator.path, and path basename, and does not establish a dedicated canonical-identity semantic contract for canonical_locator.",
+    "future_design_input": "Do NOT assume that the existence of the canonical_locator field implies every canonical_locator value is an entity identity key; its semantics must be inspected generically before future use.",
+    "resolver_modified": false
+  },
+
+  "historical_evidence_summary": {
+    "screenable_cases": 46,
+    "treatment_qualified": 39,
+    "explicit_identifier_cases": 39,
+    "descriptive_alias_cases": 0,
+    "diagnostic_cohort": 12,
+    "recall_at_10_pre": 0.3333,
+    "recall_at_10_post": 0.3333,
+    "recall_at_20_pre": 0.3333,
+    "recall_at_20_post": 0.3333,
+    "mrr_pre": 0.2222,
+    "mrr_post": 0.1369,
+    "improved": 0,
+    "regressed": 3,
+    "lost_hit": 0,
+    "false_resolution_count": 0,
+    "version_violation_count": 0,
+    "out_of_scope_promotion_count": 0,
+    "preserved_records": [
+      "C5-A0 inventory",
+      "C5-A1 T0 = 63/63",
+      "C5-A2 screening (39/46 treatment, 0 descriptive)",
+      "diagnostic PRE/POST metrics",
+      "gate ledger",
+      "production decision"
+    ],
+    "mrr_interpretation_rule": "The MRR regression must be reinterpreted neither as 'entity resolution was generally incorrect' nor as merely 'a fusion issue'. The correct interpretation: the existing canonical-prefix eligibility semantics are too broad for weak identity matches."
+  },
+
+  "sampling_and_tuning_boundary": {
+    "further_c5_sampling": "CLOSED",
+    "prohibited_rounds": ["C5-A2R1", "C5-A2R2", "another exact cohort", "another Gold sample", "another alias-treatment search", "same-cohort rerun after ranking adjustment"],
+    "descriptive_alias_creation_from_gold": "PROHIBITED",
+    "post_hoc_gate_change": "PROHIBITED (descriptive/alias minimum stays 2)",
+    "outcome_driven_ranking_tuning": "PROHIBITED",
+    "prohibited_outcome_driven_patches": [
+      "if mention == 'PandaRoot'",
+      "if object_type == README",
+      "suppress README",
+      "demote exact_title",
+      "prefer some specific source object",
+      "special-case repository names",
+      "benchmark-derived generic-looking rules"
+    ],
+    "resolver_code_modified_by_c5_a3": false,
+    "code_frozen_unchanged": [
+      "EntityResolver", "EntityMention", "EntityCandidate", "EntityResolution",
+      "EntityResolutionReceipt", "merge_exact_streams()", "Retriever.shadow_exact()", "production _exact()"
+    ]
+  },
+
+  "production_decision": {
+    "production_exact": "LEGACY_EXACT",
+    "entity_first_production_activation": false,
+    "entity_resolver_retained": true,
+    "entity_resolver_role": "experimental/shadow",
+    "retained_foundations": [
+      "EntityMention", "EntityCandidate", "EntityResolution", "EntityResolutionReceipt",
+      "boundary-safe alias matcher", "ambiguity handling", "source/version safety",
+      "resolution provenance", "shadow exact interface", "stable merge helper"
+    ],
+    "reasons": [
+      "1 descriptive/alias evidence is absent",
+      "2 the diagnostic exact cohort produced no improvement and three regressions",
+      "3 the identity-strength/canonical-prefix contract requires future refinement",
+      "4 production benefit has not been established"
+    ]
+  },
+
+  "reactivation_dependency": {
+    "primary_dependency": "Phase D / new generic entity infrastructure",
+    "phase_d_owns": [
+      "richer entity schema",
+      "systematic alias migration",
+      "canonical entity representation",
+      "broader resolver semantics",
+      "identity/equivalence relationships where justified",
+      "incremental shortcut migration"
+    ],
+    "c5_must_not_perform_these_retroactively": true,
+    "reopen_rule": {
+      "valid_triggers": [
+        "systematic accepted aliases from Phase D",
+        "canonical entity records",
+        "explicit identity/equivalence semantics",
+        "generic identity-strength policy designed independently of the exposed C5 cohort",
+        "new independently-authored evaluation data suitable for descriptive entity resolution"
+      ],
+      "invalid_triggers": [
+        "more existing Gold cases are available",
+        "the current result is INCONCLUSIVE",
+        "MRR decreased",
+        "a PASS result is desired",
+        "someone wants to tune the PandaRoot case"
+      ],
+      "form": "C5 may be reopened only as a new explicitly authorized architectural task with genuinely new information/capability."
+    }
+  },
+
+  "c6_dependency_correction": {
+    "previous_state": "C5 active INCONCLUSIVE -> C6 blocked",
+    "new_state": "C5 CLOSED_INCONCLUSIVE -> C6 becomes NEXT_ELIGIBLE",
+    "reason": "C6 can evaluate the currently valid production channels: exact = LEGACY_EXACT, raw_dense = production-authoritative, semantic_dense = auxiliary/shadow, sparse = raw question, paper, workflow, graph. C6 does NOT require EntityFirstExact to be production-authoritative.",
+    "next_eligible_task": "C6",
+    "c6_started": false,
+    "c6_ownership_unchanged": [
+      "multi-channel candidate fusion",
+      "RawDense / SemanticDense production-use decision",
+      "channel inclusion/exclusion",
+      "channel weights",
+      "intent-aware channel activation",
+      "candidate union",
+      "future evaluation of whether entity-aware information should influence sparse or exact fusion behavior"
+    ],
+    "fusion_decision_made_in_c5_a3": false
+  },
+
+  "downstream_ownership": {
+    "c4": "evaluation verdict INCONCLUSIVE, lifecycle CLOSED_INCONCLUSIVE, production sparse raw question; C4 not reopened; no C5 finding fed into LexicalQueryBuilder",
+    "phase_d": "NOT_STARTED; owns richer entity schema, systematic alias migration, canonical entity representation, broader resolver semantics, identity relations, incremental shortcut migration",
+    "phase_e": "NOT_STARTED; g011 remains deferred to Phase E; g011 must not justify C5 resolver changes; answer-point coverage / missing-evidence logic stays out of C5"
+  },
+
+  "cost_and_isolation": {
+    "analyzer_calls": 0,
+    "vertex_calls": 0,
+    "embeddings": 0,
+    "exact_sql_reads": 0,
+    "dense_reads": 0,
+    "sparse_reads": 0,
+    "paper_workflow_graph": 0,
+    "fusion": 0,
+    "reranker": 0,
+    "selector": 0,
+    "qa_verifier_judge": 0,
+    "sql_writes": 0,
+    "qdrant_reads": 0,
+    "qdrant_writes": 0,
+    "index_mutations": 0,
+    "schema_migration": "no",
+    "reindex": "no",
+    "sparse_rebuild": "no",
+    "dense_reembedding": "no",
+    "production_code_changes": 0,
+    "writes": "closeout artifact and governance documents only"
+  },
+
+  "pass_criteria_check": {
+    "1_historical_c5_evidence_unchanged": true,
+    "2_c5_a1_remains_pass_under_preregistered_contract": true,
+    "3_c5_a2_remains_inconclusive": true,
+    "4_c5_evaluation_verdict_remains_inconclusive": true,
+    "5_lifecycle_becomes_closed_inconclusive": true,
+    "6_production_exact_remains_legacy": true,
+    "7_entity_resolver_remains_experimental_shadow": true,
+    "8_identity_strength_finding_recorded": true,
+    "9_weak_matches_not_described_as_strong_identity": true,
+    "10_no_outcome_driven_patch": true,
+    "11_no_new_aliases": true,
+    "12_no_post_hoc_gate_changes": true,
+    "13_further_c5_sampling_closed": true,
+    "14_c6_next_eligible_without_being_started": true,
+    "15_c4_phase_d_phase_e_ownership_intact": true,
+    "16_no_model_retrieval_index_operation": true
+  },
+
+  "c5_a3_result": "PASS",
+  "next_roadmap_task": "C6 — Multi-channel fusion evaluation (NEXT_ELIGIBLE, NOT_STARTED)"
+}
