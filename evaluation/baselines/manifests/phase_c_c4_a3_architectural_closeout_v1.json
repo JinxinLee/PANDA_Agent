@@ -1,0 +1,197 @@
+{
+  "schema_version": "c4-a3-architectural-closeout-1",
+  "task": "C4-A3",
+  "artifact_id": "phase_c_c4_a3_architectural_closeout_v1",
+  "phase": "C4",
+  "recorded_on": "2026-08-22",
+  "source_head": "469904e9bbf1f0af7a452d35107caec3d12f4e88",
+  "purpose": "Architectural closeout of C4 and roadmap dependency correction. This artifact records lifecycle governance only: it does not reopen, rerun, or reinterpret any C4 evaluation, and it makes no retrieval-performance claim.",
+
+  "references": {
+    "original_preregistration_artifact": "evaluation/baselines/manifests/phase_c_c4_lexical_query_builder_sparse_v1.json",
+    "coverage_completion_artifact": "evaluation/baselines/manifests/phase_c_c4_a2r1_frozen_plan_coverage_completion_v1.json",
+    "historical_verdicts_unchanged": true
+  },
+
+  "status_ledger": {
+    "c4_a1": "PASS",
+    "c4_a2": "INCONCLUSIVE",
+    "c4_a2r1": "INCONCLUSIVE",
+    "c4_a3": "PASS",
+    "c4_evaluation_verdict": "INCONCLUSIVE",
+    "c4_lifecycle_state": "CLOSED_INCONCLUSIVE"
+  },
+
+  "status_distinction": {
+    "note": "C4-A3 PASS means the closeout/governance update itself was completed correctly. It does not promote the C4 evaluation verdict: the proposed production LexicalQuery improvement was never validated. CLOSED_INCONCLUSIVE means C4 no longer remains an active roadmap blocker, which is a different statement from PASS.",
+    "c4_pass_claim_made": false,
+    "c4_fail_claim_made": false
+  },
+
+  "architectural_closeout_rationale": {
+    "why_closed": "C4 exhausted its reasonable blind evaluation path. The builder passed its architecture/safety contract (C4-A1 PASS), preserved raw query semantics, preserved explicit identifiers, blocked forbidden provenance, and remained deterministic and bounded. However, the completed C4-A2R1 screening over the locked 47-case pool produced only 3 treatment-qualified cases among 46 screened, below the preregistered minimum cohort of 6, so sparse retrieval benefit could not be measured. Changing the cohort threshold or modifying the builder now would be post-hoc and outcome-aware.",
+    "contract_observation": "The observed C2 -> C4 contract is conservative: C2 accepts query-grounded concepts/symbols, and C4 appends lexical material only when accepted material is not already literally represented in the raw question.",
+    "evidence_interpretation": "After complete blind screening (46 valid plans, 3 changed lexical queries), current evidence indicates low augmentation applicability. It does NOT indicate proven sparse retrieval harm and does NOT indicate proven sparse retrieval benefit. No sparse ranking was ever observed; this is an architecture/applicability signal, not a retrieval-performance result.",
+    "recall_mrr_claim": "none; no Recall/MRR improvement or regression may be claimed"
+  },
+
+  "production_decision": {
+    "production_sparse": "raw_question",
+    "lexical_query_production_activation": false,
+    "lexical_query_retained": true,
+    "lexical_query_role": "experimental/shadow",
+    "reason": "Production sparse benefit was never established under the preregistered C4 evaluation protocol, so LexicalQuery.text must not become the production sparse input. LexicalQuery remains an experimental, auditable, shadow-capable, provenance-preserving abstraction."
+  },
+
+  "retained_implementation": [
+    "LexicalQuery",
+    "LexicalQueryComponent",
+    "build_lexical_query()",
+    "lexical provenance diagnostics",
+    "raw-vs-lexical sparse shadow interface",
+    "sparse trace representation"
+  ],
+  "retained_implementation_note": "Retained for future architectural experiments, C5/C6 diagnostics, and later entity-aware sparse enrichment studies; none of those are authorized by C4-A3.",
+
+  "screening_evidence_summary": {
+    "target_pool": 47,
+    "valid_plan_count": 46,
+    "treatment_qualified_count": 3,
+    "treatment_qualified_case_ids": ["g008", "g110", "g113"],
+    "activation_among_screened": "3/46",
+    "sparse_outcomes_observed": false
+  },
+
+  "historical_evidence_preserved": {
+    "first_c4_a2_attempt": {
+      "screenable_cases": 6,
+      "treatment_qualified": "1/6",
+      "missing_plan_proof": 40,
+      "sparse_outcomes": 0
+    },
+    "c4_a2r1": {
+      "valid_plans": 46,
+      "treatment_qualified": "3/46",
+      "sparse_outcomes": 0,
+      "analyzer_calls": 40,
+      "analyzer_tokens": 70977
+    }
+  },
+
+  "sampling_and_tuning_boundary": {
+    "further_c4_sampling": "closed",
+    "prohibited_rounds": ["C4-A2R2", "C4-A2R3", "another treatment search", "another Gold sample", "another frozen-plan completion round"],
+    "post_hoc_threshold_change": "prohibited",
+    "minimum_treatment_cases_remains": 6,
+    "cohort_eligibility_changes_after_3_of_46": "prohibited",
+    "builder_tuning_from_exposed_gold": "prohibited",
+    "builder_changes_prohibited": [
+      "build_lexical_query()",
+      "LexicalQuery",
+      "LexicalQueryComponent",
+      "lexical caps",
+      "grounding policy",
+      "append policy",
+      "provenance rules",
+      "trace behavior",
+      "sparse shadow path"
+    ],
+    "lexical_additions_prohibited": [
+      "synonyms",
+      "canonical entity names",
+      "camelCase splitting",
+      "snake_case decomposition",
+      "identifier expansion",
+      "token repetition",
+      "query-specific aliases",
+      "benchmark-specific lexical rules"
+    ]
+  },
+
+  "c4_reopen_rule": {
+    "reopening_requires": "a genuinely new upstream capability or architecture change, for example a future C5 entity resolver exposing generic canonical lexical forms, or a separately designed generic lexical representation strategy",
+    "invalid_reopen_triggers": [
+      "more Gold questions become available",
+      "the current 3/46 result is inconvenient",
+      "a PASS result is desired"
+    ],
+    "reopen_form": "Any future reopening must be a new explicitly authorized architectural task, not continuation of the exhausted A2 sampling path."
+  },
+
+  "roadmap_dependency_correction": {
+    "previous_rule": "C5 is not eligible while C4 remains INCONCLUSIVE",
+    "new_rule": "C4 CLOSED_INCONCLUSIVE -> C5 becomes next eligible roadmap task",
+    "reason": "C5 owns a distinct capability (entity-first exact retrieval; canonical entity/symbol resolution) that C4 explicitly did not own. C5 does not depend on C4 proving LexicalQuery production benefit.",
+    "next_eligible_task": "C5",
+    "c5_implementation_started": false,
+    "c5_ownership_unchanged": [
+      "entity-first exact retrieval",
+      "canonical entity resolution",
+      "alias-to-canonical-target resolution",
+      "exact technical object/symbol retrieval",
+      "use of stable entity identities in retrieval"
+    ],
+    "c4_not_retrospectively_expanded": true
+  },
+
+  "c6_ownership_unchanged": {
+    "channels": ["raw_dense", "semantic_dense", "sparse", "exact", "paper", "workflow", "graph"],
+    "c6_owns": [
+      "whether SemanticDense contributes to production fusion",
+      "whether sparse remains raw-question based",
+      "whether future entity-aware lexical information should enrich sparse",
+      "intent-aware channel use",
+      "whether some auxiliary channels remain disabled"
+    ],
+    "fusion_decision_made_in_c4_a3": false
+  },
+
+  "downstream_contract": {
+    "phase_d": "NOT_STARTED",
+    "phase_e": "NOT_STARTED",
+    "g011": "remains deferred to Phase E; not moved into C4 or C5 to resolve historical metrics"
+  },
+
+  "cost_and_isolation": {
+    "analyzer_calls": 0,
+    "vertex_calls": 0,
+    "dense_embeddings": 0,
+    "dense_reads": 0,
+    "sparse_encodes": 0,
+    "sparse_reads": 0,
+    "exact": 0,
+    "paper": 0,
+    "workflow": 0,
+    "graph": 0,
+    "fusion": 0,
+    "reranker": 0,
+    "selector": 0,
+    "qa_verifier_judge": 0,
+    "sql_writes": 0,
+    "qdrant_writes": 0,
+    "index_mutation": 0,
+    "reindex": "no",
+    "sparse_rebuild": "no",
+    "dense_reembedding": "no",
+    "production_code_changes": 0,
+    "writes": "repository documentation/artifact files only"
+  },
+
+  "pass_criteria_check": {
+    "historical_c4_evidence_preserved": true,
+    "c4_evaluation_verdict_remains_inconclusive": true,
+    "lifecycle_explicitly_closed_inconclusive": true,
+    "production_sparse_remains_exact_raw_question": true,
+    "lexical_query_experimental_shadow_only": true,
+    "no_post_hoc_threshold_adjustment": true,
+    "no_builder_tuning": true,
+    "no_further_c4_sampling_scheduled": true,
+    "c5_next_eligible_without_being_started": true,
+    "c5_c6_ownership_intact": true,
+    "roadmap_status_artifact_consistent": true,
+    "no_model_retrieval_index_operation": true
+  },
+
+  "c4_a3_result": "PASS",
+  "next_roadmap_task": "C5 — Entity-first exact retrieval (NEXT_ELIGIBLE, NOT_STARTED)"
+}
