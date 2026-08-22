@@ -1,0 +1,256 @@
+{
+ "schema_version": "c6-a1r2-provenance-repair-1",
+ "task": "C6-A1R2 provenance repair",
+ "artifact_id": "phase_c_c6_a1r2_provenance_repair_v1",
+ "phase": "C6",
+ "recorded_on": "2026-08-22",
+ "source_head": "790d918e703163df4777b1edc298ead8cd62136b",
+ "references": {
+  "a1r2_manifest": "evaluation/baselines/manifests/phase_c_c6_a1r2_current_plan_candidate_coverage_v1.json (historical provenance_preflight_audit = FAIL preserved)",
+  "replay_v1": "evaluation/baselines/replay/phase_c_c6_current_plan_candidate_replay_v1.jsonl (historical, superseded for A2)",
+  "faithful_full_plan_source": "evaluation/baselines/manifests/phase_c_c3_r3_exhaustive_treatment_qualified_dense_evaluation_v1.json",
+  "replay_v2": "evaluation/baselines/replay/phase_c_c6_current_plan_candidate_replay_v2.jsonl (authoritative for C6-A2)"
+ },
+ "repair_timing": "before any C6-A2 relevance outcome (A2 never executed)",
+ "provenance_repair_set": [
+  "g039",
+  "g040",
+  "g055",
+  "g113",
+  "g114",
+  "g115"
+ ],
+ "repaired_core_cases": [
+  "g113",
+  "g114",
+  "g115"
+ ],
+ "supplemental_repair_cases": [
+  "g039",
+  "g040",
+  "g055"
+ ],
+ "frozen_before_live_retrieval": true,
+ "frozen_at": "2026-08-22T15:08:29.176117+00:00",
+ "authoritative_full_plan_source_by_case": {
+  "g039": "phase_c_c3_r3_exhaustive_treatment_qualified_dense_evaluation_v1.json#stage_a_actual.screening_cases[g039]",
+  "g040": "phase_c_c3_r3_exhaustive_treatment_qualified_dense_evaluation_v1.json#stage_a_actual.screening_cases[g040]",
+  "g055": "phase_c_c3_r3_exhaustive_treatment_qualified_dense_evaluation_v1.json#stage_b_actual.cohort_cases[g055]",
+  "g113": "phase_c_c3_r3_exhaustive_treatment_qualified_dense_evaluation_v1.json#stage_b_actual.cohort_cases[g113]",
+  "g114": "phase_c_c3_r3_exhaustive_treatment_qualified_dense_evaluation_v1.json#stage_b_actual.cohort_cases[g114]",
+  "g115": "phase_c_c3_r3_exhaustive_treatment_qualified_dense_evaluation_v1.json#stage_b_actual.cohort_cases[g115]"
+ },
+ "required_executable_plan_fields": [
+  "intent",
+  "target_repositories",
+  "resolved_versions",
+  "symbols",
+  "concepts",
+  "resolved_aliases",
+  "required_source_types",
+  "paper_page_hints",
+  "analysis_diagnostics",
+  "source_budgets"
+ ],
+ "explicit_field_presence_verification": "all six C3-R3 full plans carry every required field as an explicitly recorded key (validated by evaluation/scripts/plan_provenance.validate_executable_plan_payload before model_validate); faithfully recorded empty values are accepted, model-default creation is not",
+ "fail_fast_guard": {
+  "module": "evaluation/scripts/plan_provenance.py",
+  "wired_into": "evaluation/scripts/capture_c6_current_plan_candidates.py and the repair scripts (evaluation-only; production retrieval does not import it)"
+ },
+ "source_budgets_policy_derivation": {
+  "path": "faithful case intent -> configs/retrieval_policies.yaml intents.<intent>.source_budgets (current versioned policy)",
+  "no_same_intent_question_copy": true,
+  "policy_equals_c3r3_recorded_value": {
+   "g039": true,
+   "g040": true,
+   "g055": true,
+   "g113": true,
+   "g114": true,
+   "g115": true
+  },
+  "note": "source_budgets is not candidate-generation or P0-fusion relevant; consumed only by final evidence selection, which was not run"
+ },
+ "question_identity_verification": "the C3-R3 holder question text equals the Gold v2.6 query for all six cases",
+ "identity_gate": {
+  "original": {
+   "source_manifest_repositories": {
+    "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+    "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357",
+    "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+   },
+   "qdrant_collection": "panda_knowledge_v1",
+   "qdrant_points": 104973,
+   "index_identity_fingerprint": "8172f9a640e62977be6e911bfb4848ce3aecd0994f1f3ba51a0985bffec62cb9",
+   "dense_vector": "size=3072 distance=Cosine name=dense",
+   "sparse_vector": "name=sparse modifier=idf",
+   "embedding_model": "gemini-embedding-2 (3072 dimensions)",
+   "sparse_encoder_receipt": "Qdrant/bm25 english sparse idf fastembed 0.7.4",
+   "candidate_pool_per_channel": 20,
+   "compatibility_check": "locked repository versions match the frozen 3.7.0 plans' resolved_versions; index identity and sparse receipt match the authoritative B-series contract"
+  },
+  "current": {
+   "qdrant_collection": "panda_knowledge_v1",
+   "qdrant_points": 104973,
+   "index_identity_fingerprint": "8172f9a640e62977be6e911bfb4848ce3aecd0994f1f3ba51a0985bffec62cb9",
+   "dense": "size=3072 distance=Cosine name=dense",
+   "sparse_vector": "name=sparse modifier=idf",
+   "sparse_encoder_receipt": "Qdrant/bm25 english sparse idf fastembed 0.7.4",
+   "embedding_model": "gemini-embedding-2",
+   "candidate_pool_per_channel": 20,
+   "locked_repositories": {
+    "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+    "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357",
+    "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+   }
+  },
+  "result": "MATCH"
+ },
+ "semantic_structural_activation": {
+  "per_case": {
+   "g039": true,
+   "g040": false,
+   "g055": true,
+   "g113": true,
+   "g114": true,
+   "g115": true
+  },
+  "expected_from_prior_audit": {
+   "g113": true,
+   "others": false
+  },
+  "discrepancy_recorded": "with the faithful full plans, g039/g055/g114/g115 are additionally semantic-active (5/6) because the C4 minimal records lacked deterministic_parse.fixed.concept_scopes, a legitimate build_semantic_query input that contributes components; the discrepancy is fully explained by the corrected plan provenance, requires no change to the frozen A2 core cohort, and changes no SemanticDense threshold or production decision",
+  "model_calls": 0,
+  "retrieval_calls": 0
+ },
+ "recapture": {
+  "per_case_status": {
+   "g039": "CAPTURE_COMPLETE",
+   "g040": "CAPTURE_COMPLETE",
+   "g055": "CAPTURE_COMPLETE",
+   "g113": "CAPTURE_COMPLETE",
+   "g114": "CAPTURE_COMPLETE",
+   "g115": "CAPTURE_COMPLETE"
+  },
+  "per_channel_availability": {
+   "exact": {
+    "PRESENT_NONEMPTY": 6
+   },
+   "raw_dense": {
+    "PRESENT_NONEMPTY": 6
+   },
+   "sparse": {
+    "PRESENT_NONEMPTY": 6
+   },
+   "paper": {
+    "PRESENT_EMPTY": 5,
+    "PRESENT_NONEMPTY": 1
+   },
+   "workflow": {
+    "PRESENT_NONEMPTY": 6
+   },
+   "graph": {
+    "PRESENT_NONEMPTY": 6
+   },
+   "semantic_dense": {
+    "PRESENT_NONEMPTY": 5,
+    "SKIPPED_BY_PLAN": 1
+   }
+  },
+  "all_six_production_channels_recaptured_per_case": true,
+  "paper_note": "paper was recaptured for all six cases even though the audit had found it behavior-equivalent for g113/g114/g115; g055 (required_source_types=['paper']) performs live paper reads"
+ },
+ "live_call_ledger": {
+  "analyzer_generation": 0,
+  "reranker_generation": 0,
+  "qa_verifier_judge": 0,
+  "raw_dense_embeddings": 6,
+  "semantic_dense_embeddings": 5,
+  "embedding_calls_total": 11,
+  "generation_calls_total": 0,
+  "sparse_encodes": 6,
+  "qdrant_reads": 20,
+  "sql_reads_read_only_asserted": 80,
+  "sql_writes": 0,
+  "qdrant_writes": 0,
+  "index_mutations": 0,
+  "reindex": "no",
+  "sparse_rebuild": "no",
+  "corpus_dense_reembedding": "no"
+ },
+ "replay_v2": {
+  "path": "evaluation/baselines/replay/phase_c_c6_current_plan_candidate_replay_v2.jsonl",
+  "total_rows": 34,
+  "reused_v1_rows": 28,
+  "repaired_rows": 3,
+  "supplemental_rows": 3,
+  "ordering_rule": "original v1 31-row order preserved with g113/g114/g115 replaced in place by repaired rows, then supplemental g039/g040/g055 appended in ascending case-ID order",
+  "row_roles": {
+   "g113/g114/g115": "repaired_core (original core rows)",
+   "g039/g040/g055": "supplemental_coverage (NOT part of C6_A2_POLICY_COHORT)",
+   "others": "reused_v1"
+  },
+  "v1_preserved_unchanged": true,
+  "no_gold_or_relevance_fields": true
+ },
+ "reused_rows_verification": {
+  "expected": 28,
+  "verified_unchanged": true,
+  "compared": "case identity, channel availability, candidate object IDs/ranks/scores, source/version metadata (row_role flag excluded)"
+ },
+ "core_cohort_preservation": {
+  "original_core_count": 30,
+  "current_core_count": 30,
+  "ids_identical": true,
+  "supplemental_excluded_from_core": true
+ },
+ "p0_results": {
+  "core_integrity": {
+   "ok": 30,
+   "fail": []
+  },
+  "unaffected_core_parity_v1_vs_v2": {
+   "ok": 27,
+   "fail": []
+  },
+  "repaired_cases_note": "g113/g114/g115 were not required to match their invalid v1 outputs; their repaired streams reflect the faithful full plans"
+ },
+ "semantic_a2": {
+  "cohort_ids": [
+   "g008",
+   "g050",
+   "g110",
+   "g113",
+   "g114",
+   "g115"
+  ],
+  "count": 6,
+  "represented_intents": [
+   "algorithm_theory",
+   "installation",
+   "troubleshooting"
+  ],
+  "semantic_a2_evidence_eligible": false,
+  "threshold_unchanged": ">=8 cases and >=2 intents; mechanically derived, no relevance",
+  "no_semanticdense_production_decision": true,
+  "note": "the repaired faithful plans expand the structural semantic-active set within the original live cohort from 4 to 6, still below 8; supplemental g039/g055 are semantic-active but excluded as supplemental coverage"
+ },
+ "repair_gates": {
+  "1_six_cases_use_faithful_complete_c3r3_plans": true,
+  "2_no_candidate_generating_field_default_reconstructed": true,
+  "3_capture_identity_matches_original": true,
+  "4_all_six_complete_all_production_channels": true,
+  "5_replay_v2_structurally_valid": true,
+  "6_exactly_28_v1_rows_reused": true,
+  "7_original_30_case_core_unchanged": true,
+  "8_all_30_core_complete_faithful_in_v2": true,
+  "9_p0_core_integrity_30_of_30": true,
+  "10_no_gold_relevance_inspected": true,
+  "11_production_behavior_unchanged": true
+ },
+ "production_behavior_unchanged": true,
+ "provenance_repair_verdict": "PASS",
+ "recapture_complete": true,
+ "c6_a1r2_current_authoritative_verdict": "PASS_AFTER_PROVENANCE_REPAIR",
+ "c6_a2_execution_eligibility": "ELIGIBLE",
+ "history_note": "the historical provenance_preflight_audit = FAIL record in the A1R2 manifest is preserved unchanged; this repair supersedes it for A2 purposes: replay v2 is authoritative, replay v1 is historical/superseded"
+}
