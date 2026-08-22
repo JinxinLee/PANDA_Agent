@@ -384,5 +384,579 @@
    "13 formal-English cases still lack faithful current plans and are absent from the captured cohort",
    "the capture reflects current production channel semantics at HEAD 3b450cc with the locked index state"
   ]
+ },
+ "provenance_preflight_audit": {
+  "audit_timestamp": "2026-08-22T14:42:52.699606+00:00",
+  "source_head": "f6e1b5d941e38f3c76e3fa4353e133aaf537ee64",
+  "task": "C6-A1R2 provenance preflight (source_budgets normalization audit)",
+  "static_offline_only": true,
+  "affected_minimal_plan_cases": [
+   "g039",
+   "g040",
+   "g055",
+   "g113",
+   "g114",
+   "g115"
+  ],
+  "affected_captured_cases": [
+   "g113",
+   "g114",
+   "g115"
+  ],
+  "candidate_generating_field_boundary": [
+   {
+    "field": "question",
+    "candidate_generation_relevant": true,
+    "consumed_by": "all channel queries (exact terms regex fallback, raw_dense/sparse text, workflow regex, semantic view)",
+    "ownership": "user question / frozen record",
+    "normalization_allowed": false,
+    "notes": "identical on every compared case"
+   },
+   {
+    "field": "intent",
+    "candidate_generation_relevant": false,
+    "consumed_by": "none of the six capture channels; only downstream policy/selection",
+    "ownership": "frozen faithful plan",
+    "normalization_allowed": false,
+    "notes": ""
+   },
+   {
+    "field": "target_repositories",
+    "candidate_generation_relevant": true,
+    "consumed_by": "_exact source filter, _query_filter (raw_dense/sparse), _workflow scope, _graph scope",
+    "ownership": "faithful plan",
+    "normalization_allowed": false,
+    "notes": "empty default removes version/source filtering entirely"
+   },
+   {
+    "field": "resolved_versions",
+    "candidate_generation_relevant": true,
+    "consumed_by": "_query_filter, _exact, _workflow, _graph version locks",
+    "ownership": "faithful plan (locked manifest)",
+    "normalization_allowed": false,
+    "notes": ""
+   },
+   {
+    "field": "symbols",
+    "candidate_generation_relevant": true,
+    "consumed_by": "_exact terms",
+    "ownership": "faithful plan",
+    "normalization_allowed": false,
+    "notes": "empty default degrades _exact to the question-regex fallback"
+   },
+   {
+    "field": "concepts",
+    "candidate_generation_relevant": true,
+    "consumed_by": "_exact terms",
+    "ownership": "faithful plan",
+    "normalization_allowed": false,
+    "notes": ""
+   },
+   {
+    "field": "resolved_aliases",
+    "candidate_generation_relevant": true,
+    "consumed_by": "_exact alias targets",
+    "ownership": "faithful plan",
+    "normalization_allowed": false,
+    "notes": "present and faithful in the minimal records"
+   },
+   {
+    "field": "required_source_types",
+    "candidate_generation_relevant": true,
+    "consumed_by": "_paper gate, _workflow fallback gate, _graph fallback gate, _exact paper-priority ordering",
+    "ownership": "faithful plan (policy-derived at analyze time)",
+    "normalization_allowed": false,
+    "notes": "[] default changes gate semantics versus the faithful values"
+   },
+   {
+    "field": "paper_page_hints",
+    "candidate_generation_relevant": true,
+    "consumed_by": "_paper hinted pages",
+    "ownership": "faithful plan",
+    "normalization_allowed": false,
+    "notes": "{} default coincides with the faithful value for the three captured troubleshooting cases"
+   },
+   {
+    "field": "source_budgets",
+    "candidate_generation_relevant": false,
+    "consumed_by": "select_final_evidence only (retrieval.py line 686; downstream final-evidence selection, NOT executed by A1R2); zero occurrences in _exact/_dense_query/_sparse_query/_paper/_workflow/_graph and fusion_replay.py",
+    "ownership": "policy-owned by intent (configs/retrieval_policies.yaml intents.<intent>.source_budgets, assigned in analyze())",
+    "normalization_allowed": true,
+    "notes": "borrowing from a same-intent plan is numerically equivalent to the policy-derived value, but the policy-derived provenance model is preferred"
+   }
+  ],
+  "per_case_provenance": {
+   "g039": {
+    "in_capture_pool": true,
+    "in_core_cohort": false,
+    "in_live_capture": false,
+    "minimal_record_missing_fields": [
+     "concepts",
+     "paper_page_hints",
+     "required_source_types",
+     "resolved_versions",
+     "symbols",
+     "target_repositories"
+    ],
+    "candidate_fields_matching_faithful": [
+     "paper_page_hints",
+     "resolved_aliases"
+    ],
+    "candidate_fields_defaulted_or_unfaithful": [
+     {
+      "field": "target_repositories",
+      "a1r2_used": "<absent>",
+      "faithful": [
+       "restgas_determination"
+      ]
+     },
+     {
+      "field": "resolved_versions",
+      "a1r2_used": "<absent>",
+      "faithful": {
+       "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+      }
+     },
+     {
+      "field": "symbols",
+      "a1r2_used": "<absent>",
+      "faithful": [
+       "macro/target/prod_sim_hvmaps.C",
+       "macro/target/ana_complete.C",
+       "macro/target/correction/efficiency_correction_2.C",
+       "macro/target/correction/efficiency_correction_steps.C"
+      ]
+     },
+     {
+      "field": "concepts",
+      "a1r2_used": "<absent>",
+      "faithful": [
+       "longitudinal restgas efficiency correction",
+       "generated target profile",
+       "reconstructed profile",
+       "efficiency correction",
+       "restgas longitudinal reconstruction efficiency",
+       "angular acceptance versus longitudinal efficiency distinction"
+      ]
+     },
+     {
+      "field": "required_source_types",
+      "a1r2_used": [],
+      "faithful": [
+       "code"
+      ]
+     }
+    ]
+   },
+   "g040": {
+    "in_capture_pool": true,
+    "in_core_cohort": false,
+    "in_live_capture": false,
+    "minimal_record_missing_fields": [
+     "concepts",
+     "paper_page_hints",
+     "required_source_types",
+     "resolved_versions",
+     "symbols",
+     "target_repositories"
+    ],
+    "candidate_fields_matching_faithful": [
+     "paper_page_hints",
+     "resolved_aliases"
+    ],
+    "candidate_fields_defaulted_or_unfaithful": [
+     {
+      "field": "target_repositories",
+      "a1r2_used": "<absent>",
+      "faithful": [
+       "restgas_determination",
+       "pandaroot"
+      ]
+     },
+     {
+      "field": "resolved_versions",
+      "a1r2_used": "<absent>",
+      "faithful": {
+       "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+       "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357"
+      }
+     },
+     {
+      "field": "symbols",
+      "a1r2_used": "<absent>",
+      "faithful": [
+       "tracking/PndApolloniusTripletTrackFinder/PndApolloniusTripletTrackFinderTask.cxx",
+       "tracking/PzFinder/PndSttSkewStrawPzFinderTask.cxx",
+       "macro/target/reco_complete.C"
+      ]
+     },
+     {
+      "field": "concepts",
+      "a1r2_used": "<absent>",
+      "faithful": [
+       "displaced-track",
+       "Apollonius task",
+       "displaced-vertex track reconstruction",
+       "displaced tracking reconstruction stages"
+      ]
+     },
+     {
+      "field": "required_source_types",
+      "a1r2_used": [],
+      "faithful": [
+       "code"
+      ]
+     }
+    ]
+   },
+   "g055": {
+    "in_capture_pool": true,
+    "in_core_cohort": false,
+    "in_live_capture": false,
+    "minimal_record_missing_fields": [
+     "concepts",
+     "paper_page_hints",
+     "required_source_types",
+     "resolved_versions",
+     "symbols",
+     "target_repositories"
+    ],
+    "candidate_fields_matching_faithful": [
+     "resolved_aliases"
+    ],
+    "candidate_fields_defaulted_or_unfaithful": [
+     {
+      "field": "target_repositories",
+      "a1r2_used": "<absent>",
+      "faithful": [
+       "luminosityfit",
+       "restgas_determination"
+      ]
+     },
+     {
+      "field": "resolved_versions",
+      "a1r2_used": "<absent>",
+      "faithful": {
+       "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+       "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+      }
+     },
+     {
+      "field": "symbols",
+      "a1r2_used": "<absent>",
+      "faithful": [
+       "data/PndLmdAcceptance.cxx",
+       "macro/target/correction/efficiency_correction_2.C",
+       "macro/target/correction/efficiency_correction_steps.C"
+      ]
+     },
+     {
+      "field": "concepts",
+      "a1r2_used": "<absent>",
+      "faithful": [
+       "angular acceptance",
+       "longitudinal efficiency",
+       "LMD angular acceptance",
+       "restgas longitudinal reconstruction efficiency"
+      ]
+     },
+     {
+      "field": "required_source_types",
+      "a1r2_used": [],
+      "faithful": [
+       "paper"
+      ]
+     },
+     {
+      "field": "paper_page_hints",
+      "a1r2_used": {},
+      "faithful": {
+       "pflueger_2017": [
+        57,
+        58,
+        62
+       ],
+       "li_2026": [
+        138,
+        142,
+        147
+       ]
+      }
+     }
+    ]
+   },
+   "g113": {
+    "in_capture_pool": true,
+    "in_core_cohort": true,
+    "in_live_capture": true,
+    "minimal_record_missing_fields": [
+     "concepts",
+     "paper_page_hints",
+     "required_source_types",
+     "resolved_versions",
+     "symbols",
+     "target_repositories"
+    ],
+    "candidate_fields_matching_faithful": [
+     "paper_page_hints",
+     "resolved_aliases"
+    ],
+    "candidate_fields_defaulted_or_unfaithful": [
+     {
+      "field": "target_repositories",
+      "a1r2_used": "<absent>",
+      "faithful": [
+       "luminosityfit",
+       "restgas_determination"
+      ]
+     },
+     {
+      "field": "resolved_versions",
+      "a1r2_used": "<absent>",
+      "faithful": {
+       "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+       "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+      }
+     },
+     {
+      "field": "symbols",
+      "a1r2_used": "<absent>",
+      "faithful": [
+       "runLmdFit",
+       "docs/apps/createLmdFitData.md",
+       "apps/createLmdFitData.cxx",
+       "data/PndLmdDataReader.cxx",
+       "apps/runLmdFit.cxx",
+       "macro/target/correction/efficiency_correction_2.C",
+       "macro/target/correction/efficiency_correction_steps.C",
+       "python/runLmdFit.sh",
+       "README.md"
+      ]
+     },
+     {
+      "field": "concepts",
+      "a1r2_used": "<absent>",
+      "faithful": [
+       "prepared data",
+       "trace mismatch",
+       "fit input assumptions and efficiency correction diagnostics",
+       "empty-bin binning and profile compatibility",
+       "LuminosityFit execution after fit-data preparation"
+      ]
+     },
+     {
+      "field": "required_source_types",
+      "a1r2_used": [],
+      "faithful": [
+       "documentation",
+       "code"
+      ]
+     }
+    ]
+   },
+   "g114": {
+    "in_capture_pool": true,
+    "in_core_cohort": true,
+    "in_live_capture": true,
+    "minimal_record_missing_fields": [
+     "concepts",
+     "paper_page_hints",
+     "required_source_types",
+     "resolved_versions",
+     "symbols",
+     "target_repositories"
+    ],
+    "candidate_fields_matching_faithful": [
+     "paper_page_hints",
+     "resolved_aliases"
+    ],
+    "candidate_fields_defaulted_or_unfaithful": [
+     {
+      "field": "target_repositories",
+      "a1r2_used": "<absent>",
+      "faithful": [
+       "restgas_determination",
+       "luminosityfit"
+      ]
+     },
+     {
+      "field": "resolved_versions",
+      "a1r2_used": "<absent>",
+      "faithful": {
+       "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+       "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+      }
+     },
+     {
+      "field": "symbols",
+      "a1r2_used": "<absent>",
+      "faithful": [
+       "macro/target/prod_sim_hvmaps.C",
+       "macro/target/ana_complete.C",
+       "macro/target/correction/efficiency_correction_2.C",
+       "docs/apps/createLmdFitData.md",
+       "apps/createLmdFitData.cxx",
+       "data/PndLmdDataReader.cxx",
+       "apps/runLmdFit.cxx",
+       "macro/target/correction/efficiency_correction_steps.C"
+      ]
+     },
+     {
+      "field": "concepts",
+      "a1r2_used": "<absent>",
+      "faithful": [
+       "restgas efficiency correction",
+       "empty bins",
+       "generated target profile",
+       "reconstructed profile",
+       "efficiency correction",
+       "fit input assumptions and efficiency correction diagnostics",
+       "empty-bin binning and profile compatibility"
+      ]
+     },
+     {
+      "field": "required_source_types",
+      "a1r2_used": [],
+      "faithful": [
+       "documentation",
+       "code"
+      ]
+     }
+    ]
+   },
+   "g115": {
+    "in_capture_pool": true,
+    "in_core_cohort": true,
+    "in_live_capture": true,
+    "minimal_record_missing_fields": [
+     "concepts",
+     "paper_page_hints",
+     "required_source_types",
+     "resolved_versions",
+     "symbols",
+     "target_repositories"
+    ],
+    "candidate_fields_matching_faithful": [
+     "paper_page_hints",
+     "resolved_aliases"
+    ],
+    "candidate_fields_defaulted_or_unfaithful": [
+     {
+      "field": "target_repositories",
+      "a1r2_used": "<absent>",
+      "faithful": [
+       "luminosityfit",
+       "restgas_determination",
+       "pandaroot"
+      ]
+     },
+     {
+      "field": "resolved_versions",
+      "a1r2_used": "<absent>",
+      "faithful": {
+       "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+       "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+       "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357"
+      }
+     },
+     {
+      "field": "symbols",
+      "a1r2_used": "<absent>",
+      "faithful": [
+       "data/PndLmdAcceptance.cxx",
+       "macro/target/correction/efficiency_correction_2.C",
+       "macro/target/correction/efficiency_correction_steps.C",
+       "Running/Running.html"
+      ]
+     },
+     {
+      "field": "concepts",
+      "a1r2_used": "<absent>",
+      "faithful": [
+       "LMD angular acceptance",
+       "pvz efficiency",
+       "restgas longitudinal reconstruction efficiency",
+       "angular acceptance versus longitudinal efficiency documentation",
+       "angular acceptance versus longitudinal efficiency distinction"
+      ]
+     },
+     {
+      "field": "required_source_types",
+      "a1r2_used": [],
+      "faithful": [
+       "documentation",
+       "code"
+      ]
+     }
+    ]
+   }
+  },
+  "faithful_evidence_source": "phase_c_c3_r3_exhaustive_treatment_qualified_dense_evaluation_v1.json stage_a_actual.screening_cases[g039,g040].retrieval_plan and stage_b_actual.cohort_cases[g055,g113,g114,g115] full plans \u2014 the very records the C4 artifact cites as the faithful 3.7.0 evidence for these cases",
+  "source_budgets": {
+   "ownership": "policy-owned by intent (configs/retrieval_policies.yaml intents.<intent>.source_budgets; assigned in analyze())",
+   "a1r2_implementation": "borrowed from a same-intent captured plan; numerically equivalent to the policy-derived value because captured plans carry the policy value unchanged",
+   "policy_derived_equivalent": true,
+   "candidate_generation_relevant": false,
+   "p0_fusion_relevant": false,
+   "evidence": "source_budgets appears only in select_final_evidence (retrieval.py line 686, downstream final-evidence selection, not executed by A1R2) and analyze(); zero occurrences in _exact/_dense_query/_sparse_query/_paper/_workflow/_graph and src/panda_agent/fusion_replay.py",
+   "candidate_acquisition_vs_selection": "candidate acquisition and P0 fusion never read source_budgets; final evidence selection (C7-owned downstream) does"
+  },
+  "audit_findings": {
+   "only_source_budgets_normalized": false,
+   "candidate_generating_fields_case_faithful": false,
+   "violation_detail": "The A1R2 preparation used the six C4 minimal records (only intent, resolved_aliases, analysis_diagnostics) plus defaults: target_repositories, resolved_versions, symbols, concepts were absent and validated to empty defaults, and required_source_types=[] was hardcoded \u2014 although faithful full values for every one of these fields exist in the C3-R3 artifact for the same cases. source_budgets was additionally borrowed from a same-intent plan (policy-equivalent, benign).",
+   "affected_captured_cases": [
+    "g113",
+    "g114",
+    "g115"
+   ],
+   "affected_fields_per_case": {
+    "g113": [
+     "target_repositories",
+     "resolved_versions",
+     "symbols",
+     "concepts",
+     "required_source_types"
+    ],
+    "g114": [
+     "target_repositories",
+     "resolved_versions",
+     "symbols",
+     "concepts",
+     "required_source_types"
+    ],
+    "g115": [
+     "target_repositories",
+     "resolved_versions",
+     "symbols",
+     "concepts",
+     "required_source_types"
+    ]
+   },
+   "invalid_channels_for_affected_cases": {
+    "exact": "INVALID \u2014 plan.symbols/concepts empty, terms degraded to the question-regex fallback",
+    "raw_dense": "INVALID \u2014 empty target_repositories removed the version/source filter (unfiltered full-index query)",
+    "sparse": "INVALID \u2014 same missing filter",
+    "paper": "behavior-equivalent by coincidence \u2014 both the faithful and defaulted required_source_types exclude 'paper' and the faithful paper_page_hints for these three troubleshooting cases are empty, so _paper returns [] either way",
+    "workflow": "INVALID \u2014 allowed_sources lack the faithful target repositories (scope differs) although the required-source gate coincides",
+    "graph": "INVALID \u2014 same scope difference plus seeds derived from the already-invalid exact/dense/sparse streams",
+    "semantic_dense (g113)": "INVALID \u2014 the semantic query text (from faithful analysis_diagnostics) was correct but the same missing filter applies"
+   },
+   "semantic_activation_screen_impact": "none \u2014 activation was derived from analysis_diagnostics, which is present and faithful in the minimal records"
+  },
+  "audit_verdict": "FAIL",
+  "fail_consequences": {
+   "recapture_required_for": [
+    "g113",
+    "g114",
+    "g115"
+   ],
+   "recapture_executed": false,
+   "repair_path": "re-prepare the three cases' plans from the C3-R3 faithful full plans (all fields case-faithful; source_budgets from the versioned intent policy) and recapture only those three frozen cases in a separately authorized repair; no other case is affected",
+   "c6_a2_execution": "NOT_ELIGIBLE until the provenance violation is repaired: prerequisite condition 3 (every case uses a faithful C2-3.7 plan) fails for 3 of the 30 core cases; core remains >= 12 without them, but cohort shrinking after outcomes is prohibited, so the correct path is repair-then-recapture of the same three frozen cases",
+   "c6_a1r2_historical_fields": "capture results and P0 replay integrity remain valid as historical records of what was executed; the faithful-plan prerequisite is what failed"
+  },
+  "c6_a1r2_result_after_audit": "PASS_UNCHANGED_AS_CAPTURE_RECORD / faithful-plan prerequisite FAILED",
+  "c6_a2_execution_eligibility_after_audit": "NOT_ELIGIBLE_PENDING_PROVENANCE_REPAIR"
  }
 }
