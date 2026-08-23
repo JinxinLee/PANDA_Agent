@@ -46,7 +46,7 @@ records:
       repositories:
         - restgas_determination
       source_types:
-        - code
+        - workflow
       expression_form: descriptive
       evidence_topology: single_hop
       source_scope: single_source
@@ -558,119 +558,6 @@ records:
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
       lifecycle: evidence_review_ready
-  - question_id: n011
-    curation_family_id: nf011
-    intent: data_flow
-    expected_status: answered
-    novelty:
-      types:
-        - entity
-        - relation
-      closest_exposed_cases: []
-      closest_case_assessment: none_found
-      benchmark_overlap:
-        wording: low
-        entity: none
-        evidence: none
-        information_need: low
-      rationale: >-
-        The exposed data-flow questions trace specific restgas/LMD artifacts
-        (event_poca, pid files, Lumi_TrksQA, restgas_profile). None covers the
-        reconstructed-candidate-to-truth relation or the full
-        reconstructed-versus-generated tree match exposed by the analysis
-        tutorial. Unsupported PndMCTrackAna composition is intentionally not
-        part of this candidate.
-    representativeness:
-      class: representative
-      primary_task_archetype: producer_consumer_trace
-      secondary_task_archetypes: []
-      gold_analogue_cases:
-        - g079
-        - g081
-      benchmark_reference_fit: strong
-      domain_relevance: strong
-      corpus_tail: representative_core
-      disposition: KEEP_REPRESENTATIVE
-      rationale: >-
-        Benchmark analogue: Gold artifact-tracing questions (g079/g081) applied to
-        the MC-truth channel. Domain relevance: checking reconstructed decay trees
-        against generated truth is standard analysis practice in PandaRoot.
-    coverage:
-      repositories:
-        - pandaroot
-      source_types:
-        - documentation
-      expression_form: descriptive
-      evidence_topology: single_hop
-      source_scope: single_source
-      repository_scope: single_repository
-      reasoning_forms:
-        - trace
-        - procedure
-      difficulty: moderate
-    curation:
-      origin: human_directed_llm_draft
-      agent_outcome_seen_before_freeze: false
-      evidence_selected_from_agent_output: false
-      lifecycle: evidence_review_ready
-  - question_id: n012
-    curation_family_id: nf012
-    intent: data_flow
-    expected_status: answered
-    novelty:
-      types:
-        - relation
-        - composition
-        - reasoning_topology
-      closest_exposed_cases:
-        - g079
-      benchmark_overlap:
-        wording: low
-        entity: none
-        evidence: none
-        information_need: low
-      rationale: >-
-        g079 traces Lumi_TrksQA into the final luminosity result but assumes
-        an aligned geometry. This candidate instead composes two explicitly
-        separate facts: the thesis's Millepede-based internal-alignment method
-        and the current Readme's placement of a possible alignment stage before
-        its listed workflow. It does not invent a historical-output handoff.
-    representativeness:
-      class: representative
-      primary_task_archetype: workflow_sequence
-      secondary_task_archetypes:
-        - theory_explanation
-      gold_analogue_cases:
-        - g080
-        - g085
-      benchmark_reference_fit: moderate
-      domain_relevance: strong
-      corpus_tail: representative_but_rare
-      disposition: KEEP_REPRESENTATIVE
-      rationale: >-
-        Benchmark analogue: workflow ordering in g080/g085. Domain relevance:
-        alignment is a real prerequisite concern for precise luminosity work. The
-        cross-era evidence is used only for method plus placement, without asserting
-        a causal interface that neither source documents.
-    coverage:
-      repositories:
-        - luminosityfit
-      source_types:
-        - paper
-        - code
-      expression_form: descriptive
-      evidence_topology: multi_hop
-      source_scope: cross_source
-      repository_scope: single_repository
-      reasoning_forms:
-        - trace
-        - explain
-      difficulty: hard
-    curation:
-      origin: human_directed_llm_draft
-      agent_outcome_seen_before_freeze: false
-      evidence_selected_from_agent_output: false
-      lifecycle: evidence_review_ready
   - question_id: n014
     curation_family_id: nf014
     intent: module_structure
@@ -891,6 +778,120 @@ records:
         - locate
         - structure
       difficulty: simple
+    curation:
+      origin: human_directed_llm_draft
+      agent_outcome_seen_before_freeze: false
+      evidence_selected_from_agent_output: false
+      lifecycle: evidence_review_ready
+  - question_id: n018
+    curation_family_id: nf018
+    intent: usage
+    expected_status: answered
+    novelty:
+      types:
+        - entity
+        - task_form
+      closest_exposed_cases:
+        - g023
+        - g024
+      benchmark_overlap:
+        wording: low
+        entity: none
+        evidence: none
+        information_need: low
+      rationale: >-
+        Exposed analysis-usage cases cover master-task configuration and
+        candidate-list operations, but none asks how a reconstructed candidate
+        exposes its MC truth counterpart or how an arbitrary reconstructed decay
+        tree is checked against generated truth. The final question is a direct
+        tutorial-usage need; it does not claim PndMCTrackInfo or generator-stage
+        propagation beyond the selected documentation.
+    representativeness:
+      class: representative
+      primary_task_archetype: component_usage
+      secondary_task_archetypes: []
+      gold_analogue_cases:
+        - g023
+        - g024
+      benchmark_reference_fit: strong
+      domain_relevance: strong
+      corpus_tail: representative_core
+      disposition: KEEP_REPRESENTATIVE
+      rationale: >-
+        Benchmark analogue: Gold component-usage questions such as g023/g024.
+        Domain relevance: inspecting a reconstructed candidate's truth match and
+        validating a decay-tree match are routine analysis operations. The
+        tutorial directly supports both operations without a cross-stage trace.
+    coverage:
+      repositories:
+        - pandaroot
+      source_types:
+        - documentation
+      expression_form: descriptive
+      evidence_topology: single_hop
+      source_scope: single_source
+      repository_scope: single_repository
+      reasoning_forms:
+        - procedure
+        - explain
+      difficulty: moderate
+    curation:
+      origin: human_directed_llm_draft
+      agent_outcome_seen_before_freeze: false
+      evidence_selected_from_agent_output: false
+      lifecycle: evidence_review_ready
+  - question_id: n019
+    curation_family_id: nf019
+    intent: algorithm_implementation
+    expected_status: answered
+    novelty:
+      types:
+        - entity
+        - composition
+      closest_exposed_cases:
+        - g059
+        - g060
+      benchmark_overlap:
+        wording: low
+        entity: none
+        evidence: none
+        information_need: low
+      rationale: >-
+        g059/g060 ask how LuminosityFit smearing models are implemented. No
+        exposed case covers PndRecoKalmanTask, its Kalman-versus-DAF dispatch,
+        particle-hypothesis selection, or the construction of fitted PndTrack
+        outputs. The composed execution pipeline is a distinct core tracking
+        implementation need, not a mechanical entity substitution.
+    representativeness:
+      class: representative
+      primary_task_archetype: implementation_explanation
+      secondary_task_archetypes: []
+      gold_analogue_cases:
+        - g059
+        - g060
+      benchmark_reference_fit: strong
+      domain_relevance: strong
+      corpus_tail: representative_core
+      disposition: KEEP_REPRESENTATIVE
+      rationale: >-
+        Benchmark analogue: Gold implementation-explanation questions g059/g060.
+        Domain relevance: fitting finder-produced tracks and materializing the
+        persistent fitted-track output is a core PandaRoot reconstruction task.
+        Both the configuration contract and execution pipeline are directly
+        evidenced in the locked implementation.
+    coverage:
+      repositories:
+        - pandaroot
+      source_types:
+        - code
+      expression_form: implementation_oriented
+      evidence_topology: multi_hop
+      source_scope: single_source
+      repository_scope: single_repository
+      reasoning_forms:
+        - explain
+        - structure
+      difficulty: moderate
     curation:
       origin: human_directed_llm_draft
       agent_outcome_seen_before_freeze: false

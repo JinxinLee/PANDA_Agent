@@ -189,6 +189,33 @@ def classify_minimum_source_scope(
     return None
 
 
+def selector_source_types(selector: Any, *, paper_ids: set[str], documentation_ids: set[str]) -> set[str]:
+    """Mirror evaluator source-type semantics where a static selector is explicit.
+
+    Path suffixes are used only for script selectors whose normalized objects
+    are deterministically ingested as ``shell_script`` or ``python_script``.
+    """
+
+    source_id = str(getattr(selector, "source_id", "") or "")
+    object_type = str(getattr(selector, "object_type", "") or "")
+    path = str(getattr(selector, "path", "") or "").replace("\\", "/")
+    path_lower = path.lower()
+    basename = path_lower.rsplit("/", 1)[-1]
+    if source_id in paper_ids:
+        return {"paper"}
+    if source_id in documentation_ids or object_type.startswith("sphinx") or path_lower.startswith(("docs/", "doc/")):
+        return {"documentation"}
+    if object_type in {"readme_section", "readme_section_chunk"} or basename.startswith("readme"):
+        return {"readme", "documentation"}
+    if object_type in {"workflow", "python_script", "shell_script"} or path_lower.endswith((".sh", ".py")):
+        return {"workflow"}
+    if object_type == "relation":
+        return {"graph"}
+    if path or object_type:
+        return {"code"}
+    return set()
+
+
 def derive_minimum_required_source_scope(
     question: dict[str, Any],
     *,
@@ -603,10 +630,20 @@ def main() -> int:
 
     # 7. Deterministic evidence-selector checks: path existence, page bounds.
     for q in questions:
+        has_static_script_selector = False
         for group in q.required_evidence_groups:
             if not group.any_of:
                 fail(f"{q.id}/{group.group_id}: empty any_of")
             for selector in group.any_of:
+                static_types = selector_source_types(
+                    selector,
+                    paper_ids=paper_ids,
+                    documentation_ids=documentation_ids,
+                )
+                selector_path = str(selector.path or "").lower()
+                has_static_script_selector = has_static_script_selector or (
+                    "workflow" in static_types and selector_path.endswith((".sh", ".py"))
+                )
                 fields = selector.model_dump(exclude_none=True)
                 if not fields:
                     fail(f"{q.id}/{group.group_id}: empty selector")
@@ -633,6 +670,11 @@ def main() -> int:
                                 f"{q.id}/{group.group_id}: pdf_page range "
                                 f"{selector.pdf_page}-{end} outside 1..{limit} for {source_id}"
                             )
+        if has_static_script_selector and "workflow" not in q.required_source_types:
+            fail(
+                f"{q.id}: shell/Python script selectors require evaluator-compatible "
+                f"source type 'workflow', got {sorted(q.required_source_types)}"
+            )
 
     # 8. Coverage-report consistency with the sidecar.
     sidecar_list = [sidecar_by_id[q.id] for q in questions if q.id in sidecar_by_id]

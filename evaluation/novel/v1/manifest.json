@@ -4,7 +4,7 @@
   "benchmark_version": "novel-v1-dev-0.1.0",
   "dataset_version": "0.1.0",
   "split": "novel_dev",
-  "status": "revised_pilot_ready_for_human_review",
+  "status": "READY_FOR_FINAL_HUMAN_APPROVAL",
   "release_eligible": false,
   "acceptance_exposed": true,
   "question_count": 16,
@@ -22,7 +22,7 @@
     "dataset": "novel_dev.yaml",
     "curation_metadata": "curation_metadata.yaml",
     "coverage_report": "coverage_report.json",
-    "review_package": "N1R2_REVIEW_PACKAGE.md"
+    "review_package": "N1R2R1_REVIEW_PACKAGE.md"
   },
   "locked_corpus_manifest": "data/manifests/source_manifest.json",
   "governance": "docs/NOVEL_DATASET_CURATION_CONTRACT.md",
@@ -39,6 +39,20 @@
     "sidecar_schema": "novel-curation-sidecar-v3"
   },
   "retired_drafts": [
+    {
+      "question_id": "n011",
+      "curation_family_id": "nf011",
+      "status": "WITHDRAWN_DRAFT",
+      "reason": "information_need_changed_during_semantic_repair",
+      "replaced_by": "n018"
+    },
+    {
+      "question_id": "n012",
+      "curation_family_id": "nf012",
+      "status": "WITHDRAWN_DRAFT",
+      "reason": "unsupported_original_information_need_replaced_by_new_sampling",
+      "replaced_by": "n019"
+    },
     {
       "question_id": "n013",
       "curation_family_id": "nf013",

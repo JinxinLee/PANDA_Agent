@@ -14,4 +14,5 @@ Target sizes are approximately 30 development, 15 validation, and 15 protected h
 
 A trivial paraphrase or mechanical entity substitution is not novel by itself. Generated questions may be used as untrusted drafts for human curation, but must not be represented as protected holdout or frozen Gold. N1 will create only the files needed for its 12–16 candidate `novel_dev` pilot; N0 does not create empty dataset placeholders.
 
-Current state: the N1 pilot candidate package (16 draft `novel_dev` questions, awaiting human review) lives in `v1/`.
+Current state: the N1-R2R1 pilot candidate package (16 draft `novel_dev`
+questions, ready for final human approval but still unapproved) lives in `v1/`.

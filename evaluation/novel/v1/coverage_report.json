@@ -3,32 +3,32 @@
   "dataset_identity": "novel-v1-n1-pilot-draft",
   "benchmark_version": "novel-v1-dev-0.1.0",
   "split": "novel_dev",
-  "status": "revised_pilot_ready_for_human_review",
+  "status": "READY_FOR_FINAL_HUMAN_APPROVAL",
   "question_count": 16,
   "independent_family_count": 16,
   "counts_by_intent": {
     "installation": 2,
-    "usage": 3,
+    "usage": 4,
     "api": 3,
     "algorithm_theory": 2,
-    "algorithm_implementation": 1,
-    "data_flow": 2,
+    "algorithm_implementation": 2,
+    "data_flow": 0,
     "module_structure": 1,
     "troubleshooting": 2
   },
   "counts_by_difficulty": {
     "simple": 5,
-    "moderate": 8,
-    "hard": 3
+    "moderate": 9,
+    "hard": 2
   },
   "counts_by_novelty_type": {
-    "entity": 12,
-    "relation": 7,
+    "entity": 13,
+    "relation": 5,
     "composition": 4,
-    "reasoning_topology": 3,
+    "reasoning_topology": 2,
     "nontrivial_expression": 3,
     "failure_mode": 1,
-    "task_form": 3
+    "task_form": 4
   },
   "counts_by_repository_scope": {
     "single_repository": 15,
@@ -36,8 +36,8 @@
     "paper_only": 1
   },
   "counts_by_expression_form": {
-    "descriptive": 14,
-    "implementation_oriented": 2
+    "descriptive": 13,
+    "implementation_oriented": 3
   },
   "counts_by_evidence_topology": {
     "single_hop": 8,
@@ -52,14 +52,14 @@
   },
   "cross_repository_count": 0,
   "multi_hop_count": 5,
-  "descriptive_or_identifier_free_count": 14,
+  "descriptive_or_identifier_free_count": 13,
   "multi_evidence_count": 8,
   "known_coverage_gaps": [
     "No cross-repository candidate: every pilot question is answerable within one repository or one paper-plus-repository pair; a full novel_dev should add genuinely cross-repository questions.",
     "No version_conflict candidate: the locked corpus exposes commit-boundary conflicts already heavily represented by exposed Gold (g012/g026/g042/g058/g077/g096/g108/g120); none arose naturally for unexposed information needs during pilot curation.",
     "No clarification_required candidate: no genuine ambiguity case was naturally supported, so the generic T0 status-compatibility check was not required and was not run.",
-    "algorithm_implementation has only one candidate (fast simulation); the replacement instead filled the more severe source_location omission with a natural persistent-data boundary.",
-    "Difficulty band is 5/8/3; labels follow the repaired critical evidence obligations rather than an exact target quota."
+    "No data_flow candidate remains after governance retirement of n011/n012; n018 is correctly classified as usage, and no artificial data-flow replacement was introduced.",
+    "Difficulty band is 5/9/2; labels follow the final critical evidence obligations rather than an exact target quota."
   ],
   "recommended_coverage_targets": {
     "scope": "proposal_only_for_future_full_novel_dev",
@@ -110,47 +110,41 @@
     "exploratory_count": 0,
     "counts_by_primary_task_archetype": {
       "setup_environment": 3,
-      "component_usage": 5,
+      "component_usage": 6,
       "concept_comparison": 1,
       "theory_explanation": 1,
-      "implementation_explanation": 1,
-      "producer_consumer_trace": 1,
-      "workflow_sequence": 1,
+      "implementation_explanation": 2,
       "repository_structure": 1,
       "troubleshooting_diagnosis": 1,
       "source_location": 1
     },
     "benchmark_reference_fit_counts": {
-      "strong": 6,
-      "moderate": 10
+      "strong": 7,
+      "moderate": 9
     },
     "domain_relevance_counts": {
       "strong": 10,
       "moderate": 6
     },
     "corpus_tail_counts": {
-      "representative_core": 9,
-      "representative_but_rare": 7
+      "representative_core": 10,
+      "representative_but_rare": 6
     },
     "dispositions": {
       "KEEP_REPRESENTATIVE": 16
     },
-    "recommended_pilot_target": {
-      "representative": 12,
-      "exploratory": 4
-    },
     "task_archetype_gaps_vs_gold_reference": [
       "source_location: Gold reference 14.2%, pilot 6.3% (1 of 16)",
-      "implementation_explanation: Gold reference 15.8%, pilot 6.3% (1 of 16)",
+      "implementation_explanation: Gold reference 15.8%, pilot 12.5% (2 of 16)",
       "documentation_navigation: Gold reference 2.5%, pilot 0%",
-      "component_usage over-weighted: Gold reference 8.3%, pilot 31.3%",
+      "component_usage over-weighted: Gold reference 8.3%, pilot 37.5%",
       "setup_environment over-weighted: Gold reference 7.5%, pilot 18.8%"
     ],
     "answerability_gaps_vs_gold_reference": [
       "version_boundary answerability: Gold reference 8/120 (6.7%), pilot 0/16",
       "corpus_insufficiency answerability: Gold reference 10/120 (8.3%), pilot 1/16"
     ],
-    "notes": "All gap statements are relative to the exposed Gold benchmark reference profile (a manually curated, intentionally balanced benchmark), not to empirical user-query frequency. Representativeness classification uses benchmark reference fit plus independent domain-relevance judgment. N1-R2 withdrew draft n013, added independently sampled source-location case n017, revised n014 to directly supported representative scope, and retained natural classifications rather than optimizing a representative/exploratory quota."
+    "notes": "All gap statements are relative to the exposed Gold benchmark reference profile (a manually curated, intentionally balanced benchmark), not to empirical user-query frequency. Representativeness classification uses benchmark reference fit plus independent domain-relevance judgment. N1-R2R1 retained n001-n010 and n014-n017 with factual corrections, retired n011/n012 under the information-need identity rule, migrated the repaired analysis-usage need to n018, and independently sampled the core Kalman implementation case n019. No representative/exploratory quota is active."
   },
   "candidate_replacement_needed_count": 0
 }

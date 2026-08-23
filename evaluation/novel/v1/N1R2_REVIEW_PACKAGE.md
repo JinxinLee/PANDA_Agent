@@ -140,10 +140,12 @@ The v2 minimum-scope distribution did not change.
 - **Question:** Which LMD track-search approaches were developed, and how do they compare?
 - **Intent / task archetype / answerability:** algorithm_theory / concept_comparison / answerable.
 - **Required answer points:** track following versus cellular automaton; sparse-hit constraint; missed/fake-track relevance to the theta distribution.
-- **Gold evidence:** Karavdina thesis pages 72-81.
+- **Gold evidence:** Karavdina thesis pages 72-77.
 - **Novelty rationale:** the specific theory comparison is absent from exposed cases.
 - **Representativeness rationale:** moderate reference/domain fit for LMD reconstruction study.
-- **Changes from previous draft:** sentinel; no content or metadata change.
+- **Changes from previous draft:** sentinel content retained; N1-R2R1 later
+  reconciled this review range with the machine Gold at the minimum sufficient
+  pages 72-77.
 - **Remaining concern:** none identified.
 - **Codex recommendation:** READY_FOR_HUMAN_REVIEW.
 - **Human decision:** PENDING.

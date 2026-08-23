@@ -32,16 +32,16 @@ When records conflict, use the single section explicitly marked **Current author
 - Dense embedding remains `gemini-embedding-2`, configured at 3072 dimensions.
 - These current defaults do not rewrite the A3 measured provenance above, which remains `gemini-3.6-flash` with index schema 2 and identity `c527bbf1d10c88969da02745d678c640a4544757258584110a5ddd7744be3cf2`.
 
-## N1 novel-dev pilot curation — 2026-08-23 (N1-R2 revised package)
+## N1 novel-dev pilot curation — 2026-08-23 (N1-R2R1 final governance cleanup)
 
-- N1 status: `REVISED_PILOT_READY_FOR_HUMAN_REVIEW / HUMAN_REVIEW_PENDING`; not `COMPLETE`, approved, or frozen.
-- Active count: `16` `novel_dev` drafts (`n001`-`n012`, `n014`-`n017`) in `16` independent active families. Draft n013/nf013 is `WITHDRAWN_DRAFT` for representativeness and factual failure, replaced by the independently sampled n017/nf017 source-location case; the retired IDs remain historical and must not be reused.
-- Intent coverage: all 8 canonical intents (installation 2, usage 3, api 3, algorithm_theory 2, algorithm_implementation 1, data_flow 2, module_structure 1, troubleshooting 2). Expected status: `15` answered / `1` insufficient_evidence. Difficulty: 5 simple / 8 moderate / 3 hard.
-- N1-R2 repaired factual, semantic, evidence, and question-answer alignment issues in n001, n002, n003, n005, n006, n007, n009, n010, n011, n012, n014, and n016; n004/n008/n015 remained content sentinels, with only n015's empirical-frequency rationale softened. n011 and n012 retained IDs because their core information needs were preserved while unsupported composition was removed.
-- Representativeness: 16 representative / 0 exploratory, following the two independent signals (`benchmark_reference_fit` + `domain_relevance`) rather than a target quota. Primary task archetypes now include one `source_location` (n017) and one `workflow_sequence` (n012); `implementation_explanation` remains 1/16.
-- N1-R1 methodology remains authoritative (`benchmark_reference_proxy`, `empirical_user_frequency: false`, task archetype orthogonal to answerability). The static validator now freshly derives minimum required source scope, topology, and difficulty for all Gold v2.6 cases: `120/120` assignments reproduced, `0` unresolved opaque selectors, profile distribution unchanged.
-- Package: `evaluation/novel/v1/`; current review artifact `N1R2_REVIEW_PACKAGE.md`; sidecar v3; dataset identity `novel-v1-n1-pilot-draft`; `release_eligible: false`. Every active question remains `review_status: draft`, `reviewer: null`, `reviewed_at: null`; human-approved questions: `0`.
-- No evaluation or runtime inspection occurred: PANDA retrieval, QA, judge, Vertex, embeddings, index rebuilds, and benchmark/novel outcome inspection were all `0`. Only static source/PDF inspection and T0 validation were used.
+- N1 status: `READY_FOR_FINAL_HUMAN_APPROVAL / HUMAN_REVIEW_PENDING`; not `COMPLETE`, approved, or frozen.
+- Active count: `16` `novel_dev` drafts (`n001`-`n010`, `n014`-`n019`) in `16` independent active families. Drafts n011/nf011, n012/nf012, and n013/nf013 are `WITHDRAWN_DRAFT`; n011's repaired analysis-usage information need moved to n018, n012's unsupported original information need was replaced by independently sampled n019, and n013 remains replaced by n017. Retired IDs remain historical and must not be reused.
+- Intent coverage: 7 of 8 canonical intents (installation 2, usage 4, api 3, algorithm_theory 2, algorithm_implementation 2, data_flow 0, module_structure 1, troubleshooting 2). Expected status: `15` answered / `1` insufficient_evidence. Difficulty: 5 simple / 9 moderate / 2 hard. The missing data-flow intent is an explicit pilot gap, not a forced quota fill.
+- N1-R2R1 corrected n001's evaluator-compatible source type to `workflow`, reconciled n008 to the minimum sufficient locked-PDF range 72–77, and removed the false claim that PndFsmResponse carries detector efficiency. The repaired n011 content was reclassified as `usage` / `component_usage` under new ID n018 with tutorial-only evidence; n012 was retired without migration; n019 covers the independently sampled PndRecoKalmanTask implementation pipeline.
+- Representativeness: 16 representative / 0 exploratory, following `benchmark_reference_fit` plus `domain_relevance`, with no active representative/exploratory quota. Primary task archetypes include two `implementation_explanation` cases, one `source_location`, and no fabricated data-flow replacement.
+- N1-R1 methodology remains authoritative (`benchmark_reference_proxy`, `empirical_user_frequency: false`, task archetype orthogonal to answerability). The static validator freshly derives minimum required source scope, topology, and difficulty for all Gold v2.6 cases.
+- Package: `evaluation/novel/v1/`; current review artifact `N1R2R1_REVIEW_PACKAGE.md`; sidecar v3; dataset identity `novel-v1-n1-pilot-draft`; `release_eligible: false`. Every active question remains `review_status: draft`, `reviewer: null`, `reviewed_at: null`; human-approved questions: `0`.
+- No evaluation or runtime inspection occurred: PANDA retrieval, QA, judge, Vertex, embeddings, index rebuilds, and benchmark/novel outcome inspection were all `0`. Only locked source/PDF inspection and static T0 validation were used.
 - No validation or holdout content was created; full-dataset quotas remain unfrozen.
 
 ## Generalization Phase status
@@ -261,7 +261,7 @@ When records conflict, use the single section explicitly marked **Current author
 - **Result:** `PASS`. `docs/NOVEL_DATASET_CURATION_CONTRACT.md` is the authoritative Novel Dataset Curation Contract v1. It defines question-distribution generalization over the locked corpus; `novel_dev`, `novel_validation`, and externally protected `novel_holdout`; the 12–16 candidate-`novel_dev` N1 pilot; substantive novelty and overlap review; independent structural difficulty and coverage metadata; Gold-compatible evaluator records plus a question-ID-keyed curation sidecar; human review; exposure-ledger semantics; external holdout loading; lightweight dataset identity; and annotation-versus-information-need amendment rules.
 - **Compatibility boundary:** The current strict `GoldQuestion` model already accepts `n###` IDs and all three novel splits, and canonical `QAStatus` includes `answered`, `insufficient_evidence`, `version_conflict`, and `clarification_required`. Novel-only metadata remains in a sidecar because unknown Gold fields are forbidden. Gold v2 does not formally cover `clarification_required`, so N1 must perform a small generic T0 loader/evaluator compatibility check before accepting such a case; N0 made no evaluator change.
 - **Isolation:** No novel question, validation item, or holdout item was created. PANDA retrieval, QA, judge, Vertex generation, dense embedding, sparse encoding, Qdrant/SQL, index mutation, and benchmark/novel outcome inspection were all `0`. No T1/T2/T3/T4/T5, C8, D1, dataset generation, candidate activation, or production behavior change occurred.
-- **Handoff at N0 closeout:** N0 is `COMPLETE`; N1 was then `NEXT / NOT_STARTED`. The current N1 state is the N1-R2 revised draft ready for human review, as recorded at the top of this file. C8 remains scientifically unchanged and `NEXT_ELIGIBLE / NOT_STARTED`.
+- **Handoff at N0 closeout:** N0 is `COMPLETE`; N1 was then `NEXT / NOT_STARTED`. The current N1 state is the N1-R2R1 draft ready for final human approval, as recorded at the top of this file. C8 remains scientifically unchanged and `NEXT_ELIGIBLE / NOT_STARTED`.
 - **Pre-N1 governance correction — 2026-08-23:** N0 remains `PASS / COMPLETE`. The contract now freezes authoritative source truth and source versions rather than derived KnowledgeObject/chunk/index representations; defines validation exposure for question content, Gold, and outcome material actually used for development; requires cross-file semantic-family isolation for repository-visible novel splits plus an external holdout non-derivation declaration; and separates canonical intents from orthogonal coverage dimensions in `evaluation/novel/README.md`. This was documentation-only: no novel question, validator, evaluation, C8 change, or production change was created.
 
 ## Historical full E2E reference
@@ -520,13 +520,13 @@ The retrieval and QA measurements are unchanged. A3.1 corrects only metric repre
 
 ## Novel dataset state
 
-- `novel_dev`: 0.
+- `novel_dev`: 16 active draft questions; human-approved/frozen: 0.
 - `novel_validation`: 0.
 - `novel_holdout`: not created; the runner supports loading it from an external path.
-- Human-curated: no trustworthy human-authored novel dataset is currently available.
+- Human-approved: no novel question has final human approval yet.
 - Empty novel JSONL artifacts are schema/placeholders, not measured results.
 - Curation governance: N0 `COMPLETE`; `docs/NOVEL_DATASET_CURATION_CONTRACT.md` is authoritative.
-- Next curation task: N1 human review/pilot finalization; the N1-R2 revised 16-question draft is ready but unapproved.
+- Next curation task: N1 human review/pilot finalization; the N1-R2R1 16-question draft is ready for final human approval but remains unapproved.
 
 ## Known limitations
 
@@ -536,7 +536,7 @@ The retrieval and QA measurements are unchanged. A3.1 corrects only metric repre
 
 ## Next authorized roadmap task
 
-**N1 Human Review / Pilot Finalization** is the next task. N1-R2 curation is complete, while human approval, N1 completion, C8, and all novel evaluation remain unexecuted.
+**N1 Human Review / Pilot Finalization** is the next task. N1-R2R1 governance cleanup is complete, while human approval, N1 completion, C8, and all novel evaluation remain unexecuted.
 
 ### Historical pre-N0 roadmap summary
 
