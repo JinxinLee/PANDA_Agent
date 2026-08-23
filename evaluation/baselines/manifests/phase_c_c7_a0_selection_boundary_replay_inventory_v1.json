@@ -1,0 +1,131 @@
+{
+  "schema_version": "1.0",
+  "task": "C7-A0 selection-layer boundary, current semantics, and replay-capability audit",
+  "source_head": "c4510bd4f09f6dfaab47ef87260b4c1ce9843f8a",
+  "audit_timing": "static pre-outcome; no retrieval, reranking, selector treatment, QA, verifier, judge, database, or index operation was executed",
+  "authoritative_inputs": [
+    "src/panda_agent/retrieval.py",
+    "src/panda_agent/retrieval_trace.py",
+    "src/panda_agent/models.py",
+    "configs/retrieval_policies.yaml",
+    "evaluation/baselines/replay/phase_c_c6_current_plan_candidate_replay_v2.jsonl",
+    "evaluation/baselines/replay/phase_c_c6_frozen_channel_replay_v1.jsonl",
+    "data/evaluation/runs/*/retrieval_traces.jsonl"
+  ],
+  "c6_lifecycle_prerequisite": "COMPLETE",
+  "c7_ownership_boundary": "C7 starts after the current LLM reranker has produced reranked_object_ids. C7 owns the deterministic post-reranker priority reorder and select_final_evidence through final Evidence; it excludes retrieval-channel recall, fusion, reranker behavior, targeted/global second-pass merge, and QA.",
+  "held_constant_components": {
+    "fusion_production_policy": "HELD_CONSTANT",
+    "llm_reranker": "HELD_CONSTANT"
+  },
+  "c7_owned_deterministic_operations": [
+    "merge raw reranker output with complete fused fallback order",
+    "paper-page-hint priority",
+    "required-source priority",
+    "exact-symbol priority",
+    "duplicate-locator suppression",
+    "per-source-id and source-type cap admission",
+    "mandatory exact-symbol cap exemption",
+    "required-source backfill",
+    "final evidence limit and exclusion receipts"
+  ],
+  "pipeline_stage_map": {
+    "F": {"meaning": "full weighted-RRF fused_order", "production_location": "Retriever.retrieve local fused_order", "persisted_field": "fusion_scores only for top 30; historical fused_candidates also top 30", "complete": false},
+    "R": {"meaning": "raw LLM reranker output over fused_order[:30]", "production_location": "reranked", "persisted_field": "reranked_object_ids / reranked_candidates", "complete": "complete for the raw returned reranker list, but not a complete selector input"},
+    "M": {"meaning": "raw Stage-R reranker order followed by remaining Stage-F fused fallback candidates, deduplicated in that order", "production_location": "ordered before deterministic priority", "persisted_field": null, "complete": false},
+    "P": {"meaning": "deduplicated [hinted_first, required_first, symbol_first, M]", "production_location": "ordered immediately before select_final_evidence", "persisted_field": "ranked_object_ids = ordered[:30]", "complete": false},
+    "S": {"meaning": "selected Evidence plus exclusions and required-source backfill admissions", "production_location": "select_final_evidence return", "persisted_field": "evidence, excluded, backfill_admissions", "complete": false}
+  },
+  "current_selector_semantics": {
+    "final_evidence_limit": "12 from configs/retrieval_policies.yaml",
+    "hinted_first": "All candidates in M whose source_id has a plan.paper_page_hints page match are placed first in their existing M order.",
+    "required_first": "For each plan.required_source_types entry, the first M candidate whose _source_type matches is moved forward; workflow and graph may alternatively match retrieval channel membership.",
+    "symbol_first": "For each plan symbol (full paths before bare symbols, with troubleshooting README/running preference), the best matching exact-channel candidate is moved forward using preferred-source, exact-path, page-level, and object-id ordering.",
+    "duplicate_locator": "A duplicate serialized locator is rejected before caps; an empty locator falls back to object:<object_id>.",
+    "max_per_source": "max(2, ceil(final_evidence_limit / 3)), independently per source_id.",
+    "source_type_caps": "ceil(source_budgets[source_type] * final_evidence_limit), minimum 1; unlisted source types default to final_evidence_limit.",
+    "hard_rejection_receipts": ["duplicate_locator", "source_diversity_cap", "source_budget_cap", "source_diversity_cap_and_source_budget_cap"],
+    "mandatory_exact_symbol": "symbol_first IDs bypass per-source-id and source-type caps only; duplicate suppression occurs first and the final limit still stops the pass.",
+    "required_source_backfill": "Only hard-cap-rejected, locator-distinct candidates with canonical_rank <= final_evidence_limit and source_type in required_source_types may fill unused capacity; it does not run once the hard pass filled the limit.",
+    "selector_horizon": "unbounded-to-available-fusion-pool: select_final_evidence iterates the full P order, not ranked_object_ids[:30]."
+  },
+  "current_source_budget_semantics": "Maximum per-source-type caps, not target allocations, minimums, or preferred shares. The cap is ceil(fraction * final_evidence_limit); it applies only when _source_type_of(item) returns the budget key.",
+  "constraint_dimension_findings": {
+    "source_id": "Used for per-source cap, preferred-source exact-symbol ordering, and Evidence provenance.",
+    "source_type": "Derived by _source_type_of from paper source IDs, sphinx/docs paths, object_type workflow/python_script/shell_script/readme_section, else code; used by type caps and backfill.",
+    "retrieval_channel": "Built from ranking membership; used by required_first only for required workflow/graph and stored on Evidence.",
+    "conflations": [
+      "graph is a retrieval channel and is absent from _source_type_of output; graph source_budgets cannot cap a graph type, and graph required_first is channel-aware while backfill is source-type-only.",
+      "workflow is both a derived source_type and a retrieval channel. required_first accepts either; backfill accepts only derived source_type, so a workflow-channel item classified as code is not backfilled for workflow."
+    ]
+  },
+  "required_source_provenance_findings": {
+    "derivation": "Retriever.analyze selects an intent then copies policy.required_sources directly to RetrievalPlan.required_source_types.",
+    "provenance": "intent-default / reviewed-static-policy, not individually question-grounded proof",
+    "intent_defaults": {
+      "installation": ["documentation"], "usage": ["documentation", "code"], "algorithm_theory": ["paper"], "algorithm_implementation": ["paper", "code"], "api": ["code"], "data_flow": ["workflow", "code"], "module_structure": ["code", "graph"], "troubleshooting": ["documentation", "code"]
+    }
+  },
+  "mandatory_protected_exact_behavior": "mandatory_symbol_ids is set(symbol_first), derived deterministically from literal matches in rankings['exact']. Its safety intent is to preserve strong exact-symbol/file evidence against diversity caps. It bypasses only cap checks, not duplicate suppression or the final evidence limit; exact path/file matches are prioritized before selection and exclusion/backfill receipts are auditable.",
+  "current_production_trace_fields": {
+    "plan": "RetrievalPlan is returned and needed for P/S; complete when captured.",
+    "rankings": "Per-channel object-id lists; supports channel membership but not embedded payloads.",
+    "fusion_scores": "Top-30 F score prefix only; not full F order/payloads.",
+    "reranked_object_ids": "R raw reranker list, not M/P/S.",
+    "ranked_object_ids": "P prefix of 30 after deterministic reorder, not complete P consideration order.",
+    "excluded": "S rejections but lacks all accepted/pass-through decisions and does not restore M/P.",
+    "backfill_admissions": "S backfill receipts.",
+    "evidence": "Selected S Evidence embeds selected payload fields but not all candidate payloads."
+  },
+  "minimum_faithful_selector_replay_state": [
+    {"field": "case_id and question", "why": "reproduce preferred-source and symbol ordering", "pipeline_source": "input", "current_persisted_location": "some traces/replays", "completeness": "exact text"},
+    {"field": "complete RetrievalPlan", "why": "required types, symbols, targets, paper hints, budgets", "pipeline_source": "analyze", "current_persisted_location": "plan/retrieval_plan", "completeness": "full frozen plan"},
+    {"field": "full Stage F fused order and score per candidate", "why": "construct M fallback and Evidence scores", "pipeline_source": "fusion", "current_persisted_location": "only top-30 prefixes", "completeness": "entire available fused pool"},
+    {"field": "full Stage R reranker object-id order", "why": "construct M and separate reranker displacement", "pipeline_source": "LLM reranker", "current_persisted_location": "reranked_object_ids", "completeness": "entire raw returned list"},
+    {"field": "candidate payload map", "why": "_source_type_of, locator duplicate detection, Evidence construction", "pipeline_source": "channel payloads", "current_persisted_location": "selected Evidence only or trace candidate metadata", "completeness": "every candidate with object_id, source_id, source_version_id, object_type, locator, title, text, authority_level"},
+    {"field": "candidate retrieval-channel membership", "why": "required graph/workflow priority and Evidence channels", "pipeline_source": "rankings", "current_persisted_location": "rankings/channels or trace candidates", "completeness": "all candidates"},
+    {"field": "exact-channel candidate stream", "why": "derive mandatory_symbol_ids", "pipeline_source": "rankings['exact']", "current_persisted_location": "channel traces/replays", "completeness": "ordered payload-bearing exact stream"},
+    {"field": "frozen selector configuration and implementation identity", "why": "final limit and exact deterministic semantics", "pipeline_source": "config/source", "current_persisted_location": "not consistently captured", "completeness": "versioned frozen text/identity"}
+  ],
+  "minimum_attribution_state": [
+    {"field": "candidate universe identity and channel ranks", "purpose": "upstream candidate missing versus present"},
+    {"field": "fusion_rank and fusion_score across full F", "purpose": "fusion displacement"},
+    {"field": "reranker_rank across R plus reranker pool membership", "purpose": "reranker displacement"},
+    {"field": "preselector_rank across full M and policy_rank across full P", "purpose": "merge and deterministic priority reorder displacement"},
+    {"field": "final_selection_decision, exclusion_reason, canonical_rank, and backfill receipt", "purpose": "selector exclusion/admission attribution"},
+    {"field": "candidate source/type/channel and locator facets", "purpose": "attribute caps, required-source handling, exact protection, and duplicates"}
+  ],
+  "hypotheses": [
+    {"id": 1, "verdict": "CONFIRMED", "code_evidence": "retrieval.py select_final_evidence: type_caps uses max(1, ceil(value * final_evidence_limit)) and source-type admission."},
+    {"id": 2, "verdict": "CONFIRMED", "code_evidence": "retrieval.py select_final_evidence: max_per_source = max(2, ceil(final_evidence_limit / 3)) and per_source[item['source_id']]."},
+    {"id": 3, "verdict": "CONFIRMED", "code_evidence": "retrieval_policies.yaml contains graph budgets/required_sources; _source_type_of returns paper/documentation/workflow/readme/code only; required_first special-cases graph channels."},
+    {"id": 4, "verdict": "CONFIRMED", "code_evidence": "workflow occurs in policy budgets and required_sources, is a rankings channel, and is also returned by _source_type_of for workflow/python_script/shell_script."},
+    {"id": 5, "verdict": "CONFIRMED", "code_evidence": "required_first accepts required in {'workflow','graph'} and channels[oid], while pass-2 backfill compares rejected['source_type'] only."},
+    {"id": 6, "verdict": "CONFIRMED", "code_evidence": "Retriever.analyze assigns required_source_types=policy.required_sources after intent routing; no per-question necessity proof is added."},
+    {"id": 7, "verdict": "CONFIRMED", "code_evidence": "mandatory_symbol_ids bypass source_violated/type_violated only; duplicate locator is tested first and len(selected) still enforces final_evidence_limit."},
+    {"id": 8, "verdict": "CONFIRMED", "code_evidence": "ranked_object_ids = ordered[:30] after P reorder, while select_final_evidence receives complete ordered and iterates it."}
+  ],
+  "trace_family_inventory": [
+    {"identity": "phase_c_c6_current_plan_candidate_replay_v2.jsonl", "case_count": 34, "pipeline_fidelity": "current-plan pre-reranker candidate artifact", "retrieval_or_query_analyzer_prompt_version": "3.7.0 (frozen_plan_prompt_version)", "current_pipeline_fidelity": "CURRENT_PLAN_INPUT_ONLY", "retrieval_plan_presence_and_completeness": "PRESENT_COMPLETE: all 15 current RetrievalPlan keys", "exact_stream_metadata": "PRESENT: ordered exact candidates with object_id/source_id/source_version_id/object_type/title/locator and channel rank/score; text and authority_level absent", "scores_and_channels_metadata": "PRESENT per-channel original scores and channel membership; full fused scores/order absent", "full_payload_metadata": "PARTIAL: candidate metadata lacks text and authority_level", "full_selector_consideration_order": false, "selector_implementation_generation": "not_recorded", "source_and_index_identity": "not_recorded in replay rows", "reranker_presence": "ABSENT", "trace_schema_compatibility": "C6 replay v2 schema, pre-reranker and not RetrievalTrace selector-complete", "external_read_free_replay": false, "can_reproduce_current_selector": false, "classification_evidence": "No R/M/P/S, no full F, no full payload map; production object lookup would be required.", "stages": {"F": false, "R": false, "M": false, "P": false, "S": false}, "full_payload_context": false, "frozen_only": true, "external_payload_lookup_required": true, "classification": "INSUFFICIENT", "note": "C6 replay is explicitly pre-reranker; it provides question, plan, and channel candidates, not reranker/selector state."},
+    {"identity": "phase_c_c6_frozen_channel_replay_v1.jsonl", "case_count": 80, "pipeline_fidelity": "historical pre-reranker channel/fusion replay input", "retrieval_or_query_analyzer_prompt_version": "not_recorded per row; C6 provenance identifies 3.6.0-era historical streams", "current_pipeline_fidelity": "HISTORICAL_PRE_RERANKER", "retrieval_plan_presence_and_completeness": "NOT_PRESENT", "exact_stream_metadata": "PRESENT: exact candidate IDs/source/version/locator/rank/original_score; object_type/title/text/authority absent", "scores_and_channels_metadata": "PRESENT per-channel original score/rank and channel identity; no persisted full F order", "full_payload_metadata": "PARTIAL", "full_selector_consideration_order": false, "selector_implementation_generation": "not_recorded", "source_and_index_identity": "recorded in C6 provenance manifest, not every replay row", "reranker_presence": "ABSENT", "trace_schema_compatibility": "C6 normalized channel replay schema, not selector-complete", "external_read_free_replay": false, "can_reproduce_current_selector": false, "classification_evidence": "F may be replayed for C6, but there is no frozen plan/R/M/P/S or full selector payload state.", "stages": {"F": false, "R": false, "M": false, "P": false, "S": false}, "full_payload_context": false, "frozen_only": true, "external_payload_lookup_required": true, "classification": "INSUFFICIENT", "note": "C6 channel replay supports fusion only and is not a C7 selector dataset."},
+    {"identity": "phase_c_c6_a2_policy_receipts_v1.jsonl", "case_count": 33, "record_count": 144, "policy_row_counts": {"CURRENT": 38, "EXACT_HEAVY": 30, "RAW_DENSE_CENTERED": 30, "SPARSE_HEAVY": 30, "SEMANTIC_AUX25": 8, "SEMANTIC_EXPANSION_ONLY": 8}, "pipeline_fidelity": "C6 fused-ranking receipt family, not selector traces", "retrieval_or_query_analyzer_prompt_version": "not_recorded", "current_pipeline_fidelity": "HISTORICAL_C6_FUSION_RECEIPTS", "retrieval_plan_presence_and_completeness": "NOT_PRESENT", "exact_stream_metadata": "NOT_PRESENT", "scores_and_channels_metadata": "PARTIAL: fused top-20 identifiers and receipt-level fields, not complete candidate scores/channels", "full_payload_metadata": "NOT_PRESENT", "full_selector_consideration_order": false, "selector_implementation_generation": "not_recorded", "source_and_index_identity": "not_recorded", "reranker_presence": "ABSENT", "trace_schema_compatibility": "C6 policy receipt schema, not RetrievalTrace", "external_read_free_replay": false, "can_reproduce_current_selector": false, "classification_evidence": "144 receipt rows cover 33 unique case_id values; no frozen reranker, merge, policy-order, selector receipt, or candidate payload inputs.", "stages": {"F": false, "R": false, "M": false, "P": false, "S": false}, "full_payload_context": false, "frozen_only": true, "external_payload_lookup_required": true, "classification": "INSUFFICIENT", "note": "Contains fused top-20 receipt identifiers and outcome-oriented fields; no reranker or selector input/output."},
+    {"identity": "phase-b-t3-retrieval-20260816/retrieval_traces.jsonl", "case_count": 80, "pipeline_fidelity": "historical prompt 3.6-era retrieval trace", "retrieval_or_query_analyzer_prompt_version": "3.6.0 in implementation_identity.prompt_version", "current_pipeline_fidelity": "HISTORICAL", "retrieval_plan_presence_and_completeness": "PRESENT_COMPLETE for historical RetrievalPlan schema (14 fields; analysis_diagnostics absent)", "exact_stream_metadata": "PRESENT as TraceCandidate metadata; title/text/authority absent", "scores_and_channels_metadata": "PRESENT for top-30 fused and reranked TraceCandidates plus channel candidates", "full_payload_metadata": "PARTIAL: TraceCandidate lacks title/text/authority", "full_selector_consideration_order": false, "selector_implementation_generation": "not_recorded separately from implementation_identity", "source_and_index_identity": "PRESENT in implementation_identity: repository_identity/index_identity/retrieval_policy_hash", "reranker_presence": "PRESENT: reranked_candidates", "trace_schema_compatibility": "RetrievalTrace schema_version 1.0; structurally useful but lacks current complete M/P state", "external_read_free_replay": false, "can_reproduce_current_selector": false, "classification_evidence": "Top-30 F prefix, R and S are present, but full F/M/P and complete payloads are absent and current-plan fidelity is historical.", "stages": {"F": false, "R": true, "M": false, "P": false, "S": true}, "full_payload_context": false, "frozen_only": true, "external_payload_lookup_required": true, "classification": "HISTORICAL_ONLY", "note": "Has top-30 fused candidates, reranked candidates, selected evidence, and exclusions, but no full F/M/P or complete candidate payloads; it cannot faithfully replay the current selector."},
+    {"identity": "b5-pre-retrieval-20260815 and b5-post-retrieval-20260816 retrieval_traces.jsonl", "case_count": 32, "pipeline_fidelity": "historical B5 RetrievalTrace group", "retrieval_or_query_analyzer_prompt_version": "recorded in each implementation_identity; not treated as current", "current_pipeline_fidelity": "HISTORICAL", "retrieval_plan_presence_and_completeness": "PRESENT_COMPLETE for historical RetrievalPlan schema", "exact_stream_metadata": "PRESENT as TraceCandidate metadata; title/text/authority absent", "scores_and_channels_metadata": "PRESENT for truncated fused/reranked candidates and channels", "full_payload_metadata": "PARTIAL", "full_selector_consideration_order": false, "selector_implementation_generation": "not_recorded separately from implementation_identity", "source_and_index_identity": "PRESENT in implementation_identity where recorded", "reranker_presence": "PRESENT: reranked_candidates", "trace_schema_compatibility": "RetrievalTrace schema_version 1.0, same structural limitation as phase-b trace", "external_read_free_replay": false, "can_reproduce_current_selector": false, "classification_evidence": "Historical only; complete F/M/P and full candidate payloads are absent.", "stages": {"F": false, "R": true, "M": false, "P": false, "S": true}, "full_payload_context": false, "frozen_only": true, "external_payload_lookup_required": true, "classification": "HISTORICAL_ONLY", "note": "Schema-equivalent group: b5-pre=16 and b5-post=16; neither can faithfully replay the current selector."},
+    {"identity": "other schema-equivalent RetrievalTrace JSONL families: generalization-a1-retrieval-smoke-host=1, generalization-a1-qa-smoke-host=1, generalization-a3-stratified-retrieval=24, generalization-a3-stratified-qa=16, english-gold bootstrap benchmark_retrieval=24, english-gold bootstrap small_e2e=16, limited bootstrap benchmark_retrieval=1, limited bootstrap small_e2e=1", "case_count": 84, "pipeline_fidelity": "historical/schema-equivalent textual retrieval traces", "retrieval_or_query_analyzer_prompt_version": "recorded per RetrievalTrace implementation_identity where available; not current-pipeline evidence", "current_pipeline_fidelity": "HISTORICAL", "retrieval_plan_presence_and_completeness": "PRESENT for RetrievalTrace rows, schema-version dependent and not current selector-complete", "exact_stream_metadata": "PRESENT as channel TraceCandidates where captured; not full payload-bearing exact streams", "scores_and_channels_metadata": "PRESENT only at stored candidate-prefix granularity", "full_payload_metadata": "PARTIAL", "full_selector_consideration_order": false, "selector_implementation_generation": "not_recorded separately", "source_and_index_identity": "implementation_identity where available", "reranker_presence": "PRESENT where reranked_candidates are captured", "trace_schema_compatibility": "schema-equivalent RetrievalTrace historical group; none records complete M/P", "external_read_free_replay": false, "can_reproduce_current_selector": false, "classification_evidence": "Enumerated nonempty textual trace families use the same truncated RetrievalTrace structure and lack full selector replay state.", "stages": {"F": false, "R": true, "M": false, "P": false, "S": true}, "full_payload_context": false, "frozen_only": true, "external_payload_lookup_required": true, "classification": "HISTORICAL_ONLY", "note": "Grouping is explicit by identity and count; it does not upgrade any member to current or FULL replay."},
+    {"identity": "empty novel_retrieval_traces.jsonl families", "paths": ["evaluation/baselines/generalization-a3-bootstrap-20260813-limited/novel_retrieval_traces.jsonl", "evaluation/baselines/english-gold-stratified-bootstrap-v1-20260813/novel_retrieval_traces.jsonl"], "case_count": 0, "record_count": 0, "pipeline_fidelity": "empty novel trace files", "retrieval_or_query_analyzer_prompt_version": "not_recorded", "current_pipeline_fidelity": "NOT_ESTABLISHED", "retrieval_plan_presence_and_completeness": "NOT_PRESENT", "exact_stream_metadata": "NOT_PRESENT", "scores_and_channels_metadata": "NOT_PRESENT", "full_payload_metadata": "NOT_PRESENT", "full_selector_consideration_order": false, "selector_implementation_generation": "not_recorded", "source_and_index_identity": "not_recorded", "reranker_presence": "NOT_ESTABLISHED", "trace_schema_compatibility": "not established: zero rows", "external_read_free_replay": false, "can_reproduce_current_selector": false, "classification_evidence": "Both discovered novel_retrieval_traces.jsonl files are zero-row textual files, so they contain no stage or provenance state.", "stages": {"F": false, "R": false, "M": false, "P": false, "S": false}, "full_payload_context": false, "frozen_only": true, "external_payload_lookup_required": true, "classification": "INSUFFICIENT", "note": "Zero-row families are independently listed and do not inherit R/S capability from nonempty historical RetrievalTrace groups."}
+  ],
+  "current_pipeline_full_replay_case_count": 0,
+  "post_reranker_replay_capability": "INSUFFICIENT",
+  "C7_A2_FROZEN_CAPTURE_REQUIRED": true,
+  "non_executable_c7_a2_minimum_capture_schema": {
+    "no_gold_outcome_fields": true,
+    "fields": ["case_id", "question", "frozen RetrievalPlan", "full Stage F object-id order and per-object fusion scores", "full raw Stage R reranker order and reranker pool identity", "full Stage M and Stage P orders", "payload map for every candidate", "source_id/source_version_id/object_type/locator/title/text/authority_level", "channel membership and ordered exact stream", "mandatory_symbol_ids", "Stage S selected evidence, exclusion receipts, and backfill admissions", "selector/config/implementation identity"]
+  },
+  "reranker_role_in_c7": "HELD_CONSTANT",
+  "reranker_quality_evaluated": false,
+  "reranker_modified": false,
+  "selector_outcome_evaluated": false,
+  "production_behavior_changed": false,
+  "c7_a0_verdict": "PASS",
+  "c7_a1_eligibility": "NEXT_ELIGIBLE / NOT_STARTED"
+}
