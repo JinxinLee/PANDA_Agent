@@ -508,11 +508,13 @@ def main() -> int:
             fail(f"{qid}: sidecar intent {record.get('intent')!r} != dataset intent {question.intent!r}")
         if record.get("expected_status") != question.expected_status.value:
             fail(f"{qid}: sidecar expected_status does not match dataset")
-        # Governance: pilot records must stay unapproved drafts.
-        if question.review_status != "draft":
-            fail(f"{qid}: pilot review_status must stay draft, got {question.review_status!r}")
-        if question.reviewer is not None or question.reviewed_at is not None:
-            fail(f"{qid}: draft pilot records must not carry reviewer/reviewed_at")
+        # Governance: accepted/rejected decisions carry human provenance;
+        # drafts must not masquerade as reviewed records.
+        if question.review_status == "draft":
+            if question.reviewer is not None or question.reviewed_at is not None:
+                fail(f"{qid}: draft pilot records must not carry reviewer/reviewed_at")
+        elif not (question.reviewer and question.reviewed_at):
+            fail(f"{qid}: {question.review_status} records require reviewer/reviewed_at")
         # Novelty block.
         novelty = record.get("novelty") or {}
         types = novelty.get("types") or []
@@ -565,6 +567,19 @@ def main() -> int:
             fail(f"{qid}: curation.origin missing")
         if not (cur.get("lifecycle") or "").strip():
             fail(f"{qid}: curation.lifecycle missing")
+        lifecycle = cur.get("lifecycle")
+        if question.review_status == "approved" and lifecycle not in {
+            "approved",
+            "split_frozen",
+            "evaluated",
+        }:
+            fail(f"{qid}: approved review_status is inconsistent with lifecycle {lifecycle!r}")
+        if question.review_status == "draft" and lifecycle in {
+            "approved",
+            "split_frozen",
+            "evaluated",
+        }:
+            fail(f"{qid}: draft review_status is inconsistent with lifecycle {lifecycle!r}")
         # Representativeness block (sidecar v3): two explicit signals.
         rep = record.get("representativeness")
         if not isinstance(rep, dict):
@@ -778,6 +793,25 @@ def main() -> int:
     review_package = (manifest.get("files") or {}).get("review_package")
     if not review_package or not (NOVEL_DIR / review_package).is_file():
         fail(f"manifest current review package missing: {review_package!r}")
+    finalization_report = (manifest.get("files") or {}).get("finalization_report")
+    if finalization_report and not (NOVEL_DIR / finalization_report).is_file():
+        fail(f"manifest finalization report missing: {finalization_report!r}")
+    review_state = manifest.get("review_state") or {}
+    review_counts = {
+        "accepted_count": sum(q.review_status == "approved" for q in questions),
+        "rejected_count": sum(q.review_status == "rejected" for q in questions),
+    }
+    for field, computed in review_counts.items():
+        if review_state.get(field) != computed:
+            fail(f"manifest review_state.{field} mismatch ({review_state.get(field)} != {computed})")
+    revise_count = review_state.get("revise_count", 0)
+    pending_count = review_state.get("pending_count", 0)
+    draft_count = sum(q.review_status == "draft" for q in questions)
+    if revise_count + pending_count != draft_count:
+        fail(
+            "manifest revise_count + pending_count must equal active draft count "
+            f"({revise_count} + {pending_count} != {draft_count})"
+        )
     for retired in manifest.get("retired_drafts", []):
         retired_id = retired.get("question_id")
         retired_family = retired.get("curation_family_id")

@@ -2,23 +2,24 @@
 
 ## Review boundary
 
-This document is the decision surface for the final human review of the N1
-Novel-Dev pilot. It was prepared by static inspection of the 16 active draft
-items and their locked Gold evidence. Codex recommendations are advisory only.
-They do not constitute human approval and do not change dataset review metadata,
-curation lifecycle state, N1 completion, or freeze state.
+This document records the explicit human decisions for the 16 active N1
+Novel-Dev pilot items. Codex recommendations remain advisory only. Human reviewer
+Li accepted 14 items and requested revisions to n002 and n008. Because those two
+items require re-review after correction, the pilot is not frozen and N1 is not
+complete.
 
-- Source baseline: `166c3f93d6640e5f150af3959d6c2330b8072de0`
+- Initial curation baseline: `166c3f93d6640e5f150af3959d6c2330b8072de0`
+- Human-decision package baseline: `5c1714bf9485f8f3e72e1d2bbb855104f0d2de8f`
 - Active set: n001-n010 and n014-n019 (16 questions, 16 semantic families)
 - Retired drafts: n011/nf011, n012/nf012, and n013/nf013 remain withdrawn
-- Human reviewer identity: **PENDING**
-- Human review timestamp: **PENDING**
-- Formal human decisions recorded: **0**
+- Human reviewer identity: **Li**
+- Human review timestamp: **2026-08-24T00:28:55+02:00**
+- Formal human decisions recorded: **16**
 
-For each item, the human reviewer should replace `PENDING` with `ACCEPT`,
-`REVISE`, or `REJECT` and add notes when needed. Formal dataset metadata must be
-updated only in an explicitly authorized finalization task after the reviewer
-identity and decisions are supplied.
+The two requested revisions are applied in the draft dataset, but the recorded
+`REVISE` decisions are not converted into acceptance without a new explicit
+human decision. The 14 accepted items carry approved review metadata; n002 and
+n008 remain drafts at `evidence_review_ready`.
 
 ## Item review sheets
 
@@ -50,31 +51,37 @@ identity and decisions are supplied.
 - **Known historical repairs:** Corrected the shell-test semantics, fallback
   semantics, and workflow source-type classification.
 - **Codex recommendation:** `RECOMMEND_ACCEPT`
-- **Human decision:** `PENDING`
+- **Human decision:** `ACCEPT`
 - **Human notes:**
 
 ### n002 / nf002
 
-- **Question:** What Python packages do the LuminosityFit analysis scripts
-  expect, and where in the repository are they declared?
+- **Question:** What Python packages does the LuminosityFit repository declare
+  in its Python requirements/tooling list, and where is that list located?
 - **Intent:** `installation`
 - **Primary task archetype:** `setup_environment`
 - **Expected status:** `answered`
 - **Difficulty:** `simple`
 - **Selection class:** `representative`
-- **Required answer points:** `requirements.txt` declares `autopep8`, `attrs`,
+- **Required answer points:** The repository's declared Python
+  requirements/tooling list is `requirements.txt`. It lists `autopep8`, `attrs`,
   `black`, `cattrs`, `flake8`, `isort`, `mypy`, `pycodestyle`, `pytest`,
-  `python-dotenv`, `uproot`, and `awkward`; it does not classify their roles.
+  `python-dotenv`, `uproot`, and `awkward`. The file does not establish that
+  every entry is required at runtime by every analysis script or classify the
+  entries by role.
 - **Critical evidence:** locked LuminosityFit `requirements.txt`.
-- **Novelty rationale:** No exposed case asks for LuminosityFit's Python-level
-  dependency declaration.
-- **Representativeness rationale:** Identifying declared dependencies is a core
-  setup task with a direct exposed benchmark analogue.
+- **Novelty rationale:** No exposed case asks for LuminosityFit's repository-level
+  Python requirements/tooling declaration.
+- **Representativeness rationale:** Identifying a repository's declared Python
+  requirements/tooling list is a plausible setup task with a direct exposed
+  benchmark analogue.
 - **Known historical repairs:** Removed unsupported runtime/development and
   package-role inferences.
 - **Codex recommendation:** `RECOMMEND_ACCEPT`
-- **Human decision:** `PENDING`
-- **Human notes:**
+- **Human decision:** `REVISE`
+- **Human notes:** Treat `requirements.txt` as the repository's declared Python
+  requirements/tooling list, not as proof that every listed package is required
+  by the analysis scripts. Correction applied; human re-review remains required.
 
 ### n003 / nf003
 
@@ -100,7 +107,7 @@ identity and decisions are supplied.
 - **Known historical repairs:** Added implementation evidence and an explicit
   description of `CalcActValues` progression.
 - **Codex recommendation:** `RECOMMEND_ACCEPT`
-- **Human decision:** `PENDING`
+- **Human decision:** `ACCEPT`
 - **Human notes:**
 
 ### n004 / nf004
@@ -126,7 +133,7 @@ identity and decisions are supplied.
 - **Known historical repairs:** None after the prior static review; retained as
   the unchanged control item.
 - **Codex recommendation:** `RECOMMEND_ACCEPT`
-- **Human decision:** `PENDING`
+- **Human decision:** `ACCEPT`
 - **Human notes:**
 
 ### n005 / nf005
@@ -153,7 +160,7 @@ identity and decisions are supplied.
 - **Known historical repairs:** Replaced the earlier vague file-opening claim
   with the macro's actual shared-prefix and friend-stage behavior.
 - **Codex recommendation:** `RECOMMEND_ACCEPT`
-- **Human decision:** `PENDING`
+- **Human decision:** `ACCEPT`
 - **Human notes:**
 
 ### n006 / nf006
@@ -180,7 +187,7 @@ identity and decisions are supplied.
 - **Known historical repairs:** Added the implementation source needed to
   support the concrete suffix inventory.
 - **Codex recommendation:** `RECOMMEND_ACCEPT`
-- **Human decision:** `PENDING`
+- **Human decision:** `ACCEPT`
 - **Human notes:**
 
 ### n007 / nf007
@@ -207,7 +214,7 @@ identity and decisions are supplied.
 - **Known historical repairs:** Removed retired encrypted-path material and
   isolated the supported shortID API.
 - **Codex recommendation:** `RECOMMEND_ACCEPT`
-- **Human decision:** `PENDING`
+- **Human decision:** `ACCEPT`
 - **Human notes:**
 
 ### n008 / nf008
@@ -223,17 +230,24 @@ identity and decisions are supplied.
 - **Required answer points:** The LMD study developed track-following and
   cellular-automaton approaches. Its low hit count requires using all hits, and
   the comparison seeks to minimize both missed and fake tracks because both
-  distort the reconstructed theta distribution used for luminosity.
-- **Critical evidence:** locked Karavdina 2015 thesis, pages 72-77.
+  distort the reconstructed theta distribution used for luminosity. For the
+  studied low-momentum, high-multiplicity cases at 1.5 GeV/c, the Cellular
+  Automaton has significantly smaller track losses and handles high-multiplicity
+  events better than Track Following; at 15 GeV/c their performance is similar.
+- **Critical evidence:** locked Karavdina 2015 thesis, pages 72-78.
 - **Novelty rationale:** Exposed LMD cases concern back-propagation, not
   hit-to-candidate track search or these two approaches.
 - **Representativeness rationale:** Track-search strategy is a meaningful LMD
   reconstruction concept with an exposed concept-comparison analogue.
-- **Known historical repairs:** Corrected the Gold page range to the minimum
-  sufficient pages 72-77.
+- **Known historical repairs:** The earlier Gold range was corrected to pages
+  72-77; human review then requested the directly supported performance
+  comparison, requiring a minimal extension through page 78.
 - **Codex recommendation:** `RECOMMEND_ACCEPT`
-- **Human decision:** `PENDING`
-- **Human notes:**
+- **Human decision:** `REVISE`
+- **Human notes:** Add the thesis-supported conclusion that Cellular Automaton
+  handles the studied low-energy/high-multiplicity cases better than Track
+  Following. Correction and page-78 evidence extension applied; human re-review
+  remains required.
 
 ### n009 / nf009
 
@@ -262,7 +276,7 @@ identity and decisions are supplied.
 - **Known historical repairs:** Corrected the intrinsic-versus-beam uncertainty
   scope, dominant parameters, ranges, and numerical statements.
 - **Codex recommendation:** `RECOMMEND_ACCEPT`
-- **Human decision:** `PENDING`
+- **Human decision:** `ACCEPT`
 - **Human notes:**
 
 ### n010 / nf010
@@ -291,7 +305,7 @@ identity and decisions are supplied.
 - **Known historical repairs:** Corrected response-versus-efficiency ownership
   and removed an unnecessary broader subsystem inventory.
 - **Codex recommendation:** `RECOMMEND_ACCEPT`
-- **Human decision:** `PENDING`
+- **Human decision:** `ACCEPT`
 - **Human notes:**
 
 ### n014 / nf014
@@ -318,7 +332,7 @@ identity and decisions are supplied.
 - **Known historical repairs:** Removed unsupported architecture and component
   inventory claims; retained only facts directly exposed by the two files.
 - **Codex recommendation:** `RECOMMEND_ACCEPT`
-- **Human decision:** `PENDING`
+- **Human decision:** `ACCEPT`
 - **Human notes:**
 
 ### n015 / nf015
@@ -344,7 +358,7 @@ identity and decisions are supplied.
 - **Known historical repairs:** Removed an unsupported empirical-frequency
   claim from the representativeness rationale.
 - **Codex recommendation:** `RECOMMEND_ACCEPT`
-- **Human decision:** `PENDING`
+- **Human decision:** `ACCEPT`
 - **Human notes:**
 
 ### n016 / nf016
@@ -370,7 +384,7 @@ identity and decisions are supplied.
 - **Known historical repairs:** Corrected “unsupported” into the evidenced
   “not documented/established” boundary.
 - **Codex recommendation:** `RECOMMEND_ACCEPT`
-- **Human decision:** `PENDING`
+- **Human decision:** `ACCEPT`
 - **Human notes:**
 
 ### n017 / nf017
@@ -397,7 +411,7 @@ identity and decisions are supplied.
 - **Known historical repairs:** Independently sampled replacement for retired
   n013; it does not reuse n013's identity or failed information need.
 - **Codex recommendation:** `RECOMMEND_ACCEPT`
-- **Human decision:** `PENDING`
+- **Human decision:** `ACCEPT`
 - **Human notes:**
 
 ### n018 / nf018
@@ -424,7 +438,7 @@ identity and decisions are supplied.
   information need changed from withdrawn n011; unsupported cross-stage trace
   claims were removed.
 - **Codex recommendation:** `RECOMMEND_ACCEPT`
-- **Human decision:** `PENDING`
+- **Human decision:** `ACCEPT`
 - **Human notes:**
 
 ### n019 / nf019
@@ -455,45 +469,45 @@ identity and decisions are supplied.
   nonzero selected PDG hypothesis and describes index/branch ID as constructor
   arguments rather than generic recorded state.
 - **Codex recommendation:** `RECOMMEND_ACCEPT`
-- **Human decision:** `PENDING`
+- **Human decision:** `ACCEPT`
 - **Human notes:**
 
 ## Decision matrix
 
 | ID | Codex recommendation | Human decision | Human notes |
 |---|---|---|---|
-| n001 | RECOMMEND_ACCEPT | PENDING | |
-| n002 | RECOMMEND_ACCEPT | PENDING | |
-| n003 | RECOMMEND_ACCEPT | PENDING | |
-| n004 | RECOMMEND_ACCEPT | PENDING | |
-| n005 | RECOMMEND_ACCEPT | PENDING | |
-| n006 | RECOMMEND_ACCEPT | PENDING | |
-| n007 | RECOMMEND_ACCEPT | PENDING | |
-| n008 | RECOMMEND_ACCEPT | PENDING | |
-| n009 | RECOMMEND_ACCEPT | PENDING | |
-| n010 | RECOMMEND_ACCEPT | PENDING | |
-| n014 | RECOMMEND_ACCEPT | PENDING | |
-| n015 | RECOMMEND_ACCEPT | PENDING | |
-| n016 | RECOMMEND_ACCEPT | PENDING | |
-| n017 | RECOMMEND_ACCEPT | PENDING | |
-| n018 | RECOMMEND_ACCEPT | PENDING | |
-| n019 | RECOMMEND_ACCEPT | PENDING | |
+| n001 | RECOMMEND_ACCEPT | ACCEPT | |
+| n002 | RECOMMEND_ACCEPT | REVISE | Treat `requirements.txt` as a declared repository list, not proof of per-script runtime requirements. |
+| n003 | RECOMMEND_ACCEPT | ACCEPT | |
+| n004 | RECOMMEND_ACCEPT | ACCEPT | |
+| n005 | RECOMMEND_ACCEPT | ACCEPT | |
+| n006 | RECOMMEND_ACCEPT | ACCEPT | |
+| n007 | RECOMMEND_ACCEPT | ACCEPT | |
+| n008 | RECOMMEND_ACCEPT | REVISE | Add the directly supported low-momentum/high-multiplicity CA versus TF result. |
+| n009 | RECOMMEND_ACCEPT | ACCEPT | |
+| n010 | RECOMMEND_ACCEPT | ACCEPT | |
+| n014 | RECOMMEND_ACCEPT | ACCEPT | |
+| n015 | RECOMMEND_ACCEPT | ACCEPT | |
+| n016 | RECOMMEND_ACCEPT | ACCEPT | |
+| n017 | RECOMMEND_ACCEPT | ACCEPT | |
+| n018 | RECOMMEND_ACCEPT | ACCEPT | |
+| n019 | RECOMMEND_ACCEPT | ACCEPT | |
 
-## Counts before human decisions
+## Human decision counts
 
 - Codex `RECOMMEND_ACCEPT`: 16
 - Codex `RECOMMEND_REVISE`: 0
 - Codex `RECOMMEND_REJECT`: 0
-- Human `ACCEPT`: 0
-- Human `REVISE`: 0
+- Human `ACCEPT`: 14
+- Human `REVISE`: 2
 - Human `REJECT`: 0
-- Human `PENDING`: 16
+- Human `PENDING`: 0
 
 ## Static-review conclusion
 
-All 16 active draft items remain answerable or intentionally
-`insufficient_evidence` as labelled, representative under the current pilot
-profile, semantically isolated by their 16 distinct curation families, and
-supported by satisfiable locked evidence obligations. No new blocker was found.
-This conclusion prepares human decisions; it does not approve or freeze any
-item.
+The reviewer accepted 14 items and requested revision of n002 and n008. Both
+requested content corrections are now applied and remain in their original
+semantic families, but the recorded human decisions remain `REVISE` until Li
+explicitly accepts the corrected drafts. The 14 accepted items are approved but
+not split-frozen. With two items awaiting re-review, the pilot is not frozen and
+N1 remains incomplete.

@@ -32,15 +32,15 @@ When records conflict, use the single section explicitly marked **Current author
 - Dense embedding remains `gemini-embedding-2`, configured at 3072 dimensions.
 - These current defaults do not rewrite the A3 measured provenance above, which remains `gemini-3.6-flash` with index schema 2 and identity `c527bbf1d10c88969da02745d678c640a4544757258584110a5ddd7744be3cf2`.
 
-## N1 novel-dev pilot curation — 2026-08-23 (N1-R2R1 final governance cleanup)
+## N1 novel-dev pilot curation — 2026-08-24 (human review in progress)
 
-- N1 status: `READY_FOR_FINAL_HUMAN_APPROVAL / HUMAN_REVIEW_PENDING`; not `COMPLETE`, approved, or frozen.
+- N1 status: `REVISION_REQUIRED_AFTER_HUMAN_REVIEW`; not `COMPLETE` or frozen. Human reviewer `Li` accepted 14 items and requested revision of n002 and n008 at `2026-08-24T00:28:55+02:00`.
 - Active count: `16` `novel_dev` drafts (`n001`-`n010`, `n014`-`n019`) in `16` independent active families. Drafts n011/nf011, n012/nf012, and n013/nf013 are `WITHDRAWN_DRAFT`; n011's repaired analysis-usage information need moved to n018, n012's unsupported original information need was replaced by independently sampled n019, and n013 remains replaced by n017. Retired IDs remain historical and must not be reused.
 - Intent coverage: 7 of 8 canonical intents (installation 2, usage 4, api 3, algorithm_theory 2, algorithm_implementation 2, data_flow 0, module_structure 1, troubleshooting 2). Expected status: `15` answered / `1` insufficient_evidence. Difficulty: 5 simple / 9 moderate / 2 hard. The missing data-flow intent is an explicit pilot gap, not a forced quota fill.
-- N1-R2R1 corrected n001's evaluator-compatible source type to `workflow`, reconciled n008 to the minimum sufficient locked-PDF range 72–77, and removed the false claim that PndFsmResponse carries detector efficiency. The repaired n011 content was reclassified as `usage` / `component_usage` under new ID n018 with tutorial-only evidence; n012 was retired without migration; n019 covers the independently sampled PndRecoKalmanTask implementation pipeline.
+- N1-R2R1 corrected n001's evaluator-compatible source type to `workflow` and removed the false claim that PndFsmResponse carries detector efficiency. Human review then revised n002 to treat `requirements.txt` as a repository-declared Python requirements/tooling list rather than proof of per-script runtime requirements, and added n008's directly supported Cellular-Automaton versus Track-Following performance result with the minimum locked-PDF extension from pages 72–77 to 72–78. The repaired n011 content was reclassified as `usage` / `component_usage` under new ID n018 with tutorial-only evidence; n012 was retired without migration; n019 covers the independently sampled PndRecoKalmanTask implementation pipeline.
 - Representativeness: 16 representative / 0 exploratory, following `benchmark_reference_fit` plus `domain_relevance`, with no active representative/exploratory quota. Primary task archetypes include two `implementation_explanation` cases, one `source_location`, and no fabricated data-flow replacement.
 - N1-R1 methodology remains authoritative (`benchmark_reference_proxy`, `empirical_user_frequency: false`, task archetype orthogonal to answerability). The static validator freshly derives minimum required source scope, topology, and difficulty for all Gold v2.6 cases.
-- Package: `evaluation/novel/v1/`; current review artifact `N1R2R1_REVIEW_PACKAGE.md`; sidecar v3; dataset identity `novel-v1-n1-pilot-draft`; `release_eligible: false`. Every active question remains `review_status: draft`, `reviewer: null`, `reviewed_at: null`; human-approved questions: `0`.
+- Package: `evaluation/novel/v1/`; current review artifacts `N1_FINAL_HUMAN_REVIEW.md` and `N1_FINALIZATION_REPORT.md`; sidecar v3; dataset identity `novel-v1-n1-pilot-draft`; `release_eligible: false`. Fourteen active questions are `approved` with reviewer `Li`; n002 and n008 remain `draft` at `evidence_review_ready` pending explicit human re-acceptance. Human decision counts: 14 ACCEPT / 2 REVISE / 0 REJECT / 0 PENDING.
 - No evaluation or runtime inspection occurred: PANDA retrieval, QA, judge, Vertex, embeddings, index rebuilds, and benchmark/novel outcome inspection were all `0`. Only locked source/PDF inspection and static T0 validation were used.
 - No validation or holdout content was created; full-dataset quotas remain unfrozen.
 
@@ -526,7 +526,7 @@ The retrieval and QA measurements are unchanged. A3.1 corrects only metric repre
 - Human-approved: no novel question has final human approval yet.
 - Empty novel JSONL artifacts are schema/placeholders, not measured results.
 - Curation governance: N0 `COMPLETE`; `docs/NOVEL_DATASET_CURATION_CONTRACT.md` is authoritative.
-- Next curation task: N1 human review/pilot finalization; the N1-R2R1 16-question draft is ready for final human approval but remains unapproved.
+- Next curation task: N1 human re-review/pilot finalization for corrected n002 and n008; the other 14 active questions are approved, but the pilot remains unfrozen.
 
 ## Known limitations
 
@@ -536,7 +536,7 @@ The retrieval and QA measurements are unchanged. A3.1 corrects only metric repre
 
 ## Next authorized roadmap task
 
-**N1 Human Review / Pilot Finalization** is the next task. N1-R2R1 governance cleanup is complete, while human approval, N1 completion, C8, and all novel evaluation remain unexecuted.
+**N1 Human Re-review / Pilot Finalization** is the next task. Human reviewer `Li` accepted 14 questions and requested revisions to n002 and n008; those corrections are applied but await explicit re-acceptance. N1 completion, pilot freeze, C8, and all novel evaluation remain unexecuted.
 
 ### Historical pre-N0 roadmap summary
 

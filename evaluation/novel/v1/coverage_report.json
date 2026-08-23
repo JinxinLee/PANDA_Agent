@@ -3,7 +3,7 @@
   "dataset_identity": "novel-v1-n1-pilot-draft",
   "benchmark_version": "novel-v1-dev-0.1.0",
   "split": "novel_dev",
-  "status": "READY_FOR_FINAL_HUMAN_APPROVAL",
+  "status": "REVISION_REQUIRED_AFTER_HUMAN_REVIEW",
   "question_count": 16,
   "independent_family_count": 16,
   "counts_by_intent": {
@@ -89,7 +89,15 @@
     "origin": "human_directed_llm_draft",
     "agent_outcome_seen_before_freeze": false,
     "evidence_selected_from_agent_output": false,
-    "human_approval": "pending",
+    "human_approval": "partial",
+    "human_reviewer": "Li",
+    "reviewed_at": "2026-08-24T00:28:55+02:00",
+    "review_decision_counts": {
+      "accepted": 14,
+      "revise": 2,
+      "rejected": 0,
+      "pending": 0
+    },
     "locked_corpus_source_versions": [
       "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
       "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",

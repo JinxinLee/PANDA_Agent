@@ -4,16 +4,20 @@
   "benchmark_version": "novel-v1-dev-0.1.0",
   "dataset_version": "0.1.0",
   "split": "novel_dev",
-  "status": "READY_FOR_HUMAN_DECISIONS",
+  "status": "REVISION_REQUIRED_AFTER_HUMAN_REVIEW",
   "release_eligible": false,
   "acceptance_exposed": true,
   "question_count": 16,
   "independent_family_count": 16,
   "review_state": {
-    "review_status": "draft",
-    "reviewer": null,
-    "reviewed_at": null,
-    "human_approval": "pending"
+    "review_status": "mixed",
+    "reviewer": "Li",
+    "reviewed_at": "2026-08-24T00:28:55+02:00",
+    "human_approval": "partial",
+    "accepted_count": 14,
+    "revise_count": 2,
+    "rejected_count": 0,
+    "pending_count": 0
   },
   "curation_origin": "human_directed_llm_draft",
   "agent_outcome_seen_before_freeze": false,
@@ -22,7 +26,8 @@
     "dataset": "novel_dev.yaml",
     "curation_metadata": "curation_metadata.yaml",
     "coverage_report": "coverage_report.json",
-    "review_package": "N1_FINAL_HUMAN_REVIEW.md"
+    "review_package": "N1_FINAL_HUMAN_REVIEW.md",
+    "finalization_report": "N1_FINALIZATION_REPORT.md"
   },
   "locked_corpus_manifest": "data/manifests/source_manifest.json",
   "governance": "docs/NOVEL_DATASET_CURATION_CONTRACT.md",

@@ -58,7 +58,7 @@ records:
       origin: human_directed_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: evidence_review_ready
+      lifecycle: approved
   - question_id: n002
     curation_family_id: nf002
     intent: installation
@@ -74,11 +74,11 @@ records:
         evidence: none
         information_need: low
       rationale: >-
-        No exposed installation case covers LuminosityFit's own Python-level
-        dependencies. g002 asks for documented build prerequisites of
-        PandaRoot; this candidate is about the LuminosityFit repository's
-        requirements.txt and its exact, unclassified dependency list, an
-        independent repository-level information need.
+        No exposed installation case covers LuminosityFit's own repository-level
+        Python requirements/tooling list. g002 asks for documented build
+        prerequisites of PandaRoot; this candidate asks where LuminosityFit
+        declares its exact unclassified list, without treating the file as proof
+        that every entry is a runtime requirement of every analysis script.
     representativeness:
       class: representative
       primary_task_archetype: setup_environment
@@ -90,9 +90,10 @@ records:
       corpus_tail: representative_core
       disposition: KEEP_REPRESENTATIVE
       rationale: >-
-        Benchmark analogue: g002 asks for documented build prerequisites; this asks
-        the dependency question of an independently selected repository. Domain
-        relevance: every LuminosityFit script user needs this environment first.
+        Benchmark analogue: g002 asks for documented build prerequisites; this
+        asks where an independently selected repository declares its Python
+        requirements/tooling list. Domain relevance: users and developers
+        plausibly inspect this list when preparing the repository environment.
     coverage:
       repositories:
         - luminosityfit
@@ -165,7 +166,7 @@ records:
       origin: human_directed_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: evidence_review_ready
+      lifecycle: approved
   - question_id: n004
     curation_family_id: nf004
     intent: usage
@@ -218,7 +219,7 @@ records:
       origin: human_directed_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: evidence_review_ready
+      lifecycle: approved
   - question_id: n005
     curation_family_id: nf005
     intent: usage
@@ -273,7 +274,7 @@ records:
       origin: human_directed_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: evidence_review_ready
+      lifecycle: approved
   - question_id: n006
     curation_family_id: nf006
     intent: api
@@ -329,7 +330,7 @@ records:
       origin: human_directed_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: evidence_review_ready
+      lifecycle: approved
   - question_id: n007
     curation_family_id: nf007
     intent: api
@@ -386,7 +387,7 @@ records:
       origin: human_directed_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: evidence_review_ready
+      lifecycle: approved
   - question_id: n008
     curation_family_id: nf008
     intent: algorithm_theory
@@ -503,7 +504,7 @@ records:
       origin: human_directed_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: evidence_review_ready
+      lifecycle: approved
   - question_id: n010
     curation_family_id: nf010
     intent: algorithm_implementation
@@ -557,7 +558,7 @@ records:
       origin: human_directed_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: evidence_review_ready
+      lifecycle: approved
   - question_id: n014
     curation_family_id: nf014
     intent: module_structure
@@ -614,7 +615,7 @@ records:
       origin: human_directed_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: evidence_review_ready
+      lifecycle: approved
   - question_id: n015
     curation_family_id: nf015
     intent: troubleshooting
@@ -669,7 +670,7 @@ records:
       origin: human_directed_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: evidence_review_ready
+      lifecycle: approved
   - question_id: n016
     curation_family_id: nf016
     intent: troubleshooting
@@ -725,7 +726,7 @@ records:
       origin: human_directed_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: evidence_review_ready
+      lifecycle: approved
   - question_id: n017
     curation_family_id: nf017
     intent: api
@@ -782,7 +783,7 @@ records:
       origin: human_directed_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: evidence_review_ready
+      lifecycle: approved
   - question_id: n018
     curation_family_id: nf018
     intent: usage
@@ -839,7 +840,7 @@ records:
       origin: human_directed_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: evidence_review_ready
+      lifecycle: approved
   - question_id: n019
     curation_family_id: nf019
     intent: algorithm_implementation
@@ -896,4 +897,4 @@ records:
       origin: human_directed_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: evidence_review_ready
+      lifecycle: approved

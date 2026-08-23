@@ -70,16 +70,16 @@ questions:
     concept_scopes: {}
     cluster_id: nf001
     challenge_tags: []
-    review_status: draft
-    reviewer: null
-    reviewed_at: null
+    review_status: approved
+    reviewer: Li
+    reviewed_at: 2026-08-24T00:28:55+02:00
   - id: n002
     split: novel_dev
     language: en
     intent: installation
     query: >-
-      What Python packages do the LuminosityFit analysis scripts expect, and
-      where in the repository are they declared?
+      What Python packages does the LuminosityFit repository declare in its
+      Python requirements/tooling list, and where is that list located?
     expected_status: answered
     allowed_source_versions:
       - luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32
@@ -92,7 +92,7 @@ questions:
       - curated_panda_domain@1.0
     required_evidence_groups:
       - group_id: n002.e1
-        role: declared_python_dependencies
+        role: declared_python_requirements_and_tooling_list
         critical: true
         any_of:
           - source_id: luminosityfit
@@ -103,10 +103,12 @@ questions:
     required_answer_points:
       - point_id: p1
         text: >-
-          The dependency declaration is requirements.txt. It lists autopep8,
-          attrs, black, cattrs, flake8, isort, mypy, pycodestyle, pytest,
-          python-dotenv, uproot, and awkward; the file does not label runtime
-          versus development dependencies or assign package-specific roles.
+          The repository's declared Python requirements/tooling list is
+          requirements.txt. It lists autopep8, attrs, black, cattrs, flake8,
+          isort, mypy, pycodestyle, pytest, python-dotenv, uproot, and awkward.
+          The file does not establish that every entry is required at runtime
+          by every analysis script, label runtime versus development entries,
+          or assign package-specific roles.
         weight: 1.0
         critical: true
     required_identifiers: []
@@ -184,9 +186,9 @@ questions:
     concept_scopes: {}
     cluster_id: nf003
     challenge_tags: []
-    review_status: draft
-    reviewer: null
-    reviewed_at: null
+    review_status: approved
+    reviewer: Li
+    reviewed_at: 2026-08-24T00:28:55+02:00
   - id: n004
     split: novel_dev
     language: en
@@ -240,9 +242,9 @@ questions:
     concept_scopes: {}
     cluster_id: nf004
     challenge_tags: []
-    review_status: draft
-    reviewer: null
-    reviewed_at: null
+    review_status: approved
+    reviewer: Li
+    reviewed_at: 2026-08-24T00:28:55+02:00
   - id: n005
     split: novel_dev
     language: en
@@ -301,9 +303,9 @@ questions:
     concept_scopes: {}
     cluster_id: nf005
     challenge_tags: []
-    review_status: draft
-    reviewer: null
-    reviewed_at: null
+    review_status: approved
+    reviewer: Li
+    reviewed_at: 2026-08-24T00:28:55+02:00
   - id: n006
     split: novel_dev
     language: en
@@ -367,9 +369,9 @@ questions:
     concept_scopes: {}
     cluster_id: nf006
     challenge_tags: []
-    review_status: draft
-    reviewer: null
-    reviewed_at: null
+    review_status: approved
+    reviewer: Li
+    reviewed_at: 2026-08-24T00:28:55+02:00
   - id: n007
     split: novel_dev
     language: en
@@ -425,9 +427,9 @@ questions:
     concept_scopes: {}
     cluster_id: nf007
     challenge_tags: []
-    review_status: draft
-    reviewer: null
-    reviewed_at: null
+    review_status: approved
+    reviewer: Li
+    reviewed_at: 2026-08-24T00:28:55+02:00
   - id: n008
     split: novel_dev
     language: en
@@ -453,7 +455,7 @@ questions:
         any_of:
           - source_id: karavdina_2015
             pdf_page: 72
-            pdf_page_end: 77
+            pdf_page_end: 78
     required_source_types:
       - paper
     required_answer_points:
@@ -476,6 +478,15 @@ questions:
           The quality goal of the comparison is minimizing both missed and
           fake tracks, because either distorts the reconstructed theta-angle
           distribution on which the luminosity determination depends.
+        weight: 1.0
+        critical: true
+      - point_id: p4
+        text: >-
+          In the studied low-momentum, high-multiplicity cases at 1.5 GeV/c,
+          the Cellular Automaton has significantly smaller track losses and
+          handles high-multiplicity events better than Track Following. At 15
+          GeV/c, the difference is no longer significant and their performance
+          is similar.
         weight: 1.0
         critical: true
     required_identifiers: []
@@ -564,9 +575,9 @@ questions:
     concept_scopes: {}
     cluster_id: nf009
     challenge_tags: []
-    review_status: draft
-    reviewer: null
-    reviewed_at: null
+    review_status: approved
+    reviewer: Li
+    reviewed_at: 2026-08-24T00:28:55+02:00
   - id: n010
     split: novel_dev
     language: en
@@ -648,9 +659,9 @@ questions:
     concept_scopes: {}
     cluster_id: nf010
     challenge_tags: []
-    review_status: draft
-    reviewer: null
-    reviewed_at: null
+    review_status: approved
+    reviewer: Li
+    reviewed_at: 2026-08-24T00:28:55+02:00
   - id: n014
     split: novel_dev
     language: en
@@ -708,9 +719,9 @@ questions:
     concept_scopes: {}
     cluster_id: nf014
     challenge_tags: []
-    review_status: draft
-    reviewer: null
-    reviewed_at: null
+    review_status: approved
+    reviewer: Li
+    reviewed_at: 2026-08-24T00:28:55+02:00
   - id: n015
     split: novel_dev
     language: en
@@ -759,9 +770,9 @@ questions:
     concept_scopes: {}
     cluster_id: nf015
     challenge_tags: []
-    review_status: draft
-    reviewer: null
-    reviewed_at: null
+    review_status: approved
+    reviewer: Li
+    reviewed_at: 2026-08-24T00:28:55+02:00
   - id: n016
     split: novel_dev
     language: en
@@ -808,9 +819,9 @@ questions:
     concept_scopes: {}
     cluster_id: nf016
     challenge_tags: []
-    review_status: draft
-    reviewer: null
-    reviewed_at: null
+    review_status: approved
+    reviewer: Li
+    reviewed_at: 2026-08-24T00:28:55+02:00
   - id: n017
     split: novel_dev
     language: en
@@ -862,9 +873,9 @@ questions:
     concept_scopes: {}
     cluster_id: nf017
     challenge_tags: []
-    review_status: draft
-    reviewer: null
-    reviewed_at: null
+    review_status: approved
+    reviewer: Li
+    reviewed_at: 2026-08-24T00:28:55+02:00
   - id: n018
     split: novel_dev
     language: en
@@ -916,9 +927,9 @@ questions:
     concept_scopes: {}
     cluster_id: nf018
     challenge_tags: []
-    review_status: draft
-    reviewer: null
-    reviewed_at: null
+    review_status: approved
+    reviewer: Li
+    reviewed_at: 2026-08-24T00:28:55+02:00
   - id: n019
     split: novel_dev
     language: en
@@ -988,6 +999,6 @@ questions:
     concept_scopes: {}
     cluster_id: nf019
     challenge_tags: []
-    review_status: draft
-    reviewer: null
-    reviewed_at: null
+    review_status: approved
+    reviewer: Li
+    reviewed_at: 2026-08-24T00:28:55+02:00
