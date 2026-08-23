@@ -71,7 +71,8 @@ smallest source footprint that satisfies **all critical evidence groups**
 (groups are AND requirements; selectors within a group are OR alternatives;
 ties resolve to the least complex scope category; workflow/repository
 object ids map deterministically to their owning repository; opaque
-`object.<hash>` selectors constrain nothing).
+`object.<hash>` selectors are resolved from static provenance and are never
+treated as unconstrained or zero-cost).
 
 Corrected `minimum_required_source_scope` distribution:
 
@@ -96,6 +97,12 @@ the same minimum-footprint semantics
 (`single_evidence 49 / multi_evidence_single_scope 40 /
 multi_evidence_cross_scope 31`; difficulty proxy `simple 49 / moderate 43 /
 hard 28`).
+
+N1-R2 made this derivation repository-reproducible in
+`evaluation/scripts/validate_novel_curation.py`. A fresh static derivation now
+checks every stored assignment and aggregate distribution. It reproduces
+`120/120` Gold assignments with `0` unresolved opaque selectors; therefore the
+v2 distribution above remains unchanged.
 
 ## N1 reassessment under the corrected method
 

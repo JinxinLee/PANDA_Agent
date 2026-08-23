@@ -14,9 +14,9 @@ questions:
     intent: installation
     query: >-
       I am building the RestgasDetermination fork on the GSI cluster. Which
-      FairSoft and FairRoot version combinations does its setup script
-      recognize, and which environment variables am I expected to export for
-      the external packages?
+      FairSoft/FairRoot pairs and paths are encoded in configSettings.sh, which
+      environment variables does it assign, and what does the script actually
+      do for unmatched input as written?
     expected_status: answered
     allowed_source_versions:
       - luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32
@@ -29,7 +29,7 @@ questions:
       - curated_panda_domain@1.0
     required_evidence_groups:
       - group_id: n001.e1
-        role: supported_fairroot_version_pairs
+        role: encoded_version_branches_and_shell_behavior
         critical: true
         any_of:
           - source_id: restgas_determination
@@ -47,16 +47,22 @@ questions:
     required_answer_points:
       - point_id: p1
         text: >-
-          The fork's configuration script recognizes two version pairs:
-          FairSoft may16p1 with FairRoot v-17.10b, and FairSoft oct17 with
-          FairRoot dev; any other combination is rejected with an error.
+          The script encodes branches for FairSoft may16p1 with FairRoot
+          v-17.10b and for FairSoft oct17 with FairRoot dev, assigning
+          placeholder build/install paths for each pair. These are intended
+          branch literals, not actual validation: without spaces around ==,
+          each bracket expression is a single nonempty argument and evaluates
+          true in Bash, so the first branch is taken regardless of the supplied
+          version values.
         weight: 1.0
         critical: true
       - point_id: p2
         text: >-
-          The environment it expects is defined by SIMPATH, pointing at the
-          external FairSoft packages, and FAIRROOTPATH, pointing at the
-          FairRoot installation.
+          The branches export SIMPATH for the FairSoft build and FAIRROOTPATH
+          for the FairRoot installation. Although the malformed tests make the
+          first branch win in ordinary Bash, the source's nominal else branch
+          only echoes the supplied values; it does not exit, throw, or enforce
+          a nonzero failure status.
         weight: 1.0
         critical: true
     required_identifiers: []
@@ -92,28 +98,15 @@ questions:
           - source_id: luminosityfit
             object_type: source_file
             path: requirements.txt
-      - group_id: n002.e2
-        role: python_workflow_context
-        critical: true
-        any_of:
-          - source_id: luminosityfit
-            path: python/Readme.md
     required_source_types:
       - code
     required_answer_points:
       - point_id: p1
         text: >-
-          The repository declares its Python dependencies in requirements.txt,
-          including uproot and awkward for columnar ROOT-data handling,
-          python-dotenv, and development tooling such as black, flake8, mypy,
-          and pytest.
-        weight: 1.0
-        critical: true
-      - point_id: p2
-        text: >-
-          The python directory Readme documents the script-based simulation,
-          reconstruction, and luminosity-determination workflow that these
-          packages support.
+          The dependency declaration is requirements.txt. It lists autopep8,
+          attrs, black, cattrs, flake8, isort, mypy, pycodestyle, pytest,
+          python-dotenv, uproot, and awkward; the file does not label runtime
+          versus development dependencies or assign package-specific roles.
         weight: 1.0
         critical: true
     required_identifiers: []
@@ -153,13 +146,19 @@ questions:
           - source_id: pandaroot_sphinx_2023_08_25_dev
             object_type: sphinx_page
             path: pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/EventGenerators/FixStepParticleGun.html
+      - group_id: n003.e2
+        role: per_event_step_advancement
+        critical: true
+        any_of:
+          - source_id: pandaroot
+            object_type: source_file
+            path: pgenerators/particleguns/PndFixStepParticleGun.cxx
     required_source_types: []
     required_answer_points:
       - point_id: p1
         text: >-
           The fixed-step scanning generator is PndFixStepParticleGun, a
-          PndTargetGenerator subclass that advances kinematic quantities in
-          configured steps across events.
+          PndTargetGenerator subclass.
         weight: 1.0
         critical: true
       - point_id: p2
@@ -167,6 +166,14 @@ questions:
           Stepping is configured through range setters built on start/stop/step
           values: SetPRange(pmin, pmax, pstep) for momentum and
           SetThetaRange(thetamin, thetamax, thetastep) for the polar angle.
+        weight: 1.0
+        critical: true
+      - point_id: p3
+        text: >-
+          ReadEvent calls CalcActValues for each generated event. After the
+          first event, CalcActValues increments the inner active range by its
+          configured step and rolls over into the middle and outer ranges when
+          a stop value is exceeded.
         weight: 1.0
         critical: true
     required_identifiers:
@@ -263,16 +270,14 @@ questions:
             object_type: sphinx_page
             path: pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/EventDisplay/EventDisplay.html
       - group_id: n005.e2
-        role: event_browsing_usage
+        role: event_display_file_opening
         critical: true
         any_of:
-          - source_id: pandaroot_sphinx_2023_08_25_dev
-            object_type: sphinx_page
-            path: pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/EventDisplay/EventDisplay_Events.html
-          - source_id: pandaroot_sphinx_2023_08_25_dev
-            object_type: sphinx_page
-            path: pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/EventDisplay/EventDisplay_DetectorGeometry.html
+          - source_id: pandaroot
+            object_type: source_file
+            path: macro/tools/eventDisplay.C
     required_source_types:
+      - code
       - documentation
     required_answer_points:
       - point_id: p1
@@ -285,10 +290,10 @@ questions:
         critical: true
       - point_id: p2
         text: >-
-          Events are displayed through the EVE browser and FairEventManager:
-          stepping uses the Update button or the Current Event selector, and
-          it is advisable to disable or make the geometry transparent while
-          browsing events.
+          Run macro/tools/eventDisplay.C with the shared file prefix. The macro
+          defaults that prefix to ../data/evtcomplete, configures sim, digi,
+          and reco as friend stages, and passes the prefix to
+          PndMasterRunAna::Setup before starting the FairEventManager display.
         weight: 1.0
         critical: true
     required_identifiers: []
@@ -329,6 +334,13 @@ questions:
           - source_id: pandaroot_sphinx_2023_08_25_dev
             object_type: sphinx_page
             path: pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tools/PndFileNameCreator.html
+      - group_id: n006.e2
+        role: filename_suffix_literals
+        critical: true
+        any_of:
+          - source_id: pandaroot
+            object_type: source_file
+            path: tools/PndFileNameCreator.cxx
     required_source_types: []
     required_answer_points:
       - point_id: p1
@@ -341,11 +353,10 @@ questions:
         critical: true
       - point_id: p2
         text: >-
-          It defines extensions for the parameter, simulation, digitization,
-          reconstruction, PID, track-finding, Riemann, Kalman, and vertex
-          stages (GetParFileName, GetSimFileName, GetDigiFileName,
-          GetRecoFileName, GetPidFileName, GetTrackFindingFileName,
-          GetRiemannFileName, GetKalmanFileName, GetVertexFileName).
+          Its constructors define the suffix literals par, sim, digi, reco,
+          pid, trackF, idealTrackF, riemann, combRiemann, kalman, and vertex,
+          which the corresponding Get*FileName methods pass to
+          GetCustomFileName.
         weight: 1.0
         critical: true
     required_identifiers:
@@ -364,10 +375,9 @@ questions:
     language: en
     intent: api
     query: >-
-      The MVD hits I read back from a file contain compact volume identifiers
-      instead of readable volume paths. How can I translate such an identifier
-      into the full detector path at analysis time, and what does that
-      translation need?
+      The MVD hits I read back from a file contain shortIDs instead of readable
+      geometry paths. How can I resolve a shortID to the full detector path at
+      analysis time, and what state must be initialized first?
     expected_status: answered
     allowed_source_versions:
       - luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32
@@ -393,17 +403,18 @@ questions:
     required_answer_points:
       - point_id: p1
         text: >-
-          PndGeoHandling converts between the encrypted per-hit volume paths
-          (for example /1_1/34_2/101_1/) or shortIds and the full geometry
-          paths of the TGeoManager, via GetPath and GetShortID.
+          PndGeoHandling::GetPath(Int_t shortID) resolves a shortID to its full
+          geometry path. GetShortID(TString path) provides the reverse lookup
+          and returns -1 when the path is not found.
         weight: 1.0
         critical: true
       - point_id: p2
         text: >-
-          The translation needs an initialized TGeoManager with the correct
-          geometry (for example from a FAIRGeom file), and for shortIds the
-          sensor-name parameter container, so the instance must be created in
-          a task's SetParContainers to have the names from the database.
+          The translation needs the initialized TGeoManager and the
+          PndSensorNamePar state that maps sensor paths to shortIDs. The header
+          explicitly requires constructing PndGeoHandling in a task's
+          SetParContainers when shortID support is needed so names are loaded
+          from the parameter database.
         weight: 1.0
         critical: true
     required_identifiers:
@@ -481,8 +492,9 @@ questions:
     intent: algorithm_theory
     query: >-
       The luminosity fit leans on an elastic-scattering model. Besides DPM,
-      which alternative model was studied for PANDA luminosity, does it also
-      exist as code, and what dominates the model uncertainty?
+      which alternative was studied for PANDA luminosity, does it also exist
+      as LuminosityFit code, and what does the thesis say about its intrinsic
+      parameter uncertainty and the added beam-momentum uncertainty?
     expected_status: answered
     allowed_source_versions:
       - luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32
@@ -495,15 +507,12 @@ questions:
       - curated_panda_domain@1.0
     required_evidence_groups:
       - group_id: n009.e1
-        role: elastic_model_alternatives
+        role: elastic_model_and_intrinsic_uncertainty
         critical: true
         any_of:
           - source_id: karavdina_2015
             pdf_page: 50
-            pdf_page_end: 53
-          - source_id: karavdina_2015
-            pdf_page: 54
-            pdf_page_end: 59
+            pdf_page_end: 56
       - group_id: n009.e2
         role: model_uncertainty_source
         critical: true
@@ -535,16 +544,19 @@ questions:
         critical: true
       - point_id: p2
         text: >-
-          The model uncertainty is driven by the beam momentum uncertainty
-          mapped onto the momentum transfer, and the thesis quantifies the
-          resulting cross-section uncertainty integrated over theta ranges.
+          For the E760-like model's intrinsic parameter uncertainty, the
+          thesis identifies sigma_T and rho as the dominant contributions at
+          small |t| and b as dominant at large |t|; over the original 2-8
+          GeV/c range it reports the integrated model uncertainty below 0.5%.
         weight: 1.0
         critical: true
       - point_id: p3
         text: >-
-          At low beam momenta below about 3.5 GeV/c, where the Coulomb part
-          dominates, the expected model uncertainty stays below roughly two
-          percent.
+          Beam-momentum uncertainty is a separate systematic. The expected
+          HESR momentum precision near 5 GeV/c corresponds to Delta P/P around
+          10^-5, for which the thesis reports an added E760-like model
+          uncertainty below 0.005%; only much larger momentum deviations
+          become significant or dominant.
         weight: 1.0
         critical: true
     required_identifiers: []
@@ -575,12 +587,12 @@ questions:
       - curated_panda_domain@1.0
     required_evidence_groups:
       - group_id: n010.e1
-        role: fastsim_task_api
+        role: fastsim_response_pipeline
         critical: true
         any_of:
           - source_id: pandaroot
             object_type: source_file
-            path: fastsim/PndFastSim.h
+            path: fastsim/PndFastSim.cxx
       - group_id: n010.e2
         role: detector_response_abstraction
         critical: true
@@ -588,6 +600,17 @@ questions:
           - source_id: pandaroot
             object_type: source_file
             path: fastsim/PndFsmAbsDet.h
+      - group_id: n010.e3
+        role: configured_detector_factory
+        critical: true
+        any_of:
+          - source_id: pandaroot
+            object_type: source_file
+            path: fastsim/PndFsmDetFactory.cxx
+      - group_id: n010.e4
+        role: response_value_object
+        critical: true
+        any_of:
           - source_id: pandaroot
             object_type: source_file
             path: fastsim/PndFsmResponse.h
@@ -596,23 +619,26 @@ questions:
     required_answer_points:
       - point_id: p1
         text: >-
-          PndFastSim is a FairTask (a PndPersistencyTask) that applies
-          parametrized detector responses to generated particles instead of
-          running full GEANT transport.
+          PndFastSim builds PndFsmTrack candidates from simulated particles,
+          asks each configured detector for a parameterized response, combines
+          those responses, and applies acceptance cuts and smearing to the
+          candidate.
         weight: 1.0
         critical: true
       - point_id: p2
         text: >-
-          Detectors are attached with AddDetector either by name with
-          parameters or as PndFsmAbsDet implementations, covering subsystems
-          such as MVD, EMC, DIRC, STT, TOF, RICH, and MDT.
+          Detectors implement PndFsmAbsDet::respond(PndFsmTrack*). AddDetector
+          accepts either an implementation object or a name plus parameters;
+          the named form delegates to PndFsmDetFactory, whose implementation
+          maps supported names to concrete detector-response classes.
         weight: 1.0
         critical: true
       - point_id: p3
         text: >-
-          Per-detector PndFsmResponse objects are summed and applied to
-          PndFsmTrack candidates by cut-and-smear, with options such as
-          split-offs, neutral-cluster merging, and electron bremsstrahlung.
+          Each detector returns a PndFsmResponse carrying acceptance,
+          resolution/smearing, efficiency, and PID-response values. PndFastSim
+          sums the responses and uses the combined values in cutAndSmear; no
+          broader subsystem inventory is required to answer the question.
         weight: 1.0
         critical: true
     required_identifiers: []
@@ -628,9 +654,9 @@ questions:
     language: en
     intent: data_flow
     query: >-
-      How does Monte Carlo truth information survive from the event generator
-      into my analysis, and how can I check whether a reconstructed decay tree
-      matches the generated one?
+      In PandaRoot analysis, how can I inspect the Monte Carlo truth counterpart
+      of a reconstructed candidate and check whether an entire reconstructed
+      decay tree matches the generated one?
     expected_status: answered
     allowed_source_versions:
       - luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32
@@ -651,33 +677,22 @@ questions:
             path: pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/tut_02_04_analysis_mctruth.html
           - source_id: pandaroot_sphinx_2023_08_25_dev
             title_contains: Monte Carlo Truth Match
-      - group_id: n011.e2
-        role: mc_track_info_tooling
-        critical: true
-        any_of:
-          - source_id: pandaroot
-            object_type: source_file
-            path: tools/PndMCTrackAna/PndMCTrackInfo.h
-          - source_id: pandaroot
-            object_type: source_file
-            path: tools/PndMCTrackAna/PndMCTrackInfoTask.h
     required_source_types:
       - documentation
-      - code
     required_answer_points:
       - point_id: p1
         text: >-
-          Reconstructed candidates keep their Monte Carlo truth through link
-          machinery, and the analysis tutorial covers accessing the MC truth,
-          a full MC truth tree match, and the MC truth list for checking a
-          reconstructed decay tree against the generated one.
+          Call RhoCandidate::GetMcTruth() on a reconstructed final-state
+          candidate and check the returned pointer before using the truth
+          candidate; noise-only reconstructed tracks may have no counterpart.
         weight: 1.0
         critical: true
       - point_id: p2
         text: >-
-          The MC Track Analysis tooling in tools/PndMCTrackAna (PndMCTrackInfo
-          and its task) provides track-level MC information that such
-          truth-based checks are built on.
+          Use PndAnalysis::McTruthMatch(candidate) for a full arbitrary decay
+          tree match. Composite candidates must be assigned their intended
+          particle types during combinatorics, and the tutorial recommends
+          loading the EvtGen PDG table first so type codes agree.
         weight: 1.0
         critical: true
     required_identifiers: []
@@ -693,9 +708,9 @@ questions:
     language: en
     intent: data_flow
     query: >-
-      The luminosity determination assumes the LMD geometry is perfectly
-      aligned. Where do alignment corrections come from before a luminosity
-      determination, and where do they enter the workflow?
+      What alignment method was studied for the LMD, and where does the current
+      LuminosityFit workflow place an alignment stage relative to the later
+      analysis steps?
     expected_status: answered
     allowed_source_versions:
       - luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32
@@ -726,18 +741,19 @@ questions:
     required_answer_points:
       - point_id: p1
         text: >-
-          LMD module alignment is treated as its own step: misaligned modules
-          degrade track reconstruction, and the internal alignment is
-          constrained with Millepede, which needs on the order of ten thousand
-          tracks because a plain global matrix inversion at that size is
-          infeasible.
+          The 2015 study describes fast, track-based internal alignment of LMD
+          sensor modules using a non-iterative least-squares method with the
+          C++ Millepede matrix-crushing algorithm; it minimizes residuals while
+          fitting track and global alignment parameters.
         weight: 1.0
         critical: true
       - point_id: p2
         text: >-
-          In the LuminosityFit workflow an alignment process may run before
-          everything else, ahead of the IP-distribution creation and the
-          luminosity-determination steps documented in the python Readme.
+          The current LuminosityFit python Readme says that a possible
+          alignment process should run before its listed workflow, whose later
+          steps begin with IP-distribution construction and end in the
+          luminosity fit. The two sources establish method and placement
+          separately, not a proven historical-output-to-current-input handoff.
         weight: 1.0
         critical: true
     required_identifiers: []
@@ -748,73 +764,14 @@ questions:
     review_status: draft
     reviewer: null
     reviewed_at: null
-  - id: n013
-    split: novel_dev
-    language: en
-    intent: module_structure
-    query: >-
-      The PandaRoot source tree ships a genfit, a genfit2 and a genfit2-remote
-      directory. Which of them does a default build actually compile, and what
-      does the genfit2-remote recipe build?
-    expected_status: answered
-    allowed_source_versions:
-      - luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32
-      - pandaroot@18c09e91100db27867ded30e708b4dae95bd8357
-      - restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42
-      - li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a
-      - karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b
-      - pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3
-      - pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87
-      - curated_panda_domain@1.0
-    required_evidence_groups:
-      - group_id: n013.e1
-        role: default_build_genfit_selection
-        critical: true
-        any_of:
-          - source_id: pandaroot
-            object_type: source_file
-            path: CMakeLists.txt
-      - group_id: n013.e2
-        role: genfit2_remote_recipe
-        critical: true
-        any_of:
-          - source_id: pandaroot
-            object_type: source_file
-            path: genfit2-remote/CMakeLists.txt
-    required_source_types:
-      - code
-    required_answer_points:
-      - point_id: p1
-        text: >-
-          The default build only adds genfit and genfit2 as subdirectories;
-          genfit2-remote is not part of the default add_subdirectory set at
-          the top level.
-        weight: 1.0
-        critical: true
-      - point_id: p2
-        text: >-
-          The genfit2-remote CMakeLists is an alternative recipe that compiles
-          the genfit2 sources (core, fields, fitters, measurements,
-          trackReps, and more) into a library target named libgenfit, rather
-          than shipping its own sources.
-        weight: 1.0
-        critical: true
-    required_identifiers: []
-    forbidden_evidence: []
-    concept_scopes: {}
-    cluster_id: nf013
-    challenge_tags: []
-    review_status: draft
-    reviewer: null
-    reviewed_at: null
   - id: n014
     split: novel_dev
     language: en
     intent: module_structure
     query: >-
-      LuminosityFit has its own model classes under model/ and a separate
-      model_framework directory. What is model_framework, and how does it
-      differ from the model layer?
+      LuminosityFit has a model_framework directory and a native model/
+      directory. What does the repository explicitly say model_framework is,
+      and what role does model/PndLmdModelFactory expose?
     expected_status: answered
     allowed_source_versions:
       - luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32
@@ -844,17 +801,19 @@ questions:
     required_answer_points:
       - point_id: p1
         text: >-
-          model_framework is a vendored working copy of the ModelFramework
-          library, which its README notes has been archived upstream in the
-          meantime; it provides the generic 1D/2D model, operator, and fitting
-          infrastructure.
+          model_framework/README.md identifies the directory only as a working
+          copy of ModelFramework and notes that ModelFramework had been
+          archived by that snapshot; the short README does not establish a
+          complete architecture or component inventory.
         weight: 1.0
         critical: true
       - point_id: p2
         text: >-
-          The model/ layer instead holds the concrete LuminosityFit models
-          (DPM and E760 parametrizations, smearing and convolution models)
-          that PndLmdModelFactory assembles into the fit.
+          The native model/PndLmdModelFactory.h declares the LuminosityFit
+          factory that users are supposed to call to create models. It exposes
+          generateModel plus 1D/2D generation helpers and combines framework
+          Model types with LuminosityFit angular, acceptance, resolution, and
+          smearing data; this is the directly evidenced directory distinction.
         weight: 1.0
         critical: true
     required_identifiers: []
@@ -921,9 +880,9 @@ questions:
     language: en
     intent: troubleshooting
     query: >-
-      Can I run the documented PandaRoot Docker containers natively on
-      Windows, or is a Linux host required? What does the locked documentation
-      actually say about supported host platforms?
+      Do the locked PandaRoot Docker pages establish that the documented
+      containers can run natively on a Windows host, and what host environment
+      do their examples actually demonstrate?
     expected_status: insufficient_evidence
     allowed_source_versions:
       - luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32
@@ -950,16 +909,71 @@ questions:
     required_answer_points:
       - point_id: p1
         text: >-
-          State that the locked corpus does not establish native Windows
-          support for the PandaRoot containers: the container documentation
-          assumes the documented Linux-based workflow, and no Windows host
-          instructions exist anywhere in the locked corpus.
+          The locked pages do not establish native Windows-host support and do
+          not provide a Windows-host procedure. Their examples are
+          Unix-oriented, using /cvmfs, $(id -u):$(id -g), /tmp/.X11-unix, and
+          Singularity/HPC commands. This evidence does not prove that Windows
+          is unsupported or that a Linux host is strictly required.
         weight: 1.0
         critical: true
     required_identifiers: []
     forbidden_evidence: []
     concept_scopes: {}
     cluster_id: nf016
+    challenge_tags: []
+    review_status: draft
+    reviewer: null
+    reviewed_at: null
+  - id: n017
+    split: novel_dev
+    language: en
+    intent: api
+    query: >-
+      When tracing the reconstructed-track object handed between PandaRoot
+      tracking tasks, where is that persistent object defined, and which fitted
+      endpoints and track-candidate links does it store?
+    expected_status: answered
+    allowed_source_versions:
+      - luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32
+      - pandaroot@18c09e91100db27867ded30e708b4dae95bd8357
+      - restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42
+      - li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a
+      - karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b
+      - pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3
+      - pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87
+      - curated_panda_domain@1.0
+    required_evidence_groups:
+      - group_id: n017.e1
+        role: persistent_reconstructed_track_definition
+        critical: true
+        any_of:
+          - source_id: pandaroot
+            object_type: source_file
+            path: pnddata/TrackData/PndTrack.h
+    required_source_types:
+      - code
+    required_answer_points:
+      - point_id: p1
+        text: >-
+          The persistent reconstructed-track class is PndTrack, defined in
+          pnddata/TrackData/PndTrack.h as a FairTimeStamp-derived data object.
+        weight: 1.0
+        critical: true
+      - point_id: p2
+        text: >-
+          PndTrack stores the first and last fitted FairTrackParP parameters,
+          an embedded PndTrackCand plus an optional TRef and reference index to
+          a candidate, and reconstruction metadata including PID hypothesis,
+          quality flag, chi2, NDF, and track type.
+        weight: 1.0
+        critical: true
+    required_identifiers:
+      - text: PndTrack
+        kind: code_symbol
+        critical: true
+    forbidden_evidence: []
+    concept_scopes: {}
+    cluster_id: nf017
     challenge_tags: []
     review_status: draft
     reviewer: null

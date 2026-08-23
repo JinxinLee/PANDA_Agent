@@ -16,6 +16,7 @@ import json
 import sys
 from collections import Counter
 from pathlib import Path
+from typing import Any
 
 import yaml
 
@@ -61,6 +62,32 @@ DISPOSITIONS = {
     "REPLACE",
 }
 GOLD_PROFILE_PATH = NOVEL_DIR / "gold_representativeness_profile.json"
+STATIC_PROVENANCE_PATHS = (
+    REPO_ROOT / "evaluation" / "baselines" / "replay" / "phase_c_c6_frozen_channel_replay_v1.jsonl",
+    REPO_ROOT / "evaluation" / "baselines" / "replay" / "phase_c_c7_a2_post_reranker_capture_v1.jsonl",
+)
+
+# These curated-domain IDs describe objects owned by a locked repository even
+# though their stored source is the curated domain catalog.  Prefix rules are
+# intentionally narrow and auditable; opaque ``object.<hash>`` IDs must be
+# resolved from static provenance instead.
+CURATED_OBJECT_SOURCE_PREFIXES = {
+    "data_product.pandaroot.": "pandaroot",
+    "workflow.pandaroot.": "pandaroot",
+    "workflow.restgas": "restgas_determination",
+    "repository.restgas_determination.": "restgas_determination",
+}
+
+SOURCE_SCOPE_COMPLEXITY = {
+    "single_repo": 0,
+    "docs_only": 1,
+    "paper_only": 2,
+    "repo_plus_docs": 3,
+    "repo_plus_paper": 4,
+    "cross_repo": 5,
+    "cross_repo_plus_docs": 6,
+    "cross_repo_plus_paper": 7,
+}
 
 errors: list[str] = []
 notes: list[str] = []
@@ -73,6 +100,197 @@ def fail(message: str) -> None:
 def load_yaml(path: Path):
     with open(path, encoding="utf-8") as handle:
         return yaml.safe_load(handle)
+
+
+def _walk_object_sources(value: Any, wanted_ids: set[str], found: dict[str, set[str]]) -> None:
+    if isinstance(value, dict):
+        object_id = value.get("object_id")
+        source_id = value.get("source_id")
+        if object_id in wanted_ids and source_id and source_id != "curated_panda_domain":
+            found.setdefault(object_id, set()).add(source_id)
+        for child in value.values():
+            _walk_object_sources(child, wanted_ids, found)
+    elif isinstance(value, list):
+        for child in value:
+            _walk_object_sources(child, wanted_ids, found)
+
+
+def build_static_object_source_index(
+    gold_questions: list[dict[str, Any]],
+) -> tuple[dict[str, str], list[str]]:
+    """Resolve object-only Gold selectors without retrieval or database reads."""
+
+    wanted_ids = {
+        selector["object_id"]
+        for question in gold_questions
+        for group in question.get("required_evidence_groups", [])
+        if group.get("critical", True)
+        for selector in group.get("any_of", [])
+        if selector.get("object_id")
+        and not selector.get("source_id")
+        and not selector.get("source_version_id")
+    }
+    found: dict[str, set[str]] = {}
+    for object_id in wanted_ids:
+        for prefix, source_id in CURATED_OBJECT_SOURCE_PREFIXES.items():
+            if object_id.startswith(prefix):
+                found.setdefault(object_id, set()).add(source_id)
+                break
+
+    for path in STATIC_PROVENANCE_PATHS:
+        if not path.exists():
+            continue
+        with open(path, encoding="utf-8") as handle:
+            for line in handle:
+                try:
+                    _walk_object_sources(json.loads(line), wanted_ids, found)
+                except json.JSONDecodeError:
+                    continue
+
+    resolved = {
+        object_id: next(iter(source_ids))
+        for object_id, source_ids in found.items()
+        if len(source_ids) == 1
+    }
+    unresolved = sorted(
+        object_id
+        for object_id in wanted_ids
+        if object_id not in resolved
+    )
+    return resolved, unresolved
+
+
+def classify_minimum_source_scope(
+    source_ids: frozenset[str],
+    *,
+    repository_ids: set[str],
+    paper_ids: set[str],
+    documentation_ids: set[str],
+) -> str | None:
+    repositories = source_ids & repository_ids
+    papers = source_ids & paper_ids
+    documentation = source_ids & documentation_ids
+    if repositories | papers | documentation != source_ids:
+        return None
+    if repositories and papers and documentation:
+        return None
+    if papers and documentation:
+        return None
+    if repositories and documentation:
+        return "repo_plus_docs" if len(repositories) == 1 else "cross_repo_plus_docs"
+    if repositories and papers:
+        return "repo_plus_paper" if len(repositories) == 1 else "cross_repo_plus_paper"
+    if repositories:
+        return "single_repo" if len(repositories) == 1 else "cross_repo"
+    if papers:
+        return "paper_only"
+    if documentation:
+        return "docs_only"
+    return None
+
+
+def derive_minimum_required_source_scope(
+    question: dict[str, Any],
+    *,
+    object_sources: dict[str, str],
+    repository_ids: set[str],
+    paper_ids: set[str],
+    documentation_ids: set[str],
+) -> dict[str, Any]:
+    """Derive the smallest source footprint satisfying all critical groups.
+
+    Critical groups are AND obligations and ``any_of`` selectors are OR
+    alternatives.  Unknown object ownership is never treated as an empty or
+    free source requirement.
+    """
+
+    critical_groups = [
+        group
+        for group in question.get("required_evidence_groups", [])
+        if group.get("critical", True)
+    ]
+    group_alternatives: list[set[frozenset[str]]] = []
+    unresolved_selectors: list[str] = []
+    for group in critical_groups:
+        alternatives: set[frozenset[str]] = set()
+        for selector in group.get("any_of", []):
+            source_id = selector.get("source_id")
+            if not source_id and selector.get("source_version_id"):
+                source_id = selector["source_version_id"].split("@", 1)[0]
+            if not source_id and selector.get("object_id"):
+                source_id = object_sources.get(selector["object_id"])
+            if source_id:
+                alternatives.add(frozenset({source_id}))
+            else:
+                unresolved_selectors.append(
+                    f"{question['id']}/{group.get('group_id')}/{selector.get('object_id', 'selector')}"
+                )
+        if not alternatives:
+            unresolved_selectors.append(f"{question['id']}/{group.get('group_id')}/NO_RESOLVED_ALTERNATIVE")
+        group_alternatives.append(alternatives)
+
+    if unresolved_selectors:
+        return {
+            "status": "UNKNOWN_SOURCE",
+            "unresolved_selectors": sorted(set(unresolved_selectors)),
+        }
+
+    footprints: set[frozenset[str]] = {frozenset()}
+    for alternatives in group_alternatives:
+        footprints = {
+            current | alternative
+            for current in footprints
+            for alternative in alternatives
+        }
+
+    classified = [
+        (footprint, classify_minimum_source_scope(
+            footprint,
+            repository_ids=repository_ids,
+            paper_ids=paper_ids,
+            documentation_ids=documentation_ids,
+        ))
+        for footprint in footprints
+    ]
+    classified = [(footprint, scope) for footprint, scope in classified if scope]
+    if not classified:
+        return {
+            "status": "UNKNOWN_SOURCE",
+            "unresolved_selectors": [f"{question['id']}/UNCLASSIFIABLE_FOOTPRINT"],
+        }
+    footprint, scope = min(
+        classified,
+        key=lambda item: (
+            len(item[0]),
+            SOURCE_SCOPE_COMPLEXITY[item[1]],
+            tuple(sorted(item[0])),
+        ),
+    )
+    group_count = len(critical_groups)
+    topology = (
+        "single_evidence"
+        if group_count <= 1
+        else "multi_evidence_single_scope"
+        if len(footprint) == 1
+        else "multi_evidence_cross_scope"
+    )
+    difficulty = (
+        "simple"
+        if group_count <= 1
+        else "moderate"
+        if group_count == 2 or (group_count == 3 and len(footprint) == 1)
+        else "hard"
+    )
+    return {
+        "status": "RESOLVED",
+        "minimum_required_source_scope": scope,
+        "minimum_footprint_size": len(footprint),
+        "critical_evidence_groups": group_count,
+        "evidence_topology": topology,
+        "difficulty_proxy": difficulty,
+        "source_ids": sorted(footprint),
+        "unresolved_selectors": [],
+    }
 
 
 def main() -> int:
@@ -121,6 +339,14 @@ def main() -> int:
     gold_ids = {q["id"] for q in gold_questions}
     gold_intent = {q["id"]: q["intent"] for q in gold_questions}
     gold_status = {q["id"]: q["expected_status"] for q in gold_questions}
+    repository_ids = {item["repo_id"] for item in source_manifest.get("repositories", [])}
+    paper_ids = {item["doc_id"] for item in source_manifest.get("papers", [])}
+    documentation_ids = {
+        item["doc_id"] for item in source_manifest.get("web_documents", [])
+    }
+    object_sources, unresolved_object_ids = build_static_object_source_index(gold_questions)
+    if unresolved_object_ids:
+        fail(f"gold profile unresolved opaque object selectors: {unresolved_object_ids}")
     taxonomy = set(gold_profile.get("task_archetype_taxonomy", {}))
     for banned in ("genuine_insufficiency", "version_boundary"):
         if banned in taxonomy:
@@ -138,6 +364,23 @@ def main() -> int:
         missing = sorted(gold_ids - set(assignments))
         extra = sorted(set(assignments) - gold_ids)
         fail(f"gold profile assignments incomplete: missing={missing[:10]} extra={extra[:10]}")
+    fresh_profile: dict[str, dict[str, Any]] = {}
+    unresolved_profile_selectors: list[str] = []
+    for question in gold_questions:
+        derived = derive_minimum_required_source_scope(
+            question,
+            object_sources=object_sources,
+            repository_ids=repository_ids,
+            paper_ids=paper_ids,
+            documentation_ids=documentation_ids,
+        )
+        fresh_profile[question["id"]] = derived
+        unresolved_profile_selectors.extend(derived.get("unresolved_selectors", []))
+    if unresolved_profile_selectors:
+        fail(
+            "gold profile minimum-source derivation has UNKNOWN_SOURCE selectors: "
+            f"{sorted(set(unresolved_profile_selectors))}"
+        )
     for gid, entry in assignments.items():
         if entry.get("primary_task_archetype") not in taxonomy:
             fail(f"gold profile {gid}: unknown primary task archetype")
@@ -153,6 +396,39 @@ def main() -> int:
             fail(f"gold profile {gid}: intent mirror mismatch")
         if entry.get("expected_status") != gold_status.get(gid):
             fail(f"gold profile {gid}: expected_status mirror mismatch")
+        derived = fresh_profile.get(gid, {})
+        for field in (
+            "critical_evidence_groups",
+            "minimum_required_source_scope",
+            "minimum_footprint_size",
+            "evidence_topology",
+            "difficulty_proxy",
+        ):
+            if entry.get(field) != derived.get(field):
+                fail(
+                    f"gold profile {gid}: stored {field}={entry.get(field)!r} "
+                    f"!= fresh deterministic derivation {derived.get(field)!r}"
+                )
+    derived_profile_counts = {
+        "counts_by_minimum_required_source_scope": dict(
+            Counter(
+                entry.get("minimum_required_source_scope")
+                for entry in fresh_profile.values()
+            )
+        ),
+        "counts_by_evidence_topology": dict(
+            Counter(entry.get("evidence_topology") for entry in fresh_profile.values())
+        ),
+        "estimated_difficulty_distribution": dict(
+            Counter(entry.get("difficulty_proxy") for entry in fresh_profile.values())
+        ),
+    }
+    for field, derived_counts in derived_profile_counts.items():
+        if gold_profile.get(field) != derived_counts:
+            fail(
+                f"gold profile {field} != fresh deterministic distribution: "
+                f"{gold_profile.get(field)} != {derived_counts}"
+            )
     for field in (
         "counts_by_primary_task_archetype",
         "counts_by_answerability_class",
@@ -296,10 +572,7 @@ def main() -> int:
 
     duplicate_families = sorted(f for f, n in Counter(family_ids).items() if n > 1)
     if duplicate_families:
-        notes.append(
-            "shared families (allowed only with an explicit same-family curation "
-            f"reason): {duplicate_families}"
-        )
+        fail(f"pilot families must be independent; duplicates: {duplicate_families}")
 
     # 4. No duplicate question text (exact and casefolded).
     seen_exact = {}
@@ -460,6 +733,21 @@ def main() -> int:
         fail("manifest benchmark_version mismatch")
     if manifest.get("release_eligible") is not False:
         fail("pilot manifest must keep release_eligible false")
+    review_package = (manifest.get("files") or {}).get("review_package")
+    if not review_package or not (NOVEL_DIR / review_package).is_file():
+        fail(f"manifest current review package missing: {review_package!r}")
+    for retired in manifest.get("retired_drafts", []):
+        retired_id = retired.get("question_id")
+        retired_family = retired.get("curation_family_id")
+        replacement_id = retired.get("replaced_by")
+        if retired.get("status") != "WITHDRAWN_DRAFT":
+            fail(f"retired draft {retired_id}: status must be WITHDRAWN_DRAFT")
+        if retired_id in by_id:
+            fail(f"retired draft {retired_id} is still active")
+        if retired_family in family_ids:
+            fail(f"retired family {retired_family} is still active")
+        if replacement_id not in by_id:
+            fail(f"retired draft {retired_id}: replacement {replacement_id!r} is not active")
 
     for note in notes:
         print(f"NOTE: {note}")
@@ -473,6 +761,10 @@ def main() -> int:
     print(
         f"PASS — {len(questions)} novel_dev questions, "
         f"{len(set(family_ids))} independent families, all static checks green."
+    )
+    print(
+        f"PROFILE — {len(fresh_profile)}/{len(gold_questions)} Gold assignments reproduced; "
+        f"unresolved opaque selectors: {len(unresolved_object_ids)}."
     )
     return 0
 

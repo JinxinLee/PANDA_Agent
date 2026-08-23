@@ -1,5 +1,9 @@
 # N1 Review Package — novel-v1-n1-pilot-draft
 
+> **Historical initial draft.** Superseded for current human review by
+> `N1R2_REVIEW_PACKAGE.md`. The original candidate records below, including
+> withdrawn draft n013, are retained as curation history.
+
 16 candidate `novel_dev` questions (`n001`-`n016`), each an independent
 curation family (`nf001`-`nf016`), curated without running PANDA Agent and
 without observing any system outcome (`agent_outcome_seen_before_freeze:

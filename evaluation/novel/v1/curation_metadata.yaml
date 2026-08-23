@@ -20,10 +20,11 @@ records:
       rationale: >-
         The exposed installation questions (g001-g012) all target the upstream
         PandaRoot documentation pages. This candidate instead asks about the
-        oct19 restgas fork's own GSI setup path: the concrete FairSoft/FairRoot
-        version pairs its configSettings.sh recognizes and the SIMPATH /
-        FAIRROOTPATH environment it expects. The information need (fork-level
-        environment pinning) does not appear in any exposed case.
+        restgas fork's own GSI setup path: the intended FairSoft/FairRoot
+        branch literals, SIMPATH / FAIRROOTPATH assignments, and the script's
+        actual malformed-test and echo-only fallback behavior. The information
+        need (auditing this fork-level setup script) does not appear in any
+        exposed case.
     representativeness:
       class: representative
       primary_task_archetype: setup_environment
@@ -37,9 +38,10 @@ records:
       disposition: KEEP_REPRESENTATIVE
       rationale: >-
         Benchmark analogue: the Gold setup task (g001/g002 asks how to install and
-        what prerequisites exist). Domain relevance: anyone running the restgas fork
-        at GSI must resolve exactly this environment pinning. The version-pair
-        detail is the rarer part of a common task.
+        what prerequisites exist). Domain relevance: running the restgas fork at GSI
+        requires understanding this environment pinning, including the script's
+        non-enforcing behavior. The version-pair detail is the rarer part of a
+        plausible setup task.
     coverage:
       repositories:
         - restgas_determination
@@ -74,9 +76,9 @@ records:
       rationale: >-
         No exposed installation case covers LuminosityFit's own Python-level
         dependencies. g002 asks for documented build prerequisites of
-        PandaRoot; this candidate is about the luminosityfit repository's
-        requirements.txt and python workflow Readme, an independent
-        repository-level information need.
+        PandaRoot; this candidate is about the LuminosityFit repository's
+        requirements.txt and its exact, unclassified dependency list, an
+        independent repository-level information need.
     representativeness:
       class: representative
       primary_task_archetype: setup_environment
@@ -127,10 +129,9 @@ records:
       rationale: >-
         g016 asks how to select the DPM event generator. This candidate asks
         which generator supports fixed-step scanning of momentum and polar
-        angle and how the stepping is configured (SetPRange /
-        SetThetaRange with start/stop/step ranges). The generator entity, its
-        stepping semantics, and the acceptance-scan use case are absent from
-        the exposed set.
+        angle, how its ranges are configured, and how CalcActValues advances
+        and rolls them over per event. The generator entity, implementation
+        semantics, and acceptance-scan use case are absent from the exposed set.
     representativeness:
       class: representative
       primary_task_archetype: component_usage
@@ -153,13 +154,13 @@ records:
         - code
         - documentation
       expression_form: descriptive
-      evidence_topology: single_hop
+      evidence_topology: multi_hop
       source_scope: single_source
       repository_scope: single_repository
       reasoning_forms:
         - configure
         - procedure
-      difficulty: simple
+      difficulty: moderate
     curation:
       origin: human_directed_llm_draft
       agent_outcome_seen_before_freeze: false
@@ -236,9 +237,10 @@ records:
       rationale: >-
         g010 asks whether a Jupyter-based workflow is documented and where.
         This candidate asks how to visually inspect simulated events and the
-        detector geometry with the event display, expressed without any class
-        or tool identifier. Visualization tooling is absent from the exposed
-        set, and the identifier-free expression changes recognition demands.
+        detector geometry with the event display and, critically, how the
+        eventDisplay macro opens a shared simulation-stage prefix. Visualization
+        tooling is absent from the exposed set, and the identifier-free
+        expression changes recognition demands.
     representativeness:
       class: representative
       primary_task_archetype: component_usage
@@ -257,15 +259,16 @@ records:
       repositories:
         - pandaroot
       source_types:
+        - code
         - documentation
       expression_form: descriptive
-      evidence_topology: single_hop
-      source_scope: single_source
+      evidence_topology: multi_hop
+      source_scope: cross_source
       repository_scope: single_repository
       reasoning_forms:
         - locate
         - procedure
-      difficulty: simple
+      difficulty: moderate
     curation:
       origin: human_directed_llm_draft
       agent_outcome_seen_before_freeze: false
@@ -291,8 +294,9 @@ records:
         g036/g037 locate one specific macro each (event_poca producer /
         POCA_VERTEX_FILE consumer). This candidate instead asks for the
         general naming utility that derives an entire simulation chain's file
-        names from the simulation file name, a reusable tool-lookup need with
-        a different task form than single-artifact location.
+        names from the simulation file name and asks for the constructor's
+        concrete suffix literals, a reusable tool-usage need with a different
+        task form than single-artifact location.
     representativeness:
       class: representative
       primary_task_archetype: component_usage
@@ -314,7 +318,7 @@ records:
         - code
         - documentation
       expression_form: implementation_oriented
-      evidence_topology: single_hop
+      evidence_topology: multi_hop
       source_scope: single_source
       repository_scope: single_repository
       reasoning_forms:
@@ -345,10 +349,10 @@ records:
       rationale: >-
         g056 asks about the conceptual role of detector-coordinate
         transformations inside the LuminosityFit model. This candidate asks a
-        runtime MVD question: how compact per-hit volume identifiers are
-        translated back into full geometry paths, and which geometry and
-        parameter-container state that translation requires. Different layer,
-        different relation, and the question is expressed without identifiers.
+        runtime MVD question: how current shortIDs are translated back into
+        full geometry paths, and which geometry and parameter-container state
+        that translation requires. It does not mix the retired encrypted-path
+        comments into the active API; the layer and relation remain distinct.
     representativeness:
       class: representative
       primary_task_archetype: component_usage
@@ -458,11 +462,11 @@ records:
       rationale: >-
         g047 asks the theoretical purpose of the DPM model. This candidate
         asks a different need: which alternative elastic model was studied
-        (E760), that the alternative also exists as LuminosityFit code, and
-        what dominates the model uncertainty (beam momentum uncertainty; the
-        below-two-percent low-momentum bound). Composition of thesis sections
-        plus code and a comparison topology are new; DPM is only the shared
-        background entity.
+        (E760), that the alternative also exists as LuminosityFit code, which
+        parameters dominate its intrinsic uncertainty, and how the separate
+        beam-momentum uncertainty behaves at expected HESR precision.
+        Composition of thesis sections plus code is new; DPM is only the
+        shared background entity.
     representativeness:
       class: representative
       primary_task_archetype: theory_explanation
@@ -517,10 +521,10 @@ records:
         information_need: low
       rationale: >-
         No exposed question covers the fast simulation subsystem. The
-        candidate asks how parametrized detector responses replace GEANT
-        transport and how PndFastSim, PndFsmAbsDet detectors, and
-        PndFsmResponse objects compose, an unexposed subsystem-level
-        implementation need.
+        candidate asks how PndFastSim obtains, combines, and applies
+        parameterized detector responses, including the PndFsmAbsDet contract,
+        named-detector factory, and PndFsmResponse value object. This is an
+        unexposed subsystem-level implementation need.
     representativeness:
       class: representative
       primary_task_archetype: implementation_explanation
@@ -542,13 +546,13 @@ records:
       source_types:
         - code
       expression_form: descriptive
-      evidence_topology: single_hop
+      evidence_topology: multi_hop
       source_scope: single_source
       repository_scope: single_repository
       reasoning_forms:
         - explain
         - structure
-      difficulty: moderate
+      difficulty: hard
     curation:
       origin: human_directed_llm_draft
       agent_outcome_seen_before_freeze: false
@@ -561,7 +565,7 @@ records:
     novelty:
       types:
         - entity
-        - reasoning_topology
+        - relation
       closest_exposed_cases: []
       closest_case_assessment: none_found
       benchmark_overlap:
@@ -572,9 +576,10 @@ records:
       rationale: >-
         The exposed data-flow questions trace specific restgas/LMD artifacts
         (event_poca, pid files, Lumi_TrksQA, restgas_profile). None covers the
-        generic MC-truth channel from generation into analysis, or the
-        reconstructed-versus-generated tree match, which spans tutorial
-        documentation and the PndMCTrackAna tooling.
+        reconstructed-candidate-to-truth relation or the full
+        reconstructed-versus-generated tree match exposed by the analysis
+        tutorial. Unsupported PndMCTrackAna composition is intentionally not
+        part of this candidate.
     representativeness:
       class: representative
       primary_task_archetype: producer_consumer_trace
@@ -595,10 +600,9 @@ records:
         - pandaroot
       source_types:
         - documentation
-        - code
       expression_form: descriptive
-      evidence_topology: multi_hop
-      source_scope: cross_source
+      evidence_topology: single_hop
+      source_scope: single_source
       repository_scope: single_repository
       reasoning_forms:
         - trace
@@ -627,15 +631,15 @@ records:
         information_need: low
       rationale: >-
         g079 traces Lumi_TrksQA into the final luminosity result but assumes
-        an aligned geometry. This candidate asks where alignment corrections
-        are produced (Millepede-based internal alignment in the thesis) and
-        where they enter the LuminosityFit workflow (an alignment process
-        ahead of the documented steps), a producer-to-pipeline-entry relation
-        across paper and repository that no exposed case measures.
+        an aligned geometry. This candidate instead composes two explicitly
+        separate facts: the thesis's Millepede-based internal-alignment method
+        and the current Readme's placement of a possible alignment stage before
+        its listed workflow. It does not invent a historical-output handoff.
     representativeness:
       class: representative
-      primary_task_archetype: producer_consumer_trace
-      secondary_task_archetypes: []
+      primary_task_archetype: workflow_sequence
+      secondary_task_archetypes:
+        - theory_explanation
       gold_analogue_cases:
         - g080
         - g085
@@ -644,10 +648,10 @@ records:
       corpus_tail: representative_but_rare
       disposition: KEEP_REPRESENTATIVE
       rationale: >-
-        Benchmark analogue: Gold producer-to-consumer traces (g080/g085). Domain
-        relevance: alignment corrections are a real prerequisite concern for precise
-        luminosity work; the cross-era paper-to-repository composition is the rarer
-        part and still needs semantic review.
+        Benchmark analogue: workflow ordering in g080/g085. Domain relevance:
+        alignment is a real prerequisite concern for precise luminosity work. The
+        cross-era evidence is used only for method plus placement, without asserting
+        a causal interface that neither source documents.
     coverage:
       repositories:
         - luminosityfit
@@ -662,61 +666,6 @@ records:
         - trace
         - explain
       difficulty: hard
-    curation:
-      origin: human_directed_llm_draft
-      agent_outcome_seen_before_freeze: false
-      evidence_selected_from_agent_output: false
-      lifecycle: evidence_review_ready
-  - question_id: n013
-    curation_family_id: nf013
-    intent: module_structure
-    expected_status: answered
-    novelty:
-      types:
-        - composition
-        - reasoning_topology
-      closest_exposed_cases: []
-      closest_case_assessment: none_found
-      benchmark_overlap:
-        wording: low
-        entity: none
-        evidence: none
-        information_need: low
-      rationale: >-
-        GenFit and its three-directory layout are not mentioned by any exposed
-        question. The candidate asks which genfit variants the default build
-        compiles and what the genfit2-remote recipe builds, a build-wiring
-        comparison inside the module structure that the benchmark does not
-        cover.
-    representativeness:
-      class: exploratory
-      primary_task_archetype: repository_structure
-      secondary_task_archetypes: []
-      gold_analogue_cases:
-        - g097
-        - g098
-      benchmark_reference_fit: weak
-      domain_relevance: weak
-      corpus_tail: exploratory_tail
-      disposition: REPLACE
-      rationale: >-
-        Benchmark analogue: only formal (g097/g098 are structure questions, not
-        build-wiring corners). Domain relevance: which vendored genfit variant CMake
-        compiles is rarely asked by real users and was sampled mainly because Gold
-        omitted genfit; also carries a factual annotation error.
-    coverage:
-      repositories:
-        - pandaroot
-      source_types:
-        - code
-      expression_form: identifier_heavy
-      evidence_topology: comparison
-      source_scope: single_source
-      repository_scope: single_repository
-      reasoning_forms:
-        - compare
-        - structure
-      difficulty: moderate
     curation:
       origin: human_directed_llm_draft
       agent_outcome_seen_before_freeze: false
@@ -740,27 +689,27 @@ records:
       rationale: >-
         g097 asks which core modules compose LuminosityFit's model layer. This
         candidate asks the adjacent but distinct question of what the separate
-        model_framework directory is (a vendored, upstream-archived working
-        copy of ModelFramework) and how it differs from the native model/
-        layer assembled by PndLmdModelFactory. The subsystem overlaps, so
-        entity and evidence overlap are partial and information-need overlap
-        is medium, but the vendored-copy role itself is not measured by g097.
+        model_framework README explicitly calls that directory and what role
+        the native PndLmdModelFactory header actually exposes. The subsystem
+        overlaps, so entity and evidence overlap are partial and
+        information-need overlap is medium, but this precise directory boundary
+        is not measured by g097.
     representativeness:
-      class: exploratory
+      class: representative
       primary_task_archetype: repository_structure
       secondary_task_archetypes: []
       gold_analogue_cases:
         - g097
         - g105
-      benchmark_reference_fit: weak
+      benchmark_reference_fit: moderate
       domain_relevance: moderate
-      corpus_tail: exploratory_tail
-      disposition: REVISE_TO_REPRESENTATIVE
+      corpus_tail: representative_but_rare
+      disposition: KEEP_REPRESENTATIVE
       rationale: >-
         Benchmark analogue: model-layer structure questions (g097/g105). Domain
-        relevance: newcomers to LuminosityFit genuinely ask what model_framework is;
-        current evidence overreach must be trimmed so the legitimate need can carry
-        a representative case.
+        relevance: newcomers to LuminosityFit plausibly need to distinguish the
+        framework working copy from the native factory entry point. The revised
+        obligations stop at facts directly exposed by the README and header.
     coverage:
       repositories:
         - luminosityfit
@@ -813,9 +762,9 @@ records:
       disposition: KEEP_REPRESENTATIVE
       rationale: >-
         Benchmark analogue: Gold diagnosis questions (g112/g114). Domain relevance:
-        build and configure failures are among the most common practical blockers
-        for every PandaRoot user, and the documented workaround structure matches
-        real support traffic.
+        build and configure failures are directly relevant and plausibly recurring
+        PandaRoot support needs; the documented workaround-with-side-effect
+        structure is representative without claiming empirical frequency.
     coverage:
       repositories:
         - pandaroot
@@ -852,10 +801,10 @@ records:
         g007 establishes that an exact hardware requirement (GPU memory) is
         not stated by the corpus. This candidate applies the same legitimate
         refusal class to host-platform support: whether the documented Docker
-        containers can run natively on Windows. Deterministic search over the
-        locked corpus shows no Windows-host statement (the only "windows"
-        matches are mass windows in a tutorial), so the expected behavior is a
-        grounded insufficient-evidence refusal, not a guessed answer.
+        containers can run natively on Windows. The selected locked Docker pages
+        provide Unix-oriented examples but no Windows-host support statement or
+        procedure, so the expected behavior is a grounded insufficient-evidence
+        boundary rather than a claim that Windows is impossible.
     representativeness:
       class: representative
       primary_task_archetype: setup_environment
@@ -884,6 +833,63 @@ records:
       repository_scope: single_repository
       reasoning_forms:
         - diagnose
+      difficulty: simple
+    curation:
+      origin: human_directed_llm_draft
+      agent_outcome_seen_before_freeze: false
+      evidence_selected_from_agent_output: false
+      lifecycle: evidence_review_ready
+  - question_id: n017
+    curation_family_id: nf017
+    intent: api
+    expected_status: answered
+    novelty:
+      types:
+        - entity
+        - relation
+      closest_exposed_cases:
+        - g029
+      benchmark_overlap:
+        wording: low
+        entity: none
+        evidence: none
+        information_need: medium
+      rationale: >-
+        g029 asks where the LMD combined-data reader is defined and what input
+        boundary it implements. This candidate shares the source-location task
+        form but asks about the independently sampled persistent reconstructed
+        track object: its fitted endpoints and track-candidate links. PndTrack
+        and pnddata/TrackData are absent from the exposed questions, and the
+        concrete information need is not a mechanical class substitution.
+    representativeness:
+      class: representative
+      primary_task_archetype: source_location
+      secondary_task_archetypes:
+        - repository_structure
+      gold_analogue_cases:
+        - g029
+        - g028
+      benchmark_reference_fit: strong
+      domain_relevance: strong
+      corpus_tail: representative_core
+      disposition: KEEP_REPRESENTATIVE
+      rationale: >-
+        Benchmark analogue: Gold source-location and data-boundary questions
+        such as g029. Domain relevance: PndTrack is a common persistent artifact
+        exchanged by tracking code, and locating its fitted-state and candidate
+        boundary is a natural PandaRoot developer need.
+    coverage:
+      repositories:
+        - pandaroot
+      source_types:
+        - code
+      expression_form: descriptive
+      evidence_topology: single_hop
+      source_scope: single_source
+      repository_scope: single_repository
+      reasoning_forms:
+        - locate
+        - structure
       difficulty: simple
     curation:
       origin: human_directed_llm_draft

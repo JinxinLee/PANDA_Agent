@@ -4,7 +4,7 @@
   "benchmark_version": "novel-v1-dev-0.1.0",
   "dataset_version": "0.1.0",
   "split": "novel_dev",
-  "status": "profile_corrected_candidate_package_awaiting_human_review",
+  "status": "revised_pilot_ready_for_human_review",
   "release_eligible": false,
   "acceptance_exposed": true,
   "question_count": 16,
@@ -22,22 +22,29 @@
     "dataset": "novel_dev.yaml",
     "curation_metadata": "curation_metadata.yaml",
     "coverage_report": "coverage_report.json",
-    "review_package": "N1_REVIEW_PACKAGE.md"
+    "review_package": "N1R2_REVIEW_PACKAGE.md"
   },
   "locked_corpus_manifest": "data/manifests/source_manifest.json",
   "governance": "docs/NOVEL_DATASET_CURATION_CONTRACT.md",
   "representativeness": {
     "profile": "gold_representativeness_profile.json",
-    "representative_count": 14,
-    "exploratory_count": 2,
+    "representative_count": 16,
+    "exploratory_count": 0,
     "dispositions": {
-      "KEEP_REPRESENTATIVE": 14,
-      "REVISE_TO_REPRESENTATIVE": 1,
-      "REPLACE": 1
+      "KEEP_REPRESENTATIVE": 16
     },
-    "revision_required_before_human_finalization": true,
+    "revision_required_before_human_finalization": false,
     "profile_schema": "novel-representativeness-profile-v2",
     "profile_role": "benchmark_reference_proxy",
     "sidecar_schema": "novel-curation-sidecar-v3"
-  }
+  },
+  "retired_drafts": [
+    {
+      "question_id": "n013",
+      "curation_family_id": "nf013",
+      "status": "WITHDRAWN_DRAFT",
+      "reason": "representativeness_and_factual_failure",
+      "replaced_by": "n017"
+    }
+  ]
 }
