@@ -1,7 +1,65 @@
 {
   "a0_reference": "phase_c_c7_a0_selection_boundary_replay_inventory_v1.json",
   "a1_a1r1_reference": "phase_c_c7_a1_explicit_selection_contract_v1.json#a1r1_semantics_correction",
-  "a2_verdict": "PASS",
+  "a2_verdict": "PASS_AFTER_EVALUATOR_REPAIR",
+  "a2r1_evaluator_semantics_correction": {
+    "a2r1_verdict": "PASS",
+    "authoritative_after_a2r1": true,
+    "capture_rerun": false,
+    "capture_reused_unchanged": true,
+    "focused_test_results": {
+      "case_scoped_group_identity": "PASS",
+      "compensating_swap_identity_gates": "PASS",
+      "direction_contract": "PASS",
+      "focused_tests": "17/17 PASS",
+      "micro_not_macro_aggregation": "PASS",
+      "selector_displacement_count_rate": "PASS",
+      "source_type_and_diversity": "PASS"
+    },
+    "gold_outcome_evaluations": 0,
+    "gold_outcomes_observed": false,
+    "identity_level_gate_corrections": {
+      "GATE_4": "S0-retained minus S1-retained case-scoped critical group identities must be empty",
+      "GATE_5": "S0-retained minus S1-retained case-scoped mandatory object identities must be empty",
+      "GATE_6": "S1 micro satisfaction >= S0 and S0-satisfied minus S1-satisfied case-scoped REQUIRED identities must be empty"
+    },
+    "metric_direction_map": {
+      "critical_evidence_retention": "HIGHER_IS_BETTER",
+      "explicit_required_satisfaction": "HIGHER_IS_BETTER",
+      "final_evidence_recall": "HIGHER_IS_BETTER",
+      "protected_exact_retention": "HIGHER_IS_BETTER",
+      "selector_caused_relevant_displacement": "LOWER_IS_BETTER"
+    },
+    "micro_aggregation_contract": {
+      "critical_evidence_retention": "micro retained case-scoped critical groups / annotated case-scoped critical groups; zero denominator value 1.0",
+      "explicit_required_satisfaction": "micro satisfied case-scoped explicit-query-reference target repository constraints / total such constraints; zero denominator value 1.0",
+      "final_evidence_recall": "micro retained case-scoped relevant groups / annotated case-scoped relevant groups; zero denominator value 1.0",
+      "protected_exact_retention": "micro retained case-scoped captured mandatory object IDs / captured mandatory object IDs; zero denominator value 1.0",
+      "selector_caused_relevant_displacement": "micro displaced case-scoped exposed relevant groups / exposed case-scoped relevant groups; zero denominator rate 0.0"
+    },
+    "no_outcome_observed_before_repair": true,
+    "production_behavior_changed": false,
+    "real_cohort_s1_executions": 0,
+    "repair_reason": "Correct positional metric direction, macro aggregation, ratio-only safety gates, and raw object_type diagnostics before any A3 outcome",
+    "repair_source_head": "4a31540151b7b7cedb11da361ffce22907c9d34f",
+    "source_type_diagnostic_correction": "classify with panda_agent.evidence_selection._source_type_of; report source ID and source type diversity separately",
+    "task": "C7-A2R1",
+    "zero_live_work": {
+      "analyzer_calls": 0,
+      "db_index_writes": 0,
+      "embedding_calls": 0,
+      "gold_outcome_evaluations": 0,
+      "judge_calls": 0,
+      "qa_calls": 0,
+      "qdrant_reads": 0,
+      "real_cohort_s1_executions": 0,
+      "reranker_calls": 0,
+      "retrieval_calls": 0,
+      "sparse_encoding_calls": 0,
+      "sql_candidate_reads": 0,
+      "verifier_calls": 0
+    }
+  },
   "a3_eligibility": "NEXT_ELIGIBLE / NOT_STARTED",
   "a3_evaluator_path": "evaluation/scripts/evaluate_c7_a3_frozen_selectors.py",
   "actual_cohort_size": 18,

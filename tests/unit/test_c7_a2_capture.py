@@ -52,9 +52,63 @@ def passing_preregistration() -> dict:
         source_head=capture.EXPECTED_HEAD,
         plan_factory=lambda value: value,
     )
-    prereg["a2_verdict"] = "PASS"
+    prereg["a2r1_evaluator_semantics_correction"] = {
+        "task": "C7-A2R1",
+        "repair_source_head": evaluator.A2R1_REPAIR_SOURCE_HEAD,
+        "repair_reason": "synthetic test fixture for the frozen evaluator-semantics correction",
+        "no_outcome_observed_before_repair": True,
+        "capture_reused_unchanged": True,
+        "capture_rerun": False,
+        "metric_direction_map": evaluator.PRIMARY_METRIC_DIRECTIONS,
+        "micro_aggregation_contract": evaluator.MICRO_AGGREGATION_CONTRACT,
+        "identity_level_gate_corrections": evaluator.IDENTITY_LEVEL_GATE_CORRECTIONS,
+        "source_type_diagnostic_correction": evaluator.SOURCE_TYPE_DIAGNOSTIC_CORRECTION,
+        "focused_test_results": {"status": "PASS", "synthetic_fixture": True},
+        "production_behavior_changed": False,
+        "gold_outcome_evaluations": 0,
+        "real_cohort_s1_executions": 0,
+        "a2r1_verdict": "PASS",
+        "authoritative_after_a2r1": True,
+    }
+    prereg["a2_verdict"] = "PASS_AFTER_EVALUATOR_REPAIR"
     prereg["a3_eligibility"] = "NEXT_ELIGIBLE / NOT_STARTED"
     return prereg
+
+
+def passing_gate_inputs() -> tuple[dict, dict]:
+    s0 = {
+        "input_identity": "same",
+        "final_evidence_recall": 1.0,
+        "explicit_required_satisfaction": 1.0,
+        "selector_displacement_count": 0,
+        "selector_displacement_rate": 0.0,
+    }
+    s1 = {
+        **s0,
+        "upstream_calls": {"retrieval": False, "reranker": False, "analyzer": False, "db": False},
+        "displacement_denominator_identical": True,
+        "new_critical_miss_count": 0,
+        "new_protected_loss_count": 0,
+        "new_required_miss_count": 0,
+        "version_source_violations": 0,
+        "forced_irrelevant": 0,
+        "deterministic": True,
+        "preferred_invariant": True,
+        "no_benchmark_specific_rule": True,
+        "preregistration_intact": True,
+    }
+    return s0, s1
+
+
+def aggregate_case(case_id: str, *, relevant_universe=(), relevant_hits=(), required_universe=(), required_hits=(), protected_universe=(), protected_hits=(), exposed=(), displaced=()) -> dict:
+    support = {
+        "relevant": {"universe": list(relevant_universe), "hits": list(relevant_hits)},
+        "critical": {"universe": [], "hits": []},
+        "required": {"universe": list(required_universe), "satisfied": list(required_hits)},
+        "protected": {"universe": list(protected_universe), "retained": list(protected_hits)},
+        "displacement": {"exposed": list(exposed), "displaced": list(displaced)},
+    }
+    return {"case_id": case_id, "s0": {"metric_support": support}}
 
 
 def record(case_id="g001") -> dict:
@@ -146,15 +200,65 @@ class CaptureTests(unittest.TestCase):
         with self.assertRaises(ValueError): capture.validate_capture_bundle(prereg, bad_integrity, **dependencies)
 
     def test_evaluator_metrics_gates_and_role_decision(self) -> None:
-        base = {"input_identity": "same", "upstream_calls": {"retrieval": False, "reranker": False, "analyzer": False, "db": False}, "final_evidence_recall": 1, "new_critical_misses": 0, "new_protected_losses": 0, "explicit_required_satisfaction": 1, "new_required_misses": 0, "selector_displacement": 0, "version_source_violations": 0, "forced_irrelevant": 0, "deterministic": True, "preferred_invariant": True, "no_benchmark_specific_rule": True, "preregistration_intact": True}
-        gates = evaluator.gate_matrix(base, base); self.assertEqual(set(gates), set(evaluator.GATE_NAMES)); self.assertEqual(gates["forced_irrelevant_evidence"], evaluator.NOT_SUPPORTED)
+        s0_gate, s1_gate = passing_gate_inputs()
+        gates = evaluator.gate_matrix(s0_gate, s1_gate); self.assertEqual(set(gates), set(evaluator.GATE_NAMES)); self.assertEqual(gates["forced_irrelevant_evidence"], evaluator.NOT_SUPPORTED)
         metrics = {name: 1.0 for name in evaluator.PRIMARY_METRICS}; metrics["selector_caused_relevant_displacement"] = 0.0
         self.assertEqual(evaluator.meaningful_gain(metrics, metrics, gates), "NO_MEANINGFUL_GAIN/INCONCLUSIVE")
         bad = dict(gates, final_evidence_recall="FAIL")
         improved = dict(metrics, final_evidence_recall=1.1)
         self.assertEqual(evaluator.meaningful_gain(metrics, improved, bad), "CURRENT_PREFERRED_GATE_FAILURE")
-        displacement = evaluator.selector_displacement([], {"relevant_groups_by_object": {"a": ["g"]}}, [{"object_id": "a", "decision_reason": "maximum"}], ["a"])
+        displacement = evaluator.selector_displacement([], {"relevant_groups": ["g"], "relevant_groups_by_object": {"a": ["g"]}}, [{"object_id": "a", "decision_reason": "maximum"}], ["a"])
         self.assertEqual(displacement["receipts"][0]["candidate_reasons"]["a"], "maximum")
+
+    def test_explicit_metric_directions_cover_all_primary_metrics(self) -> None:
+        baseline = {name: 1.0 for name in evaluator.PRIMARY_METRICS}
+        baseline["selector_caused_relevant_displacement"] = 3.0
+        gates = {name: "PASS" for name in evaluator.GATE_NAMES}
+        for metric, before, after in (
+            ("protected_exact_retention", 0.8, 1.0),
+            ("selector_caused_relevant_displacement", 4.0, 2.0),
+            ("final_evidence_recall", 0.8, 1.0),
+            ("critical_evidence_retention", 0.8, 1.0),
+            ("explicit_required_satisfaction", 0.8, 1.0),
+        ):
+            s0, s1 = dict(baseline), dict(baseline)
+            s0[metric], s1[metric] = before, after
+            self.assertEqual(evaluator.case_direction(s0, s1), "improved", metric)
+            self.assertEqual(evaluator.meaningful_gain(s0, s1, gates), "DEVELOPMENT_SUPPORTED", metric)
+        for metric, before, after in (
+            ("protected_exact_retention", 1.0, 0.8),
+            ("selector_caused_relevant_displacement", 2.0, 4.0),
+        ):
+            s0, s1 = dict(baseline), dict(baseline)
+            s0[metric], s1[metric] = before, after
+            self.assertEqual(evaluator.case_direction(s0, s1), "regressed", metric)
+            self.assertEqual(evaluator.meaningful_gain(s0, s1, gates), "NO_MEANINGFUL_GAIN/INCONCLUSIVE", metric)
+        self.assertEqual(evaluator.case_direction(baseline, baseline), "unchanged")
+        self.assertEqual(evaluator.meaningful_gain(baseline, baseline, gates), "NO_MEANINGFUL_GAIN/INCONCLUSIVE")
+        source = (ROOT / "evaluation/scripts/evaluate_c7_a3_frozen_selectors.py").read_text(encoding="utf-8")
+        self.assertNotIn("PRIMARY_METRICS[:-1]", source)
+        self.assertNotIn("PRIMARY_METRICS[-1]", source)
+
+    def test_micro_aggregation_not_macro_mean(self) -> None:
+        cases = [
+            aggregate_case("a", relevant_universe=["same"], relevant_hits=["same"], required_universe=["r1"], required_hits=["r1"], protected_universe=["p1"], protected_hits=["p1"], exposed=["same"], displaced=[]),
+            aggregate_case("b", relevant_universe=["same", "g2", "g3", "g4", "g5", "g6", "g7", "g8", "g9"], relevant_hits=[], required_universe=["r1", "r2", "r3"], required_hits=[], protected_universe=["p1", "p2", "p3"], protected_hits=[], exposed=["same", "g2", "g3", "g4", "g5", "g6", "g7", "g8", "g9"], displaced=["same", "g2", "g3", "g4"]),
+        ]
+        metrics = evaluator.aggregate_primary_metrics(cases, "s0")
+        self.assertEqual(metrics["final_evidence_recall"]["numerator"], 1)
+        self.assertEqual(metrics["final_evidence_recall"]["denominator"], 10)
+        self.assertEqual(metrics["final_evidence_recall"]["value"], 0.1)
+        self.assertEqual(metrics["explicit_required_satisfaction"]["value"], 0.25)
+        self.assertEqual(metrics["protected_exact_retention"]["value"], 0.25)
+        self.assertEqual(metrics["critical_evidence_retention"], {"value": 1.0, "numerator": 0, "denominator": 0, "numerator_identities": [], "denominator_identities": []})
+        self.assertEqual(metrics["selector_caused_relevant_displacement"]["count"], 4)
+        self.assertEqual(metrics["selector_caused_relevant_displacement"]["exposed_count"], 10)
+        self.assertEqual(metrics["selector_caused_relevant_displacement"]["rate"], 0.4)
+        identities = metrics["final_evidence_recall"]["denominator_identities"]
+        self.assertIn({"case_id": "a", "group_id": "same"}, identities)
+        self.assertIn({"case_id": "b", "group_id": "same"}, identities)
+        empty = evaluator.aggregate_primary_metrics([aggregate_case("empty")], "s0")
+        self.assertEqual(empty["selector_caused_relevant_displacement"]["rate"], 0.0)
 
     def test_full_offline_same_input_evaluator_fixture(self) -> None:
         frozen = record()
@@ -168,6 +272,78 @@ class CaptureTests(unittest.TestCase):
         self.assertEqual(result["secondary"]["displacement_reasons"]["s1"]["count"], 0)
         cohort = evaluator.evaluate_frozen_cohort([frozen], {"g001": annotations}, s0_runner=s0, s1_runner=s1, preregistration=passing_preregistration())
         self.assertEqual(set(cohort["gates"]), set(evaluator.GATE_NAMES))
+
+    def test_identity_level_gates_reject_compensating_swaps(self) -> None:
+        frozen = record()
+        frozen["candidate_payloads"] = {"a": payload("a", "alpha"), "b": payload("b", "beta")}
+        frozen["stage_f_order"] = ["a", "b"]
+        frozen["stage_r_order"] = ["a", "b"]
+        frozen["stage_p_order"] = ["a", "b"]
+        frozen["retrieval_channels"] = {"a": ["dense"], "b": ["dense"]}
+        frozen["exact_stream_order"] = []
+        frozen["mandatory_symbol_ids"] = ["a", "b"]
+        frozen["final_evidence_limit"] = 1
+        frozen["frozen_plan"] = {
+            "intent": "usage",
+            "target_repositories": ["alpha", "beta"],
+            "analysis_diagnostics": {"deterministic_parse": {"provenance": {"target_repositories": [
+                {"value": "alpha", "source": "explicit_query_reference"},
+                {"value": "beta", "source": "explicit_query_reference"},
+            ]}}},
+        }
+        annotations = {
+            "relevant_groups": ["relevant-a", "relevant-b"],
+            "critical_groups": ["critical-a", "critical-b"],
+            "relevant_groups_by_object": {"a": ["relevant-a"], "b": ["relevant-b"]},
+            "critical_groups_by_object": {"a": ["critical-a"], "b": ["critical-b"]},
+        }
+        s0 = lambda _record: {"selected_object_ids": ["a"], "candidate_receipts": [{"object_id": "b", "decision_reason": "final_evidence_limit"}]}
+        s1 = lambda _record: {"selected_object_ids": ["b"], "candidate_receipts": [{"object_id": "a", "decision_reason": "final_evidence_limit"}, {"object_id": "b", "decision_reason": "admitted"}], "constraint_receipts": []}
+        result = evaluator.evaluate_frozen_cohort([frozen], {"g001": annotations}, s0_runner=s0, s1_runner=s1, preregistration=passing_preregistration())
+        losses = result["aggregate"]["identity_losses"]
+        self.assertEqual(losses["new_critical_miss_identities"], [{"case_id": "g001", "group_id": "critical-a"}])
+        self.assertEqual(losses["new_protected_loss_identities"], [{"case_id": "g001", "object_id": "a"}])
+        self.assertEqual(losses["new_required_miss_identities"], [{"case_id": "g001", "constraint_value": "alpha"}])
+        self.assertEqual(result["gates"]["critical_safety"], "FAIL")
+        self.assertEqual(result["gates"]["protected_exact_safety"], "FAIL")
+        self.assertEqual(result["gates"]["required_safety"], "FAIL")
+        self.assertEqual(result["aggregate"]["s0_metrics"]["critical_evidence_retention"]["value"], result["aggregate"]["s1_metrics"]["critical_evidence_retention"]["value"])
+        self.assertEqual(result["aggregate"]["s0_metrics"]["protected_exact_retention"]["value"], result["aggregate"]["s1_metrics"]["protected_exact_retention"]["value"])
+        self.assertEqual(result["aggregate"]["s0_metrics"]["explicit_required_satisfaction"]["value"], result["aggregate"]["s1_metrics"]["explicit_required_satisfaction"]["value"])
+
+    def test_selector_displacement_count_rate_and_direction(self) -> None:
+        s0_gate, s1_gate = passing_gate_inputs()
+        s0_gate.update(selector_displacement_count=4, selector_displacement_rate=0.4)
+        s1_gate.update(selector_displacement_count=2, selector_displacement_rate=0.2)
+        gates = evaluator.gate_matrix(s0_gate, s1_gate)
+        self.assertEqual(gates["selector_displacement"], "PASS")
+        s0_metrics = {name: 1.0 for name in evaluator.PRIMARY_METRICS}
+        s1_metrics = dict(s0_metrics)
+        s0_metrics["selector_caused_relevant_displacement"] = 0.4
+        s1_metrics["selector_caused_relevant_displacement"] = 0.2
+        self.assertEqual(evaluator.meaningful_gain(s0_metrics, s1_metrics, gates), "DEVELOPMENT_SUPPORTED")
+        s1_gate["displacement_denominator_identical"] = False
+        broken = evaluator.gate_matrix(s0_gate, s1_gate)
+        self.assertEqual(broken["frozen_input_identity"], "FAIL")
+        self.assertEqual(broken["selector_displacement"], "FAIL")
+
+    def test_c7_source_type_concentration_and_diversity(self) -> None:
+        frozen = record()
+        frozen["candidate_payloads"] = {
+            "docs": {**payload("docs", "repo"), "locator": {"path": "docs/guide.md"}},
+            "paper": payload("paper", "li_2026"),
+        }
+        frozen["stage_f_order"] = ["docs", "paper"]
+        frozen["stage_r_order"] = ["docs", "paper"]
+        frozen["stage_p_order"] = ["docs", "paper"]
+        frozen["retrieval_channels"] = {"docs": ["dense"], "paper": ["paper"]}
+        frozen["exact_stream_order"] = []
+        runner = lambda _record: {"selected_object_ids": ["docs", "paper"], "candidate_receipts": [], "constraint_receipts": []}
+        result = evaluator.evaluate_frozen_case(frozen, {"relevant_groups": [], "critical_groups": [], "relevant_groups_by_object": {}, "critical_groups_by_object": {}}, s0_runner=runner, s1_runner=runner)
+        concentration = result["secondary"]["source_concentration"]["s1"]["source_type"]
+        self.assertEqual(concentration, {"documentation": 1, "paper": 1})
+        self.assertNotIn("source_file", concentration)
+        self.assertEqual(result["secondary"]["source_diversity"]["s1"], {"source_id_count": 2, "source_type_count": 2})
 
     def test_gate_9_supported_failure_and_not_supported(self) -> None:
         frozen = record()
