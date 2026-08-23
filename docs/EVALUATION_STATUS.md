@@ -32,6 +32,17 @@ When records conflict, use the single section explicitly marked **Current author
 - Dense embedding remains `gemini-embedding-2`, configured at 3072 dimensions.
 - These current defaults do not rewrite the A3 measured provenance above, which remains `gemini-3.6-flash` with index schema 2 and identity `c527bbf1d10c88969da02745d678c640a4544757258584110a5ddd7744be3cf2`.
 
+## N1 novel-dev pilot curation — 2026-08-23 (candidate package)
+
+- N1 status: `CANDIDATE_PACKAGE_READY_FOR_HUMAN_REVIEW` (not `COMPLETE`; final human acceptance/freeze pending).
+- Candidate count: `16` `novel_dev` questions (`n001`-`n016`), one per independent curation family (`nf001`-`nf016`).
+- Intent coverage: all 8 canonical intents covered (installation 2, usage 3, api 2, algorithm_theory 2, algorithm_implementation 1, data_flow 2, module_structure 2, troubleshooting 2).
+- Expected-status distribution: `15` answered, `1` insufficient_evidence; difficulty band 6 simple / 8 moderate / 2 hard.
+- Package location: `evaluation/novel/v1/` (dataset, sidecar, coverage report, review package, manifest). Dataset identity `novel-v1-n1-pilot-draft`, `release_eligible: false`, all questions `review_status: draft`, `reviewer: null`.
+- Human review: `PENDING` — human-approved questions: `0`. Codex drafted and self-checked only; it did not approve Gold.
+- No PANDA Agent outcome was observed and no evaluation was run: retrieval/QA/judge/Vertex/embedding/index calls all `0`. Static T0 validation only (`evaluation/scripts/validate_novel_curation.py` PASS, plus KB cross-match of every critical evidence group).
+- No validation or holdout content was created; full-dataset quotas remain unfrozen (pilot proposals in `evaluation/novel/v1/coverage_report.json`).
+
 ## Generalization Phase status
 
 # Current Evaluation Status

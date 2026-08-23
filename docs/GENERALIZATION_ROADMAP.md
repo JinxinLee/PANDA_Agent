@@ -344,7 +344,7 @@ Phase C is started by C1. The initial C1 implementation was `INCONCLUSIVE` after
 
 ### C8 — Global rerank after targeted retrieval
 
-- **Status:** NEXT_ELIGIBLE / NOT_STARTED (Novel Dataset Curation N0 is complete; N1 pilot curation is the recommended next task before substantial downstream generalization development.)
+- **Status:** NEXT_ELIGIBLE / NOT_STARTED (Novel Dataset Curation N0 is complete and the N1 pilot candidate package is ready for human review; N1 pilot finalization is the recommended next task before substantial downstream generalization development.)
 - **Problem:** Targeted retrieval can append new evidence and truncate without globally reconsidering initial and targeted candidates.
 - **Goal:** Treat targeted results as candidates in a deduplicated global fusion/rerank/selection pass.
 - **Why this stage:** Query/channel/fusion/selection contracts must be stable before changing the second retrieval pass.
@@ -584,7 +584,7 @@ Phase C and Phase D must not flatten these source/source-type constraints, evide
 The eventual curation target is approximately 30 `novel_dev`, 15 `novel_validation`, and 15 externally loaded `novel_holdout` questions across API/symbol, implementation, data flow, workflow, theory, troubleshooting, usage, and cross-repository reasoning. Questions must vary knowledge recognition/combination, not merely paraphrase benchmark wording. Generated drafts require human review and never constitute a holdout.
 
 - **N0 — Curation Contract:** `COMPLETE` (`docs/NOVEL_DATASET_CURATION_CONTRACT.md`). The contract defines question-distribution scope, split exposure, substantive novelty, Gold-compatible annotation plus curation sidecar metadata, independent human review, leakage controls, external holdout loading, lightweight versioning/amendment, and the N1 entry boundary. N0 created no questions and observed no outcomes.
-- **N1 — Novel-Dev Pilot Curation:** `NEXT / NOT_STARTED`. Curate 12–16 candidate `novel_dev` questions under N0; `pilot` is not a fourth split. Do not run novel evaluation or begin C8 as part of N1 curation.
+- **N1 — Novel-Dev Pilot Curation:** `CANDIDATE_PACKAGE_READY_FOR_HUMAN_REVIEW` (2026-08-23; not `COMPLETE` — human acceptance pending). 16 candidate `novel_dev` questions (`n001`-`n016`), one per independent curation family, curated without running PANDA Agent or observing any outcome; package in `evaluation/novel/v1/`, static T0 validation PASS, all records `review_status: draft`. `pilot` is not a fourth split. Next step: N1 human review / pilot finalization. Do not run novel evaluation or begin C8 as part of N1 curation.
 
 At release, define:
 

@@ -1,0 +1,643 @@
+schema_version: novel-curation-sidecar-v1
+dataset_version: novel-v1-n1-pilot-draft
+benchmark_version: novel-v1-dev-0.1.0
+records:
+  - question_id: n001
+    curation_family_id: nf001
+    intent: installation
+    expected_status: answered
+    novelty:
+      types:
+        - entity
+      closest_exposed_cases:
+        - g002
+        - g003
+      benchmark_overlap:
+        wording: low
+        entity: none
+        evidence: none
+        information_need: low
+      rationale: >-
+        The exposed installation questions (g001-g012) all target the upstream
+        PandaRoot documentation pages. This candidate instead asks about the
+        oct19 restgas fork's own GSI setup path: the concrete FairSoft/FairRoot
+        version pairs its configSettings.sh recognizes and the SIMPATH /
+        FAIRROOTPATH environment it expects. The information need (fork-level
+        environment pinning) does not appear in any exposed case.
+    coverage:
+      repositories:
+        - restgas_determination
+      source_types:
+        - code
+      expression_form: descriptive
+      evidence_topology: single_hop
+      source_scope: single_source
+      repository_scope: single_repository
+      reasoning_forms:
+        - procedure
+      difficulty: simple
+    curation:
+      origin: human_directed_llm_draft
+      agent_outcome_seen_before_freeze: false
+      evidence_selected_from_agent_output: false
+      lifecycle: evidence_review_ready
+  - question_id: n002
+    curation_family_id: nf002
+    intent: installation
+    expected_status: answered
+    novelty:
+      types:
+        - entity
+      closest_exposed_cases:
+        - g002
+      benchmark_overlap:
+        wording: low
+        entity: none
+        evidence: none
+        information_need: low
+      rationale: >-
+        No exposed installation case covers LuminosityFit's own Python-level
+        dependencies. g002 asks for documented build prerequisites of
+        PandaRoot; this candidate is about the luminosityfit repository's
+        requirements.txt and python workflow Readme, an independent
+        repository-level information need.
+    coverage:
+      repositories:
+        - luminosityfit
+      source_types:
+        - code
+      expression_form: descriptive
+      evidence_topology: single_hop
+      source_scope: single_source
+      repository_scope: single_repository
+      reasoning_forms:
+        - locate
+        - procedure
+      difficulty: simple
+    curation:
+      origin: human_directed_llm_draft
+      agent_outcome_seen_before_freeze: false
+      evidence_selected_from_agent_output: false
+      lifecycle: evidence_review_ready
+  - question_id: n003
+    curation_family_id: nf003
+    intent: usage
+    expected_status: answered
+    novelty:
+      types:
+        - entity
+        - relation
+      closest_exposed_cases:
+        - g016
+      benchmark_overlap:
+        wording: low
+        entity: none
+        evidence: none
+        information_need: low
+      rationale: >-
+        g016 asks how to select the DPM event generator. This candidate asks
+        which generator supports fixed-step scanning of momentum and polar
+        angle and how the stepping is configured (SetPRange /
+        SetThetaRange with start/stop/step ranges). The generator entity, its
+        stepping semantics, and the acceptance-scan use case are absent from
+        the exposed set.
+    coverage:
+      repositories:
+        - pandaroot
+      source_types:
+        - code
+        - documentation
+      expression_form: descriptive
+      evidence_topology: single_hop
+      source_scope: single_source
+      repository_scope: single_repository
+      reasoning_forms:
+        - configure
+        - procedure
+      difficulty: simple
+    curation:
+      origin: human_directed_llm_draft
+      agent_outcome_seen_before_freeze: false
+      evidence_selected_from_agent_output: false
+      lifecycle: evidence_review_ready
+  - question_id: n004
+    curation_family_id: nf004
+    intent: usage
+    expected_status: answered
+    novelty:
+      types:
+        - entity
+        - task_form
+      closest_exposed_cases: []
+      closest_case_assessment: none_found
+      benchmark_overlap:
+        wording: low
+        entity: none
+        evidence: none
+        information_need: low
+      rationale: >-
+        No exposed question touches runtime logging, verbosity control, or the
+        fair logger API. The need (configure per-message provenance while
+        debugging a macro) is a distinct runtime-usage operation not
+        represented in the benchmark.
+    coverage:
+      repositories:
+        - pandaroot
+      source_types:
+        - documentation
+      expression_form: implementation_oriented
+      evidence_topology: single_hop
+      source_scope: single_source
+      repository_scope: single_repository
+      reasoning_forms:
+        - configure
+        - diagnose
+      difficulty: simple
+    curation:
+      origin: human_directed_llm_draft
+      agent_outcome_seen_before_freeze: false
+      evidence_selected_from_agent_output: false
+      lifecycle: evidence_review_ready
+  - question_id: n005
+    curation_family_id: nf005
+    intent: usage
+    expected_status: answered
+    novelty:
+      types:
+        - entity
+        - nontrivial_expression
+      closest_exposed_cases:
+        - g010
+      benchmark_overlap:
+        wording: low
+        entity: none
+        evidence: none
+        information_need: low
+      rationale: >-
+        g010 asks whether a Jupyter-based workflow is documented and where.
+        This candidate asks how to visually inspect simulated events and the
+        detector geometry with the event display, expressed without any class
+        or tool identifier. Visualization tooling is absent from the exposed
+        set, and the identifier-free expression changes recognition demands.
+    coverage:
+      repositories:
+        - pandaroot
+      source_types:
+        - documentation
+      expression_form: descriptive
+      evidence_topology: single_hop
+      source_scope: single_source
+      repository_scope: single_repository
+      reasoning_forms:
+        - locate
+        - procedure
+      difficulty: simple
+    curation:
+      origin: human_directed_llm_draft
+      agent_outcome_seen_before_freeze: false
+      evidence_selected_from_agent_output: false
+      lifecycle: evidence_review_ready
+  - question_id: n006
+    curation_family_id: nf006
+    intent: api
+    expected_status: answered
+    novelty:
+      types:
+        - entity
+        - task_form
+      closest_exposed_cases:
+        - g036
+        - g037
+      benchmark_overlap:
+        wording: low
+        entity: none
+        evidence: none
+        information_need: low
+      rationale: >-
+        g036/g037 locate one specific macro each (event_poca producer /
+        POCA_VERTEX_FILE consumer). This candidate instead asks for the
+        general naming utility that derives an entire simulation chain's file
+        names from the simulation file name, a reusable tool-lookup need with
+        a different task form than single-artifact location.
+    coverage:
+      repositories:
+        - pandaroot
+      source_types:
+        - code
+        - documentation
+      expression_form: implementation_oriented
+      evidence_topology: single_hop
+      source_scope: single_source
+      repository_scope: single_repository
+      reasoning_forms:
+        - locate
+        - procedure
+      difficulty: moderate
+    curation:
+      origin: human_directed_llm_draft
+      agent_outcome_seen_before_freeze: false
+      evidence_selected_from_agent_output: false
+      lifecycle: evidence_review_ready
+  - question_id: n007
+    curation_family_id: nf007
+    intent: api
+    expected_status: answered
+    novelty:
+      types:
+        - entity
+        - relation
+        - nontrivial_expression
+      closest_exposed_cases:
+        - g056
+      benchmark_overlap:
+        wording: low
+        entity: none
+        evidence: none
+        information_need: low
+      rationale: >-
+        g056 asks about the conceptual role of detector-coordinate
+        transformations inside the LuminosityFit model. This candidate asks a
+        runtime MVD question: how compact per-hit volume identifiers are
+        translated back into full geometry paths, and which geometry and
+        parameter-container state that translation requires. Different layer,
+        different relation, and the question is expressed without identifiers.
+    coverage:
+      repositories:
+        - pandaroot
+      source_types:
+        - code
+        - documentation
+      expression_form: descriptive
+      evidence_topology: single_hop
+      source_scope: single_source
+      repository_scope: single_repository
+      reasoning_forms:
+        - locate
+        - explain
+      difficulty: moderate
+    curation:
+      origin: human_directed_llm_draft
+      agent_outcome_seen_before_freeze: false
+      evidence_selected_from_agent_output: false
+      lifecycle: evidence_review_ready
+  - question_id: n008
+    curation_family_id: nf008
+    intent: algorithm_theory
+    expected_status: answered
+    novelty:
+      types:
+        - entity
+        - reasoning_topology
+        - nontrivial_expression
+      closest_exposed_cases:
+        - g048
+      benchmark_overlap:
+        wording: low
+        entity: none
+        evidence: none
+        information_need: low
+      rationale: >-
+        The exposed LMD reconstruction questions (g048, g054, g061, g062)
+        concern track back-propagation to the interaction point. Track search
+        (hit-to-track candidate grouping) and the comparison between the track
+        following and cellular automaton approaches are not measured by any
+        exposed case; the question is expressed without symbol names.
+    coverage:
+      repositories: []
+      source_types:
+        - paper
+      expression_form: descriptive
+      evidence_topology: comparison
+      source_scope: single_source
+      repository_scope: single_repository
+      reasoning_forms:
+        - compare
+        - explain
+      difficulty: moderate
+    curation:
+      origin: human_directed_llm_draft
+      agent_outcome_seen_before_freeze: false
+      evidence_selected_from_agent_output: false
+      lifecycle: evidence_review_ready
+  - question_id: n009
+    curation_family_id: nf009
+    intent: algorithm_theory
+    expected_status: answered
+    novelty:
+      types:
+        - relation
+        - composition
+        - reasoning_topology
+      closest_exposed_cases:
+        - g047
+      benchmark_overlap:
+        wording: low
+        entity: partial
+        evidence: partial
+        information_need: low
+      rationale: >-
+        g047 asks the theoretical purpose of the DPM model. This candidate
+        asks a different need: which alternative elastic model was studied
+        (E760), that the alternative also exists as LuminosityFit code, and
+        what dominates the model uncertainty (beam momentum uncertainty; the
+        below-two-percent low-momentum bound). Composition of thesis sections
+        plus code and a comparison topology are new; DPM is only the shared
+        background entity.
+    coverage:
+      repositories:
+        - luminosityfit
+      source_types:
+        - paper
+        - code
+      expression_form: descriptive
+      evidence_topology: comparison
+      source_scope: cross_source
+      repository_scope: single_repository
+      reasoning_forms:
+        - compare
+        - explain
+      difficulty: hard
+    curation:
+      origin: human_directed_llm_draft
+      agent_outcome_seen_before_freeze: false
+      evidence_selected_from_agent_output: false
+      lifecycle: evidence_review_ready
+  - question_id: n010
+    curation_family_id: nf010
+    intent: algorithm_implementation
+    expected_status: answered
+    novelty:
+      types:
+        - entity
+        - composition
+      closest_exposed_cases: []
+      closest_case_assessment: none_found
+      benchmark_overlap:
+        wording: low
+        entity: none
+        evidence: none
+        information_need: low
+      rationale: >-
+        No exposed question covers the fast simulation subsystem. The
+        candidate asks how parametrized detector responses replace GEANT
+        transport and how PndFastSim, PndFsmAbsDet detectors, and
+        PndFsmResponse objects compose, an unexposed subsystem-level
+        implementation need.
+    coverage:
+      repositories:
+        - pandaroot
+      source_types:
+        - code
+      expression_form: descriptive
+      evidence_topology: single_hop
+      source_scope: single_source
+      repository_scope: single_repository
+      reasoning_forms:
+        - explain
+        - structure
+      difficulty: moderate
+    curation:
+      origin: human_directed_llm_draft
+      agent_outcome_seen_before_freeze: false
+      evidence_selected_from_agent_output: false
+      lifecycle: evidence_review_ready
+  - question_id: n011
+    curation_family_id: nf011
+    intent: data_flow
+    expected_status: answered
+    novelty:
+      types:
+        - entity
+        - reasoning_topology
+      closest_exposed_cases: []
+      closest_case_assessment: none_found
+      benchmark_overlap:
+        wording: low
+        entity: none
+        evidence: none
+        information_need: low
+      rationale: >-
+        The exposed data-flow questions trace specific restgas/LMD artifacts
+        (event_poca, pid files, Lumi_TrksQA, restgas_profile). None covers the
+        generic MC-truth channel from generation into analysis, or the
+        reconstructed-versus-generated tree match, which spans tutorial
+        documentation and the PndMCTrackAna tooling.
+    coverage:
+      repositories:
+        - pandaroot
+      source_types:
+        - documentation
+        - code
+      expression_form: descriptive
+      evidence_topology: multi_hop
+      source_scope: cross_source
+      repository_scope: single_repository
+      reasoning_forms:
+        - trace
+        - procedure
+      difficulty: moderate
+    curation:
+      origin: human_directed_llm_draft
+      agent_outcome_seen_before_freeze: false
+      evidence_selected_from_agent_output: false
+      lifecycle: evidence_review_ready
+  - question_id: n012
+    curation_family_id: nf012
+    intent: data_flow
+    expected_status: answered
+    novelty:
+      types:
+        - relation
+        - composition
+        - reasoning_topology
+      closest_exposed_cases:
+        - g079
+      benchmark_overlap:
+        wording: low
+        entity: none
+        evidence: none
+        information_need: low
+      rationale: >-
+        g079 traces Lumi_TrksQA into the final luminosity result but assumes
+        an aligned geometry. This candidate asks where alignment corrections
+        are produced (Millepede-based internal alignment in the thesis) and
+        where they enter the LuminosityFit workflow (an alignment process
+        ahead of the documented steps), a producer-to-pipeline-entry relation
+        across paper and repository that no exposed case measures.
+    coverage:
+      repositories:
+        - luminosityfit
+      source_types:
+        - paper
+        - code
+      expression_form: descriptive
+      evidence_topology: multi_hop
+      source_scope: cross_source
+      repository_scope: single_repository
+      reasoning_forms:
+        - trace
+        - explain
+      difficulty: hard
+    curation:
+      origin: human_directed_llm_draft
+      agent_outcome_seen_before_freeze: false
+      evidence_selected_from_agent_output: false
+      lifecycle: evidence_review_ready
+  - question_id: n013
+    curation_family_id: nf013
+    intent: module_structure
+    expected_status: answered
+    novelty:
+      types:
+        - composition
+        - reasoning_topology
+      closest_exposed_cases: []
+      closest_case_assessment: none_found
+      benchmark_overlap:
+        wording: low
+        entity: none
+        evidence: none
+        information_need: low
+      rationale: >-
+        GenFit and its three-directory layout are not mentioned by any exposed
+        question. The candidate asks which genfit variants the default build
+        compiles and what the genfit2-remote recipe builds, a build-wiring
+        comparison inside the module structure that the benchmark does not
+        cover.
+    coverage:
+      repositories:
+        - pandaroot
+      source_types:
+        - code
+      expression_form: identifier_heavy
+      evidence_topology: comparison
+      source_scope: single_source
+      repository_scope: single_repository
+      reasoning_forms:
+        - compare
+        - structure
+      difficulty: moderate
+    curation:
+      origin: human_directed_llm_draft
+      agent_outcome_seen_before_freeze: false
+      evidence_selected_from_agent_output: false
+      lifecycle: evidence_review_ready
+  - question_id: n014
+    curation_family_id: nf014
+    intent: module_structure
+    expected_status: answered
+    novelty:
+      types:
+        - entity
+        - relation
+      closest_exposed_cases:
+        - g097
+      benchmark_overlap:
+        wording: low
+        entity: partial
+        evidence: partial
+        information_need: medium
+      rationale: >-
+        g097 asks which core modules compose LuminosityFit's model layer. This
+        candidate asks the adjacent but distinct question of what the separate
+        model_framework directory is (a vendored, upstream-archived working
+        copy of ModelFramework) and how it differs from the native model/
+        layer assembled by PndLmdModelFactory. The subsystem overlaps, so
+        entity and evidence overlap are partial and information-need overlap
+        is medium, but the vendored-copy role itself is not measured by g097.
+    coverage:
+      repositories:
+        - luminosityfit
+      source_types:
+        - code
+      expression_form: descriptive
+      evidence_topology: comparison
+      source_scope: single_source
+      repository_scope: single_repository
+      reasoning_forms:
+        - compare
+        - structure
+      difficulty: moderate
+    curation:
+      origin: human_directed_llm_draft
+      agent_outcome_seen_before_freeze: false
+      evidence_selected_from_agent_output: false
+      lifecycle: evidence_review_ready
+  - question_id: n015
+    curation_family_id: nf015
+    intent: troubleshooting
+    expected_status: answered
+    novelty:
+      types:
+        - task_form
+        - composition
+      closest_exposed_cases: []
+      closest_case_assessment: none_found
+      benchmark_overlap:
+        wording: low
+        entity: none
+        evidence: none
+        information_need: low
+      rationale: >-
+        The exposed troubleshooting cases (g109-g115) diagnose runtime or
+        analysis artifacts of the restgas/LMD workflows. No exposed case
+        covers a build-configuration failure or the documented
+        workaround-with-side-effect structure (NOVC disabling CAtracking and
+        FtsCATracking), which is a different diagnostic operation.
+    coverage:
+      repositories:
+        - pandaroot
+      source_types:
+        - documentation
+      expression_form: descriptive
+      evidence_topology: single_hop
+      source_scope: single_source
+      repository_scope: single_repository
+      reasoning_forms:
+        - diagnose
+        - procedure
+      difficulty: moderate
+    curation:
+      origin: human_directed_llm_draft
+      agent_outcome_seen_before_freeze: false
+      evidence_selected_from_agent_output: false
+      lifecycle: evidence_review_ready
+  - question_id: n016
+    curation_family_id: nf016
+    intent: troubleshooting
+    expected_status: insufficient_evidence
+    novelty:
+      types:
+        - failure_mode
+      closest_exposed_cases:
+        - g007
+      benchmark_overlap:
+        wording: low
+        entity: none
+        evidence: none
+        information_need: low
+      rationale: >-
+        g007 establishes that an exact hardware requirement (GPU memory) is
+        not stated by the corpus. This candidate applies the same legitimate
+        refusal class to host-platform support: whether the documented Docker
+        containers can run natively on Windows. Deterministic search over the
+        locked corpus shows no Windows-host statement (the only "windows"
+        matches are mass windows in a tutorial), so the expected behavior is a
+        grounded insufficient-evidence refusal, not a guessed answer.
+    coverage:
+      repositories:
+        - pandaroot
+      source_types:
+        - documentation
+      expression_form: descriptive
+      evidence_topology: single_hop
+      source_scope: single_source
+      repository_scope: single_repository
+      reasoning_forms:
+        - diagnose
+      difficulty: simple
+    curation:
+      origin: human_directed_llm_draft
+      agent_outcome_seen_before_freeze: false
+      evidence_selected_from_agent_output: false
+      lifecycle: evidence_review_ready

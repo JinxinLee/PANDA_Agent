@@ -1,0 +1,104 @@
+{
+  "schema_version": "novel-coverage-report-v1",
+  "dataset_identity": "novel-v1-n1-pilot-draft",
+  "benchmark_version": "novel-v1-dev-0.1.0",
+  "split": "novel_dev",
+  "status": "candidate_package_ready_for_human_review",
+  "question_count": 16,
+  "independent_family_count": 16,
+  "counts_by_intent": {
+    "installation": 2,
+    "usage": 3,
+    "api": 2,
+    "algorithm_theory": 2,
+    "algorithm_implementation": 1,
+    "data_flow": 2,
+    "module_structure": 2,
+    "troubleshooting": 2
+  },
+  "counts_by_difficulty": {
+    "simple": 6,
+    "moderate": 8,
+    "hard": 2
+  },
+  "counts_by_novelty_type": {
+    "entity": 11,
+    "relation": 5,
+    "composition": 5,
+    "reasoning_topology": 5,
+    "nontrivial_expression": 3,
+    "failure_mode": 1,
+    "task_form": 3
+  },
+  "counts_by_repository_scope": {
+    "single_repository": 16,
+    "cross_repository": 0
+  },
+  "counts_by_expression_form": {
+    "descriptive": 13,
+    "implementation_oriented": 2,
+    "identifier_heavy": 1
+  },
+  "counts_by_evidence_topology": {
+    "single_hop": 10,
+    "comparison": 4,
+    "multi_hop": 2
+  },
+  "counts_by_expected_status": {
+    "answered": 15,
+    "insufficient_evidence": 1,
+    "version_conflict": 0,
+    "clarification_required": 0
+  },
+  "cross_repository_count": 0,
+  "multi_hop_count": 2,
+  "descriptive_or_identifier_free_count": 13,
+  "multi_evidence_count": 9,
+  "known_coverage_gaps": [
+    "No cross-repository candidate: every pilot question is answerable within one repository or one paper-plus-repository pair; a full novel_dev should add genuinely cross-repository questions.",
+    "No version_conflict candidate: the locked corpus exposes commit-boundary conflicts already heavily represented by exposed Gold (g012/g026/g042/g058/g077/g096/g108/g120); none arose naturally for unexposed information needs during pilot curation.",
+    "No clarification_required candidate: no genuine ambiguity case was naturally supported, so the generic T0 status-compatibility check was not required and was not run.",
+    "algorithm_implementation has only one candidate (fast simulation); the locked corpus supports more (event generators, tracking), but pilot slots went to uncovered intents first.",
+    "Difficulty band is 6/8/2, one simple case above the 3-5 guidance band; the pilot kept several easy natural user questions rather than inflating difficulty labels."
+  ],
+  "recommended_coverage_targets": {
+    "scope": "proposal_only_for_future_full_novel_dev",
+    "notes": "Derived from pilot curation experience; not frozen quotas. Requires explicit user approval before becoming contract targets.",
+    "targets": {
+      "per_intent_minimum": 2,
+      "cross_repository_minimum": 2,
+      "descriptive_or_identifier_free_share": ">= 0.4",
+      "multi_evidence_share": ">= 0.4",
+      "difficulty_band": "roughly 25% simple / 50% moderate / 25% hard",
+      "insufficient_evidence_maximum": 3,
+      "version_conflict": "include only when naturally supported by the locked version boundary; do not force parity with exposed Gold",
+      "naturally_supported_by_corpus": [
+        "installation (fork and dependency-level setups are plentiful)",
+        "usage (documentation pages for generators, logging, event display)",
+        "api (PandaRoot tools layer is broad and mostly unexposed)",
+        "algorithm_theory (both theses contain unexposed chapters: track search/fit comparisons, alignment, KOALA)",
+        "module_structure (vendored frameworks, build variants, subsystem inventories)"
+      ],
+      "evidence_scarce_in_corpus": [
+        "algorithm_implementation outside the three workflow repositories' core algorithms requires code-heavy annotation effort",
+        "version_conflict cases that are not paraphrases of the exposed commit-substitution pattern"
+      ]
+    }
+  },
+  "curation_provenance": {
+    "origin": "human_directed_llm_draft",
+    "agent_outcome_seen_before_freeze": false,
+    "evidence_selected_from_agent_output": false,
+    "human_approval": "pending",
+    "locked_corpus_source_versions": [
+      "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+      "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+      "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+      "li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a",
+      "karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b",
+      "pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3",
+      "pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87",
+      "curated_panda_domain@1.0"
+    ]
+  }
+}

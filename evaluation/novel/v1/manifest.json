@@ -1,0 +1,29 @@
+{
+  "schema_version": "novel-manifest-v1",
+  "dataset_identity": "novel-v1-n1-pilot-draft",
+  "benchmark_version": "novel-v1-dev-0.1.0",
+  "dataset_version": "0.1.0",
+  "split": "novel_dev",
+  "status": "candidate_package_ready_for_human_review",
+  "release_eligible": false,
+  "acceptance_exposed": true,
+  "question_count": 16,
+  "independent_family_count": 16,
+  "review_state": {
+    "review_status": "draft",
+    "reviewer": null,
+    "reviewed_at": null,
+    "human_approval": "pending"
+  },
+  "curation_origin": "human_directed_llm_draft",
+  "agent_outcome_seen_before_freeze": false,
+  "evidence_selected_from_agent_output": false,
+  "files": {
+    "dataset": "novel_dev.yaml",
+    "curation_metadata": "curation_metadata.yaml",
+    "coverage_report": "coverage_report.json",
+    "review_package": "N1_REVIEW_PACKAGE.md"
+  },
+  "locked_corpus_manifest": "data/manifests/source_manifest.json",
+  "governance": "docs/NOVEL_DATASET_CURATION_CONTRACT.md"
+}

@@ -13,3 +13,5 @@ Novel IDs use `n###`. Evaluator question records use the existing strict Gold sc
 Target sizes are approximately 30 development, 15 validation, and 15 protected holdout questions. Canonical product intents are `installation`, `usage`, `api`, `algorithm_theory`, `algorithm_implementation`, `data_flow`, `module_structure`, and `troubleshooting`. Workflow structure, cross-repository reasoning, descriptive expression, multi-hop evidence, producer-consumer flow, source scope, and expression diversity are orthogonal coverage dimensions, not additional intents.
 
 A trivial paraphrase or mechanical entity substitution is not novel by itself. Generated questions may be used as untrusted drafts for human curation, but must not be represented as protected holdout or frozen Gold. N1 will create only the files needed for its 12–16 candidate `novel_dev` pilot; N0 does not create empty dataset placeholders.
+
+Current state: the N1 pilot candidate package (16 draft `novel_dev` questions, awaiting human review) lives in `v1/`.

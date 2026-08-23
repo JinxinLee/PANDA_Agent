@@ -1,0 +1,966 @@
+schema_version: '2.0'
+benchmark_version: novel-v1-dev-0.1.0
+release_eligible: false
+acceptance_exposed: true
+expected_split_counts:
+  novel_dev: 16
+expected_status_counts:
+  answered: 15
+  insufficient_evidence: 1
+questions:
+  - id: n001
+    split: novel_dev
+    language: en
+    intent: installation
+    query: >-
+      I am building the RestgasDetermination fork on the GSI cluster. Which
+      FairSoft and FairRoot version combinations does its setup script
+      recognize, and which environment variables am I expected to export for
+      the external packages?
+    expected_status: answered
+    allowed_source_versions:
+      - luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32
+      - pandaroot@18c09e91100db27867ded30e708b4dae95bd8357
+      - restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42
+      - li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a
+      - karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b
+      - pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3
+      - pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87
+      - curated_panda_domain@1.0
+    required_evidence_groups:
+      - group_id: n001.e1
+        role: supported_fairroot_version_pairs
+        critical: true
+        any_of:
+          - source_id: restgas_determination
+            path: configSettings.sh
+      - group_id: n001.e2
+        role: external_package_environment_variables
+        critical: true
+        any_of:
+          - source_id: restgas_determination
+            path: configSettings.sh
+          - source_id: restgas_determination
+            path: INSTALL.GSI
+    required_source_types:
+      - code
+    required_answer_points:
+      - point_id: p1
+        text: >-
+          The fork's configuration script recognizes two version pairs:
+          FairSoft may16p1 with FairRoot v-17.10b, and FairSoft oct17 with
+          FairRoot dev; any other combination is rejected with an error.
+        weight: 1.0
+        critical: true
+      - point_id: p2
+        text: >-
+          The environment it expects is defined by SIMPATH, pointing at the
+          external FairSoft packages, and FAIRROOTPATH, pointing at the
+          FairRoot installation.
+        weight: 1.0
+        critical: true
+    required_identifiers: []
+    forbidden_evidence: []
+    concept_scopes: {}
+    cluster_id: nf001
+    challenge_tags: []
+    review_status: draft
+    reviewer: null
+    reviewed_at: null
+  - id: n002
+    split: novel_dev
+    language: en
+    intent: installation
+    query: >-
+      What Python packages do the LuminosityFit analysis scripts expect, and
+      where in the repository are they declared?
+    expected_status: answered
+    allowed_source_versions:
+      - luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32
+      - pandaroot@18c09e91100db27867ded30e708b4dae95bd8357
+      - restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42
+      - li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a
+      - karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b
+      - pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3
+      - pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87
+      - curated_panda_domain@1.0
+    required_evidence_groups:
+      - group_id: n002.e1
+        role: declared_python_dependencies
+        critical: true
+        any_of:
+          - source_id: luminosityfit
+            object_type: source_file
+            path: requirements.txt
+      - group_id: n002.e2
+        role: python_workflow_context
+        critical: true
+        any_of:
+          - source_id: luminosityfit
+            path: python/Readme.md
+    required_source_types:
+      - code
+    required_answer_points:
+      - point_id: p1
+        text: >-
+          The repository declares its Python dependencies in requirements.txt,
+          including uproot and awkward for columnar ROOT-data handling,
+          python-dotenv, and development tooling such as black, flake8, mypy,
+          and pytest.
+        weight: 1.0
+        critical: true
+      - point_id: p2
+        text: >-
+          The python directory Readme documents the script-based simulation,
+          reconstruction, and luminosity-determination workflow that these
+          packages support.
+        weight: 1.0
+        critical: true
+    required_identifiers: []
+    forbidden_evidence: []
+    concept_scopes: {}
+    cluster_id: nf002
+    challenge_tags: []
+    review_status: draft
+    reviewer: null
+    reviewed_at: null
+  - id: n003
+    split: novel_dev
+    language: en
+    intent: usage
+    query: >-
+      For an acceptance scan I need single particles whose momentum and polar
+      angle advance in fixed steps from one event to the next. Which PandaRoot
+      event generator supports this, and how is the stepping configured?
+    expected_status: answered
+    allowed_source_versions:
+      - luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32
+      - pandaroot@18c09e91100db27867ded30e708b4dae95bd8357
+      - restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42
+      - li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a
+      - karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b
+      - pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3
+      - pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87
+      - curated_panda_domain@1.0
+    required_evidence_groups:
+      - group_id: n003.e1
+        role: fixed_step_generator_definition
+        critical: true
+        any_of:
+          - source_id: pandaroot
+            object_type: source_file
+            path: pgenerators/particleguns/PndFixStepParticleGun.h
+          - source_id: pandaroot_sphinx_2023_08_25_dev
+            object_type: sphinx_page
+            path: pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/EventGenerators/FixStepParticleGun.html
+    required_source_types: []
+    required_answer_points:
+      - point_id: p1
+        text: >-
+          The fixed-step scanning generator is PndFixStepParticleGun, a
+          PndTargetGenerator subclass that advances kinematic quantities in
+          configured steps across events.
+        weight: 1.0
+        critical: true
+      - point_id: p2
+        text: >-
+          Stepping is configured through range setters built on start/stop/step
+          values: SetPRange(pmin, pmax, pstep) for momentum and
+          SetThetaRange(thetamin, thetamax, thetastep) for the polar angle.
+        weight: 1.0
+        critical: true
+    required_identifiers:
+      - text: PndFixStepParticleGun
+        kind: code_symbol
+        critical: true
+    forbidden_evidence: []
+    concept_scopes: {}
+    cluster_id: nf003
+    challenge_tags: []
+    review_status: draft
+    reviewer: null
+    reviewed_at: null
+  - id: n004
+    split: novel_dev
+    language: en
+    intent: usage
+    query: >-
+      While debugging a running PandaRoot macro I want every log message to
+      carry the severity and the file:line:function where it was emitted. How
+      do I configure that, and what other logging controls does the framework
+      documentation describe?
+    expected_status: answered
+    allowed_source_versions:
+      - luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32
+      - pandaroot@18c09e91100db27867ded30e708b4dae95bd8357
+      - restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42
+      - li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a
+      - karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b
+      - pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3
+      - pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87
+      - curated_panda_domain@1.0
+    required_evidence_groups:
+      - group_id: n004.e1
+        role: fair_logger_documentation
+        critical: true
+        any_of:
+          - source_id: pandaroot_sphinx_2023_08_25_dev
+            object_type: sphinx_page
+            path: pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Running/Logging.html
+          - source_id: pandaroot_sphinx_2023_08_25_dev
+            title_contains: Using the Logger from Fair
+    required_source_types:
+      - documentation
+    required_answer_points:
+      - point_id: p1
+        text: >-
+          fair::Logger::SetVerbosity selects a verbosity level (verylow, low,
+          medium, high, veryhigh, or user1-user4); a custom spec built with
+          fair::VerbositySpec::Make(severity, file_line_function) yields
+          [severity][file:line:function] messages, which the documentation
+          recommends for debugging macros.
+        weight: 1.0
+        critical: true
+      - point_id: p2
+        text: >-
+          Additional controls include fair::Logger::SetConsoleColor(true) for
+          colored output, which should be disabled when logging to a file
+          because the escape sequences clog the log.
+        weight: 1.0
+        critical: true
+    required_identifiers: []
+    forbidden_evidence: []
+    concept_scopes: {}
+    cluster_id: nf004
+    challenge_tags: []
+    review_status: draft
+    reviewer: null
+    reviewed_at: null
+  - id: n005
+    split: novel_dev
+    language: en
+    intent: usage
+    query: >-
+      After running a simulation I would rather look at the events and the
+      detector geometry than at histograms. What does PandaRoot provide for
+      this, and how do I get my file open in it?
+    expected_status: answered
+    allowed_source_versions:
+      - luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32
+      - pandaroot@18c09e91100db27867ded30e708b4dae95bd8357
+      - restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42
+      - li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a
+      - karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b
+      - pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3
+      - pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87
+      - curated_panda_domain@1.0
+    required_evidence_groups:
+      - group_id: n005.e1
+        role: event_display_overview
+        critical: true
+        any_of:
+          - source_id: pandaroot_sphinx_2023_08_25_dev
+            object_type: sphinx_page
+            path: pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/EventDisplay/EventDisplay.html
+      - group_id: n005.e2
+        role: event_browsing_usage
+        critical: true
+        any_of:
+          - source_id: pandaroot_sphinx_2023_08_25_dev
+            object_type: sphinx_page
+            path: pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/EventDisplay/EventDisplay_Events.html
+          - source_id: pandaroot_sphinx_2023_08_25_dev
+            object_type: sphinx_page
+            path: pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/EventDisplay/EventDisplay_DetectorGeometry.html
+    required_source_types:
+      - documentation
+    required_answer_points:
+      - point_id: p1
+        text: >-
+          PandaRoot ships an event display, a visualization tool based on the
+          FairEventDisplay/EVE infrastructure that renders the detector
+          geometry and the data objects of the different reconstruction
+          stages, with only a few PandaRoot-specific extensions on top.
+        weight: 1.0
+        critical: true
+      - point_id: p2
+        text: >-
+          Events are displayed through the EVE browser and FairEventManager:
+          stepping uses the Update button or the Current Event selector, and
+          it is advisable to disable or make the geometry transparent while
+          browsing events.
+        weight: 1.0
+        critical: true
+    required_identifiers: []
+    forbidden_evidence: []
+    concept_scopes: {}
+    cluster_id: nf005
+    challenge_tags: []
+    review_status: draft
+    reviewer: null
+    reviewed_at: null
+  - id: n006
+    split: novel_dev
+    language: en
+    intent: api
+    query: >-
+      My analysis chain produces sim, digi, reco and pid files and I keep
+      concatenating the stage names by hand. Does PandaRoot ship a helper that
+      derives all these file names from the simulation file name, and which
+      stage extensions does it define?
+    expected_status: answered
+    allowed_source_versions:
+      - luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32
+      - pandaroot@18c09e91100db27867ded30e708b4dae95bd8357
+      - restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42
+      - li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a
+      - karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b
+      - pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3
+      - pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87
+      - curated_panda_domain@1.0
+    required_evidence_groups:
+      - group_id: n006.e1
+        role: filename_helper_definition
+        critical: true
+        any_of:
+          - source_id: pandaroot
+            object_type: source_file
+            path: tools/PndFileNameCreator.h
+          - source_id: pandaroot_sphinx_2023_08_25_dev
+            object_type: sphinx_page
+            path: pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tools/PndFileNameCreator.html
+    required_source_types: []
+    required_answer_points:
+      - point_id: p1
+        text: >-
+          PndFileNameCreator takes the simulation file name and creates the
+          other file names of a simulation chain by appending stage
+          extensions; GetCustomFileName adds a custom extension, and with the
+          cut flag an existing trailing extension is replaced.
+        weight: 1.0
+        critical: true
+      - point_id: p2
+        text: >-
+          It defines extensions for the parameter, simulation, digitization,
+          reconstruction, PID, track-finding, Riemann, Kalman, and vertex
+          stages (GetParFileName, GetSimFileName, GetDigiFileName,
+          GetRecoFileName, GetPidFileName, GetTrackFindingFileName,
+          GetRiemannFileName, GetKalmanFileName, GetVertexFileName).
+        weight: 1.0
+        critical: true
+    required_identifiers:
+      - text: PndFileNameCreator
+        kind: code_symbol
+        critical: true
+    forbidden_evidence: []
+    concept_scopes: {}
+    cluster_id: nf006
+    challenge_tags: []
+    review_status: draft
+    reviewer: null
+    reviewed_at: null
+  - id: n007
+    split: novel_dev
+    language: en
+    intent: api
+    query: >-
+      The MVD hits I read back from a file contain compact volume identifiers
+      instead of readable volume paths. How can I translate such an identifier
+      into the full detector path at analysis time, and what does that
+      translation need?
+    expected_status: answered
+    allowed_source_versions:
+      - luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32
+      - pandaroot@18c09e91100db27867ded30e708b4dae95bd8357
+      - restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42
+      - li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a
+      - karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b
+      - pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3
+      - pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87
+      - curated_panda_domain@1.0
+    required_evidence_groups:
+      - group_id: n007.e1
+        role: mvd_volume_id_translation
+        critical: true
+        any_of:
+          - source_id: pandaroot
+            object_type: source_file
+            path: tools/PndGeoHandling.h
+          - source_id: pandaroot_sphinx_2023_08_25_dev
+            object_type: sphinx_page
+            path: pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tools/PndGeoHandling.html
+    required_source_types: []
+    required_answer_points:
+      - point_id: p1
+        text: >-
+          PndGeoHandling converts between the encrypted per-hit volume paths
+          (for example /1_1/34_2/101_1/) or shortIds and the full geometry
+          paths of the TGeoManager, via GetPath and GetShortID.
+        weight: 1.0
+        critical: true
+      - point_id: p2
+        text: >-
+          The translation needs an initialized TGeoManager with the correct
+          geometry (for example from a FAIRGeom file), and for shortIds the
+          sensor-name parameter container, so the instance must be created in
+          a task's SetParContainers to have the names from the database.
+        weight: 1.0
+        critical: true
+    required_identifiers:
+      - text: PndGeoHandling
+        kind: code_symbol
+        critical: true
+    forbidden_evidence: []
+    concept_scopes: {}
+    cluster_id: nf007
+    challenge_tags: []
+    review_status: draft
+    reviewer: null
+    reviewed_at: null
+  - id: n008
+    split: novel_dev
+    language: en
+    intent: algorithm_theory
+    query: >-
+      Before tracks can be fitted in the luminosity detector, the hits have to
+      be grouped into track candidates. Which track-search approaches were
+      developed for the LMD, and how do they compare?
+    expected_status: answered
+    allowed_source_versions:
+      - luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32
+      - pandaroot@18c09e91100db27867ded30e708b4dae95bd8357
+      - restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42
+      - li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a
+      - karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b
+      - pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3
+      - pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87
+      - curated_panda_domain@1.0
+    required_evidence_groups:
+      - group_id: n008.e1
+        role: lmd_track_search_comparison
+        critical: true
+        any_of:
+          - source_id: karavdina_2015
+            pdf_page: 72
+            pdf_page_end: 77
+    required_source_types:
+      - paper
+    required_answer_points:
+      - point_id: p1
+        text: >-
+          Two track-search algorithms were developed for the LMD: a track
+          following approach and a cellular automaton, and the thesis compares
+          their performance for LMD reconstruction.
+        weight: 1.0
+        critical: true
+      - point_id: p2
+        text: >-
+          The LMD records only a small number of hits per track, so all of
+          them have to be used, unlike general tracking detectors with up to a
+          hundred hits per track.
+        weight: 1.0
+        critical: true
+      - point_id: p3
+        text: >-
+          The quality goal of the comparison is minimizing both missed and
+          fake tracks, because either distorts the reconstructed theta-angle
+          distribution on which the luminosity determination depends.
+        weight: 1.0
+        critical: true
+    required_identifiers: []
+    forbidden_evidence: []
+    concept_scopes: {}
+    cluster_id: nf008
+    challenge_tags: []
+    review_status: draft
+    reviewer: null
+    reviewed_at: null
+  - id: n009
+    split: novel_dev
+    language: en
+    intent: algorithm_theory
+    query: >-
+      The luminosity fit leans on an elastic-scattering model. Besides DPM,
+      which alternative model was studied for PANDA luminosity, does it also
+      exist as code, and what dominates the model uncertainty?
+    expected_status: answered
+    allowed_source_versions:
+      - luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32
+      - pandaroot@18c09e91100db27867ded30e708b4dae95bd8357
+      - restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42
+      - li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a
+      - karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b
+      - pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3
+      - pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87
+      - curated_panda_domain@1.0
+    required_evidence_groups:
+      - group_id: n009.e1
+        role: elastic_model_alternatives
+        critical: true
+        any_of:
+          - source_id: karavdina_2015
+            pdf_page: 50
+            pdf_page_end: 53
+          - source_id: karavdina_2015
+            pdf_page: 54
+            pdf_page_end: 59
+      - group_id: n009.e2
+        role: model_uncertainty_source
+        critical: true
+        any_of:
+          - source_id: karavdina_2015
+            pdf_page: 61
+            pdf_page_end: 62
+      - group_id: n009.e3
+        role: e760_code_presence
+        critical: true
+        any_of:
+          - source_id: luminosityfit
+            object_type: source_file
+            path: model/PndLmdE760ModelParametrization.cxx
+          - source_id: luminosityfit
+            object_type: source_file
+            path: model/PndLmdE760LikeModelParametrization.cxx
+    required_source_types:
+      - paper
+      - code
+    required_answer_points:
+      - point_id: p1
+        text: >-
+          Besides DPM, the E760 parametrization was studied as the elastic
+          scattering model for PANDA luminosity, and a corresponding model
+          exists in LuminosityFit code (PndLmdE760ModelParametrization and an
+          E760-like variant).
+        weight: 1.0
+        critical: true
+      - point_id: p2
+        text: >-
+          The model uncertainty is driven by the beam momentum uncertainty
+          mapped onto the momentum transfer, and the thesis quantifies the
+          resulting cross-section uncertainty integrated over theta ranges.
+        weight: 1.0
+        critical: true
+      - point_id: p3
+        text: >-
+          At low beam momenta below about 3.5 GeV/c, where the Coulomb part
+          dominates, the expected model uncertainty stays below roughly two
+          percent.
+        weight: 1.0
+        critical: true
+    required_identifiers: []
+    forbidden_evidence: []
+    concept_scopes: {}
+    cluster_id: nf009
+    challenge_tags: []
+    review_status: draft
+    reviewer: null
+    reviewed_at: null
+  - id: n010
+    split: novel_dev
+    language: en
+    intent: algorithm_implementation
+    query: >-
+      Full GEANT transport is too slow for my feasibility study of an analysis
+      selection. How does PandaRoot's fast simulation produce detector
+      responses instead, and which building blocks is it made of?
+    expected_status: answered
+    allowed_source_versions:
+      - luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32
+      - pandaroot@18c09e91100db27867ded30e708b4dae95bd8357
+      - restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42
+      - li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a
+      - karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b
+      - pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3
+      - pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87
+      - curated_panda_domain@1.0
+    required_evidence_groups:
+      - group_id: n010.e1
+        role: fastsim_task_api
+        critical: true
+        any_of:
+          - source_id: pandaroot
+            object_type: source_file
+            path: fastsim/PndFastSim.h
+      - group_id: n010.e2
+        role: detector_response_abstraction
+        critical: true
+        any_of:
+          - source_id: pandaroot
+            object_type: source_file
+            path: fastsim/PndFsmAbsDet.h
+          - source_id: pandaroot
+            object_type: source_file
+            path: fastsim/PndFsmResponse.h
+    required_source_types:
+      - code
+    required_answer_points:
+      - point_id: p1
+        text: >-
+          PndFastSim is a FairTask (a PndPersistencyTask) that applies
+          parametrized detector responses to generated particles instead of
+          running full GEANT transport.
+        weight: 1.0
+        critical: true
+      - point_id: p2
+        text: >-
+          Detectors are attached with AddDetector either by name with
+          parameters or as PndFsmAbsDet implementations, covering subsystems
+          such as MVD, EMC, DIRC, STT, TOF, RICH, and MDT.
+        weight: 1.0
+        critical: true
+      - point_id: p3
+        text: >-
+          Per-detector PndFsmResponse objects are summed and applied to
+          PndFsmTrack candidates by cut-and-smear, with options such as
+          split-offs, neutral-cluster merging, and electron bremsstrahlung.
+        weight: 1.0
+        critical: true
+    required_identifiers: []
+    forbidden_evidence: []
+    concept_scopes: {}
+    cluster_id: nf010
+    challenge_tags: []
+    review_status: draft
+    reviewer: null
+    reviewed_at: null
+  - id: n011
+    split: novel_dev
+    language: en
+    intent: data_flow
+    query: >-
+      How does Monte Carlo truth information survive from the event generator
+      into my analysis, and how can I check whether a reconstructed decay tree
+      matches the generated one?
+    expected_status: answered
+    allowed_source_versions:
+      - luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32
+      - pandaroot@18c09e91100db27867ded30e708b4dae95bd8357
+      - restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42
+      - li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a
+      - karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b
+      - pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3
+      - pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87
+      - curated_panda_domain@1.0
+    required_evidence_groups:
+      - group_id: n011.e1
+        role: mc_truth_match_tutorial
+        critical: true
+        any_of:
+          - source_id: pandaroot_sphinx_2023_08_25_dev
+            object_type: sphinx_page
+            path: pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/tut_02_04_analysis_mctruth.html
+          - source_id: pandaroot_sphinx_2023_08_25_dev
+            title_contains: Monte Carlo Truth Match
+      - group_id: n011.e2
+        role: mc_track_info_tooling
+        critical: true
+        any_of:
+          - source_id: pandaroot
+            object_type: source_file
+            path: tools/PndMCTrackAna/PndMCTrackInfo.h
+          - source_id: pandaroot
+            object_type: source_file
+            path: tools/PndMCTrackAna/PndMCTrackInfoTask.h
+    required_source_types:
+      - documentation
+      - code
+    required_answer_points:
+      - point_id: p1
+        text: >-
+          Reconstructed candidates keep their Monte Carlo truth through link
+          machinery, and the analysis tutorial covers accessing the MC truth,
+          a full MC truth tree match, and the MC truth list for checking a
+          reconstructed decay tree against the generated one.
+        weight: 1.0
+        critical: true
+      - point_id: p2
+        text: >-
+          The MC Track Analysis tooling in tools/PndMCTrackAna (PndMCTrackInfo
+          and its task) provides track-level MC information that such
+          truth-based checks are built on.
+        weight: 1.0
+        critical: true
+    required_identifiers: []
+    forbidden_evidence: []
+    concept_scopes: {}
+    cluster_id: nf011
+    challenge_tags: []
+    review_status: draft
+    reviewer: null
+    reviewed_at: null
+  - id: n012
+    split: novel_dev
+    language: en
+    intent: data_flow
+    query: >-
+      The luminosity determination assumes the LMD geometry is perfectly
+      aligned. Where do alignment corrections come from before a luminosity
+      determination, and where do they enter the workflow?
+    expected_status: answered
+    allowed_source_versions:
+      - luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32
+      - pandaroot@18c09e91100db27867ded30e708b4dae95bd8357
+      - restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42
+      - li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a
+      - karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b
+      - pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3
+      - pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87
+      - curated_panda_domain@1.0
+    required_evidence_groups:
+      - group_id: n012.e1
+        role: lmd_alignment_method
+        critical: true
+        any_of:
+          - source_id: karavdina_2015
+            pdf_page: 114
+            pdf_page_end: 129
+      - group_id: n012.e2
+        role: alignment_pipeline_position
+        critical: true
+        any_of:
+          - source_id: luminosityfit
+            path: python/Readme.md
+    required_source_types:
+      - paper
+      - code
+    required_answer_points:
+      - point_id: p1
+        text: >-
+          LMD module alignment is treated as its own step: misaligned modules
+          degrade track reconstruction, and the internal alignment is
+          constrained with Millepede, which needs on the order of ten thousand
+          tracks because a plain global matrix inversion at that size is
+          infeasible.
+        weight: 1.0
+        critical: true
+      - point_id: p2
+        text: >-
+          In the LuminosityFit workflow an alignment process may run before
+          everything else, ahead of the IP-distribution creation and the
+          luminosity-determination steps documented in the python Readme.
+        weight: 1.0
+        critical: true
+    required_identifiers: []
+    forbidden_evidence: []
+    concept_scopes: {}
+    cluster_id: nf012
+    challenge_tags: []
+    review_status: draft
+    reviewer: null
+    reviewed_at: null
+  - id: n013
+    split: novel_dev
+    language: en
+    intent: module_structure
+    query: >-
+      The PandaRoot source tree ships a genfit, a genfit2 and a genfit2-remote
+      directory. Which of them does a default build actually compile, and what
+      does the genfit2-remote recipe build?
+    expected_status: answered
+    allowed_source_versions:
+      - luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32
+      - pandaroot@18c09e91100db27867ded30e708b4dae95bd8357
+      - restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42
+      - li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a
+      - karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b
+      - pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3
+      - pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87
+      - curated_panda_domain@1.0
+    required_evidence_groups:
+      - group_id: n013.e1
+        role: default_build_genfit_selection
+        critical: true
+        any_of:
+          - source_id: pandaroot
+            object_type: source_file
+            path: CMakeLists.txt
+      - group_id: n013.e2
+        role: genfit2_remote_recipe
+        critical: true
+        any_of:
+          - source_id: pandaroot
+            object_type: source_file
+            path: genfit2-remote/CMakeLists.txt
+    required_source_types:
+      - code
+    required_answer_points:
+      - point_id: p1
+        text: >-
+          The default build only adds genfit and genfit2 as subdirectories;
+          genfit2-remote is not part of the default add_subdirectory set at
+          the top level.
+        weight: 1.0
+        critical: true
+      - point_id: p2
+        text: >-
+          The genfit2-remote CMakeLists is an alternative recipe that compiles
+          the genfit2 sources (core, fields, fitters, measurements,
+          trackReps, and more) into a library target named libgenfit, rather
+          than shipping its own sources.
+        weight: 1.0
+        critical: true
+    required_identifiers: []
+    forbidden_evidence: []
+    concept_scopes: {}
+    cluster_id: nf013
+    challenge_tags: []
+    review_status: draft
+    reviewer: null
+    reviewed_at: null
+  - id: n014
+    split: novel_dev
+    language: en
+    intent: module_structure
+    query: >-
+      LuminosityFit has its own model classes under model/ and a separate
+      model_framework directory. What is model_framework, and how does it
+      differ from the model layer?
+    expected_status: answered
+    allowed_source_versions:
+      - luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32
+      - pandaroot@18c09e91100db27867ded30e708b4dae95bd8357
+      - restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42
+      - li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a
+      - karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b
+      - pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3
+      - pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87
+      - curated_panda_domain@1.0
+    required_evidence_groups:
+      - group_id: n014.e1
+        role: vendored_framework_status
+        critical: true
+        any_of:
+          - source_id: luminosityfit
+            path: model_framework/README.md
+      - group_id: n014.e2
+        role: native_model_layer
+        critical: true
+        any_of:
+          - source_id: luminosityfit
+            object_type: source_file
+            path: model/PndLmdModelFactory.h
+    required_source_types:
+      - code
+    required_answer_points:
+      - point_id: p1
+        text: >-
+          model_framework is a vendored working copy of the ModelFramework
+          library, which its README notes has been archived upstream in the
+          meantime; it provides the generic 1D/2D model, operator, and fitting
+          infrastructure.
+        weight: 1.0
+        critical: true
+      - point_id: p2
+        text: >-
+          The model/ layer instead holds the concrete LuminosityFit models
+          (DPM and E760 parametrizations, smearing and convolution models)
+          that PndLmdModelFactory assembles into the fit.
+        weight: 1.0
+        critical: true
+    required_identifiers: []
+    forbidden_evidence: []
+    concept_scopes: {}
+    cluster_id: nf014
+    challenge_tags: []
+    review_status: draft
+    reviewer: null
+    reviewed_at: null
+  - id: n015
+    split: novel_dev
+    language: en
+    intent: troubleshooting
+    query: >-
+      Configuring PandaRoot on an ARM machine, cmake fails while compiling the
+      legacy VC package. What does the documentation suggest, and what does
+      the workaround disable as a side effect?
+    expected_status: answered
+    allowed_source_versions:
+      - luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32
+      - pandaroot@18c09e91100db27867ded30e708b4dae95bd8357
+      - restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42
+      - li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a
+      - karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b
+      - pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3
+      - pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87
+      - curated_panda_domain@1.0
+    required_evidence_groups:
+      - group_id: n015.e1
+        role: installation_troubleshooting_page
+        critical: true
+        any_of:
+          - source_id: pandaroot_sphinx_2023_08_25_dev
+            object_type: sphinx_page
+            path: pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Installation/Troubleshooting.html
+    required_source_types:
+      - documentation
+    required_answer_points:
+      - point_id: p1
+        text: >-
+          The documentation suggests configuring with cmake -DNOVC=1 to
+          disable the legacy VC package, noting that the failure occurs for
+          example on Apple computers and ARM machines, while MacOS is handled
+          automatically.
+        weight: 1.0
+        critical: true
+      - point_id: p2
+        text: >-
+          The side effect is that CAtracking and FtsCATracking are disabled as
+          well, because they depend on this legacy version of VC.
+        weight: 1.0
+        critical: true
+    required_identifiers: []
+    forbidden_evidence: []
+    concept_scopes: {}
+    cluster_id: nf015
+    challenge_tags: []
+    review_status: draft
+    reviewer: null
+    reviewed_at: null
+  - id: n016
+    split: novel_dev
+    language: en
+    intent: troubleshooting
+    query: >-
+      Can I run the documented PandaRoot Docker containers natively on
+      Windows, or is a Linux host required? What does the locked documentation
+      actually say about supported host platforms?
+    expected_status: insufficient_evidence
+    allowed_source_versions:
+      - luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32
+      - pandaroot@18c09e91100db27867ded30e708b4dae95bd8357
+      - restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42
+      - li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a
+      - karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b
+      - pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3
+      - pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87
+      - curated_panda_domain@1.0
+    required_evidence_groups:
+      - group_id: n016.e1
+        role: container_documentation_boundary
+        critical: true
+        any_of:
+          - source_id: pandaroot_sphinx_2023_08_25_dev
+            object_type: sphinx_page
+            path: pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Docker/Docker.html
+          - source_id: pandaroot_sphinx_2023_08_25_dev
+            object_type: sphinx_page
+            path: pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Docker/DevelopingInContainer.html
+    required_source_types:
+      - documentation
+    required_answer_points:
+      - point_id: p1
+        text: >-
+          State that the locked corpus does not establish native Windows
+          support for the PandaRoot containers: the container documentation
+          assumes the documented Linux-based workflow, and no Windows host
+          instructions exist anywhere in the locked corpus.
+        weight: 1.0
+        critical: true
+    required_identifiers: []
+    forbidden_evidence: []
+    concept_scopes: {}
+    cluster_id: nf016
+    challenge_tags: []
+    review_status: draft
+    reviewer: null
+    reviewed_at: null
