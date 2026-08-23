@@ -1,4 +1,4 @@
-schema_version: novel-curation-sidecar-v2
+schema_version: novel-curation-sidecar-v3
 dataset_version: novel-v1-n1-pilot-draft
 benchmark_version: novel-v1-dev-0.1.0
 records:
@@ -26,18 +26,20 @@ records:
         environment pinning) does not appear in any exposed case.
     representativeness:
       class: representative
-      primary_archetype: setup_environment
-      secondary_archetypes: []
+      primary_task_archetype: setup_environment
+      secondary_task_archetypes: []
       gold_analogue_cases:
         - g001
         - g002
-      distribution_fit: moderate
+      benchmark_reference_fit: moderate
+      domain_relevance: strong
       corpus_tail: representative_but_rare
       disposition: KEEP_REPRESENTATIVE
       rationale: >-
-        Reuses the common Gold setup archetype on the restgas fork; fork-level
-        version pinning is a rarer instance than the upstream setup questions
-        g001-g006.
+        Benchmark analogue: the Gold setup task (g001/g002 asks how to install and
+        what prerequisites exist). Domain relevance: anyone running the restgas fork
+        at GSI must resolve exactly this environment pinning. The version-pair
+        detail is the rarer part of a common task.
     coverage:
       repositories:
         - restgas_determination
@@ -77,16 +79,18 @@ records:
         repository-level information need.
     representativeness:
       class: representative
-      primary_archetype: setup_environment
-      secondary_archetypes: []
+      primary_task_archetype: setup_environment
+      secondary_task_archetypes: []
       gold_analogue_cases:
         - g002
-      distribution_fit: strong
+      benchmark_reference_fit: strong
+      domain_relevance: strong
       corpus_tail: representative_core
       disposition: KEEP_REPRESENTATIVE
       rationale: >-
-        Dependency setup mirrors the Gold prerequisites task (g002) applied to an
-        independently selected repository.
+        Benchmark analogue: g002 asks for documented build prerequisites; this asks
+        the dependency question of an independently selected repository. Domain
+        relevance: every LuminosityFit script user needs this environment first.
     coverage:
       repositories:
         - luminosityfit
@@ -129,16 +133,19 @@ records:
         the exposed set.
     representativeness:
       class: representative
-      primary_archetype: component_usage
-      secondary_archetypes: []
+      primary_task_archetype: component_usage
+      secondary_task_archetypes: []
       gold_analogue_cases:
         - g016
-      distribution_fit: strong
+      benchmark_reference_fit: strong
+      domain_relevance: strong
       corpus_tail: representative_core
       disposition: KEEP_REPRESENTATIVE
       rationale: >-
-        Same generator-selection task type as g016 on an independently sampled
-        generator with genuinely different stepping semantics.
+        Benchmark analogue: g016 selects an event generator; same task type applied
+        to an independently sampled generator. Domain relevance: fixed-step momentum
+        and angular scans are standard practice for acceptance and efficiency
+        studies.
     coverage:
       repositories:
         - pandaroot
@@ -180,18 +187,19 @@ records:
         represented in the benchmark.
     representativeness:
       class: representative
-      primary_archetype: component_usage
-      secondary_archetypes: []
+      primary_task_archetype: component_usage
+      secondary_task_archetypes: []
       gold_analogue_cases:
         - g013
         - g015
-      distribution_fit: moderate
+      benchmark_reference_fit: moderate
+      domain_relevance: strong
       corpus_tail: representative_core
       disposition: KEEP_REPRESENTATIVE
       rationale: >-
-        Runtime logging configuration is a routine usage and debugging task; no
-        direct Gold logger analogue exists, but the task type is common in the user
-        space.
+        Benchmark analogue: macro-run configuration tasks (g013/g015). Domain
+        relevance: controlling log verbosity is a routine debugging step for anyone
+        running PandaRoot macros, even though no Gold case asks it.
     coverage:
       repositories:
         - pandaroot
@@ -233,16 +241,18 @@ records:
         set, and the identifier-free expression changes recognition demands.
     representativeness:
       class: representative
-      primary_archetype: component_usage
-      secondary_archetypes: []
+      primary_task_archetype: component_usage
+      secondary_task_archetypes: []
       gold_analogue_cases:
         - g023
-      distribution_fit: moderate
+      benchmark_reference_fit: moderate
+      domain_relevance: moderate
       corpus_tail: representative_core
       disposition: KEEP_REPRESENTATIVE
       rationale: >-
-        Visual event inspection is a routine user task documented in the main
-        documentation tree, reusing the component-usage archetype.
+        Benchmark analogue: component-usage questions like g023. Domain relevance:
+        visually inspecting events and geometry is an occasional, documented need,
+        not part of the daily batch workflow.
     coverage:
       repositories:
         - pandaroot
@@ -285,16 +295,18 @@ records:
         a different task form than single-artifact location.
     representativeness:
       class: representative
-      primary_archetype: component_usage
-      secondary_archetypes: []
+      primary_task_archetype: component_usage
+      secondary_task_archetypes: []
       gold_analogue_cases:
         - g017
-      distribution_fit: moderate
+      benchmark_reference_fit: moderate
+      domain_relevance: moderate
       corpus_tail: representative_core
       disposition: KEEP_REPRESENTATIVE
       rationale: >-
-        Deriving chained stage filenames is a recurring workflow annoyance; a tool-
-        usage need like g017 applied to an independently selected utility.
+        Benchmark analogue: tool-invocation questions like g017. Domain relevance:
+        chained stage filenames are a recurring practical annoyance, though
+        peripheral to the physics output.
     coverage:
       repositories:
         - pandaroot
@@ -339,17 +351,19 @@ records:
         different relation, and the question is expressed without identifiers.
     representativeness:
       class: representative
-      primary_archetype: component_usage
-      secondary_archetypes: []
+      primary_task_archetype: component_usage
+      secondary_task_archetypes: []
       gold_analogue_cases:
         - g023
         - g024
-      distribution_fit: moderate
+      benchmark_reference_fit: moderate
+      domain_relevance: moderate
       corpus_tail: representative_but_rare
       disposition: KEEP_REPRESENTATIVE
       rationale: >-
-        Decoding MVD volume identifiers is a genuine analysis-time task, but rarer
-        in the user population than mainstream workflow usage.
+        Benchmark analogue: analysis-time tool usage (g023/g024). Domain relevance:
+        decoding MVD volume identifiers matters to MVD-level analyses but is niche
+        for the wider population.
     coverage:
       repositories:
         - pandaroot
@@ -393,19 +407,21 @@ records:
         exposed case; the question is expressed without symbol names.
     representativeness:
       class: representative
-      primary_archetype: concept_comparison
-      secondary_archetypes:
+      primary_task_archetype: concept_comparison
+      secondary_task_archetypes:
         - theory_explanation
       gold_analogue_cases:
         - g051
         - g054
-      distribution_fit: moderate
+      benchmark_reference_fit: moderate
+      domain_relevance: moderate
       corpus_tail: representative_but_rare
       disposition: KEEP_REPRESENTATIVE
       rationale: >-
-        The comparison archetype is well represented in Gold; this instance compares
-        historical track-search algorithms in a paper-only source, rarer than Gold
-        core-method comparisons.
+        Benchmark analogue: Gold concept distinctions (g051/g054). Domain relevance:
+        understanding which track-search strategy LMD reconstruction uses is
+        relevant to tracking and luminosity work; the historical paper-only framing
+        is the rarer part.
     coverage:
       repositories: []
       source_types:
@@ -448,19 +464,23 @@ records:
         plus code and a comparison topology are new; DPM is only the shared
         background entity.
     representativeness:
-      class: exploratory
-      primary_archetype: theory_explanation
-      secondary_archetypes:
+      class: representative
+      primary_task_archetype: theory_explanation
+      secondary_task_archetypes:
         - concept_comparison
       gold_analogue_cases:
         - g047
-      distribution_fit: moderate
-      corpus_tail: exploratory_tail
-      disposition: KEEP_EXPLORATORY
+      benchmark_reference_fit: moderate
+      domain_relevance: strong
+      corpus_tail: representative_but_rare
+      disposition: KEEP_REPRESENTATIVE
       rationale: >-
-        The elastic-model topic is core, but the composed paper-plus-code evidence
-        obligation exceeds the representative Gold theory pattern of single-group
-        paper evidence; retained as a deliberate composition stress case.
+        Benchmark analogue: g047 explains the DPM model role; this asks the model-
+        choice and uncertainty question. Domain relevance: elastic-model choice and
+        its uncertainty are core concerns of the luminosity working group.
+        Reclassified representative under the corrected two-signal method: the
+        composed paper-plus-code evidence affects difficulty (hard), not the task
+        class.
     coverage:
       repositories:
         - luminosityfit
@@ -503,18 +523,19 @@ records:
         implementation need.
     representativeness:
       class: representative
-      primary_archetype: implementation_explanation
-      secondary_archetypes: []
+      primary_task_archetype: implementation_explanation
+      secondary_task_archetypes: []
       gold_analogue_cases:
         - g059
         - g060
-      distribution_fit: strong
+      benchmark_reference_fit: strong
+      domain_relevance: strong
       corpus_tail: representative_core
       disposition: KEEP_REPRESENTATIVE
       rationale: >-
-        Fast simulation is a mainstream subsystem and implementation_explanation is
-        the largest Gold archetype; the speed-versus-transport motivation is a
-        common real user need.
+        Benchmark analogue: how-is-X-implemented questions (g059/g060). Domain
+        relevance: replacing full GEANT transport with parametrized response is a
+        routine move in feasibility studies, and fastsim is a mainstream subsystem.
     coverage:
       repositories:
         - pandaroot
@@ -556,17 +577,19 @@ records:
         documentation and the PndMCTrackAna tooling.
     representativeness:
       class: representative
-      primary_archetype: producer_consumer_trace
-      secondary_archetypes: []
+      primary_task_archetype: producer_consumer_trace
+      secondary_task_archetypes: []
       gold_analogue_cases:
         - g079
         - g081
-      distribution_fit: strong
+      benchmark_reference_fit: strong
+      domain_relevance: strong
       corpus_tail: representative_core
       disposition: KEEP_REPRESENTATIVE
       rationale: >-
-        Tracing the MC-truth channel mirrors the most common Gold data-flow task
-        type on a genuinely different channel.
+        Benchmark analogue: Gold artifact-tracing questions (g079/g081) applied to
+        the MC-truth channel. Domain relevance: checking reconstructed decay trees
+        against generated truth is standard analysis practice in PandaRoot.
     coverage:
       repositories:
         - pandaroot
@@ -611,18 +634,20 @@ records:
         across paper and repository that no exposed case measures.
     representativeness:
       class: representative
-      primary_archetype: producer_consumer_trace
-      secondary_archetypes: []
+      primary_task_archetype: producer_consumer_trace
+      secondary_task_archetypes: []
       gold_analogue_cases:
         - g080
         - g085
-      distribution_fit: moderate
+      benchmark_reference_fit: moderate
+      domain_relevance: strong
       corpus_tail: representative_but_rare
       disposition: KEEP_REPRESENTATIVE
       rationale: >-
-        Alignment producer-to-pipeline-entry reuses the trace archetype, but the
-        cross-era paper-to-repository composition is rarer than Gold in-workflow
-        traces and needs semantic review.
+        Benchmark analogue: Gold producer-to-consumer traces (g080/g085). Domain
+        relevance: alignment corrections are a real prerequisite concern for precise
+        luminosity work; the cross-era paper-to-repository composition is the rarer
+        part and still needs semantic review.
     coverage:
       repositories:
         - luminosityfit
@@ -665,18 +690,20 @@ records:
         cover.
     representativeness:
       class: exploratory
-      primary_archetype: repository_structure
-      secondary_archetypes: []
+      primary_task_archetype: repository_structure
+      secondary_task_archetypes: []
       gold_analogue_cases:
         - g097
         - g098
-      distribution_fit: weak
+      benchmark_reference_fit: weak
+      domain_relevance: weak
       corpus_tail: exploratory_tail
       disposition: REPLACE
       rationale: >-
-        Build-wiring corner of vendored genfit variants, selected mainly because
-        Gold had not touched genfit, and carrying a factual annotation error;
-        replace with a representative case.
+        Benchmark analogue: only formal (g097/g098 are structure questions, not
+        build-wiring corners). Domain relevance: which vendored genfit variant CMake
+        compiles is rarely asked by real users and was sampled mainly because Gold
+        omitted genfit; also carries a factual annotation error.
     coverage:
       repositories:
         - pandaroot
@@ -720,18 +747,20 @@ records:
         is medium, but the vendored-copy role itself is not measured by g097.
     representativeness:
       class: exploratory
-      primary_archetype: repository_structure
-      secondary_archetypes: []
+      primary_task_archetype: repository_structure
+      secondary_task_archetypes: []
       gold_analogue_cases:
         - g097
         - g105
-      distribution_fit: weak
+      benchmark_reference_fit: weak
+      domain_relevance: moderate
       corpus_tail: exploratory_tail
       disposition: REVISE_TO_REPRESENTATIVE
       rationale: >-
-        Currently an evidence-overreaching corner case, but the underlying newcomer
-        question about model_framework versus the model layer is legitimate;
-        trimming the overreach can restore representative quality.
+        Benchmark analogue: model-layer structure questions (g097/g105). Domain
+        relevance: newcomers to LuminosityFit genuinely ask what model_framework is;
+        current evidence overreach must be trimmed so the legitimate need can carry
+        a representative case.
     coverage:
       repositories:
         - luminosityfit
@@ -773,17 +802,20 @@ records:
         FtsCATracking), which is a different diagnostic operation.
     representativeness:
       class: representative
-      primary_archetype: troubleshooting_diagnosis
-      secondary_archetypes: []
+      primary_task_archetype: troubleshooting_diagnosis
+      secondary_task_archetypes: []
       gold_analogue_cases:
         - g112
         - g114
-      distribution_fit: strong
+      benchmark_reference_fit: strong
+      domain_relevance: strong
       corpus_tail: representative_core
       disposition: KEEP_REPRESENTATIVE
       rationale: >-
-        Build-time failure diagnosis is among the most common real user pains and
-        reuses the Gold diagnosis task type on the documented troubleshooting page.
+        Benchmark analogue: Gold diagnosis questions (g112/g114). Domain relevance:
+        build and configure failures are among the most common practical blockers
+        for every PandaRoot user, and the documented workaround structure matches
+        real support traffic.
     coverage:
       repositories:
         - pandaroot
@@ -826,17 +858,21 @@ records:
         grounded insufficient-evidence refusal, not a guessed answer.
     representativeness:
       class: representative
-      primary_archetype: genuine_insufficiency
-      secondary_archetypes: []
+      primary_task_archetype: setup_environment
+      secondary_task_archetypes: []
       gold_analogue_cases:
         - g007
-      distribution_fit: moderate
+      benchmark_reference_fit: moderate
+      domain_relevance: moderate
       corpus_tail: representative_but_rare
       disposition: KEEP_REPRESENTATIVE
       rationale: >-
-        Gold insufficiency cases are themselves deliberate probes; a natural
-        platform-support refusal reuses that archetype, with the Windows instance
-        rarer than Gold hardware and checksum probes.
+        Task archetype setup_environment with answerability corpus_insufficiency:
+        the user asks whether the documented containers run on their platform, and
+        the corpus cannot answer. Benchmark analogue: g007 is the same platform-
+        requirement task with the same answerability. Domain relevance: platform-
+        support questions are plausible developer needs, with Windows specifically
+        the rarer instance.
     coverage:
       repositories:
         - pandaroot

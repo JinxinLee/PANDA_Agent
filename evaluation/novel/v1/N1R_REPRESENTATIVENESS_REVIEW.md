@@ -1,5 +1,16 @@
 # N1-R — Representativeness Recalibration Review
 
+> **Historical record (superseded by N1-R1).** The N1-R framework
+> (novelty × representativeness dual constraint, representative/exploratory
+> classes, analogue separation) is retained, but three method errors in the
+> Gold profile below were later corrected by N1-R1
+> (`N1R1_PROFILE_CORRECTION.md`): (1) Gold is a curated benchmark reference
+> proxy, not an empirical user-frequency sample; (2) `genuine_insufficiency`
+> and `version_boundary` are answerability classes, not task archetypes;
+> (3) source scope must be the minimum required footprint, not selector
+> availability. Use the N1-R1 numbers and classifications for all current
+> decisions; this document is preserved as the original N1-R analysis.
+
 Dataset-design analysis only: no PANDA Agent component was run, no novel or
 benchmark runtime outcome was inspected, and no question was approved or
 generated here. The input was the 120 exposed Gold questions/annotations

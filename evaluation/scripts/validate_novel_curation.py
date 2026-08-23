@@ -105,17 +105,32 @@ def main() -> int:
     web_root = REPO_ROOT / "data" / "sources" / "web"
 
     records = raw_sidecar.get("records", [])
-    if raw_sidecar.get("schema_version") != "novel-curation-sidecar-v2":
-        fail("sidecar schema_version must be novel-curation-sidecar-v2")
+    if raw_sidecar.get("schema_version") != "novel-curation-sidecar-v3":
+        fail("sidecar schema_version must be novel-curation-sidecar-v3")
 
-    # Gold representativeness profile: complete, consistent, matching Gold.
+    # Gold representativeness profile v2: benchmark reference proxy semantics.
     gold_profile = json.loads(GOLD_PROFILE_PATH.read_text(encoding="utf-8"))
+    if gold_profile.get("schema_version") != "novel-representativeness-profile-v2":
+        fail("gold profile schema_version must be novel-representativeness-profile-v2")
+    if gold_profile.get("profile_role") != "benchmark_reference_proxy":
+        fail("gold profile must declare profile_role benchmark_reference_proxy")
+    if gold_profile.get("empirical_user_frequency") is not False:
+        fail("gold profile must declare empirical_user_frequency false")
     gold_path = REPO_ROOT / "evaluation" / "benchmarks" / "v2_6" / "gold_questions.yaml"
     gold_questions = load_yaml(gold_path)["questions"]
     gold_ids = {q["id"] for q in gold_questions}
     gold_intent = {q["id"]: q["intent"] for q in gold_questions}
     gold_status = {q["id"]: q["expected_status"] for q in gold_questions}
-    taxonomy = set(gold_profile.get("archetype_taxonomy", {}))
+    taxonomy = set(gold_profile.get("task_archetype_taxonomy", {}))
+    for banned in ("genuine_insufficiency", "version_boundary"):
+        if banned in taxonomy:
+            fail(f"gold profile task taxonomy must not contain {banned}")
+    status_to_answerability = {
+        "answered": "answerable",
+        "insufficient_evidence": "corpus_insufficiency",
+        "version_conflict": "version_boundary",
+        "clarification_required": "clarification_needed",
+    }
     assignments = gold_profile.get("assignments", {})
     if gold_profile.get("question_count") != len(gold_questions):
         fail("gold profile question_count does not match Gold dataset size")
@@ -124,21 +139,26 @@ def main() -> int:
         extra = sorted(set(assignments) - gold_ids)
         fail(f"gold profile assignments incomplete: missing={missing[:10]} extra={extra[:10]}")
     for gid, entry in assignments.items():
-        if entry.get("primary_archetype") not in taxonomy:
-            fail(f"gold profile {gid}: unknown primary archetype")
-        bad_secondary = sorted(set(entry.get("secondary_archetypes", [])) - taxonomy)
+        if entry.get("primary_task_archetype") not in taxonomy:
+            fail(f"gold profile {gid}: unknown primary task archetype")
+        bad_secondary = sorted(set(entry.get("secondary_task_archetypes", [])) - taxonomy)
         if bad_secondary:
-            fail(f"gold profile {gid}: unknown secondary archetypes {bad_secondary}")
+            fail(f"gold profile {gid}: unknown secondary task archetypes {bad_secondary}")
+        expected_answerability = status_to_answerability.get(gold_status.get(gid))
+        if entry.get("answerability_class") != expected_answerability:
+            fail(f"gold profile {gid}: answerability_class inconsistent with expected_status")
+        if not entry.get("minimum_required_source_scope"):
+            fail(f"gold profile {gid}: missing minimum_required_source_scope")
         if entry.get("intent") != gold_intent.get(gid):
             fail(f"gold profile {gid}: intent mirror mismatch")
         if entry.get("expected_status") != gold_status.get(gid):
             fail(f"gold profile {gid}: expected_status mirror mismatch")
     for field in (
-        "counts_by_primary_archetype",
-        "counts_by_intent",
+        "counts_by_primary_task_archetype",
+        "counts_by_answerability_class",
         "counts_by_expected_status",
         "counts_by_evidence_topology",
-        "counts_by_source_scope",
+        "counts_by_minimum_required_source_scope",
         "counts_by_expression_style",
         "estimated_difficulty_distribution",
     ):
@@ -242,26 +262,31 @@ def main() -> int:
             fail(f"{qid}: curation.origin missing")
         if not (cur.get("lifecycle") or "").strip():
             fail(f"{qid}: curation.lifecycle missing")
-        # Representativeness block (sidecar v2).
+        # Representativeness block (sidecar v3): two explicit signals.
         rep = record.get("representativeness")
         if not isinstance(rep, dict):
             fail(f"{qid}: missing representativeness block")
         else:
             if rep.get("class") not in REPRESENTATIVENESS_CLASSES:
                 fail(f"{qid}: representativeness.class invalid ({rep.get('class')!r})")
-            if rep.get("primary_archetype") not in taxonomy:
-                fail(f"{qid}: representativeness.primary_archetype unknown ({rep.get('primary_archetype')!r})")
-            bad_sec = sorted(set(rep.get("secondary_archetypes") or []) - taxonomy)
+            if rep.get("primary_task_archetype") not in taxonomy:
+                fail(
+                    f"{qid}: representativeness.primary_task_archetype unknown "
+                    f"({rep.get('primary_task_archetype')!r})"
+                )
+            bad_sec = sorted(set(rep.get("secondary_task_archetypes") or []) - taxonomy)
             if bad_sec:
-                fail(f"{qid}: unknown secondary archetypes {bad_sec}")
+                fail(f"{qid}: unknown secondary task archetypes {bad_sec}")
             analogues = rep.get("gold_analogue_cases") or []
             if not analogues:
                 fail(f"{qid}: representativeness.gold_analogue_cases must not be empty")
             for case in analogues:
                 if case not in gold_ids:
                     fail(f"{qid}: gold_analogue_case {case!r} is not a Gold question")
-            if rep.get("distribution_fit") not in DISTRIBUTION_FITS:
-                fail(f"{qid}: representativeness.distribution_fit invalid")
+            if rep.get("benchmark_reference_fit") not in DISTRIBUTION_FITS:
+                fail(f"{qid}: representativeness.benchmark_reference_fit invalid")
+            if rep.get("domain_relevance") not in DISTRIBUTION_FITS:
+                fail(f"{qid}: representativeness.domain_relevance invalid")
             if rep.get("corpus_tail") not in CORPUS_TAILS:
                 fail(f"{qid}: representativeness.corpus_tail invalid")
             if rep.get("disposition") not in DISPOSITIONS:
@@ -412,8 +437,9 @@ def main() -> int:
     if rep_cov.get("exploratory_count") != rep_count("class", "exploratory"):
         fail("coverage_report.representativeness.exploratory_count mismatch")
     for label, field in (
-        ("counts_by_primary_archetype", "primary_archetype"),
-        ("distribution_fit_counts", "distribution_fit"),
+        ("counts_by_primary_task_archetype", "primary_task_archetype"),
+        ("benchmark_reference_fit_counts", "benchmark_reference_fit"),
+        ("domain_relevance_counts", "domain_relevance"),
         ("corpus_tail_counts", "corpus_tail"),
         ("dispositions", "disposition"),
     ):
