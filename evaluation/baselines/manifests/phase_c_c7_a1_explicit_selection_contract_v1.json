@@ -27,20 +27,21 @@
   "stage_ownership": {
     "R": "held-constant raw reranker order",
     "M": "raw R followed by remaining F fallback, object_id first-occurrence deduplicated",
-    "P": "rank-first deterministic priority with explicit paper hint, REQUIRED, PROTECTED, and PREFERRED receipt reasons",
+    "P": "rank-first deterministic priority with unchanged paper hints, minimum REQUIRED representatives, PROTECTED candidates, and Stage-M rank; PREFERRED is advisory only",
     "S": "full consideration admission/exclusion with locator duplicate and final limit hard invariants"
   },
   "receipt_schema": {
-    "candidate": ["object_id", "stage_m_rank", "stage_p_rank", "final_decision", "decision_reason", "source_id", "source_type", "retrieval_channels", "locator_identity", "matched_constraints", "priority_reasons", "protected", "required", "maximum_checks", "duplicate_status", "admission_phase", "displaced_by", "blocking_constraint"],
-    "constraint": ["constraint_id", "constraint_type", "dimension", "value", "provenance", "matched_candidate_ids", "status", "selected_candidate_ids"]
+    "candidate": ["object_id", "stage_m_rank", "stage_p_rank", "final_decision", "decision_reason", "source_id", "source_type", "retrieval_channels", "locator_identity", "matched_constraints", "priority_reasons", "protected", "required", "required_constraint_ids", "required_representative", "satisfying_required_constraints", "required_override", "protected_override", "preferred_match_without_admission_effect", "maximum_checks", "duplicate_status", "admission_phase", "displaced_by", "blocking_constraint"],
+    "constraint": ["constraint_id", "constraint_type", "dimension", "value", "provenance", "matched_candidate_ids", "status", "selected_candidate_ids", "eligible_candidate_ids (REQUIRED)", "satisfying_candidate_ids (REQUIRED)", "minimum_cardinality (REQUIRED)", "admission_effect (PREFERRED)"]
   },
   "hard_invariants": [
     "duplicate locator uses serialized locator identity and empty locator falls back to object:<object_id>",
     "final_evidence_limit is 12 by default and is never bypassed",
     "ordinary candidates obey applicable MAXIMUM constraints",
     "PROTECTED may bypass SOURCE_ID and SOURCE_TYPE/RETRIEVAL_CHANNEL MAXIMUM but not validity, duplicate, or final-limit checks",
-    "PREFERRED affects ordering only and never hard-fills or bypasses MAXIMUM",
-    "REQUIRED records satisfied or unsatisfied status and never invents evidence"
+    "PREFERRED is advisory and receipt-only for admission; adding or removing it alone cannot change selected object-ID membership",
+    "REQUIRED has default cardinality 1, promotes only the earliest eligible Stage-M representative, and never invents evidence",
+    "REQUIRED and PROTECTED do not bypass validity, duplicate suppression, or final_evidence_limit"
   ],
   "targeted_t0": {
     "command": "PYTHONPATH=src bundled-python -B -m unittest tests.unit.test_evidence_selection",
@@ -51,7 +52,49 @@
   "reranker_role": "HELD_CONSTANT",
   "gold_outcomes_used": false,
   "a2_capture": {"required": true, "executed": false},
-  "a1_verdict": "PASS",
+  "a1_verdict": "PASS_AFTER_SEMANTICS_REPAIR",
   "a2_eligibility": "NEXT_ELIGIBLE / NOT_STARTED",
-  "performance_claims": "none"
+  "performance_claims": "none",
+  "a1r1_semantics_correction": {
+    "task": "C7-A1R1 soft-preference and required-cardinality semantics correction",
+    "source_head": "dc266f3565b0d7cd1cb5c0eaa4a95abc4a5073d5",
+    "repair_reason": [
+      "PREFERRED previously participated in pre-admission priority and could change final membership by itself",
+      "all candidates matching one existential REQUIRED facet previously received blanket priority"
+    ],
+    "preferred_admission_invariance": "With frozen input, hard constraints, and final limit held constant, adding or removing only PREFERRED constraints leaves the selected object-ID set unchanged",
+    "preferred_implementation": "advisory candidate and constraint receipts only; no admission priority, backfill, or minimum obligation",
+    "required_default_cardinality": 1,
+    "required_representative_selection": "for each REQUIRED constraint, choose the earliest hard-eligible matching candidate in Stage-M order; one candidate may represent multiple constraints",
+    "required_override_semantics": "a satisfying representative may override an applicable MAXIMUM with required_override provenance, but never validity, duplicate suppression, or final_evidence_limit",
+    "unsatisfied_required": "no eligible representative, or a representative blocked by a hard final limit, remains unsatisfied without invented evidence",
+    "graph_normalization": {
+      "behavior": "graph source budget becomes RETRIEVAL_CHANNEL graph MAXIMUM",
+      "classification": "intentional EXPLICIT_V1 shadow treatment semantic delta",
+      "behavior_preserving_relative_to_production": false
+    },
+    "focused_tests": {
+      "command": "PYTHONPATH=src bundled-python -B -m unittest tests.unit.test_evidence_selection",
+      "test_count": 30,
+      "result": "PASS",
+      "coverage": [
+        "PREFERRED rank-50 admission membership invariance",
+        "REQUIRED minimum representative promotion",
+        "REQUIRED already-satisfied behavior",
+        "REQUIRED MAXIMUM override receipt",
+        "invalid and unusable REQUIRED matches",
+        "duplicate REQUIRED match eligibility",
+        "one candidate satisfying multiple REQUIRED constraints",
+        "one candidate recording REQUIRED and PROTECTED roles without duplicate admission",
+        "final-limit unsatisfied REQUIRED reporting",
+        "retained C7-A1 contract and production-isolation coverage"
+      ]
+    },
+    "production_behavior_changed": false,
+    "gold_outcomes_used": false,
+    "outcome_evaluation_executed": false,
+    "a2_capture_executed": false,
+    "a1r1_verdict": "PASS",
+    "authoritative_after_a1r1": true
+  }
 }

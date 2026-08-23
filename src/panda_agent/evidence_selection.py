@@ -54,7 +54,10 @@ class ShadowSelectionPolicy:
     final_evidence_limit: int
     constraints: tuple[SelectionConstraint, ...]
     duplicate_policy: str = "serialized_locator_or_object_id_fallback"
-    priority_policy: str = "rank_first:paper_hint,required,protected,preferred,stage_m_rank"
+    priority_policy: str = (
+        "rank_first:paper_hint,required_representative,protected,stage_m_rank;"
+        "preferred_advisory_only"
+    )
 
     def as_dict(self) -> dict[str, Any]:
         return {
@@ -215,6 +218,14 @@ def _matches(constraint: SelectionConstraint, object_id: str, item: Mapping[str,
     return constraint.value in channels
 
 
+def _is_candidate_eligible(item: Mapping[str, Any]) -> bool:
+    return (
+        item.get("valid", True)
+        and item.get("source_version_valid", True)
+        and item.get("usable", True)
+    )
+
+
 def shadow_select(frozen: FrozenShadowInput, policy: ShadowSelectionPolicy | None = None) -> ShadowSelectionResult:
     """Run explicit M/P/S selection over frozen inputs only."""
     policy = policy or translate_current_policy(
@@ -237,18 +248,44 @@ def shadow_select(frozen: FrozenShadowInput, policy: ShadowSelectionPolicy | Non
         )]
         for object_id in stage_m
     }
+    stage_m_rank = {object_id: index for index, object_id in enumerate(stage_m)}
+    eligible: set[str] = set()
+    occupied_locators: set[str] = set()
+    for object_id in stage_m:
+        item, _channels, _source_type = facets[object_id]
+        if not _is_candidate_eligible(item):
+            continue
+        locator = _locator_identity(item, object_id)
+        if locator in occupied_locators:
+            continue
+        occupied_locators.add(locator)
+        eligible.add(object_id)
+    required_representatives: dict[str, str] = {}
+    representative_constraints: dict[str, list[str]] = {}
+    for constraint in policy.constraints:
+        if constraint.constraint_type is not ConstraintType.REQUIRED:
+            continue
+        representative = next(
+            (
+                object_id for object_id in stage_m
+                if object_id in eligible and constraint in matched[object_id]
+            ),
+            None,
+        )
+        if representative is not None:
+            required_representatives[constraint.identity] = representative
+            representative_constraints.setdefault(representative, []).append(constraint.identity)
     hints = _plan_value(frozen.plan, "paper_page_hints", {}) or {}
-    def priority(object_id: str) -> tuple[int, int, int, int, int]:
+    def priority(object_id: str) -> tuple[int, int, int, int]:
         item, _channels, _source_type = facets[object_id]
         page = (item.get("locator") or {}).get("pdf_page")
         hinted = item.get("source_id") in hints and page is not None and int(page) in hints[item["source_id"]]
         constraints = matched[object_id]
         return (
             0 if hinted else 1,
-            0 if any(c.constraint_type is ConstraintType.REQUIRED for c in constraints) else 1,
+            0 if object_id in representative_constraints else 1,
             0 if any(c.constraint_type is ConstraintType.PROTECTED for c in constraints) else 1,
-            0 if any(c.constraint_type is ConstraintType.PREFERRED for c in constraints) else 1,
-            stage_m.index(object_id),
+            stage_m_rank[object_id],
         )
     stage_p = sorted(stage_m, key=priority)
     selected: list[str] = []
@@ -260,6 +297,15 @@ def shadow_select(frozen: FrozenShadowInput, policy: ShadowSelectionPolicy | Non
         constraints = matched[object_id]
         protected = any(c.constraint_type is ConstraintType.PROTECTED for c in constraints)
         required = any(c.constraint_type is ConstraintType.REQUIRED for c in constraints)
+        required_constraint_ids = [
+            constraint.identity for constraint in constraints
+            if constraint.constraint_type is ConstraintType.REQUIRED
+        ]
+        satisfying_required_constraints = representative_constraints.get(object_id, [])
+        required_representative = bool(satisfying_required_constraints)
+        preferred_match = any(
+            constraint.constraint_type is ConstraintType.PREFERRED for constraint in constraints
+        )
         locator = _locator_identity(item, object_id)
         maximum_checks: list[dict[str, Any]] = []
         violated: list[SelectionConstraint] = []
@@ -286,27 +332,31 @@ def shadow_select(frozen: FrozenShadowInput, policy: ShadowSelectionPolicy | Non
             "matched_constraints": [constraint.identity for constraint in constraints],
             "priority_reasons": [
                 *(["paper_page_hint"] if priority(object_id)[0] == 0 else []),
-                *(["required"] if required else []),
+                *(["required_representative"] if required_representative else []),
                 *(["protected"] if protected else []),
-                *(["preferred"] if any(c.constraint_type is ConstraintType.PREFERRED for c in constraints) else []),
                 "stage_m_rank",
             ],
             "protected": protected,
             "required": required,
+            "required_constraint_ids": required_constraint_ids,
+            "required_representative": required_representative,
+            "satisfying_required_constraints": satisfying_required_constraints,
+            "required_override": False,
+            "protected_override": False,
+            "preferred_match_without_admission_effect": preferred_match,
             "maximum_checks": maximum_checks,
             "duplicate_status": "UNIQUE",
             "admission_phase": "stage_s",
             "displaced_by": None,
             "blocking_constraint": None,
         }
-        valid = item.get("valid", True) and item.get("source_version_valid", True)
-        if not valid:
+        if not _is_candidate_eligible(item):
             receipt.update(decision_reason="invalid_candidate", blocking_constraint="candidate_validity")
         elif locator in selected_locator:
             receipt.update(decision_reason="duplicate_locator", duplicate_status="DUPLICATE", blocking_constraint="duplicate_locator")
         elif len(selected) >= policy.final_evidence_limit:
             receipt.update(decision_reason="final_evidence_limit", blocking_constraint="final_evidence_limit")
-        elif violated and not protected:
+        elif violated and not protected and not required_representative:
             ids = [constraint.identity for constraint in violated]
             receipt.update(decision_reason="maximum", blocking_constraint=ids[0], displaced_by=ids)
         else:
@@ -318,20 +368,41 @@ def shadow_select(frozen: FrozenShadowInput, policy: ShadowSelectionPolicy | Non
                 ):
                     key = (constraint.dimension, item["source_id"] if constraint.dimension is ConstraintDimension.SOURCE_ID else constraint.value)
                     selected_counts[key] = selected_counts.get(key, 0) + 1
-            receipt.update(final_decision="SELECTED", decision_reason=("protected_override" if protected and violated else "admitted"))
+            protected_override = bool(protected and violated)
+            required_override = bool(required_representative and violated)
+            decision_reason = (
+                "required_override" if required_override
+                else "protected_override" if protected_override
+                else "admitted"
+            )
+            receipt.update(
+                final_decision="SELECTED",
+                decision_reason=decision_reason,
+                protected_override=protected_override,
+                required_override=required_override,
+            )
         candidate_receipts.append(receipt)
+    candidate_receipt_by_id = {
+        receipt["object_id"]: receipt for receipt in candidate_receipts
+    }
     constraint_receipts: list[dict[str, Any]] = []
     for constraint in policy.constraints:
-        matched_ids = [object_id for object_id in stage_p if constraint in matched[object_id]]
+        matched_ids = [object_id for object_id in stage_m if constraint in matched[object_id]]
         selected_ids = [object_id for object_id in selected if constraint in matched[object_id]]
         if constraint.constraint_type is ConstraintType.REQUIRED:
-            status = "satisfied" if selected_ids else "unsatisfied"
+            eligible_ids = [object_id for object_id in matched_ids if object_id in eligible]
+            representative = required_representatives.get(constraint.identity)
+            satisfying_ids = [
+                representative
+            ] if representative is not None and representative in selected else []
+            status = "satisfied" if satisfying_ids else "unsatisfied"
         elif not matched_ids:
             status = "not_applicable"
         elif constraint.constraint_type is ConstraintType.MAXIMUM:
             ordinary_selected = [
                 object_id for object_id in selected_ids
-                if not any(candidate.constraint_type is ConstraintType.PROTECTED for candidate in matched[object_id])
+                if not candidate_receipt_by_id[object_id]["protected"]
+                and not candidate_receipt_by_id[object_id]["required_override"]
             ]
             if constraint.dimension is ConstraintDimension.SOURCE_ID and constraint.value == "*":
                 counts: dict[str, int] = {}
@@ -352,5 +423,12 @@ def shadow_select(frozen: FrozenShadowInput, policy: ShadowSelectionPolicy | Non
             "matched_candidate_ids": matched_ids,
             "status": status,
             "selected_candidate_ids": selected_ids,
+            **({
+                "eligible_candidate_ids": eligible_ids,
+                "satisfying_candidate_ids": satisfying_ids,
+                "minimum_cardinality": 1,
+            } if constraint.constraint_type is ConstraintType.REQUIRED else {}),
+            **({"admission_effect": False}
+               if constraint.constraint_type is ConstraintType.PREFERRED else {}),
         })
     return ShadowSelectionResult(policy.as_dict(), stage_m, stage_p, selected, candidate_receipts, constraint_receipts)

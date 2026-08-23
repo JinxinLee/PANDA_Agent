@@ -133,8 +133,34 @@ class ExplicitSelectionContractTests(unittest.TestCase):
         self.assertEqual(result.selected_object_ids, ["first"])
         excluded = result.candidate_receipts[1]
         self.assertEqual(excluded["decision_reason"], "maximum")
-        self.assertIn("preferred", excluded["priority_reasons"])
+        self.assertNotIn("preferred", excluded["priority_reasons"])
+        self.assertTrue(excluded["preferred_match_without_admission_effect"])
         self.assertEqual(excluded["admission_phase"], "stage_s")
+        preferred = next(r for r in result.constraint_receipts if r["constraint_type"] == "PREFERRED")
+        self.assertFalse(preferred["admission_effect"])
+
+    def test_preferred_does_not_change_admission_membership(self) -> None:
+        object_ids = tuple(f"rank-{rank:02d}" for rank in range(1, 51))
+        frozen = _input(*object_ids)
+        preferred = _constraint(
+            ConstraintType.PREFERRED, ConstraintDimension.OBJECT_ID,
+            "rank-50", "preferred-rank-50",
+        )
+        without_preferred = shadow_select(
+            frozen, ShadowSelectionPolicy(POLICY_ID, 12, ()),
+        )
+        with_preferred = shadow_select(
+            frozen, ShadowSelectionPolicy(POLICY_ID, 12, (preferred,)),
+        )
+        expected = {f"rank-{rank:02d}" for rank in range(1, 13)}
+        self.assertEqual(set(without_preferred.selected_object_ids), expected)
+        self.assertEqual(set(with_preferred.selected_object_ids), expected)
+        preferred_candidate = next(
+            receipt for receipt in with_preferred.candidate_receipts
+            if receipt["object_id"] == "rank-50"
+        )
+        self.assertTrue(preferred_candidate["preferred_match_without_admission_effect"])
+        self.assertEqual(preferred_candidate["decision_reason"], "final_evidence_limit")
 
     def test_required_eligible_candidate_is_selected_and_receipted(self) -> None:
         plan = {"source_budgets": {"code": 1.0}, "target_repositories": ["alpha"],
@@ -146,6 +172,206 @@ class ExplicitSelectionContractTests(unittest.TestCase):
         receipt = next(r for r in result.constraint_receipts if r["constraint_type"] == "REQUIRED")
         self.assertEqual(receipt["status"], "satisfied")
         self.assertEqual(receipt["selected_candidate_ids"], ["required"])
+
+    def test_required_promotes_only_minimum_deterministic_representative(self) -> None:
+        required = _constraint(
+            ConstraintType.REQUIRED, ConstraintDimension.SOURCE_ID,
+            "alpha", "required-alpha",
+        )
+        object_ids = ("ordinary-1", "ordinary-2", "required-1", "ordinary-3", "required-2")
+        payloads = {
+            object_id: _payload(
+                object_id, "alpha" if object_id.startswith("required") else "other"
+            )
+            for object_id in object_ids
+        }
+        result = shadow_select(
+            _input(*object_ids, payloads=payloads),
+            ShadowSelectionPolicy(POLICY_ID, 3, (required,)),
+        )
+        self.assertEqual(
+            result.stage_p_order,
+            ["required-1", "ordinary-1", "ordinary-2", "ordinary-3", "required-2"],
+        )
+        self.assertEqual(result.selected_object_ids, ["required-1", "ordinary-1", "ordinary-2"])
+        receipts = {receipt["object_id"]: receipt for receipt in result.candidate_receipts}
+        self.assertTrue(receipts["required-1"]["required_representative"])
+        self.assertFalse(receipts["required-2"]["required_representative"])
+        constraint = result.constraint_receipts[0]
+        self.assertEqual(constraint["eligible_candidate_ids"], ["required-1", "required-2"])
+        self.assertEqual(constraint["satisfying_candidate_ids"], ["required-1"])
+
+    def test_required_already_satisfied_does_not_promote_another_match(self) -> None:
+        required = _constraint(
+            ConstraintType.REQUIRED, ConstraintDimension.SOURCE_ID,
+            "alpha", "required-alpha",
+        )
+        payloads = {
+            "required-1": _payload("required-1", "alpha"),
+            "ordinary": _payload("ordinary", "other"),
+            "required-2": _payload("required-2", "alpha"),
+        }
+        result = shadow_select(
+            _input("required-1", "ordinary", "required-2", payloads=payloads),
+            ShadowSelectionPolicy(POLICY_ID, 2, (required,)),
+        )
+        self.assertEqual(result.stage_p_order, ["required-1", "ordinary", "required-2"])
+        self.assertEqual(result.selected_object_ids, ["required-1", "ordinary"])
+        receipts = {receipt["object_id"]: receipt for receipt in result.candidate_receipts}
+        self.assertTrue(receipts["required-1"]["required_representative"])
+        self.assertFalse(receipts["required-2"]["required_representative"])
+
+    def test_required_representative_can_override_maximum(self) -> None:
+        maximum = _constraint(
+            ConstraintType.MAXIMUM, ConstraintDimension.SOURCE_ID,
+            "alpha", "maximum-alpha", limit=0,
+        )
+        required = _constraint(
+            ConstraintType.REQUIRED, ConstraintDimension.SOURCE_ID,
+            "alpha", "required-alpha",
+        )
+        frozen = _input("required", payloads={"required": _payload("required", "alpha")})
+        result = shadow_select(
+            frozen, ShadowSelectionPolicy(POLICY_ID, 1, (maximum, required)),
+        )
+        self.assertEqual(result.selected_object_ids, ["required"])
+        candidate = result.candidate_receipts[0]
+        self.assertEqual(candidate["decision_reason"], "required_override")
+        self.assertTrue(candidate["required_override"])
+        required_receipt = next(
+            receipt for receipt in result.constraint_receipts
+            if receipt["constraint_type"] == "REQUIRED"
+        )
+        maximum_receipt = next(
+            receipt for receipt in result.constraint_receipts
+            if receipt["constraint_type"] == "MAXIMUM"
+        )
+        self.assertEqual(required_receipt["satisfying_candidate_ids"], ["required"])
+        self.assertEqual(required_receipt["status"], "satisfied")
+        self.assertEqual(maximum_receipt["status"], "satisfied")
+
+    def test_invalid_or_unusable_match_cannot_satisfy_required(self) -> None:
+        required = _constraint(
+            ConstraintType.REQUIRED, ConstraintDimension.SOURCE_ID,
+            "alpha", "required-alpha",
+        )
+        payloads = {
+            "invalid": _payload("invalid", "alpha"),
+            "unusable": _payload("unusable", "alpha"),
+            "ordinary": _payload("ordinary", "other"),
+        }
+        payloads["invalid"]["valid"] = False
+        payloads["unusable"]["usable"] = False
+        result = shadow_select(
+            _input("invalid", "unusable", "ordinary", payloads=payloads),
+            ShadowSelectionPolicy(POLICY_ID, 3, (required,)),
+        )
+        constraint = result.constraint_receipts[0]
+        self.assertEqual(constraint["eligible_candidate_ids"], [])
+        self.assertEqual(constraint["satisfying_candidate_ids"], [])
+        self.assertEqual(constraint["status"], "unsatisfied")
+        self.assertTrue(all(
+            receipt["decision_reason"] == "invalid_candidate"
+            for receipt in result.candidate_receipts[:2]
+        ))
+
+    def test_duplicate_match_cannot_be_required_representative(self) -> None:
+        required = _constraint(
+            ConstraintType.REQUIRED, ConstraintDimension.SOURCE_ID,
+            "alpha", "required-alpha",
+        )
+        payloads = {
+            "survivor": _payload("survivor", "other", path="same"),
+            "duplicate-required": _payload("duplicate-required", "alpha", path="same"),
+        }
+        result = shadow_select(
+            _input("survivor", "duplicate-required", payloads=payloads),
+            ShadowSelectionPolicy(POLICY_ID, 2, (required,)),
+        )
+        self.assertEqual(result.selected_object_ids, ["survivor"])
+        self.assertFalse(result.candidate_receipts[1]["required_representative"])
+        self.assertEqual(result.candidate_receipts[1]["decision_reason"], "duplicate_locator")
+        self.assertEqual(result.constraint_receipts[0]["status"], "unsatisfied")
+
+    def test_one_candidate_can_satisfy_multiple_required_constraints(self) -> None:
+        required_source = _constraint(
+            ConstraintType.REQUIRED, ConstraintDimension.SOURCE_ID,
+            "alpha", "required-alpha",
+        )
+        required_channel = _constraint(
+            ConstraintType.REQUIRED, ConstraintDimension.RETRIEVAL_CHANNEL,
+            "graph", "required-graph",
+        )
+        payloads = {
+            "ordinary": _payload("ordinary", "other"),
+            "both": _payload("both", "alpha"),
+        }
+        channels = {"ordinary": ("dense",), "both": ("dense", "graph")}
+        result = shadow_select(
+            _input("ordinary", "both", payloads=payloads, channels=channels),
+            ShadowSelectionPolicy(POLICY_ID, 2, (required_source, required_channel)),
+        )
+        self.assertEqual(result.selected_object_ids.count("both"), 1)
+        both = next(r for r in result.candidate_receipts if r["object_id"] == "both")
+        self.assertEqual(
+            both["satisfying_required_constraints"],
+            ["required-alpha", "required-graph"],
+        )
+        self.assertTrue(all(
+            receipt["satisfying_candidate_ids"] == ["both"]
+            and receipt["status"] == "satisfied"
+            for receipt in result.constraint_receipts
+        ))
+
+    def test_one_candidate_can_record_required_and_protected_roles(self) -> None:
+        maximum = _constraint(
+            ConstraintType.MAXIMUM, ConstraintDimension.SOURCE_ID,
+            "alpha", "maximum-alpha", limit=0,
+        )
+        required = _constraint(
+            ConstraintType.REQUIRED, ConstraintDimension.SOURCE_ID,
+            "alpha", "required-alpha",
+        )
+        protected = _constraint(
+            ConstraintType.PROTECTED, ConstraintDimension.OBJECT_ID,
+            "both", "protected-both",
+        )
+        result = shadow_select(
+            _input("both", payloads={"both": _payload("both", "alpha")}),
+            ShadowSelectionPolicy(POLICY_ID, 1, (maximum, required, protected)),
+        )
+        self.assertEqual(result.selected_object_ids, ["both"])
+        candidate = result.candidate_receipts[0]
+        self.assertTrue(candidate["required_representative"])
+        self.assertTrue(candidate["required_override"])
+        self.assertTrue(candidate["protected"])
+        self.assertTrue(candidate["protected_override"])
+        self.assertEqual(candidate["satisfying_required_constraints"], ["required-alpha"])
+
+    def test_final_limit_reports_unsatisfied_required_without_overflow(self) -> None:
+        required_alpha = _constraint(
+            ConstraintType.REQUIRED, ConstraintDimension.SOURCE_ID,
+            "alpha", "required-alpha",
+        )
+        required_beta = _constraint(
+            ConstraintType.REQUIRED, ConstraintDimension.SOURCE_ID,
+            "beta", "required-beta",
+        )
+        payloads = {
+            "alpha": _payload("alpha", "alpha"),
+            "beta": _payload("beta", "beta"),
+        }
+        result = shadow_select(
+            _input("alpha", "beta", payloads=payloads),
+            ShadowSelectionPolicy(POLICY_ID, 1, (required_alpha, required_beta)),
+        )
+        self.assertEqual(result.selected_object_ids, ["alpha"])
+        self.assertEqual(result.candidate_receipts[1]["decision_reason"], "final_evidence_limit")
+        statuses = {
+            receipt["constraint_id"]: receipt["status"]
+            for receipt in result.constraint_receipts
+        }
+        self.assertEqual(statuses, {"required-alpha": "satisfied", "required-beta": "unsatisfied"})
 
     def test_required_without_candidate_is_unsatisfied_without_invention(self) -> None:
         plan = {"source_budgets": {"code": 1.0}, "target_repositories": ["alpha"],
