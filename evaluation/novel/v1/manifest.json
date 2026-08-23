@@ -14,12 +14,13 @@
     "reviewer": "Li",
     "reviewed_at": "2026-08-24T00:28:55+02:00",
     "re_reviewed_at": "2026-08-24T00:49:13+02:00",
-    "reviewer_scope": "the 16 frozen N1 pilot questions only; N2-A Batch 1 drafts n020-n025 are unreviewed",
+    "reviewer_scope": "N1's 16 frozen questions (accepted 2026-08-24T00:28:55+02:00, n002/n008 re-accepted 00:49:13+02:00) plus N2-A Batch 1 n020/n024/n025 (accepted 2026-08-24T01:50+02:00); n021/n022/n023 carry an explicit REVISE decision with corrections applied and await human re-review",
     "human_approval": "partial",
-    "accepted_count": 16,
-    "revise_count": 0,
+    "accepted_count": 19,
+    "revise_count": 3,
     "rejected_count": 0,
-    "pending_count": 6
+    "pending_count": 0,
+    "batch1_reviewed_at": "2026-08-24T01:50+02:00"
   },
   "curation_origin": "human_directed_llm_draft",
   "agent_outcome_seen_before_freeze": false,

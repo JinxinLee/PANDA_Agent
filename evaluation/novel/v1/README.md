@@ -1,22 +1,23 @@
 # Novel Dataset v1 — N1 pilot frozen; N2-A expansion in progress
 
 This directory holds the frozen N1 pilot plus the N2-A Batch 1 expansion
-drafts: 22 loaded `novel_dev` records in 22 independent families — the 16
+records: 22 loaded `novel_dev` records in 22 independent families — the 16
 human-approved, `split_frozen` N1 questions (`n001`-`n010`, `n014`-`n019`)
-and 6 unreviewed Batch 1 draft candidates (`n020`-`n025`).
+and 6 Batch 1 expansion candidates (`n020`-`n025`).
 Retired drafts n011/nf011, n012/nf012, and n013/nf013 remain historical
 withdrawn records; their lineage is preserved in the review documents.
 
 State:
 
-- Loaded records: 22 (16 approved/frozen + 6 draft/pending).
-- N1: `PASS / COMPLETE`; the 16 pilot questions are human-approved
-  (reviewer `Li`; 14 accepted 2026-08-24T00:28:55+02:00, n002 and n008
-  accepted on re-review 2026-08-24T00:49:13+02:00) and frozen.
-- N2: `IN_PROGRESS / PLAN_APPROVED`. The expansion plan Rev 1 was approved
-  by `Li` at 2026-08-24T01:25+02:00.
-- N2-A: `BATCH1_DRAFTED / HUMAN_REVIEW_PENDING` — `n020`-`n025` are
-  `review_status: draft`, `reviewer: null`, sidecar `lifecycle: draft`.
+- Loaded records: 22. Human-approved: 19 (the 16 frozen N1 questions plus
+  n020/n024/n025, accepted 2026-08-24T01:50+02:00 with lifecycle `approved`).
+- Frozen: 16 (only the original N1 pilot; the approved expansion records are
+  not yet `split_frozen`).
+- Corrected REVISE candidates: n021/n022/n023 — human REVISE decisions with
+  R1 corrections applied, `CORRECTED / HUMAN_RE_REVIEW_PENDING`.
+- N1: `PASS / COMPLETE`; N2: `IN_PROGRESS / PLAN_APPROVED`; N2-A:
+  `BATCH1_HUMAN_REVIEWED / R1_RE_REVIEW_PENDING` (3 ACCEPT / 3 REVISE /
+  0 REJECT).
 - Dataset lineage: `0.3.0` expansion-in-progress (`novel-v1-dev-0.3.0`,
   identity `novel-v1-dev-expansion`, status `EXPANSION_IN_PROGRESS`).
   Git history preserves the frozen `0.2.0` pilot baseline; the original 16
@@ -42,7 +43,9 @@ Files:
   plan: corpus-support audit, soft targets, sampling protocol, batching,
   versioning, freeze criteria.
 - `N2A_BATCH1_REVIEW_PACKAGE.md` — current human-review artifact for the
-  Batch 1 candidates (advisory Codex recommendations; all decisions PENDING).
+  Batch 1 candidates: human decisions recorded (3 ACCEPT / 3 REVISE, reviewer
+  `Li`, 2026-08-24T01:50+02:00) plus R1 correction records; the three
+  corrected candidates await human re-review.
 - `N1_REVIEW_PACKAGE.md` — per-question human review package (initial draft
   history; superseded for current review).
 - `N1R_REPRESENTATIVENESS_REVIEW.md` — N1-R representativeness recalibration

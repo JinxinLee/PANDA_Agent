@@ -1,17 +1,23 @@
 # N2-A Batch 1 Review Package — Expansion Candidates n020-n025
 
-Status: READY_FOR_HUMAN_REVIEW (2026-08-24). Codex recommendations below are
-advisory only. No candidate carries a human decision yet; every `Human
-decision` field is PENDING. The authorizing plan
-(`N2_FULL_NOVEL_DEV_EXPANSION_PLAN.md`, Rev 1) was approved by reviewer `Li`
-at 2026-08-24T01:25+02:00 (approved commit `08626661e3bb776c8f74c4f5b28c85ff2147c0fb`).
+Status: **BATCH1_HUMAN_REVIEWED / R1_RE_REVIEW_PENDING** (2026-08-24).
+
+Human review record: reviewer `Li` reviewed commit
+`99ef7bf3cf9bd972d04e9f2cf5389076b6a6c0a6` at 2026-08-24T01:50+02:00 with
+decisions n020 ACCEPT, n021 REVISE, n022 REVISE, n023 REVISE, n024 ACCEPT,
+n025 ACCEPT (3 ACCEPT / 3 REVISE / 0 REJECT / 0 PENDING). The three REVISE
+corrections and a batch-wide malformed `pflueger_2017` source-identity fix
+were applied in R1; a generic validator rule now enforces the locked
+source-version universe. n021/n022/n023 are `CORRECTED / HUMAN_RE_REVIEW_PENDING`
+— the original REVISE decisions stand until explicit human re-review.
 
 Curation boundary: all six candidates were sampled from locked-source anchors
 under the approved anchor-first protocol. No PANDA Agent component was run
 and no benchmark or novel outcome was inspected. The 16 frozen N1 questions
-are untouched; the dataset enters the 0.3.0 expansion lineage
+are untouched; the dataset lineage remains 0.3.0 expansion-in-progress
 (`novel-v1-dev-0.3.0`, identity `novel-v1-dev-expansion`, status
-`EXPANSION_IN_PROGRESS`).
+`EXPANSION_IN_PROGRESS`; n020/n024/n025 are now `approved` with lifecycle
+`approved`, not yet `split_frozen`).
 
 ---
 
@@ -50,36 +56,35 @@ are untouched; the dataset enters the 0.3.0 expansion lineage
   PndRecoKalmanTask2 as documented in the branch README; the reviewer may
   want to confirm the class name against `macro/target/reco_complete.C`.
 - **Codex recommendation:** RECOMMEND_ACCEPT
-- **Human decision:** PENDING
+- **Human decision:** ACCEPT (Li, 2026-08-24T01:50+02:00; record now
+  `approved` / lifecycle `approved`, not yet `split_frozen`)
 
 ## n021 / nf021 — PandaRoot + LuminosityFit luminosity workflow
 
-- **Question:** I want to go from simulated luminosity-detector events to a
-  luminosity estimate using my PandaRoot and LuminosityFit installations.
-  Which parts of that workflow belong to which repository, and which
-  LuminosityFit scripts drive the combined chain?
+- **Question (corrected in R1):** I want to trace the LMD workflow across
+  PandaRoot and LuminosityFit. Where does PandaRoot implement the LMD
+  simulation, digitization, and reconstruction side, and which LuminosityFit
+  scripts orchestrate simulation/reconstruction and then the luminosity fit?
 - **Intent:** usage — **Expected status:** answered — **Difficulty:** hard
 - **Primary task archetype:** workflow_sequence (secondary
   producer_consumer_trace) — **Class:** representative (fit moderate /
   relevance strong / rare)
 - **Scope:** cross_repository (pandaroot + luminosityfit); cross_source;
   topology multi_hop; descriptive.
-- **Critical evidence:** luminosityfit `README.md` (first-workflow section:
-  runSimulationReconstruction.py, determineLuminosity.py); luminosityfit
-  `python/Readme.md` ("these events have to be simulated using the PandaRoot
-  framework"); pandaroot `detectors/lmd/LmdDigi/PndLmdDigiTask.h` (PandaRoot
-  LMD digitization task).
-- **Answer-point summary:** (1) simulation/reconstruction of LMD events is
-  performed with the PandaRoot framework, which LuminosityFit scripts start
-  directly; (2) the combined chain is driven by LuminosityFit's
-  runSimulationReconstruction.py then determineLuminosity.py; (3) the PandaRoot
-  side implements the luminosity monitor under `detectors/lmd` (LmdMC, LmdDigi,
-  LmdReco).
-- **Cross-repository minimum-footprint derivation (static):** critical groups
-  e1 (luminosityfit README) AND e2 (luminosityfit python/Readme.md) AND e3
-  (pandaroot LmdDigiTask.h). Minimum footprint = {luminosityfit, pandaroot};
-  no single-repository footprint satisfies all three critical groups →
-  `cross_repository` PASS.
+- **Critical evidence (corrected in R1):** luminosityfit `README.md`
+  (first-workflow section: runSimulationReconstruction.py,
+  determineLuminosity.py); pandaroot `detectors/lmd/CMakeLists.txt`
+  (implementation ownership: libLmd with LmdMC/LmdDigi sources and
+  libLmdReco reconstruction tasks).
+- **Answer-point summary:** (1) PandaRoot implements the LMD detector side
+  under `detectors/lmd` (LmdMC detector/geometry sources, LmdDigi producers
+  including PndLmdDigiTask, libLmdReco reconstruction tasks); (2)
+  LuminosityFit orchestrates the user-facing workflow via
+  runSimulationReconstruction.py then determineLuminosity.py.
+- **Cross-repository minimum-footprint derivation (static, re-derived in
+  R1):** critical groups e1 (luminosityfit) AND e2 (pandaroot); minimum
+  footprint = {luminosityfit, pandaroot}, no single-repository footprint
+  satisfies both obligations → `cross_repository` PASS.
 - **Closest exposed Gold:** g091, g092 (workflow-sequence archetype,
   single-repository; information_need overlap low).
 - **Closest frozen N1 family:** none equivalent — nf009 (elastic-model
@@ -91,7 +96,36 @@ are untouched; the dataset enters the 0.3.0 expansion lineage
   the reviewer may verify the script names still match the locked tree
   (verified statically during curation).
 - **Codex recommendation:** RECOMMEND_ACCEPT
-- **Human decision:** PENDING
+- **Human decision:** REVISE (Li, 2026-08-24T01:50+02:00)
+
+### n021 R1 correction record (CORRECTED / HUMAN_RE_REVIEW_PENDING)
+
+- **Original human issue:** the initial Gold artificially established
+  `cross_repository` by making a single PandaRoot header
+  (`detectors/lmd/LmdDigi/PndLmdDigiTask.h`) critical even though the
+  original wording could largely be answered from LuminosityFit documentation
+  alone.
+- **Corrected question wording:** "I want to trace the LMD workflow across
+  PandaRoot and LuminosityFit. Where does PandaRoot implement the LMD
+  simulation, digitization, and reconstruction side, and which LuminosityFit
+  scripts orchestrate simulation/reconstruction and then the luminosity
+  fit?" — the same information need, now phrased so both repository
+  identities are naturally required.
+- **Corrected evidence:** e1 luminosityfit `README.md` (workflow scripts
+  obligation: runSimulationReconstruction.py, determineLuminosity.py); e2
+  pandaroot `detectors/lmd/CMakeLists.txt` (implementation-ownership
+  obligation: libLmd exposing LmdMC detector/geometry sources, LmdDigi
+  producers including PndLmdDigiTask, and libLmdReco reconstruction tasks).
+  The former python/Readme.md and PndLmdDigiTask.h groups were removed — no
+  redundant group remains critical merely to manufacture a footprint.
+- **Minimum critical footprint re-derivation (static):** critical groups =
+  e1 (luminosityfit) AND e2 (pandaroot). Every valid minimum footprint
+  contains both repository identities; no single-repository footprint
+  satisfies both obligations.
+- **Final proposed repository_scope:** `cross_repository` (retained on the
+  re-derived footprint, not preserved for coverage reasons).
+- **Codex post-correction recommendation:** RECOMMEND_ACCEPT
+- **Human re-review:** PENDING
 
 ## n022 / nf022 — two-step POCA artifact flow
 
@@ -105,14 +139,18 @@ are untouched; the dataset enters the 0.3.0 expansion lineage
   representative (fit moderate / relevance strong / rare)
 - **Scope:** restgas_determination only; single_source; topology
   producer_consumer; descriptive; source type workflow (Python scripts).
-- **Critical evidence:** `macro/target/poca_step1_worker.py` (per-job sim →
-  digi → reco → pid → ana_dpm.C, leaving `vtx_fit.json`);
-  `macro/target/poca_step2_analysis.py` (reads vertex_x/y/z means from the
-  JSON, exports FIT_VERTEX_X/Y/Z and POCA_VERTEX_FILE).
-- **Answer-point summary:** (1) step 1 leaves stage outputs plus the
-  vtx_fit.json vertex-fit artifact; (2) step 2 reads the fitted vertex means
-  from that JSON; (3) step 2 exports them as environment variables that
-  parameterize the back-propagated reprocessing.
+- **Critical evidence (corrected in R1):** `macro/target/ana_dpm.C`
+  (produces `<prefix>_boost.root` with the `event_poca` tree and
+  `<prefix>_vtx_fit.json`); `macro/target/poca_step2_analysis.py` (reads
+  JSON means into `FIT_VERTEX_X/Y/Z`, points `POCA_VERTEX_FILE` at the
+  boost ROOT file); `macro/target/README.md` (two-pass workflow semantics).
+- **Answer-point summary (corrected in R1):** (1) ana_dpm.C produces both
+  artifacts — the event-level `event_poca` tree in `<prefix>_boost.root`
+  and fitted sample-level vertex means/widths in `<prefix>_vtx_fit.json`;
+  (2) step 2 reads the JSON means into `FIT_VERTEX_X/Y/Z` and points
+  `POCA_VERTEX_FILE` at the boost ROOT file; (3) the `event_poca` tree is
+  the primary event-by-event back-propagation source, the fitted-mean
+  variables are backwards-compatible fallback information.
 - **Closest exposed Gold:** g079, g080 (producer-consumer archetype;
   information_need overlap low).
 - **Closest frozen N1 family:** nf020 is the nearest — separated because
@@ -126,7 +164,36 @@ are untouched; the dataset enters the 0.3.0 expansion lineage
   environment-variable construction in step 2; the reviewer may confirm the
   consuming command in the remainder of the script.
 - **Codex recommendation:** RECOMMEND_ACCEPT
-- **Human decision:** PENDING
+- **Human decision:** REVISE (Li, 2026-08-24T01:50+02:00)
+
+### n022 R1 correction record (CORRECTED / HUMAN_RE_REVIEW_PENDING)
+
+- **Original human issue:** the initial Gold overemphasized
+  `vtx_fit.json` + `FIT_VERTEX_X/Y/Z` and underrepresented the primary
+  event-by-event POCA path.
+- **event_poca vs vtx_fit.json distinction (verified in locked sources):**
+  `macro/target/ana_dpm.C` writes the event-level `event_poca` tree into
+  `<prefix>_boost.root` (lines 125/130) and exports fitted sample-level
+  vertex means/widths to `<prefix>_vtx_fit.json` (line 895 ff.);
+  `poca_step2_analysis.py` reads the JSON means into `FIT_VERTEX_X/Y/Z` and
+  points `POCA_VERTEX_FILE` at the boost ROOT file; `macro/target/README.md`
+  documents that the Pass-2 PID correlator reads the matching event ID from
+  that tree and propagates each event's tracks to its own POCA.
+- **Corrected evidence groups:** e1 `macro/target/ana_dpm.C` (production of
+  both artifacts — direct implementation evidence); e2
+  `macro/target/poca_step2_analysis.py` (step-2 consumption: FIT_VERTEX_*,
+  POCA_VERTEX_FILE); e3 `macro/target/README.md` (two-pass workflow
+  semantics). Source types are now `code` + `workflow`.
+- **Corrected answer-point semantics:** (1) ana_dpm.C produces both
+  `<prefix>_boost.root` with the `event_poca` tree and
+  `<prefix>_vtx_fit.json` with fitted sample-level means/widths; (2) step 2
+  reads the JSON means into `FIT_VERTEX_X/Y/Z` and points
+  `POCA_VERTEX_FILE` at the boost ROOT file; (3) for the normal POCA
+  workflow the `event_poca` tree is the primary event-by-event
+  back-propagation source, with the fitted-mean variables retained as
+  backwards-compatible / legacy fallback information.
+- **Codex post-correction recommendation:** RECOMMEND_ACCEPT
+- **Human re-review:** PENDING
 
 ## n023 / nf023 — FTS track-finder ownership
 
@@ -139,13 +206,15 @@ are untouched; the dataset enters the 0.3.0 expansion lineage
   (fit strong / relevance strong / core)
 - **Scope:** pandaroot only; single_source; topology single_hop;
   implementation_oriented.
-- **Critical evidence:** `tracking/PndFtsTrackFinder/README.MD` (algorithm
-  basis, version history, output branches); `tracking/PndFtsTrackFinder/PndFtsTrackFinderTask.h`.
-- **Answer-point summary:** (1) implemented in `tracking/PndFtsTrackFinder`
-  with PndFtsTrackFinderTask as the FairTask entry; (2) based on the PANDA
-  Forward Tracker TDR algorithm (pp. 88-97); (3) writes PndTrackCand,
-  PndTrack (two momentum-estimation methods, PndFtsContext), and
-  PndTrackAnalytic branches.
+- **Critical evidence (corrected in R1):** `tracking/PndFtsTrackFinder/README.MD` (package
+  documentation); `tracking/PndFtsTrackFinder/PndFtsTrackFinderTask.cxx`
+  (branch registration, default names, payload containers).
+- **Answer-point summary (corrected in R1):** (1) implemented in
+  `tracking/PndFtsTrackFinder` with PndFtsTrackFinderTask as the FairTask
+  entry; (2) registers output branches `FtsTrack`, `FtsTrackCand`,
+  `FtsTrackAnalytic` (configurable via `SetOutputBranchName`); (3) payload
+  types `PndTrack`, `PndTrackCand`, and
+  `PndFtsTrackFinder::PndFtsAnalyticTrack` respectively.
 - **Closest exposed Gold:** g027, g028 (source-location archetype, other
   subsystems; information_need overlap low).
 - **Closest frozen N1 family:** none equivalent — nf017 (PndTrack
@@ -157,7 +226,28 @@ are untouched; the dataset enters the 0.3.0 expansion lineage
 - **Known uncertainty:** none material; evidence is direct package
   documentation.
 - **Codex recommendation:** RECOMMEND_ACCEPT
-- **Human decision:** PENDING
+- **Human decision:** REVISE (Li, 2026-08-24T01:50+02:00)
+
+### n023 R1 correction record (CORRECTED / HUMAN_RE_REVIEW_PENDING)
+
+- **Original human issue:** the initial Gold answered the branch portion
+  mainly with payload object types rather than ROOT branch names.
+- **Actual branch names (verified in `PndFtsTrackFinderTask.cxx` lines
+  21-22/47-49):** default output branches `FtsTrack`, `FtsTrackCand`, and
+  `FtsTrackAnalytic` (configurable via `SetOutputBranchName`).
+- **Payload/object types:** `FtsTrack` -> `PndTrack`; `FtsTrackCand` ->
+  `PndTrackCand`; `FtsTrackAnalytic` ->
+  `PndFtsTrackFinder::PndFtsAnalyticTrack` (line/circle equations of the
+  candidates).
+- **Removed irrelevant required answer point:** the Forward-Tracker-TDR
+  (pp. 88-97) provenance point was factual but not required by the user's
+  information need; it is removed from `required_answer_points` (it remains
+  as non-critical context in the package documentation only).
+- **Corrected evidence:** e1 `tracking/PndFtsTrackFinder/README.MD` (package
+  documentation); e2 `tracking/PndFtsTrackFinder/PndFtsTrackFinderTask.cxx`
+  (actual branch registration, default names, and payload containers).
+- **Codex post-correction recommendation:** RECOMMEND_ACCEPT
+- **Human re-review:** PENDING
 
 ## n024 / nf024 — GEANE vs analytic-helix transport
 
@@ -192,7 +282,8 @@ are untouched; the dataset enters the 0.3.0 expansion lineage
 - **Known uncertainty:** p3's common-interface claim is evidenced by both
   headers subclassing PndPropagator; reviewer may sanity-check usage.
 - **Codex recommendation:** RECOMMEND_ACCEPT
-- **Human decision:** PENDING
+- **Human decision:** ACCEPT (Li, 2026-08-24T01:50+02:00; record now
+  `approved` / lifecycle `approved`, not yet `split_frozen`)
 
 ## n025 / nf025 — Apollonius triplet geometry
 
@@ -225,9 +316,23 @@ are untouched; the dataset enters the 0.3.0 expansion lineage
   reconstruction idea of the locked branch.
 - **Known uncertainty:** none material.
 - **Codex recommendation:** RECOMMEND_ACCEPT
-- **Human decision:** PENDING
+- **Human decision:** ACCEPT (Li, 2026-08-24T01:50+02:00; record now
+  `approved` / lifecycle `approved`, not yet `split_frozen`)
 
 ---
+
+## Batch-wide R1 correction: malformed source identity
+
+All six N2-A records carried a malformed `pflueger_2017` allowed
+source-version identity (two hexadecimal characters dropped during the
+N2-A transcription). Corrected in n020-n025 to the locked identity
+`pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3`;
+the N1 records already carried the correct identity. A generic validator
+rule now rejects any `allowed_source_versions` entry outside the locked
+authoritative source-version universe (authority: `data/manifests/source_manifest.json`
+plus the declared `curated_panda_domain@1.0` catalog identity), verified by
+a targeted negative check (malformed identity injection -> validator FAIL
+naming the question and identity; restore -> PASS).
 
 ## Discarded sampling attempt (no ID consumed)
 
@@ -242,10 +347,15 @@ are untouched; the dataset enters the 0.3.0 expansion lineage
 
 ## Batch summary for the reviewer
 
-6 candidates (n020-n025 / nf020-nf025), all `review_status: draft`,
-`reviewer: null`, sidecar `lifecycle: draft`. Priority areas covered:
+Human review (Li, 2026-08-24T01:50+02:00): 3 ACCEPT (n020, n024, n025 —
+now `approved` with lifecycle `approved`, not yet `split_frozen`) /
+3 REVISE (n021, n022, n023 — corrections applied, `CORRECTED /
+HUMAN_RE_REVIEW_PENDING`) / 0 REJECT / 0 PENDING-unreviewed. The
+batch-wide malformed `pflueger_2017` identity is corrected and the generic
+locked-source-universe validator rule is active. Priority areas covered:
 data_flow/producer-consumer (n020, n022), genuine cross-repository (n021,
-footprint-verified), source_location (n023), implementation_explanation
-(n024, n025). No exploratory candidates arose naturally in Batch 1, matching
-the plan's assignment of exploratory balancing to Batch 2. Expected status:
-all answered. Difficulty: 1 simple / 4 moderate / 1 hard.
+footprint re-derived on the corrected annotation), source_location (n023),
+implementation_explanation (n024, n025). No exploratory candidates arose
+naturally in Batch 1, matching the plan's assignment of exploratory
+balancing to Batch 2. Expected status: all answered. Difficulty:
+1 simple / 4 moderate / 1 hard.

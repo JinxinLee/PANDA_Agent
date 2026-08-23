@@ -349,6 +349,25 @@ def main() -> int:
     }
     web_root = REPO_ROOT / "data" / "sources" / "web"
 
+    # Locked authoritative source-version universe. Authority comes from the
+    # corpus manifest plus the curated-domain catalog identity that is
+    # intentionally declared outside it; never from the records being
+    # validated.
+    locked_source_universe = {"curated_panda_domain@1.0"}
+    for item in source_manifest.get("repositories", []):
+        locked_source_universe.add(f"{item['repo_id']}@{item['commit_sha']}")
+    for item in source_manifest.get("papers", []):
+        locked_source_universe.add(f"{item['doc_id']}@{item['sha256']}")
+    for item in source_manifest.get("web_documents", []):
+        locked_source_universe.add(f"{item['doc_id']}@{item['snapshot_hash']}")
+    for question in dataset.questions:
+        for version in question.allowed_source_versions:
+            if version not in locked_source_universe:
+                fail(
+                    f"{question.id}: allowed source version {version!r} is not in "
+                    "the locked authoritative source universe"
+                )
+
     records = raw_sidecar.get("records", [])
     if raw_sidecar.get("schema_version") != "novel-curation-sidecar-v3":
         fail("sidecar schema_version must be novel-curation-sidecar-v3")

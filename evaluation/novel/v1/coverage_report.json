@@ -95,10 +95,10 @@
     "human_reviewer": "Li",
     "reviewed_at": "2026-08-24T00:28:55+02:00",
     "review_decision_counts": {
-      "accepted": 16,
-      "revise": 0,
+      "accepted": 19,
+      "revise": 3,
       "rejected": 0,
-      "pending": 6
+      "pending": 0
     },
     "locked_corpus_source_versions": [
       "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
@@ -112,7 +112,8 @@
     ],
     "re_reviewed_at": "2026-08-24T00:49:13+02:00",
     "pilot_frozen": true,
-    "expansion_batch1_pending": 6
+    "expansion_batch1_accepted": 3,
+    "expansion_batch1_awaiting_rereview": 3
   },
   "representativeness": {
     "profile_artifact": "gold_representativeness_profile.json",

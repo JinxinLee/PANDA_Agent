@@ -954,7 +954,7 @@ records:
       origin: human_directed_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: draft
+      lifecycle: approved
   - question_id: n021
     curation_family_id: nf021
     intent: usage
@@ -1056,6 +1056,7 @@ records:
       repositories:
         - restgas_determination
       source_types:
+        - code
         - workflow
       expression_form: descriptive
       evidence_topology: producer_consumer
@@ -1181,7 +1182,7 @@ records:
       origin: human_directed_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: draft
+      lifecycle: approved
   - question_id: n025
     curation_family_id: nf025
     intent: algorithm_implementation
@@ -1236,4 +1237,4 @@ records:
       origin: human_directed_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: draft
+      lifecycle: approved
