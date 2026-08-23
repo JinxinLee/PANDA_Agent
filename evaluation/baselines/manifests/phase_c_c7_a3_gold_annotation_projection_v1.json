@@ -1,0 +1,1392 @@
+{
+  "_metadata": {
+    "schema_version": "c7-a3-gold-annotation-projection-v1",
+    "gold_source_path": "evaluation/gold_questions.yaml",
+    "gold_schema_version": "1.0",
+    "benchmark_version": "m6-draft-1",
+    "cohort_case_ids": [
+      "g001",
+      "g002",
+      "g003",
+      "g010",
+      "g013",
+      "g014",
+      "g027",
+      "g028",
+      "g029",
+      "g044",
+      "g047",
+      "g050",
+      "g059",
+      "g060",
+      "g105",
+      "g110",
+      "g112",
+      "g113"
+    ],
+    "matcher_identity": "panda_agent.evaluation._matched_evidence_groups",
+    "unsupported_conditions_summary": {},
+    "unmatched_conditions_summary": {
+      "g013": [
+        "g013.e2"
+      ],
+      "g105": [
+        "g105.e2"
+      ],
+      "g113": [
+        "g113.e3"
+      ]
+    },
+    "no_manual_case_specific_mapping": true
+  },
+  "g001": {
+    "case_id": "g001",
+    "relevant_groups": [
+      "g001.e1",
+      "g001.e2"
+    ],
+    "critical_groups": [
+      "g001.e1",
+      "g001.e2"
+    ],
+    "relevant_groups_by_object": {
+      "object.597b862806883572328748d8": [
+        "g001.e1",
+        "g001.e2"
+      ],
+      "object.10e1a2edc34cb3a3f916be06": [
+        "g001.e2"
+      ],
+      "object.1fb50ceec6adf4d7ec53ca15": [
+        "g001.e2"
+      ],
+      "object.2de0c11066dd97bc1177de1c": [
+        "g001.e2"
+      ],
+      "object.2ef6cc5433bda519fd703ab3": [
+        "g001.e2"
+      ],
+      "object.572a275ce1cce5dd3c71f64a": [
+        "g001.e2"
+      ],
+      "object.830bb48b780040edd4191ccf": [
+        "g001.e2"
+      ],
+      "object.8a83d356db6d84627d3ac5fc": [
+        "g001.e2"
+      ],
+      "object.956517962ad0f093afaf5d8c": [
+        "g001.e2"
+      ],
+      "object.a00dba128eefd03b8bc5acda": [
+        "g001.e2"
+      ],
+      "object.dc292bf41a22347d260dece5": [
+        "g001.e2"
+      ],
+      "object.e363543e4fd82b6ccc0b1b4a": [
+        "g001.e2"
+      ],
+      "object.f62b76d2a9f89e52acc029f4": [
+        "g001.e2"
+      ]
+    },
+    "critical_groups_by_object": {
+      "object.597b862806883572328748d8": [
+        "g001.e1",
+        "g001.e2"
+      ],
+      "object.10e1a2edc34cb3a3f916be06": [
+        "g001.e2"
+      ],
+      "object.1fb50ceec6adf4d7ec53ca15": [
+        "g001.e2"
+      ],
+      "object.2de0c11066dd97bc1177de1c": [
+        "g001.e2"
+      ],
+      "object.2ef6cc5433bda519fd703ab3": [
+        "g001.e2"
+      ],
+      "object.572a275ce1cce5dd3c71f64a": [
+        "g001.e2"
+      ],
+      "object.830bb48b780040edd4191ccf": [
+        "g001.e2"
+      ],
+      "object.8a83d356db6d84627d3ac5fc": [
+        "g001.e2"
+      ],
+      "object.956517962ad0f093afaf5d8c": [
+        "g001.e2"
+      ],
+      "object.a00dba128eefd03b8bc5acda": [
+        "g001.e2"
+      ],
+      "object.dc292bf41a22347d260dece5": [
+        "g001.e2"
+      ],
+      "object.e363543e4fd82b6ccc0b1b4a": [
+        "g001.e2"
+      ],
+      "object.f62b76d2a9f89e52acc029f4": [
+        "g001.e2"
+      ]
+    },
+    "negative_completeness": false,
+    "matcher_identity": "panda_agent.evaluation._matched_evidence_groups",
+    "unmatched_group_ids": [],
+    "unsupported_conditions": [],
+    "no_manual_case_specific_mapping": true
+  },
+  "g002": {
+    "case_id": "g002",
+    "relevant_groups": [
+      "g002.e1"
+    ],
+    "critical_groups": [
+      "g002.e1"
+    ],
+    "relevant_groups_by_object": {
+      "object.2de0c11066dd97bc1177de1c": [
+        "g002.e1"
+      ],
+      "object.597b862806883572328748d8": [
+        "g002.e1"
+      ],
+      "object.74537a9551eb84182e296062": [
+        "g002.e1"
+      ],
+      "object.830bb48b780040edd4191ccf": [
+        "g002.e1"
+      ],
+      "object.8a83d356db6d84627d3ac5fc": [
+        "g002.e1"
+      ],
+      "object.8af1dbfc98e0d90dbf6ce274": [
+        "g002.e1"
+      ],
+      "object.92e6da6cf7cea6b7b102157c": [
+        "g002.e1"
+      ],
+      "object.956517962ad0f093afaf5d8c": [
+        "g002.e1"
+      ],
+      "object.f62b76d2a9f89e52acc029f4": [
+        "g002.e1"
+      ]
+    },
+    "critical_groups_by_object": {
+      "object.2de0c11066dd97bc1177de1c": [
+        "g002.e1"
+      ],
+      "object.597b862806883572328748d8": [
+        "g002.e1"
+      ],
+      "object.74537a9551eb84182e296062": [
+        "g002.e1"
+      ],
+      "object.830bb48b780040edd4191ccf": [
+        "g002.e1"
+      ],
+      "object.8a83d356db6d84627d3ac5fc": [
+        "g002.e1"
+      ],
+      "object.8af1dbfc98e0d90dbf6ce274": [
+        "g002.e1"
+      ],
+      "object.92e6da6cf7cea6b7b102157c": [
+        "g002.e1"
+      ],
+      "object.956517962ad0f093afaf5d8c": [
+        "g002.e1"
+      ],
+      "object.f62b76d2a9f89e52acc029f4": [
+        "g002.e1"
+      ]
+    },
+    "negative_completeness": false,
+    "matcher_identity": "panda_agent.evaluation._matched_evidence_groups",
+    "unmatched_group_ids": [],
+    "unsupported_conditions": [],
+    "no_manual_case_specific_mapping": true
+  },
+  "g003": {
+    "case_id": "g003",
+    "relevant_groups": [
+      "g003.e1"
+    ],
+    "critical_groups": [
+      "g003.e1"
+    ],
+    "relevant_groups_by_object": {
+      "object.13eadb1b7eec327988d2f049": [
+        "g003.e1"
+      ],
+      "object.2de0c11066dd97bc1177de1c": [
+        "g003.e1"
+      ],
+      "object.597b862806883572328748d8": [
+        "g003.e1"
+      ],
+      "object.830bb48b780040edd4191ccf": [
+        "g003.e1"
+      ],
+      "object.8a83d356db6d84627d3ac5fc": [
+        "g003.e1"
+      ],
+      "object.956517962ad0f093afaf5d8c": [
+        "g003.e1"
+      ],
+      "object.aa7ef49c92cc2137b72c9662": [
+        "g003.e1"
+      ],
+      "object.e4f54cb4330ba4f63876b9ca": [
+        "g003.e1"
+      ],
+      "object.f095b9f05dfff9fcd5806309": [
+        "g003.e1"
+      ],
+      "object.f62b76d2a9f89e52acc029f4": [
+        "g003.e1"
+      ]
+    },
+    "critical_groups_by_object": {
+      "object.13eadb1b7eec327988d2f049": [
+        "g003.e1"
+      ],
+      "object.2de0c11066dd97bc1177de1c": [
+        "g003.e1"
+      ],
+      "object.597b862806883572328748d8": [
+        "g003.e1"
+      ],
+      "object.830bb48b780040edd4191ccf": [
+        "g003.e1"
+      ],
+      "object.8a83d356db6d84627d3ac5fc": [
+        "g003.e1"
+      ],
+      "object.956517962ad0f093afaf5d8c": [
+        "g003.e1"
+      ],
+      "object.aa7ef49c92cc2137b72c9662": [
+        "g003.e1"
+      ],
+      "object.e4f54cb4330ba4f63876b9ca": [
+        "g003.e1"
+      ],
+      "object.f095b9f05dfff9fcd5806309": [
+        "g003.e1"
+      ],
+      "object.f62b76d2a9f89e52acc029f4": [
+        "g003.e1"
+      ]
+    },
+    "negative_completeness": false,
+    "matcher_identity": "panda_agent.evaluation._matched_evidence_groups",
+    "unmatched_group_ids": [],
+    "unsupported_conditions": [],
+    "no_manual_case_specific_mapping": true
+  },
+  "g010": {
+    "case_id": "g010",
+    "relevant_groups": [
+      "g010.e1"
+    ],
+    "critical_groups": [
+      "g010.e1"
+    ],
+    "relevant_groups_by_object": {
+      "object.081740e877a8fb641d2c41ea": [
+        "g010.e1"
+      ],
+      "object.384fc84f13720299a1815e6f": [
+        "g010.e1"
+      ],
+      "object.420ee00eabb1d7bf0c0c9f2c": [
+        "g010.e1"
+      ],
+      "object.572a275ce1cce5dd3c71f64a": [
+        "g010.e1"
+      ],
+      "object.5cf9e0801748ac6d955df2de": [
+        "g010.e1"
+      ],
+      "object.625bd60d575c41fc8747d2d4": [
+        "g010.e1"
+      ],
+      "object.6d240dba0e4248e1428746d3": [
+        "g010.e1"
+      ],
+      "object.830bb48b780040edd4191ccf": [
+        "g010.e1"
+      ],
+      "object.83bb338e3857444aa4cfcd31": [
+        "g010.e1"
+      ],
+      "object.8a83d356db6d84627d3ac5fc": [
+        "g010.e1"
+      ],
+      "object.d1436482b3f80e68719778a4": [
+        "g010.e1"
+      ],
+      "object.d1db57c131ea6aee57038263": [
+        "g010.e1"
+      ],
+      "object.df7e5e2a581cfc1305086cda": [
+        "g010.e1"
+      ],
+      "object.f62b76d2a9f89e52acc029f4": [
+        "g010.e1"
+      ]
+    },
+    "critical_groups_by_object": {
+      "object.081740e877a8fb641d2c41ea": [
+        "g010.e1"
+      ],
+      "object.384fc84f13720299a1815e6f": [
+        "g010.e1"
+      ],
+      "object.420ee00eabb1d7bf0c0c9f2c": [
+        "g010.e1"
+      ],
+      "object.572a275ce1cce5dd3c71f64a": [
+        "g010.e1"
+      ],
+      "object.5cf9e0801748ac6d955df2de": [
+        "g010.e1"
+      ],
+      "object.625bd60d575c41fc8747d2d4": [
+        "g010.e1"
+      ],
+      "object.6d240dba0e4248e1428746d3": [
+        "g010.e1"
+      ],
+      "object.830bb48b780040edd4191ccf": [
+        "g010.e1"
+      ],
+      "object.83bb338e3857444aa4cfcd31": [
+        "g010.e1"
+      ],
+      "object.8a83d356db6d84627d3ac5fc": [
+        "g010.e1"
+      ],
+      "object.d1436482b3f80e68719778a4": [
+        "g010.e1"
+      ],
+      "object.d1db57c131ea6aee57038263": [
+        "g010.e1"
+      ],
+      "object.df7e5e2a581cfc1305086cda": [
+        "g010.e1"
+      ],
+      "object.f62b76d2a9f89e52acc029f4": [
+        "g010.e1"
+      ]
+    },
+    "negative_completeness": false,
+    "matcher_identity": "panda_agent.evaluation._matched_evidence_groups",
+    "unmatched_group_ids": [],
+    "unsupported_conditions": [],
+    "no_manual_case_specific_mapping": true
+  },
+  "g013": {
+    "case_id": "g013",
+    "relevant_groups": [
+      "g013.e1",
+      "g013.e2"
+    ],
+    "critical_groups": [
+      "g013.e1",
+      "g013.e2"
+    ],
+    "relevant_groups_by_object": {
+      "object.262d4647ef2dc9eb9bb47ffa": [
+        "g013.e1"
+      ],
+      "object.6b0c9215ab982da22a88e619": [
+        "g013.e1"
+      ],
+      "object.830bb48b780040edd4191ccf": [
+        "g013.e1"
+      ],
+      "object.8a83d356db6d84627d3ac5fc": [
+        "g013.e1"
+      ],
+      "object.92db2633c32ebebc76b46e4a": [
+        "g013.e1"
+      ],
+      "object.9ad5cdfc275c654b6786f8c1": [
+        "g013.e1"
+      ],
+      "object.9fe2ad0d5a45339d8246947a": [
+        "g013.e1"
+      ],
+      "object.bc8333ad0e15ee02eab751a9": [
+        "g013.e1"
+      ],
+      "object.f62b76d2a9f89e52acc029f4": [
+        "g013.e1"
+      ],
+      "object.fe1e9b03d25708866787ea5c": [
+        "g013.e1"
+      ]
+    },
+    "critical_groups_by_object": {
+      "object.262d4647ef2dc9eb9bb47ffa": [
+        "g013.e1"
+      ],
+      "object.6b0c9215ab982da22a88e619": [
+        "g013.e1"
+      ],
+      "object.830bb48b780040edd4191ccf": [
+        "g013.e1"
+      ],
+      "object.8a83d356db6d84627d3ac5fc": [
+        "g013.e1"
+      ],
+      "object.92db2633c32ebebc76b46e4a": [
+        "g013.e1"
+      ],
+      "object.9ad5cdfc275c654b6786f8c1": [
+        "g013.e1"
+      ],
+      "object.9fe2ad0d5a45339d8246947a": [
+        "g013.e1"
+      ],
+      "object.bc8333ad0e15ee02eab751a9": [
+        "g013.e1"
+      ],
+      "object.f62b76d2a9f89e52acc029f4": [
+        "g013.e1"
+      ],
+      "object.fe1e9b03d25708866787ea5c": [
+        "g013.e1"
+      ]
+    },
+    "negative_completeness": false,
+    "matcher_identity": "panda_agent.evaluation._matched_evidence_groups",
+    "unmatched_group_ids": [
+      "g013.e2"
+    ],
+    "unsupported_conditions": [],
+    "no_manual_case_specific_mapping": true
+  },
+  "g014": {
+    "case_id": "g014",
+    "relevant_groups": [
+      "g014.e1",
+      "g014.e2"
+    ],
+    "critical_groups": [
+      "g014.e1",
+      "g014.e2"
+    ],
+    "relevant_groups_by_object": {
+      "object.5b16c90fb3cf53b515b1a429": [
+        "g014.e1",
+        "g014.e2"
+      ],
+      "object.72498a7b4b01f4432b19431a": [
+        "g014.e1"
+      ],
+      "object.79b75480980719256f8b7937": [
+        "g014.e1",
+        "g014.e2"
+      ],
+      "object.830bb48b780040edd4191ccf": [
+        "g014.e1",
+        "g014.e2"
+      ],
+      "object.8a83d356db6d84627d3ac5fc": [
+        "g014.e1",
+        "g014.e2"
+      ],
+      "object.a800d438d6eabed84f3e0e30": [
+        "g014.e1"
+      ],
+      "object.deeebf203a3e05a3f55df26d": [
+        "g014.e1",
+        "g014.e2"
+      ],
+      "object.df83068e7c840c216ecf55a9": [
+        "g014.e1"
+      ],
+      "object.f62b76d2a9f89e52acc029f4": [
+        "g014.e1",
+        "g014.e2"
+      ],
+      "object.262d4647ef2dc9eb9bb47ffa": [
+        "g014.e2"
+      ],
+      "object.6b0c9215ab982da22a88e619": [
+        "g014.e2"
+      ],
+      "object.9fe2ad0d5a45339d8246947a": [
+        "g014.e2"
+      ]
+    },
+    "critical_groups_by_object": {
+      "object.5b16c90fb3cf53b515b1a429": [
+        "g014.e1",
+        "g014.e2"
+      ],
+      "object.72498a7b4b01f4432b19431a": [
+        "g014.e1"
+      ],
+      "object.79b75480980719256f8b7937": [
+        "g014.e1",
+        "g014.e2"
+      ],
+      "object.830bb48b780040edd4191ccf": [
+        "g014.e1",
+        "g014.e2"
+      ],
+      "object.8a83d356db6d84627d3ac5fc": [
+        "g014.e1",
+        "g014.e2"
+      ],
+      "object.a800d438d6eabed84f3e0e30": [
+        "g014.e1"
+      ],
+      "object.deeebf203a3e05a3f55df26d": [
+        "g014.e1",
+        "g014.e2"
+      ],
+      "object.df83068e7c840c216ecf55a9": [
+        "g014.e1"
+      ],
+      "object.f62b76d2a9f89e52acc029f4": [
+        "g014.e1",
+        "g014.e2"
+      ],
+      "object.262d4647ef2dc9eb9bb47ffa": [
+        "g014.e2"
+      ],
+      "object.6b0c9215ab982da22a88e619": [
+        "g014.e2"
+      ],
+      "object.9fe2ad0d5a45339d8246947a": [
+        "g014.e2"
+      ]
+    },
+    "negative_completeness": false,
+    "matcher_identity": "panda_agent.evaluation._matched_evidence_groups",
+    "unmatched_group_ids": [],
+    "unsupported_conditions": [],
+    "no_manual_case_specific_mapping": true
+  },
+  "g027": {
+    "case_id": "g027",
+    "relevant_groups": [
+      "g027.e1"
+    ],
+    "critical_groups": [
+      "g027.e1"
+    ],
+    "relevant_groups_by_object": {
+      "object.041a28dae78c7d826a1cf717": [
+        "g027.e1"
+      ],
+      "object.1b66dd60496a4cd204aeb061": [
+        "g027.e1"
+      ],
+      "object.3874fff2733ad5bf57b2948f": [
+        "g027.e1"
+      ],
+      "object.5477fe89a06c4959e07f509e": [
+        "g027.e1"
+      ],
+      "object.5ba08d9e810649d3f729a2af": [
+        "g027.e1"
+      ],
+      "object.7c683ccb9595dad20e4529fe": [
+        "g027.e1"
+      ],
+      "object.80b4fbeb07f499350c264560": [
+        "g027.e1"
+      ]
+    },
+    "critical_groups_by_object": {
+      "object.041a28dae78c7d826a1cf717": [
+        "g027.e1"
+      ],
+      "object.1b66dd60496a4cd204aeb061": [
+        "g027.e1"
+      ],
+      "object.3874fff2733ad5bf57b2948f": [
+        "g027.e1"
+      ],
+      "object.5477fe89a06c4959e07f509e": [
+        "g027.e1"
+      ],
+      "object.5ba08d9e810649d3f729a2af": [
+        "g027.e1"
+      ],
+      "object.7c683ccb9595dad20e4529fe": [
+        "g027.e1"
+      ],
+      "object.80b4fbeb07f499350c264560": [
+        "g027.e1"
+      ]
+    },
+    "negative_completeness": false,
+    "matcher_identity": "panda_agent.evaluation._matched_evidence_groups",
+    "unmatched_group_ids": [],
+    "unsupported_conditions": [],
+    "no_manual_case_specific_mapping": true
+  },
+  "g028": {
+    "case_id": "g028",
+    "relevant_groups": [
+      "g028.e1"
+    ],
+    "critical_groups": [
+      "g028.e1"
+    ],
+    "relevant_groups_by_object": {
+      "object.0fef99d8080f88aca59e2533": [
+        "g028.e1"
+      ],
+      "object.1fb70031c552cb78f7b3dc6c": [
+        "g028.e1"
+      ],
+      "object.3b33d70b38f07085de7b959c": [
+        "g028.e1"
+      ],
+      "object.49a023aed29fd47d07604c19": [
+        "g028.e1"
+      ],
+      "object.597e603ca9dc7eda4438080d": [
+        "g028.e1"
+      ],
+      "object.6ff05220ac1e98115d58e537": [
+        "g028.e1"
+      ],
+      "object.7c19394c0d9bd3ca6de55bc6": [
+        "g028.e1"
+      ],
+      "object.7ed4403593ca1ad9eb1705e2": [
+        "g028.e1"
+      ],
+      "object.82d374df07ae729e866e6ca1": [
+        "g028.e1"
+      ],
+      "object.8704d9b2033d54ac39a78cb5": [
+        "g028.e1"
+      ],
+      "object.8d65a55c05f48d0fb5c792eb": [
+        "g028.e1"
+      ],
+      "object.a4404397cf3088783a68e7e4": [
+        "g028.e1"
+      ],
+      "object.aa1abfd4945e7598c32551be": [
+        "g028.e1"
+      ],
+      "object.b545349030372fd5e174613c": [
+        "g028.e1"
+      ],
+      "object.e46f97155a60d512218cce99": [
+        "g028.e1"
+      ],
+      "object.ebfa4fc559976056daf87739": [
+        "g028.e1"
+      ],
+      "object.ffa6c4c7af89db5e377506e6": [
+        "g028.e1"
+      ]
+    },
+    "critical_groups_by_object": {
+      "object.0fef99d8080f88aca59e2533": [
+        "g028.e1"
+      ],
+      "object.1fb70031c552cb78f7b3dc6c": [
+        "g028.e1"
+      ],
+      "object.3b33d70b38f07085de7b959c": [
+        "g028.e1"
+      ],
+      "object.49a023aed29fd47d07604c19": [
+        "g028.e1"
+      ],
+      "object.597e603ca9dc7eda4438080d": [
+        "g028.e1"
+      ],
+      "object.6ff05220ac1e98115d58e537": [
+        "g028.e1"
+      ],
+      "object.7c19394c0d9bd3ca6de55bc6": [
+        "g028.e1"
+      ],
+      "object.7ed4403593ca1ad9eb1705e2": [
+        "g028.e1"
+      ],
+      "object.82d374df07ae729e866e6ca1": [
+        "g028.e1"
+      ],
+      "object.8704d9b2033d54ac39a78cb5": [
+        "g028.e1"
+      ],
+      "object.8d65a55c05f48d0fb5c792eb": [
+        "g028.e1"
+      ],
+      "object.a4404397cf3088783a68e7e4": [
+        "g028.e1"
+      ],
+      "object.aa1abfd4945e7598c32551be": [
+        "g028.e1"
+      ],
+      "object.b545349030372fd5e174613c": [
+        "g028.e1"
+      ],
+      "object.e46f97155a60d512218cce99": [
+        "g028.e1"
+      ],
+      "object.ebfa4fc559976056daf87739": [
+        "g028.e1"
+      ],
+      "object.ffa6c4c7af89db5e377506e6": [
+        "g028.e1"
+      ]
+    },
+    "negative_completeness": false,
+    "matcher_identity": "panda_agent.evaluation._matched_evidence_groups",
+    "unmatched_group_ids": [],
+    "unsupported_conditions": [],
+    "no_manual_case_specific_mapping": true
+  },
+  "g029": {
+    "case_id": "g029",
+    "relevant_groups": [
+      "g029.e1"
+    ],
+    "critical_groups": [
+      "g029.e1"
+    ],
+    "relevant_groups_by_object": {
+      "object.04b079cb4f083d29d694e47a": [
+        "g029.e1"
+      ],
+      "object.2018a5dae00f32e7f46e47f0": [
+        "g029.e1"
+      ],
+      "object.5c1a92f0d1d7919f079637e3": [
+        "g029.e1"
+      ],
+      "object.5c42339d8325057d79c6f9b6": [
+        "g029.e1"
+      ],
+      "object.cb536dd8c6286ba174a0a23f": [
+        "g029.e1"
+      ]
+    },
+    "critical_groups_by_object": {
+      "object.04b079cb4f083d29d694e47a": [
+        "g029.e1"
+      ],
+      "object.2018a5dae00f32e7f46e47f0": [
+        "g029.e1"
+      ],
+      "object.5c1a92f0d1d7919f079637e3": [
+        "g029.e1"
+      ],
+      "object.5c42339d8325057d79c6f9b6": [
+        "g029.e1"
+      ],
+      "object.cb536dd8c6286ba174a0a23f": [
+        "g029.e1"
+      ]
+    },
+    "negative_completeness": false,
+    "matcher_identity": "panda_agent.evaluation._matched_evidence_groups",
+    "unmatched_group_ids": [],
+    "unsupported_conditions": [],
+    "no_manual_case_specific_mapping": true
+  },
+  "g044": {
+    "case_id": "g044",
+    "relevant_groups": [
+      "g044.e1"
+    ],
+    "critical_groups": [
+      "g044.e1"
+    ],
+    "relevant_groups_by_object": {
+      "object.17be0e2f5b4f2fad78261618": [
+        "g044.e1"
+      ],
+      "object.86b7c9f862f3e5c328823444": [
+        "g044.e1"
+      ],
+      "object.9a4e852fb3d690cbcf77e60b": [
+        "g044.e1"
+      ],
+      "object.c38228ebdd1d1c855848f503": [
+        "g044.e1"
+      ],
+      "object.ce07731a70c8cf4c5be45774": [
+        "g044.e1"
+      ]
+    },
+    "critical_groups_by_object": {
+      "object.17be0e2f5b4f2fad78261618": [
+        "g044.e1"
+      ],
+      "object.86b7c9f862f3e5c328823444": [
+        "g044.e1"
+      ],
+      "object.9a4e852fb3d690cbcf77e60b": [
+        "g044.e1"
+      ],
+      "object.c38228ebdd1d1c855848f503": [
+        "g044.e1"
+      ],
+      "object.ce07731a70c8cf4c5be45774": [
+        "g044.e1"
+      ]
+    },
+    "negative_completeness": false,
+    "matcher_identity": "panda_agent.evaluation._matched_evidence_groups",
+    "unmatched_group_ids": [],
+    "unsupported_conditions": [],
+    "no_manual_case_specific_mapping": true
+  },
+  "g047": {
+    "case_id": "g047",
+    "relevant_groups": [
+      "g047.e1"
+    ],
+    "critical_groups": [
+      "g047.e1"
+    ],
+    "relevant_groups_by_object": {
+      "object.760a25f4170d730f136cfdbe": [
+        "g047.e1"
+      ],
+      "object.f4196a5a00e35fc8550a1da9": [
+        "g047.e1"
+      ],
+      "object.faaced8bd5058b2a19ba9528": [
+        "g047.e1"
+      ]
+    },
+    "critical_groups_by_object": {
+      "object.760a25f4170d730f136cfdbe": [
+        "g047.e1"
+      ],
+      "object.f4196a5a00e35fc8550a1da9": [
+        "g047.e1"
+      ],
+      "object.faaced8bd5058b2a19ba9528": [
+        "g047.e1"
+      ]
+    },
+    "negative_completeness": false,
+    "matcher_identity": "panda_agent.evaluation._matched_evidence_groups",
+    "unmatched_group_ids": [],
+    "unsupported_conditions": [],
+    "no_manual_case_specific_mapping": true
+  },
+  "g050": {
+    "case_id": "g050",
+    "relevant_groups": [
+      "g050.e1"
+    ],
+    "critical_groups": [
+      "g050.e1"
+    ],
+    "relevant_groups_by_object": {
+      "object.279d3eb459004b09876f0152": [
+        "g050.e1"
+      ],
+      "object.b37ac0e03e942ca965dbad72": [
+        "g050.e1"
+      ],
+      "object.fc6e82b184f603398dde3bce": [
+        "g050.e1"
+      ]
+    },
+    "critical_groups_by_object": {
+      "object.279d3eb459004b09876f0152": [
+        "g050.e1"
+      ],
+      "object.b37ac0e03e942ca965dbad72": [
+        "g050.e1"
+      ],
+      "object.fc6e82b184f603398dde3bce": [
+        "g050.e1"
+      ]
+    },
+    "negative_completeness": false,
+    "matcher_identity": "panda_agent.evaluation._matched_evidence_groups",
+    "unmatched_group_ids": [],
+    "unsupported_conditions": [],
+    "no_manual_case_specific_mapping": true
+  },
+  "g059": {
+    "case_id": "g059",
+    "relevant_groups": [
+      "g059.e1",
+      "g059.e2",
+      "g059.e3"
+    ],
+    "critical_groups": [
+      "g059.e1",
+      "g059.e2",
+      "g059.e3"
+    ],
+    "relevant_groups_by_object": {
+      "object.25772a34446d53e2e1720b10": [
+        "g059.e1"
+      ],
+      "object.6f688277a08ed2f236ae74df": [
+        "g059.e1"
+      ],
+      "object.07ef66cefee5946e0798c652": [
+        "g059.e2"
+      ],
+      "object.0a8876471719d8af04aa69d1": [
+        "g059.e2"
+      ],
+      "object.1c3ce550df2dd14cd2c27ae2": [
+        "g059.e2"
+      ],
+      "object.2697c17005fcf17ea63e0531": [
+        "g059.e2"
+      ],
+      "object.56e3dc0932af1a20743b47b5": [
+        "g059.e2"
+      ],
+      "object.0025b2d964d8f2ff56cc6fc1": [
+        "g059.e3"
+      ],
+      "object.045424eb7dca732ff626bc4b": [
+        "g059.e3"
+      ],
+      "object.4321d4e41f520bc60247a99f": [
+        "g059.e3"
+      ],
+      "object.85d525a4f6a2fefbd95d4af9": [
+        "g059.e3"
+      ],
+      "object.ceb44bd02a5e3a790cf2dfad": [
+        "g059.e3"
+      ]
+    },
+    "critical_groups_by_object": {
+      "object.25772a34446d53e2e1720b10": [
+        "g059.e1"
+      ],
+      "object.6f688277a08ed2f236ae74df": [
+        "g059.e1"
+      ],
+      "object.07ef66cefee5946e0798c652": [
+        "g059.e2"
+      ],
+      "object.0a8876471719d8af04aa69d1": [
+        "g059.e2"
+      ],
+      "object.1c3ce550df2dd14cd2c27ae2": [
+        "g059.e2"
+      ],
+      "object.2697c17005fcf17ea63e0531": [
+        "g059.e2"
+      ],
+      "object.56e3dc0932af1a20743b47b5": [
+        "g059.e2"
+      ],
+      "object.0025b2d964d8f2ff56cc6fc1": [
+        "g059.e3"
+      ],
+      "object.045424eb7dca732ff626bc4b": [
+        "g059.e3"
+      ],
+      "object.4321d4e41f520bc60247a99f": [
+        "g059.e3"
+      ],
+      "object.85d525a4f6a2fefbd95d4af9": [
+        "g059.e3"
+      ],
+      "object.ceb44bd02a5e3a790cf2dfad": [
+        "g059.e3"
+      ]
+    },
+    "negative_completeness": false,
+    "matcher_identity": "panda_agent.evaluation._matched_evidence_groups",
+    "unmatched_group_ids": [],
+    "unsupported_conditions": [],
+    "no_manual_case_specific_mapping": true
+  },
+  "g060": {
+    "case_id": "g060",
+    "relevant_groups": [
+      "g060.e1",
+      "g060.e2",
+      "g060.e3"
+    ],
+    "critical_groups": [
+      "g060.e1",
+      "g060.e2",
+      "g060.e3"
+    ],
+    "relevant_groups_by_object": {
+      "object.94c8b2244725f71b312bf99f": [
+        "g060.e1"
+      ],
+      "object.fc690314895a094fd0ce0991": [
+        "g060.e1"
+      ],
+      "object.08b764d405235bdc3c937b71": [
+        "g060.e2"
+      ],
+      "object.32f4b8b0dfca3006dc2fe6ec": [
+        "g060.e2"
+      ],
+      "object.3e852e5d984735110e416849": [
+        "g060.e2"
+      ],
+      "object.72da1e4536c065b7cf2d095c": [
+        "g060.e2"
+      ],
+      "object.8e7fd87fdffe7bed95214911": [
+        "g060.e2"
+      ],
+      "object.c4f574b5d0a4a5276d2a5de2": [
+        "g060.e2"
+      ],
+      "object.cb1c22d84d5df7083970d26c": [
+        "g060.e2"
+      ],
+      "object.0025b2d964d8f2ff56cc6fc1": [
+        "g060.e3"
+      ],
+      "object.045424eb7dca732ff626bc4b": [
+        "g060.e3"
+      ],
+      "object.19431026c197f1cdc6eb0b57": [
+        "g060.e3"
+      ],
+      "object.4321d4e41f520bc60247a99f": [
+        "g060.e3"
+      ],
+      "object.ceb44bd02a5e3a790cf2dfad": [
+        "g060.e3"
+      ]
+    },
+    "critical_groups_by_object": {
+      "object.94c8b2244725f71b312bf99f": [
+        "g060.e1"
+      ],
+      "object.fc690314895a094fd0ce0991": [
+        "g060.e1"
+      ],
+      "object.08b764d405235bdc3c937b71": [
+        "g060.e2"
+      ],
+      "object.32f4b8b0dfca3006dc2fe6ec": [
+        "g060.e2"
+      ],
+      "object.3e852e5d984735110e416849": [
+        "g060.e2"
+      ],
+      "object.72da1e4536c065b7cf2d095c": [
+        "g060.e2"
+      ],
+      "object.8e7fd87fdffe7bed95214911": [
+        "g060.e2"
+      ],
+      "object.c4f574b5d0a4a5276d2a5de2": [
+        "g060.e2"
+      ],
+      "object.cb1c22d84d5df7083970d26c": [
+        "g060.e2"
+      ],
+      "object.0025b2d964d8f2ff56cc6fc1": [
+        "g060.e3"
+      ],
+      "object.045424eb7dca732ff626bc4b": [
+        "g060.e3"
+      ],
+      "object.19431026c197f1cdc6eb0b57": [
+        "g060.e3"
+      ],
+      "object.4321d4e41f520bc60247a99f": [
+        "g060.e3"
+      ],
+      "object.ceb44bd02a5e3a790cf2dfad": [
+        "g060.e3"
+      ]
+    },
+    "negative_completeness": false,
+    "matcher_identity": "panda_agent.evaluation._matched_evidence_groups",
+    "unmatched_group_ids": [],
+    "unsupported_conditions": [],
+    "no_manual_case_specific_mapping": true
+  },
+  "g105": {
+    "case_id": "g105",
+    "relevant_groups": [
+      "g105.e1",
+      "g105.e2",
+      "g105.e3"
+    ],
+    "critical_groups": [
+      "g105.e1",
+      "g105.e2",
+      "g105.e3"
+    ],
+    "relevant_groups_by_object": {
+      "object.30fd51f18f0e397439c78234": [
+        "g105.e1"
+      ],
+      "object.432011cd3810787037f8b091": [
+        "g105.e1"
+      ],
+      "object.4321d4e41f520bc60247a99f": [
+        "g105.e1"
+      ],
+      "object.7d818b7ac9cf6d5d80bb51a1": [
+        "g105.e1"
+      ],
+      "object.c08459387c6fd0c77a717960": [
+        "g105.e1"
+      ],
+      "object.ceb44bd02a5e3a790cf2dfad": [
+        "g105.e1"
+      ],
+      "object.139f0f56cc620835555746e5": [
+        "g105.e3"
+      ],
+      "object.5644a9fabb4a8c7cf66f9d00": [
+        "g105.e3"
+      ]
+    },
+    "critical_groups_by_object": {
+      "object.30fd51f18f0e397439c78234": [
+        "g105.e1"
+      ],
+      "object.432011cd3810787037f8b091": [
+        "g105.e1"
+      ],
+      "object.4321d4e41f520bc60247a99f": [
+        "g105.e1"
+      ],
+      "object.7d818b7ac9cf6d5d80bb51a1": [
+        "g105.e1"
+      ],
+      "object.c08459387c6fd0c77a717960": [
+        "g105.e1"
+      ],
+      "object.ceb44bd02a5e3a790cf2dfad": [
+        "g105.e1"
+      ],
+      "object.139f0f56cc620835555746e5": [
+        "g105.e3"
+      ],
+      "object.5644a9fabb4a8c7cf66f9d00": [
+        "g105.e3"
+      ]
+    },
+    "negative_completeness": false,
+    "matcher_identity": "panda_agent.evaluation._matched_evidence_groups",
+    "unmatched_group_ids": [
+      "g105.e2"
+    ],
+    "unsupported_conditions": [],
+    "no_manual_case_specific_mapping": true
+  },
+  "g110": {
+    "case_id": "g110",
+    "relevant_groups": [
+      "g110.e1",
+      "g110.e2"
+    ],
+    "critical_groups": [
+      "g110.e1",
+      "g110.e2"
+    ],
+    "relevant_groups_by_object": {
+      "object.18eb57aa7d2f81173d986e41": [
+        "g110.e1"
+      ],
+      "object.247c6025d12ed5a2728e0035": [
+        "g110.e1"
+      ],
+      "object.5cae2ceab6e67bb4c9065331": [
+        "g110.e1"
+      ],
+      "object.16e2d668d8673e7c633192c5": [
+        "g110.e2"
+      ],
+      "object.35cf84657d7458145acc6cb2": [
+        "g110.e2"
+      ]
+    },
+    "critical_groups_by_object": {
+      "object.18eb57aa7d2f81173d986e41": [
+        "g110.e1"
+      ],
+      "object.247c6025d12ed5a2728e0035": [
+        "g110.e1"
+      ],
+      "object.5cae2ceab6e67bb4c9065331": [
+        "g110.e1"
+      ],
+      "object.16e2d668d8673e7c633192c5": [
+        "g110.e2"
+      ],
+      "object.35cf84657d7458145acc6cb2": [
+        "g110.e2"
+      ]
+    },
+    "negative_completeness": false,
+    "matcher_identity": "panda_agent.evaluation._matched_evidence_groups",
+    "unmatched_group_ids": [],
+    "unsupported_conditions": [],
+    "no_manual_case_specific_mapping": true
+  },
+  "g112": {
+    "case_id": "g112",
+    "relevant_groups": [
+      "g112.e1",
+      "g112.e2",
+      "g112.e3"
+    ],
+    "critical_groups": [
+      "g112.e1",
+      "g112.e2",
+      "g112.e3"
+    ],
+    "relevant_groups_by_object": {
+      "object.afbecc7a9161e9a1aaf3fb53": [
+        "g112.e1"
+      ],
+      "object.139f0f56cc620835555746e5": [
+        "g112.e2"
+      ],
+      "object.5644a9fabb4a8c7cf66f9d00": [
+        "g112.e2"
+      ],
+      "object.e5d0b1a83d1b62183007e97d": [
+        "g112.e2"
+      ],
+      "object.e81331a63fc64027a237dda0": [
+        "g112.e3"
+      ]
+    },
+    "critical_groups_by_object": {
+      "object.afbecc7a9161e9a1aaf3fb53": [
+        "g112.e1"
+      ],
+      "object.139f0f56cc620835555746e5": [
+        "g112.e2"
+      ],
+      "object.5644a9fabb4a8c7cf66f9d00": [
+        "g112.e2"
+      ],
+      "object.e5d0b1a83d1b62183007e97d": [
+        "g112.e2"
+      ],
+      "object.e81331a63fc64027a237dda0": [
+        "g112.e3"
+      ]
+    },
+    "negative_completeness": false,
+    "matcher_identity": "panda_agent.evaluation._matched_evidence_groups",
+    "unmatched_group_ids": [],
+    "unsupported_conditions": [],
+    "no_manual_case_specific_mapping": true
+  },
+  "g113": {
+    "case_id": "g113",
+    "relevant_groups": [
+      "g113.e1",
+      "g113.e2",
+      "g113.e3"
+    ],
+    "critical_groups": [
+      "g113.e1",
+      "g113.e2",
+      "g113.e3"
+    ],
+    "relevant_groups_by_object": {
+      "object.139f0f56cc620835555746e5": [
+        "g113.e1"
+      ],
+      "object.19a00822cc46d20186d93f01": [
+        "g113.e1"
+      ],
+      "object.5644a9fabb4a8c7cf66f9d00": [
+        "g113.e1"
+      ],
+      "object.cc854629316742fdf6215394": [
+        "g113.e1"
+      ],
+      "object.e5d0b1a83d1b62183007e97d": [
+        "g113.e1"
+      ],
+      "object.f6078f0aeea216126e6caa28": [
+        "g113.e1"
+      ],
+      "object.56a5550853f5da62c73341cd": [
+        "g113.e2"
+      ],
+      "object.5c00bf100db3efd4415d34e9": [
+        "g113.e2"
+      ],
+      "object.5cb32335434bf6e8c1c900e1": [
+        "g113.e2"
+      ],
+      "object.c1f2dc8ea0396cc78abaa268": [
+        "g113.e2"
+      ],
+      "object.e371fc5f2e5db23e984d542b": [
+        "g113.e2"
+      ]
+    },
+    "critical_groups_by_object": {
+      "object.139f0f56cc620835555746e5": [
+        "g113.e1"
+      ],
+      "object.19a00822cc46d20186d93f01": [
+        "g113.e1"
+      ],
+      "object.5644a9fabb4a8c7cf66f9d00": [
+        "g113.e1"
+      ],
+      "object.cc854629316742fdf6215394": [
+        "g113.e1"
+      ],
+      "object.e5d0b1a83d1b62183007e97d": [
+        "g113.e1"
+      ],
+      "object.f6078f0aeea216126e6caa28": [
+        "g113.e1"
+      ],
+      "object.56a5550853f5da62c73341cd": [
+        "g113.e2"
+      ],
+      "object.5c00bf100db3efd4415d34e9": [
+        "g113.e2"
+      ],
+      "object.5cb32335434bf6e8c1c900e1": [
+        "g113.e2"
+      ],
+      "object.c1f2dc8ea0396cc78abaa268": [
+        "g113.e2"
+      ],
+      "object.e371fc5f2e5db23e984d542b": [
+        "g113.e2"
+      ]
+    },
+    "negative_completeness": false,
+    "matcher_identity": "panda_agent.evaluation._matched_evidence_groups",
+    "unmatched_group_ids": [
+      "g113.e3"
+    ],
+    "unsupported_conditions": [],
+    "no_manual_case_specific_mapping": true
+  }
+}
