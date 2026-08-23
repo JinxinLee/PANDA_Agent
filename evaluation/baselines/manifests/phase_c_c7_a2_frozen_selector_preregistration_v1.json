@@ -1,0 +1,231 @@
+{
+  "a0_reference": "phase_c_c7_a0_selection_boundary_replay_inventory_v1.json",
+  "a1_a1r1_reference": "phase_c_c7_a1_explicit_selection_contract_v1.json#a1r1_semantics_correction",
+  "a2_verdict": "PASS",
+  "a3_eligibility": "NEXT_ELIGIBLE / NOT_STARTED",
+  "a3_evaluator_path": "evaluation/scripts/evaluate_c7_a3_frozen_selectors.py",
+  "actual_cohort_size": 18,
+  "capture_attempted_case_ids": [
+    "g001",
+    "g002",
+    "g003",
+    "g010",
+    "g013",
+    "g014",
+    "g027",
+    "g028",
+    "g029",
+    "g044",
+    "g047",
+    "g050",
+    "g059",
+    "g060",
+    "g105",
+    "g110",
+    "g112",
+    "g113"
+  ],
+  "capture_call_ledger": {
+    "analyzer_calls": 0,
+    "gold_evaluations": 0,
+    "judge_calls": 0,
+    "qa_calls": 0,
+    "reranker_calls": 18,
+    "retrieval_calls": 18,
+    "s1_real_cohort_calls": 0,
+    "verifier_calls": 0
+  },
+  "capture_failed_case_ids": [],
+  "capture_schema": "c7-a2-post-reranker-capture-v1",
+  "cohort_frozen_before_live_capture": true,
+  "cohort_intent_counts": {
+    "algorithm_implementation": 2,
+    "algorithm_theory": 3,
+    "api": 3,
+    "installation": 3,
+    "module_structure": 1,
+    "troubleshooting": 3,
+    "usage": 3
+  },
+  "deterministic_cohort_rule": "intent count <=3: all; otherwise lexicographic first 3; final lexical sort",
+  "expected_cohort_size": 18,
+  "exposed_gold_boundary": "A3 development evidence cannot alone authorize production activation",
+  "frozen_cohort_case_ids": [
+    "g001",
+    "g002",
+    "g003",
+    "g010",
+    "g013",
+    "g014",
+    "g027",
+    "g028",
+    "g029",
+    "g044",
+    "g047",
+    "g050",
+    "g059",
+    "g060",
+    "g105",
+    "g110",
+    "g112",
+    "g113"
+  ],
+  "frozen_plan_source": "evaluation\\baselines\\replay\\phase_c_c6_current_plan_candidate_replay_v2.jsonl",
+  "graph_normalization": "RETRIEVAL_CHANNEL graph MAXIMUM is intentional S1 treatment delta",
+  "hard_gates": {
+    "GATE_1": {
+      "name": "frozen_input_identity",
+      "rule": "S0 and S1 use identical frozen question, plan, F, R, payload universe, channels, and exact stream"
+    },
+    "GATE_10": {
+      "name": "determinism",
+      "rule": "repeated S1 selected order, candidate receipts, and constraint receipts are identical; PREFERRED membership invariant holds"
+    },
+    "GATE_11": {
+      "name": "no_benchmark_specific_rule",
+      "rule": "policy ID, authoritative A1R1 contract, source identity, and static selector source prove no case, Gold, or benchmark-specific rule"
+    },
+    "GATE_12": {
+      "name": "preregistration_integrity",
+      "rule": "cohort, policies, metrics, gates, and boundaries match the frozen A2 preregistration before A3"
+    },
+    "GATE_2": {
+      "name": "no_upstream_regeneration",
+      "rule": "retrieval, reranker, analyzer, DB, and Qdrant calls are all zero during A3"
+    },
+    "GATE_3": {
+      "name": "final_evidence_recall",
+      "rule": "S1 Final Evidence Recall >= S0"
+    },
+    "GATE_4": {
+      "name": "critical_safety",
+      "rule": "S1 introduces zero new critical evidence-group misses"
+    },
+    "GATE_5": {
+      "name": "protected_exact_safety",
+      "rule": "S1 introduces zero captured mandatory/protected exact losses"
+    },
+    "GATE_6": {
+      "name": "required_safety",
+      "rule": "S1 explicit REQUIRED satisfaction >= S0 and zero new misses"
+    },
+    "GATE_7": {
+      "name": "selector_displacement",
+      "rule": "S1 selector-caused relevant displacement <= S0"
+    },
+    "GATE_8": {
+      "name": "version_source_safety",
+      "rule": "S1 selects zero invalid, source-version-invalid, or unusable candidates"
+    },
+    "GATE_9": {
+      "name": "forced_irrelevant_evidence",
+      "rule": "with explicit negative completeness, zero known-irrelevant REQUIRED/PROTECTED-only admissions that displace relevant evidence; otherwise NOT_SUPPORTED"
+    }
+  },
+  "live_capture_authorization": "required_explicit_execute_live",
+  "meaningful_gain_rule": "all supported gates PASS; >=1 primary improvement; no primary regression",
+  "no_gold_used_for_cohort": true,
+  "outcome_evaluation_executed": false,
+  "parent_population": {
+    "case_ids": [
+      "g001",
+      "g002",
+      "g003",
+      "g004",
+      "g005",
+      "g006",
+      "g010",
+      "g013",
+      "g014",
+      "g015",
+      "g017",
+      "g019",
+      "g027",
+      "g028",
+      "g029",
+      "g030",
+      "g031",
+      "g044",
+      "g047",
+      "g050",
+      "g051",
+      "g052",
+      "g059",
+      "g060",
+      "g105",
+      "g110",
+      "g112",
+      "g113",
+      "g114",
+      "g115"
+    ],
+    "intent_counts": {
+      "algorithm_implementation": 2,
+      "algorithm_theory": 5,
+      "api": 5,
+      "installation": 6,
+      "module_structure": 1,
+      "troubleshooting": 5,
+      "usage": 6
+    }
+  },
+  "preferred_semantics": "PREFERRED admission_effect=false; it cannot change admission membership by itself",
+  "primary_metrics": {
+    "critical_evidence_retention": {
+      "aggregation": "micro group coverage and per-case value",
+      "definition": "critical evidence groups represented in final selected evidence",
+      "support": "existing critical-group annotations where defined"
+    },
+    "explicit_required_satisfaction": {
+      "aggregation": "constraint satisfaction rate",
+      "definition": "question-grounded explicit_query_reference REQUIRED constraints satisfied",
+      "support": "frozen plan provenance and selected payload source IDs"
+    },
+    "final_evidence_recall": {
+      "aggregation": "micro group coverage and per-case value",
+      "definition": "relevant evidence groups represented in final selected evidence",
+      "support": "existing relevant-group annotations"
+    },
+    "protected_exact_retention": {
+      "aggregation": "object-ID retention rate",
+      "definition": "captured mandatory/protected exact object IDs retained",
+      "support": "captured mandatory_symbol_ids"
+    },
+    "selector_caused_relevant_displacement": {
+      "aggregation": "count and rate per policy",
+      "definition": "relevant groups present in the full frozen candidate universe but absent after deterministic selection",
+      "support": "relevant-group annotations and selector receipts; upstream-absent groups excluded"
+    }
+  },
+  "production_fusion_identity": "P0 CURRENT",
+  "protected_semantics": "captured mandatory IDs only; protected_override may bypass MAXIMUM but never validity, duplicate suppression, or final limit",
+  "required_semantics": "default cardinality 1; earliest hard-eligible Stage-M representative; one candidate may satisfy multiple constraints; only representatives gain priority; required_override may bypass MAXIMUM but never validity, duplicate suppression, or final limit",
+  "reranker_role": "HELD_CONSTANT",
+  "s0_identity": "CURRENT_SELECTOR",
+  "s0_replay_parity_requirement": "18/18",
+  "s1_identity": "c7.explicit_selection.v1",
+  "s1_real_cohort_execution": false,
+  "schema_version": "c7-a2-frozen-selector-preregistration-v1",
+  "secondary_metrics": {
+    "case_level_direction": "improved, unchanged, or regressed from primary metrics",
+    "duplicate_exclusion_count": "duplicate exclusions",
+    "final_limit_exclusion_count": "final-limit exclusions",
+    "first_relevant_final_rank": "one-based first relevant selected rank",
+    "graph_channel_maximum_exposure": "graph RETRIEVAL_CHANNEL MAXIMUM exposure and caused membership difference",
+    "maximum_exclusion_count": "MAXIMUM exclusions",
+    "preference_match_count": "PREFERRED matches with admission_effect=false",
+    "protected_override_count": "protected_override admissions",
+    "required_override_count": "required_override admissions",
+    "selected_critical_count": "selected objects with at least one critical group",
+    "selected_evidence_count": "selected object count",
+    "selected_relevant_count": "selected objects with at least one relevant group",
+    "source_id_concentration": "selected counts by source_id",
+    "source_type_concentration": "selected counts by source type",
+    "source_type_diversity": "unique selected source IDs and source types",
+    "supported_precision": "selected relevant object count / selected object count only with explicit negative completeness; otherwise NOT_SUPPORTED",
+    "workflow_type_channel_exposure": "workflow source-type/channel candidate and selected exposure"
+  },
+  "selector_displacement": "for each policy, relevant groups present in the full frozen candidate universe but absent from final evidence; upstream-absent groups excluded and receipt reason attributed",
+  "source_head": "a6bec2776e55b824831e22b7fbebd68489158be5",
+  "task": "C7-A2"
+}
