@@ -112,10 +112,12 @@ Record per run: purpose, mode, dataset/subset, question count, Vertex invocation
 ## 6. Novel dataset exposure
 
 - `novel_dev` is exposed and may be inspected for detailed failure-class development, but it does not permit question-specific fixes.
-- `novel_validation` is primarily for phase-level and frozen-candidate comparison. Aggregate metrics alone do not contaminate every case; when a case-level outcome is inspected and used to guide development, append an exposure-ledger event and stop treating that case as pristine validation evidence for that development lineage.
+- `novel_validation` is primarily for phase-level and frozen-candidate comparison. A case is pristine for a development lineage only while its question content, Gold annotations, and case-level outcome material have not been inspected and used to guide behavior changes for that lineage. Repository presence or access alone is not contamination; actual case-specific development use is. Append the corresponding content, Gold, or outcome exposure-ledger event and stop treating that case as pristine validation evidence for the affected lineage.
 - `novel_holdout` loads only from an external protected path for an explicitly authorized release/T5 evaluation. Its questions, Gold evidence, answer points, and hidden expected answers do not enter the repository or normal Codex development context, and its outcomes cannot be used to repair and rerun the same frozen release attempt.
 
 A trivial paraphrase or mechanical entity substitution is not novel by itself. Evidence overlap is allowed when the information need, relation, evidence combination, or reasoning topology is substantively different. Generated questions are untrusted drafts until human review and are never a protected holdout. Gold evidence must be established independently from PANDA Agent outputs; do not report retrieval metrics when reviewed Gold evidence does not exist.
+
+Ordinary roadmap development tasks must not inspect `novel_validation` question or Gold content unless the current task explicitly authorizes validation analysis. This is a development-governance boundary, not a requirement to hide repository-visible validation files.
 
 The authoritative split, novelty, annotation, review, exposure, external-holdout, versioning, and amendment rules are in `docs/NOVEL_DATASET_CURATION_CONTRACT.md`.
 

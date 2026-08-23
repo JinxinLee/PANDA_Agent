@@ -12,9 +12,25 @@ The Novel Dataset describes the PANDA user-question space, not the known weaknes
 
 Novel Dataset v1 measures **question-distribution generalization**:
 
-> Given the same locked PANDA knowledge corpus, can PANDA Agent answer new information needs expressed through entities, relations, evidence combinations, wording, and reasoning structures that did not participate in exposed benchmark-driven development?
+> Given the same locked authoritative PANDA source corpus, can PANDA Agent answer new information needs expressed through entities, relations, evidence combinations, wording, and reasoning structures that did not participate in exposed benchmark-driven development?
 
-Novel v1 does not measure **corpus generalization**. Its questions must use the same declared repository, document, paper, source-version, and KnowledgeObject universe as the locked evaluation corpus. Adding a new repository, source version, paper, or documentation snapshot would confound query generalization with corpus shift.
+Novel v1 does not measure **corpus generalization**. It freezes the authoritative source corpus and source-version universe: repository identities and locked refs, PDF/documentation snapshots, and the source provenance boundary. Adding new authoritative source content, a new repository or source version, or a different paper/documentation snapshot would confound query generalization with corpus shift.
+
+Novel v1 does **not** freeze the current derived representation. KnowledgeObject decomposition, chunks, index representation, and future Phase-D abstractions—including Concept, Symbol, Class, Function, File, Workflow, DataProduct, and derived entity/relation structures—may be added or reshaped provided every Gold evidence claim remains traceable to the same locked authoritative source content and versioned provenance.
+
+```text
+frozen:
+- authoritative source truth
+- repository identities and source versions
+- PDF and documentation snapshots
+- source provenance boundary
+
+evolvable:
+- KnowledgeObject representation and decomposition
+- chunking
+- index representation
+- entity and relation abstractions
+```
 
 A future corpus-generalization dataset may be useful, but it must be designed, versioned, and reported as a separate evaluation scope.
 
@@ -23,7 +39,7 @@ A future corpus-generalization dataset may be useful, but it must be designed, v
 Each accepted question has two linked records:
 
 1. **Evaluator question record.** Uses the existing strict `GoldQuestion` fields and semantics without extra fields: `id`, `split`, `language`, `intent`, optional `accepted_intents`, `query`, `expected_status`, `allowed_source_versions`, `required_evidence_groups`, `required_source_types`, `required_answer_points`, `required_identifiers`, `forbidden_evidence`, `concept_scopes`, optional `cluster_id` and `challenge_tags`, and review metadata.
-2. **Curation metadata record.** A sidecar keyed by `question_id` holds novelty, coverage, origin, lifecycle, exposure, and split-eligibility information. It is intentionally separate because the current Pydantic Gold model forbids unknown fields.
+2. **Curation metadata record.** A sidecar keyed by `question_id` holds `curation_family_id`, novelty, coverage, origin, lifecycle, exposure, and split-eligibility information. It is intentionally separate because the current Pydantic Gold model forbids unknown fields.
 
 The repository-local v1 layout, created only as content becomes necessary, is:
 
@@ -54,11 +70,11 @@ It must not introduce question-specific triggers, terms, entities, symbols, path
 
 ### 4.2 `novel_validation`
 
-`novel_validation` is phase-level and frozen-candidate comparison evidence. Its questions and Gold annotations may be repository-visible after approval, but individual outcomes should not be used for tuning.
+`novel_validation` is phase-level and frozen-candidate comparison evidence. Its questions and Gold annotations may be repository-visible after approval, but ordinary roadmap development tasks must not inspect them unless the current task explicitly authorizes validation analysis.
 
-A validation case is **pristine** while its case-level outcome has not been used to choose or modify system behavior. Aggregate metrics, without opening case-level questions, answers, evidence, or traces, do not by themselves contaminate every validation case.
+A validation case is **pristine for a development lineage** only while its case-level question content, Gold annotations, and outcome material (including answers, traces, and retrieved evidence) have not been inspected and used to choose or modify system behavior for that lineage. Mere repository presence, developer access, or permission to access the file does not contaminate a case.
 
-When a case-level failure is inspected and then used to guide implementation, prompting, routing, scoring, threshold, or policy work, the case becomes **exposed validation evidence**. The question remains in the dataset; the exposure ledger records the transition. It must not subsequently be counted as pristine validation evidence for the affected development lineage.
+When case-specific validation information is actually inspected and used to guide implementation, prompting, routing, scoring, threshold, or policy work, the case becomes **exposed validation evidence**. This includes use of question content or Gold annotation before any outcome, as well as use of a case-level failure or output after evaluation. The question remains in the dataset; the exposure ledger records the transition. It must not subsequently be counted as pristine validation evidence for the affected development lineage. Aggregate metrics that do not reveal or use case-specific information do not by themselves contaminate every validation case.
 
 ### 4.3 `novel_holdout`
 
@@ -67,6 +83,8 @@ When a case-level failure is inspected and then used to guide implementation, pr
 The external package may be loaded only for an explicitly authorized release/T5 evaluation through the existing `--dataset <external-path>` boundary. The repository may record the schema version, external dataset/package identity, expected count, corpus identity, loader contract, and release procedure, but not protected content.
 
 Holdout results may support reporting, archival, and release decisions. A case-level holdout result must not be used to modify the system and rerun the same frozen release attempt. A later repaired candidate requires a new explicitly authorized release attempt with distinct candidate identity.
+
+External holdout curation must attest that holdout items were not intentionally derived from exposed `novel_dev` or `novel_validation` semantic families. This declaration does not require revealing holdout questions, Gold, or family assignments to the repository.
 
 ## 5. Pilot policy
 
@@ -118,6 +136,7 @@ The curation sidecar for every accepted question records:
 
 ```yaml
 question_id: n001
+curation_family_id: nf023
 novelty:
   types:
     - relation
@@ -136,6 +155,14 @@ novelty:
 The curator must identify the closest exposed Gold case or explicitly record `none_found`, explain why the new information need remains substantive, and classify whether overlap occurs in wording, entity, evidence, or information need.
 
 Embedding or lexical similarity may assist review, but it cannot determine the authoritative novelty verdict. A human reviewer makes and records that decision.
+
+### 7.1 Semantic-family isolation
+
+`curation_family_id` identifies a shared underlying information need or near-equivalent semantic family. Trivial paraphrases and mechanical variants must be assigned to the same family or rejected; assigning different IDs does not make equivalent questions independent samples.
+
+One semantic family must belong to only one repository-visible novel split. Semantically equivalent or trivial-variant questions must not cross `novel_dev` and `novel_validation`. For example, “How does X pass data to Y?” and “Trace the handoff from X into Y.” cannot count as independent dev and validation samples when they express the same underlying information need.
+
+The existing Gold `cluster_id` split check applies only within one `GoldDataset` load. Because `novel_dev.yaml` and `novel_validation.yaml` may be loaded separately, N1 and later manifest/sidecar consistency validation must explicitly check family isolation across all repository-visible novel dataset files. `curation_family_id` in the sidecar is the cross-file authority; a compatible Gold `cluster_id` may mirror it but does not replace the cross-file check.
 
 ## 8. Difficulty is independent of novelty
 
@@ -235,6 +262,7 @@ Novelty, coverage, origin, and lifecycle metadata remain in the sidecar:
 
 ```yaml
 question_id: n001
+curation_family_id: nf023
 coverage:
   repositories:
     - pandaroot
@@ -307,10 +335,12 @@ The same person may perform multiple reviews for `novel_dev`; validation should 
 `novel_validation` uses an append-only JSONL ledger. The minimum event shape is:
 
 ```json
-{"schema_version":"novel-exposure-ledger-v1","question_id":"n041","event":"case_outcome_inspected_for_development","timestamp":"<RFC3339>","development_lineage":"<candidate-or-branch>","reason":"<general failure-class investigation>","effect":"no_longer_pristine_validation"}
+{"schema_version":"novel-exposure-ledger-v1","question_id":"n041","event":"case_content_used_for_development","timestamp":"<RFC3339>","development_lineage":"<candidate-or-branch>","reason":"<general failure-class investigation>","effect":"no_longer_pristine_validation"}
+{"schema_version":"novel-exposure-ledger-v1","question_id":"n042","event":"case_gold_used_for_development","timestamp":"<RFC3339>","development_lineage":"<candidate-or-branch>","reason":"<general failure-class investigation>","effect":"no_longer_pristine_validation"}
+{"schema_version":"novel-exposure-ledger-v1","question_id":"n043","event":"case_outcome_used_for_development","timestamp":"<RFC3339>","development_lineage":"<candidate-or-branch>","reason":"<general failure-class investigation>","effect":"no_longer_pristine_validation"}
 ```
 
-Record an event when case-level outcome details are used to guide development. Aggregate-only metric viewing does not require one contamination event per case. Corrections are appended as new events; old entries are not rewritten. Exposure does not delete the question or its historical measurements.
+Record the applicable event when case-level question content, Gold annotation, or outcome material is actually inspected and used to guide development. Access without development use is not an exposure event. Aggregate-only metric viewing does not require one contamination event per case. Corrections are appended as new events; old entries are not rewritten. Exposure does not delete the question or its historical measurements.
 
 Reports must distinguish pristine-validation results from exposed-validation diagnostics for the relevant development lineage.
 
@@ -370,11 +400,11 @@ If a subsystem needs a targeted diagnostic set, that set must be labelled and go
 
 N1 — Novel-Dev Pilot Curation may begin only under these rules:
 
-1. Use the locked current corpus and the eight canonical intents.
+1. Use the locked authoritative source corpus and source-version universe, while allowing derived representations to evolve under traceable provenance, and use the eight canonical intents.
 2. Propose 12–16 candidate `novel_dev` questions without running PANDA Agent.
 3. Create the evaluator-compatible dataset and exact curation-sidecar schema together.
 4. Perform human curation, novelty, evidence, and split review.
-5. Validate parsing and sidecar consistency with T0 only.
+5. Validate parsing, sidecar consistency, and cross-file semantic-family isolation with T0 only.
 6. If any candidate uses `clarification_required`, first run the small generic status compatibility check.
 7. Accept, reject, or rework candidates on question and annotation quality, not system outcomes.
 8. Do not start novel evaluation, N2, C8, or any production change without separate authorization.
