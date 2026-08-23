@@ -9,7 +9,7 @@ When records conflict, use the single section explicitly marked **Current author
 
 ---
 
-# Current authoritative state — 2026-08-22
+# Current authoritative state — 2026-08-23
 
 ## A3 measured execution provenance
 
@@ -243,6 +243,13 @@ When records conflict, use the single section explicitly marked **Current author
 - **Causal boundary:** Candidate-level receipts prove `g003.e1` was excluded by S1 MAXIMUM-based selection behavior. They do not prove direct graph RETRIEVAL_CHANNEL MAXIMUM ownership: the displaced relevant candidate IDs do not overlap the graph-MAXIMUM matched set. Graph MAXIMUM remains a material diagnostic exposure (`132` matched candidates; membership differences in `g003,g028,g044,g047,g059,g060,g105,g110`) and is recorded as `FUTURE_REDESIGN_DEBT`, not repaired or tuned in A4.
 - **Retained architecture and safe semantics:** The `PROTECTED`, `REQUIRED`, `PREFERRED`, and explicit-constraint vocabulary; SOURCE_ID/SOURCE_TYPE/RETRIEVAL_CHANNEL/OBJECT_ID separation; representative/protected semantics; candidate/constraint receipts; and frozen replay/evaluation infrastructure remain available as architecture and research reference. REQUIRED stayed `11/11`, protected exact stayed `52/52`, related identity losses were `0`, source/version/usability passed, S1 was deterministic, and the PREFERRED admission invariant held. These facts do not authorize a partial production rollout.
 - **Lifecycle and handoff:** No A3R2, post-outcome tuning, selector v2, C6+C7 composite, or production change occurred. `evaluation/baselines/manifests/phase_c_c7_a4_production_role_closeout_v1.json` is the closeout artifact. `C7-A4` is `PASS`; C7 is `COMPLETE`. `C8` is `NEXT_ELIGIBLE / NOT_STARTED`, while `NOVEL_DATASET_CURATION_BEFORE_SUBSTANTIAL_DOWNSTREAM_DEVELOPMENT` is the recommended immediate workflow; no novel dataset or C8 work was executed.
+
+## Current N0 — Novel Dataset Curation Contract — 2026-08-23
+
+- **Result:** `PASS`. `docs/NOVEL_DATASET_CURATION_CONTRACT.md` is the authoritative Novel Dataset Curation Contract v1. It defines question-distribution generalization over the locked corpus; `novel_dev`, `novel_validation`, and externally protected `novel_holdout`; the 12–16 candidate-`novel_dev` N1 pilot; substantive novelty and overlap review; independent structural difficulty and coverage metadata; Gold-compatible evaluator records plus a question-ID-keyed curation sidecar; human review; exposure-ledger semantics; external holdout loading; lightweight dataset identity; and annotation-versus-information-need amendment rules.
+- **Compatibility boundary:** The current strict `GoldQuestion` model already accepts `n###` IDs and all three novel splits, and canonical `QAStatus` includes `answered`, `insufficient_evidence`, `version_conflict`, and `clarification_required`. Novel-only metadata remains in a sidecar because unknown Gold fields are forbidden. Gold v2 does not formally cover `clarification_required`, so N1 must perform a small generic T0 loader/evaluator compatibility check before accepting such a case; N0 made no evaluator change.
+- **Isolation:** No novel question, validation item, or holdout item was created. PANDA retrieval, QA, judge, Vertex generation, dense embedding, sparse encoding, Qdrant/SQL, index mutation, and benchmark/novel outcome inspection were all `0`. No T1/T2/T3/T4/T5, C8, D1, dataset generation, candidate activation, or production behavior change occurred.
+- **Handoff:** N0 is `COMPLETE`; `N1 — Novel-Dev Pilot Curation` is `NEXT / NOT_STARTED`. C8 remains scientifically unchanged and `NEXT_ELIGIBLE / NOT_STARTED`, but N1 is the recommended immediate workflow.
 
 ## Historical full E2E reference
 
@@ -505,6 +512,8 @@ The retrieval and QA measurements are unchanged. A3.1 corrects only metric repre
 - `novel_holdout`: not created; the runner supports loading it from an external path.
 - Human-curated: no trustworthy human-authored novel dataset is currently available.
 - Empty novel JSONL artifacts are schema/placeholders, not measured results.
+- Curation governance: N0 `COMPLETE`; `docs/NOVEL_DATASET_CURATION_CONTRACT.md` is authoritative.
+- Next curation task: N1 `NEXT / NOT_STARTED` for 12–16 candidate `novel_dev` questions.
 
 ## Known limitations
 
@@ -513,6 +522,12 @@ The retrieval and QA measurements are unchanged. A3.1 corrects only metric repre
 - Historical E2E and current baseline identities differ, so their metric differences are not a controlled before/after comparison.
 
 ## Next authorized roadmap task
+
+**N1 — Novel-Dev Pilot Curation** is the next task. It is `NEXT / NOT_STARTED`; N1, C8, and all novel evaluation remain unexecuted.
+
+### Historical pre-N0 roadmap summary
+
+The following paragraph preserves the pre-N0 closeout context and is superseded by the current N1 handoff above.
 
 `C3-A1`, `C3-A2`, C3-A overall, and current C3 are `PASS` for the revised raw-preserving architecture. No C3-R4, new Gold sampling round, T3, T4, or T5 was started. The historical C3-R1/R2/R3 artifacts and conclusions remain preserved; the legacy single-vector semantic replacement is superseded and not accepted for production. `RawDense` is production-authoritative, `SemanticDense` is auxiliary/experimental and explicit shadow-only, and its production fusion decision is deferred to C6. C4-A1 is `PASS`; the C4 evaluation verdict is `INCONCLUSIVE` and the C4 lifecycle state is `CLOSED_INCONCLUSIVE` after the `PASS` C4-A3 architectural closeout (no live sparse stage or outcome metric ever ran). Production sparse remains the exact raw question and `LexicalQuery` is an experimental/shadow abstraction; no sparse benefit is claimed. C5 — Entity-first exact retrieval has evaluation verdict `INCONCLUSIVE` and lifecycle `CLOSED_INCONCLUSIVE` after the `PASS` C5-A3 architectural closeout (C5-A0 `DONE`, C5-A1 `PASS`, C5-A2 `INCONCLUSIVE`; descriptive evidence `UNAVAILABLE`; identity-strength finding recorded; production exact remains `LEGACY_EXACT` with `EntityResolver` retained experimental/shadow). C6 — Multi-channel fusion evaluation is `COMPLETE`: C6-A0 `PASS`, C6-A1 `PASS`, and C6-A1R1 `PASS` as the pre-outcome product-scope/plan-fidelity correction (the 59-case formal-English scope inherited from `phase_b_t3_product_language_scope_v2.json`; `PLAN_FIDELITY_BLOCKED` with `0/46` current-plan-compatible cases). `C6-A1R2` refreshed current-plan candidate coverage (30-case core + 1 semantic supplement, `31/31` captured) and, after the provenance preflight audit found 3 core cases captured under unfaithful empty-default plan fields, the authorized provenance repair rebuilt all six affected cases from the faithful C3-R3 full plans into authoritative replay v2 (34 rows; core-30 identical; P0 integrity `30/30`; unaffected parity `27/27`), so `C6-A1R2 = PASS_AFTER_PROVENANCE_REPAIR` (`semantic_a2_evidence_eligible=true` after the semantic-cohort correction: 8 semantic-active faithful cases over 4 intents). `C6-A2` `PASS` frozen policy comparison (P3 sparse-heavy passes all 10 hard gates with R@20 `1.0`/critical `1.0`/MRR `+0.0334`; P1/P2/P4 fail; P5 prefix-identical 8/8 with no meaningful expansion; `SEMANTIC_CONTRIBUTION = INSUFFICIENT` with SemanticDense `KEEP_DISABLED`; `INTENT_AWARE_ELIGIBLE = true` with the evaluation-only `C6_INTENT_AWARE_V1` mapping), confirmed unchanged by the `PASS` critical-miss semantics audit (corrected Gate-5 group identity; P3 remains `PASS_ALL_GATES`). `C6-A3` `PASS` — the frozen production-role decision keeps P0 CURRENT production-authoritative, retains P3 SPARSE_HEAVY and `C6_INTENT_AWARE_V1` as development-supported candidates blocked from activation by absent novel corroboration, rejects P1/P2/P4 as standalone global alternatives, gives P5 no production role, keeps SemanticDense `KEEP_DISABLED`, and leaves production fusion and production code `UNCHANGED`; the C6 lifecycle is `COMPLETE`. C7 is `COMPLETE`: the original A3 attempt remains historical `INCONCLUSIVE / PRE_OUTCOME_INFRASTRUCTURE_FAILURE`, C7-A3R1 is `PASS`, C7-A3 is `PASS_AFTER_PRE_OUTCOME_INVOCATION_RECOVERY`, and C7-A4 is `PASS`. `CURRENT_SELECTOR` remains `PRODUCTION_AUTHORITATIVE`; `c7.explicit_selection.v1` is `REJECTED_AS_GLOBAL_PRODUCTION_REPLACEMENT`. The next roadmap state is `C8 NEXT_ELIGIBLE / NOT_STARTED`, with `NOVEL_DATASET_CURATION_BEFORE_SUBSTANTIAL_DOWNSTREAM_DEVELOPMENT` recommended; C8 and dataset curation were not executed. T3.3A-R2 remains `INCONCLUSIVE`/partial, g016 is locally recovered but g011 is not, heuristic iteration is stopped, and the unresolved g011 mechanism is deferred to generic Phase-E coverage-aware architecture; optional T3.3B ranking debt is deferred. No formal T3, T4, or T5 was run.
 
