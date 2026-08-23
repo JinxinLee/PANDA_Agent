@@ -94,7 +94,7 @@
     "reviewed_at": "2026-08-24T00:28:55+02:00",
     "review_decision_counts": {
       "accepted": 16,
-      "revised": 0,
+      "revise": 0,
       "rejected": 0,
       "pending": 0
     },

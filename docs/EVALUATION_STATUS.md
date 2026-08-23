@@ -9,7 +9,7 @@ When records conflict, use the single section explicitly marked **Current author
 
 ---
 
-# Current authoritative state — 2026-08-23
+# Current authoritative state — 2026-08-24
 
 ## A3 measured execution provenance
 
@@ -536,7 +536,7 @@ The retrieval and QA measurements are unchanged. A3.1 corrects only metric repre
 
 ## Next authorized roadmap task
 
-**N1 Human Re-review / Pilot Finalization** is the next task. Human reviewer `Li` accepted 14 questions and requested revisions to n002 and n008; those corrections are applied but await explicit re-acceptance. N1 completion, pilot freeze, C8, and all novel evaluation remain unexecuted.
+**N2 — Full Novel-Dev Expansion Planning** is the next curation task. N1 is `PASS / COMPLETE`; the 16-question pilot is human-approved and frozen. C8 remains `NEXT_ELIGIBLE / NOT_STARTED`. No novel evaluation is authorized by the N1 completion state alone.
 
 ### Historical pre-N0 roadmap summary
 
