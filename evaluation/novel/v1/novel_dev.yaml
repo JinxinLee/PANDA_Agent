@@ -1,5 +1,5 @@
 schema_version: '2.0'
-benchmark_version: novel-v1-dev-0.1.0
+benchmark_version: novel-v1-dev-0.2.0
 release_eligible: false
 acceptance_exposed: true
 expected_split_counts:
@@ -116,9 +116,9 @@ questions:
     concept_scopes: {}
     cluster_id: nf002
     challenge_tags: []
-    review_status: draft
-    reviewer: null
-    reviewed_at: null
+    review_status: approved
+    reviewer: Li
+    reviewed_at: 2026-08-24T00:49:13+02:00
   - id: n003
     split: novel_dev
     language: en
@@ -494,9 +494,9 @@ questions:
     concept_scopes: {}
     cluster_id: nf008
     challenge_tags: []
-    review_status: draft
-    reviewer: null
-    reviewed_at: null
+    review_status: approved
+    reviewer: Li
+    reviewed_at: 2026-08-24T00:49:13+02:00
   - id: n009
     split: novel_dev
     language: en

@@ -4,22 +4,24 @@
 
 This document records the explicit human decisions for the 16 active N1
 Novel-Dev pilot items. Codex recommendations remain advisory only. Human reviewer
-Li accepted 14 items and requested revisions to n002 and n008. Because those two
-items require re-review after correction, the pilot is not frozen and N1 is not
-complete.
+Li accepted 14 items in the initial review and requested revisions to n002 and
+n008; after the requested corrections were implemented, Li re-reviewed both
+items and accepted them. All 16 active items are now human-accepted and the
+pilot is frozen.
 
 - Initial curation baseline: `166c3f93d6640e5f150af3959d6c2330b8072de0`
 - Human-decision package baseline: `5c1714bf9485f8f3e72e1d2bbb855104f0d2de8f`
 - Active set: n001-n010 and n014-n019 (16 questions, 16 semantic families)
 - Retired drafts: n011/nf011, n012/nf012, and n013/nf013 remain withdrawn
 - Human reviewer identity: **Li**
-- Human review timestamp: **2026-08-24T00:28:55+02:00**
-- Formal human decisions recorded: **16**
+- Initial human review timestamp: **2026-08-24T00:28:55+02:00**
+- Human re-review timestamp (n002, n008): **2026-08-24T00:49:13+02:00**
+- Formal human decisions recorded: **16** (14 initial ACCEPT + 2 re-review ACCEPT)
 
-The two requested revisions are applied in the draft dataset, but the recorded
-`REVISE` decisions are not converted into acceptance without a new explicit
-human decision. The 14 accepted items carry approved review metadata; n002 and
-n008 remain drafts at `evidence_review_ready`.
+The two requested revisions were applied in the draft dataset, Li re-reviewed
+the corrected versions, and both re-review decisions are explicit `ACCEPT`. All
+16 accepted items now carry approved review metadata and `split_frozen`
+lifecycle.
 
 ## Item review sheets
 
@@ -78,10 +80,12 @@ n008 remain drafts at `evidence_review_ready`.
 - **Known historical repairs:** Removed unsupported runtime/development and
   package-role inferences.
 - **Codex recommendation:** `RECOMMEND_ACCEPT`
-- **Human decision:** `REVISE`
-- **Human notes:** Treat `requirements.txt` as the repository's declared Python
-  requirements/tooling list, not as proof that every listed package is required
-  by the analysis scripts. Correction applied; human re-review remains required.
+- **Human decision:** `ACCEPT` (initial review: `REVISE`)
+- **Human notes:** Initial review requested treating `requirements.txt` as the
+  repository's declared Python requirements/tooling list, not as proof that
+  every listed package is required by the analysis scripts. The requested
+  correction was implemented; human reviewer Li re-reviewed the corrected
+  version on 2026-08-24T00:49:13+02:00 and accepted it.
 
 ### n003 / nf003
 
@@ -243,11 +247,13 @@ n008 remain drafts at `evidence_review_ready`.
   72-77; human review then requested the directly supported performance
   comparison, requiring a minimal extension through page 78.
 - **Codex recommendation:** `RECOMMEND_ACCEPT`
-- **Human decision:** `REVISE`
-- **Human notes:** Add the thesis-supported conclusion that Cellular Automaton
-  handles the studied low-energy/high-multiplicity cases better than Track
-  Following. Correction and page-78 evidence extension applied; human re-review
-  remains required.
+- **Human decision:** `ACCEPT` (initial review: `REVISE`)
+- **Human notes:** Initial review requested adding the thesis-supported
+  conclusion that Cellular Automaton handles the studied low-energy/
+  high-multiplicity cases better than Track Following. The correction and the
+  page-78 evidence extension (locked selector now pages 72-78) were implemented;
+  human reviewer Li re-reviewed the corrected version on
+  2026-08-24T00:49:13+02:00 and accepted it.
 
 ### n009 / nf009
 
@@ -477,13 +483,13 @@ n008 remain drafts at `evidence_review_ready`.
 | ID | Codex recommendation | Human decision | Human notes |
 |---|---|---|---|
 | n001 | RECOMMEND_ACCEPT | ACCEPT | |
-| n002 | RECOMMEND_ACCEPT | REVISE | Treat `requirements.txt` as a declared repository list, not proof of per-script runtime requirements. |
+| n002 | RECOMMEND_ACCEPT | ACCEPT | Initial `REVISE` corrected; Li re-reviewed and accepted on 2026-08-24T00:49:13+02:00. |
 | n003 | RECOMMEND_ACCEPT | ACCEPT | |
 | n004 | RECOMMEND_ACCEPT | ACCEPT | |
 | n005 | RECOMMEND_ACCEPT | ACCEPT | |
 | n006 | RECOMMEND_ACCEPT | ACCEPT | |
 | n007 | RECOMMEND_ACCEPT | ACCEPT | |
-| n008 | RECOMMEND_ACCEPT | REVISE | Add the directly supported low-momentum/high-multiplicity CA versus TF result. |
+| n008 | RECOMMEND_ACCEPT | ACCEPT | Initial `REVISE` corrected (answer point + pages 72-78); Li re-reviewed and accepted on 2026-08-24T00:49:13+02:00. |
 | n009 | RECOMMEND_ACCEPT | ACCEPT | |
 | n010 | RECOMMEND_ACCEPT | ACCEPT | |
 | n014 | RECOMMEND_ACCEPT | ACCEPT | |
@@ -498,16 +504,17 @@ n008 remain drafts at `evidence_review_ready`.
 - Codex `RECOMMEND_ACCEPT`: 16
 - Codex `RECOMMEND_REVISE`: 0
 - Codex `RECOMMEND_REJECT`: 0
-- Human `ACCEPT`: 14
-- Human `REVISE`: 2
+- Human `ACCEPT`: 16 (14 initial + 2 re-review)
+- Human `REVISE`: 0
 - Human `REJECT`: 0
 - Human `PENDING`: 0
 
 ## Static-review conclusion
 
-The reviewer accepted 14 items and requested revision of n002 and n008. Both
-requested content corrections are now applied and remain in their original
-semantic families, but the recorded human decisions remain `REVISE` until Li
-explicitly accepts the corrected drafts. The 14 accepted items are approved but
-not split-frozen. With two items awaiting re-review, the pilot is not frozen and
-N1 remains incomplete.
+The initial review (2026-08-24T00:28:55+02:00) accepted 14 items and requested
+revision of n002 and n008. Both requested content corrections were applied
+within their original semantic families, and Li explicitly re-reviewed and
+accepted the corrected versions on 2026-08-24T00:49:13+02:00. All 16 active
+items are human-approved with `split_frozen` lifecycle; the pilot is frozen and
+N1 is complete. Retired drafts n011/nf011, n012/nf012, and n013/nf013 remain
+withdrawn historical records and are not part of the frozen active set.

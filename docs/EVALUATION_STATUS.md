@@ -32,15 +32,15 @@ When records conflict, use the single section explicitly marked **Current author
 - Dense embedding remains `gemini-embedding-2`, configured at 3072 dimensions.
 - These current defaults do not rewrite the A3 measured provenance above, which remains `gemini-3.6-flash` with index schema 2 and identity `c527bbf1d10c88969da02745d678c640a4544757258584110a5ddd7744be3cf2`.
 
-## N1 novel-dev pilot curation — 2026-08-24 (human review in progress)
+## N1 novel-dev pilot curation — 2026-08-24 (human-reviewed and frozen)
 
-- N1 status: `REVISION_REQUIRED_AFTER_HUMAN_REVIEW`; not `COMPLETE` or frozen. Human reviewer `Li` accepted 14 items and requested revision of n002 and n008 at `2026-08-24T00:28:55+02:00`.
-- Active count: `16` `novel_dev` drafts (`n001`-`n010`, `n014`-`n019`) in `16` independent active families. Drafts n011/nf011, n012/nf012, and n013/nf013 are `WITHDRAWN_DRAFT`; n011's repaired analysis-usage information need moved to n018, n012's unsupported original information need was replaced by independently sampled n019, and n013 remains replaced by n017. Retired IDs remain historical and must not be reused.
+- N1 status: `PASS / COMPLETE`. The 16-question `novel_dev` pilot has been human-reviewed and frozen. Human reviewer `Li` accepted 14 items at `2026-08-24T00:28:55+02:00`, requested revisions to n002 and n008, and accepted both corrected items on re-review at `2026-08-24T00:49:13+02:00`. Final decisions: 16 ACCEPT / 0 REVISE / 0 REJECT / 0 PENDING. All 16 active records are `approved` with reviewer `Li`, and all 16 sidecar lifecycles are `split_frozen`.
+- Active count: `16` `novel_dev` questions (`n001`-`n010`, `n014`-`n019`) in `16` independent active families. Drafts n011/nf011, n012/nf012, and n013/nf013 are `WITHDRAWN_DRAFT`; n011's repaired analysis-usage information need moved to n018, n012's unsupported original information need was replaced by independently sampled n019, and n013 remains replaced by n017. Retired IDs remain historical and must not be reused.
 - Intent coverage: 7 of 8 canonical intents (installation 2, usage 4, api 3, algorithm_theory 2, algorithm_implementation 2, data_flow 0, module_structure 1, troubleshooting 2). Expected status: `15` answered / `1` insufficient_evidence. Difficulty: 5 simple / 9 moderate / 2 hard. The missing data-flow intent is an explicit pilot gap, not a forced quota fill.
 - N1-R2R1 corrected n001's evaluator-compatible source type to `workflow` and removed the false claim that PndFsmResponse carries detector efficiency. Human review then revised n002 to treat `requirements.txt` as a repository-declared Python requirements/tooling list rather than proof of per-script runtime requirements, and added n008's directly supported Cellular-Automaton versus Track-Following performance result with the minimum locked-PDF extension from pages 72–77 to 72–78. The repaired n011 content was reclassified as `usage` / `component_usage` under new ID n018 with tutorial-only evidence; n012 was retired without migration; n019 covers the independently sampled PndRecoKalmanTask implementation pipeline.
 - Representativeness: 16 representative / 0 exploratory, following `benchmark_reference_fit` plus `domain_relevance`, with no active representative/exploratory quota. Primary task archetypes include two `implementation_explanation` cases, one `source_location`, and no fabricated data-flow replacement.
 - N1-R1 methodology remains authoritative (`benchmark_reference_proxy`, `empirical_user_frequency: false`, task archetype orthogonal to answerability). The static validator freshly derives minimum required source scope, topology, and difficulty for all Gold v2.6 cases.
-- Package: `evaluation/novel/v1/`; current review artifacts `N1_FINAL_HUMAN_REVIEW.md` and `N1_FINALIZATION_REPORT.md`; sidecar v3; dataset identity `novel-v1-n1-pilot-draft`; `release_eligible: false`. Fourteen active questions are `approved` with reviewer `Li`; n002 and n008 remain `draft` at `evidence_review_ready` pending explicit human re-acceptance. Human decision counts: 14 ACCEPT / 2 REVISE / 0 REJECT / 0 PENDING.
+- Package: `evaluation/novel/v1/`; review artifacts `N1_FINAL_HUMAN_REVIEW.md` and `N1_FINALIZATION_REPORT.md`; sidecar v3; dataset identity `novel-v1-n1-pilot`; dataset version `0.2.0` (`novel-v1-dev-0.2.0`); `release_eligible: false`. This is a frozen pilot, not the final ~30-question `novel_dev`.
 - No evaluation or runtime inspection occurred: PANDA retrieval, QA, judge, Vertex, embeddings, index rebuilds, and benchmark/novel outcome inspection were all `0`. Only locked source/PDF inspection and static T0 validation were used.
 - No validation or holdout content was created; full-dataset quotas remain unfrozen.
 
@@ -520,13 +520,13 @@ The retrieval and QA measurements are unchanged. A3.1 corrects only metric repre
 
 ## Novel dataset state
 
-- `novel_dev`: 16 active draft questions; human-approved/frozen: 0.
-- `novel_validation`: 0.
-- `novel_holdout`: not created; the runner supports loading it from an external path.
-- Human-approved: no novel question has final human approval yet.
+- `novel_dev`: 16 human-approved frozen pilot questions (N1 pilot `0.2.0` / `novel-v1-dev-0.2.0`); the full ~30-question `novel_dev` is not complete.
+- Human-approved: 16. Frozen: 16 (reviewer `Li`; 14 accepted 2026-08-24T00:28:55+02:00, n002/n008 accepted on re-review 2026-08-24T00:49:13+02:00).
+- `novel_validation`: 0 / not started.
+- `novel_holdout`: not created / externally managed; the runner supports loading it from an external path.
 - Empty novel JSONL artifacts are schema/placeholders, not measured results.
-- Curation governance: N0 `COMPLETE`; `docs/NOVEL_DATASET_CURATION_CONTRACT.md` is authoritative.
-- Next curation task: N1 human re-review/pilot finalization for corrected n002 and n008; the other 14 active questions are approved, but the pilot remains unfrozen.
+- Curation governance: N0 `COMPLETE`; `docs/NOVEL_DATASET_CURATION_CONTRACT.md` is authoritative; N1 `PASS / COMPLETE` (frozen pilot; no generalization claim).
+- Next curation task: N2 full novel-dev expansion planning.
 
 ## Known limitations
 

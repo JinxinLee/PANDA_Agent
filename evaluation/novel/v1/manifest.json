@@ -1,21 +1,22 @@
 {
   "schema_version": "novel-manifest-v1",
-  "dataset_identity": "novel-v1-n1-pilot-draft",
-  "benchmark_version": "novel-v1-dev-0.1.0",
-  "dataset_version": "0.1.0",
+  "dataset_identity": "novel-v1-n1-pilot",
+  "benchmark_version": "novel-v1-dev-0.2.0",
+  "dataset_version": "0.2.0",
   "split": "novel_dev",
-  "status": "REVISION_REQUIRED_AFTER_HUMAN_REVIEW",
+  "status": "COMPLETE",
   "release_eligible": false,
   "acceptance_exposed": true,
   "question_count": 16,
   "independent_family_count": 16,
   "review_state": {
-    "review_status": "mixed",
+    "review_status": "approved",
     "reviewer": "Li",
     "reviewed_at": "2026-08-24T00:28:55+02:00",
-    "human_approval": "partial",
-    "accepted_count": 14,
-    "revise_count": 2,
+    "re_reviewed_at": "2026-08-24T00:49:13+02:00",
+    "human_approval": "complete",
+    "accepted_count": 16,
+    "revise_count": 0,
     "rejected_count": 0,
     "pending_count": 0
   },
@@ -65,5 +66,6 @@
       "reason": "representativeness_and_factual_failure",
       "replaced_by": "n017"
     }
-  ]
+  ],
+  "frozen_count": 16
 }
