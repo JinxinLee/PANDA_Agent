@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.0",
+  "task": "C7-A1 explicit evidence-selection contract and shadow implementation",
+  "source_head": "1c93a33944d119e10c0aad0dcc830ceb4284cd0c",
+  "a0_artifact_reference": "evaluation/baselines/manifests/phase_c_c7_a0_selection_boundary_replay_inventory_v1.json",
+  "production_behavior_changed": false,
+  "shadow_only": true,
+  "policy_id": "c7.explicit_selection.v1",
+  "contract_vocabulary": ["PROTECTED", "REQUIRED", "PREFERRED", "MAXIMUM"],
+  "unsupported_vocabulary": ["MINIMUM"],
+  "dimensions": ["SOURCE_ID", "SOURCE_TYPE", "RETRIEVAL_CHANNEL", "OBJECT_ID"],
+  "source_type_values": ["paper", "documentation", "workflow", "readme", "code"],
+  "translation_from_current_policy": {
+    "source_budgets": "SOURCE_TYPE MAXIMUM with ceil(fraction * final_evidence_limit), minimum 1; graph is normalized as RETRIEVAL_CHANNEL MAXIMUM rather than an invalid source type",
+    "max_per_source": "SOURCE_ID MAXIMUM with per-source dynamic counting",
+    "intent_required_sources": "PREFERRED with provenance reviewed_static_intent_policy and not_question_required=true",
+    "graph": "RETRIEVAL_CHANNEL, never SOURCE_TYPE",
+    "workflow": "SOURCE_TYPE and RETRIEVAL_CHANNEL remain independently representable",
+    "mandatory_symbol_ids": "PROTECTED OBJECT_ID with exact_symbol provenance"
+  },
+  "required_constraint_generation": {
+    "enabled": true,
+    "only_producer": "analysis_diagnostics.deterministic_parse.provenance.target_repositories records with source=explicit_query_reference and exact value also present in plan.target_repositories",
+    "static_intent_defaults": "never generate REQUIRED",
+    "new_query_inference": false
+  },
+  "stage_ownership": {
+    "R": "held-constant raw reranker order",
+    "M": "raw R followed by remaining F fallback, object_id first-occurrence deduplicated",
+    "P": "rank-first deterministic priority with explicit paper hint, REQUIRED, PROTECTED, and PREFERRED receipt reasons",
+    "S": "full consideration admission/exclusion with locator duplicate and final limit hard invariants"
+  },
+  "receipt_schema": {
+    "candidate": ["object_id", "stage_m_rank", "stage_p_rank", "final_decision", "decision_reason", "source_id", "source_type", "retrieval_channels", "locator_identity", "matched_constraints", "priority_reasons", "protected", "required", "maximum_checks", "duplicate_status", "admission_phase", "displaced_by", "blocking_constraint"],
+    "constraint": ["constraint_id", "constraint_type", "dimension", "value", "provenance", "matched_candidate_ids", "status", "selected_candidate_ids"]
+  },
+  "hard_invariants": [
+    "duplicate locator uses serialized locator identity and empty locator falls back to object:<object_id>",
+    "final_evidence_limit is 12 by default and is never bypassed",
+    "ordinary candidates obey applicable MAXIMUM constraints",
+    "PROTECTED may bypass SOURCE_ID and SOURCE_TYPE/RETRIEVAL_CHANNEL MAXIMUM but not validity, duplicate, or final-limit checks",
+    "PREFERRED affects ordering only and never hard-fills or bypasses MAXIMUM",
+    "REQUIRED records satisfied or unsatisfied status and never invents evidence"
+  ],
+  "targeted_t0": {
+    "command": "PYTHONPATH=src bundled-python -B -m unittest tests.unit.test_evidence_selection",
+    "test_count": 21,
+    "result": "PASS",
+    "coverage": ["dimension and graph", "workflow separation", "source budgets maximum", "static intent preferred", "protected cap bypass", "protected duplicate", "protected final limit", "preferred no fill", "matching preferred remains capped", "required eligible", "required absent", "maximum domination", "invalid candidate maximum receipt", "ordinary duplicate deterministic", "duplicate empty locator fallback", "Stage M deterministic", "Stage P deterministic", "full receipt stability", "no benchmark-specific identifiers", "source-type parity", "production isolation"]
+  },
+  "reranker_role": "HELD_CONSTANT",
+  "gold_outcomes_used": false,
+  "a2_capture": {"required": true, "executed": false},
+  "a1_verdict": "PASS",
+  "a2_eligibility": "NEXT_ELIGIBLE / NOT_STARTED",
+  "performance_claims": "none"
+}
