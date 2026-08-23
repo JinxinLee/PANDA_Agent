@@ -1,0 +1,212 @@
+{
+  "schema_version": "c7-a4-production-role-closeout-v1",
+  "task": "C7-A4",
+  "source_head": "8ba16ba6e400c7a97317a14eb5eda0e63c7e9050",
+  "authoritative_input_artifacts": {
+    "a1_a1r1_contract": "evaluation/baselines/manifests/phase_c_c7_a1_explicit_selection_contract_v1.json",
+    "a2_a2r1_preregistration": "evaluation/baselines/manifests/phase_c_c7_a2_frozen_selector_preregistration_v1.json",
+    "historical_failed_a3": "evaluation/baselines/manifests/phase_c_c7_a3_frozen_selector_evaluation_v1.json",
+    "authoritative_a3r1": "evaluation/baselines/manifests/phase_c_c7_a3r1_frozen_selector_evaluation_v1.json"
+  },
+  "historical_a3_interpretation": {
+    "status": "INCONCLUSIVE / PRE_OUTCOME_INFRASTRUCTURE_FAILURE",
+    "outcomes_observed": false,
+    "evidence_role": "PROVENANCE_ONLY"
+  },
+  "zero_new_outcome": true,
+  "zero_outcome_ledger": {
+    "new_outcome_evaluations": 0,
+    "gold_relevance_evaluations": 0,
+    "s0_executions": 0,
+    "s1_executions": 0,
+    "retrieval_calls": 0,
+    "reranker_calls": 0,
+    "analyzer_calls": 0,
+    "embedding_calls": 0,
+    "sparse_encoding_calls": 0,
+    "qdrant_reads": 0,
+    "sql_candidate_reads": 0,
+    "qa_calls": 0,
+    "verifier_calls": 0,
+    "judge_calls": 0,
+    "db_index_writes": 0
+  },
+  "a3_methodological_verdict": "PASS_AFTER_PRE_OUTCOME_INVOCATION_RECOVERY",
+  "a3r1_methodological_verdict": "PASS",
+  "a3_s1_policy_result": "CURRENT_PREFERRED_GATE_FAILURE",
+  "policies": {
+    "s0": "CURRENT_SELECTOR",
+    "s1": "c7.explicit_selection.v1"
+  },
+  "frozen_primary_metric_summary": {
+    "final_evidence_recall": {
+      "direction": "HIGHER_IS_BETTER",
+      "s0": {"numerator": 28, "denominator": 32, "value": 0.875},
+      "s1": {"numerator": 27, "denominator": 32, "value": 0.84375},
+      "comparison": "REGRESSION"
+    },
+    "critical_evidence_retention": {
+      "direction": "HIGHER_IS_BETTER",
+      "s0": {"numerator": 28, "denominator": 32, "value": 0.875},
+      "s1": {"numerator": 27, "denominator": 32, "value": 0.84375},
+      "comparison": "REGRESSION"
+    },
+    "explicit_required_satisfaction": {
+      "direction": "HIGHER_IS_BETTER",
+      "s0": {"numerator": 11, "denominator": 11, "value": 1.0},
+      "s1": {"numerator": 11, "denominator": 11, "value": 1.0},
+      "comparison": "UNCHANGED"
+    },
+    "selector_caused_relevant_displacement": {
+      "direction": "LOWER_IS_BETTER",
+      "s0": {"numerator": 1, "denominator": 29, "value": 0.034482758620689655},
+      "s1": {"numerator": 2, "denominator": 29, "value": 0.06896551724137931},
+      "comparison": "REGRESSION"
+    },
+    "protected_exact_retention": {
+      "direction": "HIGHER_IS_BETTER",
+      "s0": {"numerator": 52, "denominator": 52, "value": 1.0},
+      "s1": {"numerator": 52, "denominator": 52, "value": 1.0},
+      "comparison": "UNCHANGED"
+    }
+  },
+  "frozen_gate_summary": {
+    "pass": [1, 2, 5, 6, 8, 10, 11, 12],
+    "fail": [3, 4, 7],
+    "not_supported": [9],
+    "statuses": {
+      "1_frozen_input_identity": "PASS",
+      "2_no_upstream_regeneration": "PASS",
+      "3_final_evidence_recall": "FAIL",
+      "4_critical_safety": "FAIL",
+      "5_protected_exact_safety": "PASS",
+      "6_required_safety": "PASS",
+      "7_selector_displacement": "FAIL",
+      "8_version_source_safety": "PASS",
+      "9_forced_irrelevant_evidence": "NOT_SUPPORTED",
+      "10_determinism_and_preferred_invariant": "PASS",
+      "11_no_benchmark_specific_rule": "PASS",
+      "12_preregistration_integrity": "PASS"
+    }
+  },
+  "identity_loss_summary": {
+    "new_critical_misses": [
+      {"case_id": "g003", "group_id": "g003.e1"}
+    ],
+    "new_protected_losses": [],
+    "new_required_losses": []
+  },
+  "case_direction": {
+    "improved": 0,
+    "unchanged": 17,
+    "regressed": 1
+  },
+  "causal_closeout": {
+    "finding": "S1 introduces one additional selector-caused relevant and critical loss relative to S0: g003.e1.",
+    "maximum_based_exclusion_proven": true,
+    "graph_maximum_direct_ownership_of_g003_e1": false,
+    "graph_maximum_ownership_status": "NOT_PROVEN / DIAGNOSTIC_ONLY",
+    "evidence": "The g003.e1 candidates have candidate-level maximum exclusion receipts, but those candidate IDs do not overlap the g003 graph RETRIEVAL_CHANNEL MAXIMUM matched-candidate set."
+  },
+  "graph_diagnostic_interpretation": {
+    "treatment": "RETRIEVAL_CHANNEL graph MAXIMUM",
+    "intentional_s1_semantic_delta": true,
+    "matched_candidate_count": 132,
+    "membership_difference_case_ids": ["g003", "g028", "g044", "g047", "g059", "g060", "g105", "g110"],
+    "interpretation": "Channel-level MAXIMUM semantics materially affect membership, but direct graph-MAXIMUM ownership of g003.e1 is not proven.",
+    "role": "FUTURE_REDESIGN_DEBT"
+  },
+  "role_decisions": {
+    "CURRENT_SELECTOR": {
+      "role": "PRODUCTION_AUTHORITATIVE",
+      "reasons": [
+        "It remains the current production path.",
+        "S1 failed preregistered Gates 3, 4, and 7.",
+        "S1 produced zero improved cases and one new critical evidence miss.",
+        "No superior frozen C7 selector candidate exists."
+      ]
+    },
+    "c7.explicit_selection.v1": {
+      "role": "REJECTED_AS_GLOBAL_PRODUCTION_REPLACEMENT",
+      "production_activation": "REJECTED",
+      "implementation_disposition": "RETAIN_ARCHITECTURE_AND_REFERENCE_IMPLEMENTATION",
+      "further_c7_tuning_authorized": false
+    },
+    "current_maximum_treatment": {
+      "role": "DEVELOPMENT_FAILURE / FUTURE_REDESIGN_DEBT",
+      "repair_in_a4": false
+    }
+  },
+  "retained_architecture": [
+    "PROTECTED",
+    "REQUIRED",
+    "PREFERRED",
+    "MAXIMUM vocabulary as an explicit constraint type, without endorsing the current treatment",
+    "SOURCE_ID / SOURCE_TYPE / RETRIEVAL_CHANNEL / OBJECT_ID dimension separation",
+    "PREFERRED admission-effect invariant",
+    "REQUIRED cardinality-1 representative semantics",
+    "PROTECTED exact-object semantics",
+    "candidate and constraint receipts",
+    "frozen selector replay and evaluation infrastructure"
+  ],
+  "retained_safe_semantics": {
+    "required_satisfaction": "11/11 -> 11/11",
+    "protected_exact_retention": "52/52 -> 52/52",
+    "new_required_losses": 0,
+    "new_protected_losses": 0,
+    "version_source_usability_gate": "PASS",
+    "deterministic_s1": "PASS",
+    "preferred_admission_invariant": "PASS",
+    "partial_production_rollout_authorized": false
+  },
+  "production_stack_after_c7": {
+    "query_understanding": "C1/C2 CURRENT",
+    "exact": "LEGACY_EXACT",
+    "dense": "RawDense PRODUCTION_AUTHORITATIVE",
+    "sparse": "RAW_QUESTION",
+    "paper_workflow_graph": "CURRENT_PRODUCTION_CHANNELS",
+    "fusion": "P0 CURRENT",
+    "reranker": "CURRENT_PRODUCTION_RERANKER",
+    "final_selector": "CURRENT_SELECTOR"
+  },
+  "c6_relationship_preserved": {
+    "P0_CURRENT": "PRODUCTION_AUTHORITATIVE",
+    "P3_SPARSE_HEAVY": "DEVELOPMENT_SUPPORTED_CANDIDATE",
+    "C6_INTENT_AWARE_V1": "DEVELOPMENT_SUPPORTED_CANDIDATE",
+    "SemanticDense": "KEEP_DISABLED",
+    "composite_c6_c7_policy_created": false
+  },
+  "production_behavior_changed": false,
+  "production_selector_changed": false,
+  "production_fusion_changed": false,
+  "src_changed": false,
+  "config_changed": false,
+  "no_post_outcome_tuning": true,
+  "no_A3R2": true,
+  "new_selector_policy_created": false,
+  "exposed_development_gold": true,
+  "release_claim_authorized": false,
+  "novel_dataset_status": "ABSENT / NOT_CREATED_IN_A4",
+  "future_novel_dataset_plan": {
+    "novel_dev": "~30",
+    "novel_validation": "~15",
+    "external_novel_holdout": "~15",
+    "recommendation": "NOVEL_DATASET_CURATION_BEFORE_SUBSTANTIAL_DOWNSTREAM_DEVELOPMENT"
+  },
+  "c7_final_status": {
+    "C7": "COMPLETE",
+    "A0": "PASS",
+    "A1": "PASS_AFTER_SEMANTICS_REPAIR",
+    "A1R1": "PASS",
+    "A2": "PASS_AFTER_EVALUATOR_REPAIR",
+    "A2R1": "PASS",
+    "original_A3": "INCONCLUSIVE / PRE_OUTCOME_INFRASTRUCTURE_FAILURE",
+    "A3": "PASS_AFTER_PRE_OUTCOME_INVOCATION_RECOVERY",
+    "A3R1": "PASS",
+    "A4": "PASS"
+  },
+  "c8_eligibility": "NEXT_ELIGIBLE / NOT_STARTED",
+  "recommended_immediate_workflow": "NOVEL_DATASET_CURATION_BEFORE_SUBSTANTIAL_DOWNSTREAM_DEVELOPMENT",
+  "contradictions_found": [],
+  "a4_verdict": "PASS"
+}
