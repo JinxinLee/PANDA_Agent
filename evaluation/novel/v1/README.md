@@ -11,11 +11,19 @@ Agent: no retrieval, QA, judge, or runtime evaluation was run during curation.
 Files:
 
 - `novel_dev.yaml` — evaluator-compatible draft dataset (strict Gold schema).
-- `curation_metadata.yaml` — curation sidecar: family, novelty, overlap,
-  coverage, origin, and lifecycle per question.
-- `coverage_report.json` — pilot coverage counts, gaps, and proposed (not
-  frozen) targets for the future full `novel_dev`.
-- `N1_REVIEW_PACKAGE.md` — per-question human review package.
+- `curation_metadata.yaml` — curation sidecar (schema v2): family, novelty,
+  overlap, representativeness, coverage, origin, and lifecycle per question.
+- `coverage_report.json` — pilot coverage counts, novelty gaps,
+  representativeness classification, and proposed (not frozen) targets for
+  the future full `novel_dev`.
+- `N1_REVIEW_PACKAGE.md` — per-question human review package (initial draft
+  QA).
+- `N1R_REPRESENTATIVENESS_REVIEW.md` — N1-R representativeness recalibration:
+  Gold archetype taxonomy, distribution profile, candidate reassessment, and
+  recomposition recommendation.
+- `gold_representativeness_profile.json` — machine-readable analysis of the
+  120 exposed Gold questions (archetype assignments and distributions;
+  analysis-only, no system performance).
 - `manifest.json` — minimal dataset identity.
 
 Governance: `docs/NOVEL_DATASET_CURATION_CONTRACT.md`. Static validation:

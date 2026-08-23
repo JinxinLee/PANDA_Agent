@@ -3,7 +3,7 @@
   "dataset_identity": "novel-v1-n1-pilot-draft",
   "benchmark_version": "novel-v1-dev-0.1.0",
   "split": "novel_dev",
-  "status": "candidate_package_ready_for_human_review",
+  "status": "recalibrated_candidate_package_awaiting_human_review",
   "question_count": 16,
   "independent_family_count": 16,
   "counts_by_intent": {
@@ -31,8 +31,9 @@
     "task_form": 3
   },
   "counts_by_repository_scope": {
-    "single_repository": 16,
-    "cross_repository": 0
+    "single_repository": 15,
+    "cross_repository": 0,
+    "paper_only": 1
   },
   "counts_by_expression_form": {
     "descriptive": 13,
@@ -100,5 +101,51 @@
       "pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87",
       "curated_panda_domain@1.0"
     ]
-  }
+  },
+  "representativeness": {
+    "profile_artifact": "gold_representativeness_profile.json",
+    "profile_schema": "novel-representativeness-profile-v1",
+    "representative_count": 13,
+    "exploratory_count": 3,
+    "counts_by_primary_archetype": {
+      "setup_environment": 2,
+      "component_usage": 5,
+      "concept_comparison": 1,
+      "theory_explanation": 1,
+      "implementation_explanation": 1,
+      "producer_consumer_trace": 2,
+      "repository_structure": 2,
+      "troubleshooting_diagnosis": 1,
+      "genuine_insufficiency": 1
+    },
+    "distribution_fit_counts": {
+      "strong": 5,
+      "moderate": 9,
+      "weak": 2
+    },
+    "corpus_tail_counts": {
+      "representative_core": 8,
+      "representative_but_rare": 5,
+      "exploratory_tail": 3
+    },
+    "dispositions": {
+      "KEEP_REPRESENTATIVE": 13,
+      "KEEP_EXPLORATORY": 1,
+      "REVISE_TO_REPRESENTATIVE": 1,
+      "REPLACE": 1
+    },
+    "recommended_pilot_target": {
+      "representative": 12,
+      "exploratory": 4
+    },
+    "archetype_gaps_vs_gold": [
+      "source_location: Gold 12.5%, pilot 0%",
+      "implementation_explanation: Gold 14.2%, pilot 6.3% (1 of 16)",
+      "version_boundary: Gold 6.7%, pilot 0%",
+      "workflow_sequence: Gold 4.2%, pilot 0%",
+      "documentation_navigation: Gold 2.5%, pilot 0%"
+    ],
+    "notes": "Classes are current-draft classifications for human review; dispositions direct the follow-up N1-R2 revision task. After the proposed n013 replacement (representative source_location or implementation_explanation) and n014 revision, the pilot would sit at roughly 15 representative / 1 exploratory; an exploratory cross-repository replacement for n013 would restore closer to the 12/4 guidance while also filling the cross-repository gap."
+  },
+  "candidate_replacement_needed_count": 1
 }

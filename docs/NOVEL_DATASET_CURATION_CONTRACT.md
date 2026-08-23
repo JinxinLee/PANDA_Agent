@@ -130,6 +130,14 @@ The second question qualifies as entity novelty only if BarReader was independen
 
 Evidence overlap is allowed. A novel question may cite a repository, file, documentation page, or KnowledgeObject already used by exposed Gold. **Evidence overlap is not question overlap.** Novelty is determined from the information need, relation, evidence combination, reasoning topology, and task form, not from a requirement for unseen objects.
 
+### 6.2 Representativeness constraint
+
+Novelty and representativeness are dual constraints, and high novelty is not itself a quality objective. The Novel Dataset must remain representative of the intended PANDA user-question distribution while using new concrete information needs, entities, relations, evidence combinations, or reasoning instances. Novelty is assessed at the concrete information-need level and must not be maximized by sampling obscure corpus corners, and questions must not be selected merely because exposed Gold omitted a topic.
+
+Reusing a common exposed-Gold question archetype is allowed and expected: applying a recurring user task (configuration, source location, implementation explanation, producer-consumer trace, diagnosis, and so on) to an independently selected, routinely relevant component is a high-quality representative novel case, provided the evidence obligations and answer semantics are genuinely distinct. Curation maintains a coarse archetype profile of the exposed Gold distribution (`evaluation/novel/v1/gold_representativeness_profile.json`) and records a `representativeness` block per question in the sidecar, separating the novelty overlap review (`closest_exposed_cases`, guarding against duplication) from the representativeness analogue review (`gold_analogue_cases`, evidencing that the user-task archetype itself is common in the real question space).
+
+Each novel question is classified as `representative` or `exploratory`. Representative novel questions mirror the recurring PANDA user-question distribution; exploratory novel questions deliberately probe underrepresented needs, unusual composition, or coverage frontiers and may be rarer or harder. The primary generalization-gap comparison uses the representative subset; exploratory results are reported separately and do not substitute for representative novel cases. Target splits are coarse guidance (for example roughly 70–80% representative for `novel_dev`), never a quota that justifies forced classification or artificial questions, and coarse distribution similarity is the goal — never benchmark distribution cloning or template-based entity substitution.
+
 ## 7. Novelty rationale and overlap review
 
 The curation sidecar for every accepted question records:

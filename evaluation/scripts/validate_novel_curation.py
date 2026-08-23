@@ -50,6 +50,17 @@ EXPRESSION_FORMS = {
     "identifier_free",
     "identifier_heavy",
 }
+REPRESENTATIVENESS_CLASSES = {"representative", "exploratory"}
+DISTRIBUTION_FITS = {"strong", "moderate", "weak"}
+CORPUS_TAILS = {"representative_core", "representative_but_rare", "exploratory_tail"}
+DISPOSITIONS = {
+    "KEEP_REPRESENTATIVE",
+    "KEEP_EXPLORATORY",
+    "REVISE_TO_REPRESENTATIVE",
+    "REVISE_EXPLORATORY",
+    "REPLACE",
+}
+GOLD_PROFILE_PATH = NOVEL_DIR / "gold_representativeness_profile.json"
 
 errors: list[str] = []
 notes: list[str] = []
@@ -94,8 +105,45 @@ def main() -> int:
     web_root = REPO_ROOT / "data" / "sources" / "web"
 
     records = raw_sidecar.get("records", [])
-    if raw_sidecar.get("schema_version") != "novel-curation-sidecar-v1":
-        fail("sidecar schema_version must be novel-curation-sidecar-v1")
+    if raw_sidecar.get("schema_version") != "novel-curation-sidecar-v2":
+        fail("sidecar schema_version must be novel-curation-sidecar-v2")
+
+    # Gold representativeness profile: complete, consistent, matching Gold.
+    gold_profile = json.loads(GOLD_PROFILE_PATH.read_text(encoding="utf-8"))
+    gold_path = REPO_ROOT / "evaluation" / "benchmarks" / "v2_6" / "gold_questions.yaml"
+    gold_questions = load_yaml(gold_path)["questions"]
+    gold_ids = {q["id"] for q in gold_questions}
+    gold_intent = {q["id"]: q["intent"] for q in gold_questions}
+    gold_status = {q["id"]: q["expected_status"] for q in gold_questions}
+    taxonomy = set(gold_profile.get("archetype_taxonomy", {}))
+    assignments = gold_profile.get("assignments", {})
+    if gold_profile.get("question_count") != len(gold_questions):
+        fail("gold profile question_count does not match Gold dataset size")
+    if set(assignments) != gold_ids:
+        missing = sorted(gold_ids - set(assignments))
+        extra = sorted(set(assignments) - gold_ids)
+        fail(f"gold profile assignments incomplete: missing={missing[:10]} extra={extra[:10]}")
+    for gid, entry in assignments.items():
+        if entry.get("primary_archetype") not in taxonomy:
+            fail(f"gold profile {gid}: unknown primary archetype")
+        bad_secondary = sorted(set(entry.get("secondary_archetypes", [])) - taxonomy)
+        if bad_secondary:
+            fail(f"gold profile {gid}: unknown secondary archetypes {bad_secondary}")
+        if entry.get("intent") != gold_intent.get(gid):
+            fail(f"gold profile {gid}: intent mirror mismatch")
+        if entry.get("expected_status") != gold_status.get(gid):
+            fail(f"gold profile {gid}: expected_status mirror mismatch")
+    for field in (
+        "counts_by_primary_archetype",
+        "counts_by_intent",
+        "counts_by_expected_status",
+        "counts_by_evidence_topology",
+        "counts_by_source_scope",
+        "counts_by_expression_style",
+        "estimated_difficulty_distribution",
+    ):
+        if not gold_profile.get(field):
+            fail(f"gold profile missing {field}")
     if raw_sidecar.get("benchmark_version") != raw_dataset["benchmark_version"]:
         fail("sidecar benchmark_version does not match dataset benchmark_version")
 
@@ -182,7 +230,7 @@ def main() -> int:
         if unknown_stypes:
             fail(f"{qid}: unknown coverage source_types {unknown_stypes}")
         repo_scope = cov.get("repository_scope")
-        if repo_scope not in {"single_repository", "cross_repository"}:
+        if repo_scope not in {"single_repository", "cross_repository", "paper_only", "docs_only"}:
             fail(f"{qid}: coverage.repository_scope invalid ({repo_scope!r})")
         # Curation block.
         cur = record.get("curation") or {}
@@ -194,6 +242,32 @@ def main() -> int:
             fail(f"{qid}: curation.origin missing")
         if not (cur.get("lifecycle") or "").strip():
             fail(f"{qid}: curation.lifecycle missing")
+        # Representativeness block (sidecar v2).
+        rep = record.get("representativeness")
+        if not isinstance(rep, dict):
+            fail(f"{qid}: missing representativeness block")
+        else:
+            if rep.get("class") not in REPRESENTATIVENESS_CLASSES:
+                fail(f"{qid}: representativeness.class invalid ({rep.get('class')!r})")
+            if rep.get("primary_archetype") not in taxonomy:
+                fail(f"{qid}: representativeness.primary_archetype unknown ({rep.get('primary_archetype')!r})")
+            bad_sec = sorted(set(rep.get("secondary_archetypes") or []) - taxonomy)
+            if bad_sec:
+                fail(f"{qid}: unknown secondary archetypes {bad_sec}")
+            analogues = rep.get("gold_analogue_cases") or []
+            if not analogues:
+                fail(f"{qid}: representativeness.gold_analogue_cases must not be empty")
+            for case in analogues:
+                if case not in gold_ids:
+                    fail(f"{qid}: gold_analogue_case {case!r} is not a Gold question")
+            if rep.get("distribution_fit") not in DISTRIBUTION_FITS:
+                fail(f"{qid}: representativeness.distribution_fit invalid")
+            if rep.get("corpus_tail") not in CORPUS_TAILS:
+                fail(f"{qid}: representativeness.corpus_tail invalid")
+            if rep.get("disposition") not in DISPOSITIONS:
+                fail(f"{qid}: representativeness.disposition invalid ({rep.get('disposition')!r})")
+            if not (rep.get("rationale") or "").strip():
+                fail(f"{qid}: empty representativeness rationale")
 
     duplicate_families = sorted(f for f, n in Counter(family_ids).items() if n > 1)
     if duplicate_families:
@@ -322,6 +396,34 @@ def main() -> int:
     multi_evidence = sum(1 for q in questions if len(q.required_evidence_groups) >= 2)
     if coverage.get("multi_evidence_count") != multi_evidence:
         fail(f"coverage_report.multi_evidence_count mismatch ({coverage.get('multi_evidence_count')} != {multi_evidence})")
+
+    # Representativeness coverage consistency.
+    rep_cov = coverage.get("representativeness") or {}
+    reps = [r.get("representativeness") or {} for r in sidecar_list]
+
+    def rep_count(field, value):
+        return sum(1 for r in reps if r.get(field) == value)
+
+    def rep_dict(field):
+        return dict(Counter(r.get(field) for r in reps if r.get(field)))
+
+    if rep_cov.get("representative_count") != rep_count("class", "representative"):
+        fail("coverage_report.representativeness.representative_count mismatch")
+    if rep_cov.get("exploratory_count") != rep_count("class", "exploratory"):
+        fail("coverage_report.representativeness.exploratory_count mismatch")
+    for label, field in (
+        ("counts_by_primary_archetype", "primary_archetype"),
+        ("distribution_fit_counts", "distribution_fit"),
+        ("corpus_tail_counts", "corpus_tail"),
+        ("dispositions", "disposition"),
+    ):
+        reported = rep_cov.get(label) or {}
+        computed = rep_dict(field)
+        reported_nonzero = {k: v for k, v in reported.items() if v}
+        if reported_nonzero != computed:
+            fail(f"coverage_report.representativeness.{label} mismatch: {reported_nonzero} != {computed}")
+    if coverage.get("candidate_replacement_needed_count") != rep_count("disposition", "REPLACE"):
+        fail("coverage_report.candidate_replacement_needed_count mismatch")
 
     # 9. Manifest consistency.
     if manifest.get("question_count") != len(questions):

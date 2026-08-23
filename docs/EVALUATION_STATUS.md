@@ -34,14 +34,15 @@ When records conflict, use the single section explicitly marked **Current author
 
 ## N1 novel-dev pilot curation — 2026-08-23 (candidate package)
 
-- N1 status: `CANDIDATE_PACKAGE_READY_FOR_HUMAN_REVIEW` (not `COMPLETE`; final human acceptance/freeze pending).
+- N1 status: `RECALIBRATED / HUMAN_REVIEW_PENDING` after N1-R representativeness recalibration (initially `CANDIDATE_PACKAGE_READY_FOR_HUMAN_REVIEW`; not `COMPLETE` — human acceptance/freeze pending, and the package requires representativeness-driven revision before human finalization).
 - Candidate count: `16` `novel_dev` questions (`n001`-`n016`), one per independent curation family (`nf001`-`nf016`).
 - Intent coverage: all 8 canonical intents covered (installation 2, usage 3, api 2, algorithm_theory 2, algorithm_implementation 1, data_flow 2, module_structure 2, troubleshooting 2).
 - Expected-status distribution: `15` answered, `1` insufficient_evidence; difficulty band 6 simple / 8 moderate / 2 hard.
 - Package location: `evaluation/novel/v1/` (dataset, sidecar, coverage report, review package, manifest). Dataset identity `novel-v1-n1-pilot-draft`, `release_eligible: false`, all questions `review_status: draft`, `reviewer: null`.
+- N1-R recalibration (dataset-design analysis only, no runtime outcome inspected): 13 coarse archetypes induced from the 120 exposed Gold questions (`gold_representativeness_profile.json`); all 16 candidates classified — 13 representative / 3 exploratory; dispositions 13 KEEP_REPRESENTATIVE, 1 KEEP_EXPLORATORY, 1 REVISE_TO_REPRESENTATIVE (n014), 1 REPLACE (n013). Key drift finding: Gold's largest archetypes `implementation_explanation` (14.2%) and `source_location` (12.5%) are under/absent in the pilot. Full analysis in `evaluation/novel/v1/N1R_REPRESENTATIVENESS_REVIEW.md`.
 - Human review: `PENDING` — human-approved questions: `0`. Codex drafted and self-checked only; it did not approve Gold.
-- No PANDA Agent outcome was observed and no evaluation was run: retrieval/QA/judge/Vertex/embedding/index calls all `0`. Static T0 validation only (`evaluation/scripts/validate_novel_curation.py` PASS, plus KB cross-match of every critical evidence group).
-- No validation or holdout content was created; full-dataset quotas remain unfrozen (pilot proposals in `evaluation/novel/v1/coverage_report.json`).
+- No PANDA Agent outcome was observed and no evaluation was run: retrieval/QA/judge/Vertex/embedding/index calls all `0`. Static T0 validation only (`evaluation/scripts/validate_novel_curation.py` PASS — now covering sidecar v2 representativeness metadata and the 120-question Gold profile — plus KB cross-match of every critical evidence group).
+- No validation or holdout content was created; no replacement questions were generated (replacement specifications only); full-dataset quotas remain unfrozen (pilot proposals in `evaluation/novel/v1/coverage_report.json`).
 
 ## Generalization Phase status
 

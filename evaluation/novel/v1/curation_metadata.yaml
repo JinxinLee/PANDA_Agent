@@ -1,4 +1,4 @@
-schema_version: novel-curation-sidecar-v1
+schema_version: novel-curation-sidecar-v2
 dataset_version: novel-v1-n1-pilot-draft
 benchmark_version: novel-v1-dev-0.1.0
 records:
@@ -24,6 +24,20 @@ records:
         version pairs its configSettings.sh recognizes and the SIMPATH /
         FAIRROOTPATH environment it expects. The information need (fork-level
         environment pinning) does not appear in any exposed case.
+    representativeness:
+      class: representative
+      primary_archetype: setup_environment
+      secondary_archetypes: []
+      gold_analogue_cases:
+        - g001
+        - g002
+      distribution_fit: moderate
+      corpus_tail: representative_but_rare
+      disposition: KEEP_REPRESENTATIVE
+      rationale: >-
+        Reuses the common Gold setup archetype on the restgas fork; fork-level
+        version pinning is a rarer instance than the upstream setup questions
+        g001-g006.
     coverage:
       repositories:
         - restgas_determination
@@ -61,6 +75,18 @@ records:
         PandaRoot; this candidate is about the luminosityfit repository's
         requirements.txt and python workflow Readme, an independent
         repository-level information need.
+    representativeness:
+      class: representative
+      primary_archetype: setup_environment
+      secondary_archetypes: []
+      gold_analogue_cases:
+        - g002
+      distribution_fit: strong
+      corpus_tail: representative_core
+      disposition: KEEP_REPRESENTATIVE
+      rationale: >-
+        Dependency setup mirrors the Gold prerequisites task (g002) applied to an
+        independently selected repository.
     coverage:
       repositories:
         - luminosityfit
@@ -101,6 +127,18 @@ records:
         SetThetaRange with start/stop/step ranges). The generator entity, its
         stepping semantics, and the acceptance-scan use case are absent from
         the exposed set.
+    representativeness:
+      class: representative
+      primary_archetype: component_usage
+      secondary_archetypes: []
+      gold_analogue_cases:
+        - g016
+      distribution_fit: strong
+      corpus_tail: representative_core
+      disposition: KEEP_REPRESENTATIVE
+      rationale: >-
+        Same generator-selection task type as g016 on an independently sampled
+        generator with genuinely different stepping semantics.
     coverage:
       repositories:
         - pandaroot
@@ -140,6 +178,20 @@ records:
         fair logger API. The need (configure per-message provenance while
         debugging a macro) is a distinct runtime-usage operation not
         represented in the benchmark.
+    representativeness:
+      class: representative
+      primary_archetype: component_usage
+      secondary_archetypes: []
+      gold_analogue_cases:
+        - g013
+        - g015
+      distribution_fit: moderate
+      corpus_tail: representative_core
+      disposition: KEEP_REPRESENTATIVE
+      rationale: >-
+        Runtime logging configuration is a routine usage and debugging task; no
+        direct Gold logger analogue exists, but the task type is common in the user
+        space.
     coverage:
       repositories:
         - pandaroot
@@ -179,6 +231,18 @@ records:
         detector geometry with the event display, expressed without any class
         or tool identifier. Visualization tooling is absent from the exposed
         set, and the identifier-free expression changes recognition demands.
+    representativeness:
+      class: representative
+      primary_archetype: component_usage
+      secondary_archetypes: []
+      gold_analogue_cases:
+        - g023
+      distribution_fit: moderate
+      corpus_tail: representative_core
+      disposition: KEEP_REPRESENTATIVE
+      rationale: >-
+        Visual event inspection is a routine user task documented in the main
+        documentation tree, reusing the component-usage archetype.
     coverage:
       repositories:
         - pandaroot
@@ -219,6 +283,18 @@ records:
         general naming utility that derives an entire simulation chain's file
         names from the simulation file name, a reusable tool-lookup need with
         a different task form than single-artifact location.
+    representativeness:
+      class: representative
+      primary_archetype: component_usage
+      secondary_archetypes: []
+      gold_analogue_cases:
+        - g017
+      distribution_fit: moderate
+      corpus_tail: representative_core
+      disposition: KEEP_REPRESENTATIVE
+      rationale: >-
+        Deriving chained stage filenames is a recurring workflow annoyance; a tool-
+        usage need like g017 applied to an independently selected utility.
     coverage:
       repositories:
         - pandaroot
@@ -261,6 +337,19 @@ records:
         translated back into full geometry paths, and which geometry and
         parameter-container state that translation requires. Different layer,
         different relation, and the question is expressed without identifiers.
+    representativeness:
+      class: representative
+      primary_archetype: component_usage
+      secondary_archetypes: []
+      gold_analogue_cases:
+        - g023
+        - g024
+      distribution_fit: moderate
+      corpus_tail: representative_but_rare
+      disposition: KEEP_REPRESENTATIVE
+      rationale: >-
+        Decoding MVD volume identifiers is a genuine analysis-time task, but rarer
+        in the user population than mainstream workflow usage.
     coverage:
       repositories:
         - pandaroot
@@ -302,6 +391,21 @@ records:
         (hit-to-track candidate grouping) and the comparison between the track
         following and cellular automaton approaches are not measured by any
         exposed case; the question is expressed without symbol names.
+    representativeness:
+      class: representative
+      primary_archetype: concept_comparison
+      secondary_archetypes:
+        - theory_explanation
+      gold_analogue_cases:
+        - g051
+        - g054
+      distribution_fit: moderate
+      corpus_tail: representative_but_rare
+      disposition: KEEP_REPRESENTATIVE
+      rationale: >-
+        The comparison archetype is well represented in Gold; this instance compares
+        historical track-search algorithms in a paper-only source, rarer than Gold
+        core-method comparisons.
     coverage:
       repositories: []
       source_types:
@@ -309,7 +413,7 @@ records:
       expression_form: descriptive
       evidence_topology: comparison
       source_scope: single_source
-      repository_scope: single_repository
+      repository_scope: paper_only
       reasoning_forms:
         - compare
         - explain
@@ -343,6 +447,20 @@ records:
         below-two-percent low-momentum bound). Composition of thesis sections
         plus code and a comparison topology are new; DPM is only the shared
         background entity.
+    representativeness:
+      class: exploratory
+      primary_archetype: theory_explanation
+      secondary_archetypes:
+        - concept_comparison
+      gold_analogue_cases:
+        - g047
+      distribution_fit: moderate
+      corpus_tail: exploratory_tail
+      disposition: KEEP_EXPLORATORY
+      rationale: >-
+        The elastic-model topic is core, but the composed paper-plus-code evidence
+        obligation exceeds the representative Gold theory pattern of single-group
+        paper evidence; retained as a deliberate composition stress case.
     coverage:
       repositories:
         - luminosityfit
@@ -383,6 +501,20 @@ records:
         transport and how PndFastSim, PndFsmAbsDet detectors, and
         PndFsmResponse objects compose, an unexposed subsystem-level
         implementation need.
+    representativeness:
+      class: representative
+      primary_archetype: implementation_explanation
+      secondary_archetypes: []
+      gold_analogue_cases:
+        - g059
+        - g060
+      distribution_fit: strong
+      corpus_tail: representative_core
+      disposition: KEEP_REPRESENTATIVE
+      rationale: >-
+        Fast simulation is a mainstream subsystem and implementation_explanation is
+        the largest Gold archetype; the speed-versus-transport motivation is a
+        common real user need.
     coverage:
       repositories:
         - pandaroot
@@ -422,6 +554,19 @@ records:
         generic MC-truth channel from generation into analysis, or the
         reconstructed-versus-generated tree match, which spans tutorial
         documentation and the PndMCTrackAna tooling.
+    representativeness:
+      class: representative
+      primary_archetype: producer_consumer_trace
+      secondary_archetypes: []
+      gold_analogue_cases:
+        - g079
+        - g081
+      distribution_fit: strong
+      corpus_tail: representative_core
+      disposition: KEEP_REPRESENTATIVE
+      rationale: >-
+        Tracing the MC-truth channel mirrors the most common Gold data-flow task
+        type on a genuinely different channel.
     coverage:
       repositories:
         - pandaroot
@@ -464,6 +609,20 @@ records:
         where they enter the LuminosityFit workflow (an alignment process
         ahead of the documented steps), a producer-to-pipeline-entry relation
         across paper and repository that no exposed case measures.
+    representativeness:
+      class: representative
+      primary_archetype: producer_consumer_trace
+      secondary_archetypes: []
+      gold_analogue_cases:
+        - g080
+        - g085
+      distribution_fit: moderate
+      corpus_tail: representative_but_rare
+      disposition: KEEP_REPRESENTATIVE
+      rationale: >-
+        Alignment producer-to-pipeline-entry reuses the trace archetype, but the
+        cross-era paper-to-repository composition is rarer than Gold in-workflow
+        traces and needs semantic review.
     coverage:
       repositories:
         - luminosityfit
@@ -504,6 +663,20 @@ records:
         compiles and what the genfit2-remote recipe builds, a build-wiring
         comparison inside the module structure that the benchmark does not
         cover.
+    representativeness:
+      class: exploratory
+      primary_archetype: repository_structure
+      secondary_archetypes: []
+      gold_analogue_cases:
+        - g097
+        - g098
+      distribution_fit: weak
+      corpus_tail: exploratory_tail
+      disposition: REPLACE
+      rationale: >-
+        Build-wiring corner of vendored genfit variants, selected mainly because
+        Gold had not touched genfit, and carrying a factual annotation error;
+        replace with a representative case.
     coverage:
       repositories:
         - pandaroot
@@ -545,6 +718,20 @@ records:
         layer assembled by PndLmdModelFactory. The subsystem overlaps, so
         entity and evidence overlap are partial and information-need overlap
         is medium, but the vendored-copy role itself is not measured by g097.
+    representativeness:
+      class: exploratory
+      primary_archetype: repository_structure
+      secondary_archetypes: []
+      gold_analogue_cases:
+        - g097
+        - g105
+      distribution_fit: weak
+      corpus_tail: exploratory_tail
+      disposition: REVISE_TO_REPRESENTATIVE
+      rationale: >-
+        Currently an evidence-overreaching corner case, but the underlying newcomer
+        question about model_framework versus the model layer is legitimate;
+        trimming the overreach can restore representative quality.
     coverage:
       repositories:
         - luminosityfit
@@ -584,6 +771,19 @@ records:
         covers a build-configuration failure or the documented
         workaround-with-side-effect structure (NOVC disabling CAtracking and
         FtsCATracking), which is a different diagnostic operation.
+    representativeness:
+      class: representative
+      primary_archetype: troubleshooting_diagnosis
+      secondary_archetypes: []
+      gold_analogue_cases:
+        - g112
+        - g114
+      distribution_fit: strong
+      corpus_tail: representative_core
+      disposition: KEEP_REPRESENTATIVE
+      rationale: >-
+        Build-time failure diagnosis is among the most common real user pains and
+        reuses the Gold diagnosis task type on the documented troubleshooting page.
     coverage:
       repositories:
         - pandaroot
@@ -624,6 +824,19 @@ records:
         locked corpus shows no Windows-host statement (the only "windows"
         matches are mass windows in a tutorial), so the expected behavior is a
         grounded insufficient-evidence refusal, not a guessed answer.
+    representativeness:
+      class: representative
+      primary_archetype: genuine_insufficiency
+      secondary_archetypes: []
+      gold_analogue_cases:
+        - g007
+      distribution_fit: moderate
+      corpus_tail: representative_but_rare
+      disposition: KEEP_REPRESENTATIVE
+      rationale: >-
+        Gold insufficiency cases are themselves deliberate probes; a natural
+        platform-support refusal reuses that archetype, with the Windows instance
+        rarer than Gold hardware and checksum probes.
     coverage:
       repositories:
         - pandaroot
