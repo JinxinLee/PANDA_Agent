@@ -84,9 +84,10 @@ Five locked-corpus anchors were inspected without using system outcomes:
   `implementation_explanation` / answerable.
 - **Required answer points:** Init selects/configures Kalman versus DAF and the
   track representation; Exec chooses the configured or MC-derived particle
-  hypothesis with documented fallbacks; the fitter result is copied into a new
-  output `PndTrack` with fitted endpoints, candidate, quality, fit statistics,
-  PID hypothesis, input index, and branch ID.
+  hypothesis with documented fallbacks; for a nonzero selected PDG hypothesis,
+  the configured fitter produces the fitted track, and the task constructs the
+  output `PndTrack` from its endpoints, candidate, quality, fit statistics, and
+  PID hypothesis while passing the input index and branch ID to the constructor.
 - **Evidence:**
   `tracking/GenfitTools/recotasks/PndRecoKalmanTask.h` and
   `tracking/GenfitTools/recotasks/PndRecoKalmanTask.cxx` in the locked PandaRoot

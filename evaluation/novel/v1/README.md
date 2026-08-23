@@ -5,7 +5,7 @@ active candidate `novel_dev` questions (`n001`-`n010`, `n014`-`n019`), one per
 independent active curation family. Drafts n011/nf011, n012/nf012, and
 n013/nf013 are withdrawn; their histories are retained in the review documents.
 
-Status: **READY_FOR_FINAL_HUMAN_APPROVAL**. It is not frozen Gold.
+Status: **READY_FOR_HUMAN_DECISIONS**. It is not frozen Gold.
 Every question carries `review_status: draft` with no reviewer, and
 `release_eligible` is false. Nothing here has been evaluated against PANDA
 Agent: no retrieval, QA, judge, or runtime evaluation was run during curation.
@@ -28,9 +28,12 @@ Files:
   and minimum-required source scope; corrected candidate reassessment.
 - `N1R2_REVIEW_PACKAGE.md` — historical repaired-candidate review package,
   including the n013 withdrawal and independently sampled n017 replacement.
-- `N1R2R1_REVIEW_PACKAGE.md` — current final governance cleanup package,
-  including factual corrections, withdrawn-draft lineage, and independent n019
-  sampling evidence.
+- `N1R2R1_REVIEW_PACKAGE.md` — final governance cleanup history, including
+  factual corrections, withdrawn-draft lineage, and independent n019 sampling
+  evidence.
+- `N1_FINAL_HUMAN_REVIEW.md` — current per-item decision matrix for final human
+  review; Codex recommendations are advisory and every human decision remains
+  pending.
 - `gold_representativeness_profile.json` — machine-readable analysis of the
   120 exposed Gold questions (schema v2 benchmark reference proxy: task
   archetypes, answerability classes, minimum-required source scope;

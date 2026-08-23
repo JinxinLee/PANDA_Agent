@@ -4,7 +4,7 @@
   "benchmark_version": "novel-v1-dev-0.1.0",
   "dataset_version": "0.1.0",
   "split": "novel_dev",
-  "status": "READY_FOR_FINAL_HUMAN_APPROVAL",
+  "status": "READY_FOR_HUMAN_DECISIONS",
   "release_eligible": false,
   "acceptance_exposed": true,
   "question_count": 16,
@@ -22,7 +22,7 @@
     "dataset": "novel_dev.yaml",
     "curation_metadata": "curation_metadata.yaml",
     "coverage_report": "coverage_report.json",
-    "review_package": "N1R2R1_REVIEW_PACKAGE.md"
+    "review_package": "N1_FINAL_HUMAN_REVIEW.md"
   },
   "locked_corpus_manifest": "data/manifests/source_manifest.json",
   "governance": "docs/NOVEL_DATASET_CURATION_CONTRACT.md",
