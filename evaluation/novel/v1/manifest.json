@@ -1,24 +1,25 @@
 {
   "schema_version": "novel-manifest-v1",
-  "dataset_identity": "novel-v1-n1-pilot",
-  "benchmark_version": "novel-v1-dev-0.2.0",
-  "dataset_version": "0.2.0",
+  "dataset_identity": "novel-v1-dev-expansion",
+  "benchmark_version": "novel-v1-dev-0.3.0",
+  "dataset_version": "0.3.0",
   "split": "novel_dev",
-  "status": "COMPLETE",
+  "status": "EXPANSION_IN_PROGRESS",
   "release_eligible": false,
   "acceptance_exposed": true,
-  "question_count": 16,
-  "independent_family_count": 16,
+  "question_count": 22,
+  "independent_family_count": 22,
   "review_state": {
-    "review_status": "approved",
+    "review_status": "mixed",
     "reviewer": "Li",
     "reviewed_at": "2026-08-24T00:28:55+02:00",
     "re_reviewed_at": "2026-08-24T00:49:13+02:00",
-    "human_approval": "complete",
+    "reviewer_scope": "the 16 frozen N1 pilot questions only; N2-A Batch 1 drafts n020-n025 are unreviewed",
+    "human_approval": "partial",
     "accepted_count": 16,
     "revise_count": 0,
     "rejected_count": 0,
-    "pending_count": 0
+    "pending_count": 6
   },
   "curation_origin": "human_directed_llm_draft",
   "agent_outcome_seen_before_freeze": false,
@@ -27,17 +28,18 @@
     "dataset": "novel_dev.yaml",
     "curation_metadata": "curation_metadata.yaml",
     "coverage_report": "coverage_report.json",
-    "review_package": "N1_FINAL_HUMAN_REVIEW.md",
-    "finalization_report": "N1_FINALIZATION_REPORT.md"
+    "review_package": "N2A_BATCH1_REVIEW_PACKAGE.md",
+    "finalization_report": "N1_FINALIZATION_REPORT.md",
+    "expansion_plan": "N2_FULL_NOVEL_DEV_EXPANSION_PLAN.md"
   },
   "locked_corpus_manifest": "data/manifests/source_manifest.json",
   "governance": "docs/NOVEL_DATASET_CURATION_CONTRACT.md",
   "representativeness": {
     "profile": "gold_representativeness_profile.json",
-    "representative_count": 16,
+    "representative_count": 22,
     "exploratory_count": 0,
     "dispositions": {
-      "KEEP_REPRESENTATIVE": 16
+      "KEEP_REPRESENTATIVE": 22
     },
     "revision_required_before_human_finalization": false,
     "profile_schema": "novel-representativeness-profile-v2",

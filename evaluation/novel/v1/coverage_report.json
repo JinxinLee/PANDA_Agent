@@ -1,65 +1,67 @@
 {
   "schema_version": "novel-coverage-report-v1",
-  "dataset_identity": "novel-v1-n1-pilot",
-  "benchmark_version": "novel-v1-dev-0.2.0",
+  "dataset_identity": "novel-v1-dev-expansion",
+  "benchmark_version": "novel-v1-dev-0.3.0",
   "split": "novel_dev",
-  "status": "FROZEN_PILOT_NOT_FULL_NOVEL_DEV",
-  "question_count": 16,
-  "independent_family_count": 16,
+  "status": "EXPANSION_IN_PROGRESS",
+  "question_count": 22,
+  "independent_family_count": 22,
   "counts_by_intent": {
     "installation": 2,
-    "usage": 4,
+    "usage": 5,
     "api": 3,
     "algorithm_theory": 2,
-    "algorithm_implementation": 2,
-    "data_flow": 0,
-    "module_structure": 1,
+    "algorithm_implementation": 4,
+    "data_flow": 2,
+    "module_structure": 2,
     "troubleshooting": 2
   },
   "counts_by_difficulty": {
-    "simple": 5,
-    "moderate": 9,
-    "hard": 2
+    "simple": 6,
+    "moderate": 13,
+    "hard": 3
   },
   "counts_by_novelty_type": {
-    "entity": 13,
-    "relation": 5,
-    "composition": 4,
-    "reasoning_topology": 2,
-    "nontrivial_expression": 3,
+    "entity": 16,
+    "relation": 7,
+    "composition": 8,
+    "reasoning_topology": 3,
+    "nontrivial_expression": 4,
     "failure_mode": 1,
-    "task_form": 4
+    "task_form": 5
   },
   "counts_by_repository_scope": {
-    "single_repository": 15,
-    "cross_repository": 0,
+    "single_repository": 20,
+    "cross_repository": 1,
     "paper_only": 1
   },
   "counts_by_expression_form": {
-    "descriptive": 13,
-    "implementation_oriented": 3
+    "descriptive": 18,
+    "implementation_oriented": 4
   },
   "counts_by_evidence_topology": {
-    "single_hop": 8,
-    "comparison": 3,
-    "multi_hop": 5
+    "single_hop": 10,
+    "comparison": 4,
+    "multi_hop": 6,
+    "producer_consumer": 2
   },
   "counts_by_expected_status": {
-    "answered": 15,
+    "answered": 21,
     "insufficient_evidence": 1,
     "version_conflict": 0,
     "clarification_required": 0
   },
-  "cross_repository_count": 0,
-  "multi_hop_count": 5,
-  "descriptive_or_identifier_free_count": 13,
-  "multi_evidence_count": 8,
+  "cross_repository_count": 1,
+  "multi_hop_count": 6,
+  "descriptive_or_identifier_free_count": 18,
+  "multi_evidence_count": 14,
   "known_coverage_gaps": [
-    "No cross-repository candidate: every pilot question is answerable within one repository or one paper-plus-repository pair; a full novel_dev should add genuinely cross-repository questions.",
-    "No version_conflict candidate: the locked corpus exposes commit-boundary conflicts already heavily represented by exposed Gold (g012/g026/g042/g058/g077/g096/g108/g120); none arose naturally for unexposed information needs during pilot curation.",
+    "Cross-repository presence is 1 of 22 (the footprint-verified PandaRoot+LuminosityFit workflow n021); the full novel_dev should keep genuine cross-repository questions contingent on annotated minimum footprints.",
+    "No version_conflict candidate: the locked corpus exposes commit-boundary conflicts already heavily represented by exposed Gold (g012/g026/g042/g058/g077/g096/g108/g120); none arose naturally for unexposed information needs during Batch 1 curation.",
     "No clarification_required candidate: no genuine ambiguity case was naturally supported, so the generic T0 status-compatibility check was not required and was not run.",
-    "No data_flow candidate remains after governance retirement of n011/n012; n018 is correctly classified as usage, and no artificial data-flow replacement was introduced.",
-    "Difficulty band is 5/9/2; labels follow the final critical evidence obligations rather than an exact target quota."
+    "Data-flow coverage moved from 0 to 2 (n020, n022) with the macro/run stage-chain anchor discarded in preflight (family-adjacency risk vs nf006); Batch 2 may revisit it with a sharper information need.",
+    "No exploratory candidates arose in Batch 1; exploratory balancing is assigned to Batch 2 by the approved plan.",
+    "Difficulty band is 6/13/3; labels follow the final critical evidence obligations rather than an exact target quota."
   ],
   "recommended_coverage_targets": {
     "scope": "proposal_only_for_future_full_novel_dev",
@@ -89,14 +91,14 @@
     "origin": "human_directed_llm_draft",
     "agent_outcome_seen_before_freeze": false,
     "evidence_selected_from_agent_output": false,
-    "human_approval": "complete",
+    "human_approval": "partial",
     "human_reviewer": "Li",
     "reviewed_at": "2026-08-24T00:28:55+02:00",
     "review_decision_counts": {
       "accepted": 16,
       "revise": 0,
       "rejected": 0,
-      "pending": 0
+      "pending": 6
     },
     "locked_corpus_source_versions": [
       "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
@@ -109,53 +111,57 @@
       "curated_panda_domain@1.0"
     ],
     "re_reviewed_at": "2026-08-24T00:49:13+02:00",
-    "pilot_frozen": true
+    "pilot_frozen": true,
+    "expansion_batch1_pending": 6
   },
   "representativeness": {
     "profile_artifact": "gold_representativeness_profile.json",
     "profile_schema": "novel-representativeness-profile-v2",
     "profile_role": "benchmark_reference_proxy",
     "empirical_user_frequency": false,
-    "representative_count": 16,
+    "representative_count": 22,
     "exploratory_count": 0,
     "counts_by_primary_task_archetype": {
       "setup_environment": 3,
       "component_usage": 6,
       "concept_comparison": 1,
       "theory_explanation": 1,
-      "implementation_explanation": 2,
+      "implementation_explanation": 4,
       "repository_structure": 1,
       "troubleshooting_diagnosis": 1,
-      "source_location": 1
+      "source_location": 2,
+      "producer_consumer_trace": 2,
+      "workflow_sequence": 1
     },
     "benchmark_reference_fit_counts": {
-      "strong": 7,
-      "moderate": 9
+      "strong": 9,
+      "moderate": 13
     },
     "domain_relevance_counts": {
-      "strong": 10,
+      "strong": 16,
       "moderate": 6
     },
     "corpus_tail_counts": {
-      "representative_core": 10,
-      "representative_but_rare": 6
+      "representative_core": 13,
+      "representative_but_rare": 9
     },
     "dispositions": {
-      "KEEP_REPRESENTATIVE": 16
+      "KEEP_REPRESENTATIVE": 22
     },
     "task_archetype_gaps_vs_gold_reference": [
-      "source_location: Gold reference 14.2%, pilot 6.3% (1 of 16)",
-      "implementation_explanation: Gold reference 15.8%, pilot 12.5% (2 of 16)",
-      "documentation_navigation: Gold reference 2.5%, pilot 0%",
-      "component_usage over-weighted: Gold reference 8.3%, pilot 37.5%",
-      "setup_environment over-weighted: Gold reference 7.5%, pilot 18.8%"
+      "source_location: Gold reference 14.2%, expansion 9.1% (2 of 22)",
+      "implementation_explanation: Gold reference 15.8%, expansion 18.2% (4 of 22)",
+      "documentation_navigation: Gold reference 2.5%, expansion 0% (Batch 2 balancing area)",
+      "producer_consumer_trace: Gold reference 12.5%, expansion 9.1% (2 of 22)",
+      "component_usage over-weighted: Gold reference 8.3%, expansion 27.3%",
+      "setup_environment over-weighted: Gold reference 7.5%, expansion 13.6%"
     ],
     "answerability_gaps_vs_gold_reference": [
-      "version_boundary answerability: Gold reference 8/120 (6.7%), pilot 0/16",
-      "corpus_insufficiency answerability: Gold reference 10/120 (8.3%), pilot 1/16"
+      "version_boundary answerability: Gold reference 8/120 (6.7%), expansion 0/22",
+      "corpus_insufficiency answerability: Gold reference 10/120 (8.3%), expansion 1/22"
     ],
-    "notes": "All gap statements are relative to the exposed Gold benchmark reference profile (a manually curated, intentionally balanced benchmark), not to empirical user-query frequency. Representativeness classification uses benchmark reference fit plus independent domain-relevance judgment. N1-R2R1 retained n001-n010 and n014-n017 with factual corrections, retired n011/n012 under the information-need identity rule, migrated the repaired analysis-usage need to n018, and independently sampled the core Kalman implementation case n019. No representative/exploratory quota is active."
+    "notes": "All gap statements are relative to the exposed Gold benchmark reference profile (a manually curated, intentionally balanced benchmark), not to empirical user-query frequency. Representativeness classification uses benchmark reference fit plus independent domain-relevance judgment. Counts cover all 22 loaded records: the 16 frozen approved N1 pilot questions plus 6 unreviewed N2-A Batch 1 drafts (n020-n025, lifecycle draft). The N1 pilot remains frozen (Git-preserved 0.2.0 baseline); the 0.3.0 expansion dataset is not frozen and no representative/exploratory quota is active."
   },
   "candidate_replacement_needed_count": 0,
-  "dataset_version": "0.2.0"
+  "dataset_version": "0.3.0"
 }

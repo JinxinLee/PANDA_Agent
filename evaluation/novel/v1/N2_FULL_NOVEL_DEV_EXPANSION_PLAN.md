@@ -1,6 +1,14 @@
 # N2 — Full Novel-Dev Expansion Plan
 
-Status: **PLAN_DRAFT / HUMAN_REVIEW_PENDING** (2026-08-24).
+Status: **APPROVED_FOR_EXECUTION** (2026-08-24).
+
+Human approval record: reviewer `Li` re-reviewed Rev 1 and returned `ACCEPT`
+at 2026-08-24T01:25+02:00 (approved commit
+`08626661e3bb776c8f74c4f5b28c85ff2147c0fb`; prior review state 5/5 required
+revisions resolved). This authorizes N2-A expansion execution. N2 overall
+remains an active expansion lifecycle until the full expanded `novel_dev` is
+human-reviewed and frozen; plan approval is not N2 completion and authorizes
+no novel evaluation.
 
 Revision history: Rev 1 (2026-08-24) applies the five required revisions from
 the human review of the initial draft (REVISE decision; all other planning

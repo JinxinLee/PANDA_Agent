@@ -1,11 +1,11 @@
 schema_version: '2.0'
-benchmark_version: novel-v1-dev-0.2.0
+benchmark_version: novel-v1-dev-0.3.0
 release_eligible: false
 acceptance_exposed: true
 expected_split_counts:
-  novel_dev: 16
+  novel_dev: 22
 expected_status_counts:
-  answered: 15
+  answered: 21
   insufficient_evidence: 1
 questions:
   - id: n001
@@ -1002,3 +1002,410 @@ questions:
     review_status: approved
     reviewer: Li
     reviewed_at: 2026-08-24T00:28:55+02:00
+  - id: n020
+    split: novel_dev
+    language: en
+    intent: data_flow
+    query: >-
+      In the restgas determination analysis, the standard track finder leaves
+      part of the hits unassigned. Which task picks up those leftover hits,
+      and what do the downstream displaced-track finder and z-recovery stages
+      each contribute before the final fit?
+    expected_status: answered
+    allowed_source_versions:
+      - luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32
+      - pandaroot@18c09e91100db27867ded30e708b4dae95bd8357
+      - restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42
+      - li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a
+      - karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b
+      - pflueger_2017@1b6ec987fc1430be085f2a7ba1d634f6580115ff0a90dff090dfcba5e990f3
+      - pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87
+      - curated_panda_domain@1.0
+    required_evidence_groups:
+      - group_id: n020.e1
+        role: recovery_chain_handoff_documentation
+        critical: true
+        any_of:
+          - source_id: restgas_determination
+            path: README.md
+      - group_id: n020.e2
+        role: unassigned_hits_collection_task
+        critical: true
+        any_of:
+          - source_id: restgas_determination
+            object_type: source_file
+            path: tracking/PndUnassignedHits/PndUnassignedHitsTask.h
+      - group_id: n020.e3
+        role: triplet_finder_task
+        critical: true
+        any_of:
+          - source_id: restgas_determination
+            object_type: source_file
+            path: tracking/PndApolloniusTripletTrackFinder/PndApolloniusTripletTrackFinderTask.h
+    required_source_types:
+      - code
+    required_answer_points:
+      - point_id: p1
+        text: >-
+          PndUnassignedHitsTask collects the hits left unassigned by the
+          standard reconstruction (PndTrkTracking2) and hands them to the
+          dedicated displaced-track recovery.
+        weight: 1.0
+        critical: true
+      - point_id: p2
+        text: >-
+          PndApolloniusTripletTrackFinderTask reconstructs displaced
+          trajectories from STT drift-circle triplets together with MVD/GEM
+          information, and PndSttSkewStrawPzFinderTask recovers the
+          longitudinal track component from the skewed STT layers.
+        weight: 1.0
+        critical: true
+      - point_id: p3
+        text: >-
+          PndRecoKalmanTask2 then fits the resulting tracks with propagation
+          to the nominal interaction point disabled (SetPropagateToIP(kFALSE)),
+          completing the chain configured in macro/target/reco_complete.C.
+        weight: 1.0
+        critical: true
+    required_identifiers: []
+    forbidden_evidence: []
+    concept_scopes: {}
+    cluster_id: nf020
+    challenge_tags: []
+    review_status: draft
+    reviewer: null
+    reviewed_at: null
+  - id: n021
+    split: novel_dev
+    language: en
+    intent: usage
+    query: >-
+      I want to go from simulated luminosity-detector events to a luminosity
+      estimate using my PandaRoot and LuminosityFit installations. Which parts
+      of that workflow belong to which repository, and which LuminosityFit
+      scripts drive the combined chain?
+    expected_status: answered
+    allowed_source_versions:
+      - luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32
+      - pandaroot@18c09e91100db27867ded30e708b4dae95bd8357
+      - restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42
+      - li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a
+      - karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b
+      - pflueger_2017@1b6ec987fc1430be085f2a7ba1d634f6580115ff0a90dff090dfcba5e990f3
+      - pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87
+      - curated_panda_domain@1.0
+    required_evidence_groups:
+      - group_id: n021.e1
+        role: combined_workflow_scripts
+        critical: true
+        any_of:
+          - source_id: luminosityfit
+            path: README.md
+      - group_id: n021.e2
+        role: simulation_framework_division
+        critical: true
+        any_of:
+          - source_id: luminosityfit
+            path: python/Readme.md
+      - group_id: n021.e3
+        role: pandaroot_lmd_detector_side
+        critical: true
+        any_of:
+          - source_id: pandaroot
+            object_type: source_file
+            path: detectors/lmd/LmdDigi/PndLmdDigiTask.h
+    required_source_types:
+      - code
+    required_answer_points:
+      - point_id: p1
+        text: >-
+          The luminosity-detector events are simulated and reconstructed with
+          the PandaRoot framework: the LuminosityFit python layer documents
+          that the events have to be simulated using PandaRoot and its
+          simulation scripts start PandaRoot simulations directly.
+        weight: 1.0
+        critical: true
+      - point_id: p2
+        text: >-
+          The combined workflow is driven from the LuminosityFit side by
+          runSimulationReconstruction.py (simulation plus reconstruction)
+          followed by determineLuminosity.py (the luminosity fit), as
+          documented in the repository's first-workflow section.
+        weight: 1.0
+        critical: true
+      - point_id: p3
+        text: >-
+          On the PandaRoot side the luminosity monitor detector is implemented
+          under detectors/lmd with its own MC, digitization, and
+          reconstruction tasks (LmdMC, LmdDigi, LmdReco), for example
+          PndLmdDigiTask for digitization.
+        weight: 1.0
+        critical: true
+    required_identifiers: []
+    forbidden_evidence: []
+    concept_scopes: {}
+    cluster_id: nf021
+    challenge_tags: []
+    review_status: draft
+    reviewer: null
+    reviewed_at: null
+  - id: n022
+    split: novel_dev
+    language: en
+    intent: data_flow
+    query: >-
+      The restgas analysis determines the event vertex through a two-step
+      POCA workflow. What does the first worker step leave behind for the
+      second analysis step, and how is the fitted vertex fed into the
+      reprocessing?
+    expected_status: answered
+    allowed_source_versions:
+      - luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32
+      - pandaroot@18c09e91100db27867ded30e708b4dae95bd8357
+      - restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42
+      - li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a
+      - karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b
+      - pflueger_2017@1b6ec987fc1430be085f2a7ba1d634f6580115ff0a90dff090dfcba5e990f3
+      - pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87
+      - curated_panda_domain@1.0
+    required_evidence_groups:
+      - group_id: n022.e1
+        role: worker_step1_pipeline
+        critical: true
+        any_of:
+          - source_id: restgas_determination
+            path: macro/target/poca_step1_worker.py
+      - group_id: n022.e2
+        role: analysis_step2_consumption
+        critical: true
+        any_of:
+          - source_id: restgas_determination
+            path: macro/target/poca_step2_analysis.py
+    required_source_types:
+      - workflow
+    required_answer_points:
+      - point_id: p1
+        text: >-
+          The step-1 worker runs the per-job chain of simulation,
+          digitization, reconstruction, and PID, then executes the
+          vertex-fitting analysis macro, leaving behind the stage outputs and
+          a vtx_fit.json vertex-fit artifact.
+        weight: 1.0
+        critical: true
+      - point_id: p2
+        text: >-
+          The step-2 analysis reads the fitted vertex means (vertex_x,
+          vertex_y, vertex_z) from that JSON file.
+        weight: 1.0
+        critical: true
+      - point_id: p3
+        text: >-
+          Step 2 exports the fitted vertex as FIT_VERTEX_X/Y/Z environment
+          variables (together with POCA_VERTEX_FILE) that parameterize the
+          back-propagated reprocessing toward the POCA vertex.
+        weight: 1.0
+        critical: true
+    required_identifiers: []
+    forbidden_evidence: []
+    concept_scopes: {}
+    cluster_id: nf022
+    challenge_tags: []
+    review_status: draft
+    reviewer: null
+    reviewed_at: null
+  - id: n023
+    split: novel_dev
+    language: en
+    intent: module_structure
+    query: >-
+      I need to modify forward tracking for the forward spectrometer. Where
+      in the PandaRoot source tree is the FTS track finder implemented, and
+      which track branches does it write out?
+    expected_status: answered
+    allowed_source_versions:
+      - luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32
+      - pandaroot@18c09e91100db27867ded30e708b4dae95bd8357
+      - restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42
+      - li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a
+      - karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b
+      - pflueger_2017@1b6ec987fc1430be085f2a7ba1d634f6580115ff0a90dff090dfcba5e990f3
+      - pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87
+      - curated_panda_domain@1.0
+    required_evidence_groups:
+      - group_id: n023.e1
+        role: fts_finder_package_doc
+        critical: true
+        any_of:
+          - source_id: pandaroot
+            path: tracking/PndFtsTrackFinder/README.MD
+      - group_id: n023.e2
+        role: fts_finder_task_entry
+        critical: true
+        any_of:
+          - source_id: pandaroot
+            object_type: source_file
+            path: tracking/PndFtsTrackFinder/PndFtsTrackFinderTask.h
+    required_source_types:
+      - code
+    required_answer_points:
+      - point_id: p1
+        text: >-
+          The FTS track finder is implemented in the tracking/PndFtsTrackFinder
+          package, with PndFtsTrackFinderTask as its FairTask entry point.
+        weight: 1.0
+        critical: true
+      - point_id: p2
+        text: >-
+          The algorithm is based on the one proposed in the Technical Design
+          Report for the PANDA Forward Tracker, pp. 88-97.
+        weight: 1.0
+        critical: true
+      - point_id: p3
+        text: >-
+          It writes PndTrackCand track candidates, PndTrack tracks with two
+          momentum-estimation methods (see tool/PndFtsContext), and
+          PndTrackAnalytic branches holding the line and circle equations of
+          the track candidates.
+        weight: 1.0
+        critical: true
+    required_identifiers: []
+    forbidden_evidence: []
+    concept_scopes: {}
+    cluster_id: nf023
+    challenge_tags: []
+    review_status: draft
+    reviewer: null
+    reviewed_at: null
+  - id: n024
+    split: novel_dev
+    language: en
+    intent: algorithm_implementation
+    query: >-
+      PandaRoot can transport tracks through the magnetic field either with
+      GEANE or with an analytic helix. What are the two propagators behind
+      these options, and how does each determine the transported track state?
+    expected_status: answered
+    allowed_source_versions:
+      - luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32
+      - pandaroot@18c09e91100db27867ded30e708b4dae95bd8357
+      - restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42
+      - li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a
+      - karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b
+      - pflueger_2017@1b6ec987fc1430be085f2a7ba1d634f6580115ff0a90dff090dfcba5e990f3
+      - pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87
+      - curated_panda_domain@1.0
+    required_evidence_groups:
+      - group_id: n024.e1
+        role: geane_propagator_interface
+        critical: true
+        any_of:
+          - source_id: pandaroot
+            object_type: source_file
+            path: tracking/PndGeanePropagator/PndGeanePro.h
+      - group_id: n024.e2
+        role: helix_propagator_implementation
+        critical: true
+        any_of:
+          - source_id: pandaroot
+            object_type: source_file
+            path: tracking/PndHelixPropagator/PndHelixPropagator.h
+    required_source_types:
+      - code
+    required_answer_points:
+      - point_id: p1
+        text: >-
+          PndGeanePro is PandaRoot's interface to GEANE: it propagates track
+          parameters with error-matrix and transport-matrix handling through
+          the Geant3-based engine to a target volume or plane.
+        weight: 1.0
+        critical: true
+      - point_id: p2
+        text: >-
+          PndHelixPropagator transports analytically on a helix assuming a
+          homogeneous field along z: it computes the track-circle radius from
+          the transverse momentum and the field strength, the circle center,
+          and the propagated angle, with a backward-propagation mode.
+        weight: 1.0
+        critical: true
+      - point_id: p3
+        text: >-
+          Both classes implement the common PndPropagator interface, so
+          reconstruction code can select GEANE-based numerical transport or
+          the fast analytic helix approximation behind one interface.
+        weight: 1.0
+        critical: true
+    required_identifiers: []
+    forbidden_evidence: []
+    concept_scopes: {}
+    cluster_id: nf024
+    challenge_tags: []
+    review_status: draft
+    reviewer: null
+    reviewed_at: null
+  - id: n025
+    split: novel_dev
+    language: en
+    intent: algorithm_implementation
+    query: >-
+      The displaced-track finder in the restgas branch builds candidates from
+      triplets of STT drift circles by solving the classical Apollonius
+      tangency problem. How does it keep the triplet combinatorics manageable
+      while staying efficient for displaced vertices?
+    expected_status: answered
+    allowed_source_versions:
+      - luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32
+      - pandaroot@18c09e91100db27867ded30e708b4dae95bd8357
+      - restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42
+      - li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a
+      - karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b
+      - pflueger_2017@1b6ec987fc1430be085f2a7ba1d634f6580115ff0a90dff090dfcba5e990f3
+      - pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87
+      - curated_panda_domain@1.0
+    required_evidence_groups:
+      - group_id: n025.e1
+        role: apollonius_approach_documentation
+        critical: true
+        any_of:
+          - source_id: restgas_determination
+            path: README.md
+      - group_id: n025.e2
+        role: triplet_geometry_implementation
+        critical: true
+        any_of:
+          - source_id: restgas_determination
+            object_type: source_file
+            path: tracking/PndApolloniusTripletTrackFinder/PndApolloniusTriplet.h
+    required_source_types:
+      - code
+    required_answer_points:
+      - point_id: p1
+        text: >-
+          Three STT drift measurements define three circles in the transverse
+          plane, and the classical Apollonius problem admits up to eight
+          tangent-circle solutions from the internal and external tangency
+          combinations.
+        weight: 1.0
+        critical: true
+      - point_id: p2
+        text: >-
+          The finder reduces the combinatorics by choosing spatially separated
+          inner, middle, and outer hit rows and by requiring
+          neighbor/topological compatibility and azimuthal compatibility.
+        weight: 1.0
+        critical: true
+      - point_id: p3
+        text: >-
+          Each candidate is grown with additional compatible hits and the
+          populated trajectory that best matches the complete hit pattern is
+          selected, which avoids a hard nominal-IP constraint and preserves
+          efficiency for displaced vertices.
+        weight: 1.0
+        critical: true
+    required_identifiers: []
+    forbidden_evidence: []
+    concept_scopes: {}
+    cluster_id: nf025
+    challenge_tags: []
+    review_status: draft
+    reviewer: null
+    reviewed_at: null

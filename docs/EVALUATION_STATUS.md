@@ -44,13 +44,19 @@ When records conflict, use the single section explicitly marked **Current author
 - No evaluation or runtime inspection occurred: PANDA retrieval, QA, judge, Vertex, embeddings, index rebuilds, and benchmark/novel outcome inspection were all `0`. Only locked source/PDF inspection and static T0 validation were used.
 - No validation or holdout content was created; full-dataset quotas remain unfrozen.
 
-## N2 full novel-dev expansion planning — 2026-08-24 (plan drafted, human review pending)
+## N2 expansion planning and plan review — 2026-08-24 (historical; superseded by the N2-A section below)
 
 - N2 status: `PLAN_DRAFT / HUMAN_REVIEW_PENDING`. `evaluation/novel/v1/N2_FULL_NOVEL_DEV_EXPANSION_PLAN.md` proposes the expansion from the frozen 16-question pilot toward the ~30-question full `novel_dev`: coverage diagnosis, a static locked-corpus support audit, 16 labelled `PROPOSED_SOFT_TARGET` coverage bands with an explicit non-quota statement, the anchor-first sampling protocol, semantic-family isolation, representative/exploratory and status-selection policies, Batch 1 / Batch 2 design, the no-outcome contamination boundary, a `0.3.0` expansion-lineage versioning proposal, the human-review workflow, freeze criteria, and out-of-scope list.
 - Strongest audited supports: data_flow / producer-consumer (restgas `macro/target` POCA pipeline, `macro/run` stage chain), genuine cross-repository workflow needs (pandaroot `detectors/lmd` plus the luminosityfit README workflow, under a strict two-repository-identity rule), source_location and implementation_explanation anchors (`tracking/`, LMD sources), documentation_navigation via the locked sphinx snapshot, and moderate exploratory regions (`softrig`, `timebased`, rare locked-thesis chapters).
-- The plan creates no question, Gold record, or dataset-version change; the frozen N1 artifacts are untouched and N1 remains `PASS / COMPLETE`. No PANDA Agent component, evaluation tier, or outcome inspection occurred.
-- Human review (2026-08-24): `REVISE` with five required revisions — (1) align `expected_split_counts`/`expected_status_counts` semantics with the runtime evaluator (all loaded question records, not approved-only; curation contract §11 updated accordingly); (2) relax exploratory admission to domain relevance plus one or more substantive exploratory properties; (3) remove Gold-proxy-derived numeric caps on `component_usage`, `setup_environment`, and `documentation_navigation` (prioritization guidance, not ceilings); (4) reframe exploratory targeting as an investigation pool and identify the 25/50/25 difficulty band as a pilot-derived heuristic, not a contract rule; (5) keep the strict cross-repository definition with final classification contingent on the annotated minimum critical evidence footprint requiring two repository identities. All five revisions are applied in plan Rev 1; all other planning decisions were accepted. The plan awaits re-review before N2-A begins.
-- Next step: human re-review of the revised N2 expansion plan; N2-A candidate sampling requires explicit re-approval first.
+- The plan creates no question, Gold record, or dataset-version change at planning time; the frozen N1 artifacts are untouched and N1 remains `PASS / COMPLETE`. No PANDA Agent component, evaluation tier, or outcome inspection occurred.
+- Human review (2026-08-24): `REVISE` with five required revisions — (1) align `expected_split_counts`/`expected_status_counts` semantics with the runtime evaluator (all loaded question records, not approved-only; curation contract §11 updated accordingly); (2) relax exploratory admission to domain relevance plus one or more substantive exploratory properties; (3) remove Gold-proxy-derived numeric caps on `component_usage`, `setup_environment`, and `documentation_navigation` (prioritization guidance, not ceilings); (4) reframe exploratory targeting as an investigation pool and identify the 25/50/25 difficulty band as a pilot-derived heuristic, not a contract rule; (5) keep the strict cross-repository definition with final classification contingent on the annotated minimum critical evidence footprint requiring two repository identities. All five revisions are applied in plan Rev 1; all other planning decisions were accepted. The subsequent re-review returned `ACCEPT` — see the N2-A section below.
+
+## N2 full novel-dev expansion — 2026-08-24 (plan approved; Batch 1 drafted, human review pending)
+
+- N2: `IN_PROGRESS / PLAN_APPROVED`. Reviewer `Li` re-reviewed the Rev 1 plan and returned `ACCEPT` at 2026-08-24T01:25+02:00 (approved commit `08626661e3bb776c8f74c4f5b28c85ff2147c0fb`; 5/5 prior revisions resolved). Plan approval authorizes expansion curation only — not novel evaluation and not N2 completion.
+- N2-A: `BATCH1_DRAFTED / HUMAN_REVIEW_PENDING`. Six Batch 1 candidates were curated gap-first from audited locked-source anchors: `n020` (restgas displaced-track recovery hand-off chain, data_flow/producer-consumer), `n021` (PandaRoot+LuminosityFit luminosity workflow, genuine cross-repository with a statically derived two-identity minimum footprint), `n022` (two-step POCA artifact flow, data_flow), `n023` (FTS track-finder ownership, source_location), `n024` (GEANE vs analytic-helix transport, implementation comparison), `n025` (Apollonius triplet geometry, implementation explanation). All six are `review_status: draft`, `reviewer: null`, sidecar `lifecycle: draft`; Codex recommendations are advisory in `N2A_BATCH1_REVIEW_PACKAGE.md` and every human decision is PENDING.
+- Dataset lineage: `0.3.0` expansion-in-progress (`novel-v1-dev-0.3.0`, identity `novel-v1-dev-expansion`, status `EXPANSION_IN_PROGRESS`). The 16 frozen N1 questions are content-identical and remain approved/`split_frozen`; Git history preserves the frozen `0.2.0` pilot. Expected counts follow the runtime contract and count all 22 loaded records (16 approved + 6 draft). One pre-ID sampling idea (macro/run stage-chain macro question) was discarded for family-adjacency risk against nf006.
+- No PANDA Agent component, evaluation tier, or outcome inspection occurred. Batch 2, any freeze, and any novel evaluation remain unauthorized.
 
 ## Generalization Phase status
 
@@ -528,13 +534,13 @@ The retrieval and QA measurements are unchanged. A3.1 corrects only metric repre
 
 ## Novel dataset state
 
-- `novel_dev`: 16 human-approved frozen pilot questions (N1 pilot `0.2.0` / `novel-v1-dev-0.2.0`); the full ~30-question `novel_dev` is not complete.
-- Human-approved: 16. Frozen: 16 (reviewer `Li`; 14 accepted 2026-08-24T00:28:55+02:00, n002/n008 accepted on re-review 2026-08-24T00:49:13+02:00).
+- `novel_dev`: 22 loaded records (dataset lineage `0.3.0` / `novel-v1-dev-0.3.0`, identity `novel-v1-dev-expansion`, status `EXPANSION_IN_PROGRESS`): 16 human-approved frozen N1 questions plus 6 N2-A Batch 1 draft candidates (`n020`-`n025`, review pending). The full ~30-question `novel_dev` is not complete.
+- Human-approved: 16. Frozen: 16 (reviewer `Li`; 14 accepted 2026-08-24T00:28:55+02:00, n002/n008 accepted on re-review 2026-08-24T00:49:13+02:00). Draft/pending: 6 (no reviewer has inspected the Batch 1 candidates; `Li`'s plan approval at 2026-08-24T01:25+02:00 is plan-level only).
 - `novel_validation`: 0 / not started.
 - `novel_holdout`: not created / externally managed; the runner supports loading it from an external path.
 - Empty novel JSONL artifacts are schema/placeholders, not measured results.
-- Curation governance: N0 `COMPLETE`; `docs/NOVEL_DATASET_CURATION_CONTRACT.md` is authoritative; N1 `PASS / COMPLETE` (frozen pilot; no generalization claim).
-- Next curation task: N2 expansion plan is drafted (`PLAN_DRAFT / HUMAN_REVIEW_PENDING`; Rev 1 after a `REVISE` review; no expansion questions exist yet). Next step is human re-review of the revised plan, then N2-A Batch 1 curation.
+- Curation governance: N0 `COMPLETE`; `docs/NOVEL_DATASET_CURATION_CONTRACT.md` is authoritative; N1 `PASS / COMPLETE` (frozen pilot; no generalization claim); N2 `IN_PROGRESS / PLAN_APPROVED`; N2-A `BATCH1_DRAFTED / HUMAN_REVIEW_PENDING`.
+- Next curation step: human review of the N2-A Batch 1 candidates (`N2A_BATCH1_REVIEW_PACKAGE.md`), then Batch 2 balancing.
 
 ## Known limitations
 
@@ -544,7 +550,7 @@ The retrieval and QA measurements are unchanged. A3.1 corrects only metric repre
 
 ## Next authorized roadmap task
 
-**Human review of the N2 full novel-dev expansion plan** is the next curation step. The plan artifact `evaluation/novel/v1/N2_FULL_NOVEL_DEV_EXPANSION_PLAN.md` is `PLAN_DRAFT / HUMAN_REVIEW_PENDING`; N2-A candidate sampling may begin only after the plan is approved or revised and re-approved. N1 remains `PASS / COMPLETE`; C8 remains `NEXT_ELIGIBLE / NOT_STARTED`. No novel evaluation is authorized by the N2 planning state alone.
+**Human review of the N2-A Batch 1 candidates** is the next curation step. The six drafts `n020`-`n025` (`N2A_BATCH1_REVIEW_PACKAGE.md`) are `BATCH1_DRAFTED / HUMAN_REVIEW_PENDING`; Batch 2 balancing may begin only after the Batch 1 human decisions. N1 remains `PASS / COMPLETE`; N2 remains `IN_PROGRESS`; C8 remains `NEXT_ELIGIBLE / NOT_STARTED`. No novel evaluation is authorized by the N2-A drafting state alone.
 
 ### Historical pre-N0 roadmap summary
 

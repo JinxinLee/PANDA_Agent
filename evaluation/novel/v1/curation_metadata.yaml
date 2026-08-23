@@ -1,6 +1,6 @@
 schema_version: novel-curation-sidecar-v3
-dataset_version: 0.2.0
-benchmark_version: novel-v1-dev-0.2.0
+dataset_version: 0.3.0
+benchmark_version: novel-v1-dev-0.3.0
 records:
   - question_id: n001
     curation_family_id: nf001
@@ -898,3 +898,342 @@ records:
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
       lifecycle: split_frozen
+  - question_id: n020
+    curation_family_id: nf020
+    intent: data_flow
+    expected_status: answered
+    novelty:
+      types:
+        - relation
+        - composition
+      closest_exposed_cases:
+        - g070
+        - g074
+      benchmark_overlap:
+        wording: low
+        entity: none
+        evidence: none
+        information_need: low
+      rationale: >-
+        Exposed producer-consumer cases trace data hand-offs inside the
+        standard reconstruction and analysis stacks. None covers the restgas
+        branch's dedicated displaced-track recovery chain, the
+        unassigned-hit collection hand-off, or the disabled-IP final fit. The
+        composed hand-off relation across the recovery tasks is an
+        independently sampled information need, not a mechanical variant.
+    representativeness:
+      class: representative
+      primary_task_archetype: producer_consumer_trace
+      secondary_task_archetypes: []
+      gold_analogue_cases:
+        - g070
+        - g074
+      benchmark_reference_fit: moderate
+      domain_relevance: strong
+      corpus_tail: representative_core
+      disposition: KEEP_REPRESENTATIVE
+      rationale: >-
+        Benchmark analogue: Gold producer-consumer-trace cases g070/g074.
+        Domain relevance: recovering displaced restgas secondaries is a core
+        purpose of the RestgasDetermination branch, and the hand-off chain is
+        directly documented and implemented in the locked sources.
+    coverage:
+      repositories:
+        - restgas_determination
+      source_types:
+        - code
+      expression_form: descriptive
+      evidence_topology: producer_consumer
+      source_scope: single_source
+      repository_scope: single_repository
+      reasoning_forms:
+        - trace
+        - explain
+      difficulty: moderate
+    curation:
+      origin: human_directed_llm_draft
+      agent_outcome_seen_before_freeze: false
+      evidence_selected_from_agent_output: false
+      lifecycle: draft
+  - question_id: n021
+    curation_family_id: nf021
+    intent: usage
+    expected_status: answered
+    novelty:
+      types:
+        - reasoning_topology
+        - composition
+      closest_exposed_cases:
+        - g091
+        - g092
+      benchmark_overlap:
+        wording: low
+        entity: none
+        evidence: none
+        information_need: low
+      rationale: >-
+        Exposed workflow-sequence cases describe run order inside one
+        repository. No exposed case requires the PandaRoot-LuminosityFit
+        division of labour for the luminosity workflow or the cross-repository
+        evidence combination this need obligates. Distinct from nf009
+        (elastic-model existence) and nf014 (model_framework directory role).
+    representativeness:
+      class: representative
+      primary_task_archetype: workflow_sequence
+      secondary_task_archetypes:
+        - producer_consumer_trace
+      gold_analogue_cases:
+        - g091
+        - g092
+      benchmark_reference_fit: moderate
+      domain_relevance: strong
+      corpus_tail: representative_but_rare
+      disposition: KEEP_REPRESENTATIVE
+      rationale: >-
+        Benchmark analogue: Gold workflow-sequence cases g091/g092. Domain
+        relevance: producing luminosity estimates from simulated LMD events is
+        the central use case of the luminosity-detector toolchain recorded in
+        the locked corpus.
+    coverage:
+      repositories:
+        - pandaroot
+        - luminosityfit
+      source_types:
+        - code
+      expression_form: descriptive
+      evidence_topology: multi_hop
+      source_scope: cross_source
+      repository_scope: cross_repository
+      reasoning_forms:
+        - trace
+        - compare
+      difficulty: hard
+    curation:
+      origin: human_directed_llm_draft
+      agent_outcome_seen_before_freeze: false
+      evidence_selected_from_agent_output: false
+      lifecycle: draft
+  - question_id: n022
+    curation_family_id: nf022
+    intent: data_flow
+    expected_status: answered
+    novelty:
+      types:
+        - relation
+        - composition
+      closest_exposed_cases:
+        - g079
+        - g080
+      benchmark_overlap:
+        wording: low
+        entity: none
+        evidence: none
+        information_need: low
+      rationale: >-
+        Exposed producer-consumer cases cover task-level hand-offs, not the
+        two-step scripted analysis pipeline in which a worker step leaves a
+        fitted-vertex JSON artifact that the analysis step reads back and
+        exports as reprocessing parameters. Distinct from nf020, which covers
+        the in-reconstruction task chain rather than the analysis-level
+        artifact flow.
+    representativeness:
+      class: representative
+      primary_task_archetype: producer_consumer_trace
+      secondary_task_archetypes: []
+      gold_analogue_cases:
+        - g079
+        - g080
+      benchmark_reference_fit: moderate
+      domain_relevance: strong
+      corpus_tail: representative_but_rare
+      disposition: KEEP_REPRESENTATIVE
+      rationale: >-
+        Benchmark analogue: Gold producer-consumer-trace cases g079/g080.
+        Domain relevance: the POCA two-step pipeline is the operative
+        vertex-determination workflow of the restgas analysis in the locked
+        branch.
+    coverage:
+      repositories:
+        - restgas_determination
+      source_types:
+        - workflow
+      expression_form: descriptive
+      evidence_topology: producer_consumer
+      source_scope: single_source
+      repository_scope: single_repository
+      reasoning_forms:
+        - trace
+      difficulty: moderate
+    curation:
+      origin: human_directed_llm_draft
+      agent_outcome_seen_before_freeze: false
+      evidence_selected_from_agent_output: false
+      lifecycle: draft
+  - question_id: n023
+    curation_family_id: nf023
+    intent: module_structure
+    expected_status: answered
+    novelty:
+      types:
+        - entity
+        - task_form
+      closest_exposed_cases:
+        - g027
+        - g028
+      benchmark_overlap:
+        wording: low
+        entity: none
+        evidence: none
+        information_need: low
+      rationale: >-
+        Exposed source-location cases target other subsystems and objects;
+        none asks for the FTS track-finder package, its FairTask entry, or its
+        output branches. Independently sampled forward-spectrometer tracking
+        ownership is a distinct locating need, not a paraphrase of nf017
+        (persistent PndTrack definition) or nf006 (filename helper).
+    representativeness:
+      class: representative
+      primary_task_archetype: source_location
+      secondary_task_archetypes: []
+      gold_analogue_cases:
+        - g027
+        - g028
+      benchmark_reference_fit: strong
+      domain_relevance: strong
+      corpus_tail: representative_core
+      disposition: KEEP_REPRESENTATIVE
+      rationale: >-
+        Benchmark analogue: Gold source-location cases g027/g028, one of the
+        largest Gold archetypes. Domain relevance: knowing which package owns
+        forward-spectrometer tracking is a routine developer need directly
+        answered by the locked tree.
+    coverage:
+      repositories:
+        - pandaroot
+      source_types:
+        - code
+      expression_form: implementation_oriented
+      evidence_topology: single_hop
+      source_scope: single_source
+      repository_scope: single_repository
+      reasoning_forms:
+        - locate
+        - structure
+      difficulty: simple
+    curation:
+      origin: human_directed_llm_draft
+      agent_outcome_seen_before_freeze: false
+      evidence_selected_from_agent_output: false
+      lifecycle: draft
+  - question_id: n024
+    curation_family_id: nf024
+    intent: algorithm_implementation
+    expected_status: answered
+    novelty:
+      types:
+        - entity
+        - composition
+      closest_exposed_cases:
+        - g059
+        - g060
+      benchmark_overlap:
+        wording: low
+        entity: none
+        evidence: none
+        information_need: low
+      rationale: >-
+        g059/g060 explain LuminosityFit smearing-model implementations and are
+        also the closest cases for nf019 (Kalman fitting). No exposed case
+        compares PandaRoot's GEANE-based and analytic-helix track propagators
+        or their common interface; transport selection is an implementation
+        need independent of the fitting need in nf019.
+    representativeness:
+      class: representative
+      primary_task_archetype: implementation_explanation
+      secondary_task_archetypes:
+        - concept_comparison
+      gold_analogue_cases:
+        - g059
+        - g060
+      benchmark_reference_fit: strong
+      domain_relevance: strong
+      corpus_tail: representative_core
+      disposition: KEEP_REPRESENTATIVE
+      rationale: >-
+        Benchmark analogue: Gold implementation-explanation cases g059/g060,
+        the largest Gold archetype. Domain relevance: track transport through
+        the solenoid field underlies all PandaRoot reconstruction; both
+        propagators are directly evidenced in the locked tree.
+    coverage:
+      repositories:
+        - pandaroot
+      source_types:
+        - code
+      expression_form: descriptive
+      evidence_topology: comparison
+      source_scope: single_source
+      repository_scope: single_repository
+      reasoning_forms:
+        - compare
+        - explain
+      difficulty: moderate
+    curation:
+      origin: human_directed_llm_draft
+      agent_outcome_seen_before_freeze: false
+      evidence_selected_from_agent_output: false
+      lifecycle: draft
+  - question_id: n025
+    curation_family_id: nf025
+    intent: algorithm_implementation
+    expected_status: answered
+    novelty:
+      types:
+        - entity
+        - nontrivial_expression
+      closest_exposed_cases:
+        - g061
+        - g062
+      benchmark_overlap:
+        wording: low
+        entity: none
+        evidence: none
+        information_need: low
+      rationale: >-
+        Exposed implementation cases explain other components; none covers the
+        Apollonius triplet geometry of the restgas displaced-track finder. The
+        question is phrased descriptively (tangency, combinatorics, displaced
+        efficiency) rather than through symbol lookup, and the geometric
+        implementation is distinct from the chain hand-off in nf020 and the
+        thesis-level track-search comparison in nf008.
+    representativeness:
+      class: representative
+      primary_task_archetype: implementation_explanation
+      secondary_task_archetypes: []
+      gold_analogue_cases:
+        - g061
+        - g062
+      benchmark_reference_fit: moderate
+      domain_relevance: strong
+      corpus_tail: representative_but_rare
+      disposition: KEEP_REPRESENTATIVE
+      rationale: >-
+        Benchmark analogue: Gold implementation-explanation cases g061/g062.
+        Domain relevance: the triplet-based displaced-track finder is the core
+        geometric reconstruction idea of the locked restgas branch.
+    coverage:
+      repositories:
+        - restgas_determination
+      source_types:
+        - code
+      expression_form: descriptive
+      evidence_topology: single_hop
+      source_scope: single_source
+      repository_scope: single_repository
+      reasoning_forms:
+        - explain
+      difficulty: moderate
+    curation:
+      origin: human_directed_llm_draft
+      agent_outcome_seen_before_freeze: false
+      evidence_selected_from_agent_output: false
+      lifecycle: draft
