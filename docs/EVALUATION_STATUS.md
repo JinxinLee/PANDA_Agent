@@ -49,7 +49,8 @@ When records conflict, use the single section explicitly marked **Current author
 - N2 status: `PLAN_DRAFT / HUMAN_REVIEW_PENDING`. `evaluation/novel/v1/N2_FULL_NOVEL_DEV_EXPANSION_PLAN.md` proposes the expansion from the frozen 16-question pilot toward the ~30-question full `novel_dev`: coverage diagnosis, a static locked-corpus support audit, 16 labelled `PROPOSED_SOFT_TARGET` coverage bands with an explicit non-quota statement, the anchor-first sampling protocol, semantic-family isolation, representative/exploratory and status-selection policies, Batch 1 / Batch 2 design, the no-outcome contamination boundary, a `0.3.0` expansion-lineage versioning proposal, the human-review workflow, freeze criteria, and out-of-scope list.
 - Strongest audited supports: data_flow / producer-consumer (restgas `macro/target` POCA pipeline, `macro/run` stage chain), genuine cross-repository workflow needs (pandaroot `detectors/lmd` plus the luminosityfit README workflow, under a strict two-repository-identity rule), source_location and implementation_explanation anchors (`tracking/`, LMD sources), documentation_navigation via the locked sphinx snapshot, and moderate exploratory regions (`softrig`, `timebased`, rare locked-thesis chapters).
 - The plan creates no question, Gold record, or dataset-version change; the frozen N1 artifacts are untouched and N1 remains `PASS / COMPLETE`. No PANDA Agent component, evaluation tier, or outcome inspection occurred.
-- Next step: human review of the N2 expansion plan; N2-A candidate sampling requires explicit plan approval first.
+- Human review (2026-08-24): `REVISE` with five required revisions — (1) align `expected_split_counts`/`expected_status_counts` semantics with the runtime evaluator (all loaded question records, not approved-only; curation contract §11 updated accordingly); (2) relax exploratory admission to domain relevance plus one or more substantive exploratory properties; (3) remove Gold-proxy-derived numeric caps on `component_usage`, `setup_environment`, and `documentation_navigation` (prioritization guidance, not ceilings); (4) reframe exploratory targeting as an investigation pool and identify the 25/50/25 difficulty band as a pilot-derived heuristic, not a contract rule; (5) keep the strict cross-repository definition with final classification contingent on the annotated minimum critical evidence footprint requiring two repository identities. All five revisions are applied in plan Rev 1; all other planning decisions were accepted. The plan awaits re-review before N2-A begins.
+- Next step: human re-review of the revised N2 expansion plan; N2-A candidate sampling requires explicit re-approval first.
 
 ## Generalization Phase status
 
@@ -533,7 +534,7 @@ The retrieval and QA measurements are unchanged. A3.1 corrects only metric repre
 - `novel_holdout`: not created / externally managed; the runner supports loading it from an external path.
 - Empty novel JSONL artifacts are schema/placeholders, not measured results.
 - Curation governance: N0 `COMPLETE`; `docs/NOVEL_DATASET_CURATION_CONTRACT.md` is authoritative; N1 `PASS / COMPLETE` (frozen pilot; no generalization claim).
-- Next curation task: N2 expansion plan is drafted (`PLAN_DRAFT / HUMAN_REVIEW_PENDING`; no expansion questions exist yet). Next step is human review of the plan, then N2-A Batch 1 curation.
+- Next curation task: N2 expansion plan is drafted (`PLAN_DRAFT / HUMAN_REVIEW_PENDING`; Rev 1 after a `REVISE` review; no expansion questions exist yet). Next step is human re-review of the revised plan, then N2-A Batch 1 curation.
 
 ## Known limitations
 

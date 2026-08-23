@@ -237,7 +237,7 @@ benchmark_version: novel-v1-dev-<dataset-version>
 release_eligible: false
 acceptance_exposed: true
 expected_split_counts:
-  novel_dev: <approved-count>
+  novel_dev: <loaded-record-count>
 expected_status_counts:
   answered: <count>
 questions:
@@ -272,7 +272,7 @@ questions:
     reviewed_at: <timestamp>
 ```
 
-This is a schema illustration, not a real question or Gold record. Dataset-level expected counts must match approved contents rather than a hard-coded target. `release_eligible` and `acceptance_exposed` reflect the actual split and exposure state.
+This is a schema illustration, not a real question or Gold record. Dataset-level expected counts follow the runtime evaluator semantics: `GoldDataset` validates `expected_split_counts` and `expected_status_counts` against **all loaded question records** (every record in `questions`, regardless of `review_status`), not only approved ones. During draft-expansion phases the counts therefore include draft records, and they are derived from actual loaded contents rather than a hard-coded target. `release_eligible` and `acceptance_exposed` reflect the actual split and exposure state.
 
 Novelty, coverage, origin, and lifecycle metadata remain in the sidecar:
 

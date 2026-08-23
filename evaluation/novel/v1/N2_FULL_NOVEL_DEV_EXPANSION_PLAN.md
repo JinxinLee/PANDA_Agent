@@ -2,6 +2,23 @@
 
 Status: **PLAN_DRAFT / HUMAN_REVIEW_PENDING** (2026-08-24).
 
+Revision history: Rev 1 (2026-08-24) applies the five required revisions from
+the human review of the initial draft (REVISE decision; all other planning
+decisions accepted): (1) `expected_split_counts`/`expected_status_counts`
+semantics aligned with the runtime evaluator — they track all loaded question
+records, not only approved ones (`docs/NOVEL_DATASET_CURATION_CONTRACT.md`
+§11 updated accordingly); (2) exploratory admission relaxed to domain
+relevance plus one or more substantive exploratory properties; (3)
+Gold-proxy-derived numeric caps on `component_usage`, `setup_environment`,
+and `documentation_navigation` removed — these are prioritization guidance,
+not ceilings; (4) exploratory numeric targeting reframed as an investigation
+pool rather than a required final accepted count, and the 25/50/25 difficulty
+band identified as a pilot-derived heuristic, not a contract rule; (5) the
+strict cross-repository definition is preserved, with final classification
+contingent on the annotated minimum critical evidence footprint actually
+requiring two repository identities. Awaiting re-review; N2-A must not begin
+until the revised plan is re-approved.
+
 This is a planning artifact only. It creates no question, no Gold record, no
 evidence group, and no dataset-version change. Candidate sampling must not
 begin until a human reviewer approves or revises this plan. Nothing here was
@@ -136,7 +153,13 @@ need requires independently necessary evidence from at least two repository
 identities. It is not enough that one source is a paper and one is code, that
 two files lie in one repository, or that one repository historically depends
 on another. `any_of` alternatives inside one critical group do not create
-cross-repository scope; the minimum-required footprint decides.
+cross-repository scope; the minimum-required footprint decides. **Final
+classification is contingent on annotation:** the planning-time anchor
+suggests a candidate, but the question is `cross_repository` only if, after
+Gold evidence annotation, the minimum critical evidence footprint (critical
+groups with `any_of` read as alternatives) actually requires two repository
+identities; otherwise the sidecar records the narrower scope the annotation
+supports.
 
 1. `luminosityfit` README installation and workflow sections require cloning
    PandaRoot alongside LuminosityFit; the documented "MC simulation,
@@ -201,8 +224,11 @@ supportive regions include the tutorial sequence (`tut_01`-`tut_06`,
 `Building_Documentation`, `DalitzGui`, and the `Tools/` utility pages.
 
 Verdict: 1-2 natural "which documented resource covers X / where is X
-documented" needs. The Gold archetype share is small (2.5%), so more than 2
-would over-correct.
+documented" needs are readily supportable. Documentation-navigation is
+deprioritized relative to the larger structural gaps (small Gold archetype
+share and lower pilot urgency), but this is prioritization guidance, not a
+ceiling: additional high-quality cases are acceptable if independently
+important.
 
 ### 4.6 exploratory — support: MODERATE-to-GOOD
 
@@ -256,16 +282,16 @@ questions.
 | T1 | final `novel_dev` size | 28-32, centered near 30 | contract §4 ~30 quality target; 16 frozen + 12-16 new |
 | T2 | new approved questions beyond the frozen 16 | 12-16, centered near 14 | T1 minus frozen 16; two batches of 6-8 (§11) |
 | T3 | new `data_flow` intent | 2-4 | STRONG support (§4.1); zero in pilot |
-| T4 | genuine `cross_repository` | 1-3 total after expansion | STRONG for pandaroot+luminosityfit workflow needs (§4.2); fork-comparison only with dual-identity proof |
+| T4 | genuine `cross_repository` | 1-3 total after expansion, contingent on annotated footprint | STRONG for pandaroot+luminosityfit workflow needs; final classification only when the annotated minimum critical evidence footprint requires two repository identities (§4.2); fork-comparison only with dual-identity proof |
 | T5 | new `source_location` primary archetype | 1-3 | STRONG support; Gold 14.2% vs pilot 6.3% (§4.3) |
 | T6 | new `implementation_explanation` primary archetype | 1-3 | STRONG support; Gold 15.8% vs pilot 12.5% (§4.4) |
 | T7 | `producer_consumer_trace` primary archetype | 1-3 total after expansion | Gold 12.5%, pilot 0; overlaps §4.1 anchors, family isolation applies |
-| T8 | `documentation_navigation` primary archetype | 1-2 total after expansion | 75 locked doc pages, 3 used; Gold share only 2.5% (§4.5) |
-| T9 | exploratory class | 2-4 (about 7-13% of final) | MODERATE-to-GOOD support; contract's coarse 70-80% representative guidance implies room, not a count (§4.6) |
-| T10 | new `component_usage` / `setup_environment` primaries | 0-1 each | already over-weighted vs Gold proxy (§2) |
+| T8 | `documentation_navigation` primary archetype | deprioritized guidance: investigate 1-2, no numeric cap | 75 locked doc pages, 3 used (§4.5); prioritization guidance only — additional high-quality cases acceptable, Gold share is not a ceiling |
+| T9 | exploratory class | investigation pool of 2-4 candidates; final accepted count is an outcome, not a target | MODERATE-to-GOOD support (§4.6); the pool size guides investigation effort; acceptance is gated by §9 policy; the contract's coarse 70-80% representative guidance implies room, not a count |
+| T10 | new `component_usage` / `setup_environment` primaries | deprioritized guidance: add only independently important cases, no numeric cap | already over-weighted vs Gold proxy (§2); prioritization guidance only, not a ceiling |
 | T11 | descriptive / identifier-free share (final) | >= 0.4 | already 0.81 in pilot; preserve while adding implementation-oriented cases |
 | T12 | multi-evidence share (final) | >= 0.4 | already 0.50 in pilot; preserve |
-| T13 | difficulty band (final) | roughly 25% simple / 50% moderate / 25% hard | contract §8 structure guidance; pilot is 5/9/2 |
+| T13 | difficulty band (final) | roughly 25% simple / 50% moderate / 25% hard (pilot-derived heuristic, not a contract rule) | heuristic carried over from the pilot coverage proposal; contract §8 defines only the structural difficulty labels, not a band; pilot is 5/9/2 |
 | T14 | `insufficient_evidence` additions | 0-1 | natural-only; one precedent exists |
 | T15 | `version_conflict` additions | 0-1 | boundary material exists (§4.8), pattern-paraphrase prohibited |
 | T16 | `clarification_required` additions | 0-1 | genuine ambiguity only; generic T0 check before acceptance |
@@ -339,11 +365,15 @@ relevance) per N1-R1, recorded per question in the sidecar. The expansion
 deliberately investigates exploratory candidates (T9) but never manufactures
 them.
 
-An exploratory candidate must satisfy all of: a legitimate underrepresented
-user need; unusual but plausible evidence composition; coverage-frontier
-value; uncommon but domain-relevant reasoning topology. Rejection criteria:
-obscure symbol trivia; corpus tail for its own sake; intentionally difficult
-wording; selection only because Gold omitted the topic.
+An exploratory candidate requires **domain relevance** (the need must be a
+plausible PANDA-domain user need) **plus one or more substantive exploratory
+properties**: a legitimate underrepresented user need; unusual but plausible
+evidence composition; coverage-frontier value; or uncommon but
+domain-relevant reasoning topology. One strong property with solid domain
+relevance is sufficient; satisfying several is stronger. Rejection criteria
+are unchanged: obscure symbol trivia; corpus tail for its own sake;
+intentionally difficult wording; selection only because Gold omitted the
+topic.
 
 The representative subset remains the primary generalization-gap comparison;
 exploratory results are reported separately.
@@ -431,7 +461,9 @@ pre-authorized by being written here):
   separate draft file, so the validator's cross-file family isolation keeps
   operating on one authoritative dataset file.
 - As batches are approved, records move `draft -> approved`; expected counts
-  track actual approved contents (contract §11).
+  track **all loaded question records** per the runtime evaluator semantics
+  (contract §11 as aligned): during draft phases they include draft records
+  and are updated whenever records are added, retired, or re-classified.
 - The expanded full `novel_dev` freeze sets all lifecycles `split_frozen`
   under `dataset_version: 0.3.0` / `benchmark_version: novel-v1-dev-0.3.0`,
   with manifest and coverage report synchronized, in one freeze commit.
