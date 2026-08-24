@@ -9,15 +9,15 @@ withdrawn records; their lineage is preserved in the review documents.
 
 State:
 
-- Loaded records: 22. Human-approved: 19 (the 16 frozen N1 questions plus
-  n020/n024/n025, accepted 2026-08-24T01:50+02:00 with lifecycle `approved`).
-- Frozen: 16 (only the original N1 pilot; the approved expansion records are
-  not yet `split_frozen`).
-- Corrected REVISE candidates: n021/n022/n023 — human REVISE decisions with
-  R1 corrections applied, `CORRECTED / HUMAN_RE_REVIEW_PENDING`.
+- Loaded records: 22. Human-approved: 22 — the 16 frozen N1 questions plus
+  the 6 Batch 1 expansion records (n020/n024/n025 accepted
+  2026-08-24T01:50+02:00; corrected n021/n022/n023 accepted on re-review
+  2026-08-24T02:05+02:00; all lifecycle `approved`).
+- Frozen: 16 (only the original N1 pilot; the 6 approved expansion records
+  are NOT yet `split_frozen`).
 - N1: `PASS / COMPLETE`; N2: `IN_PROGRESS / PLAN_APPROVED`; N2-A:
-  `BATCH1_HUMAN_REVIEWED / R1_RE_REVIEW_PENDING` (3 ACCEPT / 3 REVISE /
-  0 REJECT).
+  `BATCH1_APPROVED / NOT_SPLIT_FROZEN` (6 ACCEPT / 0 REVISE / 0 REJECT /
+  0 PENDING).
 - Dataset lineage: `0.3.0` expansion-in-progress (`novel-v1-dev-0.3.0`,
   identity `novel-v1-dev-expansion`, status `EXPANSION_IN_PROGRESS`).
   Git history preserves the frozen `0.2.0` pilot baseline; the original 16
@@ -31,21 +31,23 @@ State:
 Files:
 
 - `novel_dev.yaml` — evaluator-compatible dataset (strict Gold schema); the
-  16 frozen pilot questions plus the 6 Batch 1 drafts.
+  16 frozen pilot questions plus the 6 human-approved Batch 1 expansion
+  records.
 - `curation_metadata.yaml` — curation sidecar (schema v3): family, novelty,
   overlap, representativeness (two-signal: benchmark reference fit + domain
   relevance), coverage, origin, and lifecycle per question (Batch 1
-  lifecycles `draft`).
+  lifecycles `approved`, not yet `split_frozen`).
 - `coverage_report.json` — coverage counts over all 22 loaded records,
   novelty/representativeness gaps, expansion-in-progress status, and the
   proposal-only (not frozen) targets for the future full `novel_dev`.
 - `N2_FULL_NOVEL_DEV_EXPANSION_PLAN.md` — human-approved (Rev 1) expansion
   plan: corpus-support audit, soft targets, sampling protocol, batching,
   versioning, freeze criteria.
-- `N2A_BATCH1_REVIEW_PACKAGE.md` — current human-review artifact for the
-  Batch 1 candidates: human decisions recorded (3 ACCEPT / 3 REVISE, reviewer
-  `Li`, 2026-08-24T01:50+02:00) plus R1 correction records; the three
-  corrected candidates await human re-review.
+- `N2A_BATCH1_REVIEW_PACKAGE.md` — human-review artifact for the Batch 1
+  candidates: first-review decisions (3 ACCEPT / 3 REVISE, reviewer `Li`,
+  2026-08-24T01:50+02:00), R1 correction records, and the re-review
+  acceptance of the corrected candidates (6 ACCEPT final total, reviewer
+  `Li`, 2026-08-24T02:05+02:00).
 - `N1_REVIEW_PACKAGE.md` — per-question human review package (initial draft
   history; superseded for current review).
 - `N1R_REPRESENTATIVENESS_REVIEW.md` — N1-R representativeness recalibration

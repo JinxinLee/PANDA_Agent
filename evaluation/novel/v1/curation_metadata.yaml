@@ -1012,7 +1012,7 @@ records:
       origin: human_directed_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: draft
+      lifecycle: approved
   - question_id: n022
     curation_family_id: nf022
     intent: data_flow
@@ -1069,7 +1069,7 @@ records:
       origin: human_directed_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: draft
+      lifecycle: approved
   - question_id: n023
     curation_family_id: nf023
     intent: module_structure
@@ -1125,7 +1125,7 @@ records:
       origin: human_directed_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: draft
+      lifecycle: approved
   - question_id: n024
     curation_family_id: nf024
     intent: algorithm_implementation

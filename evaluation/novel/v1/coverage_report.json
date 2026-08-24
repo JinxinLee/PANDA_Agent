@@ -91,12 +91,12 @@
     "origin": "human_directed_llm_draft",
     "agent_outcome_seen_before_freeze": false,
     "evidence_selected_from_agent_output": false,
-    "human_approval": "partial",
+    "human_approval": "complete",
     "human_reviewer": "Li",
     "reviewed_at": "2026-08-24T00:28:55+02:00",
     "review_decision_counts": {
-      "accepted": 19,
-      "revise": 3,
+      "accepted": 22,
+      "revise": 0,
       "rejected": 0,
       "pending": 0
     },
@@ -112,8 +112,9 @@
     ],
     "re_reviewed_at": "2026-08-24T00:49:13+02:00",
     "pilot_frozen": true,
-    "expansion_batch1_accepted": 3,
-    "expansion_batch1_awaiting_rereview": 3
+    "expansion_batch1_accepted": 6,
+    "expansion_batch1_awaiting_rereview": 0,
+    "re_re_reviewed_at": "2026-08-24T02:05+02:00"
   },
   "representativeness": {
     "profile_artifact": "gold_representativeness_profile.json",
@@ -161,7 +162,7 @@
       "version_boundary answerability: Gold reference 8/120 (6.7%), expansion 0/22",
       "corpus_insufficiency answerability: Gold reference 10/120 (8.3%), expansion 1/22"
     ],
-    "notes": "All gap statements are relative to the exposed Gold benchmark reference profile (a manually curated, intentionally balanced benchmark), not to empirical user-query frequency. Representativeness classification uses benchmark reference fit plus independent domain-relevance judgment. Counts cover all 22 loaded records: the 16 frozen approved N1 pilot questions plus 6 unreviewed N2-A Batch 1 drafts (n020-n025, lifecycle draft). The N1 pilot remains frozen (Git-preserved 0.2.0 baseline); the 0.3.0 expansion dataset is not frozen and no representative/exploratory quota is active."
+    "notes": "All gap statements are relative to the exposed Gold benchmark reference profile (a manually curated, intentionally balanced benchmark), not to empirical user-query frequency. Representativeness classification uses benchmark reference fit plus independent domain-relevance judgment. Counts cover all 22 loaded records: the 16 frozen N1 questions plus 6 human-approved N2-A Batch 1 expansion records (n020-n025, lifecycle approved, not yet split_frozen). All 22 loaded records are human-approved; only the original 16 are split_frozen. The N1 pilot remains frozen (Git-preserved 0.2.0 baseline); the 0.3.0 expansion dataset remains incomplete and not frozen, and no representative/exploratory quota is active."
   },
   "candidate_replacement_needed_count": 0,
   "dataset_version": "0.3.0"

@@ -1133,9 +1133,9 @@ questions:
     concept_scopes: {}
     cluster_id: nf021
     challenge_tags: []
-    review_status: draft
-    reviewer: null
-    reviewed_at: null
+    review_status: approved
+    reviewer: Li
+    reviewed_at: 2026-08-24T02:05+02:00
   - id: n022
     split: novel_dev
     language: en
@@ -1209,9 +1209,9 @@ questions:
     concept_scopes: {}
     cluster_id: nf022
     challenge_tags: []
-    review_status: draft
-    reviewer: null
-    reviewed_at: null
+    review_status: approved
+    reviewer: Li
+    reviewed_at: 2026-08-24T02:05+02:00
   - id: n023
     split: novel_dev
     language: en
@@ -1274,9 +1274,9 @@ questions:
     concept_scopes: {}
     cluster_id: nf023
     challenge_tags: []
-    review_status: draft
-    reviewer: null
-    reviewed_at: null
+    review_status: approved
+    reviewer: Li
+    reviewed_at: 2026-08-24T02:05+02:00
   - id: n024
     split: novel_dev
     language: en

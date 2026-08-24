@@ -1,23 +1,29 @@
 # N2-A Batch 1 Review Package — Expansion Candidates n020-n025
 
-Status: **BATCH1_HUMAN_REVIEWED / R1_RE_REVIEW_PENDING** (2026-08-24).
+Status: **BATCH1_HUMAN_APPROVED / NOT_SPLIT_FROZEN** (2026-08-24).
 
 Human review record: reviewer `Li` reviewed commit
 `99ef7bf3cf9bd972d04e9f2cf5389076b6a6c0a6` at 2026-08-24T01:50+02:00 with
 decisions n020 ACCEPT, n021 REVISE, n022 REVISE, n023 REVISE, n024 ACCEPT,
 n025 ACCEPT (3 ACCEPT / 3 REVISE / 0 REJECT / 0 PENDING). The three REVISE
 corrections and a batch-wide malformed `pflueger_2017` source-identity fix
-were applied in R1; a generic validator rule now enforces the locked
-source-version universe. n021/n022/n023 are `CORRECTED / HUMAN_RE_REVIEW_PENDING`
-— the original REVISE decisions stand until explicit human re-review.
+were applied in R1 (commit `516ba51abc628c63c90c41bc722a3b3825eb0269`), and
+a generic validator rule now enforces the locked source-version universe.
+
+Human re-review record: reviewer `Li` re-reviewed the corrected commit
+`516ba51abc628c63c90c41bc722a3b3825eb0269` at 2026-08-24T02:05+02:00 and
+accepted the corrected records n021 ACCEPT, n022 ACCEPT, n023 ACCEPT. Final
+Batch 1 decisions: **6 ACCEPT / 0 REVISE / 0 REJECT / 0 PENDING**. All six
+records are `approved` with reviewer `Li`; none is yet `split_frozen`. The
+historical first-review REVISE decisions and R1 correction records below are
+preserved unchanged.
 
 Curation boundary: all six candidates were sampled from locked-source anchors
 under the approved anchor-first protocol. No PANDA Agent component was run
 and no benchmark or novel outcome was inspected. The 16 frozen N1 questions
 are untouched; the dataset lineage remains 0.3.0 expansion-in-progress
 (`novel-v1-dev-0.3.0`, identity `novel-v1-dev-expansion`, status
-`EXPANSION_IN_PROGRESS`; n020/n024/n025 are now `approved` with lifecycle
-`approved`, not yet `split_frozen`).
+`EXPANSION_IN_PROGRESS`).
 
 ---
 
@@ -125,7 +131,7 @@ are untouched; the dataset lineage remains 0.3.0 expansion-in-progress
 - **Final proposed repository_scope:** `cross_repository` (retained on the
   re-derived footprint, not preserved for coverage reasons).
 - **Codex post-correction recommendation:** RECOMMEND_ACCEPT
-- **Human re-review:** PENDING
+- **Human re-review:** ACCEPT (Li, 2026-08-24T02:05+02:00; record now `approved` / lifecycle `approved`, not yet `split_frozen`)
 
 ## n022 / nf022 — two-step POCA artifact flow
 
@@ -193,7 +199,7 @@ are untouched; the dataset lineage remains 0.3.0 expansion-in-progress
   back-propagation source, with the fitted-mean variables retained as
   backwards-compatible / legacy fallback information.
 - **Codex post-correction recommendation:** RECOMMEND_ACCEPT
-- **Human re-review:** PENDING
+- **Human re-review:** ACCEPT (Li, 2026-08-24T02:05+02:00; record now `approved` / lifecycle `approved`, not yet `split_frozen`)
 
 ## n023 / nf023 — FTS track-finder ownership
 
@@ -247,7 +253,7 @@ are untouched; the dataset lineage remains 0.3.0 expansion-in-progress
   documentation); e2 `tracking/PndFtsTrackFinder/PndFtsTrackFinderTask.cxx`
   (actual branch registration, default names, and payload containers).
 - **Codex post-correction recommendation:** RECOMMEND_ACCEPT
-- **Human re-review:** PENDING
+- **Human re-review:** ACCEPT (Li, 2026-08-24T02:05+02:00; record now `approved` / lifecycle `approved`, not yet `split_frozen`)
 
 ## n024 / nf024 — GEANE vs analytic-helix transport
 
@@ -347,11 +353,13 @@ naming the question and identity; restore -> PASS).
 
 ## Batch summary for the reviewer
 
-Human review (Li, 2026-08-24T01:50+02:00): 3 ACCEPT (n020, n024, n025 —
-now `approved` with lifecycle `approved`, not yet `split_frozen`) /
-3 REVISE (n021, n022, n023 — corrections applied, `CORRECTED /
-HUMAN_RE_REVIEW_PENDING`) / 0 REJECT / 0 PENDING-unreviewed. The
-batch-wide malformed `pflueger_2017` identity is corrected and the generic
+Final Batch 1 state (after the 2026-08-24T02:05+02:00 re-review): **6 ACCEPT
+/ 0 REVISE / 0 REJECT / 0 PENDING** — n020/n024/n025 accepted at first
+review (2026-08-24T01:50+02:00), corrected n021/n022/n023 accepted on
+re-review (2026-08-24T02:05+02:00). All six records are `approved` with
+reviewer `Li` and lifecycle `approved`; **none is yet `split_frozen`** (only
+the original 16 N1 records are frozen). The batch-wide malformed
+`pflueger_2017` identity is corrected and the generic
 locked-source-universe validator rule is active. Priority areas covered:
 data_flow/producer-consumer (n020, n022), genuine cross-repository (n021,
 footprint re-derived on the corrected annotation), source_location (n023),
