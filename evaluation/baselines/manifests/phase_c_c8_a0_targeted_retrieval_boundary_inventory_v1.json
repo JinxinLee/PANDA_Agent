@@ -1,0 +1,327 @@
+{
+  "schema_version": "1.0",
+  "task": "C8-A0 current targeted-retrieval and merge-boundary static inventory (architecture audit only; no C8 solution implemented)",
+  "source_head": {
+    "expected_source_head": "3e40dcace0d5ce30c6b9598f58c70f71b992b918",
+    "expected_source_head_subject": "C7 A4 close selector production role",
+    "branch_head_at_audit": "99ef7bf3cf9bd972d04e9f2cf5389076b6a6c0a6",
+    "branch_head_at_commit": "516ba51abc628c63c90c41bc722a3b3825eb0269",
+    "src_and_configs_delta_since_expected_source_head": 0,
+    "note": "All commits between 3e40dca and the commit-time branch HEAD (a parallel Novel Dataset Curation task committed 516ba51 during the audit) touch only docs/ and evaluation/novel/ plus evaluation/scripts/validate_novel_curation.py; production source and configs are byte-identical to 3e40dca.",
+    "audit_method": "static source inspection of the working tree (no production Retriever instantiation, no live calls)"
+  },
+  "lifecycle_preconditions": {
+    "phase_c": {
+      "C1": "PASS",
+      "C2": "PASS",
+      "C3": "PASS for the raw-preserving architecture",
+      "C4": "CLOSED_INCONCLUSIVE",
+      "C5": "CLOSED_INCONCLUSIVE",
+      "C6": "COMPLETE",
+      "C7": "COMPLETE"
+    },
+    "c7_final_selector_role": "CURRENT_SELECTOR = PRODUCTION_AUTHORITATIVE (select_final_evidence in src/panda_agent/retrieval.py:662)",
+    "c7_explicit_selection_v1": "REJECTED_AS_GLOBAL_PRODUCTION_REPLACEMENT (shadow-only module src/panda_agent/evidence_selection.py; not imported by production retrieval)",
+    "c6_production_fusion_role": "P0 CURRENT = PRODUCTION_AUTHORITATIVE (inline weighted RRF in Retriever.retrieve, src/panda_agent/retrieval.py:1560-1570)",
+    "development_only_c6_candidates": ["P3 SPARSE_HEAVY", "C6_INTENT_AWARE_V1"],
+    "development_only_candidates_activated_in_c8_a0": false,
+    "c8_starting_status": "NEXT_ELIGIBLE / NOT_STARTED",
+    "novel_dataset_scope": "outside C8-A0 scope (handled by the separate Novel Dataset Curation task)"
+  },
+  "zero_live_work_ledger": {
+    "LIVE_RETRIEVAL_CALLS": 0,
+    "TARGETED_RETRIEVAL_CALLS": 0,
+    "RERANKER_CALLS": 0,
+    "ANALYZER_CALLS": 0,
+    "EMBEDDING_CALLS": 0,
+    "SPARSE_ENCODING_CALLS": 0,
+    "QDRANT_READS": 0,
+    "SQL_CANDIDATE_READS": 0,
+    "QA_GENERATION_CALLS": 0,
+    "VERIFIER_CALLS": 0,
+    "JUDGE_CALLS": 0,
+    "GOLD_EVALUATIONS": 0,
+    "DB_INDEX_WRITES": 0,
+    "method": "source inspection, static code reading, config inspection, existing tests/artifacts; no production Retriever instantiated"
+  },
+  "qa_graph": {
+    "source": "src/panda_agent/qa.py:904-933 (QAAgent.__init__ graph wiring)",
+    "nodes": ["retrieve", "sufficiency", "targeted_retrieve", "answer", "verify", "revise", "finalize"],
+    "edges": [
+      "START -> retrieve",
+      "retrieve -> sufficiency",
+      "sufficiency -> answer | targeted_retrieve | finalize (conditional, qa.py:917-923)",
+      "targeted_retrieve -> sufficiency (qa.py:924)",
+      "answer -> verify",
+      "verify -> revise | finalize (conditional: revise iff errors and revision_count < 1, qa.py:926-930)",
+      "revise -> verify",
+      "finalize -> END"
+    ],
+    "targeted_entry_condition": "not sufficient AND state.retrieval_count < policies.max_targeted_retrievals AND not bundle.plan.version_conflicts (qa.py:919-921)",
+    "targeted_attempt_limit": {
+      "config_value": "max_targeted_retrievals = 1 (configs/retrieval_policies.yaml:5; loader src/panda_agent/config.py:253 bounds 0..2)",
+      "effective_behavior": "at most one targeted pass per question; retrieval_count is reset to 0 in _retrieve (qa.py:936) and incremented only in _targeted_retrieve (qa.py:953)",
+      "can_targeted_run_more_than_once": false
+    },
+    "version_conflict_behavior": "if bundle.plan.version_conflicts is non-empty, sufficiency returns insufficient with errors=conflicts (qa.py:1038-1040) and the conditional edge routes directly to finalize (qa.py:920); targeted retrieval is never entered; _finalize emits QAStatus.VERSION_CONFLICT (qa.py:1744, 1749-1767)",
+    "sufficiency_rerun_after_targeted": true,
+    "sufficiency_rerun_after_targeted_detail": "edge targeted_retrieve -> sufficiency (qa.py:924); on the second evaluation retrieval_count=1 so the only remaining routes are answer or finalize; a second targeted pass is impossible under current config",
+    "answer_before_targeted_possible": true,
+    "answer_before_targeted_possible_detail": "first-pass sufficiency=True routes sufficiency -> answer directly",
+    "verifier_or_revision_can_trigger_targeted": false,
+    "verifier_or_revision_can_trigger_targeted_detail": "verify/revise only loop between themselves and finalize (qa.py:925-932); targeted_retrieve is reachable only from sufficiency",
+    "sufficiency_inputs": "_sufficiency (qa.py:1036-1111) checks in order: version_conflicts; _answerability_guard (future-runtime checksum, universal proof, unsupported requested API symbol, deleted runtime artifact); exact GPU-memory pairing; locked negative-control symbol; required_source_types coverage over bundle.evidence-derived source_types; empty-evidence guard"
+  },
+  "targeted_trigger_contract": {
+    "trigger": "sufficiency insufficient for any non-version-conflict reason (missing required source, no evidence, answerability-guard error, memory-pairing error, unsupported symbol) while retrieval_count=0",
+    "errors_consumed": "state.errors produced by the immediately preceding _sufficiency run",
+    "sufficiency_loop": "sufficiency -> targeted_retrieve -> sufficiency; exactly one targeted attempt, then answer (if now sufficient) or finalize (INSUFFICIENT_EVIDENCE or guard-specific refusal)"
+  },
+  "targeted_query_construction": {
+    "source": "_targeted_retrieve, src/panda_agent/qa.py:938-953",
+    "question_text_delta": {
+      "base": "the raw original question verbatim (state.question)",
+      "appended": "\\n\"Target missing evidence sources: {required}. Missing evidence details: {missing}\" where required = ', '.join(plan.required_source_types) and missing = ', '.join(state.errors)",
+      "required_source_types_appended": true,
+      "sufficiency_errors_appended": true
+    },
+    "missing_symbols": {
+      "parsed_from_errors": "errors containing 'symbol:'; text after the first 'symbol:' is taken as the symbol (qa.py:942-946); in the current source the producers are the answerability-guard strings 'unsupported requested symbol: ...' and 'unsupported requested API symbol: ...' (qa.py:1026, 1075-1089)",
+      "plan_placement": "prepended: plan.symbols = dedup([*missing_symbols, *plan.symbols]) (qa.py:947)"
+    },
+    "retrieval_plan_delta": {
+      "plan_handling": "RetrievalPlan.model_validate(state.bundle.plan) constructs a NEW model instance; the bundle's original plan dict is never mutated (qa.py:941, 947)",
+      "changed_fields": ["symbols (missing symbols prepended, deduplicated)"],
+      "unchanged_fields": ["intent", "target_repositories", "concepts", "concept_scopes", "requested/resolved versions", "required_source_types", "source_budgets", "paper_page_hints", "resolved_aliases", "premise_corrections", "version_conflicts", "analysis_diagnostics"]
+    },
+    "analyzer_behavior": "not rerun: Retriever.retrieve uses the supplied plan and skips analyze entirely (retrieval.py:1549 'plan = plan or self.analyze(question)'); deterministic parsing (_preparse) is also not rerun",
+    "query_builder_consumption": "dense/sparse/workflow consume the AUGMENTED question text (dense embeds dense_bundle.raw.text = augmented question, retrieval.py:1347-1354; sparse encodes the augmented raw question, retrieval.py:1353; workflow regex terms come from the augmented question, retrieval.py:1469); exact consumes the PLAN symbol/concept terms and falls back to question regex only when the plan has neither (retrieval.py:1201); paper uses the dense vector of the augmented question (retrieval.py:1555, 1414-1466)",
+    "classification_note": "the delta is a question-text augmentation plus a symbol-prepending plan copy; it is NOT missing-point decomposition (that belongs to future Phase E / E3)"
+  },
+  "second_pass_retriever_stages": {
+    "source": "Retriever.retrieve, src/panda_agent/retrieval.py:1548-1682",
+    "pipeline_completeness": "the targeted pass runs the COMPLETE production Retriever pipeline (all channels, fusion, reranker, Stage-P reorder, final selector) under the supplied plan; it is not a reduced-channel pass",
+    "stages": [
+      {"stage": "query_analyzer", "classification": "BYPASSED", "evidence": "explicit plan supplied (retrieval.py:1549)"},
+      {"stage": "deterministic_parse (_preparse)", "classification": "BYPASSED", "evidence": "part of analyze, not called when plan is supplied"},
+      {"stage": "exact (LEGACY_EXACT)", "classification": "EXECUTED", "evidence": "rankings['exact'] = self._exact(plan, question, limit) (retrieval.py:1551); SQL ILIKE against plan terms"},
+      {"stage": "dense (RawDense)", "classification": "EXECUTED", "evidence": "_vector embeds dense_bundle.raw.text (the augmented targeted question) and queries Qdrant 'dense' (retrieval.py:1347-1354)"},
+      {"stage": "dense (SemanticDense)", "classification": "SHADOW_ONLY", "evidence": "production retrieve never embeds the semantic text; returned bundle records dense_candidates.semantic=null and semantic_active per DenseQueryBundle.as_dict (retrieval.py:1660-1664); SemanticDense is executed only by Retriever.shadow_dense (retrieval.py:1356-1381)"},
+      {"stage": "sparse (RawSparse, raw question)", "classification": "EXECUTED", "evidence": "self._sparse_query(question, ...) on the augmented raw question (retrieval.py:1353); bundle records lexical_active=true but lexical_executed=false (retrieval.py:1665-1670)"},
+      {"stage": "sparse (LexicalQuery)", "classification": "SHADOW_ONLY", "evidence": "build_lexical_query is computed for reporting but never encoded in production retrieve; executed only in shadow_sparse (retrieval.py:1383-1412)"},
+      {"stage": "paper", "classification": "CONDITIONAL", "evidence": "runs only when 'paper' in plan.required_source_types (retrieval.py:1423, 1555-1557); the targeted plan keeps the initial required_source_types, so the condition equals the initial pass"},
+      {"stage": "workflow", "classification": "EXECUTED", "evidence": "rankings['workflow'] = self._workflow(question, plan, limit) (retrieval.py:1558), with curated-workflow fallback when required and none matched (retrieval.py:1481-1494)"},
+      {"stage": "graph", "classification": "EXECUTED", "evidence": "rankings['graph'] = self._graph(seeds from exact+dense+sparse of THIS pass, plan, limit) (retrieval.py:1559)"},
+      {"stage": "fusion (P0 CURRENT weighted RRF)", "classification": "EXECUTED", "evidence": "per-channel weighted reciprocal-rank fusion, weights {exact:2.0, dense:1.0, sparse:1.0, paper:1.15, workflow:1.2, graph:0.8}, score += weight/(60+rank+1) over object_id (retrieval.py:1560-1570); config fusion_method=rrf"},
+      {"stage": "reranker (CURRENT production reranker)", "classification": "EXECUTED", "evidence": "top-30 fused pool reranked by vertex.generate_json with RERANK_SYSTEM_PROMPT (retrieval.py:1571-1578)"},
+      {"stage": "deterministic priority reorder (Stage P)", "classification": "EXECUTED", "evidence": "hinted_first + required_first + symbol_first prepended over Stage-M order (retrieval.py:1580-1643)"},
+      {"stage": "selector (CURRENT_SELECTOR = select_final_evidence)", "classification": "EXECUTED", "evidence": "two-pass hard-budget selection with locator dedup, per-source and per-type caps, mandatory-symbol exemption, and required-source backfill, final_evidence_limit=12 (retrieval.py:1645-1653, 662-777)"}
+    ],
+    "entity_resolution_note": "EntityResolver.shadow_exact is a C5 shadow diagnostic only (retrieval.py:1259-1284); it is not executed by the targeted pass"
+  },
+  "production_policy_identities": {
+    "exact": "LEGACY_EXACT (_exact ILIKE; production path; EntityFirstExact remains shadow)",
+    "dense": "RawDense production-authoritative; SemanticDense auxiliary/shadow, not executed in either pass",
+    "sparse": "raw question (RawSparse production; LexicalQuery experimental/shadow, computed for reporting only)",
+    "fusion": "P0 CURRENT (c6.current.v1 weights reproduced in fusion_replay.py:44-52) = PRODUCTION_AUTHORITATIVE",
+    "reranker": "CURRENT production reranker (RERANK_SYSTEM_PROMPT, top-30 fused input)",
+    "selector": "CURRENT_SELECTOR = select_final_evidence = PRODUCTION_AUTHORITATIVE; c7.explicit_selection.v1 REJECTED_AS_GLOBAL_PRODUCTION_REPLACEMENT, shadow-only",
+    "development_only_not_activated": ["P3 SPARSE_HEAVY", "C6_INTENT_AWARE_V1", "c7.explicit_selection.v1", "SemanticDense", "LexicalQuery", "EntityResolver shadow_exact"],
+    "shadow_components_executed_for_diagnostics_in_targeted_pass": "none; the targeted pass executes only production-authoritative components"
+  },
+  "initial_state_retention": {
+    "question_at_targeted_start": "AVAILABLE_IN_QA_STATE (state.question)",
+    "original_plan": "AVAILABLE_IN_QA_STATE (bundle.plan; also survives the merge because the merge preserves the initial bundle shell)",
+    "channel_candidate_lists": {
+      "classification": "AVAILABLE_ONLY_INSIDE_RETRIEVER_RETURN (partial)",
+      "detail": "the returned bundle keeps rankings as OBJECT-ID ORDERED LISTS for all executed channels (retrieval.py:1675) and full payloads only for dense (bundle.dense_candidates.raw, top 20) and sparse (bundle.sparse_candidates.raw, top 20); exact/paper/workflow/graph payloads and the per-pass payloads map are discarded when retrieve returns"
+    },
+    "channel_ranks": "AVAILABLE_ONLY_INSIDE_RETRIEVER_RETURN (implicit in rankings list order; per-channel numeric scores are never retained)",
+    "candidate_scores": "AVAILABLE_ONLY_INSIDE_RETRIEVER_RETURN (fused scores only, top 30, bundle.fusion_scores, retrieval.py:1676; full score map discarded)",
+    "fused_stage_f_state": "PARTIAL: top-30 order/scores in fusion_scores; the complete fused_order beyond rank 30 is discarded at return",
+    "raw_reranker_stage_r": "AVAILABLE_ONLY_INSIDE_RETRIEVER_RETURN (bundle.reranked_object_ids, complete reranker output list, retrieval.py:1677)",
+    "merged_fallback_stage_m": "NOT separately serialized; partially derivable as dedup([*reranked, *fused]) only where fused order is known (top 30)",
+    "priority_stage_p": "PARTIAL: bundle.ranked_object_ids is the Stage-P top-30 prefix (retrieval.py:1644, 1678); select_final_evidence itself consumed the complete Stage-P order, which is not retained",
+    "selector_receipts_stage_s": "AVAILABLE_IN_QA_STATE (bundle.excluded with duplicate_locator / source cap / type cap reasons and canonical_rank, and bundle.backfill_admissions, retrieval.py:1679-1680)",
+    "selected_evidence": "AVAILABLE_IN_QA_STATE until the merge replaces it (bundle.evidence; replaced in the same node that runs targeted retrieval)",
+    "payload_map": "DISCARDED_BEFORE_TARGETED_RETRIEVAL for exact/paper/workflow/graph; dense/sparse top-20 payload lists remain",
+    "retrieval_channel_membership": "retained ONLY per selected evidence item (Evidence.retrieval_channels); channel membership for non-selected candidates is reconstructible only from rankings ID lists",
+    "exact_stream": "AVAILABLE_IN_QA_STATE as object-ID order only (bundle.rankings.exact)",
+    "mandatory_protected_ids": "UNKNOWN/NOT_RETAINED: the symbol_first set feeds Stage P and select_final_evidence but is not serialized in the bundle; only derivable by re-running the deterministic priority logic",
+    "exclusions_backfill_receipts": "AVAILABLE_IN_QA_STATE (bundle.excluded, bundle.backfill_admissions)",
+    "trace_object": "NOT built during QA runtime; RetrievalTrace is constructed later by the evaluation runner from run_detailed diagnostics (evaluation_runner.py:1583-1589); QA runtime state itself carries no trace object",
+    "top_k_truncation_already_applied": "yes: each channel capped at candidate_pool_per_channel=20; rerank input top 30; per-pass selected evidence capped at final_evidence_limit=12"
+  },
+  "targeted_state_retention": {
+    "survives_after_targeted_retrieve": [
+      "targeted selected Evidence items, and ONLY those: they appear inside the merged evidence list (qa.py:952-953)",
+      "targeted_retrieval_count (state.retrieval_count + 1)"
+    ],
+    "discarded": [
+      "targeted RetrievalPlan (including the prepended missing symbols)",
+      "targeted channel candidate lists and ranks (all channels)",
+      "targeted fusion state (P0 scores/order)",
+      "targeted reranker output (Stage R)",
+      "targeted Stage-P order",
+      "targeted selector receipts (excluded/backfill)",
+      "targeted trace/diagnostics fields (semantic_query, lexical_query, dense/sparse query and candidate records)",
+      "targeted query text (the augmented question exists only as a local variable)",
+      "targeted retrieval policy identity"
+    ],
+    "bundle_shell_semantics": "{**state['bundle'], 'evidence': merged[:12]} (qa.py:953): the returned bundle keeps ALL initial-pass metadata (plan, rankings, fusion_scores, reranked_object_ids, ranked_object_ids, excluded, backfill_admissions, dense/sparse candidates) and replaces only 'evidence'; every targeted-pass metadata field is lost with the local variable 'extra'",
+    "final_bundle_plan_note": "the post-merge bundle therefore carries the INITIAL plan; subsequent sufficiency/answer/verify/finalize all read initial-plan fields (required_source_types, resolved_versions) while the evidence list may be targeted-dominated"
+  },
+  "current_merge_semantics": {
+    "source": "qa.py:952-953",
+    "merge_input": "already-selected evidence ONLY: extra['evidence'] (targeted selector output, <=12) + state.bundle.evidence (initial selector output, <=12); full candidate pools never participate",
+    "merge_order": "targeted evidence iterated FIRST, then initial evidence",
+    "duplicate_key": "evidence_id",
+    "duplicate_winner_payload": "the LAST occurrence wins the VALUE: in the dict comprehension {item['evidence_id']: item for item in [*extra, *initial]}, a duplicate that first appears in targeted evidence and reappears in initial evidence keeps the FIRST (targeted) insertion position but stores the INITIAL-pass item (its text, channels, and initial-pass score)",
+    "duplicate_position_semantics": "first insertion position is preserved (Python dict semantics); duplicates never move to the later position",
+    "final_limit": "list(merged.values())[:12] (hard-coded 12 in qa.py; numerically equal to final_evidence_limit but not read from policy)",
+    "source_type_quotas_after_merge": "not applied; per-source/per-type caps ran only inside each pass's selector",
+    "current_selector_rerun_after_merge": false,
+    "reranker_rerun_after_merge": false,
+    "fusion_rerun_after_merge": false,
+    "final_order_global_comparability": "no: final order is pass-concatenation order (targeted block then initial block, deduped, truncated); items carry per-pass selector-era scores computed under different queries and channel mixes, so positions are not a globally comparable ranking",
+    "python_semantics_verification": "verified by a focused unit test (tests/unit/test_c8_a0_targeted_merge_semantics.py): first-insertion position with last-write payload, evidence-id merge order, [:12] truncation, plan-copy non-mutation, and initial-bundle metadata retention"
+  },
+  "dedup_identity": {
+    "targeted_merge_key": "evidence_id",
+    "evidence_id_definition": "stable_id(object_id, *sorted(channels), prefix='evidence') (retrieval.py:633-641; models.py:222-225) — a SHA-256-derived hash of object_id PLUS the pass-local channel set",
+    "one_to_one_with_object_id": false,
+    "consequence": "the same knowledge object retrieved under different channel sets in the two passes (e.g. exact+dense initially, exact+workflow in the targeted pass) receives DIFFERENT evidence_ids, so the evidence-id merge does not deduplicate them and the object can appear twice in the final evidence; conversely an identical channel set yields the same evidence_id, where the initial-pass payload (including initial score) survives at the targeted (earlier) position",
+    "fusion_identity_comparison": "C6 fusion identity is object_id (fusion_replay.py:9); the merge identity is evidence_id; the two identities are not aligned",
+    "future_c8_dedup_key": "NOT DECIDED in A0"
+  },
+  "truncation_boundaries": [
+    {"boundary": "per-channel candidate pool", "input": "channel universe", "limit": "candidate_pool_per_channel = 20 (Qdrant dense/sparse limit; SQL LIMIT for workflow/graph; exact round-robin <=6 per term over <=24 terms)", "output": "<=20 per channel", "discarded_recoverable_in_runtime_state": "partial (dense/sparse payloads retained; others only as IDs in rankings)", "available_in_trace": "channel_candidates carry full ID streams with ranks (payload via object_lookup)", "needed_for_future_global_rerank": true},
+    {"boundary": "fusion pool", "input": "all channel candidates", "limit": "none (all fused by weighted RRF)", "output": "complete fused order (in-memory)", "discarded_recoverable_in_runtime_state": "only top 30 (bundle.fusion_scores)", "available_in_trace": "fused_candidates top 30", "needed_for_future_global_rerank": true},
+    {"boundary": "reranker input", "input": "fused order", "limit": "top 30 (rerank_pool = fused_order[:30], retrieval.py:1571)", "output": "<=30", "discarded_recoverable_in_runtime_state": "no (beyond top-30 fused scores)", "available_in_trace": "no", "needed_for_future_global_rerank": true},
+    {"boundary": "reranker output", "input": "rerank_pool", "limit": "<=30 (enum-constrained permutation/subset)", "output": "reranked_object_ids", "discarded_recoverable_in_runtime_state": "retained (bundle.reranked_object_ids)", "available_in_trace": "reranked_candidates", "needed_for_future_global_rerank": true},
+    {"boundary": "stage-p prefix reporting", "input": "complete Stage-P order", "limit": "ranked_object_ids = ordered[:30] (retrieval.py:1644)", "output": "top 30 reported; full order consumed by selector in-memory", "discarded_recoverable_in_runtime_state": "no", "available_in_trace": "no", "needed_for_future_global_rerank": true},
+    {"boundary": "selector final limit (per pass)", "input": "complete Stage-P order", "limit": "final_evidence_limit = 12; locator dedup; per-source cap max(2, ceil(12/3)=4); per-type caps ceil(budget*12); mandatory-symbol exemption; required-source backfill gated on canonical_rank <= 12 (retrieval.py:662-777)", "output": "<=12 Evidence per pass", "discarded_recoverable_in_runtime_state": "receipts only (excluded/backfill_admissions); non-selected payloads discarded", "available_in_trace": "excluded_candidates/backfill receipts (IDs + reasons, no payloads)", "needed_for_future_global_rerank": true},
+    {"boundary": "targeted second-pass final selector", "input": "targeted Stage-P order", "limit": "same selector, <=12", "output": "<=12 targeted Evidence", "discarded_recoverable_in_runtime_state": "no (entire extra bundle discarded)", "available_in_trace": "no", "needed_for_future_global_rerank": true},
+    {"boundary": "qa merge dedup + truncation", "input": "<=24 selected evidence items", "limit": "evidence_id dedup then [:12] (qa.py:952-953)", "output": "<=12 final evidence", "discarded_recoverable_in_runtime_state": "no (tail items dropped without receipt)", "available_in_trace": "no", "needed_for_future_global_rerank": true},
+    {"boundary": "duplicate suppression", "input": "cross-pass selected evidence", "limit": "evidence_id equality", "output": "single item per evidence_id (first position, last payload)", "discarded_recoverable_in_runtime_state": "overwritten payload not retained", "available_in_trace": "no", "needed_for_future_global_rerank": true}
+  ],
+  "current_effective_flow": {
+    "diagram": [
+      "Question",
+      "  | _retrieve (qa.py:935-936): bundle = Retriever.retrieve(question); retrieval_count=0",
+      "Initial pass Retriever.retrieve (analyzer -> exact/RawDense/sparse[/paper]/workflow/graph -> P0 fusion -> reranker(top-30 fused) -> Stage-P reorder -> CURRENT_SELECTOR)",
+      "  | Initial selected Evidence <= 12",
+      "Sufficiency (version_conflicts -> guard -> memory -> symbol -> required-source coverage)",
+      "  | sufficient -> answer -> verify -> [revise -> verify] -> finalize",
+      "  | insufficient AND retrieval_count < 1 AND no version_conflicts",
+      "Targeted pass: plan copy with missing symbols PREPENDED + augmented question (original + 'Target missing evidence sources: ...' + 'Missing evidence details: ...')",
+      "  | Retriever.retrieve(augmented question, plan=targeted plan)  [analyzer BYPASSED; full channel/fusion/reranker/Stage-P/CURRENT_SELECTOR pipeline]",
+      "  | Targeted selected Evidence <= 12",
+      "evidence-level merge: {evidence_id: item for item in [*targeted, *initial]}  (dict: first position, last payload)",
+      "  | truncate [:12]; bundle = initial bundle shell with evidence replaced; targeted metadata discarded",
+      "Sufficiency again (same checks on merged evidence)",
+      "  | sufficient -> answer -> verify -> [revise] -> finalize",
+      "  | still insufficient -> finalize (INSUFFICIENT_EVIDENCE / guard refusal)"
+    ],
+    "fusion_rerank_selection_occurrences": "fusion, reranker, and CURRENT_SELECTOR each run exactly ONCE PER PASS (twice total across a targeted case) and NEVER again after the two passes are merged; the merge itself performs no fusion, no rerank, and no selection"
+  },
+  "global_competition_gap": {
+    "A_initial_targeted_full_candidate_universe_merge": {"classification": "ABSENT", "evidence": "merge input is the two <=12 selected-evidence lists, not candidate pools (qa.py:952)"},
+    "B_global_object_level_dedup_before_final_ranking": {"classification": "ABSENT", "evidence": "only evidence_id dedup after per-pass selection; object-level duplicates with differing channel sets survive (retrieval.py:635)"},
+    "C_global_multi_channel_fusion_across_passes": {"classification": "ABSENT", "evidence": "no fusion runs after merge"},
+    "D_global_reranker_across_passes": {"classification": "ABSENT", "evidence": "no reranker runs after merge"},
+    "E_production_authoritative_selector_after_global_reranker": {"classification": "ABSENT", "evidence": "CURRENT_SELECTOR runs inside each pass only; merge output feeds sufficiency directly"},
+    "F_initial_candidate_recovery_after_initial_selector_exclusion": {"classification": "ABSENT", "evidence": "initial excluded candidates exist only as receipts (bundle.excluded) and are never reconsidered"},
+    "G_targeted_candidate_recovery_after_targeted_selector_exclusion": {"classification": "ABSENT", "evidence": "targeted exclusions are discarded with the extra bundle"},
+    "H_origin_provenance_tracking_initial_targeted_both": {"classification": "ABSENT", "evidence": "no origin field exists on Evidence; the pre-merge initial evidence list is not retained after merge, so origin is not even inferable from final runtime state"},
+    "I_global_rank_attribution": {"classification": "ABSENT", "evidence": "final order is concatenation order; no global score or rank is computed post-merge"},
+    "J_initial_evidence_displacement_attribution": {"classification": "ABSENT", "evidence": "tail initial evidence dropped by [:12] without any receipt or retained pre-merge list"},
+    "K_targeted_recovery_survival_attribution": {"classification": "ABSENT", "evidence": "targeted evidence list is not recorded; surviving targeted items cannot be attributed without external capture"}
+  },
+  "architectural_risks": [
+    {"risk": "PREMATURE_INITIAL_SELECTION", "source_mechanism": "merge consumes only the initial selector's <=12 output (qa.py:952)", "affected_state": "initial candidate universe beyond final evidence", "why_it_matters_to_c8": "initial candidates excluded by per-source/type caps can never compete against targeted evidence in a global pass", "status": "proven behavior (static)"},
+    {"risk": "PREMATURE_TARGETED_SELECTION", "source_mechanism": "targeted pass runs CURRENT_SELECTOR to <=12 before merge (retrieval.py:1645-1653 via qa.py:948-951)", "affected_state": "targeted candidate universe beyond final evidence", "why_it_matters_to_c8": "targeted candidates excluded by caps never compete against initial evidence", "status": "proven behavior (static)"},
+    {"risk": "TARGETED_APPEND_PRIORITY", "source_mechanism": "extra evidence iterated first; [:12] keeps the targeted block ahead (qa.py:952-953)", "affected_state": "final evidence order and tail admission", "why_it_matters_to_c8": "position priority is pass-origin, not relevance; interleaving is impossible", "status": "proven behavior (static)"},
+    {"risk": "INITIAL_EVIDENCE_DISPLACEMENT", "source_mechanism": "initial evidence beyond rank 12 of the concatenation is silently dropped (qa.py:953)", "affected_state": "initial evidence items", "why_it_matters_to_c8": "strong initial evidence can be displaced without attribution or receipt", "status": "proven behavior (static); per-case outcome impact unmeasured"},
+    {"risk": "TARGETED_RECOVERY_LOSS", "source_mechanism": "non-selected targeted candidates and receipts discarded with 'extra' (qa.py:948-953)", "affected_state": "targeted candidate universe and receipts", "why_it_matters_to_c8": "a recovered-by-retrieval candidate can still be lost at the merge boundary with no observability", "status": "proven behavior (static)"},
+    {"risk": "LOSS_OF_TARGETED_TRACE", "source_mechanism": "run_detailed diagnostics expose only initial-pass fields plus counts (qa.py:1991-2009)", "affected_state": "targeted query, plan, channels, fusion, reranker, selector receipts", "why_it_matters_to_c8": "no committed artifact can attribute targeted-pass behavior", "status": "proven behavior (static)"},
+    {"risk": "NON_GLOBAL_RANK_COMPARABILITY", "source_mechanism": "merged items carry per-pass scores computed under different queries/channel mixes; order is concatenation (qa.py:952-953)", "affected_state": "final evidence ordering", "why_it_matters_to_c8": "no principled total order exists across passes; any future weighting needs a comparable basis", "status": "proven behavior (static)"},
+    {"risk": "DUPLICATE_IDENTITY_MISMATCH", "source_mechanism": "merge dedup key evidence_id = hash(object_id + channel set) differs from fusion identity object_id (retrieval.py:635; qa.py:952)", "affected_state": "final evidence uniqueness", "why_it_matters_to_c8": "the same object can appear twice (different channel sets across passes) while payload/channel attribution of the surviving duplicate is pass-arbitrary", "status": "proven behavior (static); observed duplicate frequency unmeasured"},
+    {"risk": "SECOND_PASS_METADATA_DISCARD", "source_mechanism": "{**state['bundle'], 'evidence': ...} keeps initial metadata and drops targeted metadata; post-merge sufficiency/answer read the INITIAL plan (qa.py:953)", "affected_state": "plan fidelity for downstream nodes", "why_it_matters_to_c8": "downstream decisions are made against a plan that no longer describes how the dominant evidence was retrieved", "status": "proven behavior (static)"},
+    {"risk": "FINAL_TRUNCATION_WITHOUT_GLOBAL_SELECTION", "source_mechanism": "[:12] applied to an unranked concatenation (qa.py:953)", "affected_state": "final evidence membership", "why_it_matters_to_c8": "final membership is decided by pass-origin and per-pass selector order, not by a global decision procedure", "status": "proven behavior (static)"}
+  ],
+  "existing_trace_replay_capability": {
+    "classification": "INSUFFICIENT",
+    "why": [
+      "QA-runtime traces (build_retrieval_trace from run_detailed diagnostics, retrieval_trace.py:191-310) capture ONE retrieval view: initial-pass rankings/fused(top-30)/reranked/excluded/backfill plus the POST-MERGE final evidence and targeted_retrieval_count; for a targeted case they mix initial-pass channel state with merged evidence",
+      "the targeted pass contributes no field to any trace: no targeted query text, no targeted plan delta, no targeted channel streams, no targeted F/R/M/P/S, no pre-merge initial evidence list, no pre/post-targeted sufficiency reasons",
+      "phase-b-t3-retrieval traces and the C6 frozen channel replay capture single-pass retrieval questions only, with no sufficiency error state and no second pass",
+      "the C7-A2 post-reranker capture freezes complete F/R/M/P/S state for single-pass retrieval cases only (18 cases); it has no targeted-pass counterpart",
+      "no committed artifact pairs initial and targeted passes for the same question"
+    ],
+    "reusable_components": [
+      "RetrievalTrace schema already models channel_candidates/fused/reranked/final_evidence/excluded/backfill per pass shape",
+      "C6 fusion replay (fusion_replay.py) replays P0 fusion from frozen channel streams deterministically",
+      "C7-A2 capture pipeline demonstrates frozen single-pass F/R/M/P/S capture; a targeted variant would extend, not replace, it"
+    ]
+  },
+  "minimum_future_replay_state": [
+    "case/question identity and run identity",
+    "original question and original RetrievalPlan",
+    "initial channel candidate ID streams with ranks (and scores where computed)",
+    "initial Stage F (fused order/scores), Stage R (reranker output), Stage M, Stage P, Stage S receipts (excluded/backfill), and initial payload access (payload map or object_lookup reference)",
+    "initial selected evidence list (pre-merge)",
+    "sufficiency reason/errors that triggered the targeted pass",
+    "targeted query text and targeted plan (full plan or explicit delta: prepended symbols)",
+    "targeted channel candidate ID streams with ranks",
+    "targeted Stage F/R/M/P/S receipts and payload access",
+    "targeted selected evidence list (pre-merge)",
+    "object_id <-> evidence_id mapping for both passes (channel sets per occurrence)",
+    "the current merge result (merged order, dedup outcomes, truncation point)",
+    "post-targeted sufficiency result/reason",
+    "implementation/config/policy identities (fusion P0 CURRENT, reranker prompt identity, CURRENT_SELECTOR, final_evidence_limit, candidate_pool_per_channel, max_targeted_retrievals)"
+  ],
+  "future_treatment_boundary": {
+    "verified_conceptual_boundary": [
+      "initial pre-final-selection candidate state (per-pass Stage-F/R/M/P state plus payloads)",
+      "+ targeted pre-final-selection candidate state (same shape)",
+      "-> future global merge/fusion/rerank (design undecided)",
+      "-> production-authoritative selector established by C7 closeout (currently CURRENT_SELECTOR = select_final_evidence)"
+    ],
+    "not_decided_in_a0": ["pass weights", "new RRF weights", "rank normalization", "targeted bonus", "BOTH-origin bonus", "source caps", "new reranker prompt", "new selector", "new final limit", "dedup key (object_id vs evidence_id vs locator)"],
+    "current_runtime_gap": "the current QA runtime retains only partial initial-pass state and zero targeted-pass pre-selection state, so a future C8-A1 shadow implementation needs an explicit candidate-pool/provenance contract and capture step before a frozen A/B"
+  },
+  "production_behavior_changed": false,
+  "gold_outcomes_inspected": false,
+  "novel_dataset_work_performed": false,
+  "C8_A1_eligibility": {
+    "status": "NEXT_ELIGIBLE / NOT_STARTED",
+    "suggested_purpose": "explicit global candidate-pool and provenance contract (evaluation-first/shadow, no production activation); if replay state remains insufficient, A1 designs the candidate-state contract and a later capture step",
+    "live_capture_authorized_in_a0": false
+  },
+  "contradictions_found": [
+    {
+      "item": "roadmap C8 intended design says 'then apply C7 selection'",
+      "finding": "ambiguous against the C7-A4 closeout: CURRENT_SELECTOR is PRODUCTION_AUTHORITATIVE and c7.explicit_selection.v1 is REJECTED_AS_GLOBAL_PRODUCTION_REPLACEMENT; wording corrected in this task (documentation-only) to 'feed the production-authoritative selector established by C7 closeout, currently CURRENT_SELECTOR'"
+    },
+    {
+      "item": "roadmap C7 intended design says 'Represent minimum/preferred/maximum/required'",
+      "finding": "the authoritative C7 contract vocabulary is PROTECTED/REQUIRED/PREFERRED/MAXIMUM with no MINIMUM; wording corrected in this task (documentation-only) in the C7 stage description; historical C7 artifacts untouched"
+    },
+    {
+      "item": "task starting hypothesis vs source",
+      "finding": "the hypothesis (extra-first merge, evidence_id dedup, [:12], initial bundle shell retained, missing symbols prepended, sufficiency rerun) matches the source exactly; one nuance the hypothesis did not state: on duplicate evidence_id the INITIAL-pass payload survives at the TARGETED-pass position (dict first-position/last-value semantics)"
+    }
+  ],
+  "A0_verdict": "PASS",
+  "A0_verdict_basis": [
+    "targeted-retrieval control flow fully inventoried from source (qa.py graph, trigger, attempt limit, version-conflict behavior, sufficiency loop)",
+    "merge/dedup/truncation semantics explicitly identified including duplicate payload/position semantics",
+    "retained/discarded initial and targeted state classified per field",
+    "production policy identities confirmed (LEGACY_EXACT / RawDense / raw-question sparse / P0 CURRENT / CURRENT reranker / CURRENT_SELECTOR)",
+    "global-competition capability classified for A-K (all ABSENT)",
+    "replay sufficiency determined (INSUFFICIENT) with reasons and reusable components",
+    "minimum future replay/capture state recorded",
+    "no live outcome work; production source and configs unchanged"
+  ]
+}
