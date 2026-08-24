@@ -1,0 +1,225 @@
+{
+  "schema_version": "1.0",
+  "task": "C8-A1 explicit global candidate-pool and provenance contract (data contract only; no global ranking policy, no production wiring, no live capture)",
+  "contract_id": "c8.global_candidate_pool.v1",
+  "contract_role": "DATA/PROVENANCE CONTRACT — not a production retrieval policy and not a ranking treatment",
+  "c8_a0_anchor": "4028d366a3a8ccf170bbdf8200fddb408cc490b9",
+  "branch_head_at_start": "4769a63c9ff9627d1fa13cda4b2a6d36d4c2d064",
+  "branch_head_at_commit": "4769a63c9ff9627d1fa13cda4b2a6d36d4c2d064",
+  "parallel_novel_work_allowed": true,
+  "baseline_compatibility_check": {
+    "commits_between_a0_anchor_and_a1_start": ["4769a63 finalize N2-A Batch 1 human approval"],
+    "post_a0_changes_to_c8_relevant_paths": 0,
+    "relevant_runtime_paths_checked": [
+      "src/panda_agent/qa.py",
+      "src/panda_agent/retrieval.py",
+      "src/panda_agent/evidence_selection.py",
+      "src/panda_agent/fusion_replay.py",
+      "configs/retrieval_policies.yaml",
+      "evaluation/baselines/manifests/phase_c_c6*",
+      "evaluation/baselines/manifests/phase_c_c7*",
+      "evaluation/baselines/manifests/phase_c_c8_a0_targeted_retrieval_boundary_inventory_v1.json",
+      "evaluation/gold_questions.yaml"
+    ],
+    "parallel_changes_observed": "4769a63 touched only shared docs plus evaluation/novel/ files (novel curation closeout)",
+    "conflict": "NONE — C8-relevant runtime semantics are identical to the A0 semantic baseline"
+  },
+  "a0_terminology_clarification": {
+    "recorded_in": "C8-A1 artifact and docs only; historical C8-A0 artifact NOT modified",
+    "clarification": {
+      "semantic_query_representation": "COMPUTED / SHADOW-CAPABLE",
+      "semantic_dense_retrieval": "NOT_EXECUTED in production Retriever.retrieve",
+      "lexical_query_representation": "COMPUTED / SHADOW-CAPABLE",
+      "lexical_sparse_retrieval": "NOT_EXECUTED in production Retriever.retrieve"
+    },
+    "note": "Dedicated shadow methods (Retriever.shadow_dense / shadow_sparse) may execute those candidate paths separately. A0's stage-table label SHADOW_ONLY is thereby made precise; the C8-A0 verdict remains PASS and no A0 architectural conclusion changes."
+  },
+  "existing_targeted_query_debt": {
+    "id": "EXISTING_TARGETED_QUERY_DEBT",
+    "description": "error.split(\"symbol:\", 1)[1] in QAAgent._targeted_retrieve (qa.py:942-946) preserves leading whitespace in parsed missing symbols, e.g. ' Foo::bar' instead of 'Foo::bar'",
+    "status": "RECORDED_ONLY / NOT_FIXED",
+    "reason": "targeted query/objective construction is upstream behavior and is outside the C8 cross-pass candidate-competition scope; _targeted_retrieve was not modified"
+  },
+  "global_candidate_identity": {
+    "identity": "object_id",
+    "rationale": [
+      "C6 fusion already uses object_id as the candidate identity",
+      "A0 proved evidence_id = stable_id(object_id + pass-local channel set), so the same object can carry different evidence_id values across initial and targeted passes",
+      "evidence_id is a post-retrieval/evidence occurrence identity, not a safe cross-pass candidate identity"
+    ],
+    "evidence_id_role": "OCCURRENCE/OUTPUT PROVENANCE ONLY — preserved per pass occurrence (stage_s_evidence_ids, CandidateOccurrence.evidence_id); never used to deduplicate or identify global candidates"
+  },
+  "pass_origins": {
+    "values": ["INITIAL", "TARGETED"],
+    "semantics": "provenance role only; implies no ranking priority; the contract separates pass origin from relevance rank by construction (no cross-pass rank fields exist)"
+  },
+  "origin_model": ["INITIAL_ONLY", "TARGETED_ONLY", "BOTH"],
+  "pass_snapshot_schema": {
+    "module": "src/panda_agent/global_candidate_pool.py",
+    "fields": [
+      "pass_origin (INITIAL|TARGETED)",
+      "completeness (COMPLETE|PARTIAL) + completeness_notes",
+      "query_text (the query actually consumed by Retriever for this pass)",
+      "retrieval_plan (the complete RetrievalPlan used by the pass)",
+      "channel_candidates (executed channel, object_id, 1-based channel rank, optional channel-local score)",
+      "stage_f_order + stage_f_scores (COMPLETE fused order/scores)",
+      "stage_r_order (reranker output order; may cover a Stage-F subset by design)",
+      "stage_m_order (complete Stage-M order)",
+      "stage_p_order (complete Stage-P order)",
+      "stage_s_selected_object_ids + stage_s_evidence_ids",
+      "exclusions (receipts with object_id + reason)",
+      "backfill_admissions",
+      "payloads (PayloadProvenance for every candidate in the pass universe)"
+    ],
+    "stage_terminology": "F/R/M/P/S reused with their existing C6/C7 meanings; not redefined"
+  },
+  "candidate_occurrence_schema": {
+    "fields": [
+      "pass_origin",
+      "object_id",
+      "channel_occurrences (channel name + channel rank + optional channel score)",
+      "stage_f_rank, stage_f_score",
+      "stage_r_rank",
+      "stage_m_rank",
+      "stage_p_rank",
+      "stage_s_selected (bool)",
+      "evidence_id (if selected/constructed)",
+      "exclusion_receipts",
+      "backfill_admitted (bool)"
+    ],
+    "independence_rule": "initial and targeted ranks are never collapsed into one number, never averaged, and neither pass is authoritative"
+  },
+  "global_pool_schema": {
+    "behavior": "consumes initial + targeted pass snapshots and produces ONE object-level candidate record per object_id",
+    "global_candidate_fields": [
+      "object_id (authoritative cross-pass identity)",
+      "origin (INITIAL_ONLY|TARGETED_ONLY|BOTH)",
+      "payload (canonical PayloadProvenance; for BOTH-origin objects the identical-by-validation payload with INITIAL preferred deterministically)",
+      "initial_occurrence (optional)",
+      "targeted_occurrence (optional)"
+    ],
+    "payload_provenance_fields": ["object_id", "source_id", "source_version_id", "object_type", "locator", "title (where available)", "text or payload_ref (stable reference sufficient for later reranking)"],
+    "counts_exposed": ["total", "initial_only", "targeted_only", "both"],
+    "counts_semantics": "observability only"
+  },
+  "targeted_trigger_context_schema": {
+    "fields": [
+      "original_question",
+      "initial_sufficient",
+      "initial_sufficiency_errors (trigger reason)",
+      "targeted_query_text",
+      "targeted_retrieval_plan (complete)",
+      "targeted_plan_delta (where representable)"
+    ],
+    "semantics": "provenance only; errors are not reinterpreted as answer points; E3 decomposition is NOT implemented",
+    "pairing_rule": "a targeted pass snapshot requires its TargetedTriggerContext and vice versa"
+  },
+  "required_complete_state_semantics": {
+    "COMPLETE": "stage_f_order membership equals the full channel-candidate universe AND stage_m_order/stage_p_order cover the same universe",
+    "PARTIAL": "any truncated/absent state; must carry non-empty completeness_notes",
+    "anti_silent_truncation_rule": "declaring COMPLETE with a truncated Stage-F/M/P order fails validation; the current production top-30 diagnostic output is PARTIAL, never the complete candidate universe",
+    "current_production_bundle_can_populate": "PARTIAL only (A0 finding); a later capture task populates COMPLETE state",
+    "adapter_policy": "no adapter from the current incomplete bundle to COMPLETE state was written in A1 (contract-first)"
+  },
+  "channel_provenance_rules": {
+    "executed_vocabulary": ["exact", "dense", "sparse", "paper", "workflow", "graph"],
+    "representation_only_rejected": ["semantic_dense", "lexical"],
+    "rule": "channels record only streams actually executed by the pass; computed query representations with separate shadow methods are rejected as executed channels"
+  },
+  "version_provenance_invariants": [
+    "every channel candidate has a non-empty object_id and rank >= 1; no duplicate (channel, object_id) entries",
+    "Stage-R IDs belong to Stage-F candidate membership",
+    "Stage-M membership equals deduplicated R+F membership; Stage-P membership equals Stage-M membership; no duplicate entries in F/R/M/P",
+    "Stage-S selected IDs and stage_s_evidence_ids keys belong to the pass candidate universe",
+    "stage_f_scores cover exactly the stage_f_order membership",
+    "every candidate in the pass universe has payload provenance (source_id, source_version_id, and text or payload_ref)",
+    "the same object_id cannot silently map to different source_id/source_version_id across passes (clear ValueError; no silent combination of versions)",
+    "origin BOTH requires both pass occurrences (guaranteed by construction and validated counts)"
+  ],
+  "deterministic_serialization_contract": {
+    "serialization_order": "object_id_lexicographic",
+    "serialization_order_semantics": "serialization_order_only_not_relevance_ranking",
+    "json_form": "sorted keys, compact separators; identical snapshots serialize identically",
+    "nondeterminism_banned": ["random ordering", "externally visible set iteration order", "model calls"],
+    "hash_ceremony": "none; no new file-content hashes introduced"
+  },
+  "global_ranking_defined": false,
+  "global_ranking_policy_notes": "no pass weighting, targeted/initial/BOTH-origin bonus, new RRF weights, score/rank normalization, global score, or global rank is defined; no such field exists in the serialized contract (verified by focused test)",
+  "global_fusion_implemented": false,
+  "global_reranker_implemented": false,
+  "global_selector_implemented": false,
+  "production_integration": false,
+  "production_behavior_changed": false,
+  "production_isolation_detail": "src/panda_agent/global_candidate_pool.py is UNWIRED shadow-evaluation contract code; qa.py and the retrieval.py production path must not import or call it during A1; Retriever.retrieve and the targeted merge behavior are unchanged",
+  "gold_outcomes_inspected": false,
+  "novel_outcomes_inspected": false,
+  "zero_live_work_ledger": {
+    "LIVE_RETRIEVAL_CALLS": 0,
+    "TARGETED_RETRIEVAL_CALLS": 0,
+    "RERANKER_CALLS": 0,
+    "ANALYZER_CALLS": 0,
+    "EMBEDDING_CALLS": 0,
+    "SPARSE_ENCODING_CALLS": 0,
+    "QDRANT_READS": 0,
+    "SQL_CANDIDATE_READS": 0,
+    "QA_CALLS": 0,
+    "VERIFIER_CALLS": 0,
+    "JUDGE_CALLS": 0,
+    "GOLD_EVALUATIONS": 0,
+    "NOVEL_EVALUATIONS": 0,
+    "DB_INDEX_WRITES": 0,
+    "method": "contract-first pure module plus synthetic unit tests only"
+  },
+  "focused_test_result": {
+    "file": "tests/unit/test_c8_global_candidate_pool.py",
+    "count": 15,
+    "passed": 15,
+    "failed": 0,
+    "external_calls": 0,
+    "coverage": [
+      "INITIAL_ONLY consolidation + counts",
+      "TARGETED_ONLY consolidation",
+      "same object_id both passes -> ONE BOTH candidate",
+      "different evidence_id values for one object_id still merge into one candidate with per-occurrence evidence_ids preserved",
+      "per-pass channel ranks and Stage-F ranks remain independent",
+      "Stage-S selected/excluded provenance pass-specific",
+      "conflicting source_version_id fails clearly",
+      "deterministic serialization; no global score/rank keys; serialization order labeled non-relevance",
+      "Stage-R outside Stage-F fails",
+      "Stage-S outside universe fails",
+      "missing payload provenance fails",
+      "COMPLETE with truncated Stage-F fails (must declare PARTIAL)",
+      "PARTIAL with notes allowed",
+      "targeted snapshot requires trigger context",
+      "representation-only channel (semantic_dense) rejected"
+    ],
+    "a0_recheck": "tests/unit/test_c8_a0_targeted_merge_semantics.py 6/6 (no drift)"
+  },
+  "C8_A2_eligibility": {
+    "status": "NEXT_ELIGIBLE / NOT_STARTED",
+    "recommended_purpose": "C8-A2 frozen two-pass capture and global-treatment preregistration: populate the A1 contract from real targeted cases, freeze initial + targeted pre-final state, establish faithful CURRENT append parity, and preregister global treatments before relevance outcomes",
+    "live_capture_authorized_in_a1": false
+  },
+  "contradictions_found": [
+    {
+      "item": "A0 stage table label SHADOW_ONLY for SemanticDense/LexicalQuery",
+      "resolution": "terminology clarification recorded in A1 (COMPUTED/SHADOW-CAPABLE representations; retrieval NOT_EXECUTED in production retrieve); A0 artifact and verdict unchanged"
+    },
+    {
+      "item": "current production bundle cannot populate a COMPLETE pass snapshot",
+      "resolution": "by design: the contract requires COMPLETE-vs-PARTIAL to be explicit and a later capture task (A2) populates COMPLETE state; no silent-filling adapter was written"
+    }
+  ],
+  "A1_verdict": "PASS",
+  "A1_verdict_basis": [
+    "two-pass candidate/provenance contract is explicit (c8.global_candidate_pool.v1)",
+    "INITIAL/TARGETED/BOTH provenance preserved with independent per-pass occurrences",
+    "object_id is the cross-pass candidate identity; evidence_id remains occurrence/output provenance",
+    "complete per-pass F/R/M/P/S state is representable with explicit COMPLETE/PARTIAL semantics",
+    "targeted trigger/query/plan provenance is representable",
+    "the pool builder performs object-level consolidation only",
+    "no global ranking semantics introduced; no global fusion/reranker/selection implemented",
+    "focused deterministic tests 15/15 pass; C8-A0 tests 6/6 rechecked",
+    "production behavior unchanged; no Gold/novel outcomes inspected"
+  ]
+}
