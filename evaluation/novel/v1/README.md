@@ -1,29 +1,30 @@
-# Novel Dataset v1 — N1 pilot frozen; N2-A expansion in progress
+# Novel Dataset v1 — N1 pilot frozen; N2 expansion in progress (Batch 2 drafted)
 
-This directory holds the frozen N1 pilot plus the N2-A Batch 1 expansion
-records: 22 loaded `novel_dev` records in 22 independent families — the 16
-human-approved, `split_frozen` N1 questions (`n001`-`n010`, `n014`-`n019`)
-and 6 Batch 1 expansion candidates (`n020`-`n025`).
+This directory holds the frozen N1 pilot plus the N2 expansion records:
+28 loaded `novel_dev` records in 28 independent families — the 16
+human-approved, `split_frozen` N1 questions (`n001`-`n010`, `n014`-`n019`),
+the 6 human-approved N2-A Batch 1 records (`n020`-`n025`, not yet
+`split_frozen`), and 6 unreviewed N2-B Batch 2 draft candidates
+(`n026`-`n031`).
 Retired drafts n011/nf011, n012/nf012, and n013/nf013 remain historical
 withdrawn records; their lineage is preserved in the review documents.
 
 State:
 
-- Loaded records: 22. Human-approved: 22 — the 16 frozen N1 questions plus
-  the 6 Batch 1 expansion records (n020/n024/n025 accepted
-  2026-08-24T01:50+02:00; corrected n021/n022/n023 accepted on re-review
-  2026-08-24T02:05+02:00; all lifecycle `approved`).
-- Frozen: 16 (only the original N1 pilot; the 6 approved expansion records
-  are NOT yet `split_frozen`).
+- Loaded records: 28. Human-approved: 22 (16 frozen N1 + 6 Batch 1,
+  lifecycle `approved`, not yet `split_frozen`). Draft/pending: 6 Batch 2
+  candidates (`review_status: draft`, `reviewer: null`, lifecycle `draft`;
+  no reviewer has inspected them).
 - N1: `PASS / COMPLETE`; N2: `IN_PROGRESS / PLAN_APPROVED`; N2-A:
-  `BATCH1_APPROVED / NOT_SPLIT_FROZEN` (6 ACCEPT / 0 REVISE / 0 REJECT /
-  0 PENDING).
+  `BATCH1_APPROVED / NOT_SPLIT_FROZEN`; N2-B:
+  `BATCH2_DRAFTED / HUMAN_REVIEW_PENDING`.
 - Dataset lineage: `0.3.0` expansion-in-progress (`novel-v1-dev-0.3.0`,
   identity `novel-v1-dev-expansion`, status `EXPANSION_IN_PROGRESS`).
   Git history preserves the frozen `0.2.0` pilot baseline; the original 16
   questions are content-identical and remain approved/frozen.
-- `release_eligible: false`. The expanded `novel_dev` is NOT frozen and is
-  NOT the complete ~30-question dataset; Batch 2 and freeze are future work.
+- `release_eligible: false`. The expanded `novel_dev` is NOT frozen; the
+  full ~30-question target is reached in count (28) but remains incomplete
+  until Batch 2 is human-reviewed and the split is frozen.
 - Nothing here has been evaluated against PANDA Agent: no retrieval, QA,
   judge, or runtime evaluation was run during curation, review,
   finalization, or expansion.
@@ -48,6 +49,10 @@ Files:
   2026-08-24T01:50+02:00), R1 correction records, and the re-review
   acceptance of the corrected candidates (6 ACCEPT final total, reviewer
   `Li`, 2026-08-24T02:05+02:00).
+- `N2B_BATCH2_REVIEW_PACKAGE.md` — current human-review artifact for the
+  six Batch 2 balancing candidates (advisory Codex recommendations; all
+  decisions PENDING; includes the exploratory rationales and the discarded
+  pre-ID ideas).
 - `N1_REVIEW_PACKAGE.md` — per-question human review package (initial draft
   history; superseded for current review).
 - `N1R_REPRESENTATIVENESS_REVIEW.md` — N1-R representativeness recalibration

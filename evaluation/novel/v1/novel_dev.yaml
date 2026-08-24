@@ -3,9 +3,9 @@ benchmark_version: novel-v1-dev-0.3.0
 release_eligible: false
 acceptance_exposed: true
 expected_split_counts:
-  novel_dev: 22
+  novel_dev: 28
 expected_status_counts:
-  answered: 21
+  answered: 27
   insufficient_evidence: 1
 questions:
   - id: n001
@@ -1410,3 +1410,392 @@ questions:
     review_status: approved
     reviewer: Li
     reviewed_at: 2026-08-24T01:50+02:00
+  - id: n026
+    split: novel_dev
+    language: en
+    intent: usage
+    query: >-
+      As a newcomer I want to learn PandaRoot analysis with the RHO framework
+      properly. Which official tutorial sequence covers this, and what does
+      it walk through from signal simulation to background filtering?
+    expected_status: answered
+    allowed_source_versions:
+      - luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32
+      - pandaroot@18c09e91100db27867ded30e708b4dae95bd8357
+      - restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42
+      - li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a
+      - karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b
+      - pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3
+      - pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87
+      - curated_panda_domain@1.0
+    required_evidence_groups:
+      - group_id: n026.e1
+        role: tutorial_sequence_outline
+        critical: true
+        any_of:
+          - source_id: pandaroot_sphinx_2023_08_25_dev
+            object_type: sphinx_page
+            path: pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/tut_outline.html
+      - group_id: n026.e2
+        role: analysis_section_entry
+        critical: true
+        any_of:
+          - source_id: pandaroot_sphinx_2023_08_25_dev
+            object_type: sphinx_page
+            path: pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/tut_02_00_analysis.html
+    required_source_types:
+      - documentation
+    required_answer_points:
+      - point_id: p1
+        text: >-
+          The documented learning path is the tutorial sequence "Simulation
+          and Analysis in PandaRoot with RHO", whose example files live in
+          the repository's tutorials/rho directory and which starts from a
+          Preface/Requirements section.
+        weight: 1.0
+        critical: true
+      - point_id: p2
+        text: >-
+          The sequence walks through six parts: simulating the signal events
+          (event generation plus simulation, digitization, reconstruction,
+          and PID, including fast simulation), analysis of signal events,
+          analysis in a task, n-tuple analysis using RhoTuple, quick
+          analysis, and event filtering for background events.
+        weight: 1.0
+        critical: true
+      - point_id: p3
+        text: >-
+          The same documentation section also points to the accompanying
+          tool resources (DalitzGUI visual tool, event generators, tools, MC
+          track analysis, event display, Jupyter notebooks, and Docker
+          containers).
+        weight: 1.0
+        critical: true
+    required_identifiers: []
+    forbidden_evidence: []
+    concept_scopes: {}
+    cluster_id: nf026
+    challenge_tags: []
+    review_status: draft
+    reviewer: null
+    reviewed_at: null
+  - id: n027
+    split: novel_dev
+    language: en
+    intent: usage
+    query: >-
+      I would rather drive quick PandaRoot studies from Python notebooks than
+      from ROOT macros. What does the documentation provide for using
+      PandaRoot with Jupyter, and how can I start a kernel without
+      installing anything extra?
+    expected_status: answered
+    allowed_source_versions:
+      - luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32
+      - pandaroot@18c09e91100db27867ded30e708b4dae95bd8357
+      - restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42
+      - li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a
+      - karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b
+      - pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3
+      - pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87
+      - curated_panda_domain@1.0
+    required_evidence_groups:
+      - group_id: n027.e1
+        role: jupyter_kernel_documentation
+        critical: true
+        any_of:
+          - source_id: pandaroot_sphinx_2023_08_25_dev
+            object_type: sphinx_page
+            path: pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Jupyter/Jupyter.html
+      - group_id: n027.e2
+        role: notebook_example_page
+        critical: true
+        any_of:
+          - source_id: pandaroot_sphinx_2023_08_25_dev
+            object_type: sphinx_page
+            path: pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Jupyter/notebooks/PandaRootPySim.html
+    required_source_types:
+      - documentation
+    required_answer_points:
+      - point_id: p1
+        text: >-
+          PandaRoot is natively a collection of C++ libraries usually driven
+          through ROOT macros, but ROOT provides Python bindings (PyROOT) and
+          a %%cpp magic that mixes C++ code into Python, which the
+          documentation recommends for notebook use.
+        weight: 1.0
+        critical: true
+      - point_id: p2
+        text: >-
+          A kernel can be started without further installation by sourcing
+          the build's config.sh with the python option and then pointing
+          JUPYTER_CONFIG_DIR and JUPYTER_PATH at $SIMPATH/etc/root/notebook
+          before launching jupyter notebook.
+        weight: 1.0
+        critical: true
+      - point_id: p3
+        text: >-
+          The documentation ships an example notebook (PandaRootPySim)
+          demonstrating a PandaRoot simulation in Python style.
+        weight: 1.0
+        critical: true
+    required_identifiers: []
+    forbidden_evidence: []
+    concept_scopes: {}
+    cluster_id: nf027
+    challenge_tags: []
+    review_status: draft
+    reviewer: null
+    reviewed_at: null
+  - id: n028
+    split: novel_dev
+    language: en
+    intent: usage
+    query: >-
+      Can a PandaRoot analysis apply trigger-style event tagging before
+      committing to full processing, and which softrig components carry the
+      online-filter decisions?
+    expected_status: answered
+    allowed_source_versions:
+      - luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32
+      - pandaroot@18c09e91100db27867ded30e708b4dae95bd8357
+      - restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42
+      - li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a
+      - karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b
+      - pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3
+      - pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87
+      - curated_panda_domain@1.0
+    required_evidence_groups:
+      - group_id: n028.e1
+        role: trigger_analysis_task
+        critical: true
+        any_of:
+          - source_id: pandaroot
+            object_type: source_file
+            path: softrig/PndAnaWithTrigger.h
+      - group_id: n028.e2
+        role: online_filter_container
+        critical: true
+        any_of:
+          - source_id: pandaroot
+            object_type: source_file
+            path: softrig/PndOnlineFilterInfo.h
+    required_source_types:
+      - code
+    required_answer_points:
+      - point_id: p1
+        text: >-
+          PndAnaWithTrigger in the softrig package is a FairTask that builds
+          a trigger-style analysis around a PndAnalysis object, constructed
+          with the beam momentum and an output name, and working with
+          RhoMassParticleSelector, RhoCandList, RhoTuple, and PndRhoTupleQA
+          members.
+        weight: 1.0
+        critical: true
+      - point_id: p2
+        text: >-
+          Online-filter decisions are carried by PndOnlineFilterInfo, an
+          information container holding per-mode tag counts for up to 65
+          modes (OFIMAXMODES) with GetNTag/SetNTag accessors plus total
+          counters (GetNTagTotal, Tagged) and Reset/Print, so tagged events
+          can be queried without inspecting reconstructed objects.
+        weight: 1.0
+        critical: true
+    required_identifiers: []
+    forbidden_evidence: []
+    concept_scopes: {}
+    cluster_id: nf028
+    challenge_tags: []
+    review_status: draft
+    reviewer: null
+    reviewed_at: null
+  - id: n029
+    split: novel_dev
+    language: en
+    intent: algorithm_implementation
+    query: >-
+      In time-based simulation, detector data from successive interactions
+      arrives interleaved in time. How does PandaRoot's timebased buffering
+      sort such data into processing order?
+    expected_status: answered
+    allowed_source_versions:
+      - luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32
+      - pandaroot@18c09e91100db27867ded30e708b4dae95bd8357
+      - restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42
+      - li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a
+      - karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b
+      - pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3
+      - pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87
+      - curated_panda_domain@1.0
+    required_evidence_groups:
+      - group_id: n029.e1
+        role: ring_sorter_buffer
+        critical: true
+        any_of:
+          - source_id: pandaroot
+            object_type: source_file
+            path: timebased/Buffers/PndRingSorter.h
+      - group_id: n029.e2
+        role: buffer_usage_task
+        critical: true
+        any_of:
+          - source_id: pandaroot
+            object_type: source_file
+            path: timebased/Buffers/PndBufferTestTask.h
+    required_source_types:
+      - code
+    required_answer_points:
+      - point_id: p1
+        text: >-
+          PndRingSorter keeps a fixed-size ring buffer whose cells each
+          cover a configurable time width (cellWidth); AddElement inserts a
+          timestamped element into the cell for its time, so interleaved
+          data is bucketed by time rather than arrival order.
+        weight: 1.0
+        critical: true
+      - point_id: p2
+        text: >-
+          WriteOutElements releases entries from the lower-bound pointer up
+          to a given index (WriteOutAll flushes everything), handing the
+          bucketed FairTimeStamp data to GetOutputData in time order; the
+          covered time span is cellWidth times the buffer size.
+        weight: 1.0
+        critical: true
+      - point_id: p3
+        text: >-
+          PndRingSorter is an abstract base class (subclasses implement
+          CreateElement for their data type), and PndBufferTestTask in the
+          same package demonstrates driving the buffer in a task.
+        weight: 1.0
+        critical: true
+    required_identifiers: []
+    forbidden_evidence: []
+    concept_scopes: {}
+    cluster_id: nf029
+    challenge_tags: []
+    review_status: draft
+    reviewer: null
+    reviewed_at: null
+  - id: n030
+    split: novel_dev
+    language: en
+    intent: algorithm_theory
+    query: >-
+      Before the luminosity fit runs, the framework applies a
+      coordinate-system preprocessing step to the track data. Why is the
+      standard laboratory frame insufficient there, and what does the IP
+      alignment transformation accomplish?
+    expected_status: answered
+    allowed_source_versions:
+      - luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32
+      - pandaroot@18c09e91100db27867ded30e708b4dae95bd8357
+      - restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42
+      - li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a
+      - karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b
+      - pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3
+      - pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87
+      - curated_panda_domain@1.0
+    required_evidence_groups:
+      - group_id: n030.e1
+        role: ip_alignment_preprocessing
+        critical: true
+        any_of:
+          - source_id: li_2026
+            pdf_page: 74
+            pdf_page_end: 74
+    required_source_types:
+      - paper
+    required_answer_points:
+      - point_id: p1
+        text: >-
+          The standard laboratory frame assumes the interaction point sits
+          at the origin, whereas the actual mean interaction point is
+          measured as the arithmetic mean of the POCA coordinates,
+          (x0, y0, 0).
+        weight: 1.0
+        critical: true
+      - point_id: p2
+        text: >-
+          Before the luminosity fit, a global coordinate transformation is
+          applied to all track data, virtually shifting the detector system
+          so that the measured interaction point coincides with the origin.
+        weight: 1.0
+        critical: true
+      - point_id: p3
+        text: >-
+          This restores the azimuthal symmetry that the 2D luminosity fit
+          model requires.
+        weight: 1.0
+        critical: true
+    required_identifiers: []
+    forbidden_evidence: []
+    concept_scopes: {}
+    cluster_id: nf030
+    challenge_tags: []
+    review_status: draft
+    reviewer: null
+    reviewed_at: null
+  - id: n031
+    split: novel_dev
+    language: en
+    intent: usage
+    query: >-
+      For different studies I need realistic background, one specific signal
+      channel, and simple particle scans. How do PandaRoot's event-generator
+      categories differ, and which generator is the current standard for
+      background?
+    expected_status: answered
+    allowed_source_versions:
+      - luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32
+      - pandaroot@18c09e91100db27867ded30e708b4dae95bd8357
+      - restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42
+      - li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a
+      - karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b
+      - pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3
+      - pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87
+      - curated_panda_domain@1.0
+    required_evidence_groups:
+      - group_id: n031.e1
+        role: generator_taxonomy_documentation
+        critical: true
+        any_of:
+          - source_id: pandaroot_sphinx_2023_08_25_dev
+            object_type: sphinx_page
+            path: pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/EventGenerators/EventGenerators.html
+      - group_id: n031.e2
+        role: generator_selection_in_macros
+        critical: true
+        any_of:
+          - source_id: pandaroot
+            object_type: source_file
+            path: macro/run/sim_complete.C
+    required_source_types:
+      - code
+      - documentation
+    required_answer_points:
+      - point_id: p1
+        text: >-
+          The documentation divides generators into background generators,
+          which simulate the highest-cross-section physics processes
+          (FTFGenerator as the current standard, DPMGenerator as the previous
+          one still usable), event generators for one specific physics
+          channel (EvtGen), and box generators ("particle guns"), which do
+          not simulate an interaction but produce particles of a given type
+          with defined distributions (BoxGenerator randomly within
+          boundaries, FixStepParticleGun in a fixed pattern).
+        weight: 1.0
+        critical: true
+      - point_id: p2
+        text: >-
+          In the simulation macros the generator is chosen through the
+          inputGenerator string, for example an EvtGen .dec file, "dpm",
+          "ftf", or the box syntax box:type(pdg,mult):p(min,max):tht(min,max):phi(min,max).
+        weight: 1.0
+        critical: true
+    required_identifiers: []
+    forbidden_evidence: []
+    concept_scopes: {}
+    cluster_id: nf031
+    challenge_tags: []
+    review_status: draft
+    reviewer: null
+    reviewed_at: null

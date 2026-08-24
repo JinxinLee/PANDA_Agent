@@ -1238,3 +1238,334 @@ records:
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
       lifecycle: approved
+  - question_id: n026
+    curation_family_id: nf026
+    intent: usage
+    expected_status: answered
+    novelty:
+      types:
+        - entity
+        - task_form
+      closest_exposed_cases:
+        - g009
+        - g022
+      benchmark_overlap:
+        wording: low
+        entity: none
+        evidence: none
+        information_need: low
+      rationale: >-
+        Exposed documentation-navigation cases g009/g022 point to other
+        documented resources; none asks for the RHO analysis tutorial
+        sequence, its six-part progression from signal simulation to
+        background filtering, or its tutorials/rho example files.
+    representativeness:
+      class: representative
+      primary_task_archetype: documentation_navigation
+      secondary_task_archetypes: []
+      gold_analogue_cases:
+        - g009
+        - g022
+      benchmark_reference_fit: moderate
+      domain_relevance: strong
+      corpus_tail: representative_but_rare
+      disposition: KEEP_REPRESENTATIVE
+      rationale: >-
+        Benchmark analogue: Gold documentation-navigation cases g009/g022.
+        Domain relevance: the RHO tutorial sequence is the documented
+        onboarding path for PandaRoot analysis and a routine newcomer need.
+    coverage:
+      repositories:
+        - pandaroot
+      source_types:
+        - documentation
+      expression_form: descriptive
+      evidence_topology: single_hop
+      source_scope: single_source
+      repository_scope: single_repository
+      reasoning_forms:
+        - locate
+        - summarize
+      difficulty: simple
+    curation:
+      origin: human_directed_llm_draft
+      agent_outcome_seen_before_freeze: false
+      evidence_selected_from_agent_output: false
+      lifecycle: draft
+  - question_id: n027
+    curation_family_id: nf027
+    intent: usage
+    expected_status: answered
+    novelty:
+      types:
+        - entity
+        - task_form
+      closest_exposed_cases:
+        - g009
+        - g010
+      benchmark_overlap:
+        wording: low
+        entity: none
+        evidence: none
+        information_need: low
+      rationale: >-
+        Exposed documentation cases cover other pages; none asks about the
+        Jupyter notebook integration, the kernel setup without installation,
+        or the PandaRootPySim example. Distinct from nf026, which covers the
+        analysis tutorial sequence rather than the notebook interface.
+    representativeness:
+      class: representative
+      primary_task_archetype: documentation_navigation
+      secondary_task_archetypes:
+        - workflow_sequence
+      gold_analogue_cases:
+        - g010
+      benchmark_reference_fit: moderate
+      domain_relevance: strong
+      corpus_tail: representative_but_rare
+      disposition: KEEP_REPRESENTATIVE
+      rationale: >-
+        Benchmark analogue: Gold documentation-navigation case g010. Domain
+        relevance: notebook-based work is an increasingly common way to
+        drive quick PandaRoot studies and is documented in the locked
+        snapshot.
+    coverage:
+      repositories:
+        - pandaroot
+      source_types:
+        - documentation
+      expression_form: descriptive
+      evidence_topology: single_hop
+      source_scope: single_source
+      repository_scope: single_repository
+      reasoning_forms:
+        - locate
+        - explain
+      difficulty: simple
+    curation:
+      origin: human_directed_llm_draft
+      agent_outcome_seen_before_freeze: false
+      evidence_selected_from_agent_output: false
+      lifecycle: draft
+  - question_id: n028
+    curation_family_id: nf028
+    intent: usage
+    expected_status: answered
+    novelty:
+      types:
+        - entity
+        - relation
+      closest_case_assessment: none_found
+      benchmark_overlap:
+        wording: low
+        entity: none
+        evidence: none
+        information_need: low
+      rationale: >-
+        No exposed Gold case covers the softrig package, trigger-style
+        analysis tasks, or online-filter result containers; the closest
+        exposed cases target unrelated components, so none_found is recorded.
+        The relation between the trigger-style analysis task and the
+        online-filter container is an independently sampled, genuinely
+        underrepresented need.
+    representativeness:
+      class: exploratory
+      primary_task_archetype: implementation_explanation
+      secondary_task_archetypes: []
+      gold_analogue_cases:
+        - g061
+      benchmark_reference_fit: weak
+      domain_relevance: moderate
+      corpus_tail: exploratory_tail
+      disposition: KEEP_EXPLORATORY
+      rationale: >-
+        Exploratory admission: domain relevance (event tagging and online
+        filtering are real PANDA high-rate analysis needs) plus the
+        substantive exploratory properties of a legitimate underrepresented
+        need and coverage-frontier value (the softrig package is covered by
+        no exposed or active novel question). Benchmark analogue g061 is a
+        task-form analogue only.
+    coverage:
+      repositories:
+        - pandaroot
+      source_types:
+        - code
+      expression_form: descriptive
+      evidence_topology: single_hop
+      source_scope: single_source
+      repository_scope: single_repository
+      reasoning_forms:
+        - explain
+      difficulty: moderate
+    curation:
+      origin: human_directed_llm_draft
+      agent_outcome_seen_before_freeze: false
+      evidence_selected_from_agent_output: false
+      lifecycle: draft
+  - question_id: n029
+    curation_family_id: nf029
+    intent: algorithm_implementation
+    expected_status: answered
+    novelty:
+      types:
+        - entity
+        - task_form
+      closest_case_assessment: none_found
+      benchmark_overlap:
+        wording: low
+        entity: none
+        evidence: none
+        information_need: low
+      rationale: >-
+        No exposed Gold case addresses time-based simulation buffering or
+        time-ordered data release; none_found is recorded. The mechanism
+        question (bucket interleaved timestamps in a ring buffer and release
+        them in time order) is an uncommon but domain-relevant reasoning
+        topology for PANDA's continuous-beam regime.
+    representativeness:
+      class: exploratory
+      primary_task_archetype: implementation_explanation
+      secondary_task_archetypes: []
+      gold_analogue_cases:
+        - g059
+      benchmark_reference_fit: weak
+      domain_relevance: moderate
+      corpus_tail: exploratory_tail
+      disposition: KEEP_EXPLORATORY
+      rationale: >-
+        Exploratory admission: domain relevance (time-structured data is
+        central to PANDA's high-luminosity continuous beam) plus the
+        substantive exploratory properties of an unusual but plausible
+        mechanism question and coverage-frontier value (timebased buffering
+        is unrepresented in Gold and in the active novel set). Benchmark
+        analogue g059 is a task-form analogue only.
+    coverage:
+      repositories:
+        - pandaroot
+      source_types:
+        - code
+      expression_form: descriptive
+      evidence_topology: single_hop
+      source_scope: single_source
+      repository_scope: single_repository
+      reasoning_forms:
+        - explain
+        - trace
+      difficulty: moderate
+    curation:
+      origin: human_directed_llm_draft
+      agent_outcome_seen_before_freeze: false
+      evidence_selected_from_agent_output: false
+      lifecycle: draft
+  - question_id: n030
+    curation_family_id: nf030
+    intent: algorithm_theory
+    expected_status: answered
+    novelty:
+      types:
+        - entity
+        - nontrivial_expression
+      closest_case_assessment: none_found
+      benchmark_overlap:
+        wording: low
+        entity: none
+        evidence: none
+        information_need: low
+      rationale: >-
+        Exposed theory cases explain other physics or algorithm topics;
+        none covers the luminosity framework's IP alignment preprocessing
+        or the azimuthal-symmetry rationale for the coordinate
+        transformation. none_found is recorded for the closest exposed
+        case. Distinct from nf009 (elastic-model existence) and nf014
+        (directory roles).
+    representativeness:
+      class: exploratory
+      primary_task_archetype: theory_explanation
+      secondary_task_archetypes: []
+      gold_analogue_cases:
+        - g043
+      benchmark_reference_fit: weak
+      domain_relevance: strong
+      corpus_tail: exploratory_tail
+      disposition: KEEP_EXPLORATORY
+      rationale: >-
+        Exploratory admission: domain relevance (correct interaction-point
+        alignment directly conditions luminosity extraction) plus the
+        substantive exploratory properties of an unusual but plausible
+        single-source theory composition and coverage-frontier value (the
+        alignment preprocessing step is unrepresented). Benchmark analogue
+        g043 is a task-form analogue only.
+    coverage:
+      repositories:
+        - li_2026
+      source_types:
+        - paper
+      expression_form: descriptive
+      evidence_topology: single_hop
+      source_scope: single_source
+      repository_scope: paper_only
+      reasoning_forms:
+        - explain
+      difficulty: moderate
+    curation:
+      origin: human_directed_llm_draft
+      agent_outcome_seen_before_freeze: false
+      evidence_selected_from_agent_output: false
+      lifecycle: draft
+  - question_id: n031
+    curation_family_id: nf031
+    intent: usage
+    expected_status: answered
+    novelty:
+      types:
+        - entity
+        - composition
+      closest_exposed_cases:
+        - g011
+        - g051
+      benchmark_overlap:
+        wording: low
+        entity: none
+        evidence: none
+        information_need: low
+      rationale: >-
+        Exposed concept-comparison cases g011/g051 compare other component
+        pairs; none compares the three event-generator categories or
+        identifies the current standard background generator. The composed
+        taxonomy need (background vs channel vs particle gun, plus macro
+        selection syntax) differs from nf003's fixed-step scan-scenario
+        selection.
+    representativeness:
+      class: representative
+      primary_task_archetype: concept_comparison
+      secondary_task_archetypes:
+        - component_usage
+      gold_analogue_cases:
+        - g051
+      benchmark_reference_fit: moderate
+      domain_relevance: strong
+      corpus_tail: representative_core
+      disposition: KEEP_REPRESENTATIVE
+      rationale: >-
+        Benchmark analogue: Gold concept-comparison case g051. Domain
+        relevance: choosing the right generator category is a routine
+        prerequisite of every PandaRoot simulation study.
+    coverage:
+      repositories:
+        - pandaroot
+      source_types:
+        - code
+        - documentation
+      expression_form: descriptive
+      evidence_topology: comparison
+      source_scope: cross_source
+      repository_scope: single_repository
+      reasoning_forms:
+        - compare
+        - select
+      difficulty: moderate
+    curation:
+      origin: human_directed_llm_draft
+      agent_outcome_seen_before_freeze: false
+      evidence_selected_from_agent_output: false
+      lifecycle: draft

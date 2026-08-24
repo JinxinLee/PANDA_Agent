@@ -2,6 +2,20 @@
 
 Status: **APPROVED_FOR_EXECUTION** (2026-08-24).
 
+Current execution status (2026-08-24, separated from the historical planning
+rationale below): plan Rev 1 approved by `Li` at 2026-08-24T01:25+02:00.
+N2-A Batch 1 = 6/6 human-approved (`BATCH1_APPROVED / NOT_SPLIT_FROZEN`;
+n020-n025 approved by `Li` 2026-08-24T01:50/02:05+02:00, none yet
+`split_frozen`). N2-B Batch 2 balancing curation authorized
+2026-08-24T02:17+02:00 and executed: six draft candidates n026-n031
+(`BATCH2_DRAFTED / HUMAN_REVIEW_PENDING`; see
+`N2B_BATCH2_REVIEW_PACKAGE.md`). N2 overall remains `IN_PROGRESS`; the full
+expanded novel_dev remains incomplete and unfrozen (28 loaded records = 22
+human-approved + 6 pending). C8 development proceeds in parallel under
+separate authorization; the N2 no-outcome contamination boundary remains
+unchanged. The planning rationale and soft targets below are the approved
+historical content and are not rewritten by execution progress.
+
 Human approval record: reviewer `Li` re-reviewed Rev 1 and returned `ACCEPT`
 at 2026-08-24T01:25+02:00 (approved commit
 `08626661e3bb776c8f74c4f5b28c85ff2147c0fb`; prior review state 5/5 required
