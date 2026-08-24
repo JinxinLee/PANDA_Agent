@@ -72,6 +72,10 @@ def snapshot(
             stage_m.append(object_id)
     stage_p = list(reversed(stage_m))
     selected_ids = list(stage_s_override if stage_s_override is not None else selected)
+    # A faithful COMPLETE capture gives every selected object an evidence_id.
+    effective_evidence = dict(evidence_ids)
+    for object_id in selected_ids:
+        effective_evidence.setdefault(object_id, f"evidence.{object_id}")
     return PassSnapshot(
         pass_origin=pass_origin,
         completeness=completeness,
@@ -85,7 +89,7 @@ def snapshot(
         stage_m_order=tuple(stage_m),
         stage_p_order=tuple(stage_p),
         stage_s_selected_object_ids=tuple(selected_ids),
-        stage_s_evidence_ids={key: value for key, value in evidence_ids.items()},
+        stage_s_evidence_ids=effective_evidence,
         exclusions=tuple(exclusions),
         backfill_admissions=(),
         payloads={object_id: payload(object_id, version=version) for object_id in universe},
@@ -319,6 +323,108 @@ class GlobalCandidatePoolContractTests(unittest.TestCase):
         with self.assertRaises(ValueError) as ctx:
             build_global_candidate_pool(broken)
         self.assertIn("not an executed production channel", str(ctx.exception))
+
+
+class ContractFidelityRepairTests(unittest.TestCase):
+    """A1R1: five tightened fidelity invariants on the same v1 contract."""
+
+    def test_first_snapshot_with_targeted_role_rejected(self):
+        with self.assertRaises(ValueError) as ctx:
+            build_global_candidate_pool(targeted_pass(exact_ids=["objA"]))
+        self.assertIn("pass_origin INITIAL", str(ctx.exception))
+
+    def test_stage_m_wrong_order_rejected(self):
+        # R = [B, A], F = [A, B, C]: M must be exactly [B, A, C].
+        broken = initial_pass(
+            exact_ids=["objA", "objB", "objC"], stage_r_override=["objB", "objA"]
+        )
+        object.__setattr__(broken, "stage_m_order", ("objA", "objB", "objC"))
+        with self.assertRaises(ValueError) as ctx:
+            build_global_candidate_pool(broken)
+        self.assertIn("dedup_preserving_order(R + F)", str(ctx.exception))
+
+    def test_duplicate_channel_ranks_rejected(self):
+        broken = initial_pass(exact_ids=["objA", "objB"])
+        object.__setattr__(
+            broken,
+            "channel_candidates",
+            (
+                ChannelCandidate("exact", "objA", 1),
+                ChannelCandidate("exact", "objB", 1),
+            ),
+        )
+        with self.assertRaises(ValueError) as ctx:
+            build_global_candidate_pool(broken)
+        self.assertIn("contiguous ordered stream", str(ctx.exception))
+
+    def test_gapped_channel_ranks_rejected(self):
+        broken = initial_pass(exact_ids=["objA", "objB"])
+        object.__setattr__(
+            broken,
+            "channel_candidates",
+            (
+                ChannelCandidate("exact", "objA", 1),
+                ChannelCandidate("exact", "objB", 3),
+            ),
+        )
+        with self.assertRaises(ValueError) as ctx:
+            build_global_candidate_pool(broken)
+        self.assertIn("contiguous ordered stream", str(ctx.exception))
+
+    def test_payload_key_mismatch_rejected(self):
+        broken = initial_pass(exact_ids=["objA"])
+        object.__setattr__(broken, "payloads", {"objA": payload("objB")})
+        with self.assertRaises(ValueError) as ctx:
+            build_global_candidate_pool(broken)
+        self.assertIn("does not match payload.object_id", str(ctx.exception))
+
+    def test_complete_stage_s_evidence_id_mismatch_rejected(self):
+        broken = initial_pass(exact_ids=["objA"], selected=["objA"])
+        object.__setattr__(broken, "stage_s_evidence_ids", {})
+        with self.assertRaises(ValueError) as ctx:
+            build_global_candidate_pool(broken)
+        self.assertIn(
+            "COMPLETE requires stage_s_evidence_ids keys to equal", str(ctx.exception)
+        )
+
+    def test_partial_stage_s_evidence_subset_allowed_only_with_documented_note(self):
+        def partial_snapshot(notes):
+            snap = initial_pass(
+                exact_ids=["objA", "objB"],
+                selected=["objA", "objB"],
+                completeness=CompletenessState.PARTIAL,
+                completeness_notes=notes,
+            )
+            object.__setattr__(snap, "stage_s_evidence_ids", {"objA": "evidence.objA"})
+            return snap
+
+        # Missing evidence-id coverage documented in completeness_notes: allowed.
+        pool = build_global_candidate_pool(
+            partial_snapshot(
+                ("stage_s evidence-id coverage incomplete in legacy capture",)
+            )
+        )
+        self.assertEqual(pool.counts["total"], 2)
+        # Missing coverage with no evidence-related note: rejected.
+        with self.assertRaises(ValueError) as ctx:
+            build_global_candidate_pool(
+                partial_snapshot(("stage_f_order truncated to top 30",))
+            )
+        self.assertIn("missing evidence-id coverage", str(ctx.exception))
+
+    def test_valid_contiguous_multichannel_ranks_pass(self):
+        pool = build_global_candidate_pool(
+            initial_pass(exact_ids=["objA", "objB", "objC"], dense_ids=["objA", "objB"])
+        )
+        occurrence = {
+            c.object_id: c for c in pool.candidates
+        }["objA"].initial_occurrence
+        ranks = {
+            channel: [item.rank for item in occurrence.channel_occurrences if item.channel == channel]
+            for channel in ("exact", "dense")
+        }
+        self.assertEqual(ranks, {"exact": [1], "dense": [1]})
+        self.assertEqual(pool.counts["total"], 3)
 
 
 if __name__ == "__main__":

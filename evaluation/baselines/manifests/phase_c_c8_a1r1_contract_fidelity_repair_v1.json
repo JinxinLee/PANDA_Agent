@@ -1,0 +1,142 @@
+{
+  "schema_version": "1.0",
+  "task": "C8-A1R1 repair global candidate-pool contract fidelity invariants (pre-outcome correctness repair of c8.global_candidate_pool.v1; no contract v2, no redesign)",
+  "contract_id": "c8.global_candidate_pool.v1",
+  "contract_version_note": "pre-outcome correctness repair of the existing v1 contract; no new contract identity created",
+  "a1_anchor_commit": "e17f8b247778dbef353c81599541213b2e5a892d",
+  "branch_head_at_start": "e17f8b247778dbef353c81599541213b2e5a892d",
+  "branch_head_at_commit": "d70eb1b (branch HEAD at repair time; harmless parallel novel-curation advancement; zero C8-relevant delta)",
+  "baseline_compatibility_check": {
+    "commits_between_a1_anchor_and_a1r1": [],
+    "post_a1_changes_to_c8_relevant_paths": 0,
+    "relevant_runtime_paths_checked": [
+      "src/panda_agent/global_candidate_pool.py",
+      "src/panda_agent/qa.py",
+      "src/panda_agent/retrieval.py",
+      "configs/retrieval_policies.yaml",
+      "evaluation/baselines/manifests/phase_c_c8_a0_targeted_retrieval_boundary_inventory_v1.json",
+      "evaluation/baselines/manifests/phase_c_c8_a1_global_candidate_pool_contract_v1.json",
+      "evaluation/gold_questions.yaml"
+    ],
+    "parallel_changes_observed": "uncommitted in-progress Novel Dataset Curation worktree changes (evaluation/novel/, N2B batch-2 package, and one shared-doc N2 section); regions are disjoint from C8 sections and none is staged by this task",
+    "conflict": "NONE — C8 runtime semantics identical to the A1 anchor"
+  },
+  "repair_scope": "pre-outcome contract correctness only",
+  "repaired_invariants": {
+    "initial_role_identity": {
+      "rule": "build_global_candidate_pool requires initial.pass_origin is PassOrigin.INITIAL before construction; the second snapshot remains fail-closed to PassOrigin.TARGETED; wrong roles raise clear ValueError and are never silently reinterpreted",
+      "location": "src/panda_agent/global_candidate_pool.py build_global_candidate_pool / _validate_cross_pass_consistency"
+    },
+    "exact_stage_m_order": {
+      "rule": "stage_m_order must exactly equal dedup_preserving_order([*stage_r_order, *stage_f_order]); membership equality alone is rejected because Stage-M rank is provenance (Stage R first, then remaining Stage-F candidates, first-occurrence dedup)",
+      "example": "R=[B,A], F=[A,B,C] requires M=[B,A,C]; M=[C,A,B] is rejected despite identical membership",
+      "location": "_validate_membership"
+    },
+    "contiguous_channel_ranks": {
+      "rule": "per executed channel independently, the multiset of ranks sorted must be exactly 1..N; duplicate ranks, gaps, zero, and negative values are rejected; the existing no-duplicate (channel, object_id) invariant remains; no channel-specific scoring policy added",
+      "location": "_validate_channel_rank_streams"
+    },
+    "payload_key_object_id_equality": {
+      "rule": "for every payloads[key], payload.object_id must equal key; mismatches are rejected clearly because object_id is the authoritative global candidate identity; neither side is silently rewritten",
+      "location": "_validate_payloads"
+    },
+    "complete_stage_s_evidence_id_equality": {
+      "rule": "stage_s_evidence_ids keys must always be a subset of stage_s_selected_object_ids (an evidence_id key for an unselected object is never allowed); COMPLETE requires exact set equality (every selected Evidence has an evidence_id); PARTIAL allows a subset only when the missing evidence-id coverage is documented in completeness_notes (a note mentioning evidence)",
+      "location": "_validate_membership"
+    }
+  },
+  "unchanged_contract_semantics": [
+    "object_id remains the authoritative cross-pass candidate identity",
+    "evidence_id remains occurrence/output provenance only",
+    "INITIAL / TARGETED pass roles remain provenance-only with no ranking priority",
+    "INITIAL_ONLY / TARGETED_ONLY / BOTH origins remain descriptive only",
+    "independent per-pass F/R/M/P/S occurrence provenance; ranks never collapsed or averaged",
+    "COMPLETE / PARTIAL semantics unchanged (COMPLETE still requires Stage-F/M/P coverage of the full channel universe; PARTIAL still requires completeness_notes)",
+    "no global score, no global rank, no pass weighting, no targeted/INITIAL/BOTH-origin boost, no normalization, no new RRF logic",
+    "no global fusion, no global reranker, no new reranker prompt, no global selector, no new final evidence limit",
+    "deterministic object_id serialization order remains labeled serialization-only",
+    "EXISTING_TARGETED_QUERY_DEBT remains RECORDED_ONLY / NOT_FIXED (leading-whitespace symbol parsing in _targeted_retrieve)"
+  ],
+  "existing_invariants_preserved": [
+    "channel candidate object_id non-empty and rank >= 1",
+    "no duplicate (channel, object_id)",
+    "Stage-R subset of Stage-F; no duplicates in F/R/M/P",
+    "Stage-P membership equals Stage-M membership",
+    "Stage-S selected IDs belong to the pass universe; evidence-id keys belong to the pass universe",
+    "Stage-F scores cover exactly Stage-F membership",
+    "payload provenance exists with source_id/source_version_id and text or payload_ref",
+    "same object_id cannot map to conflicting source/version identity across passes",
+    "COMPLETE covers the complete channel universe; PARTIAL requires completeness_notes",
+    "semantic_dense / lexical rejected as executed production channels",
+    "targeted snapshot requires TargetedTriggerContext"
+  ],
+  "no_new_policy_identity": true,
+  "global_ranking_defined": false,
+  "global_fusion_implemented": false,
+  "global_reranker_implemented": false,
+  "global_selector_implemented": false,
+  "production_integration": false,
+  "production_behavior_changed": false,
+  "production_isolation_detail": "src/panda_agent/global_candidate_pool.py remains UNWIRED shadow-evaluation contract code; qa.py and retrieval.py production paths are untouched and must not import it; Retriever.retrieve and targeted merge behavior unchanged",
+  "gold_outcomes_inspected": false,
+  "novel_outcomes_inspected": false,
+  "zero_live_work_ledger": {
+    "LIVE_RETRIEVAL_CALLS": 0,
+    "TARGETED_RETRIEVAL_CALLS": 0,
+    "RERANKER_CALLS": 0,
+    "ANALYZER_CALLS": 0,
+    "EMBEDDING_CALLS": 0,
+    "SPARSE_ENCODING_CALLS": 0,
+    "QDRANT_READS": 0,
+    "SQL_CANDIDATE_READS": 0,
+    "QA_CALLS": 0,
+    "VERIFIER_CALLS": 0,
+    "JUDGE_CALLS": 0,
+    "GOLD_EVALUATIONS": 0,
+    "NOVEL_EVALUATIONS": 0,
+    "DB_INDEX_WRITES": 0,
+    "method": "synthetic unit validation of the real builder/validation implementation only"
+  },
+  "focused_test_result": {
+    "file": "tests/unit/test_c8_global_candidate_pool.py",
+    "total_count": 23,
+    "passed": 23,
+    "failed": 0,
+    "new_tests_added": 8,
+    "new_tests": [
+      "first snapshot with pass_origin TARGETED is rejected",
+      "Stage-M with correct membership but wrong order is rejected",
+      "duplicate channel ranks are rejected",
+      "gapped channel ranks are rejected",
+      "payload map key != payload.object_id is rejected",
+      "COMPLETE Stage-S selected/evidence-id mismatch is rejected",
+      "PARTIAL Stage-S evidence subset allowed only with a documented evidence note",
+      "valid contiguous multi-channel ranks pass (positive)"
+    ],
+    "existing_tests_updated": "synthetic COMPLETE snapshots now auto-generate evidence_ids for selected objects, matching faithful COMPLETE capture semantics (Repair 5); no assertion weakened",
+    "a0_drift_check": "tests/unit/test_c8_a0_targeted_merge_semantics.py 6/6",
+    "external_calls": 0
+  },
+  "A1_final_role": {
+    "C8-A1_architecture": "ACCEPTED (object_id identity, evidence_id occurrence role, INITIAL/TARGETED/BOTH, COMPLETE/PARTIAL, no global ranking, production UNWIRED)",
+    "C8-A1_contract_lifecycle": "PASS_AFTER_CONTRACT_FIDELITY_REPAIR (the original A1 required this pre-outcome correctness repair; historical progression preserved; the A1 artifact is unchanged)",
+    "C8-A1R1": "PASS"
+  },
+  "C8_A2_eligibility": {
+    "status": "NEXT_ELIGIBLE / NOT_STARTED",
+    "purpose": "C8-A2 frozen two-pass capture and global-treatment preregistration (populate the repaired v1 contract from real targeted cases; faithful CURRENT append parity; preregister global treatments before relevance outcomes)",
+    "note": "A2 is eligible only after this A1R1 PASS; live capture remains unauthorized in A1R1"
+  },
+  "contradictions_found": [],
+  "A1R1_verdict": "PASS",
+  "A1R1_verdict_basis": [
+    "initial snapshot role fail-closed to INITIAL; targeted remains fail-closed to TARGETED",
+    "Stage-M exact order equals dedup_preserving_order(R + F)",
+    "channel ranks form valid contiguous 1..N streams per channel (duplicates/gaps/zero/negative rejected)",
+    "payload map key equals payload.object_id",
+    "COMPLETE Stage-S evidence-id keys equal selected object IDs; PARTIAL subset requires documented evidence note; unselected evidence-id keys never allowed",
+    "all existing A1 invariants intact; no invariant weakened",
+    "no ranking policy introduced; production unchanged; no outcome data inspected",
+    "focused tests 23/23 pass; A0 drift check 6/6"
+  ]
+}

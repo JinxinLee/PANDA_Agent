@@ -316,6 +316,21 @@ def _validate_no_duplicate_stream_entries(snapshot: PassSnapshot) -> None:
         seen.add(key)
 
 
+def _validate_channel_rank_streams(snapshot: PassSnapshot) -> None:
+    """Each channel's ranks must be exactly the contiguous stream 1..N."""
+    ranks_by_channel: dict[str, list[int]] = {}
+    for item in snapshot.channel_candidates:
+        ranks_by_channel.setdefault(item.channel, []).append(item.rank)
+    for channel, ranks in sorted(ranks_by_channel.items()):
+        expected = list(range(1, len(ranks) + 1))
+        _require(
+            sorted(ranks) == expected,
+            f"channel '{channel}' ranks must form exactly the contiguous ordered "
+            f"stream 1..{len(ranks)} (got {sorted(ranks)}); duplicate ranks, gaps, "
+            "zero, and negative values are invalid",
+        )
+
+
 def _validate_membership(snapshot: PassSnapshot) -> None:
     universe = _channel_universe(snapshot)
     stage_f = list(snapshot.stage_f_order)
@@ -332,10 +347,14 @@ def _validate_membership(snapshot: PassSnapshot) -> None:
     )
     stage_m = list(snapshot.stage_m_order)
     _require(len(set(stage_m)) == len(stage_m), "stage_m_order has duplicates")
-    expected_m = set(stage_r) | set(stage_f)
+    # Stage-M rank is provenance: the order must exactly equal the reranker
+    # Stage R followed by the remaining Stage-F candidates, deduplicated
+    # preserving first occurrence.  Membership equality alone is insufficient.
+    expected_m = list(dict.fromkeys([*stage_r, *stage_f]))
     _require(
-        set(stage_m) == expected_m,
-        "stage_m_order membership must equal deduplicated R+F membership",
+        stage_m == expected_m,
+        "stage_m_order must exactly equal dedup_preserving_order(R + F); "
+        "correct membership with wrong order is a fidelity violation",
     )
     stage_p = list(snapshot.stage_p_order)
     _require(len(set(stage_p)) == len(stage_p), "stage_p_order has duplicates")
@@ -356,6 +375,25 @@ def _validate_membership(snapshot: PassSnapshot) -> None:
         set(snapshot.stage_s_evidence_ids) <= universe,
         "stage_s_evidence_ids keys must belong to the pass candidate universe",
     )
+    _require(
+        set(snapshot.stage_s_evidence_ids) <= set(selected),
+        "stage_s_evidence_ids keys must be a subset of Stage-S selected object IDs",
+    )
+    if snapshot.completeness is CompletenessState.COMPLETE:
+        _require(
+            set(snapshot.stage_s_evidence_ids) == set(selected),
+            "COMPLETE requires stage_s_evidence_ids keys to equal Stage-S selected "
+            "object IDs (every selected Evidence has an evidence_id)",
+        )
+    elif set(snapshot.stage_s_evidence_ids) != set(selected):
+        _require(
+            any(
+                "evidence" in str(note).casefold()
+                for note in snapshot.completeness_notes
+            ),
+            "PARTIAL snapshots with incomplete Stage-S evidence-id coverage must "
+            "document the missing evidence-id coverage in completeness_notes",
+        )
     _require(
         set(snapshot.stage_f_scores) == set(stage_f),
         "stage_f_scores must cover exactly the stage_f_order membership",
@@ -384,6 +422,11 @@ def _validate_payloads(snapshot: PassSnapshot) -> None:
         _require(
             payload is not None,
             f"candidate {object_id} ({snapshot.pass_origin.value} pass) lacks payload provenance",
+        )
+        _require(
+            payload.object_id == object_id,
+            f"payload map key {object_id} does not match payload.object_id "
+            f"{payload.object_id}; object_id is the authoritative candidate identity",
         )
         _require(bool(payload.source_id), f"payload {object_id} lacks source_id")
         _require(
@@ -423,6 +466,7 @@ def _validate_pass_snapshot(snapshot: PassSnapshot) -> None:
     )
     _validate_channel_provenance(snapshot)
     _validate_no_duplicate_stream_entries(snapshot)
+    _validate_channel_rank_streams(snapshot)
     _validate_membership(snapshot)
     _validate_payloads(snapshot)
     _validate_completeness(snapshot)
@@ -515,6 +559,11 @@ def build_global_candidate_pool(
     global fusion, reranking, selection, weighting, or ranking is defined or
     applied.  Deterministic: identical snapshots produce an identical pool.
     """
+    _require(
+        initial.pass_origin is PassOrigin.INITIAL,
+        "the first snapshot must have pass_origin INITIAL; pass roles are not "
+        "silently reinterpreted",
+    )
     _validate_pass_snapshot(initial)
     if targeted is None:
         _require(
