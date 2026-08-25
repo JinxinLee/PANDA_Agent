@@ -1,0 +1,47 @@
+{
+  "schema_version": "novel-manifest-v1",
+  "dataset_identity": "novel-v1-validation-pilot",
+  "benchmark_version": "novel-v1-validation-0.1.0",
+  "dataset_version": "0.1.0",
+  "split": "novel_validation",
+  "status": "PILOT_IN_PROGRESS",
+  "release_eligible": false,
+  "acceptance_exposed": true,
+  "question_count": 6,
+  "independent_family_count": 6,
+  "review_state": {
+    "review_status": "draft",
+    "reviewer": null,
+    "reviewed_at": null,
+    "human_approval": "none",
+    "accepted_count": 0,
+    "revise_count": 0,
+    "rejected_count": 0,
+    "pending_count": 6
+  },
+  "curation_origin": "source_anchor_first_llm_draft",
+  "agent_outcome_seen_before_freeze": false,
+  "evidence_selected_from_agent_output": false,
+  "files": {
+    "dataset": "novel_validation.yaml",
+    "curation_metadata": "novel_validation_curation_metadata.yaml",
+    "coverage_report": "novel_validation_coverage_report.json",
+    "review_package": "N3_VALIDATION_PILOT_REVIEW_PACKAGE.md",
+    "curation_plan": "N3_NOVEL_VALIDATION_CURATION_PLAN.md"
+  },
+  "locked_corpus_manifest": "data/manifests/source_manifest.json",
+  "governance": "docs/NOVEL_DATASET_CURATION_CONTRACT.md",
+  "representativeness": {
+    "profile": "gold_representativeness_profile.json",
+    "representative_count": 6,
+    "exploratory_count": 0,
+    "dispositions": {
+      "KEEP_REPRESENTATIVE": 6
+    },
+    "profile_schema": "novel-representativeness-profile-v2",
+    "profile_role": "benchmark_reference_proxy",
+    "sidecar_schema": "novel-curation-sidecar-v3"
+  },
+  "retired_drafts": [],
+  "frozen_count": 0
+}

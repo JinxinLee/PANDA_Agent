@@ -1,0 +1,163 @@
+{
+  "schema_version": "novel-coverage-report-v1",
+  "dataset_identity": "novel-v1-validation-pilot",
+  "benchmark_version": "novel-v1-validation-0.1.0",
+  "dataset_version": "0.1.0",
+  "split": "novel_validation",
+  "status": "PILOT_IN_PROGRESS",
+  "question_count": 6,
+  "independent_family_count": 6,
+  "frozen_count": 0,
+  "counts_by_intent": {
+    "installation": 1,
+    "usage": 2,
+    "api": 1,
+    "algorithm_implementation": 1,
+    "troubleshooting": 1
+  },
+  "counts_by_difficulty": {
+    "simple": 2,
+    "moderate": 4
+  },
+  "counts_by_novelty_type": {
+    "entity": 1,
+    "relation": 5,
+    "composition": 3,
+    "reasoning_topology": 2,
+    "task_form": 5
+  },
+  "counts_by_repository_scope": {
+    "single_repository": 6,
+    "cross_repository": 0
+  },
+  "counts_by_source_type": {
+    "documentation": 4,
+    "code": 2
+  },
+  "counts_by_expression_form": {
+    "descriptive": 5,
+    "implementation_oriented": 1
+  },
+  "counts_by_evidence_topology": {
+    "single_hop": 2,
+    "multi_hop": 3,
+    "producer_consumer": 1
+  },
+  "counts_by_expected_status": {
+    "answered": 6,
+    "insufficient_evidence": 0,
+    "version_conflict": 0,
+    "clarification_required": 0
+  },
+  "counts_by_primary_task_archetype": {
+    "setup_environment": 1,
+    "component_usage": 3,
+    "troubleshooting_diagnosis": 1,
+    "implementation_explanation": 1
+  },
+  "cross_repository_count": 0,
+  "multi_hop_count": 3,
+  "descriptive_or_identifier_free_count": 5,
+  "multi_evidence_count": 4,
+  "family_isolation": {
+    "frozen_novel_dev_family_count_checked": 28,
+    "validation_family_count": 6,
+    "cross_split_family_id_collisions": 0,
+    "substantive_information_need_overlaps_admitted": 0,
+    "candidate_reviews": [
+      {
+        "question_id": "n901",
+        "family_id": "vf001",
+        "closest_frozen_families": ["nf001", "nf015"],
+        "independent": true,
+        "basis": "external-package CMake integration is distinct from fork version setup and ARM VC troubleshooting"
+      },
+      {
+        "question_id": "n902",
+        "family_id": "vf002",
+        "closest_frozen_families": ["nf026"],
+        "independent": true,
+        "basis": "PID selection and probability-combination semantics are distinct from tutorial navigation"
+      },
+      {
+        "question_id": "n903",
+        "family_id": "vf003",
+        "closest_frozen_families": ["nf018", "nf019", "nf026"],
+        "independent": true,
+        "basis": "channel-wide reconstruction-loss diagnosis is distinct from one fitter and from tutorial navigation"
+      },
+      {
+        "question_id": "n904",
+        "family_id": "vf004",
+        "closest_frozen_families": ["nf010", "nf029"],
+        "independent": true,
+        "basis": "EMC spatial clustering and local-maximum bump splitting are distinct from fast simulation and generic time sorting"
+      },
+      {
+        "question_id": "n905",
+        "family_id": "vf005",
+        "closest_frozen_families": ["nf017", "nf023"],
+        "independent": true,
+        "basis": "homogeneous track-branch aggregation is distinct from track fitting and FTS branch production"
+      },
+      {
+        "question_id": "n906",
+        "family_id": "vf006",
+        "closest_frozen_families": ["nf003", "nf031"],
+        "independent": true,
+        "basis": "pre-transport event rejection is distinct from generator stepping and generator taxonomy"
+      }
+    ]
+  },
+  "known_coverage_limits": [
+    "This six-question pilot is a curation sample, not evidence of empirical PANDA user traffic or a quota-matched miniature of novel_dev.",
+    "No genuine cross-repository minimum footprint arose; all six candidates require one locked repository identity.",
+    "No legitimate insufficient_evidence, version_conflict, or clarification_required candidate arose, so status diversity was not manufactured.",
+    "The pilot does not complete the approximately 12-18 question validation target and remains subject to human review and possible planning revision."
+  ],
+  "curation_provenance": {
+    "origin": "source_anchor_first_llm_draft",
+    "agent_outcome_seen_before_freeze": false,
+    "evidence_selected_from_agent_output": false,
+    "human_approval": "none",
+    "human_reviewer": null,
+    "reviewed_at": null,
+    "review_decision_counts": {
+      "accepted": 0,
+      "revise": 0,
+      "rejected": 0,
+      "pending": 6
+    }
+  },
+  "representativeness": {
+    "profile_artifact": "gold_representativeness_profile.json",
+    "profile_schema": "novel-representativeness-profile-v2",
+    "profile_role": "benchmark_reference_proxy",
+    "empirical_user_frequency": false,
+    "representative_count": 6,
+    "exploratory_count": 0,
+    "counts_by_primary_task_archetype": {
+      "setup_environment": 1,
+      "component_usage": 3,
+      "troubleshooting_diagnosis": 1,
+      "implementation_explanation": 1
+    },
+    "benchmark_reference_fit_counts": {
+      "strong": 3,
+      "moderate": 3
+    },
+    "domain_relevance_counts": {
+      "strong": 5,
+      "moderate": 1
+    },
+    "corpus_tail_counts": {
+      "representative_core": 4,
+      "representative_but_rare": 2
+    },
+    "dispositions": {
+      "KEEP_REPRESENTATIVE": 6
+    },
+    "notes": "Classifications combine benchmark-reference fit with independent PANDA-domain relevance. They do not claim empirical frequency and do not impose a validation quota."
+  },
+  "candidate_replacement_needed_count": 0
+}

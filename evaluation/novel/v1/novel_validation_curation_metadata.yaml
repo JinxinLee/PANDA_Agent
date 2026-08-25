@@ -1,0 +1,261 @@
+schema_version: novel-curation-sidecar-v3
+dataset_version: 0.1.0
+benchmark_version: novel-v1-validation-0.1.0
+records:
+  - question_id: n901
+    curation_family_id: vf001
+    intent: installation
+    expected_status: answered
+    novelty:
+      types: [relation, task_form]
+      closest_exposed_cases: [g001, g002]
+      closest_frozen_novel_dev_families: [nf001, nf015]
+      benchmark_overlap:
+        wording: low
+        entity: partial
+        evidence: none
+        information_need: low
+      rationale: >-
+        Exposed setup cases concern installing or entering PandaRoot itself. This candidate starts from the independently sampled external-package documentation and asks how a separately maintained package links to an installed PandaRoot and inherits FairRoot/VMC setup.
+      family_isolation_rationale: >-
+        nf001 audits RestgasDetermination's own version-pair shell script, while nf015 diagnoses an ARM VC build failure. Neither asks for the external-package CMake integration boundary or its default installation location.
+    representativeness:
+      class: representative
+      primary_task_archetype: setup_environment
+      secondary_task_archetypes: []
+      gold_analogue_cases: [g001, g002]
+      benchmark_reference_fit: strong
+      domain_relevance: strong
+      corpus_tail: representative_core
+      disposition: KEEP_REPRESENTATIVE
+      rationale: >-
+        Setup work recurs in the Gold reference, and maintaining analysis packages against PandaRoot is a routine software-development need. The concrete integration contract is independent of the frozen setup families.
+    coverage:
+      repositories: [pandaroot]
+      source_types: [documentation]
+      expression_form: descriptive
+      evidence_topology: multi_hop
+      source_scope: single_source
+      repository_scope: single_repository
+      reasoning_forms: [procedure, explain]
+      difficulty: moderate
+    curation:
+      origin: source_anchor_first_llm_draft
+      agent_outcome_seen_before_freeze: false
+      evidence_selected_from_agent_output: false
+      lifecycle: draft
+
+  - question_id: n902
+    curation_family_id: vf002
+    intent: usage
+    expected_status: answered
+    novelty:
+      types: [relation, composition, task_form]
+      closest_exposed_cases: [g022]
+      closest_frozen_novel_dev_families: [nf026]
+      benchmark_overlap:
+        wording: low
+        entity: partial
+        evidence: partial
+        information_need: low
+      rationale: >-
+        g022 and nf026 navigate the RHO documentation at page or sequence level. This candidate instead asks for the executable selection semantics that connect a particle/charge criterion, a named detector classifier, and a multi-algorithm probability combination.
+      family_isolation_rationale: >-
+        nf026's minimum need is to identify and summarize the official tutorial sequence. It does not require any FillList keyword, probability threshold, detector-algorithm selector, or combination rule, so the validation need is not a narrower wording of that navigation family.
+    representativeness:
+      class: representative
+      primary_task_archetype: component_usage
+      secondary_task_archetypes: []
+      gold_analogue_cases: [g022, g024]
+      benchmark_reference_fit: strong
+      domain_relevance: strong
+      corpus_tail: representative_core
+      disposition: KEEP_REPRESENTATIVE
+      rationale: >-
+        Selecting charged particle candidates with detector PID is a common RHO analysis operation, and the Gold reference contains recurring component-usage tasks even though it does not test these selection semantics.
+    coverage:
+      repositories: [pandaroot]
+      source_types: [documentation]
+      expression_form: descriptive
+      evidence_topology: multi_hop
+      source_scope: single_source
+      repository_scope: single_repository
+      reasoning_forms: [configure, explain]
+      difficulty: moderate
+    curation:
+      origin: source_anchor_first_llm_draft
+      agent_outcome_seen_before_freeze: false
+      evidence_selected_from_agent_output: false
+      lifecycle: draft
+
+  - question_id: n903
+    curation_family_id: vf003
+    intent: troubleshooting
+    expected_status: answered
+    novelty:
+      types: [composition, reasoning_topology, task_form]
+      closest_exposed_cases: [g024, g110]
+      closest_frozen_novel_dev_families: [nf018, nf019, nf026]
+      benchmark_overlap:
+        wording: low
+        entity: partial
+        evidence: none
+        information_need: low
+      rationale: >-
+        This diagnostic need begins from MCTrackAnalysis documentation and asks how the enrichment stage, declarative decay requirements, and failure-position output work together to localize reconstruction loss.
+      family_isolation_rationale: >-
+        nf018 performs candidate and whole-tree truth matching, nf019 explains one Kalman/DAF fitting task, and nf026 navigates the RHO tutorial sequence. None defines a channel-wide staged loss diagnosis over linked MC and reconstruction objects.
+    representativeness:
+      class: representative
+      primary_task_archetype: troubleshooting_diagnosis
+      secondary_task_archetypes: [workflow_sequence]
+      gold_analogue_cases: [g110, g114]
+      benchmark_reference_fit: moderate
+      domain_relevance: strong
+      corpus_tail: representative_but_rare
+      disposition: KEEP_REPRESENTATIVE
+      rationale: >-
+        Locating the stage that loses simulated signal is a natural reconstruction-validation task. The dedicated tool is less frequently referenced but addresses a central PANDA analysis workflow rather than an artificial edge case.
+    coverage:
+      repositories: [pandaroot]
+      source_types: [documentation]
+      expression_form: descriptive
+      evidence_topology: multi_hop
+      source_scope: single_source
+      repository_scope: single_repository
+      reasoning_forms: [diagnose, trace]
+      difficulty: moderate
+    curation:
+      origin: source_anchor_first_llm_draft
+      agent_outcome_seen_before_freeze: false
+      evidence_selected_from_agent_output: false
+      lifecycle: draft
+
+  - question_id: n904
+    curation_family_id: vf004
+    intent: algorithm_implementation
+    expected_status: answered
+    novelty:
+      types: [relation, composition, reasoning_topology]
+      closest_case_assessment: none_found
+      closest_frozen_novel_dev_families: [nf010, nf029]
+      benchmark_overlap:
+        wording: low
+        entity: none
+        evidence: none
+        information_need: low
+      rationale: >-
+        No exposed Gold case covers EMC clustering or bump separation. The question traces the implementation boundary between connected, thresholded digis and local-maximum shower candidates, an independently sampled calorimeter reconstruction need.
+      family_isolation_rationale: >-
+        nf010 covers parameterized fast-simulation detector responses, not EMC reconstruction, and nf029 covers generic time-order buffering, not spatial clustering or local-maximum splitting. Timestamp handling is incidental here and does not define the family.
+    representativeness:
+      class: representative
+      primary_task_archetype: implementation_explanation
+      secondary_task_archetypes: [producer_consumer_trace]
+      gold_analogue_cases: [g059, g065]
+      benchmark_reference_fit: moderate
+      domain_relevance: strong
+      corpus_tail: representative_core
+      disposition: KEEP_REPRESENTATIVE
+      rationale: >-
+        Calorimeter clustering and shower separation are central detector-reconstruction operations. Gold implementation cases establish the recurring task form, while the EMC information need is independently relevant.
+    coverage:
+      repositories: [pandaroot]
+      source_types: [code]
+      expression_form: implementation_oriented
+      evidence_topology: producer_consumer
+      source_scope: single_source
+      repository_scope: single_repository
+      reasoning_forms: [explain, trace]
+      difficulty: moderate
+    curation:
+      origin: source_anchor_first_llm_draft
+      agent_outcome_seen_before_freeze: false
+      evidence_selected_from_agent_output: false
+      lifecycle: draft
+
+  - question_id: n905
+    curation_family_id: vf005
+    intent: api
+    expected_status: answered
+    novelty:
+      types: [entity, relation, task_form]
+      closest_case_assessment: none_found
+      closest_frozen_novel_dev_families: [nf017, nf023]
+      benchmark_overlap:
+        wording: low
+        entity: none
+        evidence: none
+        information_need: low
+      rationale: >-
+        No exposed case asks how multiple homogeneous track branches are consolidated. The candidate is about configuring an aggregation task and its input acceptance behavior, not locating or explaining one producing track finder.
+      family_isolation_rationale: >-
+        nf017 defines the persistent PndTrack object and nf023 identifies the FTS finder and its output branches. Neither asks how arbitrary PndTrack branches are filtered by type and combined into a downstream branch.
+    representativeness:
+      class: representative
+      primary_task_archetype: component_usage
+      secondary_task_archetypes: []
+      gold_analogue_cases: [g023, g028]
+      benchmark_reference_fit: moderate
+      domain_relevance: moderate
+      corpus_tail: representative_but_rare
+      disposition: KEEP_REPRESENTATIVE
+      rationale: >-
+        Merging central and forward track collections is a plausible reconstruction-chain integration task. The utility is narrower than core analysis APIs but remains a supported, reusable workflow need.
+    coverage:
+      repositories: [pandaroot]
+      source_types: [code]
+      expression_form: descriptive
+      evidence_topology: single_hop
+      source_scope: single_source
+      repository_scope: single_repository
+      reasoning_forms: [configure, explain]
+      difficulty: simple
+    curation:
+      origin: source_anchor_first_llm_draft
+      agent_outcome_seen_before_freeze: false
+      evidence_selected_from_agent_output: false
+      lifecycle: draft
+
+  - question_id: n906
+    curation_family_id: vf006
+    intent: usage
+    expected_status: answered
+    novelty:
+      types: [relation, task_form]
+      closest_exposed_cases: [g015, g089]
+      closest_frozen_novel_dev_families: [nf003, nf031]
+      benchmark_overlap:
+        wording: low
+        entity: partial
+        evidence: partial
+        information_need: low
+      rationale: >-
+        Exposed cases ask how PndMasterRunSim is configured or how it relates to PndTargetGenerator. This candidate asks for the pre-transport rejection hook and a concrete multiplicity condition, starting from the documented event-filter section rather than a generator outcome.
+      family_isolation_rationale: >-
+        nf003 configures deterministic particle-gun stepping and nf031 classifies generator categories. The minimum need here is neither choosing nor stepping a generator; it is filtering a generated event before detector transport to save resources.
+    representativeness:
+      class: representative
+      primary_task_archetype: component_usage
+      secondary_task_archetypes: [workflow_sequence]
+      gold_analogue_cases: [g015, g089]
+      benchmark_reference_fit: strong
+      domain_relevance: strong
+      corpus_tail: representative_core
+      disposition: KEEP_REPRESENTATIVE
+      rationale: >-
+        Pre-transport filtering is a natural simulation-cost control for background studies. MasterTasks configuration is well represented as a task form, while this filter information need remains independent of generator selection.
+    coverage:
+      repositories: [pandaroot]
+      source_types: [documentation]
+      expression_form: descriptive
+      evidence_topology: single_hop
+      source_scope: single_source
+      repository_scope: single_repository
+      reasoning_forms: [configure, explain]
+      difficulty: simple
+    curation:
+      origin: source_anchor_first_llm_draft
+      agent_outcome_seen_before_freeze: false
+      evidence_selected_from_agent_output: false
+      lifecycle: draft

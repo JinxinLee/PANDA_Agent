@@ -1,0 +1,349 @@
+schema_version: '2.0'
+benchmark_version: novel-v1-validation-0.1.0
+release_eligible: false
+acceptance_exposed: true
+expected_split_counts:
+  novel_validation: 6
+expected_status_counts:
+  answered: 6
+questions:
+  - id: n901
+    split: novel_validation
+    language: en
+    intent: installation
+    query: >-
+      I maintain an external analysis package that must compile against an installed PandaRoot. Which setup script must I source, which CMake module and setup macro connect the package to PandaRoot, FairRoot, and VMC, and where does the example install by default?
+    expected_status: answered
+    allowed_source_versions:
+      - pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87
+    required_evidence_groups:
+      - group_id: n901.e1
+        role: installed_pandaroot_environment_export
+        critical: true
+        any_of:
+          - source_id: pandaroot_sphinx_2023_08_25_dev
+            object_type: sphinx_page
+            path: pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Installation/Building_ExternalPackage.html
+      - group_id: n901.e2
+        role: external_package_cmake_and_install_contract
+        critical: true
+        any_of:
+          - source_id: pandaroot_sphinx_2023_08_25_dev
+            object_type: sphinx_page
+            path: pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Installation/Building_ExternalPackage.html
+    required_source_types:
+      - documentation
+    required_answer_points:
+      - point_id: p1
+        text: >-
+          Source the installed bin/PandaRootConfig.sh with the -a option. The script exports PANDAROOTPATH and PandaRoot include paths needed to compile and link against the installed tree.
+        weight: 1.0
+        critical: true
+      - point_id: p2
+        text: >-
+          The external package must currently carry FindPandaROOT.cmake. Its CMake flow uses find_package(PandaRoot REQUIRED), extends CMAKE_MODULE_PATH with PANDAROOT_CMAKEMOD_DIR, includes PandaRootSetup, and calls pandaroot_setup(), which locates FairRoot and VMC for the package.
+        weight: 1.0
+        critical: true
+      - point_id: p3
+        text: >-
+          Unless CMAKE_INSTALL_PREFIX is overridden, the example takes PANDA_3RDPARTY_INSTALL_DIR as its install prefix, described as the PandaRoot installation's 3rdParty area; sourcing PandaRootConfig.sh -a again exposes the added package include paths.
+        weight: 1.0
+        critical: true
+    required_identifiers:
+      - text: PandaRootConfig.sh
+        kind: path
+        critical: true
+      - text: FindPandaROOT.cmake
+        kind: path
+        critical: true
+      - text: pandaroot_setup
+        kind: code_symbol
+        critical: true
+    forbidden_evidence: []
+    concept_scopes: {}
+    cluster_id: vf001
+    challenge_tags: []
+    review_status: draft
+    reviewer: null
+    reviewed_at: null
+
+  - id: n902
+    split: novel_validation
+    language: en
+    intent: usage
+    query: >-
+      In a RHO analysis, how do I request positively charged kaon candidates with a PID threshold, choose a particular detector algorithm, and combine several PID algorithms?
+    expected_status: answered
+    allowed_source_versions:
+      - pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87
+    required_evidence_groups:
+      - group_id: n902.e1
+        role: fill_list_pid_selection_syntax
+        critical: true
+        any_of:
+          - source_id: pandaroot_sphinx_2023_08_25_dev
+            object_type: sphinx_page
+            path: pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/tut_02_02_analysis_pid.html
+      - group_id: n902.e2
+        role: detector_algorithm_selection_and_combination
+        critical: true
+        any_of:
+          - source_id: pandaroot_sphinx_2023_08_25_dev
+            object_type: sphinx_page
+            path: pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/tut_02_02_analysis_pid.html
+    required_source_types:
+      - documentation
+    required_answer_points:
+      - point_id: p1
+        text: >-
+          Use PndAnalysis::FillList with a particle, criterion, and charge keyword. For example, KaonTightPlus selects positive kaon candidates with the documented Tight threshold P >= 0.5, while a suffix such as KaonPlus0.45 applies an explicit probability threshold.
+        weight: 1.0
+        critical: true
+      - point_id: p2
+        text: >-
+          Pass a PID algorithm name as FillList's third argument, for example PidAlgoDrc. The classifier tasks provide probabilities for the five charged-particle hypotheses from their detector responses.
+        weight: 1.0
+        critical: true
+      - point_id: p3
+        text: >-
+          A semicolon-separated third argument such as PidAlgoEmcBayes;PidAlgoDrc;PidAlgoStt combines algorithms; the documented combination multiplies their per-species probability values before applying the selection criterion.
+        weight: 1.0
+        critical: true
+    required_identifiers:
+      - text: PndAnalysis::FillList
+        kind: code_symbol
+        critical: true
+      - text: PidAlgoDrc
+        kind: code_symbol
+        critical: true
+    forbidden_evidence: []
+    concept_scopes: {}
+    cluster_id: vf002
+    challenge_tags: []
+    review_status: draft
+    reviewer: null
+    reviewed_at: null
+
+  - id: n903
+    split: novel_validation
+    language: en
+    intent: troubleshooting
+    query: >-
+      I need to find the reconstruction stage at which a simulated decay channel loses events. What two-stage MCTrackAnalysis workflow does PandaRoot document, what information is attached first, and how are decay and reconstruction requirements expressed for the diagnosis?
+    expected_status: answered
+    allowed_source_versions:
+      - pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87
+    required_evidence_groups:
+      - group_id: n903.e1
+        role: mctrackinfo_enrichment_stage
+        critical: true
+        any_of:
+          - source_id: pandaroot_sphinx_2023_08_25_dev
+            object_type: sphinx_page
+            path: pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tools/MCTrackAna/MCTrackAna.html
+      - group_id: n903.e2
+        role: requirements_and_failure_diagnosis_stage
+        critical: true
+        any_of:
+          - source_id: pandaroot_sphinx_2023_08_25_dev
+            object_type: sphinx_page
+            path: pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tools/MCTrackAna/MCTrackAna.html
+    required_source_types:
+      - documentation
+    required_answer_points:
+      - point_id: p1
+        text: >-
+          The first stage runs PndMCTrackInfoTask to extend each MCTrack with PndMCTrackInfo. The documented additions include decay and mother/daughter history, FairLinks through reconstruction objects, reconstructed momenta for tracking algorithms, and PID probabilities.
+        weight: 1.0
+        critical: true
+      - point_id: p2
+        text: >-
+          The second stage analyzes those PndMCTrackInfo objects. A PndEventRequirements object contains PndParticleRequirements records: SetPID and SetPIDMothers define the required particle and mother chain, while daughter, tracking, PID, and neutral checks are optional refinements.
+        weight: 1.0
+        critical: true
+      - point_id: p3
+        text: >-
+          The documented output reports per-requirement survival, the requirement position where reconstruction failed, and the event numbers for those failures, allowing a decay channel to be traced to the losing reconstruction stage.
+        weight: 1.0
+        critical: true
+    required_identifiers:
+      - text: PndMCTrackInfoTask
+        kind: code_symbol
+        critical: true
+      - text: PndEventRequirements
+        kind: code_symbol
+        critical: true
+      - text: PndParticleRequirements
+        kind: code_symbol
+        critical: true
+    forbidden_evidence: []
+    concept_scopes: {}
+    cluster_id: vf003
+    challenge_tags: []
+    review_status: draft
+    reviewer: null
+    reviewed_at: null
+
+  - id: n904
+    split: novel_validation
+    language: en
+    intent: algorithm_implementation
+    query: >-
+      In PandaRoot EMC reconstruction, how are calorimeter digis turned into clusters, and why is a later bump-splitting stage needed?
+    expected_status: answered
+    allowed_source_versions:
+      - pandaroot@18c09e91100db27867ded30e708b4dae95bd8357
+    required_evidence_groups:
+      - group_id: n904.e1
+        role: digi_to_cluster_implementation
+        critical: true
+        any_of:
+          - source_id: pandaroot
+            object_type: source_file
+            path: detectors/emc/EmcReco/PndEmcMakeCluster.h
+          - source_id: pandaroot
+            object_type: source_file
+            path: detectors/emc/EmcReco/PndEmcMakeCluster.cxx
+      - group_id: n904.e2
+        role: local_maximum_cluster_to_bump_split
+        critical: true
+        any_of:
+          - source_id: pandaroot
+            object_type: source_file
+            path: detectors/emc/EmcReco/PndEmcMakeBump.cxx
+          - source_id: pandaroot
+            object_type: source_file
+            path: detectors/emc/EmcReco/PndEmcExpClusterSplitter.cxx
+    required_source_types:
+      - code
+    required_answer_points:
+      - point_id: p1
+        text: >-
+          PndEmcMakeCluster reads EmcDigi data, rejects digis below the section-specific reconstruction thresholds, builds spatial-neighbour relations, and merges connected preclusters into EmcCluster objects. In timestamp mode it additionally applies the configured time separation while preserving the same spatial condition.
+        weight: 1.0
+        critical: true
+      - point_id: p2
+        text: >-
+          A cluster can contain more than one local energy maximum, so it is not necessarily one shower candidate. PndEmcMakeBump delegates the split to PndEmcExpClusterSplitter, which reads each cluster's LocalMaxMap and creates EmcBump objects associated with the maxima.
+        weight: 1.0
+        critical: true
+      - point_id: p3
+        text: >-
+          The splitter records the apportioned crystal contribution through EmcSharedDigi objects as it forms the bump output; this is the implementation boundary between connected-digi clustering and local-maximum shower separation.
+        weight: 1.0
+        critical: true
+    required_identifiers:
+      - text: PndEmcMakeCluster
+        kind: code_symbol
+        critical: true
+      - text: PndEmcMakeBump
+        kind: code_symbol
+        critical: true
+      - text: PndEmcExpClusterSplitter
+        kind: code_symbol
+        critical: true
+    forbidden_evidence: []
+    concept_scopes: {}
+    cluster_id: vf004
+    challenge_tags: []
+    review_status: draft
+    reviewer: null
+    reviewed_at: null
+
+  - id: n905
+    split: novel_validation
+    language: en
+    intent: api
+    query: >-
+      I have several PandaRoot branches containing PndTrack objects and need a single track branch for downstream tasks. What does PndTrackArrayMerger accept, what does it produce by default, and how does it handle unavailable or wrong-type inputs?
+    expected_status: answered
+    allowed_source_versions:
+      - pandaroot@18c09e91100db27867ded30e708b4dae95bd8357
+    required_evidence_groups:
+      - group_id: n905.e1
+        role: track_array_merger_interface_and_execution
+        critical: true
+        any_of:
+          - source_id: pandaroot
+            object_type: source_file
+            path: tools/PndTrackArrayMerger.h
+          - source_id: pandaroot
+            object_type: source_file
+            path: tools/PndTrackArrayMerger.cxx
+    required_source_types:
+      - code
+    required_answer_points:
+      - point_id: p1
+        text: >-
+          AddInputBranch appends input branch names, SetOutputBranch changes the destination, and SetPersistance controls whether it is stored. The default constructor registers a PndTrack output branch named ALLTracks in the AllTracks folder.
+        weight: 1.0
+        critical: true
+      - point_id: p2
+        text: >-
+          During Init, a missing named branch is reported and skipped, and only input arrays whose element class is PndTrack are retained. Other array types are not added to the merge list.
+        weight: 1.0
+        critical: true
+      - point_id: p3
+        text: >-
+          On each Exec, the output is cleared and AbsorbObjects is called for each retained input array to collect its PndTrack entries into the configured output branch.
+        weight: 1.0
+        critical: true
+    required_identifiers:
+      - text: PndTrackArrayMerger
+        kind: code_symbol
+        critical: true
+      - text: ALLTracks
+        kind: code_symbol
+        critical: true
+    forbidden_evidence: []
+    concept_scopes: {}
+    cluster_id: vf005
+    challenge_tags: []
+    review_status: draft
+    reviewer: null
+    reviewed_at: null
+
+  - id: n906
+    split: novel_validation
+    language: en
+    intent: usage
+    query: >-
+      Can I reject generated events before detector transport in a PandaRoot MasterTasks simulation, and how does the documented example require at least four charged particles?
+    expected_status: answered
+    allowed_source_versions:
+      - pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87
+    required_evidence_groups:
+      - group_id: n906.e1
+        role: pre_transport_event_filter_configuration
+        critical: true
+        any_of:
+          - source_id: pandaroot_sphinx_2023_08_25_dev
+            object_type: sphinx_page
+            path: pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Running/MasterTasks.html
+    required_source_types:
+      - documentation
+    required_answer_points:
+      - point_id: p1
+        text: >-
+          Yes. After configuring the generator, obtain the FairFilteredPrimaryGenerator through GetFilteredPrimaryGenerator and attach event filters before the transport stage; the documentation motivates this as avoiding simulation and storage for events that cannot pass the analysis selection.
+        weight: 1.0
+        critical: true
+      - point_id: p2
+        text: >-
+          The example creates FairEvtFilterOnSingleParticleCounts, calls AndMinCharge(4, FairEvtFilter::kCharged), and registers it with the primary generator through AndFilter.
+        weight: 1.0
+        critical: true
+    required_identifiers:
+      - text: FairFilteredPrimaryGenerator
+        kind: code_symbol
+        critical: true
+      - text: FairEvtFilterOnSingleParticleCounts
+        kind: code_symbol
+        critical: true
+    forbidden_evidence: []
+    concept_scopes: {}
+    cluster_id: vf006
+    challenge_tags: []
+    review_status: draft
+    reviewer: null
+    reviewed_at: null

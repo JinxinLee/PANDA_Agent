@@ -8,11 +8,19 @@ embedding, or index operations.
 
 Usage (repo root):
     python evaluation/scripts/validate_novel_curation.py
+    python evaluation/scripts/validate_novel_curation.py \
+        --dataset evaluation/novel/v1/novel_validation.yaml \
+        --sidecar evaluation/novel/v1/novel_validation_curation_metadata.yaml \
+        --coverage evaluation/novel/v1/novel_validation_coverage_report.json \
+        --manifest evaluation/novel/v1/novel_validation_manifest.json \
+        --expected-split novel_validation
 """
 
 from __future__ import annotations
 
+import argparse
 import json
+import re
 import sys
 from collections import Counter
 from pathlib import Path
@@ -320,11 +328,24 @@ def derive_minimum_required_source_scope(
     }
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--dataset", type=Path, default=NOVEL_DIR / "novel_dev.yaml")
+    parser.add_argument("--sidecar", type=Path, default=NOVEL_DIR / "curation_metadata.yaml")
+    parser.add_argument("--coverage", type=Path, default=NOVEL_DIR / "coverage_report.json")
+    parser.add_argument("--manifest", type=Path, default=NOVEL_DIR / "manifest.json")
+    parser.add_argument("--expected-split", default="novel_dev")
+    return parser.parse_args()
+
+
 def main() -> int:
-    dataset_path = NOVEL_DIR / "novel_dev.yaml"
-    sidecar_path = NOVEL_DIR / "curation_metadata.yaml"
-    coverage_path = NOVEL_DIR / "coverage_report.json"
-    manifest_path = NOVEL_DIR / "manifest.json"
+    args = parse_args()
+    dataset_path = args.dataset
+    sidecar_path = args.sidecar
+    coverage_path = args.coverage
+    manifest_path = args.manifest
+    expected_split = args.expected_split
+    artifact_dir = dataset_path.parent
     source_manifest_path = REPO_ROOT / "data" / "manifests" / "source_manifest.json"
 
     raw_dataset = load_yaml(dataset_path)
@@ -513,7 +534,7 @@ def main() -> int:
     family_ids = []
     for qid, record in sorted(sidecar_by_id.items()):
         family = record.get("curation_family_id")
-        if not family or not family.startswith("nf"):
+        if not family or not re.fullmatch(r"[a-z][a-z0-9]*f\d{3}", family):
             fail(f"{qid}: missing or malformed curation_family_id")
             continue
         family_ids.append(family)
@@ -647,10 +668,13 @@ def main() -> int:
             fail(f"duplicate casefolded query between {seen_folded[folded]} and {q.id}")
         seen_folded[folded] = q.id
 
-    # 5. Split hygiene: no validation/holdout content in the dev pilot file.
+    # 5. Split hygiene: one explicitly declared novel split per dataset file.
     for q in questions:
-        if q.split != "novel_dev":
-            fail(f"{q.id}: pilot dataset may only contain novel_dev split, got {q.split!r}")
+        if q.split != expected_split:
+            fail(
+                f"{q.id}: dataset may only contain {expected_split!r} split, "
+                f"got {q.split!r}"
+            )
 
     # 6. Cross-file family isolation: one family must not cross novel splits.
     family_splits: dict[str, set[str]] = {}
@@ -810,10 +834,10 @@ def main() -> int:
     if manifest.get("release_eligible") is not False:
         fail("pilot manifest must keep release_eligible false")
     review_package = (manifest.get("files") or {}).get("review_package")
-    if not review_package or not (NOVEL_DIR / review_package).is_file():
+    if not review_package or not (artifact_dir / review_package).is_file():
         fail(f"manifest current review package missing: {review_package!r}")
     finalization_report = (manifest.get("files") or {}).get("finalization_report")
-    if finalization_report and not (NOVEL_DIR / finalization_report).is_file():
+    if finalization_report and not (artifact_dir / finalization_report).is_file():
         fail(f"manifest finalization report missing: {finalization_report!r}")
     review_state = manifest.get("review_state") or {}
     review_counts = {
@@ -854,7 +878,7 @@ def main() -> int:
         return 1
 
     print(
-        f"PASS — {len(questions)} novel_dev questions, "
+        f"PASS — {len(questions)} {expected_split} questions, "
         f"{len(set(family_ids))} independent families, all static checks green."
     )
     print(

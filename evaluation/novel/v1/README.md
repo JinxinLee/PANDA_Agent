@@ -1,4 +1,4 @@
-# Novel Dataset v1 — full novel_dev frozen
+# Novel Dataset v1 — frozen novel_dev and draft validation pilot
 
 This directory contains the complete frozen `novel_dev` split: 28 loaded
 records in 28 independent families. The original 16-question N1 pilot
@@ -21,11 +21,29 @@ State:
   claims.
 - `release_eligible: false`. Freezing `novel_dev` does not complete the full
   generalization or release program.
-- `novel_validation`: not started. `novel_holdout`: not created and remains
-  externally managed.
+- `novel_holdout`: not created and remains externally managed.
 - No PANDA Agent retrieval, QA, judge, runtime evaluation, or novel
   evaluation has run for this curation. Any future novel measurement requires
   separate explicit authorization.
+
+## novel_validation pilot
+
+N3 adds a separate validation-only pilot without changing the frozen
+`novel_dev` artifacts:
+
+- Dataset: `0.1.0` / `novel-v1-validation-0.1.0`, identity
+  `novel-v1-validation-pilot`, status `PILOT_IN_PROGRESS`.
+- Pilot size: 6 draft candidates (`n901`-`n906`) in 6 independent validation
+  families (`vf001`-`vf006`). The reserved high ID range is the smallest
+  dedicated namespace compatible with the current strict `g###`/`n###` Gold
+  schema; it is not a continuation at `n032`.
+- Human-approved: 0. Pending: 6. Split-frozen: 0. Release eligible: false.
+- The pilot is not the full approximately 12-18 question validation split.
+  Its questions and Gold are visible for curation and review, but validation
+  system outcomes have not been observed and may not be measured before a
+  later complete split freeze and explicit authorization.
+- All candidates are statically source-anchored and family-isolated against
+  all 28 frozen `novel_dev` families. No holdout content was created.
 
 Files:
 
@@ -47,8 +65,21 @@ Files:
 - `N1_FINALIZATION_REPORT.md` — historical N1 pilot review and freeze record.
 - `gold_representativeness_profile.json` — analysis-only benchmark reference
   proxy; it makes no system-performance claim.
+- `novel_validation.yaml` — evaluator-compatible six-question validation
+  pilot; every record is `draft`.
+- `novel_validation_curation_metadata.yaml` — validation-only curation
+  sidecar with `vf###` family isolation and draft lifecycle.
+- `novel_validation_manifest.json` and
+  `novel_validation_coverage_report.json` — pilot-only counts and structural
+  coverage; no performance claim.
+- `N3_NOVEL_VALIDATION_CURATION_PLAN.md` — N3 role, sampling, isolation,
+  support audit, freeze order, and stop boundary.
+- `N3_VALIDATION_PILOT_REVIEW_PACKAGE.md` — per-candidate evidence and advisory
+  Codex recommendations; every human decision is `PENDING`.
 
 Governance: `docs/NOVEL_DATASET_CURATION_CONTRACT.md`. Static validation:
 `python evaluation/scripts/validate_novel_curation.py`; it reproduces the
 Gold minimum-source-scope, topology, and difficulty assignments from source
-selectors and static provenance.
+selectors and static provenance. Validate the separate pilot with the same
+script's `--dataset`, `--sidecar`, `--coverage`, `--manifest`, and
+`--expected-split novel_validation` arguments documented in the script.
