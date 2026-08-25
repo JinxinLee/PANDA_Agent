@@ -2,30 +2,28 @@
 
 Status: **APPROVED_FOR_EXECUTION** (2026-08-24).
 
-Current execution status (2026-08-24, separated from the historical planning
-rationale below): plan Rev 1 approved by `Li` at 2026-08-24T01:25+02:00.
-N2-A Batch 1 = 6/6 human-approved (`BATCH1_APPROVED / NOT_SPLIT_FROZEN`;
-n020-n025 approved by `Li` 2026-08-24T01:50/02:05+02:00, none yet
-`split_frozen`). N2-B Batch 2 balancing curation authorized
-2026-08-24T02:17+02:00 and executed: six draft candidates n026-n031
-(`BATCH2_HUMAN_REVIEWED / R1_RE_REVIEW_PENDING`; 1 ACCEPT / 5 REVISE; see
-`N2B_BATCH2_REVIEW_PACKAGE.md`). n027 is approved but not `split_frozen`;
-n026, n028, n029, n030, and n031 were corrected after human REVISE decisions
-and remain draft pending re-review. N2 overall remains `IN_PROGRESS`; the
-full expanded novel_dev remains incomplete and unfrozen (28 loaded records =
-23 human-approved + 5 corrected REVISE records awaiting re-review). C8
-development proceeds in parallel under separate authorization; the N2
-no-outcome contamination boundary remains unchanged. The planning rationale
-and soft targets below are the approved historical content and are not
-rewritten by execution progress.
+Current execution status (2026-08-25, separated from the historical planning
+rationale below): N2 is `PASS / COMPLETE`; N2-A is `COMPLETE`; N2-B is
+`COMPLETE`. The final active `novel_dev` contains 28/28 human-approved and
+28/28 `split_frozen` records under dataset version `0.3.0`, benchmark version
+`novel-v1-dev-0.3.0`, and identity `novel-v1-dev-expansion`; status is
+`COMPLETE`. Li's final re-review of n026/n028/n029/n030/n031 at
+2026-08-25T22:11:57+02:00 accepted all five corrected records, completing
+Batch 2 at 6/6 ACCEPT. Novel evaluation was not run; any future novel
+measurement requires separate explicit authorization. The no-outcome
+contamination boundary is satisfied. C8 development proceeds in parallel
+under separate authorization, and its current lifecycle is preserved as
+`C8-A1R1 PASS`, `C8-A1 PASS_AFTER_CONTRACT_FIDELITY_REPAIR`, and
+`C8-A2 NEXT_ELIGIBLE / NOT_STARTED`. The planning rationale and soft targets
+below are the approved historical content and are not rewritten by execution
+progress.
 
 Human approval record: reviewer `Li` re-reviewed Rev 1 and returned `ACCEPT`
 at 2026-08-24T01:25+02:00 (approved commit
 `08626661e3bb776c8f74c4f5b28c85ff2147c0fb`; prior review state 5/5 required
-revisions resolved). This authorizes N2-A expansion execution. N2 overall
-remains an active expansion lifecycle until the full expanded `novel_dev` is
-human-reviewed and frozen; plan approval is not N2 completion and authorizes
-no novel evaluation.
+revisions resolved). This authorizes N2-A expansion execution and remains the
+historical plan-approval record. N2-F later completed the full expansion
+freeze; plan approval itself did not authorize novel evaluation.
 
 Revision history: Rev 1 (2026-08-24) applies the five required revisions from
 the human review of the initial draft (REVISE decision; all other planning

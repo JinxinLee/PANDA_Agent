@@ -1,86 +1,54 @@
-# Novel Dataset v1 — N1 pilot frozen; N2 expansion in progress (Batch 2 R1 re-review pending)
+# Novel Dataset v1 — full novel_dev frozen
 
-This directory holds the frozen N1 pilot plus the N2 expansion records:
-28 loaded `novel_dev` records in 28 independent families — the 16
-human-approved, `split_frozen` N1 questions (`n001`-`n010`, `n014`-`n019`),
-the 6 human-approved N2-A Batch 1 records (`n020`-`n025`, not yet
-`split_frozen`), n027 approved by Li but not yet `split_frozen`, and five
-corrected N2-B Batch 2 records awaiting human re-review (`n026`, `n028`,
-`n029`, `n030`, `n031`).
+This directory contains the complete frozen `novel_dev` split: 28 loaded
+records in 28 independent families. The original 16-question N1 pilot
+(`n001`-`n010`, `n014`-`n019`) remains preserved, and N2-A plus N2-B provide
+the 12 approved expansion records (`n020`-`n031`). All 28 active records are
+human-approved and `split_frozen`.
+
 Retired drafts n011/nf011, n012/nf012, and n013/nf013 remain historical
-withdrawn records; their lineage is preserved in the review documents.
+withdrawn records; their lineage is preserved and they are not active.
 
 State:
 
-- Loaded records: 28. Human-approved: 23 (16 frozen N1 + 6 Batch 1 +
-  n027, all lifecycle `approved`, with only the original 16
-  `split_frozen`). Human REVISE awaiting re-review: 5 (`n026`, `n028`,
-  `n029`, `n030`, `n031`; corrected R1 records remain `review_status: draft`,
-  `reviewer: null`, lifecycle `draft`).
-- N1: `PASS / COMPLETE`; N2: `IN_PROGRESS / PLAN_APPROVED`; N2-A:
-  `BATCH1_APPROVED / NOT_SPLIT_FROZEN`; N2-B:
-  `BATCH2_HUMAN_REVIEWED / R1_RE_REVIEW_PENDING` (1 ACCEPT / 5 REVISE /
-  0 REJECT).
-- Dataset lineage: `0.3.0` expansion-in-progress (`novel-v1-dev-0.3.0`,
-  identity `novel-v1-dev-expansion`, status `EXPANSION_IN_PROGRESS`).
-  Git history preserves the frozen `0.2.0` pilot baseline; the original 16
-  questions are content-identical and remain approved/frozen.
-- `release_eligible: false`. The expanded `novel_dev` is NOT frozen; the
-  full ~30-question target is reached in count (28) but remains incomplete
-  until Batch 2 is human-reviewed and the split is frozen.
-- Nothing here has been evaluated against PANDA Agent: no retrieval, QA,
-  judge, or runtime evaluation was run during curation, review,
-  finalization, or expansion.
+- Dataset: `0.3.0` / `novel-v1-dev-0.3.0`, identity
+  `novel-v1-dev-expansion`, status `COMPLETE`.
+- Loaded records: 28. Human-approved: 28. Split-frozen: 28. Rejected: 0.
+- N1: `PASS / COMPLETE`; N2: `PASS / COMPLETE`; N2-A: `COMPLETE`;
+  N2-B: `COMPLETE` (`6 ACCEPT / 0 REVISE / 0 REJECT / 0 PENDING`).
+- Representativeness: 26 `representative`, 2 `exploratory`. These are
+  classification outcomes, not quota fulfillment or empirical user-frequency
+  claims.
+- `release_eligible: false`. Freezing `novel_dev` does not complete the full
+  generalization or release program.
+- `novel_validation`: not started. `novel_holdout`: not created and remains
+  externally managed.
+- No PANDA Agent retrieval, QA, judge, runtime evaluation, or novel
+  evaluation has run for this curation. Any future novel measurement requires
+  separate explicit authorization.
 
 Files:
 
-- `novel_dev.yaml` — evaluator-compatible dataset (strict Gold schema); the
-  16 frozen pilot questions, 6 human-approved Batch 1 expansion records,
-  n027 approved by Li, and five corrected draft records awaiting re-review.
-- `curation_metadata.yaml` — curation sidecar (schema v3): family, novelty,
-  overlap, representativeness (two-signal: benchmark reference fit + domain
-  relevance), coverage, origin, and lifecycle per question (n027 lifecycle
-  `approved`; five corrected Batch 2 records remain `draft`).
-- `coverage_report.json` — coverage counts over all 28 loaded records,
-  including the R1 evidence-topology changes, n030 representative
-  reclassification, human review provenance, expansion-in-progress status,
-  and the proposal-only (not frozen) targets for the future full
-  `novel_dev`.
-- `N2_FULL_NOVEL_DEV_EXPANSION_PLAN.md` — human-approved (Rev 1) expansion
-  plan: corpus-support audit, soft targets, sampling protocol, batching,
-  versioning, freeze criteria.
-- `N2A_BATCH1_REVIEW_PACKAGE.md` — human-review artifact for the Batch 1
-  candidates: first-review decisions (3 ACCEPT / 3 REVISE, reviewer `Li`,
-  2026-08-24T01:50+02:00), R1 correction records, and the re-review
-  acceptance of the corrected candidates (6 ACCEPT final total, reviewer
-  `Li`, 2026-08-24T02:05+02:00).
-- `N2B_BATCH2_REVIEW_PACKAGE.md` — current human-review artifact for the
-  six Batch 2 balancing candidates, preserving Li's 1 ACCEPT / 5 REVISE
-  decisions and recording the R1 corrections pending re-review.
-- `N1_REVIEW_PACKAGE.md` — per-question human review package (initial draft
-  history; superseded for current review).
-- `N1R_REPRESENTATIVENESS_REVIEW.md` — N1-R representativeness recalibration
-  (historical record; superseded by the N1-R1 correction).
-- `N1R1_PROFILE_CORRECTION.md` — N1-R1 methodological correction: benchmark
-  reference proxy semantics, task-archetype/answerability orthogonalization,
-  and minimum-required source scope; corrected candidate reassessment.
-- `N1R2_REVIEW_PACKAGE.md` — historical repaired-candidate review package,
-  including the n013 withdrawal and independently sampled n017 replacement.
-- `N1R2R1_REVIEW_PACKAGE.md` — final governance cleanup history, including
-  factual corrections, withdrawn-draft lineage, and independent n019 sampling
-  evidence.
-- `N1_FINAL_HUMAN_REVIEW.md` — per-item human decision matrix for the frozen
-  pilot: 16 ACCEPT after the initial review (14 ACCEPT / 2 REVISE) and
-  reviewer `Li`'s re-review acceptance of the corrected n002 and n008.
-- `N1_FINALIZATION_REPORT.md` — initial human decision record, the re-review
-  and finalization record, freeze state, and dataset version transition.
-- `gold_representativeness_profile.json` — machine-readable analysis of the
-  120 exposed Gold questions (schema v2 benchmark reference proxy: task
-  archetypes, answerability classes, minimum-required source scope;
-  analysis-only, no system performance).
-- `manifest.json` — dataset identity and expansion-in-progress review state.
+- `novel_dev.yaml` — evaluator-compatible, frozen 28-question Gold dataset.
+- `curation_metadata.yaml` — curation sidecar (schema v3) with family,
+  novelty, representativeness, coverage, provenance, and frozen lifecycle.
+- `coverage_report.json` — structural coverage and final curation provenance;
+  proposal-only coverage targets remain descriptive, not quotas.
+- `manifest.json` — final dataset identity, review state, frozen count, and
+  retired-draft lineage.
+- `N2_FINALIZATION_REPORT.md` — authoritative N2 finalization and freeze
+  closeout.
+- `N2_FULL_NOVEL_DEV_EXPANSION_PLAN.md` — approved N2 plan with final
+  execution status; historical planning rationale is preserved.
+- `N2A_BATCH1_REVIEW_PACKAGE.md` — Batch 1 review history and final frozen
+  state.
+- `N2B_BATCH2_REVIEW_PACKAGE.md` — Batch 2 first review, R1 corrections,
+  final re-review, and frozen state.
+- `N1_FINALIZATION_REPORT.md` — historical N1 pilot review and freeze record.
+- `gold_representativeness_profile.json` — analysis-only benchmark reference
+  proxy; it makes no system-performance claim.
 
 Governance: `docs/NOVEL_DATASET_CURATION_CONTRACT.md`. Static validation:
-`python evaluation/scripts/validate_novel_curation.py`; it also reproduces all
-120 Gold minimum-source-scope, topology, and difficulty assignments from source
+`python evaluation/scripts/validate_novel_curation.py`; it reproduces the
+Gold minimum-source-scope, topology, and difficulty assignments from source
 selectors and static provenance.

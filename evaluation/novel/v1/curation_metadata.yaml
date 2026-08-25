@@ -954,7 +954,7 @@ records:
       origin: human_directed_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: approved
+      lifecycle: split_frozen
   - question_id: n021
     curation_family_id: nf021
     intent: usage
@@ -1012,7 +1012,7 @@ records:
       origin: human_directed_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: approved
+      lifecycle: split_frozen
   - question_id: n022
     curation_family_id: nf022
     intent: data_flow
@@ -1069,7 +1069,7 @@ records:
       origin: human_directed_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: approved
+      lifecycle: split_frozen
   - question_id: n023
     curation_family_id: nf023
     intent: module_structure
@@ -1125,7 +1125,7 @@ records:
       origin: human_directed_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: approved
+      lifecycle: split_frozen
   - question_id: n024
     curation_family_id: nf024
     intent: algorithm_implementation
@@ -1182,7 +1182,7 @@ records:
       origin: human_directed_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: approved
+      lifecycle: split_frozen
   - question_id: n025
     curation_family_id: nf025
     intent: algorithm_implementation
@@ -1237,7 +1237,7 @@ records:
       origin: human_directed_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: approved
+      lifecycle: split_frozen
   - question_id: n026
     curation_family_id: nf026
     intent: usage
@@ -1291,7 +1291,7 @@ records:
       origin: human_directed_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: draft
+      lifecycle: split_frozen
   - question_id: n027
     curation_family_id: nf027
     intent: usage
@@ -1346,7 +1346,7 @@ records:
       origin: human_directed_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: approved
+      lifecycle: split_frozen
   - question_id: n028
     curation_family_id: nf028
     intent: usage
@@ -1401,7 +1401,7 @@ records:
       origin: human_directed_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: draft
+      lifecycle: split_frozen
   - question_id: n029
     curation_family_id: nf029
     intent: algorithm_implementation
@@ -1456,7 +1456,7 @@ records:
       origin: human_directed_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: draft
+      lifecycle: split_frozen
   - question_id: n030
     curation_family_id: nf030
     intent: algorithm_theory
@@ -1510,7 +1510,7 @@ records:
       origin: human_directed_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: draft
+      lifecycle: split_frozen
   - question_id: n031
     curation_family_id: nf031
     intent: usage
@@ -1566,4 +1566,4 @@ records:
       origin: human_directed_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: draft
+      lifecycle: split_frozen

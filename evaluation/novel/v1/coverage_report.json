@@ -3,9 +3,10 @@
   "dataset_identity": "novel-v1-dev-expansion",
   "benchmark_version": "novel-v1-dev-0.3.0",
   "split": "novel_dev",
-  "status": "EXPANSION_IN_PROGRESS",
+  "status": "COMPLETE",
   "question_count": 28,
   "independent_family_count": 28,
+  "frozen_count": 28,
   "counts_by_intent": {
     "installation": 2,
     "usage": 9,
@@ -90,12 +91,12 @@
     "origin": "human_directed_llm_draft",
     "agent_outcome_seen_before_freeze": false,
     "evidence_selected_from_agent_output": false,
-    "human_approval": "partial",
+    "human_approval": "complete",
     "human_reviewer": "Li",
     "reviewed_at": "2026-08-24T00:28:55+02:00",
     "review_decision_counts": {
-      "accepted": 23,
-      "revise": 5,
+      "accepted": 28,
+      "revise": 0,
       "rejected": 0,
       "pending": 0
     },
@@ -114,9 +115,10 @@
     "expansion_batch1_accepted": 6,
     "expansion_batch1_awaiting_rereview": 0,
     "re_re_reviewed_at": "2026-08-24T02:05+02:00",
-    "expansion_batch2_accepted": 1,
-    "expansion_batch2_revise": 5,
-    "expansion_batch2_pending": 0
+    "expansion_batch2_accepted": 6,
+    "expansion_batch2_revise": 0,
+    "expansion_batch2_pending": 0,
+    "expansion_batch2_final_re_reviewed_at": "2026-08-25T22:11:57+02:00"
   },
   "representativeness": {
     "profile_artifact": "gold_representativeness_profile.json",
@@ -168,7 +170,7 @@
       "version_boundary answerability: Gold reference 8/120 (6.7%), expansion 0/28",
       "corpus_insufficiency answerability: Gold reference 10/120 (8.3%), expansion 1/28"
     ],
-    "notes": "All gap statements are relative to the exposed Gold benchmark reference profile (a manually curated, intentionally balanced benchmark), not to empirical user-query frequency. Representativeness classification uses benchmark reference fit plus independent domain-relevance judgment. Counts cover all 28 loaded records: the 16 frozen N1 questions, the 6 human-approved N2-A Batch 1 records (approved, not split_frozen), n027 approved by Li (approved, not split_frozen), and five N2-B records with human REVISE decisions corrected in R1 and awaiting re-review (n026, n028, n029, n030, n031, lifecycle draft; n028 and n029 exploratory-class, n030 representative after R1). Only the original 16 are split_frozen. The N1 pilot remains frozen (Git-preserved 0.2.0 baseline); the 0.3.0 expansion dataset remains incomplete and not frozen, and no representative/exploratory quota is active."
+    "notes": "All gap statements are relative to the exposed Gold benchmark reference profile (a manually curated, intentionally balanced benchmark), not to empirical user-query frequency. Representativeness classification uses benchmark reference fit plus independent domain-relevance judgment. Counts cover all 28 loaded records: the 16 frozen N1 questions and the 12 human-approved N2 expansion records (n020-n031), all split_frozen after final human review. The N1 pilot remains frozen (Git-preserved 0.2.0 baseline); the 0.3.0 expansion dataset is complete and frozen, while no representative/exploratory quota is active."
   },
   "candidate_replacement_needed_count": 0,
   "dataset_version": "0.3.0"

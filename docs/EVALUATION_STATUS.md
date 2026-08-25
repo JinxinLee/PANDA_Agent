@@ -51,14 +51,14 @@ When records conflict, use the single section explicitly marked **Current author
 - The plan creates no question, Gold record, or dataset-version change at planning time; the frozen N1 artifacts are untouched and N1 remains `PASS / COMPLETE`. No PANDA Agent component, evaluation tier, or outcome inspection occurred.
 - Human review (2026-08-24): `REVISE` with five required revisions — (1) align `expected_split_counts`/`expected_status_counts` semantics with the runtime evaluator (all loaded question records, not approved-only; curation contract §11 updated accordingly); (2) relax exploratory admission to domain relevance plus one or more substantive exploratory properties; (3) remove Gold-proxy-derived numeric caps on `component_usage`, `setup_environment`, and `documentation_navigation` (prioritization guidance, not ceilings); (4) reframe exploratory targeting as an investigation pool and identify the 25/50/25 difficulty band as a pilot-derived heuristic, not a contract rule; (5) keep the strict cross-repository definition with final classification contingent on the annotated minimum critical evidence footprint requiring two repository identities. All five revisions are applied in plan Rev 1; all other planning decisions were accepted. The subsequent re-review returned `ACCEPT` — see the N2-A section below.
 
-## N2 full novel-dev expansion — 2026-08-25 (Batch 2 human review recorded; R1 re-review pending)
+## N2 full novel-dev expansion — 2026-08-25 (finalized and split_frozen)
 
-- N2: `IN_PROGRESS / PLAN_APPROVED`. Plan Rev 1 approved by `Li` at 2026-08-24T01:25+02:00 (commit `08626661e3bb776c8f74c4f5b28c85ff2147c0fb`; 5/5 prior revisions resolved).
-- N2-A: `BATCH1_APPROVED / NOT_SPLIT_FROZEN` — 6/6 ACCEPT (reviewer `Li`; n020/n024/n025 accepted 2026-08-24T01:50+02:00, corrected n021/n022/n023 accepted on re-review 2026-08-24T02:05+02:00 of commit `516ba51abc628c63c90c41bc722a3b3825eb0269`). All six are `approved` with lifecycle `approved`; none is yet `split_frozen`. The R1 corrections (cross-repository re-derivation for n021, event_poca primary-vs-fallback semantics for n022, branch-name/payload distinction for n023) and the batch-wide `pflueger_2017` identity fix with the generic locked-source-universe validator rule are the historical record of that round.
-- N2-B: `BATCH2_HUMAN_REVIEWED / R1_RE_REVIEW_PENDING` (authorized 2026-08-24T02:17+02:00; reviewer `Li`, 2026-08-24T02:42+02:00; reviewed candidate `d70eb1b85bc704e329207edd3874403bf4672d3b`). Human decisions: 1 ACCEPT (`n027`) / 5 REVISE (`n026`, `n028`, `n029`, `n030`, `n031`) / 0 REJECT / 0 PENDING. n027 is approved but not `split_frozen`; the five REVISE records were corrected in R1 and remain draft awaiting explicit human re-review. The Batch 1-discarded macro/run stage-chain idea was not resurrected; KOALA thesis material was insufficient (background mention only); no second cross-repository or status-class candidate was manufactured.
-- Dataset lineage: `0.3.0` expansion-in-progress (`novel-v1-dev-0.3.0`, identity `novel-v1-dev-expansion`, status `EXPANSION_IN_PROGRESS`); 28 loaded records (23 human-approved + 5 corrected human-REVISE records awaiting re-review); review counts 23 accepted / 5 revise / 0 rejected / 0 pending; expected counts cover all 28 loaded records per the runtime contract. The 16 frozen N1 questions and the 6 approved Batch 1 records are untouched.
+- N2: `PASS / COMPLETE`. Plan Rev 1 was approved by `Li` at 2026-08-24T01:25+02:00 (commit `08626661e3bb776c8f74c4f5b28c85ff2147c0fb`; 5/5 prior revisions resolved).
+- N2-A: `COMPLETE / SPLIT_FROZEN` — 6/6 ACCEPT (reviewer `Li`; n020/n024/n025 accepted 2026-08-24T01:50+02:00, corrected n021/n022/n023 accepted on re-review 2026-08-24T02:05+02:00 of commit `516ba51abc628c63c90c41bc722a3b3825eb0269`). All six are approved and were split_frozen during N2 finalization; the historical R1 corrections remain preserved.
+- N2-B: `COMPLETE / SPLIT_FROZEN` (authorized 2026-08-24T02:17+02:00; first review by `Li` at 2026-08-24T02:42+02:00 of candidate `d70eb1b85bc704e329207edd3874403bf4672d3b`). The first decision was 1 ACCEPT (`n027`) / 5 REVISE (`n026`, `n028`, `n029`, `n030`, `n031`) / 0 REJECT / 0 PENDING; Li accepted all five corrected records on final re-review at 2026-08-25T22:11:57+02:00. Final Batch 2 totals: 6 ACCEPT / 0 REVISE / 0 REJECT / 0 PENDING. All n026-n031 are approved and split_frozen.
+- Dataset lineage: `0.3.0` (`novel-v1-dev-0.3.0`, identity `novel-v1-dev-expansion`, status `COMPLETE`); 28 loaded records, 28 independent families, 28 human-approved, 28 split_frozen, 0 rejected. The 16 frozen N1 questions and the 12 approved N2 expansion records are preserved; retired n011/nf011, n012/nf012, and n013/nf013 remain inactive historical drafts.
 - Parallel-stream isolation: no PANDA Agent component was run and no benchmark, novel, or C8 outcome was inspected or used for Batch 2 candidate selection. C8 development proceeds separately under its own authorization and its state is preserved as-is below.
-- Batch 2 correction is prepared, but human re-review of n026/n028/n029/n030/n031, any freeze, and any novel evaluation remain unauthorized.
+- N2 finalization is complete. novel_validation remains not started, novel_holdout remains externally managed and not created, and novel evaluation was not run or authorized by this freeze.
 
 ## C8-A0 targeted-retrieval boundary inventory — 2026-08-24
 
@@ -569,13 +569,13 @@ The retrieval and QA measurements are unchanged. A3.1 corrects only metric repre
 
 ## Novel dataset state
 
-- `novel_dev`: 28 loaded records (dataset lineage `0.3.0` / `novel-v1-dev-0.3.0`, identity `novel-v1-dev-expansion`, status `EXPANSION_IN_PROGRESS`): 16 human-approved frozen N1 questions, 6 human-approved N2-A Batch 1 records (not yet `split_frozen`), n027 approved by Li but not `split_frozen`, and five corrected N2-B records awaiting re-review (`n026`, `n028`, `n029`, `n030`, `n031`). The full novel_dev is not complete and remains unfrozen.
-- Human-approved: 23. Frozen: 16 (reviewer `Li`; N1 accepted 2026-08-24T00:28:55+02:00 with n002/n008 re-accepted 00:49:13+02:00; Batch 1 n020-n025 accepted 01:50/02:05+02:00; n027 accepted 2026-08-24T02:42+02:00). Human REVISE awaiting re-review: 5. Rejected: 0. Pending without a human decision: 0.
+- `novel_dev`: 28 loaded records (dataset lineage `0.3.0` / `novel-v1-dev-0.3.0`, identity `novel-v1-dev-expansion`, status `COMPLETE`): 28 human-approved and 28 `split_frozen` records in 28 independent families. The N1 pilot history and N2-A/N2-B review histories remain preserved; the active split is frozen.
+- Human-approved: 28. Frozen: 28 (N1 historical approvals, N2-A approvals at 2026-08-24T01:50/02:05+02:00, n027 accepted 2026-08-24T02:42+02:00, and n026/n028/n029/n030/n031 accepted on final re-review at 2026-08-25T22:11:57+02:00). Rejected: 0. Pending: 0.
 - `novel_validation`: 0 / not started.
 - `novel_holdout`: not created / externally managed; the runner supports loading it from an external path.
 - Empty novel JSONL artifacts are schema/placeholders, not measured results.
-- Curation governance: N0 `COMPLETE`; `docs/NOVEL_DATASET_CURATION_CONTRACT.md` is authoritative; N1 `PASS / COMPLETE` (frozen pilot; no generalization claim); N2 `IN_PROGRESS / PLAN_APPROVED`; N2-A `BATCH1_APPROVED / NOT_SPLIT_FROZEN`; N2-B `BATCH2_HUMAN_REVIEWED / R1_RE_REVIEW_PENDING`.
-- Next curation step: human re-review of corrected n026/n028/n029/n030/n031 (`N2B_BATCH2_REVIEW_PACKAGE.md`), then any explicitly authorized N2 finalization/freeze.
+- Curation governance: N0 `COMPLETE`; `docs/NOVEL_DATASET_CURATION_CONTRACT.md` is authoritative; N1 `PASS / COMPLETE` (frozen pilot; no generalization claim); N2 `PASS / COMPLETE`; N2-A `COMPLETE`; N2-B `COMPLETE`; `novel_dev` `COMPLETE / SPLIT_FROZEN`.
+- Next curation step: none selected by this task. Any novel evaluation or novel_validation curation requires a new explicit authorization; C8 remains separately authorized and its current lifecycle is preserved below.
 
 ## Known limitations
 
@@ -585,7 +585,7 @@ The retrieval and QA measurements are unchanged. A3.1 corrects only metric repre
 
 ## Next authorized roadmap task
 
-**Human re-review of the corrected N2-B Batch 2 candidates n026/n028/n029/n030/n031** is the next curation step. The package `N2B_BATCH2_REVIEW_PACKAGE.md` records Li's 1 ACCEPT / 5 REVISE decisions and the R1 corrections; the five corrected records remain draft and the expanded split is not frozen. N1 remains `PASS / COMPLETE`; N2 remains `IN_PROGRESS`; C8 is `ACTIVE` with `C8-A1 = PASS_AFTER_CONTRACT_FIDELITY_REPAIR` and `C8-A2 = NEXT_ELIGIBLE / NOT_STARTED` (per the current C8 sections above). No novel evaluation is authorized.
+**N2 finalization is complete.** The package `N2B_BATCH2_REVIEW_PACKAGE.md` records Li's first 1 ACCEPT / 5 REVISE decision, the R1 corrections, and the final 5 ACCEPT re-review; all 28 active novel_dev records are now split_frozen. N1 remains `PASS / COMPLETE`; N2 is `PASS / COMPLETE`; C8 is `ACTIVE` with `C8-A1 = PASS_AFTER_CONTRACT_FIDELITY_REPAIR` and `C8-A2 = NEXT_ELIGIBLE / NOT_STARTED` (per the current C8 sections above). No novel evaluation was run or authorized by this freeze.
 
 ### Historical pre-N0 roadmap summary
 

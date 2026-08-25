@@ -4,7 +4,7 @@
   "benchmark_version": "novel-v1-dev-0.3.0",
   "dataset_version": "0.3.0",
   "split": "novel_dev",
-  "status": "EXPANSION_IN_PROGRESS",
+  "status": "COMPLETE",
   "release_eligible": false,
   "acceptance_exposed": true,
   "question_count": 28,
@@ -14,15 +14,16 @@
     "reviewer": "Li",
     "reviewed_at": "2026-08-24T00:28:55+02:00",
     "re_reviewed_at": "2026-08-24T00:49:13+02:00",
-    "reviewer_scope": "The original 22 records are human-approved by Li (16 N1 records approved AND split_frozen; 6 N2-A Batch 1 records n020-n025 approved but not split_frozen). Li reviewed N2-B Batch 2 at 2026-08-24T02:42+02:00: n027 was ACCEPTED and is approved but not split_frozen; n026, n028, n029, n030, and n031 were REVISE decisions, corrected in R1 and remain draft pending human re-review.",
-    "human_approval": "partial",
-    "accepted_count": 23,
-    "revise_count": 5,
+    "reviewer_scope": "All 28 active novel_dev records are human-approved by Li and all 28 are split_frozen. This preserves the N1 pilot history, the N2-A Batch 1 review and the N2-B first review, R1 corrections, and final re-review; it completes the novel_dev split only. novel_validation is not started, novel_holdout is not created and remains externally managed, and no novel evaluation has run.",
+    "human_approval": "complete",
+    "accepted_count": 28,
+    "revise_count": 0,
     "rejected_count": 0,
     "pending_count": 0,
     "batch1_reviewed_at": "2026-08-24T01:50+02:00",
     "batch1_re_reviewed_at": "2026-08-24T02:05+02:00",
-    "batch2_reviewed_at": "2026-08-24T02:42+02:00"
+    "batch2_reviewed_at": "2026-08-24T02:42+02:00",
+    "batch2_final_re_reviewed_at": "2026-08-25T22:11:57+02:00"
   },
   "curation_origin": "human_directed_llm_draft",
   "agent_outcome_seen_before_freeze": false,
@@ -32,7 +33,7 @@
     "curation_metadata": "curation_metadata.yaml",
     "coverage_report": "coverage_report.json",
     "review_package": "N2B_BATCH2_REVIEW_PACKAGE.md",
-    "finalization_report": "N1_FINALIZATION_REPORT.md",
+    "finalization_report": "N2_FINALIZATION_REPORT.md",
     "expansion_plan": "N2_FULL_NOVEL_DEV_EXPANSION_PLAN.md"
   },
   "locked_corpus_manifest": "data/manifests/source_manifest.json",
@@ -45,7 +46,7 @@
       "KEEP_REPRESENTATIVE": 26,
       "KEEP_EXPLORATORY": 2
     },
-    "revision_required_before_human_finalization": true,
+    "revision_required_before_human_finalization": false,
     "profile_schema": "novel-representativeness-profile-v2",
     "profile_role": "benchmark_reference_proxy",
     "sidecar_schema": "novel-curation-sidecar-v3"
@@ -73,5 +74,5 @@
       "replaced_by": "n017"
     }
   ],
-  "frozen_count": 16
+  "frozen_count": 28
 }

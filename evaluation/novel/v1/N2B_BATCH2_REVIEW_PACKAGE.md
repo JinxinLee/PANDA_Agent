@@ -1,22 +1,22 @@
 # N2-B Batch 2 Review Package — Expansion Candidates n026-n031
 
-Status: **BATCH2_HUMAN_REVIEWED / R1_RE_REVIEW_PENDING** (2026-08-25).
+Status: **BATCH2_HUMAN_APPROVED / SPLIT_FROZEN** (2026-08-25).
 
 Human authorization: N2-B — Batch 2 Balancing Curation, authorized
 2026-08-24T02:17+02:00. Human review was performed by `Li` at
 2026-08-24T02:42+02:00 against candidate commit
 `d70eb1b85bc704e329207edd3874403bf4672d3b`. The authoritative decisions were
 1 ACCEPT (`n027`) and 5 REVISE (`n026`, `n028`, `n029`, `n030`, `n031`);
-there were no REJECT or PENDING decisions. The R1 corrections below are
-Codex-prepared corrections and remain subject to explicit human re-review.
+there were no REJECT or PENDING decisions. The R1 corrections below preserve
+that review history. Li then performed the final re-review recorded below and
+accepted all five corrected records.
 Batch 2 is the balancing round under the approved N2 plan
 (`N2_FULL_NOVEL_DEV_EXPANSION_PLAN.md`, Rev 1): documentation_navigation,
 exploratory, workflow/comparison/theory balancing. The Batch 1-discarded
 macro/run stage-chain idea was NOT resurrected. The 22 existing records are
-untouched; the dataset lineage remains 0.3.0 expansion-in-progress
-(`novel-v1-dev-0.3.0`, identity `novel-v1-dev-expansion`, status
-`EXPANSION_IN_PROGRESS`, 28 loaded records = 23 human-approved + 5 corrected
-REVISE records awaiting re-review).
+untouched; the dataset lineage is now complete and frozen
+(`novel-v1-dev-0.3.0`, identity `novel-v1-dev-expansion`, status `COMPLETE`,
+28 loaded records = 28 human-approved and split_frozen).
 
 Curation boundary: no PANDA Agent component was run, and no benchmark,
 novel, or C8 outcome was inspected or used for candidate selection. Parallel
@@ -311,6 +311,26 @@ All evidence was established by static locked-source inspection.
 
 ---
 
+## Final human re-review and N2 freeze
+
+Li performed the final re-review of the five corrected records at
+`2026-08-25T22:11:57+02:00`:
+
+- n026: ACCEPT
+- n028: ACCEPT
+- n029: ACCEPT
+- n030: ACCEPT
+- n031: ACCEPT
+
+n027 retained its earlier ACCEPT decision from 2026-08-24T02:42+02:00.
+Final Batch 2 totals are **6 ACCEPT / 0 REVISE / 0 REJECT / 0 PENDING**.
+All Batch 2 records n026-n031 are human-approved and `split_frozen`; together
+with n020-n025, all 12 N2 expansion records are `split_frozen` as part of N2
+finalization. The complete active `novel_dev` therefore has 28 approved and
+28 split_frozen records. This closes N2 curation only; novel_validation is not
+started, novel_holdout is not created and remains externally managed, and no
+novel evaluation has run.
+
 ## Discarded pre-ID sampling ideas (no IDs consumed)
 
 - **macro/run stage-chain re-entry (workflow_sequence):** the Batch
@@ -336,11 +356,10 @@ All evidence was established by static locked-source inspection.
 
 ## Batch summary for the reviewer
 
-6 candidates (n026-n031 / nf026-nf031): n027 is human ACCEPTED with
-`review_status: approved` / sidecar `lifecycle: approved`; the other
-five are human REVISE decisions, corrected in R1 and remain
-`review_status: draft` / `reviewer: null` / sidecar `lifecycle: draft`
-pending re-review. Balancing coverage:
+6 candidates (n026-n031 / nf026-nf031): all six are human ACCEPTED with
+`review_status: approved`, reviewer `Li`, and sidecar `lifecycle: split_frozen`
+after final re-review. The first 1 ACCEPT / 5 REVISE decision matrix and all
+R1 correction records remain preserved above. Balancing coverage:
 documentation_navigation 2 (n026, n027 — archetype moves 0 -> 2),
 exploratory 2 (n028, n029), representative theory_explanation 1 (n030),
 concept_comparison +1 (n031), theory_explanation +1 (n030 primary).
@@ -348,6 +367,5 @@ Exploratory investigation pool: 4 regions investigated (softrig, timebased,
 thesis rare topics, second cross-repo), 2 admitted as exploratory and one
 reclassified representative; discarded material is recorded above. Expected
 status: all answered. Difficulty: 2 simple / 4 moderate / 0 hard. Total
-loaded dataset: 28 records (23 human-approved + 5 corrected REVISE awaiting
-re-review). This is structural curation coverage, not a performance
-statement.
+loaded dataset: 28 records (28 human-approved and split_frozen). This is
+structural curation coverage, not a performance statement.

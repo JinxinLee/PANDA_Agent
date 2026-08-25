@@ -1,6 +1,6 @@
 # N2-A Batch 1 Review Package — Expansion Candidates n020-n025
 
-Status: **BATCH1_HUMAN_APPROVED / NOT_SPLIT_FROZEN** (2026-08-24).
+Status: **BATCH1_HUMAN_APPROVED / SPLIT_FROZEN** (2026-08-25 finalization).
 
 Human review record: reviewer `Li` reviewed commit
 `99ef7bf3cf9bd972d04e9f2cf5389076b6a6c0a6` at 2026-08-24T01:50+02:00 with
@@ -14,16 +14,16 @@ Human re-review record: reviewer `Li` re-reviewed the corrected commit
 `516ba51abc628c63c90c41bc722a3b3825eb0269` at 2026-08-24T02:05+02:00 and
 accepted the corrected records n021 ACCEPT, n022 ACCEPT, n023 ACCEPT. Final
 Batch 1 decisions: **6 ACCEPT / 0 REVISE / 0 REJECT / 0 PENDING**. All six
-records are `approved` with reviewer `Li`; none is yet `split_frozen`. The
-historical first-review REVISE decisions and R1 correction records below are
-preserved unchanged.
+records are `approved` with reviewer `Li` and were made `split_frozen` during
+N2 finalization. The historical first-review REVISE decisions and R1
+correction records below are preserved unchanged.
 
 Curation boundary: all six candidates were sampled from locked-source anchors
 under the approved anchor-first protocol. No PANDA Agent component was run
 and no benchmark or novel outcome was inspected. The 16 frozen N1 questions
-are untouched; the dataset lineage remains 0.3.0 expansion-in-progress
-(`novel-v1-dev-0.3.0`, identity `novel-v1-dev-expansion`, status
-`EXPANSION_IN_PROGRESS`).
+are untouched; the six Batch 1 records are human-approved and split_frozen as
+part of N2 finalization. The dataset lineage is complete and frozen
+(`novel-v1-dev-0.3.0`, identity `novel-v1-dev-expansion`, status `COMPLETE`).
 
 ---
 
@@ -357,8 +357,8 @@ Final Batch 1 state (after the 2026-08-24T02:05+02:00 re-review): **6 ACCEPT
 / 0 REVISE / 0 REJECT / 0 PENDING** — n020/n024/n025 accepted at first
 review (2026-08-24T01:50+02:00), corrected n021/n022/n023 accepted on
 re-review (2026-08-24T02:05+02:00). All six records are `approved` with
-reviewer `Li` and lifecycle `approved`; **none is yet `split_frozen`** (only
-the original 16 N1 records are frozen). The batch-wide malformed
+reviewer `Li`; they became `split_frozen` during N2 finalization. The
+batch-wide malformed
 `pflueger_2017` identity is corrected and the generic
 locked-source-universe validator rule is active. Priority areas covered:
 data_flow/producer-consumer (n020, n022), genuine cross-repository (n021,
