@@ -1,24 +1,29 @@
 # N2-B Batch 2 Review Package — Expansion Candidates n026-n031
 
-Status: **BATCH2_DRAFTED / HUMAN_REVIEW_PENDING** (2026-08-24).
+Status: **BATCH2_HUMAN_REVIEWED / R1_RE_REVIEW_PENDING** (2026-08-25).
 
 Human authorization: N2-B — Batch 2 Balancing Curation, authorized
-2026-08-24T02:17+02:00. Codex recommendations below are advisory only; every
-`Human decision` field is PENDING and no reviewer has inspected these
-candidates. Batch 2 is the balancing round under the approved N2 plan
+2026-08-24T02:17+02:00. Human review was performed by `Li` at
+2026-08-24T02:42+02:00 against candidate commit
+`d70eb1b85bc704e329207edd3874403bf4672d3b`. The authoritative decisions were
+1 ACCEPT (`n027`) and 5 REVISE (`n026`, `n028`, `n029`, `n030`, `n031`);
+there were no REJECT or PENDING decisions. The R1 corrections below are
+Codex-prepared corrections and remain subject to explicit human re-review.
+Batch 2 is the balancing round under the approved N2 plan
 (`N2_FULL_NOVEL_DEV_EXPANSION_PLAN.md`, Rev 1): documentation_navigation,
 exploratory, workflow/comparison/theory balancing. The Batch 1-discarded
 macro/run stage-chain idea was NOT resurrected. The 22 existing records are
 untouched; the dataset lineage remains 0.3.0 expansion-in-progress
 (`novel-v1-dev-0.3.0`, identity `novel-v1-dev-expansion`, status
-`EXPANSION_IN_PROGRESS`, 28 loaded records = 22 human-approved + 6 pending
-drafts).
+`EXPANSION_IN_PROGRESS`, 28 loaded records = 23 human-approved + 5 corrected
+REVISE records awaiting re-review).
 
 Curation boundary: no PANDA Agent component was run, and no benchmark,
 novel, or C8 outcome was inspected or used for candidate selection. Parallel
-C8 development (ACTIVE, C8-A0 PASS) was left untouched; only its lifecycle
-status was preserved in shared documents. All evidence was established by
-static locked-source inspection.
+C8 development (ACTIVE, `C8-A1R1 PASS`, `C8-A1
+PASS_AFTER_CONTRACT_FIDELITY_REPAIR`, `C8-A2 NEXT_ELIGIBLE / NOT_STARTED`) was
+left untouched; only its lifecycle status was preserved in shared documents.
+All evidence was established by static locked-source inspection.
 
 ---
 
@@ -34,18 +39,16 @@ static locked-source inspection.
 - **Scope:** locked sphinx snapshot only (single_source,
   single_repository); topology single_hop; descriptive; source type
   documentation.
-- **Critical evidence:** `Tutorials/tut_outline.html` (the "Simulation and
-  Analysis in PandaRoot with RHO" sequence with its six parts and
-  tutorials/rho file location); `Tutorials/tut_02_00_analysis.html` (the
-  analysis-section entry page of the same sequence).
+- **Critical evidence:** `Tutorials/tut_outline.html`, which names the
+  "Simulation and Analysis in PandaRoot with RHO" sequence, its six parts,
+  and the `tutorials/rho` file location. The outline alone supports
+  the remaining answer obligations.
 - **Answer-point summary:** (1) the documented learning path is the RHO
   tutorial sequence with example files in tutorials/rho, starting from
   Preface/Requirements; (2) six parts — simulating signal events (including
   fast simulation), analysis of signal events, analysis in a task, n-tuple
   analysis with RhoTuple, quick analysis, and event filtering for background
-  events; (3) the section also points to companion resources (DalitzGUI,
-  event generators, tools, MC track analysis, event display, Jupyter,
-  Docker).
+  events.
 - **Closest exposed Gold:** g009, g022 (documentation-navigation, other
   resources; information_need overlap low).
 - **Closest active novel families:** none equivalent — no active family
@@ -56,7 +59,16 @@ static locked-source inspection.
   analysis; a routine newcomer need.
 - **Known uncertainty:** none material.
 - **Codex recommendation:** RECOMMEND_ACCEPT
-- **Human decision:** PENDING
+- **Human decision:** REVISE (Li, 2026-08-24T02:42+02:00)
+
+### n026 R1 correction
+
+- Removed the unasked companion-resource critical answer point.
+- Removed `Tutorials/tut_02_00_analysis.html` from critical Gold evidence;
+  `Tutorials/tut_outline.html` independently supports the sequence and
+  progression that the question asks for.
+- Post-correction Codex recommendation: `RECOMMEND_ACCEPT`.
+- Human re-review: `PENDING`.
 
 ## n027 / nf027 — Jupyter notebook interface
 
@@ -92,13 +104,16 @@ static locked-source inspection.
   common usage mode documented in the locked snapshot.
 - **Known uncertainty:** none material.
 - **Codex recommendation:** RECOMMEND_ACCEPT
-- **Human decision:** PENDING
+- **Human decision:** ACCEPT (Li, 2026-08-24T02:42+02:00)
+- **Lifecycle:** `approved`; `review_status: approved`; not
+  `split_frozen`. Query, Gold facts, evidence groups, family, novelty,
+  representativeness, difficulty, and archetypes are unchanged.
 
 ## n028 / nf028 — softrig trigger-style analysis (EXPLORATORY)
 
-- **Question:** Can a PandaRoot analysis apply trigger-style event tagging
-  before committing to full processing, and which softrig components carry
-  the online-filter decisions?
+- **Question:** How does PandaRoot's softrig workflow produce
+  software-trigger tags, and how are those OnlineFilterInfo decisions exposed
+  to a downstream analysis task?
 - **Intent:** usage — **Expected status:** answered — **Difficulty:**
   moderate
 - **Primary task archetype:** implementation_explanation — **Class:**
@@ -110,24 +125,45 @@ static locked-source inspection.
   coverage-frontier value — the softrig package is covered by no exposed
   Gold case (closest_case_assessment: none_found) and no active novel
   family.
-- **Scope:** pandaroot only; single_source; single_hop; descriptive.
-- **Critical evidence:** `softrig/PndAnaWithTrigger.h` (FairTask building a
-  trigger-style analysis around PndAnalysis with RhoMassParticleSelector /
-  RhoTuple / PndRhoTupleQA members); `softrig/PndOnlineFilterInfo.h`
-  (online-filter result container: OFIMAXMODES 65 modes, per-mode tag
-  counts, totals, Reset/Print).
-- **Answer-point summary:** (1) PndAnaWithTrigger wraps PndAnalysis in a
-  trigger-style FairTask constructed with beam momentum and output name;
-  (2) PndOnlineFilterInfo carries the online-filter decisions as per-mode
-  tag counts queryable without inspecting reconstructed objects.
+- **Scope:** pandaroot only; single_source; producer_consumer; descriptive.
+- **Critical evidence:** `softrig/PndSoftTriggerTask.cxx` (registers the
+  OnlineFilterInfo branch and writes per-mode tag counts);
+  `softrig/PndOnlineFilterInfo.h` (decision container with 65 modes,
+  per-mode counts, and total-tag accessors); and
+  `softrig/PndAnaWithTrigger.cxx` (downstream lookup through
+  FairRootManager and reads of Tagged(), GetNTagTotal(), and GetNTag()).
+- **Answer-point summary:** (1) PndSoftTriggerTask creates and registers the
+  OnlineFilterInfo container, evaluates active trigger lines, and writes
+  per-mode tag counts; (2) PndOnlineFilterInfo stores the resulting mode and
+  total tag information; (3) PndAnaWithTrigger consumes those decisions from
+  FairRootManager and exposes them in downstream analysis tuples.
 - **Closest exposed Gold:** none_found.
 - **Closest active novel families:** none equivalent.
 - **Novelty:** entity + relation.
-- **Known uncertainty:** answer points are grounded in the locked header
-  declarations; the reviewer may confirm the Exec behaviour in
-  PndAnaWithTrigger.cxx matches the task-role reading.
 - **Codex recommendation:** RECOMMEND_ACCEPT
-- **Human decision:** PENDING
+- **Human decision:** REVISE (Li, 2026-08-24T02:42+02:00)
+
+### n028 R1 correction
+
+- Original problem: the question implied event rejection before full
+  processing, while the annotation showed only a downstream analysis task and
+  the result container.
+- Corrected question: asks for the source-supported softrig
+  producer/container/downstream-consumer relationship without claiming
+  pre-processing rejection.
+- Producer evidence: `PndSoftTriggerTask.cxx` creates
+  `PndOnlineFilterInfo`, registers `OnlineFilterInfo`, and writes
+  per-mode counts in `Exec`.
+- Decision-container evidence: `PndOnlineFilterInfo.h` defines the
+  65-mode per-mode and total tag accessors.
+- Downstream consumer evidence: `PndAnaWithTrigger.cxx` retrieves
+  `OnlineFilterInfo` from `FairRootManager` and reads the
+  decision values.
+- Exploratory classification remains justified: the corrected
+  producer-to-consumer relation is domain-relevant and remains absent from
+  exposed Gold and the active novel set.
+- Post-correction Codex recommendation: `RECOMMEND_ACCEPT`.
+- Human re-review: `PENDING`.
 
 ## n029 / nf029 — timebased ring-buffer ordering (EXPLORATORY)
 
@@ -148,21 +184,35 @@ static locked-source inspection.
 - **Critical evidence:** `timebased/Buffers/PndRingSorter.h` (ring buffer
   with cellWidth bucketing, AddElement by timestamp,
   WriteOutElements/WriteOutAll ordered release, GetBufferSize);
-  `timebased/Buffers/PndBufferTestTask.h` (usage-demonstrating task).
+  `timebased/Buffers/PndRingSorter.cxx` (the implementation that
+  advances the lower-bound window and emits timestamp-ordered entries).
 - **Answer-point summary:** (1) fixed-size ring buffer buckets timestamped
   elements into cells of configurable time width, so interleaved data is
   ordered by time rather than arrival; (2) WriteOutElements releases
-  entries from the lower-bound pointer up to an index, handing the data to
-  GetOutputData in time order; (3) abstract base class with type-specific
-  CreateElement implementations; PndBufferTestTask demonstrates the usage.
+  entries from the lower-bound pointer up to an index, and
+  WriteOutElement emits each cell's multimap entries in timestamp order to
+  GetOutputData.
 - **Closest exposed Gold:** none_found.
 - **Closest active novel families:** none equivalent.
 - **Novelty:** entity + task_form.
 - **Known uncertainty:** none material.
 - **Codex recommendation:** RECOMMEND_ACCEPT
-- **Human decision:** PENDING
+- **Human decision:** REVISE (Li, 2026-08-24T02:42+02:00)
 
-## n030 / nf030 — luminosity IP-alignment preprocessing (EXPLORATORY)
+### n029 R1 correction
+
+- Removed the unsupported claim that `PndBufferTestTask.h` demonstrates
+  driving the buffer; the header is an empty task stub for this purpose.
+- Added `timebased/Buffers/PndRingSorter.cxx` as critical implementation
+  evidence.
+- Corrected semantics: `AddElement` buckets timestamps by cell width;
+  `WriteOutElements`/`WriteOutElement` release older cells from the
+  lower-bound window, and the cell `std::multimap` emits entries by
+  timestamp key.
+- Post-correction Codex recommendation: `RECOMMEND_ACCEPT`.
+- Human re-review: `PENDING`.
+
+## n030 / nf030 — luminosity IP-alignment preprocessing (REPRESENTATIVE)
 
 - **Question:** Before the luminosity fit runs, the framework applies a
   coordinate-system preprocessing step to the track data. Why is the
@@ -170,13 +220,14 @@ static locked-source inspection.
   alignment transformation accomplish?
 - **Intent:** algorithm_theory — **Expected status:** answered —
   **Difficulty:** moderate
-- **Primary task archetype:** theory_explanation — **Class:** EXPLORATORY
-  (fit weak / relevance strong / exploratory_tail / KEEP_EXPLORATORY)
-- **Exploratory rationale:** domain relevance (interaction-point alignment
-  directly conditions luminosity extraction) plus substantive exploratory
-  properties: unusual but plausible single-source theory composition and
-  coverage-frontier value (the alignment preprocessing step is unrepresented
-  in Gold and the active novel set; none_found).
+- **Primary task archetype:** theory_explanation — **Class:** representative
+  (fit moderate / relevance strong / representative_but_rare /
+  KEEP_REPRESENTATIVE)
+- **Representativeness rationale:** the information need is a normal,
+  domain-relevant explanation of a luminosity-analysis preprocessing
+  requirement. Gold theory and explanation cases provide task-form analogues
+  even though this exact interaction-point alignment topic is novel. Novelty
+  does not by itself make the question exploratory.
 - **Scope:** li_2026 paper only (pdf_page 74); single_source; paper_only;
   single_hop; descriptive.
 - **Critical evidence:** locked thesis page 74 ("IP Alignment and
@@ -196,7 +247,19 @@ static locked-source inspection.
 - **Known uncertainty:** the page anchor is a single locked-thesis page;
   the reviewer may verify the surrounding chapter context.
 - **Codex recommendation:** RECOMMEND_ACCEPT
-- **Human decision:** PENDING
+- **Human decision:** REVISE (Li, 2026-08-24T02:42+02:00)
+
+### n030 R1 correction
+
+- Gold query, evidence selector, required answer points, intent, and family
+  were unchanged.
+- Corrected the sidecar classification from `exploratory` to
+  `representative`.
+- New values: benchmark reference fit `moderate`, domain relevance
+  `strong`, corpus tail `representative_but_rare`, disposition
+  `KEEP_REPRESENTATIVE`.
+- Post-correction Codex recommendation: `RECOMMEND_ACCEPT`.
+- Human re-review: `PENDING`.
 
 ## n031 / nf031 — event-generator taxonomy
 
@@ -209,18 +272,17 @@ static locked-source inspection.
 - **Primary task archetype:** concept_comparison (secondary
   component_usage) — **Class:** representative (fit moderate / relevance
   strong / core)
-- **Scope:** sphinx documentation + pandaroot macro (cross_source,
+- **Scope:** sphinx documentation only (single_source,
   single_repository); topology comparison; descriptive.
 - **Critical evidence:** sphinx `EventGenerators/EventGenerators.html`
   (three categories: background — FTF current standard, DPM previous still
   usable; event — EvtGen for one specific channel; box/particle guns —
-  BoxGenerator random vs FixStepParticleGun fixed pattern);
-  `macro/run/sim_complete.C` (inputGenerator selection syntax:
-  dec-file / dpm / ftf / box:type(pdg,mult):p(...):tht(...):phi(...)).
-- **Answer-point summary:** (1) the three documented generator categories
-  and their roles, including FTFGenerator as the current standard
-  background generator; (2) generators are selected in the simulation
-  macros through the inputGenerator string.
+  BoxGenerator random vs FixStepParticleGun fixed pattern).
+- **Answer-point summary:** the three documented generator categories and
+  their roles: FTFGenerator is the current standard background generator,
+  DPMGenerator is the previous still-usable background generator, EvtGen
+  covers a specific signal channel, and BoxGenerator/FixStepParticleGun
+  provide controlled particles rather than a full interaction.
 - **Closest exposed Gold:** g011, g051 (concept-comparison, other pairs;
   information_need overlap low).
 - **Closest active novel families:** nf003 is the nearest — separated
@@ -234,7 +296,18 @@ static locked-source inspection.
 - **Known uncertainty:** family proximity to nf003 (see above); the
   taxonomy-level need is judged distinct from the scenario-level need.
 - **Codex recommendation:** RECOMMEND_ACCEPT
-- **Human decision:** PENDING
+- **Human decision:** REVISE (Li, 2026-08-24T02:42+02:00)
+
+### n031 R1 correction
+
+- Removed the unasked `macro/run/sim_complete.C` /
+  `inputGenerator` configuration obligation and its critical evidence
+  group.
+- Preserved the taxonomy information need and its distinction from nf003.
+- Resulting critical evidence topology: one documentation group,
+  single-source/single-repository comparison.
+- Post-correction Codex recommendation: `RECOMMEND_ACCEPT`.
+- Human re-review: `PENDING`.
 
 ---
 
@@ -263,15 +336,18 @@ static locked-source inspection.
 
 ## Batch summary for the reviewer
 
-6 candidates (n026-n031 / nf026-nf031), all `review_status: draft`,
-`reviewer: null`, sidecar `lifecycle: draft`. Balancing coverage:
+6 candidates (n026-n031 / nf026-nf031): n027 is human ACCEPTED with
+`review_status: approved` / sidecar `lifecycle: approved`; the other
+five are human REVISE decisions, corrected in R1 and remain
+`review_status: draft` / `reviewer: null` / sidecar `lifecycle: draft`
+pending re-review. Balancing coverage:
 documentation_navigation 2 (n026, n027 — archetype moves 0 -> 2),
-exploratory 3 (n028, n029, n030 — class moves 0 -> 3, each admitted under
-domain relevance plus substantive exploratory properties),
+exploratory 2 (n028, n029), representative theory_explanation 1 (n030),
 concept_comparison +1 (n031), theory_explanation +1 (n030 primary).
 Exploratory investigation pool: 4 regions investigated (softrig, timebased,
-thesis rare topics, second cross-repo), 3 admitted, 1+ discarded as
-recorded above. Expected status: all answered. Difficulty: 2 simple /
-4 moderate / 0 hard. Total loaded dataset: 28 records (22 human-approved +
-6 pending). This is structural curation coverage, not a performance
+thesis rare topics, second cross-repo), 2 admitted as exploratory and one
+reclassified representative; discarded material is recorded above. Expected
+status: all answered. Difficulty: 2 simple / 4 moderate / 0 hard. Total
+loaded dataset: 28 records (23 human-approved + 5 corrected REVISE awaiting
+re-review). This is structural curation coverage, not a performance
 statement.

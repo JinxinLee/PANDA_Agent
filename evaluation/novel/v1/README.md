@@ -1,23 +1,26 @@
-# Novel Dataset v1 — N1 pilot frozen; N2 expansion in progress (Batch 2 drafted)
+# Novel Dataset v1 — N1 pilot frozen; N2 expansion in progress (Batch 2 R1 re-review pending)
 
 This directory holds the frozen N1 pilot plus the N2 expansion records:
 28 loaded `novel_dev` records in 28 independent families — the 16
 human-approved, `split_frozen` N1 questions (`n001`-`n010`, `n014`-`n019`),
 the 6 human-approved N2-A Batch 1 records (`n020`-`n025`, not yet
-`split_frozen`), and 6 unreviewed N2-B Batch 2 draft candidates
-(`n026`-`n031`).
+`split_frozen`), n027 approved by Li but not yet `split_frozen`, and five
+corrected N2-B Batch 2 records awaiting human re-review (`n026`, `n028`,
+`n029`, `n030`, `n031`).
 Retired drafts n011/nf011, n012/nf012, and n013/nf013 remain historical
 withdrawn records; their lineage is preserved in the review documents.
 
 State:
 
-- Loaded records: 28. Human-approved: 22 (16 frozen N1 + 6 Batch 1,
-  lifecycle `approved`, not yet `split_frozen`). Draft/pending: 6 Batch 2
-  candidates (`review_status: draft`, `reviewer: null`, lifecycle `draft`;
-  no reviewer has inspected them).
+- Loaded records: 28. Human-approved: 23 (16 frozen N1 + 6 Batch 1 +
+  n027, all lifecycle `approved`, with only the original 16
+  `split_frozen`). Human REVISE awaiting re-review: 5 (`n026`, `n028`,
+  `n029`, `n030`, `n031`; corrected R1 records remain `review_status: draft`,
+  `reviewer: null`, lifecycle `draft`).
 - N1: `PASS / COMPLETE`; N2: `IN_PROGRESS / PLAN_APPROVED`; N2-A:
   `BATCH1_APPROVED / NOT_SPLIT_FROZEN`; N2-B:
-  `BATCH2_DRAFTED / HUMAN_REVIEW_PENDING`.
+  `BATCH2_HUMAN_REVIEWED / R1_RE_REVIEW_PENDING` (1 ACCEPT / 5 REVISE /
+  0 REJECT).
 - Dataset lineage: `0.3.0` expansion-in-progress (`novel-v1-dev-0.3.0`,
   identity `novel-v1-dev-expansion`, status `EXPANSION_IN_PROGRESS`).
   Git history preserves the frozen `0.2.0` pilot baseline; the original 16
@@ -32,15 +35,17 @@ State:
 Files:
 
 - `novel_dev.yaml` — evaluator-compatible dataset (strict Gold schema); the
-  16 frozen pilot questions plus the 6 human-approved Batch 1 expansion
-  records.
+  16 frozen pilot questions, 6 human-approved Batch 1 expansion records,
+  n027 approved by Li, and five corrected draft records awaiting re-review.
 - `curation_metadata.yaml` — curation sidecar (schema v3): family, novelty,
   overlap, representativeness (two-signal: benchmark reference fit + domain
-  relevance), coverage, origin, and lifecycle per question (Batch 1
-  lifecycles `approved`, not yet `split_frozen`).
-- `coverage_report.json` — coverage counts over all 22 loaded records,
-  novelty/representativeness gaps, expansion-in-progress status, and the
-  proposal-only (not frozen) targets for the future full `novel_dev`.
+  relevance), coverage, origin, and lifecycle per question (n027 lifecycle
+  `approved`; five corrected Batch 2 records remain `draft`).
+- `coverage_report.json` — coverage counts over all 28 loaded records,
+  including the R1 evidence-topology changes, n030 representative
+  reclassification, human review provenance, expansion-in-progress status,
+  and the proposal-only (not frozen) targets for the future full
+  `novel_dev`.
 - `N2_FULL_NOVEL_DEV_EXPANSION_PLAN.md` — human-approved (Rev 1) expansion
   plan: corpus-support audit, soft targets, sampling protocol, batching,
   versioning, freeze criteria.
@@ -50,9 +55,8 @@ Files:
   acceptance of the corrected candidates (6 ACCEPT final total, reviewer
   `Li`, 2026-08-24T02:05+02:00).
 - `N2B_BATCH2_REVIEW_PACKAGE.md` — current human-review artifact for the
-  six Batch 2 balancing candidates (advisory Codex recommendations; all
-  decisions PENDING; includes the exploratory rationales and the discarded
-  pre-ID ideas).
+  six Batch 2 balancing candidates, preserving Li's 1 ACCEPT / 5 REVISE
+  decisions and recording the R1 corrections pending re-review.
 - `N1_REVIEW_PACKAGE.md` — per-question human review package (initial draft
   history; superseded for current review).
 - `N1R_REPRESENTATIVENESS_REVIEW.md` — N1-R representativeness recalibration

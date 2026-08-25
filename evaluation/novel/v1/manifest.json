@@ -14,14 +14,15 @@
     "reviewer": "Li",
     "reviewed_at": "2026-08-24T00:28:55+02:00",
     "re_reviewed_at": "2026-08-24T00:49:13+02:00",
-    "reviewer_scope": "The original 22 records are human-approved by Li (16 N1 records approved AND split_frozen; 6 N2-A Batch 1 records n020-n025 approved but not split_frozen). The 6 N2-B Batch 2 draft records n026-n031 are NOT human-reviewed; no reviewer has inspected them.",
+    "reviewer_scope": "The original 22 records are human-approved by Li (16 N1 records approved AND split_frozen; 6 N2-A Batch 1 records n020-n025 approved but not split_frozen). Li reviewed N2-B Batch 2 at 2026-08-24T02:42+02:00: n027 was ACCEPTED and is approved but not split_frozen; n026, n028, n029, n030, and n031 were REVISE decisions, corrected in R1 and remain draft pending human re-review.",
     "human_approval": "partial",
-    "accepted_count": 22,
-    "revise_count": 0,
+    "accepted_count": 23,
+    "revise_count": 5,
     "rejected_count": 0,
-    "pending_count": 6,
+    "pending_count": 0,
     "batch1_reviewed_at": "2026-08-24T01:50+02:00",
-    "batch1_re_reviewed_at": "2026-08-24T02:05+02:00"
+    "batch1_re_reviewed_at": "2026-08-24T02:05+02:00",
+    "batch2_reviewed_at": "2026-08-24T02:42+02:00"
   },
   "curation_origin": "human_directed_llm_draft",
   "agent_outcome_seen_before_freeze": false,
@@ -30,7 +31,7 @@
     "dataset": "novel_dev.yaml",
     "curation_metadata": "curation_metadata.yaml",
     "coverage_report": "coverage_report.json",
-    "review_package": "N2A_BATCH1_REVIEW_PACKAGE.md",
+    "review_package": "N2B_BATCH2_REVIEW_PACKAGE.md",
     "finalization_report": "N1_FINALIZATION_REPORT.md",
     "expansion_plan": "N2_FULL_NOVEL_DEV_EXPANSION_PLAN.md"
   },
@@ -38,12 +39,13 @@
   "governance": "docs/NOVEL_DATASET_CURATION_CONTRACT.md",
   "representativeness": {
     "profile": "gold_representativeness_profile.json",
-    "representative_count": 22,
-    "exploratory_count": 0,
+    "representative_count": 26,
+    "exploratory_count": 2,
     "dispositions": {
-      "KEEP_REPRESENTATIVE": 22
+      "KEEP_REPRESENTATIVE": 26,
+      "KEEP_EXPLORATORY": 2
     },
-    "revision_required_before_human_finalization": false,
+    "revision_required_before_human_finalization": true,
     "profile_schema": "novel-representativeness-profile-v2",
     "profile_role": "benchmark_reference_proxy",
     "sidecar_schema": "novel-curation-sidecar-v3"

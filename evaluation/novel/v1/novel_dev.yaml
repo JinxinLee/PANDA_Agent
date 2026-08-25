@@ -1436,13 +1436,6 @@ questions:
           - source_id: pandaroot_sphinx_2023_08_25_dev
             object_type: sphinx_page
             path: pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/tut_outline.html
-      - group_id: n026.e2
-        role: analysis_section_entry
-        critical: true
-        any_of:
-          - source_id: pandaroot_sphinx_2023_08_25_dev
-            object_type: sphinx_page
-            path: pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/tut_02_00_analysis.html
     required_source_types:
       - documentation
     required_answer_points:
@@ -1461,14 +1454,6 @@ questions:
           and PID, including fast simulation), analysis of signal events,
           analysis in a task, n-tuple analysis using RhoTuple, quick
           analysis, and event filtering for background events.
-        weight: 1.0
-        critical: true
-      - point_id: p3
-        text: >-
-          The same documentation section also points to the accompanying
-          tool resources (DalitzGUI visual tool, event generators, tools, MC
-          track analysis, event display, Jupyter notebooks, and Docker
-          containers).
         weight: 1.0
         critical: true
     required_identifiers: []
@@ -1543,17 +1528,17 @@ questions:
     concept_scopes: {}
     cluster_id: nf027
     challenge_tags: []
-    review_status: draft
-    reviewer: null
-    reviewed_at: null
+    review_status: approved
+    reviewer: Li
+    reviewed_at: 2026-08-24T02:42+02:00
   - id: n028
     split: novel_dev
     language: en
     intent: usage
     query: >-
-      Can a PandaRoot analysis apply trigger-style event tagging before
-      committing to full processing, and which softrig components carry the
-      online-filter decisions?
+      How does PandaRoot's softrig workflow produce software-trigger tags,
+      and how are those OnlineFilterInfo decisions exposed to a downstream
+      analysis task?
     expected_status: answered
     allowed_source_versions:
       - luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32
@@ -1566,38 +1551,51 @@ questions:
       - curated_panda_domain@1.0
     required_evidence_groups:
       - group_id: n028.e1
-        role: trigger_analysis_task
+        role: software_trigger_producer
         critical: true
         any_of:
           - source_id: pandaroot
             object_type: source_file
-            path: softrig/PndAnaWithTrigger.h
+            path: softrig/PndSoftTriggerTask.cxx
       - group_id: n028.e2
-        role: online_filter_container
+        role: online_filter_decision_container
         critical: true
         any_of:
           - source_id: pandaroot
             object_type: source_file
             path: softrig/PndOnlineFilterInfo.h
+      - group_id: n028.e3
+        role: downstream_trigger_consumer
+        critical: true
+        any_of:
+          - source_id: pandaroot
+            object_type: source_file
+            path: softrig/PndAnaWithTrigger.cxx
     required_source_types:
       - code
     required_answer_points:
       - point_id: p1
         text: >-
-          PndAnaWithTrigger in the softrig package is a FairTask that builds
-          a trigger-style analysis around a PndAnalysis object, constructed
-          with the beam momentum and an output name, and working with
-          RhoMassParticleSelector, RhoCandList, RhoTuple, and PndRhoTupleQA
-          members.
+          PndSoftTriggerTask is the producer for the softrig tagging
+          workflow: it creates a PndOnlineFilterInfo container, registers it
+          as the OnlineFilterInfo branch with FairRootManager, and in Exec
+          evaluates active trigger lines and writes their per-mode tag counts.
         weight: 1.0
         critical: true
       - point_id: p2
         text: >-
-          Online-filter decisions are carried by PndOnlineFilterInfo, an
-          information container holding per-mode tag counts for up to 65
-          modes (OFIMAXMODES) with GetNTag/SetNTag accessors plus total
-          counters (GetNTagTotal, Tagged) and Reset/Print, so tagged events
-          can be queried without inspecting reconstructed objects.
+          PndOnlineFilterInfo is the resulting decision container: it stores
+          per-mode tag counts for up to OFIMAXMODES = 65 modes and exposes
+          GetNTag/SetNTag for a mode plus Tagged() and GetNTagTotal() for total
+          tagging information.
+        weight: 1.0
+        critical: true
+      - point_id: p3
+        text: >-
+          PndAnaWithTrigger is the downstream consumer: it retrieves the
+          OnlineFilterInfo object from FairRootManager and reads Tagged(),
+          GetNTagTotal(), and per-mode GetNTag(...) results while writing them
+          into downstream analysis tuples.
         weight: 1.0
         critical: true
     required_identifiers: []
@@ -1635,12 +1633,12 @@ questions:
             object_type: source_file
             path: timebased/Buffers/PndRingSorter.h
       - group_id: n029.e2
-        role: buffer_usage_task
+        role: ring_sorter_ordering_implementation
         critical: true
         any_of:
           - source_id: pandaroot
             object_type: source_file
-            path: timebased/Buffers/PndBufferTestTask.h
+            path: timebased/Buffers/PndRingSorter.cxx
     required_source_types:
       - code
     required_answer_points:
@@ -1654,17 +1652,11 @@ questions:
         critical: true
       - point_id: p2
         text: >-
-          WriteOutElements releases entries from the lower-bound pointer up
-          to a given index (WriteOutAll flushes everything), handing the
-          bucketed FairTimeStamp data to GetOutputData in time order; the
+          WriteOutElements advances from the lower-bound pointer to the
+          requested index (wrapping when needed), and WriteOutElement appends
+          each cell's entries in the timestamp-key order of its multimap to
+          the output data; WriteOutAll flushes the remaining range. The
           covered time span is cellWidth times the buffer size.
-        weight: 1.0
-        critical: true
-      - point_id: p3
-        text: >-
-          PndRingSorter is an abstract base class (subclasses implement
-          CreateElement for their data type), and PndBufferTestTask in the
-          same package demonstrates driving the buffer in a task.
         weight: 1.0
         critical: true
     required_identifiers: []
@@ -1761,15 +1753,7 @@ questions:
           - source_id: pandaroot_sphinx_2023_08_25_dev
             object_type: sphinx_page
             path: pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/EventGenerators/EventGenerators.html
-      - group_id: n031.e2
-        role: generator_selection_in_macros
-        critical: true
-        any_of:
-          - source_id: pandaroot
-            object_type: source_file
-            path: macro/run/sim_complete.C
     required_source_types:
-      - code
       - documentation
     required_answer_points:
       - point_id: p1
@@ -1782,13 +1766,6 @@ questions:
           not simulate an interaction but produce particles of a given type
           with defined distributions (BoxGenerator randomly within
           boundaries, FixStepParticleGun in a fixed pattern).
-        weight: 1.0
-        critical: true
-      - point_id: p2
-        text: >-
-          In the simulation macros the generator is chosen through the
-          inputGenerator string, for example an EvtGen .dec file, "dpm",
-          "ftf", or the box syntax box:type(pdg,mult):p(min,max):tht(min,max):phi(min,max).
         weight: 1.0
         critical: true
     required_identifiers: []

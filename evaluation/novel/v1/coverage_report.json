@@ -40,10 +40,10 @@
     "implementation_oriented": 4
   },
   "counts_by_evidence_topology": {
-    "single_hop": 15,
+    "single_hop": 14,
     "multi_hop": 6,
     "comparison": 5,
-    "producer_consumer": 2
+    "producer_consumer": 3
   },
   "counts_by_expected_status": {
     "answered": 27,
@@ -54,12 +54,12 @@
   "cross_repository_count": 1,
   "multi_hop_count": 6,
   "descriptive_or_identifier_free_count": 24,
-  "multi_evidence_count": 19,
+  "multi_evidence_count": 17,
   "known_coverage_gaps": [
     "Cross-repository presence remains 1 of 28 (the footprint-verified PandaRoot+LuminosityFit workflow n021); no second genuine cross-repository information need arose naturally in Batch 2.",
     "No version_conflict candidate: the locked corpus exposes commit-boundary conflicts already heavily represented by exposed Gold; no genuine same-need cross-version conflict arose naturally during Batch 1 or Batch 2 curation.",
     "No clarification_required candidate: no genuine ambiguity case was naturally supported, so the generic T0 status-compatibility check was not required and was not run.",
-    "Exploratory class at 3 of 28 (softrig online-filter tagging, timebased ring-buffer ordering, luminosity IP-alignment preprocessing); the investigation pool admitted 3 of the 2-4 pool range and the accepted count is an outcome, not a target.",
+    "Exploratory class at 2 of 28 (softrig online-filter tagging, timebased ring-buffer ordering); the investigation pool admitted 2 of the 2-4 pool range and the accepted count is an outcome, not a target.",
     "Difficulty band is 8/17/3; labels follow the final critical evidence obligations rather than the pilot-derived heuristic band."
   ],
   "recommended_coverage_targets": {
@@ -94,10 +94,10 @@
     "human_reviewer": "Li",
     "reviewed_at": "2026-08-24T00:28:55+02:00",
     "review_decision_counts": {
-      "accepted": 22,
-      "revise": 0,
+      "accepted": 23,
+      "revise": 5,
       "rejected": 0,
-      "pending": 6
+      "pending": 0
     },
     "locked_corpus_source_versions": [
       "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
@@ -114,15 +114,17 @@
     "expansion_batch1_accepted": 6,
     "expansion_batch1_awaiting_rereview": 0,
     "re_re_reviewed_at": "2026-08-24T02:05+02:00",
-    "expansion_batch2_pending": 6
+    "expansion_batch2_accepted": 1,
+    "expansion_batch2_revise": 5,
+    "expansion_batch2_pending": 0
   },
   "representativeness": {
     "profile_artifact": "gold_representativeness_profile.json",
     "profile_schema": "novel-representativeness-profile-v2",
     "profile_role": "benchmark_reference_proxy",
     "empirical_user_frequency": false,
-    "representative_count": 25,
-    "exploratory_count": 3,
+    "representative_count": 26,
+    "exploratory_count": 2,
     "counts_by_primary_task_archetype": {
       "setup_environment": 3,
       "component_usage": 6,
@@ -138,8 +140,8 @@
     },
     "benchmark_reference_fit_counts": {
       "strong": 9,
-      "moderate": 16,
-      "weak": 3
+      "moderate": 17,
+      "weak": 2
     },
     "domain_relevance_counts": {
       "strong": 20,
@@ -147,12 +149,12 @@
     },
     "corpus_tail_counts": {
       "representative_core": 14,
-      "representative_but_rare": 11,
-      "exploratory_tail": 3
+      "representative_but_rare": 12,
+      "exploratory_tail": 2
     },
     "dispositions": {
-      "KEEP_REPRESENTATIVE": 25,
-      "KEEP_EXPLORATORY": 3
+      "KEEP_REPRESENTATIVE": 26,
+      "KEEP_EXPLORATORY": 2
     },
     "task_archetype_gaps_vs_gold_reference": [
       "source_location: Gold reference 14.2%, expansion 7.1% (2 of 28)",
@@ -166,7 +168,7 @@
       "version_boundary answerability: Gold reference 8/120 (6.7%), expansion 0/28",
       "corpus_insufficiency answerability: Gold reference 10/120 (8.3%), expansion 1/28"
     ],
-    "notes": "All gap statements are relative to the exposed Gold benchmark reference profile (a manually curated, intentionally balanced benchmark), not to empirical user-query frequency. Representativeness classification uses benchmark reference fit plus independent domain-relevance judgment. Counts cover all 28 loaded records: the 16 frozen N1 questions, the 6 human-approved N2-A Batch 1 records (approved, not split_frozen), and 6 unreviewed N2-B Batch 2 drafts (n026-n031, lifecycle draft, of which 3 are exploratory-class). Only the original 16 are split_frozen. The N1 pilot remains frozen (Git-preserved 0.2.0 baseline); the 0.3.0 expansion dataset remains incomplete and not frozen, and no representative/exploratory quota is active."
+    "notes": "All gap statements are relative to the exposed Gold benchmark reference profile (a manually curated, intentionally balanced benchmark), not to empirical user-query frequency. Representativeness classification uses benchmark reference fit plus independent domain-relevance judgment. Counts cover all 28 loaded records: the 16 frozen N1 questions, the 6 human-approved N2-A Batch 1 records (approved, not split_frozen), n027 approved by Li (approved, not split_frozen), and five N2-B records with human REVISE decisions corrected in R1 and awaiting re-review (n026, n028, n029, n030, n031, lifecycle draft; n028 and n029 exploratory-class, n030 representative after R1). Only the original 16 are split_frozen. The N1 pilot remains frozen (Git-preserved 0.2.0 baseline); the 0.3.0 expansion dataset remains incomplete and not frozen, and no representative/exploratory quota is active."
   },
   "candidate_replacement_needed_count": 0,
   "dataset_version": "0.3.0"

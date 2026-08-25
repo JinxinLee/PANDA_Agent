@@ -1346,7 +1346,7 @@ records:
       origin: human_directed_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: draft
+      lifecycle: approved
   - question_id: n028
     curation_family_id: nf028
     intent: usage
@@ -1380,18 +1380,18 @@ records:
       disposition: KEEP_EXPLORATORY
       rationale: >-
         Exploratory admission: domain relevance (event tagging and online
-        filtering are real PANDA high-rate analysis needs) plus the
-        substantive exploratory properties of a legitimate underrepresented
-        need and coverage-frontier value (the softrig package is covered by
-        no exposed or active novel question). Benchmark analogue g061 is a
-        task-form analogue only.
+        filtering are real PANDA high-rate analysis needs) plus substantive
+        exploratory properties: the corrected question traces a
+        producer-to-container-to-consumer implementation relation absent from
+        exposed Gold and the active novel set, with coverage-frontier value.
+        Benchmark analogue g061 is a task-form analogue only.
     coverage:
       repositories:
         - pandaroot
       source_types:
         - code
       expression_form: descriptive
-      evidence_topology: single_hop
+      evidence_topology: producer_consumer
       source_scope: single_source
       repository_scope: single_repository
       reasoning_forms:
@@ -1479,22 +1479,21 @@ records:
         case. Distinct from nf009 (elastic-model existence) and nf014
         (directory roles).
     representativeness:
-      class: exploratory
+      class: representative
       primary_task_archetype: theory_explanation
       secondary_task_archetypes: []
       gold_analogue_cases:
         - g043
-      benchmark_reference_fit: weak
+      benchmark_reference_fit: moderate
       domain_relevance: strong
-      corpus_tail: exploratory_tail
-      disposition: KEEP_EXPLORATORY
+      corpus_tail: representative_but_rare
+      disposition: KEEP_REPRESENTATIVE
       rationale: >-
-        Exploratory admission: domain relevance (correct interaction-point
-        alignment directly conditions luminosity extraction) plus the
-        substantive exploratory properties of an unusual but plausible
-        single-source theory composition and coverage-frontier value (the
-        alignment preprocessing step is unrepresented). Benchmark analogue
-        g043 is a task-form analogue only.
+        The information need is a normal, domain-relevant explanation of a
+        luminosity-analysis preprocessing requirement. Gold theory and
+        explanation cases provide task-form analogues even though this exact
+        interaction-point alignment topic is novel. Novelty does not by itself
+        make the question exploratory.
     coverage:
       repositories:
         - li_2026
@@ -1532,8 +1531,8 @@ records:
         Exposed concept-comparison cases g011/g051 compare other component
         pairs; none compares the three event-generator categories or
         identifies the current standard background generator. The composed
-        taxonomy need (background vs channel vs particle gun, plus macro
-        selection syntax) differs from nf003's fixed-step scan-scenario
+        taxonomy need (background vs channel vs particle gun, plus the current
+        background standard) differs from nf003's fixed-step scan-scenario
         selection.
     representativeness:
       class: representative
@@ -1554,11 +1553,10 @@ records:
       repositories:
         - pandaroot
       source_types:
-        - code
         - documentation
       expression_form: descriptive
       evidence_topology: comparison
-      source_scope: cross_source
+      source_scope: single_source
       repository_scope: single_repository
       reasoning_forms:
         - compare
