@@ -16,8 +16,8 @@
     "troubleshooting": 1
   },
   "counts_by_difficulty": {
-    "simple": 2,
-    "moderate": 4
+    "simple": 1,
+    "moderate": 5
   },
   "counts_by_novelty_type": {
     "entity": 1,
@@ -39,8 +39,8 @@
     "implementation_oriented": 1
   },
   "counts_by_evidence_topology": {
-    "single_hop": 2,
-    "multi_hop": 3,
+    "single_hop": 1,
+    "multi_hop": 4,
     "producer_consumer": 1
   },
   "counts_by_expected_status": {
@@ -56,9 +56,9 @@
     "implementation_explanation": 1
   },
   "cross_repository_count": 0,
-  "multi_hop_count": 3,
+  "multi_hop_count": 4,
   "descriptive_or_identifier_free_count": 5,
-  "multi_evidence_count": 4,
+  "multi_evidence_count": 5,
   "family_isolation": {
     "frozen_novel_dev_family_count_checked": 28,
     "validation_family_count": 6,
@@ -113,21 +113,23 @@
     "This six-question pilot is a curation sample, not evidence of empirical PANDA user traffic or a quota-matched miniature of novel_dev.",
     "No genuine cross-repository minimum footprint arose; all six candidates require one locked repository identity.",
     "No legitimate insufficient_evidence, version_conflict, or clarification_required candidate arose, so status diversity was not manufactured.",
-    "The pilot does not complete the approximately 12-18 question validation target and remains subject to human review and possible planning revision."
+    "The pilot does not complete the approximately 12-18 question validation target; n904 and n905 remain draft after correction and require explicit human re-review."
   ],
   "curation_provenance": {
     "origin": "source_anchor_first_llm_draft",
     "agent_outcome_seen_before_freeze": false,
     "evidence_selected_from_agent_output": false,
-    "human_approval": "none",
-    "human_reviewer": null,
-    "reviewed_at": null,
+    "human_approval": "partial",
+    "human_reviewer": "Li",
+    "reviewed_at": "2026-08-25T23:18+02:00",
+    "reviewed_pilot_commit": "c91c1da2f80611d8ec68fd461ce16ebe2287d0de",
     "review_decision_counts": {
-      "accepted": 0,
-      "revise": 0,
+      "accepted": 4,
+      "revise": 2,
       "rejected": 0,
-      "pending": 6
-    }
+      "pending": 0
+    },
+    "corrected_awaiting_re_review": ["n904", "n905"]
   },
   "representativeness": {
     "profile_artifact": "gold_representativeness_profile.json",

@@ -1,6 +1,6 @@
 # N3 — Novel Validation Curation Plan and Pilot Record
 
-Plan status: `PILOT_EXECUTED / HUMAN_REVIEW_PENDING`
+Plan status: `PILOT_HUMAN_REVIEWED / R1_RE_REVIEW_PENDING`
 
 Dataset line: `0.1.0` / `novel-v1-validation-0.1.0`
 
@@ -218,14 +218,19 @@ ID is created.
 
 ## 12. N3 stop state
 
-After deterministic T0 validation and one normal commit, N3 stops at:
+After the N3-R1 corrections and deterministic T0 validation, N3 stops at:
 
 ```text
-N3: PILOT_CURATED / HUMAN_REVIEW_PENDING
+N3: PILOT_HUMAN_REVIEWED / R1_RE_REVIEW_PENDING
 novel_validation: PILOT_IN_PROGRESS
-human-approved: 0
+human review: 4 ACCEPT / 2 REVISE / 0 REJECT
+human-approved: 4
+corrected and awaiting re-review: n904, n905
 split-frozen: 0
+full validation: NOT COMPLETE
 validation measurement: NOT RUN
 ```
 
-Next task: human review of N3 validation pilot candidates.
+The pilot remains unfrozen, and no expansion is authorized.
+
+Next task: human re-review of corrected candidates n904 and n905.

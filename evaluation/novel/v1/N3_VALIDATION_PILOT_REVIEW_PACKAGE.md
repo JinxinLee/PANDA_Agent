@@ -1,19 +1,33 @@
 # N3 Validation Pilot Review Package
 
-Status: `PILOT_CURATED / HUMAN_REVIEW_PENDING`
+Status: `PILOT_HUMAN_REVIEWED / R1_RE_REVIEW_PENDING`
 
 Dataset: `novel-v1-validation-0.1.0`
 
-Pilot: 6 draft candidates / 6 independent families
+Pilot: 6 candidates / 6 independent families
 
-Human-approved: 0
+Human-approved: 4
+
+Human REVISE awaiting re-review: 2
 
 Frozen: 0
 
-This package presents source-anchor-first candidate and Gold annotation for
-human review. Codex recommendations are advisory. No candidate is approved or
-split-frozen by this package, and no PANDA Agent, novel, validation, or C8
-outcome informed selection.
+This package presents source-anchor-first candidate and Gold annotation plus
+the authoritative first human review. Codex recommendations remain advisory.
+Four candidates are human-approved but not split-frozen; corrected n904 and
+n905 remain draft pending explicit human re-review. No PANDA Agent, novel,
+validation, or C8 outcome informed curation or correction.
+
+## Authoritative human review
+
+- **Reviewer:** Li.
+- **Review time:** `2026-08-25T23:18+02:00`.
+- **Reviewed pilot commit:**
+  `c91c1da2f80611d8ec68fd461ce16ebe2287d0de` (`curate N3 novel-validation
+  pilot`).
+- **Decisions:** n901 ACCEPT; n902 ACCEPT; n903 ACCEPT; n904 REVISE; n905
+  REVISE; n906 ACCEPT.
+- **Totals:** 4 ACCEPT / 2 REVISE / 0 REJECT / 0 PENDING.
 
 ## n901 / vf001 — External package integration
 
@@ -58,7 +72,8 @@ outcome informed selection.
   be copied manually, so this annotation is intentionally version-bound to the
   locked snapshot and makes no claim about newer PandaRoot.
 - **Codex recommendation:** `RECOMMEND_ACCEPT`.
-- **Human decision:** `PENDING`.
+- **Human decision:** `ACCEPT`.
+- **Lifecycle:** `approved / not split_frozen`.
 
 ## n902 / vf002 — RHO PID selection and combination
 
@@ -97,7 +112,8 @@ outcome informed selection.
   equals `All`; the Gold asks only for the documented selection semantics and
   does not generalize beyond the locked page.
 - **Codex recommendation:** `RECOMMEND_ACCEPT`.
-- **Human decision:** `PENDING`.
+- **Human decision:** `ACCEPT`.
+- **Lifecycle:** `approved / not split_frozen`.
 
 ## n903 / vf003 — MCTrackAnalysis reconstruction-loss diagnosis
 
@@ -140,7 +156,8 @@ outcome informed selection.
   the Gold relies only on the locked page content and does not require that
   external presentation.
 - **Codex recommendation:** `RECOMMEND_ACCEPT`.
-- **Human decision:** `PENDING`.
+- **Human decision:** `ACCEPT`.
+- **Lifecycle:** `approved / not split_frozen`.
 
 ## n904 / vf004 — EMC cluster-to-bump reconstruction boundary
 
@@ -155,12 +172,12 @@ outcome informed selection.
 - **Source/repository scope:** locked PandaRoot code under
   `detectors/emc/EmcReco`; one repository identity; `single_repository`.
 - **Evidence topology:** `producer_consumer`: `PndEmcMakeCluster` produces
-  `EmcCluster`; `PndEmcMakeBump` / `PndEmcExpClusterSplitter` consume cluster
-  local maxima and produce bump/shared-digi objects.
-- **Critical evidence summary:** cluster headers/implementation document
-  section thresholds, spatial adjacency, timestamp handling, and cluster
-  merging; bump/splitter implementation documents `LocalMaxMap`, `EmcBump`,
-  and `EmcSharedDigi` creation.
+  `EmcCluster`; `PndEmcExpClusterSplitter` consumes cluster local maxima and
+  produces bump/shared-digi objects.
+- **Critical evidence summary:** `PndEmcMakeCluster.cxx` proves threshold
+  rejection, neighbour construction, and connected precluster merging;
+  `PndEmcExpClusterSplitter.cxx` proves `LocalMaxMap` consumption and
+  `EmcBump` / `EmcSharedDigi` construction.
 - **Answer-point summary:** describe thresholded adjacency clustering; explain
   why multiple local maxima require bump splitting; describe the shared-digi
   apportioning boundary.
@@ -178,11 +195,33 @@ outcome informed selection.
 - **Cross-repository minimum-footprint derivation:** not applicable; both
   critical groups require only the locked PandaRoot source identity.
 - **Known uncertainty:** the implementation carries event-based and
-  timestamp-based branches. The Gold states their shared spatial boundary and
-  only the directly documented time condition; it does not attempt a full EMC
+  timestamp-based branches, but timestamp details are contextual rather than
+  a critical answer obligation. The Gold does not attempt a full EMC
   algorithm inventory.
 - **Codex recommendation:** `RECOMMEND_ACCEPT`.
-- **Human decision:** `PENDING`.
+- **Historical human decision:** `REVISE`.
+- **Human re-review:** `PENDING`.
+- **Lifecycle:** `draft / not split_frozen`.
+
+### N3-R1 correction
+
+- **Previous contract defect:** n904.e1 treated the cluster header and
+  implementation as complete OR alternatives, while n904.e2 similarly
+  treated orchestration and the actual splitter as interchangeable.
+- **Final clustering evidence:** critical n904.e1 requires
+  `detectors/emc/EmcReco/PndEmcMakeCluster.cxx`.
+- **Final splitting evidence:** critical n904.e2 requires
+  `detectors/emc/EmcReco/PndEmcExpClusterSplitter.cxx`.
+- **Orchestration boundary:** `PndEmcMakeBump.cxx` is not critical because the
+  question does not require the task-composition layer; requiring it would add
+  an unnecessary obligation.
+- **Final answer obligations:** explain thresholded, valid-neighbour connected
+  clustering; explain why multiple local maxima require a later split; and
+  explain the splitter's `LocalMaxMap`-driven `EmcBump` / `EmcSharedDigi`
+  outputs. Timestamp behavior is no longer critical.
+- **Resulting metadata:** topology remains `producer_consumer`; difficulty
+  remains `moderate`.
+- **Post-correction Codex recommendation:** `RECOMMEND_ACCEPT`.
 
 ## n905 / vf005 — PndTrackArrayMerger branch aggregation
 
@@ -190,17 +229,19 @@ outcome informed selection.
   and need a single track branch for downstream tasks. What does
   `PndTrackArrayMerger` accept, what does it produce by default, and how does it
   handle unavailable or wrong-type inputs?
-- **Intent / expected status / difficulty:** `api` / `answered` / `simple`.
+- **Intent / expected status / difficulty:** `api` / `answered` / `moderate`.
 - **Primary archetype:** `component_usage`; no secondary archetype.
 - **Representativeness recommendation:** `representative` — moderate
   benchmark-reference fit and moderate independent relevance;
   `representative_but_rare`.
 - **Source/repository scope:** locked `tools/PndTrackArrayMerger.h/.cxx`; one
   PandaRoot code identity; `single_repository`.
-- **Evidence topology:** `single_hop` interface/implementation lookup.
-- **Critical evidence summary:** the class exposes input/output/persistency
-  setters, defaults the output to `ALLTracks`, accepts only `PndTrack` arrays,
-  skips missing inputs, and calls `AbsorbObjects` during execution.
+- **Evidence topology:** `multi_hop`: the header proves the configuration
+  interface, while the implementation proves initialization and execution.
+- **Critical evidence summary:** `PndTrackArrayMerger.h` exposes the
+  input/output/persistency setters; `PndTrackArrayMerger.cxx` sets the default
+  output name, registers it during `Init`, filters inputs, and calls
+  `AbsorbObjects` during execution.
 - **Answer-point summary:** configure named inputs and optional output; state
   default output and storage control; explain missing/type filtering and
   execution aggregation.
@@ -221,7 +262,32 @@ outcome informed selection.
   implementation specifically calls ROOT `AbsorbObjects`; the Gold reports the
   implementation call and does not infer ownership semantics beyond it.
 - **Codex recommendation:** `RECOMMEND_ACCEPT`.
-- **Human decision:** `PENDING`.
+- **Historical human decision:** `REVISE`.
+- **Human re-review:** `PENDING`.
+- **Lifecycle:** `draft / not split_frozen`.
+
+### N3-R1 correction
+
+- **Previous contract defect:** n905.e1 treated the header and implementation
+  as complete OR alternatives even though neither alone proves all required
+  interface and runtime facts.
+- **Final interface evidence:** critical n905.e1 requires
+  `tools/PndTrackArrayMerger.h` for `AddInputBranch`, `SetOutputBranch`, and
+  `SetPersistance`.
+- **Final implementation evidence:** critical n905.e2 requires
+  `tools/PndTrackArrayMerger.cxx` for the default name, lookup/filtering,
+  registration, and merge execution.
+- **Constructor/Init correction:** the default constructor sets
+  `fOutputBranch` to `ALLTracks`; `Init()` later registers the configured
+  output as a `PndTrack` branch in the `AllTracks` folder.
+- **Runtime boundary:** missing named inputs are reported and skipped; only
+  arrays whose element class is `PndTrack` are retained. `Exec()` clears the
+  output and calls `AbsorbObjects` for each retained array. No stronger copy or
+  ownership semantics are inferred.
+- **Resulting metadata:** topology changes from `single_hop` to `multi_hop`;
+  difficulty changes from `simple` to `moderate` because both evidence groups
+  are genuinely required.
+- **Post-correction Codex recommendation:** `RECOMMEND_ACCEPT`.
 
 ## n906 / vf006 — Pre-transport event filtering
 
@@ -256,7 +322,8 @@ outcome informed selection.
 - **Known uncertainty:** the page supplies one charged-multiplicity example;
   the Gold does not claim to enumerate all available FairRoot filter classes.
 - **Codex recommendation:** `RECOMMEND_ACCEPT`.
-- **Human decision:** `PENDING`.
+- **Human decision:** `ACCEPT`.
+- **Lifecycle:** `approved / not split_frozen`.
 
 ## Discarded pre-ID ideas
 

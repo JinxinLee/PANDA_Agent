@@ -58,14 +58,16 @@ When records conflict, use the single section explicitly marked **Current author
 - N2-B: `COMPLETE / SPLIT_FROZEN` (authorized 2026-08-24T02:17+02:00; first review by `Li` at 2026-08-24T02:42+02:00 of candidate `d70eb1b85bc704e329207edd3874403bf4672d3b`). The first decision was 1 ACCEPT (`n027`) / 5 REVISE (`n026`, `n028`, `n029`, `n030`, `n031`) / 0 REJECT / 0 PENDING; Li accepted all five corrected records on final re-review at 2026-08-25T22:11:57+02:00. Final Batch 2 totals: 6 ACCEPT / 0 REVISE / 0 REJECT / 0 PENDING. All n026-n031 are approved and split_frozen.
 - Dataset lineage: `0.3.0` (`novel-v1-dev-0.3.0`, identity `novel-v1-dev-expansion`, status `COMPLETE`); 28 loaded records, 28 independent families, 28 human-approved, 28 split_frozen, 0 rejected. The 16 frozen N1 questions and the 12 approved N2 expansion records are preserved; retired n011/nf011, n012/nf012, and n013/nf013 remain inactive historical drafts.
 - Parallel-stream isolation: no PANDA Agent component was run and no benchmark, novel, or C8 outcome was inspected or used for Batch 2 candidate selection. C8 development proceeds separately under its own authorization and its state is preserved as-is below.
-- N2 finalization is complete. novel_validation remains not started, novel_holdout remains externally managed and not created, and novel evaluation was not run or authorized by this freeze.
+- N2 finalization is complete. The current N3 validation-pilot state is recorded below; novel_holdout remains externally managed and not created, and novel evaluation was not run or authorized by the N2 freeze.
 
-## N3 novel-validation curation pilot — 2026-08-25 (draft; human review pending)
+## N3-R1 novel-validation pilot review corrections — 2026-08-25
 
-- N3: `PILOT_CURATED / HUMAN_REVIEW_PENDING`; `novel_validation`:
-  `PILOT_IN_PROGRESS`. Six draft candidates (`n901`-`n906`) occupy six
-  dedicated validation families (`vf001`-`vf006`). Human-approved: 0;
-  pending: 6; split-frozen: 0; full validation: `NOT COMPLETE`.
+- N3: `PILOT_HUMAN_REVIEWED / R1_RE_REVIEW_PENDING`;
+  `novel_validation`: `PILOT_IN_PROGRESS`. Reviewer `Li` reviewed pilot commit
+  `c91c1da2f80611d8ec68fd461ce16ebe2287d0de` at
+  `2026-08-25T23:18+02:00`: n901/n902/n903/n906 ACCEPT and n904/n905 REVISE.
+  Current counts: 6 loaded / 6 independent families / 4 approved / 2 revise /
+  0 rejected / 0 pending / 0 split-frozen. Full validation is `NOT COMPLETE`.
 - Validation lineage: dataset `0.1.0`, benchmark
   `novel-v1-validation-0.1.0`, identity `novel-v1-validation-pilot`,
   `release_eligible: false`. The high `n9xx` range is the smallest dedicated
@@ -75,6 +77,17 @@ When records conflict, use the single section explicitly marked **Current author
   compared with all 28 frozen novel-dev families; no family ID or substantive
   minimum-information-need overlap was admitted. All six are naturally
   `answered`; no status diversity or cross-repository footprint was forced.
+- N3-R1 preserves both revised information needs and families. n904 now
+  requires `PndEmcMakeCluster.cxx` for clustering facts and
+  `PndEmcExpClusterSplitter.cxx` for actual bump splitting; orchestration is
+  not an unnecessary critical obligation. n905 now requires its header for
+  configuration and its implementation for initialization/runtime behavior,
+  and correctly distinguishes the constructor's `ALLTracks` default from
+  registration during `Init()`. Both remain draft pending human re-review.
+- The accepted records n901/n902/n903/n906 are `approved` by Li but remain
+  unfrozen; their semantic and curation-classification content is unchanged.
+  The established metadata distinguishes logical multi-hop obligations from
+  minimum source-identity scope, so n901/n902 require no correction.
 - The frozen `novel_dev` remains `COMPLETE / SPLIT_FROZEN`: 28 loaded, 28
   approved, 28 split-frozen. `novel_dev.yaml` and `curation_metadata.yaml`
   were not changed.
@@ -85,8 +98,8 @@ When records conflict, use the single section explicitly marked **Current author
   implementation, test, artifact, or lifecycle decision.
 - `novel_holdout`: `NOT CREATED / EXTERNAL`; no holdout question or Gold
   record was created.
-- Next task: human review of N3 validation pilot candidates. Human approval,
-  pilot freeze, full expansion, and any measurement remain unauthorized.
+- Next task: human re-review of corrected n904 and n905. Their approval, pilot
+  freeze, full expansion, and any measurement remain unauthorized.
 
 ## C8-A0 targeted-retrieval boundary inventory — 2026-08-24
 

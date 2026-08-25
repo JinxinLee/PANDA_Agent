@@ -10,14 +10,16 @@
   "question_count": 6,
   "independent_family_count": 6,
   "review_state": {
-    "review_status": "draft",
-    "reviewer": null,
-    "reviewed_at": null,
-    "human_approval": "none",
-    "accepted_count": 0,
-    "revise_count": 0,
+    "review_status": "partial",
+    "reviewer": "Li",
+    "reviewed_at": "2026-08-25T23:18+02:00",
+    "human_approval": "partial",
+    "accepted_count": 4,
+    "revise_count": 2,
     "rejected_count": 0,
-    "pending_count": 6
+    "pending_count": 0,
+    "reviewed_pilot_commit": "c91c1da2f80611d8ec68fd461ce16ebe2287d0de",
+    "reviewer_scope": "Four pilot records are human-approved but not split-frozen. Two records were corrected after REVISE and await human re-review. Full validation is incomplete and no validation measurement has run."
   },
   "curation_origin": "source_anchor_first_llm_draft",
   "agent_outcome_seen_before_freeze": false,

@@ -63,9 +63,9 @@ questions:
     concept_scopes: {}
     cluster_id: vf001
     challenge_tags: []
-    review_status: draft
-    reviewer: null
-    reviewed_at: null
+    review_status: approved
+    reviewer: Li
+    reviewed_at: 2026-08-25T23:18+02:00
 
   - id: n902
     split: novel_validation
@@ -120,9 +120,9 @@ questions:
     concept_scopes: {}
     cluster_id: vf002
     challenge_tags: []
-    review_status: draft
-    reviewer: null
-    reviewed_at: null
+    review_status: approved
+    reviewer: Li
+    reviewed_at: 2026-08-25T23:18+02:00
 
   - id: n903
     split: novel_validation
@@ -180,9 +180,9 @@ questions:
     concept_scopes: {}
     cluster_id: vf003
     challenge_tags: []
-    review_status: draft
-    reviewer: null
-    reviewed_at: null
+    review_status: approved
+    reviewer: Li
+    reviewed_at: 2026-08-25T23:18+02:00
 
   - id: n904
     split: novel_validation
@@ -200,17 +200,11 @@ questions:
         any_of:
           - source_id: pandaroot
             object_type: source_file
-            path: detectors/emc/EmcReco/PndEmcMakeCluster.h
-          - source_id: pandaroot
-            object_type: source_file
             path: detectors/emc/EmcReco/PndEmcMakeCluster.cxx
       - group_id: n904.e2
         role: local_maximum_cluster_to_bump_split
         critical: true
         any_of:
-          - source_id: pandaroot
-            object_type: source_file
-            path: detectors/emc/EmcReco/PndEmcMakeBump.cxx
           - source_id: pandaroot
             object_type: source_file
             path: detectors/emc/EmcReco/PndEmcExpClusterSplitter.cxx
@@ -219,12 +213,12 @@ questions:
     required_answer_points:
       - point_id: p1
         text: >-
-          PndEmcMakeCluster reads EmcDigi data, rejects digis below the section-specific reconstruction thresholds, builds spatial-neighbour relations, and merges connected preclusters into EmcCluster objects. In timestamp mode it additionally applies the configured time separation while preserving the same spatial condition.
+          PndEmcMakeCluster reads EmcDigi data, rejects digis below the section-specific reconstruction thresholds, establishes valid spatial-neighbour relations, and merges connected preclusters into EmcCluster objects.
         weight: 1.0
         critical: true
       - point_id: p2
         text: >-
-          A cluster can contain more than one local energy maximum, so it is not necessarily one shower candidate. PndEmcMakeBump delegates the split to PndEmcExpClusterSplitter, which reads each cluster's LocalMaxMap and creates EmcBump objects associated with the maxima.
+          A cluster can contain more than one local energy maximum, so it is not necessarily one shower candidate. PndEmcExpClusterSplitter reads each cluster's LocalMaxMap and creates EmcBump objects associated with the maxima.
         weight: 1.0
         critical: true
       - point_id: p3
@@ -234,9 +228,6 @@ questions:
         critical: true
     required_identifiers:
       - text: PndEmcMakeCluster
-        kind: code_symbol
-        critical: true
-      - text: PndEmcMakeBump
         kind: code_symbol
         critical: true
       - text: PndEmcExpClusterSplitter
@@ -261,12 +252,16 @@ questions:
       - pandaroot@18c09e91100db27867ded30e708b4dae95bd8357
     required_evidence_groups:
       - group_id: n905.e1
-        role: track_array_merger_interface_and_execution
+        role: track_array_merger_interface
         critical: true
         any_of:
           - source_id: pandaroot
             object_type: source_file
             path: tools/PndTrackArrayMerger.h
+      - group_id: n905.e2
+        role: track_array_merger_initialization_and_execution
+        critical: true
+        any_of:
           - source_id: pandaroot
             object_type: source_file
             path: tools/PndTrackArrayMerger.cxx
@@ -275,7 +270,7 @@ questions:
     required_answer_points:
       - point_id: p1
         text: >-
-          AddInputBranch appends input branch names, SetOutputBranch changes the destination, and SetPersistance controls whether it is stored. The default constructor registers a PndTrack output branch named ALLTracks in the AllTracks folder.
+          AddInputBranch appends input branch names, SetOutputBranch changes the destination, and SetPersistance controls whether it is stored. The default constructor sets the output branch name to ALLTracks. During Init, the task registers the configured output as a PndTrack branch in the AllTracks folder.
         weight: 1.0
         critical: true
       - point_id: p2
@@ -344,6 +339,6 @@ questions:
     concept_scopes: {}
     cluster_id: vf006
     challenge_tags: []
-    review_status: draft
-    reviewer: null
-    reviewed_at: null
+    review_status: approved
+    reviewer: Li
+    reviewed_at: 2026-08-25T23:18+02:00

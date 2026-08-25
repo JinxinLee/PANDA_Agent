@@ -43,7 +43,7 @@ records:
       origin: source_anchor_first_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: draft
+      lifecycle: approved
 
   - question_id: n902
     curation_family_id: vf002
@@ -86,7 +86,7 @@ records:
       origin: source_anchor_first_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: draft
+      lifecycle: approved
 
   - question_id: n903
     curation_family_id: vf003
@@ -129,7 +129,7 @@ records:
       origin: source_anchor_first_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: draft
+      lifecycle: approved
 
   - question_id: n904
     curation_family_id: vf004
@@ -206,11 +206,11 @@ records:
       repositories: [pandaroot]
       source_types: [code]
       expression_form: descriptive
-      evidence_topology: single_hop
+      evidence_topology: multi_hop
       source_scope: single_source
       repository_scope: single_repository
       reasoning_forms: [configure, explain]
-      difficulty: simple
+      difficulty: moderate
     curation:
       origin: source_anchor_first_llm_draft
       agent_outcome_seen_before_freeze: false
@@ -258,4 +258,4 @@ records:
       origin: source_anchor_first_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: draft
+      lifecycle: approved
