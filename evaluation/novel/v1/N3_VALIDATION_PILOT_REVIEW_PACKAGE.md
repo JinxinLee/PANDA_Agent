@@ -1,22 +1,22 @@
 # N3 Validation Pilot Review Package
 
-Status: `PILOT_HUMAN_REVIEWED / R1_RE_REVIEW_PENDING`
+Status: `PILOT_HUMAN_APPROVED / SPLIT_FROZEN`
 
 Dataset: `novel-v1-validation-0.1.0`
 
 Pilot: 6 candidates / 6 independent families
 
-Human-approved: 4
+Human-approved: 6
 
-Human REVISE awaiting re-review: 2
+Human REVISE awaiting re-review: 0
 
-Frozen: 0
+Frozen: 6
 
-This package presents source-anchor-first candidate and Gold annotation plus
-the authoritative first human review. Codex recommendations remain advisory.
-Four candidates are human-approved but not split-frozen; corrected n904 and
-n905 remain draft pending explicit human re-review. No PANDA Agent, novel,
-validation, or C8 outcome informed curation or correction.
+This package presents source-anchor-first candidate and Gold annotation, the
+authoritative first human review, the N3-R1 corrections, and the final human
+re-review. Codex recommendations remain advisory. All six candidates are
+human-approved and split_frozen. No PANDA Agent, novel, validation, or C8
+outcome informed curation, correction, or freeze.
 
 ## Authoritative human review
 
@@ -73,7 +73,7 @@ validation, or C8 outcome informed curation or correction.
   locked snapshot and makes no claim about newer PandaRoot.
 - **Codex recommendation:** `RECOMMEND_ACCEPT`.
 - **Human decision:** `ACCEPT`.
-- **Lifecycle:** `approved / not split_frozen`.
+- **Lifecycle:** `approved / split_frozen`.
 
 ## n902 / vf002 — RHO PID selection and combination
 
@@ -113,7 +113,7 @@ validation, or C8 outcome informed curation or correction.
   does not generalize beyond the locked page.
 - **Codex recommendation:** `RECOMMEND_ACCEPT`.
 - **Human decision:** `ACCEPT`.
-- **Lifecycle:** `approved / not split_frozen`.
+- **Lifecycle:** `approved / split_frozen`.
 
 ## n903 / vf003 — MCTrackAnalysis reconstruction-loss diagnosis
 
@@ -157,7 +157,7 @@ validation, or C8 outcome informed curation or correction.
   external presentation.
 - **Codex recommendation:** `RECOMMEND_ACCEPT`.
 - **Human decision:** `ACCEPT`.
-- **Lifecycle:** `approved / not split_frozen`.
+- **Lifecycle:** `approved / split_frozen`.
 
 ## n904 / vf004 — EMC cluster-to-bump reconstruction boundary
 
@@ -200,8 +200,9 @@ validation, or C8 outcome informed curation or correction.
   algorithm inventory.
 - **Codex recommendation:** `RECOMMEND_ACCEPT`.
 - **Historical human decision:** `REVISE`.
-- **Human re-review:** `PENDING`.
-- **Lifecycle:** `draft / not split_frozen`.
+- **Historical human re-review before N3-F:** `PENDING`.
+- **Final human re-review:** `ACCEPT`.
+- **Lifecycle:** `approved / split_frozen`.
 
 ### N3-R1 correction
 
@@ -263,8 +264,9 @@ validation, or C8 outcome informed curation or correction.
   implementation call and does not infer ownership semantics beyond it.
 - **Codex recommendation:** `RECOMMEND_ACCEPT`.
 - **Historical human decision:** `REVISE`.
-- **Human re-review:** `PENDING`.
-- **Lifecycle:** `draft / not split_frozen`.
+- **Historical human re-review before N3-F:** `PENDING`.
+- **Final human re-review:** `ACCEPT`.
+- **Lifecycle:** `approved / split_frozen`.
 
 ### N3-R1 correction
 
@@ -323,7 +325,22 @@ validation, or C8 outcome informed curation or correction.
   the Gold does not claim to enumerate all available FairRoot filter classes.
 - **Codex recommendation:** `RECOMMEND_ACCEPT`.
 - **Human decision:** `ACCEPT`.
-- **Lifecycle:** `approved / not split_frozen`.
+- **Lifecycle:** `approved / split_frozen`.
+
+## Final human re-review
+
+- **Reviewer:** Li.
+- **Timestamp:** `2026-08-26T00:21+02:00`.
+- **Reviewed correction commit:**
+  `971a3d34abf92b89da2f2f13263b97313223ec35` (`apply N3 validation pilot
+  review corrections`).
+- **Decisions:** n904 ACCEPT; n905 ACCEPT.
+- **Final pilot:** 6 ACCEPT / 0 REVISE / 0 REJECT / 0 PENDING.
+- **Final lifecycle:** all six records are human-approved and `split_frozen`.
+- **Package status:** `PILOT_HUMAN_APPROVED / SPLIT_FROZEN`.
+- **Scope:** this completes the N3 validation pilot only. Full validation
+  expansion remains `NOT COMPLETE`, no validation measurement has run, and
+  `release_eligible` remains `false`.
 
 ## Discarded pre-ID ideas
 

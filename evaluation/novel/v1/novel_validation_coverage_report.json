@@ -4,10 +4,10 @@
   "benchmark_version": "novel-v1-validation-0.1.0",
   "dataset_version": "0.1.0",
   "split": "novel_validation",
-  "status": "PILOT_IN_PROGRESS",
+  "status": "PILOT_COMPLETE",
   "question_count": 6,
   "independent_family_count": 6,
-  "frozen_count": 0,
+  "frozen_count": 6,
   "counts_by_intent": {
     "installation": 1,
     "usage": 2,
@@ -113,23 +113,26 @@
     "This six-question pilot is a curation sample, not evidence of empirical PANDA user traffic or a quota-matched miniature of novel_dev.",
     "No genuine cross-repository minimum footprint arose; all six candidates require one locked repository identity.",
     "No legitimate insufficient_evidence, version_conflict, or clarification_required candidate arose, so status diversity was not manufactured.",
-    "The pilot does not complete the approximately 12-18 question validation target; n904 and n905 remain draft after correction and require explicit human re-review."
+    "The pilot does not complete the approximately 12-18 question validation target; full validation expansion remains NOT COMPLETE."
   ],
   "curation_provenance": {
     "origin": "source_anchor_first_llm_draft",
     "agent_outcome_seen_before_freeze": false,
     "evidence_selected_from_agent_output": false,
-    "human_approval": "partial",
+    "human_approval": "complete",
     "human_reviewer": "Li",
     "reviewed_at": "2026-08-25T23:18+02:00",
     "reviewed_pilot_commit": "c91c1da2f80611d8ec68fd461ce16ebe2287d0de",
+    "re_reviewed_at": "2026-08-26T00:21+02:00",
+    "re_reviewed_pilot_commit": "971a3d34abf92b89da2f2f13263b97313223ec35",
     "review_decision_counts": {
-      "accepted": 4,
-      "revise": 2,
+      "accepted": 6,
+      "revise": 0,
       "rejected": 0,
       "pending": 0
     },
-    "corrected_awaiting_re_review": ["n904", "n905"]
+    "corrected_awaiting_re_review": [],
+    "pilot_frozen": true
   },
   "representativeness": {
     "profile_artifact": "gold_representativeness_profile.json",

@@ -43,7 +43,7 @@ records:
       origin: source_anchor_first_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: approved
+      lifecycle: split_frozen
 
   - question_id: n902
     curation_family_id: vf002
@@ -86,7 +86,7 @@ records:
       origin: source_anchor_first_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: approved
+      lifecycle: split_frozen
 
   - question_id: n903
     curation_family_id: vf003
@@ -129,7 +129,7 @@ records:
       origin: source_anchor_first_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: approved
+      lifecycle: split_frozen
 
   - question_id: n904
     curation_family_id: vf004
@@ -172,7 +172,7 @@ records:
       origin: source_anchor_first_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: draft
+      lifecycle: split_frozen
 
   - question_id: n905
     curation_family_id: vf005
@@ -215,7 +215,7 @@ records:
       origin: source_anchor_first_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: draft
+      lifecycle: split_frozen
 
   - question_id: n906
     curation_family_id: vf006
@@ -258,4 +258,4 @@ records:
       origin: source_anchor_first_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: approved
+      lifecycle: split_frozen

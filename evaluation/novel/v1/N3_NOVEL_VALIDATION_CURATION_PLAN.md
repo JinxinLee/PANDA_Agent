@@ -1,12 +1,14 @@
 # N3 — Novel Validation Curation Plan and Pilot Record
 
-Plan status: `PILOT_HUMAN_REVIEWED / R1_RE_REVIEW_PENDING`
+Plan status: `PILOT_COMPLETE / SPLIT_FROZEN`
+
+N3: `PASS / COMPLETE`
 
 Dataset line: `0.1.0` / `novel-v1-validation-0.1.0`
 
 Identity: `novel-v1-validation-pilot`
 
-Split state: `PILOT_IN_PROGRESS`
+Split state: `PILOT_COMPLETE / SPLIT_FROZEN`
 
 Release eligible: `false`
 
@@ -178,12 +180,13 @@ The pilot uses dedicated artifacts:
 - `novel_validation_manifest.json`
 - `novel_validation_coverage_report.json`
 - `N3_VALIDATION_PILOT_REVIEW_PACKAGE.md`
+- `N3_PILOT_FINALIZATION_REPORT.md`
 
-Every record starts as `split: novel_validation`, `review_status: draft`,
-`reviewer: null`, `reviewed_at: null`, and sidecar `lifecycle: draft`. The
-manifest derives six questions, six families, zero accepted, zero revised,
-zero rejected, six pending, zero frozen, `human_approval: none`, and
-`release_eligible: false`.
+During initial curation every record started as `split: novel_validation`,
+`review_status: draft`, `reviewer: null`, `reviewed_at: null`, and sidecar
+`lifecycle: draft`. After final human re-review, the manifest records six
+questions, six families, six accepted, zero revised, zero rejected, zero
+pending, six frozen, `human_approval: complete`, and `release_eligible: false`.
 
 ## 10. Freeze and measurement order
 
@@ -200,9 +203,10 @@ pilot curation
 -> later explicit validation measurement
 ```
 
-No measurement is permitted before the complete split freeze. N3 does not
-approve, freeze, expand, or measure the pilot. Human review may revise this
-plan's assumptions before full expansion.
+No measurement is permitted before the complete split freeze. N3-F approves
+and freezes this six-question pilot only; it does not expand the full
+validation split or authorize measurement. Human review and the freeze remain
+distinct from the future full-validation expansion.
 
 ## 11. Parallel C8 and immutable novel_dev boundaries
 
@@ -216,7 +220,7 @@ Frozen `novel_dev.yaml` and `curation_metadata.yaml` remain untouched: 28
 loaded, 28 approved, 28 split-frozen, status `COMPLETE`. No holdout question or
 ID is created.
 
-## 12. N3 stop state
+## 12. Historical N3-R1 stop state
 
 After the N3-R1 corrections and deterministic T0 validation, N3 stops at:
 
@@ -231,6 +235,29 @@ full validation: NOT COMPLETE
 validation measurement: NOT RUN
 ```
 
-The pilot remains unfrozen, and no expansion is authorized.
+This was the pre-finalization state. The pilot remained unfrozen and no
+expansion was authorized at that point.
 
-Next task: human re-review of corrected candidates n904 and n905.
+## 13. N3-F finalization and freeze
+
+Final human re-review by Li at `2026-08-26T00:21+02:00` accepted corrected
+n904 and n905 from reviewed correction commit
+`971a3d34abf92b89da2f2f13263b97313223ec35`. The final pilot decision is
+6 ACCEPT / 0 REVISE / 0 REJECT / 0 PENDING.
+
+```text
+N3: PASS / COMPLETE
+novel_validation: PILOT_COMPLETE / SPLIT_FROZEN
+pilot: 6 / 6 approved, 6 / 6 split_frozen
+pilot version: 0.1.0 / novel-v1-validation-0.1.0
+full validation: NOT COMPLETE
+N3-E full expansion: NEXT_ELIGIBLE / NOT_STARTED
+validation measurement: NOT RUN
+release_eligible: false
+```
+
+The six pilot records are now immutable measurement data. Full validation
+expansion, holdout creation, and validation measurement remain outside this
+task and require separate authorization.
+
+Next task: N3-E — Full Validation Expansion.

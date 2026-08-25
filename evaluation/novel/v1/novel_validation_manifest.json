@@ -4,22 +4,24 @@
   "benchmark_version": "novel-v1-validation-0.1.0",
   "dataset_version": "0.1.0",
   "split": "novel_validation",
-  "status": "PILOT_IN_PROGRESS",
+  "status": "PILOT_COMPLETE",
   "release_eligible": false,
   "acceptance_exposed": true,
   "question_count": 6,
   "independent_family_count": 6,
   "review_state": {
-    "review_status": "partial",
+    "review_status": "approved",
     "reviewer": "Li",
     "reviewed_at": "2026-08-25T23:18+02:00",
-    "human_approval": "partial",
-    "accepted_count": 4,
-    "revise_count": 2,
+    "re_reviewed_at": "2026-08-26T00:21+02:00",
+    "human_approval": "complete",
+    "accepted_count": 6,
+    "revise_count": 0,
     "rejected_count": 0,
     "pending_count": 0,
     "reviewed_pilot_commit": "c91c1da2f80611d8ec68fd461ce16ebe2287d0de",
-    "reviewer_scope": "Four pilot records are human-approved but not split-frozen. Two records were corrected after REVISE and await human re-review. Full validation is incomplete and no validation measurement has run."
+    "re_reviewed_pilot_commit": "971a3d34abf92b89da2f2f13263b97313223ec35",
+    "reviewer_scope": "All six pilot records are human-approved by Li and all six are split_frozen. This completes the N3 validation pilot only; full validation expansion has NOT occurred and final full validation remains NOT COMPLETE. No validation measurement has run, and no novel_dev outcome informed validation curation."
   },
   "curation_origin": "source_anchor_first_llm_draft",
   "agent_outcome_seen_before_freeze": false,
@@ -29,7 +31,8 @@
     "curation_metadata": "novel_validation_curation_metadata.yaml",
     "coverage_report": "novel_validation_coverage_report.json",
     "review_package": "N3_VALIDATION_PILOT_REVIEW_PACKAGE.md",
-    "curation_plan": "N3_NOVEL_VALIDATION_CURATION_PLAN.md"
+    "curation_plan": "N3_NOVEL_VALIDATION_CURATION_PLAN.md",
+    "finalization_report": "N3_PILOT_FINALIZATION_REPORT.md"
   },
   "locked_corpus_manifest": "data/manifests/source_manifest.json",
   "governance": "docs/NOVEL_DATASET_CURATION_CONTRACT.md",
@@ -45,5 +48,5 @@
     "sidecar_schema": "novel-curation-sidecar-v3"
   },
   "retired_drafts": [],
-  "frozen_count": 0
+  "frozen_count": 6
 }

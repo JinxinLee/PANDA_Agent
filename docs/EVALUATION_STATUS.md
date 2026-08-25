@@ -9,7 +9,7 @@ When records conflict, use the single section explicitly marked **Current author
 
 ---
 
-# Current authoritative state — 2026-08-25
+# Current authoritative state — 2026-08-26
 
 ## A3 measured execution provenance
 
@@ -60,46 +60,45 @@ When records conflict, use the single section explicitly marked **Current author
 - Parallel-stream isolation: no PANDA Agent component was run and no benchmark, novel, or C8 outcome was inspected or used for Batch 2 candidate selection. C8 development proceeds separately under its own authorization and its state is preserved as-is below.
 - N2 finalization is complete. The current N3 validation-pilot state is recorded below; novel_holdout remains externally managed and not created, and novel evaluation was not run or authorized by the N2 freeze.
 
-## N3-R1 novel-validation pilot review corrections — 2026-08-25
+## N3-F validation pilot finalization — 2026-08-26
 
-- N3: `PILOT_HUMAN_REVIEWED / R1_RE_REVIEW_PENDING`;
-  `novel_validation`: `PILOT_IN_PROGRESS`. Reviewer `Li` reviewed pilot commit
-  `c91c1da2f80611d8ec68fd461ce16ebe2287d0de` at
-  `2026-08-25T23:18+02:00`: n901/n902/n903/n906 ACCEPT and n904/n905 REVISE.
-  Current counts: 6 loaded / 6 independent families / 4 approved / 2 revise /
-  0 rejected / 0 pending / 0 split-frozen. Full validation is `NOT COMPLETE`.
-- Validation lineage: dataset `0.1.0`, benchmark
+- N3: `PASS / COMPLETE`; `novel_validation` pilot:
+  `PILOT_COMPLETE / SPLIT_FROZEN`. The pilot contains 6 loaded questions in 6
+  independent families: 6 human-approved, 0 revise, 0 rejected, 0 pending,
+  and 6 split_frozen. Full validation remains `NOT COMPLETE`.
+- Final human re-review: Li accepted corrected n904 and n905 at
+  `2026-08-26T00:21+02:00`, reviewing correction commit
+  `971a3d34abf92b89da2f2f13263b97313223ec35`. The initial review at
+  `2026-08-25T23:18+02:00` and its 4 ACCEPT / 2 REVISE decision remain
+  preserved in the review package and finalization report.
+- Validation lineage remains dataset `0.1.0`, benchmark
   `novel-v1-validation-0.1.0`, identity `novel-v1-validation-pilot`,
   `release_eligible: false`. The high `n9xx` range is the smallest dedicated
   namespace compatible with the unchanged strict `g###`/`n###` Gold schema;
   it does not continue frozen novel-dev at n032.
-- Curation was anchor-first from the locked source corpus. Every candidate was
-  compared with all 28 frozen novel-dev families; no family ID or substantive
-  minimum-information-need overlap was admitted. All six are naturally
-  `answered`; no status diversity or cross-repository footprint was forced.
-- N3-R1 preserves both revised information needs and families. n904 now
-  requires `PndEmcMakeCluster.cxx` for clustering facts and
-  `PndEmcExpClusterSplitter.cxx` for actual bump splitting; orchestration is
-  not an unnecessary critical obligation. n905 now requires its header for
-  configuration and its implementation for initialization/runtime behavior,
-  and correctly distinguishes the constructor's `ALLTracks` default from
-  registration during `Init()`. Both remain draft pending human re-review.
-- The accepted records n901/n902/n903/n906 are `approved` by Li but remain
-  unfrozen; their semantic and curation-classification content is unchanged.
-  The established metadata distinguishes logical multi-hop obligations from
-  minimum source-identity scope, so n901/n902 require no correction.
+- N3-R1 evidence-contract corrections are preserved: n904 requires
+  `PndEmcMakeCluster.cxx` and `PndEmcExpClusterSplitter.cxx`; n905 requires
+  its header and implementation, with constructor `ALLTracks` distinguished
+  from registration during `Init()`. No n901-n906 semantic content changed
+  during finalization.
+- The final pilot is representative-only (6 representative / 0 exploratory),
+  all naturally `answered`, with no forced status diversity or cross-repository
+  footprint. No new ID or family was added.
 - The frozen `novel_dev` remains `COMPLETE / SPLIT_FROZEN`: 28 loaded, 28
-  approved, 28 split-frozen. `novel_dev.yaml` and `curation_metadata.yaml`
+  approved, 28 split_frozen. `novel_dev.yaml` and `curation_metadata.yaml`
   were not changed.
-- Static T0 only. Novel-dev evaluation: `NOT RUN`; validation evaluation:
-  `NOT RUN`; PANDA retrieval/QA/judge/Vertex/embedding/Qdrant/SQL calls: 0.
-  No novel-dev, validation, or C8 outcome was inspected or used.
-- C8 remains on the independent current lifecycle below; N3 changes no C8
-  implementation, test, artifact, or lifecycle decision.
+- Static T0 only. Novel-dev evaluation: `NOT RUN`; validation measurement:
+  `NOT RUN / NOT AUTHORIZED`; PANDA retrieval/QA/judge/Vertex/embedding/
+  Qdrant/SQL calls: 0. No novel-dev, validation, Agent-selected evidence, or
+  C8 outcome was inspected or used.
+- C8 remains on the independent current lifecycle below; N3-F changes no C8
+  implementation, test, artifact, or lifecycle decision. Current C8 state is
+  `C8-A1R1 = PASS`, `C8-A1 = PASS_AFTER_CONTRACT_FIDELITY_REPAIR`, and
+  `C8-A2 = NEXT_ELIGIBLE / NOT_STARTED`.
 - `novel_holdout`: `NOT CREATED / EXTERNAL`; no holdout question or Gold
   record was created.
-- Next task: human re-review of corrected n904 and n905. Their approval, pilot
-  freeze, full expansion, and any measurement remain unauthorized.
+- Next task: `N3-E — Full Validation Expansion`,
+  `NEXT_ELIGIBLE / NOT_STARTED`; it is not started or authorized here.
 
 ## C8-A0 targeted-retrieval boundary inventory — 2026-08-24
 

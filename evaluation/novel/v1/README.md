@@ -32,21 +32,22 @@ N3 adds a separate validation-only pilot without changing the frozen
 `novel_dev` artifacts:
 
 - Dataset: `0.1.0` / `novel-v1-validation-0.1.0`, identity
-  `novel-v1-validation-pilot`, status `PILOT_IN_PROGRESS`.
+  `novel-v1-validation-pilot`, status `PILOT_COMPLETE`.
 - Pilot size: 6 candidates (`n901`-`n906`) in 6 independent validation
   families (`vf001`-`vf006`). The reserved high ID range is the smallest
   dedicated namespace compatible with the current strict `g###`/`n###` Gold
   schema; it is not a continuation at `n032`.
-- N3 state: `PILOT_HUMAN_REVIEWED / R1_RE_REVIEW_PENDING`.
+- N3 state: `PASS / COMPLETE`; validation pilot: `COMPLETE / SPLIT_FROZEN`.
 - Human review by `Li` at `2026-08-25T23:18+02:00`: 4 ACCEPT
-  (`n901`, `n902`, `n903`, `n906`) and 2 REVISE (`n904`, `n905`). The two
-  corrected records remain draft pending explicit human re-review.
-- Human-approved: 4. Revise: 2. Rejected: 0. Pending: 0. Split-frozen: 0.
+  (`n901`, `n902`, `n903`, `n906`) and 2 REVISE (`n904`, `n905`). After R1
+  corrections, Li accepted n904 and n905 on final re-review at
+  `2026-08-26T00:21+02:00`.
+- Human-approved: 6. Revise: 0. Rejected: 0. Pending: 0. Split-frozen: 6.
   Release eligible: false.
 - The pilot is not the full approximately 12-18 question validation split.
   Its questions and Gold are visible for curation and review, but validation
-  system outcomes have not been observed and may not be measured before a
-  later complete split freeze and explicit authorization.
+  system outcomes have not been observed and may not be measured without
+  separate explicit authorization.
 - All candidates are statically source-anchored and family-isolated against
   all 28 frozen `novel_dev` families. No holdout content was created.
 
@@ -71,19 +72,23 @@ Files:
 - `gold_representativeness_profile.json` — analysis-only benchmark reference
   proxy; it makes no system-performance claim.
 - `novel_validation.yaml` — evaluator-compatible six-question validation
-  pilot; four records are human-approved and two corrected records remain
-  draft pending re-review.
+  pilot; all six records are human-approved and split_frozen.
 - `novel_validation_curation_metadata.yaml` — validation-only curation
-  sidecar with `vf###` family isolation; four lifecycles are `approved` and
-  two remain `draft` pending re-review.
+  sidecar with `vf###` family isolation; all six lifecycles are
+  `split_frozen`.
 - `novel_validation_manifest.json` and
   `novel_validation_coverage_report.json` — pilot-only counts and structural
-  coverage; no performance claim.
+  coverage; final pilot freeze state and no performance claim.
+- `N3_PILOT_FINALIZATION_REPORT.md` — final human re-review, pilot freeze
+  boundary, and explicit full-validation limitation.
 - `N3_NOVEL_VALIDATION_CURATION_PLAN.md` — N3 role, sampling, isolation,
   support audit, freeze order, and stop boundary.
 - `N3_VALIDATION_PILOT_REVIEW_PACKAGE.md` — authoritative first human-review
-  decisions, R1 evidence-contract corrections, and advisory Codex
-  recommendations. Human re-review remains pending for n904 and n905.
+  decisions, R1 evidence-contract corrections, final human re-review, and
+  advisory Codex recommendations; all six records are split_frozen.
+- Full validation: `NOT COMPLETE`; the next curation stage is
+  `N3-E — Full Validation Expansion`, `NEXT_ELIGIBLE / NOT_STARTED`.
+- Validation measurement: `NOT RUN`.
 
 Governance: `docs/NOVEL_DATASET_CURATION_CONTRACT.md`. Static validation:
 `python evaluation/scripts/validate_novel_curation.py`; it reproduces the
