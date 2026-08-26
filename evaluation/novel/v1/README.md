@@ -1,4 +1,4 @@
-# Novel Dataset v1 — frozen novel_dev and reviewed validation pilot
+# Novel Dataset v1 — frozen novel_dev and validation expansion
 
 This directory contains the complete frozen `novel_dev` split: 28 loaded
 records in 28 independent families. The original 16-question N1 pilot
@@ -26,30 +26,38 @@ State:
   evaluation has run for this curation. Any future novel measurement requires
   separate explicit authorization.
 
-## novel_validation pilot
+## novel_validation expansion
 
-N3 adds a separate validation-only pilot without changing the frozen
-`novel_dev` artifacts:
+N3 created and froze a six-question validation pilot without changing the
+frozen `novel_dev` artifacts. N3-E now carries that pilot unchanged into a
+human-review-pending expansion:
 
-- Dataset: `0.1.0` / `novel-v1-validation-0.1.0`, identity
-  `novel-v1-validation-pilot`, status `PILOT_COMPLETE`.
-- Pilot size: 6 candidates (`n901`-`n906`) in 6 independent validation
-  families (`vf001`-`vf006`). The reserved high ID range is the smallest
-  dedicated namespace compatible with the current strict `g###`/`n###` Gold
-  schema; it is not a continuation at `n032`.
+- Dataset: `0.2.0` / `novel-v1-validation-0.2.0`, identity
+  `novel-v1-validation-expansion`, status `EXPANSION_IN_PROGRESS`.
+- Frozen pilot: 6 records (`n901`-`n906`) in 6 independent families
+  (`vf001`-`vf006`), all approved and `split_frozen`. Their Gold, review
+  metadata, and sidecar lifecycles are carried forward unchanged.
+- N3-E drafts: 6 records (`n907`-`n912`) in 6 new independent families
+  (`vf007`-`vf012`), all `review_status: draft`, with no reviewer and sidecar
+  lifecycle `draft`.
+- Total: 12 loaded / 12 families / 6 approved / 6 pending / 6 frozen.
+  Human approval is partial and release eligibility remains false.
+- The reserved high ID range remains the smallest dedicated namespace
+  compatible with the strict `g###`/`n###` Gold schema; it is not a
+  continuation at `n032`.
 - N3 state: `PASS / COMPLETE`; validation pilot: `COMPLETE / SPLIT_FROZEN`.
 - Human review by `Li` at `2026-08-25T23:18+02:00`: 4 ACCEPT
   (`n901`, `n902`, `n903`, `n906`) and 2 REVISE (`n904`, `n905`). After R1
   corrections, Li accepted n904 and n905 on final re-review at
   `2026-08-26T00:21+02:00`.
-- Human-approved: 6. Revise: 0. Rejected: 0. Pending: 0. Split-frozen: 6.
-  Release eligible: false.
-- The pilot is not the full approximately 12-18 question validation split.
-  Its questions and Gold are visible for curation and review, but validation
-  system outcomes have not been observed and may not be measured without
-  separate explicit authorization.
-- All candidates are statically source-anchored and family-isolated against
-  all 28 frozen `novel_dev` families. No holdout content was created.
+- N3-E is `EXPANSION_CURATED / HUMAN_REVIEW_PENDING`. Reaching 12 loaded
+  records does not make full validation complete: new drafts require human
+  review, any required correction and explicit re-review, and a separately
+  authorized final freeze.
+- All 12 records are statically source-anchored and family-isolated against
+  all 28 frozen `novel_dev` families and all other validation families. No
+  validation measurement or novel-dev measurement ran, and no holdout content
+  was created or inspected.
 
 Files:
 
@@ -71,14 +79,19 @@ Files:
 - `N1_FINALIZATION_REPORT.md` — historical N1 pilot review and freeze record.
 - `gold_representativeness_profile.json` — analysis-only benchmark reference
   proxy; it makes no system-performance claim.
-- `novel_validation.yaml` — evaluator-compatible six-question validation
-  pilot; all six records are human-approved and split_frozen.
+- `novel_validation.yaml` — evaluator-compatible 12-question validation
+  expansion: six frozen pilot records plus six human-review-pending drafts.
 - `novel_validation_curation_metadata.yaml` — validation-only curation
   sidecar with `vf###` family isolation; all six lifecycles are
   `split_frozen`.
 - `novel_validation_manifest.json` and
-  `novel_validation_coverage_report.json` — pilot-only counts and structural
-  coverage; final pilot freeze state and no performance claim.
+  `novel_validation_coverage_report.json` — expansion counts, structural
+  coverage, frozen/draft distinction, and no performance claim.
+- `N3E_FULL_VALIDATION_EXPANSION_PLAN.md` — N3-E baseline, version transition,
+  support audit, isolation policy, and review/freeze stop boundary.
+- `N3E_VALIDATION_EXPANSION_REVIEW_PACKAGE.md` — per-candidate Gold,
+  representativeness, Gold-overlap, strict frozen-family isolation, advisory
+  recommendation, and pending human decision.
 - `N3_PILOT_FINALIZATION_REPORT.md` — final human re-review, pilot freeze
   boundary, and explicit full-validation limitation.
 - `N3_NOVEL_VALIDATION_CURATION_PLAN.md` — N3 role, sampling, isolation,
@@ -86,8 +99,8 @@ Files:
 - `N3_VALIDATION_PILOT_REVIEW_PACKAGE.md` — authoritative first human-review
   decisions, R1 evidence-contract corrections, final human re-review, and
   advisory Codex recommendations; all six records are split_frozen.
-- Full validation: `NOT COMPLETE`; the next curation stage is
-  `N3-E — Full Validation Expansion`, `NEXT_ELIGIBLE / NOT_STARTED`.
+- Full validation: `NOT COMPLETE`; the next task is human review of the N3-E
+  expansion candidates.
 - Validation measurement: `NOT RUN`.
 
 Governance: `docs/NOVEL_DATASET_CURATION_CONTRACT.md`. Static validation:

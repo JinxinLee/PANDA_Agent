@@ -97,8 +97,39 @@ When records conflict, use the single section explicitly marked **Current author
   `C8-A2 = NEXT_ELIGIBLE / NOT_STARTED`.
 - `novel_holdout`: `NOT CREATED / EXTERNAL`; no holdout question or Gold
   record was created.
-- Next task: `N3-E — Full Validation Expansion`,
-  `NEXT_ELIGIBLE / NOT_STARTED`; it is not started or authorized here.
+- Historical N3-F handoff: `N3-E — Full Validation Expansion` was
+  `NEXT_ELIGIBLE / NOT_STARTED`; the current N3-E state is recorded below.
+
+## N3-E full validation expansion — 2026-08-26
+
+- N3 pilot remains `PASS / COMPLETE`: frozen `n901`-`n906` and
+  `vf001`-`vf006` are carried forward with semantic changes 0, review-metadata
+  changes 0, and all six lifecycles still `split_frozen`.
+- N3-E: `EXPANSION_CURATED / HUMAN_REVIEW_PENDING`; `novel_validation` is
+  `EXPANSION_IN_PROGRESS` under `0.2.0` /
+  `novel-v1-validation-0.2.0`, identity
+  `novel-v1-validation-expansion`, `release_eligible: false`.
+- Six source-anchor-first drafts were added: `n907`-`n912` in independent
+  families `vf007`-`vf012`. All six are `review_status: draft`, have no
+  reviewer or review timestamp, and have sidecar lifecycle `draft`.
+- Current validation totals: 12 loaded / 12 independent families / 6 approved
+  / 0 revise / 0 rejected / 6 pending / 6 frozen. Human approval is partial;
+  full validation remains `NOT COMPLETE` despite reaching the lower edge of
+  the approximate target range.
+- The expansion investigates natural DIRC and muon-detector theory,
+  reconstructed-track to PID flow, magnetic-field lookup, MVD/GEM module
+  ownership, and RHO decay combinatorics. All are naturally `answered`; no
+  status, exploratory, or cross-repository case was manufactured.
+- Frozen `novel_dev` remains `COMPLETE / SPLIT_FROZEN`: 28 loaded, 28
+  approved, and 28 frozen with semantic changes 0.
+- Static T0 curation only. Novel-dev measurement: `NOT RUN`; validation
+  measurement: `NOT RUN`; holdout: `NOT CREATED / EXTERNAL`. PANDA retrieval,
+  QA, judge, Vertex, embedding, Qdrant, and SQL retrieval calls are all 0. No
+  novel-dev, validation, or C8 outcome informed candidate selection.
+- Parallel C8 lifecycle is preserved: `C8-A1R1 = PASS`,
+  `C8-A1 = PASS_AFTER_CONTRACT_FIDELITY_REPAIR`, and
+  `C8-A2 = NEXT_ELIGIBLE / NOT_STARTED`.
+- Next task: human review of the N3-E expansion candidates.
 
 ## C8-A0 targeted-retrieval boundary inventory — 2026-08-24
 
@@ -611,11 +642,17 @@ The retrieval and QA measurements are unchanged. A3.1 corrects only metric repre
 
 - `novel_dev`: 28 loaded records (dataset lineage `0.3.0` / `novel-v1-dev-0.3.0`, identity `novel-v1-dev-expansion`, status `COMPLETE`): 28 human-approved and 28 `split_frozen` records in 28 independent families. The N1 pilot history and N2-A/N2-B review histories remain preserved; the active split is frozen.
 - Human-approved: 28. Frozen: 28 (N1 historical approvals, N2-A approvals at 2026-08-24T01:50/02:05+02:00, n027 accepted 2026-08-24T02:42+02:00, and n026/n028/n029/n030/n031 accepted on final re-review at 2026-08-25T22:11:57+02:00). Rejected: 0. Pending: 0.
-- `novel_validation`: 0 / not started.
+- `novel_validation`: `0.2.0` / `novel-v1-validation-0.2.0`, identity
+  `novel-v1-validation-expansion`, status `EXPANSION_IN_PROGRESS`: 12 loaded,
+  12 families, 6 frozen pilot approvals, 6 new drafts pending human review,
+  and 6 frozen. Full validation is `NOT COMPLETE`; validation measurement is
+  `NOT RUN`.
 - `novel_holdout`: not created / externally managed; the runner supports loading it from an external path.
 - Empty novel JSONL artifacts are schema/placeholders, not measured results.
-- Curation governance: N0 `COMPLETE`; `docs/NOVEL_DATASET_CURATION_CONTRACT.md` is authoritative; N1 `PASS / COMPLETE` (frozen pilot; no generalization claim); N2 `PASS / COMPLETE`; N2-A `COMPLETE`; N2-B `COMPLETE`; `novel_dev` `COMPLETE / SPLIT_FROZEN`.
-- Next curation step: none selected by this task. Any novel evaluation or novel_validation curation requires a new explicit authorization; C8 remains separately authorized and its current lifecycle is preserved below.
+- Curation governance: N0 `COMPLETE`; `docs/NOVEL_DATASET_CURATION_CONTRACT.md` is authoritative; N1 `PASS / COMPLETE`; N2 `PASS / COMPLETE`; `novel_dev` `COMPLETE / SPLIT_FROZEN`; N3 pilot `PASS / COMPLETE`; N3-E `EXPANSION_CURATED / HUMAN_REVIEW_PENDING`.
+- Next curation step: human review of the N3-E candidates. Novel measurement,
+  another expansion batch, final freeze, and holdout work require separate
+  authorization; C8 remains on its independent lifecycle.
 
 ## Known limitations
 

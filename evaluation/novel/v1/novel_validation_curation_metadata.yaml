@@ -1,6 +1,6 @@
 schema_version: novel-curation-sidecar-v3
-dataset_version: 0.1.0
-benchmark_version: novel-v1-validation-0.1.0
+dataset_version: 0.2.0
+benchmark_version: novel-v1-validation-0.2.0
 records:
   - question_id: n901
     curation_family_id: vf001
@@ -259,3 +259,325 @@ records:
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
       lifecycle: split_frozen
+
+  - question_id: n907
+    curation_family_id: vf007
+    intent: algorithm_theory
+    expected_status: answered
+    novelty:
+      types: [relation, task_form]
+      closest_exposed_cases: [g051, g053]
+      closest_frozen_novel_dev_families: [nf008, nf031]
+      closest_frozen_validation_families: [vf002, vf004]
+      benchmark_overlap:
+        wording: low
+        entity: none
+        evidence: none
+        information_need: low
+      rationale: >-
+        Gold concept-comparison and detector-property cases establish the task
+        form but do not compare PANDA's two DIRC geometries, angular regions,
+        and momentum reach. nf008 compares LMD track-search algorithms and
+        nf031 compares generator categories; neither shares this detector-PID
+        information need. vf002 uses a DRC classifier name in an analysis API,
+        while vf004 explains EMC clustering, so neither asks how the two DIRC
+        detector systems complement one another.
+      family_isolation_rationale: >-
+        The minimum answer is the Barrel-versus-Endcap DIRC detector-system
+        comparison. It is not a renamed algorithm comparison, PID-list
+        operation, or detector-reconstruction workflow from a frozen novel
+        family.
+    representativeness:
+      class: representative
+      primary_task_archetype: concept_comparison
+      secondary_task_archetypes: [theory_explanation]
+      gold_analogue_cases: [g051, g053]
+      benchmark_reference_fit: moderate
+      domain_relevance: strong
+      corpus_tail: representative_core
+      disposition: KEEP_REPRESENTATIVE
+      rationale: >-
+        Detector-system comparisons recur in Gold, and understanding PANDA's
+        charged-hadron PID coverage is a routine detector and analysis need.
+        The paper source does not by itself make the candidate exploratory.
+    coverage:
+      repositories: []
+      source_types: [paper]
+      expression_form: descriptive
+      evidence_topology: comparison
+      source_scope: single_source
+      repository_scope: paper_only
+      reasoning_forms: [compare, explain]
+      difficulty: moderate
+    curation:
+      origin: source_anchor_first_llm_draft
+      agent_outcome_seen_before_freeze: false
+      evidence_selected_from_agent_output: false
+      lifecycle: draft
+
+  - question_id: n908
+    curation_family_id: vf008
+    intent: data_flow
+    expected_status: answered
+    novelty:
+      types: [relation, reasoning_topology, task_form]
+      closest_exposed_cases: [g028, g087]
+      closest_frozen_novel_dev_families: [nf017, nf019]
+      closest_frozen_validation_families: [vf002, vf005]
+      benchmark_overlap:
+        wording: low
+        entity: high
+        evidence: high
+        information_need: low
+      rationale: >-
+        g028 locates PndPidCorrelator, while this candidate traces its
+        track-to-PID-candidate contract and detector-set selection. g087 is a
+        producer-consumer analogue for a different LMD data product. nf017
+        defines PndTrack and nf019 explains a track fitter; neither covers PID
+        correlation. vf002 consumes already produced PID probabilities in RHO,
+        and vf005 merges homogeneous PndTrack arrays rather than enriching
+        tracks into PndPidCandidate records.
+      family_isolation_rationale: >-
+        The minimum information need is the generic reconstruction-to-PID
+        handoff, including region-dependent detector correlation and the
+        persisted candidate link. No frozen novel family measures that
+        boundary.
+    representativeness:
+      class: representative
+      primary_task_archetype: producer_consumer_trace
+      secondary_task_archetypes: [implementation_explanation]
+      gold_analogue_cases: [g028, g087]
+      benchmark_reference_fit: strong
+      domain_relevance: strong
+      corpus_tail: representative_core
+      disposition: KEEP_REPRESENTATIVE
+      rationale: >-
+        Gold already demonstrates both source-location questions about this
+        component and producer-consumer traces. The actual track-to-PID
+        candidate boundary is independently central to PandaRoot analysis.
+    coverage:
+      repositories: [pandaroot]
+      source_types: [code]
+      expression_form: implementation_oriented
+      evidence_topology: producer_consumer
+      source_scope: single_source
+      repository_scope: single_repository
+      reasoning_forms: [trace, explain]
+      difficulty: moderate
+    curation:
+      origin: source_anchor_first_llm_draft
+      agent_outcome_seen_before_freeze: false
+      evidence_selected_from_agent_output: false
+      lifecycle: draft
+
+  - question_id: n909
+    curation_family_id: vf009
+    intent: algorithm_implementation
+    expected_status: answered
+    novelty:
+      types: [relation, composition, reasoning_topology]
+      closest_exposed_cases: [g059, g064]
+      closest_frozen_novel_dev_families: [nf024, nf029]
+      closest_frozen_validation_families: [vf004]
+      benchmark_overlap:
+        wording: low
+        entity: none
+        evidence: none
+        information_need: low
+      rationale: >-
+        Gold implementation cases establish the code-explanation archetype but
+        do not cover magnetic-field map precedence or grid interpolation.
+        nf024 compares track propagators that consume a field and nf029 sorts
+        time-based detector data; neither asks how the field itself is selected
+        and evaluated. vf004's cluster-to-bump reconstruction has no shared
+        minimum obligation.
+      family_isolation_rationale: >-
+        The candidate composes two complementary obligations: choosing one
+        ordered field piece and evaluating a point inside its local grid. Both
+        are distinct from every frozen reconstruction or propagation family.
+    representativeness:
+      class: representative
+      primary_task_archetype: implementation_explanation
+      secondary_task_archetypes: []
+      gold_analogue_cases: [g059, g064]
+      benchmark_reference_fit: moderate
+      domain_relevance: strong
+      corpus_tail: representative_but_rare
+      disposition: KEEP_REPRESENTATIVE
+      rationale: >-
+        Explaining how collaborating implementation components resolve a
+        physics-service query is a recurring Gold task form. Magnetic-field
+        lookup is broadly relevant to simulation and tracking, though less
+        common than analysis-facing APIs.
+    coverage:
+      repositories: [pandaroot]
+      source_types: [code]
+      expression_form: implementation_oriented
+      evidence_topology: multi_hop
+      source_scope: single_source
+      repository_scope: single_repository
+      reasoning_forms: [explain, trace]
+      difficulty: moderate
+    curation:
+      origin: source_anchor_first_llm_draft
+      agent_outcome_seen_before_freeze: false
+      evidence_selected_from_agent_output: false
+      lifecycle: draft
+
+  - question_id: n910
+    curation_family_id: vf010
+    intent: module_structure
+    expected_status: answered
+    novelty:
+      types: [relation, composition, task_form]
+      closest_exposed_cases: [g098, g104]
+      closest_frozen_novel_dev_families: [nf017, nf023]
+      closest_frozen_validation_families: [vf005]
+      benchmark_overlap:
+        wording: low
+        entity: none
+        evidence: none
+        information_need: low
+      rationale: >-
+        g098 and g104 are module-boundary analogues for framework and LMD
+        workflows, not MVD/GEM central tracking. nf017 defines the PndTrack data
+        object and nf023 locates an FTS finder and lists its output branches;
+        neither asks which component joins three detector-hit branches and
+        preserves their identities in one candidate. vf005 merges completed
+        track arrays and therefore begins after this hit-to-track boundary.
+      family_isolation_rationale: >-
+        This information need is the cross-detector ownership and branch
+        contract of a single MVD/GEM tracking module, not another detector
+        substitution for FTS source location or a track-array merge operation.
+    representativeness:
+      class: representative
+      primary_task_archetype: repository_structure
+      secondary_task_archetypes: [producer_consumer_trace]
+      gold_analogue_cases: [g098, g104]
+      benchmark_reference_fit: moderate
+      domain_relevance: strong
+      corpus_tail: representative_but_rare
+      disposition: KEEP_REPRESENTATIVE
+      rationale: >-
+        Source ownership and producer-consumer boundaries recur in Gold. The
+        MVD/GEM integration is a credible reconstruction-maintenance need and
+        does not require an unusual or artificial composition.
+    coverage:
+      repositories: [pandaroot]
+      source_types: [code]
+      expression_form: descriptive
+      evidence_topology: producer_consumer
+      source_scope: single_source
+      repository_scope: single_repository
+      reasoning_forms: [locate, trace, explain]
+      difficulty: moderate
+    curation:
+      origin: source_anchor_first_llm_draft
+      agent_outcome_seen_before_freeze: false
+      evidence_selected_from_agent_output: false
+      lifecycle: draft
+
+  - question_id: n911
+    curation_family_id: vf011
+    intent: usage
+    expected_status: answered
+    novelty:
+      types: [composition, task_form]
+      closest_exposed_cases: [g022, g024]
+      closest_frozen_novel_dev_families: [nf018, nf026]
+      closest_frozen_validation_families: [vf002]
+      benchmark_overlap:
+        wording: low
+        entity: partial
+        evidence: partial
+        information_need: low
+      rationale: >-
+        g022 points to RHO data-access and PID pages and g024 uses analysis in
+        a task; neither asks how composite decay candidates are assembled.
+        nf018 concerns MC-truth matching and nf026 tutorial navigation. vf002
+        selects charged kaons and combines PID probabilities, while this
+        candidate combines already selected daughter candidates into decay
+        trees and controls combinatorial overlap.
+      family_isolation_rationale: >-
+        The minimum information need is RHO decay-candidate combinatorics plus
+        a mass selection and daughter-overlap rule. It is independent from PID
+        list filling, truth matching, and documentation navigation.
+    representativeness:
+      class: representative
+      primary_task_archetype: component_usage
+      secondary_task_archetypes: [workflow_sequence]
+      gold_analogue_cases: [g022, g024]
+      benchmark_reference_fit: strong
+      domain_relevance: strong
+      corpus_tail: representative_core
+      disposition: KEEP_REPRESENTATIVE
+      rationale: >-
+        Building decay candidates is a routine RHO analysis operation, and
+        Gold already represents closely related analysis and documentation
+        task forms without measuring this operation.
+    coverage:
+      repositories: [pandaroot]
+      source_types: [documentation]
+      expression_form: descriptive
+      evidence_topology: multi_hop
+      source_scope: single_source
+      repository_scope: single_repository
+      reasoning_forms: [configure, sequence]
+      difficulty: moderate
+    curation:
+      origin: source_anchor_first_llm_draft
+      agent_outcome_seen_before_freeze: false
+      evidence_selected_from_agent_output: false
+      lifecycle: draft
+
+  - question_id: n912
+    curation_family_id: vf012
+    intent: algorithm_theory
+    expected_status: answered
+    novelty:
+      types: [relation, reasoning_topology]
+      closest_exposed_cases: [g043, g053]
+      closest_frozen_novel_dev_families: [nf008, nf030]
+      closest_frozen_validation_families: [vf007]
+      benchmark_overlap:
+        wording: low
+        entity: none
+        evidence: none
+        information_need: low
+      rationale: >-
+        Gold theory cases establish causal detector explanations, but none asks
+        why penetration through iron separates muons from pions or how MDT
+        depth samples reconstruct range. nf008 and nf030 cover unrelated LMD
+        tracking and coordinate theory. vf007 compares DIRC pion-kaon coverage;
+        sharing the broad PID subsystem and adjacent paper source does not make
+        pion-muon range discrimination the same information need.
+      family_isolation_rationale: >-
+        The minimum answer is the causal material-interaction principle and
+        range observable of the muon system. It is not another Cherenkov
+        geometry comparison or a renamed tracking-method question.
+    representativeness:
+      class: representative
+      primary_task_archetype: theory_explanation
+      secondary_task_archetypes: []
+      gold_analogue_cases: [g043, g053]
+      benchmark_reference_fit: moderate
+      domain_relevance: strong
+      corpus_tail: representative_core
+      disposition: KEEP_REPRESENTATIVE
+      rationale: >-
+        Physics-motivated detector explanations recur throughout Gold, and
+        pion-muon discrimination is a natural PANDA PID information need.
+    coverage:
+      repositories: []
+      source_types: [paper]
+      expression_form: causal
+      evidence_topology: single_hop
+      source_scope: single_source
+      repository_scope: paper_only
+      reasoning_forms: [explain]
+      difficulty: simple
+    curation:
+      origin: source_anchor_first_llm_draft
+      agent_outcome_seen_before_freeze: false
+      evidence_selected_from_agent_output: false
+      lifecycle: draft

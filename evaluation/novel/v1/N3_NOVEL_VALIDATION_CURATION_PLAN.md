@@ -1,14 +1,14 @@
 # N3 — Novel Validation Curation Plan and Pilot Record
 
-Plan status: `PILOT_COMPLETE / SPLIT_FROZEN`
+Plan status: `PILOT_COMPLETE / N3-E EXPANSION_CURATED / HUMAN_REVIEW_PENDING`
 
 N3: `PASS / COMPLETE`
 
-Dataset line: `0.1.0` / `novel-v1-validation-0.1.0`
+Current dataset line: `0.2.0` / `novel-v1-validation-0.2.0`
 
-Identity: `novel-v1-validation-pilot`
+Current identity: `novel-v1-validation-expansion`
 
-Split state: `PILOT_COMPLETE / SPLIT_FROZEN`
+Split state: frozen pilot preserved / `EXPANSION_IN_PROGRESS`
 
 Release eligible: `false`
 
@@ -260,4 +260,29 @@ The six pilot records are now immutable measurement data. Full validation
 expansion, holdout creation, and validation measurement remain outside this
 task and require separate authorization.
 
-Next task: N3-E — Full Validation Expansion.
+## 14. N3-E full validation expansion
+
+N3-E opens `0.2.0` / `novel-v1-validation-0.2.0`, identity
+`novel-v1-validation-expansion`, while carrying frozen `n901`-`n906` and
+`vf001`-`vf006` forward unchanged. Six new independently source-anchored
+drafts (`n907`-`n912`, `vf007`-`vf012`) are curated for human review.
+
+```text
+N3 pilot: PASS / COMPLETE
+validation pilot: 6 / 6 approved and split_frozen
+N3-E: EXPANSION_CURATED / HUMAN_REVIEW_PENDING
+novel_validation: EXPANSION_IN_PROGRESS
+loaded: 12
+approved: 6
+draft/pending: 6
+frozen: 6
+full validation: NOT COMPLETE
+validation measurement: NOT RUN
+```
+
+The current expansion plan is
+`N3E_FULL_VALIDATION_EXPANSION_PLAN.md`; candidate decisions belong in
+`N3E_VALIDATION_EXPANSION_REVIEW_PACKAGE.md`. No N3-E draft is approved or
+split-frozen, and no second expansion batch or measurement is authorized.
+
+Next task: human review of the N3-E expansion candidates.

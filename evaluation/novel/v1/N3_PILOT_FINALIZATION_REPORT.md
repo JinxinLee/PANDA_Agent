@@ -46,9 +46,9 @@ accepted/corrected semantic content. No new question or family was added.
 - Initial review by Li at `2026-08-25T23:18+02:00`: 4 ACCEPT / 2 REVISE / 0
   REJECT / 0 PENDING. Accepted records were n901, n902, n903, and n906;
   n904 and n905 were REVISE.
-- N3-R1 corrected n904 and n905's evidence contracts while preserving their
-  information needs, Gold annotations, selectors, families, and coverage
-  semantics.
+- N3-R1 corrected n904 and n905's Gold evidence annotations and selectors
+  while preserving their information needs and semantic families; the
+  resulting metadata changes were reviewed and accepted.
 - Final re-review by Li at `2026-08-26T00:21+02:00`: n904 ACCEPT and n905
   ACCEPT.
 
