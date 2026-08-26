@@ -313,7 +313,7 @@ records:
       origin: source_anchor_first_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: draft
+      lifecycle: approved
 
   - question_id: n908
     curation_family_id: vf008
@@ -368,7 +368,7 @@ records:
       origin: source_anchor_first_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: draft
+      lifecycle: approved
 
   - question_id: n909
     curation_family_id: vf009
@@ -422,7 +422,7 @@ records:
       origin: source_anchor_first_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: draft
+      lifecycle: approved
 
   - question_id: n910
     curation_family_id: vf010
@@ -475,7 +475,7 @@ records:
       origin: source_anchor_first_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: draft
+      lifecycle: approved
 
   - question_id: n911
     curation_family_id: vf011
@@ -528,7 +528,7 @@ records:
       origin: source_anchor_first_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: draft
+      lifecycle: approved
 
   - question_id: n912
     curation_family_id: vf012
@@ -576,6 +576,170 @@ records:
       repository_scope: paper_only
       reasoning_forms: [explain]
       difficulty: simple
+    curation:
+      origin: source_anchor_first_llm_draft
+      agent_outcome_seen_before_freeze: false
+      evidence_selected_from_agent_output: false
+      lifecycle: approved
+
+  - question_id: n913
+    curation_family_id: vf013
+    intent: api
+    expected_status: answered
+    novelty:
+      types: [relation, task_form]
+      closest_exposed_cases: [g022, g024]
+      closest_frozen_novel_dev_families: [nf018, nf026]
+      closest_frozen_validation_families: [vf002, vf011]
+      benchmark_overlap:
+        wording: low
+        entity: partial
+        evidence: partial
+        information_need: low
+      rationale: >-
+        g022 navigates to RHO data-access and PID pages, while g024 asks how
+        analysis is embedded in a FairTask. Neither asks for the row-building
+        and persistence contract of RhoTuple. nf018 covers truth matching and
+        nf026 covers the tutorial sequence. vf002 selects particles and vf011
+        builds composites; neither serializes per-candidate analysis rows.
+      family_isolation_rationale: >-
+        The minimum information need is the RhoTuple Column-to-DumpData-to-
+        TTree persistence lifecycle. A review of vf001-vf012 found no family
+        with this output-record construction operation; the closest RHO
+        families stop at PID selection or candidate combinatorics.
+    representativeness:
+      class: representative
+      primary_task_archetype: component_usage
+      secondary_task_archetypes: [workflow_sequence]
+      gold_analogue_cases: [g022, g024]
+      benchmark_reference_fit: strong
+      domain_relevance: strong
+      corpus_tail: representative_core
+      disposition: KEEP_REPRESENTATIVE
+      rationale: >-
+        Persisting candidate observables for interactive analysis is a routine
+        PANDA analysis operation. Gold establishes the RHO documentation and
+        FairTask analysis archetypes without measuring this API contract.
+    coverage:
+      repositories: [pandaroot]
+      source_types: [documentation]
+      expression_form: descriptive
+      evidence_topology: single_hop
+      source_scope: single_source
+      repository_scope: single_repository
+      reasoning_forms: [configure, sequence]
+      difficulty: simple
+    curation:
+      origin: source_anchor_first_llm_draft
+      agent_outcome_seen_before_freeze: false
+      evidence_selected_from_agent_output: false
+      lifecycle: draft
+
+  - question_id: n914
+    curation_family_id: vf014
+    intent: data_flow
+    expected_status: answered
+    novelty:
+      types: [relation, composition, reasoning_topology]
+      closest_exposed_cases: [g089, g098, g106]
+      closest_frozen_novel_dev_families: [nf014, nf017]
+      closest_frozen_validation_families: [vf009, vf010]
+      benchmark_overlap:
+        wording: low
+        entity: none
+        evidence: none
+        information_need: low
+      rationale: >-
+        Gold contains producer-consumer and module-boundary questions, but not
+        FairRuntimeDb parameter registration, serialization, and consumption.
+        nf014 compares model-layer roles and nf017 defines a persistent track
+        object. vf009 traces magnetic-field lookup and vf010 owns detector-hit
+        inputs; neither asks how a runtime parameter factory serves a task.
+      family_isolation_rationale: >-
+        The minimum information need is the three-role runtime-parameter
+        lifecycle demonstrated by the tutorial. All vf001-vf012 were audited;
+        sharing framework vocabulary with field lookup or task ownership does
+        not reproduce registration, context-qualified construction, and
+        FairRuntimeDb access.
+    representativeness:
+      class: representative
+      primary_task_archetype: producer_consumer_trace
+      secondary_task_archetypes: [implementation_explanation]
+      gold_analogue_cases: [g089, g098, g106]
+      benchmark_reference_fit: moderate
+      domain_relevance: strong
+      corpus_tail: representative_but_rare
+      disposition: KEEP_REPRESENTATIVE
+      rationale: >-
+        Parameter containers are a normal FairRoot/PandaRoot framework
+        integration boundary. Gold repeatedly asks for ownership and handoff
+        explanations, while the concrete runtime-database lifecycle remains
+        unmeasured.
+    coverage:
+      repositories: [pandaroot]
+      source_types: [code]
+      expression_form: implementation_oriented
+      evidence_topology: multi_hop
+      source_scope: single_source
+      repository_scope: single_repository
+      reasoning_forms: [trace, explain]
+      difficulty: moderate
+    curation:
+      origin: source_anchor_first_llm_draft
+      agent_outcome_seen_before_freeze: false
+      evidence_selected_from_agent_output: false
+      lifecycle: draft
+
+  - question_id: n915
+    curation_family_id: vf015
+    intent: algorithm_theory
+    expected_status: answered
+    novelty:
+      types: [relation, reasoning_topology, task_form]
+      closest_exposed_cases: [g043, g045]
+      closest_frozen_novel_dev_families: [nf009, nf026]
+      closest_frozen_validation_families: [vf007, vf011]
+      benchmark_overlap:
+        wording: low
+        entity: none
+        evidence: none
+        information_need: low
+      rationale: >-
+        g043 and g045 ask for theory explanations in luminosity extraction,
+        not amplitude interference in three-body-decay projections. nf009
+        compares elastic-scattering models and nf026 navigates the RHO
+        tutorial. vf007 compares detector coverage and vf011 constructs decay
+        candidates; none diagnoses coherent versus projected resonance
+        structure.
+      family_isolation_rationale: >-
+        The minimum information need is the causal link between relative
+        amplitude phase, coherent interference, and misleading one-dimensional
+        projections, together with the views that separate the effect. The
+        vf001-vf012 audit found no equivalent detector, reconstruction, or RHO
+        operation.
+    representativeness:
+      class: representative
+      primary_task_archetype: theory_explanation
+      secondary_task_archetypes: [component_usage]
+      gold_analogue_cases: [g043, g045]
+      benchmark_reference_fit: moderate
+      domain_relevance: moderate
+      corpus_tail: representative_but_rare
+      disposition: KEEP_REPRESENTATIVE
+      rationale: >-
+        Interpreting resonance structure in three-body-decay plots is a
+        credible PANDA analysis need documented with a dedicated official
+        tool. It reuses a recurring Gold theory-explanation form without
+        claiming that the specialized tool is empirically frequent.
+    coverage:
+      repositories: [pandaroot]
+      source_types: [documentation]
+      expression_form: causal
+      evidence_topology: single_hop
+      source_scope: single_source
+      repository_scope: single_repository
+      reasoning_forms: [explain, diagnose]
+      difficulty: moderate
     curation:
       origin: source_anchor_first_llm_draft
       agent_outcome_seen_before_freeze: false

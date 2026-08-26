@@ -3,9 +3,9 @@ benchmark_version: novel-v1-validation-0.2.0
 release_eligible: false
 acceptance_exposed: true
 expected_split_counts:
-  novel_validation: 12
+  novel_validation: 15
 expected_status_counts:
-  answered: 12
+  answered: 15
 questions:
   - id: n901
     split: novel_validation
@@ -392,9 +392,9 @@ questions:
     concept_scopes: {}
     cluster_id: vf007
     challenge_tags: []
-    review_status: draft
-    reviewer: null
-    reviewed_at: null
+    review_status: approved
+    reviewer: Li
+    reviewed_at: 2026-08-26T15:36+02:00
 
   - id: n908
     split: novel_validation
@@ -452,9 +452,9 @@ questions:
     concept_scopes: {}
     cluster_id: vf008
     challenge_tags: []
-    review_status: draft
-    reviewer: null
-    reviewed_at: null
+    review_status: approved
+    reviewer: Li
+    reviewed_at: 2026-08-26T15:36+02:00
 
   - id: n909
     split: novel_validation
@@ -518,9 +518,9 @@ questions:
     concept_scopes: {}
     cluster_id: vf009
     challenge_tags: []
-    review_status: draft
-    reviewer: null
-    reviewed_at: null
+    review_status: approved
+    reviewer: Li
+    reviewed_at: 2026-08-26T15:36+02:00
 
   - id: n910
     split: novel_validation
@@ -576,9 +576,9 @@ questions:
     concept_scopes: {}
     cluster_id: vf010
     challenge_tags: []
-    review_status: draft
-    reviewer: null
-    reviewed_at: null
+    review_status: approved
+    reviewer: Li
+    reviewed_at: 2026-08-26T15:36+02:00
 
   - id: n911
     split: novel_validation
@@ -636,9 +636,9 @@ questions:
     concept_scopes: {}
     cluster_id: vf011
     challenge_tags: []
-    review_status: draft
-    reviewer: null
-    reviewed_at: null
+    review_status: approved
+    reviewer: Li
+    reviewed_at: 2026-08-26T15:36+02:00
 
   - id: n912
     split: novel_validation
@@ -687,6 +687,207 @@ questions:
     forbidden_evidence: []
     concept_scopes: {}
     cluster_id: vf012
+    challenge_tags: []
+    review_status: approved
+    reviewer: Li
+    reviewed_at: 2026-08-26T15:36+02:00
+
+  - id: n913
+    split: novel_validation
+    language: en
+    intent: api
+    query: >-
+      In a PandaRoot RHO analysis, how do I create candidate-level n-tuple
+      rows without predeclaring every branch, keep missing values consistent,
+      and persist the finished tree?
+    expected_status: answered
+    allowed_source_versions:
+      - pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87
+    required_evidence_groups:
+      - group_id: n913.e1
+        role: rhotuple_row_creation_and_persistence
+        critical: true
+        any_of:
+          - source_id: pandaroot_sphinx_2023_08_25_dev
+            object_type: sphinx_page
+            path: pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/tut_04_ntuple.html
+    required_source_types:
+      - documentation
+    required_answer_points:
+      - point_id: p1
+        text: >-
+          Construct a RhoTuple with a tree name and title. Column creates a
+          branch on first use or fills an existing branch, and its default
+          value is used for rows in which that branch is not explicitly set.
+        weight: 1.0
+        critical: true
+      - point_id: p2
+        text: >-
+          Create every intended branch from the beginning and use the correct
+          Column overload or cast; otherwise earlier rows can lack branches
+          that were introduced only in later events.
+        weight: 1.0
+        critical: true
+      - point_id: p3
+        text: >-
+          Column only updates branch values. Call DumpData once per candidate
+          to commit the current row, then write GetInternalTree() to the
+          output TFile and close the file.
+        weight: 1.0
+        critical: true
+    required_identifiers:
+      - text: RhoTuple::Column
+        kind: code_symbol
+        critical: true
+      - text: RhoTuple::DumpData
+        kind: code_symbol
+        critical: true
+      - text: RhoTuple::GetInternalTree
+        kind: code_symbol
+        critical: true
+    forbidden_evidence: []
+    concept_scopes: {}
+    cluster_id: vf013
+    challenge_tags: []
+    review_status: draft
+    reviewer: null
+    reviewed_at: null
+
+  - id: n914
+    split: novel_validation
+    language: en
+    intent: data_flow
+    query: >-
+      When adding a custom PandaRoot runtime-parameter set, what
+      responsibilities do PndTutPar, PndTutContFact, and
+      PndTutAccessRTDBTask have from parameter serialization through
+      container registration to task access?
+    expected_status: answered
+    allowed_source_versions:
+      - pandaroot@18c09e91100db27867ded30e708b4dae95bd8357
+    required_evidence_groups:
+      - group_id: n914.e1
+        role: tutorial_parameter_serialization_contract
+        critical: true
+        any_of:
+          - source_id: pandaroot
+            object_type: source_file
+            path: tutorials/rtdb/PndTutPar.cxx
+      - group_id: n914.e2
+        role: tutorial_container_factory_registration
+        critical: true
+        any_of:
+          - source_id: pandaroot
+            object_type: source_file
+            path: tutorials/rtdb/PndTutContFact.cxx
+      - group_id: n914.e3
+        role: tutorial_task_runtime_database_access
+        critical: true
+        any_of:
+          - source_id: pandaroot
+            object_type: source_file
+            path: tutorials/rtdb/PndTutAccessRTDBTask.cxx
+    required_source_types:
+      - code
+    required_answer_points:
+      - point_id: p1
+        text: >-
+          PndTutPar is the FairParGenericSet implementation: putParams writes
+          its named values to FairParamList, while getParams reads every
+          required value and returns false when the list or a required entry
+          is unavailable.
+        weight: 1.0
+        critical: true
+      - point_id: p2
+        text: >-
+          A static PndTutContFact instance registers itself with FairRuntimeDb
+          when the library loads. The factory declares TUTParDefault and
+          TUTParAlternative for the default and non-default contexts and
+          creates the corresponding PndTutPar object with its effective
+          context-qualified name.
+        weight: 1.0
+        critical: true
+      - point_id: p3
+        text: >-
+          PndTutAccessRTDBTask obtains the FairRuntimeDb from FairRunAna and
+          retrieves both named containers in SetParContainers. Init rejects a
+          missing container, ReInit refreshes the references, and Finish uses
+          the retrieved parameter objects.
+        weight: 1.0
+        critical: true
+    required_identifiers:
+      - text: PndTutPar
+        kind: code_symbol
+        critical: true
+      - text: PndTutContFact
+        kind: code_symbol
+        critical: true
+      - text: PndTutAccessRTDBTask
+        kind: code_symbol
+        critical: true
+    forbidden_evidence: []
+    concept_scopes: {}
+    cluster_id: vf014
+    challenge_tags: []
+    review_status: draft
+    reviewer: null
+    reviewed_at: null
+
+  - id: n915
+    split: novel_validation
+    language: en
+    intent: algorithm_theory
+    query: >-
+      While studying a three-body decay with PandaRoot's DalitzGUI, how can
+      interference leave a resonance band visible in the Dalitz plot while
+      its peak moves or disappears in a one-dimensional projection, and which
+      built-in views expose the coherent-versus-incoherent effect?
+    expected_status: answered
+    allowed_source_versions:
+      - pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87
+    required_evidence_groups:
+      - group_id: n915.e1
+        role: dalitz_interference_projection_diagnosis
+        critical: true
+        any_of:
+          - source_id: pandaroot_sphinx_2023_08_25_dev
+            object_type: sphinx_page
+            path: pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/DalitzGui.html
+    required_source_types:
+      - documentation
+    required_answer_points:
+      - point_id: p1
+        text: >-
+          DalitzGUI combines active resonance amplitudes with adjustable
+          complex coefficients A*exp(i*phi). Changing a relative phase changes
+          constructive and destructive interference, so a projected peak can
+          move or cancel even though the two-dimensional resonance band
+          remains visible.
+        weight: 1.0
+        critical: true
+      - point_id: p2
+        text: >-
+          A one-dimensional projection can also contain reflections whose
+          peaks do not coincide with a resonance pole mass, so a projected
+          peak alone is not a reliable resonance identifier.
+        weight: 1.0
+        critical: true
+      - point_id: p3
+        text: >-
+          Compare Dalitz or Dalitz (scat) with Dalitz In, the incoherent sum,
+          and Dalitz Diff, the difference between incoherent and coherent
+          sums; Dalitz Ph
+          and the s23/s31/s12 projections expose the phase and projection
+          behavior directly.
+        weight: 1.0
+        critical: true
+    required_identifiers:
+      - text: DalitzGUI
+        kind: code_symbol
+        critical: true
+    forbidden_evidence: []
+    concept_scopes: {}
+    cluster_id: vf015
     challenge_tags: []
     review_status: draft
     reviewer: null

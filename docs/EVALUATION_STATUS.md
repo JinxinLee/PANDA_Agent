@@ -131,6 +131,36 @@ When records conflict, use the single section explicitly marked **Current author
   `C8-A2 = NEXT_ELIGIBLE / NOT_STARTED`.
 - Next task: human review of the N3-E expansion candidates.
 
+## N3-E2 final validation expansion batch — 2026-08-26
+
+- Li's authoritative N3-E review is recorded first: reviewed commit
+  `fa902109123c17b92297c6839fd4664c659ff3c5` at
+  `2026-08-26T15:36+02:00`; n907-n912 are 6 ACCEPT / 0 REVISE / 0 REJECT,
+  with semantic changes 0. They are `approved` but not `split_frozen`.
+- N3-E2: `EXPANSION2_CURATED / HUMAN_REVIEW_PENDING`; the active lineage stays
+  `0.2.0` / `novel-v1-validation-0.2.0`, identity
+  `novel-v1-validation-expansion`, status `EXPANSION_IN_PROGRESS`, and
+  `release_eligible: false`.
+- Three source-first drafts were added: n913/vf013 covers RhoTuple row creation
+  and persistence; n914/vf014 covers runtime-parameter serialization,
+  registration, and task access; n915/vf015 covers Dalitz interference and
+  projection diagnostics. All are draft, reviewer null, reviewed_at null, and
+  lifecycle draft.
+- Current totals: 15 loaded / 15 independent families / 12 approved / 0 revise
+  / 0 rejected / 3 pending / 6 frozen. The authoritative target is
+  approximately 15 questions as a quality target, not a quota. Sampling
+  stopped after three strong candidates.
+- Full validation remains `NOT COMPLETE`; validation measurement is `NOT RUN`.
+  Frozen `novel_dev` remains 28 loaded / 28 approved / 28 split_frozen with
+  semantic changes 0. Holdout remains `NOT CREATED / EXTERNAL`.
+- Static curation only: PANDA retrieval, QA, judge, Vertex, embedding, Qdrant,
+  and SQL retrieval calls are all 0; novel-dev, validation, C8, and holdout
+  outcomes used are all 0.
+- Parallel C8 lifecycle is unchanged: `C8-A1R1 = PASS`,
+  `C8-A1 = PASS_AFTER_CONTRACT_FIDELITY_REPAIR`, and
+  `C8-A2 = NEXT_ELIGIBLE / NOT_STARTED`.
+- Next task: human review of the N3-E2 candidates.
+
 ## C8-A0 targeted-retrieval boundary inventory — 2026-08-24
 
 - C8 status: `ACTIVE`; `C8-A0 = PASS` (artifact `evaluation/baselines/manifests/phase_c_c8_a0_targeted_retrieval_boundary_inventory_v1.json`; expected source HEAD `3e40dcace0d5ce30c6b9598f58c70f71b992b918` with zero src/configs delta to the audit branch HEAD; focused static tests `tests/unit/test_c8_a0_targeted_merge_semantics.py` `6/6`).
@@ -643,14 +673,14 @@ The retrieval and QA measurements are unchanged. A3.1 corrects only metric repre
 - `novel_dev`: 28 loaded records (dataset lineage `0.3.0` / `novel-v1-dev-0.3.0`, identity `novel-v1-dev-expansion`, status `COMPLETE`): 28 human-approved and 28 `split_frozen` records in 28 independent families. The N1 pilot history and N2-A/N2-B review histories remain preserved; the active split is frozen.
 - Human-approved: 28. Frozen: 28 (N1 historical approvals, N2-A approvals at 2026-08-24T01:50/02:05+02:00, n027 accepted 2026-08-24T02:42+02:00, and n026/n028/n029/n030/n031 accepted on final re-review at 2026-08-25T22:11:57+02:00). Rejected: 0. Pending: 0.
 - `novel_validation`: `0.2.0` / `novel-v1-validation-0.2.0`, identity
-  `novel-v1-validation-expansion`, status `EXPANSION_IN_PROGRESS`: 12 loaded,
-  12 families, 6 frozen pilot approvals, 6 new drafts pending human review,
-  and 6 frozen. Full validation is `NOT COMPLETE`; validation measurement is
-  `NOT RUN`.
+  `novel-v1-validation-expansion`, status `EXPANSION_IN_PROGRESS`: 15 loaded,
+  15 families, 6 frozen pilot approvals, 6 N3-E approved-not-frozen records,
+  3 N3-E2 drafts pending human review, and 6 frozen. Full validation is `NOT
+  COMPLETE`; validation measurement is `NOT RUN`.
 - `novel_holdout`: not created / externally managed; the runner supports loading it from an external path.
 - Empty novel JSONL artifacts are schema/placeholders, not measured results.
-- Curation governance: N0 `COMPLETE`; `docs/NOVEL_DATASET_CURATION_CONTRACT.md` is authoritative; N1 `PASS / COMPLETE`; N2 `PASS / COMPLETE`; `novel_dev` `COMPLETE / SPLIT_FROZEN`; N3 pilot `PASS / COMPLETE`; N3-E `EXPANSION_CURATED / HUMAN_REVIEW_PENDING`.
-- Next curation step: human review of the N3-E candidates. Novel measurement,
+- Curation governance: N0 `COMPLETE`; `docs/NOVEL_DATASET_CURATION_CONTRACT.md` is authoritative; N1 `PASS / COMPLETE`; N2 `PASS / COMPLETE`; `novel_dev` `COMPLETE / SPLIT_FROZEN`; N3 pilot `PASS / COMPLETE`; N3-E `BATCH1_HUMAN_APPROVED`; N3-E2 `EXPANSION2_CURATED / HUMAN_REVIEW_PENDING`.
+- Next curation step: human review of the N3-E2 candidates. Novel measurement,
   another expansion batch, final freeze, and holdout work require separate
   authorization; C8 remains on its independent lifecycle.
 
@@ -662,7 +692,7 @@ The retrieval and QA measurements are unchanged. A3.1 corrects only metric repre
 
 ## Next authorized roadmap task
 
-**N2 finalization is complete.** The package `N2B_BATCH2_REVIEW_PACKAGE.md` records Li's first 1 ACCEPT / 5 REVISE decision, the R1 corrections, and the final 5 ACCEPT re-review; all 28 active novel_dev records are now split_frozen. N1 remains `PASS / COMPLETE`; N2 is `PASS / COMPLETE`; C8 is `ACTIVE` with `C8-A1 = PASS_AFTER_CONTRACT_FIDELITY_REPAIR` and `C8-A2 = NEXT_ELIGIBLE / NOT_STARTED` (per the current C8 sections above). No novel evaluation was run or authorized by this freeze.
+**N3-E2 curation is complete and awaits human review.** The active validation lineage contains 15 questions in 15 families: 6 frozen pilot records, 6 N3-E records accepted by Li but not frozen, and 3 N3-E2 drafts. Full validation is not complete and no novel evaluation was run or authorized. C8 remains independently `ACTIVE` with `C8-A1 = PASS_AFTER_CONTRACT_FIDELITY_REPAIR` and `C8-A2 = NEXT_ELIGIBLE / NOT_STARTED` (per the current C8 sections above).
 
 ### Historical pre-N0 roadmap summary
 

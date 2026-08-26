@@ -7,21 +7,23 @@
   "status": "EXPANSION_IN_PROGRESS",
   "release_eligible": false,
   "acceptance_exposed": true,
-  "question_count": 12,
-  "independent_family_count": 12,
+  "question_count": 15,
+  "independent_family_count": 15,
   "review_state": {
     "review_status": "partial",
-    "reviewer": "Li (frozen pilot only)",
-    "reviewed_at": "2026-08-25T23:18+02:00",
+    "reviewer": "Li",
+    "reviewed_at": "2026-08-26T15:36+02:00",
     "re_reviewed_at": "2026-08-26T00:21+02:00",
     "human_approval": "partial",
-    "accepted_count": 6,
+    "accepted_count": 12,
     "revise_count": 0,
     "rejected_count": 0,
-    "pending_count": 6,
+    "pending_count": 3,
     "reviewed_pilot_commit": "c91c1da2f80611d8ec68fd461ce16ebe2287d0de",
     "re_reviewed_pilot_commit": "971a3d34abf92b89da2f2f13263b97313223ec35",
-    "reviewer_scope": "Li's historical review applies only to frozen n901-n906. New records n907-n912 are drafts with no reviewer and all human decisions pending. N3-E is curated for review, full validation remains NOT COMPLETE, and no validation measurement or novel_dev outcome informed expansion curation."
+    "reviewed_n3e_commit": "fa902109123c17b92297c6839fd4664c659ff3c5",
+    "reviewed_n3e_at": "2026-08-26T15:36+02:00",
+    "reviewer_scope": "Li's review covers frozen n901-n906 and approved but not frozen n907-n912. New N3-E2 records n913-n915 are drafts with no reviewer and all human decisions pending. Full validation remains NOT COMPLETE, and no validation measurement, novel_dev outcome, C8 outcome, or holdout observation informed curation."
   },
   "curation_origin": "source_anchor_first_llm_draft",
   "agent_outcome_seen_before_freeze": false,
@@ -30,18 +32,18 @@
     "dataset": "novel_validation.yaml",
     "curation_metadata": "novel_validation_curation_metadata.yaml",
     "coverage_report": "novel_validation_coverage_report.json",
-    "review_package": "N3E_VALIDATION_EXPANSION_REVIEW_PACKAGE.md",
-    "curation_plan": "N3E_FULL_VALIDATION_EXPANSION_PLAN.md",
+    "review_package": "N3E2_VALIDATION_EXPANSION_REVIEW_PACKAGE.md",
+    "curation_plan": "N3E2_FINAL_VALIDATION_EXPANSION_PLAN.md",
     "finalization_report": "N3_PILOT_FINALIZATION_REPORT.md"
   },
   "locked_corpus_manifest": "data/manifests/source_manifest.json",
   "governance": "docs/NOVEL_DATASET_CURATION_CONTRACT.md",
   "representativeness": {
     "profile": "gold_representativeness_profile.json",
-    "representative_count": 12,
+    "representative_count": 15,
     "exploratory_count": 0,
     "dispositions": {
-      "KEEP_REPRESENTATIVE": 12
+      "KEEP_REPRESENTATIVE": 15
     },
     "profile_schema": "novel-representativeness-profile-v2",
     "profile_role": "benchmark_reference_proxy",
@@ -50,5 +52,7 @@
   "retired_drafts": [],
   "frozen_count": 6,
   "frozen_pilot_count": 6,
-  "expansion_draft_count": 6
+  "n3e_approved_not_frozen_count": 6,
+  "n3e2_draft_count": 3,
+  "expansion_draft_count": 3
 }

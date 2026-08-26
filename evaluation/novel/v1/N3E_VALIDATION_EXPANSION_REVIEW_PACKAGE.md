@@ -1,18 +1,28 @@
 # N3-E Validation Expansion Review Package
 
-Status: `EXPANSION_CURATED / HUMAN_REVIEW_PENDING`
+Status: `BATCH1_HUMAN_APPROVED`
 
 Dataset: `novel-v1-validation-0.2.0`
 
 Frozen pilot: 6 approved / 6 `split_frozen`
 
-New expansion drafts: 6 candidates / 6 independent families
+N3-E expansion: 6 approved candidates / 6 independent families
 
-Human decisions on new candidates: 6 PENDING
+Human decisions on N3-E candidates: 6 ACCEPT / 0 REVISE / 0 REJECT
 
 Codex recommendations are advisory. The six new candidates were independently
 annotated from locked sources without inspecting novel-dev, validation, or C8
-outcomes. No new candidate is approved or frozen.
+outcomes. Human approval does not freeze these records.
+
+## Authoritative human review
+
+- **Reviewer:** Li
+- **Timestamp:** `2026-08-26T15:36+02:00`
+- **Reviewed commit:** `fa902109123c17b92297c6839fd4664c659ff3c5`
+- **Decisions:** n907 `ACCEPT`; n908 `ACCEPT`; n909 `ACCEPT`; n910
+  `ACCEPT`; n911 `ACCEPT`; n912 `ACCEPT`.
+- **Totals:** 6 `ACCEPT`; 0 `REVISE`; 0 `REJECT`.
+- **Lifecycle:** n907-n912 are human-approved but are not `split_frozen`.
 
 ## n907 / vf007 - Barrel and Endcap DIRC comparison
 
@@ -61,7 +71,7 @@ outcomes. No new candidate is approved or frozen.
   to the locked thesis description and are not claims about later detector
   revisions.
 - **Codex recommendation:** `RECOMMEND_ACCEPT`.
-- **Human decision:** `PENDING`.
+- **Human decision:** `ACCEPT`.
 
 ## n908 / vf008 - Reconstructed-track to PID-candidate flow
 
@@ -108,7 +118,7 @@ outcomes. No new candidate is approved or frozen.
 - **Known uncertainty:** optional neutral-candidate behavior is outside the
   question and annotation.
 - **Codex recommendation:** `RECOMMEND_ACCEPT`.
-- **Human decision:** `PENDING`.
+- **Human decision:** `ACCEPT`.
 
 ## n909 / vf009 - Multi-part magnetic-field lookup
 
@@ -154,7 +164,7 @@ outcomes. No new candidate is approved or frozen.
 - **Known uncertainty:** the annotation describes the locked implementation's
   precedence behavior; it does not generalize to other PandaRoot versions.
 - **Codex recommendation:** `RECOMMEND_ACCEPT`.
-- **Human decision:** `PENDING`.
+- **Human decision:** `ACCEPT`.
 
 ## n910 / vf010 - MVD/GEM tracking module boundary
 
@@ -197,7 +207,7 @@ outcomes. No new candidate is approved or frozen.
   placeholders; the annotation is limited to the explicit input/output and
   hit-link contract, not algorithm-quality claims.
 - **Codex recommendation:** `RECOMMEND_ACCEPT`.
-- **Human decision:** `PENDING`.
+- **Human decision:** `ACCEPT`.
 
 ## n911 / vf011 - RHO decay-candidate combinatorics
 
@@ -240,7 +250,7 @@ outcomes. No new candidate is approved or frozen.
 - **Known uncertainty:** the tutorial's PID choices are illustrative and are
   not part of this Gold obligation.
 - **Codex recommendation:** `RECOMMEND_ACCEPT`.
-- **Human decision:** `PENDING`.
+- **Human decision:** `ACCEPT`.
 
 ## n912 / vf012 - Muon range-system principle
 
@@ -279,7 +289,7 @@ outcomes. No new candidate is approved or frozen.
   are deliberately not required because the question asks for the principle
   and observable.
 - **Codex recommendation:** `RECOMMEND_ACCEPT`.
-- **Human decision:** `PENDING`.
+- **Human decision:** `ACCEPT`.
 
 ## Discarded pre-ID ideas
 
@@ -298,10 +308,8 @@ outcomes. No new candidate is approved or frozen.
   discarded because the locked anchors supported answered needs and no status
   quota exists.
 
-## Requested human review
+## Review closure
 
-For each new record, choose `ACCEPT`, `REVISE`, or `REJECT`. An `ACCEPT`
-decision must explicitly cover the question, Gold evidence contract, answer
-points, family isolation, representativeness classification, and sidecar
-metadata. Corrections do not imply approval; any revised record remains draft
-until explicit re-review.
+Li accepted all six N3-E records as represented in the reviewed commit. Their
+semantic content is unchanged, their lifecycle is `approved`, and split freeze
+remains a separate future action.

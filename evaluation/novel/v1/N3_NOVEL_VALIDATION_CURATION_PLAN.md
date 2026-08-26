@@ -1,6 +1,6 @@
 # N3 — Novel Validation Curation Plan and Pilot Record
 
-Plan status: `PILOT_COMPLETE / N3-E EXPANSION_CURATED / HUMAN_REVIEW_PENDING`
+Plan status: `PILOT_COMPLETE / N3-E BATCH1_HUMAN_APPROVED / N3-E2 EXPANSION2_CURATED / HUMAN_REVIEW_PENDING`
 
 N3: `PASS / COMPLETE`
 
@@ -37,9 +37,9 @@ split a true external holdout.
 
 ## 2. Size and quality target
 
-The full validation quality target is approximately 15 questions, with an
-acceptable final range of approximately 12-18. This is not a quota: source
-support, family independence, Gold quality, and human review override count.
+The full validation quality target is approximately 15 questions. This is a
+quality target, not a quota: source support, family independence, Gold quality,
+and human review override count.
 
 N3 curates a pilot of six candidates. The pilot is intentionally within the
 requested 6-8 range and does not complete or stand in for the full validation
@@ -78,9 +78,10 @@ a different file, or same algorithm with another method name from any of the
 28 frozen `novel_dev` families.
 
 For each admitted record, the sidecar and review package name the closest
-frozen family or families and explain the substantive difference. Different
-paths alone never establish independence. Validation uses `vf001`-`vf006`,
-which cannot collide with frozen `nf001`-`nf031` lineage.
+frozen or accepted family or families and explain the substantive difference.
+Different paths alone never establish independence. The current validation
+lineage uses `vf001`-`vf015`; every new family is also checked against the
+frozen `nf001`-`nf031` lineage.
 
 ## 5. Dedicated ID namespace
 
@@ -262,19 +263,21 @@ task and require separate authorization.
 
 ## 14. N3-E full validation expansion
 
-N3-E opens `0.2.0` / `novel-v1-validation-0.2.0`, identity
+N3-E opened `0.2.0` / `novel-v1-validation-0.2.0`, identity
 `novel-v1-validation-expansion`, while carrying frozen `n901`-`n906` and
 `vf001`-`vf006` forward unchanged. Six new independently source-anchored
-drafts (`n907`-`n912`, `vf007`-`vf012`) are curated for human review.
+records (`n907`-`n912`, `vf007`-`vf012`) were curated and then accepted by Li
+at `2026-08-26T15:36+02:00` from reviewed commit
+`fa902109123c17b92297c6839fd4664c659ff3c5`. They are approved but not frozen.
 
 ```text
 N3 pilot: PASS / COMPLETE
 validation pilot: 6 / 6 approved and split_frozen
-N3-E: EXPANSION_CURATED / HUMAN_REVIEW_PENDING
+N3-E: BATCH1_HUMAN_APPROVED
 novel_validation: EXPANSION_IN_PROGRESS
 loaded: 12
-approved: 6
-draft/pending: 6
+approved: 12
+draft/pending: 0
 frozen: 6
 full validation: NOT COMPLETE
 validation measurement: NOT RUN
@@ -282,7 +285,33 @@ validation measurement: NOT RUN
 
 The current expansion plan is
 `N3E_FULL_VALIDATION_EXPANSION_PLAN.md`; candidate decisions belong in
-`N3E_VALIDATION_EXPANSION_REVIEW_PACKAGE.md`. No N3-E draft is approved or
-split-frozen, and no second expansion batch or measurement is authorized.
+`N3E_VALIDATION_EXPANSION_REVIEW_PACKAGE.md`. N3-E human approval does not
+split-freeze those records and does not authorize measurement.
 
-Next task: human review of the N3-E expansion candidates.
+## 15. N3-E2 final small expansion batch
+
+N3-E2 retains the same `0.2.0` expansion lineage and adds three outcome-blind
+drafts (`n913`-`n915`, `vf013`-`vf015`). The source-first audit stopped at
+three strong candidates, matching the approximate-15 planning center without
+treating it as a quota.
+
+```text
+N3 pilot: PASS / COMPLETE
+N3-E: BATCH1_HUMAN_APPROVED
+N3-E2: EXPANSION2_CURATED / HUMAN_REVIEW_PENDING
+novel_validation: EXPANSION_IN_PROGRESS
+loaded: 15
+families: 15
+approved: 12
+draft/pending: 3
+frozen: 6
+full validation: NOT COMPLETE
+validation measurement: NOT RUN
+```
+
+The current plan and review package are
+`N3E2_FINAL_VALIDATION_EXPANSION_PLAN.md` and
+`N3E2_VALIDATION_EXPANSION_REVIEW_PACKAGE.md`. n913-n915 are drafts with no
+reviewer and must not be approved or frozen without separate human action.
+
+Next task: human review of the N3-E2 candidates.

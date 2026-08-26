@@ -5,76 +5,78 @@
   "dataset_version": "0.2.0",
   "split": "novel_validation",
   "status": "EXPANSION_IN_PROGRESS",
-  "question_count": 12,
-  "independent_family_count": 12,
+  "question_count": 15,
+  "independent_family_count": 15,
   "frozen_count": 6,
   "frozen_pilot_count": 6,
-  "expansion_draft_count": 6,
+  "n3e_approved_not_frozen_count": 6,
+  "n3e2_draft_count": 3,
+  "expansion_draft_count": 3,
   "counts_by_intent": {
     "installation": 1,
     "usage": 3,
-    "api": 1,
-    "algorithm_theory": 2,
+    "api": 2,
+    "algorithm_theory": 3,
     "algorithm_implementation": 2,
-    "data_flow": 1,
+    "data_flow": 2,
     "module_structure": 1,
     "troubleshooting": 1
   },
   "counts_by_difficulty": {
-    "simple": 2,
-    "moderate": 10
+    "simple": 3,
+    "moderate": 12
   },
   "counts_by_novelty_type": {
     "entity": 1,
-    "relation": 10,
-    "composition": 6,
-    "reasoning_topology": 5,
-    "task_form": 9
+    "relation": 13,
+    "composition": 7,
+    "reasoning_topology": 7,
+    "task_form": 11
   },
   "counts_by_repository_scope": {
-    "single_repository": 10,
+    "single_repository": 13,
     "paper_only": 2,
     "cross_repository": 0
   },
   "counts_by_source_type": {
-    "documentation": 5,
-    "code": 5,
+    "documentation": 7,
+    "code": 6,
     "paper": 2
   },
   "counts_by_expression_form": {
-    "descriptive": 8,
-    "implementation_oriented": 3,
-    "causal": 1
+    "descriptive": 9,
+    "implementation_oriented": 4,
+    "causal": 2
   },
   "counts_by_evidence_topology": {
-    "single_hop": 2,
-    "multi_hop": 6,
+    "single_hop": 4,
+    "multi_hop": 7,
     "producer_consumer": 3,
     "comparison": 1
   },
   "counts_by_expected_status": {
-    "answered": 12,
+    "answered": 15,
     "insufficient_evidence": 0,
     "version_conflict": 0,
     "clarification_required": 0
   },
   "counts_by_primary_task_archetype": {
     "setup_environment": 1,
-    "component_usage": 4,
+    "component_usage": 5,
     "troubleshooting_diagnosis": 1,
     "implementation_explanation": 2,
     "concept_comparison": 1,
-    "producer_consumer_trace": 1,
+    "producer_consumer_trace": 2,
     "repository_structure": 1,
-    "theory_explanation": 1
+    "theory_explanation": 2
   },
   "cross_repository_count": 0,
-  "multi_hop_count": 6,
-  "descriptive_or_identifier_free_count": 8,
-  "multi_evidence_count": 6,
+  "multi_hop_count": 7,
+  "descriptive_or_identifier_free_count": 9,
+  "multi_evidence_count": 7,
   "family_isolation": {
     "frozen_novel_dev_family_count_checked": 28,
-    "validation_family_count": 12,
+    "validation_family_count": 15,
     "cross_split_family_id_collisions": 0,
     "substantive_information_need_overlaps_admitted": 0,
     "candidate_reviews": [
@@ -161,33 +163,57 @@
         "closest_frozen_families": ["nf008", "nf030", "vf007"],
         "independent": true,
         "basis": "pion-muon range discrimination is distinct from LMD tracking theory and DIRC pion-kaon detector coverage"
+      },
+      {
+        "question_id": "n913",
+        "family_id": "vf013",
+        "closest_frozen_families": ["nf018", "nf026", "vf002", "vf011"],
+        "independent": true,
+        "basis": "candidate-row creation and TTree persistence are distinct from truth matching, tutorial navigation, PID selection, and decay combinatorics"
+      },
+      {
+        "question_id": "n914",
+        "family_id": "vf014",
+        "closest_frozen_families": ["nf014", "nf017", "vf009", "vf010"],
+        "independent": true,
+        "basis": "runtime-parameter serialization, factory registration, and task access are distinct from model ownership, track objects, field lookup, and detector-hit ownership"
+      },
+      {
+        "question_id": "n915",
+        "family_id": "vf015",
+        "closest_frozen_families": ["nf009", "nf026", "vf007", "vf011"],
+        "independent": true,
+        "basis": "coherent amplitude interference and projection artifacts are distinct from scattering-model comparison, tutorial navigation, detector comparison, and candidate combinatorics"
       }
     ]
   },
   "known_coverage_limits": [
-    "These twelve records are a structural curation set, not evidence of empirical PANDA user traffic or a quota-matched clone of Gold or novel_dev.",
-    "No genuine cross-repository minimum footprint arose; the ten repository-associated records require one repository identity and two records are paper-only.",
+    "These fifteen records are a structural curation set, not evidence of empirical PANDA user traffic or a quota-matched clone of Gold or novel_dev.",
+    "No genuine cross-repository minimum footprint arose; the thirteen repository-associated records require one repository identity and two records are paper-only.",
     "No legitimate insufficient_evidence, version_conflict, or clarification_required candidate arose, so status diversity was not manufactured.",
-    "The six N3-E records are drafts pending human review; reaching twelve loaded records does not complete or freeze full validation."
+    "The frozen pilot contributes six records, N3-E contributes six human-approved but not frozen records, and the three N3-E2 records are drafts pending human review; reaching fifteen loaded records does not complete or freeze full validation."
   ],
   "curation_provenance": {
     "origin": "source_anchor_first_llm_draft",
     "agent_outcome_seen_before_freeze": false,
     "evidence_selected_from_agent_output": false,
     "human_approval": "partial",
-    "human_reviewer": "Li (frozen pilot only)",
-    "reviewed_at": "2026-08-25T23:18+02:00",
+    "human_reviewer": "Li",
+    "reviewed_at": "2026-08-26T15:36+02:00",
     "reviewed_pilot_commit": "c91c1da2f80611d8ec68fd461ce16ebe2287d0de",
     "re_reviewed_at": "2026-08-26T00:21+02:00",
     "re_reviewed_pilot_commit": "971a3d34abf92b89da2f2f13263b97313223ec35",
+    "reviewed_n3e_commit": "fa902109123c17b92297c6839fd4664c659ff3c5",
     "review_decision_counts": {
-      "accepted": 6,
+      "accepted": 12,
       "revise": 0,
       "rejected": 0,
-      "pending": 6
+      "pending": 3
     },
     "corrected_awaiting_re_review": [],
     "pilot_frozen": true,
+    "n3e_human_review_complete": true,
+    "n3e2_human_review_pending": true,
     "expansion_human_review_pending": true,
     "validation_measurement_run": false
   },
@@ -196,32 +222,32 @@
     "profile_schema": "novel-representativeness-profile-v2",
     "profile_role": "benchmark_reference_proxy",
     "empirical_user_frequency": false,
-    "representative_count": 12,
+    "representative_count": 15,
     "exploratory_count": 0,
     "counts_by_primary_task_archetype": {
       "setup_environment": 1,
-      "component_usage": 4,
+      "component_usage": 5,
       "troubleshooting_diagnosis": 1,
       "implementation_explanation": 2,
       "concept_comparison": 1,
-      "producer_consumer_trace": 1,
+      "producer_consumer_trace": 2,
       "repository_structure": 1,
-      "theory_explanation": 1
+      "theory_explanation": 2
     },
     "benchmark_reference_fit_counts": {
-      "strong": 5,
-      "moderate": 7
+      "strong": 6,
+      "moderate": 9
     },
     "domain_relevance_counts": {
-      "strong": 11,
-      "moderate": 1
+      "strong": 13,
+      "moderate": 2
     },
     "corpus_tail_counts": {
-      "representative_core": 8,
-      "representative_but_rare": 4
+      "representative_core": 9,
+      "representative_but_rare": 6
     },
     "dispositions": {
-      "KEEP_REPRESENTATIVE": 12
+      "KEEP_REPRESENTATIVE": 15
     },
     "notes": "Classifications combine benchmark-reference fit with independent PANDA-domain relevance. They do not claim empirical frequency, impose a validation quota, or convert draft recommendations into human approval."
   },
