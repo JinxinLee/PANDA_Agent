@@ -1,6 +1,6 @@
 # N3 — Novel Validation Curation Plan and Pilot Record
 
-Plan status: `PILOT_COMPLETE / N3-E BATCH1_HUMAN_APPROVED / N3-E2 EXPANSION2_CURATED / HUMAN_REVIEW_PENDING`
+Plan status: `N3: PASS / COMPLETE / N3-E: BATCH1_HUMAN_APPROVED / N3-E2: BATCH2_HUMAN_APPROVED / N3-VF: PASS / COMPLETE`
 
 N3: `PASS / COMPLETE`
 
@@ -8,9 +8,19 @@ Current dataset line: `0.2.0` / `novel-v1-validation-0.2.0`
 
 Current identity: `novel-v1-validation-expansion`
 
-Split state: frozen pilot preserved / `EXPANSION_IN_PROGRESS`
+Split state: `COMPLETE / SPLIT_FROZEN`
 
 Release eligible: `false`
+
+Full validation: `COMPLETE`
+
+Loaded: `15`
+
+Approved: `15`
+
+Frozen: `15`
+
+Validation measurement: `NOT RUN`
 
 ## 1. Purpose and evaluation role
 
@@ -315,3 +325,40 @@ The current plan and review package are
 reviewer and must not be approved or frozen without separate human action.
 
 Next task: human review of the N3-E2 candidates.
+
+## 16. N3-VF full validation finalization and split freeze
+
+N3-VF is the final curation and freeze task for the `0.2.0` expansion lineage.
+It records Li's authoritative N3-E2 review before changing the lifecycle of any
+record:
+
+- Reviewer: `Li`.
+- Reviewed commit: `f100f357e83b56e2799c2bb5bf89f2073b1c5872`.
+- Reviewed at: `2026-08-26T17:13+02:00`.
+- Decisions: n913/n914/n915 all `ACCEPT`; `3 ACCEPT / 0 REVISE / 0 REJECT`.
+
+The final active validation split is `0.2.0` /
+`novel-v1-validation-0.2.0`, identity `novel-v1-validation-expansion`, with
+15 loaded questions, 15 independent families, 15 approved records, 15
+`split_frozen` records, and 0 pending records. The final status is
+`COMPLETE`; `human_approval` is `complete`; `release_eligible` remains
+`false`. The six pilot records retain their historical review metadata, the
+six N3-E records retain their `2026-08-26T15:36+02:00` review time, and the
+three N3-E2 records retain the `2026-08-26T17:13+02:00` review time.
+
+N3-VF changes no semantic question content. The final batch reached the
+approximately-15 quality target without padding, and structural coverage
+counts are not empirical user-frequency estimates. No new question or family
+was created. `novel_dev` remains 28/28 approved and split_frozen with semantic
+changes 0; `novel_holdout` remains `NOT CREATED / EXTERNAL`.
+
+The finalization report is
+`N3_FULL_VALIDATION_FINALIZATION_REPORT.md`. Validation measurement and
+novel-dev measurement remain `NOT RUN`; no retrieval, QA, judge, Vertex,
+embedding, Qdrant, SQL, or other runtime evaluation was performed. The
+parallel C8 lifecycle is preserved as `C8-A1R1 = PASS`,
+`C8-A1 = PASS_AFTER_CONTRACT_FIDELITY_REPAIR`, and
+`C8-A2 = NEXT_ELIGIBLE / NOT_STARTED`.
+
+N3 curation is closed after this freeze. The next eligible roadmap task is
+`C8-A2`; it is not started by N3-VF.

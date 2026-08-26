@@ -4,26 +4,28 @@
   "benchmark_version": "novel-v1-validation-0.2.0",
   "dataset_version": "0.2.0",
   "split": "novel_validation",
-  "status": "EXPANSION_IN_PROGRESS",
+  "status": "COMPLETE",
   "release_eligible": false,
   "acceptance_exposed": true,
   "question_count": 15,
   "independent_family_count": 15,
   "review_state": {
-    "review_status": "partial",
+    "review_status": "approved",
     "reviewer": "Li",
     "reviewed_at": "2026-08-26T15:36+02:00",
     "re_reviewed_at": "2026-08-26T00:21+02:00",
-    "human_approval": "partial",
-    "accepted_count": 12,
+    "human_approval": "complete",
+    "accepted_count": 15,
     "revise_count": 0,
     "rejected_count": 0,
-    "pending_count": 3,
+    "pending_count": 0,
     "reviewed_pilot_commit": "c91c1da2f80611d8ec68fd461ce16ebe2287d0de",
     "re_reviewed_pilot_commit": "971a3d34abf92b89da2f2f13263b97313223ec35",
     "reviewed_n3e_commit": "fa902109123c17b92297c6839fd4664c659ff3c5",
     "reviewed_n3e_at": "2026-08-26T15:36+02:00",
-    "reviewer_scope": "Li's review covers frozen n901-n906 and approved but not frozen n907-n912. New N3-E2 records n913-n915 are drafts with no reviewer and all human decisions pending. Full validation remains NOT COMPLETE, and no validation measurement, novel_dev outcome, C8 outcome, or holdout observation informed curation."
+    "reviewed_n3e2_commit": "f100f357e83b56e2799c2bb5bf89f2073b1c5872",
+    "reviewed_n3e2_at": "2026-08-26T17:13+02:00",
+    "reviewer_scope": "Li's review history covers the six frozen pilot records n901-n906, the six N3-E records n907-n912, and the three N3-E2 records n913-n915. All 15 active records are human-approved and split_frozen after N3-VF; the historical pilot review and re-review timestamps remain preserved. Full validation curation is complete, but validation measurement remains NOT RUN, novel_dev and C8 outcomes were not used, and novel_holdout remains NOT CREATED / EXTERNAL."
   },
   "curation_origin": "source_anchor_first_llm_draft",
   "agent_outcome_seen_before_freeze": false,
@@ -34,7 +36,7 @@
     "coverage_report": "novel_validation_coverage_report.json",
     "review_package": "N3E2_VALIDATION_EXPANSION_REVIEW_PACKAGE.md",
     "curation_plan": "N3E2_FINAL_VALIDATION_EXPANSION_PLAN.md",
-    "finalization_report": "N3_PILOT_FINALIZATION_REPORT.md"
+    "finalization_report": "N3_FULL_VALIDATION_FINALIZATION_REPORT.md"
   },
   "locked_corpus_manifest": "data/manifests/source_manifest.json",
   "governance": "docs/NOVEL_DATASET_CURATION_CONTRACT.md",
@@ -50,9 +52,9 @@
     "sidecar_schema": "novel-curation-sidecar-v3"
   },
   "retired_drafts": [],
-  "frozen_count": 6,
+  "frozen_count": 15,
   "frozen_pilot_count": 6,
-  "n3e_approved_not_frozen_count": 6,
-  "n3e2_draft_count": 3,
-  "expansion_draft_count": 3
+  "n3e_approved_not_frozen_count": 0,
+  "n3e2_draft_count": 0,
+  "expansion_draft_count": 0
 }

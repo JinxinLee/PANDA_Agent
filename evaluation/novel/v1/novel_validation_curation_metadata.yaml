@@ -313,7 +313,7 @@ records:
       origin: source_anchor_first_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: approved
+      lifecycle: split_frozen
 
   - question_id: n908
     curation_family_id: vf008
@@ -368,7 +368,7 @@ records:
       origin: source_anchor_first_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: approved
+      lifecycle: split_frozen
 
   - question_id: n909
     curation_family_id: vf009
@@ -422,7 +422,7 @@ records:
       origin: source_anchor_first_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: approved
+      lifecycle: split_frozen
 
   - question_id: n910
     curation_family_id: vf010
@@ -475,7 +475,7 @@ records:
       origin: source_anchor_first_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: approved
+      lifecycle: split_frozen
 
   - question_id: n911
     curation_family_id: vf011
@@ -528,7 +528,7 @@ records:
       origin: source_anchor_first_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: approved
+      lifecycle: split_frozen
 
   - question_id: n912
     curation_family_id: vf012
@@ -580,7 +580,7 @@ records:
       origin: source_anchor_first_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: approved
+      lifecycle: split_frozen
 
   - question_id: n913
     curation_family_id: vf013
@@ -633,7 +633,7 @@ records:
       origin: source_anchor_first_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: draft
+      lifecycle: split_frozen
 
   - question_id: n914
     curation_family_id: vf014
@@ -688,7 +688,7 @@ records:
       origin: source_anchor_first_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: draft
+      lifecycle: split_frozen
 
   - question_id: n915
     curation_family_id: vf015
@@ -744,4 +744,4 @@ records:
       origin: source_anchor_first_llm_draft
       agent_outcome_seen_before_freeze: false
       evidence_selected_from_agent_output: false
-      lifecycle: draft
+      lifecycle: split_frozen

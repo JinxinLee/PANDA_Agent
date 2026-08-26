@@ -1,14 +1,14 @@
 # N3-E2 Validation Expansion Review Package
 
-Status: `EXPANSION2_CURATED / HUMAN_REVIEW_PENDING`
+Status: `EXPANSION2_HUMAN_APPROVED / SPLIT_FROZEN`
 
 Dataset: `novel-v1-validation-0.2.0`
 
 Starting approved base: 12 questions / 12 independent families
 
-New drafts: 3 questions / 3 independent families
+New candidates: 3 questions / 3 independent families
 
-Human decisions on N3-E2 candidates: 3 `PENDING`
+Human decisions on N3-E2 candidates: 3 `ACCEPT`
 
 Codex recommendations are advisory. The candidates were annotated from locked
 sources without inspecting novel-dev, validation, C8, or holdout outcomes.
@@ -55,7 +55,7 @@ sources without inspecting novel-dev, validation, C8, or holdout outcomes.
 - **Uncertainty:** none material. The QA helper inventory on the same page is
   deliberately excluded because it is not needed to answer this API question.
 - **Codex recommendation:** `RECOMMEND_ACCEPT`.
-- **Human decision:** `PENDING`.
+- **Human decision:** `ACCEPT` by Li at `2026-08-26T17:13+02:00`.
 
 ## n914 / vf014 - Runtime-parameter registration and access flow
 
@@ -107,7 +107,7 @@ sources without inspecting novel-dev, validation, C8, or holdout outcomes.
   comment, so only executable factory behavior is annotated; the comment is
   not an answer obligation.
 - **Codex recommendation:** `RECOMMEND_ACCEPT`.
-- **Human decision:** `PENDING`.
+- **Human decision:** `ACCEPT` by Li at `2026-08-26T17:13+02:00`.
 
 ## n915 / vf015 - Dalitz interference and projection diagnostics
 
@@ -158,7 +158,7 @@ sources without inspecting novel-dev, validation, C8, or holdout outcomes.
 - **Uncertainty:** the tool is specialized. Classification therefore remains
   representative-but-rare rather than a representative-core claim.
 - **Codex recommendation:** `RECOMMEND_ACCEPT`.
-- **Human decision:** `PENDING`.
+- **Human decision:** `ACCEPT` by Li at `2026-08-26T17:13+02:00`.
 
 ## Discarded pre-ID ideas
 
@@ -179,9 +179,28 @@ sources without inspecting novel-dev, validation, C8, or holdout outcomes.
 - **Forced non-answered, exploratory, or cross-repository record:** discarded
   because no natural locked-source need required those classifications.
 
-## Requested human review
+## Authoritative human review
 
-For n913-n915, choose `ACCEPT`, `REVISE`, or `REJECT`. An `ACCEPT` decision
-must cover the question, critical evidence, answer points, Gold comparison,
-strict family isolation, representativeness, and sidecar metadata. Any revised
-record remains draft until explicit re-review.
+Reviewer: `Li`
+Reviewed commit: `f100f357e83b56e2799c2bb5bf89f2073b1c5872`
+Reviewed at: `2026-08-26T17:13+02:00`
+
+Authoritative decisions:
+
+- n913: `ACCEPT`
+- n914: `ACCEPT`
+- n915: `ACCEPT`
+
+Totals: `3 ACCEPT / 0 REVISE / 0 REJECT`.
+
+The accepted semantic records and their evidence contracts were retained
+unchanged. Their dataset review status is now `approved`, reviewer is `Li`,
+and the sidecar lifecycle is `approved` at review time. N3-VF then finalized
+these three records as `split_frozen`; this review does not itself authorize
+measurement.
+
+## Review boundary
+
+The authoritative decision covers each question, critical evidence, answer
+points, Gold comparison, strict family isolation, representativeness, and
+sidecar metadata. No revised or rejected record remains in this batch.

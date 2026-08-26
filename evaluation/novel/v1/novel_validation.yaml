@@ -749,9 +749,9 @@ questions:
     concept_scopes: {}
     cluster_id: vf013
     challenge_tags: []
-    review_status: draft
-    reviewer: null
-    reviewed_at: null
+    review_status: approved
+    reviewer: Li
+    reviewed_at: 2026-08-26T17:13+02:00
 
   - id: n914
     split: novel_validation
@@ -829,9 +829,9 @@ questions:
     concept_scopes: {}
     cluster_id: vf014
     challenge_tags: []
-    review_status: draft
-    reviewer: null
-    reviewed_at: null
+    review_status: approved
+    reviewer: Li
+    reviewed_at: 2026-08-26T17:13+02:00
 
   - id: n915
     split: novel_validation
@@ -889,6 +889,6 @@ questions:
     concept_scopes: {}
     cluster_id: vf015
     challenge_tags: []
-    review_status: draft
-    reviewer: null
-    reviewed_at: null
+    review_status: approved
+    reviewer: Li
+    reviewed_at: 2026-08-26T17:13+02:00

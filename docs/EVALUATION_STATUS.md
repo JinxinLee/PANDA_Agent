@@ -161,6 +161,49 @@ When records conflict, use the single section explicitly marked **Current author
   `C8-A2 = NEXT_ELIGIBLE / NOT_STARTED`.
 - Next task: human review of the N3-E2 candidates.
 
+## N3-VF full validation finalization and split freeze — 2026-08-26
+
+- **Current authoritative N3 state:** `N3: PASS / COMPLETE`; the full
+  `novel_validation` split is `COMPLETE / SPLIT_FROZEN` under dataset
+  `0.2.0`, benchmark `novel-v1-validation-0.2.0`, identity
+  `novel-v1-validation-expansion`, and `release_eligible: false`.
+- **Final counts:** 15 loaded questions, 15 independent families, 15
+  human-approved, 15 split_frozen, 0 revise, 0 rejected, and 0 pending.
+  The final split is n901-n915 in families vf001-vf015; no n916/vf016 was
+  created.
+- **N3-E2 human review:** Li reviewed commit
+  `f100f357e83b56e2799c2bb5bf89f2073b1c5872` at
+  `2026-08-26T17:13+02:00` and accepted n913, n914, and n915 (3 ACCEPT / 0
+  REVISE / 0 REJECT). This review was recorded before the final split-freeze
+  transition.
+- **Freeze transition:** before N3-VF: 15 loaded / 12 approved / 3 pending /
+  6 frozen; after final human review: 15 approved / 0 pending / 6 frozen;
+  after freeze: 15 approved / 15 frozen / 0 pending. Historical pilot review,
+  pilot re-review, and N3-E review timestamps remain preserved.
+- **Semantic immutability:** n901-n915 had zero semantic changes during
+  N3-VF. n901-n906 also have zero review-metadata changes; n907-n912 retain
+  their `2026-08-26T15:36+02:00` review time.
+- The approximately-15 N0 target was achieved as a quality target, not a
+  quota. The final three candidates were independently supported and no
+  padding, status manufacturing, exploratory manufacturing, or
+  cross-repository manufacturing was used. Coverage counts are structural,
+  not empirical user-frequency estimates.
+- Frozen `novel_dev` remains `COMPLETE / SPLIT_FROZEN`: 28 loaded, 28
+  approved, 28 split_frozen, semantic changes 0. `novel_holdout` remains
+  `NOT CREATED / EXTERNAL`.
+- Static curation only. Validation measurement: `NOT RUN / NOT AUTHORIZED`;
+  novel-dev measurement: `NOT RUN`. PANDA retrieval, QA, judge, Vertex,
+  embeddings, Qdrant, SQL retrieval, reindexing, and evaluation tiers were
+  not run. Novel-dev, validation, C8, and holdout outcomes were not inspected
+  or used, and Agent-selected evidence was not used.
+- C8 was preserved without source, test, artifact, or lifecycle changes. The
+  current lifecycle remains `C8-A1R1 = PASS`,
+  `C8-A1 = PASS_AFTER_CONTRACT_FIDELITY_REPAIR`, and
+  `C8-A2 = NEXT_ELIGIBLE / NOT_STARTED`.
+- Final artifact: `evaluation/novel/v1/N3_FULL_VALIDATION_FINALIZATION_REPORT.md`.
+  N3 curation is closed; the next eligible roadmap task is C8-A2, which is
+  not started here.
+
 ## C8-A0 targeted-retrieval boundary inventory — 2026-08-24
 
 - C8 status: `ACTIVE`; `C8-A0 = PASS` (artifact `evaluation/baselines/manifests/phase_c_c8_a0_targeted_retrieval_boundary_inventory_v1.json`; expected source HEAD `3e40dcace0d5ce30c6b9598f58c70f71b992b918` with zero src/configs delta to the audit branch HEAD; focused static tests `tests/unit/test_c8_a0_targeted_merge_semantics.py` `6/6`).
