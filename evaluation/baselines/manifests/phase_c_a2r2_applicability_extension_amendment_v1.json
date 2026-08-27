@@ -1,0 +1,60 @@
+{
+  "a2r1_result_commit": "5f2b4b78e8cc98b297fcc38f2cdba8491cecf04c",
+  "a2r2_p0_commit": "15d251e482753e83b906b35c77c79866318d8aa2",
+  "a2r2_s0_audit_commit": "dedaef5a8216201781628fbccf28e5823adab513",
+  "amendment_type": "PRE_TREATMENT_OUTCOME_APPLICABILITY_EXTENSION",
+  "artifact_role": "C8_A2R2_PRE_TREATMENT_OUTCOME_APPLICABILITY_EXTENSION_AMENDMENT",
+  "failed_a2_commit": "07594b9b6f2857796115bc9cfe00d3426676084b",
+  "original_frozen_preregistration": "evaluation/baselines/manifests/phase_c_c8_a2_global_treatment_preregistration_v1.json",
+  "pre_treatment_outcome_boundary": {
+    "A3_TREATMENT_COMPARISON": 0,
+    "GOLD_EVALUATIONS": 0,
+    "REAL_G1_EXECUTIONS": 0,
+    "REAL_GLOBAL_RERANKER_CALLS": 0,
+    "decision_timing": "AFTER_APPLICABILITY_FREQUENCY_OBSERVATION_BEFORE_TREATMENT_EFFECT_OBSERVATION"
+  },
+  "rationale": [
+    "The original 24-case cohort yielded only 4 genuine targeted cases.",
+    "The minimum treatment count of 6 remains unchanged.",
+    "The extension source population was determined independently by the completed split-role audit.",
+    "The extension uses only remaining development-visible dev cases.",
+    "Existing targeted-case characteristics were not used to select or order extension cases.",
+    "No G1 treatment result had been observed when the amendment was defined."
+  ],
+  "safe_extension_projection": "evaluation/baselines/manifests/phase_c_c8_a2r2_execution_projection_extension_v1.json",
+  "schema_version": "c8-a2r2-applicability-extension-amendment-v1",
+  "scientific_fields": {
+    "acceptance_split_used_for_extension": false,
+    "additional_complete_targeted_needed": 2,
+    "amendment_type": "PRE_TREATMENT_OUTCOME_APPLICABILITY_EXTENSION",
+    "extension_order": "exact committed projection order",
+    "extension_population": "exact committed remaining-dev safe projection",
+    "extension_population_size": 64,
+    "extension_population_source": "evaluation/baselines/manifests/phase_c_c8_a2r2_execution_projection_extension_v1.json",
+    "extension_population_split": "dev",
+    "g1_identity": "C8_GLOBAL_BEST_RANK_RRF_V1",
+    "g1_s0_metrics_gates_changed": false,
+    "maximum_extension_cases_screened": 64,
+    "maximum_total_historical_screening_exposure": 88,
+    "original_24_cases_rerun": false,
+    "original_complete_targeted_count": 4,
+    "original_screened_count": 24,
+    "required_total_complete_targeted_count": 6,
+    "s0_identity": "C8_CURRENT_APPEND_V1",
+    "stop_rule": "stop immediately once 2 NEW COMPLETE targeted cases are obtained",
+    "targeted_characteristics_used_for_extension_selection": false,
+    "treatment_outcome_observed_before_amendment": false,
+    "treatment_semantics_changed": false
+  },
+  "source_head_at_amendment": "15d251e482753e83b906b35c77c79866318d8aa2",
+  "source_projection_summary": {
+    "artifact_role": "C8_A2R2_SANITIZED_EXECUTION_PROJECTION_EXTENSION",
+    "extension_count": 64,
+    "first_case_id": "g004",
+    "last_case_id": "g116",
+    "split_role_population_outcome": "DEV_ONLY_EXTENSION_SUPPORTED"
+  },
+  "split_role_audit": "evaluation/baselines/manifests/phase_c_c8_a2r2_split_role_audit_v1.json",
+  "task": "C8-A2R2",
+  "written_before_live_start": true
+}
