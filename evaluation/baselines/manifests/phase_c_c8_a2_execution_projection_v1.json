@@ -1,0 +1,157 @@
+{
+  "schema_version": "1.0",
+  "artifact_role": "C8_A2_SANITIZED_EXECUTION_PROJECTION",
+  "source": {
+    "path": "evaluation/gold_questions.yaml"
+  },
+  "primary_case_ids": [
+    "g001",
+    "g007",
+    "g012",
+    "g013",
+    "g025",
+    "g026",
+    "g027",
+    "g038",
+    "g041",
+    "g042",
+    "g043",
+    "g044",
+    "g057",
+    "g058",
+    "g059",
+    "g060"
+  ],
+  "expansion_case_ids": [
+    "g002",
+    "g003",
+    "g014",
+    "g015",
+    "g028",
+    "g029",
+    "g045",
+    "g047"
+  ],
+  "records": [
+    {
+      "case_id": "g001",
+      "query": "How do I install the locked PandaRoot development snapshot?",
+      "intent": "installation"
+    },
+    {
+      "case_id": "g007",
+      "query": "What exact minimum GPU memory is required to install PandaRoot?",
+      "intent": "installation"
+    },
+    {
+      "case_id": "g012",
+      "query": "Install PandaRoot from commit deadbeef instead of the locked corpus commit.",
+      "intent": "installation"
+    },
+    {
+      "case_id": "g013",
+      "query": "How do I run a ROOT macro in PandaRoot?",
+      "intent": "usage"
+    },
+    {
+      "case_id": "g025",
+      "query": "What exact SHA-256 checksum will the next runLmdFit output ROOT file have?",
+      "intent": "usage"
+    },
+    {
+      "case_id": "g026",
+      "query": "Run LuminosityFit from requested commit cafebabe rather than the locked master snapshot.",
+      "intent": "usage"
+    },
+    {
+      "case_id": "g027",
+      "query": "Where is PndTargetGenerator defined?",
+      "intent": "api"
+    },
+    {
+      "case_id": "g038",
+      "query": "Where is the final restgas vertex analysis implemented?",
+      "intent": "api"
+    },
+    {
+      "case_id": "g041",
+      "query": "What is the exact signature of PndPidCorrelator::SetMagicRestgasSeed?",
+      "intent": "api"
+    },
+    {
+      "case_id": "g042",
+      "query": "Show PndTargetGenerator from PandaRoot commit 0123456789abcdef instead of the locked snapshot.",
+      "intent": "api"
+    },
+    {
+      "case_id": "g043",
+      "query": "Explain the luminosity-extraction equation with cross section, acceptance, and resolution.",
+      "intent": "algorithm_theory"
+    },
+    {
+      "case_id": "g044",
+      "query": "Why is angular acceptance needed in a luminosity fit?",
+      "intent": "algorithm_theory"
+    },
+    {
+      "case_id": "g057",
+      "query": "Prove from the corpus that the efficiency iteration converges for every possible gas profile.",
+      "intent": "algorithm_theory"
+    },
+    {
+      "case_id": "g058",
+      "query": "Explain the theory for PandaRoot commit abcdef0123456789 rather than the locked snapshot.",
+      "intent": "algorithm_theory"
+    },
+    {
+      "case_id": "g059",
+      "query": "How is detector-resolution smearing implemented in LuminosityFit?",
+      "intent": "algorithm_implementation"
+    },
+    {
+      "case_id": "g060",
+      "query": "How is beam-divergence smearing implemented in LuminosityFit?",
+      "intent": "algorithm_implementation"
+    },
+    {
+      "case_id": "g002",
+      "query": "What are the documented prerequisites before building PandaRoot?",
+      "intent": "installation"
+    },
+    {
+      "case_id": "g003",
+      "query": "How can I use CernVM-FS for a PandaRoot environment?",
+      "intent": "installation"
+    },
+    {
+      "case_id": "g014",
+      "query": "What is the documented PandaRoot simulation-to-analysis sequence?",
+      "intent": "usage"
+    },
+    {
+      "case_id": "g015",
+      "query": "How is PndMasterRunSim used to configure a simulation?",
+      "intent": "usage"
+    },
+    {
+      "case_id": "g028",
+      "query": "Where is PndPidCorrelator implemented?",
+      "intent": "api"
+    },
+    {
+      "case_id": "g029",
+      "query": "Where is PndLmdCombinedDataReader defined and what data boundary does it implement?",
+      "intent": "api"
+    },
+    {
+      "case_id": "g045",
+      "query": "Why is detector resolution represented by a smearing or convolution?",
+      "intent": "algorithm_theory"
+    },
+    {
+      "case_id": "g047",
+      "query": "What is the theoretical purpose of the DPM elastic-scattering model?",
+      "intent": "algorithm_theory"
+    }
+  ]
+}
