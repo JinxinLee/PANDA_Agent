@@ -1,0 +1,405 @@
+{
+  "schema_version": "1.0",
+  "artifact_role": "C8_A2R2_SANITIZED_EXECUTION_PROJECTION_EXTENSION",
+  "split_role_audit": {
+    "path": "evaluation/baselines/manifests/phase_c_c8_a2r2_split_role_audit_v1.json",
+    "commit": "dedaef5a8216201781628fbccf28e5823adab513",
+    "population_outcome": "DEV_ONLY_EXTENSION_SUPPORTED"
+  },
+  "source": {
+    "path": "evaluation/gold_questions.yaml",
+    "authorized_split": "dev"
+  },
+  "existing_targeted_complete_count": 4,
+  "required_total_targeted_complete_count": 6,
+  "additional_targeted_complete_needed": 2,
+  "extension_case_ids": [
+    "g004",
+    "g005",
+    "g006",
+    "g008",
+    "g016",
+    "g017",
+    "g018",
+    "g019",
+    "g020",
+    "g021",
+    "g030",
+    "g031",
+    "g032",
+    "g033",
+    "g034",
+    "g035",
+    "g036",
+    "g037",
+    "g046",
+    "g048",
+    "g049",
+    "g050",
+    "g051",
+    "g052",
+    "g053",
+    "g061",
+    "g062",
+    "g063",
+    "g064",
+    "g065",
+    "g066",
+    "g067",
+    "g068",
+    "g069",
+    "g070",
+    "g071",
+    "g079",
+    "g080",
+    "g081",
+    "g082",
+    "g083",
+    "g084",
+    "g085",
+    "g086",
+    "g087",
+    "g088",
+    "g089",
+    "g090",
+    "g097",
+    "g098",
+    "g099",
+    "g100",
+    "g101",
+    "g102",
+    "g103",
+    "g104",
+    "g109",
+    "g110",
+    "g111",
+    "g112",
+    "g113",
+    "g114",
+    "g115",
+    "g116"
+  ],
+  "extension_count": 64,
+  "records": [
+    {
+      "case_id": "g004",
+      "query": "How do I start PandaRoot with its documented Docker containers?",
+      "intent": "installation"
+    },
+    {
+      "case_id": "g005",
+      "query": "How is a PandaRoot developer environment used inside Docker?",
+      "intent": "installation"
+    },
+    {
+      "case_id": "g006",
+      "query": "Which setup step makes PandaRoot commands available in a shell?",
+      "intent": "installation"
+    },
+    {
+      "case_id": "g008",
+      "query": "How can I verify that the PandaRoot environment is ready before running a macro?",
+      "intent": "installation"
+    },
+    {
+      "case_id": "g016",
+      "query": "How do I select a DPM event generator in PandaRoot?",
+      "intent": "usage"
+    },
+    {
+      "case_id": "g017",
+      "query": "How should createLmdFitData be invoked and what categories can it create?",
+      "intent": "usage"
+    },
+    {
+      "case_id": "g018",
+      "query": "How do I run a luminosity fit after preparing fit data?",
+      "intent": "usage"
+    },
+    {
+      "case_id": "g019",
+      "query": "How do I extract luminosity values from completed fit results?",
+      "intent": "usage"
+    },
+    {
+      "case_id": "g020",
+      "query": "How is the restgas two-pass reconstruction workflow run?",
+      "intent": "usage"
+    },
+    {
+      "case_id": "g021",
+      "query": "How is restgas_profile supplied to distributed-target simulation?",
+      "intent": "usage"
+    },
+    {
+      "case_id": "g030",
+      "query": "Which class represents angular acceptance in LuminosityFit?",
+      "intent": "api"
+    },
+    {
+      "case_id": "g031",
+      "query": "Where does PndLmdModelFactory assemble the fit model?",
+      "intent": "api"
+    },
+    {
+      "case_id": "g032",
+      "query": "Which source implements the 1D DPM angular model?",
+      "intent": "api"
+    },
+    {
+      "case_id": "g033",
+      "query": "Which source implements the 2D DPM angular model?",
+      "intent": "api"
+    },
+    {
+      "case_id": "g034",
+      "query": "Where is detector-resolution convolution implemented in LuminosityFit?",
+      "intent": "api"
+    },
+    {
+      "case_id": "g035",
+      "query": "Where is beam-divergence smearing implemented?",
+      "intent": "api"
+    },
+    {
+      "case_id": "g036",
+      "query": "Which macro produces event_poca?",
+      "intent": "api"
+    },
+    {
+      "case_id": "g037",
+      "query": "Which macro consumes POCA_VERTEX_FILE for the second pass?",
+      "intent": "api"
+    },
+    {
+      "case_id": "g046",
+      "query": "What role does beam divergence play in the luminosity model?",
+      "intent": "algorithm_theory"
+    },
+    {
+      "case_id": "g048",
+      "query": "Why are LMD tracks propagated back toward an interaction point?",
+      "intent": "algorithm_theory"
+    },
+    {
+      "case_id": "g049",
+      "query": "Why does the restgas method use an event-by-event POCA?",
+      "intent": "algorithm_theory"
+    },
+    {
+      "case_id": "g050",
+      "query": "Why is restgas longitudinal reconstruction efficiency profile dependent?",
+      "intent": "algorithm_theory"
+    },
+    {
+      "case_id": "g051",
+      "query": "How does point-like angular acceptance differ from restgas effective acceptance?",
+      "intent": "algorithm_theory"
+    },
+    {
+      "case_id": "g052",
+      "query": "Why does a reconstructed restgas profile feed back into effective acceptance?",
+      "intent": "algorithm_theory"
+    },
+    {
+      "case_id": "g053",
+      "query": "What detector property makes HV-MAPS relevant for longitudinal vertex resolution?",
+      "intent": "algorithm_theory"
+    },
+    {
+      "case_id": "g061",
+      "query": "LMD 轨迹如何回传到 interaction point？",
+      "intent": "algorithm_implementation"
+    },
+    {
+      "case_id": "g062",
+      "query": "Target Spectrometer 轨迹如何回传到 event POCA？",
+      "intent": "algorithm_implementation"
+    },
+    {
+      "case_id": "g063",
+      "query": "Restgas effective acceptance 在代码中如何实现？",
+      "intent": "algorithm_implementation"
+    },
+    {
+      "case_id": "g064",
+      "query": "PndLmdModelFactory 如何组合 DPM、acceptance 和 resolution？",
+      "intent": "algorithm_implementation"
+    },
+    {
+      "case_id": "g065",
+      "query": "PndLmdDataReader 如何形成 accepted/generated angular efficiency？",
+      "intent": "algorithm_implementation"
+    },
+    {
+      "case_id": "g066",
+      "query": "DPM 1D 与 2D angular model 分别在哪里实现？",
+      "intent": "algorithm_implementation"
+    },
+    {
+      "case_id": "g067",
+      "query": "Restgas longitudinal efficiency correction 如何实现？",
+      "intent": "algorithm_implementation"
+    },
+    {
+      "case_id": "g068",
+      "query": "displaced tracking 中 Apollonius task 与 skew-straw pz finder 如何配合？",
+      "intent": "algorithm_implementation"
+    },
+    {
+      "case_id": "g069",
+      "query": "PndTargetGenerator 如何用于分布式 restgas target？",
+      "intent": "algorithm_implementation"
+    },
+    {
+      "case_id": "g070",
+      "query": "event_poca 是如何写出并按事件重新读入的？",
+      "intent": "algorithm_implementation"
+    },
+    {
+      "case_id": "g071",
+      "query": "最终 vertex fit 与原始 POCA pass 的实现边界是什么？",
+      "intent": "algorithm_implementation"
+    },
+    {
+      "case_id": "g079",
+      "query": "追踪 Lumi_TrksQA 到 LuminosityFit 最终 luminosity result。",
+      "intent": "data_flow"
+    },
+    {
+      "case_id": "g080",
+      "query": "追踪 restgas_profile 到 corrected rho(z)。",
+      "intent": "data_flow"
+    },
+    {
+      "case_id": "g081",
+      "query": "谁产生 event_poca，谁消费它？",
+      "intent": "data_flow"
+    },
+    {
+      "case_id": "g082",
+      "query": "追踪 *_pid.root 到 *_pid_final.root。",
+      "intent": "data_flow"
+    },
+    {
+      "case_id": "g083",
+      "query": "追踪 *_pid_final.root 到最终 pvz 分布。",
+      "intent": "data_flow"
+    },
+    {
+      "case_id": "g084",
+      "query": "追踪 generated z profile 到 epsilon_reco(z)。",
+      "intent": "data_flow"
+    },
+    {
+      "case_id": "g085",
+      "query": "追踪 reconstructed rho(z) 到 restgas effective acceptance。",
+      "intent": "data_flow"
+    },
+    {
+      "case_id": "g086",
+      "query": "createLmdFitData 的 a/e/r/v 数据流分别是什么？",
+      "intent": "data_flow"
+    },
+    {
+      "case_id": "g087",
+      "query": "PndLmdTrackQ 如何进入 PndLmdCombinedDataReader？",
+      "intent": "data_flow"
+    },
+    {
+      "case_id": "g088",
+      "query": "PndLmdAcceptance 如何进入 PndLmdModelFactory？",
+      "intent": "data_flow"
+    },
+    {
+      "case_id": "g089",
+      "query": "PndMasterRunSim 与 PndTargetGenerator 的数据流关系是什么？",
+      "intent": "data_flow"
+    },
+    {
+      "case_id": "g090",
+      "query": "两次 PID 之间的 event ID 对齐为什么重要？",
+      "intent": "data_flow"
+    },
+    {
+      "case_id": "g097",
+      "query": "LuminosityFit 的 model layer 由哪些核心模块组成？",
+      "intent": "module_structure"
+    },
+    {
+      "case_id": "g098",
+      "query": "PandaRoot 与 LuminosityFit 的依赖边界在哪里？",
+      "intent": "module_structure"
+    },
+    {
+      "case_id": "g099",
+      "query": "RestgasDetermination 如何扩展 PandaRoot？",
+      "intent": "module_structure"
+    },
+    {
+      "case_id": "g100",
+      "query": "macro/target 的模块如何按 workflow 分组？",
+      "intent": "module_structure"
+    },
+    {
+      "case_id": "g101",
+      "query": "Sphinx documentation 在知识架构中负责什么？",
+      "intent": "module_structure"
+    },
+    {
+      "case_id": "g102",
+      "query": "PndLmdModelFactory 与 data objects 的结构关系是什么？",
+      "intent": "module_structure"
+    },
+    {
+      "case_id": "g103",
+      "query": "off-IP tracking 由哪些结构化模块支持？",
+      "intent": "module_structure"
+    },
+    {
+      "case_id": "g104",
+      "query": "LMD reconstruction 模块如何连接到 LMD QA output？",
+      "intent": "module_structure"
+    },
+    {
+      "case_id": "g109",
+      "query": "Why can Sphinx 2023-dev docs disagree with RestgasDetermination/oct19-derived code?",
+      "intent": "troubleshooting"
+    },
+    {
+      "case_id": "g110",
+      "query": "event_poca is missing: what should I inspect first?",
+      "intent": "troubleshooting"
+    },
+    {
+      "case_id": "g111",
+      "query": "POCA_VERTEX_FILE is set but second-pass PID does not use it; what should I check?",
+      "intent": "troubleshooting"
+    },
+    {
+      "case_id": "g112",
+      "query": "createLmdFitData returns no acceptance: which code and input assumptions should I inspect?",
+      "intent": "troubleshooting"
+    },
+    {
+      "case_id": "g113",
+      "query": "runLmdFit cannot find prepared data; how do I trace the mismatch?",
+      "intent": "troubleshooting"
+    },
+    {
+      "case_id": "g114",
+      "query": "Why might restgas efficiency correction have empty bins?",
+      "intent": "troubleshooting"
+    },
+    {
+      "case_id": "g115",
+      "query": "Why might LMD angular acceptance be confused with pvz efficiency?",
+      "intent": "troubleshooting"
+    },
+    {
+      "case_id": "g116",
+      "query": "Why can a class name match the query but still be the wrong implementation?",
+      "intent": "troubleshooting"
+    }
+  ]
+}
