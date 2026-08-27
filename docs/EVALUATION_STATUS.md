@@ -11,7 +11,15 @@ When records conflict, use the single section explicitly marked **Current author
 
 # Current authoritative state — 2026-08-27
 
-## C8-A2 current authoritative state — 2026-08-27
+## C8-A2-C0 current authoritative state — 2026-08-27
+
+- `C8 = DEFERRED / INSUFFICIENT_NATURAL_TARGETED_APPLICABILITY_FOR_PREREGISTERED_A3`; `C8-A3 = CLOSED_NOT_ELIGIBLE / PREREGISTERED_MINIMUM_TREATMENT_COHORT_UNAVAILABLE`. This is a static natural-applicability closeout after the preserved A2/A2R1/A2R2 lineage; it performs no treatment-effect evaluation.
+- The complete exposed dev population is `80/80`: `16` prior-screened dev cases plus `64` remaining dev extension cases. Exactly `1` dev case (`g007`) entered the current targeted-retrieval branch, so the observed targeted applicability is `1/80 = 0.0125 = 1.25%`; `79/80 dev cases did not enter the CURRENT targeted-retrieval branch`. This is branch-entry accounting, not a claim that those 79 cases were sufficient.
+- The existing COMPLETE targeted capture population is `4` cases (`g007`, `g025`, `g041`, `g057`): `1` dev case and `3` retired exposed acceptance cases. The preregistered minimum is `6`, so the minimum is unmet; the authorized dev population is exhausted and `A2R3_ALLOWED = false`.
+- `G1_REAL_CASE_EVALUATION_STATUS = NOT_EXECUTED`, `C8_TREATMENT_EFFECT_STATUS = UNEVALUATED`, and `G1_IDENTITY = C8_GLOBAL_BEST_RANK_RRF_V1`. The architecture finding remains valid (`ARCHITECTURAL_PROBLEM_IDENTIFIED = true`), but `TREATMENT_BENEFIT_DEMONSTRATED = false`; C8 is not algorithmically rejected.
+- `C8_PRODUCTION_PROMOTION = DEFERRED`, `G1_PRODUCTION_ACTIVATION = false`, `GLOBAL_RECOMPUTATION_WIRED_TO_PRODUCTION = false`, and `PRODUCTION_BEHAVIOR_CHANGED = false`. The closeout artifact is `evaluation/baselines/manifests/phase_c_c8_a2_applicability_closeout_v1.json`.
+
+## C8-A2/A2R1/A2R2 historical execution lineage — 2026-08-27
 
 - `C8-A2 = INCONCLUSIVE / PRE_OUTCOME_VERTEX_ADC_INVOCATION_FAILURE`; `C8-A2R1 = INCONCLUSIVE / PREREGISTERED_TARGETED_APPLICABILITY_SHORTFALL`; `C8-A2R2-S0 = PASS`; `C8-A2R2-P0 = PASS`; `C8-A2R2 = INCONCLUSIVE / TARGETED_APPLICABILITY_TOO_SPARSE_AFTER_DEV_EXTENSION`; `C8-A3 = NOT_ELIGIBLE`. The A2R2 applicability extension was defined and executed after applicability-frequency observation but before any treatment-effect observation.
 - The only question-level input was `evaluation/baselines/manifests/phase_c_c8_a2_execution_projection_v1.json`; its 24-record structure was checked without consulting the Gold source. `GOLD_FILE_ACCESSED = false`, `P0_VALIDATOR_EXECUTED = false`, and `PROJECTION_MODIFIED = false`.
@@ -237,6 +245,16 @@ When records conflict, use the single section explicitly marked **Current author
 - The sole authorized A2R2 extension screened `64/64` cases with `0` targeted triggers and `0` new COMPLETE treatment cases. It exhausted the extension with `unexecuted_extension_tail_count=0`, `retries=0`, `replacements=0`, and `recaptures=0`; the verdict is `INCONCLUSIVE / TARGETED_APPLICABILITY_TOO_SPARSE_AFTER_DEV_EXTENSION`. The four immutable A2R1 treatment records remain the only COMPLETE treatment captures (`g007`, `g025`, `g041`, `g057`; S0 parity `4/4`).
 - Because no new treatment case was found, the new-case capture JSONL is empty and no combined six-case manifest is valid or created. No G1 real execution or global reranker call, QA/verifier/judge call, Gold/Novel evaluation, original-24 rerun, production change, or DB/index write occurred. A3 remains `NOT_ELIGIBLE / NOT_STARTED`.
 - A2R2 artifacts: `evaluation/baselines/manifests/phase_c_a2r2_applicability_extension_amendment_v1.json`, `evaluation/baselines/manifests/phase_c_a2r2_screening_ledger_v1.json`, `evaluation/baselines/replay/phase_c_a2r2_two_pass_capture_v1.jsonl`, `evaluation/baselines/manifests/phase_c_a2r2_two_pass_capture_report_v1.json`, `evaluation/scripts/run_c8_a2r2_extension.py`, and `tests/unit/test_c8_a2r2_extension.py`.
+
+## C8-A2-C0 natural targeted applicability closeout — 2026-08-27
+
+- This closeout is static only. It reads the committed split-role audit, A2R1 capture/report, and A2R2 extension ledger/report; it does not open Gold or Novel files and does not perform Vertex, ADC, preflight, retrieval, G1, QA, verifier, judge, or production work. `live_work = zero` for C8-A2-C0.
+- Natural applicability is exhausted at the authorized dev boundary: `16 + 64 = 80` screened dev cases, `1` targeted (`g007`), `79` non-targeted, and targeted rate `1/80 = 0.0125 = 1.25%`. The A2R2 extension itself screened `64/64`, found `0` new targeted triggers, `0` new COMPLETE targeted captures, and had tail `0`.
+- The four existing COMPLETE targeted captures are `g007`, `g025`, `g041`, and `g057`; only `g007` is dev, while `g025`, `g041`, and `g057` are retired exposed acceptance provenance. They cannot be reused to manufacture a fresh dev extension or satisfy the minimum of `6`.
+- `A2R3_ALLOWED = false`: no remaining authorized dev cases exist, and Novel hunting, challenge/regression recruitment, manual treatment-driven selection, acceptance reuse, or minimum lowering are outside this closeout. No combined six-case manifest is valid.
+- G1 remains unexecuted and treatment effect remains unevaluated. The current targeted merge finding remains an architectural observation (targeted-first evidence append, `evidence_id` deduplication, and truncation without global candidate recomputation); it is not a measured treatment rejection.
+- Runner provenance is `AUTHORIZATION_ONLY`: screening, sufficiency, targeted-trigger semantics, and case order did not change, so no live rerun is required. Production remains unchanged and promotion is deferred.
+- The closeout artifact is the authoritative C8-A2-C0 record: `evaluation/baselines/manifests/phase_c_c8_a2_applicability_closeout_v1.json`.
 
 ## C8-A0 targeted-retrieval boundary inventory — 2026-08-24
 
@@ -769,7 +787,7 @@ The retrieval and QA measurements are unchanged. A3.1 corrects only metric repre
 
 ## Next authorized roadmap task
 
-**N3-E2 curation is complete and awaits human review.** The active validation lineage contains 15 questions in 15 families: 6 frozen pilot records, 6 N3-E records accepted by Li but not frozen, and 3 N3-E2 drafts. Full validation is not complete and no novel evaluation was run or authorized. C8 remains independently `ACTIVE` with `C8-A1 = PASS_AFTER_CONTRACT_FIDELITY_REPAIR` and `C8-A2 = NEXT_ELIGIBLE / NOT_STARTED` (per the current C8 sections above).
+**Novel Dataset Curation remains the independently managed non-C8 roadmap stream; this closeout does not change its status.** C8-A2-C0 is complete, no next C8 task is selected, and C8 remains closed at `DEFERRED / INSUFFICIENT_NATURAL_TARGETED_APPLICABILITY_FOR_PREREGISTERED_A3`. Any C8 reopening must satisfy the recorded broader-independent-dataset or separately justified policy/study condition.
 
 ### Historical pre-N0 roadmap summary
 
