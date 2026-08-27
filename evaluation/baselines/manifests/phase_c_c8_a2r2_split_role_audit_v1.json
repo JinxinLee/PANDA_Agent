@@ -1,0 +1,444 @@
+{
+  "schema_version": "1.0",
+  "artifact_role": "C8_A2R2_SPLIT_ROLE_AUDIT",
+  "task": "C8-A2R2-S0",
+  "a2r1_result_commit": "5f2b4b78e8cc98b297fcc38f2cdba8491cecf04c",
+  "provenance": {
+    "original_a2_preregistration_source_anchor": "5d19a5d18b7f13c163b1d6c03284158a78b88f70",
+    "a2_failed_recovery_execution_commit": "07594b9b6f2857796115bc9cfe00d3426676084b",
+    "a2r1_result_commit": "5f2b4b78e8cc98b297fcc38f2cdba8491cecf04c",
+    "note": "Older artifact naming may be ambiguous; this audit uses explicit field names."
+  },
+  "split_inventory": [
+    {
+      "split": "acceptance",
+      "count": 40
+    },
+    {
+      "split": "dev",
+      "count": 80
+    }
+  ],
+  "prior_screened_case_count": 24,
+  "prior_screened_cases": [
+    {
+      "screening_position": 1,
+      "case_id": "g001",
+      "split": "dev",
+      "intent": "installation"
+    },
+    {
+      "screening_position": 2,
+      "case_id": "g007",
+      "split": "dev",
+      "intent": "installation"
+    },
+    {
+      "screening_position": 3,
+      "case_id": "g012",
+      "split": "acceptance",
+      "intent": "installation"
+    },
+    {
+      "screening_position": 4,
+      "case_id": "g013",
+      "split": "dev",
+      "intent": "usage"
+    },
+    {
+      "screening_position": 5,
+      "case_id": "g025",
+      "split": "acceptance",
+      "intent": "usage"
+    },
+    {
+      "screening_position": 6,
+      "case_id": "g026",
+      "split": "acceptance",
+      "intent": "usage"
+    },
+    {
+      "screening_position": 7,
+      "case_id": "g027",
+      "split": "dev",
+      "intent": "api"
+    },
+    {
+      "screening_position": 8,
+      "case_id": "g038",
+      "split": "acceptance",
+      "intent": "api"
+    },
+    {
+      "screening_position": 9,
+      "case_id": "g041",
+      "split": "acceptance",
+      "intent": "api"
+    },
+    {
+      "screening_position": 10,
+      "case_id": "g042",
+      "split": "acceptance",
+      "intent": "api"
+    },
+    {
+      "screening_position": 11,
+      "case_id": "g043",
+      "split": "dev",
+      "intent": "algorithm_theory"
+    },
+    {
+      "screening_position": 12,
+      "case_id": "g044",
+      "split": "dev",
+      "intent": "algorithm_theory"
+    },
+    {
+      "screening_position": 13,
+      "case_id": "g057",
+      "split": "acceptance",
+      "intent": "algorithm_theory"
+    },
+    {
+      "screening_position": 14,
+      "case_id": "g058",
+      "split": "acceptance",
+      "intent": "algorithm_theory"
+    },
+    {
+      "screening_position": 15,
+      "case_id": "g059",
+      "split": "dev",
+      "intent": "algorithm_implementation"
+    },
+    {
+      "screening_position": 16,
+      "case_id": "g060",
+      "split": "dev",
+      "intent": "algorithm_implementation"
+    },
+    {
+      "screening_position": 17,
+      "case_id": "g002",
+      "split": "dev",
+      "intent": "installation"
+    },
+    {
+      "screening_position": 18,
+      "case_id": "g003",
+      "split": "dev",
+      "intent": "installation"
+    },
+    {
+      "screening_position": 19,
+      "case_id": "g014",
+      "split": "dev",
+      "intent": "usage"
+    },
+    {
+      "screening_position": 20,
+      "case_id": "g015",
+      "split": "dev",
+      "intent": "usage"
+    },
+    {
+      "screening_position": 21,
+      "case_id": "g028",
+      "split": "dev",
+      "intent": "api"
+    },
+    {
+      "screening_position": 22,
+      "case_id": "g029",
+      "split": "dev",
+      "intent": "api"
+    },
+    {
+      "screening_position": 23,
+      "case_id": "g045",
+      "split": "dev",
+      "intent": "algorithm_theory"
+    },
+    {
+      "screening_position": 24,
+      "case_id": "g047",
+      "split": "dev",
+      "intent": "algorithm_theory"
+    }
+  ],
+  "prior_screened_counts_by_split": {
+    "acceptance": 8,
+    "dev": 16
+  },
+  "targeted_case_count": 4,
+  "targeted_cases": [
+    {
+      "case_id": "g007",
+      "split": "dev",
+      "intent": "installation"
+    },
+    {
+      "case_id": "g025",
+      "split": "acceptance",
+      "intent": "usage"
+    },
+    {
+      "case_id": "g041",
+      "split": "acceptance",
+      "intent": "api"
+    },
+    {
+      "case_id": "g057",
+      "split": "acceptance",
+      "intent": "algorithm_theory"
+    }
+  ],
+  "targeted_counts_by_split": {
+    "acceptance": 3,
+    "dev": 1
+  },
+  "exposure_model": {
+    "QUERY_EXPOSED": {
+      "count": 24,
+      "all_prior_screened": true
+    },
+    "TARGETED_RUNTIME_EXPOSED": {
+      "count": 4,
+      "case_ids": [
+        "g007",
+        "g025",
+        "g041",
+        "g057"
+      ]
+    },
+    "GOLD_RELEVANCE_EXPOSED": {
+      "count": 0,
+      "all_prior_screened": false
+    }
+  },
+  "gold_relevance_exposure": false,
+  "dev_inventory": {
+    "total": 80,
+    "already_screened": [
+      "g001",
+      "g002",
+      "g003",
+      "g007",
+      "g013",
+      "g014",
+      "g015",
+      "g027",
+      "g028",
+      "g029",
+      "g043",
+      "g044",
+      "g045",
+      "g047",
+      "g059",
+      "g060"
+    ],
+    "already_screened_count": 16,
+    "remaining": 64,
+    "remaining_case_ids": [
+      "g004",
+      "g005",
+      "g006",
+      "g008",
+      "g016",
+      "g017",
+      "g018",
+      "g019",
+      "g020",
+      "g021",
+      "g030",
+      "g031",
+      "g032",
+      "g033",
+      "g034",
+      "g035",
+      "g036",
+      "g037",
+      "g046",
+      "g048",
+      "g049",
+      "g050",
+      "g051",
+      "g052",
+      "g053",
+      "g061",
+      "g062",
+      "g063",
+      "g064",
+      "g065",
+      "g066",
+      "g067",
+      "g068",
+      "g069",
+      "g070",
+      "g071",
+      "g079",
+      "g080",
+      "g081",
+      "g082",
+      "g083",
+      "g084",
+      "g085",
+      "g086",
+      "g087",
+      "g088",
+      "g089",
+      "g090",
+      "g097",
+      "g098",
+      "g099",
+      "g100",
+      "g101",
+      "g102",
+      "g103",
+      "g104",
+      "g109",
+      "g110",
+      "g111",
+      "g112",
+      "g113",
+      "g114",
+      "g115",
+      "g116"
+    ]
+  },
+  "non_dev_prior_screened_by_split": {
+    "acceptance": [
+      {
+        "screening_position": 3,
+        "case_id": "g012",
+        "split": "acceptance",
+        "intent": "installation"
+      },
+      {
+        "screening_position": 5,
+        "case_id": "g025",
+        "split": "acceptance",
+        "intent": "usage"
+      },
+      {
+        "screening_position": 6,
+        "case_id": "g026",
+        "split": "acceptance",
+        "intent": "usage"
+      },
+      {
+        "screening_position": 8,
+        "case_id": "g038",
+        "split": "acceptance",
+        "intent": "api"
+      },
+      {
+        "screening_position": 9,
+        "case_id": "g041",
+        "split": "acceptance",
+        "intent": "api"
+      },
+      {
+        "screening_position": 10,
+        "case_id": "g042",
+        "split": "acceptance",
+        "intent": "api"
+      },
+      {
+        "screening_position": 13,
+        "case_id": "g057",
+        "split": "acceptance",
+        "intent": "algorithm_theory"
+      },
+      {
+        "screening_position": 14,
+        "case_id": "g058",
+        "split": "acceptance",
+        "intent": "algorithm_theory"
+      }
+    ]
+  },
+  "split_role_policy": [
+    {
+      "split": "dev",
+      "role": "development-visible benchmark population",
+      "development_visibility": "allowed",
+      "reuse_eligibility": "eligible for deterministic repeated development diagnostics, subject to fixed IDs and no question-specific tuning",
+      "protection_status": "not a protected holdout",
+      "authoritative_source_path": "docs/EVALUATION_POLICY.md",
+      "source_section": "§4 Evaluation pyramid / §4 A3 bootstrap default",
+      "uncertainty": "none for development visibility; current Gold source identity must still be recorded per run"
+    },
+    {
+      "split": "acceptance",
+      "role": "historically exposed acceptance/final-candidate validation population",
+      "development_visibility": "not authorized for new applicability-extension selection",
+      "reuse_eligibility": "not eligible as a fresh development or final holdout population after query/runtime exposure",
+      "protection_status": "already exposed; not a pristine protected holdout",
+      "authoritative_source_path": "docs/M6_EVALUATION_RETROSPECTIVE.md",
+      "source_section": "§4 acceptance isolation; acceptance is for frozen-candidate final acceptance and must not drive tuning",
+      "uncertainty": "current source file still names 40 records acceptance, while current v2 policy/state describes the former acceptance split as retired and current v2 as dev/challenge/regression"
+    }
+  ],
+  "policy_conflicts": [
+    {
+      "source_path": "evaluation/gold_questions.yaml",
+      "finding": "safe metadata inventory contains split names acceptance and dev"
+    },
+    {
+      "source_path": "docs/M6_EVALUATION_RETROSPECTIVE.md",
+      "finding": "current policy history describes the old acceptance split as retired and separates development from final acceptance"
+    },
+    {
+      "source_path": "docs/EVALUATION_STATUS.md",
+      "finding": "current status identifies Gold v2.6 and C8 A2/A2R1 state, but does not reconcile the root source split naming"
+    }
+  ],
+  "independence_impact_by_split": {
+    "dev": {
+      "query_exposure": "QUERY_EXPOSED",
+      "targeted_runtime_exposure": "one targeted case is runtime-exposed",
+      "gold_relevance_exposure": "none",
+      "classification": "QUERY_EXPOSED_BUT_LABELS_UNSEEN",
+      "later_use": "permitted for exposed-development applicability diagnostics; not strictly unseen query evidence"
+    },
+    "acceptance": {
+      "query_exposure": "QUERY_EXPOSED",
+      "targeted_runtime_exposure": "three targeted cases are runtime-exposed",
+      "gold_relevance_exposure": "none",
+      "classification": "SHOULD_NOT_BE_USED_AS_FINAL_HOLDOUT",
+      "later_use": "do not extend A2R2 from acceptance; preserve as historical exposure only"
+    }
+  },
+  "future_extension_population_outcome": "DEV_ONLY_EXTENSION_SUPPORTED",
+  "allowed_extension_splits": [
+    "dev"
+  ],
+  "TARGETED_CHARACTERISTICS_USED_FOR_POPULATION_SELECTION": false,
+  "scientific_rules_changed": false,
+  "live_work": {
+    "ANALYZER_CALLS": 0,
+    "RETRIEVAL_CALLS": 0,
+    "TARGETED_RETRIEVAL_CALLS": 0,
+    "EMBEDDING_CALLS": 0,
+    "SPARSE_ENCODING_CALLS": 0,
+    "QDRANT_READS": 0,
+    "SQL_CANDIDATE_READS": 0,
+    "RERANKER_CALLS": 0,
+    "G1_EXECUTIONS": 0,
+    "QA_CALLS": 0,
+    "VERIFIER_CALLS": 0,
+    "JUDGE_CALLS": 0,
+    "DB_INDEX_WRITES": 0
+  },
+  "audit_checks": {
+    "prior_ids_unique": true,
+    "targeted_subset_of_prior": true,
+    "split_counts_sum_to_source_count": true,
+    "prior_counts_sum_to_24": true,
+    "targeted_counts_sum_to_4": true,
+    "dev_partition_complete": true,
+    "dev_partition_intersection_empty": true,
+    "relevance_bearing_gold_serialized": false
+  }
+}
