@@ -1,0 +1,356 @@
+{
+  "a1r1_anchor": "1bc0dc6f8e93f88ab1787400d4417ba463e66685",
+  "a2_p0_anchor": "5d19a5d18b7f13c163b1d6c03284158a78b88f70",
+  "artifact_role": "C8_A2_GLOBAL_TREATMENT_PREREGISTRATION",
+  "cohort": {
+    "expansion_case_ids": [
+      "g002",
+      "g003",
+      "g014",
+      "g015",
+      "g028",
+      "g029",
+      "g045",
+      "g047"
+    ],
+    "maximum_screened": 24,
+    "maximum_treatment_cases": 12,
+    "minimum_targeted_treatment_cases": 6,
+    "primary_case_ids": [
+      "g001",
+      "g007",
+      "g012",
+      "g013",
+      "g025",
+      "g026",
+      "g027",
+      "g038",
+      "g041",
+      "g042",
+      "g043",
+      "g044",
+      "g057",
+      "g058",
+      "g059",
+      "g060"
+    ],
+    "primary_then_expansion": true,
+    "treatment_selection": "first 12 targeted-triggering cases in frozen screening order"
+  },
+  "contract_id": "c8.global_candidate_pool.v1",
+  "g1": {
+    "candidate_identity": "object_id",
+    "channel_rank_rule": "minimum rank observed across INITIAL and TARGETED per object/channel",
+    "final_evidence_limit": 12,
+    "final_plan": "actual TARGETED RetrievalPlan",
+    "global_channel_membership": "union of production channels observed across both passes",
+    "global_reranker_question": "original question",
+    "global_reranker_top_k": 30,
+    "identity": "C8_GLOBAL_BEST_RANK_RRF_V1",
+    "normalization": false,
+    "one_contribution_per_object_channel": true,
+    "origin_bonus": false,
+    "origin_values": [
+      "INITIAL_ONLY",
+      "TARGETED_ONLY",
+      "BOTH"
+    ],
+    "pass_bonus": false,
+    "reranker_identity": "CURRENT reranker and CURRENT RERANK_SYSTEM_PROMPT/model/config",
+    "rrf_k": 60,
+    "selector": "CURRENT_SELECTOR",
+    "stage_p_question": "original question",
+    "weights": {
+      "dense": 1.0,
+      "exact": 2.0,
+      "graph": 0.8,
+      "paper": 1.15,
+      "sparse": 1.0,
+      "workflow": 1.2
+    }
+  },
+  "hard_gates": {
+    "GATE_1": "frozen input identity",
+    "GATE_10": "deterministic fusion/M/P/selector given fixed reranker output",
+    "GATE_11": "no benchmark-specific or case-specific rule",
+    "GATE_12": "A3 implementation matches frozen preregistration",
+    "GATE_2": "zero upstream regeneration in A3",
+    "GATE_3": "A2 S0 replay parity = 100%",
+    "GATE_4": "G1 Final Evidence Recall >= S0",
+    "GATE_5": "zero new critical misses at identity level",
+    "GATE_6": "G1 Targeted Recovery Survival >= S0",
+    "GATE_7": "G1 Initial Relevant Retention >= S0",
+    "GATE_8": "zero new protected/exact losses preserved by S0 where identities are available",
+    "GATE_9": "zero new invalid version, unusable locator, or source-lock violation"
+  },
+  "historical_pre_capture_aborts": [
+    {
+      "attempt": 1,
+      "event": "accidental exposure of expected_status",
+      "live_executions": 0,
+      "preregistration": "none",
+      "relevance_bearing_gold_exposed": false,
+      "scientific_attempt_consumed": false
+    },
+    {
+      "attempt": 2,
+      "event": "faulty multiline text projection exposed relevance-bearing Gold fields",
+      "live_executions": 0,
+      "preregistration": "none",
+      "relevance_bearing_gold_exposed": true,
+      "scientific_attempt_consumed": false,
+      "treatment_execution": 0
+    }
+  ],
+  "isolation": {
+    "db_index_writes": 0,
+    "gold_evaluations": 0,
+    "gold_file_access": false,
+    "gold_relevance_labels_access": false,
+    "judge_calls": 0,
+    "novel_evaluations": 0,
+    "production_behavior_changed": false,
+    "qa_generation_calls": 0,
+    "real_g1_executions": 0,
+    "real_global_reranker_calls": 0,
+    "verifier_calls": 0
+  },
+  "live_capture_authorization": "required_explicit_execute_live",
+  "meaningful_gain_rule": {
+    "development_supported_candidate": "all supported hard gates PASS, at least one primary metric strictly improves, and none regress",
+    "gate_failure": "any non-regression or safety gate fails; CURRENT remains preferred",
+    "maximum_exposed_development_conclusion": "DEVELOPMENT_SUPPORTED_CANDIDATE",
+    "no_meaningful_gain": "all gates PASS but no primary metric improves; CURRENT remains preferred",
+    "production_activation_authorized": false
+  },
+  "primary_metrics": {
+    "P1_FINAL_EVIDENCE_RECALL": {
+      "aggregation": "micro-aggregated numerator and denominator identities",
+      "definition": "Gold evidence groups matched by final Evidence / all Gold evidence groups in the treatment cohort",
+      "identity": "(case_id, Gold group ID)"
+    },
+    "P2_CRITICAL_EVIDENCE_RETENTION": {
+      "aggregation": "micro-aggregated numerator and denominator identities",
+      "definition": "critical Gold groups matched by final Evidence / all critical Gold groups in the treatment cohort",
+      "identity": "(case_id, Gold group ID)"
+    },
+    "P3_TARGETED_RECOVERY_SURVIVAL": {
+      "aggregation": "micro-aggregated numerator and denominator identities",
+      "definition": "Gold groups absent from INITIAL Stage-S Evidence and present in the TARGETED pre-final candidate universe that are retained in final Evidence",
+      "identity": "(case_id, Gold group ID)"
+    },
+    "P4_INITIAL_RELEVANT_RETENTION": {
+      "aggregation": "micro-aggregated numerator and denominator identities",
+      "definition": "Gold groups matched by INITIAL Stage-S Evidence that remain in final Evidence",
+      "identity": "(case_id, Gold group ID)"
+    }
+  },
+  "production_authority": {
+    "fusion": "P0 CURRENT",
+    "reranker_prompt": "CURRENT RERANK_SYSTEM_PROMPT",
+    "selector": "CURRENT_SELECTOR",
+    "targeted_query_semantics": "existing QAAgent._targeted_retrieve; leading whitespace behavior preserved"
+  },
+  "s0": {
+    "dedup_key": "evidence_id",
+    "dict_behavior": "first insertion preserves position; later duplicate assignment replaces value",
+    "final": "first 12 dict values",
+    "identity": "C8_CURRENT_APPEND_V1",
+    "input_order": "targeted selected Evidence then initial selected Evidence",
+    "post_merge_fusion": false,
+    "post_merge_reranker": false,
+    "post_merge_selector": false
+  },
+  "safe_projection": {
+    "artifact_role": "C8_A2_SANITIZED_EXECUTION_PROJECTION",
+    "path": "evaluation\\baselines\\manifests\\phase_c_c8_a2_execution_projection_v1.json",
+    "record_count": 24
+  },
+  "schema_version": "c8-a2-global-treatment-preregistration-v1",
+  "scientific_fields": {
+    "a3_input_identity": {
+      "load_frozen_a2_capture": true,
+      "load_gold_only_in_a3": true,
+      "zero_analyzer": true,
+      "zero_candidate_sql": true,
+      "zero_embeddings": true,
+      "zero_qa_verifier_judge": true,
+      "zero_qdrant": true,
+      "zero_retrieval": true,
+      "zero_sparse_encoding": true,
+      "zero_targeted_retrieval": true,
+      "zero_upstream_regeneration": true
+    },
+    "candidate_identity": {
+      "global": "object_id",
+      "occurrence_output": "evidence_id",
+      "payload_consistency": [
+        "source_id",
+        "source_version_id",
+        "object_type",
+        "locator",
+        "title when both values exist",
+        "text when both values exist",
+        "authority_level when both values exist"
+      ]
+    },
+    "cohort_order": {
+      "expansion_case_ids": [
+        "g002",
+        "g003",
+        "g014",
+        "g015",
+        "g028",
+        "g029",
+        "g045",
+        "g047"
+      ],
+      "maximum_screened": 24,
+      "maximum_treatment_cases": 12,
+      "minimum_targeted_treatment_cases": 6,
+      "primary_case_ids": [
+        "g001",
+        "g007",
+        "g012",
+        "g013",
+        "g025",
+        "g026",
+        "g027",
+        "g038",
+        "g041",
+        "g042",
+        "g043",
+        "g044",
+        "g057",
+        "g058",
+        "g059",
+        "g060"
+      ],
+      "primary_then_expansion": true,
+      "treatment_selection": "first 12 targeted-triggering cases in frozen screening order"
+    },
+    "g1": {
+      "candidate_identity": "object_id",
+      "channel_rank_rule": "minimum rank observed across INITIAL and TARGETED per object/channel",
+      "final_evidence_limit": 12,
+      "final_plan": "actual TARGETED RetrievalPlan",
+      "global_channel_membership": "union of production channels observed across both passes",
+      "global_reranker_question": "original question",
+      "global_reranker_top_k": 30,
+      "identity": "C8_GLOBAL_BEST_RANK_RRF_V1",
+      "normalization": false,
+      "one_contribution_per_object_channel": true,
+      "origin_bonus": false,
+      "origin_values": [
+        "INITIAL_ONLY",
+        "TARGETED_ONLY",
+        "BOTH"
+      ],
+      "pass_bonus": false,
+      "reranker_identity": "CURRENT reranker and CURRENT RERANK_SYSTEM_PROMPT/model/config",
+      "rrf_k": 60,
+      "selector": "CURRENT_SELECTOR",
+      "stage_p_question": "original question",
+      "weights": {
+        "dense": 1.0,
+        "exact": 2.0,
+        "graph": 0.8,
+        "paper": 1.15,
+        "sparse": 1.0,
+        "workflow": 1.2
+      }
+    },
+    "hard_gates": {
+      "GATE_1": "frozen input identity",
+      "GATE_10": "deterministic fusion/M/P/selector given fixed reranker output",
+      "GATE_11": "no benchmark-specific or case-specific rule",
+      "GATE_12": "A3 implementation matches frozen preregistration",
+      "GATE_2": "zero upstream regeneration in A3",
+      "GATE_3": "A2 S0 replay parity = 100%",
+      "GATE_4": "G1 Final Evidence Recall >= S0",
+      "GATE_5": "zero new critical misses at identity level",
+      "GATE_6": "G1 Targeted Recovery Survival >= S0",
+      "GATE_7": "G1 Initial Relevant Retention >= S0",
+      "GATE_8": "zero new protected/exact losses preserved by S0 where identities are available",
+      "GATE_9": "zero new invalid version, unusable locator, or source-lock violation"
+    },
+    "meaningful_gain_rule": {
+      "development_supported_candidate": "all supported hard gates PASS, at least one primary metric strictly improves, and none regress",
+      "gate_failure": "any non-regression or safety gate fails; CURRENT remains preferred",
+      "maximum_exposed_development_conclusion": "DEVELOPMENT_SUPPORTED_CANDIDATE",
+      "no_meaningful_gain": "all gates PASS but no primary metric improves; CURRENT remains preferred",
+      "production_activation_authorized": false
+    },
+    "primary_metrics": {
+      "P1_FINAL_EVIDENCE_RECALL": {
+        "aggregation": "micro-aggregated numerator and denominator identities",
+        "definition": "Gold evidence groups matched by final Evidence / all Gold evidence groups in the treatment cohort",
+        "identity": "(case_id, Gold group ID)"
+      },
+      "P2_CRITICAL_EVIDENCE_RETENTION": {
+        "aggregation": "micro-aggregated numerator and denominator identities",
+        "definition": "critical Gold groups matched by final Evidence / all critical Gold groups in the treatment cohort",
+        "identity": "(case_id, Gold group ID)"
+      },
+      "P3_TARGETED_RECOVERY_SURVIVAL": {
+        "aggregation": "micro-aggregated numerator and denominator identities",
+        "definition": "Gold groups absent from INITIAL Stage-S Evidence and present in the TARGETED pre-final candidate universe that are retained in final Evidence",
+        "identity": "(case_id, Gold group ID)"
+      },
+      "P4_INITIAL_RELEVANT_RETENTION": {
+        "aggregation": "micro-aggregated numerator and denominator identities",
+        "definition": "Gold groups matched by INITIAL Stage-S Evidence that remain in final Evidence",
+        "identity": "(case_id, Gold group ID)"
+      }
+    },
+    "s0": {
+      "dedup_key": "evidence_id",
+      "dict_behavior": "first insertion preserves position; later duplicate assignment replaces value",
+      "final": "first 12 dict values",
+      "identity": "C8_CURRENT_APPEND_V1",
+      "input_order": "targeted selected Evidence then initial selected Evidence",
+      "post_merge_fusion": false,
+      "post_merge_reranker": false,
+      "post_merge_selector": false
+    },
+    "screening_stop_rule": {
+      "after_primary_stop_if_targeted_at_least": 6,
+      "expansion_count": 8,
+      "primary_count": 16,
+      "reorder_cases": false,
+      "replace_cases": false,
+      "resample_cases": false,
+      "retry_cases": false,
+      "stop_when_targeted_count_reaches": 12,
+      "use_expansion_if_after_primary_targeted_below": 6
+    },
+    "secondary_diagnostics": [
+      "unique global candidate count",
+      "INITIAL_ONLY count",
+      "TARGETED_ONLY count",
+      "BOTH count",
+      "final source-id diversity",
+      "final source-type diversity",
+      "targeted-only final selection count",
+      "BOTH final selection count",
+      "initial displacement identities",
+      "targeted recovery-loss identities",
+      "S0/G1 final overlap",
+      "case direction: improved, unchanged, regressed"
+    ]
+  },
+  "screening_stop_rule": {
+    "after_primary_stop_if_targeted_at_least": 6,
+    "expansion_count": 8,
+    "primary_count": 16,
+    "reorder_cases": false,
+    "replace_cases": false,
+    "resample_cases": false,
+    "retry_cases": false,
+    "stop_when_targeted_count_reaches": 12,
+    "use_expansion_if_after_primary_targeted_below": 6
+  },
+  "source_head_at_preregistration": "5d19a5d18b7f13c163b1d6c03284158a78b88f70",
+  "task": "C8-A2",
+  "written_before_live_start": true
+}

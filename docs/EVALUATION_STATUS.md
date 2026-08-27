@@ -9,7 +9,15 @@ When records conflict, use the single section explicitly marked **Current author
 
 ---
 
-# Current authoritative state — 2026-08-26
+# Current authoritative state — 2026-08-27
+
+## C8-A2 current authoritative state — 2026-08-27
+
+- `C8-A2 = INCONCLUSIVE`; `C8-A3 = NOT_ELIGIBLE`. The pre-live preregistration and evaluation-only capture/G1 machinery were frozen before the first live case, but the single authoritative screening/capture run stopped at `g001` when the first production analyzer call could not see Application Default Credentials (`VertexCallError`, `gemini-3.7-flash`, `global`). The run was not retried, recaptured, or extended.
+- The only question-level input was `evaluation/baselines/manifests/phase_c_c8_a2_execution_projection_v1.json`; its 24-record structure was checked without consulting the Gold source. `GOLD_FILE_ACCESSED = false`, `P0_VALIDATOR_EXECUTED = false`, and `PROJECTION_MODIFIED = false`.
+- Screening ended after `1/24` case (`g001`), with `0` targeted triggers and `0` treatment cases; expansion was not used. No initial or targeted COMPLETE snapshot, contract validation, Stage-F/P/S parity, or S0 replay was completed. Historical pre-capture aborts remain tooling-only and consumed no scientific attempt.
+- The live ledger records `analyzer_calls=1`, `initial_retrieval_passes=1`, and `model_generation_calls=1`; dense/sparse/Qdrant/current-reranker/targeted/QA/verifier/judge/index-write counters are `0` where measured, and SQL candidate-read accounting is `NOT_INSTRUMENTED`. `REAL_G1_EXECUTIONS = 0`, `REAL_GLOBAL_RERANKER_CALLS = 0`, `GOLD_EVALUATIONS = 0`, and `NOVEL_EVALUATIONS = 0`.
+- The preregistered S0 identity is `C8_CURRENT_APPEND_V1`; the single G1 treatment identity is `C8_GLOBAL_BEST_RANK_RRF_V1`. No treatment outcome or relevance result was observed. Production behavior remains unchanged: `PRODUCTION_BEHAVIOR_CHANGED = false`, `QA_RUNTIME_CHANGED = false`, `RETRIEVER_RUNTIME_CHANGED = false`, `CONFIG_CHANGED = false`, `PRODUCTION_FUSION_CHANGED = false`, and `PRODUCTION_SELECTOR_CHANGED = false`.
 
 ## A3 measured execution provenance
 
@@ -203,6 +211,14 @@ When records conflict, use the single section explicitly marked **Current author
 - Final artifact: `evaluation/novel/v1/N3_FULL_VALIDATION_FINALIZATION_REPORT.md`.
   N3 curation is closed; the next eligible roadmap task is C8-A2, which is
   not started here.
+
+## C8-A2 frozen two-pass capture and global-treatment preregistration — 2026-08-27
+
+- `A2-P0 = PASS` and the C8-A2 preregistration was written before live capture with the frozen cohort/order, screening stop rule, `C8_CURRENT_APPEND_V1` S0 semantics, `C8_GLOBAL_BEST_RANK_RRF_V1` G1 semantics, four future A3 metrics, Gates 1–12, and the meaningful-gain rule. Synthetic capture/G1 preflight passed with zero retrieval/model calls.
+- The sole authoritative live run used only the safe 24-record execution projection. It stopped at screening position 1 (`g001`) during the first analyzer generation call because Application Default Credentials were unavailable to the Vertex client. No retry, replacement, expansion, or second capture run occurred: `screened_count=1`, `targeted_count=0`, `treatment_case_count=0`, `expansion_used=false`.
+- Capture completeness and parity were not established because the first pass did not complete: INITIAL COMPLETE `0/0`, TARGETED COMPLETE `0/0`, contract validation `0`, Stage-F/P/S parity `0/0`, and S0 replay `0/0` (no treatment case). This is not a retrieval-quality result and no G1 relevance result is reported.
+- The partial JSONL and screening ledger preserve the failed first case. Measured live calls are `analyzer_calls=1`, `initial_retrieval_passes=1`, `model_generation_calls=1`; targeted retrieval, embeddings, sparse encoding, Qdrant reads, current reranker, QA generation, verifier, judge, G1, Gold/Novel evaluation, and index writes are `0` where recorded; SQL candidate-read accounting is `NOT_INSTRUMENTED`.
+- Isolation flags remain false for all production changes. `GOLD_FILE_ACCESSED = false`, `GOLD_RELEVANCE_LABELS_ACCESSED = false`, `GOLD_EVIDENCE_GROUPS_ACCESSED = false`, `GOLD_ANSWER_RUBRICS_ACCESSED = false`, `GOLD_EVALUATIONS = 0`, `NOVEL_EVALUATIONS = 0`, `REAL_G1_EXECUTIONS = 0`, and `REAL_GLOBAL_RERANKER_CALLS = 0`. The C8-A2 verdict is `INCONCLUSIVE`; `C8-A3 = NOT_ELIGIBLE`.
 
 ## C8-A0 targeted-retrieval boundary inventory — 2026-08-24
 

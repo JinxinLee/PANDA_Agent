@@ -1,0 +1,139 @@
+{
+  "A2_verdict": "INCONCLUSIVE",
+  "A3_eligibility": "NOT_ELIGIBLE",
+  "CONFIG_CHANGED": false,
+  "DB_INDEX_WRITES": 0,
+  "GOLD_ANSWER_RUBRICS_ACCESSED": false,
+  "GOLD_EVALUATIONS": 0,
+  "GOLD_EVIDENCE_GROUPS_ACCESSED": false,
+  "GOLD_FILE_ACCESSED": false,
+  "GOLD_RELEVANCE_LABELS_ACCESSED": false,
+  "JUDGE_CALLS": 0,
+  "NOVEL_EVALUATIONS": 0,
+  "PRODUCTION_BEHAVIOR_CHANGED": false,
+  "PRODUCTION_FUSION_CHANGED": false,
+  "PRODUCTION_SELECTOR_CHANGED": false,
+  "QA_GENERATION_CALLS": 0,
+  "QA_RUNTIME_CHANGED": false,
+  "REAL_G1_EXECUTIONS": 0,
+  "REAL_GLOBAL_RERANKER_CALLS": 0,
+  "RETRIEVER_RUNTIME_CHANGED": false,
+  "S0_REPLAY_PARITY": {
+    "count": 0,
+    "identity": "C8_CURRENT_APPEND_V1",
+    "mismatch_case_ids": [],
+    "rate": 0.0,
+    "total": 0
+  },
+  "VERIFIER_CALLS": 0,
+  "artifact_role": "C8_A2_TWO_PASS_CAPTURE_REPORT",
+  "both_origin_payload_consistency": "0/0",
+  "call_ledger": {
+    "DB_INDEX_WRITES": 0,
+    "JUDGE_CALLS": 0,
+    "QA_GENERATION_CALLS": 0,
+    "REAL_G1_EXECUTIONS": 0,
+    "REAL_GLOBAL_RERANKER_CALLS": 0,
+    "VERIFIER_CALLS": 0,
+    "analyzer_calls": 1,
+    "current_reranker_calls": 0,
+    "db_index_writes": 0,
+    "dense_embedding_calls": 0,
+    "initial_retrieval_passes": 1,
+    "judge_calls": 0,
+    "model_generation_calls": 1,
+    "qa_generation_calls": 0,
+    "qdrant_read_calls": 0,
+    "sparse_encoding_calls": 0,
+    "sql_candidate_read_calls": "NOT_INSTRUMENTED",
+    "targeted_retrieval_passes": 0,
+    "verifier_calls": 0
+  },
+  "complete_initial_count": 0,
+  "complete_targeted_count": 0,
+  "contract_validation_count": 0,
+  "expansion_used": false,
+  "historical_pre_capture_aborts": [
+    {
+      "attempt": 1,
+      "event": "accidental exposure of expected_status",
+      "live_executions": 0,
+      "preregistration": "none",
+      "relevance_bearing_gold_exposed": false,
+      "scientific_attempt_consumed": false
+    },
+    {
+      "attempt": 2,
+      "event": "faulty multiline text projection exposed relevance-bearing Gold fields",
+      "live_executions": 0,
+      "preregistration": "none",
+      "relevance_bearing_gold_exposed": true,
+      "scientific_attempt_consumed": false,
+      "treatment_execution": 0
+    }
+  ],
+  "infrastructure_failures": [
+    {
+      "case_id": "g001",
+      "error": "VertexCallError: structured generation failed for gemini-3.7-flash in global: Your default credentials were not found. To set up Application Default Credentials, see https://cloud.google.com/docs/authentication/external/set-up-adc for more information.",
+      "screening_position": 1
+    }
+  ],
+  "prereg_scientific_fields_changed_after_live_start": false,
+  "preregistration_identity": "C8_GLOBAL_BEST_RANK_RRF_V1",
+  "safe_projection_identity": {
+    "GOLD_FILE_ACCESSED": false,
+    "P0_VALIDATOR_EXECUTED": false,
+    "PROJECTION_MODIFIED": false,
+    "artifact_role": "C8_A2_SANITIZED_EXECUTION_PROJECTION",
+    "expansion_case_ids": [
+      "g002",
+      "g003",
+      "g014",
+      "g015",
+      "g028",
+      "g029",
+      "g045",
+      "g047"
+    ],
+    "path": "evaluation\\baselines\\manifests\\phase_c_c8_a2_execution_projection_v1.json",
+    "primary_case_ids": [
+      "g001",
+      "g007",
+      "g012",
+      "g013",
+      "g025",
+      "g026",
+      "g027",
+      "g038",
+      "g041",
+      "g042",
+      "g043",
+      "g044",
+      "g057",
+      "g058",
+      "g059",
+      "g060"
+    ],
+    "record_count": 24
+  },
+  "schema_version": "c8-a2-two-pass-capture-report-v1",
+  "screened_count": 1,
+  "source_runtime_head": "5d19a5d18b7f13c163b1d6c03284158a78b88f70",
+  "stage_f_parity": {
+    "INITIAL": "0/0",
+    "TARGETED": "0/0"
+  },
+  "stage_p_parity": {
+    "INITIAL": "0/0",
+    "TARGETED": "0/0"
+  },
+  "stage_s_parity": {
+    "INITIAL": "0/0",
+    "TARGETED": "0/0"
+  },
+  "targeted_count": 0,
+  "task": "C8-A2",
+  "treatment_case_count": 0,
+  "treatment_case_ids": []
+}
