@@ -1,0 +1,526 @@
+{
+  "artifact_role": "C8_A2R1_SCREENING_LEDGER",
+  "call_ledger": {
+    "DB_INDEX_WRITES": 0,
+    "JUDGE_CALLS": 0,
+    "QA_GENERATION_CALLS": 0,
+    "REAL_G1_EXECUTIONS": 0,
+    "REAL_GLOBAL_RERANKER_CALLS": 0,
+    "VERIFIER_CALLS": 0,
+    "analyzer_calls": 24,
+    "current_reranker_calls": 28,
+    "db_index_writes": 0,
+    "dense_embedding_calls": 28,
+    "initial_retrieval_passes": 24,
+    "judge_calls": 0,
+    "model_generation_calls": 52,
+    "qa_generation_calls": 0,
+    "qdrant_read_calls": 83,
+    "sparse_encoding_calls": 28,
+    "sql_candidate_read_calls": "NOT_INSTRUMENTED",
+    "targeted_retrieval_passes": 4,
+    "verifier_calls": 0
+  },
+  "expansion_used": true,
+  "failed_a2_commit": "07594b9b6f2857796115bc9cfe00d3426676084b",
+  "original_a2_artifacts_unchanged": true,
+  "original_failure_class": "PRE_OUTCOME_VERTEX_ADC_INVOCATION_FAILURE",
+  "preregistration_identity": "C8_GLOBAL_BEST_RANK_RRF_V1",
+  "records": [
+    {
+      "case_id": "g001",
+      "complete_snapshot_valid": null,
+      "infrastructure_error": null,
+      "initial_execution_completed": true,
+      "measured_call_counts": {
+        "analyzer_calls": 1,
+        "current_reranker_calls": 1,
+        "dense_embedding_calls": 1,
+        "initial_retrieval_passes": 1,
+        "model_generation_calls": 2,
+        "qdrant_read_calls": 2,
+        "sparse_encoding_calls": 1,
+        "targeted_retrieval_passes": 0
+      },
+      "screening_position": 1,
+      "targeted_execution_completed": false,
+      "targeted_triggered": false,
+      "treatment_cohort_included": false
+    },
+    {
+      "case_id": "g007",
+      "complete_snapshot_valid": true,
+      "infrastructure_error": null,
+      "initial_execution_completed": true,
+      "measured_call_counts": {
+        "analyzer_calls": 1,
+        "current_reranker_calls": 2,
+        "dense_embedding_calls": 2,
+        "initial_retrieval_passes": 1,
+        "model_generation_calls": 3,
+        "qdrant_read_calls": 4,
+        "sparse_encoding_calls": 2,
+        "targeted_retrieval_passes": 1
+      },
+      "screening_position": 2,
+      "targeted_execution_completed": true,
+      "targeted_triggered": true,
+      "treatment_cohort_included": true
+    },
+    {
+      "case_id": "g012",
+      "complete_snapshot_valid": null,
+      "infrastructure_error": null,
+      "initial_execution_completed": true,
+      "measured_call_counts": {
+        "analyzer_calls": 1,
+        "current_reranker_calls": 1,
+        "dense_embedding_calls": 1,
+        "initial_retrieval_passes": 1,
+        "model_generation_calls": 2,
+        "qdrant_read_calls": 2,
+        "sparse_encoding_calls": 1,
+        "targeted_retrieval_passes": 0
+      },
+      "screening_position": 3,
+      "targeted_execution_completed": false,
+      "targeted_triggered": false,
+      "treatment_cohort_included": false
+    },
+    {
+      "case_id": "g013",
+      "complete_snapshot_valid": null,
+      "infrastructure_error": null,
+      "initial_execution_completed": true,
+      "measured_call_counts": {
+        "analyzer_calls": 1,
+        "current_reranker_calls": 1,
+        "dense_embedding_calls": 1,
+        "initial_retrieval_passes": 1,
+        "model_generation_calls": 2,
+        "qdrant_read_calls": 2,
+        "sparse_encoding_calls": 1,
+        "targeted_retrieval_passes": 0
+      },
+      "screening_position": 4,
+      "targeted_execution_completed": false,
+      "targeted_triggered": false,
+      "treatment_cohort_included": false
+    },
+    {
+      "case_id": "g025",
+      "complete_snapshot_valid": true,
+      "infrastructure_error": null,
+      "initial_execution_completed": true,
+      "measured_call_counts": {
+        "analyzer_calls": 1,
+        "current_reranker_calls": 2,
+        "dense_embedding_calls": 2,
+        "initial_retrieval_passes": 1,
+        "model_generation_calls": 3,
+        "qdrant_read_calls": 4,
+        "sparse_encoding_calls": 2,
+        "targeted_retrieval_passes": 1
+      },
+      "screening_position": 5,
+      "targeted_execution_completed": true,
+      "targeted_triggered": true,
+      "treatment_cohort_included": true
+    },
+    {
+      "case_id": "g026",
+      "complete_snapshot_valid": null,
+      "infrastructure_error": null,
+      "initial_execution_completed": true,
+      "measured_call_counts": {
+        "analyzer_calls": 1,
+        "current_reranker_calls": 1,
+        "dense_embedding_calls": 1,
+        "initial_retrieval_passes": 1,
+        "model_generation_calls": 2,
+        "qdrant_read_calls": 2,
+        "sparse_encoding_calls": 1,
+        "targeted_retrieval_passes": 0
+      },
+      "screening_position": 6,
+      "targeted_execution_completed": false,
+      "targeted_triggered": false,
+      "treatment_cohort_included": false
+    },
+    {
+      "case_id": "g027",
+      "complete_snapshot_valid": null,
+      "infrastructure_error": null,
+      "initial_execution_completed": true,
+      "measured_call_counts": {
+        "analyzer_calls": 1,
+        "current_reranker_calls": 1,
+        "dense_embedding_calls": 1,
+        "initial_retrieval_passes": 1,
+        "model_generation_calls": 2,
+        "qdrant_read_calls": 2,
+        "sparse_encoding_calls": 1,
+        "targeted_retrieval_passes": 0
+      },
+      "screening_position": 7,
+      "targeted_execution_completed": false,
+      "targeted_triggered": false,
+      "treatment_cohort_included": false
+    },
+    {
+      "case_id": "g038",
+      "complete_snapshot_valid": null,
+      "infrastructure_error": null,
+      "initial_execution_completed": true,
+      "measured_call_counts": {
+        "analyzer_calls": 1,
+        "current_reranker_calls": 1,
+        "dense_embedding_calls": 1,
+        "initial_retrieval_passes": 1,
+        "model_generation_calls": 2,
+        "qdrant_read_calls": 2,
+        "sparse_encoding_calls": 1,
+        "targeted_retrieval_passes": 0
+      },
+      "screening_position": 8,
+      "targeted_execution_completed": false,
+      "targeted_triggered": false,
+      "treatment_cohort_included": false
+    },
+    {
+      "case_id": "g041",
+      "complete_snapshot_valid": true,
+      "infrastructure_error": null,
+      "initial_execution_completed": true,
+      "measured_call_counts": {
+        "analyzer_calls": 1,
+        "current_reranker_calls": 2,
+        "dense_embedding_calls": 2,
+        "initial_retrieval_passes": 1,
+        "model_generation_calls": 3,
+        "qdrant_read_calls": 4,
+        "sparse_encoding_calls": 2,
+        "targeted_retrieval_passes": 1
+      },
+      "screening_position": 9,
+      "targeted_execution_completed": true,
+      "targeted_triggered": true,
+      "treatment_cohort_included": true
+    },
+    {
+      "case_id": "g042",
+      "complete_snapshot_valid": null,
+      "infrastructure_error": null,
+      "initial_execution_completed": true,
+      "measured_call_counts": {
+        "analyzer_calls": 1,
+        "current_reranker_calls": 1,
+        "dense_embedding_calls": 1,
+        "initial_retrieval_passes": 1,
+        "model_generation_calls": 2,
+        "qdrant_read_calls": 2,
+        "sparse_encoding_calls": 1,
+        "targeted_retrieval_passes": 0
+      },
+      "screening_position": 10,
+      "targeted_execution_completed": false,
+      "targeted_triggered": false,
+      "treatment_cohort_included": false
+    },
+    {
+      "case_id": "g043",
+      "complete_snapshot_valid": null,
+      "infrastructure_error": null,
+      "initial_execution_completed": true,
+      "measured_call_counts": {
+        "analyzer_calls": 1,
+        "current_reranker_calls": 1,
+        "dense_embedding_calls": 1,
+        "initial_retrieval_passes": 1,
+        "model_generation_calls": 2,
+        "qdrant_read_calls": 5,
+        "sparse_encoding_calls": 1,
+        "targeted_retrieval_passes": 0
+      },
+      "screening_position": 11,
+      "targeted_execution_completed": false,
+      "targeted_triggered": false,
+      "treatment_cohort_included": false
+    },
+    {
+      "case_id": "g044",
+      "complete_snapshot_valid": null,
+      "infrastructure_error": null,
+      "initial_execution_completed": true,
+      "measured_call_counts": {
+        "analyzer_calls": 1,
+        "current_reranker_calls": 1,
+        "dense_embedding_calls": 1,
+        "initial_retrieval_passes": 1,
+        "model_generation_calls": 2,
+        "qdrant_read_calls": 5,
+        "sparse_encoding_calls": 1,
+        "targeted_retrieval_passes": 0
+      },
+      "screening_position": 12,
+      "targeted_execution_completed": false,
+      "targeted_triggered": false,
+      "treatment_cohort_included": false
+    },
+    {
+      "case_id": "g057",
+      "complete_snapshot_valid": true,
+      "infrastructure_error": null,
+      "initial_execution_completed": true,
+      "measured_call_counts": {
+        "analyzer_calls": 1,
+        "current_reranker_calls": 2,
+        "dense_embedding_calls": 2,
+        "initial_retrieval_passes": 1,
+        "model_generation_calls": 3,
+        "qdrant_read_calls": 10,
+        "sparse_encoding_calls": 2,
+        "targeted_retrieval_passes": 1
+      },
+      "screening_position": 13,
+      "targeted_execution_completed": true,
+      "targeted_triggered": true,
+      "treatment_cohort_included": true
+    },
+    {
+      "case_id": "g058",
+      "complete_snapshot_valid": null,
+      "infrastructure_error": null,
+      "initial_execution_completed": true,
+      "measured_call_counts": {
+        "analyzer_calls": 1,
+        "current_reranker_calls": 1,
+        "dense_embedding_calls": 1,
+        "initial_retrieval_passes": 1,
+        "model_generation_calls": 2,
+        "qdrant_read_calls": 5,
+        "sparse_encoding_calls": 1,
+        "targeted_retrieval_passes": 0
+      },
+      "screening_position": 14,
+      "targeted_execution_completed": false,
+      "targeted_triggered": false,
+      "treatment_cohort_included": false
+    },
+    {
+      "case_id": "g059",
+      "complete_snapshot_valid": null,
+      "infrastructure_error": null,
+      "initial_execution_completed": true,
+      "measured_call_counts": {
+        "analyzer_calls": 1,
+        "current_reranker_calls": 1,
+        "dense_embedding_calls": 1,
+        "initial_retrieval_passes": 1,
+        "model_generation_calls": 2,
+        "qdrant_read_calls": 5,
+        "sparse_encoding_calls": 1,
+        "targeted_retrieval_passes": 0
+      },
+      "screening_position": 15,
+      "targeted_execution_completed": false,
+      "targeted_triggered": false,
+      "treatment_cohort_included": false
+    },
+    {
+      "case_id": "g060",
+      "complete_snapshot_valid": null,
+      "infrastructure_error": null,
+      "initial_execution_completed": true,
+      "measured_call_counts": {
+        "analyzer_calls": 1,
+        "current_reranker_calls": 1,
+        "dense_embedding_calls": 1,
+        "initial_retrieval_passes": 1,
+        "model_generation_calls": 2,
+        "qdrant_read_calls": 5,
+        "sparse_encoding_calls": 1,
+        "targeted_retrieval_passes": 0
+      },
+      "screening_position": 16,
+      "targeted_execution_completed": false,
+      "targeted_triggered": false,
+      "treatment_cohort_included": false
+    },
+    {
+      "case_id": "g002",
+      "complete_snapshot_valid": null,
+      "infrastructure_error": null,
+      "initial_execution_completed": true,
+      "measured_call_counts": {
+        "analyzer_calls": 1,
+        "current_reranker_calls": 1,
+        "dense_embedding_calls": 1,
+        "initial_retrieval_passes": 1,
+        "model_generation_calls": 2,
+        "qdrant_read_calls": 2,
+        "sparse_encoding_calls": 1,
+        "targeted_retrieval_passes": 0
+      },
+      "screening_position": 17,
+      "targeted_execution_completed": false,
+      "targeted_triggered": false,
+      "treatment_cohort_included": false
+    },
+    {
+      "case_id": "g003",
+      "complete_snapshot_valid": null,
+      "infrastructure_error": null,
+      "initial_execution_completed": true,
+      "measured_call_counts": {
+        "analyzer_calls": 1,
+        "current_reranker_calls": 1,
+        "dense_embedding_calls": 1,
+        "initial_retrieval_passes": 1,
+        "model_generation_calls": 2,
+        "qdrant_read_calls": 2,
+        "sparse_encoding_calls": 1,
+        "targeted_retrieval_passes": 0
+      },
+      "screening_position": 18,
+      "targeted_execution_completed": false,
+      "targeted_triggered": false,
+      "treatment_cohort_included": false
+    },
+    {
+      "case_id": "g014",
+      "complete_snapshot_valid": null,
+      "infrastructure_error": null,
+      "initial_execution_completed": true,
+      "measured_call_counts": {
+        "analyzer_calls": 1,
+        "current_reranker_calls": 1,
+        "dense_embedding_calls": 1,
+        "initial_retrieval_passes": 1,
+        "model_generation_calls": 2,
+        "qdrant_read_calls": 2,
+        "sparse_encoding_calls": 1,
+        "targeted_retrieval_passes": 0
+      },
+      "screening_position": 19,
+      "targeted_execution_completed": false,
+      "targeted_triggered": false,
+      "treatment_cohort_included": false
+    },
+    {
+      "case_id": "g015",
+      "complete_snapshot_valid": null,
+      "infrastructure_error": null,
+      "initial_execution_completed": true,
+      "measured_call_counts": {
+        "analyzer_calls": 1,
+        "current_reranker_calls": 1,
+        "dense_embedding_calls": 1,
+        "initial_retrieval_passes": 1,
+        "model_generation_calls": 2,
+        "qdrant_read_calls": 2,
+        "sparse_encoding_calls": 1,
+        "targeted_retrieval_passes": 0
+      },
+      "screening_position": 20,
+      "targeted_execution_completed": false,
+      "targeted_triggered": false,
+      "treatment_cohort_included": false
+    },
+    {
+      "case_id": "g028",
+      "complete_snapshot_valid": null,
+      "infrastructure_error": null,
+      "initial_execution_completed": true,
+      "measured_call_counts": {
+        "analyzer_calls": 1,
+        "current_reranker_calls": 1,
+        "dense_embedding_calls": 1,
+        "initial_retrieval_passes": 1,
+        "model_generation_calls": 2,
+        "qdrant_read_calls": 2,
+        "sparse_encoding_calls": 1,
+        "targeted_retrieval_passes": 0
+      },
+      "screening_position": 21,
+      "targeted_execution_completed": false,
+      "targeted_triggered": false,
+      "treatment_cohort_included": false
+    },
+    {
+      "case_id": "g029",
+      "complete_snapshot_valid": null,
+      "infrastructure_error": null,
+      "initial_execution_completed": true,
+      "measured_call_counts": {
+        "analyzer_calls": 1,
+        "current_reranker_calls": 1,
+        "dense_embedding_calls": 1,
+        "initial_retrieval_passes": 1,
+        "model_generation_calls": 2,
+        "qdrant_read_calls": 2,
+        "sparse_encoding_calls": 1,
+        "targeted_retrieval_passes": 0
+      },
+      "screening_position": 22,
+      "targeted_execution_completed": false,
+      "targeted_triggered": false,
+      "treatment_cohort_included": false
+    },
+    {
+      "case_id": "g045",
+      "complete_snapshot_valid": null,
+      "infrastructure_error": null,
+      "initial_execution_completed": true,
+      "measured_call_counts": {
+        "analyzer_calls": 1,
+        "current_reranker_calls": 1,
+        "dense_embedding_calls": 1,
+        "initial_retrieval_passes": 1,
+        "model_generation_calls": 2,
+        "qdrant_read_calls": 5,
+        "sparse_encoding_calls": 1,
+        "targeted_retrieval_passes": 0
+      },
+      "screening_position": 23,
+      "targeted_execution_completed": false,
+      "targeted_triggered": false,
+      "treatment_cohort_included": false
+    },
+    {
+      "case_id": "g047",
+      "complete_snapshot_valid": null,
+      "infrastructure_error": null,
+      "initial_execution_completed": true,
+      "measured_call_counts": {
+        "analyzer_calls": 1,
+        "current_reranker_calls": 1,
+        "dense_embedding_calls": 1,
+        "initial_retrieval_passes": 1,
+        "model_generation_calls": 2,
+        "qdrant_read_calls": 5,
+        "sparse_encoding_calls": 1,
+        "targeted_retrieval_passes": 0
+      },
+      "screening_position": 24,
+      "targeted_execution_completed": false,
+      "targeted_triggered": false,
+      "treatment_cohort_included": false
+    }
+  ],
+  "recovery_receipt_identity": "evaluation\\baselines\\manifests\\phase_c_a2r1_invocation_recovery_receipt_v1.json",
+  "replacements": 0,
+  "retries": 0,
+  "safe_projection_identity": "evaluation\\baselines\\manifests\\phase_c_c8_a2_execution_projection_v1.json",
+  "schema_version": "c8-a2r1-screening-ledger-v1",
+  "screened_count": 24,
+  "targeted_trigger_count": 4,
+  "task": "C8-A2R1",
+  "treatment_case_ids": [
+    "g007",
+    "g025",
+    "g041",
+    "g057"
+  ],
+  "verdict": "INCONCLUSIVE"
+}

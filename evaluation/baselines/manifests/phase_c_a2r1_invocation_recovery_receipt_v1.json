@@ -1,0 +1,43 @@
+{
+  "environment_preflight": {
+    "adc_resolution": "PASS",
+    "credential_refresh_attempted": true,
+    "embedding_dimensions": 3072,
+    "embedding_model": "gemini-embedding-2",
+    "generation_model": "gemini-3.7-flash",
+    "location": "global",
+    "project_resolved_by_google_auth": false,
+    "retriever_initialization": "PASS",
+    "scientific_case_calls": 0,
+    "synthetic_embedding_health": "PASS",
+    "synthetic_generation_health": "PASS"
+  },
+  "failed_a2_commit": "07594b9b6f2857796115bc9cfe00d3426676084b",
+  "frozen_preregistration_path": "evaluation\\baselines\\manifests\\phase_c_c8_a2_global_treatment_preregistration_v1.json",
+  "frozen_preregistration_unchanged": true,
+  "gold_isolation": {
+    "GOLD_ANSWER_RUBRICS_ACCESSED": false,
+    "GOLD_EVALUATIONS": 0,
+    "GOLD_EVIDENCE_GROUPS_ACCESSED": false,
+    "GOLD_FILE_ACCESSED": false,
+    "GOLD_RELEVANCE_LABELS_ACCESSED": false
+  },
+  "no_scientific_rule_changed": true,
+  "novel_isolation": {
+    "NOVEL_EVALUATIONS": 0
+  },
+  "original_a2_artifacts_unchanged_before_live": true,
+  "original_failure_class": "PRE_OUTCOME_VERTEX_ADC_INVOCATION_FAILURE",
+  "preregistration_identity": "C8-A2",
+  "recovery_restart_position": {
+    "case_id": "g001",
+    "screening_position": 1
+  },
+  "recovery_scope": "INVOCATION_ONLY",
+  "safe_projection_path": "evaluation\\baselines\\manifests\\phase_c_c8_a2_execution_projection_v1.json",
+  "schema_version": "c8-a2r1-invocation-recovery-receipt-v1",
+  "scientific_fields_authoritative": true,
+  "source_head_at_recovery": "07594b9b6f2857796115bc9cfe00d3426676084b",
+  "task": "C8-A2R1",
+  "written_before_recovery_live_start": true
+}
