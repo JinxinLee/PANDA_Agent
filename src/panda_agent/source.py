@@ -27,6 +27,39 @@ class SourceGateError(RuntimeError):
     pass
 
 
+def resolve_manifest_repository_path(
+    repo_entry: dict[str, Any], project_root: Path
+) -> Path:
+    """Resolve a locked repository snapshot without trusting machine-local provenance."""
+    repo_base = (project_root / "data" / "sources" / "repos").resolve()
+    canonical = (
+        repo_base
+        / str(repo_entry["repo_id"])
+        / str(repo_entry["commit_sha"])
+    ).resolve()
+    if not canonical.is_relative_to(repo_base):
+        raise SourceGateError(
+            f"repository identity escaped source root: {repo_entry['repo_id']}"
+        )
+    if canonical.is_dir():
+        return canonical
+
+    declared = Path(str(repo_entry.get("path", "")))
+    if not declared.is_absolute():
+        declared = project_root / declared
+    declared = declared.resolve()
+    if not declared.is_relative_to(repo_base):
+        raise SourceGateError(
+            f"manifest repository path escaped source root: {repo_entry['repo_id']}"
+        )
+    if declared.is_dir():
+        return declared
+    raise SourceGateError(
+        f"locked repository snapshot unavailable: {repo_entry['repo_id']}@"
+        f"{repo_entry['commit_sha']}"
+    )
+
+
 def sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:
@@ -340,8 +373,8 @@ def verify_manifest(
         errors.append("manifest repository set differs from corpus configuration")
     repo_base = (project_root / "data" / "sources" / "repos").resolve()
     for repo in manifest["repositories"]:
-        repo_path = Path(repo["path"])
         try:
+            repo_path = resolve_manifest_repository_path(repo, project_root)
             configured = configured_repos.get(repo["repo_id"])
             if configured is None or (
                 repo["url"] != configured.url

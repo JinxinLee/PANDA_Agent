@@ -32,6 +32,10 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT / "src"))
 
 from panda_agent.evaluation import GoldDataset, INTENTS  # noqa: E402
+from panda_agent.source import (  # noqa: E402
+    SourceGateError,
+    resolve_manifest_repository_path,
+)
 
 NOVEL_DIR = REPO_ROOT / "evaluation" / "novel" / "v1"
 
@@ -361,10 +365,14 @@ def main() -> int:
         print(f"GoldDataset parse failed: {exc}")
         return 1
 
-    repo_roots = {
-        item["repo_id"]: Path(item["path"])
-        for item in source_manifest.get("repositories", [])
-    }
+    repo_roots: dict[str, Path] = {}
+    for item in source_manifest.get("repositories", []):
+        try:
+            repo_roots[item["repo_id"]] = resolve_manifest_repository_path(
+                item, REPO_ROOT
+            )
+        except SourceGateError as exc:
+            fail(str(exc))
     paper_pages = {
         item["doc_id"]: item["page_count"] for item in source_manifest.get("papers", [])
     }

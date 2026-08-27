@@ -99,6 +99,41 @@ reference, and sanitized worker handoff were not created. Authorize and
 complete the narrowly scoped H0-P portable locked-source path resolution task
 before resuming H0. H1 is not eligible to start.
 
+## H0-P resolution addendum
+
+The original H0 blocker was `STALE_ABSOLUTE_PATH_ONLY`. H0-P added the shared
+`resolve_manifest_repository_path()` resolver in `src/panda_agent/source.py`
+and updated both source-manifest verification and the Novel static curation
+validator to use it. Resolution now prefers the canonical local snapshot at
+`data/sources/repos/<repo_id>/<commit_sha>/`; a manifest path is accepted only
+as a compatibility fallback when it resolves within this project's repository
+source root. Repository-identity traversal and external manifest paths are
+rejected.
+
+The source manifest is unchanged. Repository IDs, URLs, refs, commit SHAs,
+paper identities, the Sphinx identity, and the locked-source universe are
+unchanged. All three canonical local repository snapshots resolve
+successfully.
+
+Static validation after H0-P:
+
+- resolver unit tests: PASS (8 tests);
+- `novel_dev` static validator: PASS (28 questions, 28 independent families);
+- `novel_validation` static validator: PASS (15 questions, 15 independent
+  families);
+- stale repository-path errors: 0;
+- unresolved opaque selectors reported by each validator: 0.
+
+The restored repository worktrees still exhibit cross-platform line-ending
+differences under generic Git dirty-worktree inspection. H0-P did not alter or
+weaken that independent integrity behavior. This is a separate, nonblocking
+EOL note for the Novel curation validators.
+
+**H0-P verdict: PASS — PORTABLE LOCKED-SOURCE PATH RESOLUTION COMPLETE**
+
+This addendum does not mark full H0 as PASS. H0 governance artifacts remain
+uncreated and require a separately resumed H0 task.
+
 ## Contamination and runtime accounting
 
 - Real holdout questions created: 0
