@@ -8,9 +8,13 @@ This sanitized reference is reconstructed from the current frozen
 contains no outcomes, performance observations, weakness analysis, or future
 sampling recommendations. A shared repository, source, entity, class,
 subsystem, detector, or task archetype is not sufficient to establish a
-collision. Family identity follows the minimum information need, requested
-relation, answer obligation, critical evidence composition, reasoning
-topology, and semantic task structure.
+collision. Family identity is assessed jointly across minimum information
+need, requested relation, answer obligation, critical evidence composition,
+reasoning topology, and semantic task structure. A candidate is in the same
+family when these signals, considered together, express the same underlying
+need. Individual overlap in one or more signals—including reasoning topology,
+evidence shape, subsystem, class, or entity—is allowed and does not alone
+establish a collision.
 
 ## Active `novel_dev` families (28)
 
@@ -69,9 +73,9 @@ topology, and semantic task structure.
 
 | Question | Family | Status | Reuse policy |
 |---|---|---|---|
-| `n011` | `nf011` | Withdrawn/inactive; information need changed during semantic repair and was replaced by `n018`. | Never reusable. |
-| `n012` | `nf012` | Withdrawn/inactive; unsupported original information need was replaced by new sampling as `n019`. | Never reusable. |
-| `n013` | `nf013` | Withdrawn/inactive; retired after representativeness and factual review and replaced by `n017`. | Never reusable. |
+| `n011` | `nf011` | Withdrawn/inactive. | Never reusable. |
+| `n012` | `nf012` | Withdrawn/inactive. | Never reusable. |
+| `n013` | `nf013` | Withdrawn/inactive. | Never reusable. |
 
 ## Count declaration
 

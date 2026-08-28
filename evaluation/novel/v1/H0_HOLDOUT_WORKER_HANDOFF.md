@@ -30,19 +30,52 @@ PANDA Knowledge Bundle Prototype v2.0.0 is derived and non-authoritative. Do
 not curate from its chunks, KnowledgeObjects, indexes, embeddings, retrieval
 objects, or Agent-selected evidence.
 
-## Allowed static references
+## Phase-scoped reference access
 
-The Worker may use, subject to access separation:
+### Phase A access
+
+**PHASE A IS REFERENCE-BLIND TO EXPOSED QUESTION/FAMILY CONTENT.**
+
+Phase A may access only:
 
 - the locked authoritative source corpus;
+- `data/manifests/source_manifest.json` for locked source identity;
 - `docs/NOVEL_DATASET_CURATION_CONTRACT.md`;
-- holdout-relevant governance in `docs/EVALUATION_POLICY.md`;
-- exposed Gold definitions and generic schema;
-- frozen `novel_dev` and `novel_validation` definitions and curation metadata;
-- `evaluation/novel/v1/gold_representativeness_profile.json`;
-- `H0_EXTERNAL_HOLDOUT_CURATION_PLAN.md`;
-- `H0_FROZEN_FAMILY_BOUNDARY_REFERENCE.md`, but only during Phase B;
-- generic static validation behavior needed to ensure selectors resolve.
+- generic holdout-relevant governance;
+- generic schema and format rules needed to draft a candidate;
+- H0 source-first governance instructions;
+- H0-P path and corpus-readiness information when needed.
+
+Before a candidate exists, the Worker must not access:
+
+- Gold question content;
+- the Gold representativeness profile;
+- raw `novel_dev` question content or semantic curation metadata;
+- raw `novel_validation` question content or semantic curation metadata;
+- `H0_FROZEN_FAMILY_BOUNDARY_REFERENCE.md`;
+- accepted holdout-family content from earlier batches.
+
+### Phase B access
+
+Phase B may begin only after Phase A has produced a candidate information
+need, candidate wording, minimum critical authoritative evidence, and an
+initial answer obligation. **CANDIDATE FORMULATION MUST PRECEDE GOLD/FAMILY
+COMPARISON ACCESS.**
+
+Phase B may then access:
+
+- exposed Gold question definitions;
+- the Gold representativeness profile when needed for review;
+- `H0_FROZEN_FAMILY_BOUNDARY_REFERENCE.md`;
+- accepted holdout-family material needed for collision checking;
+- raw frozen Novel definitions only if a boundary ambiguity cannot be resolved
+  from the sanitized reference.
+
+The sanitized 43-family reference is the default frozen-family collision
+input. Raw frozen `novel_dev` and `novel_validation` question content and
+semantic curation metadata are non-default, Phase-B-only, ambiguity-only
+inputs. They must be used only to resolve a collision boundary and never to
+choose a sampling area.
 
 ## Forbidden material and runtime
 
@@ -67,8 +100,9 @@ source anchor
 ```
 
 During Phase A, do not open the frozen-family reference and do not use frozen
-families to choose a subject. Establish the candidate and its minimum critical
-source support independently.
+families, Gold content, the Gold profile, raw frozen Novel material, or prior
+holdout-family content to choose a subject. Establish the candidate wording,
+minimum critical source support, and initial answer obligation independently.
 
 ### Then and only then: Phase B — collision audit
 
@@ -94,9 +128,13 @@ archetypes are allowed.
 **Gold requires a new information need.**
 
 Against the 28 frozen `novel_dev` families, 15 frozen `novel_validation`
-families, and every accepted holdout family, require isolation in minimum
-need, requested relation, answer obligation, critical evidence composition,
-reasoning topology, and semantic task structure.
+families, and every accepted holdout family, semantic-family identity is
+assessed jointly across minimum information need, requested relation, answer
+obligation, critical evidence composition, reasoning topology, and semantic
+task structure. A candidate must not belong to the same family when the
+signals are considered together. Individual overlap in one or more signals is
+allowed: the same reasoning topology, evidence shape, subsystem, class, or
+entity alone does not establish a collision.
 
 **Frozen Novel requires a new family.**
 

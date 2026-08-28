@@ -55,10 +55,13 @@ The frozen Novel references are exclusion boundaries:
 - retired dev lineages `n011/nf011`, `n012/nf012`, and `n013/nf013` are never
   reusable.
 
-A holdout candidate may share subject matter with a frozen family, but it must
-remain isolated in minimum need, requested relation, answer obligation,
-critical evidence composition, reasoning topology, and semantic task
-structure.
+A holdout candidate may share subject matter with a frozen family. Semantic
+family identity is assessed jointly across minimum information need, requested
+relation, answer obligation, critical evidence composition, reasoning
+topology, and semantic task structure. A candidate must not belong to the same
+family when these signals are considered together. Individual overlap in one
+or more signals is allowed: the same reasoning topology, evidence shape,
+subsystem, class, or entity alone does not establish a collision.
 
 **Frozen Novel requires a new family.** The same rule applies against every
 previously accepted holdout family.
@@ -84,19 +87,63 @@ must be recorded and escalated to human authority.
 
 ### Phase A — source-first formulation
 
+**PHASE A IS REFERENCE-BLIND TO EXPOSED QUESTION/FAMILY CONTENT.**
+
+Phase A may access only source-first material needed to formulate an
+independent candidate:
+
+- the locked authoritative source corpus;
+- `data/manifests/source_manifest.json` for locked source identity;
+- `docs/NOVEL_DATASET_CURATION_CONTRACT.md`;
+- generic holdout-relevant governance;
+- generic schema and format rules needed to draft a candidate;
+- H0 source-first governance instructions;
+- H0-P path and corpus-readiness information when needed.
+
+Phase A must not access candidate-content comparison material:
+
+- Gold question content;
+- the Gold representativeness profile;
+- raw `novel_dev` question content or semantic curation metadata;
+- raw `novel_validation` question content or semantic curation metadata;
+- `H0_FROZEN_FAMILY_BOUNDARY_REFERENCE.md`;
+- accepted holdout-family content from earlier batches.
+
 ```text
 locked authoritative source
 -> natural PANDA information need
--> candidate question/information need
--> direct authoritative support
+-> candidate information need and wording
+-> minimum critical authoritative evidence
+-> initial answer obligation
 ```
 
-Phase A must not consult the frozen-family reference to select a subject. The
-43-family reference is not a coverage-gap map.
+The candidate, independent source support, and initial answer obligation must
+already exist before any comparison material is opened.
 
 ### Phase B — post-hoc collision audit
 
-Only after the candidate and its independent evidence exist:
+**CANDIDATE FORMULATION MUST PRECEDE GOLD/FAMILY COMPARISON ACCESS.**
+
+Phase B may not begin until Phase A has produced all four prerequisites:
+
+- a candidate information need;
+- candidate wording;
+- minimum critical authoritative evidence;
+- an initial answer obligation.
+
+Only then may Phase B access:
+
+- exposed Gold question definitions;
+- the Gold representativeness profile when needed for review;
+- `H0_FROZEN_FAMILY_BOUNDARY_REFERENCE.md`;
+- previously accepted holdout-family material needed for collision checking;
+- raw frozen Novel definitions only when a boundary ambiguity cannot be
+  resolved from the sanitized family reference.
+
+The sanitized 43-family reference is the default frozen-family comparison
+input. Raw frozen `novel_dev` or `novel_validation` question content and
+semantic metadata are non-default, Phase-B-only, ambiguity-only inputs. They
+must never be used to choose a sampling area.
 
 ```text
 existing candidate
