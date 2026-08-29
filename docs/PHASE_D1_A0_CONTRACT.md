@@ -5,8 +5,14 @@
 > the small representative knowledge-set expression; D2/D3/D4 own resolver and
 > migration work. No production behavior changed in D1-A0.
 
-Source of truth at freeze time: HEAD `d684329` ("C8 A2 close out targeted
-applicability"), clean tree except an untracked `data/sources.zip`.
+Source of truth at freeze time: local HEAD `f6d1b15` with the D1-A0
+documentation restored to the pre-D1-A0 state; all audited code/config content
+is identical to `d684329` ("C8 A2 close out targeted applicability"), the only
+untracked artifact being `data/sources.zip`. `origin/main` carries two
+additional commits (`a3aebba`, `a11bd87`, holdout source-path portability in
+`src/panda_agent/source.py` and novel preflight tooling) that do not touch the
+knowledge schema, relation ontology, storage contracts, alias corpus, or
+`EntityResolver` audited here.
 
 ---
 
@@ -38,7 +44,7 @@ applicability"), clean tree except an untracked `data/sources.zip`.
 **Schema (`configs/knowledge_schema.yaml`)** — 32 base object types across
 literature, code, documentation, and `concept` groups
 (`physics_concept`, `algorithm`, `detector_component`, `document_reference`),
-plus `_chunk` derived suffix. Stable IDs derive from
+plus the derived `_chunk` suffix. Stable IDs derive from
 `source_version_id + object_type + canonical_locator`.
 
 **Ontology (`configs/relation_ontology.yaml`)** — 22 predicates (Section E).
@@ -53,11 +59,11 @@ plus `_chunk` derived suffix. Stable IDs derive from
 **Ingestion (`src/panda_agent/ingestion.py`)** — curated seed objects and
 relations loaded from configs with predicate validation against the ontology;
 curated aliases resolved to real provenance objects with target-existence
-validation; static-analysis `RelationCandidate` → `RelationEdge` materialization
-by `RelationResolver` populates `source_version_ids` and
+validation; static-analysis `RelationCandidate` → `RelationEdge`
+materialization by `RelationResolver` populates `source_version_ids` and
 `evidence_object_ids=[subject_id]` for static-analysis edges.
 
-**Curated seeds** — 23 seed objects (concepts, workflows, data products,
+**Curated seeds** — 22 seed objects (concepts, workflows, data products,
 subsystems, repository-version entities, a configuration key, a file pattern)
 and 16 accepted curated relations, all cross-object semantic relations.
 
@@ -128,8 +134,8 @@ domain-level entities).
 **Identity/versioning contract:**
 
 1. Domain-level entity identity may remain stable across source versions. Its
-   `source_version_id` records the curated provenance version, not a claim that
-   the concept is version-specific.
+   `source_version_id` records the curated provenance version, not a claim
+   that the concept is version-specific.
 2. Realization and evidence remain version-bound. A domain-level concept
    connects to concrete implementations/evidence only through relations
    carrying explicit `source_version_ids`/evidence references.
@@ -175,8 +181,8 @@ Preserved C5 lesson: *a unique exact retrieval match is not automatically
 canonical identity.* `exact_title` and `exact_path` remain match kinds useful
 for candidate generation and receipts; D1 must not promote them to identity
 semantics. D1-A1 must expose enough structure (identity-role metadata and/or
-identity predicate) that D2 can implement this distinction without re-deriving
-it from match strings.
+identity predicate) that D2 can implement this distinction without
+re-deriving it from match strings.
 
 ---
 
@@ -196,9 +202,10 @@ Frozen rules:
    The alias must state `source_version_id` and `alias_kind`.
 3. **Targets:** aliases may target both domain-level and source-native
    entities, but always exactly one `target_object_id`.
-4. **Abbreviations and canonical shorthands** (e.g. "LMD" for Longitudinal
-   Muon Detector–style acronyms, "PndLmdAcceptance" shorthand forms) are
-   legitimate aliases when the short form denotes the same entity.
+4. **Abbreviations and canonical shorthands** (e.g. acronym forms such as
+   "LMD" for the Longitudinal Muon Detector, shorthand forms for class names
+   like `PndLmdAcceptance`) are legitimate aliases when the short form denotes
+   the same entity.
 5. **Descriptive paraphrases** ("the detector resolution convolution") and
    **implementation-oriented descriptions** ("the class that writes the final
    PID file") are NOT aliases by default; they are relations or resolver
@@ -211,9 +218,9 @@ Frozen rules:
    evidence.
 7. **Duplicates/conflicts:** one normalized alias text mapping to multiple
    distinct accepted targets is an ambiguity the resolver must surface
-   (`AMBIGUOUS`/`RESOLVED_MULTIPLE`), not silently resolve; ingestion must not
-   accept two aliases differing only by normalization to different targets
-   without an explicit conflict record.
+   (`AMBIGUOUS`/`RESOLVED_MULTIPLE`), not silently resolve; ingestion must
+   not accept two aliases differing only by normalization to different
+   targets without an explicit conflict record.
 8. **No mass population in D1.** D1-A0 adds no aliases; D1-A2 curates a small
    representative set under this contract.
 
@@ -286,7 +293,8 @@ relations therefore rely on prose-only evidence.
 **Frozen D1 contract for accepted curated relations (and accepted curated
 objects/aliases):**
 
-1. Resolvable subject and object (already enforced by FKs / target validation).
+1. Resolvable subject and object (already enforced by FKs / target
+   validation).
 2. Version scope: non-empty `source_version_ids` naming the source version(s)
    the relation is grounded in, when the relation is version-bound; a curated
    relation between two domain-level entities across the locked corpus may
@@ -327,8 +335,8 @@ D1-A1 (Section K); D1-A0 changes nothing.
 Recorded current state of `EntityResolver` (C5, shadow-only):
 
 - Mention sources: explicit identifiers in the raw question, C2-accepted
-  analyzer symbols with complete in-question support, accepted aliases matched
-  by boundary-safe deterministic patterns.
+  analyzer symbols with complete in-question support, accepted aliases
+  matched by boundary-safe deterministic patterns.
 - Match kinds: `accepted_alias` > `exact_symbol` > `exact_title` >
   `exact_path`; `identity_relation` is defined but unsupported
   (`IDENTITY_RELATION_SUPPORT = NOT_AVAILABLE`).
@@ -340,14 +348,14 @@ Recorded current state of `EntityResolver` (C5, shadow-only):
 
 **D1 must provide (and nothing more):**
 
-1. A governed target space: curated domain-level entities identifiable as such
-   (Section B), so D2 can rank/abstain over both classes.
+1. A governed target space: curated domain-level entities identifiable as
+   such (Section B), so D2 can rank/abstain over both classes.
 2. The alias contract (Section D) so `accepted_alias` remains the strongest
    resolution evidence with governed semantics.
 3. An identity predicate (`SAME_AS`, Section E.2) so `identity_relation`
    matching becomes implementable instead of structurally unavailable.
-4. Machine-traceable relation provenance (Section F) so D2 candidates can cite
-   auditable support.
+4. Machine-traceable relation provenance (Section F) so D2 candidates can
+   cite auditable support.
 5. Version/scope metadata unchanged in shape, so the existing
    `_row_scope_status` safety carries over.
 
@@ -368,8 +376,8 @@ mappings):
    for multi-step realization).
 2. Algorithm → implementation: `algorithm` —`IMPLEMENTS`← code object, or
    `algorithm` —`FORMALIZES`→ relation from a thesis section.
-3. Workflow → step: `workflow` object with `WorkflowStep` entries; ordering via
-   `RUNS_BEFORE`.
+3. Workflow → step: `workflow` object with `WorkflowStep` entries; ordering
+   via `RUNS_BEFORE`.
 4. Producer → data product → consumer: `workflow`/code —`PRODUCES`→
    `data_product` —`PRODUCES_INPUT_FOR`→ subsystem/workflow.
 5. Configuration → workflow/component: `configuration_key` —`PARAMETERIZES`/
