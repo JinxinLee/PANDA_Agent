@@ -851,10 +851,13 @@ class EntityResolver:
                 locked=locked,
                 version_scope=version_scope,
             )
-            if (
-                fallback_resolution is not None
-                and (fallback_resolution.candidates or fallback_resolution.status != UNRESOLVED)
-            ):
+            # D2-A1R2 repair: a synthesized fallback mention that Tier D
+            # actually evaluated is always retained in the receipt — including
+            # the ordinary UNRESOLVED-with-zero-candidates abstention.  An
+            # evaluated abstention is a first-class resolver decision, not the
+            # absence of one; dropping it would leave a fully unresolved query
+            # with an empty receipt and fallback_required = false.
+            if fallback_resolution is not None:
                 receipt.resolutions.append(fallback_resolution)
 
             resolved_ids: set[str] = set()

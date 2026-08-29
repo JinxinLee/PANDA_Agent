@@ -471,7 +471,12 @@ class D2TierSTests(unittest.TestCase):
         )
         resolution = receipt.resolutions[0]
         self.assertEqual(resolution.status, REJECTED_SCOPE)
-        self.assertEqual(receipt.unresolved_mentions, ["PndThing"])
+        # D2-A1R2: the rejected mention triggers the conservative
+        # whole-question fallback; with an empty canonical set its evaluated
+        # UNRESOLVED abstention is retained alongside the rejection.
+        self.assertEqual(
+            receipt.unresolved_mentions, ["PndThing", "Where is PndThing?"]
+        )
         self.assertTrue(
             any(
                 item["object_id"] == "obj.foreign" and item["reason"] == REJECTED_SCOPE
@@ -674,10 +679,10 @@ class D2TierDTests(unittest.TestCase):
         self.assertTrue(resolution.diagnostics["descriptive_inference"])
 
     def test_query_expansion_only_concept_is_not_authoritative(self):
-        # D2-A1R1 repair 1: a concept present only through plan.concepts
-        # (query-expansion knowledge) never becomes an authoritative
-        # descriptive mention; the conservative fallback still abstains when
-        # the question does not ground it.
+        # D2-A1R1 repair 1 + D2-A1R2 Case A: a concept present only through
+        # plan.concepts (query-expansion knowledge) never becomes an
+        # authoritative descriptive mention; the whole-question fallback is
+        # evaluated and its UNRESOLVED abstention is retained in the receipt.
         objects = [
             _canonical_row(
                 "workflow.restgas.profile_correction",
@@ -690,10 +695,26 @@ class D2TierDTests(unittest.TestCase):
             "What is the acceptance class?",
             _plan(concepts=["restgas profile correction workflow"]),
         )
-        # The QE-only concept never becomes a mention; the whole-question
-        # fallback found no governed candidate and therefore stayed
-        # diagnostic-only (no resolution entries at all).
-        self.assertEqual(receipt.resolutions, [])
+        # The QE-only concept never became a mention.
+        self.assertNotIn(
+            "restgas profile correction workflow",
+            {item.mention_text for item in receipt.resolutions},
+        )
+        # The evaluated whole-question fallback abstention is retained
+        # (D2-A1R2: an evaluated abstention is a first-class decision).
+        self.assertEqual(len(receipt.resolutions), 1)
+        fallback = receipt.resolutions[0]
+        self.assertEqual(fallback.mention_text, "What is the acceptance class?")
+        self.assertEqual(fallback.mention_kind, "descriptive")
+        self.assertEqual(fallback.status, UNRESOLVED)
+        self.assertEqual(fallback.candidates, [])
+        self.assertIsNone(fallback.matched_object_id)
+        self.assertIsNone(fallback.canonical_object_id)
+        self.assertEqual(
+            receipt.unresolved_mentions, ["What is the acceptance class?"]
+        )
+        self.assertTrue(receipt.fallback_required)
+        self.assertTrue(fallback.diagnostics["abstention_reason"])
 
     def test_malformed_support_span_fails_closed(self):
         # D2-A1R1 repair 1: support spans that are not substrings of the
@@ -727,6 +748,88 @@ class D2TierDTests(unittest.TestCase):
         self.assertEqual(fallback.mention_text, "How does the luminosity fit model work?")
         self.assertEqual(fallback.status, RESOLVED_UNIQUE)
         self.assertEqual(fallback.canonical_object_id, _LUMI_FIT_MODEL_ID)
+
+    def test_malformed_support_with_no_candidate_retains_unresolved(self):
+        # D2-A1R2 Case B: the malformed analyzer concept is rejected and the
+        # whole-question fallback finds no governed candidate — the evaluated
+        # UNRESOLVED abstention must be retained, never silently dropped.
+        objects = [
+            _canonical_row(
+                _LUMI_FIT_MODEL_ID, title="Luminosity fit model", text=_LUMI_FIT_TEXT
+            )
+        ]
+        plan = _plan(
+            analysis_diagnostics={
+                "analyzer_accepted_semantic_delta": {
+                    "concepts": [
+                        {
+                            "value": "unrelated nonexistent calibration concept",
+                            "support_spans": ["span not present in the question"],
+                        }
+                    ]
+                }
+            }
+        )
+        receipt = _resolver(objects).resolve_shadow(
+            "What is the unrelated nonexistent calibration concept?", plan
+        )
+        self.assertNotIn(
+            "unrelated nonexistent calibration concept",
+            {item.mention_text for item in receipt.resolutions},
+        )
+        self.assertEqual(len(receipt.resolutions), 1)
+        fallback = receipt.resolutions[0]
+        self.assertEqual(
+            fallback.mention_text,
+            "What is the unrelated nonexistent calibration concept?",
+        )
+        self.assertEqual(fallback.status, UNRESOLVED)
+        # One ineligible descriptive decision (the entity ID token "concept"
+        # overlaps) is retained as audit evidence with its single_feature
+        # rejection; the resolution itself abstains.
+        self.assertEqual(len(fallback.candidates), 1)
+        self.assertIn("single_feature", fallback.candidates[0]["reason"])
+        self.assertIsNone(fallback.matched_object_id)
+        self.assertTrue(fallback.diagnostics["abstention_reason"])
+        self.assertIn(
+            "What is the unrelated nonexistent calibration concept?",
+            receipt.unresolved_mentions,
+        )
+        self.assertTrue(receipt.fallback_required)
+
+    def test_generic_unsupported_query_retains_unresolved_fallback(self):
+        # D2-A1R2 Case C: a generic unsupported query yields exactly one
+        # descriptive fallback resolution with UNRESOLVED, zero candidates,
+        # populated unresolved_mentions, and fallback_required = true — an
+        # observable resolver decision, not an empty receipt.
+        objects = [
+            _canonical_row(
+                "workflow.restgas.profile_correction",
+                title="Restgas profile correction workflow",
+                text="Workflow correcting the longitudinal restgas profile.",
+                object_type="workflow",
+            )
+        ]
+        receipt = _resolver(objects).resolve_shadow(
+            "What is the unrelated nonexistent calibration concept?", _plan()
+        )
+        self.assertEqual(len(receipt.resolutions), 1)
+        fallback = receipt.resolutions[0]
+        self.assertEqual(fallback.mention_kind, "descriptive")
+        self.assertEqual(
+            fallback.support_span,
+            "What is the unrelated nonexistent calibration concept?",
+        )
+        self.assertEqual(fallback.status, UNRESOLVED)
+        self.assertEqual(fallback.candidates, [])
+        self.assertTrue(
+            fallback.diagnostics["abstention_reason"]
+        )
+        self.assertIn(
+            "What is the unrelated nonexistent calibration concept?",
+            receipt.unresolved_mentions,
+        )
+        self.assertTrue(receipt.fallback_required)
 
     def test_descriptive_tie_is_ambiguous(self):
         objects = [
