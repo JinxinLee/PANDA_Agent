@@ -39,6 +39,9 @@ preregistration, and the D2-A3 role-decision criteria. It implements nothing.
   representation to its canonical entity through governed identity evidence.
 - **Alias**: another expression referring to the same entity (identity
   equivalent). **Related term**: semantically associated but not identical.
+  **Corrective term**: an inaccurate/nonexistent/malformed/premise-confused
+  user expression safely redirectable to a governed entity with an explicit
+  correction — not identity evidence.
 
 The five resolver stages are conceptually separable and must remain so:
 mention/terminology understanding → candidate generation → identity evidence
@@ -86,7 +89,7 @@ resolver string statuses.
 
 ## 4. Identity-evidence hierarchy (frozen for D2-A1)
 
-### Tier G — governed explicit identity (may directly resolve; may canonicalize)
+### Tier G — governed explicit identity (may directly resolve; may canonicalize across co-referential records)
 
 | Evidence | Resolve | Canonicalize | Constraints |
 | --- | --- | --- | --- |
@@ -95,40 +98,79 @@ resolver string statuses.
 | Accepted/reviewed `SAME_AS` edge | Yes | Yes, toward the canonical endpoint per D1 orientation | only accepted; pending/rejected never; conflicts → AMBIGUOUS (Section 6) |
 | Exact source-native technical identifier with explicit source/type grounding (`locator.symbol` equality within locked source/version scope) | Yes | Only through governed identity evidence (G alias/SAME_AS); symbol equality alone does not canonicalize | uniqueness within scope; else REJECTED_VERSION/REJECTED_SCOPE/AMBIGUOUS |
 
-### Tier S — strong but context-dependent (candidate generation + conditional resolve; never canonicalize alone)
+### Tier S — strong structural/exact evidence (candidate generation + conditional resolve; never canonicalizes alone)
 
 Exact canonical title; exact unique symbol without explicit type grounding;
 exact path/locator; stable repository/document identifier. These may resolve
-**only when** uniqueness holds inside the plan's source/version scope AND the
-match kind is recorded as context-dependent evidence; any competing same-tier
-match → RESOLVED_MULTIPLE/AMBIGUOUS. They must never canonicalize a
-noncanonical match to a canonical entity by themselves.
+the **matched record** when uniqueness holds inside the plan's source/version
+scope and the match kind is recorded as context-dependent evidence; any
+competing same-tier match → AMBIGUOUS (D2 semantics; see Section 9). They must
+never canonicalize a matched record to a **different** record without Tier G
+evidence.
 
-### Tier D — descriptive evidence (candidate generation/scoring only)
+### Tier D — governed descriptive inference (bounded inferential resolution)
 
-Terminology variants, paraphrases, implementation descriptions, domain and
-concept descriptions. May generate and rank candidates among governed
-entities; may never directly resolve or canonicalize. A descriptive match can
-support a final decision only in combination with Tier G/S evidence on the
-same candidate, and the combined decision must be recorded as such in
-diagnostics. Uniqueness of the descriptive candidate set does not upgrade the
-tier.
+May generate candidates, score candidates, and — **when the full
+descriptive-evidence bundle is satisfied** — directly resolve a mention to an
+existing governed canonical entity. May not: create identity equivalence;
+canonicalize one matched record into a different record; invent entities;
+resolve solely because one similarity score is highest.
 
-### Tier N — non-identity evidence (never resolves, never canonicalizes)
+**Weak descriptive signal prohibition:** a single embedding similarity,
+lexical-overlap score, retrieval top-1, LLM assertion, or one generic
+descriptive feature must never directly resolve identity.
 
-Semantic similarity scores, dense retrieval rank, BM25 rank, graph proximity,
-co-occurrence, related relation edges (`IMPLEMENTS`, `FORMALIZES`,
-`PRODUCES`, `CONSUMES`, `DEPENDS_ON`, `THEORETICAL_BASIS_FOR`, …),
-query-expansion rules, and any LLM assertion without independent grounding.
-Uses: candidate retrieval support and post-decision context only. Relation
-edges may help contextualize or disambiguate candidates that are already
-identity-grounded, but never imply their endpoints are the same entity.
+**Governed descriptive-evidence bundle** — a descriptive mention supports a
+shadow resolution to an existing governed canonical entity only when ALL of:
+
+1. all candidates come from the existing D1-governed entity space;
+2. the mention is query-grounded;
+3. the selected candidate is supported by multiple compatible, inspectable
+   descriptive features or structured facts;
+4. relevant source/type/version/context constraints are satisfied;
+5. competing candidates are explicitly considered;
+6. no plausible competing candidate remains unresolved at the same evidence
+   strength;
+7. the decision is auditable in diagnostics;
+8. no new entity is invented;
+9. no source-native → different canonical-record canonicalization is
+   performed without Tier G identity evidence.
+
+This is a **bounded inferential resolution**, not a stored identity
+equivalence. No numeric thresholds are frozen in A0R1 (no
+"similarity > 0.85"-style constants); D2-A1 chooses a deterministic or scored
+implementation that satisfies these semantic requirements, and D2-A2 evaluates
+whether it actually does.
+
+**Descriptive resolution vs canonicalization (critical distinction):**
+descriptive evidence may identify an existing canonical entity **directly**
+when the mention is describing that canonical entity itself — e.g. "the model
+used to extract luminosity from the LMD angular distribution" may resolve to
+`concept.luminosityfit.luminosity_fit_model`, and "the step that reads the
+first PID output and writes the boost ROOT file" may resolve to
+`workflow.restgas.first_pass_poca`, when the bundle is satisfied. But
+descriptive evidence must not canonicalize one matched source-native record
+into a different canonical record: `PndLmdModelFactory` must not be
+transformed into that concept merely because the class implements it —
+`IMPLEMENTS` remains a non-identity relation, and cross-record
+canonicalization still requires Tier G evidence (accepted true alias, accepted
+`SAME_AS`, or another explicitly governed identity mechanism).
+
+### Tier N — non-authoritative support
+
+Never sufficient for identity resolution by itself. Retained signals:
+retrieval rank, BM25/dense rank, graph proximity, raw semantic similarity,
+co-occurrence, ordinary non-identity relations, query expansions, unsupported
+LLM assertion. Some Tier N signals may contribute to candidate generation,
+but they do not become authority merely by aggregation unless the D2-A1
+descriptive-evidence mechanism explicitly transforms them into auditable
+Tier D evidence under the descriptive-evidence bundle.
 
 No numerical confidence scale is introduced; the deterministic evidence tier +
 ambiguity state is the authority signal. If any score exists it is diagnostic:
 `score != authority`.
 
-## 5. Alias contract
+## 5. Alias contract, corrective terms, and existing-alias audit
 
 `alias = another expression referring to the same entity`. Related terms are
 not aliases. Prohibited as aliases merely because they are related:
@@ -138,16 +180,42 @@ implementation; broad topic ↔ narrow entity. Alias rules inherited unchanged
 from the D1 contract Section D (review states, provenance, single target,
 English-only, no evaluation-derived aliases, conflict surfacing).
 
+**Corrective term / premise-correction term (frozen distinction):** a user
+expression that is inaccurate, nonexistent, malformed, or premise-confused,
+but can be safely redirected to a relevant governed entity with an explicit
+correction. It is **not co-reference identity evidence**. It may trigger a
+correction message, generate a candidate, support safe user-facing
+correction, and contribute to shadow diagnostics. It must not: be treated as
+`SAME_AS`; silently canonicalize as if the mistaken term literally denoted the
+target; or count as Tier G true-identity evidence.
+
+**Deterministic D2 classification rule (no schema change):** for D2 purposes,
+an accepted alias whose stored `correction_message` is non-null is a
+**corrective term** (the correction documents that the surface form does not
+literally denote the target as named); an accepted alias without a
+correction message whose target identity is represented by the expression
+itself remains a **true identity alias** (Tier G). D2-A1 must implement this
+classification; it must not consume corrective terms as Tier G evidence.
+
+**Existing alias audit (2 accepted, classified separately):**
+
+1. `restgas_profile.txt` (generic_user_term → `configuration.restgas_profile`,
+   non-null `correction_message`) — **corrective/premise-repair term, not a
+   true identity alias**, for D2 purposes. The corpus states no literal file
+   named `restgas_profile.txt` exists; the frozen distinction is
+   `restgas_profile` = configuration key, `restgas_16012024_*.txt` = concrete
+   input-file pattern, `restgas_profile.txt` = nonexistent/mistaken user
+   expression. The three are not collapsed into one identity. The existing
+   config row is retained unchanged (C5 compatibility); D2-A1 classifies it
+   as corrective via the frozen rule above.
+2. `*_pid_final.root` (file_pattern → `data_product.restgas.pid_final_root`,
+   no correction message) — **remains a true identity alias**: the D1
+   canonical data-product entity's own title/representation is exactly this
+   file pattern, so the expression denotes the same entity. Audited
+   separately; not demoted because of the corrective case above.
+
 `configs/query_expansions.yaml` must not automatically become alias data; no
 mass migration in D2 (D3/D4 own migration).
-
-**Existing alias audit (2 accepted, both compliant)**: `restgas_profile.txt`
-(generic_user_term → `configuration.restgas_profile`) maps the colloquial
-user filename to the configuration key it denotes — identity-equivalent
-expression of the same referent, with correction_message documenting that no
-literal file exists; `*_pid_final.root` (file_pattern →
-`data_product.restgas.pid_final_root`) is the filename pattern of that exact
-data product. Both satisfy the D2 alias definition; no clarification required.
 
 ## 6. `SAME_AS` consumption contract (frozen; not activated in A0)
 
@@ -216,17 +284,37 @@ remains a relation-candidate vocabulary and is not reused):
 
 - `RESOLVED_UNIQUE` — one governed entity is supported by permitted evidence
   within scope.
-- `RESOLVED_MULTIPLE` (**MULTIPLE**) — multiple valid entities are explicitly
-  requested or the phrase legitimately denotes several entities (e.g. a
-  plural/collective mention); all are returned; not a failure.
-- `AMBIGUOUS` — the resolver cannot safely select among competing identities;
-  candidates are surfaced; no selection.
+- `RESOLVED_MULTIPLE` — **only** when the mention/query semantics legitimately
+  denote multiple entities: an explicit plural/collective request, a user
+  asking for several named entities, or one mention intentionally referring
+  to a set. This is a **valid resolution, not uncertainty**; all denoted
+  entities are returned.
+- `AMBIGUOUS` — the mention is intended to identify one entity, but multiple
+  plausible candidates remain and the resolver cannot safely choose (same
+  singular symbol in multiple scopes; same title on several entities; a
+  descriptive phrase with two equally plausible candidates). No selected
+  object.
 - `UNRESOLVED` — no sufficiently grounded candidate exists.
 - Preserved rejections: `REJECTED_VERSION`, `REJECTED_SCOPE`,
   `MISSING_TARGET` (existing C5 semantics unchanged).
 - Unsupported mentions (no deterministic mention evidence at all) are simply
   absent from the receipt, not forced to UNRESOLVED — the receipt records what
   was interpreted.
+
+**Deliberate D2 supersession of C5 collision semantics:** C5 returns
+`RESOLVED_MULTIPLE` for "multiple distinct objects share the exact match";
+that is historical behavior. **In D2, competing candidates for a singular
+mention are `AMBIGUOUS`, not `RESOLVED_MULTIPLE`.** D2-A1 implements this in
+the shadow resolver; C5 runtime code is not changed in A0R1.
+
+Receipt accounting semantics (frozen for A1): `AMBIGUOUS` →
+`ambiguous_mentions`; a valid `RESOLVED_MULTIPLE` result is a resolved
+multi-entity result and must not be placed in the ambiguity bucket; A1 may
+adjust the receipt structure accordingly. Future `fallback_required`
+meaning: ambiguous/unresolved cases may require fallback; a valid
+multi-entity resolution is not inherently fallback-worthy; corrective terms
+may require correction/fallback depending on whether an authoritative target
+is established. Not implemented in A0R1.
 
 Ambiguity is never collapsed into arbitrary top-1.
 
@@ -267,16 +355,24 @@ or "the model used to extract luminosity from the LMD angular distribution"
 "the step that reads the first PID output and writes the boost ROOT file" →
 `workflow.restgas.first_pass_poca`.
 
-Frozen rules: **a descriptive paraphrase may generate or score candidates, but
-semantic similarity alone must never become identity truth** (Tier D
-constraints, Section 4). D2-A1 must attach interpretable
-evidence/diagnostics for every descriptive decision. Candidates come only
-from existing governed entities (D1 canonical entities, source-native
-entities, accepted alias targets, accepted identity-linked representations);
-**the resolver must not invent new canonical objects at query time**; no
-unrestricted corpus-wide LLM entity invention. Implementation choices (e.g.
-any embedding-based candidate retrieval) belong to D2-A1 design within these
-bounds.
+Frozen rules: **a descriptive paraphrase may generate or score candidates and,
+when the governed descriptive-evidence bundle (Section 4, Tier D) is fully
+satisfied, may directly resolve to an existing governed canonical entity;
+semantic similarity alone must never become identity truth, and descriptive
+inference must never canonicalize one matched record into a different
+record.** D2-A1 must attach interpretable evidence/diagnostics for every
+descriptive decision, recording at minimum: mention text; candidate set;
+selected entity; evidence category = descriptive inference;
+source/type/version constraints; the descriptive features or structured facts
+used; competing candidates and why they were rejected; whether
+canonicalization occurred; whether any exact/G/S evidence contributed; and
+the abstention reason when unresolved. No opaque `confidence = 0.91` without
+explanation. Candidates come only from existing governed entities (D1
+canonical entities, source-native entities, accepted alias targets, accepted
+identity-linked representations); **the resolver must not invent new
+canonical objects at query time**; no unrestricted corpus-wide LLM entity
+invention. Implementation choices (e.g. any embedding-based candidate
+retrieval) belong to D2-A1 design within these bounds.
 
 ## 13. Query-expansion boundary
 
@@ -315,6 +411,22 @@ description; 9. ambiguous terminology; 10. related-but-not-identical
 terminology; 11. version-sensitive identifier; 12. unsupported/unresolvable
 expression.
 
+D2-A0R1 case-type clarifications (binding for A2):
+
+- **Pure descriptive positive cases** (no exact alias/title/symbol/path
+  present): expected behavior is correct descriptive resolution when the
+  evidence bundle is sufficient, otherwise safe abstention (categories 6–8).
+- **Corrective-term cases**: expected behavior is correction surfaced with no
+  false Tier G identity claim. `restgas_profile.txt` may appear as a
+  governance-type corrective example only if exposure policy permits; its
+  exact wording must not drive A1 implementation beyond the frozen generic
+  corrective-term mechanism.
+- **Singular ambiguity cases**: competing candidates for a singular mention
+  must produce `AMBIGUOUS` (category 9).
+- **Genuine multiple cases**: if natural corpus examples exist, validate
+  `RESOLVED_MULTIPLE`; if none exist, record applicability as unavailable
+  rather than inventing artificial production behavior.
+
 ## 16. D2-A2 preregistration — positive/negative cases and metrics
 
 Both positive (defensible canonical/source-native target exists) and
@@ -346,6 +458,16 @@ Decision accounting (reported separately, never collapsed into one score):
 correct_resolve / wrong_resolve / correct_abstain / wrong_abstain /
 correct_ambiguous / wrong_ambiguous / not_applicable
 ```
+
+Evidence-validity accounting additionally distinguishes:
+
+```text
+true identity resolution        # Tier G/S evidence
+descriptive inferential resolution  # governed Tier D bundle
+corrective-term handling        # correction surfaced, no Tier G claim
+```
+
+These three authority categories must not be collapsed into one.
 
 High-severity accounting: **wrong confident resolution is architecturally
 more concerning than a safe unresolved result**; the resolver favors identity
@@ -383,8 +505,11 @@ retrieval/QA runs unless a later task explicitly needs interaction evidence.
 Evaluation questions and paraphrases are measurement data, not resolver
 implementation specifications. D2-A1 must not add question-ID rules, exact
 benchmark phrase routes, hidden answer locations, benchmark-derived aliases,
-or phrase-specific candidate overrides. Any genuinely needed new alias must
-satisfy the governed alias contract independently of the evaluation case.
+or phrase-specific candidate overrides (in particular, no
+`if "restgas_profile.txt" then ...`-style rules — corrective handling is a
+generic mechanism keyed on the frozen alias-classification rule, never on the
+surface string). Any genuinely needed new alias must satisfy the governed
+alias contract independently of the evaluation case.
 
 ## 20. D2-A3 role-decision criteria
 
@@ -419,19 +544,27 @@ change production retrieval/fusion/selector; use protected evaluation data.
 
 ## 23. Frozen decisions and open questions
 
-Frozen: the evidence hierarchy (Section 4); alias boundary (Section 5);
-`SAME_AS` consumption rules (Section 6); matched ≠ canonical result contract
-(Section 7); version rules (Section 8); status vocabulary (Section 9);
-abstention-first principle (Section 10); thin mention interface (Section 11);
-descriptive constraints (Section 12); query-expansion non-authority
-(Section 13); shadow-only A1 (Section 14); A2 categories/metrics/accounting
-(Sections 15–16); exposure rules (Section 17); A3 role gate (Section 20);
-benchmark-independence (Section 19).
+Frozen: the evidence hierarchy (Section 4, including the governed
+descriptive-evidence bundle and the descriptive-vs-canonicalization
+distinction); alias/corrective-term boundary and the per-alias classification
+(Section 5); `SAME_AS` consumption rules (Section 6); matched ≠ canonical
+result contract (Section 7); version rules (Section 8); status vocabulary with
+`RESOLVED_MULTIPLE` vs `AMBIGUOUS` semantics and the deliberate supersession
+of C5 collision behavior (Section 9); abstention-first principle
+(Section 10); thin mention interface (Section 11); descriptive constraints
+and required diagnostics (Section 12); query-expansion non-authority
+(Section 13); shadow-only A1 (Section 14); A2 categories/case-type
+clarifications/metrics/accounting (Sections 15–16); exposure rules
+(Section 17); A3 role gate (Section 20); benchmark-independence
+(Section 19).
 
 Open questions (deferred, to be resolved by evidence in A1/A2): the concrete
-descriptive candidate-generation mechanism (deterministic lexical overlap vs
-embedding-assisted candidate retrieval — Tier D constraints bind either
-way); whether the C5 mention-extraction helpers are extended in place or
-wrapped; the exact diagnostic schema field names (semantics frozen in
-Section 7); the final A2 case list (built by the source-first process, not
-now).
+descriptive candidate-generation mechanism and how Tier N signals are
+transformed into auditable Tier D bundle evidence (deterministic lexical
+overlap vs embedding-assisted candidate retrieval — the bundle constraints
+bind either way); whether the C5 mention-extraction helpers are extended in
+place or wrapped; the exact diagnostic schema field names (semantics frozen
+in Sections 7 and 12); the receipt-structure adjustment for valid
+`RESOLVED_MULTIPLE` results and the refined `fallback_required` semantics
+(meaning frozen in Section 9, implementation deferred to A1); the final A2
+case list (built by the source-first process, not now).
