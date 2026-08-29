@@ -21,7 +21,13 @@
 > deterministic parent/workflow integrity validators, the
 > `load_structured_objects` structured read boundary, normalized/SQL
 > round-trip and index-compatibility verification, and the tiny read-only
-> structured smokes; **D1 overall `COMPLETE / PASS`**; implementation records
+> structured smokes;
+> `D1-A3R1 = COMPLETE / REAL_CORPUS_COMPATIBILITY_PASS` (2026-08-29) —
+> read-only compatibility preflight over the complete real normalized corpus
+> (parent integrity and universal WorkflowStep gates PASS with zero failures,
+> zero validator changes) and corrected future-state accounting (emitted
+> `metadata.curated_seed` WorkflowStep governance metadata);
+> **D1 overall `COMPLETE / PASS`**; implementation records
 > in `docs/EVALUATION_STATUS.md`. D2 owns concept/entity resolution; D3/D4 own
 > shortcut migration. No production behavior changed in any D1 task.
 
