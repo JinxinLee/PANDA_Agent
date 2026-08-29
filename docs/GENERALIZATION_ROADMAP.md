@@ -378,7 +378,7 @@ Phase D remains `NOT_STARTED`.
 
 ### D1 — Concept/entity schema
 
-- **Status:** NOT_STARTED
+- **Status:** IN_PROGRESS (D1-A0 `COMPLETE / CONTRACT_FROZEN` 2026-08-29; D1-A1 `NOT_STARTED`)
 - **Problem:** Query expansions and routing carry PANDA knowledge that belongs in auditable corpus/entity/relation structures.
 - **Goal:** Introduce a restrained domain entity model by extending existing KnowledgeObject/relation architecture.
 - **Why this stage:** Retrieval interfaces are proven before adding a knowledge abstraction that they can consume.
@@ -390,6 +390,7 @@ Phase D remains `NOT_STARTED`.
 - **Primary metrics:** Schema validity, provenance completeness, accepted relation resolution, and zero index-integrity regression.
 - **Acceptance criteria:** A small representative knowledge set is expressible through existing architecture without encoding answer locations.
 - **Failure handling:** Reduce categories/relations to evidenced use cases; keep uncertain proposals pending rather than accepted. Stop after D1.
+- **D1-A0 closeout — 2026-08-29 (`COMPLETE / CONTRACT_FROZEN`):** static inventory and identity-contract freeze, zero production/model/index operations. Authoritative contract: `docs/PHASE_D1_A0_CONTRACT.md`. Findings: all roadmap D1 object categories are already representable by existing `KnowledgeObject` types (no new object types); source-native entities remain version-bound while curated domain-level entities keep stable identity in the curated namespace; the C5 identity-strength finding is frozen as the strong-identity vs weak-retrieval evidence taxonomy; aliases are identity-equivalent expressions only; the 22 existing predicates cover the representative shapes, with exactly one authorized addition (`SAME_AS` identity predicate) and no `IMPLEMENTED_BY`/`DESCRIBED_IN`/`USES`/`PART_OF`/`RELATED_TO`; audit found curated accepted relations carry only prose `evidence_note` with empty `source_version_ids`/`evidence_object_ids`, so D1-A1 must enforce machine-traceable provenance; storage needs at most payload/metadata-level changes with no re-embedding; `EntityResolver` is inherited by D2, not replaced. D1-A1 implementation boundary is fixed in contract Section K.
 
 ### D2 — Concept/entity resolver
 

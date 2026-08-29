@@ -9,7 +9,14 @@ When records conflict, use the single section explicitly marked **Current author
 
 ---
 
-# Current authoritative state — 2026-08-27
+# Current authoritative state — 2026-08-29
+
+## D1-A0 current authoritative state — 2026-08-29
+
+- `D1 = IN_PROGRESS`; `D1-A0 = COMPLETE / CONTRACT_FROZEN` (2026-08-29); `D1-A1 = NOT_STARTED`. The frozen D1 contract is `docs/PHASE_D1_A0_CONTRACT.md` (sections A–K), inspected at source HEAD `d684329`.
+- D1-A0 was a static architecture task: zero model/retrieval/QA/judge/SQL/Qdrant/index operations, zero production code changes, zero alias population, zero query-expansion migration. Only documentation changed (new contract document; roadmap D1 card status; this section).
+- Frozen decisions: reuse existing `KnowledgeObject`/`KnowledgeAlias`/`RelationEdge`/`RelationCandidate`/`WorkflowStep` with no new object types and no separate graph platform; source-native entities version-bound, curated domain-level entities stable; strong-identity vs weak-retrieval evidence taxonomy frozen per the C5 identity-strength finding; aliases are identity-equivalent expressions only; exactly one new predicate authorized for D1-A1 (`SAME_AS`); accepted curated relations must carry machine-traceable provenance (current seeds carry only prose `evidence_note`); `EntityResolver` is inherited by D2.
+- Lifecycle roles recovered and unchanged: production exact `LEGACY_EXACT`; production sparse the exact raw question; RawDense production-authoritative with SemanticDense `KEEP_DISABLED`; fusion `P0 CURRENT` production-authoritative; `CURRENT_SELECTOR` production-authoritative; C8 `DEFERRED / INSUFFICIENT_NATURAL_TARGETED_APPLICABILITY_FOR_PREREGISTERED_A3`; no C8/G1 architecture production-wired.
 
 ## C8-A2-C0 current authoritative state — 2026-08-27
 
