@@ -12,7 +12,10 @@ untracked artifact being `data/sources.zip`. `origin/main` carries two
 additional commits (`a3aebba`, `a11bd87`, holdout source-path portability in
 `src/panda_agent/source.py` and novel preflight tooling) that do not touch the
 knowledge schema, relation ontology, storage contracts, alias corpus, or
-`EntityResolver` audited here.
+`EntityResolver` audited here. These were merged into local main at `f45a55f`
+together with the later holdout protocol/firewall commits (`73f3134`,
+`df77c88`, novel holdout curation documents and validation tooling), which
+likewise do not touch the audited contracts.
 
 ---
 
