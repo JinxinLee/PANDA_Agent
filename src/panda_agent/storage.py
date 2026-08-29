@@ -116,6 +116,25 @@ def restore_object_parent(record: Mapping[str, Any]) -> dict:
   return restored
 
 
+_OBJECT_READ_COLUMNS = (
+  "object_id,object_type,source_id,source_version_id,title,text,"
+  "authority_level,locator,metadata,canonical_locator,token_count,embedding_eligible"
+)
+
+
+def load_structured_objects(connection: Any) -> list[dict[str, Any]]:
+  """Structured D1 read boundary: reconstruct complete KnowledgeObject-shaped
+  records from persisted storage without losing metadata or the governed
+  structural parent (restored via the frozen ``restore_object_parent``
+  contract).  Read-only; no review-state or identity semantics are inferred.
+  """
+  rows = connection.execute(
+    f"SELECT {_OBJECT_READ_COLUMNS} FROM knowledge_objects ORDER BY object_id"
+  ).fetchall()
+  columns = _OBJECT_READ_COLUMNS.split(",")
+  return [restore_object_parent(dict(zip(columns, row))) for row in rows]
+
+
 @dataclass(frozen=True)
 class StorageSettings:
     database_url: str = "postgresql://panda:panda@127.0.0.1:55432/panda_qa"

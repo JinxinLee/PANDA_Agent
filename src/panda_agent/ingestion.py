@@ -708,6 +708,7 @@ def seed_workflow_steps(project_root: Path) -> list[WorkflowStep]:
             outputs=item.outputs,
             predecessor_step_ids=item.predecessor_step_ids,
             successor_step_ids=item.successor_step_ids,
+            metadata={"curated_seed": True},
         )
         for item in load_seed_workflows(project_root / "configs" / "seed_workflows.yaml").steps
     ]
@@ -1164,6 +1165,127 @@ def resolve_relation_candidates(
     return edges, audited
 
 
+def validate_parent_integrity(objects: Iterable[KnowledgeObject]) -> None:
+    """Deterministic structural-parent integrity (D1-A3): every non-null
+    parent reference resolves, no self-parent, no parent chain cycle."""
+    object_map = {item.object_id: item for item in objects}
+    for obj in object_map.values():
+        parent_id = obj.parent_object_id
+        if parent_id is None:
+            continue
+        if parent_id == obj.object_id:
+            raise ValueError(f"object references itself as structural parent: {obj.object_id}")
+        if parent_id not in object_map:
+            raise ValueError(
+                f"structural parent does not exist: {obj.object_id} -> {parent_id}"
+            )
+    for start in object_map.values():
+        chain = {start.object_id}
+        current = start.parent_object_id
+        while current is not None:
+            if current in chain:
+                raise ValueError(f"structural parent cycle detected at: {current}")
+            chain.add(current)
+            current = object_map[current].parent_object_id
+
+
+def validate_workflow_integrity(
+    objects: Iterable[KnowledgeObject],
+    workflows: Iterable[WorkflowStep],
+    relations: Iterable[RelationEdge],
+) -> None:
+    """Deterministic curated WorkflowStep integrity (D1-A3).
+
+    Universal checks (unique step IDs, no self references, resolvable step
+    references, non-contradictory reciprocal declarations) apply to every
+    step.  Full reference and data-flow validation applies to curated seed
+    steps (``metadata.curated_seed``): their workflow/entrypoint/input/output
+    IDs must resolve to objects, and a declared entrypoint data flow must be
+    supported by accepted CONSUMES/PRODUCES relations on the entrypoint
+    process.  WorkflowStep never creates semantic claims of its own; corpus
+    script steps keep their virtual ``script.<source>`` workflow container and
+    raw-filename inputs and are not held to the curated reference contract.
+    """
+    object_map = {item.object_id: item for item in objects}
+    steps = list(workflows)
+    step_ids = {step.step_id for step in steps}
+    if len(step_ids) != len(steps):
+        raise ValueError("workflow step IDs are not unique")
+    accepted_by_subject: dict[tuple[str, str], set[str]] = {}
+    for edge in relations:
+        if edge.review_status is ReviewStatus.ACCEPTED:
+            accepted_by_subject.setdefault(
+                (edge.subject_id, edge.predicate), set()
+            ).add(edge.object_id)
+    for step in steps:
+        for field, values in (
+            ("predecessor_step_ids", step.predecessor_step_ids),
+            ("successor_step_ids", step.successor_step_ids),
+        ):
+            for other in values:
+                if other == step.step_id:
+                    raise ValueError(f"workflow step references itself: {step.step_id}")
+                if other not in step_ids:
+                    raise ValueError(
+                        f"workflow step references missing step: {step.step_id} -> {other}"
+                    )
+        for other in steps:
+            if other.step_id == step.step_id:
+                continue
+            if (
+                other.step_id in step.predecessor_step_ids
+                and step.step_id in other.predecessor_step_ids
+            ):
+                raise ValueError(
+                    f"contradictory predecessor declarations: {step.step_id} <-> {other.step_id}"
+                )
+            if (
+                other.step_id in step.successor_step_ids
+                and step.step_id in other.successor_step_ids
+            ):
+                raise ValueError(
+                    f"contradictory successor declarations: {step.step_id} <-> {other.step_id}"
+                )
+        if not step.metadata.get("curated_seed"):
+            continue
+        if step.workflow_id not in object_map:
+            raise ValueError(
+                f"curated workflow step references missing workflow object: "
+                f"{step.step_id} -> {step.workflow_id}"
+            )
+        if step.entrypoint_object_id is not None and step.entrypoint_object_id not in object_map:
+            raise ValueError(
+                f"curated workflow step references missing entrypoint object: "
+                f"{step.step_id} -> {step.entrypoint_object_id}"
+            )
+        for field, values in (("inputs", step.inputs), ("outputs", step.outputs)):
+            for object_id in values:
+                if object_id not in object_map:
+                    raise ValueError(
+                        f"curated workflow step references missing {field} object: "
+                        f"{step.step_id} -> {object_id}"
+                    )
+        if step.entrypoint_object_id is not None:
+            supported_inputs = accepted_by_subject.get(
+                (step.entrypoint_object_id, "CONSUMES"), set()
+            )
+            supported_outputs = accepted_by_subject.get(
+                (step.entrypoint_object_id, "PRODUCES"), set()
+            )
+            for object_id in step.inputs:
+                if object_id not in supported_inputs:
+                    raise ValueError(
+                        f"curated workflow step input is not supported by an accepted "
+                        f"CONSUMES relation: {step.step_id} -> {object_id}"
+                    )
+            for object_id in step.outputs:
+                if object_id not in supported_outputs:
+                    raise ValueError(
+                        f"curated workflow step output is not supported by an accepted "
+                        f"PRODUCES relation: {step.step_id} -> {object_id}"
+                    )
+
+
 def validate_relation_integrity(
     objects: Iterable[KnowledgeObject], relations: Iterable[RelationEdge]
 ) -> None:
@@ -1182,6 +1304,7 @@ def validate_ingestion_contract(
     objects: Iterable[KnowledgeObject],
     candidates: Iterable[RelationCandidate],
     relations: Iterable[RelationEdge],
+    workflows: Iterable[WorkflowStep] = (),
 ) -> None:
     schema = load_knowledge_schema(project_root / "configs" / "knowledge_schema.yaml")
     ontology = load_relation_ontology(project_root / "configs" / "relation_ontology.yaml")
@@ -1205,6 +1328,8 @@ def validate_ingestion_contract(
         raise ValueError(f"unknown relation predicates: {unknown_predicates}")
     validate_relation_integrity(objects, relations)
     validate_identity_relations(objects, relations)
+    validate_parent_integrity(objects)
+    validate_workflow_integrity(objects, workflows, relations)
 
 
 def write_jsonl(path: Path, records: Iterable[dict[str, Any]]) -> str:
@@ -1571,6 +1696,7 @@ def ingest(project_root: Path) -> IngestionReport:
         unique_objects.values(),
         (),
         unique_relations.values(),
+        unique_workflows.values(),
     )
     allowed_predicates = {
         item.name

@@ -17,10 +17,13 @@
 > (2026-08-29) — the model concept corrected and renamed to
 > `concept.luminosityfit.luminosity_fit_model` over the elastic
 > antiproton-proton scattering angular distribution;
-> implementation records in `docs/EVALUATION_STATUS.md`. D1-A3 owns
-> integrity/storage/index compatibility and the tiny read-only smoke; D2/D3/D4
-> own resolver and migration work. No production behavior changed in D1-A0,
-> D1-A0R1, D1-A0R2, D1-A1, D1-A1R1, or D1-A2.
+> `D1-A3 = COMPLETE / INTEGRITY_AND_COMPATIBILITY_PASS` (2026-08-29) —
+> deterministic parent/workflow integrity validators, the
+> `load_structured_objects` structured read boundary, normalized/SQL
+> round-trip and index-compatibility verification, and the tiny read-only
+> structured smokes; **D1 overall `COMPLETE / PASS`**; implementation records
+> in `docs/EVALUATION_STATUS.md`. D2 owns concept/entity resolution; D3/D4 own
+> shortcut migration. No production behavior changed in any D1 task.
 
 Repository provenance (recorded precisely; Git history is not rewritten):
 
