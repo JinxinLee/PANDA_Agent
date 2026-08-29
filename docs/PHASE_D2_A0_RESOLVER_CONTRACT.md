@@ -1,6 +1,14 @@
 # PANDA Agent — Phase D2-A0: Resolver Contract and Evaluation Preregistration
 
-> Status: `COMPLETE / CONTRACT_AND_PREREGISTRATION_FROZEN` (2026-08-29).
+> Status: `COMPLETE / CONTRACT_AND_PREREGISTRATION_FROZEN` (2026-08-29);
+> `D2-A0R1 = COMPLETE / DESCRIPTIVE_AND_STATUS_CONTRACT_REFROZEN` (2026-08-29);
+> `D2-A1 = COMPLETE / SHADOW_RESOLVER_IMPLEMENTED` (2026-08-29) — implemented
+> per this contract in shadow mode only: `EntityResolver.resolve_shadow` +
+> the pure `descriptive_resolution` Tier D module + the
+> `Retriever.shadow_resolve` entry; accepted `SAME_AS` active in the shadow
+> only (`identity_relation_support = "ACTIVE_SHADOW"`); implementation
+> records in `docs/EVALUATION_STATUS.md`. Design/contract/preregistration
+> stage semantics unchanged.
 > Design/contract/preregistration stage. No runtime behavior changed; the D2
 > shadow resolver is NOT implemented here (D2-A1 owns it) and `SAME_AS`
 > traversal is NOT activated. Authoritative D1 baseline: `30455d4`

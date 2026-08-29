@@ -1256,6 +1256,22 @@ class Retriever:
                         return ordered
         return ordered[:limit]
 
+    def shadow_resolve(
+        self, question: str, plan: RetrievalPlan
+    ) -> dict[str, Any]:
+        """D2 shadow: conservative concept/entity resolution diagnostics.
+
+        Requires an explicit RetrievalPlan so the shadow never triggers an
+        analyzer call.  Read-only: it never calls models, embeddings, or any
+        retrieval channel, and production retrieval paths are untouched.
+        """
+        resolver = EntityResolver(self.storage, context_sources=self.context_sources)
+        receipt = resolver.resolve_shadow(
+            question,
+            plan.model_dump(mode="json") if isinstance(plan, RetrievalPlan) else plan,
+        )
+        return {"resolution_receipt": receipt.as_dict()}
+
     def shadow_exact(
         self, question: str, plan: RetrievalPlan
     ) -> dict[str, Any]:
