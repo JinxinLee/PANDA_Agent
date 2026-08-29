@@ -112,3 +112,26 @@ objects:
     title: Restgas second-pass PID workflow
     text: Workflow that reads event_poca through POCA_VERTEX_FILE and writes the final PID product.
     identity_role: canonical
+  - object_id: workflow.restgas.first_pass_poca
+    object_type: workflow
+    title: Restgas first-pass POCA analysis
+    text: >-
+      First-pass analysis process of the RestgasDetermination two-pass
+      reconstruction: it consumes the first-pass PID product, performs the
+      event-by-event POCA vertex extrapolation of target-spectrometer tracks,
+      and writes the boost ROOT output containing the event_poca tree. The
+      process is a stable domain abstraction of the analysis stage implemented
+      by the locked macro/target/ana_dpm.C source.
+    identity_role: canonical
+  - object_id: concept.luminosityfit.differential_luminosity_model
+    object_type: physics_concept
+    title: Differential luminosity model
+    text: >-
+      The differential luminosity model of the LuminosityFit framework: a model
+      of the reconstructed photon-pair kinematics composed from the DPM
+      elastic-scattering cross section, the LMD angular acceptance, and the
+      detector resolution smearing, assembled by the model factory and fitted
+      to data to determine the luminosity. The abstraction is defined by the
+      LuminosityFit framework chapter of the Pflueger thesis and realized by
+      the model-and-fit subsystem; it is stable across corpus versions.
+    identity_role: canonical

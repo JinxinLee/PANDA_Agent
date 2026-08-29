@@ -121,6 +121,13 @@ _EVIDENCE_FIXTURES = [
         path="data/PndLmdCombinedDataReader.cxx",
     ),
     _object(
+        "object.factory",
+        object_type="source_file",
+        source_id="luminosityfit",
+        source_version=LUMINOSITYFIT_VERSION,
+        path="model/PndLmdModelFactory.cxx",
+    ),
+    _object(
         "object.effcorr2",
         object_type="source_file",
         source_id="restgas_determination",
@@ -220,7 +227,7 @@ class IdentityRoleTests(unittest.TestCase):
         source_native = [
             item for item in objects if item.metadata.get("identity_role") == "source_native"
         ]
-        self.assertEqual(len(canonical), 20)
+        self.assertEqual(len(canonical), 22)
         self.assertEqual(len(source_native), 2)
         self.assertTrue(
             all(item.object_type == "repository_version" for item in source_native)
@@ -261,12 +268,8 @@ class SeedRelationMaterializationTests(unittest.TestCase):
     def test_review_status_is_taken_from_the_seed_config(self) -> None:
         accepted = self._accepted()
         pending = [edge for edge in self.edges if edge.review_status is ReviewStatus.PENDING]
-        self.assertEqual(len(accepted), 14)
-        self.assertEqual(len(pending), 1)
-        self.assertEqual(
-            (pending[0].subject_id, pending[0].predicate, pending[0].object_id),
-            ("data_product.restgas.pid_root", "PRODUCES_INPUT_FOR", "data_product.restgas.event_poca"),
-        )
+        self.assertEqual(len(accepted), 16)
+        self.assertEqual(len(pending), 0)
 
     def test_accepted_relations_carry_machine_traceable_provenance(self) -> None:
         accepted = self._accepted()
@@ -289,8 +292,11 @@ class SeedRelationMaterializationTests(unittest.TestCase):
             ("workflow.pandaroot.lmd_reconstruction", "PRODUCES", "data_product.pandaroot.lumi_trks_qa"): [PANDAROOT_VERSION],
             ("data_product.pandaroot.lumi_trks_qa", "PRODUCES_INPUT_FOR", "subsystem.luminosityfit.panda_data_io"): [LUMINOSITYFIT_VERSION],
             ("paper.karavdina_2015.chapter_4", "THEORETICAL_BASIS_FOR", "workflow.pandaroot.lmd_reconstruction"): [KARAVDINA_VERSION],
-            ("paper.pflueger_2017.chapter_4", "THEORETICAL_BASIS_FOR", "subsystem.luminosityfit.model_and_fit"): [PFLUEGER_VERSION],
+            ("paper.pflueger_2017.chapter_4", "FORMALIZES", "concept.luminosityfit.differential_luminosity_model"): [PFLUEGER_VERSION],
+            ("subsystem.luminosityfit.model_and_fit", "IMPLEMENTS", "concept.luminosityfit.differential_luminosity_model"): [LUMINOSITYFIT_VERSION],
             ("document.pandaroot_sphinx_2023_08_25_dev", "OPERATIONALLY_DOCUMENTS", "workflow.pandaroot.generic"): [SPHINX_VERSION],
+            ("workflow.restgas.first_pass_poca", "CONSUMES", "data_product.restgas.pid_root"): [RESTGAS_VERSION],
+            ("workflow.restgas.first_pass_poca", "PRODUCES", "data_product.restgas.boost_root"): [RESTGAS_VERSION],
         }
         for key, expected in expectations.items():
             self.assertEqual(by_pair[key].source_version_ids, expected, str(key))
@@ -307,18 +313,6 @@ class SeedRelationMaterializationTests(unittest.TestCase):
             ),
             "endpoint curated versions must never replace evidence grounding",
         )
-
-    def test_pending_relation_keeps_deferred_requirement_and_stays_non_authoritative(
-        self,
-    ) -> None:
-        pending = next(
-            edge for edge in self.edges if edge.review_status is ReviewStatus.PENDING
-        )
-        self.assertIn("deferred_requirement", pending.metadata)
-        self.assertIn("D1-A2", pending.metadata["deferred_requirement"])
-        # The retrieval graph channel only traverses review_status='accepted'
-        # rows, so a pending edge stored here is structurally non-authoritative.
-        self.assertNotEqual(pending.review_status, ReviewStatus.ACCEPTED)
 
     def test_boost_root_containment_is_structural_not_produces(self) -> None:
         self.assertFalse(
@@ -338,15 +332,108 @@ class SeedRelationMaterializationTests(unittest.TestCase):
             event_poca.parent_object_id, "data_product.restgas.boost_root"
         )
 
-    def test_pflueger_ambiguity_normalized_to_existing_predicate(self) -> None:
-        edge = next(
-            edge
-            for edge in self.edges
-            if edge.subject_id == "paper.pflueger_2017.chapter_4"
+    def test_pflueger_model_concept_pattern_is_represented(self) -> None:
+        """D1-A2 pattern: theory/document FORMALIZES the domain concept, and
+        the implementing subsystem IMPLEMENTS it; the D1-A1 direct
+        paper-to-subsystem stand-in edge is no longer authoritative."""
+        seed_ids = {item.object_id for item in self.objects}
+        self.assertIn("concept.luminosityfit.differential_luminosity_model", seed_ids)
+        concept = next(
+            item
+            for item in self.objects
+            if item.object_id == "concept.luminosityfit.differential_luminosity_model"
         )
-        self.assertEqual(edge.predicate, "THEORETICAL_BASIS_FOR")
-        self.assertEqual(edge.review_status, ReviewStatus.ACCEPTED)
-        self.assertNotEqual(edge.predicate, "FORMALIZES")
+        self.assertEqual(concept.metadata.get("identity_role"), "canonical")
+        by_pair = {
+            (edge.subject_id, edge.predicate, edge.object_id): edge
+            for edge in self.edges
+        }
+        formalizes = by_pair[
+            (
+                "paper.pflueger_2017.chapter_4",
+                "FORMALIZES",
+                "concept.luminosityfit.differential_luminosity_model",
+            )
+        ]
+        implements = by_pair[
+            (
+                "subsystem.luminosityfit.model_and_fit",
+                "IMPLEMENTS",
+                "concept.luminosityfit.differential_luminosity_model",
+            )
+        ]
+        self.assertEqual(formalizes.review_status, ReviewStatus.ACCEPTED)
+        self.assertEqual(implements.review_status, ReviewStatus.ACCEPTED)
+        self.assertEqual(
+            sorted(formalizes.evidence_object_ids), sorted(PFLUEGER_EVIDENCE)
+        )
+        self.assertEqual(
+            implements.evidence_object_ids, ["object.factory"]
+        )
+        self.assertNotIn(
+            (
+                "paper.pflueger_2017.chapter_4",
+                "THEORETICAL_BASIS_FOR",
+                "subsystem.luminosityfit.model_and_fit",
+            ),
+            by_pair,
+            "the superseded direct paper-to-subsystem edge must not remain",
+        )
+
+    def test_first_pass_poca_data_flow_pattern_is_represented(self) -> None:
+        """D1-A2 pattern: the materialized first-pass POCA process carries the
+        process-centric data flow, replacing the pending product-to-product
+        shortcut; containment stays structural via parent_object_id."""
+        by_pair = {
+            (edge.subject_id, edge.predicate, edge.object_id): edge
+            for edge in self.edges
+        }
+        consumes = by_pair[
+            ("workflow.restgas.first_pass_poca", "CONSUMES", "data_product.restgas.pid_root")
+        ]
+        produces = by_pair[
+            ("workflow.restgas.first_pass_poca", "PRODUCES", "data_product.restgas.boost_root")
+        ]
+        self.assertEqual(consumes.review_status, ReviewStatus.ACCEPTED)
+        self.assertEqual(produces.review_status, ReviewStatus.ACCEPTED)
+        self.assertNotIn(
+            (
+                "data_product.restgas.pid_root",
+                "PRODUCES_INPUT_FOR",
+                "data_product.restgas.event_poca",
+            ),
+            by_pair,
+            "the obsolete pending product-to-product edge must be gone",
+        )
+        self.assertNotIn(
+            (
+                "workflow.restgas_profile_reconstruction",
+                "PRODUCES",
+                "data_product.restgas.boost_root",
+            ),
+            by_pair,
+            "the superseded workflow-level stand-in edge must be gone",
+        )
+        event_poca = next(
+            item
+            for item in self.objects
+            if item.object_id == "data_product.restgas.event_poca"
+        )
+        self.assertEqual(
+            event_poca.parent_object_id, "data_product.restgas.boost_root"
+        )
+
+    def test_seed_workflow_step_records_stage_decomposition(self) -> None:
+        from panda_agent.ingestion import seed_workflow_steps
+
+        steps = seed_workflow_steps(REPO_ROOT)
+        self.assertEqual(len(steps), 1)
+        step = steps[0]
+        self.assertEqual(step.workflow_id, "workflow.restgas_profile_reconstruction")
+        self.assertEqual(step.step_id, "workflow.restgas.first_pass_poca")
+        self.assertEqual(step.entrypoint_object_id, "workflow.restgas.first_pass_poca")
+        self.assertEqual(step.inputs, ["data_product.restgas.pid_root"])
+        self.assertEqual(step.outputs, ["data_product.restgas.boost_root"])
 
 
 class EvidenceResolutionTests(unittest.TestCase):

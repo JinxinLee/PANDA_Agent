@@ -42,22 +42,32 @@ relations:
       - luminosityfit
 
   - subject_id: paper.pflueger_2017.chapter_4
-    predicate: THEORETICAL_BASIS_FOR
-    object_id: subsystem.luminosityfit.model_and_fit
+    predicate: FORMALIZES
+    object_id: concept.luminosityfit.differential_luminosity_model
     confidence: 1.0
     creation_method: curated
     review_status: accepted
     evidence_note: >-
-      Normalized in D1-A1 from FORMALIZES per the D1 contract C-class rule: the
-      chapter supplies the theoretical basis for the model-and-fit subsystem
-      implementation; the model-concept entity that FORMALIZES would target is
-      D1-A2 representative materialization and was not invented here. Evidence
-      is the source-native Pflueger thesis sections at the reviewed model,
-      acceptance, and fitting framework pages 51/57/65.
+      The LuminosityFit framework chapter (chapter 4, "Luminosity Determination")
+      gives the formal composition of the differential luminosity model. This
+      relation replaces the D1-A1 stand-in THEORETICAL_BASIS_FOR edge to the
+      subsystem once the deferred model concept was materialized in D1-A2.
     evidence_object_ids:
       - object.faaced8bd5058b2a19ba9528
       - object.86b7c9f862f3e5c328823444
       - object.6f688277a08ed2f236ae74df
+
+  - subject_id: subsystem.luminosityfit.model_and_fit
+    predicate: IMPLEMENTS
+    object_id: concept.luminosityfit.differential_luminosity_model
+    confidence: 1.0
+    creation_method: curated
+    review_status: accepted
+    evidence_note: The model-and-fit subsystem assembles the composed differential luminosity model through the model factory.
+    evidence_paths:
+      - model/PndLmdModelFactory.cxx
+    evidence_source_ids:
+      - luminosityfit
 
   - subject_id: concept.li_2026.restgas_effective_acceptance
     predicate: IMPLEMENTED_AS_PIPELINE
@@ -150,31 +160,34 @@ relations:
     evidence_source_ids:
       - restgas_determination
 
-  - subject_id: data_product.restgas.pid_root
-    predicate: PRODUCES_INPUT_FOR
-    object_id: data_product.restgas.event_poca
+  - subject_id: workflow.restgas.first_pass_poca
+    predicate: CONSUMES
+    object_id: data_product.restgas.pid_root
     confidence: 1.0
     creation_method: curated
-    review_status: pending
+    review_status: accepted
     evidence_note: >-
-      First-pass PID candidates are consumed by the POCA analysis that writes
-      event_poca. Pending per the D1 contract C-class rule: a product-to-product
-      input edge is not authoritative under the frozen semantics. Deferred to
-      D1-A2; not closed by widening predicates or inventing entities in D1-A1.
-    deferred_requirement: >-
-      Requires representative materialization of the consuming first-pass POCA
-      analysis relationship, e.g. an existing resolved consumer object with
-      CONSUMES pid_root (candidate corpus macro macro/target/ana_dpm.C), or an
-      equivalent already-authorized structure. Owned by D1-A2 per the D1
-      contract Section E.2 C-class ownership rule.
+      The first-pass POCA analysis consumes the first-pass PID candidates and
+      writes the boost ROOT output. Materialized in D1-A2 to replace the
+      pending product-to-product stand-in edge with the correct process-centric
+      data flow; the consuming stage is the locked macro/target/ana_dpm.C
+      source.
+    evidence_paths:
+      - macro/target/ana_dpm.C
+    evidence_source_ids:
+      - restgas_determination
 
-  - subject_id: workflow.restgas_profile_reconstruction
+  - subject_id: workflow.restgas.first_pass_poca
     predicate: PRODUCES
     object_id: data_product.restgas.boost_root
     confidence: 1.0
     creation_method: curated
     review_status: accepted
-    evidence_note: First-pass ana_dpm analysis writes the boost ROOT output.
+    evidence_note: >-
+      The first-pass ana_dpm analysis writes the boost ROOT output containing
+      the event_poca tree. Supersedes the former workflow-level PRODUCES edge,
+      whose evidence note described this stage; the stage decomposition of the
+      two-pass reconstruction workflow is recorded as a WorkflowStep.
     evidence_paths:
       - macro/target/ana_dpm.C
     evidence_source_ids:

@@ -1,0 +1,11 @@
+schema_version: "1.0"
+
+steps:
+  - workflow_id: workflow.restgas_profile_reconstruction
+    step_id: workflow.restgas.first_pass_poca
+    name: First-pass POCA analysis
+    entrypoint_object_id: workflow.restgas.first_pass_poca
+    inputs:
+      - data_product.restgas.pid_root
+    outputs:
+      - data_product.restgas.boost_root

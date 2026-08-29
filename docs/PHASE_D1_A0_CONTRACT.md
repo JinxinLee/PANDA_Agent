@@ -9,10 +9,14 @@
 > grounded in resolved evidence versions with inspectable-locator evidence
 > and per-path resolution accounting, and `parent_object_id` persists
 > canonically as `metadata.parent_object_id` with a frozen reload contract;
-> implementation records in `docs/EVALUATION_STATUS.md`. D1-A2 owns
-> representative knowledge materialization; D2/D3/D4 own resolver and
-> migration work. No production behavior changed in D1-A0, D1-A0R1,
-> D1-A0R2, D1-A1, or D1-A1R1.
+> `D1-A2 = COMPLETE / REPRESENTATIVE_KNOWLEDGE_MATERIALIZED` (2026-08-29) —
+> small representative batch materialized (model concept + first-pass POCA
+> process, FORMALIZES/IMPLEMENTS/CONSUMES/PRODUCES patterns, one WorkflowStep;
+> `SAME_AS` legitimately not exercised, see `docs/EVALUATION_STATUS.md`);
+> implementation records in `docs/EVALUATION_STATUS.md`. D1-A3 owns
+> integrity/storage/index compatibility and the tiny read-only smoke; D2/D3/D4
+> own resolver and migration work. No production behavior changed in D1-A0,
+> D1-A0R1, D1-A0R2, D1-A1, D1-A1R1, or D1-A2.
 
 Repository provenance (recorded precisely; Git history is not rewritten):
 

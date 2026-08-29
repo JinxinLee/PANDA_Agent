@@ -226,6 +226,29 @@ class SeedObjectsConfig(StrictModel):
         return self
 
 
+class SeedWorkflowConfig(StrictModel):
+    workflow_id: str
+    step_id: str
+    name: str
+    entrypoint_object_id: str | None = None
+    inputs: list[str] = Field(default_factory=list)
+    outputs: list[str] = Field(default_factory=list)
+    predecessor_step_ids: list[str] = Field(default_factory=list)
+    successor_step_ids: list[str] = Field(default_factory=list)
+
+
+class SeedWorkflowsConfig(StrictModel):
+    schema_version: str
+    steps: list[SeedWorkflowConfig]
+
+    @model_validator(mode="after")
+    def validate_unique_step_ids(self) -> "SeedWorkflowsConfig":
+        values = [item.step_id for item in self.steps]
+        if len(values) != len(set(values)):
+            raise ValueError("seed workflow step IDs must be unique")
+        return self
+
+
 class AliasConfig(StrictModel):
     alias_text: str
     target_object_id: str
@@ -322,6 +345,10 @@ def load_seed_relations(path: str | Path) -> SeedRelationsConfig:
 
 def load_seed_objects(path: str | Path) -> SeedObjectsConfig:
     return SeedObjectsConfig.model_validate(load_yaml(path))
+
+
+def load_seed_workflows(path: str | Path) -> SeedWorkflowsConfig:
+    return SeedWorkflowsConfig.model_validate(load_yaml(path))
 
 
 def load_aliases(path: str | Path) -> AliasesConfig:

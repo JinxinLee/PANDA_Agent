@@ -38,6 +38,7 @@ from panda_agent.config import (
     load_relation_ontology,
     load_seed_objects,
     load_seed_relations,
+    load_seed_workflows,
     validate_seed_predicates,
 )
 from panda_agent.source import sha256_file, verify_manifest
@@ -693,6 +694,23 @@ def materialize_reference_entities(
         ).model_copy(update={"embedding_eligible": False})
         entities[entity.object_id] = entity
     return sorted(entities.values(), key=lambda item: item.object_id)
+
+
+def seed_workflow_steps(project_root: Path) -> list[WorkflowStep]:
+    """Materialize curated workflow steps from the seed configuration."""
+    return [
+        WorkflowStep(
+            workflow_id=item.workflow_id,
+            step_id=item.step_id,
+            name=item.name,
+            entrypoint_object_id=item.entrypoint_object_id,
+            inputs=item.inputs,
+            outputs=item.outputs,
+            predecessor_step_ids=item.predecessor_step_ids,
+            successor_step_ids=item.successor_step_ids,
+        )
+        for item in load_seed_workflows(project_root / "configs" / "seed_workflows.yaml").steps
+    ]
 
 
 def seed_knowledge_objects(project_root: Path) -> list[KnowledgeObject]:
@@ -1518,6 +1536,7 @@ def ingest(project_root: Path) -> IngestionReport:
             for web in manifest["web_documents"]:
                 objects.extend(parse_web(web, project_root))
             objects.extend(seed_knowledge_objects(project_root))
+            workflows.extend(seed_workflow_steps(project_root))
             objects.extend(materialize_reference_entities(objects, spool))
             aliases = seed_knowledge_aliases(project_root, objects)
             resolver = RelationResolver(objects)
