@@ -43,15 +43,18 @@ relations:
 
   - subject_id: paper.pflueger_2017.chapter_4
     predicate: FORMALIZES
-    object_id: concept.luminosityfit.differential_luminosity_model
+    object_id: concept.luminosityfit.luminosity_fit_model
     confidence: 1.0
     creation_method: curated
     review_status: accepted
     evidence_note: >-
       The LuminosityFit framework chapter (chapter 4, "Luminosity Determination")
-      gives the formal composition of the differential luminosity model. This
-      relation replaces the D1-A1 stand-in THEORETICAL_BASIS_FOR edge to the
-      subsystem once the deferred model concept was materialized in D1-A2.
+      gives the composition of the luminosity fit model over the elastic
+      antiproton-proton scattering angular distribution. This relation replaces
+      the D1-A1 stand-in THEORETICAL_BASIS_FOR edge to the subsystem once the
+      deferred model concept was materialized in D1-A2; the concept semantics
+      were corrected and renamed in D1-A2R1 from the erroneous
+      differential_luminosity_model/photon-pair wording.
     evidence_object_ids:
       - object.faaced8bd5058b2a19ba9528
       - object.86b7c9f862f3e5c328823444
@@ -59,11 +62,11 @@ relations:
 
   - subject_id: subsystem.luminosityfit.model_and_fit
     predicate: IMPLEMENTS
-    object_id: concept.luminosityfit.differential_luminosity_model
+    object_id: concept.luminosityfit.luminosity_fit_model
     confidence: 1.0
     creation_method: curated
     review_status: accepted
-    evidence_note: The model-and-fit subsystem assembles the composed differential luminosity model through the model factory.
+    evidence_note: The model-and-fit subsystem assembles the luminosity fit model over the elastic scattering angular distribution through the model factory.
     evidence_paths:
       - model/PndLmdModelFactory.cxx
     evidence_source_ids:

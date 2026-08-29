@@ -123,15 +123,19 @@ objects:
       process is a stable domain abstraction of the analysis stage implemented
       by the locked macro/target/ana_dpm.C source.
     identity_role: canonical
-  - object_id: concept.luminosityfit.differential_luminosity_model
+  - object_id: concept.luminosityfit.luminosity_fit_model
     object_type: physics_concept
-    title: Differential luminosity model
+    title: Luminosity fit model
     text: >-
-      The differential luminosity model of the LuminosityFit framework: a model
-      of the reconstructed photon-pair kinematics composed from the DPM
-      elastic-scattering cross section, the LMD angular acceptance, and the
-      detector resolution smearing, assembled by the model factory and fitted
-      to data to determine the luminosity. The abstraction is defined by the
-      LuminosityFit framework chapter of the Pflueger thesis and realized by
-      the model-and-fit subsystem; it is stable across corpus versions.
+      The model of the LuminosityFit framework that describes the reconstructed
+      angular distribution of elastic antiproton-proton scattering and from
+      which the luminosity is extracted. Its physical input is the differential
+      elastic antiproton-proton cross section with its Coulomb and hadronic
+      parameterizations; the detector-side effects folded into the model are
+      the efficiency and acceptance correction, the beam divergence smearing,
+      and the detector resolution. The model is fitted to the reconstructed
+      track angular distribution to determine the luminosity. The abstraction
+      is defined by the LuminosityFit framework chapter of the Pflueger thesis
+      and realized by the model-and-fit subsystem; it is stable across corpus
+      versions.
     identity_role: canonical
