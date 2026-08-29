@@ -798,18 +798,64 @@ def _orient_same_as(
     return (subject_id, target_id) if subject_id <= target_id else (target_id, subject_id)
 
 
+_FILE_LEVEL_TYPES = {
+    "source_file",
+    "macro",
+    "python_script",
+    "shell_script",
+    "readme_section",
+    "sphinx_page",
+}
+
+
+def _has_inspectable_locator(obj: KnowledgeObject) -> bool:
+    locator = obj.locator
+    return bool(
+        locator.path
+        or locator.pdf_page
+        or locator.section_path
+        or locator.symbol
+        or locator.url
+    )
+
+
+def _select_path_matches(matches: list[tuple[str, str, bool]]) -> list[str]:
+    """Deterministic whole-object preference for one declared evidence path.
+
+    Prefer file-level objects representing the whole declared path, then other
+    non-derived matches, then all matches; ordering ties break by sorted
+    object_id.  Auditability over evidence minimization.
+    """
+    non_derived = [
+        (object_id, object_type)
+        for object_id, object_type, derived in matches
+        if not derived
+    ]
+    file_level = sorted(
+        object_id
+        for object_id, object_type in non_derived
+        if object_type in _FILE_LEVEL_TYPES
+    )
+    if file_level:
+        return file_level
+    if non_derived:
+        return sorted(object_id for object_id, _ in non_derived)
+    return sorted(object_id for object_id, _, _ in matches)
+
+
 def _resolve_seed_evidence(
     seed: Any,
     object_map: dict[str, KnowledgeObject],
-    path_index: dict[str, list[tuple[str, str]]],
+    path_index: dict[str, list[tuple[str, str, str, bool]]],
 ) -> tuple[list[str], list[str]]:
     """Resolve declared evidence into resolvable object ids.
 
-    Direct ``evidence_object_ids`` must exist.  ``evidence_paths`` resolve
-    through the locator-path index (optionally restricted by
-    ``evidence_source_ids``), mirroring curated alias provenance; declared
-    paths that resolve to nothing are returned for audit metadata (accepted
-    relations must fail closed instead, enforced by the caller).
+    Direct ``evidence_object_ids`` must exist.  Each ``evidence_paths`` entry
+    resolves independently through the locator-path index (optionally
+    restricted by ``evidence_source_ids``), mirroring curated alias
+    provenance, and is accounted per path: unresolved paths are returned
+    individually, either for audit metadata (pending) or fail-closed handling
+    (accepted, enforced by the caller).
     """
     missing = [
         object_id
@@ -822,16 +868,17 @@ def _resolve_seed_evidence(
     unresolved: list[str] = []
     if seed.evidence_paths:
         sources = set(seed.evidence_source_ids)
-        resolved: set[str] = set()
         for raw_path in seed.evidence_paths:
             path = raw_path.replace("\\", "/")
-            for source_id, object_id in path_index.get(path, ()):
-                if not sources or source_id in sources:
-                    resolved.add(object_id)
-        if resolved:
-            evidence.update(resolved)
-        else:
-            unresolved = list(seed.evidence_paths)
+            matches = [
+                (object_id, object_type, derived)
+                for source_id, object_id, object_type, derived in path_index.get(path, ())
+                if not sources or source_id in sources
+            ]
+            if matches:
+                evidence.update(_select_path_matches(matches))
+            else:
+                unresolved.append(raw_path)
     return sorted(evidence), unresolved
 
 
@@ -843,17 +890,26 @@ def materialize_seed_relations(
     Review status is taken from the seed config (no hardcoded acceptance),
     accepted relations require machine-traceable provenance, pending
     relations stay non-authoritative, and SAME_AS edges follow the
-    deterministic orientation contract.
+    deterministic orientation contract.  The source-version scope of an
+    accepted relation is grounded in the resolved evidence versions; an
+    explicitly declared scope is validated against the observed version
+    universe and must cover the evidence grounding.
     """
     object_list = list(objects)
     object_map = {item.object_id: item for item in object_list}
-    path_index: dict[str, list[tuple[str, str]]] = {}
+    path_index: dict[str, list[tuple[str, str, str, bool]]] = {}
     for obj in object_list:
         if obj.metadata.get("b5_source_gap"):
             continue
         path = (obj.locator.path or "").replace("\\", "/")
         if path:
-            path_index.setdefault(path, []).append((obj.source_id, obj.object_id))
+            derived = bool(
+                obj.object_type.endswith("_chunk") or obj.metadata.get("chunk_parent_id")
+            )
+            path_index.setdefault(path, []).append(
+                (obj.source_id, obj.object_id, obj.object_type, derived)
+            )
+    version_universe = {item.source_version_id for item in object_list}
     relations: list[RelationEdge] = []
     for seed in seed_relations.relations:
         subject = object_map.get(seed.subject_id)
@@ -863,23 +919,64 @@ def materialize_seed_relations(
                 f"seed relation endpoints do not exist: {seed.subject_id} -> {seed.object_id}"
             )
         review_status = ReviewStatus(seed.review_status)
-        source_version_ids = list(seed.source_version_ids) or sorted(
-            {subject.source_version_id, target.source_version_id}
-        )
         evidence_ids, unresolved_paths = _resolve_seed_evidence(
             seed, object_map, path_index
         )
-        if review_status is ReviewStatus.ACCEPTED:
-            if not source_version_ids:
+        evidence_versions = sorted(
+            {object_map[object_id].source_version_id for object_id in evidence_ids}
+        )
+        if seed.source_version_ids:
+            unknown = [
+                version
+                for version in seed.source_version_ids
+                if version not in version_universe
+            ]
+            if unknown:
                 raise ValueError(
-                    f"accepted curated relation lacks source-version scope: "
+                    f"declared source_version_ids are not present in the observed "
+                    f"corpus version universe: {unknown} "
+                    f"({seed.subject_id} {seed.predicate} {seed.object_id})"
+                )
+            uncovered = [
+                version
+                for version in evidence_versions
+                if version not in seed.source_version_ids
+            ]
+            if uncovered:
+                raise ValueError(
+                    f"declared source_version_ids do not cover resolved evidence "
+                    f"versions {uncovered} "
+                    f"({seed.subject_id} {seed.predicate} {seed.object_id})"
+                )
+            source_version_ids = list(seed.source_version_ids)
+        else:
+            # Ground the scope in the resolved evidence versions; endpoint
+            # curated versions never substitute for source-native grounding.
+            source_version_ids = evidence_versions
+        if review_status is ReviewStatus.ACCEPTED:
+            if unresolved_paths:
+                raise ValueError(
+                    f"accepted curated relation has unresolved declared evidence "
+                    f"paths {unresolved_paths}: "
                     f"{seed.subject_id} {seed.predicate} {seed.object_id}"
                 )
             if not evidence_ids:
                 raise ValueError(
                     f"accepted curated relation lacks resolvable evidence objects: "
-                    f"{seed.subject_id} {seed.predicate} {seed.object_id} "
-                    f"(declared paths: {unresolved_paths})"
+                    f"{seed.subject_id} {seed.predicate} {seed.object_id}"
+                )
+            # SAME_AS is a corpus-level record-identity claim (D1 contract
+            # Section C/E.2): its reviewed endpoints are the auditable
+            # referents, so the external-inspectable-locator gate for
+            # source-grounded semantic relations does not apply to it.
+            if seed.predicate != "SAME_AS" and not any(
+                _has_inspectable_locator(object_map[object_id])
+                for object_id in evidence_ids
+            ):
+                raise ValueError(
+                    f"accepted curated relation evidence is not inspectable "
+                    f"(empty locators only): "
+                    f"{seed.subject_id} {seed.predicate} {seed.object_id}"
                 )
         metadata: dict[str, Any] = {
             "evidence_note": seed.evidence_note,

@@ -4,10 +4,15 @@
 > `D1-A0R1 = COMPLETE / CONTRACT_REPAIRED_AND_REFROZEN` (2026-08-29);
 > `D1-A0R2 = COMPLETE / FINAL_SEMANTIC_BOUNDARY_AMENDMENT` (2026-08-29);
 > `D1-A1 = COMPLETE / PASS` (2026-08-29) — implemented per Sections D/E/F/K
-> with no architectural change; implementation record in
-> `docs/EVALUATION_STATUS.md`. D1-A2 owns representative knowledge
-> materialization; D2/D3/D4 own resolver and migration work.
-> No production behavior changed in D1-A0, D1-A0R1, D1-A0R2, or D1-A1.
+> with no architectural change; `D1-A1R1 = COMPLETE /
+> PROVENANCE_AND_PERSISTENCE_REPAIR_PASS` (2026-08-29) — provenance is
+> grounded in resolved evidence versions with inspectable-locator evidence
+> and per-path resolution accounting, and `parent_object_id` persists
+> canonically as `metadata.parent_object_id` with a frozen reload contract;
+> implementation records in `docs/EVALUATION_STATUS.md`. D1-A2 owns
+> representative knowledge materialization; D2/D3/D4 own resolver and
+> migration work. No production behavior changed in D1-A0, D1-A0R1,
+> D1-A0R2, D1-A1, or D1-A1R1.
 
 Repository provenance (recorded precisely; Git history is not rewritten):
 

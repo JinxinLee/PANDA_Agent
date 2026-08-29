@@ -7,7 +7,7 @@ import os
 import uuid
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any, Iterable, Mapping
 
 import psycopg
 from psycopg.types.json import Jsonb
@@ -74,6 +74,46 @@ CREATE TABLE IF NOT EXISTS qa_runs (
   status TEXT NOT NULL, trace JSONB NOT NULL
 );
 """
+
+
+def object_persisted_metadata(metadata: Mapping[str, Any], parent_object_id: str | None) -> dict:
+  """Canonical persisted-metadata contract for KnowledgeObject.parent_object_id.
+
+  The knowledge_objects table has no parent_object_id column; the governed
+  structural containment (D1-A0R2) is persisted inside the JSONB metadata
+  column. The model field stays authoritative in memory: this helper merges it
+  into the persisted metadata without mutating the input and fails closed on
+  any dual or conflicting parent representation.
+  """
+  merged = dict(metadata or {})
+  if parent_object_id is not None:
+    if "parent_object_id" in merged and merged["parent_object_id"] != parent_object_id:
+      raise ValueError(
+        "conflicting parent_object_id representations: "
+        f"model={parent_object_id!r}, metadata={merged['parent_object_id']!r}"
+      )
+    merged["parent_object_id"] = parent_object_id
+  elif "parent_object_id" in merged:
+    raise ValueError(
+      "metadata carries parent_object_id="
+      f"{merged['parent_object_id']!r} while the model parent is unset"
+    )
+  return merged
+
+
+def restore_object_parent(record: Mapping[str, Any]) -> dict:
+  """Frozen reload contract for KnowledgeObject-shaped persisted records.
+
+  Returns a NEW record dict whose top-level ``parent_object_id`` is restored
+  from ``metadata["parent_object_id"]`` (None when absent). The persisted
+  metadata keeps carrying the key so the persistence round-trip is lossless.
+  Never mutates the input record.
+  """
+  restored = dict(record)
+  metadata = dict(restored.get("metadata") or {})
+  restored["parent_object_id"] = metadata.get("parent_object_id")
+  restored["metadata"] = metadata
+  return restored
 
 
 @dataclass(frozen=True)
@@ -219,7 +259,7 @@ class Storage:
             def rows():
               for item in records:
                 content_hash = __import__("hashlib").sha256(item["text"].encode()).hexdigest()
-                yield (item["object_id"],item["object_type"],item["source_id"],item["source_version_id"],item["title"],item["text"],item["authority_level"],Jsonb(item["locator"]),Jsonb(item.get("metadata",{})),item.get("canonical_locator"),item.get("token_count",0),item.get("embedding_eligible",True),content_hash)
+                yield (item["object_id"],item["object_type"],item["source_id"],item["source_version_id"],item["title"],item["text"],item["authority_level"],Jsonb(item["locator"]),Jsonb(object_persisted_metadata(item.get("metadata",{}),item.get("parent_object_id"))),item.get("canonical_locator"),item.get("token_count",0),item.get("embedding_eligible",True),content_hash)
             with connection.cursor() as cursor: cursor.executemany(sql,rows())
 
     def upsert_aliases(self, records: Iterable[dict[str, Any]]) -> None:

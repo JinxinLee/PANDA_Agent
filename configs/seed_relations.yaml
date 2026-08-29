@@ -7,9 +7,15 @@ relations:
     confidence: 1.0
     creation_method: curated
     review_status: accepted
-    evidence_note: Accepted paper-code relationship from the architecture analysis.
+    evidence_note: >-
+      Accepted paper-code relationship from the architecture analysis. Evidence
+      is the source-native Karavdina thesis sections at the reviewed LMD
+      reconstruction pages 94/100/104 (the PDF outline labels those pages
+      "Chapter 7" because the printed numbering includes front matter).
     evidence_object_ids:
-      - paper.karavdina_2015.chapter_4
+      - object.b1739b9b6e502cda6a154406
+      - object.30cf42f607e2c228dfe125fd
+      - object.7cd1257841fc461a4e1e5390
 
   - subject_id: workflow.pandaroot.lmd_reconstruction
     predicate: PRODUCES
@@ -45,9 +51,13 @@ relations:
       Normalized in D1-A1 from FORMALIZES per the D1 contract C-class rule: the
       chapter supplies the theoretical basis for the model-and-fit subsystem
       implementation; the model-concept entity that FORMALIZES would target is
-      D1-A2 representative materialization and was not invented here.
+      D1-A2 representative materialization and was not invented here. Evidence
+      is the source-native Pflueger thesis sections at the reviewed model,
+      acceptance, and fitting framework pages 51/57/65.
     evidence_object_ids:
-      - paper.pflueger_2017.chapter_4
+      - object.faaced8bd5058b2a19ba9528
+      - object.86b7c9f862f3e5c328823444
+      - object.6f688277a08ed2f236ae74df
 
   - subject_id: concept.li_2026.restgas_effective_acceptance
     predicate: IMPLEMENTED_AS_PIPELINE
@@ -92,10 +102,17 @@ relations:
     confidence: 1.0
     creation_method: curated
     review_status: accepted
-    evidence_note: Repository provenance relationship pinned to the locked oct19 version entities.
-    evidence_object_ids:
-      - repository.restgas_determination.oct19
-      - repository.pandaroot.oct19
+    evidence_note: >-
+      Repository provenance relationship grounded in the locked corpus: the
+      RestgasDetermination README states it is a PandaRoot-based research
+      branch, and the scope names both locked source versions.
+    evidence_paths:
+      - README.md
+    evidence_source_ids:
+      - restgas_determination
+    source_version_ids:
+      - restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42
+      - pandaroot@18c09e91100db27867ded30e708b4dae95bd8357
 
   - subject_id: document.pandaroot_sphinx_2023_08_25_dev
     predicate: OPERATIONALLY_DOCUMENTS
@@ -105,7 +122,7 @@ relations:
     review_status: accepted
     evidence_note: Sphinx is authoritative for generic operational guidance, not oct19 customization.
     evidence_object_ids:
-      - document.pandaroot_sphinx_2023_08_25_dev
+      - object.79b75480980719256f8b7937
 
   - subject_id: configuration.restgas_profile
     predicate: PARAMETERIZES

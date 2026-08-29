@@ -21,25 +21,48 @@ from panda_agent.models import KnowledgeObject, ReviewStatus, SourceLocator
 REPO_ROOT = Path(__file__).resolve().parents[2]
 CONFIG_DIR = REPO_ROOT / "configs"
 
+RESTGAS_VERSION = "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+PANDAROOT_VERSION = "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357"
+LUMINOSITYFIT_VERSION = "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+KARAVDINA_VERSION = "karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b"
+PFLUEGER_VERSION = "pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3"
+SPHINX_VERSION = "pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87"
+
+KARAVDINA_EVIDENCE = [
+    "object.b1739b9b6e502cda6a154406",
+    "object.30cf42f607e2c228dfe125fd",
+    "object.7cd1257841fc461a4e1e5390",
+]
+PFLUEGER_EVIDENCE = [
+    "object.faaced8bd5058b2a19ba9528",
+    "object.86b7c9f862f3e5c328823444",
+    "object.6f688277a08ed2f236ae74df",
+]
+SPHINX_EVIDENCE = ["object.79b75480980719256f8b7937"]
+
 
 def _object(
     object_id: str,
     *,
     object_type: str = "data_product",
     source_id: str = "curated_panda_domain",
+    source_version: str | None = None,
     path: str | None = None,
+    locator: SourceLocator | None = None,
     identity_role: str | None = None,
+    chunk_parent: bool = False,
 ) -> KnowledgeObject:
     return KnowledgeObject(
         object_id=object_id,
         object_type=object_type,
         source_id=source_id,
-        source_version_id=f"{source_id}@test",
+        source_version_id=source_version or f"{source_id}@test",
         title=object_id,
         text=object_id,
         authority_level="derived",
-        locator=SourceLocator(path=path),
+        locator=locator or SourceLocator(path=path),
         canonical_locator=object_id,
+        chunk_parent_id=object_id if chunk_parent else None,
         metadata={"identity_role": identity_role} if identity_role else {},
     )
 
@@ -51,6 +74,9 @@ def _relation(
     *,
     review_status: str = "accepted",
     evidence_object_ids: list[str] | None = None,
+    evidence_paths: list[str] | None = None,
+    evidence_source_ids: list[str] | None = None,
+    source_version_ids: list[str] | None = None,
 ) -> SeedRelationConfig:
     return SeedRelationConfig(
         subject_id=subject_id,
@@ -61,65 +87,100 @@ def _relation(
         review_status=review_status,
         evidence_note="fixture note",
         evidence_object_ids=evidence_object_ids or [],
+        evidence_paths=evidence_paths or [],
+        evidence_source_ids=evidence_source_ids or [],
+        source_version_ids=source_version_ids or [],
     )
 
 
-# Fixture corpus objects covering every evidence path declared in the shipped
-# seed_relations.yaml, so the real config materializes with full provenance.
+def _section_fixture(object_id: str, source_id: str, version: str, page: int) -> KnowledgeObject:
+    return _object(
+        object_id,
+        object_type="thesis_section",
+        source_id=source_id,
+        source_version=version,
+        locator=SourceLocator(pdf_page=page, section_path=[f"section {page}"]),
+    )
+
+
+# Fixture corpus objects covering every declared evidence reference of the
+# shipped seed_relations.yaml, with the real locked corpus source versions.
 _EVIDENCE_FIXTURES = [
     _object(
         "object.trackq",
         object_type="source_file",
         source_id="pandaroot",
+        source_version=PANDAROOT_VERSION,
         path="detectors/lmd/LmdQA/PndLmdTrackQ.cxx",
     ),
     _object(
         "object.reader",
         object_type="source_file",
         source_id="luminosityfit",
+        source_version=LUMINOSITYFIT_VERSION,
         path="data/PndLmdCombinedDataReader.cxx",
     ),
     _object(
         "object.effcorr2",
-        object_type="macro",
+        object_type="source_file",
         source_id="restgas_determination",
+        source_version=RESTGAS_VERSION,
         path="macro/target/correction/efficiency_correction_2.C",
     ),
     _object(
         "object.effcorrsteps",
-        object_type="macro",
+        object_type="source_file",
         source_id="restgas_determination",
+        source_version=RESTGAS_VERSION,
         path="macro/target/correction/efficiency_correction_steps.C",
     ),
     _object(
         "object.readme",
         object_type="readme_section",
         source_id="restgas_determination",
+        source_version=RESTGAS_VERSION,
         path="README.md",
     ),
     _object(
         "object.targetreadme",
         object_type="readme_section",
         source_id="restgas_determination",
+        source_version=RESTGAS_VERSION,
         path="macro/target/README.md",
     ),
     _object(
         "object.anadpm",
-        object_type="macro",
+        object_type="source_file",
         source_id="restgas_determination",
+        source_version=RESTGAS_VERSION,
         path="macro/target/ana_dpm.C",
     ),
     _object(
         "object.pidcomplete",
-        object_type="macro",
+        object_type="source_file",
         source_id="restgas_determination",
+        source_version=RESTGAS_VERSION,
         path="macro/target/pid_complete.C",
     ),
     _object(
         "object.prodaod",
-        object_type="macro",
+        object_type="source_file",
         source_id="restgas_determination",
+        source_version=RESTGAS_VERSION,
         path="macro/target/prod_aod_complete.C",
+    ),
+    _section_fixture(KARAVDINA_EVIDENCE[0], "karavdina_2015", KARAVDINA_VERSION, 94),
+    _section_fixture(KARAVDINA_EVIDENCE[1], "karavdina_2015", KARAVDINA_VERSION, 100),
+    _section_fixture(KARAVDINA_EVIDENCE[2], "karavdina_2015", KARAVDINA_VERSION, 104),
+    _section_fixture(PFLUEGER_EVIDENCE[0], "pflueger_2017", PFLUEGER_VERSION, 51),
+    _section_fixture(PFLUEGER_EVIDENCE[1], "pflueger_2017", PFLUEGER_VERSION, 57),
+    _section_fixture(PFLUEGER_EVIDENCE[2], "pflueger_2017", PFLUEGER_VERSION, 65),
+    _object(
+        SPHINX_EVIDENCE[0],
+        object_type="sphinx_page",
+        source_id="pandaroot_sphinx_2023_08_25_dev",
+        source_version=SPHINX_VERSION,
+        locator=SourceLocator(url="https://example.invalid/sphinx/Running/Running.html"),
     ),
 ]
 
@@ -194,8 +255,11 @@ class SeedRelationMaterializationTests(unittest.TestCase):
             load_seed_relations(CONFIG_DIR / "seed_relations.yaml"), self.objects
         )
 
+    def _accepted(self) -> list:
+        return [edge for edge in self.edges if edge.review_status is ReviewStatus.ACCEPTED]
+
     def test_review_status_is_taken_from_the_seed_config(self) -> None:
-        accepted = [edge for edge in self.edges if edge.review_status is ReviewStatus.ACCEPTED]
+        accepted = self._accepted()
         pending = [edge for edge in self.edges if edge.review_status is ReviewStatus.PENDING]
         self.assertEqual(len(accepted), 14)
         self.assertEqual(len(pending), 1)
@@ -205,26 +269,43 @@ class SeedRelationMaterializationTests(unittest.TestCase):
         )
 
     def test_accepted_relations_carry_machine_traceable_provenance(self) -> None:
-        accepted = [edge for edge in self.edges if edge.review_status is ReviewStatus.ACCEPTED]
+        accepted = self._accepted()
         for edge in accepted:
-            self.assertTrue(
-                edge.source_version_ids,
-                f"missing version scope: {edge.edge_id}",
-            )
-            self.assertTrue(
-                edge.evidence_object_ids,
-                f"missing evidence objects: {edge.edge_id}",
-            )
-            self.assertTrue(
-                all(object_id is not None for object_id in edge.evidence_object_ids)
-            )
+            self.assertTrue(edge.source_version_ids, f"missing version scope: {edge.edge_id}")
+            self.assertTrue(edge.evidence_object_ids, f"missing evidence objects: {edge.edge_id}")
         self.assertFalse(
             any(
-                edge.review_status is ReviewStatus.ACCEPTED
-                and set(edge.metadata) == {"evidence_note"}
-                for edge in self.edges
+                set(edge.metadata) == {"evidence_note"}
+                for edge in accepted
             ),
             "prose-only accepted relations must no longer exist",
+        )
+
+    def test_accepted_versions_are_grounded_in_evidence_versions(self) -> None:
+        by_pair = {
+            (edge.subject_id, edge.predicate, edge.object_id): edge for edge in self._accepted()
+        }
+        expectations = {
+            ("workflow.pandaroot.lmd_reconstruction", "PRODUCES", "data_product.pandaroot.lumi_trks_qa"): [PANDAROOT_VERSION],
+            ("data_product.pandaroot.lumi_trks_qa", "PRODUCES_INPUT_FOR", "subsystem.luminosityfit.panda_data_io"): [LUMINOSITYFIT_VERSION],
+            ("paper.karavdina_2015.chapter_4", "THEORETICAL_BASIS_FOR", "workflow.pandaroot.lmd_reconstruction"): [KARAVDINA_VERSION],
+            ("paper.pflueger_2017.chapter_4", "THEORETICAL_BASIS_FOR", "subsystem.luminosityfit.model_and_fit"): [PFLUEGER_VERSION],
+            ("document.pandaroot_sphinx_2023_08_25_dev", "OPERATIONALLY_DOCUMENTS", "workflow.pandaroot.generic"): [SPHINX_VERSION],
+        }
+        for key, expected in expectations.items():
+            self.assertEqual(by_pair[key].source_version_ids, expected, str(key))
+        forked = by_pair[
+            ("repository.restgas_determination.oct19", "FORKED_FROM", "repository.pandaroot.oct19")
+        ]
+        self.assertEqual(
+            forked.source_version_ids, [RESTGAS_VERSION, PANDAROOT_VERSION]
+        )
+        self.assertFalse(
+            any(
+                edge.source_version_ids == ["curated_panda_domain@1.0"]
+                for edge in self._accepted()
+            ),
+            "endpoint curated versions must never replace evidence grounding",
         )
 
     def test_pending_relation_keeps_deferred_requirement_and_stays_non_authoritative(
@@ -268,13 +349,219 @@ class SeedRelationMaterializationTests(unittest.TestCase):
         self.assertNotEqual(edge.predicate, "FORMALIZES")
 
 
+class EvidenceResolutionTests(unittest.TestCase):
+    def _materialize(self, relations: list[SeedRelationConfig], objects: list[KnowledgeObject]):
+        config = type("SeedRelationsFixture", (), {"relations": relations})()
+        return materialize_seed_relations(config, objects)
+
+    def test_accepted_relation_fails_on_one_unresolved_declared_path(self) -> None:
+        objects = [
+            _object(
+                "object.readme",
+                object_type="readme_section",
+                source_id="restgas_determination",
+                source_version=RESTGAS_VERSION,
+                path="README.md",
+            ),
+            _object("object.seed", source_id="restgas_determination", source_version=RESTGAS_VERSION),
+        ]
+        with self.assertRaises(ValueError) as context:
+            self._materialize(
+                [
+                    _relation(
+                        "object.readme",
+                        "PARAMETERIZES",
+                        "object.seed",
+                        evidence_paths=["README.md", "docs/missing.md"],
+                        evidence_source_ids=["restgas_determination"],
+                    )
+                ],
+                objects,
+            )
+        self.assertIn("docs/missing.md", str(context.exception))
+
+    def test_pending_relation_records_individual_unresolved_paths(self) -> None:
+        objects = [
+            _object(
+                "object.readme",
+                object_type="readme_section",
+                source_id="restgas_determination",
+                source_version=RESTGAS_VERSION,
+                path="README.md",
+            ),
+            _object("object.seed", source_id="restgas_determination", source_version=RESTGAS_VERSION),
+        ]
+        edges = self._materialize(
+            [
+                _relation(
+                    "object.readme",
+                    "PARAMETERIZES",
+                    "object.seed",
+                    review_status="pending",
+                    evidence_paths=["README.md", "docs/missing.md"],
+                    evidence_source_ids=["restgas_determination"],
+                )
+            ],
+            objects,
+        )
+        self.assertEqual(edges[0].metadata["unresolved_evidence_paths"], ["docs/missing.md"])
+
+    def test_whole_file_object_is_preferred_over_functions_and_chunks(self) -> None:
+        objects = [
+            _object(
+                "object.file",
+                object_type="source_file",
+                source_id="restgas_determination",
+                source_version=RESTGAS_VERSION,
+                path="macro/target/ana_dpm.C",
+            ),
+            _object(
+                "object.func",
+                object_type="function",
+                source_id="restgas_determination",
+                source_version=RESTGAS_VERSION,
+                path="macro/target/ana_dpm.C",
+            ),
+            _object(
+                "object.funcchunk",
+                object_type="function_chunk",
+                source_id="restgas_determination",
+                source_version=RESTGAS_VERSION,
+                path="macro/target/ana_dpm.C",
+                chunk_parent=True,
+            ),
+            _object("object.seed", source_id="restgas_determination", source_version=RESTGAS_VERSION),
+        ]
+        edges = self._materialize(
+            [
+                _relation(
+                    "object.seed",
+                    "PRODUCES",
+                    "object.file",
+                    evidence_paths=["macro/target/ana_dpm.C"],
+                    evidence_source_ids=["restgas_determination"],
+                )
+            ],
+            objects,
+        )
+        self.assertEqual(edges[0].evidence_object_ids, ["object.file"])
+
+    def test_accepted_evidence_requires_an_inspectable_locator(self) -> None:
+        objects = [
+            _object("object.opaque1"),
+            _object("object.opaque2"),
+        ]
+        with self.assertRaises(ValueError) as context:
+            self._materialize(
+                [
+                    _relation(
+                        "object.opaque1",
+                        "PRODUCES",
+                        "object.opaque2",
+                        evidence_object_ids=["object.opaque2"],
+                    )
+                ],
+                objects,
+            )
+        self.assertIn("not inspectable", str(context.exception))
+
+    def test_declared_version_outside_corpus_universe_fails(self) -> None:
+        objects = [
+            _object(
+                "object.readme",
+                object_type="readme_section",
+                source_id="restgas_determination",
+                source_version=RESTGAS_VERSION,
+                path="README.md",
+            ),
+            _object("object.seed", source_id="restgas_determination", source_version=RESTGAS_VERSION),
+        ]
+        with self.assertRaises(ValueError) as context:
+            self._materialize(
+                [
+                    _relation(
+                        "object.readme",
+                        "PARAMETERIZES",
+                        "object.seed",
+                        evidence_paths=["README.md"],
+                        source_version_ids=["restgas_determination@nonexistent"],
+                    )
+                ],
+                objects,
+            )
+        self.assertIn("version universe", str(context.exception))
+
+    def test_declared_scope_must_cover_evidence_versions(self) -> None:
+        objects = [
+            _object(
+                "object.readme",
+                object_type="readme_section",
+                source_id="restgas_determination",
+                source_version=RESTGAS_VERSION,
+                path="README.md",
+            ),
+            _object(
+                "object.pandaroot",
+                object_type="source_file",
+                source_id="pandaroot",
+                source_version=PANDAROOT_VERSION,
+                path="pgenerators/Target/PndTargetGenerator.cxx",
+            ),
+            _object("object.seed", source_id="restgas_determination", source_version=RESTGAS_VERSION),
+        ]
+        with self.assertRaises(ValueError) as context:
+            self._materialize(
+                [
+                    _relation(
+                        "object.readme",
+                        "PARAMETERIZES",
+                        "object.seed",
+                        evidence_paths=["README.md"],
+                        source_version_ids=[PANDAROOT_VERSION],
+                    )
+                ],
+                objects,
+            )
+        self.assertIn("do not cover", str(context.exception))
+
+    def test_multi_version_evidence_derives_unique_sorted_set(self) -> None:
+        objects = [
+            _object(
+                "object.trackq",
+                object_type="source_file",
+                source_id="pandaroot",
+                source_version=PANDAROOT_VERSION,
+                path="detectors/lmd/LmdQA/PndLmdTrackQ.cxx",
+            ),
+            _object(
+                "object.reader",
+                object_type="source_file",
+                source_id="luminosityfit",
+                source_version=LUMINOSITYFIT_VERSION,
+                path="data/PndLmdCombinedDataReader.cxx",
+            ),
+            _object("object.seed"),
+        ]
+        edges = self._materialize(
+            [
+                _relation(
+                    "object.seed",
+                    "PRODUCES_INPUT_FOR",
+                    "object.trackq",
+                    evidence_object_ids=["object.trackq", "object.reader"],
+                )
+            ],
+            objects,
+        )
+        self.assertEqual(
+            edges[0].source_version_ids,
+            sorted([PANDAROOT_VERSION, LUMINOSITYFIT_VERSION]),
+        )
+
+
 class SameAsContractTests(unittest.TestCase):
     def _materialize(self, relations: list[SeedRelationConfig], objects: list[KnowledgeObject]):
-        config = type(
-            "SeedRelationsFixture",
-            (),
-            {"relations": relations},
-        )()
+        config = type("SeedRelationsFixture", (), {"relations": relations})()
         return materialize_seed_relations(config, objects)
 
     def test_case_a_orients_noncanonical_to_canonical(self) -> None:
@@ -383,10 +670,38 @@ class SameAsContractTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             validate_identity_relations(objects, edges)
 
+    def test_same_as_endpoint_evidence_is_corpus_level_identity_evidence(self) -> None:
+        """Identity assertions are record-level claims: reviewed endpoints are
+        the auditable referents, so the inspectable-locator gate for
+        source-grounded semantic relations does not apply to SAME_AS."""
+        objects = [
+            _object("object.canonical", identity_role="canonical"),
+            _object("object.plain"),
+        ]
+        edges = self._materialize(
+            [
+                _relation(
+                    "object.plain",
+                    "SAME_AS",
+                    "object.canonical",
+                    evidence_object_ids=["object.canonical"],
+                )
+            ],
+            objects,
+        )
+        self.assertEqual(edges[0].review_status, ReviewStatus.ACCEPTED)
+        self.assertEqual(edges[0].evidence_object_ids, ["object.canonical"])
+
     def test_semantic_similarity_alone_creates_no_identity_edge(self) -> None:
         objects = [
-            _object("object.detector resolution"),
-            _object("object.detector  resolution"),
+            _object(
+                "object.detector resolution",
+                path="docs/detector_resolution.md",
+            ),
+            _object(
+                "object.detector  resolution",
+                path="docs/detector_resolution.md",
+            ),
         ]
         edges = self._materialize(
             [
