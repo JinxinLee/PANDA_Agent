@@ -2,11 +2,12 @@
 
 > Status: `D1-A0 = COMPLETE / CONTRACT_FROZEN` (2026-08-29);
 > `D1-A0R1 = COMPLETE / CONTRACT_REPAIRED_AND_REFROZEN` (2026-08-29);
-> `D1-A0R2 = COMPLETE / FINAL_SEMANTIC_BOUNDARY_AMENDMENT` (2026-08-29).
-> This document is a static design contract, not an implementation.
-> D1-A1 owns implementation; D1-A2 owns the small representative
-> knowledge-set expression; D2/D3/D4 own resolver and migration work.
-> No production behavior changed in D1-A0, D1-A0R1, or D1-A0R2.
+> `D1-A0R2 = COMPLETE / FINAL_SEMANTIC_BOUNDARY_AMENDMENT` (2026-08-29);
+> `D1-A1 = COMPLETE / PASS` (2026-08-29) — implemented per Sections D/E/F/K
+> with no architectural change; implementation record in
+> `docs/EVALUATION_STATUS.md`. D1-A2 owns representative knowledge
+> materialization; D2/D3/D4 own resolver and migration work.
+> No production behavior changed in D1-A0, D1-A0R1, D1-A0R2, or D1-A1.
 
 Repository provenance (recorded precisely; Git history is not rewritten):
 

@@ -8,6 +8,8 @@ relations:
     creation_method: curated
     review_status: accepted
     evidence_note: Accepted paper-code relationship from the architecture analysis.
+    evidence_object_ids:
+      - paper.karavdina_2015.chapter_4
 
   - subject_id: workflow.pandaroot.lmd_reconstruction
     predicate: PRODUCES
@@ -16,6 +18,10 @@ relations:
     creation_method: curated
     review_status: accepted
     evidence_note: LMD reconstruction output consumed by LuminosityFit adapters.
+    evidence_paths:
+      - detectors/lmd/LmdQA/PndLmdTrackQ.cxx
+    evidence_source_ids:
+      - pandaroot
 
   - subject_id: data_product.pandaroot.lumi_trks_qa
     predicate: PRODUCES_INPUT_FOR
@@ -24,14 +30,24 @@ relations:
     creation_method: curated
     review_status: accepted
     evidence_note: PandaRoot data product is transformed into LuminosityFit data objects.
+    evidence_paths:
+      - data/PndLmdCombinedDataReader.cxx
+    evidence_source_ids:
+      - luminosityfit
 
   - subject_id: paper.pflueger_2017.chapter_4
-    predicate: FORMALIZES
+    predicate: THEORETICAL_BASIS_FOR
     object_id: subsystem.luminosityfit.model_and_fit
     confidence: 1.0
     creation_method: curated
     review_status: accepted
-    evidence_note: The chapter defines the model composition implemented by LuminosityFit.
+    evidence_note: >-
+      Normalized in D1-A1 from FORMALIZES per the D1 contract C-class rule: the
+      chapter supplies the theoretical basis for the model-and-fit subsystem
+      implementation; the model-concept entity that FORMALIZES would target is
+      D1-A2 representative materialization and was not invented here.
+    evidence_object_ids:
+      - paper.pflueger_2017.chapter_4
 
   - subject_id: concept.li_2026.restgas_effective_acceptance
     predicate: IMPLEMENTED_AS_PIPELINE
@@ -40,6 +56,10 @@ relations:
     creation_method: curated
     review_status: accepted
     evidence_note: Effective acceptance is a pipeline property rather than a single C++ class.
+    evidence_paths:
+      - macro/target/correction/efficiency_correction_2.C
+    evidence_source_ids:
+      - restgas_determination
 
   - subject_id: workflow.restgas_profile_reconstruction
     predicate: PRODUCES_PROFILE_FOR
@@ -48,6 +68,10 @@ relations:
     creation_method: curated
     review_status: accepted
     evidence_note: Reconstructed rho(z) is used to regenerate profile-dependent acceptance.
+    evidence_paths:
+      - macro/target/correction/efficiency_correction_2.C
+    evidence_source_ids:
+      - restgas_determination
 
   - subject_id: concept.restgas_longitudinal_efficiency
     predicate: CORRECTS
@@ -56,6 +80,11 @@ relations:
     creation_method: curated
     review_status: accepted
     evidence_note: Longitudinal efficiency is distinct from LMD angular acceptance.
+    evidence_paths:
+      - macro/target/correction/efficiency_correction_2.C
+      - macro/target/correction/efficiency_correction_steps.C
+    evidence_source_ids:
+      - restgas_determination
 
   - subject_id: repository.restgas_determination.oct19
     predicate: FORKED_FROM
@@ -63,7 +92,10 @@ relations:
     confidence: 1.0
     creation_method: curated
     review_status: accepted
-    evidence_note: Repository provenance relationship to be pinned to exact SHAs during M1.
+    evidence_note: Repository provenance relationship pinned to the locked oct19 version entities.
+    evidence_object_ids:
+      - repository.restgas_determination.oct19
+      - repository.pandaroot.oct19
 
   - subject_id: document.pandaroot_sphinx_2023_08_25_dev
     predicate: OPERATIONALLY_DOCUMENTS
@@ -72,6 +104,8 @@ relations:
     creation_method: curated
     review_status: accepted
     evidence_note: Sphinx is authoritative for generic operational guidance, not oct19 customization.
+    evidence_object_ids:
+      - document.pandaroot_sphinx_2023_08_25_dev
 
   - subject_id: configuration.restgas_profile
     predicate: PARAMETERIZES
@@ -80,6 +114,11 @@ relations:
     creation_method: curated
     review_status: accepted
     evidence_note: The restgas_profile configuration selects the concrete distributed-target profile input.
+    evidence_paths:
+      - README.md
+      - macro/target/README.md
+    evidence_source_ids:
+      - restgas_determination
 
   - subject_id: file_pattern.restgas_profile_input
     predicate: PRODUCES_INPUT_FOR
@@ -88,14 +127,29 @@ relations:
     creation_method: curated
     review_status: accepted
     evidence_note: Concrete restgas profile text files parameterize target generation and reconstruction studies.
+    evidence_paths:
+      - README.md
+      - macro/target/README.md
+    evidence_source_ids:
+      - restgas_determination
 
   - subject_id: data_product.restgas.pid_root
     predicate: PRODUCES_INPUT_FOR
     object_id: data_product.restgas.event_poca
     confidence: 1.0
     creation_method: curated
-    review_status: accepted
-    evidence_note: First-pass PID candidates are consumed by the POCA analysis that writes event_poca.
+    review_status: pending
+    evidence_note: >-
+      First-pass PID candidates are consumed by the POCA analysis that writes
+      event_poca. Pending per the D1 contract C-class rule: a product-to-product
+      input edge is not authoritative under the frozen semantics. Deferred to
+      D1-A2; not closed by widening predicates or inventing entities in D1-A1.
+    deferred_requirement: >-
+      Requires representative materialization of the consuming first-pass POCA
+      analysis relationship, e.g. an existing resolved consumer object with
+      CONSUMES pid_root (candidate corpus macro macro/target/ana_dpm.C), or an
+      equivalent already-authorized structure. Owned by D1-A2 per the D1
+      contract Section E.2 C-class ownership rule.
 
   - subject_id: workflow.restgas_profile_reconstruction
     predicate: PRODUCES
@@ -104,14 +158,10 @@ relations:
     creation_method: curated
     review_status: accepted
     evidence_note: First-pass ana_dpm analysis writes the boost ROOT output.
-
-  - subject_id: data_product.restgas.boost_root
-    predicate: PRODUCES
-    object_id: data_product.restgas.event_poca
-    confidence: 1.0
-    creation_method: curated
-    review_status: accepted
-    evidence_note: The boost ROOT file contains the event_poca tree.
+    evidence_paths:
+      - macro/target/ana_dpm.C
+    evidence_source_ids:
+      - restgas_determination
 
   - subject_id: data_product.restgas.event_poca
     predicate: PRODUCES_INPUT_FOR
@@ -120,6 +170,11 @@ relations:
     creation_method: curated
     review_status: accepted
     evidence_note: POCA_VERTEX_FILE transfers the event-indexed tree to second-pass PID.
+    evidence_paths:
+      - macro/target/pid_complete.C
+      - macro/target/prod_aod_complete.C
+    evidence_source_ids:
+      - restgas_determination
 
   - subject_id: workflow.restgas.second_pass_pid
     predicate: PRODUCES
@@ -128,3 +183,8 @@ relations:
     creation_method: curated
     review_status: accepted
     evidence_note: Second-pass PID writes the final PID ROOT product.
+    evidence_paths:
+      - macro/target/pid_complete.C
+      - macro/target/prod_aod_complete.C
+    evidence_source_ids:
+      - restgas_determination

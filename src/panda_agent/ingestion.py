@@ -698,6 +698,9 @@ def materialize_reference_entities(
 def seed_knowledge_objects(project_root: Path) -> list[KnowledgeObject]:
     result: list[KnowledgeObject] = []
     for item in load_seed_objects(project_root / "configs" / "seed_objects.yaml").objects:
+        metadata: dict[str, Any] = {"curated_seed": True}
+        if item.identity_role is not None:
+            metadata["identity_role"] = item.identity_role
         result.append(
             KnowledgeObject(
                 object_id=item.object_id,
@@ -708,10 +711,11 @@ def seed_knowledge_objects(project_root: Path) -> list[KnowledgeObject]:
                 text=item.text,
                 authority_level=AuthorityLevel(item.authority_level),
                 locator=SourceLocator(),
+                parent_object_id=item.parent_object_id,
                 canonical_locator=item.object_id,
                 token_count=_token_count(item.text),
                 embedding_eligible=item.embedding_eligible,
-                metadata={"curated_seed": True},
+                metadata=metadata,
             )
         )
     return result
@@ -757,6 +761,194 @@ def seed_knowledge_aliases(
             )
         )
     return aliases
+
+
+def _identity_role(obj: KnowledgeObject) -> str | None:
+    """Explicit governed canonical role; never inferred from title/path/type."""
+    role = obj.metadata.get("identity_role") if obj.metadata else None
+    return role if isinstance(role, str) else None
+
+
+def _orient_same_as(
+    subject_id: str,
+    target_id: str,
+    object_map: dict[str, KnowledgeObject],
+    review_status: ReviewStatus,
+) -> tuple[str, str]:
+    """Deterministic SAME_AS storage orientation (D1 contract Section E.2).
+
+    Case A: exactly one canonical endpoint -> store noncanonical -> canonical.
+    Case B: neither endpoint canonical -> lexicographically smaller object_id
+    first.  Case C: both endpoints canonical is an identity conflict; accepted
+    edges fail, pending edges stay as declared and remain non-authoritative.
+    """
+    subject_role = _identity_role(object_map[subject_id])
+    target_role = _identity_role(object_map[target_id])
+    if subject_role == "canonical" and target_role == "canonical":
+        if review_status is ReviewStatus.ACCEPTED:
+            raise ValueError(
+                f"accepted SAME_AS between two canonical records is an identity "
+                f"conflict: {subject_id} <-> {target_id}"
+            )
+        return subject_id, target_id
+    if target_role == "canonical" and subject_role != "canonical":
+        return subject_id, target_id
+    if subject_role == "canonical" and target_role != "canonical":
+        return target_id, subject_id
+    return (subject_id, target_id) if subject_id <= target_id else (target_id, subject_id)
+
+
+def _resolve_seed_evidence(
+    seed: Any,
+    object_map: dict[str, KnowledgeObject],
+    path_index: dict[str, list[tuple[str, str]]],
+) -> tuple[list[str], list[str]]:
+    """Resolve declared evidence into resolvable object ids.
+
+    Direct ``evidence_object_ids`` must exist.  ``evidence_paths`` resolve
+    through the locator-path index (optionally restricted by
+    ``evidence_source_ids``), mirroring curated alias provenance; declared
+    paths that resolve to nothing are returned for audit metadata (accepted
+    relations must fail closed instead, enforced by the caller).
+    """
+    missing = [
+        object_id
+        for object_id in seed.evidence_object_ids
+        if object_id not in object_map
+    ]
+    if missing:
+        raise ValueError(f"seed relation evidence objects do not exist: {missing}")
+    evidence: set[str] = set(seed.evidence_object_ids)
+    unresolved: list[str] = []
+    if seed.evidence_paths:
+        sources = set(seed.evidence_source_ids)
+        resolved: set[str] = set()
+        for raw_path in seed.evidence_paths:
+            path = raw_path.replace("\\", "/")
+            for source_id, object_id in path_index.get(path, ()):
+                if not sources or source_id in sources:
+                    resolved.add(object_id)
+        if resolved:
+            evidence.update(resolved)
+        else:
+            unresolved = list(seed.evidence_paths)
+    return sorted(evidence), unresolved
+
+
+def materialize_seed_relations(
+    seed_relations: Any, objects: Iterable[KnowledgeObject]
+) -> list[RelationEdge]:
+    """Materialize curated seed relations under the frozen D1 contract.
+
+    Review status is taken from the seed config (no hardcoded acceptance),
+    accepted relations require machine-traceable provenance, pending
+    relations stay non-authoritative, and SAME_AS edges follow the
+    deterministic orientation contract.
+    """
+    object_list = list(objects)
+    object_map = {item.object_id: item for item in object_list}
+    path_index: dict[str, list[tuple[str, str]]] = {}
+    for obj in object_list:
+        if obj.metadata.get("b5_source_gap"):
+            continue
+        path = (obj.locator.path or "").replace("\\", "/")
+        if path:
+            path_index.setdefault(path, []).append((obj.source_id, obj.object_id))
+    relations: list[RelationEdge] = []
+    for seed in seed_relations.relations:
+        subject = object_map.get(seed.subject_id)
+        target = object_map.get(seed.object_id)
+        if subject is None or target is None:
+            raise ValueError(
+                f"seed relation endpoints do not exist: {seed.subject_id} -> {seed.object_id}"
+            )
+        review_status = ReviewStatus(seed.review_status)
+        source_version_ids = list(seed.source_version_ids) or sorted(
+            {subject.source_version_id, target.source_version_id}
+        )
+        evidence_ids, unresolved_paths = _resolve_seed_evidence(
+            seed, object_map, path_index
+        )
+        if review_status is ReviewStatus.ACCEPTED:
+            if not source_version_ids:
+                raise ValueError(
+                    f"accepted curated relation lacks source-version scope: "
+                    f"{seed.subject_id} {seed.predicate} {seed.object_id}"
+                )
+            if not evidence_ids:
+                raise ValueError(
+                    f"accepted curated relation lacks resolvable evidence objects: "
+                    f"{seed.subject_id} {seed.predicate} {seed.object_id} "
+                    f"(declared paths: {unresolved_paths})"
+                )
+        metadata: dict[str, Any] = {
+            "evidence_note": seed.evidence_note,
+            "resolution_method": "curated_seed",
+        }
+        if seed.deferred_requirement is not None:
+            metadata["deferred_requirement"] = seed.deferred_requirement
+        if unresolved_paths:
+            metadata["unresolved_evidence_paths"] = unresolved_paths
+        subject_id, target_id = seed.subject_id, seed.object_id
+        if seed.predicate == "SAME_AS":
+            subject_id, target_id = _orient_same_as(
+                subject_id, target_id, object_map, review_status
+            )
+        relations.append(
+            RelationEdge(
+                edge_id=stable_id(subject_id, seed.predicate, target_id, prefix="edge"),
+                subject_id=subject_id,
+                predicate=seed.predicate,
+                object_id=target_id,
+                source_version_ids=source_version_ids,
+                confidence=seed.confidence,
+                creation_method=CreationMethod(seed.creation_method),
+                review_status=review_status,
+                evidence_object_ids=evidence_ids,
+                metadata=metadata,
+            )
+        )
+    return relations
+
+
+def validate_identity_relations(
+    objects: Iterable[KnowledgeObject], relations: Iterable[RelationEdge]
+) -> None:
+    """Structural SAME_AS contract validation; semantic co-reference truth is
+    curated/reviewed evidence and is never inferred here."""
+    object_map = {item.object_id: item for item in objects}
+    seen_pairs: dict[tuple[str, str], str] = {}
+    for edge in relations:
+        if edge.predicate != "SAME_AS":
+            continue
+        if edge.subject_id not in object_map or edge.object_id not in object_map:
+            raise ValueError(f"SAME_AS edge has missing endpoints: {edge.edge_id}")
+        subject_role = _identity_role(object_map[edge.subject_id])
+        target_role = _identity_role(object_map[edge.object_id])
+        subject_canonical = subject_role == "canonical"
+        target_canonical = target_role == "canonical"
+        if edge.review_status is ReviewStatus.ACCEPTED:
+            if subject_canonical and target_canonical:
+                raise ValueError(
+                    f"accepted canonical-canonical SAME_AS identity conflict: {edge.edge_id}"
+                )
+            if subject_canonical != target_canonical:
+                if subject_canonical:
+                    raise ValueError(
+                        f"SAME_AS edge must store noncanonical -> canonical: {edge.edge_id}"
+                    )
+            elif edge.subject_id > edge.object_id:
+                raise ValueError(
+                    f"SAME_AS edge without a canonical endpoint must store the "
+                    f"lexicographically smaller object_id as subject: {edge.edge_id}"
+                )
+        pair = tuple(sorted((edge.subject_id, edge.object_id)))
+        previous = seen_pairs.get(pair)
+        if previous is not None:
+            raise ValueError(
+                f"duplicate SAME_AS identity edges for pair {pair}: {previous}, {edge.edge_id}"
+            )
+        seen_pairs[pair] = edge.edge_id
 
 
 class RelationResolver:
@@ -897,6 +1089,7 @@ def validate_ingestion_contract(
     if unknown_predicates:
         raise ValueError(f"unknown relation predicates: {unknown_predicates}")
     validate_relation_integrity(objects, relations)
+    validate_identity_relations(objects, relations)
 
 
 def write_jsonl(path: Path, records: Iterable[dict[str, Any]]) -> str:
@@ -1251,13 +1444,7 @@ def ingest(project_root: Path) -> IngestionReport:
     seed_relations = load_seed_relations(project_root / "configs" / "seed_relations.yaml")
     ontology = load_relation_ontology(project_root / "configs" / "relation_ontology.yaml")
     validate_seed_predicates(seed_relations, ontology)
-    for seed in seed_relations.relations:
-        relations.append(RelationEdge(
-            edge_id=stable_id(seed.subject_id,seed.predicate,seed.object_id,prefix="edge"), subject_id=seed.subject_id,
-            predicate=seed.predicate, object_id=seed.object_id, confidence=seed.confidence,
-            creation_method=CreationMethod.CURATED, review_status=ReviewStatus.ACCEPTED,
-            metadata={"evidence_note":seed.evidence_note},
-        ))
+    relations.extend(materialize_seed_relations(seed_relations, objects))
     objects=expand_embedding_chunks(objects)
     unique_objects = {item.object_id: item for item in objects}
     unique_relations = {item.edge_id: item for item in relations}

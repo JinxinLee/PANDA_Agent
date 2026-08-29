@@ -12,19 +12,19 @@ predicates:
   - name: EXTENDS
     description: A subject adds behavior or scope to an existing object.
   - name: PRODUCES
-    description: A workflow or code object produces a data product.
+    description: A genuine producer (an executable process, workflow, or code component) generates a data product or result as an output of execution or transformation; structural containment is not production.
   - name: CONSUMES
     description: A workflow or code object consumes a data product.
   - name: PRODUCES_INPUT_FOR
-    description: A workflow produces an input used by another subsystem.
+    description: An object, data product, file pattern, or workflow result serves as an input to a downstream workflow, component, or subsystem.
   - name: PRODUCES_PROFILE_FOR
     description: A reconstruction workflow produces a target profile used downstream.
   - name: GENERATES_CALIBRATION_FOR
     description: A data product parameterizes or calibrates a downstream result.
   - name: PARAMETERIZES
-    description: A value or data object provides parameters for another object.
+    description: A value, data, or configuration-like object provides parameter values or a parameterized input, i.e. what a process runs with.
   - name: CORRECTS
-    description: A correction object adjusts an observable or data product.
+    description: A validated correction concept, factor, or object adjusts a downstream observable or data product.
   - name: CALLS
     description: A code symbol calls another symbol.
   - name: INCLUDES
@@ -38,7 +38,7 @@ predicates:
   - name: WRITES
     description: A code object writes a file, tree, branch, or result.
   - name: CONFIGURES
-    description: A configuration object controls another object.
+    description: A configuration entity controls or selects behavior, settings, or operating mode of another object, i.e. how a process runs.
   - name: RUNS_BEFORE
     description: A workflow step precedes another step.
   - name: OPERATIONALLY_DOCUMENTS
@@ -47,3 +47,5 @@ predicates:
     description: A repository or version derives from another repository or version.
   - name: VERSION_INCOMPATIBLE_WITH
     description: A statement or interface must not be applied to the specified version.
+  - name: SAME_AS
+    description: Two records are genuinely co-referential representations of the same entity; the relation is symmetric, stored as exactly one deterministic edge, and never expresses implementation, similarity, documentation, containment, or generic association.

@@ -179,6 +179,11 @@ class SeedRelationConfig(StrictModel):
     creation_method: str
     review_status: str
     evidence_note: str
+    source_version_ids: list[str] = Field(default_factory=list)
+    evidence_object_ids: list[str] = Field(default_factory=list)
+    evidence_paths: list[str] = Field(default_factory=list)
+    evidence_source_ids: list[str] = Field(default_factory=list)
+    deferred_requirement: str | None = None
 
 
 class SeedRelationsConfig(StrictModel):
@@ -195,6 +200,18 @@ class SeedObjectConfig(StrictModel):
     source_version_id: str = "curated_panda_domain@1.0"
     authority_level: str = "derived"
     embedding_eligible: bool = True
+    identity_role: str | None = None
+    parent_object_id: str | None = None
+
+    @model_validator(mode="after")
+    def validate_identity_role(self) -> "SeedObjectConfig":
+        allowed = {"canonical", "source_native"}
+        if self.identity_role is not None and self.identity_role not in allowed:
+            raise ValueError(
+                f"seed identity_role must be one of {sorted(allowed)} or omitted: "
+                f"{self.object_id}={self.identity_role!r}"
+            )
+        return self
 
 
 class SeedObjectsConfig(StrictModel):
