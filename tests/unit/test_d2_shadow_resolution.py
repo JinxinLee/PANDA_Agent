@@ -27,6 +27,7 @@ from panda_agent.entity_resolution import (
     REJECTED_VERSION,
     RESOLVED_MULTIPLE,
     RESOLVED_UNIQUE,
+    D2Resolution,
     TIER_DESCRIPN,
     TIER_GOVERNED,
     TIER_STRUCTURAL,
@@ -616,6 +617,9 @@ class D2TierDTests(unittest.TestCase):
         self.assertEqual(span.evidence[0].kind, EVIDENCE_DESCRIPN)
 
     def test_descriptive_negative_generic_mention_abstains(self):
+        # D2-A1R1: the QE-only concept "the model" is not an authoritative
+        # mention; the conservative whole-question fallback runs Tier D and
+        # abstains on the single weak feature.
         objects = [
             _canonical_row(
                 _LUMI_FIT_MODEL_ID, title="Luminosity fit model", text=_LUMI_FIT_TEXT
@@ -625,7 +629,8 @@ class D2TierDTests(unittest.TestCase):
             "How is the model configured?", _plan(concepts=["the model"])
         )
         resolution = receipt.resolutions[0]
-        self.assertEqual(resolution.mention_text, "the model")
+        self.assertEqual(resolution.mention_text, "How is the model configured?")
+        self.assertEqual(resolution.mention_kind, "descriptive")
         self.assertEqual(resolution.status, UNRESOLVED)
         self.assertIsNone(resolution.matched_object_id)
         self.assertIsNone(resolution.canonical_object_id)
@@ -633,6 +638,95 @@ class D2TierDTests(unittest.TestCase):
         self.assertFalse(resolution.diagnostics["identity_authority"])
         self.assertTrue(resolution.diagnostics["abstention_reason"])
         self.assertTrue(receipt.fallback_required)
+
+    def test_analyzer_supported_concept_becomes_tier_d_mention(self):
+        # D2-A1R1 repair 1: an analyzer-accepted concept with a valid
+        # query-grounded support span is an authoritative Tier D mention.
+        objects = [
+            _canonical_row(
+                _LUMI_FIT_MODEL_ID, title="Luminosity fit model", text=_LUMI_FIT_TEXT
+            )
+        ]
+        plan = _plan(
+            analysis_diagnostics={
+                "analyzer_accepted_semantic_delta": {
+                    "concepts": [
+                        {
+                            "value": "luminosity fit model",
+                            "support_spans": ["luminosity fit model"],
+                        }
+                    ]
+                }
+            }
+        )
+        receipt = _resolver(objects).resolve_shadow(
+            "How does the luminosity fit model work?", plan
+        )
+        resolution = next(
+            item
+            for item in receipt.resolutions
+            if item.mention_text == "luminosity fit model"
+        )
+        self.assertEqual(resolution.mention_kind, "descriptive")
+        self.assertEqual(resolution.support_span, "luminosity fit model")
+        self.assertEqual(resolution.status, RESOLVED_UNIQUE)
+        self.assertEqual(resolution.canonical_object_id, _LUMI_FIT_MODEL_ID)
+        self.assertTrue(resolution.diagnostics["descriptive_inference"])
+
+    def test_query_expansion_only_concept_is_not_authoritative(self):
+        # D2-A1R1 repair 1: a concept present only through plan.concepts
+        # (query-expansion knowledge) never becomes an authoritative
+        # descriptive mention; the conservative fallback still abstains when
+        # the question does not ground it.
+        objects = [
+            _canonical_row(
+                "workflow.restgas.profile_correction",
+                title="Restgas profile correction workflow",
+                text="Workflow correcting the longitudinal restgas profile.",
+                object_type="workflow",
+            )
+        ]
+        receipt = _resolver(objects).resolve_shadow(
+            "What is the acceptance class?",
+            _plan(concepts=["restgas profile correction workflow"]),
+        )
+        # The QE-only concept never becomes a mention; the whole-question
+        # fallback found no governed candidate and therefore stayed
+        # diagnostic-only (no resolution entries at all).
+        self.assertEqual(receipt.resolutions, [])
+
+    def test_malformed_support_span_fails_closed(self):
+        # D2-A1R1 repair 1: support spans that are not substrings of the
+        # question fail closed — the concept never becomes a mention and the
+        # whole-question fallback takes over.
+        objects = [
+            _canonical_row(
+                _LUMI_FIT_MODEL_ID, title="Luminosity fit model", text=_LUMI_FIT_TEXT
+            )
+        ]
+        plan = _plan(
+            analysis_diagnostics={
+                "analyzer_accepted_semantic_delta": {
+                    "concepts": [
+                        {
+                            "value": "luminosity fit model",
+                            "support_spans": ["span not present in the question"],
+                        }
+                    ]
+                }
+            }
+        )
+        receipt = _resolver(objects).resolve_shadow(
+            "How does the luminosity fit model work?", plan
+        )
+        self.assertNotIn(
+            "luminosity fit model",
+            {item.mention_text for item in receipt.resolutions},
+        )
+        fallback = receipt.resolutions[0]
+        self.assertEqual(fallback.mention_text, "How does the luminosity fit model work?")
+        self.assertEqual(fallback.status, RESOLVED_UNIQUE)
+        self.assertEqual(fallback.canonical_object_id, _LUMI_FIT_MODEL_ID)
 
     def test_descriptive_tie_is_ambiguous(self):
         objects = [
@@ -657,11 +751,28 @@ class D2TierDTests(unittest.TestCase):
                 ),
             ),
         ]
+        plan = _plan(
+            analysis_diagnostics={
+                "analyzer_accepted_semantic_delta": {
+                    "concepts": [
+                        {
+                            "value": "the fit model used for the angular distribution",
+                            "support_spans": [
+                                "the fit model used for the angular distribution"
+                            ],
+                        }
+                    ]
+                }
+            }
+        )
         receipt = _resolver(objects).resolve_shadow(
-            "Which is the fit model used for the angular distribution?",
-            _plan(concepts=["the fit model used for the angular distribution"]),
+            "Which is the fit model used for the angular distribution?", plan
         )
         resolution = receipt.resolutions[0]
+        self.assertEqual(
+            resolution.mention_text,
+            "the fit model used for the angular distribution",
+        )
         self.assertEqual(resolution.status, AMBIGUOUS)
         self.assertIsNone(resolution.matched_object_id)
         self.assertTrue(
@@ -682,7 +793,9 @@ class D2TierDTests(unittest.TestCase):
 
 
 class D2MultipleTests(unittest.TestCase):
-    def test_plural_mention_resolves_multiple_without_fallback(self):
+    def test_plural_mention_without_direct_match_abstains(self):
+        # D2-A1R1 repair 3: a trailing-s mention is never singularized into
+        # multi-entity promotion; without a direct governed match it abstains.
         objects = [
             _object_row("obj.one", symbol="PndThing", object_type="class"),
             _object_row("obj.two", symbol="PndThing", object_type="function"),
@@ -690,26 +803,124 @@ class D2MultipleTests(unittest.TestCase):
         receipt = _resolver(objects).resolve_shadow(
             "List all PndThings", _plan(concepts=["PndThings"])
         )
-        self.assertEqual(len(receipt.resolutions), 1)
         resolution = receipt.resolutions[0]
         self.assertEqual(resolution.mention_text, "PndThings")
-        self.assertEqual(resolution.status, RESOLVED_MULTIPLE)
+        self.assertEqual(resolution.status, UNRESOLVED)
         self.assertIsNone(resolution.matched_object_id)
-        self.assertEqual(resolution.selected_object_ids, ["obj.one", "obj.two"])
-        self.assertEqual(
-            receipt.multi_entity_results,
-            [
-                {
-                    "mention": "PndThings",
-                    "mention_kind": "explicit_identifier",
-                    "selected_object_ids": ["obj.one", "obj.two"],
-                }
-            ],
+        self.assertEqual(resolution.selected_object_ids, [])
+        self.assertEqual(receipt.multi_entity_results, [])
+        self.assertIn("PndThings", receipt.unresolved_mentions)
+        self.assertTrue(receipt.fallback_required)
+
+    def test_trailing_s_identifier_is_not_singularized(self):
+        # A technical identifier ending in "s" whose singular form would match
+        # several records must not be promoted to RESOLVED_MULTIPLE; it simply
+        # does not match and the resolver abstains.
+        objects = [
+            _object_row("obj.one", symbol="PndThing", object_type="class"),
+            _object_row("obj.two", symbol="PndThing", object_type="function"),
+        ]
+        receipt = _resolver(objects).resolve_shadow(
+            "How does PndThings behave?", _plan(concepts=["PndThings"])
         )
+        resolution = receipt.resolutions[0]
+        self.assertEqual(resolution.status, UNRESOLVED)
+        self.assertEqual(resolution.selected_object_ids, [])
+        self.assertNotEqual(resolution.status, RESOLVED_MULTIPLE)
+
+    def test_singular_exact_collision_is_ambiguous(self):
+        # Multiple exact candidates for a singular mention without genuine
+        # multi-entity evidence are AMBIGUOUS (D2 supersession of C5).
+        objects = [
+            _object_row("obj.one", symbol="PndThing", object_type="class"),
+            _object_row("obj.two", symbol="PndThing", object_type="function"),
+        ]
+        receipt = _resolver(objects).resolve_shadow(
+            "Where is PndThing?", _plan(concepts=["PndThing"])
+        )
+        resolution = receipt.resolutions[0]
+        self.assertEqual(resolution.status, AMBIGUOUS)
+        self.assertIn("PndThing", receipt.ambiguous_mentions)
+        self.assertTrue(receipt.fallback_required)
+
+    def test_resolved_multiple_schema_remains_representable(self):
+        # D2-A1R1 repair 3: the RESOLVED_MULTIPLE schema (selected_object_ids,
+        # multi-entity receipt accounting) stays representable even though no
+        # natural A1 mechanism promotes to it.
+        resolution = D2Resolution(
+            mention_text="the two detectors",
+            mention_kind="descriptive",
+            support_span="the two detectors",
+            status=RESOLVED_MULTIPLE,
+            selected_object_ids=["object.a", "object.b"],
+        )
+        payload = resolution.as_dict()
+        self.assertEqual(payload["status"], RESOLVED_MULTIPLE)
+        self.assertEqual(payload["selected_object_ids"], ["object.a", "object.b"])
+
+    def test_tier_d_evidence_is_mention_local(self):
+        # D2-A1R1 repair 2: descriptive evidence is computed from each
+        # mention's own grounded support text.  Under the previous
+        # whole-question token implementation, the decoy entity
+        # concept.fixtures.model_workflow_engine would borrow "workflow" and
+        # "engine" from the second mention and tie with the first mention,
+        # producing a wrong AMBIGUOUS.  With mention-local isolation both
+        # mentions resolve to their own entities.
+        objects = [
+            _canonical_row(
+                "concept.fixtures.luminosity_fit_model",
+                title="Luminosity fit model",
+                text=_LUMI_FIT_TEXT,
+            ),
+            _canonical_row(
+                "concept.fixtures.model_workflow_engine",
+                title="Model workflow engine",
+                text=(
+                    "A model workflow engine fixture abstraction for the "
+                    "curated fixtures domain and is stable across corpus versions."
+                ),
+            ),
+        ]
+        plan = _plan(
+            analysis_diagnostics={
+                "analyzer_accepted_semantic_delta": {
+                    "concepts": [
+                        {
+                            "value": "luminosity fit model",
+                            "support_spans": ["luminosity fit model"],
+                        },
+                        {
+                            "value": "workflow engine",
+                            "support_spans": ["workflow engine"],
+                        },
+                    ]
+                }
+            }
+        )
+        receipt = _resolver(objects).resolve_shadow(
+            "How does the luminosity fit model compare to the workflow engine?",
+            plan,
+        )
+        by_mention = {
+            item.mention_text: item for item in receipt.resolutions
+        }
+        first = by_mention["luminosity fit model"]
+        second = by_mention["workflow engine"]
+        self.assertEqual(first.status, RESOLVED_UNIQUE)
+        self.assertEqual(
+            first.canonical_object_id, "concept.fixtures.luminosity_fit_model"
+        )
+        self.assertEqual(second.status, RESOLVED_UNIQUE)
+        self.assertEqual(
+            second.canonical_object_id, "concept.fixtures.model_workflow_engine"
+        )
+        first_evidence = next(
+            item for item in first.evidence if item.tier == TIER_DESCRIPN
+        )
+        self.assertIn("luminosity", first_evidence.detail)
+        self.assertNotIn("workflow", first_evidence.detail)
+        self.assertNotIn("engine", first_evidence.detail)
         self.assertEqual(receipt.ambiguous_mentions, [])
-        self.assertEqual(receipt.unresolved_mentions, [])
-        self.assertEqual(receipt.resolved_object_ids, ["obj.one", "obj.two"])
-        self.assertFalse(receipt.fallback_required)
 
 
 class D2ReceiptTests(unittest.TestCase):
@@ -975,7 +1186,7 @@ class ShadowSmokeTests(unittest.TestCase):
 
         # 6. generic unresolved phrase.
         resolutions, receipt = by_status("Explain the model", _plan(concepts=["the model"]))
-        hit = resolutions["the model"]
+        hit = resolutions["Explain the model"]
         self.assertEqual(hit.status, UNRESOLVED)
         self.assertTrue(receipt.fallback_required)
 

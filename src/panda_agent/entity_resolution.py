@@ -277,6 +277,40 @@ def _as_list(value: Any) -> list[Any]:
     return []
 
 
+def _analyzer_supported_concepts(
+    plan: Mapping[str, Any], question: str
+) -> list[tuple[str, str]]:
+    """D2-A1R1 repair 1: recover query-grounded concept provenance.
+
+    Only analyzer-accepted concepts whose support spans are actual substrings
+    of the original question qualify as descriptive mentions.  Concepts that
+    appear only in the flattened ``plan.concepts`` list (e.g. derived from
+    reviewed query-expansion rules) never become authoritative descriptive
+    mentions, and malformed/unsupported spans fail closed.  Returns
+    (concept value, support span) pairs.
+    """
+    diagnostics = _field(plan, "analysis_diagnostics", {}) or {}
+    delta = _field(diagnostics, "analyzer_accepted_semantic_delta", {}) or {}
+    supported: list[tuple[str, str]] = []
+    for item in _as_list(_field(delta, "concepts", [])):
+        value = _field(item, "value")
+        spans = _field(item, "support_spans")
+        if not isinstance(value, str) or not value.strip():
+            continue
+        if isinstance(spans, str):
+            spans = (spans,)
+        if not isinstance(spans, Sequence) or isinstance(spans, bytes):
+            continue
+        valid = [
+            span
+            for span in spans
+            if isinstance(span, str) and span.strip() and span in question
+        ]
+        if valid:
+            supported.append((value.strip(), valid[0]))
+    return sorted(dict.fromkeys(supported), key=lambda pair: _normalization_key(pair[0]))
+
+
 class EntityResolver:
     """Resolve query-grounded mentions to canonical objects, or report why not."""
 
@@ -673,15 +707,15 @@ class EntityResolver:
             if object_id in governed_id_rows:
                 add(object_id, "governed_id", "verbatim_governed_id", span)
 
-        concepts = [str(item).strip() for item in _as_list(_field(plan, "concepts", []))]
-        concepts = [concept for concept in concepts if concept]
-        if concepts:
-            for concept in sorted(dict.fromkeys(concepts), key=_normalization_key):
-                add(concept, "descriptive", "plan_concept", concept)
-        else:
-            stripped = question.strip()
-            if stripped:
-                add(stripped, "descriptive", "question_descriptive_span", stripped)
+        # D2-A1R1 repair 1: only analyzer-accepted concepts with valid
+        # query-grounded support spans become descriptive mentions.  The
+        # flattened plan.concepts list may carry query-expansion knowledge and
+        # is not identity-authoritative mention evidence; unsupported or
+        # malformed spans fail closed.  The conservative whole-question
+        # descriptive fallback span is synthesized by resolve_shadow only when
+        # the resolution pass actually needs it.
+        for value, span in _analyzer_supported_concepts(plan, question):
+            add(value, "descriptive", "analyzer_concept", span)
 
         mentions = sorted(
             merged.values(),
@@ -724,11 +758,10 @@ class EntityResolver:
             for mention in mentions:
                 if mention.kind not in {"explicit_identifier", "analyzer_symbol"}:
                     continue
+                # D2-A1R1 repair 3: no trailing-s singularization — a
+                # technical identifier ending in "s" is never expanded to its
+                # singular form for multi-entity promotion.
                 symbol_values.append(mention.text)
-                # Plural-form mentions fall back to their singular form
-                # (contract Section 9 valid multi-entity resolution).
-                if len(mention.text) > 1 and mention.text.endswith("s"):
-                    symbol_values.append(mention.text[:-1])
             exact_rows = self._fetch_exact_rows(connection, symbol_values)
             same_as_endpoint_ids = sorted({oid for edge in same_as_edges for oid in edge})
             same_as_rows = {
@@ -763,8 +796,53 @@ class EntityResolver:
                 ) is not True:
                     tier_d_pending.append((mention, resolution))
 
+            # D2-A1R1 repair 1: conservative whole-question descriptive
+            # fallback.  Synthesized only when the resolution pass actually
+            # needs it — some mention went unresolved/rejected without a
+            # corrective flag, or nothing resolved at all — and no
+            # analyzer-grounded descriptive mention already exists.  The
+            # fallback resolution enters the receipt only when the descriptive
+            # evaluation produced decisions for it; a no-candidate abstention
+            # stays diagnostic-only so exact-only questions keep clean
+            # receipts.
+            has_descriptive = any(
+                resolution.mention_kind == "descriptive"
+                for resolution in receipt.resolutions
+            )
+            needs_fallback = (not receipt.resolutions) or any(
+                resolution.status
+                in {UNRESOLVED, REJECTED_VERSION, REJECTED_SCOPE, MISSING_TARGET}
+                and resolution.diagnostics.get("corrective") is not True
+                for resolution in receipt.resolutions
+            )
+            fallback_resolution: D2Resolution | None = None
+            if needs_fallback and not has_descriptive and question.strip():
+                fallback_mention = EntityMention(
+                    text=question.strip(),
+                    kind="descriptive",
+                    provenance="question_descriptive_span",
+                    support_span=question.strip(),
+                )
+                fallback_resolution = D2Resolution(
+                    mention_text=fallback_mention.text,
+                    mention_kind=fallback_mention.kind,
+                    support_span=fallback_mention.support_span,
+                    status=UNRESOLVED,
+                    version_scope=dict(version_scope),
+                    diagnostics={
+                        "canonicalization": False,
+                        "descriptive_inference": False,
+                        "corrective": False,
+                        "correction_message": None,
+                        "identity_authority": False,
+                        "ambiguity_reason": None,
+                        "abstention_reason": None,
+                        "rejection_reasons": [],
+                    },
+                )
+                tier_d_pending.append((fallback_mention, fallback_resolution))
+
             self._apply_tier_d(
-                question,
                 tier_d_pending,
                 canonical_rows=canonical_rows,
                 canonical_row_by_id=canonical_row_by_id,
@@ -773,6 +851,11 @@ class EntityResolver:
                 locked=locked,
                 version_scope=version_scope,
             )
+            if (
+                fallback_resolution is not None
+                and (fallback_resolution.candidates or fallback_resolution.status != UNRESOLVED)
+            ):
+                receipt.resolutions.append(fallback_resolution)
 
             resolved_ids: set[str] = set()
             for resolution in receipt.resolutions:
@@ -1076,30 +1159,22 @@ class EntityResolver:
             return resolution, None
 
         if mention.kind in {"explicit_identifier", "analyzer_symbol"}:
-            # Tier S: exact symbol/title/path with C5 kind priority; plural-form
-            # mentions may legitimately denote multiple entities (contract Section 9).
-            plural_rows: list[tuple[dict[str, Any], str]] = []
+            # Tier S: exact symbol/title/path with C5 kind priority.
+            # D2-A1R1 repair 3: no trailing-s singularization — a technical
+            # identifier that happens to end in "s" is never promoted to
+            # RESOLVED_MULTIPLE; competing exact candidates for a singular or
+            # insufficiently grounded mention are AMBIGUOUS (contract
+            # Section 9 supersession of the C5 collision semantics).
+            rows_with_layer: list[tuple[dict[str, Any], str]] = []
             for row in exact_rows:
                 layer = self._match_layer(mention.text, row)
                 if layer is not None:
-                    plural_rows.append((row, layer))
-            singular = (
-                mention.text[:-1]
-                if len(mention.text) > 1 and mention.text.endswith("s")
-                else None
-            )
-            singular_rows: list[tuple[dict[str, Any], str]] = []
-            if not plural_rows and singular:
-                for row in exact_rows:
-                    layer = self._match_layer(singular, row)
-                    if layer is not None:
-                        singular_rows.append((row, layer))
-            if plural_rows or singular_rows:
+                    rows_with_layer.append((row, layer))
+            if rows_with_layer:
                 self._resolve_exact_rows_d2(
                     resolution,
-                    plural_rows or singular_rows,
-                    mention.text if plural_rows else (singular or mention.text),
-                    plural_mode=not plural_rows,
+                    rows_with_layer,
+                    mention.text,
                     canonical_ids=canonical_ids,
                     same_as_edges=same_as_edges,
                     same_as_rows=same_as_rows,
@@ -1120,7 +1195,6 @@ class EntityResolver:
         rows_with_layer: Sequence[tuple[dict[str, Any], str]],
         matched_value: str,
         *,
-        plural_mode: bool,
         canonical_ids: set[str],
         same_as_edges: Sequence[tuple[str, str]],
         same_as_rows: Mapping[str, dict[str, Any]],
@@ -1130,9 +1204,10 @@ class EntityResolver:
         """Tier S exact-match resolution with the D2 supersession semantics.
 
         Competing exact candidates for a singular mention are AMBIGUOUS (never
-        RESOLVED_MULTIPLE); a plural-form mention whose plural form matches
-        nothing but whose singular form matches several distinct records is a
-        valid multi-entity resolution.
+        RESOLVED_MULTIPLE).  ``selected_object_ids`` and the receipt's
+        multi-entity accounting remain representable for future genuinely
+        grounded multi-entity mechanisms (D2-A1R1 repair 3), but no heuristic
+        promotes them.
         """
 
         diagnostics = resolution.diagnostics
@@ -1205,24 +1280,13 @@ class EntityResolver:
                     allowed=allowed,
                     locked=locked,
                 )
-        elif len(distinct) > 1 and plural_mode:
-            resolution.status = RESOLVED_MULTIPLE
-            resolution.selected_object_ids = sorted(distinct)
-            for object_id in sorted(distinct):
-                row = next(item for item in promotable if str(item["object_id"]) == object_id)
-                layer = self._match_layer(matched_value, row) or best_layer
-                resolution.evidence.append(
-                    D2Evidence(
-                        tier=TIER_STRUCTURAL,
-                        kind=EVIDENCE_KIND_BY_MATCH[layer],
-                        matched_value=matched_value,
-                        object_id=object_id,
-                        detail="plural mention legitimately denotes multiple governed entities",
-                    )
-                )
-            diagnostics["identity_authority"] = True
         elif len(distinct) > 1:
-            # D2 supersession of the C5 collision semantics (contract Section 9).
+            # D2 supersession of the C5 collision semantics (contract
+            # Section 9; D2-A1R1 repair 3): competing candidates without
+            # genuine multi-entity evidence are AMBIGUOUS.  The
+            # RESOLVED_MULTIPLE schema (selected_object_ids, receipt
+            # multi-entity accounting) stays representable for future
+            # independently grounded multi-entity mechanisms.
             resolution.status = AMBIGUOUS
             diagnostics["ambiguity_reason"] = "multiple distinct objects share the exact match"
         elif rejections:
@@ -1358,7 +1422,6 @@ class EntityResolver:
 
     def _apply_tier_d(
         self,
-        question: str,
         pending: Sequence[tuple[EntityMention, D2Resolution]],
         *,
         canonical_rows: Sequence[Mapping[str, Any]],
@@ -1368,7 +1431,11 @@ class EntityResolver:
         locked: Mapping[str, str],
         version_scope: Mapping[str, Any],
     ) -> None:
-        """Tier D: governed descriptive inference for unresolved/descriptive mentions."""
+        """Tier D: governed descriptive inference for unresolved/descriptive
+        mentions.  D2-A1R1 repair 2: evidence is mention-local — each mention
+        is evaluated against its own grounded support text (analyzer support
+        span, or the whole question for the raw-question fallback mention), so
+        feature evidence never leaks between mentions in one question."""
 
         if not pending:
             return
@@ -1395,11 +1462,18 @@ class EntityResolver:
             for row in sorted(canonical_rows, key=lambda item: str(item["object_id"]))
         ]
         index = build_descriptive_index(entities, relation_features)
-        mention_texts = [mention.text for mention, _resolution in pending]
-        decisions = evaluate_descriptive_mentions(question, mention_texts, index)
         by_mention: dict[str, list[Any]] = {}
-        for decision in decisions:
-            by_mention.setdefault(decision.mention, []).append(decision)
+        for mention, _resolution in pending:
+            # D2-A1R1 repair 2: mention-local evidence isolation.  The
+            # evaluation text is the mention's own grounded support text, so
+            # tokens from unrelated mentions in the same question can never
+            # leak into this mention's descriptive evidence.
+            support_text = mention.support_span or mention.text
+            mention_decisions = evaluate_descriptive_mentions(
+                support_text, [mention.text], index
+            )
+            for decision in mention_decisions:
+                by_mention.setdefault(mention.text, []).append(decision)
         for mention, resolution in pending:
             diagnostics = resolution.diagnostics
             group = by_mention.get(mention.text, [])
