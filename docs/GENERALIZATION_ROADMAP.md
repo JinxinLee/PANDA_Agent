@@ -402,7 +402,7 @@ Phase D is `IN_PROGRESS` (started by D1; D2/D3/D4 remain `NOT_STARTED`).
 
 ### D2 — Concept/entity resolver
 
-- **Status:** NOT_STARTED
+- **Status:** IN_PROGRESS (D2-A0 `COMPLETE / CONTRACT_AND_PREREGISTRATION_FROZEN` 2026-08-29; D2-A1 `NOT_STARTED`; D2-A2 `NOT_STARTED`; D2-A3 `NOT_STARTED`. D2 sub-stage roadmap: D2-A0 resolver contract + preregistration; D2-A1 shadow resolver implementation; D2-A2 terminology/paraphrase evaluation; D2-A3 resolver role decision.)
 - **Problem:** Users often describe PANDA concepts/components without naming their exact classes or symbols.
 - **Goal:** Resolve genuine English terminology, abbreviations, descriptive paraphrases, and implementation-oriented descriptions to canonical entities.
 - **Why this stage:** D1 provides the reviewed target space; resolving before migration lets quality be measured independently.
@@ -414,6 +414,7 @@ Phase D is `IN_PROGRESS` (started by D1; D2/D3/D4 remain `NOT_STARTED`).
 - **Primary metrics:** Entity Top-1/Top-3 accuracy, false-resolution/abstention rate, and downstream exact recall.
 - **Acceptance criteria:** Stable terminology resolves accurately across unseen expression forms with bounded false positives.
 - **Failure handling:** Abstain or expose ambiguity; do not turn related concepts into aliases to force Top-1. Stop after D2.
+- **D2-A0 closeout — 2026-08-29 (`COMPLETE / CONTRACT_AND_PREREGISTRATION_FROZEN`):** design/contract/preregistration stage; zero runtime behavior changes; no shadow resolver implemented; `SAME_AS` not activated. Authoritative contract: `docs/PHASE_D2_A0_RESOLVER_CONTRACT.md`. Frozen: the five-stage resolver separation (mention → candidates → identity evidence → canonicalization → decision); the four-tier identity-evidence hierarchy (governed explicit / strong context-dependent / descriptive / non-identity) with explicit resolve/canonicalize/abstain rules per tier; alias = same-entity expression vs related term (both existing accepted aliases audited compliant); `SAME_AS` consumption rules (accepted-only, D1 orientation respected, conflicts → AMBIGUOUS, version conflicts never erased); matched-object ≠ canonical-object result contract with evidence/version/diagnostics; version-aware resolution rules; status vocabulary (`RESOLVED_UNIQUE`/`RESOLVED_MULTIPLE`/`AMBIGUOUS`/`UNRESOLVED` + preserved rejections, MULTIPLE vs AMBIGUOUS distinguished); abstention as a first-class success mode; descriptive-paraphrase constraints (Tier D candidates only, no query-time entity invention, similarity never identity truth); query-expansion rules explicitly non-authoritative identity evidence; D2-A1 preregistered shadow-only (`CURRENT_DEPLOYED_RETRIEVAL_BEHAVIOR_CHANGED = false`); D2-A2 preregistered (12 categories, mandatory positive+negative cases, source-first curation, seven metrics with separate decision accounting, wrong-confident-resolution high severity); D2-A3 role gate (KEEP_SHADOW / DEVELOPMENT_SUPPORTED_CANDIDATE / limited role / production-authoritative only on strong evidence; never aggregate accuracy alone).
 
 ### D3 — Small shortcut-migration experiment
 
