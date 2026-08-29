@@ -1,11 +1,12 @@
 # PANDA Agent — Phase D1-A0: Concept/Entity Schema Inventory and Identity-Contract Freeze
 
 > Status: `D1-A0 = COMPLETE / CONTRACT_FROZEN` (2026-08-29);
-> `D1-A0R1 = COMPLETE / CONTRACT_REPAIRED_AND_REFROZEN` (2026-08-29).
+> `D1-A0R1 = COMPLETE / CONTRACT_REPAIRED_AND_REFROZEN` (2026-08-29);
+> `D1-A0R2 = COMPLETE / FINAL_SEMANTIC_BOUNDARY_AMENDMENT` (2026-08-29).
 > This document is a static design contract, not an implementation.
 > D1-A1 owns implementation; D1-A2 owns the small representative
 > knowledge-set expression; D2/D3/D4 own resolver and migration work.
-> No production behavior changed in D1-A0 or D1-A0R1.
+> No production behavior changed in D1-A0, D1-A0R1, or D1-A0R2.
 
 Repository provenance (recorded precisely; Git history is not rewritten):
 
@@ -280,18 +281,45 @@ Frozen rules:
      concept; related concept → concept; or similar object → object. Those
      relationships use semantic relations such as `IMPLEMENTS`, `FORMALIZES`,
      `PRODUCES`, `EXTENDS`, `THEORETICAL_BASIS_FOR`, etc.
-   - **Storage behavior (deterministic):** `SAME_AS` is semantically symmetric
-     but stores exactly one physical edge; query traversal treats it as
-     bidirectional; no inverse edge is stored. The stored orientation is
-     deterministic: if exactly one endpoint carries the canonical identity-role
-     marker (Section B) and the other does not, store
-     `noncanonical -> canonical`; otherwise store the lexicographically
-     smaller `object_id` as `subject_id`. `edge_id` continues to derive from
-     the stored triple via the existing `stable_id`.
+   - **Storage behavior (deterministic, amended in D1-A0R2):** `SAME_AS` is
+     semantically symmetric but stores exactly one physical edge; query
+     traversal treats it as bidirectional; no inverse edge is stored. Stored
+     orientation by case:
+     - **Case A — exactly one endpoint canonical:** store
+       `noncanonical -> canonical`.
+     - **Case B — neither endpoint canonical:** store once using
+       deterministic stable ordering — the lexicographically smaller
+       `object_id` as `subject_id`. This represents two equivalent
+       noncanonical records whose canonical status is not yet assigned.
+     - **Case C — both endpoints canonical:** invalid/pending conflict. Two
+       canonical records asserting `SAME_AS` means the canonical identity
+       model itself is in conflict; this must **not** silently fall back to
+       lexical ordering. Accepting such an edge requires explicit
+       reconciliation or demotion of one endpoint first; D1-A1 validation
+       fails for an accepted canonical-canonical `SAME_AS`, and D1-A1 must
+       not automatically merge canonical entities.
+     - `edge_id` continues to derive from the stored triple via the existing
+       `stable_id`.
+   - **Validation scope (frozen in D1-A0R2):** deterministic code validation
+     covers the structural `SAME_AS` contract only — endpoint existence,
+     predicate validity, accepted review status, provenance completeness,
+     version/scope validity, canonical-role conflict (Case C), deterministic
+     stored orientation, and duplicate-edge rules. The semantic truth of
+     co-reference is **not** inferred by code: `A SAME_AS B` must be supported
+     by curated/reviewed evidence and governance. No fuzzy title similarity,
+     dense similarity, broad path matching, LLM-generated equivalence, or
+     retrieval co-occurrence may establish identity. Frozen terminology:
+     **structural `SAME_AS` contract validation plus reviewed co-reference
+     evidence.**
 3. **Frozen boundaries for overlapping predicates** (make D1-A1 deterministic;
    descriptions are repaired only in D1-A1, not in A0R1):
-   - `PRODUCES`: a producer (workflow, code object, or a containing data
-     artifact) creates or contains a resulting data product.
+   - `PRODUCES` (amended in D1-A0R2): a **production/data-generation
+     relation** — an executable process, workflow, code component, or other
+     genuine producer generates a data product/result as an output of
+     execution or transformation. `PRODUCES` must **not** be used merely
+     because one stored artifact physically contains another object;
+     structural containment and production are distinct semantics (Section
+     E.2 item 4, `boost_root` → `event_poca` case).
    - `CONSUMES`: a workflow/code/component consumes a data product or input
      it reads during execution.
    - `PRODUCES_INPUT_FOR`: an object, data product, file pattern, or workflow
@@ -307,7 +335,17 @@ Frozen rules:
      *how* something runs. `restgas_profile` selecting a concrete input
      profile file is `PARAMETERIZES`, not `CONFIGURES`.
 4. **Audit of all 16 accepted seed relations against predicate semantics**
-   (compared in D1-A0R1; no relation migrated in A0R1):
+   (compared in D1-A0R1, amended in D1-A0R2; no relation migrated in A0R1 or
+   A0R2). **C-class resolution ownership (frozen in D1-A0R2):** D1-A1 may
+   resolve a C-class relation ambiguity only when the correct normalization
+   can be expressed using already-existing entities and already-authorized
+   predicates/structure. If the correct representation requires a new domain
+   concept, a new workflow/entity, representative knowledge materialization,
+   or source-backed semantic curation beyond existing records, D1-A1 must
+   **not** invent the missing entity merely to close the ambiguity — it must
+   preserve the relation as pending, record the exact deferred requirement,
+   and hand it to D1-A2, which owns representative knowledge-set
+   materialization. Final accounting: **8 conform / 5 A / 3 C**.
    - **Conforming (8):** karavdina `THEORETICAL_BASIS_FOR` →
      lmd_reconstruction, lmd_reconstruction `PRODUCES` lumi_trks_qa,
      effective-acceptance `IMPLEMENTED_AS_PIPELINE`,
@@ -315,30 +353,49 @@ Frozen rules:
      `OPERATIONALLY_DOCUMENTS`, restgas_profile_reconstruction `PRODUCES`
      boost_root (workflow producer), and second-pass PID `PRODUCES`
      pid_final_root.
-   - **A — ontology description too narrow, usage semantically valid (4
-     description families, 6 edges):** `PRODUCES_INPUT_FOR` says "a workflow
+   - **A — ontology description too narrow, usage semantically valid (3
+     description families, 5 edges):** `PRODUCES_INPUT_FOR` says "a workflow
      produces an input used by another subsystem" but accepted usage has
      `data_product`→subsystem, `file_pattern`→workflow, and
      `data_product`→workflow subjects/objects (3 edges) — frozen boundary in
      item 3 governs; `CORRECTS` says "a correction object" but the accepted
      subject is a physics concept acting as the correcting factor (1 edge);
      `PARAMETERIZES` says "a value or data object" but the accepted subject is
-     a `configuration_key` (1 edge); `PRODUCES` says "a workflow or code
-     object" but one accepted subject is a containing data artifact
-     (`*_boost.root` containing the `event_poca` tree, 1 edge).
-   - **C — genuine ambiguity requiring future explicit treatment (2 edges):**
-     pflueger `FORMALIZES` → `subsystem.luminosityfit.model_and_fit`: the
-     description targets a *concept*, the actual target is the implementing
-     subsystem; resolution belongs to D1-A1/A2 (either re-point the edge to
-     `THEORETICAL_BASIS_FOR`, or introduce the model-concept object in D1-A2
-     and use `FORMALIZES` → concept with `IMPLEMENTS` from the subsystem) —
-     left pending, not silently redefined. `pid_root` —`PRODUCES_INPUT_FOR`→
-     `event_poca` (product → product): either the `PRODUCES_INPUT_FOR` object
-     domain is widened to include downstream data products that directly embed
-     the input, or the edge is normalized to the consuming workflow as
-     subject with `CONSUMES`; D1-A1 must decide explicitly.
-   - **B — seed predicate misclassified: none found beyond the two pending
-     cases above.** No seed relation is reclassified in A0R1.
+     a `configuration_key` (1 edge).
+   - **C — genuine ambiguity requiring future explicit treatment (3 edges):**
+     1. pflueger `FORMALIZES` → `subsystem.luminosityfit.model_and_fit`: the
+        description targets a *concept*, the actual target is the implementing
+        subsystem. Decision policy frozen in D1-A0R2 (not the final relation):
+        if repository evidence makes an existing-entity normalization
+        unambiguous (e.g. re-pointing to `THEORETICAL_BASIS_FOR`), D1-A1 may
+        normalize it; if the semantically correct structure is
+        `paper FORMALIZES model_concept` + `subsystem IMPLEMENTS
+        model_concept`, the missing model-domain entity belongs to D1-A2 —
+        D1-A1 must not choose the weaker representation merely to eliminate
+        all pending cases.
+     2. `pid_root` —`PRODUCES_INPUT_FOR`→ `event_poca` (product → product).
+        Candidate existing normalization: the consuming first-pass POCA
+        analysis (`macro/target/ana_dpm.C`, referenced in the seed evidence
+        note) as subject with `CONSUMES`. D1-A1 may normalize **only if** the
+        consuming process is already represented as an existing object and
+        the mapping is unambiguous; D1-A1 must not invent a new workflow
+        entity, and must not widen `PRODUCES_INPUT_FOR`/`CONSUMES` solely to
+        preserve the historical edge. Otherwise the ambiguity stays pending
+        for D1-A2.
+     3. `boost_root` —`PRODUCES`→ `event_poca` (reclassified A → C in
+        D1-A0R2): the seed description states the boost ROOT output
+        **contains** the `event_poca` tree — this is structural containment,
+        not production/data-generation, so it must not be justified by
+        broadening `PRODUCES` (item 3). Future representations to consider,
+        in order: existing `parent_object_id`/composition structure; another
+        already-existing structural mechanism; a later explicitly justified
+        structural relation if existing architecture proves insufficient.
+        No `CONTAINS`/`PART_OF` predicate is added in D1-A0R2; the seed
+        relation is not modified in A0R2. D1-A1 may resolve it only if an
+        existing representation is sufficient and unambiguous; otherwise the
+        final normalization is deferred to D1-A2.
+   - **B — seed predicate misclassified: none found.** No seed relation is
+     reclassified in A0R1/A0R2.
 5. **Inverse-direction policy:** one canonical stored direction per predicate
    as documented in the ontology; inverse traversal is derived at query time,
    never stored as a second edge. If a future need for stored inverses is
@@ -484,44 +541,51 @@ locations.
 
 ---
 
-## K. D1-A1 implementation boundary (after D1-A0R1 repair)
+## K. D1-A1 implementation boundary (after D1-A0R2 amendment)
 
 D1-A1 is authorized to implement exactly:
 
 1. Add the single identity predicate `SAME_AS` to `relation_ontology.yaml`
-   with the Section E.2 co-reference-only semantics and deterministic storage
-   orientation; no other predicate is created. Resulting ontology accounting:
+   with the Section E.2 co-reference-only semantics, the Case A/B/C storage
+   contract, and structural validation including canonical-canonical conflict
+   detection. No other predicate is created. Resulting ontology accounting:
    23 existing predicates + `SAME_AS` = 24.
 2. Add minimal identity-role provenance to curated domain-level seed objects
    (payload/metadata-level, Section B) — no new object types. This marker is
-   also what makes the `SAME_AS` orientation rule (noncanonical → canonical)
-   deterministic.
+   also what makes the `SAME_AS` orientation rule deterministic.
 3. Enforce the Section F provenance contract on curated seed relations in
    ingestion (populate `source_version_ids` / `evidence_object_ids` from
    evidence references declared in `seed_relations.yaml`; migrate the 16
    existing seed relations' evidence notes into machine-traceable evidence
    references, keeping prose only as a supplement).
-4. Perform **only the narrowly authorized existing-predicate semantic
-   normalization** identified by the D1-A0R1 audit (Section E.2 items 3–4):
-   update the A-classified predicate descriptions (`PRODUCES`,
-   `PRODUCES_INPUT_FOR`, `CORRECTS`, `PARAMETERIZES`) so each description
-   matches the frozen boundary, and resolve the two C-classified ambiguities
-   explicitly (the pflueger `FORMALIZES` target and the product→product
-   `PRODUCES_INPUT_FOR` edge), normalizing affected seed relations only where
-   the resolution demonstrably requires it. This authorizes description
-   correction and seed-relation normalization only — it does **not**
-   authorize ontology expansion, new generic predicates, broad relation
-   redesign, query-expansion migration, or benchmark-driven relation changes.
-5. Extend schema/ingestion validation for the above (target existence,
-   predicate validity, provenance completeness, `SAME_AS` orientation and
-   co-reference validation); extend or add focused T0 schema/ingestion tests.
-6. Any minimal storage/payload sync required by 1–5, following the existing
+4. Correct existing-predicate descriptions **only where the semantic boundary
+   is already frozen and unambiguous** (Section E.2 item 3: `PRODUCES`,
+   `PRODUCES_INPUT_FOR`, `CORRECTS`, `PARAMETERIZES`, `CONFIGURES`). This
+   authorizes description repair only — no ontology expansion, no new generic
+   predicates, no broad relation redesign, no benchmark-driven relation
+   changes.
+5. Normalize an ambiguous seed relation **only when existing entities and
+   already-authorized predicates/structures are sufficient** (Section E.2
+   item 4 C-class ownership rule). When resolution would require creating new
+   representative domain entities or knowledge objects, D1-A1 must defer to
+   D1-A2: preserve the relation pending and record the exact deferred
+   requirement.
+6. Extend schema/ingestion validation: endpoint existence, predicate
+   validity, review status, provenance completeness, version/scope validity,
+   structural `SAME_AS` contract validation (including Case C
+   canonical-canonical conflict detection and deterministic orientation) plus
+   reviewed co-reference evidence as the only path to semantic identity — no
+   heuristic or automatic co-reference inference; extend or add focused T0
+   schema/ingestion tests.
+7. Any minimal storage/payload sync required by 1–6, following the existing
    metadata-sync pattern, with no embedding-text change and no re-embedding.
 
-D1-A1 is NOT authorized to: populate aliases; change `EntityResolver` runtime
-behavior; change production exact, fusion, or selector; migrate query
-expansions; implement D2; rebuild indexes or re-embed; tune against
-benchmarks; or touch protected evaluation data.
+D1-A1 is NOT authorized to: create new concept/entity records merely to close
+ambiguity; populate aliases; expand `EntityResolver` behavior; migrate query
+expansions; add structural/data-flow predicates beyond the already-approved
+`SAME_AS`; perform semantic co-reference inference; redesign the graph;
+change production exact, fusion, or selector; tune against benchmarks; or
+touch protected evaluation data.
 
 ---
 
@@ -545,9 +609,9 @@ incremental measured migration.
 | Phrase → implementation/file shortcut | `symbols:` mapping phrases to files (`angular acceptance` → `data/PndLmdAcceptance.cxx`, `PndMasterRunSim` → `tools/MasterTasks/...`) | D3 experiment, then D4 |
 | Workflow shortcut | `restgas_workflow_usage`, `target_macro_workflow_grouping`, `master_reconstruction_workflow` | D3/D4 |
 | Data-product shortcut | `pid_two_pass_files` (`*_pid.root`/`*_pid_final.root` → macros) | D3/D4 |
-| Negative-control / false-premise guard | `nonexistent_restgas_deconvolver`, `similarly_named_track_finders`, `version_mismatch_troubleshooting`, `acceptance_efficiency_disambiguation` | Later generic false-premise/cleanup phase (post-D4); D2 may own disambiguation semantics |
-| Answer-location shortcut | `paper_page_hints` fields (~15 rules pinning `li_2026`/`pflueger_2017`/`karavdina_2015` pages) | D4 replacement candidates only where a generic mechanism is proven; never re-encoded as D1 relations/aliases |
-| Multilingual trigger vocabulary | Chinese-language triggers across rules (English-only product scope) | Retained as compatibility behavior; out of D1–D4 migration scope; aliases remain English-only |
+| Negative-control / false-premise guard | `nonexistent_restgas_deconvolver`, `similarly_named_track_finders`, `version_mismatch_troubleshooting`, `acceptance_efficiency_disambiguation` | Conditional (frozen in D1-A0R2): **D4** when an already-proven generic replacement exists; **later generic false-premise / benchmark-dependency cleanup phase** otherwise. D2 may own disambiguation semantics |
+| Answer-location shortcut | `paper_page_hints` fields (~15 rules pinning `li_2026`/`pflueger_2017`/`karavdina_2015` pages) | D3/D4 only where a generic structured replacement has been demonstrated; never re-encoded as D1 relations/aliases |
+| Legacy multilingual compatibility debt | Chinese-language triggers across rules (reclassified in D1-A0R2) | Existing behavior preserved unchanged; not migrated into D1 aliases/entities; D2 is not expanded to multilingual resolution; these triggers are not part of the English product contract; future removal requires an explicit compatibility-cleanup task or later Phase-F-style cleanup. Aliases remain English-only |
 
 This inventory defines future task boundaries only; it authorizes no
 migration and must not be read as an implementation plan.
