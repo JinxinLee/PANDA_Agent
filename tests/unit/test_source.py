@@ -8,13 +8,83 @@ from types import SimpleNamespace
 
 from panda_agent.source import (
     LinkCollector,
+    SourceGateError,
     _validate_web_contract,
     compute_sphinx_snapshot_hash,
+    resolve_manifest_repository_path,
     sha256_file,
 )
 
 
 class SourceTests(unittest.TestCase):
+    def test_repository_path_prefers_canonical_snapshot(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            project_root = Path(directory)
+            canonical = (
+                project_root / "data" / "sources" / "repos" / "example" / "abc123"
+            )
+            canonical.mkdir(parents=True)
+            entry = {
+                "repo_id": "example",
+                "commit_sha": "abc123",
+                "path": str(project_root / "stale" / "snapshot"),
+            }
+
+            self.assertEqual(
+                resolve_manifest_repository_path(entry, project_root),
+                canonical.resolve(),
+            )
+
+    def test_repository_path_allows_safe_manifest_fallback(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            project_root = Path(directory)
+            fallback = (
+                project_root
+                / "data"
+                / "sources"
+                / "repos"
+                / "legacy"
+                / "snapshot"
+            )
+            fallback.mkdir(parents=True)
+            entry = {
+                "repo_id": "example",
+                "commit_sha": "abc123",
+                "path": str(fallback),
+            }
+
+            self.assertEqual(
+                resolve_manifest_repository_path(entry, project_root),
+                fallback.resolve(),
+            )
+
+    def test_repository_path_rejects_external_manifest_path(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            project_root = Path(directory) / "project"
+            project_root.mkdir()
+            external = Path(directory) / "external"
+            external.mkdir()
+            entry = {
+                "repo_id": "example",
+                "commit_sha": "abc123",
+                "path": str(external),
+            }
+
+            with self.assertRaises(SourceGateError):
+                resolve_manifest_repository_path(entry, project_root)
+
+    def test_repository_path_rejects_identity_traversal(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            project_root = Path(directory)
+            entry = {
+                "repo_id": "../outside",
+                "commit_sha": "abc123",
+                "path": "unused",
+            }
+
+            with self.assertRaises(SourceGateError):
+                resolve_manifest_repository_path(entry, project_root)
+
     def test_sha256_file(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "value.txt"
