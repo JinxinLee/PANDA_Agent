@@ -520,90 +520,109 @@ def _classify_case_decision(
     *,
     expected_status: str,
     resolutions: list[Any],
-    expected_object_ids: set[str],
+    required_target_ids: set[str],
     expected_canonical_object_ids: set[str],
+    allowed_context_object_ids: set[str],
     require_all_targets: bool,
     invalid: bool,
     isolation_tokens: dict[str, list[str]],
-) -> str:
-    """D2-A2R1 repair E: frozen decision-bucket semantics.
+) -> dict[str, Any]:
+    """D2-A2R2 repair A/E: target-scoped decision semantics.
 
-    wrong_resolve  = a confident incorrect identity was asserted anywhere
-                     relevant to the case;
-    wrong_abstain  = the expected resolution was not produced and no incorrect
-                     confident identity was asserted;
-    wrong_ambiguous = the expected abstain/resolve outcome was replaced by
-                     ambiguity without a confident wrong identity.
+    wrong_resolve   = a confident identity was asserted that is neither a
+                      required primary target nor an explicitly allowed
+                      contextual/co-mentioned identity;
+    wrong_ambiguous = required primary target resolution failed because
+                      ambiguity replaced it, with no prohibited confident
+                      wrong identity;
+    wrong_abstain   = required primary target resolution is
+                      missing/unresolved/rejected with no prohibited
+                      confident wrong identity and no ambiguity replacing it.
+
+    Allowed contextual identities never satisfy a required primary target and
+    never count as wrong confident identities.  Invalid cases return
+    CASE_INVALID and are excluded from the authoritative valid-case
+    accounting.
     """
-
-    if invalid:
-        return "not_applicable"
 
     isolation_valid, _details = _evaluate_isolation(resolutions, isolation_tokens)
     confident_ids = _confident_resolve_ids(resolutions)
+    confident_required = sorted(confident_ids & required_target_ids)
+    confident_allowed = sorted(confident_ids & allowed_context_object_ids)
+    confident_unexpected = sorted(
+        confident_ids - required_target_ids - allowed_context_object_ids
+    )
     has_confident = bool(confident_ids)
     has_ambiguous = any(resolution.status == AMBIGUOUS for resolution in resolutions)
 
+    if invalid:
+        return {
+            "decision": "CASE_INVALID",
+            "confident_required_target_ids": confident_required,
+            "confident_allowed_context_ids": confident_allowed,
+            "confident_unexpected_ids": confident_unexpected,
+            "isolation_valid": isolation_valid,
+        }
+
     if expected_status == RESOLVED_UNIQUE:
-        expected_set = set(expected_object_ids)
-        extra_confident = confident_ids - expected_set
-        if require_all_targets and expected_set:
-            targets_ok = all(
+        if require_all_targets and required_target_ids:
+            primary_satisfied = all(
                 any(
                     _status_target_match(resolution, expected_status, {target_id})
                     and _canonical_match(resolution, {target_id})
                     for resolution in resolutions
                 )
-                for target_id in sorted(expected_set)
+                for target_id in sorted(required_target_ids)
             )
         else:
-            targets_ok = any(
-                _status_target_match(resolution, expected_status, expected_set)
+            primary_satisfied = any(
+                _status_target_match(resolution, expected_status, required_target_ids)
                 and _canonical_match(resolution, expected_canonical_object_ids)
                 for resolution in resolutions
             )
         correct = (
-            targets_ok
+            primary_satisfied
             and isolation_valid is not False
-            and not extra_confident
+            and not confident_unexpected
         )
         if correct:
-            return "correct_resolve"
-        # Only an identity OUTSIDE the expected set is an incorrect confident
-        # assertion; a correct partial multi-target resolution is not.
-        if extra_confident:
-            return "wrong_resolve"
-        if has_ambiguous:
-            return "wrong_ambiguous"
-        return "wrong_abstain"
-
-    if expected_status == AMBIGUOUS:
+            decision = "correct_resolve"
+        elif confident_unexpected:
+            decision = "wrong_resolve"
+        elif has_ambiguous:
+            decision = "wrong_ambiguous"
+        else:
+            decision = "wrong_abstain"
+    elif expected_status == AMBIGUOUS:
         if has_confident:
-            return "wrong_resolve"
-        if has_ambiguous:
-            return "correct_ambiguous"
-        return "wrong_ambiguous"
+            decision = "wrong_resolve"
+        elif has_ambiguous:
+            decision = "correct_ambiguous"
+        else:
+            decision = "wrong_ambiguous"
+    else:
+        # Abstention family: UNRESOLVED / REJECTED_VERSION / REJECTED_SCOPE,
+        # and the corrective kind (which must never carry identity authority).
+        if has_confident:
+            decision = "wrong_resolve"
+        elif expected_status == UNRESOLVED and any(
+            resolution.status == UNRESOLVED for resolution in resolutions
+        ):
+            decision = "correct_abstain"
+        elif expected_status in {REJECTED_VERSION, REJECTED_SCOPE} and any(
+            resolution.status == expected_status for resolution in resolutions
+        ):
+            decision = "correct_abstain"
+        else:
+            decision = "wrong_abstain"
 
-
-    # Abstention family: UNRESOLVED / REJECTED_VERSION / REJECTED_SCOPE, and
-    # the corrective kind (which must never carry identity authority).
-    if has_confident:
-        return "wrong_resolve"
-    if expected_status == UNRESOLVED:
-        return (
-            "correct_abstain"
-            if any(resolution.status == UNRESOLVED for resolution in resolutions)
-            else "wrong_abstain"
-        )
-    if expected_status in {REJECTED_VERSION, REJECTED_SCOPE}:
-        return (
-            "correct_abstain"
-            if any(
-                resolution.status == expected_status for resolution in resolutions
-            )
-            else "wrong_abstain"
-        )
-    return "correct_abstain"
+    return {
+        "decision": decision,
+        "confident_required_target_ids": confident_required,
+        "confident_allowed_context_ids": confident_allowed,
+        "confident_unexpected_ids": confident_unexpected,
+        "isolation_valid": isolation_valid,
+    }
 
 
 def evaluate_case(
@@ -793,15 +812,57 @@ def evaluate_case(
         and isolation_valid is not False
     )
 
-    decision = _classify_case_decision(
+    allowed_context_object_ids = set(case.get("allowed_context_object_ids") or [])
+    classified = _classify_case_decision(
         expected_status=expected_status,
         resolutions=resolutions,
-        expected_object_ids=set(case["expected_object_ids"]),
+        required_target_ids=set(case["expected_object_ids"]),
         expected_canonical_object_ids=set(case["expected_canonical_object_ids"]),
+        allowed_context_object_ids=allowed_context_object_ids,
         require_all_targets=require_all_targets,
         invalid=False,
         isolation_tokens=isolation_tokens,
     )
+    decision = classified["decision"]
+    record["confident_required_target_ids"] = classified[
+        "confident_required_target_ids"
+    ]
+    record["confident_allowed_context_ids"] = classified[
+        "confident_allowed_context_ids"
+    ]
+    record["confident_unexpected_ids"] = classified["confident_unexpected_ids"]
+    record["allowed_context_object_ids"] = sorted(allowed_context_object_ids)
+    record["expects_explicit_canonicalization"] = bool(
+        case.get("expects_explicit_canonicalization")
+    )
+    record["explicit_canonicalization_valid"] = None
+    if case.get("expects_explicit_canonicalization"):
+        # D2-A2R2 repair D: explicit canonicalization requires the resolved
+        # canonical target to match AND the evidence to be governed identity
+        # (Tier G / accepted alias mechanism), not merely a correct identity.
+        canonical_ok = resolution_canonical_target_matches(
+            resolutions, set(case["expected_canonical_object_ids"])
+        )
+        governed = any(
+            item.tier == "G" for resolution in resolutions for item in resolution.evidence
+        )
+        record["explicit_canonicalization_valid"] = bool(canonical_ok and governed)
+    # Target-scoped primary-target outcome for positive cases (D2-A2R2
+    # repair C/G): coverage and the descriptive summary must follow the
+    # required primary target, not any contextual resolution.
+    if expected_status == RESOLVED_UNIQUE:
+        primary_targets = set(case["expected_object_ids"])
+        if any(
+            _status_target_match(resolution, expected_status, {target_id})
+            and _canonical_match(resolution, {target_id})
+            for target_id in sorted(primary_targets)
+            for resolution in resolutions
+        ):
+            record["primary_target_outcome"] = "resolved"
+        elif record["has_ambiguous"]:
+            record["primary_target_outcome"] = "ambiguous"
+        else:
+            record["primary_target_outcome"] = "unresolved"
     if decision == "correct_resolve" and evidence_valid is False:
         # A target reached through invalid evidence is not a clean success
         # (D2-A0 contract Section 32/preregistered evidence validity).
@@ -884,31 +945,27 @@ def _compute_metrics(
     *,
     not_applicable_categories: list[str] | None = None,
 ) -> dict[str, Any]:
-    """D2-A2R1 repair B/F/G/H: every ratio metric carries
-    {numerator, denominator, value}; case validity, natural category
-    applicability, and execution coverage are reported separately; canonical
-    identity, explicit canonicalization, and source-native
-    noncanonicalization safety are separate metrics."""
+    """D2-A2R2: target-scoped metrics with num/den/value; case validity,
+    natural category applicability, and execution coverage separate; explicit
+    canonicalization scoped to cases declaring it."""
 
     valid = [
         record
         for record in records
-        if not record["not_applicable"] and not record["case_invalid"]
+        if not record["case_invalid"] and not record["not_applicable"]
     ]
     invalid_records = [record for record in records if record["case_invalid"]]
     decisions = Counter(record["decision"] for record in valid)
     accounting = {bucket: decisions.get(bucket, 0) for bucket in DECISION_BUCKETS}
 
-    resolve_cases = [
+    positive_cases = [
         record for record in valid if record["expected_status"] == RESOLVED_UNIQUE
     ]
     canonical_expected = [
         record for record in valid if record["expected_canonical_object_ids"]
     ]
     explicit_canonicalization = [
-        record
-        for record in valid
-        if record["expected_resolution_kind"] == "true_identity"
+        record for record in valid if record.get("expects_explicit_canonicalization")
     ]
     source_native_null = [
         record
@@ -924,9 +981,6 @@ def _compute_metrics(
     ]
     negative_cases = [
         record for record in valid if record["expected_status"] != RESOLVED_UNIQUE
-    ]
-    positive_cases = [
-        record for record in valid if record["expected_status"] == RESOLVED_UNIQUE
     ]
     evidence_checked = [
         record
@@ -947,17 +1001,39 @@ def _compute_metrics(
         categories_requiring_accounting,
     )
 
+    # Target-scoped positive coverage (D2-A2R2 repair C/G): a contextual
+    # resolution cannot inflate primary-target coverage.
+    positives_covered = sum(
+        1
+        for record in positive_cases
+        if record.get("primary_target_outcome") == "resolved"
+    )
+    positives_correct = sum(1 for record in positive_cases if record["correct"])
+
     return {
         "case_counts": {
             "total": len(records),
             "valid": len(valid),
-            "applicable": len(valid),
-            "case_invalid": len(invalid_records),
+            "invalid": len(invalid_records),
+            "invalid_case_ids": sorted(
+                record["case_id"] for record in invalid_records
+            ),
             "not_applicable": sum(
                 1 for record in records if record["not_applicable"]
             ),
             "correct": sum(1 for record in valid if record["correct"]),
         },
+        # D2-A2R2 §28: the formal failure taxonomy applies to valid cases
+        # only; invalid cases are accounted via case_counts.invalid_case_ids.
+        "failure_taxonomy_counts": dict(
+            sorted(
+                Counter(
+                    str(record["primary_failure_type"])
+                    for record in valid
+                    if record["primary_failure_type"]
+                ).items()
+            )
+        ),
         "decision_accounting": accounting,
         "case_validity": _metric(len(valid), len(records)),
         "category_natural_applicability": {
@@ -972,8 +1048,8 @@ def _compute_metrics(
             sum(1 for record in records if record["actual"]), len(records)
         ),
         "resolution_accuracy": _metric(
-            sum(1 for record in resolve_cases if record["correct"]),
-            len(resolve_cases),
+            sum(1 for record in positive_cases if record["correct"]),
+            len(positive_cases),
         ),
         "canonical_identity_accuracy": _metric(
             sum(1 for record in canonical_expected if record["correct"]),
@@ -1015,18 +1091,14 @@ def _compute_metrics(
                 1 for record in evidence_checked if record["evidence_valid"] is False
             ),
         },
-        "positive_resolution_coverage": {
-            **_metric(
-                sum(
-                    1 for record in positive_cases if record["has_confident_resolve"]
-                ),
-                len(positive_cases),
-            ),
-            "correct_positive_resolution_coverage": _metric(
-                sum(1 for record in positive_cases if record["correct"]),
-                len(positive_cases),
-            ),
-        },
+        "positive_resolution_coverage": _metric(
+            positives_covered,
+            len(positive_cases),
+        ),
+        "correct_positive_resolution_coverage": _metric(
+            positives_correct,
+            len(positive_cases),
+        ),
         "descriptive_resolution_summary": {
             "descriptive_positive_cases": len(descriptive_cases),
             "descriptive_correctly_resolved": sum(
@@ -1035,17 +1107,15 @@ def _compute_metrics(
             "descriptive_ambiguous": sum(
                 1
                 for record in descriptive_cases
-                if record["has_ambiguous"] and not record["correct"]
+                if record.get("primary_target_outcome") == "ambiguous"
             ),
             "descriptive_unresolved": sum(
                 1
                 for record in descriptive_cases
-                if record["decision"] == "wrong_abstain"
+                if record.get("primary_target_outcome") == "unresolved"
             ),
             "descriptive_wrong_confident": sum(
-                1
-                for record in descriptive_cases
-                if record["decision"] == "wrong_resolve"
+                1 for record in descriptive_cases if record["decision"] == "wrong_resolve"
             ),
         },
         "corrective_handling_correct": sum(
@@ -1062,32 +1132,41 @@ def _compute_metrics(
     }
 
 
-def _validate_metric_consistency(metrics: dict[str, Any]) -> list[str]:
-    """D2-A2R1 repair A: mechanical consistency assertions over the
-    structured metrics (num/den/value and accounting sums)."""
+def _validate_metric_consistency(
+    records: list[dict[str, Any]],
+    metrics: dict[str, Any],
+) -> list[str]:
+    """D2-A2R2 §24: expanded internal consistency assertions."""
 
     problems: list[str] = []
 
     def _check(name: str, metric: dict[str, Any]) -> None:
         if metric.get("denominator") and abs(
             metric["numerator"] / metric["denominator"] - metric["value"]
-        ) > 1e-6:
+        ) > 1e-9:
             problems.append(f"metric {name}: value != numerator/denominator")
         if metric["numerator"] > metric["denominator"]:
             problems.append(f"metric {name}: numerator > denominator")
 
+    valid = [
+        record
+        for record in records
+        if not record["case_invalid"] and not record["not_applicable"]
+    ]
     accounting = metrics.get("decision_accounting", {})
-    counted = sum(
-        count
-        for bucket, count in accounting.items()
-        if bucket != "not_applicable"
-    )
-    if counted != metrics.get("case_counts", {}).get("valid"):
+    counted = sum(count for bucket, count in accounting.items())
+    if counted != len(valid):
         problems.append("decision_accounting does not sum to valid case count")
-    if accounting.get("not_applicable", 0) != metrics.get("case_counts", {}).get(
-        "not_applicable"
-    ):
-        problems.append("not_applicable accounting mismatch")
+
+    taxonomy = metrics.get("failure_taxonomy_counts", {})
+    per_case_failures = Counter(
+        str(record["primary_failure_type"])
+        for record in valid
+        if record["primary_failure_type"]
+    )
+    if dict(per_case_failures) != taxonomy:
+        problems.append("failure_taxonomy_counts do not match valid per-case records")
+
     for name, metric in metrics.items():
         if isinstance(metric, dict) and "numerator" in metric:
             _check(name, metric)
@@ -1095,6 +1174,18 @@ def _validate_metric_consistency(metrics: dict[str, Any]) -> list[str]:
             for sub_name, sub_metric in metric.items():
                 if isinstance(sub_metric, dict) and "numerator" in sub_metric:
                     _check(f"{name}.{sub_name}", sub_metric)
+
+    descriptive = metrics.get("descriptive_resolution_summary", {})
+    if descriptive:
+        reconciled = (
+            descriptive.get("descriptive_correctly_resolved", 0)
+            + descriptive.get("descriptive_ambiguous", 0)
+            + descriptive.get("descriptive_unresolved", 0)
+            + descriptive.get("descriptive_wrong_confident", 0)
+        )
+        if reconciled != descriptive.get("descriptive_positive_cases"):
+            problems.append("descriptive summary does not reconcile")
+
     return problems
 
 
@@ -1155,7 +1246,7 @@ def _print_summary(
         f"cases: total={counts['total']} valid={counts['valid']} "
         f"correct={counts['correct']} "
         f"not_applicable={counts['not_applicable']} "
-        f"invalid={counts['case_invalid']}"
+        f"invalid={counts['invalid']}"
     )
     accounting = metrics["decision_accounting"]
     print(
@@ -1221,6 +1312,68 @@ def _load_cases(path: Path) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]
     return cases, not_applicable
 
 
+BEGIN_D2_A2_METRICS = "BEGIN_D2_A2_METRICS"
+END_D2_A2_METRICS = "END_D2_A2_METRICS"
+
+
+def render_metrics_block(results: dict[str, Any]) -> str:
+    """Render the machine-readable metrics block embedded in the report."""
+
+    lines = [BEGIN_D2_A2_METRICS, "```json", json.dumps(results, ensure_ascii=False, indent=1, default=str), "```", END_D2_A2_METRICS, ""]
+    return "\n".join(lines)
+
+
+def validate_report_metrics(report_text: str, results: dict[str, Any]) -> list[str]:
+    """D2-A2R2 repair E: mechanically compare the report's embedded metrics
+    block against the structured results.  Returns problems ([] = clean)."""
+
+    problems: list[str] = []
+    start = report_text.find(BEGIN_D2_A2_METRICS)
+    end = report_text.find(END_D2_A2_METRICS)
+    if start < 0 or end < 0 or end < start:
+        return ["report is missing the BEGIN/END_D2_A2_METRICS block"]
+    inner_lines: list[str] = []
+    inside = False
+    for line in report_text[start:end].splitlines():
+        stripped = line.strip()
+        if stripped == BEGIN_D2_A2_METRICS:
+            inside = True
+            continue
+        if stripped == END_D2_A2_METRICS:
+            break
+        if inside and stripped and not stripped.startswith("```"):
+            inner_lines.append(line)
+    try:
+        reported = json.loads("\n".join(inner_lines))
+    except json.JSONDecodeError as exc:
+        return [f"report metrics block is not valid JSON: {exc}"]
+
+    for key in ("case_counts", "decision_accounting", "failure_taxonomy_counts"):
+        if reported.get(key) != results.get(key):
+            problems.append(f"report {key} mismatch")
+    for name, metric in results.get("metrics", {}).items():
+        reported_metric = reported.get("metrics", {}).get(name)
+        if reported_metric != metric:
+            problems.append(f"report metric {name} mismatch")
+    if reported.get("metrics", {}).get("descriptive_resolution_summary") != results[
+        "metrics"
+    ].get("descriptive_resolution_summary"):
+        problems.append("report descriptive_resolution_summary mismatch")
+    return problems
+
+
+def resolution_canonical_target_matches(
+    resolutions: list[Any], expected_canonical_ids: set[str]
+) -> bool:
+    """True when some resolution's canonical target matches the expected
+    canonical identity (used by explicit-canonicalization cases)."""
+
+    return any(
+        resolution.canonical_object_id in expected_canonical_ids
+        for resolution in resolutions
+    )
+
+
 def run(
     project_root: Path,
     cases_path: Path,
@@ -1247,19 +1400,13 @@ def run(
     metrics = _compute_metrics(
         records, not_applicable_categories=not_applicable_categories
     )
-    consistency_problems = _validate_metric_consistency(metrics)
+    consistency_problems = _validate_metric_consistency(records, metrics)
     if consistency_problems:
         raise RuntimeError(
             "metric consistency assertions failed: "
             + "; ".join(consistency_problems)
         )
     categories = _category_summaries(records)
-    taxonomy = Counter(
-        str(record["primary_failure_type"])
-        for record in records
-        if record["primary_failure_type"]
-    )
-
     receipt_consistency = None
     if receipt_baseline_path is not None and receipt_baseline_path.exists():
         baseline = json.loads(receipt_baseline_path.read_text(encoding="utf-8"))
@@ -1340,7 +1487,7 @@ def run(
         },
         "state_validation": state_report,
         "metrics": metrics,
-        "failure_taxonomy_counts": dict(sorted(taxonomy.items())),
+        "failure_taxonomy_counts": metrics["failure_taxonomy_counts"],
         "category_summaries": categories,
         "per_case_results": records,
         "not_applicable_records": not_applicable_records,

@@ -164,6 +164,7 @@ cases:
     notes: Exact path reference.
 
   - case_id: C07
+    expects_explicit_canonicalization: true
     category: accepted_alias
     question: Which output file is *_pid_final.root?
     plan:
@@ -265,6 +266,7 @@ cases:
     notes: Structured relation-backed descriptive features; relations describe the candidate, not identity.
 
   - case_id: C12
+    allowed_context_object_ids: [data_product.restgas.event_poca]
     category: data_product_description
     question: Where is the boost ROOT output that contains the event_poca tree written?
     plan:

@@ -1,11 +1,11 @@
 {
   "run_provenance": {
-    "head": "ae7b281bc75db9d4a0f6bccada8ae6b2b0f582f6",
+    "head": "2c095ebd68b571f3cf3d093e9b9d1e28dd2867cc",
     "baseline_commit": "67eff2b",
     "case_artifact_path": "evaluation\\d2_a2_terminology_cases.yaml",
     "state_type": "deterministic_in_memory_d1_compatible",
     "state_valid": true,
-    "timestamp_utc": "2026-08-30T12:33:00.968286+00:00",
+    "timestamp_utc": "2026-08-30T13:11:18.756612+00:00",
     "case_count": 22
   },
   "state_validation": {
@@ -57,18 +57,25 @@
     "case_counts": {
       "total": 22,
       "valid": 20,
-      "applicable": 20,
-      "case_invalid": 2,
+      "invalid": 2,
+      "invalid_case_ids": [
+        "C10",
+        "C14"
+      ],
       "not_applicable": 0,
       "correct": 16
     },
+    "failure_taxonomy_counts": {
+      "COMPETITION_AMBIGUITY": 3,
+      "WRONG_CONFIDENT_RESOLUTION": 1
+    },
     "decision_accounting": {
       "correct_resolve": 9,
-      "wrong_resolve": 2,
+      "wrong_resolve": 1,
       "correct_abstain": 5,
       "wrong_abstain": 0,
       "correct_ambiguous": 2,
-      "wrong_ambiguous": 2,
+      "wrong_ambiguous": 3,
       "not_applicable": 0
     },
     "case_validity": {
@@ -120,8 +127,8 @@
       "value": 0.6666666666666666
     },
     "explicit_canonicalization_accuracy": {
-      "numerator": 2,
-      "denominator": 2,
+      "numerator": 1,
+      "denominator": 1,
       "value": 1.0
     },
     "source_native_noncanonicalization_accuracy": {
@@ -153,27 +160,26 @@
       "evidence_invalid_cases": 0
     },
     "positive_resolution_coverage": {
-      "numerator": 10,
+      "numerator": 9,
       "denominator": 12,
-      "value": 0.8333333333333334,
-      "correct_positive_resolution_coverage": {
-        "numerator": 9,
-        "denominator": 12,
-        "value": 0.75
-      }
+      "value": 0.75
+    },
+    "correct_positive_resolution_coverage": {
+      "numerator": 9,
+      "denominator": 12,
+      "value": 0.75
     },
     "descriptive_resolution_summary": {
       "descriptive_positive_cases": 6,
       "descriptive_correctly_resolved": 3,
       "descriptive_ambiguous": 3,
       "descriptive_unresolved": 0,
-      "descriptive_wrong_confident": 1
+      "descriptive_wrong_confident": 0
     },
     "corrective_handling_correct": 1,
     "corrective_handling_incorrect": 0
   },
   "failure_taxonomy_counts": {
-    "CASE_INVALID": 2,
     "COMPETITION_AMBIGUITY": 3,
     "WRONG_CONFIDENT_RESOLUTION": 1
   },
@@ -226,7 +232,7 @@
       "case_invalid": 0,
       "false_positive_resolutions": 0,
       "decisions": {
-        "wrong_resolve": 1
+        "wrong_ambiguous": 1
       },
       "failure_types": {
         "COMPETITION_AMBIGUITY": 1
@@ -519,7 +525,16 @@
       "resolved_expected_targets": [],
       "missing_expected_targets": [],
       "mention_isolation_valid": null,
-      "isolation_details": []
+      "isolation_details": [],
+      "confident_required_target_ids": [
+        "concept.luminosityfit.luminosity_fit_model"
+      ],
+      "confident_allowed_context_ids": [],
+      "confident_unexpected_ids": [],
+      "allowed_context_object_ids": [],
+      "expects_explicit_canonicalization": false,
+      "explicit_canonicalization_valid": null,
+      "primary_target_outcome": "resolved"
     },
     {
       "case_id": "C02",
@@ -713,7 +728,14 @@
       "resolved_expected_targets": [],
       "missing_expected_targets": [],
       "mention_isolation_valid": null,
-      "isolation_details": []
+      "isolation_details": [],
+      "confident_required_target_ids": [],
+      "confident_allowed_context_ids": [],
+      "confident_unexpected_ids": [],
+      "allowed_context_object_ids": [],
+      "expects_explicit_canonicalization": false,
+      "explicit_canonicalization_valid": null,
+      "primary_target_outcome": "ambiguous"
     },
     {
       "case_id": "C03",
@@ -826,7 +848,13 @@
       "resolved_expected_targets": [],
       "missing_expected_targets": [],
       "mention_isolation_valid": null,
-      "isolation_details": []
+      "isolation_details": [],
+      "confident_required_target_ids": [],
+      "confident_allowed_context_ids": [],
+      "confident_unexpected_ids": [],
+      "allowed_context_object_ids": [],
+      "expects_explicit_canonicalization": false,
+      "explicit_canonicalization_valid": null
     },
     {
       "case_id": "C04",
@@ -954,7 +982,16 @@
       "resolved_expected_targets": [],
       "missing_expected_targets": [],
       "mention_isolation_valid": null,
-      "isolation_details": []
+      "isolation_details": [],
+      "confident_required_target_ids": [
+        "object.11268c4b6743544a8c5494e6"
+      ],
+      "confident_allowed_context_ids": [],
+      "confident_unexpected_ids": [],
+      "allowed_context_object_ids": [],
+      "expects_explicit_canonicalization": false,
+      "explicit_canonicalization_valid": null,
+      "primary_target_outcome": "resolved"
     },
     {
       "case_id": "C05",
@@ -1063,7 +1100,16 @@
       "resolved_expected_targets": [],
       "missing_expected_targets": [],
       "mention_isolation_valid": null,
-      "isolation_details": []
+      "isolation_details": [],
+      "confident_required_target_ids": [
+        "object.c60a8a86eb1b0578b83a8fa2"
+      ],
+      "confident_allowed_context_ids": [],
+      "confident_unexpected_ids": [],
+      "allowed_context_object_ids": [],
+      "expects_explicit_canonicalization": false,
+      "explicit_canonicalization_valid": null,
+      "primary_target_outcome": "resolved"
     },
     {
       "case_id": "C06",
@@ -1172,7 +1218,16 @@
       "resolved_expected_targets": [],
       "missing_expected_targets": [],
       "mention_isolation_valid": null,
-      "isolation_details": []
+      "isolation_details": [],
+      "confident_required_target_ids": [
+        "object.91b3e79331a311bb259f6a04"
+      ],
+      "confident_allowed_context_ids": [],
+      "confident_unexpected_ids": [],
+      "allowed_context_object_ids": [],
+      "expects_explicit_canonicalization": false,
+      "explicit_canonicalization_valid": null,
+      "primary_target_outcome": "resolved"
     },
     {
       "case_id": "C07",
@@ -1616,7 +1671,16 @@
       "resolved_expected_targets": [],
       "missing_expected_targets": [],
       "mention_isolation_valid": null,
-      "isolation_details": []
+      "isolation_details": [],
+      "confident_required_target_ids": [
+        "data_product.restgas.pid_final_root"
+      ],
+      "confident_allowed_context_ids": [],
+      "confident_unexpected_ids": [],
+      "allowed_context_object_ids": [],
+      "expects_explicit_canonicalization": true,
+      "explicit_canonicalization_valid": true,
+      "primary_target_outcome": "resolved"
     },
     {
       "case_id": "C08",
@@ -1728,7 +1792,13 @@
       "resolved_expected_targets": [],
       "missing_expected_targets": [],
       "mention_isolation_valid": null,
-      "isolation_details": []
+      "isolation_details": [],
+      "confident_required_target_ids": [],
+      "confident_allowed_context_ids": [],
+      "confident_unexpected_ids": [],
+      "allowed_context_object_ids": [],
+      "expects_explicit_canonicalization": false,
+      "explicit_canonicalization_valid": null
     },
     {
       "case_id": "C09",
@@ -2024,7 +2094,16 @@
       "resolved_expected_targets": [],
       "missing_expected_targets": [],
       "mention_isolation_valid": null,
-      "isolation_details": []
+      "isolation_details": [],
+      "confident_required_target_ids": [
+        "concept.luminosityfit.luminosity_fit_model"
+      ],
+      "confident_allowed_context_ids": [],
+      "confident_unexpected_ids": [],
+      "allowed_context_object_ids": [],
+      "expects_explicit_canonicalization": false,
+      "explicit_canonicalization_valid": null,
+      "primary_target_outcome": "resolved"
     },
     {
       "case_id": "C10",
@@ -2439,7 +2518,15 @@
       "resolved_expected_targets": [],
       "missing_expected_targets": [],
       "mention_isolation_valid": null,
-      "isolation_details": []
+      "isolation_details": [],
+      "confident_required_target_ids": [],
+      "confident_allowed_context_ids": [],
+      "confident_unexpected_ids": [
+        "concept.luminosityfit.luminosity_fit_model"
+      ],
+      "allowed_context_object_ids": [],
+      "expects_explicit_canonicalization": false,
+      "explicit_canonicalization_valid": null
     },
     {
       "case_id": "C11",
@@ -2944,7 +3031,16 @@
       "resolved_expected_targets": [],
       "missing_expected_targets": [],
       "mention_isolation_valid": null,
-      "isolation_details": []
+      "isolation_details": [],
+      "confident_required_target_ids": [
+        "workflow.restgas.first_pass_poca"
+      ],
+      "confident_allowed_context_ids": [],
+      "confident_unexpected_ids": [],
+      "allowed_context_object_ids": [],
+      "expects_explicit_canonicalization": false,
+      "explicit_canonicalization_valid": null,
+      "primary_target_outcome": "resolved"
     },
     {
       "case_id": "C12",
@@ -2963,7 +3059,7 @@
       "not_applicable": false,
       "case_invalid": false,
       "correct": false,
-      "decision": "wrong_resolve",
+      "decision": "wrong_ambiguous",
       "primary_failure_type": "COMPETITION_AMBIGUITY",
       "failure_detail": "no resolution satisfied expected status RESOLVED_UNIQUE with the expected identity targets",
       "evidence_valid": null,
@@ -3366,7 +3462,18 @@
       "resolved_expected_targets": [],
       "missing_expected_targets": [],
       "mention_isolation_valid": null,
-      "isolation_details": []
+      "isolation_details": [],
+      "confident_required_target_ids": [],
+      "confident_allowed_context_ids": [
+        "data_product.restgas.event_poca"
+      ],
+      "confident_unexpected_ids": [],
+      "allowed_context_object_ids": [
+        "data_product.restgas.event_poca"
+      ],
+      "expects_explicit_canonicalization": false,
+      "explicit_canonicalization_valid": null,
+      "primary_target_outcome": "ambiguous"
     },
     {
       "case_id": "C13",
@@ -3674,7 +3781,13 @@
       "resolved_expected_targets": [],
       "missing_expected_targets": [],
       "mention_isolation_valid": null,
-      "isolation_details": []
+      "isolation_details": [],
+      "confident_required_target_ids": [],
+      "confident_allowed_context_ids": [],
+      "confident_unexpected_ids": [],
+      "allowed_context_object_ids": [],
+      "expects_explicit_canonicalization": false,
+      "explicit_canonicalization_valid": null
     },
     {
       "case_id": "C14",
@@ -3783,7 +3896,16 @@
       "resolved_expected_targets": [],
       "missing_expected_targets": [],
       "mention_isolation_valid": null,
-      "isolation_details": []
+      "isolation_details": [],
+      "confident_required_target_ids": [],
+      "confident_allowed_context_ids": [],
+      "confident_unexpected_ids": [
+        "object.c08459387c6fd0c77a717960"
+      ],
+      "allowed_context_object_ids": [],
+      "expects_explicit_canonicalization": false,
+      "explicit_canonicalization_valid": null,
+      "primary_target_outcome": "unresolved"
     },
     {
       "case_id": "C15",
@@ -3894,7 +4016,16 @@
       "resolved_expected_targets": [],
       "missing_expected_targets": [],
       "mention_isolation_valid": null,
-      "isolation_details": []
+      "isolation_details": [],
+      "confident_required_target_ids": [
+        "data_product.restgas.event_poca"
+      ],
+      "confident_allowed_context_ids": [],
+      "confident_unexpected_ids": [],
+      "allowed_context_object_ids": [],
+      "expects_explicit_canonicalization": false,
+      "explicit_canonicalization_valid": null,
+      "primary_target_outcome": "resolved"
     },
     {
       "case_id": "C16",
@@ -4118,7 +4249,15 @@
       "resolved_expected_targets": [],
       "missing_expected_targets": [],
       "mention_isolation_valid": null,
-      "isolation_details": []
+      "isolation_details": [],
+      "confident_required_target_ids": [],
+      "confident_allowed_context_ids": [],
+      "confident_unexpected_ids": [
+        "workflow.pandaroot.lmd_reconstruction"
+      ],
+      "allowed_context_object_ids": [],
+      "expects_explicit_canonicalization": false,
+      "explicit_canonicalization_valid": null
     },
     {
       "case_id": "C17",
@@ -4384,7 +4523,13 @@
       "resolved_expected_targets": [],
       "missing_expected_targets": [],
       "mention_isolation_valid": null,
-      "isolation_details": []
+      "isolation_details": [],
+      "confident_required_target_ids": [],
+      "confident_allowed_context_ids": [],
+      "confident_unexpected_ids": [],
+      "allowed_context_object_ids": [],
+      "expects_explicit_canonicalization": false,
+      "explicit_canonicalization_valid": null
     },
     {
       "case_id": "C18",
@@ -4547,7 +4692,13 @@
       "resolved_expected_targets": [],
       "missing_expected_targets": [],
       "mention_isolation_valid": null,
-      "isolation_details": []
+      "isolation_details": [],
+      "confident_required_target_ids": [],
+      "confident_allowed_context_ids": [],
+      "confident_unexpected_ids": [],
+      "allowed_context_object_ids": [],
+      "expects_explicit_canonicalization": false,
+      "explicit_canonicalization_valid": null
     },
     {
       "case_id": "C19",
@@ -4670,7 +4821,13 @@
       "resolved_expected_targets": [],
       "missing_expected_targets": [],
       "mention_isolation_valid": null,
-      "isolation_details": []
+      "isolation_details": [],
+      "confident_required_target_ids": [],
+      "confident_allowed_context_ids": [],
+      "confident_unexpected_ids": [],
+      "allowed_context_object_ids": [],
+      "expects_explicit_canonicalization": false,
+      "explicit_canonicalization_valid": null
     },
     {
       "case_id": "C20",
@@ -4813,7 +4970,13 @@
       "resolved_expected_targets": [],
       "missing_expected_targets": [],
       "mention_isolation_valid": null,
-      "isolation_details": []
+      "isolation_details": [],
+      "confident_required_target_ids": [],
+      "confident_allowed_context_ids": [],
+      "confident_unexpected_ids": [],
+      "allowed_context_object_ids": [],
+      "expects_explicit_canonicalization": false,
+      "explicit_canonicalization_valid": null
     },
     {
       "case_id": "C21",
@@ -5410,7 +5573,14 @@
       "mention_isolation_valid": true,
       "isolation_details": [
         "no cross-mention token leakage observed"
-      ]
+      ],
+      "confident_required_target_ids": [],
+      "confident_allowed_context_ids": [],
+      "confident_unexpected_ids": [],
+      "allowed_context_object_ids": [],
+      "expects_explicit_canonicalization": false,
+      "explicit_canonicalization_valid": null,
+      "primary_target_outcome": "ambiguous"
     },
     {
       "case_id": "C22",
@@ -5790,7 +5960,16 @@
       "resolved_expected_targets": [],
       "missing_expected_targets": [],
       "mention_isolation_valid": null,
-      "isolation_details": []
+      "isolation_details": [],
+      "confident_required_target_ids": [
+        "document.pandaroot_sphinx_2023_08_25_dev"
+      ],
+      "confident_allowed_context_ids": [],
+      "confident_unexpected_ids": [],
+      "allowed_context_object_ids": [],
+      "expects_explicit_canonicalization": false,
+      "explicit_canonicalization_valid": null,
+      "primary_target_outcome": "resolved"
     }
   ],
   "not_applicable_records": [

@@ -87,16 +87,19 @@ def _bucket(
     require_all=False,
     invalid=False,
     isolation_tokens=None,
+    allowed_context_object_ids=(),
 ):
-    return d2_a2_runner._classify_case_decision(
+    classified = d2_a2_runner._classify_case_decision(
         expected_status=expected_status,
         resolutions=resolutions,
-        expected_object_ids=set(expected_object_ids),
+        required_target_ids=set(expected_object_ids),
         expected_canonical_object_ids=set(expected_canonical_object_ids),
+        allowed_context_object_ids=set(allowed_context_object_ids),
         require_all_targets=require_all,
         invalid=invalid,
         isolation_tokens=isolation_tokens or {},
     )
+    return classified["decision"]
 
 
 class SingleTargetTests(unittest.TestCase):
@@ -155,7 +158,9 @@ class InvalidCaseTests(unittest.TestCase):
             [_resolution("m", RESOLVED_UNIQUE, matched_object_id="object.a")],
             invalid=True,
         )
-        self.assertEqual(bucket, "not_applicable")
+        # D2-A2R2 §37: invalid cases use CASE_INVALID, not not_applicable,
+        # and are excluded from the authoritative valid-case accounting.
+        self.assertEqual(bucket, "CASE_INVALID")
 
 
 class NegativeCaseTests(unittest.TestCase):
@@ -189,32 +194,146 @@ class NegativeCaseTests(unittest.TestCase):
 
 class MetricConsistencyTests(unittest.TestCase):
     def test_metric_consistency_assertions(self) -> None:
-        problems = d2_a2_runner._validate_metric_consistency(
-            {
-                "case_counts": {"valid": 10, "not_applicable": 0},
-                "decision_accounting": {
-                    "correct_resolve": 9,
-                    "wrong_ambiguous": 1,
-                    "not_applicable": 0,
-                },
-                "resolution_accuracy": {"numerator": 9, "denominator": 10, "value": 0.9},
-            }
-        )
+        records = [
+            {"case_invalid": False, "not_applicable": False, "primary_failure_type": None},
+            {"case_invalid": False, "not_applicable": False, "primary_failure_type": None},
+        ]
+        metrics = {
+            "case_counts": {"valid": 2, "not_applicable": 0},
+            "decision_accounting": {
+                "correct_resolve": 1,
+                "wrong_ambiguous": 1,
+            },
+            "resolution_accuracy": {"numerator": 1, "denominator": 2, "value": 0.5},
+        }
+        problems = d2_a2_runner._validate_metric_consistency(records, metrics)
         self.assertEqual(problems, [])
 
     def test_metric_consistency_detects_mismatch(self) -> None:
-        problems = d2_a2_runner._validate_metric_consistency(
-            {
-                "case_counts": {"valid": 10, "not_applicable": 0},
-                "decision_accounting": {
-                    "correct_resolve": 8,
-                    "wrong_ambiguous": 1,
-                    "not_applicable": 0,
-                },
-                "resolution_accuracy": {"numerator": 9, "denominator": 10, "value": 0.9},
-            }
-        )
+        records = [
+            {"case_invalid": False, "not_applicable": False, "primary_failure_type": None},
+            {"case_invalid": False, "not_applicable": False, "primary_failure_type": None},
+        ]
+        metrics = {
+            "case_counts": {"valid": 2, "not_applicable": 0},
+            "decision_accounting": {
+                "correct_resolve": 0,
+                "wrong_ambiguous": 1,
+            },
+            "resolution_accuracy": {"numerator": 1, "denominator": 2, "value": 0.5},
+        }
+        problems = d2_a2_runner._validate_metric_consistency(records, metrics)
         self.assertTrue(problems)
+
+
+class ContextScopingTests(unittest.TestCase):
+    def test_allowed_context_is_not_wrong_resolve(self) -> None:
+        # Primary target ambiguous + allowed context confidently resolved:
+        # wrong_ambiguous, never wrong_resolve.
+        bucket = _bucket(
+            RESOLVED_UNIQUE,
+            [
+                _resolution("m", AMBIGUOUS),
+                _resolution("ctx", RESOLVED_UNIQUE, matched_object_id="object.ctx"),
+            ],
+            expected_object_ids=["object.primary"],
+            allowed_context_object_ids=["object.ctx"],
+        )
+        self.assertEqual(bucket, "wrong_ambiguous")
+
+    def test_unrelated_confident_identity_is_wrong_resolve(self) -> None:
+        bucket = _bucket(
+            RESOLVED_UNIQUE,
+            [
+                _resolution("m", AMBIGUOUS),
+                _resolution("unrelated", RESOLVED_UNIQUE, matched_object_id="object.x"),
+            ],
+            expected_object_ids=["object.primary"],
+            allowed_context_object_ids=["object.ctx"],
+        )
+        self.assertEqual(bucket, "wrong_resolve")
+
+    def test_primary_success_with_allowed_context_is_correct(self) -> None:
+        resolutions = [
+            _resolution("primary", RESOLVED_UNIQUE, matched_object_id="object.primary"),
+            _resolution("ctx", RESOLVED_UNIQUE, matched_object_id="object.ctx"),
+        ]
+        bucket = _bucket(
+            RESOLVED_UNIQUE,
+            resolutions,
+            expected_object_ids=["object.primary"],
+            allowed_context_object_ids=["object.ctx"],
+        )
+        self.assertEqual(bucket, "correct_resolve")
+
+
+class CanonicalizationDenominatorTests(unittest.TestCase):
+    def test_direct_governed_id_excluded_from_explicit_canonicalization(self) -> None:
+        # C01: direct governed ID — no explicit canonicalization operation.
+        records = [
+            {
+                "case_id": "C01",
+                "case_invalid": False,
+                "not_applicable": False,
+                "correct": True,
+                "expected_resolution_kind": "true_identity",
+                "expects_explicit_canonicalization": False,
+                "primary_failure_type": None,
+                "evidence_valid": True,
+            },
+        ]
+        metrics = {
+            "case_counts": {"valid": 1, "not_applicable": 0},
+            "decision_accounting": {"correct_resolve": 1},
+            "explicit_canonicalization_accuracy": d2_a2_runner._metric(0, 0),
+        }
+        problems = d2_a2_runner._validate_metric_consistency(records, metrics)
+        self.assertEqual(problems, [])
+
+    def test_accepted_alias_enters_explicit_canonicalization(self) -> None:
+        records = [
+            {
+                "case_id": "C07",
+                "case_invalid": False,
+                "not_applicable": False,
+                "correct": True,
+                "expected_resolution_kind": "true_identity",
+                "expects_explicit_canonicalization": True,
+                "explicit_canonicalization_valid": True,
+                "primary_failure_type": None,
+                "evidence_valid": True,
+            },
+        ]
+        metrics = {
+            "case_counts": {"valid": 1, "not_applicable": 0},
+            "decision_accounting": {"correct_resolve": 1},
+            "explicit_canonicalization_accuracy": d2_a2_runner._metric(1, 1),
+        }
+        problems = d2_a2_runner._validate_metric_consistency(records, metrics)
+        self.assertEqual(problems, [])
+
+    def test_explicit_canonicalization_failure_fails_metric(self) -> None:
+        records = [
+            {
+                "case_id": "C07-bad",
+                "case_invalid": False,
+                "not_applicable": False,
+                "correct": False,
+                "expected_resolution_kind": "true_identity",
+                "expects_explicit_canonicalization": True,
+                "explicit_canonicalization_valid": False,
+                "primary_failure_type": "FALSE_CANONICALIZATION",
+                "evidence_valid": True,
+            },
+        ]
+        metrics = {
+            "case_counts": {"valid": 1, "not_applicable": 0},
+            "decision_accounting": {"wrong_resolve": 1},
+            "failure_taxonomy_counts": {"FALSE_CANONICALIZATION": 1},
+            "explicit_canonicalization_accuracy": d2_a2_runner._metric(0, 1),
+        }
+        problems = d2_a2_runner._validate_metric_consistency(records, metrics)
+        self.assertEqual(problems, [])
 
 
 class CanonicalSemanticsTests(unittest.TestCase):
