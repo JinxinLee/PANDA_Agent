@@ -1,0 +1,442 @@
+{
+  "schema_version": "d2-a3-role-decision-v1",
+  "checkpoint": "D2-A3",
+  "status": "COMPLETE / RESOLVER_ROLE_DECISION_FROZEN",
+  "frozen_at": "2026-08-30",
+  "decision_basis": {
+    "evidence_hierarchy": [
+      "D2-A2 is the direct frozen resolver-efficacy and resolver-safety evidence.",
+      "ND-0 is production retrieval generalization context only because the measured production path did not consume D2."
+    ],
+    "primary_sources": [
+      "docs/PHASE_D2_A2_TERMINOLOGY_EVALUATION.md",
+      "evaluation/d2_a2_results.json",
+      "evaluation/d2_a2_terminology_cases.yaml"
+    ],
+    "context_sources": [
+      "evaluation/novel/v1/nd0/nd0c_diagnosis.json",
+      "evaluation/novel/v1/nd0/nd0c_d2_a3_handoff.json",
+      "evaluation/novel/v1/nd0/ND0C_GENERALIZATION_DIAGNOSIS.md"
+    ],
+    "d2_a2_frozen_facts": {
+      "case_counts": {
+        "total": 22,
+        "valid": 20,
+        "correct": 16,
+        "invalid_case_ids": [
+          "C10",
+          "C14"
+        ]
+      },
+      "decision_accounting": {
+        "correct_resolve": 9,
+        "wrong_resolve": 1,
+        "correct_abstain": 5,
+        "wrong_abstain": 0,
+        "correct_ambiguous": 2,
+        "wrong_ambiguous": 3
+      },
+      "metrics": {
+        "resolution_accuracy": "9/12 = 0.75",
+        "canonical_identity_accuracy": "6/9 = 0.6667",
+        "explicit_canonicalization_accuracy": "1/1 = 1.0",
+        "source_native_noncanonicalization_accuracy": "3/3 = 1.0",
+        "abstention_accuracy": "5/6 = 0.8333",
+        "ambiguity_accuracy": "2/2 = 1.0",
+        "false_positive_resolution_rate": "1/8 = 0.125"
+      },
+      "descriptive_positive": {
+        "total": 6,
+        "correctly_resolved": 3,
+        "ambiguous": 3,
+        "unresolved": 0,
+        "wrong_confident": 0
+      },
+      "wrong_confident_valid_case": "C16",
+      "invalid_case_governance": "C10 and C14 are excluded from direct efficacy and safety evidence. C10 remains qualitative observation only; C14 is a curation inventory error."
+    },
+    "nd0_context": {
+      "d2_relevance_counts": {
+        "DIRECT": 7,
+        "INDIRECT": 7,
+        "NONE": 14
+      },
+      "descriptive_context_accounting": {
+        "pure_candidate_generation_losses": [
+          "n005",
+          "n009",
+          "n010",
+          "n020",
+          "n029"
+        ],
+        "ranking_loss_cases": [
+          "n002",
+          "n017"
+        ],
+        "mixed_channel_and_final_selector_case": [
+          "n022"
+        ]
+      },
+      "mechanism_boundaries": {
+        "n014": "DIRECT relevance with an exact/structural mechanism; not Tier D descriptive context.",
+        "n023": "Surface-variation terminology context; the observed system loss was ranking."
+      },
+      "resolver_efficacy_from_nd0": "UNEVALUATED"
+    }
+  },
+  "global_principles": [
+    "EVIDENCE_STRENGTH_CONTROLS_AUTHORITY",
+    "AUTHORITY_AND_USEFULNESS_ARE_SEPARATE",
+    "BROAD_CANDIDATE_GENERATION_MAY_BE_PERMISSIVE_BUT_AUTHORITATIVE_RESOLUTION_MUST_REMAIN_CONSERVATIVE",
+    "RESOLUTION_STATUS_ALONE_DOES_NOT_GRANT_AUTHORITY",
+    "PRODUCTION_CONSUMABLE_ELIGIBILITY_DOES_NOT_MEAN_PRODUCTION_WIRED",
+    "QUERY_EXPANSIONS_NEVER_CARRY_IDENTITY_AUTHORITY",
+    "SOURCE_NATIVE_RECORDS_REMAIN_NONCANONICAL_UNLESS_TIER_G_COREFERENCE_EXISTS"
+  ],
+  "mechanisms": [
+    {
+      "mechanism": "Tier G exact governed identity",
+      "evidence_tier": "G",
+      "direct_a2_evidence": "Observed applicable strong-identity behaviors were correct; explicit true-alias canonicalization was 1/1, source-native noncanonicalization was 3/3, and no false cross-record canonicalization was observed.",
+      "nd0_context": "No novel case established a governed-identity mapping failure or a production need for Tier G; n014 was an exact/structural candidate-generation loss.",
+      "identity_authority": "YES_BOUNDED",
+      "canonicalization_authority": "YES_ONLY_WITH_GOVERNED_TRUE_COREFERENCE",
+      "production_consumable": "ELIGIBLE_NOT_WIRED",
+      "retrieval_influence_allowed": "ELIGIBLE_BOUNDED_NOT_WIRED",
+      "routing_or_scope_restriction_allowed": "ELIGIBLE_ONLY_WITHIN_EXPLICIT_SOURCE_TYPE_VERSION_SCOPE",
+      "allowed_statuses": [
+        "RESOLVED_UNIQUE",
+        "AMBIGUOUS",
+        "UNRESOLVED"
+      ],
+      "forbidden_behaviors": [
+        "Treat relatedness, implementation relations, formalizes, produces, consumes, depends_on, similarity, or retrieval rank as co-reference.",
+        "Erase source, type, version, or scope conflicts.",
+        "Use an unreviewed SAME_AS edge as identity authority."
+      ],
+      "required_preconditions": [
+        "The matched evidence is a governed canonical object ID, an accepted true identity alias, an accepted and reviewed SAME_AS edge, or an exact source-native technical identifier with explicit source/type/version grounding.",
+        "All source, type, version, and scope constraints are satisfied.",
+        "Any cross-record canonicalization is supported by accepted true co-reference, not relatedness."
+      ],
+      "safeguards": [
+        "Source-native matches preserve matched_object_id and canonical_object_id = null unless governed Tier G co-reference exists.",
+        "Competing or conflicting governed identities remain AMBIGUOUS or UNRESOLVED."
+      ],
+      "remaining_blockers": [
+        "A separate integration stage must define consumer precedence, wiring, rollback, and focused verification.",
+        "SAME_AS activation remains blocked by zero natural A2 applicability."
+      ],
+      "decision": "AUTHORITATIVE_BOUNDED",
+      "decision_confidence": "MEDIUM",
+      "rationale": "The contract and available direct evidence support bounded identity authority, but the observed sample is small and does not prove global reliability."
+    },
+    {
+      "mechanism": "Tier S exact structural identity",
+      "evidence_tier": "S",
+      "direct_a2_evidence": "Exact symbol and path cases were correct where applicable, with conservative competition and version-scope behavior and preserved source-native identity.",
+      "nd0_context": "n014 supplies exact/structural practical context, but its target was lost at candidate generation rather than identity mapping; n023 was a ranking loss.",
+      "identity_authority": "YES_DIRECT_MATCH_ONLY",
+      "canonicalization_authority": "NO_CROSS_RECORD",
+      "production_consumable": "ELIGIBLE_NOT_WIRED",
+      "retrieval_influence_allowed": "ELIGIBLE_BOUNDED_NOT_WIRED",
+      "routing_or_scope_restriction_allowed": "ELIGIBLE_ONLY_TO_THE_MATCHED_RECORD_WITHIN_EXPLICIT_SCOPE",
+      "allowed_statuses": [
+        "RESOLVED_UNIQUE",
+        "AMBIGUOUS",
+        "UNRESOLVED"
+      ],
+      "forbidden_behaviors": [
+        "Cross-record canonicalization without separate Tier G co-reference evidence.",
+        "Silently substitute a canonical concept or related record for the source-native match.",
+        "Override competition, source, type, version, or scope constraints."
+      ],
+      "required_preconditions": [
+        "An exact canonical title, exact unique symbol, exact path/locator, or stable repository/document identifier matches within explicit source/type/version scope.",
+        "No equally valid competing match remains."
+      ],
+      "safeguards": [
+        "Authority attaches only to matched_object_id.",
+        "canonical_object_id remains null for a source-native record unless independent Tier G co-reference exists."
+      ],
+      "remaining_blockers": [
+        "A separate integration stage and focused consumer-level verification are required."
+      ],
+      "decision": "AUTHORITATIVE_BOUNDED",
+      "decision_confidence": "MEDIUM",
+      "rationale": "Direct exact-match evidence and the contract support matched-record authority, while the absence of Tier G co-reference forbids cross-record canonicalization."
+    },
+    {
+      "mechanism": "Tier D descriptive RESOLVED_UNIQUE",
+      "evidence_tier": "D",
+      "direct_a2_evidence": "Among 6 descriptive positives, 3 resolved correctly and 3 were ambiguous; none was wrong-confident. This is conservative but insufficiently discriminating for identity authority.",
+      "nd0_context": "Eight descriptive-context cases establish practical relevance only: five candidate-generation losses, two ranking losses, and one mixed channel/final-selector loss. ND-0 did not consume D2.",
+      "identity_authority": "NO",
+      "canonicalization_authority": "NO",
+      "production_consumable": "ELIGIBLE_ADVISORY_NOT_WIRED",
+      "retrieval_influence_allowed": "ELIGIBLE_ADDITIVE_HINT_ONLY_NOT_WIRED",
+      "routing_or_scope_restriction_allowed": "NO",
+      "allowed_statuses": [
+        "RESOLVED_UNIQUE"
+      ],
+      "forbidden_behaviors": [
+        "Infer identity authority from RESOLVED_UNIQUE status.",
+        "Canonicalize across records.",
+        "Remove candidates, narrow source/version scope, or force final selection.",
+        "Claim Tier D efficacy from ND-0 retrieval outcomes."
+      ],
+      "required_preconditions": [
+        "Any later consumer treats the output only as an auditable candidate hypothesis or additive retrieval hint.",
+        "A separate integration stage defines precedence and prevents advisory output from becoming implicit authority."
+      ],
+      "safeguards": [
+        "Preserve original candidates and uncertainty diagnostics.",
+        "Never treat query expansions as Tier D identity evidence."
+      ],
+      "remaining_blockers": [
+        "Focused integration and treatment evaluation are required before any actual production consumption.",
+        "Discrimination remains limited in the available A2 descriptive sample."
+      ],
+      "decision": "PRODUCTION_CONSUMABLE_NONAUTHORITATIVE",
+      "decision_confidence": "HIGH",
+      "rationale": "The direct evidence supports usefulness and conservative behavior, but 3/6 ambiguity precludes identity or canonicalization authority."
+    },
+    {
+      "mechanism": "Tier D AMBIGUOUS",
+      "evidence_tier": "D",
+      "direct_a2_evidence": "Descriptive competition produced AMBIGUOUS in 3 of 6 descriptive positives with zero descriptive wrong-confident resolutions; ambiguity accuracy was 2/2 on cases that expected ambiguity.",
+      "nd0_context": "ND-0 does not expose D2 ambiguity behavior because D2 was not production-consumed.",
+      "identity_authority": "NO",
+      "canonicalization_authority": "NO",
+      "production_consumable": "ELIGIBLE_ADVISORY_NOT_WIRED",
+      "retrieval_influence_allowed": "ELIGIBLE_TO_RETAIN_MULTIPLE_CANDIDATES_NOT_WIRED",
+      "routing_or_scope_restriction_allowed": "NO",
+      "allowed_statuses": [
+        "AMBIGUOUS"
+      ],
+      "forbidden_behaviors": [
+        "Collapse competing candidates to one identity.",
+        "Treat ambiguity as proof that no target exists.",
+        "Use ambiguity to narrow governed source or version scope."
+      ],
+      "required_preconditions": [
+        "Consumers preserve all governed candidates and expose uncertainty.",
+        "Any later retrieval influence is additive and does not authorize final selection."
+      ],
+      "safeguards": [
+        "Retain candidate diagnostics and avoid premature identity collapse."
+      ],
+      "remaining_blockers": [
+        "A separate integration stage must define how ambiguity is represented and consumed."
+      ],
+      "decision": "PRODUCTION_CONSUMABLE_NONAUTHORITATIVE",
+      "decision_confidence": "HIGH",
+      "rationale": "Ambiguity is a useful conservative signal and is not an identity decision."
+    },
+    {
+      "mechanism": "UNRESOLVED and abstention receipts",
+      "evidence_tier": "NONE_OR_INSUFFICIENT",
+      "direct_a2_evidence": "Abstention accuracy was 5/6; the final target-scoped accounting contained 5 correct abstentions and 0 wrong abstentions. The remaining denominator case is C10, which is invalid and excluded from direct scoring.",
+      "nd0_context": "ND-0 provides no D2 abstention efficacy evidence because D2 was not production-consumed.",
+      "identity_authority": "NO",
+      "canonicalization_authority": "NO",
+      "production_consumable": "ELIGIBLE_ADVISORY_NOT_WIRED",
+      "retrieval_influence_allowed": "NO_NEGATIVE_FILTERING",
+      "routing_or_scope_restriction_allowed": "NO",
+      "allowed_statuses": [
+        "UNRESOLVED"
+      ],
+      "forbidden_behaviors": [
+        "Interpret UNRESOLVED as target does not exist.",
+        "Remove retrieval candidates or terminate retrieval solely because the resolver abstained.",
+        "Convert missing governed evidence into a guessed identity."
+      ],
+      "required_preconditions": [
+        "Consumers interpret UNRESOLVED only as insufficient governed identity evidence.",
+        "Receipts preserve rejection and uncertainty diagnostics."
+      ],
+      "safeguards": [
+        "Abstention remains a first-class conservative resolver outcome."
+      ],
+      "remaining_blockers": [
+        "A separate integration stage must prevent negative-existence semantics and define fallback behavior."
+      ],
+      "decision": "PRODUCTION_CONSUMABLE_NONAUTHORITATIVE",
+      "decision_confidence": "HIGH",
+      "rationale": "The contract and direct accounting support consuming abstention as a diagnostic, never as an identity or existence judgment."
+    },
+    {
+      "mechanism": "Corrective terms",
+      "evidence_tier": "CORRECTIVE_NON_IDENTITY",
+      "direct_a2_evidence": "C08 surfaced the correction, retained identity_authority = false, and returned UNRESOLVED; corrective handling was correct in 1/1 observed applicable case.",
+      "nd0_context": "No novel case exercised corrective-term topology.",
+      "identity_authority": "NO",
+      "canonicalization_authority": "NO",
+      "production_consumable": "ELIGIBLE_ADVISORY_NOT_WIRED",
+      "retrieval_influence_allowed": "ELIGIBLE_ADDITIVE_CORRECTION_SUPPORT_NOT_WIRED",
+      "routing_or_scope_restriction_allowed": "NO",
+      "allowed_statuses": [
+        "UNRESOLVED"
+      ],
+      "forbidden_behaviors": [
+        "Promote a corrective term to an accepted true alias.",
+        "Silently canonicalize the mistaken expression.",
+        "Use correction support as identity authority."
+      ],
+      "required_preconditions": [
+        "The signal is consumed only for diagnostics, user-facing correction, or additive candidate/query support.",
+        "Accepted true aliases remain distinct from terms carrying a correction_message."
+      ],
+      "safeguards": [
+        "restgas_profile.txt remains corrective and distinct from configuration.restgas_profile.",
+        "*_pid_final.root may remain a true alias only where D1 governed semantics establish true identity."
+      ],
+      "remaining_blockers": [
+        "A separate integration stage is required for any consumer."
+      ],
+      "decision": "PRODUCTION_CONSUMABLE_NONAUTHORITATIVE",
+      "decision_confidence": "HIGH",
+      "rationale": "The contract and observed case strongly support correction usefulness while excluding identity authority."
+    },
+    {
+      "mechanism": "SAME_AS",
+      "evidence_tier": "G_CONTRACT_ONLY",
+      "direct_a2_evidence": "No accepted SAME_AS edges existed in the evaluated D1 state; natural applicability was 0.",
+      "nd0_context": "No novel SAME_AS topology was observed.",
+      "identity_authority": "CONTRACT_CONDITIONAL_UNEVALUATED",
+      "canonicalization_authority": "CONTRACT_CONDITIONAL_UNEVALUATED",
+      "production_consumable": "NO",
+      "retrieval_influence_allowed": "NO",
+      "routing_or_scope_restriction_allowed": "NO",
+      "allowed_statuses": [],
+      "forbidden_behaviors": [
+        "Activate or create SAME_AS data in D2-A3.",
+        "Consume pending, rejected, unreviewed, conflicting, or version-incompatible edges.",
+        "Claim resolver efficacy or production readiness from contract support alone."
+      ],
+      "required_preconditions": [
+        "Accepted and reviewed true co-reference edges with preserved D1 orientation and compatible source/type/version scope.",
+        "Natural representative applicability and focused safety evaluation in a separately authorized stage."
+      ],
+      "safeguards": [
+        "Conflicting canonical targets remain AMBIGUOUS.",
+        "Relatedness never becomes SAME_AS."
+      ],
+      "remaining_blockers": [
+        "Zero natural A2 applicability.",
+        "No novel topology or end-to-end consumer evidence."
+      ],
+      "decision": "UNEVALUATED",
+      "decision_confidence": "HIGH",
+      "rationale": "The identity contract is defined, but efficacy and production consumption are unsupported by natural evidence."
+    },
+    {
+      "mechanism": "RESOLVED_MULTIPLE",
+      "evidence_tier": "CONTRACT_ONLY",
+      "direct_a2_evidence": "The schema and status are representable, but natural applicability was 0; automatic trailing-s promotion had already been removed.",
+      "nd0_context": "No novel legitimate multi-entity mention topology was observed.",
+      "identity_authority": "UNEVALUATED",
+      "canonicalization_authority": "NO_INDEPENDENT_AUTHORITY",
+      "production_consumable": "NO",
+      "retrieval_influence_allowed": "NO",
+      "routing_or_scope_restriction_allowed": "NO",
+      "allowed_statuses": [],
+      "forbidden_behaviors": [
+        "Treat singular ambiguity or lexical plurality as legitimate multi-entity resolution.",
+        "Infer production readiness from schema support.",
+        "Canonicalize any selected record without mechanism-specific Tier G evidence."
+      ],
+      "required_preconditions": [
+        "Representative natural legitimate multi-entity cases and separately authorized focused evaluation.",
+        "Consumer semantics that preserve the distinction from AMBIGUOUS."
+      ],
+      "safeguards": [
+        "RESOLVED_MULTIPLE remains legitimate plural semantics only, not uncertainty."
+      ],
+      "remaining_blockers": [
+        "Zero natural A2 applicability and no novel topology."
+      ],
+      "decision": "UNEVALUATED",
+      "decision_confidence": "HIGH",
+      "rationale": "Contract support without natural applicability cannot establish authority or production consumability."
+    },
+    {
+      "mechanism": "Whole-question fallback",
+      "evidence_tier": "FALLBACK",
+      "direct_a2_evidence": "C16 is the one valid wrong-confident case and the sole formal false positive (1/8): a stronger version-sensitive identifier was rejected, then whole-question fallback confidently resolved an unrelated entity. C10 is invalid and qualitative only; C14 is invalid for a curation inventory error.",
+      "nd0_context": "The fallback was not production-wired or observable in the ND-0 retrieval path.",
+      "identity_authority": "NO",
+      "canonicalization_authority": "NO",
+      "production_consumable": "NO",
+      "retrieval_influence_allowed": "NO",
+      "routing_or_scope_restriction_allowed": "NO",
+      "allowed_statuses": [],
+      "forbidden_behaviors": [
+        "Produce an authoritative or production-consumed resolution after a stronger identifier interpretation was rejected for source, version, type, or scope constraints.",
+        "Use whole-question token aggregation to override mention-local rejection or ambiguity.",
+        "Attribute C16 to Tier D descriptive-positive performance."
+      ],
+      "required_preconditions": [
+        "A separate repair stage must address fallback precedence and granularity.",
+        "A separate focused reevaluation must demonstrate safety before any role reconsideration."
+      ],
+      "safeguards": [
+        "Remain shadow-only under the current runtime contract.",
+        "C16 remains isolated as fallback-safety evidence."
+      ],
+      "remaining_blockers": [
+        "Direct negative safety evidence from C16.",
+        "No repaired mechanism or focused post-repair evaluation."
+      ],
+      "decision": "PRODUCTION_PROHIBITED",
+      "decision_confidence": "HIGH",
+      "rationale": "Direct wrong-confident safety evidence requires prohibition from production consumption until a separately authorized repair and reevaluation."
+    }
+  ],
+  "overall_resolver_role": {
+    "decision": "MIXED_ROLE / BOUNDED_AUTHORITY_BY_MECHANISM",
+    "current_production_d2_role": "SHADOW",
+    "summary": "Tier G may carry bounded governed identity and true-co-reference canonicalization authority; Tier S may carry direct matched-record authority but no cross-record canonicalization; Tier D, AMBIGUOUS, UNRESOLVED, and corrective outputs are eligible only as non-authoritative advisory signals; SAME_AS and RESOLVED_MULTIPLE remain unevaluated and inactive; whole-question fallback is production-prohibited.",
+    "production_wiring_performed": false,
+    "runtime_behavior_changed": false
+  },
+  "scientific_execution": {
+    "new_d2_resolver_runs": 0,
+    "novel_dev_retrieval_cases_run": 0,
+    "novel_dev_qa_cases_run": 0,
+    "novel_validation_cases_run": 0,
+    "novel_holdout_cases_run": 0,
+    "new_model_calls": 0,
+    "new_analyzer_calls": 0,
+    "new_embedding_calls": 0,
+    "new_reranker_calls": 0,
+    "new_qa_calls": 0,
+    "new_verifier_calls": 0,
+    "new_judge_calls": 0,
+    "production_db_writes": 0,
+    "qdrant_writes": 0
+  },
+  "production_wiring_performed": false,
+  "future_required_stage": {
+    "task": "D2 bounded signal integration contract",
+    "relationship_to_roadmap": "Separately authorized prerequisite for any future D2 production consumption; not the next roadmap task.",
+    "next_roadmap_task": "D3 — Small shortcut-migration experiment",
+    "authorization_required": true,
+    "minimum_scope": [
+      "consumer precedence and authority enforcement",
+      "bounded signal wiring",
+      "source/type/version scope preservation",
+      "rollback and fallback behavior",
+      "focused evaluation"
+    ],
+    "not_authorized_by_d2_a3": [
+      "production wiring",
+      "resolver repair or retuning",
+      "C16 repair",
+      "Tier G, Tier S, or Tier D activation",
+      "SAME_AS activation",
+      "new novel_dev, novel_validation, holdout, or QA execution",
+      "D3 start"
+    ]
+  }
+}
