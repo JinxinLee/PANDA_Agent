@@ -41,14 +41,43 @@ config-identity fact only; it does not make the cohorts or configurations
 apples-to-apples (analyzer generation, index/corpus state, and provenance
 still differ, per the frozen ND-0A-R1 comparison semantics).
 
-## 3. Pre-exposure static dataset validation finding
+## 3. Run validity vs dataset structural validity
 
-`validate_gold_dataset` recorded one unmatched evidence group before any
-retrieval: **n023.e1** (`pandaroot` path `tracking/PndFtsTrackFinder/README.MD`)
-matches no object in the evaluator-canonical normalized corpus. The frozen
-dataset was not modified; that group can never match under frozen semantics.
-This is recorded as a static pre-exposure fact only; its classification
-belongs to ND-0C.
+These are distinct, and both are recorded:
+
+- **Measurement execution valid = true** — 28 scheduled, 28 completed, 0
+  unhandled exceptions, retrieval-only, frozen semantics. The first-exposure
+  run is valid and immutable.
+- **Dataset structural valid = false** — the frozen `novel_dev` evaluation
+  dataset contains one evidence-mapping defect, detected during preflight
+  **before the first retrieval request** (`known_before_first_outcome = true`;
+  `known_pre_exposure_dataset_defect_count = 1`):
+
+  - **n023.e1** (`EXPECTED_EVIDENCE_MAPPING_ISSUE`): selector `pandaroot` /
+    `tracking/PndFtsTrackFinder/README.MD` matches no object in the
+    evaluator-canonical normalized corpus, so the group is structurally
+    impossible under the frozen mapping. The frozen dataset was not modified
+    and the group is not replaced.
+
+The distinction is mandatory: measurement execution succeeded does not imply
+all frozen evaluation mappings were structurally valid.
+
+**n023 factual impact (raw outcome, no reinterpretation; diagnosis belongs to
+ND-0C):** n023.e1 unmatched / structurally impossible; n023.e2 (valid selector
+for `tracking/PndFtsTrackFinder/PndFtsTrackFinderTask.cxx`) matched in the
+combined candidate pool (provenance `ancestor`) but not in top-5/10/20 or
+final evidence. Observed raw per-case values: combined candidate recall 0.5;
+Recall@5 = Recall@10 = Recall@20 = MRR = final evidence recall = critical
+evidence recall = 0. n023 remains in the primary 28/28 measurement.
+
+**NON_PRIMARY PRE_EXPOSURE_DATASET_DEFECT_SENSITIVITY** (fully deterministic
+offline arithmetic on the immutable raw records; zero model/retrieval calls;
+Gold and raw records untouched): with the known-impossible n023.e1 ignored for
+sensitivity purposes, n023's only valid group n023.e2 (matched in the combined
+pool) would change n023's combined candidate recall from 0.5 to 1.0, moving
+the combined-candidate-recall aggregate from 0.8117 to 0.8302 (+0.0185); all
+other aggregate values are unchanged (n023 contributed 0 to them). This view
+never replaces the primary metrics, which retain n023.e1.
 
 ## 4. Execution summary
 
@@ -65,8 +94,15 @@ belongs to ND-0C.
 ## 5. Aggregate metrics (frozen semantics; applicability-aware)
 
 Ordinary retrieval metrics apply to the 27 answered-expected cases under the
-evaluator-native applicability mechanism; per-case numerators are
-evidence-group match fractions weighted by each case's required-group count.
+evaluator-native applicability mechanism. Aggregate retrieval metrics are
+**case-level arithmetic means** over those 27 cases (the
+`panda_agent.evaluation` aggregation semantics: applicable per-case metric
+values → arithmetic mean). The displayed numerator is the **sum of the
+applicable per-case metric values**; the denominator is the applicable case
+count. A numerator of 16.666667 with denominator 27 therefore means the 27
+applicable per-case values sum to 16.666667 — it does not mean 16.666667
+evidence groups matched, and it is not a per-case-fraction × group-count
+weighting.
 
 | Metric | Numerator | Denominator | Value |
 | --- | --- | --- | --- |
@@ -78,9 +114,9 @@ evidence-group match fractions weighted by each case's required-group count.
 | critical evidence recall | 16.333333 | 27 | 0.6049 |
 | final evidence recall | 16.333333 | 27 | 0.6049 |
 
-Recall@10 and Recall@20 are identical because no case had its first
-required-evidence-group match in ranks 11–20 under the production ranking
-(factual outcome of the frozen semantics, not a definitional choice).
+Ranks 11–20 contributed no additional required-evidence-group recall under
+the frozen evaluator semantics, which is why Recall@10 and Recall@20 are
+identical.
 
 ## 6. The frozen insufficient_evidence case (n016)
 
@@ -179,6 +215,11 @@ diagnosis belongs to ND-0C.
 
 ## 9. Artifacts and immutability
 
+- Provenance note: the mirrored `nd0b_run_manifest.json` preserves the raw
+  runner manifest verbatim, including its machine-local absolute
+  `gold_dataset_path` (non-sensitive provenance debt, kept for raw fidelity;
+  the repository-relative dataset identity is recorded in
+  `nd0b_first_exposure_manifest.json`). No holdout path appears anywhere.
 - Raw run (gitignored working location):
   `data/evaluation/runs/nd0b-first-novel-dev-retrieval-20260830`.
 - Tracked immutable first-exposure package: `evaluation/novel/v1/nd0/` —

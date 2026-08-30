@@ -436,11 +436,11 @@ D2-A2R2 → ND-0A → ND-0B → ND-0C → D2-A3 → D3
 
 - **Status:** IN_PROGRESS (ND-0A `COMPLETE / PRE_OUTCOME_PREREGISTRATION_FROZEN`
   2026-08-30; ND-0A-R1 `COMPLETE / HISTORICAL_COMPARISON_PROVENANCE_CORRECTED`
-  2026-08-30; ND-0B `COMPLETE / FIRST_EXPOSURE_MEASUREMENT_FROZEN` 2026-08-30
-  with `FIRST_NOVEL_DEV_OUTCOME_EXPOSURE = COMPLETE` and
-  `NOVEL_DEV_DEVELOPMENT_EXPOSED = true`; ND-0C `NOT_STARTED`;
-  `FIRST_NOVEL_DEV_OUTCOME_EXPOSURE = NOT_STARTED`;
-  `NOVEL_DEV_DEVELOPMENT_EXPOSED = false`.)
+  2026-08-30; ND-0B `COMPLETE / FIRST_EXPOSURE_MEASUREMENT_FROZEN` 2026-08-30;
+  ND-0B-R1 `COMPLETE / EVIDENCE_PACKAGE_AND_DATASET_DEFECT_ACCOUNTING_REPAIRED`
+  2026-08-30; ND-0C `NOT_STARTED`; `FIRST_NOVEL_DEV_OUTCOME_EXPOSURE = COMPLETE`;
+  `NOVEL_DEV_DEVELOPMENT_EXPOSED = true`; `DATASET_STRUCTURAL_VALID = false`;
+  `KNOWN_PRE_EXPOSURE_DATASET_DEFECT_COUNT = 1`.)
 
 ### ND-0A — Pre-outcome preregistration
 
@@ -596,6 +596,49 @@ D2-A2R2 → ND-0A → ND-0B → ND-0C → D2-A3 → D3
   package-vs-raw byte equality, `git diff --check` — all pass. Environment
   note: `langgraph 1.2.11` (declared `qa` extra) installed to load the existing
   runner; no repository code changed. Next: ND-0C.
+
+- **ND-0B-R1 closeout — 2026-08-30 (`COMPLETE / EVIDENCE_PACKAGE_AND_DATASET_DEFECT_ACCOUNTING_REPAIRED`):**
+  artifact-only evidence-package accounting repair using the immutable ND-0B
+  artifacts; zero reruns (`NOVEL_DEV_RETRIEVAL_CASES_RUN = 0`, all new
+  model/API-call counters 0; raw results/traces/run-manifest byte-unchanged).
+  Repairs: (1) aggregate numerator semantics corrected — the authoritative
+  `panda_agent.evaluation aggregate_metrics` aggregation is a case-level
+  arithmetic mean over applicable per-case values; the displayed numerator is
+  the sum of the applicable per-case metric values and the denominator the
+  applicable case count (the published values/denominators were already
+  correct under this semantics; only the note text wrongly described
+  group-count weighting); (2) run validity distinguished from dataset
+  structural validity — `measurement_execution_valid = true`,
+  `dataset_structural_valid = false`,
+  `KNOWN_PRE_EXPOSURE_DATASET_DEFECT_COUNT = 1` with n023.e1
+  (`EXPECTED_EVIDENCE_MAPPING_ISSUE`, selector `tracking/PndFtsTrackFinder/README.MD`
+  matching no corpus object) recorded as known before first outcome; n023
+  retained in the primary measurement with its raw outcome
+  (combined 0.5; R@5/10/20, MRR, final, critical = 0) and no reinterpretation;
+  (3) R@10 = R@20 explanation corrected to the artifact-supported fact (ranks
+  11–20 contributed no additional required-evidence-group recall); (4) a
+  clearly labeled `NON_PRIMARY PRE_EXPOSURE_DATASET_DEFECT_SENSITIVITY` view
+  (deterministic offline arithmetic, zero model calls): ignoring n023.e1 for
+  sensitivity would move only combined candidate recall 0.8117 → 0.8302
+  (+0.0185), all other aggregates unchanged; primary metrics never replaced.
+  (5) roadmap current-block contradiction removed (stale
+  `FIRST_NOVEL_DEV_OUTCOME_EXPOSURE = NOT_STARTED` /
+  `NOVEL_DEV_DEVELOPMENT_EXPOSED = false` lines deleted; historical ND-0A/R1
+  statements preserved); (6) stratification counts verified against the frozen
+  curation sidecar (evidence_topology 14/6/5/3; repository_scope 25/1/2;
+  required-evidence single/multi 11/17; representative/exploratory 26/2) — the
+  committed artifacts were already correct; (7) machine-local absolute
+  `gold_dataset_path` in the mirrored raw run manifest documented as
+  non-sensitive provenance debt (raw manifest preserved verbatim;
+  repository-relative identity in the first-exposure manifest; no holdout
+  path anywhere). Primary metric values, denominators, Gold reference, gap
+  arithmetic, cost accounting (85 calls / 537,922 tokens + 1 preflight call),
+  strata set, and ND-0B first-exposure immutability unchanged. Verification:
+  28 raw records/28 traces byte-identical to HEAD; aggregates recomputed from
+  the immutable JSONL equal the published values (arithmetic mean, denominator
+  27); strata counts match the sidecar; no contradictory exposure flags in the
+  current block; no ND-0C diagnosis assigned to any other case;
+  `git diff --check` clean.
 
 ### ND-0C — Generalization diagnosis and D2-A3 handoff
 

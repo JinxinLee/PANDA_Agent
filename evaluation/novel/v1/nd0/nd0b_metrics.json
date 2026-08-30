@@ -1,7 +1,7 @@
 {
   "schema_version": "nd0b-metrics-v1",
   "run_id": "nd0b-first-novel-dev-retrieval-20260830",
-  "metric_direction_note": "Aggregate value = numerator/denominator over the 27 ordinary-applicable (answered-expected) cases; per-case numerator = per-case value x per-case required-group denominator (evidence-group semantics of panda_agent.evaluation).",
+  "metric_direction_note": "Aggregate metric value is the arithmetic mean of applicable per-case metric values (panda_agent.evaluation aggregate_metrics semantics: applicable per-case values -> arithmetic mean). The displayed numerator is the sum of the applicable per-case metric values; the denominator is the applicable case count. A numerator of 16.666667 with denominator 27 therefore means the 27 applicable per-case values sum to 16.666667, not that 16.666667 evidence groups matched and not a per-case-fraction-x-group-count weighting.",
   "aggregate_metrics": {
     "gold_recall_at_5": {
       "metric": "Recall@5",
@@ -397,5 +397,95 @@
     "PRODUCTION_DB_WRITES": 0,
     "QDRANT_WRITES": 0,
     "CURRENT_DEPLOYED_RETRIEVAL_BEHAVIOR_CHANGED": false
+  },
+  "dataset_defect_accounting": {
+    "measurement_execution_valid": true,
+    "dataset_structural_valid": false,
+    "known_pre_exposure_dataset_defect_count": 1,
+    "known_pre_exposure_dataset_defects": [
+      {
+        "question_id": "n023",
+        "group_id": "n023.e1",
+        "type": "EXPECTED_EVIDENCE_MAPPING_ISSUE",
+        "selector": {
+          "source_id": "pandaroot",
+          "path": "tracking/PndFtsTrackFinder/README.MD"
+        },
+        "known_before_first_outcome": true,
+        "detection": "validate_gold_dataset preflight before the first retrieval request; the selector matches no object in the evaluator-canonical normalized corpus, so the group is structurally impossible under frozen mapping"
+      }
+    ],
+    "distinction": "measurement execution succeeded (28/28, 0 exceptions) does not imply all frozen evaluation mappings were structurally valid",
+    "n023_factual_impact": {
+      "n023.e1": "unmatched / structurally impossible under frozen mapping",
+      "n023.e2": "valid selector for tracking/PndFtsTrackFinder/PndFtsTrackFinderTask.cxx; matched in the combined candidate pool (provenance ancestor), not in top-5/10/20 or final evidence",
+      "observed_raw_outcome": {
+        "combined_candidate_recall": 0.5,
+        "gold_recall_at_5": 0.0,
+        "gold_recall_at_10": 0.0,
+        "gold_recall_at_20": 0.0,
+        "mrr": 0.0,
+        "final_evidence_recall": 0.0,
+        "critical_final_evidence_recall": 0.0
+      },
+      "reinterpretation": "none; diagnosis belongs to ND-0C"
+    }
+  },
+  "non_primary_pre_exposure_dataset_defect_sensitivity": {
+    "label": "NON_PRIMARY PRE_EXPOSURE_DATASET_DEFECT_SENSITIVITY",
+    "method": "fully deterministic offline arithmetic on the immutable raw result records: recompute n023's per-case fractions with the known-impossible n023.e1 group ignored (n023 then has the single valid group n023.e2, which matched in the combined pool only), all other cases unchanged, 27 applicable cases; zero model/retrieval calls; Gold and raw records untouched",
+    "purpose": "answer only: what metric bookkeeping would change if the known-impossible n023.e1 group were ignored for sensitivity purposes",
+    "non_primary_guarantee": "never replaces the primary ND-0B metrics, which remain the immutable original 28-question first-exposure measurement including n023.e1",
+    "sensitivity_values": {
+      "gold_recall_at_5": {
+        "metric": "Recall@5",
+        "sum": 14.833333,
+        "denominator": 27,
+        "value": 0.5493827160493827,
+        "delta_vs_primary": 0.0
+      },
+      "gold_recall_at_10": {
+        "metric": "Recall@10",
+        "sum": 16.666667,
+        "denominator": 27,
+        "value": 0.617283950617284,
+        "delta_vs_primary": 0.0
+      },
+      "gold_recall_at_20": {
+        "metric": "Recall@20",
+        "sum": 16.666667,
+        "denominator": 27,
+        "value": 0.617283950617284,
+        "delta_vs_primary": 0.0
+      },
+      "mrr": {
+        "metric": "MRR",
+        "sum": 13.583333,
+        "denominator": 27,
+        "value": 0.5030864197530864,
+        "delta_vs_primary": 0.0
+      },
+      "combined_candidate_recall": {
+        "metric": "combined_candidate_recall",
+        "sum": 22.416667,
+        "denominator": 27,
+        "value": 0.830246925925926,
+        "delta_vs_primary": 0.018519
+      },
+      "critical_final_evidence_recall": {
+        "metric": "critical_evidence_recall",
+        "sum": 16.333333,
+        "denominator": 27,
+        "value": 0.6049382716049382,
+        "delta_vs_primary": 0.0
+      },
+      "final_evidence_recall": {
+        "metric": "final_evidence_recall",
+        "sum": 16.333333,
+        "denominator": 27,
+        "value": 0.6049382716049382,
+        "delta_vs_primary": 0.0
+      }
+    }
   }
 }

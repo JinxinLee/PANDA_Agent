@@ -119,5 +119,24 @@
     "novel_validation_cases": 0,
     "holdout_cases": 0
   },
-  "next_stage": "ND-0C"
+  "next_stage": "ND-0C",
+  "dataset_defect_accounting": {
+    "measurement_execution_valid": true,
+    "dataset_structural_valid": false,
+    "known_pre_exposure_dataset_defect_count": 1,
+    "known_before_first_outcome": true,
+    "defects": [
+      {
+        "question_id": "n023",
+        "group_id": "n023.e1",
+        "type": "EXPECTED_EVIDENCE_MAPPING_ISSUE",
+        "known_before_first_outcome": true
+      }
+    ],
+    "detail": "see nd0b_metrics.json dataset_defect_accounting and the report section 3"
+  },
+  "tracked_artifact_notes": {
+    "raw_run_manifest_fidelity": "nd0b_run_manifest.json is a verbatim mirror of the raw runner manifest, including its machine-local absolute gold_dataset_path (a C-drive user-directory path) - non-sensitive provenance debt, deliberately preserved instead of silently rewritten; the repository-relative dataset identity/path is recorded in this manifest's dataset block",
+    "holdout_path_present": false
+  }
 }
