@@ -1,410 +1,447 @@
 {
-  "schema_version": "nd0a-preregistration-v1",
-  "checkpoint": "ND-0A",
-  "artifact_type": "pre_outcome_preregistration",
-  "status": "PRE_OUTCOME_PREREGISTRATION_FROZEN",
-  "preregistered_at": "2026-08-30",
-  "preregistration_source_head": "e40ac8099607e83f720b103d7da80a85aab697ab",
-  "preregistration_source_head_subject": "D2 A2R2 repair target-scoped evaluation accounting",
-  "preregistration_commit_note": "preregistration_source_head is the repository HEAD at which this preregistration was authored and frozen (the D2-A2R2 closeout commit). The later ND-0A commit that introduces this artifact file into history is created after this file is written; its SHA is intentionally not recorded and must not be invented.",
-
-  "first_outcome_exposure": "NOT_STARTED",
-
-  "outcome_exposure_statement": {
-    "NOVEL_DEV_OUTCOME_OBSERVED_BEFORE_ND0": false,
-    "FIRST_NOVEL_DEV_MEASUREMENT_RUN": "NOT_RUN",
-    "FIRST_NOVEL_DEV_OUTCOME_EXPOSURE": "NOT_STARTED",
-    "NOVEL_DEV_DEVELOPMENT_EXPOSED": false,
-    "binding": {
-      "manifest_fields": {
-        "agent_outcome_seen_before_freeze": false,
-        "evidence_selected_from_agent_output": false
-      },
-      "manifest_review_state": "review_status=approved, reviewer=Li, human_approval=complete, accepted_count=28, revise_count=0, rejected_count=0",
-      "curation_reports": [
-        "evaluation/novel/v1/N2_FULL_NOVEL_DEV_EXPANSION_PLAN.md",
-        "evaluation/novel/v1/N2B_BATCH2_REVIEW_PACKAGE.md",
-        "evaluation/novel/v1/N2_FINALIZATION_REPORT.md"
-      ],
-      "readme_statement": "evaluation/novel/v1/README.md records that no PANDA Agent retrieval, QA, judge, runtime evaluation, or novel evaluation has run for this curation.",
-      "note": "The no-outcome statement is bound to the manifest governance fields (agent_outcome_seen_before_freeze, evidence_selected_from_agent_output) and the human curation review records, not merely to the absence of run files."
-    }
-  },
-
-  "novel_dev_version": "novel-v1-dev-0.3.0",
-  "question_count": 28,
-  "frozen_count": 28,
-
-  "novel_dev_manifest_identity": {
-    "manifest_path": "evaluation/novel/v1/manifest.json",
-    "manifest_schema_version": "novel-manifest-v1",
-    "split": "novel_dev",
-    "dataset_identity": "novel-v1-dev-expansion",
-    "benchmark_version": "novel-v1-dev-0.3.0",
-    "dataset_version": "0.3.0",
-    "status": "COMPLETE",
-    "question_count": 28,
-    "independent_family_count": 28,
-    "frozen_count": 28,
-    "review_state": {
-      "review_status": "approved",
-      "reviewer": "Li",
-      "human_approval": "complete",
-      "accepted_count": 28,
-      "revise_count": 0,
-      "rejected_count": 0,
-      "pending_count": 0
-    },
+ "schema_version": "nd0a-preregistration-v1",
+ "checkpoint": "ND-0A",
+ "artifact_type": "pre_outcome_preregistration",
+ "status": "PRE_OUTCOME_PREREGISTRATION_FROZEN",
+ "preregistered_at": "2026-08-30",
+ "preregistration_source_head": "e40ac8099607e83f720b103d7da80a85aab697ab",
+ "preregistration_source_head_subject": "D2 A2R2 repair target-scoped evaluation accounting",
+ "preregistration_commit_note": "preregistration_source_head is the repository HEAD at which this preregistration was authored and frozen (the D2-A2R2 closeout commit). The later ND-0A commit that introduces this artifact file into history is created after this file is written; its SHA is intentionally not recorded and must not be invented.",
+ "first_outcome_exposure": "NOT_STARTED",
+ "outcome_exposure_statement": {
+  "NOVEL_DEV_OUTCOME_OBSERVED_BEFORE_ND0": false,
+  "FIRST_NOVEL_DEV_MEASUREMENT_RUN": "NOT_RUN",
+  "FIRST_NOVEL_DEV_OUTCOME_EXPOSURE": "NOT_STARTED",
+  "NOVEL_DEV_DEVELOPMENT_EXPOSED": false,
+  "binding": {
+   "manifest_fields": {
     "agent_outcome_seen_before_freeze": false,
-    "evidence_selected_from_agent_output": false,
-    "representativeness": {
-      "profile": "evaluation/novel/v1/gold_representativeness_profile.json",
-      "representative_count": 26,
-      "exploratory_count": 2,
-      "dispositions": {
-        "KEEP_REPRESENTATIVE": 26,
-        "KEEP_EXPLORATORY": 2
-      }
-    },
-    "locked_corpus_manifest": "data/manifests/source_manifest.json",
-    "dataset_file": "evaluation/novel/v1/novel_dev.yaml",
-    "curation_metadata_file": "evaluation/novel/v1/curation_metadata.yaml",
-    "coverage_report_file": "evaluation/novel/v1/coverage_report.json"
+    "evidence_selected_from_agent_output": false
+   },
+   "manifest_review_state": "review_status=approved, reviewer=Li, human_approval=complete, accepted_count=28, revise_count=0, rejected_count=0",
+   "curation_reports": [
+    "evaluation/novel/v1/N2_FULL_NOVEL_DEV_EXPANSION_PLAN.md",
+    "evaluation/novel/v1/N2B_BATCH2_REVIEW_PACKAGE.md",
+    "evaluation/novel/v1/N2_FINALIZATION_REPORT.md"
+   ],
+   "readme_statement": "evaluation/novel/v1/README.md records that no PANDA Agent retrieval, QA, judge, runtime evaluation, or novel evaluation has run for this curation.",
+   "note": "The no-outcome statement is bound to the manifest governance fields (agent_outcome_seen_before_freeze, evidence_selected_from_agent_output) and the human curation review records, not merely to the absence of run files."
+  }
+ },
+ "novel_dev_version": "novel-v1-dev-0.3.0",
+ "question_count": 28,
+ "frozen_count": 28,
+ "novel_dev_manifest_identity": {
+  "manifest_path": "evaluation/novel/v1/manifest.json",
+  "manifest_schema_version": "novel-manifest-v1",
+  "split": "novel_dev",
+  "dataset_identity": "novel-v1-dev-expansion",
+  "benchmark_version": "novel-v1-dev-0.3.0",
+  "dataset_version": "0.3.0",
+  "status": "COMPLETE",
+  "question_count": 28,
+  "independent_family_count": 28,
+  "frozen_count": 28,
+  "review_state": {
+   "review_status": "approved",
+   "reviewer": "Li",
+   "human_approval": "complete",
+   "accepted_count": 28,
+   "revise_count": 0,
+   "rejected_count": 0,
+   "pending_count": 0
   },
-
-  "production_roles": {
-    "role_in_this_artifact": "provenance_only",
-    "source": "docs/EVALUATION_STATUS.md, section 'Current authoritative state - 2026-08-30' (D2-A2R2)",
-    "note": "Recorded verbatim as provenance only. ND-0 performs no promotion or demotion of any role.",
-    "roles": {
-      "production_exact": "LEGACY_EXACT",
-      "production_sparse": "the exact raw question",
-      "raw_dense": "PRODUCTION_AUTHORITATIVE",
-      "semantic_dense": "KEEP_DISABLED",
-      "semantic_dense_usage": "auxiliary-shadow only",
-      "fusion": "P0 CURRENT",
-      "fusion_role": "PRODUCTION_AUTHORITATIVE",
-      "p3_sparse_heavy": "DEVELOPMENT_SUPPORTED_CANDIDATE",
-      "c6_intent_aware_v1": "DEVELOPMENT_SUPPORTED_CANDIDATE",
-      "selector": "CURRENT_SELECTOR",
-      "selector_role": "PRODUCTION_AUTHORITATIVE",
-      "c7_explicit_selection_v1": "REJECTED_AS_GLOBAL_PRODUCTION_REPLACEMENT",
-      "d2_resolver": "SHADOW",
-      "d2_a3": "NOT_STARTED",
-      "c8_global_treatment": "DEFERRED / INSUFFICIENT_NATURAL_TARGETED_APPLICABILITY_FOR_PREREGISTERED_A3"
-    }
+  "agent_outcome_seen_before_freeze": false,
+  "evidence_selected_from_agent_output": false,
+  "representativeness": {
+   "profile": "evaluation/novel/v1/gold_representativeness_profile.json",
+   "representative_count": 26,
+   "exploratory_count": 2,
+   "dispositions": {
+    "KEEP_REPRESENTATIVE": 26,
+    "KEEP_EXPLORATORY": 2
+   }
   },
-
-  "measurement": {
-    "planned_stage": "ND-0B",
-    "executed_by_this_artifact": false,
-    "split": "novel_dev",
-    "mode": "retrieval",
-    "retrieval_only": true,
-    "case_count": 28,
-    "case_count_contract": "28/28 full frozen set; no sampling; no cohort splitting for the primary measurement",
-    "production_retrieval_configuration": "Current production retrieval path, unchanged for ND-0B: production exact LEGACY_EXACT; sparse the exact raw question; RawDense production-authoritative with SemanticDense KEEP_DISABLED; fusion P0 CURRENT production-authoritative; selector CURRENT_SELECTOR production-authoritative; D2 shadow resolver not applied in the production retrieval path.",
-    "metric_contract": [
-      {
-        "name": "recall_at_5",
-        "evaluator_key": "gold_recall_at_5",
-        "definition": "Fraction of required evidence groups matched among the top-5 ranked candidate object IDs, using the authoritative frozen evidence-group matcher (panda_agent.evaluation).",
-        "applicability": "PARTIALLY_APPLICABLE",
-        "applicability_note": "Ordinary-applicable only for expected_status=answered cases (27 of 28; novel_dev has 27 answered and 1 insufficient_evidence). Denominator per case follows the evaluator's native metric_applicability mechanism. No new relevance semantics are introduced for novel_dev."
-      },
-      {
-        "name": "recall_at_10",
-        "evaluator_key": "gold_recall_at_10",
-        "definition": "Fraction of required evidence groups matched among the top-10 ranked candidate object IDs.",
-        "applicability": "PARTIALLY_APPLICABLE",
-        "applicability_note": "Answered cases only (27 of 28); evaluator metric_applicability denominators apply as-is."
-      },
-      {
-        "name": "recall_at_20",
-        "evaluator_key": "gold_recall_at_20",
-        "definition": "Fraction of required evidence groups matched among the top-20 ranked candidate object IDs.",
-        "applicability": "PARTIALLY_APPLICABLE",
-        "applicability_note": "Answered cases only (27 of 28); evaluator metric_applicability denominators apply as-is."
-      },
-      {
-        "name": "mrr",
-        "evaluator_key": "mrr",
-        "definition": "Mean reciprocal rank of the first required-evidence-group match within the top-20 ranked candidate object IDs.",
-        "applicability": "PARTIALLY_APPLICABLE",
-        "applicability_note": "Answered cases only (27 of 28); evaluator metric_applicability denominators apply as-is."
-      },
-      {
-        "name": "combined_candidate_recall",
-        "evaluator_key": "combined_candidate_recall",
-        "definition": "Fraction of required evidence groups matched within the combined channel candidate pool (the pre-selection candidate union fed to fusion and final selection).",
-        "applicability": "PARTIALLY_APPLICABLE",
-        "applicability_note": "Answered cases only (27 of 28); evaluator metric_applicability denominators apply as-is."
-      },
-      {
-        "name": "critical_evidence_recall",
-        "evaluator_key": "critical_final_evidence_recall",
-        "definition": "Fraction of required evidence groups marked critical=true that are matched within the final selected evidence set.",
-        "applicability": "PARTIALLY_APPLICABLE",
-        "applicability_note": "Supported by the novel_dev schema (required_evidence_groups entries carry critical flags); ordinary-applicable for answered cases only (27 of 28)."
-      },
-      {
-        "name": "final_evidence_recall",
-        "evaluator_key": "final_evidence_recall",
-        "definition": "Fraction of required evidence groups matched within the final selected evidence set produced by the retrieval path.",
-        "applicability": "PARTIALLY_APPLICABLE",
-        "applicability_note": "Answered cases only (27 of 28); evaluator metric_applicability denominators apply as-is."
-      }
-    ],
-    "relevance_semantics_rule": "Existing authoritative evaluator semantics are reused unchanged. Evaluation questions are measurement data, not implementation specifications; no question-specific relevance handling is introduced.",
-    "prohibited_stages": [
-      "QA generation",
-      "runtime answer generation",
-      "answer verifier",
-      "answer revision",
-      "external rubric judge",
-      "T5"
-    ],
-    "prohibited_stage_counters": {
-      "QA_GENERATION_CALLS": 0,
-      "ANSWER_VERIFIER_CALLS": 0,
-      "EXTERNAL_JUDGE_CALLS": 0
-    },
-    "model_call_policy": "Total model calls are NOT preregistered as zero. The current production retrieval path may legitimately use model/API-backed components (query analyzer, dense embedding, reranking where applicable); production retrieval is not changed to reduce cost. Only the prohibited-stage counters above are preregistered at zero.",
-    "failure_handling": "If infrastructure failure interrupts ND-0B, partial runs are preserved and handled explicitly; partial runs are never silently redefined into a completed measurement."
-  },
-
-  "stratified_reporting": {
-    "freeze_rule": "Aggregate reporting plus existing frozen curation-metadata groupings only. Groupings are frozen before any outcome exists; no post-outcome grouping schemes are permitted.",
-    "aggregate": "Full 28-case aggregate first; strata reported as counts and rates within strata.",
-    "groupings": [
-      "intent",
-      "evidence topology",
-      "source topology",
-      "single-repository vs cross-repository",
-      "single-evidence vs multi-evidence",
-      "curation family / family class",
-      "representative vs exploratory disposition"
-    ],
-    "supporting_metadata": {
-      "intent": "coverage_report.json counts_by_intent and curation_metadata.yaml per-record intent",
-      "evidence_topology": "coverage_report.json counts_by_evidence_topology and curation_metadata.yaml coverage.evidence_topology",
-      "source_topology": "curation_metadata.yaml coverage.source_types (required_source_types in the dataset)",
-      "repository_scope": "coverage_report.json counts_by_repository_scope (single_repository / cross_repository / paper_only)",
-      "evidence_multiplicity": "coverage_report.json multi_evidence_count and per-record evidence-group counts",
-      "family": "curation_metadata.yaml curation_family_id (28 independent families) with family class as recorded in the frozen sidecar",
-      "disposition": "manifest representativeness dispositions and curation_metadata.yaml representativeness.disposition"
-    },
-    "frozen_distributions": {
-      "counts_by_intent": {
-        "installation": 2,
-        "usage": 9,
-        "api": 3,
-        "algorithm_theory": 3,
-        "algorithm_implementation": 5,
-        "data_flow": 2,
-        "module_structure": 2,
-        "troubleshooting": 2
-      },
-      "counts_by_evidence_topology": {
-        "single_hop": 14,
-        "multi_hop": 6,
-        "comparison": 5,
-        "producer_consumer": 3
-      },
-      "counts_by_repository_scope": {
-        "single_repository": 25,
-        "cross_repository": 1,
-        "paper_only": 2
-      },
-      "counts_by_expression_form": {
-        "descriptive": 24,
-        "implementation_oriented": 4
-      },
-      "counts_by_expected_status": {
-        "answered": 27,
-        "insufficient_evidence": 1
-      },
-      "multi_evidence_count": 17,
-      "representativeness": {
-        "KEEP_REPRESENTATIVE": 26,
-        "KEEP_EXPLORATORY": 2
-      }
-    },
-    "small_dimension_policy": "Dimensions with very small cell counts (for example cross_repository=1, paper_only=2) are reported as counts only, without strong comparative claims.",
-    "protection": "No protected novel_validation or external-holdout metadata is exposed by this reporting contract."
-  },
-
-  "comparison_reference": {
-    "role": "Existing Gold retrieval baseline frozen as the comparison reference BEFORE any novel_dev outcome exists. No new Gold benchmark is run for ND-0.",
-    "selection_rule": "Selected by pre-outcome provenance and configuration compatibility from the existing baseline inventory under evaluation/baselines/.",
-    "selected_reference": {
-      "baseline_id": "english-gold-stratified-bootstrap-v1-20260813",
-      "selection_manifest_id": "english-gold-stratified-bootstrap-v1",
-      "selection_manifest": "evaluation/baselines/manifests/english_gold_stratified_bootstrap_v1.json",
-      "artifact_directory": "evaluation/baselines/english-gold-stratified-bootstrap-v1-20260813",
-      "key_artifacts": [
-        "baseline_manifest.json",
-        "implementation_identity.json",
-        "benchmark_retrieval_baseline.jsonl",
-        "benchmark_retrieval_traces.jsonl"
-      ],
-      "measurement_mode": "retrieval",
-      "cohort": "24 English Gold v2.6 questions (fixed selection manifest with frozen case IDs and reuse rule)",
-      "benchmark_retrieval_run_id": "generalization-a3-stratified-retrieval-20260813",
-      "created_at": "2026-08-12T23:12:11.685477+00:00",
-      "frozen_reference_metrics": {
-        "recall_at_5": 0.8416666666666666,
-        "recall_at_10": 0.9,
-        "recall_at_20": 0.9,
-        "mrr": 0.6866666666666666,
-        "combined_candidate_recall": 0.95,
-        "critical_final_evidence_recall": 0.9,
-        "final_evidence_recall": 0.9
-      },
-      "metric_source": "baseline_manifest.json measured_metrics.benchmark_retrieval"
-    },
-    "rejected_alternative": {
-      "baseline_id": "generalization-a3-bootstrap-20260813-limited",
-      "reason": "Preserved 1-question retrieval and QA smoke artifacts only; its own scope field states 'Preserved 1-question retrieval and QA smoke artifacts; not the A3 baseline' and it is superseded_by english-gold-stratified-bootstrap-v1-20260813. Not usable as a reference."
-    },
-    "comparability_status": "APPROXIMATE / NON_IDENTICAL_COHORT",
-    "comparability_supports": [
-      "Both measurements are retrieval-only and use the same authoritative evaluator metric semantics (evidence-group matcher).",
-      "Retrieval channel roles are unchanged across the interval per the lifecycle role statements recorded at C6/C7/D1/D2 closeouts: production exact LEGACY_EXACT; sparse the exact raw question; RawDense production-authoritative with SemanticDense disabled; P0 CURRENT fusion production-authoritative; CURRENT_SELECTOR production-authoritative; D2 shadow resolver not applied in the production retrieval path.",
-      "Index identity unchanged: embedding gemini-embedding-2 (3072 dimensions), sparse Qdrant/bm25, index schema v2; REEMBEDDING_REQUIRED=false, INDEX_REBUILD_REQUIRED=false, QDRANT_SCHEMA_CHANGE_REQUIRED=false through the preregistration source head."
-    ],
-    "mismatch_dimensions": [
-      "NON_IDENTICAL_COHORT: 24 Gold v2.6 questions vs 28 novel_dev questions; different question sets and intent mixes; the Gold baseline has no evaluated data_flow, module_structure, or troubleshooting questions while novel_dev includes them.",
-      "ANALYZER_GENERATION: the baseline was measured at prompt_set_version 3.6.0; the current production prompt set is 3.7.0 (PROMPT_SET_VERSION in src/panda_agent/prompts.py); C6-A1R1 recorded 0/46 current-plan channel-input compatibility with the frozen 3.6.0-era streams, so the query-analysis layer changed after the baseline.",
-      "PROVENANCE_COARSENESS: the baseline was executed from base commit e132acce (2026-08-12) with a dirty working tree; that provenance predates the Phase C evaluation-infrastructure work and Phase D (D1/D2)."
-    ],
-    "reporting_plan": {
-      "columns": [
-        "Gold/reference (english-gold-stratified-bootstrap-v1-20260813)",
-        "novel_dev (ND-0B; not yet run)",
-        "gap"
-      ],
-      "metrics": [
-        "recall_at_5",
-        "recall_at_10",
-        "recall_at_20",
-        "mrr",
-        "critical_evidence_recall",
-        "final_evidence_recall"
-      ],
-      "secondary_metrics": ["combined_candidate_recall"],
-      "unavailable_metric_policy": "If either side lacks comparable support for a metric, that cell is marked UNAVAILABLE rather than synthesized.",
-      "interpretation_rule": "The gap is an approximate cross-cohort indication under the recorded mismatch dimensions. It is not an apples-to-apples effect estimate and is never used alone to justify production changes."
-    }
-  },
-
-  "diagnosis_taxonomy": {
-    "stage": "ND-0C",
-    "purpose": "Generic failure-class diagnosis of ND-0B misses; categories are classes of unseen questions, never question-specific labels.",
-    "categories": [
-      "CHANNEL_RECALL_FAILURE",
-      "FUSION_OR_RANKING_FAILURE",
-      "RERANK_FAILURE",
-      "FINAL_SELECTOR_FAILURE",
-      "SOURCE_SCOPE_FAILURE",
-      "VERSION_SCOPE_FAILURE",
-      "ENTITY_OR_TERMINOLOGY_RELATED",
-      "EXACT_IDENTIFIER_FAILURE",
-      "DESCRIPTIVE_TERMINOLOGY_FAILURE",
-      "CROSS_REPOSITORY_FAILURE",
-      "MULTI_EVIDENCE_FAILURE",
-      "CORPUS_OR_INDEX_COVERAGE_FAILURE",
-      "EXPECTED_EVIDENCE_MAPPING_ISSUE",
-      "EVALUATION_CASE_ISSUE",
-      "INFRASTRUCTURE_FAILURE",
-      "UNCLASSIFIED"
-    ],
-    "rules": [
-      "Category names are frozen before outcomes; ND-0C may refine naming to current architecture only where a name does not map to an existing mechanism, and must record any such refinement.",
-      "No question-specific categories, trigger phrases, expected symbols, paths, answers, quotas, or weights may be created from diagnosed cases.",
-      "INFRASTRUCTURE_FAILURE and UNCLASSIFIED are explicit outcomes; an infrastructure failure is never counted as a retrieval failure.",
-      "EXPECTED_EVIDENCE_MAPPING_ISSUE and EVALUATION_CASE_ISSUE record suspected dataset-side causes; they are diagnoses, not justifications for editing frozen Gold."
-    ]
-  },
-
-  "development_rule": {
-    "after_nd0b": "After ND-0B finishes, novel_dev becomes DEVELOPMENT_EXPOSED; later development may use it for generic debugging and iteration.",
-    "artifact_protection": "ND-0 artifacts, including this preregistration, must never be overwritten by later novel_dev iterations.",
-    "rerun_identity": "Future novel_dev reruns use new run/checkpoint identities; they never overwrite ND-0 run or checkpoint records."
-  },
-
-  "novel_validation_state": {
-    "manifest_path": "evaluation/novel/v1/novel_validation_manifest.json",
-    "manifest_schema_version": "novel-manifest-v1",
-    "split": "novel_validation",
-    "dataset_identity": "novel-v1-validation-expansion",
-    "benchmark_version": "novel-v1-validation-0.2.0",
-    "question_count": 15,
-    "independent_family_count": 15,
-    "frozen_count": 15,
-    "human_approval": "complete",
-    "measurement": "NOT_RUN",
-    "role": "FROZEN / UNSEEN / ONE_SHOT_LATER",
-    "protection_rule": "ND-0 does not run novel_validation, does not inspect outcomes on it, and does not use it to select or tune anything."
-  },
-
-  "external_holdout_registration_reference": {
-    "registration_record": "evaluation/novel/v1/external_holdout_manifest.json (created by a separate ND-0A workstream; this artifact records only the user-authorized non-sensitive registration metadata and does not duplicate or depend on that record's content)",
-    "schema": "external-holdout-v1",
-    "dataset_identity": "panda-novel-holdout-v1",
-    "split": "novel_holdout",
-    "status": "FROZEN_SEALED",
-    "externally_managed": true,
-    "expected_count": 13,
-    "content_repository_visible": false,
-    "outcome_observed": false,
-    "loader_contract": "--dataset <external-path>",
-    "authorized_use": "release/T5 only",
-    "boundary": "This preregistration does not locate, inspect, or describe the external holdout content and records no real filesystem path for it."
-  },
-
-  "protected_evaluation_ladder": [
-    {
-      "split": "novel_dev",
-      "frozen_count": 28,
-      "state": "28 frozen; outcome unseen before ND-0",
-      "next_use": "first development exposure under ND-0 (ND-0B retrieval measurement)"
-    },
-    {
-      "split": "novel_validation",
-      "frozen_count": 15,
-      "state": "15 frozen; unseen",
-      "next_use": "one-shot measurement later"
-    },
-    {
-      "split": "novel_holdout",
-      "expected_count": 13,
-      "state": "frozen/sealed externally; content not repository-visible; outcome unseen",
-      "next_use": "release/T5 only"
-    }
+  "locked_corpus_manifest": "data/manifests/source_manifest.json",
+  "dataset_file": "evaluation/novel/v1/novel_dev.yaml",
+  "curation_metadata_file": "evaluation/novel/v1/curation_metadata.yaml",
+  "coverage_report_file": "evaluation/novel/v1/coverage_report.json"
+ },
+ "production_roles": {
+  "role_in_this_artifact": "provenance_only",
+  "source": "docs/EVALUATION_STATUS.md, section 'Current authoritative state - 2026-08-30' (D2-A2R2)",
+  "note": "Recorded verbatim as provenance only. ND-0 performs no promotion or demotion of any role.",
+  "roles": {
+   "production_exact": "LEGACY_EXACT",
+   "production_sparse": "the exact raw question",
+   "raw_dense": "PRODUCTION_AUTHORITATIVE",
+   "semantic_dense": "KEEP_DISABLED",
+   "semantic_dense_usage": "auxiliary-shadow only",
+   "fusion": "P0 CURRENT",
+   "fusion_role": "PRODUCTION_AUTHORITATIVE",
+   "p3_sparse_heavy": "DEVELOPMENT_SUPPORTED_CANDIDATE",
+   "c6_intent_aware_v1": "DEVELOPMENT_SUPPORTED_CANDIDATE",
+   "selector": "CURRENT_SELECTOR",
+   "selector_role": "PRODUCTION_AUTHORITATIVE",
+   "c7_explicit_selection_v1": "REJECTED_AS_GLOBAL_PRODUCTION_REPLACEMENT",
+   "d2_resolver": "SHADOW",
+   "d2_a3": "NOT_STARTED",
+   "c8_global_treatment": "DEFERRED / INSUFFICIENT_NATURAL_TARGETED_APPLICABILITY_FOR_PREREGISTERED_A3"
+  }
+ },
+ "measurement": {
+  "planned_stage": "ND-0B",
+  "executed_by_this_artifact": false,
+  "split": "novel_dev",
+  "mode": "retrieval",
+  "retrieval_only": true,
+  "case_count": 28,
+  "case_count_contract": "28/28 full frozen set; no sampling; no cohort splitting for the primary measurement",
+  "production_retrieval_configuration": "Current production retrieval path, unchanged for ND-0B: production exact LEGACY_EXACT; sparse the exact raw question; RawDense production-authoritative with SemanticDense KEEP_DISABLED; fusion P0 CURRENT production-authoritative; selector CURRENT_SELECTOR production-authoritative; D2 shadow resolver not applied in the production retrieval path.",
+  "metric_contract": [
+   {
+    "name": "recall_at_5",
+    "evaluator_key": "gold_recall_at_5",
+    "definition": "Fraction of required evidence groups matched among the top-5 ranked candidate object IDs, using the authoritative frozen evidence-group matcher (panda_agent.evaluation).",
+    "applicability": "PARTIALLY_APPLICABLE",
+    "applicability_note": "Ordinary-applicable only for expected_status=answered cases (27 of 28; novel_dev has 27 answered and 1 insufficient_evidence). Denominator per case follows the evaluator's native metric_applicability mechanism. No new relevance semantics are introduced for novel_dev."
+   },
+   {
+    "name": "recall_at_10",
+    "evaluator_key": "gold_recall_at_10",
+    "definition": "Fraction of required evidence groups matched among the top-10 ranked candidate object IDs.",
+    "applicability": "PARTIALLY_APPLICABLE",
+    "applicability_note": "Answered cases only (27 of 28); evaluator metric_applicability denominators apply as-is."
+   },
+   {
+    "name": "recall_at_20",
+    "evaluator_key": "gold_recall_at_20",
+    "definition": "Fraction of required evidence groups matched among the top-20 ranked candidate object IDs.",
+    "applicability": "PARTIALLY_APPLICABLE",
+    "applicability_note": "Answered cases only (27 of 28); evaluator metric_applicability denominators apply as-is."
+   },
+   {
+    "name": "mrr",
+    "evaluator_key": "mrr",
+    "definition": "Mean reciprocal rank of the first required-evidence-group match within the top-20 ranked candidate object IDs.",
+    "applicability": "PARTIALLY_APPLICABLE",
+    "applicability_note": "Answered cases only (27 of 28); evaluator metric_applicability denominators apply as-is."
+   },
+   {
+    "name": "combined_candidate_recall",
+    "evaluator_key": "combined_candidate_recall",
+    "definition": "Fraction of required evidence groups matched within the combined channel candidate pool (the pre-selection candidate union fed to fusion and final selection).",
+    "applicability": "PARTIALLY_APPLICABLE",
+    "applicability_note": "Answered cases only (27 of 28); evaluator metric_applicability denominators apply as-is."
+   },
+   {
+    "name": "critical_evidence_recall",
+    "evaluator_key": "critical_final_evidence_recall",
+    "definition": "Fraction of required evidence groups marked critical=true that are matched within the final selected evidence set.",
+    "applicability": "PARTIALLY_APPLICABLE",
+    "applicability_note": "Supported by the novel_dev schema (required_evidence_groups entries carry critical flags); ordinary-applicable for answered cases only (27 of 28)."
+   },
+   {
+    "name": "final_evidence_recall",
+    "evaluator_key": "final_evidence_recall",
+    "definition": "Fraction of required evidence groups matched within the final selected evidence set produced by the retrieval path.",
+    "applicability": "PARTIALLY_APPLICABLE",
+    "applicability_note": "Answered cases only (27 of 28); evaluator metric_applicability denominators apply as-is."
+   }
   ],
-
-  "lifecycle": {
-    "checkpoint": "ND-0 - First Frozen Novel-Dev Generalization Baseline",
-    "checkpoint_type": "cross-phase evaluation checkpoint; NOT a D2 implementation stage",
-    "subphases": {
-      "ND-0A": "pre-outcome preregistration (this artifact)",
-      "ND-0B": "first 28-question retrieval measurement",
-      "ND-0C": "generalization diagnosis and D2-A3 handoff"
-    },
-    "flow": ["D2-A2R2", "ND-0A", "ND-0B", "ND-0C", "D2-A3", "D3"],
-    "d2_a3_state": "NOT_STARTED",
-    "expected_closeout_state": {
-      "ND-0": "IN_PROGRESS",
-      "ND-0A": "COMPLETE / PRE_OUTCOME_PREREGISTRATION_FROZEN",
-      "ND-0B": "NOT_STARTED",
-      "ND-0C": "NOT_STARTED",
-      "FIRST_NOVEL_DEV_OUTCOME_EXPOSURE": "NOT_STARTED",
-      "NOVEL_DEV_DEVELOPMENT_EXPOSED": false
-    }
+  "relevance_semantics_rule": "Existing authoritative evaluator semantics are reused unchanged. Evaluation questions are measurement data, not implementation specifications; no question-specific relevance handling is introduced.",
+  "prohibited_stages": [
+   "QA generation",
+   "runtime answer generation",
+   "answer verifier",
+   "answer revision",
+   "external rubric judge",
+   "T5"
+  ],
+  "prohibited_stage_counters": {
+   "QA_GENERATION_CALLS": 0,
+   "ANSWER_VERIFIER_CALLS": 0,
+   "EXTERNAL_JUDGE_CALLS": 0
   },
-
-  "no_outcome_metrics_statement": "This artifact contains no novel outcome metrics because none exist: no retrieval, QA, judge, or evaluation runner has been executed on novel_dev, novel_validation, or any novel split before this preregistration.",
-
-  "next_stage": "ND-0B"
+  "model_call_policy": "Total model calls are NOT preregistered as zero. The current production retrieval path may legitimately use model/API-backed components (query analyzer, dense embedding, reranking where applicable); production retrieval is not changed to reduce cost. Only the prohibited-stage counters above are preregistered at zero.",
+  "failure_handling": "If infrastructure failure interrupts ND-0B, partial runs are preserved and handled explicitly; partial runs are never silently redefined into a completed measurement."
+ },
+ "stratified_reporting": {
+  "freeze_rule": "Aggregate reporting plus existing frozen curation-metadata groupings only. Groupings are frozen before any outcome exists; no post-outcome grouping schemes are permitted.",
+  "aggregate": "Full 28-case aggregate first; strata reported as counts and rates within strata.",
+  "groupings": [
+   "intent",
+   "evidence topology",
+   "source topology",
+   "single-repository vs cross-repository",
+   "single-evidence vs multi-evidence",
+   "curation family / family class",
+   "representative vs exploratory disposition"
+  ],
+  "supporting_metadata": {
+   "intent": "coverage_report.json counts_by_intent and curation_metadata.yaml per-record intent",
+   "evidence_topology": "coverage_report.json counts_by_evidence_topology and curation_metadata.yaml coverage.evidence_topology",
+   "source_topology": "curation_metadata.yaml coverage.source_types (required_source_types in the dataset)",
+   "repository_scope": "coverage_report.json counts_by_repository_scope (single_repository / cross_repository / paper_only)",
+   "evidence_multiplicity": "coverage_report.json multi_evidence_count and per-record evidence-group counts",
+   "family": "curation_metadata.yaml curation_family_id (28 independent families) with family class as recorded in the frozen sidecar",
+   "disposition": "manifest representativeness dispositions and curation_metadata.yaml representativeness.disposition"
+  },
+  "frozen_distributions": {
+   "counts_by_intent": {
+    "installation": 2,
+    "usage": 9,
+    "api": 3,
+    "algorithm_theory": 3,
+    "algorithm_implementation": 5,
+    "data_flow": 2,
+    "module_structure": 2,
+    "troubleshooting": 2
+   },
+   "counts_by_evidence_topology": {
+    "single_hop": 14,
+    "multi_hop": 6,
+    "comparison": 5,
+    "producer_consumer": 3
+   },
+   "counts_by_repository_scope": {
+    "single_repository": 25,
+    "cross_repository": 1,
+    "paper_only": 2
+   },
+   "counts_by_expression_form": {
+    "descriptive": 24,
+    "implementation_oriented": 4
+   },
+   "counts_by_expected_status": {
+    "answered": 27,
+    "insufficient_evidence": 1
+   },
+   "multi_evidence_count": 17,
+   "representativeness": {
+    "KEEP_REPRESENTATIVE": 26,
+    "KEEP_EXPLORATORY": 2
+   }
+  },
+  "small_dimension_policy": "Dimensions with very small cell counts (for example cross_repository=1, paper_only=2) are reported as counts only, without strong comparative claims.",
+  "protection": "No protected novel_validation or external-holdout metadata is exposed by this reporting contract."
+ },
+ "comparison_reference": {
+  "role": "Existing Gold retrieval baseline frozen as the comparison reference BEFORE any novel_dev outcome exists. No new Gold benchmark is run for ND-0.",
+  "selection_rule": "Selected by pre-outcome provenance and configuration compatibility from the existing baseline inventory under evaluation/baselines/.",
+  "selected_reference": {
+   "baseline_id": "english-gold-stratified-bootstrap-v1-20260813",
+   "selection_manifest_id": "english-gold-stratified-bootstrap-v1",
+   "selection_manifest": "evaluation/baselines/manifests/english_gold_stratified_bootstrap_v1.json",
+   "artifact_directory": "evaluation/baselines/english-gold-stratified-bootstrap-v1-20260813",
+   "key_artifacts": [
+    "baseline_manifest.json",
+    "implementation_identity.json",
+    "benchmark_retrieval_baseline.jsonl",
+    "benchmark_retrieval_traces.jsonl"
+   ],
+   "measurement_mode": "retrieval",
+   "cohort": "24 English Gold v2.6 questions (fixed selection manifest with frozen case IDs and reuse rule)",
+   "benchmark_retrieval_run_id": "generalization-a3-stratified-retrieval-20260813",
+   "created_at": "2026-08-12T23:12:11.685477+00:00",
+   "frozen_reference_metrics": {
+    "recall_at_5": 0.8416666666666666,
+    "recall_at_10": 0.9,
+    "recall_at_20": 0.9,
+    "mrr": 0.6866666666666666,
+    "combined_candidate_recall": 0.95,
+    "critical_final_evidence_recall": 0.9,
+    "final_evidence_recall": 0.9
+   },
+   "metric_source": "baseline_manifest.json measured_metrics.benchmark_retrieval"
+  },
+  "rejected_alternative": {
+   "baseline_id": "generalization-a3-bootstrap-20260813-limited",
+   "reason": "Preserved 1-question retrieval and QA smoke artifacts only; its own scope field states 'Preserved 1-question retrieval and QA smoke artifacts; not the A3 baseline' and it is superseded_by english-gold-stratified-bootstrap-v1-20260813. Not usable as a reference."
+  },
+  "comparability_status": "APPROXIMATE / NON_IDENTICAL_COHORT",
+  "comparability_supports": [
+   "Both measurements are retrieval-only and use the same authoritative evaluator metric semantics (evidence-group matcher).",
+   "Retrieval channel roles are unchanged across the interval per the lifecycle role statements recorded at C6/C7/D1/D2 closeouts: production exact LEGACY_EXACT; sparse the exact raw question; RawDense production-authoritative with SemanticDense disabled; P0 CURRENT fusion production-authoritative; CURRENT_SELECTOR production-authoritative; D2 shadow resolver not applied in the production retrieval path.",
+   "Embedding model configuration is continuous at the model level (gemini-embedding-2, 3072 dimensions on both sides); model-configuration continuity is NOT index identity, index-schema, index-contents, or chunking-state continuity."
+  ],
+  "mismatch_dimensions": [
+   "NON_IDENTICAL_COHORT: 24 Gold v2.6 questions vs 28 novel_dev questions; different question sets and intent mixes; the Gold baseline has no evaluated data_flow, module_structure, or troubleshooting questions while novel_dev includes them.",
+   "ANALYZER_GENERATION: the baseline was measured at prompt_set_version 3.6.0; the current production prompt set is 3.7.0 (PROMPT_SET_VERSION in src/panda_agent/prompts.py); C6-A1R1 recorded 0/46 current-plan channel-input compatibility with the frozen 3.6.0-era streams, so the query-analysis layer changed after the baseline.",
+   "PROVENANCE_COARSENESS: the baseline was executed from base commit e132acce (2026-08-12) with a dirty working tree; that provenance predates the Phase C evaluation-infrastructure work and Phase D (D1/D2).",
+   "INDEX_IDENTITY: the Gold baseline ran on index schema 2 (identity c527bbf1d10c88969da02745d678c640a4544757258584110a5ddd7744be3cf2); the current ND-0 system runs schema 4 (fingerprint 8172f9a640e62977be6e911bfb4848ce3aecd0994f1f3ba51a0985bffec62cb9, 104973 Qdrant points). INDEX_IDENTITY_CHANGED = true; the historical Gold retrieval did not run on the current index.",
+   "CORPUS_INDEX_STATE: the Gold baseline predates the B5 selective index/chunking migration; the current corpus state is post-B5 (133075 SQL objects, 104973 Qdrant points, schema 4). CORPUS_INDEX_STATE_CHANGED = true.",
+   "SPARSE_CONTRACT: the governed sparse identity/factory contract (explicit idf modifier, schema-4 portable sparse receipt) was introduced after the baseline (B1/B3); the historical artifact records no sparse modifier or parameters. Governance/identity contract evolved; scoring-behavior difference is not claimable from artifacts."
+  ],
+  "reporting_plan": {
+   "columns": [
+    "Gold/reference (english-gold-stratified-bootstrap-v1-20260813)",
+    "novel_dev (ND-0B; not yet run)",
+    "gap"
+   ],
+   "metrics": [
+    "recall_at_5",
+    "recall_at_10",
+    "recall_at_20",
+    "mrr",
+    "critical_evidence_recall",
+    "final_evidence_recall"
+   ],
+   "secondary_metrics": [
+    "combined_candidate_recall"
+   ],
+   "unavailable_metric_policy": "If either side lacks comparable support for a metric, that cell is marked UNAVAILABLE rather than synthesized.",
+   "interpretation_rule": "The gap is a historical cross-cohort AND cross-configuration reference difference. It is not an apples-to-apples treatment effect and must not be attributed solely to novel-question generalization, and must not be interpreted as 'same system + different dataset only'. The gap reflects a combination of: question-population difference; analyzer-generation difference; historical provenance difference; index/corpus-state difference; and potentially other recorded configuration evolution. The Gold reference remains useful as a historical scale reference, a directional comparison, and rough generalization context; it is simply not a controlled current-system baseline."
+  },
+  "configuration_comparability": "NON_IDENTICAL_CONFIGURATION",
+  "role_level_continuity": true,
+  "role_continuity_caveat": "Role-level continuity (exact LEGACY_EXACT; sparse the exact raw question; RawDense production-authoritative with SemanticDense disabled; P0 CURRENT fusion; CURRENT_SELECTOR; D2 shadow resolver not applied) does NOT imply identical retrieval configuration, query-analysis generation, index contents, chunking state, sparse identity, or implementation provenance.",
+  "retrieval_state_identity": false,
+  "historical_reference_index": {
+   "measured_at": "2026-08-12/13",
+   "evaluation_mode": "retrieval",
+   "embedding_model": "gemini-embedding-2",
+   "embedding_dimensions": 3072,
+   "sparse_model": "Qdrant/bm25 (no modifier/parameters recorded in implementation_identity.json)",
+   "index_schema": 2,
+   "index_identity": "c527bbf1d10c88969da02745d678c640a4544757258584110a5ddd7744be3cf2",
+   "prompt_set_version": "3.6.0",
+   "base_git_commit": "e132accefc8181abba76e8d818a621dd03cd1c9c",
+   "working_tree_dirty": true
+  },
+  "current_nd0_index": {
+   "state_at": "preregistration source head e40ac80",
+   "embedding_model": "gemini-embedding-2",
+   "embedding_dimensions": 3072,
+   "sparse_model": "Qdrant/bm25, vector sparse, modifier idf (schema-4 portable sparse receipt)",
+   "index_schema": 4,
+   "index_fingerprint": "8172f9a640e62977be6e911bfb4848ce3aecd0994f1f3ba51a0985bffec62cb9",
+   "qdrant_points": 104973,
+   "sql_objects": 133075,
+   "prompt_set_version": "3.7.0"
+  },
+  "index_identity_changed": true,
+  "corpus_index_state_changed": true,
+  "corpus_index_state_note": "The historical Gold reference predates the Phase-B index/chunking evolution, including the B5 selective migration. The current indexed corpus is the post-B5 state: 133075 SQL objects / 104973 Qdrant points / schema 4. The comparison crosses this evolution; the resulting metric gap must not be attributed purely to dataset distribution.",
+  "sparse_contract_evolved": true,
+  "sparse_contract_note": "Governance/identity contract changed: the historical artifact records only 'Qdrant/bm25' with no modifier or parameters, while B1 corrected the sparse BM25/Qdrant IDF contract and B3 froze the governed sparse identity/factory with explicit modifier idf and a schema-4 portable sparse receipt. Whether retrieval scoring behavior itself differed at baseline time is NOT claimable from the recorded artifacts and is not asserted; the governance/identity change and the scoring-behavior question are kept distinct.",
+  "no_pending_rebuild_flags_note": "REEMBEDDING_REQUIRED=false / INDEX_REBUILD_REQUIRED=false / QDRANT_SCHEMA_CHANGE_REQUIRED=false describe the current pending-change state at the preregistration source head, not historical index continuity from 2026-08-13 to ND-0A. The prior use of these flags as index-identity continuity evidence was invalid and is superseded by this correction."
+ },
+ "diagnosis_taxonomy": {
+  "stage": "ND-0C",
+  "purpose": "Generic failure-class diagnosis of ND-0B misses; categories are classes of unseen questions, never question-specific labels.",
+  "categories": [
+   "CHANNEL_RECALL_FAILURE",
+   "FUSION_OR_RANKING_FAILURE",
+   "RERANK_FAILURE",
+   "FINAL_SELECTOR_FAILURE",
+   "SOURCE_SCOPE_FAILURE",
+   "VERSION_SCOPE_FAILURE",
+   "ENTITY_OR_TERMINOLOGY_RELATED",
+   "EXACT_IDENTIFIER_FAILURE",
+   "DESCRIPTIVE_TERMINOLOGY_FAILURE",
+   "CROSS_REPOSITORY_FAILURE",
+   "MULTI_EVIDENCE_FAILURE",
+   "CORPUS_OR_INDEX_COVERAGE_FAILURE",
+   "EXPECTED_EVIDENCE_MAPPING_ISSUE",
+   "EVALUATION_CASE_ISSUE",
+   "INFRASTRUCTURE_FAILURE",
+   "UNCLASSIFIED"
+  ],
+  "rules": [
+   "Category names are frozen before outcomes; ND-0C may refine naming to current architecture only where a name does not map to an existing mechanism, and must record any such refinement.",
+   "No question-specific categories, trigger phrases, expected symbols, paths, answers, quotas, or weights may be created from diagnosed cases.",
+   "INFRASTRUCTURE_FAILURE and UNCLASSIFIED are explicit outcomes; an infrastructure failure is never counted as a retrieval failure.",
+   "EXPECTED_EVIDENCE_MAPPING_ISSUE and EVALUATION_CASE_ISSUE record suspected dataset-side causes; they are diagnoses, not justifications for editing frozen Gold."
+  ]
+ },
+ "development_rule": {
+  "after_nd0b": "After ND-0B finishes, novel_dev becomes DEVELOPMENT_EXPOSED; later development may use it for generic debugging and iteration.",
+  "artifact_protection": "ND-0 artifacts, including this preregistration, must never be overwritten by later novel_dev iterations.",
+  "rerun_identity": "Future novel_dev reruns use new run/checkpoint identities; they never overwrite ND-0 run or checkpoint records."
+ },
+ "novel_validation_state": {
+  "manifest_path": "evaluation/novel/v1/novel_validation_manifest.json",
+  "manifest_schema_version": "novel-manifest-v1",
+  "split": "novel_validation",
+  "dataset_identity": "novel-v1-validation-expansion",
+  "benchmark_version": "novel-v1-validation-0.2.0",
+  "question_count": 15,
+  "independent_family_count": 15,
+  "frozen_count": 15,
+  "human_approval": "complete",
+  "measurement": "NOT_RUN",
+  "role": "FROZEN / UNSEEN / ONE_SHOT_LATER",
+  "protection_rule": "ND-0 does not run novel_validation, does not inspect outcomes on it, and does not use it to select or tune anything."
+ },
+ "external_holdout_registration_reference": {
+  "registration_record": "evaluation/novel/v1/external_holdout_manifest.json (created by a separate ND-0A workstream; this artifact records only the user-authorized non-sensitive registration metadata and does not duplicate or depend on that record's content)",
+  "schema": "external-holdout-v1",
+  "dataset_identity": "panda-novel-holdout-v1",
+  "split": "novel_holdout",
+  "status": "FROZEN_SEALED",
+  "externally_managed": true,
+  "expected_count": 13,
+  "content_repository_visible": false,
+  "outcome_observed": false,
+  "loader_contract": "--dataset <external-path>",
+  "authorized_use": "release/T5 only",
+  "boundary": "This preregistration does not locate, inspect, or describe the external holdout content and records no real filesystem path for it."
+ },
+ "protected_evaluation_ladder": [
+  {
+   "split": "novel_dev",
+   "frozen_count": 28,
+   "state": "28 frozen; outcome unseen before ND-0",
+   "next_use": "first development exposure under ND-0 (ND-0B retrieval measurement)"
+  },
+  {
+   "split": "novel_validation",
+   "frozen_count": 15,
+   "state": "15 frozen; unseen",
+   "next_use": "one-shot measurement later"
+  },
+  {
+   "split": "novel_holdout",
+   "expected_count": 13,
+   "state": "frozen/sealed externally; content not repository-visible; outcome unseen",
+   "next_use": "release/T5 only"
+  }
+ ],
+ "lifecycle": {
+  "checkpoint": "ND-0 - First Frozen Novel-Dev Generalization Baseline",
+  "checkpoint_type": "cross-phase evaluation checkpoint; NOT a D2 implementation stage",
+  "subphases": {
+   "ND-0A": "pre-outcome preregistration (this artifact)",
+   "ND-0B": "first 28-question retrieval measurement",
+   "ND-0C": "generalization diagnosis and D2-A3 handoff"
+  },
+  "flow": [
+   "D2-A2R2",
+   "ND-0A",
+   "ND-0B",
+   "ND-0C",
+   "D2-A3",
+   "D3"
+  ],
+  "d2_a3_state": "NOT_STARTED",
+  "expected_closeout_state": {
+   "ND-0": "IN_PROGRESS",
+   "ND-0A": "COMPLETE / PRE_OUTCOME_PREREGISTRATION_FROZEN",
+   "ND-0B": "NOT_STARTED",
+   "ND-0C": "NOT_STARTED",
+   "FIRST_NOVEL_DEV_OUTCOME_EXPOSURE": "NOT_STARTED",
+   "NOVEL_DEV_DEVELOPMENT_EXPOSED": false
+  }
+ },
+ "no_outcome_metrics_statement": "This artifact contains no novel outcome metrics because none exist: no retrieval, QA, judge, or evaluation runner has been executed on novel_dev, novel_validation, or any novel split before this preregistration.",
+ "next_stage": "ND-0B",
+ "provenance_corrections": [
+  {
+   "correction": "ND-0A-R1 PRE_OUTCOME_PROVENANCE_CORRECTION",
+   "date": "2026-08-30",
+   "summary": "The original ND-0A preregistration (commit 06b68c8) historically contained an incorrect same-index comparability statement ('Index identity unchanged ... index schema v2' supported by REEMBEDDING_REQUIRED=false / INDEX_REBUILD_REQUIRED=false / QDRANT_SCHEMA_CHANGE_REQUIRED=false). That statement and the flag-based continuity inference were false: the historical Gold baseline ran on index schema 2 (c527bbf1...) while the current ND-0 system runs schema 4 (8172f9a6...). ND-0A-R1 corrected the historical comparison provenance before ND-0B / first novel outcome exposure. Git history preserves the original ND-0A wording; the frozen Gold reference, ND-0B measurement contract, primary metrics, and diagnosis taxonomy are unchanged.",
+   "outcome_exposure_at_correction": "FIRST_NOVEL_DEV_OUTCOME_EXPOSURE = NOT_STARTED"
+  }
+ ]
 }

@@ -108,21 +108,44 @@ Small-dimension policy: dimensions with very small cell counts (for example cros
 - Frozen reference metrics (retrieval): Recall@5 0.8417, Recall@10 0.9000, Recall@20 0.9000, MRR 0.6867, combined candidate recall 0.95, critical final evidence recall 0.9000, final evidence recall 0.9000.
 - Why this one: it is the only existing artifact that is (a) a retrieval-mode measurement, (b) over a frozen, documented cohort with a selection manifest, and (c) recorded with exactly the metric set preregistered above. The alternative inventory candidate, `generalization-a3-bootstrap-20260813-limited`, is a preserved 1-question smoke ("not the A3 baseline", superseded by the stratified baseline) and is rejected. **No new Gold benchmark is run for ND-0.**
 
-**Comparability classification: `APPROXIMATE / NON_IDENTICAL_COHORT`.** The two measurements are not interchangeable, and this preregistration does not pretend they are.
+**Comparability classification:** `comparability_status = APPROXIMATE / NON_IDENTICAL_COHORT`; `configuration_comparability = NON_IDENTICAL_CONFIGURATION`. The two measurements are not interchangeable, and this preregistration does not pretend they are. High-level production roles are broadly continuous, but **role-level continuity does not imply identical retrieval configuration, query-analysis generation, index contents, chunking state, sparse identity, or implementation provenance** (`role_level_continuity = true`; `retrieval_state_identity = false`).
 
 Supporting comparability:
 
 - Both measurements are retrieval-only and use the same authoritative evaluator metric semantics.
 - Retrieval channel roles are unchanged across the interval per the lifecycle role statements at C6/C7/D1/D2 closeouts (exact `LEGACY_EXACT`, raw-question sparse, RawDense authoritative with SemanticDense disabled, P0 fusion, `CURRENT_SELECTOR`, D2 shadow resolver not applied).
-- Index identity unchanged: embedding `gemini-embedding-2` (3072 dimensions), sparse `Qdrant/bm25`, index schema v2; `REEMBEDDING_REQUIRED = false`, `INDEX_REBUILD_REQUIRED = false`, `QDRANT_SCHEMA_CHANGE_REQUIRED = false` through the preregistration source head.
+- Embedding model configuration is continuous at the model level (`gemini-embedding-2`, 3072 dimensions on both sides); model-configuration continuity is NOT index identity, index-schema, index-contents, or chunking-state continuity.
+
+**Index/configuration mismatch (ND-0A-R1 provenance correction).** The historical Gold retrieval did **not** run on the current index:
+
+| Aspect | Gold reference | Current ND-0 | Comparable? |
+| --- | --- | --- | --- |
+| Measurement mode | retrieval | retrieval | yes |
+| Embedding model | `gemini-embedding-2` | same | largely |
+| Embedding dimension | 3072 | 3072 | yes |
+| Sparse model | `Qdrant/bm25` (no modifier/parameters recorded) | `Qdrant/bm25`, modifier `idf`, schema-4 portable receipt | governance evolved; scoring equivalence not claimable |
+| Index schema | 2 | 4 | no |
+| Index identity | `c527bbf1d10c88969da02745d678c640a4544757258584110a5ddd7744be3cf2` | `8172f9a640e62977be6e911bfb4848ce3aecd0994f1f3ba51a0985bffec62cb9` | no (`INDEX_IDENTITY_CHANGED = true`) |
+| Corpus/index state | pre-B5 | post-B5: 133075 SQL objects / 104973 Qdrant points | no (`CORPUS_INDEX_STATE_CHANGED = true`) |
+| Prompt set | 3.6.0 | 3.7.0 | no |
+| Base commit | `e132acce` (dirty tree) | `e40ac80` | no (coarse provenance) |
+| Production role labels | broadly similar | current roles | partial (continuity only) |
+| Question cohort | 24 Gold v2.6 | 28 novel_dev | no |
+
+`REEMBEDDING_REQUIRED = false` / `INDEX_REBUILD_REQUIRED = false` / `QDRANT_SCHEMA_CHANGE_REQUIRED = false` describe the **current pending-change state** at the preregistration source head, not historical continuity from 2026-08-13 to ND-0A; using them as index-identity continuity evidence is invalid and superseded. Sparse-contract note: the governed sparse identity/factory contract (explicit `idf` modifier, schema-4 portable receipt) was introduced after the baseline (B1/B3); the historical artifact records no sparse modifier or parameters. The governance/identity contract demonstrably evolved (`SPARSE_CONTRACT_EVOLVED = true`); whether retrieval scoring behavior itself differed at baseline time is not claimable from the recorded artifacts and is not asserted — the two are kept distinct.
 
 Mismatch dimensions (recorded explicitly):
 
 1. **Non-identical cohort.** 24 Gold v2.6 questions vs 28 novel_dev questions: different question sets, different intent mixes; the Gold baseline has no evaluated data_flow, module_structure, or troubleshooting questions, while novel_dev includes them.
 2. **Analyzer generation.** The baseline was measured at prompt_set_version **3.6.0**; current production is **3.7.0** (`PROMPT_SET_VERSION` in `src/panda_agent/prompts.py`). C6-A1R1 recorded 0/46 current-plan channel-input compatibility with the frozen 3.6.0-era streams, so the query-analysis layer demonstrably changed after the baseline.
 3. **Provenance coarseness.** The baseline was executed from base commit `e132acce` (2026-08-12) with a dirty working tree; that provenance predates the Phase C evaluation-infrastructure work and Phase D (D1/D2).
+4. **Index identity.** Schema 2 (`c527bbf1…`) vs schema 4 (`8172f9a6…`, 104973 points): the Gold run did not use the current index.
+5. **Corpus/index state.** The Gold baseline predates the B5 selective index/chunking migration; the current corpus is the post-B5 state (133075 SQL objects / 104973 Qdrant points / schema 4).
+6. **Sparse contract.** Governed sparse identity/factory (explicit `idf` modifier, schema-4 portable receipt) introduced after the baseline (B1/B3); scoring-behavior equivalence is not claimable from artifacts.
 
-**Reporting plan:** for Recall@5, Recall@10, Recall@20, MRR, critical evidence recall, and final evidence recall (combined candidate recall as a secondary diagnostic), report three columns — Gold/reference, novel_dev (ND-0B, not yet run), and the gap. If either side lacks comparable support for a metric, the cell is marked **UNAVAILABLE** rather than synthesized. The gap is an approximate cross-cohort indication under the recorded mismatch dimensions; it is not an apples-to-apples effect estimate and is never used alone to justify production changes.
+**Reporting plan:** for Recall@5, Recall@10, Recall@20, MRR, critical evidence recall, and final evidence recall (combined candidate recall as a secondary diagnostic), report three columns — Gold/reference, novel_dev (ND-0B, not yet run), and the gap. If either side lacks comparable support for a metric, the cell is marked **UNAVAILABLE** rather than synthesized. **Gap interpretation (frozen):** the gap is a historical cross-cohort AND cross-configuration reference difference. It is not an apples-to-apples treatment effect, must not be attributed solely to novel-question generalization, and must not be interpreted as "same system + different dataset only". The gap reflects a combination of: question-population difference; analyzer-generation difference; historical provenance difference; index/corpus-state difference; and potentially other recorded configuration evolution. It is never used alone to justify production changes. The Gold reference remains useful as a historical scale reference, a directional comparison, and rough generalization context; it is simply not a controlled current-system baseline.
+
+**Provenance correction record (`PRE_OUTCOME_PROVENANCE_CORRECTION`, ND-0A-R1, 2026-08-30):** the original ND-0A preregistration (commit `06b68c8`) historically contained an incorrect same-index comparability statement ("Index identity unchanged … index schema v2", supported by the no-pending-rebuild flags). That statement and the flag-based continuity inference were false. ND-0A-R1 corrected the comparison provenance **before ND-0B / first novel outcome exposure**; Git history preserves the original ND-0A wording. The selected Gold reference, the ND-0B measurement contract, the primary metric set, and the diagnosis taxonomy are unchanged by this correction.
 
 ## 10. ND-0C diagnosis taxonomy (frozen)
 

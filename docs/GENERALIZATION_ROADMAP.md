@@ -435,6 +435,7 @@ D2-A2R2 → ND-0A → ND-0B → ND-0C → D2-A3 → D3
 ```
 
 - **Status:** IN_PROGRESS (ND-0A `COMPLETE / PRE_OUTCOME_PREREGISTRATION_FROZEN`
+  2026-08-30; ND-0A-R1 `COMPLETE / HISTORICAL_COMPARISON_PROVENANCE_CORRECTED`
   2026-08-30; ND-0B `NOT_STARTED`; ND-0C `NOT_STARTED`;
   `FIRST_NOVEL_DEV_OUTCOME_EXPOSURE = NOT_STARTED`;
   `NOVEL_DEV_DEVELOPMENT_EXPOSED = false`.)
@@ -469,8 +470,9 @@ D2-A2R2 → ND-0A → ND-0B → ND-0C → D2-A3 → D3
   (`evaluation/baselines/manifests/english_gold_stratified_bootstrap_v1.json`)
   classified `APPROXIMATE / NON_IDENTICAL_COHORT` with three documented
   mismatch dimensions (different 24-vs-28 cohort/intent coverage, analyzer
-  prompt_set 3.6.0 vs current 3.7.0, coarse pre-Phase-C provenance) and
-  unchanged channel-role/index identity as comparability support; ND-0C
+  prompt_set 3.6.0 vs current 3.7.0, coarse pre-Phase-C provenance), later
+  corrected by ND-0A-R1 to also record the index/configuration mismatch
+  (see the ND-0A-R1 closeout below); ND-0C
   diagnosis taxonomy frozen (16 generic classes, no question-specific
   categories); ND-0C development rule frozen (novel_dev becomes
   DEVELOPMENT_EXPOSED after ND-0B; ND-0 artifacts immutable; reruns need new
@@ -497,6 +499,50 @@ D2-A2R2 → ND-0A → ND-0B → ND-0C → D2-A3 → D3
   path-like literals. `CURRENT_DEPLOYED_RETRIEVAL_BEHAVIOR_CHANGED = false`;
   `PRODUCTION_CODE_CHANGED = false` (evaluation-infrastructure script only);
   D2-A3 remains NOT_STARTED.
+
+- **ND-0A-R1 closeout — 2026-08-30 (`COMPLETE / HISTORICAL_COMPARISON_PROVENANCE_CORRECTED`):**
+  pre-outcome provenance correction only (`PRE_OUTCOME_PROVENANCE_CORRECTION`;
+  committed while `FIRST_NOVEL_DEV_OUTCOME_EXPOSURE = NOT_STARTED`); zero
+  retrieval/QA/judge/model/database operations. Audit finding: the original
+  ND-0A commit `06b68c8` historically contained an incorrect same-index
+  comparability statement ("Index identity unchanged … index schema v2",
+  supported by `REEMBEDDING_REQUIRED = false` / `INDEX_REBUILD_REQUIRED =
+  false` / `QDRANT_SCHEMA_CHANGE_REQUIRED = false`) — those flags describe the
+  current pending-change state, not historical continuity, and the inference
+  was invalid. Corrections (artifact-verified, no reference change, no new
+  Gold run): historical Gold index schema **2** / identity `c527bbf1…`
+  (prompt_set 3.6.0, base commit `e132acce` dirty tree, sparse `Qdrant/bm25`
+  with no modifier/parameters recorded) vs current ND-0 schema **4** /
+  fingerprint `8172f9a6…` / `104973` Qdrant points / `133075` SQL objects
+  (prompt_set 3.7.0, sparse modifier `idf`, schema-4 portable receipt);
+  `INDEX_IDENTITY_CHANGED = true`; `CORPUS_INDEX_STATE_CHANGED = true` (the
+  Gold baseline predates the B5 selective migration; the current corpus is the
+  post-B5 state, so the metric gap must not be attributed purely to dataset
+  distribution); `SPARSE_CONTRACT_EVOLVED = true` as a governance/identity
+  change (B1/B3 post-baseline) with scoring-behavior equivalence explicitly
+  not claimable; `configuration_comparability = NON_IDENTICAL_CONFIGURATION`
+  added alongside the unchanged `comparability_status = APPROXIMATE /
+  NON_IDENTICAL_COHORT`; `role_level_continuity = true` with the explicit
+  caveat that role continuity does not imply identical retrieval
+  configuration/query-analysis generation/index contents/chunking state/
+  sparse identity/implementation provenance (`retrieval_state_identity =
+  false`); mismatch dimensions extended to six (+INDEX_IDENTITY,
+  CORPUS_INDEX_STATE, SPARSE_CONTRACT); gap interpretation frozen as a
+  historical cross-cohort AND cross-configuration reference difference (never
+  "same system + different dataset only", never attributable solely to
+  novel-question generalization); the Gold reference is retained as a
+  historical scale reference / directional comparison / rough generalization
+  context. ND-0A itself is not characterized as scientifically invalid; Git
+  history preserves the original wording. Unchanged: selected reference,
+  ND-0B 28/28 retrieval-only contract, primary metric set, diagnosis taxonomy,
+  holdout registration (expected_count 13), novel_validation protection,
+  production code. Artifacts updated: preregistration JSON/MD (comparison
+  section + correction record + human-readable comparison table),
+  `docs/EVALUATION_STATUS.md`, this roadmap. Verification: preregistration
+  JSON schema/static checks; stale-claim grep ("index identity unchanged" /
+  "index schema v2" as current-vs-historical claims) clean in current
+  preregistration docs; Gold `implementation_identity.json` and current
+  schema-4/fingerprint state cross-checked; `git diff --check` clean.
 
 ### ND-0B — First 28-question retrieval measurement
 
