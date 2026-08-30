@@ -2,6 +2,10 @@
 
 > Status: `D2-A3 = COMPLETE / RESOLVER_ROLE_DECISION_FROZEN` (2026-08-30)
 >
+> Repair: `D2-A3-R1 = COMPLETE / ABSTENTION_EVIDENCE_ATTRIBUTION_REPAIRED`
+> (2026-08-30). Evidence provenance only; all mechanism role decisions,
+> confidence values, and production boundaries are unchanged.
+>
 > Overall D2 role: `MIXED_ROLE / BOUNDED_AUTHORITY_BY_MECHANISM`
 >
 > Current production D2 role: `SHADOW`
@@ -108,7 +112,7 @@ The following principles are frozen:
 | Tier S | Exact symbol/path correct where applicable; competition and version scope conservative | n014 exact/structural context; its loss was candidate generation | Yes, matched record only | No cross-record canonicalization | Eligible, not wired | Substitute a related/canonical record for the source-native match | `AUTHORITATIVE_BOUNDED` |
 | Tier D unique | 3/6 correct, 3/6 ambiguous, 0/6 wrong-confident | Eight contextual cases; no treatment evidence | No | No | Advisory eligibility only, not wired | Treat `RESOLVED_UNIQUE` as identity; narrow scope; force selection | `PRODUCTION_CONSUMABLE_NONAUTHORITATIVE` |
 | Tier D ambiguous | Conservative competition signal; descriptive ambiguity 3/6; expected-ambiguity accuracy 2/2 | Not production-consumed | No | No | Advisory eligibility only, not wired | Collapse candidates or treat ambiguity as nonexistence | `PRODUCTION_CONSUMABLE_NONAUTHORITATIVE` |
-| UNRESOLVED/abstention | 5 correct abstentions, 0 wrong abstentions in final valid-case accounting | Not production-consumed | No | No | Diagnostic eligibility only, not wired | Interpret as target does not exist or filter retrieval negatively | `PRODUCTION_CONSUMABLE_NONAUTHORITATIVE` |
+| UNRESOLVED/abstention | 5/6: C08/C17/C18/C19/C20 correct; C16 valid failed `REJECTED_VERSION` through wrong-confident fallback | Not production-consumed | No | No | Diagnostic eligibility only, not wired | Interpret as target does not exist or filter retrieval negatively | `PRODUCTION_CONSUMABLE_NONAUTHORITATIVE` |
 | Corrective terms | C08 correct, correction surfaced, `identity_authority = false`, UNRESOLVED | No contextual applicability | No | No | Correction/advisory eligibility only, not wired | Promote correction to true alias or silently canonicalize | `PRODUCTION_CONSUMABLE_NONAUTHORITATIVE` |
 | SAME_AS | Natural A2 applicability 0 | No topology observed | Contract-conditional, unevaluated | Contract-conditional, unevaluated | No | Activate unreviewed or conflicting edges; claim efficacy | `UNEVALUATED` |
 | RESOLVED_MULTIPLE | Schema supported; natural A2 applicability 0 | No topology observed | Unevaluated | No independent authority | No | Treat singular ambiguity or lexical plurality as legitimate multiple | `UNEVALUATED` |
@@ -188,6 +192,15 @@ UNRESOLVED/abstention receipts are also eligible only as non-authoritative
 diagnostics. `UNRESOLVED` means that the resolver lacks sufficient governed
 identity evidence; it does not mean that the target does not exist and cannot
 be used as a negative retrieval filter.
+
+The frozen 5/6 abstention/rejection metric comprises five correct outcomes
+(C08, C17, C18, C19, C20) plus one valid failed rejection case, C16. C16
+expected `REJECTED_VERSION`, but whole-question fallback produced the same
+wrong-confident unrelated resolution recorded as the single valid
+`wrong_resolve` and the formal FPR contribution. C10 and C14 are invalid and
+excluded from this denominator. This is one C16 failure viewed consistently
+through the abstention/rejection metric and fallback-safety decision, not two
+distinct failures.
 
 ## 12. SAME_AS
 

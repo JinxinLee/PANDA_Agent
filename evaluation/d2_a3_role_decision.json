@@ -3,6 +3,18 @@
   "checkpoint": "D2-A3",
   "status": "COMPLETE / RESOLVER_ROLE_DECISION_FROZEN",
   "frozen_at": "2026-08-30",
+  "repair_history": [
+    {
+      "checkpoint": "D2-A3-R1",
+      "status": "COMPLETE / ABSTENTION_EVIDENCE_ATTRIBUTION_REPAIRED",
+      "scope": "Evidence-provenance repair only: C16, not invalid C10, is the sixth valid abstention/rejection denominator case underlying 5/6.",
+      "role_decisions_changed": false,
+      "overall_d2_role_changed": false,
+      "current_production_d2_role_changed": false,
+      "production_wiring_performed": false,
+      "scientific_execution_performed": false
+    }
+  ],
   "decision_basis": {
     "evidence_hierarchy": [
       "D2-A2 is the direct frozen resolver-efficacy and resolver-safety evidence.",
@@ -236,7 +248,7 @@
     {
       "mechanism": "UNRESOLVED and abstention receipts",
       "evidence_tier": "NONE_OR_INSUFFICIENT",
-      "direct_a2_evidence": "Abstention accuracy was 5/6; the final target-scoped accounting contained 5 correct abstentions and 0 wrong abstentions. The remaining denominator case is C10, which is invalid and excluded from direct scoring.",
+      "direct_a2_evidence": "Abstention accuracy was 5/6 over the final valid abstention/rejection-applicable cases. C08, C17, C18, C19, and C20 were handled correctly. The sixth case was C16: expected REJECTED_VERSION, but whole-question fallback produced a wrong-confident resolution. C10 and C14 are invalid and excluded from this denominator.",
       "nd0_context": "ND-0 provides no D2 abstention efficacy evidence because D2 was not production-consumed.",
       "identity_authority": "NO",
       "canonicalization_authority": "NO",
