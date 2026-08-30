@@ -132,16 +132,20 @@ INDIRECT → DIRECT (n022.e1 is a descriptive candidate-generation failure);
 counts before the rule was explicit were 6 / 8 / 14. n022 is counted exactly
 once in the descriptive-topology accounting below.
 
-- **DIRECT** = descriptively identified governed targets lost at candidate
-  generation (n005, n009, n010, n020, n029 — Tier D descriptive context) or an
-  exact governed surface whose target never entered any channel pool (n014 —
-  exact/structural mechanism, Tier G/S context, explicitly NOT Tier D
-  descriptive). Subtype rationale confidence MEDIUM; the underlying stage facts
-  are HIGH (trace-shown absence).
-- **INDIRECT** = terminology/entity understanding is contextually present but
-  the observed loss is primarily ranking (n002, n003, n006, n017, n023, n025,
-  n028) or split channel+selector (n022). Candidates were recalled; identity
-  mapping was not the failing step.
+- **DIRECT** (7 cases) includes: 5 pure descriptive candidate-generation cases
+  (n005, n009, n010, n020, n029 — Tier D descriptive context); 1 exact/
+  structural candidate-generation case (n014 — exact/structural mechanism,
+  Tier G/S context, explicitly NOT Tier D descriptive); and 1 mixed case
+  (n022): n022.e1 is a DIRECT descriptive candidate-generation failure while
+  the separate n022.e3 loss is a final-selector loss outside D2 — the
+  case-level relevance remains DIRECT under the deterministic ND-0C-R1
+  aggregation rule. Subtype rationale confidence MEDIUM; the underlying stage
+  facts are HIGH (trace-shown absence).
+- **INDIRECT** (7 cases: n002, n003, n006, n017, n023, n025, n028) =
+  terminology/entity understanding may be contextually relevant, but the
+  observed system loss is primarily downstream ranking or another non-direct
+  identity-resolution failure. Candidates were recalled; identity mapping was
+  not the failing step.
 - **NONE** includes successes, n016 (no retrieval loss), and n021 (cross-
   repository assembly).
 - **Descriptive cases** (8: n002, n005, n009, n010, n017, n020, n022, n029):

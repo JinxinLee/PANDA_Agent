@@ -441,6 +441,7 @@ D2-A2R2 → ND-0A → ND-0B → ND-0C → D2-A3 → D3
   `COMPLETE / EVIDENCE_PACKAGE_AND_DATASET_DEFECT_ACCOUNTING_REPAIRED`
   2026-08-30; ND-0C `COMPLETE / GENERALIZATION_DIAGNOSIS_AND_D2_A3_HANDOFF`
   2026-08-30; ND-0C-R1 `COMPLETE / D2_A3_HANDOFF_SEMANTICS_REPAIRED` 2026-08-30;
+  ND-0C-R2 `COMPLETE / HUMAN_READABLE_HANDOFF_CONSISTENCY_REPAIRED` 2026-08-30;
   `FIRST_NOVEL_DEV_OUTCOME_EXPOSURE = COMPLETE`;
   `NOVEL_DEV_DEVELOPMENT_EXPOSED = true`; `DATASET_STRUCTURAL_VALID = false`;
   `KNOWN_PRE_EXPOSURE_DATASET_DEFECT_COUNT = 1`.)
@@ -712,6 +713,17 @@ D2-A2R2 → ND-0A → ND-0B → ND-0C → D2-A3 → D3
   relevance valid on every failed group with mechanical case aggregation; C10
   governance labels present; A2 facts reproduced exactly; no role-decision
   claims; raw artifacts unchanged; `git diff --check` clean. Next: D2-A3.
+
+- **ND-0C-R2 closeout — 2026-08-30 (`COMPLETE / HUMAN_READABLE_HANDOFF_CONSISTENCY_REPAIRED`):**
+  documentation-only consistency repair of `ND0C_GENERALIZATION_DIAGNOSIS.md`:
+  the stale INDIRECT prose no longer lists n022 (INDIRECT = n002, n003, n006,
+  n017, n023, n025, n028 only), and the DIRECT prose now explains all 7 DIRECT
+  cases (5 pure descriptive candidate-generation + 1 exact/structural n014 +
+  1 mixed n022 with its n022.e1 DIRECT / n022.e3 non-D2 split under the R1
+  aggregation rule). Zero execution; machine-readable diagnosis/handoff JSON
+  byte-unchanged (7/7/14, n022 = DIRECT unchanged); descriptive 8 = 5 + 2 + 1,
+  Tier D evidence, C10/C14/C16 governance, and decision-neutral language
+  preserved; `git diff --check` clean. ND-0 hands over cleanly to D2-A3.
 
 ### Protected-evaluation ladder (current)
 
