@@ -1,0 +1,3319 @@
+{
+  "schema_version": "d3-a0-shortcut-migration-preregistration-v1",
+  "task_id": "D3-A0",
+  "title": "Shortcut Migration Selection and Preregistration Freeze",
+  "frozen_at": "2026-08-30",
+  "preregistration_source_head": "6849c97f65090ccee5ff7e4af5aed6837ff20940",
+  "status": "COMPLETE_PREOUTCOME_SELECTION_FROZEN",
+  "verdict": "PASS",
+  "scope": {
+    "performed": [
+      "static legacy-rule inventory",
+      "D1/D2 support audit",
+      "representative first-batch selection",
+      "three-arm experiment design",
+      "comparison-set freeze",
+      "metric/failure/rollback preregistration",
+      "documentation status update"
+    ],
+    "not_performed": [
+      "runtime implementation",
+      "query-expansion/config changes",
+      "D1/D2 seed changes",
+      "retrieval execution",
+      "QA execution",
+      "model/API calls",
+      "embedding/reranking/judge calls",
+      "novel_validation inspection or execution",
+      "external holdout access",
+      "production or database writes",
+      "D3-A1"
+    ]
+  },
+  "authoritative_inputs": [
+    "configs/query_expansions.yaml",
+    "configs/seed_objects.yaml",
+    "configs/seed_relations.yaml",
+    "configs/seed_workflows.yaml",
+    "configs/aliases.yaml",
+    "src/panda_agent/retrieval.py::_preparse",
+    "evaluation/d2_a3_role_decision.json",
+    "evaluation/benchmarks/v2_6/gold_questions.yaml (dev cases only)",
+    "evaluation/novel/v1/novel_dev.yaml",
+    "evaluation/novel/v1/curation_metadata.yaml"
+  ],
+  "legacy_consumer_contract": {
+    "match": "For each rule, any case-insensitive literal trigger substring in the raw question matches the rule.",
+    "accumulation": "All matching rules accumulate reviewed fixed repositories, symbols, concepts, and paper page hints into DeterministicQueryParse and then RetrievalPlan.",
+    "provenance": {
+      "source": "reviewed_expansion",
+      "ownership": "fixed_reviewed_rule"
+    },
+    "migration_target": "Replace selected phrase-to-fixed-location dependencies with generic entity/concept/relation/workflow retrieval while preserving a rollback arm.",
+    "prohibited_substitute": "No phrase-to-object, rule-id-to-object, evaluation-case-to-object, exact answer-location, exact page, or hidden trigger map may be introduced."
+  },
+  "complete_legacy_inventory_summary": {
+    "rule_count": 54,
+    "trigger_count": 200,
+    "rules_with_repository_injection": 54,
+    "rules_with_symbol_injection": 51,
+    "rules_with_concept_injection": 54,
+    "rules_with_paper_page_hints": 22,
+    "selected_first_batch": 7,
+    "excluded_first_batch": 47,
+    "family_counts": {
+      "CROSS_REPOSITORY_DATA_FLOW": 8,
+      "WORKFLOW_DATA_FLOW": 14,
+      "CONCEPT_IMPLEMENTATION": 19,
+      "DIRECT_API_FILE_LOCATOR": 1,
+      "PREMISE_CORRECTION": 1,
+      "VERSION_DOCUMENTATION": 1,
+      "TROUBLESHOOTING_COMPATIBILITY": 4,
+      "USAGE_INSTALLATION": 5,
+      "PAPER_PAGE_THEORY": 1
+    }
+  },
+  "complete_legacy_inventory": [
+    {
+      "inventory_index": 1,
+      "rule_id": "lmd_fit_data_chain",
+      "rule_family": "CROSS_REPOSITORY_DATA_FLOW",
+      "triggers": [
+        "lumi_trksqa",
+        "luminosity result",
+        "luminosityfit 最终"
+      ],
+      "trigger_count": 3,
+      "current_injection": {
+        "repositories": [
+          "pandaroot",
+          "luminosityfit"
+        ],
+        "symbols": [
+          "detectors/lmd/LmdQA/PndLmdTrackQ.cxx",
+          "data/PndLmdCombinedDataReader.cxx",
+          "apps/createLmdFitData.cxx",
+          "apps/runLmdFit.cxx",
+          "apps/extractLuminosityValues.cxx"
+        ],
+        "concepts": [
+          "LMD reconstruction output",
+          "luminosity fit data chain"
+        ],
+        "paper_page_hints": {}
+      },
+      "dependency_counts": {
+        "repositories": 2,
+        "symbols": 5,
+        "concepts": 2,
+        "paper_page_hints": 0
+      },
+      "exact_trigger_overlap_rule_ids": [],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "SELECTED_FIRST_BATCH",
+      "disposition_reason": "Representative cross-repository producer/consumer chain with accepted D1 edges and an intentionally preserved downstream coverage gap."
+    },
+    {
+      "inventory_index": 2,
+      "rule_id": "event_poca_handoff",
+      "rule_family": "WORKFLOW_DATA_FLOW",
+      "triggers": [
+        "event_poca",
+        "poca_vertex_file",
+        "second-pass pid",
+        "第二遍 pid"
+      ],
+      "trigger_count": 4,
+      "current_injection": {
+        "repositories": [
+          "restgas_determination",
+          "pandaroot"
+        ],
+        "symbols": [
+          "macro/target/ana_dpm.C",
+          "macro/target/prod_aod_complete.C",
+          "POCA_VERTEX_FILE",
+          "PndPidCorrelator"
+        ],
+        "concepts": [
+          "event POCA handoff",
+          "event-aligned second-pass propagation"
+        ],
+        "paper_page_hints": {
+          "li_2026": [
+            131,
+            138
+          ]
+        }
+      },
+      "dependency_counts": {
+        "repositories": 2,
+        "symbols": 4,
+        "concepts": 2,
+        "paper_page_hints": 2
+      },
+      "exact_trigger_overlap_rule_ids": [
+        "event_poca_troubleshooting"
+      ],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "SELECTED_FIRST_BATCH",
+      "disposition_reason": "Representative event-aligned two-pass handoff with accepted workflow/data-product structure and exact identifier surfaces."
+    },
+    {
+      "inventory_index": 3,
+      "rule_id": "restgas_profile_workflow",
+      "rule_family": "WORKFLOW_DATA_FLOW",
+      "triggers": [
+        "restgas_profile",
+        "restgas profile",
+        "corrected rho",
+        "修正后的 rho"
+      ],
+      "trigger_count": 4,
+      "current_injection": {
+        "repositories": [
+          "restgas_determination",
+          "pandaroot"
+        ],
+        "symbols": [
+          "pgenerators/Target/PndTargetGenerator.cxx",
+          "macro/target/prod_sim_hvmaps.C",
+          "macro/target/reco_complete.C",
+          "macro/target/ana_complete.C",
+          "macro/target/correction/efficiency_correction_2.C"
+        ],
+        "concepts": [
+          "distributed target generation",
+          "longitudinal profile correction"
+        ],
+        "paper_page_hints": {}
+      },
+      "dependency_counts": {
+        "repositories": 2,
+        "symbols": 5,
+        "concepts": 2,
+        "paper_page_hints": 0
+      },
+      "exact_trigger_overlap_rule_ids": [],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "SELECTED_FIRST_BATCH",
+      "disposition_reason": "Representative configuration/file-pattern-to-workflow rule with multiple accepted D1 edges."
+    },
+    {
+      "inventory_index": 4,
+      "rule_id": "pid_two_pass_files",
+      "rule_family": "WORKFLOW_DATA_FLOW",
+      "triggers": [
+        "*_pid.root",
+        "*_pid_final.root",
+        "pid_final.root"
+      ],
+      "trigger_count": 3,
+      "current_injection": {
+        "repositories": [
+          "restgas_determination"
+        ],
+        "symbols": [
+          "macro/target/pid_complete.C",
+          "macro/target/ana_dpm.C",
+          "macro/target/prod_aod_complete.C"
+        ],
+        "concepts": [
+          "two-pass PID workflow"
+        ],
+        "paper_page_hints": {}
+      },
+      "dependency_counts": {
+        "repositories": 1,
+        "symbols": 3,
+        "concepts": 1,
+        "paper_page_hints": 0
+      },
+      "exact_trigger_overlap_rule_ids": [],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "SELECTED_FIRST_BATCH",
+      "disposition_reason": "Representative file-pattern and two-pass workflow rule combining accepted D1 products, workflow structure, and a Tier-G true alias."
+    },
+    {
+      "inventory_index": 5,
+      "rule_id": "luminosityfit_model_layers",
+      "rule_family": "CONCEPT_IMPLEMENTATION",
+      "triggers": [
+        "luminosityfit model",
+        "model layer",
+        "模型层"
+      ],
+      "trigger_count": 3,
+      "current_injection": {
+        "repositories": [
+          "luminosityfit"
+        ],
+        "symbols": [
+          "model/PndLmdDPMAngModel1D.cxx",
+          "model/PndLmdDPMAngModel2D.cxx",
+          "model/PndLmdDivergenceSmearingModel2D.cxx",
+          "model/PndLmdDifferentialSmearingConvolutionModel2D.cxx",
+          "model/PndLmdSmearingConvolutionModel2D.cxx",
+          "model/PndLmdModelFactory.cxx"
+        ],
+        "concepts": [
+          "cross section model",
+          "divergence smearing",
+          "detector resolution convolution"
+        ],
+        "paper_page_hints": {}
+      },
+      "dependency_counts": {
+        "repositories": 1,
+        "symbols": 6,
+        "concepts": 3,
+        "paper_page_hints": 0
+      },
+      "exact_trigger_overlap_rule_ids": [],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "SELECTED_FIRST_BATCH",
+      "disposition_reason": "Representative concept-to-implementation rule with an accepted IMPLEMENTS edge and bounded source-native identifiers."
+    },
+    {
+      "inventory_index": 6,
+      "rule_id": "resolution_models",
+      "rule_family": "CONCEPT_IMPLEMENTATION",
+      "triggers": [
+        "detector resolution",
+        "resolution smearing",
+        "smearing convolution",
+        "分辨率卷积",
+        "探测器分辨率"
+      ],
+      "trigger_count": 5,
+      "current_injection": {
+        "repositories": [
+          "luminosityfit"
+        ],
+        "symbols": [
+          "model/PndLmdDifferentialSmearingConvolutionModel2D.cxx",
+          "model/PndLmdSmearingConvolutionModel2D.cxx",
+          "model/PndLmdModelFactory.cxx"
+        ],
+        "concepts": [
+          "detector resolution",
+          "resolution smearing",
+          "convolution model"
+        ],
+        "paper_page_hints": {
+          "pflueger_2017": [
+            65,
+            70,
+            71
+          ]
+        }
+      },
+      "dependency_counts": {
+        "repositories": 1,
+        "symbols": 3,
+        "concepts": 3,
+        "paper_page_hints": 3
+      },
+      "exact_trigger_overlap_rule_ids": [],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "BATCH_TOPOLOGY_OVERLAP: the rule overlaps a selected topology; excluded to keep the first batch bounded and independently interpretable."
+    },
+    {
+      "inventory_index": 7,
+      "rule_id": "resolution_api_locator",
+      "rule_family": "DIRECT_API_FILE_LOCATOR",
+      "triggers": [
+        "detector-resolution convolution"
+      ],
+      "trigger_count": 1,
+      "current_injection": {
+        "repositories": [
+          "luminosityfit"
+        ],
+        "symbols": [
+          "model/PndLmdSmearingConvolutionModel2D.cxx",
+          "model/PndLmdDifferentialSmearingConvolutionModel2D.cxx"
+        ],
+        "concepts": [
+          "detector-resolution convolution implementation"
+        ],
+        "paper_page_hints": {}
+      },
+      "dependency_counts": {
+        "repositories": 1,
+        "symbols": 2,
+        "concepts": 1,
+        "paper_page_hints": 0
+      },
+      "exact_trigger_overlap_rule_ids": [],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "DIRECT_LOCATOR_NOT_RELATION_MIGRATION: direct file/API locator behavior is not representative of a relation-driven first batch."
+    },
+    {
+      "inventory_index": 8,
+      "rule_id": "displaced_tracking",
+      "rule_family": "CONCEPT_IMPLEMENTATION",
+      "triggers": [
+        "off-ip",
+        "off ip",
+        "displaced tracking",
+        "displaced-track",
+        "离轴跟踪"
+      ],
+      "trigger_count": 5,
+      "current_injection": {
+        "repositories": [
+          "restgas_determination",
+          "pandaroot"
+        ],
+        "symbols": [
+          "tracking/PndApolloniusTripletTrackFinder/PndApolloniusTripletTrackFinderTask.cxx",
+          "tracking/PzFinder/PndSttSkewStrawPzFinderTask.cxx",
+          "macro/target/reco_complete.C"
+        ],
+        "concepts": [
+          "displaced-vertex track reconstruction"
+        ],
+        "paper_page_hints": {}
+      },
+      "dependency_counts": {
+        "repositories": 2,
+        "symbols": 3,
+        "concepts": 1,
+        "paper_page_hints": 0
+      },
+      "exact_trigger_overlap_rule_ids": [
+        "displaced_tracking_theory"
+      ],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "STRUCTURED_COVERAGE_NOT_READY: current accepted D1 objects/relations/workflows do not yet support the rule end to end without adding new structured knowledge, which D3-A0 prohibits."
+    },
+    {
+      "inventory_index": 9,
+      "rule_id": "angular_acceptance",
+      "rule_family": "CONCEPT_IMPLEMENTATION",
+      "triggers": [
+        "angular acceptance",
+        "acceptance class",
+        "角接受度",
+        "接受度类"
+      ],
+      "trigger_count": 4,
+      "current_injection": {
+        "repositories": [
+          "luminosityfit"
+        ],
+        "symbols": [
+          "data/PndLmdAcceptance.cxx"
+        ],
+        "concepts": [
+          "LMD angular acceptance"
+        ],
+        "paper_page_hints": {
+          "pflueger_2017": [
+            57,
+            58,
+            62
+          ]
+        }
+      },
+      "dependency_counts": {
+        "repositories": 1,
+        "symbols": 1,
+        "concepts": 1,
+        "paper_page_hints": 3
+      },
+      "exact_trigger_overlap_rule_ids": [],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "BATCH_TOPOLOGY_OVERLAP: the rule overlaps a selected topology; excluded to keep the first batch bounded and independently interpretable."
+    },
+    {
+      "inventory_index": 10,
+      "rule_id": "longitudinal_efficiency",
+      "rule_family": "CONCEPT_IMPLEMENTATION",
+      "triggers": [
+        "pvz efficiency",
+        "longitudinal efficiency",
+        "纵向效率"
+      ],
+      "trigger_count": 3,
+      "current_injection": {
+        "repositories": [
+          "restgas_determination"
+        ],
+        "symbols": [
+          "macro/target/correction/efficiency_correction_2.C",
+          "macro/target/correction/efficiency_correction_steps.C"
+        ],
+        "concepts": [
+          "restgas longitudinal reconstruction efficiency"
+        ],
+        "paper_page_hints": {
+          "li_2026": [
+            138,
+            142,
+            147
+          ]
+        }
+      },
+      "dependency_counts": {
+        "repositories": 1,
+        "symbols": 2,
+        "concepts": 1,
+        "paper_page_hints": 3
+      },
+      "exact_trigger_overlap_rule_ids": [
+        "acceptance_efficiency_disambiguation",
+        "restgas_longitudinal_efficiency_contrast"
+      ],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "BATCH_TOPOLOGY_OVERLAP: the rule overlaps a selected topology; excluded to keep the first batch bounded and independently interpretable."
+    },
+    {
+      "inventory_index": 11,
+      "rule_id": "nonexistent_restgas_deconvolver",
+      "rule_family": "PREMISE_CORRECTION",
+      "triggers": [
+        "PndUniversalRestgasDeconvolver"
+      ],
+      "trigger_count": 1,
+      "current_injection": {
+        "repositories": [
+          "restgas_determination"
+        ],
+        "symbols": [
+          "macro/target/correction/efficiency_correction_2.C"
+        ],
+        "concepts": [
+          "restgas longitudinal reconstruction efficiency"
+        ],
+        "paper_page_hints": {
+          "li_2026": [
+            142,
+            147
+          ]
+        }
+      },
+      "dependency_counts": {
+        "repositories": 1,
+        "symbols": 1,
+        "concepts": 1,
+        "paper_page_hints": 2
+      },
+      "exact_trigger_overlap_rule_ids": [],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "PREMISE_CORRECTION_NOT_MIGRATION: nonexistent-entity correction is a safety/normalization behavior, not a structured retrieval migration candidate."
+    },
+    {
+      "inventory_index": 12,
+      "rule_id": "lmd_reconstruction_to_qa",
+      "rule_family": "WORKFLOW_DATA_FLOW",
+      "triggers": [
+        "lmd qa output",
+        "lmd reconstruction module",
+        "lmd reconstruction 模块"
+      ],
+      "trigger_count": 3,
+      "current_injection": {
+        "repositories": [
+          "pandaroot"
+        ],
+        "symbols": [
+          "detectors/lmd/LmdTrack/PndLmdTrackFinderCATask.cxx",
+          "detectors/lmd/LmdTrack/PndLmdGeaneTask.cxx",
+          "detectors/lmd/LmdQA/PndLmdTrackQ.cxx"
+        ],
+        "concepts": [
+          "LMD reconstruction to QA data flow"
+        ],
+        "paper_page_hints": {
+          "karavdina_2015": [
+            94,
+            100,
+            104
+          ]
+        }
+      },
+      "dependency_counts": {
+        "repositories": 1,
+        "symbols": 3,
+        "concepts": 1,
+        "paper_page_hints": 3
+      },
+      "exact_trigger_overlap_rule_ids": [],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "BATCH_TOPOLOGY_OVERLAP: the rule overlaps a selected topology; excluded to keep the first batch bounded and independently interpretable."
+    },
+    {
+      "inventory_index": 13,
+      "rule_id": "target_pid_pipeline",
+      "rule_family": "WORKFLOW_DATA_FLOW",
+      "triggers": [
+        "pid processing",
+        "pid pipeline",
+        "pid_final",
+        "pid final",
+        "target pid",
+        "PID处理",
+        "PID流程"
+      ],
+      "trigger_count": 7,
+      "current_injection": {
+        "repositories": [
+          "restgas_determination"
+        ],
+        "symbols": [
+          "macro/target/pid_complete.C",
+          "macro/target/ana_dpm.C",
+          "macro/target/prod_aod_complete.C",
+          "macro/target/ana_complete.C"
+        ],
+        "concepts": [
+          "two-pass target PID pipeline"
+        ],
+        "paper_page_hints": {}
+      },
+      "dependency_counts": {
+        "repositories": 1,
+        "symbols": 4,
+        "concepts": 1,
+        "paper_page_hints": 0
+      },
+      "exact_trigger_overlap_rule_ids": [],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "BATCH_TOPOLOGY_OVERLAP: the rule overlaps a selected topology; excluded to keep the first batch bounded and independently interpretable."
+    },
+    {
+      "inventory_index": 14,
+      "rule_id": "profile_generation_and_correction",
+      "rule_family": "WORKFLOW_DATA_FLOW",
+      "triggers": [
+        "generated z profile",
+        "epsilon_reco",
+        "reconstruction efficiency",
+        "efficiency correction",
+        "restgas density",
+        "profile correction",
+        "生成 z profile",
+        "重建效率"
+      ],
+      "trigger_count": 8,
+      "current_injection": {
+        "repositories": [
+          "restgas_determination"
+        ],
+        "symbols": [
+          "macro/target/prod_sim_hvmaps.C",
+          "macro/target/ana_complete.C",
+          "macro/target/correction/efficiency_correction_2.C"
+        ],
+        "concepts": [
+          "generated target profile",
+          "reconstructed profile",
+          "efficiency correction"
+        ],
+        "paper_page_hints": {
+          "li_2026": [
+            138,
+            142,
+            147
+          ]
+        }
+      },
+      "dependency_counts": {
+        "repositories": 1,
+        "symbols": 3,
+        "concepts": 3,
+        "paper_page_hints": 3
+      },
+      "exact_trigger_overlap_rule_ids": [
+        "reconstructed_profile_to_acceptance"
+      ],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "BATCH_TOPOLOGY_OVERLAP: the rule overlaps a selected topology; excluded to keep the first batch bounded and independently interpretable."
+    },
+    {
+      "inventory_index": 15,
+      "rule_id": "event_alignment",
+      "rule_family": "WORKFLOW_DATA_FLOW",
+      "triggers": [
+        "event id alignment",
+        "event alignment",
+        "particle identification",
+        "event ID对齐",
+        "事件对齐"
+      ],
+      "trigger_count": 5,
+      "current_injection": {
+        "repositories": [
+          "restgas_determination"
+        ],
+        "symbols": [
+          "macro/target/ana_dpm.C",
+          "macro/target/prod_aod_complete.C",
+          "POCA_VERTEX_FILE",
+          "event_poca"
+        ],
+        "concepts": [
+          "event ID aligned POCA handoff"
+        ],
+        "paper_page_hints": {
+          "li_2026": [
+            131,
+            138
+          ]
+        }
+      },
+      "dependency_counts": {
+        "repositories": 1,
+        "symbols": 4,
+        "concepts": 1,
+        "paper_page_hints": 2
+      },
+      "exact_trigger_overlap_rule_ids": [
+        "event_poca_troubleshooting"
+      ],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "BATCH_TOPOLOGY_OVERLAP: the rule overlaps a selected topology; excluded to keep the first batch bounded and independently interpretable."
+    },
+    {
+      "inventory_index": 16,
+      "rule_id": "luminosity_extraction_results",
+      "rule_family": "WORKFLOW_DATA_FLOW",
+      "triggers": [
+        "extract luminosity",
+        "extract luminosity values",
+        "completed fit results",
+        "luminosity fit results"
+      ],
+      "trigger_count": 4,
+      "current_injection": {
+        "repositories": [
+          "luminosityfit"
+        ],
+        "symbols": [
+          "apps/extractLuminosityValues.cxx",
+          "README.md"
+        ],
+        "concepts": [
+          "luminosity extraction result workflow"
+        ],
+        "paper_page_hints": {}
+      },
+      "dependency_counts": {
+        "repositories": 1,
+        "symbols": 2,
+        "concepts": 1,
+        "paper_page_hints": 0
+      },
+      "exact_trigger_overlap_rule_ids": [],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "BATCH_TOPOLOGY_OVERLAP: the rule overlaps a selected topology; excluded to keep the first batch bounded and independently interpretable."
+    },
+    {
+      "inventory_index": 17,
+      "rule_id": "target_track_to_poca",
+      "rule_family": "WORKFLOW_DATA_FLOW",
+      "triggers": [
+        "target spectrometer",
+        "track extrapolation",
+        "event poca",
+        "轨迹回传",
+        "track to event poca"
+      ],
+      "trigger_count": 5,
+      "current_injection": {
+        "repositories": [
+          "restgas_determination"
+        ],
+        "symbols": [
+          "macro/target/ana_dpm.C",
+          "macro/target/prod_aod_complete.C"
+        ],
+        "concepts": [
+          "Target Spectrometer track extrapolation to event POCA"
+        ],
+        "paper_page_hints": {}
+      },
+      "dependency_counts": {
+        "repositories": 1,
+        "symbols": 2,
+        "concepts": 1,
+        "paper_page_hints": 0
+      },
+      "exact_trigger_overlap_rule_ids": [
+        "event_poca_workflow_alias",
+        "restgas_poca_theory"
+      ],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "BATCH_TOPOLOGY_OVERLAP: the rule overlaps a selected topology; excluded to keep the first batch bounded and independently interpretable."
+    },
+    {
+      "inventory_index": 18,
+      "rule_id": "effective_acceptance_pipeline",
+      "rule_family": "CROSS_REPOSITORY_DATA_FLOW",
+      "triggers": [
+        "effective acceptance",
+        "restgas acceptance",
+        "acceptance calculation",
+        "有效接受度",
+        "有效接受度"
+      ],
+      "trigger_count": 5,
+      "current_injection": {
+        "repositories": [
+          "restgas_determination",
+          "luminosityfit"
+        ],
+        "symbols": [
+          "macro/target/prod_sim_hvmaps.C",
+          "data/PndLmdAcceptance.cxx",
+          "model/PndLmdModelFactory.cxx"
+        ],
+        "concepts": [
+          "profile-dependent effective acceptance pipeline"
+        ],
+        "paper_page_hints": {
+          "li_2026": [
+            83,
+            86,
+            89
+          ]
+        }
+      },
+      "dependency_counts": {
+        "repositories": 2,
+        "symbols": 3,
+        "concepts": 1,
+        "paper_page_hints": 3
+      },
+      "exact_trigger_overlap_rule_ids": [
+        "reconstructed_profile_to_acceptance"
+      ],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "SELECTED_FIRST_BATCH",
+      "disposition_reason": "Representative cross-repository physics-concept-to-pipeline rule with accepted D1 relation support and descriptive terminology risk."
+    },
+    {
+      "inventory_index": 19,
+      "rule_id": "vertex_fit_boundary",
+      "rule_family": "WORKFLOW_DATA_FLOW",
+      "triggers": [
+        "vertex fit",
+        "poca pass",
+        "final vertex",
+        "最终 vertex fit",
+        "原始 poca"
+      ],
+      "trigger_count": 5,
+      "current_injection": {
+        "repositories": [
+          "restgas_determination"
+        ],
+        "symbols": [
+          "macro/target/ana_dpm.C",
+          "macro/target/ana_complete.C"
+        ],
+        "concepts": [
+          "raw POCA pass versus final vertex fit"
+        ],
+        "paper_page_hints": {}
+      },
+      "dependency_counts": {
+        "repositories": 1,
+        "symbols": 2,
+        "concepts": 1,
+        "paper_page_hints": 0
+      },
+      "exact_trigger_overlap_rule_ids": [],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "BATCH_TOPOLOGY_OVERLAP: the rule overlaps a selected topology; excluded to keep the first batch bounded and independently interpretable."
+    },
+    {
+      "inventory_index": 20,
+      "rule_id": "reconstructed_profile_to_acceptance",
+      "rule_family": "CROSS_REPOSITORY_DATA_FLOW",
+      "triggers": [
+        "reconstructed rho",
+        "reconstructed rho(z)",
+        "acceptance calculation",
+        "effective acceptance",
+        "restgas density"
+      ],
+      "trigger_count": 5,
+      "current_injection": {
+        "repositories": [
+          "restgas_determination",
+          "luminosityfit"
+        ],
+        "symbols": [
+          "macro/target/prod_sim_hvmaps.C",
+          "data/PndLmdAcceptance.cxx"
+        ],
+        "concepts": [
+          "reconstructed profile to effective acceptance"
+        ],
+        "paper_page_hints": {
+          "li_2026": [
+            141,
+            149,
+            151
+          ]
+        }
+      },
+      "dependency_counts": {
+        "repositories": 2,
+        "symbols": 2,
+        "concepts": 1,
+        "paper_page_hints": 3
+      },
+      "exact_trigger_overlap_rule_ids": [
+        "effective_acceptance_pipeline",
+        "profile_generation_and_correction"
+      ],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "BATCH_TOPOLOGY_OVERLAP: the rule overlaps a selected topology; excluded to keep the first batch bounded and independently interpretable."
+    },
+    {
+      "inventory_index": 21,
+      "rule_id": "panda_luminosityfit_boundary",
+      "rule_family": "CROSS_REPOSITORY_DATA_FLOW",
+      "triggers": [
+        "dependency boundary",
+        "pandaroot integration",
+        "luminosityfit integration",
+        "依赖边界"
+      ],
+      "trigger_count": 4,
+      "current_injection": {
+        "repositories": [
+          "pandaroot",
+          "luminosityfit"
+        ],
+        "symbols": [
+          "detectors/lmd/LmdQA/PndLmdTrackQ.cxx",
+          "data/PndLmdCombinedDataReader.cxx",
+          "model/PndLmdModelFactory.cxx"
+        ],
+        "concepts": [
+          "PandaRoot adapter and LuminosityFit model boundary"
+        ],
+        "paper_page_hints": {}
+      },
+      "dependency_counts": {
+        "repositories": 2,
+        "symbols": 3,
+        "concepts": 1,
+        "paper_page_hints": 0
+      },
+      "exact_trigger_overlap_rule_ids": [
+        "restgas_pandaroot_extension"
+      ],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "BATCH_TOPOLOGY_OVERLAP: the rule overlaps a selected topology; excluded to keep the first batch bounded and independently interpretable."
+    },
+    {
+      "inventory_index": 22,
+      "rule_id": "restgas_pandaroot_extension",
+      "rule_family": "CROSS_REPOSITORY_DATA_FLOW",
+      "triggers": [
+        "RestgasDetermination",
+        "PandaRoot extension",
+        "pandaroot integration",
+        "扩展 PandaRoot"
+      ],
+      "trigger_count": 4,
+      "current_injection": {
+        "repositories": [
+          "restgas_determination"
+        ],
+        "symbols": [
+          "pgenerators/Target/PndTargetGenerator.cxx",
+          "tracking/PndApolloniusTripletTrackFinder/PndApolloniusTripletTrackFinderTask.cxx",
+          "tracking/PzFinder/PndSttSkewStrawPzFinderTask.cxx",
+          "pid/PidCorr/PndPidCorrelator.cxx"
+        ],
+        "concepts": [
+          "RestgasDetermination custom extension modules"
+        ],
+        "paper_page_hints": {}
+      },
+      "dependency_counts": {
+        "repositories": 1,
+        "symbols": 4,
+        "concepts": 1,
+        "paper_page_hints": 0
+      },
+      "exact_trigger_overlap_rule_ids": [
+        "panda_luminosityfit_boundary"
+      ],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "STRUCTURED_COVERAGE_NOT_READY: current accepted D1 objects/relations/workflows do not yet support the rule end to end without adding new structured knowledge, which D3-A0 prohibits."
+    },
+    {
+      "inventory_index": 23,
+      "rule_id": "target_macro_workflow_grouping",
+      "rule_family": "WORKFLOW_DATA_FLOW",
+      "triggers": [
+        "macro/target",
+        "workflow grouping",
+        "target macro",
+        "宏模块",
+        "workflow 分组"
+      ],
+      "trigger_count": 5,
+      "current_injection": {
+        "repositories": [
+          "restgas_determination"
+        ],
+        "symbols": [
+          "macro/target/prod_sim_hvmaps.C",
+          "macro/target/reco_complete.C",
+          "macro/target/pid_complete.C",
+          "macro/target/ana_dpm.C",
+          "macro/target/prod_aod_complete.C",
+          "macro/target/ana_complete.C",
+          "macro/target/correction/efficiency_correction_2.C"
+        ],
+        "concepts": [
+          "target macro workflow stages"
+        ],
+        "paper_page_hints": {}
+      },
+      "dependency_counts": {
+        "repositories": 1,
+        "symbols": 7,
+        "concepts": 1,
+        "paper_page_hints": 0
+      },
+      "exact_trigger_overlap_rule_ids": [],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "STRUCTURED_COVERAGE_NOT_READY: current accepted D1 objects/relations/workflows do not yet support the rule end to end without adding new structured knowledge, which D3-A0 prohibits."
+    },
+    {
+      "inventory_index": 24,
+      "rule_id": "sphinx_operational_architecture",
+      "rule_family": "VERSION_DOCUMENTATION",
+      "triggers": [
+        "Sphinx documentation",
+        "knowledge architecture",
+        "Sphinx 2023-dev",
+        "docs disagree",
+        "Sphinx 文档"
+      ],
+      "trigger_count": 5,
+      "current_injection": {
+        "repositories": [
+          "pandaroot"
+        ],
+        "symbols": [
+          "Installation/Installation.html",
+          "Installation/Install_PandaRoot.html",
+          "Running/Running.html",
+          "Running/MasterTasks.html",
+          "Running/Macros.html"
+        ],
+        "concepts": [
+          "PandaRoot operational documentation and version scope"
+        ],
+        "paper_page_hints": {}
+      },
+      "dependency_counts": {
+        "repositories": 1,
+        "symbols": 5,
+        "concepts": 1,
+        "paper_page_hints": 0
+      },
+      "exact_trigger_overlap_rule_ids": [
+        "version_mismatch_troubleshooting"
+      ],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "SELECTED_FIRST_BATCH",
+      "disposition_reason": "Representative versioned-document-to-operational-workflow rule with accepted D1 documentation provenance."
+    },
+    {
+      "inventory_index": 25,
+      "rule_id": "fit_data_troubleshooting",
+      "rule_family": "TROUBLESHOOTING_COMPATIBILITY",
+      "triggers": [
+        "no acceptance",
+        "fit input",
+        "prepared data",
+        "data path",
+        "file matching",
+        "fit data path",
+        "empty bins",
+        "没有 acceptance",
+        "空 bin"
+      ],
+      "trigger_count": 9,
+      "current_injection": {
+        "repositories": [
+          "luminosityfit",
+          "restgas_determination"
+        ],
+        "symbols": [
+          "docs/apps/createLmdFitData.md",
+          "apps/createLmdFitData.cxx",
+          "data/PndLmdDataReader.cxx",
+          "apps/runLmdFit.cxx",
+          "macro/target/correction/efficiency_correction_2.C",
+          "macro/target/correction/efficiency_correction_steps.C"
+        ],
+        "concepts": [
+          "fit input assumptions and efficiency correction diagnostics",
+          "empty-bin binning and profile compatibility"
+        ],
+        "paper_page_hints": {}
+      },
+      "dependency_counts": {
+        "repositories": 2,
+        "symbols": 6,
+        "concepts": 2,
+        "paper_page_hints": 0
+      },
+      "exact_trigger_overlap_rule_ids": [],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "BATCH_TOPOLOGY_OVERLAP: the rule overlaps a selected topology; excluded to keep the first batch bounded and independently interpretable."
+    },
+    {
+      "inventory_index": 26,
+      "rule_id": "root_macro_usage",
+      "rule_family": "USAGE_INSTALLATION",
+      "triggers": [
+        "ROOT macro",
+        "macro execution",
+        "run a ROOT macro"
+      ],
+      "trigger_count": 3,
+      "current_injection": {
+        "repositories": [
+          "pandaroot"
+        ],
+        "symbols": [
+          "Running/Macros.html",
+          "tools/MasterTasks/PndMasterRunSim.cxx"
+        ],
+        "concepts": [
+          "PandaRoot macro invocation"
+        ],
+        "paper_page_hints": {}
+      },
+      "dependency_counts": {
+        "repositories": 1,
+        "symbols": 2,
+        "concepts": 1,
+        "paper_page_hints": 0
+      },
+      "exact_trigger_overlap_rule_ids": [],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "BATCH_TOPOLOGY_OVERLAP: the rule overlaps a selected topology; excluded to keep the first batch bounded and independently interpretable."
+    },
+    {
+      "inventory_index": 27,
+      "rule_id": "restgas_workflow_usage",
+      "rule_family": "WORKFLOW_DATA_FLOW",
+      "triggers": [
+        "two-pass reconstruction workflow",
+        "restgas two-pass reconstruction"
+      ],
+      "trigger_count": 2,
+      "current_injection": {
+        "repositories": [
+          "restgas_determination",
+          "pandaroot"
+        ],
+        "symbols": [
+          "macro/target/README.md",
+          "macro/target/runall_prod_hvmaps.py",
+          "Running/Running.html"
+        ],
+        "concepts": [
+          "Restgas two-pass reconstruction workflow"
+        ],
+        "paper_page_hints": {}
+      },
+      "dependency_counts": {
+        "repositories": 2,
+        "symbols": 3,
+        "concepts": 1,
+        "paper_page_hints": 0
+      },
+      "exact_trigger_overlap_rule_ids": [
+        "event_poca_workflow_alias"
+      ],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "BATCH_TOPOLOGY_OVERLAP: the rule overlaps a selected topology; excluded to keep the first batch bounded and independently interpretable."
+    },
+    {
+      "inventory_index": 28,
+      "rule_id": "installation_requirements",
+      "rule_family": "USAGE_INSTALLATION",
+      "triggers": [
+        "GPU memory",
+        "minimum GPU memory",
+        "installation requirements",
+        "install PandaRoot"
+      ],
+      "trigger_count": 4,
+      "current_injection": {
+        "repositories": [
+          "pandaroot"
+        ],
+        "symbols": [
+          "Installation/Installation.html",
+          "Installation/Install_PandaRoot.html"
+        ],
+        "concepts": [
+          "PandaRoot installation requirements"
+        ],
+        "paper_page_hints": {}
+      },
+      "dependency_counts": {
+        "repositories": 1,
+        "symbols": 2,
+        "concepts": 1,
+        "paper_page_hints": 0
+      },
+      "exact_trigger_overlap_rule_ids": [],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "BATCH_TOPOLOGY_OVERLAP: the rule overlaps a selected topology; excluded to keep the first batch bounded and independently interpretable."
+    },
+    {
+      "inventory_index": 29,
+      "rule_id": "simulation_configuration_usage",
+      "rule_family": "USAGE_INSTALLATION",
+      "triggers": [
+        "simulation configuration",
+        "configure a simulation",
+        "PndMasterRunSim"
+      ],
+      "trigger_count": 3,
+      "current_injection": {
+        "repositories": [
+          "pandaroot"
+        ],
+        "symbols": [
+          "tools/MasterTasks/PndMasterRunSim.cxx",
+          "Tools/PndMasterTasks/PndMasterRunSim.html",
+          "Running/MasterTasks.html"
+        ],
+        "concepts": [
+          "PndMasterRunSim simulation configuration"
+        ],
+        "paper_page_hints": {}
+      },
+      "dependency_counts": {
+        "repositories": 1,
+        "symbols": 3,
+        "concepts": 1,
+        "paper_page_hints": 0
+      },
+      "exact_trigger_overlap_rule_ids": [],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "BATCH_TOPOLOGY_OVERLAP: the rule overlaps a selected topology; excluded to keep the first batch bounded and independently interpretable."
+    },
+    {
+      "inventory_index": 30,
+      "rule_id": "fit_data_usage",
+      "rule_family": "USAGE_INSTALLATION",
+      "triggers": [
+        "createLmdFitData",
+        "fit data creation",
+        "data categories",
+        "a/e/r/v"
+      ],
+      "trigger_count": 4,
+      "current_injection": {
+        "repositories": [
+          "luminosityfit"
+        ],
+        "symbols": [
+          "docs/apps/createLmdFitData.md",
+          "apps/createLmdFitData.cxx"
+        ],
+        "concepts": [
+          "createLmdFitData invocation and data categories"
+        ],
+        "paper_page_hints": {}
+      },
+      "dependency_counts": {
+        "repositories": 1,
+        "symbols": 2,
+        "concepts": 1,
+        "paper_page_hints": 0
+      },
+      "exact_trigger_overlap_rule_ids": [],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "BATCH_TOPOLOGY_OVERLAP: the rule overlaps a selected topology; excluded to keep the first batch bounded and independently interpretable."
+    },
+    {
+      "inventory_index": 31,
+      "rule_id": "run_fit_usage",
+      "rule_family": "USAGE_INSTALLATION",
+      "triggers": [
+        "run a luminosity fit",
+        "running fit",
+        "runLmdFit",
+        "prepared fit data"
+      ],
+      "trigger_count": 4,
+      "current_injection": {
+        "repositories": [
+          "luminosityfit"
+        ],
+        "symbols": [
+          "docs/apps/createLmdFitData.md",
+          "apps/runLmdFit.cxx",
+          "python/runLmdFit.sh",
+          "README.md"
+        ],
+        "concepts": [
+          "LuminosityFit execution after fit-data preparation"
+        ],
+        "paper_page_hints": {}
+      },
+      "dependency_counts": {
+        "repositories": 1,
+        "symbols": 4,
+        "concepts": 1,
+        "paper_page_hints": 0
+      },
+      "exact_trigger_overlap_rule_ids": [],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "BATCH_TOPOLOGY_OVERLAP: the rule overlaps a selected topology; excluded to keep the first batch bounded and independently interpretable."
+    },
+    {
+      "inventory_index": 32,
+      "rule_id": "acceptance_model_boundary",
+      "rule_family": "CONCEPT_IMPLEMENTATION",
+      "triggers": [
+        "PndLmdAcceptance",
+        "acceptance into PndLmdModelFactory",
+        "data objects"
+      ],
+      "trigger_count": 3,
+      "current_injection": {
+        "repositories": [
+          "luminosityfit"
+        ],
+        "symbols": [
+          "data/PndLmdAcceptance.cxx",
+          "model/PndLmdModelFactory.cxx"
+        ],
+        "concepts": [
+          "acceptance data object to model factory boundary"
+        ],
+        "paper_page_hints": {}
+      },
+      "dependency_counts": {
+        "repositories": 1,
+        "symbols": 2,
+        "concepts": 1,
+        "paper_page_hints": 0
+      },
+      "exact_trigger_overlap_rule_ids": [],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "BATCH_TOPOLOGY_OVERLAP: the rule overlaps a selected topology; excluded to keep the first batch bounded and independently interpretable."
+    },
+    {
+      "inventory_index": 33,
+      "rule_id": "event_poca_troubleshooting",
+      "rule_family": "TROUBLESHOOTING_COMPATIBILITY",
+      "triggers": [
+        "event ID",
+        "event ID alignment",
+        "event_poca is missing",
+        "POCA_VERTEX_FILE",
+        "second-pass PID"
+      ],
+      "trigger_count": 5,
+      "current_injection": {
+        "repositories": [
+          "restgas_determination"
+        ],
+        "symbols": [
+          "macro/target/README.md",
+          "macro/target/pid_complete.C",
+          "macro/target/ana_dpm.C",
+          "macro/target/prod_aod_complete.C",
+          "pid/PidCorr/PndPidCorrelator.cxx",
+          "Running/Running.html"
+        ],
+        "concepts": [
+          "event POCA troubleshooting and event alignment",
+          "first-pass PID input and prefix context"
+        ],
+        "paper_page_hints": {}
+      },
+      "dependency_counts": {
+        "repositories": 1,
+        "symbols": 6,
+        "concepts": 2,
+        "paper_page_hints": 0
+      },
+      "exact_trigger_overlap_rule_ids": [
+        "event_alignment",
+        "event_poca_handoff"
+      ],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "BATCH_TOPOLOGY_OVERLAP: the rule overlaps a selected topology; excluded to keep the first batch bounded and independently interpretable."
+    },
+    {
+      "inventory_index": 34,
+      "rule_id": "acceptance_efficiency_disambiguation",
+      "rule_family": "TROUBLESHOOTING_COMPATIBILITY",
+      "triggers": [
+        "pvz efficiency",
+        "LMD angular acceptance be confused"
+      ],
+      "trigger_count": 2,
+      "current_injection": {
+        "repositories": [
+          "pandaroot"
+        ],
+        "symbols": [
+          "Running/Running.html"
+        ],
+        "concepts": [
+          "angular acceptance versus longitudinal efficiency documentation"
+        ],
+        "paper_page_hints": {}
+      },
+      "dependency_counts": {
+        "repositories": 1,
+        "symbols": 1,
+        "concepts": 1,
+        "paper_page_hints": 0
+      },
+      "exact_trigger_overlap_rule_ids": [
+        "longitudinal_efficiency",
+        "restgas_longitudinal_efficiency_contrast"
+      ],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "BATCH_TOPOLOGY_OVERLAP: the rule overlaps a selected topology; excluded to keep the first batch bounded and independently interpretable."
+    },
+    {
+      "inventory_index": 35,
+      "rule_id": "version_mismatch_troubleshooting",
+      "rule_family": "TROUBLESHOOTING_COMPATIBILITY",
+      "triggers": [
+        "docs disagree",
+        "version divergence",
+        "oct19-derived",
+        "disagree with RestgasDetermination"
+      ],
+      "trigger_count": 4,
+      "current_injection": {
+        "repositories": [
+          "restgas_determination",
+          "pandaroot"
+        ],
+        "symbols": [
+          "macro/target/README.md",
+          "Running/Running.html"
+        ],
+        "concepts": [
+          "documentation and branch version mismatch"
+        ],
+        "paper_page_hints": {}
+      },
+      "dependency_counts": {
+        "repositories": 2,
+        "symbols": 2,
+        "concepts": 1,
+        "paper_page_hints": 0
+      },
+      "exact_trigger_overlap_rule_ids": [
+        "sphinx_operational_architecture"
+      ],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "BATCH_TOPOLOGY_OVERLAP: the rule overlaps a selected topology; excluded to keep the first batch bounded and independently interpretable."
+    },
+    {
+      "inventory_index": 36,
+      "rule_id": "luminosity_equation_theory",
+      "rule_family": "PAPER_PAGE_THEORY",
+      "triggers": [
+        "luminosity-extraction equation",
+        "cross section, acceptance, and resolution"
+      ],
+      "trigger_count": 2,
+      "current_injection": {
+        "repositories": [
+          "luminosityfit",
+          "pandaroot"
+        ],
+        "symbols": [],
+        "concepts": [
+          "luminosity extraction equation",
+          "cross section",
+          "acceptance",
+          "resolution"
+        ],
+        "paper_page_hints": {
+          "karavdina_2015": [
+            60,
+            65,
+            71
+          ]
+        }
+      },
+      "dependency_counts": {
+        "repositories": 2,
+        "symbols": 0,
+        "concepts": 4,
+        "paper_page_hints": 3
+      },
+      "exact_trigger_overlap_rule_ids": [],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "STRUCTURED_COVERAGE_NOT_READY: current accepted D1 objects/relations/workflows do not yet support the rule end to end without adding new structured knowledge, which D3-A0 prohibits."
+    },
+    {
+      "inventory_index": 37,
+      "rule_id": "beam_divergence_theory",
+      "rule_family": "CONCEPT_IMPLEMENTATION",
+      "triggers": [
+        "beam divergence",
+        "divergence smearing"
+      ],
+      "trigger_count": 2,
+      "current_injection": {
+        "repositories": [
+          "luminosityfit"
+        ],
+        "symbols": [
+          "model/PndLmdDivergenceSmearingModel2D.cxx",
+          "model/PndLmdModelFactory.cxx"
+        ],
+        "concepts": [
+          "beam divergence",
+          "divergence smearing"
+        ],
+        "paper_page_hints": {
+          "pflueger_2017": [
+            74,
+            78,
+            84
+          ]
+        }
+      },
+      "dependency_counts": {
+        "repositories": 1,
+        "symbols": 2,
+        "concepts": 2,
+        "paper_page_hints": 3
+      },
+      "exact_trigger_overlap_rule_ids": [],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "BATCH_TOPOLOGY_OVERLAP: the rule overlaps a selected topology; excluded to keep the first batch bounded and independently interpretable."
+    },
+    {
+      "inventory_index": 38,
+      "rule_id": "lmd_backpropagation_theory",
+      "rule_family": "CONCEPT_IMPLEMENTATION",
+      "triggers": [
+        "propagated back toward an interaction point",
+        "LMD tracks propagated",
+        "LMD 轨迹如何回传"
+      ],
+      "trigger_count": 3,
+      "current_injection": {
+        "repositories": [
+          "pandaroot"
+        ],
+        "symbols": [
+          "detectors/lmd/LmdTrack/PndLmdGeaneTask.cxx"
+        ],
+        "concepts": [
+          "LMD back propagation to interaction point"
+        ],
+        "paper_page_hints": {
+          "karavdina_2015": [
+            94,
+            100,
+            104
+          ]
+        }
+      },
+      "dependency_counts": {
+        "repositories": 1,
+        "symbols": 1,
+        "concepts": 1,
+        "paper_page_hints": 3
+      },
+      "exact_trigger_overlap_rule_ids": [],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "STRUCTURED_COVERAGE_NOT_READY: current accepted D1 objects/relations/workflows do not yet support the rule end to end without adding new structured knowledge, which D3-A0 prohibits."
+    },
+    {
+      "inventory_index": 39,
+      "rule_id": "restgas_poca_theory",
+      "rule_family": "CONCEPT_IMPLEMENTATION",
+      "triggers": [
+        "event-by-event POCA",
+        "restgas method use an event",
+        "event POCA"
+      ],
+      "trigger_count": 3,
+      "current_injection": {
+        "repositories": [
+          "restgas_determination"
+        ],
+        "symbols": [
+          "macro/target/ana_dpm.C",
+          "macro/target/prod_aod_complete.C"
+        ],
+        "concepts": [
+          "event-by-event POCA",
+          "Target Spectrometer track extrapolation"
+        ],
+        "paper_page_hints": {
+          "li_2026": [
+            127,
+            131,
+            138
+          ]
+        }
+      },
+      "dependency_counts": {
+        "repositories": 1,
+        "symbols": 2,
+        "concepts": 2,
+        "paper_page_hints": 3
+      },
+      "exact_trigger_overlap_rule_ids": [
+        "event_poca_workflow_alias",
+        "target_track_to_poca"
+      ],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "BATCH_TOPOLOGY_OVERLAP: the rule overlaps a selected topology; excluded to keep the first batch bounded and independently interpretable."
+    },
+    {
+      "inventory_index": 40,
+      "rule_id": "pointlike_vs_restgas_acceptance",
+      "rule_family": "CROSS_REPOSITORY_DATA_FLOW",
+      "triggers": [
+        "point-like angular acceptance",
+        "restgas effective acceptance"
+      ],
+      "trigger_count": 2,
+      "current_injection": {
+        "repositories": [
+          "luminosityfit",
+          "restgas_determination"
+        ],
+        "symbols": [],
+        "concepts": [
+          "point-like acceptance versus restgas effective acceptance"
+        ],
+        "paper_page_hints": {
+          "pflueger_2017": [
+            57,
+            62
+          ],
+          "li_2026": [
+            83,
+            86,
+            89
+          ]
+        }
+      },
+      "dependency_counts": {
+        "repositories": 2,
+        "symbols": 0,
+        "concepts": 1,
+        "paper_page_hints": 5
+      },
+      "exact_trigger_overlap_rule_ids": [],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "BATCH_TOPOLOGY_OVERLAP: the rule overlaps a selected topology; excluded to keep the first batch bounded and independently interpretable."
+    },
+    {
+      "inventory_index": 41,
+      "rule_id": "hv_maps_vertex_resolution",
+      "rule_family": "CONCEPT_IMPLEMENTATION",
+      "triggers": [
+        "HV-MAPS relevant for longitudinal vertex resolution",
+        "HV-MAPS",
+        "material budget"
+      ],
+      "trigger_count": 3,
+      "current_injection": {
+        "repositories": [
+          "pandaroot",
+          "restgas_determination"
+        ],
+        "symbols": [
+          "macro/target/prod_sim_hvmaps.C"
+        ],
+        "concepts": [
+          "HV-MAPS material budget and longitudinal vertex resolution"
+        ],
+        "paper_page_hints": {
+          "li_2026": [
+            103,
+            109,
+            123
+          ]
+        }
+      },
+      "dependency_counts": {
+        "repositories": 2,
+        "symbols": 1,
+        "concepts": 1,
+        "paper_page_hints": 3
+      },
+      "exact_trigger_overlap_rule_ids": [],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "STRUCTURED_COVERAGE_NOT_READY: current accepted D1 objects/relations/workflows do not yet support the rule end to end without adding new structured knowledge, which D3-A0 prohibits."
+    },
+    {
+      "inventory_index": 42,
+      "rule_id": "model_factory_theory",
+      "rule_family": "CONCEPT_IMPLEMENTATION",
+      "triggers": [
+        "PndLmdModelFactory",
+        "DPM、acceptance 和 resolution",
+        "DPM acceptance resolution"
+      ],
+      "trigger_count": 3,
+      "current_injection": {
+        "repositories": [
+          "luminosityfit"
+        ],
+        "symbols": [
+          "model/PndLmdDPMAngModel1D.cxx",
+          "model/PndLmdDPMAngModel2D.cxx",
+          "model/PndLmdModelFactory.cxx"
+        ],
+        "concepts": [
+          "DPM model acceptance resolution composition"
+        ],
+        "paper_page_hints": {
+          "pflueger_2017": [
+            51,
+            57,
+            65
+          ]
+        }
+      },
+      "dependency_counts": {
+        "repositories": 1,
+        "symbols": 3,
+        "concepts": 1,
+        "paper_page_hints": 3
+      },
+      "exact_trigger_overlap_rule_ids": [
+        "model_factory_acceptance_methods"
+      ],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "BATCH_TOPOLOGY_OVERLAP: the rule overlaps a selected topology; excluded to keep the first batch bounded and independently interpretable."
+    },
+    {
+      "inventory_index": 43,
+      "rule_id": "dpm_model_theory",
+      "rule_family": "CONCEPT_IMPLEMENTATION",
+      "triggers": [
+        "DPM elastic-scattering model",
+        "theoretical purpose of the DPM"
+      ],
+      "trigger_count": 2,
+      "current_injection": {
+        "repositories": [
+          "luminosityfit"
+        ],
+        "symbols": [],
+        "concepts": [
+          "DPM elastic scattering model"
+        ],
+        "paper_page_hints": {
+          "pflueger_2017": [
+            51,
+            52,
+            54
+          ]
+        }
+      },
+      "dependency_counts": {
+        "repositories": 1,
+        "symbols": 0,
+        "concepts": 1,
+        "paper_page_hints": 3
+      },
+      "exact_trigger_overlap_rule_ids": [],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "BATCH_TOPOLOGY_OVERLAP: the rule overlaps a selected topology; excluded to keep the first batch bounded and independently interpretable."
+    },
+    {
+      "inventory_index": 44,
+      "rule_id": "target_generator_theory",
+      "rule_family": "CONCEPT_IMPLEMENTATION",
+      "triggers": [
+        "distributed restgas target",
+        "PndTargetGenerator 如何用于"
+      ],
+      "trigger_count": 2,
+      "current_injection": {
+        "repositories": [
+          "restgas_determination"
+        ],
+        "symbols": [
+          "pgenerators/Target/PndTargetGenerator.cxx",
+          "macro/target/prod_sim_hvmaps.C"
+        ],
+        "concepts": [
+          "distributed target generation"
+        ],
+        "paper_page_hints": {
+          "li_2026": [
+            128,
+            132
+          ]
+        }
+      },
+      "dependency_counts": {
+        "repositories": 1,
+        "symbols": 2,
+        "concepts": 1,
+        "paper_page_hints": 2
+      },
+      "exact_trigger_overlap_rule_ids": [],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "STRUCTURED_COVERAGE_NOT_READY: current accepted D1 objects/relations/workflows do not yet support the rule end to end without adding new structured knowledge, which D3-A0 prohibits."
+    },
+    {
+      "inventory_index": 45,
+      "rule_id": "displaced_tracking_theory",
+      "rule_family": "CONCEPT_IMPLEMENTATION",
+      "triggers": [
+        "Apollonius task",
+        "skew-straw pz finder",
+        "displaced tracking"
+      ],
+      "trigger_count": 3,
+      "current_injection": {
+        "repositories": [
+          "restgas_determination"
+        ],
+        "symbols": [
+          "tracking/PndApolloniusTripletTrackFinder/PndApolloniusTripletTrackFinderTask.cxx",
+          "tracking/PzFinder/PndSttSkewStrawPzFinderTask.cxx",
+          "macro/target/reco_complete.C"
+        ],
+        "concepts": [
+          "displaced tracking reconstruction stages"
+        ],
+        "paper_page_hints": {
+          "li_2026": [
+            127,
+            131
+          ]
+        }
+      },
+      "dependency_counts": {
+        "repositories": 1,
+        "symbols": 3,
+        "concepts": 1,
+        "paper_page_hints": 2
+      },
+      "exact_trigger_overlap_rule_ids": [
+        "displaced_tracking"
+      ],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "STRUCTURED_COVERAGE_NOT_READY: current accepted D1 objects/relations/workflows do not yet support the rule end to end without adding new structured knowledge, which D3-A0 prohibits."
+    },
+    {
+      "inventory_index": 46,
+      "rule_id": "vertex_fit_boundary_theory",
+      "rule_family": "CONCEPT_IMPLEMENTATION",
+      "triggers": [
+        "final vertex fit",
+        "raw POCA pass",
+        "原始 POCA pass"
+      ],
+      "trigger_count": 3,
+      "current_injection": {
+        "repositories": [
+          "restgas_determination"
+        ],
+        "symbols": [
+          "macro/target/ana_dpm.C",
+          "macro/target/ana_complete.C"
+        ],
+        "concepts": [
+          "raw POCA pass versus final vertex fit"
+        ],
+        "paper_page_hints": {
+          "li_2026": [
+            131,
+            138
+          ]
+        }
+      },
+      "dependency_counts": {
+        "repositories": 1,
+        "symbols": 2,
+        "concepts": 1,
+        "paper_page_hints": 2
+      },
+      "exact_trigger_overlap_rule_ids": [],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "BATCH_TOPOLOGY_OVERLAP: the rule overlaps a selected topology; excluded to keep the first batch bounded and independently interpretable."
+    },
+    {
+      "inventory_index": 47,
+      "rule_id": "similarly_named_track_finders",
+      "rule_family": "CONCEPT_IMPLEMENTATION",
+      "triggers": [
+        "class name match",
+        "wrong implementation",
+        "类名匹配",
+        "错误实现"
+      ],
+      "trigger_count": 4,
+      "current_injection": {
+        "repositories": [
+          "pandaroot",
+          "restgas_determination"
+        ],
+        "symbols": [
+          "tracking/PndApolloniusTripletTrackFinder/PndApolloniusTripletTrackFinderTask.cxx",
+          "detectors/lmd/LmdTrack/PndLmdTrackFinderCATask.cxx"
+        ],
+        "concepts": [
+          "detector-scoped track finder disambiguation"
+        ],
+        "paper_page_hints": {}
+      },
+      "dependency_counts": {
+        "repositories": 2,
+        "symbols": 2,
+        "concepts": 1,
+        "paper_page_hints": 0
+      },
+      "exact_trigger_overlap_rule_ids": [],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "STRUCTURED_COVERAGE_NOT_READY: current accepted D1 objects/relations/workflows do not yet support the rule end to end without adding new structured knowledge, which D3-A0 prohibits."
+    },
+    {
+      "inventory_index": 48,
+      "rule_id": "dpm_angular_models",
+      "rule_family": "CONCEPT_IMPLEMENTATION",
+      "triggers": [
+        "DPM 1D",
+        "DPM 2D",
+        "2D angular model",
+        "DPM 1D 与 2D"
+      ],
+      "trigger_count": 4,
+      "current_injection": {
+        "repositories": [
+          "luminosityfit"
+        ],
+        "symbols": [
+          "model/PndLmdDPMAngModel1D.cxx",
+          "model/PndLmdDPMAngModel2D.cxx"
+        ],
+        "concepts": [
+          "DPM one-dimensional and two-dimensional angular models"
+        ],
+        "paper_page_hints": {
+          "pflueger_2017": [
+            51,
+            54
+          ]
+        }
+      },
+      "dependency_counts": {
+        "repositories": 1,
+        "symbols": 2,
+        "concepts": 1,
+        "paper_page_hints": 2
+      },
+      "exact_trigger_overlap_rule_ids": [],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "BATCH_TOPOLOGY_OVERLAP: the rule overlaps a selected topology; excluded to keep the first batch bounded and independently interpretable."
+    },
+    {
+      "inventory_index": 49,
+      "rule_id": "event_poca_workflow_alias",
+      "rule_family": "WORKFLOW_DATA_FLOW",
+      "triggers": [
+        "event poca",
+        "two-pass reconstruction workflow",
+        "restgas two-pass reconstruction workflow"
+      ],
+      "trigger_count": 3,
+      "current_injection": {
+        "repositories": [
+          "restgas_determination",
+          "pandaroot"
+        ],
+        "symbols": [
+          "macro/target/ana_dpm.C",
+          "macro/target/prod_aod_complete.C",
+          "event_poca",
+          "POCA_VERTEX_FILE",
+          "PndPidCorrelator"
+        ],
+        "concepts": [
+          "event POCA handoff",
+          "event-aligned second-pass propagation"
+        ],
+        "paper_page_hints": {}
+      },
+      "dependency_counts": {
+        "repositories": 2,
+        "symbols": 5,
+        "concepts": 2,
+        "paper_page_hints": 0
+      },
+      "exact_trigger_overlap_rule_ids": [
+        "restgas_poca_theory",
+        "restgas_workflow_usage",
+        "target_track_to_poca"
+      ],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "BATCH_TOPOLOGY_OVERLAP: the rule overlaps a selected topology; excluded to keep the first batch bounded and independently interpretable."
+    },
+    {
+      "inventory_index": 50,
+      "rule_id": "reconstructed_profile_factory_alias",
+      "rule_family": "CROSS_REPOSITORY_DATA_FLOW",
+      "triggers": [
+        "reconstructed rho(z) to restgas effective acceptance",
+        "reconstructed rho to effective acceptance"
+      ],
+      "trigger_count": 2,
+      "current_injection": {
+        "repositories": [
+          "restgas_determination",
+          "luminosityfit"
+        ],
+        "symbols": [
+          "macro/target/prod_sim_hvmaps.C",
+          "data/PndLmdAcceptance.cxx",
+          "model/PndLmdModelFactory.cxx"
+        ],
+        "concepts": [
+          "reconstructed profile to effective acceptance pipeline"
+        ],
+        "paper_page_hints": {}
+      },
+      "dependency_counts": {
+        "repositories": 2,
+        "symbols": 3,
+        "concepts": 1,
+        "paper_page_hints": 0
+      },
+      "exact_trigger_overlap_rule_ids": [],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "BATCH_TOPOLOGY_OVERLAP: the rule overlaps a selected topology; excluded to keep the first batch bounded and independently interpretable."
+    },
+    {
+      "inventory_index": 51,
+      "rule_id": "master_reconstruction_workflow",
+      "rule_family": "WORKFLOW_DATA_FLOW",
+      "triggers": [
+        "PndMasterRecoTask",
+        "master reconstruction task",
+        "master reconstruction workflow"
+      ],
+      "trigger_count": 3,
+      "current_injection": {
+        "repositories": [
+          "pandaroot"
+        ],
+        "symbols": [
+          "Running/Running.html",
+          "Running/MasterTasks.html",
+          "Tools/PndMasterTasks/PndMasterRecoTask.html",
+          "tools/MasterTasks/PndMasterRecoTask.cxx"
+        ],
+        "concepts": [
+          "PandaRoot running sequence",
+          "master reconstruction task workflow"
+        ],
+        "paper_page_hints": {}
+      },
+      "dependency_counts": {
+        "repositories": 1,
+        "symbols": 4,
+        "concepts": 2,
+        "paper_page_hints": 0
+      },
+      "exact_trigger_overlap_rule_ids": [],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "BATCH_TOPOLOGY_OVERLAP: the rule overlaps a selected topology; excluded to keep the first batch bounded and independently interpretable."
+    },
+    {
+      "inventory_index": 52,
+      "rule_id": "target_generator_sampling_data_flow",
+      "rule_family": "CROSS_REPOSITORY_DATA_FLOW",
+      "triggers": [
+        "PndTargetGenerator",
+        "target generator data flow",
+        "interaction vertex sampling",
+        "SampleInteractionVertex"
+      ],
+      "trigger_count": 4,
+      "current_injection": {
+        "repositories": [
+          "pandaroot",
+          "restgas_determination"
+        ],
+        "symbols": [
+          "tools/MasterTasks/PndMasterRunSim.cxx",
+          "pgenerators/Target/PndTargetGenerator.cxx",
+          "PndTargetGenerator::SampleInteractionVertex",
+          "Tools/PndMasterTasks/PndMasterRunSim.html",
+          "Running/Running.html",
+          "Running/MasterTasks.html"
+        ],
+        "concepts": [
+          "simulation master task to target-generator data flow",
+          "interaction-vertex sampling lifecycle",
+          "PandaRoot operational documentation",
+          "generic PandaRoot workflow"
+        ],
+        "paper_page_hints": {}
+      },
+      "dependency_counts": {
+        "repositories": 2,
+        "symbols": 6,
+        "concepts": 4,
+        "paper_page_hints": 0
+      },
+      "exact_trigger_overlap_rule_ids": [],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "STRUCTURED_COVERAGE_NOT_READY: current accepted D1 objects/relations/workflows do not yet support the rule end to end without adding new structured knowledge, which D3-A0 prohibits."
+    },
+    {
+      "inventory_index": 53,
+      "rule_id": "model_factory_acceptance_methods",
+      "rule_family": "CONCEPT_IMPLEMENTATION",
+      "triggers": [
+        "PndLmdModelFactory",
+        "factory acceptance",
+        "effective acceptance factory",
+        "divergence factory"
+      ],
+      "trigger_count": 4,
+      "current_injection": {
+        "repositories": [
+          "luminosityfit"
+        ],
+        "symbols": [
+          "model/PndLmdModelFactory.cxx",
+          "PndLmdModelFactory::setAcceptance",
+          "PndLmdModelFactory::generate2DModel"
+        ],
+        "concepts": [
+          "acceptance injection and two-dimensional model generation"
+        ],
+        "paper_page_hints": {}
+      },
+      "dependency_counts": {
+        "repositories": 1,
+        "symbols": 3,
+        "concepts": 1,
+        "paper_page_hints": 0
+      },
+      "exact_trigger_overlap_rule_ids": [
+        "model_factory_theory"
+      ],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "BATCH_TOPOLOGY_OVERLAP: the rule overlaps a selected topology; excluded to keep the first batch bounded and independently interpretable."
+    },
+    {
+      "inventory_index": 54,
+      "rule_id": "restgas_longitudinal_efficiency_contrast",
+      "rule_family": "CONCEPT_IMPLEMENTATION",
+      "triggers": [
+        "longitudinal restgas efficiency",
+        "restgas longitudinal efficiency",
+        "restgas profile efficiency",
+        "pvz efficiency"
+      ],
+      "trigger_count": 4,
+      "current_injection": {
+        "repositories": [
+          "restgas_determination"
+        ],
+        "symbols": [
+          "macro/target/correction/efficiency_correction_2.C",
+          "macro/target/correction/efficiency_correction_steps.C"
+        ],
+        "concepts": [
+          "restgas longitudinal reconstruction efficiency",
+          "angular acceptance versus longitudinal efficiency distinction"
+        ],
+        "paper_page_hints": {}
+      },
+      "dependency_counts": {
+        "repositories": 1,
+        "symbols": 2,
+        "concepts": 2,
+        "paper_page_hints": 0
+      },
+      "exact_trigger_overlap_rule_ids": [
+        "acceptance_efficiency_disambiguation",
+        "longitudinal_efficiency"
+      ],
+      "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "BATCH_TOPOLOGY_OVERLAP: the rule overlaps a selected topology; excluded to keep the first batch bounded and independently interpretable."
+    }
+  ],
+  "selected_first_batch": [
+    {
+      "batch_index": 1,
+      "rule_id": "lmd_fit_data_chain",
+      "rule_family": "CROSS_REPOSITORY_DATA_FLOW",
+      "selection_reason": "Representative cross-repository producer/consumer chain with accepted D1 edges and an intentionally preserved downstream coverage gap.",
+      "old_behavior": {
+        "triggers": [
+          "lumi_trksqa",
+          "luminosity result",
+          "luminosityfit 最终"
+        ],
+        "fixed_repositories": [
+          "pandaroot",
+          "luminosityfit"
+        ],
+        "fixed_symbols": [
+          "detectors/lmd/LmdQA/PndLmdTrackQ.cxx",
+          "data/PndLmdCombinedDataReader.cxx",
+          "apps/createLmdFitData.cxx",
+          "apps/runLmdFit.cxx",
+          "apps/extractLuminosityValues.cxx"
+        ],
+        "fixed_concepts": [
+          "LMD reconstruction output",
+          "luminosity fit data chain"
+        ],
+        "fixed_paper_page_hints": {}
+      },
+      "proposed_structured_dependency_for_d3_a1": {
+        "support_status": "PARTIAL_ACCEPTED_PATH_WITH_PRESERVED_GAP",
+        "object_ids": [
+          "workflow.pandaroot.lmd_reconstruction",
+          "data_product.pandaroot.lumi_trks_qa",
+          "subsystem.luminosityfit.panda_data_io"
+        ],
+        "accepted_edges": [
+          "workflow.pandaroot.lmd_reconstruction PRODUCES data_product.pandaroot.lumi_trks_qa",
+          "data_product.pandaroot.lumi_trks_qa PRODUCES_INPUT_FOR subsystem.luminosityfit.panda_data_io"
+        ],
+        "workflow_steps": [],
+        "alias_evidence": [],
+        "coverage_gap": "Accepted D1 structure covers reconstruction output through the LuminosityFit reader boundary, but not createLmdFitData/runLmdFit/extractLuminosityValues orchestration. D3-A1 must not backfill this gap from the selected evaluation cases."
+      },
+      "d2_role_constraint": {
+        "expected_mechanisms": [
+          "Tier S exact/source-native identifiers",
+          "Tier D descriptive advisory context"
+        ],
+        "authority_boundary": "Tier S may bind only a directly matched source-native record; Tier D may add advisory candidates but cannot canonicalize or restrict scope."
+      },
+      "migration_readiness": "READY_WITH_PREREGISTERED_COVERAGE_RISK",
+      "d3_a0_action": "SELECTION_ONLY_NO_RUNTIME_CHANGE"
+    },
+    {
+      "batch_index": 2,
+      "rule_id": "event_poca_handoff",
+      "rule_family": "WORKFLOW_DATA_FLOW",
+      "selection_reason": "Representative event-aligned two-pass handoff with accepted workflow/data-product structure and exact identifier surfaces.",
+      "old_behavior": {
+        "triggers": [
+          "event_poca",
+          "poca_vertex_file",
+          "second-pass pid",
+          "第二遍 pid"
+        ],
+        "fixed_repositories": [
+          "restgas_determination",
+          "pandaroot"
+        ],
+        "fixed_symbols": [
+          "macro/target/ana_dpm.C",
+          "macro/target/prod_aod_complete.C",
+          "POCA_VERTEX_FILE",
+          "PndPidCorrelator"
+        ],
+        "fixed_concepts": [
+          "event POCA handoff",
+          "event-aligned second-pass propagation"
+        ],
+        "fixed_paper_page_hints": {
+          "li_2026": [
+            131,
+            138
+          ]
+        }
+      },
+      "proposed_structured_dependency_for_d3_a1": {
+        "support_status": "ACCEPTED_STRUCTURED_PATH",
+        "object_ids": [
+          "workflow.restgas.first_pass_poca",
+          "data_product.restgas.boost_root",
+          "data_product.restgas.event_poca",
+          "workflow.restgas.second_pass_pid",
+          "data_product.restgas.pid_final_root"
+        ],
+        "accepted_edges": [
+          "workflow.restgas.first_pass_poca PRODUCES data_product.restgas.boost_root",
+          "data_product.restgas.event_poca PRODUCES_INPUT_FOR workflow.restgas.second_pass_pid",
+          "workflow.restgas.second_pass_pid PRODUCES data_product.restgas.pid_final_root"
+        ],
+        "workflow_steps": [
+          "workflow.restgas_profile_reconstruction -> workflow.restgas.first_pass_poca (pid_root -> boost_root)"
+        ],
+        "alias_evidence": [],
+        "coverage_gap": "The accepted workflow models the event-POCA/second-pass handoff but does not encode question-specific JSON or environment-variable answer locations."
+      },
+      "d2_role_constraint": {
+        "expected_mechanisms": [
+          "Tier S event_poca/POCA identifiers",
+          "Tier D descriptive advisory context"
+        ],
+        "authority_boundary": "Exact identity is record-local; descriptive resolution is advisory and must preserve ambiguity/abstention."
+      },
+      "migration_readiness": "READY_FOR_BOUNDED_COMPARISON",
+      "d3_a0_action": "SELECTION_ONLY_NO_RUNTIME_CHANGE"
+    },
+    {
+      "batch_index": 3,
+      "rule_id": "pid_two_pass_files",
+      "rule_family": "WORKFLOW_DATA_FLOW",
+      "selection_reason": "Representative file-pattern and two-pass workflow rule combining accepted D1 products, workflow structure, and a Tier-G true alias.",
+      "old_behavior": {
+        "triggers": [
+          "*_pid.root",
+          "*_pid_final.root",
+          "pid_final.root"
+        ],
+        "fixed_repositories": [
+          "restgas_determination"
+        ],
+        "fixed_symbols": [
+          "macro/target/pid_complete.C",
+          "macro/target/ana_dpm.C",
+          "macro/target/prod_aod_complete.C"
+        ],
+        "fixed_concepts": [
+          "two-pass PID workflow"
+        ],
+        "fixed_paper_page_hints": {}
+      },
+      "proposed_structured_dependency_for_d3_a1": {
+        "support_status": "ACCEPTED_STRUCTURED_PATH",
+        "object_ids": [
+          "data_product.restgas.pid_root",
+          "workflow.restgas.first_pass_poca",
+          "data_product.restgas.boost_root",
+          "data_product.restgas.event_poca",
+          "workflow.restgas.second_pass_pid",
+          "data_product.restgas.pid_final_root"
+        ],
+        "accepted_edges": [
+          "workflow.restgas.first_pass_poca CONSUMES data_product.restgas.pid_root",
+          "workflow.restgas.first_pass_poca PRODUCES data_product.restgas.boost_root",
+          "data_product.restgas.event_poca PRODUCES_INPUT_FOR workflow.restgas.second_pass_pid",
+          "workflow.restgas.second_pass_pid PRODUCES data_product.restgas.pid_final_root"
+        ],
+        "workflow_steps": [
+          "workflow.restgas_profile_reconstruction -> workflow.restgas.first_pass_poca (pid_root -> boost_root)"
+        ],
+        "alias_evidence": [
+          "accepted true alias: *_pid_final.root -> data_product.restgas.pid_final_root"
+        ],
+        "coverage_gap": "No accepted identity maps generic descriptive phrases or *_pid.root directly to a canonical object."
+      },
+      "d2_role_constraint": {
+        "expected_mechanisms": [
+          "Tier G accepted true alias for *_pid_final.root",
+          "Tier S exact file-pattern surfaces",
+          "Tier D descriptive advisory context"
+        ],
+        "authority_boundary": "Only the accepted Tier-G co-reference may canonicalize; exact source-native matches remain record-local and Tier D is nonauthoritative."
+      },
+      "migration_readiness": "READY_FOR_BOUNDED_COMPARISON",
+      "d3_a0_action": "SELECTION_ONLY_NO_RUNTIME_CHANGE"
+    },
+    {
+      "batch_index": 4,
+      "rule_id": "luminosityfit_model_layers",
+      "rule_family": "CONCEPT_IMPLEMENTATION",
+      "selection_reason": "Representative concept-to-implementation rule with an accepted IMPLEMENTS edge and bounded source-native identifiers.",
+      "old_behavior": {
+        "triggers": [
+          "luminosityfit model",
+          "model layer",
+          "模型层"
+        ],
+        "fixed_repositories": [
+          "luminosityfit"
+        ],
+        "fixed_symbols": [
+          "model/PndLmdDPMAngModel1D.cxx",
+          "model/PndLmdDPMAngModel2D.cxx",
+          "model/PndLmdDivergenceSmearingModel2D.cxx",
+          "model/PndLmdDifferentialSmearingConvolutionModel2D.cxx",
+          "model/PndLmdSmearingConvolutionModel2D.cxx",
+          "model/PndLmdModelFactory.cxx"
+        ],
+        "fixed_concepts": [
+          "cross section model",
+          "divergence smearing",
+          "detector resolution convolution"
+        ],
+        "fixed_paper_page_hints": {}
+      },
+      "proposed_structured_dependency_for_d3_a1": {
+        "support_status": "PARTIAL_ACCEPTED_PATH_WITH_PRESERVED_GAP",
+        "object_ids": [
+          "concept.luminosityfit.luminosity_fit_model",
+          "subsystem.luminosityfit.model_and_fit"
+        ],
+        "accepted_edges": [
+          "subsystem.luminosityfit.model_and_fit IMPLEMENTS concept.luminosityfit.luminosity_fit_model"
+        ],
+        "workflow_steps": [],
+        "alias_evidence": [],
+        "coverage_gap": "D1 represents the subsystem/factory evidence boundary, not every injected model source file. Source-native identifiers remain noncanonical unless Tier G explicitly governs co-reference."
+      },
+      "d2_role_constraint": {
+        "expected_mechanisms": [
+          "Tier S exact PndLmdModelFactory/source-native identifiers",
+          "Tier D descriptive advisory context"
+        ],
+        "authority_boundary": "No cross-record canonicalization from Tier S; descriptive model-layer wording cannot create canonical identity."
+      },
+      "migration_readiness": "READY_WITH_PREREGISTERED_COVERAGE_RISK",
+      "d3_a0_action": "SELECTION_ONLY_NO_RUNTIME_CHANGE"
+    },
+    {
+      "batch_index": 5,
+      "rule_id": "effective_acceptance_pipeline",
+      "rule_family": "CROSS_REPOSITORY_DATA_FLOW",
+      "selection_reason": "Representative cross-repository physics-concept-to-pipeline rule with accepted D1 relation support and descriptive terminology risk.",
+      "old_behavior": {
+        "triggers": [
+          "effective acceptance",
+          "restgas acceptance",
+          "acceptance calculation",
+          "有效接受度",
+          "有效接受度"
+        ],
+        "fixed_repositories": [
+          "restgas_determination",
+          "luminosityfit"
+        ],
+        "fixed_symbols": [
+          "macro/target/prod_sim_hvmaps.C",
+          "data/PndLmdAcceptance.cxx",
+          "model/PndLmdModelFactory.cxx"
+        ],
+        "fixed_concepts": [
+          "profile-dependent effective acceptance pipeline"
+        ],
+        "fixed_paper_page_hints": {
+          "li_2026": [
+            83,
+            86,
+            89
+          ]
+        }
+      },
+      "proposed_structured_dependency_for_d3_a1": {
+        "support_status": "PARTIAL_ACCEPTED_PATH_WITH_PRESERVED_GAP",
+        "object_ids": [
+          "concept.li_2026.restgas_effective_acceptance",
+          "workflow.restgas_aware_luminosity_acceptance",
+          "workflow.restgas_profile_reconstruction"
+        ],
+        "accepted_edges": [
+          "concept.li_2026.restgas_effective_acceptance IMPLEMENTED_AS_PIPELINE workflow.restgas_aware_luminosity_acceptance",
+          "workflow.restgas_profile_reconstruction PRODUCES_PROFILE_FOR workflow.restgas_aware_luminosity_acceptance"
+        ],
+        "workflow_steps": [],
+        "alias_evidence": [],
+        "coverage_gap": "Accepted D1 structure establishes the concept/pipeline relationship but does not encode evaluation-specific pages, exact answer locations, or every repository implementation file."
+      },
+      "d2_role_constraint": {
+        "expected_mechanisms": [
+          "Tier G/S only when an already governed exact object surface applies",
+          "Tier D descriptive advisory context"
+        ],
+        "authority_boundary": "Tier D cannot narrow repository/source scope or suppress competing structured candidates."
+      },
+      "migration_readiness": "READY_WITH_PREREGISTERED_COVERAGE_RISK",
+      "d3_a0_action": "SELECTION_ONLY_NO_RUNTIME_CHANGE"
+    },
+    {
+      "batch_index": 6,
+      "rule_id": "restgas_profile_workflow",
+      "rule_family": "WORKFLOW_DATA_FLOW",
+      "selection_reason": "Representative configuration/file-pattern-to-workflow rule with multiple accepted D1 edges.",
+      "old_behavior": {
+        "triggers": [
+          "restgas_profile",
+          "restgas profile",
+          "corrected rho",
+          "修正后的 rho"
+        ],
+        "fixed_repositories": [
+          "restgas_determination",
+          "pandaroot"
+        ],
+        "fixed_symbols": [
+          "pgenerators/Target/PndTargetGenerator.cxx",
+          "macro/target/prod_sim_hvmaps.C",
+          "macro/target/reco_complete.C",
+          "macro/target/ana_complete.C",
+          "macro/target/correction/efficiency_correction_2.C"
+        ],
+        "fixed_concepts": [
+          "distributed target generation",
+          "longitudinal profile correction"
+        ],
+        "fixed_paper_page_hints": {}
+      },
+      "proposed_structured_dependency_for_d3_a1": {
+        "support_status": "ACCEPTED_STRUCTURED_PATH",
+        "object_ids": [
+          "configuration.restgas_profile",
+          "file_pattern.restgas_profile_input",
+          "workflow.restgas_profile_reconstruction",
+          "workflow.restgas_aware_luminosity_acceptance"
+        ],
+        "accepted_edges": [
+          "configuration.restgas_profile PARAMETERIZES workflow.restgas_profile_reconstruction",
+          "file_pattern.restgas_profile_input PRODUCES_INPUT_FOR workflow.restgas_profile_reconstruction",
+          "workflow.restgas_profile_reconstruction PRODUCES_PROFILE_FOR workflow.restgas_aware_luminosity_acceptance"
+        ],
+        "workflow_steps": [
+          "workflow.restgas_profile_reconstruction -> workflow.restgas.first_pass_poca (pid_root -> boost_root)"
+        ],
+        "alias_evidence": [
+          "corrective term only: restgas_profile.txt corrects to configuration.restgas_profile; it is not a true co-reference alias"
+        ],
+        "coverage_gap": "The corrective term may repair terminology only and cannot grant canonical identity or answer-location authority."
+      },
+      "d2_role_constraint": {
+        "expected_mechanisms": [
+          "Tier S exact configuration/file-pattern surfaces",
+          "corrective term",
+          "Tier D descriptive advisory context"
+        ],
+        "authority_boundary": "restgas_profile.txt is correction-only; it cannot canonicalize. Tier D remains additive and abstention-preserving."
+      },
+      "migration_readiness": "READY_FOR_BOUNDED_COMPARISON",
+      "d3_a0_action": "SELECTION_ONLY_NO_RUNTIME_CHANGE"
+    },
+    {
+      "batch_index": 7,
+      "rule_id": "sphinx_operational_architecture",
+      "rule_family": "VERSION_DOCUMENTATION",
+      "selection_reason": "Representative versioned-document-to-operational-workflow rule with accepted D1 documentation provenance.",
+      "old_behavior": {
+        "triggers": [
+          "Sphinx documentation",
+          "knowledge architecture",
+          "Sphinx 2023-dev",
+          "docs disagree",
+          "Sphinx 文档"
+        ],
+        "fixed_repositories": [
+          "pandaroot"
+        ],
+        "fixed_symbols": [
+          "Installation/Installation.html",
+          "Installation/Install_PandaRoot.html",
+          "Running/Running.html",
+          "Running/MasterTasks.html",
+          "Running/Macros.html"
+        ],
+        "fixed_concepts": [
+          "PandaRoot operational documentation and version scope"
+        ],
+        "fixed_paper_page_hints": {}
+      },
+      "proposed_structured_dependency_for_d3_a1": {
+        "support_status": "ACCEPTED_STRUCTURED_PATH",
+        "object_ids": [
+          "document.pandaroot_sphinx_2023_08_25_dev",
+          "workflow.pandaroot.generic"
+        ],
+        "accepted_edges": [
+          "document.pandaroot_sphinx_2023_08_25_dev OPERATIONALLY_DOCUMENTS workflow.pandaroot.generic"
+        ],
+        "workflow_steps": [],
+        "alias_evidence": [],
+        "coverage_gap": "The accepted edge establishes versioned documentation provenance, not direct routing to any one installation/running page."
+      },
+      "d2_role_constraint": {
+        "expected_mechanisms": [
+          "Tier S exact document/version surfaces",
+          "Tier D descriptive advisory context"
+        ],
+        "authority_boundary": "Versioned documentation identity may be direct-matched only; descriptive documentation terms cannot bypass version scope."
+      },
+      "migration_readiness": "READY_FOR_BOUNDED_COMPARISON",
+      "d3_a0_action": "SELECTION_ONLY_NO_RUNTIME_CHANGE"
+    }
+  ],
+  "experimental_contract": {
+    "design": "Paired, fixed-case, three-arm targeted retrieval comparison. D3-A1 may implement and execute only this contract after separate explicit authorization.",
+    "arms": [
+      {
+        "arm_id": "LEGACY",
+        "label": "Legacy expansion behavior",
+        "rule_state": "All current query-expansion rules active exactly as frozen at preregistration_source_head.",
+        "structured_path_state": "Current production D1/D2 roles only; no D3 migration treatment.",
+        "purpose": "Compatibility reference and rollback target."
+      },
+      {
+        "arm_id": "STRUCTURED",
+        "label": "Structured migration only",
+        "rule_state": "Only the seven selected rules are disabled; every nonselected rule remains unchanged.",
+        "structured_path_state": "Use only already accepted D1 objects/relations/workflows/aliases under frozen D2 authority boundaries; no selected-rule payload fallback.",
+        "purpose": "Measure whether generic structured paths reproduce useful retrieval without fixed answer-location injection."
+      },
+      {
+        "arm_id": "ABLATION",
+        "label": "Selected rules removed without structured replacement",
+        "rule_state": "Only the seven selected rules are disabled; every nonselected rule remains unchanged.",
+        "structured_path_state": "The D3 structured replacement is disabled; ordinary unaffected production retrieval components remain.",
+        "purpose": "Estimate selected-rule dependency and distinguish structured-path contribution from ordinary retrieval."
+      }
+    ],
+    "invariants": [
+      "Same immutable comparison cases, source versions, retrieval configuration, candidate limits, and evaluator semantics across arms.",
+      "Arm identity must be recorded per case; no inter-arm fallback or mixed payload.",
+      "D2 Tier G/S/D authority and abstention boundaries are unchanged.",
+      "No production default changes during measurement.",
+      "Partial or failed executions remain separately identified and cannot be merged into a complete paired comparison."
+    ]
+  },
+  "comparison_selection_policy": {
+    "allowed_datasets": [
+      "Gold v2.6 dev",
+      "novel_dev"
+    ],
+    "excluded_datasets": [
+      "novel_validation",
+      "external holdout",
+      "any hidden or sealed set"
+    ],
+    "selection_rule": "Bind cases to the seven preselected rule families using committed question/evidence metadata; include direct literals, paraphrases without literals, and nearby/negative controls; keep English approved cases only; freeze before D3 outcomes.",
+    "case_count": 16,
+    "role_counts": {
+      "PARAPHRASE_RELEVANT": 7,
+      "NEARBY_NEGATIVE_CONTROL": 3,
+      "DIRECT_LITERAL": 3,
+      "NEARBY_NONTRIGGER_CONTROL": 2,
+      "NEARBY_DISTINCTION_CONTROL": 1
+    },
+    "dataset_counts": {
+      "Gold v2.6 dev": 10,
+      "novel_dev": 6
+    },
+    "outcome_blinding": "No D3 outcome exists or was inspected. Historical dataset expected_status and frozen curation metadata are selection metadata, not D3 arm outcomes.",
+    "no_post_outcome_changes": "After any D3 outcome exposure, this manifest cannot be edited in place. Any repair requires a new explicitly authorized preregistration identity and must preserve this record."
+  },
+  "comparison_cases": [
+    {
+      "manifest_index": 1,
+      "case_id": "g029",
+      "dataset": "Gold v2.6 dev",
+      "split": "dev",
+      "language": "en",
+      "review_status": "approved",
+      "intent": "api",
+      "family_id": "cluster-g029",
+      "expected_status_from_dataset": "answered",
+      "query": "Where is PndLmdCombinedDataReader defined and what data boundary does it implement?",
+      "bound_rule_id": "lmd_fit_data_chain",
+      "comparison_role": "PARAPHRASE_RELEVANT",
+      "selection_basis": "Cross-repository reader-boundary case without a selected-rule literal.",
+      "literal_trigger_present": false,
+      "matched_selected_rule_triggers": [],
+      "paraphrase_without_literal_trigger": true,
+      "required_evidence_group_count": 1,
+      "critical_evidence_group_count": 1,
+      "source_ids": [
+        "luminosityfit"
+      ],
+      "evidence_topology": "single_hop",
+      "source_scope": "single_source",
+      "repository_scope": "single_repository",
+      "representativeness_class": "benchmark_reference_unlabelled",
+      "representativeness_disposition": "NOT_APPLICABLE_GOLD_BENCHMARK",
+      "challenge_tags": [],
+      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected."
+    },
+    {
+      "manifest_index": 2,
+      "case_id": "n021",
+      "dataset": "novel_dev",
+      "split": "novel_dev",
+      "language": "en",
+      "review_status": "approved",
+      "intent": "usage",
+      "family_id": "nf021",
+      "expected_status_from_dataset": "answered",
+      "query": "I want to trace the LMD workflow across PandaRoot and LuminosityFit. Where does PandaRoot implement the LMD simulation, digitization, and reconstruction side, and which LuminosityFit scripts orchestrate simulation/reconstruction and then the luminosity fit?",
+      "bound_rule_id": "lmd_fit_data_chain",
+      "comparison_role": "PARAPHRASE_RELEVANT",
+      "selection_basis": "Frozen representative cross-repository workflow composition case.",
+      "literal_trigger_present": false,
+      "matched_selected_rule_triggers": [],
+      "paraphrase_without_literal_trigger": true,
+      "required_evidence_group_count": 2,
+      "critical_evidence_group_count": 2,
+      "source_ids": [
+        "luminosityfit",
+        "pandaroot"
+      ],
+      "evidence_topology": "multi_hop",
+      "source_scope": "cross_source",
+      "repository_scope": "cross_repository",
+      "representativeness_class": "representative",
+      "representativeness_disposition": "KEEP_REPRESENTATIVE",
+      "challenge_tags": [],
+      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected."
+    },
+    {
+      "manifest_index": 3,
+      "case_id": "g025",
+      "dataset": "Gold v2.6 dev",
+      "split": "dev",
+      "language": "en",
+      "review_status": "approved",
+      "intent": "usage",
+      "family_id": "cluster-g018",
+      "expected_status_from_dataset": "insufficient_evidence",
+      "query": "What exact SHA-256 checksum will the next runLmdFit output ROOT file have?",
+      "bound_rule_id": "lmd_fit_data_chain",
+      "comparison_role": "NEARBY_NEGATIVE_CONTROL",
+      "selection_basis": "LuminosityFit output/checksum request should not gain unsupported answer-location routing.",
+      "literal_trigger_present": false,
+      "matched_selected_rule_triggers": [],
+      "paraphrase_without_literal_trigger": false,
+      "required_evidence_group_count": 1,
+      "critical_evidence_group_count": 1,
+      "source_ids": [
+        "luminosityfit"
+      ],
+      "evidence_topology": "single_hop",
+      "source_scope": "single_source",
+      "repository_scope": "single_repository",
+      "representativeness_class": "benchmark_reference_unlabelled",
+      "representativeness_disposition": "NOT_APPLICABLE_GOLD_BENCHMARK",
+      "challenge_tags": [
+        "negative_control"
+      ],
+      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected."
+    },
+    {
+      "manifest_index": 4,
+      "case_id": "g036",
+      "dataset": "Gold v2.6 dev",
+      "split": "dev",
+      "language": "en",
+      "review_status": "approved",
+      "intent": "api",
+      "family_id": "cluster-g036",
+      "expected_status_from_dataset": "answered",
+      "query": "Which macro produces event_poca?",
+      "bound_rule_id": "event_poca_handoff",
+      "comparison_role": "DIRECT_LITERAL",
+      "selection_basis": "Exact event_poca locator case.",
+      "literal_trigger_present": true,
+      "matched_selected_rule_triggers": [
+        "event_poca"
+      ],
+      "paraphrase_without_literal_trigger": false,
+      "required_evidence_group_count": 1,
+      "critical_evidence_group_count": 1,
+      "source_ids": [
+        "restgas_determination"
+      ],
+      "evidence_topology": "single_hop",
+      "source_scope": "single_source",
+      "repository_scope": "single_repository",
+      "representativeness_class": "benchmark_reference_unlabelled",
+      "representativeness_disposition": "NOT_APPLICABLE_GOLD_BENCHMARK",
+      "challenge_tags": [],
+      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected."
+    },
+    {
+      "manifest_index": 5,
+      "case_id": "n022",
+      "dataset": "novel_dev",
+      "split": "novel_dev",
+      "language": "en",
+      "review_status": "approved",
+      "intent": "data_flow",
+      "family_id": "nf022",
+      "expected_status_from_dataset": "answered",
+      "query": "The restgas analysis determines the event vertex through a two-step POCA workflow. What does the first worker step leave behind for the second analysis step, and how is the fitted vertex fed into the reprocessing?",
+      "bound_rule_id": "event_poca_handoff",
+      "comparison_role": "PARAPHRASE_RELEVANT",
+      "selection_basis": "Frozen representative producer-consumer trace without the rule's underscore literal.",
+      "literal_trigger_present": false,
+      "matched_selected_rule_triggers": [],
+      "paraphrase_without_literal_trigger": true,
+      "required_evidence_group_count": 3,
+      "critical_evidence_group_count": 3,
+      "source_ids": [
+        "restgas_determination"
+      ],
+      "evidence_topology": "producer_consumer",
+      "source_scope": "single_source",
+      "repository_scope": "single_repository",
+      "representativeness_class": "representative",
+      "representativeness_disposition": "KEEP_REPRESENTATIVE",
+      "challenge_tags": [],
+      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected."
+    },
+    {
+      "manifest_index": 6,
+      "case_id": "g020",
+      "dataset": "Gold v2.6 dev",
+      "split": "dev",
+      "language": "en",
+      "review_status": "approved",
+      "intent": "usage",
+      "family_id": "cluster-g020",
+      "expected_status_from_dataset": "answered",
+      "query": "How is the restgas two-pass reconstruction workflow run?",
+      "bound_rule_id": "pid_two_pass_files",
+      "comparison_role": "PARAPHRASE_RELEVANT",
+      "selection_basis": "Two-pass PID workflow case expressed through workflow/file dependencies.",
+      "literal_trigger_present": false,
+      "matched_selected_rule_triggers": [],
+      "paraphrase_without_literal_trigger": true,
+      "required_evidence_group_count": 2,
+      "critical_evidence_group_count": 2,
+      "source_ids": [
+        "restgas_determination"
+      ],
+      "evidence_topology": "multi_hop",
+      "source_scope": "single_source",
+      "repository_scope": "single_repository",
+      "representativeness_class": "benchmark_reference_unlabelled",
+      "representativeness_disposition": "NOT_APPLICABLE_GOLD_BENCHMARK",
+      "challenge_tags": [],
+      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected."
+    },
+    {
+      "manifest_index": 7,
+      "case_id": "n006",
+      "dataset": "novel_dev",
+      "split": "novel_dev",
+      "language": "en",
+      "review_status": "approved",
+      "intent": "api",
+      "family_id": "nf006",
+      "expected_status_from_dataset": "answered",
+      "query": "My analysis chain produces sim, digi, reco and pid files and I keep concatenating the stage names by hand. Does PandaRoot ship a helper that derives all these file names from the simulation file name, and which stage extensions does it define?",
+      "bound_rule_id": "pid_two_pass_files",
+      "comparison_role": "NEARBY_NONTRIGGER_CONTROL",
+      "selection_basis": "Frozen representative file-naming utility case near PID filenames but outside the selected workflow relation.",
+      "literal_trigger_present": false,
+      "matched_selected_rule_triggers": [],
+      "paraphrase_without_literal_trigger": false,
+      "required_evidence_group_count": 2,
+      "critical_evidence_group_count": 2,
+      "source_ids": [
+        "pandaroot",
+        "pandaroot_sphinx_2023_08_25_dev"
+      ],
+      "evidence_topology": "multi_hop",
+      "source_scope": "single_source",
+      "repository_scope": "single_repository",
+      "representativeness_class": "representative",
+      "representativeness_disposition": "KEEP_REPRESENTATIVE",
+      "challenge_tags": [],
+      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected."
+    },
+    {
+      "manifest_index": 8,
+      "case_id": "g041",
+      "dataset": "Gold v2.6 dev",
+      "split": "dev",
+      "language": "en",
+      "review_status": "approved",
+      "intent": "api",
+      "family_id": "cluster-g041",
+      "expected_status_from_dataset": "insufficient_evidence",
+      "query": "What is the exact signature of PndPidCorrelator::SetMagicRestgasSeed?",
+      "bound_rule_id": "pid_two_pass_files",
+      "comparison_role": "NEARBY_NEGATIVE_CONTROL",
+      "selection_basis": "Nonexistent PID-correlator API request must remain unsupported.",
+      "literal_trigger_present": false,
+      "matched_selected_rule_triggers": [],
+      "paraphrase_without_literal_trigger": false,
+      "required_evidence_group_count": 1,
+      "critical_evidence_group_count": 1,
+      "source_ids": [
+        "pandaroot",
+        "restgas_determination"
+      ],
+      "evidence_topology": "single_hop",
+      "source_scope": "cross_source",
+      "repository_scope": "cross_repository",
+      "representativeness_class": "benchmark_reference_unlabelled",
+      "representativeness_disposition": "NOT_APPLICABLE_GOLD_BENCHMARK",
+      "challenge_tags": [
+        "negative_control"
+      ],
+      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected."
+    },
+    {
+      "manifest_index": 9,
+      "case_id": "n014",
+      "dataset": "novel_dev",
+      "split": "novel_dev",
+      "language": "en",
+      "review_status": "approved",
+      "intent": "module_structure",
+      "family_id": "nf014",
+      "expected_status_from_dataset": "answered",
+      "query": "LuminosityFit has a model_framework directory and a native model/ directory. What does the repository explicitly say model_framework is, and what role does model/PndLmdModelFactory expose?",
+      "bound_rule_id": "luminosityfit_model_layers",
+      "comparison_role": "PARAPHRASE_RELEVANT",
+      "selection_basis": "Frozen representative model-framework/native-factory boundary case.",
+      "literal_trigger_present": false,
+      "matched_selected_rule_triggers": [],
+      "paraphrase_without_literal_trigger": true,
+      "required_evidence_group_count": 2,
+      "critical_evidence_group_count": 2,
+      "source_ids": [
+        "luminosityfit"
+      ],
+      "evidence_topology": "comparison",
+      "source_scope": "single_source",
+      "repository_scope": "single_repository",
+      "representativeness_class": "representative",
+      "representativeness_disposition": "KEEP_REPRESENTATIVE",
+      "challenge_tags": [],
+      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected."
+    },
+    {
+      "manifest_index": 10,
+      "case_id": "g060",
+      "dataset": "Gold v2.6 dev",
+      "split": "dev",
+      "language": "en",
+      "review_status": "approved",
+      "intent": "algorithm_implementation",
+      "family_id": "cluster-g035",
+      "expected_status_from_dataset": "answered",
+      "query": "How is beam-divergence smearing implemented in LuminosityFit?",
+      "bound_rule_id": "luminosityfit_model_layers",
+      "comparison_role": "PARAPHRASE_RELEVANT",
+      "selection_basis": "Model implementation/theory case tests relation-driven retrieval without the selected generic trigger.",
+      "literal_trigger_present": false,
+      "matched_selected_rule_triggers": [],
+      "paraphrase_without_literal_trigger": true,
+      "required_evidence_group_count": 3,
+      "critical_evidence_group_count": 3,
+      "source_ids": [
+        "luminosityfit",
+        "pflueger_2017"
+      ],
+      "evidence_topology": "multi_hop",
+      "source_scope": "cross_source",
+      "repository_scope": "single_repository",
+      "representativeness_class": "benchmark_reference_unlabelled",
+      "representativeness_disposition": "NOT_APPLICABLE_GOLD_BENCHMARK",
+      "challenge_tags": [],
+      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected."
+    },
+    {
+      "manifest_index": 11,
+      "case_id": "g052",
+      "dataset": "Gold v2.6 dev",
+      "split": "dev",
+      "language": "en",
+      "review_status": "approved",
+      "intent": "algorithm_theory",
+      "family_id": "cluster-g030",
+      "expected_status_from_dataset": "answered",
+      "query": "Why does a reconstructed restgas profile feed back into effective acceptance?",
+      "bound_rule_id": "effective_acceptance_pipeline",
+      "comparison_role": "DIRECT_LITERAL",
+      "selection_basis": "Direct effective-acceptance concept case.",
+      "literal_trigger_present": true,
+      "matched_selected_rule_triggers": [
+        "effective acceptance"
+      ],
+      "paraphrase_without_literal_trigger": false,
+      "required_evidence_group_count": 1,
+      "critical_evidence_group_count": 1,
+      "source_ids": [
+        "li_2026"
+      ],
+      "evidence_topology": "single_hop",
+      "source_scope": "single_source",
+      "repository_scope": "paper_only",
+      "representativeness_class": "benchmark_reference_unlabelled",
+      "representativeness_disposition": "NOT_APPLICABLE_GOLD_BENCHMARK",
+      "challenge_tags": [],
+      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected."
+    },
+    {
+      "manifest_index": 12,
+      "case_id": "g055",
+      "dataset": "Gold v2.6 dev",
+      "split": "dev",
+      "language": "en",
+      "review_status": "approved",
+      "intent": "algorithm_theory",
+      "family_id": "cluster-g030",
+      "expected_status_from_dataset": "answered",
+      "query": "How should angular acceptance be distinguished from longitudinal efficiency?",
+      "bound_rule_id": "effective_acceptance_pipeline",
+      "comparison_role": "NEARBY_DISTINCTION_CONTROL",
+      "selection_basis": "Nearby point-like-versus-restgas distinction must preserve competing concepts and provenance.",
+      "literal_trigger_present": false,
+      "matched_selected_rule_triggers": [],
+      "paraphrase_without_literal_trigger": false,
+      "required_evidence_group_count": 2,
+      "critical_evidence_group_count": 2,
+      "source_ids": [
+        "li_2026",
+        "pflueger_2017"
+      ],
+      "evidence_topology": "multi_hop",
+      "source_scope": "cross_source",
+      "repository_scope": "paper_only",
+      "representativeness_class": "benchmark_reference_unlabelled",
+      "representativeness_disposition": "NOT_APPLICABLE_GOLD_BENCHMARK",
+      "challenge_tags": [],
+      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected."
+    },
+    {
+      "manifest_index": 13,
+      "case_id": "n003",
+      "dataset": "novel_dev",
+      "split": "novel_dev",
+      "language": "en",
+      "review_status": "approved",
+      "intent": "usage",
+      "family_id": "nf003",
+      "expected_status_from_dataset": "answered",
+      "query": "For an acceptance scan I need single particles whose momentum and polar angle advance in fixed steps from one event to the next. Which PandaRoot event generator supports this, and how is the stepping configured?",
+      "bound_rule_id": "effective_acceptance_pipeline",
+      "comparison_role": "NEARBY_NONTRIGGER_CONTROL",
+      "selection_basis": "Frozen representative acceptance-scan generator case outside restgas effective acceptance.",
+      "literal_trigger_present": false,
+      "matched_selected_rule_triggers": [],
+      "paraphrase_without_literal_trigger": false,
+      "required_evidence_group_count": 2,
+      "critical_evidence_group_count": 2,
+      "source_ids": [
+        "pandaroot",
+        "pandaroot_sphinx_2023_08_25_dev"
+      ],
+      "evidence_topology": "multi_hop",
+      "source_scope": "single_source",
+      "repository_scope": "single_repository",
+      "representativeness_class": "representative",
+      "representativeness_disposition": "KEEP_REPRESENTATIVE",
+      "challenge_tags": [],
+      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected."
+    },
+    {
+      "manifest_index": 14,
+      "case_id": "g021",
+      "dataset": "Gold v2.6 dev",
+      "split": "dev",
+      "language": "en",
+      "review_status": "approved",
+      "intent": "usage",
+      "family_id": "cluster-g021",
+      "expected_status_from_dataset": "answered",
+      "query": "How is restgas_profile supplied to distributed-target simulation?",
+      "bound_rule_id": "restgas_profile_workflow",
+      "comparison_role": "DIRECT_LITERAL",
+      "selection_basis": "Direct restgas-profile workflow/configuration case.",
+      "literal_trigger_present": true,
+      "matched_selected_rule_triggers": [
+        "restgas_profile"
+      ],
+      "paraphrase_without_literal_trigger": false,
+      "required_evidence_group_count": 2,
+      "critical_evidence_group_count": 2,
+      "source_ids": [
+        "restgas_determination"
+      ],
+      "evidence_topology": "multi_hop",
+      "source_scope": "single_source",
+      "repository_scope": "single_repository",
+      "representativeness_class": "benchmark_reference_unlabelled",
+      "representativeness_disposition": "NOT_APPLICABLE_GOLD_BENCHMARK",
+      "challenge_tags": [],
+      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected."
+    },
+    {
+      "manifest_index": 15,
+      "case_id": "n004",
+      "dataset": "novel_dev",
+      "split": "novel_dev",
+      "language": "en",
+      "review_status": "approved",
+      "intent": "usage",
+      "family_id": "nf004",
+      "expected_status_from_dataset": "answered",
+      "query": "While debugging a running PandaRoot macro I want every log message to carry the severity and the file:line:function where it was emitted. How do I configure that, and what other logging controls does the framework documentation describe?",
+      "bound_rule_id": "sphinx_operational_architecture",
+      "comparison_role": "PARAPHRASE_RELEVANT",
+      "selection_basis": "Frozen representative operational-documentation usage case without a selected-rule literal.",
+      "literal_trigger_present": false,
+      "matched_selected_rule_triggers": [],
+      "paraphrase_without_literal_trigger": true,
+      "required_evidence_group_count": 1,
+      "critical_evidence_group_count": 1,
+      "source_ids": [
+        "pandaroot_sphinx_2023_08_25_dev"
+      ],
+      "evidence_topology": "single_hop",
+      "source_scope": "single_source",
+      "repository_scope": "single_repository",
+      "representativeness_class": "representative",
+      "representativeness_disposition": "KEEP_REPRESENTATIVE",
+      "challenge_tags": [],
+      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected."
+    },
+    {
+      "manifest_index": 16,
+      "case_id": "g007",
+      "dataset": "Gold v2.6 dev",
+      "split": "dev",
+      "language": "en",
+      "review_status": "approved",
+      "intent": "installation",
+      "family_id": "cluster-g007",
+      "expected_status_from_dataset": "insufficient_evidence",
+      "query": "What exact minimum GPU memory is required to install PandaRoot?",
+      "bound_rule_id": "sphinx_operational_architecture",
+      "comparison_role": "NEARBY_NEGATIVE_CONTROL",
+      "selection_basis": "Exact GPU-memory requirement should remain insufficient when documentation lacks the fact.",
+      "literal_trigger_present": false,
+      "matched_selected_rule_triggers": [],
+      "paraphrase_without_literal_trigger": false,
+      "required_evidence_group_count": 1,
+      "critical_evidence_group_count": 1,
+      "source_ids": [
+        "pandaroot_sphinx_2023_08_25_dev"
+      ],
+      "evidence_topology": "single_hop",
+      "source_scope": "single_source",
+      "repository_scope": "single_repository",
+      "representativeness_class": "benchmark_reference_unlabelled",
+      "representativeness_disposition": "NOT_APPLICABLE_GOLD_BENCHMARK",
+      "challenge_tags": [
+        "negative_control"
+      ],
+      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected."
+    }
+  ],
+  "metrics": {
+    "primary": [
+      {
+        "metric_id": "useful_retrieval_reproduction_rate",
+        "unit": "case",
+        "definition": "Among cases whose LEGACY arm retrieves at least one required evidence group in the final evidence, fraction for which STRUCTURED retrieves an equal or greater count of required evidence groups.",
+        "direction": "higher"
+      },
+      {
+        "metric_id": "final_evidence_recall",
+        "unit": "required evidence group",
+        "definition": "Evaluator-native required-evidence-group recall in final selected evidence, reported by arm and paired case.",
+        "direction": "higher"
+      },
+      {
+        "metric_id": "critical_evidence_recall",
+        "unit": "critical required evidence group",
+        "definition": "Evaluator-native recall over critical required evidence groups, reported by arm.",
+        "direction": "higher"
+      },
+      {
+        "metric_id": "selected_rule_dependency_rate",
+        "unit": "case",
+        "definition": "Fraction of cases where LEGACY final-evidence recall exceeds ABLATION final-evidence recall.",
+        "direction": "descriptive"
+      },
+      {
+        "metric_id": "structured_recovery_rate",
+        "unit": "legacy-dependent case",
+        "definition": "Among cases with LEGACY > ABLATION, fraction where STRUCTURED reaches or exceeds LEGACY final-evidence recall.",
+        "direction": "higher"
+      },
+      {
+        "metric_id": "regression_rate",
+        "unit": "case",
+        "definition": "Fraction of comparison cases where STRUCTURED final-evidence recall is below LEGACY.",
+        "direction": "lower"
+      }
+    ],
+    "secondary": [
+      "Recall@5",
+      "Recall@10",
+      "Recall@20",
+      "MRR",
+      "combined candidate recall",
+      "required source-type satisfaction",
+      "repository-scope satisfaction",
+      "structured object/edge/workflow contribution counts",
+      "selected legacy rule match counts",
+      "D2 mechanism/status counts",
+      "abstention/ambiguity counts",
+      "per-family paired deltas",
+      "direct/paraphrase/control strata counts"
+    ],
+    "derived_comparisons": [
+      "STRUCTURED minus LEGACY: migration regression or improvement",
+      "LEGACY minus ABLATION: selected shortcut dependency",
+      "STRUCTURED minus ABLATION: structured-path contribution",
+      "Direct-literal versus paraphrase-without-literal versus nearby-control strata",
+      "Single-repository versus cross-repository and single-hop versus multi-hop strata"
+    ],
+    "small_cell_rule": "Always report numerator/denominator and per-case ledger; do not publish percentages alone for cells smaller than five.",
+    "no_acceptance_threshold_frozen": "D3-A0 freezes definitions and accounting, not a PASS threshold. Outcome disposition remains evidence-bound and cannot be invented after seeing favorable cases."
+  },
+  "outcome_vocabulary": {
+    "task_verdicts": [
+      "PASS",
+      "FAIL",
+      "INCONCLUSIVE"
+    ],
+    "arm_case_outcomes": [
+      "FULL_REPRODUCTION",
+      "PARTIAL_REPRODUCTION",
+      "NO_REPRODUCTION",
+      "IMPROVEMENT",
+      "REGRESSION",
+      "NOT_APPLICABLE",
+      "NOT_RUN",
+      "INFRASTRUCTURE_FAILURE"
+    ],
+    "interpretation_rules": [
+      "PASS requires a complete paired run, auditable structured contribution, no prohibited answer-location encoding, and credible generality across direct/paraphrase/control cases.",
+      "FAIL applies when the bounded migration is technically validly measured but structured behavior materially collapses or introduces unsafe regressions.",
+      "INCONCLUSIVE applies to incomplete pairing, invalid artifacts, confounded arms, insufficient applicability, or inability to attribute a structured contribution.",
+      "Infrastructure failures are never retrieval failures.",
+      "Historical expected_status is not a D3 arm outcome."
+    ]
+  },
+  "failure_taxonomy": [
+    "STRUCTURED_CANDIDATE_RECALL_FAILURE",
+    "RELATION_COVERAGE_GAP",
+    "WORKFLOW_COVERAGE_GAP",
+    "EVIDENCE_LINK_COVERAGE_GAP",
+    "ENTITY_OR_TERMINOLOGY_RESOLUTION_FAILURE",
+    "AMBIGUITY_OR_ABSTENTION",
+    "REPOSITORY_OR_VERSION_SCOPE_FAILURE",
+    "FUSION_OR_RANKING_FAILURE",
+    "FINAL_SELECTOR_FAILURE",
+    "LEGACY_DEPENDENCY_WITHOUT_STRUCTURED_RECOVERY",
+    "CONTROL_LEAKAGE_OR_OVERMATCH",
+    "PROHIBITED_SHORTCUT_ENCODING",
+    "INFRASTRUCTURE_OR_ARTIFACT_FAILURE"
+  ],
+  "hard_constraints": [
+    "Do not add or modify D1 objects, relations, workflow steps, or aliases inside D3-A1 to fit selected cases.",
+    "Do not encode selected phrases, rule IDs, case IDs, expected symbols, paths, pages, answers, source quotas, weights, or guards as replacements.",
+    "Do not widen Tier G/S/D authority, convert corrective terms into true aliases, enable whole-question fallback, or suppress ambiguity/abstention.",
+    "Do not alter nonselected query-expansion rules, production defaults, analyzer prompts, embeddings, fusion, reranking, selector behavior, evaluator semantics, or datasets as part of the comparison.",
+    "Do not inspect or execute novel_validation or external holdout.",
+    "Do not use QA generation or an external judge to measure retrieval migration.",
+    "Do not interpret a static preregistration freeze as authorization for D3-A1 implementation or execution."
+  ],
+  "rollback_contract": {
+    "rollback_target": "LEGACY arm at preregistration_source_head with all 54 query-expansion rules active.",
+    "trigger": "Any incomplete/confounded arm, prohibited encoding, material structured regression, unsafe control leakage, or failure to preserve D2 authority boundaries.",
+    "action": "Stop the experiment, retain/re-enable the seven legacy rules, mark the attempt FAIL or INCONCLUSIVE as appropriate, and repair the owning generic resolver/schema layer only under a separate authorization.",
+    "prohibited_rollback_behavior": "Do not add question-specific replacement rules or silently keep a mixed structured/legacy fallback path."
+  },
+  "execution_exposure_state": {
+    "D3_A0_STATIC_CONFIG_READS": true,
+    "D3_A0_D1_D2_ARTIFACT_READS": true,
+    "D3_COMPARISON_CASES_SELECTED": 16,
+    "NEW_D3_RETRIEVAL_CASES_RUN": 0,
+    "NEW_GOLD_RETRIEVAL_CASES_RUN": 0,
+    "NEW_NOVEL_DEV_RETRIEVAL_CASES_RUN": 0,
+    "NOVEL_VALIDATION_CASES_RUN": 0,
+    "NOVEL_HOLDOUT_CASES_RUN": 0,
+    "NEW_QA_CASES_RUN": 0,
+    "NEW_MODEL_CALLS": 0,
+    "NEW_EMBEDDING_CALLS": 0,
+    "NEW_ANALYZER_CALLS": 0,
+    "NEW_RERANKER_CALLS": 0,
+    "NEW_JUDGE_CALLS": 0,
+    "PRODUCTION_CODE_CHANGED": false,
+    "QUERY_EXPANSIONS_CHANGED": false,
+    "D1_ARTIFACTS_CHANGED": false,
+    "D2_ARTIFACTS_CHANGED": false,
+    "PRODUCTION_DB_WRITES": 0,
+    "QDRANT_WRITES": 0,
+    "D3_A1_STARTED": false
+  },
+  "next_stage": {
+    "task": "D3-A1 — Implement and execute the frozen three-arm shortcut-migration experiment",
+    "status": "NOT_STARTED",
+    "authorization_required": true
+  }
+}

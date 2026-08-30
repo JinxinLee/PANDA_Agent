@@ -738,7 +738,8 @@ novel_holdout    13 expected → frozen/sealed externally → content not
 
 ### D3 — Small shortcut-migration experiment
 
-- **Status:** NOT_STARTED
+- **Status:** IN_PROGRESS / D3-A0 COMPLETE / PREOUTCOME_SELECTION_FROZEN / D3-A1 NOT_STARTED
+- **D3-A0 freeze:** Complete static inventory of all 54 current query-expansion rules; 7-rule representative first batch; existing D1/D2 support and coverage-gap audit; fixed 16-case English development comparison set; paired `LEGACY` / `STRUCTURED` / `ABLATION` arms; metrics, failure taxonomy, hard constraints, and rollback contract. Artifacts: `evaluation/d3_a0_shortcut_migration_preregistration.json` and `evaluation/D3_A0_SHORTCUT_MIGRATION_PREREGISTRATION.md`. No runtime/config/D1/D2 change and no retrieval/model/API execution. D3-A1 requires separate explicit authorization and must execute the frozen contract without case-driven D1 backfill or replacement shortcuts.
 - **Problem:** Wholesale removal of proven compatibility rules before the structured path is validated would cause avoidable regression.
 - **Goal:** Replace roughly 5–10 representative phrase-to-file/page shortcuts with phrase-to-concept/entity-to-relation/retrieval paths.
 - **Why this stage:** D1/D2 must demonstrate that structured knowledge can reproduce useful behavior before broader migration.
