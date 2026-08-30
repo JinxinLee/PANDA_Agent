@@ -1,11 +1,11 @@
 {
   "run_provenance": {
-    "head": "67eff2b1f870cb3a23ddb75139f511cd99ef94f4",
+    "head": "ae7b281bc75db9d4a0f6bccada8ae6b2b0f582f6",
     "baseline_commit": "67eff2b",
     "case_artifact_path": "evaluation\\d2_a2_terminology_cases.yaml",
     "state_type": "deterministic_in_memory_d1_compatible",
     "state_valid": true,
-    "timestamp_utc": "2026-08-30T00:30:16.747448+00:00",
+    "timestamp_utc": "2026-08-30T12:33:00.968286+00:00",
     "case_count": 22
   },
   "state_validation": {
@@ -54,36 +54,128 @@
     "valid": true
   },
   "metrics": {
-    "case_count": 22,
-    "applicable_case_count": 21,
-    "case_invalid_count": 1,
-    "not_applicable_case_count": 0,
-    "correct_case_count": 16,
-    "applicability": 0.9545,
-    "coverage": 1.0,
-    "resolution_accuracy": 0.75,
-    "canonicalization_accuracy_expected": 0.6667,
-    "canonicalization_accuracy_none_expected_source_native": 1.0,
-    "abstention_accuracy": 0.8333,
-    "ambiguity_accuracy": 0.6667,
-    "false_positive_resolution_rate": 0.2222,
-    "evidence_validity": 1.0,
-    "corrective_handling_correct": 1,
-    "corrective_handling_incorrect": 0,
+    "case_counts": {
+      "total": 22,
+      "valid": 20,
+      "applicable": 20,
+      "case_invalid": 2,
+      "not_applicable": 0,
+      "correct": 16
+    },
     "decision_accounting": {
       "correct_resolve": 9,
-      "wrong_resolve": 3,
+      "wrong_resolve": 2,
       "correct_abstain": 5,
-      "wrong_abstain": 2,
+      "wrong_abstain": 0,
       "correct_ambiguous": 2,
-      "wrong_ambiguous": 0,
-      "not_applicable": 1
-    }
+      "wrong_ambiguous": 2,
+      "not_applicable": 0
+    },
+    "case_validity": {
+      "numerator": 20,
+      "denominator": 22,
+      "value": 0.9090909090909091
+    },
+    "category_natural_applicability": {
+      "numerator": 14,
+      "denominator": 16,
+      "value": 0.875,
+      "categories_requiring_accounting": 16,
+      "not_available_categories": [
+        "resolved_multiple",
+        "same_as"
+      ],
+      "represented_categories": [
+        "accepted_alias",
+        "ambiguous_terminology",
+        "corrective_term",
+        "data_product_description",
+        "descriptive_domain_paraphrase",
+        "documentation_vs_concept",
+        "exact_canonical_terminology",
+        "exact_technical_identifier",
+        "multi_mention_isolation",
+        "path_reference",
+        "query_expansion_negative_control",
+        "related_but_not_identical",
+        "source_native_symbol",
+        "unsupported_expression",
+        "version_sensitive_identifier",
+        "workflow_description"
+      ]
+    },
+    "execution_coverage": {
+      "numerator": 22,
+      "denominator": 22,
+      "value": 1.0
+    },
+    "resolution_accuracy": {
+      "numerator": 9,
+      "denominator": 12,
+      "value": 0.75
+    },
+    "canonical_identity_accuracy": {
+      "numerator": 6,
+      "denominator": 9,
+      "value": 0.6666666666666666
+    },
+    "explicit_canonicalization_accuracy": {
+      "numerator": 2,
+      "denominator": 2,
+      "value": 1.0
+    },
+    "source_native_noncanonicalization_accuracy": {
+      "numerator": 3,
+      "denominator": 3,
+      "value": 1.0
+    },
+    "abstention_accuracy": {
+      "numerator": 5,
+      "denominator": 6,
+      "value": 0.8333333333333334
+    },
+    "ambiguity_accuracy": {
+      "numerator": 2,
+      "denominator": 2,
+      "value": 1.0
+    },
+    "false_positive_resolution_rate": {
+      "numerator": 1,
+      "denominator": 8,
+      "value": 0.125
+    },
+    "evidence_validity": {
+      "numerator": 10,
+      "denominator": 10,
+      "value": 1.0,
+      "evidence_checked_cases": 10,
+      "evidence_valid_cases": 10,
+      "evidence_invalid_cases": 0
+    },
+    "positive_resolution_coverage": {
+      "numerator": 10,
+      "denominator": 12,
+      "value": 0.8333333333333334,
+      "correct_positive_resolution_coverage": {
+        "numerator": 9,
+        "denominator": 12,
+        "value": 0.75
+      }
+    },
+    "descriptive_resolution_summary": {
+      "descriptive_positive_cases": 6,
+      "descriptive_correctly_resolved": 3,
+      "descriptive_ambiguous": 3,
+      "descriptive_unresolved": 0,
+      "descriptive_wrong_confident": 1
+    },
+    "corrective_handling_correct": 1,
+    "corrective_handling_incorrect": 0
   },
   "failure_taxonomy_counts": {
-    "CASE_INVALID": 1,
+    "CASE_INVALID": 2,
     "COMPETITION_AMBIGUITY": 3,
-    "WRONG_CONFIDENT_RESOLUTION": 2
+    "WRONG_CONFIDENT_RESOLUTION": 1
   },
   "category_summaries": {
     "accepted_alias": {
@@ -176,7 +268,7 @@
       "false_positive_resolutions": 0,
       "decisions": {
         "correct_resolve": 1,
-        "wrong_abstain": 1
+        "wrong_ambiguous": 1
       },
       "failure_types": {
         "COMPETITION_AMBIGUITY": 1
@@ -197,17 +289,17 @@
     },
     "implementation_description_paraphrase": {
       "cases": 1,
-      "applicable": 1,
+      "applicable": 0,
       "correct": 0,
-      "incorrect": 1,
+      "incorrect": 0,
       "not_applicable": 0,
-      "case_invalid": 0,
-      "false_positive_resolutions": 1,
+      "case_invalid": 1,
+      "false_positive_resolutions": 0,
       "decisions": {
-        "wrong_resolve": 1
+        "not_applicable": 1
       },
       "failure_types": {
-        "WRONG_CONFIDENT_RESOLUTION": 1
+        "CASE_INVALID": 1
       }
     },
     "multi_mention_isolation": {
@@ -219,7 +311,7 @@
       "case_invalid": 0,
       "false_positive_resolutions": 0,
       "decisions": {
-        "wrong_abstain": 1
+        "wrong_ambiguous": 1
       },
       "failure_types": {
         "COMPETITION_AMBIGUITY": 1
@@ -421,7 +513,13 @@
         "statuses": [
           "RESOLVED_UNIQUE"
         ]
-      }
+      },
+      "target_match_mode": "ANY",
+      "expected_target_count": null,
+      "resolved_expected_targets": [],
+      "missing_expected_targets": [],
+      "mention_isolation_valid": null,
+      "isolation_details": []
     },
     {
       "case_id": "C02",
@@ -440,7 +538,7 @@
       "not_applicable": false,
       "case_invalid": false,
       "correct": false,
-      "decision": "wrong_abstain",
+      "decision": "wrong_ambiguous",
       "primary_failure_type": "COMPETITION_AMBIGUITY",
       "failure_detail": "no resolution satisfied expected status RESOLVED_UNIQUE with the expected identity targets",
       "evidence_valid": null,
@@ -609,7 +707,13 @@
         "statuses": [
           "AMBIGUOUS"
         ]
-      }
+      },
+      "target_match_mode": "ANY",
+      "expected_target_count": null,
+      "resolved_expected_targets": [],
+      "missing_expected_targets": [],
+      "mention_isolation_valid": null,
+      "isolation_details": []
     },
     {
       "case_id": "C03",
@@ -716,7 +820,13 @@
         "statuses": [
           "AMBIGUOUS"
         ]
-      }
+      },
+      "target_match_mode": "ANY",
+      "expected_target_count": null,
+      "resolved_expected_targets": [],
+      "missing_expected_targets": [],
+      "mention_isolation_valid": null,
+      "isolation_details": []
     },
     {
       "case_id": "C04",
@@ -838,7 +948,13 @@
         "statuses": [
           "RESOLVED_UNIQUE"
         ]
-      }
+      },
+      "target_match_mode": "ANY",
+      "expected_target_count": null,
+      "resolved_expected_targets": [],
+      "missing_expected_targets": [],
+      "mention_isolation_valid": null,
+      "isolation_details": []
     },
     {
       "case_id": "C05",
@@ -941,7 +1057,13 @@
         "statuses": [
           "RESOLVED_UNIQUE"
         ]
-      }
+      },
+      "target_match_mode": "ANY",
+      "expected_target_count": null,
+      "resolved_expected_targets": [],
+      "missing_expected_targets": [],
+      "mention_isolation_valid": null,
+      "isolation_details": []
     },
     {
       "case_id": "C06",
@@ -1044,7 +1166,13 @@
         "statuses": [
           "RESOLVED_UNIQUE"
         ]
-      }
+      },
+      "target_match_mode": "ANY",
+      "expected_target_count": null,
+      "resolved_expected_targets": [],
+      "missing_expected_targets": [],
+      "mention_isolation_valid": null,
+      "isolation_details": []
     },
     {
       "case_id": "C07",
@@ -1482,7 +1610,13 @@
           "AMBIGUOUS",
           "AMBIGUOUS"
         ]
-      }
+      },
+      "target_match_mode": "ANY",
+      "expected_target_count": null,
+      "resolved_expected_targets": [],
+      "missing_expected_targets": [],
+      "mention_isolation_valid": null,
+      "isolation_details": []
     },
     {
       "case_id": "C08",
@@ -1588,7 +1722,13 @@
         "statuses": [
           "UNRESOLVED"
         ]
-      }
+      },
+      "target_match_mode": "ANY",
+      "expected_target_count": null,
+      "resolved_expected_targets": [],
+      "missing_expected_targets": [],
+      "mention_isolation_valid": null,
+      "isolation_details": []
     },
     {
       "case_id": "C09",
@@ -1878,7 +2018,13 @@
           "UNRESOLVED",
           "RESOLVED_UNIQUE"
         ]
-      }
+      },
+      "target_match_mode": "ANY",
+      "expected_target_count": null,
+      "resolved_expected_targets": [],
+      "missing_expected_targets": [],
+      "mention_isolation_valid": null,
+      "isolation_details": []
     },
     {
       "case_id": "C10",
@@ -1891,11 +2037,11 @@
       "expected_evidence_tier": "none",
       "applicability": "AVAILABLE",
       "not_applicable": false,
-      "case_invalid": false,
+      "case_invalid": true,
       "correct": false,
-      "decision": "wrong_resolve",
-      "primary_failure_type": "WRONG_CONFIDENT_RESOLUTION",
-      "failure_detail": "resolution 'the model-and-fit subsystem of the LuminosityFit framework' confidently resolved concept.luminosityfit.luminosity_fit_model in a case expecting AMBIGUOUS",
+      "decision": "not_applicable",
+      "primary_failure_type": "CASE_INVALID",
+      "failure_detail": "Source-first Gold violation recorded after the first measured run: the expected AMBIGUOUS status was influenced by the frozen resolver's lexical competition behavior rather than being determined purely from source semantics. The raw receipt is preserved as qualitative RELATED_ENTITY_OVERRESOLUTION evidence for D2-A3; the case is excluded from quantitative metrics.",
       "evidence_valid": null,
       "has_confident_resolve": true,
       "has_ambiguous": true,
@@ -2287,7 +2433,13 @@
           "AMBIGUOUS",
           "RESOLVED_UNIQUE"
         ]
-      }
+      },
+      "target_match_mode": "ANY",
+      "expected_target_count": null,
+      "resolved_expected_targets": [],
+      "missing_expected_targets": [],
+      "mention_isolation_valid": null,
+      "isolation_details": []
     },
     {
       "case_id": "C11",
@@ -2786,7 +2938,13 @@
           "UNRESOLVED",
           "RESOLVED_UNIQUE"
         ]
-      }
+      },
+      "target_match_mode": "ANY",
+      "expected_target_count": null,
+      "resolved_expected_targets": [],
+      "missing_expected_targets": [],
+      "mention_isolation_valid": null,
+      "isolation_details": []
     },
     {
       "case_id": "C12",
@@ -3202,7 +3360,13 @@
           "UNRESOLVED",
           "AMBIGUOUS"
         ]
-      }
+      },
+      "target_match_mode": "ANY",
+      "expected_target_count": null,
+      "resolved_expected_targets": [],
+      "missing_expected_targets": [],
+      "mention_isolation_valid": null,
+      "isolation_details": []
     },
     {
       "case_id": "C13",
@@ -3504,7 +3668,13 @@
           "UNRESOLVED",
           "AMBIGUOUS"
         ]
-      }
+      },
+      "target_match_mode": "ANY",
+      "expected_target_count": null,
+      "resolved_expected_targets": [],
+      "missing_expected_targets": [],
+      "mention_isolation_valid": null,
+      "isolation_details": []
     },
     {
       "case_id": "C14",
@@ -3525,10 +3695,95 @@
       "primary_failure_type": "CASE_INVALID",
       "failure_detail": "Curation inventory error recorded after the first measured run: the authoritative symbol-bearing record for PndLmdModelFactory is the function row object.c08459387c6fd0c77a717960, while the frozen expectation declared the source_file row object.ceb44bd02a5e3a790cf2dfad. Recorded INVALID_CASE per the D2-A2 freeze discipline; not replaced.",
       "evidence_valid": null,
-      "has_confident_resolve": false,
+      "has_confident_resolve": true,
       "has_ambiguous": false,
-      "plan": null,
-      "actual": null
+      "plan": {
+        "intent": "terminology_resolution",
+        "target_repositories": [
+          "luminosityfit"
+        ],
+        "resolved_versions": {},
+        "resolved_aliases": {},
+        "symbols": [],
+        "concepts": [],
+        "analysis_diagnostics": {
+          "analyzer_accepted_semantic_delta": {
+            "symbols": [],
+            "concepts": []
+          }
+        }
+      },
+      "actual": {
+        "receipt": {
+          "identity_relation_support": "ACTIVE_SHADOW",
+          "resolutions": [
+            {
+              "mention_text": "PndLmdModelFactory",
+              "mention_kind": "explicit_identifier",
+              "support_span": "PndLmdModelFactory",
+              "status": "RESOLVED_UNIQUE",
+              "matched_object_id": "object.c08459387c6fd0c77a717960",
+              "canonical_object_id": null,
+              "selected_object_ids": [],
+              "evidence": [
+                {
+                  "tier": "S",
+                  "kind": "exact_symbol",
+                  "matched_value": "PndLmdModelFactory",
+                  "object_id": "object.c08459387c6fd0c77a717960",
+                  "detail": "unique exact_symbol match within locked scope"
+                }
+              ],
+              "candidates": [
+                {
+                  "object_id": "object.c08459387c6fd0c77a717960",
+                  "source_id": "luminosityfit",
+                  "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+                  "match_kind": "exact_symbol",
+                  "matched_value": "PndLmdModelFactory",
+                  "tier": "S",
+                  "status": "PROMOTED",
+                  "reason": "unique exact exact_symbol match within scope"
+                }
+              ],
+              "version_scope": {
+                "allowed_sources": [
+                  "luminosityfit",
+                  "curated_panda_domain"
+                ],
+                "locked_versions": {}
+              },
+              "diagnostics": {
+                "canonicalization": false,
+                "descriptive_inference": false,
+                "corrective": false,
+                "correction_message": null,
+                "identity_authority": true,
+                "ambiguity_reason": null,
+                "abstention_reason": null,
+                "rejection_reasons": []
+              }
+            }
+          ],
+          "ambiguous_mentions": [],
+          "unresolved_mentions": [],
+          "multi_entity_results": [],
+          "corrective_mentions": [],
+          "resolved_object_ids": [
+            "object.c08459387c6fd0c77a717960"
+          ],
+          "fallback_required": false
+        },
+        "statuses": [
+          "RESOLVED_UNIQUE"
+        ]
+      },
+      "target_match_mode": "ANY",
+      "expected_target_count": null,
+      "resolved_expected_targets": [],
+      "missing_expected_targets": [],
+      "mention_isolation_valid": null,
+      "isolation_details": []
     },
     {
       "case_id": "C15",
@@ -3633,7 +3888,13 @@
         "statuses": [
           "RESOLVED_UNIQUE"
         ]
-      }
+      },
+      "target_match_mode": "ANY",
+      "expected_target_count": null,
+      "resolved_expected_targets": [],
+      "missing_expected_targets": [],
+      "mention_isolation_valid": null,
+      "isolation_details": []
     },
     {
       "case_id": "C16",
@@ -3851,7 +4112,13 @@
           "REJECTED_VERSION",
           "RESOLVED_UNIQUE"
         ]
-      }
+      },
+      "target_match_mode": "ANY",
+      "expected_target_count": null,
+      "resolved_expected_targets": [],
+      "missing_expected_targets": [],
+      "mention_isolation_valid": null,
+      "isolation_details": []
     },
     {
       "case_id": "C17",
@@ -4111,7 +4378,13 @@
           "REJECTED_SCOPE",
           "AMBIGUOUS"
         ]
-      }
+      },
+      "target_match_mode": "ANY",
+      "expected_target_count": null,
+      "resolved_expected_targets": [],
+      "missing_expected_targets": [],
+      "mention_isolation_valid": null,
+      "isolation_details": []
     },
     {
       "case_id": "C18",
@@ -4268,7 +4541,13 @@
         "statuses": [
           "UNRESOLVED"
         ]
-      }
+      },
+      "target_match_mode": "ANY",
+      "expected_target_count": null,
+      "resolved_expected_targets": [],
+      "missing_expected_targets": [],
+      "mention_isolation_valid": null,
+      "isolation_details": []
     },
     {
       "case_id": "C19",
@@ -4385,7 +4664,13 @@
         "statuses": [
           "UNRESOLVED"
         ]
-      }
+      },
+      "target_match_mode": "ANY",
+      "expected_target_count": null,
+      "resolved_expected_targets": [],
+      "missing_expected_targets": [],
+      "mention_isolation_valid": null,
+      "isolation_details": []
     },
     {
       "case_id": "C20",
@@ -4522,7 +4807,13 @@
         "statuses": [
           "UNRESOLVED"
         ]
-      }
+      },
+      "target_match_mode": "ANY",
+      "expected_target_count": null,
+      "resolved_expected_targets": [],
+      "missing_expected_targets": [],
+      "mention_isolation_valid": null,
+      "isolation_details": []
     },
     {
       "case_id": "C21",
@@ -4543,7 +4834,7 @@
       "not_applicable": false,
       "case_invalid": false,
       "correct": false,
-      "decision": "wrong_abstain",
+      "decision": "wrong_ambiguous",
       "primary_failure_type": "COMPETITION_AMBIGUITY",
       "failure_detail": "no resolution satisfied expected status RESOLVED_UNIQUE with the expected identity targets",
       "evidence_valid": null,
@@ -5108,7 +5399,18 @@
           "AMBIGUOUS",
           "AMBIGUOUS"
         ]
-      }
+      },
+      "target_match_mode": "ALL",
+      "expected_target_count": 2,
+      "resolved_expected_targets": [],
+      "missing_expected_targets": [
+        "concept.luminosityfit.luminosity_fit_model",
+        "workflow.restgas.first_pass_poca"
+      ],
+      "mention_isolation_valid": true,
+      "isolation_details": [
+        "no cross-mention token leakage observed"
+      ]
     },
     {
       "case_id": "C22",
@@ -5482,7 +5784,13 @@
           "AMBIGUOUS",
           "RESOLVED_UNIQUE"
         ]
-      }
+      },
+      "target_match_mode": "ANY",
+      "expected_target_count": null,
+      "resolved_expected_targets": [],
+      "missing_expected_targets": [],
+      "mention_isolation_valid": null,
+      "isolation_details": []
     }
   ],
   "not_applicable_records": [
@@ -5494,5 +5802,18 @@
       "category": "same_as",
       "reason": "Current D1 state contains no accepted SAME_AS edges; manufacturing one would violate the D1 co-reference contract. Shadow SAME_AS traversal is separately covered by focused T0 tests."
     }
-  ]
+  ],
+  "metric_consistency_problems": [],
+  "receipt_consistency_vs_ae7b281": {
+    "baseline_commit": "ae7b281",
+    "baseline_artifact": "C:\\Users\\JINXIN~1.DES\\AppData\\Local\\Temp\\d2_a2_results_ae7b281.json",
+    "compared_cases": 20,
+    "identical_receipts": 20,
+    "mismatched_case_ids": [],
+    "skipped_invalid_cases": [
+      "C10",
+      "C14"
+    ],
+    "resolver_behavior_unchanged": true
+  }
 }

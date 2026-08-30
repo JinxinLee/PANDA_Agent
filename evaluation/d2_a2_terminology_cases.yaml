@@ -215,6 +215,14 @@ cases:
     notes: Pure descriptive positive; no exact alias/ID/symbol/title/path in the mention.
 
   - case_id: C10
+    invalid: true
+    invalid_reason: >-
+      Source-first Gold violation recorded after the first measured run: the
+      expected AMBIGUOUS status was influenced by the frozen resolver's lexical
+      competition behavior rather than being determined purely from source
+      semantics. The raw receipt is preserved as qualitative
+      RELATED_ENTITY_OVERRESOLUTION evidence for D2-A3; the case is excluded
+      from quantitative metrics.
     category: implementation_description_paraphrase
     question: Where is the model-and-fit subsystem of the LuminosityFit framework implemented?
     plan:
@@ -416,6 +424,8 @@ cases:
     notes: Query expansion may help retrieval planning but must not establish identity; the fallback abstention is retained (A1R2).
 
   - case_id: C21
+    target_match_mode: ALL
+    require_all_expected_targets: true
     category: multi_mention_isolation
     question: How does the luminosity fit model relate to the first-pass POCA workflow?
     plan:
