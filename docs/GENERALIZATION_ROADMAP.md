@@ -434,11 +434,13 @@ not renumber D2 or rename D2-A3. Lifecycle flow:
 D2-A2R2 → ND-0A → ND-0B → ND-0C → D2-A3 → D3
 ```
 
-- **Status:** IN_PROGRESS (ND-0A `COMPLETE / PRE_OUTCOME_PREREGISTRATION_FROZEN`
-  2026-08-30; ND-0A-R1 `COMPLETE / HISTORICAL_COMPARISON_PROVENANCE_CORRECTED`
-  2026-08-30; ND-0B `COMPLETE / FIRST_EXPOSURE_MEASUREMENT_FROZEN` 2026-08-30;
-  ND-0B-R1 `COMPLETE / EVIDENCE_PACKAGE_AND_DATASET_DEFECT_ACCOUNTING_REPAIRED`
-  2026-08-30; ND-0C `NOT_STARTED`; `FIRST_NOVEL_DEV_OUTCOME_EXPOSURE = COMPLETE`;
+- **Status:** COMPLETE / FIRST_NOVEL_DEV_GENERALIZATION_BASELINE_CLOSED
+  (ND-0A `COMPLETE / PRE_OUTCOME_PREREGISTRATION_FROZEN` 2026-08-30; ND-0A-R1
+  `COMPLETE / HISTORICAL_COMPARISON_PROVENANCE_CORRECTED` 2026-08-30; ND-0B
+  `COMPLETE / FIRST_EXPOSURE_MEASUREMENT_FROZEN` 2026-08-30; ND-0B-R1
+  `COMPLETE / EVIDENCE_PACKAGE_AND_DATASET_DEFECT_ACCOUNTING_REPAIRED`
+  2026-08-30; ND-0C `COMPLETE / GENERALIZATION_DIAGNOSIS_AND_D2_A3_HANDOFF`
+  2026-08-30; `FIRST_NOVEL_DEV_OUTCOME_EXPOSURE = COMPLETE`;
   `NOVEL_DEV_DEVELOPMENT_EXPOSED = true`; `DATASET_STRUCTURAL_VALID = false`;
   `KNOWN_PRE_EXPOSURE_DATASET_DEFECT_COUNT = 1`.)
 
@@ -642,8 +644,38 @@ D2-A2R2 → ND-0A → ND-0B → ND-0C → D2-A3 → D3
 
 ### ND-0C — Generalization diagnosis and D2-A3 handoff
 
-- **Status:** NOT_STARTED. Classifies ND-0B first-exposure failures into the
-  frozen taxonomy and hands the evidence package to D2-A3.
+- **Status:** COMPLETE / GENERALIZATION_DIAGNOSIS_AND_D2_A3_HANDOFF (2026-08-30).
+
+- **ND-0C closeout — 2026-08-30 (`COMPLETE / GENERALIZATION_DIAGNOSIS_AND_D2_A3_HANDOFF`; ND-0 closed):**
+  offline diagnosis of the immutable ND-0B first-exposure artifacts (zero new
+  retrieval/model/API/DB calls; raw artifacts byte-unchanged; group-stage
+  matching reuses the evaluator's frozen matcher, cross-checked against frozen
+  provenance). 28-case ledger `nd0c_diagnosis.json` + `nd0c_d2_a3_handoff.json`
+  + `ND0C_GENERALIZATION_DIAGNOSIS.md`. Primary failure stages (27 applicable
+  cases): NONE 12 / CHANNEL_RECALL_FAILURE 8 / FUSION_OR_RANKING_FAILURE 7 /
+  FINAL_SELECTOR_FAILURE 0 primary. Group-level funnel (49 valid groups → 37
+  channel → 37 combined → 27 top-20 → 26 final): the dominant generalization
+  loss is combined→top-20 (10 groups / 9 cases; case-macro 0.1944 — combined
+  candidate recall 0.8117 vs R@20 0.6173); the final-selector loss is 1 group
+  (n022.e3; case-macro 0.0123 — not a material selector problem);
+  `RERANK_FAILURE = 0` (not separately attributable in the frozen traces).
+  Overlapping labels: ENTITY_OR_TERMINOLOGY_RELATED 11, DESCRIPTIVE_TERMINOLOGY_FAILURE
+  8, EXACT_IDENTIFIER_FAILURE 3, MULTI_EVIDENCE_FAILURE 12, CROSS_REPOSITORY_FAILURE 1
+  (n021 only), EXPECTED_EVIDENCE_MAPPING_ISSUE 1 (known n023.e1 defect only,
+  excluded from system accounting; n023.e2 diagnosed separately), scope/version/
+  corpus 0, additional EVALUATION_CASE_ISSUE 0, INFRASTRUCTURE 0, UNCLASSIFIED 0.
+  n016 (expected insufficient_evidence) separately diagnosed: retrieval fully
+  matched its target evidence (group recall 1.0) — the refusal boundary belongs
+  to the QA/answer layer outside retrieval-only ND-0B. D2 relevance (contextual
+  handoff only; efficacy UNEVALUATED from ND-0 because D2 was not
+  production-consumed): DIRECT 6 (n005, n009, n010, n014, n020, n029 — 12 failed
+  groups at candidate generation), INDIRECT 8, NONE 14; D2-A2 remains the only
+  direct efficacy evidence (descriptive positives 3/6 resolved / 3/6 ambiguous /
+  0 wrong-confident; C16 fallback hazard), and the D2 resolver was NOT executed
+  on novel_dev. No repair, no production-role change, no question-specific fix
+  proposals. Verification: 28/28 ledger coverage, taxonomy subset of the frozen
+  taxonomy, valid primary stages and D2 relevance values, funnel consistency,
+  primary metrics unchanged, `git diff --check` clean. Next: D2-A3.
 
 ### Protected-evaluation ladder (current)
 

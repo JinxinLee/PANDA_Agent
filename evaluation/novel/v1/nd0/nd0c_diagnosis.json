@@ -1,0 +1,1618 @@
+{
+  "schema_version": "nd0c-diagnosis-v1",
+  "checkpoint": "ND-0C",
+  "status": "COMPLETE / GENERALIZATION_DIAGNOSIS_AND_D2_A3_HANDOFF",
+  "evidence_source": {
+    "run_id": "nd0b-first-novel-dev-retrieval-20260830",
+    "artifacts": [
+      "nd0b_retrieval_results.jsonl",
+      "nd0b_retrieval_traces.jsonl",
+      "nd0b_run_manifest.json",
+      "nd0b_metrics.json",
+      "nd0a_first_exposure_preregistration.json"
+    ],
+    "immutable": true
+  },
+  "boundary": {
+    "diagnosis_and_handoff_only": true,
+    "no_repair_performed": true,
+    "no_d2_resolver_execution_on_novel_dev": true,
+    "no_production_role_change": true,
+    "new_model_or_api_calls": 0,
+    "new_retrieval_runs": 0
+  },
+  "measurement_validity": {
+    "measurement_execution_valid": true,
+    "dataset_structural_valid": false,
+    "known_pre_exposure_dataset_defect_count": 1,
+    "known_defect": {
+      "question_id": "n023",
+      "group_id": "n023.e1",
+      "type": "EXPECTED_EVIDENCE_MAPPING_ISSUE",
+      "known_before_first_outcome": true,
+      "handling": "excluded from system-failure accounting; n023.e2 diagnosed separately"
+    }
+  },
+  "metrics_note": "Primary ND-0B metrics (case-level macro means) are unchanged and authoritative; ND-0C adds group-level diagnostic accounting, labeled separately.",
+  "cases": [
+    {
+      "question_id": "n001",
+      "expected_status": "answered",
+      "ordinary_metric_applicable": true,
+      "required_evidence_group_count": 2,
+      "R@5": 1.0,
+      "R@10": 1.0,
+      "R@20": 1.0,
+      "MRR": 0.5,
+      "combined_candidate_recall": 1.0,
+      "final_evidence_recall": 1.0,
+      "primary_failure_stage": "NONE",
+      "taxonomy_labels": [],
+      "group_diagnostics": [
+        {
+          "group_id": "n001.e1",
+          "structurally_valid": true,
+          "channel_recalled": {
+            "exact": true,
+            "dense": true,
+            "sparse": true
+          },
+          "any_channel_recalled": true,
+          "combined_recalled": true,
+          "top5_recalled": true,
+          "top10_recalled": true,
+          "top20_recalled": true,
+          "final_selected": true,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        },
+        {
+          "group_id": "n001.e2",
+          "structurally_valid": true,
+          "channel_recalled": {
+            "exact": true,
+            "dense": true,
+            "sparse": true
+          },
+          "any_channel_recalled": true,
+          "combined_recalled": true,
+          "top5_recalled": true,
+          "top10_recalled": true,
+          "top20_recalled": true,
+          "final_selected": true,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        }
+      ],
+      "entity_terminology_relevance": {
+        "relevant": false,
+        "subtype": null,
+        "query_grounded_mention": null,
+        "rationale": "All required evidence groups recovered; no failure."
+      },
+      "d2_relevance": "NONE",
+      "confidence": "HIGH",
+      "notes": "All required evidence groups recovered through the frozen pipeline stages; no failure to diagnose."
+    },
+    {
+      "question_id": "n002",
+      "expected_status": "answered",
+      "ordinary_metric_applicable": true,
+      "required_evidence_group_count": 1,
+      "R@5": 0.0,
+      "R@10": 0.0,
+      "R@20": 0.0,
+      "MRR": 0.0,
+      "combined_candidate_recall": 1.0,
+      "final_evidence_recall": 0.0,
+      "primary_failure_stage": "FUSION_OR_RANKING_FAILURE",
+      "taxonomy_labels": [
+        "FUSION_OR_RANKING_FAILURE",
+        "DESCRIPTIVE_TERMINOLOGY_FAILURE",
+        "ENTITY_OR_TERMINOLOGY_RELATED"
+      ],
+      "group_diagnostics": [
+        {
+          "group_id": "n002.e1",
+          "structurally_valid": true,
+          "channel_recalled": {
+            "dense": true
+          },
+          "any_channel_recalled": true,
+          "combined_recalled": true,
+          "top5_recalled": false,
+          "top10_recalled": false,
+          "top20_recalled": false,
+          "final_selected": false,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        }
+      ],
+      "entity_terminology_relevance": {
+        "relevant": true,
+        "subtype": "descriptive_phrase",
+        "query_grounded_mention": "Python packages ... requirements/tooling list",
+        "rationale": "Descriptive mention maps to requirements.txt; the dense channel recalled the target but ranking dropped it before top-20."
+      },
+      "d2_relevance": "INDIRECT",
+      "confidence": "HIGH",
+      "notes": "Target recalled by a channel and present in the combined pool; lost between combined pool and top-20. Reranking cannot be isolated from fusion/ranking in the frozen trace (FUSION_OR_RANKING_FAILURE used per the frozen criterion)."
+    },
+    {
+      "question_id": "n003",
+      "expected_status": "answered",
+      "ordinary_metric_applicable": true,
+      "required_evidence_group_count": 2,
+      "R@5": 0.5,
+      "R@10": 0.5,
+      "R@20": 0.5,
+      "MRR": 1.0,
+      "combined_candidate_recall": 1.0,
+      "final_evidence_recall": 0.5,
+      "primary_failure_stage": "FUSION_OR_RANKING_FAILURE",
+      "taxonomy_labels": [
+        "FUSION_OR_RANKING_FAILURE",
+        "MULTI_EVIDENCE_FAILURE"
+      ],
+      "group_diagnostics": [
+        {
+          "group_id": "n003.e1",
+          "structurally_valid": true,
+          "channel_recalled": {
+            "dense": true
+          },
+          "any_channel_recalled": true,
+          "combined_recalled": true,
+          "top5_recalled": true,
+          "top10_recalled": true,
+          "top20_recalled": true,
+          "final_selected": true,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        },
+        {
+          "group_id": "n003.e2",
+          "structurally_valid": true,
+          "channel_recalled": {
+            "dense": true
+          },
+          "any_channel_recalled": true,
+          "combined_recalled": true,
+          "top5_recalled": false,
+          "top10_recalled": false,
+          "top20_recalled": false,
+          "final_selected": false,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        }
+      ],
+      "entity_terminology_relevance": {
+        "relevant": false,
+        "subtype": null,
+        "query_grounded_mention": null,
+        "rationale": "The component-identifying groups (PndFixStepParticleGun.h + sphinx page) matched in top-5; only the same component's .cxx sibling was lost in ranking."
+      },
+      "d2_relevance": "INDIRECT",
+      "confidence": "HIGH",
+      "notes": "Partial multi-evidence recovery: 1 of 2 groups; loss is ranking of a sibling implementation file of an already-identified component."
+    },
+    {
+      "question_id": "n004",
+      "expected_status": "answered",
+      "ordinary_metric_applicable": true,
+      "required_evidence_group_count": 1,
+      "R@5": 1.0,
+      "R@10": 1.0,
+      "R@20": 1.0,
+      "MRR": 1.0,
+      "combined_candidate_recall": 1.0,
+      "final_evidence_recall": 1.0,
+      "primary_failure_stage": "NONE",
+      "taxonomy_labels": [],
+      "group_diagnostics": [
+        {
+          "group_id": "n004.e1",
+          "structurally_valid": true,
+          "channel_recalled": {
+            "dense": true,
+            "sparse": true
+          },
+          "any_channel_recalled": true,
+          "combined_recalled": true,
+          "top5_recalled": true,
+          "top10_recalled": true,
+          "top20_recalled": true,
+          "final_selected": true,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        }
+      ],
+      "entity_terminology_relevance": {
+        "relevant": false,
+        "subtype": null,
+        "query_grounded_mention": null,
+        "rationale": "All required evidence groups recovered; no failure."
+      },
+      "d2_relevance": "NONE",
+      "confidence": "HIGH",
+      "notes": "All required evidence groups recovered through the frozen pipeline stages; no failure to diagnose."
+    },
+    {
+      "question_id": "n005",
+      "expected_status": "answered",
+      "ordinary_metric_applicable": true,
+      "required_evidence_group_count": 2,
+      "R@5": 0.5,
+      "R@10": 0.5,
+      "R@20": 0.5,
+      "MRR": 1.0,
+      "combined_candidate_recall": 0.5,
+      "final_evidence_recall": 0.5,
+      "primary_failure_stage": "CHANNEL_RECALL_FAILURE",
+      "taxonomy_labels": [
+        "CHANNEL_RECALL_FAILURE",
+        "DESCRIPTIVE_TERMINOLOGY_FAILURE",
+        "ENTITY_OR_TERMINOLOGY_RELATED",
+        "MULTI_EVIDENCE_FAILURE"
+      ],
+      "group_diagnostics": [
+        {
+          "group_id": "n005.e1",
+          "structurally_valid": true,
+          "channel_recalled": {
+            "dense": true,
+            "sparse": true
+          },
+          "any_channel_recalled": true,
+          "combined_recalled": true,
+          "top5_recalled": true,
+          "top10_recalled": true,
+          "top20_recalled": true,
+          "final_selected": true,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        },
+        {
+          "group_id": "n005.e2",
+          "structurally_valid": true,
+          "channel_recalled": {},
+          "any_channel_recalled": false,
+          "combined_recalled": false,
+          "top5_recalled": false,
+          "top10_recalled": false,
+          "top20_recalled": false,
+          "final_selected": false,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        }
+      ],
+      "entity_terminology_relevance": {
+        "relevant": true,
+        "subtype": "descriptive_entity_identification",
+        "query_grounded_mention": "look at the events and the detector geometry ... get my file open",
+        "rationale": "Purely descriptive mention of the event-display tool; macro/tools/eventDisplay.C appears in no executed channel candidate pool (the sphinx documentation group matched)."
+      },
+      "d2_relevance": "DIRECT",
+      "confidence": "MEDIUM",
+      "notes": "Candidate-generation loss for a descriptively identified target. Contextual Tier D applicability only; no resolver treatment was run."
+    },
+    {
+      "question_id": "n006",
+      "expected_status": "answered",
+      "ordinary_metric_applicable": true,
+      "required_evidence_group_count": 2,
+      "R@5": 0.5,
+      "R@10": 0.5,
+      "R@20": 0.5,
+      "MRR": 0.5,
+      "combined_candidate_recall": 1.0,
+      "final_evidence_recall": 0.5,
+      "primary_failure_stage": "FUSION_OR_RANKING_FAILURE",
+      "taxonomy_labels": [
+        "FUSION_OR_RANKING_FAILURE",
+        "MULTI_EVIDENCE_FAILURE"
+      ],
+      "group_diagnostics": [
+        {
+          "group_id": "n006.e1",
+          "structurally_valid": true,
+          "channel_recalled": {
+            "dense": true
+          },
+          "any_channel_recalled": true,
+          "combined_recalled": true,
+          "top5_recalled": true,
+          "top10_recalled": true,
+          "top20_recalled": true,
+          "final_selected": true,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        },
+        {
+          "group_id": "n006.e2",
+          "structurally_valid": true,
+          "channel_recalled": {
+            "dense": true,
+            "graph": true
+          },
+          "any_channel_recalled": true,
+          "combined_recalled": true,
+          "top5_recalled": false,
+          "top10_recalled": false,
+          "top20_recalled": false,
+          "final_selected": false,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        }
+      ],
+      "entity_terminology_relevance": {
+        "relevant": false,
+        "subtype": null,
+        "query_grounded_mention": null,
+        "rationale": "PndFileNameCreator.h + its sphinx page matched in top-5; the .cxx sibling was lost in ranking."
+      },
+      "d2_relevance": "INDIRECT",
+      "confidence": "HIGH",
+      "notes": "Same shape as n003: identified component, sibling implementation file lost between combined pool and top-20."
+    },
+    {
+      "question_id": "n007",
+      "expected_status": "answered",
+      "ordinary_metric_applicable": true,
+      "required_evidence_group_count": 1,
+      "R@5": 1.0,
+      "R@10": 1.0,
+      "R@20": 1.0,
+      "MRR": 1.0,
+      "combined_candidate_recall": 1.0,
+      "final_evidence_recall": 1.0,
+      "primary_failure_stage": "NONE",
+      "taxonomy_labels": [],
+      "group_diagnostics": [
+        {
+          "group_id": "n007.e1",
+          "structurally_valid": true,
+          "channel_recalled": {
+            "dense": true,
+            "sparse": true
+          },
+          "any_channel_recalled": true,
+          "combined_recalled": true,
+          "top5_recalled": true,
+          "top10_recalled": true,
+          "top20_recalled": true,
+          "final_selected": true,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        }
+      ],
+      "entity_terminology_relevance": {
+        "relevant": false,
+        "subtype": null,
+        "query_grounded_mention": null,
+        "rationale": "All required evidence groups recovered; no failure."
+      },
+      "d2_relevance": "NONE",
+      "confidence": "HIGH",
+      "notes": "All required evidence groups recovered through the frozen pipeline stages; no failure to diagnose."
+    },
+    {
+      "question_id": "n008",
+      "expected_status": "answered",
+      "ordinary_metric_applicable": true,
+      "required_evidence_group_count": 1,
+      "R@5": 1.0,
+      "R@10": 1.0,
+      "R@20": 1.0,
+      "MRR": 1.0,
+      "combined_candidate_recall": 1.0,
+      "final_evidence_recall": 1.0,
+      "primary_failure_stage": "NONE",
+      "taxonomy_labels": [],
+      "group_diagnostics": [
+        {
+          "group_id": "n008.e1",
+          "structurally_valid": true,
+          "channel_recalled": {
+            "exact": true,
+            "dense": true,
+            "sparse": true
+          },
+          "any_channel_recalled": true,
+          "combined_recalled": true,
+          "top5_recalled": true,
+          "top10_recalled": true,
+          "top20_recalled": true,
+          "final_selected": true,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        }
+      ],
+      "entity_terminology_relevance": {
+        "relevant": false,
+        "subtype": null,
+        "query_grounded_mention": null,
+        "rationale": "All required evidence groups recovered; no failure."
+      },
+      "d2_relevance": "NONE",
+      "confidence": "HIGH",
+      "notes": "All required evidence groups recovered through the frozen pipeline stages; no failure to diagnose."
+    },
+    {
+      "question_id": "n009",
+      "expected_status": "answered",
+      "ordinary_metric_applicable": true,
+      "required_evidence_group_count": 3,
+      "R@5": 0.3333333333333333,
+      "R@10": 0.3333333333333333,
+      "R@20": 0.3333333333333333,
+      "MRR": 0.25,
+      "combined_candidate_recall": 0.6666666666666666,
+      "final_evidence_recall": 0.3333333333333333,
+      "primary_failure_stage": "CHANNEL_RECALL_FAILURE",
+      "taxonomy_labels": [
+        "CHANNEL_RECALL_FAILURE",
+        "FUSION_OR_RANKING_FAILURE",
+        "DESCRIPTIVE_TERMINOLOGY_FAILURE",
+        "ENTITY_OR_TERMINOLOGY_RELATED",
+        "MULTI_EVIDENCE_FAILURE"
+      ],
+      "group_diagnostics": [
+        {
+          "group_id": "n009.e1",
+          "structurally_valid": true,
+          "channel_recalled": {
+            "dense": true
+          },
+          "any_channel_recalled": true,
+          "combined_recalled": true,
+          "top5_recalled": true,
+          "top10_recalled": true,
+          "top20_recalled": true,
+          "final_selected": true,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        },
+        {
+          "group_id": "n009.e2",
+          "structurally_valid": true,
+          "channel_recalled": {
+            "sparse": true
+          },
+          "any_channel_recalled": true,
+          "combined_recalled": true,
+          "top5_recalled": false,
+          "top10_recalled": false,
+          "top20_recalled": false,
+          "final_selected": false,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        },
+        {
+          "group_id": "n009.e3",
+          "structurally_valid": true,
+          "channel_recalled": {},
+          "any_channel_recalled": false,
+          "combined_recalled": false,
+          "top5_recalled": false,
+          "top10_recalled": false,
+          "top20_recalled": false,
+          "final_selected": false,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        }
+      ],
+      "entity_terminology_relevance": {
+        "relevant": true,
+        "subtype": "descriptive_entity_identification",
+        "query_grounded_mention": "does it also exist as LuminosityFit code",
+        "rationale": "The alternative-model source files (PndLmdE760ModelParametrization.cxx / PndLmdE760LikeModelParametrization.cxx) are identified only descriptively and appear in no channel pool; the second thesis group was recalled by sparse but lost in ranking."
+      },
+      "d2_relevance": "DIRECT",
+      "confidence": "MEDIUM",
+      "notes": "Earliest loss is candidate generation for the descriptively identified code target; secondary ranking loss on the thesis group. Contextual Tier D applicability only."
+    },
+    {
+      "question_id": "n010",
+      "expected_status": "answered",
+      "ordinary_metric_applicable": true,
+      "required_evidence_group_count": 4,
+      "R@5": 0.0,
+      "R@10": 0.0,
+      "R@20": 0.0,
+      "MRR": 0.0,
+      "combined_candidate_recall": 0.25,
+      "final_evidence_recall": 0.0,
+      "primary_failure_stage": "CHANNEL_RECALL_FAILURE",
+      "taxonomy_labels": [
+        "CHANNEL_RECALL_FAILURE",
+        "FUSION_OR_RANKING_FAILURE",
+        "DESCRIPTIVE_TERMINOLOGY_FAILURE",
+        "ENTITY_OR_TERMINOLOGY_RELATED",
+        "MULTI_EVIDENCE_FAILURE"
+      ],
+      "group_diagnostics": [
+        {
+          "group_id": "n010.e1",
+          "structurally_valid": true,
+          "channel_recalled": {
+            "graph": true
+          },
+          "any_channel_recalled": true,
+          "combined_recalled": true,
+          "top5_recalled": false,
+          "top10_recalled": false,
+          "top20_recalled": false,
+          "final_selected": false,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        },
+        {
+          "group_id": "n010.e2",
+          "structurally_valid": true,
+          "channel_recalled": {},
+          "any_channel_recalled": false,
+          "combined_recalled": false,
+          "top5_recalled": false,
+          "top10_recalled": false,
+          "top20_recalled": false,
+          "final_selected": false,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        },
+        {
+          "group_id": "n010.e3",
+          "structurally_valid": true,
+          "channel_recalled": {},
+          "any_channel_recalled": false,
+          "combined_recalled": false,
+          "top5_recalled": false,
+          "top10_recalled": false,
+          "top20_recalled": false,
+          "final_selected": false,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        },
+        {
+          "group_id": "n010.e4",
+          "structurally_valid": true,
+          "channel_recalled": {},
+          "any_channel_recalled": false,
+          "combined_recalled": false,
+          "top5_recalled": false,
+          "top10_recalled": false,
+          "top20_recalled": false,
+          "final_selected": false,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        }
+      ],
+      "entity_terminology_relevance": {
+        "relevant": true,
+        "subtype": "descriptive_entity_identification",
+        "query_grounded_mention": "PandaRoot's fast simulation ... which building blocks is it made of",
+        "rationale": "Three of four fastsim building-block files (PndFsmAbsDet.h, PndFsmDetFactory.cxx, PndFsmResponse.h) appear in no channel pool; PndFastSim.cxx was recalled (graph) but lost in ranking."
+      },
+      "d2_relevance": "DIRECT",
+      "confidence": "MEDIUM",
+      "notes": "Dominant loss is candidate generation for descriptively identified building-block files. Contextual Tier D applicability only."
+    },
+    {
+      "question_id": "n014",
+      "expected_status": "answered",
+      "ordinary_metric_applicable": true,
+      "required_evidence_group_count": 2,
+      "R@5": 0.5,
+      "R@10": 0.5,
+      "R@20": 0.5,
+      "MRR": 1.0,
+      "combined_candidate_recall": 0.5,
+      "final_evidence_recall": 0.5,
+      "primary_failure_stage": "CHANNEL_RECALL_FAILURE",
+      "taxonomy_labels": [
+        "CHANNEL_RECALL_FAILURE",
+        "EXACT_IDENTIFIER_FAILURE",
+        "ENTITY_OR_TERMINOLOGY_RELATED",
+        "MULTI_EVIDENCE_FAILURE"
+      ],
+      "group_diagnostics": [
+        {
+          "group_id": "n014.e1",
+          "structurally_valid": true,
+          "channel_recalled": {},
+          "any_channel_recalled": false,
+          "combined_recalled": false,
+          "top5_recalled": false,
+          "top10_recalled": false,
+          "top20_recalled": false,
+          "final_selected": false,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        },
+        {
+          "group_id": "n014.e2",
+          "structurally_valid": true,
+          "channel_recalled": {
+            "exact": true,
+            "dense": true,
+            "sparse": true
+          },
+          "any_channel_recalled": true,
+          "combined_recalled": true,
+          "top5_recalled": true,
+          "top10_recalled": true,
+          "top20_recalled": true,
+          "final_selected": true,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        }
+      ],
+      "entity_terminology_relevance": {
+        "relevant": true,
+        "subtype": "exact_surface_directory",
+        "query_grounded_mention": "model_framework directory ... model/PndLmdModelFactory",
+        "rationale": "The query names the exact governed surface 'model_framework' and the exact symbol PndLmdModelFactory; PndLmdModelFactory.h matched in top-5 but model_framework/README.md appears in no channel pool."
+      },
+      "d2_relevance": "DIRECT",
+      "confidence": "MEDIUM",
+      "notes": "Exact-identifier presence did not prevent candidate-generation loss of the governed README target. Contextual Tier G/S discussion input; no resolver treatment was run."
+    },
+    {
+      "question_id": "n015",
+      "expected_status": "answered",
+      "ordinary_metric_applicable": true,
+      "required_evidence_group_count": 1,
+      "R@5": 1.0,
+      "R@10": 1.0,
+      "R@20": 1.0,
+      "MRR": 0.25,
+      "combined_candidate_recall": 1.0,
+      "final_evidence_recall": 1.0,
+      "primary_failure_stage": "NONE",
+      "taxonomy_labels": [],
+      "group_diagnostics": [
+        {
+          "group_id": "n015.e1",
+          "structurally_valid": true,
+          "channel_recalled": {
+            "exact": true,
+            "dense": true,
+            "sparse": true
+          },
+          "any_channel_recalled": true,
+          "combined_recalled": true,
+          "top5_recalled": true,
+          "top10_recalled": true,
+          "top20_recalled": true,
+          "final_selected": true,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        }
+      ],
+      "entity_terminology_relevance": {
+        "relevant": false,
+        "subtype": null,
+        "query_grounded_mention": null,
+        "rationale": "All required evidence groups recovered; no failure."
+      },
+      "d2_relevance": "NONE",
+      "confidence": "HIGH",
+      "notes": "All required evidence groups recovered through the frozen pipeline stages; no failure to diagnose."
+    },
+    {
+      "question_id": "n016",
+      "expected_status": "insufficient_evidence",
+      "ordinary_metric_applicable": false,
+      "required_evidence_group_count": 1,
+      "R@5": null,
+      "R@10": null,
+      "R@20": null,
+      "MRR": null,
+      "combined_candidate_recall": null,
+      "final_evidence_recall": null,
+      "primary_failure_stage": "NONE",
+      "taxonomy_labels": [],
+      "group_diagnostics": [
+        {
+          "group_id": "n016.e1",
+          "structurally_valid": true,
+          "channel_recalled": {
+            "exact": true,
+            "dense": true,
+            "sparse": true
+          },
+          "any_channel_recalled": true,
+          "combined_recalled": true,
+          "top5_recalled": true,
+          "top10_recalled": true,
+          "top20_recalled": true,
+          "final_selected": true,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        }
+      ],
+      "entity_terminology_relevance": {
+        "relevant": false,
+        "subtype": null,
+        "query_grounded_mention": null,
+        "rationale": "No retrieval-stage loss: the final evidence fully matches the required group (group recall 1.0; the targeted Docker sphinx pages were selected)."
+      },
+      "d2_relevance": "NONE",
+      "confidence": "HIGH",
+      "notes": "The one frozen insufficient_evidence case, diagnosed separately: retrieval returned the target evidence (12 items incl. the required Docker pages), so the refusal expectation was not met. The insufficient-evidence abstention boundary lives in the QA/answer layer, which retrieval-only ND-0B does not exercise; retrieval-level `answered` is not equivalent to final QA answer quality. Not a retrieval recall failure; no stage label applies."
+    },
+    {
+      "question_id": "n017",
+      "expected_status": "answered",
+      "ordinary_metric_applicable": true,
+      "required_evidence_group_count": 1,
+      "R@5": 0.0,
+      "R@10": 0.0,
+      "R@20": 0.0,
+      "MRR": 0.0,
+      "combined_candidate_recall": 1.0,
+      "final_evidence_recall": 0.0,
+      "primary_failure_stage": "FUSION_OR_RANKING_FAILURE",
+      "taxonomy_labels": [
+        "FUSION_OR_RANKING_FAILURE",
+        "DESCRIPTIVE_TERMINOLOGY_FAILURE",
+        "ENTITY_OR_TERMINOLOGY_RELATED"
+      ],
+      "group_diagnostics": [
+        {
+          "group_id": "n017.e1",
+          "structurally_valid": true,
+          "channel_recalled": {
+            "dense": true
+          },
+          "any_channel_recalled": true,
+          "combined_recalled": true,
+          "top5_recalled": false,
+          "top10_recalled": false,
+          "top20_recalled": false,
+          "final_selected": false,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        }
+      ],
+      "entity_terminology_relevance": {
+        "relevant": true,
+        "subtype": "descriptive_phrase",
+        "query_grounded_mention": "the reconstructed-track object handed between PandaRoot tracking tasks",
+        "rationale": "Descriptive mention of PndTrack; the dense channel recalled pnddata/TrackData/PndTrack.h but ranking dropped it before top-20."
+      },
+      "d2_relevance": "INDIRECT",
+      "confidence": "HIGH",
+      "notes": "Candidate recalled; ranking loss."
+    },
+    {
+      "question_id": "n018",
+      "expected_status": "answered",
+      "ordinary_metric_applicable": true,
+      "required_evidence_group_count": 1,
+      "R@5": 1.0,
+      "R@10": 1.0,
+      "R@20": 1.0,
+      "MRR": 1.0,
+      "combined_candidate_recall": 1.0,
+      "final_evidence_recall": 1.0,
+      "primary_failure_stage": "NONE",
+      "taxonomy_labels": [],
+      "group_diagnostics": [
+        {
+          "group_id": "n018.e1",
+          "structurally_valid": true,
+          "channel_recalled": {
+            "exact": true,
+            "dense": true,
+            "sparse": true
+          },
+          "any_channel_recalled": true,
+          "combined_recalled": true,
+          "top5_recalled": true,
+          "top10_recalled": true,
+          "top20_recalled": true,
+          "final_selected": true,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        }
+      ],
+      "entity_terminology_relevance": {
+        "relevant": false,
+        "subtype": null,
+        "query_grounded_mention": null,
+        "rationale": "All required evidence groups recovered; no failure."
+      },
+      "d2_relevance": "NONE",
+      "confidence": "HIGH",
+      "notes": "All required evidence groups recovered through the frozen pipeline stages; no failure to diagnose."
+    },
+    {
+      "question_id": "n019",
+      "expected_status": "answered",
+      "ordinary_metric_applicable": true,
+      "required_evidence_group_count": 2,
+      "R@5": 1.0,
+      "R@10": 1.0,
+      "R@20": 1.0,
+      "MRR": 0.5,
+      "combined_candidate_recall": 1.0,
+      "final_evidence_recall": 1.0,
+      "primary_failure_stage": "NONE",
+      "taxonomy_labels": [],
+      "group_diagnostics": [
+        {
+          "group_id": "n019.e1",
+          "structurally_valid": true,
+          "channel_recalled": {
+            "exact": true,
+            "dense": true,
+            "sparse": true
+          },
+          "any_channel_recalled": true,
+          "combined_recalled": true,
+          "top5_recalled": true,
+          "top10_recalled": true,
+          "top20_recalled": true,
+          "final_selected": true,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        },
+        {
+          "group_id": "n019.e2",
+          "structurally_valid": true,
+          "channel_recalled": {
+            "exact": true,
+            "sparse": true
+          },
+          "any_channel_recalled": true,
+          "combined_recalled": true,
+          "top5_recalled": true,
+          "top10_recalled": true,
+          "top20_recalled": true,
+          "final_selected": true,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        }
+      ],
+      "entity_terminology_relevance": {
+        "relevant": false,
+        "subtype": null,
+        "query_grounded_mention": null,
+        "rationale": "All required evidence groups recovered; no failure."
+      },
+      "d2_relevance": "NONE",
+      "confidence": "HIGH",
+      "notes": "All required evidence groups recovered through the frozen pipeline stages; no failure to diagnose."
+    },
+    {
+      "question_id": "n020",
+      "expected_status": "answered",
+      "ordinary_metric_applicable": true,
+      "required_evidence_group_count": 3,
+      "R@5": 0.0,
+      "R@10": 0.3333333333333333,
+      "R@20": 0.3333333333333333,
+      "MRR": 0.16666666666666666,
+      "combined_candidate_recall": 0.3333333333333333,
+      "final_evidence_recall": 0.3333333333333333,
+      "primary_failure_stage": "CHANNEL_RECALL_FAILURE",
+      "taxonomy_labels": [
+        "CHANNEL_RECALL_FAILURE",
+        "DESCRIPTIVE_TERMINOLOGY_FAILURE",
+        "ENTITY_OR_TERMINOLOGY_RELATED",
+        "MULTI_EVIDENCE_FAILURE"
+      ],
+      "group_diagnostics": [
+        {
+          "group_id": "n020.e1",
+          "structurally_valid": true,
+          "channel_recalled": {
+            "exact": true,
+            "dense": true,
+            "sparse": true
+          },
+          "any_channel_recalled": true,
+          "combined_recalled": true,
+          "top5_recalled": false,
+          "top10_recalled": true,
+          "top20_recalled": true,
+          "final_selected": true,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        },
+        {
+          "group_id": "n020.e2",
+          "structurally_valid": true,
+          "channel_recalled": {},
+          "any_channel_recalled": false,
+          "combined_recalled": false,
+          "top5_recalled": false,
+          "top10_recalled": false,
+          "top20_recalled": false,
+          "final_selected": false,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        },
+        {
+          "group_id": "n020.e3",
+          "structurally_valid": true,
+          "channel_recalled": {},
+          "any_channel_recalled": false,
+          "combined_recalled": false,
+          "top5_recalled": false,
+          "top10_recalled": false,
+          "top20_recalled": false,
+          "final_selected": false,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        }
+      ],
+      "entity_terminology_relevance": {
+        "relevant": true,
+        "subtype": "descriptive_entity_identification",
+        "query_grounded_mention": "which task picks up those leftover hits ... displaced-track finder and z-recovery stages",
+        "rationale": "Both downstream-stage files (PndUnassignedHitsTask.h, PndApolloniusTripletTrackFinderTask.h) are identified only descriptively and appear in no channel pool; only the README group matched."
+      },
+      "d2_relevance": "DIRECT",
+      "confidence": "MEDIUM",
+      "notes": "Candidate-generation loss for descriptively identified pipeline-stage files. Contextual Tier D applicability only."
+    },
+    {
+      "question_id": "n021",
+      "expected_status": "answered",
+      "ordinary_metric_applicable": true,
+      "required_evidence_group_count": 2,
+      "R@5": 0.0,
+      "R@10": 0.5,
+      "R@20": 0.5,
+      "MRR": 0.16666666666666666,
+      "combined_candidate_recall": 0.5,
+      "final_evidence_recall": 0.5,
+      "primary_failure_stage": "CHANNEL_RECALL_FAILURE",
+      "taxonomy_labels": [
+        "CHANNEL_RECALL_FAILURE",
+        "CROSS_REPOSITORY_FAILURE",
+        "MULTI_EVIDENCE_FAILURE"
+      ],
+      "group_diagnostics": [
+        {
+          "group_id": "n021.e1",
+          "structurally_valid": true,
+          "channel_recalled": {
+            "dense": true,
+            "sparse": true
+          },
+          "any_channel_recalled": true,
+          "combined_recalled": true,
+          "top5_recalled": false,
+          "top10_recalled": true,
+          "top20_recalled": true,
+          "final_selected": true,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        },
+        {
+          "group_id": "n021.e2",
+          "structurally_valid": true,
+          "channel_recalled": {},
+          "any_channel_recalled": false,
+          "combined_recalled": false,
+          "top5_recalled": false,
+          "top10_recalled": false,
+          "top20_recalled": false,
+          "final_selected": false,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        }
+      ],
+      "entity_terminology_relevance": {
+        "relevant": false,
+        "subtype": null,
+        "query_grounded_mention": null,
+        "rationale": "The only cross_repository case: the LuminosityFit side matched while the PandaRoot-side target (detectors/lmd/CMakeLists.txt) appears in no channel pool."
+      },
+      "d2_relevance": "NONE",
+      "confidence": "HIGH",
+      "notes": "Cross-repository evidence-assembly topology; per the frozen D2 relevance semantics this is not resolver-contract loss. Single case; no generalization from this cell."
+    },
+    {
+      "question_id": "n022",
+      "expected_status": "answered",
+      "ordinary_metric_applicable": true,
+      "required_evidence_group_count": 3,
+      "R@5": 0.6666666666666666,
+      "R@10": 0.6666666666666666,
+      "R@20": 0.6666666666666666,
+      "MRR": 0.5,
+      "combined_candidate_recall": 0.6666666666666666,
+      "final_evidence_recall": 0.3333333333333333,
+      "primary_failure_stage": "CHANNEL_RECALL_FAILURE",
+      "taxonomy_labels": [
+        "CHANNEL_RECALL_FAILURE",
+        "FINAL_SELECTOR_FAILURE",
+        "DESCRIPTIVE_TERMINOLOGY_FAILURE",
+        "ENTITY_OR_TERMINOLOGY_RELATED",
+        "MULTI_EVIDENCE_FAILURE"
+      ],
+      "group_diagnostics": [
+        {
+          "group_id": "n022.e1",
+          "structurally_valid": true,
+          "channel_recalled": {},
+          "any_channel_recalled": false,
+          "combined_recalled": false,
+          "top5_recalled": false,
+          "top10_recalled": false,
+          "top20_recalled": false,
+          "final_selected": false,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        },
+        {
+          "group_id": "n022.e2",
+          "structurally_valid": true,
+          "channel_recalled": {
+            "exact": true,
+            "sparse": true
+          },
+          "any_channel_recalled": true,
+          "combined_recalled": true,
+          "top5_recalled": true,
+          "top10_recalled": true,
+          "top20_recalled": true,
+          "final_selected": true,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        },
+        {
+          "group_id": "n022.e3",
+          "structurally_valid": true,
+          "channel_recalled": {
+            "dense": true,
+            "sparse": true
+          },
+          "any_channel_recalled": true,
+          "combined_recalled": true,
+          "top5_recalled": true,
+          "top10_recalled": true,
+          "top20_recalled": true,
+          "final_selected": false,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        }
+      ],
+      "entity_terminology_relevance": {
+        "relevant": true,
+        "subtype": "descriptive_phrase",
+        "query_grounded_mention": "what does the first worker step leave behind for the second analysis step",
+        "rationale": "ana_dpm.C (the first worker step) is identified descriptively and appears in no channel pool; additionally poca_step2-related README group n022.e3 survived top-20 but was not finally selected \u2014 the only top20\u2192final loss in the measurement."
+      },
+      "d2_relevance": "INDIRECT",
+      "confidence": "HIGH",
+      "notes": "Two distinct loss stages (channel and final selector); terminology mapping context present but the selector loss is outside the D2 resolver contract."
+    },
+    {
+      "question_id": "n023",
+      "expected_status": "answered",
+      "ordinary_metric_applicable": true,
+      "required_evidence_group_count": 2,
+      "R@5": 0.0,
+      "R@10": 0.0,
+      "R@20": 0.0,
+      "MRR": 0.0,
+      "combined_candidate_recall": 0.5,
+      "final_evidence_recall": 0.0,
+      "primary_failure_stage": "FUSION_OR_RANKING_FAILURE",
+      "taxonomy_labels": [
+        "FUSION_OR_RANKING_FAILURE",
+        "ENTITY_OR_TERMINOLOGY_RELATED",
+        "EXPECTED_EVIDENCE_MAPPING_ISSUE"
+      ],
+      "group_diagnostics": [
+        {
+          "group_id": "n023.e1",
+          "structurally_valid": false,
+          "channel_recalled": {},
+          "any_channel_recalled": false,
+          "combined_recalled": false,
+          "top5_recalled": false,
+          "top10_recalled": false,
+          "top20_recalled": false,
+          "final_selected": false,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        },
+        {
+          "group_id": "n023.e2",
+          "structurally_valid": true,
+          "channel_recalled": {
+            "dense": true
+          },
+          "any_channel_recalled": true,
+          "combined_recalled": true,
+          "top5_recalled": false,
+          "top10_recalled": false,
+          "top20_recalled": false,
+          "final_selected": false,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        }
+      ],
+      "entity_terminology_relevance": {
+        "relevant": true,
+        "subtype": "alias_surface_variation",
+        "query_grounded_mention": "FTS track finder",
+        "rationale": "'FTS track finder' is a surface variation of PndFtsTrackFinder; the dense channel recalled PndFtsTrackFinderTask.cxx but ranking dropped it before top-20. n023.e1 is the known structurally impossible Gold mapping (counted as dataset defect, not system failure)."
+      },
+      "d2_relevance": "INDIRECT",
+      "confidence": "HIGH",
+      "notes": "Valid-group loss is ranking; the impossible n023.e1 miss is excluded from system-failure accounting per the frozen ND-0B-R1 boundary."
+    },
+    {
+      "question_id": "n024",
+      "expected_status": "answered",
+      "ordinary_metric_applicable": true,
+      "required_evidence_group_count": 2,
+      "R@5": 1.0,
+      "R@10": 1.0,
+      "R@20": 1.0,
+      "MRR": 0.5,
+      "combined_candidate_recall": 1.0,
+      "final_evidence_recall": 1.0,
+      "primary_failure_stage": "NONE",
+      "taxonomy_labels": [],
+      "group_diagnostics": [
+        {
+          "group_id": "n024.e1",
+          "structurally_valid": true,
+          "channel_recalled": {
+            "dense": true,
+            "sparse": true
+          },
+          "any_channel_recalled": true,
+          "combined_recalled": true,
+          "top5_recalled": true,
+          "top10_recalled": true,
+          "top20_recalled": true,
+          "final_selected": true,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        },
+        {
+          "group_id": "n024.e2",
+          "structurally_valid": true,
+          "channel_recalled": {
+            "dense": true,
+            "sparse": true,
+            "graph": true
+          },
+          "any_channel_recalled": true,
+          "combined_recalled": true,
+          "top5_recalled": true,
+          "top10_recalled": true,
+          "top20_recalled": true,
+          "final_selected": true,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        }
+      ],
+      "entity_terminology_relevance": {
+        "relevant": false,
+        "subtype": null,
+        "query_grounded_mention": null,
+        "rationale": "All required evidence groups recovered; no failure."
+      },
+      "d2_relevance": "NONE",
+      "confidence": "HIGH",
+      "notes": "All required evidence groups recovered through the frozen pipeline stages; no failure to diagnose."
+    },
+    {
+      "question_id": "n025",
+      "expected_status": "answered",
+      "ordinary_metric_applicable": true,
+      "required_evidence_group_count": 2,
+      "R@5": 0.0,
+      "R@10": 0.5,
+      "R@20": 0.5,
+      "MRR": 0.16666666666666666,
+      "combined_candidate_recall": 1.0,
+      "final_evidence_recall": 0.5,
+      "primary_failure_stage": "FUSION_OR_RANKING_FAILURE",
+      "taxonomy_labels": [
+        "FUSION_OR_RANKING_FAILURE",
+        "EXACT_IDENTIFIER_FAILURE",
+        "ENTITY_OR_TERMINOLOGY_RELATED",
+        "MULTI_EVIDENCE_FAILURE"
+      ],
+      "group_diagnostics": [
+        {
+          "group_id": "n025.e1",
+          "structurally_valid": true,
+          "channel_recalled": {
+            "dense": true,
+            "sparse": true
+          },
+          "any_channel_recalled": true,
+          "combined_recalled": true,
+          "top5_recalled": false,
+          "top10_recalled": true,
+          "top20_recalled": true,
+          "final_selected": true,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        },
+        {
+          "group_id": "n025.e2",
+          "structurally_valid": true,
+          "channel_recalled": {
+            "sparse": true
+          },
+          "any_channel_recalled": true,
+          "combined_recalled": true,
+          "top5_recalled": false,
+          "top10_recalled": false,
+          "top20_recalled": false,
+          "final_selected": false,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        }
+      ],
+      "entity_terminology_relevance": {
+        "relevant": true,
+        "subtype": "exact_technical_term",
+        "query_grounded_mention": "Apollonius tangency problem",
+        "rationale": "The exact technical term 'Apollonius' provides strong identity leverage for PndApolloniusTriplet.h; the sparse channel recalled it but ranking dropped it before top-20."
+      },
+      "d2_relevance": "INDIRECT",
+      "confidence": "HIGH",
+      "notes": "Exact-identifier cases can still lose recalled candidates in ranking; resolver activation would not by itself address the observed loss."
+    },
+    {
+      "question_id": "n026",
+      "expected_status": "answered",
+      "ordinary_metric_applicable": true,
+      "required_evidence_group_count": 1,
+      "R@5": 1.0,
+      "R@10": 1.0,
+      "R@20": 1.0,
+      "MRR": 1.0,
+      "combined_candidate_recall": 1.0,
+      "final_evidence_recall": 1.0,
+      "primary_failure_stage": "NONE",
+      "taxonomy_labels": [],
+      "group_diagnostics": [
+        {
+          "group_id": "n026.e1",
+          "structurally_valid": true,
+          "channel_recalled": {
+            "dense": true,
+            "sparse": true
+          },
+          "any_channel_recalled": true,
+          "combined_recalled": true,
+          "top5_recalled": true,
+          "top10_recalled": true,
+          "top20_recalled": true,
+          "final_selected": true,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        }
+      ],
+      "entity_terminology_relevance": {
+        "relevant": false,
+        "subtype": null,
+        "query_grounded_mention": null,
+        "rationale": "All required evidence groups recovered; no failure."
+      },
+      "d2_relevance": "NONE",
+      "confidence": "HIGH",
+      "notes": "All required evidence groups recovered through the frozen pipeline stages; no failure to diagnose."
+    },
+    {
+      "question_id": "n027",
+      "expected_status": "answered",
+      "ordinary_metric_applicable": true,
+      "required_evidence_group_count": 2,
+      "R@5": 0.5,
+      "R@10": 1.0,
+      "R@20": 1.0,
+      "MRR": 0.25,
+      "combined_candidate_recall": 1.0,
+      "final_evidence_recall": 1.0,
+      "primary_failure_stage": "NONE",
+      "taxonomy_labels": [],
+      "group_diagnostics": [
+        {
+          "group_id": "n027.e1",
+          "structurally_valid": true,
+          "channel_recalled": {
+            "exact": true,
+            "dense": true,
+            "sparse": true
+          },
+          "any_channel_recalled": true,
+          "combined_recalled": true,
+          "top5_recalled": true,
+          "top10_recalled": true,
+          "top20_recalled": true,
+          "final_selected": true,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        },
+        {
+          "group_id": "n027.e2",
+          "structurally_valid": true,
+          "channel_recalled": {
+            "dense": true,
+            "sparse": true
+          },
+          "any_channel_recalled": true,
+          "combined_recalled": true,
+          "top5_recalled": false,
+          "top10_recalled": true,
+          "top20_recalled": true,
+          "final_selected": true,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        }
+      ],
+      "entity_terminology_relevance": {
+        "relevant": false,
+        "subtype": null,
+        "query_grounded_mention": null,
+        "rationale": "All required evidence groups recovered; no failure."
+      },
+      "d2_relevance": "NONE",
+      "confidence": "HIGH",
+      "notes": "All required evidence groups recovered through the frozen pipeline stages; no failure to diagnose."
+    },
+    {
+      "question_id": "n028",
+      "expected_status": "answered",
+      "ordinary_metric_applicable": true,
+      "required_evidence_group_count": 3,
+      "R@5": 0.3333333333333333,
+      "R@10": 0.3333333333333333,
+      "R@20": 0.3333333333333333,
+      "MRR": 0.5,
+      "combined_candidate_recall": 1.0,
+      "final_evidence_recall": 0.3333333333333333,
+      "primary_failure_stage": "FUSION_OR_RANKING_FAILURE",
+      "taxonomy_labels": [
+        "FUSION_OR_RANKING_FAILURE",
+        "EXACT_IDENTIFIER_FAILURE",
+        "MULTI_EVIDENCE_FAILURE"
+      ],
+      "group_diagnostics": [
+        {
+          "group_id": "n028.e1",
+          "structurally_valid": true,
+          "channel_recalled": {
+            "sparse": true
+          },
+          "any_channel_recalled": true,
+          "combined_recalled": true,
+          "top5_recalled": false,
+          "top10_recalled": false,
+          "top20_recalled": false,
+          "final_selected": false,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        },
+        {
+          "group_id": "n028.e2",
+          "structurally_valid": true,
+          "channel_recalled": {
+            "exact": true,
+            "dense": true,
+            "sparse": true
+          },
+          "any_channel_recalled": true,
+          "combined_recalled": true,
+          "top5_recalled": true,
+          "top10_recalled": true,
+          "top20_recalled": true,
+          "final_selected": true,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        },
+        {
+          "group_id": "n028.e3",
+          "structurally_valid": true,
+          "channel_recalled": {
+            "graph": true
+          },
+          "any_channel_recalled": true,
+          "combined_recalled": true,
+          "top5_recalled": false,
+          "top10_recalled": false,
+          "top20_recalled": false,
+          "final_selected": false,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        }
+      ],
+      "entity_terminology_relevance": {
+        "relevant": true,
+        "subtype": "exact_technical_term",
+        "query_grounded_mention": "softrig workflow ... OnlineFilterInfo decisions",
+        "rationale": "Exact surfaces (softrig, OnlineFilterInfo) present; PndOnlineFilterInfo.h matched in top-k while PndSoftTriggerTask.cxx and PndAnaWithTrigger.cxx were sparse/graph-recalled but ranked out."
+      },
+      "d2_relevance": "INDIRECT",
+      "confidence": "HIGH",
+      "notes": "Partial recovery with exact identifiers present; losses are ranking-side."
+    },
+    {
+      "question_id": "n029",
+      "expected_status": "answered",
+      "ordinary_metric_applicable": true,
+      "required_evidence_group_count": 2,
+      "R@5": 0.0,
+      "R@10": 0.0,
+      "R@20": 0.0,
+      "MRR": 0.0,
+      "combined_candidate_recall": 0.0,
+      "final_evidence_recall": 0.0,
+      "primary_failure_stage": "CHANNEL_RECALL_FAILURE",
+      "taxonomy_labels": [
+        "CHANNEL_RECALL_FAILURE",
+        "DESCRIPTIVE_TERMINOLOGY_FAILURE",
+        "ENTITY_OR_TERMINOLOGY_RELATED",
+        "MULTI_EVIDENCE_FAILURE"
+      ],
+      "group_diagnostics": [
+        {
+          "group_id": "n029.e1",
+          "structurally_valid": true,
+          "channel_recalled": {},
+          "any_channel_recalled": false,
+          "combined_recalled": false,
+          "top5_recalled": false,
+          "top10_recalled": false,
+          "top20_recalled": false,
+          "final_selected": false,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        },
+        {
+          "group_id": "n029.e2",
+          "structurally_valid": true,
+          "channel_recalled": {},
+          "any_channel_recalled": false,
+          "combined_recalled": false,
+          "top5_recalled": false,
+          "top10_recalled": false,
+          "top20_recalled": false,
+          "final_selected": false,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        }
+      ],
+      "entity_terminology_relevance": {
+        "relevant": true,
+        "subtype": "descriptive_entity_identification",
+        "query_grounded_mention": "timebased buffering sort such data into processing order",
+        "rationale": "Both PndRingSorter.h/.cxx are identified only descriptively (the sorter is never named) and appear in no channel pool. Exploratory-class case; counts reported without comparative claims."
+      },
+      "d2_relevance": "DIRECT",
+      "confidence": "MEDIUM",
+      "notes": "Candidate-generation loss for descriptively identified files. Contextual Tier D applicability only."
+    },
+    {
+      "question_id": "n030",
+      "expected_status": "answered",
+      "ordinary_metric_applicable": true,
+      "required_evidence_group_count": 1,
+      "R@5": 1.0,
+      "R@10": 1.0,
+      "R@20": 1.0,
+      "MRR": 1.0,
+      "combined_candidate_recall": 1.0,
+      "final_evidence_recall": 1.0,
+      "primary_failure_stage": "NONE",
+      "taxonomy_labels": [],
+      "group_diagnostics": [
+        {
+          "group_id": "n030.e1",
+          "structurally_valid": true,
+          "channel_recalled": {
+            "exact": true,
+            "dense": true,
+            "sparse": true
+          },
+          "any_channel_recalled": true,
+          "combined_recalled": true,
+          "top5_recalled": true,
+          "top10_recalled": true,
+          "top20_recalled": true,
+          "final_selected": true,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        }
+      ],
+      "entity_terminology_relevance": {
+        "relevant": false,
+        "subtype": null,
+        "query_grounded_mention": null,
+        "rationale": "All required evidence groups recovered; no failure."
+      },
+      "d2_relevance": "NONE",
+      "confidence": "HIGH",
+      "notes": "All required evidence groups recovered through the frozen pipeline stages; no failure to diagnose."
+    },
+    {
+      "question_id": "n031",
+      "expected_status": "answered",
+      "ordinary_metric_applicable": true,
+      "required_evidence_group_count": 1,
+      "R@5": 1.0,
+      "R@10": 1.0,
+      "R@20": 1.0,
+      "MRR": 0.3333333333333333,
+      "combined_candidate_recall": 1.0,
+      "final_evidence_recall": 1.0,
+      "primary_failure_stage": "NONE",
+      "taxonomy_labels": [],
+      "group_diagnostics": [
+        {
+          "group_id": "n031.e1",
+          "structurally_valid": true,
+          "channel_recalled": {
+            "dense": true,
+            "sparse": true
+          },
+          "any_channel_recalled": true,
+          "combined_recalled": true,
+          "top5_recalled": true,
+          "top10_recalled": true,
+          "top20_recalled": true,
+          "final_selected": true,
+          "evidence_support": "frozen evaluator group-matching over the immutable record diagnostics (exact/dense/sparse/graph/workflow channel pools, ranked_object_ids, final evidence)"
+        }
+      ],
+      "entity_terminology_relevance": {
+        "relevant": false,
+        "subtype": null,
+        "query_grounded_mention": null,
+        "rationale": "All required evidence groups recovered; no failure."
+      },
+      "d2_relevance": "NONE",
+      "confidence": "HIGH",
+      "notes": "All required evidence groups recovered through the frozen pipeline stages; no failure to diagnose."
+    }
+  ],
+  "aggregate": {
+    "cases_total": 28,
+    "cases_ordinary_applicable": 27,
+    "primary_failure_stage_distribution": {
+      "NONE": 12,
+      "FUSION_OR_RANKING_FAILURE": 7,
+      "CHANNEL_RECALL_FAILURE": 8
+    },
+    "taxonomy_label_counts_cases_overlapping": {
+      "FUSION_OR_RANKING_FAILURE": 9,
+      "ENTITY_OR_TERMINOLOGY_RELATED": 11,
+      "DESCRIPTIVE_TERMINOLOGY_FAILURE": 8,
+      "MULTI_EVIDENCE_FAILURE": 12,
+      "CHANNEL_RECALL_FAILURE": 8,
+      "EXACT_IDENTIFIER_FAILURE": 3,
+      "CROSS_REPOSITORY_FAILURE": 1,
+      "FINAL_SELECTOR_FAILURE": 1,
+      "EXPECTED_EVIDENCE_MAPPING_ISSUE": 1
+    },
+    "taxonomy_note": "Stage categories (CHANNEL/FUSION_OR_RANKING/RERANK/FINAL_SELECTOR/SOURCE_SCOPE/VERSION_SCOPE/CORPUS_OR_INDEX) and characteristic/topology categories (ENTITY_..., EXACT_IDENTIFIER, DESCRIPTIVE_..., CROSS_REPO, MULTI_EVIDENCE) are NOT mutually exclusive; overlapping case counts are reported explicitly. Primary failure stage is mutually exclusive per case.",
+    "pipeline_funnel": {
+      "label": "ND-0C PIPELINE FUNNEL = group-level diagnostic accounting (distinct from PRIMARY ND-0B METRICS = case-level macro means)",
+      "denominator": "structurally valid required-evidence groups of ordinary-applicable (answered-expected) cases",
+      "valid_expected_groups": 49,
+      "recalled_by_any_channel": 37,
+      "combined_candidate_pool": 37,
+      "top20": 27,
+      "top5": 23,
+      "final_selected": 26
+    },
+    "combined_to_top20_loss": {
+      "groups_lost": 10,
+      "cases": [
+        "n002",
+        "n003",
+        "n006",
+        "n009",
+        "n010",
+        "n017",
+        "n023",
+        "n025",
+        "n028"
+      ],
+      "case_macro_delta": 0.1944,
+      "explanation": "answers: why combined candidate recall 0.8117 while Recall@20 is 0.6173 - 10 valid groups present in the combined candidate pool did not survive into top-20 across 9 cases; reranking cannot be isolated from fusion/ranking in the frozen traces, so FUSION_OR_RANKING_FAILURE is used"
+    },
+    "top20_to_final_loss": {
+      "groups_lost": 1,
+      "groups": [
+        "n022.e3"
+      ],
+      "cases": [
+        "n022"
+      ],
+      "case_macro_delta": 0.0123,
+      "explanation": "Recall@20 0.6173 -> final evidence recall 0.6049: a single group in a single case; the selector loss is small and not a material selector problem on this measurement"
+    },
+    "d2_relevance_counts": {
+      "DIRECT": 6,
+      "INDIRECT": 8,
+      "NONE": 14,
+      "direct_cases": [
+        "n005",
+        "n009",
+        "n010",
+        "n014",
+        "n020",
+        "n029"
+      ],
+      "direct_case_failed_groups": 12
+    },
+    "n016_separate_diagnosis": "expected insufficient_evidence; retrieval returned the targeted Docker evidence (group recall 1.0) - no retrieval failure; the abstention boundary belongs to the QA/answer layer outside retrieval-only ND-0B",
+    "taxonomy_zero_counts": {
+      "RERANK_FAILURE": 0,
+      "SOURCE_SCOPE_FAILURE": 0,
+      "VERSION_SCOPE_FAILURE": 0,
+      "CORPUS_OR_INDEX_COVERAGE_FAILURE": 0,
+      "EVALUATION_CASE_ISSUE": 0,
+      "INFRASTRUCTURE_FAILURE": 0,
+      "UNCLASSIFIED": 0,
+      "note": "no trace evidence of scope/version rejections (excluded-candidate reasons contain none); no additional static case defects proven beyond the known n023.e1 mapping defect"
+    }
+  }
+}

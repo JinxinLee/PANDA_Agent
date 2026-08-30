@@ -1,0 +1,103 @@
+{
+  "schema_version": "nd0c-d2-a3-handoff-v1",
+  "checkpoint": "ND-0C",
+  "boundary": {
+    "handoff_only": true,
+    "role_decision_belongs_to": "D2-A3",
+    "evidence_separation": "D2-A2 = direct frozen resolver evaluation evidence; ND-0 = production retrieval generalization context. ND-0 does not test D2 resolver efficacy because D2 was not production-consumed in the measured path.",
+    "treatment_evidence_source": "D2-A2 only"
+  },
+  "matrix": [
+    {
+      "mechanism": "Tier G exact governed identity",
+      "d2_a2_direct_evidence": "fully reliable: governed-ID and true-alias canonicalization cases correct (C01/C07); explicit_canonicalization_accuracy 1/1; zero false cross-record canonicalizations",
+      "nd0c_contextual_evidence": "3 exact-identifier novel cases (n014/n025/n028) show strong identity cues present in the query; their losses sit at candidate generation (1 group) or ranking (4 groups), not at governed-identity mapping; no novel alias-related failure topology observed",
+      "novel_failure_overlap": "none direct",
+      "production_implication_for_a3": "evidence does not establish a production Tier G need from novel retrieval outcomes; the reliable shadow behavior is the D2-A2 fact A3 must weigh",
+      "open_blocker": "no novel case exercises accepted-alias/SAME_AS identity resolution end-to-end; A3 must decide on D2-A2 evidence plus design arguments"
+    },
+    {
+      "mechanism": "Tier S exact structural identity",
+      "d2_a2_direct_evidence": "exact symbol/path cases correct (C05/C06); collisions correctly AMBIGUOUS/version-scoped",
+      "nd0c_contextual_evidence": "n014 (model_framework directory surface) and n023 ('FTS' surface variation) show partial surface-name leverage: named components matched while related governed targets were lost at channel or ranking stages",
+      "novel_failure_overlap": "partial (topological/contextual only)",
+      "production_implication_for_a3": "evidence supports consideration of structural-identity handling staying conservative; ranking/channel losses are outside resolver scope",
+      "open_blocker": "no novel case failed at the identity-mapping step itself"
+    },
+    {
+      "mechanism": "Tier D descriptive canonical inference",
+      "d2_a2_direct_evidence": "descriptive positives 3/6 correctly resolved, 3/6 AMBIGUOUS, 0/6 wrong-confident (C02/C12/C21 lexical sibling ties)",
+      "nd0c_contextual_evidence": "6 DIRECT-relevance novel cases (n005/n009/n010/n014/n020/n029): descriptively identified governed targets lost at candidate generation; 12 failed groups; this is contextual applicability, not resolver efficacy",
+      "novel_failure_overlap": "topological overlap with descriptive entity identification; efficacy = UNEVALUATED from ND-0",
+      "production_implication_for_a3": "evidence supports consideration of Tier D for descriptive-mention coverage, but ND-0 provides no treatment evidence; A3 must decide using D2-A2 + design",
+      "open_blocker": "ND-0C cannot claim Tier D works or fails from novel retrieval outcomes"
+    },
+    {
+      "mechanism": "corrective terms",
+      "d2_a2_direct_evidence": "C08 corrective handling correct (correction surfaced, never Tier G authority); corrective_handling_correct = 1/1",
+      "nd0c_contextual_evidence": "no novel case exhibits corrective/premise-confused terminology topology",
+      "novel_failure_overlap": "none observed",
+      "production_implication_for_a3": "no novel evidence either way; D2-A2 remains primary",
+      "open_blocker": "contextual applicability not exercised by the novel cohort"
+    },
+    {
+      "mechanism": "SAME_AS",
+      "d2_a2_direct_evidence": "no accepted SAME_AS edges in the D1 state; natural applicability 0; contract implemented in shadow",
+      "nd0c_contextual_evidence": "no novel topology observed",
+      "novel_failure_overlap": "none",
+      "production_implication_for_a3": "resolver efficacy = UNEVALUATED",
+      "open_blocker": "no accepted SAME_AS edges exist to evaluate"
+    },
+    {
+      "mechanism": "RESOLVED_MULTIPLE",
+      "d2_a2_direct_evidence": "schema representable; natural applicability 0; trailing-s promotion removed in D2-A1R1",
+      "nd0c_contextual_evidence": "no novel multi-entity mention topology observed",
+      "novel_failure_overlap": "none",
+      "production_implication_for_a3": "resolver efficacy = UNEVALUATED",
+      "open_blocker": "no natural novel cohort coverage"
+    },
+    {
+      "mechanism": "whole-question fallback",
+      "d2_a2_direct_evidence": "C16: stronger version-sensitive identifier rejection followed by confident unrelated fallback resolution (WRONG_CONFIDENT_RESOLUTION, 1/8 FPR); C10 qualitative over-resolution",
+      "nd0c_contextual_evidence": "no analogous topology observable in the production retrieval traces (the fallback is a D2-internal mechanism that was not production-wired in the measured path)",
+      "novel_failure_overlap": "not observable in ND-0B artifacts",
+      "production_implication_for_a3": "fallback safety must be evaluated as its own mechanism separate from Tier D descriptive performance; A3 must decide whether KEEP_SHADOW or bounded activation addresses it",
+      "open_blocker": "fallback hazard remains D2-A2 evidence only; no novel first-exposure evidence exists"
+    }
+  ],
+  "contextual_applicability_summary": {
+    "descriptive_mention_cases": [
+      "n002",
+      "n005",
+      "n009",
+      "n010",
+      "n017",
+      "n020",
+      "n022",
+      "n029"
+    ],
+    "descriptive_cases_lost_at_candidate_generation": [
+      "n005",
+      "n009",
+      "n010",
+      "n020",
+      "n029"
+    ],
+    "descriptive_cases_lost_at_ranking": [
+      "n002",
+      "n017"
+    ],
+    "exact_identifier_cases": [
+      "n014",
+      "n025",
+      "n028"
+    ],
+    "exact_identifier_surface_variation_case": [
+      "n023"
+    ],
+    "corrective_term_topologies": 0,
+    "same_as_topologies": 0,
+    "resolved_multiple_topologies": 0,
+    "resolver_efficacy_from_nd0": "UNEVALUATED (D2 not production-consumed in the measured path)"
+  }
+}
