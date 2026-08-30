@@ -1,0 +1,24 @@
+{
+  "schema_version": "external-holdout-v1",
+  "dataset_identity": "panda-novel-holdout-v1",
+  "split": "novel_holdout",
+  "status": "FROZEN_SEALED",
+  "curation_state": "CURATED",
+  "human_review_state": "HUMAN_REVIEWED",
+  "externally_managed": true,
+  "expected_count": 13,
+  "content_repository_visible": false,
+  "outcome_observed": false,
+  "loader_contract": "--dataset <external-path>",
+  "authorized_use": "release/T5 only",
+  "registration_scope": {
+    "metadata_only": true,
+    "blind_to_holdout": "This registration is intentionally blind to holdout content and location.",
+    "status_basis": "Status is based on explicit user-provided governance metadata.",
+    "independent_verification": "The repository has NOT independently verified the external package contents."
+  },
+  "related_context": {
+    "locked_corpus_manifest_reference": "data/manifests/source_manifest.json",
+    "reference_source": "evaluation/novel/v1/manifest.json"
+  }
+}

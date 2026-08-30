@@ -118,6 +118,28 @@ Files:
 - Validation measurement: `NOT RUN`.
 - Next eligible roadmap task: `C8-A2`; it is not started here.
 
+## 2026-08-30 current state: external novel_holdout registered
+
+The historical statement above that `novel_holdout` is not created and
+remains externally managed was correct when written. This dated section
+overrides it as the current state: a curated, human-reviewed, frozen, and
+sealed holdout now exists and remains externally managed. The repository
+records non-sensitive metadata only and is intentionally blind to holdout
+content and location; the status derives from explicit user-provided
+governance metadata, and the repository has not independently verified the
+external package contents. Registration record:
+`evaluation/novel/v1/external_holdout_manifest.json`.
+
+```
+novel_holdout:
+  CURATED / HUMAN_REVIEWED / FROZEN / SEALED / EXTERNALLY_MANAGED
+  OUTCOME_UNSEEN
+  REPOSITORY_CONTENT_VISIBLE = false
+  AUTHORIZED_USE = T5 / release only
+  expected_count = 13
+  registered in evaluation/novel/v1/external_holdout_manifest.json
+```
+
 Governance: `docs/NOVEL_DATASET_CURATION_CONTRACT.md`. Static validation:
 `python evaluation/scripts/validate_novel_curation.py`; it reproduces the
 Gold minimum-source-scope, topology, and difficulty assignments from source

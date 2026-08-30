@@ -1315,17 +1315,91 @@ def _load_cases(path: Path) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]
 BEGIN_D2_A2_METRICS = "BEGIN_D2_A2_METRICS"
 END_D2_A2_METRICS = "END_D2_A2_METRICS"
 
+# Aggregate keys hoisted from ``metrics`` to the projection top level; they
+# stay in the projection exactly once (either hoisted or under ``metrics``).
+_PROJECTION_HOISTED_METRIC_KEYS = (
+    "case_counts",
+    "decision_accounting",
+    "failure_taxonomy_counts",
+    "descriptive_resolution_summary",
+)
+
+# Minimal run-provenance subset kept for provenance validation; receipts,
+# state dumps, and per-case diagnostics are deliberately excluded (the
+# authoritative results artifact carries all of them).
+_PROJECTION_PROVENANCE_KEYS = ("head", "baseline_commit", "timestamp_utc", "case_count")
+
+
+def build_report_metrics_projection(results: dict[str, Any]) -> dict[str, Any]:
+    """Compact, tamper-checkable projection of the D2-A2 results artifact for
+    the report's embedded metrics block.
+
+    Contains ONLY aggregate data — no ``per_case_results``, no raw receipts,
+    no state dumps, no candidate diagnostics: the hoisted aggregates
+    ``case_counts`` / ``decision_accounting`` / ``failure_taxonomy_counts`` /
+    ``descriptive_resolution_summary``, the remaining compact ``metrics``
+    (num/den/value ratios and small aggregates), a compact per-category
+    decision summary, and a tiny ``run_provenance`` subset.  Both
+    ``render_metrics_block`` and ``validate_report_metrics`` build on this
+    function, so the rendered schema cannot drift from the validated schema.
+    """
+
+    metrics = results.get("metrics") or {}
+    projection: dict[str, Any] = {
+        "case_counts": metrics.get("case_counts"),
+        "decision_accounting": metrics.get("decision_accounting"),
+        "failure_taxonomy_counts": metrics.get("failure_taxonomy_counts"),
+        "metrics": {
+            name: value
+            for name, value in metrics.items()
+            if name not in _PROJECTION_HOISTED_METRIC_KEYS
+        },
+        "descriptive_resolution_summary": metrics.get(
+            "descriptive_resolution_summary"
+        ),
+    }
+    category_summaries = results.get("category_summaries") or {}
+    if category_summaries:
+        projection["category_summaries"] = {
+            category: {
+                "cases": summary.get("cases"),
+                "correct": summary.get("correct"),
+                "decisions": summary.get("decisions"),
+            }
+            for category, summary in sorted(category_summaries.items())
+        }
+    provenance = results.get("run_provenance") or {}
+    projection["run_provenance"] = {
+        key: provenance[key]
+        for key in _PROJECTION_PROVENANCE_KEYS
+        if key in provenance
+    }
+    return projection
+
 
 def render_metrics_block(results: dict[str, Any]) -> str:
-    """Render the machine-readable metrics block embedded in the report."""
+    """Render the compact machine-readable metrics block embedded in the
+    report (per-case receipts remain only in the results artifact)."""
 
-    lines = [BEGIN_D2_A2_METRICS, "```json", json.dumps(results, ensure_ascii=False, indent=1, default=str), "```", END_D2_A2_METRICS, ""]
+    projection = build_report_metrics_projection(results)
+    lines = [
+        BEGIN_D2_A2_METRICS,
+        "```json",
+        json.dumps(projection, ensure_ascii=False, indent=1, default=str),
+        "```",
+        END_D2_A2_METRICS,
+        "",
+    ]
     return "\n".join(lines)
 
 
 def validate_report_metrics(report_text: str, results: dict[str, Any]) -> list[str]:
     """D2-A2R2 repair E: mechanically compare the report's embedded metrics
-    block against the structured results.  Returns problems ([] = clean)."""
+    block against the structured results.  The expected block is the compact
+    projection built by ``build_report_metrics_projection`` — the same function
+    the renderer uses, so the validated schema cannot drift from the rendered
+    schema.  Mismatches are reported per key (nested dicts are descended).
+    Returns problems ([] = clean)."""
 
     problems: list[str] = []
     start = report_text.find(BEGIN_D2_A2_METRICS)
@@ -1347,18 +1421,20 @@ def validate_report_metrics(report_text: str, results: dict[str, Any]) -> list[s
         reported = json.loads("\n".join(inner_lines))
     except json.JSONDecodeError as exc:
         return [f"report metrics block is not valid JSON: {exc}"]
+    if not isinstance(reported, dict):
+        return ["report metrics block is not a JSON object"]
 
-    for key in ("case_counts", "decision_accounting", "failure_taxonomy_counts"):
-        if reported.get(key) != results.get(key):
-            problems.append(f"report {key} mismatch")
-    for name, metric in results.get("metrics", {}).items():
-        reported_metric = reported.get("metrics", {}).get(name)
-        if reported_metric != metric:
-            problems.append(f"report metric {name} mismatch")
-    if reported.get("metrics", {}).get("descriptive_resolution_summary") != results[
-        "metrics"
-    ].get("descriptive_resolution_summary"):
-        problems.append("report descriptive_resolution_summary mismatch")
+    def _compare(path: str, expected: Any, observed: Any) -> None:
+        if expected == observed:
+            return
+        if isinstance(expected, dict) and isinstance(observed, dict):
+            for key in sorted(set(expected) | set(observed)):
+                child = f"{path}.{key}" if path else str(key)
+                _compare(child, expected.get(key), observed.get(key))
+        else:
+            problems.append(f"report {path} mismatch")
+
+    _compare("", build_report_metrics_projection(results), reported)
     return problems
 
 

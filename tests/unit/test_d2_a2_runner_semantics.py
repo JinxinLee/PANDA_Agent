@@ -8,6 +8,7 @@ DB, no model, no network.
 from __future__ import annotations
 
 import importlib.util
+import json
 import sys
 import unittest
 from pathlib import Path
@@ -398,6 +399,246 @@ class IsolationTests(unittest.TestCase):
             isolation_tokens={"luminosity fit model": ["poca", "workflow"]},
         )
         self.assertTrue(valid)
+
+
+def _fixture_results() -> dict:
+    """Synthetic results artifact shaped like the D2-A2 runner output,
+    including deliberately bulky per-case receipt payloads that the compact
+    report projection must exclude."""
+
+    return {
+        "run_provenance": {
+            "head": "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+            "baseline_commit": "67eff2b",
+            "case_artifact_path": "evaluation/d2_a2_terminology_cases.yaml",
+            "state_type": "deterministic_in_memory_d1_compatible",
+            "state_valid": True,
+            "timestamp_utc": "2026-01-01T00:00:00+00:00",
+            "case_count": 2,
+        },
+        "state_validation": {
+            "state_type": "deterministic_in_memory_d1_compatible",
+            "object_count": 32,
+            "valid": True,
+        },
+        "metrics": {
+            "case_counts": {
+                "total": 2,
+                "valid": 2,
+                "invalid": 0,
+                "invalid_case_ids": [],
+                "not_applicable": 0,
+                "correct": 1,
+            },
+            "failure_taxonomy_counts": {"COMPETITION_AMBIGUITY": 1},
+            "decision_accounting": {
+                "correct_resolve": 1,
+                "wrong_resolve": 0,
+                "correct_abstain": 0,
+                "wrong_abstain": 0,
+                "correct_ambiguous": 0,
+                "wrong_ambiguous": 1,
+                "not_applicable": 0,
+            },
+            "case_validity": {"numerator": 2, "denominator": 2, "value": 1.0},
+            "resolution_accuracy": {"numerator": 1, "denominator": 1, "value": 1.0},
+            "descriptive_resolution_summary": {
+                "descriptive_positive_cases": 0,
+                "descriptive_correctly_resolved": 0,
+                "descriptive_ambiguous": 0,
+                "descriptive_unresolved": 0,
+                "descriptive_wrong_confident": 0,
+            },
+            "corrective_handling_correct": 0,
+            "corrective_handling_incorrect": 0,
+        },
+        "category_summaries": {
+            "ambiguous_terminology": {
+                "cases": 1,
+                "applicable": 1,
+                "correct": 0,
+                "incorrect": 1,
+                "not_applicable": 0,
+                "case_invalid": 0,
+                "false_positive_resolutions": 0,
+                "decisions": {"wrong_ambiguous": 1},
+                "failure_types": {"COMPETITION_AMBIGUITY": 1},
+            },
+            "exact_canonical_terminology": {
+                "cases": 1,
+                "applicable": 1,
+                "correct": 1,
+                "incorrect": 0,
+                "not_applicable": 0,
+                "case_invalid": 0,
+                "false_positive_resolutions": 0,
+                "decisions": {"correct_resolve": 1},
+                "failure_types": {},
+            },
+        },
+        "per_case_results": [
+            {
+                "case_id": "C01",
+                "actual": {
+                    "receipt": {
+                        "resolutions": [
+                            {
+                                "mention_text": "luminosity fit",
+                                "candidates": [{"object_id": "object.a"}],
+                            }
+                        ]
+                    },
+                    "statuses": ["RESOLVED_UNIQUE"],
+                },
+            },
+            {
+                "case_id": "C02",
+                "actual": {"receipt": {"resolutions": []}, "statuses": ["AMBIGUOUS"]},
+            },
+        ],
+        "not_applicable_records": [],
+        "metric_consistency_problems": [],
+        "receipt_consistency_vs_ae7b281": {"resolver_behavior_unchanged": True},
+    }
+
+
+def _collect_all_keys(value: object) -> set[str]:
+    keys: set[str] = set()
+    if isinstance(value, dict):
+        for key, item in value.items():
+            keys.add(str(key))
+            keys |= _collect_all_keys(item)
+    elif isinstance(value, list):
+        for item in value:
+            keys |= _collect_all_keys(item)
+    return keys
+
+
+class ReportMetricsProjectionTests(unittest.TestCase):
+    """Compact report-metrics projection (ND-0A WS-C) semantics."""
+
+    def setUp(self) -> None:
+        self.results = _fixture_results()
+        self.projection = d2_a2_runner.build_report_metrics_projection(self.results)
+
+    def test_projection_excludes_per_case_results(self) -> None:
+        self.assertNotIn("per_case_results", self.projection)
+        self.assertNotIn("not_applicable_records", self.projection)
+        self.assertNotIn("state_validation", self.projection)
+        self.assertNotIn("metric_consistency_problems", self.projection)
+        self.assertNotIn("receipt_consistency_vs_ae7b281", self.projection)
+
+    def test_projection_excludes_raw_receipts(self) -> None:
+        keys = _collect_all_keys(self.projection)
+        receipt_shaped_keys = {
+            "receipt",
+            "resolutions",
+            "candidates",
+            "evidence",
+            "mention_text",
+            "mention_kind",
+            "actual",
+            "plan",
+            "diagnostics",
+            "failure_detail",
+        }
+        self.assertEqual(keys & receipt_shaped_keys, set())
+        for key in keys:
+            self.assertNotIn("receipt", key)
+        # No receipt payload leaked into any string value either.
+        dumped = json.dumps(self.projection)
+        self.assertNotIn("mention_text", dumped)
+        self.assertNotIn("object.a", dumped)
+
+    def test_projection_top_level_keys(self) -> None:
+        self.assertEqual(
+            set(self.projection),
+            {
+                "case_counts",
+                "decision_accounting",
+                "failure_taxonomy_counts",
+                "metrics",
+                "descriptive_resolution_summary",
+                "category_summaries",
+                "run_provenance",
+            },
+        )
+        # Hoisted aggregates appear exactly once (not duplicated under
+        # ``metrics``); every remaining metric is compact aggregate data.
+        self.assertNotIn("case_counts", self.projection["metrics"])
+        self.assertNotIn("decision_accounting", self.projection["metrics"])
+        self.assertNotIn("failure_taxonomy_counts", self.projection["metrics"])
+        self.assertNotIn(
+            "descriptive_resolution_summary", self.projection["metrics"]
+        )
+        self.assertIn("resolution_accuracy", self.projection["metrics"])
+
+    def test_projection_keeps_only_tiny_provenance(self) -> None:
+        self.assertEqual(
+            set(self.projection["run_provenance"]),
+            {"head", "baseline_commit", "timestamp_utc", "case_count"},
+        )
+
+    def test_projection_compacts_category_summaries(self) -> None:
+        self.assertEqual(
+            self.projection["category_summaries"]["exact_canonical_terminology"],
+            {"cases": 1, "correct": 1, "decisions": {"correct_resolve": 1}},
+        )
+
+
+class ReportMetricsRoundTripTests(unittest.TestCase):
+    """render/validate round trip over the compact projection."""
+
+    def test_render_validate_round_trip_clean(self) -> None:
+        results = _fixture_results()
+        report_text = d2_a2_runner.render_metrics_block(results)
+        self.assertIn("BEGIN_D2_A2_METRICS", report_text)
+        self.assertIn("END_D2_A2_METRICS", report_text)
+        self.assertEqual(d2_a2_runner.validate_report_metrics(report_text, results), [])
+
+    def test_rendered_block_is_compact(self) -> None:
+        report_text = d2_a2_runner.render_metrics_block(_fixture_results())
+        self.assertNotIn("per_case_results", report_text)
+        self.assertNotIn("resolutions", report_text)
+        self.assertNotIn("candidates", report_text)
+
+    def test_tampered_compact_metric_fails_validation(self) -> None:
+        results = _fixture_results()
+        report_text = d2_a2_runner.render_metrics_block(results)
+        tampered = json.loads(json.dumps(results))
+        tampered["metrics"]["resolution_accuracy"]["value"] = 0.99
+        problems = d2_a2_runner.validate_report_metrics(report_text, tampered)
+        self.assertTrue(problems)
+        self.assertTrue(any("resolution_accuracy" in problem for problem in problems))
+
+    def test_tampered_decision_accounting_fails_validation(self) -> None:
+        results = _fixture_results()
+        report_text = d2_a2_runner.render_metrics_block(results)
+        tampered = json.loads(json.dumps(results))
+        tampered["metrics"]["decision_accounting"]["correct_resolve"] = 2
+        problems = d2_a2_runner.validate_report_metrics(report_text, tampered)
+        self.assertTrue(any("decision_accounting" in problem for problem in problems))
+
+    def test_missing_block_fails_validation(self) -> None:
+        problems = d2_a2_runner.validate_report_metrics("no block here", _fixture_results())
+        self.assertEqual(problems, ["report is missing the BEGIN/END_D2_A2_METRICS block"])
+
+
+class CommittedReportMetricsTests(unittest.TestCase):
+    """The ACTUAL committed report must validate against the ACTUAL
+    committed results artifact (paths resolved from this test file upward)."""
+
+    def test_committed_report_matches_committed_results(self) -> None:
+        repo_root = Path(__file__).resolve().parents[2]
+        results = json.loads(
+            (repo_root / "evaluation" / "d2_a2_results.json").read_text(encoding="utf-8")
+        )
+        report_text = (
+            repo_root / "docs" / "PHASE_D2_A2_TERMINOLOGY_EVALUATION.md"
+        ).read_text(encoding="utf-8")
+        self.assertEqual(
+            d2_a2_runner.validate_report_metrics(report_text, results), []
+        )
 
 
 if __name__ == "__main__":

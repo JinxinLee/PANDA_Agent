@@ -423,6 +423,100 @@ Phase D is `IN_PROGRESS` (started by D1; D2/D3/D4 remain `NOT_STARTED`).
 - **D2-A2R1 closeout — 2026-08-30 (`COMPLETE / EVALUATION_SEMANTICS_REPAIRED`):** evaluation-semantics and metric-integrity repair; resolver untouched (`RESOLVER_CODE_CHANGED = false`, byte-identical to `67eff2b`); no new cases, no question/expected-identity changes. Repairs: (A) structured results authoritative + `_validate_metric_consistency` assertions (`metric_consistency_problems = []`; the D2-A2 report's hand-transcribed 10/2 headline corrected to the structured 9/3); (B) every ratio metric carries `{numerator, denominator, value}`; (C) C10 invalidated (`CASE_INVALID`, implementation-informed Gold expectation), raw receipt preserved as qualitative RELATED_ENTITY_OVERRESOLUTION evidence, excluded from FPR and metrics; (D/L) C21 `target_match_mode: ALL` with per-target canonical matching and independent mention-isolation evaluation (`mention_isolation_valid`); (E) decision-bucket semantics frozen (wrong_ambiguous for ambiguity-without-wrong-identity); (F) `case_validity` 20/22 separated from `category_natural_applicability` 14/16 (MULTIPLE/SAME_AS NOT_AVAILABLE); (G) `execution_coverage` 22/22 separated from `positive_resolution_coverage` 10/12; (H) canonical identity 6/9 split from explicit canonicalization 2/2 and source-native null safety 3/3; (§19) raw-receipt consistency vs `ae7b281`: 20/20 unchanged valid cases identical, `resolver_behavior_unchanged = true` (C10/C14 skipped as invalid). Formal FPR 1/8 = 0.125 (C16 fallback over-resolution). Verification: 16 runner-semantics self-tests + 153 focused T0 pass; `compileall`/`git diff --check` clean; zero model/Vertex/Qdrant/production-DB operations.
 - **D2-A2R2 closeout — 2026-08-30 (`COMPLETE / TARGET_SCOPED_ACCOUNTING_REPAIRED`):** target-scoped accounting and report-consistency repair; resolver untouched (byte-identical to `67eff2b`, proven by `receipt_consistency_vs_ae7b281`: 20/20 valid-case receipts identical, `resolver_behavior_unchanged = true`); case-artifact amendments metadata-only (C07 `expects_explicit_canonicalization: true`; C12 `allowed_context_object_ids: [data_product.restgas.event_poca]`), no question/status/identity changes. Repairs: (1) `_classify_case_decision` separates confident resolutions into required / allowed-context / unexpected sets with per-case `confident_required_target_ids` / `confident_allowed_context_ids` / `confident_unexpected_ids` / `primary_target_outcome`; C12 (primary boost_root AMBIGUOUS + allowed event_poca resolution) is `wrong_ambiguous` / `COMPETITION_AMBIGUITY`, not wrong_resolve; (2) final decision accounting sums exactly to the 20 valid cases — correct_resolve 9 / wrong_resolve 1 (C16) / correct_abstain 5 / wrong_abstain 0 / correct_ambiguous 2 (C03, C13) / wrong_ambiguous 3 (C02, C12, C21) / not_applicable 0, invalid 2 (C10, C14 `case_invalid`, not not_applicable; the A2R1 closeout text's `not_applicable 2` and inconsistent sum corrected); (3) `explicit_canonicalization_accuracy` narrowed to 1/1 (true-identity alias case only) and `positive_resolution_coverage` target-scoped to 9/12; failure taxonomy `COMPETITION_AMBIGUITY` 3 + `WRONG_CONFIDENT_RESOLUTION` 1; (4) the report embeds the mechanically rendered `BEGIN_D2_A2_METRICS`/`END_D2_A2_METRICS` fenced JSON block validated by `validate_report_metrics` (`problems = []`), with narrative headline numbers regenerated from the structured artifact (structured JSON authoritative). Verification: 22 runner-semantics self-tests (context-scoping, canonicalization denominators, report-validator tamper detection included) + 140 focused D1/D2 T0 pass; `compileall`/`git diff --check` clean; zero model/Vertex/Qdrant/production-DB operations; ten pre-existing unit failures unrelated to D1/D2 (missing optional deps, one stale retrieval stub) unchanged and out of scope.
 
+## ND-0 — First Frozen Novel-Dev Generalization Baseline (cross-phase evaluation checkpoint)
+
+ND-0 is **not a D2 implementation stage** and creates no D2 subphase. It is a
+cross-phase evaluation-infrastructure checkpoint that freezes the first
+`novel_dev` measurement contract before any novel outcome is observed. It does
+not renumber D2 or rename D2-A3. Lifecycle flow:
+
+```text
+D2-A2R2 → ND-0A → ND-0B → ND-0C → D2-A3 → D3
+```
+
+- **Status:** IN_PROGRESS (ND-0A `COMPLETE / PRE_OUTCOME_PREREGISTRATION_FROZEN`
+  2026-08-30; ND-0B `NOT_STARTED`; ND-0C `NOT_STARTED`;
+  `FIRST_NOVEL_DEV_OUTCOME_EXPOSURE = NOT_STARTED`;
+  `NOVEL_DEV_DEVELOPMENT_EXPOSED = false`.)
+
+### ND-0A — Pre-outcome preregistration
+
+- **Status:** COMPLETE / PRE_OUTCOME_PREREGISTRATION_FROZEN (2026-08-30).
+- **ND-0A closeout — 2026-08-30:** strict pre-outcome preregistration; zero
+  retrieval/QA/judge/evaluation execution (`NOVEL_DEV_RETRIEVAL_CASES_RUN = 0`,
+  `NOVEL_VALIDATION_CASES_RUN = 0`, `NOVEL_HOLDOUT_CASES_RUN = 0`;
+  `NOVEL_DEV_OUTCOME_OBSERVED_BEFORE_ND0 = false`,
+  `FIRST_NOVEL_DEV_MEASUREMENT_RUN = NOT_RUN`, bound to the novel governance/
+  manifest state, not file absence). Preregistration bound to
+  `preregistration_source_head = e40ac8099607e83f720b103d7da80a85aab697ab`.
+  Artifacts: `evaluation/novel/v1/nd0a_first_exposure_preregistration.json`
+  (machine-readable, schema `nd0a-preregistration-v1`) and
+  `evaluation/novel/v1/ND0A_FIRST_EXPOSURE_PREREGISTRATION.md` (human-readable).
+  Frozen: novel_dev identity `novel-v1-dev-expansion` / `novel-v1-dev-0.3.0`,
+  28/28 frozen; ND-0B contract = full 28-question retrieval-only measurement
+  (no sampling, no cohort split; partial-run preservation on infrastructure
+  failure); prohibited stages QA generation / answer generation / verifier /
+  revision / external judge / T5 with `QA_GENERATION_CALLS = 0`,
+  `ANSWER_VERIFIER_CALLS = 0`, `EXTERNAL_JUDGE_CALLS = 0` (total model calls
+  deliberately NOT preregistered as zero — the current production retrieval
+  path legitimately uses analyzer/embedding/reranking calls); primary metrics
+  Recall@5/@10/@20, MRR, combined candidate recall, critical evidence recall,
+  final evidence recall, each `PARTIALLY_APPLICABLE` with the evaluator-native
+  applicability mechanism (27 answered + 1 insufficient_evidence denominator
+  accounting); stratified reporting by existing frozen curation metadata only;
+  comparison reference frozen as
+  `english-gold-stratified-bootstrap-v1-20260813`
+  (`evaluation/baselines/manifests/english_gold_stratified_bootstrap_v1.json`)
+  classified `APPROXIMATE / NON_IDENTICAL_COHORT` with three documented
+  mismatch dimensions (different 24-vs-28 cohort/intent coverage, analyzer
+  prompt_set 3.6.0 vs current 3.7.0, coarse pre-Phase-C provenance) and
+  unchanged channel-role/index identity as comparability support; ND-0C
+  diagnosis taxonomy frozen (16 generic classes, no question-specific
+  categories); ND-0C development rule frozen (novel_dev becomes
+  DEVELOPMENT_EXPOSED after ND-0B; ND-0 artifacts immutable; reruns need new
+  run/checkpoint identities); novel_validation remains FROZEN / UNSEEN /
+  ONE_SHOT_LATER (15/15). Two authorized pre-outcome maintenance items were
+  included: (1) external sealed holdout registered metadata-only in
+  `evaluation/novel/v1/external_holdout_manifest.json` (identity
+  `panda-novel-holdout-v1`, split `novel_holdout`, `FROZEN_SEALED`,
+  externally managed, `expected_count = 13` per user-authorized non-sensitive
+  metadata, content not repository-visible, outcome unseen, loader contract
+  `--dataset <external-path>`, authorized use release/T5 only; the repository
+  did not locate, access, or verify the external package and records no real
+  path) with a dated current-state override in
+  `evaluation/novel/v1/README.md`; (2) D2-A2 report metrics-block compaction —
+  `build_report_metrics_projection` now renders/validates a compact block
+  (case_counts, decision_accounting, failure_taxonomy_counts,
+  descriptive_resolution_summary, compact metrics + category summaries, tiny
+  run provenance), shrinking `docs/PHASE_D2_A2_TERMINOLOGY_EVALUATION.md` from
+  6261 to 522 lines with narrative text byte-identical outside the markers and
+  zero change to any D2-A2 scientific value. Verification: 33
+  runner-semantics self-tests pass (incl. projection exclusion, tamper
+  detection, committed-report validation); ND-0A/holdout JSON static checks
+  pass; `compileall`/`git diff --check` clean; staged-diff audit found no
+  path-like literals. `CURRENT_DEPLOYED_RETRIEVAL_BEHAVIOR_CHANGED = false`;
+  `PRODUCTION_CODE_CHANGED = false` (evaluation-infrastructure script only);
+  D2-A3 remains NOT_STARTED.
+
+### ND-0B — First 28-question retrieval measurement
+
+- **Status:** NOT_STARTED. Contract frozen by ND-0A; requires explicit user
+  instruction to execute. Retrieval-only, full 28/28.
+
+### ND-0C — Generalization diagnosis and D2-A3 handoff
+
+- **Status:** NOT_STARTED. Classifies ND-0B first-exposure failures into the
+  frozen taxonomy and hands the evidence package to D2-A3.
+
+### Protected-evaluation ladder (current)
+
+```text
+novel_dev        28 frozen  → first development exposure under ND-0
+novel_validation 15 frozen  → unseen → one-shot later
+novel_holdout    13 expected → frozen/sealed externally → content not
+                              repository-visible → outcome unseen → release/T5 only
+```
+
 ### D3 — Small shortcut-migration experiment
 
 - **Status:** NOT_STARTED
