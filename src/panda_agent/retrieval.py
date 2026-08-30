@@ -13,6 +13,12 @@ from typing import Any
 from qdrant_client import models
 
 from panda_agent.config import load_query_expansions, load_retrieval_policies
+from panda_agent.d3_structured import (
+    D3Arm,
+    D3ExperimentConfig,
+    build_structured_contribution_from_storage,
+    select_matching_query_expansions,
+)
 from panda_agent.entity_resolution import EntityResolver, merge_exact_streams
 from panda_agent.lexical_query import build_lexical_query
 from panda_agent.llm.vertex import VertexAIClient, VertexSettings
@@ -313,6 +319,7 @@ class DeterministicQueryParse:
     paper_page_hints: dict[str, list[int]] = field(default_factory=dict)
     matched_expansion_rules: list[str] = field(default_factory=list)
     provenance: dict[str, list[dict[str, str]]] = field(default_factory=dict)
+    d3_experiment: dict[str, Any] | None = None
 
     def record(
         self, field_name: str, *, source: str, rule: str, value: str | None = None,
@@ -941,7 +948,12 @@ class Retriever:
             for match in re.finditer(r"\b\d{4}(?:-\d{2}-\d{2})?-dev\b", item["entry_url"], re.IGNORECASE)
         }
 
-    def _preparse(self, question: str) -> DeterministicQueryParse:
+    def _preparse(
+        self,
+        question: str,
+        *,
+        d3_config: D3ExperimentConfig | None = None,
+    ) -> DeterministicQueryParse:
         """Collect only existing raw-query and reviewed knowledge before analysis."""
         parsed = DeterministicQueryParse()
         lowered = question.casefold()
@@ -998,15 +1010,21 @@ class Retriever:
         except Exception:
             pass
 
-        for rule in getattr(getattr(self, "query_expansions", None), "rules", []):
-            if any(trigger.casefold() in lowered for trigger in rule.triggers):
-                parsed.matched_expansion_rules.append(rule.rule_id)
-                parsed.symbols.extend(rule.symbols)
-                parsed.concepts.extend(rule.concepts)
-                parsed.target_repositories.extend(repo for repo in rule.repositories if repo in self.fixed_versions)
-                for source_id, pages in rule.paper_page_hints.items():
-                    parsed.paper_page_hints.setdefault(source_id, []).extend(pages)
-                parsed.record("query_expansions", source="reviewed_expansion", rule=rule.rule_id, ownership="fixed_reviewed_rule")
+        expansion_decision = select_matching_query_expansions(
+            question,
+            getattr(getattr(self, "query_expansions", None), "rules", []),
+            d3_config,
+        )
+        for rule in expansion_decision.active_matching_rules:
+            parsed.matched_expansion_rules.append(rule.rule_id)
+            parsed.symbols.extend(rule.symbols)
+            parsed.concepts.extend(rule.concepts)
+            parsed.target_repositories.extend(repo for repo in rule.repositories if repo in self.fixed_versions)
+            for source_id, pages in rule.paper_page_hints.items():
+                parsed.paper_page_hints.setdefault(source_id, []).extend(pages)
+            parsed.record("query_expansions", source="reviewed_expansion", rule=rule.rule_id, ownership="fixed_reviewed_rule")
+        if d3_config is not None:
+            parsed.d3_experiment = expansion_decision.diagnostics(d3_config)
 
         parsed.explicit_shas = re.findall(r"(?i)\b[0-9a-f]{7,40}\b", question)
         if parsed.explicit_shas and len(named_repositories) == 1:
@@ -1042,12 +1060,17 @@ class Retriever:
         fields.append("concept_scopes")
         return fields
 
-    def analyze(self, question: str) -> RetrievalPlan:
+    def analyze(
+        self,
+        question: str,
+        *,
+        d3_config: D3ExperimentConfig | None = None,
+    ) -> RetrievalPlan:
         if not question.strip():
             raise ValueError("question cannot be empty")
         if len(question) > 20_000:
             raise ValueError("question exceeds the 20,000 character safety limit")
-        parsed = self._preparse(question)
+        parsed = self._preparse(question, d3_config=d3_config)
         semantic_output_fields = self._semantic_output_fields(parsed)
         response_schema = _analysis_schema(
             intent_is_fixed=parsed.intent is not None,
@@ -1152,6 +1175,36 @@ class Retriever:
             locked = self.fixed_versions.get(repo)
             if locked and requested not in {locked, locked[:7], self.fixed_refs[repo]}:
                 conflicts.append(f"{repo}: requested {requested}, locked {locked}")
+        analysis_diagnostics = {
+            "deterministic_parse": parsed.analyzer_context(semantic_output_fields),
+            "analyzer_llm_called": True,
+            "analyzer_semantic_output_fields": semantic_output_fields,
+            "analyzer_raw_semantic_delta": raw_result,
+            "analyzer_accepted_semantic_delta": delta.as_dict(),
+            "analyzer_rejected_items": validation.rejected_items,
+            "analyzer_item_support": {
+                field_name: (
+                    [values]
+                    if isinstance(values, dict) and values.get("support_spans")
+                    else [item for item in values if item.get("support_spans")]
+                )
+                for field_name, values in delta.as_dict().items()
+                if (
+                    isinstance(values, dict) and values.get("support_spans")
+                ) or isinstance(values, list)
+            },
+            "unbound_version_tokens": unbound_version_tokens,
+            "analyzer_final": {
+                "intent": intent,
+                "target_repositories": targets,
+                "concepts": list(dict.fromkeys(expanded_concepts)),
+                "symbols": list(dict.fromkeys(expanded_symbols)),
+                "requested_versions": requested_versions,
+                "concept_scopes": scopes,
+            },
+        }
+        if parsed.d3_experiment is not None:
+            analysis_diagnostics["d3_experiment"] = parsed.d3_experiment
         return RetrievalPlan(
             intent=intent, routing_method="rule" if parsed.intent else "llm", target_repositories=targets,
             resolved_versions={repo: self.fixed_versions[repo] for repo in targets},
@@ -1162,34 +1215,7 @@ class Retriever:
             required_source_types=policy.required_sources,
             resolved_aliases=parsed.resolved_aliases, premise_corrections=parsed.premise_corrections,
             paper_page_hints={key: list(dict.fromkeys(value)) for key, value in paper_page_hints.items()},
-            analysis_diagnostics={
-                "deterministic_parse": parsed.analyzer_context(semantic_output_fields),
-                "analyzer_llm_called": True,
-                "analyzer_semantic_output_fields": semantic_output_fields,
-                "analyzer_raw_semantic_delta": raw_result,
-                "analyzer_accepted_semantic_delta": delta.as_dict(),
-                "analyzer_rejected_items": validation.rejected_items,
-                "analyzer_item_support": {
-                    field_name: (
-                        [values]
-                        if isinstance(values, dict) and values.get("support_spans")
-                        else [item for item in values if item.get("support_spans")]
-                    )
-                    for field_name, values in delta.as_dict().items()
-                    if (
-                        isinstance(values, dict) and values.get("support_spans")
-                    ) or isinstance(values, list)
-                },
-                "unbound_version_tokens": unbound_version_tokens,
-                "analyzer_final": {
-                    "intent": intent,
-                    "target_repositories": targets,
-                    "concepts": list(dict.fromkeys(expanded_concepts)),
-                    "symbols": list(dict.fromkeys(expanded_symbols)),
-                    "requested_versions": requested_versions,
-                    "concept_scopes": scopes,
-                },
-            },
+            analysis_diagnostics=analysis_diagnostics,
         )
 
     @staticmethod
@@ -1561,8 +1587,40 @@ class Retriever:
     def _source_type(item: dict[str, Any]) -> str:
         return _source_type_of(item)
 
-    def retrieve(self, question: str, plan: RetrievalPlan | None = None) -> dict[str, Any]:
-        plan = plan or self.analyze(question)
+    @staticmethod
+    def _validate_d3_plan(
+        plan: RetrievalPlan,
+        config: D3ExperimentConfig,
+    ) -> dict[str, Any]:
+        diagnostics = plan.analysis_diagnostics.get("d3_experiment")
+        if not isinstance(diagnostics, dict):
+            raise ValueError(
+                "an externally supplied D3 plan must be produced with the same D3 config"
+            )
+        expected = {
+            "d3_arm": config.arm.value,
+            "selected_rule_ids": list(config.selected_rule_ids),
+            "structured_treatment_enabled": config.structured_treatment_enabled,
+            "selected_legacy_rules_suppressed": config.selected_legacy_rules_suppressed,
+        }
+        if any(diagnostics.get(key) != value for key, value in expected.items()):
+            raise ValueError("D3 plan/config mismatch")
+        return diagnostics
+
+    def retrieve(
+        self,
+        question: str,
+        plan: RetrievalPlan | None = None,
+        *,
+        d3_config: D3ExperimentConfig | None = None,
+    ) -> dict[str, Any]:
+        plan_was_supplied = plan is not None
+        plan = plan or self.analyze(question, d3_config=d3_config)
+        d3_diagnostics: dict[str, Any] | None = None
+        if d3_config is not None:
+            d3_diagnostics = self._validate_d3_plan(plan, d3_config)
+        elif plan_was_supplied and "d3_experiment" in plan.analysis_diagnostics:
+            raise ValueError("a D3 plan requires its explicit D3 config at retrieval time")
         limit = self.policies.candidate_pool_per_channel
         rankings: dict[str, list[dict[str, Any]]] = {"exact": self._exact(plan, question, limit)}
         dense, sparse, query_vector, semantic_query = self._vector(question, plan, limit)
@@ -1573,6 +1631,20 @@ class Retriever:
             rankings["paper"] = paper
         rankings["workflow"] = self._workflow(question, plan, limit)
         rankings["graph"] = self._graph([*rankings["exact"],*rankings["dense"],*rankings["sparse"]], plan, limit)
+        structured_contribution = None
+        if d3_config is not None and d3_config.arm is D3Arm.STRUCTURED:
+            structured_contribution = build_structured_contribution_from_storage(
+                question,
+                plan,
+                storage=self.storage,
+                context_sources=self.context_sources,
+                max_relation_hops=min(2, self.policies.max_relation_hops),
+            )
+            rankings["graph"] = merge_exact_streams(
+                structured_contribution.candidates,
+                rankings["graph"],
+                limit,
+            )
         scores: dict[str, float] = defaultdict(float)
         payloads: dict[str, dict[str, Any]] = {}
         channels: dict[str, list[str]] = defaultdict(list)
@@ -1669,7 +1741,7 @@ class Retriever:
         )
         lexical_query = build_lexical_query(question, plan)
         lexical_payload = lexical_query.as_dict()
-        return {
+        result = {
             "plan": plan.model_dump(mode="json"),
             "semantic_query": semantic_query.as_dict(),
             "lexical_query": lexical_payload,
@@ -1696,3 +1768,20 @@ class Retriever:
             "backfill_admissions": backfill_admissions,
             "evidence": [item.model_dump(mode="json") for item in selected],
         }
+        if d3_config is not None and d3_diagnostics is not None:
+            counters = dict(d3_diagnostics["diagnostic_counters"])
+            d3_receipt: dict[str, Any] = {
+                "d3_arm": d3_config.arm.value,
+                "selected_rule_ids": list(d3_config.selected_rule_ids),
+                "structured_treatment_enabled": d3_config.structured_treatment_enabled,
+                "selected_legacy_rules_suppressed": d3_config.selected_legacy_rules_suppressed,
+                "suppressed_selected_rule_ids": list(
+                    d3_diagnostics["suppressed_selected_rule_ids"]
+                ),
+            }
+            if structured_contribution is not None:
+                counters.update(structured_contribution.diagnostic_counters)
+                d3_receipt.update(structured_contribution.as_dict())
+            d3_receipt["diagnostic_counters"] = counters
+            result["d3_experiment"] = d3_receipt
+        return result

@@ -1,0 +1,233 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint": "D3-A1",
+  "status": "COMPLETE / STRUCTURED_SHORTCUT_REPLACEMENT_PROTOTYPE_FROZEN",
+  "base_commit": "a1d1408",
+  "preregistration_identity": {
+    "checkpoint": "D3-A0-R1",
+    "commit": "a1d1408",
+    "structured_artifact": "evaluation/d3_a0_shortcut_migration_preregistration.json",
+    "human_readable_artifact": "evaluation/D3_A0_SHORTCUT_MIGRATION_PREREGISTRATION.md"
+  },
+  "selected_rule_ids": [
+    "lmd_fit_data_chain",
+    "event_poca_handoff",
+    "pid_two_pass_files",
+    "model_factory_theory",
+    "effective_acceptance_pipeline",
+    "restgas_profile_workflow",
+    "root_macro_usage"
+  ],
+  "arm_contract": {
+    "LEGACY": {
+      "all_54_query_expansion_rules_active": true,
+      "selected_legacy_rules_suppressed": false,
+      "structured_treatment_enabled": false
+    },
+    "ABLATION": {
+      "all_nonselected_query_expansion_rules_unchanged": true,
+      "selected_legacy_rules_suppressed": true,
+      "structured_treatment_enabled": false
+    },
+    "STRUCTURED": {
+      "all_nonselected_query_expansion_rules_unchanged": true,
+      "selected_legacy_rules_suppressed": true,
+      "structured_treatment_enabled": true,
+      "selected_legacy_payload_fallback": false
+    },
+    "hybrid_mode_available": false
+  },
+  "implementation_components": [
+    {
+      "path": "src/panda_agent/d3_structured.py",
+      "responsibility": "Explicit arm configuration, expansion filtering, D2 seed derivation, bounded D1 traversal, candidate provenance, and deterministic diagnostics."
+    },
+    {
+      "path": "src/panda_agent/retrieval.py",
+      "responsibility": "Optional experiment plumbing and additive structured contribution through the existing graph candidate channel."
+    },
+    {
+      "path": "tests/unit/test_d3_structured_shortcut.py",
+      "responsibility": "Synthetic T0 arm, isolation, authority, traversal, provenance, and default-compatibility verification."
+    }
+  ],
+  "default_behavior": {
+    "d3_config_required_for_activation": true,
+    "no_d3_config_behavior": "LEGACY_COMPATIBLE",
+    "structured_treatment_enabled_by_default": false,
+    "d3_receipt_added_by_default": false,
+    "query_expansion_config_changed": false,
+    "fusion_weights_changed": false,
+    "reranker_changed": false,
+    "selector_changed": false
+  },
+  "structured_runtime_input_contract": {
+    "accepted": [
+      "ordinary production-style query text",
+      "normal RetrievalPlan/runtime context",
+      "D3ExperimentConfig containing arm, exact selected rule IDs, and structured-treatment enablement"
+    ],
+    "evaluation_artifact_runtime_dependency": false,
+    "phrase_to_object_mapping": false,
+    "rule_to_object_mapping": false,
+    "rule_to_relation_path_mapping": false,
+    "case_to_object_mapping": false,
+    "expected_evidence_lookup": false,
+    "per_selected_rule_semantic_branch": false
+  },
+  "evaluation_metadata_isolation": {
+    "accepted_by_structured_runtime": false,
+    "runtime_api_fields": [],
+    "rejected_forwarding_examples": [
+      "case_id",
+      "question_id",
+      "bound_rule_id",
+      "comparison_role",
+      "expected_status",
+      "expected_evidence_ids"
+    ],
+    "evaluation_metadata_runtime_use_count": 0
+  },
+  "d2_authority_contract": {
+    "Tier_G": "AUTHORITATIVE_BOUNDED governed identity; permitted canonical identity is recorded but traversal begins from the governed matched seed.",
+    "Tier_S": "Direct matched-record seed only; canonical_object_id is forced to null and no cross-record canonicalization is permitted.",
+    "Tier_D_RESOLVED_UNIQUE": "NONAUTHORITATIVE additive advisory seed; no scope restriction, deletion, routing, or canonicalization.",
+    "Tier_D_AMBIGUOUS": "All governed Tier-D candidate seeds are retained without collapse.",
+    "UNRESOLVED": "No seed and no negative filtering.",
+    "corrective_terms": "NONAUTHORITATIVE advisory candidate only; no identity authority and no relation/workflow traversal.",
+    "SAME_AS": "UNEVALUATED / inactive; excluded as resolution evidence for tier selection and excluded from D1 traversal.",
+    "RESOLVED_MULTIPLE": "UNEVALUATED / inactive.",
+    "whole_question_fallback": "PRODUCTION_PROHIBITED and excluded from consumption."
+  },
+  "d1_traversal_contract": {
+    "knowledge_backfill_performed": false,
+    "maximum_relation_hops": 2,
+    "effective_hops": "min(2, existing retrieval policy max_relation_hops)",
+    "accepted_relations_only": true,
+    "same_as_excluded": true,
+    "curated_workflow_steps_only": true,
+    "cycle_termination": "visited candidate identity and deterministic frontier deduplication",
+    "predicate_provenance_preserved": true,
+    "relation_identity_authority": false,
+    "semantic_similarity_graph_search": false,
+    "per_rule_traversal_policy": false
+  },
+  "structured_candidate_contract": {
+    "contribution": "ADDITIVE",
+    "ordinary_candidates_filtered": false,
+    "integration_channel": "existing graph candidate stream",
+    "existing_merge_semantics": "merge_exact_streams",
+    "existing_graph_fusion_weight_preserved": true,
+    "selected_legacy_payload_reuse_allowed": false,
+    "direct_answer_location_encoding_allowed": false
+  },
+  "provenance_contract": [
+    "treatment",
+    "query_grounded_support.mention",
+    "query_grounded_support.support_span",
+    "resolution_status",
+    "evidence_tier",
+    "authority_class",
+    "matched_object_id",
+    "canonical_object_id",
+    "seed_object_id",
+    "relation_path.edge_id",
+    "relation_path.predicate",
+    "relation_path.subject_id",
+    "relation_path.object_id",
+    "relation_path.traversal_direction",
+    "workflow_step",
+    "candidate_object_id",
+    "candidate_source_id",
+    "candidate_source_version_id",
+    "candidate_locator",
+    "candidate_identity_authority",
+    "reason_included"
+  ],
+  "diagnostic_counters": [
+    "legacy_shortcut_hit_count",
+    "selected_legacy_shortcut_hit_count",
+    "structured_resolution_attempt_count",
+    "structured_resolution_status_counts",
+    "structured_resolution_hit_count",
+    "structured_seed_count",
+    "structured_relation_traversal_count",
+    "structured_workflow_traversal_count",
+    "structured_candidate_injection_count",
+    "migration_specific_direct_answer_location_injection_count",
+    "prohibited_fallback_use_count",
+    "evaluation_metadata_runtime_use_count",
+    "selected_legacy_payload_reuse_count",
+    "same_as_activation_count"
+  ],
+  "required_zero_counters": {
+    "migration_specific_direct_answer_location_injection_count": 0,
+    "prohibited_fallback_use_count": 0,
+    "evaluation_metadata_runtime_use_count": 0,
+    "selected_legacy_payload_reuse_count": 0,
+    "same_as_activation_count": 0
+  },
+  "selected_legacy_payload_reuse_allowed": false,
+  "production_default_changed": false,
+  "current_production_d2_role": "SHADOW",
+  "formal_outcome_exposure": "NOT_STARTED",
+  "formal_d3_experiment_verdict": "NOT_RUN",
+  "formal_comparison_runs": {
+    "total": 0,
+    "LEGACY": 0,
+    "ABLATION": 0,
+    "STRUCTURED": 0,
+    "frozen_comparison_cases_run": 0,
+    "new_gold_d3_cases_run": 0,
+    "new_novel_dev_d3_cases_run": 0
+  },
+  "model_api_calls": {
+    "external_model": 0,
+    "analyzer_api": 0,
+    "dense_embedding": 0,
+    "reranker": 0,
+    "qa": 0,
+    "verifier": 0,
+    "judge": 0
+  },
+  "storage_writes": {
+    "production_database": 0,
+    "qdrant": 0,
+    "index_migration": false,
+    "reindex": false
+  },
+  "protected_dataset_access": {
+    "novel_validation": "UNSEEN",
+    "novel_validation_cases_run": 0,
+    "novel_holdout": "SEALED_UNSEEN",
+    "novel_holdout_cases_run": 0
+  },
+  "tests": {
+    "new_d3_t0": {
+      "command": "python -m unittest discover -s tests/unit -p 'test_d3_structured_shortcut.py'",
+      "result": "PASS",
+      "tests_run": 8
+    },
+    "focused_existing_retrieval": {
+      "result": "PASS",
+      "tests_run": 5,
+      "scope": "directly relevant preparse, expansion, and plan compatibility tests"
+    },
+    "compile_import_check": "PASS",
+    "static_anti_shortcut_audit": "PASS",
+    "git_diff_check": "PASS",
+    "scientific_evaluation_performed": false,
+    "non_evaluative_smoke_performed": false
+  },
+  "known_limitations": [
+    "lmd_fit_data_chain: existing D1 covers the reconstruction-output to LuminosityFit-reader boundary, not the complete createLmdFitData/runLmdFit/extraction chain.",
+    "model_factory_theory: existing D1 covers concept to model-subsystem structure, not rule-specific factory composition or paper-page hints.",
+    "effective_acceptance_pipeline: existing D1 covers concept/pipeline structure, not every historical file/page injected by the legacy rule.",
+    "root_macro_usage: existing D1 supports operational-document to generic-workflow provenance, not direct macro-page or locator replacement.",
+    "D3-A1 establishes plumbing and contract behavior only; structured recovery, parity, and migration suitability remain completely unmeasured."
+  ],
+  "implementation_frozen": true,
+  "D3_A1_IMPLEMENTATION_FROZEN": true,
+  "implementation_identity": "The normal Git commit produced by D3-A1; its SHA is intentionally recorded later by the D3-A2 run manifest.",
+  "next_stage": "D3-A2 — Frozen Three-Arm Comparison & Migration Decision"
+}
