@@ -1,72 +1,55 @@
 {
-  "schema_version": "nd0c-d2-a3-handoff-v1",
-  "checkpoint": "ND-0C",
+  "schema_version": "nd0c-d2-a3-handoff-v2",
+  "checkpoint": "ND-0C-R1",
   "boundary": {
     "handoff_only": true,
     "role_decision_belongs_to": "D2-A3",
     "evidence_separation": "D2-A2 = direct frozen resolver evaluation evidence; ND-0 = production retrieval generalization context. ND-0 does not test D2 resolver efficacy because D2 was not production-consumed in the measured path.",
-    "treatment_evidence_source": "D2-A2 only"
+    "treatment_evidence_source": "D2-A2 only",
+    "decision_neutral_language": "rows use 'supports consideration of / does not establish / A3 must decide'; no activation or production-authoritative claims are made"
   },
-  "matrix": [
-    {
-      "mechanism": "Tier G exact governed identity",
-      "d2_a2_direct_evidence": "fully reliable: governed-ID and true-alias canonicalization cases correct (C01/C07); explicit_canonicalization_accuracy 1/1; zero false cross-record canonicalizations",
-      "nd0c_contextual_evidence": "3 exact-identifier novel cases (n014/n025/n028) show strong identity cues present in the query; their losses sit at candidate generation (1 group) or ranking (4 groups), not at governed-identity mapping; no novel alias-related failure topology observed",
-      "novel_failure_overlap": "none direct",
-      "production_implication_for_a3": "evidence does not establish a production Tier G need from novel retrieval outcomes; the reliable shadow behavior is the D2-A2 fact A3 must weigh",
-      "open_blocker": "no novel case exercises accepted-alias/SAME_AS identity resolution end-to-end; A3 must decide on D2-A2 evidence plus design arguments"
+  "concept_separation": {
+    "d2_relevance": "DIRECT/INDIRECT/NONE per case - is the observed failure topology meaningfully inside or adjacent to the D2 resolver contract?",
+    "d2_mechanism": "Tier G / Tier S / Tier D / corrective / SAME_AS / MULTIPLE / fallback - which specific D2 mechanism or tier is relevant?",
+    "distinction": "a case may be D2 relevance = DIRECT without being Tier D descriptive; n014 is the explicit example (exact/structural mechanism, DIRECT relevance)"
+  },
+  "d2_relevance_aggregation_rule": {
+    "rule": "Deterministic case-level D2-relevance aggregation: consider only system-failed structurally valid groups (successful groups and the structurally impossible n023.e1 carry no relevance). case_d2_relevance = DIRECT if at least one such group is DIRECT; else INDIRECT if at least one is INDIRECT; else NONE. Applied mechanically to all 28 cases.",
+    "group_level_field": "group_diagnostics.group_d2_relevance (failed structurally valid groups only)",
+    "old_case_counts_before_rule_was_explicit": {
+      "DIRECT": 6,
+      "INDIRECT": 8,
+      "NONE": 14
     },
-    {
-      "mechanism": "Tier S exact structural identity",
-      "d2_a2_direct_evidence": "exact symbol/path cases correct (C05/C06); collisions correctly AMBIGUOUS/version-scoped",
-      "nd0c_contextual_evidence": "n014 (model_framework directory surface) and n023 ('FTS' surface variation) show partial surface-name leverage: named components matched while related governed targets were lost at channel or ranking stages",
-      "novel_failure_overlap": "partial (topological/contextual only)",
-      "production_implication_for_a3": "evidence supports consideration of structural-identity handling staying conservative; ranking/channel losses are outside resolver scope",
-      "open_blocker": "no novel case failed at the identity-mapping step itself"
+    "note": "ND-0C-R1: the rule is now explicit and machine-readable; counts were mechanically recomputed from the immutable ledger inputs (n022 moved INDIRECT -> DIRECT because n022.e1 is a descriptive candidate-generation failure). Pipeline failure-stage counts are NOT changed by this repair."
+  },
+  "corrected_relevance_counts": {
+    "before_explicit_rule": {
+      "DIRECT": 6,
+      "INDIRECT": 8,
+      "NONE": 14
     },
-    {
-      "mechanism": "Tier D descriptive canonical inference",
-      "d2_a2_direct_evidence": "descriptive positives 3/6 correctly resolved, 3/6 AMBIGUOUS, 0/6 wrong-confident (C02/C12/C21 lexical sibling ties)",
-      "nd0c_contextual_evidence": "6 DIRECT-relevance novel cases (n005/n009/n010/n014/n020/n029): descriptively identified governed targets lost at candidate generation; 12 failed groups; this is contextual applicability, not resolver efficacy",
-      "novel_failure_overlap": "topological overlap with descriptive entity identification; efficacy = UNEVALUATED from ND-0",
-      "production_implication_for_a3": "evidence supports consideration of Tier D for descriptive-mention coverage, but ND-0 provides no treatment evidence; A3 must decide using D2-A2 + design",
-      "open_blocker": "ND-0C cannot claim Tier D works or fails from novel retrieval outcomes"
+    "after_explicit_rule": {
+      "DIRECT": 7,
+      "INDIRECT": 7,
+      "NONE": 14
     },
-    {
-      "mechanism": "corrective terms",
-      "d2_a2_direct_evidence": "C08 corrective handling correct (correction surfaced, never Tier G authority); corrective_handling_correct = 1/1",
-      "nd0c_contextual_evidence": "no novel case exhibits corrective/premise-confused terminology topology",
-      "novel_failure_overlap": "none observed",
-      "production_implication_for_a3": "no novel evidence either way; D2-A2 remains primary",
-      "open_blocker": "contextual applicability not exercised by the novel cohort"
-    },
-    {
-      "mechanism": "SAME_AS",
-      "d2_a2_direct_evidence": "no accepted SAME_AS edges in the D1 state; natural applicability 0; contract implemented in shadow",
-      "nd0c_contextual_evidence": "no novel topology observed",
-      "novel_failure_overlap": "none",
-      "production_implication_for_a3": "resolver efficacy = UNEVALUATED",
-      "open_blocker": "no accepted SAME_AS edges exist to evaluate"
-    },
-    {
-      "mechanism": "RESOLVED_MULTIPLE",
-      "d2_a2_direct_evidence": "schema representable; natural applicability 0; trailing-s promotion removed in D2-A1R1",
-      "nd0c_contextual_evidence": "no novel multi-entity mention topology observed",
-      "novel_failure_overlap": "none",
-      "production_implication_for_a3": "resolver efficacy = UNEVALUATED",
-      "open_blocker": "no natural novel cohort coverage"
-    },
-    {
-      "mechanism": "whole-question fallback",
-      "d2_a2_direct_evidence": "C16: stronger version-sensitive identifier rejection followed by confident unrelated fallback resolution (WRONG_CONFIDENT_RESOLUTION, 1/8 FPR); C10 qualitative over-resolution",
-      "nd0c_contextual_evidence": "no analogous topology observable in the production retrieval traces (the fallback is a D2-internal mechanism that was not production-wired in the measured path)",
-      "novel_failure_overlap": "not observable in ND-0B artifacts",
-      "production_implication_for_a3": "fallback safety must be evaluated as its own mechanism separate from Tier D descriptive performance; A3 must decide whether KEEP_SHADOW or bounded activation addresses it",
-      "open_blocker": "fallback hazard remains D2-A2 evidence only; no novel first-exposure evidence exists"
+    "moved_cases": [
+      {
+        "question_id": "n022",
+        "from": "INDIRECT",
+        "to": "DIRECT",
+        "reason": "n022.e1 is a descriptive candidate-generation failure (group_d2_relevance = DIRECT) under the now-explicit deterministic aggregation rule"
+      }
+    ],
+    "group_level_counts": {
+      "DIRECT": 11,
+      "INDIRECT": 10,
+      "NONE": 2
     }
-  ],
-  "contextual_applicability_summary": {
-    "descriptive_mention_cases": [
+  },
+  "mechanism_context_cohorts": {
+    "descriptive_context_cases": [
       "n002",
       "n005",
       "n009",
@@ -76,28 +59,162 @@
       "n022",
       "n029"
     ],
-    "descriptive_cases_lost_at_candidate_generation": [
-      "n005",
-      "n009",
-      "n010",
-      "n020",
-      "n029"
+    "descriptive_topology_accounting": {
+      "pure_candidate_generation_losses": [
+        "n005",
+        "n009",
+        "n010",
+        "n020",
+        "n029"
+      ],
+      "ranking_loss_cases": [
+        "n002",
+        "n017"
+      ],
+      "mixed_channel_and_final_selector_case": [
+        "n022"
+      ],
+      "note": "8 descriptive cases, each accounted for exactly once (ND-0C-R1 reconciliation)"
+    },
+    "exact_structural_context_cases": [
+      "n014"
     ],
-    "descriptive_cases_lost_at_ranking": [
-      "n002",
-      "n017"
-    ],
-    "exact_identifier_cases": [
+    "exact_identifier_context_cases": [
       "n014",
       "n025",
       "n028"
     ],
-    "exact_identifier_surface_variation_case": [
+    "alias_surface_variation_cases": [
       "n023"
+    ],
+    "mixed_context_cases": [
+      "n009",
+      "n010",
+      "n022"
+    ],
+    "n014_note": "n014 is exact/structural (exact_surface_directory: model_framework / PndLmdModelFactory) and belongs to Tier G/S context, NOT Tier D descriptive context, despite case-level D2 relevance DIRECT",
+    "n023_note": "'FTS track finder' is alias/surface-variation terminology context; the actual system loss was ranking (candidate recalled), not identity mapping"
+  },
+  "matrix": [
+    {
+      "mechanism": "Tier G exact governed identity",
+      "d2_a2_direct_evidence": "evidence-bounded: all observed applicable Tier-G behaviors in D2-A2 were correct - explicit canonicalization accuracy 1/1 (C07), source-native noncanonicalization safety held (3/3), zero observed false cross-record canonicalizations in the evaluated cases; this is observed-sample success, not a global reliability claim",
+      "nd0c_contextual_evidence": "no novel case failed at governed-identity mapping itself; the exact/structural contextual case n014 (model_framework / PndLmdModelFactory surfaces) lost its target at candidate generation",
+      "novel_failure_overlap": "none direct",
+      "production_implication_for_a3": "observed Tier-G cases passed in the available D2-A2 sample; evidence does not establish a production need from ND-0; A3 must decide",
+      "open_blocker": "no novel case exercises accepted-alias/SAME_AS identity resolution end-to-end"
+    },
+    {
+      "mechanism": "Tier S exact structural identity",
+      "d2_a2_direct_evidence": "exact symbol/path cases correct where applicable (C05/C06); competition/version-scope behavior conservative",
+      "nd0c_contextual_evidence": "n014 (exact governed directory surface) is the Tier G/S contextual case; n023 ('FTS track finder') is alias/surface-variation terminology context whose actual loss was ranking, not identity mapping",
+      "novel_failure_overlap": "partial (topological/contextual only)",
+      "production_implication_for_a3": "observed cases passed; evidence does not establish global safety or production readiness; A3 must decide",
+      "open_blocker": "no novel case failed at the identity-mapping step itself"
+    },
+    {
+      "mechanism": "Tier D descriptive canonical inference",
+      "d2_a2_direct_evidence": "direct A2 efficacy evidence: descriptive positive cases = 6; correct = 3; ambiguous = 3; wrong-confident = 0",
+      "nd0c_contextual_evidence": "contextual applicability only - pure descriptive candidate-generation losses: n005, n009, n010, n020, n029; descriptive cases lost later: n002, n017 (ranking) and n022 (mixed channel + final selector); the exact/structural case n014 is NOT Tier D descriptive context",
+      "novel_failure_overlap": "topological overlap with descriptive entity identification; efficacy = UNEVALUATED from ND-0",
+      "production_implication_for_a3": "evidence supports consideration of Tier D for descriptive-mention coverage, but ND-0 provides no treatment evidence; A3 must decide using D2-A2 + design",
+      "open_blocker": "ND-0C cannot claim Tier D works or fails from novel retrieval outcomes"
+    },
+    {
+      "mechanism": "corrective terms",
+      "d2_a2_direct_evidence": "C08 corrective handling correct (correction surfaced, never Tier G authority); corrective_handling_correct = 1/1; corrective terms remain correction-only with no identity authority and no silent canonicalization",
+      "nd0c_contextual_evidence": "no novel case exhibits corrective/premise-confused terminology topology",
+      "novel_failure_overlap": "none observed",
+      "production_implication_for_a3": "no novel evidence either way; D2-A2 remains primary; A3 must decide",
+      "open_blocker": "contextual applicability not exercised by the novel cohort"
+    },
+    {
+      "mechanism": "SAME_AS",
+      "d2_a2_direct_evidence": "no accepted SAME_AS edges in the D1 state; natural applicability = 0; contract implemented in shadow",
+      "nd0c_contextual_evidence": "no novel topology observed",
+      "novel_failure_overlap": "none",
+      "production_implication_for_a3": "resolver efficacy = UNEVALUATED; A3 must decide",
+      "open_blocker": "no accepted SAME_AS edges exist to evaluate"
+    },
+    {
+      "mechanism": "RESOLVED_MULTIPLE",
+      "d2_a2_direct_evidence": "schema representable; natural applicability = 0; trailing-s promotion removed in D2-A1R1",
+      "nd0c_contextual_evidence": "no novel multi-entity mention topology observed",
+      "novel_failure_overlap": "none",
+      "production_implication_for_a3": "resolver efficacy = UNEVALUATED; A3 must decide",
+      "open_blocker": "no natural novel cohort coverage"
+    },
+    {
+      "mechanism": "whole-question fallback",
+      "d2_a2_direct_evidence": "C16 is the one valid wrong-confident resolution in the A2 accounting (false_positive_resolution_rate = 1/8): stronger version-sensitive identifier rejection -> whole-question fallback -> confident unrelated resolution (WRONG_CONFIDENT_RESOLUTION). This is a distinct safety mechanism, not Tier D descriptive performance",
+      "nd0c_contextual_evidence": "no analogous topology observable in the production retrieval traces (the fallback is a D2-internal mechanism that was not production-wired in the measured path)",
+      "novel_failure_overlap": "not observable in ND-0B artifacts",
+      "production_implication_for_a3": "fallback safety must be evaluated as its own mechanism separate from Tier D; A3 must decide between KEEP_SHADOW and bounded activation",
+      "open_blocker": "fallback hazard remains D2-A2 evidence only; no novel first-exposure evidence exists",
+      "invalid_case_governance": {
+        "C10": {
+          "case_invalid": true,
+          "qualitative_only": true,
+          "excluded_from_direct_evidence": true,
+          "note": "C10's expected status was implementation-informed rather than source-first; recorded CASE_INVALID in D2-A2. Its raw receipt (fallback over-resolution of a subsystem description) is qualitative observation only and is NOT included in D2-A2 direct efficacy/safety accounting"
+        },
+        "C14": {
+          "case_invalid": true,
+          "qualitative_only": true,
+          "excluded_from_direct_evidence": true
+        }
+      }
+    }
+  ],
+  "authoritative_d2_a2_facts": {
+    "valid_cases": 20,
+    "invalid_cases": [
+      "C10",
+      "C14"
+    ],
+    "wrong_confident_valid_case": "C16 only",
+    "false_positive_resolution_rate": "1/8",
+    "descriptive_positive": {
+      "correct": 3,
+      "ambiguous": 3,
+      "wrong_confident": 0
+    },
+    "explicit_canonicalization_accuracy": "1/1",
+    "source_native_noncanonicalization_accuracy": "3/3",
+    "same_as_natural_applicability": 0,
+    "resolved_multiple_natural_applicability": 0
+  },
+  "contextual_applicability_summary": {
+    "descriptive_context_cases": [
+      "n002",
+      "n005",
+      "n009",
+      "n010",
+      "n017",
+      "n020",
+      "n022",
+      "n029"
+    ],
+    "exact_structural_context_cases": [
+      "n014"
+    ],
+    "exact_identifier_context_cases": [
+      "n014",
+      "n025",
+      "n028"
+    ],
+    "alias_surface_variation_cases": [
+      "n023"
+    ],
+    "mixed_context_cases": [
+      "n009",
+      "n010",
+      "n022"
     ],
     "corrective_term_topologies": 0,
     "same_as_topologies": 0,
     "resolved_multiple_topologies": 0,
-    "resolver_efficacy_from_nd0": "UNEVALUATED (D2 not production-consumed in the measured path)"
+    "resolver_efficacy_from_nd0": "UNEVALUATED (D2 not production-consumed in the measured path)",
+    "strong_identity_caveat": "strong identity cues do not guarantee downstream retrieval survival (losses occurred at ranking/channel stages); this does not imply resolver activation would fix them"
   }
 }

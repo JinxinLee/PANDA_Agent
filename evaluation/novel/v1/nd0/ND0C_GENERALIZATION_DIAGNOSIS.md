@@ -119,14 +119,25 @@ retrieval path for this case.
 
 | D2 relevance | Cases | Failed groups in DIRECT cases |
 | --- | --- | --- |
-| DIRECT | 6 (n005, n009, n010, n014, n020, n029) | 12 (all lost) |
-| INDIRECT | 8 (n002, n003, n006, n017, n022, n023, n025, n028) | — |
+| DIRECT | 7 (n005, n009, n010, n014, n020, n022, n029) | 13 (all lost) |
+| INDIRECT | 7 (n002, n003, n006, n017, n023, n025, n028) | — |
 | NONE | 14 (12 successes + n016 + n021) | — |
 
+Aggregation rule (ND-0C-R1, deterministic and machine-readable): consider only
+system-failed structurally valid groups; case relevance = DIRECT if any such
+group is DIRECT, else INDIRECT if any is INDIRECT, else NONE. Group-level
+relevance: DIRECT 11 / INDIRECT 10 / NONE 2 (n021.e2 cross-repository
+assembly; n022.e3 final-selector loss). Under the now-explicit rule n022 moved
+INDIRECT → DIRECT (n022.e1 is a descriptive candidate-generation failure);
+counts before the rule was explicit were 6 / 8 / 14. n022 is counted exactly
+once in the descriptive-topology accounting below.
+
 - **DIRECT** = descriptively identified governed targets lost at candidate
-  generation (n005, n009, n010, n020, n029) or an exact governed surface whose
-  target never entered any channel pool (n014). Subtype rationale confidence
-  MEDIUM; the underlying stage facts are HIGH (trace-shown absence).
+  generation (n005, n009, n010, n020, n029 — Tier D descriptive context) or an
+  exact governed surface whose target never entered any channel pool (n014 —
+  exact/structural mechanism, Tier G/S context, explicitly NOT Tier D
+  descriptive). Subtype rationale confidence MEDIUM; the underlying stage facts
+  are HIGH (trace-shown absence).
 - **INDIRECT** = terminology/entity understanding is contextually present but
   the observed loss is primarily ranking (n002, n003, n006, n017, n023, n025,
   n028) or split channel+selector (n022). Candidates were recalled; identity
@@ -134,9 +145,10 @@ retrieval path for this case.
 - **NONE** includes successes, n016 (no retrieval loss), and n021 (cross-
   repository assembly).
 - **Descriptive cases** (8: n002, n005, n009, n010, n017, n020, n022, n029):
-  observed failure stages are candidate-generation absence (5 cases) and
-  ranking loss (2 cases); ambiguity vs absence is **absence**, not
-  competition. **Exact-identifier cases** (3 strict: n014, n025, n028; plus
+  observed failure stages are 5 pure candidate-generation losses (n005, n009,
+  n010, n020, n029), 2 ranking-loss cases (n002, n017), and 1 mixed channel +
+  final-selector case (n022) — 8 cases each accounted exactly once; ambiguity
+  vs absence is **absence**, not competition. **Exact-identifier cases** (3 strict: n014, n025, n028; plus
   surface-variation n023): strong identity cues did not prevent 1 channel
   loss and 4 ranking losses — exact-identifier presence does not guarantee
   survival, and this must not be read as resolver activation would fix them.
@@ -160,13 +172,13 @@ handoff semantics — evidence supports consideration of / does not establish):
 
 | Mechanism | D2-A2 direct evidence | ND-0C contextual evidence | A3 implication |
 | --- | --- | --- | --- |
-| Tier G exact governed identity | fully reliable (C01/C07; 0 false canonicalizations) | no novel alias/identity-mapping failure topology; exact-identifier losses sit at ranking/channel | evidence does not establish production need from ND-0; A3 must decide |
-| Tier S exact structural identity | exact symbol/path correct (C05/C06) | partial surface-name leverage (n014/n023); losses at channel/ranking | conservative handling supported; losses outside resolver scope |
-| Tier D descriptive inference | 3/6 correct, 3/6 ambiguous, 0 wrong-confident | 6 DIRECT cases = descriptive targets lost at candidate generation (contextual applicability) | efficacy UNEVALUATED from ND-0; A3 must decide on D2-A2 + design |
+| Tier G exact governed identity | evidence-bounded: all observed applicable Tier-G behaviors in D2-A2 were correct (explicit canonicalization 1/1; source-native safety 3/3; zero observed false canonicalizations) — observed-sample success, not a global reliability claim | no novel identity-mapping failure; exact/structural case n014 lost its target at candidate generation | evidence does not establish production need from ND-0; A3 must decide |
+| Tier S exact structural identity | exact symbol/path cases correct where applicable (C05/C06); conservative competition/version-scope behavior | n014 is the Tier G/S contextual case; n023 is alias/surface-variation context whose actual loss was ranking | observed cases passed; does not establish global safety; A3 must decide |
+| Tier D descriptive inference | direct A2 efficacy: 6 descriptive positives — 3 correct / 3 ambiguous / 0 wrong-confident | contextual applicability only: pure descriptive candidate-generation losses n005/n009/n010/n020/n029; later losses n002/n017 (ranking), n022 (mixed channel + final selector); n014 is NOT Tier D context | efficacy UNEVALUATED from ND-0; A3 must decide on D2-A2 + design |
 | corrective terms | C08 correct (non-authoritative) | no novel corrective topology | D2-A2 remains primary |
 | SAME_AS | no accepted edges; applicability 0 | no novel topology | UNEVALUATED |
 | RESOLVED_MULTIPLE | representable; applicability 0 | no novel topology | UNEVALUATED |
-| whole-question fallback | C16 hazard (WRONG_CONFIDENT_RESOLUTION) | not observable in production traces (not production-wired) | evaluate fallback safety as a separate mechanism; KEEP_SHADOW vs bounded activation is A3's decision |
+| whole-question fallback | C16 is the one valid wrong-confident resolution in the A2 accounting (FPR 1/8); C10/C14 are CASE_INVALID — qualitative observation only, excluded from direct evidence | not observable in production traces (not production-wired) | evaluate fallback safety as a separate mechanism; KEEP_SHADOW vs bounded activation is A3's decision |
 
 ## 11. Limitations
 

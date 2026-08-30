@@ -440,7 +440,8 @@ D2-A2R2 → ND-0A → ND-0B → ND-0C → D2-A3 → D3
   `COMPLETE / FIRST_EXPOSURE_MEASUREMENT_FROZEN` 2026-08-30; ND-0B-R1
   `COMPLETE / EVIDENCE_PACKAGE_AND_DATASET_DEFECT_ACCOUNTING_REPAIRED`
   2026-08-30; ND-0C `COMPLETE / GENERALIZATION_DIAGNOSIS_AND_D2_A3_HANDOFF`
-  2026-08-30; `FIRST_NOVEL_DEV_OUTCOME_EXPOSURE = COMPLETE`;
+  2026-08-30; ND-0C-R1 `COMPLETE / D2_A3_HANDOFF_SEMANTICS_REPAIRED` 2026-08-30;
+  `FIRST_NOVEL_DEV_OUTCOME_EXPOSURE = COMPLETE`;
   `NOVEL_DEV_DEVELOPMENT_EXPOSED = true`; `DATASET_STRUCTURAL_VALID = false`;
   `KNOWN_PRE_EXPOSURE_DATASET_DEFECT_COUNT = 1`.)
 
@@ -668,7 +669,8 @@ D2-A2R2 → ND-0A → ND-0B → ND-0C → D2-A3 → D3
   matched its target evidence (group recall 1.0) — the refusal boundary belongs
   to the QA/answer layer outside retrieval-only ND-0B. D2 relevance (contextual
   handoff only; efficacy UNEVALUATED from ND-0 because D2 was not
-  production-consumed): DIRECT 6 (n005, n009, n010, n014, n020, n029 — 12 failed
+  production-consumed; counts later corrected to 7/7/14 by ND-0C-R1's explicit
+  aggregation rule): DIRECT 6 (n005, n009, n010, n014, n020, n029 — 12 failed
   groups at candidate generation), INDIRECT 8, NONE 14; D2-A2 remains the only
   direct efficacy evidence (descriptive positives 3/6 resolved / 3/6 ambiguous /
   0 wrong-confident; C16 fallback hazard), and the D2 resolver was NOT executed
@@ -676,6 +678,40 @@ D2-A2R2 → ND-0A → ND-0B → ND-0C → D2-A3 → D3
   proposals. Verification: 28/28 ledger coverage, taxonomy subset of the frozen
   taxonomy, valid primary stages and D2 relevance values, funnel consistency,
   primary metrics unchanged, `git diff --check` clean. Next: D2-A3.
+
+- **ND-0C-R1 closeout — 2026-08-30 (`COMPLETE / D2_A3_HANDOFF_SEMANTICS_REPAIRED`):**
+  artifact-only repair of the D2-A3 handoff semantics; the accepted ND-0C
+  pipeline diagnosis is unchanged (funnel 49-37-37-27-26; stages NONE 12 /
+  CHANNEL 8 / FUSION_OR_RANKING 7; top20-to-final = n022.e3; RERANK_FAILURE = 0
+  as an attribution-honesty boundary); zero new retrieval/model/API/DB/D2 calls.
+  Repairs: (1) D2 relevance separated from D2 mechanism — n014 is DIRECT with an
+  exact/structural mechanism (exact_surface_directory) and is NOT Tier D
+  descriptive context; (2) group-level `group_d2_relevance` added to all 22
+  failed structurally valid groups (DIRECT 11 / INDIRECT 10 / NONE 2) with an
+  explicit deterministic case aggregation rule; mechanically recomputed counts
+  DIRECT 7 / INDIRECT 7 / NONE 14 (before: 6/8/14; n022 moved INDIRECT to DIRECT
+  because n022.e1 is a descriptive candidate-generation failure); pipeline
+  failure-stage counts unchanged; (3) descriptive cohort reconciled to 8 cases
+  each counted exactly once (5 pure candidate-generation losses n005/n009/n010/
+  n020/n029; 2 ranking losses n002/n017; 1 mixed channel+final-selector case
+  n022) with machine-readable mechanism cohorts (descriptive/exact-structural/
+  exact-identifier/alias-surface-variation/mixed); (4) C10/C14 removed from
+  direct A2 evidence — the fallback row cites C16 as the one valid
+  wrong-confident resolution (FPR 1/8) and C10/C14 carry explicit
+  case_invalid/qualitative_only/excluded_from_direct_evidence governance labels;
+  (5) Tier G wording evidence-bounded ("all observed applicable Tier-G behaviors
+  in D2-A2 were correct — observed-sample success, not a global reliability
+  claim" with explicit canonicalization 1/1, source-native safety 3/3, zero
+  observed false canonicalizations) and Tier S similarly bounded; Tier D rows
+  separate direct A2 efficacy (3/6 correct, 3/6 ambiguous, 0 wrong-confident)
+  from ND-0C contextual applicability and from no-treatment-evidence
+  (UNEVALUATED). Decision-neutral language preserved throughout; n016 and the
+  n023.e1 defect accounting unchanged; SAME_AS/RESOLVED_MULTIPLE remain
+  UNEVALUATED with natural applicability 0. Verification: descriptive cohort =
+  8 exactly-once without n014; n014 in exact/structural context; group-level
+  relevance valid on every failed group with mechanical case aggregation; C10
+  governance labels present; A2 facts reproduced exactly; no role-decision
+  claims; raw artifacts unchanged; `git diff --check` clean. Next: D2-A3.
 
 ### Protected-evaluation ladder (current)
 
