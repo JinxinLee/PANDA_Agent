@@ -436,7 +436,9 @@ D2-A2R2 → ND-0A → ND-0B → ND-0C → D2-A3 → D3
 
 - **Status:** IN_PROGRESS (ND-0A `COMPLETE / PRE_OUTCOME_PREREGISTRATION_FROZEN`
   2026-08-30; ND-0A-R1 `COMPLETE / HISTORICAL_COMPARISON_PROVENANCE_CORRECTED`
-  2026-08-30; ND-0B `NOT_STARTED`; ND-0C `NOT_STARTED`;
+  2026-08-30; ND-0B `COMPLETE / FIRST_EXPOSURE_MEASUREMENT_FROZEN` 2026-08-30
+  with `FIRST_NOVEL_DEV_OUTCOME_EXPOSURE = COMPLETE` and
+  `NOVEL_DEV_DEVELOPMENT_EXPOSED = true`; ND-0C `NOT_STARTED`;
   `FIRST_NOVEL_DEV_OUTCOME_EXPOSURE = NOT_STARTED`;
   `NOVEL_DEV_DEVELOPMENT_EXPOSED = false`.)
 
@@ -546,8 +548,54 @@ D2-A2R2 → ND-0A → ND-0B → ND-0C → D2-A3 → D3
 
 ### ND-0B — First 28-question retrieval measurement
 
-- **Status:** NOT_STARTED. Contract frozen by ND-0A; requires explicit user
-  instruction to execute. Retrieval-only, full 28/28.
+- **Status:** COMPLETE / FIRST_EXPOSURE_MEASUREMENT_FROZEN (2026-08-30).
+  Retrieval-only, full 28/28, executed under the frozen ND-0A/R1 contract.
+
+- **ND-0B closeout — 2026-08-30 (`COMPLETE / FIRST_EXPOSURE_MEASUREMENT_FROZEN`):**
+  first controlled novel_dev outcome exposure; the frozen ND-0A/R1 contract was
+  executed unchanged (no redesign, no tuning, no diagnosis, no post-hoc
+  thresholds). Run `nd0b-first-novel-dev-retrieval-20260830` at measurement HEAD
+  `348dd0d3c4b1ac464498f2a16b65ccb4b39eb6d7`: 28 scheduled / 28 completed /
+  0 exceptions, retrieval-only (`D2_RESOLVER_PRODUCTION_ACTIVATION = false`;
+  `QA_GENERATION_CALLS = 0`, `ANSWER_VERIFIER_CALLS = 0`,
+  `EXTERNAL_JUDGE_CALLS = 0`; `NOVEL_VALIDATION_CASES_RUN = 0`;
+  `NOVEL_HOLDOUT_CASES_RUN = 0`; `PRODUCTION_DB_WRITES = 0`;
+  `QDRANT_WRITES = 0`). Exposure transition recorded:
+  `FIRST_NOVEL_DEV_OUTCOME_EXPOSURE = COMPLETE`,
+  `NOVEL_DEV_DEVELOPMENT_EXPOSED = true`, `FIRST_EXPOSURE_ARTIFACT_IMMUTABLE =
+  true`; frozen manifest fields untouched. Aggregate metrics (27 applicable
+  answered-expected cases, evaluator-native applicability): Recall@5 0.5494
+  (14.833333/27), Recall@10 0.6173 (16.666667/27), Recall@20 0.6173 (identical
+  to Recall@10 — no first match in ranks 11–20, factual), MRR 0.5031
+  (13.583333/27), combined candidate recall 0.8117 (21.916667/27), critical
+  evidence recall 0.6049 (16.333333/27), final evidence recall 0.6049
+  (16.333333/27); intent accuracy 0.7143 and required-source coverage 0.9630
+  recorded as facts. n016 (frozen `insufficient_evidence`) retained: retrieval
+  returned non-empty evidence so the refusal expectation was not met — a
+  measurement outcome, excluded from the 27-case denominators, no post-hoc
+  metric invented. Pre-exposure static finding: n023.e1
+  (`tracking/PndFtsTrackFinder/README.MD`) matches no object in the
+  evaluator-canonical corpus and can never match under frozen semantics;
+  dataset untouched, classification deferred to ND-0C. Historical reference
+  comparison (labeled approximate / not apples-to-apples; direction
+  `novel_minus_historical_reference`): Recall@5 −0.2923, Recall@10 −0.2827,
+  Recall@20 −0.2827, MRR −0.1836, combined candidate recall −0.1383, critical
+  evidence recall −0.2951, final evidence recall −0.2951 versus
+  `english-gold-stratified-bootstrap-v1-20260813` (unchanged;
+  `APPROXIMATE / NON_IDENTICAL_COHORT` + `NON_IDENTICAL_CONFIGURATION`); no
+  causal interpretation performed. Cost: 85 retrieval-side model calls
+  (28 embeddings, 57 runtime generation calls across analyzer/reranker),
+  537,922 tokens, plus 1 preflight embedding call; judge 0/0. Preregistered
+  stratified summaries only (frozen sidecar metadata; small cells counts-only);
+  no new strata; no ND-0C taxonomy assignment. Artifacts: tracked immutable
+  package `evaluation/novel/v1/nd0/` (manifest, run manifest, results JSONL,
+  traces JSONL, metrics, report) byte-mirroring the raw run under
+  `data/evaluation/runs/nd0b-first-novel-dev-retrieval-20260830`. Verification:
+  28/28 case integrity, metric-accounting consistency, gap arithmetic,
+  prohibited/production-write counters, diagnosis-leakage grep,
+  package-vs-raw byte equality, `git diff --check` — all pass. Environment
+  note: `langgraph 1.2.11` (declared `qa` extra) installed to load the existing
+  runner; no repository code changed. Next: ND-0C.
 
 ### ND-0C — Generalization diagnosis and D2-A3 handoff
 

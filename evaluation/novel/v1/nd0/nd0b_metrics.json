@@ -1,0 +1,401 @@
+{
+  "schema_version": "nd0b-metrics-v1",
+  "run_id": "nd0b-first-novel-dev-retrieval-20260830",
+  "metric_direction_note": "Aggregate value = numerator/denominator over the 27 ordinary-applicable (answered-expected) cases; per-case numerator = per-case value x per-case required-group denominator (evidence-group semantics of panda_agent.evaluation).",
+  "aggregate_metrics": {
+    "gold_recall_at_5": {
+      "metric": "Recall@5",
+      "numerator": 14.833333,
+      "denominator": 27,
+      "value": 0.5493827160493827
+    },
+    "gold_recall_at_10": {
+      "metric": "Recall@10",
+      "numerator": 16.666667,
+      "denominator": 27,
+      "value": 0.617283950617284
+    },
+    "gold_recall_at_20": {
+      "metric": "Recall@20",
+      "numerator": 16.666667,
+      "denominator": 27,
+      "value": 0.617283950617284
+    },
+    "mrr": {
+      "metric": "MRR",
+      "numerator": 13.583333,
+      "denominator": 27,
+      "value": 0.5030864197530864
+    },
+    "combined_candidate_recall": {
+      "metric": "combined_candidate_recall",
+      "numerator": 21.916667,
+      "denominator": 27,
+      "value": 0.8117283950617284
+    },
+    "critical_final_evidence_recall": {
+      "metric": "critical_evidence_recall",
+      "numerator": 16.333333,
+      "denominator": 27,
+      "value": 0.6049382716049382
+    },
+    "final_evidence_recall": {
+      "metric": "final_evidence_recall",
+      "numerator": 16.333333,
+      "denominator": 27,
+      "value": 0.6049382716049382
+    }
+  },
+  "metric_applicability": {
+    "ordinary_applicable_cases": 27,
+    "non_applicable_cases": 1,
+    "rule": "expected_status == answered"
+  },
+  "insufficient_evidence_case": {
+    "question_id": "n016",
+    "expected_status": "insufficient_evidence",
+    "retrieval_result_status": "answered",
+    "final_evidence_count": 12,
+    "expected_status_correct": false,
+    "refusal_metrics_applicable": false,
+    "note": "The frozen insufficient_evidence case is retained in the 28/28 run. Retrieval returned non-empty evidence, so the refusal expectation was not met (a measurement outcome, not an execution failure). Ordinary retrieval metrics apply only to the 27 answered-expected cases under the frozen evaluator applicability semantics; no post-hoc metric was invented."
+  },
+  "cases": {
+    "scheduled": 28,
+    "completed": 28,
+    "exceptions": 0
+  },
+  "stratified_metrics": {
+    "evidence_count": {
+      "multi": {
+        "cases": 17,
+        "gold_recall_at_20": 0.509804,
+        "final_evidence_recall": 0.490196,
+        "combined_candidate_recall": 0.70098,
+        "applicable_denominator": 17
+      },
+      "single": {
+        "cases": 11,
+        "gold_recall_at_20": 0.8,
+        "final_evidence_recall": 0.8,
+        "combined_candidate_recall": 1.0,
+        "applicable_denominator": 10
+      }
+    },
+    "evidence_topology": {
+      "comparison": {
+        "cases": 5,
+        "gold_recall_at_20": 0.766667,
+        "final_evidence_recall": 0.766667,
+        "combined_candidate_recall": 0.833333,
+        "applicable_denominator": 5
+      },
+      "multi_hop": {
+        "cases": 6,
+        "gold_recall_at_20": 0.5,
+        "final_evidence_recall": 0.5,
+        "combined_candidate_recall": 0.708333,
+        "applicable_denominator": 6
+      },
+      "producer_consumer": {
+        "cases": 3,
+        "gold_recall_at_20": 0.444444,
+        "final_evidence_recall": 0.333333,
+        "combined_candidate_recall": 0.666667,
+        "applicable_denominator": 3
+      },
+      "single_hop": {
+        "cases": 14,
+        "gold_recall_at_20": 0.653846,
+        "final_evidence_recall": 0.653846,
+        "combined_candidate_recall": 0.884615,
+        "applicable_denominator": 13
+      }
+    },
+    "family": {
+      "nf001": {
+        "cases": 1,
+        "note": "small cell: counts only per preregistered small-cell rule"
+      },
+      "nf002": {
+        "cases": 1,
+        "note": "small cell: counts only per preregistered small-cell rule"
+      },
+      "nf003": {
+        "cases": 1,
+        "note": "small cell: counts only per preregistered small-cell rule"
+      },
+      "nf004": {
+        "cases": 1,
+        "note": "small cell: counts only per preregistered small-cell rule"
+      },
+      "nf005": {
+        "cases": 1,
+        "note": "small cell: counts only per preregistered small-cell rule"
+      },
+      "nf006": {
+        "cases": 1,
+        "note": "small cell: counts only per preregistered small-cell rule"
+      },
+      "nf007": {
+        "cases": 1,
+        "note": "small cell: counts only per preregistered small-cell rule"
+      },
+      "nf008": {
+        "cases": 1,
+        "note": "small cell: counts only per preregistered small-cell rule"
+      },
+      "nf009": {
+        "cases": 1,
+        "note": "small cell: counts only per preregistered small-cell rule"
+      },
+      "nf010": {
+        "cases": 1,
+        "note": "small cell: counts only per preregistered small-cell rule"
+      },
+      "nf014": {
+        "cases": 1,
+        "note": "small cell: counts only per preregistered small-cell rule"
+      },
+      "nf015": {
+        "cases": 1,
+        "note": "small cell: counts only per preregistered small-cell rule"
+      },
+      "nf016": {
+        "cases": 1,
+        "note": "small cell: counts only per preregistered small-cell rule"
+      },
+      "nf017": {
+        "cases": 1,
+        "note": "small cell: counts only per preregistered small-cell rule"
+      },
+      "nf018": {
+        "cases": 1,
+        "note": "small cell: counts only per preregistered small-cell rule"
+      },
+      "nf019": {
+        "cases": 1,
+        "note": "small cell: counts only per preregistered small-cell rule"
+      },
+      "nf020": {
+        "cases": 1,
+        "note": "small cell: counts only per preregistered small-cell rule"
+      },
+      "nf021": {
+        "cases": 1,
+        "note": "small cell: counts only per preregistered small-cell rule"
+      },
+      "nf022": {
+        "cases": 1,
+        "note": "small cell: counts only per preregistered small-cell rule"
+      },
+      "nf023": {
+        "cases": 1,
+        "note": "small cell: counts only per preregistered small-cell rule"
+      },
+      "nf024": {
+        "cases": 1,
+        "note": "small cell: counts only per preregistered small-cell rule"
+      },
+      "nf025": {
+        "cases": 1,
+        "note": "small cell: counts only per preregistered small-cell rule"
+      },
+      "nf026": {
+        "cases": 1,
+        "note": "small cell: counts only per preregistered small-cell rule"
+      },
+      "nf027": {
+        "cases": 1,
+        "note": "small cell: counts only per preregistered small-cell rule"
+      },
+      "nf028": {
+        "cases": 1,
+        "note": "small cell: counts only per preregistered small-cell rule"
+      },
+      "nf029": {
+        "cases": 1,
+        "note": "small cell: counts only per preregistered small-cell rule"
+      },
+      "nf030": {
+        "cases": 1,
+        "note": "small cell: counts only per preregistered small-cell rule"
+      },
+      "nf031": {
+        "cases": 1,
+        "note": "small cell: counts only per preregistered small-cell rule"
+      }
+    },
+    "intent": {
+      "algorithm_implementation": {
+        "cases": 5,
+        "gold_recall_at_20": 0.5,
+        "final_evidence_recall": 0.5,
+        "combined_candidate_recall": 0.65,
+        "applicable_denominator": 5
+      },
+      "algorithm_theory": {
+        "cases": 3,
+        "gold_recall_at_20": 0.777778,
+        "final_evidence_recall": 0.777778,
+        "combined_candidate_recall": 0.888889,
+        "applicable_denominator": 3
+      },
+      "api": {
+        "cases": 3,
+        "gold_recall_at_20": 0.5,
+        "final_evidence_recall": 0.5,
+        "combined_candidate_recall": 1.0,
+        "applicable_denominator": 3
+      },
+      "data_flow": {
+        "cases": 2,
+        "note": "small cell: counts only per preregistered small-cell rule"
+      },
+      "installation": {
+        "cases": 2,
+        "note": "small cell: counts only per preregistered small-cell rule"
+      },
+      "module_structure": {
+        "cases": 2,
+        "note": "small cell: counts only per preregistered small-cell rule"
+      },
+      "troubleshooting": {
+        "cases": 2,
+        "note": "small cell: counts only per preregistered small-cell rule"
+      },
+      "usage": {
+        "cases": 9,
+        "gold_recall_at_20": 0.759259,
+        "final_evidence_recall": 0.759259,
+        "combined_candidate_recall": 0.888889,
+        "applicable_denominator": 9
+      }
+    },
+    "repository_scope": {
+      "cross_repository": {
+        "cases": 1,
+        "note": "small cell: counts only per preregistered small-cell rule"
+      },
+      "paper_only": {
+        "cases": 2,
+        "note": "small cell: counts only per preregistered small-cell rule"
+      },
+      "single_repository": {
+        "cases": 25,
+        "gold_recall_at_20": 0.590278,
+        "final_evidence_recall": 0.576389,
+        "combined_candidate_recall": 0.809028,
+        "applicable_denominator": 24
+      }
+    },
+    "representativeness": {
+      "exploratory": {
+        "cases": 2,
+        "note": "small cell: counts only per preregistered small-cell rule"
+      },
+      "representative": {
+        "cases": 26,
+        "gold_recall_at_20": 0.653333,
+        "final_evidence_recall": 0.64,
+        "combined_candidate_recall": 0.836667,
+        "applicable_denominator": 25
+      }
+    },
+    "source_scope": {
+      "cross_source": {
+        "cases": 3,
+        "gold_recall_at_20": 0.444444,
+        "final_evidence_recall": 0.444444,
+        "combined_candidate_recall": 0.555556,
+        "applicable_denominator": 3
+      },
+      "single_source": {
+        "cases": 25,
+        "gold_recall_at_20": 0.638889,
+        "final_evidence_recall": 0.625,
+        "combined_candidate_recall": 0.84375,
+        "applicable_denominator": 24
+      }
+    }
+  },
+  "historical_reference_comparison": {
+    "baseline_id": "english-gold-stratified-bootstrap-v1-20260813",
+    "comparability_status": "APPROXIMATE / NON_IDENTICAL_COHORT",
+    "configuration_comparability": "NON_IDENTICAL_CONFIGURATION",
+    "difference_direction": "novel_minus_historical_reference (negative means the novel metric is lower)",
+    "label": "APPROXIMATE HISTORICAL REFERENCE COMPARISON - NOT AN APPLES-TO-APPLES EFFECT ESTIMATE",
+    "differences": {
+      "gold_recall_at_5": {
+        "metric": "Recall@5",
+        "historical_gold_reference": 0.8416666666666666,
+        "nd0b_novel_dev": 0.549383,
+        "difference_novel_minus_historical_reference": -0.292284
+      },
+      "gold_recall_at_10": {
+        "metric": "Recall@10",
+        "historical_gold_reference": 0.9,
+        "nd0b_novel_dev": 0.617284,
+        "difference_novel_minus_historical_reference": -0.282716
+      },
+      "gold_recall_at_20": {
+        "metric": "Recall@20",
+        "historical_gold_reference": 0.9,
+        "nd0b_novel_dev": 0.617284,
+        "difference_novel_minus_historical_reference": -0.282716
+      },
+      "mrr": {
+        "metric": "MRR",
+        "historical_gold_reference": 0.6866666666666666,
+        "nd0b_novel_dev": 0.503086,
+        "difference_novel_minus_historical_reference": -0.18358
+      },
+      "combined_candidate_recall": {
+        "metric": "combined_candidate_recall",
+        "historical_gold_reference": 0.95,
+        "nd0b_novel_dev": 0.811728,
+        "difference_novel_minus_historical_reference": -0.138272
+      },
+      "critical_final_evidence_recall": {
+        "metric": "critical_evidence_recall",
+        "historical_gold_reference": 0.9,
+        "nd0b_novel_dev": 0.604938,
+        "difference_novel_minus_historical_reference": -0.295062
+      },
+      "final_evidence_recall": {
+        "metric": "final_evidence_recall",
+        "historical_gold_reference": 0.9,
+        "nd0b_novel_dev": 0.604938,
+        "difference_novel_minus_historical_reference": -0.295062
+      }
+    }
+  },
+  "cost_accounting": {
+    "total_model_calls": 85,
+    "total_token_usage": 537922,
+    "retrieval_runtime_breakdown": {
+      "embedding_calls": 28,
+      "generation_calls": 57,
+      "model_calls": 85,
+      "token_usage": 537922
+    },
+    "note": "Retrieval-side model calls only (query analyzer generation calls, reranker generation calls where applicable, dense query embedding calls), aggregated as recorded by the existing runtime instrumentation; the analyzer/reranker split within runtime generation calls is not separately instrumented. The judge role recorded 0 calls and 0 tokens. One additional credential-visible embedding call occurred during preflight, before the first case.",
+    "prohibited_stage_counters": {
+      "QA_GENERATION_CALLS": 0,
+      "ANSWER_VERIFIER_CALLS": 0,
+      "EXTERNAL_JUDGE_CALLS": 0
+    },
+    "preflight_embedding_calls": 1
+  },
+  "prohibited_stages_run": {
+    "qa_generation": false,
+    "answer_generation": false,
+    "answer_verifier": false,
+    "external_judge": false
+  },
+  "production_writes": {
+    "PRODUCTION_DB_WRITES": 0,
+    "QDRANT_WRITES": 0,
+    "CURRENT_DEPLOYED_RETRIEVAL_BEHAVIOR_CHANGED": false
+  }
+}

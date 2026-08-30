@@ -1,0 +1,83 @@
+{
+  "audit_resolution_hash": "e7c15d7a6eb9fa290a57dbbefbd5cb0f701b2d01265ac74cf8a01883ebcabf87",
+  "case_ids": null,
+  "deadline_minutes": null,
+  "embedding_dimensions": 3072,
+  "embedding_model_id": "gemini-embedding-2",
+  "evaluation_judge_model_id": "gemini-3.7-flash",
+  "evaluator_catalog": null,
+  "evaluator_catalog_path": null,
+  "generation_model_id": "gemini-3.7-flash",
+  "gold_acceptance_exposed": true,
+  "gold_dataset_hash": "25ad18fcf76ab2796aa18ae961bdc4faf076f0c98a8a5226413ec95e58252223",
+  "gold_dataset_path": "C:\\Users\\Jinxin.DESKTOP-H6SSTQH\\Desktop\\Agent_learn\\PANDA_Agent\\evaluation\\novel\\v1\\novel_dev.yaml",
+  "gold_expected_split_counts": {
+    "novel_dev": 28
+  },
+  "gold_release_eligible": false,
+  "index_identity": "8172f9a640e62977be6e911bfb4848ce3aecd0994f1f3ba51a0985bffec62cb9",
+  "index_identity_payload": {
+    "distance": "cosine",
+    "embedding_dimensions": 3072,
+    "embedding_model": "gemini-embedding-2",
+    "index_schema_version": "4",
+    "sparse": {
+      "avg_len": 256.0,
+      "b": 0.75,
+      "disable_stemmer": false,
+      "fastembed_version": "0.7.4",
+      "hash_function": "mmh3.hash",
+      "k": 1.2,
+      "language": "english",
+      "mmh3_version": "5.2.1",
+      "model_name": "Qdrant/bm25",
+      "modifier": "idf",
+      "py_rust_stemmers_version": "0.1.8",
+      "stemmer": "SnowballStemmer",
+      "stopwords_sha256": "019f104ba2ed07436d05f9cdd3383034ad66014edc27fc651f837e1a038b6451",
+      "token_max_length": 40,
+      "tokenizer": "SimpleTokenizer",
+      "vector_name": "sparse"
+    }
+  },
+  "limit": null,
+  "max_model_calls": null,
+  "max_token_usage": null,
+  "mode": "retrieval",
+  "normalized_manifest_hash": "9925ec31a6122e05388806990f79aae036f3b0989c4584d24f2092bc4edb3d94",
+  "normalized_output_hashes": {
+    "aliases": "2e59201f5bcb7f5c515ec6c573af1f15f18e8a8bd97dbd34ceb54aa0fc1fe7da",
+    "errors": "ea0b09cc07dc78ae83851fb247a31514350cd6ae1abd7fcdd03c61e4a20e1d7d",
+    "objects": "ff7f6102542bd68775caefba19d19d9ba0bb2452fe05a234344db40284538e73",
+    "relation_candidates": "b45264ff7451573c63c7d1e0b9fc169f79a97c5e256f3f70fd996517dfb80048",
+    "relations": "609fd869c8bc7613df4e84fbde95c172c0fce9ad1296ba32f939ab2d9b8136a9",
+    "workflows": "27bc6e4fcda3debff056f2217a468b8ce27f4469fd85dc84feee9de8ab5b6c24"
+  },
+  "official": true,
+  "package_versions": {
+    "google-genai": "2.13.0",
+    "langgraph": "1.2.11",
+    "panda-research-qa-agent": "0.1.0",
+    "psycopg": "3.3.4",
+    "python": "3.13.14",
+    "qdrant-client": "1.19.0"
+  },
+  "pipeline_boundaries": {
+    "answer_generation": false,
+    "external_judge": false,
+    "runtime_verification": false
+  },
+  "prompt_hash": "8bc024ee8d34c326343ad7d68fa3eba585a76ac7911453ab069039c7d321f5ad",
+  "prompt_version": "3.7.0",
+  "query_expansion_hash": "dad22d19e5cadc714df778274d9183b39d00eff970664c10660f2f658224ada3",
+  "repository_identity": {
+    "commit": "348dd0d3c4b1ac464498f2a16b65ccb4b39eb6d7",
+    "dirty": true
+  },
+  "retrieval_policy_hash": "ebe4cb1099caca7a6dafd8ff08a57fb5fd8ca2cec3119834ce04bd3c67ff1407",
+  "run_started_at": "2026-08-30T15:37:01.476172+00:00",
+  "runtime_generation_model_id": "gemini-3.7-flash",
+  "schema_version": "1.0",
+  "source_manifest_hash": "9925ec31a6122e05388806990f79aae036f3b0989c4584d24f2092bc4edb3d94",
+  "split": "novel_dev"
+}

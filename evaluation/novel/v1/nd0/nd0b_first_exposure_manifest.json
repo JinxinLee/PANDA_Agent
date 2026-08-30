@@ -1,0 +1,123 @@
+{
+  "schema_version": "nd0b-first-exposure-manifest-v1",
+  "run_id": "nd0b-first-novel-dev-retrieval-20260830",
+  "checkpoint": "ND-0B",
+  "first_exposure": true,
+  "first_exposure_artifact_immutable": true,
+  "status": "COMPLETE / FIRST_EXPOSURE_MEASUREMENT_FROZEN",
+  "source_head": "348dd0d3c4b1ac464498f2a16b65ccb4b39eb6d7",
+  "source_head_subject": "348dd0d ND-0A-R1 correct historical comparison provenance",
+  "working_tree_dirty_at_run_start": true,
+  "dirty_state_note": "untracked data/sources.zip only (pre-existing, not part of the measured system)",
+  "run_started_at": "2026-08-30T15:37:01.476172+00:00",
+  "mode": "retrieval",
+  "retrieval_only": true,
+  "dataset": {
+    "path": "evaluation/novel/v1/novel_dev.yaml",
+    "dataset_identity": "novel-v1-dev-expansion",
+    "benchmark_version": "novel-v1-dev-0.3.0",
+    "dataset_version": "0.3.0",
+    "split": "novel_dev",
+    "question_count": 28,
+    "frozen_count": 28,
+    "independent_family_count": 28,
+    "dataset_hash": "25ad18fcf76ab2796aa18ae961bdc4faf076f0c98a8a5226413ec95e58252223",
+    "frozen_manifest_fields_unchanged": {
+      "agent_outcome_seen_before_freeze": false,
+      "evidence_selected_from_agent_output": false
+    }
+  },
+  "cases": {
+    "scheduled": 28,
+    "completed": 28,
+    "exceptions": 0
+  },
+  "exposure_transition": {
+    "FIRST_NOVEL_DEV_OUTCOME_EXPOSURE": "NOT_STARTED -> STARTED (first retrieval request) -> COMPLETE (28/28 valid completion)",
+    "NOVEL_DEV_DEVELOPMENT_EXPOSED": true,
+    "irreversible": true
+  },
+  "production_state": {
+    "production_roles": {
+      "exact": "LEGACY_EXACT",
+      "sparse": "raw question",
+      "RawDense": "PRODUCTION_AUTHORITATIVE",
+      "SemanticDense": "KEEP_DISABLED (auxiliary-shadow)",
+      "fusion": "P0 CURRENT / PRODUCTION_AUTHORITATIVE",
+      "selector": "CURRENT_SELECTOR / PRODUCTION_AUTHORITATIVE",
+      "D2_resolver": "SHADOW (not applied in the production retrieval path)",
+      "D2_RESOLVER_PRODUCTION_ACTIVATION": false
+    },
+    "prompt_set_version": "3.7.0",
+    "prompt_hash": "8bc024ee8d34c326343ad7d68fa3eba585a76ac7911453ab069039c7d321f5ad",
+    "index_schema": "4",
+    "index_fingerprint": "8172f9a640e62977be6e911bfb4848ce3aecd0994f1f3ba51a0985bffec62cb9",
+    "qdrant_points": 104973,
+    "sql_objects": 133075,
+    "embedding_model": "gemini-embedding-2",
+    "embedding_dimensions": 3072,
+    "sparse_receipt": {
+      "avg_len": 256.0,
+      "b": 0.75,
+      "disable_stemmer": false,
+      "fastembed_version": "0.7.4",
+      "hash_function": "mmh3.hash",
+      "k": 1.2,
+      "language": "english",
+      "mmh3_version": "5.2.1",
+      "model_name": "Qdrant/bm25",
+      "modifier": "idf",
+      "py_rust_stemmers_version": "0.1.8",
+      "stemmer": "SnowballStemmer",
+      "stopwords_sha256": "019f104ba2ed07436d05f9cdd3383034ad66014edc27fc651f837e1a038b6451",
+      "token_max_length": 40,
+      "tokenizer": "SimpleTokenizer",
+      "vector_name": "sparse"
+    },
+    "retrieval_policy_hash": "ebe4cb1099caca7a6dafd8ff08a57fb5fd8ca2cec3119834ce04bd3c67ff1407",
+    "query_expansion_hash": "dad22d19e5cadc714df778274d9183b39d00eff970664c10660f2f658224ada3",
+    "normalized_corpus_manifest": "9925ec31a6122e05388806990f79aae036f3b0989c4584d24f2092bc4edb3d94"
+  },
+  "preflight": {
+    "dataset_loads_28_frozen_records": true,
+    "manifest_identity_matches_preregistration": true,
+    "production_services_available": true,
+    "index_identity_matches_authoritative_schema4_state": true,
+    "evaluator_schema_loads": true,
+    "run_id_fresh_no_overwrite": true,
+    "prohibited_qa_judge_stages_disabled": true,
+    "vertex_credential_preflight_embedding_calls": 1,
+    "static_dataset_validation_finding": {
+      "finding": "validate_gold_dataset recorded n023.e1 (pandaroot path tracking/PndFtsTrackFinder/README.MD) as unmatched: no object in the evaluator-canonical normalized corpus carries that path. The frozen dataset was not modified; the group can therefore never match under frozen semantics. Recorded as a pre-exposure static fact; classification belongs to ND-0C (EXPECTED_EVIDENCE_MAPPING_ISSUE is a frozen taxonomy category).",
+      "structurally_valid": false,
+      "official_ready_reason": "n023.e1 unmatched (28/28 review-approved)"
+    }
+  },
+  "comparison_reference": {
+    "baseline_id": "english-gold-stratified-bootstrap-v1-20260813",
+    "comparability_status": "APPROXIMATE / NON_IDENTICAL_COHORT",
+    "configuration_comparability": "NON_IDENTICAL_CONFIGURATION",
+    "gap_interpretation": "historical cross-cohort + cross-configuration reference difference; not an apples-to-apples treatment effect"
+  },
+  "artifacts": {
+    "raw_run_dir": "data/evaluation/runs/nd0b-first-novel-dev-retrieval-20260830 (gitignored working location)",
+    "package_dir": "evaluation/novel/v1/nd0 (tracked, immutable first-exposure package)",
+    "files": [
+      "nd0b_first_exposure_manifest.json",
+      "nd0b_retrieval_results.jsonl",
+      "nd0b_retrieval_traces.jsonl",
+      "nd0b_run_manifest.json",
+      "nd0b_metrics.json",
+      "ND0B_FIRST_EXPOSURE_REPORT.md"
+    ]
+  },
+  "prohibited_stages_run": {
+    "qa_generation": 0,
+    "answer_generation": 0,
+    "answer_verifier": 0,
+    "external_judge": 0,
+    "novel_validation_cases": 0,
+    "holdout_cases": 0
+  },
+  "next_stage": "ND-0C"
+}
