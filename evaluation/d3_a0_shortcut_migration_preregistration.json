@@ -4,8 +4,10 @@
   "title": "Shortcut Migration Selection and Preregistration Freeze",
   "frozen_at": "2026-08-30",
   "preregistration_source_head": "6849c97f65090ccee5ff7e4af5aed6837ff20940",
-  "status": "COMPLETE_PREOUTCOME_SELECTION_FROZEN",
+  "status": "COMPLETE_PREOUTCOME_SELECTION_FROZEN_R1_REPAIRED",
   "verdict": "PASS",
+  "verdict_scope": "D3-A0-R1_PREREGISTRATION_REPAIR_ONLY",
+  "formal_d3_experiment_verdict": "NOT_RUN",
   "scope": {
     "performed": [
       "static legacy-rule inventory",
@@ -14,7 +16,10 @@
       "three-arm experiment design",
       "comparison-set freeze",
       "metric/failure/rollback preregistration",
-      "documentation status update"
+      "documentation status update",
+      "D3-A0-R1 per-rule identifiability repair",
+      "per-rule versus overall decision-vocabulary separation",
+      "D3-A1/D3-A2 stage-boundary and runtime-input-isolation repair"
     ],
     "not_performed": [
       "runtime implementation",
@@ -271,8 +276,8 @@
       },
       "exact_trigger_overlap_rule_ids": [],
       "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
-      "d3_a0_disposition": "SELECTED_FIRST_BATCH",
-      "disposition_reason": "Representative concept-to-implementation rule with an accepted IMPLEMENTS edge and bounded source-native identifiers."
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "R1_IDENTIFIABILITY_REPLACEMENT: replaced by model_factory_theory before D3 outcome exposure because no approved English Gold-dev/novel_dev case naturally activated this rule; the replacement preserves the intended topology with inspectable D1/D2 support."
     },
     {
       "inventory_index": 6,
@@ -1045,8 +1050,8 @@
         "version_mismatch_troubleshooting"
       ],
       "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
-      "d3_a0_disposition": "SELECTED_FIRST_BATCH",
-      "disposition_reason": "Representative versioned-document-to-operational-workflow rule with accepted D1 documentation provenance."
+      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
+      "disposition_reason": "R1_IDENTIFIABILITY_REPLACEMENT: replaced by root_macro_usage before D3 outcome exposure because no approved English Gold-dev/novel_dev case naturally activated this rule; the replacement preserves the intended topology with inspectable D1/D2 support."
     },
     {
       "inventory_index": 25,
@@ -1125,8 +1130,8 @@
       },
       "exact_trigger_overlap_rule_ids": [],
       "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
-      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
-      "disposition_reason": "BATCH_TOPOLOGY_OVERLAP: the rule overlaps a selected topology; excluded to keep the first batch bounded and independently interpretable."
+      "d3_a0_disposition": "SELECTED_FIRST_BATCH",
+      "disposition_reason": "R1 replacement preserving operational-documentation usage coverage with accepted D1 document-to-workflow support and natural direct-trigger applicability in n004; selected without D3 outcome information."
     },
     {
       "inventory_index": 27,
@@ -1742,8 +1747,8 @@
         "model_factory_acceptance_methods"
       ],
       "current_consumer_semantics": "case-insensitive literal substring match; all matching rules accumulate fixed reviewed repositories, symbols, concepts, and paper page hints into deterministic query parsing",
-      "d3_a0_disposition": "EXCLUDED_FIRST_BATCH",
-      "disposition_reason": "BATCH_TOPOLOGY_OVERLAP: the rule overlaps a selected topology; excluded to keep the first batch bounded and independently interpretable."
+      "d3_a0_disposition": "SELECTED_FIRST_BATCH",
+      "disposition_reason": "R1 replacement preserving concept-to-implementation coverage with accepted D1 IMPLEMENTS support and natural direct-trigger applicability in n014; selected without D3 outcome information."
     },
     {
       "inventory_index": 43,
@@ -2390,14 +2395,14 @@
     },
     {
       "batch_index": 4,
-      "rule_id": "luminosityfit_model_layers",
+      "rule_id": "model_factory_theory",
       "rule_family": "CONCEPT_IMPLEMENTATION",
-      "selection_reason": "Representative concept-to-implementation rule with an accepted IMPLEMENTS edge and bounded source-native identifiers.",
+      "selection_reason": "R1 replacement preserving concept-to-implementation coverage with accepted D1 IMPLEMENTS support and natural direct-trigger applicability in n014; selected without D3 outcome information.",
       "old_behavior": {
         "triggers": [
-          "luminosityfit model",
-          "model layer",
-          "模型层"
+          "PndLmdModelFactory",
+          "DPM、acceptance 和 resolution",
+          "DPM acceptance resolution"
         ],
         "fixed_repositories": [
           "luminosityfit"
@@ -2405,17 +2410,18 @@
         "fixed_symbols": [
           "model/PndLmdDPMAngModel1D.cxx",
           "model/PndLmdDPMAngModel2D.cxx",
-          "model/PndLmdDivergenceSmearingModel2D.cxx",
-          "model/PndLmdDifferentialSmearingConvolutionModel2D.cxx",
-          "model/PndLmdSmearingConvolutionModel2D.cxx",
           "model/PndLmdModelFactory.cxx"
         ],
         "fixed_concepts": [
-          "cross section model",
-          "divergence smearing",
-          "detector resolution convolution"
+          "DPM model acceptance resolution composition"
         ],
-        "fixed_paper_page_hints": {}
+        "fixed_paper_page_hints": {
+          "pflueger_2017": [
+            51,
+            57,
+            65
+          ]
+        }
       },
       "proposed_structured_dependency_for_d3_a1": {
         "support_status": "PARTIAL_ACCEPTED_PATH_WITH_PRESERVED_GAP",
@@ -2428,17 +2434,17 @@
         ],
         "workflow_steps": [],
         "alias_evidence": [],
-        "coverage_gap": "D1 represents the subsystem/factory evidence boundary, not every injected model source file. Source-native identifiers remain noncanonical unless Tier G explicitly governs co-reference."
+        "coverage_gap": "Accepted D1 structure supports the model concept-to-implementation boundary, but not a question-specific factory composition or the rule's paper-page hints. D3-A1 must not backfill this gap."
       },
       "d2_role_constraint": {
         "expected_mechanisms": [
           "Tier S exact PndLmdModelFactory/source-native identifiers",
-          "Tier D descriptive advisory context"
+          "Tier D descriptive theory/composition advisory context"
         ],
-        "authority_boundary": "No cross-record canonicalization from Tier S; descriptive model-layer wording cannot create canonical identity."
+        "authority_boundary": "Tier S may bind only a directly matched source-native record; Tier D is additive and nonauthoritative, cannot canonicalize across records, and cannot restrict scope."
       },
       "migration_readiness": "READY_WITH_PREREGISTERED_COVERAGE_RISK",
-      "d3_a0_action": "SELECTION_ONLY_NO_RUNTIME_CHANGE"
+      "d3_a0_action": "R1_SELECTION_REPLACEMENT_ONLY_NO_RUNTIME_CHANGE"
     },
     {
       "batch_index": 5,
@@ -2561,34 +2567,29 @@
     },
     {
       "batch_index": 7,
-      "rule_id": "sphinx_operational_architecture",
-      "rule_family": "VERSION_DOCUMENTATION",
-      "selection_reason": "Representative versioned-document-to-operational-workflow rule with accepted D1 documentation provenance.",
+      "rule_id": "root_macro_usage",
+      "rule_family": "USAGE_INSTALLATION",
+      "selection_reason": "R1 replacement preserving operational-documentation usage coverage with accepted D1 document-to-workflow support and natural direct-trigger applicability in n004; selected without D3 outcome information.",
       "old_behavior": {
         "triggers": [
-          "Sphinx documentation",
-          "knowledge architecture",
-          "Sphinx 2023-dev",
-          "docs disagree",
-          "Sphinx 文档"
+          "ROOT macro",
+          "macro execution",
+          "run a ROOT macro"
         ],
         "fixed_repositories": [
           "pandaroot"
         ],
         "fixed_symbols": [
-          "Installation/Installation.html",
-          "Installation/Install_PandaRoot.html",
-          "Running/Running.html",
-          "Running/MasterTasks.html",
-          "Running/Macros.html"
+          "Running/Macros.html",
+          "tools/MasterTasks/PndMasterRunSim.cxx"
         ],
         "fixed_concepts": [
-          "PandaRoot operational documentation and version scope"
+          "PandaRoot macro invocation"
         ],
         "fixed_paper_page_hints": {}
       },
       "proposed_structured_dependency_for_d3_a1": {
-        "support_status": "ACCEPTED_STRUCTURED_PATH",
+        "support_status": "PARTIAL_ACCEPTED_PATH_WITH_PRESERVED_GAP",
         "object_ids": [
           "document.pandaroot_sphinx_2023_08_25_dev",
           "workflow.pandaroot.generic"
@@ -2598,21 +2599,21 @@
         ],
         "workflow_steps": [],
         "alias_evidence": [],
-        "coverage_gap": "The accepted edge establishes versioned documentation provenance, not direct routing to any one installation/running page."
+        "coverage_gap": "The accepted edge supports versioned operational documentation provenance but does not directly encode macro-invocation pages or PndMasterRunSim locations."
       },
       "d2_role_constraint": {
         "expected_mechanisms": [
-          "Tier S exact document/version surfaces",
-          "Tier D descriptive advisory context"
+          "Tier S exact source-native document/code identifiers when present",
+          "Tier D ROOT-macro usage advisory context"
         ],
-        "authority_boundary": "Versioned documentation identity may be direct-matched only; descriptive documentation terms cannot bypass version scope."
+        "authority_boundary": "Generic ROOT-macro wording cannot grant canonical identity or bypass version/repository scope; Tier D ambiguity and abstention remain intact."
       },
-      "migration_readiness": "READY_FOR_BOUNDED_COMPARISON",
-      "d3_a0_action": "SELECTION_ONLY_NO_RUNTIME_CHANGE"
+      "migration_readiness": "READY_WITH_PREREGISTERED_COVERAGE_RISK",
+      "d3_a0_action": "R1_SELECTION_REPLACEMENT_ONLY_NO_RUNTIME_CHANGE"
     }
   ],
   "experimental_contract": {
-    "design": "Paired, fixed-case, three-arm targeted retrieval comparison. D3-A1 may implement and execute only this contract after separate explicit authorization.",
+    "design": "Paired, fixed-case, three-arm targeted retrieval comparison. D3-A1 may implement the prototype and non-evaluative plumbing only; only separately authorized D3-A2 may execute this frozen formal comparison after the D3-A1 implementation is frozen.",
     "arms": [
       {
         "arm_id": "LEGACY",
@@ -2641,7 +2642,8 @@
       "Arm identity must be recorded per case; no inter-arm fallback or mixed payload.",
       "D2 Tier G/S/D authority and abstention boundaries are unchanged.",
       "No production default changes during measurement.",
-      "Partial or failed executions remain separately identified and cannot be merged into a complete paired comparison."
+      "Partial or failed executions remain separately identified and cannot be merged into a complete paired comparison.",
+      "Evaluation-only manifest metadata, including bound_rule_id, comparison role, dataset identity, family, literal-trigger labels, and expected status, must never enter structured runtime logic."
     ]
   },
   "comparison_selection_policy": {
@@ -2654,12 +2656,12 @@
       "external holdout",
       "any hidden or sealed set"
     ],
-    "selection_rule": "Bind cases to the seven preselected rule families using committed question/evidence metadata; include direct literals, paraphrases without literals, and nearby/negative controls; keep English approved cases only; freeze before D3 outcomes.",
+    "selection_rule": "R1-repaired: bind cases to the seven selected rule families using committed question/evidence metadata; include natural direct literals, paraphrases without literals, and nearby/negative controls; keep English approved development-visible cases only; freeze before any D3 outcome.",
     "case_count": 16,
     "role_counts": {
-      "PARAPHRASE_RELEVANT": 7,
+      "PARAPHRASE_RELEVANT": 5,
       "NEARBY_NEGATIVE_CONTROL": 3,
-      "DIRECT_LITERAL": 3,
+      "DIRECT_LITERAL": 5,
       "NEARBY_NONTRIGGER_CONTROL": 2,
       "NEARBY_DISTINCTION_CONTROL": 1
     },
@@ -2667,7 +2669,7 @@
       "Gold v2.6 dev": 10,
       "novel_dev": 6
     },
-    "outcome_blinding": "No D3 outcome exists or was inspected. Historical dataset expected_status and frozen curation metadata are selection metadata, not D3 arm outcomes.",
+    "outcome_blinding": "No D3 arm outcome exists or was inspected. R1 used only committed question text, review/split metadata, current legacy triggers, D1/D2 artifacts, and static substring matching.",
     "no_post_outcome_changes": "After any D3 outcome exposure, this manifest cannot be edited in place. Any repair requires a new explicitly authorized preregistration identity and must preserve this record."
   },
   "comparison_cases": [
@@ -2699,7 +2701,10 @@
       "representativeness_class": "benchmark_reference_unlabelled",
       "representativeness_disposition": "NOT_APPLICABLE_GOLD_BENCHMARK",
       "challenge_tags": [],
-      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected."
+      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected.",
+      "r1_manifest_change": {
+        "status": "UNCHANGED"
+      }
     },
     {
       "manifest_index": 2,
@@ -2730,7 +2735,10 @@
       "representativeness_class": "representative",
       "representativeness_disposition": "KEEP_REPRESENTATIVE",
       "challenge_tags": [],
-      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected."
+      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected.",
+      "r1_manifest_change": {
+        "status": "UNCHANGED"
+      }
     },
     {
       "manifest_index": 3,
@@ -2762,7 +2770,10 @@
       "challenge_tags": [
         "negative_control"
       ],
-      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected."
+      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected.",
+      "r1_manifest_change": {
+        "status": "UNCHANGED"
+      }
     },
     {
       "manifest_index": 4,
@@ -2794,7 +2805,10 @@
       "representativeness_class": "benchmark_reference_unlabelled",
       "representativeness_disposition": "NOT_APPLICABLE_GOLD_BENCHMARK",
       "challenge_tags": [],
-      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected."
+      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected.",
+      "r1_manifest_change": {
+        "status": "UNCHANGED"
+      }
     },
     {
       "manifest_index": 5,
@@ -2824,7 +2838,10 @@
       "representativeness_class": "representative",
       "representativeness_disposition": "KEEP_REPRESENTATIVE",
       "challenge_tags": [],
-      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected."
+      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected.",
+      "r1_manifest_change": {
+        "status": "UNCHANGED"
+      }
     },
     {
       "manifest_index": 6,
@@ -2854,7 +2871,10 @@
       "representativeness_class": "benchmark_reference_unlabelled",
       "representativeness_disposition": "NOT_APPLICABLE_GOLD_BENCHMARK",
       "challenge_tags": [],
-      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected."
+      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected.",
+      "r1_manifest_change": {
+        "status": "UNCHANGED"
+      }
     },
     {
       "manifest_index": 7,
@@ -2885,7 +2905,10 @@
       "representativeness_class": "representative",
       "representativeness_disposition": "KEEP_REPRESENTATIVE",
       "challenge_tags": [],
-      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected."
+      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected.",
+      "r1_manifest_change": {
+        "status": "UNCHANGED"
+      }
     },
     {
       "manifest_index": 8,
@@ -2918,7 +2941,10 @@
       "challenge_tags": [
         "negative_control"
       ],
-      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected."
+      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected.",
+      "r1_manifest_change": {
+        "status": "UNCHANGED"
+      }
     },
     {
       "manifest_index": 9,
@@ -2931,12 +2957,14 @@
       "family_id": "nf014",
       "expected_status_from_dataset": "answered",
       "query": "LuminosityFit has a model_framework directory and a native model/ directory. What does the repository explicitly say model_framework is, and what role does model/PndLmdModelFactory expose?",
-      "bound_rule_id": "luminosityfit_model_layers",
-      "comparison_role": "PARAPHRASE_RELEVANT",
-      "selection_basis": "Frozen representative model-framework/native-factory boundary case.",
-      "literal_trigger_present": false,
-      "matched_selected_rule_triggers": [],
-      "paraphrase_without_literal_trigger": true,
+      "bound_rule_id": "model_factory_theory",
+      "comparison_role": "DIRECT_LITERAL",
+      "selection_basis": "Frozen representative native-factory case; R1 rebinds it to model_factory_theory because its ordinary question naturally contains the current PndLmdModelFactory trigger.",
+      "literal_trigger_present": true,
+      "matched_selected_rule_triggers": [
+        "PndLmdModelFactory"
+      ],
+      "paraphrase_without_literal_trigger": false,
       "required_evidence_group_count": 2,
       "critical_evidence_group_count": 2,
       "source_ids": [
@@ -2948,7 +2976,15 @@
       "representativeness_class": "representative",
       "representativeness_disposition": "KEEP_REPRESENTATIVE",
       "challenge_tags": [],
-      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected."
+      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected.",
+      "r1_manifest_change": {
+        "status": "CHANGED_BINDING",
+        "original_bound_rule_id": "luminosityfit_model_layers",
+        "repaired_bound_rule_id": "model_factory_theory",
+        "original_comparison_role": "PARAPHRASE_RELEVANT",
+        "repaired_comparison_role": "DIRECT_LITERAL",
+        "reason_for_R1_change": "R1 selected-rule replacement and direct-trigger reclassification under unchanged legacy substring semantics."
+      }
     },
     {
       "manifest_index": 10,
@@ -2961,9 +2997,9 @@
       "family_id": "cluster-g035",
       "expected_status_from_dataset": "answered",
       "query": "How is beam-divergence smearing implemented in LuminosityFit?",
-      "bound_rule_id": "luminosityfit_model_layers",
+      "bound_rule_id": "model_factory_theory",
       "comparison_role": "PARAPHRASE_RELEVANT",
-      "selection_basis": "Model implementation/theory case tests relation-driven retrieval without the selected generic trigger.",
+      "selection_basis": "Model implementation/theory case retained as a paraphrase-relevant companion for the R1-selected model_factory_theory rule.",
       "literal_trigger_present": false,
       "matched_selected_rule_triggers": [],
       "paraphrase_without_literal_trigger": true,
@@ -2979,7 +3015,15 @@
       "representativeness_class": "benchmark_reference_unlabelled",
       "representativeness_disposition": "NOT_APPLICABLE_GOLD_BENCHMARK",
       "challenge_tags": [],
-      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected."
+      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected.",
+      "r1_manifest_change": {
+        "status": "CHANGED_BINDING",
+        "original_bound_rule_id": "luminosityfit_model_layers",
+        "repaired_bound_rule_id": "model_factory_theory",
+        "original_comparison_role": "PARAPHRASE_RELEVANT",
+        "repaired_comparison_role": "PARAPHRASE_RELEVANT",
+        "reason_for_R1_change": "R1 selected-rule replacement; comparison role remains paraphrase-relevant."
+      }
     },
     {
       "manifest_index": 11,
@@ -3011,7 +3055,10 @@
       "representativeness_class": "benchmark_reference_unlabelled",
       "representativeness_disposition": "NOT_APPLICABLE_GOLD_BENCHMARK",
       "challenge_tags": [],
-      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected."
+      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected.",
+      "r1_manifest_change": {
+        "status": "UNCHANGED"
+      }
     },
     {
       "manifest_index": 12,
@@ -3042,7 +3089,10 @@
       "representativeness_class": "benchmark_reference_unlabelled",
       "representativeness_disposition": "NOT_APPLICABLE_GOLD_BENCHMARK",
       "challenge_tags": [],
-      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected."
+      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected.",
+      "r1_manifest_change": {
+        "status": "UNCHANGED"
+      }
     },
     {
       "manifest_index": 13,
@@ -3073,7 +3123,10 @@
       "representativeness_class": "representative",
       "representativeness_disposition": "KEEP_REPRESENTATIVE",
       "challenge_tags": [],
-      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected."
+      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected.",
+      "r1_manifest_change": {
+        "status": "UNCHANGED"
+      }
     },
     {
       "manifest_index": 14,
@@ -3105,7 +3158,10 @@
       "representativeness_class": "benchmark_reference_unlabelled",
       "representativeness_disposition": "NOT_APPLICABLE_GOLD_BENCHMARK",
       "challenge_tags": [],
-      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected."
+      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected.",
+      "r1_manifest_change": {
+        "status": "UNCHANGED"
+      }
     },
     {
       "manifest_index": 15,
@@ -3118,12 +3174,14 @@
       "family_id": "nf004",
       "expected_status_from_dataset": "answered",
       "query": "While debugging a running PandaRoot macro I want every log message to carry the severity and the file:line:function where it was emitted. How do I configure that, and what other logging controls does the framework documentation describe?",
-      "bound_rule_id": "sphinx_operational_architecture",
-      "comparison_role": "PARAPHRASE_RELEVANT",
-      "selection_basis": "Frozen representative operational-documentation usage case without a selected-rule literal.",
-      "literal_trigger_present": false,
-      "matched_selected_rule_triggers": [],
-      "paraphrase_without_literal_trigger": true,
+      "bound_rule_id": "root_macro_usage",
+      "comparison_role": "DIRECT_LITERAL",
+      "selection_basis": "Frozen representative operational-documentation case; R1 rebinds it to root_macro_usage because its ordinary question naturally contains the current ROOT macro trigger.",
+      "literal_trigger_present": true,
+      "matched_selected_rule_triggers": [
+        "ROOT macro"
+      ],
+      "paraphrase_without_literal_trigger": false,
       "required_evidence_group_count": 1,
       "critical_evidence_group_count": 1,
       "source_ids": [
@@ -3135,7 +3193,15 @@
       "representativeness_class": "representative",
       "representativeness_disposition": "KEEP_REPRESENTATIVE",
       "challenge_tags": [],
-      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected."
+      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected.",
+      "r1_manifest_change": {
+        "status": "CHANGED_BINDING",
+        "original_bound_rule_id": "sphinx_operational_architecture",
+        "repaired_bound_rule_id": "root_macro_usage",
+        "original_comparison_role": "PARAPHRASE_RELEVANT",
+        "repaired_comparison_role": "DIRECT_LITERAL",
+        "reason_for_R1_change": "R1 selected-rule replacement and direct-trigger reclassification under unchanged legacy substring semantics."
+      }
     },
     {
       "manifest_index": 16,
@@ -3148,9 +3214,9 @@
       "family_id": "cluster-g007",
       "expected_status_from_dataset": "insufficient_evidence",
       "query": "What exact minimum GPU memory is required to install PandaRoot?",
-      "bound_rule_id": "sphinx_operational_architecture",
+      "bound_rule_id": "root_macro_usage",
       "comparison_role": "NEARBY_NEGATIVE_CONTROL",
-      "selection_basis": "Exact GPU-memory requirement should remain insufficient when documentation lacks the fact.",
+      "selection_basis": "Installation-documentation negative control retained to detect unsupported operational-document leakage for the R1-selected root_macro_usage rule.",
       "literal_trigger_present": false,
       "matched_selected_rule_triggers": [],
       "paraphrase_without_literal_trigger": false,
@@ -3167,7 +3233,15 @@
       "challenge_tags": [
         "negative_control"
       ],
-      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected."
+      "selection_time_outcome_policy": "Selected from committed question/evidence metadata before any D3 arm outcome; no D3 retrieval trace or metric was inspected.",
+      "r1_manifest_change": {
+        "status": "CHANGED_BINDING",
+        "original_bound_rule_id": "sphinx_operational_architecture",
+        "repaired_bound_rule_id": "root_macro_usage",
+        "original_comparison_role": "NEARBY_NEGATIVE_CONTROL",
+        "repaired_comparison_role": "NEARBY_NEGATIVE_CONTROL",
+        "reason_for_R1_change": "R1 selected-rule replacement; comparison role remains nearby negative control."
+      }
     }
   ],
   "metrics": {
@@ -3256,7 +3330,8 @@
       "INCONCLUSIVE applies to incomplete pairing, invalid artifacts, confounded arms, insufficient applicability, or inability to attribute a structured contribution.",
       "Infrastructure failures are never retrieval failures.",
       "Historical expected_status is not a D3 arm outcome."
-    ]
+    ],
+    "separation_note": "The task_verdicts here are overall experiment verdicts. Per-rule migration decisions use the separately frozen per_rule_migration_outcome_vocabulary."
   },
   "failure_taxonomy": [
     "STRUCTURED_CANDIDATE_RECALL_FAILURE",
@@ -3280,7 +3355,9 @@
     "Do not alter nonselected query-expansion rules, production defaults, analyzer prompts, embeddings, fusion, reranking, selector behavior, evaluator semantics, or datasets as part of the comparison.",
     "Do not inspect or execute novel_validation or external holdout.",
     "Do not use QA generation or an external judge to measure retrieval migration.",
-    "Do not interpret a static preregistration freeze as authorization for D3-A1 implementation or execution."
+    "Do not interpret this static preregistration repair as authorization for D3-A1 implementation or D3-A2 formal execution.",
+    "D3-A1 cannot add D1 objects, accepted relations, workflow steps, aliases, or evaluation-derived knowledge. A generic D1 schema defect is a blocker requiring a separate authorization.",
+    "Structured runtime must not receive bound_rule_id or any comparison-manifest metadata other than the ordinary query text."
   ],
   "rollback_contract": {
     "rollback_target": "LEGACY arm at preregistration_source_head with all 54 query-expansion rules active.",
@@ -3309,11 +3386,450 @@
     "D2_ARTIFACTS_CHANGED": false,
     "PRODUCTION_DB_WRITES": 0,
     "QDRANT_WRITES": 0,
-    "D3_A1_STARTED": false
+    "D3_A1_STARTED": false,
+    "D3_OUTCOME_EXPOSURE": "NOT_STARTED",
+    "LEGACY_ARM_RUNS": 0,
+    "STRUCTURED_ARM_RUNS": 0,
+    "ABLATION_ARM_RUNS": 0,
+    "NEW_GOLD_D3_CASES_RUN": 0,
+    "NEW_NOVEL_DEV_D3_CASES_RUN": 0,
+    "NEW_QA_CALLS": 0,
+    "NEW_VERIFIER_CALLS": 0,
+    "D3_A1_IMPLEMENTATION_FROZEN": false,
+    "D3_A2_STARTED": false,
+    "NOVEL_VALIDATION_ACCESS": "UNSEEN",
+    "NOVEL_HOLDOUT_ACCESS": "SEALED_UNSEEN"
   },
   "next_stage": {
-    "task": "D3-A1 — Implement and execute the frozen three-arm shortcut-migration experiment",
+    "task": "D3-A1 — Structured Shortcut-Replacement Prototype",
     "status": "NOT_STARTED",
-    "authorization_required": true
+    "authorization_required": true,
+    "boundary": "Implementation and non-evaluative plumbing only; formal frozen comparison and migration decisions belong exclusively to D3-A2."
+  },
+  "repaired_at": "2026-08-31",
+  "repair_source_head": "877935e",
+  "repair_history": [
+    {
+      "repair_id": "D3-A0-R1",
+      "repaired_at": "2026-08-31",
+      "source_commit": "877935e",
+      "status": "COMPLETE_COMPARISON_IDENTIFIABILITY_AND_STAGE_BOUNDARY_REPAIRED",
+      "preoutcome": true,
+      "defects_repaired": [
+        "per-rule direct legacy-dependency identifiability",
+        "per-rule migration decision vocabulary separated from overall experiment verdict",
+        "D3-A1 implementation separated from D3-A2 formal outcome exposure",
+        "bound_rule_id and all comparison metadata isolated from structured runtime inputs"
+      ],
+      "preserved": [
+        "54-rule inventory",
+        "200-trigger inventory",
+        "three-arm semantics",
+        "D1/D2 support audit",
+        "D2 authority constraints",
+        "rollback contract",
+        "metrics",
+        "failure taxonomy",
+        "Gold-dev/novel_dev-only policy",
+        "zero validation/holdout access"
+      ]
+    }
+  ],
+  "selected_batch_revision": {
+    "original_selected_rule_count": 7,
+    "repaired_selected_rule_count": 7,
+    "original_selected_rule_ids": [
+      "lmd_fit_data_chain",
+      "event_poca_handoff",
+      "pid_two_pass_files",
+      "luminosityfit_model_layers",
+      "effective_acceptance_pipeline",
+      "restgas_profile_workflow",
+      "sphinx_operational_architecture"
+    ],
+    "repaired_selected_rule_ids": [
+      "lmd_fit_data_chain",
+      "event_poca_handoff",
+      "pid_two_pass_files",
+      "model_factory_theory",
+      "effective_acceptance_pipeline",
+      "restgas_profile_workflow",
+      "root_macro_usage"
+    ],
+    "replaced_rules": [
+      {
+        "removed_rule_id": "luminosityfit_model_layers",
+        "added_rule_id": "model_factory_theory",
+        "reason": "No natural direct-trigger case existed for the removed rule. The replacement preserves concept-to-implementation topology, has inspectable accepted D1 IMPLEMENTS support, and is naturally activated by n014."
+      },
+      {
+        "removed_rule_id": "sphinx_operational_architecture",
+        "added_rule_id": "root_macro_usage",
+        "reason": "No natural direct-trigger case existed for the removed rule. The replacement preserves operational-documentation usage coverage, has inspectable accepted D1 OPERATIONALLY_DOCUMENTS support, and is naturally activated by n004."
+      }
+    ],
+    "retained_generalization_only_rule_ids": [
+      "lmd_fit_data_chain",
+      "pid_two_pass_files"
+    ],
+    "selection_evidence_policy": "Static committed question text and current configuration/D1/D2 artifacts only; no D3 outcomes."
+  },
+  "comparison_manifest_revision": {
+    "revision_id": "D3-A0-R1",
+    "preoutcome": true,
+    "original_case_count": 16,
+    "repaired_case_count": 16,
+    "added_case_ids": [],
+    "removed_case_ids": [],
+    "changed_binding_case_ids": [
+      "n014",
+      "g060",
+      "n004",
+      "g007"
+    ],
+    "changed_comparison_role_case_ids": [
+      "n014",
+      "n004"
+    ],
+    "reason": "Natural direct-trigger search found no cases for four original rules. Two topology-preserving selected-rule replacements make existing n014 and n004 natural direct cases; lmd_fit_data_chain and pid_two_pass_files remain explicitly generalization-only. g037 and g051 were not added because they would only duplicate direct coverage for already-identifiable rules.",
+    "eligible_source_counts": {
+      "eligible_english_approved_development_cases": 79
+    },
+    "direct_trigger_search_semantics": "Same case-insensitive literal substring semantics as the legacy consumer.",
+    "natural_direct_search_for_original_selected_rules": {
+      "lmd_fit_data_chain": [],
+      "event_poca_handoff": [
+        "g036",
+        "g037"
+      ],
+      "pid_two_pass_files": [],
+      "luminosityfit_model_layers": [],
+      "effective_acceptance_pipeline": [
+        "g051",
+        "g052"
+      ],
+      "restgas_profile_workflow": [
+        "g021",
+        "g052"
+      ],
+      "sphinx_operational_architecture": []
+    }
+  },
+  "selected_rule_identifiability": [
+    {
+      "rule_id": "lmd_fit_data_chain",
+      "direct_trigger_case_count": 0,
+      "direct_trigger_case_ids": [],
+      "paraphrase_case_count": 2,
+      "paraphrase_case_ids": [
+        "g029",
+        "n021"
+      ],
+      "control_case_count": 1,
+      "control_case_ids": [
+        "g025"
+      ],
+      "dependency_identifiable": false,
+      "identifiability_status": "PARTIALLY_IDENTIFIABLE",
+      "identifiability_reason": "No frozen comparison case naturally activates the rule; 2 paraphrase and 1 control case(s) support generalization/safety analysis only, not direct legacy-dependency migration support.",
+      "allowed_per_rule_migration_decisions": [
+        "INSUFFICIENT_EVIDENCE"
+      ],
+      "prohibited_without_new_preregistration": [
+        "MIGRATION_SUPPORTED",
+        "PARTIALLY_REPRODUCED",
+        "STRUCTURED_REGRESSION",
+        "NO_MEANINGFUL_LEGACY_DEPENDENCY"
+      ]
+    },
+    {
+      "rule_id": "event_poca_handoff",
+      "direct_trigger_case_count": 1,
+      "direct_trigger_case_ids": [
+        "g036"
+      ],
+      "paraphrase_case_count": 1,
+      "paraphrase_case_ids": [
+        "n022"
+      ],
+      "control_case_count": 0,
+      "control_case_ids": [],
+      "dependency_identifiable": true,
+      "identifiability_status": "IDENTIFIABLE",
+      "identifiability_reason": "1 frozen development-visible case(s) naturally activate the rule, so LEGACY minus ABLATION can measure an actual shortcut treatment difference.",
+      "allowed_per_rule_migration_decisions": [
+        "MIGRATION_SUPPORTED",
+        "PARTIALLY_REPRODUCED",
+        "STRUCTURED_REGRESSION",
+        "NO_MEANINGFUL_LEGACY_DEPENDENCY",
+        "INSUFFICIENT_EVIDENCE"
+      ],
+      "prohibited_without_new_preregistration": []
+    },
+    {
+      "rule_id": "pid_two_pass_files",
+      "direct_trigger_case_count": 0,
+      "direct_trigger_case_ids": [],
+      "paraphrase_case_count": 1,
+      "paraphrase_case_ids": [
+        "g020"
+      ],
+      "control_case_count": 2,
+      "control_case_ids": [
+        "n006",
+        "g041"
+      ],
+      "dependency_identifiable": false,
+      "identifiability_status": "PARTIALLY_IDENTIFIABLE",
+      "identifiability_reason": "No frozen comparison case naturally activates the rule; 1 paraphrase and 2 control case(s) support generalization/safety analysis only, not direct legacy-dependency migration support.",
+      "allowed_per_rule_migration_decisions": [
+        "INSUFFICIENT_EVIDENCE"
+      ],
+      "prohibited_without_new_preregistration": [
+        "MIGRATION_SUPPORTED",
+        "PARTIALLY_REPRODUCED",
+        "STRUCTURED_REGRESSION",
+        "NO_MEANINGFUL_LEGACY_DEPENDENCY"
+      ]
+    },
+    {
+      "rule_id": "model_factory_theory",
+      "direct_trigger_case_count": 1,
+      "direct_trigger_case_ids": [
+        "n014"
+      ],
+      "paraphrase_case_count": 1,
+      "paraphrase_case_ids": [
+        "g060"
+      ],
+      "control_case_count": 0,
+      "control_case_ids": [],
+      "dependency_identifiable": true,
+      "identifiability_status": "IDENTIFIABLE",
+      "identifiability_reason": "1 frozen development-visible case(s) naturally activate the rule, so LEGACY minus ABLATION can measure an actual shortcut treatment difference.",
+      "allowed_per_rule_migration_decisions": [
+        "MIGRATION_SUPPORTED",
+        "PARTIALLY_REPRODUCED",
+        "STRUCTURED_REGRESSION",
+        "NO_MEANINGFUL_LEGACY_DEPENDENCY",
+        "INSUFFICIENT_EVIDENCE"
+      ],
+      "prohibited_without_new_preregistration": []
+    },
+    {
+      "rule_id": "effective_acceptance_pipeline",
+      "direct_trigger_case_count": 1,
+      "direct_trigger_case_ids": [
+        "g052"
+      ],
+      "paraphrase_case_count": 0,
+      "paraphrase_case_ids": [],
+      "control_case_count": 2,
+      "control_case_ids": [
+        "g055",
+        "n003"
+      ],
+      "dependency_identifiable": true,
+      "identifiability_status": "IDENTIFIABLE",
+      "identifiability_reason": "1 frozen development-visible case(s) naturally activate the rule, so LEGACY minus ABLATION can measure an actual shortcut treatment difference.",
+      "allowed_per_rule_migration_decisions": [
+        "MIGRATION_SUPPORTED",
+        "PARTIALLY_REPRODUCED",
+        "STRUCTURED_REGRESSION",
+        "NO_MEANINGFUL_LEGACY_DEPENDENCY",
+        "INSUFFICIENT_EVIDENCE"
+      ],
+      "prohibited_without_new_preregistration": []
+    },
+    {
+      "rule_id": "restgas_profile_workflow",
+      "direct_trigger_case_count": 1,
+      "direct_trigger_case_ids": [
+        "g021"
+      ],
+      "paraphrase_case_count": 0,
+      "paraphrase_case_ids": [],
+      "control_case_count": 0,
+      "control_case_ids": [],
+      "dependency_identifiable": true,
+      "identifiability_status": "IDENTIFIABLE",
+      "identifiability_reason": "1 frozen development-visible case(s) naturally activate the rule, so LEGACY minus ABLATION can measure an actual shortcut treatment difference.",
+      "allowed_per_rule_migration_decisions": [
+        "MIGRATION_SUPPORTED",
+        "PARTIALLY_REPRODUCED",
+        "STRUCTURED_REGRESSION",
+        "NO_MEANINGFUL_LEGACY_DEPENDENCY",
+        "INSUFFICIENT_EVIDENCE"
+      ],
+      "prohibited_without_new_preregistration": []
+    },
+    {
+      "rule_id": "root_macro_usage",
+      "direct_trigger_case_count": 1,
+      "direct_trigger_case_ids": [
+        "n004"
+      ],
+      "paraphrase_case_count": 0,
+      "paraphrase_case_ids": [],
+      "control_case_count": 1,
+      "control_case_ids": [
+        "g007"
+      ],
+      "dependency_identifiable": true,
+      "identifiability_status": "IDENTIFIABLE",
+      "identifiability_reason": "1 frozen development-visible case(s) naturally activate the rule, so LEGACY minus ABLATION can measure an actual shortcut treatment difference.",
+      "allowed_per_rule_migration_decisions": [
+        "MIGRATION_SUPPORTED",
+        "PARTIALLY_REPRODUCED",
+        "STRUCTURED_REGRESSION",
+        "NO_MEANINGFUL_LEGACY_DEPENDENCY",
+        "INSUFFICIENT_EVIDENCE"
+      ],
+      "prohibited_without_new_preregistration": []
+    }
+  ],
+  "per_rule_migration_outcome_vocabulary": {
+    "values": {
+      "MIGRATION_SUPPORTED": "Allowed only when legacy dependency is identifiable, STRUCTURED credibly reproduces the useful LEGACY contribution, no prohibited answer-location encoding occurs, and no material targeted safety/regression issue prevents support.",
+      "PARTIALLY_REPRODUCED": "Structured treatment recovers meaningful legacy behavior, but identifiable coverage or ranking gaps remain.",
+      "STRUCTURED_REGRESSION": "On valid applicable and directly identifiable cases, STRUCTURED materially underperforms useful LEGACY behavior.",
+      "NO_MEANINGFUL_LEGACY_DEPENDENCY": "Allowed only when direct dependency is identifiable and ABLATION demonstrates that the selected shortcut was not materially responsible for useful retrieval on the frozen applicable cases.",
+      "INSUFFICIENT_EVIDENCE": "Required when direct dependency is not identifiable, applicability is too weak, pairing is incomplete, or evidence cannot support a per-rule migration conclusion."
+    },
+    "identifiability_guard": "MIGRATION_SUPPORTED and NO_MEANINGFUL_LEGACY_DEPENDENCY are impossible for PARTIALLY_IDENTIFIABLE or NOT_IDENTIFIABLE rules. In this R1 contract, their per-rule migration decision is restricted to INSUFFICIENT_EVIDENCE unless a new pre-outcome preregistration establishes direct dependency."
+  },
+  "overall_experiment_verdict_vocabulary": {
+    "values": {
+      "PASS": "The formal D3-A2 experiment is complete, valid, auditable, respects prohibitions, and supports a credible aggregate experiment conclusion; it does not imply every rule is migration-supported.",
+      "FAIL": "The complete valid experiment demonstrates material structured failure or unsafe regression at the experiment level.",
+      "INCONCLUSIVE": "Incomplete pairing, invalid artifacts, confounded arms, insufficient applicability, implementation defects, or attribution failure prevent an overall conclusion."
+    },
+    "separation_note": "Overall verdict and per-rule migration decisions are independent. An overall PASS may coexist with one or more INSUFFICIENT_EVIDENCE rules."
+  },
+  "stage_contract": {
+    "D3_A0": {
+      "name": "Selection and Preregistration",
+      "state": "COMPLETE_R1_REPAIRED",
+      "owns": [
+        "inventory",
+        "selection",
+        "comparison manifest",
+        "metrics",
+        "decision vocabulary",
+        "failure taxonomy",
+        "stage/runtime isolation",
+        "rollback"
+      ]
+    },
+    "D3_A1": {
+      "name": "Structured Shortcut-Replacement Prototype",
+      "state": "NOT_STARTED",
+      "may": [
+        "implement experimental arm plumbing",
+        "implement selected-rule suppression for experimental modes",
+        "implement generic structured candidate contribution",
+        "add deterministic provenance and diagnostics",
+        "add T0 tests",
+        "run tiny non-evaluative plumbing smoke"
+      ],
+      "may_not": [
+        "run the frozen comparison manifest formally",
+        "compute LEGACY/ABLATION/STRUCTURED comparison metrics",
+        "inspect migration outcomes",
+        "retune from formal outcomes",
+        "make per-rule migration decisions",
+        "make the overall experiment verdict"
+      ],
+      "outcome_exposure": "PROHIBITED"
+    },
+    "D3_A2": {
+      "name": "Frozen Three-Arm Comparison & Migration Decision",
+      "state": "NOT_STARTED",
+      "prerequisite": {
+        "D3_A1_IMPLEMENTATION_FROZEN": true,
+        "immutable_identifier": "Normal Git implementation commit SHA recorded in the D3-A2 run manifest; no SHA256 file hashing required."
+      },
+      "owns": [
+        "formal outcome exposure",
+        "paired metrics",
+        "legacy dependency",
+        "structured recovery and parity",
+        "failure taxonomy",
+        "per-rule migration decisions",
+        "overall experiment verdict"
+      ],
+      "run_rule": "Do not retune D3-A1 during the run. If an implementation defect invalidates the experiment, stop, use INCONCLUSIVE as appropriate, and repair only under a separately authorized stage."
+    }
+  },
+  "evaluation_metadata_only_fields": [
+    "case_id",
+    "dataset",
+    "split",
+    "review_status",
+    "intent",
+    "family_id",
+    "expected_status_from_dataset",
+    "bound_rule_id",
+    "comparison_role",
+    "literal_trigger_present",
+    "matched_selected_rule_triggers",
+    "paraphrase_without_literal_trigger",
+    "required_evidence_group_count",
+    "critical_evidence_group_count",
+    "source_ids",
+    "evidence_topology",
+    "source_scope",
+    "repository_scope",
+    "representativeness_class",
+    "representativeness_disposition",
+    "challenge_tags",
+    "selection_basis",
+    "selection_time_outcome_policy",
+    "r1_manifest_change"
+  ],
+  "runtime_input_isolation": {
+    "structured_runtime_input": [
+      "ordinary production-style query text and normal production runtime context",
+      "experimental arm mode/config"
+    ],
+    "allowed_experimental_config": [
+      "selected legacy rule IDs to disable",
+      "whether the generic D3 structured treatment is enabled"
+    ],
+    "forbidden_runtime_inputs": [
+      "case_id",
+      "dataset",
+      "split",
+      "review_status",
+      "intent",
+      "family_id",
+      "expected_status_from_dataset",
+      "bound_rule_id",
+      "comparison_role",
+      "literal_trigger_present",
+      "matched_selected_rule_triggers",
+      "paraphrase_without_literal_trigger",
+      "required_evidence_group_count",
+      "critical_evidence_group_count",
+      "source_ids",
+      "evidence_topology",
+      "source_scope",
+      "repository_scope",
+      "representativeness_class",
+      "representativeness_disposition",
+      "challenge_tags",
+      "selection_basis",
+      "selection_time_outcome_policy",
+      "r1_manifest_change"
+    ],
+    "forbidden_mappings": [
+      "rule_id -> target object",
+      "case_id/question_id -> object or relation",
+      "bound_rule_id -> topology or structured seed",
+      "expected evidence IDs -> retrieval target",
+      "question/dataset metadata -> exact source, repository, path, or page"
+    ],
+    "explicit_bound_rule_id_contract": "bound_rule_id is grouping/reporting metadata only and MUST NOT be available to or influence structured runtime logic.",
+    "arm_input_rule": "STRUCTURED receives the ordinary user question and normal runtime context only, plus nonsemantic experimental mode/config. Evaluation wrappers must strip all manifest metadata before runtime invocation."
   }
 }
