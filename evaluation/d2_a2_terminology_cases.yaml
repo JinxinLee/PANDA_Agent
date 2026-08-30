@@ -1,0 +1,469 @@
+schema_version: "1.0"
+evaluation: d2_a2_terminology
+frozen_at: "2026-08-30"
+baseline_commit: "67eff2b"
+curation_method: source_first
+notes: >-
+  Cases curated source-first from current D1 configs (seed_objects.yaml,
+  seed_relations.yaml, aliases.yaml) and verified locked-corpus rows
+  (data/normalized/9925ec31…). Expected statuses follow the frozen D2-A0/A0R1
+  contract semantics, not resolver behavior. The case artifact was frozen
+  before any resolver execution.
+
+state:
+  type: deterministic_fixture
+  source_native_rows:
+    - object_id: object.11268c4b6743544a8c5494e6
+      source_id: pandaroot
+      source_version_id: pandaroot@18c09e91100db27867ded30e708b4dae95bd8357
+      object_type: class
+      title: PndLmdTrackQ
+      locator: {path: detectors/lmd/LmdQA/PndLmdTrackQ.h, symbol: PndLmdTrackQ}
+    - object_id: object.b786907743079aff236b65b8
+      source_id: restgas_determination
+      source_version_id: restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42
+      object_type: class
+      title: PndLmdTrackQ
+      locator: {path: detectors/lmd/LmdQA/PndLmdTrackQ.h, symbol: PndLmdTrackQ}
+    - object_id: object.c60a8a86eb1b0578b83a8fa2
+      source_id: luminosityfit
+      source_version_id: luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32
+      object_type: class
+      title: PndLmdCombinedDataReader
+      locator: {path: data/PndLmdCombinedDataReader.h, symbol: PndLmdCombinedDataReader}
+    - object_id: object.ceb44bd02a5e3a790cf2dfad
+      source_id: luminosityfit
+      source_version_id: luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32
+      object_type: source_file
+      title: model/PndLmdModelFactory.cxx
+      locator: {path: model/PndLmdModelFactory.cxx, symbol: null}
+    - object_id: object.c08459387c6fd0c77a717960
+      source_id: luminosityfit
+      source_version_id: luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32
+      object_type: function
+      title: PndLmdModelFactory
+      locator: {path: model/PndLmdModelFactory.cxx, symbol: PndLmdModelFactory}
+    - object_id: object.91b3e79331a311bb259f6a04
+      source_id: pandaroot
+      source_version_id: pandaroot@18c09e91100db27867ded30e708b4dae95bd8357
+      object_type: source_file
+      title: detectors/lmd/LmdQA/PndLmdTrackQ.cxx
+      locator: {path: detectors/lmd/LmdQA/PndLmdTrackQ.cxx, symbol: null}
+    - object_id: object.04b079cb4f083d29d694e47a
+      source_id: luminosityfit
+      source_version_id: luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32
+      object_type: source_file
+      title: data/PndLmdCombinedDataReader.cxx
+      locator: {path: data/PndLmdCombinedDataReader.cxx, symbol: null}
+    - object_id: object.5cae2ceab6e67bb4c9065331
+      source_id: restgas_determination
+      source_version_id: restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42
+      object_type: source_file
+      title: macro/target/ana_dpm.C
+      locator: {path: macro/target/ana_dpm.C, symbol: null}
+
+cases:
+  - case_id: C01
+    category: exact_canonical_terminology
+    question: What does concept.luminosityfit.luminosity_fit_model describe?
+    plan:
+      target_repositories: [pandaroot, restgas_determination, luminosityfit]
+    expected_status: RESOLVED_UNIQUE
+    expected_object_ids: [concept.luminosityfit.luminosity_fit_model]
+    expected_canonical_object_ids: [concept.luminosityfit.luminosity_fit_model]
+    expected_resolution_kind: true_identity
+    expected_evidence_tier: G
+    source_evidence: D1-A2R1 canonical concept (Pflueger thesis chapter 4, LuminosityFit framework).
+    source_ids: [curated_panda_domain]
+    source_version_ids: [curated_panda_domain@1.0]
+    applicability: AVAILABLE
+    notes: Governed object ID stated verbatim in the question; Tier G.
+
+  - case_id: C02
+    category: exact_canonical_terminology
+    question: How is the luminosity fit model used?
+    plan:
+      target_repositories: [pandaroot, restgas_determination, luminosityfit]
+      analyzer_concepts:
+        - value: luminosity fit model
+          support_spans: [luminosity fit model]
+    expected_status: RESOLVED_UNIQUE
+    expected_object_ids: [concept.luminosityfit.luminosity_fit_model]
+    expected_canonical_object_ids: [concept.luminosityfit.luminosity_fit_model]
+    expected_resolution_kind: descriptive_inferential
+    expected_evidence_tier: D
+    source_evidence: Canonical concept title/text; Pflueger chapter 4.
+    source_ids: [curated_panda_domain]
+    source_version_ids: [curated_panda_domain@1.0]
+    applicability: AVAILABLE
+    notes: Exact current terminology as a natural-language phrase; Tier D bundle expected to dominate the sibling subsystem via title/text features.
+
+  - case_id: C03
+    category: exact_technical_identifier
+    question: How does PndLmdTrackQ work?
+    plan:
+      target_repositories: [pandaroot, restgas_determination, luminosityfit]
+    expected_status: AMBIGUOUS
+    expected_object_ids: []
+    expected_canonical_object_ids: []
+    expected_resolution_kind: none
+    expected_evidence_tier: none
+    source_evidence: Class PndLmdTrackQ exists in both pandaroot and restgas_determination locked sources.
+    source_ids: [pandaroot, restgas_determination]
+    source_version_ids: [pandaroot@18c09e91100db27867ded30e708b4dae95bd8357, restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42]
+    applicability: AVAILABLE
+    notes: Natural singular collision across repositories; no scope narrowing in the plan.
+
+  - case_id: C04
+    category: version_sensitive_identifier
+    question: How does PndLmdTrackQ work?
+    plan:
+      target_repositories: [pandaroot]
+      resolved_versions: {pandaroot: 18c09e91100db27867ded30e708b4dae95bd8357}
+    expected_status: RESOLVED_UNIQUE
+    expected_object_ids: [object.11268c4b6743544a8c5494e6]
+    expected_canonical_object_ids: []
+    expected_resolution_kind: structural
+    expected_evidence_tier: S
+    source_evidence: Locked pandaroot version contains exactly one PndLmdTrackQ class record.
+    source_ids: [pandaroot]
+    source_version_ids: [pandaroot@18c09e91100db27867ded30e708b4dae95bd8357]
+    applicability: AVAILABLE
+    notes: Scope/locked-version narrowing selects the pandaroot class record; canonical_object_id stays null (source-native).
+
+  - case_id: C05
+    category: source_native_symbol
+    question: How does PndLmdCombinedDataReader work?
+    plan:
+      target_repositories: [luminosityfit]
+    expected_status: RESOLVED_UNIQUE
+    expected_object_ids: [object.c60a8a86eb1b0578b83a8fa2]
+    expected_canonical_object_ids: []
+    expected_resolution_kind: structural
+    expected_evidence_tier: S
+    source_evidence: LuminosityFit combined data reader class.
+    source_ids: [luminosityfit]
+    source_version_ids: [luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32]
+    applicability: AVAILABLE
+    notes: Exact source-native symbol; no canonicalization.
+
+  - case_id: C06
+    category: path_reference
+    question: Where is detectors/lmd/LmdQA/PndLmdTrackQ.cxx defined?
+    plan:
+      target_repositories: [pandaroot]
+    expected_status: RESOLVED_UNIQUE
+    expected_object_ids: [object.91b3e79331a311bb259f6a04]
+    expected_canonical_object_ids: []
+    expected_resolution_kind: structural
+    expected_evidence_tier: S
+    source_evidence: Source file path in the locked pandaroot tree.
+    source_ids: [pandaroot]
+    source_version_ids: [pandaroot@18c09e91100db27867ded30e708b4dae95bd8357]
+    applicability: AVAILABLE
+    notes: Exact path reference.
+
+  - case_id: C07
+    category: accepted_alias
+    question: Which output file is *_pid_final.root?
+    plan:
+      target_repositories: [restgas_determination]
+    expected_status: RESOLVED_UNIQUE
+    expected_object_ids: [data_product.restgas.pid_final_root]
+    expected_canonical_object_ids: [data_product.restgas.pid_final_root]
+    expected_resolution_kind: true_identity
+    expected_evidence_tier: G
+    source_evidence: Accepted true-identity alias (file pattern of the canonical data product).
+    source_ids: [restgas_determination]
+    source_version_ids: [restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42]
+    applicability: AVAILABLE
+    notes: True alias; identity authority = true.
+
+  - case_id: C08
+    category: corrective_term
+    question: Where is restgas_profile.txt read?
+    plan:
+      target_repositories: [restgas_determination]
+    expected_status: UNRESOLVED
+    expected_object_ids: []
+    expected_canonical_object_ids: []
+    expected_resolution_kind: corrective
+    expected_evidence_tier: corrective
+    source_evidence: Alias correction message documents that no literal restgas_profile.txt exists; restgas_profile is a configuration key.
+    source_ids: [restgas_determination]
+    source_version_ids: [restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42]
+    applicability: AVAILABLE
+    notes: Corrective/premise-repair handling; identity authority = false; correction surfaced.
+
+  - case_id: C09
+    category: descriptive_domain_paraphrase
+    question: How is the model used to extract luminosity from the LMD angular distribution defined?
+    plan:
+      target_repositories: [pandaroot, restgas_determination, luminosityfit]
+      analyzer_concepts:
+        - value: the model used to extract luminosity from the LMD angular distribution
+          support_spans: [the model used to extract luminosity from the LMD angular distribution]
+    expected_status: RESOLVED_UNIQUE
+    expected_object_ids: [concept.luminosityfit.luminosity_fit_model]
+    expected_canonical_object_ids: [concept.luminosityfit.luminosity_fit_model]
+    expected_resolution_kind: descriptive_inferential
+    expected_evidence_tier: D
+    source_evidence: Pflueger chapter 4 model composition and luminosity extraction; canonical concept text.
+    source_ids: [curated_panda_domain, pflueger_2017]
+    source_version_ids: [curated_panda_domain@1.0, pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3]
+    applicability: AVAILABLE
+    notes: Pure descriptive positive; no exact alias/ID/symbol/title/path in the mention.
+
+  - case_id: C10
+    category: implementation_description_paraphrase
+    question: Where is the model-and-fit subsystem of the LuminosityFit framework implemented?
+    plan:
+      target_repositories: [pandaroot, restgas_determination, luminosityfit]
+      analyzer_concepts:
+        - value: the model-and-fit subsystem of the LuminosityFit framework
+          support_spans: [the model-and-fit subsystem of the LuminosityFit framework]
+    expected_status: AMBIGUOUS
+    expected_object_ids: []
+    expected_canonical_object_ids: []
+    expected_resolution_kind: none
+    expected_evidence_tier: none
+    source_evidence: The phrase names the subsystem, but the LuminosityFit concept and subsystem are lexical feature siblings (both carry luminosityfit/model/fit); the frozen bundle treats an equal-strength competitor as AMBIGUOUS.
+    source_ids: [curated_panda_domain]
+    source_version_ids: [curated_panda_domain@1.0]
+    applicability: AVAILABLE
+    notes: >-
+      Contract-safe expected outcome per A0R1 bundle condition 6 (no plausible
+      competing candidate may remain at equal strength). The descriptive
+      granularity limitation (LuminosityFit-sibling tie) is a deliberate A3
+      review finding, not a tuned expectation.
+
+  - case_id: C11
+    category: workflow_description
+    question: Which step is the step that reads the first PID output and writes the boost ROOT file?
+    plan:
+      target_repositories: [restgas_determination, pandaroot]
+      analyzer_concepts:
+        - value: the step that reads the first PID output and writes the boost ROOT file
+          support_spans: [the step that reads the first PID output and writes the boost ROOT file]
+    expected_status: RESOLVED_UNIQUE
+    expected_object_ids: [workflow.restgas.first_pass_poca]
+    expected_canonical_object_ids: [workflow.restgas.first_pass_poca]
+    expected_resolution_kind: descriptive_inferential
+    expected_evidence_tier: D
+    source_evidence: Seed workflow text plus accepted CONSUMES/PRODUCES structured facts (ana_dpm.C evidence).
+    source_ids: [curated_panda_domain, restgas_determination]
+    source_version_ids: [curated_panda_domain@1.0, restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42]
+    applicability: AVAILABLE
+    notes: Structured relation-backed descriptive features; relations describe the candidate, not identity.
+
+  - case_id: C12
+    category: data_product_description
+    question: Where is the boost ROOT output that contains the event_poca tree written?
+    plan:
+      target_repositories: [restgas_determination]
+      analyzer_concepts:
+        - value: the boost ROOT output that contains the event_poca tree
+          support_spans: [the boost ROOT output that contains the event_poca tree]
+    expected_status: RESOLVED_UNIQUE
+    expected_object_ids: [data_product.restgas.boost_root]
+    expected_canonical_object_ids: [data_product.restgas.boost_root]
+    expected_resolution_kind: descriptive_inferential
+    expected_evidence_tier: D
+    source_evidence: Seed data-product text (boost ROOT output containing the event_poca tree).
+    source_ids: [curated_panda_domain]
+    source_version_ids: [curated_panda_domain@1.0]
+    applicability: AVAILABLE
+    notes: Containment wording describes the container product; event_poca is a dominated competitor, not the target.
+
+  - case_id: C13
+    category: ambiguous_terminology
+    question: Where is the PID data product?
+    plan:
+      target_repositories: [restgas_determination]
+      analyzer_concepts:
+        - value: the PID data product
+          support_spans: [the PID data product]
+    expected_status: AMBIGUOUS
+    expected_object_ids: []
+    expected_canonical_object_ids: []
+    expected_resolution_kind: none
+    expected_evidence_tier: none
+    source_evidence: Two PID data products exist (first-pass pid_root and second-pass pid_final_root); the singular phrase does not disambiguate.
+    source_ids: [restgas_determination]
+    source_version_ids: [restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42]
+    applicability: AVAILABLE
+    notes: Genuine singular ambiguity; no top-1 selection permitted.
+
+  - case_id: C14
+    invalid: true
+    invalid_reason: >-
+      Curation inventory error recorded after the first measured run: the
+      authoritative symbol-bearing record for PndLmdModelFactory is the
+      function row object.c08459387c6fd0c77a717960, while the frozen
+      expectation declared the source_file row object.ceb44bd02a5e3a790cf2dfad.
+      Recorded INVALID_CASE per the D2-A2 freeze discipline; not replaced.
+    category: related_but_not_identical
+    question: What does PndLmdModelFactory do?
+    plan:
+      target_repositories: [luminosityfit]
+    expected_status: RESOLVED_UNIQUE
+    expected_object_ids: [object.ceb44bd02a5e3a790cf2dfad]
+    expected_canonical_object_ids: []
+    expected_resolution_kind: structural
+    expected_evidence_tier: S
+    source_evidence: Model factory source file in the locked luminosityfit tree; the class implements the model composition but is not the concept.
+    source_ids: [luminosityfit]
+    source_version_ids: [luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32]
+    applicability: AVAILABLE
+    notes: Negative control — implementation class resolves itself; canonical_object_id must stay null (IMPLEMENTS is not identity).
+
+  - case_id: C15
+    category: related_but_not_identical
+    question: What is event_poca?
+    plan:
+      target_repositories: [restgas_determination]
+    expected_status: RESOLVED_UNIQUE
+    expected_object_ids: [data_product.restgas.event_poca]
+    expected_canonical_object_ids: [data_product.restgas.event_poca]
+    expected_resolution_kind: structural
+    expected_evidence_tier: S
+    source_evidence: Canonical seed entity for the event_poca ROOT tree; containment by boost_root must not redirect the answer.
+    source_ids: [curated_panda_domain]
+    source_version_ids: [curated_panda_domain@1.0]
+    applicability: AVAILABLE
+    notes: Parent/child boundary control — matched record is the entity itself.
+
+  - case_id: C16
+    category: version_sensitive_identifier
+    question: How does PndLmdTrackQ work?
+    plan:
+      target_repositories: [pandaroot]
+      resolved_versions: {pandaroot: "0000000000000000000000000000000000000000"}
+    expected_status: REJECTED_VERSION
+    expected_object_ids: []
+    expected_canonical_object_ids: []
+    expected_resolution_kind: none
+    expected_evidence_tier: none
+    source_evidence: Locked version does not match the materialized pandaroot class record.
+    source_ids: [pandaroot]
+    source_version_ids: [pandaroot@18c09e91100db27867ded30e708b4dae95bd8357]
+    applicability: AVAILABLE
+    notes: Wrong-version rejection must not be erased by any canonicalization.
+
+  - case_id: C17
+    category: version_sensitive_identifier
+    question: How does PndLmdCombinedDataReader work?
+    plan:
+      target_repositories: [pandaroot]
+    expected_status: REJECTED_SCOPE
+    expected_object_ids: []
+    expected_canonical_object_ids: []
+    expected_resolution_kind: none
+    expected_evidence_tier: none
+    source_evidence: The class lives in luminosityfit, outside the declared pandaroot-only scope.
+    source_ids: [luminosityfit]
+    source_version_ids: [luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32]
+    applicability: AVAILABLE
+    notes: Source-scope rejection.
+
+  - case_id: C18
+    category: unsupported_expression
+    question: What is the unrelated nonexistent calibration concept?
+    plan:
+      target_repositories: [pandaroot, restgas_determination, luminosityfit]
+    expected_status: UNRESOLVED
+    expected_object_ids: []
+    expected_canonical_object_ids: []
+    expected_resolution_kind: none
+    expected_evidence_tier: none
+    source_evidence: No governed entity matches the expression; evaluated abstention must be retained (A1R2).
+    source_ids: [curated_panda_domain]
+    source_version_ids: [curated_panda_domain@1.0]
+    applicability: AVAILABLE
+    notes: Validates A1R2 abstention accounting.
+
+  - case_id: C19
+    category: unsupported_expression
+    question: How is the model configured?
+    plan:
+      target_repositories: [pandaroot, restgas_determination, luminosityfit]
+    expected_status: UNRESOLVED
+    expected_object_ids: []
+    expected_canonical_object_ids: []
+    expected_resolution_kind: none
+    expected_evidence_tier: none
+    source_evidence: Generic noun with a single weak descriptive feature; weak-signal abstention.
+    source_ids: [curated_panda_domain]
+    source_version_ids: [curated_panda_domain@1.0]
+    applicability: AVAILABLE
+    notes: Weak-signal prohibition control.
+
+  - case_id: C20
+    category: query_expansion_negative_control
+    question: What is the acceptance class?
+    plan:
+      target_repositories: [restgas_determination, pandaroot, luminosityfit]
+      flat_plan_concepts: [restgas profile correction workflow]
+    expected_status: UNRESOLVED
+    expected_object_ids: []
+    expected_canonical_object_ids: []
+    expected_resolution_kind: none
+    expected_evidence_tier: none
+    source_evidence: The concept appears only through a query-expansion-style flat plan concept; the question does not ground it.
+    source_ids: [curated_panda_domain]
+    source_version_ids: [curated_panda_domain@1.0]
+    applicability: AVAILABLE
+    notes: Query expansion may help retrieval planning but must not establish identity; the fallback abstention is retained (A1R2).
+
+  - case_id: C21
+    category: multi_mention_isolation
+    question: How does the luminosity fit model relate to the first-pass POCA workflow?
+    plan:
+      target_repositories: [pandaroot, restgas_determination, luminosityfit]
+      analyzer_concepts:
+        - value: luminosity fit model
+          support_spans: [luminosity fit model]
+        - value: first-pass POCA workflow
+          support_spans: [first-pass POCA workflow]
+    expected_status: RESOLVED_UNIQUE
+    expected_object_ids: [concept.luminosityfit.luminosity_fit_model, workflow.restgas.first_pass_poca]
+    expected_canonical_object_ids: [concept.luminosityfit.luminosity_fit_model, workflow.restgas.first_pass_poca]
+    expected_resolution_kind: descriptive_inferential
+    expected_evidence_tier: D
+    source_evidence: Both canonical entities and their accepted structured facts.
+    source_ids: [curated_panda_domain, restgas_determination]
+    source_version_ids: [curated_panda_domain@1.0, restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42]
+    applicability: AVAILABLE
+    notes: >-
+      Multi-mention evidence isolation (A1R1 regression): each mention is
+      scored on its own support span. Runner must assert both targets resolve
+      and that each resolution's descriptive evidence excludes the other
+      mention's distinctive tokens (poca/workflow vs luminosity/fit).
+    isolation_tokens:
+      luminosity fit model: [poca, workflow]
+      first-pass POCA workflow: [luminosity, fit]
+
+  - case_id: C22
+    category: documentation_vs_concept
+    question: Where is the PandaRoot Sphinx documentation?
+    plan:
+      target_repositories: [pandaroot]
+      analyzer_concepts:
+        - value: PandaRoot Sphinx documentation
+          support_spans: [PandaRoot Sphinx documentation]
+    expected_status: RESOLVED_UNIQUE
+    expected_object_ids: [document.pandaroot_sphinx_2023_08_25_dev]
+    expected_canonical_object_ids: [document.pandaroot_sphinx_2023_08_25_dev]
+    expected_resolution_kind: descriptive_inferential
+    expected_evidence_tier: D
+    source_evidence: Curated Sphinx documentation reference; documentation resolves to itself, not to a concept.
+    source_ids: [curated_panda_domain]
+    source_version_ids: [curated_panda_domain@1.0]
+    applicability: AVAILABLE
+    notes: Documentation-vs-concept boundary control.
+
+not_applicable:
+  - category: resolved_multiple
+    reason: No natural A1 mechanism promotes RESOLVED_MULTIPLE (trailing-s promotion removed in D2-A1R1); natural applicability = 0. Schema support remains representable.
+  - category: same_as
+    reason: Current D1 state contains no accepted SAME_AS edges; manufacturing one would violate the D1 co-reference contract. Shadow SAME_AS traversal is separately covered by focused T0 tests.
