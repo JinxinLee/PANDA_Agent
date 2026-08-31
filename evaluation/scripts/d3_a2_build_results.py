@@ -29,7 +29,7 @@ METRIC_LABELS = {
     "critical_final_evidence_recall": "critical evidence recall",
 }
 
-# Authored per-case mechanism analysis (D3-A2-R1 repaired interpretation).
+# Authored per-case mechanism analysis (D3-A2-R2 repaired interpretation).
 # Layers are kept strictly separate:
 #   failure_classification / secondary_failure_classifications: frozen D3-A0-R1
 #     failure taxonomy values only (null when no frozen-taxonomy failure exists);
@@ -64,7 +64,7 @@ CASE_ANALYSIS: dict[str, dict[str, Any]] = {
         "structured_candidate_contribution": False,
     },
     "g036": {
-        "primary_interpretation": "legacy dependency confirmed: required macro/target/ana_dpm.C evidence enters only through the LEGACY exact channel (rule symbol payload macro/target/*.C) at fused rank 5, final rank 1; with the rule suppressed the macro file never enters any channel; STRUCTURED seeds data_product.restgas.event_poca, traverses the accepted relations around it, and injects four curated objects that rank very high (fused ranks 1-2), but the frozen A1 path materializes governed objects only and never converts relation-level evidence provenance into retrievable source candidates; the required selector (source_id restgas_determination, path macro/target/ana_dpm.C, object_type function/source_file) cannot be satisfied by any curated governed object",
+        "primary_interpretation": "legacy dependency confirmed: required macro/target/ana_dpm.C evidence enters only through the LEGACY exact channel (rule symbol payload macro/target/*.C) at fused rank 5, final rank 1; with the rule suppressed the macro file never enters any channel; STRUCTURED seeds data_product.restgas.event_poca, traverses the accepted relations around it, and injects four curated objects that rank very high (fused ranks 1-2), but under the frozen actual one-hop traversal (retrieval_policies.max_relation_hops=1; A1 receives min(2, policy)=1) the provenance-bearing first_pass_poca relations are not reachable from the D2-resolved event_poca seed; even if reached, the frozen A1 path materializes governed endpoint objects only and never converts relation-level evidence provenance into retrievable source candidates; the required selector (source_id restgas_determination, path macro/target/ana_dpm.C, object_type function/source_file) cannot be satisfied by any curated governed object",
         "failure_classification": "EVIDENCE_LINK_COVERAGE_GAP",
         "secondary_failure_classifications": ["LEGACY_DEPENDENCY_WITHOUT_STRUCTURED_RECOVERY"],
         "paired_outcome": "STRUCTURED_REGRESSION",
@@ -190,7 +190,7 @@ RULE_DECISIONS: dict[str, dict[str, Any]] = {
     },
     "event_poca_handoff": {
         "decision": "STRUCTURED_REGRESSION",
-        "decision_rationale": "Direct case g036 establishes a real legacy dependency (LEGACY 1.0 -> ABLATION 0.0 final-evidence recall) and STRUCTURED fails to recover it (0.0): the structured path resolves and ranks the correct governed objects very highly but the answer-bearing macro file is reachable only through the legacy exact-channel symbol payload because no accepted D1 evidence linkage exists. Material underperformance of the structured treatment on valid directly applicable evidence; no safety or control regression.",
+        "decision_rationale": "Direct case g036 establishes a real legacy dependency (LEGACY 1.0 -> ABLATION 0.0 final-evidence recall) and STRUCTURED fails to recover it (0.0). The repository D1 contains ana_dpm.C as governed relation-level evidence provenance, but under the frozen one-hop policy the provenance-bearing first_pass_poca relations are not reachable from the D2-resolved event_poca seed, and the A1 implementation would not materialize relation-level evidence provenance into source candidates even if reached. Therefore the useful legacy answer-location evidence never enters the STRUCTURED candidate pool. Material underperformance of the structured treatment on valid directly applicable evidence; no safety or control regression.",
     },
     "pid_two_pass_files": {
         "decision": "INSUFFICIENT_EVIDENCE",
@@ -224,7 +224,7 @@ def load_records(run_dir: Path) -> list[dict[str, Any]]:
 
 
 # ---------------------------------------------------------------------------
-# D3-A2-R1 audit constants (post-outcome static/provenance repair; no rerun).
+# D3-A2-R1/R2 audit constants (post-outcome static/provenance repair; no rerun).
 #
 # Facts provenance:
 #   - repository expected state: configs/seed_objects.yaml, seed_relations.yaml,
@@ -397,6 +397,22 @@ def build_repair_sections() -> dict[str, Any]:
                     "STRUCTURED_PARITY": 14,
                     "note": "STRUCTURED_PARITY is a descriptive outcome, not a frozen taxonomy value; it was incorrectly counted as a failure class in the original A2 artifact",
                 },
+            },
+            {
+                "repair_id": "D3-A2-R2",
+                "task": "Evidence-Link Reachability & Attribution Consistency Repair",
+                "scope": "post-outcome attribution consistency repair only",
+                "scientific_reruns": 0,
+                "new_retrieval_or_model_calls": 0,
+                "metrics_changed": False,
+                "per_rule_decisions_changed": False,
+                "repairs": [
+                    "removed stale blanket no-linkage wording from the g036 machine rationale and human executive interpretation",
+                    "separated g036 governed-provenance existence, frozen one-hop reachability, and relation-provenance materialization limitations",
+                    "preserved g021 as the genuinely missing governed-evidence-link case",
+                    "refined the separately authorized next stage into Structured Evidence-Link Reachability & Bridging Design with mechanisms A, B, and C",
+                ],
+                "predecessor_repair": "D3-A2-R1",
             }
         ],
         "taxonomy_repair": {
@@ -515,22 +531,65 @@ def build_repair_sections() -> dict[str, Any]:
         },
         "mechanism_attribution_revision": {
             "g036": {
+                "primary_failure_class": "EVIDENCE_LINK_COVERAGE_GAP",
                 "primary_failure_classification": "EVIDENCE_LINK_COVERAGE_GAP",
                 "secondary_failure_classifications": ["LEGACY_DEPENDENCY_WITHOUT_STRUCTURED_RECOVERY"],
                 "diagnostic_subtype": "EXISTING_PROVENANCE_NOT_MATERIALIZED",
+                "governed_provenance_exists": True,
+                "provenance_reachability": {
+                    "reachable_from_resolved_seed": False,
+                    "status": "NOT_REACHABLE_UNDER_FROZEN_TRAVERSAL",
+                    "reason": "frozen one-hop traversal does not reach first_pass_poca provenance edges",
+                },
+                "provenance_materialization": {
+                    "supported": False,
+                    "status": "NOT_SUPPORTED",
+                    "reason": "A1 does not convert relation evidence provenance into source candidates",
+                },
+                "evidence_link_diagnostics": {
+                    "governed_provenance_exists": True,
+                    "provenance_reachable_from_resolved_seed": False,
+                    "reachability_status": "NOT_REACHABLE_UNDER_FROZEN_TRAVERSAL",
+                    "reachability_reason": "frozen one-hop traversal does not reach first_pass_poca provenance edges",
+                    "provenance_materialization_supported": False,
+                    "materialization_status": "NOT_SUPPORTED",
+                    "materialization_reason": "A1 does not convert relation evidence provenance into source candidates",
+                },
                 "audited_facts": [
                     "g036 requires evidence at macro/target/ana_dpm.C (source restgas_determination, object_type function/source_file)",
                     "the repository governed seed D1 already carries macro/target/ana_dpm.C as relation-level evidence provenance on workflow.restgas.first_pass_poca CONSUMES data_product.restgas.pid_root (edge.5a8a1deba5f20c052cdcb044) and workflow.restgas.first_pass_poca PRODUCES data_product.restgas.boost_root (edge.2e09628416a01ce2461d752a), both accepted",
+                    "the D2-resolved seed is data_product.restgas.event_poca; the frozen retrieval policy sets max_relation_hops=1 and Retriever passes min(2, policy)=1, so the provenance-bearing first_pass_poca relations are not reachable from that seed under the executed A1 traversal",
                     "the frozen A1 structured path reads relation payloads into its edge receipt but never consumes evidence provenance fields: d3_structured.py contains no reference to evidence_paths/evidence_object_ids/evidence_source_ids; relation_path provenance records only edge_id/predicate/subject_id/object_id/traversal_direction; only subject/object endpoint objects are materialized as candidates",
                     "the deployed runtime state additionally contains neither of those provenance-bearing edges, and none of its 16 materialized relation payloads carries any evidence provenance",
                     "the D2 resolution (event_poca -> data_product.restgas.event_poca, Tier S) and D1 traversal worked; structured candidates ranked at fused ranks 1-2; ranking is not the binding constraint",
                 ],
-                "revised_attribution": "the missing capability is not a new D1 domain-object relation: the governed evidence provenance already exists at the repository seed level. The frozen structured retrieval path does not materialize relation-level evidence provenance into retrievable source evidence, and the deployed runtime state has not materialized the provenance-bearing edges at all.",
+                "revised_attribution": "g036 is a two-stage governed-structure-to-evidence bridging limitation: repository-level ana_dpm.C provenance exists, but the provenance-bearing first_pass_poca structure is not reachable from the D2-resolved event_poca seed under the frozen one-hop traversal; even if reached, the frozen A1 path would not materialize relation-level evidence provenance into retrievable source candidates. Both generic structural reachability and evidence-provenance materialization are therefore required for recovery; neither step alone is sufficient.",
             },
             "g021": {
+                "primary_failure_class": "EVIDENCE_LINK_COVERAGE_GAP",
                 "primary_failure_classification": "EVIDENCE_LINK_COVERAGE_GAP",
                 "secondary_failure_classifications": ["LEGACY_DEPENDENCY_WITHOUT_STRUCTURED_RECOVERY"],
                 "diagnostic_subtype": "MISSING_GOVERNED_EVIDENCE_LINK",
+                "governed_provenance_exists": False,
+                "provenance_reachability": {
+                    "reachable_from_resolved_seed": False,
+                    "status": "NOT_APPLICABLE_PROVENANCE_ABSENT",
+                    "reason": "no governed evidence provenance exists for the required answer-bearing files",
+                },
+                "provenance_materialization": {
+                    "supported": False,
+                    "status": "NOT_APPLICABLE_PROVENANCE_ABSENT",
+                    "reason": "there is no governed provenance to materialize",
+                },
+                "evidence_link_diagnostics": {
+                    "governed_provenance_exists": False,
+                    "provenance_reachable_from_resolved_seed": False,
+                    "reachability_status": "NOT_APPLICABLE_PROVENANCE_ABSENT",
+                    "reachability_reason": "no governed evidence provenance exists for the required answer-bearing files",
+                    "provenance_materialization_supported": False,
+                    "materialization_status": "NOT_APPLICABLE_PROVENANCE_ABSENT",
+                    "materialization_reason": "there is no governed provenance to materialize",
+                },
                 "audited_facts": [
                     "g021 requires evidence at macro/target/prod_sim_hvmaps.C (e1) and pgenerators/Target/PndTargetGenerator.cxx (e2), source restgas_determination",
                     "neither path appears anywhere in governed D1 structure: not in seed objects, not in any seed relation/workflow evidence provenance, not in the deployed runtime (whose relation payloads carry no evidence provenance at all)",
@@ -538,7 +597,7 @@ def build_repair_sections() -> dict[str, Any]:
                     "prod_sim_hvmaps.C exists only in the legacy restgas_profile_workflow rule payload — exactly the shortcut whose removal defines this comparison",
                     "D2 resolution (restgas_profile -> configuration.restgas_profile, Tier S) and traversal to workflow.restgas_profile_reconstruction worked; injected candidates ranked at fused ranks 1 and 3",
                 ],
-                "revised_attribution": "the required answer-bearing evidence is not represented by any inspectable governed evidence linkage in the accepted D1 structure; this is a genuinely missing governed evidence link, not an A1 materialization failure of existing provenance.",
+                "revised_attribution": "g021 remains a genuinely missing governed evidence-link case: the required answer-bearing evidence is not represented by any inspectable governed evidence linkage in the accepted D1 structure, so there is no existing provenance for the frozen path to reach or materialize.",
             },
         },
         "experiment_validity_after_repair": {
@@ -914,7 +973,7 @@ def main() -> None:
         },
         "overall_interpretation": {
             "frozen_question": "Can the frozen generic D1/D2 structured path reproduce useful behavior of a small representative legacy-shortcut batch without relying on the legacy answer-location payloads or introducing unsafe retrieval regressions?",
-            "answer": "The experiment is valid and fully attributable. Three of the five directly identifiable rules show no meaningful legacy dependency (model_factory_theory, effective_acceptance_pipeline, root_macro_usage): their shortcuts were not materially responsible for useful retrieval, and removal plus structured treatment changes nothing. Two rules show a real, material legacy dependency (event_poca_handoff on g036, restgas_profile_workflow on g021): the useful behavior of these shortcuts is exact-channel injection of answer-location file paths/symbols, and the frozen generic structured path cannot reproduce it because the accepted D1 graph has no evidence linkage from the correctly resolved governed objects to the answer-bearing corpus files, even though structured candidates are recalled and ranked very highly (fused ranks 1-3). No unsafe retrieval regression, no control leakage, no prohibited shortcut encoding was observed anywhere.",
+            "answer": "The experiment is valid and fully attributable. Three of the five directly identifiable rules show no meaningful legacy dependency (model_factory_theory, effective_acceptance_pipeline, root_macro_usage): their shortcuts were not materially responsible for useful retrieval, and removal plus structured treatment changes nothing. Two rules show a real, material legacy dependency (event_poca_handoff on g036, restgas_profile_workflow on g021), but the evidence-link limits differ: for g036, repository-governed ana_dpm.C provenance exists yet the provenance-bearing first_pass_poca structure is not reachable from the D2-resolved event_poca seed under the frozen one-hop traversal, and A1 would not materialize relation-level provenance into source candidates even if reached; for g021, the required answer-bearing files have no governed D1 provenance at all. Thus the frozen generic structured path cannot reproduce the legacy exact-channel evidence in either case, even though structured candidates are recalled and ranked very highly (fused ranks 1-3). No unsafe retrieval regression, no control leakage, no prohibited shortcut encoding was observed anywhere.",
             "migration_support_denominator": {
                 "directly_identifiable_rules": 5,
                 "migration_supported": decisions_by_value["MIGRATION_SUPPORTED"],
@@ -934,9 +993,9 @@ def main() -> None:
             "result": "no runtime semantic change",
         },
         "next_stage": {
-            "recommended_task": "structured coverage-gap repair design: a separately authorized bounded D1 evidence-linkage coverage stage connecting governed objects to their retrievable answer-location corpus evidence for the two STRUCTURED_REGRESSION rules (event_poca_handoff, restgas_profile_workflow), followed by a focused re-comparison of only those rules",
+            "recommended_task": "Structured Evidence-Link Reachability & Bridging Design",
             "executed_here": False,
-            "evidence_basis": "the single dominant failure class is EVIDENCE_LINK_COVERAGE_GAP (2 cases); D2 resolution and D1 traversal worked and structured candidates ranked at fused ranks 1-3, so ranking is not the binding constraint",
+            "evidence_basis": "the single dominant failure class is EVIDENCE_LINK_COVERAGE_GAP (2 cases); g036 requires both generic governed-structure reachability and relation-provenance materialization, while g021 requires genuine governed evidence-link coverage; D2 resolution and ranking are not the binding constraints",
         },
     }
 
@@ -1010,20 +1069,66 @@ def main() -> None:
     assert len(runtime_set - seed_set) == 4
     assert artifact["experiment_validity_after_repair"]["formal_d3_experiment_verdict"] == "PASS"
 
-    # --- D3-A2-R1 repair sections (attribution + runtime knowledge-state provenance) ---
+    # R2: make the two g036 evidence-link limits and the g021 distinction
+    # machine-checkable without changing any scientific result fields.
+    g036_diagnostics = artifact["mechanism_attribution_revision"]["g036"]["evidence_link_diagnostics"]
+    assert g036_diagnostics == {
+        "governed_provenance_exists": True,
+        "provenance_reachable_from_resolved_seed": False,
+        "reachability_status": "NOT_REACHABLE_UNDER_FROZEN_TRAVERSAL",
+        "reachability_reason": "frozen one-hop traversal does not reach first_pass_poca provenance edges",
+        "provenance_materialization_supported": False,
+        "materialization_status": "NOT_SUPPORTED",
+        "materialization_reason": "A1 does not convert relation evidence provenance into source candidates",
+    }
+    assert artifact["mechanism_attribution_revision"]["g021"]["evidence_link_diagnostics"]["governed_provenance_exists"] is False
+
+    # --- D3-A2-R2 repair sections (reachability + attribution consistency) ---
     artifact["failure_taxonomy_counts"] = dict(sorted(taxonomy_counts.items()))
     artifact["paired_outcome_counts"] = dict(sorted(paired_outcome_counts.items()))
-    artifact["status"] = "COMPLETE / FROZEN_THREE_ARM_COMPARISON_COMPLETE (R1 attribution and runtime-state repaired)"
+    artifact["status"] = "COMPLETE / FROZEN_THREE_ARM_COMPARISON_COMPLETE"
     artifact["next_stage"] = {
-        "recommended_task": "structured evidence-link bridging design: a separately authorized bounded stage with two audited mechanisms — (A) materialize existing governed relation/workflow evidence provenance into retrieval-addressable candidates where the provenance already exists in D1 (g036/ana_dpm.C), and (B) add genuinely missing governed evidence linkage only where no inspectable provenance exists (g021/prod_sim_hvmaps.C, PndTargetGenerator.cxx) — then a focused re-comparison of only the two STRUCTURED_REGRESSION rules",
+        "recommended_task": "Structured Evidence-Link Reachability & Bridging Design",
         "executed_here": False,
-        "evidence_basis": "R1 subtype audit: g036 = EXISTING_PROVENANCE_NOT_MATERIALIZED (seed relation provenance exists, A1 does not bridge it, deployed runtime additionally lacks the provenance-bearing edges); g021 = MISSING_GOVERNED_EVIDENCE_LINK (no governed provenance anywhere); ranking and D2 resolution are not the binding constraints",
+        "evidence_basis": "R2 attribution audit: g036 = EXISTING_PROVENANCE_NOT_MATERIALIZED with governed ana_dpm.C provenance present but not reachable from the D2-resolved event_poca seed under frozen one-hop traversal and not materialized by A1; g021 = MISSING_GOVERNED_EVIDENCE_LINK with no governed provenance for the required files; ranking and D2 resolution are not the binding constraints",
+        "focused_recomparison_scope": ["event_poca_handoff", "restgas_profile_workflow"],
+        "mechanisms": {
+            "governed_structural_reachability": {
+                "id": "A",
+                "goal": "D2-resolved object -> existing governed parent/workflow/accepted-relation structure -> provenance-bearing governed structure",
+                "potential_structural_inputs": ["parent_object_id", "accepted relation direction", "workflow step participation", "bounded multi-hop composition"],
+                "g036_architecture_hypothesis": "event_poca -> parent_object_id -> boost_root -> accepted relation/workflow structure -> first_pass_poca -> governed evidence provenance -> ana_dpm.C",
+                "status": "DESIGN_HYPOTHESIS_ONLY_NOT_IMPLEMENTED",
+                "constraint": "the potential path is a design hypothesis; R2 does not assert that it is currently supported or prescribe traversal order or hop count",
+            },
+            "evidence_provenance_materialization": {
+                "id": "B",
+                "goal": "reached accepted relation/workflow -> governed evidence provenance -> retrieval-addressable source-native evidence candidate",
+                "scope": "use only evidence already present in governed provenance; requires a reached accepted relation/workflow and is not sufficient without Mechanism A for g036",
+                "status": "DESIGN_ONLY_NOT_IMPLEMENTED",
+            },
+            "genuine_evidence_link_coverage": {
+                "id": "C",
+                "goal": "where governed provenance truly does not exist -> add narrowly justified governed evidence linkage",
+                "example": "g021-type coverage for macro/target/prod_sim_hvmaps.C and pgenerators/Target/PndTargetGenerator.cxx",
+                "status": "DESIGN_ONLY_NOT_IMPLEMENTED",
+            },
+        },
         "prohibited_replacement_shapes": [
             "trigger phrase -> hardcoded file",
             "selected rule ID -> evidence_path",
             "evaluation case -> answer file",
+            "bound_rule_id -> graph route",
+            "question ID -> relation path",
         ],
-        "required_replacement_shape": "query -> D2 object -> accepted governed relation/workflow -> governed evidence provenance -> retrievable source candidate",
+        "required_replacement_shape": "question -> D2 resolved governed object -> generic governed structural reachability -> accepted governed relation/workflow -> governed evidence provenance -> retrievable source-native evidence candidate",
+        "do_not_decide_in_r2": ["increase max_relation_hops", "always traverse parent first", "implement parent traversal", "materialize evidence provenance", "add D1 links"],
+    }
+    assert artifact["next_stage"]["recommended_task"] == "Structured Evidence-Link Reachability & Bridging Design"
+    assert set(artifact["next_stage"]["mechanisms"]) == {
+        "governed_structural_reachability",
+        "evidence_provenance_materialization",
+        "genuine_evidence_link_coverage",
     }
 
     output_path = args.project_root / "evaluation" / "d3_a2_three_arm_results.json"
