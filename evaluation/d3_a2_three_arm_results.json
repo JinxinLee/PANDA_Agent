@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "checkpoint": "D3-A2",
-  "status": "COMPLETE / FROZEN_THREE_ARM_COMPARISON_COMPLETE",
+  "status": "COMPLETE / FROZEN_THREE_ARM_COMPARISON_COMPLETE (R1 attribution and runtime-state repaired)",
   "verdict": "PASS",
   "verdict_scope": "valid single frozen three-arm comparison; PASS does not imply every rule supports migration",
   "implementation_identity": {
@@ -1195,7 +1195,12 @@
         "structured_regression_occurred": false,
         "primary_interpretation": "no legacy dependency observable (paraphrase case); all arms recover the required evidence; structured abstains correctly on the AMBIGUOUS PndLmdCombinedDataReader mention without collapsing it"
       },
-      "failure_classification": "STRUCTURED_PARITY"
+      "failure_classification": null,
+      "secondary_failure_classifications": [],
+      "paired_outcome": "STRUCTURED_PARITY",
+      "dependency_interpretation": "NOT_ESTABLISHED",
+      "diagnostic_subtype": null,
+      "frozen_arm_case_outcome": "FULL_REPRODUCTION"
     },
     {
       "case_id": "n021",
@@ -1322,7 +1327,12 @@
         "structured_regression_occurred": false,
         "primary_interpretation": "no legacy dependency (paraphrase case); all arms miss the LuminosityFit orchestration group (preregistered preserved gap); structured contributes one neutral PandaRoot repository seed"
       },
-      "failure_classification": "STRUCTURED_PARITY"
+      "failure_classification": null,
+      "secondary_failure_classifications": [],
+      "paired_outcome": "STRUCTURED_PARITY",
+      "dependency_interpretation": "NOT_ESTABLISHED",
+      "diagnostic_subtype": null,
+      "frozen_arm_case_outcome": "FULL_REPRODUCTION"
     },
     {
       "case_id": "g025",
@@ -1443,7 +1453,12 @@
         "structured_regression_occurred": false,
         "primary_interpretation": "negative control behaves identically in all arms; structured correctly abstains (runLmdFit mention stays AMBIGUOUS, no collapse, no injection)"
       },
-      "failure_classification": "STRUCTURED_PARITY"
+      "failure_classification": null,
+      "secondary_failure_classifications": [],
+      "paired_outcome": "STRUCTURED_PARITY",
+      "dependency_interpretation": "NOT_ESTABLISHED",
+      "diagnostic_subtype": null,
+      "frozen_arm_case_outcome": "NOT_APPLICABLE"
     },
     {
       "case_id": "g036",
@@ -1554,9 +1569,16 @@
         "legacy_dependency_confirmed": true,
         "structured_recovery_occurred": false,
         "structured_regression_occurred": true,
-        "primary_interpretation": "legacy dependency confirmed: required macro evidence enters only through the LEGACY exact channel (rule symbol payload macro/target/*.C) at fused rank 5, final rank 1; with the rule suppressed the macro file never enters any channel; STRUCTURED seeds data_product.restgas.event_poca, traverses three accepted relations, injects four curated objects that rank very high (fused ranks 1-2), but no accepted D1 evidence linkage connects the governed object to the answer-bearing corpus file"
+        "primary_interpretation": "legacy dependency confirmed: required macro/target/ana_dpm.C evidence enters only through the LEGACY exact channel (rule symbol payload macro/target/*.C) at fused rank 5, final rank 1; with the rule suppressed the macro file never enters any channel; STRUCTURED seeds data_product.restgas.event_poca, traverses the accepted relations around it, and injects four curated objects that rank very high (fused ranks 1-2), but the frozen A1 path materializes governed objects only and never converts relation-level evidence provenance into retrievable source candidates; the required selector (source_id restgas_determination, path macro/target/ana_dpm.C, object_type function/source_file) cannot be satisfied by any curated governed object"
       },
-      "failure_classification": "EVIDENCE_LINK_COVERAGE_GAP"
+      "failure_classification": "EVIDENCE_LINK_COVERAGE_GAP",
+      "secondary_failure_classifications": [
+        "LEGACY_DEPENDENCY_WITHOUT_STRUCTURED_RECOVERY"
+      ],
+      "paired_outcome": "STRUCTURED_REGRESSION",
+      "dependency_interpretation": "LEGACY_DEPENDENCY_CONFIRMED",
+      "diagnostic_subtype": "EXISTING_PROVENANCE_NOT_MATERIALIZED",
+      "frozen_arm_case_outcome": "REGRESSION"
     },
     {
       "case_id": "n022",
@@ -1700,7 +1722,12 @@
         "structured_regression_occurred": false,
         "primary_interpretation": "no legacy dependency (paraphrase case); all arms 2/3 groups; the e3 selected object differs between ABLATION and STRUCTURED (both objects match the group's any_of selectors) due to analyzer/reranker run variance, not structured contribution (zero seeds/injections for this case)"
       },
-      "failure_classification": "STRUCTURED_PARITY"
+      "failure_classification": null,
+      "secondary_failure_classifications": [],
+      "paired_outcome": "STRUCTURED_PARITY",
+      "dependency_interpretation": "NOT_ESTABLISHED",
+      "diagnostic_subtype": null,
+      "frozen_arm_case_outcome": "FULL_REPRODUCTION"
     },
     {
       "case_id": "g020",
@@ -1841,7 +1868,12 @@
         "structured_regression_occurred": false,
         "primary_interpretation": "no legacy dependency (paraphrase case); all arms recover both required groups; structured abstains on the unresolved two-pass mention without negative filtering"
       },
-      "failure_classification": "STRUCTURED_PARITY"
+      "failure_classification": null,
+      "secondary_failure_classifications": [],
+      "paired_outcome": "STRUCTURED_PARITY",
+      "dependency_interpretation": "NOT_ESTABLISHED",
+      "diagnostic_subtype": null,
+      "frozen_arm_case_outcome": "FULL_REPRODUCTION"
     },
     {
       "case_id": "n006",
@@ -1968,7 +2000,12 @@
         "structured_regression_occurred": false,
         "primary_interpretation": "nontrigger control stable across arms; structured injects one neutral PandaRoot repository seed; pre-existing e2 gap unchanged"
       },
-      "failure_classification": "STRUCTURED_PARITY"
+      "failure_classification": null,
+      "secondary_failure_classifications": [],
+      "paired_outcome": "STRUCTURED_PARITY",
+      "dependency_interpretation": "NOT_ESTABLISHED",
+      "diagnostic_subtype": null,
+      "frozen_arm_case_outcome": "FULL_REPRODUCTION"
     },
     {
       "case_id": "g041",
@@ -2082,7 +2119,12 @@
         "structured_regression_occurred": false,
         "primary_interpretation": "negative control behaves identically in all arms; structured correctly abstains on the nonexistent SetMagicRestgasSeed mention; no injection, no false scope narrowing"
       },
-      "failure_classification": "STRUCTURED_PARITY"
+      "failure_classification": null,
+      "secondary_failure_classifications": [],
+      "paired_outcome": "STRUCTURED_PARITY",
+      "dependency_interpretation": "NOT_ESTABLISHED",
+      "diagnostic_subtype": null,
+      "frozen_arm_case_outcome": "NOT_APPLICABLE"
     },
     {
       "case_id": "n014",
@@ -2216,7 +2258,12 @@
         "structured_regression_occurred": false,
         "primary_interpretation": "LEGACY equals ABLATION on the direct literal case, so the model_factory_theory shortcut was not materially responsible for useful retrieval; structured injects the S-tier model_framework match but the model_framework definition group is missed in all arms (pre-existing recall gap unrelated to the rule)"
       },
-      "failure_classification": "STRUCTURED_PARITY"
+      "failure_classification": null,
+      "secondary_failure_classifications": [],
+      "paired_outcome": "STRUCTURED_PARITY",
+      "dependency_interpretation": "NOT_MATERIALLY_USED",
+      "diagnostic_subtype": null,
+      "frozen_arm_case_outcome": "FULL_REPRODUCTION"
     },
     {
       "case_id": "g060",
@@ -2372,7 +2419,12 @@
         "structured_regression_occurred": false,
         "primary_interpretation": "no legacy dependency (paraphrase case); all arms recover all three groups; structured abstains on the unresolved beam-divergence mention"
       },
-      "failure_classification": "STRUCTURED_PARITY"
+      "failure_classification": null,
+      "secondary_failure_classifications": [],
+      "paired_outcome": "STRUCTURED_PARITY",
+      "dependency_interpretation": "NOT_ESTABLISHED",
+      "diagnostic_subtype": null,
+      "frozen_arm_case_outcome": "FULL_REPRODUCTION"
     },
     {
       "case_id": "g052",
@@ -2494,7 +2546,12 @@
         "structured_regression_occurred": false,
         "primary_interpretation": "LEGACY equals ABLATION on the direct literal case (the question also literally triggers restgas_profile_workflow; both suppressed in ABLATION with no effect), so the effective_acceptance_pipeline shortcut was not materially responsible; structured abstains on both descriptive mentions without narrowing the distinction"
       },
-      "failure_classification": "STRUCTURED_PARITY"
+      "failure_classification": null,
+      "secondary_failure_classifications": [],
+      "paired_outcome": "STRUCTURED_PARITY",
+      "dependency_interpretation": "NOT_MATERIALLY_USED",
+      "diagnostic_subtype": null,
+      "frozen_arm_case_outcome": "FULL_REPRODUCTION"
     },
     {
       "case_id": "g055",
@@ -2635,7 +2692,12 @@
         "structured_regression_occurred": false,
         "primary_interpretation": "distinction control stable across arms; structured abstains on both descriptive mentions; no over-expansion and no false ambiguity collapse"
       },
-      "failure_classification": "STRUCTURED_PARITY"
+      "failure_classification": null,
+      "secondary_failure_classifications": [],
+      "paired_outcome": "STRUCTURED_PARITY",
+      "dependency_interpretation": "NOT_ESTABLISHED",
+      "diagnostic_subtype": null,
+      "frozen_arm_case_outcome": "FULL_REPRODUCTION"
     },
     {
       "case_id": "n003",
@@ -2762,7 +2824,12 @@
         "structured_regression_occurred": false,
         "primary_interpretation": "nontrigger control stable across arms; structured injects one neutral PandaRoot repository seed; pre-existing e2 gap unchanged"
       },
-      "failure_classification": "STRUCTURED_PARITY"
+      "failure_classification": null,
+      "secondary_failure_classifications": [],
+      "paired_outcome": "STRUCTURED_PARITY",
+      "dependency_interpretation": "NOT_ESTABLISHED",
+      "diagnostic_subtype": null,
+      "frozen_arm_case_outcome": "FULL_REPRODUCTION"
     },
     {
       "case_id": "g021",
@@ -2887,9 +2954,16 @@
         "legacy_dependency_confirmed": true,
         "structured_recovery_occurred": false,
         "structured_regression_occurred": true,
-        "primary_interpretation": "legacy dependency confirmed: required restgas_profile configuration-usage and simulation-macro evidence enters only through the LEGACY exact channel (rule symbol payload macro/target/*.C and pgenerators path); with the rule suppressed neither file enters any channel; STRUCTURED seeds configuration.restgas_profile, traverses to workflow.restgas_profile_reconstruction, injects two curated objects that rank very high (fused ranks 1 and 3), but no accepted D1 evidence linkage connects the governed objects to the answer-bearing corpus files"
+        "primary_interpretation": "legacy dependency confirmed: required macro/target/prod_sim_hvmaps.C and pgenerators/Target/PndTargetGenerator.cxx evidence enters only through the LEGACY exact channel (rule symbol payload); with the rule suppressed neither file enters any channel; STRUCTURED seeds configuration.restgas_profile, traverses to workflow.restgas_profile_reconstruction, injects two curated objects that rank very high (fused ranks 1 and 3), but prod_sim_hvmaps.C and PndTargetGenerator.cxx appear nowhere in governed D1 object/relation/workflow structure (repository seed or runtime), so no governed provenance exists that the frozen path could bridge"
       },
-      "failure_classification": "EVIDENCE_LINK_COVERAGE_GAP"
+      "failure_classification": "EVIDENCE_LINK_COVERAGE_GAP",
+      "secondary_failure_classifications": [
+        "LEGACY_DEPENDENCY_WITHOUT_STRUCTURED_RECOVERY"
+      ],
+      "paired_outcome": "STRUCTURED_REGRESSION",
+      "dependency_interpretation": "LEGACY_DEPENDENCY_CONFIRMED",
+      "diagnostic_subtype": "MISSING_GOVERNED_EVIDENCE_LINK",
+      "frozen_arm_case_outcome": "REGRESSION"
     },
     {
       "case_id": "n004",
@@ -3006,7 +3080,12 @@
         "structured_regression_occurred": false,
         "primary_interpretation": "LEGACY equals ABLATION on the direct literal case, so the root_macro_usage shortcut was not materially responsible; structured injects one neutral PandaRoot repository seed; outcomes identical"
       },
-      "failure_classification": "STRUCTURED_PARITY"
+      "failure_classification": null,
+      "secondary_failure_classifications": [],
+      "paired_outcome": "STRUCTURED_PARITY",
+      "dependency_interpretation": "NOT_MATERIALLY_USED",
+      "diagnostic_subtype": null,
+      "frozen_arm_case_outcome": "FULL_REPRODUCTION"
     },
     {
       "case_id": "g007",
@@ -3127,7 +3206,12 @@
         "structured_regression_occurred": false,
         "primary_interpretation": "negative control behaves identically in all arms; structured injects one neutral PandaRoot repository seed; no unsupported-evidence leakage and no false confidence introduced"
       },
-      "failure_classification": "STRUCTURED_PARITY"
+      "failure_classification": null,
+      "secondary_failure_classifications": [],
+      "paired_outcome": "STRUCTURED_PARITY",
+      "dependency_interpretation": "NOT_ESTABLISHED",
+      "diagnostic_subtype": null,
+      "frozen_arm_case_outcome": "NOT_APPLICABLE"
     }
   ],
   "per_rule_results": [
@@ -3236,7 +3320,7 @@
         }
       ],
       "mechanism_findings": [
-        "legacy dependency confirmed: required macro evidence enters only through the LEGACY exact channel (rule symbol payload macro/target/*.C) at fused rank 5, final rank 1; with the rule suppressed the macro file never enters any channel; STRUCTURED seeds data_product.restgas.event_poca, traverses three accepted relations, injects four curated objects that rank very high (fused ranks 1-2), but no accepted D1 evidence linkage connects the governed object to the answer-bearing corpus file",
+        "legacy dependency confirmed: required macro/target/ana_dpm.C evidence enters only through the LEGACY exact channel (rule symbol payload macro/target/*.C) at fused rank 5, final rank 1; with the rule suppressed the macro file never enters any channel; STRUCTURED seeds data_product.restgas.event_poca, traverses the accepted relations around it, and injects four curated objects that rank very high (fused ranks 1-2), but the frozen A1 path materializes governed objects only and never converts relation-level evidence provenance into retrievable source candidates; the required selector (source_id restgas_determination, path macro/target/ana_dpm.C, object_type function/source_file) cannot be satisfied by any curated governed object",
         "no legacy dependency (paraphrase case); all arms 2/3 groups; the e3 selected object differs between ABLATION and STRUCTURED (both objects match the group's any_of selectors) due to analyzer/reranker run variance, not structured contribution (zero seeds/injections for this case)"
       ],
       "safety_findings": "no control regression, no leakage, no ambiguity collapse, all five prohibited-use counters zero in every STRUCTURED execution bound to this rule",
@@ -3463,7 +3547,7 @@
         }
       ],
       "mechanism_findings": [
-        "legacy dependency confirmed: required restgas_profile configuration-usage and simulation-macro evidence enters only through the LEGACY exact channel (rule symbol payload macro/target/*.C and pgenerators path); with the rule suppressed neither file enters any channel; STRUCTURED seeds configuration.restgas_profile, traverses to workflow.restgas_profile_reconstruction, injects two curated objects that rank very high (fused ranks 1 and 3), but no accepted D1 evidence linkage connects the governed objects to the answer-bearing corpus files"
+        "legacy dependency confirmed: required macro/target/prod_sim_hvmaps.C and pgenerators/Target/PndTargetGenerator.cxx evidence enters only through the LEGACY exact channel (rule symbol payload); with the rule suppressed neither file enters any channel; STRUCTURED seeds configuration.restgas_profile, traverses to workflow.restgas_profile_reconstruction, injects two curated objects that rank very high (fused ranks 1 and 3), but prod_sim_hvmaps.C and PndTargetGenerator.cxx appear nowhere in governed D1 object/relation/workflow structure (repository seed or runtime), so no governed provenance exists that the frozen path could bridge"
       ],
       "safety_findings": "no control regression, no leakage, no ambiguity collapse, all five prohibited-use counters zero in every STRUCTURED execution bound to this rule",
       "decision": "STRUCTURED_REGRESSION",
@@ -3513,8 +3597,7 @@
     }
   ],
   "failure_taxonomy_counts": {
-    "EVIDENCE_LINK_COVERAGE_GAP": 2,
-    "STRUCTURED_PARITY": 14
+    "EVIDENCE_LINK_COVERAGE_GAP": 2
   },
   "d3_aggregate_counters": {
     "evaluation_metadata_runtime_use_count": 0,
@@ -3564,8 +3647,533 @@
     "result": "no runtime semantic change"
   },
   "next_stage": {
-    "recommended_task": "structured coverage-gap repair design: a separately authorized bounded D1 evidence-linkage coverage stage connecting governed objects to their retrievable answer-location corpus evidence for the two STRUCTURED_REGRESSION rules (event_poca_handoff, restgas_profile_workflow), followed by a focused re-comparison of only those rules",
+    "recommended_task": "structured evidence-link bridging design: a separately authorized bounded stage with two audited mechanisms — (A) materialize existing governed relation/workflow evidence provenance into retrieval-addressable candidates where the provenance already exists in D1 (g036/ana_dpm.C), and (B) add genuinely missing governed evidence linkage only where no inspectable provenance exists (g021/prod_sim_hvmaps.C, PndTargetGenerator.cxx) — then a focused re-comparison of only the two STRUCTURED_REGRESSION rules",
     "executed_here": false,
-    "evidence_basis": "the single dominant failure class is EVIDENCE_LINK_COVERAGE_GAP (2 cases); D2 resolution and D1 traversal worked and structured candidates ranked at fused ranks 1-3, so ranking is not the binding constraint"
+    "evidence_basis": "R1 subtype audit: g036 = EXISTING_PROVENANCE_NOT_MATERIALIZED (seed relation provenance exists, A1 does not bridge it, deployed runtime additionally lacks the provenance-bearing edges); g021 = MISSING_GOVERNED_EVIDENCE_LINK (no governed provenance anywhere); ranking and D2 resolution are not the binding constraints",
+    "prohibited_replacement_shapes": [
+      "trigger phrase -> hardcoded file",
+      "selected rule ID -> evidence_path",
+      "evaluation case -> answer file"
+    ],
+    "required_replacement_shape": "query -> D2 object -> accepted governed relation/workflow -> governed evidence provenance -> retrievable source candidate"
+  },
+  "repair_history": [
+    {
+      "repair_id": "D3-A2-R1",
+      "task": "Outcome Attribution & Runtime Knowledge-State Provenance Repair",
+      "scope": "post-outcome interpretation/provenance repair only",
+      "scientific_reruns": 0,
+      "new_retrieval_or_model_calls": 0,
+      "metrics_changed": false,
+      "per_rule_decisions_changed": false,
+      "repairs": [
+        "restored strict use of the frozen D3-A0-R1 failure taxonomy (descriptive outcome labels removed from failure_classification/failure_taxonomy_counts and separated into paired_outcome/dependency_interpretation)",
+        "refined g036/g021 evidence-link mechanism attribution with audited diagnostic subtypes",
+        "recorded and audited the runtime D1 materialization state versus the repository seed state with a per-item materiality assessment"
+      ],
+      "original_a2_result_commit": "c6be168",
+      "original_a2_taxonomy_counts_superseded": {
+        "EVIDENCE_LINK_COVERAGE_GAP": 2,
+        "STRUCTURED_PARITY": 14,
+        "note": "STRUCTURED_PARITY is a descriptive outcome, not a frozen taxonomy value; it was incorrectly counted as a failure class in the original A2 artifact"
+      }
+    }
+  ],
+  "taxonomy_repair": {
+    "frozen_failure_taxonomy_authority": "evaluation/d3_a0_shortcut_migration_preregistration.json (D3-A0-R1)",
+    "frozen_failure_taxonomy": [
+      "STRUCTURED_CANDIDATE_RECALL_FAILURE",
+      "RELATION_COVERAGE_GAP",
+      "WORKFLOW_COVERAGE_GAP",
+      "EVIDENCE_LINK_COVERAGE_GAP",
+      "ENTITY_OR_TERMINOLOGY_RESOLUTION_FAILURE",
+      "AMBIGUITY_OR_ABSTENTION",
+      "REPOSITORY_OR_VERSION_SCOPE_FAILURE",
+      "FUSION_OR_RANKING_FAILURE",
+      "FINAL_SELECTOR_FAILURE",
+      "LEGACY_DEPENDENCY_WITHOUT_STRUCTURED_RECOVERY",
+      "CONTROL_LEAKAGE_OR_OVERMATCH",
+      "PROHIBITED_SHORTCUT_ENCODING",
+      "INFRASTRUCTURE_OR_ARTIFACT_FAILURE"
+    ],
+    "nonfrozen_labels_removed_from_failure_layer": [
+      "STRUCTURED_PARITY",
+      "LEGACY_SHORTCUT_DEPENDENCY_CONFIRMED",
+      "LEGACY_SHORTCUT_NOT_MATERIALLY_USED"
+    ],
+    "case_layer_separation": {
+      "failure_classification": "frozen taxonomy value or null",
+      "secondary_failure_classifications": "additional frozen taxonomy values where applicable",
+      "paired_outcome": "descriptive structured-vs-ablation outcome (STRUCTURED_PARITY / STRUCTURED_REGRESSION)",
+      "dependency_interpretation": "LEGACY_DEPENDENCY_CONFIRMED / NOT_MATERIALLY_USED / NOT_ESTABLISHED",
+      "diagnostic_subtype": "interpretation-only refinement of EVIDENCE_LINK_COVERAGE_GAP; not a taxonomy value"
+    },
+    "frozen_arm_case_outcome_mapping": {
+      "anchor": "preregistered metric definitions (regression_rate, useful_retrieval_reproduction_rate, control applicability)",
+      "REGRESSION": [
+        "g036",
+        "g021"
+      ],
+      "FULL_REPRODUCTION": [
+        "g020",
+        "g029",
+        "g052",
+        "g055",
+        "g060",
+        "n003",
+        "n004",
+        "n006",
+        "n014",
+        "n021",
+        "n022"
+      ],
+      "NOT_APPLICABLE": [
+        "g007",
+        "g025",
+        "g041"
+      ],
+      "NO_REPRODUCTION": [],
+      "PARTIAL_REPRODUCTION": [],
+      "IMPROVEMENT": [],
+      "NOT_RUN": [],
+      "INFRASTRUCTURE_FAILURE": []
+    }
+  },
+  "runtime_knowledge_state": {
+    "audited_against": "frozen A1 commit 814a618 configs (repository expected) versus the deployed materialization used by the 48 A2 executions",
+    "repository_expected": {
+      "source": "configs/seed_objects.yaml, configs/seed_relations.yaml, configs/seed_workflows.yaml at 814a618",
+      "object_count": 24,
+      "object_ids": [
+        "paper.karavdina_2015.chapter_4",
+        "workflow.pandaroot.lmd_reconstruction",
+        "data_product.pandaroot.lumi_trks_qa",
+        "subsystem.luminosityfit.panda_data_io",
+        "paper.pflueger_2017.chapter_4",
+        "subsystem.luminosityfit.model_and_fit",
+        "concept.li_2026.restgas_effective_acceptance",
+        "workflow.restgas_aware_luminosity_acceptance",
+        "workflow.restgas_profile_reconstruction",
+        "concept.restgas_longitudinal_efficiency",
+        "data_product.reconstructed_restgas_profile",
+        "repository.restgas_determination.oct19",
+        "repository.pandaroot.oct19",
+        "document.pandaroot_sphinx_2023_08_25_dev",
+        "workflow.pandaroot.generic",
+        "configuration.restgas_profile",
+        "file_pattern.restgas_profile_input",
+        "data_product.restgas.event_poca",
+        "data_product.restgas.boost_root",
+        "data_product.restgas.pid_root",
+        "data_product.restgas.pid_final_root",
+        "workflow.restgas.second_pass_pid",
+        "workflow.restgas.first_pass_poca",
+        "concept.luminosityfit.luminosity_fit_model"
+      ],
+      "accepted_relation_count": 16,
+      "accepted_relations": [
+        {
+          "subject_id": "paper.karavdina_2015.chapter_4",
+          "predicate": "THEORETICAL_BASIS_FOR",
+          "object_id": "workflow.pandaroot.lmd_reconstruction",
+          "expected_edge_id": null
+        },
+        {
+          "subject_id": "workflow.pandaroot.lmd_reconstruction",
+          "predicate": "PRODUCES",
+          "object_id": "data_product.pandaroot.lumi_trks_qa",
+          "expected_edge_id": null
+        },
+        {
+          "subject_id": "data_product.pandaroot.lumi_trks_qa",
+          "predicate": "PRODUCES_INPUT_FOR",
+          "object_id": "subsystem.luminosityfit.panda_data_io",
+          "expected_edge_id": null
+        },
+        {
+          "subject_id": "paper.pflueger_2017.chapter_4",
+          "predicate": "FORMALIZES",
+          "object_id": "concept.luminosityfit.luminosity_fit_model",
+          "expected_edge_id": "edge.161980db8e6627f0ea2e220a"
+        },
+        {
+          "subject_id": "subsystem.luminosityfit.model_and_fit",
+          "predicate": "IMPLEMENTS",
+          "object_id": "concept.luminosityfit.luminosity_fit_model",
+          "expected_edge_id": "edge.4b871167865184a7c023ab36"
+        },
+        {
+          "subject_id": "concept.li_2026.restgas_effective_acceptance",
+          "predicate": "IMPLEMENTED_AS_PIPELINE",
+          "object_id": "workflow.restgas_aware_luminosity_acceptance",
+          "expected_edge_id": null
+        },
+        {
+          "subject_id": "workflow.restgas_profile_reconstruction",
+          "predicate": "PRODUCES_PROFILE_FOR",
+          "object_id": "workflow.restgas_aware_luminosity_acceptance",
+          "expected_edge_id": null
+        },
+        {
+          "subject_id": "concept.restgas_longitudinal_efficiency",
+          "predicate": "CORRECTS",
+          "object_id": "data_product.reconstructed_restgas_profile",
+          "expected_edge_id": null
+        },
+        {
+          "subject_id": "repository.restgas_determination.oct19",
+          "predicate": "FORKED_FROM",
+          "object_id": "repository.pandaroot.oct19",
+          "expected_edge_id": null
+        },
+        {
+          "subject_id": "document.pandaroot_sphinx_2023_08_25_dev",
+          "predicate": "OPERATIONALLY_DOCUMENTS",
+          "object_id": "workflow.pandaroot.generic",
+          "expected_edge_id": null
+        },
+        {
+          "subject_id": "configuration.restgas_profile",
+          "predicate": "PARAMETERIZES",
+          "object_id": "workflow.restgas_profile_reconstruction",
+          "expected_edge_id": null
+        },
+        {
+          "subject_id": "file_pattern.restgas_profile_input",
+          "predicate": "PRODUCES_INPUT_FOR",
+          "object_id": "workflow.restgas_profile_reconstruction",
+          "expected_edge_id": null
+        },
+        {
+          "subject_id": "workflow.restgas.first_pass_poca",
+          "predicate": "CONSUMES",
+          "object_id": "data_product.restgas.pid_root",
+          "expected_edge_id": "edge.5a8a1deba5f20c052cdcb044"
+        },
+        {
+          "subject_id": "workflow.restgas.first_pass_poca",
+          "predicate": "PRODUCES",
+          "object_id": "data_product.restgas.boost_root",
+          "expected_edge_id": "edge.2e09628416a01ce2461d752a"
+        },
+        {
+          "subject_id": "data_product.restgas.event_poca",
+          "predicate": "PRODUCES_INPUT_FOR",
+          "object_id": "workflow.restgas.second_pass_pid",
+          "expected_edge_id": null
+        },
+        {
+          "subject_id": "workflow.restgas.second_pass_pid",
+          "predicate": "PRODUCES",
+          "object_id": "data_product.restgas.pid_final_root",
+          "expected_edge_id": null
+        }
+      ],
+      "workflow_step_count": 1,
+      "workflow_step_ids": [
+        "workflow.restgas.first_pass_poca (workflow_id workflow.restgas_profile_reconstruction; entrypoint workflow.restgas.first_pass_poca; inputs data_product.restgas.pid_root; outputs data_product.restgas.boost_root)"
+      ]
+    },
+    "a2_runtime_materialized": {
+      "source": "read-only deterministic metadata queries reproducing the state observed during A2; active normalized ingestion 9925ec31a612 (2026-08-16)",
+      "object_count": 22,
+      "object_ids": [
+        "concept.li_2026.restgas_effective_acceptance",
+        "concept.restgas_longitudinal_efficiency",
+        "configuration.restgas_profile",
+        "data_product.pandaroot.lumi_trks_qa",
+        "data_product.reconstructed_restgas_profile",
+        "data_product.restgas.boost_root",
+        "data_product.restgas.event_poca",
+        "data_product.restgas.pid_final_root",
+        "data_product.restgas.pid_root",
+        "document.pandaroot_sphinx_2023_08_25_dev",
+        "file_pattern.restgas_profile_input",
+        "paper.karavdina_2015.chapter_4",
+        "paper.pflueger_2017.chapter_4",
+        "repository.pandaroot.oct19",
+        "repository.restgas_determination.oct19",
+        "subsystem.luminosityfit.model_and_fit",
+        "subsystem.luminosityfit.panda_data_io",
+        "workflow.pandaroot.generic",
+        "workflow.pandaroot.lmd_reconstruction",
+        "workflow.restgas.second_pass_pid",
+        "workflow.restgas_aware_luminosity_acceptance",
+        "workflow.restgas_profile_reconstruction"
+      ],
+      "accepted_relation_count": 16,
+      "accepted_relations": [
+        {
+          "subject_id": "concept.li_2026.restgas_effective_acceptance",
+          "predicate": "IMPLEMENTED_AS_PIPELINE",
+          "object_id": "workflow.restgas_aware_luminosity_acceptance",
+          "expected_edge_id": null
+        },
+        {
+          "subject_id": "concept.restgas_longitudinal_efficiency",
+          "predicate": "CORRECTS",
+          "object_id": "data_product.reconstructed_restgas_profile",
+          "expected_edge_id": null
+        },
+        {
+          "subject_id": "configuration.restgas_profile",
+          "predicate": "PARAMETERIZES",
+          "object_id": "workflow.restgas_profile_reconstruction",
+          "expected_edge_id": null
+        },
+        {
+          "subject_id": "data_product.pandaroot.lumi_trks_qa",
+          "predicate": "PRODUCES_INPUT_FOR",
+          "object_id": "subsystem.luminosityfit.panda_data_io",
+          "expected_edge_id": null
+        },
+        {
+          "subject_id": "data_product.restgas.boost_root",
+          "predicate": "PRODUCES",
+          "object_id": "data_product.restgas.event_poca",
+          "expected_edge_id": "edge.8e3356854bd9135cffddf99c"
+        },
+        {
+          "subject_id": "data_product.restgas.event_poca",
+          "predicate": "PRODUCES_INPUT_FOR",
+          "object_id": "workflow.restgas.second_pass_pid",
+          "expected_edge_id": null
+        },
+        {
+          "subject_id": "data_product.restgas.pid_root",
+          "predicate": "PRODUCES_INPUT_FOR",
+          "object_id": "data_product.restgas.event_poca",
+          "expected_edge_id": "edge.f7d601361f017a6a93b5e10b"
+        },
+        {
+          "subject_id": "document.pandaroot_sphinx_2023_08_25_dev",
+          "predicate": "OPERATIONALLY_DOCUMENTS",
+          "object_id": "workflow.pandaroot.generic",
+          "expected_edge_id": null
+        },
+        {
+          "subject_id": "file_pattern.restgas_profile_input",
+          "predicate": "PRODUCES_INPUT_FOR",
+          "object_id": "workflow.restgas_profile_reconstruction",
+          "expected_edge_id": null
+        },
+        {
+          "subject_id": "paper.karavdina_2015.chapter_4",
+          "predicate": "THEORETICAL_BASIS_FOR",
+          "object_id": "workflow.pandaroot.lmd_reconstruction",
+          "expected_edge_id": null
+        },
+        {
+          "subject_id": "paper.pflueger_2017.chapter_4",
+          "predicate": "FORMALIZES",
+          "object_id": "subsystem.luminosityfit.model_and_fit",
+          "expected_edge_id": "edge.2f95e61f216467cb0f7c2dbc"
+        },
+        {
+          "subject_id": "repository.restgas_determination.oct19",
+          "predicate": "FORKED_FROM",
+          "object_id": "repository.pandaroot.oct19",
+          "expected_edge_id": null
+        },
+        {
+          "subject_id": "workflow.pandaroot.lmd_reconstruction",
+          "predicate": "PRODUCES",
+          "object_id": "data_product.pandaroot.lumi_trks_qa",
+          "expected_edge_id": null
+        },
+        {
+          "subject_id": "workflow.restgas.second_pass_pid",
+          "predicate": "PRODUCES",
+          "object_id": "data_product.restgas.pid_final_root",
+          "expected_edge_id": null
+        },
+        {
+          "subject_id": "workflow.restgas_profile_reconstruction",
+          "predicate": "PRODUCES",
+          "object_id": "data_product.restgas.boost_root",
+          "expected_edge_id": "edge.878ae270451b806be2f6bf79"
+        },
+        {
+          "subject_id": "workflow.restgas_profile_reconstruction",
+          "predicate": "PRODUCES_PROFILE_FOR",
+          "object_id": "workflow.restgas_aware_luminosity_acceptance",
+          "expected_edge_id": null
+        }
+      ],
+      "relation_payload_evidence_provenance": "none: all 16 materialized curated-touching relation payloads carry evidence_paths = absent and evidence_object_ids = [] (no relation-level evidence provenance is stored in the deployed state)",
+      "workflow_step_count": 0,
+      "workflow_step_ids": [],
+      "workflow_steps_table_total_rows": 374
+    },
+    "missing_items": {
+      "missing_runtime_object_ids": [
+        "workflow.restgas.first_pass_poca",
+        "concept.luminosityfit.luminosity_fit_model"
+      ],
+      "unexpected_runtime_object_ids": [],
+      "missing_runtime_relations": [
+        {
+          "subject_id": "paper.pflueger_2017.chapter_4",
+          "predicate": "FORMALIZES",
+          "object_id": "concept.luminosityfit.luminosity_fit_model",
+          "expected_edge_id": "edge.161980db8e6627f0ea2e220a"
+        },
+        {
+          "subject_id": "subsystem.luminosityfit.model_and_fit",
+          "predicate": "IMPLEMENTS",
+          "object_id": "concept.luminosityfit.luminosity_fit_model",
+          "expected_edge_id": "edge.4b871167865184a7c023ab36"
+        },
+        {
+          "subject_id": "workflow.restgas.first_pass_poca",
+          "predicate": "CONSUMES",
+          "object_id": "data_product.restgas.pid_root",
+          "expected_edge_id": "edge.5a8a1deba5f20c052cdcb044"
+        },
+        {
+          "subject_id": "workflow.restgas.first_pass_poca",
+          "predicate": "PRODUCES",
+          "object_id": "data_product.restgas.boost_root",
+          "expected_edge_id": "edge.2e09628416a01ce2461d752a"
+        }
+      ],
+      "unexpected_runtime_relations": [
+        {
+          "subject_id": "data_product.restgas.boost_root",
+          "predicate": "PRODUCES",
+          "object_id": "data_product.restgas.event_poca",
+          "expected_edge_id": "edge.8e3356854bd9135cffddf99c"
+        },
+        {
+          "subject_id": "data_product.restgas.pid_root",
+          "predicate": "PRODUCES_INPUT_FOR",
+          "object_id": "data_product.restgas.event_poca",
+          "expected_edge_id": "edge.f7d601361f017a6a93b5e10b"
+        },
+        {
+          "subject_id": "paper.pflueger_2017.chapter_4",
+          "predicate": "FORMALIZES",
+          "object_id": "subsystem.luminosityfit.model_and_fit",
+          "expected_edge_id": "edge.2f95e61f216467cb0f7c2dbc"
+        },
+        {
+          "subject_id": "workflow.restgas_profile_reconstruction",
+          "predicate": "PRODUCES",
+          "object_id": "data_product.restgas.boost_root",
+          "expected_edge_id": "edge.878ae270451b806be2f6bf79"
+        }
+      ],
+      "missing_runtime_workflow_step_ids": [
+        "workflow.restgas.first_pass_poca"
+      ],
+      "unexpected_runtime_workflow_step_ids": []
+    },
+    "drift_root_cause": {
+      "cause": "repository/runtime drift: the last completed ingestion (normalized 9925ec31a612, 2026-08-16) predates the D1-A2 seed additions (commit 24e4e4b, 2026-08-29) and the D1-A2R1 concept correction (2fc947f); no re-ingestion was authorized or performed afterward (D1-A3R1 recorded FUTURE_REINGESTED_STRUCTURED_KNOWLEDGE_STATE_CHANGED and D3 prohibits reindex/ingestion)",
+      "loader_semantics_verified": "the ingestion pipeline and DB upsert paths (seed_workflow_steps with metadata.curated_seed=true, upsert_workflows, upsert_relations) correctly handle the seed additions; the deployed DB simply predates them",
+      "relation_count_coincidence": "both states contain 16 accepted curated-touching relations, but the identities differ: 12 common, 4 seed-only (two first_pass_poca edges plus the two D1-A2 model-concept edges), 4 runtime-only (D1-A1-era stand-in edges superseded by D1-A2)"
+    },
+    "materiality_assessment": {
+      "decision_rule": "material only if a missing/drifted item was part of the preregistered structured capability AND its absence could plausibly change g021/g036 or another migration decision under the frozen A1 candidate-generation semantics",
+      "per_item": [
+        {
+          "item": "workflow.restgas.first_pass_poca (object)",
+          "required_by_any_structured_path": false,
+          "directly_relevant_to": [
+            "g036"
+          ],
+          "would_create_new_retrievable_answer_bearing_candidate": false,
+          "reason": "A materialized curated workflow object (source curated_panda_domain, object_type workflow) can never satisfy the g036 required selector (source_id restgas_determination, path macro/target/ana_dpm.C, object_type function/source_file); the frozen A1 path materializes governed objects only, never corpus-file candidates from provenance"
+        },
+        {
+          "item": "concept.luminosityfit.luminosity_fit_model (object)",
+          "required_by_any_structured_path": false,
+          "directly_relevant_to": [
+            "n014",
+            "g060"
+          ],
+          "would_create_new_retrievable_answer_bearing_candidate": false,
+          "reason": "n014/g060 outcomes rest on arm equality (LEGACY == ABLATION == STRUCTURED); the concept was never a D2 match target in the run and its candidate object cannot match the n014 selectors (model_framework definition documentation, PndLmdModelFactory role)"
+        },
+        {
+          "item": "workflow.restgas.first_pass_poca (curated workflow step)",
+          "required_by_any_structured_path": false,
+          "directly_relevant_to": [
+            "g036",
+            "g021"
+          ],
+          "would_create_new_retrievable_answer_bearing_candidate": false,
+          "reason": "if materialized it would inject additional curated participants (first_pass_poca, restgas_profile_reconstruction, pid_root, boost_root) into g036/g021; all are governed objects that cannot satisfy the required corpus-file selectors, so group outcomes are unchanged (only engineering diagnostic counts would differ)"
+        },
+        {
+          "item": "4 seed-only relations (incl. the two ana_dpm.C-provenance-bearing first_pass_poca edges)",
+          "required_by_any_structured_path": false,
+          "directly_relevant_to": [
+            "g036"
+          ],
+          "would_create_new_retrievable_answer_bearing_candidate": false,
+          "reason": "the frozen hop budget is max_relation_hops=1, and event_poca's only seed edge is PRODUCES_INPUT_FOR second_pass_pid, so the ana_dpm.C-provenance edges would not have been traversed from the D2-resolved seed even under the intended seed state; under A1 semantics relation payloads are never converted into candidates anyway"
+        },
+        {
+          "item": "4 runtime-only D1-A1-era stand-in relations",
+          "required_by_any_structured_path": false,
+          "directly_relevant_to": [
+            "g036"
+          ],
+          "would_create_new_retrievable_answer_bearing_candidate": false,
+          "reason": "they made boost_root/pid_root reachable and injectable in g036; the injected curated objects ranked highly but matched no required selector, so outcomes are unchanged"
+        }
+      ],
+      "conclusion": "no missing or drifted item could have changed any of the 48 frozen scientific outcomes or any per-rule migration decision under the frozen A1 candidate-generation semantics; the drift is recorded as a provenance limitation, not a validity confound"
+    }
+  },
+  "mechanism_attribution_revision": {
+    "g036": {
+      "primary_failure_classification": "EVIDENCE_LINK_COVERAGE_GAP",
+      "secondary_failure_classifications": [
+        "LEGACY_DEPENDENCY_WITHOUT_STRUCTURED_RECOVERY"
+      ],
+      "diagnostic_subtype": "EXISTING_PROVENANCE_NOT_MATERIALIZED",
+      "audited_facts": [
+        "g036 requires evidence at macro/target/ana_dpm.C (source restgas_determination, object_type function/source_file)",
+        "the repository governed seed D1 already carries macro/target/ana_dpm.C as relation-level evidence provenance on workflow.restgas.first_pass_poca CONSUMES data_product.restgas.pid_root (edge.5a8a1deba5f20c052cdcb044) and workflow.restgas.first_pass_poca PRODUCES data_product.restgas.boost_root (edge.2e09628416a01ce2461d752a), both accepted",
+        "the frozen A1 structured path reads relation payloads into its edge receipt but never consumes evidence provenance fields: d3_structured.py contains no reference to evidence_paths/evidence_object_ids/evidence_source_ids; relation_path provenance records only edge_id/predicate/subject_id/object_id/traversal_direction; only subject/object endpoint objects are materialized as candidates",
+        "the deployed runtime state additionally contains neither of those provenance-bearing edges, and none of its 16 materialized relation payloads carries any evidence provenance",
+        "the D2 resolution (event_poca -> data_product.restgas.event_poca, Tier S) and D1 traversal worked; structured candidates ranked at fused ranks 1-2; ranking is not the binding constraint"
+      ],
+      "revised_attribution": "the missing capability is not a new D1 domain-object relation: the governed evidence provenance already exists at the repository seed level. The frozen structured retrieval path does not materialize relation-level evidence provenance into retrievable source evidence, and the deployed runtime state has not materialized the provenance-bearing edges at all."
+    },
+    "g021": {
+      "primary_failure_classification": "EVIDENCE_LINK_COVERAGE_GAP",
+      "secondary_failure_classifications": [
+        "LEGACY_DEPENDENCY_WITHOUT_STRUCTURED_RECOVERY"
+      ],
+      "diagnostic_subtype": "MISSING_GOVERNED_EVIDENCE_LINK",
+      "audited_facts": [
+        "g021 requires evidence at macro/target/prod_sim_hvmaps.C (e1) and pgenerators/Target/PndTargetGenerator.cxx (e2), source restgas_determination",
+        "neither path appears anywhere in governed D1 structure: not in seed objects, not in any seed relation/workflow evidence provenance, not in the deployed runtime (whose relation payloads carry no evidence provenance at all)",
+        "the only governed-adjacent provenance near g021's topology points to README.md and macro/target/README.md (configuration.restgas_profile PARAMETERIZES workflow.restgas_profile_reconstruction)",
+        "prod_sim_hvmaps.C exists only in the legacy restgas_profile_workflow rule payload — exactly the shortcut whose removal defines this comparison",
+        "D2 resolution (restgas_profile -> configuration.restgas_profile, Tier S) and traversal to workflow.restgas_profile_reconstruction worked; injected candidates ranked at fused ranks 1 and 3"
+      ],
+      "revised_attribution": "the required answer-bearing evidence is not represented by any inspectable governed evidence linkage in the accepted D1 structure; this is a genuinely missing governed evidence link, not an A1 materialization failure of existing provenance."
+    }
+  },
+  "experiment_validity_after_repair": {
+    "formal_d3_experiment_verdict": "PASS",
+    "provenance_limitation": "the frozen A1 implementation was evaluated against the deployed 2026-08-16 D1 materialization rather than the current D1-A2 repository seed state (22/16/0 versus 24/16/1 curated objects/relations/workflow steps, with 4 relation-identity differences in both directions); the drift was audited item-by-item and is outcome-neutral under the frozen A1 candidate-generation semantics",
+    "scientific_outcomes_changed": false,
+    "per_rule_decisions_changed": false,
+    "per_rule_decision_counts": {
+      "STRUCTURED_REGRESSION": 2,
+      "NO_MEANINGFUL_LEGACY_DEPENDENCY": 3,
+      "INSUFFICIENT_EVIDENCE": 2,
+      "MIGRATION_SUPPORTED": 0,
+      "PARTIALLY_REPRODUCED": 0
+    }
+  },
+  "paired_outcome_counts": {
+    "STRUCTURED_PARITY": 14,
+    "STRUCTURED_REGRESSION": 2
   }
 }
