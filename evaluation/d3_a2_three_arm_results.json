@@ -1,0 +1,3571 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint": "D3-A2",
+  "status": "COMPLETE / FROZEN_THREE_ARM_COMPARISON_COMPLETE",
+  "verdict": "PASS",
+  "verdict_scope": "valid single frozen three-arm comparison; PASS does not imply every rule supports migration",
+  "implementation_identity": {
+    "frozen_implementation_commit": "814a6183f8054e95f65452fc2a5ac4300a6082f5",
+    "commit_subject": "D3-A1 implement structured shortcut replacement prototype",
+    "git_head_during_run": "814a6183f8054e95f65452fc2a5ac4300a6082f5",
+    "pre_run_identity_diff_lines": 0
+  },
+  "preregistration_identity": {
+    "structured_artifact": "evaluation/d3_a0_shortcut_migration_preregistration.json",
+    "sha256": "b4adfbdc21c0fd959a26b96aad84fda5509329c96ad6083440594224a6dd7ca2",
+    "schema_version": "d3-a0-shortcut-migration-preregistration-v1",
+    "repair_source_head": "877935e"
+  },
+  "outcome_exposure": {
+    "before_first_formal_case": "STARTED",
+    "after_valid_complete_comparison": "COMPLETE",
+    "started_at_utc": "2026-08-30T23:34:42.592546+00:00",
+    "finished_at_utc": "2026-08-30T23:48:09.388174+00:00"
+  },
+  "selected_rule_ids": [
+    "lmd_fit_data_chain",
+    "event_poca_handoff",
+    "pid_two_pass_files",
+    "model_factory_theory",
+    "effective_acceptance_pipeline",
+    "restgas_profile_workflow",
+    "root_macro_usage"
+  ],
+  "comparison_manifest_identity": {
+    "revision_id": "D3-A0-R1",
+    "case_count": 16,
+    "dataset_counts": {
+      "Gold v2.6 dev": 10,
+      "novel_dev": 6
+    },
+    "case_ids_in_execution_order": [
+      "g029",
+      "n021",
+      "g025",
+      "g036",
+      "n022",
+      "g020",
+      "n006",
+      "g041",
+      "n014",
+      "g060",
+      "g052",
+      "g055",
+      "n003",
+      "g021",
+      "n004",
+      "g007"
+    ],
+    "gold_dataset_sha256": "b5406e36c64ee664f9e2ff9c0f42e354feb7164c81d8f1c7551d8f2ed1d0b687",
+    "novel_dev_dataset_sha256": "25ad18fcf76ab2796aa18ae961bdc4faf076f0c98a8a5226413ec95e58252223"
+  },
+  "execution_order": {
+    "arm_order": [
+      "LEGACY",
+      "ABLATION",
+      "STRUCTURED"
+    ],
+    "case_order_within_arm": [
+      "g029",
+      "n021",
+      "g025",
+      "g036",
+      "n022",
+      "g020",
+      "n006",
+      "g041",
+      "n014",
+      "g060",
+      "g052",
+      "g055",
+      "n003",
+      "g021",
+      "n004",
+      "g007"
+    ],
+    "runner": "evaluation/scripts/d3_a2_runner.py",
+    "run_id": "d3_a2_frozen_20260831",
+    "raw_records": "data/evaluation/runs/d3_a2_frozen_20260831/records.jsonl"
+  },
+  "run_counts": {
+    "total_executions": 48,
+    "LEGACY": 16,
+    "ABLATION": 16,
+    "STRUCTURED": 16,
+    "complete_paired_case_cells": 16,
+    "infrastructure_failures": 0,
+    "retries": 0,
+    "scientific_reruns": 0
+  },
+  "call_counts": {
+    "analyzer_generation_calls": 48,
+    "reranker_generation_calls": 48,
+    "total_generation_calls": 96,
+    "embedding_calls": 48,
+    "model_calls_total": 144,
+    "token_usage": 925870,
+    "qa_calls": 0,
+    "verifier_calls": 0,
+    "judge_calls": 0,
+    "new_model_class_or_prompt_introduced": false
+  },
+  "storage_writes": {
+    "postgresql_writes": 0,
+    "qdrant_writes": 0,
+    "reindex": false,
+    "index_migration": false
+  },
+  "protected_dataset_access": {
+    "novel_validation": "UNSEEN",
+    "novel_validation_cases_run": 0,
+    "novel_holdout": "SEALED_UNSEEN",
+    "novel_holdout_cases_run": 0
+  },
+  "arm_summaries": {
+    "LEGACY": {
+      "executions": 16,
+      "metrics": {
+        "gold_recall_at_5": {
+          "mean": 0.7692307692307693,
+          "applicable_case_count": 13
+        },
+        "gold_recall_at_10": {
+          "mean": 0.8205128205128205,
+          "applicable_case_count": 13
+        },
+        "gold_recall_at_20": {
+          "mean": 0.8205128205128205,
+          "applicable_case_count": 13
+        },
+        "mrr": {
+          "mean": 0.7051282051282051,
+          "applicable_case_count": 13
+        },
+        "combined_candidate_recall": {
+          "mean": 0.8974358974358974,
+          "applicable_case_count": 13
+        },
+        "final_evidence_recall": {
+          "mean": 0.8205128205128205,
+          "applicable_case_count": 13
+        },
+        "critical_final_evidence_recall": {
+          "mean": 0.8205128205128205,
+          "applicable_case_count": 13
+        }
+      }
+    },
+    "ABLATION": {
+      "executions": 16,
+      "metrics": {
+        "gold_recall_at_5": {
+          "mean": 0.6153846153846154,
+          "applicable_case_count": 13
+        },
+        "gold_recall_at_10": {
+          "mean": 0.6666666666666666,
+          "applicable_case_count": 13
+        },
+        "gold_recall_at_20": {
+          "mean": 0.6666666666666666,
+          "applicable_case_count": 13
+        },
+        "mrr": {
+          "mean": 0.6410256410256411,
+          "applicable_case_count": 13
+        },
+        "combined_candidate_recall": {
+          "mean": 0.7435897435897435,
+          "applicable_case_count": 13
+        },
+        "final_evidence_recall": {
+          "mean": 0.6666666666666666,
+          "applicable_case_count": 13
+        },
+        "critical_final_evidence_recall": {
+          "mean": 0.6666666666666666,
+          "applicable_case_count": 13
+        }
+      }
+    },
+    "STRUCTURED": {
+      "executions": 16,
+      "metrics": {
+        "gold_recall_at_5": {
+          "mean": 0.6153846153846154,
+          "applicable_case_count": 13
+        },
+        "gold_recall_at_10": {
+          "mean": 0.6666666666666666,
+          "applicable_case_count": 13
+        },
+        "gold_recall_at_20": {
+          "mean": 0.6666666666666666,
+          "applicable_case_count": 13
+        },
+        "mrr": {
+          "mean": 0.6410256410256411,
+          "applicable_case_count": 13
+        },
+        "combined_candidate_recall": {
+          "mean": 0.7435897435897435,
+          "applicable_case_count": 13
+        },
+        "final_evidence_recall": {
+          "mean": 0.6666666666666666,
+          "applicable_case_count": 13
+        },
+        "critical_final_evidence_recall": {
+          "mean": 0.6666666666666666,
+          "applicable_case_count": 13
+        }
+      }
+    }
+  },
+  "paired_metrics": {
+    "applicable_case_count": 13,
+    "denominator_note": "means over the 13 answered cases; the 3 insufficient-evidence controls are retained for safety/control analysis only",
+    "gold_recall_at_5": {
+      "g029": {
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED": 1.0,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "n021": {
+        "LEGACY": 0.5,
+        "ABLATION": 0.5,
+        "STRUCTURED": 0.5,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "g036": {
+        "LEGACY": 1.0,
+        "ABLATION": 0.0,
+        "STRUCTURED": 0.0,
+        "legacy_dependency": 1.0,
+        "structured_recovery": 0.0,
+        "structured_parity": -1.0
+      },
+      "n022": {
+        "LEGACY": 0.6666666666666666,
+        "ABLATION": 0.6666666666666666,
+        "STRUCTURED": 0.6666666666666666,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "g020": {
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED": 1.0,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "n006": {
+        "LEGACY": 0.5,
+        "ABLATION": 0.5,
+        "STRUCTURED": 0.5,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "n014": {
+        "LEGACY": 0.5,
+        "ABLATION": 0.5,
+        "STRUCTURED": 0.5,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "g060": {
+        "LEGACY": 0.3333333333333333,
+        "ABLATION": 0.3333333333333333,
+        "STRUCTURED": 0.3333333333333333,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "g052": {
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED": 1.0,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "g055": {
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED": 1.0,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "n003": {
+        "LEGACY": 0.5,
+        "ABLATION": 0.5,
+        "STRUCTURED": 0.5,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "g021": {
+        "LEGACY": 1.0,
+        "ABLATION": 0.0,
+        "STRUCTURED": 0.0,
+        "legacy_dependency": 1.0,
+        "structured_recovery": 0.0,
+        "structured_parity": -1.0
+      },
+      "n004": {
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED": 1.0,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "_summary": {
+        "mean_legacy_minus_ablation": 0.153846,
+        "mean_structured_minus_ablation": 0.0,
+        "mean_structured_minus_legacy": -0.153846,
+        "direction": "higher is better for every metric"
+      }
+    },
+    "gold_recall_at_10": {
+      "g029": {
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED": 1.0,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "n021": {
+        "LEGACY": 0.5,
+        "ABLATION": 0.5,
+        "STRUCTURED": 0.5,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "g036": {
+        "LEGACY": 1.0,
+        "ABLATION": 0.0,
+        "STRUCTURED": 0.0,
+        "legacy_dependency": 1.0,
+        "structured_recovery": 0.0,
+        "structured_parity": -1.0
+      },
+      "n022": {
+        "LEGACY": 0.6666666666666666,
+        "ABLATION": 0.6666666666666666,
+        "STRUCTURED": 0.6666666666666666,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "g020": {
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED": 1.0,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "n006": {
+        "LEGACY": 0.5,
+        "ABLATION": 0.5,
+        "STRUCTURED": 0.5,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "n014": {
+        "LEGACY": 0.5,
+        "ABLATION": 0.5,
+        "STRUCTURED": 0.5,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "g060": {
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED": 1.0,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "g052": {
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED": 1.0,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "g055": {
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED": 1.0,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "n003": {
+        "LEGACY": 0.5,
+        "ABLATION": 0.5,
+        "STRUCTURED": 0.5,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "g021": {
+        "LEGACY": 1.0,
+        "ABLATION": 0.0,
+        "STRUCTURED": 0.0,
+        "legacy_dependency": 1.0,
+        "structured_recovery": 0.0,
+        "structured_parity": -1.0
+      },
+      "n004": {
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED": 1.0,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "_summary": {
+        "mean_legacy_minus_ablation": 0.153846,
+        "mean_structured_minus_ablation": 0.0,
+        "mean_structured_minus_legacy": -0.153846,
+        "direction": "higher is better for every metric"
+      }
+    },
+    "gold_recall_at_20": {
+      "g029": {
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED": 1.0,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "n021": {
+        "LEGACY": 0.5,
+        "ABLATION": 0.5,
+        "STRUCTURED": 0.5,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "g036": {
+        "LEGACY": 1.0,
+        "ABLATION": 0.0,
+        "STRUCTURED": 0.0,
+        "legacy_dependency": 1.0,
+        "structured_recovery": 0.0,
+        "structured_parity": -1.0
+      },
+      "n022": {
+        "LEGACY": 0.6666666666666666,
+        "ABLATION": 0.6666666666666666,
+        "STRUCTURED": 0.6666666666666666,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "g020": {
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED": 1.0,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "n006": {
+        "LEGACY": 0.5,
+        "ABLATION": 0.5,
+        "STRUCTURED": 0.5,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "n014": {
+        "LEGACY": 0.5,
+        "ABLATION": 0.5,
+        "STRUCTURED": 0.5,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "g060": {
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED": 1.0,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "g052": {
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED": 1.0,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "g055": {
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED": 1.0,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "n003": {
+        "LEGACY": 0.5,
+        "ABLATION": 0.5,
+        "STRUCTURED": 0.5,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "g021": {
+        "LEGACY": 1.0,
+        "ABLATION": 0.0,
+        "STRUCTURED": 0.0,
+        "legacy_dependency": 1.0,
+        "structured_recovery": 0.0,
+        "structured_parity": -1.0
+      },
+      "n004": {
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED": 1.0,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "_summary": {
+        "mean_legacy_minus_ablation": 0.153846,
+        "mean_structured_minus_ablation": 0.0,
+        "mean_structured_minus_legacy": -0.153846,
+        "direction": "higher is better for every metric"
+      }
+    },
+    "mrr": {
+      "g029": {
+        "LEGACY": 0.5,
+        "ABLATION": 0.5,
+        "STRUCTURED": 0.5,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "n021": {
+        "LEGACY": 0.3333333333333333,
+        "ABLATION": 0.3333333333333333,
+        "STRUCTURED": 0.3333333333333333,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "g036": {
+        "LEGACY": 1.0,
+        "ABLATION": 0.0,
+        "STRUCTURED": 0.0,
+        "legacy_dependency": 1.0,
+        "structured_recovery": 0.0,
+        "structured_parity": -1.0
+      },
+      "n022": {
+        "LEGACY": 0.5,
+        "ABLATION": 0.5,
+        "STRUCTURED": 0.5,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "g020": {
+        "LEGACY": 0.5,
+        "ABLATION": 0.5,
+        "STRUCTURED": 0.5,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "n006": {
+        "LEGACY": 0.5,
+        "ABLATION": 0.5,
+        "STRUCTURED": 0.5,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "n014": {
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED": 1.0,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "g060": {
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED": 1.0,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "g052": {
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED": 1.0,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "g055": {
+        "LEGACY": 0.5,
+        "ABLATION": 1.0,
+        "STRUCTURED": 1.0,
+        "legacy_dependency": -0.5,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.5
+      },
+      "n003": {
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED": 1.0,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "g021": {
+        "LEGACY": 0.3333333333333333,
+        "ABLATION": 0.0,
+        "STRUCTURED": 0.0,
+        "legacy_dependency": 0.333333,
+        "structured_recovery": 0.0,
+        "structured_parity": -0.333333
+      },
+      "n004": {
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED": 1.0,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "_summary": {
+        "mean_legacy_minus_ablation": 0.064103,
+        "mean_structured_minus_ablation": 0.0,
+        "mean_structured_minus_legacy": -0.064103,
+        "direction": "higher is better for every metric"
+      }
+    },
+    "combined_candidate_recall": {
+      "g029": {
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED": 1.0,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "n021": {
+        "LEGACY": 0.5,
+        "ABLATION": 0.5,
+        "STRUCTURED": 0.5,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "g036": {
+        "LEGACY": 1.0,
+        "ABLATION": 0.0,
+        "STRUCTURED": 0.0,
+        "legacy_dependency": 1.0,
+        "structured_recovery": 0.0,
+        "structured_parity": -1.0
+      },
+      "n022": {
+        "LEGACY": 0.6666666666666666,
+        "ABLATION": 0.6666666666666666,
+        "STRUCTURED": 0.6666666666666666,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "g020": {
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED": 1.0,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "n006": {
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED": 1.0,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "n014": {
+        "LEGACY": 0.5,
+        "ABLATION": 0.5,
+        "STRUCTURED": 0.5,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "g060": {
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED": 1.0,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "g052": {
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED": 1.0,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "g055": {
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED": 1.0,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "n003": {
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED": 1.0,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "g021": {
+        "LEGACY": 1.0,
+        "ABLATION": 0.0,
+        "STRUCTURED": 0.0,
+        "legacy_dependency": 1.0,
+        "structured_recovery": 0.0,
+        "structured_parity": -1.0
+      },
+      "n004": {
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED": 1.0,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "_summary": {
+        "mean_legacy_minus_ablation": 0.153846,
+        "mean_structured_minus_ablation": 0.0,
+        "mean_structured_minus_legacy": -0.153846,
+        "direction": "higher is better for every metric"
+      }
+    },
+    "final_evidence_recall": {
+      "g029": {
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED": 1.0,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "n021": {
+        "LEGACY": 0.5,
+        "ABLATION": 0.5,
+        "STRUCTURED": 0.5,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "g036": {
+        "LEGACY": 1.0,
+        "ABLATION": 0.0,
+        "STRUCTURED": 0.0,
+        "legacy_dependency": 1.0,
+        "structured_recovery": 0.0,
+        "structured_parity": -1.0
+      },
+      "n022": {
+        "LEGACY": 0.6666666666666666,
+        "ABLATION": 0.6666666666666666,
+        "STRUCTURED": 0.6666666666666666,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "g020": {
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED": 1.0,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "n006": {
+        "LEGACY": 0.5,
+        "ABLATION": 0.5,
+        "STRUCTURED": 0.5,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "n014": {
+        "LEGACY": 0.5,
+        "ABLATION": 0.5,
+        "STRUCTURED": 0.5,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "g060": {
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED": 1.0,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "g052": {
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED": 1.0,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "g055": {
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED": 1.0,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "n003": {
+        "LEGACY": 0.5,
+        "ABLATION": 0.5,
+        "STRUCTURED": 0.5,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "g021": {
+        "LEGACY": 1.0,
+        "ABLATION": 0.0,
+        "STRUCTURED": 0.0,
+        "legacy_dependency": 1.0,
+        "structured_recovery": 0.0,
+        "structured_parity": -1.0
+      },
+      "n004": {
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED": 1.0,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "_summary": {
+        "mean_legacy_minus_ablation": 0.153846,
+        "mean_structured_minus_ablation": 0.0,
+        "mean_structured_minus_legacy": -0.153846,
+        "direction": "higher is better for every metric"
+      }
+    },
+    "critical_final_evidence_recall": {
+      "g029": {
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED": 1.0,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "n021": {
+        "LEGACY": 0.5,
+        "ABLATION": 0.5,
+        "STRUCTURED": 0.5,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "g036": {
+        "LEGACY": 1.0,
+        "ABLATION": 0.0,
+        "STRUCTURED": 0.0,
+        "legacy_dependency": 1.0,
+        "structured_recovery": 0.0,
+        "structured_parity": -1.0
+      },
+      "n022": {
+        "LEGACY": 0.6666666666666666,
+        "ABLATION": 0.6666666666666666,
+        "STRUCTURED": 0.6666666666666666,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "g020": {
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED": 1.0,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "n006": {
+        "LEGACY": 0.5,
+        "ABLATION": 0.5,
+        "STRUCTURED": 0.5,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "n014": {
+        "LEGACY": 0.5,
+        "ABLATION": 0.5,
+        "STRUCTURED": 0.5,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "g060": {
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED": 1.0,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "g052": {
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED": 1.0,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "g055": {
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED": 1.0,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "n003": {
+        "LEGACY": 0.5,
+        "ABLATION": 0.5,
+        "STRUCTURED": 0.5,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "g021": {
+        "LEGACY": 1.0,
+        "ABLATION": 0.0,
+        "STRUCTURED": 0.0,
+        "legacy_dependency": 1.0,
+        "structured_recovery": 0.0,
+        "structured_parity": -1.0
+      },
+      "n004": {
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED": 1.0,
+        "legacy_dependency": 0.0,
+        "structured_recovery": 0.0,
+        "structured_parity": 0.0
+      },
+      "_summary": {
+        "mean_legacy_minus_ablation": 0.153846,
+        "mean_structured_minus_ablation": 0.0,
+        "mean_structured_minus_legacy": -0.153846,
+        "direction": "higher is better for every metric"
+      }
+    }
+  },
+  "primary_frozen_metrics": {
+    "useful_retrieval_reproduction_rate": {
+      "numerator": 11,
+      "denominator": 13,
+      "value": 0.8462,
+      "cases": {
+        "legacy_positive": [
+          "g029",
+          "n021",
+          "g036",
+          "n022",
+          "g020",
+          "n006",
+          "n014",
+          "g060",
+          "g052",
+          "g055",
+          "n003",
+          "g021",
+          "n004"
+        ],
+        "reproduced": [
+          "g029",
+          "n021",
+          "n022",
+          "g020",
+          "n006",
+          "n014",
+          "g060",
+          "g052",
+          "g055",
+          "n003",
+          "n004"
+        ]
+      },
+      "definition": "among cases whose LEGACY arm retrieves at least one required evidence group in final evidence, fraction where STRUCTURED reaches an equal or greater required-group count"
+    },
+    "selected_rule_dependency_rate": {
+      "numerator": 2,
+      "denominator": 13,
+      "value": 0.1538,
+      "cases": [
+        "g036",
+        "g021"
+      ],
+      "definition": "fraction of applicable comparison cases where LEGACY final-evidence recall exceeds ABLATION"
+    },
+    "structured_recovery_rate": {
+      "numerator": 0,
+      "denominator": 2,
+      "value": 0.0,
+      "cases": {
+        "legacy_dependent": [
+          "g036",
+          "g021"
+        ],
+        "recovered": []
+      },
+      "definition": "among cases with LEGACY > ABLATION, fraction where STRUCTURED reaches or exceeds LEGACY"
+    },
+    "regression_rate": {
+      "numerator": 2,
+      "denominator": 13,
+      "value": 0.1538,
+      "cases": [
+        "g036",
+        "g021"
+      ],
+      "definition": "fraction of applicable comparison cases where STRUCTURED final-evidence recall is below LEGACY"
+    }
+  },
+  "case_results": [
+    {
+      "case_id": "g029",
+      "dataset": "Gold v2.6 dev",
+      "bound_rule_id": "lmd_fit_data_chain",
+      "comparison_role": "PARAPHRASE_RELEVANT",
+      "identifiability_status": "PARTIALLY_IDENTIFIABLE",
+      "arms": {
+        "LEGACY": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "LEGACY",
+            "case_id": "g029"
+          },
+          "matched_expansion_rules": [],
+          "selected_shortcut_triggered": false,
+          "structured_diagnostic_counters": null,
+          "metric_matches": {
+            "final_evidence_recall": 1.0,
+            "critical_final_evidence_recall": 1.0,
+            "gold_recall_at_5": 1.0,
+            "gold_recall_at_10": 1.0,
+            "gold_recall_at_20": 1.0,
+            "mrr": 0.5,
+            "combined_candidate_recall": 1.0,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "g029.e1",
+                "object_id": "object.04b079cb4f083d29d694e47a",
+                "selector_index": 0,
+                "provenance": "direct"
+              }
+            ]
+          }
+        },
+        "ABLATION": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "ABLATION",
+            "case_id": "g029"
+          },
+          "matched_expansion_rules": [],
+          "selected_shortcut_triggered": false,
+          "structured_diagnostic_counters": null,
+          "metric_matches": {
+            "final_evidence_recall": 1.0,
+            "critical_final_evidence_recall": 1.0,
+            "gold_recall_at_5": 1.0,
+            "gold_recall_at_10": 1.0,
+            "gold_recall_at_20": 1.0,
+            "mrr": 0.5,
+            "combined_candidate_recall": 1.0,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "g029.e1",
+                "object_id": "object.04b079cb4f083d29d694e47a",
+                "selector_index": 0,
+                "provenance": "direct"
+              }
+            ]
+          }
+        },
+        "STRUCTURED": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "STRUCTURED",
+            "case_id": "g029"
+          },
+          "matched_expansion_rules": [],
+          "selected_shortcut_triggered": false,
+          "structured_diagnostic_counters": {
+            "legacy_shortcut_hit_count": 0,
+            "selected_legacy_shortcut_hit_count": 0,
+            "structured_resolution_attempt_count": 1,
+            "structured_resolution_status_counts": {
+              "AMBIGUOUS": 1,
+              "UNRESOLVED": 1
+            },
+            "structured_resolution_hit_count": 0,
+            "structured_seed_count": 0,
+            "structured_relation_traversal_count": 0,
+            "structured_workflow_traversal_count": 0,
+            "structured_candidate_injection_count": 0,
+            "migration_specific_direct_answer_location_injection_count": 0,
+            "prohibited_fallback_use_count": 0,
+            "evaluation_metadata_runtime_use_count": 0,
+            "selected_legacy_payload_reuse_count": 0,
+            "same_as_activation_count": 0
+          },
+          "metric_matches": {
+            "final_evidence_recall": 1.0,
+            "critical_final_evidence_recall": 1.0,
+            "gold_recall_at_5": 1.0,
+            "gold_recall_at_10": 1.0,
+            "gold_recall_at_20": 1.0,
+            "mrr": 0.5,
+            "combined_candidate_recall": 1.0,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "g029.e1",
+                "object_id": "object.04b079cb4f083d29d694e47a",
+                "selector_index": 0,
+                "provenance": "direct"
+              }
+            ]
+          }
+        }
+      },
+      "paired_interpretation": {
+        "legacy_dependency_confirmed": false,
+        "structured_recovery_occurred": false,
+        "structured_regression_occurred": false,
+        "primary_interpretation": "no legacy dependency observable (paraphrase case); all arms recover the required evidence; structured abstains correctly on the AMBIGUOUS PndLmdCombinedDataReader mention without collapsing it"
+      },
+      "failure_classification": "STRUCTURED_PARITY"
+    },
+    {
+      "case_id": "n021",
+      "dataset": "novel_dev",
+      "bound_rule_id": "lmd_fit_data_chain",
+      "comparison_role": "PARAPHRASE_RELEVANT",
+      "identifiability_status": "PARTIALLY_IDENTIFIABLE",
+      "arms": {
+        "LEGACY": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "LEGACY",
+            "case_id": "n021"
+          },
+          "matched_expansion_rules": [],
+          "selected_shortcut_triggered": false,
+          "structured_diagnostic_counters": null,
+          "metric_matches": {
+            "final_evidence_recall": 0.5,
+            "critical_final_evidence_recall": 0.5,
+            "gold_recall_at_5": 0.5,
+            "gold_recall_at_10": 0.5,
+            "gold_recall_at_20": 0.5,
+            "mrr": 0.3333333333333333,
+            "combined_candidate_recall": 0.5,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "n021.e1",
+                "object_id": "object.9f7feb7ce6cb032f6cbe41f3",
+                "selector_index": 0,
+                "provenance": "direct"
+              },
+              {
+                "group_id": "n021.e2",
+                "matched": false
+              }
+            ]
+          }
+        },
+        "ABLATION": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "ABLATION",
+            "case_id": "n021"
+          },
+          "matched_expansion_rules": [],
+          "selected_shortcut_triggered": false,
+          "structured_diagnostic_counters": null,
+          "metric_matches": {
+            "final_evidence_recall": 0.5,
+            "critical_final_evidence_recall": 0.5,
+            "gold_recall_at_5": 0.5,
+            "gold_recall_at_10": 0.5,
+            "gold_recall_at_20": 0.5,
+            "mrr": 0.3333333333333333,
+            "combined_candidate_recall": 0.5,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "n021.e1",
+                "object_id": "object.9f7feb7ce6cb032f6cbe41f3",
+                "selector_index": 0,
+                "provenance": "direct"
+              },
+              {
+                "group_id": "n021.e2",
+                "matched": false
+              }
+            ]
+          }
+        },
+        "STRUCTURED": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "STRUCTURED",
+            "case_id": "n021"
+          },
+          "matched_expansion_rules": [],
+          "selected_shortcut_triggered": false,
+          "structured_diagnostic_counters": {
+            "legacy_shortcut_hit_count": 0,
+            "selected_legacy_shortcut_hit_count": 0,
+            "structured_resolution_attempt_count": 1,
+            "structured_resolution_status_counts": {
+              "RESOLVED_UNIQUE": 1,
+              "UNRESOLVED": 8
+            },
+            "structured_resolution_hit_count": 1,
+            "structured_seed_count": 1,
+            "structured_relation_traversal_count": 0,
+            "structured_workflow_traversal_count": 0,
+            "structured_candidate_injection_count": 1,
+            "migration_specific_direct_answer_location_injection_count": 0,
+            "prohibited_fallback_use_count": 0,
+            "evaluation_metadata_runtime_use_count": 0,
+            "selected_legacy_payload_reuse_count": 0,
+            "same_as_activation_count": 0
+          },
+          "metric_matches": {
+            "final_evidence_recall": 0.5,
+            "critical_final_evidence_recall": 0.5,
+            "gold_recall_at_5": 0.5,
+            "gold_recall_at_10": 0.5,
+            "gold_recall_at_20": 0.5,
+            "mrr": 0.3333333333333333,
+            "combined_candidate_recall": 0.5,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "n021.e1",
+                "object_id": "object.9f7feb7ce6cb032f6cbe41f3",
+                "selector_index": 0,
+                "provenance": "direct"
+              },
+              {
+                "group_id": "n021.e2",
+                "matched": false
+              }
+            ]
+          }
+        }
+      },
+      "paired_interpretation": {
+        "legacy_dependency_confirmed": false,
+        "structured_recovery_occurred": false,
+        "structured_regression_occurred": false,
+        "primary_interpretation": "no legacy dependency (paraphrase case); all arms miss the LuminosityFit orchestration group (preregistered preserved gap); structured contributes one neutral PandaRoot repository seed"
+      },
+      "failure_classification": "STRUCTURED_PARITY"
+    },
+    {
+      "case_id": "g025",
+      "dataset": "Gold v2.6 dev",
+      "bound_rule_id": "lmd_fit_data_chain",
+      "comparison_role": "NEARBY_NEGATIVE_CONTROL",
+      "identifiability_status": "PARTIALLY_IDENTIFIABLE",
+      "arms": {
+        "LEGACY": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "LEGACY",
+            "case_id": "g025"
+          },
+          "matched_expansion_rules": [
+            "run_fit_usage"
+          ],
+          "selected_shortcut_triggered": false,
+          "structured_diagnostic_counters": null,
+          "metric_matches": {
+            "final_evidence_recall": null,
+            "critical_final_evidence_recall": null,
+            "gold_recall_at_5": null,
+            "gold_recall_at_10": null,
+            "gold_recall_at_20": null,
+            "mrr": null,
+            "combined_candidate_recall": null,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "g025.e1",
+                "object_id": "object.5c00bf100db3efd4415d34e9",
+                "selector_index": 0,
+                "provenance": "direct"
+              }
+            ]
+          }
+        },
+        "ABLATION": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "ABLATION",
+            "case_id": "g025"
+          },
+          "matched_expansion_rules": [
+            "run_fit_usage"
+          ],
+          "selected_shortcut_triggered": false,
+          "structured_diagnostic_counters": null,
+          "metric_matches": {
+            "final_evidence_recall": null,
+            "critical_final_evidence_recall": null,
+            "gold_recall_at_5": null,
+            "gold_recall_at_10": null,
+            "gold_recall_at_20": null,
+            "mrr": null,
+            "combined_candidate_recall": null,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "g025.e1",
+                "object_id": "object.5c00bf100db3efd4415d34e9",
+                "selector_index": 0,
+                "provenance": "direct"
+              }
+            ]
+          }
+        },
+        "STRUCTURED": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "STRUCTURED",
+            "case_id": "g025"
+          },
+          "matched_expansion_rules": [
+            "run_fit_usage"
+          ],
+          "selected_shortcut_triggered": false,
+          "structured_diagnostic_counters": {
+            "legacy_shortcut_hit_count": 1,
+            "selected_legacy_shortcut_hit_count": 0,
+            "structured_resolution_attempt_count": 1,
+            "structured_resolution_status_counts": {
+              "AMBIGUOUS": 1,
+              "UNRESOLVED": 4
+            },
+            "structured_resolution_hit_count": 0,
+            "structured_seed_count": 0,
+            "structured_relation_traversal_count": 0,
+            "structured_workflow_traversal_count": 0,
+            "structured_candidate_injection_count": 0,
+            "migration_specific_direct_answer_location_injection_count": 0,
+            "prohibited_fallback_use_count": 0,
+            "evaluation_metadata_runtime_use_count": 0,
+            "selected_legacy_payload_reuse_count": 0,
+            "same_as_activation_count": 0
+          },
+          "metric_matches": {
+            "final_evidence_recall": null,
+            "critical_final_evidence_recall": null,
+            "gold_recall_at_5": null,
+            "gold_recall_at_10": null,
+            "gold_recall_at_20": null,
+            "mrr": null,
+            "combined_candidate_recall": null,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "g025.e1",
+                "object_id": "object.5c00bf100db3efd4415d34e9",
+                "selector_index": 0,
+                "provenance": "direct"
+              }
+            ]
+          }
+        }
+      },
+      "paired_interpretation": {
+        "legacy_dependency_confirmed": false,
+        "structured_recovery_occurred": false,
+        "structured_regression_occurred": false,
+        "primary_interpretation": "negative control behaves identically in all arms; structured correctly abstains (runLmdFit mention stays AMBIGUOUS, no collapse, no injection)"
+      },
+      "failure_classification": "STRUCTURED_PARITY"
+    },
+    {
+      "case_id": "g036",
+      "dataset": "Gold v2.6 dev",
+      "bound_rule_id": "event_poca_handoff",
+      "comparison_role": "DIRECT_LITERAL",
+      "identifiability_status": "IDENTIFIABLE",
+      "arms": {
+        "LEGACY": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "LEGACY",
+            "case_id": "g036"
+          },
+          "matched_expansion_rules": [
+            "event_poca_handoff"
+          ],
+          "selected_shortcut_triggered": true,
+          "structured_diagnostic_counters": null,
+          "metric_matches": {
+            "final_evidence_recall": 1.0,
+            "critical_final_evidence_recall": 1.0,
+            "gold_recall_at_5": 1.0,
+            "gold_recall_at_10": 1.0,
+            "gold_recall_at_20": 1.0,
+            "mrr": 1.0,
+            "combined_candidate_recall": 1.0,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "g036.e1",
+                "object_id": "object.5cae2ceab6e67bb4c9065331",
+                "selector_index": 0,
+                "provenance": "path_descendant_containment"
+              }
+            ]
+          }
+        },
+        "ABLATION": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "ABLATION",
+            "case_id": "g036"
+          },
+          "matched_expansion_rules": [],
+          "selected_shortcut_triggered": true,
+          "structured_diagnostic_counters": null,
+          "metric_matches": {
+            "final_evidence_recall": 0.0,
+            "critical_final_evidence_recall": 0.0,
+            "gold_recall_at_5": 0.0,
+            "gold_recall_at_10": 0.0,
+            "gold_recall_at_20": 0.0,
+            "mrr": 0.0,
+            "combined_candidate_recall": 0.0,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "g036.e1",
+                "matched": false
+              }
+            ]
+          }
+        },
+        "STRUCTURED": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "STRUCTURED",
+            "case_id": "g036"
+          },
+          "matched_expansion_rules": [],
+          "selected_shortcut_triggered": true,
+          "structured_diagnostic_counters": {
+            "legacy_shortcut_hit_count": 1,
+            "selected_legacy_shortcut_hit_count": 1,
+            "structured_resolution_attempt_count": 1,
+            "structured_resolution_status_counts": {
+              "RESOLVED_UNIQUE": 1,
+              "UNRESOLVED": 1
+            },
+            "structured_resolution_hit_count": 1,
+            "structured_seed_count": 1,
+            "structured_relation_traversal_count": 3,
+            "structured_workflow_traversal_count": 0,
+            "structured_candidate_injection_count": 4,
+            "migration_specific_direct_answer_location_injection_count": 0,
+            "prohibited_fallback_use_count": 0,
+            "evaluation_metadata_runtime_use_count": 0,
+            "selected_legacy_payload_reuse_count": 0,
+            "same_as_activation_count": 0
+          },
+          "metric_matches": {
+            "final_evidence_recall": 0.0,
+            "critical_final_evidence_recall": 0.0,
+            "gold_recall_at_5": 0.0,
+            "gold_recall_at_10": 0.0,
+            "gold_recall_at_20": 0.0,
+            "mrr": 0.0,
+            "combined_candidate_recall": 0.0,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "g036.e1",
+                "matched": false
+              }
+            ]
+          }
+        }
+      },
+      "paired_interpretation": {
+        "legacy_dependency_confirmed": true,
+        "structured_recovery_occurred": false,
+        "structured_regression_occurred": true,
+        "primary_interpretation": "legacy dependency confirmed: required macro evidence enters only through the LEGACY exact channel (rule symbol payload macro/target/*.C) at fused rank 5, final rank 1; with the rule suppressed the macro file never enters any channel; STRUCTURED seeds data_product.restgas.event_poca, traverses three accepted relations, injects four curated objects that rank very high (fused ranks 1-2), but no accepted D1 evidence linkage connects the governed object to the answer-bearing corpus file"
+      },
+      "failure_classification": "EVIDENCE_LINK_COVERAGE_GAP"
+    },
+    {
+      "case_id": "n022",
+      "dataset": "novel_dev",
+      "bound_rule_id": "event_poca_handoff",
+      "comparison_role": "PARAPHRASE_RELEVANT",
+      "identifiability_status": "IDENTIFIABLE",
+      "arms": {
+        "LEGACY": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "LEGACY",
+            "case_id": "n022"
+          },
+          "matched_expansion_rules": [],
+          "selected_shortcut_triggered": false,
+          "structured_diagnostic_counters": null,
+          "metric_matches": {
+            "final_evidence_recall": 0.6666666666666666,
+            "critical_final_evidence_recall": 0.6666666666666666,
+            "gold_recall_at_5": 0.6666666666666666,
+            "gold_recall_at_10": 0.6666666666666666,
+            "gold_recall_at_20": 0.6666666666666666,
+            "mrr": 0.5,
+            "combined_candidate_recall": 0.6666666666666666,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "n022.e1",
+                "matched": false
+              },
+              {
+                "group_id": "n022.e2",
+                "object_id": "object.10de6bfa07d20258e308d379",
+                "selector_index": 0,
+                "provenance": "direct"
+              },
+              {
+                "group_id": "n022.e3",
+                "object_id": "object.e29c4fcd17107cabea45f18e",
+                "selector_index": 0,
+                "provenance": "direct"
+              }
+            ]
+          }
+        },
+        "ABLATION": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "ABLATION",
+            "case_id": "n022"
+          },
+          "matched_expansion_rules": [],
+          "selected_shortcut_triggered": false,
+          "structured_diagnostic_counters": null,
+          "metric_matches": {
+            "final_evidence_recall": 0.6666666666666666,
+            "critical_final_evidence_recall": 0.6666666666666666,
+            "gold_recall_at_5": 0.6666666666666666,
+            "gold_recall_at_10": 0.6666666666666666,
+            "gold_recall_at_20": 0.6666666666666666,
+            "mrr": 0.5,
+            "combined_candidate_recall": 0.6666666666666666,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "n022.e1",
+                "matched": false
+              },
+              {
+                "group_id": "n022.e2",
+                "object_id": "object.10de6bfa07d20258e308d379",
+                "selector_index": 0,
+                "provenance": "direct"
+              },
+              {
+                "group_id": "n022.e3",
+                "object_id": "object.e29c4fcd17107cabea45f18e",
+                "selector_index": 0,
+                "provenance": "direct"
+              }
+            ]
+          }
+        },
+        "STRUCTURED": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "STRUCTURED",
+            "case_id": "n022"
+          },
+          "matched_expansion_rules": [],
+          "selected_shortcut_triggered": false,
+          "structured_diagnostic_counters": {
+            "legacy_shortcut_hit_count": 0,
+            "selected_legacy_shortcut_hit_count": 0,
+            "structured_resolution_attempt_count": 1,
+            "structured_resolution_status_counts": {
+              "UNRESOLVED": 7
+            },
+            "structured_resolution_hit_count": 0,
+            "structured_seed_count": 0,
+            "structured_relation_traversal_count": 0,
+            "structured_workflow_traversal_count": 0,
+            "structured_candidate_injection_count": 0,
+            "migration_specific_direct_answer_location_injection_count": 0,
+            "prohibited_fallback_use_count": 0,
+            "evaluation_metadata_runtime_use_count": 0,
+            "selected_legacy_payload_reuse_count": 0,
+            "same_as_activation_count": 0
+          },
+          "metric_matches": {
+            "final_evidence_recall": 0.6666666666666666,
+            "critical_final_evidence_recall": 0.6666666666666666,
+            "gold_recall_at_5": 0.6666666666666666,
+            "gold_recall_at_10": 0.6666666666666666,
+            "gold_recall_at_20": 0.6666666666666666,
+            "mrr": 0.5,
+            "combined_candidate_recall": 0.6666666666666666,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "n022.e1",
+                "matched": false
+              },
+              {
+                "group_id": "n022.e2",
+                "object_id": "object.10de6bfa07d20258e308d379",
+                "selector_index": 0,
+                "provenance": "direct"
+              },
+              {
+                "group_id": "n022.e3",
+                "object_id": "object.35cf84657d7458145acc6cb2",
+                "selector_index": 0,
+                "provenance": "direct"
+              }
+            ]
+          }
+        }
+      },
+      "paired_interpretation": {
+        "legacy_dependency_confirmed": false,
+        "structured_recovery_occurred": false,
+        "structured_regression_occurred": false,
+        "primary_interpretation": "no legacy dependency (paraphrase case); all arms 2/3 groups; the e3 selected object differs between ABLATION and STRUCTURED (both objects match the group's any_of selectors) due to analyzer/reranker run variance, not structured contribution (zero seeds/injections for this case)"
+      },
+      "failure_classification": "STRUCTURED_PARITY"
+    },
+    {
+      "case_id": "g020",
+      "dataset": "Gold v2.6 dev",
+      "bound_rule_id": "pid_two_pass_files",
+      "comparison_role": "PARAPHRASE_RELEVANT",
+      "identifiability_status": "PARTIALLY_IDENTIFIABLE",
+      "arms": {
+        "LEGACY": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "LEGACY",
+            "case_id": "g020"
+          },
+          "matched_expansion_rules": [
+            "restgas_workflow_usage",
+            "event_poca_workflow_alias"
+          ],
+          "selected_shortcut_triggered": false,
+          "structured_diagnostic_counters": null,
+          "metric_matches": {
+            "final_evidence_recall": 1.0,
+            "critical_final_evidence_recall": 1.0,
+            "gold_recall_at_5": 1.0,
+            "gold_recall_at_10": 1.0,
+            "gold_recall_at_20": 1.0,
+            "mrr": 0.5,
+            "combined_candidate_recall": 1.0,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "g020.e1",
+                "object_id": "object.16e2d668d8673e7c633192c5",
+                "selector_index": 0,
+                "provenance": "ancestor"
+              },
+              {
+                "group_id": "g020.e2",
+                "object_id": "object.e0fb48ec180f0e7404e5dd77",
+                "selector_index": 0,
+                "provenance": "direct"
+              }
+            ]
+          }
+        },
+        "ABLATION": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "ABLATION",
+            "case_id": "g020"
+          },
+          "matched_expansion_rules": [
+            "restgas_workflow_usage",
+            "event_poca_workflow_alias"
+          ],
+          "selected_shortcut_triggered": false,
+          "structured_diagnostic_counters": null,
+          "metric_matches": {
+            "final_evidence_recall": 1.0,
+            "critical_final_evidence_recall": 1.0,
+            "gold_recall_at_5": 1.0,
+            "gold_recall_at_10": 1.0,
+            "gold_recall_at_20": 1.0,
+            "mrr": 0.5,
+            "combined_candidate_recall": 1.0,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "g020.e1",
+                "object_id": "object.16e2d668d8673e7c633192c5",
+                "selector_index": 0,
+                "provenance": "ancestor"
+              },
+              {
+                "group_id": "g020.e2",
+                "object_id": "object.e0fb48ec180f0e7404e5dd77",
+                "selector_index": 0,
+                "provenance": "direct"
+              }
+            ]
+          }
+        },
+        "STRUCTURED": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "STRUCTURED",
+            "case_id": "g020"
+          },
+          "matched_expansion_rules": [
+            "restgas_workflow_usage",
+            "event_poca_workflow_alias"
+          ],
+          "selected_shortcut_triggered": false,
+          "structured_diagnostic_counters": {
+            "legacy_shortcut_hit_count": 2,
+            "selected_legacy_shortcut_hit_count": 0,
+            "structured_resolution_attempt_count": 1,
+            "structured_resolution_status_counts": {
+              "UNRESOLVED": 2
+            },
+            "structured_resolution_hit_count": 0,
+            "structured_seed_count": 0,
+            "structured_relation_traversal_count": 0,
+            "structured_workflow_traversal_count": 0,
+            "structured_candidate_injection_count": 0,
+            "migration_specific_direct_answer_location_injection_count": 0,
+            "prohibited_fallback_use_count": 0,
+            "evaluation_metadata_runtime_use_count": 0,
+            "selected_legacy_payload_reuse_count": 0,
+            "same_as_activation_count": 0
+          },
+          "metric_matches": {
+            "final_evidence_recall": 1.0,
+            "critical_final_evidence_recall": 1.0,
+            "gold_recall_at_5": 1.0,
+            "gold_recall_at_10": 1.0,
+            "gold_recall_at_20": 1.0,
+            "mrr": 0.5,
+            "combined_candidate_recall": 1.0,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "g020.e1",
+                "object_id": "object.16e2d668d8673e7c633192c5",
+                "selector_index": 0,
+                "provenance": "ancestor"
+              },
+              {
+                "group_id": "g020.e2",
+                "object_id": "object.e0fb48ec180f0e7404e5dd77",
+                "selector_index": 0,
+                "provenance": "direct"
+              }
+            ]
+          }
+        }
+      },
+      "paired_interpretation": {
+        "legacy_dependency_confirmed": false,
+        "structured_recovery_occurred": false,
+        "structured_regression_occurred": false,
+        "primary_interpretation": "no legacy dependency (paraphrase case); all arms recover both required groups; structured abstains on the unresolved two-pass mention without negative filtering"
+      },
+      "failure_classification": "STRUCTURED_PARITY"
+    },
+    {
+      "case_id": "n006",
+      "dataset": "novel_dev",
+      "bound_rule_id": "pid_two_pass_files",
+      "comparison_role": "NEARBY_NONTRIGGER_CONTROL",
+      "identifiability_status": "PARTIALLY_IDENTIFIABLE",
+      "arms": {
+        "LEGACY": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "LEGACY",
+            "case_id": "n006"
+          },
+          "matched_expansion_rules": [],
+          "selected_shortcut_triggered": false,
+          "structured_diagnostic_counters": null,
+          "metric_matches": {
+            "final_evidence_recall": 0.5,
+            "critical_final_evidence_recall": 0.5,
+            "gold_recall_at_5": 0.5,
+            "gold_recall_at_10": 0.5,
+            "gold_recall_at_20": 0.5,
+            "mrr": 0.5,
+            "combined_candidate_recall": 1.0,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "n006.e1",
+                "object_id": "object.70e80d1734face1646964a11",
+                "selector_index": 0,
+                "provenance": "direct"
+              },
+              {
+                "group_id": "n006.e2",
+                "matched": false
+              }
+            ]
+          }
+        },
+        "ABLATION": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "ABLATION",
+            "case_id": "n006"
+          },
+          "matched_expansion_rules": [],
+          "selected_shortcut_triggered": false,
+          "structured_diagnostic_counters": null,
+          "metric_matches": {
+            "final_evidence_recall": 0.5,
+            "critical_final_evidence_recall": 0.5,
+            "gold_recall_at_5": 0.5,
+            "gold_recall_at_10": 0.5,
+            "gold_recall_at_20": 0.5,
+            "mrr": 0.5,
+            "combined_candidate_recall": 1.0,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "n006.e1",
+                "object_id": "object.70e80d1734face1646964a11",
+                "selector_index": 0,
+                "provenance": "direct"
+              },
+              {
+                "group_id": "n006.e2",
+                "matched": false
+              }
+            ]
+          }
+        },
+        "STRUCTURED": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "STRUCTURED",
+            "case_id": "n006"
+          },
+          "matched_expansion_rules": [],
+          "selected_shortcut_triggered": false,
+          "structured_diagnostic_counters": {
+            "legacy_shortcut_hit_count": 0,
+            "selected_legacy_shortcut_hit_count": 0,
+            "structured_resolution_attempt_count": 1,
+            "structured_resolution_status_counts": {
+              "RESOLVED_UNIQUE": 1,
+              "UNRESOLVED": 4
+            },
+            "structured_resolution_hit_count": 1,
+            "structured_seed_count": 1,
+            "structured_relation_traversal_count": 0,
+            "structured_workflow_traversal_count": 0,
+            "structured_candidate_injection_count": 1,
+            "migration_specific_direct_answer_location_injection_count": 0,
+            "prohibited_fallback_use_count": 0,
+            "evaluation_metadata_runtime_use_count": 0,
+            "selected_legacy_payload_reuse_count": 0,
+            "same_as_activation_count": 0
+          },
+          "metric_matches": {
+            "final_evidence_recall": 0.5,
+            "critical_final_evidence_recall": 0.5,
+            "gold_recall_at_5": 0.5,
+            "gold_recall_at_10": 0.5,
+            "gold_recall_at_20": 0.5,
+            "mrr": 0.5,
+            "combined_candidate_recall": 1.0,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "n006.e1",
+                "object_id": "object.70e80d1734face1646964a11",
+                "selector_index": 0,
+                "provenance": "direct"
+              },
+              {
+                "group_id": "n006.e2",
+                "matched": false
+              }
+            ]
+          }
+        }
+      },
+      "paired_interpretation": {
+        "legacy_dependency_confirmed": false,
+        "structured_recovery_occurred": false,
+        "structured_regression_occurred": false,
+        "primary_interpretation": "nontrigger control stable across arms; structured injects one neutral PandaRoot repository seed; pre-existing e2 gap unchanged"
+      },
+      "failure_classification": "STRUCTURED_PARITY"
+    },
+    {
+      "case_id": "g041",
+      "dataset": "Gold v2.6 dev",
+      "bound_rule_id": "pid_two_pass_files",
+      "comparison_role": "NEARBY_NEGATIVE_CONTROL",
+      "identifiability_status": "PARTIALLY_IDENTIFIABLE",
+      "arms": {
+        "LEGACY": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "LEGACY",
+            "case_id": "g041"
+          },
+          "matched_expansion_rules": [],
+          "selected_shortcut_triggered": false,
+          "structured_diagnostic_counters": null,
+          "metric_matches": {
+            "final_evidence_recall": null,
+            "critical_final_evidence_recall": null,
+            "gold_recall_at_5": null,
+            "gold_recall_at_10": null,
+            "gold_recall_at_20": null,
+            "mrr": null,
+            "combined_candidate_recall": null,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "g041.e1",
+                "object_id": "object.de8952db46a8b52154456ee0",
+                "selector_index": 1,
+                "provenance": "direct"
+              }
+            ]
+          }
+        },
+        "ABLATION": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "ABLATION",
+            "case_id": "g041"
+          },
+          "matched_expansion_rules": [],
+          "selected_shortcut_triggered": false,
+          "structured_diagnostic_counters": null,
+          "metric_matches": {
+            "final_evidence_recall": null,
+            "critical_final_evidence_recall": null,
+            "gold_recall_at_5": null,
+            "gold_recall_at_10": null,
+            "gold_recall_at_20": null,
+            "mrr": null,
+            "combined_candidate_recall": null,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "g041.e1",
+                "object_id": "object.de8952db46a8b52154456ee0",
+                "selector_index": 1,
+                "provenance": "direct"
+              }
+            ]
+          }
+        },
+        "STRUCTURED": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "STRUCTURED",
+            "case_id": "g041"
+          },
+          "matched_expansion_rules": [],
+          "selected_shortcut_triggered": false,
+          "structured_diagnostic_counters": {
+            "legacy_shortcut_hit_count": 0,
+            "selected_legacy_shortcut_hit_count": 0,
+            "structured_resolution_attempt_count": 1,
+            "structured_resolution_status_counts": {
+              "UNRESOLVED": 2
+            },
+            "structured_resolution_hit_count": 0,
+            "structured_seed_count": 0,
+            "structured_relation_traversal_count": 0,
+            "structured_workflow_traversal_count": 0,
+            "structured_candidate_injection_count": 0,
+            "migration_specific_direct_answer_location_injection_count": 0,
+            "prohibited_fallback_use_count": 0,
+            "evaluation_metadata_runtime_use_count": 0,
+            "selected_legacy_payload_reuse_count": 0,
+            "same_as_activation_count": 0
+          },
+          "metric_matches": {
+            "final_evidence_recall": null,
+            "critical_final_evidence_recall": null,
+            "gold_recall_at_5": null,
+            "gold_recall_at_10": null,
+            "gold_recall_at_20": null,
+            "mrr": null,
+            "combined_candidate_recall": null,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "g041.e1",
+                "object_id": "object.de8952db46a8b52154456ee0",
+                "selector_index": 1,
+                "provenance": "direct"
+              }
+            ]
+          }
+        }
+      },
+      "paired_interpretation": {
+        "legacy_dependency_confirmed": false,
+        "structured_recovery_occurred": false,
+        "structured_regression_occurred": false,
+        "primary_interpretation": "negative control behaves identically in all arms; structured correctly abstains on the nonexistent SetMagicRestgasSeed mention; no injection, no false scope narrowing"
+      },
+      "failure_classification": "STRUCTURED_PARITY"
+    },
+    {
+      "case_id": "n014",
+      "dataset": "novel_dev",
+      "bound_rule_id": "model_factory_theory",
+      "comparison_role": "DIRECT_LITERAL",
+      "identifiability_status": "IDENTIFIABLE",
+      "arms": {
+        "LEGACY": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "LEGACY",
+            "case_id": "n014"
+          },
+          "matched_expansion_rules": [
+            "model_factory_theory",
+            "model_factory_acceptance_methods"
+          ],
+          "selected_shortcut_triggered": true,
+          "structured_diagnostic_counters": null,
+          "metric_matches": {
+            "final_evidence_recall": 0.5,
+            "critical_final_evidence_recall": 0.5,
+            "gold_recall_at_5": 0.5,
+            "gold_recall_at_10": 0.5,
+            "gold_recall_at_20": 0.5,
+            "mrr": 1.0,
+            "combined_candidate_recall": 0.5,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "n014.e1",
+                "matched": false
+              },
+              {
+                "group_id": "n014.e2",
+                "object_id": "object.d884768f7fab1286c9e52448",
+                "selector_index": 0,
+                "provenance": "direct"
+              }
+            ]
+          }
+        },
+        "ABLATION": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "ABLATION",
+            "case_id": "n014"
+          },
+          "matched_expansion_rules": [
+            "model_factory_acceptance_methods"
+          ],
+          "selected_shortcut_triggered": true,
+          "structured_diagnostic_counters": null,
+          "metric_matches": {
+            "final_evidence_recall": 0.5,
+            "critical_final_evidence_recall": 0.5,
+            "gold_recall_at_5": 0.5,
+            "gold_recall_at_10": 0.5,
+            "gold_recall_at_20": 0.5,
+            "mrr": 1.0,
+            "combined_candidate_recall": 0.5,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "n014.e1",
+                "matched": false
+              },
+              {
+                "group_id": "n014.e2",
+                "object_id": "object.d884768f7fab1286c9e52448",
+                "selector_index": 0,
+                "provenance": "direct"
+              }
+            ]
+          }
+        },
+        "STRUCTURED": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "STRUCTURED",
+            "case_id": "n014"
+          },
+          "matched_expansion_rules": [
+            "model_factory_acceptance_methods"
+          ],
+          "selected_shortcut_triggered": true,
+          "structured_diagnostic_counters": {
+            "legacy_shortcut_hit_count": 2,
+            "selected_legacy_shortcut_hit_count": 1,
+            "structured_resolution_attempt_count": 1,
+            "structured_resolution_status_counts": {
+              "RESOLVED_UNIQUE": 1,
+              "UNRESOLVED": 5
+            },
+            "structured_resolution_hit_count": 1,
+            "structured_seed_count": 1,
+            "structured_relation_traversal_count": 0,
+            "structured_workflow_traversal_count": 0,
+            "structured_candidate_injection_count": 1,
+            "migration_specific_direct_answer_location_injection_count": 0,
+            "prohibited_fallback_use_count": 0,
+            "evaluation_metadata_runtime_use_count": 0,
+            "selected_legacy_payload_reuse_count": 0,
+            "same_as_activation_count": 0
+          },
+          "metric_matches": {
+            "final_evidence_recall": 0.5,
+            "critical_final_evidence_recall": 0.5,
+            "gold_recall_at_5": 0.5,
+            "gold_recall_at_10": 0.5,
+            "gold_recall_at_20": 0.5,
+            "mrr": 1.0,
+            "combined_candidate_recall": 0.5,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "n014.e1",
+                "matched": false
+              },
+              {
+                "group_id": "n014.e2",
+                "object_id": "object.d884768f7fab1286c9e52448",
+                "selector_index": 0,
+                "provenance": "direct"
+              }
+            ]
+          }
+        }
+      },
+      "paired_interpretation": {
+        "legacy_dependency_confirmed": false,
+        "structured_recovery_occurred": false,
+        "structured_regression_occurred": false,
+        "primary_interpretation": "LEGACY equals ABLATION on the direct literal case, so the model_factory_theory shortcut was not materially responsible for useful retrieval; structured injects the S-tier model_framework match but the model_framework definition group is missed in all arms (pre-existing recall gap unrelated to the rule)"
+      },
+      "failure_classification": "STRUCTURED_PARITY"
+    },
+    {
+      "case_id": "g060",
+      "dataset": "Gold v2.6 dev",
+      "bound_rule_id": "model_factory_theory",
+      "comparison_role": "PARAPHRASE_RELEVANT",
+      "identifiability_status": "IDENTIFIABLE",
+      "arms": {
+        "LEGACY": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "LEGACY",
+            "case_id": "g060"
+          },
+          "matched_expansion_rules": [
+            "beam_divergence_theory"
+          ],
+          "selected_shortcut_triggered": false,
+          "structured_diagnostic_counters": null,
+          "metric_matches": {
+            "final_evidence_recall": 1.0,
+            "critical_final_evidence_recall": 1.0,
+            "gold_recall_at_5": 0.3333333333333333,
+            "gold_recall_at_10": 1.0,
+            "gold_recall_at_20": 1.0,
+            "mrr": 1.0,
+            "combined_candidate_recall": 1.0,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "g060.e1",
+                "object_id": "object.fc690314895a094fd0ce0991",
+                "selector_index": 1,
+                "provenance": "direct"
+              },
+              {
+                "group_id": "g060.e2",
+                "object_id": "object.8e7fd87fdffe7bed95214911",
+                "selector_index": 0,
+                "provenance": "direct"
+              },
+              {
+                "group_id": "g060.e3",
+                "object_id": "object.ceb44bd02a5e3a790cf2dfad",
+                "selector_index": 0,
+                "provenance": "path_descendant_containment"
+              }
+            ]
+          }
+        },
+        "ABLATION": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "ABLATION",
+            "case_id": "g060"
+          },
+          "matched_expansion_rules": [
+            "beam_divergence_theory"
+          ],
+          "selected_shortcut_triggered": false,
+          "structured_diagnostic_counters": null,
+          "metric_matches": {
+            "final_evidence_recall": 1.0,
+            "critical_final_evidence_recall": 1.0,
+            "gold_recall_at_5": 0.3333333333333333,
+            "gold_recall_at_10": 1.0,
+            "gold_recall_at_20": 1.0,
+            "mrr": 1.0,
+            "combined_candidate_recall": 1.0,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "g060.e1",
+                "object_id": "object.fc690314895a094fd0ce0991",
+                "selector_index": 1,
+                "provenance": "direct"
+              },
+              {
+                "group_id": "g060.e2",
+                "object_id": "object.8e7fd87fdffe7bed95214911",
+                "selector_index": 0,
+                "provenance": "direct"
+              },
+              {
+                "group_id": "g060.e3",
+                "object_id": "object.ceb44bd02a5e3a790cf2dfad",
+                "selector_index": 0,
+                "provenance": "path_descendant_containment"
+              }
+            ]
+          }
+        },
+        "STRUCTURED": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "STRUCTURED",
+            "case_id": "g060"
+          },
+          "matched_expansion_rules": [
+            "beam_divergence_theory"
+          ],
+          "selected_shortcut_triggered": false,
+          "structured_diagnostic_counters": {
+            "legacy_shortcut_hit_count": 1,
+            "selected_legacy_shortcut_hit_count": 0,
+            "structured_resolution_attempt_count": 1,
+            "structured_resolution_status_counts": {
+              "UNRESOLVED": 3
+            },
+            "structured_resolution_hit_count": 0,
+            "structured_seed_count": 0,
+            "structured_relation_traversal_count": 0,
+            "structured_workflow_traversal_count": 0,
+            "structured_candidate_injection_count": 0,
+            "migration_specific_direct_answer_location_injection_count": 0,
+            "prohibited_fallback_use_count": 0,
+            "evaluation_metadata_runtime_use_count": 0,
+            "selected_legacy_payload_reuse_count": 0,
+            "same_as_activation_count": 0
+          },
+          "metric_matches": {
+            "final_evidence_recall": 1.0,
+            "critical_final_evidence_recall": 1.0,
+            "gold_recall_at_5": 0.3333333333333333,
+            "gold_recall_at_10": 1.0,
+            "gold_recall_at_20": 1.0,
+            "mrr": 1.0,
+            "combined_candidate_recall": 1.0,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "g060.e1",
+                "object_id": "object.fc690314895a094fd0ce0991",
+                "selector_index": 1,
+                "provenance": "direct"
+              },
+              {
+                "group_id": "g060.e2",
+                "object_id": "object.8e7fd87fdffe7bed95214911",
+                "selector_index": 0,
+                "provenance": "direct"
+              },
+              {
+                "group_id": "g060.e3",
+                "object_id": "object.ceb44bd02a5e3a790cf2dfad",
+                "selector_index": 0,
+                "provenance": "path_descendant_containment"
+              }
+            ]
+          }
+        }
+      },
+      "paired_interpretation": {
+        "legacy_dependency_confirmed": false,
+        "structured_recovery_occurred": false,
+        "structured_regression_occurred": false,
+        "primary_interpretation": "no legacy dependency (paraphrase case); all arms recover all three groups; structured abstains on the unresolved beam-divergence mention"
+      },
+      "failure_classification": "STRUCTURED_PARITY"
+    },
+    {
+      "case_id": "g052",
+      "dataset": "Gold v2.6 dev",
+      "bound_rule_id": "effective_acceptance_pipeline",
+      "comparison_role": "DIRECT_LITERAL",
+      "identifiability_status": "IDENTIFIABLE",
+      "arms": {
+        "LEGACY": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "LEGACY",
+            "case_id": "g052"
+          },
+          "matched_expansion_rules": [
+            "restgas_profile_workflow",
+            "effective_acceptance_pipeline",
+            "reconstructed_profile_to_acceptance"
+          ],
+          "selected_shortcut_triggered": true,
+          "structured_diagnostic_counters": null,
+          "metric_matches": {
+            "final_evidence_recall": 1.0,
+            "critical_final_evidence_recall": 1.0,
+            "gold_recall_at_5": 1.0,
+            "gold_recall_at_10": 1.0,
+            "gold_recall_at_20": 1.0,
+            "mrr": 1.0,
+            "combined_candidate_recall": 1.0,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "g052.e1",
+                "object_id": "object.f2ce270fc4c23a83908b5c6e",
+                "selector_index": 1,
+                "provenance": "direct"
+              }
+            ]
+          }
+        },
+        "ABLATION": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "ABLATION",
+            "case_id": "g052"
+          },
+          "matched_expansion_rules": [
+            "reconstructed_profile_to_acceptance"
+          ],
+          "selected_shortcut_triggered": true,
+          "structured_diagnostic_counters": null,
+          "metric_matches": {
+            "final_evidence_recall": 1.0,
+            "critical_final_evidence_recall": 1.0,
+            "gold_recall_at_5": 1.0,
+            "gold_recall_at_10": 1.0,
+            "gold_recall_at_20": 1.0,
+            "mrr": 1.0,
+            "combined_candidate_recall": 1.0,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "g052.e1",
+                "object_id": "object.f2ce270fc4c23a83908b5c6e",
+                "selector_index": 1,
+                "provenance": "direct"
+              }
+            ]
+          }
+        },
+        "STRUCTURED": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "STRUCTURED",
+            "case_id": "g052"
+          },
+          "matched_expansion_rules": [
+            "reconstructed_profile_to_acceptance"
+          ],
+          "selected_shortcut_triggered": true,
+          "structured_diagnostic_counters": {
+            "legacy_shortcut_hit_count": 3,
+            "selected_legacy_shortcut_hit_count": 2,
+            "structured_resolution_attempt_count": 1,
+            "structured_resolution_status_counts": {
+              "UNRESOLVED": 2
+            },
+            "structured_resolution_hit_count": 0,
+            "structured_seed_count": 0,
+            "structured_relation_traversal_count": 0,
+            "structured_workflow_traversal_count": 0,
+            "structured_candidate_injection_count": 0,
+            "migration_specific_direct_answer_location_injection_count": 0,
+            "prohibited_fallback_use_count": 0,
+            "evaluation_metadata_runtime_use_count": 0,
+            "selected_legacy_payload_reuse_count": 0,
+            "same_as_activation_count": 0
+          },
+          "metric_matches": {
+            "final_evidence_recall": 1.0,
+            "critical_final_evidence_recall": 1.0,
+            "gold_recall_at_5": 1.0,
+            "gold_recall_at_10": 1.0,
+            "gold_recall_at_20": 1.0,
+            "mrr": 1.0,
+            "combined_candidate_recall": 1.0,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "g052.e1",
+                "object_id": "object.f2ce270fc4c23a83908b5c6e",
+                "selector_index": 1,
+                "provenance": "direct"
+              }
+            ]
+          }
+        }
+      },
+      "paired_interpretation": {
+        "legacy_dependency_confirmed": false,
+        "structured_recovery_occurred": false,
+        "structured_regression_occurred": false,
+        "primary_interpretation": "LEGACY equals ABLATION on the direct literal case (the question also literally triggers restgas_profile_workflow; both suppressed in ABLATION with no effect), so the effective_acceptance_pipeline shortcut was not materially responsible; structured abstains on both descriptive mentions without narrowing the distinction"
+      },
+      "failure_classification": "STRUCTURED_PARITY"
+    },
+    {
+      "case_id": "g055",
+      "dataset": "Gold v2.6 dev",
+      "bound_rule_id": "effective_acceptance_pipeline",
+      "comparison_role": "NEARBY_DISTINCTION_CONTROL",
+      "identifiability_status": "IDENTIFIABLE",
+      "arms": {
+        "LEGACY": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "LEGACY",
+            "case_id": "g055"
+          },
+          "matched_expansion_rules": [
+            "angular_acceptance",
+            "longitudinal_efficiency"
+          ],
+          "selected_shortcut_triggered": false,
+          "structured_diagnostic_counters": null,
+          "metric_matches": {
+            "final_evidence_recall": 1.0,
+            "critical_final_evidence_recall": 1.0,
+            "gold_recall_at_5": 1.0,
+            "gold_recall_at_10": 1.0,
+            "gold_recall_at_20": 1.0,
+            "mrr": 0.5,
+            "combined_candidate_recall": 1.0,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "g055.e1",
+                "object_id": "object.86b7c9f862f3e5c328823444",
+                "selector_index": 0,
+                "provenance": "direct"
+              },
+              {
+                "group_id": "g055.e2",
+                "object_id": "object.fc6e82b184f603398dde3bce",
+                "selector_index": 0,
+                "provenance": "direct"
+              }
+            ]
+          }
+        },
+        "ABLATION": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "ABLATION",
+            "case_id": "g055"
+          },
+          "matched_expansion_rules": [
+            "angular_acceptance",
+            "longitudinal_efficiency"
+          ],
+          "selected_shortcut_triggered": false,
+          "structured_diagnostic_counters": null,
+          "metric_matches": {
+            "final_evidence_recall": 1.0,
+            "critical_final_evidence_recall": 1.0,
+            "gold_recall_at_5": 1.0,
+            "gold_recall_at_10": 1.0,
+            "gold_recall_at_20": 1.0,
+            "mrr": 1.0,
+            "combined_candidate_recall": 1.0,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "g055.e1",
+                "object_id": "object.86b7c9f862f3e5c328823444",
+                "selector_index": 0,
+                "provenance": "direct"
+              },
+              {
+                "group_id": "g055.e2",
+                "object_id": "object.fc6e82b184f603398dde3bce",
+                "selector_index": 0,
+                "provenance": "direct"
+              }
+            ]
+          }
+        },
+        "STRUCTURED": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "STRUCTURED",
+            "case_id": "g055"
+          },
+          "matched_expansion_rules": [
+            "angular_acceptance",
+            "longitudinal_efficiency"
+          ],
+          "selected_shortcut_triggered": false,
+          "structured_diagnostic_counters": {
+            "legacy_shortcut_hit_count": 2,
+            "selected_legacy_shortcut_hit_count": 0,
+            "structured_resolution_attempt_count": 1,
+            "structured_resolution_status_counts": {
+              "UNRESOLVED": 2
+            },
+            "structured_resolution_hit_count": 0,
+            "structured_seed_count": 0,
+            "structured_relation_traversal_count": 0,
+            "structured_workflow_traversal_count": 0,
+            "structured_candidate_injection_count": 0,
+            "migration_specific_direct_answer_location_injection_count": 0,
+            "prohibited_fallback_use_count": 0,
+            "evaluation_metadata_runtime_use_count": 0,
+            "selected_legacy_payload_reuse_count": 0,
+            "same_as_activation_count": 0
+          },
+          "metric_matches": {
+            "final_evidence_recall": 1.0,
+            "critical_final_evidence_recall": 1.0,
+            "gold_recall_at_5": 1.0,
+            "gold_recall_at_10": 1.0,
+            "gold_recall_at_20": 1.0,
+            "mrr": 1.0,
+            "combined_candidate_recall": 1.0,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "g055.e1",
+                "object_id": "object.86b7c9f862f3e5c328823444",
+                "selector_index": 0,
+                "provenance": "direct"
+              },
+              {
+                "group_id": "g055.e2",
+                "object_id": "object.fc6e82b184f603398dde3bce",
+                "selector_index": 0,
+                "provenance": "direct"
+              }
+            ]
+          }
+        }
+      },
+      "paired_interpretation": {
+        "legacy_dependency_confirmed": false,
+        "structured_recovery_occurred": false,
+        "structured_regression_occurred": false,
+        "primary_interpretation": "distinction control stable across arms; structured abstains on both descriptive mentions; no over-expansion and no false ambiguity collapse"
+      },
+      "failure_classification": "STRUCTURED_PARITY"
+    },
+    {
+      "case_id": "n003",
+      "dataset": "novel_dev",
+      "bound_rule_id": "effective_acceptance_pipeline",
+      "comparison_role": "NEARBY_NONTRIGGER_CONTROL",
+      "identifiability_status": "IDENTIFIABLE",
+      "arms": {
+        "LEGACY": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "LEGACY",
+            "case_id": "n003"
+          },
+          "matched_expansion_rules": [],
+          "selected_shortcut_triggered": false,
+          "structured_diagnostic_counters": null,
+          "metric_matches": {
+            "final_evidence_recall": 0.5,
+            "critical_final_evidence_recall": 0.5,
+            "gold_recall_at_5": 0.5,
+            "gold_recall_at_10": 0.5,
+            "gold_recall_at_20": 0.5,
+            "mrr": 1.0,
+            "combined_candidate_recall": 1.0,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "n003.e1",
+                "object_id": "object.a5f27147db632f6d7ed0f95f",
+                "selector_index": 1,
+                "provenance": "direct"
+              },
+              {
+                "group_id": "n003.e2",
+                "matched": false
+              }
+            ]
+          }
+        },
+        "ABLATION": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "ABLATION",
+            "case_id": "n003"
+          },
+          "matched_expansion_rules": [],
+          "selected_shortcut_triggered": false,
+          "structured_diagnostic_counters": null,
+          "metric_matches": {
+            "final_evidence_recall": 0.5,
+            "critical_final_evidence_recall": 0.5,
+            "gold_recall_at_5": 0.5,
+            "gold_recall_at_10": 0.5,
+            "gold_recall_at_20": 0.5,
+            "mrr": 1.0,
+            "combined_candidate_recall": 1.0,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "n003.e1",
+                "object_id": "object.a5f27147db632f6d7ed0f95f",
+                "selector_index": 1,
+                "provenance": "direct"
+              },
+              {
+                "group_id": "n003.e2",
+                "matched": false
+              }
+            ]
+          }
+        },
+        "STRUCTURED": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "STRUCTURED",
+            "case_id": "n003"
+          },
+          "matched_expansion_rules": [],
+          "selected_shortcut_triggered": false,
+          "structured_diagnostic_counters": {
+            "legacy_shortcut_hit_count": 0,
+            "selected_legacy_shortcut_hit_count": 0,
+            "structured_resolution_attempt_count": 1,
+            "structured_resolution_status_counts": {
+              "RESOLVED_UNIQUE": 1,
+              "UNRESOLVED": 7
+            },
+            "structured_resolution_hit_count": 1,
+            "structured_seed_count": 1,
+            "structured_relation_traversal_count": 0,
+            "structured_workflow_traversal_count": 0,
+            "structured_candidate_injection_count": 1,
+            "migration_specific_direct_answer_location_injection_count": 0,
+            "prohibited_fallback_use_count": 0,
+            "evaluation_metadata_runtime_use_count": 0,
+            "selected_legacy_payload_reuse_count": 0,
+            "same_as_activation_count": 0
+          },
+          "metric_matches": {
+            "final_evidence_recall": 0.5,
+            "critical_final_evidence_recall": 0.5,
+            "gold_recall_at_5": 0.5,
+            "gold_recall_at_10": 0.5,
+            "gold_recall_at_20": 0.5,
+            "mrr": 1.0,
+            "combined_candidate_recall": 1.0,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "n003.e1",
+                "object_id": "object.a5f27147db632f6d7ed0f95f",
+                "selector_index": 1,
+                "provenance": "direct"
+              },
+              {
+                "group_id": "n003.e2",
+                "matched": false
+              }
+            ]
+          }
+        }
+      },
+      "paired_interpretation": {
+        "legacy_dependency_confirmed": false,
+        "structured_recovery_occurred": false,
+        "structured_regression_occurred": false,
+        "primary_interpretation": "nontrigger control stable across arms; structured injects one neutral PandaRoot repository seed; pre-existing e2 gap unchanged"
+      },
+      "failure_classification": "STRUCTURED_PARITY"
+    },
+    {
+      "case_id": "g021",
+      "dataset": "Gold v2.6 dev",
+      "bound_rule_id": "restgas_profile_workflow",
+      "comparison_role": "DIRECT_LITERAL",
+      "identifiability_status": "IDENTIFIABLE",
+      "arms": {
+        "LEGACY": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "LEGACY",
+            "case_id": "g021"
+          },
+          "matched_expansion_rules": [
+            "restgas_profile_workflow"
+          ],
+          "selected_shortcut_triggered": true,
+          "structured_diagnostic_counters": null,
+          "metric_matches": {
+            "final_evidence_recall": 1.0,
+            "critical_final_evidence_recall": 1.0,
+            "gold_recall_at_5": 1.0,
+            "gold_recall_at_10": 1.0,
+            "gold_recall_at_20": 1.0,
+            "mrr": 0.3333333333333333,
+            "combined_candidate_recall": 1.0,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "g021.e1",
+                "object_id": "object.3ab0a90ae68e8ece071a9f22",
+                "selector_index": 0,
+                "provenance": "direct"
+              },
+              {
+                "group_id": "g021.e2",
+                "object_id": "object.7c683ccb9595dad20e4529fe",
+                "selector_index": 0,
+                "provenance": "direct"
+              }
+            ]
+          }
+        },
+        "ABLATION": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "ABLATION",
+            "case_id": "g021"
+          },
+          "matched_expansion_rules": [],
+          "selected_shortcut_triggered": true,
+          "structured_diagnostic_counters": null,
+          "metric_matches": {
+            "final_evidence_recall": 0.0,
+            "critical_final_evidence_recall": 0.0,
+            "gold_recall_at_5": 0.0,
+            "gold_recall_at_10": 0.0,
+            "gold_recall_at_20": 0.0,
+            "mrr": 0.0,
+            "combined_candidate_recall": 0.0,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "g021.e1",
+                "matched": false
+              },
+              {
+                "group_id": "g021.e2",
+                "matched": false
+              }
+            ]
+          }
+        },
+        "STRUCTURED": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "STRUCTURED",
+            "case_id": "g021"
+          },
+          "matched_expansion_rules": [],
+          "selected_shortcut_triggered": true,
+          "structured_diagnostic_counters": {
+            "legacy_shortcut_hit_count": 1,
+            "selected_legacy_shortcut_hit_count": 1,
+            "structured_resolution_attempt_count": 1,
+            "structured_resolution_status_counts": {
+              "RESOLVED_UNIQUE": 1,
+              "UNRESOLVED": 2
+            },
+            "structured_resolution_hit_count": 1,
+            "structured_seed_count": 1,
+            "structured_relation_traversal_count": 1,
+            "structured_workflow_traversal_count": 0,
+            "structured_candidate_injection_count": 2,
+            "migration_specific_direct_answer_location_injection_count": 0,
+            "prohibited_fallback_use_count": 0,
+            "evaluation_metadata_runtime_use_count": 0,
+            "selected_legacy_payload_reuse_count": 0,
+            "same_as_activation_count": 0
+          },
+          "metric_matches": {
+            "final_evidence_recall": 0.0,
+            "critical_final_evidence_recall": 0.0,
+            "gold_recall_at_5": 0.0,
+            "gold_recall_at_10": 0.0,
+            "gold_recall_at_20": 0.0,
+            "mrr": 0.0,
+            "combined_candidate_recall": 0.0,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "g021.e1",
+                "matched": false
+              },
+              {
+                "group_id": "g021.e2",
+                "matched": false
+              }
+            ]
+          }
+        }
+      },
+      "paired_interpretation": {
+        "legacy_dependency_confirmed": true,
+        "structured_recovery_occurred": false,
+        "structured_regression_occurred": true,
+        "primary_interpretation": "legacy dependency confirmed: required restgas_profile configuration-usage and simulation-macro evidence enters only through the LEGACY exact channel (rule symbol payload macro/target/*.C and pgenerators path); with the rule suppressed neither file enters any channel; STRUCTURED seeds configuration.restgas_profile, traverses to workflow.restgas_profile_reconstruction, injects two curated objects that rank very high (fused ranks 1 and 3), but no accepted D1 evidence linkage connects the governed objects to the answer-bearing corpus files"
+      },
+      "failure_classification": "EVIDENCE_LINK_COVERAGE_GAP"
+    },
+    {
+      "case_id": "n004",
+      "dataset": "novel_dev",
+      "bound_rule_id": "root_macro_usage",
+      "comparison_role": "DIRECT_LITERAL",
+      "identifiability_status": "IDENTIFIABLE",
+      "arms": {
+        "LEGACY": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "LEGACY",
+            "case_id": "n004"
+          },
+          "matched_expansion_rules": [
+            "root_macro_usage"
+          ],
+          "selected_shortcut_triggered": true,
+          "structured_diagnostic_counters": null,
+          "metric_matches": {
+            "final_evidence_recall": 1.0,
+            "critical_final_evidence_recall": 1.0,
+            "gold_recall_at_5": 1.0,
+            "gold_recall_at_10": 1.0,
+            "gold_recall_at_20": 1.0,
+            "mrr": 1.0,
+            "combined_candidate_recall": 1.0,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "n004.e1",
+                "object_id": "object.6101005a6e9a289dfb8ee8d5",
+                "selector_index": 0,
+                "provenance": "ancestor"
+              }
+            ]
+          }
+        },
+        "ABLATION": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "ABLATION",
+            "case_id": "n004"
+          },
+          "matched_expansion_rules": [],
+          "selected_shortcut_triggered": true,
+          "structured_diagnostic_counters": null,
+          "metric_matches": {
+            "final_evidence_recall": 1.0,
+            "critical_final_evidence_recall": 1.0,
+            "gold_recall_at_5": 1.0,
+            "gold_recall_at_10": 1.0,
+            "gold_recall_at_20": 1.0,
+            "mrr": 1.0,
+            "combined_candidate_recall": 1.0,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "n004.e1",
+                "object_id": "object.6101005a6e9a289dfb8ee8d5",
+                "selector_index": 0,
+                "provenance": "ancestor"
+              }
+            ]
+          }
+        },
+        "STRUCTURED": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "STRUCTURED",
+            "case_id": "n004"
+          },
+          "matched_expansion_rules": [],
+          "selected_shortcut_triggered": true,
+          "structured_diagnostic_counters": {
+            "legacy_shortcut_hit_count": 1,
+            "selected_legacy_shortcut_hit_count": 1,
+            "structured_resolution_attempt_count": 1,
+            "structured_resolution_status_counts": {
+              "RESOLVED_UNIQUE": 1,
+              "UNRESOLVED": 6
+            },
+            "structured_resolution_hit_count": 1,
+            "structured_seed_count": 1,
+            "structured_relation_traversal_count": 0,
+            "structured_workflow_traversal_count": 0,
+            "structured_candidate_injection_count": 1,
+            "migration_specific_direct_answer_location_injection_count": 0,
+            "prohibited_fallback_use_count": 0,
+            "evaluation_metadata_runtime_use_count": 0,
+            "selected_legacy_payload_reuse_count": 0,
+            "same_as_activation_count": 0
+          },
+          "metric_matches": {
+            "final_evidence_recall": 1.0,
+            "critical_final_evidence_recall": 1.0,
+            "gold_recall_at_5": 1.0,
+            "gold_recall_at_10": 1.0,
+            "gold_recall_at_20": 1.0,
+            "mrr": 1.0,
+            "combined_candidate_recall": 1.0,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "n004.e1",
+                "object_id": "object.6101005a6e9a289dfb8ee8d5",
+                "selector_index": 0,
+                "provenance": "ancestor"
+              }
+            ]
+          }
+        }
+      },
+      "paired_interpretation": {
+        "legacy_dependency_confirmed": false,
+        "structured_recovery_occurred": false,
+        "structured_regression_occurred": false,
+        "primary_interpretation": "LEGACY equals ABLATION on the direct literal case, so the root_macro_usage shortcut was not materially responsible; structured injects one neutral PandaRoot repository seed; outcomes identical"
+      },
+      "failure_classification": "STRUCTURED_PARITY"
+    },
+    {
+      "case_id": "g007",
+      "dataset": "Gold v2.6 dev",
+      "bound_rule_id": "root_macro_usage",
+      "comparison_role": "NEARBY_NEGATIVE_CONTROL",
+      "identifiability_status": "IDENTIFIABLE",
+      "arms": {
+        "LEGACY": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "LEGACY",
+            "case_id": "g007"
+          },
+          "matched_expansion_rules": [
+            "installation_requirements"
+          ],
+          "selected_shortcut_triggered": false,
+          "structured_diagnostic_counters": null,
+          "metric_matches": {
+            "final_evidence_recall": null,
+            "critical_final_evidence_recall": null,
+            "gold_recall_at_5": null,
+            "gold_recall_at_10": null,
+            "gold_recall_at_20": null,
+            "mrr": null,
+            "combined_candidate_recall": null,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "g007.e1",
+                "object_id": "object.2de0c11066dd97bc1177de1c",
+                "selector_index": 0,
+                "provenance": "ancestor"
+              }
+            ]
+          }
+        },
+        "ABLATION": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "ABLATION",
+            "case_id": "g007"
+          },
+          "matched_expansion_rules": [
+            "installation_requirements"
+          ],
+          "selected_shortcut_triggered": false,
+          "structured_diagnostic_counters": null,
+          "metric_matches": {
+            "final_evidence_recall": null,
+            "critical_final_evidence_recall": null,
+            "gold_recall_at_5": null,
+            "gold_recall_at_10": null,
+            "gold_recall_at_20": null,
+            "mrr": null,
+            "combined_candidate_recall": null,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "g007.e1",
+                "object_id": "object.2de0c11066dd97bc1177de1c",
+                "selector_index": 0,
+                "provenance": "ancestor"
+              }
+            ]
+          }
+        },
+        "STRUCTURED": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_a2_frozen_20260831",
+            "arm": "STRUCTURED",
+            "case_id": "g007"
+          },
+          "matched_expansion_rules": [
+            "installation_requirements"
+          ],
+          "selected_shortcut_triggered": false,
+          "structured_diagnostic_counters": {
+            "legacy_shortcut_hit_count": 1,
+            "selected_legacy_shortcut_hit_count": 0,
+            "structured_resolution_attempt_count": 1,
+            "structured_resolution_status_counts": {
+              "RESOLVED_UNIQUE": 1,
+              "UNRESOLVED": 3
+            },
+            "structured_resolution_hit_count": 1,
+            "structured_seed_count": 1,
+            "structured_relation_traversal_count": 0,
+            "structured_workflow_traversal_count": 0,
+            "structured_candidate_injection_count": 1,
+            "migration_specific_direct_answer_location_injection_count": 0,
+            "prohibited_fallback_use_count": 0,
+            "evaluation_metadata_runtime_use_count": 0,
+            "selected_legacy_payload_reuse_count": 0,
+            "same_as_activation_count": 0
+          },
+          "metric_matches": {
+            "final_evidence_recall": null,
+            "critical_final_evidence_recall": null,
+            "gold_recall_at_5": null,
+            "gold_recall_at_10": null,
+            "gold_recall_at_20": null,
+            "mrr": null,
+            "combined_candidate_recall": null,
+            "final_evidence_group_provenance": [
+              {
+                "group_id": "g007.e1",
+                "object_id": "object.2de0c11066dd97bc1177de1c",
+                "selector_index": 0,
+                "provenance": "ancestor"
+              }
+            ]
+          }
+        }
+      },
+      "paired_interpretation": {
+        "legacy_dependency_confirmed": false,
+        "structured_recovery_occurred": false,
+        "structured_regression_occurred": false,
+        "primary_interpretation": "negative control behaves identically in all arms; structured injects one neutral PandaRoot repository seed; no unsupported-evidence leakage and no false confidence introduced"
+      },
+      "failure_classification": "STRUCTURED_PARITY"
+    }
+  ],
+  "per_rule_results": [
+    {
+      "rule_id": "lmd_fit_data_chain",
+      "identifiability_status": "PARTIALLY_IDENTIFIABLE",
+      "case_ids": [
+        "g029",
+        "n021",
+        "g025"
+      ],
+      "direct_case_ids": [],
+      "control_case_ids": [
+        "g025"
+      ],
+      "legacy_dependency_evidence": [
+        {
+          "case_id": "g029",
+          "legacy_minus_ablation_final_evidence_recall": 0.0,
+          "structured_minus_ablation_final_evidence_recall": 0.0
+        },
+        {
+          "case_id": "n021",
+          "legacy_minus_ablation_final_evidence_recall": 0.0,
+          "structured_minus_ablation_final_evidence_recall": 0.0
+        }
+      ],
+      "structured_recovery_evidence": [
+        {
+          "case_id": "g029",
+          "legacy_minus_ablation_final_evidence_recall": 0.0,
+          "structured_minus_ablation_final_evidence_recall": 0.0
+        },
+        {
+          "case_id": "n021",
+          "legacy_minus_ablation_final_evidence_recall": 0.0,
+          "structured_minus_ablation_final_evidence_recall": 0.0
+        }
+      ],
+      "structured_parity_evidence": [
+        {
+          "case_id": "g029",
+          "legacy_minus_ablation_final_evidence_recall": 0.0,
+          "structured_minus_ablation_final_evidence_recall": 0.0
+        },
+        {
+          "case_id": "n021",
+          "legacy_minus_ablation_final_evidence_recall": 0.0,
+          "structured_minus_ablation_final_evidence_recall": 0.0
+        }
+      ],
+      "mechanism_findings": [
+        "no legacy dependency observable (paraphrase case); all arms recover the required evidence; structured abstains correctly on the AMBIGUOUS PndLmdCombinedDataReader mention without collapsing it",
+        "no legacy dependency (paraphrase case); all arms miss the LuminosityFit orchestration group (preregistered preserved gap); structured contributes one neutral PandaRoot repository seed",
+        "negative control behaves identically in all arms; structured correctly abstains (runLmdFit mention stays AMBIGUOUS, no collapse, no injection)"
+      ],
+      "safety_findings": "no control regression, no leakage, no ambiguity collapse, all five prohibited-use counters zero in every STRUCTURED execution bound to this rule",
+      "decision": "INSUFFICIENT_EVIDENCE",
+      "decision_rationale": "PARTIALLY_IDENTIFIABLE per the frozen preregistration: no direct-trigger case exists, so the required LEGACY-ABLATION dependency contrast is not measurable; the frozen guard restricts the migration decision to INSUFFICIENT_EVIDENCE. Paraphrase cases g029 (1.0) and n021 (0.5) and control g025 are stable across arms; structured abstains correctly on the AMBIGUOUS PndLmdCombinedDataReader mention."
+    },
+    {
+      "rule_id": "event_poca_handoff",
+      "identifiability_status": "IDENTIFIABLE",
+      "case_ids": [
+        "g036",
+        "n022"
+      ],
+      "direct_case_ids": [
+        "g036"
+      ],
+      "control_case_ids": [],
+      "legacy_dependency_evidence": [
+        {
+          "case_id": "g036",
+          "legacy_minus_ablation_final_evidence_recall": 1.0,
+          "structured_minus_ablation_final_evidence_recall": 0.0
+        },
+        {
+          "case_id": "n022",
+          "legacy_minus_ablation_final_evidence_recall": 0.0,
+          "structured_minus_ablation_final_evidence_recall": 0.0
+        }
+      ],
+      "structured_recovery_evidence": [
+        {
+          "case_id": "g036",
+          "legacy_minus_ablation_final_evidence_recall": 1.0,
+          "structured_minus_ablation_final_evidence_recall": 0.0
+        },
+        {
+          "case_id": "n022",
+          "legacy_minus_ablation_final_evidence_recall": 0.0,
+          "structured_minus_ablation_final_evidence_recall": 0.0
+        }
+      ],
+      "structured_parity_evidence": [
+        {
+          "case_id": "g036",
+          "legacy_minus_ablation_final_evidence_recall": 1.0,
+          "structured_minus_ablation_final_evidence_recall": 0.0
+        },
+        {
+          "case_id": "n022",
+          "legacy_minus_ablation_final_evidence_recall": 0.0,
+          "structured_minus_ablation_final_evidence_recall": 0.0
+        }
+      ],
+      "mechanism_findings": [
+        "legacy dependency confirmed: required macro evidence enters only through the LEGACY exact channel (rule symbol payload macro/target/*.C) at fused rank 5, final rank 1; with the rule suppressed the macro file never enters any channel; STRUCTURED seeds data_product.restgas.event_poca, traverses three accepted relations, injects four curated objects that rank very high (fused ranks 1-2), but no accepted D1 evidence linkage connects the governed object to the answer-bearing corpus file",
+        "no legacy dependency (paraphrase case); all arms 2/3 groups; the e3 selected object differs between ABLATION and STRUCTURED (both objects match the group's any_of selectors) due to analyzer/reranker run variance, not structured contribution (zero seeds/injections for this case)"
+      ],
+      "safety_findings": "no control regression, no leakage, no ambiguity collapse, all five prohibited-use counters zero in every STRUCTURED execution bound to this rule",
+      "decision": "STRUCTURED_REGRESSION",
+      "decision_rationale": "Direct case g036 establishes a real legacy dependency (LEGACY 1.0 -> ABLATION 0.0 final-evidence recall) and STRUCTURED fails to recover it (0.0): the structured path resolves and ranks the correct governed objects very highly but the answer-bearing macro file is reachable only through the legacy exact-channel symbol payload because no accepted D1 evidence linkage exists. Material underperformance of the structured treatment on valid directly applicable evidence; no safety or control regression."
+    },
+    {
+      "rule_id": "pid_two_pass_files",
+      "identifiability_status": "PARTIALLY_IDENTIFIABLE",
+      "case_ids": [
+        "g020",
+        "n006",
+        "g041"
+      ],
+      "direct_case_ids": [],
+      "control_case_ids": [
+        "n006",
+        "g041"
+      ],
+      "legacy_dependency_evidence": [
+        {
+          "case_id": "g020",
+          "legacy_minus_ablation_final_evidence_recall": 0.0,
+          "structured_minus_ablation_final_evidence_recall": 0.0
+        },
+        {
+          "case_id": "n006",
+          "legacy_minus_ablation_final_evidence_recall": 0.0,
+          "structured_minus_ablation_final_evidence_recall": 0.0
+        }
+      ],
+      "structured_recovery_evidence": [
+        {
+          "case_id": "g020",
+          "legacy_minus_ablation_final_evidence_recall": 0.0,
+          "structured_minus_ablation_final_evidence_recall": 0.0
+        },
+        {
+          "case_id": "n006",
+          "legacy_minus_ablation_final_evidence_recall": 0.0,
+          "structured_minus_ablation_final_evidence_recall": 0.0
+        }
+      ],
+      "structured_parity_evidence": [
+        {
+          "case_id": "g020",
+          "legacy_minus_ablation_final_evidence_recall": 0.0,
+          "structured_minus_ablation_final_evidence_recall": 0.0
+        },
+        {
+          "case_id": "n006",
+          "legacy_minus_ablation_final_evidence_recall": 0.0,
+          "structured_minus_ablation_final_evidence_recall": 0.0
+        }
+      ],
+      "mechanism_findings": [
+        "no legacy dependency (paraphrase case); all arms recover both required groups; structured abstains on the unresolved two-pass mention without negative filtering",
+        "nontrigger control stable across arms; structured injects one neutral PandaRoot repository seed; pre-existing e2 gap unchanged",
+        "negative control behaves identically in all arms; structured correctly abstains on the nonexistent SetMagicRestgasSeed mention; no injection, no false scope narrowing"
+      ],
+      "safety_findings": "no control regression, no leakage, no ambiguity collapse, all five prohibited-use counters zero in every STRUCTURED execution bound to this rule",
+      "decision": "INSUFFICIENT_EVIDENCE",
+      "decision_rationale": "PARTIALLY_IDENTIFIABLE per the frozen preregistration: no direct-trigger case, dependency contrast not measurable; frozen guard applies. Paraphrase g020 (1.0) and controls n006/g041 are stable across arms; structured abstains correctly on the unresolved two-pass mention."
+    },
+    {
+      "rule_id": "model_factory_theory",
+      "identifiability_status": "IDENTIFIABLE",
+      "case_ids": [
+        "n014",
+        "g060"
+      ],
+      "direct_case_ids": [
+        "n014"
+      ],
+      "control_case_ids": [],
+      "legacy_dependency_evidence": [
+        {
+          "case_id": "n014",
+          "legacy_minus_ablation_final_evidence_recall": 0.0,
+          "structured_minus_ablation_final_evidence_recall": 0.0
+        },
+        {
+          "case_id": "g060",
+          "legacy_minus_ablation_final_evidence_recall": 0.0,
+          "structured_minus_ablation_final_evidence_recall": 0.0
+        }
+      ],
+      "structured_recovery_evidence": [
+        {
+          "case_id": "n014",
+          "legacy_minus_ablation_final_evidence_recall": 0.0,
+          "structured_minus_ablation_final_evidence_recall": 0.0
+        },
+        {
+          "case_id": "g060",
+          "legacy_minus_ablation_final_evidence_recall": 0.0,
+          "structured_minus_ablation_final_evidence_recall": 0.0
+        }
+      ],
+      "structured_parity_evidence": [
+        {
+          "case_id": "n014",
+          "legacy_minus_ablation_final_evidence_recall": 0.0,
+          "structured_minus_ablation_final_evidence_recall": 0.0
+        },
+        {
+          "case_id": "g060",
+          "legacy_minus_ablation_final_evidence_recall": 0.0,
+          "structured_minus_ablation_final_evidence_recall": 0.0
+        }
+      ],
+      "mechanism_findings": [
+        "LEGACY equals ABLATION on the direct literal case, so the model_factory_theory shortcut was not materially responsible for useful retrieval; structured injects the S-tier model_framework match but the model_framework definition group is missed in all arms (pre-existing recall gap unrelated to the rule)",
+        "no legacy dependency (paraphrase case); all arms recover all three groups; structured abstains on the unresolved beam-divergence mention"
+      ],
+      "safety_findings": "no control regression, no leakage, no ambiguity collapse, all five prohibited-use counters zero in every STRUCTURED execution bound to this rule",
+      "decision": "NO_MEANINGFUL_LEGACY_DEPENDENCY",
+      "decision_rationale": "Direct case n014 shows LEGACY == ABLATION (0.5): removing the shortcut does not degrade useful retrieval, so the shortcut was not materially responsible. STRUCTURED neither regresses nor improves (0.5); the model_framework definition group is missed in all arms for reasons unrelated to the rule. Direct dependency is identifiable and ablation shows no material legacy contribution, matching the frozen label semantics."
+    },
+    {
+      "rule_id": "effective_acceptance_pipeline",
+      "identifiability_status": "IDENTIFIABLE",
+      "case_ids": [
+        "g052",
+        "g055",
+        "n003"
+      ],
+      "direct_case_ids": [
+        "g052"
+      ],
+      "control_case_ids": [
+        "g055",
+        "n003"
+      ],
+      "legacy_dependency_evidence": [
+        {
+          "case_id": "g052",
+          "legacy_minus_ablation_final_evidence_recall": 0.0,
+          "structured_minus_ablation_final_evidence_recall": 0.0
+        },
+        {
+          "case_id": "g055",
+          "legacy_minus_ablation_final_evidence_recall": 0.0,
+          "structured_minus_ablation_final_evidence_recall": 0.0
+        },
+        {
+          "case_id": "n003",
+          "legacy_minus_ablation_final_evidence_recall": 0.0,
+          "structured_minus_ablation_final_evidence_recall": 0.0
+        }
+      ],
+      "structured_recovery_evidence": [
+        {
+          "case_id": "g052",
+          "legacy_minus_ablation_final_evidence_recall": 0.0,
+          "structured_minus_ablation_final_evidence_recall": 0.0
+        },
+        {
+          "case_id": "g055",
+          "legacy_minus_ablation_final_evidence_recall": 0.0,
+          "structured_minus_ablation_final_evidence_recall": 0.0
+        },
+        {
+          "case_id": "n003",
+          "legacy_minus_ablation_final_evidence_recall": 0.0,
+          "structured_minus_ablation_final_evidence_recall": 0.0
+        }
+      ],
+      "structured_parity_evidence": [
+        {
+          "case_id": "g052",
+          "legacy_minus_ablation_final_evidence_recall": 0.0,
+          "structured_minus_ablation_final_evidence_recall": 0.0
+        },
+        {
+          "case_id": "g055",
+          "legacy_minus_ablation_final_evidence_recall": 0.0,
+          "structured_minus_ablation_final_evidence_recall": 0.0
+        },
+        {
+          "case_id": "n003",
+          "legacy_minus_ablation_final_evidence_recall": 0.0,
+          "structured_minus_ablation_final_evidence_recall": 0.0
+        }
+      ],
+      "mechanism_findings": [
+        "LEGACY equals ABLATION on the direct literal case (the question also literally triggers restgas_profile_workflow; both suppressed in ABLATION with no effect), so the effective_acceptance_pipeline shortcut was not materially responsible; structured abstains on both descriptive mentions without narrowing the distinction",
+        "distinction control stable across arms; structured abstains on both descriptive mentions; no over-expansion and no false ambiguity collapse",
+        "nontrigger control stable across arms; structured injects one neutral PandaRoot repository seed; pre-existing e2 gap unchanged"
+      ],
+      "safety_findings": "no control regression, no leakage, no ambiguity collapse, all five prohibited-use counters zero in every STRUCTURED execution bound to this rule",
+      "decision": "NO_MEANINGFUL_LEGACY_DEPENDENCY",
+      "decision_rationale": "Direct case g052 shows LEGACY == ABLATION == STRUCTURED (1.0): paper-channel retrieval reproduces the useful behavior without the shortcut (the question also literally triggers restgas_profile_workflow; suppressing both changes nothing). The distinction control g055 stays stable and structured abstains without narrowing the acceptance/efficiency distinction."
+    },
+    {
+      "rule_id": "restgas_profile_workflow",
+      "identifiability_status": "IDENTIFIABLE",
+      "case_ids": [
+        "g021"
+      ],
+      "direct_case_ids": [
+        "g021"
+      ],
+      "control_case_ids": [],
+      "legacy_dependency_evidence": [
+        {
+          "case_id": "g021",
+          "legacy_minus_ablation_final_evidence_recall": 1.0,
+          "structured_minus_ablation_final_evidence_recall": 0.0
+        }
+      ],
+      "structured_recovery_evidence": [
+        {
+          "case_id": "g021",
+          "legacy_minus_ablation_final_evidence_recall": 1.0,
+          "structured_minus_ablation_final_evidence_recall": 0.0
+        }
+      ],
+      "structured_parity_evidence": [
+        {
+          "case_id": "g021",
+          "legacy_minus_ablation_final_evidence_recall": 1.0,
+          "structured_minus_ablation_final_evidence_recall": 0.0
+        }
+      ],
+      "mechanism_findings": [
+        "legacy dependency confirmed: required restgas_profile configuration-usage and simulation-macro evidence enters only through the LEGACY exact channel (rule symbol payload macro/target/*.C and pgenerators path); with the rule suppressed neither file enters any channel; STRUCTURED seeds configuration.restgas_profile, traverses to workflow.restgas_profile_reconstruction, injects two curated objects that rank very high (fused ranks 1 and 3), but no accepted D1 evidence linkage connects the governed objects to the answer-bearing corpus files"
+      ],
+      "safety_findings": "no control regression, no leakage, no ambiguity collapse, all five prohibited-use counters zero in every STRUCTURED execution bound to this rule",
+      "decision": "STRUCTURED_REGRESSION",
+      "decision_rationale": "Direct case g021 establishes a real legacy dependency (LEGACY 1.0 -> ABLATION 0.0) and STRUCTURED fails to recover it (0.0): the structured path seeds configuration.restgas_profile and traverses to workflow.restgas_profile_reconstruction with very high fused ranks, but the answer-bearing configuration-usage and macro files lack accepted D1 evidence linkage and never enter any candidate channel. Material underperformance on valid directly applicable evidence; no safety or control regression."
+    },
+    {
+      "rule_id": "root_macro_usage",
+      "identifiability_status": "IDENTIFIABLE",
+      "case_ids": [
+        "n004",
+        "g007"
+      ],
+      "direct_case_ids": [
+        "n004"
+      ],
+      "control_case_ids": [
+        "g007"
+      ],
+      "legacy_dependency_evidence": [
+        {
+          "case_id": "n004",
+          "legacy_minus_ablation_final_evidence_recall": 0.0,
+          "structured_minus_ablation_final_evidence_recall": 0.0
+        }
+      ],
+      "structured_recovery_evidence": [
+        {
+          "case_id": "n004",
+          "legacy_minus_ablation_final_evidence_recall": 0.0,
+          "structured_minus_ablation_final_evidence_recall": 0.0
+        }
+      ],
+      "structured_parity_evidence": [
+        {
+          "case_id": "n004",
+          "legacy_minus_ablation_final_evidence_recall": 0.0,
+          "structured_minus_ablation_final_evidence_recall": 0.0
+        }
+      ],
+      "mechanism_findings": [
+        "LEGACY equals ABLATION on the direct literal case, so the root_macro_usage shortcut was not materially responsible; structured injects one neutral PandaRoot repository seed; outcomes identical",
+        "negative control behaves identically in all arms; structured injects one neutral PandaRoot repository seed; no unsupported-evidence leakage and no false confidence introduced"
+      ],
+      "safety_findings": "no control regression, no leakage, no ambiguity collapse, all five prohibited-use counters zero in every STRUCTURED execution bound to this rule",
+      "decision": "NO_MEANINGFUL_LEGACY_DEPENDENCY",
+      "decision_rationale": "Direct case n004 shows LEGACY == ABLATION == STRUCTURED (1.0): ordinary documentation retrieval reproduces the useful behavior without the shortcut. The negative control g007 stays stable; the structured PandaRoot repository seed injection is metric-neutral and safe."
+    }
+  ],
+  "failure_taxonomy_counts": {
+    "EVIDENCE_LINK_COVERAGE_GAP": 2,
+    "STRUCTURED_PARITY": 14
+  },
+  "d3_aggregate_counters": {
+    "evaluation_metadata_runtime_use_count": 0,
+    "legacy_shortcut_hit_count": 15,
+    "migration_specific_direct_answer_location_injection_count": 0,
+    "prohibited_fallback_use_count": 0,
+    "resolution_status::AMBIGUOUS": 2,
+    "resolution_status::RESOLVED_UNIQUE": 8,
+    "resolution_status::UNRESOLVED": 59,
+    "same_as_activation_count": 0,
+    "selected_legacy_payload_reuse_count": 0,
+    "selected_legacy_shortcut_hit_count": 6,
+    "structured_candidate_injection_count": 12,
+    "structured_relation_traversal_count": 4,
+    "structured_resolution_attempt_count": 16,
+    "structured_resolution_hit_count": 8,
+    "structured_seed_count": 8,
+    "structured_workflow_traversal_count": 0
+  },
+  "safety_counters": {
+    "per_execution_verification": "all five counters verified zero in all 16 STRUCTURED executions",
+    "migration_specific_direct_answer_location_injection_count": 0,
+    "prohibited_fallback_use_count": 0,
+    "evaluation_metadata_runtime_use_count": 0,
+    "selected_legacy_payload_reuse_count": 0,
+    "same_as_activation_count": 0
+  },
+  "overall_interpretation": {
+    "frozen_question": "Can the frozen generic D1/D2 structured path reproduce useful behavior of a small representative legacy-shortcut batch without relying on the legacy answer-location payloads or introducing unsafe retrieval regressions?",
+    "answer": "The experiment is valid and fully attributable. Three of the five directly identifiable rules show no meaningful legacy dependency (model_factory_theory, effective_acceptance_pipeline, root_macro_usage): their shortcuts were not materially responsible for useful retrieval, and removal plus structured treatment changes nothing. Two rules show a real, material legacy dependency (event_poca_handoff on g036, restgas_profile_workflow on g021): the useful behavior of these shortcuts is exact-channel injection of answer-location file paths/symbols, and the frozen generic structured path cannot reproduce it because the accepted D1 graph has no evidence linkage from the correctly resolved governed objects to the answer-bearing corpus files, even though structured candidates are recalled and ranked very highly (fused ranks 1-3). No unsafe retrieval regression, no control leakage, no prohibited shortcut encoding was observed anywhere.",
+    "migration_support_denominator": {
+      "directly_identifiable_rules": 5,
+      "migration_supported": 0,
+      "note": "the two generalization-only rules are reported separately and carry INSUFFICIENT_EVIDENCE by the frozen guard"
+    },
+    "run_variance_note": "arms are independent frozen-path executions; analyzer/reranker LLM nondeterminism at temperature 0 produced minor metric-neutral selection variance in one case (n022 e3, both objects selector-matched) and small concept-list differences; ABLATION-vs-STRUCTURED rule state was identical by construction"
+  },
+  "production_changes": {
+    "query_expansions_yaml_modified": false,
+    "structured_d3_activated_in_production": false,
+    "production_d2_role_changed": false,
+    "production_routing_changed": false,
+    "runtime_files_changed_during_a2": false
+  },
+  "post_run_identity_check": {
+    "command": "git diff 814a6183f8054e95f65452fc2a5ac4300a6082f5 -- src/panda_agent/retrieval.py src/panda_agent/d3_structured.py",
+    "result": "no runtime semantic change"
+  },
+  "next_stage": {
+    "recommended_task": "structured coverage-gap repair design: a separately authorized bounded D1 evidence-linkage coverage stage connecting governed objects to their retrievable answer-location corpus evidence for the two STRUCTURED_REGRESSION rules (event_poca_handoff, restgas_profile_workflow), followed by a focused re-comparison of only those rules",
+    "executed_here": false,
+    "evidence_basis": "the single dominant failure class is EVIDENCE_LINK_COVERAGE_GAP (2 cases); D2 resolution and D1 traversal worked and structured candidates ranked at fused ranks 1-3, so ranking is not the binding constraint"
+  }
+}
