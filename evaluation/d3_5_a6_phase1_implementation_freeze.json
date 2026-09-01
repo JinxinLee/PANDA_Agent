@@ -1,0 +1,187 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint": "D3.5-A6-PHASE1",
+  "stage_name": "D3.5-A6 Phase 1 — Bounded Admission Prototype & Synthetic Construction Freeze",
+  "stage_type": "mechanical implementation and implementation freeze; no reranker outcome generated, no real-case evaluator/verdict computation, no select_v2 execution, no runtime/D1/database changes",
+  "starting_head": "9e56027995071281498636c3b84618a104cb2f29",
+  "parent_preregistration_commit": "9e56027995071281498636c3b84618a104cb2f29",
+  "A6_PHASE0_DECISION": "BOUNDED_RERANK_ADMISSION_PREREGISTRATION_FROZEN (finalized by Phase0-R1 and Phase0-R1-R1)",
+  "implementation_files": [
+    "evaluation/scripts/d3_5_a6_phase1_admission.py",
+    "tests/unit/test_d3_5_a6_phase1_admission.py"
+  ],
+  "derived_fixture": {
+    "path": "evaluation/d3_5_a6_phase1_replay_fixture.json",
+    "schema_version": "1.0.0",
+    "parent_fixture": "evaluation/d3_5_downstream_replay_fixture.json (schema 1.1.0, unchanged)",
+    "parent_A5_R2_result": "evaluation/d3_5_a5_r2_repaired_selectivity_revalidation.json (unchanged)",
+    "parent_A6_preregistration": "evaluation/d3_5_a6_bounded_rerank_admission_preregistration.json (unchanged)",
+    "normalized_corpus_manifest": "9925ec31a6122e05388806990f79aae036f3b0989c4584d24f2092bc4edb3d94",
+    "registries_explicitly_separated": ["reranker_payload_registry", "selector_replay_registry"],
+    "reranker_payload_registry_count": 345,
+    "selector_replay_registry_count": 345,
+    "selector_text_contract": "OPTION A — complete selector-visible frozen text persisted (reranker still receives text[:2000] only)"
+  },
+  "case_order": ["g036", "g021", "n006", "g041", "g020", "n004"],
+  "graph_parity": {
+    "GRAPH_CHANNEL_PARITY": "6 / 6",
+    "check": "merge_ids(selected_object_ids, unbridged_graph_ordering, 20) == persisted selectivity_only_graph_ordering",
+    "role": "equivalence check only; the persisted A5-R2 ordering is the authoritative replay input (PHASE1_SELECT_V2_RUNS = 0; no double graph merge)"
+  },
+  "fusion_replay_summary": {
+    "method": "deterministic RRF replay over frozen non-graph channel orderings (fixture key order = production exact -> dense -> sparse -> workflow traversal) + authoritative v2 graph channel; weights exact 2.0 / dense 1.0 / sparse 1.0 / paper 1.15 / workflow 1.2 / graph 0.8, score = weight/(60+rank+1), stable descending sort",
+    "parity_anchor": "with the OLD-cap graph channel input, the same fusion replay reproduces the parent fixture's baseline_fused_ordering_full EXACTLY for all six cases (full ordering, not only top-30)",
+    "FUSION_REPLAY_PARITY": "6 / 6",
+    "authoritative_input": "persisted A5-R2 selectivity_only_graph_ordering consumed as-is"
+  },
+  "replay_surface_coverage": {
+    "universe_definition": "POST_RERANK_REPLAY_REQUIRED_OBJECT_UNIVERSE = member set of the full v2-conditioned fused ordering per case (mechanically computed complete superset; exact-channel members and reserved bridge candidates are subsets)",
+    "full_fused_object_count_per_case": { "g036": 76, "g021": 47, "n006": 80, "g041": 60, "g020": 81, "n004": 67 },
+    "selector_replay_registry_count": 345,
+    "missing_selector_replay_object_ids": [],
+    "COVERAGE": "100%",
+    "selector_fields_per_object": ["object_id", "source_id", "source_version_id", "object_type", "title", "complete selector-visible frozen text", "authority_level", "complete raw locator dict", "channel membership", "fusion score"],
+    "plan_fields_per_case": ["intent", "target_repositories", "resolved_versions", "symbols", "concepts", "required_source_types", "source_budgets", "paper_page_hints", "raw question text"],
+    "note": "n006's frozen plan fields lacked empty-list keys dropped by A2 record compaction; generic empty defaults materialized (symbols=[] etc.) — no case-specific branch"
+  },
+  "reranker_payload_coverage": {
+    "payload_shape": [{"object_id": "…", "title": "…", "source_id": "…", "text": "text[:2000]"}],
+    "RERANKER_PAYLOAD_COVERAGE": "100% (every candidate that can appear in any of the 18 arm pools is in the reranker_payload_registry)",
+    "no_selector_only_metadata_in_model_payload": true
+  },
+  "formal_arm_pool_count": 18,
+  "pool_manifest": {
+    "path": "evaluation/d3_5_a6_phase1_pool_manifest.json",
+    "pool_invariant_violations": [],
+    "reservable_bridge_per_case": { "g036": 3, "g021": 1, "n006": 0, "g041": 0, "g020": 6, "n004": 0 },
+    "baseline_overlap_bridge_ids_per_case": {
+      "g036": [],
+      "g021": ["object.7ecb89690b217573371f6f70", "object.21bc3ebe83cacb360c89c4b4", "object.a0f75731467d6323c4b431df"],
+      "n006": [],
+      "g041": [],
+      "g020": ["object.e29c4fcd17107cabea45f18e", "object.35cf84657d7458145acc6cb2"],
+      "n004": []
+    },
+    "reserved_slot_counts": {
+      "g036": { "ADMISSION_K2": 2, "ADMISSION_K3": 3 },
+      "g021": { "ADMISSION_K2": 1, "ADMISSION_K3": 1 },
+      "n006": { "ADMISSION_K2": 0, "ADMISSION_K3": 0 },
+      "g041": { "ADMISSION_K2": 0, "ADMISSION_K3": 0 },
+      "g020": { "ADMISSION_K2": 2, "ADMISSION_K3": 3 },
+      "n004": { "ADMISSION_K2": 0, "ADMISSION_K3": 0 }
+    },
+    "duplicate_object_ids_per_pool": []
+  },
+  "identical_pool_relations": {
+    "g036": { "K2_pool_equals_BASELINE": false, "K3_pool_equals_BASELINE": false, "K2_pool_equals_K3": false },
+    "g021": { "K2_pool_equals_BASELINE": false, "K3_pool_equals_BASELINE": false, "K2_pool_equals_K3": true },
+    "n006": { "K2_pool_equals_BASELINE": true, "K3_pool_equals_BASELINE": true, "K2_pool_equals_K3": true },
+    "g041": { "K2_pool_equals_BASELINE": true, "K3_pool_equals_BASELINE": true, "K2_pool_equals_K3": true },
+    "g020": { "K2_pool_equals_BASELINE": false, "K3_pool_equals_BASELINE": false, "K2_pool_equals_K3": false },
+    "n004": { "K2_pool_equals_BASELINE": true, "K3_pool_equals_BASELINE": true, "K2_pool_equals_K3": true }
+  },
+  "origin_concentration_diagnostics": {
+    "carried_fields": [
+      "selected_bridge_origin_count",
+      "selected_bridge_per_origin_counts",
+      "reserved_bridge_origin_count",
+      "reserved_bridge_per_origin_counts",
+      "ordinary_rerank_candidates_displaced",
+      "reserved_bridge_candidate_ids",
+      "reserved_candidate_origin_ids"
+    ],
+    "reserved_bridge_per_origin_counts_K3": {
+      "g036": { "edge.a767185bbbc0d72189d0ac29": 2, "edge.2e09628416a01ce2461d752a": 1 },
+      "g021": { "edge.ea3a79d222f0ca6cc0e6df72": 1 },
+      "n006": {},
+      "g041": {},
+      "g020": { "edge.ea3a79d222f0ca6cc0e6df72": 2, "edge.81276373f106c8758d5aec92": 1 },
+      "n004": {}
+    },
+    "diagnostic_only": true,
+    "numeric_concentration_threshold": "none"
+  },
+  "post_rerank_parity_summary": {
+    "production_core_reused": "select_final_evidence and _source_type_of imported unchanged from src/panda_agent/retrieval.py (no production modification)",
+    "wrapper_mirroring": "fallback merge dedupe([*reranked, *full_fused_order]), preferred-source logic, symbol_first, required_first, hinted_first, final ordered dedupe, ranked = ordered[:30] mirror the production post-rerank block",
+    "source_anchor_test": "test_production_wrapper_expressions_still_present asserts the mirrored production expressions exist verbatim in retrieval.py (anti-drift anchor)",
+    "final_evidence_limit": 12,
+    "determinism": "double-execution on all six real frozen traces with fabricated model-free ranked sequences (identity/reverse): 12/12 receipts deterministic",
+    "model_output_note": "the original A2 reranker model outputs were not persisted, so historical-output reproduction is not possible; parity is established via the production selection core + mirrored wrapper + source-anchor test per the preregistered POST_RERANK_SELECTOR_PARITY_TARGET",
+    "POST_RERANK_SELECTOR_PARITY": "PASS"
+  },
+  "decision_logic_test_summary": {
+    "test_file": "tests/unit/test_d3_5_a6_phase1_admission.py",
+    "tests_passed": 32,
+    "coverage": [
+      "pool construction: 0/1/exactly-K/>K reservable, baseline overlap zero-slot, duplicate protection, bottom 1/2/3 displacement, surviving relative order, reserved append order, universe < 30, K2==BASELINE, K3==BASELINE, K2==K3, validator flags",
+      "replay: full/partial reranker orderings, repeated-ID dedup, fallback append, symbol_first/preferred-source/required_first/hinted_first movement, final dedup, source-diversity budget cap, duplicate-locator suppression, final_evidence_limit=12, determinism, production source anchor",
+      "decision logic: 9 truth-table verdict cases incl. the frozen Phase0-R1-R1 synthetic edge case, budget-selection hierarchy, MCR-never-auto-FAIL, CAUSAL_DELTA<=DELTA exhaustive bounds, 576-combination verdict uniqueness, stable-retention semantics, admission-applicable classification, stable witness"
+    ]
+  },
+  "phase2_call_plan": {
+    "path": "evaluation/d3_5_a6_phase1_execution_manifest.json",
+    "FORMAL_PHASE2_CALL_PLAN_ENTRIES": 54,
+    "construction": "6 cases x 3 repetitions x 3 arms, cyclic symmetric schedule (rep1 BASELINE->K2->K3, rep2 K2->K3->BASELINE, rep3 K3->BASELINE->K2), case-major over the frozen case order",
+    "entry_fields": ["formal_call_index", "case_id", "repetition", "arm", "ordered_pool_object_ids", "ordered_reranker_payload", "pool_size", "pool_identity", "model_contract_reference", "outcome_status"],
+    "outcome_status_values": ["NOT_EXECUTED"],
+    "execution_protocol": {
+      "all_54_formal_calls_execute_first": true,
+      "raw_ranked_object_ids_persisted_per_formal_slot": true,
+      "no_evaluator_or_verdict_computation_until_all_54_slots_complete": true,
+      "provider_internal_retries_not_formal_repetitions": true,
+      "unrecoverable_formal_call_failure": "record the formal slot as FAILED, mark Phase-2 execution incomplete, STOP before scientific evaluator/verdict computation; no ad hoc rerun, no repetition-count change",
+      "identical_pool_variance_semantics": "identical treatment-vs-BASELINE pool identities yield RERANKER_VARIANCE_REFERENCE differences only; identical-pool slots still execute and are never collapsed"
+    }
+  },
+  "model_configuration_contract": {
+    "generation_model_id": "gemini-3.7-flash (VertexSettings.from_env(), QA_GENERATION_MODEL_ID default)",
+    "temperature": 0.0,
+    "system_prompt_source": "src/panda_agent/prompts.py:RERANK_SYSTEM_PROMPT (imported unchanged)",
+    "response_schema_contract": "ranked_object_ids enum-restricted to the submitted pool member list",
+    "provider_retry_policy": "existing vertex generate_json 3-attempt transient-retry loop, unchanged",
+    "resolved_without_provider_invocation": true
+  },
+  "execution_accounting": {
+    "FORMAL_ARM_POOL_MANIFESTS": 18,
+    "FORMAL_PHASE2_CALL_PLAN_ENTRIES": 54,
+    "FORMAL_RERANKER_CALLS_EXECUTED": 0,
+    "REAL_CASE_RERANKER_CALLS": 0,
+    "PHASE1_SELECT_V2_RUNS": 0,
+    "ANALYZER_CALLS": 0,
+    "EMBEDDING_CALLS": 0,
+    "QA_CALLS": 0,
+    "VERIFIER_CALLS": 0,
+    "JUDGE_CALLS": 0,
+    "POSTGRESQL_WRITES": 0,
+    "QDRANT_WRITES": 0,
+    "INGESTION": 0,
+    "REINDEX": 0,
+    "NOVEL_VALIDATION_RUNS": 0,
+    "NOVEL_HOLDOUT_RUNS": 0
+  },
+  "outcome_exposure_state": {
+    "A6_RERANK_OUTCOME_EXPOSURE": "NOT_STARTED",
+    "distinction": "deterministic pool materialization != reranker outcome exposure; exposure begins only when the first real-case model reranker call starts in Phase 2",
+    "no_real_case_evaluator_outcome_computation": "DELTA_K / CAUSAL_DELTA_K / REGRESSION_K / budget selection / scientific verdict were NOT computed for the six real cases (requires Phase-2 outputs); decision logic exercised with synthetic data only"
+  },
+  "A6_PHASE1_DECISION": "BOUNDED_ADMISSION_PROTOTYPE_AND_REPLAY_IMPLEMENTATION_FROZEN",
+  "decision_basis": "preregistration implemented without semantic change; graph parity 6/6; full fusion deterministic with 6/6 full-ordering parity anchor; complete replay-surface coverage 100% (345 objects, 0 missing, all selector fields incl. full text/authority_level/complete locator); reranker payload coverage 100%; 18 arm pools frozen with zero pool-invariant violations; origin diagnostics materialized; production post-rerank parity passes (production selection core reused, mirrored wrapper source-anchored, 12/12 determinism receipts); decision logic synthetically validated (32 tests); 54 call-plan entries frozen with outcome_status NOT_EXECUTED; model/config contract resolved without provider invocation; 0 reranker calls; 0 select_v2 runs; protected datasets untouched",
+  "phase2_readiness": "NOT_STARTED / READY_FOR_PAIRED_REPEATED_RERANKER_REPLAY",
+  "exact_next_stage": "D3.5-A6 Phase 2 — Paired Repeated Reranker Replay (execute the frozen 54 formal slots, persist raw ranked_object_ids per slot, then run the evaluator stage; requires separate authorization)",
+  "prohibited_actions": [
+    "run the reranker or any of the 54 formal calls",
+    "run a model smoke test",
+    "compute real DELTA/CAUSAL_DELTA/REGRESSION from the six cases",
+    "select the real admission budget",
+    "produce the A6 scientific verdict",
+    "change K, the repetition count, or the call order",
+    "rerun select_v2",
+    "change v2 scoring, caps, the hard gate, or origin attribution",
+    "modify D1/D2",
+    "write PostgreSQL/Qdrant",
+    "run novel_validation",
+    "run holdout",
+    "start D4"
+  ]
+}
