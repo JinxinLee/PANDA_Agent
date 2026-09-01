@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "checkpoint": "D3.5-A1-R2",
+  "checkpoint": "D3.5-A1-R3",
   "status": "COMPLETE / D3.5-A1 FROZEN / READY FOR D3.5-A2",
   "base_commit": "45f58feb27b75d552b4797321bb688fb038f52da",
   "final_d1_commit": "9b5a84996c30eaf1a297924b36452a90fe6d84d2",
@@ -10,11 +10,12 @@
     "D3.5-A0": "COMPLETE / STRUCTURED_EVIDENCE_LINK_DESIGN_FROZEN",
     "D3.5-A0-R1": "COMPLETE / EVALUATION_IDENTIFIABILITY_AND_RUNTIME_ISOLATION_REPAIRED",
     "D3.5-A0-R2": "COMPLETE / POST_A1_D1_IDENTITY_AND_MATERIALIZATION_FREEZE_REPAIRED",
-    "D3.5-A1": "PROTOTYPE_IMPLEMENTED_AND_VERIFIED_T0",
+    "D3.5-A1": "COMPLETE / BOUNDED_STRUCTURED_EVIDENCE_LINK_BRIDGE_FROZEN",
     "D3.5-A1-R1": "COMPLETE / PREREGISTERED_TREATMENT_AND_ADDITIVE_BRIDGE_SEMANTICS_REPAIRED",
     "D3.5-A1-R2": "COMPLETE / MECHANISM_C_DISPOSITION_AND_DEVELOPMENT_MATERIALIZATION_FROZEN",
-    "D3.5-A2": "READY_TO_EXECUTE",
-    "D4": "NOT_STARTED"
+    "D3.5-A2": "NOT_STARTED / READY_TO_EXECUTE",
+    "D4": "NOT_STARTED",
+    "D3.5-A1-R3": "COMPLETE / MATERIALIZATION_RECEIPT_AND_LIFECYCLE_CONSISTENCY_REPAIRED"
   },
   "preregistration_identity": {
     "checkpoint": "D3.5-A0-R2",
@@ -29,7 +30,7 @@
     },
     "database_role_clarification": {
       "status": "CLARIFIED_AND_RECORDED",
-      "details": "CURRENT_DATABASE_ROLE = DEDICATED_DEVELOPMENT_EVALUATION_STATE. Reused the dedicated development database (postgresql://panda:panda@127.0.0.1:55432/panda_qa). Removed the obsolete separate-database assumption and ISOLATED_MATERIALIZATION_UNAVAILABLE blocker."
+      "details": "CURRENT_DATABASE_ROLE = DEDICATED_DEVELOPMENT_EVALUATION_STATE. Reused the dedicated development database (postgresql://***@127.0.0.1:55432/panda_qa). Removed the obsolete separate-database assumption and ISOLATED_MATERIALIZATION_UNAVAILABLE blocker."
     },
     "mechanism_c_governance_disposition": {
       "status": "APPROVED_GOVERNED_CHANGE",
@@ -61,7 +62,6 @@
   },
   "database_materialization_identity": {
     "database_role": "DEDICATED_DEVELOPMENT_EVALUATION_STATE",
-    "database_url": "postgresql://panda:panda@127.0.0.1:55432/panda_qa",
     "source_git_sha": "9b5a84996c30eaf1a297924b36452a90fe6d84d2",
     "counts_in_postgres": {
       "curated_objects": 24,
@@ -74,7 +74,18 @@
     },
     "stale_or_superseded_curated_records": 0,
     "development_materialization_matches_final_repository_D1": true,
-    "qdrant_writes": 0
+    "qdrant_writes": 0,
+    "database_target": {
+      "host": "127.0.0.1",
+      "port": 55432,
+      "database": "panda_qa",
+      "role": "DEDICATED_DEVELOPMENT_EVALUATION_STATE"
+    },
+    "database_target_sanitized": true,
+    "materialization_identity_auditable": true,
+    "repository_vs_database_diff_is_empty": true,
+    "provenance_mismatch_count": 0,
+    "verification_method": "D3.5-A1-R3 read-only exact diff: repository-side curated D1 identity derived from the frozen seed configs plus the frozen normalized ingestion artifacts was compared field-by-field against the read-only extracted curated PostgreSQL state (objects, accepted curated relations incl. full payload, curated workflow step, aliases) over a default_transaction_read_only=on connection. Provenance verification re-derived declared evidence path/object coverage from the persisted relation payloads without benchmark metadata."
   },
   "freeze_booleans": {
     "D3_5_A1_IMPLEMENTATION_FROZEN": true,
@@ -178,10 +189,771 @@
     "git_diff_check": "PASS"
   },
   "known_limitations": [
-    "D3.5-A1-R2 is a prototype implementation and materialization freeze verified with synthetic T0 tests and in-place database verification; no formal retrieval-quality benchmarking or outcome exposure has been executed.",
-    "PostgreSQL development database is now frozen in the D3.5 evaluation materialization state and must not be mutated until D3.5-A2 comparison runs conclude."
+    "D3.5-A1 is a prototype implementation and materialization freeze verified with synthetic T0 tests, in-place database verification, and the D3.5-A1-R3 exact read-only materialization receipt; no formal retrieval-quality benchmarking or outcome exposure has been executed.",
+    "PostgreSQL development database is now frozen in the D3.5 evaluation materialization state and must not be mutated until D3.5-A2 comparison runs conclude.",
+    "The development_materialization_receipt records repository-vs-database identity as of D3.5-A1-R3; any later mutation of the frozen curated state invalidates the receipt and requires a separate repair stage."
   ],
-  "lifecycle_decision": "D3.5-A1 COMPLETE AND FROZEN / READY FOR D3.5-A2 EXECUTION",
-  "blocker_detail": "All D3.5-A1 implementation, exact version qualification, Mechanism-C governance disposition, repository D1 identity, and PostgreSQL development materialization freezes are satisfied. D3.5-A2 is unblocked and ready for execution under separate authorization.",
-  "next_stage": "D3.5-A2 — Structured Evidence-Link Bridging Evaluation"
+  "lifecycle_decision": "D3.5-A1 COMPLETE AND FROZEN / D3.5-A2 NOT_STARTED / READY_TO_EXECUTE",
+  "blocker_detail": "All D3.5-A1 implementation, exact version qualification, Mechanism-C governance disposition, repository D1 identity, and PostgreSQL development materialization freezes are satisfied. D3.5-A1-R3 persisted the exact read-only materialization receipt proving the frozen development materialization matches the final repository D1 identity (all repository-vs-database diff lists empty, 0 stale or superseded curated records, credentials redacted from artifacts) and restored lifecycle consistency. D3.5-A2 is NOT_STARTED / READY_TO_EXECUTE and requires separate authorization.",
+  "next_stage": "D3.5-A2 — Focused Evidence-Link Recovery Validation",
+  "repair_history": {
+    "D3.5-A1-R1": "COMPLETE / PREREGISTERED_TREATMENT_AND_ADDITIVE_BRIDGE_SEMANTICS_REPAIRED",
+    "D3.5-A1-R2": "COMPLETE / MECHANISM_C_DISPOSITION_AND_DEVELOPMENT_MATERIALIZATION_FROZEN",
+    "D3.5-A1-R3": {
+      "status": "COMPLETE / MATERIALIZATION_RECEIPT_AND_LIFECYCLE_CONSISTENCY_REPAIRED",
+      "scope": [
+        "persistent exact machine-readable materialization receipt",
+        "stale isolation/production roadmap wording repair",
+        "canonical D3.5-A2 stage name and lifecycle state restore",
+        "credential redaction in evaluation artifacts"
+      ],
+      "database_writes": 0,
+      "qdrant_writes": 0,
+      "model_calls": 0,
+      "formal_d3_5_a2_runs": 0,
+      "novel_validation_runs": 0,
+      "novel_holdout_runs": 0,
+      "runtime_files_changed": 0,
+      "d1_config_changes": 0
+    }
+  },
+  "development_materialization_receipt": {
+    "database_target": {
+      "host": "127.0.0.1",
+      "port": 55432,
+      "database": "panda_qa",
+      "role": "DEDICATED_DEVELOPMENT_EVALUATION_STATE"
+    },
+    "database_target_sanitized": true,
+    "source_git_sha": "9b5a84996c30eaf1a297924b36452a90fe6d84d2",
+    "curated_object_ids": [
+      "concept.li_2026.restgas_effective_acceptance",
+      "concept.luminosityfit.luminosity_fit_model",
+      "concept.restgas_longitudinal_efficiency",
+      "configuration.restgas_profile",
+      "data_product.pandaroot.lumi_trks_qa",
+      "data_product.reconstructed_restgas_profile",
+      "data_product.restgas.boost_root",
+      "data_product.restgas.event_poca",
+      "data_product.restgas.pid_final_root",
+      "data_product.restgas.pid_root",
+      "document.pandaroot_sphinx_2023_08_25_dev",
+      "file_pattern.restgas_profile_input",
+      "paper.karavdina_2015.chapter_4",
+      "paper.pflueger_2017.chapter_4",
+      "repository.pandaroot.oct19",
+      "repository.restgas_determination.oct19",
+      "subsystem.luminosityfit.model_and_fit",
+      "subsystem.luminosityfit.panda_data_io",
+      "workflow.pandaroot.generic",
+      "workflow.pandaroot.lmd_reconstruction",
+      "workflow.restgas.first_pass_poca",
+      "workflow.restgas.second_pass_pid",
+      "workflow.restgas_aware_luminosity_acceptance",
+      "workflow.restgas_profile_reconstruction"
+    ],
+    "accepted_relations": [
+      {
+        "stable_identity": "concept.li_2026.restgas_effective_acceptance|IMPLEMENTED_AS_PIPELINE|workflow.restgas_aware_luminosity_acceptance",
+        "edge_id": "edge.63950f14c1371a8f3201236e",
+        "subject_id": "concept.li_2026.restgas_effective_acceptance",
+        "predicate": "IMPLEMENTED_AS_PIPELINE",
+        "object_id": "workflow.restgas_aware_luminosity_acceptance",
+        "review_status": "accepted",
+        "evidence_paths": [
+          "macro/target/correction/efficiency_correction_2.C"
+        ],
+        "evidence_object_ids": [],
+        "resolved_evidence_object_ids": [
+          "object.727b6eb51b2cfc8c78ce35b4"
+        ],
+        "evidence_source_ids": [
+          "restgas_determination"
+        ],
+        "source_version_ids": [
+          "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+        ]
+      },
+      {
+        "stable_identity": "concept.restgas_longitudinal_efficiency|CORRECTS|data_product.reconstructed_restgas_profile",
+        "edge_id": "edge.935e3326037267584c388fc5",
+        "subject_id": "concept.restgas_longitudinal_efficiency",
+        "predicate": "CORRECTS",
+        "object_id": "data_product.reconstructed_restgas_profile",
+        "review_status": "accepted",
+        "evidence_paths": [
+          "macro/target/correction/efficiency_correction_2.C",
+          "macro/target/correction/efficiency_correction_steps.C"
+        ],
+        "evidence_object_ids": [],
+        "resolved_evidence_object_ids": [
+          "object.6432bbd92b6596fb63e58bcc",
+          "object.727b6eb51b2cfc8c78ce35b4"
+        ],
+        "evidence_source_ids": [
+          "restgas_determination"
+        ],
+        "source_version_ids": [
+          "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+        ]
+      },
+      {
+        "stable_identity": "configuration.restgas_profile|PARAMETERIZES|workflow.restgas_profile_reconstruction",
+        "edge_id": "edge.ea3a79d222f0ca6cc0e6df72",
+        "subject_id": "configuration.restgas_profile",
+        "predicate": "PARAMETERIZES",
+        "object_id": "workflow.restgas_profile_reconstruction",
+        "review_status": "accepted",
+        "evidence_paths": [
+          "README.md",
+          "macro/target/README.md",
+          "macro/target/prod_sim_hvmaps.C"
+        ],
+        "evidence_object_ids": [],
+        "resolved_evidence_object_ids": [
+          "object.0c35c9d2ee2a07bc0a4be8fe",
+          "object.0fe58ecc9734eb4f9a351832",
+          "object.16e2d668d8673e7c633192c5",
+          "object.21bc3ebe83cacb360c89c4b4",
+          "object.25c0757afb7eabcf9183a17f",
+          "object.2ce3b321fb404505c3c19e12",
+          "object.2f28b1f3c056f9be04da6487",
+          "object.35cf84657d7458145acc6cb2",
+          "object.3ab0a90ae68e8ece071a9f22",
+          "object.3bfdd9477502819029d5f4e2",
+          "object.3f30db15a00e651138c4146a",
+          "object.427ba40a22782a7217afef8f",
+          "object.48aceb8601747afe7e7c2048",
+          "object.48be486a9ecab8f524ef9f35",
+          "object.4b4ba617d7416c518a52ff83",
+          "object.4e2bf3318be9d234c717b6cc",
+          "object.4e81a506f09b221d71a5df38",
+          "object.5023a697b2b46cfde6faee55",
+          "object.5038d66d85d49f8644390f7d",
+          "object.51622f9bdd88358b3b5711d4",
+          "object.5476889875fa4f019ea318ac",
+          "object.64407e20e9e1ea3e57ea1236",
+          "object.65b289b5d6e6f20ebbf14474",
+          "object.6a72bf9df87e9a5810015881",
+          "object.6b20287d8250ff2e55fa01af",
+          "object.70f21de0901589c9d8506e00",
+          "object.756904448a2cb490add746e8",
+          "object.75939fa753969e7ce1d8fa4b",
+          "object.76f3a617ccd5cbbfa2cb8136",
+          "object.78161cc0cea37b8b95bf8863",
+          "object.7ecb89690b217573371f6f70",
+          "object.88d0d65c7dbf3c313f1fa5dd",
+          "object.97d49d476e70e3a333779fbd",
+          "object.9e57745bf9b16a46a92d5cb0",
+          "object.a0f75731467d6323c4b431df",
+          "object.ab38ad90b923866d556bb245",
+          "object.ae2365b6243db9a5da6f41a8",
+          "object.b12c343f4978fcb93fa768d7",
+          "object.b92367ae18f0b4e9368a89b2",
+          "object.bc1c90e39128c7ca55302947",
+          "object.bf890ea4d6b13178189933d8",
+          "object.bf98d2d18b8c71ee23891b94",
+          "object.c50a3f00dd154303ff8ff5da",
+          "object.c9f92147b8490e3879afb56b",
+          "object.cbefedd3ddea3e03c8827b71",
+          "object.d13084dc0226150c4666fd1c",
+          "object.d1d036619ecae30580af435d",
+          "object.d36fa7fa9739a0a65c2345f0",
+          "object.d51cd150523d4b999a5f1ca1",
+          "object.dc2f0cfe5acd57a254a1a226",
+          "object.de351fec1daff18a542d845c",
+          "object.e29c4fcd17107cabea45f18e",
+          "object.e5136c8d8f90cb0add63ec47",
+          "object.e51879eb24fc26654017f584",
+          "object.e8af519940d19f0305e7a4be",
+          "object.e9f73efc23ccae1e3695035d",
+          "object.eb2c22536338c3faa80165bc",
+          "object.eba54e616162bc748a4230ec",
+          "object.ece5f8849c4ccef110f80f61",
+          "object.eebeb0d7f57deae9b5594579",
+          "object.fa044382bbb1bfbc45e08a74",
+          "object.fba08a93492edafab9918eec"
+        ],
+        "evidence_source_ids": [
+          "restgas_determination"
+        ],
+        "source_version_ids": [
+          "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+        ]
+      },
+      {
+        "stable_identity": "data_product.pandaroot.lumi_trks_qa|PRODUCES_INPUT_FOR|subsystem.luminosityfit.panda_data_io",
+        "edge_id": "edge.ab9ce1e51789345599c48b49",
+        "subject_id": "data_product.pandaroot.lumi_trks_qa",
+        "predicate": "PRODUCES_INPUT_FOR",
+        "object_id": "subsystem.luminosityfit.panda_data_io",
+        "review_status": "accepted",
+        "evidence_paths": [
+          "data/PndLmdCombinedDataReader.cxx"
+        ],
+        "evidence_object_ids": [],
+        "resolved_evidence_object_ids": [
+          "object.04b079cb4f083d29d694e47a"
+        ],
+        "evidence_source_ids": [
+          "luminosityfit"
+        ],
+        "source_version_ids": [
+          "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+        ]
+      },
+      {
+        "stable_identity": "data_product.restgas.event_poca|PRODUCES_INPUT_FOR|workflow.restgas.second_pass_pid",
+        "edge_id": "edge.a767185bbbc0d72189d0ac29",
+        "subject_id": "data_product.restgas.event_poca",
+        "predicate": "PRODUCES_INPUT_FOR",
+        "object_id": "workflow.restgas.second_pass_pid",
+        "review_status": "accepted",
+        "evidence_paths": [
+          "macro/target/pid_complete.C",
+          "macro/target/prod_aod_complete.C"
+        ],
+        "evidence_object_ids": [],
+        "resolved_evidence_object_ids": [
+          "object.d1810969df820d9a7aff0415",
+          "object.d61c9f6941dd9cf1acf258fe"
+        ],
+        "evidence_source_ids": [
+          "restgas_determination"
+        ],
+        "source_version_ids": [
+          "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+        ]
+      },
+      {
+        "stable_identity": "document.pandaroot_sphinx_2023_08_25_dev|OPERATIONALLY_DOCUMENTS|workflow.pandaroot.generic",
+        "edge_id": "edge.893e324ba9fdca7161f358eb",
+        "subject_id": "document.pandaroot_sphinx_2023_08_25_dev",
+        "predicate": "OPERATIONALLY_DOCUMENTS",
+        "object_id": "workflow.pandaroot.generic",
+        "review_status": "accepted",
+        "evidence_paths": [],
+        "evidence_object_ids": [
+          "object.79b75480980719256f8b7937"
+        ],
+        "resolved_evidence_object_ids": [
+          "object.79b75480980719256f8b7937"
+        ],
+        "evidence_source_ids": [],
+        "source_version_ids": [
+          "pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87"
+        ]
+      },
+      {
+        "stable_identity": "file_pattern.restgas_profile_input|PRODUCES_INPUT_FOR|workflow.restgas_profile_reconstruction",
+        "edge_id": "edge.81276373f106c8758d5aec92",
+        "subject_id": "file_pattern.restgas_profile_input",
+        "predicate": "PRODUCES_INPUT_FOR",
+        "object_id": "workflow.restgas_profile_reconstruction",
+        "review_status": "accepted",
+        "evidence_paths": [
+          "README.md",
+          "macro/target/README.md",
+          "macro/target/prod_sim_hvmaps.C",
+          "pgenerators/Target/PndTargetGenerator.cxx"
+        ],
+        "evidence_object_ids": [],
+        "resolved_evidence_object_ids": [
+          "object.0c35c9d2ee2a07bc0a4be8fe",
+          "object.0fe58ecc9734eb4f9a351832",
+          "object.16e2d668d8673e7c633192c5",
+          "object.21bc3ebe83cacb360c89c4b4",
+          "object.25c0757afb7eabcf9183a17f",
+          "object.2ce3b321fb404505c3c19e12",
+          "object.2f28b1f3c056f9be04da6487",
+          "object.35cf84657d7458145acc6cb2",
+          "object.3ab0a90ae68e8ece071a9f22",
+          "object.3bfdd9477502819029d5f4e2",
+          "object.3f30db15a00e651138c4146a",
+          "object.427ba40a22782a7217afef8f",
+          "object.48aceb8601747afe7e7c2048",
+          "object.48be486a9ecab8f524ef9f35",
+          "object.4b4ba617d7416c518a52ff83",
+          "object.4e2bf3318be9d234c717b6cc",
+          "object.4e81a506f09b221d71a5df38",
+          "object.5023a697b2b46cfde6faee55",
+          "object.5038d66d85d49f8644390f7d",
+          "object.51622f9bdd88358b3b5711d4",
+          "object.5476889875fa4f019ea318ac",
+          "object.64407e20e9e1ea3e57ea1236",
+          "object.65b289b5d6e6f20ebbf14474",
+          "object.6a72bf9df87e9a5810015881",
+          "object.6b20287d8250ff2e55fa01af",
+          "object.70f21de0901589c9d8506e00",
+          "object.756904448a2cb490add746e8",
+          "object.75939fa753969e7ce1d8fa4b",
+          "object.76f3a617ccd5cbbfa2cb8136",
+          "object.78161cc0cea37b8b95bf8863",
+          "object.7c683ccb9595dad20e4529fe",
+          "object.7ecb89690b217573371f6f70",
+          "object.88d0d65c7dbf3c313f1fa5dd",
+          "object.97d49d476e70e3a333779fbd",
+          "object.9e57745bf9b16a46a92d5cb0",
+          "object.a0f75731467d6323c4b431df",
+          "object.ab38ad90b923866d556bb245",
+          "object.ae2365b6243db9a5da6f41a8",
+          "object.b12c343f4978fcb93fa768d7",
+          "object.b92367ae18f0b4e9368a89b2",
+          "object.bc1c90e39128c7ca55302947",
+          "object.bf890ea4d6b13178189933d8",
+          "object.bf98d2d18b8c71ee23891b94",
+          "object.c50a3f00dd154303ff8ff5da",
+          "object.c9f92147b8490e3879afb56b",
+          "object.cbefedd3ddea3e03c8827b71",
+          "object.d13084dc0226150c4666fd1c",
+          "object.d1d036619ecae30580af435d",
+          "object.d36fa7fa9739a0a65c2345f0",
+          "object.d51cd150523d4b999a5f1ca1",
+          "object.dc2f0cfe5acd57a254a1a226",
+          "object.de351fec1daff18a542d845c",
+          "object.e29c4fcd17107cabea45f18e",
+          "object.e5136c8d8f90cb0add63ec47",
+          "object.e51879eb24fc26654017f584",
+          "object.e8af519940d19f0305e7a4be",
+          "object.e9f73efc23ccae1e3695035d",
+          "object.eb2c22536338c3faa80165bc",
+          "object.eba54e616162bc748a4230ec",
+          "object.ece5f8849c4ccef110f80f61",
+          "object.eebeb0d7f57deae9b5594579",
+          "object.fa044382bbb1bfbc45e08a74",
+          "object.fba08a93492edafab9918eec"
+        ],
+        "evidence_source_ids": [
+          "restgas_determination"
+        ],
+        "source_version_ids": [
+          "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+        ]
+      },
+      {
+        "stable_identity": "paper.karavdina_2015.chapter_4|THEORETICAL_BASIS_FOR|workflow.pandaroot.lmd_reconstruction",
+        "edge_id": "edge.6f22be53f97db9045521d3d5",
+        "subject_id": "paper.karavdina_2015.chapter_4",
+        "predicate": "THEORETICAL_BASIS_FOR",
+        "object_id": "workflow.pandaroot.lmd_reconstruction",
+        "review_status": "accepted",
+        "evidence_paths": [],
+        "evidence_object_ids": [
+          "object.30cf42f607e2c228dfe125fd",
+          "object.7cd1257841fc461a4e1e5390",
+          "object.b1739b9b6e502cda6a154406"
+        ],
+        "resolved_evidence_object_ids": [
+          "object.30cf42f607e2c228dfe125fd",
+          "object.7cd1257841fc461a4e1e5390",
+          "object.b1739b9b6e502cda6a154406"
+        ],
+        "evidence_source_ids": [],
+        "source_version_ids": [
+          "karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b"
+        ]
+      },
+      {
+        "stable_identity": "paper.pflueger_2017.chapter_4|FORMALIZES|concept.luminosityfit.luminosity_fit_model",
+        "edge_id": "edge.161980db8e6627f0ea2e220a",
+        "subject_id": "paper.pflueger_2017.chapter_4",
+        "predicate": "FORMALIZES",
+        "object_id": "concept.luminosityfit.luminosity_fit_model",
+        "review_status": "accepted",
+        "evidence_paths": [],
+        "evidence_object_ids": [
+          "object.6f688277a08ed2f236ae74df",
+          "object.86b7c9f862f3e5c328823444",
+          "object.faaced8bd5058b2a19ba9528"
+        ],
+        "resolved_evidence_object_ids": [
+          "object.6f688277a08ed2f236ae74df",
+          "object.86b7c9f862f3e5c328823444",
+          "object.faaced8bd5058b2a19ba9528"
+        ],
+        "evidence_source_ids": [],
+        "source_version_ids": [
+          "pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3"
+        ]
+      },
+      {
+        "stable_identity": "repository.restgas_determination.oct19|FORKED_FROM|repository.pandaroot.oct19",
+        "edge_id": "edge.3c2b9927822f43c7dbfc6191",
+        "subject_id": "repository.restgas_determination.oct19",
+        "predicate": "FORKED_FROM",
+        "object_id": "repository.pandaroot.oct19",
+        "review_status": "accepted",
+        "evidence_paths": [
+          "README.md"
+        ],
+        "evidence_object_ids": [],
+        "resolved_evidence_object_ids": [
+          "object.0c35c9d2ee2a07bc0a4be8fe",
+          "object.0fe58ecc9734eb4f9a351832",
+          "object.21bc3ebe83cacb360c89c4b4",
+          "object.2ce3b321fb404505c3c19e12",
+          "object.48aceb8601747afe7e7c2048",
+          "object.48be486a9ecab8f524ef9f35",
+          "object.4b4ba617d7416c518a52ff83",
+          "object.4e2bf3318be9d234c717b6cc",
+          "object.4e81a506f09b221d71a5df38",
+          "object.64407e20e9e1ea3e57ea1236",
+          "object.6a72bf9df87e9a5810015881",
+          "object.6b20287d8250ff2e55fa01af",
+          "object.70f21de0901589c9d8506e00",
+          "object.756904448a2cb490add746e8",
+          "object.76f3a617ccd5cbbfa2cb8136",
+          "object.78161cc0cea37b8b95bf8863",
+          "object.7ecb89690b217573371f6f70",
+          "object.88d0d65c7dbf3c313f1fa5dd",
+          "object.97d49d476e70e3a333779fbd",
+          "object.9e57745bf9b16a46a92d5cb0",
+          "object.a0f75731467d6323c4b431df",
+          "object.ae2365b6243db9a5da6f41a8",
+          "object.b92367ae18f0b4e9368a89b2",
+          "object.bf890ea4d6b13178189933d8",
+          "object.bf98d2d18b8c71ee23891b94",
+          "object.c50a3f00dd154303ff8ff5da",
+          "object.c9f92147b8490e3879afb56b",
+          "object.cbefedd3ddea3e03c8827b71",
+          "object.d13084dc0226150c4666fd1c",
+          "object.d1d036619ecae30580af435d",
+          "object.de351fec1daff18a542d845c",
+          "object.e51879eb24fc26654017f584",
+          "object.eb2c22536338c3faa80165bc",
+          "object.eba54e616162bc748a4230ec",
+          "object.ece5f8849c4ccef110f80f61",
+          "object.fa044382bbb1bfbc45e08a74",
+          "object.fba08a93492edafab9918eec"
+        ],
+        "evidence_source_ids": [
+          "restgas_determination"
+        ],
+        "source_version_ids": [
+          "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+          "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+        ]
+      },
+      {
+        "stable_identity": "subsystem.luminosityfit.model_and_fit|IMPLEMENTS|concept.luminosityfit.luminosity_fit_model",
+        "edge_id": "edge.4b871167865184a7c023ab36",
+        "subject_id": "subsystem.luminosityfit.model_and_fit",
+        "predicate": "IMPLEMENTS",
+        "object_id": "concept.luminosityfit.luminosity_fit_model",
+        "review_status": "accepted",
+        "evidence_paths": [
+          "model/PndLmdModelFactory.cxx"
+        ],
+        "evidence_object_ids": [],
+        "resolved_evidence_object_ids": [
+          "object.ceb44bd02a5e3a790cf2dfad"
+        ],
+        "evidence_source_ids": [
+          "luminosityfit"
+        ],
+        "source_version_ids": [
+          "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+        ]
+      },
+      {
+        "stable_identity": "workflow.pandaroot.lmd_reconstruction|PRODUCES|data_product.pandaroot.lumi_trks_qa",
+        "edge_id": "edge.83d4ef7a3c18a5ee4e6c91b0",
+        "subject_id": "workflow.pandaroot.lmd_reconstruction",
+        "predicate": "PRODUCES",
+        "object_id": "data_product.pandaroot.lumi_trks_qa",
+        "review_status": "accepted",
+        "evidence_paths": [
+          "detectors/lmd/LmdQA/PndLmdTrackQ.cxx"
+        ],
+        "evidence_object_ids": [],
+        "resolved_evidence_object_ids": [
+          "object.91b3e79331a311bb259f6a04"
+        ],
+        "evidence_source_ids": [
+          "pandaroot"
+        ],
+        "source_version_ids": [
+          "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357"
+        ]
+      },
+      {
+        "stable_identity": "workflow.restgas.first_pass_poca|CONSUMES|data_product.restgas.pid_root",
+        "edge_id": "edge.5a8a1deba5f20c052cdcb044",
+        "subject_id": "workflow.restgas.first_pass_poca",
+        "predicate": "CONSUMES",
+        "object_id": "data_product.restgas.pid_root",
+        "review_status": "accepted",
+        "evidence_paths": [
+          "macro/target/ana_dpm.C"
+        ],
+        "evidence_object_ids": [],
+        "resolved_evidence_object_ids": [
+          "object.5cae2ceab6e67bb4c9065331"
+        ],
+        "evidence_source_ids": [
+          "restgas_determination"
+        ],
+        "source_version_ids": [
+          "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+        ]
+      },
+      {
+        "stable_identity": "workflow.restgas.first_pass_poca|PRODUCES|data_product.restgas.boost_root",
+        "edge_id": "edge.2e09628416a01ce2461d752a",
+        "subject_id": "workflow.restgas.first_pass_poca",
+        "predicate": "PRODUCES",
+        "object_id": "data_product.restgas.boost_root",
+        "review_status": "accepted",
+        "evidence_paths": [
+          "macro/target/ana_dpm.C"
+        ],
+        "evidence_object_ids": [],
+        "resolved_evidence_object_ids": [
+          "object.5cae2ceab6e67bb4c9065331"
+        ],
+        "evidence_source_ids": [
+          "restgas_determination"
+        ],
+        "source_version_ids": [
+          "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+        ]
+      },
+      {
+        "stable_identity": "workflow.restgas.second_pass_pid|PRODUCES|data_product.restgas.pid_final_root",
+        "edge_id": "edge.d7ef44a502f1918dff5c93ab",
+        "subject_id": "workflow.restgas.second_pass_pid",
+        "predicate": "PRODUCES",
+        "object_id": "data_product.restgas.pid_final_root",
+        "review_status": "accepted",
+        "evidence_paths": [
+          "macro/target/pid_complete.C",
+          "macro/target/prod_aod_complete.C"
+        ],
+        "evidence_object_ids": [],
+        "resolved_evidence_object_ids": [
+          "object.d1810969df820d9a7aff0415",
+          "object.d61c9f6941dd9cf1acf258fe"
+        ],
+        "evidence_source_ids": [
+          "restgas_determination"
+        ],
+        "source_version_ids": [
+          "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+        ]
+      },
+      {
+        "stable_identity": "workflow.restgas_profile_reconstruction|PRODUCES_PROFILE_FOR|workflow.restgas_aware_luminosity_acceptance",
+        "edge_id": "edge.1d5c600878cd5576199cf9e0",
+        "subject_id": "workflow.restgas_profile_reconstruction",
+        "predicate": "PRODUCES_PROFILE_FOR",
+        "object_id": "workflow.restgas_aware_luminosity_acceptance",
+        "review_status": "accepted",
+        "evidence_paths": [
+          "macro/target/correction/efficiency_correction_2.C"
+        ],
+        "evidence_object_ids": [],
+        "resolved_evidence_object_ids": [
+          "object.727b6eb51b2cfc8c78ce35b4"
+        ],
+        "evidence_source_ids": [
+          "restgas_determination"
+        ],
+        "source_version_ids": [
+          "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+        ]
+      }
+    ],
+    "curated_workflow_steps": [
+      {
+        "workflow_id": "workflow.restgas_profile_reconstruction",
+        "step_id": "workflow.restgas.first_pass_poca",
+        "name": "First-pass POCA analysis",
+        "entrypoint_object_id": "workflow.restgas.first_pass_poca",
+        "inputs": [
+          "data_product.restgas.pid_root"
+        ],
+        "outputs": [
+          "data_product.restgas.boost_root"
+        ]
+      }
+    ],
+    "curated_aliases": [
+      {
+        "alias_id": "alias.d113240c86097a54294a250b",
+        "alias_text": "restgas_profile.txt",
+        "normalized_alias": "restgas_profile.txt",
+        "target_object_id": "configuration.restgas_profile",
+        "alias_kind": "generic_user_term",
+        "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+        "review_status": "accepted",
+        "provenance_object_ids": [
+          "object.0c35c9d2ee2a07bc0a4be8fe",
+          "object.0fe58ecc9734eb4f9a351832",
+          "object.16e2d668d8673e7c633192c5",
+          "object.21bc3ebe83cacb360c89c4b4",
+          "object.25c0757afb7eabcf9183a17f",
+          "object.2ce3b321fb404505c3c19e12",
+          "object.2f28b1f3c056f9be04da6487",
+          "object.35cf84657d7458145acc6cb2",
+          "object.3bfdd9477502819029d5f4e2",
+          "object.3f30db15a00e651138c4146a",
+          "object.427ba40a22782a7217afef8f",
+          "object.48aceb8601747afe7e7c2048",
+          "object.48be486a9ecab8f524ef9f35",
+          "object.4b4ba617d7416c518a52ff83",
+          "object.4e2bf3318be9d234c717b6cc",
+          "object.4e81a506f09b221d71a5df38",
+          "object.5023a697b2b46cfde6faee55",
+          "object.5038d66d85d49f8644390f7d",
+          "object.51622f9bdd88358b3b5711d4",
+          "object.5476889875fa4f019ea318ac",
+          "object.64407e20e9e1ea3e57ea1236",
+          "object.65b289b5d6e6f20ebbf14474",
+          "object.6a72bf9df87e9a5810015881",
+          "object.6b20287d8250ff2e55fa01af",
+          "object.70f21de0901589c9d8506e00",
+          "object.756904448a2cb490add746e8",
+          "object.75939fa753969e7ce1d8fa4b",
+          "object.76f3a617ccd5cbbfa2cb8136",
+          "object.78161cc0cea37b8b95bf8863",
+          "object.7ecb89690b217573371f6f70",
+          "object.88d0d65c7dbf3c313f1fa5dd",
+          "object.97d49d476e70e3a333779fbd",
+          "object.9e57745bf9b16a46a92d5cb0",
+          "object.a0f75731467d6323c4b431df",
+          "object.ab38ad90b923866d556bb245",
+          "object.ae2365b6243db9a5da6f41a8",
+          "object.b12c343f4978fcb93fa768d7",
+          "object.b92367ae18f0b4e9368a89b2",
+          "object.bc1c90e39128c7ca55302947",
+          "object.bf890ea4d6b13178189933d8",
+          "object.bf98d2d18b8c71ee23891b94",
+          "object.c50a3f00dd154303ff8ff5da",
+          "object.c9f92147b8490e3879afb56b",
+          "object.cbefedd3ddea3e03c8827b71",
+          "object.d13084dc0226150c4666fd1c",
+          "object.d1d036619ecae30580af435d",
+          "object.d36fa7fa9739a0a65c2345f0",
+          "object.d51cd150523d4b999a5f1ca1",
+          "object.dc2f0cfe5acd57a254a1a226",
+          "object.de351fec1daff18a542d845c",
+          "object.e29c4fcd17107cabea45f18e",
+          "object.e5136c8d8f90cb0add63ec47",
+          "object.e51879eb24fc26654017f584",
+          "object.e8af519940d19f0305e7a4be",
+          "object.e9f73efc23ccae1e3695035d",
+          "object.eb2c22536338c3faa80165bc",
+          "object.eba54e616162bc748a4230ec",
+          "object.ece5f8849c4ccef110f80f61",
+          "object.eebeb0d7f57deae9b5594579",
+          "object.fa044382bbb1bfbc45e08a74",
+          "object.fba08a93492edafab9918eec"
+        ]
+      },
+      {
+        "alias_id": "alias.d40bb866062a7cda6711f928",
+        "alias_text": "*_pid_final.root",
+        "normalized_alias": "*_pid_final.root",
+        "target_object_id": "data_product.restgas.pid_final_root",
+        "alias_kind": "file_pattern",
+        "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+        "review_status": "accepted",
+        "provenance_object_ids": [
+          "object.0c35c9d2ee2a07bc0a4be8fe",
+          "object.0fe58ecc9734eb4f9a351832",
+          "object.16e2d668d8673e7c633192c5",
+          "object.21bc3ebe83cacb360c89c4b4",
+          "object.25c0757afb7eabcf9183a17f",
+          "object.2ce3b321fb404505c3c19e12",
+          "object.2f28b1f3c056f9be04da6487",
+          "object.35cf84657d7458145acc6cb2",
+          "object.3bfdd9477502819029d5f4e2",
+          "object.3f30db15a00e651138c4146a",
+          "object.427ba40a22782a7217afef8f",
+          "object.48aceb8601747afe7e7c2048",
+          "object.48be486a9ecab8f524ef9f35",
+          "object.4b4ba617d7416c518a52ff83",
+          "object.4e2bf3318be9d234c717b6cc",
+          "object.4e81a506f09b221d71a5df38",
+          "object.5023a697b2b46cfde6faee55",
+          "object.5038d66d85d49f8644390f7d",
+          "object.51622f9bdd88358b3b5711d4",
+          "object.5476889875fa4f019ea318ac",
+          "object.64407e20e9e1ea3e57ea1236",
+          "object.65b289b5d6e6f20ebbf14474",
+          "object.6a72bf9df87e9a5810015881",
+          "object.6b20287d8250ff2e55fa01af",
+          "object.70f21de0901589c9d8506e00",
+          "object.756904448a2cb490add746e8",
+          "object.75939fa753969e7ce1d8fa4b",
+          "object.76f3a617ccd5cbbfa2cb8136",
+          "object.78161cc0cea37b8b95bf8863",
+          "object.7ecb89690b217573371f6f70",
+          "object.88d0d65c7dbf3c313f1fa5dd",
+          "object.97d49d476e70e3a333779fbd",
+          "object.9e57745bf9b16a46a92d5cb0",
+          "object.a0f75731467d6323c4b431df",
+          "object.ab38ad90b923866d556bb245",
+          "object.ae2365b6243db9a5da6f41a8",
+          "object.b12c343f4978fcb93fa768d7",
+          "object.b92367ae18f0b4e9368a89b2",
+          "object.bc1c90e39128c7ca55302947",
+          "object.bf890ea4d6b13178189933d8",
+          "object.bf98d2d18b8c71ee23891b94",
+          "object.c50a3f00dd154303ff8ff5da",
+          "object.c9f92147b8490e3879afb56b",
+          "object.cbefedd3ddea3e03c8827b71",
+          "object.d13084dc0226150c4666fd1c",
+          "object.d1d036619ecae30580af435d",
+          "object.d36fa7fa9739a0a65c2345f0",
+          "object.d51cd150523d4b999a5f1ca1",
+          "object.dc2f0cfe5acd57a254a1a226",
+          "object.de351fec1daff18a542d845c",
+          "object.e29c4fcd17107cabea45f18e",
+          "object.e5136c8d8f90cb0add63ec47",
+          "object.e51879eb24fc26654017f584",
+          "object.e8af519940d19f0305e7a4be",
+          "object.e9f73efc23ccae1e3695035d",
+          "object.eb2c22536338c3faa80165bc",
+          "object.eba54e616162bc748a4230ec",
+          "object.ece5f8849c4ccef110f80f61",
+          "object.eebeb0d7f57deae9b5594579",
+          "object.fa044382bbb1bfbc45e08a74",
+          "object.fba08a93492edafab9918eec"
+        ]
+      }
+    ],
+    "repository_vs_database_diff": {
+      "objects_missing_in_db": [],
+      "objects_extra_in_db": [],
+      "relations_missing_in_db": [],
+      "relations_extra_in_db": [],
+      "relation_payload_mismatches": [],
+      "workflow_steps_missing_in_db": [],
+      "workflow_steps_extra_in_db": [],
+      "workflow_payload_mismatches": [],
+      "aliases_missing_in_db": [],
+      "aliases_extra_in_db": [],
+      "alias_payload_mismatches": [],
+      "provenance_mismatches": []
+    },
+    "stale_or_superseded_curated_records": 0,
+    "matches_final_repository_d1": true,
+    "informational_database_counts": {
+      "curated_objects_in_db": 24,
+      "curated_accepted_relations_in_db": 16,
+      "curated_workflow_steps_in_db": 1,
+      "curated_aliases_in_db": 2,
+      "total_objects": 133077,
+      "total_relation_edges": 64561,
+      "total_workflow_steps": 375,
+      "total_aliases": 2,
+      "latest_ingestion_run": {
+        "manifest_hash": "9925ec31a6122e05388806990f79aae036f3b0989c4584d24f2092bc4edb3d94",
+        "status": "completed"
+      }
+    }
+  },
+  "formal_outcome_exposure": false,
+  "canonical_next_stage": "D3.5-A2 — Focused Evidence-Link Recovery Validation"
 }

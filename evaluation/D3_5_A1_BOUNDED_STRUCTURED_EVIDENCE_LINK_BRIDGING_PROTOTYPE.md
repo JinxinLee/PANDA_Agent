@@ -1,21 +1,22 @@
-# D3.5-A1 — Bounded Structured Evidence-Link Bridging Prototype (R2 Frozen)
+# D3.5-A1 — Bounded Structured Evidence-Link Bridging Prototype (R3 Frozen)
 
 ## 1. Executive Summary & Checkpoint Status
 
 | Item | Value |
 |---|---|
-| **Checkpoint** | `D3.5-A1-R2` |
+| **Checkpoint** | `D3.5-A1-R3` |
 | **Status** | `COMPLETE / D3.5-A1 FROZEN / READY FOR D3.5-A2` |
 | **Base Commit** | `45f58feb27b75d552b4797321bb688fb038f52da` |
 | **Final Repository D1 Commit** | `9b5a84996c30eaf1a297924b36452a90fe6d84d2` |
 | **Preregistration Identity** | `evaluation/d3_5_a0_structured_evidence_link_design.json` (D3.5-A0-R2) |
-| **Runtime Implementation Status** | Fully repaired, exact-version qualified, and verified via T0 unit/synthetic tests (40 tests PASS) |
-| **Database Role** | `CURRENT_DATABASE_ROLE = DEDICATED_DEVELOPMENT_EVALUATION_STATE` (`postgresql://panda:panda@127.0.0.1:55432/panda_qa`) |
+| **Runtime Implementation Status** | Fully repaired, exact-version qualified, and verified via T0 unit/synthetic tests (40 tests PASS); runtime frozen since R2 with 0 runtime changes in R3 |
+| **Database Role** | `CURRENT_DATABASE_ROLE = DEDICATED_DEVELOPMENT_EVALUATION_STATE` (sanitized target: `host=127.0.0.1`, `port=55432`, `database=panda_qa`) |
 | **Final Repository D1 Identity** | `24` objects / `16` accepted relations / `1` curated workflow step / `2` aliases (`D3_5_A2_FINAL_REPOSITORY_D1_IDENTITY_FROZEN = true`) |
 | **Mechanism-C Outcome** | `APPROVED_GOVERNED_CHANGE` (`MECHANISM_C_DISPOSITION_FROZEN = true`, `D3_5_A1_REPOSITORY_D1_CHANGED = true`) |
-| **Development Materialization Status** | In-place synchronized and semantically verified matching final D1 (`development_materialization_matches_final_repository_D1 = true`, stale records = 0, `D3_5_EVALUATION_D1_MATERIALIZATION_FROZEN = true`) |
+| **Development Materialization Status** | In-place synchronized, exact-diff verified via the R3 materialization receipt (`development_materialization_matches_final_repository_D1 = true`, all diff lists empty, stale records = 0, `D3_5_EVALUATION_D1_MATERIALIZATION_FROZEN = true`) |
 | **Production Structured-State Writes** | `0` (Deployed production database role clarified; dedicated development DB synchronized in place) |
 | **Qdrant Vector Writes** | `0` (`QDRANT_WRITES = 0`) |
+| **D3.5-A2 Lifecycle** | `NOT_STARTED / READY_TO_EXECUTE` (`FORMAL_D3_5_A2_RUNS = 0`, `D3_5_OUTCOME_EXPOSURE = NOT_STARTED`) |
 
 ---
 
@@ -82,7 +83,7 @@ The linkages truthfully reflect the core simulation entry points and C++ generat
 
 1. **Database Role Clarification**:
    - `CURRENT_DATABASE_ROLE = DEDICATED_DEVELOPMENT_EVALUATION_STATE`
-   - Database URL: `postgresql://panda:panda@127.0.0.1:55432/panda_qa`
+   - Sanitized target identity: `host = 127.0.0.1`, `port = 55432`, `database = panda_qa` (credentials redacted from evaluation artifacts per R3 hygiene; runtime environment credentials unchanged)
    - Reused existing development PostgreSQL database in place. No second database was created.
 2. **In-Place Synchronization**:
    - Ingested and updated normalized corpus (`manifest_hash = 9925ec31a6122e05388806990f79aae036f3b0989c4584d24f2092bc4edb3d94`).
@@ -96,7 +97,21 @@ The linkages truthfully reflect the core simulation entry points and C++ generat
 
 ---
 
-## 6. Freeze Booleans & Lifecycle Decision
+## 6. D3.5-A1-R3 — Materialization Receipt & Lifecycle Consistency Repair
+
+R3 is an auditability and lifecycle-consistency repair only. It changes no scientific result, no runtime behavior, no D1 configuration, and no database state.
+
+1. **Read-Only Database Verification**: The dedicated development PostgreSQL database was queried exclusively over a `default_transaction_read_only = on` connection. `POSTGRESQL_WRITES = 0`, `QDRANT_WRITES = 0`, `INGESTION = 0`, `REINGESTION = 0`, and all model-call counters remained `0`. Sanitized target: `host = 127.0.0.1`, `port = 55432`, `database = panda_qa`, `role = DEDICATED_DEVELOPMENT_EVALUATION_STATE`.
+2. **Exact Curated-State Receipt**: The machine artifact now embeds `development_materialization_receipt` — a persistent, independently inspectable record of the frozen curated D1 identity derived from the frozen seed configs plus the frozen normalized ingestion artifacts (`manifest_hash = 9925ec31a6122e05388806990f79aae036f3b0989c4584d24f2092bc4edb3d94`): all `24` exact curated object IDs, all `16` accepted curated relation identities (stable SPO tuple + stable `edge_id` + `review_status` + declared `evidence_paths`/`evidence_object_ids`/`evidence_source_ids` + resolved evidence object set + `source_version_ids`), the `1` curated workflow step (`workflow.restgas_profile_reconstruction` / `workflow.restgas.first_pass_poca` with entrypoint, inputs, outputs), and the `2` curated aliases (`alias.d113240c86097a54294a250b` `restgas_profile.txt` -> `configuration.restgas_profile`; `alias.d40bb866062a7cda6711f928` `*_pid_final.root` -> `data_product.restgas.pid_final_root`) with provenance object sets. Nothing is recorded only as a hash.
+3. **Repository-vs-Database Diff**: The receipt's `repository_vs_database_diff` compares the repository-side curated identity field-by-field against the read-only extracted curated database state. All twelve diff lists are empty: `objects_missing_in_db`, `objects_extra_in_db`, `relations_missing_in_db`, `relations_extra_in_db`, `relation_payload_mismatches`, `workflow_steps_missing_in_db`, `workflow_steps_extra_in_db`, `workflow_payload_mismatches`, `aliases_missing_in_db`, `aliases_extra_in_db`, `alias_payload_mismatches`, `provenance_mismatches`. `stale_or_superseded_curated_records = 0` (database-side curated identification used exact governance identity: `metadata.curated_seed` for objects, `creation_method = curated` + `metadata.resolution_method = curated_seed` for relations, `metadata.curated_seed` for workflow steps, `metadata.creation_method = curated` for aliases — never counts, titles, or substring heuristics).
+4. **Provenance Verification**: Every accepted curated relation's persisted database payload was compared in full (including resolved `evidence_object_ids` and `source_version_ids`), and every declared evidence path/object was re-derived from the database evidence objects' governed source identity and locator paths — no benchmark metadata was used. The two Mechanism-C repaired relations were verified explicitly in the database payload: `configuration.restgas_profile PARAMETERIZES workflow.restgas_profile_reconstruction` (`edge.ea3a79d222f0ca6cc0e6df72`) carries the approved evidence including `macro/target/prod_sim_hvmaps.C`, and `file_pattern.restgas_profile_input PRODUCES_INPUT_FOR workflow.restgas_profile_reconstruction` (`edge.81276373f106c8758d5aec92`) carries `macro/target/prod_sim_hvmaps.C` and `pgenerators/Target/PndTargetGenerator.cxx`, both governed by `restgas_determination` and grounded at `restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42`.
+5. **Credential Redaction**: Credential-bearing database URLs were replaced in the evaluation artifacts by sanitized target identities (`postgresql://***@host:port/database` shape). Runtime environment credentials were not altered. `database_target_sanitized = true`.
+6. **Lifecycle-Name Repair**: The canonical next-stage identifier is restored as `D3.5-A2 — Focused Evidence-Link Recovery Validation` (the descriptive phrase "Structured Evidence-Link Bridging Evaluation" is no longer used as the lifecycle identifier), and the A2 lifecycle state is recorded as `NOT_STARTED / READY_TO_EXECUTE` (`FORMAL_D3_5_A2_RUNS = 0`, `D3_5_OUTCOME_EXPOSURE = NOT_STARTED`). Stale isolation/separate-database wording was repaired in the current D3.5 roadmap section; historical predecessor sections remain untouched.
+7. **No Mutation**: `RUNTIME_FILES_CHANGED = 0`, D1 config changes `0`, query expansion changes `0`. The gate `development_materialization_matches_final_repository_D1 = true` is set by the empty exact diff plus zero stale records — not by counts alone.
+
+---
+
+## 7. Freeze Booleans & Lifecycle Decision
 
 | Freeze Boolean | Value | Rationale |
 |---|---|---|
@@ -104,19 +119,20 @@ The linkages truthfully reflect the core simulation entry points and C++ generat
 | `MECHANISM_C_DISPOSITION_FROZEN` | `true` | Independent governance disposition approved and committed (`APPROVED_GOVERNED_CHANGE`) |
 | `D3_5_A2_FINAL_REPOSITORY_D1_IDENTITY_FROZEN` | `true` | Repository D1 identity anchored at commit `9b5a84996c30eaf1a297924b36452a90fe6d84d2` (24/16/1/2) |
 | `D3_5_EVALUATION_D1_MATERIALIZATION_FROZEN` | `true` | Dedicated development database synchronized in place to final D1 and frozen |
-| `development_materialization_matches_final_repository_D1` | `true` | Semantic comparison verified 24 objects, 16 accepted relations, 1 workflow step, 0 stale records |
+| `development_materialization_matches_final_repository_D1` | `true` | R3 exact repository-vs-database diff verified: 24 objects, 16 accepted relations, 1 workflow step, 2 aliases, all diff lists empty, 0 stale records |
 | `D3_5_A1_REPOSITORY_D1_CHANGED` | `true` | Governed provenance repaired on 2 restgas relations |
 
 ### Lifecycle Closeout Decision:
 **`COMPLETE / D3.5-A1 FROZEN / READY FOR D3.5-A2`**
 
-All implementation, exact-version qualification, governance disposition, repository D1 identity, and PostgreSQL development materialization requirements for D3.5-A1 are complete and frozen. D3.5-A2 is unblocked and ready for execution under separate authorization.
+All implementation, exact-version qualification, governance disposition, repository D1 identity, and PostgreSQL development materialization requirements for D3.5-A1 are complete and frozen. The R3 materialization receipt makes the frozen match independently inspectable. `D3.5-A2 — Focused Evidence-Link Recovery Validation` is `NOT_STARTED / READY_TO_EXECUTE` and requires separate authorization.
 
 ---
 
-## 7. Verification & Test Summary
+## 8. Verification & Test Summary
 
 - **`tests/unit/test_d3_5_structured_bridge.py`**: 32 tests, **PASS** (includes 5 focused exact-version qualification tests).
 - **`tests/unit/test_d3_structured_shortcut.py`**: 8 tests, **PASS**.
-- **Total Tests Run**: 40 tests, 0 failures, 0 errors.
-- **Scientific Guardrails Enforced**: 0 model calls, 0 Qdrant writes, 0 formal benchmark comparison runs, 0 validation/holdout access.
+- **Total Tests Run**: 40 tests, 0 failures, 0 errors (R2 runtime freeze; no runtime files changed in R3).
+- **R3 Focused Checks**: machine artifact JSON parse **PASS**; read-only DB receipt generation **PASS**; exact repository-vs-database comparison **PASS** (all twelve diff lists empty); materialization diff empty **PASS** (`stale_or_superseded_curated_records = 0`); credential absence in active R3 artifacts **PASS**; roadmap/status lifecycle consistency **PASS**; canonical A2 stage name consistency **PASS**; `FORMAL_D3_5_A2_RUNS = 0` **PASS**; `git diff --check` **PASS**.
+- **Scientific Guardrails Enforced**: 0 model calls, 0 Qdrant writes, 0 PostgreSQL writes, 0 formal benchmark comparison runs, 0 validation/holdout access.
