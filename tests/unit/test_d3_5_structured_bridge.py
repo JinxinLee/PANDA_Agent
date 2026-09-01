@@ -10,11 +10,16 @@ from panda_agent.d3_structured import (
     GLOBAL_BRIDGED_CANDIDATE_CAP,
     GLOBAL_REACHABLE_STRUCTURE_CAP,
     SELECTED_D3_RULE_IDS,
+    D3_5_SELECTED_RULE_IDS,
     SHARED_SEED_CAP,
     D3Arm,
+    D3_5Arm,
     D3ExperimentConfig,
+    D3_5ExperimentConfig,
     D3StructuredContribution,
     PostgresD3StructuredGraphReader,
+    derive_unbridged_structured_seeds,
+    derive_d3_5_bridge_seeds,
     build_structured_contribution,
     select_matching_query_expansions,
 )
@@ -153,40 +158,53 @@ def _d2_evidence(tier, kind, object_id):
 
 class D3_5_FourArmAndPlumbingTests(unittest.TestCase):
     def test_four_arms_initialization_and_properties(self):
-        legacy = D3ExperimentConfig.for_arm(D3Arm.LEGACY)
+        # Historical D3 (7 rules)
+        hist_legacy = D3ExperimentConfig.for_arm(D3Arm.LEGACY)
+        self.assertEqual(hist_legacy.selected_rule_ids, SELECTED_D3_RULE_IDS)
+        self.assertFalse(hist_legacy.structured_treatment_enabled)
+        self.assertFalse(hist_legacy.bridge_enabled)
+
+        hist_struct = D3ExperimentConfig.for_arm(D3Arm.STRUCTURED)
+        self.assertEqual(hist_struct.selected_rule_ids, SELECTED_D3_RULE_IDS)
+        self.assertTrue(hist_struct.structured_treatment_enabled)
+        self.assertFalse(hist_struct.bridge_enabled)
+
+        # D3.5 (2 focused rules)
+        legacy = D3_5ExperimentConfig.for_arm(D3_5Arm.LEGACY)
+        self.assertEqual(legacy.selected_rule_ids, D3_5_SELECTED_RULE_IDS)
         self.assertFalse(legacy.structured_treatment_enabled)
         self.assertFalse(legacy.bridge_enabled)
         self.assertFalse(legacy.selected_legacy_rules_suppressed)
 
-        ablation = D3ExperimentConfig.for_arm(D3Arm.ABLATION)
+        ablation = D3_5ExperimentConfig.for_arm(D3_5Arm.ABLATION)
+        self.assertEqual(ablation.selected_rule_ids, D3_5_SELECTED_RULE_IDS)
         self.assertFalse(ablation.structured_treatment_enabled)
         self.assertFalse(ablation.bridge_enabled)
         self.assertTrue(ablation.selected_legacy_rules_suppressed)
 
-        unbridged = D3ExperimentConfig.for_arm(D3Arm.STRUCTURED_UNBRIDGED)
+        unbridged = D3_5ExperimentConfig.for_arm(D3_5Arm.STRUCTURED_UNBRIDGED)
+        self.assertEqual(unbridged.selected_rule_ids, D3_5_SELECTED_RULE_IDS)
         self.assertTrue(unbridged.structured_treatment_enabled)
         self.assertFalse(unbridged.bridge_enabled)
         self.assertTrue(unbridged.selected_legacy_rules_suppressed)
 
-        historical_structured = D3ExperimentConfig.for_arm(D3Arm.STRUCTURED)
-        self.assertTrue(historical_structured.structured_treatment_enabled)
-        self.assertFalse(historical_structured.bridge_enabled)
-        self.assertTrue(historical_structured.selected_legacy_rules_suppressed)
-
-        bridged = D3ExperimentConfig.for_arm(D3Arm.STRUCTURED_BRIDGED)
+        bridged = D3_5ExperimentConfig.for_arm(D3_5Arm.STRUCTURED_BRIDGED)
+        self.assertEqual(bridged.selected_rule_ids, D3_5_SELECTED_RULE_IDS)
         self.assertTrue(bridged.structured_treatment_enabled)
         self.assertTrue(bridged.bridge_enabled)
         self.assertTrue(bridged.selected_legacy_rules_suppressed)
 
     def test_invalid_arm_configurations_fail_fast(self):
         with self.assertRaises(ValueError):
-            D3ExperimentConfig(arm=D3Arm.STRUCTURED_UNBRIDGED, bridge_enabled=True, structured_treatment_enabled=True)
+            D3_5ExperimentConfig(arm=D3_5Arm.STRUCTURED_UNBRIDGED, bridge_enabled=True, structured_treatment_enabled=True)
         with self.assertRaises(ValueError):
-            D3ExperimentConfig(arm=D3Arm.STRUCTURED_BRIDGED, bridge_enabled=False, structured_treatment_enabled=True)
+            D3_5ExperimentConfig(arm=D3_5Arm.STRUCTURED_BRIDGED, bridge_enabled=False, structured_treatment_enabled=True)
         with self.assertRaises(ValueError):
-            D3ExperimentConfig(arm=D3Arm.ABLATION, structured_treatment_enabled=True)
+            D3_5ExperimentConfig(arm=D3_5Arm.ABLATION, structured_treatment_enabled=True)
         with self.assertRaises(ValueError):
-            D3ExperimentConfig(arm=D3Arm.LEGACY, selected_rule_ids=("unknown_rule",))
+            D3_5ExperimentConfig(arm=D3_5Arm.LEGACY, selected_rule_ids=("unknown_rule",))
+        with self.assertRaises(ValueError):
+            D3ExperimentConfig(arm=D3Arm.STRUCTURED, selected_rule_ids=D3_5_SELECTED_RULE_IDS)
 
 
 class D3_5_SeedAuthorityAndAmbiguityTests(unittest.TestCase):
@@ -218,21 +236,25 @@ class D3_5_SeedAuthorityAndAmbiguityTests(unittest.TestCase):
         )
 
         cand_ids = [c["object_id"] for c in result.candidates]
+        # Tier G, S, D admitted
         self.assertIn("g_obj", cand_ids)
         self.assertIn("s_obj", cand_ids)
         self.assertIn("d_obj", cand_ids)
+        # Corrective seed admitted without traversal
         self.assertIn("corr_obj", cand_ids)
+        # Unresolved and Multi not admitted
         self.assertNotIn("m1", cand_ids)
         self.assertNotIn("m2", cand_ids)
 
-        prov = {p["candidate_object_id"]: p for p in result.candidate_provenance}
-        self.assertEqual(prov["g_obj"]["canonical_object_id"], "canon_g")
-        self.assertIsNone(prov["s_obj"]["canonical_object_id"])
-        self.assertIsNone(prov["d_obj"]["canonical_object_id"])
-        self.assertEqual(prov["corr_obj"]["candidate_identity_authority"], "NONAUTHORITATIVE_ADVISORY")
+        # Check provenance metadata on admitted seeds
+        prov_map = {p["candidate_object_id"]: p for p in result.candidate_provenance}
+        self.assertEqual(prov_map["g_obj"]["authority_class"], "AUTHORITATIVE_BOUNDED_IDENTITY")
+        self.assertEqual(prov_map["s_obj"]["authority_class"], "AUTHORITATIVE_BOUNDED_MATCHED_RECORD")
+        self.assertEqual(prov_map["d_obj"]["authority_class"], "NONAUTHORITATIVE_ADVISORY")
+        self.assertEqual(prov_map["corr_obj"]["authority_class"], "NONAUTHORITATIVE_ADVISORY")
 
     def test_atomic_tier_d_ambiguity_set_rules(self):
-        # Case 1: Ambiguity set of 3 fits within budget -> all 3 admitted atomically
+        # Case 1: Ambiguity set of 3 <= 8 and fits remaining budget -> all 3 admitted
         receipt_fit = D2ResolutionReceipt(
             resolutions=[
                 D2Resolution("G_seed", "governed_id", "G_seed", RESOLVED_UNIQUE,
@@ -258,7 +280,9 @@ class D3_5_SeedAuthorityAndAmbiguityTests(unittest.TestCase):
         self.assertIn("amb2", cand_ids_fit)
         self.assertIn("amb3", cand_ids_fit)
 
-        # Case 2: Ambiguity set of 9 (> 8) -> NONE admitted, AMBIGUITY_SET_EXCEEDS_SAFE_SEED_BUDGET emitted
+        # Case 2: Ambiguity set of 9 (> 8):
+        # Unbridged baseline admits all 9 (frozen historical behavior).
+        # Bridge branch rejects ambiguity set atomically and emits AMBIGUITY_SET_EXCEEDS_SAFE_SEED_BUDGET.
         receipt_oversize = D2ResolutionReceipt(
             resolutions=[
                 D2Resolution("Amb_large", "descriptive", "Amb_large", AMBIGUOUS,
@@ -270,11 +294,15 @@ class D3_5_SeedAuthorityAndAmbiguityTests(unittest.TestCase):
         result_large = build_structured_contribution(
             "Test oversize", plan, resolver=_MockResolver(receipt_oversize), graph_reader=reader_large, bridge_enabled=True
         )
-        self.assertEqual(len(result_large.candidates), 0)
+        self.assertEqual(len(result_large.candidates), 9)
+        self.assertEqual(len(result_large.reachability_receipts), 1)
+        self.assertEqual(result_large.reachability_receipts[0]["reachability_status"], "NO_ELIGIBLE_STRUCTURED_SEED")
         reasons = [e["reason"] for e in result_large.excluded_resolution_reasons]
         self.assertIn("AMBIGUITY_SET_EXCEEDS_SAFE_SEED_BUDGET", reasons)
 
-        # Case 3: 7 G-seeds consume budget, ambiguity set of 2 (> remaining 1) -> NONE from ambiguity admitted
+        # Case 3: 7 G-seeds consume budget, ambiguity set of 2 (> remaining 1):
+        # Unbridged baseline admits all 9.
+        # Bridge branch admits 7 G-seeds, rejects ambiguity set atomically.
         g_resolutions = [
             D2Resolution(f"G_{i}", "governed_id", f"G_{i}", RESOLVED_UNIQUE,
                          matched_object_id=f"g_{i}", canonical_object_id=f"canon_g_{i}",
@@ -292,11 +320,13 @@ class D3_5_SeedAuthorityAndAmbiguityTests(unittest.TestCase):
             "Test exceed budget", plan, resolver=_MockResolver(receipt_exceed), graph_reader=reader_exceed, bridge_enabled=True
         )
         cand_ids_exceed = [c["object_id"] for c in result_exceed.candidates]
-        self.assertEqual(len(cand_ids_exceed), 7)
-        self.assertNotIn("overflow1", cand_ids_exceed)
-        self.assertNotIn("overflow2", cand_ids_exceed)
+        self.assertEqual(len(cand_ids_exceed), 9)
         exceed_reasons = [e["reason"] for e in result_exceed.excluded_resolution_reasons]
         self.assertIn("AMBIGUITY_SET_EXCEEDS_SAFE_SEED_BUDGET", exceed_reasons)
+        bridge_seed_ids = {r["seed_object_id"] for r in result_exceed.reachability_receipts if r["seed_object_id"]}
+        self.assertEqual(len(bridge_seed_ids), 7)
+        self.assertNotIn("overflow1", bridge_seed_ids)
+        self.assertNotIn("overflow2", bridge_seed_ids)
 
 
 class D3_5_MechanismAReachabilityTests(unittest.TestCase):
@@ -355,19 +385,23 @@ class D3_5_MechanismAReachabilityTests(unittest.TestCase):
             "What produces event_poca?", plan, resolver=_MockResolver(receipt), graph_reader=reader, bridge_enabled=True
         )
 
+        # Baseline seed
         cand_ids = [c["object_id"] for c in result.candidates]
-        # Child reached (Seed)
         self.assertIn("data_product.restgas.event_poca", cand_ids)
-        # Parent reached (Upward Containment)
-        self.assertIn("data_product.restgas.boost_root", cand_ids)
-        # Neighbor reached (Semantic Reachability via PRODUCES reverse)
-        self.assertIn("workflow.restgas.first_pass_poca", cand_ids)
-        # Denied predicate not reached
-        self.assertNotIn("some_random_node", cand_ids)
-        self.assertNotIn("same_as_target", cand_ids)
 
         # Verify reachability receipts
         self.assertTrue(len(result.reachability_receipts) > 0)
+        reached_nodes = {nid for r in result.reachability_receipts for nid in r["structural_path"]["node_ids"]}
+        # Child reached (Seed)
+        self.assertIn("data_product.restgas.event_poca", reached_nodes)
+        # Parent reached (Upward Containment)
+        self.assertIn("data_product.restgas.boost_root", reached_nodes)
+        # Neighbor reached (Semantic Reachability via PRODUCES reverse)
+        self.assertIn("workflow.restgas.first_pass_poca", reached_nodes)
+        # Denied predicate not reached
+        self.assertNotIn("some_random_node", reached_nodes)
+        self.assertNotIn("same_as_target", reached_nodes)
+
         reach_transition_types = [
             r["structural_path"]["transition_types"] for r in result.reachability_receipts
         ]
@@ -414,8 +448,9 @@ class D3_5_MechanismAReachabilityTests(unittest.TestCase):
         res_forward = build_structured_contribution(
             "Test forward FORKED_FROM", plan_both, resolver=_MockResolver(receipt_forward), graph_reader=reader, bridge_enabled=True
         )
-        forward_cands = [c["object_id"] for c in res_forward.candidates]
-        self.assertIn("repository.pandaroot.oct19", forward_cands)
+        forward_reached = {nid for r in res_forward.reachability_receipts for nid in r["structural_path"]["node_ids"]}
+        self.assertIn("repository.pandaroot.oct19", forward_reached)
+        self.assertIn("obj_readme", [c["object_id"] for c in res_forward.bridged_candidates])
 
         # Test reverse traversal from pandaroot -> DENIED (FORKED_FROM reverse is False)
         receipt_reverse = D2ResolutionReceipt(
@@ -428,8 +463,9 @@ class D3_5_MechanismAReachabilityTests(unittest.TestCase):
         res_reverse = build_structured_contribution(
             "Test reverse FORKED_FROM", plan_both, resolver=_MockResolver(receipt_reverse), graph_reader=reader, bridge_enabled=True
         )
-        reverse_cands = [c["object_id"] for c in res_reverse.candidates]
-        self.assertNotIn("repository.restgas_determination.oct19", reverse_cands)
+        reverse_reached = {nid for r in res_reverse.reachability_receipts for nid in r["structural_path"]["node_ids"]}
+        self.assertNotIn("repository.restgas_determination.oct19", reverse_reached)
+        self.assertEqual(len(res_reverse.bridged_candidates), 0)
 
 
 class D3_5_MechanismBMaterializationTests(unittest.TestCase):
@@ -587,7 +623,7 @@ class D3_5_IntegrationAndDiagnosticsTests(unittest.TestCase):
         ordinary_graph = [_source_file_obj(f"ord_graph_{i}", "pandaroot", f"ord/file_{i}.cxx") for i in range(5)]
         retriever._graph = lambda *args: list(ordinary_graph)
 
-        config = D3ExperimentConfig.for_arm(D3Arm.STRUCTURED_BRIDGED)
+        config = D3_5ExperimentConfig.for_arm(D3_5Arm.STRUCTURED_BRIDGED)
         plan = RetrievalPlan(
             intent="api",
             target_repositories=["pandaroot"],
@@ -600,7 +636,7 @@ class D3_5_IntegrationAndDiagnosticsTests(unittest.TestCase):
             analysis_diagnostics={
                 "d3_experiment": {
                     "d3_arm": "STRUCTURED_BRIDGED",
-                    "selected_rule_ids": list(SELECTED_D3_RULE_IDS),
+                    "selected_rule_ids": list(D3_5_SELECTED_RULE_IDS),
                     "structured_treatment_enabled": True,
                     "bridge_enabled": True,
                     "selected_legacy_rules_suppressed": True,
@@ -648,7 +684,6 @@ class D3_5_IntegrationAndDiagnosticsTests(unittest.TestCase):
         self.assertEqual(disp["bridged_candidate_ids"], ["bridged_1", "bridged_2"])
         self.assertEqual(disp["deduplicated_overlap_count"], 0)
 
-        # Graph channel rankings contain bridged prefix first
     def test_structured_unbridged_does_not_mislabel_bridged_diagnostics(self):
         retriever = Retriever.__new__(Retriever)
         retriever.policies = SimpleNamespace(
@@ -681,7 +716,7 @@ class D3_5_IntegrationAndDiagnosticsTests(unittest.TestCase):
         ordinary_graph = [_source_file_obj(f"ord_graph_{i}", "pandaroot", f"ord/file_{i}.cxx") for i in range(5)]
         retriever._graph = lambda *args: list(ordinary_graph)
 
-        config = D3ExperimentConfig.for_arm(D3Arm.STRUCTURED_UNBRIDGED)
+        config = D3_5ExperimentConfig.for_arm(D3_5Arm.STRUCTURED_UNBRIDGED)
         plan = RetrievalPlan(
             intent="api",
             target_repositories=["pandaroot"],
@@ -694,7 +729,7 @@ class D3_5_IntegrationAndDiagnosticsTests(unittest.TestCase):
             analysis_diagnostics={
                 "d3_experiment": {
                     "d3_arm": "STRUCTURED_UNBRIDGED",
-                    "selected_rule_ids": list(SELECTED_D3_RULE_IDS),
+                    "selected_rule_ids": list(D3_5_SELECTED_RULE_IDS),
                     "structured_treatment_enabled": True,
                     "bridge_enabled": False,
                     "selected_legacy_rules_suppressed": True,
@@ -724,6 +759,149 @@ class D3_5_IntegrationAndDiagnosticsTests(unittest.TestCase):
         self.assertEqual(disp["displaced_object_ids"], [])
         self.assertEqual(disp["bridged_candidate_ids"], [])
         self.assertEqual(disp["deduplicated_overlap_count"], 0)
+
+    def test_zero_bridge_exact_equivalence(self):
+        """When bridge produces zero candidates, STRUCTURED_BRIDGED is identical to STRUCTURED_UNBRIDGED."""
+        retriever = Retriever.__new__(Retriever)
+        retriever.policies = SimpleNamespace(
+            candidate_pool_per_channel=5,
+            max_relation_hops=2,
+            final_evidence_limit=3,
+        )
+        retriever.context_sources = []
+        retriever.storage = object()
+        retriever.vertex = SimpleNamespace(
+            generate_json=lambda *args, **kwargs: {"ranked_object_ids": []}
+        )
+        retriever._exact = lambda *args: []
+        retriever._vector = lambda question, *args: (
+            [], [], [],
+            SimpleNamespace(
+                text=question, raw_question=question, components=[],
+                excluded_component_classes=[], as_dict=lambda: {},
+            ),
+        )
+        retriever._dense = lambda *args: []
+        retriever._sparse = lambda *args: []
+        retriever._paper = lambda *args: []
+        retriever._workflow = lambda *args: []
+        ordinary_graph = [_source_file_obj(f"ord_graph_{i}", "pandaroot", f"ord/file_{i}.cxx") for i in range(5)]
+        retriever._graph = lambda *args: list(ordinary_graph)
+
+        unbridged_config = D3_5ExperimentConfig.for_arm(D3_5Arm.STRUCTURED_UNBRIDGED)
+        bridged_config = D3_5ExperimentConfig.for_arm(D3_5Arm.STRUCTURED_BRIDGED)
+
+        plan_unbridged = RetrievalPlan(
+            intent="api", target_repositories=["pandaroot"], resolved_versions={"pandaroot": "locked"},
+            concepts=[], symbols=[], concept_scopes={}, source_budgets={"code": 1.0}, required_source_types=[],
+            analysis_diagnostics={
+                "d3_experiment": {
+                    "d3_arm": "STRUCTURED_UNBRIDGED", "selected_rule_ids": list(D3_5_SELECTED_RULE_IDS),
+                    "structured_treatment_enabled": True, "bridge_enabled": False, "selected_legacy_rules_suppressed": True,
+                }
+            },
+        )
+        plan_bridged = RetrievalPlan(
+            intent="api", target_repositories=["pandaroot"], resolved_versions={"pandaroot": "locked"},
+            concepts=[], symbols=[], concept_scopes={}, source_budgets={"code": 1.0}, required_source_types=[],
+            analysis_diagnostics={
+                "d3_experiment": {
+                    "d3_arm": "STRUCTURED_BRIDGED", "selected_rule_ids": list(D3_5_SELECTED_RULE_IDS),
+                    "structured_treatment_enabled": True, "bridge_enabled": True, "selected_legacy_rules_suppressed": True,
+                }
+            },
+        )
+
+        cand = _source_file_obj("cand_baseline", "pandaroot", "cand/baseline.cxx")
+        contribution_zero_bridge = D3StructuredContribution(
+            candidates=[cand],
+            bridged_candidates=[],
+            candidate_provenance=[],
+            reachability_receipts=[],
+            bridge_receipts=[],
+            diagnostic_counters={},
+        )
+
+        with patch(
+            "panda_agent.retrieval.build_structured_contribution_from_storage",
+            return_value=contribution_zero_bridge,
+        ):
+            res_unbridged = retriever.retrieve("Equivalence query", plan_unbridged, d3_config=unbridged_config)
+            res_bridged = retriever.retrieve("Equivalence query", plan_bridged, d3_config=bridged_config)
+
+        # Final evidence matches exactly in content and order
+        unbridged_ev_ids = [e["object_id"] for e in res_unbridged["evidence"]]
+        bridged_ev_ids = [e["object_id"] for e in res_bridged["evidence"]]
+        self.assertEqual(unbridged_ev_ids, bridged_ev_ids)
+
+    def test_additive_bridged_and_displacement_against_unbridged_baseline(self):
+        """STRUCTURED_BRIDGED is unbridged baseline + bridged candidates, and displacement is measured against unbridged baseline."""
+        retriever = Retriever.__new__(Retriever)
+        retriever.policies = SimpleNamespace(
+            candidate_pool_per_channel=5,
+            max_relation_hops=2,
+            final_evidence_limit=3,
+        )
+        retriever.context_sources = []
+        retriever.storage = object()
+        retriever.vertex = SimpleNamespace(
+            generate_json=lambda *args, **kwargs: {"ranked_object_ids": []}
+        )
+        retriever._exact = lambda *args: []
+        retriever._vector = lambda question, *args: (
+            [], [], [],
+            SimpleNamespace(
+                text=question, raw_question=question, components=[],
+                excluded_component_classes=[], as_dict=lambda: {},
+            ),
+        )
+        retriever._dense = lambda *args: []
+        retriever._sparse = lambda *args: []
+        retriever._paper = lambda *args: []
+        retriever._workflow = lambda *args: []
+        ordinary_graph = [_source_file_obj(f"ord_graph_{i}", "pandaroot", f"ord/file_{i}.cxx") for i in range(5)]
+        retriever._graph = lambda *args: list(ordinary_graph)
+
+        config = D3_5ExperimentConfig.for_arm(D3_5Arm.STRUCTURED_BRIDGED)
+        plan = RetrievalPlan(
+            intent="api", target_repositories=["pandaroot"], resolved_versions={"pandaroot": "locked"},
+            concepts=[], symbols=[], concept_scopes={}, source_budgets={"code": 1.0}, required_source_types=[],
+            analysis_diagnostics={
+                "d3_experiment": {
+                    "d3_arm": "STRUCTURED_BRIDGED", "selected_rule_ids": list(D3_5_SELECTED_RULE_IDS),
+                    "structured_treatment_enabled": True, "bridge_enabled": True, "selected_legacy_rules_suppressed": True,
+                }
+            },
+        )
+
+        unbridged_cand = _source_file_obj("cand_unbridged_1", "pandaroot", "unbridged/cand_1.cxx")
+        bridged_cand = _source_file_obj("cand_bridged_1", "pandaroot", "bridged/cand_1.cxx")
+
+        contribution = D3StructuredContribution(
+            candidates=[unbridged_cand],
+            bridged_candidates=[bridged_cand],
+            candidate_provenance=[],
+            reachability_receipts=[],
+            bridge_receipts=[],
+            diagnostic_counters={},
+        )
+
+        with patch(
+            "panda_agent.retrieval.build_structured_contribution_from_storage",
+            return_value=contribution,
+        ):
+            res = retriever.retrieve("Additive query", plan, d3_config=config)
+
+        disp = res["d3_experiment"]["displacement_diagnostics"]
+        # unbridged_graph has: [cand_unbridged_1, ord_graph_0, ord_graph_1, ord_graph_2, ord_graph_3] (5 items)
+        # final graph has: [cand_bridged_1, cand_unbridged_1, ord_graph_0, ord_graph_1, ord_graph_2] (5 items)
+        # displaced item relative to unbridged baseline is ord_graph_3
+        self.assertEqual(disp["bridged_candidate_count"], 1)
+        self.assertEqual(disp["graph_candidates_before_bridge"], 5)
+        self.assertEqual(disp["graph_candidates_after_bridge"], 5)
+        self.assertEqual(disp["graph_candidates_displaced_by_prefix"], 1)
+        self.assertEqual(disp["displaced_object_ids"], ["ord_graph_3"])
+        self.assertEqual(disp["bridged_candidate_ids"], ["cand_bridged_1"])
 
 
 class D3_5_ComprehensiveEdgeCasesTests(unittest.TestCase):
@@ -854,11 +1032,12 @@ class D3_5_ComprehensiveEdgeCasesTests(unittest.TestCase):
         result = build_structured_contribution(
             "Test cap 32", plan, resolver=_MockResolver(receipt), graph_reader=reader, bridge_enabled=True
         )
-        self.assertLessEqual(len(result.candidates), GLOBAL_REACHABLE_STRUCTURE_CAP)
+        reached = [r for r in result.reachability_receipts if r["reachability_status"] == "REACHED"]
         exhausted = [
             r for r in result.reachability_receipts
             if r["reachability_status"] == "TRAVERSAL_BUDGET_EXHAUSTED"
         ]
+        self.assertLessEqual(len(reached), GLOBAL_REACHABLE_STRUCTURE_CAP)
         self.assertTrue(len(exhausted) > 0)
 
     def test_missing_and_standard_failures(self):
@@ -937,6 +1116,33 @@ class D3_5_ComprehensiveEdgeCasesTests(unittest.TestCase):
         matched_ids = ambig["lookup_locator"]["matched_object_ids"]
         self.assertIn("src_file_a", matched_ids)
         self.assertIn("src_file_b", matched_ids)
+        self.assertEqual(len(result.bridged_candidates), 0)
+
+    def test_missing_evidence_source_ids_fails_closed(self):
+        """Missing evidence_source_ids on evidence_paths fails closed (Defect 4)."""
+        node_no_src = _gov_object("gov_no_src", obj_type="workflow")
+        node_no_src["metadata"] = {
+            "evidence_paths": ["detectors/lmd/LmdQA/PndLmdTrackQ.cxx"],
+            # missing evidence_source_ids
+        }
+        src_file = _source_file_obj("src_lmd_id", "pandaroot", "detectors/lmd/LmdQA/PndLmdTrackQ.cxx")
+        reader = _MockGraphReader(rows=[node_no_src], source_files=[src_file])
+        receipt = D2ResolutionReceipt(
+            resolutions=[
+                D2Resolution("gov_no_src", "governed_id", "gov_no_src",
+                             RESOLVED_UNIQUE, matched_object_id="gov_no_src",
+                             canonical_object_id="gov_no_src",
+                             evidence=[_d2_evidence("G", "governed_id", "gov_no_src")]),
+            ]
+        )
+        plan = {"target_repositories": ["pandaroot"], "resolved_versions": {"pandaroot": "locked"}}
+        result = build_structured_contribution(
+            "Missing source test", plan, resolver=_MockResolver(receipt), graph_reader=reader, bridge_enabled=True
+        )
+        path_receipts = [b for b in result.bridge_receipts if b["evidence_field_used"] == "evidence_paths"]
+        self.assertEqual(len(path_receipts), 1)
+        self.assertEqual(path_receipts[0]["bridge_status"], "GOVERNED_PROVENANCE_INVALID")
+        self.assertIn("evidence path lacks explicit governed source qualification", path_receipts[0]["reason_included"])
         self.assertEqual(len(result.bridged_candidates), 0)
 
     def test_unauthorized_source_and_version_conflict_fail_closed(self):
@@ -1150,6 +1356,79 @@ class D3_5_ComprehensiveEdgeCasesTests(unittest.TestCase):
         self.assertEqual(len(res), 1)
         self.assertEqual(res[0]["object_id"], "test_obj_1")
         self.assertIn("source_id=%s", conn.query)
+
+
+    def test_d3_5_arms_keep_other_five_rules_active_in_background(self):
+        """Defect 1: D3.5 suppresses only 2 rules, keeping the other 5 historical rules active as background expansions."""
+        project_root = Path(__file__).resolve().parents[2]
+        from panda_agent.config import load_query_expansions
+        rules = load_query_expansions(project_root / "configs" / "query_expansions.yaml").rules
+        question = " || ".join(rule.triggers[0] for rule in rules)
+        all_rule_ids = {rule.rule_id for rule in rules}
+
+        for arm in (D3_5Arm.ABLATION, D3_5Arm.STRUCTURED_UNBRIDGED, D3_5Arm.STRUCTURED_BRIDGED):
+            config = D3_5ExperimentConfig.for_arm(arm)
+            decision = select_matching_query_expansions(question, rules, config)
+            # Only the 2 D3.5 rules are suppressed
+            self.assertEqual(set(decision.suppressed_selected_rule_ids), set(D3_5_SELECTED_RULE_IDS))
+            # The remaining 52 rules (including the other 5 historical D3 rules) remain active
+            other_five_historical = set(SELECTED_D3_RULE_IDS) - set(D3_5_SELECTED_RULE_IDS)
+            active_ids = {r.rule_id for r in decision.active_matching_rules}
+            for hist_rule_id in other_five_historical:
+                self.assertIn(hist_rule_id, active_ids)
+            self.assertEqual(active_ids, all_rule_ids - set(D3_5_SELECTED_RULE_IDS))
+
+    def test_unbridged_baseline_preserves_unbounded_unique_and_ambiguous_seeds(self):
+        """Defect 2: unbridged structured baseline admits >8 seeds and all Tier-D ambiguity candidates without cap."""
+        # 12 unique G seeds + 9 ambiguous Tier-D candidates
+        resolutions = [
+            D2Resolution(f"G_{i}", "governed_id", f"G_{i}", RESOLVED_UNIQUE,
+                         matched_object_id=f"g_obj_{i}", canonical_object_id=f"canon_g_{i}",
+                         evidence=[_d2_evidence("G", "governed_id", f"g_obj_{i}")])
+            for i in range(12)
+        ]
+        resolutions.append(
+            D2Resolution("Amb_9", "descriptive", "Amb_9", AMBIGUOUS,
+                         candidates=[{"object_id": f"amb_obj_{i}", "tier": "D"} for i in range(9)])
+        )
+        receipt = D2ResolutionReceipt(resolutions=resolutions)
+        plan = {"target_repositories": ["pandaroot"], "resolved_versions": {"pandaroot": "locked"}}
+
+        # Unbridged seed derivation admits all 12 + 9 = 21 seeds
+        unbridged_seeds, unb_excluded, _ = derive_unbridged_structured_seeds(receipt, "Test query", plan)
+        self.assertEqual(len(unbridged_seeds), 21)
+
+        # Bridge seed derivation admits exactly 8 (first 8 G seeds, 0 ambiguous)
+        bridge_seeds, br_excluded, _ = derive_d3_5_bridge_seeds(receipt, "Test query", plan)
+        self.assertEqual(len(bridge_seeds), 8)
+        self.assertTrue(any(e.get("reason") == "AMBIGUITY_SET_EXCEEDS_SAFE_SEED_BUDGET" for e in br_excluded))
+
+    def test_evidence_object_ids_does_not_require_evidence_source_ids(self):
+        """Defect 4: evidence_object_ids does not require explicit evidence_source_ids for lookup."""
+        gov_node = _gov_object("gov_obj_src", obj_type="workflow")
+        gov_node["metadata"] = {
+            "evidence_object_ids": ["source_code_target_1"],
+            # note: no evidence_source_ids specified
+        }
+        target_obj = _source_file_obj("source_code_target_1", "pandaroot", "src/target.cxx")
+        reader = _MockGraphReader(rows=[gov_node, target_obj])
+        receipt = D2ResolutionReceipt(
+            resolutions=[
+                D2Resolution("gov_obj_src", "governed_id", "gov_obj_src",
+                             RESOLVED_UNIQUE, matched_object_id="gov_obj_src",
+                             canonical_object_id="gov_obj_src",
+                             evidence=[_d2_evidence("G", "governed_id", "gov_obj_src")]),
+            ]
+        )
+        plan = {"target_repositories": ["pandaroot"], "resolved_versions": {"pandaroot": "locked"}}
+        result = build_structured_contribution(
+            "Evidence object test", plan, resolver=_MockResolver(receipt), graph_reader=reader, bridge_enabled=True
+        )
+        self.assertEqual(len(result.bridged_candidates), 1)
+        self.assertEqual(result.bridged_candidates[0]["object_id"], "source_code_target_1")
+        obj_receipts = [b for b in result.bridge_receipts if b["evidence_field_used"] == "evidence_object_ids"]
+        self.assertEqual(len(obj_receipts), 1)
+        self.assertEqual(obj_receipts[0]["bridge_status"], "BRIDGED_CANDIDATE_INJECTED")
 
 
 if __name__ == "__main__":

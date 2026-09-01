@@ -131,12 +131,9 @@ class D3ArmTests(unittest.TestCase):
             config = D3ExperimentConfig.for_arm(arm)
             self.assertEqual(
                 config.structured_treatment_enabled,
-                arm in {D3Arm.STRUCTURED, D3Arm.STRUCTURED_UNBRIDGED, D3Arm.STRUCTURED_BRIDGED},
+                arm is D3Arm.STRUCTURED,
             )
-            self.assertEqual(
-                config.bridge_enabled,
-                arm is D3Arm.STRUCTURED_BRIDGED,
-            )
+            self.assertFalse(config.bridge_enabled)
             self.assertEqual(config.selected_rule_ids, SELECTED_D3_RULE_IDS)
         with self.assertRaises(ValueError):
             D3ExperimentConfig(
@@ -145,8 +142,8 @@ class D3ArmTests(unittest.TestCase):
             )
         with self.assertRaises(ValueError):
             D3ExperimentConfig(
-                arm=D3Arm.STRUCTURED_BRIDGED,
-                bridge_enabled=False,
+                arm=D3Arm.STRUCTURED,
+                bridge_enabled=True,
                 structured_treatment_enabled=True,
             )
         with self.assertRaises(ValueError):

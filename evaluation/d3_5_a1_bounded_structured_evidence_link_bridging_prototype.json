@@ -1,15 +1,17 @@
 {
   "schema_version": "1.0.0",
-  "checkpoint": "D3.5-A1",
-  "status": "BLOCKED / ISOLATED_MATERIALIZATION_UNAVAILABLE",
-  "base_commit": "0151786856d813661ab29962987f933d17e619c2",
+  "checkpoint": "D3.5-A1-R1",
+  "status": "REPAIRED / AWAITING_ISOLATION_AND_MECHANISM_C",
+  "base_commit": "d84b3c0fe7ffe4bd894990077a20651165cdcfdf",
   "stage_position": {
     "D3": "COMPLETE / SHORTCUT_MIGRATION_EXPERIMENT_DECIDED",
     "D3.5": "IN_PROGRESS",
     "D3.5-A0": "COMPLETE / STRUCTURED_EVIDENCE_LINK_DESIGN_FROZEN",
     "D3.5-A0-R1": "COMPLETE / EVALUATION_IDENTIFIABILITY_AND_RUNTIME_ISOLATION_REPAIRED",
     "D3.5-A0-R2": "COMPLETE / POST_A1_D1_IDENTITY_AND_MATERIALIZATION_FREEZE_REPAIRED",
-    "D3.5-A1": "PROTOTYPE_IMPLEMENTED_AND_VERIFIED_T0 / ISOLATED_MATERIALIZATION_UNAVAILABLE",
+    "D3.5-A1": "PROTOTYPE_IMPLEMENTED_AND_VERIFIED_T0",
+    "D3.5-A1-R1": "COMPLETE / PREREGISTERED_TREATMENT_AND_ADDITIVE_BRIDGE_SEMANTICS_REPAIRED",
+    "D3.5-A1-R2": "NOT_STARTED",
     "D3.5-A2": "NOT_STARTED",
     "D4": "NOT_STARTED"
   },
@@ -18,6 +20,28 @@
     "commit": "0151786856d813661ab29962987f933d17e619c2",
     "structured_artifact": "evaluation/d3_5_a0_structured_evidence_link_design.json",
     "human_readable_artifact": "evaluation/D3_5_A0_STRUCTURED_EVIDENCE_LINK_REACHABILITY_AND_BRIDGING_DESIGN.md"
+  },
+  "r1_defect_repairs": {
+    "defect_1": {
+      "name": "Separate historical D3 seven-rule treatment semantics from D3.5 focused two-rule treatment semantics",
+      "status": "REPAIRED",
+      "details": "D3Arm and D3ExperimentConfig manage historical D3 with 7 rules (lmd_fit_data_chain, event_poca_handoff, pid_two_pass_files, model_factory_theory, effective_acceptance_pipeline, restgas_profile_workflow, root_macro_usage). D3_5Arm and D3_5ExperimentConfig manage D3.5 with 2 focused rules (event_poca_handoff, restgas_profile_workflow). The other 5 historical rules remain active background rules across all four D3.5 arms."
+    },
+    "defect_2": {
+      "name": "Restore exact historical / STRUCTURED_UNBRIDGED structured-path behavior",
+      "status": "REPAIRED",
+      "details": "derive_unbridged_structured_seeds preserves pre-A1 semantics (no 8-seed cap, admits all unique G/S/D seeds, admits all Tier-D ambiguity candidates, no atomic budget constraint). D3.5 bridge independently uses derive_d3_5_bridge_seeds (cap 8, atomic ambiguity constraint)."
+    },
+    "defect_3": {
+      "name": "Make STRUCTURED_BRIDGED genuinely additive",
+      "status": "REPAIRED",
+      "details": "STRUCTURED_BRIDGED composes bridged candidates onto the unbridged graph baseline (unbridged_graph = merge_exact_streams(candidates, ordinary_graph)). When bridge produces 0 candidates, STRUCTURED_BRIDGED graph channel exactly equals STRUCTURED_UNBRIDGED. Prefix displacement is measured relative to unbridged_graph."
+    },
+    "defect_4": {
+      "name": "Require governed source qualification for evidence_paths",
+      "status": "REPAIRED",
+      "details": "evidence_paths requires explicit governed evidence_source_ids matching plan/context scope; missing evidence_source_ids fails closed with GOVERNED_PROVENANCE_INVALID and reason 'evidence path lacks explicit governed source qualification'. evidence_object_ids does not require evidence_source_ids."
+    }
   },
   "d1_identity": {
     "starting_repository_d1_identity": {
@@ -33,51 +57,9 @@
         "curated_workflow_steps": 1
       }
     },
-    "mechanism_c_outcome": "NOT_PERFORMED / NO_CHANGE",
+    "mechanism_c_outcome": "PENDING_R2_GOVERNANCE_DISPOSITION",
     "d3_5_a1_repository_d1_changed": false,
-    "starting_identity_equals_final_identity": true,
-    "final_repository_d1_identity": {
-      "commit_sha": "0151786856d813661ab29962987f933d17e619c2",
-      "authoritative_config_paths": [
-        "configs/seed_objects.yaml",
-        "configs/seed_relations.yaml",
-        "configs/seed_workflows.yaml"
-      ],
-      "counts": {
-        "objects": 24,
-        "accepted_relations": 16,
-        "curated_workflow_steps": 1
-      },
-      "stable_governed_object_ids": [
-        "configuration.restgas_profile",
-        "concept.li_2026.restgas_effective_acceptance",
-        "concept.luminosityfit.luminosity_fit_model",
-        "concept.restgas_longitudinal_efficiency",
-        "data_product.pandaroot.lumi_trks_qa",
-        "data_product.reconstructed_restgas_profile",
-        "data_product.restgas.boost_root",
-        "data_product.restgas.event_poca",
-        "data_product.restgas.pid_final_root",
-        "data_product.restgas.pid_root",
-        "document.pandaroot_sphinx_2023_08_25_dev",
-        "file_pattern.restgas_profile_input",
-        "paper.karavdina_2015.chapter_4",
-        "paper.pflueger_2017.chapter_4",
-        "repository.pandaroot.oct19",
-        "repository.restgas_determination.oct19",
-        "subsystem.luminosityfit.model_and_fit",
-        "subsystem.luminosityfit.panda_data_io",
-        "workflow.pandaroot.generic",
-        "workflow.pandaroot.lmd_reconstruction",
-        "workflow.restgas.first_pass_poca",
-        "workflow.restgas.second_pass_pid",
-        "workflow.restgas_aware_luminosity_acceptance",
-        "workflow.restgas_profile_reconstruction"
-      ],
-      "stable_governed_workflow_step_ids": [
-        "workflow.restgas.first_pass_poca"
-      ]
-    }
+    "starting_identity_equals_final_identity": true
   },
   "isolation_and_materialization_status": {
     "implemented_isolation_mechanism": "StorageSettings(database_url=...) configurable via PANDA_DATABASE_URL, in-memory T0 mock graph reader boundaries",
@@ -91,7 +73,7 @@
   },
   "freeze_booleans": {
     "D3_5_A1_IMPLEMENTATION_FROZEN": true,
-    "D3_5_A2_FINAL_REPOSITORY_D1_IDENTITY_FROZEN": true,
+    "D3_5_A2_FINAL_REPOSITORY_D1_IDENTITY_FROZEN": false,
     "D3_5_EVALUATION_D1_MATERIALIZATION_FROZEN": false,
     "isolated_materialization_matches_final_repository_D1": false,
     "production_materialization_untouched_true": true
@@ -125,19 +107,19 @@
   "implementation_components": [
     {
       "path": "src/panda_agent/d3_structured.py",
-      "responsibility": "Four-arm configuration, atomic Tier-D ambiguity handling, Mechanism A phased typed traversal (containment, predicate/direction allowlist, cap 32), Mechanism B exact terminal materialization (exact path/object, cap 20), reachability and bridge receipts, and displacement diagnostics."
+      "responsibility": "Separate D3 / D3.5 arm configs, derive_unbridged_structured_seeds (unbounded) vs derive_d3_5_bridge_seeds (cap 8, atomic ambiguity), Mechanism A phased typed traversal, Mechanism B terminal exact materialization with mandatory evidence_source_ids for paths, reachability and bridge receipts, additive baseline composition, and displacement diagnostics."
     },
     {
       "path": "src/panda_agent/retrieval.py",
-      "responsibility": "Integration of D3.5 bridge into retrieval pipeline, graph channel prefix precedence via merge_exact_streams, and full trace diagnostic propagation."
+      "responsibility": "Integration of D3.5 bridge into retrieval pipeline, additive graph channel composition (bridged_candidates + unbridged_graph), displacement diagnostics relative to unbridged baseline, and full trace diagnostic propagation."
     },
     {
       "path": "tests/unit/test_d3_5_structured_bridge.py",
-      "responsibility": "Dedicated T0 unit and synthetic tests covering four arms, atomic ambiguity, Mechanism A traversal & budget, Mechanism B exact materialization & caps, receipts, graph prefix displacement diagnostics, and anti-leak checks."
+      "responsibility": "Dedicated T0 unit and synthetic tests covering four arms, 2-rule D3.5 suppression vs 54 background rules, atomic ambiguity, unbounded unbridged baseline vs capped bridge, Mechanism A traversal & budget, Mechanism B exact materialization & source qualification, receipts, additive graph prefix displacement diagnostics, and zero-bridge equivalence."
     },
     {
       "path": "tests/unit/test_d3_structured_shortcut.py",
-      "responsibility": "Regression tests ensuring backward compatibility across all D3 experimental arms."
+      "responsibility": "Regression tests ensuring backward compatibility across all historical D3 experimental arms with 7 frozen rules."
     }
   ],
   "candidate_integration_and_diagnostics": {
@@ -145,6 +127,8 @@
     "physical_channel": "graph",
     "precedence": "prefix",
     "deduplication": "object_id",
+    "composition": "additive (bridged_candidates + unbridged_graph)",
+    "zero_bridge_equivalence": "exact match between STRUCTURED_BRIDGED and STRUCTURED_UNBRIDGED when bridged_candidates is empty",
     "authority_role": "GOVERNED_PROVENANCE_BACKED_ADDITIVE_RETRIEVAL_CANDIDATE",
     "independent_cross_channel_priority": false,
     "extra_rrf_vote": false,
@@ -174,25 +158,25 @@
   },
   "tests": {
     "test_d3_5_structured_bridge": {
-      "command": "$env:PYTHONPATH='src'; python -m unittest discover -s tests/unit -p 'test_d3_5_structured_bridge.py'",
+      "command": "$env:PYTHONPATH='src'; python tests/unit/test_d3_5_structured_bridge.py",
       "result": "PASS",
-      "tests_run": 21
+      "tests_run": 27
     },
     "test_d3_structured_shortcut": {
-      "command": "$env:PYTHONPATH='src'; python -m unittest discover -s tests/unit -p 'test_d3_structured_shortcut.py'",
+      "command": "$env:PYTHONPATH='src'; python tests/unit/test_d3_structured_shortcut.py",
       "result": "PASS",
       "tests_run": 8
     },
-    "all_d3_tests_total": 29,
-    "anti_leak_audit": "PASS: no formal case/question/expected-evidence metadata and no new case-specific mapping occur in runtime bridge logic. Pre-existing frozen D3 selected rule IDs remain only in nonsemantic arm suppression/configuration; Mechanism A/B have zero semantic dependency on them and selected_legacy_payload_reuse_count remains 0.",
+    "all_d3_tests_total": 35,
+    "anti_leak_audit": "PASS: no formal case/question/expected-evidence metadata and no new case-specific mapping occur in runtime bridge logic. Pre-existing frozen D3/D3.5 selected rule IDs remain only in nonsemantic arm suppression/configuration; Mechanism A/B have zero semantic dependency on them and selected_legacy_payload_reuse_count remains 0.",
     "git_diff_check": "PASS"
   },
   "known_limitations": [
     "No synchronized persistent isolated evaluation database was provisioned in this environment (safety approval was not granted); persistent evaluation materialization remains unverified outside T0 in-memory/static fixtures.",
-    "Mechanism C was not performed (no D1 seed configuration change); coverage for genuinely unprovenanced links remains deferred to future governed audits.",
-    "D3.5-A1 is a prototype implementation verified with synthetic T0 tests; no formal retrieval-quality benchmarking or outcome exposure has been executed."
+    "Mechanism C governance disposition remains pending for D3.5-A1-R2.",
+    "D3.5-A1-R1 is a prototype implementation repair verified with synthetic T0 tests; no formal retrieval-quality benchmarking or outcome exposure has been executed."
   ],
-  "lifecycle_decision": "BLOCKED / ISOLATED_MATERIALIZATION_UNAVAILABLE",
-  "blocker_detail": "D3.5-A1 runtime implementation and expanded T0 unit verification are complete, but D3_5_EVALUATION_D1_MATERIALIZATION_FROZEN remains false because the isolated persistent evaluation database target was not provisioned (permission was not granted by safety approval). Per D3.5-A0 Section 18, A1 closeout is blocked until persistent isolated materialization is established under separate authorization.",
-  "next_stage": "BLOCKED — Requires separately authorized isolated evaluation database provisioning before D3.5-A2 execution. D3.5-A2 remains NOT_STARTED."
+  "lifecycle_decision": "REPAIRED / AWAITING_R2_GOVERNANCE_AND_ISOLATION",
+  "blocker_detail": "D3.5-A1-R1 contract defect repairs are complete (D3_5_A1_IMPLEMENTATION_FROZEN = true). D3_5_A2_FINAL_REPOSITORY_D1_IDENTITY_FROZEN and D3_5_EVALUATION_D1_MATERIALIZATION_FROZEN remain false pending D3.5-A1-R2 Mechanism-C governance disposition and persistent isolated evaluation database provisioning.",
+  "next_stage": "D3.5-A1-R2 — Mechanism-C Governance Disposition & Isolated Materialization Freeze"
 }

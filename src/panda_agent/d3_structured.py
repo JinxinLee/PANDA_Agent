@@ -35,6 +35,11 @@ SELECTED_D3_RULE_IDS = (
     "root_macro_usage",
 )
 
+D3_5_SELECTED_RULE_IDS = (
+    "event_poca_handoff",
+    "restgas_profile_workflow",
+)
+
 _TIER_PRIORITY = {"G": 0, "S": 1, "D": 2, "corrective": 3, "N": 4}
 
 SHARED_SEED_CAP = 8
@@ -224,14 +229,19 @@ def _is_source_native_object(cand_obj: Mapping[str, Any]) -> bool:
 class D3Arm(str, Enum):
     LEGACY = "LEGACY"
     ABLATION = "ABLATION"
-    STRUCTURED = "STRUCTURED"  # historical synonym for STRUCTURED_UNBRIDGED
+    STRUCTURED = "STRUCTURED"
+
+
+class D3_5Arm(str, Enum):
+    LEGACY = "LEGACY"
+    ABLATION = "ABLATION"
     STRUCTURED_UNBRIDGED = "STRUCTURED_UNBRIDGED"
     STRUCTURED_BRIDGED = "STRUCTURED_BRIDGED"
 
 
 @dataclass(frozen=True)
 class D3ExperimentConfig:
-    """Small nonsemantic D3/D3.5 treatment configuration."""
+    """Historical nonsemantic D3 treatment configuration (7 rules)."""
 
     arm: D3Arm
     selected_rule_ids: tuple[str, ...] = SELECTED_D3_RULE_IDS
@@ -247,30 +257,68 @@ class D3ExperimentConfig:
             raise ValueError("D3 selected rule IDs must be unique")
         if set(selected) != set(SELECTED_D3_RULE_IDS):
             raise ValueError("D3 experimental modes must suppress exactly the frozen seven rules")
-        expected_structured = arm in {
-            D3Arm.STRUCTURED,
-            D3Arm.STRUCTURED_UNBRIDGED,
-            D3Arm.STRUCTURED_BRIDGED,
-        }
+        expected_structured = arm is D3Arm.STRUCTURED
         if self.structured_treatment_enabled is not expected_structured:
             raise ValueError(
-                "D3 structured treatment must be enabled only for structured arms"
+                "D3 structured treatment must be enabled only for the STRUCTURED arm"
             )
-        expected_bridged = arm is D3Arm.STRUCTURED_BRIDGED
-        if self.bridge_enabled is not expected_bridged:
-            raise ValueError(
-                "D3 bridge must be enabled only for the STRUCTURED_BRIDGED arm"
-            )
+        if self.bridge_enabled:
+            raise ValueError("Historical D3 experiment does not support bridge_enabled")
 
     @classmethod
     def for_arm(cls, arm: D3Arm | str) -> "D3ExperimentConfig":
         normalized = arm if isinstance(arm, D3Arm) else D3Arm(arm)
-        is_structured = normalized in {
-            D3Arm.STRUCTURED,
-            D3Arm.STRUCTURED_UNBRIDGED,
-            D3Arm.STRUCTURED_BRIDGED,
+        return cls(
+            arm=normalized,
+            structured_treatment_enabled=normalized is D3Arm.STRUCTURED,
+            bridge_enabled=False,
+        )
+
+    @property
+    def selected_legacy_rules_suppressed(self) -> bool:
+        return self.arm in {D3Arm.ABLATION, D3Arm.STRUCTURED}
+
+
+@dataclass(frozen=True)
+class D3_5ExperimentConfig:
+    """Focused nonsemantic D3.5 treatment configuration (2 rules)."""
+
+    arm: D3_5Arm
+    selected_rule_ids: tuple[str, ...] = D3_5_SELECTED_RULE_IDS
+    structured_treatment_enabled: bool = False
+    bridge_enabled: bool = False
+
+    def __post_init__(self) -> None:
+        arm = self.arm if isinstance(self.arm, D3_5Arm) else D3_5Arm(self.arm)
+        object.__setattr__(self, "arm", arm)
+        selected = tuple(self.selected_rule_ids)
+        object.__setattr__(self, "selected_rule_ids", selected)
+        if len(selected) != len(set(selected)):
+            raise ValueError("D3.5 selected rule IDs must be unique")
+        if set(selected) != set(D3_5_SELECTED_RULE_IDS):
+            raise ValueError("D3.5 experimental modes must suppress exactly the focused two rules")
+        expected_structured = arm in {
+            D3_5Arm.STRUCTURED_UNBRIDGED,
+            D3_5Arm.STRUCTURED_BRIDGED,
         }
-        is_bridged = normalized is D3Arm.STRUCTURED_BRIDGED
+        if self.structured_treatment_enabled is not expected_structured:
+            raise ValueError(
+                "D3.5 structured treatment must be enabled only for structured arms"
+            )
+        expected_bridged = arm is D3_5Arm.STRUCTURED_BRIDGED
+        if self.bridge_enabled is not expected_bridged:
+            raise ValueError(
+                "D3.5 bridge must be enabled only for the STRUCTURED_BRIDGED arm"
+            )
+
+    @classmethod
+    def for_arm(cls, arm: D3_5Arm | str) -> "D3_5ExperimentConfig":
+        normalized = arm if isinstance(arm, D3_5Arm) else D3_5Arm(arm)
+        is_structured = normalized in {
+            D3_5Arm.STRUCTURED_UNBRIDGED,
+            D3_5Arm.STRUCTURED_BRIDGED,
+        }
+        is_bridged = normalized is D3_5Arm.STRUCTURED_BRIDGED
         return cls(
             arm=normalized,
             structured_treatment_enabled=is_structured,
@@ -280,10 +328,9 @@ class D3ExperimentConfig:
     @property
     def selected_legacy_rules_suppressed(self) -> bool:
         return self.arm in {
-            D3Arm.ABLATION,
-            D3Arm.STRUCTURED,
-            D3Arm.STRUCTURED_UNBRIDGED,
-            D3Arm.STRUCTURED_BRIDGED,
+            D3_5Arm.ABLATION,
+            D3_5Arm.STRUCTURED_UNBRIDGED,
+            D3_5Arm.STRUCTURED_BRIDGED,
         }
 
 
@@ -294,7 +341,7 @@ class D3ExpansionDecision:
     selected_matched_rule_ids: tuple[str, ...]
     suppressed_selected_rule_ids: tuple[str, ...]
 
-    def diagnostics(self, config: D3ExperimentConfig) -> dict[str, Any]:
+    def diagnostics(self, config: D3ExperimentConfig | D3_5ExperimentConfig) -> dict[str, Any]:
         return {
             "d3_arm": config.arm.value,
             "selected_rule_ids": list(config.selected_rule_ids),
@@ -332,7 +379,7 @@ class D3ExpansionDecision:
 def select_matching_query_expansions(
     question: str,
     rules: Iterable[Any],
-    config: D3ExperimentConfig | None,
+    config: D3ExperimentConfig | D3_5ExperimentConfig | None,
 ) -> D3ExpansionDecision:
     """Match rules once and suppress by exact ID before payload access."""
 
@@ -663,12 +710,110 @@ def _seed_authority(tier: str) -> str:
     return "NONAUTHORITATIVE_ADVISORY"
 
 
-def _derive_seeds(
+def derive_unbridged_structured_seeds(
     receipt: Any,
     question: str,
     plan: Mapping[str, Any],
 ) -> tuple[list[_Seed], list[dict[str, Any]], Counter[str]]:
-    """Derive seeds under frozen authority and atomic Tier-D ambiguity rules.
+    """Derive seeds under frozen historical pre-A1 D3 semantics.
+
+    No shared seed cap of 8 and no atomic Tier-D budget constraint.
+    All unique Tier G, Tier S, and Tier D seeds are admitted.
+    All Tier D ambiguous candidate seeds are admitted into the baseline.
+    """
+    seeds: dict[str, _Seed] = {}
+    excluded: list[dict[str, Any]] = []
+    statuses: Counter[str] = Counter()
+
+    for resolution in _field(receipt, "resolutions", []) or []:
+        status = str(_field(resolution, "status", UNRESOLVED))
+        statuses[status] += 1
+        mention = str(_field(resolution, "mention_text", ""))
+        if _is_whole_question_fallback(resolution, question, plan):
+            excluded.append({"mention": mention, "reason": "whole_question_fallback_prohibited"})
+            continue
+        if status == RESOLVED_MULTIPLE:
+            excluded.append({"mention": mention, "reason": "resolved_multiple_inactive"})
+            continue
+
+        diagnostics = _field(resolution, "diagnostics", {}) or {}
+        candidates = _candidate_dicts(resolution)
+        corrective = bool(diagnostics.get("corrective"))
+        if corrective:
+            for candidate in candidates:
+                object_id = str(candidate.get("object_id", ""))
+                if not object_id:
+                    continue
+                seeds.setdefault(
+                    object_id,
+                    _Seed(
+                        object_id=object_id,
+                        mention_text=mention,
+                        support_span=str(_field(resolution, "support_span", mention)),
+                        resolution_status=status,
+                        tier="corrective",
+                        authority_class="NONAUTHORITATIVE_ADVISORY",
+                        matched_object_id=None,
+                        canonical_object_id=None,
+                        allow_traversal=False,
+                    ),
+                )
+            continue
+
+        tier = _resolution_tier(resolution)
+        if status == RESOLVED_UNIQUE:
+            object_id = str(_field(resolution, "matched_object_id", "") or "")
+            if not object_id or tier not in {"G", "S", "D"}:
+                continue
+            canonical = _field(resolution, "canonical_object_id") if tier == "G" else None
+            seeds.setdefault(
+                object_id,
+                _Seed(
+                    object_id=object_id,
+                    mention_text=mention,
+                    support_span=str(_field(resolution, "support_span", mention)),
+                    resolution_status=status,
+                    tier=tier,
+                    authority_class=_seed_authority(tier),
+                    matched_object_id=object_id,
+                    canonical_object_id=str(canonical) if canonical else None,
+                ),
+            )
+            continue
+
+        if status == AMBIGUOUS:
+            for candidate in candidates:
+                object_id = str(candidate.get("object_id", ""))
+                candidate_tier = str(candidate.get("tier", tier))
+                if not object_id or candidate_tier != "D":
+                    continue
+                seeds.setdefault(
+                    object_id,
+                    _Seed(
+                        object_id=object_id,
+                        mention_text=mention,
+                        support_span=str(_field(resolution, "support_span", mention)),
+                        resolution_status=status,
+                        tier="D",
+                        authority_class="NONAUTHORITATIVE_ADVISORY",
+                        matched_object_id=None,
+                        canonical_object_id=None,
+                    ),
+                )
+            continue
+
+        if status == UNRESOLVED:
+            excluded.append({"mention": mention, "reason": "unresolved_no_negative_filter"})
+
+    return [seeds[key] for key in sorted(seeds)], excluded, statuses
+
+
+def derive_d3_5_bridge_seeds(
+    receipt: Any,
+    question: str,
+    plan: Mapping[str, Any],
+) -> tuple[list[_Seed], list[dict[str, Any]], Counter[str]]:
+    """Derive seeds for D3.5 bridge branch under frozen authority and atomic Tier-D ambiguity rules.
 
     Shared seed cap is 8. Independent Tier-G, Tier-S, and Tier-D-unique seeds
     are admitted first in authority order. Complete Tier-D ambiguity sets are
@@ -904,12 +1049,15 @@ def build_structured_contribution(
         raise ValueError("max_candidates must be positive")
     plan_mapping = plan.model_dump(mode="json") if hasattr(plan, "model_dump") else dict(plan)
     receipt = resolver.resolve_shadow(question, plan_mapping)
-    seeds, excluded, statuses = _derive_seeds(receipt, question, plan_mapping)
 
-    seed_by_id = {seed.object_id: seed for seed in seeds}
-    seed_rows = {
+    # 1. Unbridged structured baseline (frozen pre-A1 semantics)
+    unbridged_seeds, unbridged_excluded, unbridged_statuses = derive_unbridged_structured_seeds(
+        receipt, question, plan_mapping
+    )
+    unbridged_seed_by_id = {seed.object_id: seed for seed in unbridged_seeds}
+    unbridged_seed_rows = {
         str(row["object_id"]): row
-        for row in graph_reader.load_objects(sorted(seed_by_id))
+        for row in graph_reader.load_objects(sorted(unbridged_seed_by_id))
         if _object_in_scope(row, plan_mapping, context_sources)
     }
 
@@ -919,16 +1067,6 @@ def build_structured_contribution(
     workflow_by_id: dict[str, dict[str, Any] | None] = {}
     root_seed_by_id: dict[str, str] = {}
     traversable: set[str] = set()
-
-    reachability_receipts: list[dict[str, Any]] = []
-    bridge_receipts: list[dict[str, Any]] = []
-    bridged_candidates: dict[str, dict[str, Any]] = {}
-
-    parent_traversals = 0
-    relation_traversals = 0
-    workflow_traversals = 0
-    bridged_injections = 0
-    bridged_ranked_out = 0
 
     def add_governed_candidate(
         object_id: str,
@@ -970,12 +1108,12 @@ def build_structured_contribution(
         root_seed_by_id[object_id] = seed.object_id
         return True
 
-    # Materialize seeds as governed candidates
-    for root_rank, object_id in enumerate(sorted(seed_rows)):
-        seed = seed_by_id[object_id]
+    # Materialize unbridged seeds as governed candidates
+    for object_id in sorted(unbridged_seed_rows):
+        seed = unbridged_seed_by_id[object_id]
         add_governed_candidate(
             object_id,
-            seed_rows[object_id],
+            unbridged_seed_rows[object_id],
             seed=seed,
             relation_path=[],
             workflow_step=None,
@@ -984,109 +1122,121 @@ def build_structured_contribution(
         if seed.allow_traversal:
             traversable.add(object_id)
 
-    if not bridge_enabled:
-        # Pre-D3.5 legacy/unbridged traversal path
-        frontier = sorted(traversable)
-        for _depth in range(max_relation_hops):
-            if not frontier or len(candidates) >= max_candidates:
-                break
-            new_ids: dict[str, tuple[str, list[dict[str, Any]], dict[str, Any] | None, str]] = {}
-            for edge in graph_reader.load_accepted_relations(frontier):
-                if edge.get("review_status") != "accepted" or edge.get("predicate") == "SAME_AS":
-                    continue
-                subject = str(edge.get("subject_id", ""))
-                obj = str(edge.get("object_id", ""))
-                for current, neighbor, direction in (
-                    (subject, obj, "forward"),
-                    (obj, subject, "reverse"),
+    # Pre-D3.5 legacy/unbridged traversal path (always run for unbridged baseline)
+    frontier = sorted(traversable)
+    relation_traversals = 0
+    workflow_traversals = 0
+    for _depth in range(max_relation_hops):
+        if not frontier or len(candidates) >= max_candidates:
+            break
+        new_ids: dict[str, tuple[str, list[dict[str, Any]], dict[str, Any] | None, str]] = {}
+        for edge in graph_reader.load_accepted_relations(frontier):
+            if edge.get("review_status") != "accepted" or edge.get("predicate") == "SAME_AS":
+                continue
+            subject = str(edge.get("subject_id", ""))
+            obj = str(edge.get("object_id", ""))
+            for current, neighbor, direction in (
+                (subject, obj, "forward"),
+                (obj, subject, "reverse"),
+            ):
+                if (
+                    current not in frontier
+                    or not neighbor
+                    or neighbor in candidates
+                    or neighbor in new_ids
                 ):
-                    if (
-                        current not in frontier
-                        or not neighbor
-                        or neighbor in candidates
-                        or neighbor in new_ids
-                    ):
-                        continue
-                    path = [
-                        *path_by_id.get(current, []),
-                        {
-                            "edge_id": edge.get("edge_id"),
-                            "predicate": edge.get("predicate"),
-                            "subject_id": subject,
-                            "object_id": obj,
-                            "traversal_direction": direction,
-                        },
-                    ]
-                    new_ids[neighbor] = (
-                        current,
-                        path,
-                        workflow_by_id.get(current),
-                        "accepted D1 relation traversal",
-                    )
-
-            for step in graph_reader.load_curated_workflow_steps(frontier):
-                participants = _workflow_participants(step)
-                anchors = sorted(set(frontier).intersection(participants))
-                if not anchors:
                     continue
-                current = anchors[0]
-                step_receipt = {
-                    "workflow_id": step.get("workflow_id"),
-                    "step_id": step.get("step_id"),
-                    "name": step.get("name"),
-                    "participants": participants,
-                }
-                for neighbor in sorted(participants):
-                    if not neighbor or neighbor in candidates or neighbor in new_ids:
-                        continue
-                    new_ids[neighbor] = (
-                        current,
-                        list(path_by_id.get(current, [])),
-                        step_receipt,
-                        "accepted curated workflow-step participant",
-                    )
-
-            rows = {
-                str(row["object_id"]): row
-                for row in graph_reader.load_objects(sorted(new_ids))
-                if _object_in_scope(row, plan_mapping, context_sources)
-            }
-            next_frontier: list[str] = []
-            for object_id in sorted(rows):
-                current, path, workflow_step, reason = new_ids[object_id]
-                root_seed_id = root_seed_by_id.get(current, current)
-                seed = seed_by_id[root_seed_id]
-                added = add_governed_candidate(
-                    object_id,
-                    rows[object_id],
-                    seed=seed,
-                    relation_path=path,
-                    workflow_step=workflow_step,
-                    reason=reason,
+                path = [
+                    *path_by_id.get(current, []),
+                    {
+                        "edge_id": edge.get("edge_id"),
+                        "predicate": edge.get("predicate"),
+                        "subject_id": subject,
+                        "object_id": obj,
+                        "traversal_direction": direction,
+                    },
+                ]
+                new_ids[neighbor] = (
+                    current,
+                    path,
+                    workflow_by_id.get(current),
+                    "accepted D1 relation traversal",
                 )
-                if not added:
+
+        for step in graph_reader.load_curated_workflow_steps(frontier):
+            participants = _workflow_participants(step)
+            anchors = sorted(set(frontier).intersection(participants))
+            if not anchors:
+                continue
+            current = anchors[0]
+            step_receipt = {
+                "workflow_id": step.get("workflow_id"),
+                "step_id": step.get("step_id"),
+                "name": step.get("name"),
+                "participants": participants,
+            }
+            for neighbor in sorted(participants):
+                if not neighbor or neighbor in candidates or neighbor in new_ids:
                     continue
-                root_seed_by_id[object_id] = root_seed_id
-                if reason == "accepted D1 relation traversal":
-                    relation_traversals += 1
-                else:
-                    workflow_traversals += 1
-                next_frontier.append(object_id)
-            frontier = next_frontier
+                new_ids[neighbor] = (
+                    current,
+                    list(path_by_id.get(current, [])),
+                    step_receipt,
+                    "accepted curated workflow-step participant",
+                )
 
-    else:
-        # D3.5 Bounded Structured Evidence-Link Bridging
-        # Mechanism A: Phased Typed Transition Budget per root-to-provenance path
-        # Phase 1: Seed (up to 8)
-        # Phase 2: Containment Context (0 or 1 upward child->parent per seed)
-        # Phase 3: Semantic Reachability (0 or 1 accepted relation OR 1 curated workflow step per path)
-        # Phase 4: Mechanism B Terminal Evidence Provenance Materialization
+        rows = {
+            str(row["object_id"]): row
+            for row in graph_reader.load_objects(sorted(new_ids))
+            if _object_in_scope(row, plan_mapping, context_sources)
+        }
+        next_frontier: list[str] = []
+        for object_id in sorted(rows):
+            current, path, workflow_step, reason = new_ids[object_id]
+            root_seed_id = root_seed_by_id.get(current, current)
+            seed = unbridged_seed_by_id[root_seed_id]
+            added = add_governed_candidate(
+                object_id,
+                rows[object_id],
+                seed=seed,
+                relation_path=path,
+                workflow_step=workflow_step,
+                reason=reason,
+            )
+            if not added:
+                continue
+            root_seed_by_id[object_id] = root_seed_id
+            if reason == "accepted D1 relation traversal":
+                relation_traversals += 1
+            else:
+                workflow_traversals += 1
+            next_frontier.append(object_id)
+        frontier = next_frontier
 
-        reachable_structure_count = len(candidates)
+    # 2. D3.5 Bounded Structured Evidence-Link Bridging (if bridge_enabled)
+    reachability_receipts: list[dict[str, Any]] = []
+    bridge_receipts: list[dict[str, Any]] = []
+    bridged_candidates: dict[str, dict[str, Any]] = {}
+    parent_traversals = 0
+    bridged_injections = 0
+    bridged_ranked_out = 0
+
+    if bridge_enabled:
+        bridge_seeds, bridge_excluded, bridge_statuses = derive_d3_5_bridge_seeds(
+            receipt, question, plan_mapping
+        )
+        bridge_seed_by_id = {seed.object_id: seed for seed in bridge_seeds}
+        bridge_seed_rows = {
+            str(row["object_id"]): row
+            for row in graph_reader.load_objects(sorted(bridge_seed_by_id))
+            if _object_in_scope(row, plan_mapping, context_sources)
+        }
+
+        reachable_structure_count = len(bridge_seed_rows)
         reachability_counter = 0
         bridge_counter = 0
 
-        if not seed_rows:
+        if not bridge_seed_rows:
             reachability_receipts.append(
                 StructuredReachabilityReceipt(
                     reachability_receipt_id="reach_0001",
@@ -1111,12 +1261,14 @@ def build_structured_contribution(
                 ).as_dict()
             )
 
-        for root_rank, root_seed_id in enumerate(sorted(seed_rows)):
-            root_seed = seed_by_id[root_seed_id]
+        reached_nodes_set: set[str] = set(bridge_seed_rows)
+
+        for root_rank, root_seed_id in enumerate(sorted(bridge_seed_rows)):
+            root_seed = bridge_seed_by_id[root_seed_id]
             if not root_seed.allow_traversal:
                 continue
 
-            seed_row = seed_rows[root_seed_id]
+            seed_row = bridge_seed_rows[root_seed_id]
             seed_type = str(seed_row.get("object_type", ""))
 
             candidate_paths: list[dict[str, Any]] = []
@@ -1321,7 +1473,7 @@ def build_structured_contribution(
                 budget_c = p["budget_consumed"]
                 budget_rem = max(0, MAX_NONTERMINAL_TRANSITIONS_PER_PATH - budget_c)
 
-                if target_id is not None and target_id not in candidates:
+                if target_id is not None and target_id not in reached_nodes_set:
                     if reachable_structure_count >= GLOBAL_REACHABLE_STRUCTURE_CAP:
                         reachability_counter += 1
                         r_id = f"reach_{reachability_counter:04d}"
@@ -1342,6 +1494,8 @@ def build_structured_contribution(
                                     "parent_transitions": p["parent_transitions"],
                                     "workflow_ids": p["workflow_ids"],
                                     "workflow_step_ids": p["workflow_step_ids"],
+                                    "budget_consumed": budget_c,
+                                    "budget_remaining": budget_rem,
                                 },
                                 budget_consumed=budget_c,
                                 budget_remaining=budget_rem,
@@ -1350,22 +1504,10 @@ def build_structured_contribution(
                         )
                         continue
 
-                    added = add_governed_candidate(
-                        target_id,
-                        target_row,
-                        seed=root_seed,
-                        relation_path=p["relation_path"],
-                        workflow_step=p["workflow_step_receipt"],
-                        reason=p["target_reason"],
-                    )
-                    if added:
-                        reachable_structure_count += 1
-                        if p["step_type"] == "PARENT":
-                            parent_traversals += 1
-                        elif p["step_type"] == "RELATION":
-                            relation_traversals += 1
-                        elif p["step_type"] == "WORKFLOW":
-                            workflow_traversals += 1
+                    reached_nodes_set.add(target_id)
+                    reachable_structure_count += 1
+                    if p["step_type"] == "PARENT":
+                        parent_traversals += 1
 
                 reachability_counter += 1
                 r_id = f"reach_{reachability_counter:04d}"
@@ -1434,7 +1576,7 @@ def build_structured_contribution(
                             locator=None,
                             object_type=None,
                             candidate_authority_role="GOVERNED_PROVENANCE_BACKED_ADDITIVE_RETRIEVAL_CANDIDATE",
-                            reason_included=f"reached origin carries no evidence provenance",
+                            reason_included="reached origin carries no evidence provenance",
                             bridge_status="GOVERNED_PROVENANCE_NOT_FOUND",
                         ).as_dict()
                     )
@@ -1651,40 +1793,63 @@ def build_structured_contribution(
                             )
                             continue
 
+                        if not evidence_source_ids:
+                            bridge_receipts.append(
+                                StructuredEvidenceBridgeReceipt(
+                                    bridge_receipt_id=b_id,
+                                    reachability_receipt_id=r_id,
+                                    evidence_provenance_origin_type=origin_type,
+                                    evidence_provenance_origin_id=origin_id,
+                                    evidence_field_used="evidence_paths",
+                                    governance_review_status=review_status,
+                                    creation_or_review_metadata=creation_metadata,
+                                    lookup_source_ids=[],
+                                    lookup_source_version_ids=source_version_ids,
+                                    lookup_locator=normalized_path,
+                                    lookup_match_count=0,
+                                    source_native_candidate_object_id=None,
+                                    source_id=None,
+                                    source_version_id=None,
+                                    locator=None,
+                                    object_type=None,
+                                    candidate_authority_role="GOVERNED_PROVENANCE_BACKED_ADDITIVE_RETRIEVAL_CANDIDATE",
+                                    reason_included="evidence path lacks explicit governed source qualification",
+                                    bridge_status="GOVERNED_PROVENANCE_INVALID",
+                                ).as_dict()
+                            )
+                            continue
+
                         plan_targets = [str(v) for v in (plan_mapping.get("target_repositories") or []) if v]
                         allowed_sources = set(plan_targets) | {str(s) for s in context_sources if s}
-                        if evidence_source_ids:
-                            if allowed_sources:
-                                candidate_sources = [s for s in evidence_source_ids if s in allowed_sources]
-                                if not candidate_sources:
-                                    bridge_receipts.append(
-                                        StructuredEvidenceBridgeReceipt(
-                                            bridge_receipt_id=b_id,
-                                            reachability_receipt_id=r_id,
-                                            evidence_provenance_origin_type=origin_type,
-                                            evidence_provenance_origin_id=origin_id,
-                                            evidence_field_used="evidence_paths",
-                                            governance_review_status=review_status,
-                                            creation_or_review_metadata=creation_metadata,
-                                            lookup_source_ids=evidence_source_ids,
-                                            lookup_source_version_ids=source_version_ids,
-                                            lookup_locator=normalized_path,
-                                            lookup_match_count=0,
-                                            source_native_candidate_object_id=None,
-                                            source_id=None,
-                                            source_version_id=None,
-                                            locator=None,
-                                            object_type=None,
-                                            candidate_authority_role="GOVERNED_PROVENANCE_BACKED_ADDITIVE_RETRIEVAL_CANDIDATE",
-                                            reason_included="explicit evidence sources do not intersect plan/context scope",
-                                            bridge_status="VERSION_SCOPE_CONFLICT",
-                                        ).as_dict()
-                                    )
-                                    continue
-                            else:
-                                candidate_sources = list(evidence_source_ids)
+                        if allowed_sources:
+                            candidate_sources = [s for s in evidence_source_ids if s in allowed_sources]
+                            if not candidate_sources:
+                                bridge_receipts.append(
+                                    StructuredEvidenceBridgeReceipt(
+                                        bridge_receipt_id=b_id,
+                                        reachability_receipt_id=r_id,
+                                        evidence_provenance_origin_type=origin_type,
+                                        evidence_provenance_origin_id=origin_id,
+                                        evidence_field_used="evidence_paths",
+                                        governance_review_status=review_status,
+                                        creation_or_review_metadata=creation_metadata,
+                                        lookup_source_ids=evidence_source_ids,
+                                        lookup_source_version_ids=source_version_ids,
+                                        lookup_locator=normalized_path,
+                                        lookup_match_count=0,
+                                        source_native_candidate_object_id=None,
+                                        source_id=None,
+                                        source_version_id=None,
+                                        locator=None,
+                                        object_type=None,
+                                        candidate_authority_role="GOVERNED_PROVENANCE_BACKED_ADDITIVE_RETRIEVAL_CANDIDATE",
+                                        reason_included="explicit evidence sources do not intersect plan/context scope",
+                                        bridge_status="VERSION_SCOPE_CONFLICT",
+                                    ).as_dict()
+                                )
+                                continue
                         else:
-                            candidate_sources = list(allowed_sources) if allowed_sources else []
+                            candidate_sources = list(evidence_source_ids)
 
                         resolved_versions = plan_mapping.get("resolved_versions", {}) or {}
                         version_conflict = False
@@ -1692,7 +1857,7 @@ def build_structured_contribution(
                             if src in resolved_versions and source_version_ids:
                                 exp_ver = str(resolved_versions[src])
                                 if not any(v == exp_ver or v == f"{src}@{exp_ver}" for v in source_version_ids):
-                                    if any(v.startswith(f"{src}@") for v in source_version_ids):
+                                    if any(v.startswith(f"{src}@") or v == str(resolved_versions.get(v.split("@")[0])) for v in source_version_ids):
                                         version_conflict = True
                                         break
 
@@ -1886,13 +2051,18 @@ def build_structured_contribution(
                             ).as_dict()
                         )
 
+    active_statuses = bridge_statuses if bridge_enabled else unbridged_statuses
+    active_seeds = bridge_seeds if bridge_enabled else unbridged_seeds
+    active_seed_rows = bridge_seed_rows if bridge_enabled else unbridged_seed_rows
+    active_excluded = bridge_excluded if bridge_enabled else unbridged_excluded
+
     counters = {
         "structured_resolution_attempt_count": 1,
-        "structured_resolution_status_counts": dict(sorted(statuses.items())),
+        "structured_resolution_status_counts": dict(sorted(active_statuses.items())),
         "structured_resolution_hit_count": sum(
-            1 for seed in seeds if seed.object_id in seed_rows
+            1 for seed in active_seeds if seed.object_id in active_seed_rows
         ),
-        "structured_seed_count": len(seed_rows),
+        "structured_seed_count": len(active_seed_rows),
         "structured_relation_traversal_count": relation_traversals,
         "structured_workflow_traversal_count": workflow_traversals,
         "structured_parent_traversal_count": parent_traversals,
@@ -1913,7 +2083,7 @@ def build_structured_contribution(
         bridge_receipts=bridge_receipts,
         resolution_receipt=_as_dict(receipt),
         diagnostic_counters=counters,
-        excluded_resolution_reasons=excluded,
+        excluded_resolution_reasons=active_excluded,
     )
 
 
@@ -1941,14 +2111,22 @@ def build_structured_contribution_from_storage(
 
 __all__ = [
     "SELECTED_D3_RULE_IDS",
+    "D3_5_SELECTED_RULE_IDS",
+    "SHARED_SEED_CAP",
+    "GLOBAL_REACHABLE_STRUCTURE_CAP",
+    "GLOBAL_BRIDGED_CANDIDATE_CAP",
     "D3Arm",
+    "D3_5Arm",
     "D3ExperimentConfig",
+    "D3_5ExperimentConfig",
     "D3ExpansionDecision",
     "StructuredReachabilityReceipt",
     "StructuredEvidenceBridgeReceipt",
     "D3StructuredContribution",
     "D3StructuredGraphReader",
     "PostgresD3StructuredGraphReader",
+    "derive_unbridged_structured_seeds",
+    "derive_d3_5_bridge_seeds",
     "select_matching_query_expansions",
     "build_structured_contribution",
     "build_structured_contribution_from_storage",

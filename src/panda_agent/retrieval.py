@@ -14,6 +14,8 @@ from qdrant_client import models
 
 from panda_agent.config import load_query_expansions, load_retrieval_policies
 from panda_agent.d3_structured import (
+    D3_5Arm,
+    D3_5ExperimentConfig,
     D3Arm,
     D3ExperimentConfig,
     build_structured_contribution_from_storage,
@@ -871,7 +873,7 @@ def build_semantic_query(question: str, plan: RetrievalPlan) -> SemanticQuery:
     components: list[SemanticQueryComponent] = []
     excluded = ["rejected_analyzer_items", "reviewed_expansions", "repository_metadata", "version_metadata"]
     
-    diag = plan.analysis_diagnostics
+    diag = getattr(plan, "analysis_diagnostics", {}) or {}
     accepted = diag.get("analyzer_accepted_semantic_delta", {})
     lowered_question = question.casefold()
 
@@ -952,7 +954,7 @@ class Retriever:
         self,
         question: str,
         *,
-        d3_config: D3ExperimentConfig | None = None,
+        d3_config: D3ExperimentConfig | D3_5ExperimentConfig | None = None,
     ) -> DeterministicQueryParse:
         """Collect only existing raw-query and reviewed knowledge before analysis."""
         parsed = DeterministicQueryParse()
@@ -1064,7 +1066,7 @@ class Retriever:
         self,
         question: str,
         *,
-        d3_config: D3ExperimentConfig | None = None,
+        d3_config: D3ExperimentConfig | D3_5ExperimentConfig | None = None,
     ) -> RetrievalPlan:
         if not question.strip():
             raise ValueError("question cannot be empty")
@@ -1590,7 +1592,7 @@ class Retriever:
     @staticmethod
     def _validate_d3_plan(
         plan: RetrievalPlan,
-        config: D3ExperimentConfig,
+        config: D3ExperimentConfig | D3_5ExperimentConfig,
     ) -> dict[str, Any]:
         diagnostics = plan.analysis_diagnostics.get("d3_experiment")
         if not isinstance(diagnostics, dict):
@@ -1615,7 +1617,7 @@ class Retriever:
         question: str,
         plan: RetrievalPlan | None = None,
         *,
-        d3_config: D3ExperimentConfig | None = None,
+        d3_config: D3ExperimentConfig | D3_5ExperimentConfig | None = None,
     ) -> dict[str, Any]:
         plan_was_supplied = plan is not None
         plan = plan or self.analyze(question, d3_config=d3_config)
@@ -1644,24 +1646,25 @@ class Retriever:
                 max_relation_hops=min(2, self.policies.max_relation_hops),
                 bridge_enabled=d3_config.bridge_enabled,
             )
-            stream_to_prefix = (
-                structured_contribution.bridged_candidates
-                if d3_config.bridge_enabled
-                else structured_contribution.candidates
-            )
             before_graph = list(rankings["graph"])
-            rankings["graph"] = merge_exact_streams(
-                stream_to_prefix,
+            unbridged_graph = merge_exact_streams(
+                structured_contribution.candidates,
                 before_graph,
                 limit,
             )
             if d3_config.bridge_enabled:
+                rankings["graph"] = merge_exact_streams(
+                    structured_contribution.bridged_candidates,
+                    unbridged_graph,
+                    limit,
+                )
                 structured_contribution.compute_displacement_diagnostics(
-                    before_graph=before_graph,
+                    before_graph=unbridged_graph,
                     after_graph=rankings["graph"],
                     bridged_candidates=structured_contribution.bridged_candidates,
                 )
             else:
+                rankings["graph"] = unbridged_graph
                 structured_contribution.displacement_diagnostics = {
                     "bridged_candidate_count": 0,
                     "graph_candidates_before_bridge": len(before_graph),
@@ -1795,7 +1798,7 @@ class Retriever:
             "evidence": [item.model_dump(mode="json") for item in selected],
         }
         if d3_config is not None and d3_diagnostics is not None:
-            counters = dict(d3_diagnostics["diagnostic_counters"])
+            counters = dict(d3_diagnostics.get("diagnostic_counters") or {})
             d3_receipt: dict[str, Any] = {
                 "d3_arm": d3_config.arm.value,
                 "selected_rule_ids": list(d3_config.selected_rule_ids),
@@ -1803,7 +1806,7 @@ class Retriever:
                 "bridge_enabled": d3_config.bridge_enabled,
                 "selected_legacy_rules_suppressed": d3_config.selected_legacy_rules_suppressed,
                 "suppressed_selected_rule_ids": list(
-                    d3_diagnostics["suppressed_selected_rule_ids"]
+                    d3_diagnostics.get("suppressed_selected_rule_ids") or []
                 ),
             }
             if structured_contribution is not None:
