@@ -1,0 +1,271 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint": "D3.5-A3",
+  "stage_name": "D3.5-A3 — Post-A2 Bridge Viability & Downstream Competition Decision",
+  "stage_type": "post-A2 design/decision stage; no runtime, D1, database, or retrieval changes",
+  "starting_head": "e8e2d5aa532a6b54ebdcc728804b211e44fb2132",
+  "frozen_a2_identity": {
+    "frozen_a1_scientific_state_anchor": "470b62f823c3e65637604da2f614461c1a81d5b6",
+    "a2_pre_outcome_execution_commit": "9467061c81a288f2c3b01548b7eb39202f38e91c",
+    "a2_final_result_commit": "e8e2d5aa532a6b54ebdcc728804b211e44fb2132",
+    "a2_machine_artifact": "evaluation/d3_5_a2_focused_evidence_link_recovery_validation.json",
+    "a2_raw_records": "data/evaluation/runs/d3_5_a2_focused_20260901/records.jsonl",
+    "final_repository_d1_sha": "9b5a84996c30eaf1a297924b36452a90fe6d84d2"
+  },
+  "frozen_a2_verdict": {
+    "verdict": "PARTIAL / TARGETED_RECOVERY_MIXED",
+    "experiment_valid": true,
+    "bridge_pool_level_value": "DEMONSTRATED",
+    "bridge_end_to_end_final_evidence_value": "NOT_VALIDATED",
+    "d3_5_lifecycle": "COMPLETE / STRUCTURED_EVIDENCE_LINK_BRIDGING_NOT_VALIDATED",
+    "frozen_causal_result": {
+      "legacy_minus_ablation": "+0.4 final evidence",
+      "unbridged_minus_ablation": "0.0 final / 0.0 combined",
+      "bridged_minus_unbridged": "0.0 final / +0.3 combined",
+      "bridged_minus_legacy": "-0.4 final"
+    },
+    "frozen_mechanism_status": {
+      "mechanism_A_governed_structural_reachability": "VALIDATED_OBSERVED",
+      "mechanism_B_exact_provenance_materialization": "VALIDATED_OBSERVED",
+      "mechanism_C_governed_coverage_use": "PARTIALLY_OBSERVED",
+      "bridge_pool_level_candidate_injection": "DEMONSTRATED",
+      "bridge_end_to_end_final_evidence_recovery": "NOT_VALIDATED"
+    }
+  },
+  "a2_audit_record_repairs": {
+    "repair_id": "D3.5-A3_A2_AUDIT_RECORD_REPAIR",
+    "commit_role_naming_correction": {
+      "frozen_scientific_state_anchor": "470b62f823c3e65637604da2f614461c1a81d5b6 (A1-R3 state before A2 evaluation-only files were added; no longer described as the manifest commit)",
+      "pre_outcome_execution_commit": "9467061c81a288f2c3b01548b7eb39202f38e91c (contains the execution manifest + the A2 evaluation runner; existed before the first formal cell)",
+      "git_head_during_run": "9467061c81a288f2c3b01548b7eb39202f38e91c",
+      "final_result_commit": "e8e2d5aa532a6b54ebdcc728804b211e44fb2132"
+    },
+    "cell_rerun_vs_model_attempt_correction": {
+      "FORMAL_CELL_RERUNS": 0,
+      "EXTRA_GENERATION_ATTEMPTS": 2,
+      "ATTRIBUTION": "internal transient-retry attempts of the frozen vertex generate_json client (retry loop up to 3 attempts; each attempt records one generation request before the API call), observed once in g021/ABLATION (execution_sequence 6, generation_calls=3, model_calls=4) and once in n004/LEGACY (execution_sequence 21, generation_calls=3, model_calls=4), each contributing +1 generation_calls and +1 model_calls; the retried stage (analyzer vs reranker) per cell is NOT_DETERMINABLE_FROM_PERSISTED_RECEIPT",
+      "key_fact": "no formal A2 cell was discretionarily rerun"
+    },
+    "scientific_metrics_changed": false,
+    "verdict_changed": false,
+    "cell_identities_changed": false
+  },
+  "root_cause_matrix": {
+    "question": "Is the next problem genuinely a downstream competition/admission problem rather than another reachability, D1, or provenance problem?",
+    "explanations": {
+      "A_reachability_failure": {
+        "status": "REJECTED",
+        "evidence": "all attempted structural paths were reached with receipts (g036: 7 REACHED receipts including the preregistered parent+relation/workflow paths; g021: PARAMETERIZES edge reached); zero STRUCTURAL_PATH_NOT_FOUND, zero TRAVERSAL_BUDGET_EXHAUSTED"
+      },
+      "B_provenance_materialization_failure": {
+        "status": "REJECTED",
+        "evidence": "the required source-native candidates were materialized and injected (g036 ana_dpm.C via bridge_0005 from edge.2e09628416a01ce2461d752a; g021 e1 prod_sim_hvmaps.C via bridge_0010 from edge.ea3a79d222f0ca6cc0e6df72), each with exact frozen source versions"
+      },
+      "C_source_version_qualification_failure": {
+        "status": "REJECTED",
+        "evidence": "VERSION_SCOPE_CONFLICT never triggered in any of the 12 structured-arm executions; all bridged candidates carried exact frozen source_version_ids"
+      },
+      "D_candidate_cap_failure": {
+        "status": "REJECTED",
+        "evidence": "no cap bound the required candidates: g036 injected 3 of 3 bridge candidates (0 capped out); g021 injected prod_sim_hvmaps.C within the 20-cap (the cap affected breadth — 42 of 62 evidence objects — not the required candidate)"
+      },
+      "E_graph_stream_displacement_or_competition": {
+        "status": "PARTIAL",
+        "evidence": "the required candidates themselves entered the graph stream and the combined pool (combined recall g036 1.0, g021 0.5); displacement affected ordinary candidates (g021: 4; g020: 20/20) but did not remove the bridge candidates from the pool — displacement is a selectivity risk, not the primary loss point"
+      },
+      "F_cross_channel_fusion_admission_failure": {
+        "status": "SUPPORTED",
+        "evidence": "PRIMARY. Both required candidates scored below the fused top-30 rerank-pool cutoff: g036 ana_dpm.C fused rank 61 (score 0.012698 vs cutoff 0.015789, shortfall 0.003091); g021 prod_sim_hvmaps.C fused rank 53 (score 0.011594 vs cutoff 0.014286, shortfall 0.002692). Single-channel graph candidates (weight 0.8/(60+rank)) cannot outrank multi-channel exact(2.0)/dense(1.0)/sparse(1.0)/paper(1.15)/workflow(1.2) competition"
+      },
+      "G_reranker_failure": {
+        "status": "REJECTED_AS_CAUSE_NOT_TESTED_ON_BRIDGE_CANDIDATES",
+        "evidence": "the bridge candidates never reached the reranker (not in the fused top-30 pool), so the reranker cannot be the first failed boundary; reranker behavior on bridge candidates remains untested"
+      },
+      "H_final_selector_failure": {
+        "status": "REJECTED_AS_CAUSE_NOT_TESTED_ON_BRIDGE_CANDIDATES",
+        "evidence": "selector never saw the bridge candidates (they were already absent from the rerank pool and final ranking)"
+      },
+      "I_stochastic_analyzer_reranker_variance": {
+        "status": "REJECTED_AS_PRIMARY_CAUSE",
+        "evidence": "the loss is deterministic and exactly recomputable from frozen channel rankings and frozen fusion weights (recomputation reproduces the stored fusion_top30 exactly for both cells); the observed temperature-0 variance class affected only metric-neutral control R@5/MRR spreads with final evidence arm-stable"
+      }
+    },
+    "conclusion": "the primary and first downstream failure boundary is cross-channel fusion admission (fused candidate set -> rerank-pool admission); reachability, D1, and provenance are not the binding constraints"
+  },
+  "positive_case_decomposition": {
+    "g036": {
+      "chain": "governed D2 seed (data_product.restgas.event_poca, Tier S, RESOLVED_UNIQUE) -> bounded structured reachability (REACHED, budget <= 2) -> governed provenance (relation evidence_object_ids on edge.2e09628416a01ce2461d752a) -> source-native bridge candidate (object.5cae2ceab6e67bb4c9065331 = macro/target/ana_dpm.C, source restgas_determination) -> graph stream (prefix position 3/16) -> candidate pool (combined recall 1.0) -> FUSED RERANK-POOL ADMISSION: LOST HERE (fused rank 61, 0.012698 < cutoff 0.015789) -> reranker (never reached) -> final selector (never reached)",
+      "first_failed_downstream_boundary": "fused candidate set -> rerank-pool admission",
+      "note": "no inference beyond persisted diagnostics: the score shortfall and rank are recomputed exactly from persisted channel rankings and the frozen fusion weights"
+    },
+    "g021": {
+      "e1_prod_sim_hvmaps.C": {
+        "failure_class": "downstream competition",
+        "chain": "configuration.restgas_profile seed -> PARAMETERIZES edge (edge.ea3a79d222f0ca6cc0e6df72, Mechanism-C governed) -> materialized into 20 bridge candidates including prod_sim_hvmaps.C (bridge_0010) -> graph stream (position 9/20) -> candidate pool (combined recall 0.5 for e1) -> FUSED RERANK-POOL ADMISSION: LOST HERE (fused rank 53, 0.011594 < cutoff 0.014286) -> reranker/selector never reached",
+        "first_failed_downstream_boundary": "fused candidate set -> rerank-pool admission"
+      },
+      "e2_pndtargetgenerator.cxx": {
+        "failure_class": "structural seed/reachability coverage boundary (NOT downstream competition)",
+        "chain": "the provenance-bearing edge (file_pattern.restgas_profile_input PRODUCES_INPUT_FOR workflow.restgas_profile_reconstruction, edge.81276373f106c8758d5aec92) originates from an object that was not resolved as a D2 seed in this question (resolution statuses: RESOLVED_UNIQUE 1, UNRESOLVED 2); the frozen one-transition budget from the actual seed never reaches that edge",
+        "first_failed_downstream_boundary": "D2 seed resolution / structural reachability (upstream of the bridge entirely)",
+        "disposition": "recorded as a remaining seed/reachability coverage boundary; Mechanism-C governance remains frozen and is not reopened or repaired here"
+      },
+      "note": "e1 and e2 are two different failure classes and are not collapsed"
+    }
+  },
+  "control_expansion_analysis": {
+    "g020": {
+      "bridged_candidates": 20,
+      "candidates_capped_out": 92,
+      "graph_candidates_displaced": "20 / 20 (all ordinary graph candidates displaced at the graph limit)",
+      "control_outcome_regression": false,
+      "control_scope_leakage": false,
+      "control_expansion_signal": true,
+      "fan_out_mechanics": "a single Tier-D ambiguous seed (boost_root, ambiguity set 2, atomically admitted) reached two provenance-bearing accepted relations whose combined evidence_object_ids fan out to 112 governed objects; 20 fit the bridge cap",
+      "interpretation": "outcome-neutral in the six-case A2 experiment because the required evidence was satisfied through other channels, but the fan-out demonstrates that a broad governed-provenance expansion can monopolize the entire graph channel budget on an ordinary query; this is a first-class selectivity design constraint for any future admission experiment, not a mere safety footnote",
+      "accounting": {
+        "CONTROL_OUTCOME_REGRESSION": false,
+        "CONTROL_SCOPE_LEAKAGE": false,
+        "CONTROL_EXPANSION_SIGNAL": true
+      }
+    }
+  },
+  "downstream_strategy_options": {
+    "global_graph_weight": {
+      "option": "A — increase the global graph fusion weight (0.8 -> larger)",
+      "verdict": "REJECTED_AS_FIRST_CHOICE",
+      "analysis": "poor causal clarity (changes every graph candidate's score globally, not only provenance-backed ones); large blast radius (all existing graph-channel behavior shifts, including ordinary graph candidates that currently work); control risk unmeasured; does not specifically solve bridge admission — it merely lowers the bar for everything in one channel; A0 froze the additive no-extra-weight contract and a broad global retuning requires strong justification that does not exist"
+    },
+    "global_rerank_pool_size": {
+      "option": "B — increase the global fused rerank-pool size (top-30 -> larger top-N)",
+      "verdict": "REJECTED_AS_FIRST_CHOICE",
+      "analysis": "raises token/cost linearly for every query; admits more irrelevant candidates globally, not bridge candidates specifically; does not solve the bridge admission problem (g036 shortfall was rank 61 — a pool of 60+ would be needed, i.e., doubling the rerank cost); conflates 'more candidates' with 'fair admission'"
+    },
+    "separate_structured_vote": {
+      "option": "C — separate structured-evidence fusion channel / extra RRF vote or new weight",
+      "verdict": "REJECTED_WITHOUT_NEW_PREREGISTRATION",
+      "analysis": "creates explicit double-counting risk: bridge candidates already enter the graph stream (graph contribution) and would receive a second independent vote for the same objects; A0 explicitly prohibited independent cross-channel priority / extra RRF vote / new weight in the first bridge experiment; may be reconsidered only under a new preregistration and must not be normalized as the default solution"
+    },
+    "bounded_rerank_admission": {
+      "option": "D — bounded rerank-pool admission reservation for provenance-backed bridge candidates",
+      "verdict": "PREFERRED_CANDIDATE_AT_THE_EXACT_FAILED_BOUNDARY",
+      "analysis": "A2 localizes the failure exactly at fused-set -> rerank-pool admission; a small, fixed, provenance-backed admission budget would let governed bridge candidates compete in the reranker and selector normally (admission != force selection; candidate authority and final-selection competition fully preserved); must be paired with a selectivity gate (see g020) and a generic bounded budget rationale; cleanest identifiable intervention because everything upstream is proven working and frozen"
+    },
+    "graph_limit_change": {
+      "option": "E — increase the graph candidate limit",
+      "verdict": "REJECTED",
+      "analysis": "acts BEFORE the same fusion bottleneck: a larger graph limit only increases structured expansion into a stream whose members still compete with the same 0.8-weight formula; against g020 it would amplify the observed 20/20 displacement rather than solve admission; it changes expansion, not competition"
+    },
+    "relevance_gated_bridge_preselection": {
+      "option": "F — generic deterministic relevance-gated bridge preselection before graph-prefix insertion",
+      "verdict": "REQUIRED_COMPONENT_OF_THE_SELECTIVITY_DESIGN",
+      "analysis": "governance decides whether a candidate may exist; relevance may only order/select among already governed candidates under a cap (existing frozen distinction); a deterministic, query-grounded relevance signal already available in the normal retrieval system (no case IDs, no expected evidence, no LLM assertion of graph truth, no new identity authority, no repository widening) directly addresses the g020 fan-out; pairs with Option D as the selectivity gate"
+    },
+    "force_selection": {
+      "option": "G — force-select bridge evidence into final evidence",
+      "verdict": "REJECTED",
+      "analysis": "bypasses the retrieval ranking question rather than solving it; equivalent to granting bridge candidates authoritative answer-evidence status, violating GOVERNED_PROVENANCE_BACKED_ADDITIVE_RETRIEVAL_CANDIDATE with identity authority = NONE; rejected absent an extraordinary independently justified reason, which does not exist"
+    }
+  },
+  "preferred_intervention_boundary": {
+    "boundary": "fused candidate set -> rerank-pool admission",
+    "rationale": "the earliest downstream boundary at which the A2 receipts show the required candidates are lost (exact recomputed scores/ranks); everything upstream (D2, D1, reachability, materialization, bridge injection, channel retrieval) is proven working and frozen; the smallest intervention is therefore at admission, not at fusion weights, caps, D2, D1, or the selector",
+    "constraint": "admission to the reranker must not automatically improve the chance of final selection except through normal reranker/selector evaluation; candidate authority remains GOVERNED_PROVENANCE_BACKED_ADDITIVE_RETRIEVAL_CANDIDATE with identity authority NONE"
+  },
+  "selectivity_required": true,
+  "selectivity_rationale": "g020 demonstrated a 112-object provenance fan-out (20 admitted to graph, 92 capped out, 20/20 graph displacement) from one ordinary control query; without a selectivity gate, an admission reservation could admit up to 20 low-relevance README-evidence chunks into a 30-slot rerank pool and monopolize the rerank budget; a solution addressing only fair admission is incomplete by construction",
+  "admission_budget_rationale_rule": "any future admission budget must be justified generically (e.g., a small fixed provenance-backed admission budget relative to the existing rerank-pool size), never derived from case-specific positions (g036 needs rank 3 / g021 needs rank 9 are explicitly prohibited derivations); the exact value remains to be preregistered in the next stage",
+  "trace_replay_feasibility": {
+    "verdict": "SUFFICIENT_FOR_DOWNSTREAM_EXPERIMENT",
+    "evidence": {
+      "channel_candidate_order": "fully persisted per cell (rankings per channel as complete object_id lists: exact 7, dense 20, sparse 20, workflow 20, graph 16-20 in the observed cells; paper present when non-empty)",
+      "candidate_identities": "object_ids for every channel member; full object payloads (title/source_id/source_version_id/object_type/locator/text) recoverable from the frozen normalized corpus (manifest 9925ec31...) by object_id",
+      "fusion_inputs": "fusion is a deterministic function of channel rankings + frozen weights {exact 2.0, dense 1.0, sparse 1.0, paper 1.15, workflow 1.2, graph 0.8} with score weight/(60+rank+1); recomputation from the frozen A2 records reproduces the stored fusion_top30 EXACTLY for both positive cells (verified during A3)",
+      "structured_graph_baseline": "channel_rankings.graph of the STRUCTURED_UNBRIDGED cells is the unbridged graph baseline; bridge candidate IDs are persisted in bridge_displacement_diagnostics.bridged_candidate_ids",
+      "bridge_candidates": "persisted with origin edge, source_id, source_version_id, locator path, and injection status per candidate",
+      "source_version_identity": "persisted per bridged candidate and in top20_detail for pool members"
+    },
+    "reranker_replay_boundary": {
+      "reranker_only_replay_possible": true,
+      "explanation": "the frozen rerank payload is {object_id, title, source_id, text[:2000]}, all recoverable from the normalized corpus by object_id; a changed admission pool can therefore be reranked and selector-evaluated without rerunning the analyzer, D2 resolution, channel retrieval, or bridge reachability/materialization; the causal benefit is exact: same frozen upstream state + only the downstream admission treatment differs",
+      "caveat": "the reranker is a model call; a paired replay must rerun the frozen reranker on both the baseline pool and the treatment pool so that reranker execution variance applies symmetrically to both sides"
+    },
+    "paired_design_benefit": "future experiments should prefer frozen upstream trace -> baseline downstream policy vs the same frozen trace -> candidate downstream policy, eliminating analyzer/D2/channel/bridge variance and isolating the admission intervention; this replaces four fully independent end-to-end model executions",
+    "guardrail": "A2 traces are experimental inputs only; policy parameters must never be chosen by asking what setting makes ana_dpm.C survive or what budget makes g021 pass; A2 is used only to identify the failed architectural layer"
+  },
+  "future_identifiability_requirements": {
+    "intervention_isolation": "only the downstream admission policy may change between arms; bridge reachability, bridge materialization, D1, D2, query expansions, and source/index state remain frozen and identical",
+    "no_bundling": "if selectivity and admission both change, use separate staged experiments or explicit factorial arms with clear causal contrasts; never label a combined outcome an admission effect",
+    "candidate_arm_shape_evaluated_not_frozen": {
+      "CURRENT_BRIDGED": "frozen A2 structured bridge behavior (upstream trace replay baseline)",
+      "ADMISSION_TREATMENT": "same frozen bridge candidates + new bounded rerank-pool admission",
+      "OPTIONAL_SELECTIVITY_TREATMENT": "same admission policy + separately specified bridge selectivity gate",
+      "unbridged_reference": "not required unless comparability demands it; the full A2 four-arm experiment is not reproduced"
+    },
+    "reusable_a2_facts": {
+      "treat_as_historical_frozen_evidence": [
+        "legacy dependency on the two focused shortcuts (LEGACY−ABLATION = +0.4)",
+        "unbridged structured baseline contribution (0.0 at both levels)",
+        "bridge pool-level injection value (+0.3 combined)",
+        "bridge reachability/materialization receipts",
+        "control stability and displacement receipts"
+      ],
+      "require_contemporaneous_controls": [
+        "any outcome measured under the new admission policy must be compared against the same frozen upstream trace under the unchanged baseline policy (paired), because reranker execution is re-run",
+        "control-case regression/displacement must be re-measured under the new policy, not inherited from A2"
+      ]
+    }
+  },
+  "future_safety_requirements": {
+    "dual_requirement": "the design must answer BOTH: (1) genuinely relevant provenance-backed bridge candidates get a fair chance to reach reranking, and (2) a broad governed provenance fan-out cannot monopolize the graph/rerank budget",
+    "candidate_authority": "GOVERNED_PROVENANCE_BACKED_ADDITIVE_RETRIEVAL_CANDIDATE preserved with identity authority = NONE; no bridge candidate becomes authoritative answer evidence merely because it came from D1 provenance",
+    "admission_vs_selection": "admission to the reranker must not automatically improve the chance of final selection except through normal reranker/selector evaluation",
+    "expansion_diagnostics_to_freeze": [
+      "bridged candidates generated",
+      "bridged candidates admitted to graph",
+      "bridged candidates admitted to rerank pool",
+      "ordinary candidates displaced from graph",
+      "ordinary candidates displaced from rerank pool",
+      "bridge admission ratio",
+      "final selected bridge evidence",
+      "control regressions"
+    ],
+    "preregistered_control_failure_concept": "material loss of previously useful evidence caused by structured admission/displacement (defined before outcomes; no numeric threshold chosen from future results; not all displacement is inherently bad — only material loss of previously useful evidence counts)",
+    "production_boundary": "CURRENT_PRODUCTION_D2_ROLE = SHADOW unchanged; the D3.5 bridge is not activated as a production migration; no query-expansion deletion; no D4"
+  },
+  "follow_up_decision": "CONTINUE_ONLY_AFTER_SELECTIVITY_DESIGN",
+  "decision_rationale": "All four CONTINUE_WITH_BOUNDED_DOWNSTREAM_COMPETITION_EXPERIMENT preconditions are individually supported (pool-level value demonstrated; failure localized at one exact boundary with receipts; a small generic admission intervention is isolable; g020 risk is receipted and measurable), but g020 demonstrated that a single ordinary query can fan out 112 governed provenance objects (20 admitted, 92 capped out, 20/20 graph displacement) through one ambiguous seed. An admission experiment without a designed selectivity gate would let such fan-outs monopolize the rerank pool, so candidate selectivity must be designed before any admission experiment is scientifically safe. The decision ignores sunk implementation cost and is based only on measured value, architectural cleanliness, causal identifiability, generalization potential, control risk, and implementation scope.",
+  "exact_next_stage": "D3.5-A4 — Bridge Selectivity & Admission-Budget Design",
+  "next_stage_scope_note": "design/preregistration first; no implementation, no prototype, and no evaluation in A4 itself",
+  "next_scientific_question_frozen": "Can a small, bounded, generic admission policy — gated by generic deterministic selectivity — allow governed provenance-backed bridge candidates to reach normal reranking while preserving ordinary candidate competition and avoiding control overexpansion?",
+  "prohibited_actions": [
+    "implement a rerank-admission policy inside A3",
+    "change graph weight, graph cap, rerank pool size, or bridge candidate ordering",
+    "add a separate structured fusion vote",
+    "modify D1, D2, or query expansions",
+    "write PostgreSQL or Qdrant",
+    "rerun A2 or any retrieval/model evaluation",
+    "run novel_validation or holdout",
+    "start D4",
+    "derive admission budgets from case-specific candidate positions",
+    "treat BRIDGED−ABLATION as a pure bridge effect in any future reporting"
+  ],
+  "execution_accounting": {
+    "FORMAL_RETRIEVAL_RUNS": 0,
+    "ANALYZER_CALLS": 0,
+    "RERANKER_CALLS": 0,
+    "QA_CALLS": 0,
+    "VERIFIER_CALLS": 0,
+    "JUDGE_CALLS": 0,
+    "EMBEDDING_CALLS": 0,
+    "POSTGRESQL_WRITES": 0,
+    "QDRANT_WRITES": 0,
+    "INGESTION": 0,
+    "REINDEX": 0,
+    "NOVEL_VALIDATION_RUNS": 0,
+    "NOVEL_HOLDOUT_RUNS": 0,
+    "runtime_files_changed": 0,
+    "d1_configs_changed": 0,
+    "query_expansion_configs_changed": 0
+  }
+}

@@ -28,8 +28,10 @@ Primary causal contrasts (final evidence recall / combined candidate recall):
 | Item | Value |
 |---|---|
 | Execution manifest | `evaluation/d3_5_a2_focused_evidence_link_recovery_manifest.json` (committed pre-outcome) |
-| Pre-outcome freeze commit | `470b62f823c3e65637604da2f614461c1a81d5b6` (manifest freeze) → runner/manifest committed at `9467061` |
-| Git head during run | `9467061…` (evaluation-only commit; runtime identical to `9b5a84996c30eaf1a297924b36452a90fe6d84d2`) |
+| Frozen A1 scientific-state anchor | `470b62f823c3e65637604da2f614461c1a81d5b6` — the A1-R3 state before A2 evaluation-only files were added (HEAD at manifest creation) |
+| Pre-outcome execution commit | `9467061c81a288f2c3b01548b7eb39202f38e91c` — the commit that actually contains the execution manifest and the A2 evaluation runner, existing before the first formal cell started |
+| Git head during run | `9467061c81a288f2c3b01548b7eb39202f38e91c` (evaluation-only commit; runtime identical to `9b5a84996c30eaf1a297924b36452a90fe6d84d2`) |
+| Final result commit | `e8e2d5aa532a6b54ebdcc728804b211e44fb2132` |
 | Frozen runtime anchor | `9b5a84996c30eaf1a297924b36452a90fe6d84d2` — `git diff` on `src/panda_agent/retrieval.py`, `src/panda_agent/d3_structured.py`, and `configs/` empty before and after the run |
 | Preregistration | `evaluation/d3_5_a0_structured_evidence_link_design.json` (`d3_5_a2_contract`) + A1 artifacts |
 | Final repository D1 | `9b5a84996c30eaf1a297924b36452a90fe6d84d2` (24 objects / 16 accepted relations / 1 workflow step / 2 aliases) |
@@ -40,7 +42,7 @@ Primary causal contrasts (final evidence recall / combined candidate recall):
 
 ## 3. First-outcome-exposure boundary
 
-The execution manifest was committed (`D3.5-A2 freeze focused recovery execution manifest`) with `formal_outcome_exposure = false` and `created_before_outcome_exposure = true`. The first formal cell (g036 / LEGACY, sequence 1) started at `2026-09-01T17:21:49+00:00` (run manifest `started_at_utc` `2026-09-01T17:21:48Z`), which is the instant `D3_5_OUTCOME_EXPOSURE` became `STARTED`. From that instant no runtime, D1, database, query-expansion, arm, case, metric, or classification state was modified. The comparison finished at `2026-09-01T17:32:09Z` (run manifest `finished_at_utc`).
+The execution manifest and A2 runner were committed pre-outcome (`D3.5-A2 freeze focused recovery execution manifest`, commit `9467061c81a288f2c3b01548b7eb39202f38e91c`) with `formal_outcome_exposure = false` and `created_before_outcome_exposure = true`. The first formal cell (g036 / LEGACY, sequence 1) started at `2026-09-01T17:21:49+00:00` (run manifest `started_at_utc` `2026-09-01T17:21:48Z`), which is the instant `D3_5_OUTCOME_EXPOSURE` became `STARTED`. From that instant no runtime, D1, database, query-expansion, arm, case, metric, or classification state was modified. The comparison finished at `2026-09-01T17:32:09Z` (run manifest `finished_at_utc`).
 
 ## 4. Four-arm treatment
 
@@ -70,7 +72,7 @@ Frozen per the A0 contract; no additions, substitutions, or omissions:
 
 ## 6. Execution completeness
 
-24 scheduled / 24 valid / 0 infrastructure failures / 0 retries / 0 discretionary reruns, in the frozen case-major order (g036 → g021 → n006 → g041 → g020 → n004, each over LEGACY → ABLATION → STRUCTURED_UNBRIDGED → STRUCTURED_BRIDGED). Cost: 24 analyzer + 24 reranker generation calls, 24 embedding calls, 458,979 tokens; QA/verifier/judge = 0; PostgreSQL D1 writes = 0; Qdrant writes = 0; ingestion/re-ingestion = 0. `novel_validation` UNSEEN; holdout SEALED_UNSEEN.
+24 scheduled / 24 valid / 0 infrastructure failures / 0 discretionary reruns (`FORMAL_CELL_RERUNS = 0`), in the frozen case-major order (g036 → g021 → n006 → g041 → g020 → n004, each over LEGACY → ABLATION → STRUCTURED_UNBRIDGED → STRUCTURED_BRIDGED). Cost: 24 analyzer + 24 reranker generation calls plus 2 internal transient-retry generation attempts (the frozen vertex client's retry loop fired once in g021/ABLATION and once in n004/LEGACY, +1 generation and +1 model call each; the retried stage per cell is not determinable from persisted receipts), 24 embedding calls, 458,979 tokens; QA/verifier/judge = 0; PostgreSQL D1 writes = 0; Qdrant writes = 0; ingestion/re-ingestion = 0. `novel_validation` UNSEEN; holdout SEALED_UNSEEN.
 
 ## 7. Aggregate metrics
 

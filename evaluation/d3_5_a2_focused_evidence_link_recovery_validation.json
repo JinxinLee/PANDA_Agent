@@ -9,13 +9,17 @@
   "execution_identity": {
     "execution_manifest": "evaluation/d3_5_a2_focused_evidence_link_recovery_manifest.json",
     "execution_manifest_sha256": "91d5a57d4d3c976c6168acd0bd22104e12ee0288ebc683dc6ff0bae68fe8b1ab",
-    "pre_outcome_freeze_commit": "470b62f823c3e65637604da2f614461c1a81d5b6",
     "git_head_during_run": "9467061c81a288f2c3b01548b7eb39202f38e91c",
     "frozen_implementation_sha": "9b5a84996c30eaf1a297924b36452a90fe6d84d2",
     "implementation_identity_diff_lines": 0,
     "runner": "evaluation/scripts/d3_5_a2_runner.py",
     "run_id": "d3_5_a2_focused_20260901",
-    "raw_records": "data/evaluation/runs/d3_5_a2_focused_20260901/records.jsonl"
+    "raw_records": "data/evaluation/runs/d3_5_a2_focused_20260901/records.jsonl",
+    "frozen_scientific_state_anchor": "470b62f823c3e65637604da2f614461c1a81d5b6",
+    "frozen_scientific_state_anchor_role": "FROZEN_A1_SCIENTIFIC_STATE_ANCHOR: the A1-R3 state before A2 evaluation-only files were added; the execution manifest records HEAD at manifest creation",
+    "pre_outcome_execution_commit": "9467061c81a288f2c3b01548b7eb39202f38e91c",
+    "pre_outcome_execution_commit_role": "A2_PRE_OUTCOME_EXECUTION_COMMIT: the commit that actually contains the execution manifest and the A2 evaluation runner, existing before the first formal cell started",
+    "final_result_commit": "e8e2d5aa532a6b54ebdcc728804b211e44fb2132"
   },
   "preregistration_identity": {
     "structured_artifact": "evaluation/d3_5_a0_structured_evidence_link_design.json",
@@ -50,7 +54,7 @@
     "sql_objects": 133077
   },
   "outcome_exposure": {
-    "before_first_formal_cell": "NOT_STARTED (manifest committed pre-outcome at 470b62f823c3e65637604da2f614461c1a81d5b6)",
+    "before_first_formal_cell": "NOT_STARTED (manifest/runner committed pre-outcome at 9467061c81a288f2c3b01548b7eb39202f38e91c; frozen A1 scientific-state anchor 470b62f823c3e65637604da2f614461c1a81d5b6)",
     "started_at_utc": "2026-09-01T17:21:48.862620+00:00",
     "finished_at_utc": "2026-09-01T17:32:09.503922+00:00",
     "after_valid_complete_comparison": "COMPLETE"
@@ -217,7 +221,9 @@
     "valid_cells": 24,
     "infrastructure_failures": 0,
     "retries": 0,
-    "discretionary_reruns": 0
+    "discretionary_reruns": 0,
+    "formal_cell_reruns": 0,
+    "model_internal_retry_attempts": 2
   },
   "call_counts": {
     "analyzer_generation_calls": 24,
@@ -229,7 +235,10 @@
     "qa_calls": 0,
     "verifier_calls": 0,
     "judge_calls": 0,
-    "note": "normal frozen-pipeline retrieval calls only (analyzer + reranker generation, dense embeddings); no extra LLM diagnostics were introduced"
+    "note": "normal frozen-pipeline retrieval calls only (24 analyzer + 24 reranker generation calls, 24 dense embeddings) plus 2 internal transient-retry generation attempts in 2 of 24 cells; no extra LLM diagnostics were introduced and no formal A2 cell was discretionarily rerun",
+    "formal_cell_reruns": 0,
+    "extra_generation_attempts": 2,
+    "extra_generation_attribution": "internal transient-retry attempts of the frozen vertex generate_json client (retry loop up to 3 attempts; each attempt records one generation request before the API call): observed once in g021/ABLATION (execution_sequence 6, generation_calls=3, model_calls=4) and once in n004/LEGACY (execution_sequence 21, generation_calls=3, model_calls=4), each contributing +1 generation_calls and +1 model_calls. The retry mechanism is determinable from the frozen runtime client and the per-cell deltas; which stage (analyzer vs reranker) retried is NOT_DETERMINABLE_FROM_PERSISTED_RECEIPT."
   },
   "storage_writes": {
     "postgresql_d1_writes": 0,
@@ -3357,5 +3366,18 @@
   "next_stage": {
     "exact_next_task": "separately authorized post-A2 decision stage (no D4 start; D4 blocked by the A2 verdict)",
     "candidate_directions_authored_not_authorized": "the binding constraint is downstream of the bridge: a future authorized stage would have to decide how provenance-backed source-native candidates can compete in fusion/reranking without violating the frozen authority boundaries; any such change requires a new preregistration and is not part of A2"
-  }
+  },
+  "audit_repair_history": [
+    {
+      "repair_id": "D3.5-A3_A2_AUDIT_RECORD_REPAIR",
+      "scope": "audit-record naming and accounting clarification only",
+      "scientific_metrics_changed": false,
+      "verdict_changed": false,
+      "cell_identities_changed": false,
+      "repairs": [
+        "corrected commit-role naming: 470b62f823c3e65637604da2f614461c1a81d5b6 = FROZEN_A1_SCIENTIFIC_STATE_ANCHOR; 9467061c81a288f2c3b01548b7eb39202f38e91c = A2_PRE_OUTCOME_EXECUTION_COMMIT (contains execution manifest + A2 runner); final_result_commit e8e2d5aa532a6b54ebdcc728804b211e44fb2132 recorded",
+        "clarified call accounting: FORMAL_CELL_RERUNS = 0; EXTRA_GENERATION_ATTEMPTS = 2 attributed to the frozen vertex client internal transient-retry loop (observed in g021/ABLATION and n004/LEGACY, +1 generation and +1 model call each); analyzer/reranker stage of each retry not determinable from persisted receipts"
+      ]
+    }
+  ]
 }
