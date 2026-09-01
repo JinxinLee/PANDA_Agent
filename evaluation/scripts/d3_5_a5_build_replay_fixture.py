@@ -1,5 +1,11 @@
 """D3.5-A5 Phase 1 — mechanical replay-fixture builder and verifier.
 
+Schema 1.1.0 (D3.5-A5-R2 additive evaluator-support extension): eligible candidate
+entries and payload-registry entries additionally carry object_type and the full
+frozen locator object, read mechanically from the frozen normalized corpus so the
+complete-universe evaluator can run the existing GoldEvidenceSelector matching.
+No existing field, candidate, ordering, or payload value is altered.
+
 Builds the tracked repository-persistent downstream replay fixture from the
 frozen D3.5-A2 raw records plus the frozen normalized corpus:
 
@@ -47,7 +53,7 @@ FROZEN_A1_ANCHOR = "470b62f823c3e65637604da2f614461c1a81d5b6"
 A2_PRE_OUTCOME_COMMIT = "9467061c81a288f2c3b01548b7eb39202f38e91c"
 FROZEN_RUNTIME_SHA = "9b5a84996c30eaf1a297924b36452a90fe6d84d2"
 FINAL_REPOSITORY_D1_SHA = "9b5a84996c30eaf1a297924b36452a90fe6d84d2"
-FIXTURE_SCHEMA_VERSION = "1.0.0"
+FIXTURE_SCHEMA_VERSION = "1.1.0"
 
 # Frozen fusion contract (frozen in the A2-era runtime; verified reproducing
 # the stored fusion_top30 during D3.5-A3 and re-verified here per cell).
@@ -205,6 +211,8 @@ def main() -> int:
                     "a2_disposition": "A2_ADMITTED"
                     if candidate_id in a2_admitted_set
                     else "A2_CAPPED_OUT",
+                    "object_type": normalized.get(candidate_id, {}).get("object_type"),
+                    "locator": normalized.get(candidate_id, {}).get("locator"),
                 }
             else:
                 if origin_id not in entry["provenance_origin_ids"]:
@@ -305,6 +313,8 @@ def main() -> int:
                 "title": record.get("title"),
                 "source_id": record.get("source_id"),
                 "text_payload_2000": (record.get("text") or "")[:2000],
+                "object_type": record.get("object_type"),
+                "locator": record.get("locator"),
             }
 
         cases[case_id] = {
