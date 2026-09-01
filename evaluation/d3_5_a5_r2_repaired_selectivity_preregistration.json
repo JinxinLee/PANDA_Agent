@@ -1,0 +1,102 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint": "D3.5-A5-R2",
+  "stage_name": "D3.5-A5-R2 — Repaired Selectivity Prototype Freeze & Revalidation",
+  "document_type": "repaired-policy preregistration (frozen before any real-case repaired outcome)",
+  "starting_head": "e445f14270b64fe33321fa4eeb9887656a995409",
+  "parent_r1_commit": "240cfe0a827d125052b687a53e7519a06792069e",
+  "parent_r1_r1_commit": "e445f14270b64fe33321fa4eeb9887656a995409",
+  "fixture_identity": {
+    "path": "evaluation/d3_5_downstream_replay_fixture.json",
+    "fixture_schema_version": "1.1.0",
+    "base_fixture_commit": "e20fc6afebe671d2327ee3dbe80fd97b52c36679",
+    "source_a2_result_commit": "e8e2d5aa532a6b54ebdcc728804b211e44fb2132",
+    "frozen_runtime_sha": "9b5a84996c30eaf1a297924b36452a90fe6d84d2",
+    "final_repository_d1_sha": "9b5a84996c30eaf1a297924b36452a90fe6d84d2"
+  },
+  "fixture_extension_identity": {
+    "required": true,
+    "commit": "3db1aaae2b77a309dc5dc5a86ca69bc657001bd1",
+    "scope": "additive only: object_type + full frozen locator on eligible candidate entries and payload-registry entries, read mechanically from the frozen normalized corpus so the complete-universe evaluator can run the frozen GoldEvidenceSelector matching; all pre-existing fields verified identical; no gold labels, case roles, or manual annotations added",
+    "preservation_verified": "candidate universe/IDs/orderings/payload text/source-version identity/provenance origins/A2 replay equivalence unchanged"
+  },
+  "policy_version": "d3_5_selectivity_v2",
+  "implementation_path": "evaluation/scripts/d3_5_a5_r2_selectivity.py",
+  "evaluator_path": "evaluation/scripts/d3_5_a5_r2_selectivity.py (evaluate_complete_universe; evaluator-only path)",
+  "exact_frozen_rank_contract_reference": {
+    "authority": [
+      "evaluation/d3_5_a5_r1_selectivity_relevance_retention_design_repair.json (R1)",
+      "evaluation/d3_5_a5_r1_r1_relevance_formula_exact_match_contract_repair.json (R1-R1)"
+    ],
+    "rank_order": [
+      "1. symbol_exact_tier DESC",
+      "2. rarity_weighted_overlap DESC (idf(t) = log2((|U|+1)/(df(t)+1)), base 2, universe-local df)",
+      "3. basename_coverage DESC",
+      "4. text_presence DESC (distinct normal query tokens in tokenized text[:2000])",
+      "5. support_rank ASC (missing worse than any present, never disqualifying)",
+      "6. structural_distance ASC",
+      "7. candidate_object_id ASC"
+    ],
+    "hard_filters": [
+      "governance eligibility (fixture universe)",
+      "plan-scope compatibility (eligibility filter, no bonus)",
+      "MIN_PRIMARY_SCORE >= 1 on the unchanged v1 path/title lexical gate"
+    ],
+    "symbol_contract": "NFKC -> casefold -> path separators '/'; compound identifier never split; boundary-aware matching with [a-z0-9_] identifier class; underscore preserved; no hyphen/camelCase equivalence; surfaces = basename/path/text[:2000]; title excluded; distinct-symbol counting; empty plan.symbols -> 0",
+    "df_definition": "unique eligible candidate object IDs in U whose candidate_lexical_view (deduplicated union of basename/parent-directory/title/text[:2000] tokens) contains t; U = universe after source/scope eligibility",
+    "empty_universe": "|U| = 0 -> select none, no IDF computation"
+  },
+  "PER_ORIGIN_CAP": 4,
+  "SELECTIVITY_CAP": 8,
+  "MIN_PRIMARY_SCORE": 1,
+  "gate_unchanged": true,
+  "NUMBER_OF_R2_REPAIRED_POLICIES_IMPLEMENTED": 1,
+  "NUMBER_OF_R2_REPAIRED_POLICIES_EVALUATED": 1,
+  "real_case_outcomes_seen_before_freeze": false,
+  "R2_REPAIRED_SELECTIVITY_OUTCOME_EXPOSURE": "NOT_STARTED",
+  "selection_subset_invariant": "selected ⊆ gate-passing eligible governed candidates ⊆ complete eligible governed universe",
+  "attribution": "least-used-origin (tie: lexicographically smallest origin id); attributed-origin ceiling semantics; membership counts reported separately",
+  "decision_rule": {
+    "scientific_question": "Does the single preregistered repaired deterministic relevance policy preserve the bounded fan-out behavior established by A5 while retaining all applicable required bridge evidence that reaches the unchanged relevance gate?",
+    "not_asked": "does final answer retrieval recover? (no reranker/selector involved)",
+    "high_fan_out_case": "eligible_governed_bridge_candidate_count > SELECTIVITY_CAP",
+    "PASS / REPAIRED_SELECTIVITY_RELEVANCE_RETENTION_VALIDATED_FOR_DEVELOPMENT": {
+      "requires_all": [
+        "implementation frozen before outcome exposure",
+        "exactly one repaired policy evaluated",
+        "determinism passes (byte-identical double execution per case)",
+        "governance/scope invariants pass",
+        "caps 4/8 respected",
+        "high-fan-out behavior remains bounded by the frozen caps",
+        "zero-eligible controls remain zero (n006/g041/n004)",
+        "no GATE_RECALL_LIMITATION for designated required bridge evidence",
+        "all required bridge evidence present in the complete eligible universe AND passing the unchanged hard gate is retained by v2 (no APPLICABLE_AND_LOST)"
+      ],
+      "meaning": "development/mechanistic validation only; not end-to-end retrieval validation"
+    },
+    "PARTIAL / GATE_RECALL_LIMITATION_OBSERVED": "ranking retention succeeds for all gate-passing applicable evidence but one or more required candidates found in the complete eligible universe are rejected by the unchanged hard gate; A6 remains NOT_READY; gate not modified",
+    "PARTIAL / REPAIRED_RANKING_STILL_LOSES_RELEVANT_EVIDENCE": "fan-out remains bounded but one or more applicable gate-passing required candidates are APPLICABLE_AND_LOST; A6 remains NOT_READY",
+    "FAIL / REPAIRED_SELECTIVITY_NOT_USEFUL": "fan-out control materially breaks, controls expand unexpectedly, determinism fails, relevance retention substantially worsens, or governance/scope invariants fail",
+    "INVALID": "real-case outcomes inspected before freeze, more than one unregistered repaired policy evaluated, policy contract changed after outcome exposure, fixture/evaluator changed outcome-dependently, or expected evidence leaked into the scorer",
+    "no_post_hoc_thresholds": true,
+    "g021_group_semantics": "a required-evidence group is classified over its universe-matched candidates (any_of semantics): NOT_APPLICABLE if none in universe; GATE_RECALL_LIMITATION if matched candidates exist but all are gate-rejected; APPLICABLE_AND_RETAINED if at least one gate-passing matched candidate is selected; APPLICABLE_AND_LOST if gate-passing matched candidates exist but none selected"
+  },
+  "evaluator_contract": {
+    "universe": "complete pre-cap eligible governed candidate universe",
+    "selector_matching": "frozen GoldEvidenceSelector.matches semantics reused verbatim (source_id/source_version_id/object_type/path/symbol/line/page/title_contains/section_contains)",
+    "flow": "fixture -> v2 selectivity -> selected candidates frozen -> evaluator-only selector matching -> applicability classification",
+    "expected_evidence_runtime_use": 0,
+    "newly_visible_discovery": "required-evidence candidates matched in the complete universe that A2's combined-pool provenance never saw are reported as NEWLY_VISIBLE_COMPLETE_UNIVERSE_APPLICABLE_EVIDENCE"
+  },
+  "prohibited_actions": [
+    "change the R1/R1-R1 design, caps, or hard gate",
+    "try alternative scorers or run a second repaired policy",
+    "run admission or use K=2/K=3",
+    "run reranker/analyzer/embeddings",
+    "modify production retrieval or D1/D2",
+    "write PostgreSQL/Qdrant",
+    "access novel_validation/holdout",
+    "start A6 or D4",
+    "patch relevance after seeing g021"
+  ]
+}
