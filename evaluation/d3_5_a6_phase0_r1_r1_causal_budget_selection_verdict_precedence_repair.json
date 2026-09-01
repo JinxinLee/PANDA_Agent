@@ -1,0 +1,240 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint": "D3.5-A6-PHASE0-R1-R1",
+  "stage_name": "D3.5-A6 Phase 0-R1-R1 — Causal Budget Selection & Verdict Precedence Repair",
+  "stage_type": "extremely narrow preregistration decision-contract repair; no Phase-1 implementation, no real treatment pools, no select_v2/reranker/scorer/model execution, no new scientific outcome",
+  "starting_head": "84f218b51e3d94167964c4faed29fd8551966278",
+  "parent_phase0_commit": "54ac8ce9540125f6702f51119a610b6f59eb7925",
+  "parent_phase0_r1_commit": "84f218b51e3d94167964c4faed29fd8551966278",
+  "remaining_defects": [
+    {
+      "defect": "causal_selection_edge_case",
+      "description": "the K2/K3 selector used SAFE_EFFECTIVE(K) = DELTA_K > 0 AND REGRESSION_K == 0 while mechanistic PASS additionally required a stable reserved-required-candidate witness, so a budget could be selected first and then fail the causal PASS gate even when another budget would satisfy the mechanistic causal criterion",
+      "status": "REPAIRED"
+    },
+    {
+      "defect": "pool_perturbation_verdict_gap",
+      "description": "stable pool-perturbation recovery without a reserved-required-candidate witness had no precise final verdict",
+      "status": "REPAIRED"
+    },
+    {
+      "defect": "regression_vs_fail_conflation",
+      "description": "MATERIAL_CONTROL_REGRESSION was not explicitly distinguished from FAIL-level structural safety invariant failures, and the FAIL trigger 'systematic control degradation' was ambiguous",
+      "status": "REPAIRED"
+    }
+  ],
+  "CAUSAL_DELTA_contract": {
+    "CAUSAL_DELTA_K": "number of ADMISSION_APPLICABLE_BRIDGE_GROUPs that satisfy BOTH: (1) the group is STABLE_RETAINED under treatment K AND NOT STABLE_RETAINED under BASELINE; (2) the same group has STABLE_RESERVED_REQUIRED_WITNESS under treatment K",
+    "equivalent_reading": "stable incremental admission recovery with a stable actually-reserved required-candidate witness",
+    "CAUSAL_DELTA_2": "causal admission benefit of K2 (primary mechanistic benefit count)",
+    "CAUSAL_DELTA_3": "causal admission benefit of K3 (primary mechanistic benefit count)",
+    "invariant": "0 <= CAUSAL_DELTA_K <= DELTA_K",
+    "interpretation_boundary": "DELTA_K = stable downstream recovery after admission-induced pool perturbation; CAUSAL_DELTA_K = stable downstream recovery directly witnessed by an actually reserved required bridge candidate; never conflated",
+    "DELTA_K_retained": "DELTA_2 / DELTA_3 remain frozen downstream-recovery diagnostics (stable pool-level admission perturbation benefit) and are never deleted"
+  },
+  "NONCAUSAL_STABLE_DELTA_contract": {
+    "NONCAUSAL_STABLE_DELTA_K": "DELTA_K - CAUSAL_DELTA_K",
+    "role": "diagnostic only — stable improvement correlated with the admission-modified pool but not mechanistically carried by an actually reserved required candidate",
+    "prohibition": "never used to claim direct bridge-admission recovery; no runtime effect"
+  },
+  "MECHANISTIC_SAFE_EFFECTIVE_contract": {
+    "definition": "MECHANISTIC_SAFE_EFFECTIVE(K) = CAUSAL_DELTA_K > 0 AND REGRESSION_K == 0",
+    "superseded_rule": "SAFE_EFFECTIVE(K) = DELTA_K > 0 AND REGRESSION_K == 0 (Phase0-R1) is insufficient for mechanistic budget selection; marked superseded for PASS selection and retained only as a broader diagnostic",
+    "unsafe_budget_rule": "if CAUSAL_DELTA_K > 0 but REGRESSION_K > 0 then MECHANISTIC_SAFE_EFFECTIVE(K) = false; safety still precedes budget minimality"
+  },
+  "causal_budget_decision_rule": {
+    "DEFAULT_BUDGET_PRINCIPLE": "smallest sufficient causally witnessed safe budget — not the smallest budget and not the largest DELTA_K budget",
+    "hierarchy": [
+      "if K2 is MECHANISTIC_SAFE_EFFECTIVE and K3 is MECHANISTIC_SAFE_EFFECTIVE: SELECTED_ADMISSION_BUDGET = 3 if CAUSAL_DELTA_3 > CAUSAL_DELTA_2 else 2",
+      "elif K2 is MECHANISTIC_SAFE_EFFECTIVE: SELECTED_ADMISSION_BUDGET = 2",
+      "elif K3 is MECHANISTIC_SAFE_EFFECTIVE: SELECTED_ADMISSION_BUDGET = 3",
+      "else: no budget is selected as PASS"
+    ],
+    "k3_beats_k2_only_on_causal_benefit": "if both budgets are mechanistically safe, CAUSAL_DELTA_3 > CAUSAL_DELTA_2 selects K3, otherwise K2; a pure increase in DELTA_K, median rank, MRR-like diagnostics, or NONCAUSAL_STABLE_DELTA_K can never by itself justify K3",
+    "frozen_synthetic_edge_case": {
+      "note": "design-only synthetic example, not a real-case test",
+      "K2": { "DELTA_2": 1, "CAUSAL_DELTA_2": 1, "REGRESSION_2": 0 },
+      "K3": { "DELTA_3": 2, "CAUSAL_DELTA_3": 0, "REGRESSION_3": 0 },
+      "correct_decision": "SELECTED_ADMISSION_BUDGET = 2 because only K2 provides causally witnessed bridge-admission recovery"
+    },
+    "budget_identity_prohibition": "the budget is never chosen from positive-case identity"
+  },
+  "material_regression_classification": {
+    "classification": "MATERIAL_CONTROL_REGRESSION IS A SCIENTIFIC BUDGET-SAFETY OUTCOME",
+    "is_not": "by itself a FAIL-level structural invariant failure",
+    "handling": "a treatment may produce material control regression while the experiment remains valid and interpretable; such a result is handled through REGRESSION_K, MECHANISTIC_SAFE_EFFECTIVE, and PARTIAL / ADMISSION_RECOVERY_WITH_CONTROL_REGRESSION",
+    "rule_unchanged": "BASELINE retention_count >= 2 AND treatment retention_count <= 1; REGRESSION_2 / REGRESSION_3 unchanged; no new numeric threshold"
+  },
+  "fail_scope": {
+    "verdict": "FAIL / BOUNDED_ADMISSION_CONSTRUCTION_OR_AUTHORITY_FAILED",
+    "previous_label": "FAIL / BOUNDED_ADMISSION_SAFETY_OR_CONSTRUCTION_FAILED (narrowed by Phase0-R1-R1)",
+    "applies_to": [
+      "pool size invariant failure",
+      "duplicate-admission accounting failure",
+      "out-of-scope candidate admission",
+      "candidate-authority violation",
+      "reserved-slot accounting violation",
+      "post-rerank replay parity failure discovered after implementation freeze",
+      "implementation not matching preregistration",
+      "other deterministic construction/safety invariant failure"
+    ],
+    "systematic_control_degradation_resolution": "the Phase-0 'systematic control degradation' FAIL trigger is removed: it does NOT mean one or more preregistered MATERIAL_CONTROL_REGRESSION groups — those are scientific treatment outcomes handled by REGRESSION_K / MECHANISTIC_SAFE_EFFECTIVE / PARTIAL logic; no new numeric 'systematic' threshold is invented in this stage"
+  },
+  "partial_verdict_contracts": {
+    "PARTIAL_POOL_PERTURBATION_ASSOCIATED_RECOVERY_WITHOUT_RESERVED_WITNESS": {
+      "use_when": "there exists at least one budget K with DELTA_K > 0 AND REGRESSION_K == 0, BUT for every safe budget: CAUSAL_DELTA_K == 0",
+      "interpretation": "admission-modified rerank pools produced stable downstream recovery, but the experiment did not validate that an actually reserved required bridge candidate carried that recovery; scientifically stronger than no downstream recovery but weaker than mechanistic PASS"
+    },
+    "PARTIAL_ADMISSION_RECOVERY_WITH_CONTROL_REGRESSION": {
+      "scope": "exists K with DELTA_K > 0 AND for every budget with DELTA_K > 0: REGRESSION_K > 0 (stable recovery exists but no stable-recovery budget is safe); may include causal or noncausal recovery; no PASS budget exists"
+    },
+    "PARTIAL_ADMISSION_RECOVERY_NOT_STABLE_ACROSS_RERANKER_REPETITIONS": {
+      "scope": "only when DELTA_2 = 0 AND DELTA_3 = 0 AND UNSTABLE_ADMISSION_RECOVERY exists (prevents overlap with stable pool-perturbation recovery)"
+    },
+    "PARTIAL_ADMISSION_DID_NOT_VALIDATE_DOWNSTREAM_RECOVERY": {
+      "scope": "only when DELTA_2 = 0, DELTA_3 = 0, and no UNSTABLE_ADMISSION_RECOVERY (the true residual no-recovery class)"
+    },
+    "POOL_PERTURBATION_ASSOCIATED_RECOVERY_diagnostic_retained": "the Phase0-R1 diagnostic is preserved with the added relationship: if DELTA_K > CAUSAL_DELTA_K, the difference corresponds to stable pool-level recovery not backed by a stable reserved-required-candidate witness; no runtime effect"
+  },
+  "verdict_precedence": {
+    "note": "replaces the Phase0-R1 6-level precedence; total and non-overlapping with no outcome-dependent label selection",
+    "levels": [
+      "1. INVALID",
+      "2. FAIL / BOUNDED_ADMISSION_CONSTRUCTION_OR_AUTHORITY_FAILED (structural construction / authority / implementation invariant failure)",
+      "3. PASS / BOUNDED_RERANK_ADMISSION_VALIDATED_FOR_DEVELOPMENT if at least one MECHANISTIC_SAFE_EFFECTIVE budget exists",
+      "4. PARTIAL / ADMISSION_RECOVERY_WITH_CONTROL_REGRESSION if stable DELTA_K > 0 exists but every stable-recovery budget is unsafe",
+      "5. PARTIAL / POOL_PERTURBATION_ASSOCIATED_RECOVERY_WITHOUT_RESERVED_WITNESS if at least one safe budget has DELTA_K > 0 but no safe budget has CAUSAL_DELTA_K > 0",
+      "6. PARTIAL / ADMISSION_RECOVERY_NOT_STABLE_ACROSS_RERANKER_REPETITIONS if DELTA_2 = DELTA_3 = 0 but UNSTABLE_ADMISSION_RECOVERY exists",
+      "7. PARTIAL / ADMISSION_DID_NOT_VALIDATE_DOWNSTREAM_RECOVERY otherwise"
+    ],
+    "safe_budget_meaning_in_precedence": "a budget is safe in levels 4-5 when REGRESSION_K == 0"
+  },
+  "PASS_semantics": {
+    "requires_all": [
+      "protocol valid",
+      "construction invariants pass",
+      "at least one MECHANISTIC_SAFE_EFFECTIVE budget exists",
+      "SELECTED_ADMISSION_BUDGET chosen by the frozen causal-safe hierarchy",
+      "selected budget has REGRESSION_K = 0",
+      "selected budget has CAUSAL_DELTA_K > 0",
+      "no runtime gold/case-role leakage",
+      "no post-exposure treatment mutation"
+    ],
+    "no_separate_witness_after_selection": "the witness is already embedded in CAUSAL_DELTA_K"
+  },
+  "preserved_contracts": {
+    "repair_A_unchanged": [
+      "RERANKER_PAYLOAD_SURFACE",
+      "POST_RERANK_SELECTOR_REPLAY_SURFACE",
+      "selector-visible text = full frozen selector-visible text (OPTION A)",
+      "complete replay object universe",
+      "complete replay materialization gate",
+      "production post-rerank parity target"
+    ],
+    "repair_C_unchanged": [
+      "A6_BASELINE_GRAPH_CHANNEL_AUTHORITY = A5-R2 persisted selectivity_only_graph_ordering",
+      "PHASE1_SELECT_V2_RUNS = 0",
+      "double graph merge = PROHIBITED",
+      "merge_ids reconstruction = parity-check-only"
+    ],
+    "populations_unchanged": [
+      "ADMISSION_APPLICABLE_BRIDGE_GROUP (exact Phase0-R1 definition)",
+      "safety population = all BASELINE_STABLE evaluator-required/control groups"
+    ],
+    "broad_architecture_unchanged": [
+      "RERANK_POOL_SIZE = 30",
+      "ADMISSION_BUDGET_CANDIDATES = [2, 3]",
+      "arms = BASELINE / ADMISSION_K2 / ADMISSION_K3",
+      "RERANKER_REPETITIONS_PER_ARM_PER_CASE = 3",
+      "cyclic arm schedule",
+      "STABLE_RETAINED >= 2/3",
+      "MATERIAL_CONTROL_REGRESSION = BASELINE retention_count >= 2 AND treatment retention_count <= 1",
+      "DELTA_2 / DELTA_3",
+      "REGRESSION_2 / REGRESSION_3",
+      "RESERVED_REQUIRED_CANDIDATE_RETAINED / STABLE_RESERVED_REQUIRED_WITNESS",
+      "origin concentration = diagnostic-only",
+      "A6_RERANK_OUTCOME_EXPOSURE = NOT_STARTED",
+      "D4 = BLOCKED"
+    ]
+  },
+  "synthetic_truth_table_checks": {
+    "scope": "static/synthetic decision-logic checks only; no real case data, no treatment pools, no model calls",
+    "cases": [
+      "K2 causal-safe, K3 higher DELTA but noncausal -> PASS with SELECTED_ADMISSION_BUDGET = 2",
+      "K2 unsafe, K3 causal-safe -> PASS with SELECTED_ADMISSION_BUDGET = 3",
+      "both causal-safe, CAUSAL_DELTA equal -> PASS with SELECTED_ADMISSION_BUDGET = 2",
+      "both causal-safe, K3 causal delta larger -> PASS with SELECTED_ADMISSION_BUDGET = 3",
+      "stable safe DELTA but causal delta zero -> PARTIAL / POOL_PERTURBATION_ASSOCIATED_RECOVERY_WITHOUT_RESERVED_WITNESS",
+      "stable recovery only under unsafe arms -> PARTIAL / ADMISSION_RECOVERY_WITH_CONTROL_REGRESSION",
+      "no stable delta but isolated treatment recovery -> PARTIAL / ADMISSION_RECOVERY_NOT_STABLE_ACROSS_RERANKER_REPETITIONS",
+      "no stable or unstable recovery -> PARTIAL / ADMISSION_DID_NOT_VALIDATE_DOWNSTREAM_RECOVERY",
+      "structural invariant failure -> FAIL / BOUNDED_ADMISSION_CONSTRUCTION_OR_AUTHORITY_FAILED (precedence over all outcome classes)"
+    ],
+    "result": "all cases map to exactly one final verdict and, where PASS is possible, exactly one selected admission budget",
+    "executed_in": "focused static verification (gitignored scratch tooling); no artifact writes"
+  },
+  "phase1_readiness": {
+    "READY": true,
+    "basis": "the final preregistration now contains an unambiguous answer for every combination of DELTA_2/DELTA_3, CAUSAL_DELTA_2/CAUSAL_DELTA_3, REGRESSION_2/REGRESSION_3, unstable recovery present/absent, and structural invariant pass/fail: exactly one final verdict and, where PASS is possible, exactly one selected admission budget",
+    "phase1_must_retain": { "REAL_CASE_RERANKER_CALLS": 0 }
+  },
+  "A6_PHASE0_R1_R1_DECISION": "CAUSAL_BUDGET_SELECTION_AND_VERDICT_PRECEDENCE_REPAIRED",
+  "decision_basis": "the three remaining decision-contract defects are completely repaired: the witness is embedded in the budget-eligibility metric (CAUSAL_DELTA_K / MECHANISTIC_SAFE_EFFECTIVE / causal-safe hierarchy), stable pool-perturbation recovery has its own PARTIAL class with exact use-when conditions, and MATERIAL_CONTROL_REGRESSION is explicitly a scientific budget-safety outcome with FAIL narrowed to structural/protocol invariant failures; the 7-level precedence is total and non-overlapping and every synthetic truth-table case maps to exactly one verdict",
+  "lifecycle": {
+    "D3.5-A6": "IN_PROGRESS / BOUNDED_RERANK_ADMISSION_PREREGISTRATION_FINALIZED",
+    "D3.5-A6-PHASE0": "COMPLETE / BOUNDED_RERANK_ADMISSION_PREREGISTRATION_FINALIZED",
+    "D3.5-A6-PHASE0-R1": "COMPLETE / REPLAY_SURFACE_AND_BUDGET_DECISION_CONTRACT_REPAIRED",
+    "D3.5-A6-PHASE0-R1-R1": "COMPLETE / CAUSAL_BUDGET_SELECTION_AND_VERDICT_PRECEDENCE_REPAIRED",
+    "D3.5-A6-PHASE1": "NOT_STARTED / READY_TO_IMPLEMENT",
+    "D3.5-A6-PHASE2": "NOT_STARTED / BLOCKED_UNTIL_PHASE1_FREEZE",
+    "D3.5": "IN_PROGRESS / POST_A2_SELECTIVITY_AND_ADMISSION_REDESIGN (unchanged)",
+    "D4": "NOT_STARTED / BLOCKED"
+  },
+  "exact_next_stage": "D3.5-A6 Phase 1 — Bounded Admission Prototype & Synthetic Construction Freeze (REAL_CASE_RERANKER_CALLS = 0; PHASE1_SELECT_V2_RUNS = 0; complete replay-surface materialization gate before implementation freeze)",
+  "execution_accounting": {
+    "REAL_CASE_RERANKER_CALLS": 0,
+    "REAL_CASE_SELECTIVITY_RUNS": 0,
+    "REAL_CASE_TREATMENT_POOL_CONSTRUCTIONS": 0,
+    "ANALYZER_CALLS": 0,
+    "EMBEDDING_CALLS": 0,
+    "QA_CALLS": 0,
+    "VERIFIER_CALLS": 0,
+    "JUDGE_CALLS": 0,
+    "POSTGRESQL_WRITES": 0,
+    "QDRANT_WRITES": 0,
+    "NOVEL_VALIDATION_RUNS": 0,
+    "NOVEL_HOLDOUT_RUNS": 0
+  },
+  "protected_datasets": {
+    "novel_validation": "FROZEN / UNSEEN",
+    "novel_holdout": "SEALED / UNSEEN",
+    "contents_inspected": false
+  },
+  "artifact_change_policy": {
+    "evaluation_scripts": "unchanged",
+    "src": "unchanged",
+    "configs": "unchanged",
+    "d3_5_downstream_replay_fixture_json": "unchanged",
+    "phase0_r1_artifacts": "narrowly annotated only (superseded-rule notice; Repair A/C sections unchanged)"
+  },
+  "prohibited_actions": [
+    "implement Phase 1",
+    "create a runner",
+    "construct real BASELINE/K2/K3 pools",
+    "run select_v2",
+    "run the reranker",
+    "inspect g021 under treatment",
+    "change K",
+    "change the repetition count",
+    "change v2 selectivity",
+    "change the hard gate",
+    "change caps",
+    "change origin attribution",
+    "add concentration thresholds",
+    "write PostgreSQL/Qdrant",
+    "run novel_validation",
+    "run holdout",
+    "start Phase 2",
+    "start D4"
+  ]
+}

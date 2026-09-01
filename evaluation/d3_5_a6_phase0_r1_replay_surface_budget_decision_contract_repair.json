@@ -235,6 +235,11 @@
     "phase1_must_retain": { "REAL_CASE_RERANKER_CALLS": 0 }
   },
   "A6_PHASE0_R1_DECISION": "REPLAY_SURFACE_AND_BUDGET_DECISION_CONTRACT_REPAIRED",
+  "superseded_rule_notice": {
+    "recorded_by": "D3.5-A6-PHASE0-R1-R1_CAUSAL_BUDGET_SELECTION_AND_VERDICT_PRECEDENCE_REPAIR",
+    "notice": "this artifact's SAFE_EFFECTIVE-based budget_selection_rule (SAFE_EFFECTIVE(K) = DELTA_K > 0 AND REGRESSION_K == 0) was further refined by Phase0-R1-R1: budget selection now uses MECHANISTIC_SAFE_EFFECTIVE(K) = CAUSAL_DELTA_K > 0 AND REGRESSION_K == 0 with the causal-safe hierarchy, and the verdict precedence was extended to 7 levels including PARTIAL / POOL_PERTURBATION_ASSOCIATED_RECOVERY_WITHOUT_RESERVED_WITNESS and the narrowed FAIL scope; SAFE_EFFECTIVE is retained here as a historical record and as a broader diagnostic",
+    "repair_A_and_repair_C_sections_unchanged": true
+  },
   "decision_basis": "all three contract defects are completely repaired in the Phase-0 machine preregistration and human report: the two replay surfaces plus the complete object universe, selector-text contract, registry separation, materialization gate, and parity target are explicit; the benefit/safety populations, DELTA/REGRESSION metrics, SAFE_EFFECTIVE, the corrected decision hierarchy, the causal witness, and the total verdict precedence are conflict-free; the authoritative graph channel, the no-rerun/no-double-merge prohibitions, and the corrected BASELINE chain remove the graph-authority ambiguity; all accepted Phase-0 architecture is unchanged",
   "lifecycle": {
     "D3.5-A6": "IN_PROGRESS / BOUNDED_RERANK_ADMISSION_PREREGISTRATION_REPAIRED_AND_FROZEN",
