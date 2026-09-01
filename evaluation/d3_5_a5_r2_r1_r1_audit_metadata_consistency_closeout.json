@@ -1,0 +1,151 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint": "D3.5-A5-R2-R1-R1",
+  "stage_name": "D3.5-A5-R2-R1-R1 — Audit Metadata Consistency Closeout",
+  "stage_type": "extremely narrow metadata/audit closeout; no scorer/evaluator execution, no runtime/D1/database changes",
+  "starting_head": "716389bc7f80c61cf5896c582496220cf0e33567",
+  "parent_r2_result_commit": "2bddbbca14676cf26568f11275a80dc32335ef58",
+  "parent_r2_r1_commit": "716389bc7f80c61cf5896c582496220cf0e33567",
+  "stale_metadata_issues": [
+    {
+      "issue": 1,
+      "description": "the parent R2 result artifact's post-freeze infrastructure-repair entry still stated the hashlib import was fixed 'before any outcome exposure', conflicting with the corrected exposure chronology (treatment-execution exposure began during Invocation A, before the hashlib fix)",
+      "location": "evaluation/d3_5_a5_r2_repaired_selectivity_revalidation.json anti_tuning_audit.post_freeze_infrastructure_repairs[0].repair",
+      "status": "REPAIRED"
+    },
+    {
+      "issue": 2,
+      "description": "the parent R2 result artifact described the a2_matched_ids failure as occurring on the 'first replay invocation', while R2-R1 established Invocation A = hashlib NameError and Invocation B = a2_matched NameError",
+      "location": "evaluation/d3_5_a5_r2_repaired_selectivity_revalidation.json anti_tuning_audit.post_freeze_infrastructure_repairs[1].repair",
+      "status": "REPAIRED"
+    }
+  ],
+  "hashlib_wording_repair": {
+    "previous_incorrect_wording": "fixed ... before any outcome exposure",
+    "corrected_semantics": {
+      "repair": "hashlib_import",
+      "timing": "POST_TREATMENT_EXECUTION_EXPOSURE / PRE_EVALUATOR_EXECUTION / PRE_INVOCATION_B",
+      "semantic_effect": "NONE"
+    },
+    "placement_rule": "the stale phrase now appears only inside an explicitly marked previous_incorrect_wording field; it is absent from all current authoritative wording"
+  },
+  "a2_matched_invocation_wording_repair": {
+    "previous_incorrect_wording": "the first replay invocation crashed at the a2_matched wiring point",
+    "corrected_semantics": "Invocation B (the second failed real-case replay invocation, at the amended freeze commit f498714) crashed inside evaluate_complete_universe at the newly-visible diagnostic because a2_matched_ids had not yet been wired; Invocation A (the first failed invocation, at the original pre-amend freeze commit c4aebd8) crashed at determinism-receipt construction (NameError: hashlib) after select_v2 x2 on g036; Invocation C completed the successful 6/6 replay",
+    "placement_rule": "the stale phrase now appears only inside an explicitly marked previous_incorrect_wording field"
+  },
+  "preserved_chronology": {
+    "TREATMENT_EXECUTION_EXPOSURE": "Invocation A",
+    "PERSISTED_RESULT_EXPOSURE": "Invocation C",
+    "HUMAN_RESULT_INSPECTION": "after Invocation C",
+    "note": "no additional scientific interpretation added"
+  },
+  "pre_amend_identity_provenance": {
+    "identity": "c4aebd84eb91a7a316c9f84e94eaeffb5d1e83a7",
+    "role": "LOCAL_PRE_AMEND_GIT_OBJECT_OBSERVED_DURING_R2",
+    "ORIGINAL_PRE_AMEND_IMPLEMENTATION_IDENTITY": "c4aebd84eb91a7a316c9f84e94eaeffb5d1e83a7",
+    "remotely_reachable": false,
+    "verification": {
+      "git_branch_a_contains": "no local or remote branch contains the commit",
+      "git_merge_base_is_ancestor_origin_main": "exit 1 (not an ancestor of origin/main)",
+      "local_reflog": "the object remains locally observable via the reflog (1 reference)"
+    },
+    "impact_on_scientific_conclusion": "none"
+  },
+  "remote_replayability_caveat": {
+    "REMOTE_REPLAYABILITY_OF_PRE_AMEND_GIT_OBJECT": "NOT_AVAILABLE",
+    "wording": "The pre-amend identity was available during the original local audit, but it is not part of the currently reachable remote Git history; a fresh clone cannot git show c4aebd8.",
+    "AUDIT_EVIDENCE_AT_REPAIR_TIME": "SUFFICIENT",
+    "evidence_still_preserved": [
+      "the amended implementation freeze f498714377fea1cc819aeacdb0212d43baf32457 (remotely reachable)",
+      "the final result implementation at 2bddbbca14676cf26568f11275a80dc32335ef58 (remotely reachable)",
+      "the R2-R1 audit artifact with the recorded extracted-region identity checks",
+      "the post-freeze evaluator-wiring diff (f498714 -> 2bddbbc)"
+    ],
+    "no_invalidation": "the absence of remote reachability for c4aebd8 does NOT invalidate the R2 scientific result or the R2-R1 result-neutrality conclusion",
+    "sha_bookkeeping": "no new general SHA256 inventory introduced; only the Git commit identities and semantic diff descriptions already present in R2-R1 are reused"
+  },
+  "scientific_fields_immutability": {
+    "verified_unchanged_vs_parent_result_commit_2bddbbc": [
+      "six_case_records",
+      "selected_object_ids",
+      "selected_rank_keys",
+      "candidate_receipts (within six_case_records)",
+      "fanout_metrics",
+      "graph_displacement_metrics",
+      "complete_universe_evaluator_results / applicability classes",
+      "determinism_receipts",
+      "scientific_verdict",
+      "governance_scope_invariants"
+    ],
+    "authorized_metadata_changes": [
+      "anti_tuning_audit.post_freeze_infrastructure_repairs[0].repair wording + timing block",
+      "anti_tuning_audit.post_freeze_infrastructure_repairs[1].repair wording + timing block",
+      "audit_repair_history append: D3.5-A5-R2-R1-R1_AUDIT_METADATA_CONSISTENCY_CLOSEOUT"
+    ]
+  },
+  "runtime_immutability": {
+    "evaluation_scripts_d3_5_a5_r2_selectivity_py": "unchanged",
+    "evaluation_d3_5_downstream_replay_fixture_json": "unchanged",
+    "evaluation_d3_5_a5_r2_repaired_selectivity_preregistration_json": "unchanged",
+    "src": "unchanged",
+    "configs": "unchanged"
+  },
+  "R2_R1_R1_DECISION": "AUDIT_METADATA_CONSISTENCY_CLOSED",
+  "decision_basis": "both residual wording inconsistencies are repaired with the stale phrases confined to explicitly marked previous_incorrect_wording fields; the Invocation A/B/C chronology is preserved; the c4aebd8 provenance is clarified as a local pre-amend identity not reachable from the current remote history, with the audit evidence at repair time sufficient (f498714/2bddbbc reachable, R2-R1 artifact, recorded region checks, post-freeze diff); all scientific fields verified unchanged",
+  "A6_readiness": {
+    "A6_SCIENTIFIC_PREREGISTRATION_READINESS": "YES",
+    "A6_AUDIT_PREREGISTRATION_READINESS": "YES",
+    "A6_EXECUTION_STARTED": false,
+    "concentration_requirements_frozen": [
+      "selected_bridge_origin_count",
+      "selected_bridge_per_origin_counts",
+      "reserved_bridge_origin_count",
+      "reserved_bridge_per_origin_counts",
+      "ordinary_rerank_candidates_displaced",
+      "reserved_bridge_candidate_ids",
+      "reserved_candidate_origin_ids"
+    ],
+    "numeric_concentration_threshold_added": false,
+    "selectivity_modified_because_of_g020": false
+  },
+  "exact_next_stage": "D3.5-A6 — Bounded Rerank-Admission Prototype & Paired Replay Validation (must begin with design/preregistration, not execution)",
+  "A6_must_freeze_before_any_reranker_call": [
+    "K=2 / K=3 arms",
+    "exact baseline/treatment construction",
+    "decision semantics between K=2 and K=3",
+    "reranker repetition count",
+    "symmetric repeated execution",
+    "variance accounting",
+    "candidate displacement semantics",
+    "control material-regression interpretation",
+    "origin-concentration diagnostics"
+  ],
+  "prohibited_actions": [
+    "rerun R2",
+    "run select_v2",
+    "modify the v2 scorer or evaluator semantics",
+    "modify the fixture or preregistration",
+    "change caps or the hard gate",
+    "change origin attribution",
+    "implement K=2/K=3",
+    "run reranker/analyzer/embeddings",
+    "write PostgreSQL/Qdrant",
+    "run novel_validation/holdout",
+    "start A6 execution",
+    "start D4"
+  ],
+  "execution_accounting": {
+    "REAL_CASE_SELECTIVITY_RUNS": 0,
+    "ANALYZER_CALLS": 0,
+    "EMBEDDING_CALLS": 0,
+    "RERANKER_CALLS": 0,
+    "QA_CALLS": 0,
+    "VERIFIER_CALLS": 0,
+    "JUDGE_CALLS": 0,
+    "POSTGRESQL_WRITES": 0,
+    "QDRANT_WRITES": 0,
+    "NOVEL_VALIDATION_RUNS": 0,
+    "NOVEL_HOLDOUT_RUNS": 0
+  }
+}

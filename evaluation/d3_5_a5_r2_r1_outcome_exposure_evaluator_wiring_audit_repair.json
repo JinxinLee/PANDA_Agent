@@ -154,7 +154,9 @@
     "FAILED_PRE_COMPLETION_REAL_CASE_INVOCATIONS": 2,
     "REAL_CASE_SELECT_V2_EXECUTIONS_IN_FAILED_INVOCATIONS": 4,
     "failed_invocation_execution_detail": "invocation A: 2 select_v2 executions (g036); invocation B: 2 select_v2 executions (g036); all discarded on failure",
-    "unique_real_cases_touched_by_failed_invocations": ["g036"],
+    "unique_real_cases_touched_by_failed_invocations": [
+      "g036"
+    ],
     "completed_formal_executions_select_v2_count": 12,
     "distinction": "completed formal case treatments (6) are not conflated with low-level deterministic select_v2 calls (double execution per case plus the 4 discarded failed-invocation executions)",
     "REAL_CASE_SELECTIVITY_TREATMENT_RUNS": 6
@@ -174,7 +176,10 @@
     "PER_ORIGIN_CAP_respected": true,
     "v1_origins_after": 6,
     "v2_origins_after": 2,
-    "v2_attributed_counts": {"edge.81276373f106c8758d5aec92": 4, "edge.ea3a79d222f0ca6cc0e6df72": 4},
+    "v2_attributed_counts": {
+      "edge.81276373f106c8758d5aec92": 4,
+      "edge.ea3a79d222f0ca6cc0e6df72": 4
+    },
     "classification": "NOT an R2 failure; an A6 admission-design diagnostic requirement (origin concentration at the rerank-admission boundary)",
     "selectivity_diversity_change_now": "prohibited: least-used-origin attribution, PER_ORIGIN_CAP = 4, SELECTIVITY_CAP = 8, and v2 scoring are unchanged; A6 measures downstream concentration first"
   },
@@ -234,5 +239,13 @@
     "REINDEX": 0,
     "NOVEL_VALIDATION_RUNS": 0,
     "NOVEL_HOLDOUT_RUNS": 0
-  }
+  },
+  "pre_amend_identity_provenance": {
+    "identity": "c4aebd84eb91a7a316c9f84e94eaeffb5d1e83a7",
+    "role": "LOCAL_PRE_AMEND_GIT_OBJECT",
+    "remotely_reachable": false,
+    "verification": "git branch -a --contains prints no branch; git merge-base --is-ancestor c4aebd8 origin/main exits 1; the object remains locally observable via the reflog",
+    "impact_on_scientific_conclusion": "none (audit evidence at repair time was sufficient: f498714 and 2bddbbc are reachable, the R2-R1 artifact records the extracted-region identity checks, and the post-freeze evaluator-wiring diff is preserved)"
+  },
+  "r1_r1_closeout_link": "evaluation/d3_5_a5_r2_r1_r1_audit_metadata_consistency_closeout.json"
 }

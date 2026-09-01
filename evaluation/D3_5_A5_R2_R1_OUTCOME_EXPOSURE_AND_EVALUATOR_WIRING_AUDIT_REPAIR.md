@@ -54,6 +54,8 @@ The `a2_matched_ids` repair (after invocation B, before invocation C): `evaluate
 
 ## 11. Applicability semantics audit
 
+> **R2-R1-R1 provenance clarification (2026-09-01):** the pre-amend implementation-freeze identity `c4aebd84eb91a7a316c9f84e94eaeffb5d1e83a7` referenced above is a **local pre-amend Git object** — no local or remote branch contains it and it is not an ancestor of `origin/main`, so a fresh clone cannot `git show` it. The audit evidence at repair time was nevertheless sufficient: the amended freeze `f498714` and the result implementation `2bddbbc` are reachable, the R2-R1 artifact records the extracted-region identity checks, and the post-freeze evaluator-wiring diff is preserved. This does not invalidate the R2 scientific result or the result-neutrality conclusion.
+
 `POST_EXPOSURE_APPLICABILITY_SEMANTIC_MUTATIONS = 0`. `GoldEvidenceSelector.matches` (in `src/panda_agent/evaluation.py`, sha256 `0017367e…`) and the universe construction, gate-passing calculation, retained calculation, and all four applicability-class rules are unchanged across all three versions.
 
 ## 12. Newly-visible diagnostic role

@@ -38,13 +38,22 @@
     "GATE_CHANGES": 0,
     "post_freeze_infrastructure_repairs": [
       {
-        "repair": "missing stdlib import (hashlib) in the frozen implementation crashed the first replay invocation with NameError before any case output existed; fixed and amended into the freeze commit f498714 before any outcome exposure",
-        "policy_effect": "none"
+        "repair": "missing stdlib import (hashlib) in the frozen implementation: Invocation A (the first failed real-case replay invocation, at the original pre-amend freeze commit c4aebd8) executed select_v2 twice on g036 with the deterministic comparison completing, then crashed at determinism-receipt construction (NameError: hashlib) before the evaluator started; the import fix was amended into the freeze commit f498714",
+        "policy_effect": "none",
+        "timing": {
+          "hashlib_import_repair": "POST_TREATMENT_EXECUTION_EXPOSURE / PRE_EVALUATOR_EXECUTION / PRE_INVOCATION_B",
+          "semantic_effect": "NONE",
+          "previous_incorrect_wording": "fixed ... before any outcome exposure (stale: treatment-execution exposure had already begun during Invocation A)"
+        }
       },
       {
-        "repair": "evaluator harness parameter wiring: the newly-visible discovery record required passing the frozen A2 combined-pool matched-ID reference (a2_matched_ids) into evaluate_complete_universe; the first replay invocation crashed with NameError at that wiring point before any case output existed",
+        "repair": "evaluator harness parameter wiring: the newly-visible discovery record requires passing the frozen A2 combined-pool matched-ID reference (a2_matched_ids) into evaluate_complete_universe; Invocation B (the second failed real-case replay invocation, at the amended freeze commit f498714) executed select_v2 twice on g036 and crashed inside evaluate_complete_universe at the newly-visible diagnostic (NameError: a2_matched) after the g036 selector matching had completed in memory",
         "policy_effect": "none on the selectivity policy (select_v2 untouched); affects only the newly-visible discovery record, which could not be produced without the wiring",
-        "audit": "select_v2 code diff between the freeze commit and the fix consists solely of the parameter plumbing; applicability classes depend only on the fixture, the frozen selectors, and the frozen selection output"
+        "audit": "select_v2 code diff between the freeze commit and the fix consists solely of the parameter plumbing; applicability classes depend only on the fixture, the frozen selectors, and the frozen selection output",
+        "timing": {
+          "a2_matched_ids_wiring_repair": "POST_INVOCATION_B / PRE_INVOCATION_C",
+          "semantic_effect": "NONE (select_v2 untouched; affects only the newly-visible discovery record)"
+        }
       }
     ]
   },
@@ -4203,6 +4212,20 @@
         "POST_EXPOSURE_SCORER_MUTATIONS = 0 and POST_EXPOSURE_APPLICABILITY_SEMANTIC_MUTATIONS = 0 proven by byte-identical select_v2 (sha256 272546df...) and evaluation.py (0017367e...) across c4aebd8/f498714/2bddbbc",
         "POST_FREEZE_REPAIR_CLASS = EVALUATOR_PARAMETER_WIRING_ONLY with zero scientific-selection/ranking/gate/cap/applicability-class effect; newly-visible diagnostic enablement = YES",
         "R2_RERUN_REQUIRED = false"
+      ],
+      "metrics_changed": false,
+      "verdict_changed": false,
+      "selected_ids_changed": false
+    },
+    {
+      "repair_id": "D3.5-A5-R2-R1-R1_AUDIT_METADATA_CONSISTENCY_CLOSEOUT",
+      "artifact": "evaluation/d3_5_a5_r2_r1_r1_audit_metadata_consistency_closeout.json",
+      "scope": "audit metadata wording only",
+      "changes": [
+        "hashlib timing wording corrected: post-treatment-execution-exposure / pre-evaluator-execution / pre-invocation-B (the stale pre-exposure wording removed)",
+        "a2_matched invocation number corrected: Invocation B (the second failed real-case invocation; the stale first-invocation wording removed)",
+        "c4aebd8 remote-reachability caveat clarified: LOCAL_PRE_AMEND_GIT_OBJECT, not remotely reachable (not an ancestor of origin/main; no branch contains it)",
+        "scientific fields unchanged"
       ],
       "metrics_changed": false,
       "verdict_changed": false,
