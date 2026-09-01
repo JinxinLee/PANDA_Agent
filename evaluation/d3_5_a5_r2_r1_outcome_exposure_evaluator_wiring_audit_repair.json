@@ -1,0 +1,238 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint": "D3.5-A5-R2-R1",
+  "stage_name": "D3.5-A5-R2-R1 — Outcome-Exposure & Evaluator-Wiring Audit Repair",
+  "stage_type": "narrow audit-record repair only; no scorer execution, no policy/evaluator-semantics change, no runtime/D1/database changes",
+  "starting_head": "2bddbbca14676cf26568f11275a80dc32335ef58",
+  "parent_r2_result_commit": "2bddbbca14676cf26568f11275a80dc32335ef58",
+  "parent_r2_scientific_verdict": "REPAIRED_SELECTIVITY_RELEVANCE_RETENTION_VALIDATED_FOR_DEVELOPMENT",
+  "parent_r2_execution_audit_status_new": "PASS_WITH_AUDIT_REPAIR",
+  "r2_commit_chain": {
+    "fixture_extension_commit": "3db1aaae2b77a309dc5dc5a86ca69bc657001bd1",
+    "original_implementation_freeze_commit": "c4aebd84eb91a7a316c9f84e94eaeffb5d1e83a7",
+    "amended_implementation_freeze_commit": "f498714377fea1cc819aeacdb0212d43baf32457",
+    "result_commit": "2bddbbca14676cf26568f11275a80dc32335ef58"
+  },
+  "audit_issue": {
+    "defect": "exposure accounting: the R2 record stated outcome exposure began at the first successful six-case replay, but the repaired scorer (select_v2) had already executed on a real frozen case during earlier failed invocations",
+    "classification": "protocol-accounting defect only",
+    "not_evidence_of": [
+      "multiple repaired policies",
+      "outcome-guided ranking mutation",
+      "gold leakage into scorer",
+      "cap mutation",
+      "gate mutation",
+      "case-specific runtime rules"
+    ],
+    "interpretation_preserved": "R2 scientific result = usable; R2 audit trail = required this narrow repair"
+  },
+  "corrected_outcome_exposure": {
+    "R2_REPAIRED_SELECTIVITY_OUTCOME_EXPOSURE": {
+      "started_at": "FIRST_FAILED_REAL_CASE_INVOCATION (invocation A: the first select_v2 execution on real frozen case g036, at the original freeze commit c4aebd8)",
+      "state": "COMPLETE",
+      "previous_incorrect_wording": "started at the first successful six-case replay"
+    },
+    "exposure_semantics_distinction": {
+      "TREATMENT_EXECUTION_EXPOSURE": "STARTED at invocation A (first repaired-policy execution on a real frozen case)",
+      "PERSISTED_RESULT_EXPOSURE": "began only at invocation C (the successful six-case replay that wrote results)",
+      "HUMAN_RESULT_INSPECTION": "began only after invocation C persisted its output",
+      "meaning_of_started_at": "scientific treatment execution had begun — NOT that human result interpretation had begun"
+    }
+  },
+  "first_failed_invocation_accounting": {
+    "basis": "repository evidence: harness order verified at f498714 (and identical at c4aebd8) plus the recorded tracebacks of the two failed invocations; actual values used, not the prompt's suggested single-invocation shape",
+    "invocation_A": {
+      "at_commit": "c4aebd84eb91a7a316c9f84e94eaeffb5d1e83a7 (original freeze)",
+      "repaired_policy_real_case_execution_started": true,
+      "case_processed": "g036 (first frozen case)",
+      "select_v2_executions_before_failure": 2,
+      "deterministic_comparison_completed": true,
+      "failure_point": "determinism-receipt construction (hashlib.sha256) — NameError: hashlib",
+      "evaluator_started": false,
+      "evaluator_completed": false,
+      "persistent_case_result_written": false,
+      "case_summary_printed": false,
+      "human_case_result_inspection_recorded": false
+    },
+    "invocation_B": {
+      "at_commit": "f498714377fea1cc819aeacdb0212d43baf32457 (amended freeze)",
+      "repaired_policy_real_case_execution_started": true,
+      "case_processed": "g036 (first frozen case)",
+      "select_v2_executions_before_failure": 2,
+      "deterministic_comparison_completed": true,
+      "determinism_receipt_completed": true,
+      "failure_point": "evaluate_complete_universe at newly_visible = sorted(matched_universe_ids - a2_matched) — NameError: a2_matched (missing evaluator parameter wiring)",
+      "evaluator_started": true,
+      "evaluator_completed": false,
+      "selector_matching_for_g036_completed_in_memory_then_discarded": true,
+      "persistent_case_result_written": false,
+      "case_summary_printed": false,
+      "human_case_result_inspection_recorded": false
+    },
+    "invocation_C": {
+      "at_commit": "working tree after the evaluator parameter-wiring repair (recorded in result commit 2bddbbc)",
+      "result": "full success: 6/6 cases, results persisted, summary printed"
+    }
+  },
+  "treatment_execution_vs_persistence_semantics": {
+    "distinction": "TREATMENT_EXECUTION_EXPOSURE (scientific treatment execution had begun) is distinct from PERSISTED_RESULT_EXPOSURE and HUMAN_RESULT_INSPECTION (no persisted or human-inspected case result existed before the evaluator wiring repair)",
+    "exposure_started_means": "treatment execution had begun",
+    "exposure_started_does_not_mean": "human result interpretation had begun"
+  },
+  "pre_exposure_repairs": [],
+  "post_exposure_repairs": [
+    {
+      "repair_id": "hashlib_import_repair",
+      "timing": "POST_TREATMENT_EXECUTION_EXPOSURE (after invocation A's select_v2 executions on g036) but PRE_EVALUATOR_EXECUTION and PRE_INVOCATION_B",
+      "mechanism": "amended into the implementation-freeze commit (c4aebd8 -> f498714)",
+      "diff_scope": "exactly one added module-level line: import hashlib (verified: the c4aebd8->f498714 script diff is solely this line)",
+      "semantic_effect": "none (non-semantic module-level import; select_v2 byte-identical across c4aebd8/f498714/2bddbbc)",
+      "classification": "non-semantic infrastructure repair",
+      "note": "R1's expectation that this repair was pre-exposure is corrected by repository evidence: invocation A had already executed select_v2 on a real case before the hashlib fix"
+    },
+    {
+      "repair_id": "a2_matched_ids_wiring_repair",
+      "timing": "POST_TREATMENT_EXECUTION_EXPOSURE (after invocations A and B) and PRE_INVOCATION_C",
+      "mechanism": "uncommitted working-tree repair, recorded in the result commit 2bddbbc",
+      "diff_scope": "evaluate_complete_universe gains a2_matched_ids parameter; newly_visible uses the parameter; harness constructs the frozen A2 combined-pool matched-ID reference from a2_prov and passes it; evaluation output field _a2_match_provenance_reference renamed a2_combined_pool_matched_reference (sorted ID list)",
+      "semantic_effect": "none (see repair_classification)",
+      "classification": "EVALUATOR_PARAMETER_WIRING_ONLY"
+    }
+  ],
+  "scorer_diff_audit": {
+    "diff_audited": "f498714 -> 2bddbbc for evaluation/scripts/d3_5_a5_r2_selectivity.py",
+    "unchanged_across_c4aebd8_f498714_2bddbbc": {
+      "select_v2": "byte-identical function body (verified by sha256 of the extracted region: 272546df...)",
+      "tokenizer": true,
+      "symbol_exact_match": true,
+      "candidate_lexical_view": true,
+      "IDF_formula": true,
+      "rank_key_order": true,
+      "hard_gate": true,
+      "support_rank_semantics": true,
+      "origin_attribution": true,
+      "PER_ORIGIN_CAP": true,
+      "SELECTIVITY_CAP": true,
+      "graph_merge_semantics": true
+    },
+    "POST_EXPOSURE_SCORER_MUTATIONS": 0,
+    "c4aebd8_to_f498714_amendment_scope": "exactly one added module-level line: import hashlib (non-semantic)"
+  },
+  "applicability_semantics_diff_audit": {
+    "GoldEvidenceSelector_matches": "unchanged (src/panda_agent/evaluation.py byte-identical sha256 0017367e... across c4aebd8/f498714/2bddbbc)",
+    "universe_construction": "unchanged",
+    "gate_passing_calculation": "unchanged",
+    "retained_calculation": "unchanged",
+    "NOT_APPLICABLE_TO_SELECTIVITY_rule": "unchanged",
+    "GATE_RECALL_LIMITATION_rule": "unchanged",
+    "APPLICABLE_AND_RETAINED_rule": "unchanged",
+    "APPLICABLE_AND_LOST_rule": "unchanged",
+    "POST_EXPOSURE_APPLICABILITY_SEMANTIC_MUTATIONS": 0
+  },
+  "newly_visible_diagnostic_isolation": {
+    "a2_matched_ids_used_only_for": "newly_visible_complete_universe_applicable_evidence",
+    "does_not_control": [
+      "which candidates are required evidence",
+      "which candidates pass gate",
+      "which candidates are retained",
+      "the applicability class"
+    ],
+    "verified_from": "the f498714 -> 2bddbbc diff (the parameter appears only in the newly_visible expression and its harness plumbing)"
+  },
+  "repair_classification": {
+    "POST_FREEZE_REPAIR_CLASS": "EVALUATOR_PARAMETER_WIRING_ONLY",
+    "SCIENTIFIC_SELECTION_EFFECT": "NONE",
+    "RANKING_EFFECT": "NONE",
+    "GATE_EFFECT": "NONE",
+    "CAP_EFFECT": "NONE",
+    "APPLICABILITY_CLASS_EFFECT": "NONE",
+    "NEWLY_VISIBLE_DIAGNOSTIC_ENABLEMENT": "YES",
+    "wording_correction": "the wiring repair is NOT a pre-exposure repair: it happened after repaired-policy real-case execution had begun (invocation A). Correct classification: post-exposure infrastructure/evaluator-plumbing repair with zero scorer/policy/applicability-semantic effect"
+  },
+  "formal_run_accounting": {
+    "COMPLETED_FORMAL_R2_CASE_TREATMENTS": 6,
+    "FAILED_PRE_COMPLETION_REAL_CASE_INVOCATIONS": 2,
+    "REAL_CASE_SELECT_V2_EXECUTIONS_IN_FAILED_INVOCATIONS": 4,
+    "failed_invocation_execution_detail": "invocation A: 2 select_v2 executions (g036); invocation B: 2 select_v2 executions (g036); all discarded on failure",
+    "unique_real_cases_touched_by_failed_invocations": ["g036"],
+    "completed_formal_executions_select_v2_count": 12,
+    "distinction": "completed formal case treatments (6) are not conflated with low-level deterministic select_v2 calls (double execution per case plus the 4 discarded failed-invocation executions)",
+    "REAL_CASE_SELECTIVITY_TREATMENT_RUNS": 6
+  },
+  "r2_rerun_required": false,
+  "r2_rerun_rationale": [
+    "outcomes are already exposed",
+    "the scorer did not mutate (byte-identical select_v2 across all three versions)",
+    "the scientific result can be audited from persisted output",
+    "rerunning cannot restore an unbiased pre-exposure boundary"
+  ],
+  "development_only_claim_preserved": "R2 remains POST_OUTCOME_MECHANISTIC_DEVELOPMENT, not fresh unbiased validation; R2-R1 does not strengthen the claim",
+  "g020_origin_concentration_signal": {
+    "g020_eligible": 67,
+    "g020_selected": 8,
+    "g020_graph_displacement": 8,
+    "PER_ORIGIN_CAP_respected": true,
+    "v1_origins_after": 6,
+    "v2_origins_after": 2,
+    "v2_attributed_counts": {"edge.81276373f106c8758d5aec92": 4, "edge.ea3a79d222f0ca6cc0e6df72": 4},
+    "classification": "NOT an R2 failure; an A6 admission-design diagnostic requirement (origin concentration at the rerank-admission boundary)",
+    "selectivity_diversity_change_now": "prohibited: least-used-origin attribution, PER_ORIGIN_CAP = 4, SELECTIVITY_CAP = 8, and v2 scoring are unchanged; A6 measures downstream concentration first"
+  },
+  "a6_required_concentration_diagnostics": [
+    "selected_bridge_origin_count",
+    "selected_bridge_per_origin_counts",
+    "reserved_bridge_origin_count",
+    "reserved_bridge_per_origin_counts",
+    "ordinary_rerank_candidates_displaced",
+    "reserved_bridge_candidate_ids",
+    "reserved_candidate_origin_ids"
+  ],
+  "a6_concentration_diagnostics_purpose": "detect rerank-admission budget monopolization by a small number of provenance origins without introducing a case-specific g020 rule; no numeric concentration-failure threshold is derived now (not from g020 = 2 origins nor from 4+4); A6 may preregister a generic safety interpretation later",
+  "A6_readiness": {
+    "state": "NOT_STARTED / READY_FOR_PREREGISTRATION",
+    "meaning": "design/preregistration may begin; reranker may not be run immediately",
+    "A6_must_preregister_before_execution": [
+      "K = 2 and K = 3 admission-budget arms (frozen A4 candidates)",
+      "exact arm semantics and K=2 vs K=3 interpretation",
+      "reranker repetition count (R1 symmetric strategy)",
+      "baseline/treatment symmetric execution",
+      "reranker variance accounting",
+      "control material-regression handling",
+      "candidate displacement semantics",
+      "origin-concentration diagnostics (the list frozen here)"
+    ]
+  },
+  "R2_R1_DECISION": "OUTCOME_EXPOSURE_AND_EVALUATOR_WIRING_AUDIT_REPAIRED",
+  "decision_basis": "the audit proves result-neutrality of the post-exposure repair: the f498714 -> 2bddbbc script diff touches only the evaluator parameter wiring and the newly-visible diagnostic enablement; select_v2 and the applicability semantics are byte-identical across the original freeze, the amended freeze, and the result commit; the corrected exposure chronology is fully reconstructed from repository evidence",
+  "exact_next_stage": "D3.5-A6 — Bounded Rerank-Admission Prototype & Paired Replay Validation (preregistration only; execution requires the frozen A6 preregistration)",
+  "prohibited_actions": [
+    "rerun R2",
+    "run select_v2 on the six cases",
+    "modify the v2 scorer or evaluator semantics",
+    "change caps or the hard gate",
+    "change origin attribution",
+    "implement K=2/K=3",
+    "run reranker/analyzer/embeddings",
+    "choose the reranker repetition count",
+    "modify D1/D2",
+    "write PostgreSQL/Qdrant",
+    "run novel_validation/holdout",
+    "start A6 execution",
+    "start D4"
+  ],
+  "execution_accounting": {
+    "REAL_CASE_SELECTIVITY_RUNS": 0,
+    "RERANKER_CALLS": 0,
+    "ANALYZER_CALLS": 0,
+    "EMBEDDING_CALLS": 0,
+    "QA_CALLS": 0,
+    "VERIFIER_CALLS": 0,
+    "JUDGE_CALLS": 0,
+    "POSTGRESQL_WRITES": 0,
+    "QDRANT_WRITES": 0,
+    "INGESTION": 0,
+    "REINDEX": 0,
+    "NOVEL_VALIDATION_RUNS": 0,
+    "NOVEL_HOLDOUT_RUNS": 0
+  }
+}

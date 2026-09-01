@@ -15,9 +15,15 @@
   "preregistration_ref": "evaluation/d3_5_a5_r2_repaired_selectivity_preregistration.json",
   "R2_REPAIRED_SELECTIVITY_OUTCOME_EXPOSURE": {
     "before_phase_2": "NOT_STARTED (implementation freeze commit f498714)",
-    "started_at": "first successful six-case v2 replay after the freeze commit",
+    "started_at": "FIRST_FAILED_REAL_CASE_INVOCATION (invocation A at the original freeze commit c4aebd8: the first select_v2 execution on real frozen case g036)",
     "state": "COMPLETE",
-    "note": "the first replay invocation crashed with a harness NameError (missing a2_matched_ids parameter wiring in the evaluator) BEFORE any case output was produced or inspected; the stdlib-import and parameter-plumbing fixes are documented in the anti-tuning audit"
+    "note": "corrected by D3.5-A5-R2-R1: the first failed replay invocation had already executed select_v2 on a real frozen case before the evaluator failure",
+    "started_at_previous_incorrect_wording": "first successful six-case replay after the freeze commit",
+    "exposure_semantics": {
+      "TREATMENT_EXECUTION_EXPOSURE": "STARTED at invocation A",
+      "PERSISTED_RESULT_EXPOSURE": "began only at invocation C (successful six-case replay)",
+      "HUMAN_RESULT_INSPECTION": "began only after invocation C persisted its output"
+    }
   },
   "anti_tuning_audit": {
     "NUMBER_OF_R2_REPAIRED_POLICIES_IMPLEMENTED": 1,
@@ -4155,6 +4161,52 @@
     "POSTGRESQL_WRITES": 0,
     "QDRANT_WRITES": 0,
     "NOVEL_VALIDATION_RUNS": 0,
-    "NOVEL_HOLDOUT_RUNS": 0
-  }
+    "NOVEL_HOLDOUT_RUNS": 0,
+    "COMPLETED_FORMAL_R2_CASE_TREATMENTS": 6,
+    "FAILED_PRE_COMPLETION_REAL_CASE_INVOCATIONS": 2,
+    "REAL_CASE_SELECT_V2_EXECUTIONS_IN_FAILED_INVOCATIONS": 4,
+    "failed_invocation_detail": [
+      {
+        "invocation": "A",
+        "at_commit": "c4aebd84eb91a7a316c9f84e94eaeffb5d1e83a7",
+        "case": "g036",
+        "select_v2_executions": 2,
+        "deterministic_comparison_completed": true,
+        "evaluator_started": false,
+        "failure": "NameError: hashlib (determinism-receipt construction)"
+      },
+      {
+        "invocation": "B",
+        "at_commit": "f498714377fea1cc819aeacdb0212d43baf32457",
+        "case": "g036",
+        "select_v2_executions": 2,
+        "deterministic_comparison_completed": true,
+        "evaluator_started": true,
+        "evaluator_completed": false,
+        "failure": "NameError: a2_matched (missing evaluator parameter wiring, at newly_visible)"
+      }
+    ],
+    "completed_formal_executions_select_v2_count": 12,
+    "distinction": "completed formal case treatments (6) are not conflated with low-level deterministic select_v2 calls"
+  },
+  "POST_FREEZE_REPAIR_CLASS": "EVALUATOR_PARAMETER_WIRING_ONLY",
+  "R2_EXECUTION_AUDIT_STATUS": "PASS_WITH_AUDIT_REPAIR",
+  "R2_RERUN_REQUIRED": false,
+  "audit_repair_history": [
+    {
+      "repair_id": "D3.5-A5-R2-R1_OUTCOME_EXPOSURE_AND_EVALUATOR_WIRING_AUDIT_REPAIR",
+      "artifact": "evaluation/d3_5_a5_r2_r1_outcome_exposure_evaluator_wiring_audit_repair.json",
+      "scope": "audit metadata only (exposure chronology, invocation accounting, repair classification)",
+      "changes": [
+        "corrected exposure start: FIRST_FAILED_REAL_CASE_INVOCATION (invocation A) instead of the first successful replay",
+        "two failed pre-completion invocations recorded (A: hashlib NameError before evaluator start; B: a2_matched NameError after evaluator selector matching, before completion); 4 discarded select_v2 executions, all g036",
+        "POST_EXPOSURE_SCORER_MUTATIONS = 0 and POST_EXPOSURE_APPLICABILITY_SEMANTIC_MUTATIONS = 0 proven by byte-identical select_v2 (sha256 272546df...) and evaluation.py (0017367e...) across c4aebd8/f498714/2bddbbc",
+        "POST_FREEZE_REPAIR_CLASS = EVALUATOR_PARAMETER_WIRING_ONLY with zero scientific-selection/ranking/gate/cap/applicability-class effect; newly-visible diagnostic enablement = YES",
+        "R2_RERUN_REQUIRED = false"
+      ],
+      "metrics_changed": false,
+      "verdict_changed": false,
+      "selected_ids_changed": false
+    }
+  ]
 }
