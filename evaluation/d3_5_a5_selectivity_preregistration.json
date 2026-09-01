@@ -1,0 +1,144 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint": "D3.5-A5",
+  "document_type": "selectivity preregistration (frozen before any A5 case-level selectivity outcome)",
+  "fixture_commit": "e20fc6afebe671d2327ee3dbe80fd97b52c36679",
+  "fixture_path": "evaluation/d3_5_downstream_replay_fixture.json",
+  "selectivity_policy_version": "d3_5_a5_selectivity_v1",
+  "implementation": "evaluation/scripts/d3_5_a5_selectivity.py",
+  "selectivity_implementation_frozen_before_outcome": true,
+  "NUMBER_OF_SELECTIVITY_VARIANTS_EVALUATED": 1,
+  "case_level_outcomes_seen_before_freeze": false,
+  "A5_SELECTIVITY_OUTCOME_EXPOSURE": "NOT_STARTED",
+  "frozen_a4_constants": {
+    "SELECTIVITY_CAP": 8,
+    "PER_ORIGIN_CAP": 4,
+    "SELECTIVITY_MODEL_CALLS": 0,
+    "SELECTIVITY_EXTRA_EMBEDDING_CALLS": 0,
+    "RERANK_ADMISSION": "NOT_PART_OF_A5",
+    "ADMISSION_BUDGET_CANDIDATES_RESERVED_FOR_A6": [
+      2,
+      3
+    ]
+  },
+  "tokenization_contract": {
+    "steps": [
+      "Unicode NFKD normalization (case preserved)",
+      "insert a boundary between a lower/digit character and an uppercase character (camelCase splitting; runs before casefolding)",
+      "casefold",
+      "replace every run of characters outside [a-z0-9] with one space (underscores, dots, slashes, hyphens, punctuation are separators)",
+      "split on whitespace; drop empty tokens",
+      "deduplicate (set semantics); no stopwords; no stemming"
+    ],
+    "applied_identically_to": "every query-side and candidate-side string; no filename-specific tokenization",
+    "examples": {
+      "PndTargetGenerator.cxx": [
+        "pnd",
+        "target",
+        "generator",
+        "cxx"
+      ],
+      "restgas_profile": [
+        "restgas",
+        "profile"
+      ]
+    }
+  },
+  "primary_signal_formula": {
+    "query_token_set": "tokens(question) UNION tokens(plan.concepts) UNION tokens(plan.symbols), from the frozen BRIDGED-cell question and frozen plan fields",
+    "candidate_token_sets": {
+      "path_tokens": "tokens(candidate locator_path)",
+      "title_tokens": "tokens(candidate title from the frozen payload registry)"
+    },
+    "path_overlap": "size(query_token_set INTERSECT path_tokens)",
+    "title_overlap": "size(query_token_set INTERSECT title_tokens)",
+    "primary_score": "path_overlap + title_overlap (integer; duplicate tokens within a field do not count — set semantics)",
+    "minimum_relevance_criterion": {
+      "MIN_PRIMARY_SCORE": 1,
+      "semantics": "a candidate with primary_score < 1 has no query-grounded relevance signal and is rejected (zero_score_rejected) even when selectivity slots remain; select none rather than fill to the cap"
+    }
+  },
+  "supporting_signal_formula": {
+    "support_rank": "minimum 1-based rank of the candidate across the frozen BRIDGED-cell non-graph channels (exact, dense, sparse, paper, workflow); null when absent",
+    "role": "secondary ordering key only; never hard eligibility, never mandatory support, never a dominant score, never an extra vote; a bridge-only candidate with no channel support remains fully able to win selectivity on primary score alone",
+    "position_in_ordering": "after primary score, before structural distance"
+  },
+  "plan_scope_filter": {
+    "scope_set": "set(plan.target_repositories) UNION set(plan.version_repositories) UNION set(plan.resolved_versions keys), from the frozen plan fields",
+    "semantics": "if the scope set is non-empty, a candidate whose source_id is outside it is rejected (scope_rejected); if the scope set is empty, no rejection",
+    "not_a_bonus": "in-scope candidates receive no score advantage; the filter is eligibility-only"
+  },
+  "structural_tie_break": {
+    "structural_distance": "min_structural_distance_transitions (minimum reachability budget consumed across the receipts that produced the candidate)",
+    "role": "late tie-break only; governed closeness is never treated as query relevance; sorts after primary score and support rank; candidates with missing distance sort last deterministically"
+  },
+  "tie_break_order": [
+    "primary_score descending",
+    "support_rank ascending (absent = last)",
+    "structural_distance ascending",
+    "candidate_object_id lexicographic ascending"
+  ],
+  "per_origin_diversity_semantics": {
+    "provenance_origin_identity": "the governed provenance-bearing structure that produced the candidate: evidence_provenance_origin_id from the frozen bridge receipts (e.g., a reached relation edge id); a candidate independently produced by several origins belongs to ALL of them",
+    "grouping_prohibition": "origins are never grouped by case ID, filename substring, or expected evidence group",
+    "application": "process candidates in the tie-break order; a candidate is selectable if at least one of its origins has fewer than 4 selected candidates attributed; attribute to the least-used origin (tie: lexicographically smallest origin_id); a candidate whose every origin is at capacity is skipped as origin_capped_out",
+    "PER_ORIGIN_CAP": 4,
+    "ceiling_not_quota": true
+  },
+  "global_cap_semantics": {
+    "SELECTIVITY_CAP": 8,
+    "semantics": "ceiling: selection stops at 8; if fewer candidates meet the minimum relevance criterion, fewer are selected; never fill with irrelevant candidates",
+    "fail_closed": true
+  },
+  "failure_behavior": {
+    "zero relevance": "select none (never fill reserved space)",
+    "scope incompatible": "reject before scoring",
+    "no eligible universe": "selected count 0; the case is a valid fail-closed outcome"
+  },
+  "candidate_authority": "GOVERNED_PROVENANCE_BACKED_ADDITIVE_RETRIEVAL_CANDIDATE with identity authority NONE; selectivity never introduces a candidate and selected_bridge_candidates is a subset of eligible_governed_bridge_candidates",
+  "graph_reconstruction_contract": {
+    "method": "existing additive-prefix merge semantics on ordered object-id lists: selected candidates (in selection order) prefixed onto the frozen unbridged graph ordering, deduplicated by stable object_id, truncated to the frozen graph channel limit 20",
+    "unbridged_graph_source": "the frozen STRUCTURED_UNBRIDGED cell graph ordering",
+    "no_change_to": "fusion weights, graph channel limit, unbridged baseline, or any runtime behavior",
+    "diagnostic_only_fusion": "if recomputed, fused positions are diagnostic only; no rerank admission, no reserved slots"
+  },
+  "invariants": [
+    "selected_bridge_candidates SUBSET-OF eligible_governed_bridge_candidates",
+    "SELECTIVITY_CAP and PER_ORIGIN_CAP respected in every case",
+    "deterministic: identical fixture input yields byte-identical output (verified by double execution per case)",
+    "no model calls, no extra embeddings, no runtime changes"
+  ],
+  "a5_decision_rule_preregistration": {
+    "comparison": "BASELINE_BRIDGED (the frozen A2 bridge candidate state before A5 selectivity: the old provenance-order cap output) versus SELECTIVITY_ONLY (same eligible governed candidate universe + this frozen policy + PER_ORIGIN_CAP=4 + SELECTIVITY_CAP=8); no admission treatment; the reference is NOT A2's STRUCTURED_UNBRIDGED arm",
+    "high_fan_out_case": "a case with eligible_governed_bridge_candidate_count > SELECTIVITY_CAP",
+    "material_reduction": "for a high-fan-out case: selected_bridge_candidate_count < eligible_governed_bridge_candidate_count AND ordinary_graph_candidates_displaced_after_count < ordinary_graph_candidates_displaced_before_count",
+    "no_new_control_expansion": "for every case: ordinary_graph_candidates_displaced_after_count <= ordinary_graph_candidates_displaced_before_count and selected_bridge_candidate_count <= baseline_old_cap_admitted_count",
+    "applicability_rule": "required evidence never present in the eligible governed bridge universe (e.g., structurally unreachable evidence) is NOT_APPLICABLE_TO_SELECTIVITY and never counts as a selectivity failure",
+    "evaluator_retention_check": "after all case outputs are frozen, evaluator-only metadata (frozen A2 combined-pool match provenance) identifies applicable required-evidence candidates in each eligible universe; retention = applicable set is a subset of the selected set",
+    "PASS / SELECTIVITY_MECHANISM_VALIDATED_FOR_DEVELOPMENT": {
+      "requires_all": [
+        "fixture equivalence gates passed (frozen in Commit 1)",
+        "single frozen scoring variant (this preregistration)",
+        "all selected candidates governed and scope-compatible",
+        "SELECTIVITY_CAP respected in every case",
+        "PER_ORIGIN_CAP respected in every case",
+        "deterministic replay verified (byte-identical double execution per case)",
+        "material_reduction holds for every high-fan-out case",
+        "no_new_control_expansion holds for every case",
+        "evaluator retention: all applicable required-evidence bridge candidates for the designated positive mechanistic cases (g036, g021) are retained"
+      ],
+      "meaning": "development/mechanistic validation only; NOT end-to-end retrieval validation"
+    },
+    "PARTIAL / SELECTIVITY_FANOUT_REDUCED_WITH_RELEVANCE_LOSS": "fan-out/displacement reduced but one or more applicable relevant bridge candidates are lost",
+    "FAIL / SELECTIVITY_NOT_USEFUL": "fan-out remains uncontrolled, or ordering is not deterministic, or governance/scope invariants fail, or applicable relevant-candidate retention is materially poor",
+    "INVALID": "fixture not equivalent, or scoring changed after A5 outcome exposure, or multiple unregistered variants tried",
+    "no_post_hoc_thresholds": true
+  },
+  "anti_tuning_boundary": {
+    "case_ids_used_by_policy": 0,
+    "case_roles_used_by_policy": 0,
+    "expected_evidence_used_by_policy": 0,
+    "case_level_outcomes_inspected_before_policy_freeze": 0,
+    "note": "the scoring contract above was fixed from the A4 frozen signal families, generic synthetic examples, and repository field availability only; no A2 case was run through the policy before this preregistration was committed"
+  }
+}
