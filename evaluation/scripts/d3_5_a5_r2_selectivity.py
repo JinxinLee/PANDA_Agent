@@ -354,6 +354,7 @@ def evaluate_complete_universe(
     selection: dict[str, Any],
     payload_registry: dict[str, Any],
     question: Any,
+    a2_matched_ids: set[str],
 ) -> dict[str, Any]:
     from panda_agent.evaluation import GoldEvidenceSelector  # frozen matcher
 
@@ -406,7 +407,7 @@ def evaluate_complete_universe(
             }
         )
 
-    newly_visible = sorted(matched_universe_ids - a2_matched)
+    newly_visible = sorted(matched_universe_ids - a2_matched_ids)
     return {
         "case_id": case_id,
         "groups": group_records,
@@ -717,10 +718,14 @@ def run_replay(project_root: Path) -> dict[str, Any]:
         if not deterministic:
             raise RuntimeError(f"non-deterministic v2 output for {case_id}")
         # selection is now frozen for this case; evaluator may read gold data
+        a2_matched_ids = {
+            oid for ids in a2_prov[case_id].values() for oid in ids
+        }
         evaluation = evaluate_complete_universe(
-            case_id, case, first, fixture["reranker_payload_registry"], questions[case_id]
+            case_id, case, first, fixture["reranker_payload_registry"], questions[case_id],
+            a2_matched_ids,
         )
-        evaluation["_a2_match_provenance_reference"] = a2_prov[case_id]
+        evaluation["a2_combined_pool_matched_reference"] = sorted(a2_matched_ids)
         results[case_id] = {"selection": first, "evaluation": evaluation}
     return results
 

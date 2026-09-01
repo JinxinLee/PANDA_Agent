@@ -1,0 +1,4160 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint": "D3.5-A5-R2",
+  "stage_name": "D3.5-A5-R2 — Repaired Selectivity Prototype Freeze & Revalidation",
+  "starting_head": "e445f14270b64fe33321fa4eeb9887656a995409",
+  "fixture_identity": {
+    "path": "evaluation/d3_5_downstream_replay_fixture.json",
+    "fixture_schema_version": "1.1.0",
+    "base_fixture_commit": "e20fc6afebe671d2327ee3dbe80fd97b52c36679",
+    "extension_commit": "3db1aaae2b77a309dc5dc5a86ca69bc657001bd1",
+    "extension_scope": "additive object_type + full frozen locator on eligible entries and payload-registry entries; all pre-existing fields verified identical"
+  },
+  "fixture_extension_commit_if_any": "3db1aaae2b77a309dc5dc5a86ca69bc657001bd1",
+  "implementation_freeze_commit": "f498714377fea1cc819aeacdb0212d43baf32457",
+  "preregistration_ref": "evaluation/d3_5_a5_r2_repaired_selectivity_preregistration.json",
+  "R2_REPAIRED_SELECTIVITY_OUTCOME_EXPOSURE": {
+    "before_phase_2": "NOT_STARTED (implementation freeze commit f498714)",
+    "started_at": "first successful six-case v2 replay after the freeze commit",
+    "state": "COMPLETE",
+    "note": "the first replay invocation crashed with a harness NameError (missing a2_matched_ids parameter wiring in the evaluator) BEFORE any case output was produced or inspected; the stdlib-import and parameter-plumbing fixes are documented in the anti-tuning audit"
+  },
+  "anti_tuning_audit": {
+    "NUMBER_OF_R2_REPAIRED_POLICIES_IMPLEMENTED": 1,
+    "NUMBER_OF_R2_REPAIRED_POLICIES_EVALUATED": 1,
+    "REAL_CASE_OUTCOMES_SEEN_BEFORE_IMPLEMENTATION_FREEZE": 0,
+    "POLICY_MUTATIONS_AFTER_OUTCOME_EXPOSURE": 0,
+    "EXPECTED_EVIDENCE_USED_BY_SCORER": 0,
+    "CASE_ID_USED_BY_SCORER": 0,
+    "CASE_ROLE_USED_BY_SCORER": 0,
+    "FILE_TYPE_SPECIAL_CASES": 0,
+    "CAP_CHANGES": 0,
+    "GATE_CHANGES": 0,
+    "post_freeze_infrastructure_repairs": [
+      {
+        "repair": "missing stdlib import (hashlib) in the frozen implementation crashed the first replay invocation with NameError before any case output existed; fixed and amended into the freeze commit f498714 before any outcome exposure",
+        "policy_effect": "none"
+      },
+      {
+        "repair": "evaluator harness parameter wiring: the newly-visible discovery record required passing the frozen A2 combined-pool matched-ID reference (a2_matched_ids) into evaluate_complete_universe; the first replay invocation crashed with NameError at that wiring point before any case output existed",
+        "policy_effect": "none on the selectivity policy (select_v2 untouched); affects only the newly-visible discovery record, which could not be produced without the wiring",
+        "audit": "select_v2 code diff between the freeze commit and the fix consists solely of the parameter plumbing; applicability classes depend only on the fixture, the frozen selectors, and the frozen selection output"
+      }
+    ]
+  },
+  "six_case_records": {
+    "g036": {
+      "case_id": "g036",
+      "eligible_governed_bridge_candidate_count": 3,
+      "eligible_after_scope_count": 3,
+      "scope_rejected_candidate_count": 0,
+      "gate_passing_candidate_count": 3,
+      "gate_rejected_candidate_count": 0,
+      "selected_bridge_candidate_count": 3,
+      "selected_object_ids": [
+        "object.d61c9f6941dd9cf1acf258fe",
+        "object.d1810969df820d9a7aff0415",
+        "object.5cae2ceab6e67bb4c9065331"
+      ],
+      "selected_rank_keys": [
+        {
+          "candidate_object_id": "object.d61c9f6941dd9cf1acf258fe",
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 0.0,
+          "basename_coverage": 0,
+          "text_presence": 1,
+          "support_rank": null,
+          "structural_distance": 1,
+          "attributed_origin_id": "edge.a767185bbbc0d72189d0ac29"
+        },
+        {
+          "candidate_object_id": "object.d1810969df820d9a7aff0415",
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 0.0,
+          "basename_coverage": 0,
+          "text_presence": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "attributed_origin_id": "edge.a767185bbbc0d72189d0ac29"
+        },
+        {
+          "candidate_object_id": "object.5cae2ceab6e67bb4c9065331",
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 0.0,
+          "basename_coverage": 0,
+          "text_presence": 0,
+          "support_rank": null,
+          "structural_distance": 2,
+          "attributed_origin_id": "edge.2e09628416a01ce2461d752a"
+        }
+      ],
+      "candidate_receipts": [
+        {
+          "candidate_object_id": "object.5cae2ceab6e67bb4c9065331",
+          "locator_path": "macro/target/ana_dpm.C",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "source_file",
+          "provenance_origin_ids": [
+            "edge.2e09628416a01ce2461d752a"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 1,
+          "title_overlap": 1,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 0.0,
+          "basename_coverage": 0,
+          "text_presence": 0,
+          "support_rank": null,
+          "structural_distance": 2,
+          "in_unbridged_graph": false,
+          "disposition": "selected",
+          "attributed_origin_id": "edge.2e09628416a01ce2461d752a"
+        },
+        {
+          "candidate_object_id": "object.d1810969df820d9a7aff0415",
+          "locator_path": "macro/target/prod_aod_complete.C",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "source_file",
+          "provenance_origin_ids": [
+            "edge.a767185bbbc0d72189d0ac29"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 1,
+          "title_overlap": 1,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 0.0,
+          "basename_coverage": 0,
+          "text_presence": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "selected",
+          "attributed_origin_id": "edge.a767185bbbc0d72189d0ac29"
+        },
+        {
+          "candidate_object_id": "object.d61c9f6941dd9cf1acf258fe",
+          "locator_path": "macro/target/pid_complete.C",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "source_file",
+          "provenance_origin_ids": [
+            "edge.a767185bbbc0d72189d0ac29"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 1,
+          "title_overlap": 1,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 0.0,
+          "basename_coverage": 0,
+          "text_presence": 1,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "selected",
+          "attributed_origin_id": "edge.a767185bbbc0d72189d0ac29"
+        }
+      ],
+      "origin_capped_out_count": 0,
+      "beyond_selectivity_cap_count": 0,
+      "per_origin_attributed_counts": {
+        "edge.2e09628416a01ce2461d752a": 1,
+        "edge.a767185bbbc0d72189d0ac29": 2
+      },
+      "number_of_origins_before": 2,
+      "number_of_origins_after": 2,
+      "graph_admitted_bridge_candidates": [
+        "object.d61c9f6941dd9cf1acf258fe",
+        "object.d1810969df820d9a7aff0415",
+        "object.5cae2ceab6e67bb4c9065331"
+      ],
+      "v2_graph_displacement_count": 0,
+      "v2_displaced_object_ids": [],
+      "selectivity_only_graph_ordering": [
+        "object.d61c9f6941dd9cf1acf258fe",
+        "object.d1810969df820d9a7aff0415",
+        "object.5cae2ceab6e67bb4c9065331",
+        "data_product.restgas.event_poca",
+        "workflow.restgas.second_pass_pid",
+        "object.09e0d0e722de413b72e39fc7",
+        "object.0b2c13ac19e319aac0be7079",
+        "object.130d7834a6fe03a7867adee1",
+        "object.1bcb4bb7cd4ceaab322ce0f4",
+        "object.25bfb752235ce4c8c1672151",
+        "object.3ef7c0c1f717c8872fc97f9d",
+        "object.489090704a30da9039b50aac",
+        "object.59f6da2f9030a2a0e09d6e1b",
+        "object.5b7dc0cbd9a326e0c66eb976",
+        "object.5dd08fefb8c8085004d0cd24",
+        "workflow.restgas.first_pass_poca"
+      ],
+      "determinism_receipt": {
+        "double_execution_identical": true,
+        "output_sha256": "5a7aeb24cd4552e3c4645f8f7136199d7d38ae4ec7cd0a03c2edf58e48b16e7d"
+      },
+      "evaluator": {
+        "case_id": "g036",
+        "groups": [
+          {
+            "group_id": "g036.e1",
+            "required_candidate_ids_in_eligible_universe": [
+              "object.5cae2ceab6e67bb4c9065331"
+            ],
+            "gate_passing_ids": [
+              "object.5cae2ceab6e67bb4c9065331"
+            ],
+            "gate_rejected_ids": [],
+            "v2_retained_ids": [
+              "object.5cae2ceab6e67bb4c9065331"
+            ],
+            "applicability_class": "APPLICABLE_AND_RETAINED"
+          }
+        ],
+        "required_candidate_ids_in_eligible_universe": [
+          "object.5cae2ceab6e67bb4c9065331"
+        ],
+        "newly_visible_complete_universe_applicable_evidence": [],
+        "gate_recall_limitation_count": 0,
+        "applicable_and_lost_count": 0,
+        "applicable_and_retained_count": 1,
+        "not_applicable_count": 0,
+        "a2_combined_pool_matched_reference": [
+          "object.5cae2ceab6e67bb4c9065331"
+        ]
+      },
+      "v1_comparison": {
+        "v1_selected_count": 3,
+        "v1_selected_ids": [
+          "object.d1810969df820d9a7aff0415",
+          "object.d61c9f6941dd9cf1acf258fe",
+          "object.5cae2ceab6e67bb4c9065331"
+        ],
+        "v1_graph_displacement_count": 0,
+        "v2_selected_count": 3,
+        "v2_selected_ids": [
+          "object.d61c9f6941dd9cf1acf258fe",
+          "object.d1810969df820d9a7aff0415",
+          "object.5cae2ceab6e67bb4c9065331"
+        ],
+        "v2_graph_displacement_count": 0,
+        "pre_selectivity_old_cap_admitted_count": 3,
+        "same_selected_id_set": true
+      }
+    },
+    "g021": {
+      "case_id": "g021",
+      "eligible_governed_bridge_candidate_count": 62,
+      "eligible_after_scope_count": 62,
+      "scope_rejected_candidate_count": 0,
+      "gate_passing_candidate_count": 35,
+      "gate_rejected_candidate_count": 27,
+      "selected_bridge_candidate_count": 4,
+      "selected_object_ids": [
+        "object.7ecb89690b217573371f6f70",
+        "object.3ab0a90ae68e8ece071a9f22",
+        "object.21bc3ebe83cacb360c89c4b4",
+        "object.a0f75731467d6323c4b431df"
+      ],
+      "selected_rank_keys": [
+        {
+          "candidate_object_id": "object.7ecb89690b217573371f6f70",
+          "symbol_exact_tier": 1,
+          "rarity_weighted_overlap": 12.924300379645352,
+          "basename_coverage": 0,
+          "text_presence": 7,
+          "support_rank": 1,
+          "structural_distance": 1,
+          "attributed_origin_id": "edge.ea3a79d222f0ca6cc0e6df72"
+        },
+        {
+          "candidate_object_id": "object.3ab0a90ae68e8ece071a9f22",
+          "symbol_exact_tier": 1,
+          "rarity_weighted_overlap": 8.53198295686659,
+          "basename_coverage": 0,
+          "text_presence": 5,
+          "support_rank": null,
+          "structural_distance": 1,
+          "attributed_origin_id": "edge.ea3a79d222f0ca6cc0e6df72"
+        },
+        {
+          "candidate_object_id": "object.21bc3ebe83cacb360c89c4b4",
+          "symbol_exact_tier": 1,
+          "rarity_weighted_overlap": 8.1985592231414,
+          "basename_coverage": 0,
+          "text_presence": 5,
+          "support_rank": 3,
+          "structural_distance": 1,
+          "attributed_origin_id": "edge.ea3a79d222f0ca6cc0e6df72"
+        },
+        {
+          "candidate_object_id": "object.a0f75731467d6323c4b431df",
+          "symbol_exact_tier": 1,
+          "rarity_weighted_overlap": 5.724628034808987,
+          "basename_coverage": 0,
+          "text_presence": 5,
+          "support_rank": 4,
+          "structural_distance": 1,
+          "attributed_origin_id": "edge.ea3a79d222f0ca6cc0e6df72"
+        }
+      ],
+      "candidate_receipts": [
+        {
+          "candidate_object_id": "object.0c35c9d2ee2a07bc0a4be8fe",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "gate_pass": false,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 0,
+          "basename_coverage": 0,
+          "text_presence": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "gate_rejected"
+        },
+        {
+          "candidate_object_id": "object.0fe58ecc9734eb4f9a351832",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "gate_pass": false,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 2.878592644587323,
+          "basename_coverage": 0,
+          "text_presence": 3,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "gate_rejected"
+        },
+        {
+          "candidate_object_id": "object.16e2d668d8673e7c633192c5",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 1,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 1,
+          "rarity_weighted_overlap": 4.069276206196433,
+          "basename_coverage": 0,
+          "text_presence": 4,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.21bc3ebe83cacb360c89c4b4",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 0,
+          "title_overlap": 3,
+          "gate_pass": true,
+          "symbol_exact_tier": 1,
+          "rarity_weighted_overlap": 8.1985592231414,
+          "basename_coverage": 0,
+          "text_presence": 5,
+          "support_rank": 3,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "selected",
+          "attributed_origin_id": "edge.ea3a79d222f0ca6cc0e6df72"
+        },
+        {
+          "candidate_object_id": "object.25c0757afb7eabcf9183a17f",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 1,
+          "title_overlap": 1,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 4.069276206196433,
+          "basename_coverage": 0,
+          "text_presence": 3,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.2ce3b321fb404505c3c19e12",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "gate_pass": false,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 1.7871417011680955,
+          "basename_coverage": 0,
+          "text_presence": 2,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "gate_rejected"
+        },
+        {
+          "candidate_object_id": "object.2f28b1f3c056f9be04da6487",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 1,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 0.3334237337251918,
+          "basename_coverage": 0,
+          "text_presence": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.35cf84657d7458145acc6cb2",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 1,
+          "title_overlap": 1,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 5.422913160811134,
+          "basename_coverage": 0,
+          "text_presence": 4,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.3ab0a90ae68e8ece071a9f22",
+          "locator_path": "macro/target/prod_sim_hvmaps.C",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "source_file",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 1,
+          "title_overlap": 1,
+          "gate_pass": true,
+          "symbol_exact_tier": 1,
+          "rarity_weighted_overlap": 8.53198295686659,
+          "basename_coverage": 0,
+          "text_presence": 5,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "selected",
+          "attributed_origin_id": "edge.ea3a79d222f0ca6cc0e6df72"
+        },
+        {
+          "candidate_object_id": "object.3bfdd9477502819029d5f4e2",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 1,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 3.140778655782796,
+          "basename_coverage": 0,
+          "text_presence": 1,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.3f30db15a00e651138c4146a",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 1,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 0.3334237337251918,
+          "basename_coverage": 0,
+          "text_presence": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.427ba40a22782a7217afef8f",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 1,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 4.030595738032373,
+          "basename_coverage": 0,
+          "text_presence": 2,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.48aceb8601747afe7e7c2048",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "gate_pass": false,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 0,
+          "basename_coverage": 0,
+          "text_presence": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "gate_rejected"
+        },
+        {
+          "candidate_object_id": "object.48be486a9ecab8f524ef9f35",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "gate_pass": false,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 7.139665534087831,
+          "basename_coverage": 0,
+          "text_presence": 5,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "gate_rejected"
+        },
+        {
+          "candidate_object_id": "object.4b4ba617d7416c518a52ff83",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "gate_pass": false,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 2.6769587834176725,
+          "basename_coverage": 0,
+          "text_presence": 3,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "gate_rejected"
+        },
+        {
+          "candidate_object_id": "object.4e2bf3318be9d234c717b6cc",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 0,
+          "title_overlap": 1,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 8.53198295686659,
+          "basename_coverage": 0,
+          "text_presence": 6,
+          "support_rank": 11,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.4e81a506f09b221d71a5df38",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "gate_pass": false,
+          "symbol_exact_tier": 1,
+          "rarity_weighted_overlap": 5.98681404600446,
+          "basename_coverage": 0,
+          "text_presence": 4,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "gate_rejected"
+        },
+        {
+          "candidate_object_id": "object.5023a697b2b46cfde6faee55",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 1,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 0.3334237337251918,
+          "basename_coverage": 0,
+          "text_presence": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.5038d66d85d49f8644390f7d",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 1,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 0.3334237337251918,
+          "basename_coverage": 0,
+          "text_presence": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.51622f9bdd88358b3b5711d4",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 1,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 0.3334237337251918,
+          "basename_coverage": 0,
+          "text_presence": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.5476889875fa4f019ea318ac",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 1,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 1.223240815974769,
+          "basename_coverage": 0,
+          "text_presence": 2,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.64407e20e9e1ea3e57ea1236",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "gate_pass": false,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 5.724628034808987,
+          "basename_coverage": 0,
+          "text_presence": 5,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "gate_rejected"
+        },
+        {
+          "candidate_object_id": "object.65b289b5d6e6f20ebbf14474",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 1,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 0.3334237337251918,
+          "basename_coverage": 0,
+          "text_presence": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.6a72bf9df87e9a5810015881",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "gate_pass": false,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 2.878592644587323,
+          "basename_coverage": 0,
+          "text_presence": 3,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "gate_rejected"
+        },
+        {
+          "candidate_object_id": "object.6b20287d8250ff2e55fa01af",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 1,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 1.725741156503952,
+          "basename_coverage": 0,
+          "text_presence": 2,
+          "support_rank": 3,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.70f21de0901589c9d8506e00",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "gate_pass": false,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 3.179459123946856,
+          "basename_coverage": 0,
+          "text_presence": 3,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "gate_rejected"
+        },
+        {
+          "candidate_object_id": "object.756904448a2cb490add746e8",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "gate_pass": false,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 0.8898170822495771,
+          "basename_coverage": 0,
+          "text_presence": 1,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "gate_rejected"
+        },
+        {
+          "candidate_object_id": "object.75939fa753969e7ce1d8fa4b",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 1,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 0.3334237337251918,
+          "basename_coverage": 0,
+          "text_presence": 1,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.76f3a617ccd5cbbfa2cb8136",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "gate_pass": false,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 4.332310612030227,
+          "basename_coverage": 0,
+          "text_presence": 4,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "gate_rejected"
+        },
+        {
+          "candidate_object_id": "object.78161cc0cea37b8b95bf8863",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "gate_pass": false,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 1.223240815974769,
+          "basename_coverage": 0,
+          "text_presence": 2,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "gate_rejected"
+        },
+        {
+          "candidate_object_id": "object.7ecb89690b217573371f6f70",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 1,
+          "gate_pass": true,
+          "symbol_exact_tier": 1,
+          "rarity_weighted_overlap": 12.924300379645352,
+          "basename_coverage": 0,
+          "text_presence": 7,
+          "support_rank": 1,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "selected",
+          "attributed_origin_id": "edge.ea3a79d222f0ca6cc0e6df72"
+        },
+        {
+          "candidate_object_id": "object.88d0d65c7dbf3c313f1fa5dd",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "gate_pass": false,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 0,
+          "basename_coverage": 0,
+          "text_presence": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "gate_rejected"
+        },
+        {
+          "candidate_object_id": "object.97d49d476e70e3a333779fbd",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "gate_pass": false,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 0.8898170822495771,
+          "basename_coverage": 0,
+          "text_presence": 1,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "gate_rejected"
+        },
+        {
+          "candidate_object_id": "object.9e57745bf9b16a46a92d5cb0",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "gate_pass": false,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 4.332310612030227,
+          "basename_coverage": 0,
+          "text_presence": 4,
+          "support_rank": 4,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "gate_rejected"
+        },
+        {
+          "candidate_object_id": "object.a0f75731467d6323c4b431df",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 2,
+          "gate_pass": true,
+          "symbol_exact_tier": 1,
+          "rarity_weighted_overlap": 5.724628034808987,
+          "basename_coverage": 0,
+          "text_presence": 5,
+          "support_rank": 4,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "selected",
+          "attributed_origin_id": "edge.ea3a79d222f0ca6cc0e6df72"
+        },
+        {
+          "candidate_object_id": "object.ab38ad90b923866d556bb245",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 1,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 0.3334237337251918,
+          "basename_coverage": 0,
+          "text_presence": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.ae2365b6243db9a5da6f41a8",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 2,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 9.18844790717411,
+          "basename_coverage": 0,
+          "text_presence": 4,
+          "support_rank": 2,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.b12c343f4978fcb93fa768d7",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 1,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 5.422913160811134,
+          "basename_coverage": 0,
+          "text_presence": 4,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.b92367ae18f0b4e9368a89b2",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "gate_pass": false,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 11.339337878924196,
+          "basename_coverage": 0,
+          "text_presence": 7,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "gate_rejected"
+        },
+        {
+          "candidate_object_id": "object.bc1c90e39128c7ca55302947",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 1,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 0.3334237337251918,
+          "basename_coverage": 0,
+          "text_presence": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.bf890ea4d6b13178189933d8",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "gate_pass": false,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 2.878592644587323,
+          "basename_coverage": 0,
+          "text_presence": 3,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "gate_rejected"
+        },
+        {
+          "candidate_object_id": "object.bf98d2d18b8c71ee23891b94",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "gate_pass": false,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 0.8898170822495771,
+          "basename_coverage": 0,
+          "text_presence": 1,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "gate_rejected"
+        },
+        {
+          "candidate_object_id": "object.c50a3f00dd154303ff8ff5da",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 1,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 1.725741156503952,
+          "basename_coverage": 0,
+          "text_presence": 2,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.c9f92147b8490e3879afb56b",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "gate_pass": false,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 0,
+          "basename_coverage": 0,
+          "text_presence": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "gate_rejected"
+        },
+        {
+          "candidate_object_id": "object.cbefedd3ddea3e03c8827b71",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "gate_pass": false,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 0.8898170822495771,
+          "basename_coverage": 0,
+          "text_presence": 1,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "gate_rejected"
+        },
+        {
+          "candidate_object_id": "object.d13084dc0226150c4666fd1c",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "gate_pass": false,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 0,
+          "basename_coverage": 0,
+          "text_presence": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "gate_rejected"
+        },
+        {
+          "candidate_object_id": "object.d1d036619ecae30580af435d",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 1,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 4.069276206196433,
+          "basename_coverage": 0,
+          "text_presence": 4,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.d36fa7fa9739a0a65c2345f0",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 1,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 0.3334237337251918,
+          "basename_coverage": 0,
+          "text_presence": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.d51cd150523d4b999a5f1ca1",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 1,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 1.7871417011680955,
+          "basename_coverage": 0,
+          "text_presence": 1,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.dc2f0cfe5acd57a254a1a226",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 1,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 0.3334237337251918,
+          "basename_coverage": 0,
+          "text_presence": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.de351fec1daff18a542d845c",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "gate_pass": false,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 5.422913160811134,
+          "basename_coverage": 0,
+          "text_presence": 4,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "gate_rejected"
+        },
+        {
+          "candidate_object_id": "object.e29c4fcd17107cabea45f18e",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 1,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 5.422913160811134,
+          "basename_coverage": 0,
+          "text_presence": 4,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.e5136c8d8f90cb0add63ec47",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 1,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 3.179459123946856,
+          "basename_coverage": 0,
+          "text_presence": 2,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.e51879eb24fc26654017f584",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "gate_pass": false,
+          "symbol_exact_tier": 1,
+          "rarity_weighted_overlap": 5.391204301083795,
+          "basename_coverage": 0,
+          "text_presence": 4,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "gate_rejected"
+        },
+        {
+          "candidate_object_id": "object.e8af519940d19f0305e7a4be",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 1,
+          "title_overlap": 1,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 0.3334237337251918,
+          "basename_coverage": 0,
+          "text_presence": 1,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.e9f73efc23ccae1e3695035d",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 1,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 0.3334237337251918,
+          "basename_coverage": 0,
+          "text_presence": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.eb2c22536338c3faa80165bc",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 1,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 5.724628034808987,
+          "basename_coverage": 0,
+          "text_presence": 5,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.eba54e616162bc748a4230ec",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "gate_pass": false,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 8.53198295686659,
+          "basename_coverage": 0,
+          "text_presence": 6,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "gate_rejected"
+        },
+        {
+          "candidate_object_id": "object.ece5f8849c4ccef110f80f61",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "gate_pass": false,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 0,
+          "basename_coverage": 0,
+          "text_presence": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "gate_rejected"
+        },
+        {
+          "candidate_object_id": "object.eebeb0d7f57deae9b5594579",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 1,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 0.3334237337251918,
+          "basename_coverage": 0,
+          "text_presence": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.fa044382bbb1bfbc45e08a74",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "gate_pass": false,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 2.5451689108621314,
+          "basename_coverage": 0,
+          "text_presence": 2,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "gate_rejected"
+        },
+        {
+          "candidate_object_id": "object.fba08a93492edafab9918eec",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 1,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 4.270910067366083,
+          "basename_coverage": 0,
+          "text_presence": 4,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        }
+      ],
+      "origin_capped_out_count": 31,
+      "beyond_selectivity_cap_count": 0,
+      "per_origin_attributed_counts": {
+        "edge.ea3a79d222f0ca6cc0e6df72": 4
+      },
+      "number_of_origins_before": 1,
+      "number_of_origins_after": 1,
+      "graph_admitted_bridge_candidates": [
+        "object.7ecb89690b217573371f6f70",
+        "object.3ab0a90ae68e8ece071a9f22",
+        "object.21bc3ebe83cacb360c89c4b4",
+        "object.a0f75731467d6323c4b431df"
+      ],
+      "v2_graph_displacement_count": 0,
+      "v2_displaced_object_ids": [],
+      "selectivity_only_graph_ordering": [
+        "object.7ecb89690b217573371f6f70",
+        "object.3ab0a90ae68e8ece071a9f22",
+        "object.21bc3ebe83cacb360c89c4b4",
+        "object.a0f75731467d6323c4b431df",
+        "configuration.restgas_profile",
+        "workflow.restgas_profile_reconstruction",
+        "concept.restgas_longitudinal_efficiency",
+        "workflow.restgas_aware_luminosity_acceptance"
+      ],
+      "determinism_receipt": {
+        "double_execution_identical": true,
+        "output_sha256": "7418827a0cab4bb8e1df217a8db7dc09bc799aaeace219df07689a78a63156ce"
+      },
+      "evaluator": {
+        "case_id": "g021",
+        "groups": [
+          {
+            "group_id": "g021.e1",
+            "required_candidate_ids_in_eligible_universe": [
+              "object.3ab0a90ae68e8ece071a9f22"
+            ],
+            "gate_passing_ids": [
+              "object.3ab0a90ae68e8ece071a9f22"
+            ],
+            "gate_rejected_ids": [],
+            "v2_retained_ids": [
+              "object.3ab0a90ae68e8ece071a9f22"
+            ],
+            "applicability_class": "APPLICABLE_AND_RETAINED"
+          },
+          {
+            "group_id": "g021.e2",
+            "required_candidate_ids_in_eligible_universe": [],
+            "gate_passing_ids": [],
+            "gate_rejected_ids": [],
+            "v2_retained_ids": [],
+            "applicability_class": "NOT_APPLICABLE_TO_SELECTIVITY"
+          }
+        ],
+        "required_candidate_ids_in_eligible_universe": [
+          "object.3ab0a90ae68e8ece071a9f22"
+        ],
+        "newly_visible_complete_universe_applicable_evidence": [],
+        "gate_recall_limitation_count": 0,
+        "applicable_and_lost_count": 0,
+        "applicable_and_retained_count": 1,
+        "not_applicable_count": 1,
+        "a2_combined_pool_matched_reference": [
+          "object.3ab0a90ae68e8ece071a9f22"
+        ]
+      },
+      "v1_comparison": {
+        "v1_selected_count": 4,
+        "v1_selected_ids": [
+          "object.21bc3ebe83cacb360c89c4b4",
+          "object.ae2365b6243db9a5da6f41a8",
+          "object.a0f75731467d6323c4b431df",
+          "object.25c0757afb7eabcf9183a17f"
+        ],
+        "v1_graph_displacement_count": 0,
+        "v2_selected_count": 4,
+        "v2_selected_ids": [
+          "object.7ecb89690b217573371f6f70",
+          "object.3ab0a90ae68e8ece071a9f22",
+          "object.21bc3ebe83cacb360c89c4b4",
+          "object.a0f75731467d6323c4b431df"
+        ],
+        "v2_graph_displacement_count": 0,
+        "pre_selectivity_old_cap_admitted_count": 20,
+        "same_selected_id_set": false
+      }
+    },
+    "n006": {
+      "case_id": "n006",
+      "eligible_governed_bridge_candidate_count": 0,
+      "eligible_after_scope_count": 0,
+      "scope_rejected_candidate_count": 0,
+      "gate_passing_candidate_count": 0,
+      "gate_rejected_candidate_count": 0,
+      "selected_bridge_candidate_count": 0,
+      "selected_object_ids": [],
+      "selected_rank_keys": [],
+      "candidate_receipts": [],
+      "origin_capped_out_count": 0,
+      "beyond_selectivity_cap_count": 0,
+      "per_origin_attributed_counts": {},
+      "number_of_origins_before": 0,
+      "number_of_origins_after": 0,
+      "graph_admitted_bridge_candidates": [],
+      "v2_graph_displacement_count": 0,
+      "v2_displaced_object_ids": [],
+      "selectivity_only_graph_ordering": [
+        "object.748d6657afaae5e33dd48c4d",
+        "object.1d54263832ee883809e84070",
+        "object.23407c5ae26f7ab01ffa80ae",
+        "object.271880c2ec1ebcac7383aab8",
+        "object.2ccdd3a30202b42bf636dea8",
+        "object.4b2fa6fc6b50c3c338e0d217",
+        "object.5045b084453905095eeedca7",
+        "object.639a2e2d6c47c79b0d5b8807",
+        "object.69eae64047644350cf3ef1d2",
+        "object.81f740e4d8b4ea45688f2585",
+        "object.8b9b28bba9f71f133967c084",
+        "object.9281add925687f506301e359",
+        "object.9a8bb37159cbf88c16073aa5",
+        "object.dbfa3c28e4e33a71b07af197",
+        "object.e0fb403c3760cf27980b7846",
+        "object.eb27eff35e68a78b54fbfd35",
+        "object.ec3abbc5f415005973dc6fd4",
+        "object.f403dafbcbda4097d33997f8"
+      ],
+      "determinism_receipt": {
+        "double_execution_identical": true,
+        "output_sha256": "3a6b7962e16ad22c7a499a8f39c9dbc509e6c8312a32bbfbb2a4f83797b32e5e"
+      },
+      "evaluator": {
+        "case_id": "n006",
+        "groups": [
+          {
+            "group_id": "n006.e1",
+            "required_candidate_ids_in_eligible_universe": [],
+            "gate_passing_ids": [],
+            "gate_rejected_ids": [],
+            "v2_retained_ids": [],
+            "applicability_class": "NOT_APPLICABLE_TO_SELECTIVITY"
+          },
+          {
+            "group_id": "n006.e2",
+            "required_candidate_ids_in_eligible_universe": [],
+            "gate_passing_ids": [],
+            "gate_rejected_ids": [],
+            "v2_retained_ids": [],
+            "applicability_class": "NOT_APPLICABLE_TO_SELECTIVITY"
+          }
+        ],
+        "required_candidate_ids_in_eligible_universe": [],
+        "newly_visible_complete_universe_applicable_evidence": [],
+        "gate_recall_limitation_count": 0,
+        "applicable_and_lost_count": 0,
+        "applicable_and_retained_count": 0,
+        "not_applicable_count": 2,
+        "a2_combined_pool_matched_reference": [
+          "object.2914485ff398f61e994c46d6",
+          "object.b1250c4366eea9aa9dc68f50"
+        ]
+      },
+      "v1_comparison": {
+        "v1_selected_count": 0,
+        "v1_selected_ids": [],
+        "v1_graph_displacement_count": 0,
+        "v2_selected_count": 0,
+        "v2_selected_ids": [],
+        "v2_graph_displacement_count": 0,
+        "pre_selectivity_old_cap_admitted_count": 0,
+        "same_selected_id_set": true
+      }
+    },
+    "g041": {
+      "case_id": "g041",
+      "eligible_governed_bridge_candidate_count": 0,
+      "eligible_after_scope_count": 0,
+      "scope_rejected_candidate_count": 0,
+      "gate_passing_candidate_count": 0,
+      "gate_rejected_candidate_count": 0,
+      "selected_bridge_candidate_count": 0,
+      "selected_object_ids": [],
+      "selected_rank_keys": [],
+      "candidate_receipts": [],
+      "origin_capped_out_count": 0,
+      "beyond_selectivity_cap_count": 0,
+      "per_origin_attributed_counts": {},
+      "number_of_origins_before": 0,
+      "number_of_origins_after": 0,
+      "graph_admitted_bridge_candidates": [],
+      "v2_graph_displacement_count": 0,
+      "v2_displaced_object_ids": [],
+      "selectivity_only_graph_ordering": [
+        "concept.li_2026.restgas_effective_acceptance",
+        "concept.restgas_longitudinal_efficiency",
+        "configuration.restgas_profile",
+        "data_product.reconstructed_restgas_profile",
+        "data_product.restgas.boost_root",
+        "data_product.restgas.event_poca",
+        "data_product.restgas.pid_final_root",
+        "data_product.restgas.pid_root",
+        "file_pattern.restgas_profile_input",
+        "workflow.pandaroot.generic",
+        "workflow.restgas.first_pass_poca",
+        "workflow.restgas.second_pass_pid",
+        "workflow.restgas_aware_luminosity_acceptance",
+        "workflow.restgas_profile_reconstruction",
+        "document.pandaroot_sphinx_2023_08_25_dev",
+        "object.17571bb9d93f44e26fe002c2",
+        "object.2800de7cb8134d24cfd4be52",
+        "object.3d8b1370a3228cdb1aa35274",
+        "object.560c75763b0b32b1053c87da",
+        "object.70825ad9c1b7017889496a6b"
+      ],
+      "determinism_receipt": {
+        "double_execution_identical": true,
+        "output_sha256": "bedaf2768b3f00f862cb8e724837d96862309eac4eb9e8bc262b646750457e59"
+      },
+      "evaluator": {
+        "case_id": "g041",
+        "groups": [
+          {
+            "group_id": "g041.e1",
+            "required_candidate_ids_in_eligible_universe": [],
+            "gate_passing_ids": [],
+            "gate_rejected_ids": [],
+            "v2_retained_ids": [],
+            "applicability_class": "NOT_APPLICABLE_TO_SELECTIVITY"
+          }
+        ],
+        "required_candidate_ids_in_eligible_universe": [],
+        "newly_visible_complete_universe_applicable_evidence": [],
+        "gate_recall_limitation_count": 0,
+        "applicable_and_lost_count": 0,
+        "applicable_and_retained_count": 0,
+        "not_applicable_count": 1,
+        "a2_combined_pool_matched_reference": [
+          "object.de8952db46a8b52154456ee0"
+        ]
+      },
+      "v1_comparison": {
+        "v1_selected_count": 0,
+        "v1_selected_ids": [],
+        "v1_graph_displacement_count": 0,
+        "v2_selected_count": 0,
+        "v2_selected_ids": [],
+        "v2_graph_displacement_count": 0,
+        "pre_selectivity_old_cap_admitted_count": 0,
+        "same_selected_id_set": true
+      }
+    },
+    "g020": {
+      "case_id": "g020",
+      "eligible_governed_bridge_candidate_count": 67,
+      "eligible_after_scope_count": 67,
+      "scope_rejected_candidate_count": 0,
+      "gate_passing_candidate_count": 67,
+      "gate_rejected_candidate_count": 0,
+      "selected_bridge_candidate_count": 8,
+      "selected_object_ids": [
+        "object.e29c4fcd17107cabea45f18e",
+        "object.0fe58ecc9734eb4f9a351832",
+        "object.6a72bf9df87e9a5810015881",
+        "object.d1d036619ecae30580af435d",
+        "object.427ba40a22782a7217afef8f",
+        "object.3bfdd9477502819029d5f4e2",
+        "object.35cf84657d7458145acc6cb2",
+        "object.b12c343f4978fcb93fa768d7"
+      ],
+      "selected_rank_keys": [
+        {
+          "candidate_object_id": "object.e29c4fcd17107cabea45f18e",
+          "symbol_exact_tier": 4,
+          "rarity_weighted_overlap": 45.03460824964364,
+          "basename_coverage": 2,
+          "text_presence": 23,
+          "support_rank": 2,
+          "structural_distance": 1,
+          "attributed_origin_id": "edge.81276373f106c8758d5aec92"
+        },
+        {
+          "candidate_object_id": "object.0fe58ecc9734eb4f9a351832",
+          "symbol_exact_tier": 4,
+          "rarity_weighted_overlap": 33.5616216666406,
+          "basename_coverage": 2,
+          "text_presence": 19,
+          "support_rank": null,
+          "structural_distance": 1,
+          "attributed_origin_id": "edge.ea3a79d222f0ca6cc0e6df72"
+        },
+        {
+          "candidate_object_id": "object.6a72bf9df87e9a5810015881",
+          "symbol_exact_tier": 3,
+          "rarity_weighted_overlap": 28.45659762405739,
+          "basename_coverage": 2,
+          "text_presence": 16,
+          "support_rank": null,
+          "structural_distance": 1,
+          "attributed_origin_id": "edge.81276373f106c8758d5aec92"
+        },
+        {
+          "candidate_object_id": "object.d1d036619ecae30580af435d",
+          "symbol_exact_tier": 2,
+          "rarity_weighted_overlap": 40.37111603244215,
+          "basename_coverage": 2,
+          "text_presence": 23,
+          "support_rank": null,
+          "structural_distance": 1,
+          "attributed_origin_id": "edge.ea3a79d222f0ca6cc0e6df72"
+        },
+        {
+          "candidate_object_id": "object.427ba40a22782a7217afef8f",
+          "symbol_exact_tier": 2,
+          "rarity_weighted_overlap": 27.523234817087683,
+          "basename_coverage": 2,
+          "text_presence": 14,
+          "support_rank": 17,
+          "structural_distance": 1,
+          "attributed_origin_id": "edge.81276373f106c8758d5aec92"
+        },
+        {
+          "candidate_object_id": "object.3bfdd9477502819029d5f4e2",
+          "symbol_exact_tier": 2,
+          "rarity_weighted_overlap": 20.921961235481763,
+          "basename_coverage": 2,
+          "text_presence": 10,
+          "support_rank": null,
+          "structural_distance": 1,
+          "attributed_origin_id": "edge.ea3a79d222f0ca6cc0e6df72"
+        },
+        {
+          "candidate_object_id": "object.35cf84657d7458145acc6cb2",
+          "symbol_exact_tier": 1,
+          "rarity_weighted_overlap": 36.626642901607006,
+          "basename_coverage": 2,
+          "text_presence": 21,
+          "support_rank": 1,
+          "structural_distance": 1,
+          "attributed_origin_id": "edge.81276373f106c8758d5aec92"
+        },
+        {
+          "candidate_object_id": "object.b12c343f4978fcb93fa768d7",
+          "symbol_exact_tier": 1,
+          "rarity_weighted_overlap": 34.113495316878314,
+          "basename_coverage": 2,
+          "text_presence": 19,
+          "support_rank": null,
+          "structural_distance": 1,
+          "attributed_origin_id": "edge.ea3a79d222f0ca6cc0e6df72"
+        }
+      ],
+      "candidate_receipts": [
+        {
+          "candidate_object_id": "object.0c35c9d2ee2a07bc0a4be8fe",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 20.84282799363283,
+          "basename_coverage": 2,
+          "text_presence": 11,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.0fe58ecc9734eb4f9a351832",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 2,
+          "title_overlap": 2,
+          "gate_pass": true,
+          "symbol_exact_tier": 4,
+          "rarity_weighted_overlap": 33.5616216666406,
+          "basename_coverage": 2,
+          "text_presence": 19,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "selected",
+          "attributed_origin_id": "edge.ea3a79d222f0ca6cc0e6df72"
+        },
+        {
+          "candidate_object_id": "object.16e2d668d8673e7c633192c5",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 4,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 1,
+          "rarity_weighted_overlap": 19.52180260612983,
+          "basename_coverage": 2,
+          "text_presence": 11,
+          "support_rank": 10,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.21bc3ebe83cacb360c89c4b4",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 2,
+          "title_overlap": 1,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 21.577481906926085,
+          "basename_coverage": 2,
+          "text_presence": 12,
+          "support_rank": 8,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.25c0757afb7eabcf9183a17f",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 4,
+          "title_overlap": 1,
+          "gate_pass": true,
+          "symbol_exact_tier": 1,
+          "rarity_weighted_overlap": 7.60769809246352,
+          "basename_coverage": 2,
+          "text_presence": 5,
+          "support_rank": 18,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.2ce3b321fb404505c3c19e12",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 8.217751574147506,
+          "basename_coverage": 2,
+          "text_presence": 7,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.2f28b1f3c056f9be04da6487",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 4,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 1,
+          "rarity_weighted_overlap": 4.7879008010896005,
+          "basename_coverage": 2,
+          "text_presence": 2,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.35cf84657d7458145acc6cb2",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 4,
+          "title_overlap": 4,
+          "gate_pass": true,
+          "symbol_exact_tier": 1,
+          "rarity_weighted_overlap": 36.626642901607006,
+          "basename_coverage": 2,
+          "text_presence": 21,
+          "support_rank": 1,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "selected",
+          "attributed_origin_id": "edge.81276373f106c8758d5aec92"
+        },
+        {
+          "candidate_object_id": "object.3ab0a90ae68e8ece071a9f22",
+          "locator_path": "macro/target/prod_sim_hvmaps.C",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "source_file",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 5,
+          "title_overlap": 5,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 18.93334144951554,
+          "basename_coverage": 3,
+          "text_presence": 11,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.3bfdd9477502819029d5f4e2",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 4,
+          "title_overlap": 1,
+          "gate_pass": true,
+          "symbol_exact_tier": 2,
+          "rarity_weighted_overlap": 20.921961235481763,
+          "basename_coverage": 2,
+          "text_presence": 10,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "selected",
+          "attributed_origin_id": "edge.ea3a79d222f0ca6cc0e6df72"
+        },
+        {
+          "candidate_object_id": "object.3f30db15a00e651138c4146a",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 4,
+          "title_overlap": 1,
+          "gate_pass": true,
+          "symbol_exact_tier": 1,
+          "rarity_weighted_overlap": 10.090077810064196,
+          "basename_coverage": 2,
+          "text_presence": 5,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.427ba40a22782a7217afef8f",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 4,
+          "title_overlap": 3,
+          "gate_pass": true,
+          "symbol_exact_tier": 2,
+          "rarity_weighted_overlap": 27.523234817087683,
+          "basename_coverage": 2,
+          "text_presence": 14,
+          "support_rank": 17,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "selected",
+          "attributed_origin_id": "edge.81276373f106c8758d5aec92"
+        },
+        {
+          "candidate_object_id": "object.48aceb8601747afe7e7c2048",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 0.26653306172692814,
+          "basename_coverage": 2,
+          "text_presence": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.48be486a9ecab8f524ef9f35",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 2,
+          "title_overlap": 1,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 12.953075267888844,
+          "basename_coverage": 2,
+          "text_presence": 9,
+          "support_rank": 8,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.4b4ba617d7416c518a52ff83",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 6.908730963039532,
+          "basename_coverage": 2,
+          "text_presence": 6,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.4e2bf3318be9d234c717b6cc",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 2,
+          "title_overlap": 1,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 17.27655344414875,
+          "basename_coverage": 2,
+          "text_presence": 11,
+          "support_rank": 5,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.4e81a506f09b221d71a5df38",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 16.91281383140797,
+          "basename_coverage": 2,
+          "text_presence": 11,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.5023a697b2b46cfde6faee55",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 4,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 1,
+          "rarity_weighted_overlap": 2.523560197755182,
+          "basename_coverage": 2,
+          "text_presence": 1,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.5038d66d85d49f8644390f7d",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 4,
+          "title_overlap": 1,
+          "gate_pass": true,
+          "symbol_exact_tier": 1,
+          "rarity_weighted_overlap": 4.749220332925541,
+          "basename_coverage": 2,
+          "text_presence": 2,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.51622f9bdd88358b3b5711d4",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 4,
+          "title_overlap": 2,
+          "gate_pass": true,
+          "symbol_exact_tier": 1,
+          "rarity_weighted_overlap": 13.172246351645024,
+          "basename_coverage": 2,
+          "text_presence": 7,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.5476889875fa4f019ea318ac",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 4,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 1,
+          "rarity_weighted_overlap": 8.394932391592617,
+          "basename_coverage": 2,
+          "text_presence": 6,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.5cae2ceab6e67bb4c9065331",
+          "locator_path": "macro/target/ana_dpm.C",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "source_file",
+          "provenance_origin_ids": [
+            "edge.2e09628416a01ce2461d752a",
+            "edge.5a8a1deba5f20c052cdcb044"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 5,
+          "title_overlap": 5,
+          "gate_pass": true,
+          "symbol_exact_tier": 1,
+          "rarity_weighted_overlap": 16.217437470877165,
+          "basename_coverage": 3,
+          "text_presence": 8,
+          "support_rank": 4,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.64407e20e9e1ea3e57ea1236",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 12.478480923929546,
+          "basename_coverage": 2,
+          "text_presence": 8,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.65b289b5d6e6f20ebbf14474",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 4,
+          "title_overlap": 1,
+          "gate_pass": true,
+          "symbol_exact_tier": 1,
+          "rarity_weighted_overlap": 2.3660189207687017,
+          "basename_coverage": 2,
+          "text_presence": 1,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.6a72bf9df87e9a5810015881",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 3,
+          "gate_pass": true,
+          "symbol_exact_tier": 3,
+          "rarity_weighted_overlap": 28.45659762405739,
+          "basename_coverage": 2,
+          "text_presence": 16,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "selected",
+          "attributed_origin_id": "edge.81276373f106c8758d5aec92"
+        },
+        {
+          "candidate_object_id": "object.6b20287d8250ff2e55fa01af",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 1,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 7.653379142932367,
+          "basename_coverage": 2,
+          "text_presence": 6,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.70f21de0901589c9d8506e00",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 2.732146819566599,
+          "basename_coverage": 2,
+          "text_presence": 3,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.727b6eb51b2cfc8c78ce35b4",
+          "locator_path": "macro/target/correction/efficiency_correction_2.C",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "source_file",
+          "provenance_origin_ids": [
+            "edge.1d5c600878cd5576199cf9e0"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 3,
+          "title_overlap": 3,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 7.472409564014844,
+          "basename_coverage": 1,
+          "text_presence": 5,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.756904448a2cb490add746e8",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 5.364643147176776,
+          "basename_coverage": 2,
+          "text_presence": 2,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.75939fa753969e7ce1d8fa4b",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 4,
+          "title_overlap": 1,
+          "gate_pass": true,
+          "symbol_exact_tier": 1,
+          "rarity_weighted_overlap": 3.91271906520842,
+          "basename_coverage": 2,
+          "text_presence": 4,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.76f3a617ccd5cbbfa2cb8136",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 12.909757285088517,
+          "basename_coverage": 2,
+          "text_presence": 9,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.78161cc0cea37b8b95bf8863",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 1,
+          "rarity_weighted_overlap": 6.567222499182653,
+          "basename_coverage": 2,
+          "text_presence": 7,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.7c683ccb9595dad20e4529fe",
+          "locator_path": "pgenerators/Target/PndTargetGenerator.cxx",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "source_file",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 2,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 7.262690972713506,
+          "basename_coverage": 2,
+          "text_presence": 6,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.7ecb89690b217573371f6f70",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 1,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 17.408461133053887,
+          "basename_coverage": 2,
+          "text_presence": 12,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.88d0d65c7dbf3c313f1fa5dd",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 1,
+          "rarity_weighted_overlap": 10.58686995620542,
+          "basename_coverage": 2,
+          "text_presence": 7,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.97d49d476e70e3a333779fbd",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 13.07472984573076,
+          "basename_coverage": 2,
+          "text_presence": 8,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.9e57745bf9b16a46a92d5cb0",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 13.103900170136614,
+          "basename_coverage": 2,
+          "text_presence": 10,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.a0f75731467d6323c4b431df",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 2,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 4.296047704759926,
+          "basename_coverage": 2,
+          "text_presence": 4,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.ab38ad90b923866d556bb245",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 4,
+          "title_overlap": 1,
+          "gate_pass": true,
+          "symbol_exact_tier": 1,
+          "rarity_weighted_overlap": 8.131123384375979,
+          "basename_coverage": 2,
+          "text_presence": 4,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.ae2365b6243db9a5da6f41a8",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 2,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 8.6006086676772,
+          "basename_coverage": 2,
+          "text_presence": 6,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.b12c343f4978fcb93fa768d7",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 4,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 1,
+          "rarity_weighted_overlap": 34.113495316878314,
+          "basename_coverage": 2,
+          "text_presence": 19,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "selected",
+          "attributed_origin_id": "edge.ea3a79d222f0ca6cc0e6df72"
+        },
+        {
+          "candidate_object_id": "object.b92367ae18f0b4e9368a89b2",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 24.54274483105722,
+          "basename_coverage": 2,
+          "text_presence": 14,
+          "support_rank": 11,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.bc1c90e39128c7ca55302947",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 4,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 1,
+          "rarity_weighted_overlap": 1.1365370746459345,
+          "basename_coverage": 2,
+          "text_presence": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.bf890ea4d6b13178189933d8",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 3,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 25.292338033551175,
+          "basename_coverage": 2,
+          "text_presence": 15,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.bf98d2d18b8c71ee23891b94",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 2.7796806464556196,
+          "basename_coverage": 2,
+          "text_presence": 2,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.c50a3f00dd154303ff8ff5da",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 6.043797207270193,
+          "basename_coverage": 2,
+          "text_presence": 6,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.c9f92147b8490e3879afb56b",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 0.26653306172692814,
+          "basename_coverage": 2,
+          "text_presence": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.cbefedd3ddea3e03c8827b71",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 5.364643147176776,
+          "basename_coverage": 2,
+          "text_presence": 2,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.d13084dc0226150c4666fd1c",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 1.4960149078496954,
+          "basename_coverage": 2,
+          "text_presence": 1,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.d1810969df820d9a7aff0415",
+          "locator_path": "macro/target/prod_aod_complete.C",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "source_file",
+          "provenance_origin_ids": [
+            "edge.a767185bbbc0d72189d0ac29",
+            "edge.d7ef44a502f1918dff5c93ab"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 6,
+          "title_overlap": 6,
+          "gate_pass": true,
+          "symbol_exact_tier": 1,
+          "rarity_weighted_overlap": 19.102837688387904,
+          "basename_coverage": 4,
+          "text_presence": 11,
+          "support_rank": 5,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.d1d036619ecae30580af435d",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 2,
+          "rarity_weighted_overlap": 40.37111603244215,
+          "basename_coverage": 2,
+          "text_presence": 23,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "selected",
+          "attributed_origin_id": "edge.ea3a79d222f0ca6cc0e6df72"
+        },
+        {
+          "candidate_object_id": "object.d36fa7fa9739a0a65c2345f0",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 4,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 1,
+          "rarity_weighted_overlap": 1.1365370746459345,
+          "basename_coverage": 2,
+          "text_presence": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.d51cd150523d4b999a5f1ca1",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 4,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 1,
+          "rarity_weighted_overlap": 4.539973287646014,
+          "basename_coverage": 2,
+          "text_presence": 2,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.d61c9f6941dd9cf1acf258fe",
+          "locator_path": "macro/target/pid_complete.C",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "source_file",
+          "provenance_origin_ids": [
+            "edge.a767185bbbc0d72189d0ac29",
+            "edge.d7ef44a502f1918dff5c93ab"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 5,
+          "title_overlap": 5,
+          "gate_pass": true,
+          "symbol_exact_tier": 1,
+          "rarity_weighted_overlap": 23.933525114276133,
+          "basename_coverage": 3,
+          "text_presence": 13,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.dc2f0cfe5acd57a254a1a226",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 4,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 1,
+          "rarity_weighted_overlap": 6.235118706117594,
+          "basename_coverage": 2,
+          "text_presence": 3,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.de351fec1daff18a542d845c",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 1,
+          "gate_pass": true,
+          "symbol_exact_tier": 1,
+          "rarity_weighted_overlap": 20.67927582721076,
+          "basename_coverage": 2,
+          "text_presence": 12,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.e29c4fcd17107cabea45f18e",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 4,
+          "title_overlap": 5,
+          "gate_pass": true,
+          "symbol_exact_tier": 4,
+          "rarity_weighted_overlap": 45.03460824964364,
+          "basename_coverage": 2,
+          "text_presence": 23,
+          "support_rank": 2,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "selected",
+          "attributed_origin_id": "edge.81276373f106c8758d5aec92"
+        },
+        {
+          "candidate_object_id": "object.e5136c8d8f90cb0add63ec47",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 4,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 1,
+          "rarity_weighted_overlap": 5.625065224433607,
+          "basename_coverage": 2,
+          "text_presence": 3,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.e51879eb24fc26654017f584",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 2,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 33.02293157160582,
+          "basename_coverage": 2,
+          "text_presence": 18,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.e8af519940d19f0305e7a4be",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 4,
+          "title_overlap": 2,
+          "gate_pass": true,
+          "symbol_exact_tier": 1,
+          "rarity_weighted_overlap": 5.567222499182653,
+          "basename_coverage": 2,
+          "text_presence": 5,
+          "support_rank": 17,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.e9f73efc23ccae1e3695035d",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 4,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 1,
+          "rarity_weighted_overlap": 1.1365370746459345,
+          "basename_coverage": 2,
+          "text_presence": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.eb2c22536338c3faa80165bc",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 12.575035190656926,
+          "basename_coverage": 2,
+          "text_presence": 10,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.eba54e616162bc748a4230ec",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 2,
+          "gate_pass": true,
+          "symbol_exact_tier": 1,
+          "rarity_weighted_overlap": 25.934879367984067,
+          "basename_coverage": 2,
+          "text_presence": 16,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.ece5f8849c4ccef110f80f61",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 11.148258881152726,
+          "basename_coverage": 2,
+          "text_presence": 7,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.eebeb0d7f57deae9b5594579",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 4,
+          "title_overlap": 1,
+          "gate_pass": true,
+          "symbol_exact_tier": 1,
+          "rarity_weighted_overlap": 10.482395232842958,
+          "basename_coverage": 2,
+          "text_presence": 5,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.fa044382bbb1bfbc45e08a74",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 2.426043691840919,
+          "basename_coverage": 2,
+          "text_presence": 2,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.fba08a93492edafab9918eec",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "object_type": "readme_section",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "gate_pass": true,
+          "symbol_exact_tier": 0,
+          "rarity_weighted_overlap": 2.732146819566599,
+          "basename_coverage": 2,
+          "text_presence": 3,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        }
+      ],
+      "origin_capped_out_count": 0,
+      "beyond_selectivity_cap_count": 59,
+      "per_origin_attributed_counts": {
+        "edge.81276373f106c8758d5aec92": 4,
+        "edge.ea3a79d222f0ca6cc0e6df72": 4
+      },
+      "number_of_origins_before": 7,
+      "number_of_origins_after": 2,
+      "graph_admitted_bridge_candidates": [
+        "object.e29c4fcd17107cabea45f18e",
+        "object.0fe58ecc9734eb4f9a351832",
+        "object.6a72bf9df87e9a5810015881",
+        "object.d1d036619ecae30580af435d",
+        "object.427ba40a22782a7217afef8f",
+        "object.3bfdd9477502819029d5f4e2",
+        "object.35cf84657d7458145acc6cb2",
+        "object.b12c343f4978fcb93fa768d7"
+      ],
+      "v2_graph_displacement_count": 8,
+      "v2_displaced_object_ids": [
+        "subsystem.luminosityfit.panda_data_io",
+        "workflow.pandaroot.generic",
+        "workflow.pandaroot.lmd_reconstruction",
+        "workflow.restgas.first_pass_poca",
+        "workflow.restgas.second_pass_pid",
+        "workflow.restgas_aware_luminosity_acceptance",
+        "workflow.restgas_profile_reconstruction",
+        "object.3ef7c0c1f717c8872fc97f9d"
+      ],
+      "selectivity_only_graph_ordering": [
+        "object.e29c4fcd17107cabea45f18e",
+        "object.0fe58ecc9734eb4f9a351832",
+        "object.6a72bf9df87e9a5810015881",
+        "object.d1d036619ecae30580af435d",
+        "object.427ba40a22782a7217afef8f",
+        "object.3bfdd9477502819029d5f4e2",
+        "object.35cf84657d7458145acc6cb2",
+        "object.b12c343f4978fcb93fa768d7",
+        "concept.li_2026.restgas_effective_acceptance",
+        "concept.restgas_longitudinal_efficiency",
+        "configuration.restgas_profile",
+        "data_product.pandaroot.lumi_trks_qa",
+        "data_product.reconstructed_restgas_profile",
+        "data_product.restgas.boost_root",
+        "data_product.restgas.event_poca",
+        "data_product.restgas.pid_final_root",
+        "data_product.restgas.pid_root",
+        "document.pandaroot_sphinx_2023_08_25_dev",
+        "file_pattern.restgas_profile_input",
+        "paper.karavdina_2015.chapter_4"
+      ],
+      "determinism_receipt": {
+        "double_execution_identical": true,
+        "output_sha256": "2fc8122a0787a8061ff1d56d34d80ba871324176fc07709a1d6010c7512e61dd"
+      },
+      "evaluator": {
+        "case_id": "g020",
+        "groups": [
+          {
+            "group_id": "g020.e1",
+            "required_candidate_ids_in_eligible_universe": [
+              "object.e29c4fcd17107cabea45f18e"
+            ],
+            "gate_passing_ids": [
+              "object.e29c4fcd17107cabea45f18e"
+            ],
+            "gate_rejected_ids": [],
+            "v2_retained_ids": [
+              "object.e29c4fcd17107cabea45f18e"
+            ],
+            "applicability_class": "APPLICABLE_AND_RETAINED"
+          },
+          {
+            "group_id": "g020.e2",
+            "required_candidate_ids_in_eligible_universe": [],
+            "gate_passing_ids": [],
+            "gate_rejected_ids": [],
+            "v2_retained_ids": [],
+            "applicability_class": "NOT_APPLICABLE_TO_SELECTIVITY"
+          }
+        ],
+        "required_candidate_ids_in_eligible_universe": [
+          "object.e29c4fcd17107cabea45f18e"
+        ],
+        "newly_visible_complete_universe_applicable_evidence": [
+          "object.e29c4fcd17107cabea45f18e"
+        ],
+        "gate_recall_limitation_count": 0,
+        "applicable_and_lost_count": 0,
+        "applicable_and_retained_count": 1,
+        "not_applicable_count": 1,
+        "a2_combined_pool_matched_reference": [
+          "object.16e2d668d8673e7c633192c5",
+          "object.35cf84657d7458145acc6cb2",
+          "object.d2bd533bec69f0a55bbe36d3",
+          "object.da41a31ef9b54315f3ce4681"
+        ]
+      },
+      "v1_comparison": {
+        "v1_selected_count": 8,
+        "v1_selected_ids": [
+          "object.d1810969df820d9a7aff0415",
+          "object.5cae2ceab6e67bb4c9065331",
+          "object.3ab0a90ae68e8ece071a9f22",
+          "object.d61c9f6941dd9cf1acf258fe",
+          "object.e29c4fcd17107cabea45f18e",
+          "object.35cf84657d7458145acc6cb2",
+          "object.427ba40a22782a7217afef8f",
+          "object.e8af519940d19f0305e7a4be"
+        ],
+        "v1_graph_displacement_count": 8,
+        "v2_selected_count": 8,
+        "v2_selected_ids": [
+          "object.e29c4fcd17107cabea45f18e",
+          "object.0fe58ecc9734eb4f9a351832",
+          "object.6a72bf9df87e9a5810015881",
+          "object.d1d036619ecae30580af435d",
+          "object.427ba40a22782a7217afef8f",
+          "object.3bfdd9477502819029d5f4e2",
+          "object.35cf84657d7458145acc6cb2",
+          "object.b12c343f4978fcb93fa768d7"
+        ],
+        "v2_graph_displacement_count": 8,
+        "pre_selectivity_old_cap_admitted_count": 20,
+        "same_selected_id_set": false
+      }
+    },
+    "n004": {
+      "case_id": "n004",
+      "eligible_governed_bridge_candidate_count": 0,
+      "eligible_after_scope_count": 0,
+      "scope_rejected_candidate_count": 0,
+      "gate_passing_candidate_count": 0,
+      "gate_rejected_candidate_count": 0,
+      "selected_bridge_candidate_count": 0,
+      "selected_object_ids": [],
+      "selected_rank_keys": [],
+      "candidate_receipts": [],
+      "origin_capped_out_count": 0,
+      "beyond_selectivity_cap_count": 0,
+      "per_origin_attributed_counts": {},
+      "number_of_origins_before": 0,
+      "number_of_origins_after": 0,
+      "graph_admitted_bridge_candidates": [],
+      "v2_graph_displacement_count": 0,
+      "v2_displaced_object_ids": [],
+      "selectivity_only_graph_ordering": [
+        "object.748d6657afaae5e33dd48c4d",
+        "object.368fc0076a0f61eda1506d1f"
+      ],
+      "determinism_receipt": {
+        "double_execution_identical": true,
+        "output_sha256": "c5f44c00365083af612c180ae66daeaab90c243e58246dce316d6fe2c04ed86d"
+      },
+      "evaluator": {
+        "case_id": "n004",
+        "groups": [
+          {
+            "group_id": "n004.e1",
+            "required_candidate_ids_in_eligible_universe": [],
+            "gate_passing_ids": [],
+            "gate_rejected_ids": [],
+            "v2_retained_ids": [],
+            "applicability_class": "NOT_APPLICABLE_TO_SELECTIVITY"
+          }
+        ],
+        "required_candidate_ids_in_eligible_universe": [],
+        "newly_visible_complete_universe_applicable_evidence": [],
+        "gate_recall_limitation_count": 0,
+        "applicable_and_lost_count": 0,
+        "applicable_and_retained_count": 0,
+        "not_applicable_count": 1,
+        "a2_combined_pool_matched_reference": [
+          "object.6101005a6e9a289dfb8ee8d5",
+          "object.b238f4a4478daec4489b0f4b"
+        ]
+      },
+      "v1_comparison": {
+        "v1_selected_count": 0,
+        "v1_selected_ids": [],
+        "v1_graph_displacement_count": 0,
+        "v2_selected_count": 0,
+        "v2_selected_ids": [],
+        "v2_graph_displacement_count": 0,
+        "pre_selectivity_old_cap_admitted_count": 0,
+        "same_selected_id_set": true
+      }
+    }
+  },
+  "v1_vs_v2_comparison": {
+    "g036": {
+      "eligible": 3,
+      "v1_selected": 3,
+      "v2_selected": 3,
+      "same_selected_id_set": true,
+      "v1_displacement": 0,
+      "v2_displacement": 0
+    },
+    "g021": {
+      "eligible": 62,
+      "v1_selected": 4,
+      "v2_selected": 4,
+      "same_selected_id_set": false,
+      "v1_displacement": 0,
+      "v2_displacement": 0,
+      "relevance_repair": "prod_sim_hvmaps.C lost under v1 is retained under v2"
+    },
+    "n006": {
+      "eligible": 0,
+      "v1_selected": 0,
+      "v2_selected": 0,
+      "v1_displacement": 0,
+      "v2_displacement": 0
+    },
+    "g041": {
+      "eligible": 0,
+      "v1_selected": 0,
+      "v2_selected": 0,
+      "v1_displacement": 0,
+      "v2_displacement": 0
+    },
+    "g020": {
+      "eligible": 67,
+      "v1_selected": 8,
+      "v2_selected": 8,
+      "same_selected_id_set": false,
+      "v1_displacement": 8,
+      "v2_displacement": 8,
+      "note": "v2 attributed-origin distribution concentrates on the two top origins (4+4) versus v1's six-origin spread (max 3); both are within the frozen PER_ORIGIN_CAP"
+    },
+    "n004": {
+      "eligible": 0,
+      "v1_selected": 0,
+      "v2_selected": 0,
+      "v1_displacement": 0,
+      "v2_displacement": 0
+    },
+    "fanout_preserved": true,
+    "displacement_preserved": true
+  },
+  "complete_universe_evaluator_results": {
+    "g036": {
+      "case_id": "g036",
+      "groups": [
+        {
+          "group_id": "g036.e1",
+          "required_candidate_ids_in_eligible_universe": [
+            "object.5cae2ceab6e67bb4c9065331"
+          ],
+          "gate_passing_ids": [
+            "object.5cae2ceab6e67bb4c9065331"
+          ],
+          "gate_rejected_ids": [],
+          "v2_retained_ids": [
+            "object.5cae2ceab6e67bb4c9065331"
+          ],
+          "applicability_class": "APPLICABLE_AND_RETAINED"
+        }
+      ],
+      "required_candidate_ids_in_eligible_universe": [
+        "object.5cae2ceab6e67bb4c9065331"
+      ],
+      "newly_visible_complete_universe_applicable_evidence": [],
+      "gate_recall_limitation_count": 0,
+      "applicable_and_lost_count": 0,
+      "applicable_and_retained_count": 1,
+      "not_applicable_count": 0,
+      "a2_combined_pool_matched_reference": [
+        "object.5cae2ceab6e67bb4c9065331"
+      ]
+    },
+    "g021": {
+      "case_id": "g021",
+      "groups": [
+        {
+          "group_id": "g021.e1",
+          "required_candidate_ids_in_eligible_universe": [
+            "object.3ab0a90ae68e8ece071a9f22"
+          ],
+          "gate_passing_ids": [
+            "object.3ab0a90ae68e8ece071a9f22"
+          ],
+          "gate_rejected_ids": [],
+          "v2_retained_ids": [
+            "object.3ab0a90ae68e8ece071a9f22"
+          ],
+          "applicability_class": "APPLICABLE_AND_RETAINED"
+        },
+        {
+          "group_id": "g021.e2",
+          "required_candidate_ids_in_eligible_universe": [],
+          "gate_passing_ids": [],
+          "gate_rejected_ids": [],
+          "v2_retained_ids": [],
+          "applicability_class": "NOT_APPLICABLE_TO_SELECTIVITY"
+        }
+      ],
+      "required_candidate_ids_in_eligible_universe": [
+        "object.3ab0a90ae68e8ece071a9f22"
+      ],
+      "newly_visible_complete_universe_applicable_evidence": [],
+      "gate_recall_limitation_count": 0,
+      "applicable_and_lost_count": 0,
+      "applicable_and_retained_count": 1,
+      "not_applicable_count": 1,
+      "a2_combined_pool_matched_reference": [
+        "object.3ab0a90ae68e8ece071a9f22"
+      ]
+    },
+    "n006": {
+      "case_id": "n006",
+      "groups": [
+        {
+          "group_id": "n006.e1",
+          "required_candidate_ids_in_eligible_universe": [],
+          "gate_passing_ids": [],
+          "gate_rejected_ids": [],
+          "v2_retained_ids": [],
+          "applicability_class": "NOT_APPLICABLE_TO_SELECTIVITY"
+        },
+        {
+          "group_id": "n006.e2",
+          "required_candidate_ids_in_eligible_universe": [],
+          "gate_passing_ids": [],
+          "gate_rejected_ids": [],
+          "v2_retained_ids": [],
+          "applicability_class": "NOT_APPLICABLE_TO_SELECTIVITY"
+        }
+      ],
+      "required_candidate_ids_in_eligible_universe": [],
+      "newly_visible_complete_universe_applicable_evidence": [],
+      "gate_recall_limitation_count": 0,
+      "applicable_and_lost_count": 0,
+      "applicable_and_retained_count": 0,
+      "not_applicable_count": 2,
+      "a2_combined_pool_matched_reference": [
+        "object.2914485ff398f61e994c46d6",
+        "object.b1250c4366eea9aa9dc68f50"
+      ]
+    },
+    "g041": {
+      "case_id": "g041",
+      "groups": [
+        {
+          "group_id": "g041.e1",
+          "required_candidate_ids_in_eligible_universe": [],
+          "gate_passing_ids": [],
+          "gate_rejected_ids": [],
+          "v2_retained_ids": [],
+          "applicability_class": "NOT_APPLICABLE_TO_SELECTIVITY"
+        }
+      ],
+      "required_candidate_ids_in_eligible_universe": [],
+      "newly_visible_complete_universe_applicable_evidence": [],
+      "gate_recall_limitation_count": 0,
+      "applicable_and_lost_count": 0,
+      "applicable_and_retained_count": 0,
+      "not_applicable_count": 1,
+      "a2_combined_pool_matched_reference": [
+        "object.de8952db46a8b52154456ee0"
+      ]
+    },
+    "g020": {
+      "case_id": "g020",
+      "groups": [
+        {
+          "group_id": "g020.e1",
+          "required_candidate_ids_in_eligible_universe": [
+            "object.e29c4fcd17107cabea45f18e"
+          ],
+          "gate_passing_ids": [
+            "object.e29c4fcd17107cabea45f18e"
+          ],
+          "gate_rejected_ids": [],
+          "v2_retained_ids": [
+            "object.e29c4fcd17107cabea45f18e"
+          ],
+          "applicability_class": "APPLICABLE_AND_RETAINED"
+        },
+        {
+          "group_id": "g020.e2",
+          "required_candidate_ids_in_eligible_universe": [],
+          "gate_passing_ids": [],
+          "gate_rejected_ids": [],
+          "v2_retained_ids": [],
+          "applicability_class": "NOT_APPLICABLE_TO_SELECTIVITY"
+        }
+      ],
+      "required_candidate_ids_in_eligible_universe": [
+        "object.e29c4fcd17107cabea45f18e"
+      ],
+      "newly_visible_complete_universe_applicable_evidence": [
+        "object.e29c4fcd17107cabea45f18e"
+      ],
+      "gate_recall_limitation_count": 0,
+      "applicable_and_lost_count": 0,
+      "applicable_and_retained_count": 1,
+      "not_applicable_count": 1,
+      "a2_combined_pool_matched_reference": [
+        "object.16e2d668d8673e7c633192c5",
+        "object.35cf84657d7458145acc6cb2",
+        "object.d2bd533bec69f0a55bbe36d3",
+        "object.da41a31ef9b54315f3ce4681"
+      ]
+    },
+    "n004": {
+      "case_id": "n004",
+      "groups": [
+        {
+          "group_id": "n004.e1",
+          "required_candidate_ids_in_eligible_universe": [],
+          "gate_passing_ids": [],
+          "gate_rejected_ids": [],
+          "v2_retained_ids": [],
+          "applicability_class": "NOT_APPLICABLE_TO_SELECTIVITY"
+        }
+      ],
+      "required_candidate_ids_in_eligible_universe": [],
+      "newly_visible_complete_universe_applicable_evidence": [],
+      "gate_recall_limitation_count": 0,
+      "applicable_and_lost_count": 0,
+      "applicable_and_retained_count": 0,
+      "not_applicable_count": 1,
+      "a2_combined_pool_matched_reference": [
+        "object.6101005a6e9a289dfb8ee8d5",
+        "object.b238f4a4478daec4489b0f4b"
+      ]
+    }
+  },
+  "gate_recall_diagnostics": {
+    "GATE_RECALL_LIMITATION_count": 0,
+    "note": "no required-evidence candidate in the complete eligible universe was rejected by the unchanged MIN_PRIMARY_SCORE >= 1 path/title gate"
+  },
+  "fanout_metrics": {
+    "g036": {
+      "eligible": 3,
+      "gate_passing": 3,
+      "v2_selected": 3
+    },
+    "g021": {
+      "eligible": 62,
+      "gate_passing": 35,
+      "v2_selected": 4
+    },
+    "n006": {
+      "eligible": 0,
+      "gate_passing": 0,
+      "v2_selected": 0
+    },
+    "g041": {
+      "eligible": 0,
+      "gate_passing": 0,
+      "v2_selected": 0
+    },
+    "g020": {
+      "eligible": 67,
+      "gate_passing": 67,
+      "v2_selected": 8
+    },
+    "n004": {
+      "eligible": 0,
+      "gate_passing": 0,
+      "v2_selected": 0
+    }
+  },
+  "graph_displacement_metrics": {
+    "g036": {
+      "v1": 0,
+      "v2": 0,
+      "pre_selectivity_old_cap_admitted": 3
+    },
+    "g021": {
+      "v1": 0,
+      "v2": 0,
+      "pre_selectivity_old_cap_admitted": 20
+    },
+    "n006": {
+      "v1": 0,
+      "v2": 0,
+      "pre_selectivity_old_cap_admitted": 0
+    },
+    "g041": {
+      "v1": 0,
+      "v2": 0,
+      "pre_selectivity_old_cap_admitted": 0
+    },
+    "g020": {
+      "v1": 8,
+      "v2": 8,
+      "pre_selectivity_old_cap_admitted": 20
+    },
+    "n004": {
+      "v1": 0,
+      "v2": 0,
+      "pre_selectivity_old_cap_admitted": 0
+    }
+  },
+  "determinism_receipts": {
+    "g036": {
+      "double_execution_identical": true,
+      "output_sha256": "5a7aeb24cd4552e3c4645f8f7136199d7d38ae4ec7cd0a03c2edf58e48b16e7d"
+    },
+    "g021": {
+      "double_execution_identical": true,
+      "output_sha256": "7418827a0cab4bb8e1df217a8db7dc09bc799aaeace219df07689a78a63156ce"
+    },
+    "n006": {
+      "double_execution_identical": true,
+      "output_sha256": "3a6b7962e16ad22c7a499a8f39c9dbc509e6c8312a32bbfbb2a4f83797b32e5e"
+    },
+    "g041": {
+      "double_execution_identical": true,
+      "output_sha256": "bedaf2768b3f00f862cb8e724837d96862309eac4eb9e8bc262b646750457e59"
+    },
+    "g020": {
+      "double_execution_identical": true,
+      "output_sha256": "2fc8122a0787a8061ff1d56d34d80ba871324176fc07709a1d6010c7512e61dd"
+    },
+    "n004": {
+      "double_execution_identical": true,
+      "output_sha256": "c5f44c00365083af612c180ae66daeaab90c243e58246dce316d6fe2c04ed86d"
+    }
+  },
+  "governance_scope_invariants": {
+    "selected_subset_of_gate_passing_subset_of_universe": "verified for all six cases",
+    "all_selected_source_version_compatible": true,
+    "no_out_of_scope_candidate": true,
+    "per_origin_cap_respected": "all attributed-origin counts <= 4",
+    "selectivity_cap_respected": "all selected counts <= 8",
+    "zero_eligible_controls_remain_zero": {
+      "n006": 0,
+      "g041": 0,
+      "n004": 0
+    },
+    "violations": 0
+  },
+  "scientific_verdict": "PASS / REPAIRED_SELECTIVITY_RELEVANCE_RETENTION_VALIDATED_FOR_DEVELOPMENT",
+  "verdict_rationale": {
+    "preregistered_rule_evaluation": {
+      "implementation_frozen_before_outcome_exposure": true,
+      "exactly_one_repaired_policy_evaluated": true,
+      "determinism_passes": true,
+      "governance_scope_invariants_pass": true,
+      "caps_4_8_respected": true,
+      "high_fan_out_bounded": {
+        "g021": "62 -> 4",
+        "g020": "67 -> 8"
+      },
+      "zero_eligible_controls_remain_zero": true,
+      "gate_recall_limitation_for_designated_required_evidence": 0,
+      "applicable_required_evidence_retained": "g036.e1 (ana_dpm.C) and g021.e1 (prod_sim_hvmaps.C) and g020.e1 (POCA Workflow readme_section) all APPLICABLE_AND_RETAINED",
+      "applicable_and_lost_count": 0
+    },
+    "relevance_repair_mechanism": "prod_sim_hvmaps.C now carries symbol_exact_tier = 1 (the frozen plan symbol restgas_profile occurs literally in its bounded text payload — the configuration key the macro passes to PndMasterRunSim) and rarity_weighted_overlap = 8.532, ranking second inside its single-origin cap; the three README-chunk candidates that beat it under v1's coarse path/title score no longer outrank it because the universe-local IDF downweights ubiquitous tokens and the symbol tier adds a new discriminator",
+    "meaning": "development/mechanistic validation only; no reranker/selector ran and no final-answer recovery is claimed"
+  },
+  "A6_readiness": {
+    "eligible": true,
+    "state": "NOT_STARTED / READY_FOR_PREREGISTRATION",
+    "boundary": "A6 must first preregister the K=2/K=3 arms, decision semantics, R1 symmetric reranker repetition count, symmetric baseline/treatment execution, control material-regression handling, and reranker stochastic-variance accounting before any reranker outcome; R2 made none of these decisions"
+  },
+  "lifecycle": {
+    "D3.5-A5": "COMPLETE / SELECTIVITY_FANOUT_REDUCED_WITH_RELEVANCE_LOSS",
+    "D3.5-A5-R1": "COMPLETE / SELECTIVITY_RELEVANCE_RETENTION_REPAIR_DESIGN_FROZEN",
+    "D3.5-A5-R1-R1": "COMPLETE / RELEVANCE_FORMULA_AND_EXACT_MATCH_CONTRACT_REPAIRED",
+    "D3.5-A5-R2": "COMPLETE / REPAIRED_SELECTIVITY_RELEVANCE_RETENTION_VALIDATED_FOR_DEVELOPMENT",
+    "D3.5": "IN_PROGRESS / POST_A2_SELECTIVITY_AND_ADMISSION_REDESIGN",
+    "D3.5-A6": "NOT_STARTED / READY_FOR_PREREGISTRATION",
+    "D4": "NOT_STARTED / BLOCKED"
+  },
+  "exact_next_stage": "D3.5-A6 — Bounded Rerank-Admission Prototype & Paired Replay Validation (preregistration first; not started here)",
+  "execution_accounting": {
+    "REAL_CASE_SELECTIVITY_TREATMENT_RUNS": 6,
+    "MODEL_CALLS": 0,
+    "ANALYZER_CALLS": 0,
+    "EMBEDDING_CALLS": 0,
+    "RERANKER_CALLS": 0,
+    "QA_CALLS": 0,
+    "VERIFIER_CALLS": 0,
+    "JUDGE_CALLS": 0,
+    "A5_R2_ADMISSION_TREATMENT_RUNS": 0,
+    "POSTGRESQL_WRITES": 0,
+    "QDRANT_WRITES": 0,
+    "NOVEL_VALIDATION_RUNS": 0,
+    "NOVEL_HOLDOUT_RUNS": 0
+  }
+}
