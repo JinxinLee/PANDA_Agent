@@ -143,10 +143,15 @@ relations:
     confidence: 1.0
     creation_method: curated
     review_status: accepted
-    evidence_note: The restgas_profile configuration selects the concrete distributed-target profile input.
+    evidence_note: >-
+      The restgas_profile configuration selects the concrete distributed-target
+      profile input; implemented in simulation by prod_sim_hvmaps.C which configures
+      TargetMode=8 and passes restgas_profile to PndMasterRunSim, and documented
+      in the project and macro READMEs.
     evidence_paths:
       - README.md
       - macro/target/README.md
+      - macro/target/prod_sim_hvmaps.C
     evidence_source_ids:
       - restgas_determination
 
@@ -156,10 +161,16 @@ relations:
     confidence: 1.0
     creation_method: curated
     review_status: accepted
-    evidence_note: Concrete restgas profile text files parameterize target generation and reconstruction studies.
+    evidence_note: >-
+      Concrete restgas profile text files parameterize target generation and
+      reconstruction studies; consumed in simulation by prod_sim_hvmaps.C and
+      parsed by PndTargetGenerator.cxx for interaction vertex sampling, and
+      documented in the project and macro READMEs.
     evidence_paths:
       - README.md
       - macro/target/README.md
+      - macro/target/prod_sim_hvmaps.C
+      - pgenerators/Target/PndTargetGenerator.cxx
     evidence_source_ids:
       - restgas_determination
 

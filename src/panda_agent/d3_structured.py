@@ -13,6 +13,8 @@ from collections import Counter
 from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass, field
 from enum import Enum
+import json
+from pathlib import Path
 import re
 from typing import Any, Protocol
 
@@ -971,6 +973,61 @@ def _object_in_scope(
     return True
 
 
+_MANIFEST_VERSIONS_CACHE: dict[str, str] | None = None
+
+
+def _get_frozen_manifest_versions(project_root: Path | None = None) -> dict[str, str]:
+    global _MANIFEST_VERSIONS_CACHE
+    if _MANIFEST_VERSIONS_CACHE is not None:
+        return _MANIFEST_VERSIONS_CACHE
+    versions: dict[str, str] = {}
+    if project_root is None:
+        project_root = Path(__file__).resolve().parents[2]
+    manifest_file = project_root / "data" / "manifests" / "source_manifest.json"
+    if manifest_file.exists():
+        try:
+            data = json.loads(manifest_file.read_text(encoding="utf-8"))
+            for item in data.get("repositories", []):
+                if item.get("repo_id") and item.get("commit_sha"):
+                    versions[str(item["repo_id"])] = str(item["commit_sha"])
+            for item in data.get("papers", []):
+                if item.get("doc_id") and item.get("sha256"):
+                    versions[str(item["doc_id"])] = str(item["sha256"])
+            for item in data.get("web_documents", []):
+                if item.get("doc_id") and item.get("snapshot_hash"):
+                    versions[str(item["doc_id"])] = str(item["snapshot_hash"])
+        except Exception:
+            pass
+    _MANIFEST_VERSIONS_CACHE = versions
+    return versions
+
+
+def _resolve_frozen_source_version(
+    source_id: str,
+    plan_mapping: Mapping[str, Any],
+    project_root: Path | None = None,
+) -> str | None:
+    resolved_versions = plan_mapping.get("resolved_versions", {}) or {}
+    if source_id in resolved_versions and resolved_versions[source_id]:
+        return str(resolved_versions[source_id])
+    manifest_versions = _get_frozen_manifest_versions(project_root)
+    if source_id in manifest_versions:
+        return manifest_versions[source_id]
+    return None
+
+
+def _is_version_compatible(actual_version: str | None, source_id: str, expected_version: str | None) -> bool:
+    if not actual_version or not expected_version:
+        return False
+    act = str(actual_version)
+    exp = str(expected_version)
+    return (
+        act == exp
+        or act == f"{source_id}@{exp}"
+        or exp == f"{source_id}@{act}"
+    )
+
+
 def _normalize_evidence_path(raw_path: str) -> str | None:
     """Strict canonical repository-relative path normalization.
 
@@ -1851,15 +1908,22 @@ def build_structured_contribution(
                         else:
                             candidate_sources = list(evidence_source_ids)
 
-                        resolved_versions = plan_mapping.get("resolved_versions", {}) or {}
                         version_conflict = False
+                        version_conflict_reason = ""
                         for src in candidate_sources:
-                            if src in resolved_versions and source_version_ids:
-                                exp_ver = str(resolved_versions[src])
-                                if not any(v == exp_ver or v == f"{src}@{exp_ver}" for v in source_version_ids):
-                                    if any(v.startswith(f"{src}@") or v == str(resolved_versions.get(v.split("@")[0])) for v in source_version_ids):
-                                        version_conflict = True
-                                        break
+                            frozen_ver = _resolve_frozen_source_version(src, plan_mapping)
+                            if frozen_ver is None:
+                                version_conflict = True
+                                version_conflict_reason = f"source {src} lacks exact frozen source version identity"
+                                break
+                            if source_version_ids:
+                                has_matching_version = any(
+                                    _is_version_compatible(v, src, frozen_ver) for v in source_version_ids
+                                )
+                                if not has_matching_version:
+                                    version_conflict = True
+                                    version_conflict_reason = f"explicit source_version_ids conflict with active frozen version for {src}"
+                                    break
 
                         if version_conflict:
                             bridge_receipts.append(
@@ -1881,7 +1945,7 @@ def build_structured_contribution(
                                     locator=None,
                                     object_type=None,
                                     candidate_authority_role="GOVERNED_PROVENANCE_BACKED_ADDITIVE_RETRIEVAL_CANDIDATE",
-                                    reason_included="explicit source_version_ids conflict with plan-locked versions",
+                                    reason_included=version_conflict_reason,
                                     bridge_status="VERSION_SCOPE_CONFLICT",
                                 ).as_dict()
                             )
@@ -1889,11 +1953,16 @@ def build_structured_contribution(
 
                         all_matches: list[dict[str, Any]] = []
                         for src in candidate_sources:
+                            frozen_ver = _resolve_frozen_source_version(src, plan_mapping)
                             matches = graph_reader.find_source_objects_by_path(src, normalized_path)
                             for m in matches:
-                                if _object_in_scope(m, plan_mapping, context_sources):
-                                    if _is_source_native_object(m):
-                                        all_matches.append(m)
+                                m_ver = m.get("source_version_id")
+                                if (
+                                    _is_version_compatible(m_ver, src, frozen_ver)
+                                    and _object_in_scope(m, plan_mapping, context_sources)
+                                    and _is_source_native_object(m)
+                                ):
+                                    all_matches.append(m)
 
                         non_derived = [
                             m for m in all_matches

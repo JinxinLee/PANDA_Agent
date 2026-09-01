@@ -1431,5 +1431,146 @@ class D3_5_ComprehensiveEdgeCasesTests(unittest.TestCase):
         self.assertEqual(obj_receipts[0]["bridge_status"], "BRIDGED_CANDIDATE_INJECTED")
 
 
+class D3_5_ExactVersionQualificationTests(unittest.TestCase):
+    def test_explicit_source_explicit_matching_version_succeeds(self):
+        gov = _gov_object("gov_matching_ver", obj_type="workflow")
+        gov["metadata"] = {
+            "evidence_paths": ["detectors/lmd/test_file.cxx"],
+            "evidence_source_ids": ["pandaroot"],
+            "source_version_ids": ["pandaroot@locked"],
+        }
+        src_obj = _source_file_obj("src_matching_id", "pandaroot", "detectors/lmd/test_file.cxx")
+        reader = _MockGraphReader(rows=[gov], source_files=[src_obj])
+        receipt = D2ResolutionReceipt(
+            resolutions=[
+                D2Resolution("gov_matching_ver", "governed_id", "gov_matching_ver",
+                             RESOLVED_UNIQUE, matched_object_id="gov_matching_ver",
+                             canonical_object_id="gov_matching_ver",
+                             evidence=[_d2_evidence("G", "governed_id", "gov_matching_ver")]),
+            ]
+        )
+        plan = {"target_repositories": ["pandaroot"], "resolved_versions": {"pandaroot": "locked"}}
+        result = build_structured_contribution(
+            "Test explicit matching ver", plan, resolver=_MockResolver(receipt), graph_reader=reader, bridge_enabled=True
+        )
+        self.assertEqual(len(result.bridged_candidates), 1)
+        self.assertEqual(result.bridged_candidates[0]["object_id"], "src_matching_id")
+        path_receipts = [b for b in result.bridge_receipts if b["evidence_field_used"] == "evidence_paths"]
+        self.assertEqual(len(path_receipts), 1)
+        self.assertEqual(path_receipts[0]["bridge_status"], "BRIDGED_CANDIDATE_INJECTED")
+
+    def test_explicit_source_no_provenance_version_exact_frozen_version_succeeds(self):
+        gov = _gov_object("gov_no_prov_ver", obj_type="workflow")
+        gov["metadata"] = {
+            "evidence_paths": ["detectors/lmd/test_file.cxx"],
+            "evidence_source_ids": ["pandaroot"],
+            # no source_version_ids in provenance
+        }
+        src_obj = _source_file_obj("src_no_prov_id", "pandaroot", "detectors/lmd/test_file.cxx")
+        reader = _MockGraphReader(rows=[gov], source_files=[src_obj])
+        receipt = D2ResolutionReceipt(
+            resolutions=[
+                D2Resolution("gov_no_prov_ver", "governed_id", "gov_no_prov_ver",
+                             RESOLVED_UNIQUE, matched_object_id="gov_no_prov_ver",
+                             canonical_object_id="gov_no_prov_ver",
+                             evidence=[_d2_evidence("G", "governed_id", "gov_no_prov_ver")]),
+            ]
+        )
+        plan = {"target_repositories": ["pandaroot"], "resolved_versions": {"pandaroot": "locked"}}
+        result = build_structured_contribution(
+            "Test no prov ver with frozen plan ver", plan, resolver=_MockResolver(receipt), graph_reader=reader, bridge_enabled=True
+        )
+        self.assertEqual(len(result.bridged_candidates), 1)
+        self.assertEqual(result.bridged_candidates[0]["object_id"], "src_no_prov_id")
+        path_receipts = [b for b in result.bridge_receipts if b["evidence_field_used"] == "evidence_paths"]
+        self.assertEqual(len(path_receipts), 1)
+        self.assertEqual(path_receipts[0]["bridge_status"], "BRIDGED_CANDIDATE_INJECTED")
+
+    def test_explicit_source_no_exact_frozen_version_version_scope_conflict(self):
+        gov = _gov_object("gov_no_frozen_ver", obj_type="workflow")
+        gov["metadata"] = {
+            "evidence_paths": ["test_dir/file.cxx"],
+            "evidence_source_ids": ["synthetic_unknown_repo"],
+        }
+        reader = _MockGraphReader(rows=[gov])
+        receipt = D2ResolutionReceipt(
+            resolutions=[
+                D2Resolution("gov_no_frozen_ver", "governed_id", "gov_no_frozen_ver",
+                             RESOLVED_UNIQUE, matched_object_id="gov_no_frozen_ver",
+                             canonical_object_id="gov_no_frozen_ver",
+                             evidence=[_d2_evidence("G", "governed_id", "gov_no_frozen_ver")]),
+            ]
+        )
+        plan = {"target_repositories": ["synthetic_unknown_repo"], "resolved_versions": {}}
+        result = build_structured_contribution(
+            "Test no frozen ver", plan, resolver=_MockResolver(receipt), graph_reader=reader, bridge_enabled=True
+        )
+        self.assertEqual(len(result.bridged_candidates), 0)
+        path_receipts = [b for b in result.bridge_receipts if b["evidence_field_used"] == "evidence_paths"]
+        self.assertEqual(len(path_receipts), 1)
+        self.assertEqual(path_receipts[0]["bridge_status"], "VERSION_SCOPE_CONFLICT")
+        self.assertIn("lacks exact frozen source version identity", path_receipts[0]["reason_included"])
+
+    def test_explicit_source_conflicting_provenance_version_version_scope_conflict(self):
+        gov = _gov_object("gov_conflict_ver", obj_type="workflow")
+        gov["metadata"] = {
+            "evidence_paths": ["detectors/lmd/test_file.cxx"],
+            "evidence_source_ids": ["pandaroot"],
+            "source_version_ids": ["pandaroot@superseded_commit_1234"],
+        }
+        src_obj = _source_file_obj("src_conflict_id", "pandaroot", "detectors/lmd/test_file.cxx")
+        reader = _MockGraphReader(rows=[gov], source_files=[src_obj])
+        receipt = D2ResolutionReceipt(
+            resolutions=[
+                D2Resolution("gov_conflict_ver", "governed_id", "gov_conflict_ver",
+                             RESOLVED_UNIQUE, matched_object_id="gov_conflict_ver",
+                             canonical_object_id="gov_conflict_ver",
+                             evidence=[_d2_evidence("G", "governed_id", "gov_conflict_ver")]),
+            ]
+        )
+        plan = {"target_repositories": ["pandaroot"], "resolved_versions": {"pandaroot": "locked"}}
+        result = build_structured_contribution(
+            "Test conflicting prov ver", plan, resolver=_MockResolver(receipt), graph_reader=reader, bridge_enabled=True
+        )
+        self.assertEqual(len(result.bridged_candidates), 0)
+        path_receipts = [b for b in result.bridge_receipts if b["evidence_field_used"] == "evidence_paths"]
+        self.assertEqual(len(path_receipts), 1)
+        self.assertEqual(path_receipts[0]["bridge_status"], "VERSION_SCOPE_CONFLICT")
+        self.assertIn("conflict with active frozen version", path_receipts[0]["reason_included"])
+
+    def test_context_source_no_exact_version_identity_fails_closed(self):
+        gov = _gov_object("gov_context_no_ver", obj_type="workflow")
+        gov["metadata"] = {
+            "evidence_paths": ["doc/note.md"],
+            "evidence_source_ids": ["synthetic_context_doc_unversioned"],
+        }
+        reader = _MockGraphReader(rows=[gov])
+        receipt = D2ResolutionReceipt(
+            resolutions=[
+                D2Resolution("gov_context_no_ver", "governed_id", "gov_context_no_ver",
+                             RESOLVED_UNIQUE, matched_object_id="gov_context_no_ver",
+                             canonical_object_id="gov_context_no_ver",
+                             evidence=[_d2_evidence("G", "governed_id", "gov_context_no_ver")]),
+            ]
+        )
+        plan = {
+            "target_repositories": ["pandaroot"],
+            "resolved_versions": {"pandaroot": "locked"},
+        }
+        result = build_structured_contribution(
+            "Test context source without version",
+            plan,
+            resolver=_MockResolver(receipt),
+            graph_reader=reader,
+            bridge_enabled=True,
+            context_sources=["synthetic_context_doc_unversioned"],
+        )
+        self.assertEqual(len(result.bridged_candidates), 0)
+        path_receipts = [b for b in result.bridge_receipts if b["evidence_field_used"] == "evidence_paths"]
+        self.assertEqual(len(path_receipts), 1)
+        self.assertEqual(path_receipts[0]["bridge_status"], "VERSION_SCOPE_CONFLICT")
+        self.assertIn("lacks exact frozen source version identity", path_receipts[0]["reason_included"])
+
+
 if __name__ == "__main__":
     unittest.main()
