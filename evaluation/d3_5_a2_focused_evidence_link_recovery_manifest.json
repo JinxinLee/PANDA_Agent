@@ -1,0 +1,210 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint": "D3.5-A2",
+  "stage_name": "D3.5-A2 — Focused Evidence-Link Recovery Validation",
+  "purpose": "Frozen pre-outcome execution manifest for the first formal D3.5 outcome exposure: the 4-arm x 6-case focused evidence-link recovery comparison over the frozen final repository D1 and the dedicated development materialization.",
+  "created_before_outcome_exposure": true,
+  "formal_outcome_exposure": false,
+  "execution_head": "470b62f823c3e65637604da2f614461c1a81d5b6",
+  "execution_head_subject": "D3.5-A1-R3 freeze materialization receipt and lifecycle consistency",
+  "final_repository_d1_sha": "9b5a84996c30eaf1a297924b36452a90fe6d84d2",
+  "development_materialization_source_sha": "9b5a84996c30eaf1a297924b36452a90fe6d84d2",
+  "development_materialization_receipt_reference": {
+    "artifact": "evaluation/d3_5_a1_bounded_structured_evidence_link_bridging_prototype.json",
+    "section": "development_materialization_receipt",
+    "preflight_reverification": {
+      "performed": true,
+      "method": "read-only exact repository-vs-database curated-state diff (D3.5-A1-R3 receipt generator, default_transaction_read_only=on connection)",
+      "result": "matches_final_repository_d1 = true; all diff lists empty; stale_or_superseded_curated_records = 0; curated counts 24 / 16 / 1 / 2 unchanged"
+    }
+  },
+  "database_role": "DEDICATED_DEVELOPMENT_EVALUATION_STATE",
+  "database_target_sanitized": {
+    "host": "127.0.0.1",
+    "port": 55432,
+    "database": "panda_qa"
+  },
+  "source_manifest_identity": {
+    "path": "data/manifests/source_manifest.json",
+    "sha256": "9925ec31a6122e05388806990f79aae036f3b0989c4584d24f2092bc4edb3d94",
+    "note": "identical to the manifest_hash of the active normalized corpus and the latest completed ingestion run"
+  },
+  "retrieval_index_identities": {
+    "qdrant_collection": "panda_knowledge_v1",
+    "index_fingerprint": "8172f9a640e62977be6e911bfb4848ce3aecd0994f1f3ba51a0985bffec62cb9",
+    "qdrant_points": 104973,
+    "sql_objects": 133077,
+    "note": "existing frozen index state reused; no rebuild, no reindex, no re-embedding"
+  },
+  "configuration_identities": {
+    "query_expansions_sha256": "dad22d19e5cadc714df778274d9183b39d00eff970664c10660f2f658224ada3",
+    "retrieval_policies_sha256": "ebe4cb1099caca7a6dafd8ff08a57fb5fd8ca2cec3119834ce04bd3c67ff1407",
+    "frozen_a0_design_sha256": "44377e677e7bd7165d5b1e565511b84a6188e9ea4341b6ebe1d0302d1238acd0",
+    "frozen_a1_artifact_sha256": "629390823eb27e32983a6fb98a6471444c1f241bb59205624179a73d925f4ffa"
+  },
+  "runtime_identity": {
+    "frozen_runtime_files": [
+      "src/panda_agent/retrieval.py",
+      "src/panda_agent/d3_structured.py"
+    ],
+    "frozen_implementation_sha": "9b5a84996c30eaf1a297924b36452a90fe6d84d2",
+    "preflight_drift_check": "git diff 9b5a849 -- src/panda_agent/retrieval.py src/panda_agent/d3_structured.py configs/ is empty; no runtime, D1, or query-expansion change since the frozen final D1 commit",
+    "focused_t0_tests_before_outcome": {
+      "tests/unit/test_d3_5_structured_bridge.py": "PASS (32 tests)",
+      "tests/unit/test_d3_structured_shortcut.py": "PASS (8 tests)",
+      "total": 40
+    }
+  },
+  "frozen_arms": {
+    "arm_order": [
+      "LEGACY",
+      "ABLATION",
+      "STRUCTURED_UNBRIDGED",
+      "STRUCTURED_BRIDGED"
+    ],
+    "definitions": {
+      "LEGACY": "focused two legacy shortcuts ON; D3 structured treatment OFF; D3.5 bridge OFF",
+      "ABLATION": "focused two legacy shortcuts OFF; D3 structured treatment OFF; D3.5 bridge OFF",
+      "STRUCTURED_UNBRIDGED": "focused two legacy shortcuts OFF; frozen pre-D3.5 structured path ON; D3.5 bridge OFF",
+      "STRUCTURED_BRIDGED": "focused two legacy shortcuts OFF; frozen pre-D3.5 structured path ON; D3.5 bridge ON additively"
+    },
+    "historical_non_interchangeability": "historical D3 STRUCTURED ran on deployed 22/16/0 and is not interchangeable with STRUCTURED_UNBRIDGED on the synchronized 24/16/1/2 materialization"
+  },
+  "focused_shortcut_ids": [
+    "event_poca_handoff",
+    "restgas_profile_workflow"
+  ],
+  "focused_rule_treatment": "exactly the two focused rules are suppressed in ABLATION, STRUCTURED_UNBRIDGED, and STRUCTURED_BRIDGED; LEGACY keeps them active; all other query-expansion rules unchanged across all four arms",
+  "frozen_cases": {
+    "case_ids_in_execution_order": [
+      "g036",
+      "g021",
+      "n006",
+      "g041",
+      "g020",
+      "n004"
+    ],
+    "case_metadata": [
+      {
+        "case_id": "g036",
+        "dataset": "Gold v2.6 dev",
+        "role": "existing-provenance reachability plus materialization",
+        "bound_rule_id": "event_poca_handoff",
+        "historical_d3_comparison_role": "DIRECT_LITERAL",
+        "required_evidence_group_count": 1
+      },
+      {
+        "case_id": "g021",
+        "dataset": "Gold v2.6 dev",
+        "role": "independently governed genuine-coverage path",
+        "bound_rule_id": "restgas_profile_workflow",
+        "historical_d3_comparison_role": "DIRECT_LITERAL",
+        "required_evidence_group_count": 2
+      },
+      {
+        "case_id": "n006",
+        "dataset": "novel_dev",
+        "role": "nearby nontrigger control",
+        "bound_rule_id": "pid_two_pass_files",
+        "historical_d3_comparison_role": "NEARBY_NONTRIGGER_CONTROL",
+        "required_evidence_group_count": 2
+      },
+      {
+        "case_id": "g041",
+        "dataset": "Gold v2.6 dev",
+        "role": "ambiguity/abstention and negative control",
+        "bound_rule_id": "pid_two_pass_files",
+        "historical_d3_comparison_role": "NEARBY_NEGATIVE_CONTROL",
+        "required_evidence_group_count": 1
+      },
+      {
+        "case_id": "g020",
+        "dataset": "Gold v2.6 dev",
+        "role": "same subsystem with no governed evidence bridge required",
+        "bound_rule_id": "pid_two_pass_files",
+        "historical_d3_comparison_role": "PARAPHRASE_RELEVANT",
+        "required_evidence_group_count": 2
+      },
+      {
+        "case_id": "n004",
+        "dataset": "novel_dev",
+        "role": "ordinary retrieval already succeeds",
+        "bound_rule_id": "root_macro_usage",
+        "historical_d3_comparison_role": "DIRECT_LITERAL",
+        "required_evidence_group_count": 1
+      }
+    ],
+    "case_selection_policy": "frozen in evaluation/d3_5_a0_structured_evidence_link_design.json (d3_5_a2_contract); no additions, substitutions, or omissions"
+  },
+  "expected_execution_count": 24,
+  "execution_order_contract": "deterministic case-major order: for each case in the frozen case order, execute LEGACY, ABLATION, STRUCTURED_UNBRIDGED, STRUCTURED_BRIDGED once each; no cell rerun except per the existing evaluation runner infrastructure-failure policy; no reorder after outcomes begin",
+  "metric_definitions_reference": {
+    "evaluator": "panda_agent.evaluation.deterministic_case_metrics + apply_mode_metric_semantics(mode='retrieval', external_judge=False)",
+    "metrics": [
+      "gold_recall_at_5",
+      "gold_recall_at_10",
+      "gold_recall_at_20",
+      "mrr",
+      "combined_candidate_recall",
+      "final_evidence_recall",
+      "critical_final_evidence_recall"
+    ],
+    "policy": "existing frozen D3-A2 metric formulas reused verbatim; no redefinition; case-level tables always reported alongside aggregates"
+  },
+  "dependency_recovery_regression_classification_reference": {
+    "authority": "D3-A2 frozen classification semantics (evaluation/d3_a2_three_arm_results.json R2-repaired layer separation)",
+    "layers": {
+      "failure_classification": "frozen D3-A0-R1 taxonomy values only",
+      "paired_outcome": "descriptive structured-vs-ablation outcome",
+      "dependency_interpretation": "LEGACY_DEPENDENCY_CONFIRMED / NOT_MATERIALLY_USED / NOT_ESTABLISHED",
+      "diagnostic_subtype": "interpretation-only"
+    },
+    "primary_frozen_metrics": [
+      "selected_rule_dependency_rate",
+      "structured_recovery_rate",
+      "regression_rate",
+      "useful_retrieval_reproduction_rate"
+    ],
+    "post_outcome_thresholds_allowed": false
+  },
+  "causal_contrasts": {
+    "shortcut_dependency": "LEGACY - ABLATION = current synchronized-state shortcut dependency",
+    "unbridged_structured_contribution": "STRUCTURED_UNBRIDGED - ABLATION = contribution of final D1 + the pre-D3.5 structured mechanism",
+    "incremental_bridge_effect": "STRUCTURED_BRIDGED - STRUCTURED_UNBRIDGED = incremental causal contribution of the D3.5 bridge",
+    "final_legacy_parity": "STRUCTURED_BRIDGED - LEGACY = final parity / regression / improvement relative to legacy",
+    "identifiability_boundary": "STRUCTURED_BRIDGED - ABLATION is the combined final-D1 + old-structured + bridge contribution and must never be reported as a pure bridge effect"
+  },
+  "runtime_treatment_assertions": {
+    "LEGACY": {
+      "structured_treatment_enabled": false,
+      "bridge_enabled": false,
+      "selected_legacy_rules_suppressed": false
+    },
+    "ABLATION": {
+      "structured_treatment_enabled": false,
+      "bridge_enabled": false,
+      "selected_legacy_rules_suppressed": true
+    },
+    "STRUCTURED_UNBRIDGED": {
+      "structured_treatment_enabled": true,
+      "bridge_enabled": false,
+      "selected_legacy_rules_suppressed": true
+    },
+    "STRUCTURED_BRIDGED": {
+      "structured_treatment_enabled": true,
+      "bridge_enabled": true,
+      "selected_legacy_rules_suppressed": true
+    },
+    "enforcement": "D3_5ExperimentConfig.for_arm validates the exact frozen flag combinations; the retrieval plan diagnostics are validated against the config at retrieval time (d3 plan/config mismatch raises)"
+  },
+  "expected_evidence_boundary": "expected evidence is consumed by the deterministic evaluator only after retrieval candidates are produced; never supplied to query analysis, D2 resolution, structured seed derivation, traversal, bridge materialization, candidate generation, or reranking (evaluation_metadata_runtime_use_count must remain 0)",
+  "database_freeze_during_execution": {
+    "postgresql_d1_writes": 0,
+    "d1_ingestion": 0,
+    "d1_reingestion": 0,
+    "qdrant_writes": 0,
+    "note": "A2 may read PostgreSQL; the frozen development materialization must not change between cells"
+  },
+  "runner": "evaluation/scripts/d3_5_a2_runner.py",
+  "created_at_utc": "2026-09-01T17:20:45+00:00"
+}
