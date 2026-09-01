@@ -1,0 +1,3361 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint": "D3.5-A2",
+  "stage_name": "D3.5-A2 — Focused Evidence-Link Recovery Validation",
+  "status": "COMPLETE / PARTIAL / TARGETED_RECOVERY_MIXED",
+  "verdict": "PARTIAL / TARGETED_RECOVERY_MIXED",
+  "verdict_scope": "valid, complete frozen four-arm comparison. PARTIAL: the bridge is validated as a bounded governed pool-level injection mechanism (Mechanisms A+B observed working with receipts, controls unharmed) but NOT validated as an end-to-end final-evidence recovery mechanism (zero incremental final-evidence recall on both positive cases under the frozen ranking configuration).",
+  "scientific_question": "Does the frozen generic structured evidence-link bridge recover useful source-native evidence beyond the existing synchronized structured baseline, while avoiding material regressions or uncontrolled expansion?",
+  "execution_identity": {
+    "execution_manifest": "evaluation/d3_5_a2_focused_evidence_link_recovery_manifest.json",
+    "execution_manifest_sha256": "91d5a57d4d3c976c6168acd0bd22104e12ee0288ebc683dc6ff0bae68fe8b1ab",
+    "pre_outcome_freeze_commit": "470b62f823c3e65637604da2f614461c1a81d5b6",
+    "git_head_during_run": "9467061c81a288f2c3b01548b7eb39202f38e91c",
+    "frozen_implementation_sha": "9b5a84996c30eaf1a297924b36452a90fe6d84d2",
+    "implementation_identity_diff_lines": 0,
+    "runner": "evaluation/scripts/d3_5_a2_runner.py",
+    "run_id": "d3_5_a2_focused_20260901",
+    "raw_records": "data/evaluation/runs/d3_5_a2_focused_20260901/records.jsonl"
+  },
+  "preregistration_identity": {
+    "structured_artifact": "evaluation/d3_5_a0_structured_evidence_link_design.json",
+    "sha256": "44377e677e7bd7165d5b1e565511b84a6188e9ea4341b6ebe1d0302d1238acd0",
+    "a1_artifact": "evaluation/d3_5_a1_bounded_structured_evidence_link_bridging_prototype.json",
+    "a1_artifact_sha256": "629390823eb27e32983a6fb98a6471444c1f241bb59205624179a73d925f4ffa"
+  },
+  "materialization_identity": {
+    "final_repository_d1_sha": "9b5a84996c30eaf1a297924b36452a90fe6d84d2",
+    "development_materialization_source_sha": "9b5a84996c30eaf1a297924b36452a90fe6d84d2",
+    "receipt_reference": {
+      "artifact": "evaluation/d3_5_a1_bounded_structured_evidence_link_bridging_prototype.json",
+      "section": "development_materialization_receipt",
+      "preflight_reverification": {
+        "performed": true,
+        "method": "read-only exact repository-vs-database curated-state diff (D3.5-A1-R3 receipt generator, default_transaction_read_only=on connection)",
+        "result": "matches_final_repository_d1 = true; all diff lists empty; stale_or_superseded_curated_records = 0; curated counts 24 / 16 / 1 / 2 unchanged"
+      }
+    },
+    "database_role": "DEDICATED_DEVELOPMENT_EVALUATION_STATE",
+    "database_target_sanitized": {
+      "host": "127.0.0.1",
+      "port": 55432,
+      "database": "panda_qa"
+    }
+  },
+  "source_index_identities": {
+    "source_manifest_sha256": "9925ec31a6122e05388806990f79aae036f3b0989c4584d24f2092bc4edb3d94",
+    "qdrant_collection": "panda_knowledge_v1",
+    "index_fingerprint": "8172f9a640e62977be6e911bfb4848ce3aecd0994f1f3ba51a0985bffec62cb9",
+    "qdrant_points": 104973,
+    "sql_objects": 133077
+  },
+  "outcome_exposure": {
+    "before_first_formal_cell": "NOT_STARTED (manifest committed pre-outcome at 470b62f823c3e65637604da2f614461c1a81d5b6)",
+    "started_at_utc": "2026-09-01T17:21:48.862620+00:00",
+    "finished_at_utc": "2026-09-01T17:32:09.503922+00:00",
+    "after_valid_complete_comparison": "COMPLETE"
+  },
+  "frozen_arms": {
+    "LEGACY": "focused two legacy shortcuts ON; D3 structured treatment OFF; D3.5 bridge OFF",
+    "ABLATION": "focused two legacy shortcuts OFF; D3 structured treatment OFF; D3.5 bridge OFF",
+    "STRUCTURED_UNBRIDGED": "focused two legacy shortcuts OFF; frozen pre-D3.5 structured path ON; D3.5 bridge OFF",
+    "STRUCTURED_BRIDGED": "focused two legacy shortcuts OFF; frozen pre-D3.5 structured path ON; D3.5 bridge ON additively"
+  },
+  "focused_rule_ids": [
+    "event_poca_handoff",
+    "restgas_profile_workflow"
+  ],
+  "frozen_cases": [
+    "g036",
+    "g021",
+    "n006",
+    "g041",
+    "g020",
+    "n004"
+  ],
+  "case_roles": {
+    "g036": "existing-provenance reachability plus materialization",
+    "g021": "independently governed genuine-coverage path",
+    "n006": "nearby nontrigger control",
+    "g041": "ambiguity/abstention and negative control",
+    "g020": "same subsystem with no governed evidence bridge required",
+    "n004": "ordinary retrieval already succeeds"
+  },
+  "execution_order": {
+    "contract": "case-major: for each case in frozen case order, run the four arms in frozen arm order",
+    "cell_sequence": [
+      {
+        "sequence": 1,
+        "case_id": "g036",
+        "arm": "LEGACY"
+      },
+      {
+        "sequence": 2,
+        "case_id": "g036",
+        "arm": "ABLATION"
+      },
+      {
+        "sequence": 3,
+        "case_id": "g036",
+        "arm": "STRUCTURED_UNBRIDGED"
+      },
+      {
+        "sequence": 4,
+        "case_id": "g036",
+        "arm": "STRUCTURED_BRIDGED"
+      },
+      {
+        "sequence": 5,
+        "case_id": "g021",
+        "arm": "LEGACY"
+      },
+      {
+        "sequence": 6,
+        "case_id": "g021",
+        "arm": "ABLATION"
+      },
+      {
+        "sequence": 7,
+        "case_id": "g021",
+        "arm": "STRUCTURED_UNBRIDGED"
+      },
+      {
+        "sequence": 8,
+        "case_id": "g021",
+        "arm": "STRUCTURED_BRIDGED"
+      },
+      {
+        "sequence": 9,
+        "case_id": "n006",
+        "arm": "LEGACY"
+      },
+      {
+        "sequence": 10,
+        "case_id": "n006",
+        "arm": "ABLATION"
+      },
+      {
+        "sequence": 11,
+        "case_id": "n006",
+        "arm": "STRUCTURED_UNBRIDGED"
+      },
+      {
+        "sequence": 12,
+        "case_id": "n006",
+        "arm": "STRUCTURED_BRIDGED"
+      },
+      {
+        "sequence": 13,
+        "case_id": "g041",
+        "arm": "LEGACY"
+      },
+      {
+        "sequence": 14,
+        "case_id": "g041",
+        "arm": "ABLATION"
+      },
+      {
+        "sequence": 15,
+        "case_id": "g041",
+        "arm": "STRUCTURED_UNBRIDGED"
+      },
+      {
+        "sequence": 16,
+        "case_id": "g041",
+        "arm": "STRUCTURED_BRIDGED"
+      },
+      {
+        "sequence": 17,
+        "case_id": "g020",
+        "arm": "LEGACY"
+      },
+      {
+        "sequence": 18,
+        "case_id": "g020",
+        "arm": "ABLATION"
+      },
+      {
+        "sequence": 19,
+        "case_id": "g020",
+        "arm": "STRUCTURED_UNBRIDGED"
+      },
+      {
+        "sequence": 20,
+        "case_id": "g020",
+        "arm": "STRUCTURED_BRIDGED"
+      },
+      {
+        "sequence": 21,
+        "case_id": "n004",
+        "arm": "LEGACY"
+      },
+      {
+        "sequence": 22,
+        "case_id": "n004",
+        "arm": "ABLATION"
+      },
+      {
+        "sequence": 23,
+        "case_id": "n004",
+        "arm": "STRUCTURED_UNBRIDGED"
+      },
+      {
+        "sequence": 24,
+        "case_id": "n004",
+        "arm": "STRUCTURED_BRIDGED"
+      }
+    ]
+  },
+  "run_counts": {
+    "total_executions": 24,
+    "per_arm": {
+      "LEGACY": 6,
+      "ABLATION": 6,
+      "STRUCTURED_UNBRIDGED": 6,
+      "STRUCTURED_BRIDGED": 6
+    },
+    "valid_cells": 24,
+    "infrastructure_failures": 0,
+    "retries": 0,
+    "discretionary_reruns": 0
+  },
+  "call_counts": {
+    "analyzer_generation_calls": 24,
+    "reranker_generation_calls": 24,
+    "generation_calls_total": 50,
+    "embedding_calls": 24,
+    "model_calls_total": 74,
+    "token_usage": 458979,
+    "qa_calls": 0,
+    "verifier_calls": 0,
+    "judge_calls": 0,
+    "note": "normal frozen-pipeline retrieval calls only (analyzer + reranker generation, dense embeddings); no extra LLM diagnostics were introduced"
+  },
+  "storage_writes": {
+    "postgresql_d1_writes": 0,
+    "d1_ingestion": 0,
+    "d1_reingestion": 0,
+    "qdrant_writes": 0,
+    "note": "the frozen development materialization was not mutated before, during, or after the comparison"
+  },
+  "protected_dataset_access": {
+    "novel_validation": "UNSEEN",
+    "novel_validation_cases_run": 0,
+    "novel_holdout": "SEALED_UNSEEN",
+    "novel_holdout_cases_run": 0
+  },
+  "arm_summaries": {
+    "LEGACY": {
+      "executions": 6,
+      "metrics": {
+        "gold_recall_at_5": {
+          "mean": 0.8,
+          "applicable_case_count": 5
+        },
+        "gold_recall_at_10": {
+          "mean": 0.9,
+          "applicable_case_count": 5
+        },
+        "gold_recall_at_20": {
+          "mean": 0.9,
+          "applicable_case_count": 5
+        },
+        "mrr": {
+          "mean": 0.595238,
+          "applicable_case_count": 5
+        },
+        "combined_candidate_recall": {
+          "mean": 1.0,
+          "applicable_case_count": 5
+        },
+        "final_evidence_recall": {
+          "mean": 0.9,
+          "applicable_case_count": 5
+        },
+        "critical_final_evidence_recall": {
+          "mean": 0.9,
+          "applicable_case_count": 5
+        }
+      }
+    },
+    "ABLATION": {
+      "executions": 6,
+      "metrics": {
+        "gold_recall_at_5": {
+          "mean": 0.5,
+          "applicable_case_count": 5
+        },
+        "gold_recall_at_10": {
+          "mean": 0.5,
+          "applicable_case_count": 5
+        },
+        "gold_recall_at_20": {
+          "mean": 0.5,
+          "applicable_case_count": 5
+        },
+        "mrr": {
+          "mean": 0.34,
+          "applicable_case_count": 5
+        },
+        "combined_candidate_recall": {
+          "mean": 0.6,
+          "applicable_case_count": 5
+        },
+        "final_evidence_recall": {
+          "mean": 0.5,
+          "applicable_case_count": 5
+        },
+        "critical_final_evidence_recall": {
+          "mean": 0.5,
+          "applicable_case_count": 5
+        }
+      }
+    },
+    "STRUCTURED_UNBRIDGED": {
+      "executions": 6,
+      "metrics": {
+        "gold_recall_at_5": {
+          "mean": 0.4,
+          "applicable_case_count": 5
+        },
+        "gold_recall_at_10": {
+          "mean": 0.5,
+          "applicable_case_count": 5
+        },
+        "gold_recall_at_20": {
+          "mean": 0.5,
+          "applicable_case_count": 5
+        },
+        "mrr": {
+          "mean": 0.328571,
+          "applicable_case_count": 5
+        },
+        "combined_candidate_recall": {
+          "mean": 0.6,
+          "applicable_case_count": 5
+        },
+        "final_evidence_recall": {
+          "mean": 0.5,
+          "applicable_case_count": 5
+        },
+        "critical_final_evidence_recall": {
+          "mean": 0.5,
+          "applicable_case_count": 5
+        }
+      }
+    },
+    "STRUCTURED_BRIDGED": {
+      "executions": 6,
+      "metrics": {
+        "gold_recall_at_5": {
+          "mean": 0.5,
+          "applicable_case_count": 5
+        },
+        "gold_recall_at_10": {
+          "mean": 0.5,
+          "applicable_case_count": 5
+        },
+        "gold_recall_at_20": {
+          "mean": 0.5,
+          "applicable_case_count": 5
+        },
+        "mrr": {
+          "mean": 0.366667,
+          "applicable_case_count": 5
+        },
+        "combined_candidate_recall": {
+          "mean": 0.9,
+          "applicable_case_count": 5
+        },
+        "final_evidence_recall": {
+          "mean": 0.5,
+          "applicable_case_count": 5
+        },
+        "critical_final_evidence_recall": {
+          "mean": 0.5,
+          "applicable_case_count": 5
+        }
+      }
+    }
+  },
+  "paired_metrics": {
+    "gold_recall_at_5": {
+      "g036": {
+        "applicable": true,
+        "LEGACY": 1.0,
+        "ABLATION": 0.0,
+        "STRUCTURED_UNBRIDGED": 0.0,
+        "STRUCTURED_BRIDGED": 0.0,
+        "legacy_minus_ablation": 1.0,
+        "unbridged_minus_ablation": 0.0,
+        "bridged_minus_unbridged": 0.0,
+        "bridged_minus_legacy": -1.0
+      },
+      "g021": {
+        "applicable": true,
+        "LEGACY": 1.0,
+        "ABLATION": 0.0,
+        "STRUCTURED_UNBRIDGED": 0.0,
+        "STRUCTURED_BRIDGED": 0.0,
+        "legacy_minus_ablation": 1.0,
+        "unbridged_minus_ablation": 0.0,
+        "bridged_minus_unbridged": 0.0,
+        "bridged_minus_legacy": -1.0
+      },
+      "n006": {
+        "applicable": true,
+        "LEGACY": 0.0,
+        "ABLATION": 0.5,
+        "STRUCTURED_UNBRIDGED": 0.0,
+        "STRUCTURED_BRIDGED": 0.5,
+        "legacy_minus_ablation": -0.5,
+        "unbridged_minus_ablation": -0.5,
+        "bridged_minus_unbridged": 0.5,
+        "bridged_minus_legacy": 0.5
+      },
+      "g041": {
+        "applicable": false,
+        "arm_values": {
+          "LEGACY": null,
+          "ABLATION": null,
+          "STRUCTURED_UNBRIDGED": null,
+          "STRUCTURED_BRIDGED": null
+        },
+        "note": "frozen insufficient-evidence control; metrics not applicable in any arm"
+      },
+      "g020": {
+        "applicable": true,
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED_UNBRIDGED": 1.0,
+        "STRUCTURED_BRIDGED": 1.0,
+        "legacy_minus_ablation": 0.0,
+        "unbridged_minus_ablation": 0.0,
+        "bridged_minus_unbridged": 0.0,
+        "bridged_minus_legacy": 0.0
+      },
+      "n004": {
+        "applicable": true,
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED_UNBRIDGED": 1.0,
+        "STRUCTURED_BRIDGED": 1.0,
+        "legacy_minus_ablation": 0.0,
+        "unbridged_minus_ablation": 0.0,
+        "bridged_minus_unbridged": 0.0,
+        "bridged_minus_legacy": 0.0
+      },
+      "_summary": {
+        "legacy_minus_ablation": 0.3,
+        "unbridged_minus_ablation": -0.1,
+        "bridged_minus_unbridged": 0.1,
+        "bridged_minus_legacy": -0.3,
+        "direction": "higher is better for every metric"
+      }
+    },
+    "gold_recall_at_10": {
+      "g036": {
+        "applicable": true,
+        "LEGACY": 1.0,
+        "ABLATION": 0.0,
+        "STRUCTURED_UNBRIDGED": 0.0,
+        "STRUCTURED_BRIDGED": 0.0,
+        "legacy_minus_ablation": 1.0,
+        "unbridged_minus_ablation": 0.0,
+        "bridged_minus_unbridged": 0.0,
+        "bridged_minus_legacy": -1.0
+      },
+      "g021": {
+        "applicable": true,
+        "LEGACY": 1.0,
+        "ABLATION": 0.0,
+        "STRUCTURED_UNBRIDGED": 0.0,
+        "STRUCTURED_BRIDGED": 0.0,
+        "legacy_minus_ablation": 1.0,
+        "unbridged_minus_ablation": 0.0,
+        "bridged_minus_unbridged": 0.0,
+        "bridged_minus_legacy": -1.0
+      },
+      "n006": {
+        "applicable": true,
+        "LEGACY": 0.5,
+        "ABLATION": 0.5,
+        "STRUCTURED_UNBRIDGED": 0.5,
+        "STRUCTURED_BRIDGED": 0.5,
+        "legacy_minus_ablation": 0.0,
+        "unbridged_minus_ablation": 0.0,
+        "bridged_minus_unbridged": 0.0,
+        "bridged_minus_legacy": 0.0
+      },
+      "g041": {
+        "applicable": false,
+        "arm_values": {
+          "LEGACY": null,
+          "ABLATION": null,
+          "STRUCTURED_UNBRIDGED": null,
+          "STRUCTURED_BRIDGED": null
+        },
+        "note": "frozen insufficient-evidence control; metrics not applicable in any arm"
+      },
+      "g020": {
+        "applicable": true,
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED_UNBRIDGED": 1.0,
+        "STRUCTURED_BRIDGED": 1.0,
+        "legacy_minus_ablation": 0.0,
+        "unbridged_minus_ablation": 0.0,
+        "bridged_minus_unbridged": 0.0,
+        "bridged_minus_legacy": 0.0
+      },
+      "n004": {
+        "applicable": true,
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED_UNBRIDGED": 1.0,
+        "STRUCTURED_BRIDGED": 1.0,
+        "legacy_minus_ablation": 0.0,
+        "unbridged_minus_ablation": 0.0,
+        "bridged_minus_unbridged": 0.0,
+        "bridged_minus_legacy": 0.0
+      },
+      "_summary": {
+        "legacy_minus_ablation": 0.4,
+        "unbridged_minus_ablation": 0.0,
+        "bridged_minus_unbridged": 0.0,
+        "bridged_minus_legacy": -0.4,
+        "direction": "higher is better for every metric"
+      }
+    },
+    "gold_recall_at_20": {
+      "g036": {
+        "applicable": true,
+        "LEGACY": 1.0,
+        "ABLATION": 0.0,
+        "STRUCTURED_UNBRIDGED": 0.0,
+        "STRUCTURED_BRIDGED": 0.0,
+        "legacy_minus_ablation": 1.0,
+        "unbridged_minus_ablation": 0.0,
+        "bridged_minus_unbridged": 0.0,
+        "bridged_minus_legacy": -1.0
+      },
+      "g021": {
+        "applicable": true,
+        "LEGACY": 1.0,
+        "ABLATION": 0.0,
+        "STRUCTURED_UNBRIDGED": 0.0,
+        "STRUCTURED_BRIDGED": 0.0,
+        "legacy_minus_ablation": 1.0,
+        "unbridged_minus_ablation": 0.0,
+        "bridged_minus_unbridged": 0.0,
+        "bridged_minus_legacy": -1.0
+      },
+      "n006": {
+        "applicable": true,
+        "LEGACY": 0.5,
+        "ABLATION": 0.5,
+        "STRUCTURED_UNBRIDGED": 0.5,
+        "STRUCTURED_BRIDGED": 0.5,
+        "legacy_minus_ablation": 0.0,
+        "unbridged_minus_ablation": 0.0,
+        "bridged_minus_unbridged": 0.0,
+        "bridged_minus_legacy": 0.0
+      },
+      "g041": {
+        "applicable": false,
+        "arm_values": {
+          "LEGACY": null,
+          "ABLATION": null,
+          "STRUCTURED_UNBRIDGED": null,
+          "STRUCTURED_BRIDGED": null
+        },
+        "note": "frozen insufficient-evidence control; metrics not applicable in any arm"
+      },
+      "g020": {
+        "applicable": true,
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED_UNBRIDGED": 1.0,
+        "STRUCTURED_BRIDGED": 1.0,
+        "legacy_minus_ablation": 0.0,
+        "unbridged_minus_ablation": 0.0,
+        "bridged_minus_unbridged": 0.0,
+        "bridged_minus_legacy": 0.0
+      },
+      "n004": {
+        "applicable": true,
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED_UNBRIDGED": 1.0,
+        "STRUCTURED_BRIDGED": 1.0,
+        "legacy_minus_ablation": 0.0,
+        "unbridged_minus_ablation": 0.0,
+        "bridged_minus_unbridged": 0.0,
+        "bridged_minus_legacy": 0.0
+      },
+      "_summary": {
+        "legacy_minus_ablation": 0.4,
+        "unbridged_minus_ablation": 0.0,
+        "bridged_minus_unbridged": 0.0,
+        "bridged_minus_legacy": -0.4,
+        "direction": "higher is better for every metric"
+      }
+    },
+    "mrr": {
+      "g036": {
+        "applicable": true,
+        "LEGACY": 1.0,
+        "ABLATION": 0.0,
+        "STRUCTURED_UNBRIDGED": 0.0,
+        "STRUCTURED_BRIDGED": 0.0,
+        "legacy_minus_ablation": 1.0,
+        "unbridged_minus_ablation": 0.0,
+        "bridged_minus_unbridged": 0.0,
+        "bridged_minus_legacy": -1.0
+      },
+      "g021": {
+        "applicable": true,
+        "LEGACY": 0.3333333333333333,
+        "ABLATION": 0.0,
+        "STRUCTURED_UNBRIDGED": 0.0,
+        "STRUCTURED_BRIDGED": 0.0,
+        "legacy_minus_ablation": 0.333333,
+        "unbridged_minus_ablation": 0.0,
+        "bridged_minus_unbridged": 0.0,
+        "bridged_minus_legacy": -0.333333
+      },
+      "n006": {
+        "applicable": true,
+        "LEGACY": 0.14285714285714285,
+        "ABLATION": 0.2,
+        "STRUCTURED_UNBRIDGED": 0.14285714285714285,
+        "STRUCTURED_BRIDGED": 0.3333333333333333,
+        "legacy_minus_ablation": -0.057143,
+        "unbridged_minus_ablation": -0.057143,
+        "bridged_minus_unbridged": 0.190476,
+        "bridged_minus_legacy": 0.190476
+      },
+      "g041": {
+        "applicable": false,
+        "arm_values": {
+          "LEGACY": null,
+          "ABLATION": null,
+          "STRUCTURED_UNBRIDGED": null,
+          "STRUCTURED_BRIDGED": null
+        },
+        "note": "frozen insufficient-evidence control; metrics not applicable in any arm"
+      },
+      "g020": {
+        "applicable": true,
+        "LEGACY": 0.5,
+        "ABLATION": 0.5,
+        "STRUCTURED_UNBRIDGED": 0.5,
+        "STRUCTURED_BRIDGED": 0.5,
+        "legacy_minus_ablation": 0.0,
+        "unbridged_minus_ablation": 0.0,
+        "bridged_minus_unbridged": 0.0,
+        "bridged_minus_legacy": 0.0
+      },
+      "n004": {
+        "applicable": true,
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED_UNBRIDGED": 1.0,
+        "STRUCTURED_BRIDGED": 1.0,
+        "legacy_minus_ablation": 0.0,
+        "unbridged_minus_ablation": 0.0,
+        "bridged_minus_unbridged": 0.0,
+        "bridged_minus_legacy": 0.0
+      },
+      "_summary": {
+        "legacy_minus_ablation": 0.255238,
+        "unbridged_minus_ablation": -0.011429,
+        "bridged_minus_unbridged": 0.038095,
+        "bridged_minus_legacy": -0.228571,
+        "direction": "higher is better for every metric"
+      }
+    },
+    "combined_candidate_recall": {
+      "g036": {
+        "applicable": true,
+        "LEGACY": 1.0,
+        "ABLATION": 0.0,
+        "STRUCTURED_UNBRIDGED": 0.0,
+        "STRUCTURED_BRIDGED": 1.0,
+        "legacy_minus_ablation": 1.0,
+        "unbridged_minus_ablation": 0.0,
+        "bridged_minus_unbridged": 1.0,
+        "bridged_minus_legacy": 0.0
+      },
+      "g021": {
+        "applicable": true,
+        "LEGACY": 1.0,
+        "ABLATION": 0.0,
+        "STRUCTURED_UNBRIDGED": 0.0,
+        "STRUCTURED_BRIDGED": 0.5,
+        "legacy_minus_ablation": 1.0,
+        "unbridged_minus_ablation": 0.0,
+        "bridged_minus_unbridged": 0.5,
+        "bridged_minus_legacy": -0.5
+      },
+      "n006": {
+        "applicable": true,
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED_UNBRIDGED": 1.0,
+        "STRUCTURED_BRIDGED": 1.0,
+        "legacy_minus_ablation": 0.0,
+        "unbridged_minus_ablation": 0.0,
+        "bridged_minus_unbridged": 0.0,
+        "bridged_minus_legacy": 0.0
+      },
+      "g041": {
+        "applicable": false,
+        "arm_values": {
+          "LEGACY": null,
+          "ABLATION": null,
+          "STRUCTURED_UNBRIDGED": null,
+          "STRUCTURED_BRIDGED": null
+        },
+        "note": "frozen insufficient-evidence control; metrics not applicable in any arm"
+      },
+      "g020": {
+        "applicable": true,
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED_UNBRIDGED": 1.0,
+        "STRUCTURED_BRIDGED": 1.0,
+        "legacy_minus_ablation": 0.0,
+        "unbridged_minus_ablation": 0.0,
+        "bridged_minus_unbridged": 0.0,
+        "bridged_minus_legacy": 0.0
+      },
+      "n004": {
+        "applicable": true,
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED_UNBRIDGED": 1.0,
+        "STRUCTURED_BRIDGED": 1.0,
+        "legacy_minus_ablation": 0.0,
+        "unbridged_minus_ablation": 0.0,
+        "bridged_minus_unbridged": 0.0,
+        "bridged_minus_legacy": 0.0
+      },
+      "_summary": {
+        "legacy_minus_ablation": 0.4,
+        "unbridged_minus_ablation": 0.0,
+        "bridged_minus_unbridged": 0.3,
+        "bridged_minus_legacy": -0.1,
+        "direction": "higher is better for every metric"
+      }
+    },
+    "final_evidence_recall": {
+      "g036": {
+        "applicable": true,
+        "LEGACY": 1.0,
+        "ABLATION": 0.0,
+        "STRUCTURED_UNBRIDGED": 0.0,
+        "STRUCTURED_BRIDGED": 0.0,
+        "legacy_minus_ablation": 1.0,
+        "unbridged_minus_ablation": 0.0,
+        "bridged_minus_unbridged": 0.0,
+        "bridged_minus_legacy": -1.0
+      },
+      "g021": {
+        "applicable": true,
+        "LEGACY": 1.0,
+        "ABLATION": 0.0,
+        "STRUCTURED_UNBRIDGED": 0.0,
+        "STRUCTURED_BRIDGED": 0.0,
+        "legacy_minus_ablation": 1.0,
+        "unbridged_minus_ablation": 0.0,
+        "bridged_minus_unbridged": 0.0,
+        "bridged_minus_legacy": -1.0
+      },
+      "n006": {
+        "applicable": true,
+        "LEGACY": 0.5,
+        "ABLATION": 0.5,
+        "STRUCTURED_UNBRIDGED": 0.5,
+        "STRUCTURED_BRIDGED": 0.5,
+        "legacy_minus_ablation": 0.0,
+        "unbridged_minus_ablation": 0.0,
+        "bridged_minus_unbridged": 0.0,
+        "bridged_minus_legacy": 0.0
+      },
+      "g041": {
+        "applicable": false,
+        "arm_values": {
+          "LEGACY": null,
+          "ABLATION": null,
+          "STRUCTURED_UNBRIDGED": null,
+          "STRUCTURED_BRIDGED": null
+        },
+        "note": "frozen insufficient-evidence control; metrics not applicable in any arm"
+      },
+      "g020": {
+        "applicable": true,
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED_UNBRIDGED": 1.0,
+        "STRUCTURED_BRIDGED": 1.0,
+        "legacy_minus_ablation": 0.0,
+        "unbridged_minus_ablation": 0.0,
+        "bridged_minus_unbridged": 0.0,
+        "bridged_minus_legacy": 0.0
+      },
+      "n004": {
+        "applicable": true,
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED_UNBRIDGED": 1.0,
+        "STRUCTURED_BRIDGED": 1.0,
+        "legacy_minus_ablation": 0.0,
+        "unbridged_minus_ablation": 0.0,
+        "bridged_minus_unbridged": 0.0,
+        "bridged_minus_legacy": 0.0
+      },
+      "_summary": {
+        "legacy_minus_ablation": 0.4,
+        "unbridged_minus_ablation": 0.0,
+        "bridged_minus_unbridged": 0.0,
+        "bridged_minus_legacy": -0.4,
+        "direction": "higher is better for every metric"
+      }
+    },
+    "critical_final_evidence_recall": {
+      "g036": {
+        "applicable": true,
+        "LEGACY": 1.0,
+        "ABLATION": 0.0,
+        "STRUCTURED_UNBRIDGED": 0.0,
+        "STRUCTURED_BRIDGED": 0.0,
+        "legacy_minus_ablation": 1.0,
+        "unbridged_minus_ablation": 0.0,
+        "bridged_minus_unbridged": 0.0,
+        "bridged_minus_legacy": -1.0
+      },
+      "g021": {
+        "applicable": true,
+        "LEGACY": 1.0,
+        "ABLATION": 0.0,
+        "STRUCTURED_UNBRIDGED": 0.0,
+        "STRUCTURED_BRIDGED": 0.0,
+        "legacy_minus_ablation": 1.0,
+        "unbridged_minus_ablation": 0.0,
+        "bridged_minus_unbridged": 0.0,
+        "bridged_minus_legacy": -1.0
+      },
+      "n006": {
+        "applicable": true,
+        "LEGACY": 0.5,
+        "ABLATION": 0.5,
+        "STRUCTURED_UNBRIDGED": 0.5,
+        "STRUCTURED_BRIDGED": 0.5,
+        "legacy_minus_ablation": 0.0,
+        "unbridged_minus_ablation": 0.0,
+        "bridged_minus_unbridged": 0.0,
+        "bridged_minus_legacy": 0.0
+      },
+      "g041": {
+        "applicable": false,
+        "arm_values": {
+          "LEGACY": null,
+          "ABLATION": null,
+          "STRUCTURED_UNBRIDGED": null,
+          "STRUCTURED_BRIDGED": null
+        },
+        "note": "frozen insufficient-evidence control; metrics not applicable in any arm"
+      },
+      "g020": {
+        "applicable": true,
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED_UNBRIDGED": 1.0,
+        "STRUCTURED_BRIDGED": 1.0,
+        "legacy_minus_ablation": 0.0,
+        "unbridged_minus_ablation": 0.0,
+        "bridged_minus_unbridged": 0.0,
+        "bridged_minus_legacy": 0.0
+      },
+      "n004": {
+        "applicable": true,
+        "LEGACY": 1.0,
+        "ABLATION": 1.0,
+        "STRUCTURED_UNBRIDGED": 1.0,
+        "STRUCTURED_BRIDGED": 1.0,
+        "legacy_minus_ablation": 0.0,
+        "unbridged_minus_ablation": 0.0,
+        "bridged_minus_unbridged": 0.0,
+        "bridged_minus_legacy": 0.0
+      },
+      "_summary": {
+        "legacy_minus_ablation": 0.4,
+        "unbridged_minus_ablation": 0.0,
+        "bridged_minus_unbridged": 0.0,
+        "bridged_minus_legacy": -0.4,
+        "direction": "higher is better for every metric"
+      }
+    }
+  },
+  "case_results": [
+    {
+      "case_id": "g036",
+      "dataset": "Gold v2.6 dev",
+      "case_role": "existing-provenance reachability plus materialization",
+      "bound_rule_id": "event_poca_handoff",
+      "arms": {
+        "LEGACY": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_5_a2_focused_20260901",
+            "arm": "LEGACY",
+            "case_id": "g036"
+          },
+          "treatment_receipt": {
+            "d3_5_arm": "LEGACY",
+            "focused_rule_ids": [
+              "event_poca_handoff",
+              "restgas_profile_workflow"
+            ],
+            "structured_treatment_enabled": false,
+            "bridge_enabled": false,
+            "selected_legacy_rules_suppressed": false,
+            "suppressed_selected_rule_ids": [],
+            "matched_active_rule_ids": [
+              "event_poca_handoff"
+            ],
+            "focused_shortcut_hit_count": 1
+          },
+          "metrics": {
+            "gold_recall_at_5": 1.0,
+            "gold_recall_at_10": 1.0,
+            "gold_recall_at_20": 1.0,
+            "mrr": 1.0,
+            "combined_candidate_recall": 1.0,
+            "final_evidence_recall": 1.0,
+            "critical_final_evidence_recall": 1.0
+          },
+          "top10_object_ids": [
+            "object.5cae2ceab6e67bb4c9065331",
+            "object.d1810969df820d9a7aff0415",
+            "object.0fe58ecc9734eb4f9a351832",
+            "object.01b6ff732e72ba8e1a201d90",
+            "object.6a72bf9df87e9a5810015881",
+            "data_product.restgas.event_poca",
+            "data_product.restgas.boost_root",
+            "object.eba54e616162bc748a4230ec",
+            "object.e26cafb4cec0c37ed3dc164b",
+            "object.071c042490423d7cd052317e"
+          ],
+          "final_evidence_object_ids": [
+            "object.5cae2ceab6e67bb4c9065331",
+            "object.d1810969df820d9a7aff0415",
+            "object.0fe58ecc9734eb4f9a351832",
+            "object.01b6ff732e72ba8e1a201d90",
+            "data_product.restgas.event_poca",
+            "data_product.restgas.boost_root",
+            "object.15412361ed0393ba268948a5",
+            "object.e74f1503a79a9babcaaf310f",
+            "workflow.restgas.second_pass_pid",
+            "object.051a3e49d589400336c446db",
+            "object.07758324d812b3ee09797e10",
+            "object.e26cafb4cec0c37ed3dc164b"
+          ],
+          "bridge_displacement_diagnostics": null,
+          "structured_diagnostic_counters": null
+        },
+        "ABLATION": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_5_a2_focused_20260901",
+            "arm": "ABLATION",
+            "case_id": "g036"
+          },
+          "treatment_receipt": {
+            "d3_5_arm": "ABLATION",
+            "focused_rule_ids": [
+              "event_poca_handoff",
+              "restgas_profile_workflow"
+            ],
+            "structured_treatment_enabled": false,
+            "bridge_enabled": false,
+            "selected_legacy_rules_suppressed": true,
+            "suppressed_selected_rule_ids": [
+              "event_poca_handoff"
+            ],
+            "matched_active_rule_ids": [],
+            "focused_shortcut_hit_count": 1
+          },
+          "metrics": {
+            "gold_recall_at_5": 0.0,
+            "gold_recall_at_10": 0.0,
+            "gold_recall_at_20": 0.0,
+            "mrr": 0.0,
+            "combined_candidate_recall": 0.0,
+            "final_evidence_recall": 0.0,
+            "critical_final_evidence_recall": 0.0
+          },
+          "top10_object_ids": [
+            "data_product.restgas.event_poca",
+            "object.6a72bf9df87e9a5810015881",
+            "data_product.restgas.boost_root",
+            "object.0fe58ecc9734eb4f9a351832",
+            "object.88d0d65c7dbf3c313f1fa5dd",
+            "object.de351fec1daff18a542d845c",
+            "workflow.restgas.second_pass_pid",
+            "object.80086d9fb1913c36c8c3c05d",
+            "object.0008596b748f7e335a8151df",
+            "object.001a5db6c689f77a9e0cd201"
+          ],
+          "final_evidence_object_ids": [
+            "data_product.restgas.event_poca",
+            "object.6a72bf9df87e9a5810015881",
+            "data_product.restgas.boost_root",
+            "object.0fe58ecc9734eb4f9a351832",
+            "workflow.restgas.second_pass_pid",
+            "object.80086d9fb1913c36c8c3c05d",
+            "object.0008596b748f7e335a8151df",
+            "workflow.restgas.first_pass_poca",
+            "object.001a5db6c689f77a9e0cd201",
+            "object.002585576122d4573d3d8489",
+            "object.002acc82428ac4314b4e655e"
+          ],
+          "bridge_displacement_diagnostics": null,
+          "structured_diagnostic_counters": null
+        },
+        "STRUCTURED_UNBRIDGED": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_5_a2_focused_20260901",
+            "arm": "STRUCTURED_UNBRIDGED",
+            "case_id": "g036"
+          },
+          "treatment_receipt": {
+            "d3_5_arm": "STRUCTURED_UNBRIDGED",
+            "focused_rule_ids": [
+              "event_poca_handoff",
+              "restgas_profile_workflow"
+            ],
+            "structured_treatment_enabled": true,
+            "bridge_enabled": false,
+            "selected_legacy_rules_suppressed": true,
+            "suppressed_selected_rule_ids": [
+              "event_poca_handoff"
+            ],
+            "matched_active_rule_ids": [],
+            "focused_shortcut_hit_count": 1
+          },
+          "metrics": {
+            "gold_recall_at_5": 0.0,
+            "gold_recall_at_10": 0.0,
+            "gold_recall_at_20": 0.0,
+            "mrr": 0.0,
+            "combined_candidate_recall": 0.0,
+            "final_evidence_recall": 0.0,
+            "critical_final_evidence_recall": 0.0
+          },
+          "top10_object_ids": [
+            "data_product.restgas.event_poca",
+            "object.6a72bf9df87e9a5810015881",
+            "data_product.restgas.boost_root",
+            "object.88d0d65c7dbf3c313f1fa5dd",
+            "object.0fe58ecc9734eb4f9a351832",
+            "object.de351fec1daff18a542d845c",
+            "workflow.restgas.second_pass_pid",
+            "object.80086d9fb1913c36c8c3c05d",
+            "object.0008596b748f7e335a8151df",
+            "object.001a5db6c689f77a9e0cd201"
+          ],
+          "final_evidence_object_ids": [
+            "data_product.restgas.event_poca",
+            "object.6a72bf9df87e9a5810015881",
+            "data_product.restgas.boost_root",
+            "object.88d0d65c7dbf3c313f1fa5dd",
+            "workflow.restgas.second_pass_pid",
+            "object.80086d9fb1913c36c8c3c05d",
+            "object.0008596b748f7e335a8151df",
+            "workflow.restgas.first_pass_poca",
+            "object.001a5db6c689f77a9e0cd201",
+            "object.002585576122d4573d3d8489",
+            "object.002acc82428ac4314b4e655e"
+          ],
+          "bridge_displacement_diagnostics": null,
+          "structured_diagnostic_counters": {
+            "legacy_shortcut_hit_count": 1,
+            "selected_legacy_shortcut_hit_count": 1,
+            "structured_resolution_attempt_count": 1,
+            "structured_resolution_status_counts": {
+              "RESOLVED_UNIQUE": 1,
+              "UNRESOLVED": 1
+            },
+            "structured_resolution_hit_count": 1,
+            "structured_seed_count": 1,
+            "structured_relation_traversal_count": 1,
+            "structured_workflow_traversal_count": 0,
+            "structured_parent_traversal_count": 0,
+            "structured_candidate_injection_count": 2,
+            "bridged_candidate_injection_count": 0,
+            "bridged_candidate_ranked_out_count": 0,
+            "migration_specific_direct_answer_location_injection_count": 0,
+            "prohibited_fallback_use_count": 0,
+            "evaluation_metadata_runtime_use_count": 0,
+            "selected_legacy_payload_reuse_count": 0,
+            "same_as_activation_count": 0
+          }
+        },
+        "STRUCTURED_BRIDGED": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_5_a2_focused_20260901",
+            "arm": "STRUCTURED_BRIDGED",
+            "case_id": "g036"
+          },
+          "treatment_receipt": {
+            "d3_5_arm": "STRUCTURED_BRIDGED",
+            "focused_rule_ids": [
+              "event_poca_handoff",
+              "restgas_profile_workflow"
+            ],
+            "structured_treatment_enabled": true,
+            "bridge_enabled": true,
+            "selected_legacy_rules_suppressed": true,
+            "suppressed_selected_rule_ids": [
+              "event_poca_handoff"
+            ],
+            "matched_active_rule_ids": [],
+            "focused_shortcut_hit_count": 1
+          },
+          "metrics": {
+            "gold_recall_at_5": 0.0,
+            "gold_recall_at_10": 0.0,
+            "gold_recall_at_20": 0.0,
+            "mrr": 0.0,
+            "combined_candidate_recall": 1.0,
+            "final_evidence_recall": 0.0,
+            "critical_final_evidence_recall": 0.0
+          },
+          "top10_object_ids": [
+            "data_product.restgas.event_poca",
+            "object.6a72bf9df87e9a5810015881",
+            "data_product.restgas.boost_root",
+            "object.88d0d65c7dbf3c313f1fa5dd",
+            "object.0fe58ecc9734eb4f9a351832",
+            "object.de351fec1daff18a542d845c",
+            "workflow.restgas.second_pass_pid",
+            "object.80086d9fb1913c36c8c3c05d",
+            "object.0008596b748f7e335a8151df",
+            "object.001a5db6c689f77a9e0cd201"
+          ],
+          "final_evidence_object_ids": [
+            "data_product.restgas.event_poca",
+            "object.6a72bf9df87e9a5810015881",
+            "data_product.restgas.boost_root",
+            "object.88d0d65c7dbf3c313f1fa5dd",
+            "workflow.restgas.second_pass_pid",
+            "object.80086d9fb1913c36c8c3c05d",
+            "object.0008596b748f7e335a8151df",
+            "workflow.restgas.first_pass_poca",
+            "object.001a5db6c689f77a9e0cd201",
+            "object.002585576122d4573d3d8489",
+            "object.002acc82428ac4314b4e655e"
+          ],
+          "bridge_displacement_diagnostics": {
+            "bridged_candidate_count": 3,
+            "graph_candidates_before_bridge": 13,
+            "graph_candidates_after_bridge": 16,
+            "graph_candidates_displaced_by_prefix": 0,
+            "displaced_object_ids": [],
+            "bridged_candidate_ids": [
+              "object.d1810969df820d9a7aff0415",
+              "object.d61c9f6941dd9cf1acf258fe",
+              "object.5cae2ceab6e67bb4c9065331"
+            ],
+            "deduplicated_overlap_count": 0
+          },
+          "structured_diagnostic_counters": {
+            "legacy_shortcut_hit_count": 1,
+            "selected_legacy_shortcut_hit_count": 1,
+            "structured_resolution_attempt_count": 1,
+            "structured_resolution_status_counts": {
+              "RESOLVED_UNIQUE": 1,
+              "UNRESOLVED": 1
+            },
+            "structured_resolution_hit_count": 1,
+            "structured_seed_count": 1,
+            "structured_relation_traversal_count": 1,
+            "structured_workflow_traversal_count": 0,
+            "structured_parent_traversal_count": 1,
+            "structured_candidate_injection_count": 2,
+            "bridged_candidate_injection_count": 3,
+            "bridged_candidate_ranked_out_count": 0,
+            "migration_specific_direct_answer_location_injection_count": 0,
+            "prohibited_fallback_use_count": 0,
+            "evaluation_metadata_runtime_use_count": 0,
+            "selected_legacy_payload_reuse_count": 0,
+            "same_as_activation_count": 0
+          }
+        }
+      },
+      "contrast_labels": {
+        "legacy_dependency_final": true,
+        "unbridged_recovery_final": false,
+        "incremental_bridge_final": false,
+        "bridge_regression_final": false,
+        "bridged_legacy_parity_final": false,
+        "incremental_bridge_pool": true,
+        "pattern": "legacy_dependency_no_structured_recovery_final"
+      },
+      "interpretation": "Legacy dependency confirmed (LEGACY 1.0 -> ABLATION 0.0). The frozen A+B bridge worked mechanically end-to-end: the D2 seed data_product.restgas.event_poca (Tier S, RESOLVED_UNIQUE) reached workflow.restgas.first_pass_poca through the preregistered parent (boost_root) + accepted-relation/workflow-step paths, and the bridge materialized macro/target/ana_dpm.C (plus prod_aod_complete.C and pid_complete.C) from accepted relation evidence_object_ids into source-native candidates. Combined candidate recall rose 0.0 (UNBRIDGED) -> 1.0 (BRIDGED): the required evidence entered the candidate pool for the first time. But the ana_dpm.C candidate sat in the graph channel (prefix position 3/16, weight 0.8), scored below the frozen fused top-30 rerank pool cutoff, was never reranked, and never entered final evidence (final recall 0.0). No displacement, no control effects."
+    },
+    {
+      "case_id": "g021",
+      "dataset": "Gold v2.6 dev",
+      "case_role": "independently governed genuine-coverage path",
+      "bound_rule_id": "restgas_profile_workflow",
+      "arms": {
+        "LEGACY": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_5_a2_focused_20260901",
+            "arm": "LEGACY",
+            "case_id": "g021"
+          },
+          "treatment_receipt": {
+            "d3_5_arm": "LEGACY",
+            "focused_rule_ids": [
+              "event_poca_handoff",
+              "restgas_profile_workflow"
+            ],
+            "structured_treatment_enabled": false,
+            "bridge_enabled": false,
+            "selected_legacy_rules_suppressed": false,
+            "suppressed_selected_rule_ids": [],
+            "matched_active_rule_ids": [
+              "restgas_profile_workflow"
+            ],
+            "focused_shortcut_hit_count": 1
+          },
+          "metrics": {
+            "gold_recall_at_5": 1.0,
+            "gold_recall_at_10": 1.0,
+            "gold_recall_at_20": 1.0,
+            "mrr": 0.3333333333333333,
+            "combined_candidate_recall": 1.0,
+            "final_evidence_recall": 1.0,
+            "critical_final_evidence_recall": 1.0
+          },
+          "top10_object_ids": [
+            "object.b3a98ced579469207aefe41a",
+            "configuration.restgas_profile",
+            "object.7c683ccb9595dad20e4529fe",
+            "object.3ab0a90ae68e8ece071a9f22",
+            "object.08993f3edcaf98c42a3bdf34",
+            "object.82a0995eb01497365301e660",
+            "object.727b6eb51b2cfc8c78ce35b4",
+            "object.21bc3ebe83cacb360c89c4b4",
+            "object.7ecb89690b217573371f6f70",
+            "object.2a07ffc88bd6572519a51657"
+          ],
+          "final_evidence_object_ids": [
+            "object.b3a98ced579469207aefe41a",
+            "configuration.restgas_profile",
+            "object.7c683ccb9595dad20e4529fe",
+            "object.3ab0a90ae68e8ece071a9f22",
+            "object.08993f3edcaf98c42a3bdf34",
+            "object.82a0995eb01497365301e660",
+            "object.727b6eb51b2cfc8c78ce35b4",
+            "object.21bc3ebe83cacb360c89c4b4",
+            "object.07758324d812b3ee09797e10",
+            "object.0e4dd77fc14f3323392bce66",
+            "object.9d6c1d9d1f94394b4e20c732",
+            "object.ddc9a30b78df62cf2535b507"
+          ],
+          "bridge_displacement_diagnostics": null,
+          "structured_diagnostic_counters": null
+        },
+        "ABLATION": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_5_a2_focused_20260901",
+            "arm": "ABLATION",
+            "case_id": "g021"
+          },
+          "treatment_receipt": {
+            "d3_5_arm": "ABLATION",
+            "focused_rule_ids": [
+              "event_poca_handoff",
+              "restgas_profile_workflow"
+            ],
+            "structured_treatment_enabled": false,
+            "bridge_enabled": false,
+            "selected_legacy_rules_suppressed": true,
+            "suppressed_selected_rule_ids": [
+              "restgas_profile_workflow"
+            ],
+            "matched_active_rule_ids": [],
+            "focused_shortcut_hit_count": 1
+          },
+          "metrics": {
+            "gold_recall_at_5": 0.0,
+            "gold_recall_at_10": 0.0,
+            "gold_recall_at_20": 0.0,
+            "mrr": 0.0,
+            "combined_candidate_recall": 0.0,
+            "final_evidence_recall": 0.0,
+            "critical_final_evidence_recall": 0.0
+          },
+          "top10_object_ids": [
+            "object.c0d7534c4480436f80c0393e",
+            "configuration.restgas_profile",
+            "object.21bc3ebe83cacb360c89c4b4",
+            "object.7ecb89690b217573371f6f70",
+            "object.a0f75731467d6323c4b431df",
+            "object.9b4b835459a7f95e81ed96e2",
+            "object.3d2e414326f051b57db987f5",
+            "object.9e57745bf9b16a46a92d5cb0",
+            "file_pattern.restgas_profile_input",
+            "object.6b20287d8250ff2e55fa01af"
+          ],
+          "final_evidence_object_ids": [
+            "object.c0d7534c4480436f80c0393e",
+            "configuration.restgas_profile",
+            "object.21bc3ebe83cacb360c89c4b4",
+            "object.7ecb89690b217573371f6f70",
+            "object.a0f75731467d6323c4b431df",
+            "object.9b4b835459a7f95e81ed96e2",
+            "file_pattern.restgas_profile_input",
+            "workflow.restgas_profile_reconstruction",
+            "workflow.restgas_aware_luminosity_acceptance",
+            "object.9d6c1d9d1f94394b4e20c732",
+            "object.ddc9a30b78df62cf2535b507",
+            "object.8aa495df90f3407a2acef60d"
+          ],
+          "bridge_displacement_diagnostics": null,
+          "structured_diagnostic_counters": null
+        },
+        "STRUCTURED_UNBRIDGED": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_5_a2_focused_20260901",
+            "arm": "STRUCTURED_UNBRIDGED",
+            "case_id": "g021"
+          },
+          "treatment_receipt": {
+            "d3_5_arm": "STRUCTURED_UNBRIDGED",
+            "focused_rule_ids": [
+              "event_poca_handoff",
+              "restgas_profile_workflow"
+            ],
+            "structured_treatment_enabled": true,
+            "bridge_enabled": false,
+            "selected_legacy_rules_suppressed": true,
+            "suppressed_selected_rule_ids": [
+              "restgas_profile_workflow"
+            ],
+            "matched_active_rule_ids": [],
+            "focused_shortcut_hit_count": 1
+          },
+          "metrics": {
+            "gold_recall_at_5": 0.0,
+            "gold_recall_at_10": 0.0,
+            "gold_recall_at_20": 0.0,
+            "mrr": 0.0,
+            "combined_candidate_recall": 0.0,
+            "final_evidence_recall": 0.0,
+            "critical_final_evidence_recall": 0.0
+          },
+          "top10_object_ids": [
+            "object.c0d7534c4480436f80c0393e",
+            "configuration.restgas_profile",
+            "object.21bc3ebe83cacb360c89c4b4",
+            "object.7ecb89690b217573371f6f70",
+            "object.a0f75731467d6323c4b431df",
+            "object.9e57745bf9b16a46a92d5cb0",
+            "file_pattern.restgas_profile_input",
+            "object.9b4b835459a7f95e81ed96e2",
+            "object.3d2e414326f051b57db987f5",
+            "object.6b20287d8250ff2e55fa01af"
+          ],
+          "final_evidence_object_ids": [
+            "object.c0d7534c4480436f80c0393e",
+            "configuration.restgas_profile",
+            "object.21bc3ebe83cacb360c89c4b4",
+            "object.7ecb89690b217573371f6f70",
+            "object.a0f75731467d6323c4b431df",
+            "file_pattern.restgas_profile_input",
+            "object.9b4b835459a7f95e81ed96e2",
+            "workflow.restgas_profile_reconstruction",
+            "workflow.restgas_aware_luminosity_acceptance",
+            "object.9d6c1d9d1f94394b4e20c732",
+            "object.ddc9a30b78df62cf2535b507",
+            "object.8aa495df90f3407a2acef60d"
+          ],
+          "bridge_displacement_diagnostics": null,
+          "structured_diagnostic_counters": {
+            "legacy_shortcut_hit_count": 1,
+            "selected_legacy_shortcut_hit_count": 1,
+            "structured_resolution_attempt_count": 1,
+            "structured_resolution_status_counts": {
+              "RESOLVED_UNIQUE": 1,
+              "UNRESOLVED": 2
+            },
+            "structured_resolution_hit_count": 1,
+            "structured_seed_count": 1,
+            "structured_relation_traversal_count": 1,
+            "structured_workflow_traversal_count": 0,
+            "structured_parent_traversal_count": 0,
+            "structured_candidate_injection_count": 2,
+            "bridged_candidate_injection_count": 0,
+            "bridged_candidate_ranked_out_count": 0,
+            "migration_specific_direct_answer_location_injection_count": 0,
+            "prohibited_fallback_use_count": 0,
+            "evaluation_metadata_runtime_use_count": 0,
+            "selected_legacy_payload_reuse_count": 0,
+            "same_as_activation_count": 0
+          }
+        },
+        "STRUCTURED_BRIDGED": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_5_a2_focused_20260901",
+            "arm": "STRUCTURED_BRIDGED",
+            "case_id": "g021"
+          },
+          "treatment_receipt": {
+            "d3_5_arm": "STRUCTURED_BRIDGED",
+            "focused_rule_ids": [
+              "event_poca_handoff",
+              "restgas_profile_workflow"
+            ],
+            "structured_treatment_enabled": true,
+            "bridge_enabled": true,
+            "selected_legacy_rules_suppressed": true,
+            "suppressed_selected_rule_ids": [
+              "restgas_profile_workflow"
+            ],
+            "matched_active_rule_ids": [],
+            "focused_shortcut_hit_count": 1
+          },
+          "metrics": {
+            "gold_recall_at_5": 0.0,
+            "gold_recall_at_10": 0.0,
+            "gold_recall_at_20": 0.0,
+            "mrr": 0.0,
+            "combined_candidate_recall": 0.5,
+            "final_evidence_recall": 0.0,
+            "critical_final_evidence_recall": 0.0
+          },
+          "top10_object_ids": [
+            "object.ddc9a30b78df62cf2535b507",
+            "configuration.restgas_profile",
+            "object.21bc3ebe83cacb360c89c4b4",
+            "object.7ecb89690b217573371f6f70",
+            "object.a0f75731467d6323c4b431df",
+            "file_pattern.restgas_profile_input",
+            "object.9e57745bf9b16a46a92d5cb0",
+            "object.6b20287d8250ff2e55fa01af",
+            "object.ae2365b6243db9a5da6f41a8",
+            "object.9b4b835459a7f95e81ed96e2"
+          ],
+          "final_evidence_object_ids": [
+            "object.ddc9a30b78df62cf2535b507",
+            "configuration.restgas_profile",
+            "object.21bc3ebe83cacb360c89c4b4",
+            "object.7ecb89690b217573371f6f70",
+            "object.a0f75731467d6323c4b431df",
+            "file_pattern.restgas_profile_input",
+            "object.9b4b835459a7f95e81ed96e2",
+            "workflow.restgas_profile_reconstruction",
+            "workflow.restgas.first_pass_poca",
+            "object.9d6c1d9d1f94394b4e20c732",
+            "object.c0d7534c4480436f80c0393e",
+            "object.8aa495df90f3407a2acef60d"
+          ],
+          "bridge_displacement_diagnostics": {
+            "bridged_candidate_count": 20,
+            "graph_candidates_before_bridge": 4,
+            "graph_candidates_after_bridge": 20,
+            "graph_candidates_displaced_by_prefix": 4,
+            "displaced_object_ids": [
+              "configuration.restgas_profile",
+              "workflow.restgas_profile_reconstruction",
+              "concept.restgas_longitudinal_efficiency",
+              "workflow.restgas_aware_luminosity_acceptance"
+            ],
+            "bridged_candidate_ids": [
+              "object.0c35c9d2ee2a07bc0a4be8fe",
+              "object.0fe58ecc9734eb4f9a351832",
+              "object.16e2d668d8673e7c633192c5",
+              "object.21bc3ebe83cacb360c89c4b4",
+              "object.25c0757afb7eabcf9183a17f",
+              "object.2ce3b321fb404505c3c19e12",
+              "object.2f28b1f3c056f9be04da6487",
+              "object.35cf84657d7458145acc6cb2",
+              "object.3ab0a90ae68e8ece071a9f22",
+              "object.3bfdd9477502819029d5f4e2",
+              "object.3f30db15a00e651138c4146a",
+              "object.427ba40a22782a7217afef8f",
+              "object.48aceb8601747afe7e7c2048",
+              "object.48be486a9ecab8f524ef9f35",
+              "object.4b4ba617d7416c518a52ff83",
+              "object.4e2bf3318be9d234c717b6cc",
+              "object.4e81a506f09b221d71a5df38",
+              "object.5023a697b2b46cfde6faee55",
+              "object.5038d66d85d49f8644390f7d",
+              "object.51622f9bdd88358b3b5711d4"
+            ],
+            "deduplicated_overlap_count": 0
+          },
+          "structured_diagnostic_counters": {
+            "legacy_shortcut_hit_count": 1,
+            "selected_legacy_shortcut_hit_count": 1,
+            "structured_resolution_attempt_count": 1,
+            "structured_resolution_status_counts": {
+              "RESOLVED_UNIQUE": 1,
+              "UNRESOLVED": 2
+            },
+            "structured_resolution_hit_count": 1,
+            "structured_seed_count": 1,
+            "structured_relation_traversal_count": 1,
+            "structured_workflow_traversal_count": 0,
+            "structured_parent_traversal_count": 0,
+            "structured_candidate_injection_count": 2,
+            "bridged_candidate_injection_count": 20,
+            "bridged_candidate_ranked_out_count": 42,
+            "migration_specific_direct_answer_location_injection_count": 0,
+            "prohibited_fallback_use_count": 0,
+            "evaluation_metadata_runtime_use_count": 0,
+            "selected_legacy_payload_reuse_count": 0,
+            "same_as_activation_count": 0
+          }
+        }
+      },
+      "contrast_labels": {
+        "legacy_dependency_final": true,
+        "unbridged_recovery_final": false,
+        "incremental_bridge_final": false,
+        "bridge_regression_final": false,
+        "bridged_legacy_parity_final": false,
+        "incremental_bridge_pool": true,
+        "pattern": "legacy_dependency_no_structured_recovery_final"
+      },
+      "interpretation": "Legacy dependency confirmed (LEGACY 1.0 -> ABLATION 0.0). The bridge reached workflow.restgas_profile_reconstruction from the configuration.restgas_profile seed via the accepted PARAMETERIZES edge and materialized its 62 governed evidence objects; 20 fit the bridge cap (including macro/target/prod_sim_hvmaps.C), 42 were ranked out at the cap. Combined candidate recall rose 0.0 -> 0.5: group e1 (prod_sim_hvmaps.C) entered the pool; group e2 (pgenerators/Target/PndTargetGenerator.cxx) did not, because its provenance-bearing edge originates from file_pattern.restgas_profile_input, which was not resolved as a D2 seed in this question (resolution statuses: RESOLVED_UNIQUE 1, UNRESOLVED 2), so that edge was never reached under the frozen one-transition budget. The injected prod_sim_hvmaps.C candidate entered the graph channel (position 9/20) but scored below the fused top-30 cutoff and never reached final evidence (final recall 0.0). The Mechanism-C governed knowledge was therefore partially usable through the bridge at pool level, and not usable at final-evidence level."
+    },
+    {
+      "case_id": "n006",
+      "dataset": "novel_dev",
+      "case_role": "nearby nontrigger control",
+      "bound_rule_id": "pid_two_pass_files",
+      "arms": {
+        "LEGACY": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_5_a2_focused_20260901",
+            "arm": "LEGACY",
+            "case_id": "n006"
+          },
+          "treatment_receipt": {
+            "d3_5_arm": "LEGACY",
+            "focused_rule_ids": [
+              "event_poca_handoff",
+              "restgas_profile_workflow"
+            ],
+            "structured_treatment_enabled": false,
+            "bridge_enabled": false,
+            "selected_legacy_rules_suppressed": false,
+            "suppressed_selected_rule_ids": [],
+            "matched_active_rule_ids": [],
+            "focused_shortcut_hit_count": 0
+          },
+          "metrics": {
+            "gold_recall_at_5": 0.0,
+            "gold_recall_at_10": 0.5,
+            "gold_recall_at_20": 0.5,
+            "mrr": 0.14285714285714285,
+            "combined_candidate_recall": 1.0,
+            "final_evidence_recall": 0.5,
+            "critical_final_evidence_recall": 0.5
+          },
+          "top10_object_ids": [
+            "workflow.pandaroot.generic",
+            "object.d6c8f396e70ad462c0ea8130",
+            "object.026ae99879402e1bd1aa4f26",
+            "object.03507e1f40a9404ade63494d",
+            "object.0766bbb4b4741206c6ae60b9",
+            "object.4ec94a978be86cc66711c551",
+            "object.b1250c4366eea9aa9dc68f50",
+            "object.04fe4694a863fd3e97e351f4",
+            "object.1d8692e9a52aca25d5ab7a6f",
+            "object.6912bae57b9b64e1aaf98ef5"
+          ],
+          "final_evidence_object_ids": [
+            "workflow.pandaroot.generic",
+            "object.d6c8f396e70ad462c0ea8130",
+            "object.026ae99879402e1bd1aa4f26",
+            "object.03507e1f40a9404ade63494d",
+            "object.0766bbb4b4741206c6ae60b9",
+            "object.4ec94a978be86cc66711c551",
+            "object.b1250c4366eea9aa9dc68f50",
+            "object.6912bae57b9b64e1aaf98ef5",
+            "object.6b0c9215ab982da22a88e619",
+            "object.bc8333ad0e15ee02eab751a9",
+            "object.262d4647ef2dc9eb9bb47ffa",
+            "workflow.pandaroot.lmd_reconstruction"
+          ],
+          "bridge_displacement_diagnostics": null,
+          "structured_diagnostic_counters": null
+        },
+        "ABLATION": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_5_a2_focused_20260901",
+            "arm": "ABLATION",
+            "case_id": "n006"
+          },
+          "treatment_receipt": {
+            "d3_5_arm": "ABLATION",
+            "focused_rule_ids": [
+              "event_poca_handoff",
+              "restgas_profile_workflow"
+            ],
+            "structured_treatment_enabled": false,
+            "bridge_enabled": false,
+            "selected_legacy_rules_suppressed": true,
+            "suppressed_selected_rule_ids": [],
+            "matched_active_rule_ids": [],
+            "focused_shortcut_hit_count": 0
+          },
+          "metrics": {
+            "gold_recall_at_5": 0.5,
+            "gold_recall_at_10": 0.5,
+            "gold_recall_at_20": 0.5,
+            "mrr": 0.2,
+            "combined_candidate_recall": 1.0,
+            "final_evidence_recall": 0.5,
+            "critical_final_evidence_recall": 0.5
+          },
+          "top10_object_ids": [
+            "object.a16f67bf21d7d10138238dbd",
+            "object.04fe4694a863fd3e97e351f4",
+            "object.073ed41b639b9656921a17ff",
+            "object.03507e1f40a9404ade63494d",
+            "object.b1250c4366eea9aa9dc68f50",
+            "object.1d8692e9a52aca25d5ab7a6f",
+            "workflow.pandaroot.generic",
+            "object.026ae99879402e1bd1aa4f26",
+            "object.0766bbb4b4741206c6ae60b9",
+            "object.4ec94a978be86cc66711c551"
+          ],
+          "final_evidence_object_ids": [
+            "object.a16f67bf21d7d10138238dbd",
+            "object.04fe4694a863fd3e97e351f4",
+            "object.073ed41b639b9656921a17ff",
+            "object.03507e1f40a9404ade63494d",
+            "object.b1250c4366eea9aa9dc68f50",
+            "workflow.pandaroot.generic",
+            "object.6912bae57b9b64e1aaf98ef5",
+            "object.6b0c9215ab982da22a88e619",
+            "object.bc8333ad0e15ee02eab751a9",
+            "object.262d4647ef2dc9eb9bb47ffa",
+            "workflow.pandaroot.lmd_reconstruction",
+            "workflow.restgas.first_pass_poca"
+          ],
+          "bridge_displacement_diagnostics": null,
+          "structured_diagnostic_counters": null
+        },
+        "STRUCTURED_UNBRIDGED": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_5_a2_focused_20260901",
+            "arm": "STRUCTURED_UNBRIDGED",
+            "case_id": "n006"
+          },
+          "treatment_receipt": {
+            "d3_5_arm": "STRUCTURED_UNBRIDGED",
+            "focused_rule_ids": [
+              "event_poca_handoff",
+              "restgas_profile_workflow"
+            ],
+            "structured_treatment_enabled": true,
+            "bridge_enabled": false,
+            "selected_legacy_rules_suppressed": true,
+            "suppressed_selected_rule_ids": [],
+            "matched_active_rule_ids": [],
+            "focused_shortcut_hit_count": 0
+          },
+          "metrics": {
+            "gold_recall_at_5": 0.0,
+            "gold_recall_at_10": 0.5,
+            "gold_recall_at_20": 0.5,
+            "mrr": 0.14285714285714285,
+            "combined_candidate_recall": 1.0,
+            "final_evidence_recall": 0.5,
+            "critical_final_evidence_recall": 0.5
+          },
+          "top10_object_ids": [
+            "workflow.pandaroot.generic",
+            "object.04fe4694a863fd3e97e351f4",
+            "object.026ae99879402e1bd1aa4f26",
+            "object.03507e1f40a9404ade63494d",
+            "object.0766bbb4b4741206c6ae60b9",
+            "object.04687c9e491702b520d05629",
+            "object.b1250c4366eea9aa9dc68f50",
+            "object.1d8692e9a52aca25d5ab7a6f",
+            "object.4ec94a978be86cc66711c551",
+            "object.6912bae57b9b64e1aaf98ef5"
+          ],
+          "final_evidence_object_ids": [
+            "workflow.pandaroot.generic",
+            "object.04fe4694a863fd3e97e351f4",
+            "object.026ae99879402e1bd1aa4f26",
+            "object.03507e1f40a9404ade63494d",
+            "object.0766bbb4b4741206c6ae60b9",
+            "object.04687c9e491702b520d05629",
+            "object.b1250c4366eea9aa9dc68f50",
+            "object.6912bae57b9b64e1aaf98ef5",
+            "object.6b0c9215ab982da22a88e619",
+            "object.bc8333ad0e15ee02eab751a9",
+            "object.262d4647ef2dc9eb9bb47ffa",
+            "workflow.pandaroot.lmd_reconstruction"
+          ],
+          "bridge_displacement_diagnostics": null,
+          "structured_diagnostic_counters": {
+            "legacy_shortcut_hit_count": 0,
+            "selected_legacy_shortcut_hit_count": 0,
+            "structured_resolution_attempt_count": 1,
+            "structured_resolution_status_counts": {
+              "RESOLVED_UNIQUE": 1,
+              "UNRESOLVED": 5
+            },
+            "structured_resolution_hit_count": 1,
+            "structured_seed_count": 1,
+            "structured_relation_traversal_count": 0,
+            "structured_workflow_traversal_count": 0,
+            "structured_parent_traversal_count": 0,
+            "structured_candidate_injection_count": 1,
+            "bridged_candidate_injection_count": 0,
+            "bridged_candidate_ranked_out_count": 0,
+            "migration_specific_direct_answer_location_injection_count": 0,
+            "prohibited_fallback_use_count": 0,
+            "evaluation_metadata_runtime_use_count": 0,
+            "selected_legacy_payload_reuse_count": 0,
+            "same_as_activation_count": 0
+          }
+        },
+        "STRUCTURED_BRIDGED": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_5_a2_focused_20260901",
+            "arm": "STRUCTURED_BRIDGED",
+            "case_id": "n006"
+          },
+          "treatment_receipt": {
+            "d3_5_arm": "STRUCTURED_BRIDGED",
+            "focused_rule_ids": [
+              "event_poca_handoff",
+              "restgas_profile_workflow"
+            ],
+            "structured_treatment_enabled": true,
+            "bridge_enabled": true,
+            "selected_legacy_rules_suppressed": true,
+            "suppressed_selected_rule_ids": [],
+            "matched_active_rule_ids": [],
+            "focused_shortcut_hit_count": 0
+          },
+          "metrics": {
+            "gold_recall_at_5": 0.5,
+            "gold_recall_at_10": 0.5,
+            "gold_recall_at_20": 0.5,
+            "mrr": 0.3333333333333333,
+            "combined_candidate_recall": 1.0,
+            "final_evidence_recall": 0.5,
+            "critical_final_evidence_recall": 0.5
+          },
+          "top10_object_ids": [
+            "workflow.pandaroot.generic",
+            "object.04fe4694a863fd3e97e351f4",
+            "object.b1250c4366eea9aa9dc68f50",
+            "object.1d8692e9a52aca25d5ab7a6f",
+            "object.03507e1f40a9404ade63494d",
+            "object.6912bae57b9b64e1aaf98ef5",
+            "object.026ae99879402e1bd1aa4f26",
+            "object.0766bbb4b4741206c6ae60b9",
+            "object.4ec94a978be86cc66711c551",
+            "object.041cd5104713038a07fb6dc8"
+          ],
+          "final_evidence_object_ids": [
+            "workflow.pandaroot.generic",
+            "object.04fe4694a863fd3e97e351f4",
+            "object.b1250c4366eea9aa9dc68f50",
+            "object.1d8692e9a52aca25d5ab7a6f",
+            "object.03507e1f40a9404ade63494d",
+            "object.6912bae57b9b64e1aaf98ef5",
+            "object.026ae99879402e1bd1aa4f26",
+            "object.6b0c9215ab982da22a88e619",
+            "object.bc8333ad0e15ee02eab751a9",
+            "object.262d4647ef2dc9eb9bb47ffa",
+            "workflow.pandaroot.lmd_reconstruction",
+            "workflow.restgas.first_pass_poca"
+          ],
+          "bridge_displacement_diagnostics": {
+            "bridged_candidate_count": 0,
+            "graph_candidates_before_bridge": 18,
+            "graph_candidates_after_bridge": 18,
+            "graph_candidates_displaced_by_prefix": 0,
+            "displaced_object_ids": [],
+            "bridged_candidate_ids": [],
+            "deduplicated_overlap_count": 0
+          },
+          "structured_diagnostic_counters": {
+            "legacy_shortcut_hit_count": 0,
+            "selected_legacy_shortcut_hit_count": 0,
+            "structured_resolution_attempt_count": 1,
+            "structured_resolution_status_counts": {
+              "RESOLVED_UNIQUE": 1,
+              "UNRESOLVED": 9
+            },
+            "structured_resolution_hit_count": 1,
+            "structured_seed_count": 1,
+            "structured_relation_traversal_count": 0,
+            "structured_workflow_traversal_count": 0,
+            "structured_parent_traversal_count": 1,
+            "structured_candidate_injection_count": 1,
+            "bridged_candidate_injection_count": 0,
+            "bridged_candidate_ranked_out_count": 0,
+            "migration_specific_direct_answer_location_injection_count": 0,
+            "prohibited_fallback_use_count": 0,
+            "evaluation_metadata_runtime_use_count": 0,
+            "selected_legacy_payload_reuse_count": 0,
+            "same_as_activation_count": 0
+          }
+        }
+      },
+      "contrast_labels": {
+        "legacy_dependency_final": false,
+        "unbridged_recovery_final": false,
+        "incremental_bridge_final": false,
+        "bridge_regression_final": false,
+        "bridged_legacy_parity_final": true,
+        "incremental_bridge_pool": false,
+        "pattern": "no_legacy_dependency"
+      },
+      "interpretation": "Nontrigger control stable: final evidence recall 0.5 in all four arms (pre-existing e2 group gap preserved). Zero bridge activity (0 bridged candidates). The R@5/MRR spread across arms (LEGACY/UNBRIDGED 0.0@5 vs ABLATION/BRIDGED 0.5@5) is the documented temperature-0 analyzer/reranker execution-variance class (cf. D3-A2 n022 e3), not a bridge effect: final evidence and R@10/20 are identical in all arms."
+    },
+    {
+      "case_id": "g041",
+      "dataset": "Gold v2.6 dev",
+      "case_role": "ambiguity/abstention and negative control",
+      "bound_rule_id": "pid_two_pass_files",
+      "arms": {
+        "LEGACY": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_5_a2_focused_20260901",
+            "arm": "LEGACY",
+            "case_id": "g041"
+          },
+          "treatment_receipt": {
+            "d3_5_arm": "LEGACY",
+            "focused_rule_ids": [
+              "event_poca_handoff",
+              "restgas_profile_workflow"
+            ],
+            "structured_treatment_enabled": false,
+            "bridge_enabled": false,
+            "selected_legacy_rules_suppressed": false,
+            "suppressed_selected_rule_ids": [],
+            "matched_active_rule_ids": [],
+            "focused_shortcut_hit_count": 0
+          },
+          "metrics": {
+            "gold_recall_at_5": null,
+            "gold_recall_at_10": null,
+            "gold_recall_at_20": null,
+            "mrr": null,
+            "combined_candidate_recall": null,
+            "final_evidence_recall": null,
+            "critical_final_evidence_recall": null
+          },
+          "top10_object_ids": [
+            "object.de8952db46a8b52154456ee0",
+            "object.df275d214bd0259fc0228dfc",
+            "object.6a72bf9df87e9a5810015881",
+            "object.6ff05220ac1e98115d58e537",
+            "object.b545349030372fd5e174613c",
+            "object.cb48d182871465e7867ef8fb",
+            "object.bf23a360453fbc1ecf9def2c",
+            "object.3d070e4f3375e3844b75c401",
+            "object.8f262e4b0cf6ffa116f96207",
+            "object.6cc6c3d632daeafd0e14060f"
+          ],
+          "final_evidence_object_ids": [
+            "object.de8952db46a8b52154456ee0",
+            "object.df275d214bd0259fc0228dfc",
+            "object.6a72bf9df87e9a5810015881",
+            "object.6ff05220ac1e98115d58e537",
+            "object.b545349030372fd5e174613c",
+            "object.cb48d182871465e7867ef8fb",
+            "object.3d070e4f3375e3844b75c401",
+            "object.17afb85b9f551633ec031f51",
+            "object.1fb70031c552cb78f7b3dc6c",
+            "object.aa7ef49c92cc2137b72c9662",
+            "object.bf23a360453fbc1ecf9def2c",
+            "object.8f262e4b0cf6ffa116f96207"
+          ],
+          "bridge_displacement_diagnostics": null,
+          "structured_diagnostic_counters": null
+        },
+        "ABLATION": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_5_a2_focused_20260901",
+            "arm": "ABLATION",
+            "case_id": "g041"
+          },
+          "treatment_receipt": {
+            "d3_5_arm": "ABLATION",
+            "focused_rule_ids": [
+              "event_poca_handoff",
+              "restgas_profile_workflow"
+            ],
+            "structured_treatment_enabled": false,
+            "bridge_enabled": false,
+            "selected_legacy_rules_suppressed": true,
+            "suppressed_selected_rule_ids": [],
+            "matched_active_rule_ids": [],
+            "focused_shortcut_hit_count": 0
+          },
+          "metrics": {
+            "gold_recall_at_5": null,
+            "gold_recall_at_10": null,
+            "gold_recall_at_20": null,
+            "mrr": null,
+            "combined_candidate_recall": null,
+            "final_evidence_recall": null,
+            "critical_final_evidence_recall": null
+          },
+          "top10_object_ids": [
+            "object.de8952db46a8b52154456ee0",
+            "object.6a72bf9df87e9a5810015881",
+            "object.cb48d182871465e7867ef8fb",
+            "object.b545349030372fd5e174613c",
+            "object.6ff05220ac1e98115d58e537",
+            "object.bf23a360453fbc1ecf9def2c",
+            "object.3d070e4f3375e3844b75c401",
+            "object.8f262e4b0cf6ffa116f96207",
+            "object.6cc6c3d632daeafd0e14060f",
+            "object.e7519183182b5f4d5dfefe8e"
+          ],
+          "final_evidence_object_ids": [
+            "object.de8952db46a8b52154456ee0",
+            "object.6a72bf9df87e9a5810015881",
+            "object.cb48d182871465e7867ef8fb",
+            "object.b545349030372fd5e174613c",
+            "object.6ff05220ac1e98115d58e537",
+            "object.bf23a360453fbc1ecf9def2c",
+            "object.3d070e4f3375e3844b75c401",
+            "object.17afb85b9f551633ec031f51",
+            "object.1fb70031c552cb78f7b3dc6c",
+            "object.aa7ef49c92cc2137b72c9662",
+            "object.8f262e4b0cf6ffa116f96207",
+            "object.5a2f915e50ba293910f9213c"
+          ],
+          "bridge_displacement_diagnostics": null,
+          "structured_diagnostic_counters": null
+        },
+        "STRUCTURED_UNBRIDGED": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_5_a2_focused_20260901",
+            "arm": "STRUCTURED_UNBRIDGED",
+            "case_id": "g041"
+          },
+          "treatment_receipt": {
+            "d3_5_arm": "STRUCTURED_UNBRIDGED",
+            "focused_rule_ids": [
+              "event_poca_handoff",
+              "restgas_profile_workflow"
+            ],
+            "structured_treatment_enabled": true,
+            "bridge_enabled": false,
+            "selected_legacy_rules_suppressed": true,
+            "suppressed_selected_rule_ids": [],
+            "matched_active_rule_ids": [],
+            "focused_shortcut_hit_count": 0
+          },
+          "metrics": {
+            "gold_recall_at_5": null,
+            "gold_recall_at_10": null,
+            "gold_recall_at_20": null,
+            "mrr": null,
+            "combined_candidate_recall": null,
+            "final_evidence_recall": null,
+            "critical_final_evidence_recall": null
+          },
+          "top10_object_ids": [
+            "object.bf23a360453fbc1ecf9def2c",
+            "object.3d070e4f3375e3844b75c401",
+            "object.8f262e4b0cf6ffa116f96207",
+            "object.cb48d182871465e7867ef8fb",
+            "object.6ff05220ac1e98115d58e537",
+            "object.6cc6c3d632daeafd0e14060f",
+            "object.de8952db46a8b52154456ee0",
+            "object.e7519183182b5f4d5dfefe8e",
+            "object.17afb85b9f551633ec031f51",
+            "object.6a72bf9df87e9a5810015881"
+          ],
+          "final_evidence_object_ids": [
+            "object.bf23a360453fbc1ecf9def2c",
+            "object.3d070e4f3375e3844b75c401",
+            "object.8f262e4b0cf6ffa116f96207",
+            "object.cb48d182871465e7867ef8fb",
+            "object.6ff05220ac1e98115d58e537",
+            "object.de8952db46a8b52154456ee0",
+            "object.17afb85b9f551633ec031f51",
+            "object.6a72bf9df87e9a5810015881",
+            "object.1fb70031c552cb78f7b3dc6c",
+            "concept.li_2026.restgas_effective_acceptance",
+            "object.aa7ef49c92cc2137b72c9662",
+            "workflow.pandaroot.generic"
+          ],
+          "bridge_displacement_diagnostics": null,
+          "structured_diagnostic_counters": {
+            "legacy_shortcut_hit_count": 0,
+            "selected_legacy_shortcut_hit_count": 0,
+            "structured_resolution_attempt_count": 1,
+            "structured_resolution_status_counts": {
+              "AMBIGUOUS": 1,
+              "UNRESOLVED": 1
+            },
+            "structured_resolution_hit_count": 14,
+            "structured_seed_count": 14,
+            "structured_relation_traversal_count": 1,
+            "structured_workflow_traversal_count": 0,
+            "structured_parent_traversal_count": 0,
+            "structured_candidate_injection_count": 15,
+            "bridged_candidate_injection_count": 0,
+            "bridged_candidate_ranked_out_count": 0,
+            "migration_specific_direct_answer_location_injection_count": 0,
+            "prohibited_fallback_use_count": 0,
+            "evaluation_metadata_runtime_use_count": 0,
+            "selected_legacy_payload_reuse_count": 0,
+            "same_as_activation_count": 0
+          }
+        },
+        "STRUCTURED_BRIDGED": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_5_a2_focused_20260901",
+            "arm": "STRUCTURED_BRIDGED",
+            "case_id": "g041"
+          },
+          "treatment_receipt": {
+            "d3_5_arm": "STRUCTURED_BRIDGED",
+            "focused_rule_ids": [
+              "event_poca_handoff",
+              "restgas_profile_workflow"
+            ],
+            "structured_treatment_enabled": true,
+            "bridge_enabled": true,
+            "selected_legacy_rules_suppressed": true,
+            "suppressed_selected_rule_ids": [],
+            "matched_active_rule_ids": [],
+            "focused_shortcut_hit_count": 0
+          },
+          "metrics": {
+            "gold_recall_at_5": null,
+            "gold_recall_at_10": null,
+            "gold_recall_at_20": null,
+            "mrr": null,
+            "combined_candidate_recall": null,
+            "final_evidence_recall": null,
+            "critical_final_evidence_recall": null
+          },
+          "top10_object_ids": [
+            "object.bf23a360453fbc1ecf9def2c",
+            "object.3d070e4f3375e3844b75c401",
+            "object.8f262e4b0cf6ffa116f96207",
+            "object.cb48d182871465e7867ef8fb",
+            "object.6ff05220ac1e98115d58e537",
+            "object.6cc6c3d632daeafd0e14060f",
+            "object.de8952db46a8b52154456ee0",
+            "object.e7519183182b5f4d5dfefe8e",
+            "object.17afb85b9f551633ec031f51",
+            "object.6a72bf9df87e9a5810015881"
+          ],
+          "final_evidence_object_ids": [
+            "object.bf23a360453fbc1ecf9def2c",
+            "object.3d070e4f3375e3844b75c401",
+            "object.8f262e4b0cf6ffa116f96207",
+            "object.cb48d182871465e7867ef8fb",
+            "object.6ff05220ac1e98115d58e537",
+            "object.de8952db46a8b52154456ee0",
+            "object.17afb85b9f551633ec031f51",
+            "object.6a72bf9df87e9a5810015881",
+            "object.1fb70031c552cb78f7b3dc6c",
+            "concept.li_2026.restgas_effective_acceptance",
+            "object.aa7ef49c92cc2137b72c9662",
+            "workflow.pandaroot.generic"
+          ],
+          "bridge_displacement_diagnostics": {
+            "bridged_candidate_count": 0,
+            "graph_candidates_before_bridge": 20,
+            "graph_candidates_after_bridge": 20,
+            "graph_candidates_displaced_by_prefix": 0,
+            "displaced_object_ids": [],
+            "bridged_candidate_ids": [],
+            "deduplicated_overlap_count": 0
+          },
+          "structured_diagnostic_counters": {
+            "legacy_shortcut_hit_count": 0,
+            "selected_legacy_shortcut_hit_count": 0,
+            "structured_resolution_attempt_count": 1,
+            "structured_resolution_status_counts": {
+              "AMBIGUOUS": 1,
+              "UNRESOLVED": 1
+            },
+            "structured_resolution_hit_count": 0,
+            "structured_seed_count": 0,
+            "structured_relation_traversal_count": 1,
+            "structured_workflow_traversal_count": 0,
+            "structured_parent_traversal_count": 0,
+            "structured_candidate_injection_count": 15,
+            "bridged_candidate_injection_count": 0,
+            "bridged_candidate_ranked_out_count": 0,
+            "migration_specific_direct_answer_location_injection_count": 0,
+            "prohibited_fallback_use_count": 0,
+            "evaluation_metadata_runtime_use_count": 0,
+            "selected_legacy_payload_reuse_count": 0,
+            "same_as_activation_count": 0
+          }
+        }
+      },
+      "contrast_labels": {
+        "final_evidence": "NOT_APPLICABLE_INSUFFICIENT_EVIDENCE_CONTROL",
+        "combined_pool": "NOT_APPLICABLE_INSUFFICIENT_EVIDENCE_CONTROL"
+      },
+      "interpretation": "Ambiguity/abstention negative control preserved: metrics not applicable (frozen insufficient-evidence expectation) identically in all four arms; no abstention break, no ambiguity collapse, zero bridge activity."
+    },
+    {
+      "case_id": "g020",
+      "dataset": "Gold v2.6 dev",
+      "case_role": "same subsystem with no governed evidence bridge required",
+      "bound_rule_id": "pid_two_pass_files",
+      "arms": {
+        "LEGACY": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_5_a2_focused_20260901",
+            "arm": "LEGACY",
+            "case_id": "g020"
+          },
+          "treatment_receipt": {
+            "d3_5_arm": "LEGACY",
+            "focused_rule_ids": [
+              "event_poca_handoff",
+              "restgas_profile_workflow"
+            ],
+            "structured_treatment_enabled": false,
+            "bridge_enabled": false,
+            "selected_legacy_rules_suppressed": false,
+            "suppressed_selected_rule_ids": [],
+            "matched_active_rule_ids": [
+              "restgas_workflow_usage",
+              "event_poca_workflow_alias"
+            ],
+            "focused_shortcut_hit_count": 0
+          },
+          "metrics": {
+            "gold_recall_at_5": 1.0,
+            "gold_recall_at_10": 1.0,
+            "gold_recall_at_20": 1.0,
+            "mrr": 0.5,
+            "combined_candidate_recall": 1.0,
+            "final_evidence_recall": 1.0,
+            "critical_final_evidence_recall": 1.0
+          },
+          "top10_object_ids": [
+            "object.79b75480980719256f8b7937",
+            "object.e0fb48ec180f0e7404e5dd77",
+            "object.16e2d668d8673e7c633192c5",
+            "object.7f5d7d33198c8250d854a4d7",
+            "object.5cae2ceab6e67bb4c9065331",
+            "object.d1810969df820d9a7aff0415",
+            "object.0fe58ecc9734eb4f9a351832",
+            "object.01b6ff732e72ba8e1a201d90",
+            "object.e29c4fcd17107cabea45f18e",
+            "object.da41a31ef9b54315f3ce4681"
+          ],
+          "final_evidence_object_ids": [
+            "object.79b75480980719256f8b7937",
+            "object.e0fb48ec180f0e7404e5dd77",
+            "object.16e2d668d8673e7c633192c5",
+            "object.7f5d7d33198c8250d854a4d7",
+            "object.5cae2ceab6e67bb4c9065331",
+            "object.d1810969df820d9a7aff0415",
+            "object.0fe58ecc9734eb4f9a351832",
+            "object.01b6ff732e72ba8e1a201d90",
+            "workflow.restgas_profile_reconstruction",
+            "object.4ae6940438d16bb63702e1f6",
+            "workflow.restgas.second_pass_pid",
+            "object.1ef3945822aeea8fe5226875"
+          ],
+          "bridge_displacement_diagnostics": null,
+          "structured_diagnostic_counters": null
+        },
+        "ABLATION": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_5_a2_focused_20260901",
+            "arm": "ABLATION",
+            "case_id": "g020"
+          },
+          "treatment_receipt": {
+            "d3_5_arm": "ABLATION",
+            "focused_rule_ids": [
+              "event_poca_handoff",
+              "restgas_profile_workflow"
+            ],
+            "structured_treatment_enabled": false,
+            "bridge_enabled": false,
+            "selected_legacy_rules_suppressed": true,
+            "suppressed_selected_rule_ids": [],
+            "matched_active_rule_ids": [
+              "restgas_workflow_usage",
+              "event_poca_workflow_alias"
+            ],
+            "focused_shortcut_hit_count": 0
+          },
+          "metrics": {
+            "gold_recall_at_5": 1.0,
+            "gold_recall_at_10": 1.0,
+            "gold_recall_at_20": 1.0,
+            "mrr": 0.5,
+            "combined_candidate_recall": 1.0,
+            "final_evidence_recall": 1.0,
+            "critical_final_evidence_recall": 1.0
+          },
+          "top10_object_ids": [
+            "object.79b75480980719256f8b7937",
+            "object.e0fb48ec180f0e7404e5dd77",
+            "object.16e2d668d8673e7c633192c5",
+            "object.7f5d7d33198c8250d854a4d7",
+            "object.5cae2ceab6e67bb4c9065331",
+            "object.d1810969df820d9a7aff0415",
+            "object.0fe58ecc9734eb4f9a351832",
+            "object.01b6ff732e72ba8e1a201d90",
+            "object.e29c4fcd17107cabea45f18e",
+            "object.da41a31ef9b54315f3ce4681"
+          ],
+          "final_evidence_object_ids": [
+            "object.79b75480980719256f8b7937",
+            "object.e0fb48ec180f0e7404e5dd77",
+            "object.16e2d668d8673e7c633192c5",
+            "object.7f5d7d33198c8250d854a4d7",
+            "object.5cae2ceab6e67bb4c9065331",
+            "object.d1810969df820d9a7aff0415",
+            "object.0fe58ecc9734eb4f9a351832",
+            "object.01b6ff732e72ba8e1a201d90",
+            "workflow.restgas_profile_reconstruction",
+            "object.4ae6940438d16bb63702e1f6",
+            "workflow.restgas.second_pass_pid",
+            "object.1ef3945822aeea8fe5226875"
+          ],
+          "bridge_displacement_diagnostics": null,
+          "structured_diagnostic_counters": null
+        },
+        "STRUCTURED_UNBRIDGED": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_5_a2_focused_20260901",
+            "arm": "STRUCTURED_UNBRIDGED",
+            "case_id": "g020"
+          },
+          "treatment_receipt": {
+            "d3_5_arm": "STRUCTURED_UNBRIDGED",
+            "focused_rule_ids": [
+              "event_poca_handoff",
+              "restgas_profile_workflow"
+            ],
+            "structured_treatment_enabled": true,
+            "bridge_enabled": false,
+            "selected_legacy_rules_suppressed": true,
+            "suppressed_selected_rule_ids": [],
+            "matched_active_rule_ids": [
+              "restgas_workflow_usage",
+              "event_poca_workflow_alias"
+            ],
+            "focused_shortcut_hit_count": 0
+          },
+          "metrics": {
+            "gold_recall_at_5": 1.0,
+            "gold_recall_at_10": 1.0,
+            "gold_recall_at_20": 1.0,
+            "mrr": 0.5,
+            "combined_candidate_recall": 1.0,
+            "final_evidence_recall": 1.0,
+            "critical_final_evidence_recall": 1.0
+          },
+          "top10_object_ids": [
+            "object.79b75480980719256f8b7937",
+            "object.e0fb48ec180f0e7404e5dd77",
+            "object.16e2d668d8673e7c633192c5",
+            "object.7f5d7d33198c8250d854a4d7",
+            "object.5cae2ceab6e67bb4c9065331",
+            "object.d1810969df820d9a7aff0415",
+            "object.0fe58ecc9734eb4f9a351832",
+            "object.01b6ff732e72ba8e1a201d90",
+            "object.e29c4fcd17107cabea45f18e",
+            "object.da41a31ef9b54315f3ce4681"
+          ],
+          "final_evidence_object_ids": [
+            "object.79b75480980719256f8b7937",
+            "object.e0fb48ec180f0e7404e5dd77",
+            "object.16e2d668d8673e7c633192c5",
+            "object.7f5d7d33198c8250d854a4d7",
+            "object.5cae2ceab6e67bb4c9065331",
+            "object.d1810969df820d9a7aff0415",
+            "object.0fe58ecc9734eb4f9a351832",
+            "object.01b6ff732e72ba8e1a201d90",
+            "workflow.restgas_profile_reconstruction",
+            "object.bb329e5c85f66664d5c82352",
+            "workflow.restgas.second_pass_pid",
+            "object.1ef3945822aeea8fe5226875"
+          ],
+          "bridge_displacement_diagnostics": null,
+          "structured_diagnostic_counters": {
+            "legacy_shortcut_hit_count": 2,
+            "selected_legacy_shortcut_hit_count": 0,
+            "structured_resolution_attempt_count": 1,
+            "structured_resolution_status_counts": {
+              "AMBIGUOUS": 2
+            },
+            "structured_resolution_hit_count": 19,
+            "structured_seed_count": 19,
+            "structured_relation_traversal_count": 0,
+            "structured_workflow_traversal_count": 0,
+            "structured_parent_traversal_count": 0,
+            "structured_candidate_injection_count": 19,
+            "bridged_candidate_injection_count": 0,
+            "bridged_candidate_ranked_out_count": 0,
+            "migration_specific_direct_answer_location_injection_count": 0,
+            "prohibited_fallback_use_count": 0,
+            "evaluation_metadata_runtime_use_count": 0,
+            "selected_legacy_payload_reuse_count": 0,
+            "same_as_activation_count": 0
+          }
+        },
+        "STRUCTURED_BRIDGED": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_5_a2_focused_20260901",
+            "arm": "STRUCTURED_BRIDGED",
+            "case_id": "g020"
+          },
+          "treatment_receipt": {
+            "d3_5_arm": "STRUCTURED_BRIDGED",
+            "focused_rule_ids": [
+              "event_poca_handoff",
+              "restgas_profile_workflow"
+            ],
+            "structured_treatment_enabled": true,
+            "bridge_enabled": true,
+            "selected_legacy_rules_suppressed": true,
+            "suppressed_selected_rule_ids": [],
+            "matched_active_rule_ids": [
+              "restgas_workflow_usage",
+              "event_poca_workflow_alias"
+            ],
+            "focused_shortcut_hit_count": 0
+          },
+          "metrics": {
+            "gold_recall_at_5": 1.0,
+            "gold_recall_at_10": 1.0,
+            "gold_recall_at_20": 1.0,
+            "mrr": 0.5,
+            "combined_candidate_recall": 1.0,
+            "final_evidence_recall": 1.0,
+            "critical_final_evidence_recall": 1.0
+          },
+          "top10_object_ids": [
+            "object.79b75480980719256f8b7937",
+            "object.d2bd533bec69f0a55bbe36d3",
+            "object.16e2d668d8673e7c633192c5",
+            "object.7f5d7d33198c8250d854a4d7",
+            "object.5cae2ceab6e67bb4c9065331",
+            "object.d1810969df820d9a7aff0415",
+            "object.35cf84657d7458145acc6cb2",
+            "object.01b6ff732e72ba8e1a201d90",
+            "object.e29c4fcd17107cabea45f18e",
+            "object.b92367ae18f0b4e9368a89b2"
+          ],
+          "final_evidence_object_ids": [
+            "object.79b75480980719256f8b7937",
+            "object.d2bd533bec69f0a55bbe36d3",
+            "object.16e2d668d8673e7c633192c5",
+            "object.7f5d7d33198c8250d854a4d7",
+            "object.5cae2ceab6e67bb4c9065331",
+            "object.d1810969df820d9a7aff0415",
+            "object.35cf84657d7458145acc6cb2",
+            "object.01b6ff732e72ba8e1a201d90",
+            "object.4ae6940438d16bb63702e1f6",
+            "workflow.restgas_profile_reconstruction",
+            "workflow.restgas.second_pass_pid",
+            "object.1ef3945822aeea8fe5226875"
+          ],
+          "bridge_displacement_diagnostics": {
+            "bridged_candidate_count": 20,
+            "graph_candidates_before_bridge": 20,
+            "graph_candidates_after_bridge": 20,
+            "graph_candidates_displaced_by_prefix": 20,
+            "displaced_object_ids": [
+              "concept.li_2026.restgas_effective_acceptance",
+              "concept.restgas_longitudinal_efficiency",
+              "configuration.restgas_profile",
+              "data_product.pandaroot.lumi_trks_qa",
+              "data_product.reconstructed_restgas_profile",
+              "data_product.restgas.boost_root",
+              "data_product.restgas.event_poca",
+              "data_product.restgas.pid_final_root",
+              "data_product.restgas.pid_root",
+              "document.pandaroot_sphinx_2023_08_25_dev",
+              "file_pattern.restgas_profile_input",
+              "paper.karavdina_2015.chapter_4",
+              "subsystem.luminosityfit.panda_data_io",
+              "workflow.pandaroot.generic",
+              "workflow.pandaroot.lmd_reconstruction",
+              "workflow.restgas.first_pass_poca",
+              "workflow.restgas.second_pass_pid",
+              "workflow.restgas_aware_luminosity_acceptance",
+              "workflow.restgas_profile_reconstruction",
+              "object.3ef7c0c1f717c8872fc97f9d"
+            ],
+            "bridged_candidate_ids": [
+              "object.5cae2ceab6e67bb4c9065331",
+              "object.d1810969df820d9a7aff0415",
+              "object.d61c9f6941dd9cf1acf258fe",
+              "object.0c35c9d2ee2a07bc0a4be8fe",
+              "object.0fe58ecc9734eb4f9a351832",
+              "object.16e2d668d8673e7c633192c5",
+              "object.21bc3ebe83cacb360c89c4b4",
+              "object.25c0757afb7eabcf9183a17f",
+              "object.2ce3b321fb404505c3c19e12",
+              "object.2f28b1f3c056f9be04da6487",
+              "object.35cf84657d7458145acc6cb2",
+              "object.3ab0a90ae68e8ece071a9f22",
+              "object.3bfdd9477502819029d5f4e2",
+              "object.3f30db15a00e651138c4146a",
+              "object.427ba40a22782a7217afef8f",
+              "object.48aceb8601747afe7e7c2048",
+              "object.48be486a9ecab8f524ef9f35",
+              "object.4b4ba617d7416c518a52ff83",
+              "object.4e2bf3318be9d234c717b6cc",
+              "object.4e81a506f09b221d71a5df38"
+            ],
+            "deduplicated_overlap_count": 0
+          },
+          "structured_diagnostic_counters": {
+            "legacy_shortcut_hit_count": 2,
+            "selected_legacy_shortcut_hit_count": 0,
+            "structured_resolution_attempt_count": 1,
+            "structured_resolution_status_counts": {
+              "AMBIGUOUS": 2,
+              "UNRESOLVED": 1
+            },
+            "structured_resolution_hit_count": 7,
+            "structured_seed_count": 7,
+            "structured_relation_traversal_count": 0,
+            "structured_workflow_traversal_count": 0,
+            "structured_parent_traversal_count": 0,
+            "structured_candidate_injection_count": 19,
+            "bridged_candidate_injection_count": 20,
+            "bridged_candidate_ranked_out_count": 92,
+            "migration_specific_direct_answer_location_injection_count": 0,
+            "prohibited_fallback_use_count": 0,
+            "evaluation_metadata_runtime_use_count": 0,
+            "selected_legacy_payload_reuse_count": 0,
+            "same_as_activation_count": 0
+          }
+        }
+      },
+      "contrast_labels": {
+        "legacy_dependency_final": false,
+        "unbridged_recovery_final": false,
+        "incremental_bridge_final": false,
+        "bridge_regression_final": false,
+        "bridged_legacy_parity_final": true,
+        "incremental_bridge_pool": false,
+        "pattern": "no_legacy_dependency"
+      },
+      "interpretation": "Same-subsystem control outcome-neutral: final evidence recall 1.0 in all four arms. The Tier-D ambiguous boost_root mention was admitted atomically (ambiguity set 2, within the cap-8 rule, no truncation) and the bridge injected 20 provenance-backed candidates (including ana_dpm.C), displacing all 20 ordinary graph candidates at the graph limit. The displacement was outcome-neutral: the required evidence groups were satisfied through other channels, and no harmful expansion, scope leakage, or regression was observed. This is the largest observed displacement (20/20 graph slots) and is recorded as a bounded-but-real displacement fact."
+    },
+    {
+      "case_id": "n004",
+      "dataset": "novel_dev",
+      "case_role": "ordinary retrieval already succeeds",
+      "bound_rule_id": "root_macro_usage",
+      "arms": {
+        "LEGACY": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_5_a2_focused_20260901",
+            "arm": "LEGACY",
+            "case_id": "n004"
+          },
+          "treatment_receipt": {
+            "d3_5_arm": "LEGACY",
+            "focused_rule_ids": [
+              "event_poca_handoff",
+              "restgas_profile_workflow"
+            ],
+            "structured_treatment_enabled": false,
+            "bridge_enabled": false,
+            "selected_legacy_rules_suppressed": false,
+            "suppressed_selected_rule_ids": [],
+            "matched_active_rule_ids": [
+              "root_macro_usage"
+            ],
+            "focused_shortcut_hit_count": 0
+          },
+          "metrics": {
+            "gold_recall_at_5": 1.0,
+            "gold_recall_at_10": 1.0,
+            "gold_recall_at_20": 1.0,
+            "mrr": 1.0,
+            "combined_candidate_recall": 1.0,
+            "final_evidence_recall": 1.0,
+            "critical_final_evidence_recall": 1.0
+          },
+          "top10_object_ids": [
+            "object.6101005a6e9a289dfb8ee8d5",
+            "object.f6e0bb7e96416552006ef725",
+            "object.0aeb0bec22156dbcff5a7849",
+            "object.eebb40ad3219185296de197e",
+            "object.12ff97e6d4376bc8864c2a87",
+            "object.b238f4a4478daec4489b0f4b",
+            "object.b2c373d5a3891f8a52f3b757",
+            "object.fbb693303ca86d67b63b2e35",
+            "object.048cc11446e98d8271f585e8",
+            "object.1dbf46888850bdf075a3f4c9"
+          ],
+          "final_evidence_object_ids": [
+            "object.6101005a6e9a289dfb8ee8d5",
+            "object.f6e0bb7e96416552006ef725",
+            "object.0aeb0bec22156dbcff5a7849",
+            "object.eebb40ad3219185296de197e",
+            "object.12ff97e6d4376bc8864c2a87",
+            "object.1dbf46888850bdf075a3f4c9",
+            "object.3f480116ca5470b6ae04f609",
+            "object.112af2438e48baee96dfdda0",
+            "object.b238f4a4478daec4489b0f4b",
+            "object.b2c373d5a3891f8a52f3b757",
+            "object.fbb693303ca86d67b63b2e35",
+            "object.048cc11446e98d8271f585e8"
+          ],
+          "bridge_displacement_diagnostics": null,
+          "structured_diagnostic_counters": null
+        },
+        "ABLATION": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_5_a2_focused_20260901",
+            "arm": "ABLATION",
+            "case_id": "n004"
+          },
+          "treatment_receipt": {
+            "d3_5_arm": "ABLATION",
+            "focused_rule_ids": [
+              "event_poca_handoff",
+              "restgas_profile_workflow"
+            ],
+            "structured_treatment_enabled": false,
+            "bridge_enabled": false,
+            "selected_legacy_rules_suppressed": true,
+            "suppressed_selected_rule_ids": [],
+            "matched_active_rule_ids": [
+              "root_macro_usage"
+            ],
+            "focused_shortcut_hit_count": 0
+          },
+          "metrics": {
+            "gold_recall_at_5": 1.0,
+            "gold_recall_at_10": 1.0,
+            "gold_recall_at_20": 1.0,
+            "mrr": 1.0,
+            "combined_candidate_recall": 1.0,
+            "final_evidence_recall": 1.0,
+            "critical_final_evidence_recall": 1.0
+          },
+          "top10_object_ids": [
+            "object.6101005a6e9a289dfb8ee8d5",
+            "object.f6e0bb7e96416552006ef725",
+            "object.0aeb0bec22156dbcff5a7849",
+            "object.eebb40ad3219185296de197e",
+            "object.12ff97e6d4376bc8864c2a87",
+            "object.b238f4a4478daec4489b0f4b",
+            "object.b2c373d5a3891f8a52f3b757",
+            "object.fbb693303ca86d67b63b2e35",
+            "object.048cc11446e98d8271f585e8",
+            "object.1dbf46888850bdf075a3f4c9"
+          ],
+          "final_evidence_object_ids": [
+            "object.6101005a6e9a289dfb8ee8d5",
+            "object.f6e0bb7e96416552006ef725",
+            "object.0aeb0bec22156dbcff5a7849",
+            "object.eebb40ad3219185296de197e",
+            "object.12ff97e6d4376bc8864c2a87",
+            "object.1dbf46888850bdf075a3f4c9",
+            "object.3f480116ca5470b6ae04f609",
+            "object.112af2438e48baee96dfdda0",
+            "object.b238f4a4478daec4489b0f4b",
+            "object.b2c373d5a3891f8a52f3b757",
+            "object.fbb693303ca86d67b63b2e35",
+            "object.048cc11446e98d8271f585e8"
+          ],
+          "bridge_displacement_diagnostics": null,
+          "structured_diagnostic_counters": null
+        },
+        "STRUCTURED_UNBRIDGED": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_5_a2_focused_20260901",
+            "arm": "STRUCTURED_UNBRIDGED",
+            "case_id": "n004"
+          },
+          "treatment_receipt": {
+            "d3_5_arm": "STRUCTURED_UNBRIDGED",
+            "focused_rule_ids": [
+              "event_poca_handoff",
+              "restgas_profile_workflow"
+            ],
+            "structured_treatment_enabled": true,
+            "bridge_enabled": false,
+            "selected_legacy_rules_suppressed": true,
+            "suppressed_selected_rule_ids": [],
+            "matched_active_rule_ids": [
+              "root_macro_usage"
+            ],
+            "focused_shortcut_hit_count": 0
+          },
+          "metrics": {
+            "gold_recall_at_5": 1.0,
+            "gold_recall_at_10": 1.0,
+            "gold_recall_at_20": 1.0,
+            "mrr": 1.0,
+            "combined_candidate_recall": 1.0,
+            "final_evidence_recall": 1.0,
+            "critical_final_evidence_recall": 1.0
+          },
+          "top10_object_ids": [
+            "object.6101005a6e9a289dfb8ee8d5",
+            "object.f6e0bb7e96416552006ef725",
+            "object.0aeb0bec22156dbcff5a7849",
+            "object.eebb40ad3219185296de197e",
+            "object.12ff97e6d4376bc8864c2a87",
+            "object.b2c373d5a3891f8a52f3b757",
+            "object.b238f4a4478daec4489b0f4b",
+            "object.fbb693303ca86d67b63b2e35",
+            "object.048cc11446e98d8271f585e8",
+            "object.1dbf46888850bdf075a3f4c9"
+          ],
+          "final_evidence_object_ids": [
+            "object.6101005a6e9a289dfb8ee8d5",
+            "object.f6e0bb7e96416552006ef725",
+            "object.0aeb0bec22156dbcff5a7849",
+            "object.eebb40ad3219185296de197e",
+            "object.12ff97e6d4376bc8864c2a87",
+            "object.1dbf46888850bdf075a3f4c9",
+            "object.3f480116ca5470b6ae04f609",
+            "object.112af2438e48baee96dfdda0",
+            "object.b2c373d5a3891f8a52f3b757",
+            "object.b238f4a4478daec4489b0f4b",
+            "object.fbb693303ca86d67b63b2e35",
+            "object.048cc11446e98d8271f585e8"
+          ],
+          "bridge_displacement_diagnostics": null,
+          "structured_diagnostic_counters": {
+            "legacy_shortcut_hit_count": 1,
+            "selected_legacy_shortcut_hit_count": 0,
+            "structured_resolution_attempt_count": 1,
+            "structured_resolution_status_counts": {
+              "RESOLVED_UNIQUE": 1,
+              "UNRESOLVED": 5
+            },
+            "structured_resolution_hit_count": 1,
+            "structured_seed_count": 1,
+            "structured_relation_traversal_count": 0,
+            "structured_workflow_traversal_count": 0,
+            "structured_parent_traversal_count": 0,
+            "structured_candidate_injection_count": 1,
+            "bridged_candidate_injection_count": 0,
+            "bridged_candidate_ranked_out_count": 0,
+            "migration_specific_direct_answer_location_injection_count": 0,
+            "prohibited_fallback_use_count": 0,
+            "evaluation_metadata_runtime_use_count": 0,
+            "selected_legacy_payload_reuse_count": 0,
+            "same_as_activation_count": 0
+          }
+        },
+        "STRUCTURED_BRIDGED": {
+          "retrieval_receipt_ref": {
+            "run_id": "d3_5_a2_focused_20260901",
+            "arm": "STRUCTURED_BRIDGED",
+            "case_id": "n004"
+          },
+          "treatment_receipt": {
+            "d3_5_arm": "STRUCTURED_BRIDGED",
+            "focused_rule_ids": [
+              "event_poca_handoff",
+              "restgas_profile_workflow"
+            ],
+            "structured_treatment_enabled": true,
+            "bridge_enabled": true,
+            "selected_legacy_rules_suppressed": true,
+            "suppressed_selected_rule_ids": [],
+            "matched_active_rule_ids": [
+              "root_macro_usage"
+            ],
+            "focused_shortcut_hit_count": 0
+          },
+          "metrics": {
+            "gold_recall_at_5": 1.0,
+            "gold_recall_at_10": 1.0,
+            "gold_recall_at_20": 1.0,
+            "mrr": 1.0,
+            "combined_candidate_recall": 1.0,
+            "final_evidence_recall": 1.0,
+            "critical_final_evidence_recall": 1.0
+          },
+          "top10_object_ids": [
+            "object.6101005a6e9a289dfb8ee8d5",
+            "object.f6e0bb7e96416552006ef725",
+            "object.0aeb0bec22156dbcff5a7849",
+            "object.eebb40ad3219185296de197e",
+            "object.12ff97e6d4376bc8864c2a87",
+            "object.b2c373d5a3891f8a52f3b757",
+            "object.b238f4a4478daec4489b0f4b",
+            "object.fbb693303ca86d67b63b2e35",
+            "object.048cc11446e98d8271f585e8",
+            "object.1dbf46888850bdf075a3f4c9"
+          ],
+          "final_evidence_object_ids": [
+            "object.6101005a6e9a289dfb8ee8d5",
+            "object.f6e0bb7e96416552006ef725",
+            "object.0aeb0bec22156dbcff5a7849",
+            "object.eebb40ad3219185296de197e",
+            "object.12ff97e6d4376bc8864c2a87",
+            "object.1dbf46888850bdf075a3f4c9",
+            "object.3f480116ca5470b6ae04f609",
+            "object.112af2438e48baee96dfdda0",
+            "object.b2c373d5a3891f8a52f3b757",
+            "object.b238f4a4478daec4489b0f4b",
+            "object.fbb693303ca86d67b63b2e35",
+            "object.048cc11446e98d8271f585e8"
+          ],
+          "bridge_displacement_diagnostics": {
+            "bridged_candidate_count": 0,
+            "graph_candidates_before_bridge": 2,
+            "graph_candidates_after_bridge": 2,
+            "graph_candidates_displaced_by_prefix": 0,
+            "displaced_object_ids": [],
+            "bridged_candidate_ids": [],
+            "deduplicated_overlap_count": 0
+          },
+          "structured_diagnostic_counters": {
+            "legacy_shortcut_hit_count": 1,
+            "selected_legacy_shortcut_hit_count": 0,
+            "structured_resolution_attempt_count": 1,
+            "structured_resolution_status_counts": {
+              "RESOLVED_UNIQUE": 1,
+              "UNRESOLVED": 5
+            },
+            "structured_resolution_hit_count": 1,
+            "structured_seed_count": 1,
+            "structured_relation_traversal_count": 0,
+            "structured_workflow_traversal_count": 0,
+            "structured_parent_traversal_count": 1,
+            "structured_candidate_injection_count": 1,
+            "bridged_candidate_injection_count": 0,
+            "bridged_candidate_ranked_out_count": 0,
+            "migration_specific_direct_answer_location_injection_count": 0,
+            "prohibited_fallback_use_count": 0,
+            "evaluation_metadata_runtime_use_count": 0,
+            "selected_legacy_payload_reuse_count": 0,
+            "same_as_activation_count": 0
+          }
+        }
+      },
+      "contrast_labels": {
+        "legacy_dependency_final": false,
+        "unbridged_recovery_final": false,
+        "incremental_bridge_final": false,
+        "bridge_regression_final": false,
+        "bridged_legacy_parity_final": true,
+        "incremental_bridge_pool": false,
+        "pattern": "no_legacy_dependency"
+      },
+      "interpretation": "Ordinary-retrieval control stable: 1.0 in all four arms; zero bridge activity; no expansion or regression."
+    }
+  ],
+  "bridge_diagnostic_summary": {
+    "total_bridged_candidates": 43,
+    "cases_with_bridge_activity": [
+      "g036",
+      "g021",
+      "g020"
+    ],
+    "cases_with_zero_bridge_activity": [
+      "n006",
+      "g041",
+      "n004"
+    ],
+    "total_deduplicated_overlaps": 0,
+    "total_graph_candidates_displaced": 24,
+    "cases_with_displacement": [
+      "g021",
+      "g020"
+    ],
+    "cases_with_traversal_budget_exhaustion": [],
+    "cases_with_structural_ambiguity": [],
+    "cases_with_provenance_failure": [
+      "g036",
+      "g021",
+      "n006",
+      "g020",
+      "n004"
+    ],
+    "cases_with_version_conflict": [],
+    "cases_with_ranked_out_bridged_evidence": [
+      "g021",
+      "g020"
+    ],
+    "per_case": {
+      "g036": {
+        "bridged_candidate_count": 3,
+        "bridged_candidate_ranked_out_at_cap": 0,
+        "graph_candidates_displaced_by_prefix": 0,
+        "deduplicated_overlap_count": 0,
+        "budget_exhaustion": false,
+        "structural_ambiguity": false,
+        "provenance_failure": true,
+        "version_conflict": false
+      },
+      "g021": {
+        "bridged_candidate_count": 20,
+        "bridged_candidate_ranked_out_at_cap": 42,
+        "graph_candidates_displaced_by_prefix": 4,
+        "deduplicated_overlap_count": 0,
+        "budget_exhaustion": false,
+        "structural_ambiguity": false,
+        "provenance_failure": true,
+        "version_conflict": false
+      },
+      "n006": {
+        "bridged_candidate_count": 0,
+        "bridged_candidate_ranked_out_at_cap": 0,
+        "graph_candidates_displaced_by_prefix": 0,
+        "deduplicated_overlap_count": 0,
+        "budget_exhaustion": false,
+        "structural_ambiguity": false,
+        "provenance_failure": true,
+        "version_conflict": false
+      },
+      "g041": {
+        "bridged_candidate_count": 0,
+        "bridged_candidate_ranked_out_at_cap": 0,
+        "graph_candidates_displaced_by_prefix": 0,
+        "deduplicated_overlap_count": 0,
+        "budget_exhaustion": false,
+        "structural_ambiguity": false,
+        "provenance_failure": false,
+        "version_conflict": false
+      },
+      "g020": {
+        "bridged_candidate_count": 20,
+        "bridged_candidate_ranked_out_at_cap": 92,
+        "graph_candidates_displaced_by_prefix": 20,
+        "deduplicated_overlap_count": 0,
+        "budget_exhaustion": false,
+        "structural_ambiguity": false,
+        "provenance_failure": true,
+        "version_conflict": false
+      },
+      "n004": {
+        "bridged_candidate_count": 0,
+        "bridged_candidate_ranked_out_at_cap": 0,
+        "graph_candidates_displaced_by_prefix": 0,
+        "deduplicated_overlap_count": 0,
+        "budget_exhaustion": false,
+        "structural_ambiguity": false,
+        "provenance_failure": true,
+        "version_conflict": false
+      }
+    }
+  },
+  "positive_case_bridge_receipts": {
+    "g036": {
+      "reachability_receipts_compact": [
+        {
+          "reachability_receipt_id": "reach_0001",
+          "seed_object_id": "data_product.restgas.event_poca",
+          "seed_authority_tier": "S",
+          "D2_resolution_status": "RESOLVED_UNIQUE",
+          "reachability_status": "REACHED",
+          "path": "data_product.restgas.event_poca",
+          "transitions": "SEED",
+          "budget_consumed": 0,
+          "budget_remaining": 2
+        },
+        {
+          "reachability_receipt_id": "reach_0002",
+          "seed_object_id": "data_product.restgas.event_poca",
+          "seed_authority_tier": "S",
+          "D2_resolution_status": "RESOLVED_UNIQUE",
+          "reachability_status": "REACHED",
+          "path": "data_product.restgas.event_poca -> data_product.restgas.boost_root",
+          "transitions": "SEED -> CONTAINMENT_PARENT",
+          "budget_consumed": 1,
+          "budget_remaining": 1
+        },
+        {
+          "reachability_receipt_id": "reach_0003",
+          "seed_object_id": "data_product.restgas.event_poca",
+          "seed_authority_tier": "S",
+          "D2_resolution_status": "RESOLVED_UNIQUE",
+          "reachability_status": "REACHED",
+          "path": "data_product.restgas.event_poca -> workflow.restgas.second_pass_pid",
+          "transitions": "SEED -> ACCEPTED_RELATION",
+          "budget_consumed": 1,
+          "budget_remaining": 1
+        },
+        {
+          "reachability_receipt_id": "reach_0004",
+          "seed_object_id": "data_product.restgas.event_poca",
+          "seed_authority_tier": "S",
+          "D2_resolution_status": "RESOLVED_UNIQUE",
+          "reachability_status": "REACHED",
+          "path": "data_product.restgas.event_poca -> data_product.restgas.boost_root -> workflow.restgas.first_pass_poca",
+          "transitions": "SEED -> CONTAINMENT_PARENT -> ACCEPTED_RELATION",
+          "budget_consumed": 2,
+          "budget_remaining": 0
+        },
+        {
+          "reachability_receipt_id": "reach_0005",
+          "seed_object_id": "data_product.restgas.event_poca",
+          "seed_authority_tier": "S",
+          "D2_resolution_status": "RESOLVED_UNIQUE",
+          "reachability_status": "REACHED",
+          "path": "data_product.restgas.event_poca -> data_product.restgas.boost_root -> data_product.restgas.pid_root",
+          "transitions": "SEED -> CONTAINMENT_PARENT -> WORKFLOW_STEP",
+          "budget_consumed": 2,
+          "budget_remaining": 0
+        },
+        {
+          "reachability_receipt_id": "reach_0006",
+          "seed_object_id": "data_product.restgas.event_poca",
+          "seed_authority_tier": "S",
+          "D2_resolution_status": "RESOLVED_UNIQUE",
+          "reachability_status": "REACHED",
+          "path": "data_product.restgas.event_poca -> data_product.restgas.boost_root -> workflow.restgas.first_pass_poca",
+          "transitions": "SEED -> CONTAINMENT_PARENT -> WORKFLOW_STEP",
+          "budget_consumed": 2,
+          "budget_remaining": 0
+        },
+        {
+          "reachability_receipt_id": "reach_0007",
+          "seed_object_id": "data_product.restgas.event_poca",
+          "seed_authority_tier": "S",
+          "D2_resolution_status": "RESOLVED_UNIQUE",
+          "reachability_status": "REACHED",
+          "path": "data_product.restgas.event_poca -> data_product.restgas.boost_root -> workflow.restgas_profile_reconstruction",
+          "transitions": "SEED -> CONTAINMENT_PARENT -> WORKFLOW_STEP",
+          "budget_consumed": 2,
+          "budget_remaining": 0
+        }
+      ],
+      "bridge_receipts_compact": {
+        "status_counts": {
+          "BRIDGED_CANDIDATE_INJECTED": 3,
+          "GOVERNED_PROVENANCE_NOT_FOUND": 5
+        },
+        "injected_candidates": [
+          {
+            "bridge_receipt_id": "bridge_0003",
+            "origin_type": "relation_edge",
+            "origin_id": "edge.a767185bbbc0d72189d0ac29",
+            "source_id": "restgas_determination",
+            "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+            "candidate_object_id": "object.d1810969df820d9a7aff0415",
+            "locator_path": "macro/target/prod_aod_complete.C"
+          },
+          {
+            "bridge_receipt_id": "bridge_0004",
+            "origin_type": "relation_edge",
+            "origin_id": "edge.a767185bbbc0d72189d0ac29",
+            "source_id": "restgas_determination",
+            "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+            "candidate_object_id": "object.d61c9f6941dd9cf1acf258fe",
+            "locator_path": "macro/target/pid_complete.C"
+          },
+          {
+            "bridge_receipt_id": "bridge_0005",
+            "origin_type": "relation_edge",
+            "origin_id": "edge.2e09628416a01ce2461d752a",
+            "source_id": "restgas_determination",
+            "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+            "candidate_object_id": "object.5cae2ceab6e67bb4c9065331",
+            "locator_path": "macro/target/ana_dpm.C"
+          }
+        ]
+      },
+      "displacement_diagnostics": {
+        "bridged_candidate_count": 3,
+        "graph_candidates_before_bridge": 13,
+        "graph_candidates_after_bridge": 16,
+        "graph_candidates_displaced_by_prefix": 0,
+        "displaced_object_ids": [],
+        "bridged_candidate_ids": [
+          "object.d1810969df820d9a7aff0415",
+          "object.d61c9f6941dd9cf1acf258fe",
+          "object.5cae2ceab6e67bb4c9065331"
+        ],
+        "deduplicated_overlap_count": 0
+      },
+      "diagnostic_counters": {
+        "legacy_shortcut_hit_count": 1,
+        "selected_legacy_shortcut_hit_count": 1,
+        "structured_resolution_attempt_count": 1,
+        "structured_resolution_status_counts": {
+          "RESOLVED_UNIQUE": 1,
+          "UNRESOLVED": 1
+        },
+        "structured_resolution_hit_count": 1,
+        "structured_seed_count": 1,
+        "structured_relation_traversal_count": 1,
+        "structured_workflow_traversal_count": 0,
+        "structured_parent_traversal_count": 1,
+        "structured_candidate_injection_count": 2,
+        "bridged_candidate_injection_count": 3,
+        "bridged_candidate_ranked_out_count": 0,
+        "migration_specific_direct_answer_location_injection_count": 0,
+        "prohibited_fallback_use_count": 0,
+        "evaluation_metadata_runtime_use_count": 0,
+        "selected_legacy_payload_reuse_count": 0,
+        "same_as_activation_count": 0
+      }
+    },
+    "g021": {
+      "reachability_receipts_compact": [
+        {
+          "reachability_receipt_id": "reach_0001",
+          "seed_object_id": "configuration.restgas_profile",
+          "seed_authority_tier": "S",
+          "D2_resolution_status": "RESOLVED_UNIQUE",
+          "reachability_status": "REACHED",
+          "path": "configuration.restgas_profile",
+          "transitions": "SEED",
+          "budget_consumed": 0,
+          "budget_remaining": 2
+        },
+        {
+          "reachability_receipt_id": "reach_0002",
+          "seed_object_id": "configuration.restgas_profile",
+          "seed_authority_tier": "S",
+          "D2_resolution_status": "RESOLVED_UNIQUE",
+          "reachability_status": "REACHED",
+          "path": "configuration.restgas_profile -> workflow.restgas_profile_reconstruction",
+          "transitions": "SEED -> ACCEPTED_RELATION",
+          "budget_consumed": 1,
+          "budget_remaining": 1
+        }
+      ],
+      "bridge_receipts_compact": {
+        "status_counts": {
+          "BRIDGED_CANDIDATE_INJECTED": 20,
+          "BRIDGED_CANDIDATE_RANKED_OUT": 42,
+          "GOVERNED_PROVENANCE_NOT_FOUND": 1
+        },
+        "injected_candidates": [
+          {
+            "bridge_receipt_id": "bridge_0002",
+            "origin_type": "relation_edge",
+            "origin_id": "edge.ea3a79d222f0ca6cc0e6df72",
+            "source_id": "restgas_determination",
+            "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+            "candidate_object_id": "object.0c35c9d2ee2a07bc0a4be8fe",
+            "locator_path": "README.md"
+          },
+          {
+            "bridge_receipt_id": "bridge_0003",
+            "origin_type": "relation_edge",
+            "origin_id": "edge.ea3a79d222f0ca6cc0e6df72",
+            "source_id": "restgas_determination",
+            "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+            "candidate_object_id": "object.0fe58ecc9734eb4f9a351832",
+            "locator_path": "README.md"
+          },
+          {
+            "bridge_receipt_id": "bridge_0004",
+            "origin_type": "relation_edge",
+            "origin_id": "edge.ea3a79d222f0ca6cc0e6df72",
+            "source_id": "restgas_determination",
+            "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+            "candidate_object_id": "object.16e2d668d8673e7c633192c5",
+            "locator_path": "macro/target/README.md"
+          },
+          {
+            "bridge_receipt_id": "bridge_0005",
+            "origin_type": "relation_edge",
+            "origin_id": "edge.ea3a79d222f0ca6cc0e6df72",
+            "source_id": "restgas_determination",
+            "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+            "candidate_object_id": "object.21bc3ebe83cacb360c89c4b4",
+            "locator_path": "README.md"
+          },
+          {
+            "bridge_receipt_id": "bridge_0006",
+            "origin_type": "relation_edge",
+            "origin_id": "edge.ea3a79d222f0ca6cc0e6df72",
+            "source_id": "restgas_determination",
+            "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+            "candidate_object_id": "object.25c0757afb7eabcf9183a17f",
+            "locator_path": "macro/target/README.md"
+          },
+          {
+            "bridge_receipt_id": "bridge_0007",
+            "origin_type": "relation_edge",
+            "origin_id": "edge.ea3a79d222f0ca6cc0e6df72",
+            "source_id": "restgas_determination",
+            "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+            "candidate_object_id": "object.2ce3b321fb404505c3c19e12",
+            "locator_path": "README.md"
+          },
+          {
+            "bridge_receipt_id": "bridge_0008",
+            "origin_type": "relation_edge",
+            "origin_id": "edge.ea3a79d222f0ca6cc0e6df72",
+            "source_id": "restgas_determination",
+            "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+            "candidate_object_id": "object.2f28b1f3c056f9be04da6487",
+            "locator_path": "macro/target/README.md"
+          },
+          {
+            "bridge_receipt_id": "bridge_0009",
+            "origin_type": "relation_edge",
+            "origin_id": "edge.ea3a79d222f0ca6cc0e6df72",
+            "source_id": "restgas_determination",
+            "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+            "candidate_object_id": "object.35cf84657d7458145acc6cb2",
+            "locator_path": "macro/target/README.md"
+          },
+          {
+            "bridge_receipt_id": "bridge_0010",
+            "origin_type": "relation_edge",
+            "origin_id": "edge.ea3a79d222f0ca6cc0e6df72",
+            "source_id": "restgas_determination",
+            "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+            "candidate_object_id": "object.3ab0a90ae68e8ece071a9f22",
+            "locator_path": "macro/target/prod_sim_hvmaps.C"
+          },
+          {
+            "bridge_receipt_id": "bridge_0011",
+            "origin_type": "relation_edge",
+            "origin_id": "edge.ea3a79d222f0ca6cc0e6df72",
+            "source_id": "restgas_determination",
+            "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+            "candidate_object_id": "object.3bfdd9477502819029d5f4e2",
+            "locator_path": "macro/target/README.md"
+          },
+          {
+            "bridge_receipt_id": "bridge_0012",
+            "origin_type": "relation_edge",
+            "origin_id": "edge.ea3a79d222f0ca6cc0e6df72",
+            "source_id": "restgas_determination",
+            "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+            "candidate_object_id": "object.3f30db15a00e651138c4146a",
+            "locator_path": "macro/target/README.md"
+          },
+          {
+            "bridge_receipt_id": "bridge_0013",
+            "origin_type": "relation_edge",
+            "origin_id": "edge.ea3a79d222f0ca6cc0e6df72",
+            "source_id": "restgas_determination",
+            "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+            "candidate_object_id": "object.427ba40a22782a7217afef8f",
+            "locator_path": "macro/target/README.md"
+          },
+          {
+            "bridge_receipt_id": "bridge_0014",
+            "origin_type": "relation_edge",
+            "origin_id": "edge.ea3a79d222f0ca6cc0e6df72",
+            "source_id": "restgas_determination",
+            "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+            "candidate_object_id": "object.48aceb8601747afe7e7c2048",
+            "locator_path": "README.md"
+          },
+          {
+            "bridge_receipt_id": "bridge_0015",
+            "origin_type": "relation_edge",
+            "origin_id": "edge.ea3a79d222f0ca6cc0e6df72",
+            "source_id": "restgas_determination",
+            "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+            "candidate_object_id": "object.48be486a9ecab8f524ef9f35",
+            "locator_path": "README.md"
+          },
+          {
+            "bridge_receipt_id": "bridge_0016",
+            "origin_type": "relation_edge",
+            "origin_id": "edge.ea3a79d222f0ca6cc0e6df72",
+            "source_id": "restgas_determination",
+            "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+            "candidate_object_id": "object.4b4ba617d7416c518a52ff83",
+            "locator_path": "README.md"
+          },
+          {
+            "bridge_receipt_id": "bridge_0017",
+            "origin_type": "relation_edge",
+            "origin_id": "edge.ea3a79d222f0ca6cc0e6df72",
+            "source_id": "restgas_determination",
+            "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+            "candidate_object_id": "object.4e2bf3318be9d234c717b6cc",
+            "locator_path": "README.md"
+          },
+          {
+            "bridge_receipt_id": "bridge_0018",
+            "origin_type": "relation_edge",
+            "origin_id": "edge.ea3a79d222f0ca6cc0e6df72",
+            "source_id": "restgas_determination",
+            "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+            "candidate_object_id": "object.4e81a506f09b221d71a5df38",
+            "locator_path": "README.md"
+          },
+          {
+            "bridge_receipt_id": "bridge_0019",
+            "origin_type": "relation_edge",
+            "origin_id": "edge.ea3a79d222f0ca6cc0e6df72",
+            "source_id": "restgas_determination",
+            "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+            "candidate_object_id": "object.5023a697b2b46cfde6faee55",
+            "locator_path": "macro/target/README.md"
+          },
+          {
+            "bridge_receipt_id": "bridge_0020",
+            "origin_type": "relation_edge",
+            "origin_id": "edge.ea3a79d222f0ca6cc0e6df72",
+            "source_id": "restgas_determination",
+            "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+            "candidate_object_id": "object.5038d66d85d49f8644390f7d",
+            "locator_path": "macro/target/README.md"
+          },
+          {
+            "bridge_receipt_id": "bridge_0021",
+            "origin_type": "relation_edge",
+            "origin_id": "edge.ea3a79d222f0ca6cc0e6df72",
+            "source_id": "restgas_determination",
+            "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+            "candidate_object_id": "object.51622f9bdd88358b3b5711d4",
+            "locator_path": "macro/target/README.md"
+          }
+        ]
+      },
+      "displacement_diagnostics": {
+        "bridged_candidate_count": 20,
+        "graph_candidates_before_bridge": 4,
+        "graph_candidates_after_bridge": 20,
+        "graph_candidates_displaced_by_prefix": 4,
+        "displaced_object_ids": [
+          "configuration.restgas_profile",
+          "workflow.restgas_profile_reconstruction",
+          "concept.restgas_longitudinal_efficiency",
+          "workflow.restgas_aware_luminosity_acceptance"
+        ],
+        "bridged_candidate_ids": [
+          "object.0c35c9d2ee2a07bc0a4be8fe",
+          "object.0fe58ecc9734eb4f9a351832",
+          "object.16e2d668d8673e7c633192c5",
+          "object.21bc3ebe83cacb360c89c4b4",
+          "object.25c0757afb7eabcf9183a17f",
+          "object.2ce3b321fb404505c3c19e12",
+          "object.2f28b1f3c056f9be04da6487",
+          "object.35cf84657d7458145acc6cb2",
+          "object.3ab0a90ae68e8ece071a9f22",
+          "object.3bfdd9477502819029d5f4e2",
+          "object.3f30db15a00e651138c4146a",
+          "object.427ba40a22782a7217afef8f",
+          "object.48aceb8601747afe7e7c2048",
+          "object.48be486a9ecab8f524ef9f35",
+          "object.4b4ba617d7416c518a52ff83",
+          "object.4e2bf3318be9d234c717b6cc",
+          "object.4e81a506f09b221d71a5df38",
+          "object.5023a697b2b46cfde6faee55",
+          "object.5038d66d85d49f8644390f7d",
+          "object.51622f9bdd88358b3b5711d4"
+        ],
+        "deduplicated_overlap_count": 0
+      },
+      "diagnostic_counters": {
+        "legacy_shortcut_hit_count": 1,
+        "selected_legacy_shortcut_hit_count": 1,
+        "structured_resolution_attempt_count": 1,
+        "structured_resolution_status_counts": {
+          "RESOLVED_UNIQUE": 1,
+          "UNRESOLVED": 2
+        },
+        "structured_resolution_hit_count": 1,
+        "structured_seed_count": 1,
+        "structured_relation_traversal_count": 1,
+        "structured_workflow_traversal_count": 0,
+        "structured_parent_traversal_count": 0,
+        "structured_candidate_injection_count": 2,
+        "bridged_candidate_injection_count": 20,
+        "bridged_candidate_ranked_out_count": 42,
+        "migration_specific_direct_answer_location_injection_count": 0,
+        "prohibited_fallback_use_count": 0,
+        "evaluation_metadata_runtime_use_count": 0,
+        "selected_legacy_payload_reuse_count": 0,
+        "same_as_activation_count": 0
+      }
+    }
+  },
+  "primary_causal_conclusions": {
+    "shortcut_dependency (LEGACY - ABLATION)": {
+      "final_evidence_recall": "+0.4 mean (g036 +1.0, g021 +1.0): the two focused shortcuts remain materially responsible for useful retrieval on both direct cases"
+    },
+    "unbridged_structured_contribution (STRUCTURED_UNBRIDGED - ABLATION)": {
+      "final_evidence_recall": "0.0: the synchronized final D1 plus the pre-D3.5 structured path recovered nothing at final-evidence level (g021's Mechanism-C knowledge did not surface through the unbridged path either)",
+      "combined_candidate_recall": "0.0"
+    },
+    "incremental_bridge_effect (STRUCTURED_BRIDGED - STRUCTURED_UNBRIDGED)": {
+      "final_evidence_recall": "0.0: no incremental final-evidence recovery",
+      "combined_candidate_recall": "+0.3 mean (g036 +1.0, g021 +0.5): a real, causally identifiable pool-level contribution",
+      "decomposition": "the bridge demonstrably materializes the governed provenance into source-native candidates, but they enter only the graph channel and score below the frozen fused top-30 rerank pool cutoff"
+    },
+    "final_legacy_parity (STRUCTURED_BRIDGED - LEGACY)": {
+      "final_evidence_recall": "-0.4: bridged does not reach legacy parity on the positive cases; controls unchanged"
+    },
+    "identifiability_boundary_respected": "STRUCTURED_BRIDGED - ABLATION (+0.3 combined / 0.0 final) is reported only as the combined final-D1 + old-structured + bridge contribution and is never described as a pure bridge effect; the pure bridge effect is BRIDGED - UNBRIDGED"
+  },
+  "safety_counters": {
+    "per_execution_verification": "all five prohibited-use counters verified zero in all 12 structured-arm executions",
+    "violations": 0
+  },
+  "anti_shortcut_audit": {
+    "case_id_to_file_mapping_count": 0,
+    "question_id_to_path_count": 0,
+    "bound_rule_id_to_route_count": 0,
+    "expected_evidence_to_d1_link_count": 0,
+    "legacy_payload_reuse_count": 0,
+    "evaluation_metadata_runtime_use_count": 0,
+    "focused_rule_ids_usage": "arm suppression/configuration only; no semantic payload reuse",
+    "static_check": "runtime files (src/panda_agent/retrieval.py, src/panda_agent/d3_structured.py) unchanged since frozen commit 9b5a849 (git diff empty); focused rule IDs appear only in D3_5ExperimentConfig/d3_structured.py suppression constants",
+    "runtime_treatment_receipt_check": "all 24 per-cell treatment receipts match the frozen arm flag matrix exactly"
+  },
+  "run_variance_note": "arms are independent frozen-path executions; temperature-0 analyzer/reranker variance produced metric-neutral selection differences (n006 R@5 0.0 vs 0.5 across arms with final evidence identical; same class as D3-A2 n022 e3). Final evidence and R@10/20 are arm-stable on every control case.",
+  "historical_d3_comparison_caveat": "historical D3 STRUCTURED ran on the deployed 22/16/0 materialization with a different three-arm contract and is not interchangeable with STRUCTURED_UNBRIDGED on the synchronized 24/16/1/2 materialization; no causal deltas were computed across the two experiments",
+  "overall_interpretation": "The experiment is valid, complete, and fully attributable (24/24 cells, 0 errors, 0 retries). At the final-evidence level the frozen bridge produced no incremental recovery: both positive cases stayed at 0.0 in ABLATION, STRUCTURED_UNBRIDGED, and STRUCTURED_BRIDGED, so BRIDGED - UNBRIDGED = 0.0 and BRIDGED - LEGACY = -0.4 on final evidence recall. The shortcut dependency is real and unchanged (LEGACY - ABLATION = +0.4, driven by g036 and g021). However, the bridge produced a real, causally identifiable incremental contribution one level earlier in the pipeline: combined candidate recall rose from 0.0 to 1.0 (g036) and 0.0 to 0.5 (g021), so BRIDGED - UNBRIDGED = +0.3 on combined candidate recall. Mechanism A (bounded structural reachability) and Mechanism B (exact provenance materialization) worked exactly as designed and as preregistered: the preregistered g036 path event_poca -> boost_root -> first_pass_poca -> ana_dpm.C was observed with receipts. The binding constraint is downstream of the bridge: provenance-backed source-native candidates enter only the graph channel (weight 0.8, single-channel), score below the fused top-30 rerank pool cutoff against multi-channel exact/dense/sparse competition, and therefore never reach the reranker, the selector, or final evidence. Controls show no material harm: n006/g020/n004 outcomes unchanged, g041 abstention preserved, zero safety-counter violations; the g020 20/20 graph-slot displacement was outcome-neutral and bounded by the existing graph cap. The bridge is therefore validated as a bounded, governed, additively-injective pool-level mechanism, but NOT validated as an end-to-end final-evidence recovery mechanism under the frozen ranking configuration.",
+  "binding_constraint_analysis": {
+    "observed": "bridged candidates enter the graph channel via prefix merge (g036 ana_dpm.C at graph position 3/16; g021 prod_sim_hvmaps.C at graph position 9/20) but are single-channel graph candidates scored with weight 0.8/(60+rank); both fell below the frozen fused top-30 rerank pool cutoff against exact(2.0)/dense(1.0)/sparse(1.0)/paper(1.15)/workflow(1.2) multi-channel competition and were never reranked or selected",
+    "not_the_constraint": "reachability (both preregistered paths reached with receipts), materialization (exact source-native candidates injected), candidate caps (no cap bound on the required candidates), or source/version qualification (all bridged candidates carried exact frozen source versions)",
+    "repair_belongs_to": "a separately authorized post-A2 stage; no ranking/fusion/bridge change is permitted inside A2"
+  },
+  "scientific_decision": {
+    "verdict": "PARTIAL / TARGETED_RECOVERY_MIXED",
+    "d3_5_lifecycle": "D3.5 COMPLETE / STRUCTURED_EVIDENCE_LINK_BRIDGING_NOT_VALIDATED",
+    "d4_gate": "BLOCKED: D4 requires D3.5 bridge validated by A2; the end-to-end validation criterion was not met (no incremental final-evidence recovery on the positive cases), so D4 remains NOT_STARTED",
+    "mechanism_decomposition": {
+      "mechanism_A_bounded_reachability": "VALIDATED_OBSERVED (preregistered paths reached with receipts; atomic Tier-D ambiguity admission observed on g020; no budget exhaustion or ambiguity collapse)",
+      "mechanism_B_provenance_materialization": "VALIDATED_OBSERVED (exact governed provenance materialized into source-native candidates with exact frozen source versions; VERSION_SCOPE_CONFLICT never triggered)",
+      "mechanism_C_governed_coverage_use": "PARTIALLY_OBSERVED (g021 e1 prod_sim_hvmaps.C reached and materialized via the Mechanism-C PARAMETERIZES edge; g021 e2 PndTargetGenerator.cxx unreachable because its provenance-bearing edge originates from file_pattern.restgas_profile_input, which was not a D2 seed in this question)",
+      "end_to_end_final_evidence_recovery": "NOT_VALIDATED (bridge candidates never survive the frozen fusion/rerank/selector into final evidence)"
+    }
+  },
+  "limitations": [
+    "six focused cases with g041 metric-inapplicable in all arms; aggregates have denominator 5 and case-level heterogeneity is reported in full",
+    "temperature-0 analyzer/reranker variance produces within-case R@5/MRR spread across independent arm executions (n006); final-evidence outcomes were arm-stable",
+    "the g020 control exercised the bridge through an ambiguous Tier-D seed and displaced all 20 graph slots (outcome-neutral); displacement behavior under heavier structured reach remains bounded by the graph cap but was not stress-tested beyond this",
+    "g021 e2 (PndTargetGenerator.cxx) was structurally unreachable under the frozen seed resolution and one-transition budget, so the bridge could not materialize it in this question",
+    "single frozen materialization (24/16/1/2) and single frozen ranking configuration; results do not speak to alternative fusion weights or channel budgets"
+  ],
+  "next_stage": {
+    "exact_next_task": "separately authorized post-A2 decision stage (no D4 start; D4 blocked by the A2 verdict)",
+    "candidate_directions_authored_not_authorized": "the binding constraint is downstream of the bridge: a future authorized stage would have to decide how provenance-backed source-native candidates can compete in fusion/reranking without violating the frozen authority boundaries; any such change requires a new preregistration and is not part of A2"
+  }
+}
