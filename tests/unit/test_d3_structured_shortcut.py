@@ -129,11 +129,24 @@ class D3ArmTests(unittest.TestCase):
     def test_arm_contract_rejects_hybrid_or_different_rule_set(self):
         for arm in D3Arm:
             config = D3ExperimentConfig.for_arm(arm)
-            self.assertEqual(config.structured_treatment_enabled, arm is D3Arm.STRUCTURED)
+            self.assertEqual(
+                config.structured_treatment_enabled,
+                arm in {D3Arm.STRUCTURED, D3Arm.STRUCTURED_UNBRIDGED, D3Arm.STRUCTURED_BRIDGED},
+            )
+            self.assertEqual(
+                config.bridge_enabled,
+                arm is D3Arm.STRUCTURED_BRIDGED,
+            )
             self.assertEqual(config.selected_rule_ids, SELECTED_D3_RULE_IDS)
         with self.assertRaises(ValueError):
             D3ExperimentConfig(
                 arm=D3Arm.ABLATION,
+                structured_treatment_enabled=True,
+            )
+        with self.assertRaises(ValueError):
+            D3ExperimentConfig(
+                arm=D3Arm.STRUCTURED_BRIDGED,
+                bridge_enabled=False,
                 structured_treatment_enabled=True,
             )
         with self.assertRaises(ValueError):

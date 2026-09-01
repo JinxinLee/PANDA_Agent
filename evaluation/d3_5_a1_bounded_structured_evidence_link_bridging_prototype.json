@@ -1,0 +1,198 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint": "D3.5-A1",
+  "status": "BLOCKED / ISOLATED_MATERIALIZATION_UNAVAILABLE",
+  "base_commit": "0151786856d813661ab29962987f933d17e619c2",
+  "stage_position": {
+    "D3": "COMPLETE / SHORTCUT_MIGRATION_EXPERIMENT_DECIDED",
+    "D3.5": "IN_PROGRESS",
+    "D3.5-A0": "COMPLETE / STRUCTURED_EVIDENCE_LINK_DESIGN_FROZEN",
+    "D3.5-A0-R1": "COMPLETE / EVALUATION_IDENTIFIABILITY_AND_RUNTIME_ISOLATION_REPAIRED",
+    "D3.5-A0-R2": "COMPLETE / POST_A1_D1_IDENTITY_AND_MATERIALIZATION_FREEZE_REPAIRED",
+    "D3.5-A1": "PROTOTYPE_IMPLEMENTED_AND_VERIFIED_T0 / ISOLATED_MATERIALIZATION_UNAVAILABLE",
+    "D3.5-A2": "NOT_STARTED",
+    "D4": "NOT_STARTED"
+  },
+  "preregistration_identity": {
+    "checkpoint": "D3.5-A0-R2",
+    "commit": "0151786856d813661ab29962987f933d17e619c2",
+    "structured_artifact": "evaluation/d3_5_a0_structured_evidence_link_design.json",
+    "human_readable_artifact": "evaluation/D3_5_A0_STRUCTURED_EVIDENCE_LINK_REACHABILITY_AND_BRIDGING_DESIGN.md"
+  },
+  "d1_identity": {
+    "starting_repository_d1_identity": {
+      "commit_sha": "0151786856d813661ab29962987f933d17e619c2",
+      "authoritative_config_paths": [
+        "configs/seed_objects.yaml",
+        "configs/seed_relations.yaml",
+        "configs/seed_workflows.yaml"
+      ],
+      "counts": {
+        "objects": 24,
+        "accepted_relations": 16,
+        "curated_workflow_steps": 1
+      }
+    },
+    "mechanism_c_outcome": "NOT_PERFORMED / NO_CHANGE",
+    "d3_5_a1_repository_d1_changed": false,
+    "starting_identity_equals_final_identity": true,
+    "final_repository_d1_identity": {
+      "commit_sha": "0151786856d813661ab29962987f933d17e619c2",
+      "authoritative_config_paths": [
+        "configs/seed_objects.yaml",
+        "configs/seed_relations.yaml",
+        "configs/seed_workflows.yaml"
+      ],
+      "counts": {
+        "objects": 24,
+        "accepted_relations": 16,
+        "curated_workflow_steps": 1
+      },
+      "stable_governed_object_ids": [
+        "configuration.restgas_profile",
+        "concept.li_2026.restgas_effective_acceptance",
+        "concept.luminosityfit.luminosity_fit_model",
+        "concept.restgas_longitudinal_efficiency",
+        "data_product.pandaroot.lumi_trks_qa",
+        "data_product.reconstructed_restgas_profile",
+        "data_product.restgas.boost_root",
+        "data_product.restgas.event_poca",
+        "data_product.restgas.pid_final_root",
+        "data_product.restgas.pid_root",
+        "document.pandaroot_sphinx_2023_08_25_dev",
+        "file_pattern.restgas_profile_input",
+        "paper.karavdina_2015.chapter_4",
+        "paper.pflueger_2017.chapter_4",
+        "repository.pandaroot.oct19",
+        "repository.restgas_determination.oct19",
+        "subsystem.luminosityfit.model_and_fit",
+        "subsystem.luminosityfit.panda_data_io",
+        "workflow.pandaroot.generic",
+        "workflow.pandaroot.lmd_reconstruction",
+        "workflow.restgas.first_pass_poca",
+        "workflow.restgas.second_pass_pid",
+        "workflow.restgas_aware_luminosity_acceptance",
+        "workflow.restgas_profile_reconstruction"
+      ],
+      "stable_governed_workflow_step_ids": [
+        "workflow.restgas.first_pass_poca"
+      ]
+    }
+  },
+  "isolation_and_materialization_status": {
+    "implemented_isolation_mechanism": "StorageSettings(database_url=...) configurable via PANDA_DATABASE_URL, in-memory T0 mock graph reader boundaries",
+    "in_memory_t0_materialization_verified": true,
+    "persistent_isolated_evaluation_db_present": false,
+    "provisioning_note": "A configured isolation mechanism exists, but the persistent target database was not provisioned because permission was not granted by safety approval. Production database was untouched.",
+    "production_structured_state_writes": 0,
+    "production_materialization_untouched_true": true,
+    "d3_5_evaluation_d1_materialization_frozen": false,
+    "isolated_materialization_matches_final_repository_d1": false
+  },
+  "freeze_booleans": {
+    "D3_5_A1_IMPLEMENTATION_FROZEN": true,
+    "D3_5_A2_FINAL_REPOSITORY_D1_IDENTITY_FROZEN": true,
+    "D3_5_EVALUATION_D1_MATERIALIZATION_FROZEN": false,
+    "isolated_materialization_matches_final_repository_D1": false,
+    "production_materialization_untouched_true": true
+  },
+  "arm_contract": {
+    "LEGACY": {
+      "all_54_query_expansion_rules_active": true,
+      "selected_legacy_rules_suppressed": false,
+      "structured_treatment_enabled": false,
+      "bridge_enabled": false
+    },
+    "ABLATION": {
+      "all_nonselected_query_expansion_rules_unchanged": true,
+      "selected_legacy_rules_suppressed": true,
+      "structured_treatment_enabled": false,
+      "bridge_enabled": false
+    },
+    "STRUCTURED_UNBRIDGED": {
+      "all_nonselected_query_expansion_rules_unchanged": true,
+      "selected_legacy_rules_suppressed": true,
+      "structured_treatment_enabled": true,
+      "bridge_enabled": false
+    },
+    "STRUCTURED_BRIDGED": {
+      "all_nonselected_query_expansion_rules_unchanged": true,
+      "selected_legacy_rules_suppressed": true,
+      "structured_treatment_enabled": true,
+      "bridge_enabled": true
+    }
+  },
+  "implementation_components": [
+    {
+      "path": "src/panda_agent/d3_structured.py",
+      "responsibility": "Four-arm configuration, atomic Tier-D ambiguity handling, Mechanism A phased typed traversal (containment, predicate/direction allowlist, cap 32), Mechanism B exact terminal materialization (exact path/object, cap 20), reachability and bridge receipts, and displacement diagnostics."
+    },
+    {
+      "path": "src/panda_agent/retrieval.py",
+      "responsibility": "Integration of D3.5 bridge into retrieval pipeline, graph channel prefix precedence via merge_exact_streams, and full trace diagnostic propagation."
+    },
+    {
+      "path": "tests/unit/test_d3_5_structured_bridge.py",
+      "responsibility": "Dedicated T0 unit and synthetic tests covering four arms, atomic ambiguity, Mechanism A traversal & budget, Mechanism B exact materialization & caps, receipts, graph prefix displacement diagnostics, and anti-leak checks."
+    },
+    {
+      "path": "tests/unit/test_d3_structured_shortcut.py",
+      "responsibility": "Regression tests ensuring backward compatibility across all D3 experimental arms."
+    }
+  ],
+  "candidate_integration_and_diagnostics": {
+    "logical_substream": "structured_evidence",
+    "physical_channel": "graph",
+    "precedence": "prefix",
+    "deduplication": "object_id",
+    "authority_role": "GOVERNED_PROVENANCE_BACKED_ADDITIVE_RETRIEVAL_CANDIDATE",
+    "independent_cross_channel_priority": false,
+    "extra_rrf_vote": false,
+    "displacement_diagnostics": [
+      "bridged_candidate_count",
+      "graph_candidates_before_bridge",
+      "graph_candidates_after_bridge",
+      "graph_candidates_displaced_by_prefix",
+      "displaced_object_ids",
+      "bridged_candidate_ids",
+      "deduplicated_overlap_count"
+    ],
+    "receipt_types": [
+      "StructuredReachabilityReceipt",
+      "StructuredEvidenceBridgeReceipt"
+    ]
+  },
+  "production_and_safety_invariants": {
+    "production_database_writes": 0,
+    "qdrant_writes": 0,
+    "model_api_calls": 0,
+    "formal_comparison_runs": 0,
+    "evaluation_metadata_runtime_use_count": 0,
+    "selected_legacy_payload_reuse_count": 0,
+    "prohibited_fallback_use_count": 0,
+    "same_as_activation_count": 0
+  },
+  "tests": {
+    "test_d3_5_structured_bridge": {
+      "command": "$env:PYTHONPATH='src'; python -m unittest discover -s tests/unit -p 'test_d3_5_structured_bridge.py'",
+      "result": "PASS",
+      "tests_run": 21
+    },
+    "test_d3_structured_shortcut": {
+      "command": "$env:PYTHONPATH='src'; python -m unittest discover -s tests/unit -p 'test_d3_structured_shortcut.py'",
+      "result": "PASS",
+      "tests_run": 8
+    },
+    "all_d3_tests_total": 29,
+    "anti_leak_audit": "PASS: no formal case/question/expected-evidence metadata and no new case-specific mapping occur in runtime bridge logic. Pre-existing frozen D3 selected rule IDs remain only in nonsemantic arm suppression/configuration; Mechanism A/B have zero semantic dependency on them and selected_legacy_payload_reuse_count remains 0.",
+    "git_diff_check": "PASS"
+  },
+  "known_limitations": [
+    "No synchronized persistent isolated evaluation database was provisioned in this environment (safety approval was not granted); persistent evaluation materialization remains unverified outside T0 in-memory/static fixtures.",
+    "Mechanism C was not performed (no D1 seed configuration change); coverage for genuinely unprovenanced links remains deferred to future governed audits.",
+    "D3.5-A1 is a prototype implementation verified with synthetic T0 tests; no formal retrieval-quality benchmarking or outcome exposure has been executed."
+  ],
+  "lifecycle_decision": "BLOCKED / ISOLATED_MATERIALIZATION_UNAVAILABLE",
+  "blocker_detail": "D3.5-A1 runtime implementation and expanded T0 unit verification are complete, but D3_5_EVALUATION_D1_MATERIALIZATION_FROZEN remains false because the isolated persistent evaluation database target was not provisioned (permission was not granted by safety approval). Per D3.5-A0 Section 18, A1 closeout is blocked until persistent isolated materialization is established under separate authorization.",
+  "next_stage": "BLOCKED — Requires separately authorized isolated evaluation database provisioning before D3.5-A2 execution. D3.5-A2 remains NOT_STARTED."
+}

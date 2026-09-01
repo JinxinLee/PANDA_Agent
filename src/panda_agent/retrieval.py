@@ -1601,10 +1601,13 @@ class Retriever:
             "d3_arm": config.arm.value,
             "selected_rule_ids": list(config.selected_rule_ids),
             "structured_treatment_enabled": config.structured_treatment_enabled,
+            "bridge_enabled": config.bridge_enabled,
             "selected_legacy_rules_suppressed": config.selected_legacy_rules_suppressed,
         }
-        if any(diagnostics.get(key) != value for key, value in expected.items()):
-            raise ValueError("D3 plan/config mismatch")
+        for key, value in expected.items():
+            actual = diagnostics.get(key, False) if key == "bridge_enabled" else diagnostics.get(key)
+            if actual != value:
+                raise ValueError("D3 plan/config mismatch")
         return diagnostics
 
     def retrieve(
@@ -1632,19 +1635,42 @@ class Retriever:
         rankings["workflow"] = self._workflow(question, plan, limit)
         rankings["graph"] = self._graph([*rankings["exact"],*rankings["dense"],*rankings["sparse"]], plan, limit)
         structured_contribution = None
-        if d3_config is not None and d3_config.arm is D3Arm.STRUCTURED:
+        if d3_config is not None and d3_config.structured_treatment_enabled:
             structured_contribution = build_structured_contribution_from_storage(
                 question,
                 plan,
                 storage=self.storage,
                 context_sources=self.context_sources,
                 max_relation_hops=min(2, self.policies.max_relation_hops),
+                bridge_enabled=d3_config.bridge_enabled,
             )
+            stream_to_prefix = (
+                structured_contribution.bridged_candidates
+                if d3_config.bridge_enabled
+                else structured_contribution.candidates
+            )
+            before_graph = list(rankings["graph"])
             rankings["graph"] = merge_exact_streams(
-                structured_contribution.candidates,
-                rankings["graph"],
+                stream_to_prefix,
+                before_graph,
                 limit,
             )
+            if d3_config.bridge_enabled:
+                structured_contribution.compute_displacement_diagnostics(
+                    before_graph=before_graph,
+                    after_graph=rankings["graph"],
+                    bridged_candidates=structured_contribution.bridged_candidates,
+                )
+            else:
+                structured_contribution.displacement_diagnostics = {
+                    "bridged_candidate_count": 0,
+                    "graph_candidates_before_bridge": len(before_graph),
+                    "graph_candidates_after_bridge": len(rankings["graph"]),
+                    "graph_candidates_displaced_by_prefix": 0,
+                    "displaced_object_ids": [],
+                    "bridged_candidate_ids": [],
+                    "deduplicated_overlap_count": 0,
+                }
         scores: dict[str, float] = defaultdict(float)
         payloads: dict[str, dict[str, Any]] = {}
         channels: dict[str, list[str]] = defaultdict(list)
@@ -1774,6 +1800,7 @@ class Retriever:
                 "d3_arm": d3_config.arm.value,
                 "selected_rule_ids": list(d3_config.selected_rule_ids),
                 "structured_treatment_enabled": d3_config.structured_treatment_enabled,
+                "bridge_enabled": d3_config.bridge_enabled,
                 "selected_legacy_rules_suppressed": d3_config.selected_legacy_rules_suppressed,
                 "suppressed_selected_rule_ids": list(
                     d3_diagnostics["suppressed_selected_rule_ids"]
