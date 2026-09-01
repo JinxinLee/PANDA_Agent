@@ -1,8 +1,9 @@
 {
   "schema_version": "1.0.0",
-  "checkpoint": "D3.5-A1-R1",
-  "status": "REPAIRED / AWAITING_ISOLATION_AND_MECHANISM_C",
-  "base_commit": "d84b3c0fe7ffe4bd894990077a20651165cdcfdf",
+  "checkpoint": "D3.5-A1-R2",
+  "status": "COMPLETE / D3.5-A1 FROZEN / READY FOR D3.5-A2",
+  "base_commit": "45f58feb27b75d552b4797321bb688fb038f52da",
+  "final_d1_commit": "9b5a84996c30eaf1a297924b36452a90fe6d84d2",
   "stage_position": {
     "D3": "COMPLETE / SHORTCUT_MIGRATION_EXPERIMENT_DECIDED",
     "D3.5": "IN_PROGRESS",
@@ -11,8 +12,8 @@
     "D3.5-A0-R2": "COMPLETE / POST_A1_D1_IDENTITY_AND_MATERIALIZATION_FREEZE_REPAIRED",
     "D3.5-A1": "PROTOTYPE_IMPLEMENTED_AND_VERIFIED_T0",
     "D3.5-A1-R1": "COMPLETE / PREREGISTERED_TREATMENT_AND_ADDITIVE_BRIDGE_SEMANTICS_REPAIRED",
-    "D3.5-A1-R2": "NOT_STARTED",
-    "D3.5-A2": "NOT_STARTED",
+    "D3.5-A1-R2": "COMPLETE / MECHANISM_C_DISPOSITION_AND_DEVELOPMENT_MATERIALIZATION_FROZEN",
+    "D3.5-A2": "READY_TO_EXECUTE",
     "D4": "NOT_STARTED"
   },
   "preregistration_identity": {
@@ -21,31 +22,27 @@
     "structured_artifact": "evaluation/d3_5_a0_structured_evidence_link_design.json",
     "human_readable_artifact": "evaluation/D3_5_A0_STRUCTURED_EVIDENCE_LINK_REACHABILITY_AND_BRIDGING_DESIGN.md"
   },
-  "r1_defect_repairs": {
-    "defect_1": {
-      "name": "Separate historical D3 seven-rule treatment semantics from D3.5 focused two-rule treatment semantics",
+  "r2_repairs_and_governance": {
+    "exact_version_qualification": {
       "status": "REPAIRED",
-      "details": "D3Arm and D3ExperimentConfig manage historical D3 with 7 rules (lmd_fit_data_chain, event_poca_handoff, pid_two_pass_files, model_factory_theory, effective_acceptance_pipeline, restgas_profile_workflow, root_macro_usage). D3_5Arm and D3_5ExperimentConfig manage D3.5 with 2 focused rules (event_poca_handoff, restgas_profile_workflow). The other 5 historical rules remain active background rules across all four D3.5 arms."
+      "details": "Path-based source-native materialization requires explicit governed source_id + one exact frozen source_version_id + canonical repository-relative path. Resolves active frozen version from RetrievalPlan.resolved_versions or source_manifest.json; provenance source_version_ids must match; unversioned or conflicting sources fail closed with VERSION_SCOPE_CONFLICT. Context and paper/web sources are not exempt from exact version qualification; latest-version inference is strictly prohibited."
     },
-    "defect_2": {
-      "name": "Restore exact historical / STRUCTURED_UNBRIDGED structured-path behavior",
-      "status": "REPAIRED",
-      "details": "derive_unbridged_structured_seeds preserves pre-A1 semantics (no 8-seed cap, admits all unique G/S/D seeds, admits all Tier-D ambiguity candidates, no atomic budget constraint). D3.5 bridge independently uses derive_d3_5_bridge_seeds (cap 8, atomic ambiguity constraint)."
+    "database_role_clarification": {
+      "status": "CLARIFIED_AND_RECORDED",
+      "details": "CURRENT_DATABASE_ROLE = DEDICATED_DEVELOPMENT_EVALUATION_STATE. Reused the dedicated development database (postgresql://panda:panda@127.0.0.1:55432/panda_qa). Removed the obsolete separate-database assumption and ISOLATED_MATERIALIZATION_UNAVAILABLE blocker."
     },
-    "defect_3": {
-      "name": "Make STRUCTURED_BRIDGED genuinely additive",
-      "status": "REPAIRED",
-      "details": "STRUCTURED_BRIDGED composes bridged candidates onto the unbridged graph baseline (unbridged_graph = merge_exact_streams(candidates, ordinary_graph)). When bridge produces 0 candidates, STRUCTURED_BRIDGED graph channel exactly equals STRUCTURED_UNBRIDGED. Prefix displacement is measured relative to unbridged_graph."
+    "mechanism_c_governance_disposition": {
+      "status": "APPROVED_GOVERNED_CHANGE",
+      "details": "Independently audited restgas profile workflow semantics without using benchmark queries or gold labels. Provenance repair approved for existing relations: configuration.restgas_profile PARAMETERIZES workflow.restgas_profile_reconstruction augmented with macro/target/prod_sim_hvmaps.C; file_pattern.restgas_profile_input PRODUCES_INPUT_FOR workflow.restgas_profile_reconstruction augmented with macro/target/prod_sim_hvmaps.C and pgenerators/Target/PndTargetGenerator.cxx. Passed counterfactual gate ('Would this linkage still be correct and useful if g021 never existed? -> YES'). D3_5_A1_REPOSITORY_D1_CHANGED = true."
     },
-    "defect_4": {
-      "name": "Require governed source qualification for evidence_paths",
-      "status": "REPAIRED",
-      "details": "evidence_paths requires explicit governed evidence_source_ids matching plan/context scope; missing evidence_source_ids fails closed with GOVERNED_PROVENANCE_INVALID and reason 'evidence path lacks explicit governed source qualification'. evidence_object_ids does not require evidence_source_ids."
+    "development_database_sync": {
+      "status": "SYNCHRONIZED_AND_VERIFIED",
+      "details": "Synchronized PostgreSQL development database in place from D3_5_A2_FINAL_REPOSITORY_D1_IDENTITY. Upserted 24 objects, 16 accepted relations, 1 curated workflow step, 2 aliases. Pruned all 4 historical superseded records (stale records = 0). Semantic verification confirmed development_materialization_matches_final_repository_D1 = true. QDRANT_WRITES = 0."
     }
   },
   "d1_identity": {
-    "starting_repository_d1_identity": {
-      "commit_sha": "0151786856d813661ab29962987f933d17e619c2",
+    "final_repository_d1_identity": {
+      "commit_sha": "9b5a84996c30eaf1a297924b36452a90fe6d84d2",
       "authoritative_config_paths": [
         "configs/seed_objects.yaml",
         "configs/seed_relations.yaml",
@@ -54,29 +51,38 @@
       "counts": {
         "objects": 24,
         "accepted_relations": 16,
-        "curated_workflow_steps": 1
+        "curated_workflow_steps": 1,
+        "aliases": 2
       }
     },
-    "mechanism_c_outcome": "PENDING_R2_GOVERNANCE_DISPOSITION",
-    "d3_5_a1_repository_d1_changed": false,
-    "starting_identity_equals_final_identity": true
+    "mechanism_c_outcome": "APPROVED_GOVERNED_CHANGE",
+    "d3_5_a1_repository_d1_changed": true,
+    "starting_identity_equals_final_identity": false
   },
-  "isolation_and_materialization_status": {
-    "implemented_isolation_mechanism": "StorageSettings(database_url=...) configurable via PANDA_DATABASE_URL, in-memory T0 mock graph reader boundaries",
-    "in_memory_t0_materialization_verified": true,
-    "persistent_isolated_evaluation_db_present": false,
-    "provisioning_note": "A configured isolation mechanism exists, but the persistent target database was not provisioned because permission was not granted by safety approval. Production database was untouched.",
-    "production_structured_state_writes": 0,
-    "production_materialization_untouched_true": true,
-    "d3_5_evaluation_d1_materialization_frozen": false,
-    "isolated_materialization_matches_final_repository_d1": false
+  "database_materialization_identity": {
+    "database_role": "DEDICATED_DEVELOPMENT_EVALUATION_STATE",
+    "database_url": "postgresql://panda:panda@127.0.0.1:55432/panda_qa",
+    "source_git_sha": "9b5a84996c30eaf1a297924b36452a90fe6d84d2",
+    "counts_in_postgres": {
+      "curated_objects": 24,
+      "curated_accepted_relations": 16,
+      "curated_workflow_steps": 1,
+      "curated_aliases": 2,
+      "total_objects": 133077,
+      "total_accepted_relations": 64561,
+      "total_workflow_steps": 375
+    },
+    "stale_or_superseded_curated_records": 0,
+    "development_materialization_matches_final_repository_D1": true,
+    "qdrant_writes": 0
   },
   "freeze_booleans": {
     "D3_5_A1_IMPLEMENTATION_FROZEN": true,
-    "D3_5_A2_FINAL_REPOSITORY_D1_IDENTITY_FROZEN": false,
-    "D3_5_EVALUATION_D1_MATERIALIZATION_FROZEN": false,
-    "isolated_materialization_matches_final_repository_D1": false,
-    "production_materialization_untouched_true": true
+    "MECHANISM_C_DISPOSITION_FROZEN": true,
+    "D3_5_A2_FINAL_REPOSITORY_D1_IDENTITY_FROZEN": true,
+    "D3_5_EVALUATION_D1_MATERIALIZATION_FROZEN": true,
+    "development_materialization_matches_final_repository_D1": true,
+    "D3_5_A1_REPOSITORY_D1_CHANGED": true
   },
   "arm_contract": {
     "LEGACY": {
@@ -107,7 +113,7 @@
   "implementation_components": [
     {
       "path": "src/panda_agent/d3_structured.py",
-      "responsibility": "Separate D3 / D3.5 arm configs, derive_unbridged_structured_seeds (unbounded) vs derive_d3_5_bridge_seeds (cap 8, atomic ambiguity), Mechanism A phased typed traversal, Mechanism B terminal exact materialization with mandatory evidence_source_ids for paths, reachability and bridge receipts, additive baseline composition, and displacement diagnostics."
+      "responsibility": "Separate D3 / D3.5 arm configs, derive_unbridged_structured_seeds (unbounded) vs derive_d3_5_bridge_seeds (cap 8, atomic ambiguity), Mechanism A phased typed traversal, Mechanism B terminal exact materialization with mandatory evidence_source_ids and exact frozen source version qualification, reachability and bridge receipts, additive baseline composition, and displacement diagnostics."
     },
     {
       "path": "src/panda_agent/retrieval.py",
@@ -115,7 +121,7 @@
     },
     {
       "path": "tests/unit/test_d3_5_structured_bridge.py",
-      "responsibility": "Dedicated T0 unit and synthetic tests covering four arms, 2-rule D3.5 suppression vs 54 background rules, atomic ambiguity, unbounded unbridged baseline vs capped bridge, Mechanism A traversal & budget, Mechanism B exact materialization & source qualification, receipts, additive graph prefix displacement diagnostics, and zero-bridge equivalence."
+      "responsibility": "Dedicated T0 unit and synthetic tests covering four arms, 2-rule D3.5 suppression vs 54 background rules, atomic ambiguity, unbounded unbridged baseline vs capped bridge, Mechanism A traversal & budget, Mechanism B exact materialization & exact source version qualification, receipts, additive graph prefix displacement diagnostics, and zero-bridge equivalence."
     },
     {
       "path": "tests/unit/test_d3_structured_shortcut.py",
@@ -158,25 +164,24 @@
   },
   "tests": {
     "test_d3_5_structured_bridge": {
-      "command": "$env:PYTHONPATH='src'; python tests/unit/test_d3_5_structured_bridge.py",
+      "command": "$env:PYTHONPATH='src;.'; python tests/unit/test_d3_5_structured_bridge.py",
       "result": "PASS",
-      "tests_run": 27
+      "tests_run": 32
     },
     "test_d3_structured_shortcut": {
-      "command": "$env:PYTHONPATH='src'; python tests/unit/test_d3_structured_shortcut.py",
+      "command": "$env:PYTHONPATH='src;.'; python tests/unit/test_d3_structured_shortcut.py",
       "result": "PASS",
       "tests_run": 8
     },
-    "all_d3_tests_total": 35,
+    "all_d3_tests_total": 40,
     "anti_leak_audit": "PASS: no formal case/question/expected-evidence metadata and no new case-specific mapping occur in runtime bridge logic. Pre-existing frozen D3/D3.5 selected rule IDs remain only in nonsemantic arm suppression/configuration; Mechanism A/B have zero semantic dependency on them and selected_legacy_payload_reuse_count remains 0.",
     "git_diff_check": "PASS"
   },
   "known_limitations": [
-    "No synchronized persistent isolated evaluation database was provisioned in this environment (safety approval was not granted); persistent evaluation materialization remains unverified outside T0 in-memory/static fixtures.",
-    "Mechanism C governance disposition remains pending for D3.5-A1-R2.",
-    "D3.5-A1-R1 is a prototype implementation repair verified with synthetic T0 tests; no formal retrieval-quality benchmarking or outcome exposure has been executed."
+    "D3.5-A1-R2 is a prototype implementation and materialization freeze verified with synthetic T0 tests and in-place database verification; no formal retrieval-quality benchmarking or outcome exposure has been executed.",
+    "PostgreSQL development database is now frozen in the D3.5 evaluation materialization state and must not be mutated until D3.5-A2 comparison runs conclude."
   ],
-  "lifecycle_decision": "REPAIRED / AWAITING_R2_GOVERNANCE_AND_ISOLATION",
-  "blocker_detail": "D3.5-A1-R1 contract defect repairs are complete (D3_5_A1_IMPLEMENTATION_FROZEN = true). D3_5_A2_FINAL_REPOSITORY_D1_IDENTITY_FROZEN and D3_5_EVALUATION_D1_MATERIALIZATION_FROZEN remain false pending D3.5-A1-R2 Mechanism-C governance disposition and persistent isolated evaluation database provisioning.",
-  "next_stage": "D3.5-A1-R2 — Mechanism-C Governance Disposition & Isolated Materialization Freeze"
+  "lifecycle_decision": "D3.5-A1 COMPLETE AND FROZEN / READY FOR D3.5-A2 EXECUTION",
+  "blocker_detail": "All D3.5-A1 implementation, exact version qualification, Mechanism-C governance disposition, repository D1 identity, and PostgreSQL development materialization freezes are satisfied. D3.5-A2 is unblocked and ready for execution under separate authorization.",
+  "next_stage": "D3.5-A2 — Structured Evidence-Link Bridging Evaluation"
 }
