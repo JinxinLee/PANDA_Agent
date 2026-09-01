@@ -9,9 +9,19 @@ When records conflict, use the single section explicitly marked **Current author
 
 ---
 
-# Current authoritative state — 2026-08-31
+# Current authoritative state — 2026-09-01
 
-## D3-A2-R2 current authoritative state — 2026-08-31
+## D3.5-A0 current authoritative state — 2026-09-01
+
+- `D3.5-A0 = COMPLETE / STRUCTURED_EVIDENCE_LINK_DESIGN_FROZEN`; `D3.5 = IN_PROGRESS`; `D3.5-A1 = NOT_STARTED`; `D3.5-A2 = NOT_STARTED`; `D3 = COMPLETE / SHORTCUT_MIGRATION_EXPERIMENT_DECIDED`; `D3_OUTCOME_EXPOSURE = COMPLETE`; `FORMAL_D3_EXPERIMENT_VERDICT = PASS`; `D4 = NOT_STARTED`.
+- D3.5 owns three distinct mechanisms: (A) typed, bounded governed structural reachability from a valid D2 seed to provenance-bearing governed structure; (B) strict materialization of reached governed evidence provenance into a source/version/locator-valid source-native candidate; and (C) narrowly justified, independently source-grounded governed evidence coverage where provenance genuinely does not exist. g036 is frozen as A + B; g021 is frozen as C. No case-specific linkage, path, or traversal route is selected in A0.
+- The frozen traversal design uses a phased typed budget, not a global hop increase: at most one child-to-parent containment transition and one accepted-relation or curated-workflow transition per root-to-provenance path, followed by terminal evidence materialization. Reverse traversal is predicate/type gated; ordinary relations confer no identity authority; `SAME_AS` remains inactive.
+- Evidence paths are lookup keys, not candidates. Materialization requires one exact indexed source-native match under plan-consistent `source_id`, `source_version_id`, canonical repository-relative locator, and preserved `object_type`; zero or multiple matches fail closed. Bridged candidates form a logical `structured_evidence` substream merged once into the existing graph channel with no new RRF vote, fusion weight, reranker, selector, filtering, or production authority.
+- D3.5-A1 requires runtime materialization matching authoritative approved repository D1 (`24 / 16 / 1` objects / accepted relations / curated workflow steps). The last observed deployment was `22 / 16 / 0`, so controlled re-ingestion is a required explicit A1 prerequisite unless a fresh read-only check proves the runtime has already been synchronized. No re-ingestion occurred in A0.
+- D3.5-A2 is preregistered as a focused `LEGACY / ABLATION / STRUCTURED_BRIDGED` comparison over g036, g021, and four already-exposed controls (`n006`, `g041`, `g020`, `n004`): 18 future retrieval executions, not a full 16 x 3 rerun. D3.5 outcome exposure remains not started.
+- A0 operations: runtime/config/D1/query-expansion changes `0`; retrieval/model calls `0`; PostgreSQL/Qdrant writes `0`; re-ingestion `0`; `novel_validation` and holdout untouched. Artifacts: `evaluation/d3_5_a0_structured_evidence_link_design.json` and `evaluation/D3_5_A0_STRUCTURED_EVIDENCE_LINK_REACHABILITY_AND_BRIDGING_DESIGN.md`. Exact next task only: **D3.5-A1 — Bounded Structured Evidence-Link Bridging Prototype** (`NOT_STARTED`).
+
+## D3-A2-R2 predecessor state — 2026-08-31
 
 - `D3-A2-R2 = COMPLETE / EVIDENCE_LINK_REACHABILITY_AND_ATTRIBUTION_CONSISTENCY_REPAIRED`; `D3-A2-R1 = COMPLETE / OUTCOME_ATTRIBUTION_AND_RUNTIME_STATE_REPAIRED`; `D3-A2 = COMPLETE / FROZEN_THREE_ARM_COMPARISON_COMPLETE`; `FORMAL_D3_EXPERIMENT_VERDICT = PASS`; `D3_OUTCOME_EXPOSURE = COMPLETE`; `D3 = COMPLETE / SHORTCUT_MIGRATION_EXPERIMENT_DECIDED`. R2 is a post-outcome consistency repair only: 0 retrieval reruns, 0 analyzer/embedding/reranker/QA/verifier/judge/API calls, and 0 runtime/config/D1/D2/query-expansion changes.
 - Scientific invariance is preserved exactly: 48/48 arm-case cells; final-evidence recall `0.8205128205128205 / 0.6666666666666666 / 0.6666666666666666` (LEGACY / ABLATION / STRUCTURED), group-pooled `19/24 / 16/24 / 16/24`, dependency `2/13`, recovery `0/2`, regression `2/13`, useful reproduction `11/13`; g036 and g021 remain `1.0 / 0.0 / 0.0` in all three arms. All seven per-rule decisions and `failure_taxonomy_counts = {EVIDENCE_LINK_COVERAGE_GAP: 2}` remain unchanged.

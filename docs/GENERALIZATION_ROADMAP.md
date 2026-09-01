@@ -374,7 +374,7 @@ C1 is `PASS`; C2 is `PASS`. Legacy C3-R1, C3-R2, and C3-R3 remain historical `IN
 
 ## Phase D — Concept and entity knowledge abstraction
 
-Phase D is `IN_PROGRESS` (D1 complete; D2 role decision complete; D3 complete 2026-08-31 with the shortcut-migration experiment decided; D4 remains `NOT_STARTED`).
+Phase D is `IN_PROGRESS` (D1 complete; D2 role decision complete; D3 complete 2026-08-31 with the shortcut-migration experiment decided; D3.5 is `IN_PROGRESS` with A0 design frozen; D4 remains `NOT_STARTED`).
 
 ### D1 — Concept/entity schema
 
@@ -759,16 +759,32 @@ novel_holdout    13 expected → frozen/sealed externally → content not
 - **Acceptance criteria:** Structured paths reproduce useful behavior without encoding exact evaluation answer locations and show credible generality.
 - **Failure handling:** Stop migration if performance collapses; keep old rules and fix the general resolver/schema rather than add replacement hard-coded rules. Stop after D3.
 
+### D3.5 — Structured Evidence-Link Reachability & Bridging
+
+- **Status:** IN_PROGRESS (`D3.5-A0` COMPLETE / STRUCTURED_EVIDENCE_LINK_DESIGN_FROZEN; `D3.5-A1` NOT_STARTED; `D3.5-A2` NOT_STARTED; D3 remains COMPLETE / SHORTCUT_MIGRATION_EXPERIMENT_DECIDED; D4 remains NOT_STARTED)
+- **Problem:** The current structured path can resolve governed objects and traverse accepted D1 structure, but it lacks a sufficiently generic, bounded, auditable bridge from a resolved governed seed to retrieval-addressable source evidence. D3 exposed two distinct classes: existing governed provenance that is unreachable and/or not materialized, and genuinely absent governed provenance.
+- **Goal:** Establish a typed, bounded path from valid D2 seeds through governed structure and validated evidence provenance to additive source-native candidates, plus a conservative governance path for genuine evidence-link gaps.
+- **Mechanisms:** (A) governed structural reachability through one bounded upward containment transition and one predicate/type-gated accepted-relation or curated-workflow transition; (B) terminal evidence-provenance materialization through exact source/version/locator resolution; and (C) independently source-grounded, version-grounded, reviewable, reusable governed evidence coverage. g036 is design evidence for A + B; g021 is design evidence for C only and does not preregister a new link.
+- **Authority boundary:** Tier G and Tier S may seed within their existing bounded authority; Tier D unique and ambiguous remain additive advisory seeds; corrective-only and UNRESOLVED do not initiate traversal; ambiguity is retained; `SAME_AS`, RESOLVED_MULTIPLE, and whole-question fallback remain inactive/prohibited. Structural containment and ordinary relations never confer identity.
+- **Boundedness:** Phased typed transition budgets replace raw BFS and a global hop increase. Source/version scope, predicate semantics, endpoint types, deterministic deduplication, a seed cap of 8, reachable-structure cap of 32, and bridged-candidate cap of 20 prevent overexpansion. Query relevance may only order already governed reachable structures when a cap binds.
+- **Candidate integration:** Bridged candidates are governed-provenance-backed, additive, and nonauthoritative. A logical `structured_evidence` substream is merged once into the existing graph channel under the existing limit and graph weight; no extra RRF vote, filtering, force-selection, fusion retuning, reranker change, selector change, or production activation is allowed.
+- **Runtime prerequisite:** D3.5-A1 validation requires a runtime materialization matching current approved repository D1 (`24 / 16 / 1`). If the runtime remains at the last observed `22 / 16 / 0`, controlled re-ingestion is an explicit A1 setup prerequisite and must record materialization identity while changing no query expansion or D2 authority.
+- **D3.5-A1 — Bounded Structured Evidence-Link Bridging Prototype:** May implement generic typed reachability, strict provenance materialization, receipts, anti-shortcut safeguards, focused T0 tests, runtime synchronization, and only independently justified narrow Mechanism-C coverage. May not expose formal g036/g021 outcomes, delete shortcuts, activate production, change D2 authority, perform broad D1 expansion, or retune retrieval.
+- **D3.5-A2 — Focused Evidence-Link Recovery Validation:** Owns first D3.5 outcome exposure. Frozen comparison: `LEGACY / ABLATION / STRUCTURED_BRIDGED` on g036 and g021 plus `n006`, `g041`, `g020`, and `n004` controls (`18` executions). This re-confirms dependency in the synchronized runtime, attributes bridge recovery, tests legacy parity, and avoids an unnecessary full 16 x 3 rerun.
+- **Acceptance criteria:** Reachability is bounded and auditable; every bridged candidate derives from accepted governed structure and exact source/version-valid provenance; no evaluation-shaped mapping or legacy-payload reuse exists; g036-type provenance can materialize when reachable; g021-type coverage is independently governable; controls show no material overexpansion, abstention break, displacement, or scope leakage; D2 authority and production defaults remain unchanged.
+- **Anti-shortcut boundary:** Prohibited shapes include trigger/rule/case/question/bound-rule to file, evidence path, object, or traversal route; benchmark expected evidence to D1 relation; evaluation selector to governed object; legacy payload to structured map; and object-ID special branches equivalent to direct answer injection.
+- **Artifacts:** `evaluation/d3_5_a0_structured_evidence_link_design.json` and `evaluation/D3_5_A0_STRUCTURED_EVIDENCE_LINK_REACHABILITY_AND_BRIDGING_DESIGN.md`. A0 performed zero retrieval/model calls, zero DB/Qdrant writes, zero re-ingestion, and zero runtime/config/D1/query-expansion changes. Exact next task: **D3.5-A1 — Bounded Structured Evidence-Link Bridging Prototype**.
+
 ### D4 — Incremental migration of appropriate query expansions
 
 - **Status:** NOT_STARTED
 - **Problem:** Remaining shortcut knowledge should move gradually, while genuine terminology and normalization must remain.
-- **Goal:** Migrate appropriate shortcuts in small measured batches only after D3 passes.
+- **Goal:** Migrate appropriate shortcuts in small measured batches only after D3 is complete and D3.5 has validated the structured evidence-link bridge.
 - **Why this stage:** Small batches preserve accountability and localize regressions while the structured layer matures.
 - **Intended design:** Retain stable aliases/domain vocabulary/normalization; replace phrase-to-file/page, negative-control, and answer-location shortcuts where a generic mechanism is proven.
 - **Functional requirements:** Batch inventory, replacement mechanism, before/after retrieval and novel checks, dependency metric, and reversible changes.
 - **Explicit out of scope:** One-operation deletion of `query_expansions.yaml`, removing stable vocabulary, or re-adding hidden shortcuts after one failure.
-- **Dependencies:** D3 PASS.
+- **Dependencies:** D3 COMPLETE / valid shortcut-migration experiment, plus D3.5 structured evidence-link bridging mechanism validated by D3.5-A2. D3 PASS alone is insufficient.
 - **Authorized evaluation tier:** T0 and T2 per batch; a Phase-D T3 only at an agreed boundary.
 - **Primary metrics:** Benchmark/novel retrieval, generalization gap, benchmark dependency, and rules migrated/retained by classification.
 - **Acceptance criteria:** Each batch has an evidenced generic replacement, bounded benchmark regression, and no grounding regression.

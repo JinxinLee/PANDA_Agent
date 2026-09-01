@@ -1,0 +1,629 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint": "D3.5-A0",
+  "status": "COMPLETE / STRUCTURED_EVIDENCE_LINK_DESIGN_FROZEN",
+  "base_commit": "6082fe8fadb3b89fc225f4b0daa91d17e3a57e69",
+  "stage_position": {
+    "D3": "COMPLETE / SHORTCUT_MIGRATION_EXPERIMENT_DECIDED",
+    "D3.5": "IN_PROGRESS",
+    "D3.5-A0": "COMPLETE / STRUCTURED_EVIDENCE_LINK_DESIGN_FROZEN",
+    "D3.5-A1": "NOT_STARTED",
+    "D3.5-A2": "NOT_STARTED",
+    "D4": "NOT_STARTED",
+    "sequence": [
+      "D3 — Small shortcut-migration experiment — COMPLETE",
+      "D3.5 — Structured Evidence-Link Reachability & Bridging — IN_PROGRESS",
+      "D4 — Incremental migration of appropriate query expansions — NOT_STARTED"
+    ]
+  },
+  "d3_evidence_inputs": [
+    "evaluation/d3_a2_three_arm_results.json",
+    "evaluation/D3_A2_FROZEN_THREE_ARM_COMPARISON.md",
+    "docs/EVALUATION_STATUS.md",
+    "docs/GENERALIZATION_ROADMAP.md",
+    "evaluation/d3_a1_structured_shortcut_replacement_prototype.json",
+    "evaluation/D3_A1_STRUCTURED_SHORTCUT_REPLACEMENT_PROTOTYPE.md",
+    "src/panda_agent/d3_structured.py",
+    "src/panda_agent/retrieval.py",
+    "configs/seed_objects.yaml",
+    "configs/seed_relations.yaml",
+    "configs/seed_workflows.yaml",
+    "configs/retrieval_policies.yaml"
+  ],
+  "problem_statement": "The current structured path can resolve governed objects and traverse accepted D1 structure, but it does not yet provide a sufficiently generic, bounded, auditable bridge from resolved governed identity to retrieval-addressable source evidence. D3 exposed two distinct mechanism classes: A. governed evidence provenance already exists but is not reachable and/or not materialized into source-native retrieval candidates; B. the required governed evidence provenance does not yet exist.",
+  "motivating_cases": {
+    "g036": {
+      "rule_id": "event_poca_handoff",
+      "use": "KNOWN_DESIGN_EVIDENCE_ONLY",
+      "d2_resolution": "event_poca -> data_product.restgas.event_poca (Tier S)",
+      "diagnosis": [
+        "STRUCTURAL_REACHABILITY",
+        "EVIDENCE_PROVENANCE_MATERIALIZATION"
+      ],
+      "mechanism_mapping": [
+        "A",
+        "B"
+      ],
+      "frozen_facts": [
+        "data_product.restgas.event_poca has parent_object_id data_product.restgas.boost_root",
+        "accepted workflow.restgas.first_pass_poca CONSUMES data_product.restgas.pid_root and PRODUCES data_product.restgas.boost_root relations carry macro/target/ana_dpm.C provenance in repository D1",
+        "the provenance-bearing structure is not reachable under the frozen one-hop A1 traversal",
+        "A1 does not materialize relation-level provenance into source-native candidates"
+      ]
+    },
+    "g021": {
+      "rule_id": "restgas_profile_workflow",
+      "use": "KNOWN_DESIGN_EVIDENCE_ONLY",
+      "d2_resolution": "restgas_profile -> configuration.restgas_profile (Tier S)",
+      "diagnosis": [
+        "GENUINE_GOVERNED_EVIDENCE_COVERAGE"
+      ],
+      "mechanism_mapping": [
+        "C"
+      ],
+      "frozen_facts": [
+        "required source evidence has no inspectable governed provenance in the current D1 structure",
+        "no path, predicate, or new linkage is selected in A0"
+      ]
+    }
+  },
+  "mechanisms": {
+    "governed_structural_reachability": {
+      "id": "A",
+      "definition": "D2-resolved governed object -> existing governed structural context -> provenance-bearing governed object, accepted relation, or curated workflow step.",
+      "eligible_primitives": [
+        "parent_object_id child-to-parent containment",
+        "accepted relation traversal under predicate and type policy",
+        "reverse accepted relation traversal under predicate and type policy",
+        "curated workflow membership and workflow-step participation",
+        "workflow entrypoint, inputs, and outputs"
+      ],
+      "authority": "REACHABILITY_ONLY / NO_IDENTITY_AUTHORITY",
+      "implementation_status": "DESIGN_ONLY"
+    },
+    "evidence_provenance_materialization": {
+      "id": "B",
+      "definition": "Reached governed object, accepted relation, or curated workflow -> validated governed evidence provenance -> retrieval-addressable source-native evidence candidate.",
+      "authority": "GOVERNED_PROVENANCE_BACKED_ADDITIVE_CANDIDATE / NO_IDENTITY_AUTHORITY",
+      "implementation_status": "DESIGN_ONLY"
+    },
+    "genuine_evidence_link_coverage": {
+      "id": "C",
+      "definition": "When required source evidence genuinely lacks governed provenance, add only narrowly justified, source-grounded, version-grounded, reviewable, reusable governed evidence linkage.",
+      "counterfactual_gate": "The linkage must remain semantically justified if the motivating evaluation case did not exist.",
+      "preference": "Add evidence provenance to an already correct governed object, relation, or workflow before considering a new ontology relation or object.",
+      "implementation_status": "DESIGN_ONLY / NO_LINK_SELECTED_IN_A0"
+    }
+  },
+  "seed_eligibility_contract": {
+    "Tier_G": {
+      "eligible": true,
+      "role": "AUTHORITATIVE_BOUNDED_IDENTITY_SEED",
+      "constraints": "Traversal starts from the governed matched seed; canonical identity remains bounded to accepted Tier-G co-reference evidence."
+    },
+    "Tier_S": {
+      "eligible": true,
+      "role": "AUTHORITATIVE_BOUNDED_MATCHED_RECORD_SEED",
+      "constraints": "Matched-record structure only; canonical_object_id remains null and no cross-record canonicalization is permitted."
+    },
+    "Tier_D_unique": {
+      "eligible": true,
+      "role": "NONAUTHORITATIVE_ADVISORY_ADDITIVE_SEED",
+      "constraints": "May add a bounded structured branch but may not filter, restrict scope, route exclusively, canonicalize, or override other seeds."
+    },
+    "Tier_D_ambiguous": {
+      "eligible": true,
+      "role": "BOUNDED_MULTI_SEED_NONAUTHORITATIVE_ADVISORY",
+      "constraints": "Retain all governed Tier-D alternatives up to the shared seed cap; preserve the ambiguity set and allocate the traversal cap across alternatives deterministically."
+    },
+    "corrective_only": {
+      "eligible": false,
+      "role": "ADVISORY_CANDIDATE_ONLY",
+      "constraints": "No identity traversal. A corrective term may accompany traversal only when an independent valid Tier-G, Tier-S, or Tier-D governed seed exists."
+    },
+    "UNRESOLVED": {
+      "eligible": false,
+      "role": "NO_STRUCTURAL_REACHABILITY",
+      "constraints": "No seed and no negative filtering."
+    },
+    "RESOLVED_MULTIPLE": {
+      "eligible": false,
+      "role": "INACTIVE_UNEVALUATED",
+      "constraints": "No activation in D3.5."
+    },
+    "SAME_AS": {
+      "eligible": false,
+      "role": "INACTIVE_UNEVALUATED_FOR_THIS_PATH",
+      "constraints": "Excluded from reachability and does not increase resolver authority."
+    },
+    "whole_question_fallback": {
+      "eligible": false,
+      "role": "PROHIBITED"
+    },
+    "shared_seed_cap": 8
+  },
+  "structural_primitive_policy": {
+    "parent_object_id": {
+      "eligible_for_reachability": true,
+      "directionality": "CHILD_TO_PARENT_ONLY",
+      "authority_level": "STRUCTURAL_CONTAINMENT_ONLY",
+      "may_change_identity": false,
+      "may_produce_candidate_seeds": true,
+      "may_expose_evidence_provenance": true,
+      "required_governance": "Persisted governed parent reference passing D1 parent integrity validation",
+      "version_scope_constraints": "Child and parent must resolve in the accepted structured state and pass RetrievalPlan source/version scope",
+      "object_type_constraints": "The child must be a contained object and the parent a valid container or containing artifact under the governed parent contract",
+      "boundary": "At most one upward containment transition per root seed. Parent-to-child fan-out is not eligible in A1.",
+      "identity_statement": "Structural containment is not identity; a child is never canonicalized to its parent."
+    },
+    "accepted_relation_subject_to_object": {
+      "eligible_for_reachability": true,
+      "directionality": "FORWARD_WHEN_PREDICATE_POLICY_AND_ENDPOINT_TYPES_ALLOW",
+      "authority_level": "RELATION_REACHABILITY_ONLY",
+      "may_change_identity": false,
+      "may_produce_candidate_seeds": true,
+      "may_expose_evidence_provenance": true,
+      "required_governance": "review_status accepted; predicate explicitly eligible; SAME_AS excluded",
+      "version_scope_constraints": "Both endpoints and any materialized evidence must pass plan scope"
+    },
+    "accepted_relation_object_to_subject": {
+      "eligible_for_reachability": true,
+      "directionality": "REVERSE_WHEN_PREDICATE_POLICY_AND_ENDPOINT_TYPES_ALLOW",
+      "authority_level": "RELATION_REACHABILITY_ONLY",
+      "may_change_identity": false,
+      "may_produce_candidate_seeds": true,
+      "may_expose_evidence_provenance": true,
+      "required_governance": "Original accepted edge and predicate provenance preserved; reverse eligibility is explicit, not inferred from generic adjacency",
+      "version_scope_constraints": "Both endpoints and any materialized evidence must pass plan scope"
+    },
+    "workflow_step_entrypoint": {
+      "eligible_for_reachability": true,
+      "directionality": "WORKFLOW_OR_STEP_TO_ENTRYPOINT_AND_ENTRYPOINT_TO_OWNING_CURATED_STEP",
+      "authority_level": "WORKFLOW_PARTICIPATION_ONLY",
+      "may_change_identity": false,
+      "may_produce_candidate_seeds": true,
+      "may_expose_evidence_provenance": true,
+      "required_governance": "Curated seed workflow step with valid entrypoint and D1 workflow integrity",
+      "version_scope_constraints": "Participants and evidence pass plan scope"
+    },
+    "workflow_step_inputs_outputs": {
+      "eligible_for_reachability": true,
+      "directionality": "INPUT_TO_STEP, STEP_TO_OUTPUT, OUTPUT_TO_PRODUCING_STEP, AND STEP_TO_INPUT_AS EXPLICIT PARTICIPATION DIRECTIONS",
+      "authority_level": "WORKFLOW_DATAFLOW_REACHABILITY_ONLY",
+      "may_change_identity": false,
+      "may_produce_candidate_seeds": true,
+      "may_expose_evidence_provenance": true,
+      "required_governance": "Curated seed workflow step passing D1 workflow integrity",
+      "version_scope_constraints": "Participants and evidence pass plan scope"
+    },
+    "workflow_containment_membership": {
+      "eligible_for_reachability": true,
+      "directionality": "PARTICIPANT_TO_OWNING_CURATED_WORKFLOW_AND_WORKFLOW_TO_DECLARED_STEP_ONLY",
+      "authority_level": "MEMBERSHIP_ONLY",
+      "may_change_identity": false,
+      "may_produce_candidate_seeds": true,
+      "may_expose_evidence_provenance": true,
+      "required_governance": "Membership must be explicitly represented by a curated workflow record; no inferred membership",
+      "version_scope_constraints": "Participants and evidence pass plan scope"
+    },
+    "source_native_evidence_provenance": {
+      "eligible_for_reachability": false,
+      "directionality": "TERMINAL_MATERIALIZATION_ONLY",
+      "authority_level": "EVIDENCE_PROVENANCE_NOT_IDENTITY",
+      "may_change_identity": false,
+      "may_produce_candidate_seeds": false,
+      "may_expose_evidence_provenance": true,
+      "required_governance": "Accepted provenance origin plus successful strict source-native resolution",
+      "version_scope_constraints": "Exact source/version/locator contract"
+    }
+  },
+  "predicate_policy": {
+    "default": "DENY_UNLESS_LISTED",
+    "identity_authority_for_all_ordinary_relations": false,
+    "classes": {
+      "DATAFLOW": {
+        "predicates": [
+          "PRODUCES",
+          "CONSUMES",
+          "PRODUCES_INPUT_FOR"
+        ],
+        "forward_reachability": true,
+        "reverse_reachability": true,
+        "evidence_provenance_exposure": true,
+        "workflow_process_expansion": true,
+        "constraints": "Endpoint types must conform to the governed predicate meaning; reverse traversal answers producer/consumer reachability but never reverses the stored predicate."
+      },
+      "IMPLEMENTATION_AND_FORMALIZATION": {
+        "predicates": [
+          "IMPLEMENTS",
+          "FORMALIZES",
+          "IMPLEMENTED_AS_PIPELINE",
+          "THEORETICAL_BASIS_FOR"
+        ],
+        "forward_reachability": true,
+        "reverse_reachability": true,
+        "evidence_provenance_exposure": true,
+        "workflow_process_expansion": "IMPLEMENTED_AS_PIPELINE_ONLY",
+        "constraints": "Only accepted governed endpoints; relation direction remains explicit and supplies no co-reference authority."
+      },
+      "WORKFLOW_AND_PARAMETERIZATION": {
+        "predicates": [
+          "PRODUCES_PROFILE_FOR",
+          "PARAMETERIZES",
+          "CORRECTS"
+        ],
+        "forward_reachability": true,
+        "reverse_reachability": true,
+        "evidence_provenance_exposure": true,
+        "workflow_process_expansion": true,
+        "constraints": "Reverse traversal is allowed only to the accepted governed source of the stored relationship and within compatible endpoint types."
+      },
+      "DOCUMENTATION": {
+        "predicates": [
+          "OPERATIONALLY_DOCUMENTS"
+        ],
+        "forward_reachability": true,
+        "reverse_reachability": true,
+        "evidence_provenance_exposure": true,
+        "workflow_process_expansion": false,
+        "constraints": "Document-to-governed-object linkage only; no repository-wide document expansion."
+      },
+      "REPOSITORY_PROVENANCE": {
+        "predicates": [
+          "FORKED_FROM"
+        ],
+        "forward_reachability": true,
+        "reverse_reachability": false,
+        "evidence_provenance_exposure": true,
+        "workflow_process_expansion": false,
+        "constraints": "Both repository versions must already be explicitly in RetrievalPlan/context scope; this relation cannot widen repository scope."
+      }
+    },
+    "SAME_AS": {
+      "forward_reachability": false,
+      "reverse_reachability": false,
+      "evidence_provenance_exposure": false,
+      "workflow_process_expansion": false,
+      "identity_authority": "INACTIVE_UNEVALUATED"
+    }
+  },
+  "traversal_budget_policy": {
+    "selected_design": "PHASED_TYPED_TRANSITION_BUDGET",
+    "rejected_options": {
+      "raw_graph_edge_count": "Rejected because it treats containment, workflow participation, and semantic relations as interchangeable adjacency.",
+      "increase_global_max_relation_hops_to_2": "Rejected because it is case-shaped, widens ordinary graph behavior, and does not bound parent/workflow composition.",
+      "untyped_bfs": "Rejected because it permits graph explosion and erases predicate semantics."
+    },
+    "phases": [
+      {
+        "phase": "SEED",
+        "budget": "up to 8 eligible governed seeds, deterministically ordered"
+      },
+      {
+        "phase": "CONTAINMENT_CONTEXT",
+        "budget": "zero or one child-to-parent transition per root seed"
+      },
+      {
+        "phase": "SEMANTIC_REACHABILITY",
+        "budget": "zero or one accepted predicate transition OR one curated workflow-step/membership transition per root-to-provenance path"
+      },
+      {
+        "phase": "EVIDENCE_MATERIALIZATION",
+        "budget": "terminal only; does not create a new graph frontier"
+      }
+    ],
+    "maximum_nonterminal_transitions_per_path": 2,
+    "relation_and_workflow_transition_are_alternative_within_one_path": true,
+    "global_reachable_structure_cap": 32,
+    "global_bridged_candidate_cap": 20,
+    "deduplication": "Deterministic by root seed, governed node ID, edge or workflow-step ID, transition type, and source-native candidate object_id.",
+    "budget_exhaustion_behavior": "Stop the affected branch, emit TRAVERSAL_BUDGET_EXHAUSTED, preserve ordinary retrieval, and never widen the budget at runtime.",
+    "global_retrieval_policy_change": false
+  },
+  "query_relevance_boundary": {
+    "graph_semantics_define_eligibility": true,
+    "query_relevance_allowed": true,
+    "allowed_use": "Deterministically order or select among already-governed, already-reachable structures and already-resolved candidates when a cap binds, using ordinary query and RetrievalPlan signals.",
+    "prohibited_uses": [
+      "create or assert a relation",
+      "increase identity authority",
+      "override review status",
+      "widen source/version scope",
+      "use an LLM assertion as graph truth",
+      "use evaluation metadata"
+    ]
+  },
+  "evidence_provenance_eligibility": {
+    "evidence_object_ids": {
+      "eligible": true,
+      "contract": "Each ID must resolve exactly to an existing indexed source-native knowledge object that passes source/version scope. Curated domain objects may remain provenance anchors but are not source-native candidates unless they themselves satisfy the source-native contract."
+    },
+    "evidence_paths": {
+      "eligible": "CONDITIONAL",
+      "contract": "A path is only a governed lookup key. It must resolve through the strict path-to-source-object contract before candidate creation; raw path strings are never injected."
+    },
+    "evidence_source_ids": {
+      "eligible": false,
+      "role": "SCOPE_QUALIFIER_ONLY"
+    },
+    "source_version_ids": {
+      "eligible": false,
+      "role": "VERSION_QUALIFIER_ONLY"
+    },
+    "source_locators": {
+      "eligible": "CONDITIONAL",
+      "contract": "A structured locator may resolve a candidate only with explicit source and version scope and one exact source-native match."
+    },
+    "review_creation_metadata": {
+      "eligible": false,
+      "role": "GOVERNANCE_VALIDATION_AND_RECEIPT_ONLY"
+    }
+  },
+  "path_to_source_object_resolution": {
+    "lookup_key": "source_id + source_version_id + canonical repository-relative locator path",
+    "path_normalization": "Convert separators to '/', remove a single leading './', reject absolute paths and parent-directory traversal, and preserve case; no basename-only or substring matching.",
+    "matching_semantics": "Exact equality against the indexed canonical/source-native path within the qualified source/version scope.",
+    "source_scope": "Use evidence_source_ids intersected with RetrievalPlan target/context sources; a single evidence source may qualify all listed paths. Multiple eligible sources are searched independently but the final match must be unique.",
+    "version_scope": "Use explicit source_version_ids when present only if they agree with RetrievalPlan; otherwise use the RetrievalPlan locked version for the evidence source. Never select latest or widen the plan.",
+    "object_type_handling": "Preserve the resolved indexed object_type. For a path-only locator, select the unique path-owning source-native container object, not arbitrary chunks or symbol descendants. A more specific governed locator or evidence_object_id may select a specific indexed descendant.",
+    "multiple_match_behavior": "Fail closed with PROVENANCE_SOURCE_OBJECT_AMBIGUOUS; inject none and retain all match identities in the receipt.",
+    "zero_match_behavior": "Fail closed with PROVENANCE_SOURCE_OBJECT_NOT_FOUND; inject no raw path string.",
+    "fuzzy_filename_search": false
+  },
+  "source_version_scope_contract": {
+    "preserve_fields": [
+      "source_id",
+      "source_version_id",
+      "canonical/source-native locator",
+      "object_type",
+      "governed provenance origin"
+    ],
+    "scope_conflict_behavior": "Do not inject, do not alter the RetrievalPlan, emit VERSION_SCOPE_CONFLICT, and preserve ordinary retrieval results.",
+    "cross_repository_behavior": "A relation cannot introduce a repository absent from target_repositories or context_sources. Repository provenance predicates do not widen scope.",
+    "missing_version_behavior": "Do not infer latest. Path-only provenance without a plan-consistent version cannot materialize."
+  },
+  "candidate_authority_contract": {
+    "class": "GOVERNED_PROVENANCE_BACKED_ADDITIVE_RETRIEVAL_CANDIDATE",
+    "identity_authority": "NONE",
+    "ranking_authority": "NONE_BEYOND_EXISTING_FUSION",
+    "may_hard_filter_other_channels": false,
+    "may_force_final_selection": false,
+    "may_override_ranking": false,
+    "may_restrict_repository_scope": false,
+    "provenance_identity_statement": "The provenance-bearing governed object/relation/workflow and the source evidence candidate remain distinct identities."
+  },
+  "candidate_integration_contract": {
+    "logical_surface": "structured_evidence",
+    "physical_fusion_surface": "existing graph candidate channel",
+    "merge_behavior": "Deduplicate source-native candidates by object_id, then prefix the bounded structured_evidence substream into the existing graph stream with existing merge semantics and the existing graph channel limit.",
+    "rrf_vote_behavior": "No separate RRF vote and no double counting; bridged candidates receive the existing graph channel weight only.",
+    "global_fusion_retuning": false,
+    "reranker_prompt_change": false,
+    "selector_redesign": false,
+    "production_activation": false
+  },
+  "provenance_receipt_contract": {
+    "StructuredReachabilityReceipt": [
+      "query_grounded_seed_mention",
+      "D2_resolution_status",
+      "seed_authority_tier",
+      "seed_object_id",
+      "root_seed_rank",
+      "structural_path.node_ids",
+      "structural_path.transition_types",
+      "structural_path.edge_ids",
+      "structural_path.edge_predicates",
+      "structural_path.directions",
+      "structural_path.parent_transitions",
+      "structural_path.workflow_ids",
+      "structural_path.workflow_step_ids",
+      "budget_consumed",
+      "budget_remaining",
+      "reachability_status"
+    ],
+    "StructuredEvidenceBridgeReceipt": [
+      "reachability_receipt_id",
+      "evidence_provenance_origin_type",
+      "evidence_provenance_origin_id",
+      "evidence_field_used",
+      "governance_review_status",
+      "creation_or_review_metadata",
+      "lookup_source_ids",
+      "lookup_source_version_ids",
+      "lookup_locator",
+      "lookup_match_count",
+      "source_native_candidate_object_id",
+      "source_id",
+      "source_version_id",
+      "locator",
+      "object_type",
+      "candidate_authority_role",
+      "reason_included",
+      "bridge_status"
+    ],
+    "hidden_chain_of_thought": false,
+    "stage_separation": [
+      "seed resolved",
+      "structure reached",
+      "provenance found",
+      "source object resolved",
+      "candidate injected"
+    ]
+  },
+  "failure_taxonomy": {
+    "scope": "D3.5 engineering and focused-validation diagnostics; does not replace the frozen D3 formal taxonomy",
+    "classes": [
+      "NO_ELIGIBLE_STRUCTURED_SEED",
+      "STRUCTURAL_PATH_NOT_FOUND",
+      "STRUCTURAL_PATH_AMBIGUOUS",
+      "TRAVERSAL_BUDGET_EXHAUSTED",
+      "GOVERNED_PROVENANCE_NOT_FOUND",
+      "GOVERNED_PROVENANCE_INVALID",
+      "PROVENANCE_SOURCE_OBJECT_NOT_FOUND",
+      "PROVENANCE_SOURCE_OBJECT_AMBIGUOUS",
+      "VERSION_SCOPE_CONFLICT",
+      "BRIDGED_CANDIDATE_INJECTED",
+      "BRIDGED_CANDIDATE_RANKED_OUT",
+      "PROHIBITED_DIRECT_SHORTCUT_ATTEMPT",
+      "CONTROL_OVEREXPANSION"
+    ]
+  },
+  "runtime_materialization_prerequisite": {
+    "required_for_D3.5-A1_validation": true,
+    "authoritative_repository_seed_state": {
+      "objects": 24,
+      "accepted_relations": 16,
+      "curated_workflow_steps": 1
+    },
+    "last_observed_deployed_state": {
+      "objects": 22,
+      "accepted_relations": 16,
+      "curated_workflow_steps": 0
+    },
+    "decision": "D3.5-A1 must begin with a read-only state comparison. If the runtime does not match the authoritative current approved D1 seed state, controlled re-ingestion is a required explicit A1 setup action before implementation validation.",
+    "known_state_implication": "Under the last observed 22/16/0 runtime state, controlled re-ingestion is required.",
+    "reingestion_contract": [
+      "record the resulting D1 materialization identity and exact counts",
+      "materialize only independently approved current D1 state",
+      "do not consume D3 evaluation outcomes or legacy payloads as knowledge",
+      "do not modify query expansions",
+      "do not alter D2 authority",
+      "do not treat synchronization as a scientific treatment"
+    ],
+    "performed_in_A0": false
+  },
+  "anti_shortcut_constraints": {
+    "principle": "D3.5 must replace answer-location shortcuts with governed structural/evidence semantics, not merely move the shortcut from YAML into the graph.",
+    "prohibited_shapes": [
+      "trigger phrase -> file",
+      "rule_id -> file",
+      "rule_id -> evidence_path",
+      "case_id -> object",
+      "case_id -> file",
+      "question_id -> relation path",
+      "bound_rule_id -> traversal route",
+      "benchmark expected evidence -> D1 relation",
+      "evaluation selector -> governed object",
+      "legacy payload -> new structured map",
+      "object-ID special branch equivalent to if event_poca return ana_dpm.C"
+    ],
+    "runtime_input_exclusions": [
+      "case_id",
+      "question_id",
+      "bound_rule_id",
+      "expected evidence",
+      "evaluation selector",
+      "comparison role"
+    ]
+  },
+  "d3_5_a1_contract": {
+    "name": "D3.5-A1 — Bounded Structured Evidence-Link Bridging Prototype",
+    "may": [
+      "synchronize runtime materialization to independently approved current D1 state as an explicit prerequisite",
+      "implement generic typed governed structural reachability",
+      "implement generic evidence provenance materialization",
+      "add a narrowly justified Mechanism-C evidence linkage only after independent source inspection, version grounding, governance review, and the counterfactual gate; no linkage is preregistered by g021 outcome alone",
+      "add focused T0 deterministic tests",
+      "emit separate reachability and bridge receipts",
+      "enforce anti-shortcut safeguards"
+    ],
+    "may_not": [
+      "run formal focused g036/g021 recovery evaluation",
+      "inspect recovery metrics",
+      "delete legacy shortcuts",
+      "activate the production structured path",
+      "change D2 authority",
+      "perform broad D1 expansion",
+      "change global fusion, reranker, or selector policy"
+    ],
+    "outcome_exposure": "NOT_STARTED"
+  },
+  "d3_5_a2_contract": {
+    "name": "D3.5-A2 — Focused Evidence-Link Recovery Validation",
+    "first_post_D3.5_outcome_exposure_owner": true,
+    "comparison_design": {
+      "selected": "FOCUSED_THREE_ARM_PAIRED_COMPARISON",
+      "arms": {
+        "LEGACY": "The two selected legacy rules active; D3.5 bridge disabled.",
+        "ABLATION": "The two selected legacy rules suppressed; D3.5 bridge disabled.",
+        "STRUCTURED_BRIDGED": "The two selected legacy rules suppressed; the frozen D3.5-A1 bridge enabled."
+      },
+      "rationale": "LEGACY versus ABLATION re-confirms dependency in the synchronized runtime; STRUCTURED_BRIDGED versus ABLATION attributes total bridge recovery; STRUCTURED_BRIDGED versus LEGACY tests parity. Repeating the old D3 STRUCTURED arm is unnecessary because D3 already established its zero recovery and A2 is intentionally focused."
+    },
+    "positive_cases": [
+      {
+        "case_id": "g036",
+        "rule_id": "event_poca_handoff",
+        "role": "existing-provenance reachability plus materialization"
+      },
+      {
+        "case_id": "g021",
+        "rule_id": "restgas_profile_workflow",
+        "role": "independently governed genuine-coverage path"
+      }
+    ],
+    "controls": [
+      {
+        "case_id": "n006",
+        "role": "nearby nontrigger control"
+      },
+      {
+        "case_id": "g041",
+        "role": "ambiguity/abstention and negative control"
+      },
+      {
+        "case_id": "g020",
+        "role": "same subsystem with no governed evidence bridge required"
+      },
+      {
+        "case_id": "n004",
+        "role": "ordinary retrieval already succeeds"
+      }
+    ],
+    "case_selection_policy": "Use only already-exposed frozen D3 development cases selected by preregistered role, not treatment likelihood; make no additions or substitutions after A1 outcome exposure.",
+    "expected_execution_count": 18,
+    "full_16_by_3_rerun_required": false,
+    "performed_in_A0": false
+  },
+  "d3_5_success_criteria": [
+    "generic reachability is bounded, deterministic, and auditable",
+    "bridged candidates derive only from accepted governed structure and validated provenance",
+    "no direct evaluation-shaped mapping or legacy-payload reuse",
+    "g036-type existing provenance can become a source-native candidate when it is structurally reachable",
+    "g021-type genuine coverage is independently source-grounded and reusable outside the motivating case",
+    "all four controls show no material overexpansion, abstention break, evidence displacement, or scope leakage",
+    "D2 authority remains unchanged",
+    "source/version/locator provenance remains valid and exact",
+    "bridged candidates remain additive and do not force selection",
+    "production defaults, fusion weights, reranker, selector, D1 authority, and query expansions remain unchanged"
+  ],
+  "d4_dependency_contract": {
+    "D4_status": "NOT_STARTED",
+    "required_entry_condition": [
+      "D3 COMPLETE / valid shortcut-migration experiment",
+      "D3.5 structured evidence-link bridging mechanism validated by D3.5-A2"
+    ],
+    "D3_PASS_alone_is_sufficient": false,
+    "D4_role_unchanged": "Incremental, reversible migration of appropriate query-expansion batches while retaining true terminology and normalization."
+  },
+  "production_changes": {
+    "runtime_files_changed": 0,
+    "D1_configs_changed": 0,
+    "query_expansions_changed": 0,
+    "retrieval_policy_changed": 0,
+    "production_activation": false,
+    "retrieval_runs": 0,
+    "model_calls": 0,
+    "database_writes": 0,
+    "qdrant_writes": 0,
+    "reingestion": false
+  },
+  "outcome_exposure": {
+    "D3": "COMPLETE",
+    "D3.5": "NOT_STARTED",
+    "new_outcomes_exposed": false,
+    "novel_validation": "UNTOUCHED",
+    "novel_holdout": "UNTOUCHED"
+  },
+  "next_stage": "D3.5-A1 — Bounded Structured Evidence-Link Bridging Prototype"
+}
