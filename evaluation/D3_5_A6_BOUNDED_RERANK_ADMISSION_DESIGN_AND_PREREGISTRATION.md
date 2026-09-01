@@ -25,16 +25,19 @@ A5-R2 proved the repaired deterministic selectivity retains all applicable gover
 ## 5. BASELINE
 
 ```
-frozen A5-R2 v2 selectivity (frozen selectivity_only_graph_ordering per case)
-→ frozen graph merge (selected bridge candidates as graph-channel prefix,
-  then ordinary unbridged graph candidates, graph_channel_limit = 20)
-→ frozen fusion (weights exact 2.0 / dense 1.0 / sparse 1.0 / paper 1.15 /
-  workflow 1.2 / graph 0.8; score = weight/(60+rank+1); non-graph channels
-  unchanged from the frozen STRUCTURED_BRIDGED cell trace)
-→ ordinary fused top-30 rerank pool
+persisted A5-R2 final v2-conditioned graph channel
+  (six_case_records[case_id].selectivity_only_graph_ordering — already the
+  final selected-bridge-prefix + ordinary-unbridged-graph ordering under
+  GRAPH_CHANNEL_LIMIT = 20; consumed as-is, never re-merged)
+→ frozen fusion with unchanged non-graph channels (weights exact 2.0 /
+  dense 1.0 / sparse 1.0 / paper 1.15 / workflow 1.2 / graph 0.8;
+  score = weight/(60+rank+1))
+→ full fused ordering (deterministic recomputation; tie-breaking per the
+  existing frozen fusion implementation, verified 6/6 by the Phase-0 probe)
+→ top-30 BASELINE rerank pool
 ```
 
-No reserved admission. **BASELINE is NOT** A2 STRUCTURED_BRIDGED (old 20-cap bridge), A5 v1, LEGACY, or ABLATION — the A6 scientific contrast is admission on top of repaired v2 selectivity. A Phase-0 read-only fusion probe confirmed this construction is deterministic: the same fusion code path reproduces the frozen `baseline_fused_ordering_full` top-30 exactly for all six cases when fed the old graph channel.
+`A6_BASELINE_GRAPH_CHANNEL_AUTHORITY` = the persisted A5-R2 `selectivity_only_graph_ordering` — it is authoritative and already merged, so Phase 1 runs `select_v2` zero times, never applies the graph merge a second time, and may use the `merge_ids(selected_object_ids, unbridged_graph_ordering, 20)` reconstruction only as an all-six-cases equivalence check (parity failure ⇒ STOP BEFORE IMPLEMENTATION FREEZE). No reserved admission. **BASELINE is NOT** A2 STRUCTURED_BRIDGED (old 20-cap bridge), A5 v1, LEGACY, or ABLATION — the A6 scientific contrast is admission on top of repaired v2 selectivity. A Phase-0 read-only fusion probe confirmed this construction is deterministic: the same fusion code path reproduces the frozen `baseline_fused_ordering_full` top-30 exactly for all six cases when fed the old graph channel.
 
 ## 6. K2 arm
 
@@ -90,14 +93,13 @@ Required evidence group is the primary retention unit. Per arm/case/group/repeti
 
 ## 17. K2-vs-K3 decision rule
 
-`DEFAULT_BUDGET_PREFERENCE = K2` (fewer ordinary candidates displaced). Across all evaluator-applicable required evidence groups, with `S2`/`S3` = applicable groups `STABLE_RETAINED` by K2/K3:
+`DEFAULT_BUDGET_PREFERENCE = K2` (fewer ordinary candidates displaced), corrected in Phase 0-R1 to **smallest sufficient SAFE budget**. Benefit population = `ADMISSION_APPLICABLE_BRIDGE_GROUP`s (required evidence groups with ≥ 1 evaluator-identified required candidate of which ≥ 1 belongs to `RESERVABLE_BRIDGE` for that case; evaluator-only, classified after output freeze, never a runtime input). Safety population = all BASELINE-STABLE evaluator-required/control groups. With `DELTA_K` = admission-applicable groups `STABLE_RETAINED` under K and **not** under BASELINE, `REGRESSION_K` = material control regressions under K, and `SAFE_EFFECTIVE(K) = DELTA_K > 0 AND REGRESSION_K == 0`:
 
-- `S2 == S3` → prefer K2;
-- `S3 > S2` and K3 adds no `MATERIAL_CONTROL_REGRESSION` relative to K2 → prefer K3;
-- `S3 > S2` but K3 introduces additional material regression → do not automatically prefer K3; verdict becomes PARTIAL / tradeoff;
-- `S2 > S3` → prefer K2.
+- both K2 and K3 SAFE_EFFECTIVE → `SELECTED_ADMISSION_BUDGET = 3` iff `DELTA_3 > DELTA_2`, else 2;
+- only K2 SAFE_EFFECTIVE → 2; only K3 SAFE_EFFECTIVE → 3;
+- neither SAFE_EFFECTIVE → no budget is selected as PASS.
 
-If `S2 == S3` and K3 only improves median rank / MRR-like diagnostics, `SELECTED_ADMISSION_BUDGET = 2` — rank quality alone never justifies the extra displaced slot. The budget is never chosen from positive-case identity.
+If `DELTA_2 == DELTA_3` and both are safe-effective, K2 is chosen even if K3 improves median rank / MRR-like diagnostics — rank quality alone never justifies the extra displaced slot. Conversely, `DELTA_2 == DELTA_3 → K2` is **prohibited** when `REGRESSION_2 > 0 AND REGRESSION_3 == 0` — safety is evaluated before budget minimality. The budget is never chosen from positive-case identity.
 
 ## 18. Origin concentration diagnostics
 
@@ -115,12 +117,14 @@ Phase 0 made `REAL_CASE_RERANKER_CALLS = 0`: no "just to verify" treatment-pool 
 
 | Verdict | Condition |
 |---|---|
-| `PASS / BOUNDED_RERANK_ADMISSION_VALIDATED_FOR_DEVELOPMENT` | all of: protocol valid; exact preregistered arms executed; repetition protocol valid; candidate-authority invariants pass; pool-size/displacement invariants pass; ≥ 1 treatment budget gives additional stable retention of applicable bridge evidence over BASELINE; selected budget has no `MATERIAL_CONTROL_REGRESSION`; no runtime gold/case-role leakage; no post-exposure treatment mutation. Both arms PASS with `S2 == S3` → `SELECTED_ADMISSION_BUDGET = 2`; budget 3 only when `S3 > S2` with no additional material regression |
-| `PARTIAL / ADMISSION_RECOVERY_WITH_CONTROL_REGRESSION` | additional stable retention exists but every otherwise-preferred effective treatment introduces material control regression; incomplete for downstream activation |
+| `PASS / BOUNDED_RERANK_ADMISSION_VALIDATED_FOR_DEVELOPMENT` | all of: protocol valid; exact preregistered arms executed; repetition protocol valid; candidate-authority invariants pass; pool-size/displacement invariants pass; ≥ 1 treatment budget gives additional stable retention of applicable bridge evidence over BASELINE; selected budget has no `MATERIAL_CONTROL_REGRESSION`; **at least one `ADMISSION_APPLICABLE_BRIDGE_GROUP` has `DELTA_K` benefit and `STABLE_RESERVED_REQUIRED_WITNESS` under the selected budget** (causal admission witness); no runtime gold/case-role leakage; no post-exposure treatment mutation. Selection follows the corrected smallest-sufficient-SAFE-budget hierarchy |
+| `PARTIAL / ADMISSION_RECOVERY_WITH_CONTROL_REGRESSION` | `DELTA_K > 0` exists but no effective budget is safe (every otherwise-effective budget introduces material control regression); incomplete for downstream activation |
 | `PARTIAL / ADMISSION_DID_NOT_VALIDATE_DOWNSTREAM_RECOVERY` | valid treatment pools, but neither K2 nor K3 improves stable applicable retention over BASELINE |
-| `PARTIAL / ADMISSION_RECOVERY_NOT_STABLE_ACROSS_RERANKER_REPETITIONS` | recovery appears in one repetition but fails the ≥ 2/3 stability criterion |
+| `PARTIAL / ADMISSION_RECOVERY_NOT_STABLE_ACROSS_RERANKER_REPETITIONS` | no stable `DELTA_K` exists but `UNSTABLE_ADMISSION_RECOVERY` is observed (an admission-applicable group recovered in ≥ 1 individual treatment repetition relative to baseline without satisfying `DELTA_K` stable recovery) |
 | `FAIL / BOUNDED_ADMISSION_SAFETY_OR_CONSTRUCTION_FAILED` | pool-size invariant, duplicate-admission accounting, out-of-scope admission, candidate-authority violation, systematic control degradation, or implementation/preregistration mismatch — while the protocol remains interpretable |
 | `INVALID` | reranker outcome seen before prereg freeze; K/repetition/decision rule changed after exposure; unregistered budget arm; gold/required evidence in pool construction; case-role branch in admission; reranker prompt/model/config changed during the experiment; outcome-guided reruns |
+
+Verdicts are assigned by the frozen deterministic **precedence** (no outcome-dependent label selection): 1. INVALID; 2. FAIL; 3. PASS (a SAFE_EFFECTIVE budget exists and the required stable reserved-candidate witness exists); 4. PARTIAL / recovery-with-regression; 5. PARTIAL / not-stable-across-repetitions; 6. PARTIAL / no-downstream-recovery. `RESERVED_REQUIRED_CANDIDATE_RETAINED` records, per admission-applicable group/repetition, whether final evidence actually contains a required-evidence matching candidate that consumed a reserved slot in that treatment arm; `STABLE_RESERVED_REQUIRED_WITNESS` = retained in ≥ 2/3 repetitions. If final evidence improves relative to baseline but the improvement is not carried by an actually reserved required candidate, it is classified `POOL_PERTURBATION_ASSOCIATED_RECOVERY` — diagnostic only, never sufficient for the mechanistic PASS requirement.
 
 Identical pool fingerprints between a treatment and BASELINE mean identical reranker inputs: any output difference is `RERANKER_VARIANCE_REFERENCE`, never admission effect; admission effect is interpretable only when the fingerprints differ.
 
@@ -136,7 +140,7 @@ QA answer quality; production readiness (`PRODUCTION_ACTIVATION = false` even on
 
 > **D3.5-A6 Phase 1 — Bounded Admission Prototype & Synthetic Construction Freeze**
 
-Phase 1 may implement the deterministic BASELINE/K2/K3 pool construction, diagnostics, synthetic tests, and the formal runner **without executing real reranker calls** (`REAL_CASE_RERANKER_CALLS = 0`), then freeze the implementation. One anticipated mechanical task is recorded generically: the frozen payload registry covers the union of the old-cap fused top-30 and all bridge candidates, while v2 conditioning re-admits previously displaced ordinary graph candidates; the Phase-0 read-only probe found exactly one v2-conditioned top-30 member absent from the registry (`concept.restgas_longitudinal_efficiency`, g020; all other cases complete). If any arm's pool contains an unregistered candidate, Phase 1 must mechanically extend the registry additively from the frozen normalized corpus under the unchanged index-identity check, documented before any reranker outcome — a descriptive payload-availability repair, not a treatment or semantics change. The fixture itself is unchanged in Phase 0.
+Phase 1 may implement the deterministic BASELINE/K2/K3 pool construction, diagnostics, synthetic tests, and the formal runner **without executing real reranker calls** (`REAL_CASE_RERANKER_CALLS = 0`), then freeze the implementation. Phase 1 must first **mechanically materialize the complete replay surface** (`COMPLETE_REPLAY_SURFACE_MATERIALIZATION_REQUIRED = true`): `POST_RERANK_REPLAY_REQUIRED_OBJECT_UNIVERSE` = the union of (1) every object in the full v2-conditioned fused ordering, (2) every frozen exact-channel member needed for `symbol_first`, (3) every reserved bridge candidate, (4) every additional object referenced by deterministic final-selector logic before `final_evidence_limit` can be satisfied — under the frozen fusion construction this equals the full fused-ordering member set (a mechanically computable complete superset; the reranker output and the fallback merge only ever contain fused-ordering members). Phase 0 recorded a generic problem class, not a case-specific branch: the registry covers the old-cap top-30 ∪ bridge candidates with `text[:2000]`/title/source_id/object_type/locator only, while v2 conditioning re-admits previously displaced ordinary graph candidates (the probe saw exactly one such top-30 member today: `concept.restgas_longitudinal_efficiency`, g020 — an example only, never special-cased) and the selector replay surface additionally needs `source_version_id`, `authority_level`, full selector-visible text, and the `paper_page_hints` plan field. Phase 1 materializes **all** missing objects/fields from the frozen normalized corpus under the unchanged index-identity check, with the gate conditions of `complete_replay_surface_gate` (100% coverage, all selector fields, unchanged source/version and full-locator identity, reproducible channel membership/fusion scores/exact-channel ordering, passing synthetic/parity tests) required before implementation freeze; runtime KeyError→add-one-object→rerun repair is prohibited. The fixture itself is unchanged in Phase 0.
 
 ## 25. Phase-2 contract
 
@@ -147,13 +151,14 @@ Only after the Phase-1 implementation freeze may the 54 formal reranker calls ru
 ## 26. Lifecycle
 
 ```
-D3.5-A6         = IN_PROGRESS / BOUNDED_RERANK_ADMISSION_PREREGISTRATION_FROZEN
-D3.5-A6-PHASE0  = COMPLETE / BOUNDED_RERANK_ADMISSION_PREREGISTRATION_FROZEN
-D3.5-A6-PHASE1  = NOT_STARTED / READY_TO_IMPLEMENT
-D3.5-A6-PHASE2  = NOT_STARTED / BLOCKED_UNTIL_PHASE1_FREEZE
-D3.5-A5-R2      = COMPLETE / REPAIRED_SELECTIVITY_RELEVANCE_RETENTION_VALIDATED_FOR_DEVELOPMENT (unchanged)
-D3.5            = IN_PROGRESS / POST_A2_SELECTIVITY_AND_ADMISSION_REDESIGN
-D4              = NOT_STARTED / BLOCKED
+D3.5-A6           = IN_PROGRESS / BOUNDED_RERANK_ADMISSION_PREREGISTRATION_REPAIRED_AND_FROZEN
+D3.5-A6-PHASE0    = COMPLETE / BOUNDED_RERANK_ADMISSION_PREREGISTRATION_REPAIRED_AND_FROZEN
+D3.5-A6-PHASE0-R1 = COMPLETE / REPLAY_SURFACE_AND_BUDGET_DECISION_CONTRACT_REPAIRED
+D3.5-A6-PHASE1    = NOT_STARTED / READY_TO_IMPLEMENT
+D3.5-A6-PHASE2    = NOT_STARTED / BLOCKED_UNTIL_PHASE1_FREEZE
+D3.5-A5-R2        = COMPLETE / REPAIRED_SELECTIVITY_RELEVANCE_RETENTION_VALIDATED_FOR_DEVELOPMENT (unchanged)
+D3.5              = IN_PROGRESS / POST_A2_SELECTIVITY_AND_ADMISSION_REDESIGN
+D4                = NOT_STARTED / BLOCKED
 ```
 
 Execution accounting: real-case reranker calls 0; real-case selectivity runs 0; real-case treatment-pool constructions 0; analyzer/embedding/QA/verifier/judge calls 0; PostgreSQL/Qdrant writes 0; novel_validation/holdout untouched and unsealed-state unchanged; `src/`/`configs/`/fixture/A5-R2 artifacts unchanged. Protected datasets: `novel_validation = FROZEN / UNSEEN`, `novel_holdout = SEALED / UNSEEN`.
@@ -161,3 +166,21 @@ Execution accounting: real-case reranker calls 0; real-case selectivity runs 0; 
 ## 27. Exact next task
 
 > **D3.5-A6 Phase 1 — Bounded Admission Prototype & Synthetic Construction Freeze** — deterministic pool construction, diagnostics, synthetic tests, formal runner without real reranker calls; Phase 2 (the 54 formal calls) remains blocked until the Phase-1 freeze.
+
+## 28. Phase 0-R1 — Replay-Surface & Budget-Decision Contract Repair (2026-09-02)
+
+Independent audit found three preregistration-contract defects; all three are repaired in place (machine artifact updated with `repair_history[].D3.5-A6-PHASE0-R1_REPLAY_SURFACE_AND_BUDGET_DECISION_CONTRACT_REPAIR`; dedicated report `evaluation/D3_5_A6_PHASE0_R1_REPLAY_SURFACE_AND_BUDGET_DECISION_CONTRACT_REPAIR.md`). All accepted Phase-0 architecture (three arms, pool 30, K ∈ {2,3}, ceiling-not-quota, bottom-first displacement, v2 admission order, candidate authority, 3 repetitions, cyclic schedule, ≥2/3 stable retention, diagnostic-only origin concentration, no new scorer, no QA/verifier/judge, no production activation, D4 blocked) is unchanged.
+
+**Post-rerank replay surface (defect A).** The Phase-0 contract partly conflated the reranker input payload with the post-rerank deterministic selector replay state. Two explicit data contracts are now frozen: `RERANKER_PAYLOAD_SURFACE` (object_id/title/source_id/`text[:2000]`, in exact treatment-pool order; exists only to call the unchanged reranker; no selector-only metadata in the model prompt) and `POST_RERANK_SELECTOR_REPLAY_SURFACE` (a separate deterministic surface carrying, per object: object_id, source_id, source_version_id, object_type, title, selector-visible text, authority_level, the **complete raw locator** — the duplicate-locator identity is the canonical JSON dump of the entire locator, so no key may be dropped — plus channel membership and fusion score, and the frozen plan fields including `paper_page_hints` and the raw question). Model-visible fields and selector-only fields must remain explicitly separated (e.g., distinct `reranker_payload_registry` / `selector_replay_registry`); exact Phase-1 schema is free, the semantic separation is frozen.
+
+**Complete replay object universe.** Coverage is never "rerank top-30 only": production consumes `ordered = dedupe([*reranked, *full_fused_order])` and selection may continue beyond top-30. `POST_RERANK_REPLAY_REQUIRED_OBJECT_UNIVERSE` = full v2-conditioned fused ordering ∪ exact channel ∪ reserved bridge candidates ∪ any additional object referenced by deterministic selector logic — mechanically this equals the full fused-ordering member set (a complete superset, never outcome-shaped incremental filling).
+
+**Selector-visible text semantics.** Repository inspection shows production consumes **full** text in three places: `symbol_first` matches plan symbols against exact-channel items' full text; `_evidence` builds `Evidence.text` from the full payload; the frozen evaluator's `title_contains` check searches the evidence item's full text. `text[:2000] == production selector text` therefore cannot be proven (needle occurrence beyond char 2000 is data-dependent), so **OPTION A** is frozen: persist the complete selector-visible frozen text for every universe object; the reranker model still receives `text[:2000]` only.
+
+**Authoritative graph channel (defect C).** `A6_BASELINE_GRAPH_CHANNEL_AUTHORITY` = the persisted A5-R2 `selectivity_only_graph_ordering` — already the final v2-conditioned graph-channel ordering (bridge prefix + ordinary unbridged graph, limit 20). `PHASE1_SELECT_V2_RUNS = 0`; the double graph merge is prohibited; `merge_ids` reconstruction is an equivalence check only (all six cases; parity failure ⇒ STOP BEFORE IMPLEMENTATION FREEZE); the full fused ordering is recomputed deterministically from the authoritative channel + frozen non-graph channels + frozen weights.
+
+**Incremental admission benefit & safety-first selection (defect B).** Benefit population = `ADMISSION_APPLICABLE_BRIDGE_GROUP`s (required group with ≥ 1 evaluator-identified required candidate, of which ≥ 1 is in `RESERVABLE_BRIDGE`; evaluator-only, post-output-freeze, never runtime). Safety population = all BASELINE-STABLE evaluator-required/control groups. Primary benefit metrics are `DELTA_2`/`DELTA_3` (applicable bridge groups stably retained under K but not under BASELINE); total stable retained counts are diagnostic only. Safety metrics `REGRESSION_2`/`REGRESSION_3` use the unchanged material-regression rule over the safety population. `SAFE_EFFECTIVE(K) = DELTA_K > 0 AND REGRESSION_K == 0` is evaluated **before** smallest-budget preference: both safe-effective → 3 iff `DELTA_3 > DELTA_2` else 2; only one safe-effective → that one; neither → no PASS budget. An unsafe smaller K2 can never win merely by being smaller, and rank-only K3 improvement can never override `DELTA_2 == DELTA_3`.
+
+**Causal reserved-candidate witness.** PASS now requires, in addition to the Phase-0 conditions, that at least one `ADMISSION_APPLICABLE_BRIDGE_GROUP` has `DELTA_K` benefit **and** `STABLE_RESERVED_REQUIRED_WITNESS` (`RESERVED_REQUIRED_CANDIDATE_RETAINED` in ≥ 2/3 repetitions — final evidence actually contains a required-evidence matching candidate that consumed a reserved slot in that treatment arm). Improvement not carried by an actually reserved required candidate is `POOL_PERTURBATION_ASSOCIATED_RECOVERY`, diagnostic only.
+
+**Verdict precedence.** Frozen total order with no outcome-dependent label selection: 1. INVALID; 2. FAIL; 3. PASS (a SAFE_EFFECTIVE budget exists with the required witness); 4. PARTIAL / ADMISSION_RECOVERY_WITH_CONTROL_REGRESSION (`DELTA_K > 0` exists but no effective budget is safe); 5. PARTIAL / ADMISSION_RECOVERY_NOT_STABLE_ACROSS_RERANKER_REPETITIONS (no stable `DELTA_K`, but `UNSTABLE_ADMISSION_RECOVERY` observed); 6. PARTIAL / ADMISSION_DID_NOT_VALIDATE_DOWNSTREAM_RECOVERY otherwise.

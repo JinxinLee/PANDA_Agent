@@ -1,0 +1,295 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint": "D3.5-A6-PHASE0-R1",
+  "stage_name": "D3.5-A6 Phase 0-R1 — Replay-Surface & Budget-Decision Contract Repair",
+  "stage_type": "narrow preregistration-contract repair only; no Phase-1 implementation, no real admission treatment, no reranker/scorer/model calls, no runtime/D1/database changes",
+  "starting_head": "54ac8ce9540125f6702f51119a610b6f59eb7925",
+  "parent_phase0_commit": "54ac8ce9540125f6702f51119a610b6f59eb7925",
+  "parent_phase0_decision": "BOUNDED_RERANK_ADMISSION_PREREGISTRATION_FROZEN",
+  "repair_issues": [
+    {
+      "issue": "A",
+      "description": "post-rerank deterministic replay metadata is incompletely specified: the Phase-0 contract partly conflates the reranker input payload with the post-rerank deterministic selector replay state",
+      "status": "REPAIRED"
+    },
+    {
+      "issue": "B",
+      "description": "K2/K3 benefit + safety decision semantics are not fully conflict-free: benefit wording alternates between 'all evaluator-applicable required evidence groups' and 'applicable bridge evidence'; no incremental benefit metric, no safety-before-minimality ordering, no causal witness, overlapping PARTIAL labels",
+      "status": "REPAIRED"
+    },
+    {
+      "issue": "C",
+      "description": "BASELINE graph-channel authority wording is ambiguous: the Phase-0 chain reads 'frozen v2 selectivity -> frozen graph merge -> frozen fusion' although selectivity_only_graph_ordering is already the final persisted v2-conditioned graph-channel ordering",
+      "status": "REPAIRED"
+    }
+  ],
+  "post_rerank_replay_surface_contract": {
+    "RERANKER_PAYLOAD_SURFACE": {
+      "definition": "the exact payload submitted to the existing reranker",
+      "per_candidate_fields": ["object_id", "title", "source_id", "text[:2000]"],
+      "ordering": "exact treatment-pool order",
+      "purpose": "exists only to call the unchanged reranker",
+      "prohibition": "no selector-only metadata is added to the model prompt"
+    },
+    "POST_RERANK_SELECTOR_REPLAY_SURFACE": {
+      "definition": "a separate deterministic replay surface, independent of the reranker payload, sufficient to reproduce the existing production post-rerank logic exactly",
+      "must_support": [
+        "reranked + fused fallback merge",
+        "preferred-source ordering",
+        "symbol_first",
+        "required_first",
+        "hinted_first",
+        "select_final_evidence",
+        "evidence construction"
+      ],
+      "required_per_object_fields": [
+        "object_id",
+        "source_id",
+        "source_version_id",
+        "object_type",
+        "title",
+        "selector-visible text",
+        "authority_level",
+        "full locator (complete raw locator dict; the duplicate-locator identity is the canonical JSON dump of the entire locator)",
+        "channel membership (reproducible from the frozen channel orderings)",
+        "fusion score (reproducible from the frozen fusion contract)"
+      ],
+      "required_plan_fields": [
+        "intent",
+        "target_repositories",
+        "resolved_versions",
+        "symbols",
+        "concepts",
+        "required_source_types",
+        "source_budgets",
+        "paper_page_hints",
+        "raw question text"
+      ],
+      "registry_separation": "model-visible reranker fields and selector-only replay fields must be explicitly separated (e.g., reranker_payload_registry vs selector_replay_registry or clearly namespaced fields); the exact Phase-1 schema is free, the semantic separation is frozen now"
+    },
+    "POST_RERANK_REPLAY_REQUIRED_OBJECT_UNIVERSE": {
+      "definition": "union of (1) every object in the full v2-conditioned fused ordering; (2) every object in the frozen exact channel needed for symbol_first; (3) every reserved bridge candidate; (4) every additional object referenced by deterministic final-selector logic before final_evidence_limit can be satisfied",
+      "mechanically_computed_superset": "under the frozen fusion construction every channel member receives a fused score and ordered = dedupe([*reranked, *full_fused_order]) only ever contains fused-ordering members, so the complete required universe equals the member set of the full v2-conditioned fused ordering; Phase 1 computes it deterministically per case — a complete superset, never outcome-shaped incremental filling",
+      "coverage_is_not_rerank_top30_only": true
+    },
+    "selector_text_contract": {
+      "chosen": "OPTION A — persist the complete selector-visible frozen text needed by production logic",
+      "repository_evidence": [
+        "symbol_first checks plan symbols against the exact-channel item's full text (src/panda_agent/retrieval.py: literal in item['text'])",
+        "_evidence constructs Evidence.text from the full payload text (src/panda_agent/retrieval.py)",
+        "GoldEvidenceSelector.matches title_contains searches the evidence item's full text joined with title and section_path (src/panda_agent/evaluation.py)"
+      ],
+      "OPTION_B_rejected_because": "text[:2000] == production selector text cannot be proven: whether a plan symbol or title_contains needle occurs beyond character 2000 is data-dependent, so no generic mechanical equivalence proof exists; assuming equality without proof is prohibited",
+      "reranker_payload_unchanged": "the reranker model still receives text[:2000] only"
+    },
+    "complete_replay_surface_gate": {
+      "COMPLETE_REPLAY_SURFACE_MATERIALIZATION_REQUIRED": true,
+      "rule": "before any Phase-2 reranker outcome, Phase 1 mechanically materializes the full required replay surface (100% of the required universe with all required selector fields) from the frozen normalized corpus and frozen trace state; runtime KeyError-driven incremental repair is PROHIBITED",
+      "gate_conditions": [
+        "100% required object coverage",
+        "all required selector fields present",
+        "source/version identity unchanged",
+        "full locator identity unchanged",
+        "channel membership reproducible",
+        "fusion scores reproducible",
+        "exact-channel ordering reproducible",
+        "post-rerank deterministic selector replay synthetic/parity tests pass"
+      ]
+    },
+    "POST_RERANK_SELECTOR_PARITY_TARGET": "production retrieval.py deterministic post-rerank behavior, including ordered fallback construction, preferred_sources, symbol_first, required_first, hinted_first, final ordered deduplication, select_final_evidence, and final_evidence_limit = 12; no simplified evaluation-only substitute unless proven semantically identical"
+  },
+  "complete_object_universe_contract": {
+    "POST_RERANK_REPLAY_REQUIRED_OBJECT_UNIVERSE": "union of (1) every object in the full v2-conditioned fused ordering; (2) every object in the frozen exact channel needed for symbol_first; (3) every reserved bridge candidate; (4) every additional object referenced by deterministic final-selector logic before final_evidence_limit can be satisfied",
+    "mechanically_computed_superset": "equals the member set of the full v2-conditioned fused ordering under the frozen fusion construction; computed deterministically per case in Phase 1 — a complete superset, never outcome-shaped incremental filling",
+    "coverage_is_not_rerank_top30_only": true
+  },
+  "selector_text_contract": {
+    "chosen": "OPTION A — persist the complete selector-visible frozen text needed by production logic",
+    "repository_evidence": [
+      "symbol_first checks plan symbols against the exact-channel item's full text (src/panda_agent/retrieval.py: literal in item['text'])",
+      "_evidence constructs Evidence.text from the full payload text (src/panda_agent/retrieval.py)",
+      "GoldEvidenceSelector.matches title_contains searches the evidence item's full text joined with title and section_path (src/panda_agent/evaluation.py)"
+    ],
+    "OPTION_B_rejected_because": "text[:2000] == production selector text cannot be proven: whether a plan symbol or title_contains needle occurs beyond character 2000 is data-dependent, so no generic mechanical equivalence proof exists; assuming equality without proof is prohibited",
+    "reranker_payload_unchanged": "the reranker model still receives text[:2000] only"
+  },
+  "baseline_graph_authority": {
+    "A6_BASELINE_GRAPH_CHANNEL_AUTHORITY": "evaluation/d3_5_a5_r2_repaired_selectivity_revalidation.json .six_case_records[case_id].selectivity_only_graph_ordering",
+    "rationale": "the persisted field is already the final v2-conditioned graph-channel ordering (selected bridge prefix + ordinary unbridged graph under GRAPH_CHANNEL_LIMIT = 20) produced by the frozen v2 implementation",
+    "corrected_baseline_chain": [
+      "persisted A5-R2 final v2-conditioned graph channel (consumed as-is)",
+      "frozen fusion with unchanged non-graph channels",
+      "full fused ordering (deterministic recomputation; tie-breaking per the existing frozen fusion implementation)",
+      "top-30 BASELINE rerank pool"
+    ],
+    "full_fused_ordering_authority": "deterministically recomputed from the persisted final graph channel + frozen non-graph channels + frozen RRF weights; deterministic replay, not new retrieval"
+  },
+  "phase1_reexecution_prohibitions": {
+    "PHASE1_SELECT_V2_RUNS": 0,
+    "double_graph_merge": "PROHIBITED (selectivity_only_graph_ordering must never be merged with the selected bridge prefix again)",
+    "equivalence_check_only": "Phase 1 may verify persisted selectivity_only_graph_ordering == merge_ids(selected_object_ids, unbridged_graph_ordering, GRAPH_CHANNEL_LIMIT) for all six cases; the persisted ordering remains the runtime replay input; parity failure -> STOP BEFORE IMPLEMENTATION FREEZE (no opportunistic representation choice)",
+    "runtime_keyerror_incremental_payload_repair": "PROHIBITED"
+  },
+  "admission_benefit_population": {
+    "ADMISSION_APPLICABLE_BRIDGE_GROUP": "a required evidence group is an ADMISSION_APPLICABLE_BRIDGE_GROUP iff the deterministic evaluator identifies at least one required candidate for that group AND at least one such required candidate belongs to RESERVABLE_BRIDGE for that case",
+    "classification_timing": "evaluator-only; occurs after pool construction and output freeze; must never affect runtime admission",
+    "already_baseline_bridge_evidence": "a required bridge candidate already present in BASELINE_TOP30 consumes zero reservation slots, so its group is useful for control/retention diagnostics but does not count as evidence that reserved admission created incremental reachability"
+  },
+  "incremental_benefit_metrics": {
+    "DELTA_K": "number of ADMISSION_APPLICABLE_BRIDGE_GROUPs that are STABLE_RETAINED under treatment K AND NOT STABLE_RETAINED under BASELINE",
+    "DELTA_2": "incremental admission benefit of K2 (primary)",
+    "DELTA_3": "incremental admission benefit of K3 (primary)",
+    "TOTAL_STABLE_RETAINED_K2": "diagnostic only",
+    "TOTAL_STABLE_RETAINED_K3": "diagnostic only",
+    "primary_rule": "budget selection is based on incremental admission benefit + safety; total stable retained groups are never the primary K benefit metric"
+  },
+  "safety_metrics": {
+    "safety_population": "all evaluator-required/control groups that are BASELINE_STABLE (not only admission-target groups)",
+    "REGRESSION_K": "number of MATERIAL_CONTROL_REGRESSION groups under budget K",
+    "REGRESSION_2": "material control regressions under K2",
+    "REGRESSION_3": "material control regressions under K3",
+    "material_regression_rule_unchanged": "BASELINE retention_count >= 2 AND treatment retention_count <= 1"
+  },
+  "safe_effective_definition": {
+    "SAFE_EFFECTIVE(K)": "DELTA_K > 0 AND REGRESSION_K == 0",
+    "ordering": "the safety filter occurs BEFORE smallest-budget preference"
+  },
+  "budget_decision_rule": {
+    "hierarchy": [
+      "if K2 is SAFE_EFFECTIVE and K3 is SAFE_EFFECTIVE: SELECTED_ADMISSION_BUDGET = 3 if DELTA_3 > DELTA_2 else 2",
+      "elif K2 is SAFE_EFFECTIVE: SELECTED_ADMISSION_BUDGET = 2",
+      "elif K3 is SAFE_EFFECTIVE: SELECTED_ADMISSION_BUDGET = 3",
+      "else: no budget is selected as PASS"
+    ],
+    "meaning": "smallest sufficient SAFE budget, not merely smallest budget",
+    "rank_only_rule": "if DELTA_2 == DELTA_3 and both are safe-effective: choose K2 even if K3 improves median rank or MRR-like diagnostics",
+    "unsafe_smaller_budget_prohibition": "DELTA_2 == DELTA_3 -> choose K2 is PROHIBITED when REGRESSION_2 > 0 AND REGRESSION_3 == 0; safety is evaluated before budget minimality",
+    "budget_identity_prohibition": "the budget is never chosen from positive-case identity"
+  },
+  "causal_witness_contract": {
+    "RESERVED_REQUIRED_CANDIDATE_RETAINED": "evaluator-only diagnostic: for each ADMISSION_APPLICABLE_BRIDGE_GROUP/repetition, record whether the final evidence actually contains a required-evidence matching candidate that consumed a reserved slot in that treatment arm",
+    "STABLE_RESERVED_REQUIRED_WITNESS": "RESERVED_REQUIRED_CANDIDATE_RETAINED in >= 2/3 repetitions",
+    "PASS_requirement": "PASS requires at least one ADMISSION_APPLICABLE_BRIDGE_GROUP with DELTA_K benefit AND STABLE_RESERVED_REQUIRED_WITNESS under the selected budget; without that witness, direct bridge-admission recovery is not claimed",
+    "POOL_PERTURBATION_ASSOCIATED_RECOVERY": "final evidence improves relative to baseline but the improvement is not carried by an actually reserved required candidate; recorded as a diagnostic only and never sufficient for the mechanistic PASS requirement",
+    "UNSTABLE_ADMISSION_RECOVERY": "an ADMISSION_APPLICABLE_BRIDGE_GROUP is retained in at least one treatment repetition where the corresponding BASELINE repetition/stable baseline state does not establish stable retention, but the group does not satisfy DELTA_K stable recovery; isolated reranker variance is never confused with stable treatment effect"
+  },
+  "verdict_precedence": {
+    "total_deterministic_order_no_outcome_dependent_label_selection": [
+      "1. INVALID",
+      "2. FAIL / construction-or-safety invariant failure",
+      "3. PASS if a SAFE_EFFECTIVE budget exists and the required stable reserved-candidate witness exists",
+      "4. PARTIAL / ADMISSION_RECOVERY_WITH_CONTROL_REGRESSION if DELTA_K > 0 exists but no effective budget is safe",
+      "5. PARTIAL / ADMISSION_RECOVERY_NOT_STABLE_ACROSS_RERANKER_REPETITIONS if no stable DELTA_K exists but at least one ADMISSION_APPLICABLE_BRIDGE_GROUP is recovered in >= 1 individual treatment repetition relative to baseline",
+      "6. PARTIAL / ADMISSION_DID_NOT_VALIDATE_DOWNSTREAM_RECOVERY otherwise"
+    ]
+  },
+  "preserved_phase0_contracts": {
+    "probe_history": "the Phase-0 read-only fusion/payload-coverage probe remains deterministic frozen-trace feasibility inspection, never reinterpreted as an experiment (REAL_CASE_RERANKER_CALLS = 0, REAL_CASE_SELECTIVITY_RUNS = 0)",
+    "payload_contingency_superseded": "the narrow Phase-0 registry-extension contingency is replaced by the generic complete_replay_surface_gate contract (mechanically materialize ALL missing required replay objects before Phase-2 exposure; no case-specific branch; the g020 concept-node observation remains a disclosed example only)",
+    "accepted_phase0_architecture_unchanged": [
+      "three arms = BASELINE / K2 / K3",
+      "RERANK_POOL_SIZE = 30",
+      "ADMISSION_BUDGET_CANDIDATES = [2, 3]",
+      "ceiling-not-quota semantics",
+      "bottom-first positional displacement",
+      "v2 order as admission order",
+      "candidate authority = additive retrieval candidate only",
+      "RERANKER_REPETITIONS_PER_ARM_PER_CASE = 3",
+      "cyclic arm schedule",
+      "STABLE_RETAINED >= 2/3 and STABLE_LOST <= 1/3",
+      "origin concentration diagnostic-only",
+      "no new origin threshold",
+      "no new admission scorer",
+      "no QA/verifier/judge",
+      "no production activation",
+      "D4 blocked"
+    ]
+  },
+  "phase1_readiness": {
+    "READY": true,
+    "criteria_all_implementation_unambiguous": [
+      "reranker payload fields",
+      "selector replay fields",
+      "selector-visible text semantics (OPTION A)",
+      "complete replay object universe",
+      "full replay coverage gate",
+      "authoritative graph-channel field",
+      "no v2 rerun",
+      "no double graph merge",
+      "DELTA_K definition",
+      "regression definition",
+      "SAFE_EFFECTIVE definition",
+      "budget selection hierarchy",
+      "causal witness",
+      "verdict precedence"
+    ],
+    "phase1_may": [
+      "materialize the complete replay surface mechanically",
+      "extend replay metadata generically",
+      "implement deterministic BASELINE/K2/K3 pool construction",
+      "implement post-rerank replay logic",
+      "implement diagnostics",
+      "implement synthetic/parity tests",
+      "implement formal runner skeleton"
+    ],
+    "phase1_must_retain": { "REAL_CASE_RERANKER_CALLS": 0 }
+  },
+  "A6_PHASE0_R1_DECISION": "REPLAY_SURFACE_AND_BUDGET_DECISION_CONTRACT_REPAIRED",
+  "decision_basis": "all three contract defects are completely repaired in the Phase-0 machine preregistration and human report: the two replay surfaces plus the complete object universe, selector-text contract, registry separation, materialization gate, and parity target are explicit; the benefit/safety populations, DELTA/REGRESSION metrics, SAFE_EFFECTIVE, the corrected decision hierarchy, the causal witness, and the total verdict precedence are conflict-free; the authoritative graph channel, the no-rerun/no-double-merge prohibitions, and the corrected BASELINE chain remove the graph-authority ambiguity; all accepted Phase-0 architecture is unchanged",
+  "lifecycle": {
+    "D3.5-A6": "IN_PROGRESS / BOUNDED_RERANK_ADMISSION_PREREGISTRATION_REPAIRED_AND_FROZEN",
+    "D3.5-A6-PHASE0": "COMPLETE / BOUNDED_RERANK_ADMISSION_PREREGISTRATION_REPAIRED_AND_FROZEN",
+    "D3.5-A6-PHASE0-R1": "COMPLETE / REPLAY_SURFACE_AND_BUDGET_DECISION_CONTRACT_REPAIRED",
+    "D3.5-A6-PHASE1": "NOT_STARTED / READY_TO_IMPLEMENT",
+    "D3.5-A6-PHASE2": "NOT_STARTED / BLOCKED_UNTIL_PHASE1_FREEZE",
+    "D3.5": "IN_PROGRESS / POST_A2_SELECTIVITY_AND_ADMISSION_REDESIGN (unchanged)",
+    "D4": "NOT_STARTED / BLOCKED"
+  },
+  "exact_next_stage": "D3.5-A6 Phase 1 — Bounded Admission Prototype & Synthetic Construction Freeze (REAL_CASE_RERANKER_CALLS = 0; PHASE1_SELECT_V2_RUNS = 0; complete replay-surface materialization gate before implementation freeze)",
+  "execution_accounting": {
+    "REAL_CASE_RERANKER_CALLS": 0,
+    "REAL_CASE_SELECTIVITY_RUNS": 0,
+    "REAL_CASE_TREATMENT_POOL_CONSTRUCTIONS": 0,
+    "ANALYZER_CALLS": 0,
+    "EMBEDDING_CALLS": 0,
+    "QA_CALLS": 0,
+    "VERIFIER_CALLS": 0,
+    "JUDGE_CALLS": 0,
+    "POSTGRESQL_WRITES": 0,
+    "QDRANT_WRITES": 0,
+    "NOVEL_VALIDATION_RUNS": 0,
+    "NOVEL_HOLDOUT_RUNS": 0
+  },
+  "protected_datasets": {
+    "novel_validation": "FROZEN / UNSEEN",
+    "novel_holdout": "SEALED / UNSEEN",
+    "contents_inspected": false
+  },
+  "artifact_change_policy": {
+    "evaluation_scripts": "unchanged (no Phase-1 implementation in this task)",
+    "src": "unchanged",
+    "configs": "unchanged",
+    "d3_5_downstream_replay_fixture_json": "unchanged (prefer no fixture changes in Phase0-R1; none made)"
+  },
+  "prohibited_actions": [
+    "implement Phase 1",
+    "create an A6 runner",
+    "materialize real treatment pools",
+    "run select_v2",
+    "rerun A5-R2",
+    "run the reranker",
+    "test K2/K3 on g021",
+    "change K",
+    "change the repetition count",
+    "change the material-regression threshold",
+    "change v2 scoring",
+    "change selectivity caps",
+    "change the hard gate",
+    "add an origin reservation threshold",
+    "write PostgreSQL/Qdrant",
+    "run novel_validation",
+    "run holdout",
+    "start Phase 2",
+    "start D4"
+  ]
+}
