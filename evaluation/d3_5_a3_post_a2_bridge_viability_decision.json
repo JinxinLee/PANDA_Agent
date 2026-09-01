@@ -191,7 +191,14 @@
       "caveat": "the reranker is a model call; a paired replay must rerun the frozen reranker on both the baseline pool and the treatment pool so that reranker execution variance applies symmetrically to both sides"
     },
     "paired_design_benefit": "future experiments should prefer frozen upstream trace -> baseline downstream policy vs the same frozen trace -> candidate downstream policy, eliminating analyzer/D2/channel/bridge variance and isolating the admission intervention; this replaces four fully independent end-to-end model executions",
-    "guardrail": "A2 traces are experimental inputs only; policy parameters must never be chosen by asking what setting makes ana_dpm.C survive or what budget makes g021 pass; A2 is used only to identify the failed architectural layer"
+    "guardrail": "A2 traces are experimental inputs only; policy parameters must never be chosen by asking what setting makes ana_dpm.C survive or what budget makes g021 pass; A2 is used only to identify the failed architectural layer",
+    "a4_scoping_correction": {
+      "repair_id": "D3.5-A4_TRACE_REPLAY_SCOPE_CLARIFICATION",
+      "original_verdict_retained": "SUFFICIENT_FOR_DOWNSTREAM_EXPERIMENT",
+      "LOCAL_TRACE_REPLAY_FEASIBILITY": "SUFFICIENT_FOR_DOWNSTREAM_EXPERIMENT (true in the local development environment where the gitignored raw A2 records and gitignored normalized corpus exist)",
+      "REPOSITORY_PERSISTED_REPLAY_FIXTURE_READY": false,
+      "reason": "/data/evaluation/ and /data/normalized/ are gitignored; the raw local A2 run is not a durable scientific fixture and a future downstream experiment must not depend solely on it; a compact tracked replay fixture is required before any repository-replayable experiment"
+    }
   },
   "future_identifiability_requirements": {
     "intervention_isolation": "only the downstream admission policy may change between arms; bridge reachability, bridge materialization, D1, D2, query expansions, and source/index state remain frozen and identical",

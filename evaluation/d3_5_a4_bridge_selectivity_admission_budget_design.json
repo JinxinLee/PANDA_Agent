@@ -1,0 +1,352 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint": "D3.5-A4",
+  "stage_name": "D3.5-A4 — Bridge Selectivity & Admission-Budget Design",
+  "stage_type": "design/preregistration stage; no runtime, D1, database, or retrieval changes",
+  "starting_head": "1e8b2b4f9bc99fcf7be0cef86ae7931b89b96ee3",
+  "frozen_a2_identity": {
+    "frozen_a1_scientific_state_anchor": "470b62f823c3e65637604da2f614461c1a81d5b6",
+    "a2_pre_outcome_execution_commit": "9467061c81a288f2c3b01548b7eb39202f38e91c",
+    "a2_final_result_commit": "e8e2d5aa532a6b54ebdcc728804b211e44fb2132",
+    "a2_verdict": "PARTIAL / TARGETED_RECOVERY_MIXED",
+    "final_repository_d1_sha": "9b5a84996c30eaf1a297924b36452a90fe6d84d2"
+  },
+  "frozen_a3_decision": {
+    "follow_up_decision": "CONTINUE_ONLY_AFTER_SELECTIVITY_DESIGN",
+    "a3_result_commit": "1e8b2b4f9bc99fcf7be0cef86ae7931b89b96ee3",
+    "primary_observed_downstream_boundary": "fused candidate set -> rerank-pool admission",
+    "control_expansion_signal": "g020: 112 governed provenance objects reachable, 20 admitted to graph, 92 capped out, 20/20 ordinary graph candidates displaced, final regression 0, CONTROL_EXPANSION_SIGNAL = true"
+  },
+  "lifecycle_repair": {
+    "repair_id": "D3.5-A4_PARENT_LIFECYCLE_REPAIR",
+    "problem": "D3.5 = COMPLETE / STRUCTURED_EVIDENCE_LINK_BRIDGING_NOT_VALIDATED correctly describes the completed initial A0->A2 validation cycle but conflicts with authorized continuing work inside D3.5-A4/A5/A6",
+    "repaired_semantics": {
+      "D3_5_INITIAL_VALIDATION_CYCLE": "COMPLETE / STRUCTURED_EVIDENCE_LINK_BRIDGING_NOT_VALIDATED",
+      "D3.5": "IN_PROGRESS / POST_A2_SELECTIVITY_AND_ADMISSION_REDESIGN",
+      "meaning": "initial bridge design/implementation/evaluation completed -> did not validate end-to-end bridge -> A3 authorized a separate bounded redesign track -> overall D3.5 work is active again"
+    },
+    "a2_verdict_unchanged": true,
+    "a2_not_retroactively_invalidated": true,
+    "D4": "NOT_STARTED / BLOCKED"
+  },
+  "trace_replay_state": {
+    "LOCAL_TRACE_REPLAY_FEASIBILITY": "SUFFICIENT",
+    "local_evidence": "local raw A2 records (data/evaluation/runs/d3_5_a2_focused_20260901/records.jsonl) and the local normalized corpus exist; A3 verified that fusion recomputation from frozen channel rankings + frozen weights exactly reproduces the stored fusion_top30 for both positive cells",
+    "REPOSITORY_PERSISTED_REPLAY_FIXTURE_READY": false,
+    "repository_evidence": "/data/evaluation/ and /data/normalized/ are gitignored (.gitignore lines 84-85; only /data/manifests/*.json is tracked); the raw local A2 run is not a durable scientific fixture and may be absent on another machine",
+    "a3_wording_clarification": "applied to the A3 machine artifact as D3.5-A4_TRACE_REPLAY_SCOPE_CLARIFICATION (original A3 verdict retained verbatim; A3 decision fields untouched)",
+    "fixture_contract": {
+      "path": "evaluation/d3_5_downstream_replay_fixture.json",
+      "tracked": true,
+      "created_in": "D3.5-A5 (mechanical, outcome-independent extraction from frozen A2 records; not created in A4)",
+      "size_envelope": "compact: per-channel ordered object_id lists, bridge candidate records, a global deduplicated rerank-payload registry, and identity fields; no full corpus, no full documents; A5 must verify the committed size before freezing",
+      "identity_fields": [
+        "fixture_schema_version",
+        "source_a2_result_commit (e8e2d5aa532a6b54ebdcc728804b211e44fb2132)",
+        "source_a2_run_id (d3_5_a2_focused_20260901)",
+        "frozen_runtime_sha (9b5a84996c30eaf1a297924b36452a90fe6d84d2)",
+        "final_repository_d1_sha (9b5a84996c30eaf1a297924b36452a90fe6d84d2)",
+        "source_manifest identity (9925ec31a6122e05388806990f79aae036f3b0989c4584d24f2092bc4edb3d94)",
+        "index identity (panda_knowledge_v1 fingerprint 8172f9a6...; 104973 points; 133077 SQL objects)",
+        "case identities (g036, g021, n006, g041, g020, n004)",
+        "arm/source trace identity (per-cell arm, execution sequence, treatment flags)",
+        "created_from_frozen_A2 = true"
+      ],
+      "per_case_trace_fields": [
+        "case_id",
+        "question text / frozen question identity (query + query_sha256)",
+        "retrieval plan identity / relevant frozen plan fields (intent, target/version repositories, resolved_versions, concepts, symbols, concept_scopes, required_source_types, source_budgets)",
+        "D2 resolution receipt / exact seed identities (structured_resolution_receipt)",
+        "per-channel ordered candidate object_ids with per-channel rank and channel name (exact, dense, sparse, paper when present, workflow, graph)",
+        "bridge candidate IDs with provenance origin identities, source_id, source_version_id, locator",
+        "unbridged graph ordering (UNBRIDGED cell graph ranking)",
+        "bridged graph ordering (BRIDGED cell graph ranking)",
+        "frozen fusion weights (exact 2.0, dense 1.0, sparse 1.0, paper 1.15, workflow 1.2, graph 0.8; score weight/(60+rank+1))",
+        "baseline fused candidate ordering (full recomputed order, not only top-30)",
+        "baseline rerank-pool boundary (top-30 cutoff score and member list)"
+      ],
+      "payload_persistence_strategy": {
+        "chosen": "Option 1 — persist the exact bounded reranker payload",
+        "rationale": "Option 2 (stable identities + tracked content source) is invalid: the normalized corpus is gitignored, so no repository-persistent immutable source exists from which the exact reranker input could be reconstructed; Option 1 makes the fixture fully repository-replayable",
+        "payload_fields": ["object_id", "title", "source_id", "text payload exactly as used by the reranker (text[:2000] truncation of the normalized record)"],
+        "coverage": "global deduplicated registry covering the union of (baseline fused top-30 members) and (all bridge candidates) per cell; channel-trace members outside this union need IDs only",
+        "deduplication": "by object_id across cells"
+      },
+      "outcome_label_cleanliness": {
+        "runtime_fixture_must_not_contain": [
+          "gold candidate markers",
+          "required evidence",
+          "positive/control treatment targets",
+          "case roles (positive/control/Mechanism A/Mechanism C)",
+          "expected rank",
+          "case->candidate admission labels"
+        ],
+        "evaluator_metadata": "lives only in a separate evaluator-side file (suggested evaluation/d3_5_downstream_replay_evaluator_metadata.json), never in the runtime treatment fixture",
+        "runtime_fixture_may_contain": ["query", "candidate trace", "bridge receipts", "reranker input payload", "plan fields"]
+      }
+    }
+  },
+  "reranker_variance_contract": {
+    "UPSTREAM_VARIANCE_CONTROL": "FROZEN_TRACE_REPLAY",
+    "upstream_variance_eliminated": [
+      "analyzer variance",
+      "D2 variance",
+      "channel retrieval variance",
+      "bridge reachability variance",
+      "bridge materialization variance",
+      "fusion-input variance"
+    ],
+    "RERANKER_VARIANCE": "PRESENT / MUST_BE_SYMMETRICALLY_ACCOUNTED",
+    "not_fully_deterministic": "a paired replay still invokes the reranker model separately on baseline and treatment pools, so the observed final difference may contain admission/selectivity treatment effect + reranker execution variance unless variance is handled by preregistered symmetric repeated execution",
+    "strategy_class": "R1 — symmetric repeated reranker evaluation",
+    "strategy_rationale": {
+      "R1_chosen": "the reranker is a temperature-0 LLM call with an observed execution-variance class (A2 n006 R@5/MRR spread with final evidence arm-stable; D3-A2 n022 e3 precedent); running baseline and treatment pools the same preregistered number of times on the same frozen trace and comparing distributions is the smallest methodology that accounts for it",
+      "R2_rejected": "no deterministic reranker surface exists in the system (the only rerank path is vertex generate_json with RERANK_SYSTEM_PROMPT); inventing one is prohibited",
+      "R3_rejected": "single paired calls leave reranker variance unresolved exactly where the primary admission question is decided; weak inference is not proportionate for the A6 primary question"
+    },
+    "repetition_count_rule": "a small fixed preregistered repetition count per pool per cell is frozen in the A6 preregistration from a generic stability rationale (bounded, no Monte Carlo sweeps, no heavy significance frameworks); it must not be chosen from A2 outcomes",
+    "over_engineering_boundary": "no large reranker sweeps, no arbitrary confidence frameworks, no heavy significance testing"
+  },
+  "selectivity_problem_definition": {
+    "governance_eligibility": "GOVERNANCE ELIGIBILITY answers: which candidates are governable and therefore eligible to exist (accepted governed provenance, exact source/version qualification) — remains a hard prerequisite",
+    "query_relevance": "QUERY RELEVANCE answers: which governed candidates are most relevant to this query under a tight downstream budget — currently unanswered",
+    "distinction": "GOVERNANCE ELIGIBILITY != QUERY RELEVANCE; selectivity operates only among already governed bridge candidates and never admits ungoverned content",
+    "current_cap_behavior": {
+      "GLOBAL_BRIDGED_CANDIDATE_CAP": 20,
+      "ordering": "candidate materialization is primarily governed/provenance-order bounded (insertion order of provenance instances), not a dedicated candidate-level query-relevance ranking",
+      "conclusion": "candidate cap != selectivity policy; the cap bounds breadth but does not rank by relevance, which is why g021 admitted 19 README-evidence objects alongside prod_sim_hvmaps.C and g020 filled all 20 slots from one fan-out"
+    }
+  },
+  "candidate_signal_evaluation": {
+    "A_exact_lexical_overlap_with_query_concepts_symbols": {
+      "status": "ELIGIBLE_SIGNAL",
+      "role": "PRIMARY",
+      "rationale": "deterministic, query-grounded, already computed for the normal pipeline (analyzer deterministic parse + frozen plan concepts/symbols); zero model calls"
+    },
+    "B_sparse_retrieval_score_or_rank": {
+      "status": "SUPPORTING_TIEBREAKER_ONLY",
+      "rationale": "reusing non-graph channel support as relevance evidence; circularity risk (see below) forbids it as a hard requirement"
+    },
+    "C_dense_retrieval_score_or_rank": {
+      "status": "SUPPORTING_TIEBREAKER_ONLY",
+      "rationale": "same circularity risk as B"
+    },
+    "D_existing_fused_evidence_from_non_graph_channels": {
+      "status": "SUPPORTING_TIEBREAKER_ONLY",
+      "rationale": "useful relevance signal; must never become extra structured vote + extra sparse/dense vote + forced admission without explicit accounting (no duplicate authority)"
+    },
+    "E_source_repository_scope_match_from_frozen_retrievalplan": {
+      "status": "ELIGIBLE_SIGNAL",
+      "role": "BOUNDED_ELIGIBILITY_FILTER",
+      "rationale": "deterministic, plan-governed scope; filters only within already governed candidates; no repository widening"
+    },
+    "F_deterministic_locator_title_token_overlap": {
+      "status": "ELIGIBLE_SIGNAL",
+      "role": "PRIMARY",
+      "rationale": "same deterministic query-grounded family as A (locator paths and titles carry strong file-level signals); zero model calls"
+    },
+    "G_provenance_distance_structural_path_cost": {
+      "status": "SUPPORTING_TIEBREAKER_ONLY",
+      "rationale": "a shorter governed path may receive a weak deterministic preference, but short path != query relevance; never the sole rule; final tie-break role only"
+    },
+    "H_provenance_origin_confidence_governance_status": {
+      "status": "NOT_AVAILABLE",
+      "rationale": "all 16 accepted curated relations in the frozen D1 carry uniform confidence 1.0 and accepted review status — no discriminating signal exists at candidate level"
+    }
+  },
+  "circularity_analysis": {
+    "failure_mode": "a selectivity rule that keeps only bridge candidates already ranked highly by dense/sparse/exact would destroy the bridge's incremental value: in A2 the required files (g036 ana_dpm.C, g021 prod_sim_hvmaps.C) were absent from every non-graph channel when the focused shortcuts were suppressed — that absence is exactly what the bridge exists to repair",
+    "resolution": "non-graph channel presence is never a hard requirement or a removal trigger; absence from dense/sparse/exact must not imply removal; channel support may only add bounded tie-break points in the selectivity ordering among bridge candidates",
+    "duplicate_authority_guard": "channel support influences only the within-bridge selectivity ordering; it never adds votes, never changes fusion weights, and never grants admission by itself"
+  },
+  "selected_selectivity_design": {
+    "pipeline_shape": [
+      "governed eligible bridge candidates",
+      "generic deterministic candidate relevance scoring (primary: query-grounded lexical/symbol/locator token overlap; support: bounded non-graph channel overlap/rank points)",
+      "per-provenance-origin diversity guard",
+      "small bridge-selectivity cap",
+      "graph/additive candidate representation",
+      "bounded rerank admission (A6 only)"
+    ],
+    "primary_relevance_signals": [
+      "query/concepts/symbols lexical token overlap (A)",
+      "deterministic locator/title token overlap (F)",
+      "frozen plan source/scope match as a bounded eligibility filter (E)"
+    ],
+    "supporting_signals": [
+      "non-graph channel overlap/rank as bounded tie-break points (B/C/D)",
+      "structural provenance distance as final tie-break (G)"
+    ],
+    "rejected_signals": [
+      "non-graph support as a hard requirement (circularity — destroys bridge value)",
+      "structural-distance-only selection (governed closeness != query relevance)",
+      "provenance-origin confidence (no discriminating signal exists)"
+    ],
+    "score_transparency": "a small number of interpretable signals with deterministic weights frozen at implementation-preregistration time in A5; reconstructible from recorded inputs; no opaque composite rules",
+    "deterministic_tie_break": "selectivity score -> structural/provenance secondary key (path cost, then receipt order frozen at A5) -> stable object_id lexicographic; never database row order",
+    "SELECTIVITY_MODEL_CALLS": 0,
+    "SELECTIVITY_EXTRA_EMBEDDING_CALLS": 0,
+    "no_hand_written_file_pattern_boosts": "no special score bonuses for .C / README / macro/ / pgenerators/ or any positive-case-specific filename semantics; locator/title tokens are treated by one generic tokenizer for all candidates"
+  },
+  "selectivity_cap_design": {
+    "SELECTIVITY_CAP": 8,
+    "rationale": "generic absolute bound: at most 40% of the existing 20-slot bridge cap, keeping the bridge's additive graph footprint strictly below today's worst case while allowing multi-origin coverage; chosen from budget-architecture classes, not from case outcomes or case-specific candidate positions",
+    "PER_ORIGIN_CAP": 4,
+    "rationale": "no single provenance origin may consume the selectivity budget; this is the generic guard for the high-fan-out governed-provenance class that g020 exposed (one origin contributed all 112 fanned-out objects); the value is a generic bound on per-origin contribution, not derived from g020's exact 112->20 outcome",
+    "diversity_principles": [
+      "preserve reasonable diversity across provenance origins, source files, and relations/workflow steps where multiple governed origins exist",
+      "never force artificial diversity when only one valid origin exists (a single-origin fan-out is simply bounded by PER_ORIGIN_CAP)"
+    ],
+    "fail_closed": "if no bridge candidate meets the generic relevance/selectivity criteria, admit none; reserved slots are never filled merely because budget exists",
+    "cap_semantics": "SELECTIVITY_CAP and PER_ORIGIN_CAP are ceilings, not quotas: up to 8 candidates, never always 8"
+  },
+  "admission_policy_options": {
+    "A_fixed_small_absolute_reservation": {
+      "verdict": "SELECTED",
+      "analysis": "easy to audit, easy to replay, causally clean, bounded; strong default per the simplicity principle"
+    },
+    "B_small_fraction_of_rerank_pool": {
+      "verdict": "REJECTED_AS_PRIMARY",
+      "analysis": "equivalent to A for a fixed pool but introduces a ratio parameter; no architectural benefit over a fixed absolute ceiling"
+    },
+    "C_dynamic_reservation_based_on_selected_count": {
+      "verdict": "REJECTED",
+      "analysis": "dynamic complexity without clear justification; harder to audit and replay; rejected unless a future stage demonstrates need"
+    }
+  },
+  "selected_admission_policy": {
+    "family": "A — fixed small absolute rerank-pool admission reservation",
+    "total_rerank_pool_size_unchanged": true,
+    "pool_size": 30,
+    "displacement_semantics": "retain the baseline fused top-N ordering, then replace the lowest-ranked eligible baseline entries with selected bridge candidates not already present, up to the admission budget; displaced object_ids are recorded",
+    "no_duplicate_admission": "a selected bridge candidate already present in the baseline rerank pool does not consume a reserved slot; deduplication by stable object identity; overlap recorded separately",
+    "ceiling_not_quota": "up to K candidates, never always K; empty reservation is a valid outcome (fail closed)",
+    "candidate_authority": "every specially admitted candidate remains GOVERNED_PROVENANCE_BACKED_ADDITIVE_RETRIEVAL_CANDIDATE with IDENTITY_AUTHORITY = NONE",
+    "admission_grants": "permission to compete in the reranker only — never answer authority, never final-selection priority; selection chances improve only through normal reranker/selector evaluation",
+    "ADMISSION_BUDGET_CANDIDATES": [2, 3],
+    "budget_rationale": "generic class: small absolute reservation relative to the 30-slot rerank pool (2/30 ~ 7%, 3/30 = 10%), both preserving >= 90% ordinary-candidate competition; values chosen from budget-architecture classes, never from g036/g021 fused ranks (61/53) or any case-derived slot count",
+    "budget_comparison_rule": "A6 preregisters both budget arms ex ante against the same frozen baseline pool with preregistered decision criteria (bridge admission ratio, displacement accounting, control safety); the comparison is decided by those preregistered criteria, never by whether a positive case passes"
+  },
+  "selectivity_vs_admission_identifiability": {
+    "SELECTIVITY_CAP": "how many governed bridge candidates survive preselection into the graph stream",
+    "RERANK_ADMISSION_BUDGET": "how many non-baseline bridge candidates may receive reserved rerank slots",
+    "not_collapsed": true,
+    "design_decision": "S1 — STAGED_SELECTIVITY_THEN_ADMISSION",
+    "staged_rationale": "A3 froze CONTINUE_ONLY_AFTER_SELECTIVITY_DESIGN; an admission-only arm is not scientifically safe before selectivity is proven (g020 fan-out would let unselected provenance chunks monopolize reserved slots), so the factorial design's required proof (admission-only is safe enough to run) fails and S2 is invalid; S1 preserves clean attribution and minimizes treatment complexity",
+    "stage_1": {
+      "stage": "D3.5-A5 — Selectivity Prototype & Frozen-Trace Fan-Out Validation",
+      "question": "Can a generic deterministic selectivity policy materially reduce governed bridge fan-out and ordinary-candidate displacement while preserving the bridge candidates that are plausibly query-relevant?",
+      "question_is_NOT": "does final evidence recovery improve? (not asked in A5)",
+      "no_admission_treatment": true,
+      "no_reranker_required": true
+    },
+    "stage_2": {
+      "stage": "D3.5-A6 — Bounded Rerank-Admission Prototype & Paired Replay Validation",
+      "question": "With selectivity frozen, does bounded rerank-pool admission of selected bridge candidates improve downstream evidence competition without material control regression, under symmetric reranker-variance accounting?",
+      "sequencing": "only after A5 stabilizes selectivity and the replay fixture passes its verification gates"
+    }
+  },
+  "future_experiment_design": {
+    "implementation_sequence": [
+      "A4 design freeze (this artifact)",
+      "build compact tracked replay fixture from frozen A2 trace (mechanical, outcome-independent)",
+      "verify exact fusion reproduction",
+      "freeze replay fixture",
+      "implement selectivity prototype",
+      "evaluate using frozen fixture (A5)",
+      "then A6 admission prototype with paired replay"
+    ],
+    "selectivity_stage_outcome_surface": {
+      "no_reranker_metrics": [
+        "governed candidates before selectivity",
+        "candidates after selectivity",
+        "per-origin retained counts",
+        "bridge candidate reduction ratio",
+        "ordinary graph displacement",
+        "candidate overlap with baseline channels",
+        "candidate query-relevance diagnostics",
+        "positive-case required-evidence pool retention (evaluator-only)",
+        "control fan-out reduction"
+      ],
+      "expected_evidence_boundary": "expected evidence may only be used after candidate production for evaluation, never as a runtime input"
+    },
+    "anti_tuning_boundary": "the selectivity policy and all parameters must be chosen from generic criteria before evaluating frozen case outcomes; tuning against retain ana_dpm.C / retain prod_sim_hvmaps.C / remove g020 candidates is prohibited and preregistered as a boundary here",
+    "exposed_cases_acknowledgment": "reusing the frozen A2 six-case set is POST_OUTCOME_DESIGN_VALIDATION: these outcomes are already exposed, so the experiment is mechanistic development, not an unbiased confirmatory evaluation, and must never be represented as a fresh holdout",
+    "trace_replay_role": "POST_OUTCOME_MECHANISTIC_DEVELOPMENT",
+    "future_confirmation_boundary": "any later claim of general validated improvement requires a separate untouched evaluation surface after the development redesign stabilizes; that evaluation is not scheduled now — the boundary is preserved only",
+    "runtime_selectivity_inspection_prohibition": "runtime selectivity cannot inspect case IDs, case roles, positive/control markers, or mechanism labels (g036/g021/g020/positive/control/Mechanism A/Mechanism C are evaluator-only)"
+  },
+  "future_diagnostics": {
+    "four_stage_quantities": [
+      "eligible_governed_bridge_candidates",
+      "selected_bridge_candidates",
+      "graph_admitted_bridge_candidates",
+      "rerank_reserved_bridge_candidates",
+      "final_selected_bridge_evidence"
+    ],
+    "distinct_quantities": true,
+    "displacement_diagnostics": [
+      "ordinary_graph_candidates_displaced",
+      "ordinary_rerank_candidates_displaced",
+      "displaced_object_ids",
+      "bridge_overlap_with_baseline_rerank_pool",
+      "reserved_slots_used",
+      "reserved_slots_unused"
+    ]
+  },
+  "fixture_verification_gates": {
+    "before_any_replay_outcome": [
+      "baseline fusion order reproduced exactly",
+      "baseline top-30 rerank pool reproduced exactly",
+      "bridge candidate identities reproduced exactly",
+      "candidate payload reconstruction exact (semantic field equality: object_id, title, source_id, text payload, order; byte equality preferred, semantic equality required if serialization differs)",
+      "source/version identities preserved"
+    ],
+    "on_failure": "STOP; do not run treatment evaluation on a non-equivalent fixture",
+    "reranker_input_equality_gate": "baseline replay reranker inputs must match the original A2 baseline ordering/payload semantics before any treatment is introduced; approximate payload reconstruction is not accepted"
+  },
+  "control_failure_definition": {
+    "CONTROL_MATERIAL_REGRESSION": "loss of previously useful final evidence attributable to structured selectivity/admission displacement",
+    "numeric_threshold": "none defined now; never derived from observed case outcomes",
+    "not_all_displacement_is_failure": true
+  },
+  "expansion_signal_definition": {
+    "CONTROL_EXPANSION_SIGNAL": "bridge/selectivity/admission consumes a disproportionate candidate budget (graph slots, selectivity cap, reserved slots) even without final metric regression",
+    "role": "non-outcome diagnostic; recorded per case; does not automatically classify displacement as failure"
+  },
+  "A4_DESIGN_DECISION": "STAGED_SELECTIVITY_THEN_ADMISSION",
+  "exact_next_stage": "D3.5-A5 — Selectivity Prototype & Frozen-Trace Fan-Out Validation",
+  "A5_scope": {
+    "create_and_freeze_compact_replay_fixture": true,
+    "implement_selectivity_only": true,
+    "run_no_admission_treatment": true,
+    "measure": "fan-out/displacement/relevance retention with the frozen no-reranker metric surface"
+  },
+  "admission_budget_frozen_now_but_not_implemented_until_A6": true,
+  "execution_accounting": {
+    "RUNTIME_FILES_CHANGED": 0,
+    "D1_CONFIGS_CHANGED": 0,
+    "QUERY_EXPANSIONS_CHANGED": 0,
+    "POSTGRESQL_WRITES": 0,
+    "QDRANT_WRITES": 0,
+    "RETRIEVAL_RUNS": 0,
+    "RERANKER_CALLS": 0,
+    "EMBEDDING_CALLS": 0,
+    "NOVEL_VALIDATION_RUNS": 0,
+    "NOVEL_HOLDOUT_RUNS": 0
+  },
+  "prohibited_actions": [
+    "implement selectivity or admission inside A4",
+    "create production runtime policy",
+    "change bridge cap, graph weight, graph limit, or rerank pool size",
+    "run reranker replay or rerun A2",
+    "modify D1 or D2",
+    "write PostgreSQL or Qdrant",
+    "run novel_validation or holdout",
+    "start D4",
+    "derive any budget from case-specific candidate positions",
+    "let the runtime selectivity policy inspect case IDs, roles, or mechanism labels",
+    "add hand-written file-pattern boosts",
+    "use expected evidence as a runtime input"
+  ]
+}
