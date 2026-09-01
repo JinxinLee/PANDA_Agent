@@ -1,0 +1,238 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint": "D3.5-A5-R1-R1",
+  "stage_name": "D3.5-A5-R1-R1 — Relevance Formula & Exact-Match Contract Repair",
+  "stage_type": "narrow design-contract repair only; no repaired-scorer implementation, no real-case runs, no runtime/D1/database changes",
+  "starting_head": "240cfe0a827d125052b687a53e7519a06792069e",
+  "parent_r1_identity": {
+    "artifact": "evaluation/d3_5_a5_r1_selectivity_relevance_retention_design_repair.json",
+    "report": "evaluation/D3_5_A5_R1_SELECTIVITY_RELEVANCE_RETENTION_DESIGN_REPAIR.md",
+    "commit": "240cfe0a827d125052b687a53e7519a06792069e",
+    "frozen_a5_result_commit": "f4095626a9af0fbfdcbe7d446d4292667c57f241",
+    "fixture_commit": "e20fc6afebe671d2327ee3dbe80fd97b52c36679",
+    "selectivity_freeze_commit": "70a808d032016241ef8adf7c918168a807d1e4dc"
+  },
+  "parent_r1_decision": {
+    "R1_DESIGN_DECISION": "REPAIR_WITH_HIGHER_RESOLUTION_DETERMINISTIC_RELEVANCE",
+    "preserved_unchanged": [
+      "ranking-resolution defect, not budget defect",
+      "PER_ORIGIN_CAP_NEXT = 4",
+      "SELECTIVITY_CAP_NEXT = 8",
+      "governance eligibility remains HARD_FILTER",
+      "plan-scope compatibility remains HARD_FILTER",
+      "MIN_PRIMARY_SCORE >= 1 remains the unchanged hard gate",
+      "support_rank remains SECONDARY_RANK",
+      "structural_distance remains TIEBREAKER_ONLY",
+      "least-used-origin attribution remains unchanged",
+      "no file-type bonuses, no case-specific rules, no LLM/embedding scorer",
+      "NUMBER_OF_R2_REPAIRED_POLICIES_TO_EVALUATE = 1"
+    ]
+  },
+  "idf_defect": {
+    "frozen_formula": "idf(t) = log2(|U| / (1 + df(t)))",
+    "defect": "df(t) = |U| gives idf = log2(|U| / (|U| + 1)) < 0: a matched query token that is ubiquitous in the eligible universe would create negative relevance evidence",
+    "worked_example": "N = 10, df = 10 -> log2(10/11) = -0.1375 (negative)",
+    "severity": "design-contract defect; must be repaired before R2 implements the formula"
+  },
+  "repaired_idf_formula": {
+    "formula": "idf(t) = log2((|U| + 1) / (df(t) + 1))",
+    "base": 2,
+    "properties": "non-negative on 1 <= df <= N; idf(df = N) = 0; strictly decreasing in df; deterministic for identical (N, df); no corpus-global statistics; no expected evidence; no case-specific constants",
+    "numeric_behavior": "floating-point values are allowed only for ranking; ranking compares the unrounded deterministic computed values; serialization may round values for diagnostics only",
+    "selected_over_alternatives": "the task-preferred formula is adopted unchanged: it satisfies every required invariant with the smallest deviation from the R1 contract; no alternative formula is needed"
+  },
+  "idf_invariants": [
+    "for N = |U| >= 1 and 1 <= df <= N: idf(df) >= 0",
+    "idf(df = N) = 0",
+    "idf(df = 1) > idf(df = 2) > ... >= idf(df = N)",
+    "same N + same df => deterministic same value",
+    "no corpus-global statistics, no expected evidence, no case-specific constants"
+  ],
+  "df_definition": {
+    "definition": "number of UNIQUE eligible candidate object IDs whose candidate_lexical_view contains token t",
+    "not": [
+      "number of provenance receipts",
+      "number of origins",
+      "number of token occurrences",
+      "number of selected candidates"
+    ],
+    "multi_origin_rule": "a candidate belonging to multiple provenance origins counts exactly once"
+  },
+  "candidate_lexical_view": {
+    "definition": "deduplicated union of tokens from locator basename, locator parent-directory components, title, and bounded text[:2000]",
+    "tokenization": "the frozen v1 lexical tokenizer (NFKD -> camelCase split -> casefold -> non-alphanumeric separators -> dedupe)",
+    "set_semantics": "all tokens are sets for df purposes; repeated occurrences inside one candidate do not increase df",
+    "effect": "removes the R1-diagnosed path/title duplicate contribution: a token present in path + title + text contributes its IDF weight exactly once at ranking level 2"
+  },
+  "symbol_exact_normalization": {
+    "plan_symbol_side": "Unicode NFKC -> casefold -> path separators normalized to '/'",
+    "candidate_surface_side": "identical normalization (Unicode NFKC -> casefold -> path separators to '/')",
+    "compound_identifier_preserved": "the compound identifier is NEVER split for the symbol_exact_tier (restgas_profile remains one identifier); the ordinary lexical tokenizer may still split it for the separate split-token signals",
+    "case_sensitivity": "case-insensitive via casefold after NFKC (deterministic)"
+  },
+  "symbol_exact_boundary_contract": {
+    "rule": "a normalized compound symbol matches only if its normalized occurrence is bounded on both sides by start/end of string OR a character that is NOT in [a-z0-9_]",
+    "identifier_character_class": "[a-z0-9_] — underscore is part of an identifier and never a boundary",
+    "positive_examples": [
+      "'... restgas_profile ...' matches",
+      "'/restgas_profile/' matches",
+      "'restgas_profile(' matches",
+      "'macro/target/restgas_profile.txt' matches"
+    ],
+    "negative_examples": [
+      "'my_restgas_profile_backup' does NOT match",
+      "'restgas_profile2' does NOT match",
+      "'xrestgas_profile' does NOT match"
+    ],
+    "arbitrary_substring_matching": "prohibited"
+  },
+  "symbol_exact_semantics_decisions": {
+    "hyphen": "restgas-profile does NOT count as an exact compound-symbol match for restgas_profile (no invented equivalence; it may still receive ordinary split-token lexical overlap)",
+    "camelcase": "RestgasProfile does NOT automatically equal restgas_profile for this tier (no camel-splitting of the candidate surface before exact matching; no existing canonical identifier normalization establishes equivalence)",
+    "title_in_symbol_tier": "EXCLUDED by the strong default: the persisted title is synthetic/descriptive and duplicates path semantics for source-file objects; recorded explicitly as a frozen decision",
+    "empty_plan_symbols": "if plan.symbols = [] then symbol_exact_tier = 0 for every candidate; no fallback to inferred symbols",
+    "ranking_only": "symbol_exact_tier remains PRIMARY_RANK level 1; it is not governance authority, hard inclusion rule, answer truth, or required-evidence mapping; a candidate without an exact symbol may still win through later generic relevance levels"
+  },
+  "symbol_exact_surfaces": [
+    "locator basename (normalized)",
+    "full normalized locator path",
+    "bounded text[:2000] (normalized)"
+  ],
+  "symbol_exact_count_semantics": {
+    "definition": "number of DISTINCT plan symbols that have at least one valid boundary-aware exact match in any allowed candidate surface",
+    "occurrence_rule": "a symbol occurring 10 times contributes 1, not 10",
+    "multi_surface_rule": "the same symbol matching path and text still contributes once"
+  },
+  "v2_exact_rank_order": [
+    "1. symbol_exact_tier DESC",
+    "2. rarity_weighted_overlap DESC (repaired non-negative universe-local IDF)",
+    "3. basename_coverage DESC",
+    "4. text_presence DESC (distinct normal query tokens in tokenized text[:2000]; not raw occurrence count; the compound symbol exact count is not re-included here beyond what naturally results from the ordinary split-token representation)",
+    "5. support_rank ASC (missing support sorts worse than any present support but never disqualifies)",
+    "6. structural_distance ASC",
+    "7. stable candidate_object_id ASC"
+  ],
+  "lexical_view_dedup_semantics": {
+    "rule": "basename, parent-directory, title, and text tokens are combined as one deduplicated token set before the IDF-weighted overlap (level 2); a token present in path + title + text contributes its IDF weight once",
+    "basename_coverage_independence": "basename_coverage deliberately remains a separate later lexicographic level: cross-level structural specificity is intentional, not double-counting within one score",
+    "text_presence_independence": "text_presence counts distinct normal query tokens only and is a separate later lexicographic level for the same reason"
+  },
+  "gate_recall_limitation_contract": {
+    "GATE_RECALL_LIMITATION": {
+      "definition": "a required-evidence candidate is present in the complete pre-cap eligible governed universe AND the repaired evaluator identifies it as required evidence BUT the unchanged MIN_PRIMARY_SCORE >= 1 path/title gate rejects it before v2 ranking is applied",
+      "distinct_from": "APPLICABLE_AND_LOST_AFTER_RANKING (passes the gate but lost by ranking/caps)",
+      "owner": "evaluator-only; never a runtime category",
+      "response_rule": "if R2 observes GATE_RECALL_LIMITATION, do NOT modify the gate inside R2 after outcome exposure; record it and stop/route to a later design stage; R1-R1 does not change the gate"
+    },
+    "future_evaluator_classes": {
+      "NOT_APPLICABLE_TO_SELECTIVITY": "required evidence absent from the complete eligible governed universe",
+      "GATE_RECALL_LIMITATION": "present in the eligible universe but rejected by the unchanged hard relevance gate",
+      "APPLICABLE_AND_RETAINED": "passes the gate and retained by repaired selectivity",
+      "APPLICABLE_AND_LOST": "passes the gate but lost by repaired ranking/caps"
+    },
+    "evaluator_only": true
+  },
+  "complete_universe_evaluator_contract_preserved": {
+    "contract": "complete pre-cap eligible governed universe x frozen evaluator-only expected-evidence selectors",
+    "no_reversion_to_a2_combined_pool_provenance": true,
+    "expected_evidence_runtime_use": 0
+  },
+  "r2_anti_tuning_contract": {
+    "NUMBER_OF_R2_REPAIRED_POLICIES_TO_EVALUATE": 1,
+    "sequence": [
+      "R1-R1 contract frozen (this artifact)",
+      "R2 implementation of exactly the frozen v2 contract",
+      "evaluator implementation (complete-universe matching with the four applicability classes)",
+      "synthetic tests",
+      "freeze commit",
+      "one real six-case revalidation"
+    ],
+    "r2_discretion_prohibited_on": [
+      "IDF formula",
+      "df definition",
+      "candidate lexical view",
+      "symbol normalization",
+      "symbol boundary behavior",
+      "symbol surfaces",
+      "count semantics",
+      "lexicographic rank order"
+    ],
+    "r2_ambiguity_rule": "if R2 discovers ambiguity: STOP BEFORE REAL-CASE OUTCOME; do not improvise",
+    "no_winner_picking": true
+  },
+  "caps_preserved": {
+    "PER_ORIGIN_CAP_NEXT": 4,
+    "SELECTIVITY_CAP_NEXT": 8
+  },
+  "model_call_boundary": {
+    "SELECTIVITY_MODEL_CALLS": 0,
+    "EXTRA_EMBEDDING_CALLS": 0
+  },
+  "property_checks_executed": {
+    "scope": "mathematical/property-level checks of the repaired IDF formula and the boundary matcher on synthetic strings only; no real-case candidate outcomes",
+    "source": "data/tmp/r1r1_property_checks.json (gitignored working record; results embedded here)",
+    "idf_checks": {
+      "idf_df_equals_N_equals_0": {"input": "N=10, df=10", "result": 0.0, "pass": true},
+      "idf_never_negative_1_le_df_le_N": {"input": "N=10, df=1..10", "min": 0.0, "pass": true},
+      "idf_strictly_decreasing_in_df": {"input": "N=10, df=1..10", "pass": true},
+      "determinism_same_N_df": {"pass": true},
+      "old_formula_defect_reproduced_for_documentation": {"input": "log2(10/11)", "result": -0.1375, "negative_confirmed": true}
+    },
+    "symbol_boundary_checks": {
+      "positive_matches": [
+        "'... restgas_profile ...'",
+        "'/restgas_profile/'",
+        "'restgas_profile('",
+        "'macro/target/restgas_profile.txt'",
+        "'the restgas_profile key' (underscore preserved)",
+        "'RESTGAS_PROFILE value' (case-normalized)",
+        "'macro\\target\\restgas_profile.C' (path separators normalized)"
+      ],
+      "negative_matches": [
+        "'my_restgas_profile_backup'",
+        "'restgas_profile2'",
+        "'xrestgas_profile'",
+        "'restgas-profile' (hyphen: no invented equivalence)",
+        "'RestgasProfile' (camelCase: no invented equivalence)"
+      ],
+      "all_pass": true
+    },
+    "total": "17/17 passed"
+  },
+  "R1_R1_DECISION": "RELEVANCE_FORMULA_AND_EXACT_MATCH_CONTRACT_REPAIRED",
+  "decision_basis": "both defects are fully frozen: (1) the repaired IDF formula satisfies every required invariant (verified 17/17 synthetic property checks including the negative-defect reproduction); (2) the symbol-exact contract is now implementation-unambiguous (normalization, boundaries, surfaces, count semantics, empty-symbols behavior). R2 has no discretion over any contract detail.",
+  "exact_next_stage": "D3.5-A5-R2 — Repaired Selectivity Prototype Freeze & Revalidation (READY_TO_IMPLEMENT)",
+  "prohibited_actions": [
+    "implement the v2 scorer inside R1-R1",
+    "run v2 on g036/g021/g020",
+    "inspect repaired retention outcomes",
+    "change caps",
+    "change the hard gate",
+    "try alternative IDF formulas on real cases",
+    "run admission",
+    "call reranker/analyzer/embeddings",
+    "modify D1/D2",
+    "write PostgreSQL/Qdrant",
+    "run novel_validation/holdout",
+    "start A6",
+    "start D4"
+  ],
+  "execution_accounting": {
+    "REAL_CASE_SELECTIVITY_TREATMENT_RUNS": 0,
+    "REPAIRED_SCORER_RUNS": 0,
+    "ANALYZER_CALLS": 0,
+    "EMBEDDING_CALLS": 0,
+    "RERANKER_CALLS": 0,
+    "QA_CALLS": 0,
+    "VERIFIER_CALLS": 0,
+    "JUDGE_CALLS": 0,
+    "PRODUCTION_RUNTIME_CHANGES": 0,
+    "D1_CHANGES": 0,
+    "D2_CHANGES": 0,
+    "QUERY_EXPANSION_CHANGES": 0,
+    "POSTGRESQL_WRITES": 0,
+    "QDRANT_WRITES": 0,
+    "NOVEL_VALIDATION_RUNS": 0,
+    "NOVEL_HOLDOUT_RUNS": 0
+  }
+}

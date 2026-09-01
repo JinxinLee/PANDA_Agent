@@ -107,3 +107,15 @@ A5 audit metadata repaired narrowly (`D3.5-A5-R1_METADATA_REPAIR`): exposure sta
 ## 20. Exact next task
 
 > **D3.5-A5-R2 — Repaired Selectivity Prototype Freeze & Revalidation** — implement exactly the frozen v2 relevance design, upgrade the evaluator to complete-universe matching, run synthetic tests before real outcomes, freeze the implementation, evaluate exactly one repaired policy on the six frozen cases, preserve the caps, run no admission and no reranker.
+
+---
+
+## 21. R1-R1 contract repair clarification (2026-09-01)
+
+`D3.5-A5-R1-R1` narrowed two preregistration-level ambiguities in this design before any implementation; the full frozen contract is in `evaluation/d3_5_a5_r1_r1_relevance_formula_exact_match_contract_repair.json`:
+
+1. **Non-negative IDF**: the level-2 rarity weighting uses `idf(t) = log2((|U| + 1) / (df(t) + 1))` (base 2) — the initially written `log2(|U| / (1 + df(t)))` could go negative at `df(t) = |U|`. Invariants (verified 17/17 synthetic property checks): non-negative on `1 ≤ df ≤ N`, `idf(df = N) = 0`, strictly decreasing in df, deterministic; floats ranking-only (unrounded comparison). `df(t)` counts **unique eligible candidate object IDs** whose `candidate_lexical_view` — the deduplicated union of basename/parent-directory/title/text[:2000] tokens — contains t; empty universe → select none, no IDF computation.
+2. **Symbol-exact semantics**: normalization NFKC → casefold → path separators to "/" on both sides; the compound identifier is never split; matching is boundary-aware (bounded by start/end or a character outside `[a-z0-9_]` — underscore preserved); no hyphen (`restgas-profile`) or camelCase (`RestgasProfile`) equivalence; surfaces = locator basename, full normalized path, `text[:2000]`, with **title excluded**; count = distinct symbols matched; empty `plan.symbols` → 0 with no inferred fallback.
+3. **`GATE_RECALL_LIMITATION`** (evaluator-only): a required-evidence candidate present in the complete pre-cap eligible universe but rejected by the unchanged `MIN_PRIMARY_SCORE ≥ 1` path/title gate before v2 ranking. If R2 observes it, the gate is not modified inside R2 — record and route to a later design stage. The complete-universe evaluator contract from §16 is preserved; the exact 7-level v2 rank order is frozen in the R1-R1 artifact.
+
+No other R1 decision changed: `R1_DESIGN_DECISION`, the caps (4/8), the hard filters, and the R2 anti-tuning sequence stand as written above.

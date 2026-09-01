@@ -125,14 +125,16 @@
     ],
     "primary_rank_levels": {
       "level_1_symbol_exact_tier": {
-        "signal": "count of distinct compound plan-symbol strings (unsplit identifier form, from the frozen plan.symbols field) whose occurrence is found in the candidate's basename, full path, or bounded text[:2000]",
+        "signal": "number of DISTINCT compound plan-symbol strings (unsplit identifier form, from the frozen plan.symbols field) with at least one boundary-aware exact match in the candidate's allowed search surfaces (locator basename, full normalized locator path, bounded text[:2000]; title EXCLUDED by the strong default because it is synthetic/descriptive and duplicates path semantics for source-file objects)",
         "rationale": "distinctive identifier matches are the strongest generic query-grounded signal; if plan.symbols is empty the level is inert for every candidate (generic behavior)",
-        "note": "this is a distinct signal from the tokenizer's split tokens; the tokenizer itself is unchanged"
+        "note": "this is a distinct signal from the tokenizer's split tokens; the tokenizer itself is unchanged",
+        "exact_match_contract_repair_note": "D3.5-A5-R1-R1: normalization for both plan symbol and candidate search surface is Unicode NFKC -> casefold -> path separators normalized to '/'; the compound identifier is never split for this tier; a match requires the normalized symbol occurrence to be bounded on both sides by start/end of string or a character outside [a-z0-9_] (underscore is part of an identifier); arbitrary substring matching is prohibited; hyphen forms (restgas-profile) and camelCase forms (RestgasProfile) do NOT count as exact matches for restgas_profile (no invented equivalence; ordinary lexical overlap still applies); count semantics: distinct symbols matched, occurrences and multi-surface hits contribute once; empty plan.symbols -> symbol_exact_tier = 0 for every candidate with no fallback to inferred symbols"
       },
       "level_2_rarity_weighted_overlap": {
-        "signal": "sum over distinct query tokens t present in the candidate's (basename union parent-directory union title union text[:2000]) token view of idf(t) = log2(|U| / (1 + df(t))), where df(t) is the number of eligible-universe candidates whose (path union title union text) token view contains t, and |U| is the eligible universe size",
+        "signal": "sum over distinct query tokens t present in the candidate's (basename union parent-directory union title union text[:2000]) token view of idf(t) = log2((|U| + 1) / (df(t) + 1)), where df(t) is the number of UNIQUE eligible candidate object IDs whose candidate_lexical_view contains t, and |U| is the eligible universe size (|U| >= 1; if |U| = 0 selectivity selects none and no IDF is computed)",
         "rationale": "downweights universe-ubiquitous tokens (target 49/62, readme 61/62) and upweights distinctive ones (supplied 2/62) with zero handwritten lists",
-        "bias_controls": "distinct-token counting and universe-local computation only"
+        "bias_controls": "distinct-token counting and universe-local computation only; the candidate lexical view is a deduplicated set union so a token present in path + title + text contributes its IDF weight exactly once (removes the R1-diagnosed path/title double-count)",
+        "idf_contract_repair_note": "D3.5-A5-R1-R1: the originally frozen idf(t) = log2(|U| / (1 + df(t))) is defective because df(t) = |U| yields log2(|U|/(|U|+1)) < 0, i.e., a matched ubiquitous token would create negative relevance evidence. Repaired formula log2((|U|+1)/(df+1)) is non-negative on 1 <= df <= N, idf(df=N) = 0, strictly decreasing in df, deterministic for same (N, df); base 2; floating-point values are ranking-only and comparison uses unrounded values (serialization may round for diagnostics only)"
       },
       "level_3_basename_coverage": {
         "signal": "count of distinct query tokens present in the locator basename tokens",
@@ -152,7 +154,17 @@
     ],
     "title_handling": "title tokens participate in the lexical token view (levels 2 and the gate) but the v1 additive path+title double-count is removed; for source-file objects whose title equals the path this prevents double-counting one generic token",
     "caps_unchanged": "PER_ORIGIN_CAP = 4 and SELECTIVITY_CAP = 8 preserved; budget relaxation rejected as the repair",
-    "model_calls": "SELECTIVITY_MODEL_CALLS = 0; EXTRA_EMBEDDING_CALLS = 0; all signals are deterministic functions of the frozen fixture"
+    "model_calls": "SELECTIVITY_MODEL_CALLS = 0; EXTRA_EMBEDDING_CALLS = 0; all signals are deterministic functions of the frozen fixture",
+    "v2_exact_rank_order": [
+      "1. symbol_exact_tier DESC",
+      "2. rarity_weighted_overlap DESC (repaired non-negative universe-local IDF)",
+      "3. basename_coverage DESC",
+      "4. text_presence DESC (distinct normal query tokens in tokenized text[:2000])",
+      "5. support_rank ASC (missing support sorts worse than any present support but never disqualifies)",
+      "6. structural_distance ASC",
+      "7. stable candidate_object_id ASC"
+    ],
+    "lexical_view_dedup_note": "D3.5-A5-R1-R1: for rarity and text lexical calculations the basename/parent-directory/title/text tokens are combined as one deduplicated token set before IDF-weighted overlap; basename_coverage deliberately remains a separate later lexicographic level (structural specificity across levels, not double-counting within one score); text_presence counts distinct normal query tokens, not raw occurrences"
   },
   "signal_role_contract": {
     "HARD_FILTER": [
@@ -166,8 +178,13 @@
       "level 3: basename_coverage",
       "level 4: text_presence (distinct query tokens in text[:2000])"
     ],
-    "SECONDARY_RANK": ["support_rank (non-graph channels; never mandatory)"],
-    "TIEBREAKER_ONLY": ["structural_distance", "candidate_object_id"],
+    "SECONDARY_RANK": [
+      "support_rank (non-graph channels; never mandatory)"
+    ],
+    "TIEBREAKER_ONLY": [
+      "structural_distance",
+      "candidate_object_id"
+    ],
     "REJECTED": [
       "raw text overlap count (length bias)",
       "token precision (inverse length bias)",
@@ -273,5 +290,23 @@
     "QDRANT_WRITES": 0,
     "NOVEL_VALIDATION_RUNS": 0,
     "NOVEL_HOLDOUT_RUNS": 0
-  }
+  },
+  "repair_history": [
+    {
+      "repair_id": "D3.5-A5-R1-R1_RELEVANCE_CONTRACT_REPAIR",
+      "scope": "narrow design-contract repair only (IDF formula + symbol-exact semantics + gate-recall diagnostic); no other R1 decision reopened",
+      "changes": [
+        "IDF formula repaired: log2(|U|/(1+df)) -> log2((|U|+1)/(df+1)) (non-negative, idf(df=N)=0, monotonic decreasing, deterministic, base 2)",
+        "df definition frozen: unique eligible candidate object IDs whose candidate_lexical_view contains the token (not receipts/origins/occurrences/selected counts)",
+        "candidate_lexical_view frozen: deduplicated union of basename/parent-directory/title/text[:2000] tokens",
+        "symbol-exact contract frozen: NFKC -> casefold -> path-separator normalization; boundary-aware matching with [a-z0-9_] identifier class; underscore preserved; no hyphen/camelCase equivalence; surfaces = basename/path/text[:2000] with title excluded; distinct-symbol count semantics; empty plan.symbols -> 0",
+        "v2 exact rank order frozen (7 levels, no weights)",
+        "GATE_RECALL_LIMITATION evaluator-only diagnostic frozen with the four future applicability classes"
+      ],
+      "top_level_decision_changed": false,
+      "caps_changed": false,
+      "metrics_changed": false
+    }
+  ],
+  "R1_R1_DECISION_LINK": "evaluation/d3_5_a5_r1_r1_relevance_formula_exact_match_contract_repair.json"
 }
