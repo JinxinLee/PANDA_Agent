@@ -1,0 +1,3275 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint": "D3.5-A5",
+  "stage_name": "D3.5-A5 — Selectivity Prototype & Frozen-Trace Fan-Out Validation",
+  "starting_head": "e90604aef383b980f31e3ea106c28489b76b6288",
+  "fixture_freeze_commit": "e20fc6afebe671d2327ee3dbe80fd97b52c36679",
+  "selectivity_freeze_commit": "70a808d032016241ef8adf7c918168a807d1e4dc",
+  "fixture_identity": {
+    "path": "evaluation/d3_5_downstream_replay_fixture.json",
+    "fixture_schema_version": "1.0.0",
+    "source_a2_result_commit": "e8e2d5aa532a6b54ebdcc728804b211e44fb2132",
+    "source_a2_run_id": "d3_5_a2_focused_20260901",
+    "frozen_runtime_sha": "9b5a84996c30eaf1a297924b36452a90fe6d84d2",
+    "final_repository_d1_sha": "9b5a84996c30eaf1a297924b36452a90fe6d84d2",
+    "source_manifest_sha256": "9925ec31a6122e05388806990f79aae036f3b0989c4584d24f2092bc4edb3d94",
+    "tracked": true,
+    "size_bytes": 1225100,
+    "payload_registry_entries": 217,
+    "created_from_frozen_A2": true
+  },
+  "selectivity_preregistration_ref": {
+    "path": "evaluation/d3_5_a5_selectivity_preregistration.json",
+    "policy_version": "d3_5_a5_selectivity_v1",
+    "implementation": "evaluation/scripts/d3_5_a5_selectivity.py",
+    "NUMBER_OF_SELECTIVITY_VARIANTS_EVALUATED": 1,
+    "case_level_outcomes_seen_before_freeze": false
+  },
+  "A5_SELECTIVITY_OUTCOME_EXPOSURE": {
+    "before_phase_3": "NOT_STARTED (fixture and selectivity implementation frozen and committed)",
+    "started_at": "first six-case replay execution after Commit 2 (70a808d)",
+    "state": "STARTED",
+    "immutable_after_start": [
+      "tokenizer",
+      "lexical normalization",
+      "signal weights",
+      "signal combination",
+      "plan-scope filter",
+      "PER_ORIGIN_CAP",
+      "SELECTIVITY_CAP",
+      "tie-break order",
+      "candidate eligibility",
+      "fixture"
+    ]
+  },
+  "phase_sequence": {
+    "phase_1": "build + mechanically verify replay fixture (all equivalence gates passed) -> Commit 1 e20fc6a",
+    "phase_2": "implement + preregister exactly one selectivity policy with 13/13 synthetic checks -> Commit 2 70a808d",
+    "phase_3": "deterministic six-case replay of the frozen traces -> this artifact"
+  },
+  "fixture_equivalence_proof": {
+    "fusion_reproduction": "BRIDGED-cell fusion recomputed from frozen channel rankings + frozen weights equals the stored fusion_top30 for all six cases (scores to 6 decimals)",
+    "orderings": "per-channel orderings, unbridged and bridged graph orderings persisted verbatim from the frozen records",
+    "bridge_candidates": "bridge candidate identities/origins/versions/locators equal the frozen bridge receipts; baseline displacement reproduction verified per case",
+    "pre_cap_universe": "complete pre-cap eligible governed bridge-candidate universe reconstructed from INJECTED/RANKED_OUT receipts (duplicate-reference receipts identified via reason_included and deduplicated by candidate object id with full origin sets)",
+    "payloads": "all 217 registry payloads (object_id/title/source_id/text[:2000]) verified to match the frozen PostgreSQL state read-only",
+    "outcome_label_clean": "fixture contains no required_evidence/gold/positive-control/expected-rank/case-to-target fields (label-like corpus text only, verified by scan)"
+  },
+  "NUMBER_OF_SELECTIVITY_VARIANTS_EVALUATED": 1,
+  "six_case_records": {
+    "g036": {
+      "case_id": "g036",
+      "eligible_governed_bridge_candidate_count": 3,
+      "baseline_old_cap_admitted_count": 3,
+      "selected_bridge_candidate_count": 3,
+      "selection_reduction_count": 0,
+      "selection_reduction_ratio": 0.0,
+      "number_of_provenance_origins_before": 2,
+      "number_of_provenance_origins_baseline_admitted": 2,
+      "number_of_provenance_origins_after": 2,
+      "per_origin_retained_counts_attributed": {
+        "edge.2e09628416a01ce2461d752a": 1,
+        "edge.a767185bbbc0d72189d0ac29": 2
+      },
+      "per_origin_membership_counts_informational": {
+        "edge.2e09628416a01ce2461d752a": 1,
+        "edge.a767185bbbc0d72189d0ac29": 2
+      },
+      "selected_object_ids": [
+        "object.d1810969df820d9a7aff0415",
+        "object.d61c9f6941dd9cf1acf258fe",
+        "object.5cae2ceab6e67bb4c9065331"
+      ],
+      "selected_scores": {
+        "object.d1810969df820d9a7aff0415": 2,
+        "object.d61c9f6941dd9cf1acf258fe": 2,
+        "object.5cae2ceab6e67bb4c9065331": 2
+      },
+      "selected_score_components": [
+        {
+          "candidate_object_id": "object.d1810969df820d9a7aff0415",
+          "path_overlap": 1,
+          "title_overlap": 1,
+          "primary_score": 2,
+          "support_rank": null,
+          "structural_distance": 1,
+          "attributed_origin_id": "edge.a767185bbbc0d72189d0ac29",
+          "provenance_origin_ids": [
+            "edge.a767185bbbc0d72189d0ac29"
+          ],
+          "locator_path": "macro/target/prod_aod_complete.C",
+          "a2_disposition": "A2_ADMITTED"
+        },
+        {
+          "candidate_object_id": "object.d61c9f6941dd9cf1acf258fe",
+          "path_overlap": 1,
+          "title_overlap": 1,
+          "primary_score": 2,
+          "support_rank": null,
+          "structural_distance": 1,
+          "attributed_origin_id": "edge.a767185bbbc0d72189d0ac29",
+          "provenance_origin_ids": [
+            "edge.a767185bbbc0d72189d0ac29"
+          ],
+          "locator_path": "macro/target/pid_complete.C",
+          "a2_disposition": "A2_ADMITTED"
+        },
+        {
+          "candidate_object_id": "object.5cae2ceab6e67bb4c9065331",
+          "path_overlap": 1,
+          "title_overlap": 1,
+          "primary_score": 2,
+          "support_rank": null,
+          "structural_distance": 2,
+          "attributed_origin_id": "edge.2e09628416a01ce2461d752a",
+          "provenance_origin_ids": [
+            "edge.2e09628416a01ce2461d752a"
+          ],
+          "locator_path": "macro/target/ana_dpm.C",
+          "a2_disposition": "A2_ADMITTED"
+        }
+      ],
+      "graph_admitted_bridge_candidates": [
+        "object.d1810969df820d9a7aff0415",
+        "object.d61c9f6941dd9cf1acf258fe",
+        "object.5cae2ceab6e67bb4c9065331"
+      ],
+      "ordinary_graph_candidates_displaced_before_count": 0,
+      "ordinary_graph_candidates_displaced_after_count": 0,
+      "ordinary_graph_candidates_displaced_after_ids": [],
+      "overlap_with_non_graph_channels_count": 0,
+      "zero_score_candidates_rejected": 0,
+      "scope_rejected_count": 0,
+      "origin_capped_out_count": 0,
+      "beyond_selectivity_cap_count": 0,
+      "selectivity_only_graph_ordering": [
+        "object.d1810969df820d9a7aff0415",
+        "object.d61c9f6941dd9cf1acf258fe",
+        "object.5cae2ceab6e67bb4c9065331",
+        "data_product.restgas.event_poca",
+        "workflow.restgas.second_pass_pid",
+        "object.09e0d0e722de413b72e39fc7",
+        "object.0b2c13ac19e319aac0be7079",
+        "object.130d7834a6fe03a7867adee1",
+        "object.1bcb4bb7cd4ceaab322ce0f4",
+        "object.25bfb752235ce4c8c1672151",
+        "object.3ef7c0c1f717c8872fc97f9d",
+        "object.489090704a30da9039b50aac",
+        "object.59f6da2f9030a2a0e09d6e1b",
+        "object.5b7dc0cbd9a326e0c66eb976",
+        "object.5dd08fefb8c8085004d0cd24",
+        "workflow.restgas.first_pass_poca"
+      ],
+      "full_candidate_score_receipts": [
+        {
+          "candidate_object_id": "object.5cae2ceab6e67bb4c9065331",
+          "locator_path": "macro/target/ana_dpm.C",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.2e09628416a01ce2461d752a"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 1,
+          "title_overlap": 1,
+          "primary_score": 2,
+          "support_rank": null,
+          "structural_distance": 2,
+          "in_unbridged_graph": false,
+          "disposition": "selected",
+          "attributed_origin_id": "edge.2e09628416a01ce2461d752a"
+        },
+        {
+          "candidate_object_id": "object.d1810969df820d9a7aff0415",
+          "locator_path": "macro/target/prod_aod_complete.C",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.a767185bbbc0d72189d0ac29"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 1,
+          "title_overlap": 1,
+          "primary_score": 2,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "selected",
+          "attributed_origin_id": "edge.a767185bbbc0d72189d0ac29"
+        },
+        {
+          "candidate_object_id": "object.d61c9f6941dd9cf1acf258fe",
+          "locator_path": "macro/target/pid_complete.C",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.a767185bbbc0d72189d0ac29"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 1,
+          "title_overlap": 1,
+          "primary_score": 2,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "selected",
+          "attributed_origin_id": "edge.a767185bbbc0d72189d0ac29"
+        }
+      ],
+      "evaluator_only_relevant_evidence_retention": {
+        "a2_combined_pool_matched_required_evidence_candidates": [
+          "object.5cae2ceab6e67bb4c9065331"
+        ],
+        "applicable_in_eligible_universe": [
+          "object.5cae2ceab6e67bb4c9065331"
+        ],
+        "applicable_match_contexts": {
+          "object.5cae2ceab6e67bb4c9065331": [
+            {
+              "field": "combined_candidate_recall",
+              "group_id": "g036.e1",
+              "provenance": "path_descendant_containment"
+            }
+          ]
+        },
+        "retained_after_selectivity": [
+          "object.5cae2ceab6e67bb4c9065331"
+        ],
+        "lost_after_selectivity": [],
+        "not_applicable_to_selectivity": [],
+        "not_applicable_reason": "required evidence never present in the eligible governed bridge universe because the frozen structured path could not reach it (e.g., g021 e2 pgenerators/Target/PndTargetGenerator.cxx, whose provenance-bearing edge originates from file_pattern.restgas_profile_input, a non-seed object)"
+      },
+      "is_high_fan_out_case": false,
+      "material_reduction_check": null,
+      "no_new_expansion_check": {
+        "displacement_not_increased": true,
+        "selected_not_increased": true
+      }
+    },
+    "g021": {
+      "case_id": "g021",
+      "eligible_governed_bridge_candidate_count": 62,
+      "baseline_old_cap_admitted_count": 20,
+      "selected_bridge_candidate_count": 4,
+      "selection_reduction_count": 58,
+      "selection_reduction_ratio": 0.935484,
+      "number_of_provenance_origins_before": 1,
+      "number_of_provenance_origins_baseline_admitted": 1,
+      "number_of_provenance_origins_after": 1,
+      "per_origin_retained_counts_attributed": {
+        "edge.ea3a79d222f0ca6cc0e6df72": 4
+      },
+      "per_origin_membership_counts_informational": {
+        "edge.ea3a79d222f0ca6cc0e6df72": 4
+      },
+      "selected_object_ids": [
+        "object.21bc3ebe83cacb360c89c4b4",
+        "object.ae2365b6243db9a5da6f41a8",
+        "object.a0f75731467d6323c4b431df",
+        "object.25c0757afb7eabcf9183a17f"
+      ],
+      "selected_scores": {
+        "object.21bc3ebe83cacb360c89c4b4": 3,
+        "object.ae2365b6243db9a5da6f41a8": 2,
+        "object.a0f75731467d6323c4b431df": 2,
+        "object.25c0757afb7eabcf9183a17f": 2
+      },
+      "selected_score_components": [
+        {
+          "candidate_object_id": "object.21bc3ebe83cacb360c89c4b4",
+          "path_overlap": 0,
+          "title_overlap": 3,
+          "primary_score": 3,
+          "support_rank": 3,
+          "structural_distance": 1,
+          "attributed_origin_id": "edge.ea3a79d222f0ca6cc0e6df72",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "locator_path": "README.md",
+          "a2_disposition": "A2_ADMITTED"
+        },
+        {
+          "candidate_object_id": "object.ae2365b6243db9a5da6f41a8",
+          "path_overlap": 0,
+          "title_overlap": 2,
+          "primary_score": 2,
+          "support_rank": 2,
+          "structural_distance": 1,
+          "attributed_origin_id": "edge.ea3a79d222f0ca6cc0e6df72",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "locator_path": "README.md",
+          "a2_disposition": "A2_CAPPED_OUT"
+        },
+        {
+          "candidate_object_id": "object.a0f75731467d6323c4b431df",
+          "path_overlap": 0,
+          "title_overlap": 2,
+          "primary_score": 2,
+          "support_rank": 4,
+          "structural_distance": 1,
+          "attributed_origin_id": "edge.ea3a79d222f0ca6cc0e6df72",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "locator_path": "README.md",
+          "a2_disposition": "A2_CAPPED_OUT"
+        },
+        {
+          "candidate_object_id": "object.25c0757afb7eabcf9183a17f",
+          "path_overlap": 1,
+          "title_overlap": 1,
+          "primary_score": 2,
+          "support_rank": null,
+          "structural_distance": 1,
+          "attributed_origin_id": "edge.ea3a79d222f0ca6cc0e6df72",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "locator_path": "macro/target/README.md",
+          "a2_disposition": "A2_ADMITTED"
+        }
+      ],
+      "graph_admitted_bridge_candidates": [
+        "object.21bc3ebe83cacb360c89c4b4",
+        "object.ae2365b6243db9a5da6f41a8",
+        "object.a0f75731467d6323c4b431df",
+        "object.25c0757afb7eabcf9183a17f"
+      ],
+      "ordinary_graph_candidates_displaced_before_count": 4,
+      "ordinary_graph_candidates_displaced_after_count": 0,
+      "ordinary_graph_candidates_displaced_after_ids": [],
+      "overlap_with_non_graph_channels_count": 3,
+      "zero_score_candidates_rejected": 27,
+      "scope_rejected_count": 0,
+      "origin_capped_out_count": 31,
+      "beyond_selectivity_cap_count": 0,
+      "selectivity_only_graph_ordering": [
+        "object.21bc3ebe83cacb360c89c4b4",
+        "object.ae2365b6243db9a5da6f41a8",
+        "object.a0f75731467d6323c4b431df",
+        "object.25c0757afb7eabcf9183a17f",
+        "configuration.restgas_profile",
+        "workflow.restgas_profile_reconstruction",
+        "concept.restgas_longitudinal_efficiency",
+        "workflow.restgas_aware_luminosity_acceptance"
+      ],
+      "full_candidate_score_receipts": [
+        {
+          "candidate_object_id": "object.0c35c9d2ee2a07bc0a4be8fe",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "primary_score": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "zero_score_rejected"
+        },
+        {
+          "candidate_object_id": "object.0fe58ecc9734eb4f9a351832",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "primary_score": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "zero_score_rejected"
+        },
+        {
+          "candidate_object_id": "object.16e2d668d8673e7c633192c5",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 1,
+          "title_overlap": 0,
+          "primary_score": 1,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.21bc3ebe83cacb360c89c4b4",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 0,
+          "title_overlap": 3,
+          "primary_score": 3,
+          "support_rank": 3,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "selected",
+          "attributed_origin_id": "edge.ea3a79d222f0ca6cc0e6df72"
+        },
+        {
+          "candidate_object_id": "object.25c0757afb7eabcf9183a17f",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 1,
+          "title_overlap": 1,
+          "primary_score": 2,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "selected",
+          "attributed_origin_id": "edge.ea3a79d222f0ca6cc0e6df72"
+        },
+        {
+          "candidate_object_id": "object.2ce3b321fb404505c3c19e12",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "primary_score": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "zero_score_rejected"
+        },
+        {
+          "candidate_object_id": "object.2f28b1f3c056f9be04da6487",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 1,
+          "title_overlap": 0,
+          "primary_score": 1,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.35cf84657d7458145acc6cb2",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 1,
+          "title_overlap": 1,
+          "primary_score": 2,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.3ab0a90ae68e8ece071a9f22",
+          "locator_path": "macro/target/prod_sim_hvmaps.C",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 1,
+          "title_overlap": 1,
+          "primary_score": 2,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.3bfdd9477502819029d5f4e2",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 1,
+          "title_overlap": 0,
+          "primary_score": 1,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.3f30db15a00e651138c4146a",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 1,
+          "title_overlap": 0,
+          "primary_score": 1,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.427ba40a22782a7217afef8f",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 1,
+          "title_overlap": 0,
+          "primary_score": 1,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.48aceb8601747afe7e7c2048",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "primary_score": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "zero_score_rejected"
+        },
+        {
+          "candidate_object_id": "object.48be486a9ecab8f524ef9f35",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "primary_score": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "zero_score_rejected"
+        },
+        {
+          "candidate_object_id": "object.4b4ba617d7416c518a52ff83",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "primary_score": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "zero_score_rejected"
+        },
+        {
+          "candidate_object_id": "object.4e2bf3318be9d234c717b6cc",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 0,
+          "title_overlap": 1,
+          "primary_score": 1,
+          "support_rank": 11,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.4e81a506f09b221d71a5df38",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "primary_score": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "zero_score_rejected"
+        },
+        {
+          "candidate_object_id": "object.5023a697b2b46cfde6faee55",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 1,
+          "title_overlap": 0,
+          "primary_score": 1,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.5038d66d85d49f8644390f7d",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 1,
+          "title_overlap": 0,
+          "primary_score": 1,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.51622f9bdd88358b3b5711d4",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 1,
+          "title_overlap": 0,
+          "primary_score": 1,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.5476889875fa4f019ea318ac",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 1,
+          "title_overlap": 0,
+          "primary_score": 1,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.64407e20e9e1ea3e57ea1236",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "primary_score": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "zero_score_rejected"
+        },
+        {
+          "candidate_object_id": "object.65b289b5d6e6f20ebbf14474",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 1,
+          "title_overlap": 0,
+          "primary_score": 1,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.6a72bf9df87e9a5810015881",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "primary_score": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "zero_score_rejected"
+        },
+        {
+          "candidate_object_id": "object.6b20287d8250ff2e55fa01af",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 1,
+          "primary_score": 1,
+          "support_rank": 3,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.70f21de0901589c9d8506e00",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "primary_score": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "zero_score_rejected"
+        },
+        {
+          "candidate_object_id": "object.756904448a2cb490add746e8",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "primary_score": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "zero_score_rejected"
+        },
+        {
+          "candidate_object_id": "object.75939fa753969e7ce1d8fa4b",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 1,
+          "title_overlap": 0,
+          "primary_score": 1,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.76f3a617ccd5cbbfa2cb8136",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "primary_score": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "zero_score_rejected"
+        },
+        {
+          "candidate_object_id": "object.78161cc0cea37b8b95bf8863",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "primary_score": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "zero_score_rejected"
+        },
+        {
+          "candidate_object_id": "object.7ecb89690b217573371f6f70",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 1,
+          "primary_score": 1,
+          "support_rank": 1,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.88d0d65c7dbf3c313f1fa5dd",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "primary_score": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "zero_score_rejected"
+        },
+        {
+          "candidate_object_id": "object.97d49d476e70e3a333779fbd",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "primary_score": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "zero_score_rejected"
+        },
+        {
+          "candidate_object_id": "object.9e57745bf9b16a46a92d5cb0",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "primary_score": 0,
+          "support_rank": 4,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "zero_score_rejected"
+        },
+        {
+          "candidate_object_id": "object.a0f75731467d6323c4b431df",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 2,
+          "primary_score": 2,
+          "support_rank": 4,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "selected",
+          "attributed_origin_id": "edge.ea3a79d222f0ca6cc0e6df72"
+        },
+        {
+          "candidate_object_id": "object.ab38ad90b923866d556bb245",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 1,
+          "title_overlap": 0,
+          "primary_score": 1,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.ae2365b6243db9a5da6f41a8",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 2,
+          "primary_score": 2,
+          "support_rank": 2,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "selected",
+          "attributed_origin_id": "edge.ea3a79d222f0ca6cc0e6df72"
+        },
+        {
+          "candidate_object_id": "object.b12c343f4978fcb93fa768d7",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 1,
+          "title_overlap": 0,
+          "primary_score": 1,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.b92367ae18f0b4e9368a89b2",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "primary_score": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "zero_score_rejected"
+        },
+        {
+          "candidate_object_id": "object.bc1c90e39128c7ca55302947",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 1,
+          "title_overlap": 0,
+          "primary_score": 1,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.bf890ea4d6b13178189933d8",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "primary_score": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "zero_score_rejected"
+        },
+        {
+          "candidate_object_id": "object.bf98d2d18b8c71ee23891b94",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "primary_score": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "zero_score_rejected"
+        },
+        {
+          "candidate_object_id": "object.c50a3f00dd154303ff8ff5da",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 1,
+          "primary_score": 1,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.c9f92147b8490e3879afb56b",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "primary_score": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "zero_score_rejected"
+        },
+        {
+          "candidate_object_id": "object.cbefedd3ddea3e03c8827b71",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "primary_score": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "zero_score_rejected"
+        },
+        {
+          "candidate_object_id": "object.d13084dc0226150c4666fd1c",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "primary_score": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "zero_score_rejected"
+        },
+        {
+          "candidate_object_id": "object.d1d036619ecae30580af435d",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 1,
+          "primary_score": 1,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.d36fa7fa9739a0a65c2345f0",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 1,
+          "title_overlap": 0,
+          "primary_score": 1,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.d51cd150523d4b999a5f1ca1",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 1,
+          "title_overlap": 0,
+          "primary_score": 1,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.dc2f0cfe5acd57a254a1a226",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 1,
+          "title_overlap": 0,
+          "primary_score": 1,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.de351fec1daff18a542d845c",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "primary_score": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "zero_score_rejected"
+        },
+        {
+          "candidate_object_id": "object.e29c4fcd17107cabea45f18e",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 1,
+          "title_overlap": 0,
+          "primary_score": 1,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.e5136c8d8f90cb0add63ec47",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 1,
+          "title_overlap": 0,
+          "primary_score": 1,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.e51879eb24fc26654017f584",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "primary_score": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "zero_score_rejected"
+        },
+        {
+          "candidate_object_id": "object.e8af519940d19f0305e7a4be",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 1,
+          "title_overlap": 1,
+          "primary_score": 2,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.e9f73efc23ccae1e3695035d",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 1,
+          "title_overlap": 0,
+          "primary_score": 1,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.eb2c22536338c3faa80165bc",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 1,
+          "primary_score": 1,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.eba54e616162bc748a4230ec",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "primary_score": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "zero_score_rejected"
+        },
+        {
+          "candidate_object_id": "object.ece5f8849c4ccef110f80f61",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "primary_score": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "zero_score_rejected"
+        },
+        {
+          "candidate_object_id": "object.eebeb0d7f57deae9b5594579",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 1,
+          "title_overlap": 0,
+          "primary_score": 1,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        },
+        {
+          "candidate_object_id": "object.fa044382bbb1bfbc45e08a74",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 0,
+          "primary_score": 0,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "zero_score_rejected"
+        },
+        {
+          "candidate_object_id": "object.fba08a93492edafab9918eec",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 0,
+          "title_overlap": 1,
+          "primary_score": 1,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "origin_capped_out"
+        }
+      ],
+      "evaluator_only_relevant_evidence_retention": {
+        "a2_combined_pool_matched_required_evidence_candidates": [
+          "object.3ab0a90ae68e8ece071a9f22"
+        ],
+        "applicable_in_eligible_universe": [
+          "object.3ab0a90ae68e8ece071a9f22"
+        ],
+        "applicable_match_contexts": {
+          "object.3ab0a90ae68e8ece071a9f22": [
+            {
+              "field": "combined_candidate_recall",
+              "group_id": "g021.e1",
+              "provenance": "direct"
+            }
+          ]
+        },
+        "retained_after_selectivity": [],
+        "lost_after_selectivity": [
+          "object.3ab0a90ae68e8ece071a9f22"
+        ],
+        "not_applicable_to_selectivity": [],
+        "not_applicable_reason": "required evidence never present in the eligible governed bridge universe because the frozen structured path could not reach it (e.g., g021 e2 pgenerators/Target/PndTargetGenerator.cxx, whose provenance-bearing edge originates from file_pattern.restgas_profile_input, a non-seed object)"
+      },
+      "is_high_fan_out_case": true,
+      "material_reduction_check": {
+        "selected_less_than_eligible": true,
+        "displacement_reduced": true
+      },
+      "no_new_expansion_check": {
+        "displacement_not_increased": true,
+        "selected_not_increased": true
+      }
+    },
+    "n006": {
+      "case_id": "n006",
+      "eligible_governed_bridge_candidate_count": 0,
+      "baseline_old_cap_admitted_count": 0,
+      "selected_bridge_candidate_count": 0,
+      "selection_reduction_count": 0,
+      "selection_reduction_ratio": 1.0,
+      "number_of_provenance_origins_before": 0,
+      "number_of_provenance_origins_baseline_admitted": 0,
+      "number_of_provenance_origins_after": 0,
+      "per_origin_retained_counts_attributed": {},
+      "per_origin_membership_counts_informational": {},
+      "selected_object_ids": [],
+      "selected_scores": {},
+      "selected_score_components": [],
+      "graph_admitted_bridge_candidates": [],
+      "ordinary_graph_candidates_displaced_before_count": 0,
+      "ordinary_graph_candidates_displaced_after_count": 0,
+      "ordinary_graph_candidates_displaced_after_ids": [],
+      "overlap_with_non_graph_channels_count": 0,
+      "zero_score_candidates_rejected": 0,
+      "scope_rejected_count": 0,
+      "origin_capped_out_count": 0,
+      "beyond_selectivity_cap_count": 0,
+      "selectivity_only_graph_ordering": [
+        "object.748d6657afaae5e33dd48c4d",
+        "object.1d54263832ee883809e84070",
+        "object.23407c5ae26f7ab01ffa80ae",
+        "object.271880c2ec1ebcac7383aab8",
+        "object.2ccdd3a30202b42bf636dea8",
+        "object.4b2fa6fc6b50c3c338e0d217",
+        "object.5045b084453905095eeedca7",
+        "object.639a2e2d6c47c79b0d5b8807",
+        "object.69eae64047644350cf3ef1d2",
+        "object.81f740e4d8b4ea45688f2585",
+        "object.8b9b28bba9f71f133967c084",
+        "object.9281add925687f506301e359",
+        "object.9a8bb37159cbf88c16073aa5",
+        "object.dbfa3c28e4e33a71b07af197",
+        "object.e0fb403c3760cf27980b7846",
+        "object.eb27eff35e68a78b54fbfd35",
+        "object.ec3abbc5f415005973dc6fd4",
+        "object.f403dafbcbda4097d33997f8"
+      ],
+      "full_candidate_score_receipts": [],
+      "evaluator_only_relevant_evidence_retention": {
+        "a2_combined_pool_matched_required_evidence_candidates": [
+          "object.2914485ff398f61e994c46d6",
+          "object.b1250c4366eea9aa9dc68f50"
+        ],
+        "applicable_in_eligible_universe": [],
+        "applicable_match_contexts": {},
+        "retained_after_selectivity": [],
+        "lost_after_selectivity": [],
+        "not_applicable_to_selectivity": [
+          "object.2914485ff398f61e994c46d6",
+          "object.b1250c4366eea9aa9dc68f50"
+        ],
+        "not_applicable_reason": "required evidence never present in the eligible governed bridge universe because the frozen structured path could not reach it (e.g., g021 e2 pgenerators/Target/PndTargetGenerator.cxx, whose provenance-bearing edge originates from file_pattern.restgas_profile_input, a non-seed object)"
+      },
+      "is_high_fan_out_case": false,
+      "material_reduction_check": null,
+      "no_new_expansion_check": {
+        "displacement_not_increased": true,
+        "selected_not_increased": true
+      }
+    },
+    "g041": {
+      "case_id": "g041",
+      "eligible_governed_bridge_candidate_count": 0,
+      "baseline_old_cap_admitted_count": 0,
+      "selected_bridge_candidate_count": 0,
+      "selection_reduction_count": 0,
+      "selection_reduction_ratio": 1.0,
+      "number_of_provenance_origins_before": 0,
+      "number_of_provenance_origins_baseline_admitted": 0,
+      "number_of_provenance_origins_after": 0,
+      "per_origin_retained_counts_attributed": {},
+      "per_origin_membership_counts_informational": {},
+      "selected_object_ids": [],
+      "selected_scores": {},
+      "selected_score_components": [],
+      "graph_admitted_bridge_candidates": [],
+      "ordinary_graph_candidates_displaced_before_count": 0,
+      "ordinary_graph_candidates_displaced_after_count": 0,
+      "ordinary_graph_candidates_displaced_after_ids": [],
+      "overlap_with_non_graph_channels_count": 0,
+      "zero_score_candidates_rejected": 0,
+      "scope_rejected_count": 0,
+      "origin_capped_out_count": 0,
+      "beyond_selectivity_cap_count": 0,
+      "selectivity_only_graph_ordering": [
+        "concept.li_2026.restgas_effective_acceptance",
+        "concept.restgas_longitudinal_efficiency",
+        "configuration.restgas_profile",
+        "data_product.reconstructed_restgas_profile",
+        "data_product.restgas.boost_root",
+        "data_product.restgas.event_poca",
+        "data_product.restgas.pid_final_root",
+        "data_product.restgas.pid_root",
+        "file_pattern.restgas_profile_input",
+        "workflow.pandaroot.generic",
+        "workflow.restgas.first_pass_poca",
+        "workflow.restgas.second_pass_pid",
+        "workflow.restgas_aware_luminosity_acceptance",
+        "workflow.restgas_profile_reconstruction",
+        "document.pandaroot_sphinx_2023_08_25_dev",
+        "object.17571bb9d93f44e26fe002c2",
+        "object.2800de7cb8134d24cfd4be52",
+        "object.3d8b1370a3228cdb1aa35274",
+        "object.560c75763b0b32b1053c87da",
+        "object.70825ad9c1b7017889496a6b"
+      ],
+      "full_candidate_score_receipts": [],
+      "evaluator_only_relevant_evidence_retention": {
+        "a2_combined_pool_matched_required_evidence_candidates": [
+          "object.de8952db46a8b52154456ee0"
+        ],
+        "applicable_in_eligible_universe": [],
+        "applicable_match_contexts": {},
+        "retained_after_selectivity": [],
+        "lost_after_selectivity": [],
+        "not_applicable_to_selectivity": [
+          "object.de8952db46a8b52154456ee0"
+        ],
+        "not_applicable_reason": "required evidence never present in the eligible governed bridge universe because the frozen structured path could not reach it (e.g., g021 e2 pgenerators/Target/PndTargetGenerator.cxx, whose provenance-bearing edge originates from file_pattern.restgas_profile_input, a non-seed object)"
+      },
+      "is_high_fan_out_case": false,
+      "material_reduction_check": null,
+      "no_new_expansion_check": {
+        "displacement_not_increased": true,
+        "selected_not_increased": true
+      }
+    },
+    "g020": {
+      "case_id": "g020",
+      "eligible_governed_bridge_candidate_count": 67,
+      "baseline_old_cap_admitted_count": 20,
+      "selected_bridge_candidate_count": 8,
+      "selection_reduction_count": 59,
+      "selection_reduction_ratio": 0.880597,
+      "number_of_provenance_origins_before": 7,
+      "number_of_provenance_origins_baseline_admitted": 6,
+      "number_of_provenance_origins_after": 6,
+      "per_origin_retained_counts_attributed": {
+        "edge.2e09628416a01ce2461d752a": 1,
+        "edge.5a8a1deba5f20c052cdcb044": 0,
+        "edge.81276373f106c8758d5aec92": 3,
+        "edge.a767185bbbc0d72189d0ac29": 1,
+        "edge.d7ef44a502f1918dff5c93ab": 1,
+        "edge.ea3a79d222f0ca6cc0e6df72": 2
+      },
+      "per_origin_membership_counts_informational": {
+        "edge.2e09628416a01ce2461d752a": 1,
+        "edge.5a8a1deba5f20c052cdcb044": 1,
+        "edge.81276373f106c8758d5aec92": 5,
+        "edge.a767185bbbc0d72189d0ac29": 2,
+        "edge.d7ef44a502f1918dff5c93ab": 2,
+        "edge.ea3a79d222f0ca6cc0e6df72": 5
+      },
+      "selected_object_ids": [
+        "object.d1810969df820d9a7aff0415",
+        "object.5cae2ceab6e67bb4c9065331",
+        "object.3ab0a90ae68e8ece071a9f22",
+        "object.d61c9f6941dd9cf1acf258fe",
+        "object.e29c4fcd17107cabea45f18e",
+        "object.35cf84657d7458145acc6cb2",
+        "object.427ba40a22782a7217afef8f",
+        "object.e8af519940d19f0305e7a4be"
+      ],
+      "selected_scores": {
+        "object.d1810969df820d9a7aff0415": 12,
+        "object.5cae2ceab6e67bb4c9065331": 10,
+        "object.3ab0a90ae68e8ece071a9f22": 10,
+        "object.d61c9f6941dd9cf1acf258fe": 10,
+        "object.e29c4fcd17107cabea45f18e": 9,
+        "object.35cf84657d7458145acc6cb2": 8,
+        "object.427ba40a22782a7217afef8f": 7,
+        "object.e8af519940d19f0305e7a4be": 6
+      },
+      "selected_score_components": [
+        {
+          "candidate_object_id": "object.d1810969df820d9a7aff0415",
+          "path_overlap": 6,
+          "title_overlap": 6,
+          "primary_score": 12,
+          "support_rank": 5,
+          "structural_distance": 1,
+          "attributed_origin_id": "edge.a767185bbbc0d72189d0ac29",
+          "provenance_origin_ids": [
+            "edge.a767185bbbc0d72189d0ac29",
+            "edge.d7ef44a502f1918dff5c93ab"
+          ],
+          "locator_path": "macro/target/prod_aod_complete.C",
+          "a2_disposition": "A2_ADMITTED"
+        },
+        {
+          "candidate_object_id": "object.5cae2ceab6e67bb4c9065331",
+          "path_overlap": 5,
+          "title_overlap": 5,
+          "primary_score": 10,
+          "support_rank": 4,
+          "structural_distance": 1,
+          "attributed_origin_id": "edge.2e09628416a01ce2461d752a",
+          "provenance_origin_ids": [
+            "edge.2e09628416a01ce2461d752a",
+            "edge.5a8a1deba5f20c052cdcb044"
+          ],
+          "locator_path": "macro/target/ana_dpm.C",
+          "a2_disposition": "A2_ADMITTED"
+        },
+        {
+          "candidate_object_id": "object.3ab0a90ae68e8ece071a9f22",
+          "path_overlap": 5,
+          "title_overlap": 5,
+          "primary_score": 10,
+          "support_rank": null,
+          "structural_distance": 1,
+          "attributed_origin_id": "edge.81276373f106c8758d5aec92",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "locator_path": "macro/target/prod_sim_hvmaps.C",
+          "a2_disposition": "A2_ADMITTED"
+        },
+        {
+          "candidate_object_id": "object.d61c9f6941dd9cf1acf258fe",
+          "path_overlap": 5,
+          "title_overlap": 5,
+          "primary_score": 10,
+          "support_rank": null,
+          "structural_distance": 1,
+          "attributed_origin_id": "edge.d7ef44a502f1918dff5c93ab",
+          "provenance_origin_ids": [
+            "edge.a767185bbbc0d72189d0ac29",
+            "edge.d7ef44a502f1918dff5c93ab"
+          ],
+          "locator_path": "macro/target/pid_complete.C",
+          "a2_disposition": "A2_ADMITTED"
+        },
+        {
+          "candidate_object_id": "object.e29c4fcd17107cabea45f18e",
+          "path_overlap": 4,
+          "title_overlap": 5,
+          "primary_score": 9,
+          "support_rank": 2,
+          "structural_distance": 1,
+          "attributed_origin_id": "edge.ea3a79d222f0ca6cc0e6df72",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "locator_path": "macro/target/README.md",
+          "a2_disposition": "A2_CAPPED_OUT"
+        },
+        {
+          "candidate_object_id": "object.35cf84657d7458145acc6cb2",
+          "path_overlap": 4,
+          "title_overlap": 4,
+          "primary_score": 8,
+          "support_rank": 1,
+          "structural_distance": 1,
+          "attributed_origin_id": "edge.81276373f106c8758d5aec92",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "locator_path": "macro/target/README.md",
+          "a2_disposition": "A2_ADMITTED"
+        },
+        {
+          "candidate_object_id": "object.427ba40a22782a7217afef8f",
+          "path_overlap": 4,
+          "title_overlap": 3,
+          "primary_score": 7,
+          "support_rank": 17,
+          "structural_distance": 1,
+          "attributed_origin_id": "edge.ea3a79d222f0ca6cc0e6df72",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "locator_path": "macro/target/README.md",
+          "a2_disposition": "A2_ADMITTED"
+        },
+        {
+          "candidate_object_id": "object.e8af519940d19f0305e7a4be",
+          "path_overlap": 4,
+          "title_overlap": 2,
+          "primary_score": 6,
+          "support_rank": 17,
+          "structural_distance": 1,
+          "attributed_origin_id": "edge.81276373f106c8758d5aec92",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "locator_path": "macro/target/README.md",
+          "a2_disposition": "A2_CAPPED_OUT"
+        }
+      ],
+      "graph_admitted_bridge_candidates": [
+        "object.d1810969df820d9a7aff0415",
+        "object.5cae2ceab6e67bb4c9065331",
+        "object.3ab0a90ae68e8ece071a9f22",
+        "object.d61c9f6941dd9cf1acf258fe",
+        "object.e29c4fcd17107cabea45f18e",
+        "object.35cf84657d7458145acc6cb2",
+        "object.427ba40a22782a7217afef8f",
+        "object.e8af519940d19f0305e7a4be"
+      ],
+      "ordinary_graph_candidates_displaced_before_count": 20,
+      "ordinary_graph_candidates_displaced_after_count": 8,
+      "ordinary_graph_candidates_displaced_after_ids": [
+        "subsystem.luminosityfit.panda_data_io",
+        "workflow.pandaroot.generic",
+        "workflow.pandaroot.lmd_reconstruction",
+        "workflow.restgas.first_pass_poca",
+        "workflow.restgas.second_pass_pid",
+        "workflow.restgas_aware_luminosity_acceptance",
+        "workflow.restgas_profile_reconstruction",
+        "object.3ef7c0c1f717c8872fc97f9d"
+      ],
+      "overlap_with_non_graph_channels_count": 6,
+      "zero_score_candidates_rejected": 0,
+      "scope_rejected_count": 0,
+      "origin_capped_out_count": 0,
+      "beyond_selectivity_cap_count": 59,
+      "selectivity_only_graph_ordering": [
+        "object.d1810969df820d9a7aff0415",
+        "object.5cae2ceab6e67bb4c9065331",
+        "object.3ab0a90ae68e8ece071a9f22",
+        "object.d61c9f6941dd9cf1acf258fe",
+        "object.e29c4fcd17107cabea45f18e",
+        "object.35cf84657d7458145acc6cb2",
+        "object.427ba40a22782a7217afef8f",
+        "object.e8af519940d19f0305e7a4be",
+        "concept.li_2026.restgas_effective_acceptance",
+        "concept.restgas_longitudinal_efficiency",
+        "configuration.restgas_profile",
+        "data_product.pandaroot.lumi_trks_qa",
+        "data_product.reconstructed_restgas_profile",
+        "data_product.restgas.boost_root",
+        "data_product.restgas.event_poca",
+        "data_product.restgas.pid_final_root",
+        "data_product.restgas.pid_root",
+        "document.pandaroot_sphinx_2023_08_25_dev",
+        "file_pattern.restgas_profile_input",
+        "paper.karavdina_2015.chapter_4"
+      ],
+      "full_candidate_score_receipts": [
+        {
+          "candidate_object_id": "object.0c35c9d2ee2a07bc0a4be8fe",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "primary_score": 2,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.0fe58ecc9734eb4f9a351832",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 2,
+          "title_overlap": 2,
+          "primary_score": 4,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.16e2d668d8673e7c633192c5",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 4,
+          "title_overlap": 0,
+          "primary_score": 4,
+          "support_rank": 10,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.21bc3ebe83cacb360c89c4b4",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 2,
+          "title_overlap": 1,
+          "primary_score": 3,
+          "support_rank": 8,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.25c0757afb7eabcf9183a17f",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 4,
+          "title_overlap": 1,
+          "primary_score": 5,
+          "support_rank": 18,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.2ce3b321fb404505c3c19e12",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "primary_score": 2,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.2f28b1f3c056f9be04da6487",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 4,
+          "title_overlap": 0,
+          "primary_score": 4,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.35cf84657d7458145acc6cb2",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 4,
+          "title_overlap": 4,
+          "primary_score": 8,
+          "support_rank": 1,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "selected",
+          "attributed_origin_id": "edge.81276373f106c8758d5aec92"
+        },
+        {
+          "candidate_object_id": "object.3ab0a90ae68e8ece071a9f22",
+          "locator_path": "macro/target/prod_sim_hvmaps.C",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 5,
+          "title_overlap": 5,
+          "primary_score": 10,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "selected",
+          "attributed_origin_id": "edge.81276373f106c8758d5aec92"
+        },
+        {
+          "candidate_object_id": "object.3bfdd9477502819029d5f4e2",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 4,
+          "title_overlap": 1,
+          "primary_score": 5,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.3f30db15a00e651138c4146a",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 4,
+          "title_overlap": 1,
+          "primary_score": 5,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.427ba40a22782a7217afef8f",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 4,
+          "title_overlap": 3,
+          "primary_score": 7,
+          "support_rank": 17,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "selected",
+          "attributed_origin_id": "edge.ea3a79d222f0ca6cc0e6df72"
+        },
+        {
+          "candidate_object_id": "object.48aceb8601747afe7e7c2048",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "primary_score": 2,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.48be486a9ecab8f524ef9f35",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 2,
+          "title_overlap": 1,
+          "primary_score": 3,
+          "support_rank": 8,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.4b4ba617d7416c518a52ff83",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "primary_score": 2,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.4e2bf3318be9d234c717b6cc",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 2,
+          "title_overlap": 1,
+          "primary_score": 3,
+          "support_rank": 5,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.4e81a506f09b221d71a5df38",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "primary_score": 2,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.5023a697b2b46cfde6faee55",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 4,
+          "title_overlap": 0,
+          "primary_score": 4,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.5038d66d85d49f8644390f7d",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 4,
+          "title_overlap": 1,
+          "primary_score": 5,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.51622f9bdd88358b3b5711d4",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 4,
+          "title_overlap": 2,
+          "primary_score": 6,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.5476889875fa4f019ea318ac",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 4,
+          "title_overlap": 0,
+          "primary_score": 4,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.5cae2ceab6e67bb4c9065331",
+          "locator_path": "macro/target/ana_dpm.C",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.2e09628416a01ce2461d752a",
+            "edge.5a8a1deba5f20c052cdcb044"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 5,
+          "title_overlap": 5,
+          "primary_score": 10,
+          "support_rank": 4,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "selected",
+          "attributed_origin_id": "edge.2e09628416a01ce2461d752a"
+        },
+        {
+          "candidate_object_id": "object.64407e20e9e1ea3e57ea1236",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "primary_score": 2,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.65b289b5d6e6f20ebbf14474",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 4,
+          "title_overlap": 1,
+          "primary_score": 5,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.6a72bf9df87e9a5810015881",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 3,
+          "primary_score": 5,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.6b20287d8250ff2e55fa01af",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 1,
+          "primary_score": 3,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.70f21de0901589c9d8506e00",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "primary_score": 2,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.727b6eb51b2cfc8c78ce35b4",
+          "locator_path": "macro/target/correction/efficiency_correction_2.C",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.1d5c600878cd5576199cf9e0"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 3,
+          "title_overlap": 3,
+          "primary_score": 6,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.756904448a2cb490add746e8",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "primary_score": 2,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.75939fa753969e7ce1d8fa4b",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 4,
+          "title_overlap": 1,
+          "primary_score": 5,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.76f3a617ccd5cbbfa2cb8136",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "primary_score": 2,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.78161cc0cea37b8b95bf8863",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "primary_score": 2,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.7c683ccb9595dad20e4529fe",
+          "locator_path": "pgenerators/Target/PndTargetGenerator.cxx",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 2,
+          "primary_score": 4,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.7ecb89690b217573371f6f70",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 1,
+          "primary_score": 3,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.88d0d65c7dbf3c313f1fa5dd",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "primary_score": 2,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.97d49d476e70e3a333779fbd",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "primary_score": 2,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.9e57745bf9b16a46a92d5cb0",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "primary_score": 2,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.a0f75731467d6323c4b431df",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 2,
+          "primary_score": 4,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.ab38ad90b923866d556bb245",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 4,
+          "title_overlap": 1,
+          "primary_score": 5,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.ae2365b6243db9a5da6f41a8",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 2,
+          "primary_score": 4,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.b12c343f4978fcb93fa768d7",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 4,
+          "title_overlap": 0,
+          "primary_score": 4,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.b92367ae18f0b4e9368a89b2",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "primary_score": 2,
+          "support_rank": 11,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.bc1c90e39128c7ca55302947",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 4,
+          "title_overlap": 0,
+          "primary_score": 4,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.bf890ea4d6b13178189933d8",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 3,
+          "primary_score": 5,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.bf98d2d18b8c71ee23891b94",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "primary_score": 2,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.c50a3f00dd154303ff8ff5da",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "primary_score": 2,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.c9f92147b8490e3879afb56b",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "primary_score": 2,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.cbefedd3ddea3e03c8827b71",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "primary_score": 2,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.d13084dc0226150c4666fd1c",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "primary_score": 2,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.d1810969df820d9a7aff0415",
+          "locator_path": "macro/target/prod_aod_complete.C",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.a767185bbbc0d72189d0ac29",
+            "edge.d7ef44a502f1918dff5c93ab"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 6,
+          "title_overlap": 6,
+          "primary_score": 12,
+          "support_rank": 5,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "selected",
+          "attributed_origin_id": "edge.a767185bbbc0d72189d0ac29"
+        },
+        {
+          "candidate_object_id": "object.d1d036619ecae30580af435d",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "primary_score": 2,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.d36fa7fa9739a0a65c2345f0",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 4,
+          "title_overlap": 0,
+          "primary_score": 4,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.d51cd150523d4b999a5f1ca1",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 4,
+          "title_overlap": 0,
+          "primary_score": 4,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.d61c9f6941dd9cf1acf258fe",
+          "locator_path": "macro/target/pid_complete.C",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.a767185bbbc0d72189d0ac29",
+            "edge.d7ef44a502f1918dff5c93ab"
+          ],
+          "a2_disposition": "A2_ADMITTED",
+          "path_overlap": 5,
+          "title_overlap": 5,
+          "primary_score": 10,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "selected",
+          "attributed_origin_id": "edge.d7ef44a502f1918dff5c93ab"
+        },
+        {
+          "candidate_object_id": "object.dc2f0cfe5acd57a254a1a226",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 4,
+          "title_overlap": 0,
+          "primary_score": 4,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.de351fec1daff18a542d845c",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 1,
+          "primary_score": 3,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.e29c4fcd17107cabea45f18e",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 4,
+          "title_overlap": 5,
+          "primary_score": 9,
+          "support_rank": 2,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "selected",
+          "attributed_origin_id": "edge.ea3a79d222f0ca6cc0e6df72"
+        },
+        {
+          "candidate_object_id": "object.e5136c8d8f90cb0add63ec47",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 4,
+          "title_overlap": 0,
+          "primary_score": 4,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.e51879eb24fc26654017f584",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 2,
+          "primary_score": 4,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.e8af519940d19f0305e7a4be",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 4,
+          "title_overlap": 2,
+          "primary_score": 6,
+          "support_rank": 17,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "selected",
+          "attributed_origin_id": "edge.81276373f106c8758d5aec92"
+        },
+        {
+          "candidate_object_id": "object.e9f73efc23ccae1e3695035d",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 4,
+          "title_overlap": 0,
+          "primary_score": 4,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.eb2c22536338c3faa80165bc",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "primary_score": 2,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.eba54e616162bc748a4230ec",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 2,
+          "primary_score": 4,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.ece5f8849c4ccef110f80f61",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "primary_score": 2,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.eebeb0d7f57deae9b5594579",
+          "locator_path": "macro/target/README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 4,
+          "title_overlap": 1,
+          "primary_score": 5,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.fa044382bbb1bfbc45e08a74",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "primary_score": 2,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        },
+        {
+          "candidate_object_id": "object.fba08a93492edafab9918eec",
+          "locator_path": "README.md",
+          "source_id": "restgas_determination",
+          "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "provenance_origin_ids": [
+            "edge.81276373f106c8758d5aec92",
+            "edge.ea3a79d222f0ca6cc0e6df72"
+          ],
+          "a2_disposition": "A2_CAPPED_OUT",
+          "path_overlap": 2,
+          "title_overlap": 0,
+          "primary_score": 2,
+          "support_rank": null,
+          "structural_distance": 1,
+          "in_unbridged_graph": false,
+          "disposition": "beyond_selectivity_cap"
+        }
+      ],
+      "evaluator_only_relevant_evidence_retention": {
+        "a2_combined_pool_matched_required_evidence_candidates": [
+          "object.16e2d668d8673e7c633192c5",
+          "object.35cf84657d7458145acc6cb2",
+          "object.d2bd533bec69f0a55bbe36d3",
+          "object.da41a31ef9b54315f3ce4681"
+        ],
+        "applicable_in_eligible_universe": [
+          "object.16e2d668d8673e7c633192c5",
+          "object.35cf84657d7458145acc6cb2"
+        ],
+        "applicable_match_contexts": {
+          "object.16e2d668d8673e7c633192c5": [
+            {
+              "field": "gold_recall_at_5",
+              "group_id": "g020.e1",
+              "provenance": "ancestor"
+            },
+            {
+              "field": "gold_recall_at_10",
+              "group_id": "g020.e1",
+              "provenance": "ancestor"
+            },
+            {
+              "field": "gold_recall_at_20",
+              "group_id": "g020.e1",
+              "provenance": "ancestor"
+            },
+            {
+              "field": "final_evidence_recall",
+              "group_id": "g020.e1",
+              "provenance": "ancestor"
+            },
+            {
+              "field": "critical_final_evidence_recall",
+              "group_id": "g020.e1",
+              "provenance": "ancestor"
+            }
+          ],
+          "object.35cf84657d7458145acc6cb2": [
+            {
+              "field": "combined_candidate_recall",
+              "group_id": "g020.e1",
+              "provenance": "direct"
+            }
+          ]
+        },
+        "retained_after_selectivity": [
+          "object.35cf84657d7458145acc6cb2"
+        ],
+        "lost_after_selectivity": [
+          "object.16e2d668d8673e7c633192c5"
+        ],
+        "not_applicable_to_selectivity": [
+          "object.d2bd533bec69f0a55bbe36d3",
+          "object.da41a31ef9b54315f3ce4681"
+        ],
+        "not_applicable_reason": "required evidence never present in the eligible governed bridge universe because the frozen structured path could not reach it (e.g., g021 e2 pgenerators/Target/PndTargetGenerator.cxx, whose provenance-bearing edge originates from file_pattern.restgas_profile_input, a non-seed object)"
+      },
+      "is_high_fan_out_case": true,
+      "material_reduction_check": {
+        "selected_less_than_eligible": true,
+        "displacement_reduced": true
+      },
+      "no_new_expansion_check": {
+        "displacement_not_increased": true,
+        "selected_not_increased": true
+      }
+    },
+    "n004": {
+      "case_id": "n004",
+      "eligible_governed_bridge_candidate_count": 0,
+      "baseline_old_cap_admitted_count": 0,
+      "selected_bridge_candidate_count": 0,
+      "selection_reduction_count": 0,
+      "selection_reduction_ratio": 1.0,
+      "number_of_provenance_origins_before": 0,
+      "number_of_provenance_origins_baseline_admitted": 0,
+      "number_of_provenance_origins_after": 0,
+      "per_origin_retained_counts_attributed": {},
+      "per_origin_membership_counts_informational": {},
+      "selected_object_ids": [],
+      "selected_scores": {},
+      "selected_score_components": [],
+      "graph_admitted_bridge_candidates": [],
+      "ordinary_graph_candidates_displaced_before_count": 0,
+      "ordinary_graph_candidates_displaced_after_count": 0,
+      "ordinary_graph_candidates_displaced_after_ids": [],
+      "overlap_with_non_graph_channels_count": 0,
+      "zero_score_candidates_rejected": 0,
+      "scope_rejected_count": 0,
+      "origin_capped_out_count": 0,
+      "beyond_selectivity_cap_count": 0,
+      "selectivity_only_graph_ordering": [
+        "object.748d6657afaae5e33dd48c4d",
+        "object.368fc0076a0f61eda1506d1f"
+      ],
+      "full_candidate_score_receipts": [],
+      "evaluator_only_relevant_evidence_retention": {
+        "a2_combined_pool_matched_required_evidence_candidates": [
+          "object.6101005a6e9a289dfb8ee8d5",
+          "object.b238f4a4478daec4489b0f4b"
+        ],
+        "applicable_in_eligible_universe": [],
+        "applicable_match_contexts": {},
+        "retained_after_selectivity": [],
+        "lost_after_selectivity": [],
+        "not_applicable_to_selectivity": [
+          "object.6101005a6e9a289dfb8ee8d5",
+          "object.b238f4a4478daec4489b0f4b"
+        ],
+        "not_applicable_reason": "required evidence never present in the eligible governed bridge universe because the frozen structured path could not reach it (e.g., g021 e2 pgenerators/Target/PndTargetGenerator.cxx, whose provenance-bearing edge originates from file_pattern.restgas_profile_input, a non-seed object)"
+      },
+      "is_high_fan_out_case": false,
+      "material_reduction_check": null,
+      "no_new_expansion_check": {
+        "displacement_not_increased": true,
+        "selected_not_increased": true
+      }
+    }
+  },
+  "aggregate_fan_out_results": {
+    "g036": {
+      "eligible": 3,
+      "old_admitted": 3,
+      "selected": 3,
+      "displaced_before": 0,
+      "displaced_after": 0
+    },
+    "g021": {
+      "eligible": 62,
+      "old_admitted": 20,
+      "selected": 4,
+      "displaced_before": 4,
+      "displaced_after": 0
+    },
+    "n006": {
+      "eligible": 0,
+      "old_admitted": 0,
+      "selected": 0,
+      "displaced_before": 0,
+      "displaced_after": 0
+    },
+    "g041": {
+      "eligible": 0,
+      "old_admitted": 0,
+      "selected": 0,
+      "displaced_before": 0,
+      "displaced_after": 0
+    },
+    "g020": {
+      "eligible": 67,
+      "old_admitted": 20,
+      "selected": 8,
+      "displaced_before": 20,
+      "displaced_after": 8
+    },
+    "n004": {
+      "eligible": 0,
+      "old_admitted": 0,
+      "selected": 0,
+      "displaced_before": 0,
+      "displaced_after": 0
+    }
+  },
+  "control_expansion_diagnostics": {
+    "CONTROL_MATERIAL_REGRESSION": "NOT_MEASURABLE_IN_A5 (no reranker/selector runs; reserved for A6)",
+    "CONTROL_EXPANSION_SIGNAL": {
+      "g020": "reduced: eligible 67 -> selected 8 (88.1% reduction), graph displacement 20 -> 8, selections spread across 6 origins (max attributed 3)",
+      "g021": "reduced: eligible 62 -> selected 4 (93.5% reduction), graph displacement 4 -> 0; single-origin fan-out bounded by PER_ORIGIN_CAP=4",
+      "n006_g041_n004": "fail-closed: zero eligible candidates -> zero selected -> zero expansion"
+    },
+    "not_all_displacement_is_failure": true
+  },
+  "anti_tuning_audit": {
+    "NUMBER_OF_SELECTIVITY_VARIANTS_IMPLEMENTED": 1,
+    "NUMBER_OF_SELECTIVITY_VARIANTS_EVALUATED": 1,
+    "CASE_LEVEL_OUTCOMES_INSPECTED_BEFORE_POLICY_FREEZE": 0,
+    "PARAMETERS_CHANGED_AFTER_OUTCOME_EXPOSURE": 0,
+    "EXPECTED_EVIDENCE_USED_BY_RUNTIME": 0,
+    "CASE_ID_USED_BY_RUNTIME": 0,
+    "MECHANISM_ROLE_USED_BY_RUNTIME": 0,
+    "pre_freeze_bug_repair": "the tokenizer camelCase-boundary order bug (casefold applied before camel splitting) was caught by the synthetic tokenizer-contract check and repaired before Commit 2; no case-level outcome had been exposed (allowed preregistration repair window); the preregistration tokenizer steps were synced to the fixed implementation",
+    "post_exposure_diagnostic_repair": {
+      "repair": "per_origin_retained_counts changed from membership-based counting to attribution-based counting, matching the exact semantics the PER_ORIGIN_CAP is enforced with; per_origin_membership_counts added as informational",
+      "scope": "diagnostic reporting only; the selection algorithm was untouched",
+      "result_neutrality_proof": "g036 and g021 selected-candidate sets verified byte-identical to the captured pre-repair replay output; git diff of the selectivity implementation between 70a808d and this artifact consists solely of the diagnostic computation and the added informational field (9 added lines)"
+    }
+  },
+  "applicability_accounting": {
+    "g021_e2": "NOT_APPLICABLE_TO_SELECTIVITY: the required evidence pgenerators/Target/PndTargetGenerator.cxx was never in the eligible governed bridge universe (its provenance-bearing edge originates from file_pattern.restgas_profile_input, which the frozen D2 seed set did not resolve); selectivity can only retain or reject candidates present in its input universe",
+    "controls": "n006/g041/n004 have empty eligible universes; zero selection is the correct fail-closed outcome"
+  },
+  "scientific_verdict": "PARTIAL / SELECTIVITY_FANOUT_REDUCED_WITH_RELEVANCE_LOSS",
+  "verdict_rationale": {
+    "per_preregistered_rule": "PASS required all applicable required-evidence bridge candidates for the designated positive mechanistic cases (g036, g021) to be retained; g036 retained (ana_dpm.C, object.5cae2ceab6e67bb4c9065331, selected with score 2) but g021 lost (prod_sim_hvmaps.C, object.3ab0a90ae68e8ece071a9f22, primary_score 2, lost the object_id tie-break at the single-origin PER_ORIGIN_CAP=4 boundary against three same-score README-chunk candidates)",
+    "what_was_demonstrated": [
+      "fixture equivalence exact (fusion/top-30/orderings/payloads/universe reproduction)",
+      "fan-out materially reduced on both high-fan-out cases (g021 62->4 with displacement 4->0; g020 67->8 with displacement 20->8)",
+      "no new control expansion anywhere (displacement and selection counts never increased)",
+      "governance/scope invariants hold (0 scope rejections; selected subset of eligible universe; caps respected; deterministic double-execution replay)",
+      "fail-closed behavior verified on all zero-eligible controls",
+      "diversity guard spread the g020 selection across 6 origins (max 3 attributed per origin)",
+      "bridge-only candidates (zero non-graph channel support) won selectivity on primary score alone in g036 — the A4 circularity guard works"
+    ],
+    "what_failed": [
+      "g021 applicable required-evidence retention: prod_sim_hvmaps.C was A2-admitted and eligible, scored 2 (path 1 + title 1), but three same-score README-chunk candidates won the frozen object_id tie-break inside the single-origin PER_ORIGIN_CAP=4 boundary; the loss is inherent to the frozen design (one origin, 62 candidates, 4 slots), not a nondeterministic or governance failure"
+    ],
+    "interpretation": "the selectivity mechanism is bounded, deterministic, governance-preserving, and effective at fan-out reduction, but the frozen relevance/tie-break contract does not preserve all applicable relevant bridge evidence under tight single-origin budgets; per the preregistered rule this is PARTIAL, not PASS"
+  },
+  "lifecycle_decision": {
+    "D3.5-A5": "COMPLETE / SELECTIVITY_FANOUT_REDUCED_WITH_RELEVANCE_LOSS",
+    "D3.5": "IN_PROGRESS / POST_A2_SELECTIVITY_AND_ADMISSION_REDESIGN",
+    "D3.5-A6": "NOT_STARTED / NOT_READY (A6 readiness gate requires no applicable relevant-evidence loss; g021 retention failed)",
+    "D4": "NOT_STARTED / BLOCKED"
+  },
+  "A6_readiness_gate": {
+    "eligible": false,
+    "reason": "A5 did not establish that the frozen selectivity policy avoids applicable relevant-evidence loss (g021); A6 must not run against the current frozen policy",
+    "A6_reserved_parameters_unchanged": {
+      "ADMISSION_BUDGET_CANDIDATES": [
+        2,
+        3
+      ],
+      "R1_symmetric_repeated_reranker_evaluation": true
+    }
+  },
+  "next_stage": "a separately authorized selectivity design/decision repair stage (candidate name: D3.5-A5-R1 — Selectivity Relevance-Retention Design Repair); A5 must not mutate selectivity and rerun after outcome exposure",
+  "prohibited_next_actions": [
+    "try a second selectivity scoring formula inside A5",
+    "retune tokenizer or weights after outcomes",
+    "change SELECTIVITY_CAP or PER_ORIGIN_CAP after outcomes",
+    "implement admission or run K=2/K=3",
+    "call reranker/analyzer/embeddings",
+    "modify D1/D2/query expansions",
+    "write PostgreSQL/Qdrant",
+    "run novel_validation/holdout",
+    "start D4"
+  ],
+  "execution_accounting": {
+    "ANALYZER_CALLS": 0,
+    "EMBEDDING_CALLS": 0,
+    "RERANKER_CALLS": 0,
+    "QA_CALLS": 0,
+    "VERIFIER_CALLS": 0,
+    "JUDGE_CALLS": 0,
+    "POSTGRESQL_WRITES": 0,
+    "QDRANT_WRITES": 0,
+    "INGESTION": 0,
+    "REINDEX": 0,
+    "PRODUCTION_RUNTIME_CHANGES": 0,
+    "D1_CHANGES": 0,
+    "D2_CHANGES": 0,
+    "QUERY_EXPANSION_CHANGES": 0,
+    "A5_ADMISSION_TREATMENT_RUNS": 0,
+    "NOVEL_VALIDATION_RUNS": 0,
+    "NOVEL_HOLDOUT_RUNS": 0
+  }
+}

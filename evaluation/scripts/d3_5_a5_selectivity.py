@@ -216,7 +216,15 @@ def select_bridge_candidates(
         for origin in (item.get("provenance_origin_ids") or [])
     }
     origins_after = {origin for item in selected for origin in item["provenance_origin_ids"]}
+    # Cap-consistent accounting: counts follow the attributed origin (the same
+    # semantics the PER_ORIGIN_CAP is enforced with), so attributed counts are
+    # always <= PER_ORIGIN_CAP.  Membership counts (a selected candidate may
+    # belong to several origins) are reported separately as informational.
     per_origin_retained = {
+        origin: sum(1 for item in selected if item.get("attributed_origin_id") == origin)
+        for origin in sorted(origins_after)
+    }
+    per_origin_membership = {
         origin: sum(1 for item in selected if origin in item["provenance_origin_ids"])
         for origin in sorted(origins_after)
     }
@@ -247,6 +255,7 @@ def select_bridge_candidates(
         "number_of_provenance_origins_baseline_admitted": len(origins_baseline_admitted),
         "number_of_provenance_origins_after": len(origins_after),
         "per_origin_retained_counts": per_origin_retained,
+        "per_origin_membership_counts": per_origin_membership,
         "selected_candidates": [
             {
                 "candidate_object_id": item["candidate_object_id"],
