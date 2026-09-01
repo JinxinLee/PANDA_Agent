@@ -1,0 +1,529 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint": "D3.5-A6-PHASE0",
+  "stage_name": "D3.5-A6 Phase 0 — Bounded Rerank-Admission Design & Preregistration Freeze",
+  "stage_type": "design/preregistration-only stage; no runner implementation, no treatment pool construction, no reranker/analyzer/embedding/QA/verifier/judge calls, no runtime/D1/database changes",
+  "starting_head": "bb8b7008c22d492eafe4af47fd0e396916cdb760",
+  "parent_a4_design_identity": {
+    "artifact": "evaluation/d3_5_a4_bridge_selectivity_admission_budget_design.json",
+    "human_report": "evaluation/D3_5_A4_BRIDGE_SELECTIVITY_AND_ADMISSION_BUDGET_DESIGN.md",
+    "commit": "e90604a",
+    "A4_DESIGN_DECISION": "STAGED_SELECTIVITY_THEN_ADMISSION",
+    "inherited_frozen_parameters": {
+      "RERANK_POOL_SIZE": 30,
+      "ADMISSION_BUDGET_CANDIDATES": [2, 3],
+      "admission_policy_family": "A — fixed small absolute rerank-pool admission reservation",
+      "reranker_variance_strategy": "R1 — symmetric repeated reranker evaluation",
+      "candidate_authority": "GOVERNED_PROVENANCE_BACKED_ADDITIVE_RETRIEVAL_CANDIDATE / IDENTITY_AUTHORITY = NONE"
+    }
+  },
+  "parent_a5_r2_identity": {
+    "artifact": "evaluation/d3_5_a5_r2_repaired_selectivity_revalidation.json",
+    "human_report": "evaluation/D3_5_A5_R2_REPAIRED_SELECTIVITY_PROTOTYPE_FREEZE_AND_REVALIDATION.md",
+    "fixture_extension_commit": "3db1aaa",
+    "implementation_freeze_commit": "f498714",
+    "result_commit": "2bddbbc",
+    "scientific_verdict": "PASS / REPAIRED_SELECTIVITY_RELEVANCE_RETENTION_VALIDATED_FOR_DEVELOPMENT",
+    "frozen_v2_selectivity_surface": {
+      "implementation": "evaluation/scripts/d3_5_a5_r2_selectivity.py",
+      "selected_ordering_field_in_result_artifact": "six_case_records[case_id].selected_object_ids (verified equal to selected_rank_keys candidate order in all six cases)",
+      "selectivity_only_graph_ordering_field": "six_case_records[case_id].selectivity_only_graph_ordering",
+      "caps": { "PER_ORIGIN_CAP": 4, "SELECTIVITY_CAP": 8 },
+      "hard_gate": "MIN_PRIMARY_SCORE >= 1 (unchanged v1 path/title gate)",
+      "per_origin_attribution": "least-used-origin"
+    }
+  },
+  "parent_a5_r2_r1_r1_identity": {
+    "artifact": "evaluation/d3_5_a5_r2_r1_r1_audit_metadata_consistency_closeout.json",
+    "commit": "bb8b700",
+    "decision": "AUDIT_METADATA_CONSISTENCY_CLOSED",
+    "A6_readiness_at_parent": "NOT_STARTED / READY_FOR_PREREGISTRATION (A6_EXECUTION_STARTED = false)"
+  },
+  "scientific_question": "Can a very small reserved rerank-admission budget allow already-selected, governed bridge evidence to compete in the existing reranker and achieve stable downstream evidence retention, while preserving ordinary-candidate competition and avoiding material control regressions?",
+  "scientific_question_is_NOT": [
+    "Does QA answer quality improve?",
+    "Does the bridge become production-ready?",
+    "Should D4 start?",
+    "Should the reranker be replaced?",
+    "Should fusion weights change?"
+  ],
+  "staged_identifiability": {
+    "A4_design_preserved": "S1 — STAGED_SELECTIVITY_THEN_ADMISSION",
+    "selectivity_stage_status": "D3.5-A5-R2 = COMPLETE / PASS (repaired v2 selectivity validated for development)",
+    "admission_uses_only_validated_selectivity": true,
+    "admission_only_arm_with_unselected_candidates": "PROHIBITED",
+    "A5_selectivity_design_reopened": false,
+    "SELECTIVITY_CAP_and_RERANK_ADMISSION_BUDGET_remain_distinct": true
+  },
+  "frozen_cases": {
+    "case_order": ["g036", "g021", "n006", "g041", "g020", "n004"],
+    "source": "the frozen A2 six-case development set",
+    "role": "POST_OUTCOME_MECHANISTIC_DEVELOPMENT — outcomes already exposed in A2/A5/R2; never represented as a fresh holdout",
+    "case_roles_and_required_evidence_are_evaluator_only": true
+  },
+  "arm_definitions": {
+    "arms": ["BASELINE", "ADMISSION_K2", "ADMISSION_K3"],
+    "additional_budget_arm": "PROHIBITED",
+    "K1": "PROHIBITED",
+    "K4": "PROHIBITED",
+    "adaptive_K": "PROHIBITED"
+  },
+  "baseline_definition": {
+    "construction_chain": [
+      "frozen A5-R2 v2 selectivity (frozen selectivity_only_graph_ordering per case)",
+      "frozen graph merge (selected bridge candidates as graph-channel prefix, then ordinary unbridged graph candidates, graph_channel_limit = 20)",
+      "frozen fusion (weights exact 2.0 / dense 1.0 / sparse 1.0 / paper 1.15 / workflow 1.2 / graph 0.8, score = weight / (60 + rank + 1), non-graph channels taken unchanged from the frozen STRUCTURED_BRIDGED cell trace, graph channel replaced by the v2 selectivity-only graph ordering)",
+      "ordinary fused top-30 rerank pool (first 30 members of the v2-conditioned full fused ordering)"
+    ],
+    "inputs": {
+      "fixture": "evaluation/d3_5_downstream_replay_fixture.json (schema 1.1.0, unchanged)",
+      "v2_selectivity_result": "evaluation/d3_5_a5_r2_repaired_selectivity_revalidation.json (six_case_records, unchanged)"
+    },
+    "BASELINE_is_NOT": [
+      "A2 STRUCTURED_BRIDGED (old 20-cap bridge without selectivity)",
+      "A5 v1 selectivity",
+      "LEGACY",
+      "ABLATION"
+    ],
+    "A6_scientific_contrast": "admission on top of repaired v2 selectivity",
+    "no_reserved_admission_in_BASELINE": true
+  },
+  "reservable_bridge_definition": {
+    "V2_SELECTED_BRIDGE": "the exact v2-selected bridge candidate ordering frozen by A5-R2 (six_case_records[case_id].selected_object_ids)",
+    "BASELINE_TOP30": "the ordinary frozen v2-conditioned fused rerank pool (top-30)",
+    "RESERVABLE_BRIDGE": "V2_SELECTED_BRIDGE minus candidates already present in BASELINE_TOP30",
+    "deduplication": "by stable object identity",
+    "admission_order": "frozen v2 selectivity order (the V2_SELECTED_BRIDGE ordering); no new admission relevance score; bridge candidates are never reranked a second time before admission"
+  },
+  "RERANK_POOL_SIZE": 30,
+  "pool_size_rule": "every BASELINE/ADMISSION_K2/ADMISSION_K3 reranker input pool contains exactly 30 candidates unless fewer than 30 unique candidates exist in the frozen candidate universe for that case; the pool is never globally expanded",
+  "ADMISSION_BUDGET_CANDIDATES": [2, 3],
+  "K2_semantics": {
+    "reservation": "reserve up to 2 candidates",
+    "reserved_set": "the first min(2, len(RESERVABLE_BRIDGE)) candidates of RESERVABLE_BRIDGE in frozen v2 order"
+  },
+  "K3_semantics": {
+    "reservation": "reserve up to 3 candidates",
+    "reserved_set": "the first min(3, len(RESERVABLE_BRIDGE)) candidates of RESERVABLE_BRIDGE in frozen v2 order"
+  },
+  "ceiling_not_quota": {
+    "semantics": "up to K candidates, never always K",
+    "empty_reservable_case": "if len(RESERVABLE_BRIDGE) = 0, the K2 treatment pool equals the BASELINE pool and the K3 treatment pool equals the BASELINE pool",
+    "single_reservable_case": "if exactly one reservable candidate exists, both arms reserve exactly one",
+    "unused_capacity": "never filled with unrelated candidates (fail closed)"
+  },
+  "duplicate_admission_semantics": {
+    "already_present_rule": "a v2-selected bridge candidate already present in BASELINE_TOP30 stays in its ordinary baseline position and consumes 0 reserved slots",
+    "overlap_recording": "baseline_overlap_bridge_ids recorded explicitly per treatment pool",
+    "no_duplicate_entries": "no candidate is ever inserted twice into a pool"
+  },
+  "treatment_pool_construction": {
+    "steps": [
+      "take the first min(K, len(RESERVABLE_BRIDGE)) candidates of RESERVABLE_BRIDGE in frozen v2 order (the reserved set)",
+      "retain all BASELINE_TOP30 candidates except those mechanically displaced",
+      "insert the reserved candidates",
+      "keep the pool size fixed at 30"
+    ],
+    "deterministic": true
+  },
+  "displacement_semantics": {
+    "A4_rule": "retain the baseline fused ordering and replace the lowest-ranked eligible baseline entries with reserved bridge candidates",
+    "displacement_start": "from the bottom of BASELINE_TOP30 (positional, bottom-first)",
+    "displaced_count": "exactly len(reserved_set) per treatment pool",
+    "bridge_derived_status_neutral": "a candidate already present in the baseline pool is never displaced merely because it is bridge-derived; bridge-derived status neither protects nor targets any candidate",
+    "displaced_object_ids_recorded": true
+  },
+  "protected_baseline_entries": {
+    "default": "all baseline candidates are displacement-eligible",
+    "case_specific_protected_candidates": "PROHIBITED",
+    "gold_based_protection": "PROHIBITED (evaluator information never enters pool construction)",
+    "duplicate_exception": "a v2-selected bridge candidate already present in the baseline pool occupies its own baseline slot and never receives a duplicate reservation entry"
+  },
+  "treatment_pool_order": {
+    "frozen_ordering": "surviving baseline candidates retain their original v2-conditioned fused order; reserved bridge candidates are appended after them in frozen v2 order",
+    "rationale": "preserves baseline ordering semantics and matches the production rerank-payload construction (payload list built in pool order); deterministic and implementation-unambiguous",
+    "implementation_defined_ordering": "PROHIBITED"
+  },
+  "candidate_authority": {
+    "reserved_candidate_status": "GOVERNED_PROVENANCE_BACKED_ADDITIVE_RETRIEVAL_CANDIDATE",
+    "IDENTITY_AUTHORITY": "NONE",
+    "reservation_grants": "permission to enter the ordinary reranker competition only",
+    "reservation_does_NOT_grant": [
+      "answer authority",
+      "identity authority",
+      "automatic final selection",
+      "reranker priority",
+      "selector priority",
+      "extra RRF vote"
+    ]
+  },
+  "admission_score_freeze": {
+    "admission_inputs": ["v2-selected status", "v2 ordering", "K ceiling", "baseline overlap"],
+    "prohibited_new_inputs": [
+      "new lexical admission score",
+      "new embedding",
+      "reranker pre-score",
+      "case-specific evidence selector",
+      "gold signal"
+    ]
+  },
+  "reranker_interface_freeze": {
+    "contract": "A6 reuses the existing production/evaluation reranker interface unchanged",
+    "observed_frozen_interface": {
+      "call_site": "src/panda_agent/retrieval.py (rerank pool construction and generate_json rerank call)",
+      "payload_shape": "[{object_id, title, source_id, text[:2000]}] in pool order",
+      "response_schema": "ranked_object_ids enum-restricted to the pool member list",
+      "system_prompt": "RERANK_SYSTEM_PROMPT (src/panda_agent/prompts.py, unchanged)",
+      "decoding": "vertex generate_json, temperature 0.0 (existing default), response_mime_type application/json",
+      "model": "the environment-resolved generation model (VertexSettings.generation_model, default gemini-3.7-flash via QA_GENERATION_MODEL_ID)",
+      "provider_retry_policy": "the existing 3-attempt transient-retry loop inside vertex generate_json, unchanged"
+    },
+    "phase0_and_phase1_prohibitions": [
+      "modify the reranker system prompt",
+      "modify reranker parsing",
+      "modify the reranker candidate payload shape",
+      "change model choice",
+      "change temperature",
+      "change provider retry policy"
+    ],
+    "ambiguity_rule": "if the exact currently used model/config cannot be recovered unambiguously: STOP BEFORE IMPLEMENTATION",
+    "phase1_recording_requirement": "the Phase-1 runner manifest must record the resolved model id and configuration actually used"
+  },
+  "UPSTREAM_VARIANCE_CONTROL": "FROZEN_TRACE_REPLAY",
+  "upstream_variance_eliminated": [
+    "analyzer variance",
+    "D2 variance",
+    "channel retrieval variance",
+    "bridge reachability variance",
+    "bridge materialization variance",
+    "fusion-input variance"
+  ],
+  "rerun_prohibitions": [
+    "analyzer",
+    "D2",
+    "channel retrieval",
+    "bridge reachability",
+    "fusion inputs"
+  ],
+  "only_non_deterministic_component_in_phase2": "existing reranker model execution",
+  "RERANKER_REPETITIONS_PER_ARM_PER_CASE": 3,
+  "repetition_rationale": {
+    "1_repetition": "insufficient variance characterization",
+    "2_repetitions": "tie-prone and weak stability semantics",
+    "3_repetitions": "minimal odd-number repeated design supporting majority/median semantics",
+    "larger_counts": "unnecessary Monte-Carlo-style expansion for this mechanistic stage",
+    "outcome_independence": "the count is NOT chosen from A2/A5/R2 case outcomes"
+  },
+  "EXPECTED_FORMAL_RERANKER_CALLS": 54,
+  "formal_call_accounting": {
+    "formula": "6 cases x 3 arms x 3 repetitions = 54",
+    "provider_retries": "internal provider retries, if any, are accounted separately from formal repetitions and never counted as repetitions"
+  },
+  "repetition_arm_schedule": {
+    "type": "cyclic symmetric schedule per case",
+    "repetition_1": ["BASELINE", "ADMISSION_K2", "ADMISSION_K3"],
+    "repetition_2": ["ADMISSION_K2", "ADMISSION_K3", "BASELINE"],
+    "repetition_3": ["ADMISSION_K3", "BASELINE", "ADMISSION_K2"],
+    "randomized_execution_order": "PROHIBITED",
+    "order_chosen_after_outcomes": "PROHIBITED"
+  },
+  "execution_schedule": {
+    "case_major": true,
+    "rule": "for each case in frozen case order, complete all 3 repetitions per the cyclic schedule before advancing to the next case"
+  },
+  "pairing_semantics": {
+    "no_hidden_pairing_assumption": true,
+    "reranker_calls_are": "independent model executions",
+    "prohibited_claim": "that BASELINE repetition r and treatment repetition r share random seeds or deterministic stochastic state unless the existing model interface actually supports that",
+    "paired_means": [
+      "same frozen case",
+      "same frozen upstream trace",
+      "same preregistered repetition index",
+      "symmetric arm schedule"
+    ],
+    "paired_does_not_mean": "shared RNG"
+  },
+  "QA_disabled": {
+    "QA_CALLS": 0,
+    "VERIFIER_CALLS": 0,
+    "JUDGE_CALLS": 0,
+    "outcome_boundary": "A6 outcome ends at reranked evidence; no answer generation is added"
+  },
+  "evaluator_contract": {
+    "evaluator": "the existing deterministic evidence evaluator (frozen GoldEvidenceSelector.matches semantics; expected evidence is evaluator-only)",
+    "required_flow": [
+      "arm/repetition reranker output",
+      "freeze the reranker result",
+      "evaluator-only evidence matching"
+    ],
+    "post_rerank_deterministic_surface": "each arm/repetition reranker output is deterministically post-processed with production-identical unchanged semantics: fallback merge ordered = dedupe([*reranker_output, *baseline_full_fused_order]) (the admission changes only the rerank pool; fusion state, scores, channels, and the fused fallback are identical across arms and admission grants no extra RRF vote), then the unchanged plan-driven deterministic reordering and unchanged select_final_evidence with the frozen final_evidence_limit (12, configs/retrieval_policies.yaml); the resulting final evidence is the arm/repetition evidence surface",
+    "retention_unit": "required evidence group (primary unit)",
+    "retained_per_repetition": "a required evidence group is retained in an arm/repetition iff the existing deterministic evaluator's group matching is satisfied by that arm/repetition evidence surface",
+    "gold_flow_prohibitions": [
+      "gold -> admission",
+      "gold -> reranker input construction",
+      "case role -> admission",
+      "case role -> reranker input construction"
+    ]
+  },
+  "retention_definitions": {
+    "STABLE_RETAINED": "required evidence group retained in at least 2 of 3 reranker repetitions (retention_count >= 2)",
+    "STABLE_LOST": "required evidence group retained in at most 1 of 3 repetitions",
+    "aggregation": "no weighted probability; no p-values",
+    "rank_diagnostics": {
+      "per_repetition_record": "reranked rank if retained; absent otherwise",
+      "aggregation": "median retained rank only, as a secondary diagnostic",
+      "rank_limitation": "rank improvement alone does NOT determine K selection"
+    }
+  },
+  "pool_fingerprint_definition": {
+    "pool_fingerprint": "deterministic hash over the ordered pool member object_id list exactly as submitted to the reranker (pool membership and ordering)",
+    "identical_pool_rule": "arms whose pool fingerprints are identical submitted identical reranker inputs"
+  },
+  "baseline_variance_reference": {
+    "RERANKER_VARIANCE_REFERENCE": "when a treatment pool equals the BASELINE pool (identical fingerprint), any observed output difference between separate reranker calls is reranker variance reference, not admission effect",
+    "record": "identical-pool fingerprints are recorded explicitly"
+  },
+  "treatment_effect_interpretation": {
+    "rule": "admission effect may be interpreted only when the treatment rerank pool differs from the BASELINE rerank pool (different fingerprint)",
+    "identical_fingerprint_rule": "if pool fingerprints are identical, output differences are never attributed to admission"
+  },
+  "material_control_regression_definition": {
+    "BASELINE_STABLE": "required/control evidence group retained in >= 2 of 3 BASELINE repetitions",
+    "MATERIAL_CONTROL_REGRESSION": "BASELINE retention_count >= 2 AND treatment retention_count <= 1 for the same group (repetition-aware; filters single-run reranker variance)"
+  },
+  "non_material_fluctuations": {
+    "not_automatically_material_regression": [
+      "3/3 -> 2/3",
+      "2/3 -> 2/3",
+      "1/3 -> 0/3",
+      "2/3 -> 3/3"
+    ],
+    "exception": "unless another frozen primary invariant is violated"
+  },
+  "DEFAULT_BUDGET_PREFERENCE": "K2",
+  "smallest_sufficient_budget_rationale": "K2 displaces fewer ordinary candidates; K3 must demonstrate additional stable evidence-retention value to override K2",
+  "K2_vs_K3_decision_rule": {
+    "scope": "across all evaluator-applicable required evidence groups",
+    "S2": "number of applicable evidence groups STABLE_RETAINED by K2",
+    "S3": "number of applicable evidence groups STABLE_RETAINED by K3",
+    "rules": [
+      "if S2 == S3: prefer K2",
+      "if S3 > S2 AND K3 has no additional MATERIAL_CONTROL_REGRESSION relative to K2: prefer K3",
+      "if S3 > S2 BUT K3 introduces additional MATERIAL_CONTROL_REGRESSION: do not automatically prefer K3; verdict becomes PARTIAL / tradeoff",
+      "if S2 > S3: prefer K2"
+    ],
+    "rank_only_improvement_rule": "if S2 == S3 and K3 only improves median rank or MRR-like rank diagnostics, SELECTED_ADMISSION_BUDGET = 2 (rank quality alone never justifies the extra displaced slot)",
+    "budget_identity_prohibition": "the budget is never chosen from positive-case identity"
+  },
+  "origin_concentration_diagnostics": {
+    "carried_forward_exactly": [
+      "selected_bridge_origin_count",
+      "selected_bridge_per_origin_counts",
+      "reserved_bridge_origin_count",
+      "reserved_bridge_per_origin_counts",
+      "ordinary_rerank_candidates_displaced",
+      "reserved_bridge_candidate_ids",
+      "reserved_candidate_origin_ids"
+    ],
+    "role_in_A6": "diagnostic-only",
+    "numeric_failure_threshold": "NONE (never derived from g020 v2 origins_after = 2 or the 4+4 attribution)",
+    "admission_diversity_enforcement": "A6 does not modify admission to enforce diversity",
+    "existing_v2_per_origin_cap": "PER_ORIGIN_CAP = 4 remains the selectivity-stage guard and is unchanged; no new per-origin admission cap is added inside A6 (A6 tests its downstream consequence)"
+  },
+  "treatment_pool_diagnostics": {
+    "per_treatment_pool_record": [
+      "baseline_pool_object_ids",
+      "reserved_bridge_candidate_ids",
+      "baseline_overlap_bridge_ids",
+      "ordinary_rerank_candidates_displaced",
+      "displaced_object_ids",
+      "treatment_pool_object_ids",
+      "pool_size",
+      "pool_fingerprint"
+    ]
+  },
+  "candidate_authority_diagnostics": {
+    "per_reserved_candidate_record": [
+      "object_id",
+      "source_id",
+      "source_version_id",
+      "v2 selectivity position",
+      "attributed_origin_id",
+      "already_in_baseline",
+      "reserved_slot_consumed"
+    ],
+    "no_new_authority": true
+  },
+  "control_interpretation_boundary": {
+    "runtime_admission_and_reranker_construction_must_not_consume": [
+      "case role",
+      "positive/control label",
+      "required evidence"
+    ],
+    "hard_coded_case_ids_in_admission_policy": "PROHIBITED",
+    "post_output_reporting": "evaluator/reporting may retain the existing frozen case-role metadata for scientific interpretation after outputs are produced"
+  },
+  "outcome_exposure_contract": {
+    "A6_RERANK_OUTCOME_EXPOSURE_before_first_real_case_reranker_call": "NOT_STARTED",
+    "exposure_starts_when": "the first real-case reranker call starts (TREATMENT_EXECUTION_EXPOSURE)",
+    "exposure_does_not_start_when": [
+      "a result is persisted (PERSISTED_RESULT_EXPOSURE is a later layer)",
+      "a human reads the result (HUMAN_RESULT_INSPECTION is a later layer)"
+    ],
+    "semantics_source": "corrected R2 exposure semantics (evaluation/d3_5_a5_r2_r1_outcome_exposure_evaluator_wiring_audit_repair.json)"
+  },
+  "anti_tuning_contract": {
+    "phase0_real_case_reranker_calls": 0,
+    "phase0_prohibited_probes": [
+      "constructing a real case treatment pool and running it 'just to verify'",
+      "running a real-case baseline smoke test",
+      "running one reranker call to estimate variance"
+    ],
+    "synthetic_construction_tests_belong_to": "Phase 1",
+    "outcome_independent_design": "K, repetition count, material regression threshold, pool order, and budget decision semantics are never tuned from exposed A5/R2 result details",
+    "g020_origin_concentration_role": "may motivate required diagnostics only"
+  },
+  "payload_availability_contingency": {
+    "problem_class": "a v2-conditioned pool member may be absent from the frozen fixture payload registry because the registry covers the union of the OLD-cap fused top-30 and all bridge candidates, while v2 conditioning re-admits previously displaced ordinary graph candidates",
+    "phase0_feasibility_probe": {
+      "method": "read-only deterministic fusion recomputation over frozen artifacts (fixture channel rankings + frozen R2 selectivity_only_graph_ordering), no selectivity execution, no model calls",
+      "old_fusion_reproduction_check": "the same fusion code path reproduces the frozen baseline_fused_ordering_full top-30 exactly for all six cases (6/6)",
+      "v2_conditioned_top30_members_missing_from_registry": {
+        "g036": 0,
+        "g021": 0,
+        "n006": 0,
+        "g041": 0,
+        "g020": 1,
+        "n004": 0
+      },
+      "observed_missing_candidate_example": "concept.restgas_longitudinal_efficiency (g020, ordinary graph candidate re-admitted under v2 conditioning)"
+    },
+    "generic_phase1_rule": "if any arm's pool contains a candidate absent from the frozen payload registry, Phase 1 must mechanically extend the registry additively (object_id/title/source_id/text[:2000] and object_type/locator as needed) from the frozen normalized corpus under the unchanged index-identity check, documented before any reranker outcome; this is a descriptive payload-availability repair, not a treatment or semantics change",
+    "fixture_unchanged_in_phase0": true
+  },
+  "scientific_verdict_rules": {
+    "PASS": {
+      "verdict": "PASS / BOUNDED_RERANK_ADMISSION_VALIDATED_FOR_DEVELOPMENT",
+      "requires_all": [
+        "protocol valid",
+        "exact preregistered arms executed",
+        "reranker repetition protocol valid",
+        "candidate authority invariants pass",
+        "pool size/displacement invariants pass",
+        "at least one treatment budget provides additional stable retention for applicable bridge evidence relative to BASELINE",
+        "selected budget has no MATERIAL_CONTROL_REGRESSION",
+        "no runtime gold/case-role leakage",
+        "no post-exposure treatment mutation"
+      ]
+    },
+    "K2_PASS_selection": "if both K2 and K3 satisfy PASS and S2 == S3, SELECTED_ADMISSION_BUDGET = 2",
+    "K3_PASS_selection": "SELECTED_ADMISSION_BUDGET = 3 only when S3 > S2 and K3 introduces no additional MATERIAL_CONTROL_REGRESSION relative to K2",
+    "PARTIAL_ADMISSION_RECOVERY_WITH_CONTROL_REGRESSION": "admission yields additional stable applicable evidence retention but every otherwise-preferred effective treatment introduces material control regression; A6 remains incomplete for downstream activation",
+    "PARTIAL_ADMISSION_DID_NOT_VALIDATE_DOWNSTREAM_RECOVERY": "K2/K3 construct valid treatment pools but neither improves stable applicable evidence retention over BASELINE",
+    "PARTIAL_ADMISSION_RECOVERY_NOT_STABLE_ACROSS_RERANKER_REPETITIONS": "an arm appears to recover evidence in one repetition but fails the >= 2/3 stable-retention criterion",
+    "FAIL": {
+      "verdict": "FAIL / BOUNDED_ADMISSION_SAFETY_OR_CONSTRUCTION_FAILED",
+      "applies_to": [
+        "pool size invariant failure",
+        "duplicate-admission accounting failure",
+        "out-of-scope candidate admission",
+        "candidate-authority violation",
+        "systematic control degradation",
+        "implementation not matching preregistration"
+      ],
+      "condition": "the protocol itself remains interpretable"
+    },
+    "INVALID_applies_to": [
+      "reranker outcome seen before prereg freeze",
+      "K/repetition/decision rule changed after exposure",
+      "additional unregistered budget arm evaluated",
+      "gold/required evidence used in pool construction",
+      "case-role branch used in admission",
+      "reranker prompt/model/config changed during experiment",
+      "outcome-guided reruns"
+    ]
+  },
+  "production_activation": {
+    "PRODUCTION_ACTIVATION": false,
+    "even_on_PASS": true,
+    "A6_validates_only": "development-stage bounded admission mechanism"
+  },
+  "phase1_contract": {
+    "stage": "D3.5-A6 Phase 1 — Bounded Admission Prototype & Synthetic Construction Freeze",
+    "may": [
+      "implement deterministic BASELINE/K2/K3 pool construction",
+      "implement diagnostics",
+      "implement synthetic tests",
+      "implement the formal runner without executing real reranker calls",
+      "freeze the implementation",
+      "mechanically extend the payload registry under the payload_availability_contingency"
+    ],
+    "must_retain": { "REAL_CASE_RERANKER_CALLS": 0 }
+  },
+  "phase2_contract": {
+    "stage": "D3.5-A6 Phase 2 — Paired Repeated Reranker Replay",
+    "prerequisite": "Phase-1 implementation freeze",
+    "may_perform": "the 54 formal reranker calls",
+    "phase_merge_prohibition": "Phase 1 and Phase 2 must not be merged unless explicitly authorized later"
+  },
+  "A6_PHASE0_DECISION": "BOUNDED_RERANK_ADMISSION_PREREGISTRATION_FROZEN",
+  "decision_basis": "all Phase-0 readiness criteria are exact and implementation-unambiguous: three arms; pool construction; pool order; duplicate semantics; displacement semantics; K ceilings; reranker interface; repetition count; execution order; stable retention; material regression; K decision rule; concentration diagnostics; outcome exposure; verdict rules",
+  "lifecycle": {
+    "D3.5-A6": "IN_PROGRESS / BOUNDED_RERANK_ADMISSION_PREREGISTRATION_FROZEN",
+    "D3.5-A6-PHASE0": "COMPLETE / BOUNDED_RERANK_ADMISSION_PREREGISTRATION_FROZEN",
+    "D3.5-A6-PHASE1": "NOT_STARTED / READY_TO_IMPLEMENT",
+    "D3.5-A6-PHASE2": "NOT_STARTED / BLOCKED_UNTIL_PHASE1_FREEZE",
+    "D3.5-A5-R2": "COMPLETE / REPAIRED_SELECTIVITY_RELEVANCE_RETENTION_VALIDATED_FOR_DEVELOPMENT (unchanged)",
+    "D3.5": "IN_PROGRESS / POST_A2_SELECTIVITY_AND_ADMISSION_REDESIGN (unchanged)",
+    "D3_5_INITIAL_VALIDATION_CYCLE": "COMPLETE / STRUCTURED_EVIDENCE_LINK_BRIDGING_NOT_VALIDATED (unchanged)",
+    "D4": "NOT_STARTED / BLOCKED"
+  },
+  "exact_next_stage": "D3.5-A6 Phase 1 — Bounded Admission Prototype & Synthetic Construction Freeze (REAL_CASE_RERANKER_CALLS = 0; Phase 2 blocked until Phase-1 freeze)",
+  "protected_datasets": {
+    "novel_validation": "FROZEN / UNSEEN",
+    "novel_holdout": "SEALED / UNSEEN",
+    "contents_inspected": false
+  },
+  "execution_accounting": {
+    "REAL_CASE_RERANKER_CALLS": 0,
+    "REAL_CASE_SELECTIVITY_RUNS": 0,
+    "REAL_CASE_TREATMENT_POOL_CONSTRUCTIONS": 0,
+    "ANALYZER_CALLS": 0,
+    "EMBEDDING_CALLS": 0,
+    "QA_CALLS": 0,
+    "VERIFIER_CALLS": 0,
+    "JUDGE_CALLS": 0,
+    "POSTGRESQL_WRITES": 0,
+    "QDRANT_WRITES": 0,
+    "NOVEL_VALIDATION_RUNS": 0,
+    "NOVEL_HOLDOUT_RUNS": 0,
+    "disclosed_phase0_read_only_probe": "one mechanical fusion-recomputation/payload-coverage probe over frozen artifacts (no selectivity execution, no model calls, no pool construction); results recorded in payload_availability_contingency.phase0_feasibility_probe"
+  },
+  "artifact_change_policy": {
+    "src": "unchanged in Phase 0",
+    "configs": "unchanged in Phase 0",
+    "evaluation_scripts": "no new A6 runner created in Phase 0",
+    "d3_5_downstream_replay_fixture_json": "unchanged in Phase 0",
+    "A5_R2_scientific_artifacts": "unchanged in Phase 0"
+  },
+  "prohibited_actions": [
+    "implement the A6 runner",
+    "construct real K2/K3 treatment pools",
+    "run the reranker",
+    "run a variance smoke test",
+    "inspect a real case under K2/K3",
+    "change the repetition count",
+    "change the budget rule",
+    "change control-regression semantics",
+    "modify v2 selectivity",
+    "change caps",
+    "change the hard gate",
+    "add an origin reservation cap",
+    "write PostgreSQL/Qdrant",
+    "run novel_validation",
+    "run holdout",
+    "start Phase 2",
+    "start D4"
+  ]
+}
