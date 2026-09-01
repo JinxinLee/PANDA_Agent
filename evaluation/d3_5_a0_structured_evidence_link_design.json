@@ -15,7 +15,8 @@
       "D3 — Small shortcut-migration experiment — COMPLETE",
       "D3.5 — Structured Evidence-Link Reachability & Bridging — IN_PROGRESS",
       "D4 — Incremental migration of appropriate query expansions — NOT_STARTED"
-    ]
+    ],
+    "D3.5-A0-R2": "COMPLETE / POST_A1_D1_IDENTITY_AND_MATERIALIZATION_FREEZE_REPAIRED"
   },
   "d3_evidence_inputs": [
     "evaluation/d3_a2_three_arm_results.json",
@@ -481,18 +482,13 @@
   },
   "runtime_materialization_prerequisite": {
     "required_for_D3.5-A1_validation": true,
-    "authoritative_repository_seed_state": {
-      "objects": 24,
-      "accepted_relations": 16,
-      "curated_workflow_steps": 1
-    },
     "last_observed_deployed_state": {
       "objects": 22,
       "accepted_relations": 16,
       "curated_workflow_steps": 0
     },
-    "decision": "D3.5-A1 must begin with a read-only comparison between the authoritative repository-governed D1 identity and a separate isolated D3.5 evaluation materialization identity. If the isolated state is stale, controlled ingestion may target that isolated state only. The deployed production materialization is a third, distinct identity and must remain untouched.",
-    "known_state_implication": "The historical D3 deployed 22/16/0 materialization is non-interchangeable with the synchronized 24/16/1 isolated D3.5 evaluation arm and is not an ingestion target.",
+    "decision": "D3.5-A1 must begin with a read-only comparison between the starting repository-governed D1 identity and a separate isolated D3.5 evaluation materialization identity. If the isolated state is stale, controlled ingestion may target that isolated state only. If approved Mechanism-C changes occur during A1, the isolated state must be resynchronized to match D3_5_A2_FINAL_REPOSITORY_D1_IDENTITY before pre-A2 freezes. The deployed production materialization is a distinct identity and must remain untouched.",
+    "known_state_implication": "The historical D3 deployed 22/16/0 materialization is non-interchangeable with the synchronized isolated D3.5 evaluation arm and is not an ingestion target.",
     "reingestion_contract": [
       "record the isolated target identity and exact counts",
       "materialize only independently approved current D1 state",
@@ -504,7 +500,12 @@
     ],
     "production_structured_state_writes": 0,
     "isolation_failure_behavior": "Stop before ingestion and report D3.5-A1 BLOCKED / ISOLATED_MATERIALIZATION_UNAVAILABLE; never silently rewrite the deployed database.",
-    "performed_in_A0": false
+    "performed_in_A0": false,
+    "starting_baseline_repository_seed_state": {
+      "objects": 24,
+      "accepted_relations": 16,
+      "curated_workflow_steps": 1
+    }
   },
   "anti_shortcut_constraints": {
     "principle": "D3.5 must replace answer-location shortcuts with governed structural/evidence semantics, not merely move the shortcut from YAML into the graph.",
@@ -534,9 +535,10 @@
     "name": "D3.5-A1 — Bounded Structured Evidence-Link Bridging Prototype",
     "prerequisite_sequence": [
       "establish an isolated D3.5 evaluation structured-state target",
-      "synchronize that isolated target to authoritative approved repository D1",
-      "freeze the isolated materialization identity",
-      "only then implement and validate the bridge with synthetic, unit, or static fixtures"
+      "initially synchronize that isolated target to starting approved repository D1 (D3_5_A1_STARTING_REPOSITORY_D1_IDENTITY, currently 24/16/1)",
+      "implement and validate the bridge with synthetic, unit, or static fixtures",
+      "if approved Mechanism-C changes occur, update repository D1 configs and resynchronize isolated target to match D3_5_A2_FINAL_REPOSITORY_D1_IDENTITY",
+      "freeze A1 implementation, final repository D1 identity, and isolated evaluation materialization before A2"
     ],
     "may": [
       "choose the smallest existing isolation mechanism and synchronize only the isolated D3.5 dev/evaluation materialization to independently approved current D1 state as an explicit prerequisite",
@@ -559,12 +561,20 @@
     ],
     "required_freezes_before_A2": {
       "D3_5_A1_IMPLEMENTATION_FROZEN": true,
+      "D3_5_A2_FINAL_REPOSITORY_D1_IDENTITY_FROZEN": true,
       "D3_5_EVALUATION_D1_MATERIALIZATION_FROZEN": true,
+      "isolated_materialization_matches_final_repository_D1": true,
       "run_manifest_must_record": [
         "D3.5-A1 implementation commit SHA",
-        "repository-governed D1 identity",
-        "isolated evaluation materialization identity and 24/16/1 counts",
-        "production materialization untouched"
+        "starting repository-governed D1 identity",
+        "final repository-governed D1 identity",
+        "whether D1 changed and change summary",
+        "final D1 counts",
+        "stable object IDs, relation IDs/tuples, and workflow IDs",
+        "isolated evaluation materialization identity",
+        "deterministic proof/accounting of materialization match to final repository D1",
+        "deployed production materialization identity",
+        "production materialization untouched true"
       ]
     },
     "outcome_exposure": "NOT_STARTED"
@@ -577,18 +587,23 @@
       "arms": {
         "LEGACY": "The two selected legacy rules active; structured path and D3.5 bridge disabled.",
         "ABLATION": "The two selected legacy rules suppressed; structured path and D3.5 bridge disabled.",
-        "STRUCTURED_UNBRIDGED": "The two selected legacy rules suppressed; synchronized current structured path enabled; D3.5 bridge disabled.",
-        "STRUCTURED_BRIDGED": "The two selected legacy rules suppressed; the same synchronized current structured path plus the frozen D3.5-A1 bridge enabled."
+        "STRUCTURED_UNBRIDGED": "The two selected legacy rules suppressed; synchronized current structured path enabled against final repository D1; D3.5 bridge disabled.",
+        "STRUCTURED_BRIDGED": "The two selected legacy rules suppressed; the same synchronized current structured path plus the frozen D3.5-A1 bridge enabled against final repository D1."
       },
-      "shared_materialization": "All four arms use the same frozen synchronized isolated D3.5 evaluation materialization matching repository D1 24/16/1.",
-      "historical_non_interchangeability": "The historical D3 STRUCTURED arm used deployed 22/16/0 and is not interchangeable with the current synchronized 24/16/1 STRUCTURED_UNBRIDGED arm.",
+      "shared_materialization": "All four arms use the same frozen synchronized isolated D3.5 evaluation materialization exactly matching D3_5_A2_FINAL_REPOSITORY_D1_IDENTITY.",
+      "historical_non_interchangeability": "The historical D3 STRUCTURED arm used deployed 22/16/0 and is not interchangeable with the current synchronized STRUCTURED_UNBRIDGED arm.",
       "causal_contrasts": {
         "shortcut_dependency": "LEGACY - ABLATION",
         "unbridged_structured_contribution": "STRUCTURED_UNBRIDGED - ABLATION",
         "incremental_bridge_effect": "STRUCTURED_BRIDGED - STRUCTURED_UNBRIDGED",
         "final_legacy_parity": "STRUCTURED_BRIDGED - LEGACY"
       },
-      "identifiability_boundary": "STRUCTURED_BRIDGED - ABLATION is the combined current structured-plus-bridge contribution and must not be described as a pure bridge effect."
+      "identifiability_boundary": "STRUCTURED_BRIDGED - ABLATION is the combined current structured-plus-bridge contribution and must not be described as a pure bridge effect.",
+      "scientific_interpretation": {
+        "unbridged_vs_ablation": "If STRUCTURED_UNBRIDGED > ABLATION, the final repository-governed D1 state and pre-D3.5 structured traversal path contribute to evidence recovery.",
+        "bridged_vs_unbridged": "If STRUCTURED_BRIDGED > STRUCTURED_UNBRIDGED, the D3.5 reachability/evidence bridge adds incremental recovery beyond the final governed D1 state.",
+        "identifiability_boundary": "STRUCTURED_BRIDGED - ABLATION is the combined current structured-plus-bridge contribution and must not be described as a pure bridge effect."
+      }
     },
     "mechanism_interpretation_examples": [
       "LEGACY succeeds; ABLATION fails; STRUCTURED_UNBRIDGED fails; STRUCTURED_BRIDGED succeeds -> dependency confirmed, pre-D3.5 structured path does not recover under synchronized D1, and the D3.5 bridge incrementally recovers behavior.",
@@ -703,14 +718,15 @@
   },
   "runtime_isolation_contract": {
     "identity_invariant": "D3_5_EVALUATION_STRUCTURED_STATE != CURRENT_DEPLOYED_STRUCTURED_STATE",
-    "repository_governed_D1_identity": "Authoritative approved repository seed state: 24 objects / 16 accepted relations / 1 curated workflow step.",
-    "isolated_D3.5_evaluation_materialization_identity": "Separate dev/evaluation target synchronized from authoritative repository D1 using the smallest existing mechanism selected in A1.",
+    "isolated_D3.5_evaluation_materialization_identity": "Separate dev/evaluation target synchronized to match D3_5_A2_FINAL_REPOSITORY_D1_IDENTITY using the smallest existing mechanism selected in A1.",
     "deployed_production_materialization_identity": "Distinct deployed target; historical observation 22/16/0; untouched by D3.5 A1/A2 setup.",
     "mechanism_C_write_path": "Repository config -> review/freeze -> isolated evaluation materialization only.",
     "PRODUCTION_STRUCTURED_STATE_WRITES": 0,
     "PRODUCTION_QUERY_EXPANSION_CHANGES": 0,
     "PRODUCTION_D2_ROLE_CHANGES": 0,
-    "PRODUCTION_D3_5_ACTIVATION": false
+    "PRODUCTION_D3_5_ACTIVATION": false,
+    "starting_repository_governed_D1_identity": "Authoritative approved repository seed state at A1 start: 24 objects / 16 accepted relations / 1 curated workflow step.",
+    "final_repository_governed_D1_identity": "Final approved repository seed state after A1 implementation/governance, authoritative for all A2 arms."
   },
   "candidate_integration_repair": {
     "logical_surface": "structured_evidence",
@@ -742,6 +758,19 @@
         "State within-graph prefix precedence and displacement diagnostics explicitly."
       ],
       "scientific_outcome_exposure": false
+    },
+    "D3.5-A0-R2": {
+      "status": "COMPLETE / POST_A1_D1_IDENTITY_AND_MATERIALIZATION_FREEZE_REPAIRED",
+      "issue": "24/16/1 was over-specified as the only possible A2 state rather than the authoritative starting repository D1 state at the beginning of A1. A1 may add a narrowly justified Mechanism-C governed evidence link, and provenance-only changes can alter identity without changing counts. A2 must freeze and use the final approved post-A1 repository-governed D1 identity and an isolated materialization proven to match it.",
+      "reasons": [
+        "Distinguish D3_5_A1_STARTING_REPOSITORY_D1_IDENTITY (starting baseline, currently 24/16/1) from D3_5_A2_FINAL_REPOSITORY_D1_IDENTITY (final post-A1 authoritative identity).",
+        "Establish that object/relation/workflow counts are required accounting but insufficient for semantic identity.",
+        "Require three explicit pre-A2 freezes: D3_5_A1_IMPLEMENTATION_FROZEN, D3_5_A2_FINAL_REPOSITORY_D1_IDENTITY_FROZEN, and D3_5_EVALUATION_D1_MATERIALIZATION_FROZEN.",
+        "Specify exact matching between the isolated evaluation materialization and the final approved post-A1 repository D1 identity for all four A2 evaluation arms.",
+        "Define bounded, hash-inventory-free identity anchoring in normal repository state (Git SHA, config paths, stable IDs, SPO tuples, workflow IDs, provenance).",
+        "Define two-phase synchronization in A1 (initial sync to starting D1, resync to final D1 after approved Mechanism-C changes)."
+      ],
+      "scientific_outcome_exposure": false
     }
   },
   "d4_dependency_contract": {
@@ -771,6 +800,101 @@
     "new_outcomes_exposed": false,
     "novel_validation": "UNTOUCHED",
     "novel_holdout": "UNTOUCHED"
+  },
+  "d1_identity_freeze_contract": {
+    "starting_repository_d1_identity": {
+      "name": "D3_5_A1_STARTING_REPOSITORY_D1_IDENTITY",
+      "definition": "Approved repository-governed D1 state when D3.5-A1 implementation begins.",
+      "expected_starting_counts": {
+        "objects": 24,
+        "accepted_relations": 16,
+        "curated_workflow_steps": 1
+      },
+      "role": "STARTING_BASELINE_ONLY / NOT_ASSUMED_FINAL_A2_IDENTITY"
+    },
+    "final_repository_d1_identity": {
+      "name": "D3_5_A2_FINAL_REPOSITORY_D1_IDENTITY",
+      "definition": "Final approved repository-governed D1 state after all D3.5-A1 implementation and any independently justified Mechanism-C governance changes, frozen before any D3.5-A2 outcome exposure.",
+      "role": "AUTHORITATIVE_D1_IDENTITY_FOR_ALL_A2_ARMS"
+    },
+    "counts_insufficient_for_identity_statement": "Object count, accepted relation count, and curated workflow step count are required accounting metrics but are insufficient to define D1 semantic identity. Identical counts (e.g. 24/16/1) can differ in relation provenance, metadata, evidence paths/IDs, source/version grounding, relation identity, or workflow step content. Conversely, approved additions or deletions may change counts. Semantic identity requires anchoring in governed repository state.",
+    "identity_anchoring_specification": {
+      "git_sha": "Authoritative Git commit SHA containing the D1 state",
+      "authoritative_config_paths": [
+        "configs/seed_objects.yaml",
+        "configs/seed_relations.yaml",
+        "configs/seed_workflows.yaml"
+      ],
+      "stable_governed_object_ids": "Complete ordered list of governed object IDs",
+      "stable_governed_relations": "Complete ordered list of relation IDs or stable (subject, predicate, object) tuples",
+      "stable_governed_workflow_steps": "Complete ordered list of curated workflow step IDs",
+      "relevant_provenance": "Exact evidence provenance fields, source_ids, source_version_ids, and locator paths on all governed records",
+      "ad_hoc_sha256_inventory": false
+    },
+    "mechanism_c_governance_gate": {
+      "independently_source_grounded": true,
+      "version_grounded": true,
+      "reviewable_and_review_status_accepted": true,
+      "semantically_justified": true,
+      "counterfactual_gate": "Would this linkage remain justified if the motivating evaluation case did not exist? Reject if no.",
+      "preregistration_status": "No linkage is preregistered by g021 outcome alone; must be evaluated and approved during A1 through normal D1 governance."
+    },
+    "freeze_lifecycle": [
+      "1. Establish starting repository D1 identity (D3_5_A1_STARTING_REPOSITORY_D1_IDENTITY, currently 24/16/1)",
+      "2. Execute D3.5-A1 implementation and optional approved Mechanism-C governance",
+      "3. Establish final approved repository D1 identity (D3_5_A2_FINAL_REPOSITORY_D1_IDENTITY)",
+      "4. Freeze final repository D1 identity (D3_5_A2_FINAL_REPOSITORY_D1_IDENTITY_FROZEN = true)",
+      "5. Synchronize isolated evaluation target to exactly match final repository D1 identity",
+      "6. Freeze isolated materialization identity (D3_5_EVALUATION_D1_MATERIALIZATION_FROZEN = true, isolated_materialization_matches_final_repository_D1 = true)",
+      "7. Only then begin D3.5-A2 focused validation"
+    ],
+    "required_freezes_before_A2": {
+      "D3_5_A1_IMPLEMENTATION_FROZEN": true,
+      "D3_5_A2_FINAL_REPOSITORY_D1_IDENTITY_FROZEN": true,
+      "D3_5_EVALUATION_D1_MATERIALIZATION_FROZEN": true,
+      "isolated_materialization_matches_final_repository_D1": true
+    },
+    "d1_change_accounting": {
+      "if_no_d1_change": {
+        "D3_5_A1_REPOSITORY_D1_CHANGED": false,
+        "starting_identity_equals_final_identity": true,
+        "expected_final_counts": {
+          "objects": 24,
+          "accepted_relations": 16,
+          "curated_workflow_steps": 1
+        }
+      },
+      "if_approved_mechanism_c_change": {
+        "D3_5_A1_REPOSITORY_D1_CHANGED": true,
+        "starting_identity_equals_final_identity": false,
+        "required_change_records": [
+          "governed records added or modified",
+          "semantic domain rationale",
+          "independent source/version evidence",
+          "counterfactual gate evaluation result",
+          "newly frozen final repository D1 identity"
+        ]
+      }
+    },
+    "post_freeze_immutability": "Once D3_5_A2_FINAL_REPOSITORY_D1_IDENTITY_FROZEN is true, no further objects, relations, provenance, workflows, or materialization writes from another state are permitted. If a defect is discovered later, the pre-exposure freeze must be formally invalidated, execution stopped, and a separately authorized repair performed. Silent mutations are strictly prohibited."
+  },
+  "a2_manifest_identity_contract": {
+    "required_manifest_fields": [
+      "d3_5_a1_implementation_commit_sha",
+      "d3_5_a1_starting_repository_d1_identity",
+      "d3_5_a2_final_repository_d1_identity",
+      "d3_5_a1_repository_d1_changed",
+      "d3_5_a1_d1_change_summary",
+      "final_d1_counts",
+      "stable_governed_object_ids",
+      "stable_governed_relation_ids_or_spo_tuples",
+      "stable_governed_workflow_step_ids",
+      "isolated_evaluation_materialization_identity",
+      "deterministic_proof_or_accounting_of_materialization_match",
+      "deployed_production_materialization_identity",
+      "production_materialization_untouched_true"
+    ],
+    "format_constraints": "Bounded metadata records and stable identifier lists only; no ad hoc SHA256 file inventory."
   },
   "next_stage": "D3.5-A1 — Bounded Structured Evidence-Link Bridging Prototype"
 }
