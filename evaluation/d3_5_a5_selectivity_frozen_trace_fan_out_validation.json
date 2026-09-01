@@ -28,7 +28,7 @@
   "A5_SELECTIVITY_OUTCOME_EXPOSURE": {
     "before_phase_3": "NOT_STARTED (fixture and selectivity implementation frozen and committed)",
     "started_at": "first six-case replay execution after Commit 2 (70a808d)",
-    "state": "STARTED",
+    "state": "COMPLETE",
     "immutable_after_start": [
       "tokenizer",
       "lexical normalization",
@@ -40,7 +40,8 @@
       "tie-break order",
       "candidate eligibility",
       "fixture"
-    ]
+    ],
+    "completed_note": "exposure lifecycle completed with the six-case replay; started after 70a808d (selectivity freeze) per the frozen phase sequence; historical boundary preserved"
   },
   "phase_sequence": {
     "phase_1": "build + mechanically verify replay fixture (all equivalence gates passed) -> Commit 1 e20fc6a",
@@ -3271,5 +3272,18 @@
     "A5_ADMISSION_TREATMENT_RUNS": 0,
     "NOVEL_VALIDATION_RUNS": 0,
     "NOVEL_HOLDOUT_RUNS": 0
-  }
+  },
+  "repair_history": [
+    {
+      "repair_id": "D3.5-A5-R1_METADATA_REPAIR",
+      "scope": "audit metadata only",
+      "changes": [
+        "A5_SELECTIVITY_OUTCOME_EXPOSURE.state STARTED -> COMPLETE (lifecycle clarification; started_after=70a808d preserved)",
+        "evaluator coverage limitation recorded: the A5 evaluator retention check derived applicable required-evidence candidates from frozen A2 combined-pool match provenance, which cannot see required evidence that the old 20-cap ranked out of the A2 pool; the repaired evaluator contract (complete pre-cap eligible universe x evaluator-only selectors) is frozen in evaluation/d3_5_a5_r1_selectivity_relevance_retention_design_repair.json"
+      ],
+      "metrics_changed": false,
+      "verdict_changed": false,
+      "selected_candidates_changed": false
+    }
+  ]
 }

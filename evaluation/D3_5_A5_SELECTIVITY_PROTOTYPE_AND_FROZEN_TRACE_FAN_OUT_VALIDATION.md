@@ -105,6 +105,8 @@ End-to-end final-evidence recovery (no reranker/selector ran; `CONTROL_MATERIAL_
 
 **Gate failed.** A6 is eligible only if A5 establishes no applicable relevant-evidence loss; g021's loss blocks it. `D3.5-A6 = NOT_STARTED / NOT_READY`. The reserved A6 parameters (`ADMISSION_BUDGET_CANDIDATES = {2, 3}`, R1 symmetric repeated reranker evaluation) remain frozen but untested, and A5 did not choose between them.
 
+> **R1 clarification (2026-09-01):** `A5_SELECTIVITY_OUTCOME_EXPOSURE` is now recorded as `COMPLETE` (lifecycle clarification; exposure started after the selectivity freeze commit `70a808d`). Additionally, the A5 evaluator retention check has a recorded coverage limitation: it derived applicable required-evidence candidates from frozen A2 combined-pool match provenance, which cannot see required evidence that the old 20-cap ranked out of the A2 pool. The repaired evaluator contract — matching evaluator-only selectors against the **complete pre-cap eligible universe** — is frozen in `evaluation/d3_5_a5_r1_selectivity_relevance_retention_design_repair.json`. The A5 scientific interpretation above is unchanged.
+
 ## 21. Lifecycle
 
 ```

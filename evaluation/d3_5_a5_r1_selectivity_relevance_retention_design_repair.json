@@ -1,0 +1,277 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint": "D3.5-A5-R1",
+  "stage_name": "D3.5-A5-R1 — Selectivity Relevance-Retention Design Repair",
+  "stage_type": "design/preregistration stage; no runtime, D1, database, or retrieval changes; no repaired implementation; no real-case treatment runs",
+  "starting_head": "f4095626a9af0fbfdcbe7d446d4292667c57f241",
+  "frozen_a5_identity": {
+    "fixture_freeze_commit": "e20fc6afebe671d2327ee3dbe80fd97b52c36679",
+    "selectivity_freeze_commit": "70a808d032016241ef8adf7c918168a807d1e4dc",
+    "result_commit": "f4095626a9af0fbfdcbe7d446d4292667c57f241",
+    "fixture_path": "evaluation/d3_5_downstream_replay_fixture.json",
+    "preregistration_path": "evaluation/d3_5_a5_selectivity_preregistration.json",
+    "implementation_path": "evaluation/scripts/d3_5_a5_selectivity.py",
+    "result_artifact_path": "evaluation/d3_5_a5_selectivity_frozen_trace_fan_out_validation.json"
+  },
+  "frozen_a5_verdict": {
+    "verdict": "PARTIAL / SELECTIVITY_FANOUT_REDUCED_WITH_RELEVANCE_LOSS",
+    "experiment_valid": true,
+    "fanout_reduction_validated": true,
+    "graph_displacement_reduction_validated": true,
+    "relevance_retention_validated": false,
+    "observed_failure": "g021: 62 eligible governed bridge candidates from a single provenance origin; PER_ORIGIN_CAP = 4; prod_sim_hvmaps.C (object.3ab0a90ae68e8ece071a9f22) with primary_score = 2 lost under the frozen generic ordering/tie-break against same-score README-chunk candidates"
+  },
+  "preserved_a5_successes": [
+    "repository-persistent replay fixture = valid (all equivalence gates passed)",
+    "complete pre-cap eligible universe = replayable (unique-candidate reconstruction with full origin sets)",
+    "single deterministic policy = validly preregistered before outcomes",
+    "governance/scope invariants = passed (0 scope rejections; selected subset of eligible universe)",
+    "SELECTIVITY_CAP = 8 respected in every case",
+    "PER_ORIGIN_CAP = 4 respected in every case",
+    "high-fan-out reduction: g021 62 -> 4 (93.5%), g020 67 -> 8 (88.1%)",
+    "graph displacement reduction: g021 4 -> 0, g020 20 -> 8",
+    "zero-eligible controls fail closed (n006/g041/n004)",
+    "bridge-only evidence can win without dense/sparse support (g036)",
+    "deterministic double-execution replay verified per case"
+  ],
+  "root_cause_matrix": {
+    "diagnosis_basis": "frozen A5 receipts, the frozen fixture payload registry, and frozen plan fields only; diagnosis-only token distribution statistics (document-frequency readouts) were computed over the frozen g021 eligible universe; NO candidate scorer was run and no selection/retention outcome was computed",
+    "A_tokenizer_granularity_insufficient": {
+      "status": "SUPPORTED",
+      "evidence": "the v1 tokenizer splits the compound identifier restgas_profile into {restgas, profile}, so the plan symbol's identifier form is invisible to every signal; plan.symbols = ['restgas_profile'] exists in the frozen g021 plan but the v1 contract has no identifier-exact tier"
+    },
+    "B_query_side_token_set_too_broad": {
+      "status": "PARTIAL",
+      "evidence": "question tokens include generic items (how/is/to) and plan.concepts contributes distributed/target/simulation; with raw set-overlap counting the generic token target (df = 49/62 in the g021 universe) counted the same as rare tokens; the defect is discrimination weighting rather than the token set itself"
+    },
+    "C_candidate_side_field_set_too_weak": {
+      "status": "SUPPORTED",
+      "evidence": "the fixture persists text[:2000] for every candidate but v1 used only locator path + title; prod_sim_hvmaps.C's bounded text literally contains the identifier restgas_profile (the configuration key the macro passes to PndMasterRunSim), a discriminating signal v1 never read"
+    },
+    "D_raw_overlap_count_too_coarse": {
+      "status": "SUPPORTED",
+      "evidence": "raw integer overlap treats the df-49/62 token target identically to df-2/62 tokens; no rarity or normalization signal exists in v1"
+    },
+    "E_path_title_contributions_incorrectly_treated_equally": {
+      "status": "SUPPORTED",
+      "evidence": "for source-file objects the persisted title equals the locator path (prod_sim_hvmaps.C's title is literally 'macro/target/prod_sim_hvmaps.C'), so v1's additive path_overlap + title_overlap double-counts the same generic directory token (target) twice, while README section chunks carry genuinely distinct descriptive titles — a structural asymmetry that inflates file-object scores with generic tokens and hands section chunks an unwarranted title advantage"
+    },
+    "F_common_query_tokens_dominate_discrimination": {
+      "status": "SUPPORTED",
+      "evidence": "document frequencies across the frozen g021 eligible universe: target 49/62, readme 61/62, profile 23/62, restgas 22/62, versus supplied 2/62, distributed 8/62, simulation 8/62 — generic tokens dominate raw overlap while genuinely distinctive tokens are rare"
+    },
+    "G_candidate_title_chunks_create_spurious_equality": {
+      "status": "SUPPORTED",
+      "evidence": "README section-chunk titles are long descriptive sentences ('6.5 MC-truth control for a distributed Restgas profile') whose raw title overlap (3) outranks the precise file identifier path of prod_sim_hvmaps.C; title semantics differ across object kinds and v1 treats them uniformly additive"
+    },
+    "H_support_rank_tie_break_insufficient": {
+      "status": "SUPPORTED",
+      "evidence": "3 of the 4 g021 winners carried non-graph channel support and prod_sim_hvmaps.C had none, so the support tie-break could not separate them; role must nonetheless remain non-mandatory (g036 bridge-only candidates must keep winning) — the repair is higher-resolution primary signals, not a support promotion"
+    },
+    "I_structural_distance_insufficient": {
+      "status": "SUPPORTED",
+      "evidence": "all 62 g021 candidates share one origin at distance 1 — zero discrimination inside single-origin sets; retained only as a late tie-break"
+    },
+    "J_per_origin_cap_primary_problem": {
+      "status": "REJECTED",
+      "evidence": "the cap correctly bounded the single-origin fan-out (62 -> 4 candidates, displacement 4 -> 0); the failure is that the ranking under the cap lacked resolution; raising the cap would be budget relaxation (prohibited as primary repair) and would not improve discrimination"
+    },
+    "K_selectivity_cap_primary_problem": {
+      "status": "REJECTED",
+      "evidence": "SELECTIVITY_CAP = 8 was never binding in g021 (only 4 candidates survived the origin cap); the loss occurred inside the origin cap boundary"
+    },
+    "L_provenance_origin_attribution_semantics_primary_problem": {
+      "status": "REJECTED",
+      "evidence": "g021 has a single origin, so least-used-origin attribution was inert; the attribution semantics are not implicated by the observed failure"
+    }
+  },
+  "ranking_vs_budget_diagnosis": {
+    "question": "If several candidates have the same primary score inside one origin, does the current system possess enough generic information to rank them meaningfully before the origin cap is applied?",
+    "answer": "YES",
+    "generic_information_available": [
+      "plan-symbol compound identifiers exist in the frozen plan fields (g021: restgas_profile) and are invisible to the v1 tokenizer — an exact-identifier tier is available",
+      "bounded text payloads (text[:2000]) are persisted for every eligible candidate and contain literal identifier and query-token occurrences unused by v1",
+      "universe-local document frequencies are computable deterministically from the eligible universe alone (df target 49/62 vs supplied 2/62), enabling rarity weighting without any corpus-wide tuning",
+      "locator structure supports a generic basename/parent-directory decomposition (title == path for source-file objects makes the de-duplication well-defined)"
+    ],
+    "conclusion": "the failure is a ranking-resolution defect, not a budget defect; increasing caps would admit more low-resolution candidates without improving ordering and is rejected as the primary repair"
+  },
+  "signal_family_evaluation": {
+    "A_token_overlap_count": "RETAINED_AS_BASE_COMPONENT (inside the rarity-weighted overlap and the unchanged v1 gate)",
+    "B_token_precision": "REJECTED (precision against candidate token count re-introduces length bias in the opposite direction)",
+    "C_token_coverage": "REJECTED_AS_STANDALONE (absorbed into rarity-weighted overlap; a standalone coverage level adds complexity without new information)",
+    "D_idf_like_rarity_weighting": "SELECTED (universe-local: computed solely from the current query's eligible candidate universe; deterministic; model-free; case-agnostic; no expected evidence; no corpus-wide tuning)",
+    "E_path_component_overlap": "SELECTED (basename vs parent-directory decomposition is generic locator structure; no directory names encoded)",
+    "F_basename_stem_overlap": "SELECTED (basename coverage as its own ranking level)",
+    "G_title_overlap": "RETAINED_BUT_DEDUPLICATED (title tokens merged into the single lexical token view; the path/title additive double-count is removed; no README penalty)",
+    "H_exact_identifier_symbol_match": "SELECTED (plan-symbol compound-form exact-match tier; generic use of the existing frozen plan field; no expected filenames)",
+    "I_text_token_occurrence": "SELECTED (bounded distinct query-token presence in text[:2000]; relevance evidence only)",
+    "J_proximity_cooccurrence": "REJECTED (overengineered for this stage; revisit only if R2 revalidation shows residual discrimination failure)",
+    "K_existing_sparse_rank": "RETAINED (unchanged role: late tie-break, never mandatory)",
+    "L_existing_dense_rank": "RETAINED (unchanged role: late tie-break, never mandatory)",
+    "M_exact_channel_support": "RETAINED (same as K/L via the support_rank tie-break)",
+    "N_source_plan_compatibility": "RETAINED (unchanged HARD_FILTER role)",
+    "O_structural_distance": "RETAINED (TIEBREAKER_ONLY)",
+    "P_provenance_origin_diversity": "RETAINED (PER_ORIGIN_CAP architecture unchanged)"
+  },
+  "selected_repair_design": {
+    "family": "R1-A — richer deterministic lexicographic hierarchy (with R1-C's unchanged fail-closed gate)",
+    "policy_version_next": "d3_5_selectivity_v2",
+    "principle": "same hard filters, same caps, same origin attribution; the ranking between the gate and the caps gains higher-resolution deterministic levels",
+    "hard_filters_unchanged": [
+      "governance eligibility (fixture eligible governed bridge universe)",
+      "plan-scope compatibility (eligibility filter, no bonus)",
+      "MIN_PRIMARY_SCORE >= 1 on path/title overlap (the v1 gate, unchanged — admission breadth is not widened; only ranking resolution changes)"
+    ],
+    "primary_rank_levels": {
+      "level_1_symbol_exact_tier": {
+        "signal": "count of distinct compound plan-symbol strings (unsplit identifier form, from the frozen plan.symbols field) whose occurrence is found in the candidate's basename, full path, or bounded text[:2000]",
+        "rationale": "distinctive identifier matches are the strongest generic query-grounded signal; if plan.symbols is empty the level is inert for every candidate (generic behavior)",
+        "note": "this is a distinct signal from the tokenizer's split tokens; the tokenizer itself is unchanged"
+      },
+      "level_2_rarity_weighted_overlap": {
+        "signal": "sum over distinct query tokens t present in the candidate's (basename union parent-directory union title union text[:2000]) token view of idf(t) = log2(|U| / (1 + df(t))), where df(t) is the number of eligible-universe candidates whose (path union title union text) token view contains t, and |U| is the eligible universe size",
+        "rationale": "downweights universe-ubiquitous tokens (target 49/62, readme 61/62) and upweights distinctive ones (supplied 2/62) with zero handwritten lists",
+        "bias_controls": "distinct-token counting and universe-local computation only"
+      },
+      "level_3_basename_coverage": {
+        "signal": "count of distinct query tokens present in the locator basename tokens",
+        "rationale": "a basename match is structurally more specific than a parent-directory match; repository-generic decomposition, no directory names encoded"
+      },
+      "level_4_text_presence": {
+        "signal": "count of distinct query tokens present in text[:2000]",
+        "rationale": "bounded distinct-token presence (not raw occurrence count) mitigates candidate-length bias while adding the persisted text field as relevance evidence"
+      }
+    },
+    "secondary_rank": {
+      "support_rank": "unchanged A4/A5 role: after all primary levels, before structural distance; never mandatory; bridge-only candidates remain able to win on primary levels alone"
+    },
+    "tiebreakers": [
+      "structural_distance ascending",
+      "candidate_object_id lexicographic ascending"
+    ],
+    "title_handling": "title tokens participate in the lexical token view (levels 2 and the gate) but the v1 additive path+title double-count is removed; for source-file objects whose title equals the path this prevents double-counting one generic token",
+    "caps_unchanged": "PER_ORIGIN_CAP = 4 and SELECTIVITY_CAP = 8 preserved; budget relaxation rejected as the repair",
+    "model_calls": "SELECTIVITY_MODEL_CALLS = 0; EXTRA_EMBEDDING_CALLS = 0; all signals are deterministic functions of the frozen fixture"
+  },
+  "signal_role_contract": {
+    "HARD_FILTER": [
+      "governance eligibility (fixture universe membership)",
+      "plan-scope compatibility",
+      "MIN_PRIMARY_SCORE >= 1 (path/title overlap gate, unchanged)"
+    ],
+    "PRIMARY_RANK": [
+      "level 1: symbol_exact_tier (compound plan-symbol occurrence)",
+      "level 2: rarity_weighted_overlap (universe-local idf)",
+      "level 3: basename_coverage",
+      "level 4: text_presence (distinct query tokens in text[:2000])"
+    ],
+    "SECONDARY_RANK": ["support_rank (non-graph channels; never mandatory)"],
+    "TIEBREAKER_ONLY": ["structural_distance", "candidate_object_id"],
+    "REJECTED": [
+      "raw text overlap count (length bias)",
+      "token precision (inverse length bias)",
+      "standalone token coverage",
+      "README/file-type penalties",
+      "budget relaxation as primary repair",
+      "learned scorers, embeddings, LLM relevance judges",
+      "corpus-wide IDF (universe-local only)"
+    ]
+  },
+  "tokenization_decision": "the v1 tokenizer is unchanged for lexical signals; the symbol-exact tier is a separate signal that matches plan-symbol strings in their unsplit compound form; no filename-specific tokenization is introduced",
+  "query_side_relevance_decision": "the query token set (question ∪ plan.concepts ∪ plan.symbols) is unchanged as the lexical source; discrimination is repaired by rarity weighting and the symbol-exact tier rather than by hand-built stopword lists",
+  "locator_relevance_decision": "generic basename/parent-directory decomposition adopted as ranking levels 2-3; no specific directory names are encoded",
+  "title_relevance_decision": "title tokens remain in the lexical view but the additive path+title double-count is removed; no README penalty; the defect is relevance discrimination, not extension preference",
+  "text_payload_relevance_decision": "bounded text[:2000] is used as query relevance evidence only (symbol-exact tier level 1 and distinct-token presence level 4); it is never governance evidence, identity authority, or answer truth; no model call",
+  "channel_support_decision": "support_rank remains the SECONDARY_RANK after all primary levels; promoting it into the primary ranking was evaluated and rejected to preserve the g036-proven bridge-only path (circularity risk)",
+  "structural_distance_decision": "retained as TIEBREAKER_ONLY after support_rank; promoted ranking use rejected (governed closeness != query relevance; zero discrimination within single-origin sets)",
+  "origin_attribution_decision": "least-used-origin attribution preserved exactly as established by A5; membership counts and attribution counts remain distinct concepts",
+  "PER_ORIGIN_CAP_NEXT": 4,
+  "SELECTIVITY_CAP_NEXT": 8,
+  "cap_decision_rationale": "root causes J/K/L are REJECTED with evidence: the caps behaved correctly (62 -> 4 with displacement 4 -> 0) and the loss occurred inside the origin boundary because the ranking lacked resolution; abundant unused generic discrimination exists (symbol tier, text payloads, universe-local rarity, basename decomposition), so the design defect is the ranking, not the budget; a single observed rank position alone would not justify a cap change",
+  "evaluator_contract_repair": {
+    "old_limitation": "the A5 evaluator retention check derived applicable required-evidence candidates from frozen A2 combined-pool match provenance, which is biased toward A2-admitted evidence: a required-evidence candidate present in the complete pre-cap eligible universe but ranked out by the old 20-cap never entered the A2 combined pool and could not be classified applicable",
+    "repaired_contract": "future selectivity revalidation must evaluate the complete pre-cap eligible governed candidate universe against the frozen evaluator-only expected-evidence selectors, reusing the existing deterministic evaluator matching semantics (no second incompatible gold-matching definition)",
+    "applicability_classes": {
+      "APPLICABLE_AND_RETAINED": "required evidence present in the complete eligible universe and selected",
+      "APPLICABLE_AND_LOST": "required evidence present in the complete eligible universe and not selected",
+      "NOT_APPLICABLE_TO_SELECTIVITY": "required evidence genuinely absent from the complete eligible governed universe (structurally unreachable); old-cap ranked-out evidence is never classified as not applicable"
+    },
+    "separation": "fixture -> selectivity runtime -> selected candidates frozen -> evaluator-only selector matching -> relevance-retention metrics; expected evidence never reaches the selectivity score",
+    "r2_implementation_requirements": [
+      "the evaluator side must reuse the existing deterministic evidence-matching semantics against the expanded universe",
+      "if selector matching requires object_type (or other per-candidate fields beyond the fixture's persisted source_id/locator_path/title/text), the fixture may be extended additively and mechanically from the frozen normalized corpus in R2 (outcome-independent, existing fields byte-identical); any such amendment must be documented in the R2 preregistration before outcomes",
+      "runtime policy remains outcome-label clean"
+    ]
+  },
+  "a5_outcome_exposure_metadata_repair": {
+    "repair_id": "D3.5-A5-R1_METADATA_REPAIR",
+    "change": "A5_SELECTIVITY_OUTCOME_EXPOSURE.state STARTED -> COMPLETE (lifecycle clarification; started_after 70a808d preserved; historical boundary intact)",
+    "metrics_changed": false,
+    "verdict_changed": false,
+    "selected_candidates_changed": false,
+    "post_exposure_diagnostic_repair_status": "the A5 per_origin_retained_counts membership-to-attribution diagnostic repair remains valid and is preserved as a diagnostic-only, result-neutral repair; it is not a policy mutation"
+  },
+  "anti_tuning_contract": {
+    "SELECTIVITY_REPAIR_VARIANTS_EVALUATED_ON_REAL_CASES": 0,
+    "no_case_specific_signals": true,
+    "no_filename_type_bonuses": true,
+    "no_expected_evidence_in_runtime": true,
+    "future_anti_tuning_sequence": [
+      "R1 design freeze (this artifact)",
+      "R2 implements exactly the frozen v2 relevance design",
+      "evaluator updated to complete-universe matching",
+      "synthetic tests pass before real outcomes",
+      "R2 implementation frozen and committed",
+      "exactly one repaired policy evaluated on the six frozen cases",
+      "caps preserved unless independently justified (they are preserved)",
+      "no admission, no reranker in R2"
+    ],
+    "NUMBER_OF_R2_REPAIRED_POLICIES_TO_EVALUATE": 1,
+    "no_winner_picking": true
+  },
+  "R1_DESIGN_DECISION": "REPAIR_WITH_HIGHER_RESOLUTION_DETERMINISTIC_RELEVANCE",
+  "decision_rationale": "all five continuation standards hold: (1) the A5 fan-out architecture remains useful (62->4, 67->8, displacement 4->0 and 20->8, controls fail-closed); (2) generic additional deterministic relevance information exists and is currently unused (plan-symbol compound identifiers, persisted bounded text payloads, universe-local rarity weighting, basename decomposition); (3) the caps can remain bounded (PER_ORIGIN_CAP_NEXT = 4, SELECTIVITY_CAP_NEXT = 8); (4) the repair requires no case-specific knowledge (every signal is a frozen-field, repository-generic mechanism); (5) the repair can be fully preregistered before revalidation. The budget-architecture change was rejected because the caps demonstrably behaved correctly and the loss occurred inside the origin boundary from ranking-resolution poverty, not because preservation is systematically impossible under the caps. The stop path was rejected because no benchmark-specific scoring, budget expansion, file-type privilege, LLM judging, or unbounded weighting is required.",
+  "exact_next_stage": "D3.5-A5-R2 — Repaired Selectivity Prototype Freeze & Revalidation",
+  "R2_scope": [
+    "implement exactly the frozen v2 relevance design (lexicographic levels 1-4 + unchanged secondary/tie-breakers)",
+    "update the evaluator to complete-universe matching with the three applicability classes",
+    "use the existing frozen replay fixture (additive mechanical amendment only if selector matching requires additional per-candidate fields)",
+    "run synthetic tests before real outcomes",
+    "freeze the implementation",
+    "evaluate exactly one repaired policy on the six frozen cases",
+    "preserve PER_ORIGIN_CAP = 4 and SELECTIVITY_CAP = 8",
+    "run no admission treatment and no reranker"
+  ],
+  "prohibited_actions": [
+    "modify the A5 selectivity implementation or the fixture inside R1",
+    "run a repaired scorer on g036/g021/g020 inside R1",
+    "increase caps to rescue known evidence",
+    "try several formulas (winner-picking)",
+    "implement admission or run K=2/K=3",
+    "call reranker/analyzer/embeddings",
+    "rerun A5",
+    "modify D1/D2",
+    "write PostgreSQL/Qdrant",
+    "run novel_validation/holdout",
+    "start D4",
+    "mark A6 ready on the basis of R1 alone"
+  ],
+  "execution_accounting": {
+    "REAL_CASE_SELECTIVITY_TREATMENT_RUNS": 0,
+    "ANALYZER_CALLS": 0,
+    "EMBEDDING_CALLS": 0,
+    "RERANKER_CALLS": 0,
+    "QA_CALLS": 0,
+    "VERIFIER_CALLS": 0,
+    "JUDGE_CALLS": 0,
+    "PRODUCTION_RUNTIME_CHANGES": 0,
+    "D1_CHANGES": 0,
+    "D2_CHANGES": 0,
+    "QUERY_EXPANSION_CHANGES": 0,
+    "POSTGRESQL_WRITES": 0,
+    "QDRANT_WRITES": 0,
+    "NOVEL_VALIDATION_RUNS": 0,
+    "NOVEL_HOLDOUT_RUNS": 0
+  }
+}
