@@ -7,6 +7,7 @@
     "D3": "COMPLETE / SHORTCUT_MIGRATION_EXPERIMENT_DECIDED",
     "D3.5": "IN_PROGRESS",
     "D3.5-A0": "COMPLETE / STRUCTURED_EVIDENCE_LINK_DESIGN_FROZEN",
+    "D3.5-A0-R1": "COMPLETE / EVALUATION_IDENTIFIABILITY_AND_RUNTIME_ISOLATION_REPAIRED",
     "D3.5-A1": "NOT_STARTED",
     "D3.5-A2": "NOT_STARTED",
     "D4": "NOT_STARTED",
@@ -114,7 +115,7 @@
     "Tier_D_ambiguous": {
       "eligible": true,
       "role": "BOUNDED_MULTI_SEED_NONAUTHORITATIVE_ADVISORY",
-      "constraints": "Retain all governed Tier-D alternatives up to the shared seed cap; preserve the ambiguity set and allocate the traversal cap across alternatives deterministically."
+      "constraints": "Treat the complete governed ambiguity set atomically. If its size is at most 8 and the whole set fits the global seed budget remaining after stronger independent Tier-G, Tier-S, and Tier-D-unique seeds are processed in existing authority order, preserve and traverse every alternative. If the set exceeds 8 or does not fit the remaining budget, preserve the full receipt, traverse none from that branch, and emit STRUCTURAL_PATH_AMBIGUOUS with reason AMBIGUITY_SET_EXCEEDS_SAFE_SEED_BUDGET. Never truncate, sample, or take a top-8 subset."
     },
     "corrective_only": {
       "eligible": false,
@@ -385,7 +386,7 @@
   "candidate_authority_contract": {
     "class": "GOVERNED_PROVENANCE_BACKED_ADDITIVE_RETRIEVAL_CANDIDATE",
     "identity_authority": "NONE",
-    "ranking_authority": "NONE_BEYOND_EXISTING_FUSION",
+    "ranking_authority": "WITHIN_GRAPH_PREFIX_PRECEDENCE_ONLY / NO_INDEPENDENT_CROSS_CHANNEL_PRIORITY",
     "may_hard_filter_other_channels": false,
     "may_force_final_selection": false,
     "may_override_ranking": false,
@@ -395,8 +396,18 @@
   "candidate_integration_contract": {
     "logical_surface": "structured_evidence",
     "physical_fusion_surface": "existing graph candidate channel",
-    "merge_behavior": "Deduplicate source-native candidates by object_id, then prefix the bounded structured_evidence substream into the existing graph stream with existing merge semantics and the existing graph channel limit.",
+    "merge_behavior": "Deduplicate source-native candidates by object_id, then prefix the bounded structured_evidence substream into the existing graph stream under existing stable merge semantics and the existing graph channel limit. This explicit within-graph prefix precedence may displace ordinary graph candidates when the graph limit binds.",
+    "cross_channel_priority": "NONE",
     "rrf_vote_behavior": "No separate RRF vote and no double counting; bridged candidates receive the existing graph channel weight only.",
+    "required_displacement_diagnostics": [
+      "bridged_candidate_count",
+      "graph_candidates_before_bridge",
+      "graph_candidates_after_bridge",
+      "graph_candidates_displaced_by_prefix",
+      "displaced_object_ids",
+      "bridged_candidate_ids",
+      "deduplicated_overlap_count"
+    ],
     "global_fusion_retuning": false,
     "reranker_prompt_change": false,
     "selector_redesign": false,
@@ -480,16 +491,19 @@
       "accepted_relations": 16,
       "curated_workflow_steps": 0
     },
-    "decision": "D3.5-A1 must begin with a read-only state comparison. If the runtime does not match the authoritative current approved D1 seed state, controlled re-ingestion is a required explicit A1 setup action before implementation validation.",
-    "known_state_implication": "Under the last observed 22/16/0 runtime state, controlled re-ingestion is required.",
+    "decision": "D3.5-A1 must begin with a read-only comparison between the authoritative repository-governed D1 identity and a separate isolated D3.5 evaluation materialization identity. If the isolated state is stale, controlled ingestion may target that isolated state only. The deployed production materialization is a third, distinct identity and must remain untouched.",
+    "known_state_implication": "The historical D3 deployed 22/16/0 materialization is non-interchangeable with the synchronized 24/16/1 isolated D3.5 evaluation arm and is not an ingestion target.",
     "reingestion_contract": [
-      "record the resulting D1 materialization identity and exact counts",
+      "record the isolated target identity and exact counts",
       "materialize only independently approved current D1 state",
       "do not consume D3 evaluation outcomes or legacy payloads as knowledge",
       "do not modify query expansions",
       "do not alter D2 authority",
-      "do not treat synchronization as a scientific treatment"
+      "do not treat synchronization as a scientific treatment",
+      "do not write to or rewrite the deployed production materialization"
     ],
+    "production_structured_state_writes": 0,
+    "isolation_failure_behavior": "Stop before ingestion and report D3.5-A1 BLOCKED / ISOLATED_MATERIALIZATION_UNAVAILABLE; never silently rewrite the deployed database.",
     "performed_in_A0": false
   },
   "anti_shortcut_constraints": {
@@ -518,8 +532,14 @@
   },
   "d3_5_a1_contract": {
     "name": "D3.5-A1 — Bounded Structured Evidence-Link Bridging Prototype",
+    "prerequisite_sequence": [
+      "establish an isolated D3.5 evaluation structured-state target",
+      "synchronize that isolated target to authoritative approved repository D1",
+      "freeze the isolated materialization identity",
+      "only then implement and validate the bridge with synthetic, unit, or static fixtures"
+    ],
     "may": [
-      "synchronize runtime materialization to independently approved current D1 state as an explicit prerequisite",
+      "choose the smallest existing isolation mechanism and synchronize only the isolated D3.5 dev/evaluation materialization to independently approved current D1 state as an explicit prerequisite",
       "implement generic typed governed structural reachability",
       "implement generic evidence provenance materialization",
       "add a narrowly justified Mechanism-C evidence linkage only after independent source inspection, version grounding, governance review, and the counterfactual gate; no linkage is preregistered by g021 outcome alone",
@@ -529,6 +549,7 @@
     ],
     "may_not": [
       "run formal focused g036/g021 recovery evaluation",
+      "run g036, g021, n006, g041, g020, or n004 through the formal retrieval comparison",
       "inspect recovery metrics",
       "delete legacy shortcuts",
       "activate the production structured path",
@@ -536,20 +557,55 @@
       "perform broad D1 expansion",
       "change global fusion, reranker, or selector policy"
     ],
+    "required_freezes_before_A2": {
+      "D3_5_A1_IMPLEMENTATION_FROZEN": true,
+      "D3_5_EVALUATION_D1_MATERIALIZATION_FROZEN": true,
+      "run_manifest_must_record": [
+        "D3.5-A1 implementation commit SHA",
+        "repository-governed D1 identity",
+        "isolated evaluation materialization identity and 24/16/1 counts",
+        "production materialization untouched"
+      ]
+    },
     "outcome_exposure": "NOT_STARTED"
   },
   "d3_5_a2_contract": {
     "name": "D3.5-A2 — Focused Evidence-Link Recovery Validation",
     "first_post_D3.5_outcome_exposure_owner": true,
     "comparison_design": {
-      "selected": "FOCUSED_THREE_ARM_PAIRED_COMPARISON",
+      "selected": "FOCUSED_FOUR_ARM_PAIRED_COMPARISON",
       "arms": {
-        "LEGACY": "The two selected legacy rules active; D3.5 bridge disabled.",
-        "ABLATION": "The two selected legacy rules suppressed; D3.5 bridge disabled.",
-        "STRUCTURED_BRIDGED": "The two selected legacy rules suppressed; the frozen D3.5-A1 bridge enabled."
+        "LEGACY": "The two selected legacy rules active; structured path and D3.5 bridge disabled.",
+        "ABLATION": "The two selected legacy rules suppressed; structured path and D3.5 bridge disabled.",
+        "STRUCTURED_UNBRIDGED": "The two selected legacy rules suppressed; synchronized current structured path enabled; D3.5 bridge disabled.",
+        "STRUCTURED_BRIDGED": "The two selected legacy rules suppressed; the same synchronized current structured path plus the frozen D3.5-A1 bridge enabled."
       },
-      "rationale": "LEGACY versus ABLATION re-confirms dependency in the synchronized runtime; STRUCTURED_BRIDGED versus ABLATION attributes total bridge recovery; STRUCTURED_BRIDGED versus LEGACY tests parity. Repeating the old D3 STRUCTURED arm is unnecessary because D3 already established its zero recovery and A2 is intentionally focused."
+      "shared_materialization": "All four arms use the same frozen synchronized isolated D3.5 evaluation materialization matching repository D1 24/16/1.",
+      "historical_non_interchangeability": "The historical D3 STRUCTURED arm used deployed 22/16/0 and is not interchangeable with the current synchronized 24/16/1 STRUCTURED_UNBRIDGED arm.",
+      "causal_contrasts": {
+        "shortcut_dependency": "LEGACY - ABLATION",
+        "unbridged_structured_contribution": "STRUCTURED_UNBRIDGED - ABLATION",
+        "incremental_bridge_effect": "STRUCTURED_BRIDGED - STRUCTURED_UNBRIDGED",
+        "final_legacy_parity": "STRUCTURED_BRIDGED - LEGACY"
+      },
+      "identifiability_boundary": "STRUCTURED_BRIDGED - ABLATION is the combined current structured-plus-bridge contribution and must not be described as a pure bridge effect."
     },
+    "mechanism_interpretation_examples": [
+      "LEGACY succeeds; ABLATION fails; STRUCTURED_UNBRIDGED fails; STRUCTURED_BRIDGED succeeds -> dependency confirmed, pre-D3.5 structured path does not recover under synchronized D1, and the D3.5 bridge incrementally recovers behavior.",
+      "LEGACY succeeds; ABLATION fails; STRUCTURED_UNBRIDGED succeeds; STRUCTURED_BRIDGED succeeds -> dependency confirmed, synchronized D1 plus the pre-D3.5 structured mechanism already recovers behavior, and an incremental bridge effect is not established.",
+      "LEGACY succeeds; ABLATION fails; STRUCTURED_UNBRIDGED partially succeeds; STRUCTURED_BRIDGED fully succeeds -> a pre-D3.5 contribution exists and the D3.5 bridge adds incremental recovery.",
+      "STRUCTURED_BRIDGED is worse than STRUCTURED_UNBRIDGED -> bridge-introduced regression."
+    ],
+    "primary_causal_accounting_metrics": [
+      "required evidence outcome",
+      "Recall@5",
+      "Recall@10",
+      "Recall@20",
+      "MRR",
+      "combined candidate recall",
+      "final evidence recall"
+    ],
+    "post_outcome_thresholds_allowed": false,
     "positive_cases": [
       {
         "case_id": "g036",
@@ -581,8 +637,19 @@
       }
     ],
     "case_selection_policy": "Use only already-exposed frozen D3 development cases selected by preregistered role, not treatment likelihood; make no additions or substitutions after A1 outcome exposure.",
-    "expected_execution_count": 18,
-    "full_16_by_3_rerun_required": false,
+    "control_incremental_comparison": {
+      "contrast": "STRUCTURED_BRIDGED vs STRUCTURED_UNBRIDGED",
+      "checks": [
+        "new irrelevant candidates",
+        "graph-channel displacement",
+        "ambiguity collapse",
+        "abstention break",
+        "scope/version leakage",
+        "final-evidence displacement"
+      ]
+    },
+    "expected_execution_count": 24,
+    "full_16_by_4_rerun_required": false,
     "performed_in_A0": false
   },
   "d3_5_success_criteria": [
@@ -595,8 +662,88 @@
     "D2 authority remains unchanged",
     "source/version/locator provenance remains valid and exact",
     "bridged candidates remain additive and do not force selection",
-    "production defaults, fusion weights, reranker, selector, D1 authority, and query expansions remain unchanged"
+    "production defaults, fusion weights, reranker, selector, D1 authority, and query expansions remain unchanged",
+    "bridge incremental effect is identifiable separately from synchronized D1 and pre-D3.5 structured-path effects",
+    "Tier-D ambiguity is never partially truncated",
+    "deployed production structured state remains untouched during A1 and A2",
+    "graph-prefix displacement is measured and bounded"
   ],
+  "evaluation_identifiability_repair": {
+    "status": "COMPLETE",
+    "frozen_cases": [
+      "g036",
+      "g021",
+      "n006",
+      "g041",
+      "g020",
+      "n004"
+    ],
+    "four_arm_contract": {
+      "LEGACY": "selected two legacy shortcuts enabled; existing D3 structured path disabled; D3.5 bridge disabled",
+      "ABLATION": "selected two legacy shortcuts disabled; existing D3 structured path disabled; D3.5 bridge disabled",
+      "STRUCTURED_UNBRIDGED": "selected two legacy shortcuts disabled; existing frozen D3-A1 structured path enabled; D3.5 reachability/evidence bridge disabled",
+      "STRUCTURED_BRIDGED": "selected two legacy shortcuts disabled; existing structured path enabled; frozen D3.5-A1 bridge enabled"
+    },
+    "causal_contrasts": {
+      "shortcut_dependency": "LEGACY - ABLATION",
+      "unbridged_structured_contribution": "STRUCTURED_UNBRIDGED - ABLATION",
+      "incremental_bridge_effect": "STRUCTURED_BRIDGED - STRUCTURED_UNBRIDGED",
+      "final_legacy_parity": "STRUCTURED_BRIDGED - LEGACY"
+    },
+    "four_arm_execution_count": 24,
+    "pure_bridge_contrast": "STRUCTURED_BRIDGED - STRUCTURED_UNBRIDGED"
+  },
+  "ambiguity_budget_repair": {
+    "processing_order": "Process independent Tier-G, Tier-S, and Tier-D-unique seeds first in existing authority order.",
+    "admit_whole_set_when": "Complete Tier-D ambiguity set size is at most 8 and the whole set fits the remaining global seed budget.",
+    "fail_closed_when": "Set size exceeds 8 or the whole set does not fit the remaining global seed budget.",
+    "fail_closed_action": "Preserve the full ambiguity receipt, traverse none from that branch, and emit STRUCTURAL_PATH_AMBIGUOUS with reason AMBIGUITY_SET_EXCEEDS_SAFE_SEED_BUDGET.",
+    "partial_admission_prohibited": true,
+    "graph_or_materialization_may_resolve_identity_ambiguity": false
+  },
+  "runtime_isolation_contract": {
+    "identity_invariant": "D3_5_EVALUATION_STRUCTURED_STATE != CURRENT_DEPLOYED_STRUCTURED_STATE",
+    "repository_governed_D1_identity": "Authoritative approved repository seed state: 24 objects / 16 accepted relations / 1 curated workflow step.",
+    "isolated_D3.5_evaluation_materialization_identity": "Separate dev/evaluation target synchronized from authoritative repository D1 using the smallest existing mechanism selected in A1.",
+    "deployed_production_materialization_identity": "Distinct deployed target; historical observation 22/16/0; untouched by D3.5 A1/A2 setup.",
+    "mechanism_C_write_path": "Repository config -> review/freeze -> isolated evaluation materialization only.",
+    "PRODUCTION_STRUCTURED_STATE_WRITES": 0,
+    "PRODUCTION_QUERY_EXPANSION_CHANGES": 0,
+    "PRODUCTION_D2_ROLE_CHANGES": 0,
+    "PRODUCTION_D3_5_ACTIVATION": false
+  },
+  "candidate_integration_repair": {
+    "logical_surface": "structured_evidence",
+    "physical_surface": "existing graph channel",
+    "within_graph_prefix_precedence": true,
+    "may_displace_ordinary_graph_candidates": true,
+    "independent_cross_channel_priority": false,
+    "extra_rrf_vote": false,
+    "new_weight": false,
+    "double_vote": false,
+    "identity_authority": "NONE",
+    "displacement_diagnostics": [
+      "bridged_candidate_count",
+      "graph_candidates_before_bridge",
+      "graph_candidates_after_bridge",
+      "graph_candidates_displaced_by_prefix",
+      "displaced_object_ids",
+      "bridged_candidate_ids",
+      "deduplicated_overlap_count"
+    ]
+  },
+  "repair_history": {
+    "D3.5-A0-R1": {
+      "status": "COMPLETE / EVALUATION_IDENTIFIABILITY_AND_RUNTIME_ISOLATION_REPAIRED",
+      "reasons": [
+        "Restore causal identifiability with a synchronized four-arm design.",
+        "Make Tier-D ambiguity budget handling atomic and fail closed.",
+        "Separate repository, isolated evaluation, and deployed production materialization identities.",
+        "State within-graph prefix precedence and displacement diagnostics explicitly."
+      ],
+      "scientific_outcome_exposure": false
+    }
+  },
   "d4_dependency_contract": {
     "D4_status": "NOT_STARTED",
     "required_entry_condition": [

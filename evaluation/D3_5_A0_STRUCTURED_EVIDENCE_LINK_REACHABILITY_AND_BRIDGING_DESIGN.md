@@ -146,14 +146,14 @@ When an already correct governed object, relation, or workflow can carry the nec
 | Tier G | Yes | Bounded governed identity seed; traversal begins at the matched governed object. |
 | Tier S | Yes | Matched-record structure only; `canonical_object_id = null`; no cross-record canonicalization. |
 | Tier D unique | Yes | Nonauthoritative additive advisory seed; cannot filter, scope, canonicalize, or override. |
-| Tier D ambiguous | Yes, bounded | Retain all governed Tier-D alternatives up to the shared seed cap; no ambiguity collapse. |
+| Tier D ambiguous | Yes, atomic and bounded | Admit and traverse the complete ambiguity set only when its size is at most `8` and the whole set fits the remaining global seed budget; otherwise preserve the full receipt and traverse none from that branch. |
 | Corrective-only | No | Advisory candidate only; traversal requires an independent valid governed seed. |
 | UNRESOLVED | No | No reachability and no negative filtering. |
 | RESOLVED_MULTIPLE | No | Inactive and unevaluated. |
 | SAME_AS | No | Inactive and unevaluated for this path. |
 | Whole-question fallback | No | Prohibited. |
 
-The shared seed cap is `8`. When an ambiguous set reaches the cap, alternatives are ordered deterministically using the existing resolver evidence order and stable object ID; no semantic winner is invented.
+The shared seed cap is `8`. Independent Tier-G, Tier-S, and Tier-D-unique seeds are processed first in their existing authority order. A complete Tier-D ambiguity set is then admitted only as a whole when its size is at most `8` and the whole set fits the remaining global seed budget. If the set exceeds `8` or does not fit the remaining budget, the bridge preserves the full ambiguity receipt, traverses none from that branch, and emits `STRUCTURAL_PATH_AMBIGUOUS` with reason `AMBIGUITY_SET_EXCEEDS_SAFE_SEED_BUDGET`. It never truncates, samples, or selects a top-8 subset. Graph traversal and evidence materialization cannot resolve identity ambiguity.
 
 ## 8. Structural primitive semantics
 
@@ -270,9 +270,11 @@ A bridged source object is a:
 GOVERNED_PROVENANCE_BACKED_ADDITIVE_RETRIEVAL_CANDIDATE
 ```
 
-It has no identity authority and no priority beyond existing fusion. It cannot hard-filter other channels, force final selection, override ranking, or restrict scope.
+It has no identity authority and no independent cross-channel priority. It cannot hard-filter other channels, force final selection, globally override ranking, restrict scope, narrow scope, or suppress another channel.
 
-The logical interface is a `structured_evidence` substream. Physically, it is deduplicated and merged into the existing graph candidate stream under the existing graph limit and weight. It receives no independent RRF vote and cannot be counted twice. Global fusion weights, reranker prompt, selector, and production defaults remain unchanged.
+The logical interface is a `structured_evidence` substream. Physically, it is deduplicated and prefixed into the existing graph candidate stream under the existing stable merge semantics, graph limit, and graph weight. This is explicit within-graph prefix precedence, so bridged candidates can displace ordinary graph candidates when the graph limit binds. It is not an independent cross-channel priority: the substream receives no extra RRF vote, new weight, or double vote. Other channels, global fusion weights, reranker prompt, selector, and production defaults remain unchanged.
+
+The integration receipt must record `bridged_candidate_count`, `graph_candidates_before_bridge`, `graph_candidates_after_bridge`, `graph_candidates_displaced_by_prefix`, `displaced_object_ids`, `bridged_candidate_ids`, and `deduplicated_overlap_count`.
 
 ## 15. Provenance and diagnostics
 
@@ -352,28 +354,27 @@ Runtime does not receive case IDs, question IDs, bound rule IDs, comparison role
 
 ## 17. Runtime D1 materialization prerequisite
 
-D3.5-A1 must operate against a runtime materialization matching the authoritative current approved repository D1 seed state: `24` objects / `16` accepted relations / `1` curated workflow step.
+D3.5 freezes three distinct identities:
 
-A1 begins with a read-only comparison. If runtime state does not match, controlled re-ingestion is an explicit required A1 setup action before implementation validation. Because the last observed deployed state is `22 / 16 / 0`, the currently evidenced answer is: **yes, controlled re-ingestion is required before A1 validation unless a fresh read-only check proves synchronization has already occurred.**
+1. the authoritative repository-governed D1 identity (`24` objects / `16` accepted relations / `1` curated workflow step);
+2. a separate isolated D3.5 dev/evaluation materialization identity, synchronized to that authoritative repository state;
+3. the deployed production materialization identity, whose last observed historical state was `22 / 16 / 0`.
 
-The action must:
+A1 begins with a read-only comparison between the repository-governed D1 identity and the isolated evaluation identity. If the isolated state is stale, A1 may use the smallest existing isolation mechanism—such as a separate database, schema, configuration target, or fixture—to perform controlled ingestion into that isolated target only. A1 chooses among existing mechanisms; A0-R1 does not invent broader infrastructure. The deployed target is not a synchronization target and `PRODUCTION_STRUCTURED_STATE_WRITES = 0`.
 
-- record the resulting materialization identity and exact counts;
-- materialize only independently approved current D1 state;
-- consume no D3 outcomes or legacy payloads as new knowledge;
-- modify no query expansion;
-- alter no D2 authority;
-- remain setup/provenance work, not a scientific treatment.
+The isolated action must record target identity, exact counts, source configuration or relevant commit, and run/timestamp when repository conventions support them. It materializes only independently approved current D1 state, consumes no D3 outcomes or legacy payloads as knowledge, modifies no query expansion, alters no D2 authority, and remains setup/provenance work rather than a scientific treatment. Mechanism-C writes follow repository config -> review/freeze -> isolated evaluation materialization only.
 
-No re-ingestion occurs in A0.
+If no isolated materialization is possible, A1 must stop before ingestion and report `D3.5-A1 BLOCKED / ISOLATED_MATERIALIZATION_UNAVAILABLE`; it must never silently rewrite the deployed database. No ingestion or deployed-state write occurs in A0-R1.
 
 ## 18. D3.5-A1 implementation contract
 
 The exact next task is **D3.5-A1 — Bounded Structured Evidence-Link Bridging Prototype**.
 
+A1 must first establish an isolated D3.5 evaluation target, synchronize only that target to authoritative approved repository D1, freeze the isolated materialization identity, and only then implement and validate the bridge with synthetic, unit, or static fixtures.
+
 A1 may:
 
-- synchronize runtime materialization under the prerequisite above;
+- choose the smallest existing isolation mechanism and synchronize only the isolated D3.5 dev/evaluation materialization under the prerequisite above;
 - implement generic typed structural reachability;
 - implement strict evidence-provenance materialization;
 - add a narrowly justified Mechanism-C evidence link only after independent source inspection, version grounding, normal governance review, and the counterfactual gate;
@@ -384,25 +385,45 @@ A1 may:
 A1 may not:
 
 - run formal g036/g021 recovery evaluation or inspect recovery metrics;
+- run `g036`, `g021`, `n006`, `g041`, `g020`, or `n004` through the formal retrieval comparison;
 - delete legacy shortcuts;
 - activate production structured behavior;
 - change D2 authority;
 - perform broad D1 expansion;
 - retune fusion, reranker, or selector behavior.
 
+Before A2, both `D3_5_A1_IMPLEMENTATION_FROZEN = true` and `D3_5_EVALUATION_D1_MATERIALIZATION_FROZEN = true` are required. The A2 run manifest must record the A1 implementation commit SHA, repository D1 identity, isolated materialization identity and `24 / 16 / 1` counts, and that production remained untouched.
+
 ## 19. D3.5-A2 focused validation contract
 
 **D3.5-A2 — Focused Evidence-Link Recovery Validation** owns the first post-D3.5 outcome exposure.
 
-The selected design is a focused three-arm paired comparison, all against one frozen A1 implementation and synchronized D1 materialization:
+The selected design is a focused four-arm paired comparison, all against one frozen A1 implementation and the same frozen synchronized isolated D1 materialization:
 
 | Arm | Contract |
 |---|---|
-| `LEGACY` | The two selected legacy rules active; D3.5 bridge disabled. |
-| `ABLATION` | The two selected legacy rules suppressed; D3.5 bridge disabled. |
-| `STRUCTURED_BRIDGED` | The two selected legacy rules suppressed; frozen D3.5 bridge enabled. |
+| `LEGACY` | The two selected legacy rules active; structured path and D3.5 bridge disabled. |
+| `ABLATION` | The two selected legacy rules suppressed; structured path and D3.5 bridge disabled. |
+| `STRUCTURED_UNBRIDGED` | The two selected legacy rules suppressed; existing frozen D3-A1 structured path enabled against synchronized current D1; D3.5 reachability/evidence bridge disabled. |
+| `STRUCTURED_BRIDGED` | The two selected legacy rules suppressed; the same synchronized current structured path plus the frozen D3.5 bridge enabled. |
 
-`LEGACY - ABLATION` re-confirms dependency in the synchronized runtime. `STRUCTURED_BRIDGED - ABLATION` attributes total bridge recovery. `STRUCTURED_BRIDGED - LEGACY` tests parity. The old D3 `STRUCTURED` arm is not repeated because D3 already established zero recovery, and repeating it would add cost without a necessary new contrast.
+All four arms use the synchronized isolated `24 / 16 / 1` materialization. The historical D3 `STRUCTURED` arm used deployed `22 / 16 / 0`; it is therefore non-interchangeable with the current `STRUCTURED_UNBRIDGED` arm.
+
+The preregistered contrasts are exact:
+
+- `LEGACY - ABLATION = shortcut_dependency`;
+- `STRUCTURED_UNBRIDGED - ABLATION = unbridged_structured_contribution`;
+- `STRUCTURED_BRIDGED - STRUCTURED_UNBRIDGED = incremental_bridge_effect`;
+- `STRUCTURED_BRIDGED - LEGACY = final_legacy_parity`.
+
+`STRUCTURED_BRIDGED - ABLATION` is the combined current structured-plus-bridge contribution and must not be described as a pure bridge effect.
+
+Frozen interpretation examples:
+
+- LEGACY succeeds, ABLATION fails, UNBRIDGED fails, BRIDGED succeeds: dependency is confirmed, the pre-D3.5 structured path does not recover under synchronized D1, and the bridge incrementally recovers behavior.
+- LEGACY succeeds, ABLATION fails, UNBRIDGED succeeds, BRIDGED succeeds: dependency is confirmed, synchronized D1 plus the pre-D3.5 structured path already recovers behavior, and an incremental bridge effect is not established.
+- LEGACY succeeds, ABLATION fails, UNBRIDGED partially succeeds, BRIDGED fully succeeds: a pre-D3.5 contribution exists and the bridge adds incremental recovery.
+- BRIDGED is worse than UNBRIDGED: bridge-introduced regression.
 
 Positive cases are the already-exposed `g036` and `g021` only. Controls are frozen before A1:
 
@@ -413,7 +434,9 @@ Positive cases are the already-exposed `g036` and `g021` only. Controls are froz
 | `g020` | Same subsystem with no governed evidence bridge required |
 | `n004` | Ordinary retrieval already succeeds |
 
-This is `6 cases x 3 arms = 18` future retrieval executions, not a full `16 x 3` rerun. Selection uses already-exposed D3 roles, not treatment likelihood. No addition or substitution is allowed after A1 outcome exposure.
+This is `6 cases x 4 arms = 24` future retrieval executions, not a full `16 x 4` rerun. The frozen cases remain exactly `g036`, `g021`, `n006`, `g041`, `g020`, and `n004`. Selection uses already-exposed D3 roles, not treatment likelihood. No addition or substitution is allowed after A1 outcome exposure.
+
+A2 applies the four frozen contrasts to required-evidence outcome, `Recall@5`, `Recall@10`, `Recall@20`, MRR, combined candidate recall, and final-evidence recall where applicable, using the same frozen retrieval metrics and no post-outcome thresholds. For each control, `STRUCTURED_BRIDGED` versus `STRUCTURED_UNBRIDGED` specifically checks new irrelevant candidates, graph-channel displacement, ambiguity collapse, abstention break, scope/version leakage, and final-evidence displacement.
 
 ## 20. D4 entry criteria
 
@@ -435,6 +458,7 @@ After A0:
 D3 = COMPLETE / SHORTCUT_MIGRATION_EXPERIMENT_DECIDED
 D3.5 = IN_PROGRESS
 D3.5-A0 = COMPLETE / STRUCTURED_EVIDENCE_LINK_DESIGN_FROZEN
+D3.5-A0-R1 = COMPLETE / EVALUATION_IDENTIFIABILITY_AND_RUNTIME_ISOLATION_REPAIRED
 D3.5-A1 = NOT_STARTED
 D3.5-A2 = NOT_STARTED
 D4 = NOT_STARTED
@@ -452,5 +476,22 @@ D3.5 success requires more than both motivating cases passing. The frozen criter
 - exact source/version/locator validity;
 - additive candidate authority only;
 - unchanged production defaults, fusion, reranker, selector, query expansions, and production activation.
+- bridge incremental effect identifiable separately from synchronized D1 and pre-D3.5 structured-path effects;
+- no partial Tier-D ambiguity truncation;
+- deployed production structured state untouched during A1/A2;
+- measured and bounded graph-prefix displacement.
 
 No implementation result or recovery result is claimed by A0. The exact next task is **D3.5-A1 — Bounded Structured Evidence-Link Bridging Prototype**.
+
+## 22. D3.5-A0-R1 — Evaluation Identifiability & Runtime-Isolation Repair
+
+R1 is a static contract repair to the accepted A0 design. It preserves Mechanisms A/B/C, `g036 = A + B`, `g021 = C`, D2 authority, child-to-parent-only containment, predicate/type-gated reverse traversal, the phased typed traversal budget, exact fail-closed source resolution, the additive/no-new-RRF-vote candidate boundary, and the D4 dependency.
+
+R1 repairs only four defects and records why each repair is necessary:
+
+1. A2 now has four synchronized isolated arms because historical D3 `STRUCTURED` used `22 / 16 / 0` and cannot replace a `24 / 16 / 1` synchronized-state `STRUCTURED_UNBRIDGED` counterfactual.
+2. Tier-D ambiguity admission is atomic and fail closed because top-8 truncation would turn a safety budget into implicit identity selection.
+3. repository, isolated evaluation, and deployed production materialization identities are distinct because synchronizing by overwriting the deployed graph would change ordinary/default retrieval state; production writes remain zero.
+4. `structured_evidence` has explicit within-graph prefix precedence and displacement diagnostics because prefix-then-deduplicate-under-limit can displace ordinary graph candidates, even though it creates no independent cross-channel priority, extra vote, new weight, or identity authority.
+
+R1 exposes no scientific outcome, performs no retrieval or ingestion, changes no runtime/config/D1 data, and does not authorize A1 or A2 execution.
