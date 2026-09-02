@@ -1,0 +1,437 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint": "D4-A1",
+  "stage": "d4_a1_fixed_locator_migration",
+  "created_at": "2026-09-02T22:01:00+02:00",
+  "starting_head": "feecfdbebd933fbcf679b65432bd54d699594ecb",
+  "implementation_freeze_head": "CAPTURED_FROM_CURRENT_CLEAN_HEAD_IN_PERSISTED_STARTED_JOURNAL_BEFORE_CELL_1",
+  "implementation_freeze_head_statement": "Because a commit cannot self-reference, the exact SHA is captured from the current clean HEAD in the persisted STARTED journal immediately before formal cell #1.",
+  "implementation_freeze_commit_message": "D4-A1 freeze first-batch migration prototype",
+  "lifecycle_gate": {
+    "historical_gate_statement": "D4 requires the D3.5 bridge validated by A2; D3.5-A2 alone validated the replacement.",
+    "corrected_gate_statement": "D4_STRUCTURED_REPLACEMENT_GATE = SATISFIED_FOR_BOUNDED_DEVELOPMENT_MIGRATION",
+    "gate_decision": "SATISFIED_FOR_BOUNDED_DEVELOPMENT_MIGRATION",
+    "evidence_basis": "D3_COMPLETE + D3_5_SELECTIVITY_VALIDATED + D3_5_A6_DOWNSTREAM_ADMISSION_VALIDATED. Historical D3.5-A2 observed the structured bridge mechanism at candidate-pool level (+0.3 combined candidate recall), but produced zero incremental final-evidence recovery due to downstream cutoff. D3.5-A5-R2 repaired and validated deterministic candidate selectivity (v2 policy, 4/8 caps, relevant evidence retained). D3.5-A6 Phase 2 validated bounded reserved rerank admission (K=3) at downstream final-evidence level under Gemini 3.8 Flash, achieving CAUSAL_DELTA_3 = 2 (3/3 stable reserved witness on g036.e1 and g021.e1) with REGRESSION_3 = 0 across 5 safety groups. Validated for bounded development migration only; PRODUCTION_ACTIVATION remains false.",
+    "production_activation": false
+  },
+  "exact_masks": {
+    "event_poca_handoff": {
+      "rule_id": "event_poca_handoff",
+      "suppressed_symbols": [
+        "macro/target/ana_dpm.C",
+        "macro/target/prod_aod_complete.C",
+        "POCA_VERTEX_FILE",
+        "PndPidCorrelator"
+      ],
+      "suppressed_paper_page_hints": {
+        "li_2026": [
+          131,
+          138
+        ]
+      }
+    },
+    "restgas_profile_workflow": {
+      "rule_id": "restgas_profile_workflow",
+      "suppressed_symbols": [
+        "pgenerators/Target/PndTargetGenerator.cxx",
+        "macro/target/prod_sim_hvmaps.C",
+        "macro/target/reco_complete.C",
+        "macro/target/ana_complete.C",
+        "macro/target/correction/efficiency_correction_2.C"
+      ],
+      "suppressed_paper_page_hints": {}
+    }
+  },
+  "preserved_components": {
+    "event_poca_handoff": {
+      "triggers": [
+        "event_poca",
+        "poca_vertex_file",
+        "second-pass pid",
+        "第二遍 pid"
+      ],
+      "repositories": [
+        "restgas_determination",
+        "pandaroot"
+      ],
+      "concepts": [
+        "event POCA handoff",
+        "event-aligned second-pass propagation"
+      ]
+    },
+    "restgas_profile_workflow": {
+      "triggers": [
+        "restgas_profile",
+        "restgas profile",
+        "corrected rho",
+        "修正后的 rho"
+      ],
+      "repositories": [
+        "restgas_determination",
+        "pandaroot"
+      ],
+      "concepts": [
+        "distributed target generation",
+        "longitudinal profile correction"
+      ]
+    }
+  },
+  "model_prompt_authority": {
+    "model_selection_role": "QA_GENERATION_MODEL_ID via VertexSettings.from_env()",
+    "expected_model": "gemini-3.8-flash",
+    "temperature": 0.0,
+    "prompt_authority": "src/panda_agent/prompts.py:RERANK_SYSTEM_PROMPT",
+    "query_analyzer_prompt": "src/panda_agent/prompts.py:QUERY_ANALYZER_SYSTEM_PROMPT",
+    "retry_policy": "VertexAIClient.generate_json 3-attempt transient retry loop"
+  },
+  "replacement_authority": {
+    "d1_d2_authority": "D2 governed resolution -> D1 accepted objects/relations/workflows. No fuzzy/dense/LLM jumping.",
+    "bridge_semantics": "Bounded reachability: max 1 upward containment transition + max 1 predicate/type-gated relation/workflow transition. Governed provenance materialization to exact source/version evidence.",
+    "selectivity_policy": "d3_5_selectivity_v2",
+    "selectivity_caps": {
+      "SELECTIVITY_CAP": 8,
+      "PER_ORIGIN_CAP": 4,
+      "policy_version": "d3_5_selectivity_v2",
+      "model_calls": 0
+    },
+    "eligible_bridge_receipt_statuses": [
+      "BRIDGED_CANDIDATE_INJECTED",
+      "BRIDGED_CANDIDATE_RANKED_OUT"
+    ],
+    "eligible_payload_source": "complete normalized object lookup including pre-cap ranked-out candidates",
+    "post_rerank_fallback_pool": "treatment pool [*reranked, *rerank_pool, *baseline_fused_ordering] to preserve reserved candidates",
+    "selected_admission_budget_k": 3,
+    "rerank_pool_size": 30,
+    "prohibited_shortcuts": [
+      "No new scorer, weights, or reranker models",
+      "No benchmark-specific mapping tables or ID lookup dicts",
+      "No rule-ID to evidence-path mapping",
+      "No question-ID to evidence-path mapping",
+      "No silent re-injection of suppressed legacy locators into retrieval channels"
+    ]
+  },
+  "arms": {
+    "LEGACY_CONTROL": {
+      "arm": "LEGACY_CONTROL",
+      "description": "Current query-expansion behavior without suppression and without D4 replacement path.",
+      "query_expansions_state": "ALL_RULES_ACTIVE",
+      "structured_replacement_active": false,
+      "admission_budget_k": 0
+    },
+    "BATCH1_ABLATION": {
+      "arm": "BATCH1_ABLATION",
+      "description": "Batch-1 fixed-location components suppressed; no structured replacement path.",
+      "query_expansions_state": "BATCH1_FIXED_LOCATORS_SUPPRESSED",
+      "structured_replacement_active": false,
+      "admission_budget_k": 0
+    },
+    "BATCH1_REPLACEMENT": {
+      "arm": "BATCH1_REPLACEMENT",
+      "description": "Batch-1 fixed-location components suppressed; validated generic structured replacement active with K=3 bounded rerank admission.",
+      "query_expansions_state": "BATCH1_FIXED_LOCATORS_SUPPRESSED",
+      "structured_replacement_active": true,
+      "admission_budget_k": 3
+    }
+  },
+  "cases": [
+    {
+      "case_id": "g036",
+      "role": "TARGET_DEPENDENCY_CASE",
+      "target_rule": "event_poca_handoff",
+      "dataset": "gold_dev",
+      "query": "Which macro produces event_poca?",
+      "primary_evaluation_function": "Test whether suppression of event_poca_handoff fixed locators ablates evidence and whether structured bridge restores ana_dpm.C",
+      "gating": true
+    },
+    {
+      "case_id": "g021",
+      "role": "TARGET_DEPENDENCY_CASE",
+      "target_rule": "restgas_profile_workflow",
+      "dataset": "gold_dev",
+      "query": "How is restgas_profile supplied to distributed-target simulation?",
+      "primary_evaluation_function": "Test whether suppression of restgas_profile_workflow fixed locators ablates evidence and whether structured bridge restores prod_sim_hvmaps.C",
+      "gating": true
+    },
+    {
+      "case_id": "n006",
+      "role": "SAFETY_CONTROL_CASE",
+      "target_rule": null,
+      "dataset": "novel_dev",
+      "query": "My analysis chain produces sim, digi, reco and pid files and I keep concatenating the stage names by hand. Does PandaRoot ship a helper that derives all these file names from the simulation file name, and which stage extensions does it define?",
+      "primary_evaluation_function": "Detect ordinary-evidence regression in absence of bridge activity",
+      "gating": true
+    },
+    {
+      "case_id": "g041",
+      "role": "SAFETY_CONTROL_CASE",
+      "target_rule": null,
+      "dataset": "gold_dev",
+      "query": "What is the exact signature of PndPidCorrelator::SetMagicRestgasSeed?",
+      "primary_evaluation_function": "Detect ordinary-evidence regression in absence of bridge activity",
+      "gating": true
+    },
+    {
+      "case_id": "g020",
+      "role": "SAFETY_CONTROL_CASE",
+      "target_rule": null,
+      "dataset": "gold_dev",
+      "query": "How is the restgas two-pass reconstruction workflow run?",
+      "primary_evaluation_function": "Detect ordinary-evidence regression and verify non-target expansion stability",
+      "gating": true
+    },
+    {
+      "case_id": "n004",
+      "role": "SAFETY_CONTROL_CASE",
+      "target_rule": null,
+      "dataset": "novel_dev",
+      "query": "While debugging a running PandaRoot macro I want every log message to carry the severity and the file:line:function where it was emitted. How do I configure that, and what other logging controls does the framework documentation describe?",
+      "primary_evaluation_function": "Detect ordinary-evidence regression in non-target rule root_macro_usage",
+      "gating": true
+    },
+    {
+      "case_id": "n022",
+      "role": "PARAPHRASE_DIAGNOSTIC_CASE",
+      "target_rule": "event_poca_handoff",
+      "dataset": "novel_dev",
+      "query": "The restgas analysis determines the event vertex through a two-step POCA workflow. What does the first worker step leave behind for the second analysis step, and how is the fitted vertex fed into the reprocessing?",
+      "primary_evaluation_function": "Approved D3 event_poca paraphrase diagnostic case without literal trigger; non-gating observation of non-trigger stability under ablation and potential structured generalization",
+      "gating": false
+    }
+  ],
+  "formal_slots_21": [
+    {
+      "slot_index": 1,
+      "case_id": "g036",
+      "arm": "LEGACY_CONTROL",
+      "outcome_status": "NOT_EXECUTED"
+    },
+    {
+      "slot_index": 2,
+      "case_id": "g036",
+      "arm": "BATCH1_ABLATION",
+      "outcome_status": "NOT_EXECUTED"
+    },
+    {
+      "slot_index": 3,
+      "case_id": "g036",
+      "arm": "BATCH1_REPLACEMENT",
+      "outcome_status": "NOT_EXECUTED"
+    },
+    {
+      "slot_index": 4,
+      "case_id": "g021",
+      "arm": "LEGACY_CONTROL",
+      "outcome_status": "NOT_EXECUTED"
+    },
+    {
+      "slot_index": 5,
+      "case_id": "g021",
+      "arm": "BATCH1_ABLATION",
+      "outcome_status": "NOT_EXECUTED"
+    },
+    {
+      "slot_index": 6,
+      "case_id": "g021",
+      "arm": "BATCH1_REPLACEMENT",
+      "outcome_status": "NOT_EXECUTED"
+    },
+    {
+      "slot_index": 7,
+      "case_id": "n006",
+      "arm": "LEGACY_CONTROL",
+      "outcome_status": "NOT_EXECUTED"
+    },
+    {
+      "slot_index": 8,
+      "case_id": "n006",
+      "arm": "BATCH1_ABLATION",
+      "outcome_status": "NOT_EXECUTED"
+    },
+    {
+      "slot_index": 9,
+      "case_id": "n006",
+      "arm": "BATCH1_REPLACEMENT",
+      "outcome_status": "NOT_EXECUTED"
+    },
+    {
+      "slot_index": 10,
+      "case_id": "g041",
+      "arm": "LEGACY_CONTROL",
+      "outcome_status": "NOT_EXECUTED"
+    },
+    {
+      "slot_index": 11,
+      "case_id": "g041",
+      "arm": "BATCH1_ABLATION",
+      "outcome_status": "NOT_EXECUTED"
+    },
+    {
+      "slot_index": 12,
+      "case_id": "g041",
+      "arm": "BATCH1_REPLACEMENT",
+      "outcome_status": "NOT_EXECUTED"
+    },
+    {
+      "slot_index": 13,
+      "case_id": "g020",
+      "arm": "LEGACY_CONTROL",
+      "outcome_status": "NOT_EXECUTED"
+    },
+    {
+      "slot_index": 14,
+      "case_id": "g020",
+      "arm": "BATCH1_ABLATION",
+      "outcome_status": "NOT_EXECUTED"
+    },
+    {
+      "slot_index": 15,
+      "case_id": "g020",
+      "arm": "BATCH1_REPLACEMENT",
+      "outcome_status": "NOT_EXECUTED"
+    },
+    {
+      "slot_index": 16,
+      "case_id": "n004",
+      "arm": "LEGACY_CONTROL",
+      "outcome_status": "NOT_EXECUTED"
+    },
+    {
+      "slot_index": 17,
+      "case_id": "n004",
+      "arm": "BATCH1_ABLATION",
+      "outcome_status": "NOT_EXECUTED"
+    },
+    {
+      "slot_index": 18,
+      "case_id": "n004",
+      "arm": "BATCH1_REPLACEMENT",
+      "outcome_status": "NOT_EXECUTED"
+    },
+    {
+      "slot_index": 19,
+      "case_id": "n022",
+      "arm": "LEGACY_CONTROL",
+      "outcome_status": "NOT_EXECUTED"
+    },
+    {
+      "slot_index": 20,
+      "case_id": "n022",
+      "arm": "BATCH1_ABLATION",
+      "outcome_status": "NOT_EXECUTED"
+    },
+    {
+      "slot_index": 21,
+      "case_id": "n022",
+      "arm": "BATCH1_REPLACEMENT",
+      "outcome_status": "NOT_EXECUTED"
+    }
+  ],
+  "metrics": [
+    "combined_candidate_recall",
+    "rerank_pool_presence",
+    "final_evidence_retention",
+    "critical_evidence_retention",
+    "structured_provenance_path",
+    "reserved_admission_witness"
+  ],
+  "safety_definition": {
+    "safety_control_cases": [
+      "n006",
+      "g041",
+      "g020",
+      "n004"
+    ],
+    "frozen_a6_safety_groups": [
+      "n006.e1",
+      "g041.e1",
+      "g020.e1",
+      "g020.e2",
+      "n004.e1"
+    ],
+    "safety_population_rule": "Evidence groups with stable final-evidence retention under LEGACY_CONTROL across the frozen A6 safety evidence groups",
+    "regression_counters": [
+      "REGRESSION_ABLATION",
+      "REGRESSION_REPLACEMENT"
+    ],
+    "regression_criterion": "Zero material control regressions under replacement across safety population (REGRESSION_REPLACEMENT == 0); REGRESSION_ABLATION is diagnostic and non-gating"
+  },
+  "evaluator_verdict_taxonomy": {
+    "per_rule_decisions": [
+      "REPLACEMENT_VALIDATED",
+      "LEGACY_DEPENDENCY_NOT_REPRODUCED",
+      "REPLACEMENT_FAILED",
+      "LEGACY_CONTROL_REFERENCE_NOT_REPRODUCED"
+    ],
+    "batch_verdicts": [
+      "INVALID / PROTOCOL_OR_TREATMENT_CONSTRUCTION_FAILED",
+      "FAIL / MATERIAL_SAFETY_REGRESSION",
+      "PASS / FIRST_BATCH_FIXED_LOCATOR_REPLACEMENT_VALIDATED_FOR_DEVELOPMENT",
+      "PARTIAL / MIXED_TARGET_REPLACEMENT_EVIDENCE",
+      "PARTIAL / LEGACY_DEPENDENCY_NOT_REPRODUCED_IN_CURRENT_PROTOTYPE",
+      "FAIL / FIXED_LOCATOR_REPLACEMENT_DID_NOT_RECOVER_CONFIRMED_DEPENDENCY",
+      "INCONCLUSIVE / LEGACY_CONTROL_REFERENCE_NOT_REPRODUCED"
+    ],
+    "verdict_precedence": [
+      "1. Structural or protocol/treatment construction violation -> INVALID / PROTOCOL_OR_TREATMENT_CONSTRUCTION_FAILED",
+      "2. Material control regression on any group in safety population under replacement (REGRESSION_REPLACEMENT > 0) -> FAIL / MATERIAL_SAFETY_REGRESSION",
+      "3. Both target rules REPLACEMENT_VALIDATED with reserved admission witness and zero replacement regression -> PASS / FIRST_BATCH_FIXED_LOCATOR_REPLACEMENT_VALIDATED_FOR_DEVELOPMENT",
+      "4. Exactly one target rule REPLACEMENT_VALIDATED -> PARTIAL / MIXED_TARGET_REPLACEMENT_EVIDENCE",
+      "5. At least one target rule LEGACY_DEPENDENCY_NOT_REPRODUCED -> PARTIAL / LEGACY_DEPENDENCY_NOT_REPRODUCED_IN_CURRENT_PROTOTYPE",
+      "6. At least one target rule REPLACEMENT_FAILED -> FAIL / FIXED_LOCATOR_REPLACEMENT_DID_NOT_RECOVER_CONFIRMED_DEPENDENCY",
+      "7. Both target rules LEGACY_CONTROL_REFERENCE_NOT_REPRODUCED -> INCONCLUSIVE / LEGACY_CONTROL_REFERENCE_NOT_REPRODUCED"
+    ],
+    "diagnostic_case_policy": {
+      "n022": {
+        "gating": false,
+        "role": "PARAPHRASE_DIAGNOSTIC_CASE",
+        "description": "Evaluated for non-trigger stability and potential structured generalization; does not gate PASS/FAIL."
+      }
+    }
+  },
+  "resume_and_failure_semantics": {
+    "journal_states": [
+      "NOT_EXECUTED",
+      "STARTED",
+      "COMPLETED",
+      "FAILED"
+    ],
+    "execution_order": "case-major: for each case in cases (g036, g021, n006, g041, g020, n004, n022), execute LEGACY_CONTROL, then BATCH1_ABLATION, then BATCH1_REPLACEMENT",
+    "rules": [
+      "All 21 slots start as NOT_EXECUTED",
+      "Before each slot invocation, state transitions to STARTED and is flushed to disk",
+      "On successful slot completion, state transitions to COMPLETED and is flushed to disk",
+      "On slot error, state transitions to FAILED, is flushed to disk, and execution terminates immediately",
+      "COMPLETED slots are never rerun on resumption",
+      "An ambiguous STARTED or FAILED slot halts execution immediately",
+      "Strict serial execution: no parallelism"
+    ]
+  },
+  "protected_dataset_boundary": {
+    "NOVEL_VALIDATION_RUNS": 0,
+    "NOVEL_HOLDOUT_RUNS": 0,
+    "PROTECTED_DATASET_ACCESS": 0
+  },
+  "outcome_exposure_state": {
+    "D4_A1_OUTCOME_EXPOSURE": "NOT_STARTED",
+    "formal_slots_total": 21,
+    "formal_slots_completed": 0,
+    "formal_slots_failed": 0,
+    "evaluator_executed": false,
+    "migration_verdict_computed": false
+  },
+  "pre_exposure_accounting": {
+    "MODEL_CALLS": 0,
+    "GENERATION_CALLS": 0,
+    "RERANKER_CALLS": 0,
+    "ANALYZER_CALLS": 0,
+    "EMBEDDING_CALLS": 0,
+    "QA_CALLS": 0,
+    "VERIFIER_CALLS": 0,
+    "JUDGE_CALLS": 0,
+    "RETRIEVAL_RUNS": 0,
+    "POSTGRESQL_WRITES": 0,
+    "QDRANT_WRITES": 0,
+    "INGESTION": 0,
+    "REINDEX": 0
+  }
+}
