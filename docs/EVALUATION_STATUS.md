@@ -11,7 +11,25 @@ When records conflict, use the single section explicitly marked **Current author
 
 # Current authoritative state — 2026-09-02
 
-## D3.5-A6 Phase 2 current authoritative state — 2026-09-02
+## D4-A0 current authoritative state — 2026-09-02
+
+- `D4_A0_DECISION = PASS / FIRST_BATCH_FIXED_LOCATOR_MIGRATION_PREREGISTERED`; `D4-A0 = COMPLETE / LIFECYCLE_GATE_EXPANSION_COMPONENT_INVENTORY_AND_BATCH1_PREREGISTRATION_FROZEN`; `D4 = IN_PROGRESS / INCREMENTAL_QUERY_EXPANSION_MIGRATION`; `D4-A1 = NOT_STARTED / READY_FOR_FIRST_BATCH_FIXED_LOCATOR_MIGRATION_PROTOTYPE`; `D4_STRUCTURED_REPLACEMENT_GATE = SATISFIED_FOR_BOUNDED_DEVELOPMENT_MIGRATION`; `SELECTED_ADMISSION_BUDGET = 3`; `PRODUCTION_ACTIVATION = false`.
+- Lifecycle gate correction: The D4 dependency statement is updated to reflect the full evidence chain (`D3_COMPLETE + D3_5_SELECTIVITY_VALIDATED + D3_5_A6_DOWNSTREAM_ADMISSION_VALIDATED`). Historical D3.5-A2 alone was partial/mixed (candidate-pool level bridge only; 0 incremental final-evidence recovery). Downstream replacement validity was established through D3.5-A5-R2 (deterministic candidate selectivity validated with 4/8 caps) and D3.5-A6 Phase 2 (bounded rerank admission validated at downstream final evidence with budget K=3 and zero material control regressions). This satisfies the gate for bounded development migration only, not production activation.
+- Mechanical inventory: Audited all 54 rules in `configs/query_expansions.yaml`. Confirmed exact counts: 54 rules, 200 triggers, 54 rules with repository injection (71 repo entries), 51 rules with symbol injection (155 symbol entries), 54 rules with concept injection (76 concept entries), 22 rules with paper page hints (23 document entries, 61 pages cited). Zero drift vs D3-A0 complete legacy inventory. Mechanically confirmed the 3 rules without symbols: `luminosity_equation_theory`, `pointlike_vs_restgas_acceptance`, `dpm_model_theory`.
+- Component taxonomy & readiness: Classified components across the frozen 8-disposition taxonomy under evidence-bounded criteria (avoiding blanket positive retention without direct evidence):
+  - Strong RETAIN preserved strictly where current static/historical evidence supports them (Batch 1 preserved components: 8 triggers as `RETAIN_LANGUAGE_NORMALIZATION`, 4 repo entries as `RETAIN_GENERIC_DOMAIN_SCOPE`, 4 concepts as `RETAIN_DOMAIN_CONCEPT` across 2 rules).
+  - Batch 1 fixed locators: 9 symbols as `MIGRATE_FIXED_EVIDENCE_LOCATOR`, 2 paper pages as `MIGRATE_FIXED_PAGE_LOCATOR`.
+  - Historically no-dependency locators: 8 symbols and 3 paper pages (11 items, 4 groups) as `RETIRE_IF_REDUNDANT`.
+  - Shortcut-like unvalidated locators: 138 symbols and 56 paper pages (194 items, 66 groups) as `RETAIN_PENDING_GENERIC_REPLACEMENT`.
+  - Non-locator components lacking direct evidence: 192 triggers, 67 repo entries, and 72 concepts (331 items, 156 groups) across the 47 `NOT_YET_ASSESSED` rules and 5 non-Batch1 historical rules as `NEEDS_EVIDENCE`.
+  - Rule-level migration readiness: `READY_FOR_BATCH1_REPLACEMENT` (2 rules), `LOW_RISK_RETIREMENT_CANDIDATE` (3 rules), `HOLD_INSUFFICIENT_EVIDENCE` (2 rules), `NOT_YET_ASSESSED` (47 rules). Total accounting: 235 component groups, 563 individual items across all 54 rules.
+- Batch-1 specification: Migrates fixed evidence locators (9 symbols across both rules + 2 paper pages in `event_poca_handoff`) while preserving domain terminology (triggers), generic repository scope, and domain concepts.
+- Overlap accounting: All 54 rules checked for locator overlap with Batch-1 targets. On the frozen D4-A1 target cases (`g036`, `g021`) and diagnostic case (`n022`), zero overlapping rules trigger (`NO_ACTION_NOT_ACTIVE`). Identifiability is fully preserved.
+- D4-A1 experimental design frozen: Three evaluation-only arms (`LEGACY_CONTROL`, `BATCH1_ABLATION`, `BATCH1_REPLACEMENT` with K=3 bounded admission). Frozen 7-case cohort: target dependency cases `g036` and `g021`; safety control backbone `n006`, `g041`, `g020`, `n004`; paraphrase diagnostic `n022` (`PARAPHRASE_DIAGNOSTIC_CASE`, diagnostic and non-gating; safety criterion exact `REGRESSION == 0`).
+- Execution invariants held: Zero model calls, zero retrieval runs, zero DB/Qdrant writes, zero novel validation/holdout access. `query_expansions.yaml` and runtime code byte-identical.
+- Artifacts: `evaluation/d4_a0_expansion_component_inventory.json`, `evaluation/d4_a0_batch1_migration_preregistration.json`, `evaluation/D4_A0_LIFECYCLE_GATE_EXPANSION_COMPONENT_INVENTORY_AND_BATCH1_PREREGISTRATION.md`. Exact next stage: **D4-A1 — First-Batch Fixed-Locator Migration Prototype** (requires separate authorization).
+
+## D3.5-A6 Phase 2 predecessor state — 2026-09-02
 
 - `A6_PHASE2_DECISION = BOUNDED_RERANK_ADMISSION_VALIDATED_FOR_DEVELOPMENT`; `D3.5-A6-PHASE2 = COMPLETE / PASS`; `FINAL_A6_PHASE2_VERDICT = PASS / BOUNDED_RERANK_ADMISSION_VALIDATED_FOR_DEVELOPMENT`; `SELECTED_ADMISSION_BUDGET = 3`; `D3.5-A6 = COMPLETE / PASS`; `PRODUCTION_ACTIVATION = false`; `D4 = NOT_STARTED / BLOCKED`.
 - Execution completed: all 54 formal slots in the frozen cyclic schedule (6 cases × 3 repetitions × 3 arms) executed against Google Vertex AI Gemini 3.8 Flash (`temperature = 0.0`, `RERANK_SYSTEM_PROMPT`). 54/54 calls succeeded on the first provider attempt (0 transient retries, 0 failed slots, 931,012 tokens consumed).

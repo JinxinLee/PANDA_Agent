@@ -1,0 +1,398 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint": "D4-A0",
+  "stage": "d4_a0_batch1_migration_preregistration",
+  "created_at": "2026-09-02T20:38:57+02:00",
+  "starting_head": "6a558eaeb00be1f53b9b684958b031dbca21b75b",
+  "lifecycle_gate": {
+    "historical_gate_statement": "D4 requires the D3.5 bridge validated by A2; D3.5-A2 alone validated the replacement.",
+    "corrected_gate_statement": "D4_STRUCTURED_REPLACEMENT_GATE = SATISFIED_FOR_BOUNDED_DEVELOPMENT_MIGRATION",
+    "evidence_basis": "D3_COMPLETE + D3_5_SELECTIVITY_VALIDATED + D3_5_A6_DOWNSTREAM_ADMISSION_VALIDATED. Historical D3.5-A2 observed the structured bridge mechanism at candidate-pool level (+0.3 combined candidate recall), but produced zero incremental final-evidence recovery due to downstream cutoff. D3.5-A5-R2 repaired and validated deterministic candidate selectivity (v2 policy, 4/8 caps, relevant evidence retained). D3.5-A6 Phase 2 validated bounded reserved rerank admission (K=3) at downstream final-evidence level under Gemini 3.8 Flash, achieving CAUSAL_DELTA_3 = 2 (3/3 stable reserved witness on g036.e1 and g021.e1) with REGRESSION_3 = 0 across 5 safety groups. Validated for bounded development migration only; PRODUCTION_ACTIVATION remains false.",
+    "gate_decision": "SATISFIED_FOR_BOUNDED_DEVELOPMENT_MIGRATION",
+    "production_activation": false
+  },
+  "batch1": {
+    "rule_ids": [
+      "event_poca_handoff",
+      "restgas_profile_workflow"
+    ],
+    "selection_rationale": "These two rules represent the complete set of legacy-dependent rules with confirmed downstream structured replacement validity (D3 legacy dependency confirmed; D3.5-A5-R2 selectivity validated; D3.5-A6 Phase 2 K=3 bounded rerank admission validated).",
+    "experimental_focus": "Isolates the fixed-location dependency (file paths, source paths, macros, and paper-page hints) of the two demonstrated legacy-dependent rules, replacing them with the generic structured path while preserving domain terminology, scope, and concepts.",
+    "exact_migrated_components": {
+      "event_poca_handoff": {
+        "symbols": [
+          "macro/target/ana_dpm.C",
+          "macro/target/prod_aod_complete.C",
+          "POCA_VERTEX_FILE",
+          "PndPidCorrelator"
+        ],
+        "paper_page_hints": {
+          "li_2026": [
+            131,
+            138
+          ]
+        }
+      },
+      "restgas_profile_workflow": {
+        "symbols": [
+          "pgenerators/Target/PndTargetGenerator.cxx",
+          "macro/target/prod_sim_hvmaps.C",
+          "macro/target/reco_complete.C",
+          "macro/target/ana_complete.C",
+          "macro/target/correction/efficiency_correction_2.C"
+        ],
+        "paper_page_hints": {}
+      }
+    },
+    "exact_preserved_components": {
+      "event_poca_handoff": {
+        "triggers": [
+          "event_poca",
+          "poca_vertex_file",
+          "second-pass pid",
+          "第二遍 pid"
+        ],
+        "repositories": [
+          "restgas_determination",
+          "pandaroot"
+        ],
+        "concepts": [
+          "event POCA handoff",
+          "event-aligned second-pass propagation"
+        ]
+      },
+      "restgas_profile_workflow": {
+        "triggers": [
+          "restgas_profile",
+          "restgas profile",
+          "corrected rho",
+          "修正后的 rho"
+        ],
+        "repositories": [
+          "restgas_determination",
+          "pandaroot"
+        ],
+        "concepts": [
+          "distributed target generation",
+          "longitudinal profile correction"
+        ]
+      }
+    },
+    "overlap_accounting": {
+      "audit_scope": "All 54 current query-expansion rules audited for potential locator overlap with Batch-1 targets.",
+      "target_case_activity_findings": {
+        "g036": {
+          "query": "Which macro produces event_poca?",
+          "triggered_rules": [
+            "event_poca_handoff"
+          ],
+          "overlapping_rules_triggered": [],
+          "overlap_active": false,
+          "identifiability_action": "NO_ACTION_NOT_ACTIVE"
+        },
+        "g021": {
+          "query": "How is restgas_profile supplied to distributed-target simulation?",
+          "triggered_rules": [
+            "restgas_profile_workflow"
+          ],
+          "overlapping_rules_triggered": [],
+          "overlap_active": false,
+          "identifiability_action": "NO_ACTION_NOT_ACTIVE"
+        },
+        "n022": {
+          "query": "The restgas analysis determines the event vertex through a two-step POCA workflow. What does the first worker step leave behind for the second analysis step, and how is the fitted vertex fed into the reprocessing?",
+          "triggered_rules": [],
+          "overlapping_rules_triggered": [],
+          "overlap_active": false,
+          "identifiability_action": "NO_ACTION_NOT_ACTIVE"
+        }
+      },
+      "locator_overlap_registry": [
+        {
+          "batch1_rule_id": "event_poca_handoff",
+          "targeted_locator": "macro/target/ana_dpm.C",
+          "overlapping_rules": [
+            "pid_two_pass_files",
+            "target_pid_pipeline",
+            "event_alignment",
+            "target_track_to_poca",
+            "vertex_fit_boundary",
+            "target_macro_workflow_grouping",
+            "event_poca_troubleshooting",
+            "restgas_poca_theory",
+            "vertex_fit_boundary_theory",
+            "event_poca_workflow_alias"
+          ],
+          "active_on_d4_a1_cases": false,
+          "identifiability_action": "NO_ACTION_NOT_ACTIVE"
+        },
+        {
+          "batch1_rule_id": "event_poca_handoff",
+          "targeted_locator": "macro/target/prod_aod_complete.C",
+          "overlapping_rules": [
+            "pid_two_pass_files",
+            "target_pid_pipeline",
+            "event_alignment",
+            "target_track_to_poca",
+            "target_macro_workflow_grouping",
+            "event_poca_troubleshooting",
+            "restgas_poca_theory",
+            "event_poca_workflow_alias"
+          ],
+          "active_on_d4_a1_cases": false,
+          "identifiability_action": "NO_ACTION_NOT_ACTIVE"
+        },
+        {
+          "batch1_rule_id": "event_poca_handoff",
+          "targeted_locator": "POCA_VERTEX_FILE",
+          "overlapping_rules": [
+            "event_alignment",
+            "event_poca_workflow_alias"
+          ],
+          "active_on_d4_a1_cases": false,
+          "identifiability_action": "NO_ACTION_NOT_ACTIVE"
+        },
+        {
+          "batch1_rule_id": "event_poca_handoff",
+          "targeted_locator": "PndPidCorrelator",
+          "overlapping_rules": [
+            "event_poca_workflow_alias"
+          ],
+          "active_on_d4_a1_cases": false,
+          "identifiability_action": "NO_ACTION_NOT_ACTIVE"
+        },
+        {
+          "batch1_rule_id": "event_poca_handoff",
+          "targeted_locator": "paper_page_hints: li_2026 [131, 138]",
+          "overlapping_rules": [
+            "longitudinal_efficiency",
+            "profile_generation_and_correction",
+            "event_alignment",
+            "restgas_poca_theory",
+            "displaced_tracking_theory",
+            "vertex_fit_boundary_theory"
+          ],
+          "active_on_d4_a1_cases": false,
+          "identifiability_action": "NO_ACTION_NOT_ACTIVE"
+        },
+        {
+          "batch1_rule_id": "restgas_profile_workflow",
+          "targeted_locator": "pgenerators/Target/PndTargetGenerator.cxx",
+          "overlapping_rules": [
+            "restgas_pandaroot_extension",
+            "target_generator_theory",
+            "target_generator_sampling_data_flow"
+          ],
+          "active_on_d4_a1_cases": false,
+          "identifiability_action": "NO_ACTION_NOT_ACTIVE"
+        },
+        {
+          "batch1_rule_id": "restgas_profile_workflow",
+          "targeted_locator": "macro/target/prod_sim_hvmaps.C",
+          "overlapping_rules": [
+            "profile_generation_and_correction",
+            "effective_acceptance_pipeline",
+            "reconstructed_profile_to_acceptance",
+            "target_macro_workflow_grouping",
+            "hv_maps_vertex_resolution",
+            "target_generator_theory",
+            "reconstructed_profile_factory_alias"
+          ],
+          "active_on_d4_a1_cases": false,
+          "identifiability_action": "NO_ACTION_NOT_ACTIVE"
+        },
+        {
+          "batch1_rule_id": "restgas_profile_workflow",
+          "targeted_locator": "macro/target/reco_complete.C",
+          "overlapping_rules": [
+            "displaced_tracking",
+            "target_macro_workflow_grouping",
+            "displaced_tracking_theory"
+          ],
+          "active_on_d4_a1_cases": false,
+          "identifiability_action": "NO_ACTION_NOT_ACTIVE"
+        },
+        {
+          "batch1_rule_id": "restgas_profile_workflow",
+          "targeted_locator": "macro/target/ana_complete.C",
+          "overlapping_rules": [
+            "target_pid_pipeline",
+            "profile_generation_and_correction",
+            "vertex_fit_boundary",
+            "target_macro_workflow_grouping",
+            "vertex_fit_boundary_theory"
+          ],
+          "active_on_d4_a1_cases": false,
+          "identifiability_action": "NO_ACTION_NOT_ACTIVE"
+        },
+        {
+          "batch1_rule_id": "restgas_profile_workflow",
+          "targeted_locator": "macro/target/correction/efficiency_correction_2.C",
+          "overlapping_rules": [
+            "longitudinal_efficiency",
+            "nonexistent_restgas_deconvolver",
+            "profile_generation_and_correction",
+            "target_macro_workflow_grouping",
+            "fit_data_troubleshooting",
+            "restgas_longitudinal_efficiency_contrast"
+          ],
+          "active_on_d4_a1_cases": false,
+          "identifiability_action": "NO_ACTION_NOT_ACTIVE"
+        }
+      ],
+      "future_treatment_mask_policy": "If an equivalent locator rule is activated on any future migration case, D4-A1 must apply TREATMENT_MASK_EQUIVALENT_LOCATOR_ON_TARGET_CASE to suppress that locator on the target case to preserve causal identifiability."
+    }
+  },
+  "replacement_contract": {
+    "d1_d2_authority": "D2 governed resolution -> D1 accepted objects/relations/workflows. No fuzzy/dense/LLM jumping.",
+    "bridge_semantics": "Bounded reachability: max 1 upward containment transition + max 1 predicate/type-gated relation/workflow transition. Governed provenance materialization to exact source/version evidence.",
+    "selectivity_caps": {
+      "SELECTIVITY_CAP": 8,
+      "PER_ORIGIN_CAP": 4,
+      "policy_version": "d3_5_selectivity_v2",
+      "model_calls": 0
+    },
+    "selected_admission_budget_k": 3,
+    "rerank_pool_size": 30,
+    "prohibited_shortcuts": [
+      "No new scorer, weights, or reranker models",
+      "No benchmark-specific mapping tables or ID lookup dicts",
+      "No rule-ID to evidence-path mapping",
+      "No question-ID to evidence-path mapping",
+      "No silent re-injection of suppressed legacy locators into retrieval channels"
+    ]
+  },
+  "future_D4_A1": {
+    "stage_name": "D4-A1 — First-Batch Fixed-Locator Migration Prototype",
+    "execution_mode": "EVALUATION_ONLY",
+    "production_activation": false,
+    "arms": {
+      "LEGACY_CONTROL": {
+        "description": "Current query-expansion behavior without suppression and without D4 replacement path.",
+        "query_expansions_state": "ALL_RULES_ACTIVE",
+        "structured_replacement_active": false,
+        "admission_budget_k": 0
+      },
+      "BATCH1_ABLATION": {
+        "description": "Batch-1 fixed-location components suppressed; no structured replacement path.",
+        "query_expansions_state": "BATCH1_FIXED_LOCATORS_SUPPRESSED",
+        "structured_replacement_active": false,
+        "admission_budget_k": 0
+      },
+      "BATCH1_REPLACEMENT": {
+        "description": "Batch-1 fixed-location components suppressed; validated generic structured replacement active with K=3 bounded rerank admission.",
+        "query_expansions_state": "BATCH1_FIXED_LOCATORS_SUPPRESSED",
+        "structured_replacement_active": true,
+        "admission_budget_k": 3
+      }
+    },
+    "exact_cases": [
+      {
+        "case_id": "g036",
+        "role": "TARGET_DEPENDENCY_CASE",
+        "target_rule": "event_poca_handoff",
+        "dataset": "gold_dev",
+        "query": "Which macro produces event_poca?",
+        "primary_evaluation_function": "Test whether suppression of event_poca_handoff fixed locators ablates evidence and whether structured bridge restores ana_dpm.C"
+      },
+      {
+        "case_id": "g021",
+        "role": "TARGET_DEPENDENCY_CASE",
+        "target_rule": "restgas_profile_workflow",
+        "dataset": "gold_dev",
+        "query": "How is restgas_profile supplied to distributed-target simulation?",
+        "primary_evaluation_function": "Test whether suppression of restgas_profile_workflow fixed locators ablates evidence and whether structured bridge restores prod_sim_hvmaps.C"
+      },
+      {
+        "case_id": "n006",
+        "role": "SAFETY_CONTROL_CASE",
+        "target_rule": null,
+        "dataset": "novel_dev",
+        "query": "My analysis chain produces sim, digi, reco and pid files and I keep concatenating the stage names by hand. Does PandaRoot ship a helper that derives all these file names from the simulation file name, and which stage extensions does it define?",
+        "primary_evaluation_function": "Detect ordinary-evidence regression in absence of bridge activity"
+      },
+      {
+        "case_id": "g041",
+        "role": "SAFETY_CONTROL_CASE",
+        "target_rule": null,
+        "dataset": "gold_dev",
+        "query": "What is the exact signature of PndPidCorrelator::SetMagicRestgasSeed?",
+        "primary_evaluation_function": "Detect ordinary-evidence regression in absence of bridge activity"
+      },
+      {
+        "case_id": "g020",
+        "role": "SAFETY_CONTROL_CASE",
+        "target_rule": null,
+        "dataset": "gold_dev",
+        "query": "How is the restgas two-pass reconstruction workflow run?",
+        "primary_evaluation_function": "Detect ordinary-evidence regression and verify non-target expansion stability"
+      },
+      {
+        "case_id": "n004",
+        "role": "SAFETY_CONTROL_CASE",
+        "target_rule": null,
+        "dataset": "novel_dev",
+        "query": "While debugging a running PandaRoot macro I want every log message to carry the severity and the file:line:function where it was emitted. How do I configure that, and what other logging controls does the framework documentation describe?",
+        "primary_evaluation_function": "Detect ordinary-evidence regression in non-target rule root_macro_usage"
+      },
+      {
+        "case_id": "n022",
+        "role": "PARAPHRASE_DIAGNOSTIC_CASE",
+        "target_rule": "event_poca_handoff",
+        "dataset": "novel_dev",
+        "query": "The restgas analysis determines the event vertex through a two-step POCA workflow. What does the first worker step leave behind for the second analysis step, and how is the fitted vertex fed into the reprocessing?",
+        "primary_evaluation_function": "Approved D3 event_poca paraphrase diagnostic case without literal trigger; non-gating observation of non-trigger stability under ablation and potential structured generalization",
+        "gating": false
+      }
+    ],
+    "metrics": [
+      "combined_candidate_recall",
+      "rerank_pool_presence",
+      "final_evidence_retention",
+      "critical_evidence_retention",
+      "structured_provenance_path",
+      "reserved_admission_witness"
+    ],
+    "migration_decision_logic": {
+      "replacement_supported_conditions": [
+        "1. LEGACY_CONTROL demonstrates expected useful evidence behavior (final evidence retention > 0)",
+        "2. BATCH1_ABLATION loses or materially weakens the evidence attributable to the migrated fixed locators",
+        "3. BATCH1_REPLACEMENT restores the required evidence to the frozen acceptance target",
+        "4. Recovery is causally attributable to the generic structured path with reserved witness, not an equivalent shortcut",
+        "5. Zero material control regressions across safety population (REGRESSION == 0)"
+      ],
+      "diagnostic_case_policy": {
+        "n022": {
+          "case_id": "n022",
+          "role": "PARAPHRASE_DIAGNOSTIC_CASE",
+          "gating": false,
+          "description": "Diagnostic and non-gating only. Evaluated to observe non-trigger paraphrase behavior and potential structured generalization; does not gate Batch-1 replacement PASS/FAIL."
+        }
+      }
+    },
+    "attribution_requirements": "The replacement arm must not silently reuse suppressed fixed locators. Evaluation receipts must prove full chain: legacy fixed locator suppressed -> structured seed resolved -> governed structure reached -> provenance materialized -> candidate selected by v2 -> admitted under K=3 reservation -> retained in final evidence.",
+    "suppression_implementation_mechanism": "Evaluation-only overlay / component mask / evaluation parser option; configs/query_expansions.yaml remains byte-identical."
+  },
+  "protected_dataset_boundary": {
+    "NOVEL_VALIDATION_RUNS": 0,
+    "NOVEL_HOLDOUT_RUNS": 0,
+    "PROTECTED_DATASET_ACCESS": 0
+  },
+  "execution_accounting": {
+    "MODEL_CALLS": 0,
+    "GENERATION_CALLS": 0,
+    "RERANKER_CALLS": 0,
+    "ANALYZER_CALLS": 0,
+    "EMBEDDING_CALLS": 0,
+    "QA_CALLS": 0,
+    "VERIFIER_CALLS": 0,
+    "JUDGE_CALLS": 0,
+    "RETRIEVAL_RUNS": 0,
+    "POSTGRESQL_WRITES": 0,
+    "QDRANT_WRITES": 0,
+    "INGESTION": 0,
+    "REINDEX": 0
+  },
+  "decision": "PASS / FIRST_BATCH_FIXED_LOCATOR_MIGRATION_PREREGISTERED",
+  "exact_next_stage": "D4-A1 — First-Batch Fixed-Locator Migration Prototype (requires separate explicit authorization)"
+}

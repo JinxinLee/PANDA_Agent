@@ -1,0 +1,4822 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint": "D4-A0",
+  "stage": "d4_a0_expansion_component_inventory",
+  "created_at": "2026-09-02T20:38:57+02:00",
+  "starting_head": "6a558eaeb00be1f53b9b684958b031dbca21b75b",
+  "status": "COMPLETE",
+  "verdict": "PASS / EXPANSION_COMPONENT_INVENTORY_FROZEN",
+  "inventory_summary": {
+    "total_rules": 54,
+    "total_triggers": 200,
+    "rules_with_repositories": 54,
+    "rules_with_symbols": 51,
+    "rules_without_symbols": [
+      "luminosity_equation_theory",
+      "pointlike_vs_restgas_acceptance",
+      "dpm_model_theory"
+    ],
+    "rules_without_symbols_count": 3,
+    "rules_with_concepts": 54,
+    "rules_with_paper_page_hints": 22,
+    "rules_without_paper_page_hints_count": 32,
+    "total_repository_entries": 71,
+    "total_symbol_entries": 155,
+    "total_concept_entries": 76,
+    "total_paper_page_hint_documents": 23,
+    "total_paper_pages_cited": 61,
+    "drift_vs_d3_a0": false,
+    "drift_findings": "Mechanically verified zero drift vs D3-A0 complete_legacy_inventory. Exact match on all 54 rules, 200 triggers, 54 repository injections, 51 symbol injections, 54 concept injections, and 22 paper-page-hint rules."
+  },
+  "rule_readiness_counts": {
+    "READY_FOR_BATCH1_REPLACEMENT": 2,
+    "LOW_RISK_RETIREMENT_CANDIDATE": 3,
+    "HOLD_INSUFFICIENT_EVIDENCE": 2,
+    "HOLD_REPLACEMENT_NOT_VALIDATED": 0,
+    "NOT_YET_ASSESSED": 47
+  },
+  "component_group_taxonomy_counts": {
+    "RETAIN_LANGUAGE_NORMALIZATION": 2,
+    "RETAIN_GENERIC_DOMAIN_SCOPE": 2,
+    "RETAIN_DOMAIN_CONCEPT": 2,
+    "MIGRATE_FIXED_EVIDENCE_LOCATOR": 2,
+    "MIGRATE_FIXED_PAGE_LOCATOR": 1,
+    "RETAIN_PENDING_GENERIC_REPLACEMENT": 66,
+    "RETIRE_IF_REDUNDANT": 4,
+    "NEEDS_EVIDENCE": 156
+  },
+  "component_item_taxonomy_counts": {
+    "RETAIN_LANGUAGE_NORMALIZATION": 8,
+    "RETAIN_GENERIC_DOMAIN_SCOPE": 4,
+    "RETAIN_DOMAIN_CONCEPT": 4,
+    "MIGRATE_FIXED_EVIDENCE_LOCATOR": 9,
+    "MIGRATE_FIXED_PAGE_LOCATOR": 2,
+    "RETAIN_PENDING_GENERIC_REPLACEMENT": 194,
+    "RETIRE_IF_REDUNDANT": 11,
+    "NEEDS_EVIDENCE": 331
+  },
+  "rules": [
+    {
+      "rule_id": "lmd_fit_data_chain",
+      "historical_rule_family": "CROSS_REPOSITORY_DATA_FLOW",
+      "triggers": [
+        "lumi_trksqa",
+        "luminosity result",
+        "luminosityfit 最终"
+      ],
+      "repositories": [
+        "pandaroot",
+        "luminosityfit"
+      ],
+      "symbols": [
+        "detectors/lmd/LmdQA/PndLmdTrackQ.cxx",
+        "data/PndLmdCombinedDataReader.cxx",
+        "apps/createLmdFitData.cxx",
+        "apps/runLmdFit.cxx",
+        "apps/extractLuminosityValues.cxx"
+      ],
+      "concepts": [
+        "LMD reconstruction output",
+        "luminosity fit data chain"
+      ],
+      "paper_page_hints": {},
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "lumi_trksqa",
+            "luminosity result",
+            "luminosityfit 最终"
+          ],
+          "rationale": "Historical D3 evaluation resulted in INSUFFICIENT_EVIDENCE; trigger component lacks direct validated evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "pandaroot",
+            "luminosityfit"
+          ],
+          "rationale": "Historical D3 evaluation resulted in INSUFFICIENT_EVIDENCE; repository scope lacks direct validated evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "LMD reconstruction output",
+            "luminosity fit data chain"
+          ],
+          "rationale": "Historical D3 evaluation resulted in INSUFFICIENT_EVIDENCE; concept vocabulary lacks direct validated evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": [
+            "detectors/lmd/LmdQA/PndLmdTrackQ.cxx",
+            "data/PndLmdCombinedDataReader.cxx",
+            "apps/createLmdFitData.cxx",
+            "apps/runLmdFit.cxx",
+            "apps/extractLuminosityValues.cxx"
+          ],
+          "rationale": "Fixed symbol or file path; hold pending validated generic replacement mechanism for this domain.",
+          "expected_future_owner": "HOLD pending future generic evidence replacement"
+        },
+        "paper_page_hints": {
+          "disposition": null,
+          "items": {},
+          "rationale": "No paper page hints injected by this rule.",
+          "expected_future_owner": null
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Historical D3-A2 found INSUFFICIENT_EVIDENCE to establish legacy dependency. Hold until domain-specific evidence or replacement is validated.",
+      "expected_future_owner": "HOLD / pending evidence",
+      "historical_D3_evidence": {
+        "direct_identifiability": "PARTIALLY_IDENTIFIABLE",
+        "legacy_dependency": "UNKNOWN_INSUFFICIENT_EVIDENCE",
+        "structured_recovery": "NONE",
+        "prior_rule_decision": "INSUFFICIENT_EVIDENCE",
+        "d3_cases": [
+          "g029",
+          "n021",
+          "g025"
+        ]
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "HOLD_INSUFFICIENT_EVIDENCE"
+    },
+    {
+      "rule_id": "event_poca_handoff",
+      "historical_rule_family": "WORKFLOW_DATA_FLOW",
+      "triggers": [
+        "event_poca",
+        "poca_vertex_file",
+        "second-pass pid",
+        "第二遍 pid"
+      ],
+      "repositories": [
+        "restgas_determination",
+        "pandaroot"
+      ],
+      "symbols": [
+        "macro/target/ana_dpm.C",
+        "macro/target/prod_aod_complete.C",
+        "POCA_VERTEX_FILE",
+        "PndPidCorrelator"
+      ],
+      "concepts": [
+        "event POCA handoff",
+        "event-aligned second-pass propagation"
+      ],
+      "paper_page_hints": {
+        "li_2026": [
+          131,
+          138
+        ]
+      },
+      "component_classification": {
+        "triggers": {
+          "disposition": "RETAIN_LANGUAGE_NORMALIZATION",
+          "items": [
+            "event_poca",
+            "poca_vertex_file",
+            "second-pass pid",
+            "第二遍 pid"
+          ],
+          "rationale": "Batch 1 preserved component: generic terminology / phrase normalization preserved for initial fixed-locator migration experiment under validated D3/D3.5/A6 evidence chain.",
+          "expected_future_owner": "aliases.yaml / D2 resolver lexicon"
+        },
+        "repositories": {
+          "disposition": "RETAIN_GENERIC_DOMAIN_SCOPE",
+          "items": [
+            "restgas_determination",
+            "pandaroot"
+          ],
+          "rationale": "Batch 1 preserved component: generic domain/repository routing scope preserved for initial fixed-locator migration experiment.",
+          "expected_future_owner": "D1/D2 repository scope / routing policy"
+        },
+        "concepts": {
+          "disposition": "RETAIN_DOMAIN_CONCEPT",
+          "items": [
+            "event POCA handoff",
+            "event-aligned second-pass propagation"
+          ],
+          "rationale": "Batch 1 preserved component: reusable conceptual domain vocabulary preserved for initial fixed-locator migration experiment.",
+          "expected_future_owner": "D1 governed objects / D2 resolver concept vocabulary"
+        },
+        "symbols": {
+          "disposition": "MIGRATE_FIXED_EVIDENCE_LOCATOR",
+          "items": [
+            "macro/target/ana_dpm.C",
+            "macro/target/prod_aod_complete.C",
+            "POCA_VERTEX_FILE",
+            "PndPidCorrelator"
+          ],
+          "rationale": "Fixed implementation source files, macros, and symbol locators; primary target for structured replacement.",
+          "expected_future_owner": "D1 governed structure -> bounded reachability -> governed provenance materialization -> v2 selectivity -> K=3 rerank admission"
+        },
+        "paper_page_hints": {
+          "disposition": "MIGRATE_FIXED_PAGE_LOCATOR",
+          "items": {
+            "li_2026": [
+              131,
+              138
+            ]
+          },
+          "rationale": "Direct answer-page hints in thesis/paper functioning as exact answer-location shortcuts.",
+          "expected_future_owner": "Governed provenance documentation navigation"
+        }
+      },
+      "component_dispositions": [
+        "MIGRATE_FIXED_EVIDENCE_LOCATOR",
+        "MIGRATE_FIXED_PAGE_LOCATOR",
+        "RETAIN_DOMAIN_CONCEPT",
+        "RETAIN_GENERIC_DOMAIN_SCOPE",
+        "RETAIN_LANGUAGE_NORMALIZATION"
+      ],
+      "rationale": "Proven legacy dependency rule with validated downstream replacement path (D3.5-A5-R2 selectivity + A6 Phase 2 K=3 admission). Migrating fixed locators while retaining terminology, scope, and concepts.",
+      "expected_future_owner": "Hybrid: D1/D2 structured bridge for locators; aliases.yaml/D2 for language normalization and concepts",
+      "historical_D3_evidence": {
+        "direct_identifiability": "IDENTIFIABLE",
+        "legacy_dependency": "CONFIRMED",
+        "structured_recovery": "FAILED_IN_D3",
+        "prior_rule_decision": "STRUCTURED_REGRESSION",
+        "d3_cases": [
+          "g036",
+          "n022"
+        ]
+      },
+      "D3_5_replacement_evidence": {
+        "bridge_observed_in_a2": true,
+        "candidate_pool_recovery": "1.0 combined candidate recall on g036 in D3.5-A2",
+        "selectivity_validated_in_a5_r2": true,
+        "selectivity_outcome": "3/3 selected with ana_dpm.C retained at symbol_exact_tier 1",
+        "admission_validated_in_a6_phase2": true,
+        "admission_outcome": "Causal recovery confirmed with 3/3 stable reserved witness on g036.e1 under K=3 (REGRESSION_3=0)"
+      },
+      "migration_readiness": "READY_FOR_BATCH1_REPLACEMENT"
+    },
+    {
+      "rule_id": "restgas_profile_workflow",
+      "historical_rule_family": "WORKFLOW_DATA_FLOW",
+      "triggers": [
+        "restgas_profile",
+        "restgas profile",
+        "corrected rho",
+        "修正后的 rho"
+      ],
+      "repositories": [
+        "restgas_determination",
+        "pandaroot"
+      ],
+      "symbols": [
+        "pgenerators/Target/PndTargetGenerator.cxx",
+        "macro/target/prod_sim_hvmaps.C",
+        "macro/target/reco_complete.C",
+        "macro/target/ana_complete.C",
+        "macro/target/correction/efficiency_correction_2.C"
+      ],
+      "concepts": [
+        "distributed target generation",
+        "longitudinal profile correction"
+      ],
+      "paper_page_hints": {},
+      "component_classification": {
+        "triggers": {
+          "disposition": "RETAIN_LANGUAGE_NORMALIZATION",
+          "items": [
+            "restgas_profile",
+            "restgas profile",
+            "corrected rho",
+            "修正后的 rho"
+          ],
+          "rationale": "Batch 1 preserved component: generic terminology / phrase normalization preserved for initial fixed-locator migration experiment under validated D3/D3.5/A6 evidence chain.",
+          "expected_future_owner": "aliases.yaml / D2 resolver lexicon"
+        },
+        "repositories": {
+          "disposition": "RETAIN_GENERIC_DOMAIN_SCOPE",
+          "items": [
+            "restgas_determination",
+            "pandaroot"
+          ],
+          "rationale": "Batch 1 preserved component: generic domain/repository routing scope preserved for initial fixed-locator migration experiment.",
+          "expected_future_owner": "D1/D2 repository scope / routing policy"
+        },
+        "concepts": {
+          "disposition": "RETAIN_DOMAIN_CONCEPT",
+          "items": [
+            "distributed target generation",
+            "longitudinal profile correction"
+          ],
+          "rationale": "Batch 1 preserved component: reusable conceptual domain vocabulary preserved for initial fixed-locator migration experiment.",
+          "expected_future_owner": "D1 governed objects / D2 resolver concept vocabulary"
+        },
+        "symbols": {
+          "disposition": "MIGRATE_FIXED_EVIDENCE_LOCATOR",
+          "items": [
+            "pgenerators/Target/PndTargetGenerator.cxx",
+            "macro/target/prod_sim_hvmaps.C",
+            "macro/target/reco_complete.C",
+            "macro/target/ana_complete.C",
+            "macro/target/correction/efficiency_correction_2.C"
+          ],
+          "rationale": "Fixed implementation source files, macros, and symbol locators; primary target for structured replacement.",
+          "expected_future_owner": "D1 governed structure -> bounded reachability -> governed provenance materialization -> v2 selectivity -> K=3 rerank admission"
+        },
+        "paper_page_hints": {
+          "disposition": null,
+          "items": {},
+          "rationale": "No paper page hints injected by this rule.",
+          "expected_future_owner": null
+        }
+      },
+      "component_dispositions": [
+        "MIGRATE_FIXED_EVIDENCE_LOCATOR",
+        "RETAIN_DOMAIN_CONCEPT",
+        "RETAIN_GENERIC_DOMAIN_SCOPE",
+        "RETAIN_LANGUAGE_NORMALIZATION"
+      ],
+      "rationale": "Proven legacy dependency rule with validated downstream replacement path (D3.5-A5-R2 selectivity + A6 Phase 2 K=3 admission). Migrating fixed locators while retaining terminology, scope, and concepts.",
+      "expected_future_owner": "Hybrid: D1/D2 structured bridge for locators; aliases.yaml/D2 for language normalization and concepts",
+      "historical_D3_evidence": {
+        "direct_identifiability": "IDENTIFIABLE",
+        "legacy_dependency": "CONFIRMED",
+        "structured_recovery": "FAILED_IN_D3",
+        "prior_rule_decision": "STRUCTURED_REGRESSION",
+        "d3_cases": [
+          "g021"
+        ]
+      },
+      "D3_5_replacement_evidence": {
+        "bridge_observed_in_a2": true,
+        "candidate_pool_recovery": "0.5 combined candidate recall on g021 in D3.5-A2",
+        "selectivity_validated_in_a5_r2": true,
+        "selectivity_outcome": "4 selected with prod_sim_hvmaps.C retained at symbol_exact_tier 1",
+        "admission_validated_in_a6_phase2": true,
+        "admission_outcome": "Causal recovery confirmed with 3/3 stable reserved witness on g021.e1 under K=3 (REGRESSION_3=0)"
+      },
+      "migration_readiness": "READY_FOR_BATCH1_REPLACEMENT"
+    },
+    {
+      "rule_id": "pid_two_pass_files",
+      "historical_rule_family": "WORKFLOW_DATA_FLOW",
+      "triggers": [
+        "*_pid.root",
+        "*_pid_final.root",
+        "pid_final.root"
+      ],
+      "repositories": [
+        "restgas_determination"
+      ],
+      "symbols": [
+        "macro/target/pid_complete.C",
+        "macro/target/ana_dpm.C",
+        "macro/target/prod_aod_complete.C"
+      ],
+      "concepts": [
+        "two-pass PID workflow"
+      ],
+      "paper_page_hints": {},
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "*_pid.root",
+            "*_pid_final.root",
+            "pid_final.root"
+          ],
+          "rationale": "Historical D3 evaluation resulted in INSUFFICIENT_EVIDENCE; trigger component lacks direct validated evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "restgas_determination"
+          ],
+          "rationale": "Historical D3 evaluation resulted in INSUFFICIENT_EVIDENCE; repository scope lacks direct validated evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "two-pass PID workflow"
+          ],
+          "rationale": "Historical D3 evaluation resulted in INSUFFICIENT_EVIDENCE; concept vocabulary lacks direct validated evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": [
+            "macro/target/pid_complete.C",
+            "macro/target/ana_dpm.C",
+            "macro/target/prod_aod_complete.C"
+          ],
+          "rationale": "Fixed symbol or file path; hold pending validated generic replacement mechanism for this domain.",
+          "expected_future_owner": "HOLD pending future generic evidence replacement"
+        },
+        "paper_page_hints": {
+          "disposition": null,
+          "items": {},
+          "rationale": "No paper page hints injected by this rule.",
+          "expected_future_owner": null
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Historical D3-A2 found INSUFFICIENT_EVIDENCE to establish legacy dependency. Hold until domain-specific evidence or replacement is validated.",
+      "expected_future_owner": "HOLD / pending evidence",
+      "historical_D3_evidence": {
+        "direct_identifiability": "PARTIALLY_IDENTIFIABLE",
+        "legacy_dependency": "UNKNOWN_INSUFFICIENT_EVIDENCE",
+        "structured_recovery": "NONE",
+        "prior_rule_decision": "INSUFFICIENT_EVIDENCE",
+        "d3_cases": [
+          "g020",
+          "n006",
+          "g041"
+        ]
+      },
+      "D3_5_replacement_evidence": {
+        "safety_controls_in_a6": true,
+        "safety_outcome": "Associated cases g020, n006, g041 served as safety population in A6 with zero material regression"
+      },
+      "migration_readiness": "HOLD_INSUFFICIENT_EVIDENCE"
+    },
+    {
+      "rule_id": "luminosityfit_model_layers",
+      "historical_rule_family": "CONCEPT_IMPLEMENTATION",
+      "triggers": [
+        "luminosityfit model",
+        "model layer",
+        "模型层"
+      ],
+      "repositories": [
+        "luminosityfit"
+      ],
+      "symbols": [
+        "model/PndLmdDPMAngModel1D.cxx",
+        "model/PndLmdDPMAngModel2D.cxx",
+        "model/PndLmdDivergenceSmearingModel2D.cxx",
+        "model/PndLmdDifferentialSmearingConvolutionModel2D.cxx",
+        "model/PndLmdSmearingConvolutionModel2D.cxx",
+        "model/PndLmdModelFactory.cxx"
+      ],
+      "concepts": [
+        "cross section model",
+        "divergence smearing",
+        "detector resolution convolution"
+      ],
+      "paper_page_hints": {},
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "luminosityfit model",
+            "model layer",
+            "模型层"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; trigger component lacks direct experimental or static evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "luminosityfit"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; repository scope lacks direct experimental or static evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "cross section model",
+            "divergence smearing",
+            "detector resolution convolution"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; concept vocabulary lacks direct experimental or static evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": [
+            "model/PndLmdDPMAngModel1D.cxx",
+            "model/PndLmdDPMAngModel2D.cxx",
+            "model/PndLmdDivergenceSmearingModel2D.cxx",
+            "model/PndLmdDifferentialSmearingConvolutionModel2D.cxx",
+            "model/PndLmdSmearingConvolutionModel2D.cxx",
+            "model/PndLmdModelFactory.cxx"
+          ],
+          "rationale": "Fixed symbol or file path; hold pending validated generic replacement mechanism for this domain.",
+          "expected_future_owner": "HOLD pending future generic evidence replacement"
+        },
+        "paper_page_hints": {
+          "disposition": null,
+          "items": {},
+          "rationale": "No paper page hints injected by this rule.",
+          "expected_future_owner": null
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Not part of historical D3-selected batch; held without prejudice. Retain language/domain components; fixed locators hold pending future assessment.",
+      "expected_future_owner": "HOLD / pending future batch assessment",
+      "historical_D3_evidence": {
+        "direct_identifiability": "NOT_EVALUATED_IN_D3",
+        "legacy_dependency": "NOT_EVALUATED",
+        "structured_recovery": "NOT_EVALUATED",
+        "prior_rule_decision": "EXCLUDED_FROM_D3_FIRST_BATCH",
+        "d3_cases": []
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "NOT_YET_ASSESSED"
+    },
+    {
+      "rule_id": "resolution_models",
+      "historical_rule_family": "CONCEPT_IMPLEMENTATION",
+      "triggers": [
+        "detector resolution",
+        "resolution smearing",
+        "smearing convolution",
+        "分辨率卷积",
+        "探测器分辨率"
+      ],
+      "repositories": [
+        "luminosityfit"
+      ],
+      "symbols": [
+        "model/PndLmdDifferentialSmearingConvolutionModel2D.cxx",
+        "model/PndLmdSmearingConvolutionModel2D.cxx",
+        "model/PndLmdModelFactory.cxx"
+      ],
+      "concepts": [
+        "detector resolution",
+        "resolution smearing",
+        "convolution model"
+      ],
+      "paper_page_hints": {
+        "pflueger_2017": [
+          65,
+          70,
+          71
+        ]
+      },
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "detector resolution",
+            "resolution smearing",
+            "smearing convolution",
+            "分辨率卷积",
+            "探测器分辨率"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; trigger component lacks direct experimental or static evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "luminosityfit"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; repository scope lacks direct experimental or static evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "detector resolution",
+            "resolution smearing",
+            "convolution model"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; concept vocabulary lacks direct experimental or static evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": [
+            "model/PndLmdDifferentialSmearingConvolutionModel2D.cxx",
+            "model/PndLmdSmearingConvolutionModel2D.cxx",
+            "model/PndLmdModelFactory.cxx"
+          ],
+          "rationale": "Fixed symbol or file path; hold pending validated generic replacement mechanism for this domain.",
+          "expected_future_owner": "HOLD pending future generic evidence replacement"
+        },
+        "paper_page_hints": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": {
+            "pflueger_2017": [
+              65,
+              70,
+              71
+            ]
+          },
+          "rationale": "Paper page hints; hold pending generic document/version navigation mechanism.",
+          "expected_future_owner": "HOLD pending generic document navigation"
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Not part of historical D3-selected batch; held without prejudice. Retain language/domain components; fixed locators hold pending future assessment.",
+      "expected_future_owner": "HOLD / pending future batch assessment",
+      "historical_D3_evidence": {
+        "direct_identifiability": "NOT_EVALUATED_IN_D3",
+        "legacy_dependency": "NOT_EVALUATED",
+        "structured_recovery": "NOT_EVALUATED",
+        "prior_rule_decision": "EXCLUDED_FROM_D3_FIRST_BATCH",
+        "d3_cases": []
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "NOT_YET_ASSESSED"
+    },
+    {
+      "rule_id": "resolution_api_locator",
+      "historical_rule_family": "DIRECT_API_FILE_LOCATOR",
+      "triggers": [
+        "detector-resolution convolution"
+      ],
+      "repositories": [
+        "luminosityfit"
+      ],
+      "symbols": [
+        "model/PndLmdSmearingConvolutionModel2D.cxx",
+        "model/PndLmdDifferentialSmearingConvolutionModel2D.cxx"
+      ],
+      "concepts": [
+        "detector-resolution convolution implementation"
+      ],
+      "paper_page_hints": {},
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "detector-resolution convolution"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; trigger component lacks direct experimental or static evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "luminosityfit"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; repository scope lacks direct experimental or static evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "detector-resolution convolution implementation"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; concept vocabulary lacks direct experimental or static evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": [
+            "model/PndLmdSmearingConvolutionModel2D.cxx",
+            "model/PndLmdDifferentialSmearingConvolutionModel2D.cxx"
+          ],
+          "rationale": "Fixed symbol or file path; hold pending validated generic replacement mechanism for this domain.",
+          "expected_future_owner": "HOLD pending future generic evidence replacement"
+        },
+        "paper_page_hints": {
+          "disposition": null,
+          "items": {},
+          "rationale": "No paper page hints injected by this rule.",
+          "expected_future_owner": null
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Not part of historical D3-selected batch; held without prejudice. Retain language/domain components; fixed locators hold pending future assessment.",
+      "expected_future_owner": "HOLD / pending future batch assessment",
+      "historical_D3_evidence": {
+        "direct_identifiability": "NOT_EVALUATED_IN_D3",
+        "legacy_dependency": "NOT_EVALUATED",
+        "structured_recovery": "NOT_EVALUATED",
+        "prior_rule_decision": "EXCLUDED_FROM_D3_FIRST_BATCH",
+        "d3_cases": []
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "NOT_YET_ASSESSED"
+    },
+    {
+      "rule_id": "displaced_tracking",
+      "historical_rule_family": "CONCEPT_IMPLEMENTATION",
+      "triggers": [
+        "off-ip",
+        "off ip",
+        "displaced tracking",
+        "displaced-track",
+        "离轴跟踪"
+      ],
+      "repositories": [
+        "restgas_determination",
+        "pandaroot"
+      ],
+      "symbols": [
+        "tracking/PndApolloniusTripletTrackFinder/PndApolloniusTripletTrackFinderTask.cxx",
+        "tracking/PzFinder/PndSttSkewStrawPzFinderTask.cxx",
+        "macro/target/reco_complete.C"
+      ],
+      "concepts": [
+        "displaced-vertex track reconstruction"
+      ],
+      "paper_page_hints": {},
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "off-ip",
+            "off ip",
+            "displaced tracking",
+            "displaced-track",
+            "离轴跟踪"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; trigger component lacks direct experimental or static evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "restgas_determination",
+            "pandaroot"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; repository scope lacks direct experimental or static evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "displaced-vertex track reconstruction"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; concept vocabulary lacks direct experimental or static evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": [
+            "tracking/PndApolloniusTripletTrackFinder/PndApolloniusTripletTrackFinderTask.cxx",
+            "tracking/PzFinder/PndSttSkewStrawPzFinderTask.cxx",
+            "macro/target/reco_complete.C"
+          ],
+          "rationale": "Fixed symbol or file path; hold pending validated generic replacement mechanism for this domain.",
+          "expected_future_owner": "HOLD pending future generic evidence replacement"
+        },
+        "paper_page_hints": {
+          "disposition": null,
+          "items": {},
+          "rationale": "No paper page hints injected by this rule.",
+          "expected_future_owner": null
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Not part of historical D3-selected batch; held without prejudice. Retain language/domain components; fixed locators hold pending future assessment.",
+      "expected_future_owner": "HOLD / pending future batch assessment",
+      "historical_D3_evidence": {
+        "direct_identifiability": "NOT_EVALUATED_IN_D3",
+        "legacy_dependency": "NOT_EVALUATED",
+        "structured_recovery": "NOT_EVALUATED",
+        "prior_rule_decision": "EXCLUDED_FROM_D3_FIRST_BATCH",
+        "d3_cases": []
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "NOT_YET_ASSESSED"
+    },
+    {
+      "rule_id": "angular_acceptance",
+      "historical_rule_family": "CONCEPT_IMPLEMENTATION",
+      "triggers": [
+        "angular acceptance",
+        "acceptance class",
+        "角接受度",
+        "接受度类"
+      ],
+      "repositories": [
+        "luminosityfit"
+      ],
+      "symbols": [
+        "data/PndLmdAcceptance.cxx"
+      ],
+      "concepts": [
+        "LMD angular acceptance"
+      ],
+      "paper_page_hints": {
+        "pflueger_2017": [
+          57,
+          58,
+          62
+        ]
+      },
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "angular acceptance",
+            "acceptance class",
+            "角接受度",
+            "接受度类"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; trigger component lacks direct experimental or static evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "luminosityfit"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; repository scope lacks direct experimental or static evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "LMD angular acceptance"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; concept vocabulary lacks direct experimental or static evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": [
+            "data/PndLmdAcceptance.cxx"
+          ],
+          "rationale": "Fixed symbol or file path; hold pending validated generic replacement mechanism for this domain.",
+          "expected_future_owner": "HOLD pending future generic evidence replacement"
+        },
+        "paper_page_hints": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": {
+            "pflueger_2017": [
+              57,
+              58,
+              62
+            ]
+          },
+          "rationale": "Paper page hints; hold pending generic document/version navigation mechanism.",
+          "expected_future_owner": "HOLD pending generic document navigation"
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Not part of historical D3-selected batch; held without prejudice. Retain language/domain components; fixed locators hold pending future assessment.",
+      "expected_future_owner": "HOLD / pending future batch assessment",
+      "historical_D3_evidence": {
+        "direct_identifiability": "NOT_EVALUATED_IN_D3",
+        "legacy_dependency": "NOT_EVALUATED",
+        "structured_recovery": "NOT_EVALUATED",
+        "prior_rule_decision": "EXCLUDED_FROM_D3_FIRST_BATCH",
+        "d3_cases": []
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "NOT_YET_ASSESSED"
+    },
+    {
+      "rule_id": "longitudinal_efficiency",
+      "historical_rule_family": "CONCEPT_IMPLEMENTATION",
+      "triggers": [
+        "pvz efficiency",
+        "longitudinal efficiency",
+        "纵向效率"
+      ],
+      "repositories": [
+        "restgas_determination"
+      ],
+      "symbols": [
+        "macro/target/correction/efficiency_correction_2.C",
+        "macro/target/correction/efficiency_correction_steps.C"
+      ],
+      "concepts": [
+        "restgas longitudinal reconstruction efficiency"
+      ],
+      "paper_page_hints": {
+        "li_2026": [
+          138,
+          142,
+          147
+        ]
+      },
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "pvz efficiency",
+            "longitudinal efficiency",
+            "纵向效率"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; trigger component lacks direct experimental or static evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "restgas_determination"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; repository scope lacks direct experimental or static evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "restgas longitudinal reconstruction efficiency"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; concept vocabulary lacks direct experimental or static evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": [
+            "macro/target/correction/efficiency_correction_2.C",
+            "macro/target/correction/efficiency_correction_steps.C"
+          ],
+          "rationale": "Fixed symbol or file path; hold pending validated generic replacement mechanism for this domain.",
+          "expected_future_owner": "HOLD pending future generic evidence replacement"
+        },
+        "paper_page_hints": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": {
+            "li_2026": [
+              138,
+              142,
+              147
+            ]
+          },
+          "rationale": "Paper page hints; hold pending generic document/version navigation mechanism.",
+          "expected_future_owner": "HOLD pending generic document navigation"
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Not part of historical D3-selected batch; held without prejudice. Retain language/domain components; fixed locators hold pending future assessment.",
+      "expected_future_owner": "HOLD / pending future batch assessment",
+      "historical_D3_evidence": {
+        "direct_identifiability": "NOT_EVALUATED_IN_D3",
+        "legacy_dependency": "NOT_EVALUATED",
+        "structured_recovery": "NOT_EVALUATED",
+        "prior_rule_decision": "EXCLUDED_FROM_D3_FIRST_BATCH",
+        "d3_cases": []
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "NOT_YET_ASSESSED"
+    },
+    {
+      "rule_id": "nonexistent_restgas_deconvolver",
+      "historical_rule_family": "PREMISE_CORRECTION",
+      "triggers": [
+        "PndUniversalRestgasDeconvolver"
+      ],
+      "repositories": [
+        "restgas_determination"
+      ],
+      "symbols": [
+        "macro/target/correction/efficiency_correction_2.C"
+      ],
+      "concepts": [
+        "restgas longitudinal reconstruction efficiency"
+      ],
+      "paper_page_hints": {
+        "li_2026": [
+          142,
+          147
+        ]
+      },
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "PndUniversalRestgasDeconvolver"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; trigger component lacks direct experimental or static evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "restgas_determination"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; repository scope lacks direct experimental or static evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "restgas longitudinal reconstruction efficiency"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; concept vocabulary lacks direct experimental or static evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": [
+            "macro/target/correction/efficiency_correction_2.C"
+          ],
+          "rationale": "Fixed symbol or file path; hold pending validated generic replacement mechanism for this domain.",
+          "expected_future_owner": "HOLD pending future generic evidence replacement"
+        },
+        "paper_page_hints": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": {
+            "li_2026": [
+              142,
+              147
+            ]
+          },
+          "rationale": "Paper page hints; hold pending generic document/version navigation mechanism.",
+          "expected_future_owner": "HOLD pending generic document navigation"
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Not part of historical D3-selected batch; held without prejudice. Retain language/domain components; fixed locators hold pending future assessment.",
+      "expected_future_owner": "HOLD / pending future batch assessment",
+      "historical_D3_evidence": {
+        "direct_identifiability": "NOT_EVALUATED_IN_D3",
+        "legacy_dependency": "NOT_EVALUATED",
+        "structured_recovery": "NOT_EVALUATED",
+        "prior_rule_decision": "EXCLUDED_FROM_D3_FIRST_BATCH",
+        "d3_cases": []
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "NOT_YET_ASSESSED"
+    },
+    {
+      "rule_id": "lmd_reconstruction_to_qa",
+      "historical_rule_family": "WORKFLOW_DATA_FLOW",
+      "triggers": [
+        "lmd qa output",
+        "lmd reconstruction module",
+        "lmd reconstruction 模块"
+      ],
+      "repositories": [
+        "pandaroot"
+      ],
+      "symbols": [
+        "detectors/lmd/LmdTrack/PndLmdTrackFinderCATask.cxx",
+        "detectors/lmd/LmdTrack/PndLmdGeaneTask.cxx",
+        "detectors/lmd/LmdQA/PndLmdTrackQ.cxx"
+      ],
+      "concepts": [
+        "LMD reconstruction to QA data flow"
+      ],
+      "paper_page_hints": {
+        "karavdina_2015": [
+          94,
+          100,
+          104
+        ]
+      },
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "lmd qa output",
+            "lmd reconstruction module",
+            "lmd reconstruction 模块"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; trigger component lacks direct experimental or static evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "pandaroot"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; repository scope lacks direct experimental or static evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "LMD reconstruction to QA data flow"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; concept vocabulary lacks direct experimental or static evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": [
+            "detectors/lmd/LmdTrack/PndLmdTrackFinderCATask.cxx",
+            "detectors/lmd/LmdTrack/PndLmdGeaneTask.cxx",
+            "detectors/lmd/LmdQA/PndLmdTrackQ.cxx"
+          ],
+          "rationale": "Fixed symbol or file path; hold pending validated generic replacement mechanism for this domain.",
+          "expected_future_owner": "HOLD pending future generic evidence replacement"
+        },
+        "paper_page_hints": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": {
+            "karavdina_2015": [
+              94,
+              100,
+              104
+            ]
+          },
+          "rationale": "Paper page hints; hold pending generic document/version navigation mechanism.",
+          "expected_future_owner": "HOLD pending generic document navigation"
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Not part of historical D3-selected batch; held without prejudice. Retain language/domain components; fixed locators hold pending future assessment.",
+      "expected_future_owner": "HOLD / pending future batch assessment",
+      "historical_D3_evidence": {
+        "direct_identifiability": "NOT_EVALUATED_IN_D3",
+        "legacy_dependency": "NOT_EVALUATED",
+        "structured_recovery": "NOT_EVALUATED",
+        "prior_rule_decision": "EXCLUDED_FROM_D3_FIRST_BATCH",
+        "d3_cases": []
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "NOT_YET_ASSESSED"
+    },
+    {
+      "rule_id": "target_pid_pipeline",
+      "historical_rule_family": "WORKFLOW_DATA_FLOW",
+      "triggers": [
+        "pid processing",
+        "pid pipeline",
+        "pid_final",
+        "pid final",
+        "target pid",
+        "PID处理",
+        "PID流程"
+      ],
+      "repositories": [
+        "restgas_determination"
+      ],
+      "symbols": [
+        "macro/target/pid_complete.C",
+        "macro/target/ana_dpm.C",
+        "macro/target/prod_aod_complete.C",
+        "macro/target/ana_complete.C"
+      ],
+      "concepts": [
+        "two-pass target PID pipeline"
+      ],
+      "paper_page_hints": {},
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "pid processing",
+            "pid pipeline",
+            "pid_final",
+            "pid final",
+            "target pid",
+            "PID处理",
+            "PID流程"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; trigger component lacks direct experimental or static evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "restgas_determination"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; repository scope lacks direct experimental or static evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "two-pass target PID pipeline"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; concept vocabulary lacks direct experimental or static evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": [
+            "macro/target/pid_complete.C",
+            "macro/target/ana_dpm.C",
+            "macro/target/prod_aod_complete.C",
+            "macro/target/ana_complete.C"
+          ],
+          "rationale": "Fixed symbol or file path; hold pending validated generic replacement mechanism for this domain.",
+          "expected_future_owner": "HOLD pending future generic evidence replacement"
+        },
+        "paper_page_hints": {
+          "disposition": null,
+          "items": {},
+          "rationale": "No paper page hints injected by this rule.",
+          "expected_future_owner": null
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Not part of historical D3-selected batch; held without prejudice. Retain language/domain components; fixed locators hold pending future assessment.",
+      "expected_future_owner": "HOLD / pending future batch assessment",
+      "historical_D3_evidence": {
+        "direct_identifiability": "NOT_EVALUATED_IN_D3",
+        "legacy_dependency": "NOT_EVALUATED",
+        "structured_recovery": "NOT_EVALUATED",
+        "prior_rule_decision": "EXCLUDED_FROM_D3_FIRST_BATCH",
+        "d3_cases": []
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "NOT_YET_ASSESSED"
+    },
+    {
+      "rule_id": "profile_generation_and_correction",
+      "historical_rule_family": "WORKFLOW_DATA_FLOW",
+      "triggers": [
+        "generated z profile",
+        "epsilon_reco",
+        "reconstruction efficiency",
+        "efficiency correction",
+        "restgas density",
+        "profile correction",
+        "生成 z profile",
+        "重建效率"
+      ],
+      "repositories": [
+        "restgas_determination"
+      ],
+      "symbols": [
+        "macro/target/prod_sim_hvmaps.C",
+        "macro/target/ana_complete.C",
+        "macro/target/correction/efficiency_correction_2.C"
+      ],
+      "concepts": [
+        "generated target profile",
+        "reconstructed profile",
+        "efficiency correction"
+      ],
+      "paper_page_hints": {
+        "li_2026": [
+          138,
+          142,
+          147
+        ]
+      },
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "generated z profile",
+            "epsilon_reco",
+            "reconstruction efficiency",
+            "efficiency correction",
+            "restgas density",
+            "profile correction",
+            "生成 z profile",
+            "重建效率"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; trigger component lacks direct experimental or static evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "restgas_determination"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; repository scope lacks direct experimental or static evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "generated target profile",
+            "reconstructed profile",
+            "efficiency correction"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; concept vocabulary lacks direct experimental or static evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": [
+            "macro/target/prod_sim_hvmaps.C",
+            "macro/target/ana_complete.C",
+            "macro/target/correction/efficiency_correction_2.C"
+          ],
+          "rationale": "Fixed symbol or file path; hold pending validated generic replacement mechanism for this domain.",
+          "expected_future_owner": "HOLD pending future generic evidence replacement"
+        },
+        "paper_page_hints": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": {
+            "li_2026": [
+              138,
+              142,
+              147
+            ]
+          },
+          "rationale": "Paper page hints; hold pending generic document/version navigation mechanism.",
+          "expected_future_owner": "HOLD pending generic document navigation"
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Not part of historical D3-selected batch; held without prejudice. Retain language/domain components; fixed locators hold pending future assessment.",
+      "expected_future_owner": "HOLD / pending future batch assessment",
+      "historical_D3_evidence": {
+        "direct_identifiability": "NOT_EVALUATED_IN_D3",
+        "legacy_dependency": "NOT_EVALUATED",
+        "structured_recovery": "NOT_EVALUATED",
+        "prior_rule_decision": "EXCLUDED_FROM_D3_FIRST_BATCH",
+        "d3_cases": []
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "NOT_YET_ASSESSED"
+    },
+    {
+      "rule_id": "event_alignment",
+      "historical_rule_family": "WORKFLOW_DATA_FLOW",
+      "triggers": [
+        "event id alignment",
+        "event alignment",
+        "particle identification",
+        "event ID对齐",
+        "事件对齐"
+      ],
+      "repositories": [
+        "restgas_determination"
+      ],
+      "symbols": [
+        "macro/target/ana_dpm.C",
+        "macro/target/prod_aod_complete.C",
+        "POCA_VERTEX_FILE",
+        "event_poca"
+      ],
+      "concepts": [
+        "event ID aligned POCA handoff"
+      ],
+      "paper_page_hints": {
+        "li_2026": [
+          131,
+          138
+        ]
+      },
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "event id alignment",
+            "event alignment",
+            "particle identification",
+            "event ID对齐",
+            "事件对齐"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; trigger component lacks direct experimental or static evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "restgas_determination"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; repository scope lacks direct experimental or static evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "event ID aligned POCA handoff"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; concept vocabulary lacks direct experimental or static evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": [
+            "macro/target/ana_dpm.C",
+            "macro/target/prod_aod_complete.C",
+            "POCA_VERTEX_FILE",
+            "event_poca"
+          ],
+          "rationale": "Fixed symbol or file path; hold pending validated generic replacement mechanism for this domain.",
+          "expected_future_owner": "HOLD pending future generic evidence replacement"
+        },
+        "paper_page_hints": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": {
+            "li_2026": [
+              131,
+              138
+            ]
+          },
+          "rationale": "Paper page hints; hold pending generic document/version navigation mechanism.",
+          "expected_future_owner": "HOLD pending generic document navigation"
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Not part of historical D3-selected batch; held without prejudice. Retain language/domain components; fixed locators hold pending future assessment.",
+      "expected_future_owner": "HOLD / pending future batch assessment",
+      "historical_D3_evidence": {
+        "direct_identifiability": "NOT_EVALUATED_IN_D3",
+        "legacy_dependency": "NOT_EVALUATED",
+        "structured_recovery": "NOT_EVALUATED",
+        "prior_rule_decision": "EXCLUDED_FROM_D3_FIRST_BATCH",
+        "d3_cases": []
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "NOT_YET_ASSESSED"
+    },
+    {
+      "rule_id": "luminosity_extraction_results",
+      "historical_rule_family": "WORKFLOW_DATA_FLOW",
+      "triggers": [
+        "extract luminosity",
+        "extract luminosity values",
+        "completed fit results",
+        "luminosity fit results"
+      ],
+      "repositories": [
+        "luminosityfit"
+      ],
+      "symbols": [
+        "apps/extractLuminosityValues.cxx",
+        "README.md"
+      ],
+      "concepts": [
+        "luminosity extraction result workflow"
+      ],
+      "paper_page_hints": {},
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "extract luminosity",
+            "extract luminosity values",
+            "completed fit results",
+            "luminosity fit results"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; trigger component lacks direct experimental or static evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "luminosityfit"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; repository scope lacks direct experimental or static evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "luminosity extraction result workflow"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; concept vocabulary lacks direct experimental or static evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": [
+            "apps/extractLuminosityValues.cxx",
+            "README.md"
+          ],
+          "rationale": "Fixed symbol or file path; hold pending validated generic replacement mechanism for this domain.",
+          "expected_future_owner": "HOLD pending future generic evidence replacement"
+        },
+        "paper_page_hints": {
+          "disposition": null,
+          "items": {},
+          "rationale": "No paper page hints injected by this rule.",
+          "expected_future_owner": null
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Not part of historical D3-selected batch; held without prejudice. Retain language/domain components; fixed locators hold pending future assessment.",
+      "expected_future_owner": "HOLD / pending future batch assessment",
+      "historical_D3_evidence": {
+        "direct_identifiability": "NOT_EVALUATED_IN_D3",
+        "legacy_dependency": "NOT_EVALUATED",
+        "structured_recovery": "NOT_EVALUATED",
+        "prior_rule_decision": "EXCLUDED_FROM_D3_FIRST_BATCH",
+        "d3_cases": []
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "NOT_YET_ASSESSED"
+    },
+    {
+      "rule_id": "target_track_to_poca",
+      "historical_rule_family": "WORKFLOW_DATA_FLOW",
+      "triggers": [
+        "target spectrometer",
+        "track extrapolation",
+        "event poca",
+        "轨迹回传",
+        "track to event poca"
+      ],
+      "repositories": [
+        "restgas_determination"
+      ],
+      "symbols": [
+        "macro/target/ana_dpm.C",
+        "macro/target/prod_aod_complete.C"
+      ],
+      "concepts": [
+        "Target Spectrometer track extrapolation to event POCA"
+      ],
+      "paper_page_hints": {},
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "target spectrometer",
+            "track extrapolation",
+            "event poca",
+            "轨迹回传",
+            "track to event poca"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; trigger component lacks direct experimental or static evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "restgas_determination"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; repository scope lacks direct experimental or static evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "Target Spectrometer track extrapolation to event POCA"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; concept vocabulary lacks direct experimental or static evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": [
+            "macro/target/ana_dpm.C",
+            "macro/target/prod_aod_complete.C"
+          ],
+          "rationale": "Fixed symbol or file path; hold pending validated generic replacement mechanism for this domain.",
+          "expected_future_owner": "HOLD pending future generic evidence replacement"
+        },
+        "paper_page_hints": {
+          "disposition": null,
+          "items": {},
+          "rationale": "No paper page hints injected by this rule.",
+          "expected_future_owner": null
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Not part of historical D3-selected batch; held without prejudice. Retain language/domain components; fixed locators hold pending future assessment.",
+      "expected_future_owner": "HOLD / pending future batch assessment",
+      "historical_D3_evidence": {
+        "direct_identifiability": "NOT_EVALUATED_IN_D3",
+        "legacy_dependency": "NOT_EVALUATED",
+        "structured_recovery": "NOT_EVALUATED",
+        "prior_rule_decision": "EXCLUDED_FROM_D3_FIRST_BATCH",
+        "d3_cases": []
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "NOT_YET_ASSESSED"
+    },
+    {
+      "rule_id": "effective_acceptance_pipeline",
+      "historical_rule_family": "CROSS_REPOSITORY_DATA_FLOW",
+      "triggers": [
+        "effective acceptance",
+        "restgas acceptance",
+        "acceptance calculation",
+        "有效接受度",
+        "有效接受度"
+      ],
+      "repositories": [
+        "restgas_determination",
+        "luminosityfit"
+      ],
+      "symbols": [
+        "macro/target/prod_sim_hvmaps.C",
+        "data/PndLmdAcceptance.cxx",
+        "model/PndLmdModelFactory.cxx"
+      ],
+      "concepts": [
+        "profile-dependent effective acceptance pipeline"
+      ],
+      "paper_page_hints": {
+        "li_2026": [
+          83,
+          86,
+          89
+        ]
+      },
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "effective acceptance",
+            "restgas acceptance",
+            "acceptance calculation",
+            "有效接受度",
+            "有效接受度"
+          ],
+          "rationale": "Historical D3 evaluation demonstrated no meaningful legacy dependency (LOW_RISK_RETIREMENT_CANDIDATE); trigger component lacks direct evidence of generic reusability or necessity in query expansion.",
+          "expected_future_owner": "Later retirement / cleanup batch (no structured replacement required)"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "restgas_determination",
+            "luminosityfit"
+          ],
+          "rationale": "Historical D3 evaluation demonstrated no meaningful legacy dependency; repository scope lacks direct evidence of routing necessity.",
+          "expected_future_owner": "Later retirement / cleanup batch (no structured replacement required)"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "profile-dependent effective acceptance pipeline"
+          ],
+          "rationale": "Historical D3 evaluation demonstrated no meaningful legacy dependency; concept vocabulary lacks direct evidence of query expansion contribution.",
+          "expected_future_owner": "Later retirement / cleanup batch (no structured replacement required)"
+        },
+        "symbols": {
+          "disposition": "RETIRE_IF_REDUNDANT",
+          "items": [
+            "macro/target/prod_sim_hvmaps.C",
+            "data/PndLmdAcceptance.cxx",
+            "model/PndLmdModelFactory.cxx"
+          ],
+          "rationale": "Historical D3 evidence demonstrated no meaningful legacy dependency (LEGACY == ABLATION); component does not contribute to evidence retrieval.",
+          "expected_future_owner": "Later retirement / cleanup batch (no structured replacement required)"
+        },
+        "paper_page_hints": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": {
+            "li_2026": [
+              83,
+              86,
+              89
+            ]
+          },
+          "rationale": "Paper page hints; hold pending generic document/version navigation mechanism.",
+          "expected_future_owner": "HOLD pending generic document navigation"
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT",
+        "RETIRE_IF_REDUNDANT"
+      ],
+      "rationale": "Historical D3-A2 demonstrated NO_MEANINGFUL_LEGACY_DEPENDENCY (LEGACY == ABLATION). Candidate for a later retirement batch, not replacement migration.",
+      "expected_future_owner": "Later retirement / cleanup batch (with terminology preserved in aliases.yaml)",
+      "historical_D3_evidence": {
+        "direct_identifiability": "IDENTIFIABLE",
+        "legacy_dependency": "NOT_OBSERVED",
+        "structured_recovery": "PARITY",
+        "prior_rule_decision": "NO_MEANINGFUL_LEGACY_DEPENDENCY",
+        "d3_cases": [
+          "g052",
+          "g055",
+          "n003"
+        ]
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "LOW_RISK_RETIREMENT_CANDIDATE"
+    },
+    {
+      "rule_id": "vertex_fit_boundary",
+      "historical_rule_family": "WORKFLOW_DATA_FLOW",
+      "triggers": [
+        "vertex fit",
+        "poca pass",
+        "final vertex",
+        "最终 vertex fit",
+        "原始 poca"
+      ],
+      "repositories": [
+        "restgas_determination"
+      ],
+      "symbols": [
+        "macro/target/ana_dpm.C",
+        "macro/target/ana_complete.C"
+      ],
+      "concepts": [
+        "raw POCA pass versus final vertex fit"
+      ],
+      "paper_page_hints": {},
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "vertex fit",
+            "poca pass",
+            "final vertex",
+            "最终 vertex fit",
+            "原始 poca"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; trigger component lacks direct experimental or static evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "restgas_determination"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; repository scope lacks direct experimental or static evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "raw POCA pass versus final vertex fit"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; concept vocabulary lacks direct experimental or static evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": [
+            "macro/target/ana_dpm.C",
+            "macro/target/ana_complete.C"
+          ],
+          "rationale": "Fixed symbol or file path; hold pending validated generic replacement mechanism for this domain.",
+          "expected_future_owner": "HOLD pending future generic evidence replacement"
+        },
+        "paper_page_hints": {
+          "disposition": null,
+          "items": {},
+          "rationale": "No paper page hints injected by this rule.",
+          "expected_future_owner": null
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Not part of historical D3-selected batch; held without prejudice. Retain language/domain components; fixed locators hold pending future assessment.",
+      "expected_future_owner": "HOLD / pending future batch assessment",
+      "historical_D3_evidence": {
+        "direct_identifiability": "NOT_EVALUATED_IN_D3",
+        "legacy_dependency": "NOT_EVALUATED",
+        "structured_recovery": "NOT_EVALUATED",
+        "prior_rule_decision": "EXCLUDED_FROM_D3_FIRST_BATCH",
+        "d3_cases": []
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "NOT_YET_ASSESSED"
+    },
+    {
+      "rule_id": "reconstructed_profile_to_acceptance",
+      "historical_rule_family": "CROSS_REPOSITORY_DATA_FLOW",
+      "triggers": [
+        "reconstructed rho",
+        "reconstructed rho(z)",
+        "acceptance calculation",
+        "effective acceptance",
+        "restgas density"
+      ],
+      "repositories": [
+        "restgas_determination",
+        "luminosityfit"
+      ],
+      "symbols": [
+        "macro/target/prod_sim_hvmaps.C",
+        "data/PndLmdAcceptance.cxx"
+      ],
+      "concepts": [
+        "reconstructed profile to effective acceptance"
+      ],
+      "paper_page_hints": {
+        "li_2026": [
+          141,
+          149,
+          151
+        ]
+      },
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "reconstructed rho",
+            "reconstructed rho(z)",
+            "acceptance calculation",
+            "effective acceptance",
+            "restgas density"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; trigger component lacks direct experimental or static evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "restgas_determination",
+            "luminosityfit"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; repository scope lacks direct experimental or static evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "reconstructed profile to effective acceptance"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; concept vocabulary lacks direct experimental or static evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": [
+            "macro/target/prod_sim_hvmaps.C",
+            "data/PndLmdAcceptance.cxx"
+          ],
+          "rationale": "Fixed symbol or file path; hold pending validated generic replacement mechanism for this domain.",
+          "expected_future_owner": "HOLD pending future generic evidence replacement"
+        },
+        "paper_page_hints": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": {
+            "li_2026": [
+              141,
+              149,
+              151
+            ]
+          },
+          "rationale": "Paper page hints; hold pending generic document/version navigation mechanism.",
+          "expected_future_owner": "HOLD pending generic document navigation"
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Not part of historical D3-selected batch; held without prejudice. Retain language/domain components; fixed locators hold pending future assessment.",
+      "expected_future_owner": "HOLD / pending future batch assessment",
+      "historical_D3_evidence": {
+        "direct_identifiability": "NOT_EVALUATED_IN_D3",
+        "legacy_dependency": "NOT_EVALUATED",
+        "structured_recovery": "NOT_EVALUATED",
+        "prior_rule_decision": "EXCLUDED_FROM_D3_FIRST_BATCH",
+        "d3_cases": []
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "NOT_YET_ASSESSED"
+    },
+    {
+      "rule_id": "panda_luminosityfit_boundary",
+      "historical_rule_family": "CROSS_REPOSITORY_DATA_FLOW",
+      "triggers": [
+        "dependency boundary",
+        "pandaroot integration",
+        "luminosityfit integration",
+        "依赖边界"
+      ],
+      "repositories": [
+        "pandaroot",
+        "luminosityfit"
+      ],
+      "symbols": [
+        "detectors/lmd/LmdQA/PndLmdTrackQ.cxx",
+        "data/PndLmdCombinedDataReader.cxx",
+        "model/PndLmdModelFactory.cxx"
+      ],
+      "concepts": [
+        "PandaRoot adapter and LuminosityFit model boundary"
+      ],
+      "paper_page_hints": {},
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "dependency boundary",
+            "pandaroot integration",
+            "luminosityfit integration",
+            "依赖边界"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; trigger component lacks direct experimental or static evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "pandaroot",
+            "luminosityfit"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; repository scope lacks direct experimental or static evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "PandaRoot adapter and LuminosityFit model boundary"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; concept vocabulary lacks direct experimental or static evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": [
+            "detectors/lmd/LmdQA/PndLmdTrackQ.cxx",
+            "data/PndLmdCombinedDataReader.cxx",
+            "model/PndLmdModelFactory.cxx"
+          ],
+          "rationale": "Fixed symbol or file path; hold pending validated generic replacement mechanism for this domain.",
+          "expected_future_owner": "HOLD pending future generic evidence replacement"
+        },
+        "paper_page_hints": {
+          "disposition": null,
+          "items": {},
+          "rationale": "No paper page hints injected by this rule.",
+          "expected_future_owner": null
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Not part of historical D3-selected batch; held without prejudice. Retain language/domain components; fixed locators hold pending future assessment.",
+      "expected_future_owner": "HOLD / pending future batch assessment",
+      "historical_D3_evidence": {
+        "direct_identifiability": "NOT_EVALUATED_IN_D3",
+        "legacy_dependency": "NOT_EVALUATED",
+        "structured_recovery": "NOT_EVALUATED",
+        "prior_rule_decision": "EXCLUDED_FROM_D3_FIRST_BATCH",
+        "d3_cases": []
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "NOT_YET_ASSESSED"
+    },
+    {
+      "rule_id": "restgas_pandaroot_extension",
+      "historical_rule_family": "CROSS_REPOSITORY_DATA_FLOW",
+      "triggers": [
+        "RestgasDetermination",
+        "PandaRoot extension",
+        "pandaroot integration",
+        "扩展 PandaRoot"
+      ],
+      "repositories": [
+        "restgas_determination"
+      ],
+      "symbols": [
+        "pgenerators/Target/PndTargetGenerator.cxx",
+        "tracking/PndApolloniusTripletTrackFinder/PndApolloniusTripletTrackFinderTask.cxx",
+        "tracking/PzFinder/PndSttSkewStrawPzFinderTask.cxx",
+        "pid/PidCorr/PndPidCorrelator.cxx"
+      ],
+      "concepts": [
+        "RestgasDetermination custom extension modules"
+      ],
+      "paper_page_hints": {},
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "RestgasDetermination",
+            "PandaRoot extension",
+            "pandaroot integration",
+            "扩展 PandaRoot"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; trigger component lacks direct experimental or static evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "restgas_determination"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; repository scope lacks direct experimental or static evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "RestgasDetermination custom extension modules"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; concept vocabulary lacks direct experimental or static evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": [
+            "pgenerators/Target/PndTargetGenerator.cxx",
+            "tracking/PndApolloniusTripletTrackFinder/PndApolloniusTripletTrackFinderTask.cxx",
+            "tracking/PzFinder/PndSttSkewStrawPzFinderTask.cxx",
+            "pid/PidCorr/PndPidCorrelator.cxx"
+          ],
+          "rationale": "Fixed symbol or file path; hold pending validated generic replacement mechanism for this domain.",
+          "expected_future_owner": "HOLD pending future generic evidence replacement"
+        },
+        "paper_page_hints": {
+          "disposition": null,
+          "items": {},
+          "rationale": "No paper page hints injected by this rule.",
+          "expected_future_owner": null
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Not part of historical D3-selected batch; held without prejudice. Retain language/domain components; fixed locators hold pending future assessment.",
+      "expected_future_owner": "HOLD / pending future batch assessment",
+      "historical_D3_evidence": {
+        "direct_identifiability": "NOT_EVALUATED_IN_D3",
+        "legacy_dependency": "NOT_EVALUATED",
+        "structured_recovery": "NOT_EVALUATED",
+        "prior_rule_decision": "EXCLUDED_FROM_D3_FIRST_BATCH",
+        "d3_cases": []
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "NOT_YET_ASSESSED"
+    },
+    {
+      "rule_id": "target_macro_workflow_grouping",
+      "historical_rule_family": "WORKFLOW_DATA_FLOW",
+      "triggers": [
+        "macro/target",
+        "workflow grouping",
+        "target macro",
+        "宏模块",
+        "workflow 分组"
+      ],
+      "repositories": [
+        "restgas_determination"
+      ],
+      "symbols": [
+        "macro/target/prod_sim_hvmaps.C",
+        "macro/target/reco_complete.C",
+        "macro/target/pid_complete.C",
+        "macro/target/ana_dpm.C",
+        "macro/target/prod_aod_complete.C",
+        "macro/target/ana_complete.C",
+        "macro/target/correction/efficiency_correction_2.C"
+      ],
+      "concepts": [
+        "target macro workflow stages"
+      ],
+      "paper_page_hints": {},
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "macro/target",
+            "workflow grouping",
+            "target macro",
+            "宏模块",
+            "workflow 分组"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; trigger component lacks direct experimental or static evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "restgas_determination"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; repository scope lacks direct experimental or static evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "target macro workflow stages"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; concept vocabulary lacks direct experimental or static evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": [
+            "macro/target/prod_sim_hvmaps.C",
+            "macro/target/reco_complete.C",
+            "macro/target/pid_complete.C",
+            "macro/target/ana_dpm.C",
+            "macro/target/prod_aod_complete.C",
+            "macro/target/ana_complete.C",
+            "macro/target/correction/efficiency_correction_2.C"
+          ],
+          "rationale": "Fixed symbol or file path; hold pending validated generic replacement mechanism for this domain.",
+          "expected_future_owner": "HOLD pending future generic evidence replacement"
+        },
+        "paper_page_hints": {
+          "disposition": null,
+          "items": {},
+          "rationale": "No paper page hints injected by this rule.",
+          "expected_future_owner": null
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Not part of historical D3-selected batch; held without prejudice. Retain language/domain components; fixed locators hold pending future assessment.",
+      "expected_future_owner": "HOLD / pending future batch assessment",
+      "historical_D3_evidence": {
+        "direct_identifiability": "NOT_EVALUATED_IN_D3",
+        "legacy_dependency": "NOT_EVALUATED",
+        "structured_recovery": "NOT_EVALUATED",
+        "prior_rule_decision": "EXCLUDED_FROM_D3_FIRST_BATCH",
+        "d3_cases": []
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "NOT_YET_ASSESSED"
+    },
+    {
+      "rule_id": "sphinx_operational_architecture",
+      "historical_rule_family": "VERSION_DOCUMENTATION",
+      "triggers": [
+        "Sphinx documentation",
+        "knowledge architecture",
+        "Sphinx 2023-dev",
+        "docs disagree",
+        "Sphinx 文档"
+      ],
+      "repositories": [
+        "pandaroot"
+      ],
+      "symbols": [
+        "Installation/Installation.html",
+        "Installation/Install_PandaRoot.html",
+        "Running/Running.html",
+        "Running/MasterTasks.html",
+        "Running/Macros.html"
+      ],
+      "concepts": [
+        "PandaRoot operational documentation and version scope"
+      ],
+      "paper_page_hints": {},
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "Sphinx documentation",
+            "knowledge architecture",
+            "Sphinx 2023-dev",
+            "docs disagree",
+            "Sphinx 文档"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; trigger component lacks direct experimental or static evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "pandaroot"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; repository scope lacks direct experimental or static evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "PandaRoot operational documentation and version scope"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; concept vocabulary lacks direct experimental or static evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": [
+            "Installation/Installation.html",
+            "Installation/Install_PandaRoot.html",
+            "Running/Running.html",
+            "Running/MasterTasks.html",
+            "Running/Macros.html"
+          ],
+          "rationale": "Fixed symbol or file path; hold pending validated generic replacement mechanism for this domain.",
+          "expected_future_owner": "HOLD pending future generic evidence replacement"
+        },
+        "paper_page_hints": {
+          "disposition": null,
+          "items": {},
+          "rationale": "No paper page hints injected by this rule.",
+          "expected_future_owner": null
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Not part of historical D3-selected batch; held without prejudice. Retain language/domain components; fixed locators hold pending future assessment.",
+      "expected_future_owner": "HOLD / pending future batch assessment",
+      "historical_D3_evidence": {
+        "direct_identifiability": "NOT_EVALUATED_IN_D3",
+        "legacy_dependency": "NOT_EVALUATED",
+        "structured_recovery": "NOT_EVALUATED",
+        "prior_rule_decision": "EXCLUDED_FROM_D3_FIRST_BATCH",
+        "d3_cases": []
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "NOT_YET_ASSESSED"
+    },
+    {
+      "rule_id": "fit_data_troubleshooting",
+      "historical_rule_family": "TROUBLESHOOTING_COMPATIBILITY",
+      "triggers": [
+        "no acceptance",
+        "fit input",
+        "prepared data",
+        "data path",
+        "file matching",
+        "fit data path",
+        "empty bins",
+        "没有 acceptance",
+        "空 bin"
+      ],
+      "repositories": [
+        "luminosityfit",
+        "restgas_determination"
+      ],
+      "symbols": [
+        "docs/apps/createLmdFitData.md",
+        "apps/createLmdFitData.cxx",
+        "data/PndLmdDataReader.cxx",
+        "apps/runLmdFit.cxx",
+        "macro/target/correction/efficiency_correction_2.C",
+        "macro/target/correction/efficiency_correction_steps.C"
+      ],
+      "concepts": [
+        "fit input assumptions and efficiency correction diagnostics",
+        "empty-bin binning and profile compatibility"
+      ],
+      "paper_page_hints": {},
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "no acceptance",
+            "fit input",
+            "prepared data",
+            "data path",
+            "file matching",
+            "fit data path",
+            "empty bins",
+            "没有 acceptance",
+            "空 bin"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; trigger component lacks direct experimental or static evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "luminosityfit",
+            "restgas_determination"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; repository scope lacks direct experimental or static evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "fit input assumptions and efficiency correction diagnostics",
+            "empty-bin binning and profile compatibility"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; concept vocabulary lacks direct experimental or static evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": [
+            "docs/apps/createLmdFitData.md",
+            "apps/createLmdFitData.cxx",
+            "data/PndLmdDataReader.cxx",
+            "apps/runLmdFit.cxx",
+            "macro/target/correction/efficiency_correction_2.C",
+            "macro/target/correction/efficiency_correction_steps.C"
+          ],
+          "rationale": "Fixed symbol or file path; hold pending validated generic replacement mechanism for this domain.",
+          "expected_future_owner": "HOLD pending future generic evidence replacement"
+        },
+        "paper_page_hints": {
+          "disposition": null,
+          "items": {},
+          "rationale": "No paper page hints injected by this rule.",
+          "expected_future_owner": null
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Not part of historical D3-selected batch; held without prejudice. Retain language/domain components; fixed locators hold pending future assessment.",
+      "expected_future_owner": "HOLD / pending future batch assessment",
+      "historical_D3_evidence": {
+        "direct_identifiability": "NOT_EVALUATED_IN_D3",
+        "legacy_dependency": "NOT_EVALUATED",
+        "structured_recovery": "NOT_EVALUATED",
+        "prior_rule_decision": "EXCLUDED_FROM_D3_FIRST_BATCH",
+        "d3_cases": []
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "NOT_YET_ASSESSED"
+    },
+    {
+      "rule_id": "root_macro_usage",
+      "historical_rule_family": "USAGE_INSTALLATION",
+      "triggers": [
+        "ROOT macro",
+        "macro execution",
+        "run a ROOT macro"
+      ],
+      "repositories": [
+        "pandaroot"
+      ],
+      "symbols": [
+        "Running/Macros.html",
+        "tools/MasterTasks/PndMasterRunSim.cxx"
+      ],
+      "concepts": [
+        "PandaRoot macro invocation"
+      ],
+      "paper_page_hints": {},
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "ROOT macro",
+            "macro execution",
+            "run a ROOT macro"
+          ],
+          "rationale": "Historical D3 evaluation demonstrated no meaningful legacy dependency (LOW_RISK_RETIREMENT_CANDIDATE); trigger component lacks direct evidence of generic reusability or necessity in query expansion.",
+          "expected_future_owner": "Later retirement / cleanup batch (no structured replacement required)"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "pandaroot"
+          ],
+          "rationale": "Historical D3 evaluation demonstrated no meaningful legacy dependency; repository scope lacks direct evidence of routing necessity.",
+          "expected_future_owner": "Later retirement / cleanup batch (no structured replacement required)"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "PandaRoot macro invocation"
+          ],
+          "rationale": "Historical D3 evaluation demonstrated no meaningful legacy dependency; concept vocabulary lacks direct evidence of query expansion contribution.",
+          "expected_future_owner": "Later retirement / cleanup batch (no structured replacement required)"
+        },
+        "symbols": {
+          "disposition": "RETIRE_IF_REDUNDANT",
+          "items": [
+            "Running/Macros.html",
+            "tools/MasterTasks/PndMasterRunSim.cxx"
+          ],
+          "rationale": "Historical D3 evidence demonstrated no meaningful legacy dependency (LEGACY == ABLATION); component does not contribute to evidence retrieval.",
+          "expected_future_owner": "Later retirement / cleanup batch (no structured replacement required)"
+        },
+        "paper_page_hints": {
+          "disposition": null,
+          "items": {},
+          "rationale": "No paper page hints injected by this rule.",
+          "expected_future_owner": null
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETIRE_IF_REDUNDANT"
+      ],
+      "rationale": "Historical D3-A2 demonstrated NO_MEANINGFUL_LEGACY_DEPENDENCY (LEGACY == ABLATION). Candidate for a later retirement batch, not replacement migration.",
+      "expected_future_owner": "Later retirement / cleanup batch (with terminology preserved in aliases.yaml)",
+      "historical_D3_evidence": {
+        "direct_identifiability": "IDENTIFIABLE",
+        "legacy_dependency": "NOT_OBSERVED",
+        "structured_recovery": "PARITY",
+        "prior_rule_decision": "NO_MEANINGFUL_LEGACY_DEPENDENCY",
+        "d3_cases": [
+          "n004",
+          "g007"
+        ]
+      },
+      "D3_5_replacement_evidence": {
+        "bridge_observed_in_a2": false,
+        "safety_control_in_a6": true,
+        "safety_outcome": "Stable 1.0 retention across all arms, 0 bridge activity, zero regression"
+      },
+      "migration_readiness": "LOW_RISK_RETIREMENT_CANDIDATE"
+    },
+    {
+      "rule_id": "restgas_workflow_usage",
+      "historical_rule_family": "WORKFLOW_DATA_FLOW",
+      "triggers": [
+        "two-pass reconstruction workflow",
+        "restgas two-pass reconstruction"
+      ],
+      "repositories": [
+        "restgas_determination",
+        "pandaroot"
+      ],
+      "symbols": [
+        "macro/target/README.md",
+        "macro/target/runall_prod_hvmaps.py",
+        "Running/Running.html"
+      ],
+      "concepts": [
+        "Restgas two-pass reconstruction workflow"
+      ],
+      "paper_page_hints": {},
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "two-pass reconstruction workflow",
+            "restgas two-pass reconstruction"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; trigger component lacks direct experimental or static evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "restgas_determination",
+            "pandaroot"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; repository scope lacks direct experimental or static evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "Restgas two-pass reconstruction workflow"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; concept vocabulary lacks direct experimental or static evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": [
+            "macro/target/README.md",
+            "macro/target/runall_prod_hvmaps.py",
+            "Running/Running.html"
+          ],
+          "rationale": "Fixed symbol or file path; hold pending validated generic replacement mechanism for this domain.",
+          "expected_future_owner": "HOLD pending future generic evidence replacement"
+        },
+        "paper_page_hints": {
+          "disposition": null,
+          "items": {},
+          "rationale": "No paper page hints injected by this rule.",
+          "expected_future_owner": null
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Not part of historical D3-selected batch; held without prejudice. Retain language/domain components; fixed locators hold pending future assessment.",
+      "expected_future_owner": "HOLD / pending future batch assessment",
+      "historical_D3_evidence": {
+        "direct_identifiability": "NOT_EVALUATED_IN_D3",
+        "legacy_dependency": "NOT_EVALUATED",
+        "structured_recovery": "NOT_EVALUATED",
+        "prior_rule_decision": "EXCLUDED_FROM_D3_FIRST_BATCH",
+        "d3_cases": []
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "NOT_YET_ASSESSED"
+    },
+    {
+      "rule_id": "installation_requirements",
+      "historical_rule_family": "USAGE_INSTALLATION",
+      "triggers": [
+        "GPU memory",
+        "minimum GPU memory",
+        "installation requirements",
+        "install PandaRoot"
+      ],
+      "repositories": [
+        "pandaroot"
+      ],
+      "symbols": [
+        "Installation/Installation.html",
+        "Installation/Install_PandaRoot.html"
+      ],
+      "concepts": [
+        "PandaRoot installation requirements"
+      ],
+      "paper_page_hints": {},
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "GPU memory",
+            "minimum GPU memory",
+            "installation requirements",
+            "install PandaRoot"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; trigger component lacks direct experimental or static evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "pandaroot"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; repository scope lacks direct experimental or static evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "PandaRoot installation requirements"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; concept vocabulary lacks direct experimental or static evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": [
+            "Installation/Installation.html",
+            "Installation/Install_PandaRoot.html"
+          ],
+          "rationale": "Fixed symbol or file path; hold pending validated generic replacement mechanism for this domain.",
+          "expected_future_owner": "HOLD pending future generic evidence replacement"
+        },
+        "paper_page_hints": {
+          "disposition": null,
+          "items": {},
+          "rationale": "No paper page hints injected by this rule.",
+          "expected_future_owner": null
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Not part of historical D3-selected batch; held without prejudice. Retain language/domain components; fixed locators hold pending future assessment.",
+      "expected_future_owner": "HOLD / pending future batch assessment",
+      "historical_D3_evidence": {
+        "direct_identifiability": "NOT_EVALUATED_IN_D3",
+        "legacy_dependency": "NOT_EVALUATED",
+        "structured_recovery": "NOT_EVALUATED",
+        "prior_rule_decision": "EXCLUDED_FROM_D3_FIRST_BATCH",
+        "d3_cases": []
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "NOT_YET_ASSESSED"
+    },
+    {
+      "rule_id": "simulation_configuration_usage",
+      "historical_rule_family": "USAGE_INSTALLATION",
+      "triggers": [
+        "simulation configuration",
+        "configure a simulation",
+        "PndMasterRunSim"
+      ],
+      "repositories": [
+        "pandaroot"
+      ],
+      "symbols": [
+        "tools/MasterTasks/PndMasterRunSim.cxx",
+        "Tools/PndMasterTasks/PndMasterRunSim.html",
+        "Running/MasterTasks.html"
+      ],
+      "concepts": [
+        "PndMasterRunSim simulation configuration"
+      ],
+      "paper_page_hints": {},
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "simulation configuration",
+            "configure a simulation",
+            "PndMasterRunSim"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; trigger component lacks direct experimental or static evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "pandaroot"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; repository scope lacks direct experimental or static evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "PndMasterRunSim simulation configuration"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; concept vocabulary lacks direct experimental or static evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": [
+            "tools/MasterTasks/PndMasterRunSim.cxx",
+            "Tools/PndMasterTasks/PndMasterRunSim.html",
+            "Running/MasterTasks.html"
+          ],
+          "rationale": "Fixed symbol or file path; hold pending validated generic replacement mechanism for this domain.",
+          "expected_future_owner": "HOLD pending future generic evidence replacement"
+        },
+        "paper_page_hints": {
+          "disposition": null,
+          "items": {},
+          "rationale": "No paper page hints injected by this rule.",
+          "expected_future_owner": null
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Not part of historical D3-selected batch; held without prejudice. Retain language/domain components; fixed locators hold pending future assessment.",
+      "expected_future_owner": "HOLD / pending future batch assessment",
+      "historical_D3_evidence": {
+        "direct_identifiability": "NOT_EVALUATED_IN_D3",
+        "legacy_dependency": "NOT_EVALUATED",
+        "structured_recovery": "NOT_EVALUATED",
+        "prior_rule_decision": "EXCLUDED_FROM_D3_FIRST_BATCH",
+        "d3_cases": []
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "NOT_YET_ASSESSED"
+    },
+    {
+      "rule_id": "fit_data_usage",
+      "historical_rule_family": "USAGE_INSTALLATION",
+      "triggers": [
+        "createLmdFitData",
+        "fit data creation",
+        "data categories",
+        "a/e/r/v"
+      ],
+      "repositories": [
+        "luminosityfit"
+      ],
+      "symbols": [
+        "docs/apps/createLmdFitData.md",
+        "apps/createLmdFitData.cxx"
+      ],
+      "concepts": [
+        "createLmdFitData invocation and data categories"
+      ],
+      "paper_page_hints": {},
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "createLmdFitData",
+            "fit data creation",
+            "data categories",
+            "a/e/r/v"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; trigger component lacks direct experimental or static evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "luminosityfit"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; repository scope lacks direct experimental or static evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "createLmdFitData invocation and data categories"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; concept vocabulary lacks direct experimental or static evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": [
+            "docs/apps/createLmdFitData.md",
+            "apps/createLmdFitData.cxx"
+          ],
+          "rationale": "Fixed symbol or file path; hold pending validated generic replacement mechanism for this domain.",
+          "expected_future_owner": "HOLD pending future generic evidence replacement"
+        },
+        "paper_page_hints": {
+          "disposition": null,
+          "items": {},
+          "rationale": "No paper page hints injected by this rule.",
+          "expected_future_owner": null
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Not part of historical D3-selected batch; held without prejudice. Retain language/domain components; fixed locators hold pending future assessment.",
+      "expected_future_owner": "HOLD / pending future batch assessment",
+      "historical_D3_evidence": {
+        "direct_identifiability": "NOT_EVALUATED_IN_D3",
+        "legacy_dependency": "NOT_EVALUATED",
+        "structured_recovery": "NOT_EVALUATED",
+        "prior_rule_decision": "EXCLUDED_FROM_D3_FIRST_BATCH",
+        "d3_cases": []
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "NOT_YET_ASSESSED"
+    },
+    {
+      "rule_id": "run_fit_usage",
+      "historical_rule_family": "USAGE_INSTALLATION",
+      "triggers": [
+        "run a luminosity fit",
+        "running fit",
+        "runLmdFit",
+        "prepared fit data"
+      ],
+      "repositories": [
+        "luminosityfit"
+      ],
+      "symbols": [
+        "docs/apps/createLmdFitData.md",
+        "apps/runLmdFit.cxx",
+        "python/runLmdFit.sh",
+        "README.md"
+      ],
+      "concepts": [
+        "LuminosityFit execution after fit-data preparation"
+      ],
+      "paper_page_hints": {},
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "run a luminosity fit",
+            "running fit",
+            "runLmdFit",
+            "prepared fit data"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; trigger component lacks direct experimental or static evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "luminosityfit"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; repository scope lacks direct experimental or static evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "LuminosityFit execution after fit-data preparation"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; concept vocabulary lacks direct experimental or static evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": [
+            "docs/apps/createLmdFitData.md",
+            "apps/runLmdFit.cxx",
+            "python/runLmdFit.sh",
+            "README.md"
+          ],
+          "rationale": "Fixed symbol or file path; hold pending validated generic replacement mechanism for this domain.",
+          "expected_future_owner": "HOLD pending future generic evidence replacement"
+        },
+        "paper_page_hints": {
+          "disposition": null,
+          "items": {},
+          "rationale": "No paper page hints injected by this rule.",
+          "expected_future_owner": null
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Not part of historical D3-selected batch; held without prejudice. Retain language/domain components; fixed locators hold pending future assessment.",
+      "expected_future_owner": "HOLD / pending future batch assessment",
+      "historical_D3_evidence": {
+        "direct_identifiability": "NOT_EVALUATED_IN_D3",
+        "legacy_dependency": "NOT_EVALUATED",
+        "structured_recovery": "NOT_EVALUATED",
+        "prior_rule_decision": "EXCLUDED_FROM_D3_FIRST_BATCH",
+        "d3_cases": []
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "NOT_YET_ASSESSED"
+    },
+    {
+      "rule_id": "acceptance_model_boundary",
+      "historical_rule_family": "CONCEPT_IMPLEMENTATION",
+      "triggers": [
+        "PndLmdAcceptance",
+        "acceptance into PndLmdModelFactory",
+        "data objects"
+      ],
+      "repositories": [
+        "luminosityfit"
+      ],
+      "symbols": [
+        "data/PndLmdAcceptance.cxx",
+        "model/PndLmdModelFactory.cxx"
+      ],
+      "concepts": [
+        "acceptance data object to model factory boundary"
+      ],
+      "paper_page_hints": {},
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "PndLmdAcceptance",
+            "acceptance into PndLmdModelFactory",
+            "data objects"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; trigger component lacks direct experimental or static evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "luminosityfit"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; repository scope lacks direct experimental or static evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "acceptance data object to model factory boundary"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; concept vocabulary lacks direct experimental or static evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": [
+            "data/PndLmdAcceptance.cxx",
+            "model/PndLmdModelFactory.cxx"
+          ],
+          "rationale": "Fixed symbol or file path; hold pending validated generic replacement mechanism for this domain.",
+          "expected_future_owner": "HOLD pending future generic evidence replacement"
+        },
+        "paper_page_hints": {
+          "disposition": null,
+          "items": {},
+          "rationale": "No paper page hints injected by this rule.",
+          "expected_future_owner": null
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Not part of historical D3-selected batch; held without prejudice. Retain language/domain components; fixed locators hold pending future assessment.",
+      "expected_future_owner": "HOLD / pending future batch assessment",
+      "historical_D3_evidence": {
+        "direct_identifiability": "NOT_EVALUATED_IN_D3",
+        "legacy_dependency": "NOT_EVALUATED",
+        "structured_recovery": "NOT_EVALUATED",
+        "prior_rule_decision": "EXCLUDED_FROM_D3_FIRST_BATCH",
+        "d3_cases": []
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "NOT_YET_ASSESSED"
+    },
+    {
+      "rule_id": "event_poca_troubleshooting",
+      "historical_rule_family": "TROUBLESHOOTING_COMPATIBILITY",
+      "triggers": [
+        "event ID",
+        "event ID alignment",
+        "event_poca is missing",
+        "POCA_VERTEX_FILE",
+        "second-pass PID"
+      ],
+      "repositories": [
+        "restgas_determination"
+      ],
+      "symbols": [
+        "macro/target/README.md",
+        "macro/target/pid_complete.C",
+        "macro/target/ana_dpm.C",
+        "macro/target/prod_aod_complete.C",
+        "pid/PidCorr/PndPidCorrelator.cxx",
+        "Running/Running.html"
+      ],
+      "concepts": [
+        "event POCA troubleshooting and event alignment",
+        "first-pass PID input and prefix context"
+      ],
+      "paper_page_hints": {},
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "event ID",
+            "event ID alignment",
+            "event_poca is missing",
+            "POCA_VERTEX_FILE",
+            "second-pass PID"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; trigger component lacks direct experimental or static evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "restgas_determination"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; repository scope lacks direct experimental or static evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "event POCA troubleshooting and event alignment",
+            "first-pass PID input and prefix context"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; concept vocabulary lacks direct experimental or static evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": [
+            "macro/target/README.md",
+            "macro/target/pid_complete.C",
+            "macro/target/ana_dpm.C",
+            "macro/target/prod_aod_complete.C",
+            "pid/PidCorr/PndPidCorrelator.cxx",
+            "Running/Running.html"
+          ],
+          "rationale": "Fixed symbol or file path; hold pending validated generic replacement mechanism for this domain.",
+          "expected_future_owner": "HOLD pending future generic evidence replacement"
+        },
+        "paper_page_hints": {
+          "disposition": null,
+          "items": {},
+          "rationale": "No paper page hints injected by this rule.",
+          "expected_future_owner": null
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Not part of historical D3-selected batch; held without prejudice. Retain language/domain components; fixed locators hold pending future assessment.",
+      "expected_future_owner": "HOLD / pending future batch assessment",
+      "historical_D3_evidence": {
+        "direct_identifiability": "NOT_EVALUATED_IN_D3",
+        "legacy_dependency": "NOT_EVALUATED",
+        "structured_recovery": "NOT_EVALUATED",
+        "prior_rule_decision": "EXCLUDED_FROM_D3_FIRST_BATCH",
+        "d3_cases": []
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "NOT_YET_ASSESSED"
+    },
+    {
+      "rule_id": "acceptance_efficiency_disambiguation",
+      "historical_rule_family": "TROUBLESHOOTING_COMPATIBILITY",
+      "triggers": [
+        "pvz efficiency",
+        "LMD angular acceptance be confused"
+      ],
+      "repositories": [
+        "pandaroot"
+      ],
+      "symbols": [
+        "Running/Running.html"
+      ],
+      "concepts": [
+        "angular acceptance versus longitudinal efficiency documentation"
+      ],
+      "paper_page_hints": {},
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "pvz efficiency",
+            "LMD angular acceptance be confused"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; trigger component lacks direct experimental or static evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "pandaroot"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; repository scope lacks direct experimental or static evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "angular acceptance versus longitudinal efficiency documentation"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; concept vocabulary lacks direct experimental or static evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": [
+            "Running/Running.html"
+          ],
+          "rationale": "Fixed symbol or file path; hold pending validated generic replacement mechanism for this domain.",
+          "expected_future_owner": "HOLD pending future generic evidence replacement"
+        },
+        "paper_page_hints": {
+          "disposition": null,
+          "items": {},
+          "rationale": "No paper page hints injected by this rule.",
+          "expected_future_owner": null
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Not part of historical D3-selected batch; held without prejudice. Retain language/domain components; fixed locators hold pending future assessment.",
+      "expected_future_owner": "HOLD / pending future batch assessment",
+      "historical_D3_evidence": {
+        "direct_identifiability": "NOT_EVALUATED_IN_D3",
+        "legacy_dependency": "NOT_EVALUATED",
+        "structured_recovery": "NOT_EVALUATED",
+        "prior_rule_decision": "EXCLUDED_FROM_D3_FIRST_BATCH",
+        "d3_cases": []
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "NOT_YET_ASSESSED"
+    },
+    {
+      "rule_id": "version_mismatch_troubleshooting",
+      "historical_rule_family": "TROUBLESHOOTING_COMPATIBILITY",
+      "triggers": [
+        "docs disagree",
+        "version divergence",
+        "oct19-derived",
+        "disagree with RestgasDetermination"
+      ],
+      "repositories": [
+        "restgas_determination",
+        "pandaroot"
+      ],
+      "symbols": [
+        "macro/target/README.md",
+        "Running/Running.html"
+      ],
+      "concepts": [
+        "documentation and branch version mismatch"
+      ],
+      "paper_page_hints": {},
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "docs disagree",
+            "version divergence",
+            "oct19-derived",
+            "disagree with RestgasDetermination"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; trigger component lacks direct experimental or static evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "restgas_determination",
+            "pandaroot"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; repository scope lacks direct experimental or static evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "documentation and branch version mismatch"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; concept vocabulary lacks direct experimental or static evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": [
+            "macro/target/README.md",
+            "Running/Running.html"
+          ],
+          "rationale": "Fixed symbol or file path; hold pending validated generic replacement mechanism for this domain.",
+          "expected_future_owner": "HOLD pending future generic evidence replacement"
+        },
+        "paper_page_hints": {
+          "disposition": null,
+          "items": {},
+          "rationale": "No paper page hints injected by this rule.",
+          "expected_future_owner": null
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Not part of historical D3-selected batch; held without prejudice. Retain language/domain components; fixed locators hold pending future assessment.",
+      "expected_future_owner": "HOLD / pending future batch assessment",
+      "historical_D3_evidence": {
+        "direct_identifiability": "NOT_EVALUATED_IN_D3",
+        "legacy_dependency": "NOT_EVALUATED",
+        "structured_recovery": "NOT_EVALUATED",
+        "prior_rule_decision": "EXCLUDED_FROM_D3_FIRST_BATCH",
+        "d3_cases": []
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "NOT_YET_ASSESSED"
+    },
+    {
+      "rule_id": "luminosity_equation_theory",
+      "historical_rule_family": "PAPER_PAGE_THEORY",
+      "triggers": [
+        "luminosity-extraction equation",
+        "cross section, acceptance, and resolution"
+      ],
+      "repositories": [
+        "luminosityfit",
+        "pandaroot"
+      ],
+      "symbols": [],
+      "concepts": [
+        "luminosity extraction equation",
+        "cross section",
+        "acceptance",
+        "resolution"
+      ],
+      "paper_page_hints": {
+        "karavdina_2015": [
+          60,
+          65,
+          71
+        ]
+      },
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "luminosity-extraction equation",
+            "cross section, acceptance, and resolution"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; trigger component lacks direct experimental or static evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "luminosityfit",
+            "pandaroot"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; repository scope lacks direct experimental or static evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "luminosity extraction equation",
+            "cross section",
+            "acceptance",
+            "resolution"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; concept vocabulary lacks direct experimental or static evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": null,
+          "items": [],
+          "rationale": "No symbols injected by this rule.",
+          "expected_future_owner": null
+        },
+        "paper_page_hints": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": {
+            "karavdina_2015": [
+              60,
+              65,
+              71
+            ]
+          },
+          "rationale": "Paper page hints; hold pending generic document/version navigation mechanism.",
+          "expected_future_owner": "HOLD pending generic document navigation"
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Not part of historical D3-selected batch; held without prejudice. Retain language/domain components; fixed locators hold pending future assessment.",
+      "expected_future_owner": "HOLD / pending future batch assessment",
+      "historical_D3_evidence": {
+        "direct_identifiability": "NOT_EVALUATED_IN_D3",
+        "legacy_dependency": "NOT_EVALUATED",
+        "structured_recovery": "NOT_EVALUATED",
+        "prior_rule_decision": "EXCLUDED_FROM_D3_FIRST_BATCH",
+        "d3_cases": []
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "NOT_YET_ASSESSED"
+    },
+    {
+      "rule_id": "beam_divergence_theory",
+      "historical_rule_family": "CONCEPT_IMPLEMENTATION",
+      "triggers": [
+        "beam divergence",
+        "divergence smearing"
+      ],
+      "repositories": [
+        "luminosityfit"
+      ],
+      "symbols": [
+        "model/PndLmdDivergenceSmearingModel2D.cxx",
+        "model/PndLmdModelFactory.cxx"
+      ],
+      "concepts": [
+        "beam divergence",
+        "divergence smearing"
+      ],
+      "paper_page_hints": {
+        "pflueger_2017": [
+          74,
+          78,
+          84
+        ]
+      },
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "beam divergence",
+            "divergence smearing"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; trigger component lacks direct experimental or static evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "luminosityfit"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; repository scope lacks direct experimental or static evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "beam divergence",
+            "divergence smearing"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; concept vocabulary lacks direct experimental or static evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": [
+            "model/PndLmdDivergenceSmearingModel2D.cxx",
+            "model/PndLmdModelFactory.cxx"
+          ],
+          "rationale": "Fixed symbol or file path; hold pending validated generic replacement mechanism for this domain.",
+          "expected_future_owner": "HOLD pending future generic evidence replacement"
+        },
+        "paper_page_hints": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": {
+            "pflueger_2017": [
+              74,
+              78,
+              84
+            ]
+          },
+          "rationale": "Paper page hints; hold pending generic document/version navigation mechanism.",
+          "expected_future_owner": "HOLD pending generic document navigation"
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Not part of historical D3-selected batch; held without prejudice. Retain language/domain components; fixed locators hold pending future assessment.",
+      "expected_future_owner": "HOLD / pending future batch assessment",
+      "historical_D3_evidence": {
+        "direct_identifiability": "NOT_EVALUATED_IN_D3",
+        "legacy_dependency": "NOT_EVALUATED",
+        "structured_recovery": "NOT_EVALUATED",
+        "prior_rule_decision": "EXCLUDED_FROM_D3_FIRST_BATCH",
+        "d3_cases": []
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "NOT_YET_ASSESSED"
+    },
+    {
+      "rule_id": "lmd_backpropagation_theory",
+      "historical_rule_family": "CONCEPT_IMPLEMENTATION",
+      "triggers": [
+        "propagated back toward an interaction point",
+        "LMD tracks propagated",
+        "LMD 轨迹如何回传"
+      ],
+      "repositories": [
+        "pandaroot"
+      ],
+      "symbols": [
+        "detectors/lmd/LmdTrack/PndLmdGeaneTask.cxx"
+      ],
+      "concepts": [
+        "LMD back propagation to interaction point"
+      ],
+      "paper_page_hints": {
+        "karavdina_2015": [
+          94,
+          100,
+          104
+        ]
+      },
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "propagated back toward an interaction point",
+            "LMD tracks propagated",
+            "LMD 轨迹如何回传"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; trigger component lacks direct experimental or static evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "pandaroot"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; repository scope lacks direct experimental or static evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "LMD back propagation to interaction point"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; concept vocabulary lacks direct experimental or static evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": [
+            "detectors/lmd/LmdTrack/PndLmdGeaneTask.cxx"
+          ],
+          "rationale": "Fixed symbol or file path; hold pending validated generic replacement mechanism for this domain.",
+          "expected_future_owner": "HOLD pending future generic evidence replacement"
+        },
+        "paper_page_hints": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": {
+            "karavdina_2015": [
+              94,
+              100,
+              104
+            ]
+          },
+          "rationale": "Paper page hints; hold pending generic document/version navigation mechanism.",
+          "expected_future_owner": "HOLD pending generic document navigation"
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Not part of historical D3-selected batch; held without prejudice. Retain language/domain components; fixed locators hold pending future assessment.",
+      "expected_future_owner": "HOLD / pending future batch assessment",
+      "historical_D3_evidence": {
+        "direct_identifiability": "NOT_EVALUATED_IN_D3",
+        "legacy_dependency": "NOT_EVALUATED",
+        "structured_recovery": "NOT_EVALUATED",
+        "prior_rule_decision": "EXCLUDED_FROM_D3_FIRST_BATCH",
+        "d3_cases": []
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "NOT_YET_ASSESSED"
+    },
+    {
+      "rule_id": "restgas_poca_theory",
+      "historical_rule_family": "CONCEPT_IMPLEMENTATION",
+      "triggers": [
+        "event-by-event POCA",
+        "restgas method use an event",
+        "event POCA"
+      ],
+      "repositories": [
+        "restgas_determination"
+      ],
+      "symbols": [
+        "macro/target/ana_dpm.C",
+        "macro/target/prod_aod_complete.C"
+      ],
+      "concepts": [
+        "event-by-event POCA",
+        "Target Spectrometer track extrapolation"
+      ],
+      "paper_page_hints": {
+        "li_2026": [
+          127,
+          131,
+          138
+        ]
+      },
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "event-by-event POCA",
+            "restgas method use an event",
+            "event POCA"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; trigger component lacks direct experimental or static evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "restgas_determination"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; repository scope lacks direct experimental or static evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "event-by-event POCA",
+            "Target Spectrometer track extrapolation"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; concept vocabulary lacks direct experimental or static evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": [
+            "macro/target/ana_dpm.C",
+            "macro/target/prod_aod_complete.C"
+          ],
+          "rationale": "Fixed symbol or file path; hold pending validated generic replacement mechanism for this domain.",
+          "expected_future_owner": "HOLD pending future generic evidence replacement"
+        },
+        "paper_page_hints": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": {
+            "li_2026": [
+              127,
+              131,
+              138
+            ]
+          },
+          "rationale": "Paper page hints; hold pending generic document/version navigation mechanism.",
+          "expected_future_owner": "HOLD pending generic document navigation"
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Not part of historical D3-selected batch; held without prejudice. Retain language/domain components; fixed locators hold pending future assessment.",
+      "expected_future_owner": "HOLD / pending future batch assessment",
+      "historical_D3_evidence": {
+        "direct_identifiability": "NOT_EVALUATED_IN_D3",
+        "legacy_dependency": "NOT_EVALUATED",
+        "structured_recovery": "NOT_EVALUATED",
+        "prior_rule_decision": "EXCLUDED_FROM_D3_FIRST_BATCH",
+        "d3_cases": []
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "NOT_YET_ASSESSED"
+    },
+    {
+      "rule_id": "pointlike_vs_restgas_acceptance",
+      "historical_rule_family": "CROSS_REPOSITORY_DATA_FLOW",
+      "triggers": [
+        "point-like angular acceptance",
+        "restgas effective acceptance"
+      ],
+      "repositories": [
+        "luminosityfit",
+        "restgas_determination"
+      ],
+      "symbols": [],
+      "concepts": [
+        "point-like acceptance versus restgas effective acceptance"
+      ],
+      "paper_page_hints": {
+        "pflueger_2017": [
+          57,
+          62
+        ],
+        "li_2026": [
+          83,
+          86,
+          89
+        ]
+      },
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "point-like angular acceptance",
+            "restgas effective acceptance"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; trigger component lacks direct experimental or static evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "luminosityfit",
+            "restgas_determination"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; repository scope lacks direct experimental or static evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "point-like acceptance versus restgas effective acceptance"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; concept vocabulary lacks direct experimental or static evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": null,
+          "items": [],
+          "rationale": "No symbols injected by this rule.",
+          "expected_future_owner": null
+        },
+        "paper_page_hints": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": {
+            "pflueger_2017": [
+              57,
+              62
+            ],
+            "li_2026": [
+              83,
+              86,
+              89
+            ]
+          },
+          "rationale": "Paper page hints; hold pending generic document/version navigation mechanism.",
+          "expected_future_owner": "HOLD pending generic document navigation"
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Not part of historical D3-selected batch; held without prejudice. Retain language/domain components; fixed locators hold pending future assessment.",
+      "expected_future_owner": "HOLD / pending future batch assessment",
+      "historical_D3_evidence": {
+        "direct_identifiability": "NOT_EVALUATED_IN_D3",
+        "legacy_dependency": "NOT_EVALUATED",
+        "structured_recovery": "NOT_EVALUATED",
+        "prior_rule_decision": "EXCLUDED_FROM_D3_FIRST_BATCH",
+        "d3_cases": []
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "NOT_YET_ASSESSED"
+    },
+    {
+      "rule_id": "hv_maps_vertex_resolution",
+      "historical_rule_family": "CONCEPT_IMPLEMENTATION",
+      "triggers": [
+        "HV-MAPS relevant for longitudinal vertex resolution",
+        "HV-MAPS",
+        "material budget"
+      ],
+      "repositories": [
+        "pandaroot",
+        "restgas_determination"
+      ],
+      "symbols": [
+        "macro/target/prod_sim_hvmaps.C"
+      ],
+      "concepts": [
+        "HV-MAPS material budget and longitudinal vertex resolution"
+      ],
+      "paper_page_hints": {
+        "li_2026": [
+          103,
+          109,
+          123
+        ]
+      },
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "HV-MAPS relevant for longitudinal vertex resolution",
+            "HV-MAPS",
+            "material budget"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; trigger component lacks direct experimental or static evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "pandaroot",
+            "restgas_determination"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; repository scope lacks direct experimental or static evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "HV-MAPS material budget and longitudinal vertex resolution"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; concept vocabulary lacks direct experimental or static evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": [
+            "macro/target/prod_sim_hvmaps.C"
+          ],
+          "rationale": "Fixed symbol or file path; hold pending validated generic replacement mechanism for this domain.",
+          "expected_future_owner": "HOLD pending future generic evidence replacement"
+        },
+        "paper_page_hints": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": {
+            "li_2026": [
+              103,
+              109,
+              123
+            ]
+          },
+          "rationale": "Paper page hints; hold pending generic document/version navigation mechanism.",
+          "expected_future_owner": "HOLD pending generic document navigation"
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Not part of historical D3-selected batch; held without prejudice. Retain language/domain components; fixed locators hold pending future assessment.",
+      "expected_future_owner": "HOLD / pending future batch assessment",
+      "historical_D3_evidence": {
+        "direct_identifiability": "NOT_EVALUATED_IN_D3",
+        "legacy_dependency": "NOT_EVALUATED",
+        "structured_recovery": "NOT_EVALUATED",
+        "prior_rule_decision": "EXCLUDED_FROM_D3_FIRST_BATCH",
+        "d3_cases": []
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "NOT_YET_ASSESSED"
+    },
+    {
+      "rule_id": "model_factory_theory",
+      "historical_rule_family": "CONCEPT_IMPLEMENTATION",
+      "triggers": [
+        "PndLmdModelFactory",
+        "DPM、acceptance 和 resolution",
+        "DPM acceptance resolution"
+      ],
+      "repositories": [
+        "luminosityfit"
+      ],
+      "symbols": [
+        "model/PndLmdDPMAngModel1D.cxx",
+        "model/PndLmdDPMAngModel2D.cxx",
+        "model/PndLmdModelFactory.cxx"
+      ],
+      "concepts": [
+        "DPM model acceptance resolution composition"
+      ],
+      "paper_page_hints": {
+        "pflueger_2017": [
+          51,
+          57,
+          65
+        ]
+      },
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "PndLmdModelFactory",
+            "DPM、acceptance 和 resolution",
+            "DPM acceptance resolution"
+          ],
+          "rationale": "Historical D3 evaluation demonstrated no meaningful legacy dependency (LOW_RISK_RETIREMENT_CANDIDATE); trigger component lacks direct evidence of generic reusability or necessity in query expansion.",
+          "expected_future_owner": "Later retirement / cleanup batch (no structured replacement required)"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "luminosityfit"
+          ],
+          "rationale": "Historical D3 evaluation demonstrated no meaningful legacy dependency; repository scope lacks direct evidence of routing necessity.",
+          "expected_future_owner": "Later retirement / cleanup batch (no structured replacement required)"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "DPM model acceptance resolution composition"
+          ],
+          "rationale": "Historical D3 evaluation demonstrated no meaningful legacy dependency; concept vocabulary lacks direct evidence of query expansion contribution.",
+          "expected_future_owner": "Later retirement / cleanup batch (no structured replacement required)"
+        },
+        "symbols": {
+          "disposition": "RETIRE_IF_REDUNDANT",
+          "items": [
+            "model/PndLmdDPMAngModel1D.cxx",
+            "model/PndLmdDPMAngModel2D.cxx",
+            "model/PndLmdModelFactory.cxx"
+          ],
+          "rationale": "Historical D3 evidence demonstrated no meaningful legacy dependency (LEGACY == ABLATION); component does not contribute to evidence retrieval.",
+          "expected_future_owner": "Later retirement / cleanup batch (no structured replacement required)"
+        },
+        "paper_page_hints": {
+          "disposition": "RETIRE_IF_REDUNDANT",
+          "items": {
+            "pflueger_2017": [
+              51,
+              57,
+              65
+            ]
+          },
+          "rationale": "Historical D3 evaluation showed no meaningful legacy dependency; page hint does not materially drive evidence retrieval.",
+          "expected_future_owner": "Later retirement / cleanup batch"
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETIRE_IF_REDUNDANT"
+      ],
+      "rationale": "Historical D3-A2 demonstrated NO_MEANINGFUL_LEGACY_DEPENDENCY (LEGACY == ABLATION). Candidate for a later retirement batch, not replacement migration.",
+      "expected_future_owner": "Later retirement / cleanup batch (with terminology preserved in aliases.yaml)",
+      "historical_D3_evidence": {
+        "direct_identifiability": "IDENTIFIABLE",
+        "legacy_dependency": "NOT_OBSERVED",
+        "structured_recovery": "PARITY",
+        "prior_rule_decision": "NO_MEANINGFUL_LEGACY_DEPENDENCY",
+        "d3_cases": [
+          "n014",
+          "g060"
+        ]
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "LOW_RISK_RETIREMENT_CANDIDATE"
+    },
+    {
+      "rule_id": "dpm_model_theory",
+      "historical_rule_family": "CONCEPT_IMPLEMENTATION",
+      "triggers": [
+        "DPM elastic-scattering model",
+        "theoretical purpose of the DPM"
+      ],
+      "repositories": [
+        "luminosityfit"
+      ],
+      "symbols": [],
+      "concepts": [
+        "DPM elastic scattering model"
+      ],
+      "paper_page_hints": {
+        "pflueger_2017": [
+          51,
+          52,
+          54
+        ]
+      },
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "DPM elastic-scattering model",
+            "theoretical purpose of the DPM"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; trigger component lacks direct experimental or static evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "luminosityfit"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; repository scope lacks direct experimental or static evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "DPM elastic scattering model"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; concept vocabulary lacks direct experimental or static evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": null,
+          "items": [],
+          "rationale": "No symbols injected by this rule.",
+          "expected_future_owner": null
+        },
+        "paper_page_hints": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": {
+            "pflueger_2017": [
+              51,
+              52,
+              54
+            ]
+          },
+          "rationale": "Paper page hints; hold pending generic document/version navigation mechanism.",
+          "expected_future_owner": "HOLD pending generic document navigation"
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Not part of historical D3-selected batch; held without prejudice. Retain language/domain components; fixed locators hold pending future assessment.",
+      "expected_future_owner": "HOLD / pending future batch assessment",
+      "historical_D3_evidence": {
+        "direct_identifiability": "NOT_EVALUATED_IN_D3",
+        "legacy_dependency": "NOT_EVALUATED",
+        "structured_recovery": "NOT_EVALUATED",
+        "prior_rule_decision": "EXCLUDED_FROM_D3_FIRST_BATCH",
+        "d3_cases": []
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "NOT_YET_ASSESSED"
+    },
+    {
+      "rule_id": "target_generator_theory",
+      "historical_rule_family": "CONCEPT_IMPLEMENTATION",
+      "triggers": [
+        "distributed restgas target",
+        "PndTargetGenerator 如何用于"
+      ],
+      "repositories": [
+        "restgas_determination"
+      ],
+      "symbols": [
+        "pgenerators/Target/PndTargetGenerator.cxx",
+        "macro/target/prod_sim_hvmaps.C"
+      ],
+      "concepts": [
+        "distributed target generation"
+      ],
+      "paper_page_hints": {
+        "li_2026": [
+          128,
+          132
+        ]
+      },
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "distributed restgas target",
+            "PndTargetGenerator 如何用于"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; trigger component lacks direct experimental or static evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "restgas_determination"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; repository scope lacks direct experimental or static evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "distributed target generation"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; concept vocabulary lacks direct experimental or static evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": [
+            "pgenerators/Target/PndTargetGenerator.cxx",
+            "macro/target/prod_sim_hvmaps.C"
+          ],
+          "rationale": "Fixed symbol or file path; hold pending validated generic replacement mechanism for this domain.",
+          "expected_future_owner": "HOLD pending future generic evidence replacement"
+        },
+        "paper_page_hints": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": {
+            "li_2026": [
+              128,
+              132
+            ]
+          },
+          "rationale": "Paper page hints; hold pending generic document/version navigation mechanism.",
+          "expected_future_owner": "HOLD pending generic document navigation"
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Not part of historical D3-selected batch; held without prejudice. Retain language/domain components; fixed locators hold pending future assessment.",
+      "expected_future_owner": "HOLD / pending future batch assessment",
+      "historical_D3_evidence": {
+        "direct_identifiability": "NOT_EVALUATED_IN_D3",
+        "legacy_dependency": "NOT_EVALUATED",
+        "structured_recovery": "NOT_EVALUATED",
+        "prior_rule_decision": "EXCLUDED_FROM_D3_FIRST_BATCH",
+        "d3_cases": []
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "NOT_YET_ASSESSED"
+    },
+    {
+      "rule_id": "displaced_tracking_theory",
+      "historical_rule_family": "CONCEPT_IMPLEMENTATION",
+      "triggers": [
+        "Apollonius task",
+        "skew-straw pz finder",
+        "displaced tracking"
+      ],
+      "repositories": [
+        "restgas_determination"
+      ],
+      "symbols": [
+        "tracking/PndApolloniusTripletTrackFinder/PndApolloniusTripletTrackFinderTask.cxx",
+        "tracking/PzFinder/PndSttSkewStrawPzFinderTask.cxx",
+        "macro/target/reco_complete.C"
+      ],
+      "concepts": [
+        "displaced tracking reconstruction stages"
+      ],
+      "paper_page_hints": {
+        "li_2026": [
+          127,
+          131
+        ]
+      },
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "Apollonius task",
+            "skew-straw pz finder",
+            "displaced tracking"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; trigger component lacks direct experimental or static evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "restgas_determination"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; repository scope lacks direct experimental or static evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "displaced tracking reconstruction stages"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; concept vocabulary lacks direct experimental or static evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": [
+            "tracking/PndApolloniusTripletTrackFinder/PndApolloniusTripletTrackFinderTask.cxx",
+            "tracking/PzFinder/PndSttSkewStrawPzFinderTask.cxx",
+            "macro/target/reco_complete.C"
+          ],
+          "rationale": "Fixed symbol or file path; hold pending validated generic replacement mechanism for this domain.",
+          "expected_future_owner": "HOLD pending future generic evidence replacement"
+        },
+        "paper_page_hints": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": {
+            "li_2026": [
+              127,
+              131
+            ]
+          },
+          "rationale": "Paper page hints; hold pending generic document/version navigation mechanism.",
+          "expected_future_owner": "HOLD pending generic document navigation"
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Not part of historical D3-selected batch; held without prejudice. Retain language/domain components; fixed locators hold pending future assessment.",
+      "expected_future_owner": "HOLD / pending future batch assessment",
+      "historical_D3_evidence": {
+        "direct_identifiability": "NOT_EVALUATED_IN_D3",
+        "legacy_dependency": "NOT_EVALUATED",
+        "structured_recovery": "NOT_EVALUATED",
+        "prior_rule_decision": "EXCLUDED_FROM_D3_FIRST_BATCH",
+        "d3_cases": []
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "NOT_YET_ASSESSED"
+    },
+    {
+      "rule_id": "vertex_fit_boundary_theory",
+      "historical_rule_family": "CONCEPT_IMPLEMENTATION",
+      "triggers": [
+        "final vertex fit",
+        "raw POCA pass",
+        "原始 POCA pass"
+      ],
+      "repositories": [
+        "restgas_determination"
+      ],
+      "symbols": [
+        "macro/target/ana_dpm.C",
+        "macro/target/ana_complete.C"
+      ],
+      "concepts": [
+        "raw POCA pass versus final vertex fit"
+      ],
+      "paper_page_hints": {
+        "li_2026": [
+          131,
+          138
+        ]
+      },
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "final vertex fit",
+            "raw POCA pass",
+            "原始 POCA pass"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; trigger component lacks direct experimental or static evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "restgas_determination"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; repository scope lacks direct experimental or static evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "raw POCA pass versus final vertex fit"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; concept vocabulary lacks direct experimental or static evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": [
+            "macro/target/ana_dpm.C",
+            "macro/target/ana_complete.C"
+          ],
+          "rationale": "Fixed symbol or file path; hold pending validated generic replacement mechanism for this domain.",
+          "expected_future_owner": "HOLD pending future generic evidence replacement"
+        },
+        "paper_page_hints": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": {
+            "li_2026": [
+              131,
+              138
+            ]
+          },
+          "rationale": "Paper page hints; hold pending generic document/version navigation mechanism.",
+          "expected_future_owner": "HOLD pending generic document navigation"
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Not part of historical D3-selected batch; held without prejudice. Retain language/domain components; fixed locators hold pending future assessment.",
+      "expected_future_owner": "HOLD / pending future batch assessment",
+      "historical_D3_evidence": {
+        "direct_identifiability": "NOT_EVALUATED_IN_D3",
+        "legacy_dependency": "NOT_EVALUATED",
+        "structured_recovery": "NOT_EVALUATED",
+        "prior_rule_decision": "EXCLUDED_FROM_D3_FIRST_BATCH",
+        "d3_cases": []
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "NOT_YET_ASSESSED"
+    },
+    {
+      "rule_id": "similarly_named_track_finders",
+      "historical_rule_family": "CONCEPT_IMPLEMENTATION",
+      "triggers": [
+        "class name match",
+        "wrong implementation",
+        "类名匹配",
+        "错误实现"
+      ],
+      "repositories": [
+        "pandaroot",
+        "restgas_determination"
+      ],
+      "symbols": [
+        "tracking/PndApolloniusTripletTrackFinder/PndApolloniusTripletTrackFinderTask.cxx",
+        "detectors/lmd/LmdTrack/PndLmdTrackFinderCATask.cxx"
+      ],
+      "concepts": [
+        "detector-scoped track finder disambiguation"
+      ],
+      "paper_page_hints": {},
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "class name match",
+            "wrong implementation",
+            "类名匹配",
+            "错误实现"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; trigger component lacks direct experimental or static evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "pandaroot",
+            "restgas_determination"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; repository scope lacks direct experimental or static evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "detector-scoped track finder disambiguation"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; concept vocabulary lacks direct experimental or static evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": [
+            "tracking/PndApolloniusTripletTrackFinder/PndApolloniusTripletTrackFinderTask.cxx",
+            "detectors/lmd/LmdTrack/PndLmdTrackFinderCATask.cxx"
+          ],
+          "rationale": "Fixed symbol or file path; hold pending validated generic replacement mechanism for this domain.",
+          "expected_future_owner": "HOLD pending future generic evidence replacement"
+        },
+        "paper_page_hints": {
+          "disposition": null,
+          "items": {},
+          "rationale": "No paper page hints injected by this rule.",
+          "expected_future_owner": null
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Not part of historical D3-selected batch; held without prejudice. Retain language/domain components; fixed locators hold pending future assessment.",
+      "expected_future_owner": "HOLD / pending future batch assessment",
+      "historical_D3_evidence": {
+        "direct_identifiability": "NOT_EVALUATED_IN_D3",
+        "legacy_dependency": "NOT_EVALUATED",
+        "structured_recovery": "NOT_EVALUATED",
+        "prior_rule_decision": "EXCLUDED_FROM_D3_FIRST_BATCH",
+        "d3_cases": []
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "NOT_YET_ASSESSED"
+    },
+    {
+      "rule_id": "dpm_angular_models",
+      "historical_rule_family": "CONCEPT_IMPLEMENTATION",
+      "triggers": [
+        "DPM 1D",
+        "DPM 2D",
+        "2D angular model",
+        "DPM 1D 与 2D"
+      ],
+      "repositories": [
+        "luminosityfit"
+      ],
+      "symbols": [
+        "model/PndLmdDPMAngModel1D.cxx",
+        "model/PndLmdDPMAngModel2D.cxx"
+      ],
+      "concepts": [
+        "DPM one-dimensional and two-dimensional angular models"
+      ],
+      "paper_page_hints": {
+        "pflueger_2017": [
+          51,
+          54
+        ]
+      },
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "DPM 1D",
+            "DPM 2D",
+            "2D angular model",
+            "DPM 1D 与 2D"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; trigger component lacks direct experimental or static evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "luminosityfit"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; repository scope lacks direct experimental or static evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "DPM one-dimensional and two-dimensional angular models"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; concept vocabulary lacks direct experimental or static evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": [
+            "model/PndLmdDPMAngModel1D.cxx",
+            "model/PndLmdDPMAngModel2D.cxx"
+          ],
+          "rationale": "Fixed symbol or file path; hold pending validated generic replacement mechanism for this domain.",
+          "expected_future_owner": "HOLD pending future generic evidence replacement"
+        },
+        "paper_page_hints": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": {
+            "pflueger_2017": [
+              51,
+              54
+            ]
+          },
+          "rationale": "Paper page hints; hold pending generic document/version navigation mechanism.",
+          "expected_future_owner": "HOLD pending generic document navigation"
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Not part of historical D3-selected batch; held without prejudice. Retain language/domain components; fixed locators hold pending future assessment.",
+      "expected_future_owner": "HOLD / pending future batch assessment",
+      "historical_D3_evidence": {
+        "direct_identifiability": "NOT_EVALUATED_IN_D3",
+        "legacy_dependency": "NOT_EVALUATED",
+        "structured_recovery": "NOT_EVALUATED",
+        "prior_rule_decision": "EXCLUDED_FROM_D3_FIRST_BATCH",
+        "d3_cases": []
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "NOT_YET_ASSESSED"
+    },
+    {
+      "rule_id": "event_poca_workflow_alias",
+      "historical_rule_family": "WORKFLOW_DATA_FLOW",
+      "triggers": [
+        "event poca",
+        "two-pass reconstruction workflow",
+        "restgas two-pass reconstruction workflow"
+      ],
+      "repositories": [
+        "restgas_determination",
+        "pandaroot"
+      ],
+      "symbols": [
+        "macro/target/ana_dpm.C",
+        "macro/target/prod_aod_complete.C",
+        "event_poca",
+        "POCA_VERTEX_FILE",
+        "PndPidCorrelator"
+      ],
+      "concepts": [
+        "event POCA handoff",
+        "event-aligned second-pass propagation"
+      ],
+      "paper_page_hints": {},
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "event poca",
+            "two-pass reconstruction workflow",
+            "restgas two-pass reconstruction workflow"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; trigger component lacks direct experimental or static evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "restgas_determination",
+            "pandaroot"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; repository scope lacks direct experimental or static evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "event POCA handoff",
+            "event-aligned second-pass propagation"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; concept vocabulary lacks direct experimental or static evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": [
+            "macro/target/ana_dpm.C",
+            "macro/target/prod_aod_complete.C",
+            "event_poca",
+            "POCA_VERTEX_FILE",
+            "PndPidCorrelator"
+          ],
+          "rationale": "Fixed symbol or file path; hold pending validated generic replacement mechanism for this domain.",
+          "expected_future_owner": "HOLD pending future generic evidence replacement"
+        },
+        "paper_page_hints": {
+          "disposition": null,
+          "items": {},
+          "rationale": "No paper page hints injected by this rule.",
+          "expected_future_owner": null
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Not part of historical D3-selected batch; held without prejudice. Retain language/domain components; fixed locators hold pending future assessment.",
+      "expected_future_owner": "HOLD / pending future batch assessment",
+      "historical_D3_evidence": {
+        "direct_identifiability": "NOT_EVALUATED_IN_D3",
+        "legacy_dependency": "NOT_EVALUATED",
+        "structured_recovery": "NOT_EVALUATED",
+        "prior_rule_decision": "EXCLUDED_FROM_D3_FIRST_BATCH",
+        "d3_cases": []
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "NOT_YET_ASSESSED"
+    },
+    {
+      "rule_id": "reconstructed_profile_factory_alias",
+      "historical_rule_family": "CROSS_REPOSITORY_DATA_FLOW",
+      "triggers": [
+        "reconstructed rho(z) to restgas effective acceptance",
+        "reconstructed rho to effective acceptance"
+      ],
+      "repositories": [
+        "restgas_determination",
+        "luminosityfit"
+      ],
+      "symbols": [
+        "macro/target/prod_sim_hvmaps.C",
+        "data/PndLmdAcceptance.cxx",
+        "model/PndLmdModelFactory.cxx"
+      ],
+      "concepts": [
+        "reconstructed profile to effective acceptance pipeline"
+      ],
+      "paper_page_hints": {},
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "reconstructed rho(z) to restgas effective acceptance",
+            "reconstructed rho to effective acceptance"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; trigger component lacks direct experimental or static evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "restgas_determination",
+            "luminosityfit"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; repository scope lacks direct experimental or static evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "reconstructed profile to effective acceptance pipeline"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; concept vocabulary lacks direct experimental or static evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": [
+            "macro/target/prod_sim_hvmaps.C",
+            "data/PndLmdAcceptance.cxx",
+            "model/PndLmdModelFactory.cxx"
+          ],
+          "rationale": "Fixed symbol or file path; hold pending validated generic replacement mechanism for this domain.",
+          "expected_future_owner": "HOLD pending future generic evidence replacement"
+        },
+        "paper_page_hints": {
+          "disposition": null,
+          "items": {},
+          "rationale": "No paper page hints injected by this rule.",
+          "expected_future_owner": null
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Not part of historical D3-selected batch; held without prejudice. Retain language/domain components; fixed locators hold pending future assessment.",
+      "expected_future_owner": "HOLD / pending future batch assessment",
+      "historical_D3_evidence": {
+        "direct_identifiability": "NOT_EVALUATED_IN_D3",
+        "legacy_dependency": "NOT_EVALUATED",
+        "structured_recovery": "NOT_EVALUATED",
+        "prior_rule_decision": "EXCLUDED_FROM_D3_FIRST_BATCH",
+        "d3_cases": []
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "NOT_YET_ASSESSED"
+    },
+    {
+      "rule_id": "master_reconstruction_workflow",
+      "historical_rule_family": "WORKFLOW_DATA_FLOW",
+      "triggers": [
+        "PndMasterRecoTask",
+        "master reconstruction task",
+        "master reconstruction workflow"
+      ],
+      "repositories": [
+        "pandaroot"
+      ],
+      "symbols": [
+        "Running/Running.html",
+        "Running/MasterTasks.html",
+        "Tools/PndMasterTasks/PndMasterRecoTask.html",
+        "tools/MasterTasks/PndMasterRecoTask.cxx"
+      ],
+      "concepts": [
+        "PandaRoot running sequence",
+        "master reconstruction task workflow"
+      ],
+      "paper_page_hints": {},
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "PndMasterRecoTask",
+            "master reconstruction task",
+            "master reconstruction workflow"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; trigger component lacks direct experimental or static evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "pandaroot"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; repository scope lacks direct experimental or static evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "PandaRoot running sequence",
+            "master reconstruction task workflow"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; concept vocabulary lacks direct experimental or static evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": [
+            "Running/Running.html",
+            "Running/MasterTasks.html",
+            "Tools/PndMasterTasks/PndMasterRecoTask.html",
+            "tools/MasterTasks/PndMasterRecoTask.cxx"
+          ],
+          "rationale": "Fixed symbol or file path; hold pending validated generic replacement mechanism for this domain.",
+          "expected_future_owner": "HOLD pending future generic evidence replacement"
+        },
+        "paper_page_hints": {
+          "disposition": null,
+          "items": {},
+          "rationale": "No paper page hints injected by this rule.",
+          "expected_future_owner": null
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Not part of historical D3-selected batch; held without prejudice. Retain language/domain components; fixed locators hold pending future assessment.",
+      "expected_future_owner": "HOLD / pending future batch assessment",
+      "historical_D3_evidence": {
+        "direct_identifiability": "NOT_EVALUATED_IN_D3",
+        "legacy_dependency": "NOT_EVALUATED",
+        "structured_recovery": "NOT_EVALUATED",
+        "prior_rule_decision": "EXCLUDED_FROM_D3_FIRST_BATCH",
+        "d3_cases": []
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "NOT_YET_ASSESSED"
+    },
+    {
+      "rule_id": "target_generator_sampling_data_flow",
+      "historical_rule_family": "CROSS_REPOSITORY_DATA_FLOW",
+      "triggers": [
+        "PndTargetGenerator",
+        "target generator data flow",
+        "interaction vertex sampling",
+        "SampleInteractionVertex"
+      ],
+      "repositories": [
+        "pandaroot",
+        "restgas_determination"
+      ],
+      "symbols": [
+        "tools/MasterTasks/PndMasterRunSim.cxx",
+        "pgenerators/Target/PndTargetGenerator.cxx",
+        "PndTargetGenerator::SampleInteractionVertex",
+        "Tools/PndMasterTasks/PndMasterRunSim.html",
+        "Running/Running.html",
+        "Running/MasterTasks.html"
+      ],
+      "concepts": [
+        "simulation master task to target-generator data flow",
+        "interaction-vertex sampling lifecycle",
+        "PandaRoot operational documentation",
+        "generic PandaRoot workflow"
+      ],
+      "paper_page_hints": {},
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "PndTargetGenerator",
+            "target generator data flow",
+            "interaction vertex sampling",
+            "SampleInteractionVertex"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; trigger component lacks direct experimental or static evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "pandaroot",
+            "restgas_determination"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; repository scope lacks direct experimental or static evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "simulation master task to target-generator data flow",
+            "interaction-vertex sampling lifecycle",
+            "PandaRoot operational documentation",
+            "generic PandaRoot workflow"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; concept vocabulary lacks direct experimental or static evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": [
+            "tools/MasterTasks/PndMasterRunSim.cxx",
+            "pgenerators/Target/PndTargetGenerator.cxx",
+            "PndTargetGenerator::SampleInteractionVertex",
+            "Tools/PndMasterTasks/PndMasterRunSim.html",
+            "Running/Running.html",
+            "Running/MasterTasks.html"
+          ],
+          "rationale": "Fixed symbol or file path; hold pending validated generic replacement mechanism for this domain.",
+          "expected_future_owner": "HOLD pending future generic evidence replacement"
+        },
+        "paper_page_hints": {
+          "disposition": null,
+          "items": {},
+          "rationale": "No paper page hints injected by this rule.",
+          "expected_future_owner": null
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Not part of historical D3-selected batch; held without prejudice. Retain language/domain components; fixed locators hold pending future assessment.",
+      "expected_future_owner": "HOLD / pending future batch assessment",
+      "historical_D3_evidence": {
+        "direct_identifiability": "NOT_EVALUATED_IN_D3",
+        "legacy_dependency": "NOT_EVALUATED",
+        "structured_recovery": "NOT_EVALUATED",
+        "prior_rule_decision": "EXCLUDED_FROM_D3_FIRST_BATCH",
+        "d3_cases": []
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "NOT_YET_ASSESSED"
+    },
+    {
+      "rule_id": "model_factory_acceptance_methods",
+      "historical_rule_family": "CONCEPT_IMPLEMENTATION",
+      "triggers": [
+        "PndLmdModelFactory",
+        "factory acceptance",
+        "effective acceptance factory",
+        "divergence factory"
+      ],
+      "repositories": [
+        "luminosityfit"
+      ],
+      "symbols": [
+        "model/PndLmdModelFactory.cxx",
+        "PndLmdModelFactory::setAcceptance",
+        "PndLmdModelFactory::generate2DModel"
+      ],
+      "concepts": [
+        "acceptance injection and two-dimensional model generation"
+      ],
+      "paper_page_hints": {},
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "PndLmdModelFactory",
+            "factory acceptance",
+            "effective acceptance factory",
+            "divergence factory"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; trigger component lacks direct experimental or static evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "luminosityfit"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; repository scope lacks direct experimental or static evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "acceptance injection and two-dimensional model generation"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; concept vocabulary lacks direct experimental or static evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": [
+            "model/PndLmdModelFactory.cxx",
+            "PndLmdModelFactory::setAcceptance",
+            "PndLmdModelFactory::generate2DModel"
+          ],
+          "rationale": "Fixed symbol or file path; hold pending validated generic replacement mechanism for this domain.",
+          "expected_future_owner": "HOLD pending future generic evidence replacement"
+        },
+        "paper_page_hints": {
+          "disposition": null,
+          "items": {},
+          "rationale": "No paper page hints injected by this rule.",
+          "expected_future_owner": null
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Not part of historical D3-selected batch; held without prejudice. Retain language/domain components; fixed locators hold pending future assessment.",
+      "expected_future_owner": "HOLD / pending future batch assessment",
+      "historical_D3_evidence": {
+        "direct_identifiability": "NOT_EVALUATED_IN_D3",
+        "legacy_dependency": "NOT_EVALUATED",
+        "structured_recovery": "NOT_EVALUATED",
+        "prior_rule_decision": "EXCLUDED_FROM_D3_FIRST_BATCH",
+        "d3_cases": []
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "NOT_YET_ASSESSED"
+    },
+    {
+      "rule_id": "restgas_longitudinal_efficiency_contrast",
+      "historical_rule_family": "CONCEPT_IMPLEMENTATION",
+      "triggers": [
+        "longitudinal restgas efficiency",
+        "restgas longitudinal efficiency",
+        "restgas profile efficiency",
+        "pvz efficiency"
+      ],
+      "repositories": [
+        "restgas_determination"
+      ],
+      "symbols": [
+        "macro/target/correction/efficiency_correction_2.C",
+        "macro/target/correction/efficiency_correction_steps.C"
+      ],
+      "concepts": [
+        "restgas longitudinal reconstruction efficiency",
+        "angular acceptance versus longitudinal efficiency distinction"
+      ],
+      "paper_page_hints": {},
+      "component_classification": {
+        "triggers": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "longitudinal restgas efficiency",
+            "restgas longitudinal efficiency",
+            "restgas profile efficiency",
+            "pvz efficiency"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; trigger component lacks direct experimental or static evidence of generic reusability.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "repositories": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "restgas_determination"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; repository scope lacks direct experimental or static evidence of routing necessity.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "concepts": {
+          "disposition": "NEEDS_EVIDENCE",
+          "items": [
+            "restgas longitudinal reconstruction efficiency",
+            "angular acceptance versus longitudinal efficiency distinction"
+          ],
+          "rationale": "Rule not yet assessed in D3/D3.5; concept vocabulary lacks direct experimental or static evidence of retrieval contribution.",
+          "expected_future_owner": "Evidence collection / subsequent D4 evaluation batches"
+        },
+        "symbols": {
+          "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+          "items": [
+            "macro/target/correction/efficiency_correction_2.C",
+            "macro/target/correction/efficiency_correction_steps.C"
+          ],
+          "rationale": "Fixed symbol or file path; hold pending validated generic replacement mechanism for this domain.",
+          "expected_future_owner": "HOLD pending future generic evidence replacement"
+        },
+        "paper_page_hints": {
+          "disposition": null,
+          "items": {},
+          "rationale": "No paper page hints injected by this rule.",
+          "expected_future_owner": null
+        }
+      },
+      "component_dispositions": [
+        "NEEDS_EVIDENCE",
+        "RETAIN_PENDING_GENERIC_REPLACEMENT"
+      ],
+      "rationale": "Not part of historical D3-selected batch; held without prejudice. Retain language/domain components; fixed locators hold pending future assessment.",
+      "expected_future_owner": "HOLD / pending future batch assessment",
+      "historical_D3_evidence": {
+        "direct_identifiability": "NOT_EVALUATED_IN_D3",
+        "legacy_dependency": "NOT_EVALUATED",
+        "structured_recovery": "NOT_EVALUATED",
+        "prior_rule_decision": "EXCLUDED_FROM_D3_FIRST_BATCH",
+        "d3_cases": []
+      },
+      "D3_5_replacement_evidence": null,
+      "migration_readiness": "NOT_YET_ASSESSED"
+    }
+  ]
+}
