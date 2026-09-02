@@ -62,14 +62,55 @@ class FakeClient:
         self.models = FakeModels(embedding_dimensions, response_dimensions, response_counts)
 
 
+def _settings(**overrides) -> VertexSettings:
+    defaults = {
+        "project": "test-project",
+        "generation_model": "test-generation-model",
+        "evaluation_judge_model": "test-evaluation-judge-model",
+    }
+    defaults.update(overrides)
+    return VertexSettings(**defaults)
+
+
 class VertexTests(unittest.TestCase):
     def setUp(self) -> None:
-        self.settings = VertexSettings(project="test-project")
+        self.settings = _settings()
         self.fake = FakeClient(self.settings.embedding_dimensions)
         self.client = VertexAIClient(self.settings, client=self.fake)
 
     def test_settings_require_project(self) -> None:
-        with patch.dict(os.environ, {}, clear=True):
+        with patch.dict(
+            os.environ,
+            {
+                "QA_GENERATION_MODEL_ID": "test-generation-model",
+                "QA_EVALUATION_JUDGE_MODEL_ID": "test-evaluation-judge-model",
+            },
+            clear=True,
+        ):
+            with self.assertRaises(VertexConfigurationError):
+                VertexSettings.from_env()
+
+    def test_settings_require_generation_model(self) -> None:
+        with patch.dict(
+            os.environ,
+            {
+                "QA_GCP_PROJECT_ID": "test-project",
+                "QA_EVALUATION_JUDGE_MODEL_ID": "test-evaluation-judge-model",
+            },
+            clear=True,
+        ):
+            with self.assertRaises(VertexConfigurationError):
+                VertexSettings.from_env()
+
+    def test_settings_require_evaluation_judge_model(self) -> None:
+        with patch.dict(
+            os.environ,
+            {
+                "QA_GCP_PROJECT_ID": "test-project",
+                "QA_GENERATION_MODEL_ID": "test-generation-model",
+            },
+            clear=True,
+        ):
             with self.assertRaises(VertexConfigurationError):
                 VertexSettings.from_env()
 
@@ -78,24 +119,25 @@ class VertexTests(unittest.TestCase):
             os.environ,
             {
                 "QA_GCP_PROJECT_ID": "test-project",
-                "QA_GENERATION_MODEL_ID": "gemini-3.7-flash",
-                "QA_EVALUATION_JUDGE_MODEL_ID": "gemini-3.7-flash",
-                "QA_EMBEDDING_MODEL_ID": "gemini-embedding-2",
+                "QA_GENERATION_MODEL_ID": "test-generation-model",
+                "QA_EVALUATION_JUDGE_MODEL_ID": "test-evaluation-judge-model",
+                "QA_EMBEDDING_MODEL_ID": "test-embedding-model",
             },
             clear=True,
         ):
             settings = VertexSettings.from_env()
-        self.assertEqual(settings.generation_model, "gemini-3.7-flash")
-        self.assertEqual(settings.evaluation_judge_model, "gemini-3.7-flash")
+        self.assertEqual(settings.generation_model, "test-generation-model")
+        self.assertEqual(settings.evaluation_judge_model, "test-evaluation-judge-model")
+        self.assertEqual(settings.embedding_model, "test-embedding-model")
         self.assertEqual(
             settings.for_generation_model(settings.evaluation_judge_model).generation_model,
-            "gemini-3.7-flash",
+            "test-evaluation-judge-model",
         )
 
     def test_generation_health_check_reports_model_role(self) -> None:
         result = self.client.generation_health_check()
         self.assertEqual(result["status"], "ok")
-        self.assertEqual(result["generation_model"], "gemini-3.7-flash")
+        self.assertEqual(result["generation_model"], self.settings.generation_model)
 
     def test_generate_json_uses_constrained_json_output(self) -> None:
         result = self.client.generate_json(
@@ -121,7 +163,7 @@ class VertexTests(unittest.TestCase):
         self.assertFalse(query_config.auto_truncate)
 
     def test_embedding_dimension_mismatch_reports_expected_and_actual(self) -> None:
-        settings = VertexSettings(project="test-project")
+        settings = _settings()
         fake = FakeClient(settings.embedding_dimensions, response_dimensions=[3071])
         client = VertexAIClient(settings, client=fake)
 
@@ -134,7 +176,7 @@ class VertexTests(unittest.TestCase):
         self.assertNotIn("secret query", str(context.exception))
 
     def test_mixed_document_dimensions_fail_strictly(self) -> None:
-        settings = VertexSettings(project="test-project")
+        settings = _settings()
         fake = FakeClient(settings.embedding_dimensions, response_dimensions=[3072, 0])
         client = VertexAIClient(settings, client=fake)
 
@@ -146,7 +188,7 @@ class VertexTests(unittest.TestCase):
         self.assertNotIn("wrong document", str(context.exception))
 
     def test_embedding_response_count_mismatch_reports_expected_and_actual(self) -> None:
-        settings = VertexSettings(project="test-project")
+        settings = _settings()
         fake = FakeClient(settings.embedding_dimensions, response_counts=[2])
         client = VertexAIClient(settings, client=fake)
 
@@ -161,6 +203,7 @@ class VertexTests(unittest.TestCase):
     def test_health_check_reports_models_without_vectors(self) -> None:
         result = self.client.health_check()
         self.assertEqual(result.status, "ok")
+        self.assertEqual(result.generation_model, self.settings.generation_model)
         self.assertEqual(result.query_embedding_dimensions, 3072)
         self.assertEqual(result.document_embedding_dimensions, 3072)
         self.assertNotIn("project", result.to_dict())

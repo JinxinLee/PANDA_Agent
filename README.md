@@ -88,9 +88,10 @@ resume it:
 ```
 
 The health check uses Application Default Credentials and the
-`QA_GCP_PROJECT_ID`/`QA_VERTEX_LOCATION` values. Model IDs can be overridden with
-`QA_GENERATION_MODEL_ID` and `QA_EMBEDDING_MODEL_ID`; the fixed embedding
-contract requires `QA_EMBEDDING_DIMENSIONS=3072`.
+`QA_GCP_PROJECT_ID`/`QA_VERTEX_LOCATION` values. Runtime generation and evaluation
+judge models must be configured via `QA_GENERATION_MODEL_ID` and `QA_EVALUATION_JUDGE_MODEL_ID`
+(recommended values in `.env.example`). Embedding models can be customized with `QA_EMBEDDING_MODEL_ID`;
+the fixed embedding contract requires `QA_EMBEDDING_DIMENSIONS=3072`.
 
 ## Knowledge bundle prototype
 

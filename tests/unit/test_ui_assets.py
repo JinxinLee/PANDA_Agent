@@ -69,11 +69,12 @@ class UIAssetTests(unittest.TestCase):
                 "status": "registered",
                 "knowledge_revision": "knowledge-v1",
                 "service_revision": "0005",
-                "generation_model": "gemini-3.7-flash",
+                "generation_model": "test-generation-model",
                 "embedding_model": "gemini-embedding-2",
             },
         )
         self.assertIn("Ready", rendered)
+        self.assertIn("test-generation-model", rendered)
         self.assertIn("gemini-embedding-2", rendered)
         self.assertNotIn("ADC", rendered)
         self.assertNotIn("password", rendered.casefold())

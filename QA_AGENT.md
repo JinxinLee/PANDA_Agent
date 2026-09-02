@@ -485,13 +485,13 @@ Vertex 配置：
 ```env
 QA_GCP_PROJECT_ID=your-project-id
 QA_VERTEX_LOCATION=global
-QA_GENERATION_MODEL_ID=gemini-3.7-flash
-QA_EVALUATION_JUDGE_MODEL_ID=gemini-3.7-flash
+QA_GENERATION_MODEL_ID=gemini-3.8-flash
+QA_EVALUATION_JUDGE_MODEL_ID=gemini-3.8-flash
 QA_EMBEDDING_MODEL_ID=gemini-embedding-2
 QA_EMBEDDING_CONCURRENCY=16
 ```
 
-不要把真实密钥写入文档或提交到版本库。项目使用 ADC/当前 `.env`；模型不做 fallback。
+不要把真实密钥写入文档或提交到版本库。项目使用 ADC/当前 `.env`；运行时生成与判卷模型为必需环境变量，模型不做代码内置 fallback。
 
 ## 11. 当前 P1/P2 技术债务
 

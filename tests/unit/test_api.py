@@ -383,6 +383,38 @@ class APITestClientContractTests(unittest.TestCase):
             logger.setLevel(previous[0])
             logger.propagate = previous[1]
 
+    def test_model_reporting_reflects_configuration_and_unconfigured_state(self) -> None:
+        with patch.dict(os.environ, {"QA_GENERATION_MODEL_ID": "test-env-model"}, clear=True):
+            app, _, _ = self.make_app()
+            with TestClient(app) as client:
+                version = client.get("/version").json()
+                self.assertEqual(version["models"]["generation"], "test-env-model")
+                ui_health = client.get("/ui/health")
+                self.assertEqual(ui_health.status_code, 200)
+                self.assertIn("test-env-model", ui_health.text)
+
+        with patch.dict(os.environ, {}, clear=True):
+            app, _, _ = self.make_app()
+            with TestClient(app) as client:
+                version = client.get("/version").json()
+                self.assertEqual(version["models"]["generation"], "unconfigured")
+                ui_health = client.get("/ui/health")
+                self.assertEqual(ui_health.status_code, 200)
+                self.assertIn("unconfigured", ui_health.text)
+
+        mock_settings = SimpleNamespace(generation_model="service-configured-model")
+        mock_agent = SimpleNamespace(vertex=SimpleNamespace(settings=mock_settings))
+        service_with_settings = FakeService()
+        service_with_settings.agent = mock_agent
+        with patch.dict(os.environ, {}, clear=True):
+            app, _, _ = self.make_app(service=service_with_settings)
+            with TestClient(app) as client:
+                version = client.get("/version").json()
+                self.assertEqual(version["models"]["generation"], "service-configured-model")
+                ui_health = client.get("/ui/health")
+                self.assertEqual(ui_health.status_code, 200)
+                self.assertIn("service-configured-model", ui_health.text)
+
 
 if __name__ == "__main__":
     unittest.main()

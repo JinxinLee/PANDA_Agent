@@ -26,9 +26,9 @@ class VertexCallError(RuntimeError):
 @dataclass(frozen=True)
 class VertexSettings:
     project: str
+    generation_model: str
+    evaluation_judge_model: str
     location: str = "global"
-    generation_model: str = "gemini-3.7-flash"
-    evaluation_judge_model: str = "gemini-3.7-flash"
     embedding_model: str = "gemini-embedding-2"
     embedding_dimensions: int = 3072
     timeout_ms: int = 120_000
@@ -40,18 +40,24 @@ class VertexSettings:
             raise VertexConfigurationError(
                 "QA_GCP_PROJECT_ID or GCP_PROJECT_ID is required for Vertex AI"
             )
+        generation_model = os.getenv("QA_GENERATION_MODEL_ID")
+        if not generation_model:
+            raise VertexConfigurationError(
+                "QA_GENERATION_MODEL_ID is required for Vertex AI"
+            )
+        evaluation_judge_model = os.getenv("QA_EVALUATION_JUDGE_MODEL_ID")
+        if not evaluation_judge_model:
+            raise VertexConfigurationError(
+                "QA_EVALUATION_JUDGE_MODEL_ID is required for Vertex AI"
+            )
         return cls(
             project=project,
+            generation_model=generation_model,
+            evaluation_judge_model=evaluation_judge_model,
             location=(
                 os.getenv("QA_VERTEX_LOCATION")
                 or os.getenv("GCP_LOCATION")
                 or "global"
-            ),
-            generation_model=os.getenv(
-                "QA_GENERATION_MODEL_ID", "gemini-3.7-flash"
-            ),
-            evaluation_judge_model=os.getenv(
-                "QA_EVALUATION_JUDGE_MODEL_ID", "gemini-3.7-flash"
             ),
             embedding_model=os.getenv(
                 "QA_EMBEDDING_MODEL_ID", "gemini-embedding-2"

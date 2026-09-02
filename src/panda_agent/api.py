@@ -37,7 +37,6 @@ from panda_agent.service import (
 
 
 PACKAGE_NAME = "panda-research-qa-agent"
-DEFAULT_GENERATION_MODEL = "gemini-3.7-flash"
 PACKAGE_ROOT = Path(__file__).resolve().parent
 MAX_UI_FORM_BODY_BYTES = 65_536
 CONTENT_SECURITY_POLICY = (
@@ -315,19 +314,37 @@ def _ui_diagnostics(
     }
 
 
-def _public_runtime_context(root: Path, runtime_state: dict[str, Any]) -> dict[str, Any]:
+def _configured_generation_model(service: Any | None = None) -> str:
+    if service is not None:
+        agent = getattr(service, "agent", None)
+        vertex = getattr(agent, "vertex", None)
+        settings = getattr(vertex, "settings", None)
+        model = getattr(settings, "generation_model", None)
+        if model:
+            return str(model)
+    model = os.getenv("QA_GENERATION_MODEL_ID")
+    if model:
+        return model
+    return "unconfigured"
+
+
+def _public_runtime_context(
+    root: Path, runtime_state: dict[str, Any], service: Any | None = None
+) -> dict[str, Any]:
     identity = _runtime_identity(root)
     return {
         "status": runtime_state.get("runtime_status", "not_initialized"),
         "knowledge_revision": identity.knowledge_revision if identity else None,
         "service_revision": identity.service_revision if identity else None,
-        "generation_model": os.getenv("QA_GENERATION_MODEL_ID", DEFAULT_GENERATION_MODEL),
+        "generation_model": _configured_generation_model(service),
         "embedding_model": os.getenv("QA_EMBEDDING_MODEL_ID", EMBEDDING_MODEL),
     }
 
 
-def _public_health_context(root: Path, runtime_state: dict[str, Any], *, ready: bool) -> dict[str, Any]:
-    runtime = _public_runtime_context(root, runtime_state)
+def _public_health_context(
+    root: Path, runtime_state: dict[str, Any], *, ready: bool, service: Any | None = None
+) -> dict[str, Any]:
+    runtime = _public_runtime_context(root, runtime_state, service=service)
     return {
         "status": "ready" if ready else "not_ready",
         "ready": ready,
@@ -562,13 +579,14 @@ def create_app(
     @app.get("/ui/health", include_in_schema=False)
     async def ui_health(request: Request):
         is_ready = await run_in_threadpool(refresh_readiness, app)
+        service = getattr(app.state, "service", None)
         return templates.TemplateResponse(
             request=request,
             name="partials/health.html",
             context={
                 "ready": is_ready,
-                "runtime": _public_runtime_context(root, app.state.runtime),
-                "health": _public_health_context(root, app.state.runtime, ready=is_ready),
+                "runtime": _public_runtime_context(root, app.state.runtime, service=service),
+                "health": _public_health_context(root, app.state.runtime, ready=is_ready, service=service),
             },
             status_code=200 if is_ready else 503,
         )
@@ -577,10 +595,11 @@ def create_app(
     async def api_version() -> dict[str, Any]:
         runtime_state = getattr(app.state, "runtime", {})
         identity = _runtime_identity(root)
+        service = getattr(app.state, "service", None)
         return {
             "package": {"name": PACKAGE_NAME, "version": _package_version()},
             "models": {
-                "generation": os.getenv("QA_GENERATION_MODEL_ID", DEFAULT_GENERATION_MODEL),
+                "generation": _configured_generation_model(service),
                 "embedding": os.getenv("QA_EMBEDDING_MODEL_ID", EMBEDDING_MODEL),
             },
             "prompt_set": {"version": PROMPT_SET_VERSION},
