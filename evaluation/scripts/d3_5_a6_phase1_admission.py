@@ -376,13 +376,10 @@ def build_case_pools(case_entry: dict[str, Any]) -> dict[str, Any]:
         "origin_concentration_diagnostics": {
             "selected_bridge_origin_count": case_entry["selected_bridge_origin_count"],
             "selected_bridge_per_origin_counts": case_entry["selected_bridge_per_origin_counts"],
-            "reserved_bridge_origin_count": len({o for o in arms["ADMISSION_K2"]["reserved_candidate_origin_ids"]}
-                                                | {o for o in arms["ADMISSION_K3"]["reserved_candidate_origin_ids"]}),
-            "reserved_bridge_per_origin_counts": _per_origin_counts(
-                arms["ADMISSION_K3"]["reserved_candidate_origin_ids"]
-            ),
-            "reserved_candidate_origin_ids_K2": arms["ADMISSION_K2"]["reserved_candidate_origin_ids"],
-            "reserved_candidate_origin_ids_K3": arms["ADMISSION_K3"]["reserved_candidate_origin_ids"],
+            "reserved_by_arm": {
+                "ADMISSION_K2": per_arm_origin_summary(arms["ADMISSION_K2"]["reserved_candidate_origin_ids"]),
+                "ADMISSION_K3": per_arm_origin_summary(arms["ADMISSION_K3"]["reserved_candidate_origin_ids"]),
+            },
             "ordinary_rerank_candidates_displaced": {
                 "ADMISSION_K2": arms["ADMISSION_K2"]["ordinary_rerank_candidates_displaced"],
                 "ADMISSION_K3": arms["ADMISSION_K3"]["ordinary_rerank_candidates_displaced"],
@@ -396,6 +393,17 @@ def _per_origin_counts(origin_ids: list[str]) -> dict[str, int]:
     for oid in origin_ids:
         counts[oid] = counts.get(oid, 0) + 1
     return counts
+
+
+def per_arm_origin_summary(origin_ids: list[str]) -> dict[str, Any]:
+    """Mechanical per-arm reserved-origin summary derived only from the arm's
+    frozen reserved candidates and their frozen attributed origins
+    (zero-reservation arms yield count 0 / empty table / empty list)."""
+    return {
+        "reserved_bridge_origin_count": len(set(origin_ids)),
+        "reserved_bridge_per_origin_counts": _per_origin_counts(origin_ids),
+        "reserved_candidate_origin_ids": list(origin_ids),
+    }
 
 
 def validate_pool(entry: dict[str, Any], baseline: list[str]) -> list[str]:

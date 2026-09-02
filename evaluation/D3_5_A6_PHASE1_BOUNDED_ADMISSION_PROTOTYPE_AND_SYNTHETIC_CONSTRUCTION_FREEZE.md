@@ -30,7 +30,12 @@ Deterministic RRF replay: frozen non-graph channel orderings in fixture key orde
 
 ## 8. Selector replay registry
 
-`selector_replay_registry` (explicitly separated from the payload registry per Phase0-R1): per object `object_id, source_id, source_version_id, object_type, title, complete selector-visible frozen text (OPTION A), authority_level, complete raw locator dict, channel membership, fusion score`. Plan fields per case: `intent, target_repositories, resolved_versions, symbols, concepts, required_source_types, source_budgets, paper_page_hints, raw question text`. No locator keys omitted.
+`selector_replay_registry` (explicitly separated from the payload registry per Phase0-R1). The accurate surface model (corrected by Phase1-R1) is **`POST_RERANK_SELECTOR_REPLAY_SURFACE = STATIC_OBJECT_METADATA_SURFACE + PER_CASE_SELECTOR_STATE_SURFACE`**:
+
+- **Static object metadata surface** — `selector_replay_registry[object_id]`: `object_id, source_id, source_version_id, object_type, title, complete selector-visible frozen text (OPTION A), authority_level, complete raw locator dict` (no locator keys omitted).
+- **Per-case selector state surface** — case-level fixture state, *not* duplicated into each global registry entry: `channel_membership[object_id]`, `full_fused_ordering` / fused score map, `exact_channel_ordering`, frozen plan fields (`intent, target_repositories, resolved_versions, symbols, concepts, required_source_types, source_budgets, paper_page_hints`), and the raw question text.
+
+The replay reconstructs the surface exactly as the frozen Phase0-R1 composition — `payload_map` (static registry) + `score_map` (per case) + `channel_map` (per case). An earlier wording of this section listed channel membership and fusion score as registry-entry fields, overstating what is physically stored per object; the implementation was already correct and only the wording has been corrected (no implementation change).
 
 ## 9. BASELINE construction
 
@@ -50,7 +55,7 @@ Identical semantics with ceiling 3. Reserved counts: g036 3, g021 1, controls 0,
 
 ## 13. Origin-concentration diagnostics
 
-All seven preregistered fields carried per case/arm (selected origin counts from the A5-R2 records; reserved per-origin counts from `attributed_origin_id`, e.g. g036 K3: `edge.a767…`×2 + `edge.2e09…`×1; g020 K3: `edge.ea3a…`×2 + `edge.8127…`×1). Diagnostic-only; no numeric threshold.
+Materialized per case **and per treatment arm** (Phase1-R1 schema): `selected_bridge_origin_count` / `selected_bridge_per_origin_counts` from the A5-R2 records, plus `reserved_by_arm` with an explicit `{reserved_bridge_origin_count, reserved_bridge_per_origin_counts, reserved_candidate_origin_ids}` summary for ADMISSION_K2 and ADMISSION_K3 separately (mechanically derived from each arm's frozen reserved candidates and their frozen attributed origins; zero-reservation arms yield count 0 / empty table / empty list), and `ordinary_rerank_candidates_displaced` per arm. Examples derived from the frozen manifest: g036 K2 = 1 origin (`edge.a767…`×2) vs K3 = 2 origins (`edge.a767…`×2, `edge.2e09…`×1); g020 K2 = 2 origins vs K3 = 2 origins with different attribution (`edge.ea3a…`+`edge.8127…` vs `edge.ea3a…`×2+`edge.8127…`); g021 both arms = 1 origin. The K2 summary is never implicitly the K3 summary. Diagnostic-only; no numeric threshold; no diversity enforcement.
 
 ## 14. Production post-rerank replay implementation
 
@@ -58,7 +63,7 @@ All seven preregistered fields carried per case/arm (selected origin counts from
 
 ## 15. Production parity checks
 
-`POST_RERANK_SELECTOR_PARITY = PASS`: (a) the selection core is the production function itself; (b) the wrapper mirror is anchored by `test_production_wrapper_expressions_still_present`, asserting the mirrored expressions exist verbatim in `retrieval.py`; (c) fusion replay is anchored 6/6 against the historical full fused ordering; (d) double-execution determinism over all six real frozen traces with fabricated model-free ranked sequences (identity/reverse): 12/12 receipts byte-identical. The original A2 model outputs were not persisted, so historical-output reproduction is not possible — parity is established exactly as preregistered (production core + mirrored wrapper + anchors).
+**`POST_RERANK_IMPLEMENTATION_FIDELITY = PASS / PRODUCTION_CORE_REUSE_PLUS_SOURCE_ANCHORED_WRAPPER_MIRROR`** (wording precision repaired by Phase1-R1; not a scientific downgrade). It claims exactly: (a) `select_final_evidence` and `_source_type_of` are imported directly from production; (b) the surrounding deterministic post-rerank wrapper is mirrored in evaluation code, with key production expressions source-anchored by `test_production_wrapper_expressions_still_present`; (c) synthetic behavioral tests exercise movement/dedupe/caps/determinism; (d) fusion replay is anchored 6/6 against the historical full fused ordering and replay double-execution is 12/12 deterministic. **No full independent production-wrapper output-equality claim is made** — no such test exists, and the original A2 model outputs were not persisted, so historical-output reproduction is not possible.
 
 ## 16. Decision-logic implementation
 
@@ -92,6 +97,7 @@ D3.5-A6-PHASE0       = COMPLETE / BOUNDED_RERANK_ADMISSION_PREREGISTRATION_FINAL
 D3.5-A6-PHASE0-R1    = COMPLETE / REPLAY_SURFACE_AND_BUDGET_DECISION_CONTRACT_REPAIRED
 D3.5-A6-PHASE0-R1-R1 = COMPLETE / CAUSAL_BUDGET_SELECTION_AND_VERDICT_PRECEDENCE_REPAIRED
 D3.5-A6-PHASE1       = COMPLETE / BOUNDED_ADMISSION_PROTOTYPE_AND_REPLAY_IMPLEMENTATION_FROZEN
+D3.5-A6-PHASE1-R1    = COMPLETE / REPLAY_SURFACE_METADATA_AND_PER_ARM_ORIGIN_DIAGNOSTICS_CLOSED
 D3.5-A6-PHASE2       = NOT_STARTED / READY_FOR_PAIRED_REPEATED_RERANKER_REPLAY
 D3.5                 = IN_PROGRESS / POST_A2_SELECTIVITY_AND_ADMISSION_REDESIGN (unchanged)
 D4                   = NOT_STARTED / BLOCKED

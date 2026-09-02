@@ -40,9 +40,19 @@
     "selector_replay_registry_count": 345,
     "missing_selector_replay_object_ids": [],
     "COVERAGE": "100%",
-    "selector_fields_per_object": ["object_id", "source_id", "source_version_id", "object_type", "title", "complete selector-visible frozen text", "authority_level", "complete raw locator dict", "channel membership", "fusion score"],
+    "POST_RERANK_SELECTOR_REPLAY_SURFACE": "STATIC_OBJECT_METADATA_SURFACE + PER_CASE_SELECTOR_STATE_SURFACE",
+    "static_object_metadata_fields": {
+      "location": "selector_replay_registry[object_id]",
+      "fields": ["object_id", "source_id", "source_version_id", "object_type", "title", "complete selector-visible frozen text", "authority_level", "complete raw locator dict"]
+    },
+    "per_case_selector_state_fields": {
+      "location": "case-level fixture state (NOT inside each global registry entry)",
+      "fields": ["channel_membership[object_id]", "full_fused_ordering / fused score map", "exact_channel_ordering", "frozen plan fields", "raw question text"]
+    },
+    "composition_semantics": "the replay reconstructs the surface as payload_map (static registry) + score_map (per case) + channel_map (per case) — exactly the frozen Phase0-R1 composition; per-case fields are deliberately not duplicated into every global registry record",
     "plan_fields_per_case": ["intent", "target_repositories", "resolved_versions", "symbols", "concepts", "required_source_types", "source_budgets", "paper_page_hints", "raw question text"],
-    "note": "n006's frozen plan fields lacked empty-list keys dropped by A2 record compaction; generic empty defaults materialized (symbols=[] etc.) — no case-specific branch"
+    "note": "n006's frozen plan fields lacked empty-list keys dropped by A2 record compaction; generic empty defaults materialized (symbols=[] etc.) — no case-specific branch",
+    "metadata_correction": "an earlier wording of this block listed channel membership and fusion score as registry-entry fields; the implementation correctly stores them per case — wording corrected by Phase1-R1 with no implementation change"
   },
   "reranker_payload_coverage": {
     "payload_shape": [{"object_id": "…", "title": "…", "source_id": "…", "text": "text[:2000]"}],
@@ -84,22 +94,40 @@
     "carried_fields": [
       "selected_bridge_origin_count",
       "selected_bridge_per_origin_counts",
-      "reserved_bridge_origin_count",
-      "reserved_bridge_per_origin_counts",
-      "ordinary_rerank_candidates_displaced",
-      "reserved_bridge_candidate_ids",
-      "reserved_candidate_origin_ids"
+      "reserved_by_arm.ADMISSION_K2.{reserved_bridge_origin_count, reserved_bridge_per_origin_counts, reserved_candidate_origin_ids}",
+      "reserved_by_arm.ADMISSION_K3.{reserved_bridge_origin_count, reserved_bridge_per_origin_counts, reserved_candidate_origin_ids}",
+      "ordinary_rerank_candidates_displaced (per arm)"
     ],
-    "reserved_bridge_per_origin_counts_K3": {
-      "g036": { "edge.a767185bbbc0d72189d0ac29": 2, "edge.2e09628416a01ce2461d752a": 1 },
-      "g021": { "edge.ea3a79d222f0ca6cc0e6df72": 1 },
-      "n006": {},
-      "g041": {},
-      "g020": { "edge.ea3a79d222f0ca6cc0e6df72": 2, "edge.81276373f106c8758d5aec92": 1 },
-      "n004": {}
+    "reserved_by_arm": {
+      "g036": {
+        "ADMISSION_K2": { "reserved_bridge_origin_count": 1, "reserved_bridge_per_origin_counts": { "edge.a767185bbbc0d72189d0ac29": 2 } },
+        "ADMISSION_K3": { "reserved_bridge_origin_count": 2, "reserved_bridge_per_origin_counts": { "edge.a767185bbbc0d72189d0ac29": 2, "edge.2e09628416a01ce2461d752a": 1 } }
+      },
+      "g021": {
+        "ADMISSION_K2": { "reserved_bridge_origin_count": 1, "reserved_bridge_per_origin_counts": { "edge.ea3a79d222f0ca6cc0e6df72": 1 } },
+        "ADMISSION_K3": { "reserved_bridge_origin_count": 1, "reserved_bridge_per_origin_counts": { "edge.ea3a79d222f0ca6cc0e6df72": 1 } }
+      },
+      "g020": {
+        "ADMISSION_K2": { "reserved_bridge_origin_count": 2, "reserved_bridge_per_origin_counts": { "edge.ea3a79d222f0ca6cc0e6df72": 1, "edge.81276373f106c8758d5aec92": 1 } },
+        "ADMISSION_K3": { "reserved_bridge_origin_count": 2, "reserved_bridge_per_origin_counts": { "edge.ea3a79d222f0ca6cc0e6df72": 2, "edge.81276373f106c8758d5aec92": 1 } }
+      },
+      "n006": {
+        "ADMISSION_K2": { "reserved_bridge_origin_count": 0, "reserved_bridge_per_origin_counts": {} },
+        "ADMISSION_K3": { "reserved_bridge_origin_count": 0, "reserved_bridge_per_origin_counts": {} }
+      },
+      "g041": {
+        "ADMISSION_K2": { "reserved_bridge_origin_count": 0, "reserved_bridge_per_origin_counts": {} },
+        "ADMISSION_K3": { "reserved_bridge_origin_count": 0, "reserved_bridge_per_origin_counts": {} }
+      },
+      "n004": {
+        "ADMISSION_K2": { "reserved_bridge_origin_count": 0, "reserved_bridge_per_origin_counts": {} },
+        "ADMISSION_K3": { "reserved_bridge_origin_count": 0, "reserved_bridge_per_origin_counts": {} }
+      }
     },
+    "derivation": "mechanical frequency table of attributed_origin_id among each arm's frozen reserved candidates; zero-reservation arms yield count 0 / empty table / empty list; no re-attribution, no thresholds, no diversity enforcement",
     "diagnostic_only": true,
-    "numeric_concentration_threshold": "none"
+    "numeric_concentration_threshold": "none",
+    "schema_correction": "the pre-R1 case-level summary collapsed K2/K3 into a union count plus a K3-based per-origin table; Phase1-R1 materializes explicit per-arm summaries (scientific identities unchanged, verified 18/18)"
   },
   "post_rerank_parity_summary": {
     "production_core_reused": "select_final_evidence and _source_type_of imported unchanged from src/panda_agent/retrieval.py (no production modification)",
@@ -108,7 +136,8 @@
     "final_evidence_limit": 12,
     "determinism": "double-execution on all six real frozen traces with fabricated model-free ranked sequences (identity/reverse): 12/12 receipts deterministic",
     "model_output_note": "the original A2 reranker model outputs were not persisted, so historical-output reproduction is not possible; parity is established via the production selection core + mirrored wrapper + source-anchor test per the preregistered POST_RERANK_SELECTOR_PARITY_TARGET",
-    "POST_RERANK_SELECTOR_PARITY": "PASS"
+    "POST_RERANK_IMPLEMENTATION_FIDELITY": "PASS / PRODUCTION_CORE_REUSE_PLUS_SOURCE_ANCHORED_WRAPPER_MIRROR",
+    "fidelity_precision_note": "wording precision repair (Phase1-R1): this classification replaces the earlier stronger-sounding POST_RERANK_SELECTOR_PARITY label; it claims exactly (a) production select_final_evidence/_source_type_of imported directly, (b) the surrounding deterministic wrapper mirrored in evaluation code, (c) key production expressions source-anchored, (d) synthetic behavioral validation — and no full independent production-wrapper output-equality claim, since no such test exists and the A2 model outputs were not persisted; a wording precision repair, not a scientific downgrade"
   },
   "decision_logic_test_summary": {
     "test_file": "tests/unit/test_d3_5_a6_phase1_admission.py",
@@ -166,6 +195,7 @@
     "no_real_case_evaluator_outcome_computation": "DELTA_K / CAUSAL_DELTA_K / REGRESSION_K / budget selection / scientific verdict were NOT computed for the six real cases (requires Phase-2 outputs); decision logic exercised with synthetic data only"
   },
   "A6_PHASE1_DECISION": "BOUNDED_ADMISSION_PROTOTYPE_AND_REPLAY_IMPLEMENTATION_FROZEN",
+  "phase1_r1_closeout": "evaluation/d3_5_a6_phase1_r1_replay_surface_metadata_per_arm_origin_diagnostic_closeout.json (A6_PHASE1_R1_DECISION = REPLAY_SURFACE_METADATA_AND_PER_ARM_ORIGIN_DIAGNOSTICS_CLOSED; repaired the replay-surface metadata model to STATIC_OBJECT_METADATA_SURFACE + PER_CASE_SELECTOR_STATE_SURFACE, materialized explicit per-arm K2/K3 reserved-origin summaries, and refined the implementation-fidelity wording; scientific identities verified unchanged: 18/18 pool identities, reserved/displaced IDs, identical-pool relations, 54/54 call-plan entries, reranker payloads, decision logic, replay semantics)",
   "decision_basis": "preregistration implemented without semantic change; graph parity 6/6; full fusion deterministic with 6/6 full-ordering parity anchor; complete replay-surface coverage 100% (345 objects, 0 missing, all selector fields incl. full text/authority_level/complete locator); reranker payload coverage 100%; 18 arm pools frozen with zero pool-invariant violations; origin diagnostics materialized; production post-rerank parity passes (production selection core reused, mirrored wrapper source-anchored, 12/12 determinism receipts); decision logic synthetically validated (32 tests); 54 call-plan entries frozen with outcome_status NOT_EXECUTED; model/config contract resolved without provider invocation; 0 reranker calls; 0 select_v2 runs; protected datasets untouched",
   "phase2_readiness": "NOT_STARTED / READY_FOR_PAIRED_REPEATED_RERANKER_REPLAY",
   "exact_next_stage": "D3.5-A6 Phase 2 — Paired Repeated Reranker Replay (execute the frozen 54 formal slots, persist raw ranked_object_ids per slot, then run the evaluator stage; requires separate authorization)",

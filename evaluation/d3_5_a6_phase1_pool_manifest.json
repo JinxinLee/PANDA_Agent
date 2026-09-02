@@ -275,20 +275,30 @@
      "edge.2e09628416a01ce2461d752a": 1,
      "edge.a767185bbbc0d72189d0ac29": 2
     },
-    "reserved_bridge_origin_count": 2,
-    "reserved_bridge_per_origin_counts": {
-     "edge.a767185bbbc0d72189d0ac29": 2,
-     "edge.2e09628416a01ce2461d752a": 1
+    "reserved_by_arm": {
+     "ADMISSION_K2": {
+      "reserved_bridge_origin_count": 1,
+      "reserved_bridge_per_origin_counts": {
+       "edge.a767185bbbc0d72189d0ac29": 2
+      },
+      "reserved_candidate_origin_ids": [
+       "edge.a767185bbbc0d72189d0ac29",
+       "edge.a767185bbbc0d72189d0ac29"
+      ]
+     },
+     "ADMISSION_K3": {
+      "reserved_bridge_origin_count": 2,
+      "reserved_bridge_per_origin_counts": {
+       "edge.a767185bbbc0d72189d0ac29": 2,
+       "edge.2e09628416a01ce2461d752a": 1
+      },
+      "reserved_candidate_origin_ids": [
+       "edge.a767185bbbc0d72189d0ac29",
+       "edge.a767185bbbc0d72189d0ac29",
+       "edge.2e09628416a01ce2461d752a"
+      ]
+     }
     },
-    "reserved_candidate_origin_ids_K2": [
-     "edge.a767185bbbc0d72189d0ac29",
-     "edge.a767185bbbc0d72189d0ac29"
-    ],
-    "reserved_candidate_origin_ids_K3": [
-     "edge.a767185bbbc0d72189d0ac29",
-     "edge.a767185bbbc0d72189d0ac29",
-     "edge.2e09628416a01ce2461d752a"
-    ],
     "ordinary_rerank_candidates_displaced": {
      "ADMISSION_K2": 2,
      "ADMISSION_K3": 3
@@ -563,16 +573,26 @@
     "selected_bridge_per_origin_counts": {
      "edge.ea3a79d222f0ca6cc0e6df72": 4
     },
-    "reserved_bridge_origin_count": 1,
-    "reserved_bridge_per_origin_counts": {
-     "edge.ea3a79d222f0ca6cc0e6df72": 1
+    "reserved_by_arm": {
+     "ADMISSION_K2": {
+      "reserved_bridge_origin_count": 1,
+      "reserved_bridge_per_origin_counts": {
+       "edge.ea3a79d222f0ca6cc0e6df72": 1
+      },
+      "reserved_candidate_origin_ids": [
+       "edge.ea3a79d222f0ca6cc0e6df72"
+      ]
+     },
+     "ADMISSION_K3": {
+      "reserved_bridge_origin_count": 1,
+      "reserved_bridge_per_origin_counts": {
+       "edge.ea3a79d222f0ca6cc0e6df72": 1
+      },
+      "reserved_candidate_origin_ids": [
+       "edge.ea3a79d222f0ca6cc0e6df72"
+      ]
+     }
     },
-    "reserved_candidate_origin_ids_K2": [
-     "edge.ea3a79d222f0ca6cc0e6df72"
-    ],
-    "reserved_candidate_origin_ids_K3": [
-     "edge.ea3a79d222f0ca6cc0e6df72"
-    ],
     "ordinary_rerank_candidates_displaced": {
      "ADMISSION_K2": 1,
      "ADMISSION_K3": 1
@@ -815,10 +835,18 @@
    "origin_concentration_diagnostics": {
     "selected_bridge_origin_count": 0,
     "selected_bridge_per_origin_counts": {},
-    "reserved_bridge_origin_count": 0,
-    "reserved_bridge_per_origin_counts": {},
-    "reserved_candidate_origin_ids_K2": [],
-    "reserved_candidate_origin_ids_K3": [],
+    "reserved_by_arm": {
+     "ADMISSION_K2": {
+      "reserved_bridge_origin_count": 0,
+      "reserved_bridge_per_origin_counts": {},
+      "reserved_candidate_origin_ids": []
+     },
+     "ADMISSION_K3": {
+      "reserved_bridge_origin_count": 0,
+      "reserved_bridge_per_origin_counts": {},
+      "reserved_candidate_origin_ids": []
+     }
+    },
     "ordinary_rerank_candidates_displaced": {
      "ADMISSION_K2": 0,
      "ADMISSION_K3": 0
@@ -1061,10 +1089,18 @@
    "origin_concentration_diagnostics": {
     "selected_bridge_origin_count": 0,
     "selected_bridge_per_origin_counts": {},
-    "reserved_bridge_origin_count": 0,
-    "reserved_bridge_per_origin_counts": {},
-    "reserved_candidate_origin_ids_K2": [],
-    "reserved_candidate_origin_ids_K3": [],
+    "reserved_by_arm": {
+     "ADMISSION_K2": {
+      "reserved_bridge_origin_count": 0,
+      "reserved_bridge_per_origin_counts": {},
+      "reserved_candidate_origin_ids": []
+     },
+     "ADMISSION_K3": {
+      "reserved_bridge_origin_count": 0,
+      "reserved_bridge_per_origin_counts": {},
+      "reserved_candidate_origin_ids": []
+     }
+    },
     "ordinary_rerank_candidates_displaced": {
      "ADMISSION_K2": 0,
      "ADMISSION_K3": 0
@@ -1361,20 +1397,31 @@
      "edge.81276373f106c8758d5aec92": 4,
      "edge.ea3a79d222f0ca6cc0e6df72": 4
     },
-    "reserved_bridge_origin_count": 2,
-    "reserved_bridge_per_origin_counts": {
-     "edge.ea3a79d222f0ca6cc0e6df72": 2,
-     "edge.81276373f106c8758d5aec92": 1
+    "reserved_by_arm": {
+     "ADMISSION_K2": {
+      "reserved_bridge_origin_count": 2,
+      "reserved_bridge_per_origin_counts": {
+       "edge.ea3a79d222f0ca6cc0e6df72": 1,
+       "edge.81276373f106c8758d5aec92": 1
+      },
+      "reserved_candidate_origin_ids": [
+       "edge.ea3a79d222f0ca6cc0e6df72",
+       "edge.81276373f106c8758d5aec92"
+      ]
+     },
+     "ADMISSION_K3": {
+      "reserved_bridge_origin_count": 2,
+      "reserved_bridge_per_origin_counts": {
+       "edge.ea3a79d222f0ca6cc0e6df72": 2,
+       "edge.81276373f106c8758d5aec92": 1
+      },
+      "reserved_candidate_origin_ids": [
+       "edge.ea3a79d222f0ca6cc0e6df72",
+       "edge.81276373f106c8758d5aec92",
+       "edge.ea3a79d222f0ca6cc0e6df72"
+      ]
+     }
     },
-    "reserved_candidate_origin_ids_K2": [
-     "edge.ea3a79d222f0ca6cc0e6df72",
-     "edge.81276373f106c8758d5aec92"
-    ],
-    "reserved_candidate_origin_ids_K3": [
-     "edge.ea3a79d222f0ca6cc0e6df72",
-     "edge.81276373f106c8758d5aec92",
-     "edge.ea3a79d222f0ca6cc0e6df72"
-    ],
     "ordinary_rerank_candidates_displaced": {
      "ADMISSION_K2": 2,
      "ADMISSION_K3": 3
@@ -1617,10 +1664,18 @@
    "origin_concentration_diagnostics": {
     "selected_bridge_origin_count": 0,
     "selected_bridge_per_origin_counts": {},
-    "reserved_bridge_origin_count": 0,
-    "reserved_bridge_per_origin_counts": {},
-    "reserved_candidate_origin_ids_K2": [],
-    "reserved_candidate_origin_ids_K3": [],
+    "reserved_by_arm": {
+     "ADMISSION_K2": {
+      "reserved_bridge_origin_count": 0,
+      "reserved_bridge_per_origin_counts": {},
+      "reserved_candidate_origin_ids": []
+     },
+     "ADMISSION_K3": {
+      "reserved_bridge_origin_count": 0,
+      "reserved_bridge_per_origin_counts": {},
+      "reserved_candidate_origin_ids": []
+     }
+    },
     "ordinary_rerank_candidates_displaced": {
      "ADMISSION_K2": 0,
      "ADMISSION_K3": 0

@@ -1,0 +1,117 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint": "D3.5-A6-PHASE1-R1",
+  "stage_name": "D3.5-A6 Phase 1-R1 — Replay-Surface Metadata & Per-Arm Origin Diagnostic Closeout",
+  "stage_type": "extremely narrow audit/metadata/diagnostic closeout; no redesign, no rerun, no new experiment, not Phase 2",
+  "starting_head": "b26b2d740d656079862d845a023e31142e99db32",
+  "phase1_freeze_commit": "b26b2d740d656079862d845a023e31142e99db32",
+  "parent_phase0_r1_r1_commit": "9e56027995071281498636c3b84618a104cb2f29",
+  "REPAIR_A_STATUS": "REPAIRED",
+  "REPAIR_B_STATUS": "REPAIRED",
+  "selector_replay_surface": {
+    "corrected_model": "POST_RERANK_SELECTOR_REPLAY_SURFACE = STATIC_OBJECT_METADATA_SURFACE + PER_CASE_SELECTOR_STATE_SURFACE",
+    "static_object_metadata_fields": {
+      "location": "selector_replay_registry[object_id]",
+      "fields": ["object_id", "source_id", "source_version_id", "object_type", "title", "complete selector-visible frozen text", "authority_level", "complete raw locator dict"]
+    },
+    "per_case_selector_state_fields": {
+      "location": "case-level fixture state (channel_membership, full_fused_ordering / fused score map, exact_channel_ordering, frozen plan fields, raw question)",
+      "fields": ["channel_membership[object_id]", "full_fused_ordering / fused score map", "exact_channel_ordering", "frozen plan fields", "raw question text"]
+    },
+    "composition_semantics": "the implementation already reconstructs replay as payload_map (static registry) + score_map (per case) + channel_map (per case); per-case fields were deliberately not duplicated into every global registry record; only the artifact/report wording claimed registry-entry membership for channel membership and fusion score",
+    "implementation_effect": "NONE (wording/schema-description correction only; post_rerank_replay / replay_case_with_registry / replay_case / select_final_evidence / _source_type_of unchanged)",
+    "fields_moved_into_registry_entries": false
+  },
+  "origin_diagnostics": {
+    "selected_side_case_level_semantics": "selected_bridge_origin_count / selected_bridge_per_origin_counts remain case-level, taken from the persisted A5-R2 records",
+    "reserved_side_per_arm_semantics": "reserved_by_arm.ADMISSION_K{2,3} each carry a mechanically derived {reserved_bridge_origin_count, reserved_bridge_per_origin_counts, reserved_candidate_origin_ids} = distinct attributed_origin_id count / frequency table / ordered list among that arm's frozen reserved candidates; zero-reservation arms yield 0 / {} / []; the K2 summary is never implicitly the K3 summary",
+    "previous_defect": "the pre-R1 case-level summary collapsed K2/K3 into a union-like reserved_bridge_origin_count plus a K3-based per-origin table",
+    "derivation_constraints": "mechanical derivation only from the frozen per-arm reserved candidates and their frozen attributed origins; no new scoring, no re-attribution, no evaluator outcome, no case-role branch, no gold evidence, no thresholds, no diversity enforcement",
+    "per_case_per_arm_summary": {
+      "g036": {
+        "ADMISSION_K2": { "reserved_bridge_origin_count": 1, "reserved_bridge_per_origin_counts": { "edge.a767185bbbc0d72189d0ac29": 2 } },
+        "ADMISSION_K3": { "reserved_bridge_origin_count": 2, "reserved_bridge_per_origin_counts": { "edge.a767185bbbc0d72189d0ac29": 2, "edge.2e09628416a01ce2461d752a": 1 } }
+      },
+      "g021": {
+        "ADMISSION_K2": { "reserved_bridge_origin_count": 1, "reserved_bridge_per_origin_counts": { "edge.ea3a79d222f0ca6cc0e6df72": 1 } },
+        "ADMISSION_K3": { "reserved_bridge_origin_count": 1, "reserved_bridge_per_origin_counts": { "edge.ea3a79d222f0ca6cc0e6df72": 1 } }
+      },
+      "g020": {
+        "ADMISSION_K2": { "reserved_bridge_origin_count": 2, "reserved_bridge_per_origin_counts": { "edge.ea3a79d222f0ca6cc0e6df72": 1, "edge.81276373f106c8758d5aec92": 1 } },
+        "ADMISSION_K3": { "reserved_bridge_origin_count": 2, "reserved_bridge_per_origin_counts": { "edge.ea3a79d222f0ca6cc0e6df72": 2, "edge.81276373f106c8758d5aec92": 1 } }
+      },
+      "n006": {
+        "ADMISSION_K2": { "reserved_bridge_origin_count": 0, "reserved_bridge_per_origin_counts": {} },
+        "ADMISSION_K3": { "reserved_bridge_origin_count": 0, "reserved_bridge_per_origin_counts": {} }
+      },
+      "g041": {
+        "ADMISSION_K2": { "reserved_bridge_origin_count": 0, "reserved_bridge_per_origin_counts": {} },
+        "ADMISSION_K3": { "reserved_bridge_origin_count": 0, "reserved_bridge_per_origin_counts": {} }
+      },
+      "n004": {
+        "ADMISSION_K2": { "reserved_bridge_origin_count": 0, "reserved_bridge_per_origin_counts": {} },
+        "ADMISSION_K3": { "reserved_bridge_origin_count": 0, "reserved_bridge_per_origin_counts": {} }
+      }
+    },
+    "note": "examples derived mechanically from the frozen manifest; none turned into a failure threshold"
+  },
+  "implementation_fidelity_wording": {
+    "POST_RERANK_IMPLEMENTATION_FIDELITY": "PASS / PRODUCTION_CORE_REUSE_PLUS_SOURCE_ANCHORED_WRAPPER_MIRROR",
+    "replaces": "the earlier stronger-sounding POST_RERANK_SELECTOR_PARITY = PASS label",
+    "claim_scope": [
+      "select_final_evidence and _source_type_of imported directly from production",
+      "the surrounding deterministic post-rerank wrapper mirrored in evaluation code",
+      "key production expressions source-anchored (test_production_wrapper_expressions_still_present)",
+      "synthetic behavioral tests exercise movement/dedupe/caps/determinism",
+      "no full independent production-wrapper output-equality claim (no such test exists; A2 model outputs were not persisted)"
+    ],
+    "classification": "wording precision repair, not a scientific downgrade"
+  },
+  "invariance_checks": {
+    "pool_identities_unchanged": "18/18 ordered_pool_object_ids identical before/after (snapshot comparison over the regenerated pool manifest)",
+    "reserved_candidate_ids_unchanged": "all treatment arms identical",
+    "displaced_ids_unchanged": "all treatment arms identical",
+    "identical_pool_relations_unchanged": "g021 K2==K3; n006/g041/n004 BASELINE==K2==K3; g036/g020 all distinct — unchanged",
+    "54_call_plan_unchanged": "evaluation/d3_5_a6_phase1_execution_manifest.json required zero change (formal_call_count, all 54 entries' formal_call_index/case_id/repetition/arm/ordered_pool_object_ids/ordered_reranker_payload/pool_size/pool_identity/model_contract_reference/outcome_status byte-identical vs the pre-R1 snapshot)",
+    "reranker_payloads_unchanged": true,
+    "decision_logic_unchanged": "compute_delta / compute_causal_delta / mechanistic_safe_effective / select_budget / material_control_regression / classify_unstable_recovery / compute_verdict / stable_reserved_required_witness / admission_applicable_bridge_groups untouched",
+    "replay_semantics_unchanged": "post_rerank_replay / replay_case_with_registry / replay_case / select_final_evidence / _source_type_of untouched",
+    "phase1_script_change_scope": "only build_case_pools' origin_concentration_diagnostics block (diagnostic summarization schema) plus the new pure helper per_arm_origin_summary; POOL_CONSTRUCTION_EFFECT = NONE, CALL_PLAN_EFFECT = NONE, REPLAY_EFFECT = NONE, DECISION_LOGIC_EFFECT = NONE (proven by snapshot comparison and the unchanged test suite)"
+  },
+  "execution_accounting": {
+    "REAL_CASE_RERANKER_CALLS": 0,
+    "FORMAL_RERANKER_CALLS_EXECUTED": 0,
+    "PHASE1_SELECT_V2_RUNS": 0,
+    "ANALYZER_CALLS": 0,
+    "EMBEDDING_CALLS": 0,
+    "QA_CALLS": 0,
+    "VERIFIER_CALLS": 0,
+    "JUDGE_CALLS": 0,
+    "POSTGRESQL_WRITES": 0,
+    "QDRANT_WRITES": 0,
+    "NOVEL_VALIDATION_RUNS": 0,
+    "NOVEL_HOLDOUT_RUNS": 0
+  },
+  "outcome_exposure_state": {
+    "A6_RERANK_OUTCOME_EXPOSURE": "NOT_STARTED",
+    "FORMAL_RERANKER_CALLS_EXECUTED": 0,
+    "REAL_CASE_RERANKER_CALLS": 0
+  },
+  "A6_PHASE1_R1_DECISION": "REPLAY_SURFACE_METADATA_AND_PER_ARM_ORIGIN_DIAGNOSTICS_CLOSED",
+  "decision_basis": "both repairs are proven semantic-neutral: Repair A corrected only the artifact/report schema description (the implementation composition was already correct and unchanged); Repair B regenerated the pool manifest with explicit per-arm K2/K3 reserved-origin summaries while a pre/post snapshot proved all scientific fields identical (18/18 pool identities, reserved/displaced IDs, identical-pool relations) and the execution manifest required zero change; focused tests (35 passing, incl. 3 new per-arm diagnostic tests) and git diff --check are clean",
+  "PHASE2_SCIENTIFIC_READINESS": "YES",
+  "PHASE2_AUDIT_READINESS": "YES",
+  "phase2_readiness": "NOT_STARTED / READY_FOR_PAIRED_REPEATED_RERANKER_REPLAY",
+  "exact_next_stage": "D3.5-A6 Phase 2 — Paired Repeated Reranker Replay (requires separate explicit authorization)",
+  "prohibited_actions": [
+    "execute any of the 54 formal reranker calls",
+    "run a reranker smoke test",
+    "inspect g021 under a treatment reranker output",
+    "compute real DELTA/CAUSAL_DELTA/REGRESSION",
+    "choose K2 or K3 from real outcomes",
+    "issue the A6 scientific verdict",
+    "alter the frozen model contract or call schedule",
+    "start Phase 2",
+    "start D4"
+  ]
+}

@@ -418,3 +418,77 @@ def test_admission_applicable_bridge_group_classification():
 def test_stable_reserved_required_witness():
     assert admission.stable_reserved_required_witness([True, True, False]) is True
     assert admission.stable_reserved_required_witness([True, False, False]) is False
+
+
+# ---------------------------------------------------------------------------
+# per-arm origin diagnostics (Phase1-R1)
+# ---------------------------------------------------------------------------
+
+def test_per_arm_origin_summary_synthetic():
+    assert admission.per_arm_origin_summary([]) == {
+        "reserved_bridge_origin_count": 0, "reserved_bridge_per_origin_counts": {},
+        "reserved_candidate_origin_ids": []}
+    assert admission.per_arm_origin_summary(["A", "A"]) == {
+        "reserved_bridge_origin_count": 1, "reserved_bridge_per_origin_counts": {"A": 2},
+        "reserved_candidate_origin_ids": ["A", "A"]}
+    assert admission.per_arm_origin_summary(["A", "A", "B"]) == {
+        "reserved_bridge_origin_count": 2, "reserved_bridge_per_origin_counts": {"A": 2, "B": 1},
+        "reserved_candidate_origin_ids": ["A", "A", "B"]}
+
+
+def test_per_arm_origin_summary_is_pure_diagnostic():
+    """Deriving the summary must never mutate the frozen arm identities."""
+    baseline = [f"o{i:02d}" for i in range(30)]
+    built = admission.build_treatment_pool(baseline, ["b1", "b2", "b3"], 3)
+    reserved_ids = ["e1", "e1", "e2"]  # attributed origins of the three reserved candidates
+    summary = admission.per_arm_origin_summary(reserved_ids)
+    assert built["reserved_bridge_candidate_ids"] == ["b1", "b2", "b3"]
+    assert built["treatment_pool_object_ids"] == baseline[:27] + ["b1", "b2", "b3"]
+    assert summary["reserved_bridge_origin_count"] == 2
+    assert summary["reserved_bridge_per_origin_counts"] == {"e1": 2, "e2": 1}
+
+
+def test_build_case_pools_reports_explicit_per_arm_origin_summaries():
+    """g036-like case: K2 reserves two candidates from one origin, K3 adds a
+    second origin — the summaries must be arm-specific, never collapsed."""
+    records = {}
+    for i in range(40):
+        records[f"o{i:02d}"] = make_record(f"o{i:02d}", text=f"body {i}")
+    records["b1"] = make_record("b1", text="bridge one")
+    records["b2"] = make_record("b2", text="bridge two")
+    records["b3"] = make_record("b3", text="bridge three")
+    plan = {"intent": "troubleshooting", "target_repositories": [], "symbols": [],
+            "required_source_types": [], "source_budgets": {}, "paper_page_hints": {}}
+    nongraph = {"exact": [], "dense": [f"o{i:02d}" for i in range(30)], "sparse": [], "workflow": []}
+    case_entry = {
+        "case_id": "synthetic-origin",
+        "question": {"query": "neutral question"},
+        "frozen_plan_fields": plan,
+        "nongraph_channel_rankings": nongraph,
+        "exact_channel_ordering": [],
+        "full_fused_ordering": [[f"o{i:02d}", 0.01 * i] for i in range(30)],
+        "channel_membership": {f"o{i:02d}": ["dense"] for i in range(30)},
+        "post_rerank_replay_required_object_universe": [f"o{i:02d}" for i in range(30)],
+        "v2_selected_bridge_order": ["b1", "b2", "b3"],
+        "selected_rank_keys": [
+            {"candidate_object_id": "b1", "attributed_origin_id": "e1"},
+            {"candidate_object_id": "b2", "attributed_origin_id": "e1"},
+            {"candidate_object_id": "b3", "attributed_origin_id": "e2"},
+        ],
+        "selected_bridge_origin_count": 2,
+        "selected_bridge_per_origin_counts": {"e1": 2, "e2": 1},
+    }
+    registry = {**records}
+    case_pools = admission.build_case_pools(case_entry)
+    diag = case_pools["origin_concentration_diagnostics"]
+    k2 = diag["reserved_by_arm"]["ADMISSION_K2"]
+    k3 = diag["reserved_by_arm"]["ADMISSION_K3"]
+    assert k2["reserved_bridge_origin_count"] == 1
+    assert k2["reserved_bridge_per_origin_counts"] == {"e1": 2}
+    assert k3["reserved_bridge_origin_count"] == 2
+    assert k3["reserved_bridge_per_origin_counts"] == {"e1": 2, "e2": 1}
+    assert k2["reserved_candidate_origin_ids"] == ["e1", "e1"]
+    assert k3["reserved_candidate_origin_ids"] == ["e1", "e1", "e2"]
+    # identities untouched by diagnostic derivation
+    assert case_pools["arms"]["ADMISSION_K2"]["reserved_bridge_candidate_ids"] == ["b1", "b2"]
+    assert case_pools["arms"]["ADMISSION_K3"]["ordered_pool_object_ids"] == case_pools["baseline_pool_object_ids"][:27] + ["b1", "b2", "b3"]
