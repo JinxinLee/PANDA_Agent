@@ -1,0 +1,537 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint": "D4-A2",
+  "stage": "d4_a2_before_after_preregistration",
+  "title": "D4-A2 First-Batch Before/After Validation Preregistration",
+  "created_at": "2026-09-02T23:59:00+02:00",
+  "starting_head": "d078be6cbce59d4991100e566b92524458ea2abe",
+  "implementation_freeze_contract": {
+    "policy": "GIT_COMMIT_CONTAINING_THIS_ARTIFACT",
+    "description": "Implementation freeze identity is defined non-self-referentially as the Git commit containing this preregistration (Commit A). The runtime execution runner captures `git rev-parse HEAD` dynamically before formal cell #1, verifies a clean worktree, and records that exact Commit A SHA in the first persisted STARTED journal and raw results authority.",
+    "expected_commit_message": "D4-A2 freeze first-batch before-after validation",
+    "starting_head": "d078be6cbce59d4991100e566b92524458ea2abe"
+  },
+  "d4_a1_authority": {
+    "commit": "d078be6cbce59d4991100e566b92524458ea2abe",
+    "checkpoint": "D4-A1",
+    "verdict": "PASS / FIRST_BATCH_FIXED_LOCATOR_REPLACEMENT_VALIDATED_FOR_DEVELOPMENT",
+    "result_artifact": "evaluation/d4_a1_result.json",
+    "findings": "A1 proved on the two frozen target dependencies that legacy locator present retains evidence, suppression loses evidence, and generic structured replacement restores evidence with governed witness (event_poca_handoff and restgas_profile_workflow REPLACEMENT_VALIDATED, REGRESSION_REPLACEMENT = 0)."
+  },
+  "d3_cohort_authority": {
+    "revision_id": "D3-A0-R1",
+    "result_artifact": "evaluation/d3_a2_three_arm_results.json",
+    "case_count": 16,
+    "gold_cases_count": 10,
+    "novel_dev_cases_count": 6,
+    "answered_cases_count": 13,
+    "insufficient_evidence_cases_count": 3,
+    "selection_principle": "Reuses unchanged historical D3-A0-R1 / D3-A2 comparison cohort frozen before D4-A1 outcome exposure; outcome-independent T2 regression surface."
+  },
+  "evaluation_tier": "T2",
+  "mode": "retrieval",
+  "cohort": {
+    "case_count": 16,
+    "exact_case_order": [
+      "g029",
+      "n021",
+      "g025",
+      "g036",
+      "n022",
+      "g020",
+      "n006",
+      "g041",
+      "n014",
+      "g060",
+      "g052",
+      "g055",
+      "n003",
+      "g021",
+      "n004",
+      "g007"
+    ],
+    "dataset_breakdown": {
+      "gold_dev": [
+        "g029",
+        "g025",
+        "g036",
+        "g020",
+        "g041",
+        "g060",
+        "g052",
+        "g055",
+        "g021",
+        "g007"
+      ],
+      "novel_dev": [
+        "n021",
+        "n022",
+        "n006",
+        "n014",
+        "n003",
+        "n004"
+      ]
+    },
+    "applicability": {
+      "answered_cases": [
+        "g029",
+        "n021",
+        "g036",
+        "n022",
+        "g020",
+        "n006",
+        "n014",
+        "g060",
+        "g052",
+        "g055",
+        "n003",
+        "g021",
+        "n004"
+      ],
+      "answered_count": 13,
+      "insufficient_evidence_negative_controls": [
+        "g025",
+        "g041",
+        "g007"
+      ],
+      "insufficient_evidence_count": 3
+    }
+  },
+  "arms": {
+    "BEFORE_COMPAT": {
+      "arm": "BEFORE_COMPAT",
+      "description": "Current compatibility reference behavior: production configs/query_expansions.yaml active with all Batch-1 fixed locators active, generic D3.5 structured replacement OFF, reserved admission OFF.",
+      "query_expansions_state": "ALL_RULES_ACTIVE",
+      "in_memory_mask_active": false,
+      "structured_replacement_active": false,
+      "admission_budget_k": 0
+    },
+    "AFTER_BATCH1_REPLACEMENT": {
+      "arm": "AFTER_BATCH1_REPLACEMENT",
+      "description": "Proposed Batch-1 migrated candidate behavior: evaluation-only in-memory component mask suppressing Batch-1 fixed locators while preserving triggers, repos, and concepts; generic D3.5 structured replacement ON; d3_5_selectivity_v2 caps 8/4; K=3 bounded reserved rerank admission; rerank pool 30.",
+      "query_expansions_state": "BATCH1_FIXED_LOCATORS_SUPPRESSED",
+      "in_memory_mask_active": true,
+      "structured_replacement_active": true,
+      "admission_budget_k": 3,
+      "rerank_pool_size": 30,
+      "selectivity_caps": {
+        "SELECTIVITY_CAP": 8,
+        "PER_ORIGIN_CAP": 4,
+        "policy": "d3_5_selectivity_v2"
+      }
+    }
+  },
+  "formal_slots_32_schedule": {
+    "total_slots": 32,
+    "order_principle": "Strict case-major paired order: for each case, BEFORE_COMPAT followed immediately by AFTER_BATCH1_REPLACEMENT.",
+    "slots": [
+      {
+        "slot_index": 1,
+        "case_id": "g029",
+        "arm": "BEFORE_COMPAT"
+      },
+      {
+        "slot_index": 2,
+        "case_id": "g029",
+        "arm": "AFTER_BATCH1_REPLACEMENT"
+      },
+      {
+        "slot_index": 3,
+        "case_id": "n021",
+        "arm": "BEFORE_COMPAT"
+      },
+      {
+        "slot_index": 4,
+        "case_id": "n021",
+        "arm": "AFTER_BATCH1_REPLACEMENT"
+      },
+      {
+        "slot_index": 5,
+        "case_id": "g025",
+        "arm": "BEFORE_COMPAT"
+      },
+      {
+        "slot_index": 6,
+        "case_id": "g025",
+        "arm": "AFTER_BATCH1_REPLACEMENT"
+      },
+      {
+        "slot_index": 7,
+        "case_id": "g036",
+        "arm": "BEFORE_COMPAT"
+      },
+      {
+        "slot_index": 8,
+        "case_id": "g036",
+        "arm": "AFTER_BATCH1_REPLACEMENT"
+      },
+      {
+        "slot_index": 9,
+        "case_id": "n022",
+        "arm": "BEFORE_COMPAT"
+      },
+      {
+        "slot_index": 10,
+        "case_id": "n022",
+        "arm": "AFTER_BATCH1_REPLACEMENT"
+      },
+      {
+        "slot_index": 11,
+        "case_id": "g020",
+        "arm": "BEFORE_COMPAT"
+      },
+      {
+        "slot_index": 12,
+        "case_id": "g020",
+        "arm": "AFTER_BATCH1_REPLACEMENT"
+      },
+      {
+        "slot_index": 13,
+        "case_id": "n006",
+        "arm": "BEFORE_COMPAT"
+      },
+      {
+        "slot_index": 14,
+        "case_id": "n006",
+        "arm": "AFTER_BATCH1_REPLACEMENT"
+      },
+      {
+        "slot_index": 15,
+        "case_id": "g041",
+        "arm": "BEFORE_COMPAT"
+      },
+      {
+        "slot_index": 16,
+        "case_id": "g041",
+        "arm": "AFTER_BATCH1_REPLACEMENT"
+      },
+      {
+        "slot_index": 17,
+        "case_id": "n014",
+        "arm": "BEFORE_COMPAT"
+      },
+      {
+        "slot_index": 18,
+        "case_id": "n014",
+        "arm": "AFTER_BATCH1_REPLACEMENT"
+      },
+      {
+        "slot_index": 19,
+        "case_id": "g060",
+        "arm": "BEFORE_COMPAT"
+      },
+      {
+        "slot_index": 20,
+        "case_id": "g060",
+        "arm": "AFTER_BATCH1_REPLACEMENT"
+      },
+      {
+        "slot_index": 21,
+        "case_id": "g052",
+        "arm": "BEFORE_COMPAT"
+      },
+      {
+        "slot_index": 22,
+        "case_id": "g052",
+        "arm": "AFTER_BATCH1_REPLACEMENT"
+      },
+      {
+        "slot_index": 23,
+        "case_id": "g055",
+        "arm": "BEFORE_COMPAT"
+      },
+      {
+        "slot_index": 24,
+        "case_id": "g055",
+        "arm": "AFTER_BATCH1_REPLACEMENT"
+      },
+      {
+        "slot_index": 25,
+        "case_id": "n003",
+        "arm": "BEFORE_COMPAT"
+      },
+      {
+        "slot_index": 26,
+        "case_id": "n003",
+        "arm": "AFTER_BATCH1_REPLACEMENT"
+      },
+      {
+        "slot_index": 27,
+        "case_id": "g021",
+        "arm": "BEFORE_COMPAT"
+      },
+      {
+        "slot_index": 28,
+        "case_id": "g021",
+        "arm": "AFTER_BATCH1_REPLACEMENT"
+      },
+      {
+        "slot_index": 29,
+        "case_id": "n004",
+        "arm": "BEFORE_COMPAT"
+      },
+      {
+        "slot_index": 30,
+        "case_id": "n004",
+        "arm": "AFTER_BATCH1_REPLACEMENT"
+      },
+      {
+        "slot_index": 31,
+        "case_id": "g007",
+        "arm": "BEFORE_COMPAT"
+      },
+      {
+        "slot_index": 32,
+        "case_id": "g007",
+        "arm": "AFTER_BATCH1_REPLACEMENT"
+      }
+    ]
+  },
+  "exact_component_mask": {
+    "event_poca_handoff": {
+      "rule_id": "event_poca_handoff",
+      "suppressed_symbols": [
+        "macro/target/ana_dpm.C",
+        "macro/target/prod_aod_complete.C",
+        "POCA_VERTEX_FILE",
+        "PndPidCorrelator"
+      ],
+      "suppressed_paper_page_hints": {
+        "li_2026": [
+          131,
+          138
+        ]
+      },
+      "preserved_triggers": [
+        "event_poca",
+        "poca_vertex_file",
+        "second-pass pid",
+        "第二遍 pid"
+      ],
+      "preserved_repositories": [
+        "restgas_determination",
+        "pandaroot"
+      ],
+      "preserved_concepts": [
+        "event POCA handoff",
+        "event-aligned second-pass propagation"
+      ]
+    },
+    "restgas_profile_workflow": {
+      "rule_id": "restgas_profile_workflow",
+      "suppressed_symbols": [
+        "pgenerators/Target/PndTargetGenerator.cxx",
+        "macro/target/prod_sim_hvmaps.C",
+        "macro/target/reco_complete.C",
+        "macro/target/ana_complete.C",
+        "macro/target/correction/efficiency_correction_2.C"
+      ],
+      "suppressed_paper_page_hints": {},
+      "preserved_triggers": [
+        "restgas_profile",
+        "restgas profile",
+        "corrected rho",
+        "修正后的 rho"
+      ],
+      "preserved_repositories": [
+        "restgas_determination",
+        "pandaroot"
+      ],
+      "preserved_concepts": [
+        "distributed target generation",
+        "longitudinal profile correction"
+      ]
+    }
+  },
+  "model_prompt_authority": {
+    "qa_generation_model_id": "gemini-3.8-flash",
+    "qa_embedding_model_id": "gemini-embedding-2",
+    "reranker_temperature": 0.0,
+    "vertex_location": "global",
+    "rerank_system_prompt": "src/panda_agent/prompts.py:RERANK_SYSTEM_PROMPT",
+    "query_analyzer_system_prompt": "src/panda_agent/prompts.py:QUERY_ANALYZER_SYSTEM_PROMPT",
+    "rrf_weights": {
+      "exact": 2.0,
+      "dense": 1.0,
+      "sparse": 1.0,
+      "paper": 1.15,
+      "workflow": 1.2,
+      "graph": 0.8
+    },
+    "selectivity_caps": {
+      "SELECTIVITY_CAP": 8,
+      "PER_ORIGIN_CAP": 4,
+      "policy": "d3_5_selectivity_v2"
+    },
+    "admission_budget_k": 3,
+    "rerank_pool_size": 30
+  },
+  "retrieval_boundary": {
+    "allowed_stages": [
+      "query_analysis",
+      "exact_channel",
+      "dense_channel",
+      "sparse_channel",
+      "paper_channel",
+      "workflow_channel",
+      "graph_channel",
+      "rrf_fusion",
+      "reranker",
+      "select_final_evidence"
+    ],
+    "prohibited_calls": {
+      "QA_CALLS": 0,
+      "VERIFIER_CALLS": 0,
+      "JUDGE_CALLS": 0
+    }
+  },
+  "metric_definitions_and_applicability": {
+    "primary_retrieval_metrics": [
+      "Recall@5",
+      "Recall@10",
+      "Recall@20",
+      "MRR",
+      "combined_candidate_recall",
+      "final_evidence_recall",
+      "critical_final_evidence_recall"
+    ],
+    "combined_candidate_recall_semantics": "Computed strictly as the union of channel_rankings (rankings across retrieval channels) as defined by the repository evaluator, rather than a potentially divergent proxy.",
+    "applicability_semantics": "Per repository evaluation policy, retrieval metrics apply strictly to answered cases (13 cases). Negative control questions with expected_status=insufficient_evidence (g025, g041, g007) are evaluated separately and excluded from answered denominators.",
+    "reporting_scopes": [
+      "Full T2 cohort (13 answered cases)",
+      "Gold subset (7 answered cases: g029, g036, g020, g060, g052, g055, g021)",
+      "novel_dev subset (6 answered cases: n021, n022, n006, n014, n003, n004)"
+    ],
+    "targeted_t2_generalization_diagnostics": {
+      "description": "Gold minus novel_dev gaps (BEFORE and AFTER) across all analogous retrieval metrics where meaningful.",
+      "metrics": [
+        "final_evidence_recall",
+        "recall_at_5",
+        "recall_at_10",
+        "recall_at_20",
+        "mrr",
+        "combined_candidate_recall",
+        "critical_final_evidence_recall"
+      ]
+    }
+  },
+  "evidence_group_retention_rules": {
+    "classification_states": {
+      "PRESERVED": "BEFORE=true, AFTER=true",
+      "RECOVERED": "BEFORE=false, AFTER=true",
+      "REGRESSED": "BEFORE=true, AFTER=false",
+      "UNRESOLVED_BOTH": "BEFORE=false, AFTER=false"
+    },
+    "applicability_labeling": "All 16 formal cases report group retention with explicit applicability and negative-control labeling (ANSWERED vs NEGATIVE_CONTROL_INSUFFICIENT_EVIDENCE) to prevent silent conversion of negative controls into ordinary answered cases.",
+    "critical_group_regressions": {
+      "definition": "Applicable critical evidence groups retained under BEFORE but lost under AFTER.",
+      "hard_condition": "CRITICAL_GROUP_REGRESSIONS == 0",
+      "fatal_to_pass": true
+    },
+    "noncritical_group_regressions": {
+      "definition": "Applicable noncritical evidence groups retained under BEFORE but lost under AFTER.",
+      "fatal_to_pass": false,
+      "reporting": "Reported transparently as diagnostic; contributes to aggregate final evidence recall deltas."
+    },
+    "g021_e2_handling": "Participates naturally in the 16-case cohort evaluation without any special branch, exception, or repair rule."
+  },
+  "grounding_and_version_safety": {
+    "GROUNDING_REGRESSIONS": 0,
+    "WRONG_VERSION_REGRESSIONS": 0,
+    "INVALID_PROVENANCE_RECOVERIES": 0,
+    "hard_condition": "All grounding/version/provenance regression counters must equal 0.",
+    "rule_specifications": {
+      "WRONG_VERSION_REGRESSIONS": "Counts newly introduced wrong-version evidence in AFTER relative to BEFORE (in AFTER final evidence, not in BEFORE final evidence for the same case). Does NOT count historical or persistent wrong-version evidence present in both arms.",
+      "GROUNDING_REGRESSIONS": "Counts newly introduced forbidden/out-of-scope grounding violations in AFTER relative to BEFORE evaluated using existing Gold selectors (q.forbidden_evidence matching).",
+      "INVALID_PROVENANCE_RECOVERIES": "Meaningful check for AFTER structured recoveries and target witnesses: requires governed path, non-empty provenance origins, and valid source_id; catches un-governed or origin-less bridge candidates admitted into final evidence."
+    },
+    "reporting": "Evidence-level details recorded for each detected violation."
+  },
+  "batch1_target_reproduction": {
+    "target_groups": [
+      "g036.e1",
+      "g021.e1"
+    ],
+    "requirement": "Both target groups must be retained under AFTER with valid governed structured admission witness (governed provenance path, selected by v2, competed in rerank pool, retained in final evidence).",
+    "TARGET_REPLACEMENT_REPRODUCED": "2 / 2",
+    "BATCH1_FIXED_LOCATOR_DEPENDENCY_REMOVED": "2 / 2",
+    "dependency_removal_conditions": [
+      "Fixed locator inputs active in BEFORE",
+      "Exact masked locator inputs absent in AFTER",
+      "Generic structured mechanism active in AFTER",
+      "Target evidence retained in AFTER",
+      "Valid governed witness exists in AFTER"
+    ]
+  },
+  "before_reference_validity": {
+    "requirement": "Fresh BEFORE arm must reproduce compatibility reference baseline: g036.e1 and g021.e1 retained, with no catastrophic reference failure across safety surface."
+  },
+  "bounded_regression_thresholds": {
+    "tolerance_rule": "Absolute delta (AFTER - BEFORE) on full applicable cohort (13 answered cases)",
+    "recall_at_5": -0.05,
+    "recall_at_10": -0.05,
+    "recall_at_20": -0.05,
+    "combined_candidate_recall": -0.05,
+    "final_evidence_recall": -0.05,
+    "critical_final_evidence_recall": 0.0,
+    "mrr": "DIAGNOSTIC_ONLY"
+  },
+  "verdict_precedence": {
+    "authority": "User Contract Section 41 (Exact 6-Level Precedence)",
+    "levels": [
+      {
+        "level": 1,
+        "verdict": "INVALID / PROTOCOL_OR_TREATMENT_CONSTRUCTION_FAILED",
+        "description": "Triggered by incomplete 32-cell execution, wrong case set, wrong mask, wrong arms, wrong model contract, post-exposure treatment/evaluator mutation, treatment attribution failure, or protected dataset violation."
+      },
+      {
+        "level": 2,
+        "verdict": "INCONCLUSIVE / BEFORE_REFERENCE_NOT_REPRODUCED",
+        "description": "Triggered when fresh BEFORE arm fails to reproduce required compatibility reference (g036.e1 or g021.e1 missing under BEFORE) and no structural protocol invalidity occurred."
+      },
+      {
+        "level": 3,
+        "verdict": "FAIL / PRIMARY_TARGET_REPLACEMENT_NOT_REPRODUCED",
+        "description": "Triggered when either g036.e1 or g021.e1 fails AFTER retention or valid structured witness attribution."
+      },
+      {
+        "level": 4,
+        "verdict": "FAIL / CRITICAL_OR_GROUNDING_REGRESSION",
+        "description": "Triggered when CRITICAL_GROUP_REGRESSIONS > 0, GROUNDING_REGRESSIONS > 0, WRONG_VERSION_REGRESSIONS > 0, or INVALID_PROVENANCE_RECOVERIES > 0."
+      },
+      {
+        "level": 5,
+        "verdict": "PARTIAL / BEFORE_AFTER_REGRESSION_EXCEEDS_BOUNDED_TOLERANCE",
+        "description": "Triggered when targets reproduce and critical/grounding gates are clean, but one or more primary aggregate metrics violate the frozen -0.05 tolerance (or critical final evidence delta < 0)."
+      },
+      {
+        "level": 6,
+        "verdict": "PASS / FIRST_BATCH_BEFORE_AFTER_VALIDATED_FOR_RUNTIME_MIGRATION_DECISION",
+        "description": "Triggered when all 32 cells execute validly, BEFORE reference valid, both target replacements reproduced with structured witness (2/2), dependency removed (2/2), critical regressions = 0, grounding regressions = 0, and all primary metric deltas satisfy bounded tolerances."
+      }
+    ]
+  },
+  "protected_dataset_boundary": {
+    "NOVEL_VALIDATION_RUNS": 0,
+    "NOVEL_HOLDOUT_RUNS": 0,
+    "PROTECTED_DATASET_ACCESS": 0
+  },
+  "post_exposure_mutation_accounting": {
+    "POST_EXPOSURE_CASE_MUTATIONS": 0,
+    "POST_EXPOSURE_MASK_MUTATIONS": 0,
+    "POST_EXPOSURE_REPLACEMENT_MUTATIONS": 0,
+    "POST_EXPOSURE_MODEL_MUTATIONS": 0,
+    "POST_EXPOSURE_METRIC_MUTATIONS": 0,
+    "POST_EXPOSURE_VERDICT_MUTATIONS": 0,
+    "tolerance": "Zero tolerance: any post-exposure mutation violates Level 1 protocol validity and renders the experiment INVALID."
+  },
+  "outcome_exposure_state": {
+    "D4_A2_OUTCOME_EXPOSURE": "NOT_STARTED",
+    "formal_slots_total": 32,
+    "formal_slots_completed": 0,
+    "formal_slots_failed": 0,
+    "evaluator_executed": false,
+    "scientific_verdict_computed": false
+  },
+  "production_activation": false
+}
