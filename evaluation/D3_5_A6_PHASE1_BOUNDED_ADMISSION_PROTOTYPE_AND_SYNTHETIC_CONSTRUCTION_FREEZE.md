@@ -81,6 +81,8 @@ Pure functions implemented without running on real outcomes: `STABLE_RETAINED`/`
 
 Resolved through the existing settings path without any provider invocation: generation model `gemini-3.7-flash` (`VertexSettings.from_env()` / `QA_GENERATION_MODEL_ID` default), `temperature = 0.0`, system prompt `RERANK_SYSTEM_PROMPT` (imported unchanged), `ranked_object_ids` enum schema over the submitted pool, existing 3-attempt transient-retry policy. Provider-internal retries never create formal repetitions; an unrecoverable formal-call failure records the slot FAILED and stops Phase 2 before evaluator/verdict computation.
 
+*Phase 1-R2 Note (2026-09-02):* Following the centralization of runtime model selection in environment configuration (commit `136e021`), the future Phase-2 reranker model contract was refrozen to `gemini-3.8-flash` (`QA_GENERATION_MODEL_ID`). This upgrade was completed pre-exposure (0 real reranker calls executed). The authoritative model contract for Phase 2 is now `evaluation/d3_5_a6_phase1_r2_pre_exposure_reranker_model_contract_refreeze.json`. The original `gemini-3.7-flash` record above is preserved as historical provenance.
+
 ## 20. Anti-outcome boundary
 
 `REAL_CASE_RERANKER_CALLS = 0`; `FORMAL_RERANKER_CALLS_EXECUTED = 0`; analyzer/embedding/QA/verifier/judge calls 0; `PHASE1_SELECT_V2_RUNS = 0`; no variance smoke test, no g021 probe, no "just verify" invocation. Gold/required evidence/case role were consumed nowhere in pool, payload, or call-plan construction. **No real-case `DELTA_K`/`CAUSAL_DELTA_K`/`REGRESSION_K`, budget selection, or verdict was computed** — those require Phase-2 outputs. Deterministic pool materialization ≠ outcome exposure: `A6_RERANK_OUTCOME_EXPOSURE = NOT_STARTED`.

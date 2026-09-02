@@ -1,10 +1,15 @@
 {
  "schema_version": "1.0.0",
- "checkpoint": "D3.5-A6-PHASE1",
- "purpose": "frozen 54-slot Phase-2 call plan (non-executing; outcome_status all NOT_EXECUTED)",
+ "checkpoint": "D3.5-A6-PHASE1-R2",
+ "purpose": "frozen 54-slot Phase-2 call plan (non-executing; outcome_status all NOT_EXECUTED; refrozen for Gemini 3.8 pre-exposure)",
  "model_configuration_contract": {
+  "authority": "evaluation/d3_5_a6_phase1_r2_pre_exposure_reranker_model_contract_refreeze.json",
+  "checkpoint": "D3.5-A6-PHASE1-R2",
   "resolved": true,
-  "generation_model_id": "gemini-3.7-flash",
+  "generation_model_id": "gemini-3.8-flash",
+  "historical_original_generation_model_id": "gemini-3.7-flash",
+  "model_upgrade_timing": "PRE_EXPOSURE",
+  "real_reranker_calls_before_upgrade": 0,
   "temperature": 0.0,
   "system_prompt_source": "src/panda_agent/prompts.py:RERANK_SYSTEM_PROMPT (imported unchanged)",
   "response_schema_contract": "{\"ranked_object_ids\": [string...], \"additionalProperties\": false} with the schema enum restricted to the submitted pool member list",
@@ -17,7 +22,7 @@
    }
   ],
   "provider_retry_policy": "existing vertex generate_json 3-attempt transient-retry loop, unchanged",
-  "invocation": "NOT_CALLED_IN_PHASE1"
+  "invocation": "NOT_CALLED_IN_PHASE1_OR_R2"
  },
  "execution_protocol": {
   "all_54_formal_calls_execute_first": true,

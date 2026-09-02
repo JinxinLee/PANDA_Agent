@@ -1,0 +1,131 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint": "D3.5-A6-PHASE1-R2",
+  "stage_name": "D3.5-A6 Phase 1-R2 — Pre-Exposure Reranker Model Contract Upgrade & Re-freeze",
+  "stage_type": "pre-exposure model contract upgrade and re-freeze; no reranker calls, no generation health probe, no model smoke tests, no analyzer/embedding/QA/verifier/judge calls, no select_v2 runs, no retrieval re-execution, no pool/admission/prompt/retry/evaluator/metric/verdict redesign",
+  "starting_head": "136e02144cd197da031ce99eef9cb7ad179ccf88",
+  "runtime_configuration_cleanup_commit": "136e02144cd197da031ce99eef9cb7ad179ccf88",
+  "phase1_freeze_commit": "b26b2d740d656079862d845a023e31142e99db32",
+  "phase1_r1_commit": "b7868fba119b0b492db9d56fc8396e5cc5f06191",
+  "model_contract_authority": "D3.5-A6-PHASE1-R2",
+  "supersedes_for_phase2": {
+    "target_field": "model_configuration_contract.generation_model_id",
+    "superseded_value": "gemini-3.7-flash",
+    "authoritative_refrozen_value": "gemini-3.8-flash",
+    "scope": "future A6 Phase-2 execution only; does not alter historical Phase0/Phase1/Phase1-R1 scientific provenance"
+  },
+  "original_model_contract": {
+    "generation_model_id": "gemini-3.7-flash",
+    "temperature": 0.0,
+    "prompt": "src/panda_agent/prompts.py:RERANK_SYSTEM_PROMPT",
+    "response_schema": "{\"ranked_object_ids\": [string...], \"additionalProperties\": false} with the schema enum restricted to the submitted pool member list",
+    "retry_policy": "existing VertexAIClient.generate_json 3-attempt transient-retry loop, unchanged"
+  },
+  "refrozen_model_contract": {
+    "generation_model_id": "gemini-3.8-flash",
+    "temperature": 0.0,
+    "prompt": "src/panda_agent/prompts.py:RERANK_SYSTEM_PROMPT (imported unchanged)",
+    "response_schema": "{\"ranked_object_ids\": [string...], \"additionalProperties\": false} with the schema enum restricted to the submitted pool member list (unchanged)",
+    "retry_policy": "existing VertexAIClient.generate_json 3-attempt transient-retry loop, unchanged"
+  },
+  "model_upgrade": {
+    "from": "gemini-3.7-flash",
+    "to": "gemini-3.8-flash",
+    "reason": "Centralize runtime model selection in environment configuration (commit 136e021); align A6 Phase-2 execution contract with active QA_GENERATION_MODEL_ID single source of truth",
+    "timing": "PRE_EXPOSURE",
+    "real_reranker_calls_before_upgrade": 0,
+    "real_reranker_calls_during_r2": 0
+  },
+  "environment_configuration_preflight": {
+    "QA_GENERATION_MODEL_ID": "gemini-3.8-flash",
+    "QA_EVALUATION_JUDGE_MODEL_ID": "gemini-3.8-flash",
+    "resolution_path": "os.getenv via VertexSettings.from_env()",
+    "judge_role_relevance": "none; A6 Phase 2 uses only the generation role for reranking; QA_EVALUATION_JUDGE_MODEL_ID is runtime configuration and not part of the A6 treatment"
+  },
+  "reranker_interface_invariants": {
+    "temperature": 0.0,
+    "system_instruction": "RERANK_SYSTEM_PROMPT",
+    "system_instruction_changed": false,
+    "task": "rerank_evidence",
+    "request_structure": "{ task, untrusted_question, untrusted_candidates }",
+    "candidate_payload_fields": [
+      "object_id",
+      "title",
+      "source_id",
+      "text[:2000]"
+    ],
+    "response_field": "ranked_object_ids",
+    "response_enum": "formal slot pool object IDs",
+    "provider_retry_policy": "existing VertexAIClient.generate_json transient retry loop (3 attempts, transient status code / timeout check, exponential backoff)",
+    "thinking_mode_introduced": false
+  },
+  "invariance_checks": {
+    "18_pool_identities": "18 / 18 unchanged",
+    "reserved_ids": "unchanged across all 18 arm pools",
+    "displaced_ids": "unchanged across all 18 arm pools",
+    "identical_pool_relations": {
+      "g036": "all distinct (unchanged)",
+      "g021": "K2 == K3 (unchanged)",
+      "n006": "BASELINE == K2 == K3 (unchanged)",
+      "g041": "BASELINE == K2 == K3 (unchanged)",
+      "g020": "all distinct (unchanged)",
+      "n004": "BASELINE == K2 == K3 (unchanged)"
+    },
+    "54_call_entries": "54 / 54 call entries preserved (case_id, repetition, arm, ordered_pool_object_ids, pool_size, pool_identity, outcome_status all NOT_EXECUTED)",
+    "54_payloads": "54 / 54 ordered candidate payloads byte-identical in scientific content (object_id, title, source_id, text[:2000])",
+    "schedule": "frozen cyclic schedule unchanged: 6 cases (g036, g021, n006, g041, g020, n004), rep1 BASELINE->K2->K3, rep2 K2->K3->BASELINE, rep3 K3->BASELINE->K2",
+    "prompt": "RERANK_SYSTEM_PROMPT byte-identical (src/panda_agent/prompts.py)",
+    "temperature": "0.0 (unchanged)",
+    "response_schema": "structured JSON with ranked_object_ids enum-constrained to pool members (unchanged)",
+    "retry_semantics": "VertexAIClient.generate_json 3-attempt transient-retry loop (unchanged)",
+    "replay_semantics": "post_rerank_replay, replay_case_with_registry, replay_case, select_final_evidence, _source_type_of untouched (unchanged)",
+    "evaluator_semantics": "ADMISSION_APPLICABLE_BRIDGE_GROUP, STABLE_RETAINED, STABLE_LOST, STABLE_RESERVED_REQUIRED_WITNESS, DELTA_K, CAUSAL_DELTA_K, NONCAUSAL_STABLE_DELTA_K, MATERIAL_CONTROL_REGRESSION, REGRESSION_K, MECHANISTIC_SAFE_EFFECTIVE, SELECTED_ADMISSION_BUDGET, seven-level verdict precedence untouched (unchanged)",
+    "decision_logic": "untouched; pure functions synthetically tested only (unchanged)"
+  },
+  "cross_stage_comparability_note": "Historical A2/A5 reranker executions used Gemini 3.7 Flash. A6 Phase 2 will use Gemini 3.8 Flash. Therefore absolute cross-stage reranker rank/final-evidence differences between historical A2/A5 and A6 must not be attributed solely to the admission redesign. The primary A6 scientific contrast remains the within-A6 comparison: BASELINE vs K2 vs K3 under the same Gemini 3.8 reranker contract.",
+  "execution_accounting": {
+    "REAL_CASE_RERANKER_CALLS": 0,
+    "FORMAL_RERANKER_CALLS_EXECUTED": 0,
+    "MODEL_SMOKE_TESTS": 0,
+    "PHASE1_SELECT_V2_RUNS": 0,
+    "ANALYZER_CALLS": 0,
+    "EMBEDDING_CALLS": 0,
+    "QA_CALLS": 0,
+    "VERIFIER_CALLS": 0,
+    "JUDGE_CALLS": 0,
+    "POSTGRESQL_WRITES": 0,
+    "QDRANT_WRITES": 0,
+    "INGESTION": 0,
+    "REINDEX": 0,
+    "NOVEL_VALIDATION_RUNS": 0,
+    "NOVEL_HOLDOUT_RUNS": 0,
+    "PROTECTED_DATASET_ACCESS": 0
+  },
+  "outcome_exposure_state": {
+    "A6_RERANK_OUTCOME_EXPOSURE": "NOT_STARTED",
+    "FORMAL_PHASE2_CALL_PLAN_ENTRIES": 54,
+    "COMPLETED_FORMAL_SLOTS": 0,
+    "PENDING_FORMAL_SLOTS": 54
+  },
+  "A6_PHASE1_R2_DECISION": "PRE_EXPOSURE_RERANKER_MODEL_CONTRACT_UPGRADED_AND_REFROZEN",
+  "PHASE2_SCIENTIFIC_READINESS": "YES",
+  "PHASE2_AUDIT_READINESS": "YES",
+  "phase2_readiness": "NOT_STARTED / READY_FOR_PAIRED_REPEATED_RERANKER_REPLAY",
+  "exact_next_stage": "D3.5-A6 Phase 2 — Paired Repeated Reranker Replay (execute the frozen 54 formal slots, persist raw ranked_object_ids per slot, then run the evaluator stage; requires separate explicit authorization)",
+  "prohibited_actions": [
+    "call Gemini 3.8 or any model",
+    "run a reranker health probe",
+    "execute formal call #1",
+    "run g036/g021 manually",
+    "compute real A6 outcomes",
+    "modify K2/K3",
+    "change reranker prompt",
+    "change temperature",
+    "change retry policy",
+    "change the 54-call schedule",
+    "run QA",
+    "run novel_validation",
+    "run holdout",
+    "start D4"
+  ]
+}

@@ -213,5 +213,6 @@
     "run novel_validation",
     "run holdout",
     "start D4"
-  ]
+  ],
+  "phase1_r2_refreeze": "evaluation/d3_5_a6_phase1_r2_pre_exposure_reranker_model_contract_refreeze.json (A6_PHASE1_R2_DECISION = PRE_EXPOSURE_RERANKER_MODEL_CONTRACT_UPGRADED_AND_REFROZEN; future Phase-2 execution model contract refrozen to gemini-3.8-flash following runtime env centralization in commit 136e021; historical gemini-3.7-flash preserved as provenance; upgrade timing PRE_EXPOSURE with 0 real reranker calls; 18/18 pool identities and 54/54 call entries invariant)"
 }
