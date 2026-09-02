@@ -1,0 +1,493 @@
+{
+ "schema_version": "1.0.0",
+ "checkpoint": "D3.5-A6-PHASE2",
+ "stage": "D3.5-A6 Phase 2 — Paired Repeated Reranker Replay",
+ "experiment_authority_references": {
+  "model_contract_authority": "evaluation/d3_5_a6_phase1_r2_pre_exposure_reranker_model_contract_refreeze.json",
+  "raw_results_freeze": "evaluation/d3_5_a6_phase2_raw_reranker_results.json",
+  "execution_manifest": "evaluation/d3_5_a6_phase1_execution_manifest.json",
+  "pool_manifest": "evaluation/d3_5_a6_phase1_pool_manifest.json",
+  "replay_fixture": "evaluation/d3_5_a6_phase1_replay_fixture.json"
+ },
+ "model_contract": {
+  "generation_model_id": "gemini-3.8-flash",
+  "temperature": 0.0,
+  "system_prompt_source": "src/panda_agent/prompts.py:RERANK_SYSTEM_PROMPT",
+  "retry_semantics": "VertexAIClient.generate_json 3-attempt transient retry loop"
+ },
+ "populations": {
+  "admission_applicable_bridge_groups": [
+   "g036.e1",
+   "g021.e1"
+  ],
+  "safety_population": [
+   "n006.e1",
+   "g041.e1",
+   "g020.e1",
+   "g020.e2",
+   "n004.e1"
+  ]
+ },
+ "scientific_metrics": {
+  "DELTA_2": 1,
+  "DELTA_3": 2,
+  "CAUSAL_DELTA_2": 1,
+  "CAUSAL_DELTA_3": 2,
+  "NONCAUSAL_STABLE_DELTA_2": 0,
+  "NONCAUSAL_STABLE_DELTA_3": 0,
+  "REGRESSION_2": 0,
+  "REGRESSION_3": 0,
+  "MECHANISTIC_SAFE_EFFECTIVE_K2": true,
+  "MECHANISTIC_SAFE_EFFECTIVE_K3": true,
+  "SELECTED_ADMISSION_BUDGET": 3,
+  "UNSTABLE_ADMISSION_RECOVERY": false,
+  "FINAL_A6_PHASE2_VERDICT": "PASS / BOUNDED_RERANK_ADMISSION_VALIDATED_FOR_DEVELOPMENT"
+ },
+ "group_stability_analysis": {
+  "g036.e1": {
+   "case_id": "g036",
+   "is_admission_applicable": true,
+   "BASELINE": {
+    "flags": [
+     false,
+     false,
+     false
+    ],
+    "count": 0,
+    "stable_retained": false
+   },
+   "ADMISSION_K2": {
+    "flags": [
+     false,
+     false,
+     false
+    ],
+    "count": 0,
+    "stable_retained": false,
+    "witness_flags": [
+     false,
+     false,
+     false
+    ],
+    "stable_witness": false,
+    "material_control_regression": false
+   },
+   "ADMISSION_K3": {
+    "flags": [
+     true,
+     true,
+     true
+    ],
+    "count": 3,
+    "stable_retained": true,
+    "witness_flags": [
+     true,
+     true,
+     true
+    ],
+    "stable_witness": true,
+    "material_control_regression": false
+   }
+  },
+  "g021.e1": {
+   "case_id": "g021",
+   "is_admission_applicable": true,
+   "BASELINE": {
+    "flags": [
+     false,
+     false,
+     false
+    ],
+    "count": 0,
+    "stable_retained": false
+   },
+   "ADMISSION_K2": {
+    "flags": [
+     true,
+     true,
+     true
+    ],
+    "count": 3,
+    "stable_retained": true,
+    "witness_flags": [
+     true,
+     true,
+     true
+    ],
+    "stable_witness": true,
+    "material_control_regression": false
+   },
+   "ADMISSION_K3": {
+    "flags": [
+     true,
+     true,
+     true
+    ],
+    "count": 3,
+    "stable_retained": true,
+    "witness_flags": [
+     true,
+     true,
+     true
+    ],
+    "stable_witness": true,
+    "material_control_regression": false
+   }
+  },
+  "g021.e2": {
+   "case_id": "g021",
+   "is_admission_applicable": false,
+   "BASELINE": {
+    "flags": [
+     false,
+     false,
+     false
+    ],
+    "count": 0,
+    "stable_retained": false
+   },
+   "ADMISSION_K2": {
+    "flags": [
+     false,
+     false,
+     false
+    ],
+    "count": 0,
+    "stable_retained": false,
+    "witness_flags": [
+     false,
+     false,
+     false
+    ],
+    "stable_witness": false,
+    "material_control_regression": false
+   },
+   "ADMISSION_K3": {
+    "flags": [
+     false,
+     false,
+     false
+    ],
+    "count": 0,
+    "stable_retained": false,
+    "witness_flags": [
+     false,
+     false,
+     false
+    ],
+    "stable_witness": false,
+    "material_control_regression": false
+   }
+  },
+  "n006.e1": {
+   "case_id": "n006",
+   "is_admission_applicable": false,
+   "BASELINE": {
+    "flags": [
+     true,
+     true,
+     true
+    ],
+    "count": 3,
+    "stable_retained": true
+   },
+   "ADMISSION_K2": {
+    "flags": [
+     true,
+     true,
+     true
+    ],
+    "count": 3,
+    "stable_retained": true,
+    "witness_flags": [
+     false,
+     false,
+     false
+    ],
+    "stable_witness": false,
+    "material_control_regression": false
+   },
+   "ADMISSION_K3": {
+    "flags": [
+     true,
+     true,
+     true
+    ],
+    "count": 3,
+    "stable_retained": true,
+    "witness_flags": [
+     false,
+     false,
+     false
+    ],
+    "stable_witness": false,
+    "material_control_regression": false
+   }
+  },
+  "n006.e2": {
+   "case_id": "n006",
+   "is_admission_applicable": false,
+   "BASELINE": {
+    "flags": [
+     false,
+     false,
+     false
+    ],
+    "count": 0,
+    "stable_retained": false
+   },
+   "ADMISSION_K2": {
+    "flags": [
+     false,
+     false,
+     false
+    ],
+    "count": 0,
+    "stable_retained": false,
+    "witness_flags": [
+     false,
+     false,
+     false
+    ],
+    "stable_witness": false,
+    "material_control_regression": false
+   },
+   "ADMISSION_K3": {
+    "flags": [
+     false,
+     false,
+     false
+    ],
+    "count": 0,
+    "stable_retained": false,
+    "witness_flags": [
+     false,
+     false,
+     false
+    ],
+    "stable_witness": false,
+    "material_control_regression": false
+   }
+  },
+  "g041.e1": {
+   "case_id": "g041",
+   "is_admission_applicable": false,
+   "BASELINE": {
+    "flags": [
+     true,
+     true,
+     true
+    ],
+    "count": 3,
+    "stable_retained": true
+   },
+   "ADMISSION_K2": {
+    "flags": [
+     true,
+     true,
+     true
+    ],
+    "count": 3,
+    "stable_retained": true,
+    "witness_flags": [
+     false,
+     false,
+     false
+    ],
+    "stable_witness": false,
+    "material_control_regression": false
+   },
+   "ADMISSION_K3": {
+    "flags": [
+     true,
+     true,
+     true
+    ],
+    "count": 3,
+    "stable_retained": true,
+    "witness_flags": [
+     false,
+     false,
+     false
+    ],
+    "stable_witness": false,
+    "material_control_regression": false
+   }
+  },
+  "g020.e1": {
+   "case_id": "g020",
+   "is_admission_applicable": false,
+   "BASELINE": {
+    "flags": [
+     true,
+     true,
+     true
+    ],
+    "count": 3,
+    "stable_retained": true
+   },
+   "ADMISSION_K2": {
+    "flags": [
+     true,
+     true,
+     true
+    ],
+    "count": 3,
+    "stable_retained": true,
+    "witness_flags": [
+     false,
+     false,
+     false
+    ],
+    "stable_witness": false,
+    "material_control_regression": false
+   },
+   "ADMISSION_K3": {
+    "flags": [
+     true,
+     true,
+     true
+    ],
+    "count": 3,
+    "stable_retained": true,
+    "witness_flags": [
+     false,
+     false,
+     false
+    ],
+    "stable_witness": false,
+    "material_control_regression": false
+   }
+  },
+  "g020.e2": {
+   "case_id": "g020",
+   "is_admission_applicable": false,
+   "BASELINE": {
+    "flags": [
+     true,
+     true,
+     true
+    ],
+    "count": 3,
+    "stable_retained": true
+   },
+   "ADMISSION_K2": {
+    "flags": [
+     true,
+     true,
+     true
+    ],
+    "count": 3,
+    "stable_retained": true,
+    "witness_flags": [
+     false,
+     false,
+     false
+    ],
+    "stable_witness": false,
+    "material_control_regression": false
+   },
+   "ADMISSION_K3": {
+    "flags": [
+     true,
+     true,
+     true
+    ],
+    "count": 3,
+    "stable_retained": true,
+    "witness_flags": [
+     false,
+     false,
+     false
+    ],
+    "stable_witness": false,
+    "material_control_regression": false
+   }
+  },
+  "n004.e1": {
+   "case_id": "n004",
+   "is_admission_applicable": false,
+   "BASELINE": {
+    "flags": [
+     true,
+     true,
+     true
+    ],
+    "count": 3,
+    "stable_retained": true
+   },
+   "ADMISSION_K2": {
+    "flags": [
+     true,
+     true,
+     true
+    ],
+    "count": 3,
+    "stable_retained": true,
+    "witness_flags": [
+     false,
+     false,
+     false
+    ],
+    "stable_witness": false,
+    "material_control_regression": false
+   },
+   "ADMISSION_K3": {
+    "flags": [
+     true,
+     true,
+     true
+    ],
+    "count": 3,
+    "stable_retained": true,
+    "witness_flags": [
+     false,
+     false,
+     false
+    ],
+    "stable_witness": false,
+    "material_control_regression": false
+   }
+  }
+ },
+ "identical_pool_analysis": {
+  "g036": {
+   "K2_equals_BASELINE": false,
+   "K3_equals_BASELINE": false,
+   "K2_equals_K3": false
+  },
+  "g021": {
+   "K2_equals_BASELINE": false,
+   "K3_equals_BASELINE": false,
+   "K2_equals_K3": true
+  },
+  "n006": {
+   "K2_equals_BASELINE": true,
+   "K3_equals_BASELINE": true,
+   "K2_equals_K3": true
+  },
+  "g041": {
+   "K2_equals_BASELINE": true,
+   "K3_equals_BASELINE": true,
+   "K2_equals_K3": true
+  },
+  "g020": {
+   "K2_equals_BASELINE": false,
+   "K3_equals_BASELINE": false,
+   "K2_equals_K3": false
+  },
+  "n004": {
+   "K2_equals_BASELINE": true,
+   "K3_equals_BASELINE": true,
+   "K2_equals_K3": true
+  }
+ },
+ "structural_validity": {
+  "protocol_valid": true,
+  "formal_calls_succeeded": 54,
+  "treatment_mutations": 0,
+  "mid_run_evaluations": 0
+ },
+ "production_activation": false,
+ "exact_next_lifecycle_state": "D3.5-A6 COMPLETE / EVALUATION_CLOSED (D4 remains BLOCKED / NOT_STARTED)"
+}

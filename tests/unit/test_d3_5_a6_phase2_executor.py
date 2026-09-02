@@ -27,19 +27,51 @@ def test_mock_reranker_slot_execution(tmp_path, monkeypatch):
     class DummyClient:
         def __init__(self, settings):
             self.settings = settings
+
         def stats_snapshot(self):
             return {"generation_calls": 0, "token_usage": 0}
+
         def stats_delta(self, before):
             return {"generation_calls": 1, "token_usage": 100}
+
         def generate_json(self, prompt, schema, system_instruction=None, temperature=0.0):
-            # Parse schema enum and return reverse order
             pool = schema["properties"]["ranked_object_ids"]["items"]["enum"]
             return {"ranked_object_ids": list(reversed(pool[:10]))}
 
     monkeypatch.setattr(executor, "VertexAIClient", DummyClient)
-    # Target temp path for raw results
-    raw_path = tmp_path / "raw_results.json"
-    monkeypatch.setattr(executor, "RAW_RESULTS_PATH", str(raw_path.relative_to(project_root) if raw_path.is_relative_to(project_root) else raw_path))
-
-    # Test audit invariants
     assert executor.audit_invariants(project_root)["verified"] is True
+
+
+def test_phase2_evaluated_results_structure_and_metrics():
+    """Verify the persisted Phase 2 result artifacts and scientific invariants."""
+    project_root = Path(__file__).resolve().parents[2]
+    result_path = project_root / executor.FINAL_RESULT_PATH
+    assert result_path.exists()
+
+    result = json.loads(result_path.read_text(encoding="utf-8"))
+    metrics = result["scientific_metrics"]
+
+    assert metrics["DELTA_2"] == 1
+    assert metrics["DELTA_3"] == 2
+    assert metrics["CAUSAL_DELTA_2"] == 1
+    assert metrics["CAUSAL_DELTA_3"] == 2
+    assert metrics["NONCAUSAL_STABLE_DELTA_2"] == 0
+    assert metrics["NONCAUSAL_STABLE_DELTA_3"] == 0
+    assert metrics["REGRESSION_2"] == 0
+    assert metrics["REGRESSION_3"] == 0
+    assert metrics["MECHANISTIC_SAFE_EFFECTIVE_K2"] is True
+    assert metrics["MECHANISTIC_SAFE_EFFECTIVE_K3"] is True
+    assert metrics["SELECTED_ADMISSION_BUDGET"] == 3
+    assert metrics["FINAL_A6_PHASE2_VERDICT"] == (
+        "PASS / BOUNDED_RERANK_ADMISSION_VALIDATED_FOR_DEVELOPMENT"
+    )
+    assert result["production_activation"] is False
+
+    # Check accounting
+    acct = result["accounting"]
+    assert acct["FORMAL_RERANKER_CALLS_EXECUTED"] == 54
+    assert acct["FORMAL_RERANKER_CALLS_SUCCEEDED"] == 54
+    assert acct["FORMAL_RERANKER_CALLS_FAILED"] == 0
+    assert acct["PROVIDER_INTERNAL_ATTEMPTS"] == 54
+    assert acct["NOVEL_VALIDATION_RUNS"] == 0
+    assert acct["PROTECTED_DATASET_ACCESS"] == 0

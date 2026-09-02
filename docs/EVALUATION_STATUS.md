@@ -11,7 +11,25 @@ When records conflict, use the single section explicitly marked **Current author
 
 # Current authoritative state — 2026-09-02
 
-## D3.5-A6 Phase 1-R2 current authoritative state — 2026-09-02
+## D3.5-A6 Phase 2 current authoritative state — 2026-09-02
+
+- `A6_PHASE2_DECISION = BOUNDED_RERANK_ADMISSION_VALIDATED_FOR_DEVELOPMENT`; `D3.5-A6-PHASE2 = COMPLETE / PASS`; `FINAL_A6_PHASE2_VERDICT = PASS / BOUNDED_RERANK_ADMISSION_VALIDATED_FOR_DEVELOPMENT`; `SELECTED_ADMISSION_BUDGET = 3`; `D3.5-A6 = COMPLETE / PASS`; `PRODUCTION_ACTIVATION = false`; `D4 = NOT_STARTED / BLOCKED`.
+- Execution completed: all 54 formal slots in the frozen cyclic schedule (6 cases × 3 repetitions × 3 arms) executed against Google Vertex AI Gemini 3.8 Flash (`temperature = 0.0`, `RERANK_SYSTEM_PROMPT`). 54/54 calls succeeded on the first provider attempt (0 transient retries, 0 failed slots, 931,012 tokens consumed).
+- Outcome-exposure audit boundary: `A6_RERANK_OUTCOME_EXPOSURE = NOT_STARTED` -> `STARTED` (formal call #1) -> `COMPLETE` (call #54). All 54 raw outputs were persisted and frozen in dedicated audit Commit A (`4e8335d`) before running any replay or scientific evaluator. Zero mid-run evaluations were performed.
+- Scientific evaluation results:
+  - Applicable bridge groups (2): `g036.e1` (`macro/target/ana_dpm.C`), `g021.e1` (`macro/target/prod_sim_hvmaps.C`).
+  - Safety population (5 BASELINE-stable groups): `n006.e1`, `g041.e1`, `g020.e1`, `g020.e2`, `n004.e1`.
+  - Incremental benefit: `DELTA_2 = 1` (`g021.e1`), `DELTA_3 = 2` (`g036.e1`, `g021.e1`).
+  - Mechanistic witness: `CAUSAL_DELTA_2 = 1`, `CAUSAL_DELTA_3 = 2` (both groups stably retained in 3/3 repetitions with the arm's actually-reserved required candidate present in final evidence).
+  - Un-witnessed perturbation: `NONCAUSAL_STABLE_DELTA_2 = 0`, `NONCAUSAL_STABLE_DELTA_3 = 0`.
+  - Safety: `REGRESSION_2 = 0`, `REGRESSION_3 = 0` (zero material control regressions).
+  - Mechanistic safe-effectiveness: `MECHANISTIC_SAFE_EFFECTIVE(K2) = True`, `MECHANISTIC_SAFE_EFFECTIVE(K3) = True`.
+  - Budget selection: under the frozen causal-safe hierarchy, `CAUSAL_DELTA_3 (2) > CAUSAL_DELTA_2 (1)`, selecting bounded admission budget `SELECTED_ADMISSION_BUDGET = 3`.
+- Reranker variance reference: identical pools (`n006`, `g041`, `n004` all arms; `g021` K2/K3) demonstrated 100% stable downstream retention across repetitions, confirming that observed recovery is an admission treatment effect rather than reranker noise.
+- Protection boundaries held: `NOVEL_VALIDATION_RUNS = 0`, `NOVEL_HOLDOUT_RUNS = 0`, `PROTECTED_DATASET_ACCESS = 0`, `POSTGRESQL_WRITES = 0`, `QDRANT_WRITES = 0`. All post-exposure mutation counts = 0.
+- Artifacts: `evaluation/d3_5_a6_phase2_raw_reranker_results.json`, `evaluation/d3_5_a6_phase2_replay_and_evaluator_results.json`, `evaluation/d3_5_a6_phase2_result.json`, `evaluation/D3_5_A6_PHASE2_PAIRED_REPEATED_RERANKER_REPLAY.md`.
+
+## D3.5-A6 Phase 1-R2 predecessor state — 2026-09-02
 
 - `A6_PHASE1_R2_DECISION = PRE_EXPOSURE_RERANKER_MODEL_CONTRACT_UPGRADED_AND_REFROZEN`; `D3.5-A6-PHASE1-R2 = COMPLETE`; `D3.5-A6 = IN_PROGRESS / BOUNDED_ADMISSION_PROTOTYPE_AND_REPLAY_IMPLEMENTATION_FROZEN` (unchanged); `D3.5-A6-PHASE1 = COMPLETE` (unchanged); `D3.5-A6-PHASE1-R1 = COMPLETE` (unchanged); `D3.5-A6-PHASE2 = NOT_STARTED / READY_FOR_PAIRED_REPEATED_RERANKER_REPLAY` (`PHASE2_SCIENTIFIC_READINESS = YES`, `PHASE2_AUDIT_READINESS = YES`); `A6_PHASE2_RERANKER_MODEL = gemini-3.8-flash`; `A6_RERANK_OUTCOME_EXPOSURE = NOT_STARTED`; `D4 = NOT_STARTED / BLOCKED`.
 - Pre-exposure model contract upgrade: following the centralization of runtime model selection in environment configuration (commit `136e021`), the future execution contract for A6 Phase 2 is upgraded from `gemini-3.7-flash` to `gemini-3.8-flash` (`QA_GENERATION_MODEL_ID`), resolving the mismatch between the frozen Phase-1 manifest and active runtime environment configuration.
