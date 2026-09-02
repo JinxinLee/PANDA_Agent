@@ -1,0 +1,454 @@
+{
+ "schema_version": "1.0.0",
+ "checkpoint": "D4-A1",
+ "stage": "D4-A1 — First-Batch Fixed-Locator Migration Prototype",
+ "lifecycle_state": "COMPLETE / PASS / FIRST_BATCH_FIXED_LOCATOR_REPLACEMENT_VALIDATED_FOR_DEVELOPMENT",
+ "exact_next_lifecycle_state": "D4-A2 — First-Batch Before/After Validation (NOT_STARTED / READY_FOR_FIRST_BATCH_BEFORE_AFTER_VALIDATION)",
+ "roadmap_state": {
+  "D4": "IN_PROGRESS / INCREMENTAL_QUERY_EXPANSION_MIGRATION",
+  "D4_A1": "COMPLETE / PASS / FIRST_BATCH_FIXED_LOCATOR_REPLACEMENT_VALIDATED_FOR_DEVELOPMENT",
+  "D4_A2": "NOT_STARTED / READY_FOR_FIRST_BATCH_BEFORE_AFTER_VALIDATION"
+ },
+ "lineage": {
+  "starting_head": "feecfdbebd933fbcf679b65432bd54d699594ecb",
+  "implementation_freeze_commit_a": "8481f3411ae7e277abd8056910eb737624b7666e",
+  "raw_outcome_freeze_commit_b": "d0921c87aa7542e6f84ec49ec04a28cd199a6050",
+  "scientific_closeout_commit_c": "GIT_COMMIT_CONTAINING_THIS_ARTIFACT"
+ },
+ "authority_references": {
+  "manifest": "evaluation/d4_a1_execution_manifest.json",
+  "preregistration": "evaluation/d4_a0_batch1_migration_preregistration.json",
+  "component_inventory": "evaluation/d4_a0_expansion_component_inventory.json",
+  "raw_results": "evaluation/d4_a1_raw_three_arm_results.json",
+  "evaluator_results": "evaluation/d4_a1_evaluator_results.json",
+  "human_report": "evaluation/D4_A1_FIRST_BATCH_FIXED_LOCATOR_MIGRATION_PROTOTYPE.md"
+ },
+ "model_and_config_receipts": {
+  "model_selection_role": "QA_GENERATION_MODEL_ID via VertexSettings.from_env()",
+  "generation_model_id": "gemini-3.8-flash",
+  "analyzer_model_id": "gemini-3.8-flash",
+  "reranker_model_id": "gemini-3.8-flash",
+  "embedding_model_selection_role": "QA_EMBEDDING_MODEL_ID via VertexSettings.from_env()",
+  "embedding_model_id": "gemini-embedding-2",
+  "vertex_location": "global",
+  "temperature": 0.0,
+  "prompt_authority": "src/panda_agent/prompts.py:RERANK_SYSTEM_PROMPT",
+  "query_analyzer_prompt": "src/panda_agent/prompts.py:QUERY_ANALYZER_SYSTEM_PROMPT",
+  "retry_policy": "VertexAIClient.generate_json 3-attempt transient retry loop"
+ },
+ "governed_replacement_receipts": {
+  "d1_d2_authority": "D2 governed resolution -> D1 accepted objects/relations/workflows. No fuzzy/dense/LLM jumping.",
+  "bridge_semantics": "Bounded reachability: max 1 upward containment transition + max 1 predicate/type-gated relation/workflow transition. Governed provenance materialization to exact source/version evidence.",
+  "selectivity_policy": "d3_5_selectivity_v2",
+  "selectivity_caps": {
+   "SELECTIVITY_CAP": 8,
+   "PER_ORIGIN_CAP": 4,
+   "policy_version": "d3_5_selectivity_v2",
+   "model_calls": 0
+  },
+  "selected_admission_budget_k": 3,
+  "rerank_pool_size": 30,
+  "post_rerank_fallback_pool": "treatment pool [*reranked, *rerank_pool, *baseline_fused_ordering]"
+ },
+ "exact_masks": {
+  "event_poca_handoff": {
+   "rule_id": "event_poca_handoff",
+   "suppressed_symbols": [
+    "macro/target/ana_dpm.C",
+    "macro/target/prod_aod_complete.C",
+    "POCA_VERTEX_FILE",
+    "PndPidCorrelator"
+   ],
+   "suppressed_paper_page_hints": {
+    "li_2026": [
+     131,
+     138
+    ]
+   },
+   "preserved_components": {
+    "triggers": [
+     "event_poca",
+     "poca_vertex_file",
+     "second-pass pid",
+     "第二遍 pid"
+    ],
+    "repositories": [
+     "restgas_determination",
+     "pandaroot"
+    ],
+    "concepts": [
+     "event POCA handoff",
+     "event-aligned second-pass propagation"
+    ]
+   }
+  },
+  "restgas_profile_workflow": {
+   "rule_id": "restgas_profile_workflow",
+   "suppressed_symbols": [
+    "pgenerators/Target/PndTargetGenerator.cxx",
+    "macro/target/prod_sim_hvmaps.C",
+    "macro/target/reco_complete.C",
+    "macro/target/ana_complete.C",
+    "macro/target/correction/efficiency_correction_2.C"
+   ],
+   "suppressed_paper_page_hints": {},
+   "preserved_components": {
+    "triggers": [
+     "restgas_profile",
+     "restgas profile",
+     "corrected rho",
+     "修正后的 rho"
+    ],
+    "repositories": [
+     "restgas_determination",
+     "pandaroot"
+    ],
+    "concepts": [
+     "distributed target generation",
+     "longitudinal profile correction"
+    ]
+   }
+  }
+ },
+ "experimental_cohort": {
+  "cases": [
+   {
+    "case_id": "g036",
+    "role": "TARGET_DEPENDENCY_CASE",
+    "target_rule": "event_poca_handoff",
+    "dataset": "gold_dev",
+    "gating": true
+   },
+   {
+    "case_id": "g021",
+    "role": "TARGET_DEPENDENCY_CASE",
+    "target_rule": "restgas_profile_workflow",
+    "dataset": "gold_dev",
+    "gating": true
+   },
+   {
+    "case_id": "n006",
+    "role": "SAFETY_CONTROL_CASE",
+    "target_rule": null,
+    "dataset": "novel_dev",
+    "gating": true
+   },
+   {
+    "case_id": "g041",
+    "role": "SAFETY_CONTROL_CASE",
+    "target_rule": null,
+    "dataset": "gold_dev",
+    "gating": true
+   },
+   {
+    "case_id": "g020",
+    "role": "SAFETY_CONTROL_CASE",
+    "target_rule": null,
+    "dataset": "gold_dev",
+    "gating": true
+   },
+   {
+    "case_id": "n004",
+    "role": "SAFETY_CONTROL_CASE",
+    "target_rule": null,
+    "dataset": "novel_dev",
+    "gating": true
+   },
+   {
+    "case_id": "n022",
+    "role": "PARAPHRASE_DIAGNOSTIC_CASE",
+    "target_rule": "event_poca_handoff",
+    "dataset": "novel_dev",
+    "gating": false
+   }
+  ],
+  "arms": [
+   "LEGACY_CONTROL",
+   "BATCH1_ABLATION",
+   "BATCH1_REPLACEMENT"
+  ],
+  "formal_cells_total": 21
+ },
+ "outcome_exposure": {
+  "state": "COMPLETE",
+  "started_at_utc": "2026-09-02T20:30:42.444983+00:00",
+  "completed_at_utc": "2026-09-02T20:38:16.921682+00:00",
+  "evaluator_executed_at_utc": "2026-09-02T20:39:14.061043+00:00",
+  "formal_slots_total": 21,
+  "formal_slots_completed": 21,
+  "formal_slots_failed": 0
+ },
+ "accounting": {
+  "FORMAL_CELLS_TOTAL": 21,
+  "FORMAL_CELLS_COMPLETED": 21,
+  "FORMAL_CELLS_FAILED": 0,
+  "LOGICAL_ANALYZER_CALLS": 21,
+  "LOGICAL_EMBEDDING_CALLS": 21,
+  "LOGICAL_RERANKER_CALLS": 21,
+  "TOTAL_LOGICAL_MODEL_CALLS": 63,
+  "PROVIDER_INTERNAL_ATTEMPTS": 63,
+  "TOTAL_TOKEN_USAGE": 406019,
+  "QA_CALLS": 0,
+  "VERIFIER_CALLS": 0,
+  "JUDGE_CALLS": 0,
+  "RETRIEVAL_RUNS": 21,
+  "POSTGRESQL_WRITES": 0,
+  "QDRANT_WRITES": 0,
+  "INGESTION": 0,
+  "REINDEX": 0,
+  "NOVEL_VALIDATION_RUNS": 0,
+  "NOVEL_HOLDOUT_RUNS": 0,
+  "PROTECTED_DATASET_ACCESS": 0
+ },
+ "post_exposure_mutations": {
+  "POST_EXPOSURE_MODEL_MUTATIONS": 0,
+  "POST_EXPOSURE_PROMPT_MUTATIONS": 0,
+  "POST_EXPOSURE_MASK_MUTATIONS": 0,
+  "POST_EXPOSURE_SCHEDULE_MUTATIONS": 0,
+  "POST_EXPOSURE_REPLACEMENT_MUTATIONS": 0,
+  "POST_EXPOSURE_SCORER_MUTATIONS": 0,
+  "POST_EXPOSURE_VERDICT_LOGIC_MUTATIONS": 0
+ },
+ "scientific_evaluation": {
+  "target_results": {
+   "g036": {
+    "target_evidence": "g036.e1",
+    "LEGACY_CONTROL": true,
+    "BATCH1_ABLATION": false,
+    "BATCH1_REPLACEMENT": true,
+    "witness": true,
+    "decision": "REPLACEMENT_VALIDATED",
+    "witness_record": {
+     "group_id": "g036.e1",
+     "retained_in_final": true,
+     "has_valid_witness": true,
+     "candidate_witnesses": [
+      {
+       "candidate_object_id": "object.5cae2ceab6e67bb4c9065331",
+       "governed_path": true,
+       "selected_by_v2": true,
+       "ordinary_top30_before_reservation": false,
+       "reserved_under_k3": true,
+       "displaced_candidates": [
+        "object.88d0d65c7dbf3c313f1fa5dd",
+        "object.2243fa2f42ac96009ac4ba42",
+        "object.9784e8cd299c611d20d298d4"
+       ],
+       "final_pool_membership": true,
+       "final_pool_position": 29,
+       "competed_in_reranker": true,
+       "final_evidence_retained": true,
+       "full_structured_path": {
+        "candidate_object_id": "object.5cae2ceab6e67bb4c9065331",
+        "provenance_origin_ids": [
+         "edge.2e09628416a01ce2461d752a"
+        ],
+        "origin_types": [
+         "relation_edge"
+        ],
+        "source_id": "restgas_determination",
+        "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+        "locator_path": "macro/target/ana_dpm.C",
+        "min_structural_distance_transitions": 2,
+        "locator": {
+         "url": null,
+         "path": "macro/target/ana_dpm.C",
+         "symbol": null,
+         "end_line": 938,
+         "pdf_page": null,
+         "start_line": 1,
+         "printed_page": null,
+         "section_path": [],
+         "snapshot_date": null
+        }
+       },
+       "is_valid_witness": true
+      }
+     ]
+    }
+   },
+   "g021": {
+    "target_evidence": "g021.e1",
+    "LEGACY_CONTROL": true,
+    "BATCH1_ABLATION": false,
+    "BATCH1_REPLACEMENT": true,
+    "witness": true,
+    "decision": "REPLACEMENT_VALIDATED",
+    "witness_record": {
+     "group_id": "g021.e1",
+     "retained_in_final": true,
+     "has_valid_witness": true,
+     "candidate_witnesses": [
+      {
+       "candidate_object_id": "object.3ab0a90ae68e8ece071a9f22",
+       "governed_path": true,
+       "selected_by_v2": true,
+       "ordinary_top30_before_reservation": false,
+       "reserved_under_k3": true,
+       "displaced_candidates": [
+        "object.54b5cf78ac656b14878ac4b6"
+       ],
+       "final_pool_membership": true,
+       "final_pool_position": 29,
+       "competed_in_reranker": true,
+       "final_evidence_retained": true,
+       "full_structured_path": {
+        "candidate_object_id": "object.3ab0a90ae68e8ece071a9f22",
+        "provenance_origin_ids": [
+         "edge.ea3a79d222f0ca6cc0e6df72"
+        ],
+        "origin_types": [
+         "relation_edge"
+        ],
+        "source_id": "restgas_determination",
+        "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+        "locator_path": "macro/target/prod_sim_hvmaps.C",
+        "min_structural_distance_transitions": 1,
+        "locator": {
+         "url": null,
+         "path": "macro/target/prod_sim_hvmaps.C",
+         "symbol": null,
+         "end_line": 203,
+         "pdf_page": null,
+         "start_line": 1,
+         "printed_page": null,
+         "section_path": [],
+         "snapshot_date": null
+        }
+       },
+       "is_valid_witness": true
+      }
+     ]
+    }
+   }
+  },
+  "safety_results": {
+   "safety_cases": [
+    "n006",
+    "g041",
+    "g020",
+    "n004"
+   ],
+   "frozen_a6_safety_groups": [
+    "n006.e1",
+    "g041.e1",
+    "g020.e1",
+    "g020.e2",
+    "n004.e1"
+   ],
+   "safety_population": [
+    "n006.e1",
+    "g041.e1",
+    "g020.e1",
+    "g020.e2",
+    "n004.e1"
+   ],
+   "ablation_regressions": [],
+   "replacement_regressions": [],
+   "REGRESSION_ABLATION": 0,
+   "REGRESSION_REPLACEMENT": 0,
+   "regression_count": 0
+  },
+  "diagnostic_results": {
+   "case_id": "n022",
+   "gating": false,
+   "arms_evaluated": [
+    "LEGACY_CONTROL",
+    "BATCH1_ABLATION",
+    "BATCH1_REPLACEMENT"
+   ],
+   "group_retention": {
+    "n022.e1": {
+     "LEGACY_CONTROL": false,
+     "BATCH1_ABLATION": false,
+     "BATCH1_REPLACEMENT": false
+    },
+    "n022.e2": {
+     "LEGACY_CONTROL": true,
+     "BATCH1_ABLATION": true,
+     "BATCH1_REPLACEMENT": true
+    },
+    "n022.e3": {
+     "LEGACY_CONTROL": true,
+     "BATCH1_ABLATION": false,
+     "BATCH1_REPLACEMENT": true
+    }
+   },
+   "witness_summary": {
+    "n022.e1": false,
+    "n022.e2": false,
+    "n022.e3": false
+   }
+  },
+  "group_retention_complete": {
+   "g036.e1": {
+    "LEGACY_CONTROL": true,
+    "BATCH1_ABLATION": false,
+    "BATCH1_REPLACEMENT": true
+   },
+   "g021.e1": {
+    "LEGACY_CONTROL": true,
+    "BATCH1_ABLATION": false,
+    "BATCH1_REPLACEMENT": true
+   },
+   "g021.e2": {
+    "LEGACY_CONTROL": true,
+    "BATCH1_ABLATION": false,
+    "BATCH1_REPLACEMENT": false
+   },
+   "n006.e1": {
+    "LEGACY_CONTROL": true,
+    "BATCH1_ABLATION": true,
+    "BATCH1_REPLACEMENT": true
+   },
+   "n006.e2": {
+    "LEGACY_CONTROL": false,
+    "BATCH1_ABLATION": false,
+    "BATCH1_REPLACEMENT": false
+   },
+   "g041.e1": {
+    "LEGACY_CONTROL": true,
+    "BATCH1_ABLATION": true,
+    "BATCH1_REPLACEMENT": true
+   },
+   "g020.e1": {
+    "LEGACY_CONTROL": true,
+    "BATCH1_ABLATION": true,
+    "BATCH1_REPLACEMENT": true
+   },
+   "g020.e2": {
+    "LEGACY_CONTROL": true,
+    "BATCH1_ABLATION": true,
+    "BATCH1_REPLACEMENT": true
+   },
+   "n004.e1": {
+    "LEGACY_CONTROL": true,
+    "BATCH1_ABLATION": true,
+    "BATCH1_REPLACEMENT": true
+   },
+   "n022.e1": {
+    "LEGACY_CONTROL": false,
+    "BATCH1_ABLATION": false,
+    "BATCH1_REPLACEMENT": false
+   },
+   "n022.e2": {
+    "LEGACY_CONTROL": true,
+    "BATCH1_ABLATION": true,
+    "BATCH1_REPLACEMENT": true
+   },
+   "n022.e3": {
+    "LEGACY_CONTROL": true,
+    "BATCH1_ABLATION": false,
+    "BATCH1_REPLACEMENT": true
+   }
+  },
+  "per_rule_decisions": {
+   "event_poca_handoff": "REPLACEMENT_VALIDATED",
+   "restgas_profile_workflow": "REPLACEMENT_VALIDATED"
+  },
+  "batch_verdict": "PASS / FIRST_BATCH_FIXED_LOCATOR_REPLACEMENT_VALIDATED_FOR_DEVELOPMENT",
+  "verdict_reason": "Both target rules REPLACEMENT_VALIDATED with confirmed legacy dependency, truthful admission witness, and zero replacement regression."
+ },
+ "production_activation": false,
+ "authorization_boundary": "Validated for bounded development migration only. Production activation remains false. Moving to D4-A2 (First-Batch Before/After Validation) requires separate explicit authorization."
+}

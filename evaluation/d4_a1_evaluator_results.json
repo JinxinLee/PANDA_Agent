@@ -1,0 +1,289 @@
+{
+ "schema_version": "1.0.0",
+ "checkpoint": "D4-A1-EVALUATOR-RESULTS",
+ "stage": "d4_a1_evaluator_results",
+ "raw_artifact_authority": "evaluation/d4_a1_raw_three_arm_results.json",
+ "evaluator_executed_at_utc": "2026-09-02T20:39:14.061043+00:00",
+ "target_results": {
+  "g036": {
+   "target_evidence": "g036.e1",
+   "LEGACY_CONTROL": true,
+   "BATCH1_ABLATION": false,
+   "BATCH1_REPLACEMENT": true,
+   "witness": true,
+   "witness_record": {
+    "group_id": "g036.e1",
+    "retained_in_final": true,
+    "has_valid_witness": true,
+    "candidate_witnesses": [
+     {
+      "candidate_object_id": "object.5cae2ceab6e67bb4c9065331",
+      "governed_path": true,
+      "selected_by_v2": true,
+      "ordinary_top30_before_reservation": false,
+      "reserved_under_k3": true,
+      "displaced_candidates": [
+       "object.88d0d65c7dbf3c313f1fa5dd",
+       "object.2243fa2f42ac96009ac4ba42",
+       "object.9784e8cd299c611d20d298d4"
+      ],
+      "final_pool_membership": true,
+      "final_pool_position": 29,
+      "competed_in_reranker": true,
+      "final_evidence_retained": true,
+      "full_structured_path": {
+       "candidate_object_id": "object.5cae2ceab6e67bb4c9065331",
+       "provenance_origin_ids": [
+        "edge.2e09628416a01ce2461d752a"
+       ],
+       "origin_types": [
+        "relation_edge"
+       ],
+       "source_id": "restgas_determination",
+       "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+       "locator_path": "macro/target/ana_dpm.C",
+       "min_structural_distance_transitions": 2,
+       "locator": {
+        "url": null,
+        "path": "macro/target/ana_dpm.C",
+        "symbol": null,
+        "end_line": 938,
+        "pdf_page": null,
+        "start_line": 1,
+        "printed_page": null,
+        "section_path": [],
+        "snapshot_date": null
+       }
+      },
+      "is_valid_witness": true
+     }
+    ]
+   }
+  },
+  "g021": {
+   "target_evidence": "g021.e1",
+   "LEGACY_CONTROL": true,
+   "BATCH1_ABLATION": false,
+   "BATCH1_REPLACEMENT": true,
+   "witness": true,
+   "witness_record": {
+    "group_id": "g021.e1",
+    "retained_in_final": true,
+    "has_valid_witness": true,
+    "candidate_witnesses": [
+     {
+      "candidate_object_id": "object.3ab0a90ae68e8ece071a9f22",
+      "governed_path": true,
+      "selected_by_v2": true,
+      "ordinary_top30_before_reservation": false,
+      "reserved_under_k3": true,
+      "displaced_candidates": [
+       "object.54b5cf78ac656b14878ac4b6"
+      ],
+      "final_pool_membership": true,
+      "final_pool_position": 29,
+      "competed_in_reranker": true,
+      "final_evidence_retained": true,
+      "full_structured_path": {
+       "candidate_object_id": "object.3ab0a90ae68e8ece071a9f22",
+       "provenance_origin_ids": [
+        "edge.ea3a79d222f0ca6cc0e6df72"
+       ],
+       "origin_types": [
+        "relation_edge"
+       ],
+       "source_id": "restgas_determination",
+       "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+       "locator_path": "macro/target/prod_sim_hvmaps.C",
+       "min_structural_distance_transitions": 1,
+       "locator": {
+        "url": null,
+        "path": "macro/target/prod_sim_hvmaps.C",
+        "symbol": null,
+        "end_line": 203,
+        "pdf_page": null,
+        "start_line": 1,
+        "printed_page": null,
+        "section_path": [],
+        "snapshot_date": null
+       }
+      },
+      "is_valid_witness": true
+     }
+    ]
+   }
+  }
+ },
+ "safety_results": {
+  "safety_cases": [
+   "n006",
+   "g041",
+   "g020",
+   "n004"
+  ],
+  "frozen_a6_safety_groups": [
+   "n006.e1",
+   "g041.e1",
+   "g020.e1",
+   "g020.e2",
+   "n004.e1"
+  ],
+  "safety_population": [
+   "n006.e1",
+   "g041.e1",
+   "g020.e1",
+   "g020.e2",
+   "n004.e1"
+  ],
+  "ablation_regressions": [],
+  "replacement_regressions": [],
+  "REGRESSION_ABLATION": 0,
+  "REGRESSION_REPLACEMENT": 0,
+  "regression_count": 0
+ },
+ "diagnostic_results": {
+  "case_id": "n022",
+  "gating": false,
+  "arms_evaluated": [
+   "LEGACY_CONTROL",
+   "BATCH1_ABLATION",
+   "BATCH1_REPLACEMENT"
+  ],
+  "group_retention": {
+   "n022.e1": {
+    "LEGACY_CONTROL": false,
+    "BATCH1_ABLATION": false,
+    "BATCH1_REPLACEMENT": false
+   },
+   "n022.e2": {
+    "LEGACY_CONTROL": true,
+    "BATCH1_ABLATION": true,
+    "BATCH1_REPLACEMENT": true
+   },
+   "n022.e3": {
+    "LEGACY_CONTROL": true,
+    "BATCH1_ABLATION": false,
+    "BATCH1_REPLACEMENT": true
+   }
+  },
+  "witness_records": {
+   "n022.e1": {
+    "group_id": "n022.e1",
+    "retained_in_final": false,
+    "has_valid_witness": false,
+    "candidate_witnesses": []
+   },
+   "n022.e2": {
+    "group_id": "n022.e2",
+    "retained_in_final": true,
+    "has_valid_witness": false,
+    "candidate_witnesses": [
+     {
+      "candidate_object_id": "object.10de6bfa07d20258e308d379",
+      "governed_path": false,
+      "selected_by_v2": false,
+      "ordinary_top30_before_reservation": true,
+      "reserved_under_k3": false,
+      "displaced_candidates": [],
+      "final_pool_membership": true,
+      "final_pool_position": 19,
+      "competed_in_reranker": true,
+      "final_evidence_retained": true,
+      "full_structured_path": {},
+      "is_valid_witness": false
+     }
+    ]
+   },
+   "n022.e3": {
+    "group_id": "n022.e3",
+    "retained_in_final": true,
+    "has_valid_witness": false,
+    "candidate_witnesses": [
+     {
+      "candidate_object_id": "object.e29c4fcd17107cabea45f18e",
+      "governed_path": false,
+      "selected_by_v2": false,
+      "ordinary_top30_before_reservation": true,
+      "reserved_under_k3": false,
+      "displaced_candidates": [],
+      "final_pool_membership": true,
+      "final_pool_position": 12,
+      "competed_in_reranker": true,
+      "final_evidence_retained": true,
+      "full_structured_path": {},
+      "is_valid_witness": false
+     }
+    ]
+   }
+  }
+ },
+ "group_retention_complete": {
+  "g036.e1": {
+   "LEGACY_CONTROL": true,
+   "BATCH1_ABLATION": false,
+   "BATCH1_REPLACEMENT": true
+  },
+  "g021.e1": {
+   "LEGACY_CONTROL": true,
+   "BATCH1_ABLATION": false,
+   "BATCH1_REPLACEMENT": true
+  },
+  "g021.e2": {
+   "LEGACY_CONTROL": true,
+   "BATCH1_ABLATION": false,
+   "BATCH1_REPLACEMENT": false
+  },
+  "n006.e1": {
+   "LEGACY_CONTROL": true,
+   "BATCH1_ABLATION": true,
+   "BATCH1_REPLACEMENT": true
+  },
+  "n006.e2": {
+   "LEGACY_CONTROL": false,
+   "BATCH1_ABLATION": false,
+   "BATCH1_REPLACEMENT": false
+  },
+  "g041.e1": {
+   "LEGACY_CONTROL": true,
+   "BATCH1_ABLATION": true,
+   "BATCH1_REPLACEMENT": true
+  },
+  "g020.e1": {
+   "LEGACY_CONTROL": true,
+   "BATCH1_ABLATION": true,
+   "BATCH1_REPLACEMENT": true
+  },
+  "g020.e2": {
+   "LEGACY_CONTROL": true,
+   "BATCH1_ABLATION": true,
+   "BATCH1_REPLACEMENT": true
+  },
+  "n004.e1": {
+   "LEGACY_CONTROL": true,
+   "BATCH1_ABLATION": true,
+   "BATCH1_REPLACEMENT": true
+  },
+  "n022.e1": {
+   "LEGACY_CONTROL": false,
+   "BATCH1_ABLATION": false,
+   "BATCH1_REPLACEMENT": false
+  },
+  "n022.e2": {
+   "LEGACY_CONTROL": true,
+   "BATCH1_ABLATION": true,
+   "BATCH1_REPLACEMENT": true
+  },
+  "n022.e3": {
+   "LEGACY_CONTROL": true,
+   "BATCH1_ABLATION": false,
+   "BATCH1_REPLACEMENT": true
+  }
+ },
+ "per_rule_decisions": {
+  "event_poca_handoff": "REPLACEMENT_VALIDATED",
+  "restgas_profile_workflow": "REPLACEMENT_VALIDATED"
+ },
+ "batch_verdict": "PASS / FIRST_BATCH_FIXED_LOCATOR_REPLACEMENT_VALIDATED_FOR_DEVELOPMENT",
+ "verdict_reason": "Both target rules REPLACEMENT_VALIDATED with confirmed legacy dependency, truthful admission witness, and zero replacement regression.",
+ "production_activation": false
+}
