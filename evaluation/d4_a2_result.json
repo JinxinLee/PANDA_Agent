@@ -1,0 +1,972 @@
+{
+ "schema_version": "1.0.0",
+ "checkpoint": "D4-A2",
+ "stage": "D4-A2 — First-Batch Before/After Validation",
+ "lifecycle_state": "COMPLETE / FAIL / CRITICAL_OR_GROUNDING_REGRESSION",
+ "exact_next_lifecycle_state": "D4-A2-R1 — First-Batch Critical-Regression Diagnosis and Repair Decision (NOT_STARTED / READY_FOR_DIAGNOSIS_AND_REPAIR_DECISION)",
+ "roadmap_state": {
+  "D4": "IN_PROGRESS / INCREMENTAL_QUERY_EXPANSION_MIGRATION",
+  "D4_A1": "COMPLETE / PASS / FIRST_BATCH_FIXED_LOCATOR_REPLACEMENT_VALIDATED_FOR_DEVELOPMENT",
+  "D4_A2": "COMPLETE / FAIL / CRITICAL_OR_GROUNDING_REGRESSION",
+  "D4_A3": "NOT_STARTED / BLOCKED_BY_D4_A2_CRITICAL_REGRESSION",
+  "D4_A2_R1": "NOT_STARTED / READY_FOR_DIAGNOSIS_AND_REPAIR_DECISION"
+ },
+ "lineage": {
+  "starting_head": "d078be6cbce59d4991100e566b92524458ea2abe",
+  "implementation_freeze_commit_a": "1bda8cbfe393c30a74581bed1411573100487ea2",
+  "raw_outcome_freeze_commit_b": "bbbea0eac8ce3badf42b4832f36487520354ecee",
+  "scientific_closeout_commit_c": "GIT_COMMIT_CONTAINING_THIS_ARTIFACT",
+  "final_head": "GIT_COMMIT_CONTAINING_THIS_ARTIFACT"
+ },
+ "authority_references": {
+  "manifest": "evaluation/d4_a2_execution_manifest.json",
+  "preregistration": "evaluation/d4_a2_before_after_preregistration.json",
+  "component_inventory": "evaluation/d4_a0_expansion_component_inventory.json",
+  "batch1_preregistration": "evaluation/d4_a0_batch1_migration_preregistration.json",
+  "predecessor_d4_a1_result": "evaluation/d4_a1_result.json",
+  "d3_cohort_authority": "evaluation/d3_a2_three_arm_results.json",
+  "raw_results": "evaluation/d4_a2_raw_before_after_results.json",
+  "evaluator_results": "evaluation/d4_a2_evaluator_results.json",
+  "human_report": "evaluation/D4_A2_FIRST_BATCH_BEFORE_AFTER_VALIDATION.md"
+ },
+ "evaluation_tier": "T2",
+ "mode": "retrieval",
+ "experimental_cohort": {
+  "cases_total": 16,
+  "case_order": [
+   "g029",
+   "n021",
+   "g025",
+   "g036",
+   "n022",
+   "g020",
+   "n006",
+   "g041",
+   "n014",
+   "g060",
+   "g052",
+   "g055",
+   "n003",
+   "g021",
+   "n004",
+   "g007"
+  ],
+  "gold_cases": [
+   "g029",
+   "g025",
+   "g036",
+   "g020",
+   "g041",
+   "g060",
+   "g052",
+   "g055",
+   "g021",
+   "g007"
+  ],
+  "novel_dev_cases": [
+   "n021",
+   "n022",
+   "n006",
+   "n014",
+   "n003",
+   "n004"
+  ],
+  "answered_cases": [
+   "g029",
+   "n021",
+   "g036",
+   "n022",
+   "g020",
+   "n006",
+   "n014",
+   "g060",
+   "g052",
+   "g055",
+   "n003",
+   "g021",
+   "n004"
+  ],
+  "insufficient_evidence_cases": [
+   "g025",
+   "g041",
+   "g007"
+  ],
+  "arms": {
+   "BEFORE_COMPAT": {
+    "arm": "BEFORE_COMPAT",
+    "description": "Current compatibility reference behavior: production configs/query_expansions.yaml active with all Batch-1 fixed locators active, generic D3.5 structured replacement OFF, reserved admission OFF.",
+    "query_expansions_state": "ALL_RULES_ACTIVE",
+    "in_memory_mask_active": false,
+    "structured_replacement_active": false,
+    "admission_budget_k": 0
+   },
+   "AFTER_BATCH1_REPLACEMENT": {
+    "arm": "AFTER_BATCH1_REPLACEMENT",
+    "description": "Proposed Batch-1 migrated candidate behavior: evaluation-only in-memory component mask suppressing Batch-1 fixed locators while preserving triggers, repos, and concepts; generic D3.5 structured replacement ON; d3_5_selectivity_v2 caps 8/4; K=3 bounded reserved rerank admission; rerank pool 30.",
+    "query_expansions_state": "BATCH1_FIXED_LOCATORS_SUPPRESSED",
+    "in_memory_mask_active": true,
+    "structured_replacement_active": true,
+    "admission_budget_k": 3,
+    "rerank_pool_size": 30,
+    "selectivity_caps": {
+     "SELECTIVITY_CAP": 8,
+     "PER_ORIGIN_CAP": 4
+    }
+   }
+  },
+  "formal_cells_total": 32
+ },
+ "exact_masks": {
+  "event_poca_handoff": {
+   "rule_id": "event_poca_handoff",
+   "suppressed_symbols": [
+    "macro/target/ana_dpm.C",
+    "macro/target/prod_aod_complete.C",
+    "POCA_VERTEX_FILE",
+    "PndPidCorrelator"
+   ],
+   "suppressed_paper_page_hints": {
+    "li_2026": [
+     131,
+     138
+    ]
+   }
+  },
+  "restgas_profile_workflow": {
+   "rule_id": "restgas_profile_workflow",
+   "suppressed_symbols": [
+    "pgenerators/Target/PndTargetGenerator.cxx",
+    "macro/target/prod_sim_hvmaps.C",
+    "macro/target/reco_complete.C",
+    "macro/target/ana_complete.C",
+    "macro/target/correction/efficiency_correction_2.C"
+   ],
+   "suppressed_paper_page_hints": {}
+  }
+ },
+ "preserved_components": {
+  "event_poca_handoff": {
+   "triggers": [
+    "event_poca",
+    "poca_vertex_file",
+    "second-pass pid",
+    "第二遍 pid"
+   ],
+   "repositories": [
+    "restgas_determination",
+    "pandaroot"
+   ],
+   "concepts": [
+    "event POCA handoff",
+    "event-aligned second-pass propagation"
+   ]
+  },
+  "restgas_profile_workflow": {
+   "triggers": [
+    "restgas_profile",
+    "restgas profile",
+    "corrected rho",
+    "修正后的 rho"
+   ],
+   "repositories": [
+    "restgas_determination",
+    "pandaroot"
+   ],
+   "concepts": [
+    "distributed target generation",
+    "longitudinal profile correction"
+   ]
+  }
+ },
+ "replacement_parameters": {
+  "governed_authority": "D2 governed resolution -> D1 accepted object/relation/workflow. No fuzzy/dense/LLM jumping.",
+  "bridge_semantics": "Bounded reachability: max 1 upward containment transition + max 1 predicate/type-gated relation/workflow transition. Governed provenance materialization to exact source/version evidence.",
+  "selectivity_policy": "d3_5_selectivity_v2",
+  "selectivity_cap": 8,
+  "per_origin_cap": 4,
+  "selected_admission_budget_k": 3,
+  "rerank_pool_size": 30,
+  "rrf_weights": {
+   "exact": 2.0,
+   "dense": 1.0,
+   "sparse": 1.0,
+   "paper": 1.15,
+   "workflow": 1.2,
+   "graph": 0.8
+  }
+ },
+ "model_and_config_receipts": {
+  "model_selection_role": "QA_GENERATION_MODEL_ID via VertexSettings.from_env()",
+  "generation_model_id": "gemini-3.8-flash",
+  "analyzer_model_id": "gemini-3.8-flash",
+  "reranker_model_id": "gemini-3.8-flash",
+  "embedding_model_selection_role": "QA_EMBEDDING_MODEL_ID via VertexSettings.from_env()",
+  "embedding_model_id": "gemini-embedding-2",
+  "vertex_location": "global",
+  "temperature": 0.0,
+  "prompt_authority": "src/panda_agent/prompts.py:RERANK_SYSTEM_PROMPT",
+  "query_analyzer_prompt": "src/panda_agent/prompts.py:QUERY_ANALYZER_SYSTEM_PROMPT",
+  "retry_policy": "VertexAIClient.generate_json 3-attempt transient retry loop"
+ },
+ "outcome_exposure": {
+  "state": "COMPLETE",
+  "execution_started_at_utc": "2026-09-02T22:28:57.172552+00:00",
+  "execution_completed_at_utc": "2026-09-02T22:41:00.225325+00:00",
+  "evaluator_executed_at_utc": "2026-09-02T22:41:50.944587+00:00",
+  "formal_slots_total": 32,
+  "formal_slots_completed": 32,
+  "formal_slots_failed": 0
+ },
+ "accounting": {
+  "FORMAL_CASES": 16,
+  "FORMAL_ARMS": 2,
+  "FORMAL_CELLS_PLANNED": 32,
+  "FORMAL_CELLS_EXECUTED": 32,
+  "FORMAL_CELLS_SUCCEEDED": 32,
+  "FORMAL_CELLS_FAILED": 0,
+  "GOLD_CASES": 10,
+  "NOVEL_DEV_CASES": 6,
+  "ANSWERED_CASES": 13,
+  "INSUFFICIENT_EVIDENCE_CASES": 3,
+  "ANALYZER_CALLS": 32,
+  "EMBEDDING_CALLS": 32,
+  "RERANKER_CALLS": 32,
+  "TOTAL_LOGICAL_MODEL_CALLS": 96,
+  "PROVIDER_INTERNAL_ATTEMPTS": 96,
+  "PROVIDER_RETRIES": 0,
+  "TOTAL_TOKEN_USAGE": 633354,
+  "QA_CALLS": 0,
+  "VERIFIER_CALLS": 0,
+  "JUDGE_CALLS": 0,
+  "RETRIEVAL_RUNS": 32,
+  "POSTGRESQL_WRITES": 0,
+  "QDRANT_WRITES": 0,
+  "INGESTION": 0,
+  "REINDEX": 0,
+  "NOVEL_VALIDATION_RUNS": 0,
+  "NOVEL_HOLDOUT_RUNS": 0,
+  "PROTECTED_DATASET_ACCESS": 0
+ },
+ "post_exposure_mutations": {
+  "POST_EXPOSURE_CASE_MUTATIONS": 0,
+  "POST_EXPOSURE_MASK_MUTATIONS": 0,
+  "POST_EXPOSURE_REPLACEMENT_MUTATIONS": 0,
+  "POST_EXPOSURE_MODEL_MUTATIONS": 0,
+  "POST_EXPOSURE_METRIC_MUTATIONS": 0,
+  "POST_EXPOSURE_VERDICT_MUTATIONS": 0
+ },
+ "scientific_evaluation": {
+  "cohort_metrics": {
+   "applicable_answered_cases_count": 13,
+   "insufficient_evidence_cases_count": 3,
+   "BEFORE_COMPAT": {
+    "recall_at_5": 0.7307692307692307,
+    "recall_at_10": 0.8205128205128205,
+    "recall_at_20": 0.8205128205128205,
+    "mrr": 0.7289377289377289,
+    "combined_candidate_recall": 0.8974358974358974,
+    "final_evidence_recall": 0.8205128205128205,
+    "critical_final_evidence_recall": 0.8205128205128205
+   },
+   "AFTER_BATCH1_REPLACEMENT": {
+    "recall_at_5": 0.6282051282051282,
+    "recall_at_10": 0.7564102564102565,
+    "recall_at_20": 0.7564102564102565,
+    "mrr": 0.6904761904761905,
+    "combined_candidate_recall": 0.7435897435897435,
+    "final_evidence_recall": 0.7564102564102565,
+    "critical_final_evidence_recall": 0.7564102564102565
+   },
+   "deltas": {
+    "recall_at_5": -0.102564,
+    "recall_at_10": -0.064103,
+    "recall_at_20": -0.064103,
+    "mrr": -0.038462,
+    "combined_candidate_recall": -0.153846,
+    "final_evidence_recall": -0.064103,
+    "critical_final_evidence_recall": -0.064103
+   }
+  },
+  "subset_metrics": {
+   "gold": {
+    "case_count": 7,
+    "BEFORE_COMPAT": {
+     "recall_at_5": 0.9047619047619048,
+     "recall_at_10": 1.0,
+     "recall_at_20": 1.0,
+     "mrr": 0.7857142857142857,
+     "combined_candidate_recall": 1.0,
+     "final_evidence_recall": 1.0,
+     "critical_final_evidence_recall": 1.0
+    },
+    "AFTER_BATCH1_REPLACEMENT": {
+     "recall_at_5": 0.7619047619047619,
+     "recall_at_10": 0.9285714285714286,
+     "recall_at_20": 0.9285714285714286,
+     "mrr": 0.7380952380952381,
+     "combined_candidate_recall": 0.7142857142857143,
+     "final_evidence_recall": 0.9285714285714286,
+     "critical_final_evidence_recall": 0.9285714285714286
+    },
+    "deltas": {
+     "recall_at_5": -0.142857,
+     "recall_at_10": -0.071429,
+     "recall_at_20": -0.071429,
+     "mrr": -0.047619,
+     "combined_candidate_recall": -0.285714,
+     "final_evidence_recall": -0.071429,
+     "critical_final_evidence_recall": -0.071429
+    }
+   },
+   "novel_dev": {
+    "case_count": 6,
+    "BEFORE_COMPAT": {
+     "recall_at_5": 0.5277777777777778,
+     "recall_at_10": 0.611111111111111,
+     "recall_at_20": 0.611111111111111,
+     "mrr": 0.6626984126984127,
+     "combined_candidate_recall": 0.7777777777777778,
+     "final_evidence_recall": 0.611111111111111,
+     "critical_final_evidence_recall": 0.611111111111111
+    },
+    "AFTER_BATCH1_REPLACEMENT": {
+     "recall_at_5": 0.47222222222222227,
+     "recall_at_10": 0.5555555555555556,
+     "recall_at_20": 0.5555555555555556,
+     "mrr": 0.6349206349206349,
+     "combined_candidate_recall": 0.7777777777777778,
+     "final_evidence_recall": 0.5555555555555556,
+     "critical_final_evidence_recall": 0.5555555555555556
+    },
+    "deltas": {
+     "recall_at_5": -0.055556,
+     "recall_at_10": -0.055556,
+     "recall_at_20": -0.055556,
+     "mrr": -0.027778,
+     "combined_candidate_recall": 0.0,
+     "final_evidence_recall": -0.055556,
+     "critical_final_evidence_recall": -0.055556
+    }
+   }
+  },
+  "targeted_generalization_diagnostics": {
+   "gold_final_evidence_recall_before": 1.0,
+   "novel_final_evidence_recall_before": 0.611111111111111,
+   "gap_before": 0.388889,
+   "gold_final_evidence_recall_after": 0.9285714285714286,
+   "novel_final_evidence_recall_after": 0.5555555555555556,
+   "gap_after": 0.373016,
+   "analogous_metrics": {
+    "recall_at_5": {
+     "gold_before": 0.9047619047619048,
+     "novel_before": 0.5277777777777778,
+     "gap_before": 0.376984,
+     "gold_after": 0.7619047619047619,
+     "novel_after": 0.47222222222222227,
+     "gap_after": 0.289683,
+     "gap_delta": -0.087302
+    },
+    "recall_at_10": {
+     "gold_before": 1.0,
+     "novel_before": 0.611111111111111,
+     "gap_before": 0.388889,
+     "gold_after": 0.9285714285714286,
+     "novel_after": 0.5555555555555556,
+     "gap_after": 0.373016,
+     "gap_delta": -0.015873
+    },
+    "recall_at_20": {
+     "gold_before": 1.0,
+     "novel_before": 0.611111111111111,
+     "gap_before": 0.388889,
+     "gold_after": 0.9285714285714286,
+     "novel_after": 0.5555555555555556,
+     "gap_after": 0.373016,
+     "gap_delta": -0.015873
+    },
+    "mrr": {
+     "gold_before": 0.7857142857142857,
+     "novel_before": 0.6626984126984127,
+     "gap_before": 0.123016,
+     "gold_after": 0.7380952380952381,
+     "novel_after": 0.6349206349206349,
+     "gap_after": 0.103175,
+     "gap_delta": -0.019841
+    },
+    "combined_candidate_recall": {
+     "gold_before": 1.0,
+     "novel_before": 0.7777777777777778,
+     "gap_before": 0.222222,
+     "gold_after": 0.7142857142857143,
+     "novel_after": 0.7777777777777778,
+     "gap_after": -0.063492,
+     "gap_delta": -0.285714
+    },
+    "final_evidence_recall": {
+     "gold_before": 1.0,
+     "novel_before": 0.611111111111111,
+     "gap_before": 0.388889,
+     "gold_after": 0.9285714285714286,
+     "novel_after": 0.5555555555555556,
+     "gap_after": 0.373016,
+     "gap_delta": -0.015873
+    },
+    "critical_final_evidence_recall": {
+     "gold_before": 1.0,
+     "novel_before": 0.611111111111111,
+     "gap_before": 0.388889,
+     "gold_after": 0.9285714285714286,
+     "novel_after": 0.5555555555555556,
+     "gap_after": 0.373016,
+     "gap_delta": -0.015873
+    }
+   }
+  },
+  "target_replacement_reproduction": {
+   "g036.e1": {
+    "reproduced": true,
+    "witness": true,
+    "witness_record": {
+     "group_id": "g036.e1",
+     "retained_in_final": true,
+     "has_valid_witness": true,
+     "candidate_witnesses": [
+      {
+       "candidate_object_id": "object.5cae2ceab6e67bb4c9065331",
+       "governed_path": true,
+       "selected_by_v2": true,
+       "ordinary_top30_before_reservation": false,
+       "reserved_under_k3": true,
+       "displaced_candidates": [
+        "object.88d0d65c7dbf3c313f1fa5dd",
+        "object.2243fa2f42ac96009ac4ba42",
+        "object.9784e8cd299c611d20d298d4"
+       ],
+       "final_pool_membership": true,
+       "final_pool_position": 29,
+       "competed_in_reranker": true,
+       "final_evidence_retained": true,
+       "full_structured_path": {
+        "candidate_object_id": "object.5cae2ceab6e67bb4c9065331",
+        "provenance_origin_ids": [
+         "edge.2e09628416a01ce2461d752a"
+        ],
+        "origin_types": [
+         "relation_edge"
+        ],
+        "source_id": "restgas_determination",
+        "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+        "locator_path": "macro/target/ana_dpm.C",
+        "min_structural_distance_transitions": 2,
+        "locator": {
+         "url": null,
+         "path": "macro/target/ana_dpm.C",
+         "symbol": null,
+         "end_line": 938,
+         "pdf_page": null,
+         "start_line": 1,
+         "printed_page": null,
+         "section_path": [],
+         "snapshot_date": null
+        }
+       },
+       "is_valid_witness": true
+      }
+     ]
+    }
+   },
+   "g021.e1": {
+    "reproduced": true,
+    "witness": true,
+    "witness_record": {
+     "group_id": "g021.e1",
+     "retained_in_final": true,
+     "has_valid_witness": true,
+     "candidate_witnesses": [
+      {
+       "candidate_object_id": "object.3ab0a90ae68e8ece071a9f22",
+       "governed_path": true,
+       "selected_by_v2": true,
+       "ordinary_top30_before_reservation": false,
+       "reserved_under_k3": true,
+       "displaced_candidates": [
+        "object.54b5cf78ac656b14878ac4b6"
+       ],
+       "final_pool_membership": true,
+       "final_pool_position": 29,
+       "competed_in_reranker": true,
+       "final_evidence_retained": true,
+       "full_structured_path": {
+        "candidate_object_id": "object.3ab0a90ae68e8ece071a9f22",
+        "provenance_origin_ids": [
+         "edge.ea3a79d222f0ca6cc0e6df72"
+        ],
+        "origin_types": [
+         "relation_edge"
+        ],
+        "source_id": "restgas_determination",
+        "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+        "locator_path": "macro/target/prod_sim_hvmaps.C",
+        "min_structural_distance_transitions": 1,
+        "locator": {
+         "url": null,
+         "path": "macro/target/prod_sim_hvmaps.C",
+         "symbol": null,
+         "end_line": 203,
+         "pdf_page": null,
+         "start_line": 1,
+         "printed_page": null,
+         "section_path": [],
+         "snapshot_date": null
+        }
+       },
+       "is_valid_witness": true
+      }
+     ]
+    }
+   },
+   "TARGET_REPLACEMENT_REPRODUCED": "2 / 2",
+   "BATCH1_FIXED_LOCATOR_DEPENDENCY_REMOVED": "2 / 2",
+   "dependency_removal_receipts": {
+    "event_poca_handoff": {
+     "rule_id": "event_poca_handoff",
+     "case_id": "g036",
+     "target_group_id": "g036.e1",
+     "fixed_locator_inputs_active_before": true,
+     "exact_masked_locator_inputs_absent_after": true,
+     "generic_structured_mechanism_active": true,
+     "target_evidence_retained_after": true,
+     "valid_governed_witness_exists": true,
+     "dependency_removed": true
+    },
+    "restgas_profile_workflow": {
+     "rule_id": "restgas_profile_workflow",
+     "case_id": "g021",
+     "target_group_id": "g021.e1",
+     "fixed_locator_inputs_active_before": true,
+     "exact_masked_locator_inputs_absent_after": true,
+     "generic_structured_mechanism_active": true,
+     "target_evidence_retained_after": true,
+     "valid_governed_witness_exists": true,
+     "dependency_removed": true
+    }
+   }
+  },
+  "group_retention": {
+   "all_groups": {
+    "g029.e1": {
+     "case_id": "g029",
+     "dataset": "Gold v2.6 dev",
+     "applicability": "ANSWERED",
+     "is_negative_control": false,
+     "expected_status": "answered",
+     "critical": true,
+     "role": "pnd_lmd_combined_data_reader_implementation",
+     "BEFORE_COMPAT": true,
+     "AFTER_BATCH1_REPLACEMENT": true,
+     "retention_state": "PRESERVED"
+    },
+    "n021.e1": {
+     "case_id": "n021",
+     "dataset": "novel_dev",
+     "applicability": "ANSWERED",
+     "is_negative_control": false,
+     "expected_status": "answered",
+     "critical": true,
+     "role": "luminosityfit_workflow_scripts",
+     "BEFORE_COMPAT": true,
+     "AFTER_BATCH1_REPLACEMENT": true,
+     "retention_state": "PRESERVED"
+    },
+    "n021.e2": {
+     "case_id": "n021",
+     "dataset": "novel_dev",
+     "applicability": "ANSWERED",
+     "is_negative_control": false,
+     "expected_status": "answered",
+     "critical": true,
+     "role": "pandaroot_lmd_implementation_ownership",
+     "BEFORE_COMPAT": false,
+     "AFTER_BATCH1_REPLACEMENT": false,
+     "retention_state": "UNRESOLVED_BOTH"
+    },
+    "g025.e1": {
+     "case_id": "g025",
+     "dataset": "Gold v2.6 dev",
+     "applicability": "NEGATIVE_CONTROL_INSUFFICIENT_EVIDENCE",
+     "is_negative_control": true,
+     "expected_status": "insufficient_evidence",
+     "critical": true,
+     "role": "run_lmd_fit_implementation",
+     "BEFORE_COMPAT": true,
+     "AFTER_BATCH1_REPLACEMENT": true,
+     "retention_state": "PRESERVED"
+    },
+    "g036.e1": {
+     "case_id": "g036",
+     "dataset": "Gold v2.6 dev",
+     "applicability": "ANSWERED",
+     "is_negative_control": false,
+     "expected_status": "answered",
+     "critical": true,
+     "role": "ana_dpm_implementation",
+     "BEFORE_COMPAT": true,
+     "AFTER_BATCH1_REPLACEMENT": true,
+     "retention_state": "PRESERVED"
+    },
+    "n022.e1": {
+     "case_id": "n022",
+     "dataset": "novel_dev",
+     "applicability": "ANSWERED",
+     "is_negative_control": false,
+     "expected_status": "answered",
+     "critical": true,
+     "role": "pass1_artifact_production",
+     "BEFORE_COMPAT": false,
+     "AFTER_BATCH1_REPLACEMENT": false,
+     "retention_state": "UNRESOLVED_BOTH"
+    },
+    "n022.e2": {
+     "case_id": "n022",
+     "dataset": "novel_dev",
+     "applicability": "ANSWERED",
+     "is_negative_control": false,
+     "expected_status": "answered",
+     "critical": true,
+     "role": "step2_artifact_consumption",
+     "BEFORE_COMPAT": true,
+     "AFTER_BATCH1_REPLACEMENT": false,
+     "retention_state": "REGRESSED"
+    },
+    "n022.e3": {
+     "case_id": "n022",
+     "dataset": "novel_dev",
+     "applicability": "ANSWERED",
+     "is_negative_control": false,
+     "expected_status": "answered",
+     "critical": true,
+     "role": "two_pass_workflow_semantics",
+     "BEFORE_COMPAT": true,
+     "AFTER_BATCH1_REPLACEMENT": true,
+     "retention_state": "PRESERVED"
+    },
+    "g020.e1": {
+     "case_id": "g020",
+     "dataset": "Gold v2.6 dev",
+     "applicability": "ANSWERED",
+     "is_negative_control": false,
+     "expected_status": "answered",
+     "critical": true,
+     "role": "poca_workflow_documentation",
+     "BEFORE_COMPAT": true,
+     "AFTER_BATCH1_REPLACEMENT": true,
+     "retention_state": "PRESERVED"
+    },
+    "g020.e2": {
+     "case_id": "g020",
+     "dataset": "Gold v2.6 dev",
+     "applicability": "ANSWERED",
+     "is_negative_control": false,
+     "expected_status": "answered",
+     "critical": true,
+     "role": "runall_prod_hvmaps_implementation",
+     "BEFORE_COMPAT": true,
+     "AFTER_BATCH1_REPLACEMENT": true,
+     "retention_state": "PRESERVED"
+    },
+    "n006.e1": {
+     "case_id": "n006",
+     "dataset": "novel_dev",
+     "applicability": "ANSWERED",
+     "is_negative_control": false,
+     "expected_status": "answered",
+     "critical": true,
+     "role": "filename_helper_definition",
+     "BEFORE_COMPAT": true,
+     "AFTER_BATCH1_REPLACEMENT": true,
+     "retention_state": "PRESERVED"
+    },
+    "n006.e2": {
+     "case_id": "n006",
+     "dataset": "novel_dev",
+     "applicability": "ANSWERED",
+     "is_negative_control": false,
+     "expected_status": "answered",
+     "critical": true,
+     "role": "filename_suffix_literals",
+     "BEFORE_COMPAT": false,
+     "AFTER_BATCH1_REPLACEMENT": false,
+     "retention_state": "UNRESOLVED_BOTH"
+    },
+    "g041.e1": {
+     "case_id": "g041",
+     "dataset": "Gold v2.6 dev",
+     "applicability": "NEGATIVE_CONTROL_INSUFFICIENT_EVIDENCE",
+     "is_negative_control": true,
+     "expected_status": "insufficient_evidence",
+     "critical": true,
+     "role": "pnd_pid_correlator_interface",
+     "BEFORE_COMPAT": true,
+     "AFTER_BATCH1_REPLACEMENT": true,
+     "retention_state": "PRESERVED"
+    },
+    "n014.e1": {
+     "case_id": "n014",
+     "dataset": "novel_dev",
+     "applicability": "ANSWERED",
+     "is_negative_control": false,
+     "expected_status": "answered",
+     "critical": true,
+     "role": "vendored_framework_status",
+     "BEFORE_COMPAT": false,
+     "AFTER_BATCH1_REPLACEMENT": false,
+     "retention_state": "UNRESOLVED_BOTH"
+    },
+    "n014.e2": {
+     "case_id": "n014",
+     "dataset": "novel_dev",
+     "applicability": "ANSWERED",
+     "is_negative_control": false,
+     "expected_status": "answered",
+     "critical": true,
+     "role": "native_model_layer",
+     "BEFORE_COMPAT": true,
+     "AFTER_BATCH1_REPLACEMENT": true,
+     "retention_state": "PRESERVED"
+    },
+    "g060.e1": {
+     "case_id": "g060",
+     "dataset": "Gold v2.6 dev",
+     "applicability": "ANSWERED",
+     "is_negative_control": false,
+     "expected_status": "answered",
+     "critical": true,
+     "role": "pflueger_2017_page_74_theory",
+     "BEFORE_COMPAT": true,
+     "AFTER_BATCH1_REPLACEMENT": true,
+     "retention_state": "PRESERVED"
+    },
+    "g060.e2": {
+     "case_id": "g060",
+     "dataset": "Gold v2.6 dev",
+     "applicability": "ANSWERED",
+     "is_negative_control": false,
+     "expected_status": "answered",
+     "critical": true,
+     "role": "pnd_lmd_divergence_smearing_model2_d_implementation",
+     "BEFORE_COMPAT": true,
+     "AFTER_BATCH1_REPLACEMENT": true,
+     "retention_state": "PRESERVED"
+    },
+    "g060.e3": {
+     "case_id": "g060",
+     "dataset": "Gold v2.6 dev",
+     "applicability": "ANSWERED",
+     "is_negative_control": false,
+     "expected_status": "answered",
+     "critical": true,
+     "role": "generate2_dmodel_implementation",
+     "BEFORE_COMPAT": true,
+     "AFTER_BATCH1_REPLACEMENT": true,
+     "retention_state": "PRESERVED"
+    },
+    "g052.e1": {
+     "case_id": "g052",
+     "dataset": "Gold v2.6 dev",
+     "applicability": "ANSWERED",
+     "is_negative_control": false,
+     "expected_status": "answered",
+     "critical": true,
+     "role": "li_2026_page_141_theory",
+     "BEFORE_COMPAT": true,
+     "AFTER_BATCH1_REPLACEMENT": true,
+     "retention_state": "PRESERVED"
+    },
+    "g055.e1": {
+     "case_id": "g055",
+     "dataset": "Gold v2.6 dev",
+     "applicability": "ANSWERED",
+     "is_negative_control": false,
+     "expected_status": "answered",
+     "critical": true,
+     "role": "pflueger_2017_page_57_theory",
+     "BEFORE_COMPAT": true,
+     "AFTER_BATCH1_REPLACEMENT": true,
+     "retention_state": "PRESERVED"
+    },
+    "g055.e2": {
+     "case_id": "g055",
+     "dataset": "Gold v2.6 dev",
+     "applicability": "ANSWERED",
+     "is_negative_control": false,
+     "expected_status": "answered",
+     "critical": true,
+     "role": "li_2026_page_142_theory",
+     "BEFORE_COMPAT": true,
+     "AFTER_BATCH1_REPLACEMENT": true,
+     "retention_state": "PRESERVED"
+    },
+    "n003.e1": {
+     "case_id": "n003",
+     "dataset": "novel_dev",
+     "applicability": "ANSWERED",
+     "is_negative_control": false,
+     "expected_status": "answered",
+     "critical": true,
+     "role": "fixed_step_generator_definition",
+     "BEFORE_COMPAT": true,
+     "AFTER_BATCH1_REPLACEMENT": true,
+     "retention_state": "PRESERVED"
+    },
+    "n003.e2": {
+     "case_id": "n003",
+     "dataset": "novel_dev",
+     "applicability": "ANSWERED",
+     "is_negative_control": false,
+     "expected_status": "answered",
+     "critical": true,
+     "role": "per_event_step_advancement",
+     "BEFORE_COMPAT": false,
+     "AFTER_BATCH1_REPLACEMENT": false,
+     "retention_state": "UNRESOLVED_BOTH"
+    },
+    "g021.e1": {
+     "case_id": "g021",
+     "dataset": "Gold v2.6 dev",
+     "applicability": "ANSWERED",
+     "is_negative_control": false,
+     "expected_status": "answered",
+     "critical": true,
+     "role": "prod_sim_hvmaps_implementation",
+     "BEFORE_COMPAT": true,
+     "AFTER_BATCH1_REPLACEMENT": true,
+     "retention_state": "PRESERVED"
+    },
+    "g021.e2": {
+     "case_id": "g021",
+     "dataset": "Gold v2.6 dev",
+     "applicability": "ANSWERED",
+     "is_negative_control": false,
+     "expected_status": "answered",
+     "critical": true,
+     "role": "pnd_target_generator_implementation",
+     "BEFORE_COMPAT": true,
+     "AFTER_BATCH1_REPLACEMENT": false,
+     "retention_state": "REGRESSED"
+    },
+    "n004.e1": {
+     "case_id": "n004",
+     "dataset": "novel_dev",
+     "applicability": "ANSWERED",
+     "is_negative_control": false,
+     "expected_status": "answered",
+     "critical": true,
+     "role": "fair_logger_documentation",
+     "BEFORE_COMPAT": true,
+     "AFTER_BATCH1_REPLACEMENT": true,
+     "retention_state": "PRESERVED"
+    },
+    "g007.e1": {
+     "case_id": "g007",
+     "dataset": "Gold v2.6 dev",
+     "applicability": "NEGATIVE_CONTROL_INSUFFICIENT_EVIDENCE",
+     "is_negative_control": true,
+     "expected_status": "insufficient_evidence",
+     "critical": true,
+     "role": "installation_documentation",
+     "BEFORE_COMPAT": true,
+     "AFTER_BATCH1_REPLACEMENT": true,
+     "retention_state": "PRESERVED"
+    }
+   },
+   "group_regressions": [
+    "n022.e2",
+    "g021.e2"
+   ],
+   "critical_group_regressions": [
+    "n022.e2",
+    "g021.e2"
+   ],
+   "noncritical_group_regressions": [],
+   "group_recoveries": []
+  },
+  "safety_and_grounding": {
+   "CRITICAL_GROUP_REGRESSIONS": 2,
+   "NONCRITICAL_GROUP_REGRESSIONS": 0,
+   "GROUNDING_REGRESSIONS": 0,
+   "WRONG_VERSION_REGRESSIONS": 0,
+   "INVALID_PROVENANCE_RECOVERIES": 0,
+   "grounding_details": [],
+   "wrong_version_details": [],
+   "invalid_provenance_details": []
+  },
+  "bounded_threshold_evaluation": {
+   "recall_at_5": {
+    "delta": -0.102564,
+    "threshold": -0.05,
+    "satisfied": false
+   },
+   "recall_at_10": {
+    "delta": -0.064103,
+    "threshold": -0.05,
+    "satisfied": false
+   },
+   "recall_at_20": {
+    "delta": -0.064103,
+    "threshold": -0.05,
+    "satisfied": false
+   },
+   "combined_candidate_recall": {
+    "delta": -0.153846,
+    "threshold": -0.05,
+    "satisfied": false
+   },
+   "final_evidence_recall": {
+    "delta": -0.064103,
+    "threshold": -0.05,
+    "satisfied": false
+   },
+   "critical_final_evidence_recall": {
+    "delta": -0.064103,
+    "threshold": 0.0,
+    "satisfied": false
+   },
+   "mrr": {
+    "delta": -0.038462,
+    "diagnostic_only": true
+   }
+  },
+  "mechanistic_ownership_analysis": {
+   "n022.e2": {
+    "case_id": "n022",
+    "group_id": "n022.e2",
+    "role": "step2_artifact_consumption",
+    "critical": true,
+    "retained_before": true,
+    "retained_after": false,
+    "classification": "FUSION_CANDIDATE_ADMISSION_CUTOFF_REGRESSION",
+    "raw_trace_observation": "Target evidence (macro/target/poca_step2_analysis.py via object.88f0fa939d8a56760c9d44c4) is present in AFTER channel union, but excluded from ordinary fused top-30 and final pool.",
+    "overclaim_boundary": "Do not overclaim root cause beyond stage observation of fusion cutoff."
+   },
+   "g021.e2": {
+    "case_id": "g021",
+    "group_id": "g021.e2",
+    "role": "pnd_target_generator_implementation",
+    "critical": true,
+    "retained_before": true,
+    "retained_after": false,
+    "classification": "CANDIDATE_RECALL_GOVERNED_PROVENANCE_COVERAGE_REGRESSION",
+    "raw_trace_observation": "Target evidence (pgenerators/Target/PndTargetGenerator.cxx) is absent from the AFTER channel union and eligible/selected/reserved structured candidate sets following expansion suppression. No special treatment was used.",
+    "overclaim_boundary": "Do not overclaim root cause beyond stage observation of candidate recall and governed provenance coverage."
+   }
+  },
+  "verdict_outcome": {
+   "verdict_level": 4,
+   "batch_verdict": "FAIL / CRITICAL_OR_GROUNDING_REGRESSION",
+   "verdict_reason": "Critical evidence or grounding regression detected: 2 critical group regression(s) (['n022.e2', 'g021.e2']), 0 grounding regression(s), 0 wrong-version regression(s), 0 invalid-provenance recovery(ies)."
+  },
+  "precedence_resolution": "Level 4 (FAIL / CRITICAL_OR_GROUNDING_REGRESSION) takes precedence over Level 5 (PARTIAL / BEFORE_AFTER_REGRESSION_EXCEEDS_BOUNDED_TOLERANCE)."
+ },
+ "production_activation": false,
+ "authorization_boundary": "First-batch runtime migration is blocked by Level 4 critical evidence regressions (n022.e2, g021.e2). Production activation remains false. Exact next separately authorized task: D4-A2-R1 — First-Batch Critical-Regression Diagnosis and Repair Decision. This is a diagnosis/decision task only; do not start it."
+}

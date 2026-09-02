@@ -11,7 +11,32 @@ When records conflict, use the single section explicitly marked **Current author
 
 # Current authoritative state — 2026-09-02
 
-## D4-A1 current authoritative state — 2026-09-02
+## D4-A2 current authoritative state — 2026-09-02
+
+- `D4_A2_DECISION = FAIL / CRITICAL_OR_GROUNDING_REGRESSION`; `D4-A2 = COMPLETE / FAIL / CRITICAL_OR_GROUNDING_REGRESSION`; `D4 = IN_PROGRESS / INCREMENTAL_QUERY_EXPANSION_MIGRATION`; `FIRST_BATCH_RUNTIME_MIGRATION = BLOCKED`; `PRODUCTION_ACTIVATION = false`; `D4-A3 = NOT_STARTED / BLOCKED_BY_D4_A2_CRITICAL_REGRESSION`; `EXACT_NEXT_STAGE = D4-A2-R1 — First-Batch Critical-Regression Diagnosis and Repair Decision` (separately authorized).
+- Three-commit outcome-exposure audit boundary: Commit A `1bda8cbfe393c30a74581bed1411573100487ea2` (`D4-A2 freeze first-batch before-after validation`) froze execution manifest, preregistration, runner script, and unit tests. Commit B `bbbea0eac8ce3badf42b4832f36487520354ecee` (`D4-A2 freeze first-batch raw before-after outcomes`) froze raw 32-cell outcomes prior to evaluator execution. Commit C (`GIT_COMMIT_CONTAINING_THIS_ARTIFACT`, message `D4-A2 close first-batch before-after validation`) closes deterministic evaluator results, machine result artifact, human report, status documentation, and roadmap.
+- Execution accounting: All 32 formal cells across the frozen 16-case historical D3 cohort (10 Gold v2.6 dev + 6 novel_dev; 13 answered cases + 3 insufficient_evidence negative controls) × 2 evaluation-only arms (`BEFORE_COMPAT` vs `AFTER_BATCH1_REPLACEMENT` with K=3 bounded admission) executed in strict case-major paired order against Google Vertex AI Gemini 3.8 Flash (`temperature = 0.0`) and Gemini Embedding 2. 32/32 completed, 0 failed; 96 logical model calls (32 analyzer, 32 embedding, 32 reranker); 96 provider attempts (0 transient retries); 633,354 tokens consumed. Zero QA/verifier/judge calls, zero PostgreSQL/Qdrant writes, zero ingestion/reindex, zero protected dataset access (0 novel validation, 0 novel holdout). Zero post-exposure mutations across all 6 categories. `D4_A2_OUTCOME_EXPOSURE = COMPLETE`.
+- Batch-1 target reproduction & dependency removal:
+  - Both Batch-1 primary target groups reproduced under `AFTER_BATCH1_REPLACEMENT` with valid governed admission witnesses (`TARGET_REPLACEMENT_REPRODUCED = 2 / 2`):
+    - `g036.e1` (`macro/target/ana_dpm.C`): `BEFORE = True`, `AFTER = True`; witness `object.5cae2ceab6e67bb4c9065331` (origin `edge.2e09628416a01ce2461d752a`, K=3 reserved, pool position 29, final retained).
+    - `g021.e1` (`macro/target/prod_sim_hvmaps.C`): `BEFORE = True`, `AFTER = True`; witness `object.3ab0a90ae68e8ece071a9f22` (origin `edge.ea3a79d222f0ca6cc0e6df72`, K=3 reserved, pool position 29, final retained).
+  - Fixed-locator dependency removed: `BATCH1_FIXED_LOCATOR_DEPENDENCY_REMOVED = 2 / 2`.
+  - Reference baseline valid: `g036.e1` and `g021.e1` both retained under fresh `BEFORE_COMPAT` (`BEFORE_REFERENCE_REPRODUCED = true`).
+- Regressions & mechanistic classifications:
+  - `CRITICAL_GROUP_REGRESSIONS = 2` (`n022.e2`, `g021.e2`); `NONCRITICAL_GROUP_REGRESSIONS = 0`; `GROUP_RECOVERIES = 0`.
+  - `GROUNDING_REGRESSIONS = 0`, `WRONG_VERSION_REGRESSIONS = 0`, `INVALID_PROVENANCE_RECOVERIES = 0`.
+  - Mechanistic ownership from frozen raw traces:
+    - `n022.e2` (role `step2_artifact_consumption`, `macro/target/poca_step2_analysis.py`): present in AFTER channel union (`object.88f0fa939d8a56760c9d44c4`), but excluded from ordinary fused top-30 and final pool -> classified as `FUSION_CANDIDATE_ADMISSION_CUTOFF_REGRESSION`.
+    - `g021.e2` (role `pnd_target_generator_implementation`, `pgenerators/Target/PndTargetGenerator.cxx`): absent from AFTER channel union and eligible/selected/reserved structured candidate sets following expansion suppression (no special treatment applied) -> classified as `CANDIDATE_RECALL_GOVERNED_PROVENANCE_COVERAGE_REGRESSION`.
+- Quantitative retrieval metrics (13 answered cases):
+  - Cohort deltas: Recall@5 -.102564 (.730769 -> .628205), Recall@10 -.064103 (.820513 -> .756410), Recall@20 -.064103 (.820513 -> .756410), MRR -.038462 (.728938 -> .690476, diagnostic), combined candidate recall -.153846 (.897436 -> .743590), final evidence recall -.064103 (.820513 -> .756410), critical final evidence recall -.064103 (.820513 -> .756410).
+  - Subset deltas: Gold 7 answered [-.142857, -.071429, -.071429, -.047619, -.285714, -.071429, -.071429]; novel_dev 6 answered [-.055556, -.055556, -.055556, -.027778, 0, -.055556, -.055556].
+  - Bounded regression thresholds: Recall@5, Recall@10, Recall@20, combined candidate recall, final evidence recall, and critical final evidence recall all fail frozen tolerance.
+  - Targeted generalization diagnostics: Gold final evidence recall .928571 vs Novel final evidence recall .555556; gap narrowed from .388889 to .373016 (delta -.015873; targeted diagnostic only).
+- Scientific verdict: Level 4 precedence ladder triggered -> `FAIL / CRITICAL_OR_GROUNDING_REGRESSION`. Level 4 takes precedence over Level 5 tolerance failure. First-batch runtime migration is blocked; `PRODUCTION_ACTIVATION = false`.
+- Artifacts: `evaluation/d4_a2_execution_manifest.json`, `evaluation/d4_a2_before_after_preregistration.json`, `evaluation/d4_a2_raw_before_after_results.json`, `evaluation/d4_a2_evaluator_results.json`, `evaluation/d4_a2_result.json`, `evaluation/D4_A2_FIRST_BATCH_BEFORE_AFTER_VALIDATION.md`. Exact next separately authorized stage: **D4-A2-R1 — First-Batch Critical-Regression Diagnosis and Repair Decision** (diagnosis/decision task only; do not start).
+
+## D4-A1 predecessor state — 2026-09-02
 
 - `D4_A1_DECISION = PASS / FIRST_BATCH_FIXED_LOCATOR_REPLACEMENT_VALIDATED_FOR_DEVELOPMENT`; `D4-A1 = COMPLETE / PASS / FIRST_BATCH_FIXED_LOCATOR_REPLACEMENT_VALIDATED_FOR_DEVELOPMENT`; `D4 = IN_PROGRESS / INCREMENTAL_QUERY_EXPANSION_MIGRATION`; `D4-A2 = NOT_STARTED / READY_FOR_FIRST_BATCH_BEFORE_AFTER_VALIDATION`; `PRODUCTION_ACTIVATION = false`.
 - Three-commit outcome-exposure audit boundary: Commit A `8481f3411ae7e277abd8056910eb737624b7666e` (`D4-A1 freeze first-batch migration prototype`) froze execution manifest, migration script, and unit tests. Commit B `d0921c87aa7542e6f84ec49ec04a28cd199a6050` (`D4-A1 freeze first-batch raw migration outcomes`) froze raw 21-slot outcomes before evaluator execution. Commit C closes deterministic evaluation artifacts, human report, status documentation, and roadmap.

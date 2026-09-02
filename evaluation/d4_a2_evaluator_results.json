@@ -1,0 +1,665 @@
+{
+ "schema_version": "1.0.0",
+ "checkpoint": "D4-A2-EVALUATOR-RESULTS",
+ "stage": "d4_a2_evaluator_results",
+ "raw_artifact_authority": "evaluation/d4_a2_raw_before_after_results.json",
+ "evaluator_executed_at_utc": "2026-09-02T22:41:50.944587+00:00",
+ "cohort_metrics": {
+  "applicable_answered_cases_count": 13,
+  "insufficient_evidence_cases_count": 3,
+  "BEFORE_COMPAT": {
+   "recall_at_5": 0.7307692307692307,
+   "recall_at_10": 0.8205128205128205,
+   "recall_at_20": 0.8205128205128205,
+   "mrr": 0.7289377289377289,
+   "combined_candidate_recall": 0.8974358974358974,
+   "final_evidence_recall": 0.8205128205128205,
+   "critical_final_evidence_recall": 0.8205128205128205
+  },
+  "AFTER_BATCH1_REPLACEMENT": {
+   "recall_at_5": 0.6282051282051282,
+   "recall_at_10": 0.7564102564102565,
+   "recall_at_20": 0.7564102564102565,
+   "mrr": 0.6904761904761905,
+   "combined_candidate_recall": 0.7435897435897435,
+   "final_evidence_recall": 0.7564102564102565,
+   "critical_final_evidence_recall": 0.7564102564102565
+  },
+  "deltas": {
+   "recall_at_5": -0.102564,
+   "recall_at_10": -0.064103,
+   "recall_at_20": -0.064103,
+   "mrr": -0.038462,
+   "combined_candidate_recall": -0.153846,
+   "final_evidence_recall": -0.064103,
+   "critical_final_evidence_recall": -0.064103
+  }
+ },
+ "subset_metrics": {
+  "gold": {
+   "case_count": 7,
+   "BEFORE_COMPAT": {
+    "recall_at_5": 0.9047619047619048,
+    "recall_at_10": 1.0,
+    "recall_at_20": 1.0,
+    "mrr": 0.7857142857142857,
+    "combined_candidate_recall": 1.0,
+    "final_evidence_recall": 1.0,
+    "critical_final_evidence_recall": 1.0
+   },
+   "AFTER_BATCH1_REPLACEMENT": {
+    "recall_at_5": 0.7619047619047619,
+    "recall_at_10": 0.9285714285714286,
+    "recall_at_20": 0.9285714285714286,
+    "mrr": 0.7380952380952381,
+    "combined_candidate_recall": 0.7142857142857143,
+    "final_evidence_recall": 0.9285714285714286,
+    "critical_final_evidence_recall": 0.9285714285714286
+   },
+   "deltas": {
+    "recall_at_5": -0.142857,
+    "recall_at_10": -0.071429,
+    "recall_at_20": -0.071429,
+    "mrr": -0.047619,
+    "combined_candidate_recall": -0.285714,
+    "final_evidence_recall": -0.071429,
+    "critical_final_evidence_recall": -0.071429
+   }
+  },
+  "novel_dev": {
+   "case_count": 6,
+   "BEFORE_COMPAT": {
+    "recall_at_5": 0.5277777777777778,
+    "recall_at_10": 0.611111111111111,
+    "recall_at_20": 0.611111111111111,
+    "mrr": 0.6626984126984127,
+    "combined_candidate_recall": 0.7777777777777778,
+    "final_evidence_recall": 0.611111111111111,
+    "critical_final_evidence_recall": 0.611111111111111
+   },
+   "AFTER_BATCH1_REPLACEMENT": {
+    "recall_at_5": 0.47222222222222227,
+    "recall_at_10": 0.5555555555555556,
+    "recall_at_20": 0.5555555555555556,
+    "mrr": 0.6349206349206349,
+    "combined_candidate_recall": 0.7777777777777778,
+    "final_evidence_recall": 0.5555555555555556,
+    "critical_final_evidence_recall": 0.5555555555555556
+   },
+   "deltas": {
+    "recall_at_5": -0.055556,
+    "recall_at_10": -0.055556,
+    "recall_at_20": -0.055556,
+    "mrr": -0.027778,
+    "combined_candidate_recall": 0.0,
+    "final_evidence_recall": -0.055556,
+    "critical_final_evidence_recall": -0.055556
+   }
+  }
+ },
+ "targeted_generalization_diagnostics": {
+  "gold_final_evidence_recall_before": 1.0,
+  "novel_final_evidence_recall_before": 0.611111111111111,
+  "gap_before": 0.388889,
+  "gold_final_evidence_recall_after": 0.9285714285714286,
+  "novel_final_evidence_recall_after": 0.5555555555555556,
+  "gap_after": 0.373016,
+  "analogous_metrics": {
+   "recall_at_5": {
+    "gold_before": 0.9047619047619048,
+    "novel_before": 0.5277777777777778,
+    "gap_before": 0.376984,
+    "gold_after": 0.7619047619047619,
+    "novel_after": 0.47222222222222227,
+    "gap_after": 0.289683,
+    "gap_delta": -0.087302
+   },
+   "recall_at_10": {
+    "gold_before": 1.0,
+    "novel_before": 0.611111111111111,
+    "gap_before": 0.388889,
+    "gold_after": 0.9285714285714286,
+    "novel_after": 0.5555555555555556,
+    "gap_after": 0.373016,
+    "gap_delta": -0.015873
+   },
+   "recall_at_20": {
+    "gold_before": 1.0,
+    "novel_before": 0.611111111111111,
+    "gap_before": 0.388889,
+    "gold_after": 0.9285714285714286,
+    "novel_after": 0.5555555555555556,
+    "gap_after": 0.373016,
+    "gap_delta": -0.015873
+   },
+   "mrr": {
+    "gold_before": 0.7857142857142857,
+    "novel_before": 0.6626984126984127,
+    "gap_before": 0.123016,
+    "gold_after": 0.7380952380952381,
+    "novel_after": 0.6349206349206349,
+    "gap_after": 0.103175,
+    "gap_delta": -0.019841
+   },
+   "combined_candidate_recall": {
+    "gold_before": 1.0,
+    "novel_before": 0.7777777777777778,
+    "gap_before": 0.222222,
+    "gold_after": 0.7142857142857143,
+    "novel_after": 0.7777777777777778,
+    "gap_after": -0.063492,
+    "gap_delta": -0.285714
+   },
+   "final_evidence_recall": {
+    "gold_before": 1.0,
+    "novel_before": 0.611111111111111,
+    "gap_before": 0.388889,
+    "gold_after": 0.9285714285714286,
+    "novel_after": 0.5555555555555556,
+    "gap_after": 0.373016,
+    "gap_delta": -0.015873
+   },
+   "critical_final_evidence_recall": {
+    "gold_before": 1.0,
+    "novel_before": 0.611111111111111,
+    "gap_before": 0.388889,
+    "gold_after": 0.9285714285714286,
+    "novel_after": 0.5555555555555556,
+    "gap_after": 0.373016,
+    "gap_delta": -0.015873
+   }
+  }
+ },
+ "target_replacement_reproduction": {
+  "g036.e1": {
+   "reproduced": true,
+   "witness": true,
+   "witness_record": {
+    "group_id": "g036.e1",
+    "retained_in_final": true,
+    "has_valid_witness": true,
+    "candidate_witnesses": [
+     {
+      "candidate_object_id": "object.5cae2ceab6e67bb4c9065331",
+      "governed_path": true,
+      "selected_by_v2": true,
+      "ordinary_top30_before_reservation": false,
+      "reserved_under_k3": true,
+      "displaced_candidates": [
+       "object.88d0d65c7dbf3c313f1fa5dd",
+       "object.2243fa2f42ac96009ac4ba42",
+       "object.9784e8cd299c611d20d298d4"
+      ],
+      "final_pool_membership": true,
+      "final_pool_position": 29,
+      "competed_in_reranker": true,
+      "final_evidence_retained": true,
+      "full_structured_path": {
+       "candidate_object_id": "object.5cae2ceab6e67bb4c9065331",
+       "provenance_origin_ids": [
+        "edge.2e09628416a01ce2461d752a"
+       ],
+       "origin_types": [
+        "relation_edge"
+       ],
+       "source_id": "restgas_determination",
+       "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+       "locator_path": "macro/target/ana_dpm.C",
+       "min_structural_distance_transitions": 2,
+       "locator": {
+        "url": null,
+        "path": "macro/target/ana_dpm.C",
+        "symbol": null,
+        "end_line": 938,
+        "pdf_page": null,
+        "start_line": 1,
+        "printed_page": null,
+        "section_path": [],
+        "snapshot_date": null
+       }
+      },
+      "is_valid_witness": true
+     }
+    ]
+   }
+  },
+  "g021.e1": {
+   "reproduced": true,
+   "witness": true,
+   "witness_record": {
+    "group_id": "g021.e1",
+    "retained_in_final": true,
+    "has_valid_witness": true,
+    "candidate_witnesses": [
+     {
+      "candidate_object_id": "object.3ab0a90ae68e8ece071a9f22",
+      "governed_path": true,
+      "selected_by_v2": true,
+      "ordinary_top30_before_reservation": false,
+      "reserved_under_k3": true,
+      "displaced_candidates": [
+       "object.54b5cf78ac656b14878ac4b6"
+      ],
+      "final_pool_membership": true,
+      "final_pool_position": 29,
+      "competed_in_reranker": true,
+      "final_evidence_retained": true,
+      "full_structured_path": {
+       "candidate_object_id": "object.3ab0a90ae68e8ece071a9f22",
+       "provenance_origin_ids": [
+        "edge.ea3a79d222f0ca6cc0e6df72"
+       ],
+       "origin_types": [
+        "relation_edge"
+       ],
+       "source_id": "restgas_determination",
+       "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+       "locator_path": "macro/target/prod_sim_hvmaps.C",
+       "min_structural_distance_transitions": 1,
+       "locator": {
+        "url": null,
+        "path": "macro/target/prod_sim_hvmaps.C",
+        "symbol": null,
+        "end_line": 203,
+        "pdf_page": null,
+        "start_line": 1,
+        "printed_page": null,
+        "section_path": [],
+        "snapshot_date": null
+       }
+      },
+      "is_valid_witness": true
+     }
+    ]
+   }
+  },
+  "TARGET_REPLACEMENT_REPRODUCED": "2 / 2",
+  "BATCH1_FIXED_LOCATOR_DEPENDENCY_REMOVED": "2 / 2",
+  "dependency_removal_receipts": {
+   "event_poca_handoff": {
+    "rule_id": "event_poca_handoff",
+    "case_id": "g036",
+    "target_group_id": "g036.e1",
+    "fixed_locator_inputs_active_before": true,
+    "exact_masked_locator_inputs_absent_after": true,
+    "generic_structured_mechanism_active": true,
+    "target_evidence_retained_after": true,
+    "valid_governed_witness_exists": true,
+    "dependency_removed": true
+   },
+   "restgas_profile_workflow": {
+    "rule_id": "restgas_profile_workflow",
+    "case_id": "g021",
+    "target_group_id": "g021.e1",
+    "fixed_locator_inputs_active_before": true,
+    "exact_masked_locator_inputs_absent_after": true,
+    "generic_structured_mechanism_active": true,
+    "target_evidence_retained_after": true,
+    "valid_governed_witness_exists": true,
+    "dependency_removed": true
+   }
+  }
+ },
+ "group_retention": {
+  "all_groups": {
+   "g029.e1": {
+    "case_id": "g029",
+    "dataset": "Gold v2.6 dev",
+    "applicability": "ANSWERED",
+    "is_negative_control": false,
+    "expected_status": "answered",
+    "critical": true,
+    "role": "pnd_lmd_combined_data_reader_implementation",
+    "BEFORE_COMPAT": true,
+    "AFTER_BATCH1_REPLACEMENT": true,
+    "retention_state": "PRESERVED"
+   },
+   "n021.e1": {
+    "case_id": "n021",
+    "dataset": "novel_dev",
+    "applicability": "ANSWERED",
+    "is_negative_control": false,
+    "expected_status": "answered",
+    "critical": true,
+    "role": "luminosityfit_workflow_scripts",
+    "BEFORE_COMPAT": true,
+    "AFTER_BATCH1_REPLACEMENT": true,
+    "retention_state": "PRESERVED"
+   },
+   "n021.e2": {
+    "case_id": "n021",
+    "dataset": "novel_dev",
+    "applicability": "ANSWERED",
+    "is_negative_control": false,
+    "expected_status": "answered",
+    "critical": true,
+    "role": "pandaroot_lmd_implementation_ownership",
+    "BEFORE_COMPAT": false,
+    "AFTER_BATCH1_REPLACEMENT": false,
+    "retention_state": "UNRESOLVED_BOTH"
+   },
+   "g025.e1": {
+    "case_id": "g025",
+    "dataset": "Gold v2.6 dev",
+    "applicability": "NEGATIVE_CONTROL_INSUFFICIENT_EVIDENCE",
+    "is_negative_control": true,
+    "expected_status": "insufficient_evidence",
+    "critical": true,
+    "role": "run_lmd_fit_implementation",
+    "BEFORE_COMPAT": true,
+    "AFTER_BATCH1_REPLACEMENT": true,
+    "retention_state": "PRESERVED"
+   },
+   "g036.e1": {
+    "case_id": "g036",
+    "dataset": "Gold v2.6 dev",
+    "applicability": "ANSWERED",
+    "is_negative_control": false,
+    "expected_status": "answered",
+    "critical": true,
+    "role": "ana_dpm_implementation",
+    "BEFORE_COMPAT": true,
+    "AFTER_BATCH1_REPLACEMENT": true,
+    "retention_state": "PRESERVED"
+   },
+   "n022.e1": {
+    "case_id": "n022",
+    "dataset": "novel_dev",
+    "applicability": "ANSWERED",
+    "is_negative_control": false,
+    "expected_status": "answered",
+    "critical": true,
+    "role": "pass1_artifact_production",
+    "BEFORE_COMPAT": false,
+    "AFTER_BATCH1_REPLACEMENT": false,
+    "retention_state": "UNRESOLVED_BOTH"
+   },
+   "n022.e2": {
+    "case_id": "n022",
+    "dataset": "novel_dev",
+    "applicability": "ANSWERED",
+    "is_negative_control": false,
+    "expected_status": "answered",
+    "critical": true,
+    "role": "step2_artifact_consumption",
+    "BEFORE_COMPAT": true,
+    "AFTER_BATCH1_REPLACEMENT": false,
+    "retention_state": "REGRESSED"
+   },
+   "n022.e3": {
+    "case_id": "n022",
+    "dataset": "novel_dev",
+    "applicability": "ANSWERED",
+    "is_negative_control": false,
+    "expected_status": "answered",
+    "critical": true,
+    "role": "two_pass_workflow_semantics",
+    "BEFORE_COMPAT": true,
+    "AFTER_BATCH1_REPLACEMENT": true,
+    "retention_state": "PRESERVED"
+   },
+   "g020.e1": {
+    "case_id": "g020",
+    "dataset": "Gold v2.6 dev",
+    "applicability": "ANSWERED",
+    "is_negative_control": false,
+    "expected_status": "answered",
+    "critical": true,
+    "role": "poca_workflow_documentation",
+    "BEFORE_COMPAT": true,
+    "AFTER_BATCH1_REPLACEMENT": true,
+    "retention_state": "PRESERVED"
+   },
+   "g020.e2": {
+    "case_id": "g020",
+    "dataset": "Gold v2.6 dev",
+    "applicability": "ANSWERED",
+    "is_negative_control": false,
+    "expected_status": "answered",
+    "critical": true,
+    "role": "runall_prod_hvmaps_implementation",
+    "BEFORE_COMPAT": true,
+    "AFTER_BATCH1_REPLACEMENT": true,
+    "retention_state": "PRESERVED"
+   },
+   "n006.e1": {
+    "case_id": "n006",
+    "dataset": "novel_dev",
+    "applicability": "ANSWERED",
+    "is_negative_control": false,
+    "expected_status": "answered",
+    "critical": true,
+    "role": "filename_helper_definition",
+    "BEFORE_COMPAT": true,
+    "AFTER_BATCH1_REPLACEMENT": true,
+    "retention_state": "PRESERVED"
+   },
+   "n006.e2": {
+    "case_id": "n006",
+    "dataset": "novel_dev",
+    "applicability": "ANSWERED",
+    "is_negative_control": false,
+    "expected_status": "answered",
+    "critical": true,
+    "role": "filename_suffix_literals",
+    "BEFORE_COMPAT": false,
+    "AFTER_BATCH1_REPLACEMENT": false,
+    "retention_state": "UNRESOLVED_BOTH"
+   },
+   "g041.e1": {
+    "case_id": "g041",
+    "dataset": "Gold v2.6 dev",
+    "applicability": "NEGATIVE_CONTROL_INSUFFICIENT_EVIDENCE",
+    "is_negative_control": true,
+    "expected_status": "insufficient_evidence",
+    "critical": true,
+    "role": "pnd_pid_correlator_interface",
+    "BEFORE_COMPAT": true,
+    "AFTER_BATCH1_REPLACEMENT": true,
+    "retention_state": "PRESERVED"
+   },
+   "n014.e1": {
+    "case_id": "n014",
+    "dataset": "novel_dev",
+    "applicability": "ANSWERED",
+    "is_negative_control": false,
+    "expected_status": "answered",
+    "critical": true,
+    "role": "vendored_framework_status",
+    "BEFORE_COMPAT": false,
+    "AFTER_BATCH1_REPLACEMENT": false,
+    "retention_state": "UNRESOLVED_BOTH"
+   },
+   "n014.e2": {
+    "case_id": "n014",
+    "dataset": "novel_dev",
+    "applicability": "ANSWERED",
+    "is_negative_control": false,
+    "expected_status": "answered",
+    "critical": true,
+    "role": "native_model_layer",
+    "BEFORE_COMPAT": true,
+    "AFTER_BATCH1_REPLACEMENT": true,
+    "retention_state": "PRESERVED"
+   },
+   "g060.e1": {
+    "case_id": "g060",
+    "dataset": "Gold v2.6 dev",
+    "applicability": "ANSWERED",
+    "is_negative_control": false,
+    "expected_status": "answered",
+    "critical": true,
+    "role": "pflueger_2017_page_74_theory",
+    "BEFORE_COMPAT": true,
+    "AFTER_BATCH1_REPLACEMENT": true,
+    "retention_state": "PRESERVED"
+   },
+   "g060.e2": {
+    "case_id": "g060",
+    "dataset": "Gold v2.6 dev",
+    "applicability": "ANSWERED",
+    "is_negative_control": false,
+    "expected_status": "answered",
+    "critical": true,
+    "role": "pnd_lmd_divergence_smearing_model2_d_implementation",
+    "BEFORE_COMPAT": true,
+    "AFTER_BATCH1_REPLACEMENT": true,
+    "retention_state": "PRESERVED"
+   },
+   "g060.e3": {
+    "case_id": "g060",
+    "dataset": "Gold v2.6 dev",
+    "applicability": "ANSWERED",
+    "is_negative_control": false,
+    "expected_status": "answered",
+    "critical": true,
+    "role": "generate2_dmodel_implementation",
+    "BEFORE_COMPAT": true,
+    "AFTER_BATCH1_REPLACEMENT": true,
+    "retention_state": "PRESERVED"
+   },
+   "g052.e1": {
+    "case_id": "g052",
+    "dataset": "Gold v2.6 dev",
+    "applicability": "ANSWERED",
+    "is_negative_control": false,
+    "expected_status": "answered",
+    "critical": true,
+    "role": "li_2026_page_141_theory",
+    "BEFORE_COMPAT": true,
+    "AFTER_BATCH1_REPLACEMENT": true,
+    "retention_state": "PRESERVED"
+   },
+   "g055.e1": {
+    "case_id": "g055",
+    "dataset": "Gold v2.6 dev",
+    "applicability": "ANSWERED",
+    "is_negative_control": false,
+    "expected_status": "answered",
+    "critical": true,
+    "role": "pflueger_2017_page_57_theory",
+    "BEFORE_COMPAT": true,
+    "AFTER_BATCH1_REPLACEMENT": true,
+    "retention_state": "PRESERVED"
+   },
+   "g055.e2": {
+    "case_id": "g055",
+    "dataset": "Gold v2.6 dev",
+    "applicability": "ANSWERED",
+    "is_negative_control": false,
+    "expected_status": "answered",
+    "critical": true,
+    "role": "li_2026_page_142_theory",
+    "BEFORE_COMPAT": true,
+    "AFTER_BATCH1_REPLACEMENT": true,
+    "retention_state": "PRESERVED"
+   },
+   "n003.e1": {
+    "case_id": "n003",
+    "dataset": "novel_dev",
+    "applicability": "ANSWERED",
+    "is_negative_control": false,
+    "expected_status": "answered",
+    "critical": true,
+    "role": "fixed_step_generator_definition",
+    "BEFORE_COMPAT": true,
+    "AFTER_BATCH1_REPLACEMENT": true,
+    "retention_state": "PRESERVED"
+   },
+   "n003.e2": {
+    "case_id": "n003",
+    "dataset": "novel_dev",
+    "applicability": "ANSWERED",
+    "is_negative_control": false,
+    "expected_status": "answered",
+    "critical": true,
+    "role": "per_event_step_advancement",
+    "BEFORE_COMPAT": false,
+    "AFTER_BATCH1_REPLACEMENT": false,
+    "retention_state": "UNRESOLVED_BOTH"
+   },
+   "g021.e1": {
+    "case_id": "g021",
+    "dataset": "Gold v2.6 dev",
+    "applicability": "ANSWERED",
+    "is_negative_control": false,
+    "expected_status": "answered",
+    "critical": true,
+    "role": "prod_sim_hvmaps_implementation",
+    "BEFORE_COMPAT": true,
+    "AFTER_BATCH1_REPLACEMENT": true,
+    "retention_state": "PRESERVED"
+   },
+   "g021.e2": {
+    "case_id": "g021",
+    "dataset": "Gold v2.6 dev",
+    "applicability": "ANSWERED",
+    "is_negative_control": false,
+    "expected_status": "answered",
+    "critical": true,
+    "role": "pnd_target_generator_implementation",
+    "BEFORE_COMPAT": true,
+    "AFTER_BATCH1_REPLACEMENT": false,
+    "retention_state": "REGRESSED"
+   },
+   "n004.e1": {
+    "case_id": "n004",
+    "dataset": "novel_dev",
+    "applicability": "ANSWERED",
+    "is_negative_control": false,
+    "expected_status": "answered",
+    "critical": true,
+    "role": "fair_logger_documentation",
+    "BEFORE_COMPAT": true,
+    "AFTER_BATCH1_REPLACEMENT": true,
+    "retention_state": "PRESERVED"
+   },
+   "g007.e1": {
+    "case_id": "g007",
+    "dataset": "Gold v2.6 dev",
+    "applicability": "NEGATIVE_CONTROL_INSUFFICIENT_EVIDENCE",
+    "is_negative_control": true,
+    "expected_status": "insufficient_evidence",
+    "critical": true,
+    "role": "installation_documentation",
+    "BEFORE_COMPAT": true,
+    "AFTER_BATCH1_REPLACEMENT": true,
+    "retention_state": "PRESERVED"
+   }
+  },
+  "group_regressions": [
+   "n022.e2",
+   "g021.e2"
+  ],
+  "critical_group_regressions": [
+   "n022.e2",
+   "g021.e2"
+  ],
+  "noncritical_group_regressions": [],
+  "group_recoveries": []
+ },
+ "safety_and_grounding": {
+  "CRITICAL_GROUP_REGRESSIONS": 2,
+  "NONCRITICAL_GROUP_REGRESSIONS": 0,
+  "GROUNDING_REGRESSIONS": 0,
+  "WRONG_VERSION_REGRESSIONS": 0,
+  "INVALID_PROVENANCE_RECOVERIES": 0,
+  "grounding_details": [],
+  "wrong_version_details": [],
+  "invalid_provenance_details": []
+ },
+ "post_exposure_mutation_accounting": {
+  "POST_EXPOSURE_CASE_MUTATIONS": 0,
+  "POST_EXPOSURE_MASK_MUTATIONS": 0,
+  "POST_EXPOSURE_REPLACEMENT_MUTATIONS": 0,
+  "POST_EXPOSURE_MODEL_MUTATIONS": 0,
+  "POST_EXPOSURE_METRIC_MUTATIONS": 0,
+  "POST_EXPOSURE_VERDICT_MUTATIONS": 0
+ },
+ "verdict_outcome": {
+  "verdict_level": 4,
+  "batch_verdict": "FAIL / CRITICAL_OR_GROUNDING_REGRESSION",
+  "verdict_reason": "Critical evidence or grounding regression detected: 2 critical group regression(s) (['n022.e2', 'g021.e2']), 0 grounding regression(s), 0 wrong-version regression(s), 0 invalid-provenance recovery(ies)."
+ },
+ "production_activation": false
+}
