@@ -119,8 +119,8 @@
     ]
   },
   "outcome_exposure_state": {
-    "D4_A2_V1_R1_OUTCOME_EXPOSURE": "NOT_STARTED",
-    "downstream_cells_completed": 0,
+    "D4_A2_V1_R1_OUTCOME_EXPOSURE": "RAW_OUTCOMES_COMPLETE",
+    "downstream_cells_completed": 4,
     "downstream_cells_failed": 0,
     "evaluator_executed": false,
     "scientific_verdict_computed": false
@@ -132,13 +132,13 @@
       "source_slot_index": 9,
       "arm": "BEFORE_COMPAT",
       "case_id": "n022",
-      "status": "NOT_EXECUTED",
-      "started_at": null,
-      "completed_at": null,
-      "token_usage": null,
-      "provider_attempts": null,
-      "final_rerank_pool_retained": null,
-      "final_evidence_retained": null
+      "status": "COMPLETED",
+      "started_at": "2026-09-03T19:18:34.116936",
+      "completed_at": "2026-09-03T19:19:14.858975",
+      "token_usage": 19431,
+      "provider_attempts": 2,
+      "final_rerank_pool_retained": true,
+      "final_evidence_retained": true
     },
     {
       "cell_index": 2,
@@ -146,13 +146,13 @@
       "source_slot_index": 9,
       "arm": "AFTER_BATCH1_REPLACEMENT",
       "case_id": "n022",
-      "status": "NOT_EXECUTED",
-      "started_at": null,
-      "completed_at": null,
-      "token_usage": null,
-      "provider_attempts": null,
-      "final_rerank_pool_retained": null,
-      "final_evidence_retained": null
+      "status": "COMPLETED",
+      "started_at": "2026-09-03T19:19:14.859763",
+      "completed_at": "2026-09-03T19:19:39.843051",
+      "token_usage": 19073,
+      "provider_attempts": 2,
+      "final_rerank_pool_retained": true,
+      "final_evidence_retained": true
     },
     {
       "cell_index": 3,
@@ -160,13 +160,13 @@
       "source_slot_index": 10,
       "arm": "AFTER_BATCH1_REPLACEMENT",
       "case_id": "n022",
-      "status": "NOT_EXECUTED",
-      "started_at": null,
-      "completed_at": null,
-      "token_usage": null,
-      "provider_attempts": null,
-      "final_rerank_pool_retained": null,
-      "final_evidence_retained": null
+      "status": "COMPLETED",
+      "started_at": "2026-09-03T19:19:39.843838",
+      "completed_at": "2026-09-03T19:19:58.097906",
+      "token_usage": 14527,
+      "provider_attempts": 2,
+      "final_rerank_pool_retained": false,
+      "final_evidence_retained": false
     },
     {
       "cell_index": 4,
@@ -174,13 +174,13 @@
       "source_slot_index": 10,
       "arm": "BEFORE_COMPAT",
       "case_id": "n022",
-      "status": "NOT_EXECUTED",
-      "started_at": null,
-      "completed_at": null,
-      "token_usage": null,
-      "provider_attempts": null,
-      "final_rerank_pool_retained": null,
-      "final_evidence_retained": null
+      "status": "COMPLETED",
+      "started_at": "2026-09-03T19:19:58.098742",
+      "completed_at": "2026-09-03T19:20:10.627929",
+      "token_usage": 14297,
+      "provider_attempts": 2,
+      "final_rerank_pool_retained": false,
+      "final_evidence_retained": false
     }
   ]
 }
