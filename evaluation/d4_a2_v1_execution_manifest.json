@@ -259,118 +259,214 @@
       "plan_index": 1,
       "case_id": "n022",
       "arm": "BEFORE_COMPAT",
-      "status": "NOT_EXECUTED"
+      "status": "COMPLETED",
+      "started_at": "2026-09-03T15:30:21.683760",
+      "completed_at": "2026-09-03T15:30:51.288932",
+      "token_usage": 19194,
+      "provider_attempts": 2,
+      "final_rerank_pool_retained": true,
+      "final_evidence_retained": true
     },
     {
       "cell_index": 2,
       "plan_index": 1,
       "case_id": "n022",
       "arm": "AFTER_BATCH1_REPLACEMENT",
-      "status": "NOT_EXECUTED"
+      "status": "COMPLETED",
+      "started_at": "2026-09-03T15:30:51.289768",
+      "completed_at": "2026-09-03T15:31:16.188549",
+      "token_usage": 19307,
+      "provider_attempts": 2,
+      "final_rerank_pool_retained": true,
+      "final_evidence_retained": true
     },
     {
       "cell_index": 3,
       "plan_index": 2,
       "case_id": "n022",
       "arm": "AFTER_BATCH1_REPLACEMENT",
-      "status": "NOT_EXECUTED"
+      "status": "COMPLETED",
+      "started_at": "2026-09-03T15:31:16.189669",
+      "completed_at": "2026-09-03T15:31:48.804100",
+      "token_usage": 17083,
+      "provider_attempts": 2,
+      "final_rerank_pool_retained": true,
+      "final_evidence_retained": true
     },
     {
       "cell_index": 4,
       "plan_index": 2,
       "case_id": "n022",
       "arm": "BEFORE_COMPAT",
-      "status": "NOT_EXECUTED"
+      "status": "COMPLETED",
+      "started_at": "2026-09-03T15:31:48.804974",
+      "completed_at": "2026-09-03T15:32:18.183074",
+      "token_usage": 16639,
+      "provider_attempts": 2,
+      "final_rerank_pool_retained": true,
+      "final_evidence_retained": true
     },
     {
       "cell_index": 5,
       "plan_index": 3,
       "case_id": "n022",
       "arm": "BEFORE_COMPAT",
-      "status": "NOT_EXECUTED"
+      "status": "COMPLETED",
+      "started_at": "2026-09-03T15:32:18.183805",
+      "completed_at": "2026-09-03T15:32:44.463569",
+      "token_usage": 18828,
+      "provider_attempts": 2,
+      "final_rerank_pool_retained": true,
+      "final_evidence_retained": true
     },
     {
       "cell_index": 6,
       "plan_index": 3,
       "case_id": "n022",
       "arm": "AFTER_BATCH1_REPLACEMENT",
-      "status": "NOT_EXECUTED"
+      "status": "COMPLETED",
+      "started_at": "2026-09-03T15:32:44.464283",
+      "completed_at": "2026-09-03T15:33:17.855141",
+      "token_usage": 19285,
+      "provider_attempts": 2,
+      "final_rerank_pool_retained": true,
+      "final_evidence_retained": true
     },
     {
       "cell_index": 7,
       "plan_index": 4,
       "case_id": "n022",
       "arm": "AFTER_BATCH1_REPLACEMENT",
-      "status": "NOT_EXECUTED"
+      "status": "COMPLETED",
+      "started_at": "2026-09-03T15:33:17.856234",
+      "completed_at": "2026-09-03T15:33:51.710450",
+      "token_usage": 18797,
+      "provider_attempts": 2,
+      "final_rerank_pool_retained": true,
+      "final_evidence_retained": true
     },
     {
       "cell_index": 8,
       "plan_index": 4,
       "case_id": "n022",
       "arm": "BEFORE_COMPAT",
-      "status": "NOT_EXECUTED"
+      "status": "COMPLETED",
+      "started_at": "2026-09-03T15:33:51.711240",
+      "completed_at": "2026-09-03T15:34:36.758469",
+      "token_usage": 19661,
+      "provider_attempts": 2,
+      "final_rerank_pool_retained": true,
+      "final_evidence_retained": true
     },
     {
       "cell_index": 9,
       "plan_index": 5,
       "case_id": "n022",
       "arm": "BEFORE_COMPAT",
-      "status": "NOT_EXECUTED"
+      "status": "COMPLETED",
+      "started_at": "2026-09-03T15:34:36.759391",
+      "completed_at": "2026-09-03T15:35:04.341322",
+      "token_usage": 16894,
+      "provider_attempts": 2,
+      "final_rerank_pool_retained": true,
+      "final_evidence_retained": true
     },
     {
       "cell_index": 10,
       "plan_index": 5,
       "case_id": "n022",
       "arm": "AFTER_BATCH1_REPLACEMENT",
-      "status": "NOT_EXECUTED"
+      "status": "COMPLETED",
+      "started_at": "2026-09-03T15:35:04.342348",
+      "completed_at": "2026-09-03T15:35:40.837461",
+      "token_usage": 17067,
+      "provider_attempts": 2,
+      "final_rerank_pool_retained": true,
+      "final_evidence_retained": true
     },
     {
       "cell_index": 11,
       "plan_index": 6,
       "case_id": "n022",
       "arm": "AFTER_BATCH1_REPLACEMENT",
-      "status": "NOT_EXECUTED"
+      "status": "COMPLETED",
+      "started_at": "2026-09-03T15:35:40.838338",
+      "completed_at": "2026-09-03T15:36:01.998073",
+      "token_usage": 19283,
+      "provider_attempts": 2,
+      "final_rerank_pool_retained": true,
+      "final_evidence_retained": true
     },
     {
       "cell_index": 12,
       "plan_index": 6,
       "case_id": "n022",
       "arm": "BEFORE_COMPAT",
-      "status": "NOT_EXECUTED"
+      "status": "COMPLETED",
+      "started_at": "2026-09-03T15:36:01.998852",
+      "completed_at": "2026-09-03T15:36:21.376904",
+      "token_usage": 19209,
+      "provider_attempts": 2,
+      "final_rerank_pool_retained": true,
+      "final_evidence_retained": true
     },
     {
       "cell_index": 13,
       "plan_index": 7,
       "case_id": "n022",
       "arm": "BEFORE_COMPAT",
-      "status": "NOT_EXECUTED"
+      "status": "COMPLETED",
+      "started_at": "2026-09-03T15:36:21.377723",
+      "completed_at": "2026-09-03T15:36:44.436705",
+      "token_usage": 19177,
+      "provider_attempts": 2,
+      "final_rerank_pool_retained": true,
+      "final_evidence_retained": true
     },
     {
       "cell_index": 14,
       "plan_index": 7,
       "case_id": "n022",
       "arm": "AFTER_BATCH1_REPLACEMENT",
-      "status": "NOT_EXECUTED"
+      "status": "COMPLETED",
+      "started_at": "2026-09-03T15:36:44.437820",
+      "completed_at": "2026-09-03T15:37:13.074968",
+      "token_usage": 19268,
+      "provider_attempts": 2,
+      "final_rerank_pool_retained": true,
+      "final_evidence_retained": true
     },
     {
       "cell_index": 15,
       "plan_index": 8,
       "case_id": "n022",
       "arm": "AFTER_BATCH1_REPLACEMENT",
-      "status": "NOT_EXECUTED"
+      "status": "COMPLETED",
+      "started_at": "2026-09-03T15:37:13.075970",
+      "completed_at": "2026-09-03T15:37:35.482852",
+      "token_usage": 16994,
+      "provider_attempts": 2,
+      "final_rerank_pool_retained": true,
+      "final_evidence_retained": true
     },
     {
       "cell_index": 16,
       "plan_index": 8,
       "case_id": "n022",
       "arm": "BEFORE_COMPAT",
-      "status": "NOT_EXECUTED"
+      "status": "COMPLETED",
+      "started_at": "2026-09-03T15:37:35.483788",
+      "completed_at": "2026-09-03T15:38:02.777685",
+      "token_usage": 16881,
+      "provider_attempts": 2,
+      "final_rerank_pool_retained": true,
+      "final_evidence_retained": true
     }
   ],
   "outcome_exposure_state": {
-    "D4_A2_V1_OUTCOME_EXPOSURE": "ANALYZER_SAMPLES_FROZEN",
+    "D4_A2_V1_OUTCOME_EXPOSURE": "RAW_OUTCOMES_COMPLETE",
     "analyzer_draws_completed": 8,
-    "downstream_cells_completed": 0,
+    "downstream_cells_completed": 16,
     "downstream_cells_failed": 0,
     "evaluator_executed": false,
     "scientific_verdict_computed": false
