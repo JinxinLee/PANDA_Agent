@@ -1,0 +1,232 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint": "D4-A2-V1",
+  "stage": "d4_a2_v1_paired_stability_validation_preregistration",
+  "title": "D4-A2-V1 Paired Retrieval Stability and Variance Attribution Validation Preregistration",
+  "created_at": "2026-09-03T15:30:00+02:00",
+  "starting_head": "9b007b5a895c245b40fa702996e07d45f47d2205",
+  "implementation_freeze_contract": {
+    "policy": "GIT_COMMIT_CONTAINING_THIS_ARTIFACT",
+    "description": "Implementation freeze identity is defined non-self-referentially as the Git commit containing this preregistration (Commit A). The runtime execution runner captures git rev-parse HEAD dynamically before Phase P draw #1, verifies a clean worktree, and records that exact Commit A SHA in raw artifacts and closeout.",
+    "expected_commit_message": "D4-A2-V1 freeze paired stability validation",
+    "starting_head": "9b007b5a895c245b40fa702996e07d45f47d2205"
+  },
+  "d4_a2_r1_authority": {
+    "commit": "9b007b5a895c245b40fa702996e07d45f47d2205",
+    "checkpoint": "D4-A2-R1",
+    "verdict": "PASS / BENCHMARK_CORRECTION_AND_REGRESSION_ATTRIBUTION_COMPLETE",
+    "attribution": "ORDINARY_FRESH_RUN_VARIANCE_DOMINATED",
+    "first_divergence": "QUERY_ANALYZER / RETRIEVAL_PLAN",
+    "repair_disposition": "NO_GENERIC_REPAIR_YET / PAIRED_STABILITY_VALIDATION_REQUIRED",
+    "result_artifact": "evaluation/d4_a2_r1_critical_regression_diagnosis.json",
+    "report_artifact": "evaluation/D4_A2_R1_CRITICAL_REGRESSION_DIAGNOSIS_AND_REPAIR_DECISION.md"
+  },
+  "scientific_scope": {
+    "case_id": "n022",
+    "split": "novel_dev",
+    "intent": "data_flow",
+    "query": "The restgas analysis determines the event vertex through a two-step POCA workflow. What does the first worker step leave behind for the second analysis step, and how is the fitted vertex fed into the reprocessing?",
+    "target_evidence_group": {
+      "group_id": "n022.e2",
+      "role": "step2_artifact_consumption",
+      "critical": true,
+      "source_id": "restgas_determination",
+      "path": "macro/target/poca_step2_analysis.py"
+    },
+    "single_case_only": true,
+    "excluded_cases": "No other novel_dev cases, no Gold cases, no novel_validation, no holdout."
+  },
+  "phase_p_specification": {
+    "analyzer_plan_draws": 8,
+    "model_id": "gemini-3.8-flash",
+    "vertex_location": "global",
+    "temperature": 0.0,
+    "prompt_authority": "QUERY_ANALYZER_SYSTEM_PROMPT",
+    "query_expansions_file": "configs/query_expansions.yaml",
+    "batch1_trigger_rules_active": false,
+    "target_batch1_rules": [
+      "event_poca_handoff",
+      "restgas_profile_workflow"
+    ],
+    "freeze_policy": "All 8 plans frozen to evaluation/d4_a2_v1_raw_analyzer_plan_samples.json and committed (Commit B) before Phase R."
+  },
+  "phase_r_specification": {
+    "frozen_plans_count": 8,
+    "downstream_arms": [
+      "BEFORE_COMPAT",
+      "AFTER_BATCH1_REPLACEMENT"
+    ],
+    "cells_total": 16,
+    "alternating_schedule": [
+      {
+        "cell_index": 1,
+        "plan_index": 1,
+        "arm": "BEFORE_COMPAT"
+      },
+      {
+        "cell_index": 2,
+        "plan_index": 1,
+        "arm": "AFTER_BATCH1_REPLACEMENT"
+      },
+      {
+        "cell_index": 3,
+        "plan_index": 2,
+        "arm": "AFTER_BATCH1_REPLACEMENT"
+      },
+      {
+        "cell_index": 4,
+        "plan_index": 2,
+        "arm": "BEFORE_COMPAT"
+      },
+      {
+        "cell_index": 5,
+        "plan_index": 3,
+        "arm": "BEFORE_COMPAT"
+      },
+      {
+        "cell_index": 6,
+        "plan_index": 3,
+        "arm": "AFTER_BATCH1_REPLACEMENT"
+      },
+      {
+        "cell_index": 7,
+        "plan_index": 4,
+        "arm": "AFTER_BATCH1_REPLACEMENT"
+      },
+      {
+        "cell_index": 8,
+        "plan_index": 4,
+        "arm": "BEFORE_COMPAT"
+      },
+      {
+        "cell_index": 9,
+        "plan_index": 5,
+        "arm": "BEFORE_COMPAT"
+      },
+      {
+        "cell_index": 10,
+        "plan_index": 5,
+        "arm": "AFTER_BATCH1_REPLACEMENT"
+      },
+      {
+        "cell_index": 11,
+        "plan_index": 6,
+        "arm": "AFTER_BATCH1_REPLACEMENT"
+      },
+      {
+        "cell_index": 12,
+        "plan_index": 6,
+        "arm": "BEFORE_COMPAT"
+      },
+      {
+        "cell_index": 13,
+        "plan_index": 7,
+        "arm": "BEFORE_COMPAT"
+      },
+      {
+        "cell_index": 14,
+        "plan_index": 7,
+        "arm": "AFTER_BATCH1_REPLACEMENT"
+      },
+      {
+        "cell_index": 15,
+        "plan_index": 8,
+        "arm": "AFTER_BATCH1_REPLACEMENT"
+      },
+      {
+        "cell_index": 16,
+        "plan_index": 8,
+        "arm": "BEFORE_COMPAT"
+      }
+    ],
+    "shared_plan_adapter_guarantees": {
+      "phase_r_analyzer_provider_calls": 0,
+      "plan_identity": "BEFORE_PLAN == AFTER_PLAN == frozen plan_i (verified by canonical model_dump equality)",
+      "adapter_lifecycle": "Restores Retriever.analyze on cell completion or exception; fail-closed on error."
+    },
+    "arm_definitions": {
+      "BEFORE_COMPAT": "Production query expansions with Batch-1 fixed locators active, generic D3.5 structured replacement OFF, reserved admission OFF.",
+      "AFTER_BATCH1_REPLACEMENT": "Exact in-memory Batch-1 component mask active, generic D3.5 structured replacement ON, d3_5_selectivity_v2 ON (caps 8/4), K=3 reserved admission, rerank pool size = 30."
+    },
+    "pipeline_constants": {
+      "selectivity_cap": 8,
+      "per_origin_cap": 4,
+      "admission_budget_k": 3,
+      "rerank_pool_size": 30
+    }
+  },
+  "planned_formal_call_accounting": {
+    "formal_cases": 1,
+    "analyzer_plan_draws_planned": 8,
+    "frozen_plans": 8,
+    "downstream_arms": 2,
+    "formal_downstream_cells_planned": 16,
+    "planned_analyzer_calls": 8,
+    "planned_embedding_calls": 16,
+    "planned_reranker_calls": 16,
+    "planned_logical_model_calls": 40,
+    "qa_calls": 0,
+    "verifier_calls": 0,
+    "judge_calls": 0,
+    "postgresql_writes": 0,
+    "qdrant_writes": 0,
+    "ingestion": 0,
+    "reindex": 0,
+    "novel_validation_runs": 0,
+    "novel_holdout_runs": 0,
+    "protected_dataset_access": 0
+  },
+  "outcome_exposure_state": {
+    "D4_A2_V1_OUTCOME_EXPOSURE": "NOT_STARTED",
+    "analyzer_draws_completed": 0,
+    "downstream_cells_completed": 0,
+    "downstream_cells_failed": 0,
+    "evaluator_executed": false,
+    "scientific_verdict_computed": false
+  },
+  "post_exposure_mutation_accounting": {
+    "POST_EXPOSURE_QUESTION_MUTATIONS": 0,
+    "POST_EXPOSURE_MASK_MUTATIONS": 0,
+    "POST_EXPOSURE_REPLACEMENT_MUTATIONS": 0,
+    "POST_EXPOSURE_MODEL_MUTATIONS": 0,
+    "POST_EXPOSURE_METRIC_MUTATIONS": 0,
+    "POST_EXPOSURE_VERDICT_MUTATIONS": 0
+  },
+  "verdict_precedence": [
+    {
+      "level": 1,
+      "verdict": "INVALID / PROTOCOL_OR_SHARED_PLAN_CONSTRUCTION_FAILED",
+      "condition": "Wrong plan count, wrong pair count, analyzer called inside Phase R, BEFORE/AFTER plan mismatch, wrong mask, wrong K/selectivity, post-exposure mutation, protected dataset violation, or incomplete execution."
+    },
+    {
+      "level": 2,
+      "verdict": "FAIL / REPRODUCIBLE_TREATMENT_ASSOCIATED_PRE_RERANK_REGRESSION",
+      "condition": "PAIR_TREATMENT_REGRESSION_COUNT >= 2 at pre-rerank final-pool availability under shared analyzer plans."
+    },
+    {
+      "level": 3,
+      "verdict": "PARTIAL / POSSIBLE_TREATMENT_EFFECT_NOT_STABLE",
+      "condition": "PAIR_TREATMENT_REGRESSION_COUNT == 1 or mixed treatment regressions/recoveries make direction unstable."
+    },
+    {
+      "level": 4,
+      "verdict": "PARTIAL / FINAL_ONLY_RERANKER_INSTABILITY",
+      "condition": "PAIR_TREATMENT_REGRESSION_COUNT == 0, but final-evidence paired results exhibit reproducible AFTER disadvantage while pre-rerank availability remains equivalent."
+    },
+    {
+      "level": 5,
+      "verdict": "INCONCLUSIVE / ANALYZER_VARIABILITY_NOT_REPRODUCED",
+      "condition": "distinct_plan_signature_count == 1 and no meaningful plan-to-evidence variation occurs."
+    },
+    {
+      "level": 6,
+      "verdict": "PARTIAL / ANALYZER_VARIABILITY_OBSERVED_WITHOUT_EVIDENCE_SENSITIVITY",
+      "condition": "Multiple analyzer plans occur (distinct_plan_signature_count >= 2) but n022.e2 pre-rerank availability is stable across all frozen plans."
+    },
+    {
+      "level": 7,
+      "verdict": "PASS / ANALYZER_VARIANCE_CONFIRMED_WITHOUT_SHARED_PLAN_TREATMENT_REGRESSION",
+      "condition": "8/8 analyzer draws valid, 16/16 shared-plan downstream cells valid, ANALYZER_PLAN_VARIABILITY_OBSERVED = true, PLAN_TO_EVIDENCE_SENSITIVITY_OBSERVED = true, PAIR_TREATMENT_REGRESSION_COUNT = 0, no reproducible final-only AFTER disadvantage, direct Batch-1 mask effect on n022 = false, structured treatment not required to explain plan-driven losses."
+    }
+  ]
+}

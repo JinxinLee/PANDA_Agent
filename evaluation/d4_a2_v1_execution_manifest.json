@@ -1,0 +1,297 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint": "D4-A2-V1",
+  "stage": "d4_a2_v1_execution_manifest",
+  "created_at": "2026-09-03T15:30:00+02:00",
+  "starting_head": "9b007b5a895c245b40fa702996e07d45f47d2205",
+  "implementation_freeze_contract": {
+    "policy": "GIT_COMMIT_CONTAINING_THIS_ARTIFACT",
+    "description": "Implementation freeze identity is defined non-self-referentially as the Git commit containing this manifest (Commit A). The runtime execution runner captures git rev-parse HEAD dynamically before Phase P draw #1, verifies a clean worktree, and records that exact Commit A SHA in raw artifacts and closeout.",
+    "expected_commit_message": "D4-A2-V1 freeze paired stability validation",
+    "starting_head": "9b007b5a895c245b40fa702996e07d45f47d2205"
+  },
+  "d4_a2_r1_authority": "9b007b5a895c245b40fa702996e07d45f47d2205",
+  "case_id": "n022",
+  "question": "The restgas analysis determines the event vertex through a two-step POCA workflow. What does the first worker step leave behind for the second analysis step, and how is the fitted vertex fed into the reprocessing?",
+  "target_evidence_group": {
+    "group_id": "n022.e2",
+    "role": "step2_artifact_consumption",
+    "critical": true,
+    "path": "macro/target/poca_step2_analysis.py"
+  },
+  "exact_masks": {
+    "event_poca_handoff": {
+      "rule_id": "event_poca_handoff",
+      "suppressed_symbols": [
+        "macro/target/ana_dpm.C",
+        "macro/target/prod_aod_complete.C",
+        "POCA_VERTEX_FILE",
+        "PndPidCorrelator"
+      ],
+      "suppressed_paper_page_hints": {
+        "li_2026": [
+          131,
+          138
+        ]
+      }
+    },
+    "restgas_profile_workflow": {
+      "rule_id": "restgas_profile_workflow",
+      "suppressed_symbols": [
+        "pgenerators/Target/PndTargetGenerator.cxx",
+        "macro/target/prod_sim_hvmaps.C",
+        "macro/target/reco_complete.C",
+        "macro/target/ana_complete.C",
+        "macro/target/correction/efficiency_correction_2.C"
+      ],
+      "suppressed_paper_page_hints": {}
+    }
+  },
+  "preserved_components": {
+    "event_poca_handoff": {
+      "triggers": [
+        "event_poca",
+        "poca_vertex_file",
+        "second-pass pid",
+        "第二遍 pid"
+      ],
+      "repositories": [
+        "restgas_determination",
+        "pandaroot"
+      ],
+      "concepts": [
+        "event POCA handoff",
+        "event-aligned second-pass propagation"
+      ]
+    },
+    "restgas_profile_workflow": {
+      "triggers": [
+        "restgas_profile",
+        "restgas profile",
+        "corrected rho",
+        "修正后的 rho"
+      ],
+      "repositories": [
+        "restgas_determination",
+        "pandaroot"
+      ],
+      "concepts": [
+        "distributed target generation",
+        "longitudinal profile correction"
+      ]
+    }
+  },
+  "model_prompt_authority": {
+    "qa_generation_model_id": "gemini-3.8-flash",
+    "qa_embedding_model_id": "gemini-embedding-2",
+    "reranker_temperature": 0.0,
+    "vertex_location": "global",
+    "rerank_system_prompt": "src/panda_agent/prompts.py:RERANK_SYSTEM_PROMPT",
+    "query_analyzer_system_prompt": "src/panda_agent/prompts.py:QUERY_ANALYZER_SYSTEM_PROMPT",
+    "retry_policy": "VertexAIClient.generate_json transient retry loop"
+  },
+  "replacement_authority": {
+    "d1_d2_authority": "D2 governed resolution -> D1 accepted objects/relations/workflows.",
+    "selectivity_policy": "d3_5_selectivity_v2",
+    "selectivity_caps": {
+      "SELECTIVITY_CAP": 8,
+      "PER_ORIGIN_CAP": 4
+    },
+    "selected_admission_budget_k": 3,
+    "rerank_pool_size": 30,
+    "eligible_bridge_receipt_statuses": [
+      "BRIDGED_CANDIDATE_INJECTED",
+      "BRIDGED_CANDIDATE_RANKED_OUT"
+    ]
+  },
+  "phase_p_slots_8": [
+    {
+      "draw_index": 1,
+      "case_id": "n022",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "draw_index": 2,
+      "case_id": "n022",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "draw_index": 3,
+      "case_id": "n022",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "draw_index": 4,
+      "case_id": "n022",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "draw_index": 5,
+      "case_id": "n022",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "draw_index": 6,
+      "case_id": "n022",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "draw_index": 7,
+      "case_id": "n022",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "draw_index": 8,
+      "case_id": "n022",
+      "status": "NOT_EXECUTED"
+    }
+  ],
+  "phase_r_cells_16": [
+    {
+      "cell_index": 1,
+      "plan_index": 1,
+      "case_id": "n022",
+      "arm": "BEFORE_COMPAT",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "cell_index": 2,
+      "plan_index": 1,
+      "case_id": "n022",
+      "arm": "AFTER_BATCH1_REPLACEMENT",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "cell_index": 3,
+      "plan_index": 2,
+      "case_id": "n022",
+      "arm": "AFTER_BATCH1_REPLACEMENT",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "cell_index": 4,
+      "plan_index": 2,
+      "case_id": "n022",
+      "arm": "BEFORE_COMPAT",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "cell_index": 5,
+      "plan_index": 3,
+      "case_id": "n022",
+      "arm": "BEFORE_COMPAT",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "cell_index": 6,
+      "plan_index": 3,
+      "case_id": "n022",
+      "arm": "AFTER_BATCH1_REPLACEMENT",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "cell_index": 7,
+      "plan_index": 4,
+      "case_id": "n022",
+      "arm": "AFTER_BATCH1_REPLACEMENT",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "cell_index": 8,
+      "plan_index": 4,
+      "case_id": "n022",
+      "arm": "BEFORE_COMPAT",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "cell_index": 9,
+      "plan_index": 5,
+      "case_id": "n022",
+      "arm": "BEFORE_COMPAT",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "cell_index": 10,
+      "plan_index": 5,
+      "case_id": "n022",
+      "arm": "AFTER_BATCH1_REPLACEMENT",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "cell_index": 11,
+      "plan_index": 6,
+      "case_id": "n022",
+      "arm": "AFTER_BATCH1_REPLACEMENT",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "cell_index": 12,
+      "plan_index": 6,
+      "case_id": "n022",
+      "arm": "BEFORE_COMPAT",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "cell_index": 13,
+      "plan_index": 7,
+      "case_id": "n022",
+      "arm": "BEFORE_COMPAT",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "cell_index": 14,
+      "plan_index": 7,
+      "case_id": "n022",
+      "arm": "AFTER_BATCH1_REPLACEMENT",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "cell_index": 15,
+      "plan_index": 8,
+      "case_id": "n022",
+      "arm": "AFTER_BATCH1_REPLACEMENT",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "cell_index": 16,
+      "plan_index": 8,
+      "case_id": "n022",
+      "arm": "BEFORE_COMPAT",
+      "status": "NOT_EXECUTED"
+    }
+  ],
+  "outcome_exposure_state": {
+    "D4_A2_V1_OUTCOME_EXPOSURE": "NOT_STARTED",
+    "analyzer_draws_completed": 0,
+    "downstream_cells_completed": 0,
+    "downstream_cells_failed": 0,
+    "evaluator_executed": false,
+    "scientific_verdict_computed": false
+  },
+  "pre_exposure_accounting": {
+    "formal_cases": 1,
+    "analyzer_plan_draws_planned": 8,
+    "formal_downstream_cells_planned": 16,
+    "planned_analyzer_calls": 8,
+    "planned_embedding_calls": 16,
+    "planned_reranker_calls": 16,
+    "planned_logical_model_calls": 40,
+    "actual_analyzer_calls": 0,
+    "actual_embedding_calls": 0,
+    "actual_reranker_calls": 0,
+    "actual_logical_model_calls": 0,
+    "provider_attempts": 0,
+    "provider_retries": 0,
+    "token_usage": 0,
+    "qa_calls": 0,
+    "verifier_calls": 0,
+    "judge_calls": 0,
+    "postgresql_writes": 0,
+    "qdrant_writes": 0,
+    "ingestion": 0,
+    "reindex": 0,
+    "novel_validation_runs": 0,
+    "novel_holdout_runs": 0,
+    "protected_dataset_access": 0
+  }
+}
