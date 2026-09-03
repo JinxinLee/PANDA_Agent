@@ -1,0 +1,965 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint": "D4-A2-V2",
+  "stage": "d4_a2_v2_execution_manifest",
+  "created_at": "2026-09-03T23:55:00+02:00",
+  "starting_head": "6bc10872bee9d00a7ea710f55353c3113756dbb2",
+  "implementation_freeze_contract": {
+    "policy": "GIT_COMMIT_CONTAINING_THIS_ARTIFACT",
+    "description": "Implementation freeze identity is defined non-self-referentially as the Git commit containing this manifest (Commit A). The runtime execution runner captures git rev-parse HEAD dynamically before formal Phase P acquisition, verifies a clean worktree on protected paths, and records that exact Commit A SHA in all downstream artifacts.",
+    "expected_commit_message": "D4-A2-V2 freeze controlled shared-plan validation",
+    "starting_head": "6bc10872bee9d00a7ea710f55353c3113756dbb2"
+  },
+  "plan_freeze_gate_contract": {
+    "policy": "HARD_COMMIT_B_PLAN_FREEZE_GATE",
+    "description": "Before any Phase R provider exposure, mechanically requires evaluation/d4_a2_v2_raw_plans.json to be present in Git HEAD, clean in both index and worktree, and committed after Commit A as the dedicated plan-freeze boundary. Validates exactly 16 unique case plans in exact order, all completed and canonical, with Phase P accounting complete and Phase R/evaluator false. Captures actual Commit B plan-freeze commit SHA and preserves true Commit A SHA in Phase R provenance.",
+    "raw_plans_path": "evaluation/d4_a2_v2_raw_plans.json"
+  },
+  "evaluator_boundary_contract": {
+    "policy": "FAIL_CLOSED_UNTIL_COMMIT_D",
+    "description": "Commit D is not authorized now. Evaluator execution is unavailable until separately authorized Commit D after Commit C raw freeze. Runner evaluator invocation fails closed with zero file writes."
+  },
+  "evaluation_tier": "T2",
+  "mode": "controlled_shared_plan_retrieval",
+  "exact_masks": {
+    "event_poca_handoff": {
+      "rule_id": "event_poca_handoff",
+      "suppressed_symbols": [
+        "macro/target/ana_dpm.C",
+        "macro/target/prod_aod_complete.C",
+        "POCA_VERTEX_FILE",
+        "PndPidCorrelator"
+      ],
+      "suppressed_paper_page_hints": {
+        "li_2026": [
+          131,
+          138
+        ]
+      }
+    },
+    "restgas_profile_workflow": {
+      "rule_id": "restgas_profile_workflow",
+      "suppressed_symbols": [
+        "pgenerators/Target/PndTargetGenerator.cxx",
+        "macro/target/prod_sim_hvmaps.C",
+        "macro/target/reco_complete.C",
+        "macro/target/ana_complete.C",
+        "macro/target/correction/efficiency_correction_2.C"
+      ],
+      "suppressed_paper_page_hints": {}
+    }
+  },
+  "preserved_components": {
+    "event_poca_handoff": {
+      "triggers": [
+        "event_poca",
+        "poca_vertex_file",
+        "second-pass pid",
+        "第二遍 pid"
+      ],
+      "repositories": [
+        "restgas_determination",
+        "pandaroot"
+      ],
+      "concepts": [
+        "event POCA handoff",
+        "event-aligned second-pass propagation"
+      ]
+    },
+    "restgas_profile_workflow": {
+      "triggers": [
+        "restgas_profile",
+        "restgas profile",
+        "corrected rho",
+        "修正后的 rho"
+      ],
+      "repositories": [
+        "restgas_determination",
+        "pandaroot"
+      ],
+      "concepts": [
+        "distributed target generation",
+        "longitudinal profile correction"
+      ]
+    }
+  },
+  "model_prompt_authority": {
+    "qa_generation_model_id": "gemini-3.8-flash",
+    "qa_embedding_model_id": "gemini-embedding-2",
+    "reranker_temperature": 0.0,
+    "vertex_location": "global",
+    "rerank_system_prompt": "src/panda_agent/prompts.py:RERANK_SYSTEM_PROMPT",
+    "query_analyzer_system_prompt": "src/panda_agent/prompts.py:QUERY_ANALYZER_SYSTEM_PROMPT"
+  },
+  "replacement_authority": {
+    "selectivity_caps": {
+      "SELECTIVITY_CAP": 8,
+      "PER_ORIGIN_CAP": 4,
+      "policy": "d3_5_selectivity_v2"
+    },
+    "selected_admission_budget_k": 3,
+    "rerank_pool_size": 30,
+    "rrf_weights": {
+      "exact": 2.0,
+      "dense": 1.0,
+      "sparse": 1.0,
+      "paper": 1.15,
+      "workflow": 1.2,
+      "graph": 0.8
+    }
+  },
+  "arms": {
+    "BEFORE_COMPAT": {
+      "arm": "BEFORE_COMPAT",
+      "description": "Production query expansions with all Batch-1 fixed locators active, generic D3.5 structured replacement OFF, reserved admission OFF (budget K=0).",
+      "in_memory_mask_active": false,
+      "structured_replacement_active": false,
+      "admission_budget_k": 0
+    },
+    "AFTER_BATCH1_REPLACEMENT": {
+      "arm": "AFTER_BATCH1_REPLACEMENT",
+      "description": "In-memory component mask suppressing Batch-1 fixed locators while preserving triggers, repos, and concepts; generic governed D3.5 structured replacement ON; deterministic selectivity v2 (caps 8/4); K=3 bounded reserved rerank admission; rerank pool 30.",
+      "in_memory_mask_active": true,
+      "structured_replacement_active": true,
+      "admission_budget_k": 3,
+      "rerank_pool_size": 30,
+      "selectivity_caps": {
+        "SELECTIVITY_CAP": 8,
+        "PER_ORIGIN_CAP": 4
+      }
+    }
+  },
+  "cases": [
+    {
+      "case_id": "g029",
+      "dataset": "Gold v2.6 dev",
+      "expected_status": "answered",
+      "query": "Where is PndLmdCombinedDataReader defined and what data boundary does it implement?",
+      "intent": "api",
+      "required_evidence_groups": [
+        {
+          "group_id": "g029.e1",
+          "role": "pnd_lmd_combined_data_reader_implementation",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "case_id": "n021",
+      "dataset": "novel_dev",
+      "expected_status": "answered",
+      "query": "I want to trace the LMD workflow across PandaRoot and LuminosityFit. Where does PandaRoot implement the LMD simulation, digitization, and reconstruction side, and which LuminosityFit scripts orchestrate simulation/reconstruction and then the luminosity fit?",
+      "intent": "usage",
+      "required_evidence_groups": [
+        {
+          "group_id": "n021.e1",
+          "role": "luminosityfit_workflow_scripts",
+          "critical": true
+        },
+        {
+          "group_id": "n021.e2",
+          "role": "pandaroot_lmd_implementation_ownership",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "case_id": "g025",
+      "dataset": "Gold v2.6 dev",
+      "expected_status": "insufficient_evidence",
+      "query": "What exact SHA-256 checksum will the next runLmdFit output ROOT file have?",
+      "intent": "usage",
+      "required_evidence_groups": [
+        {
+          "group_id": "g025.e1",
+          "role": "run_lmd_fit_implementation",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "case_id": "g036",
+      "dataset": "Gold v2.6 dev",
+      "expected_status": "answered",
+      "query": "Which macro produces event_poca?",
+      "intent": "api",
+      "required_evidence_groups": [
+        {
+          "group_id": "g036.e1",
+          "role": "ana_dpm_implementation",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "case_id": "n022",
+      "dataset": "novel_dev",
+      "expected_status": "answered",
+      "query": "The restgas analysis determines the event vertex through a two-step POCA workflow. What does the first worker step leave behind for the second analysis step, and how is the fitted vertex fed into the reprocessing?",
+      "intent": "data_flow",
+      "required_evidence_groups": [
+        {
+          "group_id": "n022.e1",
+          "role": "pass1_artifact_production",
+          "critical": true
+        },
+        {
+          "group_id": "n022.e2",
+          "role": "step2_artifact_consumption",
+          "critical": true
+        },
+        {
+          "group_id": "n022.e3",
+          "role": "two_pass_workflow_semantics",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "case_id": "g020",
+      "dataset": "Gold v2.6 dev",
+      "expected_status": "answered",
+      "query": "How is the restgas two-pass reconstruction workflow run?",
+      "intent": "usage",
+      "required_evidence_groups": [
+        {
+          "group_id": "g020.e1",
+          "role": "poca_workflow_documentation",
+          "critical": true
+        },
+        {
+          "group_id": "g020.e2",
+          "role": "runall_prod_hvmaps_implementation",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "case_id": "n006",
+      "dataset": "novel_dev",
+      "expected_status": "answered",
+      "query": "My analysis chain produces sim, digi, reco and pid files and I keep concatenating the stage names by hand. Does PandaRoot ship a helper that derives all these file names from the simulation file name, and which stage extensions does it define?",
+      "intent": "api",
+      "required_evidence_groups": [
+        {
+          "group_id": "n006.e1",
+          "role": "filename_helper_definition",
+          "critical": true
+        },
+        {
+          "group_id": "n006.e2",
+          "role": "filename_suffix_literals",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "case_id": "g041",
+      "dataset": "Gold v2.6 dev",
+      "expected_status": "insufficient_evidence",
+      "query": "What is the exact signature of PndPidCorrelator::SetMagicRestgasSeed?",
+      "intent": "api",
+      "required_evidence_groups": [
+        {
+          "group_id": "g041.e1",
+          "role": "pnd_pid_correlator_interface",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "case_id": "n014",
+      "dataset": "novel_dev",
+      "expected_status": "answered",
+      "query": "LuminosityFit has a model_framework directory and a native model/ directory. What does the repository explicitly say model_framework is, and what role does model/PndLmdModelFactory expose?",
+      "intent": "module_structure",
+      "required_evidence_groups": [
+        {
+          "group_id": "n014.e1",
+          "role": "vendored_framework_status",
+          "critical": true
+        },
+        {
+          "group_id": "n014.e2",
+          "role": "native_model_layer",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "case_id": "g060",
+      "dataset": "Gold v2.6 dev",
+      "expected_status": "answered",
+      "query": "How is beam-divergence smearing implemented in LuminosityFit?",
+      "intent": "algorithm_implementation",
+      "required_evidence_groups": [
+        {
+          "group_id": "g060.e1",
+          "role": "pflueger_2017_page_74_theory",
+          "critical": true
+        },
+        {
+          "group_id": "g060.e2",
+          "role": "pnd_lmd_divergence_smearing_model2_d_implementation",
+          "critical": true
+        },
+        {
+          "group_id": "g060.e3",
+          "role": "generate2_dmodel_implementation",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "case_id": "g052",
+      "dataset": "Gold v2.6 dev",
+      "expected_status": "answered",
+      "query": "Why does a reconstructed restgas profile feed back into effective acceptance?",
+      "intent": "algorithm_theory",
+      "required_evidence_groups": [
+        {
+          "group_id": "g052.e1",
+          "role": "li_2026_page_141_theory",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "case_id": "g055",
+      "dataset": "Gold v2.6 dev",
+      "expected_status": "answered",
+      "query": "How should angular acceptance be distinguished from longitudinal efficiency?",
+      "intent": "algorithm_theory",
+      "required_evidence_groups": [
+        {
+          "group_id": "g055.e1",
+          "role": "pflueger_2017_page_57_theory",
+          "critical": true
+        },
+        {
+          "group_id": "g055.e2",
+          "role": "li_2026_page_142_theory",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "case_id": "n003",
+      "dataset": "novel_dev",
+      "expected_status": "answered",
+      "query": "For an acceptance scan I need single particles whose momentum and polar angle advance in fixed steps from one event to the next. Which PandaRoot event generator supports this, and how is the stepping configured?",
+      "intent": "usage",
+      "required_evidence_groups": [
+        {
+          "group_id": "n003.e1",
+          "role": "fixed_step_generator_definition",
+          "critical": true
+        },
+        {
+          "group_id": "n003.e2",
+          "role": "per_event_step_advancement",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "case_id": "g021",
+      "dataset": "Gold v2.6 dev",
+      "expected_status": "answered",
+      "query": "How is restgas_profile supplied to distributed-target simulation?",
+      "intent": "usage",
+      "required_evidence_groups": [
+        {
+          "group_id": "g021.e1",
+          "role": "prod_sim_hvmaps_implementation",
+          "critical": true
+        },
+        {
+          "group_id": "g021.e2",
+          "role": "pnd_target_generator_implementation",
+          "critical": false
+        }
+      ]
+    },
+    {
+      "case_id": "n004",
+      "dataset": "novel_dev",
+      "expected_status": "answered",
+      "query": "While debugging a running PandaRoot macro I want every log message to carry the severity and the file:line:function where it was emitted. How do I configure that, and what other logging controls does the framework documentation describe?",
+      "intent": "usage",
+      "required_evidence_groups": [
+        {
+          "group_id": "n004.e1",
+          "role": "fair_logger_documentation",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "case_id": "g007",
+      "dataset": "Gold v2.6 dev",
+      "expected_status": "insufficient_evidence",
+      "query": "What exact minimum GPU memory is required to install PandaRoot?",
+      "intent": "installation",
+      "required_evidence_groups": [
+        {
+          "group_id": "g007.e1",
+          "role": "installation_documentation",
+          "critical": true
+        }
+      ]
+    }
+  ],
+  "phase_p_slots_16": [
+    {
+      "slot_index": 1,
+      "case_id": "g029",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_signature": null,
+      "attempts": 0,
+      "error": null
+    },
+    {
+      "slot_index": 2,
+      "case_id": "n021",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_signature": null,
+      "attempts": 0,
+      "error": null
+    },
+    {
+      "slot_index": 3,
+      "case_id": "g025",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_signature": null,
+      "attempts": 0,
+      "error": null
+    },
+    {
+      "slot_index": 4,
+      "case_id": "g036",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_signature": null,
+      "attempts": 0,
+      "error": null
+    },
+    {
+      "slot_index": 5,
+      "case_id": "n022",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_signature": null,
+      "attempts": 0,
+      "error": null
+    },
+    {
+      "slot_index": 6,
+      "case_id": "g020",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_signature": null,
+      "attempts": 0,
+      "error": null
+    },
+    {
+      "slot_index": 7,
+      "case_id": "n006",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_signature": null,
+      "attempts": 0,
+      "error": null
+    },
+    {
+      "slot_index": 8,
+      "case_id": "g041",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_signature": null,
+      "attempts": 0,
+      "error": null
+    },
+    {
+      "slot_index": 9,
+      "case_id": "n014",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_signature": null,
+      "attempts": 0,
+      "error": null
+    },
+    {
+      "slot_index": 10,
+      "case_id": "g060",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_signature": null,
+      "attempts": 0,
+      "error": null
+    },
+    {
+      "slot_index": 11,
+      "case_id": "g052",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_signature": null,
+      "attempts": 0,
+      "error": null
+    },
+    {
+      "slot_index": 12,
+      "case_id": "g055",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_signature": null,
+      "attempts": 0,
+      "error": null
+    },
+    {
+      "slot_index": 13,
+      "case_id": "n003",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_signature": null,
+      "attempts": 0,
+      "error": null
+    },
+    {
+      "slot_index": 14,
+      "case_id": "g021",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_signature": null,
+      "attempts": 0,
+      "error": null
+    },
+    {
+      "slot_index": 15,
+      "case_id": "n004",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_signature": null,
+      "attempts": 0,
+      "error": null
+    },
+    {
+      "slot_index": 16,
+      "case_id": "g007",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_signature": null,
+      "attempts": 0,
+      "error": null
+    }
+  ],
+  "phase_r_cells_32": [
+    {
+      "cell_index": 1,
+      "case_id": "g029",
+      "dataset": "Gold v2.6 dev",
+      "arm": "BEFORE_COMPAT",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_equality_verified": null,
+      "error": null
+    },
+    {
+      "cell_index": 2,
+      "case_id": "g029",
+      "dataset": "Gold v2.6 dev",
+      "arm": "AFTER_BATCH1_REPLACEMENT",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_equality_verified": null,
+      "error": null
+    },
+    {
+      "cell_index": 3,
+      "case_id": "n021",
+      "dataset": "novel_dev",
+      "arm": "AFTER_BATCH1_REPLACEMENT",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_equality_verified": null,
+      "error": null
+    },
+    {
+      "cell_index": 4,
+      "case_id": "n021",
+      "dataset": "novel_dev",
+      "arm": "BEFORE_COMPAT",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_equality_verified": null,
+      "error": null
+    },
+    {
+      "cell_index": 5,
+      "case_id": "g025",
+      "dataset": "Gold v2.6 dev",
+      "arm": "BEFORE_COMPAT",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_equality_verified": null,
+      "error": null
+    },
+    {
+      "cell_index": 6,
+      "case_id": "g025",
+      "dataset": "Gold v2.6 dev",
+      "arm": "AFTER_BATCH1_REPLACEMENT",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_equality_verified": null,
+      "error": null
+    },
+    {
+      "cell_index": 7,
+      "case_id": "g036",
+      "dataset": "Gold v2.6 dev",
+      "arm": "AFTER_BATCH1_REPLACEMENT",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_equality_verified": null,
+      "error": null
+    },
+    {
+      "cell_index": 8,
+      "case_id": "g036",
+      "dataset": "Gold v2.6 dev",
+      "arm": "BEFORE_COMPAT",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_equality_verified": null,
+      "error": null
+    },
+    {
+      "cell_index": 9,
+      "case_id": "n022",
+      "dataset": "novel_dev",
+      "arm": "BEFORE_COMPAT",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_equality_verified": null,
+      "error": null
+    },
+    {
+      "cell_index": 10,
+      "case_id": "n022",
+      "dataset": "novel_dev",
+      "arm": "AFTER_BATCH1_REPLACEMENT",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_equality_verified": null,
+      "error": null
+    },
+    {
+      "cell_index": 11,
+      "case_id": "g020",
+      "dataset": "Gold v2.6 dev",
+      "arm": "AFTER_BATCH1_REPLACEMENT",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_equality_verified": null,
+      "error": null
+    },
+    {
+      "cell_index": 12,
+      "case_id": "g020",
+      "dataset": "Gold v2.6 dev",
+      "arm": "BEFORE_COMPAT",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_equality_verified": null,
+      "error": null
+    },
+    {
+      "cell_index": 13,
+      "case_id": "n006",
+      "dataset": "novel_dev",
+      "arm": "BEFORE_COMPAT",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_equality_verified": null,
+      "error": null
+    },
+    {
+      "cell_index": 14,
+      "case_id": "n006",
+      "dataset": "novel_dev",
+      "arm": "AFTER_BATCH1_REPLACEMENT",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_equality_verified": null,
+      "error": null
+    },
+    {
+      "cell_index": 15,
+      "case_id": "g041",
+      "dataset": "Gold v2.6 dev",
+      "arm": "AFTER_BATCH1_REPLACEMENT",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_equality_verified": null,
+      "error": null
+    },
+    {
+      "cell_index": 16,
+      "case_id": "g041",
+      "dataset": "Gold v2.6 dev",
+      "arm": "BEFORE_COMPAT",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_equality_verified": null,
+      "error": null
+    },
+    {
+      "cell_index": 17,
+      "case_id": "n014",
+      "dataset": "novel_dev",
+      "arm": "BEFORE_COMPAT",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_equality_verified": null,
+      "error": null
+    },
+    {
+      "cell_index": 18,
+      "case_id": "n014",
+      "dataset": "novel_dev",
+      "arm": "AFTER_BATCH1_REPLACEMENT",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_equality_verified": null,
+      "error": null
+    },
+    {
+      "cell_index": 19,
+      "case_id": "g060",
+      "dataset": "Gold v2.6 dev",
+      "arm": "AFTER_BATCH1_REPLACEMENT",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_equality_verified": null,
+      "error": null
+    },
+    {
+      "cell_index": 20,
+      "case_id": "g060",
+      "dataset": "Gold v2.6 dev",
+      "arm": "BEFORE_COMPAT",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_equality_verified": null,
+      "error": null
+    },
+    {
+      "cell_index": 21,
+      "case_id": "g052",
+      "dataset": "Gold v2.6 dev",
+      "arm": "BEFORE_COMPAT",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_equality_verified": null,
+      "error": null
+    },
+    {
+      "cell_index": 22,
+      "case_id": "g052",
+      "dataset": "Gold v2.6 dev",
+      "arm": "AFTER_BATCH1_REPLACEMENT",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_equality_verified": null,
+      "error": null
+    },
+    {
+      "cell_index": 23,
+      "case_id": "g055",
+      "dataset": "Gold v2.6 dev",
+      "arm": "AFTER_BATCH1_REPLACEMENT",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_equality_verified": null,
+      "error": null
+    },
+    {
+      "cell_index": 24,
+      "case_id": "g055",
+      "dataset": "Gold v2.6 dev",
+      "arm": "BEFORE_COMPAT",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_equality_verified": null,
+      "error": null
+    },
+    {
+      "cell_index": 25,
+      "case_id": "n003",
+      "dataset": "novel_dev",
+      "arm": "BEFORE_COMPAT",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_equality_verified": null,
+      "error": null
+    },
+    {
+      "cell_index": 26,
+      "case_id": "n003",
+      "dataset": "novel_dev",
+      "arm": "AFTER_BATCH1_REPLACEMENT",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_equality_verified": null,
+      "error": null
+    },
+    {
+      "cell_index": 27,
+      "case_id": "g021",
+      "dataset": "Gold v2.6 dev",
+      "arm": "AFTER_BATCH1_REPLACEMENT",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_equality_verified": null,
+      "error": null
+    },
+    {
+      "cell_index": 28,
+      "case_id": "g021",
+      "dataset": "Gold v2.6 dev",
+      "arm": "BEFORE_COMPAT",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_equality_verified": null,
+      "error": null
+    },
+    {
+      "cell_index": 29,
+      "case_id": "n004",
+      "dataset": "novel_dev",
+      "arm": "BEFORE_COMPAT",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_equality_verified": null,
+      "error": null
+    },
+    {
+      "cell_index": 30,
+      "case_id": "n004",
+      "dataset": "novel_dev",
+      "arm": "AFTER_BATCH1_REPLACEMENT",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_equality_verified": null,
+      "error": null
+    },
+    {
+      "cell_index": 31,
+      "case_id": "g007",
+      "dataset": "Gold v2.6 dev",
+      "arm": "AFTER_BATCH1_REPLACEMENT",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_equality_verified": null,
+      "error": null
+    },
+    {
+      "cell_index": 32,
+      "case_id": "g007",
+      "dataset": "Gold v2.6 dev",
+      "arm": "BEFORE_COMPAT",
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "completed_at": null,
+      "plan_equality_verified": null,
+      "error": null
+    }
+  ],
+  "outcome_exposure_state": {
+    "D4_A2_V2_OUTCOME_EXPOSURE": "NOT_STARTED",
+    "phase_p_slots_total": 16,
+    "phase_p_slots_completed": 0,
+    "phase_p_slots_failed": 0,
+    "phase_r_cells_total": 32,
+    "phase_r_cells_completed": 0,
+    "phase_r_cells_failed": 0,
+    "evaluator_executed": false,
+    "scientific_verdict_computed": false
+  },
+  "pre_exposure_accounting": {
+    "FORMAL_CASES": 16,
+    "PHASE_P_PLANS_ACQUIRED": 0,
+    "PHASE_R_CELLS_COMPLETED": 0,
+    "PHASE_R_CELLS_FAILED": 0,
+    "ANALYZER_PROVIDER_CALLS": 0,
+    "EMBEDDING_PROVIDER_CALLS": 0,
+    "RERANKER_PROVIDER_CALLS": 0,
+    "TOTAL_LOGICAL_MODEL_CALLS": 0,
+    "PROVIDER_INTERNAL_ATTEMPTS": 0,
+    "TOTAL_TOKEN_USAGE": 0,
+    "QA_CALLS": 0,
+    "VERIFIER_CALLS": 0,
+    "JUDGE_CALLS": 0,
+    "POSTGRESQL_WRITES": 0,
+    "QDRANT_WRITES": 0,
+    "INGESTION_RUNS": 0,
+    "REINDEX_RUNS": 0,
+    "NOVEL_VALIDATION_RUNS": 0,
+    "NOVEL_HOLDOUT_RUNS": 0,
+    "PROTECTED_DATASET_ACCESS": 0
+  },
+  "production_activation": false,
+  "first_batch_runtime_migration": "BLOCKED",
+  "d4_a3": "NOT_STARTED / BLOCKED"
+}
