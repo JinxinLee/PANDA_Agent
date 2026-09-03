@@ -1,0 +1,173 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint": "D4-A2-V1-R1",
+  "stage": "d4_a2_v1_r1_historical_contrast_shared_plan_replay_preregistration",
+  "title": "D4-A2-V1-R1 Historical Contrast Shared-Plan Replay Preregistration",
+  "created_at": "2026-09-03T19:20:00+02:00",
+  "starting_head": "a85a79efaf90ee341787fe97b1dc29a7c4e7637c",
+  "implementation_freeze_contract": {
+    "policy": "GIT_COMMIT_CONTAINING_THIS_ARTIFACT",
+    "description": "Implementation freeze identity is defined non-self-referentially as the Git commit containing this preregistration (Commit A). The runtime execution runner captures git rev-parse HEAD dynamically before formal Cell #1, verifies a clean worktree, and records that exact Commit A SHA in raw artifacts and closeout.",
+    "expected_commit_message": "D4-A2-V1-R1 freeze historical contrast replay",
+    "starting_head": "a85a79efaf90ee341787fe97b1dc29a7c4e7637c"
+  },
+  "historical_d4_a2_authority": {
+    "raw_artifact": "evaluation/d4_a2_raw_before_after_results.json",
+    "historical_slots": {
+      "slot_9": {
+        "slot_index": 9,
+        "arm": "BEFORE_COMPAT",
+        "historical_plan_id": "HIST_A2_BEFORE_PLAN",
+        "phenotype": "R1_FEATURE_COMPLETE"
+      },
+      "slot_10": {
+        "slot_index": 10,
+        "arm": "AFTER_BATCH1_REPLACEMENT",
+        "historical_plan_id": "HIST_A2_AFTER_PLAN",
+        "phenotype": "R1_FEATURE_ABSENT"
+      }
+    }
+  },
+  "d4_a2_r1_authority": {
+    "checkpoint": "D4-A2-R1",
+    "verdict": "PASS / BENCHMARK_CORRECTION_AND_REGRESSION_ATTRIBUTION_COMPLETE",
+    "attribution": "ORDINARY_FRESH_RUN_VARIANCE_DOMINATED",
+    "first_divergence": "QUERY_ANALYZER / RETRIEVAL_PLAN",
+    "result_artifact": "evaluation/d4_a2_r1_critical_regression_diagnosis.json",
+    "report_artifact": "evaluation/D4_A2_R1_CRITICAL_REGRESSION_DIAGNOSIS_AND_REPAIR_DECISION.md"
+  },
+  "d4_a2_v1_authority": {
+    "checkpoint": "D4-A2-V1",
+    "verdict": "PARTIAL / ANALYZER_VARIABILITY_OBSERVED_WITHOUT_EVIDENCE_SENSITIVITY",
+    "result_artifact": "evaluation/d4_a2_v1_result.json",
+    "report_artifact": "evaluation/D4_A2_V1_PAIRED_RETRIEVAL_STABILITY_AND_VARIANCE_ATTRIBUTION_VALIDATION.md"
+  },
+  "scientific_scope": {
+    "case_id": "n022",
+    "split": "novel_dev",
+    "intent": "data_flow",
+    "query": "The restgas analysis determines the event vertex through a two-step POCA workflow. What does the first worker step leave behind for the second analysis step, and how is the fitted vertex fed into the reprocessing?",
+    "target_evidence_group": {
+      "group_id": "n022.e2",
+      "role": "step2_artifact_consumption",
+      "critical": true,
+      "source_id": "restgas_determination",
+      "path": "macro/target/poca_step2_analysis.py"
+    },
+    "single_case_only": true,
+    "excluded_cases": "No other novel_dev cases, no Gold cases, no novel_validation, no holdout."
+  },
+  "crossover_2x2_specification": {
+    "plans_count": 2,
+    "arms_count": 2,
+    "cells_total": 4,
+    "schedule": [
+      {
+        "cell_index": 1,
+        "historical_plan_id": "HIST_A2_BEFORE_PLAN",
+        "source_historical_slot": 9,
+        "arm": "BEFORE_COMPAT"
+      },
+      {
+        "cell_index": 2,
+        "historical_plan_id": "HIST_A2_BEFORE_PLAN",
+        "source_historical_slot": 9,
+        "arm": "AFTER_BATCH1_REPLACEMENT"
+      },
+      {
+        "cell_index": 3,
+        "historical_plan_id": "HIST_A2_AFTER_PLAN",
+        "source_historical_slot": 10,
+        "arm": "AFTER_BATCH1_REPLACEMENT"
+      },
+      {
+        "cell_index": 4,
+        "historical_plan_id": "HIST_A2_AFTER_PLAN",
+        "source_historical_slot": 10,
+        "arm": "BEFORE_COMPAT"
+      }
+    ],
+    "shared_plan_adapter_guarantees": {
+      "analyzer_provider_calls": 0,
+      "plan_identity": "actual_plan_used == frozen_plan (verified by canonical model_dump equality)",
+      "adapter_lifecycle": "Restores Retriever.analyze on cell completion or exception; fail-closed on error."
+    },
+    "arm_definitions": {
+      "BEFORE_COMPAT": "Production query expansions with Batch-1 fixed locators active, generic D3.5 structured replacement OFF, reserved admission OFF.",
+      "AFTER_BATCH1_REPLACEMENT": "Exact in-memory Batch-1 component mask active, generic D3.5 structured replacement ON, d3_5_selectivity_v2 ON (caps 8/4), K=3 reserved admission, rerank pool size = 30."
+    },
+    "pipeline_constants": {
+      "selectivity_cap": 8,
+      "per_origin_cap": 4,
+      "admission_budget_k": 3,
+      "rerank_pool_size": 30
+    }
+  },
+  "planned_formal_call_accounting": {
+    "formal_cases": 1,
+    "historical_plans": 2,
+    "downstream_arms": 2,
+    "formal_cells_planned": 4,
+    "planned_analyzer_calls": 0,
+    "planned_embedding_calls": 4,
+    "planned_reranker_calls": 4,
+    "planned_logical_model_calls": 8,
+    "qa_calls": 0,
+    "verifier_calls": 0,
+    "judge_calls": 0,
+    "postgresql_writes": 0,
+    "qdrant_writes": 0,
+    "ingestion": 0,
+    "reindex": 0,
+    "novel_validation_runs": 0,
+    "novel_holdout_runs": 0,
+    "protected_dataset_access": 0
+  },
+  "outcome_exposure_state": {
+    "D4_A2_V1_R1_OUTCOME_EXPOSURE": "NOT_STARTED",
+    "downstream_cells_completed": 0,
+    "downstream_cells_failed": 0,
+    "evaluator_executed": false,
+    "scientific_verdict_computed": false
+  },
+  "post_exposure_mutation_accounting": {
+    "POST_EXPOSURE_QUESTION_MUTATIONS": 0,
+    "POST_EXPOSURE_MASK_MUTATIONS": 0,
+    "POST_EXPOSURE_REPLACEMENT_MUTATIONS": 0,
+    "POST_EXPOSURE_MODEL_MUTATIONS": 0,
+    "POST_EXPOSURE_METRIC_MUTATIONS": 0,
+    "POST_EXPOSURE_VERDICT_MUTATIONS": 0
+  },
+  "verdict_precedence": [
+    {
+      "level": 1,
+      "verdict": "INVALID / PROTOCOL_OR_HISTORICAL_PLAN_REPLAY_FAILED",
+      "condition": "Wrong historical plans, ambiguous source cells, plan injection mismatch, Analyzer provider call > 0, wrong cell matrix, wrong mask, post-exposure mutation, protected-data violation, or incomplete execution."
+    },
+    {
+      "level": 2,
+      "verdict": "FAIL / SHARED_PLAN_TREATMENT_REGRESSION_REPRODUCED",
+      "condition": "PAIR_TREATMENT_REGRESSION_COUNT >= 1 at pre-rerank availability. Any T->F pre-rerank treatment pair is Level 2 FAIL."
+    },
+    {
+      "level": 3,
+      "verdict": "PARTIAL / FINAL_ONLY_RERANKER_INSTABILITY",
+      "condition": "PAIR_TREATMENT_REGRESSION_COUNT = 0 but one or more final-only AFTER regressions occur (FINAL_ONLY_REGRESSION_COUNT >= 1)."
+    },
+    {
+      "level": 4,
+      "verdict": "INCONCLUSIVE / HISTORICAL_BEFORE_REFERENCE_PLAN_NOT_REPRODUCED",
+      "condition": "HIST_A2_BEFORE_PLAN x BEFORE_COMPAT does not retain n022.e2 in the pre-rerank pool."
+    },
+    {
+      "level": 5,
+      "verdict": "INCONCLUSIVE / HISTORICAL_PLAN_SENSITIVITY_NOT_REPRODUCED",
+      "condition": "HIST_A2_BEFORE_PLAN x BEFORE = retained AND HIST_A2_AFTER_PLAN x BEFORE = retained, or otherwise frozen historical plans fail to create expected pre-rerank contrast under common compatibility path."
+    },
+    {
+      "level": 6,
+      "verdict": "PASS / HISTORICAL_PLAN_SENSITIVITY_REPRODUCED_WITHOUT_TREATMENT_REGRESSION",
+      "condition": "4/4 valid cells, ANALYZER_CALLS = 0, HIST_A2_BEFORE_PLAN x BEFORE retains n022.e2, HIST_A2_AFTER_PLAN x BEFORE loses n022.e2, HISTORICAL_PLAN_SENSITIVITY_REPRODUCED = true, PAIR_TREATMENT_REGRESSION_COUNT = 0, FINAL_ONLY_REGRESSION_COUNT = 0, Batch-1 direct match = false."
+    }
+  ]
+}
