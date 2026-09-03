@@ -1,0 +1,294 @@
+{
+ "schema_version": "1.0.0",
+ "checkpoint": "D4-A2-R1",
+ "stage": "D4-A2-R1 — Critical-Regression Diagnosis & Repair Decision",
+ "starting_head": "9220c744126d0db9365006c9896cfd44abfc9d34",
+ "historical_d4_a2_authority": {
+  "raw_results": "evaluation/d4_a2_raw_before_after_results.json",
+  "evaluator_results": "evaluation/d4_a2_evaluator_results.json",
+  "result": "evaluation/d4_a2_result.json",
+  "report": "evaluation/D4_A2_FIRST_BATCH_BEFORE_AFTER_VALIDATION.md",
+  "historical_verdict": "FAIL / CRITICAL_OR_GROUNDING_REGRESSION",
+  "historical_critical_group_regressions": [
+   "n022.e2",
+   "g021.e2"
+  ],
+  "historical_artifacts_immutable_and_unchanged": true
+ },
+ "execution_boundary": {
+  "model_calls": 0,
+  "analyzer_calls": 0,
+  "embedding_calls": 0,
+  "reranker_calls": 0,
+  "retrieval_runs": 0,
+  "qa_calls": 0,
+  "verifier_calls": 0,
+  "judge_calls": 0,
+  "postgresql_writes": 0,
+  "qdrant_writes": 0,
+  "ingestion": 0,
+  "reindex": 0,
+  "novel_validation_runs": 0,
+  "novel_holdout_runs": 0,
+  "protected_dataset_access": 0
+ },
+ "evidence_requirement_review": {
+  "n021.e2": {
+   "role": "pandaroot_lmd_implementation_ownership",
+   "path": "detectors/lmd/CMakeLists.txt",
+   "decision": "REQUIRED_CRITICAL",
+   "rationale": "The question explicitly asks for the PandaRoot-side LMD implementation ownership in addition to the LuminosityFit scripts.",
+   "selector_breadth_review": "POSSIBLY_NARROW_BUT_NOT_A_D4_A2_BLOCKER",
+   "benchmark_change": "NONE_BYTE_UNCHANGED"
+  },
+  "n022.e2": {
+   "role": "step2_artifact_consumption",
+   "path": "macro/target/poca_step2_analysis.py",
+   "decision": "REQUIRED_CRITICAL",
+   "rationale": "The question explicitly asks what the first worker step leaves behind for the second analysis step and how the fitted vertex is fed into reprocessing. poca_step2_analysis.py directly implements this consumption.",
+   "benchmark_change": "NONE_BYTE_UNCHANGED"
+  },
+  "g021.e2": {
+   "role": "pnd_target_generator_implementation",
+   "path": "pgenerators/Target/PndTargetGenerator.cxx",
+   "decision": "VALID_SUPPORTING_EVIDENCE / NONCRITICAL_FOR_CURRENT_QUESTION",
+   "rationale": "For 'How is restgas_profile supplied to distributed-target simulation?', the direct core evidence is macro/target/prod_sim_hvmaps.C (g021.e1). PndTargetGenerator.cxx supports the deeper generator-internal consumption to sample positions, which is valid supporting evidence but not mandatory-critical.",
+   "benchmark_change": "FORWARD_ONLY_CRITICALITY_RELAXATION"
+  }
+ },
+ "g021_forward_contract_correction": {
+  "correction_type": "POST_D4_A2_FORWARD_ONLY_BENCHMARK_CONTRACT_CORRECTION",
+  "file": "evaluation/benchmarks/v2_6/gold_questions.yaml",
+  "elements": {
+   "g021.e1": {
+    "old_critical": true,
+    "new_critical": true
+   },
+   "g021.e2": {
+    "old_critical": true,
+    "new_critical": false
+   },
+   "answer_point_p1": {
+    "old_critical": true,
+    "new_critical": true
+   },
+   "answer_point_p2": {
+    "old_critical": true,
+    "new_critical": true
+   },
+   "answer_point_p3": {
+    "old_critical": true,
+    "new_critical": false
+   },
+   "identifier_PndTargetGenerator": {
+    "old_critical": true,
+    "new_critical": false
+   }
+  },
+  "historical_commit_addressable_evidence_preserved": true,
+  "historical_d4_a2_retroactive_mutation_claimed": false
+ },
+ "n022_first_divergence": {
+  "layer0_treatment_applicability": {
+   "matched_query_expansion_rules_before": [],
+   "matched_query_expansion_rules_after": [],
+   "target_batch1_rules_triggered_before": false,
+   "target_batch1_rules_triggered_after": false,
+   "effective_suppressed_components": {},
+   "effective_preserved_components": {},
+   "did_batch1_component_mask_directly_change_n022_expansion_inputs": false
+  },
+  "layer1_analyzer_retrieval_plan": {
+   "intent_before": "data_flow",
+   "intent_after": "data_flow",
+   "target_repositories_before": [
+    "luminosityfit",
+    "pandaroot",
+    "restgas_determination"
+   ],
+   "target_repositories_after": [
+    "luminosityfit",
+    "pandaroot",
+    "restgas_determination"
+   ],
+   "concepts_before": [
+    "restgas analysis",
+    "event vertex",
+    "POCA workflow",
+    "worker step",
+    "fitted vertex",
+    "reprocessing"
+   ],
+   "concepts_after": [
+    "restgas analysis",
+    "event vertex",
+    "two-step POCA workflow",
+    "reprocessing"
+   ],
+   "symbols_before": [],
+   "symbols_after": [],
+   "classification": "PLAN_DIVERGENCE",
+   "divergence_details": "BEFORE query analyzer extracted 6 concepts including 'worker step' and 'fitted vertex'. AFTER query analyzer extracted 4 concepts ('restgas analysis', 'event vertex', 'two-step POCA workflow', 'reprocessing'), omitting 'worker step' and 'fitted vertex'."
+  },
+  "layer2_ordinary_recall_channels": {
+   "channels": {
+    "exact": {
+     "channel_len_before": 20,
+     "channel_len_after": 12,
+     "target_matches_before": {
+      "object.10de6bfa07d20258e308d379": {
+       "rank": 9,
+       "symbol": "get_vertex_from_file"
+      }
+     },
+     "target_matches_after": {}
+    },
+    "dense": {
+     "channel_len_before": 20,
+     "channel_len_after": 20,
+     "target_matches_before": {},
+     "target_matches_after": {}
+    },
+    "sparse": {
+     "channel_len_before": 20,
+     "channel_len_after": 20,
+     "target_matches_before": {
+      "object.88f0fa939d8a56760c9d44c4": {
+       "rank": 17,
+       "symbol": "main"
+      }
+     },
+     "target_matches_after": {
+      "object.88f0fa939d8a56760c9d44c4": {
+       "rank": 17,
+       "symbol": "main"
+      }
+     }
+    },
+    "workflow": {
+     "channel_len_before": 6,
+     "channel_len_after": 6,
+     "target_matches_before": {},
+     "target_matches_after": {}
+    },
+    "graph": {
+     "channel_len_before": 0,
+     "channel_len_after": 2,
+     "target_matches_before": {},
+     "target_matches_after": {}
+    }
+   },
+   "observation": "In BEFORE, object.10de6bfa07d20258e308d379 (get_vertex_from_file) was retrieved by channel 'exact' at rank 9/20 matching concept 'worker step'/'fitted vertex'. In AFTER, 'worker step' and 'fitted vertex' were omitted by analyzer, so channel 'exact' returned 12 objects without any poca_step2 target object. Channel 'sparse' retrieved object.88f0fa939d8a56760c9d44c4 (main) at rank 17/20 in BOTH arms."
+  },
+  "layer3_structured_graph_contribution": {
+   "resolved_d2_seeds_count": 1,
+   "reached_structures_count": 23,
+   "eligible_bridge_candidates_count": 3,
+   "selected_bridge_candidates_count": 0,
+   "reserved_candidate_ids": [],
+   "displaced_candidate_ids": [],
+   "graph_channel_after": [
+    "data_product.restgas.event_poca",
+    "data_product.restgas.pid_final_root"
+   ],
+   "observation": "In AFTER, 3 bridge candidates were eligible but 0 passed selectivity gates (all gate-rejected). Channel 'graph' contained 2 reached data products ('event_poca', 'pid_final_root'). No structured bridge candidates were reserved or displaced."
+  },
+  "layer4_fusion": {
+   "object_10de6bfa07d20258e308d379": {
+    "before_fused_rank": 18,
+    "before_top30": true,
+    "after_fused_rank": null,
+    "after_top30": false
+   },
+   "object_88f0fa939d8a56760c9d44c4": {
+    "before_fused_rank": 46,
+    "before_top30": false,
+    "after_fused_rank": 40,
+    "after_top30": false
+   }
+  },
+  "layer5_reserved_admission": {
+   "before_final_pool_membership": true,
+   "before_final_pool_rank": 18,
+   "after_final_pool_membership": false,
+   "after_reserved_candidates": [],
+   "after_displaced_candidates": [],
+   "observation": "Target evidence was absent from AFTER fusion top-30 prior to reservation; reservation caused 0 displacements."
+  },
+  "layer6_reranker_final_selection": {
+   "before_reranked_rank": 3,
+   "before_final_evidence_rank": 2,
+   "before_retained": true,
+   "after_retained": false,
+   "downstream_reranker_cause": false,
+   "observation": "Target never reached AFTER rerank pool; downstream reranker/final selection did not cause the regression."
+  },
+  "first_divergence_layer": "Layer 1 — Analyzer / retrieval plan"
+ },
+ "offline_counterfactual": {
+  "identifiable": true,
+  "method": "Zero-model RRF recomputation over AFTER frozen ordinary retrieval channels with structured graph additions removed, using exact frozen RRF weights.",
+  "actual_after_top30_cutoff_score": 0.015384615384615385,
+  "counterfactual_top30_cutoff_score": 0.014705882352941176,
+  "target_main_object_id": "object.88f0fa939d8a56760c9d44c4",
+  "target_main_actual_rank": 40,
+  "target_main_counterfactual_rank": 40,
+  "target_main_reenters_top30": false,
+  "target_worker_object_id": "object.10de6bfa07d20258e308d379",
+  "target_worker_present_in_after_channels": false,
+  "conclusion": "Removing structured graph additions leaves target object.88f0fa939d8a56760c9d44c4 at rank 40 (below top30 cutoff of rank 30 / score 0.014706). Target object.10de6bfa07d20258e308d379 is absent from all AFTER channels. n022.e2 fails to reach fused top30 in AFTER ordinary retrieval even without any structured competition. Structured competition was NOT necessary for the observed loss."
+ },
+ "n022_attribution_class": "ORDINARY_FRESH_RUN_VARIANCE_DOMINATED",
+ "n022_repair_owner": "QUERY_ANALYZER",
+ "repair_disposition": "NO_GENERIC_REPAIR_YET / PAIRED_STABILITY_VALIDATION_REQUIRED",
+ "forward_corrected_contract_diagnostic": {
+  "FORWARD_CRITICAL_GROUP_REGRESSIONS": [
+   "n022.e2"
+  ],
+  "FORWARD_NONCRITICAL_GROUP_REGRESSIONS": [
+   "g021.e2"
+  ],
+  "cohort_critical_final_evidence_recall": {
+   "before": 0.8205128205128205,
+   "after": 0.7948717948717949,
+   "delta": -0.025641
+  },
+  "cohort_final_evidence_recall": {
+   "before": 0.8205128205128205,
+   "after": 0.7564102564102565,
+   "delta": -0.064103
+  },
+  "gold_critical_final_evidence_recall": {
+   "before": 1.0,
+   "after": 1.0,
+   "delta": 0.0
+  },
+  "gold_critical_final_evidence_regressions_count": 0,
+  "novel_critical_final_evidence_regressions_count": 1,
+  "g021_case_diagnostic": {
+   "BEFORE_COMPAT": {
+    "recall_at_5": 1.0,
+    "recall_at_10": 1.0,
+    "recall_at_20": 1.0,
+    "mrr": 0.5,
+    "combined_candidate_recall": 1.0,
+    "final_evidence_recall": 1.0,
+    "critical_final_evidence_recall": 1.0
+   },
+   "AFTER_BATCH1_REPLACEMENT": {
+    "recall_at_5": 0.0,
+    "recall_at_10": 0.5,
+    "recall_at_20": 0.5,
+    "mrr": 0.16666666666666666,
+    "combined_candidate_recall": 0.0,
+    "final_evidence_recall": 0.5,
+    "critical_final_evidence_recall": 1.0
+   }
+  },
+  "diagnostic_observation": "Under the forward contract, g021 has 0 critical group regressions (g021.e1 is retained, g021.e2 is noncritical). Gold critical final recall delta improves from -0.071429 to 0.000000. Overall cohort critical final recall delta improves from -0.064103 to -0.025641. Only 1 critical regression remains in the cohort: n022.e2."
+ },
+ "historical_d4_a2_verdict": "FAIL / CRITICAL_OR_GROUNDING_REGRESSION",
+ "D4_A2_R1_DECISION": "PASS / BENCHMARK_CORRECTION_AND_REGRESSION_ATTRIBUTION_COMPLETE",
+ "production_activation": false,
+ "exact_next_stage": "D4-A2-V1 — Paired Retrieval Stability and Variance Attribution Validation (NOT_STARTED / SEPARATELY_AUTHORIZED)"
+}

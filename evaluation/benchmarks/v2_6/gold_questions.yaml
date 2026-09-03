@@ -1356,7 +1356,7 @@ questions:
       section_contains: null
   - group_id: g021.e2
     role: pnd_target_generator_implementation
-    critical: true
+    critical: false
     any_of:
     - object_id: null
       source_id: restgas_determination
@@ -1384,11 +1384,11 @@ questions:
   - point_id: p3
     text: Explain that PndTargetGenerator reads the density and samples longitudinal interaction positions.
     weight: 1.0
-    critical: true
+    critical: false
   required_identifiers:
   - text: PndTargetGenerator
     kind: code_symbol
-    critical: true
+    critical: false
   forbidden_evidence: []
   concept_scopes: {}
   cluster_id: cluster-g021

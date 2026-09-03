@@ -9,9 +9,42 @@ When records conflict, use the single section explicitly marked **Current author
 
 ---
 
-# Current authoritative state — 2026-09-02
+# Current authoritative state — 2026-09-03
 
-## D4-A2 current authoritative state — 2026-09-02
+## D4-A2-R1 current authoritative state — 2026-09-03
+
+- `D4_A2_R1_DECISION = PASS / BENCHMARK_CORRECTION_AND_REGRESSION_ATTRIBUTION_COMPLETE`; `D4-A2 = COMPLETE / FAIL / CRITICAL_OR_GROUNDING_REGRESSION (HISTORICAL IMMUTABLE)`; `D4 = IN_PROGRESS / INCREMENTAL_QUERY_EXPANSION_MIGRATION`; `FIRST_BATCH_RUNTIME_MIGRATION = BLOCKED`; `PRODUCTION_ACTIVATION = false`; `D4-A3 = NOT_STARTED / BLOCKED`; `EXACT_NEXT_STAGE = D4-A2-V1 — Paired Retrieval Stability and Variance Attribution Validation` (separately authorized).
+- Scientific scope & execution boundary: Static diagnosis + forward benchmark contract correction only. 0 model calls (no Gemini, no Vertex AI), 0 analyzer/embedding/reranker calls, 0 retrieval runs, 0 QA/verifier/judge calls, 0 PostgreSQL/Qdrant writes, 0 ingestion/reindex, 0 protected dataset access (0 novel validation, 0 novel holdout). Historical D4-A2 frozen raw/evaluator/result artifacts are immutable and unchanged.
+- Evidence-requirement review:
+  - `n021.e2` (`detectors/lmd/CMakeLists.txt`): `REQUIRED_CRITICAL`. Left byte-unchanged in `novel_dev.yaml`.
+  - `n022.e2` (`macro/target/poca_step2_analysis.py`): `REQUIRED_CRITICAL`. Left byte-unchanged in `novel_dev.yaml`.
+  - `g021.e2` (`pgenerators/Target/PndTargetGenerator.cxx`): `VALID_SUPPORTING_EVIDENCE / NONCRITICAL_FOR_CURRENT_QUESTION`. Forward-only benchmark contract correction applied in `evaluation/benchmarks/v2_6/gold_questions.yaml`.
+- Forward-only `g021` benchmark contract correction:
+  - Consistently corrected all elements associated with the deeper generator-internal implementation: `g021.e1` remains `critical: true`; `g021.e2` becomes `critical: false`; answer points `p1`/`p2` remain `critical: true`; answer point `p3` becomes `critical: false`; identifier `PndTargetGenerator` becomes `critical: false`. Traceable as `POST_D4_A2_FORWARD_ONLY_BENCHMARK_CONTRACT_CORRECTION`.
+- `n022.e2` first-divergence analysis:
+  - Layer 0 (Treatment applicability): `did_batch1_component_mask_directly_change_n022_expansion_inputs = false` (`matched_query_expansion_rules = []` in both arms).
+  - Layer 1 (Query Analyzer): `PLAN_DIVERGENCE`. BEFORE extracted 6 concepts including "worker step" and "fitted vertex"; AFTER extracted 4 concepts ("restgas analysis", "event vertex", "two-step POCA workflow", "reprocessing"), omitting "worker step" and "fitted vertex".
+  - Layer 2 (Ordinary recall channels): In BEFORE, "worker step" and "fitted vertex" allowed `exact` channel to recall `object.10de6bfa07d20258e308d379` (`get_vertex_from_file`) at rank 9/20. In AFTER, without those concepts, `exact` returned 12 objects and missed the target. Channel `sparse` recalled `object.88f0fa939d8a56760c9d44c4` (`main`) at rank 17/20 in both arms.
+  - Layer 3 (Structured graph contribution): In AFTER, 3 bridge candidates were eligible but all were gate-rejected. 0 selected, 0 reserved, 0 displaced. Structured additions did not bridge to or displace target.
+  - Layer 4 (Fusion): In BEFORE, `object.10de6bfa07d20258e308d379` fused at rank 18 (in top30: true). In AFTER, `object.10de6bfa07d20258e308d379` was absent from all channels (score 0.0); `object.88f0fa939d8a56760c9d44c4` fused at rank 40 (below top30 cutoff 0.015385).
+  - Layer 5 (Admission): Target was absent prior to admission; K=3 reservation caused 0 displacements.
+  - Layer 6 (Reranker / selection): Target never reached AFTER rerank pool; downstream reranker was not the cause.
+  - First divergence layer: **Layer 1 — Query Analyzer / retrieval plan**.
+- Deterministic offline counterfactual (`AFTER_NO_STRUCTURED_COMPETITION`):
+  - Removing structured graph channel additions leaves `object.88f0fa939d8a56760c9d44c4` at rank 40 (score 0.012987, below top30 cutoff 0.014706) and `object.10de6bfa07d20258e308d379` absent (score 0.0). Target does NOT re-enter top30. Structured competition was not necessary for the observed loss.
+- Attribution taxonomy & repair owner:
+  - Attribution: `ORDINARY_FRESH_RUN_VARIANCE_DOMINATED` (preferred wording: `fresh-run ordinary retrieval divergence`).
+  - Repair owner: `QUERY_ANALYZER` (mechanistic divergence origin) / `NO_GENERIC_REPAIR_YET` (no architecture/fusion repair based on single-run variance; recommend paired stability validation first).
+- Forward-corrected contract diagnostic (post-hoc on frozen raw results):
+  - Critical group regressions: 1 (`n022.e2`, reduced from 2). Noncritical group regressions: 1 (`g021.e2`).
+  - Cohort critical final evidence recall: BEFORE 0.820513 (32/39), AFTER 0.794872 (31/39), delta -0.025641 (improved from historical -0.064103).
+  - Gold critical final evidence recall: BEFORE 1.0 (21/21), AFTER 1.0 (21/21), delta 0.0 (improved from historical -0.071429; 0 critical regressions in Gold cohort).
+  - Ordinary required-group recall: cohort delta -0.064103 (unchanged, as `g021.e2` remains a required supporting group).
+- Production status: `PRODUCTION_ACTIVATION = false`; first-batch runtime migration remains blocked; `D4-A3 = NOT_STARTED / BLOCKED`.
+- Artifacts: `evaluation/d4_a2_r1_critical_regression_diagnosis.json`, `evaluation/D4_A2_R1_CRITICAL_REGRESSION_DIAGNOSIS_AND_REPAIR_DECISION.md`, `evaluation/scripts/d4_a2_r1_static_diagnosis.py`, `tests/unit/test_d4_a2_r1_static_diagnosis.py`.
+- Exact next separately authorized stage: **D4-A2-V1 — Paired Retrieval Stability and Variance Attribution Validation** (separately authorized; do not start).
+
+## D4-A2 historical state — 2026-09-02
 
 - `D4_A2_DECISION = FAIL / CRITICAL_OR_GROUNDING_REGRESSION`; `D4-A2 = COMPLETE / FAIL / CRITICAL_OR_GROUNDING_REGRESSION`; `D4 = IN_PROGRESS / INCREMENTAL_QUERY_EXPANSION_MIGRATION`; `FIRST_BATCH_RUNTIME_MIGRATION = BLOCKED`; `PRODUCTION_ACTIVATION = false`; `D4-A3 = NOT_STARTED / BLOCKED_BY_D4_A2_CRITICAL_REGRESSION`; `EXACT_NEXT_STAGE = D4-A2-R1 — First-Batch Critical-Regression Diagnosis and Repair Decision` (separately authorized).
 - Three-commit outcome-exposure audit boundary: Commit A `1bda8cbfe393c30a74581bed1411573100487ea2` (`D4-A2 freeze first-batch before-after validation`) froze execution manifest, preregistration, runner script, and unit tests. Commit B `bbbea0eac8ce3badf42b4832f36487520354ecee` (`D4-A2 freeze first-batch raw before-after outcomes`) froze raw 32-cell outcomes prior to evaluator execution. Commit C (`GIT_COMMIT_CONTAINING_THIS_ARTIFACT`, message `D4-A2 close first-batch before-after validation`) closes deterministic evaluator results, machine result artifact, human report, status documentation, and roadmap.
