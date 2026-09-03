@@ -1,0 +1,112 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint": "D4-A2-V1-R1",
+  "stage": "D4-A2-V1-R1 — Deterministic Evaluator",
+  "created_at": "2026-09-03T19:22:59.749462",
+  "starting_head": "a85a79efaf90ee341787fe97b1dc29a7c4e7637c",
+  "commit_a_implementation_freeze_head": "7310bbdbedc1eae3b02bd8cada67c8b04e0ce56b",
+  "verdict": "PASS / HISTORICAL_PLAN_SENSITIVITY_REPRODUCED_WITHOUT_TREATMENT_REGRESSION",
+  "verdict_level": 6,
+  "rationale": "The historically observed n022.e2 availability contrast is reproduced by the frozen RetrievalPlan contrast under a common compatibility path, while no additional Batch-1 replacement regression is observed when each plan is shared across arms.",
+  "clean_factorial_pattern": "T/T vs F/F",
+  "scientific_contrasts": {
+    "contrast_A_historical_plan_effect_under_before": {
+      "description": "HIST_A2_BEFORE_PLAN x BEFORE vs HIST_A2_AFTER_PLAN x BEFORE",
+      "before_plan_pre_rerank": true,
+      "after_plan_pre_rerank": false,
+      "contrast_observed": true,
+      "exact_recall_contrast_observed": true
+    },
+    "contrast_B_historical_plan_effect_under_after": {
+      "description": "HIST_A2_BEFORE_PLAN x AFTER vs HIST_A2_AFTER_PLAN x AFTER",
+      "before_plan_pre_rerank": true,
+      "after_plan_pre_rerank": false,
+      "contrast_observed": true
+    },
+    "contrast_C_treatment_effect_under_before_plan": {
+      "description": "HIST_A2_BEFORE_PLAN: BEFORE vs AFTER",
+      "before_compat_pre_rerank": true,
+      "after_batch1_pre_rerank": true,
+      "classification": "PAIR_PRESERVED"
+    },
+    "contrast_D_treatment_effect_under_after_plan": {
+      "description": "HIST_A2_AFTER_PLAN: BEFORE vs AFTER",
+      "before_compat_pre_rerank": false,
+      "after_batch1_pre_rerank": false,
+      "classification": "PAIR_UNRESOLVED_BOTH"
+    }
+  },
+  "exact_recall_contrast": {
+    "HISTORICAL_EXACT_RECALL_CONTRAST_REPRODUCED": true,
+    "before_plan_before_compat_exact": true,
+    "after_plan_before_compat_exact": false
+  },
+  "plan_sensitivity": {
+    "HISTORICAL_PLAN_SENSITIVITY_REPRODUCED": true,
+    "before_plan_before_compat_pool": true,
+    "after_plan_before_compat_pool": false,
+    "final_evidence_sensitivity_reproduced": true
+  },
+  "treatment_effects": {
+    "PAIR_TREATMENT_REGRESSION_COUNT": 0,
+    "PAIR_TREATMENT_RECOVERY_COUNT": 0,
+    "PAIR_PRESERVED_COUNT": 1,
+    "PAIR_UNRESOLVED_BOTH_COUNT": 1,
+    "plan_before_classification": "PAIR_PRESERVED",
+    "plan_after_classification": "PAIR_UNRESOLVED_BOTH"
+  },
+  "final_only_effects": {
+    "FINAL_ONLY_REGRESSION_COUNT": 0,
+    "FINAL_ONLY_RECOVERY_COUNT": 0,
+    "plan_before_final_classification": "FINAL_EVIDENCE_PRESERVED",
+    "plan_after_final_classification": "FINAL_EVIDENCE_UNRESOLVED_BOTH"
+  },
+  "structured_treatment_attribution": [],
+  "historical_vs_replay": {
+    "historical_slot_9_vs_cell_1": {
+      "slot_index": 9,
+      "arm": "BEFORE_COMPAT",
+      "plan_id": "HIST_A2_BEFORE_PLAN",
+      "historical_exact": true,
+      "replay_exact": true,
+      "historical_pool": true,
+      "replay_pool": true,
+      "historical_final": true,
+      "replay_final": true
+    },
+    "historical_slot_10_vs_cell_3": {
+      "slot_index": 10,
+      "arm": "AFTER_BATCH1_REPLACEMENT",
+      "plan_id": "HIST_A2_AFTER_PLAN",
+      "historical_exact": false,
+      "replay_exact": false,
+      "historical_pool": false,
+      "replay_pool": false,
+      "historical_final": false,
+      "replay_final": false
+    }
+  },
+  "accounting": {
+    "FORMAL_CASES": 1,
+    "HISTORICAL_PLANS": 2,
+    "ARMS": 2,
+    "FORMAL_CELLS_PLANNED": 4,
+    "FORMAL_CELLS_COMPLETED": 4,
+    "FORMAL_CELLS_FAILED": 0,
+    "ANALYZER_CALLS": 0,
+    "EMBEDDING_CALLS": 4,
+    "RERANKER_CALLS": 4,
+    "TOTAL_LOGICAL_MODEL_CALLS": 8,
+    "PROVIDER_ATTEMPTS": 8,
+    "RETRIES": 0,
+    "TOKEN_USAGE": 67328,
+    "QA_CALLS": 0,
+    "VERIFIER_CALLS": 0,
+    "JUDGE_CALLS": 0,
+    "POSTGRESQL_WRITES": 0,
+    "QDRANT_WRITES": 0,
+    "INGESTION": 0,
+    "REINDEX": 0,
+    "PROTECTED_DATASET_ACCESS": 0
+  }
+}

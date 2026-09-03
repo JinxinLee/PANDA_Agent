@@ -11,12 +11,33 @@ When records conflict, use the single section explicitly marked **Current author
 
 # Current authoritative state — 2026-09-03
 
-## D4-A2-V1 current authoritative state — 2026-09-03
+## D4-A2-V1-R1 current authoritative state — 2026-09-03
+
+- `D4_A2_V1_R1_DECISION = PASS / HISTORICAL_PLAN_SENSITIVITY_REPRODUCED_WITHOUT_TREATMENT_REGRESSION`; `D4-A2-V1-R1 = COMPLETE / PASS / HISTORICAL_PLAN_SENSITIVITY_REPRODUCED_WITHOUT_TREATMENT_REGRESSION`; `D4-A2-V1 = COMPLETE / PARTIAL / ANALYZER_VARIABILITY_OBSERVED_WITHOUT_EVIDENCE_SENSITIVITY (HISTORICAL IMMUTABLE)`; `D4-A2-R1 = COMPLETE / PASS / BENCHMARK_CORRECTION_AND_REGRESSION_ATTRIBUTION_COMPLETE (HISTORICAL IMMUTABLE)`; `D4-A2 = COMPLETE / FAIL / CRITICAL_OR_GROUNDING_REGRESSION (HISTORICAL IMMUTABLE)`; `D4 = IN_PROGRESS / INCREMENTAL_QUERY_EXPANSION_MIGRATION`; `FIRST_BATCH_RUNTIME_MIGRATION = BLOCKED`; `PRODUCTION_ACTIVATION = false`; `D4-A3 = NOT_STARTED / BLOCKED`; `EXACT_NEXT_STAGE = D4-A2-V2 — Controlled Shared-Plan T2 Before/After Validation (NOT_STARTED / SEPARATELY_AUTHORIZED)`.
+- Three-commit scientific audit boundary: Commit A `7310bbdbedc1eae3b02bd8cada67c8b04e0ce56b` (`D4-A2-V1-R1 freeze historical contrast replay`) froze preregistration, manifest, historical plan pair extraction, runner, and 9 focused unit tests before exposure. Commit B `6248c3751aaf2d759931bc3d51c31d1d17d43bb7` (`D4-A2-V1-R1 freeze historical contrast outcomes`) froze 4-cell raw outcomes with `EVALUATOR_EXECUTED = false` and `SCIENTIFIC_VERDICT_COMPUTED = false`. Commit C (`GIT_COMMIT_CONTAINING_THIS_ARTIFACT`, message `D4-A2-V1-R1 close historical contrast replay`) closes deterministic evaluator results, machine result artifact, report, status, and roadmap.
+- Call and resource accounting:
+  - 4 formal serial retrieval cells across 2 historical plans (`HIST_A2_BEFORE_PLAN` slot 9, `HIST_A2_AFTER_PLAN` slot 10) × 2 evaluation-only arms (`BEFORE_COMPAT` vs `AFTER_BATCH1_REPLACEMENT` with K=3 bounded admission).
+  - Model calls: 0 analyzer calls (reusing `frozen_plan_context`), 4 embedding calls (`gemini-embedding-2`), 4 reranker calls (`gemini-3.8-flash`), total 8 logical model calls; 8 provider attempts (0 retries); 67,328 tokens consumed.
+  - Zero QA/verifier/judge calls, zero PostgreSQL/Qdrant writes, zero ingestion/reindex, zero protected dataset access (0 novel validation, 0 novel holdout). Zero post-exposure mutations across all categories.
+- 2x2 Crossover & Factorial Findings:
+  - Exact plan equality: `plan_equality_verified = true` for all 4 cells.
+  - Cell 1 (`HIST_A2_BEFORE_PLAN × BEFORE_COMPAT`): exact=True, pool=True, final=True.
+  - Cell 2 (`HIST_A2_BEFORE_PLAN × AFTER_BATCH1_REPLACEMENT`): exact=True, pool=True, final=True.
+  - Cell 3 (`HIST_A2_AFTER_PLAN × AFTER_BATCH1_REPLACEMENT`): exact=False, pool=False, final=False.
+  - Cell 4 (`HIST_A2_AFTER_PLAN × BEFORE_COMPAT`): exact=False, pool=False, final=False.
+  - `HISTORICAL_EXACT_RECALL_CONTRAST_REPRODUCED = true`: under BEFORE_COMPAT, exact channel retained under BEFORE plan and missed under AFTER plan.
+  - `HISTORICAL_PLAN_SENSITIVITY_REPRODUCED = true`: under BEFORE_COMPAT, pre-rerank pool retained under BEFORE plan (True) and lost under AFTER plan (False).
+  - Treatment effect under shared plans: `PAIR_TREATMENT_REGRESSION_COUNT = 0` (0 regressions). Plan BEFORE remained preserved across arms (`PAIR_PRESERVED`, T/T); Plan AFTER remained unresolved across arms (`PAIR_UNRESOLVED_BOTH`, F/F).
+  - Treatment recoveries: `PAIR_TREATMENT_RECOVERY_COUNT = 0`.
+  - Final-only reranker variance: `FINAL_ONLY_REGRESSION_COUNT = 0`, `FINAL_ONLY_RECOVERY_COUNT = 0`.
+  - Clean factorial pattern confirmed: `CLEAN_FACTORIAL_PATTERN = "T/T vs F/F"`. Within this targeted 2x2 replay, the historical `n022.e2` availability contrast was reproduced by the frozen Query Analyzer plan contrast (including omission of "worker step" and "fitted vertex"), and no shared-plan Batch-1 replacement regression was observed under either frozen plan. This is not a formal statistical causal-inference or general-safety claim.
+- Production status: `PRODUCTION_ACTIVATION = false`; first-batch runtime migration remains blocked; `D4-A3 = NOT_STARTED / BLOCKED`.
+- Artifacts: `evaluation/d4_a2_v1_r1_preregistration.json`, `evaluation/d4_a2_v1_r1_execution_manifest.json`, `evaluation/d4_a2_v1_r1_historical_plan_pair.json`, `evaluation/d4_a2_v1_r1_raw_historical_contrast_results.json`, `evaluation/d4_a2_v1_r1_evaluator_results.json`, `evaluation/d4_a2_v1_r1_result.json`, `evaluation/D4_A2_V1_R1_HISTORICAL_CONTRAST_SHARED_PLAN_REPLAY.md`, `evaluation/scripts/d4_a2_v1_r1_historical_contrast_replay.py`, `tests/unit/test_d4_a2_v1_r1_historical_contrast_replay.py`.
+- Exact next separately authorized stage: **D4-A2-V2 — Controlled Shared-Plan T2 Before/After Validation** (NOT_STARTED / SEPARATELY_AUTHORIZED).
+
+## D4-A2-V1 historical state — 2026-09-03
 
 - `D4_A2_V1_DECISION = PARTIAL / ANALYZER_VARIABILITY_OBSERVED_WITHOUT_EVIDENCE_SENSITIVITY`; `D4-A2-V1 = COMPLETE / PARTIAL / ANALYZER_VARIABILITY_OBSERVED_WITHOUT_EVIDENCE_SENSITIVITY`; `D4-A2-R1 = COMPLETE / PASS / BENCHMARK_CORRECTION_AND_REGRESSION_ATTRIBUTION_COMPLETE (HISTORICAL IMMUTABLE)`; `D4-A2 = COMPLETE / FAIL / CRITICAL_OR_GROUNDING_REGRESSION (HISTORICAL IMMUTABLE)`; `D4 = IN_PROGRESS / INCREMENTAL_QUERY_EXPANSION_MIGRATION`; `FIRST_BATCH_RUNTIME_MIGRATION = BLOCKED`; `PRODUCTION_ACTIVATION = false`; `D4-A3 = NOT_STARTED / BLOCKED`; `EXACT_NEXT_STAGE = D4-A2-V1-R1 — Expanded Analyzer Stability and Evidence-Sensitivity Validation (RECOMMENDED / SEPARATELY_AUTHORIZED)`.
-- Four-commit scientific audit boundary: Commit A `8b26430b6d3253658c2cc2d05ad8e92c13b2b737` (`D4-A2-V1 freeze paired stability validation`) froze manifest, preregistration, narrow runner, and 14 unit tests before exposure. Commit B `fd65d87a956ee86df3328eb7212eab8b5e890446` (`D4-A2-V1 freeze analyzer stability samples`) froze raw 8-draw Query Analyzer stability samples. Commit C `3cf22910953ae796a7bee6055387422f3e4fdd17` (`D4-A2-V1 freeze paired retrieval outcomes`) froze raw 16 downstream shared-plan retrieval cells. Commit D (`GIT_COMMIT_CONTAINING_THIS_ARTIFACT`, message `D4-A2-V1 close paired stability validation`) closes deterministic evaluator results, machine result artifact, report, and documentation.
-- Call and resource accounting:
-  - Phase P: 8 independent Query Analyzer calls on exact `n022` question (8 completed, 0 failed, 17,826 tokens).
   - Phase R: 16 downstream shared-plan paired retrieval cells (8 plans × 2 arms in balanced alternating schedule; 0 analyzer calls, 16 embedding calls, 16 reranker calls; 293,567 tokens).
   - Total model calls: 40 logical model calls (8 analyzer, 16 embedding, 16 reranker); 40 provider attempts (0 retries); 311,393 tokens consumed.
   - Zero QA/verifier/judge calls, zero PostgreSQL/Qdrant writes, zero ingestion/reindex, zero protected dataset access (0 novel validation, 0 novel holdout). Zero post-exposure mutations across all categories.
