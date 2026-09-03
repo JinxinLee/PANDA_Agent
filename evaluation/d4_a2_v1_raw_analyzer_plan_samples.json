@@ -1,0 +1,2830 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint": "D4-A2-V1",
+  "stage": "Phase P — Analyzer Plan Stability Sampling",
+  "created_at": "2026-09-03T15:29:48.324864",
+  "starting_head": "9b007b5a895c245b40fa702996e07d45f47d2205",
+  "commit_a_implementation_freeze_head": "8b26430b6d3253658c2cc2d05ad8e92c13b2b737",
+  "PAIRED_RETRIEVAL_EXECUTED": false,
+  "EVALUATOR_EXECUTED": false,
+  "SCIENTIFIC_VERDICT_COMPUTED": false,
+  "draws_planned": 8,
+  "draws_completed": 8,
+  "draws_failed": 0,
+  "accounting": {
+    "analyzer_calls": 8,
+    "embedding_calls": 0,
+    "reranker_calls": 0,
+    "logical_model_calls": 8,
+    "provider_attempts": 8,
+    "token_usage": 17826,
+    "qa_calls": 0,
+    "verifier_calls": 0,
+    "judge_calls": 0,
+    "postgresql_writes": 0,
+    "qdrant_writes": 0,
+    "ingestion": 0,
+    "reindex": 0,
+    "novel_validation_runs": 0,
+    "novel_holdout_runs": 0,
+    "protected_dataset_access": 0
+  },
+  "draws": [
+    {
+      "draw_index": 1,
+      "case_id": "n022",
+      "question": "The restgas analysis determines the event vertex through a two-step POCA workflow. What does the first worker step leave behind for the second analysis step, and how is the fitted vertex fed into the reprocessing?",
+      "intent": "data_flow",
+      "target_repositories": [
+        "luminosityfit",
+        "pandaroot",
+        "restgas_determination"
+      ],
+      "resolved_versions": {
+        "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+        "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357",
+        "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+      },
+      "symbols": [],
+      "concepts": [
+        "restgas analysis",
+        "event vertex",
+        "two-step POCA workflow",
+        "worker step",
+        "fitted vertex",
+        "reprocessing"
+      ],
+      "concept_scopes": {},
+      "required_source_types": [
+        "workflow",
+        "code"
+      ],
+      "paper_page_hints": {},
+      "matched_expansion_rules": [],
+      "provider_internal_attempts": 1,
+      "token_usage": 2344,
+      "elapsed_seconds": 21.218,
+      "started_at": "2026-09-03T15:28:15.980272",
+      "completed_at": "2026-09-03T15:28:37.199136",
+      "status": "COMPLETED",
+      "logical_calls": {
+        "analyzer_calls": 1,
+        "embedding_calls": 0,
+        "reranker_calls": 0
+      },
+      "r1_concept_phenotype": "R1_FEATURE_COMPLETE",
+      "plan_signature": {
+        "intent": "data_flow",
+        "target_repositories": [
+          "luminosityfit",
+          "pandaroot",
+          "restgas_determination"
+        ],
+        "symbols": [],
+        "normalized_concepts": [
+          "event vertex",
+          "fitted vertex",
+          "reprocessing",
+          "restgas analysis",
+          "two-step poca workflow",
+          "worker step"
+        ],
+        "required_source_types": [
+          "code",
+          "workflow"
+        ],
+        "paper_page_hints": [],
+        "concept_scopes": []
+      },
+      "plan": {
+        "intent": "data_flow",
+        "secondary_intents": [],
+        "routing_method": "llm",
+        "target_repositories": [
+          "luminosityfit",
+          "pandaroot",
+          "restgas_determination"
+        ],
+        "resolved_versions": {
+          "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+          "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357",
+          "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+        },
+        "version_conflicts": [],
+        "concepts": [
+          "restgas analysis",
+          "event vertex",
+          "two-step POCA workflow",
+          "worker step",
+          "fitted vertex",
+          "reprocessing"
+        ],
+        "symbols": [],
+        "concept_scopes": {},
+        "source_budgets": {
+          "workflow": 0.35,
+          "code": 0.3,
+          "graph": 0.2,
+          "readme": 0.1,
+          "paper": 0.05
+        },
+        "required_source_types": [
+          "workflow",
+          "code"
+        ],
+        "resolved_aliases": {},
+        "premise_corrections": [],
+        "paper_page_hints": {},
+        "analysis_diagnostics": {
+          "deterministic_parse": {
+            "fixed": {},
+            "fallback": {
+              "concept_scopes": {}
+            },
+            "known_partial": {},
+            "semantic_output_fields": [
+              "intent",
+              "repository_additions",
+              "concepts",
+              "symbols",
+              "version_mentions",
+              "concept_scopes"
+            ],
+            "unresolved_semantics": {
+              "intent": "resolve",
+              "repository_additions": "resolve",
+              "target_repositories": "resolve",
+              "concepts": "resolve",
+              "symbols": "resolve",
+              "version_mentions": "resolve",
+              "concept_scopes": "resolve"
+            },
+            "provenance": {}
+          },
+          "analyzer_llm_called": true,
+          "analyzer_semantic_output_fields": [
+            "intent",
+            "repository_additions",
+            "concepts",
+            "symbols",
+            "version_mentions",
+            "concept_scopes"
+          ],
+          "analyzer_raw_semantic_delta": {
+            "intent": {
+              "value": "data_flow",
+              "support_spans": [
+                "What does the first worker step leave behind for the second analysis step, and how is the fitted vertex fed into the reprocessing?"
+              ]
+            },
+            "repository_additions": [
+              {
+                "value": "restgas_determination",
+                "support_spans": [
+                  "restgas"
+                ]
+              }
+            ],
+            "concepts": [
+              {
+                "value": "restgas analysis",
+                "support_spans": [
+                  "restgas analysis"
+                ]
+              },
+              {
+                "value": "event vertex",
+                "support_spans": [
+                  "event vertex"
+                ]
+              },
+              {
+                "value": "two-step POCA workflow",
+                "support_spans": [
+                  "two-step POCA workflow"
+                ]
+              },
+              {
+                "value": "worker step",
+                "support_spans": [
+                  "worker step"
+                ]
+              },
+              {
+                "value": "fitted vertex",
+                "support_spans": [
+                  "fitted vertex"
+                ]
+              },
+              {
+                "value": "reprocessing",
+                "support_spans": [
+                  "reprocessing"
+                ]
+              }
+            ],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "analyzer_accepted_semantic_delta": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "restgas analysis",
+                "support_spans": [
+                  "restgas analysis"
+                ]
+              },
+              {
+                "value": "event vertex",
+                "support_spans": [
+                  "event vertex"
+                ]
+              },
+              {
+                "value": "two-step POCA workflow",
+                "support_spans": [
+                  "two-step POCA workflow"
+                ]
+              },
+              {
+                "value": "worker step",
+                "support_spans": [
+                  "worker step"
+                ]
+              },
+              {
+                "value": "fitted vertex",
+                "support_spans": [
+                  "fitted vertex"
+                ]
+              },
+              {
+                "value": "reprocessing",
+                "support_spans": [
+                  "reprocessing"
+                ]
+              }
+            ],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": [],
+            "intent": {
+              "value": "data_flow",
+              "support_spans": [
+                "What does the first worker step leave behind for the second analysis step, and how is the fitted vertex fed into the reprocessing?"
+              ]
+            }
+          },
+          "analyzer_rejected_items": [
+            {
+              "field": "repository_additions",
+              "item": {
+                "value": "restgas_determination",
+                "support_spans": [
+                  "restgas"
+                ]
+              },
+              "reason": "unsupported_repository"
+            }
+          ],
+          "analyzer_item_support": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "restgas analysis",
+                "support_spans": [
+                  "restgas analysis"
+                ]
+              },
+              {
+                "value": "event vertex",
+                "support_spans": [
+                  "event vertex"
+                ]
+              },
+              {
+                "value": "two-step POCA workflow",
+                "support_spans": [
+                  "two-step POCA workflow"
+                ]
+              },
+              {
+                "value": "worker step",
+                "support_spans": [
+                  "worker step"
+                ]
+              },
+              {
+                "value": "fitted vertex",
+                "support_spans": [
+                  "fitted vertex"
+                ]
+              },
+              {
+                "value": "reprocessing",
+                "support_spans": [
+                  "reprocessing"
+                ]
+              }
+            ],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": [],
+            "intent": [
+              {
+                "value": "data_flow",
+                "support_spans": [
+                  "What does the first worker step leave behind for the second analysis step, and how is the fitted vertex fed into the reprocessing?"
+                ]
+              }
+            ]
+          },
+          "unbound_version_tokens": [],
+          "analyzer_final": {
+            "intent": "data_flow",
+            "target_repositories": [
+              "luminosityfit",
+              "pandaroot",
+              "restgas_determination"
+            ],
+            "concepts": [
+              "restgas analysis",
+              "event vertex",
+              "two-step POCA workflow",
+              "worker step",
+              "fitted vertex",
+              "reprocessing"
+            ],
+            "symbols": [],
+            "requested_versions": {},
+            "concept_scopes": {}
+          }
+        }
+      }
+    },
+    {
+      "draw_index": 2,
+      "case_id": "n022",
+      "question": "The restgas analysis determines the event vertex through a two-step POCA workflow. What does the first worker step leave behind for the second analysis step, and how is the fitted vertex fed into the reprocessing?",
+      "intent": "data_flow",
+      "target_repositories": [
+        "luminosityfit",
+        "pandaroot",
+        "restgas_determination"
+      ],
+      "resolved_versions": {
+        "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+        "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357",
+        "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+      },
+      "symbols": [
+        "POCA"
+      ],
+      "concepts": [
+        "restgas analysis",
+        "event vertex",
+        "two-step POCA workflow",
+        "first worker step",
+        "second analysis step",
+        "fitted vertex",
+        "reprocessing"
+      ],
+      "concept_scopes": {},
+      "required_source_types": [
+        "workflow",
+        "code"
+      ],
+      "paper_page_hints": {},
+      "matched_expansion_rules": [],
+      "provider_internal_attempts": 1,
+      "token_usage": 2265,
+      "elapsed_seconds": 10.395,
+      "started_at": "2026-09-03T15:28:37.199901",
+      "completed_at": "2026-09-03T15:28:47.595584",
+      "status": "COMPLETED",
+      "logical_calls": {
+        "analyzer_calls": 1,
+        "embedding_calls": 0,
+        "reranker_calls": 0
+      },
+      "r1_concept_phenotype": "R1_FEATURE_PARTIAL",
+      "plan_signature": {
+        "intent": "data_flow",
+        "target_repositories": [
+          "luminosityfit",
+          "pandaroot",
+          "restgas_determination"
+        ],
+        "symbols": [
+          "POCA"
+        ],
+        "normalized_concepts": [
+          "event vertex",
+          "first worker step",
+          "fitted vertex",
+          "reprocessing",
+          "restgas analysis",
+          "second analysis step",
+          "two-step poca workflow"
+        ],
+        "required_source_types": [
+          "code",
+          "workflow"
+        ],
+        "paper_page_hints": [],
+        "concept_scopes": []
+      },
+      "plan": {
+        "intent": "data_flow",
+        "secondary_intents": [],
+        "routing_method": "llm",
+        "target_repositories": [
+          "luminosityfit",
+          "pandaroot",
+          "restgas_determination"
+        ],
+        "resolved_versions": {
+          "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+          "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357",
+          "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+        },
+        "version_conflicts": [],
+        "concepts": [
+          "restgas analysis",
+          "event vertex",
+          "two-step POCA workflow",
+          "first worker step",
+          "second analysis step",
+          "fitted vertex",
+          "reprocessing"
+        ],
+        "symbols": [
+          "POCA"
+        ],
+        "concept_scopes": {},
+        "source_budgets": {
+          "workflow": 0.35,
+          "code": 0.3,
+          "graph": 0.2,
+          "readme": 0.1,
+          "paper": 0.05
+        },
+        "required_source_types": [
+          "workflow",
+          "code"
+        ],
+        "resolved_aliases": {},
+        "premise_corrections": [],
+        "paper_page_hints": {},
+        "analysis_diagnostics": {
+          "deterministic_parse": {
+            "fixed": {},
+            "fallback": {
+              "concept_scopes": {}
+            },
+            "known_partial": {},
+            "semantic_output_fields": [
+              "intent",
+              "repository_additions",
+              "concepts",
+              "symbols",
+              "version_mentions",
+              "concept_scopes"
+            ],
+            "unresolved_semantics": {
+              "intent": "resolve",
+              "repository_additions": "resolve",
+              "target_repositories": "resolve",
+              "concepts": "resolve",
+              "symbols": "resolve",
+              "version_mentions": "resolve",
+              "concept_scopes": "resolve"
+            },
+            "provenance": {}
+          },
+          "analyzer_llm_called": true,
+          "analyzer_semantic_output_fields": [
+            "intent",
+            "repository_additions",
+            "concepts",
+            "symbols",
+            "version_mentions",
+            "concept_scopes"
+          ],
+          "analyzer_raw_semantic_delta": {
+            "intent": {
+              "value": "data_flow",
+              "support_spans": [
+                "What does the first worker step leave behind for the second analysis step, and how is the fitted vertex fed into the reprocessing?"
+              ]
+            },
+            "repository_additions": [
+              {
+                "value": "restgas_determination",
+                "support_spans": [
+                  "restgas"
+                ]
+              }
+            ],
+            "concepts": [
+              {
+                "value": "restgas analysis",
+                "support_spans": [
+                  "restgas analysis"
+                ]
+              },
+              {
+                "value": "event vertex",
+                "support_spans": [
+                  "event vertex"
+                ]
+              },
+              {
+                "value": "two-step POCA workflow",
+                "support_spans": [
+                  "two-step POCA workflow"
+                ]
+              },
+              {
+                "value": "first worker step",
+                "support_spans": [
+                  "first worker step"
+                ]
+              },
+              {
+                "value": "second analysis step",
+                "support_spans": [
+                  "second analysis step"
+                ]
+              },
+              {
+                "value": "fitted vertex",
+                "support_spans": [
+                  "fitted vertex"
+                ]
+              },
+              {
+                "value": "reprocessing",
+                "support_spans": [
+                  "reprocessing"
+                ]
+              }
+            ],
+            "symbols": [
+              {
+                "value": "POCA",
+                "support_spans": [
+                  "POCA"
+                ]
+              }
+            ],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "analyzer_accepted_semantic_delta": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "restgas analysis",
+                "support_spans": [
+                  "restgas analysis"
+                ]
+              },
+              {
+                "value": "event vertex",
+                "support_spans": [
+                  "event vertex"
+                ]
+              },
+              {
+                "value": "two-step POCA workflow",
+                "support_spans": [
+                  "two-step POCA workflow"
+                ]
+              },
+              {
+                "value": "first worker step",
+                "support_spans": [
+                  "first worker step"
+                ]
+              },
+              {
+                "value": "second analysis step",
+                "support_spans": [
+                  "second analysis step"
+                ]
+              },
+              {
+                "value": "fitted vertex",
+                "support_spans": [
+                  "fitted vertex"
+                ]
+              },
+              {
+                "value": "reprocessing",
+                "support_spans": [
+                  "reprocessing"
+                ]
+              }
+            ],
+            "symbols": [
+              {
+                "value": "POCA",
+                "support_spans": [
+                  "POCA"
+                ]
+              }
+            ],
+            "version_mentions": [],
+            "concept_scopes": [],
+            "intent": {
+              "value": "data_flow",
+              "support_spans": [
+                "What does the first worker step leave behind for the second analysis step, and how is the fitted vertex fed into the reprocessing?"
+              ]
+            }
+          },
+          "analyzer_rejected_items": [
+            {
+              "field": "repository_additions",
+              "item": {
+                "value": "restgas_determination",
+                "support_spans": [
+                  "restgas"
+                ]
+              },
+              "reason": "unsupported_repository"
+            }
+          ],
+          "analyzer_item_support": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "restgas analysis",
+                "support_spans": [
+                  "restgas analysis"
+                ]
+              },
+              {
+                "value": "event vertex",
+                "support_spans": [
+                  "event vertex"
+                ]
+              },
+              {
+                "value": "two-step POCA workflow",
+                "support_spans": [
+                  "two-step POCA workflow"
+                ]
+              },
+              {
+                "value": "first worker step",
+                "support_spans": [
+                  "first worker step"
+                ]
+              },
+              {
+                "value": "second analysis step",
+                "support_spans": [
+                  "second analysis step"
+                ]
+              },
+              {
+                "value": "fitted vertex",
+                "support_spans": [
+                  "fitted vertex"
+                ]
+              },
+              {
+                "value": "reprocessing",
+                "support_spans": [
+                  "reprocessing"
+                ]
+              }
+            ],
+            "symbols": [
+              {
+                "value": "POCA",
+                "support_spans": [
+                  "POCA"
+                ]
+              }
+            ],
+            "version_mentions": [],
+            "concept_scopes": [],
+            "intent": [
+              {
+                "value": "data_flow",
+                "support_spans": [
+                  "What does the first worker step leave behind for the second analysis step, and how is the fitted vertex fed into the reprocessing?"
+                ]
+              }
+            ]
+          },
+          "unbound_version_tokens": [],
+          "analyzer_final": {
+            "intent": "data_flow",
+            "target_repositories": [
+              "luminosityfit",
+              "pandaroot",
+              "restgas_determination"
+            ],
+            "concepts": [
+              "restgas analysis",
+              "event vertex",
+              "two-step POCA workflow",
+              "first worker step",
+              "second analysis step",
+              "fitted vertex",
+              "reprocessing"
+            ],
+            "symbols": [
+              "POCA"
+            ],
+            "requested_versions": {},
+            "concept_scopes": {}
+          }
+        }
+      }
+    },
+    {
+      "draw_index": 3,
+      "case_id": "n022",
+      "question": "The restgas analysis determines the event vertex through a two-step POCA workflow. What does the first worker step leave behind for the second analysis step, and how is the fitted vertex fed into the reprocessing?",
+      "intent": "data_flow",
+      "target_repositories": [
+        "luminosityfit",
+        "pandaroot",
+        "restgas_determination"
+      ],
+      "resolved_versions": {
+        "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+        "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357",
+        "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+      },
+      "symbols": [],
+      "concepts": [
+        "event vertex",
+        "POCA workflow",
+        "worker step",
+        "analysis step",
+        "fitted vertex",
+        "reprocessing"
+      ],
+      "concept_scopes": {},
+      "required_source_types": [
+        "workflow",
+        "code"
+      ],
+      "paper_page_hints": {},
+      "matched_expansion_rules": [],
+      "provider_internal_attempts": 1,
+      "token_usage": 2400,
+      "elapsed_seconds": 15.107,
+      "started_at": "2026-09-03T15:28:47.596291",
+      "completed_at": "2026-09-03T15:29:02.703480",
+      "status": "COMPLETED",
+      "logical_calls": {
+        "analyzer_calls": 1,
+        "embedding_calls": 0,
+        "reranker_calls": 0
+      },
+      "r1_concept_phenotype": "R1_FEATURE_COMPLETE",
+      "plan_signature": {
+        "intent": "data_flow",
+        "target_repositories": [
+          "luminosityfit",
+          "pandaroot",
+          "restgas_determination"
+        ],
+        "symbols": [],
+        "normalized_concepts": [
+          "analysis step",
+          "event vertex",
+          "fitted vertex",
+          "poca workflow",
+          "reprocessing",
+          "worker step"
+        ],
+        "required_source_types": [
+          "code",
+          "workflow"
+        ],
+        "paper_page_hints": [],
+        "concept_scopes": []
+      },
+      "plan": {
+        "intent": "data_flow",
+        "secondary_intents": [],
+        "routing_method": "llm",
+        "target_repositories": [
+          "luminosityfit",
+          "pandaroot",
+          "restgas_determination"
+        ],
+        "resolved_versions": {
+          "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+          "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357",
+          "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+        },
+        "version_conflicts": [],
+        "concepts": [
+          "event vertex",
+          "POCA workflow",
+          "worker step",
+          "analysis step",
+          "fitted vertex",
+          "reprocessing"
+        ],
+        "symbols": [],
+        "concept_scopes": {},
+        "source_budgets": {
+          "workflow": 0.35,
+          "code": 0.3,
+          "graph": 0.2,
+          "readme": 0.1,
+          "paper": 0.05
+        },
+        "required_source_types": [
+          "workflow",
+          "code"
+        ],
+        "resolved_aliases": {},
+        "premise_corrections": [],
+        "paper_page_hints": {},
+        "analysis_diagnostics": {
+          "deterministic_parse": {
+            "fixed": {},
+            "fallback": {
+              "concept_scopes": {}
+            },
+            "known_partial": {},
+            "semantic_output_fields": [
+              "intent",
+              "repository_additions",
+              "concepts",
+              "symbols",
+              "version_mentions",
+              "concept_scopes"
+            ],
+            "unresolved_semantics": {
+              "intent": "resolve",
+              "repository_additions": "resolve",
+              "target_repositories": "resolve",
+              "concepts": "resolve",
+              "symbols": "resolve",
+              "version_mentions": "resolve",
+              "concept_scopes": "resolve"
+            },
+            "provenance": {}
+          },
+          "analyzer_llm_called": true,
+          "analyzer_semantic_output_fields": [
+            "intent",
+            "repository_additions",
+            "concepts",
+            "symbols",
+            "version_mentions",
+            "concept_scopes"
+          ],
+          "analyzer_raw_semantic_delta": {
+            "intent": {
+              "value": "data_flow",
+              "support_spans": [
+                "What does the first worker step leave behind for the second analysis step, and how is the fitted vertex fed into the reprocessing?"
+              ]
+            },
+            "repository_additions": [
+              {
+                "value": "restgas_determination",
+                "support_spans": [
+                  "restgas analysis"
+                ]
+              }
+            ],
+            "concepts": [
+              {
+                "value": "event vertex",
+                "support_spans": [
+                  "event vertex"
+                ]
+              },
+              {
+                "value": "POCA workflow",
+                "support_spans": [
+                  "POCA workflow"
+                ]
+              },
+              {
+                "value": "worker step",
+                "support_spans": [
+                  "worker step"
+                ]
+              },
+              {
+                "value": "analysis step",
+                "support_spans": [
+                  "analysis step"
+                ]
+              },
+              {
+                "value": "fitted vertex",
+                "support_spans": [
+                  "fitted vertex"
+                ]
+              },
+              {
+                "value": "reprocessing",
+                "support_spans": [
+                  "reprocessing"
+                ]
+              }
+            ],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "analyzer_accepted_semantic_delta": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "event vertex",
+                "support_spans": [
+                  "event vertex"
+                ]
+              },
+              {
+                "value": "POCA workflow",
+                "support_spans": [
+                  "POCA workflow"
+                ]
+              },
+              {
+                "value": "worker step",
+                "support_spans": [
+                  "worker step"
+                ]
+              },
+              {
+                "value": "analysis step",
+                "support_spans": [
+                  "analysis step"
+                ]
+              },
+              {
+                "value": "fitted vertex",
+                "support_spans": [
+                  "fitted vertex"
+                ]
+              },
+              {
+                "value": "reprocessing",
+                "support_spans": [
+                  "reprocessing"
+                ]
+              }
+            ],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": [],
+            "intent": {
+              "value": "data_flow",
+              "support_spans": [
+                "What does the first worker step leave behind for the second analysis step, and how is the fitted vertex fed into the reprocessing?"
+              ]
+            }
+          },
+          "analyzer_rejected_items": [
+            {
+              "field": "repository_additions",
+              "item": {
+                "value": "restgas_determination",
+                "support_spans": [
+                  "restgas analysis"
+                ]
+              },
+              "reason": "unsupported_repository"
+            }
+          ],
+          "analyzer_item_support": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "event vertex",
+                "support_spans": [
+                  "event vertex"
+                ]
+              },
+              {
+                "value": "POCA workflow",
+                "support_spans": [
+                  "POCA workflow"
+                ]
+              },
+              {
+                "value": "worker step",
+                "support_spans": [
+                  "worker step"
+                ]
+              },
+              {
+                "value": "analysis step",
+                "support_spans": [
+                  "analysis step"
+                ]
+              },
+              {
+                "value": "fitted vertex",
+                "support_spans": [
+                  "fitted vertex"
+                ]
+              },
+              {
+                "value": "reprocessing",
+                "support_spans": [
+                  "reprocessing"
+                ]
+              }
+            ],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": [],
+            "intent": [
+              {
+                "value": "data_flow",
+                "support_spans": [
+                  "What does the first worker step leave behind for the second analysis step, and how is the fitted vertex fed into the reprocessing?"
+                ]
+              }
+            ]
+          },
+          "unbound_version_tokens": [],
+          "analyzer_final": {
+            "intent": "data_flow",
+            "target_repositories": [
+              "luminosityfit",
+              "pandaroot",
+              "restgas_determination"
+            ],
+            "concepts": [
+              "event vertex",
+              "POCA workflow",
+              "worker step",
+              "analysis step",
+              "fitted vertex",
+              "reprocessing"
+            ],
+            "symbols": [],
+            "requested_versions": {},
+            "concept_scopes": {}
+          }
+        }
+      }
+    },
+    {
+      "draw_index": 4,
+      "case_id": "n022",
+      "question": "The restgas analysis determines the event vertex through a two-step POCA workflow. What does the first worker step leave behind for the second analysis step, and how is the fitted vertex fed into the reprocessing?",
+      "intent": "data_flow",
+      "target_repositories": [
+        "luminosityfit",
+        "pandaroot",
+        "restgas_determination"
+      ],
+      "resolved_versions": {
+        "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+        "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357",
+        "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+      },
+      "symbols": [],
+      "concepts": [
+        "restgas analysis",
+        "event vertex",
+        "POCA workflow",
+        "worker step",
+        "analysis step",
+        "fitted vertex",
+        "reprocessing"
+      ],
+      "concept_scopes": {},
+      "required_source_types": [
+        "workflow",
+        "code"
+      ],
+      "paper_page_hints": {},
+      "matched_expansion_rules": [],
+      "provider_internal_attempts": 1,
+      "token_usage": 2326,
+      "elapsed_seconds": 10.325,
+      "started_at": "2026-09-03T15:29:02.704261",
+      "completed_at": "2026-09-03T15:29:13.029869",
+      "status": "COMPLETED",
+      "logical_calls": {
+        "analyzer_calls": 1,
+        "embedding_calls": 0,
+        "reranker_calls": 0
+      },
+      "r1_concept_phenotype": "R1_FEATURE_COMPLETE",
+      "plan_signature": {
+        "intent": "data_flow",
+        "target_repositories": [
+          "luminosityfit",
+          "pandaroot",
+          "restgas_determination"
+        ],
+        "symbols": [],
+        "normalized_concepts": [
+          "analysis step",
+          "event vertex",
+          "fitted vertex",
+          "poca workflow",
+          "reprocessing",
+          "restgas analysis",
+          "worker step"
+        ],
+        "required_source_types": [
+          "code",
+          "workflow"
+        ],
+        "paper_page_hints": [],
+        "concept_scopes": []
+      },
+      "plan": {
+        "intent": "data_flow",
+        "secondary_intents": [],
+        "routing_method": "llm",
+        "target_repositories": [
+          "luminosityfit",
+          "pandaroot",
+          "restgas_determination"
+        ],
+        "resolved_versions": {
+          "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+          "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357",
+          "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+        },
+        "version_conflicts": [],
+        "concepts": [
+          "restgas analysis",
+          "event vertex",
+          "POCA workflow",
+          "worker step",
+          "analysis step",
+          "fitted vertex",
+          "reprocessing"
+        ],
+        "symbols": [],
+        "concept_scopes": {},
+        "source_budgets": {
+          "workflow": 0.35,
+          "code": 0.3,
+          "graph": 0.2,
+          "readme": 0.1,
+          "paper": 0.05
+        },
+        "required_source_types": [
+          "workflow",
+          "code"
+        ],
+        "resolved_aliases": {},
+        "premise_corrections": [],
+        "paper_page_hints": {},
+        "analysis_diagnostics": {
+          "deterministic_parse": {
+            "fixed": {},
+            "fallback": {
+              "concept_scopes": {}
+            },
+            "known_partial": {},
+            "semantic_output_fields": [
+              "intent",
+              "repository_additions",
+              "concepts",
+              "symbols",
+              "version_mentions",
+              "concept_scopes"
+            ],
+            "unresolved_semantics": {
+              "intent": "resolve",
+              "repository_additions": "resolve",
+              "target_repositories": "resolve",
+              "concepts": "resolve",
+              "symbols": "resolve",
+              "version_mentions": "resolve",
+              "concept_scopes": "resolve"
+            },
+            "provenance": {}
+          },
+          "analyzer_llm_called": true,
+          "analyzer_semantic_output_fields": [
+            "intent",
+            "repository_additions",
+            "concepts",
+            "symbols",
+            "version_mentions",
+            "concept_scopes"
+          ],
+          "analyzer_raw_semantic_delta": {
+            "intent": {
+              "value": "data_flow",
+              "support_spans": [
+                "What does the first worker step leave behind for the second analysis step, and how is the fitted vertex fed into the reprocessing?"
+              ]
+            },
+            "repository_additions": [
+              {
+                "value": "restgas_determination",
+                "support_spans": [
+                  "restgas"
+                ]
+              }
+            ],
+            "concepts": [
+              {
+                "value": "restgas analysis",
+                "support_spans": [
+                  "restgas analysis"
+                ]
+              },
+              {
+                "value": "event vertex",
+                "support_spans": [
+                  "event vertex"
+                ]
+              },
+              {
+                "value": "POCA workflow",
+                "support_spans": [
+                  "POCA workflow"
+                ]
+              },
+              {
+                "value": "worker step",
+                "support_spans": [
+                  "worker step"
+                ]
+              },
+              {
+                "value": "analysis step",
+                "support_spans": [
+                  "analysis step"
+                ]
+              },
+              {
+                "value": "fitted vertex",
+                "support_spans": [
+                  "fitted vertex"
+                ]
+              },
+              {
+                "value": "reprocessing",
+                "support_spans": [
+                  "reprocessing"
+                ]
+              }
+            ],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "analyzer_accepted_semantic_delta": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "restgas analysis",
+                "support_spans": [
+                  "restgas analysis"
+                ]
+              },
+              {
+                "value": "event vertex",
+                "support_spans": [
+                  "event vertex"
+                ]
+              },
+              {
+                "value": "POCA workflow",
+                "support_spans": [
+                  "POCA workflow"
+                ]
+              },
+              {
+                "value": "worker step",
+                "support_spans": [
+                  "worker step"
+                ]
+              },
+              {
+                "value": "analysis step",
+                "support_spans": [
+                  "analysis step"
+                ]
+              },
+              {
+                "value": "fitted vertex",
+                "support_spans": [
+                  "fitted vertex"
+                ]
+              },
+              {
+                "value": "reprocessing",
+                "support_spans": [
+                  "reprocessing"
+                ]
+              }
+            ],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": [],
+            "intent": {
+              "value": "data_flow",
+              "support_spans": [
+                "What does the first worker step leave behind for the second analysis step, and how is the fitted vertex fed into the reprocessing?"
+              ]
+            }
+          },
+          "analyzer_rejected_items": [
+            {
+              "field": "repository_additions",
+              "item": {
+                "value": "restgas_determination",
+                "support_spans": [
+                  "restgas"
+                ]
+              },
+              "reason": "unsupported_repository"
+            }
+          ],
+          "analyzer_item_support": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "restgas analysis",
+                "support_spans": [
+                  "restgas analysis"
+                ]
+              },
+              {
+                "value": "event vertex",
+                "support_spans": [
+                  "event vertex"
+                ]
+              },
+              {
+                "value": "POCA workflow",
+                "support_spans": [
+                  "POCA workflow"
+                ]
+              },
+              {
+                "value": "worker step",
+                "support_spans": [
+                  "worker step"
+                ]
+              },
+              {
+                "value": "analysis step",
+                "support_spans": [
+                  "analysis step"
+                ]
+              },
+              {
+                "value": "fitted vertex",
+                "support_spans": [
+                  "fitted vertex"
+                ]
+              },
+              {
+                "value": "reprocessing",
+                "support_spans": [
+                  "reprocessing"
+                ]
+              }
+            ],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": [],
+            "intent": [
+              {
+                "value": "data_flow",
+                "support_spans": [
+                  "What does the first worker step leave behind for the second analysis step, and how is the fitted vertex fed into the reprocessing?"
+                ]
+              }
+            ]
+          },
+          "unbound_version_tokens": [],
+          "analyzer_final": {
+            "intent": "data_flow",
+            "target_repositories": [
+              "luminosityfit",
+              "pandaroot",
+              "restgas_determination"
+            ],
+            "concepts": [
+              "restgas analysis",
+              "event vertex",
+              "POCA workflow",
+              "worker step",
+              "analysis step",
+              "fitted vertex",
+              "reprocessing"
+            ],
+            "symbols": [],
+            "requested_versions": {},
+            "concept_scopes": {}
+          }
+        }
+      }
+    },
+    {
+      "draw_index": 5,
+      "case_id": "n022",
+      "question": "The restgas analysis determines the event vertex through a two-step POCA workflow. What does the first worker step leave behind for the second analysis step, and how is the fitted vertex fed into the reprocessing?",
+      "intent": "data_flow",
+      "target_repositories": [
+        "luminosityfit",
+        "pandaroot",
+        "restgas_determination"
+      ],
+      "resolved_versions": {
+        "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+        "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357",
+        "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+      },
+      "symbols": [],
+      "concepts": [
+        "event vertex",
+        "POCA",
+        "first worker step",
+        "second analysis step",
+        "fitted vertex",
+        "reprocessing"
+      ],
+      "concept_scopes": {},
+      "required_source_types": [
+        "workflow",
+        "code"
+      ],
+      "paper_page_hints": {},
+      "matched_expansion_rules": [],
+      "provider_internal_attempts": 1,
+      "token_usage": 2006,
+      "elapsed_seconds": 5.301,
+      "started_at": "2026-09-03T15:29:13.030575",
+      "completed_at": "2026-09-03T15:29:18.332275",
+      "status": "COMPLETED",
+      "logical_calls": {
+        "analyzer_calls": 1,
+        "embedding_calls": 0,
+        "reranker_calls": 0
+      },
+      "r1_concept_phenotype": "R1_FEATURE_PARTIAL",
+      "plan_signature": {
+        "intent": "data_flow",
+        "target_repositories": [
+          "luminosityfit",
+          "pandaroot",
+          "restgas_determination"
+        ],
+        "symbols": [],
+        "normalized_concepts": [
+          "event vertex",
+          "first worker step",
+          "fitted vertex",
+          "poca",
+          "reprocessing",
+          "second analysis step"
+        ],
+        "required_source_types": [
+          "code",
+          "workflow"
+        ],
+        "paper_page_hints": [],
+        "concept_scopes": []
+      },
+      "plan": {
+        "intent": "data_flow",
+        "secondary_intents": [],
+        "routing_method": "llm",
+        "target_repositories": [
+          "luminosityfit",
+          "pandaroot",
+          "restgas_determination"
+        ],
+        "resolved_versions": {
+          "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+          "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357",
+          "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+        },
+        "version_conflicts": [],
+        "concepts": [
+          "event vertex",
+          "POCA",
+          "first worker step",
+          "second analysis step",
+          "fitted vertex",
+          "reprocessing"
+        ],
+        "symbols": [],
+        "concept_scopes": {},
+        "source_budgets": {
+          "workflow": 0.35,
+          "code": 0.3,
+          "graph": 0.2,
+          "readme": 0.1,
+          "paper": 0.05
+        },
+        "required_source_types": [
+          "workflow",
+          "code"
+        ],
+        "resolved_aliases": {},
+        "premise_corrections": [],
+        "paper_page_hints": {},
+        "analysis_diagnostics": {
+          "deterministic_parse": {
+            "fixed": {},
+            "fallback": {
+              "concept_scopes": {}
+            },
+            "known_partial": {},
+            "semantic_output_fields": [
+              "intent",
+              "repository_additions",
+              "concepts",
+              "symbols",
+              "version_mentions",
+              "concept_scopes"
+            ],
+            "unresolved_semantics": {
+              "intent": "resolve",
+              "repository_additions": "resolve",
+              "target_repositories": "resolve",
+              "concepts": "resolve",
+              "symbols": "resolve",
+              "version_mentions": "resolve",
+              "concept_scopes": "resolve"
+            },
+            "provenance": {}
+          },
+          "analyzer_llm_called": true,
+          "analyzer_semantic_output_fields": [
+            "intent",
+            "repository_additions",
+            "concepts",
+            "symbols",
+            "version_mentions",
+            "concept_scopes"
+          ],
+          "analyzer_raw_semantic_delta": {
+            "intent": {
+              "value": "data_flow",
+              "support_spans": [
+                "What does the first worker step leave behind for the second analysis step, and how is the fitted vertex fed into the reprocessing?"
+              ]
+            },
+            "repository_additions": [
+              {
+                "value": "restgas_determination",
+                "support_spans": [
+                  "restgas"
+                ]
+              }
+            ],
+            "concepts": [
+              {
+                "value": "event vertex",
+                "support_spans": [
+                  "event vertex"
+                ]
+              },
+              {
+                "value": "POCA",
+                "support_spans": [
+                  "POCA"
+                ]
+              },
+              {
+                "value": "first worker step",
+                "support_spans": [
+                  "first worker step"
+                ]
+              },
+              {
+                "value": "second analysis step",
+                "support_spans": [
+                  "second analysis step"
+                ]
+              },
+              {
+                "value": "fitted vertex",
+                "support_spans": [
+                  "fitted vertex"
+                ]
+              },
+              {
+                "value": "reprocessing",
+                "support_spans": [
+                  "reprocessing"
+                ]
+              }
+            ],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "analyzer_accepted_semantic_delta": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "event vertex",
+                "support_spans": [
+                  "event vertex"
+                ]
+              },
+              {
+                "value": "POCA",
+                "support_spans": [
+                  "POCA"
+                ]
+              },
+              {
+                "value": "first worker step",
+                "support_spans": [
+                  "first worker step"
+                ]
+              },
+              {
+                "value": "second analysis step",
+                "support_spans": [
+                  "second analysis step"
+                ]
+              },
+              {
+                "value": "fitted vertex",
+                "support_spans": [
+                  "fitted vertex"
+                ]
+              },
+              {
+                "value": "reprocessing",
+                "support_spans": [
+                  "reprocessing"
+                ]
+              }
+            ],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": [],
+            "intent": {
+              "value": "data_flow",
+              "support_spans": [
+                "What does the first worker step leave behind for the second analysis step, and how is the fitted vertex fed into the reprocessing?"
+              ]
+            }
+          },
+          "analyzer_rejected_items": [
+            {
+              "field": "repository_additions",
+              "item": {
+                "value": "restgas_determination",
+                "support_spans": [
+                  "restgas"
+                ]
+              },
+              "reason": "unsupported_repository"
+            }
+          ],
+          "analyzer_item_support": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "event vertex",
+                "support_spans": [
+                  "event vertex"
+                ]
+              },
+              {
+                "value": "POCA",
+                "support_spans": [
+                  "POCA"
+                ]
+              },
+              {
+                "value": "first worker step",
+                "support_spans": [
+                  "first worker step"
+                ]
+              },
+              {
+                "value": "second analysis step",
+                "support_spans": [
+                  "second analysis step"
+                ]
+              },
+              {
+                "value": "fitted vertex",
+                "support_spans": [
+                  "fitted vertex"
+                ]
+              },
+              {
+                "value": "reprocessing",
+                "support_spans": [
+                  "reprocessing"
+                ]
+              }
+            ],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": [],
+            "intent": [
+              {
+                "value": "data_flow",
+                "support_spans": [
+                  "What does the first worker step leave behind for the second analysis step, and how is the fitted vertex fed into the reprocessing?"
+                ]
+              }
+            ]
+          },
+          "unbound_version_tokens": [],
+          "analyzer_final": {
+            "intent": "data_flow",
+            "target_repositories": [
+              "luminosityfit",
+              "pandaroot",
+              "restgas_determination"
+            ],
+            "concepts": [
+              "event vertex",
+              "POCA",
+              "first worker step",
+              "second analysis step",
+              "fitted vertex",
+              "reprocessing"
+            ],
+            "symbols": [],
+            "requested_versions": {},
+            "concept_scopes": {}
+          }
+        }
+      }
+    },
+    {
+      "draw_index": 6,
+      "case_id": "n022",
+      "question": "The restgas analysis determines the event vertex through a two-step POCA workflow. What does the first worker step leave behind for the second analysis step, and how is the fitted vertex fed into the reprocessing?",
+      "intent": "data_flow",
+      "target_repositories": [
+        "luminosityfit",
+        "pandaroot",
+        "restgas_determination"
+      ],
+      "resolved_versions": {
+        "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+        "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357",
+        "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+      },
+      "symbols": [],
+      "concepts": [
+        "restgas analysis",
+        "event vertex",
+        "two-step POCA workflow",
+        "worker step",
+        "analysis step",
+        "fitted vertex",
+        "reprocessing"
+      ],
+      "concept_scopes": {},
+      "required_source_types": [
+        "workflow",
+        "code"
+      ],
+      "paper_page_hints": {},
+      "matched_expansion_rules": [],
+      "provider_internal_attempts": 1,
+      "token_usage": 2145,
+      "elapsed_seconds": 10.338,
+      "started_at": "2026-09-03T15:29:18.333084",
+      "completed_at": "2026-09-03T15:29:28.671874",
+      "status": "COMPLETED",
+      "logical_calls": {
+        "analyzer_calls": 1,
+        "embedding_calls": 0,
+        "reranker_calls": 0
+      },
+      "r1_concept_phenotype": "R1_FEATURE_COMPLETE",
+      "plan_signature": {
+        "intent": "data_flow",
+        "target_repositories": [
+          "luminosityfit",
+          "pandaroot",
+          "restgas_determination"
+        ],
+        "symbols": [],
+        "normalized_concepts": [
+          "analysis step",
+          "event vertex",
+          "fitted vertex",
+          "reprocessing",
+          "restgas analysis",
+          "two-step poca workflow",
+          "worker step"
+        ],
+        "required_source_types": [
+          "code",
+          "workflow"
+        ],
+        "paper_page_hints": [],
+        "concept_scopes": []
+      },
+      "plan": {
+        "intent": "data_flow",
+        "secondary_intents": [],
+        "routing_method": "llm",
+        "target_repositories": [
+          "luminosityfit",
+          "pandaroot",
+          "restgas_determination"
+        ],
+        "resolved_versions": {
+          "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+          "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357",
+          "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+        },
+        "version_conflicts": [],
+        "concepts": [
+          "restgas analysis",
+          "event vertex",
+          "two-step POCA workflow",
+          "worker step",
+          "analysis step",
+          "fitted vertex",
+          "reprocessing"
+        ],
+        "symbols": [],
+        "concept_scopes": {},
+        "source_budgets": {
+          "workflow": 0.35,
+          "code": 0.3,
+          "graph": 0.2,
+          "readme": 0.1,
+          "paper": 0.05
+        },
+        "required_source_types": [
+          "workflow",
+          "code"
+        ],
+        "resolved_aliases": {},
+        "premise_corrections": [],
+        "paper_page_hints": {},
+        "analysis_diagnostics": {
+          "deterministic_parse": {
+            "fixed": {},
+            "fallback": {
+              "concept_scopes": {}
+            },
+            "known_partial": {},
+            "semantic_output_fields": [
+              "intent",
+              "repository_additions",
+              "concepts",
+              "symbols",
+              "version_mentions",
+              "concept_scopes"
+            ],
+            "unresolved_semantics": {
+              "intent": "resolve",
+              "repository_additions": "resolve",
+              "target_repositories": "resolve",
+              "concepts": "resolve",
+              "symbols": "resolve",
+              "version_mentions": "resolve",
+              "concept_scopes": "resolve"
+            },
+            "provenance": {}
+          },
+          "analyzer_llm_called": true,
+          "analyzer_semantic_output_fields": [
+            "intent",
+            "repository_additions",
+            "concepts",
+            "symbols",
+            "version_mentions",
+            "concept_scopes"
+          ],
+          "analyzer_raw_semantic_delta": {
+            "intent": {
+              "value": "data_flow",
+              "support_spans": [
+                "What does the first worker step leave behind for the second analysis step, and how is the fitted vertex fed into the reprocessing?"
+              ]
+            },
+            "repository_additions": [
+              {
+                "value": "restgas_determination",
+                "support_spans": [
+                  "restgas"
+                ]
+              }
+            ],
+            "concepts": [
+              {
+                "value": "restgas analysis",
+                "support_spans": [
+                  "restgas analysis"
+                ]
+              },
+              {
+                "value": "event vertex",
+                "support_spans": [
+                  "event vertex"
+                ]
+              },
+              {
+                "value": "two-step POCA workflow",
+                "support_spans": [
+                  "two-step POCA workflow"
+                ]
+              },
+              {
+                "value": "worker step",
+                "support_spans": [
+                  "worker step"
+                ]
+              },
+              {
+                "value": "analysis step",
+                "support_spans": [
+                  "analysis step"
+                ]
+              },
+              {
+                "value": "fitted vertex",
+                "support_spans": [
+                  "fitted vertex"
+                ]
+              },
+              {
+                "value": "reprocessing",
+                "support_spans": [
+                  "reprocessing"
+                ]
+              }
+            ],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "analyzer_accepted_semantic_delta": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "restgas analysis",
+                "support_spans": [
+                  "restgas analysis"
+                ]
+              },
+              {
+                "value": "event vertex",
+                "support_spans": [
+                  "event vertex"
+                ]
+              },
+              {
+                "value": "two-step POCA workflow",
+                "support_spans": [
+                  "two-step POCA workflow"
+                ]
+              },
+              {
+                "value": "worker step",
+                "support_spans": [
+                  "worker step"
+                ]
+              },
+              {
+                "value": "analysis step",
+                "support_spans": [
+                  "analysis step"
+                ]
+              },
+              {
+                "value": "fitted vertex",
+                "support_spans": [
+                  "fitted vertex"
+                ]
+              },
+              {
+                "value": "reprocessing",
+                "support_spans": [
+                  "reprocessing"
+                ]
+              }
+            ],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": [],
+            "intent": {
+              "value": "data_flow",
+              "support_spans": [
+                "What does the first worker step leave behind for the second analysis step, and how is the fitted vertex fed into the reprocessing?"
+              ]
+            }
+          },
+          "analyzer_rejected_items": [
+            {
+              "field": "repository_additions",
+              "item": {
+                "value": "restgas_determination",
+                "support_spans": [
+                  "restgas"
+                ]
+              },
+              "reason": "unsupported_repository"
+            }
+          ],
+          "analyzer_item_support": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "restgas analysis",
+                "support_spans": [
+                  "restgas analysis"
+                ]
+              },
+              {
+                "value": "event vertex",
+                "support_spans": [
+                  "event vertex"
+                ]
+              },
+              {
+                "value": "two-step POCA workflow",
+                "support_spans": [
+                  "two-step POCA workflow"
+                ]
+              },
+              {
+                "value": "worker step",
+                "support_spans": [
+                  "worker step"
+                ]
+              },
+              {
+                "value": "analysis step",
+                "support_spans": [
+                  "analysis step"
+                ]
+              },
+              {
+                "value": "fitted vertex",
+                "support_spans": [
+                  "fitted vertex"
+                ]
+              },
+              {
+                "value": "reprocessing",
+                "support_spans": [
+                  "reprocessing"
+                ]
+              }
+            ],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": [],
+            "intent": [
+              {
+                "value": "data_flow",
+                "support_spans": [
+                  "What does the first worker step leave behind for the second analysis step, and how is the fitted vertex fed into the reprocessing?"
+                ]
+              }
+            ]
+          },
+          "unbound_version_tokens": [],
+          "analyzer_final": {
+            "intent": "data_flow",
+            "target_repositories": [
+              "luminosityfit",
+              "pandaroot",
+              "restgas_determination"
+            ],
+            "concepts": [
+              "restgas analysis",
+              "event vertex",
+              "two-step POCA workflow",
+              "worker step",
+              "analysis step",
+              "fitted vertex",
+              "reprocessing"
+            ],
+            "symbols": [],
+            "requested_versions": {},
+            "concept_scopes": {}
+          }
+        }
+      }
+    },
+    {
+      "draw_index": 7,
+      "case_id": "n022",
+      "question": "The restgas analysis determines the event vertex through a two-step POCA workflow. What does the first worker step leave behind for the second analysis step, and how is the fitted vertex fed into the reprocessing?",
+      "intent": "data_flow",
+      "target_repositories": [
+        "luminosityfit",
+        "pandaroot",
+        "restgas_determination"
+      ],
+      "resolved_versions": {
+        "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+        "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357",
+        "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+      },
+      "symbols": [],
+      "concepts": [
+        "restgas analysis",
+        "event vertex",
+        "POCA workflow",
+        "worker step",
+        "fitted vertex",
+        "reprocessing"
+      ],
+      "concept_scopes": {},
+      "required_source_types": [
+        "workflow",
+        "code"
+      ],
+      "paper_page_hints": {},
+      "matched_expansion_rules": [],
+      "provider_internal_attempts": 1,
+      "token_usage": 2187,
+      "elapsed_seconds": 13.036,
+      "started_at": "2026-09-03T15:29:28.672810",
+      "completed_at": "2026-09-03T15:29:41.709187",
+      "status": "COMPLETED",
+      "logical_calls": {
+        "analyzer_calls": 1,
+        "embedding_calls": 0,
+        "reranker_calls": 0
+      },
+      "r1_concept_phenotype": "R1_FEATURE_COMPLETE",
+      "plan_signature": {
+        "intent": "data_flow",
+        "target_repositories": [
+          "luminosityfit",
+          "pandaroot",
+          "restgas_determination"
+        ],
+        "symbols": [],
+        "normalized_concepts": [
+          "event vertex",
+          "fitted vertex",
+          "poca workflow",
+          "reprocessing",
+          "restgas analysis",
+          "worker step"
+        ],
+        "required_source_types": [
+          "code",
+          "workflow"
+        ],
+        "paper_page_hints": [],
+        "concept_scopes": []
+      },
+      "plan": {
+        "intent": "data_flow",
+        "secondary_intents": [],
+        "routing_method": "llm",
+        "target_repositories": [
+          "luminosityfit",
+          "pandaroot",
+          "restgas_determination"
+        ],
+        "resolved_versions": {
+          "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+          "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357",
+          "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+        },
+        "version_conflicts": [],
+        "concepts": [
+          "restgas analysis",
+          "event vertex",
+          "POCA workflow",
+          "worker step",
+          "fitted vertex",
+          "reprocessing"
+        ],
+        "symbols": [],
+        "concept_scopes": {},
+        "source_budgets": {
+          "workflow": 0.35,
+          "code": 0.3,
+          "graph": 0.2,
+          "readme": 0.1,
+          "paper": 0.05
+        },
+        "required_source_types": [
+          "workflow",
+          "code"
+        ],
+        "resolved_aliases": {},
+        "premise_corrections": [],
+        "paper_page_hints": {},
+        "analysis_diagnostics": {
+          "deterministic_parse": {
+            "fixed": {},
+            "fallback": {
+              "concept_scopes": {}
+            },
+            "known_partial": {},
+            "semantic_output_fields": [
+              "intent",
+              "repository_additions",
+              "concepts",
+              "symbols",
+              "version_mentions",
+              "concept_scopes"
+            ],
+            "unresolved_semantics": {
+              "intent": "resolve",
+              "repository_additions": "resolve",
+              "target_repositories": "resolve",
+              "concepts": "resolve",
+              "symbols": "resolve",
+              "version_mentions": "resolve",
+              "concept_scopes": "resolve"
+            },
+            "provenance": {}
+          },
+          "analyzer_llm_called": true,
+          "analyzer_semantic_output_fields": [
+            "intent",
+            "repository_additions",
+            "concepts",
+            "symbols",
+            "version_mentions",
+            "concept_scopes"
+          ],
+          "analyzer_raw_semantic_delta": {
+            "intent": {
+              "value": "data_flow",
+              "support_spans": [
+                "What does the first worker step leave behind for the second analysis step, and how is the fitted vertex fed into the reprocessing?"
+              ]
+            },
+            "repository_additions": [
+              {
+                "value": "restgas_determination",
+                "support_spans": [
+                  "restgas"
+                ]
+              }
+            ],
+            "concepts": [
+              {
+                "value": "restgas analysis",
+                "support_spans": [
+                  "restgas analysis"
+                ]
+              },
+              {
+                "value": "event vertex",
+                "support_spans": [
+                  "event vertex"
+                ]
+              },
+              {
+                "value": "POCA workflow",
+                "support_spans": [
+                  "POCA workflow"
+                ]
+              },
+              {
+                "value": "worker step",
+                "support_spans": [
+                  "worker step"
+                ]
+              },
+              {
+                "value": "fitted vertex",
+                "support_spans": [
+                  "fitted vertex"
+                ]
+              },
+              {
+                "value": "reprocessing",
+                "support_spans": [
+                  "reprocessing"
+                ]
+              }
+            ],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "analyzer_accepted_semantic_delta": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "restgas analysis",
+                "support_spans": [
+                  "restgas analysis"
+                ]
+              },
+              {
+                "value": "event vertex",
+                "support_spans": [
+                  "event vertex"
+                ]
+              },
+              {
+                "value": "POCA workflow",
+                "support_spans": [
+                  "POCA workflow"
+                ]
+              },
+              {
+                "value": "worker step",
+                "support_spans": [
+                  "worker step"
+                ]
+              },
+              {
+                "value": "fitted vertex",
+                "support_spans": [
+                  "fitted vertex"
+                ]
+              },
+              {
+                "value": "reprocessing",
+                "support_spans": [
+                  "reprocessing"
+                ]
+              }
+            ],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": [],
+            "intent": {
+              "value": "data_flow",
+              "support_spans": [
+                "What does the first worker step leave behind for the second analysis step, and how is the fitted vertex fed into the reprocessing?"
+              ]
+            }
+          },
+          "analyzer_rejected_items": [
+            {
+              "field": "repository_additions",
+              "item": {
+                "value": "restgas_determination",
+                "support_spans": [
+                  "restgas"
+                ]
+              },
+              "reason": "unsupported_repository"
+            }
+          ],
+          "analyzer_item_support": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "restgas analysis",
+                "support_spans": [
+                  "restgas analysis"
+                ]
+              },
+              {
+                "value": "event vertex",
+                "support_spans": [
+                  "event vertex"
+                ]
+              },
+              {
+                "value": "POCA workflow",
+                "support_spans": [
+                  "POCA workflow"
+                ]
+              },
+              {
+                "value": "worker step",
+                "support_spans": [
+                  "worker step"
+                ]
+              },
+              {
+                "value": "fitted vertex",
+                "support_spans": [
+                  "fitted vertex"
+                ]
+              },
+              {
+                "value": "reprocessing",
+                "support_spans": [
+                  "reprocessing"
+                ]
+              }
+            ],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": [],
+            "intent": [
+              {
+                "value": "data_flow",
+                "support_spans": [
+                  "What does the first worker step leave behind for the second analysis step, and how is the fitted vertex fed into the reprocessing?"
+                ]
+              }
+            ]
+          },
+          "unbound_version_tokens": [],
+          "analyzer_final": {
+            "intent": "data_flow",
+            "target_repositories": [
+              "luminosityfit",
+              "pandaroot",
+              "restgas_determination"
+            ],
+            "concepts": [
+              "restgas analysis",
+              "event vertex",
+              "POCA workflow",
+              "worker step",
+              "fitted vertex",
+              "reprocessing"
+            ],
+            "symbols": [],
+            "requested_versions": {},
+            "concept_scopes": {}
+          }
+        }
+      }
+    },
+    {
+      "draw_index": 8,
+      "case_id": "n022",
+      "question": "The restgas analysis determines the event vertex through a two-step POCA workflow. What does the first worker step leave behind for the second analysis step, and how is the fitted vertex fed into the reprocessing?",
+      "intent": "data_flow",
+      "target_repositories": [
+        "luminosityfit",
+        "pandaroot",
+        "restgas_determination"
+      ],
+      "resolved_versions": {
+        "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+        "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357",
+        "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+      },
+      "symbols": [
+        "POCA"
+      ],
+      "concepts": [
+        "restgas analysis",
+        "event vertex",
+        "two-step POCA workflow",
+        "worker step",
+        "fitted vertex",
+        "reprocessing"
+      ],
+      "concept_scopes": {},
+      "required_source_types": [
+        "workflow",
+        "code"
+      ],
+      "paper_page_hints": {},
+      "matched_expansion_rules": [],
+      "provider_internal_attempts": 1,
+      "token_usage": 2153,
+      "elapsed_seconds": 6.613,
+      "started_at": "2026-09-03T15:29:41.709924",
+      "completed_at": "2026-09-03T15:29:48.324131",
+      "status": "COMPLETED",
+      "logical_calls": {
+        "analyzer_calls": 1,
+        "embedding_calls": 0,
+        "reranker_calls": 0
+      },
+      "r1_concept_phenotype": "R1_FEATURE_COMPLETE",
+      "plan_signature": {
+        "intent": "data_flow",
+        "target_repositories": [
+          "luminosityfit",
+          "pandaroot",
+          "restgas_determination"
+        ],
+        "symbols": [
+          "POCA"
+        ],
+        "normalized_concepts": [
+          "event vertex",
+          "fitted vertex",
+          "reprocessing",
+          "restgas analysis",
+          "two-step poca workflow",
+          "worker step"
+        ],
+        "required_source_types": [
+          "code",
+          "workflow"
+        ],
+        "paper_page_hints": [],
+        "concept_scopes": []
+      },
+      "plan": {
+        "intent": "data_flow",
+        "secondary_intents": [],
+        "routing_method": "llm",
+        "target_repositories": [
+          "luminosityfit",
+          "pandaroot",
+          "restgas_determination"
+        ],
+        "resolved_versions": {
+          "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+          "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357",
+          "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+        },
+        "version_conflicts": [],
+        "concepts": [
+          "restgas analysis",
+          "event vertex",
+          "two-step POCA workflow",
+          "worker step",
+          "fitted vertex",
+          "reprocessing"
+        ],
+        "symbols": [
+          "POCA"
+        ],
+        "concept_scopes": {},
+        "source_budgets": {
+          "workflow": 0.35,
+          "code": 0.3,
+          "graph": 0.2,
+          "readme": 0.1,
+          "paper": 0.05
+        },
+        "required_source_types": [
+          "workflow",
+          "code"
+        ],
+        "resolved_aliases": {},
+        "premise_corrections": [],
+        "paper_page_hints": {},
+        "analysis_diagnostics": {
+          "deterministic_parse": {
+            "fixed": {},
+            "fallback": {
+              "concept_scopes": {}
+            },
+            "known_partial": {},
+            "semantic_output_fields": [
+              "intent",
+              "repository_additions",
+              "concepts",
+              "symbols",
+              "version_mentions",
+              "concept_scopes"
+            ],
+            "unresolved_semantics": {
+              "intent": "resolve",
+              "repository_additions": "resolve",
+              "target_repositories": "resolve",
+              "concepts": "resolve",
+              "symbols": "resolve",
+              "version_mentions": "resolve",
+              "concept_scopes": "resolve"
+            },
+            "provenance": {}
+          },
+          "analyzer_llm_called": true,
+          "analyzer_semantic_output_fields": [
+            "intent",
+            "repository_additions",
+            "concepts",
+            "symbols",
+            "version_mentions",
+            "concept_scopes"
+          ],
+          "analyzer_raw_semantic_delta": {
+            "intent": {
+              "value": "data_flow",
+              "support_spans": [
+                "What does the first worker step leave behind for the second analysis step, and how is the fitted vertex fed into the reprocessing?"
+              ]
+            },
+            "repository_additions": [
+              {
+                "value": "restgas_determination",
+                "support_spans": [
+                  "restgas"
+                ]
+              }
+            ],
+            "concepts": [
+              {
+                "value": "restgas analysis",
+                "support_spans": [
+                  "restgas analysis"
+                ]
+              },
+              {
+                "value": "event vertex",
+                "support_spans": [
+                  "event vertex"
+                ]
+              },
+              {
+                "value": "two-step POCA workflow",
+                "support_spans": [
+                  "two-step POCA workflow"
+                ]
+              },
+              {
+                "value": "worker step",
+                "support_spans": [
+                  "worker step"
+                ]
+              },
+              {
+                "value": "fitted vertex",
+                "support_spans": [
+                  "fitted vertex"
+                ]
+              },
+              {
+                "value": "reprocessing",
+                "support_spans": [
+                  "reprocessing"
+                ]
+              }
+            ],
+            "symbols": [
+              {
+                "value": "POCA",
+                "support_spans": [
+                  "POCA"
+                ]
+              }
+            ],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "analyzer_accepted_semantic_delta": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "restgas analysis",
+                "support_spans": [
+                  "restgas analysis"
+                ]
+              },
+              {
+                "value": "event vertex",
+                "support_spans": [
+                  "event vertex"
+                ]
+              },
+              {
+                "value": "two-step POCA workflow",
+                "support_spans": [
+                  "two-step POCA workflow"
+                ]
+              },
+              {
+                "value": "worker step",
+                "support_spans": [
+                  "worker step"
+                ]
+              },
+              {
+                "value": "fitted vertex",
+                "support_spans": [
+                  "fitted vertex"
+                ]
+              },
+              {
+                "value": "reprocessing",
+                "support_spans": [
+                  "reprocessing"
+                ]
+              }
+            ],
+            "symbols": [
+              {
+                "value": "POCA",
+                "support_spans": [
+                  "POCA"
+                ]
+              }
+            ],
+            "version_mentions": [],
+            "concept_scopes": [],
+            "intent": {
+              "value": "data_flow",
+              "support_spans": [
+                "What does the first worker step leave behind for the second analysis step, and how is the fitted vertex fed into the reprocessing?"
+              ]
+            }
+          },
+          "analyzer_rejected_items": [
+            {
+              "field": "repository_additions",
+              "item": {
+                "value": "restgas_determination",
+                "support_spans": [
+                  "restgas"
+                ]
+              },
+              "reason": "unsupported_repository"
+            }
+          ],
+          "analyzer_item_support": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "restgas analysis",
+                "support_spans": [
+                  "restgas analysis"
+                ]
+              },
+              {
+                "value": "event vertex",
+                "support_spans": [
+                  "event vertex"
+                ]
+              },
+              {
+                "value": "two-step POCA workflow",
+                "support_spans": [
+                  "two-step POCA workflow"
+                ]
+              },
+              {
+                "value": "worker step",
+                "support_spans": [
+                  "worker step"
+                ]
+              },
+              {
+                "value": "fitted vertex",
+                "support_spans": [
+                  "fitted vertex"
+                ]
+              },
+              {
+                "value": "reprocessing",
+                "support_spans": [
+                  "reprocessing"
+                ]
+              }
+            ],
+            "symbols": [
+              {
+                "value": "POCA",
+                "support_spans": [
+                  "POCA"
+                ]
+              }
+            ],
+            "version_mentions": [],
+            "concept_scopes": [],
+            "intent": [
+              {
+                "value": "data_flow",
+                "support_spans": [
+                  "What does the first worker step leave behind for the second analysis step, and how is the fitted vertex fed into the reprocessing?"
+                ]
+              }
+            ]
+          },
+          "unbound_version_tokens": [],
+          "analyzer_final": {
+            "intent": "data_flow",
+            "target_repositories": [
+              "luminosityfit",
+              "pandaroot",
+              "restgas_determination"
+            ],
+            "concepts": [
+              "restgas analysis",
+              "event vertex",
+              "two-step POCA workflow",
+              "worker step",
+              "fitted vertex",
+              "reprocessing"
+            ],
+            "symbols": [
+              "POCA"
+            ],
+            "requested_versions": {},
+            "concept_scopes": {}
+          }
+        }
+      }
+    }
+  ]
+}

@@ -108,42 +108,149 @@
     {
       "draw_index": 1,
       "case_id": "n022",
-      "status": "NOT_EXECUTED"
+      "status": "COMPLETED",
+      "started_at": "2026-09-03T15:28:15.980272",
+      "completed_at": "2026-09-03T15:28:37.199136",
+      "token_usage": 2344,
+      "provider_attempts": 1,
+      "concepts": [
+        "restgas analysis",
+        "event vertex",
+        "two-step POCA workflow",
+        "worker step",
+        "fitted vertex",
+        "reprocessing"
+      ],
+      "phenotype": "R1_FEATURE_COMPLETE"
     },
     {
       "draw_index": 2,
       "case_id": "n022",
-      "status": "NOT_EXECUTED"
+      "status": "COMPLETED",
+      "started_at": "2026-09-03T15:28:37.199901",
+      "completed_at": "2026-09-03T15:28:47.595584",
+      "token_usage": 2265,
+      "provider_attempts": 1,
+      "concepts": [
+        "restgas analysis",
+        "event vertex",
+        "two-step POCA workflow",
+        "first worker step",
+        "second analysis step",
+        "fitted vertex",
+        "reprocessing"
+      ],
+      "phenotype": "R1_FEATURE_PARTIAL"
     },
     {
       "draw_index": 3,
       "case_id": "n022",
-      "status": "NOT_EXECUTED"
+      "status": "COMPLETED",
+      "started_at": "2026-09-03T15:28:47.596291",
+      "completed_at": "2026-09-03T15:29:02.703480",
+      "token_usage": 2400,
+      "provider_attempts": 1,
+      "concepts": [
+        "event vertex",
+        "POCA workflow",
+        "worker step",
+        "analysis step",
+        "fitted vertex",
+        "reprocessing"
+      ],
+      "phenotype": "R1_FEATURE_COMPLETE"
     },
     {
       "draw_index": 4,
       "case_id": "n022",
-      "status": "NOT_EXECUTED"
+      "status": "COMPLETED",
+      "started_at": "2026-09-03T15:29:02.704261",
+      "completed_at": "2026-09-03T15:29:13.029869",
+      "token_usage": 2326,
+      "provider_attempts": 1,
+      "concepts": [
+        "restgas analysis",
+        "event vertex",
+        "POCA workflow",
+        "worker step",
+        "analysis step",
+        "fitted vertex",
+        "reprocessing"
+      ],
+      "phenotype": "R1_FEATURE_COMPLETE"
     },
     {
       "draw_index": 5,
       "case_id": "n022",
-      "status": "NOT_EXECUTED"
+      "status": "COMPLETED",
+      "started_at": "2026-09-03T15:29:13.030575",
+      "completed_at": "2026-09-03T15:29:18.332275",
+      "token_usage": 2006,
+      "provider_attempts": 1,
+      "concepts": [
+        "event vertex",
+        "POCA",
+        "first worker step",
+        "second analysis step",
+        "fitted vertex",
+        "reprocessing"
+      ],
+      "phenotype": "R1_FEATURE_PARTIAL"
     },
     {
       "draw_index": 6,
       "case_id": "n022",
-      "status": "NOT_EXECUTED"
+      "status": "COMPLETED",
+      "started_at": "2026-09-03T15:29:18.333084",
+      "completed_at": "2026-09-03T15:29:28.671874",
+      "token_usage": 2145,
+      "provider_attempts": 1,
+      "concepts": [
+        "restgas analysis",
+        "event vertex",
+        "two-step POCA workflow",
+        "worker step",
+        "analysis step",
+        "fitted vertex",
+        "reprocessing"
+      ],
+      "phenotype": "R1_FEATURE_COMPLETE"
     },
     {
       "draw_index": 7,
       "case_id": "n022",
-      "status": "NOT_EXECUTED"
+      "status": "COMPLETED",
+      "started_at": "2026-09-03T15:29:28.672810",
+      "completed_at": "2026-09-03T15:29:41.709187",
+      "token_usage": 2187,
+      "provider_attempts": 1,
+      "concepts": [
+        "restgas analysis",
+        "event vertex",
+        "POCA workflow",
+        "worker step",
+        "fitted vertex",
+        "reprocessing"
+      ],
+      "phenotype": "R1_FEATURE_COMPLETE"
     },
     {
       "draw_index": 8,
       "case_id": "n022",
-      "status": "NOT_EXECUTED"
+      "status": "COMPLETED",
+      "started_at": "2026-09-03T15:29:41.709924",
+      "completed_at": "2026-09-03T15:29:48.324131",
+      "token_usage": 2153,
+      "provider_attempts": 1,
+      "concepts": [
+        "restgas analysis",
+        "event vertex",
+        "two-step POCA workflow",
+        "worker step",
+        "fitted vertex",
+        "reprocessing"
+      ],
+      "phenotype": "R1_FEATURE_COMPLETE"
     }
   ],
   "phase_r_cells_16": [
@@ -261,8 +368,8 @@
     }
   ],
   "outcome_exposure_state": {
-    "D4_A2_V1_OUTCOME_EXPOSURE": "NOT_STARTED",
-    "analyzer_draws_completed": 0,
+    "D4_A2_V1_OUTCOME_EXPOSURE": "ANALYZER_SAMPLES_FROZEN",
+    "analyzer_draws_completed": 8,
     "downstream_cells_completed": 0,
     "downstream_cells_failed": 0,
     "evaluator_executed": false,
