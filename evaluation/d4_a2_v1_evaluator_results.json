@@ -1,0 +1,419 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint": "D4-A2-V1",
+  "stage": "D4-A2-V1 — Evaluator Deterministic Closeout",
+  "created_at": "2026-09-03T15:38:40.034326",
+  "starting_head": "9b007b5a895c245b40fa702996e07d45f47d2205",
+  "verdict": "PARTIAL / ANALYZER_VARIABILITY_OBSERVED_WITHOUT_EVIDENCE_SENSITIVITY",
+  "verdict_level": 6,
+  "rationale": "Multiple analyzer plans observed (8 signatures), but n022.e2 pre-rerank availability remained invariant across all plans.",
+  "plan_variability": {
+    "distinct_plan_signatures_count": 8,
+    "analyzer_plan_variability_observed": true,
+    "signature_frequencies": {
+      "{\"concept_scopes\": [], \"intent\": \"data_flow\", \"normalized_concepts\": [\"event vertex\", \"fitted vertex\", \"reprocessing\", \"restgas analysis\", \"two-step poca workflow\", \"worker step\"], \"paper_page_hints\": [], \"required_source_types\": [\"code\", \"workflow\"], \"symbols\": [], \"target_repositories\": [\"luminosityfit\", \"pandaroot\", \"restgas_determination\"]}": 1,
+      "{\"concept_scopes\": [], \"intent\": \"data_flow\", \"normalized_concepts\": [\"event vertex\", \"first worker step\", \"fitted vertex\", \"reprocessing\", \"restgas analysis\", \"second analysis step\", \"two-step poca workflow\"], \"paper_page_hints\": [], \"required_source_types\": [\"code\", \"workflow\"], \"symbols\": [\"POCA\"], \"target_repositories\": [\"luminosityfit\", \"pandaroot\", \"restgas_determination\"]}": 1,
+      "{\"concept_scopes\": [], \"intent\": \"data_flow\", \"normalized_concepts\": [\"analysis step\", \"event vertex\", \"fitted vertex\", \"poca workflow\", \"reprocessing\", \"worker step\"], \"paper_page_hints\": [], \"required_source_types\": [\"code\", \"workflow\"], \"symbols\": [], \"target_repositories\": [\"luminosityfit\", \"pandaroot\", \"restgas_determination\"]}": 1,
+      "{\"concept_scopes\": [], \"intent\": \"data_flow\", \"normalized_concepts\": [\"analysis step\", \"event vertex\", \"fitted vertex\", \"poca workflow\", \"reprocessing\", \"restgas analysis\", \"worker step\"], \"paper_page_hints\": [], \"required_source_types\": [\"code\", \"workflow\"], \"symbols\": [], \"target_repositories\": [\"luminosityfit\", \"pandaroot\", \"restgas_determination\"]}": 1,
+      "{\"concept_scopes\": [], \"intent\": \"data_flow\", \"normalized_concepts\": [\"event vertex\", \"first worker step\", \"fitted vertex\", \"poca\", \"reprocessing\", \"second analysis step\"], \"paper_page_hints\": [], \"required_source_types\": [\"code\", \"workflow\"], \"symbols\": [], \"target_repositories\": [\"luminosityfit\", \"pandaroot\", \"restgas_determination\"]}": 1,
+      "{\"concept_scopes\": [], \"intent\": \"data_flow\", \"normalized_concepts\": [\"analysis step\", \"event vertex\", \"fitted vertex\", \"reprocessing\", \"restgas analysis\", \"two-step poca workflow\", \"worker step\"], \"paper_page_hints\": [], \"required_source_types\": [\"code\", \"workflow\"], \"symbols\": [], \"target_repositories\": [\"luminosityfit\", \"pandaroot\", \"restgas_determination\"]}": 1,
+      "{\"concept_scopes\": [], \"intent\": \"data_flow\", \"normalized_concepts\": [\"event vertex\", \"fitted vertex\", \"poca workflow\", \"reprocessing\", \"restgas analysis\", \"worker step\"], \"paper_page_hints\": [], \"required_source_types\": [\"code\", \"workflow\"], \"symbols\": [], \"target_repositories\": [\"luminosityfit\", \"pandaroot\", \"restgas_determination\"]}": 1,
+      "{\"concept_scopes\": [], \"intent\": \"data_flow\", \"normalized_concepts\": [\"event vertex\", \"fitted vertex\", \"reprocessing\", \"restgas analysis\", \"two-step poca workflow\", \"worker step\"], \"paper_page_hints\": [], \"required_source_types\": [\"code\", \"workflow\"], \"symbols\": [\"POCA\"], \"target_repositories\": [\"luminosityfit\", \"pandaroot\", \"restgas_determination\"]}": 1
+    }
+  },
+  "r1_concept_phenotype": {
+    "R1_FEATURE_COMPLETE_COUNT": 6,
+    "R1_FEATURE_PARTIAL_COUNT": 2,
+    "R1_FEATURE_ABSENT_COUNT": 0,
+    "r1_feature_variability_observed": true
+  },
+  "plan_to_evidence_sensitivity": {
+    "PLAN_TO_EVIDENCE_SENSITIVITY_OBSERVED": false,
+    "R1_MECHANISM_REPRODUCED": false,
+    "before_contingency_table": [
+      {
+        "plan_index": 1,
+        "r1_concept_phenotype": "R1_FEATURE_COMPLETE",
+        "concepts": [
+          "restgas analysis",
+          "event vertex",
+          "two-step POCA workflow",
+          "worker step",
+          "fitted vertex",
+          "reprocessing"
+        ],
+        "exact_channel_retained": true,
+        "channel_union_retained": true,
+        "fused_top30_retained": true,
+        "final_rerank_pool_retained": true,
+        "final_evidence_retained": true
+      },
+      {
+        "plan_index": 2,
+        "r1_concept_phenotype": "R1_FEATURE_PARTIAL",
+        "concepts": [
+          "restgas analysis",
+          "event vertex",
+          "two-step POCA workflow",
+          "first worker step",
+          "second analysis step",
+          "fitted vertex",
+          "reprocessing"
+        ],
+        "exact_channel_retained": true,
+        "channel_union_retained": true,
+        "fused_top30_retained": true,
+        "final_rerank_pool_retained": true,
+        "final_evidence_retained": true
+      },
+      {
+        "plan_index": 3,
+        "r1_concept_phenotype": "R1_FEATURE_COMPLETE",
+        "concepts": [
+          "event vertex",
+          "POCA workflow",
+          "worker step",
+          "analysis step",
+          "fitted vertex",
+          "reprocessing"
+        ],
+        "exact_channel_retained": true,
+        "channel_union_retained": true,
+        "fused_top30_retained": true,
+        "final_rerank_pool_retained": true,
+        "final_evidence_retained": true
+      },
+      {
+        "plan_index": 4,
+        "r1_concept_phenotype": "R1_FEATURE_COMPLETE",
+        "concepts": [
+          "restgas analysis",
+          "event vertex",
+          "POCA workflow",
+          "worker step",
+          "analysis step",
+          "fitted vertex",
+          "reprocessing"
+        ],
+        "exact_channel_retained": true,
+        "channel_union_retained": true,
+        "fused_top30_retained": true,
+        "final_rerank_pool_retained": true,
+        "final_evidence_retained": true
+      },
+      {
+        "plan_index": 5,
+        "r1_concept_phenotype": "R1_FEATURE_PARTIAL",
+        "concepts": [
+          "event vertex",
+          "POCA",
+          "first worker step",
+          "second analysis step",
+          "fitted vertex",
+          "reprocessing"
+        ],
+        "exact_channel_retained": true,
+        "channel_union_retained": true,
+        "fused_top30_retained": true,
+        "final_rerank_pool_retained": true,
+        "final_evidence_retained": true
+      },
+      {
+        "plan_index": 6,
+        "r1_concept_phenotype": "R1_FEATURE_COMPLETE",
+        "concepts": [
+          "restgas analysis",
+          "event vertex",
+          "two-step POCA workflow",
+          "worker step",
+          "analysis step",
+          "fitted vertex",
+          "reprocessing"
+        ],
+        "exact_channel_retained": true,
+        "channel_union_retained": true,
+        "fused_top30_retained": true,
+        "final_rerank_pool_retained": true,
+        "final_evidence_retained": true
+      },
+      {
+        "plan_index": 7,
+        "r1_concept_phenotype": "R1_FEATURE_COMPLETE",
+        "concepts": [
+          "restgas analysis",
+          "event vertex",
+          "POCA workflow",
+          "worker step",
+          "fitted vertex",
+          "reprocessing"
+        ],
+        "exact_channel_retained": true,
+        "channel_union_retained": true,
+        "fused_top30_retained": true,
+        "final_rerank_pool_retained": true,
+        "final_evidence_retained": true
+      },
+      {
+        "plan_index": 8,
+        "r1_concept_phenotype": "R1_FEATURE_COMPLETE",
+        "concepts": [
+          "restgas analysis",
+          "event vertex",
+          "two-step POCA workflow",
+          "worker step",
+          "fitted vertex",
+          "reprocessing"
+        ],
+        "exact_channel_retained": true,
+        "channel_union_retained": true,
+        "fused_top30_retained": true,
+        "final_rerank_pool_retained": true,
+        "final_evidence_retained": true
+      }
+    ]
+  },
+  "paired_retrieval_analysis": {
+    "pre_rerank": {
+      "PAIR_PRESERVED_COUNT": 8,
+      "PAIR_UNRESOLVED_BOTH_COUNT": 0,
+      "PAIR_TREATMENT_REGRESSION_COUNT": 0,
+      "PAIR_TREATMENT_RECOVERY_COUNT": 0
+    },
+    "final_evidence": {
+      "FINAL_EVIDENCE_PRESERVED_COUNT": 8,
+      "FINAL_EVIDENCE_UNRESOLVED_BOTH_COUNT": 0,
+      "FINAL_EVIDENCE_REGRESSION_COUNT": 0,
+      "FINAL_EVIDENCE_RECOVERY_COUNT": 0
+    },
+    "final_only_reranker_variance": {
+      "FINAL_ONLY_REGRESSION_COUNT": 0,
+      "FINAL_ONLY_RECOVERY_COUNT": 0
+    },
+    "structured_treatment_attribution": [
+      {
+        "attribution": "NO_SHARED_PLAN_PRE_RERANK_TREATMENT_REGRESSION_OBSERVED"
+      }
+    ],
+    "pairs": [
+      {
+        "plan_index": 1,
+        "plan_phenotype": "R1_FEATURE_COMPLETE",
+        "plan_concepts": [
+          "restgas analysis",
+          "event vertex",
+          "two-step POCA workflow",
+          "worker step",
+          "fitted vertex",
+          "reprocessing"
+        ],
+        "before_cell_index": 1,
+        "after_cell_index": 2,
+        "before_final_rerank_pool_retained": true,
+        "after_final_rerank_pool_retained": true,
+        "pre_rerank_pair_classification": "PAIR_PRESERVED",
+        "before_final_evidence_retained": true,
+        "after_final_evidence_retained": true,
+        "final_evidence_pair_classification": "FINAL_EVIDENCE_PRESERVED",
+        "is_final_only_regression": false,
+        "is_final_only_recovery": false,
+        "plan_equality_verified": true
+      },
+      {
+        "plan_index": 2,
+        "plan_phenotype": "R1_FEATURE_PARTIAL",
+        "plan_concepts": [
+          "restgas analysis",
+          "event vertex",
+          "two-step POCA workflow",
+          "first worker step",
+          "second analysis step",
+          "fitted vertex",
+          "reprocessing"
+        ],
+        "before_cell_index": 4,
+        "after_cell_index": 3,
+        "before_final_rerank_pool_retained": true,
+        "after_final_rerank_pool_retained": true,
+        "pre_rerank_pair_classification": "PAIR_PRESERVED",
+        "before_final_evidence_retained": true,
+        "after_final_evidence_retained": true,
+        "final_evidence_pair_classification": "FINAL_EVIDENCE_PRESERVED",
+        "is_final_only_regression": false,
+        "is_final_only_recovery": false,
+        "plan_equality_verified": true
+      },
+      {
+        "plan_index": 3,
+        "plan_phenotype": "R1_FEATURE_COMPLETE",
+        "plan_concepts": [
+          "event vertex",
+          "POCA workflow",
+          "worker step",
+          "analysis step",
+          "fitted vertex",
+          "reprocessing"
+        ],
+        "before_cell_index": 5,
+        "after_cell_index": 6,
+        "before_final_rerank_pool_retained": true,
+        "after_final_rerank_pool_retained": true,
+        "pre_rerank_pair_classification": "PAIR_PRESERVED",
+        "before_final_evidence_retained": true,
+        "after_final_evidence_retained": true,
+        "final_evidence_pair_classification": "FINAL_EVIDENCE_PRESERVED",
+        "is_final_only_regression": false,
+        "is_final_only_recovery": false,
+        "plan_equality_verified": true
+      },
+      {
+        "plan_index": 4,
+        "plan_phenotype": "R1_FEATURE_COMPLETE",
+        "plan_concepts": [
+          "restgas analysis",
+          "event vertex",
+          "POCA workflow",
+          "worker step",
+          "analysis step",
+          "fitted vertex",
+          "reprocessing"
+        ],
+        "before_cell_index": 8,
+        "after_cell_index": 7,
+        "before_final_rerank_pool_retained": true,
+        "after_final_rerank_pool_retained": true,
+        "pre_rerank_pair_classification": "PAIR_PRESERVED",
+        "before_final_evidence_retained": true,
+        "after_final_evidence_retained": true,
+        "final_evidence_pair_classification": "FINAL_EVIDENCE_PRESERVED",
+        "is_final_only_regression": false,
+        "is_final_only_recovery": false,
+        "plan_equality_verified": true
+      },
+      {
+        "plan_index": 5,
+        "plan_phenotype": "R1_FEATURE_PARTIAL",
+        "plan_concepts": [
+          "event vertex",
+          "POCA",
+          "first worker step",
+          "second analysis step",
+          "fitted vertex",
+          "reprocessing"
+        ],
+        "before_cell_index": 9,
+        "after_cell_index": 10,
+        "before_final_rerank_pool_retained": true,
+        "after_final_rerank_pool_retained": true,
+        "pre_rerank_pair_classification": "PAIR_PRESERVED",
+        "before_final_evidence_retained": true,
+        "after_final_evidence_retained": true,
+        "final_evidence_pair_classification": "FINAL_EVIDENCE_PRESERVED",
+        "is_final_only_regression": false,
+        "is_final_only_recovery": false,
+        "plan_equality_verified": true
+      },
+      {
+        "plan_index": 6,
+        "plan_phenotype": "R1_FEATURE_COMPLETE",
+        "plan_concepts": [
+          "restgas analysis",
+          "event vertex",
+          "two-step POCA workflow",
+          "worker step",
+          "analysis step",
+          "fitted vertex",
+          "reprocessing"
+        ],
+        "before_cell_index": 12,
+        "after_cell_index": 11,
+        "before_final_rerank_pool_retained": true,
+        "after_final_rerank_pool_retained": true,
+        "pre_rerank_pair_classification": "PAIR_PRESERVED",
+        "before_final_evidence_retained": true,
+        "after_final_evidence_retained": true,
+        "final_evidence_pair_classification": "FINAL_EVIDENCE_PRESERVED",
+        "is_final_only_regression": false,
+        "is_final_only_recovery": false,
+        "plan_equality_verified": true
+      },
+      {
+        "plan_index": 7,
+        "plan_phenotype": "R1_FEATURE_COMPLETE",
+        "plan_concepts": [
+          "restgas analysis",
+          "event vertex",
+          "POCA workflow",
+          "worker step",
+          "fitted vertex",
+          "reprocessing"
+        ],
+        "before_cell_index": 13,
+        "after_cell_index": 14,
+        "before_final_rerank_pool_retained": true,
+        "after_final_rerank_pool_retained": true,
+        "pre_rerank_pair_classification": "PAIR_PRESERVED",
+        "before_final_evidence_retained": true,
+        "after_final_evidence_retained": true,
+        "final_evidence_pair_classification": "FINAL_EVIDENCE_PRESERVED",
+        "is_final_only_regression": false,
+        "is_final_only_recovery": false,
+        "plan_equality_verified": true
+      },
+      {
+        "plan_index": 8,
+        "plan_phenotype": "R1_FEATURE_COMPLETE",
+        "plan_concepts": [
+          "restgas analysis",
+          "event vertex",
+          "two-step POCA workflow",
+          "worker step",
+          "fitted vertex",
+          "reprocessing"
+        ],
+        "before_cell_index": 16,
+        "after_cell_index": 15,
+        "before_final_rerank_pool_retained": true,
+        "after_final_rerank_pool_retained": true,
+        "pre_rerank_pair_classification": "PAIR_PRESERVED",
+        "before_final_evidence_retained": true,
+        "after_final_evidence_retained": true,
+        "final_evidence_pair_classification": "FINAL_EVIDENCE_PRESERVED",
+        "is_final_only_regression": false,
+        "is_final_only_recovery": false,
+        "plan_equality_verified": true
+      }
+    ]
+  },
+  "accounting": {
+    "FORMAL_CASES": 1,
+    "ANALYZER_PLAN_DRAWS_PLANNED": 8,
+    "ANALYZER_PLAN_DRAWS_COMPLETED": 8,
+    "DISTINCT_PLAN_SIGNATURES": 8,
+    "R1_FEATURE_COMPLETE_COUNT": 6,
+    "R1_FEATURE_PARTIAL_COUNT": 2,
+    "R1_FEATURE_ABSENT_COUNT": 0,
+    "FORMAL_DOWNSTREAM_CELLS_PLANNED": 16,
+    "FORMAL_DOWNSTREAM_CELLS_COMPLETED": 16,
+    "FORMAL_DOWNSTREAM_CELLS_FAILED": 0,
+    "ANALYZER_CALLS": 8,
+    "EMBEDDING_CALLS": 16,
+    "RERANKER_CALLS": 16,
+    "TOTAL_LOGICAL_MODEL_CALLS": 40,
+    "PROVIDER_ATTEMPTS": 40,
+    "RETRIES": 0,
+    "TOKEN_USAGE": 311393,
+    "QA_CALLS": 0,
+    "VERIFIER_CALLS": 0,
+    "JUDGE_CALLS": 0,
+    "DB_QDRANT_WRITES": 0,
+    "PROTECTED_DATASET_ACCESS": 0,
+    "PAIR_PRESERVED_COUNT": 8,
+    "PAIR_UNRESOLVED_BOTH_COUNT": 0,
+    "PAIR_TREATMENT_REGRESSION_COUNT": 0,
+    "PAIR_TREATMENT_RECOVERY_COUNT": 0,
+    "FINAL_ONLY_REGRESSION_COUNT": 0,
+    "FINAL_ONLY_RECOVERY_COUNT": 0,
+    "PLAN_TO_EVIDENCE_SENSITIVITY_OBSERVED": false,
+    "R1_MECHANISM_REPRODUCED": false
+  }
+}

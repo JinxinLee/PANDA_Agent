@@ -11,6 +11,35 @@ When records conflict, use the single section explicitly marked **Current author
 
 # Current authoritative state — 2026-09-03
 
+## D4-A2-V1 current authoritative state — 2026-09-03
+
+- `D4_A2_V1_DECISION = PARTIAL / ANALYZER_VARIABILITY_OBSERVED_WITHOUT_EVIDENCE_SENSITIVITY`; `D4-A2-V1 = COMPLETE / PARTIAL / ANALYZER_VARIABILITY_OBSERVED_WITHOUT_EVIDENCE_SENSITIVITY`; `D4-A2-R1 = COMPLETE / PASS / BENCHMARK_CORRECTION_AND_REGRESSION_ATTRIBUTION_COMPLETE (HISTORICAL IMMUTABLE)`; `D4-A2 = COMPLETE / FAIL / CRITICAL_OR_GROUNDING_REGRESSION (HISTORICAL IMMUTABLE)`; `D4 = IN_PROGRESS / INCREMENTAL_QUERY_EXPANSION_MIGRATION`; `FIRST_BATCH_RUNTIME_MIGRATION = BLOCKED`; `PRODUCTION_ACTIVATION = false`; `D4-A3 = NOT_STARTED / BLOCKED`; `EXACT_NEXT_STAGE = D4-A2-V1-R1 — Expanded Analyzer Stability and Evidence-Sensitivity Validation (RECOMMENDED / SEPARATELY_AUTHORIZED)`.
+- Four-commit scientific audit boundary: Commit A `8b26430b6d3253658c2cc2d05ad8e92c13b2b737` (`D4-A2-V1 freeze paired stability validation`) froze manifest, preregistration, narrow runner, and 14 unit tests before exposure. Commit B `fd65d87a956ee86df3328eb7212eab8b5e890446` (`D4-A2-V1 freeze analyzer stability samples`) froze raw 8-draw Query Analyzer stability samples. Commit C `3cf22910953ae796a7bee6055387422f3e4fdd17` (`D4-A2-V1 freeze paired retrieval outcomes`) froze raw 16 downstream shared-plan retrieval cells. Commit D (`GIT_COMMIT_CONTAINING_THIS_ARTIFACT`, message `D4-A2-V1 close paired stability validation`) closes deterministic evaluator results, machine result artifact, report, and documentation.
+- Call and resource accounting:
+  - Phase P: 8 independent Query Analyzer calls on exact `n022` question (8 completed, 0 failed, 17,826 tokens).
+  - Phase R: 16 downstream shared-plan paired retrieval cells (8 plans × 2 arms in balanced alternating schedule; 0 analyzer calls, 16 embedding calls, 16 reranker calls; 293,567 tokens).
+  - Total model calls: 40 logical model calls (8 analyzer, 16 embedding, 16 reranker); 40 provider attempts (0 retries); 311,393 tokens consumed.
+  - Zero QA/verifier/judge calls, zero PostgreSQL/Qdrant writes, zero ingestion/reindex, zero protected dataset access (0 novel validation, 0 novel holdout). Zero post-exposure mutations across all categories.
+- Phase P plan variability findings:
+  - 8 distinct plan signatures across 8 draws (`distinct_plan_signatures_count = 8`; `ANALYZER_PLAN_VARIABILITY_OBSERVED = true`).
+  - R1 concept phenotype: `R1_FEATURE_COMPLETE = 6` (draws #1, #3, #4, #6, #7, #8), `R1_FEATURE_PARTIAL = 2` (draws #2, #5), `R1_FEATURE_ABSENT = 0` (`R1_FEATURE_VARIABILITY_OBSERVED = true`).
+- Phase R shared-plan paired retrieval findings:
+  - Exact plan equality: `plan_equality_verified = true` for all 16 cells.
+  - Pre-rerank availability: `PAIR_PRESERVED_COUNT = 8` (8/8 pairs retained target in final rerank pool in both arms).
+  - Treatment regressions: `PAIR_TREATMENT_REGRESSION_COUNT = 0` (0/8 regressions).
+  - Treatment recoveries: `PAIR_TREATMENT_RECOVERY_COUNT = 0`.
+  - Unresolved both: `PAIR_UNRESOLVED_BOTH_COUNT = 0`.
+  - Final-evidence retention: `FINAL_EVIDENCE_PRESERVED_COUNT = 8` (8/8 pairs retained target in final evidence in both arms).
+  - Final-only reranker variance: `FINAL_ONLY_REGRESSION_COUNT = 0`, `FINAL_ONLY_RECOVERY_COUNT = 0`.
+  - Structured competition attribution: `NO_SHARED_PLAN_PRE_RERANK_TREATMENT_REGRESSION_OBSERVED` (0 displaced candidates, 0 gate-passing structured candidates).
+- Attribution and sensitivity diagnosis:
+  - In this 8-draw sample, all 8 plans extracted either "worker step" + "fitted vertex" (6 draws) or "fitted vertex" + "first worker step" (2 draws), retaining `n022.e2` in ordinary exact recall and reaching the final pool in all 8 BEFORE cells. No draw produced the historical A2 AFTER state (omitting both concepts, `R1_FEATURE_ABSENT`).
+  - Therefore, `PLAN_TO_EVIDENCE_SENSITIVITY_OBSERVED = false` within this sample, triggering Level 6 precedence (`PARTIAL / ANALYZER_VARIABILITY_OBSERVED_WITHOUT_EVIDENCE_SENSITIVITY`).
+  - Zero treatment regressions occurred for the eight sampled shared plans (`PAIR_TREATMENT_REGRESSION_COUNT = 0`). Because this sample did not reproduce evidence sensitivity or an `R1_FEATURE_ABSENT` plan, this does not establish a general absence of Batch-1 treatment effects.
+- Production status: `PRODUCTION_ACTIVATION = false`; first-batch runtime migration remains blocked; `D4-A3 = NOT_STARTED / BLOCKED`.
+- Artifacts: `evaluation/d4_a2_v1_preregistration.json`, `evaluation/d4_a2_v1_execution_manifest.json`, `evaluation/d4_a2_v1_raw_analyzer_plan_samples.json`, `evaluation/d4_a2_v1_raw_paired_replay_results.json`, `evaluation/d4_a2_v1_evaluator_results.json`, `evaluation/d4_a2_v1_result.json`, `evaluation/D4_A2_V1_PAIRED_RETRIEVAL_STABILITY_AND_VARIANCE_ATTRIBUTION_VALIDATION.md`, `evaluation/scripts/d4_a2_v1_paired_stability_validation.py`, `tests/unit/test_d4_a2_v1_paired_stability_validation.py`.
+- Exact next separately authorized stage: **D4-A2-V1-R1 — Expanded Analyzer Stability and Evidence-Sensitivity Validation** (recommended to seek the missing analyzer phenotype/evidence-sensitivity contrast before any broad V2; do not start).
+
 ## D4-A2-R1 current authoritative state — 2026-09-03
 
 - `D4_A2_R1_DECISION = PASS / BENCHMARK_CORRECTION_AND_REGRESSION_ATTRIBUTION_COMPLETE`; `D4-A2 = COMPLETE / FAIL / CRITICAL_OR_GROUNDING_REGRESSION (HISTORICAL IMMUTABLE)`; `D4 = IN_PROGRESS / INCREMENTAL_QUERY_EXPANSION_MIGRATION`; `FIRST_BATCH_RUNTIME_MIGRATION = BLOCKED`; `PRODUCTION_ACTIVATION = false`; `D4-A3 = NOT_STARTED / BLOCKED`; `EXACT_NEXT_STAGE = D4-A2-V1 — Paired Retrieval Stability and Variance Attribution Validation` (separately authorized).

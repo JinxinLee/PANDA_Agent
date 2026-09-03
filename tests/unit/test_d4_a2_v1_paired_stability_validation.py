@@ -75,22 +75,27 @@ def test_batch1_rules_do_not_match_n022():
 # ---------------------------------------------------------------------------
 
 def test_manifest_phase_p_and_phase_r_slots():
-    """Verify exactly 8 Phase P slots and 16 Phase R cells in manifest."""
+    """Verify exact slot counts and journal accounting at any lifecycle state."""
     manifest = json.loads((_PROJECT_ROOT / d4_a2_v1.MANIFEST_PATH).read_text(encoding="utf-8"))
+    exposure = manifest["outcome_exposure_state"]
+    allowed_statuses = {"NOT_EXECUTED", "STARTED", "COMPLETED", "FAILED"}
 
     slots_p = manifest["phase_p_slots_8"]
     assert len(slots_p) == 8
     for i, s in enumerate(slots_p, start=1):
         assert s["draw_index"] == i
         assert s["case_id"] == "n022"
-        assert s["status"] == "NOT_EXECUTED"
+        assert s["status"] in allowed_statuses
+    assert sum(s["status"] == "COMPLETED" for s in slots_p) == exposure["analyzer_draws_completed"]
 
     cells_r = manifest["phase_r_cells_16"]
     assert len(cells_r) == 16
     for i, c in enumerate(cells_r, start=1):
         assert c["cell_index"] == i
         assert c["case_id"] == "n022"
-        assert c["status"] == "NOT_EXECUTED"
+        assert c["status"] in allowed_statuses
+    assert sum(c["status"] == "COMPLETED" for c in cells_r) == exposure["downstream_cells_completed"]
+    assert sum(c["status"] == "FAILED" for c in cells_r) == exposure["downstream_cells_failed"]
 
 
 def test_balanced_arm_schedule_alternation():

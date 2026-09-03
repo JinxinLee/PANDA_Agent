@@ -468,8 +468,9 @@
     "analyzer_draws_completed": 8,
     "downstream_cells_completed": 16,
     "downstream_cells_failed": 0,
-    "evaluator_executed": false,
-    "scientific_verdict_computed": false
+    "evaluator_executed": true,
+    "scientific_verdict_computed": true,
+    "scientific_verdict": "PARTIAL / ANALYZER_VARIABILITY_OBSERVED_WITHOUT_EVIDENCE_SENSITIVITY"
   },
   "pre_exposure_accounting": {
     "formal_cases": 1,
