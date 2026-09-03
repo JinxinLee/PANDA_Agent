@@ -66,6 +66,9 @@ from panda_agent.retrieval import Retriever, select_final_evidence
 
 
 STARTING_HEAD = "6bc10872bee9d00a7ea710f55353c3113756dbb2"
+COMMIT_A_HEAD = "c77f608cdf0edf77cbf482b71c51cbe9b1ce9d68"
+EXPECTED_A_R1_COMMIT_MESSAGE = "D4-A2-V2 repair pre-exposure freeze guards"
+MAX_PROVIDER_ATTEMPTS_PER_CASE = 3
 
 PREREGISTRATION_PATH = "evaluation/d4_a2_v2_preregistration.json"
 MANIFEST_PATH = "evaluation/d4_a2_v2_execution_manifest.json"
@@ -78,6 +81,31 @@ REPORT_PATH = "evaluation/D4_A2_V2_CONTROLLED_SHARED_PLAN_VALIDATION.md"
 GOLD_QUESTIONS_PATH = "evaluation/benchmarks/v2_6/gold_questions.yaml"
 NOVEL_DEV_PATH = "evaluation/novel/v1/novel_dev.yaml"
 CONFIG_QUERY_EXPANSIONS_PATH = "configs/query_expansions.yaml"
+
+FROZEN_IMPLEMENTATION_PATHS = [
+    "evaluation/d4_a2_v2_preregistration.json",
+    "evaluation/d4_a2_v2_execution_manifest.json",
+    "evaluation/scripts/d4_a2_v2_controlled_shared_plan_validation.py",
+    "tests/unit/test_d4_a2_v2_controlled_shared_plan_validation.py",
+    "src",
+    "configs",
+    "evaluation/benchmarks/v2_6/gold_questions.yaml",
+    "evaluation/novel/v1/novel_dev.yaml",
+]
+
+ALLOWED_COMMIT_B_DIFF_FILES = {
+    "evaluation/d4_a2_v2_raw_plans.json",
+    "evaluation/d4_a2_v2_execution_manifest.json",
+}
+
+REQUIRED_PRIMARY_METRIC_KEYS = [
+    "recall_at_5",
+    "recall_at_10",
+    "recall_at_20",
+    "combined_candidate_recall",
+    "final_evidence_recall",
+    "critical_final_evidence_recall",
+]
 
 EXPECTED_MODEL = "gemini-3.8-flash"
 EXPECTED_EMBEDDING_MODEL = "gemini-embedding-2"
@@ -202,16 +230,123 @@ def _git_head(project_root: Path) -> str:
         return f"UNKNOWN ({exc})"
 
 
+def get_implementation_freeze_commit(
+    project_root: Path,
+    rel_path: str = PREREGISTRATION_PATH,
+) -> tuple[str, str]:
+    """Determines the authoritative A-R1 implementation freeze commit using
+    the non-self-referential containing-commit policy.
+
+    Returns (commit_sha, commit_message).
+    """
+    rel_posix = rel_path.replace("\\", "/")
+    proc = subprocess.run(
+        ["git", "log", "-1", "--format=%H%x00%s", "HEAD", "--", rel_posix],
+        cwd=str(project_root),
+        capture_output=True,
+        text=True,
+    )
+    if proc.returncode != 0:
+        raise RuntimeError(
+            f"Git log failed for {rel_posix}: {proc.stderr.strip()}"
+        )
+    out = proc.stdout.strip()
+    if not out or "\x00" not in out:
+        raise RuntimeError(
+            f"Could not determine implementation freeze commit for {rel_posix} from Git history"
+        )
+    sha, msg = out.split("\x00", 1)
+    return sha.strip(), msg.strip()
+
+
+def verify_phase_p_gate(
+    project_root: Path,
+    *,
+    git_checker: Any | None = None,
+) -> dict[str, Any]:
+    """Mechanically verifies the authoritative A-R1 implementation-freeze boundary
+    prior to any Phase P Query Analyzer provider call:
+    1. Current HEAD is exactly the final A-R1 implementation freeze commit.
+    2. Commit message matches EXPECTED_A_R1_COMMIT_MESSAGE.
+    3. No intervening or descendant commits between freeze and Phase P.
+    4. Worktree and index are completely clean (no staged, unstaged, or untracked changes)
+       across all frozen implementation/benchmark paths: runner, prereg, manifest,
+       tests, src/, configs/, benchmarks, and novel_dev.
+    5. Implementation has not drifted from the freeze boundary.
+    """
+    if git_checker is not None:
+        freeze_sha, freeze_msg, current_head, dirty_paths = git_checker(project_root)
+    else:
+        freeze_sha, freeze_msg = get_implementation_freeze_commit(project_root)
+        current_head = _git_head(project_root)
+
+        status_proc = subprocess.run(
+            ["git", "status", "--porcelain", "-uall", "--", *FROZEN_IMPLEMENTATION_PATHS],
+            cwd=str(project_root),
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        dirty_paths = [
+            line.strip()
+            for line in status_proc.stdout.splitlines()
+            if line.strip()
+        ]
+
+    # Validate commit message
+    if freeze_msg != EXPECTED_A_R1_COMMIT_MESSAGE:
+        raise RuntimeError(
+            f"Implementation freeze commit message mismatch: expected '{EXPECTED_A_R1_COMMIT_MESSAGE}', "
+            f"got '{freeze_msg}' (commit {freeze_sha})"
+        )
+
+    # Require current HEAD to be exactly the freeze commit
+    if current_head != freeze_sha:
+        raise RuntimeError(
+            f"Current Git HEAD ({current_head}) differs from authoritative implementation freeze "
+            f"commit ({freeze_sha})! Descendant or intervening commits are rejected before Phase P."
+        )
+
+    # Require completely clean worktree/index across all frozen paths
+    if dirty_paths:
+        raise RuntimeError(
+            f"Worktree or index is dirty for frozen implementation/benchmark paths: {dirty_paths}. "
+            f"Require clean index, worktree, and untracked files before Phase P."
+        )
+
+    # Verify drift guards relative to STARTING_HEAD
+    if git_checker is None:
+        verify_drift_guards(project_root, require_clean_worktree=True)
+
+    return {
+        "verified": True,
+        "implementation_freeze_head": freeze_sha,
+        "runtime_execution_head": current_head,
+        "commit_message": freeze_msg,
+        "frozen_paths_clean": True,
+    }
+
+
 def verify_drift_guards(
     project_root: Path, *, require_clean_worktree: bool = False
 ) -> dict[str, Any]:
     """Enforces implementation and configuration drift guards:
-    - Protected src/ and configs/ are completely unchanged relative to STARTING_HEAD.
+    - Protected src/, configs/, benchmarks, and novel_dev are completely unchanged relative to STARTING_HEAD.
     - Only authorized Commit-A files are modified relative to STARTING_HEAD.
     - Clean worktree for frozen paths when require_clean_worktree=True.
     """
     diff_protected = subprocess.run(
-        ["git", "diff", "--name-only", STARTING_HEAD, "--", "src", "configs"],
+        [
+            "git",
+            "diff",
+            "--name-only",
+            STARTING_HEAD,
+            "--",
+            "src",
+            "configs",
+            "evaluation/benchmarks",
+            "evaluation/novel",
+        ],
         cwd=str(project_root),
         capture_output=True,
         text=True,
@@ -224,7 +359,7 @@ def verify_drift_guards(
     ]
     if changed_protected:
         raise RuntimeError(
-            f"Protected src/ or configs/ modified relative to STARTING_HEAD: {changed_protected}"
+            f"Protected src/, configs/, benchmarks, or novel_dev modified relative to STARTING_HEAD: {changed_protected}"
         )
 
     diff_all = subprocess.run(
@@ -247,7 +382,7 @@ def verify_drift_guards(
         )
 
     status_proc = subprocess.run(
-        ["git", "status", "--porcelain", "src", "configs", *ALLOWED_COMMIT_A_FILES],
+        ["git", "status", "--porcelain", "-uall", "--", *FROZEN_IMPLEMENTATION_PATHS],
         cwd=str(project_root),
         capture_output=True,
         text=True,
@@ -441,6 +576,38 @@ def audit_invariants(project_root: Path) -> dict[str, Any]:
     if prereg.get("production_and_lifecycle_guards", {}).get("d4_a3") != "NOT_STARTED / BLOCKED":
         raise ValueError("Preregistration d4_a3 is not NOT_STARTED / BLOCKED")
 
+    # A-R1 Implementation Freeze contract & Retry Cap consistency checks
+    if MAX_PROVIDER_ATTEMPTS_PER_CASE != 3:
+        raise ValueError(f"Runner MAX_PROVIDER_ATTEMPTS_PER_CASE != 3: {MAX_PROVIDER_ATTEMPTS_PER_CASE}")
+
+    prereg_p = prereg.get("phase_p_contract", {})
+    manifest_p = manifest.get("phase_p_contract", {})
+    if prereg_p.get("max_provider_attempts_per_case") != 3:
+        raise ValueError(
+            f"Preregistration max_provider_attempts_per_case != 3: {prereg_p.get('max_provider_attempts_per_case')}"
+        )
+    if manifest_p.get("max_provider_attempts_per_case") != 3:
+        raise ValueError(
+            f"Manifest max_provider_attempts_per_case != 3: {manifest_p.get('max_provider_attempts_per_case')}"
+        )
+
+    prereg_retry_cats = set(prereg_p.get("acquisition_rules", {}).get("allowed_retry_categories", []))
+    if prereg_retry_cats != ALLOWED_RETRY_CATEGORIES:
+        raise ValueError(
+            f"Preregistration allowed_retry_categories mismatch: {prereg_retry_cats} vs {ALLOWED_RETRY_CATEGORIES}"
+        )
+
+    prereg_freeze_msg = prereg.get("implementation_freeze_contract", {}).get("expected_commit_message")
+    if prereg_freeze_msg != EXPECTED_A_R1_COMMIT_MESSAGE:
+        raise ValueError(
+            f"Preregistration expected_commit_message mismatch: expected '{EXPECTED_A_R1_COMMIT_MESSAGE}', got '{prereg_freeze_msg}'"
+        )
+    manifest_freeze_msg = manifest.get("implementation_freeze_contract", {}).get("expected_commit_message")
+    if manifest_freeze_msg != EXPECTED_A_R1_COMMIT_MESSAGE:
+        raise ValueError(
+            f"Manifest expected_commit_message mismatch: expected '{EXPECTED_A_R1_COMMIT_MESSAGE}', got '{manifest_freeze_msg}'"
+        )
+
     drift_receipt = verify_drift_guards(project_root, require_clean_worktree=False)
 
     return {
@@ -548,7 +715,11 @@ def classify_phase_p_retryable_error(exc: BaseException) -> tuple[bool, str | No
     return False, None
 
 
-def execute_phase_p(project_root: Path) -> dict[str, Any]:
+def execute_phase_p(
+    project_root: Path,
+    *,
+    git_checker: Any | None = None,
+) -> dict[str, Any]:
     """Separately authorized future Phase P runner:
     Acquires exactly 1 accepted canonical Query Analyzer plan per case across the 16 cases.
     Enforces the single valid plan acquisition rule:
@@ -561,6 +732,11 @@ def execute_phase_p(project_root: Path) -> dict[str, Any]:
     audit_receipt = audit_invariants(project_root)
     print(f"[PHASE P AUDIT PASSED] Model: {audit_receipt['model_id']}")
 
+    # Mechanical Phase-P pre-exposure gate
+    gate_receipt = verify_phase_p_gate(project_root, git_checker=git_checker)
+    implementation_freeze_head = gate_receipt["implementation_freeze_head"]
+    runtime_execution_head = gate_receipt["runtime_execution_head"]
+
     manifest_path = project_root / MANIFEST_PATH
     manifest = _load_json(manifest_path)
     exposure = manifest.setdefault("outcome_exposure_state", {})
@@ -571,7 +747,6 @@ def execute_phase_p(project_root: Path) -> dict[str, Any]:
     exposure["D4_A2_V2_OUTCOME_EXPOSURE"] = "PLAN_ACQUISITION_STARTED"
     _save_json(manifest_path, manifest)
 
-    commit_a_sha = _git_head(project_root)
     retriever = Retriever(project_root)
 
     gold_ds = load_gold_dataset(project_root / GOLD_QUESTIONS_PATH)
@@ -600,7 +775,7 @@ def execute_phase_p(project_root: Path) -> dict[str, Any]:
         _save_json(manifest_path, manifest)
 
         # Plan acquisition with strict narrow retry policy
-        max_attempts = 3
+        max_attempts = MAX_PROVIDER_ATTEMPTS_PER_CASE
         attempts = 0
         accepted_plan: RetrievalPlan | None = None
         retry_reasons: list[str] = []
@@ -677,6 +852,7 @@ def execute_phase_p(project_root: Path) -> dict[str, Any]:
                 "reranker_calls": 0,
             },
             "plan_signature": sig_payload,
+            "accepted_canonical_plan": plan_dict,
             "canonical_plan": plan_dict,
         }
         plan_records.append(plan_record)
@@ -696,11 +872,22 @@ def execute_phase_p(project_root: Path) -> dict[str, Any]:
         "stage": "Phase P — Controlled Shared Plan Acquisition",
         "created_at": datetime.datetime.now().isoformat(),
         "starting_head": STARTING_HEAD,
-        "commit_a_implementation_freeze_head": commit_a_sha,
+        "implementation_freeze_head": implementation_freeze_head,
+        "runtime_execution_head": runtime_execution_head,
+        "commit_a_r1_implementation_freeze_head": implementation_freeze_head,
+        "commit_a_implementation_freeze_head": implementation_freeze_head,
+        "plan_freeze_state": "PLANS_FROZEN",
         "PLAN_FREEZE_BOUNDARY_ESTABLISHED": True,
         "PHASE_R_RETRIEVAL_EXECUTED": False,
         "EVALUATOR_EXECUTED": False,
         "SCIENTIFIC_VERDICT_COMPUTED": False,
+        "model_id": EXPECTED_MODEL,
+        "vertex_location": EXPECTED_VERTEX_LOCATION,
+        "temperature": EXPECTED_TEMPERATURE,
+        "prompt_authority": "src/panda_agent/prompts.py:QUERY_ANALYZER_SYSTEM_PROMPT",
+        "exact_acquisition_case_order": list(CASE_ORDER),
+        "max_provider_attempts_per_case": MAX_PROVIDER_ATTEMPTS_PER_CASE,
+        "allowed_retry_categories": sorted(list(ALLOWED_RETRY_CATEGORIES)),
         "plans_planned": len(CASE_ORDER),
         "plans_completed": len(plan_records),
         "plans_failed": 0,
@@ -743,7 +930,11 @@ def check_git_plan_freeze_status(
     """Mechanically checks that the artifact at rel_path:
     1. Is present in Git HEAD.
     2. Is clean in both index and worktree (no unstaged, staged, or untracked changes).
-    3. Is committed in a commit that is after Commit A (a descendant of Commit A and != Commit A).
+    3. Is committed in Commit B which is a descendant of implementation_freeze_head and != implementation_freeze_head.
+    4. Current Git HEAD is exactly the dedicated plan-freeze Commit B (no later commit).
+    5. Narrow allowed diff: only ALLOWED_COMMIT_B_DIFF_FILES differ between implementation_freeze_head and Commit B.
+    6. All frozen implementation files (FROZEN_IMPLEMENTATION_PATHS except MANIFEST_PATH) are Git-object unchanged.
+    7. Clean worktree/index across all FROZEN_IMPLEMENTATION_PATHS.
 
     Returns the Git commit SHA where the artifact was frozen in HEAD.
     """
@@ -764,7 +955,7 @@ def check_git_plan_freeze_status(
 
     # 2. Clean in both index and worktree
     status_proc = subprocess.run(
-        ["git", "status", "--porcelain", "--", rel_path_posix],
+        ["git", "status", "--porcelain", "-uall", "--", rel_path_posix],
         cwd=str(project_root),
         capture_output=True,
         text=True,
@@ -801,16 +992,16 @@ def check_git_plan_freeze_status(
             f"Could not determine Git commit identity for plan freeze artifact {rel_path_posix}"
         )
 
-    # 4. Committed AFTER Commit A
+    # 4. Committed AFTER implementation_freeze_head
     if not commit_a_sha or commit_a_sha.startswith("UNKNOWN"):
         raise RuntimeError(
-            f"Invalid or missing Commit A SHA for plan-freeze boundary comparison: {commit_a_sha!r}"
+            f"Invalid or missing implementation freeze SHA for plan-freeze boundary comparison: {commit_a_sha!r}"
         )
 
     if freeze_commit_sha == commit_a_sha:
         raise RuntimeError(
-            f"Plan freeze commit {freeze_commit_sha} cannot be identical to Commit A ({commit_a_sha}). "
-            f"Phase P plans must be committed in a dedicated Commit B after Commit A."
+            f"Plan freeze commit {freeze_commit_sha} cannot be identical to implementation freeze "
+            f"({commit_a_sha}). Phase P plans must be committed in a dedicated Commit B."
         )
 
     anc_proc = subprocess.run(
@@ -821,7 +1012,81 @@ def check_git_plan_freeze_status(
     )
     if anc_proc.returncode != 0:
         raise RuntimeError(
-            f"Plan freeze commit {freeze_commit_sha} is not a descendant of Commit A ({commit_a_sha})!"
+            f"Plan freeze commit {freeze_commit_sha} is not a descendant of implementation freeze "
+            f"({commit_a_sha})!"
+        )
+
+    # 5. Current Git HEAD is exactly Commit B (no later commit)
+    current_head = _git_head(project_root)
+    if current_head != freeze_commit_sha:
+        raise RuntimeError(
+            f"Current Git HEAD ({current_head}) is not the dedicated plan-freeze Commit B ({freeze_commit_sha})! "
+            f"No intervening or later commits allowed before Phase R."
+        )
+
+    # 6. Narrow allowed diff between implementation freeze and Commit B
+    diff_b = subprocess.run(
+        ["git", "diff", "--name-only", commit_a_sha, freeze_commit_sha],
+        cwd=str(project_root),
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    changed_b_files = [
+        f.strip().replace("\\", "/")
+        for f in diff_b.stdout.splitlines()
+        if f.strip()
+    ]
+    disallowed_b = [f for f in changed_b_files if f not in ALLOWED_COMMIT_B_DIFF_FILES]
+    if disallowed_b:
+        raise RuntimeError(
+            f"Commit B modified disallowed paths relative to implementation freeze ({commit_a_sha}): {disallowed_b}. "
+            f"Only {ALLOWED_COMMIT_B_DIFF_FILES} are allowed to differ in Commit B."
+        )
+
+    # 7. Git-object unchanged check for frozen implementation files
+    diff_frozen = subprocess.run(
+        [
+            "git",
+            "diff",
+            "--name-only",
+            commit_a_sha,
+            freeze_commit_sha,
+            "--",
+            *FROZEN_IMPLEMENTATION_PATHS,
+        ],
+        cwd=str(project_root),
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    frozen_diff = [
+        f.strip().replace("\\", "/")
+        for f in diff_frozen.stdout.splitlines()
+        if f.strip()
+    ]
+    disallowed_frozen = [f for f in frozen_diff if f != MANIFEST_PATH]
+    if disallowed_frozen:
+        raise RuntimeError(
+            f"Frozen implementation/benchmark files drifted between implementation freeze and Commit B: {disallowed_frozen}"
+        )
+
+    # 8. Worktree/index cleanliness across all frozen paths
+    status_frozen = subprocess.run(
+        ["git", "status", "--porcelain", "-uall", "--", *FROZEN_IMPLEMENTATION_PATHS],
+        cwd=str(project_root),
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    dirty_frozen = [
+        line.strip()
+        for line in status_frozen.stdout.splitlines()
+        if line.strip()
+    ]
+    if dirty_frozen:
+        raise RuntimeError(
+            f"Worktree or index is dirty for frozen implementation paths at Phase-R gate: {dirty_frozen}"
         )
 
     return freeze_commit_sha
@@ -837,18 +1102,22 @@ def verify_plan_freeze_gate(
 
     Validates:
       1. evaluation/d4_a2_v2_raw_plans.json exists and is parseable.
-      2. Artifact is present in Git HEAD, clean in index and worktree, and committed after Commit A.
-      3. Exactly 16 unique case plans in exact CASE_ORDER.
-      4. All 16 plans have status == 'COMPLETED', error is None, and valid canonical RetrievalPlan.
-      5. Phase P accounting and lifecycle state are complete:
+      2. Artifact is present in Git HEAD, clean in index and worktree, and committed after implementation freeze.
+      3. Commit B is descendant of implementation freeze and distinct from it.
+      4. Current HEAD is exactly Commit B with no later commit.
+      5. Only allowed Phase-P artifacts (raw_plans.json and manifest Phase-P state) differ between freeze and Commit B.
+      6. Frozen implementation files are Git-object unchanged between implementation freeze and Commit B.
+      7. Exactly 16 unique case plans in exact CASE_ORDER.
+      8. All 16 plans have status == 'COMPLETED', error is None, and valid canonical RetrievalPlan.
+      9. Phase P accounting and lifecycle state are complete:
          - PLAN_FREEZE_BOUNDARY_ESTABLISHED is True
          - plans_planned == 16, plans_completed == 16, plans_failed == 0
          - analyzer_calls == 16, zero embedding/reranker/qa/verifier/judge/db/protected calls
-      6. Phase R / evaluator flags remain False:
+      10. Phase R / evaluator flags remain False:
          - PHASE_R_RETRIEVAL_EXECUTED is False
          - EVALUATOR_EXECUTED is False
          - SCIENTIFIC_VERDICT_COMPUTED is False
-      7. Captures and returns the actual plan-freeze Git commit identity and Commit A identity.
+      11. Captures and returns the actual plan-freeze Git commit identity and implementation freeze identity.
 
     Fails closed on modified, uncommitted, stale, or malformed plan artifacts.
     """
@@ -867,11 +1136,15 @@ def verify_plan_freeze_gate(
     if not isinstance(raw_data, dict):
         raise ValueError(f"Raw plans artifact {raw_plans_file} is not a JSON object")
 
-    # Commit A identity recorded during Phase P
-    commit_a_sha = raw_data.get("commit_a_implementation_freeze_head")
+    # Implementation freeze identity recorded during Phase P
+    commit_a_sha = (
+        raw_data.get("implementation_freeze_head")
+        or raw_data.get("commit_a_r1_implementation_freeze_head")
+        or raw_data.get("commit_a_implementation_freeze_head")
+    )
     if not commit_a_sha or not isinstance(commit_a_sha, str) or commit_a_sha.startswith("UNKNOWN"):
         raise ValueError(
-            f"Raw plans artifact missing valid 'commit_a_implementation_freeze_head': {commit_a_sha!r}"
+            f"Raw plans artifact missing valid implementation freeze HEAD: {commit_a_sha!r}"
         )
 
     # Git HEAD presence, cleanliness, and descendant check
@@ -923,6 +1196,13 @@ def verify_plan_freeze_gate(
         if acct.get(forbidden, 0) != 0:
             raise ValueError(f"Phase P accounting violation: {forbidden} = {acct.get(forbidden)} != 0")
 
+    # Contract fields verification
+    if raw_data.get("max_provider_attempts_per_case") is not None:
+        if raw_data.get("max_provider_attempts_per_case") != MAX_PROVIDER_ATTEMPTS_PER_CASE:
+            raise ValueError(
+                f"Plan artifact max_provider_attempts_per_case mismatch: {raw_data.get('max_provider_attempts_per_case')}"
+            )
+
     # Exactly 16 unique case plans in exact CASE_ORDER
     plans = raw_data.get("plans", [])
     if len(plans) != len(CASE_ORDER):
@@ -946,7 +1226,7 @@ def verify_plan_freeze_gate(
         if p.get("error") is not None:
             raise ValueError(f"Plan slot #{idx} ({cid}) has error: {p.get('error')}")
 
-        canonical_dict = p.get("canonical_plan")
+        canonical_dict = p.get("canonical_plan") or p.get("accepted_canonical_plan")
         if not canonical_dict or not isinstance(canonical_dict, dict):
             raise ValueError(f"Plan slot #{idx} ({cid}) missing canonical_plan dictionary")
 
@@ -968,6 +1248,7 @@ def verify_plan_freeze_gate(
     return {
         "verified": True,
         "raw_plans_path": str(raw_plans_file),
+        "implementation_freeze_head": commit_a_sha,
         "commit_a_implementation_freeze_head": commit_a_sha,
         "phase_p_plan_freeze_commit_head": plan_freeze_commit_sha,
         "plans_count": len(plans),
@@ -1364,14 +1645,18 @@ def validate_raw_artifact_structural_validity(
         return False, "Raw SCIENTIFIC_VERDICT_COMPUTED is not False", mutation_counters
 
     # Check commit provenance
-    commit_a_sha = raw_data.get("commit_a_implementation_freeze_head")
+    commit_a_sha = (
+        raw_data.get("implementation_freeze_head")
+        or raw_data.get("commit_a_r1_implementation_freeze_head")
+        or raw_data.get("commit_a_implementation_freeze_head")
+    )
     if not commit_a_sha or not isinstance(commit_a_sha, str) or commit_a_sha.startswith("UNKNOWN"):
-        return False, "Raw artifact missing valid commit_a_implementation_freeze_head", mutation_counters
+        return False, "Raw artifact missing valid implementation_freeze_head", mutation_counters
     plan_freeze_sha = raw_data.get("phase_p_plan_freeze_commit_head")
     if not plan_freeze_sha or not isinstance(plan_freeze_sha, str) or plan_freeze_sha.startswith("UNKNOWN"):
         return False, "Raw artifact missing valid phase_p_plan_freeze_commit_head", mutation_counters
     if commit_a_sha == plan_freeze_sha:
-        return False, "Raw artifact commit_a_implementation_freeze_head cannot equal phase_p_plan_freeze_commit_head", mutation_counters
+        return False, "Raw artifact implementation_freeze_head cannot equal phase_p_plan_freeze_commit_head", mutation_counters
 
     # Check model contract
     mc = raw_data.get("model_contract", {})
@@ -1400,16 +1685,16 @@ def validate_raw_artifact_structural_validity(
 
 
 def compute_controlled_shared_plan_verdict(
-    execution_valid: bool = True,
+    execution_valid: bool | None = None,
     protocol_violation: bool = False,
     protocol_violation_reason: str | None = None,
-    before_reference_valid: bool = True,
-    target_replacement_reproduced: int = 2,
-    batch1_dependency_removed: int = 2,
+    before_reference_valid: bool | None = None,
+    target_replacement_reproduced: int | None = None,
+    batch1_dependency_removed: int | None = None,
     shared_plan_critical_regressions: list[str] | None = None,
-    grounding_regressions: int = 0,
-    wrong_version_regressions: int = 0,
-    invalid_provenance_recoveries: int = 0,
+    grounding_regressions: int | None = None,
+    wrong_version_regressions: int | None = None,
+    invalid_provenance_recoveries: int | None = None,
     metric_deltas: dict[str, float] | None = None,
 ) -> dict[str, Any]:
     """Pure deterministic decision logic implementing D4-A2-V2 Section 20.
@@ -1421,12 +1706,12 @@ def compute_controlled_shared_plan_verdict(
       Level 4: FAIL / SHARED_PLAN_CRITICAL_TREATMENT_REGRESSION
       Level 5: PARTIAL / AGGREGATE_REGRESSION_EXCEEDS_BOUNDED_TOLERANCE
       Level 6: PASS / CONTROLLED_SHARED_PLAN_T2_VALIDATED
-    """
-    crit_regs = shared_plan_critical_regressions or []
-    deltas = metric_deltas or {}
 
-    # Level 1 — INVALID
-    if not execution_valid or protocol_violation:
+    Requires complete, explicit scientific evaluator inputs. Missing, empty, or
+    malformed inputs fail closed at Level 1 with INCOMPLETE_EVALUATOR_INPUT.
+    """
+    # Level 1 — Explicit protocol violation or execution failure
+    if protocol_violation or execution_valid is False:
         return {
             "verdict_level": 1,
             "verdict": VERDICT_LEVEL_1_INVALID,
@@ -1434,6 +1719,38 @@ def compute_controlled_shared_plan_verdict(
                 protocol_violation_reason
                 or "Fundamental protocol, plan construction, or execution integrity failure occurred."
             ),
+        }
+
+    # Completeness verification for explicit evaluator inputs
+    missing_fields: list[str] = []
+    if execution_valid is None:
+        missing_fields.append("execution_valid")
+    if before_reference_valid is None:
+        missing_fields.append("before_reference_valid")
+    if target_replacement_reproduced is None:
+        missing_fields.append("target_replacement_reproduced")
+    if batch1_dependency_removed is None:
+        missing_fields.append("batch1_dependency_removed")
+    if shared_plan_critical_regressions is None:
+        missing_fields.append("shared_plan_critical_regressions")
+    if grounding_regressions is None:
+        missing_fields.append("grounding_regressions")
+    if wrong_version_regressions is None:
+        missing_fields.append("wrong_version_regressions")
+    if invalid_provenance_recoveries is None:
+        missing_fields.append("invalid_provenance_recoveries")
+    if metric_deltas is None:
+        missing_fields.append("metric_deltas")
+    else:
+        for m in REQUIRED_PRIMARY_METRIC_KEYS:
+            if m not in metric_deltas or metric_deltas[m] is None or not isinstance(metric_deltas[m], (int, float)):
+                missing_fields.append(f"metric_deltas[{m}]")
+
+    if missing_fields:
+        return {
+            "verdict_level": 1,
+            "verdict": VERDICT_LEVEL_1_INVALID,
+            "verdict_reason": f"INCOMPLETE_EVALUATOR_INPUT: Missing or invalid required evaluator inputs: {', '.join(missing_fields)}",
         }
 
     # Level 2 — INCONCLUSIVE
@@ -1460,6 +1777,7 @@ def compute_controlled_shared_plan_verdict(
         }
 
     # Level 4 — FAIL (Shared-plan critical regression or safety gate failure)
+    crit_regs = shared_plan_critical_regressions
     if (
         len(crit_regs) > 0
         or grounding_regressions > 0
@@ -1480,12 +1798,12 @@ def compute_controlled_shared_plan_verdict(
 
     # Level 5 — PARTIAL (Aggregate tolerances)
     tolerance_violations: list[str] = []
-    delta_r5 = deltas.get("recall_at_5", 0.0)
-    delta_r10 = deltas.get("recall_at_10", 0.0)
-    delta_r20 = deltas.get("recall_at_20", 0.0)
-    delta_comb = deltas.get("combined_candidate_recall", 0.0)
-    delta_final = deltas.get("final_evidence_recall", 0.0)
-    delta_crit = deltas.get("critical_final_evidence_recall", 0.0)
+    delta_r5 = metric_deltas["recall_at_5"]
+    delta_r10 = metric_deltas["recall_at_10"]
+    delta_r20 = metric_deltas["recall_at_20"]
+    delta_comb = metric_deltas["combined_candidate_recall"]
+    delta_final = metric_deltas["final_evidence_recall"]
+    delta_crit = metric_deltas["critical_final_evidence_recall"]
 
     if delta_r5 < -0.05:
         tolerance_violations.append(f"Recall@5 delta {delta_r5:.4f} < -0.05")

@@ -9,7 +9,9 @@ from __future__ import annotations
 import copy
 import json
 from pathlib import Path
+import subprocess
 import sys
+from typing import Any
 from unittest.mock import MagicMock
 import pytest
 
@@ -383,6 +385,33 @@ def test_no_question_specific_shortcuts():
 # 11. Verdict Precedence Ladder Tests
 # ---------------------------------------------------------------------------
 
+VALID_PRIMARY_METRIC_DELTAS = {
+    "recall_at_5": 0.0,
+    "recall_at_10": 0.0,
+    "recall_at_20": 0.0,
+    "combined_candidate_recall": 0.0,
+    "final_evidence_recall": 0.0,
+    "critical_final_evidence_recall": 0.0,
+}
+
+
+def _make_valid_verdict_inputs(**overrides: Any) -> dict[str, Any]:
+    base: dict[str, Any] = {
+        "execution_valid": True,
+        "protocol_violation": False,
+        "before_reference_valid": True,
+        "target_replacement_reproduced": 2,
+        "batch1_dependency_removed": 2,
+        "shared_plan_critical_regressions": [],
+        "grounding_regressions": 0,
+        "wrong_version_regressions": 0,
+        "invalid_provenance_recoveries": 0,
+        "metric_deltas": dict(VALID_PRIMARY_METRIC_DELTAS),
+    }
+    base.update(overrides)
+    return base
+
+
 def test_verdict_precedence_ladder():
     """Verify the 6-level verdict precedence ladder:
     - Level 1: INVALID
@@ -393,62 +422,97 @@ def test_verdict_precedence_ladder():
     - Level 6: PASS (Controlled shared plan T2 validated)
     """
     # Level 1: Protocol failure
-    v1 = v2.compute_controlled_shared_plan_verdict(execution_valid=False)
+    v1 = v2.compute_controlled_shared_plan_verdict(
+        **_make_valid_verdict_inputs(execution_valid=False)
+    )
     assert v1["verdict_level"] == 1
     assert "INVALID" in v1["verdict"]
 
     # Level 2: BEFORE reference not reproduced
     v2_res = v2.compute_controlled_shared_plan_verdict(
-        execution_valid=True,
-        before_reference_valid=False,
+        **_make_valid_verdict_inputs(before_reference_valid=False)
     )
     assert v2_res["verdict_level"] == 2
     assert "INCONCLUSIVE" in v2_res["verdict"]
 
     # Level 3: Target replacement not reproduced
     v3 = v2.compute_controlled_shared_plan_verdict(
-        execution_valid=True,
-        before_reference_valid=True,
-        target_replacement_reproduced=1,
-        batch1_dependency_removed=2,
+        **_make_valid_verdict_inputs(target_replacement_reproduced=1)
     )
     assert v3["verdict_level"] == 3
     assert "FAIL / PRIMARY_TARGET_REPLACEMENT_NOT_REPRODUCED" in v3["verdict"]
 
     # Level 4: Shared plan critical regression
     v4 = v2.compute_controlled_shared_plan_verdict(
-        execution_valid=True,
-        before_reference_valid=True,
-        target_replacement_reproduced=2,
-        batch1_dependency_removed=2,
-        shared_plan_critical_regressions=["n022.e2"],
+        **_make_valid_verdict_inputs(shared_plan_critical_regressions=["n022.e2"])
     )
     assert v4["verdict_level"] == 4
     assert "FAIL / SHARED_PLAN_CRITICAL_TREATMENT_REGRESSION" in v4["verdict"]
 
     # Level 5: Aggregate tolerance exceeded
+    deltas_l5 = dict(VALID_PRIMARY_METRIC_DELTAS)
+    deltas_l5["recall_at_5"] = -0.06
     v5 = v2.compute_controlled_shared_plan_verdict(
-        execution_valid=True,
-        before_reference_valid=True,
-        target_replacement_reproduced=2,
-        batch1_dependency_removed=2,
-        shared_plan_critical_regressions=[],
-        metric_deltas={"recall_at_5": -0.06},
+        **_make_valid_verdict_inputs(metric_deltas=deltas_l5)
     )
     assert v5["verdict_level"] == 5
     assert "PARTIAL / AGGREGATE_REGRESSION_EXCEEDS_BOUNDED_TOLERANCE" in v5["verdict"]
 
     # Level 6: PASS
     v6 = v2.compute_controlled_shared_plan_verdict(
-        execution_valid=True,
-        before_reference_valid=True,
-        target_replacement_reproduced=2,
-        batch1_dependency_removed=2,
-        shared_plan_critical_regressions=[],
-        metric_deltas={"recall_at_5": 0.0, "final_evidence_recall": 0.0},
+        **_make_valid_verdict_inputs()
     )
     assert v6["verdict_level"] == 6
     assert "PASS / CONTROLLED_SHARED_PLAN_T2_VALIDATED" in v6["verdict"]
+
+
+def test_verdict_empty_input_cannot_pass():
+    """Verify that compute_controlled_shared_plan_verdict fails closed at Level 1 on empty input."""
+    res = v2.compute_controlled_shared_plan_verdict()
+    assert res["verdict_level"] == 1
+    assert "INVALID" in res["verdict"]
+    assert "INCOMPLETE_EVALUATOR_INPUT" in res["verdict_reason"]
+
+
+def test_verdict_incomplete_primary_metrics_cannot_pass():
+    """Verify that compute_controlled_shared_plan_verdict fails closed at Level 1 if any primary metric is missing."""
+    for key in v2.REQUIRED_PRIMARY_METRIC_KEYS:
+        incomplete_deltas = dict(VALID_PRIMARY_METRIC_DELTAS)
+        del incomplete_deltas[key]
+        inputs = _make_valid_verdict_inputs(metric_deltas=incomplete_deltas)
+        res = v2.compute_controlled_shared_plan_verdict(**inputs)
+        assert res["verdict_level"] == 1, f"Should fail Level 1 when {key} is missing"
+        assert "INVALID" in res["verdict"]
+        assert "INCOMPLETE_EVALUATOR_INPUT" in res["verdict_reason"]
+        assert key in res["verdict_reason"]
+
+
+def test_verdict_missing_safety_accounting_cannot_pass():
+    """Verify that compute_controlled_shared_plan_verdict fails closed at Level 1 if safety accounting is missing."""
+    for safety_key in ("grounding_regressions", "wrong_version_regressions", "invalid_provenance_recoveries"):
+        inputs = _make_valid_verdict_inputs(**{safety_key: None})
+        res = v2.compute_controlled_shared_plan_verdict(**inputs)
+        assert res["verdict_level"] == 1, f"Should fail Level 1 when {safety_key} is None"
+        assert "INVALID" in res["verdict"]
+        assert "INCOMPLETE_EVALUATOR_INPUT" in res["verdict_reason"]
+
+
+def test_verdict_missing_target_reproduction_cannot_pass():
+    """Verify that compute_controlled_shared_plan_verdict fails closed at Level 1 if target reproduction is missing."""
+    for target_key in ("target_replacement_reproduced", "batch1_dependency_removed"):
+        inputs = _make_valid_verdict_inputs(**{target_key: None})
+        res = v2.compute_controlled_shared_plan_verdict(**inputs)
+        assert res["verdict_level"] == 1, f"Should fail Level 1 when {target_key} is None"
+        assert "INVALID" in res["verdict"]
+        assert "INCOMPLETE_EVALUATOR_INPUT" in res["verdict_reason"]
+
+
+def test_verdict_complete_valid_input_passes():
+    """Verify that compute_controlled_shared_plan_verdict with complete valid input produces Level 6 PASS."""
+    inputs = _make_valid_verdict_inputs()
+    res = v2.compute_controlled_shared_plan_verdict(**inputs)
+    assert res["verdict_level"] == 6
+    assert "PASS / CONTROLLED_SHARED_PLAN_T2_VALIDATED" in res["verdict"]
 
 
 # ---------------------------------------------------------------------------
@@ -529,6 +593,7 @@ def _make_valid_raw_plans_artifact(commit_a_sha: str = "aaaaaaaaaaaaaaaaaaaaaaaa
             "plan_signature": sig_payload,
             "retries_count": 0,
             "retry_reasons": [],
+            "provider_attempts": 1,
             "token_usage": 100,
             "elapsed_seconds": 0.5,
             "started_at": "2026-09-03T12:00:00",
@@ -541,11 +606,21 @@ def _make_valid_raw_plans_artifact(commit_a_sha: str = "aaaaaaaaaaaaaaaaaaaaaaaa
         "stage": "Phase P — Controlled Shared Plan Acquisition",
         "created_at": "2026-09-03T12:00:05",
         "starting_head": v2.STARTING_HEAD,
+        "implementation_freeze_head": commit_a_sha,
+        "runtime_execution_head": commit_a_sha,
         "commit_a_implementation_freeze_head": commit_a_sha,
+        "plan_freeze_state": "FROZEN",
         "PLAN_FREEZE_BOUNDARY_ESTABLISHED": True,
         "PHASE_R_RETRIEVAL_EXECUTED": False,
         "EVALUATOR_EXECUTED": False,
         "SCIENTIFIC_VERDICT_COMPUTED": False,
+        "model_id": v2.EXPECTED_MODEL,
+        "vertex_location": v2.EXPECTED_VERTEX_LOCATION,
+        "temperature": v2.EXPECTED_TEMPERATURE,
+        "prompt_authority": "panda_agent.prompts.QUERY_ANALYZER_SYSTEM_PROMPT",
+        "exact_acquisition_case_order": list(v2.CASE_ORDER),
+        "max_provider_attempts_per_case": v2.MAX_PROVIDER_ATTEMPTS_PER_CASE,
+        "allowed_retry_categories": sorted(list(v2.ALLOWED_RETRY_CATEGORIES)),
         "plans_planned": 16,
         "plans_completed": 16,
         "plans_failed": 0,
@@ -664,6 +739,17 @@ def test_phase_p_allowed_errors_retry_and_record_exact_reasons(monkeypatch, tmp_
     monkeypatch.setattr(v2, "_git_head", lambda root: "test_sha_commit_a")
     monkeypatch.setattr(v2, "audit_invariants", lambda root: {"model_id": "gemini-3.8-flash"})
     monkeypatch.setattr(v2, "CASE_ORDER", ["g029"])
+    monkeypatch.setattr(
+        v2,
+        "verify_phase_p_gate",
+        lambda root, git_checker=None: {
+            "verified": True,
+            "implementation_freeze_head": "test_sha_commit_a",
+            "runtime_execution_head": "test_sha_commit_a",
+            "commit_message": v2.EXPECTED_A_R1_COMMIT_MESSAGE,
+            "frozen_paths_clean": True,
+        },
+    )
 
     res = v2.execute_phase_p(tmp_path)
 
@@ -707,6 +793,17 @@ def test_phase_p_unrelated_exception_fails_closed_without_retry(monkeypatch, tmp
     monkeypatch.setattr(v2, "_git_head", lambda root: "test_sha_commit_a")
     monkeypatch.setattr(v2, "audit_invariants", lambda root: {"model_id": "gemini-3.8-flash"})
     monkeypatch.setattr(v2, "CASE_ORDER", ["g029"])
+    monkeypatch.setattr(
+        v2,
+        "verify_phase_p_gate",
+        lambda root, git_checker=None: {
+            "verified": True,
+            "implementation_freeze_head": "test_sha_commit_a",
+            "runtime_execution_head": "test_sha_commit_a",
+            "commit_message": v2.EXPECTED_A_R1_COMMIT_MESSAGE,
+            "frozen_paths_clean": True,
+        },
+    )
 
     with pytest.raises(RuntimeError) as exc_info:
         v2.execute_phase_p(tmp_path)
@@ -1118,3 +1215,227 @@ def test_evaluator_cli_fails_closed(monkeypatch, tmp_path):
     assert not (tmp_path / v2.EVALUATOR_RESULTS_PATH).exists()
     assert not (tmp_path / v2.RESULT_PATH).exists()
     assert list(tmp_path.rglob("*")) == []
+
+
+# ---------------------------------------------------------------------------
+# 18. Commit A-R1 Pre-Exposure Freeze Guard Focused Tests (Section 25)
+# ---------------------------------------------------------------------------
+
+def test_phase_p_gate_rejects_dirty_frozen_files(tmp_path):
+    """Verify that Phase-P gate fails closed when worktree or index is dirty for frozen files."""
+    def mock_git_checker(root: Path):
+        return (
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            v2.EXPECTED_A_R1_COMMIT_MESSAGE,
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            ["M evaluation/scripts/d4_a2_v2_controlled_shared_plan_validation.py"],
+        )
+
+    with pytest.raises(RuntimeError) as exc_info:
+        v2.verify_phase_p_gate(tmp_path, git_checker=mock_git_checker)
+    assert "Worktree or index is dirty" in str(exc_info.value)
+
+
+def test_phase_p_gate_rejects_head_different_from_implementation_freeze(tmp_path):
+    """Verify that Phase-P gate fails closed when current HEAD is not identical to freeze SHA."""
+    def mock_git_checker(root: Path):
+        return (
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            v2.EXPECTED_A_R1_COMMIT_MESSAGE,
+            "cccccccccccccccccccccccccccccccccccccccc",  # different HEAD
+            [],
+        )
+
+    with pytest.raises(RuntimeError) as exc_info:
+        v2.verify_phase_p_gate(tmp_path, git_checker=mock_git_checker)
+    assert "differs from authoritative implementation freeze" in str(exc_info.value)
+
+
+def test_phase_p_does_not_dynamically_redefine_implementation_freeze(tmp_path, monkeypatch):
+    """Verify that Phase-P gate determines freeze commit from authoritative containing commit,
+    never adopting arbitrary current HEAD dynamically.
+    """
+    freeze_sha = "1111111111111111111111111111111111111111"
+    descendant_head = "2222222222222222222222222222222222222222"
+    monkeypatch.setattr(
+        v2,
+        "get_implementation_freeze_commit",
+        lambda root: (freeze_sha, v2.EXPECTED_A_R1_COMMIT_MESSAGE),
+    )
+    monkeypatch.setattr(v2, "_git_head", lambda root: descendant_head)
+    mock_run = MagicMock()
+    mock_run.return_value.returncode = 0
+    mock_run.return_value.stdout = ""
+    monkeypatch.setattr("subprocess.run", mock_run)
+
+    with pytest.raises(RuntimeError) as exc_info:
+        v2.verify_phase_p_gate(tmp_path)
+    assert descendant_head in str(exc_info.value)
+    assert freeze_sha in str(exc_info.value)
+    assert "differs from authoritative implementation freeze" in str(exc_info.value)
+
+
+def test_phase_r_gate_rejects_head_later_than_commit_b(tmp_path, monkeypatch):
+    """Verify that check_git_plan_freeze_status rejects current HEAD that is later than Commit B."""
+    commit_a_sha = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    commit_b_sha = "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    later_head_sha = "cccccccccccccccccccccccccccccccccccccccc"
+
+    monkeypatch.setattr(v2, "_git_head", lambda root: later_head_sha)
+
+    def mock_subp_run(cmd, **kwargs):
+        res = MagicMock()
+        res.returncode = 0
+        cmd_str = " ".join(cmd)
+        if "cat-file" in cmd_str:
+            res.stdout = ""
+        elif "status" in cmd_str:
+            res.stdout = ""
+        elif "diff" in cmd_str:
+            res.stdout = ""
+        elif "log" in cmd_str:
+            res.stdout = commit_b_sha + "\n"
+        elif "merge-base" in cmd_str:
+            res.returncode = 0
+        return res
+
+    monkeypatch.setattr("subprocess.run", mock_subp_run)
+
+    with pytest.raises(RuntimeError) as exc_info:
+        v2.check_git_plan_freeze_status(tmp_path, v2.RAW_PLANS_PATH, commit_a_sha)
+    assert "is not the dedicated plan-freeze Commit B" in str(exc_info.value)
+
+
+def test_phase_r_gate_rejects_runner_prereg_test_drift_between_a_r1_and_b(tmp_path, monkeypatch):
+    """Verify that check_git_plan_freeze_status rejects drift in runner, prereg, or test files
+    between implementation freeze and Commit B.
+    """
+    commit_a_sha = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    commit_b_sha = "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+
+    monkeypatch.setattr(v2, "_git_head", lambda root: commit_b_sha)
+
+    def mock_subp_run(cmd, **kwargs):
+        res = MagicMock()
+        res.returncode = 0
+        cmd_str = " ".join(cmd)
+        if "cat-file" in cmd_str:
+            res.stdout = ""
+        elif "status" in cmd_str:
+            res.stdout = ""
+        elif "diff" in cmd_str and f"{commit_a_sha} {commit_b_sha}" in cmd_str:
+            # Report disallowed modification in runner file
+            res.stdout = "evaluation/scripts/d4_a2_v2_controlled_shared_plan_validation.py\n"
+        elif "diff" in cmd_str:
+            res.stdout = ""
+        elif "log" in cmd_str:
+            res.stdout = commit_b_sha + "\n"
+        elif "merge-base" in cmd_str:
+            res.returncode = 0
+        return res
+
+    monkeypatch.setattr("subprocess.run", mock_subp_run)
+
+    with pytest.raises(RuntimeError) as exc_info:
+        v2.check_git_plan_freeze_status(tmp_path, v2.RAW_PLANS_PATH, commit_a_sha)
+    assert "modified disallowed paths" in str(exc_info.value)
+
+
+def test_phase_r_gate_accepts_valid_commit_b_with_only_allowed_artifacts(tmp_path, monkeypatch):
+    """Verify that check_git_plan_freeze_status succeeds when Commit B modifies only allowed artifacts."""
+    commit_a_sha = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    commit_b_sha = "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+
+    monkeypatch.setattr(v2, "_git_head", lambda root: commit_b_sha)
+
+    def mock_subp_run(cmd, **kwargs):
+        res = MagicMock()
+        res.returncode = 0
+        cmd_str = " ".join(cmd)
+        if "cat-file" in cmd_str:
+            res.stdout = ""
+        elif "status" in cmd_str:
+            res.stdout = ""
+        elif "diff" in cmd_str and "--" in cmd and f"{commit_a_sha} {commit_b_sha}" in cmd_str:
+            # Diff across FROZEN_IMPLEMENTATION_PATHS: only manifest has Phase-P state changes
+            res.stdout = "evaluation/d4_a2_v2_execution_manifest.json\n"
+        elif "diff" in cmd_str and f"{commit_a_sha} {commit_b_sha}" in cmd_str:
+            # Commit B overall modifies raw_plans.json and execution_manifest.json
+            res.stdout = "evaluation/d4_a2_v2_raw_plans.json\nevaluation/d4_a2_v2_execution_manifest.json\n"
+        elif "diff" in cmd_str:
+            res.stdout = ""
+        elif "log" in cmd_str:
+            res.stdout = commit_b_sha + "\n"
+        elif "merge-base" in cmd_str:
+            res.returncode = 0
+        return res
+
+    monkeypatch.setattr("subprocess.run", mock_subp_run)
+
+    frozen_sha = v2.check_git_plan_freeze_status(tmp_path, v2.RAW_PLANS_PATH, commit_a_sha)
+    assert frozen_sha == commit_b_sha
+
+
+def test_max_provider_attempts_per_case_frozen_consistently():
+    """Verify MAX_PROVIDER_ATTEMPTS_PER_CASE = 3 consistently frozen across runner, prereg, and manifest."""
+    assert v2.MAX_PROVIDER_ATTEMPTS_PER_CASE == 3
+
+    prereg = json.loads((_PROJECT_ROOT / v2.PREREGISTRATION_PATH).read_text(encoding="utf-8"))
+    assert prereg["phase_p_contract"]["max_provider_attempts_per_case"] == 3
+
+    manifest = json.loads((_PROJECT_ROOT / v2.MANIFEST_PATH).read_text(encoding="utf-8"))
+    assert manifest["phase_p_contract"]["max_provider_attempts_per_case"] == 3
+
+
+def test_raw_plan_provenance_contract_fields():
+    """Verify that raw plans artifact satisfies all Section 19 self-contained provenance requirements."""
+    artifact = _make_valid_raw_plans_artifact("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+
+    # Artifact-level required fields
+    required_artifact_fields = [
+        "checkpoint",
+        "stage",
+        "implementation_freeze_head",
+        "runtime_execution_head",
+        "plan_freeze_state",
+        "PLAN_FREEZE_BOUNDARY_ESTABLISHED",
+        "model_id",
+        "vertex_location",
+        "temperature",
+        "prompt_authority",
+        "exact_acquisition_case_order",
+        "max_provider_attempts_per_case",
+        "allowed_retry_categories",
+        "plans_planned",
+        "plans_completed",
+        "plans_failed",
+        "accounting",
+        "plans",
+    ]
+    for field in required_artifact_fields:
+        assert field in artifact, f"Missing artifact field: {field}"
+
+    assert artifact["max_provider_attempts_per_case"] == 3
+    assert artifact["model_id"] == "gemini-3.8-flash"
+    assert artifact["temperature"] == 0.0
+    assert artifact["exact_acquisition_case_order"] == v2.CASE_ORDER
+
+    # Plan-level required fields
+    required_plan_fields = [
+        "draw_index",
+        "case_id",
+        "question",
+        "canonical_plan",
+        "plan_signature",
+        "status",
+        "retries_count",
+        "retry_reasons",
+        "provider_attempts",
+        "token_usage",
+        "elapsed_seconds",
+        "started_at",
+        "completed_at",
+    ]
+    for plan in artifact["plans"]:
+        for field in required_plan_fields:
+            assert field in plan, f"Missing plan field {field} in case {plan.get('case_id')}"

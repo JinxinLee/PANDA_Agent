@@ -7,8 +7,9 @@
   "starting_head": "6bc10872bee9d00a7ea710f55353c3113756dbb2",
   "implementation_freeze_contract": {
     "policy": "GIT_COMMIT_CONTAINING_THIS_ARTIFACT",
-    "description": "Implementation freeze identity is defined non-self-referentially as the Git commit containing this preregistration (Commit A). The runtime execution runner captures git rev-parse HEAD dynamically before Phase P plan acquisition, verifies clean worktree on protected paths, and records that exact Commit A SHA in all downstream artifacts.",
-    "expected_commit_message": "D4-A2-V2 freeze controlled shared-plan validation",
+    "description": "The implementation freeze is the Git commit containing the finalized A-R1 preregistration/manifest/runner/tests (Commit A-R1). Phase P is only allowed when the checked-out repository exactly matches that frozen implementation boundary and all protected/frozen paths are clean. The runtime runner mechanically verifies HEAD corresponds to that exact freeze boundary, validates the expected commit message, and rejects any drift without dynamically redefining freeze from runtime HEAD.",
+    "expected_commit_message": "D4-A2-V2 repair pre-exposure freeze guards",
+    "commit_a_head": "c77f608cdf0edf77cbf482b71c51cbe9b1ce9d68",
     "starting_head": "6bc10872bee9d00a7ea710f55353c3113756dbb2"
   },
   "scientific_purpose": {
@@ -97,6 +98,7 @@
   "phase_p_contract": {
     "description": "Future separately authorized Phase P acquires exactly 1 accepted canonical RetrievalPlan per case across the 16 cases (16 total plans).",
     "plan_acquisition_count": 16,
+    "max_provider_attempts_per_case": 3,
     "model_id": "gemini-3.8-flash",
     "vertex_location": "global",
     "temperature": 0.0,
@@ -109,6 +111,8 @@
       "no_historical_substitution": "No substitution with historical D4-A2 or V1 plans.",
       "no_case_special_handling": "No special handling for n022 or any other question ID.",
       "no_semantic_weakness_redraw": "Semantic weakness is strictly NOT a retry condition. Any schema-valid RetrievalPlan must be accepted as generated.",
+      "max_provider_attempts_per_case": 3,
+      "attempt_cap_rule": "Maximum 3 provider attempts per case across retryable categories. Semantic weakness is strictly non-retryable. Maximum-attempt exhaustion fails the experiment rather than silently skipping a case.",
       "retry_policy": "Retry is permitted only for transport/provider errors, unparsable responses, or schema-invalid plan objects. Any other exception must fail closed immediately without retry.",
       "allowed_retry_categories": [
         "TRANSPORT_OR_PROVIDER_FAILURE",
@@ -118,20 +122,34 @@
       "retry_accounting_rule": "Every retry records an exact categorized reason ([CATEGORY] Attempt #N failed with ExceptionType: details)."
     },
     "provenance_fields_required": [
-      "case_id",
-      "draw_index",
-      "accepted_canonical_plan",
-      "plan_signature",
+      "checkpoint",
+      "stage",
+      "implementation_freeze_head",
+      "runtime_execution_head",
+      "plan_freeze_state",
+      "model_id",
+      "vertex_location",
+      "temperature",
+      "prompt_authority",
+      "exact_acquisition_case_order",
+      "max_provider_attempts_per_case",
+      "allowed_retry_categories",
+      "planned_counts",
+      "completed_counts",
       "analyzer_logical_calls",
       "provider_attempts",
+      "token_usage",
+      "zero_downstream_call_counters",
+      "case_id",
+      "draw_index",
+      "question",
+      "accepted_canonical_plan",
+      "plan_signature",
+      "status",
       "retries_count",
       "retry_reasons",
-      "model_id",
-      "prompt_authority",
-      "acquisition_ordering",
       "started_at",
-      "completed_at",
-      "commit_a_head"
+      "completed_at"
     ],
     "freeze_boundary": "Phase P outputs must be frozen to evaluation/d4_a2_v2_raw_plans.json in dedicated Commit B prior to any Phase R retrieval execution."
   },
@@ -148,13 +166,21 @@
       "policy": "MECHANICAL_PRE_EXPOSURE_GATE",
       "requirements": [
         "evaluation/d4_a2_v2_raw_plans.json present in Git HEAD",
-        "clean in both index and worktree",
-        "committed after Commit A as the dedicated plan-freeze boundary (Commit B)",
+        "clean in both index and worktree across all frozen paths",
+        "committed as dedicated plan-freeze Commit B after A-R1 implementation freeze",
+        "Commit B is a descendant of A-R1 and not equal to A-R1",
+        "current HEAD is exactly the dedicated plan-freeze Commit B with no later commit",
+        "narrow allowed diff: only evaluation/d4_a2_v2_raw_plans.json and necessary V2 execution manifest Phase-P state fields may differ between A-R1 and Commit B",
+        "A-R1 runner, preregistration, focused tests, src/, configs/, benchmarks, and novel_dev are Git-object unchanged from A-R1",
         "exactly 16 unique case plans in exact CASE_ORDER",
         "all 16 plans completed, canonical, and schema-valid",
         "Phase P accounting complete and zero-call boundaries intact",
         "Phase R retrieval, evaluator, and verdict flags all False",
-        "provenance preserves true Commit A SHA and separately records actual Commit B plan-freeze commit SHA"
+        "provenance preserves implementation_freeze_head and separately records actual Commit B plan-freeze commit SHA"
+      ],
+      "allowed_commit_b_diff_paths": [
+        "evaluation/d4_a2_v2_raw_plans.json",
+        "evaluation/d4_a2_v2_execution_manifest.json"
       ]
     }
   },
@@ -597,7 +623,8 @@
     "guard_statement": "Even a future V2 PASS does not activate production or migrate runtime query expansions. It makes runtime migration eligible for a separately authorized lifecycle decision."
   },
   "four_commit_architecture": {
-    "commit_a": "Freeze preregistration, execution manifest, runner harness, and focused unit tests. Zero model calls, zero formal outcomes.",
+    "commit_a_r1": "Freeze A-R1 pre-exposure freeze guard repair. Authoritative non-self-referential implementation freeze boundary for Phase P. Zero model calls, zero formal outcomes.",
+    "commit_a": "Historical initial freeze commit c77f608cdf0edf77cbf482b71c51cbe9b1ce9d68.",
     "commit_b": "Separately authorized future commit freezing 16 accepted prospective canonical RetrievalPlans, call ledger, and acquisition provenance.",
     "commit_c": "Separately authorized future commit freezing 32 paired raw retrieval cells, raw classifications, call ledger, diagnostics. Evaluator not executed.",
     "commit_d": "Separately authorized future commit closing deterministic evaluator results, machine result artifact, report, status, and roadmap. Evaluator execution is unavailable until separately authorized Commit D after Commit C raw freeze."

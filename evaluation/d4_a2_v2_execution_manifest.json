@@ -6,14 +6,28 @@
   "starting_head": "6bc10872bee9d00a7ea710f55353c3113756dbb2",
   "implementation_freeze_contract": {
     "policy": "GIT_COMMIT_CONTAINING_THIS_ARTIFACT",
-    "description": "Implementation freeze identity is defined non-self-referentially as the Git commit containing this manifest (Commit A). The runtime execution runner captures git rev-parse HEAD dynamically before formal Phase P acquisition, verifies a clean worktree on protected paths, and records that exact Commit A SHA in all downstream artifacts.",
-    "expected_commit_message": "D4-A2-V2 freeze controlled shared-plan validation",
+    "description": "The implementation freeze is the Git commit containing the finalized A-R1 preregistration/manifest/runner/tests (Commit A-R1). Phase P is only allowed when the checked-out repository exactly matches that frozen implementation boundary and all protected/frozen paths are clean. The runtime runner mechanically verifies HEAD corresponds to that exact freeze boundary, validates expected commit message, and rejects any drift without dynamically redefining freeze from runtime HEAD.",
+    "expected_commit_message": "D4-A2-V2 repair pre-exposure freeze guards",
+    "commit_a_head": "c77f608cdf0edf77cbf482b71c51cbe9b1ce9d68",
     "starting_head": "6bc10872bee9d00a7ea710f55353c3113756dbb2"
   },
   "plan_freeze_gate_contract": {
     "policy": "HARD_COMMIT_B_PLAN_FREEZE_GATE",
-    "description": "Before any Phase R provider exposure, mechanically requires evaluation/d4_a2_v2_raw_plans.json to be present in Git HEAD, clean in both index and worktree, and committed after Commit A as the dedicated plan-freeze boundary. Validates exactly 16 unique case plans in exact order, all completed and canonical, with Phase P accounting complete and Phase R/evaluator false. Captures actual Commit B plan-freeze commit SHA and preserves true Commit A SHA in Phase R provenance.",
-    "raw_plans_path": "evaluation/d4_a2_v2_raw_plans.json"
+    "description": "Before any Phase R provider exposure, mechanically requires evaluation/d4_a2_v2_raw_plans.json to be present in Git HEAD, clean in both index and worktree across all frozen paths, and committed after A-R1 as the dedicated plan-freeze boundary. Requires current HEAD is exactly Commit B with no later commit. Restricts allowed diff between A-R1 and B strictly to raw_plans.json and necessary manifest Phase-P state fields. Requires runner, prereg, tests, src, configs, benchmarks, and novel_dev to be Git-object unchanged. Validates exactly 16 unique case plans in exact order, all completed and canonical, with Phase P accounting complete and Phase R/evaluator false. Captures actual Commit B plan-freeze commit SHA and preserves true A-R1 implementation_freeze_head in Phase R provenance.",
+    "raw_plans_path": "evaluation/d4_a2_v2_raw_plans.json",
+    "allowed_commit_b_diff_paths": [
+      "evaluation/d4_a2_v2_raw_plans.json",
+      "evaluation/d4_a2_v2_execution_manifest.json"
+    ]
+  },
+  "phase_p_contract": {
+    "max_provider_attempts_per_case": 3,
+    "allowed_retry_categories": [
+      "TRANSPORT_OR_PROVIDER_FAILURE",
+      "UNPARSABLE_RESPONSE",
+      "SCHEMA_VALIDATION_FAILURE"
+    ],
+    "plan_acquisition_count": 16
   },
   "evaluator_boundary_contract": {
     "policy": "FAIL_CLOSED_UNTIL_COMMIT_D",
