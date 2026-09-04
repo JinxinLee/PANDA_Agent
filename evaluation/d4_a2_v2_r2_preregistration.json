@@ -1,0 +1,44 @@
+{
+  "schema_version": "1.0.0",
+  "lifecycle_stage": "D4-A2-V2-R2",
+  "repair_title": "D4-A2-V2-R2 Frozen Plan Signature Verification Repair",
+  "defect_attribution": "JSON_ROUND_TRIP_SIGNATURE_REPRESENTATION_DEFECT",
+  "repair_purpose": "Repair the verification representation mismatch where compute_plan_signature produced in-memory Python tuples for paper_page_hints and concept_scopes, causing false verification failures against JSON-reloaded list representations, and establish forward-only post-freeze lineage verification for R2 without modifying the frozen scientific raw plans artifact.",
+  "repair_identity_contract": {
+    "policy": "GIT_COMMIT_CONTAINING_THIS_ARTIFACT",
+    "expected_commit_message": "D4-A2-V2-R2 repair frozen plan verification",
+    "parent_commit": "537836244d44d9e5c10472df019f5fac1c9070a1",
+    "direct_child_of_plan_freeze": true
+  },
+  "authoritative_lineage": {
+    "implementation_freeze_head": "afc93327ff7f6de6c0b49dd905347696cfaad27a",
+    "plan_freeze_head": "537836244d44d9e5c10472df019f5fac1c9070a1",
+    "raw_plans_path": "evaluation/d4_a2_v2_raw_plans.json",
+    "raw_plans_blob": "ee7c1c011463973557ef423178d7c241bf3821d4"
+  },
+  "zero_provider_boundary": {
+    "analyzer_calls": 0,
+    "embedding_calls": 0,
+    "reranker_calls": 0,
+    "qa_calls": 0,
+    "verifier_calls": 0,
+    "judge_calls": 0,
+    "postgresql_writes": 0,
+    "qdrant_writes": 0,
+    "ingestion": 0,
+    "reindex": 0,
+    "protected_dataset_access": 0
+  },
+  "allowed_r2_file_changes": [
+    "evaluation/d4_a2_v2_r2_preregistration.json",
+    "evaluation/scripts/d4_a2_v2_controlled_shared_plan_validation.py",
+    "tests/unit/test_d4_a2_v2_controlled_shared_plan_validation.py"
+  ],
+  "lifecycle_guards": {
+    "paired_retrieval_status": "BLOCKED",
+    "evaluator_status": "BLOCKED",
+    "production_activation": false,
+    "first_batch_runtime_migration": "BLOCKED",
+    "d4_a3_status": "NOT_STARTED / BLOCKED"
+  }
+}

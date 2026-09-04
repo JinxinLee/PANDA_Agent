@@ -67,10 +67,15 @@ from panda_agent.retrieval import Retriever, select_final_evidence
 
 STARTING_HEAD = "6bc10872bee9d00a7ea710f55353c3113756dbb2"
 COMMIT_A_HEAD = "c77f608cdf0edf77cbf482b71c51cbe9b1ce9d68"
+IMPLEMENTATION_FREEZE_HEAD = "afc93327ff7f6de6c0b49dd905347696cfaad27a"
+PLAN_FREEZE_HEAD = "537836244d44d9e5c10472df019f5fac1c9070a1"
+PLAN_FREEZE_RAW_BLOB = "ee7c1c011463973557ef423178d7c241bf3821d4"
 EXPECTED_A_R1_COMMIT_MESSAGE = "D4-A2-V2 repair pre-exposure freeze guards"
+EXPECTED_R2_COMMIT_MESSAGE = "D4-A2-V2-R2 repair frozen plan verification"
 MAX_PROVIDER_ATTEMPTS_PER_CASE = 3
 
 PREREGISTRATION_PATH = "evaluation/d4_a2_v2_preregistration.json"
+R2_PREREGISTRATION_PATH = "evaluation/d4_a2_v2_r2_preregistration.json"
 MANIFEST_PATH = "evaluation/d4_a2_v2_execution_manifest.json"
 RAW_PLANS_PATH = "evaluation/d4_a2_v2_raw_plans.json"
 RAW_RESULTS_PATH = "evaluation/d4_a2_v2_raw_results.json"
@@ -96,6 +101,12 @@ FROZEN_IMPLEMENTATION_PATHS = [
 ALLOWED_COMMIT_B_DIFF_FILES = {
     "evaluation/d4_a2_v2_raw_plans.json",
     "evaluation/d4_a2_v2_execution_manifest.json",
+}
+
+ALLOWED_R2_DIFF_FILES = {
+    "evaluation/d4_a2_v2_r2_preregistration.json",
+    "evaluation/scripts/d4_a2_v2_controlled_shared_plan_validation.py",
+    "tests/unit/test_d4_a2_v2_controlled_shared_plan_validation.py",
 }
 
 REQUIRED_PRIMARY_METRIC_KEYS = [
@@ -254,6 +265,36 @@ def get_implementation_freeze_commit(
     if not out or "\x00" not in out:
         raise RuntimeError(
             f"Could not determine implementation freeze commit for {rel_posix} from Git history"
+        )
+    sha, msg = out.split("\x00", 1)
+    return sha.strip(), msg.strip()
+
+
+def get_r2_repair_commit(
+    project_root: Path,
+    rel_path: str = R2_PREREGISTRATION_PATH,
+) -> tuple[str, str]:
+    """Determines the authoritative R2 repair commit using
+    the non-self-referential containing-commit policy.
+
+    Returns (commit_sha, commit_message).
+    """
+    rel_posix = rel_path.replace("\\", "/")
+    proc = subprocess.run(
+        ["git", "log", "-1", "--format=%H%x00%s", "HEAD", "--", rel_posix],
+        cwd=str(project_root),
+        capture_output=True,
+        text=True,
+    )
+    if proc.returncode != 0:
+        raise RuntimeError(
+            f"Git log failed for {rel_posix}: {proc.stderr.strip()}"
+        )
+    out = proc.stdout.strip()
+    if not out or "\x00" not in out:
+        raise RuntimeError(
+            f"Could not determine R2 repair commit for {rel_posix} from Git history. "
+            f"R2 preregistration must be committed as the R2 repair boundary."
         )
     sha, msg = out.split("\x00", 1)
     return sha.strip(), msg.strip()
@@ -656,16 +697,22 @@ def frozen_plan_context(retriever: Retriever, frozen_plan: RetrievalPlan):
 
 
 def compute_plan_signature(plan_dict: dict[str, Any]) -> tuple[str, dict[str, Any]]:
-    """Generates a canonical signature payload and JSON string for plan comparison."""
+    """Generates a canonical signature payload and JSON string for plan comparison.
+
+    Repaired in D4-A2-V2-R2 to produce a deterministic, JSON-canonical representation
+    where paper_page_hints and concept_scopes use JSON-compatible list structures
+    instead of Python tuples, resolving the tuple-vs-list round-trip defect while
+    preserving exact participating fields and semantic sorting.
+    """
     intent = plan_dict.get("intent", "")
     repos = sorted(plan_dict.get("target_repositories", []))
     symbols = sorted(plan_dict.get("symbols", []))
     concepts = sorted(c.strip().casefold() for c in plan_dict.get("concepts", []))
     req_types = sorted(plan_dict.get("required_source_types", []))
-    paper_hints = sorted(
-        (k, sorted(v)) for k, v in (plan_dict.get("paper_page_hints") or {}).items()
-    )
-    scopes = sorted((plan_dict.get("concept_scopes") or {}).items())
+    paper_hints = [
+        [k, sorted(v)] for k, v in sorted((plan_dict.get("paper_page_hints") or {}).items())
+    ]
+    scopes = [[k, v] for k, v in sorted((plan_dict.get("concept_scopes") or {}).items())]
     sig_payload = {
         "intent": intent,
         "target_repositories": repos,
@@ -676,7 +723,8 @@ def compute_plan_signature(plan_dict: dict[str, Any]) -> tuple[str, dict[str, An
         "concept_scopes": scopes,
     }
     sig_str = json.dumps(sig_payload, sort_keys=True)
-    return sig_str, sig_payload
+    canonical_payload = json.loads(sig_str)
+    return sig_str, canonical_payload
 
 
 def classify_phase_p_retryable_error(exc: BaseException) -> tuple[bool, str | None]:
@@ -924,19 +972,28 @@ def execute_phase_p(
 
 def check_git_plan_freeze_status(
     project_root: Path,
-    rel_path: str,
-    commit_a_sha: str,
+    rel_path: str = RAW_PLANS_PATH,
+    commit_a_sha: str = IMPLEMENTATION_FREEZE_HEAD,
 ) -> str:
-    """Mechanically checks that the artifact at rel_path:
-    1. Is present in Git HEAD.
-    2. Is clean in both index and worktree (no unstaged, staged, or untracked changes).
-    3. Is committed in Commit B which is a descendant of implementation_freeze_head and != implementation_freeze_head.
-    4. Current Git HEAD is exactly the dedicated plan-freeze Commit B (no later commit).
-    5. Narrow allowed diff: only ALLOWED_COMMIT_B_DIFF_FILES differ between implementation_freeze_head and Commit B.
-    6. All frozen implementation files (FROZEN_IMPLEMENTATION_PATHS except MANIFEST_PATH) are Git-object unchanged.
-    7. Clean worktree/index across all FROZEN_IMPLEMENTATION_PATHS.
+    """Mechanically checks that the artifact at rel_path satisfies R2-aware freeze and lineage guards:
+    1. Is present in Git HEAD and clean in both index and worktree.
+    2. Raw plan artifact was frozen in exactly PLAN_FREEZE_HEAD (537836244...).
+    3. Raw plan Git blob at current HEAD is identical to blob at PLAN_FREEZE_HEAD
+       and matches authoritative PLAN_FREEZE_RAW_BLOB (ee7c1c011...).
+    4. Lineage verification:
+       - PLAN_FREEZE_HEAD parent is IMPLEMENTATION_FREEZE_HEAD (afc93327...).
+       - Current Git HEAD is exactly the finalized R2 repair commit.
+       - R2 commit message matches EXPECTED_R2_COMMIT_MESSAGE.
+       - Current HEAD is a direct child of PLAN_FREEZE_HEAD (parents == [PLAN_FREEZE_HEAD]).
+       - Arbitrary later descendants fail closed.
+    5. Allowed diff verification:
+       - Diff between PLAN_FREEZE_HEAD and current HEAD contains only ALLOWED_R2_DIFF_FILES.
+       - Disallowed changes to raw plans, manifest, original prereg, src/, configs/, benchmarks, novel_dev fail.
+    6. Historical diff verification:
+       - Diff between IMPLEMENTATION_FREEZE_HEAD and PLAN_FREEZE_HEAD contains only ALLOWED_COMMIT_B_DIFF_FILES.
+    7. Clean worktree/index across all frozen implementation and R2 paths.
 
-    Returns the Git commit SHA where the artifact was frozen in HEAD.
+    Returns the Git commit SHA where the raw plans artifact was frozen (PLAN_FREEZE_HEAD).
     """
     rel_path_posix = rel_path.replace("\\", "/")
 
@@ -950,7 +1007,7 @@ def check_git_plan_freeze_status(
     if cat_proc.returncode != 0:
         raise RuntimeError(
             f"Plan freeze artifact {rel_path_posix} is not present in Git HEAD! "
-            f"Phase P plans must be committed as Commit B before Phase R exposure."
+            f"Phase P plans must be committed before Phase R exposure."
         )
 
     # 2. Clean in both index and worktree
@@ -979,54 +1036,134 @@ def check_git_plan_freeze_status(
             f"Plan freeze artifact {rel_path_posix} differs from Git HEAD: {diff_out!r}"
         )
 
-    # 3. Capture the actual plan-freeze Git commit identity
+    # 3. Raw plan origin: was frozen in exactly PLAN_FREEZE_HEAD (Section 14.1)
     log_proc = subprocess.run(
         ["git", "log", "-1", "--format=%H", "HEAD", "--", rel_path_posix],
         cwd=str(project_root),
         capture_output=True,
         text=True,
     )
-    freeze_commit_sha = log_proc.stdout.strip()
-    if not freeze_commit_sha:
+    raw_plan_origin_commit = log_proc.stdout.strip()
+    if raw_plan_origin_commit != PLAN_FREEZE_HEAD:
         raise RuntimeError(
-            f"Could not determine Git commit identity for plan freeze artifact {rel_path_posix}"
+            f"Plan freeze artifact {rel_path_posix} origin commit mismatch: "
+            f"expected exactly PLAN_FREEZE_HEAD ({PLAN_FREEZE_HEAD}), "
+            f"got {raw_plan_origin_commit}."
         )
 
-    # 4. Committed AFTER implementation_freeze_head
-    if not commit_a_sha or commit_a_sha.startswith("UNKNOWN"):
-        raise RuntimeError(
-            f"Invalid or missing implementation freeze SHA for plan-freeze boundary comparison: {commit_a_sha!r}"
-        )
-
-    if freeze_commit_sha == commit_a_sha:
-        raise RuntimeError(
-            f"Plan freeze commit {freeze_commit_sha} cannot be identical to implementation freeze "
-            f"({commit_a_sha}). Phase P plans must be committed in a dedicated Commit B."
-        )
-
-    anc_proc = subprocess.run(
-        ["git", "merge-base", "--is-ancestor", commit_a_sha, freeze_commit_sha],
+    # 4. Raw plan immutability: Git blob identity (Section 14.2)
+    blob_freeze_proc = subprocess.run(
+        ["git", "rev-parse", f"{PLAN_FREEZE_HEAD}:{rel_path_posix}"],
         cwd=str(project_root),
         capture_output=True,
         text=True,
     )
-    if anc_proc.returncode != 0:
+    if blob_freeze_proc.returncode != 0:
         raise RuntimeError(
-            f"Plan freeze commit {freeze_commit_sha} is not a descendant of implementation freeze "
-            f"({commit_a_sha})!"
+            f"Failed to get Git blob for {rel_path_posix} at {PLAN_FREEZE_HEAD}: {blob_freeze_proc.stderr.strip()}"
+        )
+    freeze_blob = blob_freeze_proc.stdout.strip()
+
+    blob_head_proc = subprocess.run(
+        ["git", "rev-parse", f"HEAD:{rel_path_posix}"],
+        cwd=str(project_root),
+        capture_output=True,
+        text=True,
+    )
+    if blob_head_proc.returncode != 0:
+        raise RuntimeError(
+            f"Failed to get Git blob for {rel_path_posix} at HEAD: {blob_head_proc.stderr.strip()}"
+        )
+    head_blob = blob_head_proc.stdout.strip()
+
+    if head_blob != freeze_blob:
+        raise RuntimeError(
+            f"Raw plan Git blob at HEAD ({head_blob}) differs from PLAN_FREEZE_HEAD blob ({freeze_blob})! "
+            f"Raw plans artifact must remain Git-object identical."
+        )
+    if head_blob != PLAN_FREEZE_RAW_BLOB:
+        raise RuntimeError(
+            f"Raw plan Git blob at HEAD ({head_blob}) does not match authoritative PLAN_FREEZE_RAW_BLOB ({PLAN_FREEZE_RAW_BLOB})!"
         )
 
-    # 5. Current Git HEAD is exactly Commit B (no later commit)
+    hash_obj_proc = subprocess.run(
+        ["git", "hash-object", str(project_root / rel_path)],
+        cwd=str(project_root),
+        capture_output=True,
+        text=True,
+    )
+    if hash_obj_proc.returncode == 0:
+        worktree_blob = hash_obj_proc.stdout.strip()
+        if worktree_blob != freeze_blob:
+            raise RuntimeError(
+                f"Raw plan worktree blob ({worktree_blob}) differs from frozen blob ({freeze_blob})!"
+            )
+
+    # 5. Plan-freeze ancestry and lineage (Section 14.3, 14.4)
+    plan_freeze_parent_proc = subprocess.run(
+        ["git", "log", "-1", "--format=%P", PLAN_FREEZE_HEAD],
+        cwd=str(project_root),
+        capture_output=True,
+        text=True,
+    )
+    plan_freeze_parents = plan_freeze_parent_proc.stdout.strip().split()
+    if IMPLEMENTATION_FREEZE_HEAD not in plan_freeze_parents:
+        raise RuntimeError(
+            f"PLAN_FREEZE_HEAD ({PLAN_FREEZE_HEAD}) parent mismatch: "
+            f"expected {IMPLEMENTATION_FREEZE_HEAD}, got {plan_freeze_parents}."
+        )
+
     current_head = _git_head(project_root)
-    if current_head != freeze_commit_sha:
+    r2_commit_sha, r2_commit_msg = get_r2_repair_commit(project_root)
+
+    if current_head != r2_commit_sha:
         raise RuntimeError(
-            f"Current Git HEAD ({current_head}) is not the dedicated plan-freeze Commit B ({freeze_commit_sha})! "
-            f"No intervening or later commits allowed before Phase R."
+            f"Current Git HEAD ({current_head}) is not the finalized R2 repair commit ({r2_commit_sha})! "
+            f"Arbitrary later descendants or uncommitted state must fail closed."
         )
 
-    # 6. Narrow allowed diff between implementation freeze and Commit B
+    if r2_commit_msg != EXPECTED_R2_COMMIT_MESSAGE:
+        raise RuntimeError(
+            f"R2 repair commit message mismatch: expected '{EXPECTED_R2_COMMIT_MESSAGE}', "
+            f"got '{r2_commit_msg}' (commit {r2_commit_sha})."
+        )
+
+    head_parent_proc = subprocess.run(
+        ["git", "log", "-1", "--format=%P", current_head],
+        cwd=str(project_root),
+        capture_output=True,
+        text=True,
+    )
+    head_parents = head_parent_proc.stdout.strip().split()
+    if head_parents != [PLAN_FREEZE_HEAD]:
+        raise RuntimeError(
+            f"R2 repair HEAD ({current_head}) is not a direct child of PLAN_FREEZE_HEAD ({PLAN_FREEZE_HEAD})! "
+            f"Parents: {head_parents}."
+        )
+
+    # 6. R2 allowed diff: diff between PLAN_FREEZE_HEAD and current_head (Section 14.5)
+    diff_r2 = subprocess.run(
+        ["git", "diff", "--name-only", PLAN_FREEZE_HEAD, current_head],
+        cwd=str(project_root),
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    changed_r2_files = [
+        f.strip().replace("\\", "/")
+        for f in diff_r2.stdout.splitlines()
+        if f.strip()
+    ]
+    disallowed_r2 = [f for f in changed_r2_files if f not in ALLOWED_R2_DIFF_FILES]
+    if disallowed_r2:
+        raise RuntimeError(
+            f"R2 repair commit modified disallowed paths relative to PLAN_FREEZE_HEAD ({PLAN_FREEZE_HEAD}): {disallowed_r2}. "
+            f"Only {ALLOWED_R2_DIFF_FILES} are allowed."
+        )
+
+    # 7. Historical diff between IMPLEMENTATION_FREEZE_HEAD and PLAN_FREEZE_HEAD
     diff_b = subprocess.run(
-        ["git", "diff", "--name-only", commit_a_sha, freeze_commit_sha],
+        ["git", "diff", "--name-only", IMPLEMENTATION_FREEZE_HEAD, PLAN_FREEZE_HEAD],
         cwd=str(project_root),
         capture_output=True,
         text=True,
@@ -1040,40 +1177,14 @@ def check_git_plan_freeze_status(
     disallowed_b = [f for f in changed_b_files if f not in ALLOWED_COMMIT_B_DIFF_FILES]
     if disallowed_b:
         raise RuntimeError(
-            f"Commit B modified disallowed paths relative to implementation freeze ({commit_a_sha}): {disallowed_b}. "
-            f"Only {ALLOWED_COMMIT_B_DIFF_FILES} are allowed to differ in Commit B."
+            f"PLAN_FREEZE_HEAD modified disallowed paths relative to IMPLEMENTATION_FREEZE_HEAD ({IMPLEMENTATION_FREEZE_HEAD}): {disallowed_b}. "
+            f"Only {ALLOWED_COMMIT_B_DIFF_FILES} are allowed to differ in PLAN_FREEZE_HEAD."
         )
 
-    # 7. Git-object unchanged check for frozen implementation files
-    diff_frozen = subprocess.run(
-        [
-            "git",
-            "diff",
-            "--name-only",
-            commit_a_sha,
-            freeze_commit_sha,
-            "--",
-            *FROZEN_IMPLEMENTATION_PATHS,
-        ],
-        cwd=str(project_root),
-        capture_output=True,
-        text=True,
-        check=True,
-    )
-    frozen_diff = [
-        f.strip().replace("\\", "/")
-        for f in diff_frozen.stdout.splitlines()
-        if f.strip()
-    ]
-    disallowed_frozen = [f for f in frozen_diff if f != MANIFEST_PATH]
-    if disallowed_frozen:
-        raise RuntimeError(
-            f"Frozen implementation/benchmark files drifted between implementation freeze and Commit B: {disallowed_frozen}"
-        )
-
-    # 8. Worktree/index cleanliness across all frozen paths
+    # 8. Worktree/index cleanliness across frozen paths and R2 files
+    check_paths = list(FROZEN_IMPLEMENTATION_PATHS) + list(ALLOWED_R2_DIFF_FILES) + [rel_path_posix]
     status_frozen = subprocess.run(
-        ["git", "status", "--porcelain", "-uall", "--", *FROZEN_IMPLEMENTATION_PATHS],
+        ["git", "status", "--porcelain", "-uall", "--", *check_paths],
         cwd=str(project_root),
         capture_output=True,
         text=True,
@@ -1086,10 +1197,10 @@ def check_git_plan_freeze_status(
     ]
     if dirty_frozen:
         raise RuntimeError(
-            f"Worktree or index is dirty for frozen implementation paths at Phase-R gate: {dirty_frozen}"
+            f"Worktree or index is dirty for frozen implementation or R2 paths: {dirty_frozen}"
         )
 
-    return freeze_commit_sha
+    return PLAN_FREEZE_HEAD
 
 
 def verify_plan_freeze_gate(
@@ -1251,6 +1362,8 @@ def verify_plan_freeze_gate(
         "implementation_freeze_head": commit_a_sha,
         "commit_a_implementation_freeze_head": commit_a_sha,
         "phase_p_plan_freeze_commit_head": plan_freeze_commit_sha,
+        "plan_freeze_head": PLAN_FREEZE_HEAD,
+        "raw_plan_blob_sha": PLAN_FREEZE_RAW_BLOB,
         "plans_count": len(plans),
         "cases_validated": CASE_ORDER,
     }
@@ -1859,7 +1972,13 @@ def main() -> None:
     parser.add_argument("--project-root", type=Path, default=Path("."), help="Path to project root")
     parser.add_argument(
         "--mode",
-        choices=["audit-invariants", "execute-phase-p", "execute-phase-r", "evaluate"],
+        choices=[
+            "audit-invariants",
+            "execute-phase-p",
+            "execute-phase-r",
+            "evaluate",
+            "verify-plan-freeze-gate",
+        ],
         default="audit-invariants",
         help="Execution mode (evaluate fails closed until separately authorized Commit D)",
     )
@@ -1876,6 +1995,10 @@ def main() -> None:
         execute_phase_r(project_root)
     elif args.mode == "evaluate":
         evaluate(project_root)
+    elif args.mode == "verify-plan-freeze-gate":
+        receipt = verify_plan_freeze_gate(project_root)
+        print("[PLAN FREEZE GATE SUCCESS] Repaired plan-freeze gate verified successfully:")
+        print(json.dumps(receipt, indent=2, ensure_ascii=False))
 
 
 if __name__ == "__main__":

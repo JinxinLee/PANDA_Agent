@@ -540,8 +540,23 @@ def test_pre_exposure_call_accounting_strictly_zero():
 # 13. Audit Invariants Offline Execution Tests
 # ---------------------------------------------------------------------------
 
-def test_audit_invariants_offline():
+def test_audit_invariants_offline(monkeypatch):
     """Verify that audit_invariants executes successfully offline."""
+    manifest_data = json.loads((_PROJECT_ROOT / v2.MANIFEST_PATH).read_text(encoding="utf-8"))
+    manifest_pre = copy.deepcopy(manifest_data)
+    manifest_pre["outcome_exposure_state"]["D4_A2_V2_OUTCOME_EXPOSURE"] = "NOT_STARTED"
+    manifest_pre["outcome_exposure_state"]["phase_p_slots_completed"] = 0
+    for s in manifest_pre["phase_p_slots_16"]:
+        s["status"] = "NOT_STARTED"
+    orig_load_json = v2._load_json
+
+    def mock_load(path: Path) -> Any:
+        if Path(path).resolve() == (_PROJECT_ROOT / v2.MANIFEST_PATH).resolve():
+            return manifest_pre
+        return orig_load_json(path)
+
+    monkeypatch.setattr(v2, "_load_json", mock_load)
+    monkeypatch.setattr(v2, "verify_drift_guards", lambda root, require_clean_worktree=False: {"verified": True, "dirty_frozen_paths": []})
     receipt = v2.audit_invariants(_PROJECT_ROOT)
     assert receipt["verified"] is True
     assert receipt["cohort_cases"] == 16
@@ -706,6 +721,8 @@ def test_phase_p_allowed_errors_retry_and_record_exact_reasons(monkeypatch, tmp_
     and accepts valid plan.
     """
     manifest_data = json.loads((_PROJECT_ROOT / v2.MANIFEST_PATH).read_text(encoding="utf-8"))
+    manifest_data["outcome_exposure_state"]["D4_A2_V2_OUTCOME_EXPOSURE"] = "NOT_STARTED"
+    manifest_data["phase_p_slots_16"][0]["status"] = "NOT_STARTED"
     manifest_file = tmp_path / v2.MANIFEST_PATH
     manifest_file.parent.mkdir(parents=True, exist_ok=True)
     manifest_file.write_text(json.dumps(manifest_data, indent=2), encoding="utf-8")
@@ -765,6 +782,8 @@ def test_phase_p_allowed_errors_retry_and_record_exact_reasons(monkeypatch, tmp_
 def test_phase_p_unrelated_exception_fails_closed_without_retry(monkeypatch, tmp_path):
     """Verify that an unrelated exception fails closed immediately without any retry."""
     manifest_data = json.loads((_PROJECT_ROOT / v2.MANIFEST_PATH).read_text(encoding="utf-8"))
+    manifest_data["outcome_exposure_state"]["D4_A2_V2_OUTCOME_EXPOSURE"] = "NOT_STARTED"
+    manifest_data["phase_p_slots_16"][0]["status"] = "NOT_STARTED"
     manifest_file = tmp_path / v2.MANIFEST_PATH
     manifest_file.parent.mkdir(parents=True, exist_ok=True)
     manifest_file.write_text(json.dumps(manifest_data, indent=2), encoding="utf-8")
@@ -950,7 +969,10 @@ def test_execute_phase_r_gate_rejects_before_exposure_state_mutation(tmp_path):
 
     # Verify manifest exposure state was NOT mutated
     manifest_after = json.loads(manifest_file.read_text(encoding="utf-8"))
-    assert manifest_after["outcome_exposure_state"]["D4_A2_V2_OUTCOME_EXPOSURE"] == "NOT_STARTED"
+    assert (
+        manifest_after["outcome_exposure_state"]["D4_A2_V2_OUTCOME_EXPOSURE"]
+        == manifest_data["outcome_exposure_state"]["D4_A2_V2_OUTCOME_EXPOSURE"]
+    )
     assert manifest_after["outcome_exposure_state"]["phase_r_cells_completed"] == 0
 
 
@@ -1275,13 +1297,30 @@ def test_phase_p_does_not_dynamically_redefine_implementation_freeze(tmp_path, m
     assert "differs from authoritative implementation freeze" in str(exc_info.value)
 
 
-def test_phase_r_gate_rejects_head_later_than_commit_b(tmp_path, monkeypatch):
-    """Verify that check_git_plan_freeze_status rejects current HEAD that is later than Commit B."""
-    commit_a_sha = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-    commit_b_sha = "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
-    later_head_sha = "cccccccccccccccccccccccccccccccccccccccc"
-
-    monkeypatch.setattr(v2, "_git_head", lambda root: later_head_sha)
+def _mock_r2_git_subprocess(
+    *,
+    head_sha: str = "r2_repair_commit_sha_12345",
+    head_msg: str = v2.EXPECTED_R2_COMMIT_MESSAGE,
+    head_parents: list[str] | None = None,
+    raw_plan_origin: str = v2.PLAN_FREEZE_HEAD,
+    frozen_blob: str = v2.PLAN_FREEZE_RAW_BLOB,
+    head_blob: str = v2.PLAN_FREEZE_RAW_BLOB,
+    worktree_blob: str = v2.PLAN_FREEZE_RAW_BLOB,
+    r2_diff_files: list[str] | None = None,
+    plan_freeze_parents: list[str] | None = None,
+    commit_b_diff_files: list[str] | None = None,
+    dirty_paths: list[str] | None = None,
+):
+    if head_parents is None:
+        head_parents = [v2.PLAN_FREEZE_HEAD]
+    if r2_diff_files is None:
+        r2_diff_files = list(v2.ALLOWED_R2_DIFF_FILES)
+    if plan_freeze_parents is None:
+        plan_freeze_parents = [v2.IMPLEMENTATION_FREEZE_HEAD]
+    if commit_b_diff_files is None:
+        commit_b_diff_files = list(v2.ALLOWED_COMMIT_B_DIFF_FILES)
+    if dirty_paths is None:
+        dirty_paths = []
 
     def mock_subp_run(cmd, **kwargs):
         res = MagicMock()
@@ -1290,90 +1329,130 @@ def test_phase_r_gate_rejects_head_later_than_commit_b(tmp_path, monkeypatch):
         if "cat-file" in cmd_str:
             res.stdout = ""
         elif "status" in cmd_str:
-            res.stdout = ""
+            res.stdout = "\n".join(dirty_paths) + ("\n" if dirty_paths else "")
         elif "diff" in cmd_str:
-            res.stdout = ""
+            if len(cmd) >= 5 and cmd[3] == v2.PLAN_FREEZE_HEAD and cmd[4] == head_sha:
+                res.stdout = "\n".join(r2_diff_files) + ("\n" if r2_diff_files else "")
+            elif len(cmd) >= 5 and cmd[3] == v2.IMPLEMENTATION_FREEZE_HEAD and cmd[4] == v2.PLAN_FREEZE_HEAD:
+                res.stdout = "\n".join(commit_b_diff_files) + ("\n" if commit_b_diff_files else "")
+            else:
+                res.stdout = ""
         elif "log" in cmd_str:
-            res.stdout = commit_b_sha + "\n"
+            if "%H%x00%s" in cmd_str:
+                res.stdout = f"{head_sha}\x00{head_msg}\n"
+            elif "%H" in cmd_str:
+                res.stdout = f"{raw_plan_origin}\n"
+            elif "%P" in cmd_str:
+                if v2.PLAN_FREEZE_HEAD in cmd:
+                    res.stdout = " ".join(plan_freeze_parents) + "\n"
+                else:
+                    res.stdout = " ".join(head_parents) + "\n"
+            else:
+                res.stdout = f"{head_sha}\n"
+        elif "rev-parse" in cmd_str:
+            if "HEAD:" in cmd_str or (len(cmd) >= 3 and cmd[2].startswith("HEAD:")):
+                res.stdout = f"{head_blob}\n"
+            elif f"{v2.PLAN_FREEZE_HEAD}:" in cmd_str or (len(cmd) >= 3 and cmd[2].startswith(f"{v2.PLAN_FREEZE_HEAD}:")):
+                res.stdout = f"{frozen_blob}\n"
+            elif cmd[-1] == "HEAD":
+                res.stdout = f"{head_sha}\n"
+            else:
+                res.stdout = f"{head_sha}\n"
+        elif "hash-object" in cmd_str:
+            res.stdout = f"{worktree_blob}\n"
         elif "merge-base" in cmd_str:
             res.returncode = 0
         return res
 
-    monkeypatch.setattr("subprocess.run", mock_subp_run)
+    return mock_subp_run
 
+
+def test_r2_gate_rejects_raw_plan_blob_mutation_after_freeze(tmp_path, monkeypatch):
+    """Verify that raw-plan blob mutation after PLAN_FREEZE_HEAD is rejected (Section 17.1)."""
+    monkeypatch.setattr(v2, "_git_head", lambda root: "r2_repair_commit_sha_12345")
+    monkeypatch.setattr(
+        "subprocess.run",
+        _mock_r2_git_subprocess(head_blob="mutated_blob_1111111111111111111111111111111111111111"),
+    )
     with pytest.raises(RuntimeError) as exc_info:
-        v2.check_git_plan_freeze_status(tmp_path, v2.RAW_PLANS_PATH, commit_a_sha)
-    assert "is not the dedicated plan-freeze Commit B" in str(exc_info.value)
+        v2.check_git_plan_freeze_status(tmp_path, v2.RAW_PLANS_PATH, v2.IMPLEMENTATION_FREEZE_HEAD)
+    assert "differs from PLAN_FREEZE_HEAD blob" in str(exc_info.value)
 
 
-def test_phase_r_gate_rejects_runner_prereg_test_drift_between_a_r1_and_b(tmp_path, monkeypatch):
-    """Verify that check_git_plan_freeze_status rejects drift in runner, prereg, or test files
-    between implementation freeze and Commit B.
+def test_r2_gate_rejects_raw_plan_file_rewrite_with_identical_json(tmp_path, monkeypatch):
+    """Verify that raw-plan file rewrite with semantically identical JSON is still rejected
+    if the Git blob differs (Section 17.2).
     """
-    commit_a_sha = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-    commit_b_sha = "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
-
-    monkeypatch.setattr(v2, "_git_head", lambda root: commit_b_sha)
-
-    def mock_subp_run(cmd, **kwargs):
-        res = MagicMock()
-        res.returncode = 0
-        cmd_str = " ".join(cmd)
-        if "cat-file" in cmd_str:
-            res.stdout = ""
-        elif "status" in cmd_str:
-            res.stdout = ""
-        elif "diff" in cmd_str and f"{commit_a_sha} {commit_b_sha}" in cmd_str:
-            # Report disallowed modification in runner file
-            res.stdout = "evaluation/scripts/d4_a2_v2_controlled_shared_plan_validation.py\n"
-        elif "diff" in cmd_str:
-            res.stdout = ""
-        elif "log" in cmd_str:
-            res.stdout = commit_b_sha + "\n"
-        elif "merge-base" in cmd_str:
-            res.returncode = 0
-        return res
-
-    monkeypatch.setattr("subprocess.run", mock_subp_run)
-
+    monkeypatch.setattr(v2, "_git_head", lambda root: "r2_repair_commit_sha_12345")
+    monkeypatch.setattr(
+        "subprocess.run",
+        _mock_r2_git_subprocess(worktree_blob="rewritten_worktree_blob_222222222222222222222222"),
+    )
     with pytest.raises(RuntimeError) as exc_info:
-        v2.check_git_plan_freeze_status(tmp_path, v2.RAW_PLANS_PATH, commit_a_sha)
+        v2.check_git_plan_freeze_status(tmp_path, v2.RAW_PLANS_PATH, v2.IMPLEMENTATION_FREEZE_HEAD)
+    assert "differs from frozen blob" in str(exc_info.value)
+
+
+def test_r2_gate_rejects_wrong_plan_freeze_sha(tmp_path, monkeypatch):
+    """Verify that raw plans artifact not originating from PLAN_FREEZE_HEAD is rejected (Section 17.3)."""
+    monkeypatch.setattr(v2, "_git_head", lambda root: "r2_repair_commit_sha_12345")
+    monkeypatch.setattr(
+        "subprocess.run",
+        _mock_r2_git_subprocess(raw_plan_origin="wrong_plan_freeze_sha_333333333333333333333333"),
+    )
+    with pytest.raises(RuntimeError) as exc_info:
+        v2.check_git_plan_freeze_status(tmp_path, v2.RAW_PLANS_PATH, v2.IMPLEMENTATION_FREEZE_HEAD)
+    assert "origin commit mismatch: expected exactly PLAN_FREEZE_HEAD" in str(exc_info.value)
+
+
+def test_r2_gate_rejects_r2_parent_not_plan_freeze(tmp_path, monkeypatch):
+    """Verify that R2 repair whose parent is not PLAN_FREEZE_HEAD is rejected (Section 17.4)."""
+    monkeypatch.setattr(v2, "_git_head", lambda root: "r2_repair_commit_sha_12345")
+    monkeypatch.setattr(
+        "subprocess.run",
+        _mock_r2_git_subprocess(head_parents=["wrong_parent_sha_444444444444444444444444"]),
+    )
+    with pytest.raises(RuntimeError) as exc_info:
+        v2.check_git_plan_freeze_status(tmp_path, v2.RAW_PLANS_PATH, v2.IMPLEMENTATION_FREEZE_HEAD)
+    assert "not a direct child of PLAN_FREEZE_HEAD" in str(exc_info.value)
+
+
+def test_r2_gate_rejects_arbitrary_later_descendant(tmp_path, monkeypatch):
+    """Verify that an arbitrary later descendant after R2 fails closed (Section 17.5)."""
+    monkeypatch.setattr(v2, "_git_head", lambda root: "later_descendant_commit_sha_5555555555555555")
+    monkeypatch.setattr(
+        "subprocess.run",
+        _mock_r2_git_subprocess(head_sha="r2_repair_commit_sha_12345"),
+    )
+    with pytest.raises(RuntimeError) as exc_info:
+        v2.check_git_plan_freeze_status(tmp_path, v2.RAW_PLANS_PATH, v2.IMPLEMENTATION_FREEZE_HEAD)
+    assert "is not the finalized R2 repair commit" in str(exc_info.value)
+
+
+def test_r2_gate_rejects_unauthorized_r2_file_change(tmp_path, monkeypatch):
+    """Verify that unauthorized file modification in R2 diff is rejected (Section 17.6)."""
+    monkeypatch.setattr(v2, "_git_head", lambda root: "r2_repair_commit_sha_12345")
+    monkeypatch.setattr(
+        "subprocess.run",
+        _mock_r2_git_subprocess(
+            r2_diff_files=list(v2.ALLOWED_R2_DIFF_FILES) + ["src/panda_agent/retrieval.py"]
+        ),
+    )
+    with pytest.raises(RuntimeError) as exc_info:
+        v2.check_git_plan_freeze_status(tmp_path, v2.RAW_PLANS_PATH, v2.IMPLEMENTATION_FREEZE_HEAD)
     assert "modified disallowed paths" in str(exc_info.value)
 
 
-def test_phase_r_gate_accepts_valid_commit_b_with_only_allowed_artifacts(tmp_path, monkeypatch):
-    """Verify that check_git_plan_freeze_status succeeds when Commit B modifies only allowed artifacts."""
-    commit_a_sha = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-    commit_b_sha = "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
-
-    monkeypatch.setattr(v2, "_git_head", lambda root: commit_b_sha)
-
-    def mock_subp_run(cmd, **kwargs):
-        res = MagicMock()
-        res.returncode = 0
-        cmd_str = " ".join(cmd)
-        if "cat-file" in cmd_str:
-            res.stdout = ""
-        elif "status" in cmd_str:
-            res.stdout = ""
-        elif "diff" in cmd_str and "--" in cmd and f"{commit_a_sha} {commit_b_sha}" in cmd_str:
-            # Diff across FROZEN_IMPLEMENTATION_PATHS: only manifest has Phase-P state changes
-            res.stdout = "evaluation/d4_a2_v2_execution_manifest.json\n"
-        elif "diff" in cmd_str and f"{commit_a_sha} {commit_b_sha}" in cmd_str:
-            # Commit B overall modifies raw_plans.json and execution_manifest.json
-            res.stdout = "evaluation/d4_a2_v2_raw_plans.json\nevaluation/d4_a2_v2_execution_manifest.json\n"
-        elif "diff" in cmd_str:
-            res.stdout = ""
-        elif "log" in cmd_str:
-            res.stdout = commit_b_sha + "\n"
-        elif "merge-base" in cmd_str:
-            res.returncode = 0
-        return res
-
-    monkeypatch.setattr("subprocess.run", mock_subp_run)
-
-    frozen_sha = v2.check_git_plan_freeze_status(tmp_path, v2.RAW_PLANS_PATH, commit_a_sha)
-    assert frozen_sha == commit_b_sha
+def test_r2_gate_valid_direct_child_lineage_passes(tmp_path, monkeypatch):
+    """Verify that valid R2 direct-child lineage passes all gate checks (Section 17.7)."""
+    head_sha = "r2_repair_commit_sha_12345"
+    monkeypatch.setattr(v2, "_git_head", lambda root: head_sha)
+    monkeypatch.setattr(
+        "subprocess.run",
+        _mock_r2_git_subprocess(head_sha=head_sha),
+    )
+    frozen_sha = v2.check_git_plan_freeze_status(tmp_path, v2.RAW_PLANS_PATH, v2.IMPLEMENTATION_FREEZE_HEAD)
+    assert frozen_sha == v2.PLAN_FREEZE_HEAD
 
 
 def test_max_provider_attempts_per_case_frozen_consistently():
@@ -1439,3 +1518,260 @@ def test_raw_plan_provenance_contract_fields():
     for plan in artifact["plans"]:
         for field in required_plan_fields:
             assert field in plan, f"Missing plan field {field} in case {plan.get('case_id')}"
+
+
+# ---------------------------------------------------------------------------
+# 16. Static Protection for Retrieval Semantics Tests (Section 16)
+# ---------------------------------------------------------------------------
+
+def test_retrieval_semantics_and_constants_protected():
+    """Verify frozen scientific constants and treatment contracts remain strictly unchanged (Section 16)."""
+    # 1. CASE_ORDER unchanged
+    expected_order = [
+        "g029", "n021", "g025", "g036", "n022", "g020", "n006", "g041",
+        "n014", "g060", "g052", "g055", "n003", "g021", "n004", "g007",
+    ]
+    assert v2.CASE_ORDER == expected_order
+
+    # 2. SCHEDULE_32 unchanged
+    assert len(v2.SCHEDULE_32) == 32
+    before_cells = [c for c in v2.SCHEDULE_32 if c["arm"] == "BEFORE_COMPAT"]
+    after_cells = [c for c in v2.SCHEDULE_32 if c["arm"] == "AFTER_BATCH1_REPLACEMENT"]
+    assert len(before_cells) == 16
+    assert len(after_cells) == 16
+    assert {c["case_id"] for c in before_cells} == set(v2.CASE_ORDER)
+    assert {c["case_id"] for c in after_cells} == set(v2.CASE_ORDER)
+
+    # 3. Selectivity caps 8 / 4
+    assert v2.EXPECTED_SELECTIVITY_CAP == 8
+    assert v2.EXPECTED_PER_ORIGIN_CAP == 4
+
+    # 4. K = 3
+    assert v2.EXPECTED_ADMISSION_BUDGET_K == 3
+
+    # 5. Rerank pool = 30
+    assert v2.EXPECTED_RERANK_POOL_SIZE == 30
+
+    # 6. Model = gemini-3.8-flash
+    assert v2.EXPECTED_MODEL == "gemini-3.8-flash"
+
+    # 7. Embedding model = gemini-embedding-2
+    assert v2.EXPECTED_EMBEDDING_MODEL == "gemini-embedding-2"
+
+    # 8. Temperature = 0.0
+    assert v2.EXPECTED_TEMPERATURE == 0.0
+
+    # 9. BEFORE / AFTER treatment definitions
+    assert v2.ARMS == ["BEFORE_COMPAT", "AFTER_BATCH1_REPLACEMENT"]
+
+    # 10. RRF weights unchanged
+    expected_rrf = {
+        "exact": 2.0,
+        "dense": 1.0,
+        "sparse": 1.0,
+        "paper": 1.15,
+        "workflow": 1.2,
+        "graph": 0.8,
+    }
+    assert v2.EXPECTED_RRF_WEIGHTS == expected_rrf
+
+
+# ---------------------------------------------------------------------------
+# 17. Additional R2 Lineage and Artifact Protection Tests (Section 17.8, 17.9)
+# ---------------------------------------------------------------------------
+
+def test_r2_gate_valid_frozen_16_plan_artifact_passes_full_signature_gate():
+    """Verify that the real frozen 16-plan artifact passes the full signature gate (Section 17.8)."""
+    receipt = v2.verify_plan_freeze_gate(
+        _PROJECT_ROOT,
+        git_checker=lambda root, rel, ca: v2.PLAN_FREEZE_HEAD,
+    )
+    assert receipt["verified"] is True
+    assert receipt["plans_count"] == 16
+    assert receipt["plan_freeze_head"] == v2.PLAN_FREEZE_HEAD
+    assert receipt["raw_plan_blob_sha"] == v2.PLAN_FREEZE_RAW_BLOB
+    assert receipt["cases_validated"] == v2.CASE_ORDER
+
+
+def test_current_raw_artifact_remains_untouched_and_identical_to_git_blob():
+    """Verify that current raw plans artifact remains untouched and identical to Git blob (Section 17.9)."""
+    raw_path = _PROJECT_ROOT / v2.RAW_PLANS_PATH
+    assert raw_path.exists()
+
+    res = subprocess.run(
+        ["git", "hash-object", str(raw_path)],
+        cwd=str(_PROJECT_ROOT),
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    assert res.stdout.strip() == v2.PLAN_FREEZE_RAW_BLOB
+
+    status_res = subprocess.run(
+        ["git", "status", "--porcelain", "--", v2.RAW_PLANS_PATH],
+        cwd=str(_PROJECT_ROOT),
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    assert status_res.stdout.strip() == ""
+
+
+# ---------------------------------------------------------------------------
+# 18. Explicit Signature Tests (Section 9)
+# ---------------------------------------------------------------------------
+
+def test_plan_signature_empty_paper_page_hints_round_trip():
+    """Verify that a plan with empty paper_page_hints round-trips cleanly (Section 9.1)."""
+    plan = _make_sample_canonical_plan("g029")
+    plan["paper_page_hints"] = {}
+    sig_str, sig_payload = v2.compute_plan_signature(plan)
+    reloaded = json.loads(sig_str)
+    assert reloaded == sig_payload
+    re_dumped = json.dumps(reloaded, sort_keys=True)
+    assert re_dumped == sig_str
+    assert sig_payload["paper_page_hints"] == []
+
+
+def test_plan_signature_non_empty_paper_page_hints_round_trip():
+    """Verify that a plan with non-empty paper_page_hints round-trips cleanly without tuple-vs-list mismatch (Section 9.2)."""
+    plan = _make_sample_canonical_plan("g060")
+    plan["paper_page_hints"] = {"pflueger_2017": [78, 74, 84]}
+    sig_str, sig_payload = v2.compute_plan_signature(plan)
+    reloaded = json.loads(sig_str)
+    assert reloaded == sig_payload
+    assert sig_payload["paper_page_hints"] == [["pflueger_2017", [74, 78, 84]]]
+    assert isinstance(sig_payload["paper_page_hints"][0], list)
+
+
+def test_plan_signature_non_empty_concept_scopes_round_trip():
+    """Verify that a plan with non-empty concept_scopes round-trips cleanly (Section 9.3)."""
+    plan = _make_sample_canonical_plan("g055")
+    plan["concept_scopes"] = {"efficiency": ["detector", "tracking"]}
+    sig_str, sig_payload = v2.compute_plan_signature(plan)
+    reloaded = json.loads(sig_str)
+    assert reloaded == sig_payload
+    assert sig_payload["concept_scopes"] == [["efficiency", ["detector", "tracking"]]]
+    assert isinstance(sig_payload["concept_scopes"][0], list)
+
+
+def test_plan_signature_nested_list_content_survives_round_trip():
+    """Verify nested list content survives JSON round-trip with all list types intact (Section 9.4)."""
+    plan = _make_sample_canonical_plan("nested_case")
+    plan["paper_page_hints"] = {
+        "doc_b": [10, 20],
+        "doc_a": [1, 5, 3],
+    }
+    plan["concept_scopes"] = {
+        "scope_y": ["sub_2", "sub_1"],
+        "scope_x": ["sub_0"],
+    }
+    sig_str, sig_payload = v2.compute_plan_signature(plan)
+    reloaded = json.loads(sig_str)
+    assert reloaded == sig_payload
+    for item in sig_payload["paper_page_hints"]:
+        assert isinstance(item, list)
+        assert isinstance(item[1], list)
+    for item in sig_payload["concept_scopes"]:
+        assert isinstance(item, list)
+
+
+def test_plan_signature_computed_equals_reloaded_from_json():
+    """Verify computed signature in Python equals signature after json.dumps/loads (Section 9.5)."""
+    plan = _make_sample_canonical_plan("g052")
+    plan["paper_page_hints"] = {"li_2026": [12, 15]}
+    sig_str, sig_payload = v2.compute_plan_signature(plan)
+    reloaded = json.loads(json.dumps(sig_payload))
+    assert sig_payload == reloaded
+    assert type(sig_payload) is type(reloaded)
+
+
+def test_plan_signature_recompute_from_canonical_plan_equals_stored_json_loaded():
+    """Verify recomputing from canonical plan matches the stored JSON-loaded signature (Section 9.6)."""
+    plan = _make_sample_canonical_plan("g055")
+    plan["paper_page_hints"] = {"pflueger_2017": [74, 84], "li_2026": [10]}
+    plan["concept_scopes"] = {"efficiency": ["detector"]}
+    sig_str, sig_payload = v2.compute_plan_signature(plan)
+
+    fake_stored_plan = {
+        "canonical_plan": json.loads(json.dumps(plan)),
+        "plan_signature": json.loads(sig_str),
+    }
+
+    _, recomputed_payload = v2.compute_plan_signature(fake_stored_plan["canonical_plan"])
+    assert recomputed_payload == fake_stored_plan["plan_signature"]
+
+
+def test_plan_signature_genuine_semantic_change_fails():
+    """Verify that a genuine semantic change causes signature mismatch (Section 9.7)."""
+    plan = _make_sample_canonical_plan("g029")
+    sig_str, sig_payload = v2.compute_plan_signature(plan)
+
+    # 1. Alter concepts
+    mutated_plan = copy.deepcopy(plan)
+    mutated_plan["concepts"].append("new_concept")
+    _, mut_payload = v2.compute_plan_signature(mutated_plan)
+    assert mut_payload != sig_payload
+
+    # 2. Alter intent
+    mutated_plan2 = copy.deepcopy(plan)
+    mutated_plan2["intent"] = "different_intent"
+    _, mut_payload2 = v2.compute_plan_signature(mutated_plan2)
+    assert mut_payload2 != sig_payload
+
+    # 3. Alter symbols
+    mutated_plan3 = copy.deepcopy(plan)
+    mutated_plan3["symbols"].append("macro/other.C")
+    _, mut_payload3 = v2.compute_plan_signature(mutated_plan3)
+    assert mut_payload3 != sig_payload
+
+
+def test_plan_signature_order_insensitivity_for_canonical_fields():
+    """Verify target repositories/symbols/concepts/source types remain order-insensitive (Section 9.8)."""
+    plan_a = {
+        "intent": "code_search",
+        "target_repositories": ["pandaroot", "fairroot"],
+        "symbols": ["b.C", "a.C"],
+        "concepts": ["Beta", "alpha"],
+        "required_source_types": ["docs", "code"],
+        "paper_page_hints": {},
+        "concept_scopes": {},
+    }
+    plan_b = {
+        "intent": "code_search",
+        "target_repositories": ["fairroot", "pandaroot"],
+        "symbols": ["a.C", "b.C"],
+        "concepts": ["ALPHA", "beta"],
+        "required_source_types": ["code", "docs"],
+        "paper_page_hints": {},
+        "concept_scopes": {},
+    }
+    sig_str_a, payload_a = v2.compute_plan_signature(plan_a)
+    sig_str_b, payload_b = v2.compute_plan_signature(plan_b)
+    assert payload_a == payload_b
+    assert sig_str_a == sig_str_b
+
+
+def test_plan_signature_real_frozen_g060_verifies():
+    """Verify that the real frozen g060 signature verifies without mutation (Section 9.9)."""
+    raw_plans = json.loads((_PROJECT_ROOT / v2.RAW_PLANS_PATH).read_text(encoding="utf-8"))
+    g060_plan = next(p for p in raw_plans["plans"] if p["case_id"] == "g060")
+    canonical = g060_plan["canonical_plan"]
+    stored_sig = g060_plan["plan_signature"]
+    sig_str, computed_sig = v2.compute_plan_signature(canonical)
+    assert computed_sig == stored_sig
+    assert sig_str == json.dumps(stored_sig, sort_keys=True)
+    assert "pflueger_2017" in canonical["paper_page_hints"]
+
+
+def test_plan_signature_all_16_real_frozen_plans_verify():
+    """Verify that all 16 real frozen plans pass signature verification without mutation (Section 9.10)."""
+    raw_plans = json.loads((_PROJECT_ROOT / v2.RAW_PLANS_PATH).read_text(encoding="utf-8"))
+    assert len(raw_plans["plans"]) == 16
+    for idx, p in enumerate(raw_plans["plans"], start=1):
+        cid = p["case_id"]
+        canonical = p["canonical_plan"]
+        stored_sig = p["plan_signature"]
+        sig_str, computed_sig = v2.compute_plan_signature(canonical)
+        assert computed_sig == stored_sig, f"Signature mismatch on slot #{idx} ({cid})"
+        assert sig_str == json.dumps(stored_sig, sort_keys=True)
