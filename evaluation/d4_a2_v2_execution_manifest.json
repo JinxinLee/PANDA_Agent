@@ -428,162 +428,582 @@
     {
       "slot_index": 1,
       "case_id": "g029",
-      "status": "NOT_STARTED",
-      "started_at": null,
-      "completed_at": null,
-      "plan_signature": null,
-      "attempts": 0,
-      "error": null
+      "status": "COMPLETED",
+      "started_at": "2026-09-04T02:22:11.784367",
+      "completed_at": "2026-09-04T02:22:18.726762",
+      "plan_signature": {
+        "intent": "api",
+        "target_repositories": [
+          "luminosityfit",
+          "pandaroot",
+          "restgas_determination"
+        ],
+        "symbols": [
+          "PndLmdCombinedDataReader"
+        ],
+        "normalized_concepts": [
+          "data boundary"
+        ],
+        "required_source_types": [
+          "code"
+        ],
+        "paper_page_hints": [],
+        "concept_scopes": []
+      },
+      "attempts": 1,
+      "error": null,
+      "token_usage": 1568
     },
     {
       "slot_index": 2,
       "case_id": "n021",
-      "status": "NOT_STARTED",
-      "started_at": null,
-      "completed_at": null,
-      "plan_signature": null,
-      "attempts": 0,
-      "error": null
+      "status": "COMPLETED",
+      "started_at": "2026-09-04T02:22:18.727682",
+      "completed_at": "2026-09-04T02:22:24.017466",
+      "plan_signature": {
+        "intent": "api",
+        "target_repositories": [
+          "luminosityfit",
+          "pandaroot"
+        ],
+        "symbols": [],
+        "normalized_concepts": [
+          "digitization",
+          "lmd workflow",
+          "luminosity fit",
+          "reconstruction",
+          "simulation"
+        ],
+        "required_source_types": [
+          "code"
+        ],
+        "paper_page_hints": [],
+        "concept_scopes": []
+      },
+      "attempts": 1,
+      "error": null,
+      "token_usage": 1718
     },
     {
       "slot_index": 3,
       "case_id": "g025",
-      "status": "NOT_STARTED",
-      "started_at": null,
-      "completed_at": null,
-      "plan_signature": null,
-      "attempts": 0,
-      "error": null
+      "status": "COMPLETED",
+      "started_at": "2026-09-04T02:22:24.018399",
+      "completed_at": "2026-09-04T02:22:29.231313",
+      "plan_signature": {
+        "intent": "usage",
+        "target_repositories": [
+          "luminosityfit"
+        ],
+        "symbols": [
+          "README.md",
+          "apps/runLmdFit.cxx",
+          "docs/apps/createLmdFitData.md",
+          "python/runLmdFit.sh",
+          "runLmdFit"
+        ],
+        "normalized_concepts": [
+          "luminosityfit execution after fit-data preparation",
+          "output root file",
+          "sha-256 checksum"
+        ],
+        "required_source_types": [
+          "code",
+          "documentation"
+        ],
+        "paper_page_hints": [],
+        "concept_scopes": []
+      },
+      "attempts": 1,
+      "error": null,
+      "token_usage": 2095
     },
     {
       "slot_index": 4,
       "case_id": "g036",
-      "status": "NOT_STARTED",
-      "started_at": null,
-      "completed_at": null,
-      "plan_signature": null,
-      "attempts": 0,
-      "error": null
+      "status": "COMPLETED",
+      "started_at": "2026-09-04T02:22:29.232614",
+      "completed_at": "2026-09-04T02:22:33.149907",
+      "plan_signature": {
+        "intent": "api",
+        "target_repositories": [
+          "pandaroot",
+          "restgas_determination"
+        ],
+        "symbols": [
+          "POCA_VERTEX_FILE",
+          "PndPidCorrelator",
+          "event_poca",
+          "macro/target/ana_dpm.C",
+          "macro/target/prod_aod_complete.C"
+        ],
+        "normalized_concepts": [
+          "event poca handoff",
+          "event-aligned second-pass propagation",
+          "macro"
+        ],
+        "required_source_types": [
+          "code"
+        ],
+        "paper_page_hints": [],
+        "concept_scopes": []
+      },
+      "attempts": 1,
+      "error": null,
+      "token_usage": 1883
     },
     {
       "slot_index": 5,
       "case_id": "n022",
-      "status": "NOT_STARTED",
-      "started_at": null,
-      "completed_at": null,
-      "plan_signature": null,
-      "attempts": 0,
-      "error": null
+      "status": "COMPLETED",
+      "started_at": "2026-09-04T02:22:33.150894",
+      "completed_at": "2026-09-04T02:22:38.486021",
+      "plan_signature": {
+        "intent": "data_flow",
+        "target_repositories": [
+          "luminosityfit",
+          "pandaroot",
+          "restgas_determination"
+        ],
+        "symbols": [],
+        "normalized_concepts": [
+          "event vertex",
+          "fitted vertex",
+          "poca",
+          "reprocessing",
+          "restgas analysis",
+          "two-step poca workflow",
+          "worker step"
+        ],
+        "required_source_types": [
+          "code",
+          "workflow"
+        ],
+        "paper_page_hints": [],
+        "concept_scopes": []
+      },
+      "attempts": 1,
+      "error": null,
+      "token_usage": 2084
     },
     {
       "slot_index": 6,
       "case_id": "g020",
-      "status": "NOT_STARTED",
-      "started_at": null,
-      "completed_at": null,
-      "plan_signature": null,
-      "attempts": 0,
-      "error": null
+      "status": "COMPLETED",
+      "started_at": "2026-09-04T02:22:38.487087",
+      "completed_at": "2026-09-04T02:22:55.411581",
+      "plan_signature": {
+        "intent": "usage",
+        "target_repositories": [
+          "pandaroot",
+          "restgas_determination"
+        ],
+        "symbols": [
+          "POCA_VERTEX_FILE",
+          "PndPidCorrelator",
+          "Running/Running.html",
+          "event_poca",
+          "macro/target/README.md",
+          "macro/target/ana_dpm.C",
+          "macro/target/prod_aod_complete.C",
+          "macro/target/runall_prod_hvmaps.py"
+        ],
+        "normalized_concepts": [
+          "event poca handoff",
+          "event-aligned second-pass propagation",
+          "restgas two-pass reconstruction workflow",
+          "two-pass reconstruction"
+        ],
+        "required_source_types": [
+          "code",
+          "documentation"
+        ],
+        "paper_page_hints": [],
+        "concept_scopes": []
+      },
+      "attempts": 1,
+      "error": null,
+      "token_usage": 2685
     },
     {
       "slot_index": 7,
       "case_id": "n006",
-      "status": "NOT_STARTED",
-      "started_at": null,
-      "completed_at": null,
-      "plan_signature": null,
-      "attempts": 0,
-      "error": null
+      "status": "COMPLETED",
+      "started_at": "2026-09-04T02:22:55.412599",
+      "completed_at": "2026-09-04T02:23:00.123683",
+      "plan_signature": {
+        "intent": "data_flow",
+        "target_repositories": [
+          "pandaroot"
+        ],
+        "symbols": [
+          "digi",
+          "pid",
+          "reco",
+          "sim"
+        ],
+        "normalized_concepts": [
+          "analysis chain",
+          "file names",
+          "helper",
+          "simulation file name",
+          "stage extensions",
+          "stage names"
+        ],
+        "required_source_types": [
+          "code",
+          "workflow"
+        ],
+        "paper_page_hints": [],
+        "concept_scopes": []
+      },
+      "attempts": 1,
+      "error": null,
+      "token_usage": 1908
     },
     {
       "slot_index": 8,
       "case_id": "g041",
-      "status": "NOT_STARTED",
-      "started_at": null,
-      "completed_at": null,
-      "plan_signature": null,
-      "attempts": 0,
-      "error": null
+      "status": "COMPLETED",
+      "started_at": "2026-09-04T02:23:00.124727",
+      "completed_at": "2026-09-04T02:23:06.335388",
+      "plan_signature": {
+        "intent": "api",
+        "target_repositories": [
+          "luminosityfit",
+          "pandaroot",
+          "restgas_determination"
+        ],
+        "symbols": [
+          "PndPidCorrelator::SetMagicRestgasSeed"
+        ],
+        "normalized_concepts": [
+          "signature"
+        ],
+        "required_source_types": [
+          "code"
+        ],
+        "paper_page_hints": [],
+        "concept_scopes": []
+      },
+      "attempts": 1,
+      "error": null,
+      "token_usage": 1687
     },
     {
       "slot_index": 9,
       "case_id": "n014",
-      "status": "NOT_STARTED",
-      "started_at": null,
-      "completed_at": null,
-      "plan_signature": null,
-      "attempts": 0,
-      "error": null
+      "status": "COMPLETED",
+      "started_at": "2026-09-04T02:23:06.336438",
+      "completed_at": "2026-09-04T02:23:13.029374",
+      "plan_signature": {
+        "intent": "module_structure",
+        "target_repositories": [
+          "luminosityfit"
+        ],
+        "symbols": [
+          "PndLmdModelFactory::generate2DModel",
+          "PndLmdModelFactory::setAcceptance",
+          "model/",
+          "model/PndLmdDPMAngModel1D.cxx",
+          "model/PndLmdDPMAngModel2D.cxx",
+          "model/PndLmdModelFactory",
+          "model/PndLmdModelFactory.cxx",
+          "model_framework"
+        ],
+        "normalized_concepts": [
+          "acceptance injection and two-dimensional model generation",
+          "dpm model acceptance resolution composition",
+          "model_framework directory",
+          "native model directory",
+          "pndlmdmodelfactory role"
+        ],
+        "required_source_types": [
+          "code",
+          "graph"
+        ],
+        "paper_page_hints": [],
+        "concept_scopes": []
+      },
+      "attempts": 1,
+      "error": null,
+      "token_usage": 2658
     },
     {
       "slot_index": 10,
       "case_id": "g060",
-      "status": "NOT_STARTED",
-      "started_at": null,
-      "completed_at": null,
-      "plan_signature": null,
-      "attempts": 0,
-      "error": null
+      "status": "COMPLETED",
+      "started_at": "2026-09-04T02:23:13.030262",
+      "completed_at": "2026-09-04T02:23:27.702640",
+      "plan_signature": {
+        "intent": "algorithm_implementation",
+        "target_repositories": [
+          "luminosityfit"
+        ],
+        "symbols": [
+          "model/PndLmdDivergenceSmearingModel2D.cxx",
+          "model/PndLmdModelFactory.cxx"
+        ],
+        "normalized_concepts": [
+          "beam divergence",
+          "beam-divergence smearing",
+          "divergence smearing"
+        ],
+        "required_source_types": [
+          "code",
+          "paper"
+        ],
+        "paper_page_hints": [
+          [
+            "pflueger_2017",
+            [
+              74,
+              78,
+              84
+            ]
+          ]
+        ],
+        "concept_scopes": []
+      },
+      "attempts": 1,
+      "error": null,
+      "token_usage": 2570
     },
     {
       "slot_index": 11,
       "case_id": "g052",
-      "status": "NOT_STARTED",
-      "started_at": null,
-      "completed_at": null,
-      "plan_signature": null,
-      "attempts": 0,
-      "error": null
+      "status": "COMPLETED",
+      "started_at": "2026-09-04T02:23:27.703906",
+      "completed_at": "2026-09-04T02:23:32.422357",
+      "plan_signature": {
+        "intent": "algorithm_theory",
+        "target_repositories": [
+          "luminosityfit",
+          "pandaroot",
+          "restgas_determination"
+        ],
+        "symbols": [
+          "data/PndLmdAcceptance.cxx",
+          "macro/target/ana_complete.C",
+          "macro/target/correction/efficiency_correction_2.C",
+          "macro/target/prod_sim_hvmaps.C",
+          "macro/target/reco_complete.C",
+          "model/PndLmdModelFactory.cxx",
+          "pgenerators/Target/PndTargetGenerator.cxx"
+        ],
+        "normalized_concepts": [
+          "distributed target generation",
+          "effective acceptance",
+          "longitudinal profile correction",
+          "profile-dependent effective acceptance pipeline",
+          "reconstructed profile to effective acceptance",
+          "reconstructed restgas profile"
+        ],
+        "required_source_types": [
+          "paper"
+        ],
+        "paper_page_hints": [
+          [
+            "li_2026",
+            [
+              141,
+              149,
+              151
+            ]
+          ]
+        ],
+        "concept_scopes": []
+      },
+      "attempts": 1,
+      "error": null,
+      "token_usage": 1990
     },
     {
       "slot_index": 12,
       "case_id": "g055",
-      "status": "NOT_STARTED",
-      "started_at": null,
-      "completed_at": null,
-      "plan_signature": null,
-      "attempts": 0,
-      "error": null
+      "status": "COMPLETED",
+      "started_at": "2026-09-04T02:23:32.423226",
+      "completed_at": "2026-09-04T02:23:37.158306",
+      "plan_signature": {
+        "intent": "algorithm_theory",
+        "target_repositories": [
+          "luminosityfit",
+          "restgas_determination"
+        ],
+        "symbols": [
+          "data/PndLmdAcceptance.cxx",
+          "macro/target/correction/efficiency_correction_2.C",
+          "macro/target/correction/efficiency_correction_steps.C"
+        ],
+        "normalized_concepts": [
+          "angular acceptance",
+          "lmd angular acceptance",
+          "longitudinal efficiency",
+          "restgas longitudinal reconstruction efficiency"
+        ],
+        "required_source_types": [
+          "paper"
+        ],
+        "paper_page_hints": [
+          [
+            "li_2026",
+            [
+              138,
+              142,
+              147
+            ]
+          ],
+          [
+            "pflueger_2017",
+            [
+              57,
+              58,
+              62
+            ]
+          ]
+        ],
+        "concept_scopes": [
+          [
+            "efficiency",
+            "angular_acceptance_vs_longitudinal_profile"
+          ]
+        ]
+      },
+      "attempts": 1,
+      "error": null,
+      "token_usage": 2267
     },
     {
       "slot_index": 13,
       "case_id": "n003",
-      "status": "NOT_STARTED",
-      "started_at": null,
-      "completed_at": null,
-      "plan_signature": null,
-      "attempts": 0,
-      "error": null
+      "status": "COMPLETED",
+      "started_at": "2026-09-04T02:23:37.159308",
+      "completed_at": "2026-09-04T02:23:44.307834",
+      "plan_signature": {
+        "intent": "usage",
+        "target_repositories": [
+          "pandaroot"
+        ],
+        "symbols": [],
+        "normalized_concepts": [
+          "acceptance scan",
+          "event generator",
+          "momentum",
+          "polar angle",
+          "single particles",
+          "stepping"
+        ],
+        "required_source_types": [
+          "code",
+          "documentation"
+        ],
+        "paper_page_hints": [],
+        "concept_scopes": []
+      },
+      "attempts": 1,
+      "error": null,
+      "token_usage": 2382
     },
     {
       "slot_index": 14,
       "case_id": "g021",
-      "status": "NOT_STARTED",
-      "started_at": null,
-      "completed_at": null,
-      "plan_signature": null,
-      "attempts": 0,
-      "error": null
+      "status": "COMPLETED",
+      "started_at": "2026-09-04T02:23:44.308840",
+      "completed_at": "2026-09-04T02:23:47.878771",
+      "plan_signature": {
+        "intent": "usage",
+        "target_repositories": [
+          "pandaroot",
+          "restgas_determination"
+        ],
+        "symbols": [
+          "macro/target/ana_complete.C",
+          "macro/target/correction/efficiency_correction_2.C",
+          "macro/target/prod_sim_hvmaps.C",
+          "macro/target/reco_complete.C",
+          "pgenerators/Target/PndTargetGenerator.cxx",
+          "restgas_profile"
+        ],
+        "normalized_concepts": [
+          "distributed target generation",
+          "distributed-target simulation",
+          "longitudinal profile correction"
+        ],
+        "required_source_types": [
+          "code",
+          "documentation"
+        ],
+        "paper_page_hints": [],
+        "concept_scopes": []
+      },
+      "attempts": 1,
+      "error": null,
+      "token_usage": 1878
     },
     {
       "slot_index": 15,
       "case_id": "n004",
-      "status": "NOT_STARTED",
-      "started_at": null,
-      "completed_at": null,
-      "plan_signature": null,
-      "attempts": 0,
-      "error": null
+      "status": "COMPLETED",
+      "started_at": "2026-09-04T02:23:47.879835",
+      "completed_at": "2026-09-04T02:23:53.009293",
+      "plan_signature": {
+        "intent": "usage",
+        "target_repositories": [
+          "pandaroot"
+        ],
+        "symbols": [
+          "Running/Macros.html",
+          "file:line:function",
+          "tools/MasterTasks/PndMasterRunSim.cxx"
+        ],
+        "normalized_concepts": [
+          "debugging",
+          "framework documentation",
+          "log message",
+          "logging controls",
+          "pandaroot macro invocation",
+          "severity"
+        ],
+        "required_source_types": [
+          "code",
+          "documentation"
+        ],
+        "paper_page_hints": [],
+        "concept_scopes": []
+      },
+      "attempts": 1,
+      "error": null,
+      "token_usage": 2269
     },
     {
       "slot_index": 16,
       "case_id": "g007",
-      "status": "NOT_STARTED",
-      "started_at": null,
-      "completed_at": null,
-      "plan_signature": null,
-      "attempts": 0,
-      "error": null
+      "status": "COMPLETED",
+      "started_at": "2026-09-04T02:23:53.010377",
+      "completed_at": "2026-09-04T02:23:59.065576",
+      "plan_signature": {
+        "intent": "installation",
+        "target_repositories": [
+          "pandaroot"
+        ],
+        "symbols": [
+          "Installation/Install_PandaRoot.html",
+          "Installation/Installation.html"
+        ],
+        "normalized_concepts": [
+          "gpu memory",
+          "minimum gpu memory",
+          "pandaroot installation requirements"
+        ],
+        "required_source_types": [
+          "documentation"
+        ],
+        "paper_page_hints": [],
+        "concept_scopes": []
+      },
+      "attempts": 1,
+      "error": null,
+      "token_usage": 1974
     }
   ],
   "phase_r_cells_32": [
@@ -941,9 +1361,9 @@
     }
   ],
   "outcome_exposure_state": {
-    "D4_A2_V2_OUTCOME_EXPOSURE": "NOT_STARTED",
+    "D4_A2_V2_OUTCOME_EXPOSURE": "PLANS_FROZEN",
     "phase_p_slots_total": 16,
-    "phase_p_slots_completed": 0,
+    "phase_p_slots_completed": 16,
     "phase_p_slots_failed": 0,
     "phase_r_cells_total": 32,
     "phase_r_cells_completed": 0,
