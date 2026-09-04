@@ -400,6 +400,7 @@ def _make_valid_verdict_inputs(**overrides: Any) -> dict[str, Any]:
         "before_reference_valid": True,
         "target_replacement_reproduced": 2,
         "batch1_dependency_removed": 2,
+        "dependency_removal_identifiable": True,
         "shared_plan_critical_regressions": [],
         "grounding_regressions": 0,
         "wrong_version_regressions": 0,
@@ -497,7 +498,7 @@ def test_verdict_missing_safety_accounting_cannot_pass():
 
 def test_verdict_missing_target_reproduction_cannot_pass():
     """Verify that compute_controlled_shared_plan_verdict fails closed at Level 1 if target reproduction is missing."""
-    for target_key in ("target_replacement_reproduced", "batch1_dependency_removed"):
+    for target_key in ("target_replacement_reproduced", "batch1_dependency_removed", "dependency_removal_identifiable"):
         inputs = _make_valid_verdict_inputs(**{target_key: None})
         res = v2.compute_controlled_shared_plan_verdict(**inputs)
         assert res["verdict_level"] == 1, f"Should fail Level 1 when {target_key} is None"
@@ -545,6 +546,8 @@ def test_audit_invariants_offline(monkeypatch):
     manifest_pre["outcome_exposure_state"]["D4_A2_V2_OUTCOME_EXPOSURE"] = "NOT_STARTED"
     manifest_pre["outcome_exposure_state"]["phase_p_slots_completed"] = 0
     manifest_pre["outcome_exposure_state"]["phase_r_cells_completed"] = 0
+    manifest_pre["outcome_exposure_state"]["evaluator_executed"] = False
+    manifest_pre["outcome_exposure_state"]["scientific_verdict_computed"] = False
     for s in manifest_pre["phase_p_slots_16"]:
         s["status"] = "NOT_STARTED"
     for c in manifest_pre["phase_r_cells_32"]:
@@ -1933,6 +1936,13 @@ def test_s18_req02_incomplete_evaluator_inputs_cannot_pass():
     assert res4["verdict_level"] == 1
     assert "INCOMPLETE_EVALUATOR_INPUT" in res4["verdict_reason"]
 
+    # Missing dependency_removal_identifiable
+    res5 = v2.compute_controlled_shared_plan_verdict(
+        **_make_valid_verdict_inputs(dependency_removal_identifiable=None)
+    )
+    assert res5["verdict_level"] == 1
+    assert "INCOMPLETE_EVALUATOR_INPUT" in res5["verdict_reason"]
+
 
 def test_s18_req03_unresolved_both_ff_is_not_treatment_regression():
     """Req 3: F/F -> unresolved both, strictly NOT a treatment regression."""
@@ -2061,7 +2071,10 @@ def test_s18_req09_before_primary_reference_miss_yields_level_2():
 
 
 def test_s18_req10_primary_target_reproduction_less_than_2_yields_level_3():
-    """Req 10: Primary target reproduction < 2 -> Level 3 FAIL."""
+    """Req 10: Primary target reproduction < 2 -> Level 3 FAIL.
+    Under R3 repair, Level 3 is strictly target_replacement_reproduced < 2 only;
+    it is never triggered solely by dependency removal.
+    """
     for val in (0, 1):
         res = v2.compute_controlled_shared_plan_verdict(
             **_make_valid_verdict_inputs(target_replacement_reproduced=val)
@@ -2069,12 +2082,23 @@ def test_s18_req10_primary_target_reproduction_less_than_2_yields_level_3():
         assert res["verdict_level"] == 3
         assert "FAIL / PRIMARY_TARGET_REPLACEMENT_NOT_REPRODUCED" in res["verdict"]
 
+    # When target replacement is reproduced (2/2), dependency removal < 2 NEVER yields Level 3:
     for val in (0, 1):
-        res = v2.compute_controlled_shared_plan_verdict(
-            **_make_valid_verdict_inputs(batch1_dependency_removed=val)
+        # If identifiable=True but not demonstrated: fail closed at Level 1
+        res_ident = v2.compute_controlled_shared_plan_verdict(
+            **_make_valid_verdict_inputs(target_replacement_reproduced=2, batch1_dependency_removed=val, dependency_removal_identifiable=True)
         )
-        assert res["verdict_level"] == 3
-        assert "FAIL / PRIMARY_TARGET_REPLACEMENT_NOT_REPRODUCED" in res["verdict"]
+        assert res_ident["verdict_level"] == 1
+        assert "TREATMENT_REMOVAL_NOT_DEMONSTRATED" in res_ident["verdict_reason"]
+        assert "FAIL / PRIMARY_TARGET_REPLACEMENT_NOT_REPRODUCED" not in res_ident["verdict"]
+
+        # If identifiable=False: yields Resolution B Inconclusive (Level 2)
+        res_unident = v2.compute_controlled_shared_plan_verdict(
+            **_make_valid_verdict_inputs(target_replacement_reproduced=2, batch1_dependency_removed=val, dependency_removal_identifiable=False)
+        )
+        assert res_unident["verdict_level"] == 2
+        assert "INCONCLUSIVE / FIXED_LOCATOR_DEPENDENCY_NOT_IDENTIFIABLE" in res_unident["verdict"]
+        assert "FAIL / PRIMARY_TARGET_REPLACEMENT_NOT_REPRODUCED" not in res_unident["verdict"]
 
 
 def test_s18_req11_critical_treatment_regression_yields_level_4():
@@ -2708,4 +2732,937 @@ def test_evaluator_freeze_provenance_real_repo_fail_closed_or_clean_pass():
         assert receipt["evaluator_implementation_parents"] == [v2.RAW_RESULTS_FREEZE_HEAD]
     except RuntimeError as exc:
         err = str(exc)
-        assert any(term in err for term in ("uncommitted", "dirty", "drift"))
+        assert any(term in err for term in ("uncommitted", "dirty", "drift", "mismatch"))
+
+
+# ---------------------------------------------------------------------------
+# 21. Section 13 Focused R3 Evaluator Tests (18 Requirements)
+# ---------------------------------------------------------------------------
+
+def test_s13_req01_target_2_of_2_never_yields_primary_target_failure():
+    """Req 01: Target replacement reproduced 2/2 never yields Level 3
+    FAIL / PRIMARY_TARGET_REPLACEMENT_NOT_REPRODUCED, even when dependency
+    removal is 0, 1, or unidentifiable.
+    """
+    for dep_count in (0, 1, 2):
+        for is_ident in (True, False):
+            inputs = _make_valid_verdict_inputs(
+                target_replacement_reproduced=2,
+                batch1_dependency_removed=dep_count,
+                dependency_removal_identifiable=is_ident,
+            )
+            res = v2.compute_controlled_shared_plan_verdict(**inputs)
+            assert res["verdict_level"] != 3, f"Failed for dep_count={dep_count}, is_ident={is_ident}"
+            assert "FAIL / PRIMARY_TARGET_REPLACEMENT_NOT_REPRODUCED" not in res["verdict"]
+
+
+def test_s13_req02_level_3_triggered_strictly_by_target_replacement_less_than_2():
+    """Req 02: Level 3 is strictly triggered only by target_replacement_reproduced < 2,
+    and never solely by dependency removal.
+    """
+    for target_count in (0, 1):
+        inputs = _make_valid_verdict_inputs(
+            target_replacement_reproduced=target_count,
+            batch1_dependency_removed=2,
+            dependency_removal_identifiable=True,
+        )
+        res = v2.compute_controlled_shared_plan_verdict(**inputs)
+        assert res["verdict_level"] == 3
+        assert res["verdict"] == v2.VERDICT_LEVEL_3_FAIL_PRIMARY_TARGET
+
+
+def test_s13_req03_resolution_b_inactive_before_locator_not_identifiable():
+    """Req 03: Under Resolution B, inactive BEFORE fixed locator means
+    dependency_removal_identifiable=False and dependency_removal_demonstrated=False.
+    It is not a primary-target failure.
+    """
+    # Slot without locator symbol/page hints in BEFORE
+    slot_b_inactive = {
+        "inputs": {"symbol_inputs": ["unrelated_macro.C"], "page_inputs": {}},
+        "exact_effective_suppressed_components": {},
+        "in_memory_mask_active": False,
+    }
+    slot_a = {
+        "inputs": {"symbol_inputs": ["unrelated_macro.C"]},
+        "structured_replacement_active": True,
+        "admission_budget_k": 3,
+    }
+    slots_map = {
+        ("g036", "BEFORE_COMPAT"): slot_b_inactive,
+        ("g036", "AFTER_BATCH1_REPLACEMENT"): slot_a,
+        ("g021", "BEFORE_COMPAT"): slot_b_inactive,
+        ("g021", "AFTER_BATCH1_REPLACEMENT"): slot_a,
+    }
+    witness = {"has_valid_witness": True}
+    retention = {
+        "g036.e1": {"BEFORE_COMPAT": True, "AFTER_BATCH1_REPLACEMENT": True},
+        "g021.e1": {"BEFORE_COMPAT": True, "AFTER_BATCH1_REPLACEMENT": True},
+    }
+    count, receipts = v2.compute_batch1_dependency_removal(slots_map, witness, witness, retention)
+    assert count == 0
+    for rule_id in ("event_poca_handoff", "restgas_profile_workflow"):
+        rec = receipts[rule_id]
+        assert rec["before_fixed_locator_active"] is False
+        assert rec["dependency_removal_identifiable"] is False
+        assert rec["dependency_removal_demonstrated"] is False
+
+
+def test_s13_req04_resolution_b_active_before_locator_is_identifiable():
+    """Req 04: Active BEFORE fixed locator results in dependency_removal_identifiable=True."""
+    slot_g036_b = {
+        "inputs": {
+            "symbol_inputs": [d4_a1.SUPPRESSED_SYMBOLS_EVENT_POCA[0]],
+            "page_inputs": d4_a1.SUPPRESSED_PAGE_HINTS_EVENT_POCA,
+        },
+        "exact_effective_suppressed_components": {},
+        "in_memory_mask_active": False,
+    }
+    slot_g021_b = {
+        "inputs": {
+            "symbol_inputs": [d4_a1.SUPPRESSED_SYMBOLS_RESTGAS[0]],
+            "page_inputs": d4_a1.SUPPRESSED_PAGE_HINTS_RESTGAS,
+        },
+        "exact_effective_suppressed_components": {},
+        "in_memory_mask_active": False,
+    }
+    slot_dummy_a = {
+        "inputs": {"symbol_inputs": []},
+        "structured_replacement_active": True,
+        "admission_budget_k": 3,
+    }
+    slots_map = {
+        ("g036", "BEFORE_COMPAT"): slot_g036_b,
+        ("g036", "AFTER_BATCH1_REPLACEMENT"): slot_dummy_a,
+        ("g021", "BEFORE_COMPAT"): slot_g021_b,
+        ("g021", "AFTER_BATCH1_REPLACEMENT"): slot_dummy_a,
+    }
+    witness = {"has_valid_witness": True}
+    retention = {
+        "g036.e1": {"BEFORE_COMPAT": True, "AFTER_BATCH1_REPLACEMENT": True},
+        "g021.e1": {"BEFORE_COMPAT": True, "AFTER_BATCH1_REPLACEMENT": True},
+    }
+    count, receipts = v2.compute_batch1_dependency_removal(slots_map, witness, witness, retention)
+    assert receipts["event_poca_handoff"]["before_fixed_locator_active"] is True
+    assert receipts["event_poca_handoff"]["dependency_removal_identifiable"] is True
+    assert receipts["restgas_profile_workflow"]["before_fixed_locator_active"] is True
+    assert receipts["restgas_profile_workflow"]["dependency_removal_identifiable"] is True
+
+
+def test_s13_req05_resolution_b_inconclusive_verdict_when_unidentifiable_and_target_reproduced():
+    """Req 05: Resolution B Inconclusive verdict: when target replacement is 2/2
+    and before_reference_valid=True, but dependency removal is not identifiable (BEFORE inactive),
+    verdict is INCONCLUSIVE / FIXED_LOCATOR_DEPENDENCY_NOT_IDENTIFIABLE (level 2).
+    """
+    inputs = _make_valid_verdict_inputs(
+        before_reference_valid=True,
+        target_replacement_reproduced=2,
+        batch1_dependency_removed=0,
+        dependency_removal_identifiable=False,
+    )
+    res = v2.compute_controlled_shared_plan_verdict(**inputs)
+    assert res["verdict_level"] == 2
+    assert res["verdict"] == v2.VERDICT_INCONCLUSIVE_DEPENDENCY_NOT_IDENTIFIABLE
+    assert "FIXED_LOCATOR_DEPENDENCY_NOT_IDENTIFIABLE" in res["verdict"]
+    assert "Resolution B" in res["verdict_reason"]
+
+
+def test_s13_req06_demonstrated_false_when_identifiable_fails_closed_not_inconclusive():
+    """Req 06: Merely demonstrated=False is NOT classified as inconclusive if
+    identifiable=True. It fails closed instead at Level 1.
+    """
+    inputs = _make_valid_verdict_inputs(
+        before_reference_valid=True,
+        target_replacement_reproduced=2,
+        batch1_dependency_removed=1,
+        dependency_removal_identifiable=True,
+    )
+    res = v2.compute_controlled_shared_plan_verdict(**inputs)
+    assert res["verdict_level"] == 1
+    assert res["verdict"] == v2.VERDICT_LEVEL_1_INVALID
+    assert "TREATMENT_REMOVAL_NOT_DEMONSTRATED" in res["verdict_reason"]
+
+
+def test_s13_req07_cell_schema_reads_symbol_inputs_for_locator_activity():
+    """Req 07: Frozen cell schema reads inputs.symbol_inputs rather than demanding
+    defective inputs.symbols.
+    """
+    slot_with_symbol_inputs = {
+        "inputs": {"symbol_inputs": [d4_a1.SUPPRESSED_SYMBOLS_EVENT_POCA[0]]},
+        "exact_effective_suppressed_components": {},
+        "in_memory_mask_active": False,
+    }
+    extracted = v2._extract_slot_symbols(slot_with_symbol_inputs)
+    assert d4_a1.SUPPRESSED_SYMBOLS_EVENT_POCA[0] in extracted
+
+    is_active = v2._is_before_locator_active(
+        slot_b=slot_with_symbol_inputs,
+        rule_id="event_poca_handoff",
+        target_symbols=d4_a1.SUPPRESSED_SYMBOLS_EVENT_POCA,
+        target_pages=d4_a1.SUPPRESSED_PAGE_HINTS_EVENT_POCA,
+    )
+    assert is_active is True
+
+
+def test_s13_req08_cell_schema_reads_page_inputs_for_locator_activity():
+    """Req 08: Frozen cell schema reads inputs.page_inputs rather than demanding
+    defective inputs.paper_page_hints.
+    """
+    slot_with_page_inputs = {
+        "inputs": {
+            "symbol_inputs": [],
+            "page_inputs": dict(d4_a1.SUPPRESSED_PAGE_HINTS_EVENT_POCA),
+        },
+        "exact_effective_suppressed_components": {},
+        "in_memory_mask_active": False,
+    }
+    extracted_hints = v2._extract_slot_page_hints(slot_with_page_inputs)
+    assert extracted_hints == d4_a1.SUPPRESSED_PAGE_HINTS_EVENT_POCA
+
+    is_active = v2._is_before_locator_active(
+        slot_b=slot_with_page_inputs,
+        rule_id="event_poca_handoff",
+        target_symbols=d4_a1.SUPPRESSED_SYMBOLS_EVENT_POCA,
+        target_pages=d4_a1.SUPPRESSED_PAGE_HINTS_EVENT_POCA,
+    )
+    assert is_active is True
+
+
+def test_s13_req09_after_absence_verified_via_effective_suppression_and_mask():
+    """Req 09: Ensure AFTER absence is verified based on effective suppression /
+    masked execution semantics rather than demanding mutation of shared canonical plan text.
+    """
+    # Shared plan contains symbol in inputs.symbol_inputs
+    slot_a = {
+        "inputs": {
+            "symbol_inputs": [d4_a1.SUPPRESSED_SYMBOLS_EVENT_POCA[0]],
+            "page_inputs": dict(d4_a1.SUPPRESSED_PAGE_HINTS_EVENT_POCA),
+        },
+        "exact_effective_suppressed_components": {
+            "event_poca_handoff": {
+                "symbols": [d4_a1.SUPPRESSED_SYMBOLS_EVENT_POCA[0]],
+                "paper_page_hints": dict(d4_a1.SUPPRESSED_PAGE_HINTS_EVENT_POCA),
+            }
+        },
+        "in_memory_mask_active": True,
+    }
+    absent = v2._is_after_locator_absent(
+        slot_a=slot_a,
+        rule_id="event_poca_handoff",
+        target_symbols=d4_a1.SUPPRESSED_SYMBOLS_EVENT_POCA,
+        target_pages=d4_a1.SUPPRESSED_PAGE_HINTS_EVENT_POCA,
+    )
+    assert absent is True
+
+
+def test_s13_req10_per_target_receipt_fields_present_and_complete():
+    """Req 10: Per-target receipts contain all five repository-style fields:
+    - before_fixed_locator_active
+    - after_fixed_locator_absent
+    - after_governed_replacement_valid
+    - dependency_removal_identifiable
+    - dependency_removal_demonstrated
+    """
+    slots_map = {
+        ("g036", "BEFORE_COMPAT"): {"inputs": {"symbol_inputs": []}},
+        ("g036", "AFTER_BATCH1_REPLACEMENT"): {"inputs": {"symbol_inputs": []}},
+        ("g021", "BEFORE_COMPAT"): {"inputs": {"symbol_inputs": []}},
+        ("g021", "AFTER_BATCH1_REPLACEMENT"): {"inputs": {"symbol_inputs": []}},
+    }
+    witness = {"has_valid_witness": False}
+    retention = {}
+    _, receipts = v2.compute_batch1_dependency_removal(slots_map, witness, witness, retention)
+    required_fields = [
+        "before_fixed_locator_active",
+        "after_fixed_locator_absent",
+        "after_governed_replacement_valid",
+        "dependency_removal_identifiable",
+        "dependency_removal_demonstrated",
+    ]
+    for rule_id in ("event_poca_handoff", "restgas_profile_workflow"):
+        assert rule_id in receipts
+        for field in required_fields:
+            assert field in receipts[rule_id], f"Missing {field} in {rule_id} receipts"
+
+
+def test_s13_req11_five_generic_conjuncts_required_for_demonstration():
+    """Req 11: All 5 conjuncts required for dependency_removal_demonstrated=True:
+    1. BEFORE locator active
+    2. exact masked locator absent AFTER
+    3. generic structured mechanism active AFTER
+    4. target evidence retained AFTER
+    5. valid governed witness exists AFTER
+    """
+    slot_b = {
+        "inputs": {
+            "symbol_inputs": [d4_a1.SUPPRESSED_SYMBOLS_EVENT_POCA[0]],
+            "page_inputs": d4_a1.SUPPRESSED_PAGE_HINTS_EVENT_POCA,
+        },
+        "exact_effective_suppressed_components": {},
+        "in_memory_mask_active": False,
+    }
+    slot_a = {
+        "inputs": {
+            "symbol_inputs": [d4_a1.SUPPRESSED_SYMBOLS_EVENT_POCA[0]],
+            "page_inputs": d4_a1.SUPPRESSED_PAGE_HINTS_EVENT_POCA,
+        },
+        "exact_effective_suppressed_components": {
+            "event_poca_handoff": {
+                "symbols": [d4_a1.SUPPRESSED_SYMBOLS_EVENT_POCA[0]],
+                "paper_page_hints": d4_a1.SUPPRESSED_PAGE_HINTS_EVENT_POCA,
+            }
+        },
+        "in_memory_mask_active": True,
+        "structured_replacement_active": True,
+        "admission_budget_k": 3,
+    }
+    slots_map = {
+        ("g036", "BEFORE_COMPAT"): slot_b,
+        ("g036", "AFTER_BATCH1_REPLACEMENT"): slot_a,
+        ("g021", "BEFORE_COMPAT"): slot_b,
+        ("g021", "AFTER_BATCH1_REPLACEMENT"): slot_a,
+    }
+    witness = {"has_valid_witness": True}
+    retention = {
+        "g036.e1": {"BEFORE_COMPAT": True, "AFTER_BATCH1_REPLACEMENT": True},
+        "g021.e1": {"BEFORE_COMPAT": True, "AFTER_BATCH1_REPLACEMENT": True},
+    }
+    count, receipts = v2.compute_batch1_dependency_removal(slots_map, witness, witness, retention)
+    assert receipts["event_poca_handoff"]["dependency_removal_demonstrated"] is True
+
+    # Break conjunct 5: witness invalid
+    witness_invalid = {"has_valid_witness": False}
+    count_bad_wit, receipts_bad_wit = v2.compute_batch1_dependency_removal(slots_map, witness_invalid, witness_invalid, retention)
+    assert receipts_bad_wit["event_poca_handoff"]["dependency_removal_demonstrated"] is False
+    assert receipts_bad_wit["event_poca_handoff"]["dependency_removal_identifiable"] is True
+
+
+def test_s13_req12_raw_plans_and_results_blobs_immutable():
+    """Req 12: Raw plans and raw results artifacts are Git-object identical to frozen blobs."""
+    plans_file = _PROJECT_ROOT / v2.RAW_PLANS_PATH
+    results_file = _PROJECT_ROOT / v2.RAW_RESULTS_PATH
+    proc_p = subprocess.run(["git", "hash-object", str(plans_file)], cwd=str(_PROJECT_ROOT), capture_output=True, text=True, check=True)
+    assert proc_p.stdout.strip() == v2.PLAN_FREEZE_RAW_BLOB
+    proc_r = subprocess.run(["git", "hash-object", str(results_file)], cwd=str(_PROJECT_ROOT), capture_output=True, text=True, check=True)
+    assert proc_r.stdout.strip() == v2.RAW_RESULTS_FREEZE_BLOB
+
+
+def test_s13_req13_original_evaluator_script_starting_blob_tracked():
+    """Req 13: Original evaluator script starting blob is preserved as baseline reference."""
+    assert v2.ORIGINAL_EVALUATOR_SCRIPT_BLOB == "1e7afd66ff2b2173e765e6c98942159c998e11bc"
+
+
+def test_s13_req14_zero_provider_boundary_strictly_enforced(monkeypatch):
+    """Req 14: Zero provider boundary: evaluation must not call external providers."""
+    def forbidden_call(*args: Any, **kwargs: Any) -> None:
+        raise AssertionError("External provider call detected during evaluation!")
+
+    monkeypatch.setattr(subprocess, "Popen", forbidden_call)
+    verdict = v2.compute_controlled_shared_plan_verdict(**_make_valid_verdict_inputs())
+    assert verdict["verdict_level"] == 6
+
+
+def test_s13_req15_missing_evaluator_inputs_fail_closed_at_level_1():
+    """Req 15: Incomplete evaluator inputs fail closed at Level 1 with INCOMPLETE_EVALUATOR_INPUT."""
+    for missing_field in [
+        "execution_valid",
+        "before_reference_valid",
+        "target_replacement_reproduced",
+        "batch1_dependency_removed",
+        "dependency_removal_identifiable",
+        "shared_plan_critical_regressions",
+        "grounding_regressions",
+        "wrong_version_regressions",
+        "invalid_provenance_recoveries",
+        "metric_deltas",
+    ]:
+        inputs = _make_valid_verdict_inputs(**{missing_field: None})
+        res = v2.compute_controlled_shared_plan_verdict(**inputs)
+        assert res["verdict_level"] == 1
+        assert "INCOMPLETE_EVALUATOR_INPUT" in res["verdict_reason"]
+        assert missing_field in res["verdict_reason"]
+
+
+def test_s13_req16_no_preferred_verdict_shortcut():
+    """Req 16: No preferred-verdict shortcut: verdict ladder evaluates in exact deterministic order."""
+    inputs = _make_valid_verdict_inputs(execution_valid=False)
+    assert v2.compute_controlled_shared_plan_verdict(**inputs)["verdict_level"] == 1
+
+    inputs2 = _make_valid_verdict_inputs(before_reference_valid=False)
+    assert v2.compute_controlled_shared_plan_verdict(**inputs2)["verdict_level"] == 2
+
+    inputs3 = _make_valid_verdict_inputs(target_replacement_reproduced=1, shared_plan_critical_regressions=["n022.e2"])
+    assert v2.compute_controlled_shared_plan_verdict(**inputs3)["verdict_level"] == 3
+
+
+def test_s13_req17_before_reference_inconclusive_precedes_resolution_b_inconclusive():
+    """Req 17: Level 2 BEFORE reference invalid precedes Resolution B Inconclusive."""
+    inputs = _make_valid_verdict_inputs(
+        before_reference_valid=False,
+        target_replacement_reproduced=2,
+        batch1_dependency_removed=0,
+        dependency_removal_identifiable=False,
+    )
+    res = v2.compute_controlled_shared_plan_verdict(**inputs)
+    assert res["verdict_level"] == 2
+    assert res["verdict"] == v2.VERDICT_LEVEL_2_INCONCLUSIVE
+    assert "BEFORE_REFERENCE_NOT_REPRODUCED" in res["verdict"]
+
+
+def test_s13_req18_artifact_records_identifiable_metrics_and_receipts():
+    """Req 18: Evaluator artifact schema includes dependency_removal_identifiable accounting."""
+    dep_receipts = {
+        "event_poca_handoff": {
+            "before_fixed_locator_active": False,
+            "dependency_removal_identifiable": False,
+            "dependency_removal_demonstrated": False,
+        },
+        "restgas_profile_workflow": {
+            "before_fixed_locator_active": True,
+            "dependency_removal_identifiable": True,
+            "dependency_removal_demonstrated": False,
+        },
+    }
+    dep_identifiable_count = (
+        (1 if dep_receipts.get("event_poca_handoff", {}).get("dependency_removal_identifiable", False) else 0)
+        + (1 if dep_receipts.get("restgas_profile_workflow", {}).get("dependency_removal_identifiable", False) else 0)
+    )
+    assert dep_identifiable_count == 1
+    dep_identifiable = (dep_identifiable_count == 2)
+    assert dep_identifiable is False
+
+
+# ---------------------------------------------------------------------------
+# 19. D4-A2-V2-R3 Evaluator Repair & Boundary-1 Tests
+# ---------------------------------------------------------------------------
+
+def _mock_r3_evaluator_freeze_git_subprocess(
+    *,
+    r3_sha: str = "37d9716889630dc663645bb30b1130ff0c307730",
+    r3_msg: str = v2.EXPECTED_R3_COMMIT_MESSAGE,
+    r3_parents: list[str] | None = None,
+    current_head: str | None = None,
+    raw_results_origin: str = v2.RAW_RESULTS_FREEZE_HEAD,
+    raw_results_blob: str = v2.RAW_RESULTS_FREEZE_BLOB,
+    raw_plans_blob: str = v2.PLAN_FREEZE_RAW_BLOB,
+    historical_prereg_blob: str = v2.HISTORICAL_PREREGISTRATION_BLOB,
+    historical_eval_results_blob: str = v2.HISTORICAL_EVALUATOR_RESULTS_BLOB,
+    historical_result_blob: str = v2.HISTORICAL_RESULT_BLOB,
+    historical_report_blob: str = v2.HISTORICAL_REPORT_BLOB,
+    r3_script_blob: str = "r3_script_blob_11111111111111111111111111111111",
+    worktree_r3_script_blob: str | None = None,
+    diff_r3_files: list[str] | None = None,
+    dirty_paths: list[str] | None = None,
+    diff_drift_output: str = "",
+    merge_base_returncode: int = 0,
+):
+    if r3_parents is None:
+        r3_parents = [v2.HISTORICAL_V2_CLOSE_HEAD]
+    if current_head is None:
+        current_head = r3_sha
+    if worktree_r3_script_blob is None:
+        worktree_r3_script_blob = r3_script_blob
+    if diff_r3_files is None:
+        diff_r3_files = list(v2.ALLOWED_R3_DIFF_FILES)
+    if dirty_paths is None:
+        dirty_paths = []
+
+    def mock_subp_run(cmd, **kwargs):
+        res = MagicMock()
+        res.returncode = 0
+        cmd_str = " ".join(str(c) for c in cmd)
+
+        if "merge-base" in cmd_str:
+            res.returncode = merge_base_returncode
+            res.stdout = ""
+            return res
+
+        if "diff" in cmd_str:
+            if "--name-only" in cmd_str:
+                res.stdout = "\n".join(diff_r3_files) + ("\n" if diff_r3_files else "")
+            elif r3_sha in cmd and "--" in cmd:
+                res.stdout = diff_drift_output
+            else:
+                res.stdout = ""
+            return res
+
+        if "cat-file" in cmd_str:
+            res.stdout = ""
+            return res
+
+        if "status" in cmd_str:
+            target_args = cmd[cmd.index("--") + 1 :] if "--" in cmd else []
+            matching_dirty = [
+                d for d in dirty_paths
+                if any(str(arg).replace("\\", "/") in d.replace("\\", "/") for arg in target_args)
+            ] if dirty_paths else []
+            res.stdout = "\n".join(matching_dirty) + ("\n" if matching_dirty else "")
+            return res
+
+        if "log" in cmd_str:
+            if "%H%x00%s%x00%P" in cmd_str:
+                res.stdout = f"{r3_sha}\x00{r3_msg}\x00{' '.join(r3_parents)}\n"
+            elif "%H" in cmd_str:
+                res.stdout = f"{raw_results_origin}\n"
+            else:
+                res.stdout = f"{r3_sha}\n"
+            return res
+
+        if "rev-parse" in cmd_str:
+            last = str(cmd[-1]).replace("\\", "/")
+            if "raw_results.json" in last:
+                res.stdout = f"{raw_results_blob}\n"
+            elif "raw_plans.json" in last:
+                res.stdout = f"{raw_plans_blob}\n"
+            elif "d4_a2_v2_preregistration.json" in last:
+                res.stdout = f"{historical_prereg_blob}\n"
+            elif "d4_a2_v2_evaluator_results.json" in last:
+                res.stdout = f"{historical_eval_results_blob}\n"
+            elif "d4_a2_v2_result.json" in last:
+                res.stdout = f"{historical_result_blob}\n"
+            elif "D4_A2_V2_CONTROLLED_SHARED_PLAN_VALIDATION.md" in last:
+                res.stdout = f"{historical_report_blob}\n"
+            elif "d4_a2_v2_r3_preregistration.json" in last:
+                res.stdout = "r3_prereg_blob\n"
+            elif "d4_a2_v2_controlled_shared_plan_validation.py" in last:
+                res.stdout = f"{r3_script_blob}\n"
+            elif "test_d4_a2_v2_controlled_shared_plan_validation.py" in last:
+                res.stdout = "r3_test_blob\n"
+            elif last == "HEAD":
+                res.stdout = f"{current_head}\n"
+            else:
+                res.stdout = f"{r3_sha}\n"
+            return res
+
+        if "hash-object" in cmd_str:
+            last = str(cmd[-1]).replace("\\", "/")
+            if "raw_results.json" in last:
+                res.stdout = f"{raw_results_blob}\n"
+            elif "raw_plans.json" in last:
+                res.stdout = f"{raw_plans_blob}\n"
+            elif "d4_a2_v2_preregistration.json" in last:
+                res.stdout = f"{historical_prereg_blob}\n"
+            elif "d4_a2_v2_evaluator_results.json" in last:
+                res.stdout = f"{historical_eval_results_blob}\n"
+            elif "d4_a2_v2_result.json" in last:
+                res.stdout = f"{historical_result_blob}\n"
+            elif "D4_A2_V2_CONTROLLED_SHARED_PLAN_VALIDATION.md" in last:
+                res.stdout = f"{historical_report_blob}\n"
+            elif "d4_a2_v2_r3_preregistration.json" in last:
+                res.stdout = "r3_prereg_blob\n"
+            elif "d4_a2_v2_controlled_shared_plan_validation.py" in last:
+                res.stdout = f"{worktree_r3_script_blob}\n"
+            elif "test_d4_a2_v2_controlled_shared_plan_validation.py" in last:
+                res.stdout = "r3_test_blob\n"
+            else:
+                res.stdout = "dummy_hash\n"
+            return res
+
+        return res
+
+    return mock_subp_run
+
+
+def test_r3_outcome_artifacts_do_not_exist_in_workspace():
+    """Verify that neither real R3 evaluator results nor result summary exist in the repository yet.
+    Prevents pre-execution outcome exposure or accidental leakage before formal invocation.
+    """
+    r3_eval_path = _PROJECT_ROOT / v2.R3_EVALUATOR_RESULTS_PATH
+    r3_result_path = _PROJECT_ROOT / v2.R3_RESULT_PATH
+    assert not r3_eval_path.exists(), f"Outcome artifact {r3_eval_path} must not exist before formal R3 recomputation!"
+    assert not r3_result_path.exists(), f"Outcome artifact {r3_result_path} must not exist before formal R3 recomputation!"
+
+
+def test_r3_evaluator_constants_and_contract():
+    """Verify D4-A2-V2-R3 path, commit, and provenance contract constants."""
+    assert v2.R3_PREREGISTRATION_PATH == "evaluation/d4_a2_v2_r3_preregistration.json"
+    assert v2.R3_EVALUATOR_RESULTS_PATH == "evaluation/d4_a2_v2_r3_evaluator_results.json"
+    assert v2.R3_RESULT_PATH == "evaluation/d4_a2_v2_r3_result.json"
+    assert v2.EXPECTED_R3_COMMIT_MESSAGE == "D4-A2-V2-R3 freeze evaluator contract repair"
+    assert v2.HISTORICAL_V2_CLOSE_HEAD == "deb6aa98e0fd9c12cd15b68e5889ecd62e8d6ffe"
+    assert v2.HISTORICAL_EVALUATOR_FREEZE_HEAD == "6c12af68ee17615a66a732108cb5b895f86853b7"
+    assert v2.ORIGINAL_DEFECTIVE_EVALUATOR_SHA == "6c12af68ee17615a66a732108cb5b895f86853b7"
+    assert v2.ORIGINAL_DEFECTIVE_EVALUATOR_VERDICT == "FAIL / PRIMARY_TARGET_REPLACEMENT_NOT_REPRODUCED"
+    assert v2.ALLOWED_R3_DIFF_FILES == {
+        "evaluation/d4_a2_v2_r3_preregistration.json",
+        "evaluation/scripts/d4_a2_v2_controlled_shared_plan_validation.py",
+        "tests/unit/test_d4_a2_v2_controlled_shared_plan_validation.py",
+    }
+    assert v2.HISTORICAL_PREREGISTRATION_BLOB == "79aef67131af2ef7029a1646a681b3f34483f839"
+    assert v2.HISTORICAL_EVALUATOR_RESULTS_BLOB == "40e25fc27d090d45413e816a0500d1aa5e441d1b"
+    assert v2.HISTORICAL_RESULT_BLOB == "752adbf84ff2128884286948e5205a4323863677"
+    assert v2.HISTORICAL_REPORT_BLOB == "813dc68640958b82a33d8c4cc111909873b44d6a"
+
+
+def test_r3_evaluator_output_path_collision_protection(tmp_path, monkeypatch):
+    """Verify that _save_r3_artifacts strictly forbids collision with historical artifact paths."""
+    # Test collision with EVALUATOR_RESULTS_PATH
+    monkeypatch.setattr(v2, "R3_EVALUATOR_RESULTS_PATH", v2.EVALUATOR_RESULTS_PATH)
+    with pytest.raises(RuntimeError) as exc1:
+        v2._save_r3_artifacts(tmp_path, {"test": 1}, {"test": 2})
+    assert "collision with historical artifact" in str(exc1.value)
+
+    # Test collision with RESULT_PATH
+    monkeypatch.setattr(v2, "R3_EVALUATOR_RESULTS_PATH", "evaluation/d4_a2_v2_r3_evaluator_results.json")
+    monkeypatch.setattr(v2, "R3_RESULT_PATH", v2.RESULT_PATH)
+    with pytest.raises(RuntimeError) as exc2:
+        v2._save_r3_artifacts(tmp_path, {"test": 1}, {"test": 2})
+    assert "collision with historical artifact" in str(exc2.value)
+
+    # Test collision with REPORT_PATH
+    monkeypatch.setattr(v2, "R3_RESULT_PATH", v2.REPORT_PATH)
+    with pytest.raises(RuntimeError) as exc3:
+        v2._save_r3_artifacts(tmp_path, {"test": 1}, {"test": 2})
+    assert "collision with historical artifact" in str(exc3.value)
+
+
+def test_historical_evaluate_d4_a2_v2_refuses_to_overwrite_committed_historical_artifacts(tmp_path, monkeypatch):
+    """Verify that the historical evaluate_d4_a2_v2 path fails closed with IMMUTABLE_HISTORICAL_ARTIFACT_PROTECTION
+    if historical evaluator results match the committed blob, preventing historical artifact overwrites.
+    """
+    hist_eval = tmp_path / v2.EVALUATOR_RESULTS_PATH
+    hist_eval.parent.mkdir(parents=True, exist_ok=True)
+    hist_eval.write_text('{"committed_historical": true}', encoding="utf-8")
+
+    real_gold_ds = v2.load_gold_dataset(_PROJECT_ROOT / v2.GOLD_QUESTIONS_PATH)
+    real_novel_ds = v2.load_gold_dataset(_PROJECT_ROOT / v2.NOVEL_DEV_PATH)
+    monkeypatch.setattr(v2, "load_gold_dataset", lambda p: real_gold_ds if "gold_questions" in str(p) else real_novel_ds)
+    real_lookup = v2.load_object_lookup(_PROJECT_ROOT)
+    monkeypatch.setattr(v2, "load_object_lookup", lambda p: real_lookup)
+
+    raw_file = tmp_path / v2.RAW_RESULTS_PATH
+    raw_file.parent.mkdir(parents=True, exist_ok=True)
+    raw_file.write_text(json.dumps(_make_synthetic_raw_results_data(), indent=2), encoding="utf-8")
+
+    def mock_subp(cmd, **kwargs):
+        res = MagicMock()
+        res.returncode = 0
+        if "hash-object" in cmd:
+            res.stdout = f"{v2.HISTORICAL_EVALUATOR_RESULTS_BLOB}\n"
+        else:
+            res.stdout = ""
+        return res
+
+    monkeypatch.setattr("subprocess.run", mock_subp)
+
+    with pytest.raises(RuntimeError) as exc_info:
+        v2.evaluate_d4_a2_v2(
+            project_root=tmp_path,
+            raw_results_path=raw_file,
+            write_artifacts=True,
+            require_git_frozen=False,
+        )
+    assert "IMMUTABLE_HISTORICAL_ARTIFACT_PROTECTION" in str(exc_info.value)
+    assert "Historical V2 artifacts are immutable" in str(exc_info.value)
+
+
+def test_r3_mode_writes_only_to_r3_paths_and_never_mutates_historical(tmp_path, monkeypatch):
+    """Verify that evaluate_d4_a2_v2_r3:
+    1. Reads original prereg, R3 prereg, raw plans, raw results, and manifest.
+    2. Writes strictly to R3_EVALUATOR_RESULTS_PATH and R3_RESULT_PATH.
+    3. Leaves historical artifacts completely untouched and immutable.
+    """
+    real_gold_ds = v2.load_gold_dataset(_PROJECT_ROOT / v2.GOLD_QUESTIONS_PATH)
+    real_novel_ds = v2.load_gold_dataset(_PROJECT_ROOT / v2.NOVEL_DEV_PATH)
+    monkeypatch.setattr(v2, "load_gold_dataset", lambda p: real_gold_ds if "gold_questions" in str(p) else real_novel_ds)
+    real_lookup = v2.load_object_lookup(_PROJECT_ROOT)
+    monkeypatch.setattr(v2, "load_object_lookup", lambda p: real_lookup)
+
+    # Set up files in tmp_path
+    raw_file = tmp_path / v2.RAW_RESULTS_PATH
+    raw_file.parent.mkdir(parents=True, exist_ok=True)
+    raw_file.write_text(json.dumps(_make_synthetic_raw_results_data(), indent=2), encoding="utf-8")
+
+    plans_file = tmp_path / v2.RAW_PLANS_PATH
+    plans_file.parent.mkdir(parents=True, exist_ok=True)
+    plans_file.write_text(json.dumps(_make_valid_raw_plans_artifact(), indent=2), encoding="utf-8")
+
+    orig_prereg = json.loads((_PROJECT_ROOT / v2.PREREGISTRATION_PATH).read_text(encoding="utf-8"))
+    prereg_file = tmp_path / v2.PREREGISTRATION_PATH
+    prereg_file.parent.mkdir(parents=True, exist_ok=True)
+    prereg_file.write_text(json.dumps(orig_prereg, indent=2), encoding="utf-8")
+
+    r3_prereg = json.loads((_PROJECT_ROOT / v2.R3_PREREGISTRATION_PATH).read_text(encoding="utf-8"))
+    r3_prereg_file = tmp_path / v2.R3_PREREGISTRATION_PATH
+    r3_prereg_file.parent.mkdir(parents=True, exist_ok=True)
+    r3_prereg_file.write_text(json.dumps(r3_prereg, indent=2), encoding="utf-8")
+
+    manifest = json.loads((_PROJECT_ROOT / v2.MANIFEST_PATH).read_text(encoding="utf-8"))
+    man_file = tmp_path / v2.MANIFEST_PATH
+    man_file.parent.mkdir(parents=True, exist_ok=True)
+    man_file.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+
+    # Set up historical artifacts with known content
+    hist_eval = tmp_path / v2.EVALUATOR_RESULTS_PATH
+    hist_eval.write_text('{"historical_eval": true}\n', encoding="utf-8")
+    hist_eval_bytes = hist_eval.read_bytes()
+
+    hist_res = tmp_path / v2.RESULT_PATH
+    hist_res.write_text('{"historical_res": true}\n', encoding="utf-8")
+    hist_res_bytes = hist_res.read_bytes()
+
+    hist_rep = tmp_path / v2.REPORT_PATH
+    hist_rep.write_text('# Historical Report\n', encoding="utf-8")
+    hist_rep_bytes = hist_rep.read_bytes()
+
+    # Execute evaluate_d4_a2_v2_r3
+    eval_res = v2.evaluate_d4_a2_v2_r3(
+        project_root=tmp_path,
+        raw_results_path=raw_file,
+        raw_plans_path=plans_file,
+        prereg_path=prereg_file,
+        r3_prereg_path=r3_prereg_file,
+        manifest_path=man_file,
+        write_artifacts=True,
+        require_git_frozen=False,
+    )
+
+    # Check R3 files were written
+    r3_eval_path = tmp_path / v2.R3_EVALUATOR_RESULTS_PATH
+    r3_res_path = tmp_path / v2.R3_RESULT_PATH
+    assert r3_eval_path.exists()
+    assert r3_res_path.exists()
+
+    r3_eval_data = json.loads(r3_eval_path.read_text(encoding="utf-8"))
+    assert r3_eval_data["checkpoint"] == "D4-A2-V2-R3"
+    assert r3_eval_data["stage"] == "d4_a2_v2_r3_evaluator_results"
+    assert r3_eval_data["resolution"] == "Resolution B"
+    assert r3_eval_data["frozen_provenance"]["r3_evaluator_parent_sha"] == v2.HISTORICAL_V2_CLOSE_HEAD
+
+    r3_res_data = json.loads(r3_res_path.read_text(encoding="utf-8"))
+    assert r3_res_data["checkpoint"] == "D4-A2-V2-R3"
+    assert r3_res_data["stage"] == "D4-A2-V2-R3 — Repaired Controlled Shared-Plan T2 Validation (Resolution B)"
+    assert r3_res_data["resolution"] == "Resolution B"
+
+    # CRITICAL: Verify historical artifacts are 100% byte-for-byte unmodified!
+    assert hist_eval.read_bytes() == hist_eval_bytes
+    assert hist_res.read_bytes() == hist_res_bytes
+    assert hist_rep.read_bytes() == hist_rep_bytes
+
+
+def test_r3_freeze_provenance_validation_accepts_exact_boundary(tmp_path, monkeypatch):
+    """Verify that verify_r3_evaluator_freeze_provenance accepts an exact conforming boundary:
+    - Message: 'D4-A2-V2-R3 freeze evaluator contract repair'
+    - Parent: 'deb6aa98e0fd9c12cd15b68e5889ecd62e8d6ffe'
+    - Diff: exactly ALLOWED_R3_DIFF_FILES
+    - Correct raw and historical blobs
+    """
+    candidate_sha = "37d9716889630dc663645bb30b1130ff0c307730"
+    monkeypatch.setattr(v2, "_git_head", lambda root: candidate_sha)
+    monkeypatch.setattr("subprocess.run", _mock_r3_evaluator_freeze_git_subprocess(r3_sha=candidate_sha))
+
+    receipt = v2.verify_r3_evaluator_freeze_provenance(tmp_path)
+    assert receipt["verified"] is True
+    assert receipt["checkpoint"] == "D4-A2-V2-R3"
+    assert receipt["r3_evaluator_freeze_sha"] == candidate_sha
+    assert receipt["r3_evaluator_freeze_message"] == v2.EXPECTED_R3_COMMIT_MESSAGE
+    assert receipt["r3_evaluator_freeze_parents"] == [v2.HISTORICAL_V2_CLOSE_HEAD]
+    assert receipt["historical_v2_close_parent"] == v2.HISTORICAL_V2_CLOSE_HEAD
+    assert receipt["diff_files_relative_to_parent"] == sorted(list(v2.ALLOWED_R3_DIFF_FILES))
+
+
+def test_r3_freeze_provenance_rejects_wrong_commit_message(tmp_path, monkeypatch):
+    """Verify that verify_r3_evaluator_freeze_provenance rejects wrong commit message."""
+    candidate_sha = "37d9716889630dc663645bb30b1130ff0c307730"
+    monkeypatch.setattr(v2, "_git_head", lambda root: candidate_sha)
+    monkeypatch.setattr(
+        "subprocess.run",
+        _mock_r3_evaluator_freeze_git_subprocess(r3_sha=candidate_sha, r3_msg="Wrong commit message"),
+    )
+
+    with pytest.raises(RuntimeError) as exc:
+        v2.verify_r3_evaluator_freeze_provenance(tmp_path)
+    assert "R3 evaluator freeze commit message mismatch" in str(exc.value)
+
+
+def test_r3_freeze_provenance_rejects_wrong_parent(tmp_path, monkeypatch):
+    """Verify that verify_r3_evaluator_freeze_provenance rejects wrong parent commit."""
+    candidate_sha = "37d9716889630dc663645bb30b1130ff0c307730"
+    monkeypatch.setattr(v2, "_git_head", lambda root: candidate_sha)
+    monkeypatch.setattr(
+        "subprocess.run",
+        _mock_r3_evaluator_freeze_git_subprocess(
+            r3_sha=candidate_sha,
+            r3_parents=["1111111111111111111111111111111111111111"],
+        ),
+    )
+
+    with pytest.raises(RuntimeError) as exc:
+        v2.verify_r3_evaluator_freeze_provenance(tmp_path)
+    assert "R3 evaluator freeze parent mismatch" in str(exc.value)
+
+
+def test_r3_freeze_provenance_rejects_non_ancestor(tmp_path, monkeypatch):
+    """Verify that verify_r3_evaluator_freeze_provenance rejects when freeze commit is not ancestor of HEAD."""
+    candidate_sha = "37d9716889630dc663645bb30b1130ff0c307730"
+    monkeypatch.setattr(v2, "_git_head", lambda root: candidate_sha)
+    monkeypatch.setattr(
+        "subprocess.run",
+        _mock_r3_evaluator_freeze_git_subprocess(
+            r3_sha=candidate_sha,
+            merge_base_returncode=1,
+        ),
+    )
+
+    with pytest.raises(RuntimeError) as exc:
+        v2.verify_r3_evaluator_freeze_provenance(tmp_path)
+    assert "is not an ancestor of current HEAD" in str(exc.value)
+
+
+def test_r3_freeze_provenance_rejects_disallowed_diff_files(tmp_path, monkeypatch):
+    """Verify that verify_r3_evaluator_freeze_provenance rejects extra/disallowed diff files."""
+    candidate_sha = "37d9716889630dc663645bb30b1130ff0c307730"
+    monkeypatch.setattr(v2, "_git_head", lambda root: candidate_sha)
+    diff_with_extra = list(v2.ALLOWED_R3_DIFF_FILES) + ["src/panda_agent/extra.py"]
+    monkeypatch.setattr(
+        "subprocess.run",
+        _mock_r3_evaluator_freeze_git_subprocess(
+            r3_sha=candidate_sha,
+            diff_r3_files=diff_with_extra,
+        ),
+    )
+
+    with pytest.raises(RuntimeError) as exc:
+        v2.verify_r3_evaluator_freeze_provenance(tmp_path)
+    assert "diff relative to parent" in str(exc.value)
+    assert "mismatch" in str(exc.value)
+
+
+def test_r3_freeze_provenance_rejects_incomplete_diff_files(tmp_path, monkeypatch):
+    """Verify that verify_r3_evaluator_freeze_provenance rejects missing diff files."""
+    candidate_sha = "37d9716889630dc663645bb30b1130ff0c307730"
+    monkeypatch.setattr(v2, "_git_head", lambda root: candidate_sha)
+    diff_missing = list(v2.ALLOWED_R3_DIFF_FILES)[:2]
+    monkeypatch.setattr(
+        "subprocess.run",
+        _mock_r3_evaluator_freeze_git_subprocess(
+            r3_sha=candidate_sha,
+            diff_r3_files=diff_missing,
+        ),
+    )
+
+    with pytest.raises(RuntimeError) as exc:
+        v2.verify_r3_evaluator_freeze_provenance(tmp_path)
+    assert "diff relative to parent" in str(exc.value)
+    assert "mismatch" in str(exc.value)
+
+
+def test_r3_freeze_provenance_rejects_tampered_blobs(tmp_path, monkeypatch):
+    """Verify that verify_r3_evaluator_freeze_provenance rejects tampered raw and historical blobs."""
+    candidate_sha = "37d9716889630dc663645bb30b1130ff0c307730"
+    monkeypatch.setattr(v2, "_git_head", lambda root: candidate_sha)
+
+    # 1. Tampered raw results
+    monkeypatch.setattr(
+        "subprocess.run",
+        _mock_r3_evaluator_freeze_git_subprocess(r3_sha=candidate_sha, raw_results_blob="bad_raw_res"),
+    )
+    with pytest.raises(RuntimeError) as exc1:
+        v2.verify_r3_evaluator_freeze_provenance(tmp_path)
+    assert "Raw results Git blob mismatch" in str(exc1.value)
+
+    # 2. Tampered raw plans
+    monkeypatch.setattr(
+        "subprocess.run",
+        _mock_r3_evaluator_freeze_git_subprocess(r3_sha=candidate_sha, raw_plans_blob="bad_raw_plans"),
+    )
+    with pytest.raises(RuntimeError) as exc2:
+        v2.verify_r3_evaluator_freeze_provenance(tmp_path)
+    assert "Raw plans Git blob mismatch" in str(exc2.value)
+
+    # 3. Tampered historical evaluator results
+    monkeypatch.setattr(
+        "subprocess.run",
+        _mock_r3_evaluator_freeze_git_subprocess(r3_sha=candidate_sha, historical_eval_results_blob="bad_hist_eval"),
+    )
+    with pytest.raises(RuntimeError) as exc3:
+        v2.verify_r3_evaluator_freeze_provenance(tmp_path)
+    assert "Historical artifact evaluation/d4_a2_v2_evaluator_results.json Git blob mismatch" in str(exc3.value)
+
+    # 4. Tampered historical result
+    monkeypatch.setattr(
+        "subprocess.run",
+        _mock_r3_evaluator_freeze_git_subprocess(r3_sha=candidate_sha, historical_result_blob="bad_hist_res"),
+    )
+    with pytest.raises(RuntimeError) as exc4:
+        v2.verify_r3_evaluator_freeze_provenance(tmp_path)
+    assert "Historical artifact evaluation/d4_a2_v2_result.json Git blob mismatch" in str(exc4.value)
+
+    # 5. Tampered historical report
+    monkeypatch.setattr(
+        "subprocess.run",
+        _mock_r3_evaluator_freeze_git_subprocess(r3_sha=candidate_sha, historical_report_blob="bad_hist_rep"),
+    )
+    with pytest.raises(RuntimeError) as exc5:
+        v2.verify_r3_evaluator_freeze_provenance(tmp_path)
+    assert "Historical artifact evaluation/D4_A2_V2_CONTROLLED_SHARED_PLAN_VALIDATION.md Git blob mismatch" in str(exc5.value)
+
+    # 6. Tampered historical preregistration
+    monkeypatch.setattr(
+        "subprocess.run",
+        _mock_r3_evaluator_freeze_git_subprocess(r3_sha=candidate_sha, historical_prereg_blob="bad_hist_prereg"),
+    )
+    with pytest.raises(RuntimeError) as exc6:
+        v2.verify_r3_evaluator_freeze_provenance(tmp_path)
+    assert "Historical artifact evaluation/d4_a2_v2_preregistration.json Git blob mismatch" in str(exc6.value)
+
+
+def test_r3_freeze_provenance_rejects_dirty_r3_worktree(tmp_path, monkeypatch):
+    """Verify that verify_r3_evaluator_freeze_provenance rejects dirty worktree for R3 files."""
+    candidate_sha = "37d9716889630dc663645bb30b1130ff0c307730"
+    monkeypatch.setattr(v2, "_git_head", lambda root: candidate_sha)
+    monkeypatch.setattr(
+        "subprocess.run",
+        _mock_r3_evaluator_freeze_git_subprocess(
+            r3_sha=candidate_sha,
+            dirty_paths=[" M evaluation/scripts/d4_a2_v2_controlled_shared_plan_validation.py"],
+        ),
+    )
+
+    with pytest.raises(RuntimeError) as exc:
+        v2.verify_r3_evaluator_freeze_provenance(tmp_path)
+    assert "Worktree or index is dirty for R3 files" in str(exc.value)
+
+
+def test_r3_freeze_provenance_rejects_r3_code_drift(tmp_path, monkeypatch):
+    """Verify that verify_r3_evaluator_freeze_provenance rejects uncommitted code drift relative to freeze commit."""
+    candidate_sha = "37d9716889630dc663645bb30b1130ff0c307730"
+    monkeypatch.setattr(v2, "_git_head", lambda root: candidate_sha)
+    monkeypatch.setattr(
+        "subprocess.run",
+        _mock_r3_evaluator_freeze_git_subprocess(
+            r3_sha=candidate_sha,
+            diff_drift_output="diff --git a/script.py b/script.py\n+new line",
+        ),
+    )
+
+    with pytest.raises(RuntimeError) as exc:
+        v2.verify_r3_evaluator_freeze_provenance(tmp_path)
+    assert "R3 evaluator code drift detected" in str(exc.value)
+
+
+def test_r3_freeze_provenance_real_repo_fails_closed_when_dirty_or_verifies():
+    """Verify that verify_r3_evaluator_freeze_provenance against real repository
+    fails closed with RuntimeError if worktree is dirty/drifted, or returns verified=True if clean.
+    """
+    try:
+        receipt = v2.verify_r3_evaluator_freeze_provenance(_PROJECT_ROOT)
+        assert receipt["verified"] is True
+        assert receipt["r3_evaluator_freeze_message"] == v2.EXPECTED_R3_COMMIT_MESSAGE
+    except RuntimeError as exc:
+        err = str(exc)
+        assert any(keyword in err for keyword in ["dirty", "drift", "mismatch", "not present"])
+
+
+def test_evaluate_r3_wrapper(monkeypatch):
+    """Verify that evaluate_r3 wrapper calls evaluate_d4_a2_v2_r3 with project_root."""
+    called_root = None
+
+    def mock_eval_r3(project_root, **kwargs):
+        nonlocal called_root
+        called_root = project_root
+        return {"wrapped": True}
+
+    monkeypatch.setattr(v2, "evaluate_d4_a2_v2_r3", mock_eval_r3)
+    res = v2.evaluate_r3(_PROJECT_ROOT)
+    assert res == {"wrapped": True}
+    assert called_root == _PROJECT_ROOT

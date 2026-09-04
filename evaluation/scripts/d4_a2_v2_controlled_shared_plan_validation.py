@@ -77,9 +77,12 @@ MAX_PROVIDER_ATTEMPTS_PER_CASE = 3
 RAW_RESULTS_FREEZE_HEAD = "b1a9f12366e328263e000f7b4c89184f2854c77a"
 RAW_RESULTS_FREEZE_BLOB = "2d894ff2d0ac8a49239663df155478614a99bae0"
 EXPECTED_EVALUATOR_FREEZE_COMMIT_MESSAGE = "D4-A2-V2 freeze deterministic evaluator"
+EXPECTED_R3_COMMIT_MESSAGE = "D4-A2-V2-R3 freeze evaluator contract repair"
+ORIGINAL_EVALUATOR_SCRIPT_BLOB = "1e7afd66ff2b2173e765e6c98942159c998e11bc"
 
 PREREGISTRATION_PATH = "evaluation/d4_a2_v2_preregistration.json"
 R2_PREREGISTRATION_PATH = "evaluation/d4_a2_v2_r2_preregistration.json"
+R3_PREREGISTRATION_PATH = "evaluation/d4_a2_v2_r3_preregistration.json"
 MANIFEST_PATH = "evaluation/d4_a2_v2_execution_manifest.json"
 RAW_PLANS_PATH = "evaluation/d4_a2_v2_raw_plans.json"
 RAW_RESULTS_PATH = "evaluation/d4_a2_v2_raw_results.json"
@@ -88,6 +91,21 @@ RESULT_PATH = "evaluation/d4_a2_v2_result.json"
 REPORT_PATH = "evaluation/D4_A2_V2_CONTROLLED_SHARED_PLAN_VALIDATION.md"
 EVALUATOR_SCRIPT_PATH = "evaluation/scripts/d4_a2_v2_controlled_shared_plan_validation.py"
 EVALUATOR_TEST_PATH = "tests/unit/test_d4_a2_v2_controlled_shared_plan_validation.py"
+
+# Dedicated R3 paths (forward-only recomputation outputs)
+R3_EVALUATOR_RESULTS_PATH = "evaluation/d4_a2_v2_r3_evaluator_results.json"
+R3_RESULT_PATH = "evaluation/d4_a2_v2_r3_result.json"
+
+# Authoritative historical lineage and immutable historical artifact blobs
+HISTORICAL_V2_CLOSE_HEAD = "deb6aa98e0fd9c12cd15b68e5889ecd62e8d6ffe"
+HISTORICAL_EVALUATOR_FREEZE_HEAD = "6c12af68ee17615a66a732108cb5b895f86853b7"
+ORIGINAL_DEFECTIVE_EVALUATOR_SHA = "6c12af68ee17615a66a732108cb5b895f86853b7"
+ORIGINAL_DEFECTIVE_EVALUATOR_VERDICT = "FAIL / PRIMARY_TARGET_REPLACEMENT_NOT_REPRODUCED"
+
+HISTORICAL_PREREGISTRATION_BLOB = "79aef67131af2ef7029a1646a681b3f34483f839"
+HISTORICAL_EVALUATOR_RESULTS_BLOB = "40e25fc27d090d45413e816a0500d1aa5e441d1b"
+HISTORICAL_RESULT_BLOB = "752adbf84ff2128884286948e5205a4323863677"
+HISTORICAL_REPORT_BLOB = "813dc68640958b82a33d8c4cc111909873b44d6a"
 
 GOLD_QUESTIONS_PATH = "evaluation/benchmarks/v2_6/gold_questions.yaml"
 NOVEL_DEV_PATH = "evaluation/novel/v1/novel_dev.yaml"
@@ -111,6 +129,12 @@ ALLOWED_COMMIT_B_DIFF_FILES = {
 
 ALLOWED_R2_DIFF_FILES = {
     "evaluation/d4_a2_v2_r2_preregistration.json",
+    "evaluation/scripts/d4_a2_v2_controlled_shared_plan_validation.py",
+    "tests/unit/test_d4_a2_v2_controlled_shared_plan_validation.py",
+}
+
+ALLOWED_R3_DIFF_FILES = {
+    "evaluation/d4_a2_v2_r3_preregistration.json",
     "evaluation/scripts/d4_a2_v2_controlled_shared_plan_validation.py",
     "tests/unit/test_d4_a2_v2_controlled_shared_plan_validation.py",
 }
@@ -203,9 +227,10 @@ ALLOWED_COMMIT_A_FILES = {
     "tests/unit/test_d4_a2_v2_controlled_shared_plan_validation.py",
 }
 
-# 6-level verdict precedence constants (exact D4-A2-V2 Section 20 specification)
+# Verdict precedence constants (D4-A2-V2 and D4-A2-V2-R3 Resolution B repair)
 VERDICT_LEVEL_1_INVALID = "INVALID / PROTOCOL_OR_SHARED_PLAN_CONSTRUCTION_FAILED"
 VERDICT_LEVEL_2_INCONCLUSIVE = "INCONCLUSIVE / BEFORE_REFERENCE_NOT_REPRODUCED"
+VERDICT_INCONCLUSIVE_DEPENDENCY_NOT_IDENTIFIABLE = "INCONCLUSIVE / FIXED_LOCATOR_DEPENDENCY_NOT_IDENTIFIABLE"
 VERDICT_LEVEL_3_FAIL_PRIMARY_TARGET = "FAIL / PRIMARY_TARGET_REPLACEMENT_NOT_REPRODUCED"
 VERDICT_LEVEL_4_FAIL_SHARED_PLAN_CRITICAL = "FAIL / SHARED_PLAN_CRITICAL_TREATMENT_REGRESSION"
 VERDICT_LEVEL_5_PARTIAL_TOLERANCE = "PARTIAL / AGGREGATE_REGRESSION_EXCEEDS_BOUNDED_TOLERANCE"
@@ -214,6 +239,7 @@ VERDICT_LEVEL_6_PASS = "PASS / CONTROLLED_SHARED_PLAN_T2_VALIDATED"
 FROZEN_V2_VERDICTS = [
     VERDICT_LEVEL_1_INVALID,
     VERDICT_LEVEL_2_INCONCLUSIVE,
+    VERDICT_INCONCLUSIVE_DEPENDENCY_NOT_IDENTIFIABLE,
     VERDICT_LEVEL_3_FAIL_PRIMARY_TARGET,
     VERDICT_LEVEL_4_FAIL_SHARED_PLAN_CRITICAL,
     VERDICT_LEVEL_5_PARTIAL_TOLERANCE,
@@ -346,6 +372,69 @@ def get_r2_repair_commit(
         )
     sha, msg = out.split("\x00", 1)
     return sha.strip(), msg.strip()
+
+
+def get_r3_repair_commit(
+    project_root: Path,
+    rel_path: str = R3_PREREGISTRATION_PATH,
+) -> tuple[str, str]:
+    """Determines the authoritative R3 repair commit using
+    the non-self-referential containing-commit policy.
+
+    Returns (commit_sha, commit_message).
+    """
+    rel_posix = rel_path.replace("\\", "/")
+    proc = subprocess.run(
+        ["git", "log", "-1", "--format=%H%x00%s", "HEAD", "--", rel_posix],
+        cwd=str(project_root),
+        capture_output=True,
+        text=True,
+    )
+    if proc.returncode != 0:
+        raise RuntimeError(
+            f"Git log failed for {rel_posix}: {proc.stderr.strip()}"
+        )
+    out = proc.stdout.strip()
+    if not out or "\x00" not in out:
+        raise RuntimeError(
+            f"Could not determine R3 repair commit for {rel_posix} from Git history. "
+            f"R3 preregistration must be committed as the R3 repair boundary."
+        )
+    sha, msg = out.split("\x00", 1)
+    return sha.strip(), msg.strip()
+
+
+def get_r3_evaluator_freeze_commit(
+    project_root: Path,
+    rel_path: str = R3_PREREGISTRATION_PATH,
+) -> tuple[str, str, list[str]]:
+    """Determines the authoritative R3 evaluator repair commit using
+    the containing-commit policy over the R3 preregistration artifact.
+
+    Returns (commit_sha, commit_message, parent_shas).
+    """
+    rel_posix = rel_path.replace("\\", "/")
+    proc = subprocess.run(
+        ["git", "log", "-1", "--format=%H%x00%s%x00%P", "HEAD", "--", rel_posix],
+        cwd=str(project_root),
+        capture_output=True,
+        text=True,
+    )
+    if proc.returncode != 0:
+        raise RuntimeError(
+            f"Git log failed for {rel_posix}: {proc.stderr.strip()}"
+        )
+    out = proc.stdout.strip()
+    if not out or "\x00" not in out:
+        raise RuntimeError(
+            f"Could not determine R3 repair commit for {rel_posix} from Git history. "
+            f"R3 preregistration must be committed as the R3 repair boundary."
+        )
+    parts = out.split("\x00")
+    sha = parts[0].strip()
+    msg = parts[1].strip() if len(parts) > 1 else ""
+    parents = parts[2].strip().split() if len(parts) > 2 else []
+    return sha, msg, parents
 
 
 def get_evaluator_freeze_commit(
@@ -639,6 +728,312 @@ def verify_evaluator_freeze_provenance(
         "evaluator_implementation_freeze_sha": eval_sha,
         "evaluator_implementation_freeze_message": eval_msg,
         "evaluator_implementation_parents": eval_parents,
+        "current_head": _git_head(project_root),
+    }
+
+
+def verify_r3_evaluator_freeze_provenance(
+    project_root: Path,
+    *,
+    r3_preregistration_path: str = R3_PREREGISTRATION_PATH,
+    evaluator_script_path: str = EVALUATOR_SCRIPT_PATH,
+    evaluator_test_path: str = EVALUATOR_TEST_PATH,
+    raw_results_path: str = RAW_RESULTS_PATH,
+    raw_plans_path: str = RAW_PLANS_PATH,
+    historical_prereg_path: str = PREREGISTRATION_PATH,
+    historical_eval_results_path: str = EVALUATOR_RESULTS_PATH,
+    historical_result_path: str = RESULT_PATH,
+    historical_report_path: str = REPORT_PATH,
+    expected_r3_commit_message: str = EXPECTED_R3_COMMIT_MESSAGE,
+    expected_parent_sha: str = HISTORICAL_V2_CLOSE_HEAD,
+    raw_results_freeze_sha: str = RAW_RESULTS_FREEZE_HEAD,
+    raw_results_freeze_blob: str = RAW_RESULTS_FREEZE_BLOB,
+    plan_freeze_raw_blob: str = PLAN_FREEZE_RAW_BLOB,
+    historical_prereg_blob: str = HISTORICAL_PREREGISTRATION_BLOB,
+    historical_eval_results_blob: str = HISTORICAL_EVALUATOR_RESULTS_BLOB,
+    historical_result_blob: str = HISTORICAL_RESULT_BLOB,
+    historical_report_blob: str = HISTORICAL_REPORT_BLOB,
+) -> dict[str, Any]:
+    """Mechanically verifies the authoritative D4-A2-V2-R3 evaluator freeze boundary:
+    1. Evaluator repair containing commit message is exactly EXPECTED_R3_COMMIT_MESSAGE ('D4-A2-V2-R3 freeze evaluator contract repair').
+    2. Evaluator repair direct parent is exactly HISTORICAL_V2_CLOSE_HEAD ('deb6aa98e0fd9c12cd15b68e5889ecd62e8d6ffe').
+    3. R3 freeze commit is an ancestor of current HEAD (allowing deterministic recomputation).
+    4. Exact three-file diff relative to parent: exactly ALLOWED_R3_DIFF_FILES.
+    5. Raw results artifact present at HEAD, clean in worktree/index, origin commit equals RAW_RESULTS_FREEZE_HEAD,
+       blob at HEAD and worktree equals RAW_RESULTS_FREEZE_BLOB.
+    6. Raw plans artifact present at HEAD, clean in worktree/index, blob at HEAD and worktree equals PLAN_FREEZE_RAW_BLOB.
+    7. Historical exposed artifacts present at HEAD, clean in worktree/index, blobs at HEAD and worktree equal
+       authoritative historical blobs (historical preregistration, evaluator results, result, and report).
+    8. R3 evaluator implementation, preregistration, and test files are clean in worktree/index with no drift from freeze commit.
+    """
+    # 1. R3 freeze commit determination and metadata
+    r3_sha, r3_msg, r3_parents = get_r3_evaluator_freeze_commit(
+        project_root, rel_path=r3_preregistration_path
+    )
+    if r3_msg != expected_r3_commit_message:
+        raise RuntimeError(
+            f"R3 evaluator freeze commit message mismatch: expected '{expected_r3_commit_message}', "
+            f"got '{r3_msg}' (commit {r3_sha})"
+        )
+    if r3_parents != [expected_parent_sha]:
+        raise RuntimeError(
+            f"R3 evaluator freeze parent mismatch: expected direct parent {[expected_parent_sha]}, "
+            f"got {r3_parents} (commit {r3_sha})"
+        )
+    anc = subprocess.run(
+        ["git", "merge-base", "--is-ancestor", r3_sha, "HEAD"],
+        cwd=str(project_root),
+        capture_output=True,
+        text=True,
+    )
+    if anc.returncode != 0:
+        raise RuntimeError(
+            f"R3 evaluator freeze commit {r3_sha} is not an ancestor of current HEAD!"
+        )
+
+    # 2. Exact three-file diff relative to direct parent
+    diff_proc = subprocess.run(
+        ["git", "diff", "--name-only", expected_parent_sha, r3_sha],
+        cwd=str(project_root),
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    changed = {
+        f.strip().replace("\\", "/")
+        for f in diff_proc.stdout.splitlines()
+        if f.strip()
+    }
+    if changed != ALLOWED_R3_DIFF_FILES:
+        raise RuntimeError(
+            f"R3 freeze commit {r3_sha} diff relative to parent {expected_parent_sha} mismatch: "
+            f"expected exact three files {ALLOWED_R3_DIFF_FILES}, got {changed}"
+        )
+
+    # 3. Raw results artifact verification
+    raw_res_posix = raw_results_path.replace("\\", "/")
+    cat_r = subprocess.run(
+        ["git", "cat-file", "-e", f"HEAD:{raw_res_posix}"],
+        cwd=str(project_root),
+        capture_output=True,
+        text=True,
+    )
+    if cat_r.returncode != 0:
+        raise RuntimeError(f"Raw results artifact {raw_res_posix} is not present in Git HEAD!")
+
+    st_r = subprocess.run(
+        ["git", "status", "--porcelain", "-uall", "--", raw_res_posix],
+        cwd=str(project_root),
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    if st_r.stdout.strip():
+        raise RuntimeError(
+            f"Raw results artifact {raw_res_posix} has uncommitted or dirty changes: {st_r.stdout.strip()}"
+        )
+
+    log_r = subprocess.run(
+        ["git", "log", "-1", "--format=%H", "HEAD", "--", raw_res_posix],
+        cwd=str(project_root),
+        capture_output=True,
+        text=True,
+    )
+    if log_r.returncode != 0 or log_r.stdout.strip() != raw_results_freeze_sha:
+        raise RuntimeError(
+            f"Raw results origin commit mismatch: expected {raw_results_freeze_sha}, got {log_r.stdout.strip()}"
+        )
+
+    blob_head_r = subprocess.run(
+        ["git", "rev-parse", f"HEAD:{raw_res_posix}"],
+        cwd=str(project_root),
+        capture_output=True,
+        text=True,
+    )
+    if blob_head_r.returncode != 0 or blob_head_r.stdout.strip() != raw_results_freeze_blob:
+        raise RuntimeError(
+            f"Raw results Git blob mismatch at HEAD: expected {raw_results_freeze_blob}, got {blob_head_r.stdout.strip()}"
+        )
+
+    hash_r_file = project_root / raw_results_path
+    if hash_r_file.exists():
+        hash_proc = subprocess.run(
+            ["git", "hash-object", str(hash_r_file)],
+            cwd=str(project_root),
+            capture_output=True,
+            text=True,
+        )
+        if hash_proc.returncode == 0 and hash_proc.stdout.strip() != raw_results_freeze_blob:
+            raise RuntimeError(
+                f"Raw results worktree blob mismatch: expected {raw_results_freeze_blob}, got {hash_proc.stdout.strip()}"
+            )
+
+    # 4. Raw plans artifact verification
+    raw_plans_posix = raw_plans_path.replace("\\", "/")
+    cat_p = subprocess.run(
+        ["git", "cat-file", "-e", f"HEAD:{raw_plans_posix}"],
+        cwd=str(project_root),
+        capture_output=True,
+        text=True,
+    )
+    if cat_p.returncode != 0:
+        raise RuntimeError(f"Raw plans artifact {raw_plans_posix} is not present in Git HEAD!")
+
+    st_p = subprocess.run(
+        ["git", "status", "--porcelain", "-uall", "--", raw_plans_posix],
+        cwd=str(project_root),
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    if st_p.stdout.strip():
+        raise RuntimeError(
+            f"Raw plans artifact {raw_plans_posix} has uncommitted or dirty changes: {st_p.stdout.strip()}"
+        )
+
+    blob_head_p = subprocess.run(
+        ["git", "rev-parse", f"HEAD:{raw_plans_posix}"],
+        cwd=str(project_root),
+        capture_output=True,
+        text=True,
+    )
+    if blob_head_p.returncode != 0 or blob_head_p.stdout.strip() != plan_freeze_raw_blob:
+        raise RuntimeError(
+            f"Raw plans Git blob mismatch at HEAD: expected {plan_freeze_raw_blob}, got {blob_head_p.stdout.strip()}"
+        )
+
+    hash_p_file = project_root / raw_plans_path
+    if hash_p_file.exists():
+        hash_proc = subprocess.run(
+            ["git", "hash-object", str(hash_p_file)],
+            cwd=str(project_root),
+            capture_output=True,
+            text=True,
+        )
+        if hash_proc.returncode == 0 and hash_proc.stdout.strip() != plan_freeze_raw_blob:
+            raise RuntimeError(
+                f"Raw plans worktree blob mismatch: expected {plan_freeze_raw_blob}, got {hash_proc.stdout.strip()}"
+            )
+
+    # 5. Historical exposed artifacts verification
+    historical_checks = [
+        ("preregistration", historical_prereg_path, historical_prereg_blob),
+        ("evaluator_results", historical_eval_results_path, historical_eval_results_blob),
+        ("result", historical_result_path, historical_result_blob),
+        ("report", historical_report_path, historical_report_blob),
+    ]
+    historical_receipts = {}
+    for name, p_rel, exp_blob in historical_checks:
+        p_posix = p_rel.replace("\\", "/")
+        cat_h = subprocess.run(
+            ["git", "cat-file", "-e", f"HEAD:{p_posix}"],
+            cwd=str(project_root),
+            capture_output=True,
+            text=True,
+        )
+        if cat_h.returncode != 0:
+            raise RuntimeError(f"Historical artifact {p_posix} is not present in Git HEAD!")
+        st_h = subprocess.run(
+            ["git", "status", "--porcelain", "-uall", "--", p_posix],
+            cwd=str(project_root),
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        if st_h.stdout.strip():
+            raise RuntimeError(
+                f"Historical artifact {p_posix} has uncommitted or dirty changes: {st_h.stdout.strip()}"
+            )
+        blob_h = subprocess.run(
+            ["git", "rev-parse", f"HEAD:{p_posix}"],
+            cwd=str(project_root),
+            capture_output=True,
+            text=True,
+        )
+        if blob_h.returncode != 0 or blob_h.stdout.strip() != exp_blob:
+            raise RuntimeError(
+                f"Historical artifact {p_posix} Git blob mismatch at HEAD: expected {exp_blob}, got {blob_h.stdout.strip()}"
+            )
+        f_h = project_root / p_rel
+        if f_h.exists():
+            h_proc = subprocess.run(
+                ["git", "hash-object", str(f_h)],
+                cwd=str(project_root),
+                capture_output=True,
+                text=True,
+            )
+            if h_proc.returncode == 0 and h_proc.stdout.strip() != exp_blob:
+                raise RuntimeError(
+                    f"Historical artifact {p_posix} worktree blob mismatch: expected {exp_blob}, got {h_proc.stdout.strip()}"
+                )
+        historical_receipts[name] = {"path": p_rel, "blob": exp_blob}
+
+    # 6. R3 files cleanliness and drift check
+    r3_files = [
+        r3_preregistration_path.replace("\\", "/"),
+        evaluator_script_path.replace("\\", "/"),
+        evaluator_test_path.replace("\\", "/"),
+    ]
+    st_r3 = subprocess.run(
+        ["git", "status", "--porcelain", "-uall", "--"] + r3_files,
+        cwd=str(project_root),
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    if st_r3.stdout.strip():
+        raise RuntimeError(
+            f"Worktree or index is dirty for R3 files: {st_r3.stdout.strip()}"
+        )
+    diff_r3_drift = subprocess.run(
+        ["git", "diff", r3_sha, "--"] + r3_files,
+        cwd=str(project_root),
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    if diff_r3_drift.stdout.strip():
+        raise RuntimeError(
+            f"R3 evaluator code drift detected relative to freeze commit {r3_sha}: {diff_r3_drift.stdout.strip()}"
+        )
+    for rf in r3_files:
+        f_obj = project_root / rf
+        if f_obj.exists():
+            blob_proc = subprocess.run(
+                ["git", "rev-parse", f"{r3_sha}:{rf}"],
+                cwd=str(project_root),
+                capture_output=True,
+                text=True,
+            )
+            hash_proc = subprocess.run(
+                ["git", "hash-object", str(f_obj)],
+                cwd=str(project_root),
+                capture_output=True,
+                text=True,
+            )
+            if (
+                blob_proc.returncode == 0
+                and hash_proc.returncode == 0
+                and hash_proc.stdout.strip() != blob_proc.stdout.strip()
+            ):
+                raise RuntimeError(
+                    f"File {rf} worktree blob ({hash_proc.stdout.strip()}) differs from commit blob ({blob_proc.stdout.strip()})!"
+                )
+
+    return {
+        "verified": True,
+        "checkpoint": "D4-A2-V2-R3",
+        "stage": "d4_a2_v2_r3_evaluator_freeze_provenance",
+        "r3_evaluator_freeze_sha": r3_sha,
+        "r3_evaluator_freeze_message": r3_msg,
+        "r3_evaluator_freeze_parents": r3_parents,
+        "historical_v2_close_parent": expected_parent_sha,
+        "raw_results_freeze_sha": raw_results_freeze_sha,
+        "raw_results_blob": raw_results_freeze_blob,
+        "raw_plans_blob": plan_freeze_raw_blob,
+        "historical_artifacts": historical_receipts,
+        "allowed_r3_diff_files": sorted(ALLOWED_R3_DIFF_FILES),
+        "diff_files_relative_to_parent": sorted(list(changed)),
         "current_head": _git_head(project_root),
     }
 
@@ -2147,18 +2542,23 @@ def compute_controlled_shared_plan_verdict(
     before_reference_valid: bool | None = None,
     target_replacement_reproduced: int | None = None,
     batch1_dependency_removed: int | None = None,
+    dependency_removal_identifiable: bool | int | None = None,
     shared_plan_critical_regressions: list[str] | None = None,
     grounding_regressions: int | None = None,
     wrong_version_regressions: int | None = None,
     invalid_provenance_recoveries: int | None = None,
     metric_deltas: dict[str, float] | None = None,
 ) -> dict[str, Any]:
-    """Pure deterministic decision logic implementing D4-A2-V2 Section 20.
+    """Pure deterministic decision logic implementing D4-A2-V2 and D4-A2-V2-R3.
 
-    Exact 6-Level Precedence:
+    Precedence Ladder (Resolution B):
       Level 1: INVALID / PROTOCOL_OR_SHARED_PLAN_CONSTRUCTION_FAILED
       Level 2: INCONCLUSIVE / BEFORE_REFERENCE_NOT_REPRODUCED
+      Resolution B Inconclusive: INCONCLUSIVE / FIXED_LOCATOR_DEPENDENCY_NOT_IDENTIFIABLE
+        (Narrowly evaluated before Level 3: target replacement reproduced 2/2, but dependency
+        removal is not identifiable because BEFORE locator contrast was inactive)
       Level 3: FAIL / PRIMARY_TARGET_REPLACEMENT_NOT_REPRODUCED
+        (Restored to target_replacement_reproduced < 2 only; never triggered solely by dependency removal)
       Level 4: FAIL / SHARED_PLAN_CRITICAL_TREATMENT_REGRESSION
       Level 5: PARTIAL / AGGREGATE_REGRESSION_EXCEEDS_BOUNDED_TOLERANCE
       Level 6: PASS / CONTROLLED_SHARED_PLAN_T2_VALIDATED
@@ -2187,6 +2587,8 @@ def compute_controlled_shared_plan_verdict(
         missing_fields.append("target_replacement_reproduced")
     if batch1_dependency_removed is None:
         missing_fields.append("batch1_dependency_removed")
+    if dependency_removal_identifiable is None:
+        missing_fields.append("dependency_removal_identifiable")
     if shared_plan_critical_regressions is None:
         missing_fields.append("shared_plan_critical_regressions")
     if grounding_regressions is None:
@@ -2209,7 +2611,12 @@ def compute_controlled_shared_plan_verdict(
             "verdict_reason": f"INCOMPLETE_EVALUATOR_INPUT: Missing or invalid required evaluator inputs: {', '.join(missing_fields)}",
         }
 
-    # Level 2 — INCONCLUSIVE
+    if isinstance(dependency_removal_identifiable, int) and not isinstance(dependency_removal_identifiable, bool):
+        is_identifiable = (dependency_removal_identifiable >= 2)
+    else:
+        is_identifiable = bool(dependency_removal_identifiable)
+
+    # Level 2 — INCONCLUSIVE (BEFORE reference not reproduced)
     if not before_reference_valid:
         return {
             "verdict_level": 2,
@@ -2220,15 +2627,28 @@ def compute_controlled_shared_plan_verdict(
             ),
         }
 
+    # Resolution B Inconclusive — FIXED_LOCATOR_DEPENDENCY_NOT_IDENTIFIABLE
+    # Narrowly evaluated before Level 3: target replacement reproduced 2/2 under AFTER with valid
+    # governed witness, but fixed locator dependency removal is not identifiable because BEFORE was inactive.
+    if target_replacement_reproduced >= 2 and not is_identifiable:
+        return {
+            "verdict_level": 2,
+            "verdict": VERDICT_INCONCLUSIVE_DEPENDENCY_NOT_IDENTIFIABLE,
+            "verdict_reason": (
+                "Primary target replacement reproduced (2/2) under AFTER with valid governed witness, "
+                "but fixed locator dependency removal is not identifiable under Resolution B because "
+                "the fixed locator contrast was inactive in BEFORE_COMPAT."
+            ),
+        }
+
     # Level 3 — FAIL (Primary targets replacement)
-    if target_replacement_reproduced < 2 or batch1_dependency_removed < 2:
+    if target_replacement_reproduced < 2:
         return {
             "verdict_level": 3,
             "verdict": VERDICT_LEVEL_3_FAIL_PRIMARY_TARGET,
             "verdict_reason": (
-                f"Primary target replacement or fixed locator dependency removal not reproduced: "
-                f"{target_replacement_reproduced}/2 targets reproduced under AFTER with valid governed witness, "
-                f"{batch1_dependency_removed}/2 dependencies removed."
+                f"Primary target replacement not reproduced: "
+                f"{target_replacement_reproduced}/2 targets reproduced under AFTER with valid governed witness."
             ),
         }
 
@@ -2280,6 +2700,18 @@ def compute_controlled_shared_plan_verdict(
             "verdict": VERDICT_LEVEL_5_PARTIAL_TOLERANCE,
             "verdict_reason": (
                 f"Aggregate retrieval regressions exceeded bounded tolerances: {'; '.join(tolerance_violations)}."
+            ),
+        }
+
+    # Fail-closed gate: if dependency removal was identifiable but not demonstrated
+    if batch1_dependency_removed < 2:
+        return {
+            "verdict_level": 1,
+            "verdict": VERDICT_LEVEL_1_INVALID,
+            "verdict_reason": (
+                f"TREATMENT_REMOVAL_NOT_DEMONSTRATED: Fixed locator dependency removal was identifiable "
+                f"but not demonstrated ({batch1_dependency_removed}/2 demonstrated). "
+                f"Masked execution or replacement suppression was incomplete."
             ),
         }
 
@@ -2512,6 +2944,133 @@ def attribute_critical_regression(
     return False, f"Phenotype {pre_rerank_class} / {final_class} is not a treatment regression."
 
 
+def _extract_slot_symbols(slot: dict[str, Any]) -> list[str]:
+    inputs = slot.get("inputs") or {}
+    syms = inputs.get("symbol_inputs")
+    if syms is None:
+        syms = slot.get("effective_symbols")
+    if syms is None:
+        syms = inputs.get("symbols", [])
+    return list(syms) if isinstance(syms, (list, tuple)) else []
+
+
+def _extract_slot_page_hints(slot: dict[str, Any]) -> dict[str, list[int]]:
+    inputs = slot.get("inputs") or {}
+    hints = inputs.get("page_inputs")
+    if hints is None:
+        hints = slot.get("effective_paper_page_hints")
+    if hints is None:
+        hints = inputs.get("paper_page_hints", {})
+    return dict(hints) if isinstance(hints, dict) else {}
+
+
+def _is_before_locator_active(
+    slot_b: dict[str, Any],
+    rule_id: str,
+    target_symbols: list[str],
+    target_pages: dict[str, list[int]] | None = None,
+) -> bool:
+    """Determine BEFORE activity from frozen cell's symbol_inputs / page hints plus lack of effective suppression."""
+    b_syms = _extract_slot_symbols(slot_b)
+    has_sym = any(sym in b_syms for sym in target_symbols)
+
+    has_page = False
+    if target_pages:
+        b_hints = _extract_slot_page_hints(slot_b)
+        for doc_id, pages in target_pages.items():
+            if any(p in b_hints.get(doc_id, []) for p in pages):
+                has_page = True
+                break
+
+    if not (has_sym or has_page):
+        return False
+
+    # Check lack of effective suppression in BEFORE
+    supp = slot_b.get("exact_effective_suppressed_components") or {}
+    rule_supp = supp.get(rule_id, {})
+    if isinstance(rule_supp, dict):
+        if any(sym in rule_supp.get("symbols", []) for sym in target_symbols):
+            return False
+        if target_pages:
+            rule_pages = rule_supp.get("paper_page_hints", {})
+            for doc_id, pages in target_pages.items():
+                if any(p in rule_pages.get(doc_id, []) for p in pages):
+                    return False
+
+    if slot_b.get("in_memory_mask_active") is True:
+        return False
+
+    return True
+
+
+def _is_after_locator_absent(
+    slot_a: dict[str, Any],
+    rule_id: str,
+    target_symbols: list[str],
+    target_pages: dict[str, list[int]] | None = None,
+) -> bool:
+    """Ensure AFTER absence is based on effective suppression / masked execution semantics."""
+    # 1. If effective_symbols is explicitly specified, check it directly
+    eff_syms = slot_a.get("effective_symbols")
+    if eff_syms is not None:
+        if any(sym in eff_syms for sym in target_symbols):
+            return False
+
+    # 2. If effective_paper_page_hints is explicitly specified, check it directly
+    if target_pages:
+        eff_hints = slot_a.get("effective_paper_page_hints")
+        if eff_hints is not None:
+            for doc_id, pages in target_pages.items():
+                if any(p in eff_hints.get(doc_id, []) for p in pages):
+                    return False
+
+    # 3. Masked execution / effective suppression semantics:
+    # Under prospective shared canonical plans, inputs.symbol_inputs retains the canonical plan text.
+    # In AFTER, absence is verified via effective suppression components and active mask.
+    inputs = slot_a.get("inputs") or {}
+    plan_syms = inputs.get("symbol_inputs")
+    if plan_syms is None:
+        plan_syms = inputs.get("symbols", [])
+    plan_has_sym = any(sym in plan_syms for sym in target_symbols) if isinstance(plan_syms, (list, tuple)) else False
+
+    plan_has_page = False
+    if target_pages:
+        plan_hints = inputs.get("page_inputs")
+        if plan_hints is None:
+            plan_hints = inputs.get("paper_page_hints", {})
+        if isinstance(plan_hints, dict):
+            for doc_id, pages in target_pages.items():
+                if any(p in plan_hints.get(doc_id, []) for p in pages):
+                    plan_has_page = True
+                    break
+
+    # If the shared plan did not contain the locator components, they are naturally absent
+    if not plan_has_sym and not plan_has_page:
+        return True
+
+    # If the shared plan contained the locator, verify effective suppression in AFTER
+    supp = slot_a.get("exact_effective_suppressed_components") or {}
+    rule_supp = supp.get(rule_id, {})
+    if not isinstance(rule_supp, dict):
+        return False
+
+    if plan_has_sym:
+        supp_symbols = rule_supp.get("symbols", [])
+        if not any(sym in supp_symbols for sym in target_symbols):
+            return False
+
+    if plan_has_page and target_pages:
+        supp_pages = rule_supp.get("paper_page_hints", {})
+        for doc_id, pages in target_pages.items():
+            if not any(p in supp_pages.get(doc_id, []) for p in pages):
+                return False
+
+    if slot_a.get("in_memory_mask_active") is False:
+        return False
+
+    return True
+
+
 def compute_batch1_dependency_removal(
     slots_map: dict[tuple[str, str], dict[str, Any]],
     witness_g036: dict[str, Any],
@@ -2519,11 +3078,17 @@ def compute_batch1_dependency_removal(
     group_retention: dict[str, dict[str, Any]],
 ) -> tuple[int, dict[str, Any]]:
     """Separately verifies for each Batch-1 target rule:
-    1. Fixed locator inputs were active in BEFORE.
-    2. Exact masked locator inputs are absent in AFTER.
+    1. Fixed locator inputs were active in BEFORE (before_fixed_locator_active).
+    2. Exact masked locator inputs are absent in AFTER (after_fixed_locator_absent).
     3. Generic structured mechanism is active in AFTER.
     4. Target evidence is retained in AFTER.
     5. Valid governed witness exists in AFTER.
+    (3, 4, 5 define after_governed_replacement_valid).
+
+    Under Resolution B:
+      - Inactive BEFORE means dependency_removal_identifiable=False and dependency_removal_demonstrated=False.
+      - Active BEFORE means dependency_removal_identifiable=True.
+      - Demonstrated=True requires all 5 conjuncts.
 
     Returns (dependency_removed_count, per_rule_receipts).
     """
@@ -2533,82 +3098,91 @@ def compute_batch1_dependency_removal(
     slot_g036_b = slots_map.get(("g036", "BEFORE_COMPAT"), {})
     slot_g036_a = slots_map.get(("g036", "AFTER_BATCH1_REPLACEMENT"), {})
 
-    g036_b_symbols = slot_g036_b.get("effective_symbols") or slot_g036_b.get("inputs", {}).get("symbols", [])
-    ep_active_before = bool(
-        any(sym in g036_b_symbols for sym in d4_a1.SUPPRESSED_SYMBOLS_EVENT_POCA)
-        or (slot_g036_b.get("in_memory_mask_active") is False and not slot_g036_b.get("exact_effective_suppressed_components"))
+    ep_before_active = _is_before_locator_active(
+        slot_b=slot_g036_b,
+        rule_id="event_poca_handoff",
+        target_symbols=d4_a1.SUPPRESSED_SYMBOLS_EVENT_POCA,
+        target_pages=d4_a1.SUPPRESSED_PAGE_HINTS_EVENT_POCA,
     )
-    g036_a_symbols = slot_g036_a.get("effective_symbols") or slot_g036_a.get("inputs", {}).get("symbols", [])
-    ep_symbols_absent = not any(sym in g036_a_symbols for sym in d4_a1.SUPPRESSED_SYMBOLS_EVENT_POCA)
-    g036_a_hints = slot_g036_a.get("effective_paper_page_hints") or slot_g036_a.get("inputs", {}).get("paper_page_hints", {})
-    ep_hints_absent = not any(
-        p in g036_a_hints.get("li_2026", []) for p in d4_a1.SUPPRESSED_PAGE_HINTS_EVENT_POCA.get("li_2026", [])
+    ep_absent_after = _is_after_locator_absent(
+        slot_a=slot_g036_a,
+        rule_id="event_poca_handoff",
+        target_symbols=d4_a1.SUPPRESSED_SYMBOLS_EVENT_POCA,
+        target_pages=d4_a1.SUPPRESSED_PAGE_HINTS_EVENT_POCA,
     )
-    ep_absent_after = ep_symbols_absent and ep_hints_absent
     ep_struct_active = bool(
         slot_g036_a.get("structured_replacement_active", True) is True
         and slot_g036_a.get("admission_budget_k", 3) == EXPECTED_ADMISSION_BUDGET_K
     )
     ep_target_retained = bool(group_retention.get("g036.e1", {}).get("AFTER_BATCH1_REPLACEMENT", False))
     ep_valid_witness = bool(witness_g036.get("has_valid_witness", False))
+    ep_governed_valid = bool(ep_struct_active and ep_target_retained and ep_valid_witness)
 
-    ep_removed = bool(
-        ep_active_before
-        and ep_absent_after
-        and ep_struct_active
-        and ep_target_retained
-        and ep_valid_witness
-    )
+    ep_identifiable = bool(ep_before_active)
+    ep_demonstrated = bool(ep_before_active and ep_absent_after and ep_governed_valid)
+
     receipts["event_poca_handoff"] = {
         "rule_id": "event_poca_handoff",
         "case_id": "g036",
         "target_group_id": "g036.e1",
-        "fixed_locator_inputs_active_before": ep_active_before,
+        "before_fixed_locator_active": ep_before_active,
+        "after_fixed_locator_absent": ep_absent_after,
+        "after_governed_replacement_valid": ep_governed_valid,
+        "dependency_removal_identifiable": ep_identifiable,
+        "dependency_removal_demonstrated": ep_demonstrated,
+        "fixed_locator_inputs_active_before": ep_before_active,
         "exact_masked_locator_inputs_absent_after": ep_absent_after,
         "generic_structured_mechanism_active": ep_struct_active,
         "target_evidence_retained_after": ep_target_retained,
         "valid_governed_witness_exists": ep_valid_witness,
-        "dependency_removed": ep_removed,
+        "dependency_removed": ep_demonstrated,
     }
 
     # Rule 2: restgas_profile_workflow (case g021, group g021.e1)
     slot_g021_b = slots_map.get(("g021", "BEFORE_COMPAT"), {})
     slot_g021_a = slots_map.get(("g021", "AFTER_BATCH1_REPLACEMENT"), {})
 
-    g021_b_symbols = slot_g021_b.get("effective_symbols") or slot_g021_b.get("inputs", {}).get("symbols", [])
-    rg_active_before = bool(
-        any(sym in g021_b_symbols for sym in d4_a1.SUPPRESSED_SYMBOLS_RESTGAS)
-        or (slot_g021_b.get("in_memory_mask_active") is False and not slot_g021_b.get("exact_effective_suppressed_components"))
+    rg_before_active = _is_before_locator_active(
+        slot_b=slot_g021_b,
+        rule_id="restgas_profile_workflow",
+        target_symbols=d4_a1.SUPPRESSED_SYMBOLS_RESTGAS,
+        target_pages=d4_a1.SUPPRESSED_PAGE_HINTS_RESTGAS,
     )
-    g021_a_symbols = slot_g021_a.get("effective_symbols") or slot_g021_a.get("inputs", {}).get("symbols", [])
-    rg_absent_after = not any(sym in g021_a_symbols for sym in d4_a1.SUPPRESSED_SYMBOLS_RESTGAS)
+    rg_absent_after = _is_after_locator_absent(
+        slot_a=slot_g021_a,
+        rule_id="restgas_profile_workflow",
+        target_symbols=d4_a1.SUPPRESSED_SYMBOLS_RESTGAS,
+        target_pages=d4_a1.SUPPRESSED_PAGE_HINTS_RESTGAS,
+    )
     rg_struct_active = bool(
         slot_g021_a.get("structured_replacement_active", True) is True
         and slot_g021_a.get("admission_budget_k", 3) == EXPECTED_ADMISSION_BUDGET_K
     )
     rg_target_retained = bool(group_retention.get("g021.e1", {}).get("AFTER_BATCH1_REPLACEMENT", False))
     rg_valid_witness = bool(witness_g021.get("has_valid_witness", False))
+    rg_governed_valid = bool(rg_struct_active and rg_target_retained and rg_valid_witness)
 
-    rg_removed = bool(
-        rg_active_before
-        and rg_absent_after
-        and rg_struct_active
-        and rg_target_retained
-        and rg_valid_witness
-    )
+    rg_identifiable = bool(rg_before_active)
+    rg_demonstrated = bool(rg_before_active and rg_absent_after and rg_governed_valid)
+
     receipts["restgas_profile_workflow"] = {
         "rule_id": "restgas_profile_workflow",
         "case_id": "g021",
         "target_group_id": "g021.e1",
-        "fixed_locator_inputs_active_before": rg_active_before,
+        "before_fixed_locator_active": rg_before_active,
+        "after_fixed_locator_absent": rg_absent_after,
+        "after_governed_replacement_valid": rg_governed_valid,
+        "dependency_removal_identifiable": rg_identifiable,
+        "dependency_removal_demonstrated": rg_demonstrated,
+        "fixed_locator_inputs_active_before": rg_before_active,
         "exact_masked_locator_inputs_absent_after": rg_absent_after,
         "generic_structured_mechanism_active": rg_struct_active,
         "target_evidence_retained_after": rg_target_retained,
         "valid_governed_witness_exists": rg_valid_witness,
-        "dependency_removed": rg_removed,
+        "dependency_removed": rg_demonstrated,
     }
 
-    count = (1 if ep_removed else 0) + (1 if rg_removed else 0)
+    count = (1 if ep_demonstrated else 0) + (1 if rg_demonstrated else 0)
     return count, receipts
 
 
@@ -2760,113 +3334,14 @@ def compute_grounding_and_version_safety(
     }
 
 
-def evaluate_d4_a2_v2(
+def _compute_evaluation_metrics_and_verdict(
     project_root: Path,
-    raw_results_path: Path | None = None,
-    raw_plans_path: Path | None = None,
-    write_artifacts: bool = True,
-    require_git_frozen: bool = True,
-    git_checker: Any | None = None,
+    raw_data: dict[str, Any],
 ) -> dict[str, Any]:
-    """Deterministic offline evaluator for D4-A2-V2 Controlled Shared-Plan Validation.
-    Executes Sections 5-17 of the preregistration with zero provider calls.
-    Evaluates over frozen raw artifacts, enforcing:
-      - 16 total cases, 13 answered cases, 7 Gold answered, 6 novel_dev answered, 3 negative controls
-      - Corrected criticality contract (g021.e1 critical, g021.e2 noncritical, n022.e2 critical)
-      - Paired pre-rerank and final classifications (F/F is strictly NOT a treatment regression)
-      - Frozen 9-element first-divergence taxonomy
-      - Causal treatment attribution for critical regressions
-      - BEFORE reference validity
-      - Primary replacement witness and dependency removal for g036.e1 and g021.e1
-      - Grounding, version, and provenance hard gates
-      - Six historical primary metrics + diagnostic MRR
-      - Frozen bounded tolerances
-      - 6-level verdict precedence ladder.
+    """Pure deterministic computation of evidence group classifications, witness checks,
+    dependency removal, safety accounting, per-case and cohort metrics, and verdict outcome.
+    Shared by historical V2 and R3 evaluators.
     """
-    raw_results_file = (raw_results_path or (project_root / RAW_RESULTS_PATH)).resolve()
-    raw_plans_file = (raw_plans_path or (project_root / RAW_PLANS_PATH)).resolve()
-
-    if not raw_results_file.exists():
-        raise FileNotFoundError(f"Raw results file {raw_results_file} missing! Run Phase R first.")
-
-    if require_git_frozen:
-        if git_checker is not None:
-            provenance = git_checker(project_root)
-            if isinstance(provenance, dict):
-                raw_results_freeze_sha = provenance.get("raw_results_freeze_sha", RAW_RESULTS_FREEZE_HEAD)
-                evaluator_freeze_sha = provenance.get("evaluator_implementation_freeze_sha", _git_head(project_root))
-                raw_results_blob = provenance.get("raw_results_blob", RAW_RESULTS_FREEZE_BLOB)
-                raw_plans_blob = provenance.get("raw_plans_blob", PLAN_FREEZE_RAW_BLOB)
-                evaluator_freeze_msg = provenance.get("evaluator_implementation_freeze_message", EXPECTED_EVALUATOR_FREEZE_COMMIT_MESSAGE)
-            else:
-                raw_results_freeze_sha = RAW_RESULTS_FREEZE_HEAD
-                evaluator_freeze_sha = str(provenance) if provenance else _git_head(project_root)
-                raw_results_blob = RAW_RESULTS_FREEZE_BLOB
-                raw_plans_blob = PLAN_FREEZE_RAW_BLOB
-                evaluator_freeze_msg = EXPECTED_EVALUATOR_FREEZE_COMMIT_MESSAGE
-        else:
-            provenance = verify_evaluator_freeze_provenance(project_root)
-            raw_results_freeze_sha = provenance["raw_results_freeze_sha"]
-            evaluator_freeze_sha = provenance["evaluator_implementation_freeze_sha"]
-            raw_results_blob = provenance["raw_results_blob"]
-            raw_plans_blob = provenance["raw_plans_blob"]
-            evaluator_freeze_msg = provenance["evaluator_implementation_freeze_message"]
-    else:
-        raw_results_freeze_sha = RAW_RESULTS_FREEZE_HEAD
-        evaluator_freeze_sha = "SYNTHETIC_EVALUATOR_FREEZE_HEAD"
-        raw_results_blob = RAW_RESULTS_FREEZE_BLOB
-        raw_plans_blob = PLAN_FREEZE_RAW_BLOB
-        evaluator_freeze_msg = EXPECTED_EVALUATOR_FREEZE_COMMIT_MESSAGE
-
-    raw_data = _load_json(raw_results_file)
-
-    manifest_file = project_root / MANIFEST_PATH
-    manifest = _load_json(manifest_file) if manifest_file.exists() else {}
-    prereg_file = project_root / PREREGISTRATION_PATH
-    prereg = _load_json(prereg_file) if prereg_file.exists() else {}
-
-    # Mechanical structural validity audit
-    is_struct_valid, struct_fail_reason, mutation_counters = validate_raw_artifact_structural_validity(
-        raw_data=raw_data,
-        manifest=manifest,
-        prereg=prereg,
-        project_root=project_root,
-    )
-    if not is_struct_valid:
-        verdict_outcome = compute_controlled_shared_plan_verdict(
-            execution_valid=False,
-            protocol_violation=True,
-            protocol_violation_reason=struct_fail_reason,
-        )
-        eval_artifact = {
-            "schema_version": "1.0.0",
-            "checkpoint": "D4-A2-V2",
-            "stage": "d4_a2_v2_evaluator_results",
-            "raw_results_freeze_sha": raw_results_freeze_sha,
-            "evaluator_implementation_freeze_sha": evaluator_freeze_sha,
-            "frozen_provenance": {
-                "raw_results_freeze_sha": raw_results_freeze_sha,
-                "raw_results_blob": raw_results_blob,
-                "raw_plans_blob": raw_plans_blob,
-                "evaluator_implementation_freeze_sha": evaluator_freeze_sha,
-                "evaluator_implementation_freeze_message": evaluator_freeze_msg,
-                "evaluator_implementation_parent_sha": raw_results_freeze_sha,
-            },
-            "raw_artifact_authority": str(raw_results_file),
-            "raw_plans_authority": str(raw_plans_file),
-            "evaluator_executed_at_utc": datetime.datetime.now(datetime.timezone.utc).isoformat(),
-            "execution_valid": False,
-            "protocol_violation": True,
-            "protocol_violation_reason": struct_fail_reason,
-            "verdict_outcome": verdict_outcome,
-            "post_exposure_mutation_accounting": mutation_counters,
-            "production_activation": False,
-        }
-        if write_artifacts:
-            _save_json(project_root / EVALUATOR_RESULTS_PATH, eval_artifact)
-        return eval_artifact
-
-    # Load governed benchmark questions and object lookup (read-only, local)
     gold_ds = load_gold_dataset(project_root / GOLD_QUESTIONS_PATH)
     novel_ds = load_gold_dataset(project_root / NOVEL_DEV_PATH)
     all_questions = {q.id: q for q in gold_ds.questions + novel_ds.questions}
@@ -2874,7 +3349,6 @@ def evaluate_d4_a2_v2(
 
     slots_map = {(s["case_id"], s["arm"]): s for s in raw_data.get("slots", [])}
 
-    # Process all evidence groups across all 16 cases
     group_classifications: dict[str, dict[str, Any]] = {}
     pair_pre_rerank_counts = {
         PAIR_PRESERVED: 0,
@@ -3116,18 +3590,174 @@ def evaluate_d4_a2_v2(
         }
 
     # Final verdict precedence determination
+    dep_identifiable_count = (
+        (1 if dep_receipts.get("event_poca_handoff", {}).get("dependency_removal_identifiable", False) else 0)
+        + (1 if dep_receipts.get("restgas_profile_workflow", {}).get("dependency_removal_identifiable", False) else 0)
+    )
+    dep_identifiable = (dep_identifiable_count == 2)
+
     verdict_outcome = compute_controlled_shared_plan_verdict(
         execution_valid=True,
         protocol_violation=False,
         before_reference_valid=before_reference_valid,
         target_replacement_reproduced=target_replacement_reproduced_count,
         batch1_dependency_removed=dep_count,
+        dependency_removal_identifiable=dep_identifiable,
         shared_plan_critical_regressions=critical_regression_ids,
         grounding_regressions=safety_res["GROUNDING_REGRESSIONS"],
         wrong_version_regressions=safety_res["WRONG_VERSION_REGRESSIONS"],
         invalid_provenance_recoveries=safety_res["INVALID_PROVENANCE_RECOVERIES"],
         metric_deltas=cohort_deltas,
     )
+
+    return {
+        "all_questions": all_questions,
+        "object_lookup": object_lookup,
+        "slots_map": slots_map,
+        "group_classifications": group_classifications,
+        "pair_pre_rerank_counts": pair_pre_rerank_counts,
+        "pair_final_counts": pair_final_counts,
+        "first_divergence_counts": first_divergence_counts,
+        "wit_g036": wit_g036,
+        "wit_g021": wit_g021,
+        "b_ret_g036": b_ret_g036,
+        "a_ret_g036": a_ret_g036,
+        "b_ret_g021": b_ret_g021,
+        "a_ret_g021": a_ret_g021,
+        "g036_reproduced": g036_reproduced,
+        "g021_reproduced": g021_reproduced,
+        "target_replacement_reproduced_count": target_replacement_reproduced_count,
+        "before_reference_valid": before_reference_valid,
+        "dep_count": dep_count,
+        "dep_receipts": dep_receipts,
+        "dep_identifiable": dep_identifiable,
+        "dep_identifiable_count": dep_identifiable_count,
+        "safety_res": safety_res,
+        "critical_regression_ids": critical_regression_ids,
+        "critical_regression_details": critical_regression_details,
+        "noncritical_regression_ids": noncritical_regression_ids,
+        "case_metrics": case_metrics,
+        "cohort_before": cohort_before,
+        "cohort_after": cohort_after,
+        "cohort_deltas": cohort_deltas,
+        "gold_before": gold_before,
+        "gold_after": gold_after,
+        "gold_deltas": gold_deltas,
+        "novel_before": novel_before,
+        "novel_after": novel_after,
+        "novel_deltas": novel_deltas,
+        "negative_controls_accounting": negative_controls_accounting,
+        "verdict_outcome": verdict_outcome,
+    }
+
+
+def evaluate_d4_a2_v2(
+    project_root: Path,
+    raw_results_path: Path | None = None,
+    raw_plans_path: Path | None = None,
+    write_artifacts: bool = True,
+    require_git_frozen: bool = True,
+    git_checker: Any | None = None,
+) -> dict[str, Any]:
+    """Deterministic offline evaluator for D4-A2-V2 Controlled Shared-Plan Validation.
+    Executes Sections 5-17 of the preregistration with zero provider calls.
+    Evaluates over frozen raw artifacts, enforcing:
+      - 16 total cases, 13 answered cases, 7 Gold answered, 6 novel_dev answered, 3 negative controls
+      - Corrected criticality contract (g021.e1 critical, g021.e2 noncritical, n022.e2 critical)
+      - Paired pre-rerank and final classifications (F/F is strictly NOT a treatment regression)
+      - Frozen 9-element first-divergence taxonomy
+      - Causal treatment attribution for critical regressions
+      - BEFORE reference validity
+      - Primary replacement witness and dependency removal for g036.e1 and g021.e1
+      - Grounding, version, and provenance hard gates
+      - Six historical primary metrics + diagnostic MRR
+      - Frozen bounded tolerances
+      - 6-level verdict precedence ladder.
+    """
+    raw_results_file = (raw_results_path or (project_root / RAW_RESULTS_PATH)).resolve()
+    raw_plans_file = (raw_plans_path or (project_root / RAW_PLANS_PATH)).resolve()
+
+    if not raw_results_file.exists():
+        raise FileNotFoundError(f"Raw results file {raw_results_file} missing! Run Phase R first.")
+
+    if require_git_frozen:
+        if git_checker is not None:
+            provenance = git_checker(project_root)
+            if isinstance(provenance, dict):
+                raw_results_freeze_sha = provenance.get("raw_results_freeze_sha", RAW_RESULTS_FREEZE_HEAD)
+                evaluator_freeze_sha = provenance.get("evaluator_implementation_freeze_sha", _git_head(project_root))
+                raw_results_blob = provenance.get("raw_results_blob", RAW_RESULTS_FREEZE_BLOB)
+                raw_plans_blob = provenance.get("raw_plans_blob", PLAN_FREEZE_RAW_BLOB)
+                evaluator_freeze_msg = provenance.get("evaluator_implementation_freeze_message", EXPECTED_EVALUATOR_FREEZE_COMMIT_MESSAGE)
+            else:
+                raw_results_freeze_sha = RAW_RESULTS_FREEZE_HEAD
+                evaluator_freeze_sha = str(provenance) if provenance else _git_head(project_root)
+                raw_results_blob = RAW_RESULTS_FREEZE_BLOB
+                raw_plans_blob = PLAN_FREEZE_RAW_BLOB
+                evaluator_freeze_msg = EXPECTED_EVALUATOR_FREEZE_COMMIT_MESSAGE
+        else:
+            provenance = verify_evaluator_freeze_provenance(project_root)
+            raw_results_freeze_sha = provenance["raw_results_freeze_sha"]
+            evaluator_freeze_sha = provenance["evaluator_implementation_freeze_sha"]
+            raw_results_blob = provenance["raw_results_blob"]
+            raw_plans_blob = provenance["raw_plans_blob"]
+            evaluator_freeze_msg = provenance["evaluator_implementation_freeze_message"]
+    else:
+        raw_results_freeze_sha = RAW_RESULTS_FREEZE_HEAD
+        evaluator_freeze_sha = "SYNTHETIC_EVALUATOR_FREEZE_HEAD"
+        raw_results_blob = RAW_RESULTS_FREEZE_BLOB
+        raw_plans_blob = PLAN_FREEZE_RAW_BLOB
+        evaluator_freeze_msg = EXPECTED_EVALUATOR_FREEZE_COMMIT_MESSAGE
+
+    raw_data = _load_json(raw_results_file)
+
+    manifest_file = project_root / MANIFEST_PATH
+    manifest = _load_json(manifest_file) if manifest_file.exists() else {}
+    prereg_file = project_root / PREREGISTRATION_PATH
+    prereg = _load_json(prereg_file) if prereg_file.exists() else {}
+
+    # Mechanical structural validity audit
+    is_struct_valid, struct_fail_reason, mutation_counters = validate_raw_artifact_structural_validity(
+        raw_data=raw_data,
+        manifest=manifest,
+        prereg=prereg,
+        project_root=project_root,
+    )
+    if not is_struct_valid:
+        verdict_outcome = compute_controlled_shared_plan_verdict(
+            execution_valid=False,
+            protocol_violation=True,
+            protocol_violation_reason=struct_fail_reason,
+        )
+        eval_artifact = {
+            "schema_version": "1.0.0",
+            "checkpoint": "D4-A2-V2",
+            "stage": "d4_a2_v2_evaluator_results",
+            "raw_results_freeze_sha": raw_results_freeze_sha,
+            "evaluator_implementation_freeze_sha": evaluator_freeze_sha,
+            "frozen_provenance": {
+                "raw_results_freeze_sha": raw_results_freeze_sha,
+                "raw_results_blob": raw_results_blob,
+                "raw_plans_blob": raw_plans_blob,
+                "evaluator_implementation_freeze_sha": evaluator_freeze_sha,
+                "evaluator_implementation_freeze_message": evaluator_freeze_msg,
+                "evaluator_implementation_parent_sha": raw_results_freeze_sha,
+            },
+            "raw_artifact_authority": str(raw_results_file),
+            "raw_plans_authority": str(raw_plans_file),
+            "evaluator_executed_at_utc": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            "execution_valid": False,
+            "protocol_violation": True,
+            "protocol_violation_reason": struct_fail_reason,
+            "verdict_outcome": verdict_outcome,
+            "post_exposure_mutation_accounting": mutation_counters,
+            "production_activation": False,
+        }
+        if write_artifacts:
+            _save_json(project_root / EVALUATOR_RESULTS_PATH, eval_artifact)
+        return eval_artifact
+
+    c = _compute_evaluation_metrics_and_verdict(project_root, raw_data)
 
     eval_artifact = {
         "schema_version": "1.0.0",
@@ -3163,71 +3793,74 @@ def evaluate_d4_a2_v2(
             "gold_answered_cases": GOLD_ANSWERED_CASES,
             "novel_dev_answered_cases": NOVEL_DEV_ANSWERED_CASES,
             "insufficient_evidence_cases": INSUFFICIENT_EVIDENCE_CASES,
-            "negative_controls": negative_controls_accounting,
+            "negative_controls": c["negative_controls_accounting"],
         },
-        "evidence_group_pair_classifications": group_classifications,
+        "evidence_group_pair_classifications": c["group_classifications"],
         "pair_phenotype_counts": {
-            "pre_rerank": pair_pre_rerank_counts,
-            "final_evidence": pair_final_counts,
+            "pre_rerank": c["pair_pre_rerank_counts"],
+            "final_evidence": c["pair_final_counts"],
         },
-        "first_divergence_accounting": first_divergence_counts,
+        "first_divergence_accounting": c["first_divergence_counts"],
         "primary_target_reproduction": {
             "g036.e1": {
-                "before_retained": b_ret_g036,
-                "after_retained": a_ret_g036,
-                "has_valid_witness": wit_g036.get("has_valid_witness", False),
-                "reproduced": g036_reproduced,
-                "witness_record": wit_g036,
+                "before_retained": c["b_ret_g036"],
+                "after_retained": c["a_ret_g036"],
+                "has_valid_witness": c["wit_g036"].get("has_valid_witness", False),
+                "reproduced": c["g036_reproduced"],
+                "witness_record": c["wit_g036"],
             },
             "g021.e1": {
-                "before_retained": b_ret_g021,
-                "after_retained": a_ret_g021,
-                "has_valid_witness": wit_g021.get("has_valid_witness", False),
-                "reproduced": g021_reproduced,
-                "witness_record": wit_g021,
+                "before_retained": c["b_ret_g021"],
+                "after_retained": c["a_ret_g021"],
+                "has_valid_witness": c["wit_g021"].get("has_valid_witness", False),
+                "reproduced": c["g021_reproduced"],
+                "witness_record": c["wit_g021"],
             },
-            "before_reference_valid": before_reference_valid,
-            "target_replacement_reproduced": target_replacement_reproduced_count,
-            "target_replacement_reproduced_display": f"{target_replacement_reproduced_count} / 2",
-            "batch1_dependency_removed": dep_count,
-            "batch1_dependency_removed_display": f"{dep_count} / 2",
-            "dependency_removal_receipts": dep_receipts,
+            "before_reference_valid": c["before_reference_valid"],
+            "target_replacement_reproduced": c["target_replacement_reproduced_count"],
+            "target_replacement_reproduced_display": f"{c['target_replacement_reproduced_count']} / 2",
+            "batch1_dependency_removed": c["dep_count"],
+            "batch1_dependency_removed_display": f"{c['dep_count']} / 2",
+            "dependency_removal_identifiable": c["dep_identifiable"],
+            "dependency_removal_identifiable_count": c["dep_identifiable_count"],
+            "dependency_removal_identifiable_display": f"{c['dep_identifiable_count']} / 2",
+            "dependency_removal_receipts": c["dep_receipts"],
         },
         "regression_accounting": {
-            "shared_plan_critical_regressions": critical_regression_ids,
-            "critical_regression_details": critical_regression_details,
-            "noncritical_regressions": noncritical_regression_ids,
-            "grounding_regressions": safety_res["GROUNDING_REGRESSIONS"],
-            "wrong_version_regressions": safety_res["WRONG_VERSION_REGRESSIONS"],
-            "invalid_provenance_recoveries": safety_res["INVALID_PROVENANCE_RECOVERIES"],
+            "shared_plan_critical_regressions": c["critical_regression_ids"],
+            "critical_regression_details": c["critical_regression_details"],
+            "noncritical_regressions": c["noncritical_regression_ids"],
+            "grounding_regressions": c["safety_res"]["GROUNDING_REGRESSIONS"],
+            "wrong_version_regressions": c["safety_res"]["WRONG_VERSION_REGRESSIONS"],
+            "invalid_provenance_recoveries": c["safety_res"]["INVALID_PROVENANCE_RECOVERIES"],
             "safety_details": {
-                "grounding_details": safety_res["grounding_details"],
-                "wrong_version_details": safety_res["wrong_version_details"],
-                "invalid_provenance_details": safety_res["invalid_provenance_details"],
+                "grounding_details": c["safety_res"]["grounding_details"],
+                "wrong_version_details": c["safety_res"]["wrong_version_details"],
+                "invalid_provenance_details": c["safety_res"]["invalid_provenance_details"],
             },
         },
         "metrics": {
             "cohort_answered": {
                 "case_count": len(ANSWERED_CASES),
-                "BEFORE_COMPAT": cohort_before,
-                "AFTER_BATCH1_REPLACEMENT": cohort_after,
-                "deltas": cohort_deltas,
+                "BEFORE_COMPAT": c["cohort_before"],
+                "AFTER_BATCH1_REPLACEMENT": c["cohort_after"],
+                "deltas": c["cohort_deltas"],
             },
             "subsets": {
                 "gold_answered": {
                     "case_count": len(GOLD_ANSWERED_CASES),
-                    "BEFORE_COMPAT": gold_before,
-                    "AFTER_BATCH1_REPLACEMENT": gold_after,
-                    "deltas": gold_deltas,
+                    "BEFORE_COMPAT": c["gold_before"],
+                    "AFTER_BATCH1_REPLACEMENT": c["gold_after"],
+                    "deltas": c["gold_deltas"],
                 },
                 "novel_dev_answered": {
                     "case_count": len(NOVEL_DEV_ANSWERED_CASES),
-                    "BEFORE_COMPAT": novel_before,
-                    "AFTER_BATCH1_REPLACEMENT": novel_after,
-                    "deltas": novel_deltas,
+                    "BEFORE_COMPAT": c["novel_before"],
+                    "AFTER_BATCH1_REPLACEMENT": c["novel_after"],
+                    "deltas": c["novel_deltas"],
                 },
             },
-            "per_case_metrics": case_metrics,
+            "per_case_metrics": c["case_metrics"],
         },
         "zero_provider_accounting": {
             "ANALYZER_CALLS": 0,
@@ -3245,7 +3878,7 @@ def evaluate_d4_a2_v2(
             "PROTECTED_DATASET_ACCESS": 0,
         },
         "post_exposure_mutation_accounting": mutation_counters,
-        "verdict_outcome": verdict_outcome,
+        "verdict_outcome": c["verdict_outcome"],
         "production_activation": False,
         "first_batch_runtime_migration": "BLOCKED",
         "d4_a3": "NOT_STARTED / BLOCKED",
@@ -3255,37 +3888,460 @@ def evaluate_d4_a2_v2(
         "schema_version": "1.0.0",
         "checkpoint": "D4-A2-V2",
         "stage": "D4-A2-V2 — Controlled Shared-Plan T2 Before/After Validation",
-        "lifecycle_status": f"COMPLETE / {verdict_outcome['verdict']}",
+        "lifecycle_status": f"COMPLETE / {c['verdict_outcome']['verdict']}",
         "raw_results_freeze_sha": raw_results_freeze_sha,
         "evaluator_implementation_freeze_sha": evaluator_freeze_sha,
         "execution_valid": True,
-        "before_reference_valid": before_reference_valid,
-        "target_replacement_reproduced": f"{target_replacement_reproduced_count} / 2",
-        "batch1_dependency_removed": f"{dep_count} / 2",
-        "critical_regressions_count": len(critical_regression_ids),
-        "grounding_regressions": safety_res["GROUNDING_REGRESSIONS"],
-        "wrong_version_regressions": safety_res["WRONG_VERSION_REGRESSIONS"],
-        "invalid_provenance_recoveries": safety_res["INVALID_PROVENANCE_RECOVERIES"],
-        "primary_metric_deltas": {k: cohort_deltas[k] for k in REQUIRED_PRIMARY_METRIC_KEYS},
-        "mrr_delta": cohort_deltas.get("mrr", 0.0),
-        "verdict_level": verdict_outcome["verdict_level"],
-        "verdict": verdict_outcome["verdict"],
-        "verdict_reason": verdict_outcome["verdict_reason"],
+        "before_reference_valid": c["before_reference_valid"],
+        "target_replacement_reproduced": f"{c['target_replacement_reproduced_count']} / 2",
+        "batch1_dependency_removed": f"{c['dep_count']} / 2",
+        "critical_regressions_count": len(c["critical_regression_ids"]),
+        "grounding_regressions": c["safety_res"]["GROUNDING_REGRESSIONS"],
+        "wrong_version_regressions": c["safety_res"]["WRONG_VERSION_REGRESSIONS"],
+        "invalid_provenance_recoveries": c["safety_res"]["INVALID_PROVENANCE_RECOVERIES"],
+        "primary_metric_deltas": {k: c["cohort_deltas"][k] for k in REQUIRED_PRIMARY_METRIC_KEYS},
+        "mrr_delta": c["cohort_deltas"].get("mrr", 0.0),
+        "verdict_level": c["verdict_outcome"]["verdict_level"],
+        "verdict": c["verdict_outcome"]["verdict"],
+        "verdict_reason": c["verdict_outcome"]["verdict_reason"],
         "production_activation": False,
         "first_batch_runtime_migration": "BLOCKED",
         "d4_a3_status": "NOT_STARTED / BLOCKED",
     }
 
     if write_artifacts:
-        _save_json(project_root / EVALUATOR_RESULTS_PATH, eval_artifact)
-        _save_json(project_root / RESULT_PATH, compact_result)
+        target_eval = (project_root / EVALUATOR_RESULTS_PATH).resolve()
+        target_res = (project_root / RESULT_PATH).resolve()
+        hist_eval_file = (project_root / EVALUATOR_RESULTS_PATH).resolve()
+        if hist_eval_file.exists():
+            try:
+                proc_chk = subprocess.run(
+                    ["git", "hash-object", str(hist_eval_file)],
+                    cwd=str(project_root),
+                    capture_output=True,
+                    text=True,
+                )
+                if proc_chk.returncode == 0 and proc_chk.stdout.strip() == HISTORICAL_EVALUATOR_RESULTS_BLOB:
+                    raise RuntimeError(
+                        f"IMMUTABLE_HISTORICAL_ARTIFACT_PROTECTION: Refusing to overwrite committed historical "
+                        f"{EVALUATOR_RESULTS_PATH} in {project_root}. Historical V2 artifacts are immutable. "
+                        f"For R3 recomputation, invoke evaluate_d4_a2_v2_r3 (or --mode evaluate-r3)."
+                    )
+            except (subprocess.SubprocessError, FileNotFoundError):
+                pass
+
+        _save_json(target_eval, eval_artifact)
+        _save_json(target_res, compact_result)
+
+    return eval_artifact
+
+
+def _save_r3_artifacts(
+    project_root: Path,
+    eval_artifact: dict[str, Any],
+    compact_result: dict[str, Any],
+) -> None:
+    """Saves R3 artifacts strictly to R3 output paths while verifying complete immutability
+    of historical exposed artifacts.
+    """
+    target_eval = (project_root / R3_EVALUATOR_RESULTS_PATH).resolve()
+    target_res = (project_root / R3_RESULT_PATH).resolve()
+
+    historical_paths = [
+        (project_root / EVALUATOR_RESULTS_PATH).resolve(),
+        (project_root / RESULT_PATH).resolve(),
+        (project_root / REPORT_PATH).resolve(),
+    ]
+
+    for hist_path in historical_paths:
+        if target_eval == hist_path or target_res == hist_path:
+            raise RuntimeError(
+                f"R3 evaluator output path collision with historical artifact: {hist_path}!"
+            )
+
+    hist_snapshots = {}
+    for hp in historical_paths:
+        if hp.exists():
+            hist_snapshots[hp] = hp.read_bytes()
+
+    _save_json(target_eval, eval_artifact)
+    _save_json(target_res, compact_result)
+
+    for hp, content in hist_snapshots.items():
+        if not hp.exists() or hp.read_bytes() != content:
+            raise RuntimeError(
+                f"CRITICAL: Historical exposed artifact {hp} was mutated during R3 evaluation!"
+            )
+
+
+def evaluate_d4_a2_v2_r3(
+    project_root: Path,
+    raw_results_path: Path | None = None,
+    raw_plans_path: Path | None = None,
+    prereg_path: Path | None = None,
+    r3_prereg_path: Path | None = None,
+    manifest_path: Path | None = None,
+    write_artifacts: bool = True,
+    require_git_frozen: bool = True,
+    git_checker: Any | None = None,
+) -> dict[str, Any]:
+    """Dedicated deterministic offline evaluator for D4-A2-V2-R3 (Resolution B).
+
+    Reads:
+      - Frozen original preregistration (evaluation/d4_a2_v2_preregistration.json)
+      - R3 repair clarification (evaluation/d4_a2_v2_r3_preregistration.json)
+      - Frozen raw plans (evaluation/d4_a2_v2_raw_plans.json)
+      - Frozen raw results (evaluation/d4_a2_v2_raw_results.json)
+      - Execution manifest (evaluation/d4_a2_v2_execution_manifest.json)
+
+    Writes STRICTLY and ONLY to new R3 artifact paths:
+      - evaluation/d4_a2_v2_r3_evaluator_results.json
+      - evaluation/d4_a2_v2_r3_result.json
+
+    Historical exposed artifacts:
+      - evaluation/d4_a2_v2_evaluator_results.json
+      - evaluation/d4_a2_v2_result.json
+      - evaluation/D4_A2_V2_CONTROLLED_SHARED_PLAN_VALIDATION.md
+    are strictly immutable and NEVER modified, overwritten, or removed.
+    """
+    raw_results_file = (raw_results_path or (project_root / RAW_RESULTS_PATH)).resolve()
+    raw_plans_file = (raw_plans_path or (project_root / RAW_PLANS_PATH)).resolve()
+    prereg_file = (prereg_path or (project_root / PREREGISTRATION_PATH)).resolve()
+    r3_prereg_file = (r3_prereg_path or (project_root / R3_PREREGISTRATION_PATH)).resolve()
+    manifest_file = (manifest_path or (project_root / MANIFEST_PATH)).resolve()
+
+    if not raw_results_file.exists():
+        raise FileNotFoundError(f"Raw results file {raw_results_file} missing! Run Phase R first.")
+    if not raw_plans_file.exists():
+        raise FileNotFoundError(f"Raw plans file {raw_plans_file} missing!")
+    if not prereg_file.exists():
+        raise FileNotFoundError(f"Original preregistration file {prereg_file} missing!")
+    if not r3_prereg_file.exists():
+        raise FileNotFoundError(f"R3 preregistration file {r3_prereg_file} missing!")
+
+    if require_git_frozen:
+        if git_checker is not None:
+            provenance = git_checker(project_root)
+            if isinstance(provenance, dict):
+                raw_results_freeze_sha = provenance.get("raw_results_freeze_sha", RAW_RESULTS_FREEZE_HEAD)
+                raw_results_blob = provenance.get("raw_results_blob", RAW_RESULTS_FREEZE_BLOB)
+                raw_plans_blob = provenance.get("raw_plans_blob", PLAN_FREEZE_RAW_BLOB)
+                r3_evaluator_freeze_sha = provenance.get(
+                    "r3_evaluator_freeze_sha",
+                    provenance.get("evaluator_implementation_freeze_sha", _git_head(project_root)),
+                )
+                r3_freeze_msg = provenance.get("r3_evaluator_freeze_message", EXPECTED_R3_COMMIT_MESSAGE)
+                r3_freeze_parents = provenance.get("r3_evaluator_freeze_parents", [HISTORICAL_V2_CLOSE_HEAD])
+            else:
+                raw_results_freeze_sha = RAW_RESULTS_FREEZE_HEAD
+                raw_results_blob = RAW_RESULTS_FREEZE_BLOB
+                raw_plans_blob = PLAN_FREEZE_RAW_BLOB
+                r3_evaluator_freeze_sha = str(provenance) if provenance else _git_head(project_root)
+                r3_freeze_msg = EXPECTED_R3_COMMIT_MESSAGE
+                r3_freeze_parents = [HISTORICAL_V2_CLOSE_HEAD]
+        else:
+            provenance = verify_r3_evaluator_freeze_provenance(project_root)
+            raw_results_freeze_sha = provenance["raw_results_freeze_sha"]
+            raw_results_blob = provenance["raw_results_blob"]
+            raw_plans_blob = provenance["raw_plans_blob"]
+            r3_evaluator_freeze_sha = provenance["r3_evaluator_freeze_sha"]
+            r3_freeze_msg = provenance["r3_evaluator_freeze_message"]
+            r3_freeze_parents = provenance["r3_evaluator_freeze_parents"]
+    else:
+        raw_results_freeze_sha = RAW_RESULTS_FREEZE_HEAD
+        raw_results_blob = RAW_RESULTS_FREEZE_BLOB
+        raw_plans_blob = PLAN_FREEZE_RAW_BLOB
+        r3_evaluator_freeze_sha = "SYNTHETIC_R3_EVALUATOR_FREEZE_HEAD"
+        r3_freeze_msg = EXPECTED_R3_COMMIT_MESSAGE
+        r3_freeze_parents = [HISTORICAL_V2_CLOSE_HEAD]
+
+    raw_data = _load_json(raw_results_file)
+    manifest = _load_json(manifest_file) if manifest_file.exists() else {}
+    prereg = _load_json(prereg_file)
+    r3_prereg = _load_json(r3_prereg_file)
+
+    # Mechanical structural validity audit
+    is_struct_valid, struct_fail_reason, mutation_counters = validate_raw_artifact_structural_validity(
+        raw_data=raw_data,
+        manifest=manifest,
+        prereg=prereg,
+        project_root=project_root,
+    )
+    if not is_struct_valid:
+        verdict_outcome = compute_controlled_shared_plan_verdict(
+            execution_valid=False,
+            protocol_violation=True,
+            protocol_violation_reason=struct_fail_reason,
+        )
+        eval_artifact = {
+            "schema_version": "1.0.0",
+            "checkpoint": "D4-A2-V2-R3",
+            "stage": "d4_a2_v2_r3_evaluator_results",
+            "resolution": "Resolution B",
+            "resolution_contract": r3_prereg.get("resolution_contract", {}),
+            "defect_attribution": r3_prereg.get("defect_attribution", {}),
+            "authoritative_lineage": {
+                "validation_close_head": HISTORICAL_V2_CLOSE_HEAD,
+                "original_defective_evaluator_sha": HISTORICAL_EVALUATOR_FREEZE_HEAD,
+                "original_defective_evaluator_result": {
+                    "verdict_level": 3,
+                    "verdict": ORIGINAL_DEFECTIVE_EVALUATOR_VERDICT,
+                    "verdict_reason": "Primary target replacement or fixed locator dependency removal not reproduced: 2/2 targets reproduced under AFTER with valid governed witness, 0/2 dependencies removed.",
+                },
+                "raw_results_freeze_sha": raw_results_freeze_sha,
+                "r3_evaluator_freeze_sha": r3_evaluator_freeze_sha,
+            },
+            "raw_results_freeze_sha": raw_results_freeze_sha,
+            "evaluator_implementation_freeze_sha": r3_evaluator_freeze_sha,
+            "r3_evaluator_freeze_sha": r3_evaluator_freeze_sha,
+            "original_defective_evaluator_sha": HISTORICAL_EVALUATOR_FREEZE_HEAD,
+            "original_defective_evaluator_result": ORIGINAL_DEFECTIVE_EVALUATOR_VERDICT,
+            "frozen_provenance": {
+                "r3_evaluator_freeze_sha": r3_evaluator_freeze_sha,
+                "r3_evaluator_freeze_message": r3_freeze_msg,
+                "r3_evaluator_parent_sha": HISTORICAL_V2_CLOSE_HEAD,
+                "original_defective_evaluator_sha": HISTORICAL_EVALUATOR_FREEZE_HEAD,
+                "raw_results_freeze_sha": raw_results_freeze_sha,
+                "raw_results_blob": raw_results_blob,
+                "raw_plans_blob": raw_plans_blob,
+                "historical_evaluator_results_blob": HISTORICAL_EVALUATOR_RESULTS_BLOB,
+                "historical_result_blob": HISTORICAL_RESULT_BLOB,
+                "historical_report_blob": HISTORICAL_REPORT_BLOB,
+                "historical_preregistration_blob": HISTORICAL_PREREGISTRATION_BLOB,
+            },
+            "raw_artifact_authority": str(raw_results_file),
+            "raw_plans_authority": str(raw_plans_file),
+            "original_preregistration_authority": str(prereg_file),
+            "r3_preregistration_authority": str(r3_prereg_file),
+            "evaluator_executed_at_utc": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            "execution_valid": False,
+            "protocol_violation": True,
+            "protocol_violation_reason": struct_fail_reason,
+            "verdict_outcome": verdict_outcome,
+            "post_exposure_mutation_accounting": mutation_counters,
+            "production_activation": False,
+            "first_batch_runtime_migration": "BLOCKED",
+            "d4_a3": "NOT_STARTED / BLOCKED",
+            "d4_a3_status": "NOT_STARTED / BLOCKED",
+        }
+        compact_result = {
+            "schema_version": "1.0.0",
+            "checkpoint": "D4-A2-V2-R3",
+            "stage": "D4-A2-V2-R3 — Repaired Controlled Shared-Plan T2 Validation (Resolution B)",
+            "resolution": "Resolution B",
+            "lifecycle_status": f"COMPLETE / {verdict_outcome['verdict']}",
+            "raw_results_freeze_sha": raw_results_freeze_sha,
+            "original_defective_evaluator_sha": HISTORICAL_EVALUATOR_FREEZE_HEAD,
+            "original_defective_evaluator_result": ORIGINAL_DEFECTIVE_EVALUATOR_VERDICT,
+            "r3_evaluator_freeze_sha": r3_evaluator_freeze_sha,
+            "execution_valid": False,
+            "verdict_level": verdict_outcome["verdict_level"],
+            "verdict": verdict_outcome["verdict"],
+            "verdict_reason": verdict_outcome["verdict_reason"],
+            "production_activation": False,
+            "first_batch_runtime_migration": "BLOCKED",
+            "d4_a3_status": "NOT_STARTED / BLOCKED",
+        }
+        if write_artifacts:
+            _save_r3_artifacts(project_root, eval_artifact, compact_result)
+        return eval_artifact
+
+    c = _compute_evaluation_metrics_and_verdict(project_root, raw_data)
+
+    eval_artifact = {
+        "schema_version": "1.0.0",
+        "checkpoint": "D4-A2-V2-R3",
+        "stage": "d4_a2_v2_r3_evaluator_results",
+        "repair_title": "D4-A2-V2-R3 Forward-Only Evaluator Contract Repair",
+        "resolution": "Resolution B",
+        "resolution_contract": r3_prereg.get("resolution_contract", {}),
+        "defect_attribution": r3_prereg.get("defect_attribution", {}),
+        "authoritative_lineage": {
+            "validation_close_head": HISTORICAL_V2_CLOSE_HEAD,
+            "original_defective_evaluator_sha": HISTORICAL_EVALUATOR_FREEZE_HEAD,
+            "original_defective_evaluator_result": {
+                "verdict_level": 3,
+                "verdict": ORIGINAL_DEFECTIVE_EVALUATOR_VERDICT,
+                "verdict_reason": "Primary target replacement or fixed locator dependency removal not reproduced: 2/2 targets reproduced under AFTER with valid governed witness, 0/2 dependencies removed.",
+            },
+            "raw_results_freeze_sha": raw_results_freeze_sha,
+            "r3_evaluator_freeze_sha": r3_evaluator_freeze_sha,
+        },
+        "raw_results_freeze_sha": raw_results_freeze_sha,
+        "evaluator_implementation_freeze_sha": r3_evaluator_freeze_sha,
+        "r3_evaluator_freeze_sha": r3_evaluator_freeze_sha,
+        "original_defective_evaluator_sha": HISTORICAL_EVALUATOR_FREEZE_HEAD,
+        "original_defective_evaluator_result": ORIGINAL_DEFECTIVE_EVALUATOR_VERDICT,
+        "frozen_provenance": {
+            "r3_evaluator_freeze_sha": r3_evaluator_freeze_sha,
+            "r3_evaluator_freeze_message": r3_freeze_msg,
+            "r3_evaluator_parent_sha": HISTORICAL_V2_CLOSE_HEAD,
+            "original_defective_evaluator_sha": HISTORICAL_EVALUATOR_FREEZE_HEAD,
+            "raw_results_freeze_sha": raw_results_freeze_sha,
+            "raw_results_blob": raw_results_blob,
+            "raw_plans_blob": raw_plans_blob,
+            "historical_evaluator_results_blob": HISTORICAL_EVALUATOR_RESULTS_BLOB,
+            "historical_result_blob": HISTORICAL_RESULT_BLOB,
+            "historical_report_blob": HISTORICAL_REPORT_BLOB,
+            "historical_preregistration_blob": HISTORICAL_PREREGISTRATION_BLOB,
+        },
+        "raw_artifact_authority": str(raw_results_file),
+        "raw_plans_authority": str(raw_plans_file),
+        "original_preregistration_authority": str(prereg_file),
+        "r3_preregistration_authority": str(r3_prereg_file),
+        "evaluator_executed_at_utc": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        "protocol_validity": {
+            "execution_valid": True,
+            "protocol_violation": False,
+            "slots_total": len(raw_data.get("slots", [])),
+            "plan_equality_all_verified": True,
+            "analyzer_provider_calls": 0,
+        },
+        "applicability_accounting": {
+            "cohort_total_cases": len(CASE_ORDER),
+            "answered_cases_count": len(ANSWERED_CASES),
+            "gold_answered_cases_count": len(GOLD_ANSWERED_CASES),
+            "novel_dev_answered_cases_count": len(NOVEL_DEV_ANSWERED_CASES),
+            "insufficient_evidence_cases_count": len(INSUFFICIENT_EVIDENCE_CASES),
+            "answered_cases": ANSWERED_CASES,
+            "gold_answered_cases": GOLD_ANSWERED_CASES,
+            "novel_dev_answered_cases": NOVEL_DEV_ANSWERED_CASES,
+            "insufficient_evidence_cases": INSUFFICIENT_EVIDENCE_CASES,
+            "negative_controls": c["negative_controls_accounting"],
+        },
+        "evidence_group_pair_classifications": c["group_classifications"],
+        "pair_phenotype_counts": {
+            "pre_rerank": c["pair_pre_rerank_counts"],
+            "final_evidence": c["pair_final_counts"],
+        },
+        "first_divergence_accounting": c["first_divergence_counts"],
+        "primary_target_reproduction": {
+            "g036.e1": {
+                "before_retained": c["b_ret_g036"],
+                "after_retained": c["a_ret_g036"],
+                "has_valid_witness": c["wit_g036"].get("has_valid_witness", False),
+                "reproduced": c["g036_reproduced"],
+                "witness_record": c["wit_g036"],
+            },
+            "g021.e1": {
+                "before_retained": c["b_ret_g021"],
+                "after_retained": c["a_ret_g021"],
+                "has_valid_witness": c["wit_g021"].get("has_valid_witness", False),
+                "reproduced": c["g021_reproduced"],
+                "witness_record": c["wit_g021"],
+            },
+            "before_reference_valid": c["before_reference_valid"],
+            "target_replacement_reproduced": c["target_replacement_reproduced_count"],
+            "target_replacement_reproduced_display": f"{c['target_replacement_reproduced_count']} / 2",
+            "batch1_dependency_removed": c["dep_count"],
+            "batch1_dependency_removed_display": f"{c['dep_count']} / 2",
+            "dependency_removal_identifiable": c["dep_identifiable"],
+            "dependency_removal_identifiable_count": c["dep_identifiable_count"],
+            "dependency_removal_identifiable_display": f"{c['dep_identifiable_count']} / 2",
+            "dependency_removal_receipts": c["dep_receipts"],
+        },
+        "regression_accounting": {
+            "shared_plan_critical_regressions": c["critical_regression_ids"],
+            "critical_regression_details": c["critical_regression_details"],
+            "noncritical_regressions": c["noncritical_regression_ids"],
+            "grounding_regressions": c["safety_res"]["GROUNDING_REGRESSIONS"],
+            "wrong_version_regressions": c["safety_res"]["WRONG_VERSION_REGRESSIONS"],
+            "invalid_provenance_recoveries": c["safety_res"]["INVALID_PROVENANCE_RECOVERIES"],
+            "safety_details": {
+                "grounding_details": c["safety_res"]["grounding_details"],
+                "wrong_version_details": c["safety_res"]["wrong_version_details"],
+                "invalid_provenance_details": c["safety_res"]["invalid_provenance_details"],
+            },
+        },
+        "metrics": {
+            "cohort_answered": {
+                "case_count": len(ANSWERED_CASES),
+                "BEFORE_COMPAT": c["cohort_before"],
+                "AFTER_BATCH1_REPLACEMENT": c["cohort_after"],
+                "deltas": c["cohort_deltas"],
+            },
+            "subsets": {
+                "gold_answered": {
+                    "case_count": len(GOLD_ANSWERED_CASES),
+                    "BEFORE_COMPAT": c["gold_before"],
+                    "AFTER_BATCH1_REPLACEMENT": c["gold_after"],
+                    "deltas": c["gold_deltas"],
+                },
+                "novel_dev_answered": {
+                    "case_count": len(NOVEL_DEV_ANSWERED_CASES),
+                    "BEFORE_COMPAT": c["novel_before"],
+                    "AFTER_BATCH1_REPLACEMENT": c["novel_after"],
+                    "deltas": c["novel_deltas"],
+                },
+            },
+            "per_case_metrics": c["case_metrics"],
+        },
+        "zero_provider_accounting": {
+            "ANALYZER_CALLS": 0,
+            "EMBEDDING_CALLS": 0,
+            "RERANKER_CALLS": 0,
+            "QA_CALLS": 0,
+            "VERIFIER_CALLS": 0,
+            "JUDGE_CALLS": 0,
+            "POSTGRESQL_WRITES": 0,
+            "QDRANT_WRITES": 0,
+            "INGESTION_RUNS": 0,
+            "REINDEX_RUNS": 0,
+            "NOVEL_VALIDATION_RUNS": 0,
+            "NOVEL_HOLDOUT_RUNS": 0,
+            "PROTECTED_DATASET_ACCESS": 0,
+        },
+        "post_exposure_mutation_accounting": mutation_counters,
+        "verdict_outcome": c["verdict_outcome"],
+        "production_activation": False,
+        "first_batch_runtime_migration": "BLOCKED",
+        "d4_a3": "NOT_STARTED / BLOCKED",
+        "d4_a3_status": "NOT_STARTED / BLOCKED",
+    }
+
+    compact_result = {
+        "schema_version": "1.0.0",
+        "checkpoint": "D4-A2-V2-R3",
+        "stage": "D4-A2-V2-R3 — Repaired Controlled Shared-Plan T2 Validation (Resolution B)",
+        "resolution": "Resolution B",
+        "lifecycle_status": f"COMPLETE / {c['verdict_outcome']['verdict']}",
+        "raw_results_freeze_sha": raw_results_freeze_sha,
+        "original_defective_evaluator_sha": HISTORICAL_EVALUATOR_FREEZE_HEAD,
+        "original_defective_evaluator_result": ORIGINAL_DEFECTIVE_EVALUATOR_VERDICT,
+        "r3_evaluator_freeze_sha": r3_evaluator_freeze_sha,
+        "execution_valid": True,
+        "before_reference_valid": c["before_reference_valid"],
+        "target_replacement_reproduced": f"{c['target_replacement_reproduced_count']} / 2",
+        "batch1_dependency_removed": f"{c['dep_count']} / 2",
+        "dependency_removal_identifiable": f"{c['dep_identifiable_count']} / 2",
+        "critical_regressions_count": len(c["critical_regression_ids"]),
+        "grounding_regressions": c["safety_res"]["GROUNDING_REGRESSIONS"],
+        "wrong_version_regressions": c["safety_res"]["WRONG_VERSION_REGRESSIONS"],
+        "invalid_provenance_recoveries": c["safety_res"]["INVALID_PROVENANCE_RECOVERIES"],
+        "primary_metric_deltas": {k: c["cohort_deltas"][k] for k in REQUIRED_PRIMARY_METRIC_KEYS},
+        "mrr_delta": c["cohort_deltas"].get("mrr", 0.0),
+        "verdict_level": c["verdict_outcome"]["verdict_level"],
+        "verdict": c["verdict_outcome"]["verdict"],
+        "verdict_reason": c["verdict_outcome"]["verdict_reason"],
+        "production_activation": False,
+        "first_batch_runtime_migration": "BLOCKED",
+        "d4_a3_status": "NOT_STARTED / BLOCKED",
+    }
+
+    if write_artifacts:
+        _save_r3_artifacts(project_root, eval_artifact, compact_result)
 
     return eval_artifact
 
 
 def evaluate(project_root: Path) -> dict[str, Any]:
-    """Deterministic offline evaluator for D4-A2-V2."""
+    """Deterministic offline evaluator for D4-A2-V2 (historical code)."""
     return evaluate_d4_a2_v2(project_root)
+
+
+def evaluate_r3(project_root: Path) -> dict[str, Any]:
+    """Dedicated deterministic offline evaluator for D4-A2-V2-R3 (Resolution B)."""
+    return evaluate_d4_a2_v2_r3(project_root)
 
 
 def main() -> None:
@@ -3298,11 +4354,13 @@ def main() -> None:
             "execute-phase-p",
             "execute-phase-r",
             "evaluate",
+            "evaluate-r3",
             "verify-plan-freeze-gate",
             "verify-evaluator-freeze-provenance",
+            "verify-r3-evaluator-freeze-provenance",
         ],
         default="audit-invariants",
-        help="Execution mode (evaluate fails closed until separately authorized Commit D)",
+        help="Execution mode (evaluate-r3 runs R3 evaluator; verify-r3-evaluator-freeze-provenance verifies R3 freeze boundary)",
     )
     args = parser.parse_args()
     project_root = args.project_root.resolve()
@@ -3317,6 +4375,10 @@ def main() -> None:
         execute_phase_r(project_root)
     elif args.mode == "evaluate":
         evaluate(project_root)
+    elif args.mode == "evaluate-r3":
+        receipt = evaluate_r3(project_root)
+        print("[EVALUATE R3 SUCCESS] Deterministic R3 evaluation completed successfully:")
+        print(json.dumps(receipt.get("verdict_outcome", {}), indent=2, ensure_ascii=False))
     elif args.mode == "verify-plan-freeze-gate":
         receipt = verify_plan_freeze_gate(project_root)
         print("[PLAN FREEZE GATE SUCCESS] Repaired plan-freeze gate verified successfully:")
@@ -3324,6 +4386,10 @@ def main() -> None:
     elif args.mode == "verify-evaluator-freeze-provenance":
         receipt = verify_evaluator_freeze_provenance(project_root)
         print("[EVALUATOR FREEZE PROVENANCE SUCCESS] Provenance verified successfully:")
+        print(json.dumps(receipt, indent=2, ensure_ascii=False))
+    elif args.mode == "verify-r3-evaluator-freeze-provenance":
+        receipt = verify_r3_evaluator_freeze_provenance(project_root)
+        print("[R3 EVALUATOR FREEZE PROVENANCE SUCCESS] R3 freeze provenance verified successfully:")
         print(json.dumps(receipt, indent=2, ensure_ascii=False))
 
 

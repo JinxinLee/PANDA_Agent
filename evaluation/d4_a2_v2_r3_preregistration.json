@@ -1,0 +1,127 @@
+{
+  "schema_version": "1.0.0",
+  "lifecycle_stage": "D4-A2-V2-R3",
+  "repair_title": "D4-A2-V2-R3 Forward-Only Evaluator Contract Repair Preregistration",
+  "document_type": "forward-only evaluator contract repair preregistration (frozen before real recomputation)",
+  "created_at": "2026-09-04T23:55:00+02:00",
+  "starting_head": "deb6aa98e0fd9c12cd15b68e5889ecd62e8d6ffe",
+  "defect_classification": "POST_EXPOSURE_EVALUATOR_VERDICT_CONTRACT_DEFECT",
+  "repair_identity_contract": {
+    "policy": "GIT_COMMIT_CONTAINING_THIS_ARTIFACT",
+    "expected_commit_message": "D4-A2-V2-R3 freeze evaluator contract repair",
+    "parent_commit": "deb6aa98e0fd9c12cd15b68e5889ecd62e8d6ffe",
+    "direct_child_of_v2_closeout": true
+  },
+  "defect_attribution": {
+    "category": "POST_EXPOSURE_EVALUATOR_VERDICT_CONTRACT_DEFECT",
+    "implementation_subclassification": "EVALUATOR_SCHEMA_AND_VERDICT_PRECEDENCE_COUPLING_DEFECT",
+    "description": "Historical D4-A2-V2 evaluator suffered from two critical defects: (1) schema mismatch where the evaluator read inputs.symbols instead of the actual frozen raw cell schema inputs.symbol_inputs and omitted arm/config evidence, causing BEFORE locator inputs to be reported as inactive; (2) coupling in Level 3 where primary target replacement was coupled with batch1_dependency_removed < 2, causing dependency removal contrast failure to masquerade as PRIMARY_TARGET_REPLACEMENT failure even when target replacement was reproduced 2/2 with valid governed witness."
+  },
+  "resolution_contract": {
+    "selected_resolution": "Resolution B",
+    "historical_semantics": "An active BEFORE fixed-locator contrast is required to demonstrate dependency removal.",
+    "pre_exposure_authority": [
+      "evaluation/d4_a2_v2_preregistration.json",
+      "evaluation/d4_a2_before_after_preregistration.json",
+      "evaluation/scripts/d4_a2_before_after_validation.py",
+      "evaluation/D4_A1_FIRST_BATCH_FIXED_LOCATOR_MIGRATION_PROTOTYPE.md",
+      "evaluation/d4_a1_fixed_locator_migration.py",
+      "evaluation/d4_a0_expansion_component_inventory.json"
+    ],
+    "authority_rationale": "The V2 preregistration preserves dependency_removal_required = 2 / 2 without redefining its predicate. The earlier frozen D4-A2 preregistration defines dependency removal through five conjuncts beginning with fixed locator inputs active in BEFORE, and the historical evaluator implements the same five-part contrast. D4-A1 independently established the underlying fixed-locator dependency. Resolution B therefore preserves the inherited contrast semantics while separating non-identifiability from target-replacement failure.",
+    "identifiability_rule": "Inactive BEFORE locator input means dependency_removal_identifiable=false and dependency_removal_demonstrated=false. This is an unidentifiable contrast, strictly NOT a primary-target replacement failure.",
+    "concrete_protocol_determination": "Determine BEFORE activity from the frozen raw cell's correct inputs.symbol_inputs plus lack of effective suppression in BEFORE, not from current metric outcomes."
+  },
+  "five_generic_conjuncts": [
+    "1. BEFORE fixed locator active (before_fixed_locator_active = true)",
+    "2. Exact masked locator absent AFTER (after_fixed_locator_absent = true)",
+    "3. Governed structured mechanism active AFTER (structured_replacement_active = true, admission_budget_k = 3)",
+    "4. Target retained AFTER (target_evidence_retained_after = true)",
+    "5. Valid governed witness AFTER (valid_governed_witness_exists = true)"
+  ],
+  "per_target_receipt_fields": [
+    "after_fixed_locator_absent",
+    "after_governed_replacement_valid",
+    "before_fixed_locator_active",
+    "dependency_removal_demonstrated",
+    "dependency_removal_identifiable"
+  ],
+  "schema_repair": {
+    "before_activity_field": "inputs.symbol_inputs",
+    "defective_field": "inputs.symbols",
+    "after_absence_rule": "Based on effective suppression / masked execution semantics rather than falsely demanding removal from the shared canonical plan text"
+  },
+  "verdict_precedence_repair": {
+    "level_1": "INVALID / PROTOCOL_OR_SHARED_PLAN_CONSTRUCTION_FAILED",
+    "level_2": "INCONCLUSIVE / BEFORE_REFERENCE_NOT_REPRODUCED",
+    "resolution_b_inconclusive": {
+      "verdict": "INCONCLUSIVE / FIXED_LOCATOR_DEPENDENCY_NOT_IDENTIFIABLE",
+      "precedence": "Evaluated before Level 3",
+      "condition": "target_replacement_reproduced == 2 and dependency_removal_identifiable == false",
+      "rule": "Narrowly defined for the logically possible state where target replacement is 2/2 but dependency removal is not identifiable because BEFORE was inactive. Merely demonstrated=false is NOT inconclusive if identifiable."
+    },
+    "level_3": {
+      "verdict": "FAIL / PRIMARY_TARGET_REPLACEMENT_NOT_REPRODUCED",
+      "condition": "target_replacement_reproduced < 2 only",
+      "restoration": "Restored to target_replacement_reproduced < 2 only; must never be triggered solely by dependency removal"
+    },
+    "level_4": "FAIL / SHARED_PLAN_CRITICAL_TREATMENT_REGRESSION",
+    "level_5": "PARTIAL / AGGREGATE_REGRESSION_EXCEEDS_BOUNDED_TOLERANCE",
+    "level_6": "PASS / CONTROLLED_SHARED_PLAN_T2_VALIDATED"
+  },
+  "authoritative_lineage": {
+    "validation_close_head": "deb6aa98e0fd9c12cd15b68e5889ecd62e8d6ffe",
+    "evaluator_freeze_head": "6c12af68ee17615a66a732108cb5b895f86853b7",
+    "raw_results_freeze_head": "b1a9f12366e328263e000f7b4c89184f2854c77a",
+    "plan_freeze_head": "537836244d44d9e5c10472df019f5fac1c9070a1",
+    "implementation_freeze_head": "afc93327ff7f6de6c0b49dd905347696cfaad27a",
+    "raw_plans_path": "evaluation/d4_a2_v2_raw_plans.json",
+    "raw_plans_blob": "ee7c1c011463973557ef423178d7c241bf3821d4",
+    "raw_results_path": "evaluation/d4_a2_v2_raw_results.json",
+    "raw_results_blob": "2d894ff2d0ac8a49239663df155478614a99bae0",
+    "original_evaluator_script_blob": "1e7afd66ff2b2173e765e6c98942159c998e11bc"
+  },
+  "historical_exposed_output": {
+    "evaluator_freeze_sha": "6c12af68ee17615a66a732108cb5b895f86853b7",
+    "defective_closeout_sha": "deb6aa98e0fd9c12cd15b68e5889ecd62e8d6ffe",
+    "verdict_level": 3,
+    "verdict": "FAIL / PRIMARY_TARGET_REPLACEMENT_NOT_REPRODUCED",
+    "status": "HISTORICAL / DEFECTIVE / SCIENTIFICALLY_UNACCEPTED / PRESERVED",
+    "contract_conflict": "The historical evaluator triggered Level 3 when target_replacement_reproduced < 2 OR batch1_dependency_removed < 2, while the frozen V2 Level-3 contract triggers only when a primary target is not retained under AFTER with a valid governed replacement witness."
+  },
+  "immutable_historical_artifacts": [
+    "evaluation/d4_a2_v2_raw_plans.json",
+    "evaluation/d4_a2_v2_raw_results.json",
+    "evaluation/d4_a2_v2_preregistration.json",
+    "evaluation/d4_a2_v2_r2_preregistration.json",
+    "evaluation/d4_a2_v2_evaluator_results.json",
+    "evaluation/d4_a2_v2_result.json",
+    "evaluation/D4_A2_V2_CONTROLLED_SHARED_PLAN_VALIDATION.md"
+  ],
+  "zero_provider_boundary": {
+    "analyzer_calls": 0,
+    "embedding_calls": 0,
+    "reranker_calls": 0,
+    "qa_calls": 0,
+    "verifier_calls": 0,
+    "judge_calls": 0,
+    "retrieval_cells_executed": 0,
+    "postgresql_writes": 0,
+    "qdrant_writes": 0,
+    "ingestion": 0,
+    "reindex": 0,
+    "protected_dataset_access": 0
+  },
+  "retrieval_rerun": false,
+  "allowed_r3_file_changes": [
+    "evaluation/d4_a2_v2_r3_preregistration.json",
+    "evaluation/scripts/d4_a2_v2_controlled_shared_plan_validation.py",
+    "tests/unit/test_d4_a2_v2_controlled_shared_plan_validation.py"
+  ],
+  "lifecycle_guards": {
+    "production_activation": false,
+    "first_batch_runtime_migration": "BLOCKED",
+    "d4_a3_status": "NOT_STARTED / BLOCKED",
+    "recomputation_executed": false
+  }
+}
