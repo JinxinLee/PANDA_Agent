@@ -74,6 +74,10 @@ EXPECTED_A_R1_COMMIT_MESSAGE = "D4-A2-V2 repair pre-exposure freeze guards"
 EXPECTED_R2_COMMIT_MESSAGE = "D4-A2-V2-R2 repair frozen plan verification"
 MAX_PROVIDER_ATTEMPTS_PER_CASE = 3
 
+RAW_RESULTS_FREEZE_HEAD = "b1a9f12366e328263e000f7b4c89184f2854c77a"
+RAW_RESULTS_FREEZE_BLOB = "2d894ff2d0ac8a49239663df155478614a99bae0"
+EXPECTED_EVALUATOR_FREEZE_COMMIT_MESSAGE = "D4-A2-V2 freeze deterministic evaluator"
+
 PREREGISTRATION_PATH = "evaluation/d4_a2_v2_preregistration.json"
 R2_PREREGISTRATION_PATH = "evaluation/d4_a2_v2_r2_preregistration.json"
 MANIFEST_PATH = "evaluation/d4_a2_v2_execution_manifest.json"
@@ -82,6 +86,8 @@ RAW_RESULTS_PATH = "evaluation/d4_a2_v2_raw_results.json"
 EVALUATOR_RESULTS_PATH = "evaluation/d4_a2_v2_evaluator_results.json"
 RESULT_PATH = "evaluation/d4_a2_v2_result.json"
 REPORT_PATH = "evaluation/D4_A2_V2_CONTROLLED_SHARED_PLAN_VALIDATION.md"
+EVALUATOR_SCRIPT_PATH = "evaluation/scripts/d4_a2_v2_controlled_shared_plan_validation.py"
+EVALUATOR_TEST_PATH = "tests/unit/test_d4_a2_v2_controlled_shared_plan_validation.py"
 
 GOLD_QUESTIONS_PATH = "evaluation/benchmarks/v2_6/gold_questions.yaml"
 NOVEL_DEV_PATH = "evaluation/novel/v1/novel_dev.yaml"
@@ -105,6 +111,11 @@ ALLOWED_COMMIT_B_DIFF_FILES = {
 
 ALLOWED_R2_DIFF_FILES = {
     "evaluation/d4_a2_v2_r2_preregistration.json",
+    "evaluation/scripts/d4_a2_v2_controlled_shared_plan_validation.py",
+    "tests/unit/test_d4_a2_v2_controlled_shared_plan_validation.py",
+}
+
+ALLOWED_EVALUATOR_FREEZE_DIFF_FILES = {
     "evaluation/scripts/d4_a2_v2_controlled_shared_plan_validation.py",
     "tests/unit/test_d4_a2_v2_controlled_shared_plan_validation.py",
 }
@@ -144,6 +155,8 @@ GOLD_CASES = ["g029", "g025", "g036", "g020", "g041", "g060", "g052", "g055", "g
 NOVEL_DEV_CASES = ["n021", "n022", "n006", "n014", "n003", "n004"]
 ANSWERED_CASES = ["g029", "n021", "g036", "n022", "g020", "n006", "n014", "g060", "g052", "g055", "n003", "g021", "n004"]
 INSUFFICIENT_EVIDENCE_CASES = ["g025", "g041", "g007"]
+GOLD_ANSWERED_CASES = [c for c in GOLD_CASES if c in ANSWERED_CASES]
+NOVEL_DEV_ANSWERED_CASES = [c for c in NOVEL_DEV_CASES if c in ANSWERED_CASES]
 
 ARMS = ["BEFORE_COMPAT", "AFTER_BATCH1_REPLACEMENT"]
 TOTAL_FORMAL_SLOTS = 32
@@ -205,6 +218,41 @@ FROZEN_V2_VERDICTS = [
     VERDICT_LEVEL_4_FAIL_SHARED_PLAN_CRITICAL,
     VERDICT_LEVEL_5_PARTIAL_TOLERANCE,
     VERDICT_LEVEL_6_PASS,
+]
+
+# Paired Pre-Rerank Classification Constants
+PAIR_PRESERVED = "PAIR_PRESERVED"
+PAIR_TREATMENT_RECOVERY = "PAIR_TREATMENT_RECOVERY"
+PAIR_TREATMENT_REGRESSION = "PAIR_TREATMENT_REGRESSION"
+PAIR_UNRESOLVED_BOTH = "PAIR_UNRESOLVED_BOTH"
+
+# Paired Final-Evidence Classification Constants
+FINAL_PRESERVED = "FINAL_PRESERVED"
+FINAL_TREATMENT_RECOVERY = "FINAL_TREATMENT_RECOVERY"
+FINAL_TREATMENT_REGRESSION = "FINAL_TREATMENT_REGRESSION"
+FINAL_UNRESOLVED_BOTH = "FINAL_UNRESOLVED_BOTH"
+
+# Frozen First-Divergence Taxonomy Constants (exact Section 9 taxonomy)
+DIV_NO_DIVERGENCE = "NO_DIVERGENCE"
+DIV_FIXED_LOCATOR_SUPPRESSION = "FIXED_LOCATOR_SUPPRESSION"
+DIV_ORDINARY_CHANNEL_RECALL = "ORDINARY_CHANNEL_RECALL"
+DIV_STRUCTURED_GENERATION = "STRUCTURED_GENERATION"
+DIV_SELECTIVITY = "SELECTIVITY"
+DIV_K3_ADMISSION = "K3_ADMISSION"
+DIV_FUSION_CUTOFF = "FUSION_CUTOFF"
+DIV_RERANKER = "RERANKER"
+DIV_FINAL_SELECTION = "FINAL_SELECTION"
+
+FROZEN_FIRST_DIVERGENCE_TAXONOMY = [
+    DIV_NO_DIVERGENCE,
+    DIV_FIXED_LOCATOR_SUPPRESSION,
+    DIV_ORDINARY_CHANNEL_RECALL,
+    DIV_STRUCTURED_GENERATION,
+    DIV_SELECTIVITY,
+    DIV_K3_ADMISSION,
+    DIV_FUSION_CUTOFF,
+    DIV_RERANKER,
+    DIV_FINAL_SELECTION,
 ]
 
 # Phase P narrow retry categories
@@ -298,6 +346,301 @@ def get_r2_repair_commit(
         )
     sha, msg = out.split("\x00", 1)
     return sha.strip(), msg.strip()
+
+
+def get_evaluator_freeze_commit(
+    project_root: Path,
+    rel_path: str = EVALUATOR_SCRIPT_PATH,
+) -> tuple[str, str, list[str]]:
+    """Determines the authoritative evaluator freeze commit using
+    the containing-commit policy over the evaluator script.
+
+    Returns (commit_sha, commit_message, parent_shas).
+    """
+    rel_posix = rel_path.replace("\\", "/")
+    proc = subprocess.run(
+        ["git", "log", "-1", "--format=%H%x00%s%x00%P", "HEAD", "--", rel_posix],
+        cwd=str(project_root),
+        capture_output=True,
+        text=True,
+    )
+    if proc.returncode != 0:
+        raise RuntimeError(
+            f"Git log failed for {rel_posix}: {proc.stderr.strip()}"
+        )
+    out = proc.stdout.strip()
+    if not out or "\x00" not in out:
+        raise RuntimeError(
+            f"Could not determine evaluator freeze commit for {rel_posix} from Git history"
+        )
+    parts = out.split("\x00")
+    sha = parts[0].strip()
+    msg = parts[1].strip() if len(parts) > 1 else ""
+    parents = parts[2].strip().split() if len(parts) > 2 else []
+    return sha, msg, parents
+
+
+def verify_evaluator_freeze_provenance(
+    project_root: Path,
+    *,
+    raw_results_path: str = RAW_RESULTS_PATH,
+    raw_plans_path: str = RAW_PLANS_PATH,
+    evaluator_script_path: str = EVALUATOR_SCRIPT_PATH,
+    evaluator_test_path: str = EVALUATOR_TEST_PATH,
+    raw_results_freeze_sha: str = RAW_RESULTS_FREEZE_HEAD,
+    raw_results_freeze_blob: str = RAW_RESULTS_FREEZE_BLOB,
+    plan_freeze_raw_blob: str = PLAN_FREEZE_RAW_BLOB,
+    expected_evaluator_commit_message: str = EXPECTED_EVALUATOR_FREEZE_COMMIT_MESSAGE,
+) -> dict[str, Any]:
+    """Mechanically verifies the authoritative evaluator freeze boundary and provenance:
+    1. Raw results artifact is present in Git HEAD and clean in worktree/index.
+    2. Raw results origin commit equals authoritative raw-result freeze b1a9f12366e328263e000f7b4c89184f2854c77a.
+    3. Raw results Git blob at HEAD and in worktree equals 2d894ff2d0ac8a49239663df155478614a99bae0.
+    4. Raw plans artifact is present in Git HEAD and clean in worktree/index.
+    5. Raw plans Git blob at HEAD and in worktree equals PLAN_FREEZE_RAW_BLOB (ee7c1c011463973557ef423178d7c241bf3821d4).
+    6. Evaluator implementation containing commit has exact message: 'D4-A2-V2 freeze deterministic evaluator'.
+    7. Evaluator implementation containing commit has direct parent: b1a9f12366e328263e000f7b4c89184f2854c77a.
+    8. Freeze commit is an ancestor of current HEAD (allowing deterministic read-only recomputation from later closeout descendant).
+    9. Evaluator freeze commit modified only ALLOWED_EVALUATOR_FREEZE_DIFF_FILES relative to raw-result freeze.
+    10. No evaluator code drift: worktree/index clean for evaluator files, diff between freeze commit and worktree is empty,
+        and worktree blob matches frozen commit blob.
+    """
+    raw_res_posix = raw_results_path.replace("\\", "/")
+    raw_plans_posix = raw_plans_path.replace("\\", "/")
+    eval_script_posix = evaluator_script_path.replace("\\", "/")
+    eval_test_posix = evaluator_test_path.replace("\\", "/")
+
+    # 1. Raw results present in Git HEAD and clean in worktree/index
+    cat_res = subprocess.run(
+        ["git", "cat-file", "-e", f"HEAD:{raw_res_posix}"],
+        cwd=str(project_root),
+        capture_output=True,
+        text=True,
+    )
+    if cat_res.returncode != 0:
+        raise RuntimeError(
+            f"Raw results artifact {raw_res_posix} is not present in Git HEAD!"
+        )
+
+    status_raw_res = subprocess.run(
+        ["git", "status", "--porcelain", "-uall", "--", raw_res_posix],
+        cwd=str(project_root),
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    if status_raw_res.stdout.strip():
+        raise RuntimeError(
+            f"Raw results artifact {raw_res_posix} has uncommitted or dirty changes: {status_raw_res.stdout.strip()}"
+        )
+
+    # 2. Raw results origin commit
+    log_raw_res = subprocess.run(
+        ["git", "log", "-1", "--format=%H", "HEAD", "--", raw_res_posix],
+        cwd=str(project_root),
+        capture_output=True,
+        text=True,
+    )
+    if log_raw_res.returncode != 0:
+        raise RuntimeError(f"Git log failed for {raw_res_posix}: {log_raw_res.stderr.strip()}")
+    raw_res_origin = log_raw_res.stdout.strip()
+    if raw_res_origin != raw_results_freeze_sha:
+        raise RuntimeError(
+            f"Raw results origin commit mismatch: expected authoritative raw-result freeze "
+            f"commit {raw_results_freeze_sha}, got {raw_res_origin}"
+        )
+
+    # 3. Raw results blob at HEAD and in worktree
+    blob_head_res = subprocess.run(
+        ["git", "rev-parse", f"HEAD:{raw_res_posix}"],
+        cwd=str(project_root),
+        capture_output=True,
+        text=True,
+    )
+    if blob_head_res.returncode != 0:
+        raise RuntimeError(f"Failed to get Git blob for {raw_res_posix} at HEAD: {blob_head_res.stderr.strip()}")
+    res_blob_head = blob_head_res.stdout.strip()
+    if res_blob_head != raw_results_freeze_blob:
+        raise RuntimeError(
+            f"Raw results Git blob mismatch at HEAD: expected {raw_results_freeze_blob}, got {res_blob_head}"
+        )
+
+    hash_res_file = project_root / raw_results_path
+    if hash_res_file.exists():
+        hash_res_proc = subprocess.run(
+            ["git", "hash-object", str(hash_res_file)],
+            cwd=str(project_root),
+            capture_output=True,
+            text=True,
+        )
+        if hash_res_proc.returncode == 0 and hash_res_proc.stdout.strip() != raw_results_freeze_blob:
+            raise RuntimeError(
+                f"Raw results worktree blob mismatch: expected {raw_results_freeze_blob}, got {hash_res_proc.stdout.strip()}"
+            )
+
+    # 4. Raw plans present in Git HEAD and clean in worktree/index
+    cat_plans = subprocess.run(
+        ["git", "cat-file", "-e", f"HEAD:{raw_plans_posix}"],
+        cwd=str(project_root),
+        capture_output=True,
+        text=True,
+    )
+    if cat_plans.returncode != 0:
+        raise RuntimeError(
+            f"Raw plans artifact {raw_plans_posix} is not present in Git HEAD!"
+        )
+
+    status_raw_plans = subprocess.run(
+        ["git", "status", "--porcelain", "-uall", "--", raw_plans_posix],
+        cwd=str(project_root),
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    if status_raw_plans.stdout.strip():
+        raise RuntimeError(
+            f"Raw plans artifact {raw_plans_posix} has uncommitted or dirty changes: {status_raw_plans.stdout.strip()}"
+        )
+
+    # 5. Raw plans blob at HEAD and in worktree
+    blob_head_plans = subprocess.run(
+        ["git", "rev-parse", f"HEAD:{raw_plans_posix}"],
+        cwd=str(project_root),
+        capture_output=True,
+        text=True,
+    )
+    if blob_head_plans.returncode != 0:
+        raise RuntimeError(f"Failed to get Git blob for {raw_plans_posix} at HEAD: {blob_head_plans.stderr.strip()}")
+    plans_blob_head = blob_head_plans.stdout.strip()
+    if plans_blob_head != plan_freeze_raw_blob:
+        raise RuntimeError(
+            f"Raw plans Git blob mismatch at HEAD: expected {plan_freeze_raw_blob}, got {plans_blob_head}"
+        )
+
+    hash_plans_file = project_root / raw_plans_path
+    if hash_plans_file.exists():
+        hash_plans_proc = subprocess.run(
+            ["git", "hash-object", str(hash_plans_file)],
+            cwd=str(project_root),
+            capture_output=True,
+            text=True,
+        )
+        if hash_plans_proc.returncode == 0 and hash_plans_proc.stdout.strip() != plan_freeze_raw_blob:
+            raise RuntimeError(
+                f"Raw plans worktree blob mismatch: expected {plan_freeze_raw_blob}, got {hash_plans_proc.stdout.strip()}"
+            )
+
+    # 6. Evaluator implementation freeze commit determination
+    eval_sha, eval_msg, eval_parents = get_evaluator_freeze_commit(project_root, rel_path=eval_script_posix)
+
+    # 7. Evaluator freeze commit message verification
+    if eval_msg != expected_evaluator_commit_message:
+        raise RuntimeError(
+            f"Evaluator freeze commit message mismatch: expected '{expected_evaluator_commit_message}', "
+            f"got '{eval_msg}' (commit {eval_sha})"
+        )
+
+    # 8. Evaluator freeze direct parent verification
+    if eval_parents != [raw_results_freeze_sha]:
+        raise RuntimeError(
+            f"Evaluator freeze parent mismatch: expected direct parent {[raw_results_freeze_sha]}, "
+            f"got {eval_parents} (commit {eval_sha})"
+        )
+
+    # 9. Ancestry check: freeze commit must be an ancestor of current HEAD (permits closeout descendant recomputation)
+    ancestor_proc = subprocess.run(
+        ["git", "merge-base", "--is-ancestor", eval_sha, "HEAD"],
+        cwd=str(project_root),
+        capture_output=True,
+        text=True,
+    )
+    if ancestor_proc.returncode != 0:
+        raise RuntimeError(
+            f"Evaluator freeze commit {eval_sha} is not an ancestor of current HEAD! "
+            f"Evaluator execution or recomputation must descend from the freeze commit."
+        )
+
+    # 10. Historical diff between raw-result freeze and evaluator freeze commit
+    diff_freeze = subprocess.run(
+        ["git", "diff", "--name-only", raw_results_freeze_sha, eval_sha],
+        cwd=str(project_root),
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    changed_eval_files = [
+        f.strip().replace("\\", "/")
+        for f in diff_freeze.stdout.splitlines()
+        if f.strip()
+    ]
+    disallowed_eval = [f for f in changed_eval_files if f not in ALLOWED_EVALUATOR_FREEZE_DIFF_FILES]
+    if disallowed_eval:
+        raise RuntimeError(
+            f"Evaluator freeze commit {eval_sha} modified disallowed paths relative to "
+            f"raw-result freeze ({raw_results_freeze_sha}): {disallowed_eval}. "
+            f"Only {ALLOWED_EVALUATOR_FREEZE_DIFF_FILES} are allowed."
+        )
+
+    # 11. Reject evaluator code drift between eval_sha and current working tree / index
+    status_eval = subprocess.run(
+        ["git", "status", "--porcelain", "-uall", "--", eval_script_posix, eval_test_posix],
+        cwd=str(project_root),
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    if status_eval.stdout.strip():
+        raise RuntimeError(
+            f"Worktree or index is dirty for evaluator files: {status_eval.stdout.strip()}"
+        )
+
+    diff_drift = subprocess.run(
+        ["git", "diff", eval_sha, "--", eval_script_posix, eval_test_posix],
+        cwd=str(project_root),
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    if diff_drift.stdout.strip():
+        raise RuntimeError(
+            f"Evaluator code drift detected relative to freeze commit {eval_sha}: {diff_drift.stdout.strip()}"
+        )
+
+    # 12. Blob identity of script
+    hash_eval_script = project_root / evaluator_script_path
+    if hash_eval_script.exists():
+        blob_frozen_proc = subprocess.run(
+            ["git", "rev-parse", f"{eval_sha}:{eval_script_posix}"],
+            cwd=str(project_root),
+            capture_output=True,
+            text=True,
+        )
+        hash_eval_proc = subprocess.run(
+            ["git", "hash-object", str(hash_eval_script)],
+            cwd=str(project_root),
+            capture_output=True,
+            text=True,
+        )
+        if (
+            blob_frozen_proc.returncode == 0
+            and hash_eval_proc.returncode == 0
+            and hash_eval_proc.stdout.strip() != blob_frozen_proc.stdout.strip()
+        ):
+            raise RuntimeError(
+                f"Evaluator script worktree blob ({hash_eval_proc.stdout.strip()}) differs from frozen "
+                f"commit blob ({blob_frozen_proc.stdout.strip()})!"
+            )
+
+    return {
+        "verified": True,
+        "raw_results_freeze_sha": raw_results_freeze_sha,
+        "raw_results_blob": raw_results_freeze_blob,
+        "raw_plans_blob": plan_freeze_raw_blob,
+        "evaluator_implementation_freeze_sha": eval_sha,
+        "evaluator_implementation_freeze_message": eval_msg,
+        "evaluator_implementation_parents": eval_parents,
+        "current_head": _git_head(project_root),
+    }
 
 
 def verify_phase_p_gate(
@@ -1953,18 +2296,996 @@ def compute_controlled_shared_plan_verdict(
     }
 
 
-def evaluate(project_root: Path) -> dict[str, Any]:
-    """Fail-closed evaluator stub for Commit A.
-
-    Commit D is not authorized now. Full deterministic evaluation must be separately
-    implemented and authorized in Commit D after Commit C raw freeze.
-    Performs zero file writes and raises RuntimeError to prevent premature or
-    incomplete evaluation.
+def get_evidence_group_criticality(group_id: str, default_critical: bool) -> bool:
+    """Corrected criticality contract:
+    - g021.e1 = critical (True)
+    - g021.e2 = noncritical supporting evidence (False)
+    - n022.e2 = critical (True)
     """
-    raise RuntimeError(
-        "Commit D evaluator is not authorized now. Evaluator execution is unavailable "
-        "until separately authorized Commit D after Commit C raw freeze."
+    if group_id == "g021.e1":
+        return True
+    if group_id == "g021.e2":
+        return False
+    if group_id == "n022.e2":
+        return True
+    return default_critical
+
+
+def classify_pair_pre_rerank(before_retained: bool, after_retained: bool) -> str:
+    """Classify pre-rerank pool paired retention state."""
+    if before_retained and after_retained:
+        return PAIR_PRESERVED
+    if not before_retained and after_retained:
+        return PAIR_TREATMENT_RECOVERY
+    if before_retained and not after_retained:
+        return PAIR_TREATMENT_REGRESSION
+    return PAIR_UNRESOLVED_BOTH
+
+
+def classify_pair_final_evidence(before_retained: bool, after_retained: bool) -> str:
+    """Classify final-evidence paired retention state."""
+    if before_retained and after_retained:
+        return FINAL_PRESERVED
+    if not before_retained and after_retained:
+        return FINAL_TREATMENT_RECOVERY
+    if before_retained and not after_retained:
+        return FINAL_TREATMENT_REGRESSION
+    return FINAL_UNRESOLVED_BOTH
+
+
+def _evidence_in_candidates(
+    evidence_group: GoldEvidenceGroup,
+    candidate_ids: list[str],
+    object_lookup: dict[str, dict[str, Any]],
+) -> bool:
+    if not candidate_ids:
+        return False
+    rec, _ = _matched_evidence_groups([evidence_group], candidate_ids, object_lookup)
+    return rec > 0
+
+
+def compute_first_divergence_layer(
+    slot_b: dict[str, Any],
+    slot_a: dict[str, Any],
+    evidence_group: GoldEvidenceGroup,
+    object_lookup: dict[str, dict[str, Any]],
+    b_pool_retained: bool,
+    a_pool_retained: bool,
+    b_final_retained: bool,
+    a_final_retained: bool,
+) -> str:
+    """Derives the first observable divergence layer using the frozen 9-element taxonomy.
+    Attribution follows the first observable divergence in the retrieval pipeline:
+    1. FIXED_LOCATOR_SUPPRESSION
+    2. ORDINARY_CHANNEL_RECALL
+    3. STRUCTURED_GENERATION
+    4. SELECTIVITY
+    5. FUSION_CUTOFF
+    6. K3_ADMISSION
+    7. RERANKER
+    8. FINAL_SELECTION
+    If no divergence is observed, returns NO_DIVERGENCE.
+    """
+    # 1. FIXED_LOCATOR_SUPPRESSION
+    b_exact_ids = slot_b.get("channel_rankings", {}).get("exact", [])
+    a_exact_ids = slot_a.get("channel_rankings", {}).get("exact", [])
+    b_in_exact = _evidence_in_candidates(evidence_group, b_exact_ids, object_lookup)
+    a_in_exact = _evidence_in_candidates(evidence_group, a_exact_ids, object_lookup)
+
+    suppressed = slot_a.get("exact_effective_suppressed_components", {}) or slot_a.get("suppressed_components", {})
+    if b_in_exact and not a_in_exact and bool(suppressed):
+        all_supp_symbols = [s for r in suppressed.values() for s in r.get("suppressed_symbols", [])]
+        all_supp_hints = [h for r in suppressed.values() for h in r.get("suppressed_paper_page_hints", {}).keys()]
+        matches_suppression = False
+        for sel in evidence_group.any_of:
+            if sel.path and any(sym in sel.path or sel.path in sym for sym in all_supp_symbols):
+                matches_suppression = True
+                break
+            if sel.symbol and any(sym in sel.symbol or sel.symbol in sym for sym in all_supp_symbols):
+                matches_suppression = True
+                break
+            if sel.source_id and sel.source_id in all_supp_hints:
+                matches_suppression = True
+                break
+        if matches_suppression:
+            return DIV_FIXED_LOCATOR_SUPPRESSION
+
+    # 2. ORDINARY_CHANNEL_RECALL
+    ord_channels = ["exact", "dense", "sparse", "paper", "workflow"]
+    b_ord_ids = list(dict.fromkeys(
+        oid for ch in ord_channels for oid in slot_b.get("channel_rankings", {}).get(ch, [])
+    ))
+    a_ord_ids = list(dict.fromkeys(
+        oid for ch in ord_channels for oid in slot_a.get("channel_rankings", {}).get(ch, [])
+    ))
+    b_in_ord = _evidence_in_candidates(evidence_group, b_ord_ids, object_lookup)
+    a_in_ord = _evidence_in_candidates(evidence_group, a_ord_ids, object_lookup)
+
+    if b_in_ord != a_in_ord:
+        return DIV_ORDINARY_CHANNEL_RECALL
+
+    # 3. STRUCTURED_GENERATION
+    eligible_cands = slot_a.get("eligible_bridge_candidates", [])
+    eligible_oids = [
+        c["candidate_object_id"] if isinstance(c, dict) else c
+        for c in eligible_cands
+    ]
+    in_structured_gen = _evidence_in_candidates(evidence_group, eligible_oids, object_lookup)
+    if in_structured_gen and not b_in_ord:
+        return DIV_STRUCTURED_GENERATION
+
+    # 4. SELECTIVITY
+    selected_oids = slot_a.get("selected_bridge_candidates", [])
+    in_selected = _evidence_in_candidates(evidence_group, selected_oids, object_lookup)
+    if in_structured_gen and not in_selected:
+        return DIV_SELECTIVITY
+
+    # 5. FUSION_CUTOFF
+    b_top30 = slot_b.get("ordinary_fused_top30", [])
+    a_top30 = slot_a.get("ordinary_fused_top30", [])
+    b_in_top30 = _evidence_in_candidates(evidence_group, b_top30, object_lookup)
+    a_in_top30 = _evidence_in_candidates(evidence_group, a_top30, object_lookup)
+    if b_in_top30 != a_in_top30:
+        return DIV_FUSION_CUTOFF
+
+    # 6. K3_ADMISSION
+    displaced_ids = slot_a.get("displaced_candidate_ids", [])
+    if _evidence_in_candidates(evidence_group, displaced_ids, object_lookup):
+        return DIV_K3_ADMISSION
+
+    reserved_ids = slot_a.get("reserved_candidate_ids", [])
+    in_reserved = _evidence_in_candidates(evidence_group, reserved_ids, object_lookup)
+    if in_selected and not a_in_top30 and not in_reserved:
+        return DIV_K3_ADMISSION
+    if in_reserved and not b_pool_retained:
+        return DIV_K3_ADMISSION
+
+    # 7. RERANKER & 8. FINAL_SELECTION
+    if b_pool_retained and a_pool_retained:
+        if b_final_retained != a_final_retained:
+            ranked_b = slot_b.get("ranked_object_ids", [])
+            ranked_a = slot_a.get("ranked_object_ids", [])
+            b_rank = next((r for r, oid in enumerate(ranked_b, 1) if _evidence_in_candidates(evidence_group, [oid], object_lookup)), None)
+            a_rank = next((r for r, oid in enumerate(ranked_a, 1) if _evidence_in_candidates(evidence_group, [oid], object_lookup)), None)
+            if b_rank != a_rank:
+                return DIV_RERANKER
+            return DIV_FINAL_SELECTION
+
+    if b_final_retained != a_final_retained:
+        return DIV_RERANKER
+
+    return DIV_NO_DIVERGENCE
+
+
+def attribute_critical_regression(
+    case_id: str,
+    group_id: str,
+    critical: bool,
+    pre_rerank_class: str,
+    final_class: str,
+    first_div_layer: str,
+    slot_b: dict[str, Any],
+    slot_a: dict[str, Any],
+) -> tuple[bool, str]:
+    """Determines whether a critical evidence group regression is treatment-attributable.
+    - Noncritical evidence (e.g. g021.e2) is excluded.
+    - F/F (unresolved both) is strictly NOT a treatment regression.
+    - Pre-rerank treatment regressions (BEFORE=True, AFTER=False in pool) are treatment-attributable.
+    - Final-only regressions (pre-rerank preserved, final lost in AFTER) require causal attribution:
+      reserved structured candidates displacing or outranking the target in final selection.
+    """
+    if not critical:
+        return False, f"Noncritical evidence group {group_id} excluded from critical treatment regressions."
+
+    if final_class != FINAL_TREATMENT_REGRESSION:
+        return False, f"Evidence group {group_id} final phenotype is {final_class}, not a treatment regression."
+
+    if pre_rerank_class == PAIR_UNRESOLVED_BOTH:
+        return False, f"Evidence group {group_id} is unresolved in both arms (F/F); baseline weakness, not treatment failure."
+
+    if pre_rerank_class == PAIR_TREATMENT_REGRESSION:
+        return True, (
+            f"Pre-rerank treatment regression at layer '{first_div_layer}' under shared prospective plan: "
+            f"BEFORE retained in pre-rerank pool, AFTER lost in pre-rerank pool."
+        )
+
+    if pre_rerank_class == PAIR_PRESERVED:
+        reserved_ids = slot_a.get("reserved_candidate_ids", [])
+        if not reserved_ids:
+            return False, (
+                f"Simple final-only reranker divergence without causal treatment attribution: "
+                f"zero reserved candidates in AFTER pool (first divergence: '{first_div_layer}')."
+            )
+
+        final_a = slot_a.get("final_evidence_object_ids", [])
+        has_competing_reserved = any(r_oid in final_a for r_oid in reserved_ids)
+        if has_competing_reserved:
+            return True, (
+                f"Final-only regression caused by structured candidate competition in rerank pool: "
+                f"reserved candidate(s) {reserved_ids} selected into final evidence ahead of target."
+            )
+        return False, (
+            f"Simple final-only reranker divergence without causal treatment attribution: "
+            f"reserved candidate(s) did not cause target exclusion."
+        )
+
+    return False, f"Phenotype {pre_rerank_class} / {final_class} is not a treatment regression."
+
+
+def compute_batch1_dependency_removal(
+    slots_map: dict[tuple[str, str], dict[str, Any]],
+    witness_g036: dict[str, Any],
+    witness_g021: dict[str, Any],
+    group_retention: dict[str, dict[str, Any]],
+) -> tuple[int, dict[str, Any]]:
+    """Separately verifies for each Batch-1 target rule:
+    1. Fixed locator inputs were active in BEFORE.
+    2. Exact masked locator inputs are absent in AFTER.
+    3. Generic structured mechanism is active in AFTER.
+    4. Target evidence is retained in AFTER.
+    5. Valid governed witness exists in AFTER.
+
+    Returns (dependency_removed_count, per_rule_receipts).
+    """
+    receipts: dict[str, Any] = {}
+
+    # Rule 1: event_poca_handoff (case g036, group g036.e1)
+    slot_g036_b = slots_map.get(("g036", "BEFORE_COMPAT"), {})
+    slot_g036_a = slots_map.get(("g036", "AFTER_BATCH1_REPLACEMENT"), {})
+
+    g036_b_symbols = slot_g036_b.get("effective_symbols") or slot_g036_b.get("inputs", {}).get("symbols", [])
+    ep_active_before = bool(
+        any(sym in g036_b_symbols for sym in d4_a1.SUPPRESSED_SYMBOLS_EVENT_POCA)
+        or (slot_g036_b.get("in_memory_mask_active") is False and not slot_g036_b.get("exact_effective_suppressed_components"))
     )
+    g036_a_symbols = slot_g036_a.get("effective_symbols") or slot_g036_a.get("inputs", {}).get("symbols", [])
+    ep_symbols_absent = not any(sym in g036_a_symbols for sym in d4_a1.SUPPRESSED_SYMBOLS_EVENT_POCA)
+    g036_a_hints = slot_g036_a.get("effective_paper_page_hints") or slot_g036_a.get("inputs", {}).get("paper_page_hints", {})
+    ep_hints_absent = not any(
+        p in g036_a_hints.get("li_2026", []) for p in d4_a1.SUPPRESSED_PAGE_HINTS_EVENT_POCA.get("li_2026", [])
+    )
+    ep_absent_after = ep_symbols_absent and ep_hints_absent
+    ep_struct_active = bool(
+        slot_g036_a.get("structured_replacement_active", True) is True
+        and slot_g036_a.get("admission_budget_k", 3) == EXPECTED_ADMISSION_BUDGET_K
+    )
+    ep_target_retained = bool(group_retention.get("g036.e1", {}).get("AFTER_BATCH1_REPLACEMENT", False))
+    ep_valid_witness = bool(witness_g036.get("has_valid_witness", False))
+
+    ep_removed = bool(
+        ep_active_before
+        and ep_absent_after
+        and ep_struct_active
+        and ep_target_retained
+        and ep_valid_witness
+    )
+    receipts["event_poca_handoff"] = {
+        "rule_id": "event_poca_handoff",
+        "case_id": "g036",
+        "target_group_id": "g036.e1",
+        "fixed_locator_inputs_active_before": ep_active_before,
+        "exact_masked_locator_inputs_absent_after": ep_absent_after,
+        "generic_structured_mechanism_active": ep_struct_active,
+        "target_evidence_retained_after": ep_target_retained,
+        "valid_governed_witness_exists": ep_valid_witness,
+        "dependency_removed": ep_removed,
+    }
+
+    # Rule 2: restgas_profile_workflow (case g021, group g021.e1)
+    slot_g021_b = slots_map.get(("g021", "BEFORE_COMPAT"), {})
+    slot_g021_a = slots_map.get(("g021", "AFTER_BATCH1_REPLACEMENT"), {})
+
+    g021_b_symbols = slot_g021_b.get("effective_symbols") or slot_g021_b.get("inputs", {}).get("symbols", [])
+    rg_active_before = bool(
+        any(sym in g021_b_symbols for sym in d4_a1.SUPPRESSED_SYMBOLS_RESTGAS)
+        or (slot_g021_b.get("in_memory_mask_active") is False and not slot_g021_b.get("exact_effective_suppressed_components"))
+    )
+    g021_a_symbols = slot_g021_a.get("effective_symbols") or slot_g021_a.get("inputs", {}).get("symbols", [])
+    rg_absent_after = not any(sym in g021_a_symbols for sym in d4_a1.SUPPRESSED_SYMBOLS_RESTGAS)
+    rg_struct_active = bool(
+        slot_g021_a.get("structured_replacement_active", True) is True
+        and slot_g021_a.get("admission_budget_k", 3) == EXPECTED_ADMISSION_BUDGET_K
+    )
+    rg_target_retained = bool(group_retention.get("g021.e1", {}).get("AFTER_BATCH1_REPLACEMENT", False))
+    rg_valid_witness = bool(witness_g021.get("has_valid_witness", False))
+
+    rg_removed = bool(
+        rg_active_before
+        and rg_absent_after
+        and rg_struct_active
+        and rg_target_retained
+        and rg_valid_witness
+    )
+    receipts["restgas_profile_workflow"] = {
+        "rule_id": "restgas_profile_workflow",
+        "case_id": "g021",
+        "target_group_id": "g021.e1",
+        "fixed_locator_inputs_active_before": rg_active_before,
+        "exact_masked_locator_inputs_absent_after": rg_absent_after,
+        "generic_structured_mechanism_active": rg_struct_active,
+        "target_evidence_retained_after": rg_target_retained,
+        "valid_governed_witness_exists": rg_valid_witness,
+        "dependency_removed": rg_removed,
+    }
+
+    count = (1 if ep_removed else 0) + (1 if rg_removed else 0)
+    return count, receipts
+
+
+def compute_grounding_and_version_safety(
+    slots_map: dict[tuple[str, str], dict[str, Any]],
+    all_questions: dict[str, Any],
+    object_lookup: dict[str, dict[str, Any]],
+    witness_g036: dict[str, Any],
+    witness_g021: dict[str, Any],
+    group_retention: dict[str, dict[str, Any]],
+) -> dict[str, Any]:
+    """Computes grounding, version, and provenance safety checks with evidence-level details:
+    1. WRONG_VERSION_REGRESSIONS: newly introduced AFTER wrong-version evidence relative to BEFORE.
+    2. GROUNDING_REGRESSIONS: newly introduced forbidden/out-of-scope grounding violations via Gold selectors.
+    3. INVALID_PROVENANCE_RECOVERIES: check for AFTER structured recoveries and target witnesses.
+    """
+    wrong_version_details: list[dict[str, Any]] = []
+    grounding_details: list[dict[str, Any]] = []
+    invalid_provenance_details: list[dict[str, Any]] = []
+
+    # 1. WRONG_VERSION_REGRESSIONS: newly introduced AFTER relative to BEFORE
+    for cid in CASE_ORDER:
+        q = all_questions.get(cid)
+        if not q:
+            continue
+        allowed_v = set(q.allowed_source_versions)
+
+        slot_b = slots_map.get((cid, "BEFORE_COMPAT"), {})
+        slot_a = slots_map.get((cid, "AFTER_BATCH1_REPLACEMENT"), {})
+
+        b_wv: dict[str, str] = {}
+        for oid in slot_b.get("final_evidence_object_ids", []):
+            item = object_lookup.get(oid) or {}
+            sv = item.get("source_version_id")
+            if sv and sv not in allowed_v:
+                b_wv[oid] = sv
+
+        a_wv: dict[str, str] = {}
+        for oid in slot_a.get("final_evidence_object_ids", []):
+            item = object_lookup.get(oid) or {}
+            sv = item.get("source_version_id")
+            if sv and sv not in allowed_v:
+                a_wv[oid] = sv
+
+        new_wv_oids = set(a_wv.keys()) - set(b_wv.keys())
+        for oid in sorted(new_wv_oids):
+            wrong_version_details.append({
+                "case_id": cid,
+                "object_id": oid,
+                "source_version_id": a_wv[oid],
+                "allowed_source_versions": list(allowed_v),
+            })
+
+    # 2. GROUNDING_REGRESSIONS: newly introduced forbidden evidence via Gold selectors
+    for cid in CASE_ORDER:
+        q = all_questions.get(cid)
+        if not q:
+            continue
+        forbidden_selectors = q.forbidden_evidence
+        if not forbidden_selectors:
+            continue
+
+        slot_b = slots_map.get((cid, "BEFORE_COMPAT"), {})
+        slot_a = slots_map.get((cid, "AFTER_BATCH1_REPLACEMENT"), {})
+
+        b_forbidden: set[str] = set()
+        for oid in slot_b.get("final_evidence_object_ids", []):
+            item = object_lookup.get(oid) or {}
+            if any(sel.matches(item) for sel in forbidden_selectors):
+                b_forbidden.add(oid)
+
+        a_forbidden: dict[str, dict[str, Any]] = {}
+        for oid in slot_a.get("final_evidence_object_ids", []):
+            item = object_lookup.get(oid) or {}
+            for sel in forbidden_selectors:
+                if sel.matches(item):
+                    a_forbidden[oid] = sel.model_dump()
+                    break
+
+        new_forbidden = set(a_forbidden.keys()) - b_forbidden
+        for oid in sorted(new_forbidden):
+            grounding_details.append({
+                "case_id": cid,
+                "object_id": oid,
+                "violation_type": "forbidden_evidence_hit",
+                "matched_selector": a_forbidden[oid],
+            })
+
+    # 3. INVALID_PROVENANCE_RECOVERIES: check AFTER target witnesses and reserved candidates
+    for case_id, wit, gid in [("g036", witness_g036, "g036.e1"), ("g021", witness_g021, "g021.e1")]:
+        for cw in wit.get("candidate_witnesses", []):
+            oid = cw.get("candidate_object_id")
+            if cw.get("final_evidence_retained", False) or cw.get("is_valid_witness", False):
+                governed = cw.get("governed_path", False)
+                origins = cw.get("full_structured_path", {}).get("provenance_origin_ids", [])
+                source_id = cw.get("full_structured_path", {}).get("source_id")
+                if not governed:
+                    invalid_provenance_details.append({
+                        "case_id": case_id,
+                        "group_id": gid,
+                        "object_id": oid,
+                        "violation": "Target candidate witness missing governed bridge path",
+                    })
+                elif not origins:
+                    invalid_provenance_details.append({
+                        "case_id": case_id,
+                        "group_id": gid,
+                        "object_id": oid,
+                        "violation": "Target candidate witness has empty provenance origins",
+                    })
+                elif not source_id:
+                    invalid_provenance_details.append({
+                        "case_id": case_id,
+                        "group_id": gid,
+                        "object_id": oid,
+                        "violation": "Target candidate witness missing source_id",
+                    })
+
+    for cid in ANSWERED_CASES:
+        slot_a = slots_map.get((cid, "AFTER_BATCH1_REPLACEMENT"), {})
+        reserved_ids = slot_a.get("reserved_candidate_ids", [])
+        final_ids = slot_a.get("final_evidence_object_ids", [])
+        eligible_cands = slot_a.get("eligible_bridge_candidates", [])
+        eligible_map = {c.get("candidate_object_id"): c for c in eligible_cands if isinstance(c, dict)}
+
+        for r_oid in reserved_ids:
+            if r_oid in final_ids:
+                cand_meta = eligible_map.get(r_oid)
+                if not cand_meta:
+                    invalid_provenance_details.append({
+                        "case_id": cid,
+                        "object_id": r_oid,
+                        "violation": "Reserved candidate retained in final evidence missing from eligible bridge candidates",
+                    })
+                elif not cand_meta.get("provenance_origin_ids"):
+                    invalid_provenance_details.append({
+                        "case_id": cid,
+                        "object_id": r_oid,
+                        "violation": "Reserved candidate retained in final evidence has empty provenance origins",
+                    })
+
+    return {
+        "GROUNDING_REGRESSIONS": len(grounding_details),
+        "WRONG_VERSION_REGRESSIONS": len(wrong_version_details),
+        "INVALID_PROVENANCE_RECOVERIES": len(invalid_provenance_details),
+        "grounding_details": grounding_details,
+        "wrong_version_details": wrong_version_details,
+        "invalid_provenance_details": invalid_provenance_details,
+    }
+
+
+def evaluate_d4_a2_v2(
+    project_root: Path,
+    raw_results_path: Path | None = None,
+    raw_plans_path: Path | None = None,
+    write_artifacts: bool = True,
+    require_git_frozen: bool = True,
+    git_checker: Any | None = None,
+) -> dict[str, Any]:
+    """Deterministic offline evaluator for D4-A2-V2 Controlled Shared-Plan Validation.
+    Executes Sections 5-17 of the preregistration with zero provider calls.
+    Evaluates over frozen raw artifacts, enforcing:
+      - 16 total cases, 13 answered cases, 7 Gold answered, 6 novel_dev answered, 3 negative controls
+      - Corrected criticality contract (g021.e1 critical, g021.e2 noncritical, n022.e2 critical)
+      - Paired pre-rerank and final classifications (F/F is strictly NOT a treatment regression)
+      - Frozen 9-element first-divergence taxonomy
+      - Causal treatment attribution for critical regressions
+      - BEFORE reference validity
+      - Primary replacement witness and dependency removal for g036.e1 and g021.e1
+      - Grounding, version, and provenance hard gates
+      - Six historical primary metrics + diagnostic MRR
+      - Frozen bounded tolerances
+      - 6-level verdict precedence ladder.
+    """
+    raw_results_file = (raw_results_path or (project_root / RAW_RESULTS_PATH)).resolve()
+    raw_plans_file = (raw_plans_path or (project_root / RAW_PLANS_PATH)).resolve()
+
+    if not raw_results_file.exists():
+        raise FileNotFoundError(f"Raw results file {raw_results_file} missing! Run Phase R first.")
+
+    if require_git_frozen:
+        if git_checker is not None:
+            provenance = git_checker(project_root)
+            if isinstance(provenance, dict):
+                raw_results_freeze_sha = provenance.get("raw_results_freeze_sha", RAW_RESULTS_FREEZE_HEAD)
+                evaluator_freeze_sha = provenance.get("evaluator_implementation_freeze_sha", _git_head(project_root))
+                raw_results_blob = provenance.get("raw_results_blob", RAW_RESULTS_FREEZE_BLOB)
+                raw_plans_blob = provenance.get("raw_plans_blob", PLAN_FREEZE_RAW_BLOB)
+                evaluator_freeze_msg = provenance.get("evaluator_implementation_freeze_message", EXPECTED_EVALUATOR_FREEZE_COMMIT_MESSAGE)
+            else:
+                raw_results_freeze_sha = RAW_RESULTS_FREEZE_HEAD
+                evaluator_freeze_sha = str(provenance) if provenance else _git_head(project_root)
+                raw_results_blob = RAW_RESULTS_FREEZE_BLOB
+                raw_plans_blob = PLAN_FREEZE_RAW_BLOB
+                evaluator_freeze_msg = EXPECTED_EVALUATOR_FREEZE_COMMIT_MESSAGE
+        else:
+            provenance = verify_evaluator_freeze_provenance(project_root)
+            raw_results_freeze_sha = provenance["raw_results_freeze_sha"]
+            evaluator_freeze_sha = provenance["evaluator_implementation_freeze_sha"]
+            raw_results_blob = provenance["raw_results_blob"]
+            raw_plans_blob = provenance["raw_plans_blob"]
+            evaluator_freeze_msg = provenance["evaluator_implementation_freeze_message"]
+    else:
+        raw_results_freeze_sha = RAW_RESULTS_FREEZE_HEAD
+        evaluator_freeze_sha = "SYNTHETIC_EVALUATOR_FREEZE_HEAD"
+        raw_results_blob = RAW_RESULTS_FREEZE_BLOB
+        raw_plans_blob = PLAN_FREEZE_RAW_BLOB
+        evaluator_freeze_msg = EXPECTED_EVALUATOR_FREEZE_COMMIT_MESSAGE
+
+    raw_data = _load_json(raw_results_file)
+
+    manifest_file = project_root / MANIFEST_PATH
+    manifest = _load_json(manifest_file) if manifest_file.exists() else {}
+    prereg_file = project_root / PREREGISTRATION_PATH
+    prereg = _load_json(prereg_file) if prereg_file.exists() else {}
+
+    # Mechanical structural validity audit
+    is_struct_valid, struct_fail_reason, mutation_counters = validate_raw_artifact_structural_validity(
+        raw_data=raw_data,
+        manifest=manifest,
+        prereg=prereg,
+        project_root=project_root,
+    )
+    if not is_struct_valid:
+        verdict_outcome = compute_controlled_shared_plan_verdict(
+            execution_valid=False,
+            protocol_violation=True,
+            protocol_violation_reason=struct_fail_reason,
+        )
+        eval_artifact = {
+            "schema_version": "1.0.0",
+            "checkpoint": "D4-A2-V2",
+            "stage": "d4_a2_v2_evaluator_results",
+            "raw_results_freeze_sha": raw_results_freeze_sha,
+            "evaluator_implementation_freeze_sha": evaluator_freeze_sha,
+            "frozen_provenance": {
+                "raw_results_freeze_sha": raw_results_freeze_sha,
+                "raw_results_blob": raw_results_blob,
+                "raw_plans_blob": raw_plans_blob,
+                "evaluator_implementation_freeze_sha": evaluator_freeze_sha,
+                "evaluator_implementation_freeze_message": evaluator_freeze_msg,
+                "evaluator_implementation_parent_sha": raw_results_freeze_sha,
+            },
+            "raw_artifact_authority": str(raw_results_file),
+            "raw_plans_authority": str(raw_plans_file),
+            "evaluator_executed_at_utc": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            "execution_valid": False,
+            "protocol_violation": True,
+            "protocol_violation_reason": struct_fail_reason,
+            "verdict_outcome": verdict_outcome,
+            "post_exposure_mutation_accounting": mutation_counters,
+            "production_activation": False,
+        }
+        if write_artifacts:
+            _save_json(project_root / EVALUATOR_RESULTS_PATH, eval_artifact)
+        return eval_artifact
+
+    # Load governed benchmark questions and object lookup (read-only, local)
+    gold_ds = load_gold_dataset(project_root / GOLD_QUESTIONS_PATH)
+    novel_ds = load_gold_dataset(project_root / NOVEL_DEV_PATH)
+    all_questions = {q.id: q for q in gold_ds.questions + novel_ds.questions}
+    object_lookup = load_object_lookup(project_root)
+
+    slots_map = {(s["case_id"], s["arm"]): s for s in raw_data.get("slots", [])}
+
+    # Process all evidence groups across all 16 cases
+    group_classifications: dict[str, dict[str, Any]] = {}
+    pair_pre_rerank_counts = {
+        PAIR_PRESERVED: 0,
+        PAIR_TREATMENT_RECOVERY: 0,
+        PAIR_TREATMENT_REGRESSION: 0,
+        PAIR_UNRESOLVED_BOTH: 0,
+    }
+    pair_final_counts = {
+        FINAL_PRESERVED: 0,
+        FINAL_TREATMENT_RECOVERY: 0,
+        FINAL_TREATMENT_REGRESSION: 0,
+        FINAL_UNRESOLVED_BOTH: 0,
+    }
+    first_divergence_counts = {k: 0 for k in FROZEN_FIRST_DIVERGENCE_TAXONOMY}
+
+    critical_regression_ids: list[str] = []
+    critical_regression_details: list[dict[str, Any]] = []
+    noncritical_regression_ids: list[str] = []
+
+    for cid in CASE_ORDER:
+        q = all_questions[cid]
+        slot_b = slots_map.get((cid, "BEFORE_COMPAT"), {})
+        slot_a = slots_map.get((cid, "AFTER_BATCH1_REPLACEMENT"), {})
+        is_answered = cid in ANSWERED_CASES
+
+        for grp in q.required_evidence_groups:
+            gid = grp.group_id
+            critical = get_evidence_group_criticality(gid, grp.critical)
+
+            b_pool_ids = slot_b.get("final_pool_object_ids", [])
+            a_pool_ids = slot_a.get("final_pool_object_ids", [])
+            b_fin_ids = slot_b.get("final_evidence_object_ids", [])
+            a_fin_ids = slot_a.get("final_evidence_object_ids", [])
+
+            b_pool_ret = _evidence_in_candidates(grp, b_pool_ids, object_lookup)
+            a_pool_ret = _evidence_in_candidates(grp, a_pool_ids, object_lookup)
+            b_fin_ret = _evidence_in_candidates(grp, b_fin_ids, object_lookup)
+            a_fin_ret = _evidence_in_candidates(grp, a_fin_ids, object_lookup)
+
+            pre_rerank_class = classify_pair_pre_rerank(b_pool_ret, a_pool_ret)
+            final_class = classify_pair_final_evidence(b_fin_ret, a_fin_ret)
+
+            pair_pre_rerank_counts[pre_rerank_class] += 1
+            pair_final_counts[final_class] += 1
+
+            first_div = compute_first_divergence_layer(
+                slot_b=slot_b,
+                slot_a=slot_a,
+                evidence_group=grp,
+                object_lookup=object_lookup,
+                b_pool_retained=b_pool_ret,
+                a_pool_retained=a_pool_ret,
+                b_final_retained=b_fin_ret,
+                a_final_retained=a_fin_ret,
+            )
+            first_divergence_counts[first_div] += 1
+
+            is_treatment_regr, attr_evidence = attribute_critical_regression(
+                case_id=cid,
+                group_id=gid,
+                critical=critical,
+                pre_rerank_class=pre_rerank_class,
+                final_class=final_class,
+                first_div_layer=first_div,
+                slot_b=slot_b,
+                slot_a=slot_a,
+            )
+
+            if is_answered:
+                if is_treatment_regr:
+                    critical_regression_ids.append(gid)
+                    critical_regression_details.append({
+                        "case_id": cid,
+                        "evidence_group_id": gid,
+                        "critical": True,
+                        "before_state": b_fin_ret,
+                        "after_state": a_fin_ret,
+                        "pre_rerank_state": pre_rerank_class,
+                        "final_state": final_class,
+                        "first_divergence_layer": first_div,
+                        "attribution_evidence": attr_evidence,
+                    })
+                elif not critical and b_fin_ret and not a_fin_ret:
+                    noncritical_regression_ids.append(gid)
+
+            group_classifications[gid] = {
+                "case_id": cid,
+                "dataset": "Gold v2.6 dev" if cid in GOLD_CASES else "novel_dev",
+                "is_answered": is_answered,
+                "is_negative_control": cid in INSUFFICIENT_EVIDENCE_CASES,
+                "critical": critical,
+                "role": grp.role,
+                "BEFORE_pool_retained": b_pool_ret,
+                "AFTER_pool_retained": a_pool_ret,
+                "BEFORE_final_retained": b_fin_ret,
+                "AFTER_final_retained": a_fin_ret,
+                "pre_rerank_classification": pre_rerank_class,
+                "final_classification": final_class,
+                "first_divergence_layer": first_div,
+                "is_treatment_attributable_critical_regression": is_treatment_regr,
+                "attribution_evidence": attr_evidence,
+            }
+
+    # Primary Batch-1 replacement targets witness verification
+    eg_g036 = next(g for g in all_questions["g036"].required_evidence_groups if g.group_id == "g036.e1")
+    eg_g021 = next(g for g in all_questions["g021"].required_evidence_groups if g.group_id == "g021.e1")
+    slot_a_g036 = slots_map.get(("g036", "AFTER_BATCH1_REPLACEMENT"), {})
+    slot_a_g021 = slots_map.get(("g021", "AFTER_BATCH1_REPLACEMENT"), {})
+
+    wit_g036 = d4_a1.check_admission_witness("g036.e1", slot_a_g036, object_lookup, eg_g036)
+    wit_g021 = d4_a1.check_admission_witness("g021.e1", slot_a_g021, object_lookup, eg_g021)
+
+    b_ret_g036 = group_classifications.get("g036.e1", {}).get("BEFORE_final_retained", False)
+    a_ret_g036 = group_classifications.get("g036.e1", {}).get("AFTER_final_retained", False)
+    b_ret_g021 = group_classifications.get("g021.e1", {}).get("BEFORE_final_retained", False)
+    a_ret_g021 = group_classifications.get("g021.e1", {}).get("AFTER_final_retained", False)
+
+    g036_reproduced = bool(b_ret_g036 and a_ret_g036 and wit_g036.get("has_valid_witness", False))
+    g021_reproduced = bool(b_ret_g021 and a_ret_g021 and wit_g021.get("has_valid_witness", False))
+    target_replacement_reproduced_count = (1 if g036_reproduced else 0) + (1 if g021_reproduced else 0)
+
+    # BEFORE reference validity (both required targets reproduced under BEFORE)
+    before_reference_valid = bool(b_ret_g036 and b_ret_g021)
+
+    # Benchmark dependency removal
+    retention_for_dep = {
+        gid: {
+            "BEFORE_COMPAT": info["BEFORE_final_retained"],
+            "AFTER_BATCH1_REPLACEMENT": info["AFTER_final_retained"],
+        }
+        for gid, info in group_classifications.items()
+    }
+    dep_count, dep_receipts = compute_batch1_dependency_removal(
+        slots_map=slots_map,
+        witness_g036=wit_g036,
+        witness_g021=wit_g021,
+        group_retention=retention_for_dep,
+    )
+
+    # Grounding, version, and provenance safety checks
+    safety_res = compute_grounding_and_version_safety(
+        slots_map=slots_map,
+        all_questions=all_questions,
+        object_lookup=object_lookup,
+        witness_g036=wit_g036,
+        witness_g021=wit_g021,
+        group_retention=retention_for_dep,
+    )
+
+    # Per-case and aggregate metrics for answered cases (13 cases)
+    case_metrics: dict[str, dict[str, dict[str, float]]] = {}
+    for cid in ANSWERED_CASES:
+        q = all_questions[cid]
+        case_metrics[cid] = {}
+        for arm in ARMS:
+            slot = slots_map.get((cid, arm), {})
+            ranked_ids = slot.get("ranked_object_ids", [])
+            final_ids = slot.get("final_evidence_object_ids", [])
+            channel_rankings = slot.get("channel_rankings") or (slot.get("diagnostics") or {}).get("rankings") or {}
+            combined_ids = list(dict.fromkeys(
+                oid for oids in channel_rankings.values() for oid in oids
+            ))
+            if not combined_ids:
+                combined_ids = slot.get("combined_candidate_universe", [])
+            if not combined_ids:
+                combined_ids = list(dict.fromkeys(
+                    slot.get("ordinary_fused_ordering", []) + slot.get("reserved_candidate_ids", [])
+                ))
+
+            r5, _ = _matched_evidence_groups(q.required_evidence_groups, ranked_ids[:5], object_lookup)
+            r10, _ = _matched_evidence_groups(q.required_evidence_groups, ranked_ids[:10], object_lookup)
+            r20, _ = _matched_evidence_groups(q.required_evidence_groups, ranked_ids[:20], object_lookup)
+
+            rank_by_oid = {oid: r for r, oid in enumerate(ranked_ids, 1)}
+            _, top20_prov = _matched_evidence_groups(q.required_evidence_groups, ranked_ids[:20], object_lookup)
+            rel_ranks = [rank_by_oid[m["object_id"]] for m in top20_prov if isinstance(m, dict) and m.get("object_id") in rank_by_oid]
+            mrr = 1.0 / min(rel_ranks) if rel_ranks else 0.0
+
+            comb_rec, _ = _matched_evidence_groups(q.required_evidence_groups, combined_ids, object_lookup)
+            final_rec, _ = _matched_evidence_groups(q.required_evidence_groups, final_ids, object_lookup)
+
+            crit_groups = [
+                g for g in q.required_evidence_groups
+                if get_evidence_group_criticality(g.group_id, g.critical)
+            ]
+            crit_rec, _ = _matched_evidence_groups(crit_groups, final_ids, object_lookup) if crit_groups else (1.0, [])
+
+            case_metrics[cid][arm] = {
+                "recall_at_5": r5,
+                "recall_at_10": r10,
+                "recall_at_20": r20,
+                "mrr": mrr,
+                "combined_candidate_recall": comb_rec,
+                "final_evidence_recall": final_rec,
+                "critical_final_evidence_recall": crit_rec,
+            }
+
+    def _mean_metrics(case_ids: list[str], arm: str) -> dict[str, float]:
+        keys = [
+            "recall_at_5",
+            "recall_at_10",
+            "recall_at_20",
+            "mrr",
+            "combined_candidate_recall",
+            "final_evidence_recall",
+            "critical_final_evidence_recall",
+        ]
+        res = {}
+        for k in keys:
+            vals = [case_metrics[cid][arm][k] for cid in case_ids if cid in case_metrics]
+            res[k] = sum(vals) / len(vals) if vals else 0.0
+        return res
+
+    def _delta_metrics(after_m: dict[str, float], before_m: dict[str, float]) -> dict[str, float]:
+        return {k: round(after_m[k] - before_m[k], 6) for k in after_m}
+
+    cohort_before = _mean_metrics(ANSWERED_CASES, "BEFORE_COMPAT")
+    cohort_after = _mean_metrics(ANSWERED_CASES, "AFTER_BATCH1_REPLACEMENT")
+    cohort_deltas = _delta_metrics(cohort_after, cohort_before)
+
+    gold_before = _mean_metrics(GOLD_ANSWERED_CASES, "BEFORE_COMPAT")
+    gold_after = _mean_metrics(GOLD_ANSWERED_CASES, "AFTER_BATCH1_REPLACEMENT")
+    gold_deltas = _delta_metrics(gold_after, gold_before)
+
+    novel_before = _mean_metrics(NOVEL_DEV_ANSWERED_CASES, "BEFORE_COMPAT")
+    novel_after = _mean_metrics(NOVEL_DEV_ANSWERED_CASES, "AFTER_BATCH1_REPLACEMENT")
+    novel_deltas = _delta_metrics(novel_after, novel_before)
+
+    negative_controls_accounting: dict[str, Any] = {}
+    for cid in INSUFFICIENT_EVIDENCE_CASES:
+        q = all_questions.get(cid)
+        slot_b = slots_map.get((cid, "BEFORE_COMPAT"), {})
+        slot_a = slots_map.get((cid, "AFTER_BATCH1_REPLACEMENT"), {})
+        negative_controls_accounting[cid] = {
+            "case_id": cid,
+            "expected_status": q.expected_status.value if q else "insufficient_evidence",
+            "BEFORE_final_evidence_count": len(slot_b.get("final_evidence_object_ids", [])),
+            "AFTER_final_evidence_count": len(slot_a.get("final_evidence_object_ids", [])),
+        }
+
+    # Final verdict precedence determination
+    verdict_outcome = compute_controlled_shared_plan_verdict(
+        execution_valid=True,
+        protocol_violation=False,
+        before_reference_valid=before_reference_valid,
+        target_replacement_reproduced=target_replacement_reproduced_count,
+        batch1_dependency_removed=dep_count,
+        shared_plan_critical_regressions=critical_regression_ids,
+        grounding_regressions=safety_res["GROUNDING_REGRESSIONS"],
+        wrong_version_regressions=safety_res["WRONG_VERSION_REGRESSIONS"],
+        invalid_provenance_recoveries=safety_res["INVALID_PROVENANCE_RECOVERIES"],
+        metric_deltas=cohort_deltas,
+    )
+
+    eval_artifact = {
+        "schema_version": "1.0.0",
+        "checkpoint": "D4-A2-V2",
+        "stage": "d4_a2_v2_evaluator_results",
+        "raw_results_freeze_sha": raw_results_freeze_sha,
+        "evaluator_implementation_freeze_sha": evaluator_freeze_sha,
+        "frozen_provenance": {
+            "raw_results_freeze_sha": raw_results_freeze_sha,
+            "raw_results_blob": raw_results_blob,
+            "raw_plans_blob": raw_plans_blob,
+            "evaluator_implementation_freeze_sha": evaluator_freeze_sha,
+            "evaluator_implementation_freeze_message": evaluator_freeze_msg,
+            "evaluator_implementation_parent_sha": raw_results_freeze_sha,
+        },
+        "raw_artifact_authority": str(raw_results_file),
+        "raw_plans_authority": str(raw_plans_file),
+        "evaluator_executed_at_utc": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        "protocol_validity": {
+            "execution_valid": True,
+            "protocol_violation": False,
+            "slots_total": len(raw_data.get("slots", [])),
+            "plan_equality_all_verified": True,
+            "analyzer_provider_calls": 0,
+        },
+        "applicability_accounting": {
+            "cohort_total_cases": len(CASE_ORDER),
+            "answered_cases_count": len(ANSWERED_CASES),
+            "gold_answered_cases_count": len(GOLD_ANSWERED_CASES),
+            "novel_dev_answered_cases_count": len(NOVEL_DEV_ANSWERED_CASES),
+            "insufficient_evidence_cases_count": len(INSUFFICIENT_EVIDENCE_CASES),
+            "answered_cases": ANSWERED_CASES,
+            "gold_answered_cases": GOLD_ANSWERED_CASES,
+            "novel_dev_answered_cases": NOVEL_DEV_ANSWERED_CASES,
+            "insufficient_evidence_cases": INSUFFICIENT_EVIDENCE_CASES,
+            "negative_controls": negative_controls_accounting,
+        },
+        "evidence_group_pair_classifications": group_classifications,
+        "pair_phenotype_counts": {
+            "pre_rerank": pair_pre_rerank_counts,
+            "final_evidence": pair_final_counts,
+        },
+        "first_divergence_accounting": first_divergence_counts,
+        "primary_target_reproduction": {
+            "g036.e1": {
+                "before_retained": b_ret_g036,
+                "after_retained": a_ret_g036,
+                "has_valid_witness": wit_g036.get("has_valid_witness", False),
+                "reproduced": g036_reproduced,
+                "witness_record": wit_g036,
+            },
+            "g021.e1": {
+                "before_retained": b_ret_g021,
+                "after_retained": a_ret_g021,
+                "has_valid_witness": wit_g021.get("has_valid_witness", False),
+                "reproduced": g021_reproduced,
+                "witness_record": wit_g021,
+            },
+            "before_reference_valid": before_reference_valid,
+            "target_replacement_reproduced": target_replacement_reproduced_count,
+            "target_replacement_reproduced_display": f"{target_replacement_reproduced_count} / 2",
+            "batch1_dependency_removed": dep_count,
+            "batch1_dependency_removed_display": f"{dep_count} / 2",
+            "dependency_removal_receipts": dep_receipts,
+        },
+        "regression_accounting": {
+            "shared_plan_critical_regressions": critical_regression_ids,
+            "critical_regression_details": critical_regression_details,
+            "noncritical_regressions": noncritical_regression_ids,
+            "grounding_regressions": safety_res["GROUNDING_REGRESSIONS"],
+            "wrong_version_regressions": safety_res["WRONG_VERSION_REGRESSIONS"],
+            "invalid_provenance_recoveries": safety_res["INVALID_PROVENANCE_RECOVERIES"],
+            "safety_details": {
+                "grounding_details": safety_res["grounding_details"],
+                "wrong_version_details": safety_res["wrong_version_details"],
+                "invalid_provenance_details": safety_res["invalid_provenance_details"],
+            },
+        },
+        "metrics": {
+            "cohort_answered": {
+                "case_count": len(ANSWERED_CASES),
+                "BEFORE_COMPAT": cohort_before,
+                "AFTER_BATCH1_REPLACEMENT": cohort_after,
+                "deltas": cohort_deltas,
+            },
+            "subsets": {
+                "gold_answered": {
+                    "case_count": len(GOLD_ANSWERED_CASES),
+                    "BEFORE_COMPAT": gold_before,
+                    "AFTER_BATCH1_REPLACEMENT": gold_after,
+                    "deltas": gold_deltas,
+                },
+                "novel_dev_answered": {
+                    "case_count": len(NOVEL_DEV_ANSWERED_CASES),
+                    "BEFORE_COMPAT": novel_before,
+                    "AFTER_BATCH1_REPLACEMENT": novel_after,
+                    "deltas": novel_deltas,
+                },
+            },
+            "per_case_metrics": case_metrics,
+        },
+        "zero_provider_accounting": {
+            "ANALYZER_CALLS": 0,
+            "EMBEDDING_CALLS": 0,
+            "RERANKER_CALLS": 0,
+            "QA_CALLS": 0,
+            "VERIFIER_CALLS": 0,
+            "JUDGE_CALLS": 0,
+            "POSTGRESQL_WRITES": 0,
+            "QDRANT_WRITES": 0,
+            "INGESTION_RUNS": 0,
+            "REINDEX_RUNS": 0,
+            "NOVEL_VALIDATION_RUNS": 0,
+            "NOVEL_HOLDOUT_RUNS": 0,
+            "PROTECTED_DATASET_ACCESS": 0,
+        },
+        "post_exposure_mutation_accounting": mutation_counters,
+        "verdict_outcome": verdict_outcome,
+        "production_activation": False,
+        "first_batch_runtime_migration": "BLOCKED",
+        "d4_a3": "NOT_STARTED / BLOCKED",
+    }
+
+    compact_result = {
+        "schema_version": "1.0.0",
+        "checkpoint": "D4-A2-V2",
+        "stage": "D4-A2-V2 — Controlled Shared-Plan T2 Before/After Validation",
+        "lifecycle_status": f"COMPLETE / {verdict_outcome['verdict']}",
+        "raw_results_freeze_sha": raw_results_freeze_sha,
+        "evaluator_implementation_freeze_sha": evaluator_freeze_sha,
+        "execution_valid": True,
+        "before_reference_valid": before_reference_valid,
+        "target_replacement_reproduced": f"{target_replacement_reproduced_count} / 2",
+        "batch1_dependency_removed": f"{dep_count} / 2",
+        "critical_regressions_count": len(critical_regression_ids),
+        "grounding_regressions": safety_res["GROUNDING_REGRESSIONS"],
+        "wrong_version_regressions": safety_res["WRONG_VERSION_REGRESSIONS"],
+        "invalid_provenance_recoveries": safety_res["INVALID_PROVENANCE_RECOVERIES"],
+        "primary_metric_deltas": {k: cohort_deltas[k] for k in REQUIRED_PRIMARY_METRIC_KEYS},
+        "mrr_delta": cohort_deltas.get("mrr", 0.0),
+        "verdict_level": verdict_outcome["verdict_level"],
+        "verdict": verdict_outcome["verdict"],
+        "verdict_reason": verdict_outcome["verdict_reason"],
+        "production_activation": False,
+        "first_batch_runtime_migration": "BLOCKED",
+        "d4_a3_status": "NOT_STARTED / BLOCKED",
+    }
+
+    if write_artifacts:
+        _save_json(project_root / EVALUATOR_RESULTS_PATH, eval_artifact)
+        _save_json(project_root / RESULT_PATH, compact_result)
+
+    return eval_artifact
+
+
+def evaluate(project_root: Path) -> dict[str, Any]:
+    """Deterministic offline evaluator for D4-A2-V2."""
+    return evaluate_d4_a2_v2(project_root)
 
 
 def main() -> None:
@@ -1978,6 +3299,7 @@ def main() -> None:
             "execute-phase-r",
             "evaluate",
             "verify-plan-freeze-gate",
+            "verify-evaluator-freeze-provenance",
         ],
         default="audit-invariants",
         help="Execution mode (evaluate fails closed until separately authorized Commit D)",
@@ -1998,6 +3320,10 @@ def main() -> None:
     elif args.mode == "verify-plan-freeze-gate":
         receipt = verify_plan_freeze_gate(project_root)
         print("[PLAN FREEZE GATE SUCCESS] Repaired plan-freeze gate verified successfully:")
+        print(json.dumps(receipt, indent=2, ensure_ascii=False))
+    elif args.mode == "verify-evaluator-freeze-provenance":
+        receipt = verify_evaluator_freeze_provenance(project_root)
+        print("[EVALUATOR FREEZE PROVENANCE SUCCESS] Provenance verified successfully:")
         print(json.dumps(receipt, indent=2, ensure_ascii=False))
 
 

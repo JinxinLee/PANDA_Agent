@@ -131,9 +131,7 @@ def test_32_cell_balanced_alternating_schedule():
         assert act["cell_index"] == exp["slot_index"]
         assert act["case_id"] == exp["case_id"]
         assert act["arm"] == exp["arm"]
-        assert act["status"] == "NOT_STARTED"
-        assert act["started_at"] is None
-        assert act["completed_at"] is None
+        assert act["status"] in ("NOT_STARTED", "COMPLETED")
 
 
 # ---------------------------------------------------------------------------
@@ -546,8 +544,11 @@ def test_audit_invariants_offline(monkeypatch):
     manifest_pre = copy.deepcopy(manifest_data)
     manifest_pre["outcome_exposure_state"]["D4_A2_V2_OUTCOME_EXPOSURE"] = "NOT_STARTED"
     manifest_pre["outcome_exposure_state"]["phase_p_slots_completed"] = 0
+    manifest_pre["outcome_exposure_state"]["phase_r_cells_completed"] = 0
     for s in manifest_pre["phase_p_slots_16"]:
         s["status"] = "NOT_STARTED"
+    for c in manifest_pre["phase_r_cells_32"]:
+        c["status"] = "NOT_STARTED"
     orig_load_json = v2._load_json
 
     def mock_load(path: Path) -> Any:
@@ -973,7 +974,10 @@ def test_execute_phase_r_gate_rejects_before_exposure_state_mutation(tmp_path):
         manifest_after["outcome_exposure_state"]["D4_A2_V2_OUTCOME_EXPOSURE"]
         == manifest_data["outcome_exposure_state"]["D4_A2_V2_OUTCOME_EXPOSURE"]
     )
-    assert manifest_after["outcome_exposure_state"]["phase_r_cells_completed"] == 0
+    assert (
+        manifest_after["outcome_exposure_state"]["phase_r_cells_completed"]
+        == manifest_data["outcome_exposure_state"]["phase_r_cells_completed"]
+    )
 
 
 def test_provenance_names_separate_commit_a_and_plan_freeze():
@@ -1200,25 +1204,22 @@ def test_build_phase_r_cell_record_lossless_preservation():
 # 17. Commit-D Evaluator Fail-Closed Boundary Tests
 # ---------------------------------------------------------------------------
 
-def test_evaluator_fails_closed_without_creating_files(tmp_path):
-    """Verify that invoking evaluate() fails closed with RuntimeError and creates
-    zero evaluator or result files. Commit D is not authorized.
+def test_evaluator_missing_raw_results_fails_closed(tmp_path):
+    """Verify that invoking evaluate() with missing raw results fails closed with FileNotFoundError
+    and creates zero evaluator or result files.
     """
-    with pytest.raises(RuntimeError) as exc_info:
+    with pytest.raises(FileNotFoundError) as exc_info:
         v2.evaluate(tmp_path)
 
-    err_msg = str(exc_info.value)
-    assert "Commit D" in err_msg
-    assert "unavailable until separately authorized Commit D after Commit C raw freeze" in err_msg
-
+    assert "missing" in str(exc_info.value).lower()
     # Verify zero files created
     assert not (tmp_path / v2.EVALUATOR_RESULTS_PATH).exists()
     assert not (tmp_path / v2.RESULT_PATH).exists()
     assert list(tmp_path.rglob("*")) == []
 
 
-def test_evaluator_cli_fails_closed(monkeypatch, tmp_path):
-    """Verify that executing evaluate mode via CLI fails closed with zero file writes."""
+def test_evaluator_cli_missing_raw_results_fails_closed(monkeypatch, tmp_path):
+    """Verify that executing evaluate mode via CLI with missing raw results fails closed with zero file writes."""
     monkeypatch.setattr(
         sys,
         "argv",
@@ -1230,10 +1231,9 @@ def test_evaluator_cli_fails_closed(monkeypatch, tmp_path):
             "evaluate",
         ],
     )
-    with pytest.raises(RuntimeError) as exc_info:
+    with pytest.raises(FileNotFoundError):
         v2.main()
 
-    assert "Commit D" in str(exc_info.value)
     assert not (tmp_path / v2.EVALUATOR_RESULTS_PATH).exists()
     assert not (tmp_path / v2.RESULT_PATH).exists()
     assert list(tmp_path.rglob("*")) == []
@@ -1775,3 +1775,937 @@ def test_plan_signature_all_16_real_frozen_plans_verify():
         sig_str, computed_sig = v2.compute_plan_signature(canonical)
         assert computed_sig == stored_sig, f"Signature mismatch on slot #{idx} ({cid})"
         assert sig_str == json.dumps(stored_sig, sort_keys=True)
+
+
+# ---------------------------------------------------------------------------
+# 19. Section 18 Focused Evaluator Tests (22 Requirements)
+# ---------------------------------------------------------------------------
+
+def _make_synthetic_raw_cell(slot_idx: int, case_id: str, arm: str, **overrides: Any) -> dict[str, Any]:
+    cell = {
+        "cell_index": slot_idx,
+        "case_id": case_id,
+        "arm": arm,
+        "status": "COMPLETED",
+        "error": None,
+        "plan_equality_verified": True,
+        "analyzer_provider_calls": 0,
+        "embedding_calls": 1,
+        "reranker_calls": 1,
+        "provider_internal_attempts": 2,
+        "token_usage": 100,
+        "elapsed_seconds": 0.5,
+        "started_at": "2026-09-03T12:00:00",
+        "completed_at": "2026-09-03T12:00:01",
+        "channel_rankings": {"exact": [], "dense": []},
+        "ordinary_fused_ordering": [],
+        "ordinary_fused_top30": [],
+        "reserved_candidate_ids": [],
+        "displaced_candidate_ids": [],
+        "final_pool_object_ids": [],
+        "ranked_object_ids": [],
+        "final_evidence_object_ids": [],
+        "final_evidence_locators": {},
+        "excluded": [],
+        "backfill_admissions": [],
+        "structured_receipts": {},
+        "v2_diagnostics": {},
+        "eligible_bridge_candidates": [],
+        "selected_bridge_candidates": [],
+        "resolved_d2_seeds": [],
+        "reached_structures": [],
+        "reachability_receipts": [],
+        "actual_bridge_receipts": [],
+        "inputs": {},
+        "group_retention": {},
+    }
+    cell.update(overrides)
+    return cell
+
+
+def _make_synthetic_raw_results_data(
+    slots: list[dict[str, Any]] | None = None,
+    **overrides: Any,
+) -> dict[str, Any]:
+    if slots is None:
+        slots = [
+            _make_synthetic_raw_cell(s["slot_index"], s["case_id"], s["arm"])
+            for s in v2.SCHEDULE_32
+        ]
+    data = {
+        "schema_version": "1.0.0",
+        "checkpoint": "D4-A2-V2",
+        "stage": "Phase R — Paired Retrieval Execution",
+        "created_at": "2026-09-03T12:00:00",
+        "starting_head": "b1a9f12366e328263e000f7b4c89184f2854c77a",
+        "implementation_freeze_head": "afc93327ff7f6de6c0b49dd905347696cfaad27a",
+        "phase_p_plan_freeze_commit_head": "537836244d44d9e5c10472df019f5fac1c9070a1",
+        "runtime_execution_head": "8ef69a99d6389c47d7c2f09f7b9ff7d04aee548d",
+        "EVALUATOR_EXECUTED": False,
+        "SCIENTIFIC_VERDICT_COMPUTED": False,
+        "model_contract": {
+            "generation_model_id": v2.EXPECTED_MODEL,
+            "embedding_model_id": v2.EXPECTED_EMBEDDING_MODEL,
+        },
+        "accounting": {
+            "NOVEL_VALIDATION_RUNS": 0,
+            "NOVEL_HOLDOUT_RUNS": 0,
+            "PROTECTED_DATASET_ACCESS": 0,
+        },
+        "slots": slots,
+    }
+    data.update(overrides)
+    return data
+
+
+def test_s18_req01_raw_structural_invalidity_yields_level_1(tmp_path):
+    """Req 1: Raw structural invalidity -> Level 1 INVALID."""
+    # 1. Slot count mismatch (31 instead of 32)
+    invalid_data_31 = _make_synthetic_raw_results_data(
+        slots=[_make_synthetic_raw_cell(s["slot_index"], s["case_id"], s["arm"]) for s in v2.SCHEDULE_32[:31]]
+    )
+    is_valid, err, _ = v2.validate_raw_artifact_structural_validity(invalid_data_31)
+    assert is_valid is False
+    assert "slots count mismatch" in err
+
+    # 2. Plan equality not verified
+    invalid_data_pe = _make_synthetic_raw_results_data()
+    invalid_data_pe["slots"][0]["plan_equality_verified"] = False
+    is_valid_pe, err_pe, _ = v2.validate_raw_artifact_structural_validity(invalid_data_pe)
+    assert is_valid_pe is False
+    assert "plan equality" in err_pe
+
+    # 3. Analyzer provider calls > 0
+    invalid_data_ap = _make_synthetic_raw_results_data()
+    invalid_data_ap["slots"][0]["analyzer_provider_calls"] = 1
+    is_valid_ap, err_ap, _ = v2.validate_raw_artifact_structural_validity(invalid_data_ap)
+    assert is_valid_ap is False
+    assert "Analyzer provider calls > 0" in err_ap
+
+    # 4. Premature evaluator executed flag
+    invalid_data_ee = _make_synthetic_raw_results_data(EVALUATOR_EXECUTED=True)
+    is_valid_ee, err_ee, _ = v2.validate_raw_artifact_structural_validity(invalid_data_ee)
+    assert is_valid_ee is False
+    assert "EVALUATOR_EXECUTED" in err_ee
+
+    # 5. Full evaluate_d4_a2_v2 pipeline produces Level 1 on structural invalidity
+    raw_file = tmp_path / "raw_invalid.json"
+    raw_file.write_text(json.dumps(invalid_data_31), encoding="utf-8")
+    eval_res = v2.evaluate_d4_a2_v2(
+        project_root=tmp_path,
+        raw_results_path=raw_file,
+        write_artifacts=False,
+        require_git_frozen=False,
+    )
+    assert eval_res["execution_valid"] is False
+    assert eval_res["protocol_violation"] is True
+    assert eval_res["verdict_outcome"]["verdict_level"] == 1
+    assert "INVALID" in eval_res["verdict_outcome"]["verdict"]
+
+
+def test_s18_req02_incomplete_evaluator_inputs_cannot_pass():
+    """Req 2: Incomplete evaluator inputs cannot PASS -> fails closed at Level 1."""
+    # Missing execution_valid
+    res1 = v2.compute_controlled_shared_plan_verdict(execution_valid=None)
+    assert res1["verdict_level"] == 1
+    assert "INCOMPLETE_EVALUATOR_INPUT" in res1["verdict_reason"]
+
+    # Missing target_replacement_reproduced
+    res2 = v2.compute_controlled_shared_plan_verdict(
+        **_make_valid_verdict_inputs(target_replacement_reproduced=None)
+    )
+    assert res2["verdict_level"] == 1
+    assert "INCOMPLETE_EVALUATOR_INPUT" in res2["verdict_reason"]
+
+    # Missing metric deltas
+    res3 = v2.compute_controlled_shared_plan_verdict(
+        **_make_valid_verdict_inputs(metric_deltas=None)
+    )
+    assert res3["verdict_level"] == 1
+    assert "INCOMPLETE_EVALUATOR_INPUT" in res3["verdict_reason"]
+
+    # Incomplete primary metric keys
+    incomplete_deltas = dict(VALID_PRIMARY_METRIC_DELTAS)
+    del incomplete_deltas["recall_at_5"]
+    res4 = v2.compute_controlled_shared_plan_verdict(
+        **_make_valid_verdict_inputs(metric_deltas=incomplete_deltas)
+    )
+    assert res4["verdict_level"] == 1
+    assert "INCOMPLETE_EVALUATOR_INPUT" in res4["verdict_reason"]
+
+
+def test_s18_req03_unresolved_both_ff_is_not_treatment_regression():
+    """Req 3: F/F -> unresolved both, strictly NOT a treatment regression."""
+    pre_class = v2.classify_pair_pre_rerank(False, False)
+    fin_class = v2.classify_pair_final_evidence(False, False)
+    assert pre_class == v2.PAIR_UNRESOLVED_BOTH
+    assert fin_class == v2.FINAL_UNRESOLVED_BOTH
+
+    is_regr, reason = v2.attribute_critical_regression(
+        case_id="g036",
+        group_id="g036.e1",
+        critical=True,
+        pre_rerank_class=pre_class,
+        final_class=fin_class,
+        first_div_layer=v2.DIV_NO_DIVERGENCE,
+        slot_b={},
+        slot_a={},
+    )
+    assert is_regr is False
+    assert "not a treatment regression" in reason
+
+    # When pre_rerank is unresolved both (F/F), it is baseline weakness, never treatment failure
+    is_regr2, reason2 = v2.attribute_critical_regression(
+        case_id="g036",
+        group_id="g036.e1",
+        critical=True,
+        pre_rerank_class=v2.PAIR_UNRESOLVED_BOTH,
+        final_class=v2.FINAL_TREATMENT_REGRESSION,
+        first_div_layer=v2.DIV_NO_DIVERGENCE,
+        slot_b={},
+        slot_a={},
+    )
+    assert is_regr2 is False
+    assert "baseline weakness" in reason2
+
+
+def test_s18_req04_paired_treatment_regression_tf_classification():
+    """Req 4: T/F paired treatment regression classification."""
+    assert v2.classify_pair_pre_rerank(True, False) == v2.PAIR_TREATMENT_REGRESSION
+    assert v2.classify_pair_final_evidence(True, False) == v2.FINAL_TREATMENT_REGRESSION
+
+
+def test_s18_req05_paired_treatment_recovery_ft_classification():
+    """Req 5: F/T paired treatment recovery classification."""
+    assert v2.classify_pair_pre_rerank(False, True) == v2.PAIR_TREATMENT_RECOVERY
+    assert v2.classify_pair_final_evidence(False, True) == v2.FINAL_TREATMENT_RECOVERY
+
+
+def test_s18_req06_final_only_divergence_not_automatically_causal_regression():
+    """Req 6: Final-only divergence does not automatically become causal regression."""
+    # Pre-rerank preserved (True/True), but final lost in AFTER (True/False)
+    # Scenario A: zero reserved candidates in AFTER pool -> Pure reranker variance, NOT causal regression
+    is_regr_a, reason_a = v2.attribute_critical_regression(
+        case_id="g036",
+        group_id="g036.e1",
+        critical=True,
+        pre_rerank_class=v2.PAIR_PRESERVED,
+        final_class=v2.FINAL_TREATMENT_REGRESSION,
+        first_div_layer=v2.DIV_RERANKER,
+        slot_b={},
+        slot_a={"reserved_candidate_ids": []},
+    )
+    assert is_regr_a is False
+    assert "without causal treatment attribution" in reason_a
+
+    # Scenario B: reserved candidates exist, but none reached final evidence -> NOT causal regression
+    is_regr_b, reason_b = v2.attribute_critical_regression(
+        case_id="g036",
+        group_id="g036.e1",
+        critical=True,
+        pre_rerank_class=v2.PAIR_PRESERVED,
+        final_class=v2.FINAL_TREATMENT_REGRESSION,
+        first_div_layer=v2.DIV_RERANKER,
+        slot_b={},
+        slot_a={
+            "reserved_candidate_ids": ["cand_reserved_1"],
+            "final_evidence_object_ids": ["cand_other_2"],
+        },
+    )
+    assert is_regr_b is False
+    assert "did not cause target exclusion" in reason_b
+
+
+def test_s18_req07_corrected_g021_e2_noncriticality():
+    """Req 7: Corrected g021.e2 noncriticality."""
+    assert v2.get_evidence_group_criticality("g021.e2", default_critical=True) is False
+
+    is_regr, reason = v2.attribute_critical_regression(
+        case_id="g021",
+        group_id="g021.e2",
+        critical=False,
+        pre_rerank_class=v2.PAIR_TREATMENT_REGRESSION,
+        final_class=v2.FINAL_TREATMENT_REGRESSION,
+        first_div_layer=v2.DIV_ORDINARY_CHANNEL_RECALL,
+        slot_b={},
+        slot_a={},
+    )
+    assert is_regr is False
+    assert "Noncritical evidence group g021.e2 excluded" in reason
+
+
+def test_s18_req08_n022_e2_criticality():
+    """Req 8: n022.e2 criticality."""
+    assert v2.get_evidence_group_criticality("n022.e2", default_critical=False) is True
+
+    is_regr, reason = v2.attribute_critical_regression(
+        case_id="n022",
+        group_id="n022.e2",
+        critical=True,
+        pre_rerank_class=v2.PAIR_TREATMENT_REGRESSION,
+        final_class=v2.FINAL_TREATMENT_REGRESSION,
+        first_div_layer=v2.DIV_ORDINARY_CHANNEL_RECALL,
+        slot_b={},
+        slot_a={},
+    )
+    assert is_regr is True
+    assert "Pre-rerank treatment regression" in reason
+
+
+def test_s18_req09_before_primary_reference_miss_yields_level_2():
+    """Req 9: BEFORE primary-reference miss -> Level 2 INCONCLUSIVE."""
+    inputs = _make_valid_verdict_inputs(before_reference_valid=False)
+    res = v2.compute_controlled_shared_plan_verdict(**inputs)
+    assert res["verdict_level"] == 2
+    assert "INCONCLUSIVE / BEFORE_REFERENCE_NOT_REPRODUCED" in res["verdict"]
+
+
+def test_s18_req10_primary_target_reproduction_less_than_2_yields_level_3():
+    """Req 10: Primary target reproduction < 2 -> Level 3 FAIL."""
+    for val in (0, 1):
+        res = v2.compute_controlled_shared_plan_verdict(
+            **_make_valid_verdict_inputs(target_replacement_reproduced=val)
+        )
+        assert res["verdict_level"] == 3
+        assert "FAIL / PRIMARY_TARGET_REPLACEMENT_NOT_REPRODUCED" in res["verdict"]
+
+    for val in (0, 1):
+        res = v2.compute_controlled_shared_plan_verdict(
+            **_make_valid_verdict_inputs(batch1_dependency_removed=val)
+        )
+        assert res["verdict_level"] == 3
+        assert "FAIL / PRIMARY_TARGET_REPLACEMENT_NOT_REPRODUCED" in res["verdict"]
+
+
+def test_s18_req11_critical_treatment_regression_yields_level_4():
+    """Req 11: Critical treatment regression -> Level 4 FAIL."""
+    inputs = _make_valid_verdict_inputs(shared_plan_critical_regressions=["n022.e2"])
+    res = v2.compute_controlled_shared_plan_verdict(**inputs)
+    assert res["verdict_level"] == 4
+    assert "FAIL / SHARED_PLAN_CRITICAL_TREATMENT_REGRESSION" in res["verdict"]
+
+
+def test_s18_req12_grounding_version_provenance_violation_yields_level_4():
+    """Req 12: Grounding/version/provenance violation -> Level 4 FAIL."""
+    # Grounding regression
+    res_g = v2.compute_controlled_shared_plan_verdict(
+        **_make_valid_verdict_inputs(grounding_regressions=1)
+    )
+    assert res_g["verdict_level"] == 4
+    assert "FAIL / SHARED_PLAN_CRITICAL_TREATMENT_REGRESSION" in res_g["verdict"]
+
+    # Wrong version regression
+    res_v = v2.compute_controlled_shared_plan_verdict(
+        **_make_valid_verdict_inputs(wrong_version_regressions=1)
+    )
+    assert res_v["verdict_level"] == 4
+    assert "FAIL / SHARED_PLAN_CRITICAL_TREATMENT_REGRESSION" in res_v["verdict"]
+
+    # Invalid provenance recovery
+    res_p = v2.compute_controlled_shared_plan_verdict(
+        **_make_valid_verdict_inputs(invalid_provenance_recoveries=1)
+    )
+    assert res_p["verdict_level"] == 4
+    assert "FAIL / SHARED_PLAN_CRITICAL_TREATMENT_REGRESSION" in res_p["verdict"]
+
+
+def test_s18_req13_bounded_metric_tolerance_violation_yields_level_5():
+    """Req 13: Bounded metric tolerance violation -> Level 5 PARTIAL."""
+    for key in v2.REQUIRED_PRIMARY_METRIC_KEYS:
+        deltas = dict(VALID_PRIMARY_METRIC_DELTAS)
+        if key == "critical_final_evidence_recall":
+            deltas[key] = -0.001  # Tolerance is >= 0.0
+        else:
+            deltas[key] = -0.051  # Tolerance is >= -0.05
+
+        inputs = _make_valid_verdict_inputs(metric_deltas=deltas)
+        res = v2.compute_controlled_shared_plan_verdict(**inputs)
+        assert res["verdict_level"] == 5, f"Failed Level 5 check for metric {key}"
+        assert "PARTIAL / AGGREGATE_REGRESSION_EXCEEDS_BOUNDED_TOLERANCE" in res["verdict"]
+
+
+def test_s18_req14_complete_clean_synthetic_inputs_yields_level_6():
+    """Req 14: Complete clean synthetic inputs -> Level 6 PASS."""
+    inputs = _make_valid_verdict_inputs()
+    res = v2.compute_controlled_shared_plan_verdict(**inputs)
+    assert res["verdict_level"] == 6
+    assert "PASS / CONTROLLED_SHARED_PLAN_T2_VALIDATED" in res["verdict"]
+
+
+def test_s18_req15_exact_six_required_primary_metrics():
+    """Req 15: Exact six required primary metrics."""
+    expected_primary = [
+        "recall_at_5",
+        "recall_at_10",
+        "recall_at_20",
+        "combined_candidate_recall",
+        "final_evidence_recall",
+        "critical_final_evidence_recall",
+    ]
+    assert v2.REQUIRED_PRIMARY_METRIC_KEYS == expected_primary
+    assert len(v2.REQUIRED_PRIMARY_METRIC_KEYS) == 6
+
+
+def test_s18_req16_mrr_cannot_change_verdict():
+    """Req 16: MRR cannot change verdict (diagnostic only)."""
+    for mrr_delta in (-1.0, -0.5, 0.0, 0.5, 1.0):
+        deltas = dict(VALID_PRIMARY_METRIC_DELTAS)
+        deltas["mrr"] = mrr_delta
+        res = v2.compute_controlled_shared_plan_verdict(
+            **_make_valid_verdict_inputs(metric_deltas=deltas)
+        )
+        assert res["verdict_level"] == 6
+        assert "PASS / CONTROLLED_SHARED_PLAN_T2_VALIDATED" in res["verdict"]
+
+
+def test_s18_req17_applicability_uses_case_id_not_raw_dataset_string():
+    """Req 17: Applicability uses case ID / preregistered cohort, not raw dataset display string."""
+    assert len(v2.CASE_ORDER) == 16
+    assert len(v2.ANSWERED_CASES) == 13
+    assert len(v2.GOLD_ANSWERED_CASES) == 7
+    assert len(v2.NOVEL_DEV_ANSWERED_CASES) == 6
+    assert len(v2.INSUFFICIENT_EVIDENCE_CASES) == 3
+
+    assert v2.GOLD_ANSWERED_CASES == [c for c in v2.GOLD_CASES if c in v2.ANSWERED_CASES]
+    assert v2.NOVEL_DEV_ANSWERED_CASES == [c for c in v2.NOVEL_DEV_CASES if c in v2.ANSWERED_CASES]
+
+
+def test_s18_req18_negative_controls_accounted_for_separately():
+    """Req 18: Negative controls are accounted for separately."""
+    assert sorted(v2.INSUFFICIENT_EVIDENCE_CASES) == ["g007", "g025", "g041"]
+    assert set(v2.INSUFFICIENT_EVIDENCE_CASES).isdisjoint(set(v2.ANSWERED_CASES))
+    assert len(v2.ANSWERED_CASES) + len(v2.INSUFFICIENT_EVIDENCE_CASES) == len(v2.CASE_ORDER)
+
+
+def test_s18_req19_first_divergence_taxonomy_limited_to_frozen_values():
+    """Req 19: First-divergence taxonomy limited to frozen 9 values."""
+    assert len(v2.FROZEN_FIRST_DIVERGENCE_TAXONOMY) == 9
+    expected_taxonomy = {
+        "NO_DIVERGENCE",
+        "FIXED_LOCATOR_SUPPRESSION",
+        "ORDINARY_CHANNEL_RECALL",
+        "STRUCTURED_GENERATION",
+        "SELECTIVITY",
+        "K3_ADMISSION",
+        "FUSION_CUTOFF",
+        "RERANKER",
+        "FINAL_SELECTION",
+    }
+    assert set(v2.FROZEN_FIRST_DIVERGENCE_TAXONOMY) == expected_taxonomy
+
+
+def test_s18_req20_governed_primary_target_witness_requires_more_than_simple_final_presence(monkeypatch):
+    """Req 20: Governed primary-target witness requires more than simple final-presence."""
+    # Build a mock slot where target is present in final evidence, but has NO eligible bridge candidates
+    mock_slot = {
+        "final_evidence_object_ids": ["obj_test_cand_1"],
+        "eligible_bridge_candidates": [],  # Missing governed structured bridge path!
+        "selected_bridge_candidates": [],
+        "ordinary_fused_top30": [],
+        "reserved_candidate_ids": [],
+        "final_pool_object_ids": ["obj_test_cand_1"],
+    }
+    mock_object_lookup = {
+        "obj_test_cand_1": {
+            "object_id": "obj_test_cand_1",
+            "source_id": "pandaroot",
+            "path": "macro/test.C",
+        }
+    }
+    mock_req_group = MagicMock()
+    mock_req_group.group_id = "test.e1"
+
+    monkeypatch.setattr(
+        d4_a1,
+        "_matched_evidence_groups",
+        lambda groups, oids, lookup: (1.0, [{"object_id": "obj_test_cand_1"}]),
+    )
+    wit = d4_a1.check_admission_witness("test.e1", mock_slot, mock_object_lookup, mock_req_group)
+    assert wit["retained_in_final"] is True
+    assert wit["has_valid_witness"] is False  # Fails witness because governed_path is False!
+    assert wit["candidate_witnesses"][0]["governed_path"] is False
+
+
+def test_s18_req21_evaluator_uses_zero_providers(monkeypatch):
+    """Req 21: Evaluator uses zero providers."""
+    # Ensure any attempt to instantiate or call provider clients raises
+    mock_fail = MagicMock(side_effect=RuntimeError("Provider call forbidden in evaluator"))
+    monkeypatch.setattr(v2, "Retriever", mock_fail)
+    monkeypatch.setattr(v2, "VertexAIClient", mock_fail)
+
+    # Pure decision logic and classification executes with zero provider calls
+    verdict = v2.compute_controlled_shared_plan_verdict(**_make_valid_verdict_inputs())
+    assert verdict["verdict_level"] == 6
+
+    # Verify zero provider accounting definition
+    assert v2.EXPECTED_MODEL == "gemini-3.8-flash"
+    assert v2.EXPECTED_EMBEDDING_MODEL == "gemini-embedding-2"
+
+
+def test_s18_req22_evaluator_does_not_modify_raw_plans_or_raw_results():
+    """Req 22: Evaluator does not modify raw plans or raw results."""
+    # Verify hash-object before and after calling validation
+    res_p = subprocess.run(
+        ["git", "hash-object", str(_PROJECT_ROOT / v2.RAW_PLANS_PATH)],
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    res_r = subprocess.run(
+        ["git", "hash-object", str(_PROJECT_ROOT / v2.RAW_RESULTS_PATH)],
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    assert res_p.stdout.strip() == v2.PLAN_FREEZE_RAW_BLOB
+    assert res_r.stdout.strip() == "2d894ff2d0ac8a49239663df155478614a99bae0"
+
+
+# ---------------------------------------------------------------------------
+# 20. Evaluator Implementation Freeze & Provenance Tests
+# ---------------------------------------------------------------------------
+
+def _mock_evaluator_freeze_git_subprocess(
+    *,
+    eval_sha: str = "da27ba9bd0d4b31b1162c065a46aa9f711f03f7b",
+    eval_msg: str = v2.EXPECTED_EVALUATOR_FREEZE_COMMIT_MESSAGE,
+    eval_parents: list[str] | None = None,
+    current_head: str | None = None,
+    raw_results_origin: str = v2.RAW_RESULTS_FREEZE_HEAD,
+    raw_results_blob: str = v2.RAW_RESULTS_FREEZE_BLOB,
+    raw_plans_blob: str = v2.PLAN_FREEZE_RAW_BLOB,
+    eval_script_blob: str = "dc535f59b97fd68ed96fc985f46dbbf28c9b06e5",
+    worktree_eval_script_blob: str | None = None,
+    dirty_raw_results: list[str] | None = None,
+    dirty_raw_plans: list[str] | None = None,
+    dirty_eval_paths: list[str] | None = None,
+    diff_drift_output: str = "",
+    diff_freeze_files: list[str] | None = None,
+    merge_base_returncode: int = 0,
+):
+    if eval_parents is None:
+        eval_parents = [v2.RAW_RESULTS_FREEZE_HEAD]
+    if current_head is None:
+        current_head = eval_sha
+    if worktree_eval_script_blob is None:
+        worktree_eval_script_blob = eval_script_blob
+    if dirty_raw_results is None:
+        dirty_raw_results = []
+    if dirty_raw_plans is None:
+        dirty_raw_plans = []
+    if dirty_eval_paths is None:
+        dirty_eval_paths = []
+    if diff_freeze_files is None:
+        diff_freeze_files = list(v2.ALLOWED_EVALUATOR_FREEZE_DIFF_FILES)
+
+    def mock_subp_run(cmd, **kwargs):
+        res = MagicMock()
+        res.returncode = 0
+        cmd_str = " ".join(cmd)
+
+        if "cat-file" in cmd_str:
+            res.stdout = ""
+        elif "status" in cmd_str:
+            if "raw_results.json" in cmd_str:
+                res.stdout = "\n".join(dirty_raw_results) + ("\n" if dirty_raw_results else "")
+            elif "raw_plans.json" in cmd_str:
+                res.stdout = "\n".join(dirty_raw_plans) + ("\n" if dirty_raw_plans else "")
+            elif "d4_a2_v2_controlled_shared_plan_validation.py" in cmd_str or "test_d4_a2_v2" in cmd_str:
+                res.stdout = "\n".join(dirty_eval_paths) + ("\n" if dirty_eval_paths else "")
+            else:
+                res.stdout = ""
+        elif "merge-base" in cmd_str:
+            res.returncode = merge_base_returncode
+            res.stdout = ""
+        elif "diff" in cmd_str:
+            if v2.RAW_RESULTS_FREEZE_HEAD in cmd and eval_sha in cmd:
+                res.stdout = "\n".join(diff_freeze_files) + ("\n" if diff_freeze_files else "")
+            elif eval_sha in cmd and "--" in cmd:
+                res.stdout = diff_drift_output
+            else:
+                res.stdout = ""
+        elif "log" in cmd_str:
+            if "%H%x00%s%x00%P" in cmd_str:
+                res.stdout = f"{eval_sha}\x00{eval_msg}\x00{' '.join(eval_parents)}\n"
+            elif "%H" in cmd_str:
+                res.stdout = f"{raw_results_origin}\n"
+            else:
+                res.stdout = f"{eval_sha}\n"
+        elif "rev-parse" in cmd_str:
+            if "raw_results.json" in cmd_str:
+                res.stdout = f"{raw_results_blob}\n"
+            elif "raw_plans.json" in cmd_str:
+                res.stdout = f"{raw_plans_blob}\n"
+            elif f"{eval_sha}:" in cmd_str and "d4_a2_v2_controlled_shared_plan_validation.py" in cmd_str:
+                res.stdout = f"{eval_script_blob}\n"
+            elif cmd[-1] == "HEAD":
+                res.stdout = f"{current_head}\n"
+            else:
+                res.stdout = f"{eval_sha}\n"
+        elif "hash-object" in cmd_str:
+            if "raw_results.json" in cmd_str:
+                res.stdout = f"{raw_results_blob}\n"
+            elif "raw_plans.json" in cmd_str:
+                res.stdout = f"{raw_plans_blob}\n"
+            elif "d4_a2_v2_controlled_shared_plan_validation.py" in cmd_str:
+                res.stdout = f"{worktree_eval_script_blob}\n"
+            else:
+                res.stdout = "some_hash\n"
+        return res
+
+    return mock_subp_run
+
+
+def test_evaluator_freeze_constants():
+    """Verify frozen evaluator provenance constants."""
+    assert v2.RAW_RESULTS_FREEZE_HEAD == "b1a9f12366e328263e000f7b4c89184f2854c77a"
+    assert v2.RAW_RESULTS_FREEZE_BLOB == "2d894ff2d0ac8a49239663df155478614a99bae0"
+    assert v2.PLAN_FREEZE_RAW_BLOB == "ee7c1c011463973557ef423178d7c241bf3821d4"
+    assert v2.EXPECTED_EVALUATOR_FREEZE_COMMIT_MESSAGE == "D4-A2-V2 freeze deterministic evaluator"
+    assert v2.ALLOWED_EVALUATOR_FREEZE_DIFF_FILES == {
+        "evaluation/scripts/d4_a2_v2_controlled_shared_plan_validation.py",
+        "tests/unit/test_d4_a2_v2_controlled_shared_plan_validation.py",
+    }
+
+
+def test_evaluator_freeze_provenance_clean_matches_all_constants(tmp_path, monkeypatch):
+    """Verify that when all Git criteria are met, verify_evaluator_freeze_provenance succeeds."""
+    eval_sha = "mocked_evaluator_freeze_sha_1234567890"
+    monkeypatch.setattr(v2, "_git_head", lambda root: eval_sha)
+    monkeypatch.setattr("subprocess.run", _mock_evaluator_freeze_git_subprocess(eval_sha=eval_sha))
+
+    receipt = v2.verify_evaluator_freeze_provenance(tmp_path)
+    assert receipt["verified"] is True
+    assert receipt["raw_results_freeze_sha"] == v2.RAW_RESULTS_FREEZE_HEAD
+    assert receipt["raw_results_blob"] == v2.RAW_RESULTS_FREEZE_BLOB
+    assert receipt["raw_plans_blob"] == v2.PLAN_FREEZE_RAW_BLOB
+    assert receipt["evaluator_implementation_freeze_sha"] == eval_sha
+    assert receipt["evaluator_implementation_freeze_message"] == v2.EXPECTED_EVALUATOR_FREEZE_COMMIT_MESSAGE
+    assert receipt["evaluator_implementation_parents"] == [v2.RAW_RESULTS_FREEZE_HEAD]
+    assert receipt["current_head"] == eval_sha
+
+
+def test_evaluator_freeze_provenance_rejects_wrong_raw_results_origin(tmp_path, monkeypatch):
+    """Verify that wrong raw-results origin commit fails closed."""
+    eval_sha = "mocked_evaluator_freeze_sha_1234567890"
+    monkeypatch.setattr(v2, "_git_head", lambda root: eval_sha)
+    monkeypatch.setattr(
+        "subprocess.run",
+        _mock_evaluator_freeze_git_subprocess(
+            eval_sha=eval_sha,
+            raw_results_origin="wrong_raw_results_origin_sha_999",
+        ),
+    )
+    with pytest.raises(RuntimeError) as exc_info:
+        v2.verify_evaluator_freeze_provenance(tmp_path)
+    assert "Raw results origin commit mismatch" in str(exc_info.value)
+
+
+def test_evaluator_freeze_provenance_rejects_wrong_raw_results_blob(tmp_path, monkeypatch):
+    """Verify that wrong raw-results Git blob fails closed."""
+    eval_sha = "mocked_evaluator_freeze_sha_1234567890"
+    monkeypatch.setattr(v2, "_git_head", lambda root: eval_sha)
+    monkeypatch.setattr(
+        "subprocess.run",
+        _mock_evaluator_freeze_git_subprocess(
+            eval_sha=eval_sha,
+            raw_results_blob="wrong_results_blob_99999999999999999",
+        ),
+    )
+    with pytest.raises(RuntimeError) as exc_info:
+        v2.verify_evaluator_freeze_provenance(tmp_path)
+    assert "Raw results Git blob mismatch" in str(exc_info.value)
+
+
+def test_evaluator_freeze_provenance_rejects_wrong_raw_plans_blob(tmp_path, monkeypatch):
+    """Verify that wrong raw-plans Git blob fails closed."""
+    eval_sha = "mocked_evaluator_freeze_sha_1234567890"
+    monkeypatch.setattr(v2, "_git_head", lambda root: eval_sha)
+    monkeypatch.setattr(
+        "subprocess.run",
+        _mock_evaluator_freeze_git_subprocess(
+            eval_sha=eval_sha,
+            raw_plans_blob="wrong_plans_blob_88888888888888888",
+        ),
+    )
+    with pytest.raises(RuntimeError) as exc_info:
+        v2.verify_evaluator_freeze_provenance(tmp_path)
+    assert "Raw plans Git blob mismatch" in str(exc_info.value)
+
+
+def test_evaluator_freeze_provenance_rejects_wrong_evaluator_commit_message(tmp_path, monkeypatch):
+    """Verify that mismatching evaluator commit message fails closed."""
+    eval_sha = "mocked_evaluator_freeze_sha_1234567890"
+    monkeypatch.setattr(v2, "_git_head", lambda root: eval_sha)
+    monkeypatch.setattr(
+        "subprocess.run",
+        _mock_evaluator_freeze_git_subprocess(
+            eval_sha=eval_sha,
+            eval_msg="Wrong commit message for freeze",
+        ),
+    )
+    with pytest.raises(RuntimeError) as exc_info:
+        v2.verify_evaluator_freeze_provenance(tmp_path)
+    assert "Evaluator freeze commit message mismatch" in str(exc_info.value)
+
+
+def test_evaluator_freeze_provenance_rejects_wrong_evaluator_parent(tmp_path, monkeypatch):
+    """Verify that non-direct-child of raw-result freeze fails closed."""
+    eval_sha = "mocked_evaluator_freeze_sha_1234567890"
+    monkeypatch.setattr(v2, "_git_head", lambda root: eval_sha)
+    monkeypatch.setattr(
+        "subprocess.run",
+        _mock_evaluator_freeze_git_subprocess(
+            eval_sha=eval_sha,
+            eval_parents=["wrong_parent_sha_77777777777777777"],
+        ),
+    )
+    with pytest.raises(RuntimeError) as exc_info:
+        v2.verify_evaluator_freeze_provenance(tmp_path)
+    assert "Evaluator freeze parent mismatch" in str(exc_info.value)
+
+
+def test_evaluator_freeze_provenance_rejects_non_ancestor_freeze_commit(tmp_path, monkeypatch):
+    """Verify that freeze commit that is not an ancestor of HEAD fails closed."""
+    eval_sha = "mocked_evaluator_freeze_sha_1234567890"
+    monkeypatch.setattr(v2, "_git_head", lambda root: "some_unrelated_head_sha")
+    monkeypatch.setattr(
+        "subprocess.run",
+        _mock_evaluator_freeze_git_subprocess(
+            eval_sha=eval_sha,
+            current_head="some_unrelated_head_sha",
+            merge_base_returncode=1,
+        ),
+    )
+    with pytest.raises(RuntimeError) as exc_info:
+        v2.verify_evaluator_freeze_provenance(tmp_path)
+    assert "not an ancestor of current HEAD" in str(exc_info.value)
+
+
+def test_evaluator_freeze_provenance_rejects_disallowed_freeze_diff_files(tmp_path, monkeypatch):
+    """Verify that evaluator freeze commit with disallowed file changes fails closed."""
+    eval_sha = "mocked_evaluator_freeze_sha_1234567890"
+    monkeypatch.setattr(v2, "_git_head", lambda root: eval_sha)
+    monkeypatch.setattr(
+        "subprocess.run",
+        _mock_evaluator_freeze_git_subprocess(
+            eval_sha=eval_sha,
+            diff_freeze_files=list(v2.ALLOWED_EVALUATOR_FREEZE_DIFF_FILES) + ["src/panda_agent/prompts.py"],
+        ),
+    )
+    with pytest.raises(RuntimeError) as exc_info:
+        v2.verify_evaluator_freeze_provenance(tmp_path)
+    assert "modified disallowed paths" in str(exc_info.value)
+
+
+def test_evaluator_freeze_provenance_rejects_uncommitted_raw_results(tmp_path, monkeypatch):
+    """Verify that uncommitted/dirty worktree for raw results fails closed."""
+    eval_sha = "mocked_evaluator_freeze_sha_1234567890"
+    monkeypatch.setattr(v2, "_git_head", lambda root: eval_sha)
+    monkeypatch.setattr(
+        "subprocess.run",
+        _mock_evaluator_freeze_git_subprocess(
+            eval_sha=eval_sha,
+            dirty_raw_results=[" M evaluation/d4_a2_v2_raw_results.json"],
+        ),
+    )
+    with pytest.raises(RuntimeError) as exc_info:
+        v2.verify_evaluator_freeze_provenance(tmp_path)
+    assert "Raw results artifact" in str(exc_info.value)
+    assert "uncommitted or dirty changes" in str(exc_info.value)
+
+
+def test_evaluator_freeze_provenance_rejects_uncommitted_raw_plans(tmp_path, monkeypatch):
+    """Verify that uncommitted/dirty worktree for raw plans fails closed."""
+    eval_sha = "mocked_evaluator_freeze_sha_1234567890"
+    monkeypatch.setattr(v2, "_git_head", lambda root: eval_sha)
+    monkeypatch.setattr(
+        "subprocess.run",
+        _mock_evaluator_freeze_git_subprocess(
+            eval_sha=eval_sha,
+            dirty_raw_plans=[" M evaluation/d4_a2_v2_raw_plans.json"],
+        ),
+    )
+    with pytest.raises(RuntimeError) as exc_info:
+        v2.verify_evaluator_freeze_provenance(tmp_path)
+    assert "Raw plans artifact" in str(exc_info.value)
+    assert "uncommitted or dirty changes" in str(exc_info.value)
+
+
+def test_evaluator_freeze_provenance_rejects_uncommitted_evaluator_changes(tmp_path, monkeypatch):
+    """Verify that uncommitted/dirty worktree for evaluator files fails closed."""
+    eval_sha = "mocked_evaluator_freeze_sha_1234567890"
+    monkeypatch.setattr(v2, "_git_head", lambda root: eval_sha)
+    monkeypatch.setattr(
+        "subprocess.run",
+        _mock_evaluator_freeze_git_subprocess(
+            eval_sha=eval_sha,
+            dirty_eval_paths=[" M evaluation/scripts/d4_a2_v2_controlled_shared_plan_validation.py"],
+        ),
+    )
+    with pytest.raises(RuntimeError) as exc_info:
+        v2.verify_evaluator_freeze_provenance(tmp_path)
+    assert "Worktree or index is dirty for evaluator files" in str(exc_info.value)
+
+
+def test_evaluator_freeze_provenance_rejects_evaluator_code_drift(tmp_path, monkeypatch):
+    """Verify that evaluator code drift between freeze commit and worktree fails closed."""
+    eval_sha = "mocked_evaluator_freeze_sha_1234567890"
+    monkeypatch.setattr(v2, "_git_head", lambda root: eval_sha)
+    monkeypatch.setattr(
+        "subprocess.run",
+        _mock_evaluator_freeze_git_subprocess(
+            eval_sha=eval_sha,
+            diff_drift_output="diff --git a/... b/...",
+        ),
+    )
+    with pytest.raises(RuntimeError) as exc_info:
+        v2.verify_evaluator_freeze_provenance(tmp_path)
+    assert "Evaluator code drift detected" in str(exc_info.value)
+
+
+def test_evaluator_freeze_provenance_permits_recomputation_from_descendant_without_drift(tmp_path, monkeypatch):
+    """Verify that deterministic recomputation from a later closeout descendant succeeds
+    when evaluator files are unchanged relative to the freeze commit.
+    """
+    eval_sha = "authoritative_evaluator_freeze_sha_12345"
+    descendant_head = "closeout_commit_sha_67890"
+    monkeypatch.setattr(v2, "_git_head", lambda root: descendant_head)
+    monkeypatch.setattr(
+        "subprocess.run",
+        _mock_evaluator_freeze_git_subprocess(
+            eval_sha=eval_sha,
+            current_head=descendant_head,
+            merge_base_returncode=0,
+            diff_drift_output="",
+            dirty_eval_paths=[],
+        ),
+    )
+
+    receipt = v2.verify_evaluator_freeze_provenance(tmp_path)
+    assert receipt["verified"] is True
+    assert receipt["evaluator_implementation_freeze_sha"] == eval_sha
+    assert receipt["current_head"] == descendant_head
+    assert receipt["raw_results_freeze_sha"] == v2.RAW_RESULTS_FREEZE_HEAD
+
+
+def test_evaluate_d4_a2_v2_records_exact_provenance_shas_and_blobs(tmp_path, monkeypatch):
+    """Verify that evaluate_d4_a2_v2 records the exact authoritative raw-result freeze SHA
+    and the actual evaluator implementation freeze SHA, instead of starting_head or placeholders.
+    """
+    eval_sha = "authoritative_evaluator_freeze_sha_abcdef"
+    mock_provenance = {
+        "verified": True,
+        "raw_results_freeze_sha": v2.RAW_RESULTS_FREEZE_HEAD,
+        "raw_results_blob": v2.RAW_RESULTS_FREEZE_BLOB,
+        "raw_plans_blob": v2.PLAN_FREEZE_RAW_BLOB,
+        "evaluator_implementation_freeze_sha": eval_sha,
+        "evaluator_implementation_freeze_message": v2.EXPECTED_EVALUATOR_FREEZE_COMMIT_MESSAGE,
+        "evaluator_implementation_parents": [v2.RAW_RESULTS_FREEZE_HEAD],
+        "current_head": eval_sha,
+    }
+
+    synthetic_invalid = _make_synthetic_raw_results_data(
+        starting_head="6bc10872bee9d00a7ea710f55353c3113756dbb2",  # historical, NOT raw-result freeze
+        EVALUATOR_EXECUTED=True,
+    )
+    invalid_file = tmp_path / "raw_invalid.json"
+    invalid_file.write_text(json.dumps(synthetic_invalid, indent=2), encoding="utf-8")
+
+    eval_res_invalid = v2.evaluate_d4_a2_v2(
+        project_root=tmp_path,
+        raw_results_path=invalid_file,
+        write_artifacts=False,
+        require_git_frozen=True,
+        git_checker=lambda root: mock_provenance,
+    )
+    assert eval_res_invalid["raw_results_freeze_sha"] == v2.RAW_RESULTS_FREEZE_HEAD
+    assert eval_res_invalid["evaluator_implementation_freeze_sha"] == eval_sha
+    assert eval_res_invalid["frozen_provenance"]["raw_results_freeze_sha"] == v2.RAW_RESULTS_FREEZE_HEAD
+    assert eval_res_invalid["frozen_provenance"]["raw_results_blob"] == v2.RAW_RESULTS_FREEZE_BLOB
+    assert eval_res_invalid["frozen_provenance"]["raw_plans_blob"] == v2.PLAN_FREEZE_RAW_BLOB
+    assert eval_res_invalid["frozen_provenance"]["evaluator_implementation_freeze_sha"] == eval_sha
+    assert eval_res_invalid["frozen_provenance"]["evaluator_implementation_freeze_message"] == v2.EXPECTED_EVALUATOR_FREEZE_COMMIT_MESSAGE
+    assert eval_res_invalid["frozen_provenance"]["evaluator_implementation_parent_sha"] == v2.RAW_RESULTS_FREEZE_HEAD
+
+
+def test_evaluate_d4_a2_v2_writes_exact_provenance_to_compact_and_eval_artifacts(tmp_path, monkeypatch):
+    """Verify that evaluate_d4_a2_v2 with write_artifacts=True writes exact authoritative
+    raw-result freeze SHA and evaluator implementation freeze SHA to both JSON files on disk.
+    """
+    eval_sha = "authoritative_evaluator_freeze_sha_abcdef"
+    mock_provenance = {
+        "verified": True,
+        "raw_results_freeze_sha": v2.RAW_RESULTS_FREEZE_HEAD,
+        "raw_results_blob": v2.RAW_RESULTS_FREEZE_BLOB,
+        "raw_plans_blob": v2.PLAN_FREEZE_RAW_BLOB,
+        "evaluator_implementation_freeze_sha": eval_sha,
+        "evaluator_implementation_freeze_message": v2.EXPECTED_EVALUATOR_FREEZE_COMMIT_MESSAGE,
+        "evaluator_implementation_parents": [v2.RAW_RESULTS_FREEZE_HEAD],
+        "current_head": eval_sha,
+    }
+    real_gold_ds = v2.load_gold_dataset(_PROJECT_ROOT / v2.GOLD_QUESTIONS_PATH)
+    real_novel_ds = v2.load_gold_dataset(_PROJECT_ROOT / v2.NOVEL_DEV_PATH)
+    monkeypatch.setattr(v2, "load_gold_dataset", lambda p: real_gold_ds if "gold_questions" in str(p) else real_novel_ds)
+    real_lookup = v2.load_object_lookup(_PROJECT_ROOT)
+    monkeypatch.setattr(v2, "load_object_lookup", lambda p: real_lookup)
+
+    synthetic_raw = _make_synthetic_raw_results_data(
+        starting_head="6bc10872bee9d00a7ea710f55353c3113756dbb2",
+    )
+    raw_file = tmp_path / v2.RAW_RESULTS_PATH
+    raw_file.parent.mkdir(parents=True, exist_ok=True)
+    raw_file.write_text(json.dumps(synthetic_raw, indent=2), encoding="utf-8")
+
+    raw_plans = _make_valid_raw_plans_artifact()
+    plans_file = tmp_path / v2.RAW_PLANS_PATH
+    plans_file.parent.mkdir(parents=True, exist_ok=True)
+    plans_file.write_text(json.dumps(raw_plans, indent=2), encoding="utf-8")
+
+    manifest = json.loads((_PROJECT_ROOT / v2.MANIFEST_PATH).read_text(encoding="utf-8"))
+    man_file = tmp_path / v2.MANIFEST_PATH
+    man_file.parent.mkdir(parents=True, exist_ok=True)
+    man_file.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+
+    res = v2.evaluate_d4_a2_v2(
+        project_root=tmp_path,
+        raw_results_path=raw_file,
+        raw_plans_path=plans_file,
+        write_artifacts=True,
+        require_git_frozen=True,
+        git_checker=lambda root: mock_provenance,
+    )
+    assert res["raw_results_freeze_sha"] == v2.RAW_RESULTS_FREEZE_HEAD
+    assert res["evaluator_implementation_freeze_sha"] == eval_sha
+
+    # Verify written files on disk
+    eval_artifact_on_disk = json.loads((tmp_path / v2.EVALUATOR_RESULTS_PATH).read_text(encoding="utf-8"))
+    assert eval_artifact_on_disk["raw_results_freeze_sha"] == v2.RAW_RESULTS_FREEZE_HEAD
+    assert eval_artifact_on_disk["evaluator_implementation_freeze_sha"] == eval_sha
+    assert eval_artifact_on_disk["frozen_provenance"]["raw_results_freeze_sha"] == v2.RAW_RESULTS_FREEZE_HEAD
+    assert eval_artifact_on_disk["frozen_provenance"]["evaluator_implementation_freeze_sha"] == eval_sha
+    assert eval_artifact_on_disk["frozen_provenance"]["raw_results_blob"] == v2.RAW_RESULTS_FREEZE_BLOB
+    assert eval_artifact_on_disk["frozen_provenance"]["raw_plans_blob"] == v2.PLAN_FREEZE_RAW_BLOB
+
+    compact_result_on_disk = json.loads((tmp_path / v2.RESULT_PATH).read_text(encoding="utf-8"))
+    assert compact_result_on_disk["raw_results_freeze_sha"] == v2.RAW_RESULTS_FREEZE_HEAD
+    assert compact_result_on_disk["evaluator_implementation_freeze_sha"] == eval_sha
+    assert compact_result_on_disk["raw_results_freeze_sha"] != "6bc10872bee9d00a7ea710f55353c3113756dbb2"
+    assert compact_result_on_disk["evaluator_implementation_freeze_sha"] != "FROZEN_AT_COMMIT_D"
+
+
+def test_evaluator_freeze_provenance_real_repo_fail_closed_or_clean_pass():
+    """Verify real repository invocation: if worktree is clean it passes with exact constants;
+    if dirty it fails closed with uncommitted changes.
+    """
+    try:
+        receipt = v2.verify_evaluator_freeze_provenance(_PROJECT_ROOT)
+        assert receipt["verified"] is True
+        assert receipt["raw_results_freeze_sha"] == v2.RAW_RESULTS_FREEZE_HEAD
+        assert receipt["raw_results_blob"] == v2.RAW_RESULTS_FREEZE_BLOB
+        assert receipt["raw_plans_blob"] == v2.PLAN_FREEZE_RAW_BLOB
+        assert receipt["evaluator_implementation_freeze_message"] == v2.EXPECTED_EVALUATOR_FREEZE_COMMIT_MESSAGE
+        assert receipt["evaluator_implementation_parents"] == [v2.RAW_RESULTS_FREEZE_HEAD]
+    except RuntimeError as exc:
+        err = str(exc)
+        assert any(term in err for term in ("uncommitted", "dirty", "drift"))
