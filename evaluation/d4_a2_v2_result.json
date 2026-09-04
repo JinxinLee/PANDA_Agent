@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint": "D4-A2-V2",
+  "stage": "D4-A2-V2 — Controlled Shared-Plan T2 Before/After Validation",
+  "lifecycle_status": "COMPLETE / FAIL / PRIMARY_TARGET_REPLACEMENT_NOT_REPRODUCED",
+  "raw_results_freeze_sha": "b1a9f12366e328263e000f7b4c89184f2854c77a",
+  "evaluator_implementation_freeze_sha": "6c12af68ee17615a66a732108cb5b895f86853b7",
+  "execution_valid": true,
+  "before_reference_valid": true,
+  "target_replacement_reproduced": "2 / 2",
+  "batch1_dependency_removed": "0 / 2",
+  "critical_regressions_count": 0,
+  "grounding_regressions": 0,
+  "wrong_version_regressions": 0,
+  "invalid_provenance_recoveries": 0,
+  "primary_metric_deltas": {
+    "recall_at_5": 0.0,
+    "recall_at_10": 0.0,
+    "recall_at_20": 0.0,
+    "combined_candidate_recall": 0.0,
+    "final_evidence_recall": 0.0,
+    "critical_final_evidence_recall": 0.0
+  },
+  "mrr_delta": -0.025641,
+  "verdict_level": 3,
+  "verdict": "FAIL / PRIMARY_TARGET_REPLACEMENT_NOT_REPRODUCED",
+  "verdict_reason": "Primary target replacement or fixed locator dependency removal not reproduced: 2/2 targets reproduced under AFTER with valid governed witness, 0/2 dependencies removed.",
+  "production_activation": false,
+  "first_batch_runtime_migration": "BLOCKED",
+  "d4_a3_status": "NOT_STARTED / BLOCKED"
+}
