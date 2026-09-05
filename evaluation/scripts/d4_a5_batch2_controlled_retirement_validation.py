@@ -29,7 +29,6 @@ not necessarily an active contribution in the final canonical RetrievalPlan.
 CLI (run with PYTHONPATH=src):
     python evaluation/scripts/d4_a5_batch2_controlled_retirement_validation.py --project-root . --mode audit
     python evaluation/scripts/d4_a5_batch2_controlled_retirement_validation.py --project-root . --mode audit-reuse
-    python evaluation/scripts/d4_a5_batch2_controlled_retirement_validation.py --project-root . --mode prepare-continuation-manifest
     python evaluation/scripts/d4_a5_batch2_controlled_retirement_validation.py --project-root . --mode execute-phase-p
     python evaluation/scripts/d4_a5_batch2_controlled_retirement_validation.py --project-root . --mode execute-phase-r
     python evaluation/scripts/d4_a5_batch2_controlled_retirement_validation.py --project-root . --mode evaluate
@@ -266,9 +265,15 @@ R2_PREREGISTRATION_PATH = "evaluation/d4_a5_r2_continuation_contract_preregistra
 R2_RESULT_PATH = "evaluation/d4_a5_r2_result.json"
 R2_REPORT_PATH = "evaluation/D4_A5_R2_CONTINUATION_FREEZE_AND_ACCOUNTING_CONTRACT_REPAIR.md"
 R3_COMMIT_MESSAGE = "D4-A5-R3 repair continuation lineage and end-to-end accounting"
+R3_HEAD = "447d03e3cb9d3c1109d6f6070115f3ea4618bb7e"
 R3_PREREGISTRATION_PATH = "evaluation/d4_a5_r3_continuation_lineage_accounting_preregistration.json"
 R3_RESULT_PATH = "evaluation/d4_a5_r3_result.json"
 R3_REPORT_PATH = "evaluation/D4_A5_R3_CONTINUATION_LINEAGE_AND_END_TO_END_ACCOUNTING_REPAIR.md"
+R5_COMMIT_MESSAGE = "D4-A5-R5 seal raw-freeze evaluator integrity"
+R5_PREREGISTRATION_PATH = "evaluation/d4_a5_r5_raw_freeze_evaluator_integrity_preregistration.json"
+R5_RESULT_PATH = "evaluation/d4_a5_r5_result.json"
+R5_REPORT_PATH = "evaluation/D4_A5_R5_RAW_FREEZE_EVALUATOR_INTEGRITY_SEAL.md"
+
 CONTINUATION_PLAN_FREEZE_COMMIT_MESSAGE = "D4-A5 continuation freeze prospective shared plans"
 CONTINUATION_RAW_FREEZE_COMMIT_MESSAGE = "D4-A5 continuation freeze paired raw retirement results"
 CONTINUATION_CLOSEOUT_COMMIT_MESSAGE = "D4-A5 continuation close controlled retirement validation"
@@ -329,6 +334,13 @@ CONTINUATION_RAW_PLANS_PATH = "evaluation/d4_a5_continuation_raw_prospective_pla
 CONTINUATION_RAW_RESULTS_PATH = "evaluation/d4_a5_continuation_raw_paired_retirement_results.json"
 CONTINUATION_EVALUATOR_RESULTS_PATH = "evaluation/d4_a5_continuation_evaluator_results.json"
 CONTINUATION_RESULT_PATH = "evaluation/d4_a5_continuation_result.json"
+
+# Strict raw-freeze diff allowlist (R5; task Section 7): the plan-freeze ->
+# raw-freeze changed-file set must be a subset of exactly these paths.
+RAW_FREEZE_DIFF_ALLOWLIST = (
+    CONTINUATION_MANIFEST_PATH,
+    CONTINUATION_RAW_RESULTS_PATH,
+)
 R1_PREREGISTRATION_PATH = "evaluation/d4_a5_r1_retirement_applicability_preregistration.json"
 R1_RESULT_PATH = "evaluation/d4_a5_r1_result.json"
 R1_REPORT_PATH = "evaluation/D4_A5_R1_RETIREMENT_APPLICABILITY_AND_PROVENANCE_CONTRACT_REPAIR.md"
@@ -1337,24 +1349,28 @@ def build_continuation_manifest(project_root: Path, reuse_audit: dict[str, Any])
         "historical_a5_stop_verdict": "INVALID / BATCH2_PROTOCOL_OR_SHARED_PLAN_CONSTRUCTION_FAILED",
         "r1_parent_boundary": R1_HEAD,
         "r2_parent_boundary": R2_HEAD,
-        "r3_continuation_implementation_freeze": "commit containing this manifest",
+        "r3_parent_boundary": R3_HEAD,
+        "r5_continuation_implementation_freeze": "commit containing this manifest",
         "repair_lifecycle": R1_LIFECYCLE_ID,
         "repair_preregistration": R1_PREREGISTRATION_PATH,
         "r2_continuation_contract_preregistration": R2_PREREGISTRATION_PATH,
         "r3_continuation_lineage_preregistration": R3_PREREGISTRATION_PATH,
+        "r5_raw_freeze_integrity_preregistration": R5_PREREGISTRATION_PATH,
     }
-    # Unambiguous continuation lineage vocabulary (R3): historical R1/R2 heads are
-    # historical facts and never drive current continuation gates; the current
-    # continuation implementation freeze is the R3 freeze commit.
+    # Unambiguous continuation lineage vocabulary (R5): historical R1/R2/R3 heads
+    # are historical facts and never drive current continuation gates; the current
+    # continuation implementation freeze is the R5 freeze commit.
     manifest["continuation_lineage"] = {
         "historical_a5_starting_head": STARTING_HEAD,
         "historical_a5_executor_freeze_head": EXECUTOR_FREEZE_HEAD,
         "historical_a5_stop_head": A5_STOP_HEAD,
         "historical_r1_head": R1_HEAD,
         "historical_r2_head": R2_HEAD,
-        "continuation_implementation_freeze_message": R3_COMMIT_MESSAGE,
+        "historical_r3_head": R3_HEAD,
+        "continuation_implementation_freeze_message": R5_COMMIT_MESSAGE,
         "continuation_plan_freeze_message": CONTINUATION_PLAN_FREEZE_COMMIT_MESSAGE,
         "continuation_raw_freeze_message": CONTINUATION_RAW_FREEZE_COMMIT_MESSAGE,
+        "raw_freeze_diff_allowlist": list(RAW_FREEZE_DIFF_ALLOWLIST),
     }
     manifest["artifact_paths"] = {
         "manifest": CONTINUATION_MANIFEST_PATH,
@@ -1376,24 +1392,35 @@ def build_continuation_manifest(project_root: Path, reuse_audit: dict[str, Any])
     # messages are retained only as clearly labeled historical references.
     manifest["implementation_freeze_contract"] = {
         "policy": "GIT_COMMIT_CONTAINING_THIS_ARTIFACT",
-        "expected_commit_message": R3_COMMIT_MESSAGE,
-        "expected_parent": R2_HEAD,
-        "note": "The R3 freeze commit contains this manifest and is the current continuation "
+        "expected_commit_message": R5_COMMIT_MESSAGE,
+        "expected_parent": R3_HEAD,
+        "note": "The R5 freeze commit contains this manifest and is the current continuation "
         "implementation freeze; no descendant or intervening commit is accepted as a "
         "replacement freeze.",
     }
     manifest["plan_freeze_gate_contract"] = {
         "policy": "HARD_COMMIT_PLAN_FREEZE_GATE",
         "expected_commit_message": CONTINUATION_PLAN_FREEZE_COMMIT_MESSAGE,
-        "expected_parent": "the R3 continuation implementation freeze commit "
+        "expected_parent": "the R5 continuation implementation freeze commit "
         "(continuation_implementation_freeze_head)",
         "raw_plans_path": CONTINUATION_RAW_PLANS_PATH,
+        "diff_allowlist": [CONTINUATION_MANIFEST_PATH, CONTINUATION_RAW_PLANS_PATH],
     }
     manifest["raw_freeze_gate_contract"] = {
-        "policy": "HARD_COMMIT_RAW_FREEZE_GATE",
+        "policy": "HARD_COMMIT_RAW_FREEZE_GATE_WITH_STRICT_EVALUATOR_INTEGRITY_SEAL",
         "expected_commit_message": CONTINUATION_RAW_FREEZE_COMMIT_MESSAGE,
-        "expected_parent": "the continuation plan-freeze commit",
+        "expected_parent": "the continuation plan-freeze commit "
+        "(continuation_plan_freeze_head)",
         "raw_results_path": CONTINUATION_RAW_RESULTS_PATH,
+        "strict_diff_allowlist": list(RAW_FREEZE_DIFF_ALLOWLIST),
+        "evaluator_integrity": {
+            "runner_blob": "runner blob at raw-freeze HEAD == runner blob at "
+            "continuation_implementation_freeze_head (R5)",
+            "focused_test_blob": "focused test blob at raw-freeze HEAD == focused test blob "
+            "at continuation_implementation_freeze_head (R5)",
+            "raw_plans_blob": "continuation raw plans blob at raw-freeze HEAD == continuation "
+            "raw plans blob at plan-freeze HEAD",
+        },
     }
     manifest["closeout_gate_contract"] = {
         "policy": "HARD_COMMIT_CLOSEOUT_GATE",
@@ -1737,19 +1764,19 @@ def verify_continuation_start(project_root: Path) -> dict[str, Any]:
     assert_clean_worktree(project_root)
     head = git_head(project_root)
     message = git_commit_message(project_root, head)
-    if message != R3_COMMIT_MESSAGE:
+    if message != R5_COMMIT_MESSAGE:
         raise RuntimeError(
-            f"Continuation start requires HEAD to be the R3 implementation-freeze commit "
-            f"('{R3_COMMIT_MESSAGE}'), got '{message}'"
+            f"Continuation start requires HEAD to be the R5 implementation-freeze commit "
+            f"('{R5_COMMIT_MESSAGE}'), got '{message}'"
         )
     parent = git_parent(project_root, head)
-    if parent != R2_HEAD:
-        raise RuntimeError(f"R3 freeze commit parent must be {R2_HEAD}, got {parent}")
+    if parent != R3_HEAD:
+        raise RuntimeError(f"R5 freeze commit parent must be {R3_HEAD}, got {parent}")
     manifest_committed = git_blob(project_root, CONTINUATION_MANIFEST_PATH, "HEAD")
     if manifest_committed is None:
         raise RuntimeError(
             f"{CONTINUATION_MANIFEST_PATH} is not committed at HEAD; the continuation "
-            f"execution manifest must be a committed pre-exposure artifact of the R3 freeze."
+            f"execution manifest must be a committed pre-exposure artifact of the R5 freeze."
         )
     changed = git_paths_unchanged_between(
         project_root, STARTING_HEAD, head, list(PRODUCTION_IMMUTABLE_PATHS)
@@ -1819,6 +1846,8 @@ def verify_continuation_start(project_root: Path) -> dict[str, Any]:
         errors.append("manifest repair lineage does not record the R1 parent boundary")
     if manifest.get("repair_lineage", {}).get("r2_parent_boundary") != R2_HEAD:
         errors.append("manifest repair lineage does not record the R2 parent boundary")
+    if manifest.get("repair_lineage", {}).get("r3_parent_boundary") != R3_HEAD:
+        errors.append("manifest repair lineage does not record the R3 parent boundary")
     lineage = manifest.get("continuation_lineage", {})
     for key, expected in {
         "historical_a5_starting_head": STARTING_HEAD,
@@ -1826,12 +1855,13 @@ def verify_continuation_start(project_root: Path) -> dict[str, Any]:
         "historical_a5_stop_head": A5_STOP_HEAD,
         "historical_r1_head": R1_HEAD,
         "historical_r2_head": R2_HEAD,
-        "continuation_implementation_freeze_message": R3_COMMIT_MESSAGE,
+        "historical_r3_head": R3_HEAD,
+        "continuation_implementation_freeze_message": R5_COMMIT_MESSAGE,
         "continuation_plan_freeze_message": CONTINUATION_PLAN_FREEZE_COMMIT_MESSAGE,
         "continuation_raw_freeze_message": CONTINUATION_RAW_FREEZE_COMMIT_MESSAGE,
     }.items():
         if lineage.get(key) != expected:
-            errors.append(f"manifest continuation lineage {key} does not match the R3 contract")
+            errors.append(f"manifest continuation lineage {key} does not match the R5 contract")
     decision = manifest.get("reusability_decision", {})
     for key, expected in CONTINUATION_EXPECTED_REUSABILITY.items():
         if decision.get(key) != expected:
@@ -2752,6 +2782,7 @@ def _write_raw_results(
         "historical_a5_stop_head": A5_STOP_HEAD,
         "historical_r1_head": R1_HEAD,
         "historical_r2_head": R2_HEAD,
+        "historical_r3_head": R3_HEAD,
         "continuation_implementation_freeze_head": freeze[
             "continuation_implementation_freeze_head"
         ],
@@ -2927,10 +2958,21 @@ def _final_retention(
     return final_ret, pool_ret
 
 
-def verify_continuation_raw_freeze_gate(project_root: Path, plan_freeze_head: str) -> dict[str, Any]:
-    """Continuation raw-freeze gate: HEAD is the continuation raw-freeze commit
-    (child of the continuation plan-freeze commit); raw + plan artifacts are
-    committed and unchanged; historical/production paths remain untouched."""
+def verify_continuation_raw_freeze_gate(
+    project_root: Path,
+    plan_freeze_head: str,
+    continuation_implementation_freeze_head: str,
+) -> dict[str, Any]:
+    """Continuation raw-freeze gate with the strict evaluator-integrity seal
+    (R5; task Sections 7/9): HEAD is the raw-freeze commit, a DIRECT CHILD of
+    the continuation plan-freeze commit; raw plans AND raw results are
+    committed; the exact plan-freeze -> raw-freeze changed-file set is a subset
+    of RAW_FREEZE_DIFF_ALLOWLIST (continuation manifest + continuation raw
+    results) — so no runner, test, raw-plan, R5-artifact, historical, or
+    production path can drift into the raw-freeze commit after retrieval
+    outcomes were exposed. The strict allowlist subsumes broad protected-path
+    lists for this window; upstream gates (start preflight and plan-freeze
+    gate) cover the earlier windows."""
     head = _require_freeze_commit(
         project_root, CONTINUATION_RAW_FREEZE_COMMIT_MESSAGE, plan_freeze_head
     )
@@ -2943,18 +2985,115 @@ def verify_continuation_raw_freeze_gate(project_root: Path, plan_freeze_head: st
         )
         if proc.returncode != 0:
             raise RuntimeError(f"{rel} is not committed at HEAD; raw freeze gate failed")
-    changed = git_paths_unchanged_between(
-        project_root, A5_STOP_HEAD, head,
-        list(PRODUCTION_IMMUTABLE_PATHS) + [HISTORICAL_MANIFEST_PATH, RESULT_PATH],
-    )
-    if changed:
-        raise RuntimeError(f"Protected paths drifted during the continuation: {changed}")
+    diff_output = _git(["diff", "--name-only", plan_freeze_head, head], project_root)
+    changed_files = {line for line in diff_output.splitlines() if line}
+    unexpected = changed_files - set(RAW_FREEZE_DIFF_ALLOWLIST)
+    if unexpected:
+        raise RuntimeError(
+            "Raw-freeze commit violates the strict evaluator-integrity allowlist "
+            f"(plan-freeze -> raw-freeze changed files outside "
+            f"{sorted(RAW_FREEZE_DIFF_ALLOWLIST)}): {sorted(unexpected)}"
+        )
     plans_unchanged = git_paths_unchanged_between(
         project_root, plan_freeze_head, head, [CONTINUATION_RAW_PLANS_PATH]
     )
     if plans_unchanged:
         raise RuntimeError("Continuation plans artifact changed after plan freeze")
-    return {"head": head, "plan_freeze_head": plan_freeze_head}
+    return {
+        "head": head,
+        "continuation_raw_freeze_head": head,
+        "plan_freeze_head": plan_freeze_head,
+        "continuation_implementation_freeze_head": continuation_implementation_freeze_head,
+        "raw_freeze_diff_allowlist_respected": True,
+    }
+
+
+def verify_continuation_evaluator_preflight(
+    project_root: Path,
+    plan_freeze_head: str,
+    continuation_implementation_freeze_head: str,
+) -> dict[str, Any]:
+    """Read-only evaluator preflight (R5; task Sections 8/10): must pass before
+    any deterministic evaluator logic consumes retrieval outcomes. Establishes:
+    the raw-freeze gate; runner blob and focused-test blob at raw-freeze HEAD
+    equal to the R5 implementation-freeze blobs; continuation raw plans blob
+    equal to the plan-freeze blob; production/config/dataset paths unchanged
+    across the whole retrieval window (implementation freeze -> raw freeze);
+    historical R1/R2/R3 artifacts unchanged; manifest lineage internally
+    consistent; and no evaluator/result artifact already mutated outside the
+    expected lifecycle. Zero provider calls."""
+    gate = verify_continuation_raw_freeze_gate(
+        project_root, plan_freeze_head, continuation_implementation_freeze_head
+    )
+    raw_freeze_head = gate["continuation_raw_freeze_head"]
+    errors: list[str] = []
+
+    runner_changed = git_paths_unchanged_between(
+        project_root, continuation_implementation_freeze_head, raw_freeze_head, [RUNNER_PATH]
+    )
+    if runner_changed:
+        errors.append(f"runner drifted after the implementation freeze: {runner_changed}")
+    test_changed = git_paths_unchanged_between(
+        project_root, continuation_implementation_freeze_head, raw_freeze_head, [TEST_PATH]
+    )
+    if test_changed:
+        errors.append(f"focused tests drifted after the implementation freeze: {test_changed}")
+
+    production_changed = git_paths_unchanged_between(
+        project_root, continuation_implementation_freeze_head, raw_freeze_head,
+        list(PRODUCTION_IMMUTABLE_PATHS),
+    )
+    if production_changed:
+        errors.append(f"production/config/dataset paths drifted during retrieval: {production_changed}")
+
+    historical_changed = git_paths_unchanged_between(
+        project_root, A5_STOP_HEAD, raw_freeze_head,
+        [HISTORICAL_MANIFEST_PATH, RESULT_PATH,
+         R1_PREREGISTRATION_PATH, R1_RESULT_PATH, R1_REPORT_PATH,
+         R2_PREREGISTRATION_PATH, R2_RESULT_PATH, R2_REPORT_PATH,
+         R3_PREREGISTRATION_PATH, R3_RESULT_PATH, R3_REPORT_PATH],
+    )
+    if historical_changed:
+        errors.append(f"historical A5/R1/R2/R3 artifacts drifted: {historical_changed}")
+
+    manifest = _load_json(project_root / CONTINUATION_MANIFEST_PATH)
+    lineage = manifest.get("continuation_lineage", {})
+    for key, expected in {
+        "historical_a5_starting_head": STARTING_HEAD,
+        "historical_a5_executor_freeze_head": EXECUTOR_FREEZE_HEAD,
+        "historical_a5_stop_head": A5_STOP_HEAD,
+        "historical_r1_head": R1_HEAD,
+        "historical_r2_head": R2_HEAD,
+        "historical_r3_head": R3_HEAD,
+        "continuation_implementation_freeze_message": R5_COMMIT_MESSAGE,
+        "continuation_plan_freeze_message": CONTINUATION_PLAN_FREEZE_COMMIT_MESSAGE,
+        "continuation_raw_freeze_message": CONTINUATION_RAW_FREEZE_COMMIT_MESSAGE,
+    }.items():
+        if lineage.get(key) != expected:
+            errors.append(f"manifest continuation lineage {key} does not match the R5 contract")
+    exposure = manifest.get("outcome_exposure_state", {})
+    if exposure.get("D4_A5_OUTCOME_EXPOSURE") != "RAW_RETRIEVAL_COMPLETE":
+        errors.append(f"manifest exposure is not RAW_RETRIEVAL_COMPLETE: {exposure}")
+
+    for rel in (CONTINUATION_EVALUATOR_RESULTS_PATH, CONTINUATION_RESULT_PATH):
+        if (project_root / rel).exists():
+            errors.append(
+                f"{rel} already exists before evaluator execution; lifecycle state is "
+                f"inconsistent with a raw-freeze boundary"
+            )
+
+    if errors:
+        raise RuntimeError(
+            "Evaluator preflight FAILED before consuming any retrieval outcome: "
+            + "; ".join(errors)
+        )
+    return {
+        "continuation_implementation_freeze_head": continuation_implementation_freeze_head,
+        "continuation_plan_freeze_head": plan_freeze_head,
+        "continuation_raw_freeze_head": raw_freeze_head,
+        "evaluator_integrity_sealed": True,
+        "provider_calls": 0,
+    }
 
 
 def evaluate_d4_a5(project_root: Path) -> dict[str, Any]:
@@ -2970,9 +3109,24 @@ def evaluate_d4_a5(project_root: Path) -> dict[str, Any]:
         raise RuntimeError(f"Evaluator requires RAW_RETRIEVAL_COMPLETE, got {exposure}")
 
     plan_freeze_head = exposure.get("plan_freeze_head")
-    if not plan_freeze_head:
-        raise RuntimeError("Manifest missing plan_freeze_head")
-    freeze = verify_continuation_raw_freeze_gate(project_root, plan_freeze_head)
+    continuation_implementation_freeze_head = exposure.get(
+        "continuation_implementation_freeze_head"
+    )
+    if not plan_freeze_head or not continuation_implementation_freeze_head:
+        raise RuntimeError(
+            "Manifest is missing the frozen continuation lineage "
+            "(continuation_implementation_freeze_head / plan_freeze_head); stale or "
+            "incomplete lineage input is not accepted"
+        )
+    preflight = verify_continuation_evaluator_preflight(
+        project_root, plan_freeze_head, continuation_implementation_freeze_head
+    )
+    freeze = {
+        "continuation_implementation_freeze_head": preflight[
+            "continuation_implementation_freeze_head"
+        ],
+        "head": preflight["continuation_raw_freeze_head"],
+    }
 
     prereg = _load_json(project_root / PREREGISTRATION_PATH)
     plans_data = _load_json(project_root / CONTINUATION_RAW_PLANS_PATH)
@@ -3306,6 +3460,7 @@ def evaluate_d4_a5(project_root: Path) -> dict[str, Any]:
             "historical_a5_stop_head": A5_STOP_HEAD,
             "historical_r1_head": R1_HEAD,
             "historical_r2_head": R2_HEAD,
+            "historical_r3_head": R3_HEAD,
             "continuation_implementation_freeze_head": exposure.get(
                 "continuation_implementation_freeze_head"
             ),
@@ -3411,6 +3566,7 @@ def evaluate_d4_a5(project_root: Path) -> dict[str, Any]:
             "historical_a5_stop_head": A5_STOP_HEAD,
             "historical_r1_head": R1_HEAD,
             "historical_r2_head": R2_HEAD,
+            "historical_r3_head": R3_HEAD,
             "continuation_implementation_freeze_head": exposure.get(
                 "continuation_implementation_freeze_head"
             ),
@@ -3494,6 +3650,7 @@ def verify_freeze(project_root: Path) -> dict[str, Any]:
     chain: list[str] = []
     cursor = head
     for expected_message in (
+        R5_COMMIT_MESSAGE,
         R3_COMMIT_MESSAGE,
         R2_COMMIT_MESSAGE,
         R1_COMMIT_MESSAGE,
@@ -3513,19 +3670,19 @@ def verify_freeze(project_root: Path) -> dict[str, Any]:
     chain.append(cursor)
 
     (
-        r3_head, r2_head, r1_head, a5_stop_head,
+        r5_head, r3_head, r2_head, r1_head, a5_stop_head,
         executor_freeze_head, a4_freeze_head, starting_parent,
     ) = chain
     checks: dict[str, Any] = {
         "chain": chain,
-        "continuation_manifest_committed_in_r3": git_blob(
-            project_root, CONTINUATION_MANIFEST_PATH, r3_head
+        "continuation_manifest_committed_in_r5": git_blob(
+            project_root, CONTINUATION_MANIFEST_PATH, r5_head
         ) is not None
         and git_commit_message(
             project_root,
             _git(["log", "-1", "--format=%H", "--", CONTINUATION_MANIFEST_PATH], project_root),
         )
-        == R3_COMMIT_MESSAGE,
+        == R5_COMMIT_MESSAGE,
         "continuation_runtime_artifacts_absent": all(
             git_blob(project_root, rel, "HEAD") is None
             for rel in (

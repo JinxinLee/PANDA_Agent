@@ -1,0 +1,105 @@
+{
+  "schema_version": "1.0.0",
+  "lifecycle_id": "D4-A5-R5",
+  "stage": "D4-A5-R5 — Raw-Freeze Evaluator Integrity Seal",
+  "created_at": "2026-09-05T21:00:00.000000+00:00",
+  "repair_status": "COMPLETE / PASS",
+  "repair_commit": "D4-A5-R5 seal raw-freeze evaluator integrity",
+  "defect_repaired": {
+    "defect": "RAW_FREEZE_GATE_MISSING_EVALUATOR_INTEGRITY_SEAL",
+    "pre_repair_gap": "The continuation raw-freeze gate verified the raw-freeze commit message, direct plan-freeze parent, committed raw plans/results, raw-plan immutability, and a fixed protected-path list that excluded the runner and focused-test paths. No plan-freeze -> raw-freeze diff allowlist existed, so a raw-freeze commit could carry a runner or focused-test modification (made after retrieval outcomes were exposed) and still reach evaluator execution.",
+    "post_repair_guarantee": "The exact plan-freeze -> raw-freeze changed-file set must be a subset of {continuation execution manifest, continuation raw paired retrieval results}; any runner, test, raw-plan, R5-artifact, historical, or production path change in that window fails the gate before the evaluator can run."
+  },
+  "raw_freeze_gate_sealed": {
+    "strict_diff_allowlist": [
+      "evaluation/d4_a5_continuation_execution_manifest.json",
+      "evaluation/d4_a5_continuation_raw_paired_retirement_results.json"
+    ],
+    "direct_parent": "continuation plan-freeze commit",
+    "raw_plans_immutable_after_plan_freeze": true,
+    "smallest_auditable_implementation": "the strict allowlist subsumes broad protected-path lists for the retrieval window; upstream gates cover earlier windows"
+  },
+  "evaluator_integrity_checks_frozen": {
+    "runner_blob_equality": "raw-freeze HEAD == continuation_implementation_freeze_head (R5)",
+    "focused_test_blob_equality": "raw-freeze HEAD == continuation_implementation_freeze_head (R5)",
+    "raw_plans_blob_equality": "raw-freeze HEAD == continuation_plan_freeze_head",
+    "production_paths_unchanged_across_retrieval_window": true,
+    "historical_r1_r2_r3_artifacts_unchanged": true,
+    "manifest_lineage_consistency": true,
+    "lifecycle_consistency": "no evaluator/result artifact exists before evaluator execution",
+    "fail_closed_before_consuming_outcomes": true
+  },
+  "r5_implementation_freeze": {
+    "message": "D4-A5-R5 seal raw-freeze evaluator integrity",
+    "direct_parent": "447d03e3cb9d3c1109d6f6070115f3ea4618bb7e",
+    "manifest_forward_updated": true,
+    "future_plan_freeze_parent": "the R5 implementation freeze",
+    "no_descendant_accepted": true
+  },
+  "lineage_update": {
+    "historical_r3_head": "447d03e3cb9d3c1109d6f6070115f3ea4618bb7e",
+    "historical_r4_head_invented": false,
+    "continuation_implementation_freeze_message": "D4-A5-R5 seal raw-freeze evaluator integrity",
+    "historical_heads_provenance_only": true
+  },
+  "verification": {
+    "focused_tests_total": 131,
+    "r5_tests_added": 9,
+    "raw_freeze_git_integrity_tests": [
+      "test_r5_13a valid raw freeze passes the strict allowlist",
+      "test_r5_13b runner mutation rejected",
+      "test_r5_13c focused-test mutation rejected",
+      "test_r5_13d raw-plan mutation rejected",
+      "test_r5_13e unrelated file rejected",
+      "test_r5_13f wrong raw-freeze parent rejected"
+    ],
+    "evaluator_preflight_tests": [
+      "test_r5_14a valid chain passes the real preflight",
+      "test_r5_14b runner drift fails before outcomes are consumed",
+      "test_r5_14c evaluator reaches the deterministic boundary through the REAL gate (sentinel-proven) with provider construction forbidden"
+    ],
+    "compile_static_check": "passed",
+    "json_parse": "passed",
+    "git_diff_check": "passed",
+    "r3_to_r5_changed_file_audit": "only the allowed R5 files",
+    "real_post_commit_continuation_start_verification": "executed against the real repository HEAD",
+    "no_full_suite_run": true,
+    "test_count_note": "the actual current pytest result is reported (131 passing); historical R3 artifacts are not rewritten to reconcile older narrative counts"
+  },
+  "zero_exposure": {
+    "analyzer_provider_calls": 0,
+    "plan_acquisitions": 0,
+    "embedding_calls": 0,
+    "reranker_calls": 0,
+    "retrieval_cells": 0,
+    "qa_verifier_judge_calls": 0,
+    "evaluator_executed": false,
+    "scientific_verdict_computed": false,
+    "db_qdrant_writes": 0,
+    "protected_dataset_access": 0
+  },
+  "immutability_confirmations": {
+    "production_unchanged": true,
+    "historical_first_attempt_unchanged": true,
+    "r1_r2_r3_artifacts_unchanged": true,
+    "continuation_raw_plans_created": false,
+    "continuation_raw_results_created": false,
+    "continuation_evaluator_results_created": false,
+    "continuation_result_created": false,
+    "batch1_active": true,
+    "batch2_production_active": false
+  },
+  "lifecycle_state": {
+    "d4_a5_first_attempt": "HISTORICAL / INVALID / PRE-OUTCOME STOP / PRESERVED",
+    "d4_a5_r1": "HISTORICAL REPAIR RECORD PRESERVED / APPLICABILITY AND PROVENANCE LOGIC RETAINED",
+    "d4_a5_r2": "HISTORICAL REPAIR RECORD PRESERVED / CONTINUATION BOOTSTRAP REPAIR RETAINED",
+    "d4_a5_r3": "HISTORICAL REPAIR RECORD PRESERVED / CONTINUATION LINEAGE AND END-TO-END ACCOUNTING REPAIR RETAINED",
+    "d4_a5_r5": "COMPLETE / PASS / RAW_FREEZE_EVALUATOR_INTEGRITY_SEALED",
+    "d4_a5": "BLOCKED / READY_FOR_SEPARATELY_AUTHORIZED_CONTINUATION",
+    "batch1": "ACTIVE",
+    "batch2": "SELECTED / FROZEN / NOT YET SCIENTIFICALLY VALIDATED",
+    "batch2_production": false,
+    "d4_a6": "NOT_STARTED",
+    "no_r4_stage_created": true
+  }
+}

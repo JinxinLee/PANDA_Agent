@@ -1,0 +1,144 @@
+{
+  "schema_version": "1.0.0",
+  "lifecycle_id": "D4-A5-R5",
+  "stage": "D4-A5-R5 — Raw-Freeze Evaluator Integrity Seal",
+  "created_at": "2026-09-05T20:56:25.630725+00:00",
+  "starting_head": "447d03e3cb9d3c1109d6f6070115f3ea4618bb7e",
+  "starting_commit_message": "D4-A5-R3 repair continuation lineage and end-to-end accounting",
+  "starting_parent": "a53ca0ace5280c278e32e350f5a5051b810fa6f4",
+  "task_classification": {
+    "type": "pre-exposure continuation-integrity repair",
+    "is_not": [
+      "a new scientific validation stage",
+      "D4-A6",
+      "a new Batch-2 selection",
+      "a redesign of R1 applicability",
+      "a redesign of R2 bootstrap",
+      "a redesign of R3 lineage",
+      "a redesign of R3 accounting",
+      "plan acquisition",
+      "paired retrieval execution",
+      "evaluator execution",
+      "scientific verdict computation",
+      "production activation"
+    ]
+  },
+  "audit_defect_repaired": {
+    "finding": "The continuation raw-freeze gate verified the raw-freeze commit message, its direct parent (plan-freeze), committed raw plans/results, raw-plan immutability, and protected production/historical paths — but enforced no strict plan-freeze -> raw-freeze diff allowlist. A raw-freeze commit could therefore contain continuation raw results, the continuation manifest, AND a runner (or focused-test) modification, and still reach evaluator execution — a runner modification occurring after retrieval outcomes had already been exposed.",
+    "mechanical_confirmation": "The pre-repair raw-freeze gate compared only a fixed protected-path list (src/, configs/, datasets, historical first-attempt artifacts) that does not include the runner or focused-test paths, and applied no changed-file allowlist to the plan-freeze -> raw-freeze window.",
+    "repair": "The raw-freeze gate now enforces a strict diff allowlist: the exact plan-freeze -> raw-freeze changed-file set must be a subset of {continuation execution manifest, continuation raw paired retrieval results}. No other path is permitted. This single allowlist subsumes broad protected-path lists for the retrieval window; upstream gates (start preflight and plan-freeze gate) cover the earlier windows."
+  },
+  "r5_continuation_implementation_freeze": {
+    "commit_message": "D4-A5-R5 seal raw-freeze evaluator integrity",
+    "direct_parent": "447d03e3cb9d3c1109d6f6070115f3ea4618bb7e",
+    "future_start_requirements": [
+      "current HEAD is the R5 implementation-freeze commit",
+      "exact R5 commit message",
+      "direct parent is the R3 HEAD (447d03e3cb9d3c1109d6f6070115f3ea4618bb7e)",
+      "continuation manifest committed at HEAD",
+      "worktree/index clean (runner at HEAD is the frozen R5 implementation)",
+      "production/historical paths unchanged",
+      "no descendant commit dynamically accepted"
+    ],
+    "no_sha256_inventories": true,
+    "no_cryptographic_sealing": true
+  },
+  "lineage_update": {
+    "historical_a5_starting_head": "cb0f8c330f224a470401535b4b01f153488da99b",
+    "historical_a5_executor_freeze_head": "8579cdc60c3ebb53f9958d3fdd442c1a5454cc91",
+    "historical_a5_stop_head": "dc679f880cda8d2ccdfb709d725e24673c562eab",
+    "historical_r1_head": "93ad95d7f8808bc4e7ccdbb21a24457c0df30564",
+    "historical_r2_head": "a53ca0ace5280c278e32e350f5a5051b810fa6f4",
+    "historical_r3_head": "447d03e3cb9d3c1109d6f6070115f3ea4618bb7e",
+    "continuation_implementation_freeze_head": "the R5 freeze commit",
+    "continuation_plan_freeze_head": "direct child of the R5 freeze",
+    "continuation_raw_freeze_head": "direct child of the plan-freeze commit",
+    "no_historical_r4_head_invented": true,
+    "historical_heads_are_provenance_only": true
+  },
+  "plan_freeze_contract_unchanged_except_parent": {
+    "commit_message": "D4-A5 continuation freeze prospective shared plans",
+    "direct_parent": "the R5 implementation freeze",
+    "diff_allowlist": [
+      "evaluation/d4_a5_continuation_execution_manifest.json",
+      "evaluation/d4_a5_continuation_raw_prospective_plans.json"
+    ],
+    "phase_p_unchanged": "reacquire exactly all 7 frozen cases, one logical Analyzer acquisition per case, no semantic redraw, max_retries = 0, persist before applicability/provenance gate, R1 applicability semantics, R3-style accounting and lineage"
+  },
+  "raw_freeze_contract": {
+    "commit_message": "D4-A5 continuation freeze paired raw retirement results",
+    "direct_parent": "the continuation plan-freeze commit",
+    "strict_diff_allowlist": [
+      "evaluation/d4_a5_continuation_execution_manifest.json",
+      "evaluation/d4_a5_continuation_raw_paired_retirement_results.json"
+    ],
+    "explicitly_rejected_paths_include": [
+      "evaluation/scripts/d4_a5_batch2_controlled_retirement_validation.py",
+      "tests/unit/test_d4_a5_batch2_controlled_retirement_validation.py",
+      "evaluation/d4_a5_continuation_raw_prospective_plans.json",
+      "evaluation/d4_a5_r5_raw_freeze_evaluator_integrity_preregistration.json",
+      "evaluation/d4_a5_r5_result.json",
+      "evaluation/D4_A5_R5_RAW_FREEZE_EVALUATOR_INTEGRITY_SEAL.md",
+      "all historical R1/R2/R3 artifacts",
+      "all production/config/dataset paths"
+    ]
+  },
+  "evaluator_integrity_checks": {
+    "runner_blob": "runner blob at raw-freeze HEAD == runner blob at continuation_implementation_freeze_head (Git object comparison; no SHA256 inventory)",
+    "focused_test_blob": "focused test blob at raw-freeze HEAD == focused test blob at continuation_implementation_freeze_head",
+    "raw_plans_blob": "continuation raw plans blob at raw-freeze HEAD == continuation raw plans blob at plan-freeze HEAD",
+    "production_paths": "production/config/dataset paths unchanged across the whole retrieval window (implementation freeze -> raw freeze)",
+    "historical_artifacts": "historical A5/R1/R2/R3 artifacts unchanged",
+    "manifest_lineage": "manifest continuation_lineage internally consistent with the R5 contract; exposure = RAW_RETRIEVAL_COMPLETE",
+    "lifecycle_consistency": "no evaluator/result artifact already mutated outside the expected lifecycle",
+    "fail_closed": "evaluator preflight fails closed before any deterministic evaluator logic consumes retrieval outcomes"
+  },
+  "scientific_contract_unchanged": {
+    "applicability_tri_state": true,
+    "selected_rule_origin_provenance": true,
+    "projection_logic": true,
+    "six_state_dispositions": true,
+    "seven_level_batch_verdict": true,
+    "six_primary_metrics_and_thresholds": true,
+    "mrr_diagnostic_only": true,
+    "safety_gates": true,
+    "batch1_behavior": true,
+    "batch2_masks": "unchanged including model_factory_theory pflueger_2017: [51, 57, 65]",
+    "case_cohort": ["g052", "g055", "n003", "n004", "g007", "n014", "g060"],
+    "pair_schedule": true,
+    "analyzer_accounting_semantics": true,
+    "retrieval_accounting_semantics": true,
+    "unknown_accounting_semantics": true,
+    "no_special_handling": "no n014, pflueger, rule-ID, case-ID, locator, benchmark, or expected-outcome special handling"
+  },
+  "historical_records_immutable": [
+    "evaluation/d4_a5_execution_manifest.json",
+    "evaluation/d4_a5_result.json",
+    "evaluation/d4_a4_batch2_retirement_preregistration.json",
+    "evaluation/d4_a4_batch2_low_risk_retirement_selection.json",
+    "evaluation/d4_a5_r1_retirement_applicability_preregistration.json",
+    "evaluation/d4_a5_r1_result.json",
+    "evaluation/D4_A5_R1_RETIREMENT_APPLICABILITY_AND_PROVENANCE_CONTRACT_REPAIR.md",
+    "evaluation/d4_a5_r2_continuation_contract_preregistration.json",
+    "evaluation/d4_a5_r2_result.json",
+    "evaluation/D4_A5_R2_CONTINUATION_FREEZE_AND_ACCOUNTING_CONTRACT_REPAIR.md",
+    "evaluation/d4_a5_r3_continuation_lineage_accounting_preregistration.json",
+    "evaluation/d4_a5_r3_result.json",
+    "evaluation/D4_A5_R3_CONTINUATION_LINEAGE_AND_END_TO_END_ACCOUNTING_REPAIR.md"
+  ],
+  "forward_only_audit_note": "R3 successfully repaired continuation lineage and end-to-end accounting, but independent audit subsequently found that the continuation raw-freeze gate did not fully seal the evaluator implementation against post-retrieval code drift; R3's historical PASS artifact is not rewritten.",
+  "stale_docstring_cleanup": "the runner module docstring no longer lists the removed prepare-continuation-manifest CLI mode",
+  "zero_exposure_boundary": {
+    "analyzer_provider_calls": 0, "plan_acquisitions": 0, "embedding_calls": 0,
+    "reranker_calls": 0, "retrieval_cells": 0, "qa_calls": 0, "verifier_calls": 0,
+    "judge_calls": 0, "evaluator_execution": false, "scientific_verdict": false,
+    "db_writes": 0, "qdrant_writes": 0, "protected_dataset_access": 0,
+    "execute_phase_p_run": false, "execute_phase_r_run": false, "evaluate_run": false
+  },
+  "future_scientific_artifacts_not_created": [
+    "evaluation/d4_a5_continuation_raw_prospective_plans.json",
+    "evaluation/d4_a5_continuation_raw_paired_retirement_results.json",
+    "evaluation/d4_a5_continuation_evaluator_results.json",
+    "evaluation/d4_a5_continuation_result.json"
+  ]
+}
