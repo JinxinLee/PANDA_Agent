@@ -11,7 +11,30 @@ When records conflict, use the single section explicitly marked **Current author
 
 # Current authoritative state — 2026-09-05
 
-## D4-A3 current authoritative state — 2026-09-05
+## D4-A4 current authoritative state — 2026-09-05
+
+- `D4_A4_DECISION = PASS / SECOND_BATCH_LOW_RISK_RETIREMENT_PREREGISTERED`; `D4-A4 = COMPLETE / PASS / SECOND_BATCH_LOW_RISK_RETIREMENT_PREREGISTERED`; `D4-A3 = COMPLETE / PASS / FIRST_BATCH_RUNTIME_MIGRATION_ACTIVATED`; `D4-A2-V2 = COMPLETE / PASS / CONTROLLED_SHARED_PLAN_T2_VALIDATED (AUTHORITATIVE VIA D4-A2-V2-R3)`; `BATCH1 = ACTIVE`; `BATCH2 = SELECTED / FROZEN / NOT_EXECUTED`; `BATCH2_PRODUCTION_ACTIVATION = false`; `BATCH2_CANDIDATES = ["effective_acceptance_pipeline", "root_macro_usage", "model_factory_theory"]`; `PRODUCTION_ACTIVATION = true` (unchanged Batch 1 runtime; Batch 2 remains inactive); `D4 = IN_PROGRESS / INCREMENTAL_QUERY_EXPANSION_MIGRATION`; `NEXT_STAGE = D4-A5 — Second-Batch Low-Risk Locator Controlled Retirement Validation (BLOCKED / REQUIRES_SEPARATE_AUTHORIZATION)`.
+- Second-batch low-risk locator retirement selection and preregistration:
+  - Scientific basis: Fixed locator components for which historical controlled evidence demonstrated no meaningful legacy dependency (`LEGACY == ABLATION`). Redundant locators do not receive an artificial structured replacement.
+  - Three candidate rules mechanically recovered from `evaluation/d4_a0_expansion_component_inventory.json` with `migration_readiness = LOW_RISK_RETIREMENT_CANDIDATE`:
+    1. `effective_acceptance_pipeline`: 3 symbols proposed for retirement (`macro/target/prod_sim_hvmaps.C`, `data/PndLmdAcceptance.cxx`, `model/PndLmdModelFactory.cxx`); paper page hint `li_2026: [83, 86, 89]` explicitly preserved pending generic document navigation; triggers, repositories, and concepts preserved.
+    2. `root_macro_usage`: 2 symbols proposed for retirement (`Running/Macros.html`, `tools/MasterTasks/PndMasterRunSim.cxx`); triggers, repositories, and concepts preserved.
+    3. `model_factory_theory`: 3 symbols proposed for retirement (`model/PndLmdDPMAngModel1D.cxx`, `model/PndLmdDPMAngModel2D.cxx`, `model/PndLmdModelFactory.cxx`); 1 paper page hint proposed for retirement (`pflueger_2017: [51, 57, 65]`); triggers, repositories, and concepts preserved.
+  - Zero material semantic drift verified across all three candidate rules against current HEAD `configs/query_expansions.yaml` (54 rules, 2 Batch-1 active, 52 inactive).
+  - Occurrence audit across 54 rules confirmed rule-component retirement only; never global string deletion (overlapping locators in unassessed rules remain untouched).
+  - Direct case cohort: 7 cases (`g052`, `g055`, `n003`, `n004`, `g007`, `n014`, `g060`). Overlap matrix confirmed 0 multi-Batch-2 rule collisions.
+  - Prospective experimental protocol: 1 canonical plan acquired per unique case (7 plans), shared identically between arms (`CURRENT_COMPAT` vs `BATCH2_RETIREMENT`), 0 downstream Analyzer calls, 14 downstream retrieval cells. Source-native provenance contribution subtraction for retirement arm.
+  - Batch 1 production runtime invariant across both arms (selectivity v2, K=3 admission, 30 rerank pool).
+  - Scientific contract: `gemini-3.8-flash`, `gemini-embedding-2`, `global`, temperature `0.0`.
+  - Evidence denominators: 7 total cases, 6 answered, 1 negative control (`g007`), 12 required evidence groups, 11 answered evidence groups, 12 critical groups.
+  - Conservative 6-level verdict precedence ladder frozen, requiring complete explicit inputs; Level 3 partial applies only without safety violations; Level 4 handles safety when prior protocol/reference gates pass.
+  - Zero-outcome-exposure accounting: 0 model calls, 0 retrieval runs, 0 DB/Qdrant writes, 0 protected dataset access (`novel_validation`, `novel_holdout`).
+  - Attribution: only g052, n004, n014 have active candidate masks; g055, n003, g007, g060 are empty-mask controls. Per-rule baseline gates cover 3 active cases / 4 groups; aggregate metrics retain all 6 answered cases / 11 groups.
+  - Verification: 36/36 focused tests passing in `tests/unit/test_d4_a4_batch2_retirement_preregistration.py`.
+- Production status: `BATCH2_PRODUCTION_ACTIVATION = false`; `PRODUCTION_ACTIVATION = true` (unchanged Batch 1); `D4-A4 = COMPLETE / PASS / SECOND_BATCH_LOW_RISK_RETIREMENT_PREREGISTERED`; `BATCH2 = SELECTED / FROZEN / NOT_EXECUTED`; `D4 = IN_PROGRESS / INCREMENTAL_QUERY_EXPANSION_MIGRATION`.
+- Artifacts: `evaluation/d4_a4_batch2_low_risk_retirement_selection.json`, `evaluation/d4_a4_batch2_retirement_preregistration.json`, `evaluation/D4_A4_SECOND_BATCH_LOW_RISK_RETIREMENT_SELECTION_AND_PREREGISTRATION.md`, `evaluation/scripts/d4_a4_batch2_retirement_preregistration.py`, `tests/unit/test_d4_a4_batch2_retirement_preregistration.py`.
+
+## D4-A3 historical activation state — 2026-09-05
 
 - `D4_A3_DECISION = PASS / FIRST_BATCH_RUNTIME_MIGRATION_ACTIVATED`; `D4-A3 = COMPLETE / PASS / FIRST_BATCH_RUNTIME_MIGRATION_ACTIVATED`; `D4-A2-V2 = COMPLETE / PASS / CONTROLLED_SHARED_PLAN_T2_VALIDATED (AUTHORITATIVE VIA D4-A2-V2-R3)`; `FIRST_BATCH_RUNTIME_MIGRATION = ACTIVE`; `BATCH1_MIGRATED_RULES = ["event_poca_handoff", "restgas_profile_workflow"]`; `BATCH1_FIXED_LOCATORS_REMOVED = 10 components`; `PRODUCTION_ACTIVATION = true`; `D4 = IN_PROGRESS / INCREMENTAL_QUERY_EXPANSION_MIGRATION`; `NEXT_BATCH_STATE = NOT_STARTED / SEPARATELY_GOVERNED`.
 - First-batch runtime migration activation:

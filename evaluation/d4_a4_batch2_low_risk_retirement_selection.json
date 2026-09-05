@@ -1,0 +1,935 @@
+{
+  "schema_version": "1.0.0",
+  "lifecycle_stage": "D4-A4",
+  "lifecycle_name": "D4-A4 — Second-Batch Low-Risk Locator Retirement Selection & Preregistration",
+  "created_at": "2026-09-05T14:11:12+02:00",
+  "starting_head": "631a66c125e8d58fee24bd448f868b4a8e423ab6",
+  "parent_head": "8c0971f20f9a2b2680451e3123fa1d95325816bc",
+  "status": "COMPLETE",
+  "selection_verdict": "SELECTED / THREE_LOW_RISK_CANDIDATES_CONFIRMED",
+  "current_rule_count": 54,
+  "batch1_active_state": {
+    "status": "ACTIVE",
+    "rules": [
+      "event_poca_handoff",
+      "restgas_profile_workflow"
+    ],
+    "structured_replacement": true,
+    "non_batch1_rule_count": 52,
+    "non_batch1_structured_replacement": false
+  },
+  "historical_low_risk_candidate_count": 3,
+  "exact_historical_candidate_rules": [
+    "effective_acceptance_pipeline",
+    "root_macro_usage",
+    "model_factory_theory"
+  ],
+  "current_drift_audit": {
+    "effective_acceptance_pipeline": {
+      "rule_id": "effective_acceptance_pipeline",
+      "exists_in_current_config": true,
+      "triggers_unchanged": true,
+      "repositories_unchanged": true,
+      "concepts_unchanged": true,
+      "symbols_unchanged": true,
+      "paper_page_hints_unchanged": true,
+      "structured_replacement_is_false": true,
+      "material_semantic_drift": false,
+      "current_triggers": [
+        "effective acceptance",
+        "restgas acceptance",
+        "acceptance calculation",
+        "有效接受度",
+        "有效接受度"
+      ],
+      "current_repositories": [
+        "restgas_determination",
+        "luminosityfit"
+      ],
+      "current_symbols": [
+        "macro/target/prod_sim_hvmaps.C",
+        "data/PndLmdAcceptance.cxx",
+        "model/PndLmdModelFactory.cxx"
+      ],
+      "current_concepts": [
+        "profile-dependent effective acceptance pipeline"
+      ],
+      "current_paper_page_hints": {
+        "li_2026": [
+          83,
+          86,
+          89
+        ]
+      },
+      "d4_a0_migration_readiness": "LOW_RISK_RETIREMENT_CANDIDATE",
+      "historical_prior_decision": "NO_MEANINGFUL_LEGACY_DEPENDENCY",
+      "historical_legacy_dependency": "NOT_OBSERVED",
+      "eligibility": "ELIGIBLE_FOR_BATCH2_RETIREMENT"
+    },
+    "root_macro_usage": {
+      "rule_id": "root_macro_usage",
+      "exists_in_current_config": true,
+      "triggers_unchanged": true,
+      "repositories_unchanged": true,
+      "concepts_unchanged": true,
+      "symbols_unchanged": true,
+      "paper_page_hints_unchanged": true,
+      "structured_replacement_is_false": true,
+      "material_semantic_drift": false,
+      "current_triggers": [
+        "ROOT macro",
+        "macro execution",
+        "run a ROOT macro"
+      ],
+      "current_repositories": [
+        "pandaroot"
+      ],
+      "current_symbols": [
+        "Running/Macros.html",
+        "tools/MasterTasks/PndMasterRunSim.cxx"
+      ],
+      "current_concepts": [
+        "PandaRoot macro invocation"
+      ],
+      "current_paper_page_hints": {},
+      "d4_a0_migration_readiness": "LOW_RISK_RETIREMENT_CANDIDATE",
+      "historical_prior_decision": "NO_MEANINGFUL_LEGACY_DEPENDENCY",
+      "historical_legacy_dependency": "NOT_OBSERVED",
+      "eligibility": "ELIGIBLE_FOR_BATCH2_RETIREMENT"
+    },
+    "model_factory_theory": {
+      "rule_id": "model_factory_theory",
+      "exists_in_current_config": true,
+      "triggers_unchanged": true,
+      "repositories_unchanged": true,
+      "concepts_unchanged": true,
+      "symbols_unchanged": true,
+      "paper_page_hints_unchanged": true,
+      "structured_replacement_is_false": true,
+      "material_semantic_drift": false,
+      "current_triggers": [
+        "PndLmdModelFactory",
+        "DPM、acceptance 和 resolution",
+        "DPM acceptance resolution"
+      ],
+      "current_repositories": [
+        "luminosityfit"
+      ],
+      "current_symbols": [
+        "model/PndLmdDPMAngModel1D.cxx",
+        "model/PndLmdDPMAngModel2D.cxx",
+        "model/PndLmdModelFactory.cxx"
+      ],
+      "current_concepts": [
+        "DPM model acceptance resolution composition"
+      ],
+      "current_paper_page_hints": {
+        "pflueger_2017": [
+          51,
+          57,
+          65
+        ]
+      },
+      "d4_a0_migration_readiness": "LOW_RISK_RETIREMENT_CANDIDATE",
+      "historical_prior_decision": "NO_MEANINGFUL_LEGACY_DEPENDENCY",
+      "historical_legacy_dependency": "NOT_OBSERVED",
+      "eligibility": "ELIGIBLE_FOR_BATCH2_RETIREMENT"
+    }
+  },
+  "component_occurrence_overlap_audit": {
+    "symbols": {
+      "macro/target/prod_sim_hvmaps.C": {
+        "all_current_rule_occurrences": [
+          "profile_generation_and_correction",
+          "effective_acceptance_pipeline",
+          "reconstructed_profile_to_acceptance",
+          "target_macro_workflow_grouping",
+          "hv_maps_vertex_resolution",
+          "target_generator_theory",
+          "reconstructed_profile_factory_alias"
+        ],
+        "occurrence_count": 7,
+        "batch1_occurrence_status": "HISTORICALLY_CLEARED_IN_BATCH1",
+        "batch2_candidate_occurrences": [
+          "effective_acceptance_pipeline"
+        ],
+        "non_batch2_occurrences_untouched": [
+          "profile_generation_and_correction",
+          "reconstructed_profile_to_acceptance",
+          "target_macro_workflow_grouping",
+          "hv_maps_vertex_resolution",
+          "target_generator_theory",
+          "reconstructed_profile_factory_alias"
+        ],
+        "retirement_scope": "RULE_COMPONENT_RETIREMENT_ONLY",
+        "global_string_deletion": false
+      },
+      "data/PndLmdAcceptance.cxx": {
+        "all_current_rule_occurrences": [
+          "angular_acceptance",
+          "effective_acceptance_pipeline",
+          "reconstructed_profile_to_acceptance",
+          "acceptance_model_boundary",
+          "reconstructed_profile_factory_alias"
+        ],
+        "occurrence_count": 5,
+        "batch1_occurrence_status": "NEVER_PRESENT_IN_BATCH1",
+        "batch2_candidate_occurrences": [
+          "effective_acceptance_pipeline"
+        ],
+        "non_batch2_occurrences_untouched": [
+          "angular_acceptance",
+          "reconstructed_profile_to_acceptance",
+          "acceptance_model_boundary",
+          "reconstructed_profile_factory_alias"
+        ],
+        "retirement_scope": "RULE_COMPONENT_RETIREMENT_ONLY",
+        "global_string_deletion": false
+      },
+      "model/PndLmdModelFactory.cxx": {
+        "all_current_rule_occurrences": [
+          "luminosityfit_model_layers",
+          "resolution_models",
+          "effective_acceptance_pipeline",
+          "panda_luminosityfit_boundary",
+          "acceptance_model_boundary",
+          "beam_divergence_theory",
+          "model_factory_theory",
+          "reconstructed_profile_factory_alias",
+          "model_factory_acceptance_methods"
+        ],
+        "occurrence_count": 9,
+        "batch1_occurrence_status": "NEVER_PRESENT_IN_BATCH1",
+        "batch2_candidate_occurrences": [
+          "effective_acceptance_pipeline",
+          "model_factory_theory"
+        ],
+        "non_batch2_occurrences_untouched": [
+          "luminosityfit_model_layers",
+          "resolution_models",
+          "panda_luminosityfit_boundary",
+          "acceptance_model_boundary",
+          "beam_divergence_theory",
+          "reconstructed_profile_factory_alias",
+          "model_factory_acceptance_methods"
+        ],
+        "retirement_scope": "RULE_COMPONENT_RETIREMENT_ONLY",
+        "global_string_deletion": false
+      },
+      "Running/Macros.html": {
+        "all_current_rule_occurrences": [
+          "sphinx_operational_architecture",
+          "root_macro_usage"
+        ],
+        "occurrence_count": 2,
+        "batch1_occurrence_status": "NEVER_PRESENT_IN_BATCH1",
+        "batch2_candidate_occurrences": [
+          "root_macro_usage"
+        ],
+        "non_batch2_occurrences_untouched": [
+          "sphinx_operational_architecture"
+        ],
+        "retirement_scope": "RULE_COMPONENT_RETIREMENT_ONLY",
+        "global_string_deletion": false
+      },
+      "tools/MasterTasks/PndMasterRunSim.cxx": {
+        "all_current_rule_occurrences": [
+          "root_macro_usage",
+          "simulation_configuration_usage",
+          "target_generator_sampling_data_flow"
+        ],
+        "occurrence_count": 3,
+        "batch1_occurrence_status": "NEVER_PRESENT_IN_BATCH1",
+        "batch2_candidate_occurrences": [
+          "root_macro_usage"
+        ],
+        "non_batch2_occurrences_untouched": [
+          "simulation_configuration_usage",
+          "target_generator_sampling_data_flow"
+        ],
+        "retirement_scope": "RULE_COMPONENT_RETIREMENT_ONLY",
+        "global_string_deletion": false
+      },
+      "model/PndLmdDPMAngModel1D.cxx": {
+        "all_current_rule_occurrences": [
+          "luminosityfit_model_layers",
+          "model_factory_theory",
+          "dpm_angular_models"
+        ],
+        "occurrence_count": 3,
+        "batch1_occurrence_status": "NEVER_PRESENT_IN_BATCH1",
+        "batch2_candidate_occurrences": [
+          "model_factory_theory"
+        ],
+        "non_batch2_occurrences_untouched": [
+          "luminosityfit_model_layers",
+          "dpm_angular_models"
+        ],
+        "retirement_scope": "RULE_COMPONENT_RETIREMENT_ONLY",
+        "global_string_deletion": false
+      },
+      "model/PndLmdDPMAngModel2D.cxx": {
+        "all_current_rule_occurrences": [
+          "luminosityfit_model_layers",
+          "model_factory_theory",
+          "dpm_angular_models"
+        ],
+        "occurrence_count": 3,
+        "batch1_occurrence_status": "NEVER_PRESENT_IN_BATCH1",
+        "batch2_candidate_occurrences": [
+          "model_factory_theory"
+        ],
+        "non_batch2_occurrences_untouched": [
+          "luminosityfit_model_layers",
+          "dpm_angular_models"
+        ],
+        "retirement_scope": "RULE_COMPONENT_RETIREMENT_ONLY",
+        "global_string_deletion": false
+      }
+    },
+    "paper_page_hints": {
+      "pflueger_2017: [51, 57, 65]": {
+        "paper": "pflueger_2017",
+        "pages": [
+          51,
+          57,
+          65
+        ],
+        "exact_matching_rules": [
+          "model_factory_theory"
+        ],
+        "candidate_owner": "model_factory_theory",
+        "disposition": "RETIRE_IF_REDUNDANT",
+        "batch2_candidate_occurrences": [
+          "model_factory_theory"
+        ],
+        "non_batch2_occurrences_untouched": [
+          "dpm_model_theory",
+          "dpm_angular_models",
+          "angular_acceptance",
+          "pointlike_vs_restgas_acceptance",
+          "resolution_models"
+        ],
+        "same_paper_other_rule_pages": [
+          {
+            "rule_id": "resolution_models",
+            "pages": [
+              65,
+              70,
+              71
+            ]
+          },
+          {
+            "rule_id": "angular_acceptance",
+            "pages": [
+              57,
+              58,
+              62
+            ]
+          },
+          {
+            "rule_id": "beam_divergence_theory",
+            "pages": [
+              74,
+              78,
+              84
+            ]
+          },
+          {
+            "rule_id": "pointlike_vs_restgas_acceptance",
+            "pages": [
+              57,
+              62
+            ]
+          },
+          {
+            "rule_id": "dpm_model_theory",
+            "pages": [
+              51,
+              52,
+              54
+            ]
+          },
+          {
+            "rule_id": "dpm_angular_models",
+            "pages": [
+              51,
+              54
+            ]
+          }
+        ],
+        "page_occurrences": {
+          "51": [
+            "model_factory_theory",
+            "dpm_model_theory",
+            "dpm_angular_models"
+          ],
+          "57": [
+            "angular_acceptance",
+            "pointlike_vs_restgas_acceptance",
+            "model_factory_theory"
+          ],
+          "65": [
+            "resolution_models",
+            "model_factory_theory"
+          ]
+        },
+        "batch1_occurrence_status": "ABSENT_IN_CURRENT_AND_HISTORICAL_BATCH1_RULES"
+      },
+      "li_2026: [83, 86, 89]": {
+        "paper": "li_2026",
+        "pages": [
+          83,
+          86,
+          89
+        ],
+        "exact_matching_rules": [
+          "effective_acceptance_pipeline",
+          "pointlike_vs_restgas_acceptance"
+        ],
+        "candidate_owner": "effective_acceptance_pipeline",
+        "disposition": "RETAIN_PENDING_GENERIC_REPLACEMENT",
+        "batch2_candidate_occurrences": [
+          "effective_acceptance_pipeline"
+        ],
+        "non_batch2_occurrences_untouched": [
+          "pointlike_vs_restgas_acceptance"
+        ],
+        "same_paper_other_rule_pages": [
+          {
+            "rule_id": "longitudinal_efficiency",
+            "pages": [
+              138,
+              142,
+              147
+            ]
+          },
+          {
+            "rule_id": "nonexistent_restgas_deconvolver",
+            "pages": [
+              142,
+              147
+            ]
+          },
+          {
+            "rule_id": "profile_generation_and_correction",
+            "pages": [
+              138,
+              142,
+              147
+            ]
+          },
+          {
+            "rule_id": "event_alignment",
+            "pages": [
+              131,
+              138
+            ]
+          },
+          {
+            "rule_id": "reconstructed_profile_to_acceptance",
+            "pages": [
+              141,
+              149,
+              151
+            ]
+          },
+          {
+            "rule_id": "restgas_poca_theory",
+            "pages": [
+              127,
+              131,
+              138
+            ]
+          },
+          {
+            "rule_id": "hv_maps_vertex_resolution",
+            "pages": [
+              103,
+              109,
+              123
+            ]
+          },
+          {
+            "rule_id": "target_generator_theory",
+            "pages": [
+              128,
+              132
+            ]
+          },
+          {
+            "rule_id": "displaced_tracking_theory",
+            "pages": [
+              127,
+              131
+            ]
+          },
+          {
+            "rule_id": "vertex_fit_boundary_theory",
+            "pages": [
+              131,
+              138
+            ]
+          }
+        ],
+        "page_occurrences": {
+          "83": [
+            "effective_acceptance_pipeline",
+            "pointlike_vs_restgas_acceptance"
+          ],
+          "86": [
+            "effective_acceptance_pipeline",
+            "pointlike_vs_restgas_acceptance"
+          ],
+          "89": [
+            "effective_acceptance_pipeline",
+            "pointlike_vs_restgas_acceptance"
+          ]
+        },
+        "batch1_occurrence_status": "ABSENT_IN_CURRENT_AND_HISTORICAL_BATCH1_RULES"
+      }
+    }
+  },
+  "historical_direct_cases": {
+    "effective_acceptance_pipeline": {
+      "direct_trigger_case_ids": [
+        "g052"
+      ],
+      "control_case_ids": [
+        "g055",
+        "n003"
+      ],
+      "all_d3_cases": [
+        "g052",
+        "g055",
+        "n003"
+      ]
+    },
+    "root_macro_usage": {
+      "direct_trigger_case_ids": [
+        "n004"
+      ],
+      "control_case_ids": [
+        "g007"
+      ],
+      "all_d3_cases": [
+        "n004",
+        "g007"
+      ]
+    },
+    "model_factory_theory": {
+      "direct_trigger_case_ids": [
+        "n014"
+      ],
+      "paraphrase_case_ids": [
+        "g060"
+      ],
+      "all_d3_cases": [
+        "n014",
+        "g060"
+      ]
+    }
+  },
+  "deterministic_match_matrix": {
+    "g052": {
+      "case_id": "g052",
+      "source_dataset": "Gold v2.6",
+      "split": "dev",
+      "expected_status": "answered",
+      "query": "Why does a reconstructed restgas profile feed back into effective acceptance?",
+      "matched_rules_total": [
+        "restgas_profile_workflow",
+        "effective_acceptance_pipeline",
+        "reconstructed_profile_to_acceptance"
+      ],
+      "matched_rules_count": 3,
+      "batch2_matched_rules": [
+        "effective_acceptance_pipeline"
+      ],
+      "batch1_matched_rules": [
+        "restgas_profile_workflow"
+      ],
+      "other_matched_rules": [
+        "reconstructed_profile_to_acceptance"
+      ],
+      "multi_batch2_collision": false
+    },
+    "g055": {
+      "case_id": "g055",
+      "source_dataset": "Gold v2.6",
+      "split": "dev",
+      "expected_status": "answered",
+      "query": "How should angular acceptance be distinguished from longitudinal efficiency?",
+      "matched_rules_total": [
+        "angular_acceptance",
+        "longitudinal_efficiency"
+      ],
+      "matched_rules_count": 2,
+      "batch2_matched_rules": [],
+      "batch1_matched_rules": [],
+      "other_matched_rules": [
+        "angular_acceptance",
+        "longitudinal_efficiency"
+      ],
+      "multi_batch2_collision": false
+    },
+    "n003": {
+      "case_id": "n003",
+      "source_dataset": "novel_dev",
+      "split": "novel_dev",
+      "expected_status": "answered",
+      "query": "For an acceptance scan I need single particles whose momentum and polar angle advance in fixed steps from one event to the next. Which PandaRoot event generator supports this, and how is the stepping configured?",
+      "matched_rules_total": [],
+      "matched_rules_count": 0,
+      "batch2_matched_rules": [],
+      "batch1_matched_rules": [],
+      "other_matched_rules": [],
+      "multi_batch2_collision": false
+    },
+    "n004": {
+      "case_id": "n004",
+      "source_dataset": "novel_dev",
+      "split": "novel_dev",
+      "expected_status": "answered",
+      "query": "While debugging a running PandaRoot macro I want every log message to carry the severity and the file:line:function where it was emitted. How do I configure that, and what other logging controls does the framework documentation describe?",
+      "matched_rules_total": [
+        "root_macro_usage"
+      ],
+      "matched_rules_count": 1,
+      "batch2_matched_rules": [
+        "root_macro_usage"
+      ],
+      "batch1_matched_rules": [],
+      "other_matched_rules": [],
+      "multi_batch2_collision": false
+    },
+    "g007": {
+      "case_id": "g007",
+      "source_dataset": "Gold v2.6",
+      "split": "dev",
+      "expected_status": "insufficient_evidence",
+      "query": "What exact minimum GPU memory is required to install PandaRoot?",
+      "matched_rules_total": [
+        "installation_requirements"
+      ],
+      "matched_rules_count": 1,
+      "batch2_matched_rules": [],
+      "batch1_matched_rules": [],
+      "other_matched_rules": [
+        "installation_requirements"
+      ],
+      "multi_batch2_collision": false
+    },
+    "n014": {
+      "case_id": "n014",
+      "source_dataset": "novel_dev",
+      "split": "novel_dev",
+      "expected_status": "answered",
+      "query": "LuminosityFit has a model_framework directory and a native model/ directory. What does the repository explicitly say model_framework is, and what role does model/PndLmdModelFactory expose?",
+      "matched_rules_total": [
+        "model_factory_theory",
+        "model_factory_acceptance_methods"
+      ],
+      "matched_rules_count": 2,
+      "batch2_matched_rules": [
+        "model_factory_theory"
+      ],
+      "batch1_matched_rules": [],
+      "other_matched_rules": [
+        "model_factory_acceptance_methods"
+      ],
+      "multi_batch2_collision": false
+    },
+    "g060": {
+      "case_id": "g060",
+      "source_dataset": "Gold v2.6",
+      "split": "dev",
+      "expected_status": "answered",
+      "query": "How is beam-divergence smearing implemented in LuminosityFit?",
+      "matched_rules_total": [
+        "beam_divergence_theory"
+      ],
+      "matched_rules_count": 1,
+      "batch2_matched_rules": [],
+      "batch1_matched_rules": [],
+      "other_matched_rules": [
+        "beam_divergence_theory"
+      ],
+      "multi_batch2_collision": false
+    }
+  },
+  "selected_batch2_rules": [
+    "effective_acceptance_pipeline",
+    "root_macro_usage",
+    "model_factory_theory"
+  ],
+  "held_candidate_rules_and_reasons": [],
+  "exact_retirement_masks": {
+    "effective_acceptance_pipeline": {
+      "rule_id": "effective_acceptance_pipeline",
+      "symbols_retired": [
+        "macro/target/prod_sim_hvmaps.C",
+        "data/PndLmdAcceptance.cxx",
+        "model/PndLmdModelFactory.cxx"
+      ],
+      "paper_page_hints_retired": {},
+      "symbols_preserved": [],
+      "paper_page_hints_preserved": {
+        "li_2026": [
+          83,
+          86,
+          89
+        ]
+      },
+      "triggers_preserved": [
+        "effective acceptance",
+        "restgas acceptance",
+        "acceptance calculation",
+        "有效接受度",
+        "有效接受度"
+      ],
+      "repositories_preserved": [
+        "restgas_determination",
+        "luminosityfit"
+      ],
+      "concepts_preserved": [
+        "profile-dependent effective acceptance pipeline"
+      ],
+      "structured_replacement_after_retirement": false,
+      "retirement_rationale": "Historical D3-A2 demonstrated NO_MEANINGFUL_LEGACY_DEPENDENCY (LEGACY == ABLATION). Symbols retired; paper page hints preserved pending generic document navigation."
+    },
+    "root_macro_usage": {
+      "rule_id": "root_macro_usage",
+      "symbols_retired": [
+        "Running/Macros.html",
+        "tools/MasterTasks/PndMasterRunSim.cxx"
+      ],
+      "paper_page_hints_retired": {},
+      "symbols_preserved": [],
+      "paper_page_hints_preserved": {},
+      "triggers_preserved": [
+        "ROOT macro",
+        "macro execution",
+        "run a ROOT macro"
+      ],
+      "repositories_preserved": [
+        "pandaroot"
+      ],
+      "concepts_preserved": [
+        "PandaRoot macro invocation"
+      ],
+      "structured_replacement_after_retirement": false,
+      "retirement_rationale": "Historical D3-A2 demonstrated NO_MEANINGFUL_LEGACY_DEPENDENCY (LEGACY == ABLATION). Both fixed symbols retired; no page hints existed."
+    },
+    "model_factory_theory": {
+      "rule_id": "model_factory_theory",
+      "symbols_retired": [
+        "model/PndLmdDPMAngModel1D.cxx",
+        "model/PndLmdDPMAngModel2D.cxx",
+        "model/PndLmdModelFactory.cxx"
+      ],
+      "paper_page_hints_retired": {
+        "pflueger_2017": [
+          51,
+          57,
+          65
+        ]
+      },
+      "symbols_preserved": [],
+      "paper_page_hints_preserved": {},
+      "triggers_preserved": [
+        "PndLmdModelFactory",
+        "DPM、acceptance 和 resolution",
+        "DPM acceptance resolution"
+      ],
+      "repositories_preserved": [
+        "luminosityfit"
+      ],
+      "concepts_preserved": [
+        "DPM model acceptance resolution composition"
+      ],
+      "structured_replacement_after_retirement": false,
+      "retirement_rationale": "Historical D3-A2 demonstrated NO_MEANINGFUL_LEGACY_DEPENDENCY (LEGACY == ABLATION). Three model symbols and pflueger_2017 page hints retired; triggers, repo scope and concepts preserved."
+    }
+  },
+  "explicitly_preserved_components": {
+    "effective_acceptance_pipeline": {
+      "paper_page_hints": {
+        "li_2026": [
+          83,
+          86,
+          89
+        ]
+      },
+      "triggers": [
+        "effective acceptance",
+        "restgas acceptance",
+        "acceptance calculation",
+        "有效接受度",
+        "有效接受度"
+      ],
+      "repositories": [
+        "restgas_determination",
+        "luminosityfit"
+      ],
+      "concepts": [
+        "profile-dependent effective acceptance pipeline"
+      ]
+    },
+    "root_macro_usage": {
+      "triggers": [
+        "ROOT macro",
+        "macro execution",
+        "run a ROOT macro"
+      ],
+      "repositories": [
+        "pandaroot"
+      ],
+      "concepts": [
+        "PandaRoot macro invocation"
+      ]
+    },
+    "model_factory_theory": {
+      "triggers": [
+        "PndLmdModelFactory",
+        "DPM、acceptance 和 resolution",
+        "DPM acceptance resolution"
+      ],
+      "repositories": [
+        "luminosityfit"
+      ],
+      "concepts": [
+        "DPM model acceptance resolution composition"
+      ]
+    },
+    "non_batch2_rule_components": "All symbols, page hints, triggers, repos and concepts belonging to the 51 other rules remain untouched."
+  },
+  "components_explicitly_excluded_from_batch2": [
+    "li_2026: [83, 86, 89] (held pending generic document navigation)",
+    "All triggers across candidate rules (preserved language normalization)",
+    "All repositories across candidate rules (preserved routing domain scope)",
+    "All concepts across candidate rules (preserved conceptual vocabulary)",
+    "All locators belonging to non-Batch-2 query-expansion rules"
+  ],
+  "zero_provider_accounting": {
+    "analyzer_calls": 0,
+    "embedding_calls": 0,
+    "reranker_calls": 0,
+    "qa_calls": 0,
+    "verifier_calls": 0,
+    "judge_calls": 0,
+    "db_writes": 0,
+    "qdrant_writes": 0,
+    "retrieval_runs": 0,
+    "benchmark_runs": 0,
+    "novel_runs": 0,
+    "protected_dataset_access": 0
+  },
+  "historical_evidence_basis": {
+    "effective_acceptance_pipeline": {
+      "direct_identifiability": "IDENTIFIABLE",
+      "legacy_dependency": "NOT_OBSERVED",
+      "structured_recovery": "PARITY",
+      "prior_rule_decision": "NO_MEANINGFUL_LEGACY_DEPENDENCY",
+      "d3_cases": [
+        "g052",
+        "g055",
+        "n003"
+      ]
+    },
+    "root_macro_usage": {
+      "direct_identifiability": "IDENTIFIABLE",
+      "legacy_dependency": "NOT_OBSERVED",
+      "structured_recovery": "PARITY",
+      "prior_rule_decision": "NO_MEANINGFUL_LEGACY_DEPENDENCY",
+      "d3_cases": [
+        "n004",
+        "g007"
+      ]
+    },
+    "model_factory_theory": {
+      "direct_identifiability": "IDENTIFIABLE",
+      "legacy_dependency": "NOT_OBSERVED",
+      "structured_recovery": "PARITY",
+      "prior_rule_decision": "NO_MEANINGFUL_LEGACY_DEPENDENCY",
+      "d3_cases": [
+        "n014",
+        "g060"
+      ]
+    }
+  },
+  "later_authority_audit": {
+    "scope": "D4 result summaries and candidate-ID search of D4 preregistrations/results through starting HEAD; D4-A3 production diff inspected for new candidate-specific literals. No contradictory candidate dependency classification found; absence of a later claim is not a new outcome measurement.",
+    "superseding_candidate_dependencies": [],
+    "new_d4_a3_candidate_specific_dependency": false
+  },
+  "component_future_owners": {
+    "effective_acceptance_pipeline": {
+      "symbols": "RETIRE_REDUNDANT_LOCATOR",
+      "paper_page_hints": "RETAIN_PENDING_REPLACEMENT",
+      "triggers": "RETAIN_LANGUAGE_OR_DOMAIN_SEMANTICS",
+      "repositories": "RETAIN_LANGUAGE_OR_DOMAIN_SEMANTICS",
+      "concepts": "RETAIN_LANGUAGE_OR_DOMAIN_SEMANTICS"
+    },
+    "root_macro_usage": {
+      "symbols": "RETIRE_REDUNDANT_LOCATOR",
+      "paper_page_hints": "NOT_APPLICABLE",
+      "triggers": "RETAIN_LANGUAGE_OR_DOMAIN_SEMANTICS",
+      "repositories": "RETAIN_LANGUAGE_OR_DOMAIN_SEMANTICS",
+      "concepts": "RETAIN_LANGUAGE_OR_DOMAIN_SEMANTICS"
+    },
+    "model_factory_theory": {
+      "symbols": "RETIRE_REDUNDANT_LOCATOR",
+      "paper_page_hints": "RETIRE_REDUNDANT_LOCATOR",
+      "triggers": "RETAIN_LANGUAGE_OR_DOMAIN_SEMANTICS",
+      "repositories": "RETAIN_LANGUAGE_OR_DOMAIN_SEMANTICS",
+      "concepts": "RETAIN_LANGUAGE_OR_DOMAIN_SEMANTICS"
+    }
+  },
+  "controller_reviewed_at": "2026-09-05T12:22:45Z",
+  "verification": {
+    "worker_reported": "29 initial D4-A4 tests; 67 combined D4-A4/D4-A3 tests passed",
+    "controller_defects_found": [
+      "Missing primary metrics could PASS",
+      "Missing selected rule results could PASS",
+      "No-match cells incorrectly marked mask-applied",
+      "Page-set audit needed individual page overlaps",
+      "Provenance removal needed per-origin own-component mask"
+    ],
+    "controller_runs": [
+      {
+        "tests": 33,
+        "result": "PASS",
+        "seconds": 0.75
+      },
+      {
+        "tests": 36,
+        "result": "PASS",
+        "seconds": 0.83
+      }
+    ],
+    "truth_space_combinations": 1024,
+    "scientific_calls": 0,
+    "scientific_tokens": 0,
+    "agy_coding_tokens": "not measured; separate from scientific calls",
+    "json_yaml_parse": "PASS",
+    "python_compile_static": "PASS",
+    "exact_git_scope": "PASS; seven allowed files; production/config/datasets and historical artifacts unchanged",
+    "historical_status_body": "EXACTLY_PRESERVED",
+    "precommit_format_correction": "Staged diff check caught seven Markdown hard-break trailing-space lines in the new report; trailing spaces removed before commit."
+  },
+  "commit_contract": {
+    "message": "D4-A4 freeze second-batch low-risk retirement validation",
+    "direct_parent": "631a66c125e8d58fee24bd448f868b4a8e423ab6",
+    "commit": "GIT_COMMIT_CONTAINING_THIS_ARTIFACT"
+  },
+  "changed_files": [
+    "docs/EVALUATION_STATUS.md",
+    "docs/GENERALIZATION_ROADMAP.md",
+    "evaluation/D4_A4_SECOND_BATCH_LOW_RISK_RETIREMENT_SELECTION_AND_PREREGISTRATION.md",
+    "evaluation/d4_a4_batch2_low_risk_retirement_selection.json",
+    "evaluation/d4_a4_batch2_retirement_preregistration.json",
+    "evaluation/scripts/d4_a4_batch2_retirement_preregistration.py",
+    "tests/unit/test_d4_a4_batch2_retirement_preregistration.py"
+  ]
+}

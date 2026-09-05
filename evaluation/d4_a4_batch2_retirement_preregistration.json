@@ -1,0 +1,814 @@
+{
+  "schema_version": "1.0.0",
+  "lifecycle_id": "D4-A4",
+  "stage": "D4-A4 — Second-Batch Low-Risk Locator Retirement Selection & Preregistration",
+  "created_at": "2026-09-05T14:11:12+02:00",
+  "starting_head": "631a66c125e8d58fee24bd448f868b4a8e423ab6",
+  "future_execution_stage_identity": "D4-A5 — Second-Batch Low-Risk Locator Controlled Retirement Validation",
+  "future_stage_status": "NOT_EXECUTED / REQUIRES_SEPARATE_AUTHORIZATION",
+  "production_activation": false,
+  "exact_selected_rules": [
+    "effective_acceptance_pipeline",
+    "root_macro_usage",
+    "model_factory_theory"
+  ],
+  "exact_component_masks": {
+    "effective_acceptance_pipeline": {
+      "rule_id": "effective_acceptance_pipeline",
+      "symbols_retired": [
+        "macro/target/prod_sim_hvmaps.C",
+        "data/PndLmdAcceptance.cxx",
+        "model/PndLmdModelFactory.cxx"
+      ],
+      "paper_page_hints_retired": {},
+      "symbols_preserved": [],
+      "paper_page_hints_preserved": {
+        "li_2026": [
+          83,
+          86,
+          89
+        ]
+      },
+      "triggers_preserved": [
+        "effective acceptance",
+        "restgas acceptance",
+        "acceptance calculation",
+        "有效接受度",
+        "有效接受度"
+      ],
+      "repositories_preserved": [
+        "restgas_determination",
+        "luminosityfit"
+      ],
+      "concepts_preserved": [
+        "profile-dependent effective acceptance pipeline"
+      ],
+      "structured_replacement_after_retirement": false,
+      "retirement_rationale": "Historical D3-A2 demonstrated NO_MEANINGFUL_LEGACY_DEPENDENCY (LEGACY == ABLATION). Symbols retired; paper page hints preserved pending generic document navigation."
+    },
+    "root_macro_usage": {
+      "rule_id": "root_macro_usage",
+      "symbols_retired": [
+        "Running/Macros.html",
+        "tools/MasterTasks/PndMasterRunSim.cxx"
+      ],
+      "paper_page_hints_retired": {},
+      "symbols_preserved": [],
+      "paper_page_hints_preserved": {},
+      "triggers_preserved": [
+        "ROOT macro",
+        "macro execution",
+        "run a ROOT macro"
+      ],
+      "repositories_preserved": [
+        "pandaroot"
+      ],
+      "concepts_preserved": [
+        "PandaRoot macro invocation"
+      ],
+      "structured_replacement_after_retirement": false,
+      "retirement_rationale": "Historical D3-A2 demonstrated NO_MEANINGFUL_LEGACY_DEPENDENCY (LEGACY == ABLATION). Both fixed symbols retired; no page hints existed."
+    },
+    "model_factory_theory": {
+      "rule_id": "model_factory_theory",
+      "symbols_retired": [
+        "model/PndLmdDPMAngModel1D.cxx",
+        "model/PndLmdDPMAngModel2D.cxx",
+        "model/PndLmdModelFactory.cxx"
+      ],
+      "paper_page_hints_retired": {
+        "pflueger_2017": [
+          51,
+          57,
+          65
+        ]
+      },
+      "symbols_preserved": [],
+      "paper_page_hints_preserved": {},
+      "triggers_preserved": [
+        "PndLmdModelFactory",
+        "DPM、acceptance 和 resolution",
+        "DPM acceptance resolution"
+      ],
+      "repositories_preserved": [
+        "luminosityfit"
+      ],
+      "concepts_preserved": [
+        "DPM model acceptance resolution composition"
+      ],
+      "structured_replacement_after_retirement": false,
+      "retirement_rationale": "Historical D3-A2 demonstrated NO_MEANINGFUL_LEGACY_DEPENDENCY (LEGACY == ABLATION). Three model symbols and pflueger_2017 page hints retired; triggers, repo scope and concepts preserved."
+    }
+  },
+  "exact_case_cohort": [
+    "g052",
+    "g055",
+    "n003",
+    "n004",
+    "g007",
+    "n014",
+    "g060"
+  ],
+  "exact_case_to_rule_attribution": {
+    "g052": {
+      "owning_rule": "effective_acceptance_pipeline",
+      "role": "direct_trigger",
+      "matched_retirement_rules": [
+        "effective_acceptance_pipeline"
+      ],
+      "per_rule_dependency_attribution_eligible": true
+    },
+    "g055": {
+      "owning_rule": "effective_acceptance_pipeline",
+      "role": "nonmatching_control",
+      "matched_retirement_rules": [],
+      "per_rule_dependency_attribution_eligible": false
+    },
+    "n003": {
+      "owning_rule": "effective_acceptance_pipeline",
+      "role": "nonmatching_control",
+      "matched_retirement_rules": [],
+      "per_rule_dependency_attribution_eligible": false
+    },
+    "n004": {
+      "owning_rule": "root_macro_usage",
+      "role": "direct_trigger",
+      "matched_retirement_rules": [
+        "root_macro_usage"
+      ],
+      "per_rule_dependency_attribution_eligible": true
+    },
+    "g007": {
+      "owning_rule": "root_macro_usage",
+      "role": "negative_control",
+      "matched_retirement_rules": [],
+      "per_rule_dependency_attribution_eligible": false
+    },
+    "n014": {
+      "owning_rule": "model_factory_theory",
+      "role": "direct_trigger",
+      "matched_retirement_rules": [
+        "model_factory_theory"
+      ],
+      "per_rule_dependency_attribution_eligible": true
+    },
+    "g060": {
+      "owning_rule": "model_factory_theory",
+      "role": "nonmatching_control",
+      "matched_retirement_rules": [],
+      "per_rule_dependency_attribution_eligible": false
+    }
+  },
+  "overlap_handling": {
+    "multi_batch2_collisions": 0,
+    "multi_batch2_interaction_cells_required": false,
+    "rule_isolated_retirement_cells": true,
+    "provenance_subtraction_semantics": "Only the contribution originating from the matched selected Batch-2 rule mask is subtracted in BATCH2_RETIREMENT. Contributions independently provided by non-Batch2 rules (such as reconstructed_profile_to_acceptance on g052), explicit user queries, or accepted Analyzer output remain active. Never global string deletion.",
+    "nonmatching_controls": [
+      "g055",
+      "n003",
+      "g007",
+      "g060"
+    ],
+    "control_attribution": "Nonmatching controls use an empty retirement mask; their results cannot establish dependency or retirement validity for the historical owning rule."
+  },
+  "prospective_one_plan_per_case_acquisition": {
+    "strategy": "ONE_PROSPECTIVE_PLAN_PER_UNIQUE_CASE",
+    "phase_p_analyzer_calls": 7,
+    "downstream_phase_r_analyzer_calls": 0,
+    "shared_canonical_plan_equality_required": true,
+    "plan_ids": [
+      "prospective_g052",
+      "prospective_g055",
+      "prospective_n003",
+      "prospective_n004",
+      "prospective_g007",
+      "prospective_n014",
+      "prospective_g060"
+    ]
+  },
+  "exact_paired_cell_schedule": [
+    {
+      "cell_id": "g052_current_compat",
+      "case_id": "g052",
+      "arm": "CURRENT_COMPAT",
+      "active_batch1_runtime": true,
+      "batch2_retirement_mask_applied": false,
+      "expected_model_calls": {
+        "analyzer": 0,
+        "embedding": 1,
+        "reranker": 1
+      },
+      "canonical_plan_id": "prospective_g052",
+      "retirement_rule_ids": [],
+      "role": "rule_isolated_treatment_pair",
+      "matched_batch1_rule_ids": [
+        "restgas_profile_workflow"
+      ],
+      "batch1_replacement_expected_to_invoke": true
+    },
+    {
+      "cell_id": "g052_batch2_retirement",
+      "case_id": "g052",
+      "arm": "BATCH2_RETIREMENT",
+      "active_batch1_runtime": true,
+      "batch2_retirement_mask_applied": true,
+      "expected_model_calls": {
+        "analyzer": 0,
+        "embedding": 1,
+        "reranker": 1
+      },
+      "canonical_plan_id": "prospective_g052",
+      "retirement_rule_ids": [
+        "effective_acceptance_pipeline"
+      ],
+      "role": "rule_isolated_treatment_pair",
+      "matched_batch1_rule_ids": [
+        "restgas_profile_workflow"
+      ],
+      "batch1_replacement_expected_to_invoke": true
+    },
+    {
+      "cell_id": "g055_current_compat",
+      "case_id": "g055",
+      "arm": "CURRENT_COMPAT",
+      "active_batch1_runtime": true,
+      "batch2_retirement_mask_applied": false,
+      "expected_model_calls": {
+        "analyzer": 0,
+        "embedding": 1,
+        "reranker": 1
+      },
+      "canonical_plan_id": "prospective_g055",
+      "retirement_rule_ids": [],
+      "role": "no_op_control_pair",
+      "matched_batch1_rule_ids": [],
+      "batch1_replacement_expected_to_invoke": false
+    },
+    {
+      "cell_id": "g055_batch2_retirement",
+      "case_id": "g055",
+      "arm": "BATCH2_RETIREMENT",
+      "active_batch1_runtime": true,
+      "batch2_retirement_mask_applied": false,
+      "expected_model_calls": {
+        "analyzer": 0,
+        "embedding": 1,
+        "reranker": 1
+      },
+      "canonical_plan_id": "prospective_g055",
+      "retirement_rule_ids": [],
+      "role": "no_op_control_pair",
+      "matched_batch1_rule_ids": [],
+      "batch1_replacement_expected_to_invoke": false
+    },
+    {
+      "cell_id": "n003_current_compat",
+      "case_id": "n003",
+      "arm": "CURRENT_COMPAT",
+      "active_batch1_runtime": true,
+      "batch2_retirement_mask_applied": false,
+      "expected_model_calls": {
+        "analyzer": 0,
+        "embedding": 1,
+        "reranker": 1
+      },
+      "canonical_plan_id": "prospective_n003",
+      "retirement_rule_ids": [],
+      "role": "no_op_control_pair",
+      "matched_batch1_rule_ids": [],
+      "batch1_replacement_expected_to_invoke": false
+    },
+    {
+      "cell_id": "n003_batch2_retirement",
+      "case_id": "n003",
+      "arm": "BATCH2_RETIREMENT",
+      "active_batch1_runtime": true,
+      "batch2_retirement_mask_applied": false,
+      "expected_model_calls": {
+        "analyzer": 0,
+        "embedding": 1,
+        "reranker": 1
+      },
+      "canonical_plan_id": "prospective_n003",
+      "retirement_rule_ids": [],
+      "role": "no_op_control_pair",
+      "matched_batch1_rule_ids": [],
+      "batch1_replacement_expected_to_invoke": false
+    },
+    {
+      "cell_id": "n004_current_compat",
+      "case_id": "n004",
+      "arm": "CURRENT_COMPAT",
+      "active_batch1_runtime": true,
+      "batch2_retirement_mask_applied": false,
+      "expected_model_calls": {
+        "analyzer": 0,
+        "embedding": 1,
+        "reranker": 1
+      },
+      "canonical_plan_id": "prospective_n004",
+      "retirement_rule_ids": [],
+      "role": "rule_isolated_treatment_pair",
+      "matched_batch1_rule_ids": [],
+      "batch1_replacement_expected_to_invoke": false
+    },
+    {
+      "cell_id": "n004_batch2_retirement",
+      "case_id": "n004",
+      "arm": "BATCH2_RETIREMENT",
+      "active_batch1_runtime": true,
+      "batch2_retirement_mask_applied": true,
+      "expected_model_calls": {
+        "analyzer": 0,
+        "embedding": 1,
+        "reranker": 1
+      },
+      "canonical_plan_id": "prospective_n004",
+      "retirement_rule_ids": [
+        "root_macro_usage"
+      ],
+      "role": "rule_isolated_treatment_pair",
+      "matched_batch1_rule_ids": [],
+      "batch1_replacement_expected_to_invoke": false
+    },
+    {
+      "cell_id": "g007_current_compat",
+      "case_id": "g007",
+      "arm": "CURRENT_COMPAT",
+      "active_batch1_runtime": true,
+      "batch2_retirement_mask_applied": false,
+      "expected_model_calls": {
+        "analyzer": 0,
+        "embedding": 1,
+        "reranker": 1
+      },
+      "canonical_plan_id": "prospective_g007",
+      "retirement_rule_ids": [],
+      "role": "no_op_control_pair",
+      "matched_batch1_rule_ids": [],
+      "batch1_replacement_expected_to_invoke": false
+    },
+    {
+      "cell_id": "g007_batch2_retirement",
+      "case_id": "g007",
+      "arm": "BATCH2_RETIREMENT",
+      "active_batch1_runtime": true,
+      "batch2_retirement_mask_applied": false,
+      "expected_model_calls": {
+        "analyzer": 0,
+        "embedding": 1,
+        "reranker": 1
+      },
+      "canonical_plan_id": "prospective_g007",
+      "retirement_rule_ids": [],
+      "role": "no_op_control_pair",
+      "matched_batch1_rule_ids": [],
+      "batch1_replacement_expected_to_invoke": false
+    },
+    {
+      "cell_id": "n014_current_compat",
+      "case_id": "n014",
+      "arm": "CURRENT_COMPAT",
+      "active_batch1_runtime": true,
+      "batch2_retirement_mask_applied": false,
+      "expected_model_calls": {
+        "analyzer": 0,
+        "embedding": 1,
+        "reranker": 1
+      },
+      "canonical_plan_id": "prospective_n014",
+      "retirement_rule_ids": [],
+      "role": "rule_isolated_treatment_pair",
+      "matched_batch1_rule_ids": [],
+      "batch1_replacement_expected_to_invoke": false
+    },
+    {
+      "cell_id": "n014_batch2_retirement",
+      "case_id": "n014",
+      "arm": "BATCH2_RETIREMENT",
+      "active_batch1_runtime": true,
+      "batch2_retirement_mask_applied": true,
+      "expected_model_calls": {
+        "analyzer": 0,
+        "embedding": 1,
+        "reranker": 1
+      },
+      "canonical_plan_id": "prospective_n014",
+      "retirement_rule_ids": [
+        "model_factory_theory"
+      ],
+      "role": "rule_isolated_treatment_pair",
+      "matched_batch1_rule_ids": [],
+      "batch1_replacement_expected_to_invoke": false
+    },
+    {
+      "cell_id": "g060_current_compat",
+      "case_id": "g060",
+      "arm": "CURRENT_COMPAT",
+      "active_batch1_runtime": true,
+      "batch2_retirement_mask_applied": false,
+      "expected_model_calls": {
+        "analyzer": 0,
+        "embedding": 1,
+        "reranker": 1
+      },
+      "canonical_plan_id": "prospective_g060",
+      "retirement_rule_ids": [],
+      "role": "no_op_control_pair",
+      "matched_batch1_rule_ids": [],
+      "batch1_replacement_expected_to_invoke": false
+    },
+    {
+      "cell_id": "g060_batch2_retirement",
+      "case_id": "g060",
+      "arm": "BATCH2_RETIREMENT",
+      "active_batch1_runtime": true,
+      "batch2_retirement_mask_applied": false,
+      "expected_model_calls": {
+        "analyzer": 0,
+        "embedding": 1,
+        "reranker": 1
+      },
+      "canonical_plan_id": "prospective_g060",
+      "retirement_rule_ids": [],
+      "role": "no_op_control_pair",
+      "matched_batch1_rule_ids": [],
+      "batch1_replacement_expected_to_invoke": false
+    }
+  ],
+  "total_prospective_plans": 7,
+  "total_retrieval_cells": 14,
+  "arm_definitions": {
+    "CURRENT_COMPAT": {
+      "description": "Current Batch-1 production runtime baseline with candidate Batch-2 legacy locators active.",
+      "batch1_production_active": true,
+      "selectivity_v2_active": true,
+      "selectivity_caps": {
+        "SELECTIVITY_CAP": 8,
+        "PER_ORIGIN_CAP": 4
+      },
+      "admission_k": 3,
+      "rerank_pool_size": 30,
+      "batch2_legacy_locators": "ACTIVE",
+      "batch2_structured_replacement": false,
+      "batch1_activation_condition": "Preserve current generic policy exactly: invoke replacement only when a Batch1 enabled rule matches; this is g052 in the frozen static cohort."
+    },
+    "BATCH2_RETIREMENT": {
+      "description": "Identical current Batch-1 production runtime with only frozen redundant Batch-2 locator contributions subtracted and no new Batch-2 structured replacement.",
+      "batch1_production_active": true,
+      "selectivity_v2_active": true,
+      "selectivity_caps": {
+        "SELECTIVITY_CAP": 8,
+        "PER_ORIGIN_CAP": 4
+      },
+      "admission_k": 3,
+      "rerank_pool_size": 30,
+      "batch2_legacy_locators": "SUBTRACTED_VIA_FROZEN_MASK",
+      "batch2_structured_replacement": false,
+      "batch1_activation_condition": "Preserve current generic policy exactly: invoke replacement only when a Batch1 enabled rule matches; this is g052 in the frozen static cohort."
+    }
+  },
+  "scientific_model_contract": {
+    "generation_and_reranker": "gemini-3.8-flash",
+    "embedding": "gemini-embedding-2",
+    "location": "global",
+    "temperature": 0.0,
+    "staffer_identity_independent": true
+  },
+  "retry_policy": {
+    "max_retries": 0,
+    "note": "Strict forward-only bookkeeping without retries.",
+    "partial_failure": "Stop and record every logical call/attempt; never rerun or replace a failed slot without separate authorization. Incomplete cells are INVALID, not zero-metric observations."
+  },
+  "future_call_accounting_expectations": {
+    "analyzer_phase_p": 7,
+    "analyzer_phase_r": 0,
+    "embedding_downstream": 14,
+    "reranker_downstream": 14,
+    "qa_verifier_judge": 0,
+    "db_qdrant_writes": 0,
+    "retrieval_runs_in_d4_a4": 0,
+    "total_logical_model_calls_no_retry": 35,
+    "total_provider_attempts_no_retry": 35,
+    "plan_acquisition_cases": 7,
+    "paired_cells": 14,
+    "status": "PREREGISTERED_ONLY_NOT_EXECUTED",
+    "provider_tokens": "UNKNOWN_UNTIL_SEPARATELY_AUTHORIZED_EXECUTION"
+  },
+  "evidence_group_applicability_and_denominators": {
+    "total_cases": 7,
+    "answered_cases": [
+      "g052",
+      "g055",
+      "n003",
+      "n004",
+      "n014",
+      "g060"
+    ],
+    "answered_case_count": 6,
+    "negative_control_cases": [
+      "g007"
+    ],
+    "negative_control_case_count": 1,
+    "gold_cases": [
+      "g052",
+      "g055",
+      "g007",
+      "g060"
+    ],
+    "gold_case_count": 4,
+    "novel_dev_cases": [
+      "n003",
+      "n004",
+      "n014"
+    ],
+    "novel_dev_case_count": 3,
+    "evidence_group_details": {
+      "g052": [
+        {
+          "group_id": "g052.e1",
+          "critical": true,
+          "role": "li_2026_page_141_theory",
+          "candidate_count": 3
+        }
+      ],
+      "g055": [
+        {
+          "group_id": "g055.e1",
+          "critical": true,
+          "role": "pflueger_2017_page_57_theory",
+          "candidate_count": 2
+        },
+        {
+          "group_id": "g055.e2",
+          "critical": true,
+          "role": "li_2026_page_142_theory",
+          "candidate_count": 2
+        }
+      ],
+      "n003": [
+        {
+          "group_id": "n003.e1",
+          "critical": true,
+          "role": "fixed_step_generator_definition",
+          "candidate_count": 2
+        },
+        {
+          "group_id": "n003.e2",
+          "critical": true,
+          "role": "per_event_step_advancement",
+          "candidate_count": 1
+        }
+      ],
+      "n004": [
+        {
+          "group_id": "n004.e1",
+          "critical": true,
+          "role": "fair_logger_documentation",
+          "candidate_count": 2
+        }
+      ],
+      "g007": [
+        {
+          "group_id": "g007.e1",
+          "critical": true,
+          "role": "installation_documentation",
+          "candidate_count": 1
+        }
+      ],
+      "n014": [
+        {
+          "group_id": "n014.e1",
+          "critical": true,
+          "role": "vendored_framework_status",
+          "candidate_count": 1
+        },
+        {
+          "group_id": "n014.e2",
+          "critical": true,
+          "role": "native_model_layer",
+          "candidate_count": 1
+        }
+      ],
+      "g060": [
+        {
+          "group_id": "g060.e1",
+          "critical": true,
+          "role": "pflueger_2017_page_74_theory",
+          "candidate_count": 2
+        },
+        {
+          "group_id": "g060.e2",
+          "critical": true,
+          "role": "pnd_lmd_divergence_smearing_model2_d_implementation",
+          "candidate_count": 1
+        },
+        {
+          "group_id": "g060.e3",
+          "critical": true,
+          "role": "generate2_dmodel_implementation",
+          "candidate_count": 1
+        }
+      ]
+    },
+    "total_required_evidence_groups": 12,
+    "total_critical_evidence_groups": 12,
+    "answered_evidence_groups_count": 11,
+    "negative_control_evidence_groups_count": 1,
+    "case_macro_denominator": 6,
+    "micro_evidence_group_denominator": 11,
+    "per_rule_primary_case_denominators": {
+      "effective_acceptance_pipeline": 1,
+      "root_macro_usage": 1,
+      "model_factory_theory": 1
+    },
+    "per_rule_primary_group_denominators": {
+      "effective_acceptance_pipeline": 1,
+      "root_macro_usage": 1,
+      "model_factory_theory": 2
+    },
+    "primary_active_case_count": 3,
+    "primary_active_group_count": 4,
+    "negative_control_policy": "g007 is excluded from answered macro/micro and per-rule retirement claims. Its one documentation group is a separately reported retrieval-anchor control; QA expected-status accuracy is N/A, no QA call."
+  },
+  "metric_definitions_and_bounded_tolerances": {
+    "recall_at_5": {
+      "delta_threshold": -0.05,
+      "role": "primary",
+      "aggregation": "Arithmetic mean over six answered cases; per-case denominator is all required groups (critical groups only for critical final recall); no group-weighted pooling for primary gates.",
+      "missing_input_policy": "INVALID; no silent empty-list, zero, or denominator replacement.",
+      "definition": "Matched required evidence groups among canonical final-ranked object IDs[:5] / required groups."
+    },
+    "recall_at_10": {
+      "delta_threshold": -0.05,
+      "role": "primary",
+      "aggregation": "Arithmetic mean over six answered cases; per-case denominator is all required groups (critical groups only for critical final recall); no group-weighted pooling for primary gates.",
+      "missing_input_policy": "INVALID; no silent empty-list, zero, or denominator replacement.",
+      "definition": "Matched required evidence groups among canonical final-ranked object IDs[:10] / required groups."
+    },
+    "recall_at_20": {
+      "delta_threshold": -0.05,
+      "role": "primary",
+      "aggregation": "Arithmetic mean over six answered cases; per-case denominator is all required groups (critical groups only for critical final recall); no group-weighted pooling for primary gates.",
+      "missing_input_policy": "INVALID; no silent empty-list, zero, or denominator replacement.",
+      "definition": "Matched required evidence groups among canonical final-ranked object IDs[:20] / required groups."
+    },
+    "combined_candidate_recall": {
+      "delta_threshold": -0.05,
+      "role": "primary",
+      "aggregation": "Arithmetic mean over six answered cases; per-case denominator is all required groups (critical groups only for critical final recall); no group-weighted pooling for primary gates.",
+      "missing_input_policy": "INVALID; no silent empty-list, zero, or denominator replacement.",
+      "definition": "Matched groups in the deduplicated union of recorded ordinary exact/dense/sparse/paper/workflow/graph channel object IDs / required groups. Preserve frozen D4 definition; report structured eligible/reserved contribution separately, no extra RRF channel."
+    },
+    "final_evidence_recall": {
+      "delta_threshold": -0.05,
+      "role": "primary",
+      "aggregation": "Arithmetic mean over six answered cases; per-case denominator is all required groups (critical groups only for critical final recall); no group-weighted pooling for primary gates.",
+      "missing_input_policy": "INVALID; no silent empty-list, zero, or denominator replacement.",
+      "definition": "Matched groups among final selected evidence object IDs / required groups."
+    },
+    "critical_final_evidence_recall": {
+      "delta_threshold": 0.0,
+      "role": "primary_safety",
+      "aggregation": "Arithmetic mean over six answered cases; per-case denominator is all required groups (critical groups only for critical final recall); no group-weighted pooling for primary gates.",
+      "missing_input_policy": "INVALID; no silent empty-list, zero, or denominator replacement.",
+      "definition": "Matched critical groups among final selected evidence object IDs / critical required groups; all 11 answered groups are critical in this cohort."
+    },
+    "mrr": {
+      "delta_threshold": null,
+      "role": "diagnostic",
+      "aggregation": "Arithmetic mean over six answered cases; per-case denominator is all required groups (critical groups only for critical final recall); no group-weighted pooling for primary gates.",
+      "missing_input_policy": "INVALID; no silent empty-list, zero, or denominator replacement.",
+      "definition": "Per-case reciprocal of earliest relevant rank among final-ranked top 20, or zero if none; average over six answered cases, diagnostic only."
+    }
+  },
+  "pair_phenotype_definitions": {
+    "PAIR_PRESERVED": "T/T — Evidence retained in both CURRENT_COMPAT and BATCH2_RETIREMENT.",
+    "PAIR_RETIREMENT_RECOVERY": "F/T — Evidence absent in CURRENT_COMPAT but recovered under BATCH2_RETIREMENT.",
+    "PAIR_RETIREMENT_REGRESSION": "T/F — Evidence retained in CURRENT_COMPAT but lost under BATCH2_RETIREMENT (observed legacy dependency).",
+    "PAIR_UNRESOLVED_BOTH": "F/F — Evidence absent in both arms (hard rule: F/F is NOT a retirement regression)."
+  },
+  "strict_retirement_safety_rules": {
+    "critical_retirement_regressions": 0,
+    "grounding_regressions": 0,
+    "wrong_version_regressions": 0,
+    "invalid_provenance_recoveries": 0,
+    "control_accounting": "All answered T/F critical evidence losses and grounding/version/provenance violations remain batch safety findings, including no-op control differences; a control difference does not establish a rule-specific dependency. Report negative-anchor behavior separately."
+  },
+  "per_rule_dispositions": [
+    "RETIREMENT_VALIDATED",
+    "DEPENDENCY_OBSERVED_RETAIN",
+    "INCONCLUSIVE_BASELINE_NOT_REPRODUCED",
+    "INVALID_PROTOCOL"
+  ],
+  "batch_level_verdict_precedence": [
+    {
+      "level": 1,
+      "verdict": "INVALID / BATCH2_PROTOCOL_OR_SHARED_PLAN_CONSTRUCTION_FAILED",
+      "condition": "Any missing/malformed required input, unknown/missing selected rule disposition, nonfinite/missing primary metric, incomplete execution/provenance, protocol violation, shared-plan inequality or downstream Analyzer call. Must supply all five booleans, five nonnegative integer counters, exactly three rule results and all six finite metric deltas; thresholds are immutable."
+    },
+    {
+      "level": 2,
+      "verdict": "INCONCLUSIVE / BATCH2_REFERENCE_BASELINE_NOT_REPRODUCED",
+      "condition": "An active per-rule reference baseline is not reproduced (as defined in per_rule_decision_contract); preserve independently computed rule outcomes and safety receipts."
+    },
+    {
+      "level": 3,
+      "verdict": "PARTIAL / SOME_RETIREMENT_CANDIDATES_RETAIN_DEPENDENCY",
+      "condition": "Some or all retirement candidates retained legacy dependency WITHOUT any critical safety violations."
+    },
+    {
+      "level": 4,
+      "verdict": "FAIL / BATCH2_CRITICAL_OR_GROUNDING_REGRESSION",
+      "condition": "Any critical retirement regression, grounding regression, wrong-version regression, or invalid provenance recovery observed (including safety failure combined with partial dependency)."
+    },
+    {
+      "level": 5,
+      "verdict": "PARTIAL / BATCH2_AGGREGATE_REGRESSION_EXCEEDS_BOUNDED_TOLERANCE",
+      "condition": "All candidates validated without critical regressions, but an aggregate metric delta exceeds bounded tolerance."
+    },
+    {
+      "level": 6,
+      "verdict": "PASS / SECOND_BATCH_LOW_RISK_RETIREMENT_VALIDATED",
+      "condition": "All candidate rules validated, zero critical/grounding/version/provenance regressions, and all aggregate metric deltas satisfy bounded tolerances."
+    }
+  ],
+  "protected_data_boundary": {
+    "novel_validation_access": false,
+    "novel_holdout_access": false,
+    "authorized_development_datasets": [
+      "evaluation/benchmarks/v2_6/gold_questions.yaml (Gold v2.6 dev)",
+      "evaluation/novel/v1/novel_dev.yaml (novel_dev)"
+    ]
+  },
+  "d4_a4_zero_provider_accounting": {
+    "analyzer_calls": 0,
+    "embedding_calls": 0,
+    "reranker_calls": 0,
+    "qa_calls": 0,
+    "verifier_calls": 0,
+    "judge_calls": 0,
+    "db_writes": 0,
+    "qdrant_writes": 0,
+    "retrieval_runs": 0,
+    "benchmark_runs": 0,
+    "novel_runs": 0,
+    "protected_dataset_access": 0
+  },
+  "component_provenance_subtraction_contract": {
+    "canonical_plan": "One immutable prospective canonical RetrievalPlan per case, plus a complete ordered contribution ledger frozen before any downstream outcome; identical canonical serialization is supplied to both arms.",
+    "projection": "An arm-specific non-mutating execution-input projection subtracts ONLY (active selected rule ID, component kind, exact value) contributions in that rule own mask. The canonical plan and original ledger remain unchanged; no arm-specific Analyzer plan is sampled.",
+    "origins": [
+      "matched query-expansion rule ID",
+      "explicit query span",
+      "accepted Analyzer semantic output with its support record",
+      "other authoritative origin"
+    ],
+    "same_token_multiple_origins": "Remove only the masked origin entries; preserve a token/page if any independent origin remains. Keep surviving baseline order and all vocabulary/scope fields.",
+    "pre_outcome_gate": "Missing/ambiguous provenance, absent expected contribution, non-mask field change, or canonical inequality is INVALID before downstream calls; never guess origin or globally remove a token.",
+    "receipts": [
+      "canonical plan ID and equality",
+      "before/after contributor ledger",
+      "removed rule-component entries",
+      "surviving independent origins",
+      "effective token changes",
+      "unchanged Batch1 policy",
+      "execution projection diff"
+    ],
+    "no_op_controls": "Empty rule mask and identical execution-input projection. Keep both scheduled cells for control accounting.",
+    "implementation_boundary": "This is a frozen contract and pure synthetic utility only; D4-A5 executor integration is not implemented or authorized here."
+  },
+  "per_rule_decision_contract": {
+    "function": "classify_rule(protocol_valid, baseline_reproduced, attributable_loss)",
+    "precedence": [
+      "INVALID_PROTOCOL if rule protocol/provenance incomplete",
+      "DEPENDENCY_OBSERVED_RETAIN if any attributable T/F loss, even when another required group is absent at baseline",
+      "INCONCLUSIVE_BASELINE_NOT_REPRODUCED if any required active-case baseline group absent and no attributable loss",
+      "RETIREMENT_VALIDATED otherwise"
+    ],
+    "active_case_groups": {
+      "effective_acceptance_pipeline": {
+        "g052": [
+          "g052.e1"
+        ]
+      },
+      "root_macro_usage": {
+        "n004": [
+          "n004.e1"
+        ]
+      },
+      "model_factory_theory": {
+        "n014": [
+          "n014.e1",
+          "n014.e2"
+        ]
+      }
+    },
+    "applicability": "Every rule requires at least one active direct case with complete traceable masked contributions. Nonmatching historical cases are controls only, not per-rule baseline gates or extra successful retirement observations.",
+    "batch_reference_baseline_valid": "All required evidence groups for the three active direct cases (4 groups total) reproduced in CURRENT_COMPAT. Other answered controls retain their own pair and metric receipts; F/F is not regression.",
+    "independent_results": "Compute and preserve each rule disposition even if another rule or batch-level gate fails; no subset is production activated by this validation."
+  },
+  "metric_reference": "Read-only semantics of evaluation/scripts/d4_a2_v2_controlled_shared_plan_validation.py and panda_agent.evaluation._matched_evidence_groups; use current approved group contracts and source/version checks, never runtime selection metadata.",
+  "controller_reviewed_at": "2026-09-05T12:22:45Z"
+}
