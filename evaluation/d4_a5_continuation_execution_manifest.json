@@ -204,84 +204,343 @@
       "plan_id": "prospective_g052",
       "case_id": "g052",
       "role": "direct_trigger",
-      "status": "NOT_EXECUTED",
+      "status": "COMPLETED",
       "analyzer_calls": 0,
-      "token_usage": 0,
+      "token_usage": 1764,
       "reuse_classification": "HISTORICAL_ATTEMPT_NOT_REUSABLE",
       "reacquisition_required": true,
-      "reuse_source": null
+      "reuse_source": null,
+      "started_at": "2026-09-05T22:41:17.153245+00:00",
+      "completed_at": "2026-09-05T22:41:23.048851+00:00",
+      "attempts": 1,
+      "plan_signature": {
+        "concept_scopes": [],
+        "intent": "algorithm_theory",
+        "normalized_concepts": [
+          "distributed target generation",
+          "effective acceptance",
+          "longitudinal profile correction",
+          "profile-dependent effective acceptance pipeline",
+          "reconstructed profile to effective acceptance",
+          "reconstructed restgas profile"
+        ],
+        "paper_page_hints": [
+          [
+            "li_2026",
+            [
+              141,
+              149,
+              151
+            ]
+          ]
+        ],
+        "required_source_types": [
+          "paper"
+        ],
+        "symbols": [
+          "data/PndLmdAcceptance.cxx",
+          "macro/target/prod_sim_hvmaps.C",
+          "model/PndLmdModelFactory.cxx"
+        ],
+        "target_repositories": [
+          "luminosityfit",
+          "pandaroot",
+          "restgas_determination"
+        ]
+      },
+      "applicability_summary": {
+        "active": 3,
+        "inactive": 0,
+        "ambiguous": 0
+      }
     },
     {
       "slot_index": 2,
       "plan_id": "prospective_g055",
       "case_id": "g055",
       "role": "nonmatching_control",
-      "status": "NOT_EXECUTED",
+      "status": "COMPLETED",
       "analyzer_calls": 0,
-      "token_usage": 0,
+      "token_usage": 2065,
       "reuse_classification": "HISTORICAL_ATTEMPT_NOT_REUSABLE",
       "reacquisition_required": true,
-      "reuse_source": null
+      "reuse_source": null,
+      "started_at": "2026-09-05T22:41:23.050810+00:00",
+      "completed_at": "2026-09-05T22:41:26.005777+00:00",
+      "attempts": 1,
+      "plan_signature": {
+        "concept_scopes": [
+          [
+            "efficiency",
+            "angular_acceptance_vs_longitudinal_profile"
+          ]
+        ],
+        "intent": "algorithm_theory",
+        "normalized_concepts": [
+          "angular acceptance",
+          "lmd angular acceptance",
+          "longitudinal efficiency",
+          "restgas longitudinal reconstruction efficiency"
+        ],
+        "paper_page_hints": [
+          [
+            "li_2026",
+            [
+              138,
+              142,
+              147
+            ]
+          ],
+          [
+            "pflueger_2017",
+            [
+              57,
+              58,
+              62
+            ]
+          ]
+        ],
+        "required_source_types": [
+          "paper"
+        ],
+        "symbols": [
+          "data/PndLmdAcceptance.cxx",
+          "macro/target/correction/efficiency_correction_2.C",
+          "macro/target/correction/efficiency_correction_steps.C"
+        ],
+        "target_repositories": [
+          "luminosityfit",
+          "restgas_determination"
+        ]
+      },
+      "applicability_summary": {
+        "active": 0,
+        "inactive": 0,
+        "ambiguous": 0
+      }
     },
     {
       "slot_index": 3,
       "plan_id": "prospective_n003",
       "case_id": "n003",
       "role": "nonmatching_control",
-      "status": "NOT_EXECUTED",
+      "status": "COMPLETED",
       "analyzer_calls": 0,
-      "token_usage": 0,
+      "token_usage": 2164,
       "reuse_classification": "HISTORICAL_ATTEMPT_NOT_REUSABLE",
       "reacquisition_required": true,
-      "reuse_source": null
+      "reuse_source": null,
+      "started_at": "2026-09-05T22:41:26.008108+00:00",
+      "completed_at": "2026-09-05T22:41:30.831893+00:00",
+      "attempts": 1,
+      "plan_signature": {
+        "concept_scopes": [],
+        "intent": "usage",
+        "normalized_concepts": [
+          "acceptance scan",
+          "event generator",
+          "momentum",
+          "polar angle",
+          "single particles",
+          "stepping"
+        ],
+        "paper_page_hints": [],
+        "required_source_types": [
+          "code",
+          "documentation"
+        ],
+        "symbols": [],
+        "target_repositories": [
+          "pandaroot"
+        ]
+      },
+      "applicability_summary": {
+        "active": 0,
+        "inactive": 0,
+        "ambiguous": 0
+      }
     },
     {
       "slot_index": 4,
       "plan_id": "prospective_n004",
       "case_id": "n004",
       "role": "direct_trigger",
-      "status": "NOT_EXECUTED",
+      "status": "COMPLETED",
       "analyzer_calls": 0,
-      "token_usage": 0,
+      "token_usage": 2560,
       "reuse_classification": "HISTORICAL_ATTEMPT_NOT_REUSABLE",
       "reacquisition_required": true,
-      "reuse_source": null
+      "reuse_source": null,
+      "started_at": "2026-09-05T22:41:30.834623+00:00",
+      "completed_at": "2026-09-05T22:41:36.872930+00:00",
+      "attempts": 1,
+      "plan_signature": {
+        "concept_scopes": [],
+        "intent": "usage",
+        "normalized_concepts": [
+          "debugging",
+          "log message",
+          "logging controls",
+          "pandaroot macro invocation",
+          "severity"
+        ],
+        "paper_page_hints": [],
+        "required_source_types": [
+          "code",
+          "documentation"
+        ],
+        "symbols": [
+          "Running/Macros.html",
+          "file:line:function",
+          "tools/MasterTasks/PndMasterRunSim.cxx"
+        ],
+        "target_repositories": [
+          "pandaroot"
+        ]
+      },
+      "applicability_summary": {
+        "active": 2,
+        "inactive": 0,
+        "ambiguous": 0
+      }
     },
     {
       "slot_index": 5,
       "plan_id": "prospective_g007",
       "case_id": "g007",
       "role": "negative_control",
-      "status": "NOT_EXECUTED",
+      "status": "COMPLETED",
       "analyzer_calls": 0,
-      "token_usage": 0,
+      "token_usage": 1923,
       "reuse_classification": "HISTORICAL_ATTEMPT_NOT_REUSABLE",
       "reacquisition_required": true,
-      "reuse_source": null
+      "reuse_source": null,
+      "started_at": "2026-09-05T22:41:36.876155+00:00",
+      "completed_at": "2026-09-05T22:41:40.726456+00:00",
+      "attempts": 1,
+      "plan_signature": {
+        "concept_scopes": [],
+        "intent": "installation",
+        "normalized_concepts": [
+          "gpu memory",
+          "minimum gpu memory",
+          "pandaroot installation requirements"
+        ],
+        "paper_page_hints": [],
+        "required_source_types": [
+          "documentation"
+        ],
+        "symbols": [
+          "Installation/Install_PandaRoot.html",
+          "Installation/Installation.html"
+        ],
+        "target_repositories": [
+          "pandaroot"
+        ]
+      },
+      "applicability_summary": {
+        "active": 0,
+        "inactive": 0,
+        "ambiguous": 0
+      }
     },
     {
       "slot_index": 6,
       "plan_id": "prospective_n014",
       "case_id": "n014",
       "role": "direct_trigger",
-      "status": "NOT_EXECUTED",
+      "status": "COMPLETED",
       "analyzer_calls": 0,
-      "token_usage": 0,
+      "token_usage": 2553,
       "reuse_classification": "HISTORICAL_ATTEMPT_NOT_REUSABLE",
       "reacquisition_required": true,
-      "reuse_source": null
+      "reuse_source": null,
+      "started_at": "2026-09-05T22:41:40.729972+00:00",
+      "completed_at": "2026-09-05T22:41:46.224984+00:00",
+      "attempts": 1,
+      "plan_signature": {
+        "concept_scopes": [],
+        "intent": "module_structure",
+        "normalized_concepts": [
+          "acceptance injection and two-dimensional model generation",
+          "dpm model acceptance resolution composition",
+          "model_framework",
+          "native model"
+        ],
+        "paper_page_hints": [],
+        "required_source_types": [
+          "code",
+          "graph"
+        ],
+        "symbols": [
+          "PndLmdModelFactory::generate2DModel",
+          "PndLmdModelFactory::setAcceptance",
+          "model/",
+          "model/PndLmdDPMAngModel1D.cxx",
+          "model/PndLmdDPMAngModel2D.cxx",
+          "model/PndLmdModelFactory",
+          "model/PndLmdModelFactory.cxx",
+          "model_framework"
+        ],
+        "target_repositories": [
+          "luminosityfit"
+        ]
+      },
+      "applicability_summary": {
+        "active": 3,
+        "inactive": 3,
+        "ambiguous": 0
+      }
     },
     {
       "slot_index": 7,
       "plan_id": "prospective_g060",
       "case_id": "g060",
       "role": "nonmatching_control",
-      "status": "NOT_EXECUTED",
+      "status": "COMPLETED",
       "analyzer_calls": 0,
-      "token_usage": 0,
+      "token_usage": 4014,
       "reuse_classification": "NEVER_EXECUTED",
       "reacquisition_required": true,
-      "reuse_source": null
+      "reuse_source": null,
+      "started_at": "2026-09-05T22:41:46.229457+00:00",
+      "completed_at": "2026-09-05T22:42:01.742957+00:00",
+      "attempts": 1,
+      "plan_signature": {
+        "concept_scopes": [],
+        "intent": "algorithm_implementation",
+        "normalized_concepts": [
+          "beam divergence",
+          "beam-divergence smearing",
+          "divergence smearing"
+        ],
+        "paper_page_hints": [
+          [
+            "pflueger_2017",
+            [
+              74,
+              78,
+              84
+            ]
+          ]
+        ],
+        "required_source_types": [
+          "code",
+          "paper"
+        ],
+        "symbols": [
+          "model/PndLmdDivergenceSmearingModel2D.cxx",
+          "model/PndLmdModelFactory.cxx"
+        ],
+        "target_repositories": [
+          "luminosityfit"
+        ]
+      },
+      "applicability_summary": {
+        "active": 0,
+        "inactive": 0,
+        "ambiguous": 0
+      }
     }
   ],
   "phase_r_cells_14": [
@@ -450,12 +709,13 @@
     "token_usage": 0
   },
   "outcome_exposure_state": {
-    "D4_A5_OUTCOME_EXPOSURE": "NOT_STARTED",
-    "plans_completed": 0,
+    "D4_A5_OUTCOME_EXPOSURE": "PLANS_FROZEN",
+    "plans_completed": 7,
     "formal_cells_completed": 0,
     "formal_cells_failed": 0,
     "evaluator_executed": false,
-    "scientific_verdict_computed": false
+    "scientific_verdict_computed": false,
+    "continuation_implementation_freeze_head": "e91c2bb56763d56be9c7ca333aefb6c97016a150"
   },
   "production_activation": false,
   "batch1_production_active": true,
@@ -564,11 +824,11 @@
     },
     "continuation_attempt": {
       "attempt_id": "D4-A5_ATTEMPT_2_CONTINUATION",
-      "analyzer_logical_calls": 0,
-      "analyzer_provider_attempts": 0,
+      "analyzer_logical_calls": 7,
+      "analyzer_provider_attempts": 7,
       "unknown_provider_attempt_events": 0,
       "retries": 0,
-      "token_usage": 0,
+      "token_usage": 17043,
       "unknown_token_usage": [],
       "unknown_token_usage_events": 0,
       "embedding_calls": 0,
@@ -580,11 +840,11 @@
       "protected_dataset_access": 0
     },
     "cumulative": {
-      "analyzer_logical_calls": 6,
-      "analyzer_provider_attempts": 6,
+      "analyzer_logical_calls": 13,
+      "analyzer_provider_attempts": 13,
       "provider_attempt_unknown_components": 0,
       "retries": 0,
-      "token_usage_recorded": 10303,
+      "token_usage_recorded": 27346,
       "token_usage_unknown_components": 1,
       "embedding_calls": 0,
       "reranker_calls": 0,
