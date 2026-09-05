@@ -1,0 +1,162 @@
+{
+  "schema_version": "1.0.0",
+  "lifecycle_id": "D4-A5-R6",
+  "stage": "D4-A5-R6 — Historical Baseline and Evaluator Lineage Preflight Repair",
+  "created_at": "2026-09-05T21:49:59.190103+00:00",
+  "starting_head": "cc5db408929e82b29da76d92f1439ac53a4c8cf3",
+  "starting_commit_message": "D4-A5-R5 seal raw-freeze evaluator integrity",
+  "starting_parent": "447d03e3cb9d3c1109d6f6070115f3ea4618bb7e",
+  "task_classification": {
+    "type": "pre-exposure continuation-integrity repair",
+    "is_not": [
+      "a new scientific validation stage",
+      "D4-A6",
+      "a new Batch-2 selection",
+      "a redesign of R1 applicability",
+      "a redesign of R2 bootstrap",
+      "a redesign of R3 accounting/lineage",
+      "a redesign of the R5 raw-freeze allowlist",
+      "plan acquisition",
+      "paired retrieval",
+      "evaluator execution",
+      "scientific result computation",
+      "production activation"
+    ]
+  },
+  "audit_defects_repaired": {
+    "defect_A_wrong_common_historical_baseline": {
+      "finding": "The evaluator preflight compared historical R1/R2/R3 artifacts against the single common baseline A5_STOP_HEAD. R1 artifacts were introduced after A5_STOP_HEAD (likewise R2 after R1, R3 after R2, R5 after R3), so git_blob(A5_STOP_HEAD, R1 artifact) = None while the artifact exists at its own freeze commit and at raw-freeze HEAD — the real repository evaluator preflight would falsely reject valid later-stage artifacts.",
+      "mechanical_confirmation": "git_blob(A5_STOP_HEAD, evaluation/d4_a5_r1_result.json) = None; git_blob(R1_HEAD, same) = 285e657e9a90b9660c7e3bb30a0d59d86e0f9a4c; git_blob(HEAD, same) = 285e657e9a90b9660c7e3bb30a0d59d86e0f9a4c. None != real blob -> false drift.",
+      "repair": "Per-stage historical artifact baselines: historical_artifact_baselines() maps A5_STOP_HEAD -> historical A5 first-attempt artifacts, R1_HEAD -> R1 preregistration/result/report, R2_HEAD -> R2 artifacts, R3_HEAD -> R3 artifacts, R5_HEAD -> R5 artifacts. historical_baseline_drift(project_root, head) fail-closes when an artifact is missing at its owning stage or differs at the checked head."
+    },
+    "defect_B_incomplete_lineage_proof": {
+      "finding": "The evaluator preflight did not independently re-establish the complete implementation-freeze -> plan-freeze -> raw-freeze parent chain; manifest-recorded heads could be accepted without Git proof.",
+      "repair": "The preflight now mechanically proves, before outcome interpretation: implementation-freeze identity (exact R6 message, direct parent = R5_HEAD); plan-freeze identity (exact continuation plan-freeze message, direct parent = the implementation freeze); raw-freeze identity (exact raw-freeze message at current HEAD, direct parent = the plan-freeze); the strict R5 raw-freeze diff allowlist; raw-plan immutability; runner/test blob integrity; production/historical immutability; and cross-checks manifest-recorded heads against the Git-proven lineage (forged manifest values are rejected)."
+    }
+  },
+  "historical_artifact_baselines": {
+    "A5_STOP_HEAD": "dc679f880cda8d2ccdfb709d725e24673c562eab -> historical A5 first-attempt artifacts (stopped manifest, result, A4 preregistration, selection)",
+    "R1_HEAD": "93ad95d7f8808bc4e7ccdbb21a24457c0df30564 -> R1 preregistration/result/report",
+    "R2_HEAD": "a53ca0ace5280c278e32e350f5a5051b810fa6f4 -> R2 preregistration/result/report",
+    "R3_HEAD": "447d03e3cb9d3c1109d6f6070115f3ea4618bb7e -> R3 preregistration/result/report",
+    "R5_HEAD": "cc5db408929e82b29da76d92f1439ac53a4c8cf3 -> R5 preregistration/result/report"
+  },
+  "baseline_semantics": {
+    "rule": "blob(current raw-freeze HEAD, path) == blob(stage freeze commit, path) for every frozen historical artifact",
+    "later_artifact_never_required_at_earlier_commit": true,
+    "missing_at_owning_stage": "FAIL CLOSED",
+    "differs_at_raw_freeze": "FAIL CLOSED",
+    "no_generic_provenance_framework": true,
+    "no_sha256_inventories": true,
+    "git_object_identity_only": true
+  },
+  "r6_continuation_implementation_freeze": {
+    "commit_message": "D4-A5-R6 repair historical baseline and evaluator lineage preflight",
+    "direct_parent": "cc5db408929e82b29da76d92f1439ac53a4c8cf3",
+    "future_start_requirements": [
+      "current HEAD is the R6 implementation-freeze commit",
+      "exact R6 commit message",
+      "direct parent is the R5 HEAD (cc5db408929e82b29da76d92f1439ac53a4c8cf3)",
+      "continuation manifest committed at HEAD",
+      "worktree/index clean",
+      "production/history unchanged",
+      "continuation state = NOT_STARTED",
+      "no descendant dynamically accepted"
+    ]
+  },
+  "lineage_vocabulary": {
+    "historical_a5_starting_head": "cb0f8c330f224a470401535b4b01f153488da99b",
+    "historical_a5_executor_freeze_head": "8579cdc60c3ebb53f9958d3fdd442c1a5454cc91",
+    "historical_a5_stop_head": "dc679f880cda8d2ccdfb709d725e24673c562eab",
+    "historical_r1_head": "93ad95d7f8808bc4e7ccdbb21a24457c0df30564",
+    "historical_r2_head": "a53ca0ace5280c278e32e350f5a5051b810fa6f4",
+    "historical_r3_head": "447d03e3cb9d3c1109d6f6070115f3ea4618bb7e",
+    "historical_r5_head": "cc5db408929e82b29da76d92f1439ac53a4c8cf3",
+    "continuation_implementation_freeze_head": "the R6 freeze commit",
+    "continuation_plan_freeze_head": "direct child of the R6 freeze",
+    "continuation_raw_freeze_head": "direct child of the plan-freeze commit",
+    "no_historical_r4_head": true
+  },
+  "r5_raw_freeze_allowlist_preserved": {
+    "strict_diff_allowlist": [
+      "evaluation/d4_a5_continuation_execution_manifest.json",
+      "evaluation/d4_a5_continuation_raw_paired_retirement_results.json"
+    ],
+    "rejections_retained": [
+      "runner drift",
+      "focused-test drift",
+      "raw-plan drift",
+      "R5/R6 contract-artifact drift",
+      "unrelated files",
+      "production/config/data drift"
+    ],
+    "raw_plans_immutable_after_plan_freeze": true,
+    "runner_test_git_object_integrity_checks_retained": true
+  },
+  "evaluator_preflight_ordering": [
+    "1. raw-freeze commit/message/direct parent valid",
+    "2. implementation-freeze identity valid (R6 message, parent = R5_HEAD)",
+    "3. plan-freeze direct parent = implementation freeze",
+    "4. raw-freeze direct parent = plan freeze",
+    "5. raw-freeze strict diff allowlist passes",
+    "6. raw plans unchanged after plan freeze",
+    "7. runner blob unchanged from the R6 implementation freeze",
+    "8. focused-test blob unchanged from the R6 implementation freeze",
+    "9. production/config/dataset paths unchanged",
+    "10. historical artifacts equal their own stage baselines",
+    "11. manifest lineage agrees with the mechanically established Git lineage",
+    "12. evaluator/result artifacts not already present outside the expected lifecycle",
+    "13. exposure state = RAW_RETRIEVAL_COMPLETE"
+  ],
+  "scientific_contract_unchanged": {
+    "selected_rules": ["effective_acceptance_pipeline", "root_macro_usage", "model_factory_theory"],
+    "d4_a4_masks": "unchanged including model_factory_theory pflueger_2017: [51, 57, 65]",
+    "case_order": ["g052", "g055", "n003", "n004", "g007", "n014", "g060"],
+    "plans_and_cells": "7 plans / 14 cells",
+    "arms": ["CURRENT_COMPAT", "BATCH2_RETIREMENT"],
+    "batch1_invariant": true,
+    "applicability_tri_state": true,
+    "contribution_origin_semantics": true,
+    "projection_logic": true,
+    "six_dispositions": true,
+    "seven_level_verdict": true,
+    "metrics_thresholds_mrr": true,
+    "safety_gates": true,
+    "accounting_and_unknown_semantics": true,
+    "provider_retry_policy": "max_retries = 0 / max_provider_attempts_per_case = 1",
+    "raw_freeze_diff_allowlist": "unchanged from R5",
+    "no_special_handling": "no case/rule/benchmark/locator-specific shortcut"
+  },
+  "historical_records_immutable": [
+    "evaluation/d4_a5_execution_manifest.json",
+    "evaluation/d4_a5_result.json",
+    "evaluation/d4_a4_batch2_retirement_preregistration.json",
+    "evaluation/d4_a4_batch2_low_risk_retirement_selection.json",
+    "evaluation/d4_a5_r1_retirement_applicability_preregistration.json",
+    "evaluation/d4_a5_r1_result.json",
+    "evaluation/D4_A5_R1_RETIREMENT_APPLICABILITY_AND_PROVENANCE_CONTRACT_REPAIR.md",
+    "evaluation/d4_a5_r2_continuation_contract_preregistration.json",
+    "evaluation/d4_a5_r2_result.json",
+    "evaluation/D4_A5_R2_CONTINUATION_FREEZE_AND_ACCOUNTING_CONTRACT_REPAIR.md",
+    "evaluation/d4_a5_r3_continuation_lineage_accounting_preregistration.json",
+    "evaluation/d4_a5_r3_result.json",
+    "evaluation/D4_A5_R3_CONTINUATION_LINEAGE_AND_END_TO_END_ACCOUNTING_REPAIR.md",
+    "evaluation/d4_a5_r5_raw_freeze_evaluator_integrity_preregistration.json",
+    "evaluation/d4_a5_r5_result.json",
+    "evaluation/D4_A5_R5_RAW_FREEZE_EVALUATOR_INTEGRITY_SEAL.md"
+  ],
+  "forward_only_audit_note": "R5 successfully sealed the plan-freeze -> raw-freeze changed-file boundary and evaluator runner/test blobs, but a post-R5 independent audit found: (1) later repair artifacts were compared against A5_STOP_HEAD instead of their own freeze commits, causing false drift detection in the real repository; (2) evaluator preflight did not independently prove the complete implementation-freeze -> plan-freeze -> raw-freeze parent chain. R5's historical PASS artifact is not rewritten.",
+  "zero_exposure_boundary": {
+    "analyzer_calls": 0, "plan_acquisitions": 0, "embedding_calls": 0,
+    "reranker_calls": 0, "retrieval_cells": 0, "qa_calls": 0, "verifier_calls": 0,
+    "judge_calls": 0, "scientific_evaluator_executions": 0, "db_writes": 0,
+    "qdrant_writes": 0, "protected_dataset_access": 0,
+    "execute_phase_p_run": false, "execute_phase_r_run": false, "evaluate_run": false
+  },
+  "future_scientific_artifacts_not_created": [
+    "evaluation/d4_a5_continuation_raw_prospective_plans.json",
+    "evaluation/d4_a5_continuation_raw_paired_retirement_results.json",
+    "evaluation/d4_a5_continuation_evaluator_results.json",
+    "evaluation/d4_a5_continuation_result.json"
+  ]
+}

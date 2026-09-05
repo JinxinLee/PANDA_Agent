@@ -2,19 +2,19 @@
   "schema_version": "1.0.0",
   "checkpoint": "D4-A5-CONTINUATION",
   "stage": "d4_a5_continuation_batch2_controlled_retirement_execution_manifest",
-  "created_at": "2026-09-05T20:37:00.220191+00:00",
+  "created_at": "2026-09-05T21:23:11.460102+00:00",
   "starting_head": "cb0f8c330f224a470401535b4b01f153488da99b",
   "starting_commit_message": "D4-A4 freeze second-batch low-risk retirement validation",
   "implementation_freeze_contract": {
     "policy": "GIT_COMMIT_CONTAINING_THIS_ARTIFACT",
-    "expected_commit_message": "D4-A5-R5 seal raw-freeze evaluator integrity",
-    "expected_parent": "447d03e3cb9d3c1109d6f6070115f3ea4618bb7e",
-    "note": "The R5 freeze commit contains this manifest and is the current continuation implementation freeze; no descendant or intervening commit is accepted as a replacement freeze."
+    "expected_commit_message": "D4-A5-R6 repair historical baseline and evaluator lineage preflight",
+    "expected_parent": "cc5db408929e82b29da76d92f1439ac53a4c8cf3",
+    "note": "The R6 freeze commit contains this manifest and is the current continuation implementation freeze; no descendant or intervening commit is accepted as a replacement freeze."
   },
   "plan_freeze_gate_contract": {
     "policy": "HARD_COMMIT_PLAN_FREEZE_GATE",
     "expected_commit_message": "D4-A5 continuation freeze prospective shared plans",
-    "expected_parent": "the R5 continuation implementation freeze commit (continuation_implementation_freeze_head)",
+    "expected_parent": "the R6 continuation implementation freeze commit (continuation_implementation_freeze_head)",
     "raw_plans_path": "evaluation/d4_a5_continuation_raw_prospective_plans.json",
     "diff_allowlist": [
       "evaluation/d4_a5_continuation_execution_manifest.json",
@@ -468,12 +468,14 @@
     "r1_parent_boundary": "93ad95d7f8808bc4e7ccdbb21a24457c0df30564",
     "r2_parent_boundary": "a53ca0ace5280c278e32e350f5a5051b810fa6f4",
     "r3_parent_boundary": "447d03e3cb9d3c1109d6f6070115f3ea4618bb7e",
-    "r5_continuation_implementation_freeze": "commit containing this manifest",
+    "r5_parent_boundary": "cc5db408929e82b29da76d92f1439ac53a4c8cf3",
+    "r6_continuation_implementation_freeze": "commit containing this manifest",
     "repair_lifecycle": "D4-A5-R1",
     "repair_preregistration": "evaluation/d4_a5_r1_retirement_applicability_preregistration.json",
     "r2_continuation_contract_preregistration": "evaluation/d4_a5_r2_continuation_contract_preregistration.json",
     "r3_continuation_lineage_preregistration": "evaluation/d4_a5_r3_continuation_lineage_accounting_preregistration.json",
-    "r5_raw_freeze_integrity_preregistration": "evaluation/d4_a5_r5_raw_freeze_evaluator_integrity_preregistration.json"
+    "r5_raw_freeze_integrity_preregistration": "evaluation/d4_a5_r5_raw_freeze_evaluator_integrity_preregistration.json",
+    "r6_historical_baseline_preregistration": "evaluation/d4_a5_r6_historical_baseline_evaluator_lineage_preregistration.json"
   },
   "continuation_lineage": {
     "historical_a5_starting_head": "cb0f8c330f224a470401535b4b01f153488da99b",
@@ -482,7 +484,8 @@
     "historical_r1_head": "93ad95d7f8808bc4e7ccdbb21a24457c0df30564",
     "historical_r2_head": "a53ca0ace5280c278e32e350f5a5051b810fa6f4",
     "historical_r3_head": "447d03e3cb9d3c1109d6f6070115f3ea4618bb7e",
-    "continuation_implementation_freeze_message": "D4-A5-R5 seal raw-freeze evaluator integrity",
+    "historical_r5_head": "cc5db408929e82b29da76d92f1439ac53a4c8cf3",
+    "continuation_implementation_freeze_message": "D4-A5-R6 repair historical baseline and evaluator lineage preflight",
     "continuation_plan_freeze_message": "D4-A5 continuation freeze prospective shared plans",
     "continuation_raw_freeze_message": "D4-A5 continuation freeze paired raw retirement results",
     "raw_freeze_diff_allowlist": [

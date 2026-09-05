@@ -1,0 +1,104 @@
+{
+  "schema_version": "1.0.0",
+  "lifecycle_id": "D4-A5-R6",
+  "stage": "D4-A5-R6 — Historical Baseline and Evaluator Lineage Preflight Repair",
+  "created_at": "2026-09-05T21:55:00.000000+00:00",
+  "repair_status": "COMPLETE / PASS",
+  "repair_commit": "D4-A5-R6 repair historical baseline and evaluator lineage preflight",
+  "defects_repaired": {
+    "A_wrong_common_historical_baseline": true,
+    "B_incomplete_lineage_proof": true
+  },
+  "per_stage_baselines": {
+    "A5_STOP_HEAD": ["stopped manifest", "result", "A4 preregistration", "selection"],
+    "R1_HEAD": ["R1 preregistration", "R1 result", "R1 report"],
+    "R2_HEAD": ["R2 preregistration", "R2 result", "R2 report"],
+    "R3_HEAD": ["R3 preregistration", "R3 result", "R3 report"],
+    "R5_HEAD": ["R5 preregistration", "R5 result", "R5 report"],
+    "semantics": {
+      "later_artifact_never_required_at_earlier_commit": true,
+      "missing_at_owning_stage": "FAIL CLOSED",
+      "differs_at_raw_freeze": "FAIL CLOSED",
+      "git_object_identity_only": true
+    }
+  },
+  "real_repository_baseline_sanity": {
+    "executed_after_commit": true,
+    "r1_artifacts_equal_r1_head_blobs": true,
+    "r2_artifacts_equal_r2_head_blobs": true,
+    "r3_artifacts_equal_r3_head_blobs": true,
+    "r5_artifacts_equal_r5_head_blobs": true,
+    "historical_a5_artifacts_equal_a5_stop_blobs": true,
+    "method": "historical_baseline_drift(project_root, HEAD) == [] plus verify-freeze historical_stage_baselines_verified"
+  },
+  "full_lineage_proof": {
+    "chain": "R6 implementation freeze -> direct-child plan freeze -> direct-child raw freeze",
+    "identity_checks": [
+      "implementation-freeze message == R6 message; parent == R5_HEAD",
+      "plan-freeze message == continuation plan-freeze message; parent == implementation freeze",
+      "raw-freeze message at HEAD == continuation raw-freeze message; parent == plan freeze"
+    ],
+    "manifest_lineage_cross_checked_against_git": true,
+    "forged_manifest_rejected": true,
+    "stale_heads_rejected": ["R5 as current implementation freeze", "historical R1/R3/R5 as plan-freeze parent inputs"],
+    "no_skipped_or_intervening_commit_accepted": true
+  },
+  "r5_allowlist_preserved": {
+    "strict_diff_allowlist": [
+      "evaluation/d4_a5_continuation_execution_manifest.json",
+      "evaluation/d4_a5_continuation_raw_paired_retirement_results.json"
+    ],
+    "runner_test_blob_checks_retained": true,
+    "raw_plans_immutable_after_plan_freeze": true,
+    "redesigned": false
+  },
+  "verification": {
+    "focused_tests_total": 144,
+    "r6_tests_added": 11,
+    "realistic_historical_fixture": "every historical artifact introduced at its own stage commit; the fixture reproduces the defect shape (R1 artifacts absent at A5_STOP_HEAD) and the preflight passes under R6 per-stage baselines",
+    "drift_tests": "R1/R2/R3/R5/historical-A5 artifact drift each reported by the baseline helper; missing-at-owning-stage fail-closed test",
+    "full_lineage_tests": "valid chain PASS; wrong implementation freeze/message/parent FAIL; plan freeze not direct child FAIL; wrong plan-freeze message FAIL; raw freeze not direct child FAIL; forged manifest lineage FAIL",
+    "compile_static_check": "passed",
+    "json_parse": "passed",
+    "git_diff_check": "passed",
+    "r5_to_r6_changed_file_audit": "only the allowed R6 files",
+    "real_post_commit_continuation_start_verification": "executed against the real repository HEAD",
+    "no_hash_inventories": true
+  },
+  "zero_exposure": {
+    "analyzer_calls": 0,
+    "plan_acquisitions": 0,
+    "embedding_calls": 0,
+    "reranker_calls": 0,
+    "retrieval_cells": 0,
+    "qa_verifier_judge_calls": 0,
+    "scientific_evaluator_executions": 0,
+    "db_qdrant_writes": 0,
+    "protected_dataset_access": 0
+  },
+  "immutability_confirmations": {
+    "production_unchanged": true,
+    "historical_first_attempt_unchanged": true,
+    "r1_r2_r3_r5_artifacts_unchanged": true,
+    "continuation_raw_plans_created": false,
+    "continuation_raw_results_created": false,
+    "continuation_evaluator_results_created": false,
+    "continuation_result_created": false,
+    "batch1_active": true,
+    "batch2_production_active": false
+  },
+  "lifecycle_state": {
+    "d4_a5_first_attempt": "HISTORICAL / INVALID / PRE-OUTCOME STOP / PRESERVED",
+    "d4_a5_r1": "HISTORICAL REPAIR RECORD PRESERVED / APPLICABILITY AND PROVENANCE LOGIC RETAINED",
+    "d4_a5_r2": "HISTORICAL REPAIR RECORD PRESERVED / CONTINUATION BOOTSTRAP REPAIR RETAINED",
+    "d4_a5_r3": "HISTORICAL REPAIR RECORD PRESERVED / CONTINUATION LINEAGE AND END-TO-END ACCOUNTING REPAIR RETAINED",
+    "d4_a5_r5": "HISTORICAL REPAIR RECORD PRESERVED / RAW-FREEZE ALLOWLIST AND EVALUATOR BLOB SEAL RETAINED",
+    "d4_a5_r6": "COMPLETE / PASS / HISTORICAL_BASELINE_AND_EVALUATOR_LINEAGE_PREFLIGHT_REPAIRED",
+    "d4_a5": "BLOCKED / READY_FOR_SEPARATELY_AUTHORIZED_CONTINUATION",
+    "batch1": "ACTIVE",
+    "batch2": "SELECTED / FROZEN / NOT YET SCIENTIFICALLY VALIDATED",
+    "batch2_production": false,
+    "d4_a6": "NOT_STARTED",
+    "no_r4_stage": true
+  }
+}
