@@ -14,16 +14,16 @@ rules:
   - rule_id: event_poca_handoff
     triggers: ["event_poca", "poca_vertex_file", "second-pass pid", "第二遍 pid"]
     repositories: [restgas_determination, pandaroot]
-    symbols: [macro/target/ana_dpm.C, macro/target/prod_aod_complete.C, POCA_VERTEX_FILE, PndPidCorrelator]
+    symbols: []
     concepts: [event POCA handoff, event-aligned second-pass propagation]
-    paper_page_hints:
-      li_2026: [131, 138]
+    structured_replacement: true
 
   - rule_id: restgas_profile_workflow
     triggers: ["restgas_profile", "restgas profile", "corrected rho", "修正后的 rho"]
     repositories: [restgas_determination, pandaroot]
-    symbols: [pgenerators/Target/PndTargetGenerator.cxx, macro/target/prod_sim_hvmaps.C, macro/target/reco_complete.C, macro/target/ana_complete.C, macro/target/correction/efficiency_correction_2.C]
+    symbols: []
     concepts: [distributed target generation, longitudinal profile correction]
+    structured_replacement: true
 
   - rule_id: pid_two_pass_files
     triggers: ["*_pid.root", "*_pid_final.root", "pid_final.root"]

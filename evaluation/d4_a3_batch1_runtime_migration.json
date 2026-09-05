@@ -1,0 +1,212 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint": "D4-A3",
+  "stage": "D4-A3 First-Batch Runtime Migration Activation",
+  "starting_head": "8c0971f20f9a2b2680451e3123fa1d95325816bc",
+  "authoritative_v2_r3_basis": {
+    "status": "PASS",
+    "lifecycle_status": "COMPLETE / PASS / CONTROLLED_SHARED_PLAN_T2_VALIDATED",
+    "verdict": "PASS / CONTROLLED_SHARED_PLAN_T2_VALIDATED",
+    "target_replacement_reproduced": "2 / 2",
+    "batch1_dependency_removed": "2 / 2",
+    "dependency_removal_identifiable": "2 / 2",
+    "critical_regressions_count": 0,
+    "grounding_regressions": 0,
+    "wrong_version_regressions": 0,
+    "invalid_provenance_recoveries": 0,
+    "r3_result_file": "evaluation/d4_a2_v2_r3_result.json"
+  },
+  "batch1_migrated_rule_ids": [
+    "event_poca_handoff",
+    "restgas_profile_workflow"
+  ],
+  "removed_components": {
+    "total_components_removed": 10,
+    "event_poca_handoff": {
+      "symbols_removed": [
+        "macro/target/ana_dpm.C",
+        "macro/target/prod_aod_complete.C",
+        "POCA_VERTEX_FILE",
+        "PndPidCorrelator"
+      ],
+      "paper_page_hints_removed": {
+        "li_2026": [
+          131,
+          138
+        ]
+      }
+    },
+    "restgas_profile_workflow": {
+      "symbols_removed": [
+        "pgenerators/Target/PndTargetGenerator.cxx",
+        "macro/target/prod_sim_hvmaps.C",
+        "macro/target/reco_complete.C",
+        "macro/target/ana_complete.C",
+        "macro/target/correction/efficiency_correction_2.C"
+      ],
+      "paper_page_hints_removed": {}
+    }
+  },
+  "preserved_components": {
+    "event_poca_handoff": {
+      "triggers": [
+        "event_poca",
+        "poca_vertex_file",
+        "second-pass pid",
+        "第二遍 pid"
+      ],
+      "repositories": [
+        "restgas_determination",
+        "pandaroot"
+      ],
+      "concepts": [
+        "event POCA handoff",
+        "event-aligned second-pass propagation"
+      ]
+    },
+    "restgas_profile_workflow": {
+      "triggers": [
+        "restgas_profile",
+        "restgas profile",
+        "corrected rho",
+        "修正后的 rho"
+      ],
+      "repositories": [
+        "restgas_determination",
+        "pandaroot"
+      ],
+      "concepts": [
+        "distributed target generation",
+        "longitudinal profile correction"
+      ]
+    },
+    "non_batch1_rules": "All 52 non-Batch1 rules match the starting Git configuration semantically; structured_replacement defaults to false."
+  },
+  "production_activation_mechanism": {
+    "policy_field": "structured_replacement",
+    "type": "boolean",
+    "default": false,
+    "trigger_condition": "Rule-level structured_replacement: true in query_expansions.yaml matched by query analyzer and activated automatically during production retrieve() when d3_config is None"
+  },
+  "selectivity_contract": {
+    "policy_version": "d3_5_selectivity_v2",
+    "selectivity_cap": 8,
+    "per_origin_cap": 4,
+    "min_primary_score": 1,
+    "primary_ordering": [
+      "symbol_exact_tier DESC",
+      "rarity_weighted_overlap DESC",
+      "basename_coverage DESC",
+      "text_presence DESC"
+    ],
+    "secondary_ordering": "support_rank ASC",
+    "tie_breakers": [
+      "structural_distance ASC",
+      "candidate_object_id ASC"
+    ],
+    "origin_attribution": "least-used eligible provenance origin (tie: lexical origin ID)"
+  },
+  "admission_contract": {
+    "admission_policy": "bounded_rerank_admission",
+    "k": 3,
+    "pool_size_cap": 30,
+    "displacement_strategy": "bottom-first ordinary baseline candidate displacement",
+    "baseline_overlap_handling": "deduplicated via reservable_bridge before admission"
+  },
+  "changed_production_files": [
+    "configs/query_expansions.yaml",
+    "src/panda_agent/config.py",
+    "src/panda_agent/d3_structured.py",
+    "src/panda_agent/retrieval.py"
+  ],
+  "verification_results": {
+    "focused_unit_test_suite": "tests/unit/test_d4_a3_batch1_runtime_migration.py",
+    "test_suite_status": "PASS: controller 38 migration tests; 134 focused tests plus 7 subtests",
+    "git_diff_check": "CLEAN (exit code 0)",
+    "anti_shortcut_check": "PASS: inspected new production diff; no answer-location mapping, benchmark evidence input, or evaluation-script import",
+    "focused_command": "$env:PYTHONPATH=\"src;evaluation;tests/unit\"; & \"..\\.venv\\Scripts\\python.exe\" -m pytest tests/unit/test_d4_a3_batch1_runtime_migration.py tests/unit/test_retrieval.py tests/unit/test_retrieval_trace.py tests/unit/test_d3_structured_shortcut.py tests/unit/test_d3_5_structured_bridge.py tests/unit/test_config.py -q -p no:cacheprovider",
+    "controller_run_history": [
+      {
+        "scope": "strengthened initial migration tests",
+        "passed": 30,
+        "warnings": "Pytest cache write denied; subsequent runs disable cache"
+      },
+      {
+        "scope": "new integration fixtures",
+        "passed": 30,
+        "failed": 4,
+        "cause": "Synthetic fixtures omitted required schema_version/source_budgets; fixtures corrected"
+      },
+      {
+        "scope": "final migration tests",
+        "passed": 37,
+        "seconds": 3.46
+      },
+      {
+        "scope": "final focused regression including configuration and historical D3/D3.5 paths",
+        "passed": 133,
+        "subtests_passed": 7,
+        "seconds": 5.28
+      },
+      {
+        "scope": "canonical source-native selectivity payload on ordinary overlap; final focused regression",
+        "passed": 134,
+        "subtests_passed": 7,
+        "seconds": 5.19
+      }
+    ],
+    "config_parse": "PASS; exact two enabled rules and all other rules compared with starting Git blob",
+    "compile_static": "PASS; compile() and AST parse of changed Python modules and new tests",
+    "parity": "Four synthetic selectivity scope/symbol variants compare selected IDs, rank keys, and candidate receipts; K3 pool, reservation, displacement match frozen reference",
+    "unchanged_code_checks": [
+      "ordinary RRF block",
+      "explicit D3/D3.5 treatment block",
+      "reranker payload/schema/call",
+      "final selector AST"
+    ],
+    "materialization_parity": "Source-native bridge payloads feed selectivity even on ordinary-channel overlap; overlap consumes zero reserved slots.",
+    "git_scope_check": "PASS: exact nine allowed paths; no historical scientific artifact changed"
+  },
+  "zero_provider_accounting": {
+    "vertex_model_calls": 0,
+    "embedding_calls": 0,
+    "reranker_provider_calls": 0,
+    "scientific_database_writes": 0,
+    "qdrant_writes": 0,
+    "postgres_writes": 0,
+    "scientific_provider_tokens": 0,
+    "qa_judge_verifier_calls": 0,
+    "benchmark_novel_runs": 0,
+    "scope": "PANDA runtime/scientific providers; AGY coding delegation is separate and its tokens were not measured",
+    "new_scientific_evaluations": 0
+  },
+  "rollback_commit_boundary": "8c0971f20f9a2b2680451e3123fa1d95325816bc",
+  "production_activation_state": {
+    "d4_a3_status": "COMPLETE / PASS / FIRST_BATCH_RUNTIME_MIGRATION_ACTIVATED",
+    "first_batch_runtime_migration": "ACTIVE",
+    "batch1_migrated_rules": [
+      "event_poca_handoff",
+      "restgas_profile_workflow"
+    ],
+    "batch1_fixed_locators_removed": "10 components",
+    "production_activation": true,
+    "d4_status": "IN_PROGRESS / INCREMENTAL_QUERY_EXPANSION_MIGRATION"
+  },
+  "authorization": "User explicitly authorized D4-A3 runtime activation in this task; R3 PASS supplied eligibility only.",
+  "migration_commit": "GIT_COMMIT_CONTAINING_THIS_ARTIFACT",
+  "limitations": [
+    "Offline synthetic verification only; no live model smoke or new scientific outcome measurement.",
+    "Batch 1 only; all other rules and later batches remain separately governed."
+  ],
+  "changed_files": [
+    "configs/query_expansions.yaml",
+    "src/panda_agent/config.py",
+    "src/panda_agent/d3_structured.py",
+    "src/panda_agent/retrieval.py",
+    "tests/unit/test_d4_a3_batch1_runtime_migration.py",
+    "evaluation/d4_a3_batch1_runtime_migration.json",
+    "evaluation/D4_A3_BATCH1_RUNTIME_MIGRATION.md",
+    "docs/EVALUATION_STATUS.md",
+    "docs/GENERALIZATION_ROADMAP.md"
+  ]
+}

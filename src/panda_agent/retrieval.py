@@ -18,8 +18,14 @@ from panda_agent.d3_structured import (
     D3_5ExperimentConfig,
     D3Arm,
     D3ExperimentConfig,
+    SELECTIVITY_POLICY_VERSION,
+    build_candidate_payload_registry,
+    build_eligible_bridge_candidates,
     build_structured_contribution_from_storage,
+    build_treatment_pool,
+    reservable_bridge,
     select_matching_query_expansions,
+    select_structured_candidates_v2,
 )
 from panda_agent.entity_resolution import EntityResolver, merge_exact_streams
 from panda_agent.lexical_query import build_lexical_query
@@ -320,6 +326,7 @@ class DeterministicQueryParse:
     premise_corrections: list[str] = field(default_factory=list)
     paper_page_hints: dict[str, list[int]] = field(default_factory=dict)
     matched_expansion_rules: list[str] = field(default_factory=list)
+    structured_replacement_rules: list[str] = field(default_factory=list)
     provenance: dict[str, list[dict[str, str]]] = field(default_factory=dict)
     d3_experiment: dict[str, Any] | None = None
 
@@ -1019,6 +1026,8 @@ class Retriever:
         )
         for rule in expansion_decision.active_matching_rules:
             parsed.matched_expansion_rules.append(rule.rule_id)
+            if getattr(rule, "structured_replacement", False):
+                parsed.structured_replacement_rules.append(rule.rule_id)
             parsed.symbols.extend(rule.symbols)
             parsed.concepts.extend(rule.concepts)
             parsed.target_repositories.extend(repo for repo in rule.repositories if repo in self.fixed_versions)
@@ -1205,6 +1214,9 @@ class Retriever:
                 "concept_scopes": scopes,
             },
         }
+        analysis_diagnostics["matched_expansion_rules"] = list(parsed.matched_expansion_rules)
+        if parsed.structured_replacement_rules:
+            analysis_diagnostics["structured_replacement_rules"] = list(parsed.structured_replacement_rules)
         if parsed.d3_experiment is not None:
             analysis_diagnostics["d3_experiment"] = parsed.d3_experiment
         return RetrievalPlan(
@@ -1686,6 +1698,101 @@ class Retriever:
                 channels[oid].append(channel)
         fused_order = sorted(scores, key=scores.get, reverse=True)
         rerank_pool = fused_order[:30]
+        structured_replacement_receipt: dict[str, Any] | None = None
+        if d3_config is None:
+            diagnostics = plan.analysis_diagnostics or {}
+            rules = getattr(getattr(self, "query_expansions", None), "rules", [])
+            if "matched_expansion_rules" in diagnostics:
+                matched_set = set(diagnostics["matched_expansion_rules"])
+            else:
+                # Normal caller-supplied plans may predate policy diagnostics.
+                matched_set = {
+                    rule.rule_id for rule in
+                    select_matching_query_expansions(question, rules, None).active_matching_rules
+                }
+            active_migrated_rules = [
+                rule.rule_id for rule in rules
+                if rule.rule_id in matched_set and getattr(rule, "structured_replacement", False)
+            ]
+
+            if active_migrated_rules:
+                structured_contribution = build_structured_contribution_from_storage(
+                    question,
+                    plan,
+                    storage=self.storage,
+                    context_sources=self.context_sources,
+                    max_relation_hops=min(2, self.policies.max_relation_hops),
+                    bridge_enabled=True,
+                )
+                for oid, cand_payload in structured_contribution.bridged_payloads.items():
+                    if oid not in payloads:
+                        payloads[oid] = cand_payload
+
+                eligible_candidates = build_eligible_bridge_candidates(
+                    structured_contribution.bridge_receipts,
+                    structured_contribution.reachability_receipts,
+                    object_lookup=structured_contribution.bridged_payloads,
+                )
+                # Selectivity uses source-native text even when an ordinary
+                # channel already supplied a different projection of this object.
+                payload_registry = build_candidate_payload_registry(
+                    eligible_candidates,
+                    structured_contribution.bridged_payloads,
+                )
+                unbridged_graph = rankings.get("graph", [])
+                unbridged_graph_ids = [
+                    item["object_id"] if isinstance(item, dict) else str(item)
+                    for item in unbridged_graph
+                ]
+                channel_orderings = {
+                    ch: [item["object_id"] if isinstance(item, dict) else str(item) for item in items]
+                    for ch, items in rankings.items()
+                }
+                v2_result = select_structured_candidates_v2(
+                    question,
+                    plan,
+                    eligible_candidates,
+                    payload_registry,
+                    channels=channel_orderings,
+                    unbridged_graph=unbridged_graph_ids,
+                )
+                v2_selected_order = v2_result.get("selected_object_ids", [])
+                reservable = reservable_bridge(v2_selected_order, rerank_pool)
+                treatment_pool = build_treatment_pool(rerank_pool, reservable, k=3)
+                displaced_ids = treatment_pool.get("displaced_object_ids", [])
+                reserved_ids = treatment_pool.get("reserved_bridge_candidate_ids", [])
+                rerank_pool = treatment_pool.get("treatment_pool_object_ids", rerank_pool)
+
+                resolution_receipt = structured_contribution.resolution_receipt
+                if hasattr(resolution_receipt, "as_dict"):
+                    resolution_receipt = resolution_receipt.as_dict()
+
+                structured_replacement_receipt = {
+                    "active_migrated_rule_ids": list(active_migrated_rules),
+                    "governed_resolution_receipt": resolution_receipt,
+                    "reachability_receipts_count": len(structured_contribution.reachability_receipts),
+                    "reachability_receipts": [
+                        r.as_dict() if hasattr(r, "as_dict") else r
+                        for r in structured_contribution.reachability_receipts
+                    ],
+                    "bridge_receipts_count": len(structured_contribution.bridge_receipts),
+                    "bridge_receipts": [
+                        b.as_dict() if hasattr(b, "as_dict") else b
+                        for b in structured_contribution.bridge_receipts
+                    ],
+                    "eligible_candidate_count": len(eligible_candidates),
+                    "eligible_candidates": eligible_candidates,
+                    "selectivity_policy_version": v2_result.get("policy_version", SELECTIVITY_POLICY_VERSION),
+                    "selected_candidate_ids": v2_selected_order,
+                    "candidate_selectivity_receipts": v2_result.get("candidate_receipts", []),
+                    "selected_rank_keys": v2_result.get("selected_rank_keys", []),
+                    "reservable_ids": reservable,
+                    "reserved_ids": reserved_ids,
+                    "displaced_ordinary_ids": displaced_ids,
+                    "k": 3,
+                    "final_rerank_pool_ids": list(rerank_pool),
+                }
+
         rerank_payload = [{"object_id":oid,"title":payloads[oid].get("title"),"source_id":payloads[oid].get("source_id"),"text":payloads[oid].get("text","")[:2000]} for oid in rerank_pool]
         rerank_schema = {"type":"object","properties":{"ranked_object_ids":{"type":"array","items":{"type":"string","enum":rerank_pool}}},"required":["ranked_object_ids"],"additionalProperties":False}
         reranked = self.vertex.generate_json(
@@ -1693,7 +1800,7 @@ class Retriever:
             rerank_schema,
             system_instruction=RERANK_SYSTEM_PROMPT,
         )["ranked_object_ids"] if rerank_pool else []
-        ordered = list(dict.fromkeys([*reranked, *fused_order]))
+        ordered = list(dict.fromkeys([*reranked, *rerank_pool, *fused_order]))
         preferred_sources = list(plan.target_repositories)
         lowered_question = question.casefold()
         if any(term in lowered_question for term in ("restgas", "off-ip", "event_poca", "poca", "displaced")):
@@ -1797,6 +1904,8 @@ class Retriever:
             "backfill_admissions": backfill_admissions,
             "evidence": [item.model_dump(mode="json") for item in selected],
         }
+        if structured_replacement_receipt is not None:
+            result["structured_replacement"] = structured_replacement_receipt
         if d3_config is not None and d3_diagnostics is not None:
             counters = dict(d3_diagnostics.get("diagnostic_counters") or {})
             d3_receipt: dict[str, Any] = {

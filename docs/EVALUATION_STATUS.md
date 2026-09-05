@@ -9,9 +9,29 @@ When records conflict, use the single section explicitly marked **Current author
 
 ---
 
-# Current authoritative state — 2026-09-04
+# Current authoritative state — 2026-09-05
 
-## D4-A2-V2-R3 current authoritative state — 2026-09-04
+## D4-A3 current authoritative state — 2026-09-05
+
+- `D4_A3_DECISION = PASS / FIRST_BATCH_RUNTIME_MIGRATION_ACTIVATED`; `D4-A3 = COMPLETE / PASS / FIRST_BATCH_RUNTIME_MIGRATION_ACTIVATED`; `D4-A2-V2 = COMPLETE / PASS / CONTROLLED_SHARED_PLAN_T2_VALIDATED (AUTHORITATIVE VIA D4-A2-V2-R3)`; `FIRST_BATCH_RUNTIME_MIGRATION = ACTIVE`; `BATCH1_MIGRATED_RULES = ["event_poca_handoff", "restgas_profile_workflow"]`; `BATCH1_FIXED_LOCATORS_REMOVED = 10 components`; `PRODUCTION_ACTIVATION = true`; `D4 = IN_PROGRESS / INCREMENTAL_QUERY_EXPANSION_MIGRATION`; `NEXT_BATCH_STATE = NOT_STARTED / SEPARATELY_GOVERNED`.
+- First-batch runtime migration activation:
+  - Authorization basis: Prospective shared-plan validation D4-A2-V2-R3 (parent `8c0971f20f9a2b2680451e3123fa1d95325816bc`) passed Level 6 criteria: target evidence replacement reproduced 2/2 (`g036.e1`, `g021.e1`), fixed-locator dependency removal demonstrated 2/2, 0 shared-plan critical regressions, 0 grounding/version/provenance violations, and all six primary retrieval metric deltas strictly zero (0.000000).
+  - 10 fixed locator components removed across 2 rules in `configs/query_expansions.yaml`:
+    - `event_poca_handoff`: removed 4 fixed symbols (`macro/target/ana_dpm.C`, `macro/target/prod_aod_complete.C`, `POCA_VERTEX_FILE`, `PndPidCorrelator`) and 1 page hint (`li_2026: [131, 138]`).
+    - `restgas_profile_workflow`: removed 5 fixed symbols (`pgenerators/Target/PndTargetGenerator.cxx`, `macro/target/prod_sim_hvmaps.C`, `macro/target/reco_complete.C`, `macro/target/ana_complete.C`, `macro/target/correction/efficiency_correction_2.C`).
+  - Preserved semantic vocabulary: Both rules preserve query matching triggers, repository scopes, and domain concepts. All other 52 query expansion rules remain semantically unchanged with `structured_replacement: false`.
+  - Production runtime activation:
+    - Policy marker: `QueryExpansionRule.structured_replacement: bool = False` added in `src/panda_agent/config.py`; set `structured_replacement: true` for the 2 Batch-1 rules in `configs/query_expansions.yaml`.
+    - Default execution: Standard `Retriever.retrieve(question)` without `d3_config` computes ordinary RRF first across standard channels (`exact`, `dense`, `sparse`, `paper`, `workflow`, `graph`), automatically invokes generic structured bridge (`build_structured_contribution_from_storage`), evaluates candidates with `d3_5_selectivity_v2` (caps 8/4), and applies K=3 bounded admission into the 30-slot rerank pool (bottom-first displacement of ordinary candidates).
+    - Single reranker call: Reranker call count remains exactly one per retrieval.
+    - Auditable receipt: Diagnostic receipt attached as `"structured_replacement"`.
+  - Zero-provider execution accounting: 0 Vertex model calls, 0 embedding calls, 0 reranker calls, 0 PostgreSQL/Qdrant writes.
+  - Verification: 38/38 focused unit tests passing in `tests/unit/test_d4_a3_batch1_runtime_migration.py` covering all 29 requirements and semantic parity with frozen evaluation algorithms. 134/134 plus 7 subtests passing across full focused suite. `git diff --check` clean.
+- Production status: `PRODUCTION_ACTIVATION = true` (specifically for Batch 1 default runtime structured replacement); `FIRST_BATCH_RUNTIME_MIGRATION = ACTIVE`; `D4-A3 = COMPLETE / PASS / FIRST_BATCH_RUNTIME_MIGRATION_ACTIVATED`; `D4 = IN_PROGRESS / INCREMENTAL_QUERY_EXPANSION_MIGRATION`.
+- Rollback boundary: Starting parent commit `8c0971f20f9a2b2680451e3123fa1d95325816bc`.
+- Artifacts: `evaluation/d4_a3_batch1_runtime_migration.json`, `evaluation/D4_A3_BATCH1_RUNTIME_MIGRATION.md`, `tests/unit/test_d4_a3_batch1_runtime_migration.py`.
+
+## D4-A2-V2-R3 historical validation state — 2026-09-04 (AUTHORITATIVE VALIDATION BASIS)
 
 - `D4_A2_V2_R3_DECISION = PASS / CONTROLLED_SHARED_PLAN_T2_VALIDATED`; `D4-A2-V2-R3 = COMPLETE / PASS / CONTROLLED_SHARED_PLAN_T2_VALIDATED`; `D4-A2-V2 = COMPLETE / FAIL / PRIMARY_TARGET_REPLACEMENT_NOT_REPRODUCED (HISTORICAL / DEFECTIVE / SUPERSEDED_BY_D4_A2_V2_R3)`; `D4-A2-V1-R1 = COMPLETE / PASS / HISTORICAL_PLAN_SENSITIVITY_REPRODUCED_WITHOUT_TREATMENT_REGRESSION (HISTORICAL IMMUTABLE)`; `D4-A2-V1 = COMPLETE / PARTIAL / ANALYZER_VARIABILITY_OBSERVED_WITHOUT_EVIDENCE_SENSITIVITY (HISTORICAL IMMUTABLE)`; `D4-A2-R1 = COMPLETE / PASS / BENCHMARK_CORRECTION_AND_REGRESSION_ATTRIBUTION_COMPLETE (HISTORICAL IMMUTABLE)`; `D4-A2 = COMPLETE / FAIL / CRITICAL_OR_GROUNDING_REGRESSION (HISTORICAL IMMUTABLE)`; `D4 = IN_PROGRESS / INCREMENTAL_QUERY_EXPANSION_MIGRATION`; `FIRST_BATCH_RUNTIME_MIGRATION = BLOCKED`; `PRODUCTION_ACTIVATION = false`; `D4-A3 = NOT_STARTED / BLOCKED`.
 - Resolution B and evaluator contract repair:

@@ -305,6 +305,7 @@ class QueryExpansionRule(StrictModel):
     concepts: list[str] = Field(default_factory=list)
     repositories: list[str] = Field(default_factory=list)
     paper_page_hints: dict[str, list[int]] = Field(default_factory=dict)
+    structured_replacement: bool = False
 
 
 class QueryExpansions(StrictModel):

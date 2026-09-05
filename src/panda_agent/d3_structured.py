@@ -14,9 +14,11 @@ from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass, field
 from enum import Enum
 import json
+import math
 from pathlib import Path
 import re
 from typing import Any, Protocol
+import unicodedata
 
 from panda_agent.entity_resolution import (
     AMBIGUOUS,
@@ -620,6 +622,7 @@ class D3StructuredContribution:
     resolution_receipt: dict[str, Any] = field(default_factory=dict)
     diagnostic_counters: dict[str, Any] = field(default_factory=dict)
     excluded_resolution_reasons: list[dict[str, Any]] = field(default_factory=list)
+    bridged_payloads: dict[str, dict[str, Any]] = field(default_factory=dict)
 
     def compute_displacement_diagnostics(
         self,
@@ -1274,6 +1277,7 @@ def build_structured_contribution(
     reachability_receipts: list[dict[str, Any]] = []
     bridge_receipts: list[dict[str, Any]] = []
     bridged_candidates: dict[str, dict[str, Any]] = {}
+    bridged_payloads: dict[str, dict[str, Any]] = {}
     parent_traversals = 0
     bridged_injections = 0
     bridged_ranked_out = 0
@@ -1740,6 +1744,7 @@ def build_structured_contribution(
                             )
                             continue
 
+                        bridged_payloads[target_obj_id] = cand_obj
                         if target_obj_id in bridged_candidates:
                             bridge_receipts.append(
                                 StructuredEvidenceBridgeReceipt(
@@ -2041,6 +2046,7 @@ def build_structured_contribution(
                         target_obj = resolved_matches[0]
                         target_id = str(target_obj["object_id"])
 
+                        bridged_payloads[target_id] = target_obj
                         if target_id in bridged_candidates:
                             bridge_receipts.append(
                                 StructuredEvidenceBridgeReceipt(
@@ -2153,6 +2159,7 @@ def build_structured_contribution(
         resolution_receipt=_as_dict(receipt),
         diagnostic_counters=counters,
         excluded_resolution_reasons=active_excluded,
+        bridged_payloads=bridged_payloads,
     )
 
 
@@ -2178,6 +2185,362 @@ def build_structured_contribution_from_storage(
     )
 
 
+SELECTIVITY_CAP = 8
+PER_ORIGIN_CAP = 4
+MIN_PRIMARY_SCORE = 1
+DEFAULT_ADMISSION_K = 3
+RERANK_POOL_SIZE = 30
+SELECTIVITY_POLICY_VERSION = "d3_5_selectivity_v2"
+ELIGIBLE_BRIDGE_STATUSES = ("BRIDGED_CANDIDATE_INJECTED", "BRIDGED_CANDIDATE_RANKED_OUT")
+NON_GRAPH_CHANNELS = ("exact", "dense", "sparse", "paper", "workflow")
+
+
+def tokenize(text: str) -> set[str]:
+    """Frozen A5 lexical tokenizer (NFKD -> camelCase split -> casefold -> non-[a-z0-9] separators -> dedupe)."""
+    normalized = unicodedata.normalize("NFKD", text or "")
+    camel_split = re.sub(r"(?<=[a-z0-9])(?=[A-Z])", " ", normalized)
+    cleaned = re.sub(r"[^a-z0-9]+", " ", camel_split.casefold())
+    return {token for token in cleaned.split() if token}
+
+
+def exact_normalize(text: str) -> str:
+    """Frozen R1-R1 symbol-exact normalization: NFKC -> casefold -> path separators to '/'."""
+    return unicodedata.normalize("NFKC", text or "").casefold().replace("\\", "/")
+
+
+def symbol_exact_match(symbol: str, surface: str) -> bool:
+    """Boundary-aware compound-symbol match: the normalized symbol occurrence
+    must be bounded on both sides by start/end of string or a character
+    outside [a-z0-9_]."""
+    sym = exact_normalize(symbol)
+    if not sym:
+        return False
+    surf = exact_normalize(surface)
+    pattern = r"(?<![a-z0-9_])" + re.escape(sym) + r"(?![a-z0-9_])"
+    return re.search(pattern, surf) is not None
+
+
+def plan_scope_set(plan: Any) -> set[str]:
+    scope: set[str] = set()
+    target_repos = getattr(plan, "target_repositories", None) or (plan.get("target_repositories") if isinstance(plan, dict) else []) or []
+    version_repos = getattr(plan, "version_repositories", None) or (plan.get("version_repositories") if isinstance(plan, dict) else []) or []
+    resolved_versions = getattr(plan, "resolved_versions", None) or (plan.get("resolved_versions") if isinstance(plan, dict) else {}) or {}
+    scope |= {str(item) for item in target_repos}
+    scope |= {str(item) for item in version_repos}
+    scope |= {str(key) for key in resolved_versions}
+    return scope
+
+
+def query_token_set(question: str, plan: Any) -> set[str]:
+    tokens: set[str] = set(tokenize(question))
+    concepts = getattr(plan, "concepts", None) or (plan.get("concepts") if isinstance(plan, dict) else []) or []
+    for concept in concepts:
+        tokens |= tokenize(str(concept))
+    symbols = getattr(plan, "symbols", None) or (plan.get("symbols") if isinstance(plan, dict) else []) or []
+    for symbol in symbols:
+        tokens |= tokenize(str(symbol))
+    return tokens
+
+
+def support_rank(candidate_id: str, channels: Mapping[str, Sequence[str]]) -> int | None:
+    ranks = []
+    for channel in NON_GRAPH_CHANNELS:
+        ordering = channels.get(channel) or []
+        if candidate_id in ordering:
+            ranks.append(list(ordering).index(candidate_id) + 1)
+    return min(ranks) if ranks else None
+
+
+def candidate_views(candidate: dict[str, Any], payload: dict[str, Any]) -> dict[str, Any]:
+    locator_path = candidate.get("locator_path") or ""
+    basename = locator_path.rsplit("/", 1)[-1]
+    parent_dir = locator_path.rsplit("/", 1)[0] if "/" in locator_path else ""
+    title = payload.get("title") or ""
+    text = payload.get("text_payload_2000") or (payload.get("text") or "")[:2000]
+    path_tokens = tokenize(locator_path)
+    title_tokens = tokenize(title)
+    text_tokens = tokenize(text)
+    basename_tokens = tokenize(basename)
+    parent_tokens = tokenize(parent_dir)
+    return {
+        "basename": basename,
+        "path_tokens": path_tokens,
+        "title_tokens": title_tokens,
+        "text_tokens": text_tokens,
+        "basename_tokens": basename_tokens,
+        "parent_tokens": parent_tokens,
+        "lexical_view": basename_tokens | parent_tokens | title_tokens | text_tokens,
+        # title excluded from the symbol-exact tier (R1-R1 frozen decision)
+        "exact_surfaces": [basename, locator_path, text],
+    }
+
+
+def build_eligible_bridge_candidates(
+    bridge_receipts: Sequence[dict[str, Any]],
+    reachability_receipts: Sequence[dict[str, Any]],
+    object_lookup: Mapping[str, dict[str, Any]] | None = None,
+) -> list[dict[str, Any]]:
+    """Constructs the eligible governed candidate universe from structured
+    bridge receipts and reachability receipts.
+
+    Filters eligible bridge receipts to ELIGIBLE_BRIDGE_STATUSES (INJECTED and
+    RANKED_OUT candidate statuses), aggregates all provenance origins across
+    duplicate receipts, and uses available candidate metadata.
+    """
+    reach_by_id = {
+        r.get("reachability_receipt_id"): r for r in reachability_receipts
+    }
+    candidates_acc: dict[str, dict[str, Any]] = {}
+    for receipt in bridge_receipts:
+        status = receipt.get("bridge_status")
+        if status not in ELIGIBLE_BRIDGE_STATUSES:
+            continue
+        candidate_id = receipt.get("source_native_candidate_object_id")
+        if not candidate_id:
+            continue
+        origin_id = receipt.get("evidence_provenance_origin_id")
+        reach = reach_by_id.get(receipt.get("reachability_receipt_id")) or {}
+        distance = reach.get("budget_consumed")
+        locator = receipt.get("locator") if isinstance(receipt.get("locator"), dict) else {}
+        locator_path = locator.get("path")
+
+        cand_obj = (object_lookup.get(candidate_id) or {}) if object_lookup else {}
+        entry = candidates_acc.get(candidate_id)
+        if entry is None:
+            candidates_acc[candidate_id] = {
+                "candidate_object_id": candidate_id,
+                "provenance_origin_ids": [origin_id] if origin_id else [],
+                "origin_types": (
+                    [receipt.get("evidence_provenance_origin_type")]
+                    if receipt.get("evidence_provenance_origin_type")
+                    else []
+                ),
+                "source_id": receipt.get("source_id") or cand_obj.get("source_id"),
+                "source_version_id": receipt.get("source_version_id") or cand_obj.get("source_version_id"),
+                "locator_path": locator_path or (cand_obj.get("locator") or {}).get("path"),
+                "min_structural_distance_transitions": distance if distance is not None else 1_000_000,
+                "object_type": receipt.get("object_type") or cand_obj.get("object_type"),
+                "locator": locator or cand_obj.get("locator") or {},
+            }
+        else:
+            if origin_id and origin_id not in entry["provenance_origin_ids"]:
+                entry["provenance_origin_ids"].append(origin_id)
+            orig_type = receipt.get("evidence_provenance_origin_type")
+            if orig_type and orig_type not in entry["origin_types"]:
+                entry["origin_types"].append(orig_type)
+            if distance is not None:
+                entry["min_structural_distance_transitions"] = min(
+                    entry["min_structural_distance_transitions"], distance
+                )
+
+    return sorted(candidates_acc.values(), key=lambda item: item["candidate_object_id"])
+
+
+def build_candidate_payload_registry(
+    eligible_candidates: Sequence[dict[str, Any]],
+    object_lookup: Mapping[str, dict[str, Any]],
+) -> dict[str, dict[str, Any]]:
+    payload_registry: dict[str, dict[str, Any]] = {}
+    for cand in eligible_candidates:
+        oid = cand["candidate_object_id"]
+        cand_obj = object_lookup.get(oid) or {}
+        payload_registry[oid] = {
+            "object_id": oid,
+            "title": cand_obj.get("title", ""),
+            "source_id": cand_obj.get("source_id", ""),
+            "text_payload_2000": (cand_obj.get("text") or "")[:2000],
+            "object_type": cand_obj.get("object_type", ""),
+            "locator": cand_obj.get("locator") or {},
+        }
+    return payload_registry
+
+
+def select_structured_candidates_v2(
+    question: str,
+    plan: Any,
+    eligible_candidates: Sequence[dict[str, Any]],
+    payload_registry: Mapping[str, dict[str, Any]],
+    channels: Mapping[str, Sequence[str]] | None = None,
+    unbridged_graph: Sequence[str] | None = None,
+) -> dict[str, Any]:
+    """Frozen selectivity-v2 implementation preserving exact 8/4 caps,
+    lexicographic ranking, and fail-closed scope gating."""
+    if channels is None:
+        channels = {}
+    if unbridged_graph is None:
+        unbridged_graph = []
+
+    query_tokens = query_token_set(question, plan)
+    scope = plan_scope_set(plan)
+    plan_symbols = [
+        str(s) for s in (getattr(plan, "symbols", None) or (plan.get("symbols") if isinstance(plan, dict) else []) or [])
+    ]
+
+    # --- hard filter: plan-scope compatibility ---
+    scope_passed: list[dict[str, Any]] = []
+    scope_rejected = 0
+    for candidate in eligible_candidates:
+        source_id = candidate.get("source_id")
+        if scope and source_id not in scope:
+            scope_rejected += 1
+            continue
+        scope_passed.append(candidate)
+    eligible_after_scope = len(scope_passed)
+
+    # --- views and df over U (universe after scope eligibility) ---
+    views = {
+        candidate["candidate_object_id"]: candidate_views(
+            candidate, payload_registry.get(candidate["candidate_object_id"]) or {}
+        )
+        for candidate in scope_passed
+    }
+    universe_size = len(scope_passed)
+    df: dict[str, int] = {}
+    if universe_size > 0:
+        for view in views.values():
+            for token in view["lexical_view"]:
+                df[token] = df.get(token, 0) + 1
+
+    def idf(token: str) -> float:
+        return math.log2((universe_size + 1) / (df.get(token, 0) + 1))
+
+    # --- per-candidate v2 rank keys ---
+    receipts: list[dict[str, Any]] = []
+    for candidate in scope_passed:
+        object_id = candidate["candidate_object_id"]
+        view = views[object_id]
+        path_overlap = len(query_tokens & view["path_tokens"])
+        title_overlap = len(query_tokens & view["title_tokens"])
+        # unchanged v1 hard gate (path/title lexical overlap)
+        gate_pass = (path_overlap + title_overlap) >= MIN_PRIMARY_SCORE
+        symbol_exact_tier = sum(
+            1
+            for symbol in plan_symbols
+            if any(symbol_exact_match(symbol, surface) for surface in view["exact_surfaces"])
+        )
+        rarity_weighted_overlap = sum(
+            idf(token) for token in (query_tokens & view["lexical_view"])
+        )
+        basename_coverage = len(query_tokens & view["basename_tokens"])
+        text_presence = len(query_tokens & view["text_tokens"])
+        support = support_rank(object_id, channels)
+        distance = candidate.get("min_structural_distance_transitions")
+        if distance is None:
+            distance = 1_000_000
+        receipts.append(
+            {
+                "candidate_object_id": object_id,
+                "locator_path": candidate.get("locator_path"),
+                "source_id": candidate.get("source_id"),
+                "source_version_id": candidate.get("source_version_id"),
+                "object_type": candidate.get("object_type"),
+                "provenance_origin_ids": sorted(candidate.get("provenance_origin_ids") or []),
+                "path_overlap": path_overlap,
+                "title_overlap": title_overlap,
+                "gate_pass": gate_pass,
+                "symbol_exact_tier": symbol_exact_tier,
+                "rarity_weighted_overlap": rarity_weighted_overlap,
+                "basename_coverage": basename_coverage,
+                "text_presence": text_presence,
+                "support_rank": support,
+                "structural_distance": distance,
+                "in_unbridged_graph": object_id in set(unbridged_graph),
+                "disposition": "candidate" if gate_pass else "gate_rejected",
+            }
+        )
+
+    candidates = [item for item in receipts if item["gate_pass"]]
+    candidates.sort(
+        key=lambda item: (
+            -item["symbol_exact_tier"],
+            -item["rarity_weighted_overlap"],
+            -item["basename_coverage"],
+            -item["text_presence"],
+            item["support_rank"] if item["support_rank"] is not None else 1_000_000,
+            item["structural_distance"],
+            item["candidate_object_id"],
+        )
+    )
+
+    origin_used: dict[str, int] = {}
+    selected: list[dict[str, Any]] = []
+    origin_capped_out = 0
+    beyond_selectivity_cap = 0
+    for item in candidates:
+        if len(selected) >= SELECTIVITY_CAP:
+            item["disposition"] = "beyond_selectivity_cap"
+            beyond_selectivity_cap += 1
+            continue
+        origins = sorted(item["provenance_origin_ids"])
+        chosen = min(origins, key=lambda origin: (origin_used.get(origin, 0), origin))
+        if origin_used.get(chosen, 0) >= PER_ORIGIN_CAP:
+            item["disposition"] = "origin_capped_out"
+            origin_capped_out += 1
+            continue
+        origin_used[chosen] = origin_used.get(chosen, 0) + 1
+        item["attributed_origin_id"] = chosen
+        item["disposition"] = "selected"
+        selected.append(item)
+
+    selected_ids_in_order = [item["candidate_object_id"] for item in selected]
+
+    return {
+        "policy_version": SELECTIVITY_POLICY_VERSION,
+        "eligible_governed_bridge_candidate_count": len(eligible_candidates),
+        "eligible_after_scope_count": eligible_after_scope,
+        "scope_rejected_candidate_count": scope_rejected,
+        "gate_passing_candidate_count": len(candidates),
+        "gate_rejected_candidate_count": len(scope_passed) - len(candidates),
+        "selected_bridge_candidate_count": len(selected),
+        "selected_object_ids": selected_ids_in_order,
+        "candidate_receipts": receipts,
+        "selected_rank_keys": [
+            {
+                "candidate_object_id": item["candidate_object_id"],
+                "symbol_exact_tier": item["symbol_exact_tier"],
+                "rarity_weighted_overlap": item["rarity_weighted_overlap"],
+                "basename_coverage": item["basename_coverage"],
+                "text_presence": item["text_presence"],
+                "support_rank": item["support_rank"],
+                "structural_distance": item["structural_distance"],
+                "attributed_origin_id": item.get("attributed_origin_id"),
+            }
+            for item in selected
+        ],
+        "origin_capped_out_count": origin_capped_out,
+        "beyond_selectivity_cap_count": beyond_selectivity_cap,
+    }
+
+
+def reservable_bridge(v2_selected_bridge_order: Sequence[str], baseline_pool: Sequence[str]) -> list[str]:
+    baseline_ids = set(baseline_pool)
+    return [oid for oid in v2_selected_bridge_order if oid not in baseline_ids]
+
+
+def build_treatment_pool(
+    baseline_pool: Sequence[str],
+    reservable: Sequence[str],
+    k: int = DEFAULT_ADMISSION_K,
+) -> dict[str, Any]:
+    """Frozen Phase-0 construction: reserve the first ``min(k, len(reservable))``
+    candidates in frozen v2 order, displace exactly that many bottom baseline
+    members (pure positional, bottom-first), keep surviving baseline candidates
+    in their original fused order, append the reserved candidates in v2 order."""
+    reserved = list(reservable[: min(k, len(reservable))])
+    cut = len(baseline_pool) - len(reserved)
+    surviving = list(baseline_pool[:cut])
+    displaced = list(baseline_pool[cut:])
+    pool = surviving + reserved
+    return {
+        "reserved_bridge_candidate_ids": reserved,
+        "reserved_slot_count": len(reserved),
+        "displaced_object_ids": displaced,
+        "ordinary_rerank_candidates_displaced": len(displaced),
+        "treatment_pool_object_ids": pool,
+        "pool_size": len(pool),
+    }
+
+
 __all__ = [
     "SELECTED_D3_RULE_IDS",
     "D3_5_SELECTED_RULE_IDS",
@@ -2199,4 +2562,24 @@ __all__ = [
     "select_matching_query_expansions",
     "build_structured_contribution",
     "build_structured_contribution_from_storage",
+    "SELECTIVITY_CAP",
+    "PER_ORIGIN_CAP",
+    "MIN_PRIMARY_SCORE",
+    "DEFAULT_ADMISSION_K",
+    "RERANK_POOL_SIZE",
+    "SELECTIVITY_POLICY_VERSION",
+    "ELIGIBLE_BRIDGE_STATUSES",
+    "NON_GRAPH_CHANNELS",
+    "tokenize",
+    "exact_normalize",
+    "symbol_exact_match",
+    "plan_scope_set",
+    "query_token_set",
+    "support_rank",
+    "candidate_views",
+    "build_eligible_bridge_candidates",
+    "build_candidate_payload_registry",
+    "select_structured_candidates_v2",
+    "reservable_bridge",
+    "build_treatment_pool",
 ]
