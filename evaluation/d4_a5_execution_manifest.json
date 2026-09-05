@@ -1,0 +1,426 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint": "D4-A5",
+  "stage": "d4_a5_batch2_controlled_retirement_execution_manifest",
+  "created_at": "2026-09-05T15:27:56.184509+00:00",
+  "starting_head": "cb0f8c330f224a470401535b4b01f153488da99b",
+  "starting_commit_message": "D4-A4 freeze second-batch low-risk retirement validation",
+  "implementation_freeze_contract": {
+    "policy": "GIT_COMMIT_CONTAINING_THIS_ARTIFACT",
+    "expected_commit_message": "D4-A5 freeze controlled retirement executor",
+    "expected_parent": "cb0f8c330f224a470401535b4b01f153488da99b"
+  },
+  "plan_freeze_gate_contract": {
+    "policy": "HARD_COMMIT_PLAN_FREEZE_GATE",
+    "expected_commit_message": "D4-A5 freeze prospective shared plans",
+    "raw_plans_path": "evaluation/d4_a5_raw_prospective_plans.json"
+  },
+  "raw_freeze_gate_contract": {
+    "policy": "HARD_COMMIT_RAW_FREEZE_GATE",
+    "expected_commit_message": "D4-A5 freeze paired raw retirement results",
+    "raw_results_path": "evaluation/d4_a5_raw_paired_retirement_results.json"
+  },
+  "evaluation_tier": "T2",
+  "mode": "controlled_batch2_retirement_retrieval",
+  "preregistration_authority": "evaluation/d4_a4_batch2_retirement_preregistration.json",
+  "selection_authority": "evaluation/d4_a4_batch2_low_risk_retirement_selection.json",
+  "exact_selected_rules": [
+    "effective_acceptance_pipeline",
+    "root_macro_usage",
+    "model_factory_theory"
+  ],
+  "frozen_retirement_masks": {
+    "effective_acceptance_pipeline": {
+      "rule_id": "effective_acceptance_pipeline",
+      "symbols_retired": [
+        "macro/target/prod_sim_hvmaps.C",
+        "data/PndLmdAcceptance.cxx",
+        "model/PndLmdModelFactory.cxx"
+      ],
+      "paper_page_hints_retired": {},
+      "symbols_preserved": [],
+      "paper_page_hints_preserved": {
+        "li_2026": [
+          83,
+          86,
+          89
+        ]
+      },
+      "triggers_preserved": [
+        "effective acceptance",
+        "restgas acceptance",
+        "acceptance calculation",
+        "有效接受度",
+        "有效接受度"
+      ],
+      "repositories_preserved": [
+        "restgas_determination",
+        "luminosityfit"
+      ],
+      "concepts_preserved": [
+        "profile-dependent effective acceptance pipeline"
+      ],
+      "structured_replacement_after_retirement": false
+    },
+    "root_macro_usage": {
+      "rule_id": "root_macro_usage",
+      "symbols_retired": [
+        "Running/Macros.html",
+        "tools/MasterTasks/PndMasterRunSim.cxx"
+      ],
+      "paper_page_hints_retired": {},
+      "symbols_preserved": [],
+      "paper_page_hints_preserved": {},
+      "triggers_preserved": [
+        "ROOT macro",
+        "macro execution",
+        "run a ROOT macro"
+      ],
+      "repositories_preserved": [
+        "pandaroot"
+      ],
+      "concepts_preserved": [
+        "PandaRoot macro invocation"
+      ],
+      "structured_replacement_after_retirement": false
+    },
+    "model_factory_theory": {
+      "rule_id": "model_factory_theory",
+      "symbols_retired": [
+        "model/PndLmdDPMAngModel1D.cxx",
+        "model/PndLmdDPMAngModel2D.cxx",
+        "model/PndLmdModelFactory.cxx"
+      ],
+      "paper_page_hints_retired": {
+        "pflueger_2017": [
+          51,
+          57,
+          65
+        ]
+      },
+      "symbols_preserved": [],
+      "paper_page_hints_preserved": {},
+      "triggers_preserved": [
+        "PndLmdModelFactory",
+        "DPM、acceptance 和 resolution",
+        "DPM acceptance resolution"
+      ],
+      "repositories_preserved": [
+        "luminosityfit"
+      ],
+      "concepts_preserved": [
+        "DPM model acceptance resolution composition"
+      ],
+      "structured_replacement_after_retirement": false
+    }
+  },
+  "exact_case_cohort": [
+    "g052",
+    "g055",
+    "n003",
+    "n004",
+    "g007",
+    "n014",
+    "g060"
+  ],
+  "case_to_rule_attribution": {
+    "g052": {
+      "owning_rule": "effective_acceptance_pipeline",
+      "role": "direct_trigger",
+      "matched_retirement_rules": [
+        "effective_acceptance_pipeline"
+      ],
+      "matched_batch1_rule_ids": [
+        "restgas_profile_workflow"
+      ]
+    },
+    "g055": {
+      "owning_rule": "effective_acceptance_pipeline",
+      "role": "nonmatching_control",
+      "matched_retirement_rules": [],
+      "matched_batch1_rule_ids": []
+    },
+    "n003": {
+      "owning_rule": "effective_acceptance_pipeline",
+      "role": "nonmatching_control",
+      "matched_retirement_rules": [],
+      "matched_batch1_rule_ids": []
+    },
+    "n004": {
+      "owning_rule": "root_macro_usage",
+      "role": "direct_trigger",
+      "matched_retirement_rules": [
+        "root_macro_usage"
+      ],
+      "matched_batch1_rule_ids": []
+    },
+    "g007": {
+      "owning_rule": "root_macro_usage",
+      "role": "negative_control",
+      "matched_retirement_rules": [],
+      "matched_batch1_rule_ids": []
+    },
+    "n014": {
+      "owning_rule": "model_factory_theory",
+      "role": "direct_trigger",
+      "matched_retirement_rules": [
+        "model_factory_theory"
+      ],
+      "matched_batch1_rule_ids": []
+    },
+    "g060": {
+      "owning_rule": "model_factory_theory",
+      "role": "nonmatching_control",
+      "matched_retirement_rules": [],
+      "matched_batch1_rule_ids": []
+    }
+  },
+  "scientific_model_contract": {
+    "generation_and_reranker": "gemini-3.8-flash",
+    "embedding": "gemini-embedding-2",
+    "location": "global",
+    "temperature": 0.0,
+    "max_retries": 0
+  },
+  "phase_p_slots_7": [
+    {
+      "slot_index": 1,
+      "plan_id": "prospective_g052",
+      "case_id": "g052",
+      "role": "direct_trigger",
+      "status": "NOT_EXECUTED",
+      "analyzer_calls": 0,
+      "token_usage": 0
+    },
+    {
+      "slot_index": 2,
+      "plan_id": "prospective_g055",
+      "case_id": "g055",
+      "role": "nonmatching_control",
+      "status": "NOT_EXECUTED",
+      "analyzer_calls": 0,
+      "token_usage": 0
+    },
+    {
+      "slot_index": 3,
+      "plan_id": "prospective_n003",
+      "case_id": "n003",
+      "role": "nonmatching_control",
+      "status": "NOT_EXECUTED",
+      "analyzer_calls": 0,
+      "token_usage": 0
+    },
+    {
+      "slot_index": 4,
+      "plan_id": "prospective_n004",
+      "case_id": "n004",
+      "role": "direct_trigger",
+      "status": "NOT_EXECUTED",
+      "analyzer_calls": 0,
+      "token_usage": 0
+    },
+    {
+      "slot_index": 5,
+      "plan_id": "prospective_g007",
+      "case_id": "g007",
+      "role": "negative_control",
+      "status": "NOT_EXECUTED",
+      "analyzer_calls": 0,
+      "token_usage": 0
+    },
+    {
+      "slot_index": 6,
+      "plan_id": "prospective_n014",
+      "case_id": "n014",
+      "role": "direct_trigger",
+      "status": "NOT_EXECUTED",
+      "analyzer_calls": 0,
+      "token_usage": 0
+    },
+    {
+      "slot_index": 7,
+      "plan_id": "prospective_g060",
+      "case_id": "g060",
+      "role": "nonmatching_control",
+      "status": "NOT_EXECUTED",
+      "analyzer_calls": 0,
+      "token_usage": 0
+    }
+  ],
+  "phase_r_cells_14": [
+    {
+      "cell_index": 1,
+      "cell_id": "g052_current_compat",
+      "case_id": "g052",
+      "arm": "CURRENT_COMPAT",
+      "role": "direct_trigger",
+      "batch2_retirement_mask_applied": false,
+      "status": "NOT_EXECUTED",
+      "token_usage": 0
+    },
+    {
+      "cell_index": 2,
+      "cell_id": "g052_batch2_retirement",
+      "case_id": "g052",
+      "arm": "BATCH2_RETIREMENT",
+      "role": "direct_trigger",
+      "batch2_retirement_mask_applied": true,
+      "status": "NOT_EXECUTED",
+      "token_usage": 0
+    },
+    {
+      "cell_index": 3,
+      "cell_id": "g055_current_compat",
+      "case_id": "g055",
+      "arm": "CURRENT_COMPAT",
+      "role": "nonmatching_control",
+      "batch2_retirement_mask_applied": false,
+      "status": "NOT_EXECUTED",
+      "token_usage": 0
+    },
+    {
+      "cell_index": 4,
+      "cell_id": "g055_batch2_retirement",
+      "case_id": "g055",
+      "arm": "BATCH2_RETIREMENT",
+      "role": "nonmatching_control",
+      "batch2_retirement_mask_applied": false,
+      "status": "NOT_EXECUTED",
+      "token_usage": 0
+    },
+    {
+      "cell_index": 5,
+      "cell_id": "n003_current_compat",
+      "case_id": "n003",
+      "arm": "CURRENT_COMPAT",
+      "role": "nonmatching_control",
+      "batch2_retirement_mask_applied": false,
+      "status": "NOT_EXECUTED",
+      "token_usage": 0
+    },
+    {
+      "cell_index": 6,
+      "cell_id": "n003_batch2_retirement",
+      "case_id": "n003",
+      "arm": "BATCH2_RETIREMENT",
+      "role": "nonmatching_control",
+      "batch2_retirement_mask_applied": false,
+      "status": "NOT_EXECUTED",
+      "token_usage": 0
+    },
+    {
+      "cell_index": 7,
+      "cell_id": "n004_current_compat",
+      "case_id": "n004",
+      "arm": "CURRENT_COMPAT",
+      "role": "direct_trigger",
+      "batch2_retirement_mask_applied": false,
+      "status": "NOT_EXECUTED",
+      "token_usage": 0
+    },
+    {
+      "cell_index": 8,
+      "cell_id": "n004_batch2_retirement",
+      "case_id": "n004",
+      "arm": "BATCH2_RETIREMENT",
+      "role": "direct_trigger",
+      "batch2_retirement_mask_applied": true,
+      "status": "NOT_EXECUTED",
+      "token_usage": 0
+    },
+    {
+      "cell_index": 9,
+      "cell_id": "g007_current_compat",
+      "case_id": "g007",
+      "arm": "CURRENT_COMPAT",
+      "role": "negative_control",
+      "batch2_retirement_mask_applied": false,
+      "status": "NOT_EXECUTED",
+      "token_usage": 0
+    },
+    {
+      "cell_index": 10,
+      "cell_id": "g007_batch2_retirement",
+      "case_id": "g007",
+      "arm": "BATCH2_RETIREMENT",
+      "role": "negative_control",
+      "batch2_retirement_mask_applied": false,
+      "status": "NOT_EXECUTED",
+      "token_usage": 0
+    },
+    {
+      "cell_index": 11,
+      "cell_id": "n014_current_compat",
+      "case_id": "n014",
+      "arm": "CURRENT_COMPAT",
+      "role": "direct_trigger",
+      "batch2_retirement_mask_applied": false,
+      "status": "NOT_EXECUTED",
+      "token_usage": 0
+    },
+    {
+      "cell_index": 12,
+      "cell_id": "n014_batch2_retirement",
+      "case_id": "n014",
+      "arm": "BATCH2_RETIREMENT",
+      "role": "direct_trigger",
+      "batch2_retirement_mask_applied": true,
+      "status": "NOT_EXECUTED",
+      "token_usage": 0
+    },
+    {
+      "cell_index": 13,
+      "cell_id": "g060_current_compat",
+      "case_id": "g060",
+      "arm": "CURRENT_COMPAT",
+      "role": "nonmatching_control",
+      "batch2_retirement_mask_applied": false,
+      "status": "NOT_EXECUTED",
+      "token_usage": 0
+    },
+    {
+      "cell_index": 14,
+      "cell_id": "g060_batch2_retirement",
+      "case_id": "g060",
+      "arm": "BATCH2_RETIREMENT",
+      "role": "nonmatching_control",
+      "batch2_retirement_mask_applied": false,
+      "status": "NOT_EXECUTED",
+      "token_usage": 0
+    }
+  ],
+  "pre_exposure_accounting": {
+    "analyzer_calls": 0,
+    "embedding_calls": 0,
+    "reranker_calls": 0,
+    "qa_calls": 0,
+    "verifier_calls": 0,
+    "judge_calls": 0,
+    "db_writes": 0,
+    "qdrant_writes": 0,
+    "novel_validation_runs": 0,
+    "novel_holdout_runs": 0,
+    "protected_dataset_access": 0
+  },
+  "accounting": {
+    "analyzer_calls": 0,
+    "analyzer_provider_attempts": 0,
+    "embedding_calls": 0,
+    "reranker_calls": 0,
+    "logical_model_calls": 0,
+    "provider_attempts": 0,
+    "retries": 0,
+    "token_usage": 0
+  },
+  "outcome_exposure_state": {
+    "D4_A5_OUTCOME_EXPOSURE": "NOT_STARTED",
+    "plans_completed": 0,
+    "formal_cells_completed": 0,
+    "formal_cells_failed": 0,
+    "evaluator_executed": false,
+    "scientific_verdict_computed": false
+  },
+  "production_activation": false,
+  "batch1_production_active": true,
+  "batch2_production_active": false
+}
