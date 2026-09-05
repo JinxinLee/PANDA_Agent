@@ -1,0 +1,143 @@
+{
+  "schema_version": "1.0.0",
+  "lifecycle_id": "D4-A5-R3",
+  "stage": "D4-A5-R3 — Continuation Lineage and End-to-End Accounting Repair",
+  "created_at": "2026-09-05T20:06:17.891088+00:00",
+  "starting_head": "a53ca0ace5280c278e32e350f5a5051b810fa6f4",
+  "starting_commit_message": "D4-A5-R2 repair continuation freeze and accounting contract",
+  "starting_parent": "93ad95d7f8808bc4e7ccdbb21a24457c0df30564",
+  "task_classification": {
+    "type": "pre-exposure continuation-contract repair",
+    "is_not": [
+      "a new scientific validation stage",
+      "D4-A6",
+      "a new Batch-2 selection",
+      "a new retirement experiment",
+      "plan acquisition",
+      "paired retrieval execution",
+      "evaluator execution",
+      "scientific verdict computation",
+      "production activation"
+    ]
+  },
+  "audit_defects_repaired": {
+    "defect_a_phase_p_phase_r_lineage_mismatch": {
+      "finding": "Continuation Phase P wrote exposure['r2_freeze_head'] from the start preflight, but Phase R still read exposure.get('r1_freeze_head') and passed that stale field to the continuation plan-freeze gate: a clean R2/R3 freeze -> Phase P -> 7 plans -> plan freeze -> Phase R would hard-fail on a missing r1_freeze_head.",
+      "repair": "Phase P now freezes continuation_implementation_freeze_head from the shared preflight receipt; the plan-freeze gate and Phase R consume the frozen continuation lineage and never a stale historical r1_freeze_head."
+    },
+    "defect_b_stale_r1_provenance_downstream": {
+      "finding": "Continuation Phase-R raw artifacts and evaluator/result provenance still used r1_freeze_head as if it were the current continuation implementation freeze.",
+      "repair": "One unambiguous lineage vocabulary (historical_a5_starting_head, historical_a5_executor_freeze_head, historical_a5_stop_head, historical_r1_head, historical_r2_head, continuation_implementation_freeze_head, continuation_plan_freeze_head, continuation_raw_freeze_head) is used by the committed manifest, Phase-P raw-plans provenance, Phase-R raw-results provenance and authority block, and evaluator/result provenance. Historical R1/R2 heads are never collapsed into the current implementation-freeze field."
+    },
+    "defect_c_accounting_only_wired_to_phase_p": {
+      "finding": "apply_continuation_accounting updated Analyzer acquisition accounting but not Phase-R retrieval accounting.",
+      "repair": "Every completed retrieval cell feeds its ACTUAL recorded stats (embedding calls, reranker calls, retrieval provider attempts, known token usage) into the same deterministic helper; cumulative values are recomputed as historical + continuation. The expected 14/14 protocol outcome must be derived from actual cell records, never assumed."
+    },
+    "defect_d_provider_failure_unknown_accounting_incomplete": {
+      "finding": "Per-slot failure receipts could say provider attempts = unknown while the manifest aggregate effectively added numeric zero; the logical-call semantics for failed acquisitions were unset.",
+      "repair": "Manifest accounting gains explicit unknown_provider_attempt_events and unknown_token_usage_events dimensions (cumulative unknown = historical unknowns + continuation unknowns). Frozen logical-call semantics: a continuation Analyzer acquisition that is actually invoked but terminates in a provider exception counts as ONE logical Analyzer acquisition; provider/internal attempts remain a separate dimension (known integer or unknown); no retry (max_retries = 0, max_provider_attempts_per_case = 1 unchanged)."
+    }
+  },
+  "r3_continuation_implementation_freeze": {
+    "commit_message": "D4-A5-R3 repair continuation lineage and end-to-end accounting",
+    "direct_parent": "a53ca0ace5280c278e32e350f5a5051b810fa6f4",
+    "mechanism": "containing-commit contract: the R3 commit forward-updates the committed continuation manifest; future continuation start requires HEAD == the R3 freeze commit with the exact message, direct parent = the R2 HEAD, the manifest committed at HEAD, clean worktree/index, the runner at HEAD being the frozen R3 runner, and historical/production paths unchanged; no descendant is dynamically accepted; no hash inventories or cryptographic sealing"
+  },
+  "lineage_vocabulary": {
+    "historical_a5_starting_head": "cb0f8c330f224a470401535b4b01f153488da99b",
+    "historical_a5_executor_freeze_head": "8579cdc60c3ebb53f9958d3fdd442c1a5454cc91",
+    "historical_a5_stop_head": "dc679f880cda8d2ccdfb709d725e24673c562eab",
+    "historical_r1_head": "93ad95d7f8808bc4e7ccdbb21a24457c0df30564",
+    "historical_r2_head": "a53ca0ace5280c278e32e350f5a5051b810fa6f4",
+    "continuation_implementation_freeze_head": "the R3 freeze commit (recorded at Phase P start from the shared preflight receipt)",
+    "continuation_plan_freeze_head": "the continuation plan-freeze commit (direct child of the R3 freeze)",
+    "continuation_raw_freeze_head": "the continuation raw-freeze commit (direct child of the plan-freeze commit)"
+  },
+  "future_execution_lineage": [
+    "R3 continuation implementation freeze",
+    "Phase P plan acquisition",
+    "continuation plan-freeze commit (D4-A5 continuation freeze prospective shared plans)",
+    "Phase R paired retrieval",
+    "continuation raw-freeze commit (D4-A5 continuation freeze paired raw retirement results)",
+    "deterministic evaluator",
+    "continuation closeout commit (D4-A5 continuation close controlled retirement validation)"
+  ],
+  "plan_freeze_gate_contract": {
+    "required": [
+      "committed continuation raw-plan artifact",
+      "exact 7-case cohort with completed provenance-gated plans",
+      "current HEAD = plan-freeze commit",
+      "direct parent = R3 implementation freeze",
+      "R3->plan-freeze diff limited to the frozen plan-acquisition artifacts (continuation manifest + raw plans)",
+      "production/historical/R1/R2 implementation artifacts unchanged"
+    ]
+  },
+  "phase_r_preflight": {
+    "function": "verify_phase_r_preflight (shared by the CLI-reachable execution path and focused tests)",
+    "consumes": ["continuation_implementation_freeze_head", "continuation_plan_freeze_head"],
+    "never_requires": "a current r1_freeze_head"
+  },
+  "end_to_end_accounting_contract": {
+    "historical_fixed_record": {
+      "analyzer_logical_calls": 6,
+      "analyzer_provider_attempts": 6,
+      "retries": 0,
+      "recorded_token_usage": 10303,
+      "historical_unknown_token_component": 1,
+      "embedding_calls": 0,
+      "reranker_calls": 0
+    },
+    "successful_continuation_expectation": {
+      "continuation_analyzer_logical_calls": 7,
+      "cumulative_analyzer_logical_calls": 13,
+      "continuation_embedding_calls": 14,
+      "continuation_reranker_calls": 14,
+      "cumulative_embedding_calls": 14,
+      "cumulative_reranker_calls": 14
+    },
+    "derivation_rule": "cell/slot accounting updates come from ACTUAL recorded receipts; totals are never assumed from the protocol; unknown components stay explicit",
+    "double_counting_prevention": "terminal slot/cell status transitions gate re-application; reload/recompute leaves counters stable; cumulative is a deterministic function of historical + continuation state",
+    "no_generic_recovery_framework": true
+  },
+  "scientific_contract_unchanged": {
+    "selected_rules": ["effective_acceptance_pipeline", "root_macro_usage", "model_factory_theory"],
+    "d4_a4_masks": "unchanged including model_factory_theory pflueger_2017: [51, 57, 65]",
+    "case_order": ["g052", "g055", "n003", "n004", "g007", "n014", "g060"],
+    "plans_and_cells": "7 plans / 14 cells",
+    "arms": ["CURRENT_COMPAT", "BATCH2_RETIREMENT"],
+    "applicability": "three-state selected-rule-origin semantics unchanged",
+    "dispositions": "six-state space unchanged",
+    "batch_verdict": "seven-level precedence unchanged",
+    "metrics_thresholds": "six primary metrics, frozen tolerances, MRR diagnostic-only",
+    "safety_gates": "unchanged",
+    "batch1_invariant": true,
+    "batch2_production": false,
+    "no_special_handling": "no n014/pflueger/case/rule/locator/expected-answer special case"
+  },
+  "historical_records_immutable": [
+    "evaluation/d4_a5_execution_manifest.json",
+    "evaluation/d4_a5_result.json",
+    "evaluation/d4_a4_batch2_retirement_preregistration.json",
+    "evaluation/d4_a4_batch2_low_risk_retirement_selection.json",
+    "evaluation/d4_a5_r1_retirement_applicability_preregistration.json",
+    "evaluation/d4_a5_r1_result.json",
+    "evaluation/D4_A5_R1_RETIREMENT_APPLICABILITY_AND_PROVENANCE_CONTRACT_REPAIR.md",
+    "evaluation/d4_a5_r2_continuation_contract_preregistration.json",
+    "evaluation/d4_a5_r2_result.json",
+    "evaluation/D4_A5_R2_CONTINUATION_FREEZE_AND_ACCOUNTING_CONTRACT_REPAIR.md"
+  ],
+  "forward_only_audit_note": "R2 successfully repaired the continuation bootstrap boundary, but the post-plan continuation lineage and end-to-end accounting contract remained incomplete; R3 closes those defects without rewriting R1/R2 records.",
+  "zero_exposure_boundary": {
+    "analyzer_provider_calls": 0, "plan_acquisitions": 0, "embedding_calls": 0,
+    "reranker_calls": 0, "retrieval_cells": 0, "qa_calls": 0, "verifier_calls": 0,
+    "judge_calls": 0, "evaluator_execution": false, "scientific_verdict": false,
+    "db_writes": 0, "qdrant_writes": 0, "protected_dataset_access": 0,
+    "execute_phase_p_run": false, "execute_phase_r_run": false, "evaluate_run": false
+  },
+  "future_scientific_artifacts_not_created": [
+    "evaluation/d4_a5_continuation_raw_prospective_plans.json",
+    "evaluation/d4_a5_continuation_raw_paired_retirement_results.json",
+    "evaluation/d4_a5_continuation_evaluator_results.json",
+    "evaluation/d4_a5_continuation_result.json"
+  ]
+}

@@ -1,0 +1,99 @@
+{
+  "schema_version": "1.0.0",
+  "lifecycle_id": "D4-A5-R3",
+  "stage": "D4-A5-R3 — Continuation Lineage and End-to-End Accounting Repair",
+  "created_at": "2026-09-05T20:10:00.000000+00:00",
+  "repair_status": "COMPLETE / PASS",
+  "repair_commit": "D4-A5-R3 repair continuation lineage and end-to-end accounting",
+  "defects_repaired": {
+    "A_phase_p_phase_r_lineage_mismatch": true,
+    "B_stale_r1_provenance_downstream": true,
+    "C_accounting_only_wired_to_phase_p": true,
+    "D_provider_failure_unknown_accounting_incomplete": true
+  },
+  "lineage_vocabulary_adopted": {
+    "historical_a5_starting_head": "cb0f8c330f224a470401535b4b01f153488da99b",
+    "historical_a5_executor_freeze_head": "8579cdc60c3ebb53f9958d3fdd442c1a5454cc91",
+    "historical_a5_stop_head": "dc679f880cda8d2ccdfb709d725e24673c562eab",
+    "historical_r1_head": "93ad95d7f8808bc4e7ccdbb21a24457c0df30564",
+    "historical_r2_head": "a53ca0ace5280c278e32e350f5a5051b810fa6f4",
+    "continuation_implementation_freeze_head": "recorded at Phase P start from the shared preflight receipt (the R3 freeze commit)",
+    "continuation_plan_freeze_head": "direct child of the R3 freeze commit",
+    "continuation_raw_freeze_head": "direct child of the plan-freeze commit",
+    "no_r1_freeze_head_as_current_freeze": true,
+    "historical_heads_never_collapsed_into_current_freeze_field": true
+  },
+  "handoff_behavior": {
+    "phase_p_writes": "continuation_implementation_freeze_head = R3 HEAD (from the shared preflight receipt); no misleading current r1/r2 freeze head",
+    "plan_freeze_gate": "plan-freeze commit must be a direct child of the R3 implementation freeze; requires the committed raw-plan artifact, exact 7-case cohort of completed provenance-gated plans, and an R3->plan-freeze diff limited to the frozen plan-acquisition artifacts",
+    "phase_r_consumes": "continuation_implementation_freeze_head + continuation_plan_freeze_head from the frozen lineage via verify_phase_r_preflight; no r1_freeze_head dependency (source-scan tested)",
+    "raw_freeze_gate": "raw-freeze commit must be a direct child of the plan-freeze commit",
+    "synthetic_lifecycle_handoff_test": "test_r3_09_10 exercises the real gates in a temporary Git repository: R3 freeze -> completed Phase-P state -> plan-freeze commit -> gate -> Phase-R preflight succeeds; no provider or retrieval call"
+  },
+  "accounting_behavior": {
+    "single_path": "apply_continuation_accounting is the one deterministic accounting path for the whole continuation attempt (Phase P acquisitions and Phase R cells)",
+    "seven_successful_acquisitions": {"continuation_analyzer_logical": 7, "cumulative_analyzer_logical": 13},
+    "fourteen_retrieval_cells_from_actual_receipts": {
+      "continuation_embedding": 14,
+      "continuation_reranker": 14,
+      "cumulative_embedding": 14,
+      "cumulative_reranker": 14,
+      "note": "derived from actual recorded cell stats, never assumed from the protocol"
+    },
+    "tokens_and_provider_attempts": "accumulated from actual recorded cell/slot accounting; nothing inferred or fabricated",
+    "unknown_contract": {
+      "unknown_token_usage_events": "explicit counter; cumulative unknown = historical unknown (1) + continuation unknowns",
+      "unknown_provider_attempt_events": "explicit counter; unknown attempts never silently contribute numeric zero as if known",
+      "failed_invocation_logical_semantics": "one failed-but-invoked Analyzer acquisition counts analyzer logical calls += 1; provider attempts stay a separate known-or-unknown dimension; retries = 0"
+    },
+    "double_counting_prevention": "terminal slot/cell status transitions gate re-application; reload/recompute leaves counters stable (test_r3_18_19)"
+  },
+  "verification": {
+    "focused_tests_total": 113,
+    "r3_tests_added": 9,
+    "r2_tests_retargeted_to_r3_contract": true,
+    "compile_static_check": "passed",
+    "json_parse": "passed",
+    "lineage_handoff_tests": "test_r3_09_10 / test_r3_11 / test_r3_12 (real gates in a temporary Git repository; stale-R1 input rejected)",
+    "phase_r_accounting_tests": "test_r3_14_17 / test_r3_18_19",
+    "provider_unknown_accounting_tests": "test_r3_20_26 + updated test_r2_15_20 / test_r2_15b",
+    "scientific_invariants": "test_r2_21 / test_r2_22 / test_r2_24 / test_r3_31",
+    "real_post_commit_continuation_start_verification": "executed after the R3 commit against the real repository HEAD",
+    "r2_to_r3_changed_file_audit": "only the allowed R3 files"
+  },
+  "zero_exposure": {
+    "analyzer_provider_calls": 0,
+    "plan_acquisitions": 0,
+    "embedding_calls": 0,
+    "reranker_calls": 0,
+    "retrieval_cells": 0,
+    "qa_verifier_judge_calls": 0,
+    "evaluator_executed": false,
+    "scientific_verdict_computed": false,
+    "db_qdrant_writes": 0,
+    "protected_dataset_access": 0
+  },
+  "immutability_confirmations": {
+    "production_unchanged": true,
+    "historical_first_attempt_unchanged": true,
+    "r1_artifacts_unchanged": true,
+    "r2_artifacts_unchanged": true,
+    "continuation_raw_plans_created": false,
+    "continuation_raw_results_created": false,
+    "continuation_evaluator_results_created": false,
+    "continuation_result_created": false,
+    "batch1_active": true,
+    "batch2_production_active": false
+  },
+  "lifecycle_state": {
+    "d4_a5_first_attempt": "HISTORICAL / INVALID / PRE-OUTCOME STOP / PRESERVED",
+    "d4_a5_r1": "HISTORICAL REPAIR RECORD PRESERVED / APPLICABILITY AND PROVENANCE LOGIC RETAINED",
+    "d4_a5_r2": "HISTORICAL REPAIR RECORD PRESERVED / CONTINUATION BOOTSTRAP REPAIR RETAINED",
+    "d4_a5_r3": "COMPLETE / PASS / CONTINUATION_LINEAGE_AND_END_TO_END_ACCOUNTING_REPAIRED",
+    "d4_a5": "BLOCKED / READY_FOR_SEPARATELY_AUTHORIZED_CONTINUATION",
+    "batch1": "ACTIVE",
+    "batch2": "SELECTED / FROZEN / NOT YET SCIENTIFICALLY VALIDATED",
+    "batch2_production": false,
+    "d4_a6": "NOT_STARTED"
+  }
+}

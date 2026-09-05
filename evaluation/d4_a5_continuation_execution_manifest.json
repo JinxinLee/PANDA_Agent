@@ -2,19 +2,19 @@
   "schema_version": "1.0.0",
   "checkpoint": "D4-A5-CONTINUATION",
   "stage": "d4_a5_continuation_batch2_controlled_retirement_execution_manifest",
-  "created_at": "2026-09-05T19:23:52.949263+00:00",
+  "created_at": "2026-09-05T19:58:30.579029+00:00",
   "starting_head": "cb0f8c330f224a470401535b4b01f153488da99b",
   "starting_commit_message": "D4-A4 freeze second-batch low-risk retirement validation",
   "implementation_freeze_contract": {
     "policy": "GIT_COMMIT_CONTAINING_THIS_ARTIFACT",
-    "expected_commit_message": "D4-A5-R2 repair continuation freeze and accounting contract",
-    "expected_parent": "93ad95d7f8808bc4e7ccdbb21a24457c0df30564",
-    "note": "The R2 freeze commit contains this manifest; no descendant or intervening commit is accepted as the continuation implementation freeze."
+    "expected_commit_message": "D4-A5-R3 repair continuation lineage and end-to-end accounting",
+    "expected_parent": "a53ca0ace5280c278e32e350f5a5051b810fa6f4",
+    "note": "The R3 freeze commit contains this manifest and is the current continuation implementation freeze; no descendant or intervening commit is accepted as a replacement freeze."
   },
   "plan_freeze_gate_contract": {
     "policy": "HARD_COMMIT_PLAN_FREEZE_GATE",
     "expected_commit_message": "D4-A5 continuation freeze prospective shared plans",
-    "expected_parent": "the R2 continuation implementation freeze commit",
+    "expected_parent": "the R3 continuation implementation freeze commit (continuation_implementation_freeze_head)",
     "raw_plans_path": "evaluation/d4_a5_continuation_raw_prospective_plans.json"
   },
   "raw_freeze_gate_contract": {
@@ -453,10 +453,22 @@
     "historical_a5_stop_head": "dc679f880cda8d2ccdfb709d725e24673c562eab",
     "historical_a5_stop_verdict": "INVALID / BATCH2_PROTOCOL_OR_SHARED_PLAN_CONSTRUCTION_FAILED",
     "r1_parent_boundary": "93ad95d7f8808bc4e7ccdbb21a24457c0df30564",
-    "r2_continuation_implementation_freeze": "commit containing this manifest",
+    "r2_parent_boundary": "a53ca0ace5280c278e32e350f5a5051b810fa6f4",
+    "r3_continuation_implementation_freeze": "commit containing this manifest",
     "repair_lifecycle": "D4-A5-R1",
     "repair_preregistration": "evaluation/d4_a5_r1_retirement_applicability_preregistration.json",
-    "r2_continuation_contract_preregistration": "evaluation/d4_a5_r2_continuation_contract_preregistration.json"
+    "r2_continuation_contract_preregistration": "evaluation/d4_a5_r2_continuation_contract_preregistration.json",
+    "r3_continuation_lineage_preregistration": "evaluation/d4_a5_r3_continuation_lineage_accounting_preregistration.json"
+  },
+  "continuation_lineage": {
+    "historical_a5_starting_head": "cb0f8c330f224a470401535b4b01f153488da99b",
+    "historical_a5_executor_freeze_head": "8579cdc60c3ebb53f9958d3fdd442c1a5454cc91",
+    "historical_a5_stop_head": "dc679f880cda8d2ccdfb709d725e24673c562eab",
+    "historical_r1_head": "93ad95d7f8808bc4e7ccdbb21a24457c0df30564",
+    "historical_r2_head": "a53ca0ace5280c278e32e350f5a5051b810fa6f4",
+    "continuation_implementation_freeze_message": "D4-A5-R3 repair continuation lineage and end-to-end accounting",
+    "continuation_plan_freeze_message": "D4-A5 continuation freeze prospective shared plans",
+    "continuation_raw_freeze_message": "D4-A5 continuation freeze paired raw retirement results"
   },
   "artifact_paths": {
     "manifest": "evaluation/d4_a5_continuation_execution_manifest.json",
@@ -531,11 +543,14 @@
       "attempt_id": "D4-A5_ATTEMPT_2_CONTINUATION",
       "analyzer_logical_calls": 0,
       "analyzer_provider_attempts": 0,
+      "unknown_provider_attempt_events": 0,
       "retries": 0,
       "token_usage": 0,
       "unknown_token_usage": [],
+      "unknown_token_usage_events": 0,
       "embedding_calls": 0,
       "reranker_calls": 0,
+      "retrieval_provider_attempts": 0,
       "downstream_analyzer_calls": 0,
       "qa_verifier_judge_calls": 0,
       "db_qdrant_writes": 0,
@@ -544,11 +559,13 @@
     "cumulative": {
       "analyzer_logical_calls": 6,
       "analyzer_provider_attempts": 6,
+      "provider_attempt_unknown_components": 0,
       "retries": 0,
       "token_usage_recorded": 10303,
       "token_usage_unknown_components": 1,
       "embedding_calls": 0,
-      "reranker_calls": 0
+      "reranker_calls": 0,
+      "retrieval_provider_attempts": 0
     },
     "accounting_rule": "Historical and continuation attempt costs are recorded separately; cumulative cost is their sum. Unknown historical token usage stays explicitly unknown and is never fabricated."
   }

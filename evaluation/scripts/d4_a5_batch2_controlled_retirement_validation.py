@@ -261,9 +261,14 @@ EXECUTOR_FREEZE_HEAD = "8579cdc60c3ebb53f9958d3fdd442c1a5454cc91"
 R1_COMMIT_MESSAGE = "D4-A5-R1 repair retirement applicability contract"
 R1_HEAD = "93ad95d7f8808bc4e7ccdbb21a24457c0df30564"
 R2_COMMIT_MESSAGE = "D4-A5-R2 repair continuation freeze and accounting contract"
+R2_HEAD = "a53ca0ace5280c278e32e350f5a5051b810fa6f4"
 R2_PREREGISTRATION_PATH = "evaluation/d4_a5_r2_continuation_contract_preregistration.json"
 R2_RESULT_PATH = "evaluation/d4_a5_r2_result.json"
 R2_REPORT_PATH = "evaluation/D4_A5_R2_CONTINUATION_FREEZE_AND_ACCOUNTING_CONTRACT_REPAIR.md"
+R3_COMMIT_MESSAGE = "D4-A5-R3 repair continuation lineage and end-to-end accounting"
+R3_PREREGISTRATION_PATH = "evaluation/d4_a5_r3_continuation_lineage_accounting_preregistration.json"
+R3_RESULT_PATH = "evaluation/d4_a5_r3_result.json"
+R3_REPORT_PATH = "evaluation/D4_A5_R3_CONTINUATION_LINEAGE_AND_END_TO_END_ACCOUNTING_REPAIR.md"
 CONTINUATION_PLAN_FREEZE_COMMIT_MESSAGE = "D4-A5 continuation freeze prospective shared plans"
 CONTINUATION_RAW_FREEZE_COMMIT_MESSAGE = "D4-A5 continuation freeze paired raw retirement results"
 CONTINUATION_CLOSEOUT_COMMIT_MESSAGE = "D4-A5 continuation close controlled retirement validation"
@@ -1331,10 +1336,25 @@ def build_continuation_manifest(project_root: Path, reuse_audit: dict[str, Any])
         "historical_a5_stop_head": A5_STOP_HEAD,
         "historical_a5_stop_verdict": "INVALID / BATCH2_PROTOCOL_OR_SHARED_PLAN_CONSTRUCTION_FAILED",
         "r1_parent_boundary": R1_HEAD,
-        "r2_continuation_implementation_freeze": "commit containing this manifest",
+        "r2_parent_boundary": R2_HEAD,
+        "r3_continuation_implementation_freeze": "commit containing this manifest",
         "repair_lifecycle": R1_LIFECYCLE_ID,
         "repair_preregistration": R1_PREREGISTRATION_PATH,
         "r2_continuation_contract_preregistration": R2_PREREGISTRATION_PATH,
+        "r3_continuation_lineage_preregistration": R3_PREREGISTRATION_PATH,
+    }
+    # Unambiguous continuation lineage vocabulary (R3): historical R1/R2 heads are
+    # historical facts and never drive current continuation gates; the current
+    # continuation implementation freeze is the R3 freeze commit.
+    manifest["continuation_lineage"] = {
+        "historical_a5_starting_head": STARTING_HEAD,
+        "historical_a5_executor_freeze_head": EXECUTOR_FREEZE_HEAD,
+        "historical_a5_stop_head": A5_STOP_HEAD,
+        "historical_r1_head": R1_HEAD,
+        "historical_r2_head": R2_HEAD,
+        "continuation_implementation_freeze_message": R3_COMMIT_MESSAGE,
+        "continuation_plan_freeze_message": CONTINUATION_PLAN_FREEZE_COMMIT_MESSAGE,
+        "continuation_raw_freeze_message": CONTINUATION_RAW_FREEZE_COMMIT_MESSAGE,
     }
     manifest["artifact_paths"] = {
         "manifest": CONTINUATION_MANIFEST_PATH,
@@ -1356,15 +1376,17 @@ def build_continuation_manifest(project_root: Path, reuse_audit: dict[str, Any])
     # messages are retained only as clearly labeled historical references.
     manifest["implementation_freeze_contract"] = {
         "policy": "GIT_COMMIT_CONTAINING_THIS_ARTIFACT",
-        "expected_commit_message": R2_COMMIT_MESSAGE,
-        "expected_parent": R1_HEAD,
-        "note": "The R2 freeze commit contains this manifest; no descendant or intervening "
-        "commit is accepted as the continuation implementation freeze.",
+        "expected_commit_message": R3_COMMIT_MESSAGE,
+        "expected_parent": R2_HEAD,
+        "note": "The R3 freeze commit contains this manifest and is the current continuation "
+        "implementation freeze; no descendant or intervening commit is accepted as a "
+        "replacement freeze.",
     }
     manifest["plan_freeze_gate_contract"] = {
         "policy": "HARD_COMMIT_PLAN_FREEZE_GATE",
         "expected_commit_message": CONTINUATION_PLAN_FREEZE_COMMIT_MESSAGE,
-        "expected_parent": "the R2 continuation implementation freeze commit",
+        "expected_parent": "the R3 continuation implementation freeze commit "
+        "(continuation_implementation_freeze_head)",
         "raw_plans_path": CONTINUATION_RAW_PLANS_PATH,
     }
     manifest["raw_freeze_gate_contract"] = {
@@ -1393,11 +1415,14 @@ def build_continuation_manifest(project_root: Path, reuse_audit: dict[str, Any])
             "attempt_id": "D4-A5_ATTEMPT_2_CONTINUATION",
             "analyzer_logical_calls": 0,
             "analyzer_provider_attempts": 0,
+            "unknown_provider_attempt_events": 0,
             "retries": 0,
             "token_usage": 0,
             "unknown_token_usage": [],
+            "unknown_token_usage_events": 0,
             "embedding_calls": 0,
             "reranker_calls": 0,
+            "retrieval_provider_attempts": 0,
             "downstream_analyzer_calls": 0,
             "qa_verifier_judge_calls": 0,
             "db_qdrant_writes": 0,
@@ -1406,11 +1431,13 @@ def build_continuation_manifest(project_root: Path, reuse_audit: dict[str, Any])
         "cumulative": {
             "analyzer_logical_calls": HISTORICAL_ATTEMPT_ACCOUNTING["analyzer_logical_calls"],
             "analyzer_provider_attempts": HISTORICAL_ATTEMPT_ACCOUNTING["analyzer_provider_attempts"],
+            "provider_attempt_unknown_components": 0,
             "retries": 0,
             "token_usage_recorded": HISTORICAL_ATTEMPT_ACCOUNTING["recorded_token_usage"],
             "token_usage_unknown_components": 1,
             "embedding_calls": 0,
             "reranker_calls": 0,
+            "retrieval_provider_attempts": 0,
         },
         "accounting_rule": "Historical and continuation attempt costs are recorded separately; "
         "cumulative cost is their sum. Unknown historical token usage stays explicitly unknown "
@@ -1710,24 +1737,19 @@ def verify_continuation_start(project_root: Path) -> dict[str, Any]:
     assert_clean_worktree(project_root)
     head = git_head(project_root)
     message = git_commit_message(project_root, head)
-    if message != R2_COMMIT_MESSAGE:
+    if message != R3_COMMIT_MESSAGE:
         raise RuntimeError(
-            f"Continuation start requires HEAD to be the R2 implementation-freeze commit "
-            f"('{R2_COMMIT_MESSAGE}'), got '{message}'"
+            f"Continuation start requires HEAD to be the R3 implementation-freeze commit "
+            f"('{R3_COMMIT_MESSAGE}'), got '{message}'"
         )
     parent = git_parent(project_root, head)
-    if parent != R1_HEAD:
-        raise RuntimeError(f"R2 freeze commit parent must be {R1_HEAD}, got {parent}")
+    if parent != R2_HEAD:
+        raise RuntimeError(f"R3 freeze commit parent must be {R2_HEAD}, got {parent}")
     manifest_committed = git_blob(project_root, CONTINUATION_MANIFEST_PATH, "HEAD")
     if manifest_committed is None:
         raise RuntimeError(
             f"{CONTINUATION_MANIFEST_PATH} is not committed at HEAD; the continuation "
-            f"execution manifest must be a committed pre-exposure artifact of the R2 freeze."
-        )
-    if git_blob(project_root, CONTINUATION_MANIFEST_PATH, parent) is not None:
-        raise RuntimeError(
-            f"{CONTINUATION_MANIFEST_PATH} already exists at the parent commit; the "
-            f"authoritative continuation manifest must be introduced by the R2 freeze commit."
+            f"execution manifest must be a committed pre-exposure artifact of the R3 freeze."
         )
     changed = git_paths_unchanged_between(
         project_root, STARTING_HEAD, head, list(PRODUCTION_IMMUTABLE_PATHS)
@@ -1795,6 +1817,21 @@ def verify_continuation_start(project_root: Path) -> dict[str, Any]:
         errors.append("manifest masks do not match the frozen D4-A4 masks")
     if manifest.get("repair_lineage", {}).get("r1_parent_boundary") != R1_HEAD:
         errors.append("manifest repair lineage does not record the R1 parent boundary")
+    if manifest.get("repair_lineage", {}).get("r2_parent_boundary") != R2_HEAD:
+        errors.append("manifest repair lineage does not record the R2 parent boundary")
+    lineage = manifest.get("continuation_lineage", {})
+    for key, expected in {
+        "historical_a5_starting_head": STARTING_HEAD,
+        "historical_a5_executor_freeze_head": EXECUTOR_FREEZE_HEAD,
+        "historical_a5_stop_head": A5_STOP_HEAD,
+        "historical_r1_head": R1_HEAD,
+        "historical_r2_head": R2_HEAD,
+        "continuation_implementation_freeze_message": R3_COMMIT_MESSAGE,
+        "continuation_plan_freeze_message": CONTINUATION_PLAN_FREEZE_COMMIT_MESSAGE,
+        "continuation_raw_freeze_message": CONTINUATION_RAW_FREEZE_COMMIT_MESSAGE,
+    }.items():
+        if lineage.get(key) != expected:
+            errors.append(f"manifest continuation lineage {key} does not match the R3 contract")
     decision = manifest.get("reusability_decision", {})
     for key, expected in CONTINUATION_EXPECTED_REUSABILITY.items():
         if decision.get(key) != expected:
@@ -1831,7 +1868,9 @@ def _new_continuation_plans_artifact(freeze_head: str) -> dict[str, Any]:
         "attempt_id": "D4-A5_ATTEMPT_2_CONTINUATION",
         "starting_head": STARTING_HEAD,
         "historical_a5_stop_head": A5_STOP_HEAD,
-        "r1_freeze_head": freeze_head,
+        "historical_r1_head": R1_HEAD,
+        "historical_r2_head": R2_HEAD,
+        "continuation_implementation_freeze_head": freeze_head,
         "persistence_contract": "PERSIST_BEFORE_GATE — every Analyzer acquisition (canonical "
         "plan, serialization, signature, matched rules, contribution ledger, origins, "
         "applicability receipts, projections when constructible, provider accounting) is durably "
@@ -1897,31 +1936,45 @@ def apply_continuation_accounting(
     *,
     analyzer_calls: int = 0,
     analyzer_attempts: int = 0,
+    unknown_provider_attempt_events: int = 0,
     token_usage: int = 0,
     unknown_token_events: int = 0,
     embedding_calls: int = 0,
     reranker_calls: int = 0,
+    retrieval_provider_attempts: int = 0,
 ) -> None:
-    """Deterministic two-layer accounting update (R2; task Section 9).
+    """Deterministic two-layer accounting update (R3; task Sections 7-10).
 
-    Applies one continuation-event delta to the continuation-attempt layer and
-    then mechanically recomputes the cumulative layer as historical + continuation.
-    Unknown historical token usage stays explicitly unknown and is never
-    collapsed into zero; unknown continuation token events are tracked as a
-    separate count. Cumulative values are always recomputed absolutely from the
-    two layers, so persisted/reloaded state never double counts as long as each
-    event is applied once (slot status transitions gate re-application).
+    The single accounting path for the WHOLE continuation attempt: Analyzer
+    acquisitions (Phase P) and paired retrieval cells (Phase R) both feed their
+    observed deltas here. Applies one continuation-event delta to the
+    continuation-attempt layer, then mechanically recomputes the cumulative
+    layer as historical + continuation.
+
+    Unknown accounting stays explicit: unknown provider-attempt and unknown
+    token events are counted separately and never silently contribute numerical
+    zero as if known. A failed-but-invoked Analyzer acquisition still counts as
+    one logical Analyzer acquisition. Cumulative values are always recomputed
+    absolutely from the two layers, so persisted/reloaded state never double
+    counts as long as each event is applied once (terminal slot/cell status
+    transitions gate re-application).
     """
     attempt = manifest["attempt_accounting"]
     cont = attempt["continuation_attempt"]
     cont["analyzer_logical_calls"] += analyzer_calls
     cont["analyzer_provider_attempts"] += analyzer_attempts
+    cont["unknown_provider_attempt_events"] = (
+        cont.get("unknown_provider_attempt_events", 0) + unknown_provider_attempt_events
+    )
     cont["token_usage"] += token_usage
     cont["unknown_token_usage_events"] = (
         cont.get("unknown_token_usage_events", 0) + unknown_token_events
     )
     cont["embedding_calls"] += embedding_calls
     cont["reranker_calls"] += reranker_calls
+    cont["retrieval_provider_attempts"] = (
+        cont.get("retrieval_provider_attempts", 0) + retrieval_provider_attempts
+    )
     hist = attempt["historical_attempt"]
     cumulative = attempt["cumulative"]
     cumulative["analyzer_logical_calls"] = (
@@ -1930,15 +1983,24 @@ def apply_continuation_accounting(
     cumulative["analyzer_provider_attempts"] = (
         hist["analyzer_provider_attempts"] + cont["analyzer_provider_attempts"]
     )
+    cumulative["provider_attempt_unknown_components"] = (
+        hist.get("unknown_provider_attempt_events", 0)
+        + cont.get("unknown_provider_attempt_events", 0)
+    )
     cumulative["retries"] = hist["retries"] + cont["retries"]
     cumulative["token_usage_recorded"] = (
         hist["recorded_token_usage"] + cont["token_usage"]
     )
-    cumulative["token_usage_unknown_components"] = 1 + cont.get(
-        "unknown_token_usage_events", 0
+    cumulative["token_usage_unknown_components"] = (
+        hist.get("unknown_token_usage_components", 1)
+        + cont.get("unknown_token_usage_events", 0)
     )
     cumulative["embedding_calls"] = hist["embedding_calls"] + cont["embedding_calls"]
     cumulative["reranker_calls"] = hist["reranker_calls"] + cont["reranker_calls"]
+    cumulative["retrieval_provider_attempts"] = (
+        hist.get("retrieval_provider_attempts", 0)
+        + cont.get("retrieval_provider_attempts", 0)
+    )
 
 
 def execute_phase_p(project_root: Path) -> dict[str, Any]:
@@ -1971,7 +2033,7 @@ def execute_phase_p(project_root: Path) -> dict[str, Any]:
         raise RuntimeError(f"Unexpected exposure state: {exposure}")
 
     exposure["D4_A5_OUTCOME_EXPOSURE"] = "PLAN_ACQUISITION_STARTED"
-    exposure["r2_freeze_head"] = start_receipt["head"]
+    exposure["continuation_implementation_freeze_head"] = start_receipt["head"]
     _save_json(manifest_path, manifest)
 
     artifact = _new_continuation_plans_artifact(start_receipt["head"])
@@ -2058,7 +2120,7 @@ def execute_phase_p(project_root: Path) -> dict[str, Any]:
                 "status": "PROVIDER_FAILED",
                 "provider_failure_receipt": failure_receipt,
                 "provider_accounting": {
-                    "analyzer_logical_calls": 0,
+                    "analyzer_logical_calls": 1,
                     "analyzer_provider_attempts": provider_attempts,
                     "retries": 0,
                     "embedding_calls": 0,
@@ -2078,17 +2140,18 @@ def execute_phase_p(project_root: Path) -> dict[str, Any]:
             artifact["plans"].append(failure_record)
             artifact["plans_recorded"] = len(artifact["plans"])
             artifact["plans_provider_failed"] += 1
+            artifact["accounting"]["analyzer_calls"] += 1
+            artifact["accounting"]["logical_model_calls"] = artifact["accounting"]["analyzer_calls"]
             artifact["accounting"]["analyzer_provider_attempts"] += provider_attempts
             artifact["accounting"]["token_usage"] += token_usage
             _write_continuation_plans_artifact(project_root, artifact)
             apply_continuation_accounting(
                 manifest,
-                analyzer_calls=0,
-                analyzer_attempts=provider_attempts,
+                analyzer_calls=1,
+                analyzer_attempts=provider_attempts if attempts_recoverable else 0,
+                unknown_provider_attempt_events=0 if attempts_recoverable else 1,
                 token_usage=token_usage,
-                unknown_token_events=0
-                if (attempts_recoverable and tokens_recoverable)
-                else 1,
+                unknown_token_events=0 if tokens_recoverable else 1,
             )
             slot["status"] = "PROVIDER_FAILED"
             slot["completed_at"] = failure_record["failed_at"]
@@ -2415,12 +2478,19 @@ def build_cell_record(
     }
 
 
-def verify_continuation_plan_freeze_gate(project_root: Path, r1_freeze_head: str) -> dict[str, Any]:
-    """Continuation plan-freeze gate: HEAD is the continuation plan-freeze commit
-    (child of the R1 commit); the continuation plans artifact is committed and
-    clean; historical and production paths remain unchanged."""
+def verify_continuation_plan_freeze_gate(
+    project_root: Path, continuation_implementation_freeze_head: str
+) -> dict[str, Any]:
+    """Continuation plan-freeze gate (R3; task Section 6): HEAD is the
+    continuation plan-freeze commit, a DIRECT CHILD of the R3 continuation
+    implementation freeze; the committed raw-plan artifact contains exactly the
+    frozen 7-case cohort with completed provenance-gated plans; the R3→plan-freeze
+    diff is limited to the frozen plan-acquisition artifacts; protected
+    historical/production paths remain unchanged."""
     head = _require_freeze_commit(
-        project_root, CONTINUATION_PLAN_FREEZE_COMMIT_MESSAGE, r1_freeze_head
+        project_root,
+        CONTINUATION_PLAN_FREEZE_COMMIT_MESSAGE,
+        continuation_implementation_freeze_head,
     )
     rel = CONTINUATION_RAW_PLANS_PATH.replace("\\", "/")
     proc = subprocess.run(
@@ -2433,13 +2503,76 @@ def verify_continuation_plan_freeze_gate(project_root: Path, r1_freeze_head: str
         raise RuntimeError(
             f"{CONTINUATION_RAW_PLANS_PATH} is not committed at HEAD; plan freeze gate failed"
         )
+    allowed_diff = {CONTINUATION_MANIFEST_PATH, CONTINUATION_RAW_PLANS_PATH}
+    diff_output = _git(
+        ["diff", "--name-only", continuation_implementation_freeze_head, head],
+        project_root,
+    )
+    changed_files = {line for line in diff_output.splitlines() if line}
+    unexpected = changed_files - allowed_diff
+    if unexpected:
+        raise RuntimeError(
+            f"R3->plan-freeze diff contains non-plan-acquisition artifacts: "
+            f"{sorted(unexpected)}"
+        )
+    raw_plans = _load_json(project_root / CONTINUATION_RAW_PLANS_PATH)
+    cohort = sorted(p["case_id"] for p in raw_plans.get("plans", []))
+    if cohort != sorted(CASE_ORDER) or len(raw_plans.get("plans", [])) != 7:
+        raise RuntimeError("Committed raw plans do not contain exactly the frozen 7-case cohort")
+    if raw_plans.get("plans_completed") != 7 or raw_plans.get("plan_freeze_state") != "PLANS_FROZEN":
+        raise RuntimeError("Committed raw plans are not a completed frozen Phase-P run")
+    for record in raw_plans["plans"]:
+        if record["status"] != "COMPLETED" or not record["provenance_gate"]["pass"]:
+            raise RuntimeError(
+                f"Plan record for {record['case_id']} is not a completed provenance-gated plan"
+            )
     changed = git_paths_unchanged_between(
         project_root, A5_STOP_HEAD, head,
         list(PRODUCTION_IMMUTABLE_PATHS) + [HISTORICAL_MANIFEST_PATH, RESULT_PATH],
     )
     if changed:
         raise RuntimeError(f"Protected paths drifted during the continuation: {changed}")
-    return {"head": head, "r1_freeze_head": r1_freeze_head}
+    r1_r2_unchanged = git_paths_unchanged_between(
+        project_root, R1_HEAD, head,
+        [R1_PREREGISTRATION_PATH, R1_RESULT_PATH, R1_REPORT_PATH,
+         R2_PREREGISTRATION_PATH, R2_RESULT_PATH, R2_REPORT_PATH],
+    )
+    if r1_r2_unchanged:
+        raise RuntimeError(f"R1/R2 repair artifacts drifted: {r1_r2_unchanged}")
+    return {
+        "head": head,
+        "continuation_implementation_freeze_head": continuation_implementation_freeze_head,
+        "continuation_plan_freeze_head": head,
+    }
+
+
+def verify_phase_r_preflight(
+    project_root: Path, continuation_implementation_freeze_head: str
+) -> dict[str, Any]:
+    """Read-only Phase-R preflight (R3; task Section 11): plan-freeze gate plus
+    raw-plan structural completeness, before any retrieval exposure. Phase R
+    consumes the frozen continuation lineage — the implementation freeze head
+    and the plan-freeze head — and never a stale historical r1_freeze_head."""
+    freeze = verify_continuation_plan_freeze_gate(
+        project_root, continuation_implementation_freeze_head
+    )
+    manifest = _load_json(project_root / CONTINUATION_MANIFEST_PATH)
+    exposure = manifest.get("outcome_exposure_state", {})
+    if exposure.get("D4_A5_OUTCOME_EXPOSURE") != "PLANS_FROZEN":
+        raise RuntimeError(
+            f"Phase R requires PLANS_FROZEN exposure, got {exposure}"
+        )
+    raw_plans = _load_json(project_root / CONTINUATION_RAW_PLANS_PATH)
+    plans_planned = raw_plans.get("plans_planned")
+    plans_completed = raw_plans.get("plans_completed")
+    if plans_planned != 7 or plans_completed != 7:
+        raise RuntimeError("Plan artifact accounting incomplete")
+    return {
+        "continuation_implementation_freeze_head": freeze[
+            "continuation_implementation_freeze_head"
+        ],
+        "continuation_plan_freeze_head": freeze["continuation_plan_freeze_head"],
+    }
 
 
 def execute_phase_r(project_root: Path) -> dict[str, Any]:
@@ -2452,10 +2585,21 @@ def execute_phase_r(project_root: Path) -> dict[str, Any]:
     if exposure.get("D4_A5_OUTCOME_EXPOSURE") != "PLANS_FROZEN":
         raise RuntimeError(f"Phase R requires PLANS_FROZEN exposure, got {exposure}")
 
-    r1_freeze_head = exposure.get("r1_freeze_head")
-    if not r1_freeze_head:
-        raise RuntimeError("Manifest is missing r1_freeze_head; plan freeze provenance unknown")
-    freeze = verify_continuation_plan_freeze_gate(project_root, r1_freeze_head)
+    continuation_implementation_freeze_head = exposure.get(
+        "continuation_implementation_freeze_head"
+    )
+    if not continuation_implementation_freeze_head:
+        raise RuntimeError(
+            "Manifest is missing continuation_implementation_freeze_head; plan freeze "
+            "provenance unknown (stale lineage input is not accepted)"
+        )
+    preflight = verify_phase_r_preflight(project_root, continuation_implementation_freeze_head)
+    freeze = {
+        "continuation_implementation_freeze_head": preflight[
+            "continuation_implementation_freeze_head"
+        ],
+        "head": preflight["continuation_plan_freeze_head"],
+    }
 
     raw_plans = _load_json(project_root / CONTINUATION_RAW_PLANS_PATH)
     plans_by_case = {p["case_id"]: p for p in raw_plans["plans"]}
@@ -2554,6 +2698,17 @@ def execute_phase_r(project_root: Path) -> dict[str, Any]:
         manifest_cell["completed_at"] = record["completed_at"]
         manifest_cell["plan_equality_verified"] = record["plan_equality_arm_projection_verified"]
         manifest_cell["token_usage"] = stats["token_usage"]
+        # End-to-end continuation accounting (R3): feed the cell's ACTUAL
+        # recorded stats into the shared two-layer accounting path. Unknown
+        # components stay explicit; cumulative is recomputed as
+        # historical + continuation.
+        apply_continuation_accounting(
+            manifest,
+            embedding_calls=stats["embedding_calls"],
+            reranker_calls=stats["generation_calls"],
+            retrieval_provider_attempts=stats["model_calls"],
+            token_usage=stats["token_usage"],
+        )
         exposure["formal_cells_completed"] = len(cell_records)
         _save_json(project_root / CONTINUATION_MANIFEST_PATH, manifest)
 
@@ -2595,8 +2750,12 @@ def _write_raw_results(
         "attempt_id": "D4-A5_ATTEMPT_2_CONTINUATION",
         "starting_head": STARTING_HEAD,
         "historical_a5_stop_head": A5_STOP_HEAD,
-        "r1_freeze_head": freeze["r1_freeze_head"],
-        "plan_freeze_head": freeze["head"],
+        "historical_r1_head": R1_HEAD,
+        "historical_r2_head": R2_HEAD,
+        "continuation_implementation_freeze_head": freeze[
+            "continuation_implementation_freeze_head"
+        ],
+        "continuation_plan_freeze_head": freeze["head"],
         "PLAN_FREEZE_BOUNDARY_ESTABLISHED": True,
         "PHASE_R_RETRIEVAL_EXECUTED": True,
         "EVALUATOR_EXECUTED": False,
@@ -2639,8 +2798,10 @@ def _write_raw_results(
             "selection": SELECTION_PATH,
             "raw_plans": CONTINUATION_RAW_PLANS_PATH,
             "manifest": CONTINUATION_MANIFEST_PATH,
-            "r1_freeze_head": freeze["r1_freeze_head"],
-            "plan_freeze_head": freeze["head"],
+            "continuation_implementation_freeze_head": freeze[
+                "continuation_implementation_freeze_head"
+            ],
+            "continuation_plan_freeze_head": freeze["head"],
         },
         "slots": cell_records,
     }
@@ -3141,11 +3302,15 @@ def evaluate_d4_a5(project_root: Path) -> dict[str, Any]:
         "created_at": _utc_now(),
         "attempt_id": "D4-A5_ATTEMPT_2_CONTINUATION",
         "frozen_input_provenance": {
-            "starting_head": STARTING_HEAD,
+            "historical_a5_starting_head": STARTING_HEAD,
             "historical_a5_stop_head": A5_STOP_HEAD,
-            "r1_freeze_head": exposure.get("r1_freeze_head"),
-            "plan_freeze_head": plan_freeze_head,
-            "raw_freeze_head": freeze["head"],
+            "historical_r1_head": R1_HEAD,
+            "historical_r2_head": R2_HEAD,
+            "continuation_implementation_freeze_head": exposure.get(
+                "continuation_implementation_freeze_head"
+            ),
+            "continuation_plan_freeze_head": plan_freeze_head,
+            "continuation_raw_freeze_head": freeze["head"],
             "preregistration": PREREGISTRATION_PATH,
             "selection": SELECTION_PATH,
             "raw_plans": CONTINUATION_RAW_PLANS_PATH,
@@ -3242,11 +3407,15 @@ def evaluate_d4_a5(project_root: Path) -> dict[str, Any]:
         "created_at": _utc_now(),
         "attempt_id": "D4-A5_ATTEMPT_2_CONTINUATION",
         "commit_lineage": {
-            "starting_head": STARTING_HEAD,
+            "historical_a5_starting_head": STARTING_HEAD,
             "historical_a5_stop_head": A5_STOP_HEAD,
-            "r1_freeze_head": exposure.get("r1_freeze_head"),
-            "plan_freeze_head": plan_freeze_head,
-            "raw_freeze_head": freeze["head"],
+            "historical_r1_head": R1_HEAD,
+            "historical_r2_head": R2_HEAD,
+            "continuation_implementation_freeze_head": exposure.get(
+                "continuation_implementation_freeze_head"
+            ),
+            "continuation_plan_freeze_head": plan_freeze_head,
+            "continuation_raw_freeze_head": freeze["head"],
         },
         "exact_selected_rules": list(b2.CANDIDATE_RULE_IDS),
         "exact_component_masks": b2.FROZEN_RETIREMENT_MASKS,
@@ -3325,6 +3494,7 @@ def verify_freeze(project_root: Path) -> dict[str, Any]:
     chain: list[str] = []
     cursor = head
     for expected_message in (
+        R3_COMMIT_MESSAGE,
         R2_COMMIT_MESSAGE,
         R1_COMMIT_MESSAGE,
         A5_STOP_COMMIT_MESSAGE,
@@ -3342,13 +3512,20 @@ def verify_freeze(project_root: Path) -> dict[str, Any]:
         raise RuntimeError(f"Chain base mismatch: expected {STARTING_PARENT}, got {cursor}")
     chain.append(cursor)
 
-    r2_head, r1_head, a5_stop_head, executor_freeze_head, a4_freeze_head, starting_parent = chain
+    (
+        r3_head, r2_head, r1_head, a5_stop_head,
+        executor_freeze_head, a4_freeze_head, starting_parent,
+    ) = chain
     checks: dict[str, Any] = {
         "chain": chain,
-        "continuation_manifest_committed_in_r2": git_blob(
-            project_root, CONTINUATION_MANIFEST_PATH, r2_head
+        "continuation_manifest_committed_in_r3": git_blob(
+            project_root, CONTINUATION_MANIFEST_PATH, r3_head
         ) is not None
-        and git_blob(project_root, CONTINUATION_MANIFEST_PATH, r1_head) is None,
+        and git_commit_message(
+            project_root,
+            _git(["log", "-1", "--format=%H", "--", CONTINUATION_MANIFEST_PATH], project_root),
+        )
+        == R3_COMMIT_MESSAGE,
         "continuation_runtime_artifacts_absent": all(
             git_blob(project_root, rel, "HEAD") is None
             for rel in (

@@ -1946,8 +1946,8 @@ def _temp_repo_commit(tmp_path: Path, files: dict[str, str], message: str) -> st
 @pytest.fixture()
 def continuation_git_repo(tmp_path, monkeypatch):
     """Temporary Git repository exercising the REAL continuation-start gate
-    logic (constants are remapped to local SHAs; the gate itself is not
-    monkeypatched)."""
+    logic (expected-SHA constants are remapped to local fixture SHAs; the gate
+    itself is never monkeypatched). Chain: base(R1) -> R2 -> R3 freeze."""
     _git(tmp_path, "init", "-q")
     _git(tmp_path, "config", "user.email", "test@example.com")
     _git(tmp_path, "config", "user.name", "test")
@@ -1955,20 +1955,22 @@ def continuation_git_repo(tmp_path, monkeypatch):
     monkeypatch.setattr(a5, "R1_HEAD", r1_sha)
     monkeypatch.setattr(a5, "A5_STOP_HEAD", r1_sha)
     monkeypatch.setattr(a5, "STARTING_HEAD", r1_sha)
+    r2_sha = _temp_repo_commit(tmp_path, {"r2.txt": "r2"}, a5.R2_COMMIT_MESSAGE)
+    monkeypatch.setattr(a5, "R2_HEAD", r2_sha)
     manifest = a5.build_continuation_manifest(_REPO_ROOT, a5.audit_historical_plan_reusability(_REPO_ROOT))
-    r2_sha = _temp_repo_commit(
+    r3_sha = _temp_repo_commit(
         tmp_path,
         {a5.CONTINUATION_MANIFEST_PATH: json.dumps(manifest, ensure_ascii=False, indent=2)},
-        a5.R2_COMMIT_MESSAGE,
+        a5.R3_COMMIT_MESSAGE,
     )
-    return tmp_path, r1_sha, r2_sha
+    return tmp_path, r1_sha, r2_sha, r3_sha
 
 
 def test_r2_02_clean_r2_head_passes_continuation_start(continuation_git_repo):
-    tmp_path, r1_sha, r2_sha = continuation_git_repo
+    tmp_path, r1_sha, r2_sha, r3_sha = continuation_git_repo
     receipt = a5.verify_continuation_start(tmp_path)
-    assert receipt["head"] == r2_sha
-    assert receipt["parent"] == r1_sha
+    assert receipt["head"] == r3_sha
+    assert receipt["parent"] == r2_sha
     assert receipt["manifest_contract_matches_runner"] is True
     assert receipt["provider_calls"] == 0
     assert receipt["continuation_state"] == "NOT_STARTED"
@@ -1984,7 +1986,7 @@ def test_r2_03_uncommitted_drift_fails(continuation_git_repo):
 def test_r2_04_descendant_head_fails(continuation_git_repo):
     tmp_path, *_ = continuation_git_repo
     _temp_repo_commit(tmp_path, {"later.txt": "later"}, "later commit")
-    with pytest.raises(RuntimeError, match="R2 implementation-freeze commit"):
+    with pytest.raises(RuntimeError, match="R3 implementation-freeze commit"):
         a5.verify_continuation_start(tmp_path)
 
 
@@ -1993,26 +1995,28 @@ def test_r2_05_wrong_direct_parent_fails(tmp_path, monkeypatch):
     _git(tmp_path, "config", "user.email", "test@example.com")
     _git(tmp_path, "config", "user.name", "test")
     base = _temp_repo_commit(tmp_path, {"base.txt": "base"}, "base commit")
+    _temp_repo_commit(tmp_path, {"r2.txt": "r2"}, a5.R2_COMMIT_MESSAGE)
     manifest = a5.build_continuation_manifest(_REPO_ROOT, a5.audit_historical_plan_reusability(_REPO_ROOT))
-    r2_sha = _temp_repo_commit(
+    _temp_repo_commit(
         tmp_path,
         {a5.CONTINUATION_MANIFEST_PATH: json.dumps(manifest, ensure_ascii=False, indent=2)},
-        a5.R2_COMMIT_MESSAGE,
+        a5.R3_COMMIT_MESSAGE,
     )
-    # Point the expected R1 parent at a nonexistent commit so the mechanical
+    # Point the expected R2 parent at a nonexistent commit so the mechanical
     # parent check (not the message check) is what fires.
-    monkeypatch.setattr(a5, "R1_HEAD", "0" * 40)
+    monkeypatch.setattr(a5, "R1_HEAD", base)
     monkeypatch.setattr(a5, "A5_STOP_HEAD", base)
     monkeypatch.setattr(a5, "STARTING_HEAD", base)
+    monkeypatch.setattr(a5, "R2_HEAD", "0" * 40)
     with pytest.raises(RuntimeError, match="parent must be"):
         a5.verify_continuation_start(tmp_path)
 
 
 def test_r2_06_wrong_r2_commit_message_fails(continuation_git_repo):
-    tmp_path, r1_sha, _ = continuation_git_repo
-    # Amend the R2 commit with a wrong message; the gate must reject it.
+    tmp_path, *_ = continuation_git_repo
+    # Amend the R3 freeze commit with a wrong message; the gate must reject it.
     _git(tmp_path, "commit", "-q", "--amend", "-m", "wrong message")
-    with pytest.raises(RuntimeError, match="R2 implementation-freeze commit"):
+    with pytest.raises(RuntimeError, match="R3 implementation-freeze commit"):
         a5.verify_continuation_start(tmp_path)
 
 
@@ -2021,10 +2025,12 @@ def test_r2_07_missing_committed_manifest_fails(tmp_path, monkeypatch):
     _git(tmp_path, "config", "user.email", "test@example.com")
     _git(tmp_path, "config", "user.name", "test")
     r1_sha = _temp_repo_commit(tmp_path, {"base.txt": "base"}, "base commit")
-    r2_sha = _temp_repo_commit(tmp_path, {"other.txt": "x"}, a5.R2_COMMIT_MESSAGE)
+    _temp_repo_commit(tmp_path, {"r2.txt": "x"}, a5.R2_COMMIT_MESSAGE)
+    _temp_repo_commit(tmp_path, {"other.txt": "x"}, a5.R3_COMMIT_MESSAGE)
     monkeypatch.setattr(a5, "R1_HEAD", r1_sha)
     monkeypatch.setattr(a5, "A5_STOP_HEAD", r1_sha)
     monkeypatch.setattr(a5, "STARTING_HEAD", r1_sha)
+    monkeypatch.setattr(a5, "R2_HEAD", _git(tmp_path, "rev-parse", "HEAD~1"))
     with pytest.raises(RuntimeError, match="not committed at HEAD"):
         a5.verify_continuation_start(tmp_path)
 
@@ -2036,6 +2042,11 @@ def test_r2_08_protected_historical_drift_fails(tmp_path, monkeypatch):
     r1_sha = _temp_repo_commit(
         tmp_path, {a5.RESULT_PATH: '{"verdict": "historical"}'}, "base commit"
     )
+    monkeypatch.setattr(a5, "R1_HEAD", r1_sha)
+    monkeypatch.setattr(a5, "A5_STOP_HEAD", r1_sha)
+    monkeypatch.setattr(a5, "STARTING_HEAD", r1_sha)
+    r2_sha = _temp_repo_commit(tmp_path, {"r2.txt": "r2"}, a5.R2_COMMIT_MESSAGE)
+    monkeypatch.setattr(a5, "R2_HEAD", r2_sha)
     manifest = a5.build_continuation_manifest(_REPO_ROOT, a5.audit_historical_plan_reusability(_REPO_ROOT))
     _temp_repo_commit(
         tmp_path,
@@ -2043,11 +2054,8 @@ def test_r2_08_protected_historical_drift_fails(tmp_path, monkeypatch):
             a5.CONTINUATION_MANIFEST_PATH: json.dumps(manifest, ensure_ascii=False, indent=2),
             a5.RESULT_PATH: '{"verdict": "rewritten"}',
         },
-        a5.R2_COMMIT_MESSAGE,
+        a5.R3_COMMIT_MESSAGE,
     )
-    monkeypatch.setattr(a5, "R1_HEAD", r1_sha)
-    monkeypatch.setattr(a5, "A5_STOP_HEAD", r1_sha)
-    monkeypatch.setattr(a5, "STARTING_HEAD", r1_sha)
     with pytest.raises(RuntimeError, match="Historical A5 attempt artifacts"):
         a5.verify_continuation_start(tmp_path)
 
@@ -2065,14 +2073,19 @@ def test_r2_01_real_manifest_committed_in_r2_freeze_commit():
     last_touch = _git(
         _REPO_ROOT, "log", "-1", "--format=%s", "--", a5.CONTINUATION_MANIFEST_PATH
     )
-    assert last_touch == a5.R2_COMMIT_MESSAGE
+    assert last_touch == a5.R3_COMMIT_MESSAGE
     manifest = json.loads(
         (_REPO_ROOT / a5.CONTINUATION_MANIFEST_PATH).read_text(encoding="utf-8")
     )
     assert manifest["implementation_freeze_contract"]["expected_commit_message"] == (
-        a5.R2_COMMIT_MESSAGE
+        a5.R3_COMMIT_MESSAGE
     )
-    assert manifest["implementation_freeze_contract"]["expected_parent"] == a5.R1_HEAD
+    assert manifest["implementation_freeze_contract"]["expected_parent"] == a5.R2_HEAD
+    assert manifest["continuation_lineage"]["historical_r1_head"] == a5.R1_HEAD
+    assert manifest["continuation_lineage"]["historical_r2_head"] == a5.R2_HEAD
+    assert manifest["continuation_lineage"][
+        "continuation_implementation_freeze_message"
+    ] == a5.R3_COMMIT_MESSAGE
     assert manifest["plan_freeze_gate_contract"]["expected_commit_message"] == (
         a5.CONTINUATION_PLAN_FREEZE_COMMIT_MESSAGE
     )
@@ -2227,9 +2240,14 @@ def test_r2_15_20_provider_failure_persists_receipt_and_stops(tmp_path, monkeypa
     cont = manifest["attempt_accounting"]["continuation_attempt"]
     assert cont["analyzer_provider_attempts"] == 1
     assert cont["token_usage"] == 123
+    # A failed-but-invoked Analyzer acquisition counts as ONE logical acquisition.
+    assert cont["analyzer_logical_calls"] == 1
+    assert cont["unknown_provider_attempt_events"] == 0
     cumulative = manifest["attempt_accounting"]["cumulative"]
     assert cumulative["analyzer_provider_attempts"] == 7  # historical 6 + continuation 1
+    assert cumulative["analyzer_logical_calls"] == 7  # historical 6 + continuation 1
     assert cumulative["token_usage_recorded"] == 10303 + 123
+    assert cumulative["provider_attempt_unknown_components"] == 0
 
 
 def test_r2_15b_provider_failure_with_unavailable_stats_marks_unknown(
@@ -2266,10 +2284,17 @@ def test_r2_15b_provider_failure_with_unavailable_stats_marks_unknown(
     slot = manifest["phase_p_slots_7"][0]
     assert slot["attempts"] == "unknown"
     assert slot["token_usage"] == "unknown"
-    assert manifest["attempt_accounting"]["continuation_attempt"][
-        "unknown_token_usage_events"
-    ] == 1
-    assert manifest["attempt_accounting"]["cumulative"]["token_usage_unknown_components"] == 2
+    cont = manifest["attempt_accounting"]["continuation_attempt"]
+    assert cont["unknown_token_usage_events"] == 1
+    assert cont["unknown_provider_attempt_events"] == 1
+    # The failed invocation still counts one logical Analyzer acquisition, but
+    # the unknown provider attempts never pretend to be a known numeric zero.
+    assert cont["analyzer_logical_calls"] == 1
+    assert cont["analyzer_provider_attempts"] == 0
+    cumulative = manifest["attempt_accounting"]["cumulative"]
+    assert cumulative["token_usage_unknown_components"] == 2
+    assert cumulative["provider_attempt_unknown_components"] == 1
+    assert cumulative["analyzer_logical_calls"] == 7
 
 
 # --- R1 scientific logic unchanged (Sections 7/16-21..23) --------------------
@@ -2352,3 +2377,298 @@ def test_r2_24_frozen_scientific_constants_unchanged():
         "PARTIAL / RETIREMENT_COMPONENT_APPLICABILITY_INCOMPLETE"
     )
     assert a5.R1_BATCH_VERDICT_LEVELS[7] == "PASS / SECOND_BATCH_LOW_RISK_RETIREMENT_VALIDATED"
+
+
+# ===========================================================================
+# D4-A5-R3 — Continuation Lineage and End-to-End Accounting tests
+# ===========================================================================
+
+
+def test_r3_07_phase_p_writes_r3_lineage_not_stale_heads(tmp_path, monkeypatch):
+    """Phase P must freeze continuation_implementation_freeze_head from the
+    preflight receipt and must not write misleading current r1/r2 freeze heads."""
+    project = _prepare_tmp_continuation(tmp_path)
+    questions = _phase_p_question_index()
+    plans = _fake_plans_all_inactive(questions)
+    fake = _FakeRetriever(plans, _FakeQueryExpansions(_real_query_expansions(), stripped=True))
+    monkeypatch.setattr(
+        a5, "verify_continuation_start",
+        lambda *_a, **_k: {"head": "r3fake", "parent": "r2fake", "message": a5.R3_COMMIT_MESSAGE},
+    )
+    monkeypatch.setattr(a5, "Retriever", lambda *_a, **_k: fake)
+    monkeypatch.setattr(a5, "load_gold_dataset", _real_dataset_loader)
+
+    a5.execute_phase_p(project)
+
+    manifest = json.loads(
+        (project / a5.CONTINUATION_MANIFEST_PATH).read_text(encoding="utf-8")
+    )
+    exposure = manifest["outcome_exposure_state"]
+    assert exposure["continuation_implementation_freeze_head"] == "r3fake"
+    assert "r1_freeze_head" not in exposure
+    assert "r2_freeze_head" not in exposure
+
+
+def test_r3_08_no_current_gate_depends_on_stale_r1_lineage():
+    import inspect
+
+    for func in (
+        a5.execute_phase_r,
+        a5.evaluate_d4_a5,
+        a5.verify_phase_r_preflight,
+        a5.verify_continuation_plan_freeze_gate,
+        a5.verify_continuation_start,
+    ):
+        source = inspect.getsource(func)
+        assert '.get("r1_freeze_head")' not in source, func.__name__
+        assert 'r1_freeze_head = ' not in source, func.__name__
+        assert 'freeze["r1_freeze_head"]' not in source, func.__name__
+
+
+def _synthetic_completed_plans_artifact() -> dict[str, Any]:
+    plans = []
+    for cid in a5.CASE_ORDER:
+        plans.append({
+            "plan_id": f"prospective_{cid}",
+            "case_id": cid,
+            "canonical_plan": {"intent": "algorithm_theory", "synthetic": cid},
+            "provenance_gate": {"pass": True},
+            "status": "COMPLETED",
+            "provider_accounting": {"analyzer_logical_calls": 1},
+        })
+    return {
+        "schema_version": "1.0.0",
+        "checkpoint": "D4-A5-CONTINUATION",
+        "plans_planned": 7,
+        "plans_completed": 7,
+        "plans_failed": 0,
+        "plan_freeze_state": "PLANS_FROZEN",
+        "PLAN_FREEZE_BOUNDARY_ESTABLISHED": True,
+        "plans": plans,
+    }
+
+
+def test_r3_09_10_synthetic_handoff_plan_freeze_then_phase_r_preflight(
+    tmp_path, monkeypatch
+):
+    """Real-lineage synthetic flow: clean R3 freeze -> completed Phase-P state ->
+    continuation plan-freeze commit -> plan-freeze gate -> Phase-R preflight.
+    Phase R consumes continuation_implementation_freeze_head; no stale
+    r1_freeze_head is required. No provider or retrieval call occurs."""
+    _git(tmp_path, "init", "-q")
+    _git(tmp_path, "config", "user.email", "test@example.com")
+    _git(tmp_path, "config", "user.name", "test")
+    r1_sha = _temp_repo_commit(tmp_path, {"base.txt": "base"}, "base commit")
+    monkeypatch.setattr(a5, "R1_HEAD", r1_sha)
+    monkeypatch.setattr(a5, "A5_STOP_HEAD", r1_sha)
+    monkeypatch.setattr(a5, "STARTING_HEAD", r1_sha)
+    r2_sha = _temp_repo_commit(tmp_path, {"r2.txt": "r2"}, a5.R2_COMMIT_MESSAGE)
+    monkeypatch.setattr(a5, "R2_HEAD", r2_sha)
+
+    manifest = a5.build_continuation_manifest(_REPO_ROOT, a5.audit_historical_plan_reusability(_REPO_ROOT))
+    r3_sha = _temp_repo_commit(
+        tmp_path,
+        {a5.CONTINUATION_MANIFEST_PATH: json.dumps(manifest, ensure_ascii=False, indent=2)},
+        a5.R3_COMMIT_MESSAGE,
+    )
+
+    # Simulate a completed 7-plan Phase-P state and freeze it as a direct child
+    # of the R3 implementation freeze.
+    manifest["outcome_exposure_state"]["D4_A5_OUTCOME_EXPOSURE"] = "PLANS_FROZEN"
+    plan_freeze_sha = _temp_repo_commit(
+        tmp_path,
+        {
+            a5.CONTINUATION_MANIFEST_PATH: json.dumps(manifest, ensure_ascii=False, indent=2),
+            a5.CONTINUATION_RAW_PLANS_PATH: json.dumps(
+                _synthetic_completed_plans_artifact(), ensure_ascii=False, indent=2
+            ),
+        },
+        a5.CONTINUATION_PLAN_FREEZE_COMMIT_MESSAGE,
+    )
+    assert _git(tmp_path, "rev-parse", f"{plan_freeze_sha}^") == r3_sha
+
+    preflight = a5.verify_phase_r_preflight(tmp_path, r3_sha)
+    assert preflight["continuation_implementation_freeze_head"] == r3_sha
+    assert preflight["continuation_plan_freeze_head"] == plan_freeze_sha
+    gate = a5.verify_continuation_plan_freeze_gate(tmp_path, r3_sha)
+    assert gate["continuation_plan_freeze_head"] == plan_freeze_sha
+
+
+def test_r3_11_wrong_plan_freeze_parent_fails(tmp_path, monkeypatch):
+    _git(tmp_path, "init", "-q")
+    _git(tmp_path, "config", "user.email", "test@example.com")
+    _git(tmp_path, "config", "user.name", "test")
+    r1_sha = _temp_repo_commit(tmp_path, {"base.txt": "base"}, "base commit")
+    monkeypatch.setattr(a5, "R1_HEAD", r1_sha)
+    monkeypatch.setattr(a5, "A5_STOP_HEAD", r1_sha)
+    monkeypatch.setattr(a5, "STARTING_HEAD", r1_sha)
+    r2_sha = _temp_repo_commit(tmp_path, {"r2.txt": "r2"}, a5.R2_COMMIT_MESSAGE)
+    monkeypatch.setattr(a5, "R2_HEAD", r2_sha)
+    manifest = a5.build_continuation_manifest(_REPO_ROOT, a5.audit_historical_plan_reusability(_REPO_ROOT))
+    r3_sha = _temp_repo_commit(
+        tmp_path,
+        {a5.CONTINUATION_MANIFEST_PATH: json.dumps(manifest, ensure_ascii=False, indent=2)},
+        a5.R3_COMMIT_MESSAGE,
+    )
+    _temp_repo_commit(
+        tmp_path,
+        {
+            a5.CONTINUATION_MANIFEST_PATH: json.dumps(manifest, ensure_ascii=False, indent=2),
+            a5.CONTINUATION_RAW_PLANS_PATH: json.dumps(
+                _synthetic_completed_plans_artifact(), ensure_ascii=False, indent=2
+            ),
+        },
+        a5.CONTINUATION_PLAN_FREEZE_COMMIT_MESSAGE,
+    )
+    # A stale implementation-freeze input (e.g. the historical R1 head) must not
+    # satisfy the plan-freeze gate: the actual parent is the R3 freeze commit.
+    with pytest.raises(RuntimeError, match="parent"):
+        a5.verify_phase_r_preflight(tmp_path, r1_sha)
+
+
+def test_r3_13_provenance_schemas_retain_historical_r1_r2_separately(tmp_path):
+    freeze = {
+        "continuation_implementation_freeze_head": "r3head",
+        "head": "planfreezehead",
+    }
+    (tmp_path / "evaluation").mkdir(parents=True, exist_ok=True)
+    artifact = a5._write_raw_results(
+        tmp_path, [], freeze, 0, 0, 0, 0, final=False
+    )
+    assert artifact["historical_r1_head"] == a5.R1_HEAD
+    assert artifact["historical_r2_head"] == a5.R2_HEAD
+    assert artifact["continuation_implementation_freeze_head"] == "r3head"
+    assert artifact["continuation_plan_freeze_head"] == "planfreezehead"
+    assert artifact["historical_r1_head"] != artifact[
+        "continuation_implementation_freeze_head"
+    ]
+    # The probe write landed in the temporary project only.
+    assert not (_REPO_ROOT / a5.CONTINUATION_RAW_RESULTS_PATH).exists()
+    import inspect
+
+    source = inspect.getsource(a5.evaluate_d4_a5)
+    for key in (
+        "historical_a5_starting_head", "historical_a5_stop_head",
+        "historical_r1_head", "historical_r2_head",
+        "continuation_implementation_freeze_head",
+        "continuation_plan_freeze_head", "continuation_raw_freeze_head",
+    ):
+        assert key in source
+
+
+def test_r3_14_17_end_to_end_accounting_over_plans_and_cells():
+    manifest = _fresh_manifest()
+    # Seven successful Analyzer acquisitions.
+    for _ in range(7):
+        a5.apply_continuation_accounting(
+            manifest, analyzer_calls=1, analyzer_attempts=1, token_usage=20
+        )
+    cont = manifest["attempt_accounting"]["continuation_attempt"]
+    cumulative = manifest["attempt_accounting"]["cumulative"]
+    assert cont["analyzer_logical_calls"] == 7
+    assert cumulative["analyzer_logical_calls"] == 13  # historical 6 + continuation 7
+    assert cumulative["token_usage_recorded"] == 10303 + 7 * 20
+    # Fourteen synthetic retrieval cells with KNOWN recorded values.
+    for _ in range(14):
+        a5.apply_continuation_accounting(
+            manifest,
+            embedding_calls=1,
+            reranker_calls=1,
+            retrieval_provider_attempts=2,
+            token_usage=10,
+        )
+    assert cont["embedding_calls"] == 14
+    assert cont["reranker_calls"] == 14
+    assert cont["retrieval_provider_attempts"] == 28
+    assert cont["token_usage"] == 7 * 20 + 14 * 10
+    # Historical embedding/reranker are 0, so cumulative equals continuation.
+    assert cumulative["embedding_calls"] == 14
+    assert cumulative["reranker_calls"] == 14
+    assert cumulative["retrieval_provider_attempts"] == 28
+
+
+def test_r3_18_19_reload_does_not_double_count_plans_or_cells():
+    manifest = _fresh_manifest()
+    for _ in range(7):
+        a5.apply_continuation_accounting(
+            manifest, analyzer_calls=1, analyzer_attempts=1, token_usage=5
+        )
+    for _ in range(14):
+        a5.apply_continuation_accounting(
+            manifest,
+            embedding_calls=1, reranker_calls=1,
+            retrieval_provider_attempts=2, token_usage=10,
+        )
+    before = json.dumps(manifest["attempt_accounting"], sort_keys=True)
+    reloaded = json.loads(json.dumps(manifest))
+    # Applying zero further events (the reload/restart path with all terminal
+    # slot/cell states skipped) keeps every counter stable.
+    a5.apply_continuation_accounting(reloaded)
+    assert json.dumps(reloaded["attempt_accounting"], sort_keys=True) == before
+    # Cumulative remains the deterministic function of the two layers.
+    acct = reloaded["attempt_accounting"]
+    assert acct["cumulative"]["analyzer_logical_calls"] == (
+        acct["historical_attempt"]["analyzer_logical_calls"]
+        + acct["continuation_attempt"]["analyzer_logical_calls"]
+    )
+    assert acct["cumulative"]["embedding_calls"] == (
+        acct["historical_attempt"]["embedding_calls"]
+        + acct["continuation_attempt"]["embedding_calls"]
+    )
+
+
+def test_r3_20_26_provider_failure_unknown_accounting_contract():
+    # Known-attempts failure: one logical acquisition, known attempts numeric.
+    manifest = _fresh_manifest()
+    a5.apply_continuation_accounting(
+        manifest,
+        analyzer_calls=1,
+        analyzer_attempts=1,
+        unknown_provider_attempt_events=0,
+        token_usage=123,
+        unknown_token_events=0,
+    )
+    cont = manifest["attempt_accounting"]["continuation_attempt"]
+    assert cont["analyzer_logical_calls"] == 1
+    assert cont["analyzer_provider_attempts"] == 1
+    assert cont["unknown_provider_attempt_events"] == 0
+    cumulative = manifest["attempt_accounting"]["cumulative"]
+    assert cumulative["analyzer_logical_calls"] == 7
+    assert cumulative["provider_attempt_unknown_components"] == 0
+    # Unknown-attempts failure: logical acquisition counts, the numeric attempt
+    # total does NOT pretend the unknown value is zero-known, and the unknown
+    # event is counted separately.
+    a5.apply_continuation_accounting(
+        manifest,
+        analyzer_calls=1,
+        analyzer_attempts=0,
+        unknown_provider_attempt_events=1,
+        token_usage=0,
+        unknown_token_events=1,
+    )
+    assert cont["analyzer_logical_calls"] == 2
+    assert cont["analyzer_provider_attempts"] == 1  # only the known attempt
+    assert cont["unknown_provider_attempt_events"] == 1
+    assert cont["unknown_token_usage_events"] == 1
+    cumulative = manifest["attempt_accounting"]["cumulative"]
+    assert cumulative["analyzer_logical_calls"] == 8
+    assert cumulative["provider_attempt_unknown_components"] == 1
+    assert cumulative["token_usage_unknown_components"] == 2
+    assert cumulative["token_usage_recorded"] == 10303 + 123
+    # Frozen retry policy unchanged.
+    assert a5.MAX_PROVIDER_ATTEMPTS_PER_CASE == 1
+
+
+def test_r3_31_no_benchmark_or_case_specific_shortcut_in_r3_code():
+    import inspect
+
+    for func in (
+        a5.verify_phase_r_preflight,
+        a5.verify_continuation_plan_freeze_gate,
+        a5.apply_continuation_accounting,
+    ):
+        lowered = inspect.getsource(func).casefold()
+        assert "n014" not in lowered, func.__name__
+        assert "pflueger" not in lowered, func.__name__
+        assert "g052" not in lowered, func.__name__
+        assert "required_evidence" not in lowered, func.__name__
