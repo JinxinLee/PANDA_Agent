@@ -259,6 +259,11 @@ A5_STOP_HEAD = "dc679f880cda8d2ccdfb709d725e24673c562eab"
 A5_STOP_COMMIT_MESSAGE = "D4-A5 record pre-outcome provenance gate stop"
 EXECUTOR_FREEZE_HEAD = "8579cdc60c3ebb53f9958d3fdd442c1a5454cc91"
 R1_COMMIT_MESSAGE = "D4-A5-R1 repair retirement applicability contract"
+R1_HEAD = "93ad95d7f8808bc4e7ccdbb21a24457c0df30564"
+R2_COMMIT_MESSAGE = "D4-A5-R2 repair continuation freeze and accounting contract"
+R2_PREREGISTRATION_PATH = "evaluation/d4_a5_r2_continuation_contract_preregistration.json"
+R2_RESULT_PATH = "evaluation/d4_a5_r2_result.json"
+R2_REPORT_PATH = "evaluation/D4_A5_R2_CONTINUATION_FREEZE_AND_ACCOUNTING_CONTRACT_REPAIR.md"
 CONTINUATION_PLAN_FREEZE_COMMIT_MESSAGE = "D4-A5 continuation freeze prospective shared plans"
 CONTINUATION_RAW_FREEZE_COMMIT_MESSAGE = "D4-A5 continuation freeze paired raw retirement results"
 CONTINUATION_CLOSEOUT_COMMIT_MESSAGE = "D4-A5 continuation close controlled retirement validation"
@@ -1321,11 +1326,15 @@ def build_continuation_manifest(project_root: Path, reuse_audit: dict[str, Any])
     manifest["stage"] = "d4_a5_continuation_batch2_controlled_retirement_execution_manifest"
     manifest["created_at"] = _utc_now()
     manifest["repair_lineage"] = {
+        "historical_a5_starting_boundary": STARTING_HEAD,
         "historical_a5_executor_freeze_head": EXECUTOR_FREEZE_HEAD,
         "historical_a5_stop_head": A5_STOP_HEAD,
         "historical_a5_stop_verdict": "INVALID / BATCH2_PROTOCOL_OR_SHARED_PLAN_CONSTRUCTION_FAILED",
+        "r1_parent_boundary": R1_HEAD,
+        "r2_continuation_implementation_freeze": "commit containing this manifest",
         "repair_lifecycle": R1_LIFECYCLE_ID,
         "repair_preregistration": R1_PREREGISTRATION_PATH,
+        "r2_continuation_contract_preregistration": R2_PREREGISTRATION_PATH,
     }
     manifest["artifact_paths"] = {
         "manifest": CONTINUATION_MANIFEST_PATH,
@@ -1335,6 +1344,49 @@ def build_continuation_manifest(project_root: Path, reuse_audit: dict[str, Any])
         "result": CONTINUATION_RESULT_PATH,
         "historical_manifest_untouched": HISTORICAL_MANIFEST_PATH,
     }
+    # Repaired contract authority: the continuation execution contract is governed
+    # by the R1 applicability repair; the frozen D4-A4 scientific selection/masks
+    # are referenced read-only and never replaced.
+    manifest["continuation_contract_authority"] = {
+        "applicability_repair_authority": R1_PREREGISTRATION_PATH,
+        "scientific_selection_authority": PREREGISTRATION_PATH,
+        "scientific_selection_mutability": "read-only frozen reference; never replaced",
+    }
+    # Continuation execution gates replace the first-attempt messages; the old
+    # messages are retained only as clearly labeled historical references.
+    manifest["implementation_freeze_contract"] = {
+        "policy": "GIT_COMMIT_CONTAINING_THIS_ARTIFACT",
+        "expected_commit_message": R2_COMMIT_MESSAGE,
+        "expected_parent": R1_HEAD,
+        "note": "The R2 freeze commit contains this manifest; no descendant or intervening "
+        "commit is accepted as the continuation implementation freeze.",
+    }
+    manifest["plan_freeze_gate_contract"] = {
+        "policy": "HARD_COMMIT_PLAN_FREEZE_GATE",
+        "expected_commit_message": CONTINUATION_PLAN_FREEZE_COMMIT_MESSAGE,
+        "expected_parent": "the R2 continuation implementation freeze commit",
+        "raw_plans_path": CONTINUATION_RAW_PLANS_PATH,
+    }
+    manifest["raw_freeze_gate_contract"] = {
+        "policy": "HARD_COMMIT_RAW_FREEZE_GATE",
+        "expected_commit_message": CONTINUATION_RAW_FREEZE_COMMIT_MESSAGE,
+        "expected_parent": "the continuation plan-freeze commit",
+        "raw_results_path": CONTINUATION_RAW_RESULTS_PATH,
+    }
+    manifest["closeout_gate_contract"] = {
+        "policy": "HARD_COMMIT_CLOSEOUT_GATE",
+        "expected_commit_message": CONTINUATION_CLOSEOUT_COMMIT_MESSAGE,
+        "expected_parent": "the continuation raw-freeze commit",
+    }
+    manifest["historical_first_attempt_freeze_messages"] = {
+        "executor_freeze": EXECUTOR_FREEZE_COMMIT_MESSAGE,
+        "plan_freeze": PLAN_FREEZE_COMMIT_MESSAGE,
+        "raw_freeze": RAW_FREEZE_COMMIT_MESSAGE,
+        "status": "HISTORICAL ONLY — not current continuation execution gates",
+    }
+    manifest["reusability_decision"] = dict(CONTINUATION_EXPECTED_REUSABILITY)
+    manifest["reusability_decision"]["signature_alone_insufficient"] = True
+    manifest["reusability_decision"]["source"] = "R1 mechanical audit (forward-only, frozen)"
     manifest["attempt_accounting"] = {
         "historical_attempt": dict(HISTORICAL_ATTEMPT_ACCOUNTING),
         "continuation_attempt": {
@@ -1627,21 +1679,56 @@ def build_initial_manifest(project_root: Path) -> dict[str, Any]:
 # ---------------------------------------------------------------------------
 
 
-def verify_r1_freeze_gate(project_root: Path) -> dict[str, Any]:
-    """Continuation freeze gate: HEAD is the R1 repair commit (direct child of
-    the historical A5 stop commit) with production and historical artifacts
-    unchanged."""
+CONTINUATION_EXPECTED_REUSABILITY = {
+    "reusable_cases": [],
+    "non_reusable_cases": ["g052", "g055", "n003", "n004", "g007", "n014"],
+    "never_executed_cases": ["g060"],
+    "reacquisition_required_cases": ["g052", "g055", "n003", "n004", "g007", "n014", "g060"],
+}
+
+
+def verify_continuation_start(project_root: Path) -> dict[str, Any]:
+    """Read-only pre-provider continuation-start gate (R2; task Section 11).
+
+    The single shared preflight used by both the CLI mode
+    ``verify-continuation-start`` and the real ``execute_phase_p``. Establishes,
+    with zero provider calls:
+      1. HEAD is the R2 implementation-freeze commit;
+      2. exact parent is the R1 HEAD;
+      3. the continuation manifest is committed AT HEAD (introduced by this
+         commit — absent at the parent — so no descendant or intervening commit
+         is accepted as the freeze);
+      4. worktree/index are clean (the executing runner is therefore the
+         R2-frozen implementation blob);
+      5. historical A5/R1 artifacts and production/frozen paths are unchanged;
+      6. the committed manifest contract internally matches the runner constants
+         (paths, freeze messages, cohort, masks, reusability decision, attempt
+         accounting reference);
+      7. continuation state is NOT_STARTED;
+      8. raw continuation plans do not already represent a completed/frozen run.
+    """
     assert_clean_worktree(project_root)
     head = git_head(project_root)
     message = git_commit_message(project_root, head)
-    if message != R1_COMMIT_MESSAGE:
+    if message != R2_COMMIT_MESSAGE:
         raise RuntimeError(
-            f"Continuation Phase P requires HEAD to be the R1 repair commit "
-            f"('{R1_COMMIT_MESSAGE}'), got '{message}'"
+            f"Continuation start requires HEAD to be the R2 implementation-freeze commit "
+            f"('{R2_COMMIT_MESSAGE}'), got '{message}'"
         )
     parent = git_parent(project_root, head)
-    if parent != A5_STOP_HEAD:
-        raise RuntimeError(f"R1 commit parent must be {A5_STOP_HEAD}, got {parent}")
+    if parent != R1_HEAD:
+        raise RuntimeError(f"R2 freeze commit parent must be {R1_HEAD}, got {parent}")
+    manifest_committed = git_blob(project_root, CONTINUATION_MANIFEST_PATH, "HEAD")
+    if manifest_committed is None:
+        raise RuntimeError(
+            f"{CONTINUATION_MANIFEST_PATH} is not committed at HEAD; the continuation "
+            f"execution manifest must be a committed pre-exposure artifact of the R2 freeze."
+        )
+    if git_blob(project_root, CONTINUATION_MANIFEST_PATH, parent) is not None:
+        raise RuntimeError(
+            f"{CONTINUATION_MANIFEST_PATH} already exists at the parent commit; the "
+            f"authoritative continuation manifest must be introduced by the R2 freeze commit."
+        )
     changed = git_paths_unchanged_between(
         project_root, STARTING_HEAD, head, list(PRODUCTION_IMMUTABLE_PATHS)
     )
@@ -1653,7 +1740,86 @@ def verify_r1_freeze_gate(project_root: Path) -> dict[str, Any]:
     changed = git_paths_unchanged_between(project_root, A5_STOP_HEAD, head, historical_immutable)
     if changed:
         raise RuntimeError(f"Historical A5 attempt artifacts were modified after the stop: {changed}")
-    return {"head": head, "parent": parent, "message": message}
+    r1_immutable = [R1_PREREGISTRATION_PATH, R1_RESULT_PATH, R1_REPORT_PATH]
+    changed = git_paths_unchanged_between(project_root, R1_HEAD, head, r1_immutable)
+    if changed:
+        raise RuntimeError(f"R1 repair artifacts were modified after R1: {changed}")
+
+    manifest = _load_json(project_root / CONTINUATION_MANIFEST_PATH)
+    checks: dict[str, Any] = {"head": head, "parent": parent, "message": message}
+    errors: list[str] = []
+    if manifest.get("checkpoint") != "D4-A5-CONTINUATION":
+        errors.append("manifest checkpoint is not D4-A5-CONTINUATION")
+    if manifest.get("artifact_paths") != {
+        "manifest": CONTINUATION_MANIFEST_PATH,
+        "raw_plans": CONTINUATION_RAW_PLANS_PATH,
+        "raw_results": CONTINUATION_RAW_RESULTS_PATH,
+        "evaluator_results": CONTINUATION_EVALUATOR_RESULTS_PATH,
+        "result": CONTINUATION_RESULT_PATH,
+        "historical_manifest_untouched": HISTORICAL_MANIFEST_PATH,
+    }:
+        errors.append("manifest artifact paths do not match runner continuation constants")
+    gate_contracts = (
+        manifest.get("plan_freeze_gate_contract", {}),
+        manifest.get("raw_freeze_gate_contract", {}),
+        manifest.get("closeout_gate_contract", {}),
+    )
+    expected_messages = (
+        CONTINUATION_PLAN_FREEZE_COMMIT_MESSAGE,
+        CONTINUATION_RAW_FREEZE_COMMIT_MESSAGE,
+        CONTINUATION_CLOSEOUT_COMMIT_MESSAGE,
+    )
+    for contract, expected in zip(gate_contracts, expected_messages):
+        if contract.get("expected_commit_message") != expected:
+            errors.append(
+                f"manifest gate contract message {contract.get('expected_commit_message')!r} "
+                f"!= runner constant {expected!r}"
+            )
+    for historical_message in (
+        EXECUTOR_FREEZE_COMMIT_MESSAGE,
+        PLAN_FREEZE_COMMIT_MESSAGE,
+        RAW_FREEZE_COMMIT_MESSAGE,
+    ):
+        if historical_message in json.dumps(manifest):
+            if f"historical" not in json.dumps(manifest):
+                errors.append("old first-attempt freeze message appears without historical labeling")
+    if manifest.get("plan_freeze_gate_contract", {}).get("expected_commit_message") in (
+        PLAN_FREEZE_COMMIT_MESSAGE, EXECUTOR_FREEZE_COMMIT_MESSAGE
+    ):
+        errors.append("manifest still claims a first-attempt freeze message as a current gate")
+    if [s["case_id"] for s in manifest.get("phase_p_slots_7", [])] != list(CASE_ORDER):
+        errors.append("manifest Phase P cohort does not match the frozen case order")
+    if len(manifest.get("phase_r_cells_14", [])) != 14:
+        errors.append("manifest does not contain the frozen 14-cell schedule")
+    if manifest.get("frozen_retirement_masks") != b2.FROZEN_RETIREMENT_MASKS:
+        errors.append("manifest masks do not match the frozen D4-A4 masks")
+    if manifest.get("repair_lineage", {}).get("r1_parent_boundary") != R1_HEAD:
+        errors.append("manifest repair lineage does not record the R1 parent boundary")
+    decision = manifest.get("reusability_decision", {})
+    for key, expected in CONTINUATION_EXPECTED_REUSABILITY.items():
+        if decision.get(key) != expected:
+            errors.append(f"manifest reusability decision {key} does not match the frozen R1 audit")
+    if manifest.get("attempt_accounting", {}).get("historical_attempt") != HISTORICAL_ATTEMPT_ACCOUNTING:
+        errors.append("manifest historical attempt accounting does not match the frozen record")
+    exposure = manifest.get("outcome_exposure_state", {})
+    if exposure.get("D4_A5_OUTCOME_EXPOSURE") != "NOT_STARTED":
+        errors.append(f"continuation state is not NOT_STARTED: {exposure}")
+    raw_plans_path = project_root / CONTINUATION_RAW_PLANS_PATH
+    if raw_plans_path.exists():
+        raw_plans = _load_json(raw_plans_path)
+        if raw_plans.get("plan_freeze_state") == "PLANS_FROZEN":
+            errors.append(
+                "raw continuation plans already represent a completed/frozen run; "
+                "execute-phase-p must not restart it"
+            )
+    if errors:
+        raise RuntimeError(
+            "Continuation-start verification FAILED: " + "; ".join(errors)
+        )
+    checks["manifest_contract_matches_runner"] = True
+    checks["continuation_state"] = exposure.get("D4_A5_OUTCOME_EXPOSURE")
+    checks["provider_calls"] = 0
+    return checks
 
 
 def _new_continuation_plans_artifact(freeze_head: str) -> dict[str, Any]:
@@ -1696,6 +1862,7 @@ def _new_continuation_plans_artifact(freeze_head: str) -> dict[str, Any]:
         "plans_completed": 0,
         "plans_reused": 0,
         "plans_gate_stopped": 0,
+        "plans_provider_failed": 0,
         "plans_failed": 0,
         "accounting": {
             "analyzer_calls": 0,
@@ -1725,26 +1892,76 @@ def _write_continuation_plans_artifact(project_root: Path, artifact: dict[str, A
     _save_json(project_root / CONTINUATION_RAW_PLANS_PATH, artifact)
 
 
-def execute_phase_p(project_root: Path) -> dict[str, Any]:
-    """Continuation Phase P with persistence-before-gate (R1; task Section 16).
+def apply_continuation_accounting(
+    manifest: dict[str, Any],
+    *,
+    analyzer_calls: int = 0,
+    analyzer_attempts: int = 0,
+    token_usage: int = 0,
+    unknown_token_events: int = 0,
+    embedding_calls: int = 0,
+    reranker_calls: int = 0,
+) -> None:
+    """Deterministic two-layer accounting update (R2; task Section 9).
 
-    Acquires exactly one prospective Analyzer plan per case that requires
+    Applies one continuation-event delta to the continuation-attempt layer and
+    then mechanically recomputes the cumulative layer as historical + continuation.
+    Unknown historical token usage stays explicitly unknown and is never
+    collapsed into zero; unknown continuation token events are tracked as a
+    separate count. Cumulative values are always recomputed absolutely from the
+    two layers, so persisted/reloaded state never double counts as long as each
+    event is applied once (slot status transitions gate re-application).
+    """
+    attempt = manifest["attempt_accounting"]
+    cont = attempt["continuation_attempt"]
+    cont["analyzer_logical_calls"] += analyzer_calls
+    cont["analyzer_provider_attempts"] += analyzer_attempts
+    cont["token_usage"] += token_usage
+    cont["unknown_token_usage_events"] = (
+        cont.get("unknown_token_usage_events", 0) + unknown_token_events
+    )
+    cont["embedding_calls"] += embedding_calls
+    cont["reranker_calls"] += reranker_calls
+    hist = attempt["historical_attempt"]
+    cumulative = attempt["cumulative"]
+    cumulative["analyzer_logical_calls"] = (
+        hist["analyzer_logical_calls"] + cont["analyzer_logical_calls"]
+    )
+    cumulative["analyzer_provider_attempts"] = (
+        hist["analyzer_provider_attempts"] + cont["analyzer_provider_attempts"]
+    )
+    cumulative["retries"] = hist["retries"] + cont["retries"]
+    cumulative["token_usage_recorded"] = (
+        hist["recorded_token_usage"] + cont["token_usage"]
+    )
+    cumulative["token_usage_unknown_components"] = 1 + cont.get(
+        "unknown_token_usage_events", 0
+    )
+    cumulative["embedding_calls"] = hist["embedding_calls"] + cont["embedding_calls"]
+    cumulative["reranker_calls"] = hist["reranker_calls"] + cont["reranker_calls"]
+
+
+def execute_phase_p(project_root: Path) -> dict[str, Any]:
+    """Continuation Phase P with persistence-before-gate (R1) and the real R2
+    continuation-start preflight (task Sections 10/11/16).
+
+    Starts only from a clean R2 freeze HEAD containing the committed continuation
+    manifest (verified by the shared read-only preflight, before any provider
+    call). Acquires exactly one prospective Analyzer plan per case that requires
     reacquisition, in frozen order, with zero retries. Every acquisition is
     durably persisted — including its provider accounting, contribution ledger,
     component applicability receipts, and (when constructible) both execution
     projections — BEFORE any applicability gate can terminate execution. A gate
     stop (AMBIGUOUS_INVALID) records GATE_STOPPED state with full accounting and
-    stops the run; it never discards consumed-cost evidence.
+    stops the run. A provider failure persists a durable failure receipt with
+    every mechanically available accounting value (unavailable values are
+    recorded as unknown, never fabricated), marks the slot with an explicit
+    terminal failure state, and stops the continuation. No retries.
     """
     load_dotenv(project_root / ".env")
-    freeze = verify_r1_freeze_gate(project_root)
+    start_receipt = verify_continuation_start(project_root)
 
     manifest_path = project_root / CONTINUATION_MANIFEST_PATH
-    if not manifest_path.exists():
-        raise RuntimeError(
-            f"Continuation manifest {CONTINUATION_MANIFEST_PATH} missing; run "
-            f"prepare-continuation-manifest first (requires separate authorization for execution)."
-        )
     manifest = _load_json(manifest_path)
     exposure = manifest.setdefault("outcome_exposure_state", {})
     if exposure.get("D4_A5_OUTCOME_EXPOSURE") in ("PLANS_FROZEN", "RAW_RETRIEVAL_COMPLETE", "EVALUATION_COMPLETE"):
@@ -1754,10 +1971,10 @@ def execute_phase_p(project_root: Path) -> dict[str, Any]:
         raise RuntimeError(f"Unexpected exposure state: {exposure}")
 
     exposure["D4_A5_OUTCOME_EXPOSURE"] = "PLAN_ACQUISITION_STARTED"
-    exposure["r1_freeze_head"] = freeze["head"]
+    exposure["r2_freeze_head"] = start_receipt["head"]
     _save_json(manifest_path, manifest)
 
-    artifact = _new_continuation_plans_artifact(freeze["head"])
+    artifact = _new_continuation_plans_artifact(start_receipt["head"])
     _write_continuation_plans_artifact(project_root, artifact)
 
     retriever = Retriever(project_root)
@@ -1797,9 +2014,93 @@ def execute_phase_p(project_root: Path) -> dict[str, Any]:
         _save_json(manifest_path, manifest)
 
         # --- 1. Provider acquisition; accounting captured immediately. -------
+        # Frozen retry policy: max_retries = 0, exactly one attempt per slot.
         stats_before = retriever.vertex.stats_snapshot()
         t0 = time.time()
-        raw_plan = retriever.analyze(question_text)  # frozen retry policy: exactly one attempt
+        try:
+            raw_plan = retriever.analyze(question_text)
+        except Exception as exc:
+            # Provider failure: no retry. Persist a durable failure receipt with
+            # every mechanically available accounting value before stopping.
+            elapsed = round(time.time() - t0, 3)
+            try:
+                stats_delta = retriever.vertex.stats_delta(stats_before)
+                attempts_recoverable = True
+                tokens_recoverable = True
+            except Exception:
+                stats_delta = {}
+                attempts_recoverable = False
+                tokens_recoverable = False
+            provider_attempts = stats_delta.get("model_calls", 0) if attempts_recoverable else 0
+            token_usage = stats_delta.get("token_usage", 0) if tokens_recoverable else 0
+            failure_receipt = {
+                "exception_type": type(exc).__name__,
+                "exception_message": str(exc)[:500],
+                "retry_policy": {"max_retries": 0, "max_provider_attempts_per_case": 1},
+                "retries_performed": 0,
+                "provider_attempts_recoverable": attempts_recoverable,
+                "token_usage_recoverable": tokens_recoverable,
+                "provider_attempts": provider_attempts if attempts_recoverable else "unknown",
+                "token_usage": token_usage if tokens_recoverable else "unknown",
+                "unknown_accounting_note": (
+                    "Unavailable provider accounting is recorded as explicitly unknown, "
+                    "never fabricated as zero."
+                )
+                if not (attempts_recoverable and tokens_recoverable)
+                else None,
+            }
+            failure_record = {
+                "plan_index": i,
+                "plan_id": f"prospective_{cid}",
+                "case_id": cid,
+                "question": question_text,
+                "role": CASE_ATTRIBUTION[cid]["role"],
+                "status": "PROVIDER_FAILED",
+                "provider_failure_receipt": failure_receipt,
+                "provider_accounting": {
+                    "analyzer_logical_calls": 0,
+                    "analyzer_provider_attempts": provider_attempts,
+                    "retries": 0,
+                    "embedding_calls": 0,
+                    "reranker_calls": 0,
+                    "token_usage": token_usage,
+                    "token_usage_unknown": not tokens_recoverable,
+                    "provider_attempts_unknown": not attempts_recoverable,
+                    "model": EXPECTED_MODEL,
+                    "location": EXPECTED_VERTEX_LOCATION,
+                    "temperature": EXPECTED_TEMPERATURE,
+                    "elapsed_seconds": elapsed,
+                },
+                "started_at": slot["started_at"],
+                "failed_at": _utc_now(),
+            }
+            artifact["plans"] = [r for r in artifact["plans"] if r["case_id"] != cid]
+            artifact["plans"].append(failure_record)
+            artifact["plans_recorded"] = len(artifact["plans"])
+            artifact["plans_provider_failed"] += 1
+            artifact["accounting"]["analyzer_provider_attempts"] += provider_attempts
+            artifact["accounting"]["token_usage"] += token_usage
+            _write_continuation_plans_artifact(project_root, artifact)
+            apply_continuation_accounting(
+                manifest,
+                analyzer_calls=0,
+                analyzer_attempts=provider_attempts,
+                token_usage=token_usage,
+                unknown_token_events=0
+                if (attempts_recoverable and tokens_recoverable)
+                else 1,
+            )
+            slot["status"] = "PROVIDER_FAILED"
+            slot["completed_at"] = failure_record["failed_at"]
+            slot["attempts"] = provider_attempts if attempts_recoverable else "unknown"
+            slot["token_usage"] = token_usage if tokens_recoverable else "unknown"
+            slot["provider_failure_receipt"] = failure_receipt
+            _save_json(manifest_path, manifest)
+            raise RuntimeError(
+                f"Case {cid}: provider call failed (no retry per frozen max_retries=0 policy); "
+                f"durable failure receipt persisted to {CONTINUATION_RAW_PLANS_PATH}; "
+                f"continuation STOPPED."
+            ) from exc
         elapsed = round(time.time() - t0, 3)
         stats_delta = retriever.vertex.stats_delta(stats_before)
         provider_attempts = stats_delta.get("model_calls", 1)
@@ -1967,6 +2268,12 @@ def execute_phase_p(project_root: Path) -> dict[str, Any]:
         artifact["plans_completed"] += 1
         _write_continuation_plans_artifact(project_root, artifact)
 
+        apply_continuation_accounting(
+            manifest,
+            analyzer_calls=1,
+            analyzer_attempts=provider_attempts,
+            token_usage=token_usage,
+        )
         slot["status"] = "COMPLETED"
         slot["completed_at"] = record["completed_at"]
         slot["token_usage"] = token_usage
@@ -3018,6 +3325,7 @@ def verify_freeze(project_root: Path) -> dict[str, Any]:
     chain: list[str] = []
     cursor = head
     for expected_message in (
+        R2_COMMIT_MESSAGE,
         R1_COMMIT_MESSAGE,
         A5_STOP_COMMIT_MESSAGE,
         EXECUTOR_FREEZE_COMMIT_MESSAGE,
@@ -3034,9 +3342,20 @@ def verify_freeze(project_root: Path) -> dict[str, Any]:
         raise RuntimeError(f"Chain base mismatch: expected {STARTING_PARENT}, got {cursor}")
     chain.append(cursor)
 
-    r1_head, a5_stop_head, executor_freeze_head, a4_freeze_head, starting_parent = chain
+    r2_head, r1_head, a5_stop_head, executor_freeze_head, a4_freeze_head, starting_parent = chain
     checks: dict[str, Any] = {
         "chain": chain,
+        "continuation_manifest_committed_in_r2": git_blob(
+            project_root, CONTINUATION_MANIFEST_PATH, r2_head
+        ) is not None
+        and git_blob(project_root, CONTINUATION_MANIFEST_PATH, r1_head) is None,
+        "continuation_runtime_artifacts_absent": all(
+            git_blob(project_root, rel, "HEAD") is None
+            for rel in (
+                CONTINUATION_RAW_PLANS_PATH, CONTINUATION_RAW_RESULTS_PATH,
+                CONTINUATION_EVALUATOR_RESULTS_PATH, CONTINUATION_RESULT_PATH,
+            )
+        ),
         "historical_stop_unchanged": git_paths_unchanged_between(
             project_root, a5_stop_head, head, [RESULT_PATH, HISTORICAL_MANIFEST_PATH]
         ) == [],
@@ -3092,7 +3411,7 @@ def main() -> None:
         choices=[
             "audit",
             "audit-reuse",
-            "prepare-continuation-manifest",
+            "verify-continuation-start",
             "execute-phase-p",
             "execute-phase-r",
             "evaluate",
@@ -3114,16 +3433,12 @@ def main() -> None:
         receipt = audit_historical_plan_reusability(project_root)
         print(json.dumps(receipt, ensure_ascii=False, indent=2, default=str))
         return
-    if args.mode == "prepare-continuation-manifest":
-        verify_r1_freeze_gate(project_root)
-        reuse_audit = audit_historical_plan_reusability(project_root)
-        manifest = build_continuation_manifest(project_root, reuse_audit)
-        path = project_root / CONTINUATION_MANIFEST_PATH
-        _save_json(path, manifest)
-        print(f"[CONTINUATION MANIFEST PREPARED] {CONTINUATION_MANIFEST_PATH}")
+    if args.mode == "verify-continuation-start":
+        receipt = verify_continuation_start(project_root)
+        print(json.dumps(receipt, ensure_ascii=False, indent=2))
         print(
-            "reacquisition_required for: "
-            f"{[s['case_id'] for s in manifest['phase_p_slots_7'] if s['reacquisition_required']]}"
+            "[CONTINUATION START VERIFIED] read-only pre-provider gate passed; "
+            "zero provider calls made."
         )
         return
     if args.mode == "execute-phase-p":

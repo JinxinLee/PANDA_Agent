@@ -1,0 +1,170 @@
+{
+  "schema_version": "1.0.0",
+  "lifecycle_id": "D4-A5-R2",
+  "stage": "D4-A5-R2 — Continuation Freeze and Accounting Contract Repair",
+  "created_at": "2026-09-05T19:30:12.704565+00:00",
+  "starting_head": "93ad95d7f8808bc4e7ccdbb21a24457c0df30564",
+  "starting_commit_message": "D4-A5-R1 repair retirement applicability contract",
+  "starting_parent": "dc679f880cda8d2ccdfb709d725e24673c562eab",
+  "task_classification": {
+    "type": "pre-exposure contract/infrastructure repair",
+    "is_not": [
+      "a new scientific validation stage",
+      "a D4-A6 task",
+      "a new Batch-2 selection",
+      "a new retirement experiment",
+      "a plan reacquisition task",
+      "a retrieval execution task",
+      "an evaluator task",
+      "a production activation task"
+    ]
+  },
+  "audit_finding_repaired": {
+    "finding": "The committed R1 continuation path is internally non-executable (bootstrap deadlock).",
+    "deadlock": "prepare-continuation-manifest created an untracked continuation manifest (dirty worktree), while execute_phase_p required the exact R1 HEAD with a completely clean worktree. Leaving the manifest uncommitted failed the cleanliness check; committing it changed HEAD away from the exact R1 commit and failed the freeze check. The focused Phase-P tests did not expose this because the real freeze gate was monkeypatched.",
+    "resolution": "The continuation execution manifest is now a committed pre-exposure artifact of the R2 freeze commit itself; the old write-before-execution CLI bootstrap (prepare-continuation-manifest) is removed; the real continuation start is governed by a shared read-only preflight (verify-continuation-start) used by execute_phase_p itself."
+  },
+  "continuation_implementation_freeze_contract": {
+    "policy": "GIT_COMMIT_CONTAINING_THIS_ARTIFACT",
+    "expected_commit_message": "D4-A5-R2 repair continuation freeze and accounting contract",
+    "expected_direct_parent": "93ad95d7f8808bc4e7ccdbb21a24457c0df30564",
+    "mechanics": [
+      "continuation manifest committed at HEAD and absent at the parent (introduced by the freeze commit)",
+      "current HEAD is exactly the R2 freeze commit (no descendant/intervening commit accepted)",
+      "worktree/index clean, so the executing runner is the R2-frozen implementation blob",
+      "production/historical protected paths unchanged",
+      "manifest contract internally matches runner constants"
+    ],
+    "no_adversarial_cryptographic_sealing": true,
+    "no_sha_inventories": true
+  },
+  "lifecycle_lineage_frozen": {
+    "historical_a5_starting_boundary": "cb0f8c330f224a470401535b4b01f153488da99b",
+    "historical_a5_executor_freeze": "8579cdc60c3ebb53f9958d3fdd442c1a5454cc91",
+    "historical_a5_stop": "dc679f880cda8d2ccdfb709d725e24673c562eab",
+    "r1_parent_boundary": "93ad95d7f8808bc4e7ccdbb21a24457c0df30564",
+    "r2_continuation_implementation_freeze": "commit containing evaluation/d4_a5_continuation_execution_manifest.json"
+  },
+  "repaired_contract_authority": {
+    "applicability_repair_authority": "evaluation/d4_a5_r1_retirement_applicability_preregistration.json",
+    "scientific_selection_authority": "evaluation/d4_a4_batch2_retirement_preregistration.json (read-only frozen reference, never replaced)"
+  },
+  "continuation_artifact_paths_frozen": [
+    "evaluation/d4_a5_continuation_execution_manifest.json",
+    "evaluation/d4_a5_continuation_raw_prospective_plans.json",
+    "evaluation/d4_a5_continuation_raw_paired_retirement_results.json",
+    "evaluation/d4_a5_continuation_evaluator_results.json",
+    "evaluation/d4_a5_continuation_result.json"
+  ],
+  "continuation_freeze_messages": {
+    "plan_freeze": "D4-A5 continuation freeze prospective shared plans",
+    "raw_retrieval_freeze": "D4-A5 continuation freeze paired raw retirement results",
+    "final_closeout": "D4-A5 continuation close controlled retirement validation",
+    "old_first_attempt_messages": "historical references only, clearly labeled; not current gates"
+  },
+  "frozen_reusability_decision": {
+    "REUSABLE_FROZEN_SCIENTIFIC_PLAN": [],
+    "HISTORICAL_ATTEMPT_NOT_REUSABLE": ["g052", "g055", "n003", "n004", "g007", "n014"],
+    "NEVER_EXECUTED": ["g060"],
+    "consequence": "a future separately authorized continuation may reacquire exactly all seven plans",
+    "r2_performs_zero_reacquisition": true,
+    "signature_alone_insufficient": true,
+    "recorded_in_committed_manifest": true
+  },
+  "accounting_contract_repair": {
+    "defect": "the R1 manifest builder initialized continuation/cumulative accounting but Phase P did not maintain it",
+    "repair": "one small deterministic helper (apply_continuation_accounting) used by the execution code: continuation-attempt layer receives each event delta; cumulative is mechanically recomputed as historical + continuation",
+    "historical_attempt": {
+      "analyzer_logical_calls": 6,
+      "analyzer_provider_attempts": 6,
+      "retries": 0,
+      "recorded_tokens": 10303,
+      "n014_consumed_token_usage": "explicitly unknown, never fabricated"
+    },
+    "continuation_attempt_initial": {
+      "analyzer_logical_calls": 0,
+      "analyzer_provider_attempts": 0,
+      "retries": 0,
+      "token_usage_recorded": 0,
+      "embedding_calls": 0,
+      "reranker_calls": 0,
+      "downstream_analyzer_calls": 0,
+      "qa_verifier_judge": 0,
+      "db_qdrant_writes": 0,
+      "protected_access": 0
+    },
+    "cumulative_rule": "historical + continuation; unknown historical token usage stays explicitly unknown",
+    "no_double_counting": "cumulative is recomputed absolutely from the two layers; slot status transitions gate re-application",
+    "synthetic_tests": [
+      "one acquisition: continuation 1 / cumulative 7",
+      "seven acquisitions: continuation 7 / cumulative 13",
+      "tokens follow the same historical + continuation rule",
+      "unknown historical usage remains explicitly unknown",
+      "reload/recompute does not double count"
+    ]
+  },
+  "provider_failure_persistence_repair": {
+    "frozen_retry_policy": {"max_retries": 0, "max_provider_attempts_per_case": 1},
+    "flow": [
+      "mark slot STARTED and persist that state",
+      "snapshot provider stats",
+      "initiate exactly one analyze() call",
+      "on provider return: persist accounting, canonical plan/serialization/signature/ledger/provenance/applicability/projections as applicable, then evaluate the applicability/provenance gate",
+      "on provider raise: no retry; persist a durable provider-failure receipt; preserve every mechanically available accounting value from the stats delta; record unavailable values explicitly as unknown (never fabricated zero); mark the slot PROVIDER_FAILED (explicit terminal state, not ambiguous STARTED); STOP the continuation"
+    ],
+    "no_generalized_recovery_framework": true,
+    "no_auto_restart": true
+  },
+  "real_continuation_start_verification": {
+    "shared_preflight": "verify_continuation_start (read-only, zero provider calls)",
+    "cli_mode": "verify-continuation-start",
+    "used_by_execute_phase_p": true,
+    "establishes": [
+      "HEAD is the R2 implementation-freeze commit",
+      "exact parent is the R1 HEAD",
+      "continuation manifest is committed (introduced at the freeze commit)",
+      "worktree/index clean",
+      "historical A5/R1 artifacts unchanged",
+      "production/frozen paths unchanged",
+      "manifest contract internally matches the runner",
+      "continuation state NOT_STARTED",
+      "raw continuation plans do not already represent a completed/frozen run"
+    ],
+    "test_strategy": "temporary Git repository fixture exercising the real gate logic (constants remapped to local SHAs; the gate itself never monkeypatched) plus a real-repo committed-manifest test"
+  },
+  "preserved_unchanged": {
+    "selected_rules": ["effective_acceptance_pipeline", "root_macro_usage", "model_factory_theory"],
+    "d4_a4_masks": "unchanged including model_factory_theory pflueger_2017: [51, 57, 65]",
+    "case_order": ["g052", "g055", "n003", "n004", "g007", "n014", "g060"],
+    "plans_and_cells": "7 prospective plans / 14 paired cells in a future continuation",
+    "arms": ["CURRENT_COMPAT", "BATCH2_RETIREMENT"],
+    "metrics_and_thresholds": "six primary metrics with -0.05/-0.05/-0.05/-0.05/-0.05/0.0; MRR diagnostic-only",
+    "applicability_semantics": "three-state, selected-rule-origin driven; unchanged",
+    "dispositions": "six-state space unchanged",
+    "batch_verdict": "seven-level precedence unchanged",
+    "batch1_invariant": true,
+    "batch2_production": false,
+    "no_special_handling": "no n014/pflueger/case-ID/rule-ID/locator/benchmark/expected-outcome special handling added"
+  },
+  "historical_records_immutable": {
+    "first_attempt_artifacts": [
+      "evaluation/d4_a5_execution_manifest.json",
+      "evaluation/d4_a5_result.json",
+      "evaluation/d4_a4_batch2_retirement_preregistration.json",
+      "evaluation/d4_a4_batch2_low_risk_retirement_selection.json"
+    ],
+    "r1_artifacts": [
+      "evaluation/d4_a5_r1_retirement_applicability_preregistration.json",
+      "evaluation/d4_a5_r1_result.json",
+      "evaluation/D4_A5_R1_RETIREMENT_APPLICABILITY_AND_PROVENANCE_CONTRACT_REPAIR.md"
+    ],
+    "r1_wording_note": "R2 is a forward-only repair prompted by a later independent audit finding; R1 applicability/provenance logic repair is accepted, but the continuation bootstrap/accounting contract was incomplete. R1 artifacts are not rewritten."
+  },
+  "timestamp_handling": "new R2 timestamps are timezone-aware UTC; historical R1 artifacts are not rewritten for timestamp metadata",
+  "zero_exposure_boundary": {
+    "analyzer": 0, "embedding": 0, "reranker": 0, "qa": 0, "verifier": 0, "judge": 0,
+    "retrieval": 0, "benchmark_runs": 0, "novel_runs": 0, "db_writes": 0,
+    "qdrant_writes": 0, "protected_dataset_access": 0, "evaluator_executed": false,
+    "scientific_outcome_exposure": false
+  }
+}

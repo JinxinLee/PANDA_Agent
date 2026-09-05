@@ -1,0 +1,107 @@
+{
+  "schema_version": "1.0.0",
+  "lifecycle_id": "D4-A5-R2",
+  "stage": "D4-A5-R2 — Continuation Freeze and Accounting Contract Repair",
+  "created_at": "2026-09-05T19:32:00.000000+00:00",
+  "repair_status": "COMPLETE / PASS",
+  "repair_commit": "D4-A5-R2 repair continuation freeze and accounting contract",
+  "bootstrap_deadlock_repaired": {
+    "old_deadlock": "untracked continuation manifest -> dirty worktree -> gate rejects; committed manifest -> HEAD no longer the exact R1 commit -> gate rejects",
+    "new_flow": "clean R2 freeze HEAD already contains the committed continuation manifest; execute_phase_p and the read-only verify-continuation-start mode share the same real preflight",
+    "prepare_continuation_manifest_mode_removed": true,
+    "phase_p_tests_no_longer_silently_monkeypatch_the_real_gate": "bootstrap tests use a temporary Git repository fixture exercising the real gate logic"
+  },
+  "continuation_implementation_freeze": {
+    "mechanism": "containing-commit contract: the R2 commit contains evaluation/d4_a5_continuation_execution_manifest.json",
+    "expected_message": "D4-A5-R2 repair continuation freeze and accounting contract",
+    "expected_parent": "93ad95d7f8808bc4e7ccdbb21a24457c0df30564",
+    "manifest_committed": true
+  },
+  "manifest_authority_repaired": {
+    "inherited_first_attempt_freeze_metadata_removed": true,
+    "continuation_contract_authority_recorded": "evaluation/d4_a5_r1_retirement_applicability_preregistration.json",
+    "artifact_paths_frozen": 5,
+    "continuation_freeze_messages_frozen": 3,
+    "old_messages_labeled_historical_only": true,
+    "reusability_decision_frozen": {
+      "reusable": [],
+      "not_reusable": ["g052", "g055", "n003", "n004", "g007", "n014"],
+      "never_executed": ["g060"],
+      "future_reacquisition": "all seven plans, under separate authorization"
+    }
+  },
+  "accounting_repair_verified": {
+    "helper": "apply_continuation_accounting (single deterministic helper used by execution code)",
+    "one_acquisition": {"continuation_logical_calls": 1, "cumulative_logical_calls": 7},
+    "seven_acquisitions": {"continuation_logical_calls": 7, "cumulative_logical_calls": 13},
+    "token_rule": "cumulative recorded = 10,303 historical + continuation recorded",
+    "historical_unknown_preserved": "n014 consumed token usage stays explicitly unknown; cumulative unknown-component count starts at 1",
+    "no_double_counting_on_reload": true,
+    "phase_p_maintains_manifest_layers": true
+  },
+  "provider_failure_persistence_verified": {
+    "no_retry": true,
+    "durable_failure_receipt_written": true,
+    "available_accounting_preserved": {"provider_attempts": "preserved from stats delta", "token_usage": "preserved from stats delta"},
+    "unavailable_accounting_marked_unknown": true,
+    "terminal_slot_state": "PROVIDER_FAILED (explicit, not ambiguous STARTED)",
+    "continuation_stops_after_failure": true,
+    "unknown_token_events_tracked_separately": true
+  },
+  "scientific_contract_unchanged": {
+    "selected_rules": 3,
+    "masks": "unchanged incl. pflueger_2017 [51,57,65]",
+    "cohort_order": true,
+    "plans_cells": "7/14",
+    "metrics_thresholds": true,
+    "applicability_semantics": "unchanged (three-state, selected-rule origin)",
+    "dispositions": "unchanged (six-state)",
+    "batch_verdict": "unchanged (seven-level)",
+    "no_special_handling_added": true
+  },
+  "verification": {
+    "focused_tests_total": 105,
+    "r2_tests_added": 19,
+    "bootstrap_tests": "temporary Git repository fixture with the REAL gate logic (constants remapped; gate never monkeypatched): clean HEAD passes, uncommitted drift fails, descendant fails, wrong parent fails, wrong message fails, missing manifest fails, protected drift fails; real-repo committed-manifest test included",
+    "accounting_tests": 5,
+    "provider_failure_tests": 2,
+    "r1_unchanged_tests": 3,
+    "compile_static_check": "passed",
+    "json_parse": "passed",
+    "real_post_commit_continuation_start_verification": "executed after the R2 commit against the real repository HEAD",
+    "no_full_suite_run": true,
+    "no_sha256_inventory": true
+  },
+  "zero_exposure": {
+    "provider_calls": 0,
+    "analyzer_acquisitions": 0,
+    "embedding_calls": 0,
+    "reranker_calls": 0,
+    "retrieval_cells": 0,
+    "evaluator_executed": false,
+    "scientific_outcome_exposure": false,
+    "db_qdrant_writes": 0,
+    "protected_dataset_access": 0
+  },
+  "immutability_confirmations": {
+    "production_unchanged": true,
+    "historical_first_attempt_unchanged": true,
+    "r1_artifacts_unchanged": true,
+    "continuation_raw_plans_created": false,
+    "continuation_raw_results_created": false,
+    "continuation_evaluator_results_created": false,
+    "continuation_result_created": false,
+    "batch1_active": true,
+    "batch2_production_active": false
+  },
+  "lifecycle_state": {
+    "d4_a5_first_attempt": "HISTORICAL / INVALID / PRE-OUTCOME STOP / PRESERVED",
+    "d4_a5_r1": "HISTORICAL REPAIR RECORD PRESERVED / APPLICABILITY AND PROVENANCE LOGIC REPAIR RETAINED",
+    "d4_a5_r2": "COMPLETE / PASS / CONTINUATION_FREEZE_AND_ACCOUNTING_CONTRACT_REPAIRED",
+    "d4_a5": "BLOCKED / READY_FOR_SEPARATELY_AUTHORIZED_CONTINUATION",
+    "batch1": "ACTIVE",
+    "batch2": "SELECTED / FROZEN / NOT YET SCIENTIFICALLY VALIDATED",
+    "batch2_production": false,
+    "d4_a6": "NOT_STARTED"
+  }
+}

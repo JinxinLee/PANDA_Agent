@@ -1781,7 +1781,9 @@ def _prepare_tmp_continuation(tmp_path: Path) -> Path:
 
 
 def _patch_phase_p_env(monkeypatch, fake: _FakeRetriever) -> None:
-    monkeypatch.setattr(a5, "verify_r1_freeze_gate", lambda *_a, **_k: {"head": "r1fake"})
+    monkeypatch.setattr(
+        a5, "verify_continuation_start", lambda *_a, **_k: {"head": "r2fake", "parent": "r1fake"}
+    )
     monkeypatch.setattr(a5, "Retriever", lambda *_a, **_k: fake)
     monkeypatch.setattr(a5, "load_gold_dataset", _real_dataset_loader)
 
@@ -1910,3 +1912,443 @@ def test_r1_32_reuse_audit_performs_zero_provider_calls(monkeypatch):
     assert set(audit["reusable_cases"]) == set()
     assert len(audit["non_reusable_cases"]) == 6
     assert audit["never_executed_cases"] == ["g060"]
+
+
+# ===========================================================================
+# D4-A5-R2 — Continuation Freeze and Accounting Contract Repair tests
+# ===========================================================================
+
+
+def _git(tmp_path: Path, *args: str, cwd: Path | None = None) -> str:
+    import subprocess
+
+    proc = subprocess.run(
+        ["git", *args],
+        cwd=str(cwd or tmp_path),
+        capture_output=True,
+        text=True,
+    )
+    if proc.returncode != 0:
+        raise RuntimeError(f"git {args} failed: {proc.stderr}")
+    return proc.stdout.strip()
+
+
+def _temp_repo_commit(tmp_path: Path, files: dict[str, str], message: str) -> str:
+    for rel, content in files.items():
+        target = tmp_path / rel
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(content, encoding="utf-8")
+    _git(tmp_path, "add", "-A")
+    _git(tmp_path, "commit", "-q", "-m", message)
+    return _git(tmp_path, "rev-parse", "HEAD")
+
+
+@pytest.fixture()
+def continuation_git_repo(tmp_path, monkeypatch):
+    """Temporary Git repository exercising the REAL continuation-start gate
+    logic (constants are remapped to local SHAs; the gate itself is not
+    monkeypatched)."""
+    _git(tmp_path, "init", "-q")
+    _git(tmp_path, "config", "user.email", "test@example.com")
+    _git(tmp_path, "config", "user.name", "test")
+    r1_sha = _temp_repo_commit(tmp_path, {"base.txt": "base"}, "base commit")
+    monkeypatch.setattr(a5, "R1_HEAD", r1_sha)
+    monkeypatch.setattr(a5, "A5_STOP_HEAD", r1_sha)
+    monkeypatch.setattr(a5, "STARTING_HEAD", r1_sha)
+    manifest = a5.build_continuation_manifest(_REPO_ROOT, a5.audit_historical_plan_reusability(_REPO_ROOT))
+    r2_sha = _temp_repo_commit(
+        tmp_path,
+        {a5.CONTINUATION_MANIFEST_PATH: json.dumps(manifest, ensure_ascii=False, indent=2)},
+        a5.R2_COMMIT_MESSAGE,
+    )
+    return tmp_path, r1_sha, r2_sha
+
+
+def test_r2_02_clean_r2_head_passes_continuation_start(continuation_git_repo):
+    tmp_path, r1_sha, r2_sha = continuation_git_repo
+    receipt = a5.verify_continuation_start(tmp_path)
+    assert receipt["head"] == r2_sha
+    assert receipt["parent"] == r1_sha
+    assert receipt["manifest_contract_matches_runner"] is True
+    assert receipt["provider_calls"] == 0
+    assert receipt["continuation_state"] == "NOT_STARTED"
+
+
+def test_r2_03_uncommitted_drift_fails(continuation_git_repo):
+    tmp_path, *_ = continuation_git_repo
+    (tmp_path / "stray.txt").write_text("drift", encoding="utf-8")
+    with pytest.raises(RuntimeError, match="not clean"):
+        a5.verify_continuation_start(tmp_path)
+
+
+def test_r2_04_descendant_head_fails(continuation_git_repo):
+    tmp_path, *_ = continuation_git_repo
+    _temp_repo_commit(tmp_path, {"later.txt": "later"}, "later commit")
+    with pytest.raises(RuntimeError, match="R2 implementation-freeze commit"):
+        a5.verify_continuation_start(tmp_path)
+
+
+def test_r2_05_wrong_direct_parent_fails(tmp_path, monkeypatch):
+    _git(tmp_path, "init", "-q")
+    _git(tmp_path, "config", "user.email", "test@example.com")
+    _git(tmp_path, "config", "user.name", "test")
+    base = _temp_repo_commit(tmp_path, {"base.txt": "base"}, "base commit")
+    manifest = a5.build_continuation_manifest(_REPO_ROOT, a5.audit_historical_plan_reusability(_REPO_ROOT))
+    r2_sha = _temp_repo_commit(
+        tmp_path,
+        {a5.CONTINUATION_MANIFEST_PATH: json.dumps(manifest, ensure_ascii=False, indent=2)},
+        a5.R2_COMMIT_MESSAGE,
+    )
+    # Point the expected R1 parent at a nonexistent commit so the mechanical
+    # parent check (not the message check) is what fires.
+    monkeypatch.setattr(a5, "R1_HEAD", "0" * 40)
+    monkeypatch.setattr(a5, "A5_STOP_HEAD", base)
+    monkeypatch.setattr(a5, "STARTING_HEAD", base)
+    with pytest.raises(RuntimeError, match="parent must be"):
+        a5.verify_continuation_start(tmp_path)
+
+
+def test_r2_06_wrong_r2_commit_message_fails(continuation_git_repo):
+    tmp_path, r1_sha, _ = continuation_git_repo
+    # Amend the R2 commit with a wrong message; the gate must reject it.
+    _git(tmp_path, "commit", "-q", "--amend", "-m", "wrong message")
+    with pytest.raises(RuntimeError, match="R2 implementation-freeze commit"):
+        a5.verify_continuation_start(tmp_path)
+
+
+def test_r2_07_missing_committed_manifest_fails(tmp_path, monkeypatch):
+    _git(tmp_path, "init", "-q")
+    _git(tmp_path, "config", "user.email", "test@example.com")
+    _git(tmp_path, "config", "user.name", "test")
+    r1_sha = _temp_repo_commit(tmp_path, {"base.txt": "base"}, "base commit")
+    r2_sha = _temp_repo_commit(tmp_path, {"other.txt": "x"}, a5.R2_COMMIT_MESSAGE)
+    monkeypatch.setattr(a5, "R1_HEAD", r1_sha)
+    monkeypatch.setattr(a5, "A5_STOP_HEAD", r1_sha)
+    monkeypatch.setattr(a5, "STARTING_HEAD", r1_sha)
+    with pytest.raises(RuntimeError, match="not committed at HEAD"):
+        a5.verify_continuation_start(tmp_path)
+
+
+def test_r2_08_protected_historical_drift_fails(tmp_path, monkeypatch):
+    _git(tmp_path, "init", "-q")
+    _git(tmp_path, "config", "user.email", "test@example.com")
+    _git(tmp_path, "config", "user.name", "test")
+    r1_sha = _temp_repo_commit(
+        tmp_path, {a5.RESULT_PATH: '{"verdict": "historical"}'}, "base commit"
+    )
+    manifest = a5.build_continuation_manifest(_REPO_ROOT, a5.audit_historical_plan_reusability(_REPO_ROOT))
+    _temp_repo_commit(
+        tmp_path,
+        {
+            a5.CONTINUATION_MANIFEST_PATH: json.dumps(manifest, ensure_ascii=False, indent=2),
+            a5.RESULT_PATH: '{"verdict": "rewritten"}',
+        },
+        a5.R2_COMMIT_MESSAGE,
+    )
+    monkeypatch.setattr(a5, "R1_HEAD", r1_sha)
+    monkeypatch.setattr(a5, "A5_STOP_HEAD", r1_sha)
+    monkeypatch.setattr(a5, "STARTING_HEAD", r1_sha)
+    with pytest.raises(RuntimeError, match="Historical A5 attempt artifacts"):
+        a5.verify_continuation_start(tmp_path)
+
+
+def test_r2_01_real_manifest_committed_in_r2_freeze_commit():
+    """Real-repo bootstrap contract: the committed continuation manifest was
+    introduced by the R2 freeze commit and matches runner constants."""
+    assert a5.verify_freeze is not None  # module sanity
+    head_blob = a5.git_blob(_REPO_ROOT, a5.CONTINUATION_MANIFEST_PATH, "HEAD")
+    assert head_blob is not None, "continuation manifest must be committed"
+    parent_blob = a5.git_blob(
+        _REPO_ROOT, a5.CONTINUATION_MANIFEST_PATH, a5.R1_HEAD
+    )
+    assert parent_blob is None, "manifest must be introduced by the R2 commit"
+    last_touch = _git(
+        _REPO_ROOT, "log", "-1", "--format=%s", "--", a5.CONTINUATION_MANIFEST_PATH
+    )
+    assert last_touch == a5.R2_COMMIT_MESSAGE
+    manifest = json.loads(
+        (_REPO_ROOT / a5.CONTINUATION_MANIFEST_PATH).read_text(encoding="utf-8")
+    )
+    assert manifest["implementation_freeze_contract"]["expected_commit_message"] == (
+        a5.R2_COMMIT_MESSAGE
+    )
+    assert manifest["implementation_freeze_contract"]["expected_parent"] == a5.R1_HEAD
+    assert manifest["plan_freeze_gate_contract"]["expected_commit_message"] == (
+        a5.CONTINUATION_PLAN_FREEZE_COMMIT_MESSAGE
+    )
+    assert manifest["raw_freeze_gate_contract"]["expected_commit_message"] == (
+        a5.CONTINUATION_RAW_FREEZE_COMMIT_MESSAGE
+    )
+    assert manifest["closeout_gate_contract"]["expected_commit_message"] == (
+        a5.CONTINUATION_CLOSEOUT_COMMIT_MESSAGE
+    )
+    # The old first-attempt messages appear only as labeled historical references.
+    assert manifest["historical_first_attempt_freeze_messages"]["status"].startswith(
+        "HISTORICAL ONLY"
+    )
+    assert manifest["artifact_paths"]["raw_plans"] == a5.CONTINUATION_RAW_PLANS_PATH
+    assert manifest["repair_lineage"]["r1_parent_boundary"] == a5.R1_HEAD
+    decision = manifest["reusability_decision"]
+    for key, expected in a5.CONTINUATION_EXPECTED_REUSABILITY.items():
+        assert decision[key] == expected, key
+    assert decision["signature_alone_insufficient"] is True
+
+
+# --- Accounting (Sections 9/16-10..14) ---------------------------------------
+
+
+def _fresh_manifest() -> dict[str, Any]:
+    return a5.build_continuation_manifest(
+        _REPO_ROOT, a5.audit_historical_plan_reusability(_REPO_ROOT)
+    )
+
+
+def test_r2_10_one_acquisition_updates_attempt_and_cumulative():
+    manifest = _fresh_manifest()
+    a5.apply_continuation_accounting(
+        manifest, analyzer_calls=1, analyzer_attempts=1, token_usage=100
+    )
+    cont = manifest["attempt_accounting"]["continuation_attempt"]
+    cumulative = manifest["attempt_accounting"]["cumulative"]
+    assert cont["analyzer_logical_calls"] == 1
+    assert cumulative["analyzer_logical_calls"] == 7  # historical 6 + continuation 1
+
+
+def test_r2_11_seven_acquisitions_produce_cumulative_13():
+    manifest = _fresh_manifest()
+    for _ in range(7):
+        a5.apply_continuation_accounting(
+            manifest, analyzer_calls=1, analyzer_attempts=1, token_usage=10
+        )
+    cont = manifest["attempt_accounting"]["continuation_attempt"]
+    cumulative = manifest["attempt_accounting"]["cumulative"]
+    assert cont["analyzer_logical_calls"] == 7
+    assert cumulative["analyzer_logical_calls"] == 13  # historical 6 + continuation 7
+
+
+def test_r2_12_continuation_tokens_add_to_historical_recorded_tokens():
+    manifest = _fresh_manifest()
+    a5.apply_continuation_accounting(manifest, analyzer_calls=1, token_usage=250)
+    cumulative = manifest["attempt_accounting"]["cumulative"]
+    assert cumulative["token_usage_recorded"] == 10303 + 250
+    assert manifest["attempt_accounting"]["historical_attempt"]["recorded_token_usage"] == 10303
+
+
+def test_r2_13_historical_unknown_n014_tokens_stay_explicitly_unknown():
+    manifest = _fresh_manifest()
+    hist = manifest["attempt_accounting"]["historical_attempt"]
+    assert hist["unknown_token_usage"]["case_id"] == "n014"
+    assert hist["unknown_token_usage"]["note"]
+    cumulative = manifest["attempt_accounting"]["cumulative"]
+    assert cumulative["token_usage_unknown_components"] == 1
+    # Unknown history is never silently collapsed into zero recorded tokens.
+    assert cumulative["token_usage_recorded"] == 10303
+
+
+def test_r2_14_reload_recompute_does_not_double_count():
+    manifest = _fresh_manifest()
+    for _ in range(3):
+        a5.apply_continuation_accounting(
+            manifest, analyzer_calls=1, analyzer_attempts=1, token_usage=33
+        )
+    serialized = json.dumps(manifest, ensure_ascii=False)
+    reloaded = json.loads(serialized)
+    cont = reloaded["attempt_accounting"]["continuation_attempt"]
+    cumulative = reloaded["attempt_accounting"]["cumulative"]
+    hist = reloaded["attempt_accounting"]["historical_attempt"]
+    # Applying zero further events keeps every counter stable.
+    a5.apply_continuation_accounting(reloaded)
+    assert reloaded["attempt_accounting"]["continuation_attempt"] == cont
+    assert reloaded["attempt_accounting"]["cumulative"] == cumulative
+    # Cumulative remains the exact mechanical sum of the two layers.
+    assert cumulative["analyzer_logical_calls"] == (
+        hist["analyzer_logical_calls"] + cont["analyzer_logical_calls"]
+    )
+    assert cumulative["token_usage_recorded"] == (
+        hist["recorded_token_usage"] + cont["token_usage"]
+    )
+
+
+# --- Provider-failure persistence (Sections 10/16-15..20) --------------------
+
+
+class _ExplodingRetriever(_FakeRetriever):
+    def __init__(self, qe: Any, fail_on_call: int = 1) -> None:
+        super().__init__({}, qe)
+        self._fail_on_call = fail_on_call
+        self.call_count = 0
+
+    def analyze(self, question: str) -> Any:
+        self.call_count += 1
+        self.vertex.calls += 1
+        self.vertex.tokens += 123
+        if self.call_count >= self._fail_on_call:
+            raise RuntimeError("simulated provider transport failure")
+        return a5.RetrievalPlan.model_validate(self.plans_by_question[question])
+
+
+def test_r2_15_20_provider_failure_persists_receipt_and_stops(tmp_path, monkeypatch):
+    project = _prepare_tmp_continuation(tmp_path)
+    questions = _phase_p_question_index()
+    plans = _fake_plans_all_inactive(questions)
+    fake = _ExplodingRetriever(_FakeQueryExpansions(_real_query_expansions(), stripped=True))
+    fake.plans_by_question = plans
+    _patch_phase_p_env(monkeypatch, fake)
+
+    with pytest.raises(RuntimeError, match="provider call failed"):
+        a5.execute_phase_p(project)
+
+    # No retry: exactly one analyze call was made.
+    assert fake.call_count == 1
+    artifact = json.loads(
+        (project / a5.CONTINUATION_RAW_PLANS_PATH).read_text(encoding="utf-8")
+    )
+    assert artifact["plans_provider_failed"] == 1
+    record = artifact["plans"][0]
+    assert record["status"] == "PROVIDER_FAILED"
+    receipt = record["provider_failure_receipt"]
+    assert receipt["retries_performed"] == 0
+    assert receipt["retry_policy"] == {"max_retries": 0, "max_provider_attempts_per_case": 1}
+    assert receipt["exception_type"] == "RuntimeError"
+    # Available provider accounting is preserved, not fabricated.
+    assert record["provider_accounting"]["analyzer_provider_attempts"] == 1
+    assert record["provider_accounting"]["token_usage"] == 123
+    assert record["provider_accounting"]["token_usage_unknown"] is False
+    # Terminal slot state is explicit, not an ambiguous STARTED.
+    manifest = json.loads(
+        (project / a5.CONTINUATION_MANIFEST_PATH).read_text(encoding="utf-8")
+    )
+    slot = manifest["phase_p_slots_7"][0]
+    assert slot["status"] == "PROVIDER_FAILED"
+    assert slot["token_usage"] == 123
+    # The continuation stopped: only the failed slot was processed.
+    assert len(artifact["plans"]) == 1
+    # Attempt-local and cumulative accounting were updated exactly once.
+    cont = manifest["attempt_accounting"]["continuation_attempt"]
+    assert cont["analyzer_provider_attempts"] == 1
+    assert cont["token_usage"] == 123
+    cumulative = manifest["attempt_accounting"]["cumulative"]
+    assert cumulative["analyzer_provider_attempts"] == 7  # historical 6 + continuation 1
+    assert cumulative["token_usage_recorded"] == 10303 + 123
+
+
+def test_r2_15b_provider_failure_with_unavailable_stats_marks_unknown(
+    tmp_path, monkeypatch
+):
+    project = _prepare_tmp_continuation(tmp_path)
+    questions = _phase_p_question_index()
+    plans = _fake_plans_all_inactive(questions)
+
+    class _BrokenStatsVertex(_FakeVertex):
+        def stats_delta(self, previous: dict[str, int]) -> dict[str, int]:
+            raise RuntimeError("stats unavailable")
+
+    fake = _ExplodingRetriever(_FakeQueryExpansions(_real_query_expansions(), stripped=True))
+    fake.plans_by_question = plans
+    fake.vertex = _BrokenStatsVertex()
+    _patch_phase_p_env(monkeypatch, fake)
+
+    with pytest.raises(RuntimeError, match="provider call failed"):
+        a5.execute_phase_p(project)
+
+    artifact = json.loads(
+        (project / a5.CONTINUATION_RAW_PLANS_PATH).read_text(encoding="utf-8")
+    )
+    record = artifact["plans"][0]
+    receipt = record["provider_failure_receipt"]
+    assert receipt["provider_attempts_recoverable"] is False
+    assert receipt["provider_attempts"] == "unknown"
+    assert receipt["token_usage"] == "unknown"
+    assert record["provider_accounting"]["token_usage_unknown"] is True
+    manifest = json.loads(
+        (project / a5.CONTINUATION_MANIFEST_PATH).read_text(encoding="utf-8")
+    )
+    slot = manifest["phase_p_slots_7"][0]
+    assert slot["attempts"] == "unknown"
+    assert slot["token_usage"] == "unknown"
+    assert manifest["attempt_accounting"]["continuation_attempt"][
+        "unknown_token_usage_events"
+    ] == 1
+    assert manifest["attempt_accounting"]["cumulative"]["token_usage_unknown_components"] == 2
+
+
+# --- R1 scientific logic unchanged (Sections 7/16-21..23) --------------------
+
+
+def test_r2_21_applicability_semantics_unchanged():
+    assert a5.APPLICABILITY_STATUSES == (
+        "ACTIVE_IDENTIFIABLE", "INACTIVE_NOT_IDENTIFIABLE", "AMBIGUOUS_INVALID",
+    )
+    plan = _synthetic_canonical_plan(
+        matched_rules=["root_macro_usage"], symbols=_full_mask_symbols("root_macro_usage")
+    )
+    ledger = _ledger_for(plan, ["root_macro_usage"])
+    entries = a5.build_batch2_mask_entries("n004", ["root_macro_usage"])
+    receipts, summary = a5.classify_component_applicability(plan, ledger, entries)
+    assert summary == {"active": 2, "inactive": 0, "ambiguous": 0}
+    # INACTIVE-by-absence semantics unchanged.
+    empty_plan = _synthetic_canonical_plan(matched_rules=["root_macro_usage"], symbols=[])
+    receipts2, summary2 = a5.classify_component_applicability(
+        empty_plan, _ledger_for(empty_plan, ["root_macro_usage"]), entries
+    )
+    assert summary2 == {"active": 0, "inactive": 2, "ambiguous": 0}
+
+
+def test_r2_22_partial_applicability_still_blocks_full_batch2_pass():
+    assert a5.classify_rule_r1(
+        protocol_valid=True, baseline_reproduced=True, attributable_loss=False,
+        active_component_count=2, frozen_component_count=3,
+    ) == a5.DISPOSITION_PARTIAL_COMPONENT_HOLD
+    dispositions = {
+        "effective_acceptance_pipeline": a5.DISPOSITION_RETIREMENT_VALIDATED,
+        "root_macro_usage": a5.DISPOSITION_RETIREMENT_VALIDATED,
+        "model_factory_theory": a5.DISPOSITION_PARTIAL_COMPONENT_HOLD,
+    }
+    verdict = a5.evaluate_batch2_verdict_r1(
+        execution_valid=True, protocol_violation=False, missing_inputs=False,
+        plan_equality_all_verified=True, analyzer_provider_calls_downstream=0,
+        reference_baseline_valid=True, per_rule_dispositions=dispositions,
+        critical_retirement_regressions=0, grounding_regressions=0,
+        wrong_version_regressions=0, invalid_provenance_recoveries=0,
+        metric_deltas={k: 0.0 for k in a5.DEFAULT_METRIC_TOLERANCES_KEYS},
+    )
+    assert verdict["verdict_level"] == 5
+    assert verdict["verdict_status"] == "PARTIAL"
+
+
+def test_r2_23_no_case_specific_shortcut_in_r2_code():
+    import inspect
+
+    for func in (a5.verify_continuation_start, a5.apply_continuation_accounting):
+        lowered = inspect.getsource(func).casefold()
+        assert "n014" not in lowered, func.__name__
+        assert "pflueger" not in lowered, func.__name__
+        assert "model_factory_theory" not in lowered, func.__name__
+        assert "g052" not in lowered, func.__name__
+    # The manifest builder may name cohort ids only inside the frozen reusability
+    # decision; it must never reference mask component values.
+    lowered = inspect.getsource(a5.build_continuation_manifest).casefold()
+    assert "pflueger" not in lowered
+    assert "symbols_retired" not in lowered
+    assert "paper_page_hints_retired" not in lowered
+
+
+def test_r2_24_frozen_scientific_constants_unchanged():
+    assert list(b2.CANDIDATE_RULE_IDS) == [
+        "effective_acceptance_pipeline", "root_macro_usage", "model_factory_theory",
+    ]
+    assert b2.FROZEN_RETIREMENT_MASKS["model_factory_theory"]["paper_page_hints_retired"] == {
+        "pflueger_2017": [51, 57, 65]
+    }
+    assert a5.CASE_ORDER == ["g052", "g055", "n003", "n004", "g007", "n014", "g060"]
+    assert len(a5.SCHEDULE_14) == 14
+    assert a5.R1_PER_RULE_DISPOSITIONS == (
+        "INVALID_PROTOCOL", "DEPENDENCY_OBSERVED_RETAIN",
+        "INCONCLUSIVE_BASELINE_NOT_REPRODUCED",
+        "INCONCLUSIVE_NO_ACTIVE_RETIREMENT_COMPONENT",
+        "PARTIAL_RETIREMENT_VALIDATED_COMPONENT_HOLD", "RETIREMENT_VALIDATED",
+    )
+    assert a5.R1_BATCH_VERDICT_LEVELS[5] == (
+        "PARTIAL / RETIREMENT_COMPONENT_APPLICABILITY_INCOMPLETE"
+    )
+    assert a5.R1_BATCH_VERDICT_LEVELS[7] == "PASS / SECOND_BATCH_LOW_RISK_RETIREMENT_VALIDATED"
