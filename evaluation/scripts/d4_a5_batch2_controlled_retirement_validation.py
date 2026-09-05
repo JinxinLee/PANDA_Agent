@@ -1,32 +1,35 @@
 """PANDA Agent D4-A5 — Second-Batch Low-Risk Locator Controlled Retirement Validation.
 
-Pre-exposure implementation freeze only (Commit 1 of the A5 chain).
-Authoritative preregistration: evaluation/d4_a4_batch2_retirement_preregistration.json.
-Authoritative selection artifact: evaluation/d4_a4_batch2_low_risk_retirement_selection.json.
+R1 (D4-A5-R1 — Retirement Applicability and Provenance-Contract Repair) repairs
+the pre-retrieval contract and persistence ordering after the correctly
+fail-closed first A5 attempt:
+  - component-level applicability model (ACTIVE_IDENTIFIABLE /
+    INACTIVE_NOT_IDENTIFIABLE / AMBIGUOUS_INVALID) driven by selected-rule
+    origin, never by raw token presence;
+  - BATCH2_RETIREMENT projections built only from ACTIVE_IDENTIFIABLE
+    components, preserving independent origins;
+  - repaired 6-state per-rule disposition space and 7-level batch verdict;
+  - persistence of every Analyzer acquisition (plan, ledger, origins,
+    projections, applicability receipts, provider accounting) BEFORE any
+    applicability gate can terminate execution;
+  - forward-only continuation artifacts that leave the historical first-attempt
+    manifest/result and the frozen D4-A4 contract untouched;
+  - mechanical reusability audit of the first attempt's persisted plans and
+    minimum-affected reacquisition policy for a separately authorized
+    continuation.
 
-Controlled scientific validation of the frozen Batch-2 low-risk retirement:
-  - Phase P: 7 questions x exactly 1 prospective Query Analyzer plan per case,
-             acquired in frozen order with zero retries, each frozen together
-             with its complete ordered contribution ledger, provenance origins,
-             CURRENT_COMPAT execution projection, and BATCH2_RETIREMENT
-             provenance-aware execution projection into
-             evaluation/d4_a5_raw_prospective_plans.json (Commit 2).
-  - Phase R: 14 paired shared-plan retrieval cells (7 cases x 2 arms) in the
-             exact frozen schedule with 0 Analyzer provider calls. Both arms run
-             the current D4-A3 production retrieval (Batch-1 runtime active);
-             the retirement arm differs ONLY by the frozen execution projection.
-             Frozen into evaluation/d4_a5_raw_paired_retirement_results.json
-             (Commit 3).
-  - Evaluator: deterministic, zero-provider evaluation executed only after
-             Commit 3. Uses the frozen D4-A4 verdict contract module verbatim
-             (masks, pair phenotypes, per-rule dispositions, 6-level verdict).
-
-Production immutability: no production file is modified by this runner. The
-treatment exists only inside the executor through non-mutating execution
-projections. Batch-2 production remains inactive regardless of the outcome.
+Historical context (first A5 attempt, preserved immutable): Phase P stopped at
+the original pre-outcome gate after 6 Analyzer calls because the frozen
+model_factory_theory page-hint mask components (pflueger_2017: [51, 57, 65])
+were absent from the acquired n014 canonical plan — production analyze() drops
+rule page hints when the accepted intent is not algorithm_theory or
+algorithm_implementation. A configured locator on a matched rule is therefore
+not necessarily an active contribution in the final canonical RetrievalPlan.
 
 CLI (run with PYTHONPATH=src):
     python evaluation/scripts/d4_a5_batch2_controlled_retirement_validation.py --project-root . --mode audit
+    python evaluation/scripts/d4_a5_batch2_controlled_retirement_validation.py --project-root . --mode audit-reuse
+    python evaluation/scripts/d4_a5_batch2_controlled_retirement_validation.py --project-root . --mode prepare-continuation-manifest
     python evaluation/scripts/d4_a5_batch2_controlled_retirement_validation.py --project-root . --mode execute-phase-p
     python evaluation/scripts/d4_a5_batch2_controlled_retirement_validation.py --project-root . --mode execute-phase-r
     python evaluation/scripts/d4_a5_batch2_controlled_retirement_validation.py --project-root . --mode evaluate
@@ -44,7 +47,7 @@ import subprocess
 import sys
 import time
 from pathlib import Path
-from typing import Any
+from typing import Any, Mapping
 
 from dotenv import load_dotenv
 
@@ -246,6 +249,105 @@ ORIGIN_RUNTIME_DETERMINISTIC_OVERRIDE = "runtime_deterministic_override"
 RUNTIME_FEEDBACK_OVERRIDE_HINTS = ("li_2026", [141, 149, 151])
 
 VERDICT_INVALID = b2.BATCH_VERDICT_LEVELS[1]
+
+# ---------------------------------------------------------------------------
+# D4-A5-R1 repaired contract constants
+# ---------------------------------------------------------------------------
+
+R1_LIFECYCLE_ID = "D4-A5-R1"
+A5_STOP_HEAD = "dc679f880cda8d2ccdfb709d725e24673c562eab"
+A5_STOP_COMMIT_MESSAGE = "D4-A5 record pre-outcome provenance gate stop"
+EXECUTOR_FREEZE_HEAD = "8579cdc60c3ebb53f9958d3fdd442c1a5454cc91"
+R1_COMMIT_MESSAGE = "D4-A5-R1 repair retirement applicability contract"
+CONTINUATION_PLAN_FREEZE_COMMIT_MESSAGE = "D4-A5 continuation freeze prospective shared plans"
+CONTINUATION_RAW_FREEZE_COMMIT_MESSAGE = "D4-A5 continuation freeze paired raw retirement results"
+CONTINUATION_CLOSEOUT_COMMIT_MESSAGE = "D4-A5 continuation close controlled retirement validation"
+
+# Component applicability tri-state (task Section 6).
+APPLICABILITY_ACTIVE = "ACTIVE_IDENTIFIABLE"
+APPLICABILITY_INACTIVE = "INACTIVE_NOT_IDENTIFIABLE"
+APPLICABILITY_AMBIGUOUS = "AMBIGUOUS_INVALID"
+APPLICABILITY_STATUSES = (APPLICABILITY_ACTIVE, APPLICABILITY_INACTIVE, APPLICABILITY_AMBIGUOUS)
+
+INACTIVE_HELD_REASON = (
+    "Configured retirement component was not contributed by the selected Batch-2 rule to the "
+    "final canonical plan after normal production plan construction (deterministic runtime "
+    "plan-formation policy); no selected-rule contribution exists to subtract. Retirement "
+    "effect not identifiable for this component in this plan; component remains HOLD."
+)
+
+# Repaired per-rule disposition space (task Section 11).
+DISPOSITION_INVALID_PROTOCOL = "INVALID_PROTOCOL"
+DISPOSITION_DEPENDENCY = "DEPENDENCY_OBSERVED_RETAIN"
+DISPOSITION_BASELINE_INCONCLUSIVE = "INCONCLUSIVE_BASELINE_NOT_REPRODUCED"
+DISPOSITION_NO_ACTIVE_COMPONENT = "INCONCLUSIVE_NO_ACTIVE_RETIREMENT_COMPONENT"
+DISPOSITION_PARTIAL_COMPONENT_HOLD = "PARTIAL_RETIREMENT_VALIDATED_COMPONENT_HOLD"
+DISPOSITION_RETIREMENT_VALIDATED = "RETIREMENT_VALIDATED"
+R1_PER_RULE_DISPOSITIONS = (
+    DISPOSITION_INVALID_PROTOCOL,
+    DISPOSITION_DEPENDENCY,
+    DISPOSITION_BASELINE_INCONCLUSIVE,
+    DISPOSITION_NO_ACTIVE_COMPONENT,
+    DISPOSITION_PARTIAL_COMPONENT_HOLD,
+    DISPOSITION_RETIREMENT_VALIDATED,
+)
+
+# Repaired 7-level batch verdict precedence (task Section 13).
+R1_VERDICT_LEVEL_1_INVALID = "INVALID / BATCH2_PROTOCOL_OR_SHARED_PLAN_CONSTRUCTION_FAILED"
+R1_VERDICT_LEVEL_2_BASELINE = "INCONCLUSIVE / BATCH2_REFERENCE_BASELINE_NOT_REPRODUCED"
+R1_VERDICT_LEVEL_3_DEPENDENCY = "PARTIAL / SOME_RETIREMENT_CANDIDATES_RETAIN_DEPENDENCY"
+R1_VERDICT_LEVEL_4_SAFETY = "FAIL / BATCH2_CRITICAL_OR_GROUNDING_REGRESSION"
+R1_VERDICT_LEVEL_5_APPLICABILITY = "PARTIAL / RETIREMENT_COMPONENT_APPLICABILITY_INCOMPLETE"
+R1_VERDICT_LEVEL_6_AGGREGATE = "PARTIAL / BATCH2_AGGREGATE_REGRESSION_EXCEEDS_BOUNDED_TOLERANCE"
+R1_VERDICT_LEVEL_7_PASS = "PASS / SECOND_BATCH_LOW_RISK_RETIREMENT_VALIDATED"
+R1_BATCH_VERDICT_LEVELS = {
+    1: R1_VERDICT_LEVEL_1_INVALID,
+    2: R1_VERDICT_LEVEL_2_BASELINE,
+    3: R1_VERDICT_LEVEL_3_DEPENDENCY,
+    4: R1_VERDICT_LEVEL_4_SAFETY,
+    5: R1_VERDICT_LEVEL_5_APPLICABILITY,
+    6: R1_VERDICT_LEVEL_6_AGGREGATE,
+    7: R1_VERDICT_LEVEL_7_PASS,
+}
+
+# Forward-only continuation artifacts (historical first-attempt artifacts remain
+# immutable at the A5 stop commit dc679f8).
+HISTORICAL_MANIFEST_PATH = MANIFEST_PATH
+HISTORICAL_RAW_PLANS_PATH = RAW_PLANS_PATH
+CONTINUATION_MANIFEST_PATH = "evaluation/d4_a5_continuation_execution_manifest.json"
+CONTINUATION_RAW_PLANS_PATH = "evaluation/d4_a5_continuation_raw_prospective_plans.json"
+CONTINUATION_RAW_RESULTS_PATH = "evaluation/d4_a5_continuation_raw_paired_retirement_results.json"
+CONTINUATION_EVALUATOR_RESULTS_PATH = "evaluation/d4_a5_continuation_evaluator_results.json"
+CONTINUATION_RESULT_PATH = "evaluation/d4_a5_continuation_result.json"
+R1_PREREGISTRATION_PATH = "evaluation/d4_a5_r1_retirement_applicability_preregistration.json"
+R1_RESULT_PATH = "evaluation/d4_a5_r1_result.json"
+R1_REPORT_PATH = "evaluation/D4_A5_R1_RETIREMENT_APPLICABILITY_AND_PROVENANCE_CONTRACT_REPAIR.md"
+
+REUSE_REUSABLE = "REUSABLE_FROZEN_SCIENTIFIC_PLAN"
+REUSE_NOT_REUSABLE = "HISTORICAL_ATTEMPT_NOT_REUSABLE"
+REUSE_NEVER_EXECUTED = "NEVER_EXECUTED"
+
+# Historical first-attempt cost (immutable reference; never overwritten).
+HISTORICAL_ATTEMPT_ACCOUNTING = {
+    "attempt_id": "D4-A5_ATTEMPT_1",
+    "manifest_path": MANIFEST_PATH,
+    "preserved_at_commit": A5_STOP_HEAD,
+    "analyzer_logical_calls": 6,
+    "analyzer_provider_attempts": 6,
+    "retries": 0,
+    "recorded_token_usage": 10303,
+    "unknown_token_usage": {
+        "case_id": "n014",
+        "note": "slot 6 consumed one Analyzer call whose token usage was not recorded "
+        "(fail-closed stop before slot bookkeeping); unknown stays explicitly unknown",
+    },
+    "embedding_calls": 0,
+    "reranker_calls": 0,
+    "downstream_analyzer_calls": 0,
+    "qa_verifier_judge_calls": 0,
+    "db_qdrant_writes": 0,
+    "protected_dataset_access": 0,
+}
 
 
 # ---------------------------------------------------------------------------
@@ -664,6 +766,160 @@ def verify_projection_diff(
     return True, None
 
 
+def classify_component_applicability(
+    canonical_plan: dict[str, Any],
+    ledger: list[dict[str, Any]],
+    configured_entries: list[dict[str, Any]],
+) -> tuple[list[dict[str, Any]], dict[str, int]]:
+    """Component-level applicability classification (task Section 6/7/10).
+
+    For every configured retirement-mask component of a matched selected Batch-2
+    rule, classifies the SELECTED-RULE CONTRIBUTION — not the raw token presence —
+    into exactly one of ACTIVE_IDENTIFIABLE / INACTIVE_NOT_IDENTIFIABLE /
+    AMBIGUOUS_INVALID. Fully generic: no case-id, rule-id value, or component
+    value special-casing.
+
+    Semantics:
+      - component present in the final canonical plan AND the ledger entry
+        carries the selected-rule origin -> ACTIVE_IDENTIFIABLE;
+      - component present but ONLY via independent origins (selected rule did
+        not contribute it after normal production plan construction) ->
+        INACTIVE_NOT_IDENTIFIABLE; the independently contributed token/page
+        remains active and untouched;
+      - component absent from the final canonical plan (the plan is the
+        unmodified production analyze() output, so the absence is a
+        deterministic consequence of normal production plan formation) ->
+        INACTIVE_NOT_IDENTIFIABLE;
+      - component present without identifiable/complete provenance, or any
+        ledger/plan contradiction -> AMBIGUOUS_INVALID (fail closed).
+    """
+    plan_symbols = set(canonical_plan.get("symbols") or [])
+    plan_hints = {
+        (str(src), int(page))
+        for src, pages in (canonical_plan.get("paper_page_hints") or {}).items()
+        for page in (pages or [])
+    }
+    by_id = {entry["contribution_id"]: entry for entry in ledger}
+
+    receipts: list[dict[str, Any]] = []
+    summary = {"active": 0, "inactive": 0, "ambiguous": 0}
+    for entry in configured_entries:
+        rid = entry["rule_id"]
+        if entry["kind"] == "symbol":
+            contribution_id = f"symbol::{entry['value']}"
+            plan_present = entry["value"] in plan_symbols
+        else:
+            contribution_id = f"paper_page_hint::{entry['source_id']}#{entry['pdf_page']}"
+            plan_present = (entry["source_id"], int(entry["pdf_page"])) in plan_hints
+        ledger_entry = by_id.get(contribution_id)
+        origins = list((ledger_entry or {}).get("provenance_origin_ids") or [])
+        ledger_claims_present = bool((ledger_entry or {}).get("plan_present"))
+
+        selected_origin_present = rid in origins
+        independent_origins = [o for o in origins if o != rid]
+        ambiguity_reason = None
+        if plan_present and ledger_entry is None:
+            status = APPLICABILITY_AMBIGUOUS
+            ambiguity_reason = (
+                "Component is present in the final canonical plan but has no contribution-ledger "
+                "entry; selected-rule ownership cannot be determined."
+            )
+        elif plan_present and not origins:
+            status = APPLICABILITY_AMBIGUOUS
+            ambiguity_reason = (
+                "Component is present in the final canonical plan but its provenance is "
+                "empty/incomplete; selected-rule ownership cannot be determined."
+            )
+        elif ledger_entry is not None and ledger_claims_present != plan_present:
+            status = APPLICABILITY_AMBIGUOUS
+            ambiguity_reason = (
+                "Contribution ledger and canonical plan contradict each other about component "
+                "presence; provenance is unreliable."
+            )
+        elif plan_present and selected_origin_present:
+            status = APPLICABILITY_ACTIVE
+        elif plan_present and not selected_origin_present:
+            status = APPLICABILITY_INACTIVE
+        else:  # not plan_present
+            status = APPLICABILITY_INACTIVE
+
+        if status == APPLICABILITY_ACTIVE:
+            action = "remove_selected_rule_origin_preserve_independent_origins"
+        elif status == APPLICABILITY_INACTIVE:
+            action = "none_inactive_nothing_to_subtract"
+        else:
+            action = "not_constructed_ambiguous_fail_closed"
+        summary_key = {"ACTIVE_IDENTIFIABLE": "active", "INACTIVE_NOT_IDENTIFIABLE": "inactive",
+                       "AMBIGUOUS_INVALID": "ambiguous"}[status]
+        summary[summary_key] += 1
+        receipts.append({
+            "rule_id": rid,
+            "component_kind": entry["kind"],
+            "component_value": entry["value"],
+            "source_id": entry["source_id"],
+            "pdf_page": entry["pdf_page"],
+            "configured_in_frozen_mask": True,
+            "selected_rule_origin_present": selected_origin_present,
+            "provenance_origin_ids": origins,
+            "independent_origins": independent_origins,
+            "final_canonical_plan_presence": plan_present,
+            "applicability_status": status,
+            "retirement_projection_action": action,
+            "held_reason": INACTIVE_HELD_REASON if status == APPLICABILITY_INACTIVE else None,
+            "provenance_ambiguity_reason": ambiguity_reason,
+        })
+    return receipts, summary
+
+
+def build_retirement_projection_r1(
+    canonical_plan: dict[str, Any],
+    ledger: list[dict[str, Any]],
+    component_receipts: list[dict[str, Any]],
+    matched_retirement_rules: list[str],
+    masks: dict[str, dict[str, Any]] | None = None,
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Repaired BATCH2_RETIREMENT projection (task Section 8).
+
+    Removes ONLY selected-rule origins classified ACTIVE_IDENTIFIABLE, preserving
+    independent origins; does nothing for INACTIVE_NOT_IDENTIFIABLE components.
+    Raises on AMBIGUOUS_INVALID (the caller must stop before retrieval). The
+    canonical plan is never mutated.
+    """
+    ambiguous = [
+        r for r in component_receipts if r["applicability_status"] == APPLICABILITY_AMBIGUOUS
+    ]
+    if ambiguous:
+        raise ValueError(
+            "AMBIGUOUS_INVALID components present; retirement projection must not be "
+            f"constructed: {[r['component_value'] for r in ambiguous]}"
+        )
+    active_entries = [
+        {
+            "rule_id": r["rule_id"],
+            "kind": r["component_kind"],
+            "value": r["component_value"],
+            "source_id": r["source_id"],
+            "pdf_page": r["pdf_page"],
+        }
+        for r in component_receipts
+        if r["applicability_status"] == APPLICABILITY_ACTIVE
+    ]
+    projected, receipts = build_retirement_projection(
+        canonical_plan, ledger, active_entries, matched_retirement_rules, masks
+    )
+    receipts["applicability_summary"] = {
+        "active": sum(1 for r in component_receipts if r["applicability_status"] == APPLICABILITY_ACTIVE),
+        "inactive": sum(1 for r in component_receipts if r["applicability_status"] == APPLICABILITY_INACTIVE),
+        "ambiguous": 0,
+        "inactive_components": [
+            {"rule_id": r["rule_id"], "kind": r["component_kind"], "value": r["component_value"],
+             "held_reason": r["held_reason"]}
+            for r in component_receipts if r["applicability_status"] == APPLICABILITY_INACTIVE
+        ],
+    }
+    return projected, receipts
+
+
 def build_provenance_gate_receipt(
     case_id: str,
     attribution: dict[str, Any],
@@ -673,8 +929,15 @@ def build_provenance_gate_receipt(
     current_compat_projection: dict[str, Any],
     batch2_retirement_projection: dict[str, Any],
     projection_receipts: dict[str, Any],
+    component_receipts: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
-    """Pre-outcome provenance gate (task Section 11 / D4-A4 pre_outcome_gate)."""
+    """Repaired pre-outcome provenance gate (R1; task Sections 6-10).
+
+    INACTIVE_NOT_IDENTIFIABLE components are NOT a gate failure: they carry
+    HOLD receipts and are excluded from the projection. Only AMBIGUOUS_INVALID
+    provenance, ledger/plan contradiction, projection drift, or control
+    divergence fail the gate.
+    """
     selected_expected = list(attribution["matched_retirement_rules"])
     matched_batch2 = [rid for rid in selected_expected if rid in matched_rule_ids]
     gate: dict[str, Any] = {"case_id": case_id, "checks": {}}
@@ -684,43 +947,37 @@ def build_provenance_gate_receipt(
         "observed": matched_batch2,
         "pass": sorted(matched_batch2) == sorted(selected_expected),
     }
-    mask_entries = build_batch2_mask_entries(case_id, matched_batch2)
-    expected_mask_count = 0
-    for rid in matched_batch2:
-        frozen = b2.FROZEN_RETIREMENT_MASKS[rid]
-        expected_mask_count += len(frozen.get("symbols_retired", []))
-        expected_mask_count += sum(
-            len(pages or []) for pages in (frozen.get("paper_page_hints_retired") or {}).values()
+    configured_entries = build_batch2_mask_entries(case_id, matched_batch2)
+    if component_receipts is None:
+        component_receipts, _ = classify_component_applicability(
+            canonical_plan, ledger, configured_entries
         )
-    gate["checks"]["mask_entry_count"] = {
-        "expected": expected_mask_count,
-        "observed": len(mask_entries),
-        "pass": len(mask_entries) == expected_mask_count
-        and (len(mask_entries) > 0) == bool(selected_expected),
+    gate["checks"]["configured_mask_size"] = {
+        "expected": len(configured_entries),
+        "observed": len(component_receipts),
+        "pass": len(configured_entries) == len(component_receipts)
+        and (len(configured_entries) > 0) == bool(selected_expected),
     }
     coverage_ok, coverage_error = validate_ledger_coverage(canonical_plan, ledger)
     gate["checks"]["ledger_coverage"] = {"pass": coverage_ok, "error": coverage_error}
 
-    represented = True
-    represented_error = None
-    if mask_entries:
-        by_id = {entry["contribution_id"]: entry for entry in ledger}
-        for entry in mask_entries:
-            cid = (
-                f"symbol::{entry['value']}"
-                if entry["kind"] == "symbol"
-                else f"paper_page_hint::{entry['source_id']}#{entry['pdf_page']}"
-            )
-            ledger_entry = by_id.get(cid)
-            if ledger_entry is None or not ledger_entry.get("plan_present"):
-                represented = False
-                represented_error = f"Masked contribution not represented in canonical plan: {cid}"
-                break
-            if entry["rule_id"] not in (ledger_entry["provenance_origin_ids"] or []):
-                represented = False
-                represented_error = f"Masked contribution lacks rule-origin provenance: {cid}"
-                break
-    gate["checks"]["frozen_mask_represented"] = {"pass": represented, "error": represented_error}
+    ambiguous = [
+        r for r in component_receipts if r["applicability_status"] == APPLICABILITY_AMBIGUOUS
+    ]
+    gate["checks"]["component_applicability"] = {
+        "pass": not ambiguous,
+        "active": sum(1 for r in component_receipts if r["applicability_status"] == APPLICABILITY_ACTIVE),
+        "inactive": sum(1 for r in component_receipts if r["applicability_status"] == APPLICABILITY_INACTIVE),
+        "ambiguous": len(ambiguous),
+        "ambiguous_details": [
+            {"value": r["component_value"], "reason": r["provenance_ambiguity_reason"]}
+            for r in ambiguous
+        ],
+        "inactive_note": (
+            "INACTIVE_NOT_IDENTIFIABLE components are HOLD, not protocol failures; they are "
+            "excluded from the retirement projection and never count toward retirement success."
+        ),
+    }
 
     gate["checks"]["current_compat_projection_identical"] = {
         "pass": current_compat_projection == canonical_plan,
@@ -739,7 +996,384 @@ def build_provenance_gate_receipt(
         for item in gate["checks"].values()
     )
     gate["projection_receipts"] = projection_receipts
+    gate["component_applicability_receipts"] = component_receipts
     return gate
+
+
+def classify_rule_r1(
+    *,
+    protocol_valid: bool,
+    baseline_reproduced: bool,
+    attributable_loss: bool,
+    active_component_count: int,
+    frozen_component_count: int,
+) -> str:
+    """Repaired per-rule disposition precedence (task Section 11).
+
+    1. INVALID_PROTOCOL  — ambiguous provenance / malformed input / plan
+                           inequality / projection drift / impossible attribution
+    2. DEPENDENCY_OBSERVED_RETAIN — any attributable T/F loss from removal of
+                           the rule's ACTIVE_IDENTIFIABLE contribution set;
+                           takes precedence over baseline incompleteness
+    3. INCONCLUSIVE_BASELINE_NOT_REPRODUCED — no attributable loss but the
+                           required active-case baseline evidence is missing
+    4. INCONCLUSIVE_NO_ACTIVE_RETIREMENT_COMPONENT — protocol valid, baseline
+                           reproduced, but ZERO frozen components are
+                           ACTIVE_IDENTIFIABLE (nothing was scientifically tested)
+    5. PARTIAL_RETIREMENT_VALIDATED_COMPONENT_HOLD — protocol valid, baseline
+                           reproduced, no attributable loss, and only a strict
+                           subset of the frozen components is ACTIVE_IDENTIFIABLE
+    6. RETIREMENT_VALIDATED — protocol valid, baseline reproduced, no
+                           attributable loss, and ALL frozen components are
+                           ACTIVE_IDENTIFIABLE
+    """
+    if any(type(v) is not bool for v in (protocol_valid, baseline_reproduced, attributable_loss)):
+        return DISPOSITION_INVALID_PROTOCOL
+    if type(active_component_count) is not int or type(frozen_component_count) is not int:
+        return DISPOSITION_INVALID_PROTOCOL
+    if active_component_count < 0 or frozen_component_count < 0:
+        return DISPOSITION_INVALID_PROTOCOL
+    if active_component_count > frozen_component_count:
+        return DISPOSITION_INVALID_PROTOCOL
+    if (
+        not protocol_valid
+        or frozen_component_count == 0
+        or (attributable_loss and active_component_count == 0)
+    ):
+        # Contradictory or malformed disposition inputs are protocol-invalid:
+        # an empty frozen mask is impossible for the selected rules, and an
+        # attributable T/F loss cannot exist without an ACTIVE_IDENTIFIABLE
+        # contribution set that was actually removed.
+        return DISPOSITION_INVALID_PROTOCOL
+    if attributable_loss:
+        return DISPOSITION_DEPENDENCY
+    if not baseline_reproduced:
+        return DISPOSITION_BASELINE_INCONCLUSIVE
+    if active_component_count == 0:
+        return DISPOSITION_NO_ACTIVE_COMPONENT
+    if active_component_count < frozen_component_count:
+        return DISPOSITION_PARTIAL_COMPONENT_HOLD
+    return DISPOSITION_RETIREMENT_VALIDATED
+
+
+def evaluate_batch2_verdict_r1(
+    *,
+    execution_valid: bool | None = None,
+    protocol_violation: bool | None = None,
+    missing_inputs: bool | None = None,
+    plan_equality_all_verified: bool | None = None,
+    analyzer_provider_calls_downstream: int | None = None,
+    reference_baseline_valid: bool | None = None,
+    per_rule_dispositions: Mapping[str, str] | None = None,
+    critical_retirement_regressions: int | None = None,
+    grounding_regressions: int | None = None,
+    wrong_version_regressions: int | None = None,
+    invalid_provenance_recoveries: int | None = None,
+    metric_deltas: Mapping[str, float] | None = None,
+    metric_tolerances: Mapping[str, float] | None = None,
+) -> dict[str, Any]:
+    """Repaired 7-level batch verdict precedence (task Section 13).
+
+    Evaluation order: L1 -> L2 -> L4 -> L3 -> L5 -> L6 -> L7.
+    L4 (safety) wins over L3 (dependency) when both coexist; L2 (baseline
+    inconclusive) precedes safety, consistent with the historical A4 contract.
+    No undefined verdict state exists: every complete input combination maps to
+    exactly one level.
+    """
+    flags = (execution_valid, protocol_violation, missing_inputs,
+             plan_equality_all_verified, reference_baseline_valid)
+    counters = (analyzer_provider_calls_downstream, critical_retirement_regressions,
+                grounding_regressions, wrong_version_regressions, invalid_provenance_recoveries)
+    complete = (
+        all(type(flag) is bool for flag in flags)
+        and all(type(count) is int and count >= 0 for count in counters)
+        and isinstance(per_rule_dispositions, Mapping)
+        and set(per_rule_dispositions) == set(b2.CANDIDATE_RULE_IDS)
+        and all(d in R1_PER_RULE_DISPOSITIONS for d in per_rule_dispositions.values())
+        and isinstance(metric_deltas, Mapping)
+        and set(DEFAULT_METRIC_TOLERANCES_KEYS) <= set(metric_deltas)
+        and all(type(metric_deltas[k]) in (int, float) and math.isfinite(metric_deltas[k])
+                and -1 <= metric_deltas[k] <= 1 for k in DEFAULT_METRIC_TOLERANCES_KEYS)
+        and (metric_tolerances is None or dict(metric_tolerances) == b2.DEFAULT_METRIC_BOUNDED_TOLERANCES)
+    )
+    if not complete:
+        return {
+            "verdict_level": 1, "verdict": R1_VERDICT_LEVEL_1_INVALID,
+            "verdict_status": "INVALID",
+            "verdict_reason": "Incomplete or malformed repaired evaluator inputs.",
+        }
+
+    # Level 1: protocol / shared plan / input completeness defects.
+    if (
+        not execution_valid
+        or protocol_violation
+        or missing_inputs
+        or not plan_equality_all_verified
+        or analyzer_provider_calls_downstream > 0
+        or any(d == DISPOSITION_INVALID_PROTOCOL for d in per_rule_dispositions.values())
+    ):
+        return {
+            "verdict_level": 1, "verdict": R1_VERDICT_LEVEL_1_INVALID,
+            "verdict_status": "INVALID",
+            "verdict_reason": "Protocol violation, execution invalid, missing inputs, shared "
+            "plan inequality, downstream Analyzer call, or INVALID_PROTOCOL rule disposition.",
+        }
+
+    # Level 2: reference baseline not reproduced.
+    if (
+        not reference_baseline_valid
+        or any(d == DISPOSITION_BASELINE_INCONCLUSIVE for d in per_rule_dispositions.values())
+    ):
+        return {
+            "verdict_level": 2, "verdict": R1_VERDICT_LEVEL_2_BASELINE,
+            "verdict_status": "INCONCLUSIVE",
+            "verdict_reason": "One or more active direct-rule reference baselines are not "
+            "reproduced under the repaired disposition contract.",
+        }
+
+    # Level 4: safety failures win over dependency (Level 3).
+    has_safety_violation = (
+        critical_retirement_regressions > 0
+        or grounding_regressions > 0
+        or wrong_version_regressions > 0
+        or invalid_provenance_recoveries > 0
+    )
+    if has_safety_violation:
+        violations = []
+        if critical_retirement_regressions > 0:
+            violations.append(f"critical_retirement_regressions={critical_retirement_regressions}")
+        if grounding_regressions > 0:
+            violations.append(f"grounding_regressions={grounding_regressions}")
+        if wrong_version_regressions > 0:
+            violations.append(f"wrong_version_regressions={wrong_version_regressions}")
+        if invalid_provenance_recoveries > 0:
+            violations.append(f"invalid_provenance_recoveries={invalid_provenance_recoveries}")
+        return {
+            "verdict_level": 4, "verdict": R1_VERDICT_LEVEL_4_SAFETY,
+            "verdict_status": "FAIL",
+            "verdict_reason": f"Strict retirement safety rule violated: {', '.join(violations)} "
+            "(safety failure wins over retained dependency).",
+        }
+
+    # Level 3: retained dependency without safety violation.
+    if any(d == DISPOSITION_DEPENDENCY for d in per_rule_dispositions.values()):
+        retained = [r for r, d in per_rule_dispositions.items() if d == DISPOSITION_DEPENDENCY]
+        return {
+            "verdict_level": 3, "verdict": R1_VERDICT_LEVEL_3_DEPENDENCY,
+            "verdict_status": "PARTIAL",
+            "verdict_reason": f"Observed retirement dependency on rule(s) {retained}; locator "
+            "component(s) must be retained pending further decision.",
+        }
+
+    # Level 5: component applicability incomplete.
+    if any(
+        d in (DISPOSITION_NO_ACTIVE_COMPONENT, DISPOSITION_PARTIAL_COMPONENT_HOLD)
+        for d in per_rule_dispositions.values()
+    ):
+        incomplete = [
+            r for r, d in per_rule_dispositions.items()
+            if d in (DISPOSITION_NO_ACTIVE_COMPONENT, DISPOSITION_PARTIAL_COMPONENT_HOLD)
+        ]
+        return {
+            "verdict_level": 5, "verdict": R1_VERDICT_LEVEL_5_APPLICABILITY,
+            "verdict_status": "PARTIAL",
+            "verdict_reason": f"Rule(s) {incomplete} have inactive or untestable frozen "
+            "retirement components in their active direct cases; the full Batch2 mask was not "
+            "completely testable. Inactive components remain HOLD.",
+        }
+
+    # Level 6: aggregate tolerance failure after full component validation.
+    tols = dict(b2.DEFAULT_METRIC_BOUNDED_TOLERANCES)
+    if metric_tolerances:
+        tols.update(metric_tolerances)
+    exceeded = [
+        f"{name} delta {metric_deltas.get(name):.4f} < {tol:.4f}"
+        for name, tol in tols.items()
+        if metric_deltas.get(name) is not None and metric_deltas.get(name) < tol
+    ]
+    if exceeded:
+        return {
+            "verdict_level": 6, "verdict": R1_VERDICT_LEVEL_6_AGGREGATE,
+            "verdict_status": "PARTIAL",
+            "verdict_reason": "All selected rules fully validated without safety failure, but "
+            f"the aggregate bounded tolerance is exceeded: {', '.join(exceeded)}.",
+        }
+
+    # Level 7: clean pass.
+    if all(d == DISPOSITION_RETIREMENT_VALIDATED for d in per_rule_dispositions.values()):
+        return {
+            "verdict_level": 7, "verdict": R1_VERDICT_LEVEL_7_PASS,
+            "verdict_status": "PASS",
+            "verdict_reason": "Second-batch low-risk retirement validated: all candidate rules "
+            "fully validated with every frozen component ACTIVE_IDENTIFIABLE, zero "
+            "critical/grounding/version/provenance regressions, and all bounded tolerances "
+            "satisfied.",
+        }
+    # Defensive fallback (unreachable for complete inputs): fail closed to Level 5.
+    return {
+        "verdict_level": 5, "verdict": R1_VERDICT_LEVEL_5_APPLICABILITY,
+        "verdict_status": "PARTIAL",
+        "verdict_reason": "Unclassified non-passing disposition without critical safety "
+        "violation; treated as applicability-incomplete.",
+    }
+
+
+DEFAULT_METRIC_TOLERANCES_KEYS = (
+    "recall_at_5",
+    "recall_at_10",
+    "recall_at_20",
+    "combined_candidate_recall",
+    "final_evidence_recall",
+    "critical_final_evidence_recall",
+)
+
+
+def audit_historical_plan_reusability(project_root: Path) -> dict[str, Any]:
+    """Mechanical reusability audit of the first A5 attempt (task Sections 18-20).
+
+    Reads the immutable stopped manifest committed at the A5 stop head and, for
+    each case, checks whether ALL of the following are durably recoverable
+    without any provider call: exact canonical RetrievalPlan, canonical
+    serialized representation, complete contribution ledger, exact origin
+    provenance, CURRENT_COMPAT projection, retirement projection, deterministic
+    signature, provider accounting. A plan_signature alone never qualifies.
+    """
+    historical = _load_json(project_root / HISTORICAL_MANIFEST_PATH)
+    slots = {s["case_id"]: s for s in historical["phase_p_slots_7"]}
+    required_fields = (
+        "canonical_plan",
+        "canonical_serialization",
+        "contribution_ledger",
+        "provenance_origin_receipts",
+        "current_compat_execution_projection",
+        "batch2_retirement_execution_projection",
+        "plan_signature",
+        "provider_accounting",
+    )
+    raw_plans_committed = git_blob(project_root, HISTORICAL_RAW_PLANS_PATH, "HEAD") is not None
+    per_case: dict[str, dict[str, Any]] = {}
+    for cid in CASE_ORDER:
+        slot = slots.get(cid)
+        if slot is None or slot["status"] == "NOT_EXECUTED":
+            per_case[cid] = {
+                "previous_execution_state": "NEVER_EXECUTED",
+                "persisted_fields": sorted((slot or {}).keys()),
+                "classification": REUSE_NEVER_EXECUTED,
+                "reason": "Slot never consumed an Analyzer call and has no plan evidence.",
+                "reacquisition_required": True,
+            }
+            continue
+        persisted = sorted(slot.keys())
+        missing = [f for f in required_fields if f not in persisted]
+        classification = REUSE_REUSABLE if not missing else REUSE_NOT_REUSABLE
+        reason = (
+            "Complete frozen scientific plan artifact present."
+            if classification == REUSE_REUSABLE
+            else (
+                f"Stopped manifest persists only slot-level bookkeeping "
+                f"({', '.join(persisted)}); the complete canonical plan, serialization, "
+                f"contribution ledger, origin provenance, and both execution projections were "
+                f"never durably persisted (missing: {', '.join(missing)}). "
+                f"Raw plans artifact committed: {raw_plans_committed}. A plan_signature alone "
+                f"does not satisfy the reuse contract."
+            )
+        )
+        per_case[cid] = {
+            "previous_execution_state": slot["status"],
+            "persisted_fields": persisted,
+            "classification": classification,
+            "reason": reason,
+            "reacquisition_required": classification != REUSE_REUSABLE,
+        }
+    reusable = [c for c, v in per_case.items() if v["classification"] == REUSE_REUSABLE]
+    not_reusable = [c for c, v in per_case.items() if v["classification"] == REUSE_NOT_REUSABLE]
+    never_executed = [c for c, v in per_case.items() if v["classification"] == REUSE_NEVER_EXECUTED]
+    return {
+        "historical_manifest": HISTORICAL_MANIFEST_PATH,
+        "historical_raw_plans_artifact_committed": raw_plans_committed,
+        "required_artifact_fields": list(required_fields),
+        "per_case": per_case,
+        "reusable_cases": reusable,
+        "non_reusable_cases": not_reusable,
+        "never_executed_cases": never_executed,
+        "future_continuation_policy": {
+            "reuse_required": "Every case classified REUSABLE_FROZEN_SCIENTIFIC_PLAN must be "
+            "reused, never redrawn.",
+            "reacquisition_required": [c for c in CASE_ORDER if per_case[c]["reacquisition_required"]],
+            "fresh_complete_acquisition": len(reusable) == 0,
+            "note": "A fresh complete 7-plan acquisition for a separately authorized "
+            "continuation is not an outcome-improvement rerun because no valid frozen 7-plan "
+            "scientific artifact exists.",
+        },
+    }
+
+
+def build_continuation_manifest(project_root: Path, reuse_audit: dict[str, Any]) -> dict[str, Any]:
+    """Forward-only continuation execution manifest (task Sections 3/22).
+
+    Preserves the historical first attempt by reference (immutable at the A5
+    stop commit), records attempt-local and cumulative provider accounting, and
+    marks each Phase P slot with its reuse classification and reacquisition
+    eligibility.
+    """
+    manifest = build_initial_manifest(project_root)
+    manifest["checkpoint"] = "D4-A5-CONTINUATION"
+    manifest["stage"] = "d4_a5_continuation_batch2_controlled_retirement_execution_manifest"
+    manifest["created_at"] = _utc_now()
+    manifest["repair_lineage"] = {
+        "historical_a5_executor_freeze_head": EXECUTOR_FREEZE_HEAD,
+        "historical_a5_stop_head": A5_STOP_HEAD,
+        "historical_a5_stop_verdict": "INVALID / BATCH2_PROTOCOL_OR_SHARED_PLAN_CONSTRUCTION_FAILED",
+        "repair_lifecycle": R1_LIFECYCLE_ID,
+        "repair_preregistration": R1_PREREGISTRATION_PATH,
+    }
+    manifest["artifact_paths"] = {
+        "manifest": CONTINUATION_MANIFEST_PATH,
+        "raw_plans": CONTINUATION_RAW_PLANS_PATH,
+        "raw_results": CONTINUATION_RAW_RESULTS_PATH,
+        "evaluator_results": CONTINUATION_EVALUATOR_RESULTS_PATH,
+        "result": CONTINUATION_RESULT_PATH,
+        "historical_manifest_untouched": HISTORICAL_MANIFEST_PATH,
+    }
+    manifest["attempt_accounting"] = {
+        "historical_attempt": dict(HISTORICAL_ATTEMPT_ACCOUNTING),
+        "continuation_attempt": {
+            "attempt_id": "D4-A5_ATTEMPT_2_CONTINUATION",
+            "analyzer_logical_calls": 0,
+            "analyzer_provider_attempts": 0,
+            "retries": 0,
+            "token_usage": 0,
+            "unknown_token_usage": [],
+            "embedding_calls": 0,
+            "reranker_calls": 0,
+            "downstream_analyzer_calls": 0,
+            "qa_verifier_judge_calls": 0,
+            "db_qdrant_writes": 0,
+            "protected_dataset_access": 0,
+        },
+        "cumulative": {
+            "analyzer_logical_calls": HISTORICAL_ATTEMPT_ACCOUNTING["analyzer_logical_calls"],
+            "analyzer_provider_attempts": HISTORICAL_ATTEMPT_ACCOUNTING["analyzer_provider_attempts"],
+            "retries": 0,
+            "token_usage_recorded": HISTORICAL_ATTEMPT_ACCOUNTING["recorded_token_usage"],
+            "token_usage_unknown_components": 1,
+            "embedding_calls": 0,
+            "reranker_calls": 0,
+        },
+        "accounting_rule": "Historical and continuation attempt costs are recorded separately; "
+        "cumulative cost is their sum. Unknown historical token usage stays explicitly unknown "
+        "and is never fabricated.",
+    }
+    for slot in manifest["phase_p_slots_7"]:
+        audit = reuse_audit["per_case"][slot["case_id"]]
+        slot["reuse_classification"] = audit["classification"]
+        slot["reacquisition_required"] = audit["reacquisition_required"]
+        slot["reuse_source"] = (
+            {"manifest": HISTORICAL_MANIFEST_PATH, "raw_plans": HISTORICAL_RAW_PLANS_PATH}
+            if audit["classification"] == REUSE_REUSABLE else None
+        )
+        slot["status"] = "NOT_EXECUTED"
+    return manifest
 
 
 # ---------------------------------------------------------------------------
@@ -993,28 +1627,138 @@ def build_initial_manifest(project_root: Path) -> dict[str, Any]:
 # ---------------------------------------------------------------------------
 
 
-def execute_phase_p(project_root: Path) -> dict[str, Any]:
-    load_dotenv(project_root / ".env")
-    freeze = verify_executor_freeze_gate(project_root)
+def verify_r1_freeze_gate(project_root: Path) -> dict[str, Any]:
+    """Continuation freeze gate: HEAD is the R1 repair commit (direct child of
+    the historical A5 stop commit) with production and historical artifacts
+    unchanged."""
+    assert_clean_worktree(project_root)
+    head = git_head(project_root)
+    message = git_commit_message(project_root, head)
+    if message != R1_COMMIT_MESSAGE:
+        raise RuntimeError(
+            f"Continuation Phase P requires HEAD to be the R1 repair commit "
+            f"('{R1_COMMIT_MESSAGE}'), got '{message}'"
+        )
+    parent = git_parent(project_root, head)
+    if parent != A5_STOP_HEAD:
+        raise RuntimeError(f"R1 commit parent must be {A5_STOP_HEAD}, got {parent}")
+    changed = git_paths_unchanged_between(
+        project_root, STARTING_HEAD, head, list(PRODUCTION_IMMUTABLE_PATHS)
+    )
+    if changed:
+        raise RuntimeError(f"Production/frozen paths changed since the A5 starting boundary: {changed}")
+    historical_immutable = [
+        HISTORICAL_MANIFEST_PATH, RESULT_PATH, PREREGISTRATION_PATH, SELECTION_PATH,
+    ]
+    changed = git_paths_unchanged_between(project_root, A5_STOP_HEAD, head, historical_immutable)
+    if changed:
+        raise RuntimeError(f"Historical A5 attempt artifacts were modified after the stop: {changed}")
+    return {"head": head, "parent": parent, "message": message}
 
-    manifest = _load_json(project_root / MANIFEST_PATH)
+
+def _new_continuation_plans_artifact(freeze_head: str) -> dict[str, Any]:
+    return {
+        "schema_version": "1.0.0",
+        "checkpoint": "D4-A5-CONTINUATION",
+        "stage": "Phase P — Prospective Shared Plan Acquisition (Continuation Attempt)",
+        "created_at": _utc_now(),
+        "attempt_id": "D4-A5_ATTEMPT_2_CONTINUATION",
+        "starting_head": STARTING_HEAD,
+        "historical_a5_stop_head": A5_STOP_HEAD,
+        "r1_freeze_head": freeze_head,
+        "persistence_contract": "PERSIST_BEFORE_GATE — every Analyzer acquisition (canonical "
+        "plan, serialization, signature, matched rules, contribution ledger, origins, "
+        "applicability receipts, projections when constructible, provider accounting) is durably "
+        "written before any applicability gate can terminate execution; gate-stopped "
+        "acquisitions retain full accounting and diagnostic evidence.",
+        "applicability_contract": {
+            "statuses": list(APPLICABILITY_STATUSES),
+            "semantics_authority": "selected-rule origin in the contribution ledger, never raw "
+            "token presence; absence from the unmodified production plan is INACTIVE, not INVALID",
+        },
+        "plan_freeze_state": "ACQUISITION_IN_PROGRESS",
+        "PLAN_FREEZE_BOUNDARY_ESTABLISHED": False,
+        "PHASE_R_RETRIEVAL_EXECUTED": False,
+        "EVALUATOR_EXECUTED": False,
+        "SCIENTIFIC_VERDICT_COMPUTED": False,
+        "model_contract": {
+            "generation_model": EXPECTED_MODEL,
+            "embedding_model": EXPECTED_EMBEDDING_MODEL,
+            "location": EXPECTED_VERTEX_LOCATION,
+            "temperature": EXPECTED_TEMPERATURE,
+        },
+        "prompt_authority": "src/panda_agent/prompts.py:QUERY_ANALYZER_SYSTEM_PROMPT",
+        "exact_acquisition_case_order": list(CASE_ORDER),
+        "max_provider_attempts_per_case": MAX_PROVIDER_ATTEMPTS_PER_CASE,
+        "retry_policy": {"max_retries": 0},
+        "plans_planned": len(CASE_ORDER),
+        "plans_recorded": 0,
+        "plans_completed": 0,
+        "plans_reused": 0,
+        "plans_gate_stopped": 0,
+        "plans_failed": 0,
+        "accounting": {
+            "analyzer_calls": 0,
+            "analyzer_provider_attempts": 0,
+            "embedding_calls": 0,
+            "reranker_calls": 0,
+            "logical_model_calls": 0,
+            "retries": 0,
+            "token_usage": 0,
+            "token_usage_unknown_components": 0,
+            "qa_calls": 0,
+            "verifier_calls": 0,
+            "judge_calls": 0,
+            "db_writes": 0,
+            "qdrant_writes": 0,
+            "reindex": 0,
+            "novel_validation_runs": 0,
+            "novel_holdout_runs": 0,
+            "protected_dataset_access": 0,
+            "historical_attempt_reference": dict(HISTORICAL_ATTEMPT_ACCOUNTING),
+        },
+        "plans": [],
+    }
+
+
+def _write_continuation_plans_artifact(project_root: Path, artifact: dict[str, Any]) -> None:
+    _save_json(project_root / CONTINUATION_RAW_PLANS_PATH, artifact)
+
+
+def execute_phase_p(project_root: Path) -> dict[str, Any]:
+    """Continuation Phase P with persistence-before-gate (R1; task Section 16).
+
+    Acquires exactly one prospective Analyzer plan per case that requires
+    reacquisition, in frozen order, with zero retries. Every acquisition is
+    durably persisted — including its provider accounting, contribution ledger,
+    component applicability receipts, and (when constructible) both execution
+    projections — BEFORE any applicability gate can terminate execution. A gate
+    stop (AMBIGUOUS_INVALID) records GATE_STOPPED state with full accounting and
+    stops the run; it never discards consumed-cost evidence.
+    """
+    load_dotenv(project_root / ".env")
+    freeze = verify_r1_freeze_gate(project_root)
+
+    manifest_path = project_root / CONTINUATION_MANIFEST_PATH
+    if not manifest_path.exists():
+        raise RuntimeError(
+            f"Continuation manifest {CONTINUATION_MANIFEST_PATH} missing; run "
+            f"prepare-continuation-manifest first (requires separate authorization for execution)."
+        )
+    manifest = _load_json(manifest_path)
     exposure = manifest.setdefault("outcome_exposure_state", {})
     if exposure.get("D4_A5_OUTCOME_EXPOSURE") in ("PLANS_FROZEN", "RAW_RETRIEVAL_COMPLETE", "EVALUATION_COMPLETE"):
         print("[PHASE P ALREADY COMPLETED] Loading existing frozen plans.")
-        return _load_json(project_root / RAW_PLANS_PATH)
+        return _load_json(project_root / CONTINUATION_RAW_PLANS_PATH)
     if exposure.get("D4_A5_OUTCOME_EXPOSURE") not in ("NOT_STARTED", "PLAN_ACQUISITION_STARTED"):
         raise RuntimeError(f"Unexpected exposure state: {exposure}")
 
-    settings_check = {
-        "generation_model": EXPECTED_MODEL,
-        "embedding_model": EXPECTED_EMBEDDING_MODEL,
-        "location": EXPECTED_VERTEX_LOCATION,
-        "temperature": EXPECTED_TEMPERATURE,
-    }
-
     exposure["D4_A5_OUTCOME_EXPOSURE"] = "PLAN_ACQUISITION_STARTED"
-    exposure["executor_freeze_head"] = freeze["head"]
-    _save_json(project_root / MANIFEST_PATH, manifest)
+    exposure["r1_freeze_head"] = freeze["head"]
+    _save_json(manifest_path, manifest)
+
+    artifact = _new_continuation_plans_artifact(freeze["head"])
+    _write_continuation_plans_artifact(project_root, artifact)
 
     retriever = Retriever(project_root)
     if retriever.query_expansions is None or len(retriever.query_expansions.rules) != 54:
@@ -1030,43 +1774,54 @@ def execute_phase_p(project_root: Path) -> dict[str, Any]:
         for rule in retriever.query_expansions.model_dump(mode="python")["rules"]
     }
 
-    plan_records: list[dict[str, Any]] = []
-    total_tokens = 0
-    total_attempts = 0
-
-    print(f"[PHASE P] Acquiring {len(CASE_ORDER)} prospective plans (retries=0)...")
+    print("[PHASE P] Acquiring prospective plans (retries=0, persist-before-gate)...")
 
     for i, cid in enumerate(CASE_ORDER, start=1):
         slot = manifest["phase_p_slots_7"][i - 1]
-        if slot["status"] == "COMPLETED":
-            print(f"  Slot #{i} ({cid}) already completed, skipping.")
+        if slot["status"] in ("COMPLETED", "REUSED_FROZEN_PLAN", "GATE_STOPPED_AMBIGUOUS_INVALID"):
+            print(f"  Slot #{i} ({cid}) already recorded ({slot['status']}), skipping.")
             continue
         if slot["status"] == "STARTED":
             raise RuntimeError(
                 f"Slot #{i} ({cid}) in ambiguous STARTED state; fail closed on restart."
             )
+        if not slot.get("reacquisition_required", True):
+            raise RuntimeError(
+                f"Slot #{i} ({cid}) is marked reusable but no valid reusable frozen plan exists "
+                f"in the historical artifacts; reuse requires the complete frozen record."
+            )
 
         question_text = all_questions[cid].query
-
         slot["status"] = "STARTED"
         slot["started_at"] = _utc_now()
-        _save_json(project_root / MANIFEST_PATH, manifest)
+        _save_json(manifest_path, manifest)
 
+        # --- 1. Provider acquisition; accounting captured immediately. -------
         stats_before = retriever.vertex.stats_snapshot()
         t0 = time.time()
-        # Frozen retry policy: exactly one attempt; any failure fails closed.
-        raw_plan = retriever.analyze(question_text)
+        raw_plan = retriever.analyze(question_text)  # frozen retry policy: exactly one attempt
         elapsed = round(time.time() - t0, 3)
         stats_delta = retriever.vertex.stats_delta(stats_before)
         provider_attempts = stats_delta.get("model_calls", 1)
         token_usage = stats_delta.get("token_usage", 0)
-        total_tokens += token_usage
-        total_attempts += provider_attempts
+        provider_accounting = {
+            "analyzer_logical_calls": 1,
+            "analyzer_provider_attempts": provider_attempts,
+            "retries": 0,
+            "embedding_calls": 0,
+            "reranker_calls": 0,
+            "token_usage": token_usage,
+            "token_usage_note": "recorded before any applicability gate evaluation",
+            "model": EXPECTED_MODEL,
+            "location": EXPECTED_VERTEX_LOCATION,
+            "temperature": EXPECTED_TEMPERATURE,
+            "elapsed_seconds": elapsed,
+        }
 
+        # --- 2. Deterministic plan/ledger/applicability construction. -------
         plan_dict = raw_plan.model_dump(mode="json")
         RetrievalPlan.model_validate(plan_dict)
         sig_str, sig_payload = compute_plan_signature(plan_dict)
-
         diagnostics = plan_dict.get("analysis_diagnostics") or {}
         matched_rule_ids = list(diagnostics.get("matched_expansion_rules") or [])
         attribution = CASE_ATTRIBUTION[cid]
@@ -1090,20 +1845,26 @@ def execute_phase_p(project_root: Path) -> dict[str, Any]:
             )
 
         ledger = build_contribution_ledger(plan_dict, rules_by_id, matched_rule_ids)
-        mask_entries = build_batch2_mask_entries(cid, matched_batch2)
+        configured_entries = build_batch2_mask_entries(cid, matched_batch2)
+        component_receipts, applicability_summary = classify_component_applicability(
+            plan_dict, ledger, configured_entries
+        )
         current_compat_projection = copy.deepcopy(plan_dict)
-        projected, projection_receipts = build_retirement_projection(
-            plan_dict, ledger, mask_entries, matched_batch2
-        )
-        gate = build_provenance_gate_receipt(
-            cid, attribution, matched_rule_ids, plan_dict, ledger,
-            current_compat_projection, projected, projection_receipts,
-        )
-        if not gate["pass"]:
-            failed = [k for k, v in gate["checks"].items() if not v.get("pass", False)]
-            raise RuntimeError(
-                f"Case {cid}: pre-outcome provenance gate FAILED ({failed}); "
-                f"verdict path {VERDICT_INVALID}. No downstream retrieval may run."
+        gate_error = None
+        projected = None
+        projection_receipts = None
+        if applicability_summary["ambiguous"] == 0:
+            try:
+                projected, projection_receipts = build_retirement_projection_r1(
+                    plan_dict, ledger, component_receipts, matched_batch2
+                )
+            except ValueError as exc:
+                gate_error = str(exc)
+        else:
+            gate_error = (
+                f"{applicability_summary['ambiguous']} configured retirement component(s) are "
+                f"AMBIGUOUS_INVALID; treatment construction would require guessing or global "
+                f"deletion."
             )
 
         record = {
@@ -1121,86 +1882,116 @@ def execute_phase_p(project_root: Path) -> dict[str, Any]:
             "matched_batch1_rule_ids": matched_batch1,
             "matched_batch2_rule_ids": matched_batch2,
             "contribution_ledger": ledger,
+            "provenance_origin_receipts": [
+                {
+                    "contribution_id": e["contribution_id"],
+                    "provenance_origin_ids": e["provenance_origin_ids"],
+                    "origin_types": e["origin_types"],
+                    "plan_present": e["plan_present"],
+                }
+                for e in ledger
+            ],
+            "component_applicability_receipts": component_receipts,
+            "component_applicability_summary": applicability_summary,
             "current_compat_execution_projection": current_compat_projection,
             "batch2_retirement_execution_projection": projected,
             "projection_diff_receipts": projection_receipts,
-            "provenance_gate": gate,
-            "provider_accounting": {
-                "analyzer_logical_calls": 1,
-                "analyzer_provider_attempts": provider_attempts,
-                "retries": 0,
-                "embedding_calls": 0,
-                "reranker_calls": 0,
-                "token_usage": token_usage,
-                "elapsed_seconds": elapsed,
-            },
-            "status": "COMPLETED",
+            "provider_accounting": provider_accounting,
+            "gate_error": gate_error,
+            "status": "PERSISTED_PRE_GATE",
             "started_at": slot["started_at"],
-            "completed_at": _utc_now(),
+            "persisted_at": _utc_now(),
         }
-        plan_records.append(record)
+
+        # --- 3. PERSIST BEFORE GATE: durable record with full accounting. ---
+        artifact["plans"] = [r for r in artifact["plans"] if r["case_id"] != cid]
+        artifact["plans"].append(record)
+        artifact["plans_recorded"] = len(artifact["plans"])
+        artifact["accounting"]["analyzer_calls"] = sum(
+            r["provider_accounting"]["analyzer_logical_calls"] for r in artifact["plans"]
+            if r["status"] != "REUSED_FROZEN_PLAN"
+        )
+        artifact["accounting"]["analyzer_provider_attempts"] = sum(
+            r["provider_accounting"]["analyzer_provider_attempts"] for r in artifact["plans"]
+            if r["status"] != "REUSED_FROZEN_PLAN"
+        )
+        artifact["accounting"]["token_usage"] = sum(
+            r["provider_accounting"]["token_usage"] for r in artifact["plans"]
+            if r["status"] != "REUSED_FROZEN_PLAN"
+        )
+        artifact["accounting"]["logical_model_calls"] = artifact["accounting"]["analyzer_calls"]
+        _write_continuation_plans_artifact(project_root, artifact)
+
+        # --- 4. Gate evaluation (after durable persistence). ----------------
+        if gate_error is not None:
+            record["status"] = "GATE_STOPPED_AMBIGUOUS_INVALID"
+            record["completed_at"] = _utc_now()
+            artifact["plans_gate_stopped"] += 1
+            _write_continuation_plans_artifact(project_root, artifact)
+            slot["status"] = "GATE_STOPPED_AMBIGUOUS_INVALID"
+            slot["completed_at"] = record["completed_at"]
+            slot["token_usage"] = token_usage
+            slot["attempts"] = provider_attempts
+            slot["gate_error"] = gate_error
+            exposure["plans_gate_stopped"] = artifact["plans_gate_stopped"]
+            _save_json(manifest_path, manifest)
+            raise RuntimeError(
+                f"Case {cid}: applicability gate STOPPED after durable persistence "
+                f"({gate_error}); verdict path {R1_VERDICT_LEVEL_1_INVALID}. Consumed provider "
+                f"accounting and plan evidence are preserved in {CONTINUATION_RAW_PLANS_PATH}."
+            )
+
+        gate = build_provenance_gate_receipt(
+            cid, attribution, matched_rule_ids, plan_dict, ledger,
+            current_compat_projection, projected, projection_receipts,
+            component_receipts=component_receipts,
+        )
+        if not gate["pass"]:
+            failed = [k for k, v in gate["checks"].items() if not v.get("pass", False)]
+            record["status"] = "GATE_STOPPED_PROTOCOL"
+            record["provenance_gate"] = gate
+            record["completed_at"] = _utc_now()
+            artifact["plans_gate_stopped"] += 1
+            _write_continuation_plans_artifact(project_root, artifact)
+            slot["status"] = "GATE_STOPPED_PROTOCOL"
+            slot["token_usage"] = token_usage
+            slot["attempts"] = provider_attempts
+            _save_json(manifest_path, manifest)
+            raise RuntimeError(
+                f"Case {cid}: provenance gate FAILED ({failed}) after durable persistence; "
+                f"verdict path {R1_VERDICT_LEVEL_1_INVALID}."
+            )
+        record["provenance_gate"] = gate
+        record["status"] = "COMPLETED"
+        record["completed_at"] = _utc_now()
+        artifact["plans_completed"] += 1
+        _write_continuation_plans_artifact(project_root, artifact)
 
         slot["status"] = "COMPLETED"
         slot["completed_at"] = record["completed_at"]
         slot["token_usage"] = token_usage
         slot["attempts"] = provider_attempts
         slot["plan_signature"] = sig_payload
-        exposure["plans_completed"] = len(plan_records)
-        _save_json(project_root / MANIFEST_PATH, manifest)
+        slot["applicability_summary"] = applicability_summary
+        exposure["plans_completed"] = artifact["plans_completed"]
+        _save_json(manifest_path, manifest)
 
         print(
             f"  Slot #{i}/{len(CASE_ORDER)} ({cid}) COMPLETED in {elapsed}s: "
-            f"{len(plan_dict.get('concepts') or [])} concepts, "
-            f"{len(plan_dict.get('symbols') or [])} symbols, "
-            f"batch2={matched_batch2}"
+            f"active={applicability_summary['active']} "
+            f"inactive={applicability_summary['inactive']} "
+            f"ambiguous={applicability_summary['ambiguous']}"
         )
 
-    raw_artifact = {
-        "schema_version": "1.0.0",
-        "checkpoint": "D4-A5",
-        "stage": "Phase P — Prospective Shared Plan Acquisition",
-        "created_at": _utc_now(),
-        "starting_head": STARTING_HEAD,
-        "executor_freeze_head": freeze["head"],
-        "plan_freeze_state": "PLANS_FROZEN",
-        "PLAN_FREEZE_BOUNDARY_ESTABLISHED": True,
-        "PHASE_R_RETRIEVAL_EXECUTED": False,
-        "EVALUATOR_EXECUTED": False,
-        "SCIENTIFIC_VERDICT_COMPUTED": False,
-        "model_contract": settings_check,
-        "prompt_authority": "src/panda_agent/prompts.py:QUERY_ANALYZER_SYSTEM_PROMPT",
-        "exact_acquisition_case_order": list(CASE_ORDER),
-        "max_provider_attempts_per_case": MAX_PROVIDER_ATTEMPTS_PER_CASE,
-        "retry_policy": {"max_retries": 0},
-        "plans_planned": len(CASE_ORDER),
-        "plans_completed": len(plan_records),
-        "plans_failed": 0,
-        "accounting": {
-            "analyzer_calls": len(plan_records),
-            "analyzer_provider_attempts": total_attempts,
-            "embedding_calls": 0,
-            "reranker_calls": 0,
-            "logical_model_calls": len(plan_records),
-            "retries": 0,
-            "token_usage": total_tokens,
-            "qa_calls": 0,
-            "verifier_calls": 0,
-            "judge_calls": 0,
-            "db_writes": 0,
-            "qdrant_writes": 0,
-            "reindex": 0,
-            "novel_validation_runs": 0,
-            "novel_holdout_runs": 0,
-            "protected_dataset_access": 0,
-        },
-        "plans": plan_records,
-    }
-    _save_json(project_root / RAW_PLANS_PATH, raw_artifact)
+    artifact["plan_freeze_state"] = "PLANS_FROZEN"
+    artifact["PLAN_FREEZE_BOUNDARY_ESTABLISHED"] = True
+    artifact["created_at_finalized"] = _utc_now()
+    _write_continuation_plans_artifact(project_root, artifact)
 
     exposure["D4_A5_OUTCOME_EXPOSURE"] = "PLANS_FROZEN"
-    _save_json(project_root / MANIFEST_PATH, manifest)
-    print(f"[PHASE P COMPLETE] {len(plan_records)} plans frozen to {RAW_PLANS_PATH}")
-    return raw_artifact
+    _save_json(manifest_path, manifest)
+    print(f"[PHASE P COMPLETE] {artifact['plans_completed']} plans frozen to {CONTINUATION_RAW_PLANS_PATH}")
+    return artifact
 
 
 # ---------------------------------------------------------------------------
@@ -1317,22 +2108,49 @@ def build_cell_record(
     }
 
 
+def verify_continuation_plan_freeze_gate(project_root: Path, r1_freeze_head: str) -> dict[str, Any]:
+    """Continuation plan-freeze gate: HEAD is the continuation plan-freeze commit
+    (child of the R1 commit); the continuation plans artifact is committed and
+    clean; historical and production paths remain unchanged."""
+    head = _require_freeze_commit(
+        project_root, CONTINUATION_PLAN_FREEZE_COMMIT_MESSAGE, r1_freeze_head
+    )
+    rel = CONTINUATION_RAW_PLANS_PATH.replace("\\", "/")
+    proc = subprocess.run(
+        ["git", "cat-file", "-e", f"HEAD:{rel}"],
+        cwd=str(project_root),
+        capture_output=True,
+        text=True,
+    )
+    if proc.returncode != 0:
+        raise RuntimeError(
+            f"{CONTINUATION_RAW_PLANS_PATH} is not committed at HEAD; plan freeze gate failed"
+        )
+    changed = git_paths_unchanged_between(
+        project_root, A5_STOP_HEAD, head,
+        list(PRODUCTION_IMMUTABLE_PATHS) + [HISTORICAL_MANIFEST_PATH, RESULT_PATH],
+    )
+    if changed:
+        raise RuntimeError(f"Protected paths drifted during the continuation: {changed}")
+    return {"head": head, "r1_freeze_head": r1_freeze_head}
+
+
 def execute_phase_r(project_root: Path) -> dict[str, Any]:
     load_dotenv(project_root / ".env")
-    manifest = _load_json(project_root / MANIFEST_PATH)
+    manifest = _load_json(project_root / CONTINUATION_MANIFEST_PATH)
     exposure = manifest.setdefault("outcome_exposure_state", {})
     if exposure.get("D4_A5_OUTCOME_EXPOSURE") in ("RAW_RETRIEVAL_COMPLETE", "EVALUATION_COMPLETE"):
         print("[PHASE R ALREADY COMPLETED] Loading existing paired results.")
-        return _load_json(project_root / RAW_RESULTS_PATH)
+        return _load_json(project_root / CONTINUATION_RAW_RESULTS_PATH)
     if exposure.get("D4_A5_OUTCOME_EXPOSURE") != "PLANS_FROZEN":
         raise RuntimeError(f"Phase R requires PLANS_FROZEN exposure, got {exposure}")
 
-    executor_freeze_head = exposure.get("executor_freeze_head")
-    if not executor_freeze_head:
-        raise RuntimeError("Manifest is missing executor_freeze_head; plan freeze provenance unknown")
-    freeze = verify_plan_freeze_gate(project_root, executor_freeze_head)
+    r1_freeze_head = exposure.get("r1_freeze_head")
+    if not r1_freeze_head:
+        raise RuntimeError("Manifest is missing r1_freeze_head; plan freeze provenance unknown")
+    freeze = verify_continuation_plan_freeze_gate(project_root, r1_freeze_head)
 
-    raw_plans = _load_json(project_root / RAW_PLANS_PATH)
+    raw_plans = _load_json(project_root / CONTINUATION_RAW_PLANS_PATH)
     plans_by_case = {p["case_id"]: p for p in raw_plans["plans"]}
     if sorted(plans_by_case) != sorted(CASE_ORDER) or len(raw_plans["plans"]) != 7:
         raise RuntimeError("Plan artifact does not contain exactly the frozen 7-case cohort")
@@ -1341,12 +2159,17 @@ def execute_phase_r(project_root: Path) -> dict[str, Any]:
     if plans_planned != 7 or plans_completed != 7:
         raise RuntimeError("Plan artifact accounting incomplete")
     for record in raw_plans["plans"]:
+        if record["status"] != "COMPLETED":
+            raise RuntimeError(
+                f"Plan record for {record['case_id']} is {record['status']}; PLANS_FROZEN "
+                f"requires every acquisition COMPLETED"
+            )
         if not record["provenance_gate"]["pass"]:
             raise RuntimeError(f"Plan provenance gate not PASS for {record['case_id']}")
 
     exposure["D4_A5_OUTCOME_EXPOSURE"] = "RAW_RETRIEVAL_STARTED"
     exposure["plan_freeze_head"] = freeze["head"]
-    _save_json(project_root / MANIFEST_PATH, manifest)
+    _save_json(project_root / CONTINUATION_MANIFEST_PATH, manifest)
 
     retriever = Retriever(project_root)
     gold_ds = load_gold_dataset(project_root / GOLD_QUESTIONS_PATH)
@@ -1380,7 +2203,7 @@ def execute_phase_r(project_root: Path) -> dict[str, Any]:
 
         manifest_cell["status"] = "STARTED"
         manifest_cell["started_at"] = _utc_now()
-        _save_json(project_root / MANIFEST_PATH, manifest)
+        _save_json(project_root / CONTINUATION_MANIFEST_PATH, manifest)
 
         plan_record = plans_by_case[cell["case_id"]]
         question_text = all_questions[cell["case_id"]].query
@@ -1425,7 +2248,7 @@ def execute_phase_r(project_root: Path) -> dict[str, Any]:
         manifest_cell["plan_equality_verified"] = record["plan_equality_arm_projection_verified"]
         manifest_cell["token_usage"] = stats["token_usage"]
         exposure["formal_cells_completed"] = len(cell_records)
-        _save_json(project_root / MANIFEST_PATH, manifest)
+        _save_json(project_root / CONTINUATION_MANIFEST_PATH, manifest)
 
         # Persist the complete raw cell record after successful completion.
         _write_raw_results(project_root, cell_records, freeze, total_tokens, total_attempts,
@@ -1441,8 +2264,8 @@ def execute_phase_r(project_root: Path) -> dict[str, Any]:
         total_embedding, total_reranker, final=True,
     )
     exposure["D4_A5_OUTCOME_EXPOSURE"] = "RAW_RETRIEVAL_COMPLETE"
-    _save_json(project_root / MANIFEST_PATH, manifest)
-    print(f"[PHASE R COMPLETE] 14 cells frozen to {RAW_RESULTS_PATH}")
+    _save_json(project_root / CONTINUATION_MANIFEST_PATH, manifest)
+    print(f"[PHASE R COMPLETE] 14 cells frozen to {CONTINUATION_RAW_RESULTS_PATH}")
     return raw_artifact
 
 
@@ -1459,11 +2282,13 @@ def _write_raw_results(
 ) -> dict[str, Any]:
     artifact = {
         "schema_version": "1.0.0",
-        "checkpoint": "D4-A5",
-        "stage": "Phase R — Paired Shared-Plan Batch2 Retirement Retrieval",
+        "checkpoint": "D4-A5-CONTINUATION",
+        "stage": "Phase R — Paired Shared-Plan Batch2 Retirement Retrieval (Continuation Attempt)",
         "created_at": _utc_now(),
+        "attempt_id": "D4-A5_ATTEMPT_2_CONTINUATION",
         "starting_head": STARTING_HEAD,
-        "executor_freeze_head": freeze["executor_freeze_head"],
+        "historical_a5_stop_head": A5_STOP_HEAD,
+        "r1_freeze_head": freeze["r1_freeze_head"],
         "plan_freeze_head": freeze["head"],
         "PLAN_FREEZE_BOUNDARY_ESTABLISHED": True,
         "PHASE_R_RETRIEVAL_EXECUTED": True,
@@ -1505,14 +2330,14 @@ def _write_raw_results(
         "authority": {
             "preregistration": PREREGISTRATION_PATH,
             "selection": SELECTION_PATH,
-            "raw_plans": RAW_PLANS_PATH,
-            "manifest": MANIFEST_PATH,
-            "executor_freeze_head": freeze["executor_freeze_head"],
+            "raw_plans": CONTINUATION_RAW_PLANS_PATH,
+            "manifest": CONTINUATION_MANIFEST_PATH,
+            "r1_freeze_head": freeze["r1_freeze_head"],
             "plan_freeze_head": freeze["head"],
         },
         "slots": cell_records,
     }
-    _save_json(project_root / RAW_RESULTS_PATH, artifact)
+    _save_json(project_root / CONTINUATION_RAW_RESULTS_PATH, artifact)
     return artifact
 
 
@@ -1634,30 +2459,62 @@ def _final_retention(
     return final_ret, pool_ret
 
 
+def verify_continuation_raw_freeze_gate(project_root: Path, plan_freeze_head: str) -> dict[str, Any]:
+    """Continuation raw-freeze gate: HEAD is the continuation raw-freeze commit
+    (child of the continuation plan-freeze commit); raw + plan artifacts are
+    committed and unchanged; historical/production paths remain untouched."""
+    head = _require_freeze_commit(
+        project_root, CONTINUATION_RAW_FREEZE_COMMIT_MESSAGE, plan_freeze_head
+    )
+    for rel in (CONTINUATION_RAW_RESULTS_PATH, CONTINUATION_RAW_PLANS_PATH):
+        proc = subprocess.run(
+            ["git", "cat-file", "-e", f"HEAD:{rel.replace(chr(92), '/')}"],
+            cwd=str(project_root),
+            capture_output=True,
+            text=True,
+        )
+        if proc.returncode != 0:
+            raise RuntimeError(f"{rel} is not committed at HEAD; raw freeze gate failed")
+    changed = git_paths_unchanged_between(
+        project_root, A5_STOP_HEAD, head,
+        list(PRODUCTION_IMMUTABLE_PATHS) + [HISTORICAL_MANIFEST_PATH, RESULT_PATH],
+    )
+    if changed:
+        raise RuntimeError(f"Protected paths drifted during the continuation: {changed}")
+    plans_unchanged = git_paths_unchanged_between(
+        project_root, plan_freeze_head, head, [CONTINUATION_RAW_PLANS_PATH]
+    )
+    if plans_unchanged:
+        raise RuntimeError("Continuation plans artifact changed after plan freeze")
+    return {"head": head, "plan_freeze_head": plan_freeze_head}
+
+
 def evaluate_d4_a5(project_root: Path) -> dict[str, Any]:
-    """Deterministic, zero-provider evaluator using the frozen D4-A4 contract."""
+    """Deterministic, zero-provider evaluator using the repaired R1 contract
+    (component applicability, 6-state dispositions, 7-level batch verdict)."""
     load_dotenv(project_root / ".env")
-    manifest = _load_json(project_root / MANIFEST_PATH)
+    manifest = _load_json(project_root / CONTINUATION_MANIFEST_PATH)
     exposure = manifest.get("outcome_exposure_state", {})
     if exposure.get("D4_A5_OUTCOME_EXPOSURE") == "EVALUATION_COMPLETE":
         print("[EVALUATOR ALREADY COMPLETED] Loading existing evaluator results.")
-        return _load_json(project_root / EVALUATOR_RESULTS_PATH)
+        return _load_json(project_root / CONTINUATION_EVALUATOR_RESULTS_PATH)
     if exposure.get("D4_A5_OUTCOME_EXPOSURE") != "RAW_RETRIEVAL_COMPLETE":
         raise RuntimeError(f"Evaluator requires RAW_RETRIEVAL_COMPLETE, got {exposure}")
 
     plan_freeze_head = exposure.get("plan_freeze_head")
     if not plan_freeze_head:
         raise RuntimeError("Manifest missing plan_freeze_head")
-    freeze = verify_raw_freeze_gate(project_root, plan_freeze_head)
+    freeze = verify_continuation_raw_freeze_gate(project_root, plan_freeze_head)
 
     prereg = _load_json(project_root / PREREGISTRATION_PATH)
-    plans_data = _load_json(project_root / RAW_PLANS_PATH)
-    raw_data = _load_json(project_root / RAW_RESULTS_PATH)
+    plans_data = _load_json(project_root / CONTINUATION_RAW_PLANS_PATH)
+    raw_data = _load_json(project_root / CONTINUATION_RAW_RESULTS_PATH)
 
     execution_valid, validity_error = validate_raw_artifact_structural_validity(raw_data, plans_data)
     if not execution_valid:
         raise RuntimeError(
-            f"Raw artifact structurally invalid; verdict path {VERDICT_INVALID}: {validity_error}"
+            f"Raw artifact structurally invalid; verdict path {R1_VERDICT_LEVEL_1_INVALID}: "
+            f"{validity_error}"
         )
 
     gold_ds = load_gold_dataset(project_root / GOLD_QUESTIONS_PATH)
@@ -1707,7 +2564,8 @@ def evaluate_d4_a5(project_root: Path) -> dict[str, Any]:
                 "pair_phenotype_pre_rerank": b2.classify_pair(cc_pool[gid], rt_pool[gid]),
             }
 
-    # Per-rule protocol validity, effective removals, and attribution receipts.
+    # Per-rule protocol validity, component applicability, effective removals,
+    # and attribution receipts (repaired R1 contract).
     rule_receipts: dict[str, dict[str, Any]] = {}
     for rid in b2.CANDIDATE_RULE_IDS:
         active_groups = ACTIVE_RULE_CASE_GROUPS[rid]
@@ -1716,6 +2574,12 @@ def evaluate_d4_a5(project_root: Path) -> dict[str, Any]:
             "active_case_groups": active_groups,
             "protocol_valid": True,
             "protocol_errors": [],
+            "frozen_component_count": 0,
+            "active_component_count": 0,
+            "inactive_component_count": 0,
+            "ambiguous_component_count": 0,
+            "validated_active_components": [],
+            "held_inactive_components": [],
             "effective_removal_count": 0,
             "removed_effective_values": [],
             "surviving_via_independent_origin": [],
@@ -1736,6 +2600,31 @@ def evaluate_d4_a5(project_root: Path) -> dict[str, Any]:
             if slot_cc["plan_equality_arm_projection_verified"] is not True or slot_rt["plan_equality_arm_projection_verified"] is not True:
                 receipts["protocol_valid"] = False
                 receipts["protocol_errors"].append(f"{case_id}: cell plan equality not verified")
+            for comp in plan_record.get("component_applicability_receipts") or []:
+                if comp["rule_id"] != rid:
+                    continue
+                receipts["frozen_component_count"] += 1
+                if comp["applicability_status"] == "ACTIVE_IDENTIFIABLE":
+                    receipts["active_component_count"] += 1
+                    receipts["validated_active_components"].append({
+                        "case_id": case_id,
+                        "kind": comp["component_kind"],
+                        "value": comp["component_value"],
+                    })
+                elif comp["applicability_status"] == "INACTIVE_NOT_IDENTIFIABLE":
+                    receipts["inactive_component_count"] += 1
+                    receipts["held_inactive_components"].append({
+                        "case_id": case_id,
+                        "kind": comp["component_kind"],
+                        "value": comp["component_value"],
+                        "held_reason": comp["held_reason"],
+                    })
+                else:
+                    receipts["ambiguous_component_count"] += 1
+                    receipts["protocol_valid"] = False
+                    receipts["protocol_errors"].append(
+                        f"{case_id}: AMBIGUOUS_INVALID component {comp['component_value']}"
+                    )
             for entry in diff["removed_rule_origin_entries"]:
                 if entry["retired_rule_origins"] and rid in entry["retired_rule_origins"]:
                     if entry["effectively_removed"]:
@@ -1879,10 +2768,12 @@ def evaluate_d4_a5(project_root: Path) -> dict[str, Any]:
     dispositions: dict[str, str] = {}
     for rid in b2.CANDIDATE_RULE_IDS:
         receipts = rule_receipts[rid]
-        dispositions[rid] = b2.classify_rule(
+        dispositions[rid] = classify_rule_r1(
             protocol_valid=receipts["protocol_valid"],
             baseline_reproduced=baseline_reproduced[rid],
             attributable_loss=bool(attributable_losses[rid]),
+            active_component_count=receipts["active_component_count"],
+            frozen_component_count=receipts["frozen_component_count"],
         )
 
     # Metrics: macro arithmetic mean over the six answered cases.
@@ -1921,7 +2812,7 @@ def evaluate_d4_a5(project_root: Path) -> dict[str, Any]:
         for key in PRIMARY_METRIC_KEYS
     }
 
-    verdict = b2.evaluate_batch2_verdict(
+    verdict = evaluate_batch2_verdict_r1(
         execution_valid=True,
         protocol_violation=False,
         missing_inputs=False,
@@ -1938,18 +2829,20 @@ def evaluate_d4_a5(project_root: Path) -> dict[str, Any]:
 
     evaluator_results = {
         "schema_version": "1.0.0",
-        "checkpoint": "D4-A5",
-        "stage": "Deterministic Evaluator — Batch2 Controlled Retirement Validation",
+        "checkpoint": "D4-A5-CONTINUATION",
+        "stage": "Deterministic Evaluator — Batch2 Controlled Retirement Validation (Continuation Attempt, R1 contract)",
         "created_at": _utc_now(),
+        "attempt_id": "D4-A5_ATTEMPT_2_CONTINUATION",
         "frozen_input_provenance": {
             "starting_head": STARTING_HEAD,
-            "executor_freeze_head": exposure.get("executor_freeze_head"),
+            "historical_a5_stop_head": A5_STOP_HEAD,
+            "r1_freeze_head": exposure.get("r1_freeze_head"),
             "plan_freeze_head": plan_freeze_head,
             "raw_freeze_head": freeze["head"],
             "preregistration": PREREGISTRATION_PATH,
             "selection": SELECTION_PATH,
-            "raw_plans": RAW_PLANS_PATH,
-            "raw_results": RAW_RESULTS_PATH,
+            "raw_plans": CONTINUATION_RAW_PLANS_PATH,
+            "raw_results": CONTINUATION_RAW_RESULTS_PATH,
             "gold": GOLD_QUESTIONS_PATH,
             "novel_dev": NOVEL_DEV_PATH,
         },
@@ -1968,6 +2861,16 @@ def evaluate_d4_a5(project_root: Path) -> dict[str, Any]:
             for phenotype in b2.PAIR_PHENOTYPES
         },
         "rule_attribution_receipts": rule_receipts,
+        "per_rule_component_accounting": {
+            rid: {
+                "frozen_component_count": rule_receipts[rid]["frozen_component_count"],
+                "active_component_count": rule_receipts[rid]["active_component_count"],
+                "inactive_component_count": rule_receipts[rid]["inactive_component_count"],
+                "validated_active_components": rule_receipts[rid]["validated_active_components"],
+                "held_inactive_components": rule_receipts[rid]["held_inactive_components"],
+            }
+            for rid in b2.CANDIDATE_RULE_IDS
+        },
         "attributable_losses": attributable_losses,
         "baseline_reproduction": baseline_reproduced,
         "reference_baseline_valid": reference_baseline_valid,
@@ -2023,16 +2926,18 @@ def evaluate_d4_a5(project_root: Path) -> dict[str, Any]:
         "verdict_status": verdict["verdict_status"],
         "verdict_reason": verdict["verdict_reason"],
     }
-    _save_json(project_root / EVALUATOR_RESULTS_PATH, evaluator_results)
+    _save_json(project_root / CONTINUATION_EVALUATOR_RESULTS_PATH, evaluator_results)
 
     result = {
         "schema_version": "1.0.0",
-        "checkpoint": "D4-A5",
-        "lifecycle_stage": "D4-A5 — Second-Batch Low-Risk Locator Controlled Retirement Validation",
+        "checkpoint": "D4-A5-CONTINUATION",
+        "lifecycle_stage": "D4-A5 — Second-Batch Low-Risk Locator Controlled Retirement Validation (Continuation Attempt)",
         "created_at": _utc_now(),
+        "attempt_id": "D4-A5_ATTEMPT_2_CONTINUATION",
         "commit_lineage": {
             "starting_head": STARTING_HEAD,
-            "executor_freeze_head": exposure.get("executor_freeze_head"),
+            "historical_a5_stop_head": A5_STOP_HEAD,
+            "r1_freeze_head": exposure.get("r1_freeze_head"),
             "plan_freeze_head": plan_freeze_head,
             "raw_freeze_head": freeze["head"],
         },
@@ -2042,6 +2947,13 @@ def evaluate_d4_a5(project_root: Path) -> dict[str, Any]:
         "cells_completed": raw_data["cells_completed"],
         "cells_failed": raw_data["cells_failed"],
         "per_rule_dispositions": dispositions,
+        "per_rule_component_accounting": {
+            rid: {
+                "validated_active_components": rule_receipts[rid]["validated_active_components"],
+                "held_inactive_components": rule_receipts[rid]["held_inactive_components"],
+            }
+            for rid in b2.CANDIDATE_RULE_IDS
+        },
         "critical_regression_count": critical_regression_count,
         "grounding_regression_count": len(grounding_details),
         "wrong_version_regression_count": len(wrong_version_details),
@@ -2062,7 +2974,7 @@ def evaluate_d4_a5(project_root: Path) -> dict[str, Any]:
         "batch2_production_active": False,
         "next_stage": "D4-A6 (requires separate authorization)",
     }
-    _save_json(project_root / RESULT_PATH, result)
+    _save_json(project_root / CONTINUATION_RESULT_PATH, result)
 
     exposure["D4_A5_OUTCOME_EXPOSURE"] = "EVALUATION_COMPLETE"
     exposure["evaluator_executed"] = True
@@ -2071,7 +2983,7 @@ def evaluate_d4_a5(project_root: Path) -> dict[str, Any]:
     manifest["production_activation"] = False
     manifest["batch1_production_active"] = True
     manifest["batch2_production_active"] = False
-    _save_json(project_root / MANIFEST_PATH, manifest)
+    _save_json(project_root / CONTINUATION_MANIFEST_PATH, manifest)
 
     print(f"[EVALUATOR COMPLETE] Level {verdict['verdict_level']}: {verdict['verdict']}")
     return evaluator_results
@@ -2097,16 +3009,19 @@ def PRIMARY_METRICS_AND_MRR() -> list[str]:
 
 
 def verify_freeze(project_root: Path) -> dict[str, Any]:
-    """Section 50 independent read-only verification (no writes)."""
+    """Independent read-only verification for the R1 era (no writes):
+    commit chain dc679f8 (A5 stop) <- 8579cdc (executor freeze) <- cb0f8c3
+    (D4-A4) <- 631a66c, historical artifacts immutable, production unchanged,
+    machine artifacts consistent, all lifecycle JSON parsable."""
     assert_clean_worktree(project_root)
     head = git_head(project_root)
     chain: list[str] = []
     cursor = head
     for expected_message in (
-        CLOSEOUT_COMMIT_MESSAGE,
-        RAW_FREEZE_COMMIT_MESSAGE,
-        PLAN_FREEZE_COMMIT_MESSAGE,
+        R1_COMMIT_MESSAGE,
+        A5_STOP_COMMIT_MESSAGE,
         EXECUTOR_FREEZE_COMMIT_MESSAGE,
+        STARTING_COMMIT_MESSAGE,
     ):
         message = git_commit_message(project_root, cursor)
         if message != expected_message:
@@ -2115,51 +3030,46 @@ def verify_freeze(project_root: Path) -> dict[str, Any]:
             )
         chain.append(cursor)
         cursor = git_parent(project_root, cursor)
-    if cursor != STARTING_HEAD:
-        raise RuntimeError(f"Chain base mismatch: expected {STARTING_HEAD}, got {cursor}")
+    if cursor != STARTING_PARENT:
+        raise RuntimeError(f"Chain base mismatch: expected {STARTING_PARENT}, got {cursor}")
     chain.append(cursor)
 
-    def _blob_at(rel: str, rev: str) -> str | None:
-        return git_blob(project_root, rel, rev)
-
-    executor_freeze_head, plan_freeze_head, raw_freeze_head, closeout_head, base = chain
+    r1_head, a5_stop_head, executor_freeze_head, a4_freeze_head, starting_parent = chain
     checks: dict[str, Any] = {
         "chain": chain,
-        "evaluator_code_unchanged_since_executor_freeze": git_paths_unchanged_between(
-            project_root, executor_freeze_head, head, [RUNNER_PATH, TEST_PATH]
+        "historical_stop_unchanged": git_paths_unchanged_between(
+            project_root, a5_stop_head, head, [RESULT_PATH, HISTORICAL_MANIFEST_PATH]
         ) == [],
-        "plan_artifact_unchanged_since_plan_freeze": git_paths_unchanged_between(
-            project_root, plan_freeze_head, head, [RAW_PLANS_PATH]
+        "a4_authorities_unchanged": git_paths_unchanged_between(
+            project_root, a4_freeze_head, head, [PREREGISTRATION_PATH, SELECTION_PATH]
         ) == [],
-        "raw_results_unchanged_since_raw_freeze": git_paths_unchanged_between(
-            project_root, raw_freeze_head, head, [RAW_RESULTS_PATH]
-        ) == [],
-        "prereg_unchanged_since_starting_head": _blob_at(PREREGISTRATION_PATH, base)
-        == _blob_at(PREREGISTRATION_PATH, head),
         "production_unchanged_since_starting_head": git_paths_unchanged_between(
-            project_root, base, head, list(PRODUCTION_IMMUTABLE_PATHS)
+            project_root, STARTING_HEAD, head, list(PRODUCTION_IMMUTABLE_PATHS)
         ) == [],
+        "no_scientific_raw_artifacts_created": all(
+            git_blob(project_root, rel, "HEAD") is None
+            for rel in (
+                HISTORICAL_RAW_PLANS_PATH, RAW_RESULTS_PATH,
+                CONTINUATION_RAW_PLANS_PATH, CONTINUATION_RAW_RESULTS_PATH,
+            )
+        ),
     }
 
-    manifest = _load_json(project_root / MANIFEST_PATH)
-    result = _load_json(project_root / RESULT_PATH)
-    evaluator_results = _load_json(project_root / EVALUATOR_RESULTS_PATH)
+    historical_result = _load_json(project_root / RESULT_PATH)
+    r1_result = _load_json(project_root / R1_RESULT_PATH)
     checks["machine_artifacts_agree"] = (
-        result["verdict"] == evaluator_results["verdict"]
-        and result["verdict"] == manifest["outcome_exposure_state"].get("verdict")
-        and result["per_rule_dispositions"] == evaluator_results["per_rule_dispositions"]
-        and manifest["production_activation"] is False
-        and manifest["batch1_production_active"] is True
-        and manifest["batch2_production_active"] is False
-        and result["production_activation"] is False
+        historical_result["verdict"] == "INVALID / BATCH2_PROTOCOL_OR_SHARED_PLAN_CONSTRUCTION_FAILED"
+        and r1_result["historical_stop_preserved"] is True
+        and r1_result["repair_status"] == "COMPLETE / PASS"
+        and r1_result["accounting"]["provider_calls_in_r1"] == 0
+        and r1_result["batch2_production_active"] is False
     )
     checks["batch1_active"] = True
     checks["batch2_production_inactive"] = True
 
     for rel in (
-        MANIFEST_PATH, RAW_PLANS_PATH, RAW_RESULTS_PATH,
-        EVALUATOR_RESULTS_PATH, RESULT_PATH,
-        PREREGISTRATION_PATH, SELECTION_PATH,
+        RESULT_PATH, R1_RESULT_PATH, R1_PREREGISTRATION_PATH,
+        PREREGISTRATION_PATH, SELECTION_PATH, HISTORICAL_MANIFEST_PATH,
     ):
         _load_json(project_root / rel)
     checks["all_json_parsable"] = True
@@ -2179,7 +3089,15 @@ def main() -> None:
     parser.add_argument(
         "--mode",
         required=True,
-        choices=["audit", "execute-phase-p", "execute-phase-r", "evaluate", "verify-freeze"],
+        choices=[
+            "audit",
+            "audit-reuse",
+            "prepare-continuation-manifest",
+            "execute-phase-p",
+            "execute-phase-r",
+            "evaluate",
+            "verify-freeze",
+        ],
     )
     args = parser.parse_args()
     project_root = args.project_root.resolve()
@@ -2191,6 +3109,22 @@ def main() -> None:
             raise SystemExit("Starting boundary audit FAILED")
         if receipt["batch2_candidate_drift"]["all_clean"] is False:
             raise SystemExit("Batch-2 candidate drift detected")
+        return
+    if args.mode == "audit-reuse":
+        receipt = audit_historical_plan_reusability(project_root)
+        print(json.dumps(receipt, ensure_ascii=False, indent=2, default=str))
+        return
+    if args.mode == "prepare-continuation-manifest":
+        verify_r1_freeze_gate(project_root)
+        reuse_audit = audit_historical_plan_reusability(project_root)
+        manifest = build_continuation_manifest(project_root, reuse_audit)
+        path = project_root / CONTINUATION_MANIFEST_PATH
+        _save_json(path, manifest)
+        print(f"[CONTINUATION MANIFEST PREPARED] {CONTINUATION_MANIFEST_PATH}")
+        print(
+            "reacquisition_required for: "
+            f"{[s['case_id'] for s in manifest['phase_p_slots_7'] if s['reacquisition_required']]}"
+        )
         return
     if args.mode == "execute-phase-p":
         execute_phase_p(project_root)

@@ -1,0 +1,126 @@
+{
+  "schema_version": "1.0.0",
+  "lifecycle_id": "D4-A5-R1",
+  "stage": "D4-A5-R1 — Retirement Applicability and Provenance-Contract Repair",
+  "created_at": "2026-09-05T20:25:00+00:00",
+  "repair_status": "COMPLETE / PASS",
+  "repair_commit": "D4-A5-R1 repair retirement applicability contract",
+  "defect_classification": {
+    "defect": "CONFIGURED_VS_ACTIVE_CONFLATION",
+    "summary": "The original A4/A5 pre-outcome gate treated absence of any frozen configured mask component from an acquired prospective plan as protocol-invalid, conflating configured mask components with active runtime contributions. Production analyze() deterministically drops matched-rule page hints when the accepted intent is not algorithm_theory/algorithm_implementation, so the first prospective n014 plan could not contain the model_factory_theory pflueger_2017 [51, 57, 65] page-hint contributions.",
+    "stop_was_correct_under_original_contract": true,
+    "repair_type": "pre-retrieval contract + persistence repair only"
+  },
+  "historical_stop_preserved": true,
+  "historical_stop_verdict": "INVALID / BATCH2_PROTOCOL_OR_SHARED_PLAN_CONSTRUCTION_FAILED",
+  "historical_stop_location": "evaluation/d4_a5_result.json (immutable at dc679f880cda8d2ccdfb709d725e24673c562eab)",
+  "historical_artifacts_untouched": {
+    "d4_a4_batch2_retirement_preregistration.json": true,
+    "d4_a4_batch2_low_risk_retirement_selection.json": true,
+    "d4_a5_result.json": true,
+    "d4_a5_execution_manifest.json (stopped state)": true
+  },
+  "applicability_contract_repaired": {
+    "statuses": ["ACTIVE_IDENTIFIABLE", "INACTIVE_NOT_IDENTIFIABLE", "AMBIGUOUS_INVALID"],
+    "selected_rule_origin_semantics": true,
+    "token_presence_never_controls_applicability": true,
+    "inactive_is_hold_not_invalid_not_validated": true,
+    "projection_uses_active_subset_only": true,
+    "independent_origins_preserved": true,
+    "canonical_plan_never_mutated": true,
+    "generic_no_case_specific_shortcuts": true
+  },
+  "disposition_space_repaired": [
+    "INVALID_PROTOCOL",
+    "DEPENDENCY_OBSERVED_RETAIN",
+    "INCONCLUSIVE_BASELINE_NOT_REPRODUCED",
+    "INCONCLUSIVE_NO_ACTIVE_RETIREMENT_COMPONENT",
+    "PARTIAL_RETIREMENT_VALIDATED_COMPONENT_HOLD",
+    "RETIREMENT_VALIDATED"
+  ],
+  "component_level_conclusions_recorded_separately": {
+    "validated_active_components": true,
+    "held_inactive_components": true
+  },
+  "verdict_truth_space": {
+    "levels": 7,
+    "level_4_wins_over_level_3_on_safety_plus_dependency": true,
+    "level_5_applicability_incomplete": "PARTIAL / RETIREMENT_COMPONENT_APPLICABILITY_INCOMPLETE",
+    "level_7_pass_requires": "3/3 rules RETIREMENT_VALIDATED + zero safety regressions + six primary metric thresholds pass",
+    "exhaustive_truth_space_test": "test_r1_21 (216 disposition combinations x safety x metrics plus full classify_rule_r1 input space)",
+    "no_undefined_verdict_state": true
+  },
+  "scientific_definitions_unchanged": {
+    "selected_rules": 3,
+    "configured_masks": "unchanged incl. pflueger_2017 [51,57,65]",
+    "case_cohort": 7,
+    "six_primary_metrics": true,
+    "thresholds": {"recall_at_5": -0.05, "recall_at_10": -0.05, "recall_at_20": -0.05, "combined_candidate_recall": -0.05, "final_evidence_recall": -0.05, "critical_final_evidence_recall": 0.0},
+    "mrr_diagnostic_only": true,
+    "pair_phenotypes": true,
+    "safety_gates": true,
+    "batch1_invariant": true
+  },
+  "persistence_contract_repaired": {
+    "persist_before_gate": true,
+    "durable_fields": ["case ID", "attempt index", "provider call consumed", "provider attempt count", "token usage", "model/location/temperature", "canonical RetrievalPlan serialization", "deterministic signature", "matched rules", "full ordered contribution ledger", "provenance origin receipts", "component applicability receipts", "CURRENT_COMPAT projection", "BATCH2_RETIREMENT projection (when constructible)", "gate outcome"],
+    "ambiguous_stops_retain_accounting": true,
+    "behavioral_test": "test_r1_27_28 (gate-stopped record retains provider accounting) and test_r1_27b (inactive-hold completion)",
+    "implementation_style": "existing manifest/raw-artifact pattern; no scheduler/workflow/resume framework"
+  },
+  "historical_plan_reusability": {
+    "reusable_cases": [],
+    "non_reusable_cases": ["g052", "g055", "n003", "n004", "g007", "n014"],
+    "never_executed_cases": ["g060"],
+    "per_case_reasons": {
+      "g052": "Only slot-level bookkeeping (status/token/attempts/plan_signature/timestamps) persisted; canonical plan, serialization, ledger, origins, and projections never durably persisted.",
+      "g055": "Only slot-level bookkeeping persisted.",
+      "n003": "Only slot-level bookkeeping persisted.",
+      "n004": "Only slot-level bookkeeping persisted.",
+      "g007": "Only slot-level bookkeeping persisted.",
+      "n014": "Stop receipt persisted but not the complete plan; token usage unknown.",
+      "g060": "Slot never executed; no plan evidence exists."
+    },
+    "signature_alone_insufficient": true
+  },
+  "future_reacquisition_eligibility": {
+    "reacquisition_required_cases": ["g052", "g055", "n003", "n004", "g007", "n014", "g060"],
+    "fresh_complete_7_plan_acquisition_eligible": true,
+    "eligibility_rationale": "No valid frozen 7-plan scientific artifact exists from the failed attempt; a fresh complete acquisition under the repaired contract is not an outcome-improvement rerun.",
+    "performed_in_r1": false
+  },
+  "accounting": {
+    "provider_calls_in_r1": 0,
+    "historical_attempt": {
+      "analyzer_logical_calls": 6,
+      "analyzer_provider_attempts": 6,
+      "retries": 0,
+      "recorded_token_usage": 10303,
+      "unknown_token_usage": "n014 slot token usage consumed but not recorded; stays explicitly unknown"
+    },
+    "continuation_attempt": "not started; will record attempt-local cost separately",
+    "cumulative_rule": "cumulative = historical + continuation; unknown components remain explicitly unknown"
+  },
+  "verification": {
+    "focused_tests_total": 86,
+    "r1_focused_tests_added": 31,
+    "truth_space_tests": "test_r1_21 (exhaustive disposition + verdict combinations)",
+    "static_compile_check": "passed",
+    "json_parse_check": "passed",
+    "no_outcome_specific_shortcuts": "test_r1_26 (source scan over all applicability/verdict functions)",
+    "no_production_mutation": "git blob identity checks + config byte checks",
+    "no_protected_data_access": true
+  },
+  "production_activation": false,
+  "batch1_production_active": true,
+  "batch2_production_active": false,
+  "lifecycle_state": {
+    "d4_a5_first_attempt": "HISTORICAL / INVALID / PRE-OUTCOME STOP (preserved)",
+    "d4_a5_r1": "COMPLETE / PASS / RETIREMENT_APPLICABILITY_CONTRACT_REPAIRED",
+    "d4_a5": "BLOCKED / READY_FOR_SEPARATELY_AUTHORIZED_CONTINUATION",
+    "batch1": "ACTIVE",
+    "batch2": "SELECTED / FROZEN / NOT YET SCIENTIFICALLY VALIDATED",
+    "batch2_production_activation": false,
+    "d4_a6": "NOT_STARTED"
+  }
+}

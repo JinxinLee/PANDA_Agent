@@ -803,9 +803,13 @@ def _write_synthetic_project(tmp_path: Path) -> Path:
         projected, receipts = a5.build_retirement_projection(
             canonical, ledger, mask_entries, matched_batch2
         )
+        component_receipts, applicability_summary = a5.classify_component_applicability(
+            canonical, ledger, mask_entries
+        )
         gate = a5.build_provenance_gate_receipt(
             cid, attribution, matched_rules, canonical, ledger,
             copy.deepcopy(canonical), projected, receipts,
+            component_receipts=component_receipts,
         )
         assert gate["pass"], (cid, gate)
         plans.append({
@@ -818,8 +822,11 @@ def _write_synthetic_project(tmp_path: Path) -> Path:
             "projection_diff_receipts": receipts,
             "contribution_ledger": ledger,
             "matched_batch2_rule_ids": matched_batch2,
+            "component_applicability_receipts": component_receipts,
+            "component_applicability_summary": applicability_summary,
             "provenance_gate": gate,
             "plan_signature": {"synthetic": True},
+            "status": "COMPLETED",
         })
 
     slots = []
@@ -864,9 +871,10 @@ def _write_synthetic_project(tmp_path: Path) -> Path:
         })
 
     manifest = a5.build_initial_manifest(_REPO_ROOT)
+    manifest["checkpoint"] = "D4-A5-CONTINUATION"
     manifest["outcome_exposure_state"] = {
         "D4_A5_OUTCOME_EXPOSURE": "RAW_RETRIEVAL_COMPLETE",
-        "executor_freeze_head": "0" * 40,
+        "r1_freeze_head": "0" * 40,
         "plan_freeze_head": "1" * 40,
         "plans_completed": 7,
         "formal_cells_completed": 14,
@@ -874,20 +882,27 @@ def _write_synthetic_project(tmp_path: Path) -> Path:
         "evaluator_executed": False,
         "scientific_verdict_computed": False,
     }
-    a5._save_json(project / "evaluation" / "d4_a5_execution_manifest.json", manifest)
+    a5._save_json(
+        project / "evaluation" / "d4_a5_continuation_execution_manifest.json", manifest
+    )
 
     plans_artifact = {
         "schema_version": "1.0.0",
+        "checkpoint": "D4-A5-CONTINUATION",
         "plans_planned": 7,
         "plans_completed": 7,
         "plans_failed": 0,
         "plans": plans,
         "accounting": {"analyzer_calls": 7, "token_usage": 70},
     }
-    a5._save_json(project / "evaluation" / "d4_a5_raw_prospective_plans.json", plans_artifact)
+    a5._save_json(
+        project / "evaluation" / "d4_a5_continuation_raw_prospective_plans.json",
+        plans_artifact,
+    )
 
     raw = {
         "schema_version": "1.0.0",
+        "checkpoint": "D4-A5-CONTINUATION",
         "EVALUATOR_EXECUTED": False,
         "SCIENTIFIC_VERDICT_COMPUTED": False,
         "cells_planned": 14,
@@ -916,7 +931,9 @@ def _write_synthetic_project(tmp_path: Path) -> Path:
         },
         "slots": slots,
     }
-    a5._save_json(project / "evaluation" / "d4_a5_raw_paired_retirement_results.json", raw)
+    a5._save_json(
+        project / "evaluation" / "d4_a5_continuation_raw_paired_retirement_results.json", raw
+    )
     return project
 
 
@@ -930,9 +947,9 @@ def test_37_evaluator_runs_with_zero_provider_calls(tmp_path, monkeypatch):
     import panda_agent.llm.vertex as vertex_module
 
     monkeypatch.setattr(vertex_module, "VertexAIClient", _forbidden)
-    monkeypatch.setattr(a5, "verify_raw_freeze_gate", lambda *_a, **_k: {"head": "synthetic"})
-
-    real_load_gold = load_gold_dataset
+    monkeypatch.setattr(
+        a5, "verify_continuation_raw_freeze_gate", lambda *_a, **_k: {"head": "synthetic"}
+    )
 
     def _synthetic_dataset(path: Path) -> GoldDataset:
         questions = []
@@ -961,8 +978,12 @@ def test_37_evaluator_runs_with_zero_provider_calls(tmp_path, monkeypatch):
         "root_macro_usage": "RETIREMENT_VALIDATED",
         "model_factory_theory": "RETIREMENT_VALIDATED",
     }
-    assert results["verdict_level"] == 6
+    assert results["verdict_level"] == 7
     assert results["verdict_status"] == "PASS"
+    # Every synthetic mask component is ACTIVE_IDENTIFIABLE -> full validation.
+    for rid, acct in results["per_rule_component_accounting"].items():
+        assert acct["inactive_component_count"] == 0
+        assert acct["active_component_count"] == acct["frozen_component_count"] > 0
     assert results["answered_case_denominator"] == 6
     assert results["answered_evidence_group_denominator"] == 11
     # Six primary metrics present with zero deltas on the identical-synthesis fixture;
@@ -970,8 +991,10 @@ def test_37_evaluator_runs_with_zero_provider_calls(tmp_path, monkeypatch):
     assert set(results["verdict_inputs"]["metric_deltas"]) == set(a5.PRIMARY_METRIC_KEYS)
     assert all(delta == 0.0 for delta in results["verdict_inputs"]["metric_deltas"].values())
     # Evaluator artifacts written deterministically.
-    assert (project / "evaluation" / "d4_a5_evaluator_results.json").exists()
-    result = json.loads((project / "evaluation" / "d4_a5_result.json").read_text(encoding="utf-8"))
+    assert (project / "evaluation" / "d4_a5_continuation_evaluator_results.json").exists()
+    result = json.loads(
+        (project / "evaluation" / "d4_a5_continuation_result.json").read_text(encoding="utf-8")
+    )
     assert result["production_activation"] is False
     assert result["batch2_production_active"] is False
     assert result["batch1_production_active"] is True
@@ -979,7 +1002,7 @@ def test_37_evaluator_runs_with_zero_provider_calls(tmp_path, monkeypatch):
 
 def test_37b_evaluator_counts_control_divergence_as_safety_finding(tmp_path, monkeypatch):
     project = _write_synthetic_project(tmp_path)
-    raw_path = project / "evaluation" / "d4_a5_raw_paired_retirement_results.json"
+    raw_path = project / "evaluation" / "d4_a5_continuation_raw_paired_retirement_results.json"
     raw = json.loads(raw_path.read_text(encoding="utf-8"))
     # Remove g055.e1 from the retirement arm's final evidence in the no-op control.
     for slot in raw["slots"]:
@@ -996,7 +1019,9 @@ def test_37b_evaluator_counts_control_divergence_as_safety_finding(tmp_path, mon
         raise AssertionError("Provider construction is forbidden in the evaluator")
 
     monkeypatch.setattr(a5, "Retriever", _forbidden)
-    monkeypatch.setattr(a5, "verify_raw_freeze_gate", lambda *_a, **_k: {"head": "synthetic"})
+    monkeypatch.setattr(
+        a5, "verify_continuation_raw_freeze_gate", lambda *_a, **_k: {"head": "synthetic"}
+    )
 
     def _synthetic_dataset(_path: Path) -> GoldDataset:
         questions = []
@@ -1030,10 +1055,10 @@ def test_37b_evaluator_counts_control_divergence_as_safety_finding(tmp_path, mon
 def test_37c_structural_validation_rejects_incomplete_artifacts(tmp_path):
     project = _write_synthetic_project(tmp_path)
     plans = json.loads(
-        (project / "evaluation" / "d4_a5_raw_prospective_plans.json").read_text(encoding="utf-8")
+        (project / "evaluation" / "d4_a5_continuation_raw_prospective_plans.json").read_text(encoding="utf-8")
     )
     raw = json.loads(
-        (project / "evaluation" / "d4_a5_raw_paired_retirement_results.json").read_text(encoding="utf-8")
+        (project / "evaluation" / "d4_a5_continuation_raw_paired_retirement_results.json").read_text(encoding="utf-8")
     )
     ok, error = a5.validate_raw_artifact_structural_validity(raw, plans)
     assert ok is True, error
@@ -1116,10 +1141,10 @@ def test_40_no_protected_dataset_access(tmp_path_factory):
     # Structural validation rejects protected-dataset access counters.
     project = _write_synthetic_project(tmp_path_factory.mktemp("d4_a5_test40"))
     plans = json.loads(
-        (project / "evaluation" / "d4_a5_raw_prospective_plans.json").read_text(encoding="utf-8")
+        (project / "evaluation" / "d4_a5_continuation_raw_prospective_plans.json").read_text(encoding="utf-8")
     )
     raw = json.loads(
-        (project / "evaluation" / "d4_a5_raw_paired_retirement_results.json").read_text(encoding="utf-8")
+        (project / "evaluation" / "d4_a5_continuation_raw_paired_retirement_results.json").read_text(encoding="utf-8")
     )
     raw["accounting"]["NOVEL_VALIDATION_RUNS"] = 1
     ok, error = a5.validate_raw_artifact_structural_validity(raw, plans)
@@ -1167,3 +1192,721 @@ def test_43_production_immutable_paths_cover_the_frozen_boundary():
         "evaluation/d4_a4_batch2_retirement_preregistration.json",
     ):
         assert rel in a5.PRODUCTION_IMMUTABLE_PATHS
+
+
+# ===========================================================================
+# D4-A5-R1 — Retirement Applicability and Provenance-Contract Repair tests
+# ===========================================================================
+
+
+def _r1_component(receipts: list[dict[str, Any]], value: str) -> dict[str, Any]:
+    return next(r for r in receipts if r["component_value"] == value)
+
+
+def test_r1_01_active_when_selected_rule_origin_present():
+    plan = _synthetic_canonical_plan(
+        matched_rules=["effective_acceptance_pipeline"],
+        symbols=_full_mask_symbols("effective_acceptance_pipeline"),
+    )
+    ledger = _ledger_for(plan, ["effective_acceptance_pipeline"])
+    entries = a5.build_batch2_mask_entries("g052", ["effective_acceptance_pipeline"])
+    receipts, summary = a5.classify_component_applicability(plan, ledger, entries)
+    assert summary == {"active": 3, "inactive": 0, "ambiguous": 0}
+    for receipt in receipts:
+        assert receipt["applicability_status"] == a5.APPLICABILITY_ACTIVE
+        assert receipt["selected_rule_origin_present"] is True
+        assert receipt["retirement_projection_action"] == (
+            "remove_selected_rule_origin_preserve_independent_origins"
+        )
+
+
+def test_r1_02_inactive_when_selected_rule_origin_absent_via_analyzer_only():
+    plan = _synthetic_canonical_plan(
+        matched_rules=["effective_acceptance_pipeline"],
+        symbols=["data/PndLmdAcceptance.cxx"],
+    )
+    # The token is present but contributed only by the accepted analyzer delta;
+    # the selected rule did not contribute it after normal plan construction.
+    plan["analysis_diagnostics"]["analyzer_accepted_semantic_delta"] = {
+        "symbols": [{"value": "data/PndLmdAcceptance.cxx", "support_spans": [1]}],
+        "concepts": [{"value": "synthetic concept", "support_spans": [0]}],
+    }
+    rules = _rules_by_id()
+    rules["effective_acceptance_pipeline"] = {
+        "rule_id": "effective_acceptance_pipeline",
+        "triggers": ["effective acceptance"],
+        "repositories": [],
+        "symbols": [],
+        "concepts": [],
+        "paper_page_hints": {},
+    }
+    ledger = a5.build_contribution_ledger(
+        plan, rules, ["effective_acceptance_pipeline"]
+    )
+    entries = a5.build_batch2_mask_entries("g052", ["effective_acceptance_pipeline"])
+    receipts, summary = a5.classify_component_applicability(plan, ledger, entries)
+    receipt = _r1_component(receipts, "data/PndLmdAcceptance.cxx")
+    assert receipt["applicability_status"] == a5.APPLICABILITY_INACTIVE
+    assert receipt["selected_rule_origin_present"] is False
+    assert receipt["final_canonical_plan_presence"] is True
+    assert receipt["held_reason"]
+    assert summary["inactive"] == 3
+
+
+def test_r1_03_token_only_from_another_rule_is_inactive_for_selected_rule():
+    plan = _synthetic_canonical_plan(
+        matched_rules=["effective_acceptance_pipeline", "synthetic_other_rule"],
+        symbols=["data/PndLmdAcceptance.cxx"],
+    )
+    rules = _rules_by_id()
+    rules["synthetic_other_rule"] = {
+        "rule_id": "synthetic_other_rule",
+        "triggers": ["other"],
+        "repositories": [],
+        "symbols": ["data/PndLmdAcceptance.cxx"],
+        "concepts": [],
+        "paper_page_hints": {},
+    }
+    rules["effective_acceptance_pipeline"] = dict(
+        rules["effective_acceptance_pipeline"], symbols=[]
+    )
+    ledger = a5.build_contribution_ledger(
+        plan, rules, ["effective_acceptance_pipeline", "synthetic_other_rule"]
+    )
+    entries = a5.build_batch2_mask_entries("g052", ["effective_acceptance_pipeline"])
+    receipts, _ = a5.classify_component_applicability(plan, ledger, entries)
+    receipt = _r1_component(receipts, "data/PndLmdAcceptance.cxx")
+    assert receipt["applicability_status"] == a5.APPLICABILITY_INACTIVE
+    assert receipt["independent_origins"] == ["synthetic_other_rule"]
+
+
+def test_r1_04_multi_origin_token_removes_selected_rule_origin_only():
+    plan = _synthetic_canonical_plan(
+        matched_rules=["effective_acceptance_pipeline"],
+        symbols=_full_mask_symbols("effective_acceptance_pipeline"),
+    )
+    plan["analysis_diagnostics"]["analyzer_accepted_semantic_delta"] = {
+        "symbols": [{"value": "macro/target/prod_sim_hvmaps.C", "support_spans": [1]}],
+        "concepts": [{"value": "synthetic concept", "support_spans": [0]}],
+    }
+    ledger = _ledger_for(plan, ["effective_acceptance_pipeline"])
+    entries = a5.build_batch2_mask_entries("g052", ["effective_acceptance_pipeline"])
+    receipts, _ = a5.classify_component_applicability(plan, ledger, entries)
+    receipt = _r1_component(receipts, "macro/target/prod_sim_hvmaps.C")
+    assert receipt["applicability_status"] == a5.APPLICABILITY_ACTIVE
+    assert receipt["independent_origins"] == [a5.ORIGIN_ACCEPTED_ANALYZER_DELTA]
+    projected, diff = a5.build_retirement_projection_r1(
+        plan, ledger, receipts, ["effective_acceptance_pipeline"]
+    )
+    # Selected-rule origin retired; the token itself survives via the delta origin.
+    assert "macro/target/prod_sim_hvmaps.C" in projected["symbols"]
+    removed = next(
+        e for e in diff["removed_rule_origin_entries"]
+        if e["value"] == "macro/target/prod_sim_hvmaps.C"
+    )
+    assert removed["effectively_removed"] is False
+    assert removed["surviving_independent_origins"] == [a5.ORIGIN_ACCEPTED_ANALYZER_DELTA]
+
+
+def test_r1_05_independent_origin_survives_treatment():
+    plan = _synthetic_canonical_plan(
+        matched_rules=["root_macro_usage"],
+        symbols=_full_mask_symbols("root_macro_usage"),
+    )
+    plan["analysis_diagnostics"]["analyzer_accepted_semantic_delta"] = {
+        "symbols": [{"value": "Running/Macros.html", "support_spans": [1]}],
+        "concepts": [{"value": "synthetic concept", "support_spans": [0]}],
+    }
+    ledger = _ledger_for(plan, ["root_macro_usage"])
+    entries = a5.build_batch2_mask_entries("n004", ["root_macro_usage"])
+    receipts, _ = a5.classify_component_applicability(plan, ledger, entries)
+    projected, diff = a5.build_retirement_projection_r1(
+        plan, ledger, receipts, ["root_macro_usage"]
+    )
+    assert "Running/Macros.html" in projected["symbols"]
+    assert diff["applicability_summary"]["inactive"] == 0
+
+
+def test_r1_06_ambiguous_provenance_is_invalid():
+    plan = _synthetic_canonical_plan(
+        matched_rules=["root_macro_usage"],
+        symbols=_full_mask_symbols("root_macro_usage"),
+    )
+    ledger = _ledger_for(plan, ["root_macro_usage"])
+    for entry in ledger:
+        if entry["value"] == "Running/Macros.html":
+            entry["provenance_origin_ids"] = []
+    entries = a5.build_batch2_mask_entries("n004", ["root_macro_usage"])
+    receipts, summary = a5.classify_component_applicability(plan, ledger, entries)
+    receipt = _r1_component(receipts, "Running/Macros.html")
+    assert receipt["applicability_status"] == a5.APPLICABILITY_AMBIGUOUS
+    assert receipt["provenance_ambiguity_reason"]
+    assert summary["ambiguous"] == 1
+    with pytest.raises(ValueError, match="AMBIGUOUS_INVALID"):
+        a5.build_retirement_projection_r1(
+            plan, ledger, receipts, ["root_macro_usage"]
+        )
+
+
+def test_r1_07_inactive_component_is_not_protocol_invalid():
+    plan = _synthetic_canonical_plan(
+        matched_rules=["model_factory_theory"],
+        symbols=[],
+        hints={},
+    )
+    ledger = _ledger_for(plan, ["model_factory_theory"])
+    entries = a5.build_batch2_mask_entries("n014", ["model_factory_theory"])
+    assert len(entries) == 6  # 3 symbols + 3 page hints configured
+    receipts, summary = a5.classify_component_applicability(plan, ledger, entries)
+    assert summary == {"active": 0, "inactive": 6, "ambiguous": 0}
+    projected, diff = a5.build_retirement_projection_r1(
+        plan, ledger, receipts, ["model_factory_theory"]
+    )
+    gate = a5.build_provenance_gate_receipt(
+        "n014", a5.CASE_ATTRIBUTION["n014"], ["model_factory_theory"],
+        plan, ledger, copy.deepcopy(plan), projected, diff,
+        component_receipts=receipts,
+    )
+    assert gate["pass"] is True
+    assert gate["checks"]["component_applicability"]["inactive"] == 6
+    assert gate["checks"]["component_applicability"]["ambiguous"] == 0
+
+
+def test_r1_08_inactive_component_is_never_retirement_validated():
+    for active, frozen in ((1, 2), (0, 3), (2, 3)):
+        assert a5.classify_rule_r1(
+            protocol_valid=True,
+            baseline_reproduced=True,
+            attributable_loss=False,
+            active_component_count=active,
+            frozen_component_count=frozen,
+        ) != a5.DISPOSITION_RETIREMENT_VALIDATED
+
+
+def test_r1_09_inactive_component_is_never_dependency_observed():
+    # No effective removal of any active contribution -> no attributable loss.
+    assert a5.classify_rule_r1(
+        protocol_valid=True,
+        baseline_reproduced=True,
+        attributable_loss=False,
+        active_component_count=0,
+        frozen_component_count=3,
+    ) == a5.DISPOSITION_NO_ACTIVE_COMPONENT
+
+
+def test_r1_10_zero_active_components_is_inconclusive_no_active():
+    assert a5.classify_rule_r1(
+        protocol_valid=True,
+        baseline_reproduced=True,
+        attributable_loss=False,
+        active_component_count=0,
+        frozen_component_count=3,
+    ) == a5.DISPOSITION_NO_ACTIVE_COMPONENT
+
+
+def test_r1_11_partial_active_subset_is_component_hold():
+    assert a5.classify_rule_r1(
+        protocol_valid=True,
+        baseline_reproduced=True,
+        attributable_loss=False,
+        active_component_count=2,
+        frozen_component_count=3,
+    ) == a5.DISPOSITION_PARTIAL_COMPONENT_HOLD
+
+
+def test_r1_12_full_active_mask_with_no_loss_is_validated():
+    assert a5.classify_rule_r1(
+        protocol_valid=True,
+        baseline_reproduced=True,
+        attributable_loss=False,
+        active_component_count=3,
+        frozen_component_count=3,
+    ) == a5.DISPOSITION_RETIREMENT_VALIDATED
+
+
+def test_r1_13_attributable_tf_is_dependency_observed():
+    assert a5.classify_rule_r1(
+        protocol_valid=True,
+        baseline_reproduced=True,
+        attributable_loss=True,
+        active_component_count=3,
+        frozen_component_count=3,
+    ) == a5.DISPOSITION_DEPENDENCY
+
+
+def test_r1_14_dependency_precedes_another_groups_baseline_miss():
+    assert a5.classify_rule_r1(
+        protocol_valid=True,
+        baseline_reproduced=False,
+        attributable_loss=True,
+        active_component_count=1,
+        frozen_component_count=2,
+    ) == a5.DISPOSITION_DEPENDENCY
+
+
+def test_r1_15_baseline_miss_without_tf_is_baseline_inconclusive():
+    assert a5.classify_rule_r1(
+        protocol_valid=True,
+        baseline_reproduced=False,
+        attributable_loss=False,
+        active_component_count=3,
+        frozen_component_count=3,
+    ) == a5.DISPOSITION_BASELINE_INCONCLUSIVE
+
+
+def test_r1_16_protocol_ambiguity_is_invalid_protocol():
+    assert a5.classify_rule_r1(
+        protocol_valid=False,
+        baseline_reproduced=True,
+        attributable_loss=False,
+        active_component_count=3,
+        frozen_component_count=3,
+    ) == a5.DISPOSITION_INVALID_PROTOCOL
+    assert a5.classify_rule_r1(
+        protocol_valid=True,
+        baseline_reproduced=True,
+        attributable_loss=False,
+        active_component_count=4,
+        frozen_component_count=3,
+    ) == a5.DISPOSITION_INVALID_PROTOCOL
+
+
+def _r1_verdict(dispositions: dict[str, str], **overrides: Any) -> dict[str, Any]:
+    kwargs: dict[str, Any] = {
+        "execution_valid": True,
+        "protocol_violation": False,
+        "missing_inputs": False,
+        "plan_equality_all_verified": True,
+        "analyzer_provider_calls_downstream": 0,
+        "reference_baseline_valid": not any(
+            d == a5.DISPOSITION_BASELINE_INCONCLUSIVE for d in dispositions.values()
+        ),
+        "per_rule_dispositions": dispositions,
+        "critical_retirement_regressions": 0,
+        "grounding_regressions": 0,
+        "wrong_version_regressions": 0,
+        "invalid_provenance_recoveries": 0,
+        "metric_deltas": {k: 0.0 for k in a5.DEFAULT_METRIC_TOLERANCES_KEYS},
+    }
+    kwargs.update(overrides)
+    return a5.evaluate_batch2_verdict_r1(**kwargs)
+
+
+def test_r1_17_safety_and_dependency_coexist_is_level4_not_level3():
+    dispositions = {
+        "effective_acceptance_pipeline": a5.DISPOSITION_RETIREMENT_VALIDATED,
+        "root_macro_usage": a5.DISPOSITION_DEPENDENCY,
+        "model_factory_theory": a5.DISPOSITION_RETIREMENT_VALIDATED,
+    }
+    verdict = _r1_verdict(dispositions, critical_retirement_regressions=1)
+    assert verdict["verdict_level"] == 4
+    assert verdict["verdict_status"] == "FAIL"
+
+
+def test_r1_18_applicability_incomplete_is_level5():
+    for d in (a5.DISPOSITION_NO_ACTIVE_COMPONENT, a5.DISPOSITION_PARTIAL_COMPONENT_HOLD):
+        dispositions = {
+            "effective_acceptance_pipeline": a5.DISPOSITION_RETIREMENT_VALIDATED,
+            "root_macro_usage": a5.DISPOSITION_RETIREMENT_VALIDATED,
+            "model_factory_theory": d,
+        }
+        verdict = _r1_verdict(dispositions)
+        assert verdict["verdict_level"] == 5
+        assert verdict["verdict"] == a5.R1_VERDICT_LEVEL_5_APPLICABILITY
+
+
+def test_r1_19_aggregate_failure_only_after_full_component_validation():
+    full = {rid: a5.DISPOSITION_RETIREMENT_VALIDATED for rid in b2.CANDIDATE_RULE_IDS}
+    deltas = {k: 0.0 for k in a5.DEFAULT_METRIC_TOLERANCES_KEYS}
+    deltas["final_evidence_recall"] = -0.06
+    verdict = _r1_verdict(full, metric_deltas=deltas)
+    assert verdict["verdict_level"] == 6
+    # Same aggregate failure with an incomplete mask is Level 5 instead.
+    partial = dict(full)
+    partial["model_factory_theory"] = a5.DISPOSITION_PARTIAL_COMPONENT_HOLD
+    verdict = _r1_verdict(partial, metric_deltas=deltas)
+    assert verdict["verdict_level"] == 5
+
+
+def test_r1_20_clean_full_validation_is_level7_pass():
+    full = {rid: a5.DISPOSITION_RETIREMENT_VALIDATED for rid in b2.CANDIDATE_RULE_IDS}
+    verdict = _r1_verdict(full)
+    assert verdict["verdict_level"] == 7
+    assert verdict["verdict"] == a5.R1_VERDICT_LEVEL_7_PASS
+
+
+def test_r1_21_truth_space_is_exhaustive_without_gaps():
+    import itertools
+
+    disposition_values = list(a5.R1_PER_RULE_DISPOSITIONS)
+    rules = list(b2.CANDIDATE_RULE_IDS)
+    for combo in itertools.product(disposition_values, repeat=len(rules)):
+        dispositions = dict(zip(rules, combo))
+        for safety in (False, True):
+            for metrics_pass in (False, True):
+                kwargs: dict[str, Any] = {
+                    "execution_valid": True,
+                    "protocol_violation": False,
+                    "missing_inputs": False,
+                    "plan_equality_all_verified": True,
+                    "analyzer_provider_calls_downstream": 0,
+                    "reference_baseline_valid": not any(
+                        d == a5.DISPOSITION_BASELINE_INCONCLUSIVE for d in combo
+                    ),
+                    "per_rule_dispositions": dispositions,
+                    "critical_retirement_regressions": 1 if safety else 0,
+                    "grounding_regressions": 0,
+                    "wrong_version_regressions": 0,
+                    "invalid_provenance_recoveries": 0,
+                    "metric_deltas": {
+                        k: (0.0 if metrics_pass else -0.5)
+                        for k in a5.DEFAULT_METRIC_TOLERANCES_KEYS
+                    },
+                }
+                verdict = a5.evaluate_batch2_verdict_r1(**kwargs)
+                if any(d == a5.DISPOSITION_INVALID_PROTOCOL for d in combo):
+                    expected = 1
+                elif any(d == a5.DISPOSITION_BASELINE_INCONCLUSIVE for d in combo):
+                    expected = 2
+                elif safety:
+                    expected = 4
+                elif any(d == a5.DISPOSITION_DEPENDENCY for d in combo):
+                    expected = 3
+                elif any(
+                    d in (a5.DISPOSITION_NO_ACTIVE_COMPONENT, a5.DISPOSITION_PARTIAL_COMPONENT_HOLD)
+                    for d in combo
+                ):
+                    expected = 5
+                elif not metrics_pass:
+                    expected = 6
+                else:
+                    expected = 7
+                assert verdict["verdict_level"] == expected, (combo, safety, metrics_pass, verdict)
+                assert verdict["verdict_level"] in a5.R1_BATCH_VERDICT_LEVELS
+    # classify_rule_r1 precedence table over its full input space.
+    for protocol in (True, False):
+        for baseline in (True, False):
+            for loss in (True, False):
+                for active, frozen in ((0, 0), (0, 3), (1, 3), (2, 3), (3, 3)):
+                    d = a5.classify_rule_r1(
+                        protocol_valid=protocol,
+                        baseline_reproduced=baseline,
+                        attributable_loss=loss,
+                        active_component_count=active,
+                        frozen_component_count=frozen,
+                    )
+                    assert d in a5.R1_PER_RULE_DISPOSITIONS
+                    if (
+                        not protocol
+                        or (active, frozen) == (0, 0)
+                        or active > frozen
+                        or (loss and active == 0)
+                    ):
+                        assert d == a5.DISPOSITION_INVALID_PROTOCOL
+                    elif loss:
+                        assert d == a5.DISPOSITION_DEPENDENCY
+                    elif not baseline:
+                        assert d == a5.DISPOSITION_BASELINE_INCONCLUSIVE
+                    elif active == 0:
+                        assert d == a5.DISPOSITION_NO_ACTIVE_COMPONENT
+                    elif active < frozen:
+                        assert d == a5.DISPOSITION_PARTIAL_COMPONENT_HOLD
+                    else:
+                        assert d == a5.DISPOSITION_RETIREMENT_VALIDATED
+
+
+def test_r1_22_mrr_cannot_affect_verdict():
+    full = {rid: a5.DISPOSITION_RETIREMENT_VALIDATED for rid in b2.CANDIDATE_RULE_IDS}
+    kwargs = {
+        "execution_valid": True,
+        "protocol_violation": False,
+        "missing_inputs": False,
+        "plan_equality_all_verified": True,
+        "analyzer_provider_calls_downstream": 0,
+        "reference_baseline_valid": True,
+        "per_rule_dispositions": full,
+        "critical_retirement_regressions": 0,
+        "grounding_regressions": 0,
+        "wrong_version_regressions": 0,
+        "invalid_provenance_recoveries": 0,
+        "metric_deltas": {k: -0.5 for k in a5.DEFAULT_METRIC_TOLERANCES_KEYS},
+    }
+    verdict = a5.evaluate_batch2_verdict_r1(**kwargs)
+    assert verdict["verdict_level"] == 6  # primary metrics fail, MRR not consulted
+    kwargs["metric_deltas"]["mrr"] = -1.0  # even a catastrophic MRR changes nothing
+    verdict2 = a5.evaluate_batch2_verdict_r1(**kwargs)
+    assert verdict2["verdict_level"] == 6
+
+
+def test_r1_23_six_primary_metrics_and_thresholds_unchanged():
+    assert a5.DEFAULT_METRIC_TOLERANCES_KEYS == (
+        "recall_at_5", "recall_at_10", "recall_at_20",
+        "combined_candidate_recall", "final_evidence_recall",
+        "critical_final_evidence_recall",
+    )
+    assert b2.DEFAULT_METRIC_BOUNDED_TOLERANCES == {
+        "recall_at_5": -0.05,
+        "recall_at_10": -0.05,
+        "recall_at_20": -0.05,
+        "combined_candidate_recall": -0.05,
+        "final_evidence_recall": -0.05,
+        "critical_final_evidence_recall": 0.0,
+    }
+    assert a5.PRIMARY_METRIC_KEYS == list(a5.DEFAULT_METRIC_TOLERANCES_KEYS)
+
+
+def test_r1_24_original_a4_masks_unchanged():
+    for rid, mask in b2.FROZEN_RETIREMENT_MASKS.items():
+        prereg_mask = PREREG["exact_component_masks"][rid]
+        shared = {k: v for k, v in prereg_mask.items() if k in mask}
+        assert mask == shared
+    assert a5.build_initial_manifest(_REPO_ROOT)["frozen_retirement_masks"] == b2.FROZEN_RETIREMENT_MASKS
+
+
+def test_r1_25_pflueger_page_hints_remain_configured_in_mask():
+    mask = b2.FROZEN_RETIREMENT_MASKS["model_factory_theory"]
+    assert mask["paper_page_hints_retired"] == {"pflueger_2017": [51, 57, 65]}
+    assert len(mask["symbols_retired"]) == 3
+    assert PREREG["exact_component_masks"]["model_factory_theory"]["paper_page_hints_retired"] == {
+        "pflueger_2017": [51, 57, 65]
+    }
+
+
+def test_r1_26_applicability_is_generic_not_case_tailored():
+    import inspect
+
+    for func in (
+        a5.classify_component_applicability,
+        a5.build_retirement_projection_r1,
+        a5.classify_rule_r1,
+        a5.evaluate_batch2_verdict_r1,
+        a5.build_provenance_gate_receipt,
+        a5.audit_historical_plan_reusability,
+    ):
+        lowered = inspect.getsource(func).casefold()
+        assert "n014" not in lowered, func.__name__
+        assert "pflueger" not in lowered, func.__name__
+        assert "model_factory_theory" not in lowered, func.__name__
+        assert "effective_acceptance" not in lowered, func.__name__
+        assert "root_macro" not in lowered, func.__name__
+
+
+# --- persistence-before-gate behavioral tests (Sections 16/27/28) -------------
+
+
+class _FakeVertex:
+    def __init__(self) -> None:
+        self.calls = 0
+        self.tokens = 0
+
+    def stats_snapshot(self) -> dict[str, int]:
+        return {"model_calls": self.calls, "token_usage": self.tokens,
+                "generation_calls": 0, "embedding_calls": 0}
+
+    def stats_delta(self, previous: dict[str, int]) -> dict[str, int]:
+        current = self.stats_snapshot()
+        return {k: current.get(k, 0) - previous.get(k, 0) for k in set(current) | set(previous)}
+
+
+class _FakeQueryExpansions:
+    """Real 54-rule config, with selected-rule symbols/hints stripped from the
+    dump so configured components simulate inactive contributions."""
+
+    def __init__(self, qe: Any, stripped: bool) -> None:
+        self.rules = qe.rules
+        self._stripped = stripped
+        self._qe = qe
+
+    def model_dump(self, mode: str | None = None) -> dict[str, Any]:
+        dumped = self._qe.model_dump(mode="python")
+        if self._stripped:
+            for rule in dumped["rules"]:
+                if rule["rule_id"] in b2.CANDIDATE_RULE_IDS:
+                    rule["symbols"] = []
+                    rule["paper_page_hints"] = {}
+        return dumped
+
+
+class _FakeRetriever:
+    def __init__(self, plans_by_question: dict[str, dict[str, Any]], qe: Any) -> None:
+        self.plans_by_question = plans_by_question
+        self.query_expansions = qe
+        self.vertex = _FakeVertex()
+
+    def analyze(self, question: str) -> Any:
+        self.vertex.calls += 1
+        self.vertex.tokens += 123
+        return a5.RetrievalPlan.model_validate(self.plans_by_question[question])
+
+
+def _phase_p_question_index() -> dict[str, str]:
+    gold = load_gold_dataset(_REPO_ROOT / a5.GOLD_QUESTIONS_PATH)
+    novel = load_gold_dataset(_REPO_ROOT / a5.NOVEL_DEV_PATH)
+    return {
+        q.query: q.id
+        for q in gold.questions + novel.questions
+        if q.id in a5.CASE_ORDER
+    }
+
+
+def _fake_plans_all_inactive(questions: dict[str, str]) -> dict[str, dict[str, Any]]:
+    plans: dict[str, dict[str, Any]] = {}
+    for question, cid in questions.items():
+        matched_batch1 = ["restgas_profile_workflow"] if cid == "g052" else []
+        matched_batch2 = list(a5.CASE_ATTRIBUTION[cid]["matched_retirement_rules"])
+        plans[question] = _synthetic_canonical_plan(
+            matched_batch1 + matched_batch2, [], {}
+        )
+    return plans
+
+
+def _real_query_expansions() -> Any:
+    from panda_agent.config import load_query_expansions
+
+    return load_query_expansions(_REPO_ROOT / a5.CONFIG_QUERY_EXPANSIONS_PATH)
+
+
+def _real_dataset_loader(path: Path):
+    name = Path(path).name
+    real = a5.GOLD_QUESTIONS_PATH if name == "gold_questions.yaml" else a5.NOVEL_DEV_PATH
+    return load_gold_dataset(_REPO_ROOT / real)
+
+
+def _prepare_tmp_continuation(tmp_path: Path) -> Path:
+    reuse_audit = a5.audit_historical_plan_reusability(_REPO_ROOT)
+    manifest = a5.build_continuation_manifest(_REPO_ROOT, reuse_audit)
+    (tmp_path / "evaluation").mkdir(parents=True, exist_ok=True)
+    a5._save_json(tmp_path / a5.CONTINUATION_MANIFEST_PATH, manifest)
+    return tmp_path
+
+
+def _patch_phase_p_env(monkeypatch, fake: _FakeRetriever) -> None:
+    monkeypatch.setattr(a5, "verify_r1_freeze_gate", lambda *_a, **_k: {"head": "r1fake"})
+    monkeypatch.setattr(a5, "Retriever", lambda *_a, **_k: fake)
+    monkeypatch.setattr(a5, "load_gold_dataset", _real_dataset_loader)
+
+
+def test_r1_27_28_phase_p_persists_before_gate_and_preserves_accounting(
+    tmp_path, monkeypatch
+):
+    """A gate-stopped acquisition must leave a durable record with full provider
+    accounting written BEFORE the gate raises (Sections 16/27/28-27/28)."""
+    project = _prepare_tmp_continuation(tmp_path)
+    questions = _phase_p_question_index()
+    # g052 plan contains a masked symbol the (stripped) selected rule did not
+    # contribute and no delta origin exists -> empty provenance -> AMBIGUOUS.
+    plans = _fake_plans_all_inactive(questions)
+    plans[next(q for q, c in questions.items() if c == "g052")] = _synthetic_canonical_plan(
+        ["restgas_profile_workflow", "effective_acceptance_pipeline"],
+        ["data/PndLmdAcceptance.cxx"],
+    )
+    fake = _FakeRetriever(plans, _FakeQueryExpansions(_real_query_expansions(), stripped=True))
+    _patch_phase_p_env(monkeypatch, fake)
+
+    with pytest.raises(RuntimeError, match="applicability gate STOPPED after durable persistence"):
+        a5.execute_phase_p(project)
+
+    artifact = json.loads(
+        (project / a5.CONTINUATION_RAW_PLANS_PATH).read_text(encoding="utf-8")
+    )
+    assert artifact["plans_recorded"] == 1
+    record = artifact["plans"][0]
+    assert record["case_id"] == "g052"
+    assert record["status"] == "GATE_STOPPED_AMBIGUOUS_INVALID"
+    # Provider accounting survived the gate stop.
+    assert record["provider_accounting"]["analyzer_logical_calls"] == 1
+    assert record["provider_accounting"]["token_usage"] == 123
+    assert artifact["accounting"]["analyzer_calls"] == 1
+    assert artifact["accounting"]["token_usage"] == 123
+    manifest = json.loads(
+        (project / a5.CONTINUATION_MANIFEST_PATH).read_text(encoding="utf-8")
+    )
+    slot = manifest["phase_p_slots_7"][0]
+    assert slot["status"] == "GATE_STOPPED_AMBIGUOUS_INVALID"
+    assert slot["token_usage"] == 123
+
+
+def test_r1_27b_phase_p_completes_with_inactive_components_hold(tmp_path, monkeypatch):
+    """When every configured component is INACTIVE_NOT_IDENTIFIABLE the run
+    completes: no ambiguity, projections equal canonical, receipts recorded
+    as HOLD."""
+    project = _prepare_tmp_continuation(tmp_path)
+    questions = _phase_p_question_index()
+    plans = _fake_plans_all_inactive(questions)
+    fake = _FakeRetriever(plans, _FakeQueryExpansions(_real_query_expansions(), stripped=True))
+    _patch_phase_p_env(monkeypatch, fake)
+
+    artifact = a5.execute_phase_p(project)
+
+    assert artifact["plans_completed"] == 7
+    assert artifact["plans_gate_stopped"] == 0
+    assert artifact["accounting"]["analyzer_calls"] == 7
+    assert artifact["accounting"]["token_usage"] == 7 * 123
+    by_case = {r["case_id"]: r for r in artifact["plans"]}
+    g052 = by_case["g052"]
+    assert g052["component_applicability_summary"] == {"active": 0, "inactive": 3, "ambiguous": 0}
+    assert all(
+        r["applicability_status"] == a5.APPLICABILITY_INACTIVE
+        for r in g052["component_applicability_receipts"]
+    )
+    assert g052["batch2_retirement_execution_projection"] == g052["canonical_plan"]
+    n014 = by_case["n014"]
+    assert n014["component_applicability_summary"] == {"active": 0, "inactive": 6, "ambiguous": 0}
+
+
+def test_r1_29_30_reuse_requires_complete_plan_not_signature_alone(tmp_path):
+    manifest = a5.build_initial_manifest(_REPO_ROOT)
+    (tmp_path / "evaluation").mkdir(parents=True, exist_ok=True)
+    # Case A: signature-only slot (as the real stopped manifest has).
+    manifest["phase_p_slots_7"][0].update({
+        "status": "COMPLETED", "plan_signature": {"intent": "x"}, "token_usage": 100,
+    })
+    # Case B: slot pretending a complete frozen record exists.
+    manifest["phase_p_slots_7"][1].update({
+        "status": "COMPLETED", "plan_signature": {"intent": "y"}, "token_usage": 100,
+        "canonical_plan": {"intent": "y"},
+        "canonical_serialization": "{}",
+        "contribution_ledger": [],
+        "provenance_origin_receipts": [],
+        "current_compat_execution_projection": {},
+        "batch2_retirement_execution_projection": {},
+        "provider_accounting": {"analyzer_logical_calls": 1},
+    })
+    a5._save_json(tmp_path / a5.HISTORICAL_MANIFEST_PATH, manifest)
+    audit = a5.audit_historical_plan_reusability(tmp_path)
+    assert audit["per_case"]["g052"]["classification"] == a5.REUSE_NOT_REUSABLE
+    assert "plan_signature" in audit["per_case"]["g052"]["reason"]
+    assert audit["per_case"]["g055"]["classification"] == a5.REUSE_REUSABLE
+    assert audit["per_case"]["g055"]["reacquisition_required"] is False
+    # A signature alone never qualifies: strip the complete record -> not reusable.
+    manifest["phase_p_slots_7"][1].pop("canonical_plan")
+    a5._save_json(tmp_path / a5.HISTORICAL_MANIFEST_PATH, manifest)
+    audit = a5.audit_historical_plan_reusability(tmp_path)
+    assert audit["per_case"]["g055"]["classification"] == a5.REUSE_NOT_REUSABLE
+
+
+def test_r1_31_historical_and_continuation_accounting_kept_separate():
+    historical = a5.HISTORICAL_ATTEMPT_ACCOUNTING
+    assert historical["analyzer_logical_calls"] == 6
+    assert historical["analyzer_provider_attempts"] == 6
+    assert historical["recorded_token_usage"] == 10303
+    assert historical["unknown_token_usage"]["case_id"] == "n014"
+    reuse_audit = a5.audit_historical_plan_reusability(_REPO_ROOT)
+    manifest = a5.build_continuation_manifest(_REPO_ROOT, reuse_audit)
+    accounting = manifest["attempt_accounting"]
+    assert accounting["historical_attempt"] == historical
+    assert accounting["continuation_attempt"]["analyzer_logical_calls"] == 0
+    assert accounting["cumulative"]["analyzer_logical_calls"] == 6
+    assert accounting["cumulative"]["token_usage_recorded"] == 10303
+    assert accounting["cumulative"]["token_usage_unknown_components"] == 1
+
+
+def test_r1_32_reuse_audit_performs_zero_provider_calls(monkeypatch):
+    def _forbidden(*_a: Any, **_k: Any) -> None:
+        raise AssertionError("No provider construction is allowed in R1 flows")
+
+    monkeypatch.setattr(a5, "Retriever", _forbidden)
+    audit = a5.audit_historical_plan_reusability(_REPO_ROOT)
+    assert set(audit["reusable_cases"]) == set()
+    assert len(audit["non_reusable_cases"]) == 6
+    assert audit["never_executed_cases"] == ["g060"]

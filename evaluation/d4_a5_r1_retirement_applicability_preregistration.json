@@ -1,0 +1,182 @@
+{
+  "schema_version": "1.0.0",
+  "lifecycle_id": "D4-A5-R1",
+  "stage": "D4-A5-R1 — Retirement Applicability and Provenance-Contract Repair",
+  "created_at": "2026-09-05T20:20:00+00:00",
+  "starting_head": "dc679f880cda8d2ccdfb709d725e24673c562eab",
+  "starting_commit_message": "D4-A5 record pre-outcome provenance gate stop",
+  "historical_lineage": {
+    "d4_a4_preregistration_freeze_head": "cb0f8c330f224a470401535b4b01f153488da99b",
+    "a5_executor_freeze_head": "8579cdc60c3ebb53f9958d3fdd442c1a5454cc91",
+    "a5_stop_head": "dc679f880cda8d2ccdfb709d725e24673c562eab",
+    "a5_stop_commit_message": "D4-A5 record pre-outcome provenance gate stop",
+    "a5_stop_verdict": "INVALID / BATCH2_PROTOCOL_OR_SHARED_PLAN_CONSTRUCTION_FAILED",
+    "historical_stop_is_immutable_truth": true
+  },
+  "defect_classification": {
+    "summary": "A locator configured on a matched query-expansion rule is not necessarily an active contribution in the final canonical RetrievalPlan.",
+    "mechanism": "Production analyze() applies the generic policy: if the accepted intent is not algorithm_theory or algorithm_implementation, paper_page_hints are cleared (src/panda_agent/retrieval.py). The first prospective n014 plan therefore did not contain the selected-rule pflueger_2017 [51, 57, 65] page-hint contributions although model_factory_theory matched.",
+    "original_contract_gap": "The original A4/A5 pre-outcome gate required the exact frozen candidate mask to be represented in every acquired plan and treated any absent configured component as protocol-invalid. That conflated configured mask components with active runtime contributions and made the experiment non-constructible for deterministic runtime-policy drops.",
+    "stop_was_correct": "Under the original frozen contract the fail-closed STOP was the correct outcome; R1 repairs the contract for a future separately authorized continuation and does not reinterpret the historical verdict."
+  },
+  "configured_vs_active_distinction": {
+    "configured_retirement_candidate_mask": "Frozen D4-A4 masks remain the historical configured retirement candidates; R1 never rewrites them.",
+    "runtime_component_applicability": "For every configured component of a matched selected Batch-2 rule, the prospective plan classifies the selected-rule contribution into exactly one of:",
+    "applicability_statuses": {
+      "ACTIVE_IDENTIFIABLE": "The selected Batch-2 rule contributed this exact component to the final canonical plan; selected-rule provenance is present and unambiguous; the contribution can be removed from the retirement execution projection while preserving independent origins. Scientifically testable in this plan.",
+      "INACTIVE_NOT_IDENTIFIABLE": "The configured component was not contributed by the selected Batch-2 rule to the final canonical plan after normal production plan construction; its absence is a deterministic consequence of normal runtime policy or normal plan formation; no selected-rule contribution exists to subtract. Not protocol-invalid, not dependency observed, not retirement validated. RETIREMENT EFFECT NOT IDENTIFIABLE FOR THIS COMPONENT IN THIS PLAN; component remains HOLD.",
+      "AMBIGUOUS_INVALID": "The component appears but selected-rule ownership cannot be determined, provenance is contradictory/incomplete, the projection cannot establish selected-rule removal, or treatment construction would require guessing or global deletion. Protocol-invalid and fail-closed."
+    },
+    "selected_rule_origin_semantics": "Applicability is decided by selected-rule origin in the contribution ledger, never by raw token presence. A token present only through independent origins (another matched rule or the accepted Analyzer semantic delta) leaves the selected-rule configured component INACTIVE_NOT_IDENTIFIABLE while the token itself remains active and untouched.",
+    "absence_semantics": "The canonical plan is the unmodified production analyze() output; absence of a configured component from that plan is by construction a deterministic consequence of normal production plan formation and is therefore INACTIVE_NOT_IDENTIFIABLE, not INVALID."
+  },
+  "projection_semantics": {
+    "CURRENT_COMPAT": "Exact canonical plan with all normal production contributions.",
+    "BATCH2_RETIREMENT": "Same canonical plan; remove only selected-rule origins classified ACTIVE_IDENTIFIABLE; preserve independent origins; do nothing for INACTIVE_NOT_IDENTIFIABLE; STOP before retrieval for AMBIGUOUS_INVALID.",
+    "canonical_plan_immutability": "The canonical plan is never mutated; treatment exists only as an arm-specific execution projection.",
+    "inactive_is_not_automatically_safe": "Absence of a configured component from one prospective plan does not validate production retirement of that component. INACTIVE_NOT_IDENTIFIABLE never counts toward RETIREMENT_VALIDATED, the successful-retirement numerator, the dependency-removal numerator, or production retirement eligibility; it remains HOLD unless a later prospective case naturally activates it or a separately governed lifecycle resolves it."
+  },
+  "per_component_receipt_fields": [
+    "rule_id",
+    "component_kind",
+    "exact component value",
+    "configured in frozen A4 mask (always true)",
+    "selected-rule origin present",
+    "independent origins",
+    "final canonical-plan presence",
+    "applicability status",
+    "retirement projection action",
+    "held reason if inactive",
+    "provenance ambiguity reason if invalid"
+  ],
+  "no_case_specific_shortcut_logic": true,
+  "repaired_per_rule_disposition_precedence": [
+    {"order": 1, "disposition": "INVALID_PROTOCOL", "condition": "Ambiguous provenance, malformed input, plan inequality, projection drift, impossible attribution (including contradictory inputs such as an empty frozen mask or an attributable loss without an active contribution set)."},
+    {"order": 2, "disposition": "DEPENDENCY_OBSERVED_RETAIN", "condition": "At least one attributable T/F loss from removal of the rule's ACTIVE_IDENTIFIABLE contribution set; takes precedence over baseline incompleteness for another group."},
+    {"order": 3, "disposition": "INCONCLUSIVE_BASELINE_NOT_REPRODUCED", "condition": "No attributable T/F loss, but required active-case baseline evidence is not reproduced."},
+    {"order": 4, "disposition": "INCONCLUSIVE_NO_ACTIVE_RETIREMENT_COMPONENT", "condition": "Protocol valid and baseline reproduced, but none of the rule's frozen retirement components are ACTIVE_IDENTIFIABLE in its active direct case; nothing was scientifically tested."},
+    {"order": 5, "disposition": "PARTIAL_RETIREMENT_VALIDATED_COMPONENT_HOLD", "condition": "Protocol valid, baseline reproduced, no attributable loss, at least one frozen component ACTIVE_IDENTIFIABLE and at least one other INACTIVE_NOT_IDENTIFIABLE; the active subset may be reported validated for this cohort, inactive components remain HOLD, the full frozen rule mask is NOT validated."},
+    {"order": 6, "disposition": "RETIREMENT_VALIDATED", "condition": "Protocol valid, baseline reproduced, ALL frozen retirement-mask components ACTIVE_IDENTIFIABLE, no attributable T/F loss. Only this disposition validates the entire frozen rule mask."}
+  ],
+  "component_level_conclusions_preserved_under_partial": {
+    "validated_active_components": "Recorded separately per rule.",
+    "held_inactive_components": "Recorded separately per rule with hold reasons.",
+    "no_boolean_collapse": true,
+    "production_migration_note": "A later production migration may only consider components with explicit scientific validation and separate authorization; R1 itself authorizes no migration."
+  },
+  "repaired_batch_verdict_precedence": [
+    {"level": 1, "verdict": "INVALID / BATCH2_PROTOCOL_OR_SHARED_PLAN_CONSTRUCTION_FAILED", "condition": "Any protocol/provenance/shared-plan/input completeness defect, downstream Analyzer call, or INVALID_PROTOCOL rule disposition."},
+    {"level": 2, "verdict": "INCONCLUSIVE / BATCH2_REFERENCE_BASELINE_NOT_REPRODUCED", "condition": "One or more active direct-rule baselines not reproduced, with no higher-priority protocol defect."},
+    {"level": 3, "verdict": "PARTIAL / SOME_RETIREMENT_CANDIDATES_RETAIN_DEPENDENCY", "condition": "At least one rule DEPENDENCY_OBSERVED_RETAIN and no Level-4 safety violation."},
+    {"level": 4, "verdict": "FAIL / BATCH2_CRITICAL_OR_GROUNDING_REGRESSION", "condition": "Any critical retirement regression, grounding regression, wrong-version regression, or invalid-provenance recovery. Wins over Level 3 when dependency and safety failure coexist."},
+    {"level": 5, "verdict": "PARTIAL / RETIREMENT_COMPONENT_APPLICABILITY_INCOMPLETE", "condition": "No Level 1-4 condition, but at least one selected rule is INCONCLUSIVE_NO_ACTIVE_RETIREMENT_COMPONENT or PARTIAL_RETIREMENT_VALIDATED_COMPONENT_HOLD; the full Batch2 mask was not completely testable."},
+    {"level": 6, "verdict": "PARTIAL / BATCH2_AGGREGATE_REGRESSION_EXCEEDS_BOUNDED_TOLERANCE", "condition": "All selected rules otherwise fully validated (RETIREMENT_VALIDATED), no safety failure, but at least one frozen aggregate metric tolerance fails."},
+    {"level": 7, "verdict": "PASS / SECOND_BATCH_LOW_RISK_RETIREMENT_VALIDATED", "condition": "All three rules RETIREMENT_VALIDATED, zero safety regressions, all six primary metric thresholds pass."}
+  ],
+  "evaluation_order": "L1 -> L2 -> L4 -> L3 -> L5 -> L6 -> L7; no undefined verdict state exists.",
+  "preserved_scientific_definitions": {
+    "selected_rules": ["effective_acceptance_pipeline", "root_macro_usage", "model_factory_theory"],
+    "original_a4_configured_masks": "Unchanged (including pflueger_2017: [51, 57, 65] on model_factory_theory); outcome-tailored mask editing is prohibited.",
+    "case_cohort": ["g052", "g055", "n003", "n004", "g007", "n014", "g060"],
+    "active_direct_cases": {"effective_acceptance_pipeline": {"g052": ["g052.e1"]}, "root_macro_usage": {"n004": ["n004.e1"]}, "model_factory_theory": {"n014": ["n014.e1", "n014.e2"]}},
+    "control_cases": ["g055", "n003", "g007", "g060"],
+    "evidence_groups_and_denominators": "Unchanged: 7 total, 6 answered, 1 negative control, 12 required groups, 11 answered groups.",
+    "six_primary_metrics": ["recall_at_5", "recall_at_10", "recall_at_20", "combined_candidate_recall", "final_evidence_recall", "critical_final_evidence_recall"],
+    "thresholds": {"recall_at_5": -0.05, "recall_at_10": -0.05, "recall_at_20": -0.05, "combined_candidate_recall": -0.05, "final_evidence_recall": -0.05, "critical_final_evidence_recall": 0.0},
+    "mrr_role": "diagnostic only, cannot affect the verdict",
+    "batch1_invariant": true,
+    "no_batch2_replacement": true,
+    "pair_phenotype_definitions": "Unchanged (T/T, F/T, T/F, F/F; F/F is never a regression).",
+    "safety_gates": "Unchanged (critical retirement regressions = 0, grounding = 0, wrong-version = 0, invalid-provenance recoveries = 0; no-op control differences reported as safety findings)."
+  },
+  "persistence_before_gate_requirement": {
+    "defect": "The first attempt consumed an n014 Analyzer call but lost its token accounting and full plan because the applicability gate terminated execution before durable persistence.",
+    "repair": "For every future Analyzer attempt the executor durably persists provider/canonical-plan data BEFORE any applicability gate can terminate execution: case ID, attempt index, provider call consumed, provider attempt count, token usage, model/location/temperature, canonical RetrievalPlan serialization, deterministic signature, matched rules, full ordered contribution ledger, provenance origin receipts, component applicability receipts, CURRENT_COMPAT projection, BATCH2_RETIREMENT projection (when constructible), and gate outcome.",
+    "ambiguous_stops_retain_evidence": "Even a plan later rejected as AMBIGUOUS_INVALID retains its accounting and diagnostic evidence.",
+    "implementation_style": "Existing A5 manifest/raw-artifact pattern; no database-backed scheduler, workflow engine, general resume framework, or transaction framework."
+  },
+  "historical_plan_reusability_criteria": {
+    "required_durably_recoverable_artifacts": [
+      "exact canonical RetrievalPlan",
+      "canonical serialized representation",
+      "complete contribution ledger",
+      "exact origin provenance",
+      "CURRENT_COMPAT projection",
+      "retirement projection",
+      "deterministic signature",
+      "provider accounting"
+    ],
+    "classification_values": ["REUSABLE_FROZEN_SCIENTIFIC_PLAN", "HISTORICAL_ATTEMPT_NOT_REUSABLE", "NEVER_EXECUTED"],
+    "signature_alone_insufficient": "A plan_signature alone never qualifies unless it provably contains the complete canonical plan and complete provenance/projection contract.",
+    "no_reconstruction_by_guessing": true,
+    "no_analyzer_calls_during_repair": true
+  },
+  "actual_reusability_audit": {
+    "audited_manifest": "evaluation/d4_a5_execution_manifest.json (immutable at dc679f8)",
+    "raw_plans_artifact_ever_committed": false,
+    "per_case": {
+      "g052": {"previous_state": "COMPLETED", "persisted": ["status", "token_usage", "attempts", "plan_signature", "timestamps"], "classification": "HISTORICAL_ATTEMPT_NOT_REUSABLE", "reason": "Only slot-level bookkeeping persisted; canonical plan, serialization, ledger, origins, and projections were never durably persisted."},
+      "g055": {"previous_state": "COMPLETED", "persisted": ["status", "token_usage", "attempts", "plan_signature", "timestamps"], "classification": "HISTORICAL_ATTEMPT_NOT_REUSABLE", "reason": "Only slot-level bookkeeping persisted."},
+      "n003": {"previous_state": "COMPLETED", "persisted": ["status", "token_usage", "attempts", "plan_signature", "timestamps"], "classification": "HISTORICAL_ATTEMPT_NOT_REUSABLE", "reason": "Only slot-level bookkeeping persisted."},
+      "n004": {"previous_state": "COMPLETED", "persisted": ["status", "token_usage", "attempts", "plan_signature", "timestamps"], "classification": "HISTORICAL_ATTEMPT_NOT_REUSABLE", "reason": "Only slot-level bookkeeping persisted."},
+      "g007": {"previous_state": "COMPLETED", "persisted": ["status", "token_usage", "attempts", "plan_signature", "timestamps"], "classification": "HISTORICAL_ATTEMPT_NOT_REUSABLE", "reason": "Only slot-level bookkeeping persisted."},
+      "n014": {"previous_state": "FAILED", "persisted": ["status", "attempts", "error receipt", "timestamps"], "classification": "HISTORICAL_ATTEMPT_NOT_REUSABLE", "reason": "Stop receipt persisted but not the complete plan; token usage unknown."},
+      "g060": {"previous_state": "NOT_EXECUTED", "persisted": [], "classification": "NEVER_EXECUTED", "reason": "Slot never consumed an Analyzer call and has no plan evidence."}
+    },
+    "reusable_cases": [],
+    "non_reusable_cases": ["g052", "g055", "n003", "n004", "g007", "n014"],
+    "never_executed_cases": ["g060"]
+  },
+  "minimum_affected_reacquisition_policy": {
+    "r1_performs_zero_reacquisition": true,
+    "continuation_rules": [
+      "Reuse every prior plan classified REUSABLE_FROZEN_SCIENTIFIC_PLAN; never redraw one.",
+      "Reacquire only cases classified HISTORICAL_ATTEMPT_NOT_REUSABLE or never executed.",
+      "No plan selection based on semantic quality or expected outcome."
+    ],
+    "expected_continuation_scope": "No complete reusable frozen plan exists from the failed attempt; a future separately authorized continuation may therefore explicitly authorize a fresh complete 7-plan acquisition. That is not an outcome-improvement rerun because no valid frozen 7-plan scientific artifact exists."
+  },
+  "historical_cost_accounting": {
+    "historical_failed_attempt": {
+      "analyzer_logical_calls": 6,
+      "analyzer_provider_attempts": 6,
+      "retries": 0,
+      "recorded_token_usage": 10303,
+      "unknown_token_usage": "n014 slot consumed one Analyzer call whose token usage was not recorded; unknown stays explicitly unknown and is never fabricated."
+    },
+    "continuation_attempt": "must record its own calls/tokens separately",
+    "cumulative": "sum of both attempts; unknown components remain explicitly unknown",
+    "never_overwrite_historical_counts": true
+  },
+  "zero_exposure_boundary": {
+    "analyzer": 0, "embedding": 0, "reranker": 0, "qa": 0, "verifier": 0, "judge": 0,
+    "retrieval": 0, "benchmark_runs": 0, "novel_runs": 0, "db_writes": 0,
+    "qdrant_writes": 0, "protected_dataset_access": 0,
+    "no_provider_smoke_tests": true
+  },
+  "production_immutability": {
+    "unmodified_paths": [
+      "src/panda_agent/retrieval.py",
+      "src/panda_agent/config.py",
+      "src/panda_agent/d3_structured.py",
+      "configs/query_expansions.yaml",
+      "prompts",
+      "evaluation/benchmarks/v2_6/gold_questions.yaml",
+      "evaluation/novel/v1/novel_dev.yaml",
+      "D1/D2 governed data",
+      "indexes",
+      "DB contents"
+    ],
+    "page_hint_retention_not_broadened": true,
+    "intent_not_forced": true,
+    "n014_not_special_cased": true,
+    "model_factory_page_hints_not_forced_into_plan": true
+  },
+  "lifecycle_state": {
+    "batch1_production_active": true,
+    "batch2_production_active": false,
+    "batch2_status": "SELECTED / FROZEN / NOT YET SCIENTIFICALLY VALIDATED",
+    "a5_continuation_requires_separate_authorization": true,
+    "d4_a6": "NOT_STARTED"
+  }
+}
