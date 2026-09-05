@@ -1,0 +1,72 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint": "D4-A5",
+  "lifecycle_stage": "D4-A5 — Second-Batch Low-Risk Locator Controlled Retirement Validation",
+  "created_at": "2026-09-05T15:34:27.653604+00:00",
+  "outcome": "STOPPED_PRE_OUTCOME / INVALID",
+  "verdict_level": 1,
+  "verdict": "INVALID / BATCH2_PROTOCOL_OR_SHARED_PLAN_CONSTRUCTION_FAILED",
+  "verdict_status": "INVALID",
+  "verdict_reason": "Pre-outcome provenance gate failed during Phase P on slot 6 (n014, owning rule model_factory_theory): the frozen Batch-2 mask contribution paper_page_hint::pflueger_2017#51 (with siblings #57 and #65) is absent from the acquired prospective canonical plan, so the exact frozen candidate mask is not represented. The production analyze() intent policy (src/panda_agent/retrieval.py: 'if intent not in {algorithm_theory, algorithm_implementation}: paper_page_hints = {}') dropped the matched rule's page hints for the accepted intent of the first and only formal Analyzer plan. Per the frozen D4-A4 contract (component_provenance_subtraction_contract.pre_outcome_gate: absent expected contribution is INVALID before downstream calls) the execution stopped before any downstream retrieval. No plan redraw, no historical substitution, no origin guessing, no evaluator or runner repair.",
+  "commit_lineage": {
+    "starting_head": "cb0f8c330f224a470401535b4b01f153488da99b",
+    "executor_freeze_head": "8579cdc60c3ebb53f9958d3fdd442c1a5454cc91",
+    "plan_freeze_head": null,
+    "raw_freeze_head": null,
+    "closeout_head": null
+  },
+  "exact_selected_rules": [
+    "effective_acceptance_pipeline",
+    "root_macro_usage",
+    "model_factory_theory"
+  ],
+  "plans_completed": 5,
+  "plans_failed": 1,
+  "cells_completed": 0,
+  "cells_planned": 14,
+  "per_rule_dispositions": {
+    "effective_acceptance_pipeline": "NOT_COMPUTED_EXECUTION_STOPPED",
+    "root_macro_usage": "NOT_COMPUTED_EXECUTION_STOPPED",
+    "model_factory_theory": "NOT_COMPUTED_EXECUTION_STOPPED"
+  },
+  "per_rule_provenance_gate_observations": {
+    "effective_acceptance_pipeline": "PASS on g052 (3 symbol mask entries represented; CURRENT_COMPAT and BATCH2_RETIREMENT projections constructed)",
+    "root_macro_usage": "PASS on n004 (2 symbol mask entries represented; projections constructed)",
+    "model_factory_theory": "STOP on n014: symbol mask entries represented, page-hint mask entries (pflueger_2017 [51,57,65]) absent from acquired canonical plan"
+  },
+  "critical_regression_count": null,
+  "grounding_regression_count": null,
+  "wrong_version_regression_count": null,
+  "invalid_provenance_recovery_count": null,
+  "metric_deltas": null,
+  "provider_accounting": {
+    "analyzer_logical_calls_consumed": 6,
+    "analyzer_provider_attempts_recorded": 6,
+    "token_usage_recorded": 10303,
+    "token_usage_note": "sum of the 5 completed Phase P slots; slot 6 (n014) consumed one Analyzer call whose token usage was not recorded due to the fail-closed stop",
+    "embedding_calls": 0,
+    "reranker_calls": 0,
+    "downstream_analyzer_calls": 0,
+    "qa_verifier_judge_calls": 0,
+    "db_qdrant_writes": 0,
+    "retries": 0,
+    "protected_dataset_access": 0
+  },
+  "safety_and_boundary_receipts": {
+    "production_config_modified": false,
+    "production_activation": false,
+    "batch1_production_active": true,
+    "batch2_production_active": false,
+    "downstream_retrieval_executed": false,
+    "raw_plans_artifact_written": false,
+    "raw_paired_results_written": false,
+    "evaluator_executed": false,
+    "novel_validation_or_holdout_access": false
+  },
+  "lifecycle_consequence": {
+    "batch1": "ACTIVE (unchanged)",
+    "batch2": "SELECTED / FROZEN / NOT_EXECUTED (production activation remains false)",
+    "d4_a5": "BLOCKED / REMAIN_BLOCKED (exact result recorded; no repair or rerun within this task)",
+    "next_stage": "Contract repair / re-authorization decision for the model_factory_theory page-hint mask component; NOT D4-A6"
+  }
+}

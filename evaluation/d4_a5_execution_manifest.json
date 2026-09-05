@@ -188,54 +188,217 @@
       "plan_id": "prospective_g052",
       "case_id": "g052",
       "role": "direct_trigger",
-      "status": "NOT_EXECUTED",
+      "status": "COMPLETED",
       "analyzer_calls": 0,
-      "token_usage": 0
+      "token_usage": 1694,
+      "started_at": "2026-09-05T15:28:51.595529+00:00",
+      "completed_at": "2026-09-05T15:28:57.694233+00:00",
+      "attempts": 1,
+      "plan_signature": {
+        "concept_scopes": [],
+        "intent": "algorithm_theory",
+        "normalized_concepts": [
+          "distributed target generation",
+          "effective acceptance",
+          "longitudinal profile correction",
+          "profile-dependent effective acceptance pipeline",
+          "reconstructed profile to effective acceptance",
+          "reconstructed restgas profile"
+        ],
+        "paper_page_hints": [
+          [
+            "li_2026",
+            [
+              141,
+              149,
+              151
+            ]
+          ]
+        ],
+        "required_source_types": [
+          "paper"
+        ],
+        "symbols": [
+          "data/PndLmdAcceptance.cxx",
+          "macro/target/prod_sim_hvmaps.C",
+          "model/PndLmdModelFactory.cxx"
+        ],
+        "target_repositories": [
+          "luminosityfit",
+          "pandaroot",
+          "restgas_determination"
+        ]
+      }
     },
     {
       "slot_index": 2,
       "plan_id": "prospective_g055",
       "case_id": "g055",
       "role": "nonmatching_control",
-      "status": "NOT_EXECUTED",
+      "status": "COMPLETED",
       "analyzer_calls": 0,
-      "token_usage": 0
+      "token_usage": 2293,
+      "started_at": "2026-09-05T15:28:57.695433+00:00",
+      "completed_at": "2026-09-05T15:29:01.865937+00:00",
+      "attempts": 1,
+      "plan_signature": {
+        "concept_scopes": [
+          [
+            "efficiency",
+            "angular_acceptance_vs_longitudinal_profile"
+          ]
+        ],
+        "intent": "algorithm_theory",
+        "normalized_concepts": [
+          "angular acceptance",
+          "lmd angular acceptance",
+          "longitudinal efficiency",
+          "restgas longitudinal reconstruction efficiency"
+        ],
+        "paper_page_hints": [
+          [
+            "li_2026",
+            [
+              138,
+              142,
+              147
+            ]
+          ],
+          [
+            "pflueger_2017",
+            [
+              57,
+              58,
+              62
+            ]
+          ]
+        ],
+        "required_source_types": [
+          "paper"
+        ],
+        "symbols": [
+          "data/PndLmdAcceptance.cxx",
+          "macro/target/correction/efficiency_correction_2.C",
+          "macro/target/correction/efficiency_correction_steps.C"
+        ],
+        "target_repositories": [
+          "luminosityfit",
+          "restgas_determination"
+        ]
+      }
     },
     {
       "slot_index": 3,
       "plan_id": "prospective_n003",
       "case_id": "n003",
       "role": "nonmatching_control",
-      "status": "NOT_EXECUTED",
+      "status": "COMPLETED",
       "analyzer_calls": 0,
-      "token_usage": 0
+      "token_usage": 2140,
+      "started_at": "2026-09-05T15:29:01.867578+00:00",
+      "completed_at": "2026-09-05T15:29:06.864913+00:00",
+      "attempts": 1,
+      "plan_signature": {
+        "concept_scopes": [],
+        "intent": "usage",
+        "normalized_concepts": [
+          "acceptance scan",
+          "event generator",
+          "momentum",
+          "polar angle",
+          "single particles",
+          "stepping"
+        ],
+        "paper_page_hints": [],
+        "required_source_types": [
+          "code",
+          "documentation"
+        ],
+        "symbols": [],
+        "target_repositories": [
+          "pandaroot"
+        ]
+      }
     },
     {
       "slot_index": 4,
       "plan_id": "prospective_n004",
       "case_id": "n004",
       "role": "direct_trigger",
-      "status": "NOT_EXECUTED",
+      "status": "COMPLETED",
       "analyzer_calls": 0,
-      "token_usage": 0
+      "token_usage": 2336,
+      "started_at": "2026-09-05T15:29:06.866722+00:00",
+      "completed_at": "2026-09-05T15:29:13.268720+00:00",
+      "attempts": 1,
+      "plan_signature": {
+        "concept_scopes": [],
+        "intent": "usage",
+        "normalized_concepts": [
+          "debugging",
+          "log message",
+          "logging controls",
+          "pandaroot macro invocation",
+          "severity"
+        ],
+        "paper_page_hints": [],
+        "required_source_types": [
+          "code",
+          "documentation"
+        ],
+        "symbols": [
+          "Running/Macros.html",
+          "file:line:function",
+          "tools/MasterTasks/PndMasterRunSim.cxx"
+        ],
+        "target_repositories": [
+          "pandaroot"
+        ]
+      }
     },
     {
       "slot_index": 5,
       "plan_id": "prospective_g007",
       "case_id": "g007",
       "role": "negative_control",
-      "status": "NOT_EXECUTED",
+      "status": "COMPLETED",
       "analyzer_calls": 0,
-      "token_usage": 0
+      "token_usage": 1840,
+      "started_at": "2026-09-05T15:29:13.269849+00:00",
+      "completed_at": "2026-09-05T15:29:16.740318+00:00",
+      "attempts": 1,
+      "plan_signature": {
+        "concept_scopes": [],
+        "intent": "installation",
+        "normalized_concepts": [
+          "minimum gpu memory",
+          "pandaroot installation requirements"
+        ],
+        "paper_page_hints": [],
+        "required_source_types": [
+          "documentation"
+        ],
+        "symbols": [
+          "Installation/Install_PandaRoot.html",
+          "Installation/Installation.html"
+        ],
+        "target_repositories": [
+          "pandaroot"
+        ]
+      }
     },
     {
       "slot_index": 6,
       "plan_id": "prospective_n014",
       "case_id": "n014",
       "role": "direct_trigger",
-      "status": "NOT_EXECUTED",
-      "analyzer_calls": 0,
-      "token_usage": 0
+      "status": "FAILED",
+      "analyzer_calls": 1,
+      "token_usage": null,
+      "started_at": "2026-09-05T15:29:16.741335+00:00",
+      "attempts": 1,
+      "completed_at": "2026-09-05T15:33:47.912542+00:00",
+      "error": "PRE_OUTCOME_PROVENANCE_GATE_STOP: Masked contribution not identified in canonical plan ledger: paper_page_hint::pflueger_2017#51 (frozen model_factory_theory retirement mask paper page hints pflueger_2017 [51, 57, 65] are absent from the acquired prospective canonical plan; production analyze() intent policy dropped rule page hints). Verdict path INVALID / BATCH2_PROTOCOL_OR_SHARED_PLAN_CONSTRUCTION_FAILED. STOP before any downstream retrieval; no plan redraw, no repair, no rerun."
     },
     {
       "slot_index": 7,
@@ -403,22 +566,27 @@
     "protected_dataset_access": 0
   },
   "accounting": {
-    "analyzer_calls": 0,
-    "analyzer_provider_attempts": 0,
+    "analyzer_calls": 6,
+    "analyzer_provider_attempts": 6,
     "embedding_calls": 0,
     "reranker_calls": 0,
-    "logical_model_calls": 0,
-    "provider_attempts": 0,
+    "logical_model_calls": 6,
+    "provider_attempts": 6,
     "retries": 0,
-    "token_usage": 0
+    "token_usage": 10303,
+    "token_usage_note": "sum of 5 completed slots; slot 6 token usage consumed but not recorded (fail-closed stop before slot bookkeeping)"
   },
   "outcome_exposure_state": {
-    "D4_A5_OUTCOME_EXPOSURE": "NOT_STARTED",
-    "plans_completed": 0,
+    "D4_A5_OUTCOME_EXPOSURE": "PHASE_P_STOPPED_PRE_OUTCOME_PROVENANCE_GATE",
+    "plans_completed": 5,
     "formal_cells_completed": 0,
     "formal_cells_failed": 0,
     "evaluator_executed": false,
-    "scientific_verdict_computed": false
+    "scientific_verdict_computed": false,
+    "executor_freeze_head": "8579cdc60c3ebb53f9958d3fdd442c1a5454cc91",
+    "verdict_path": "INVALID / BATCH2_PROTOCOL_OR_SHARED_PLAN_CONSTRUCTION_FAILED",
+    "stopped_at": "2026-09-05T15:33:47.912542+00:00",
+    "stop_reason": "Pre-outcome provenance gate failed on slot 6 (n014): frozen Batch-2 mask contribution paper_page_hint::pflueger_2017#51 (and siblings #57, #65) absent from the acquired canonical plan. Exact frozen candidate mask not represented. Fail-closed stop per D4-A4 preregistration component_provenance_subtraction_contract.pre_outcome_gate."
   },
   "production_activation": false,
   "batch1_production_active": true,
