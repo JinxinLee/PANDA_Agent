@@ -1,0 +1,98 @@
+{
+  "schema_version": "1.0.0",
+  "lifecycle_id": "D4-A5-R8",
+  "stage": "D4-A5-R8 — Post-Closeout Verification Contract Repair",
+  "created_at": "2026-09-06T18:20:00.000000+00:00",
+  "repair_status": "COMPLETE / PASS",
+  "repair_commit_message": "D4-A5-R8 repair post-closeout verification contract",
+  "starting_head": "c33f4cbe0bc2dfe6352d70396ebbdc203d3c624f",
+  "starting_parent": "6d226e10ba2fee0eea0d14c216b41d44bab24e59",
+  "defect_repaired": {
+    "defect": "STALE_POST_CLOSEOUT_VERIFY_FREEZE_CONTRACT",
+    "pre_repair": "verify_freeze() expected current HEAD message == R7_COMMIT_MESSAGE ('D4-A5-R7 repair post-plan-freeze gate and continuation handoff') and expected continuation runtime artifacts to be absent, failing at valid closeout descendants.",
+    "post_repair": "verify_freeze() validates the full 6-node lineage (R8 -> closeout -> raw-freeze -> R7 -> plan-freeze -> R6), closeout diff seal (only manifest, evaluator results, continuation result), R8 repair diff seal (strictly within 7 allowed files), blob seals for raw plans (plan-freeze), raw results (raw-freeze), closeout outputs (closeout), scientific runner/test seals (R7 == closeout), per-stage historical baselines, clean worktree/index seal, production immutability, and machine-artifact consistency."
+  },
+  "preserved_scientific_outcome": {
+    "scientific_checkpoint": "D4-A5-CONTINUATION",
+    "verdict_level": 2,
+    "verdict": "INCONCLUSIVE / BATCH2_REFERENCE_BASELINE_NOT_REPRODUCED",
+    "verdict_status": "INCONCLUSIVE",
+    "verdict_reason": "One or more active direct-rule reference baselines are not reproduced under the repaired disposition contract.",
+    "execution_validity": {
+      "valid": true,
+      "plan_pair_equality": "7/7",
+      "plan_cell_equality": "14/14"
+    },
+    "reference_baseline_valid": false,
+    "safety": {
+      "critical_retirement_regressions": 0,
+      "grounding_regressions": 0,
+      "wrong_version_regressions": 0,
+      "invalid_provenance_recoveries": 0
+    },
+    "per_rule_dispositions": {
+      "effective_acceptance_pipeline": "RETIREMENT_VALIDATED",
+      "root_macro_usage": "RETIREMENT_VALIDATED",
+      "model_factory_theory": "INCONCLUSIVE_BASELINE_NOT_REPRODUCED"
+    },
+    "corrected_machine_record_facts": {
+      "unresolved_both_groups": [
+        "n003.e2",
+        "n014.e1"
+      ],
+      "effective_acceptance_pipeline": {
+        "active_component_count": 3,
+        "effective_removal_count": 1,
+        "surviving_via_independent_origin_count": 2,
+        "surviving_origin": "reconstructed_profile_to_acceptance"
+      }
+    },
+    "production_activation": false,
+    "batch1_production_active": true,
+    "batch2_production_active": false
+  },
+  "verification": {
+    "focused_tests_total": 152,
+    "r8_focused_tests": 12,
+    "r8_focused_tests_status": "12 passed",
+    "compile_static_check": "passed",
+    "json_parse": "passed",
+    "git_diff_check": "passed",
+    "r8_repair_changed_file_audit": "exactly the 7-file R8 repair contract",
+    "scientific_continuation_artifacts_mutated": false,
+    "scientific_verdict_recomputed": false
+  },
+  "zero_exposure": {
+    "analyzer_calls": 0,
+    "plan_acquisitions": 0,
+    "plan_redraws": 0,
+    "embedding_calls": 0,
+    "reranker_calls": 0,
+    "retrieval_cells": 0,
+    "qa_verifier_judge_calls": 0,
+    "scientific_evaluator_executions": 0,
+    "db_qdrant_writes": 0,
+    "batch2_production_activations": 0
+  },
+  "lifecycle_state": {
+    "d4_a5_continuation_phase_p": "COMPLETE / 7_OF_7_PROSPECTIVE_SHARED_PLANS_FROZEN",
+    "plan_freeze": "12b5dc6908e7dc22f6fa88fa189252099df8f3c6 PRESERVED / IMMUTABLE",
+    "d4_a5_r7": "COMPLETE / PASS",
+    "d4_a5_continuation_phase_r": "COMPLETE / 14_OF_14_PAIRED_RETRIEVAL_CELLS_EXECUTED",
+    "raw_freeze": "6d226e10ba2fee0eea0d14c216b41d44bab24e59 PRESERVED / IMMUTABLE",
+    "d4_a5_scientific_evaluation": "COMPLETE / INCONCLUSIVE / BATCH2_REFERENCE_BASELINE_NOT_REPRODUCED",
+    "scientific_closeout": "c33f4cbe0bc2dfe6352d70396ebbdc203d3c624f PRESERVED / IMMUTABLE",
+    "d4_a5_r8": "COMPLETE / PASS / POST_CLOSEOUT_VERIFICATION_CONTRACT_REPAIRED",
+    "d4_a5_technical_closeout": "COMPLETE",
+    "batch1": "ACTIVE",
+    "batch2_production": false,
+    "d4_a6": "NOT_STARTED"
+  },
+  "no_self_referential_sha": {
+    "rule": "R8 SHA depends on the commit tree; the commit tree must not depend on the R8 SHA",
+    "r8_result_contains_own_sha": false,
+    "r8_preregistration_contains_own_sha": false,
+    "r8_report_contains_own_sha": false,
+    "identity_established_only_by_git": "HEAD message + HEAD parent + HEAD SHA after commit exists"
+  }
+}

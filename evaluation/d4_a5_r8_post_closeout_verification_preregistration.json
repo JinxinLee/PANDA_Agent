@@ -1,0 +1,77 @@
+{
+  "schema_version": "1.0.0",
+  "lifecycle_id": "D4-A5-R8",
+  "stage": "D4-A5-R8 — Post-Closeout Verification Contract Repair",
+  "created_at": "2026-09-06T18:15:00.000000+00:00",
+  "starting_head": "c33f4cbe0bc2dfe6352d70396ebbdc203d3c624f",
+  "starting_commit_message": "D4-A5 continuation close controlled retirement validation",
+  "starting_parent": "6d226e10ba2fee0eea0d14c216b41d44bab24e59",
+  "task_classification": {
+    "type": "post-closeout verification contract repair",
+    "is_not": [
+      "a new scientific validation stage",
+      "recomputation or reinterpretation of the scientific verdict",
+      "D4-A6",
+      "a new Batch-2 selection",
+      "plan acquisition or redraw",
+      "paired retrieval",
+      "evaluator execution",
+      "scientific result computation",
+      "production activation"
+    ]
+  },
+  "audit_defect_repaired": {
+    "finding": "The stale verify_freeze() contract assumed current HEAD message == R7_COMMIT_MESSAGE ('D4-A5-R7 repair post-plan-freeze gate and continuation handoff') and expected continuation runtime artifacts (raw paired results, evaluator results, continuation result) to be absent. This prevented post-closeout verification from validating the repository after D4-A5 scientific closeout was frozen at c33f4cbe.",
+    "repair": "verify_freeze() was updated into a true post-closeout read-only verifier. It now mechanically verifies the full 6-node lineage (R8 -> closeout -> raw-freeze -> R7 -> plan-freeze -> R6), closeout diff seal (only manifest, evaluator results, continuation result changed between raw-freeze and closeout), R8 repair diff seal (strictly within the 7 allowed files), scientific artifact blob seals (raw plans, raw results, closeout outputs unchanged), scientific implementation seals (runner and tests identical between R7 and closeout), historical per-stage baselines, production immutability, clean worktree/index seal, and machine-artifact consistency."
+  },
+  "preserved_scientific_outcome": {
+    "verdict_level": 2,
+    "verdict": "INCONCLUSIVE / BATCH2_REFERENCE_BASELINE_NOT_REPRODUCED",
+    "verdict_status": "INCONCLUSIVE",
+    "verdict_reason": "One or more active direct-rule reference baselines are not reproduced under the repaired disposition contract.",
+    "reference_baseline_valid": false,
+    "execution_validity": {
+      "valid": true,
+      "plan_pair_equality": "7/7",
+      "plan_cell_equality": "14/14"
+    },
+    "safety": {
+      "critical_retirement_regressions": 0,
+      "grounding_regressions": 0,
+      "wrong_version_regressions": 0,
+      "invalid_provenance_recoveries": 0
+    },
+    "per_rule_dispositions": {
+      "effective_acceptance_pipeline": "RETIREMENT_VALIDATED",
+      "root_macro_usage": "RETIREMENT_VALIDATED",
+      "model_factory_theory": "INCONCLUSIVE_BASELINE_NOT_REPRODUCED"
+    },
+    "production_activation": false,
+    "batch1_production_active": true,
+    "batch2_production_active": false
+  },
+  "allowed_r8_repair_files": [
+    "evaluation/scripts/d4_a5_batch2_controlled_retirement_validation.py",
+    "tests/unit/test_d4_a5_batch2_controlled_retirement_validation.py",
+    "evaluation/d4_a5_r8_post_closeout_verification_preregistration.json",
+    "evaluation/d4_a5_r8_result.json",
+    "evaluation/D4_A5_R8_POST_CLOSEOUT_VERIFICATION_REPAIR.md",
+    "docs/EVALUATION_STATUS.md",
+    "docs/GENERALIZATION_ROADMAP.md"
+  ],
+  "zero_exposure_boundary": {
+    "analyzer_calls": 0,
+    "plan_acquisitions": 0,
+    "plan_redraws": 0,
+    "embedding_calls": 0,
+    "reranker_calls": 0,
+    "retrieval_cells": 0,
+    "qa_calls": 0,
+    "verifier_calls": 0,
+    "judge_calls": 0,
+    "scientific_evaluator_executions": 0,
+    "db_writes": 0,
+    "qdrant_writes": 0,
+    "batch2_production_activations": 0
+  }
+}

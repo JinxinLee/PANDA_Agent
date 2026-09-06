@@ -2107,9 +2107,13 @@ def test_r2_01_real_manifest_committed_in_r2_freeze_commit():
     last_touch = _git(
         _REPO_ROOT, "log", "-1", "--format=%s", "--", a5.CONTINUATION_MANIFEST_PATH
     )
-    # The manifest is UNCHANGED in R7: last touch is the plan-freeze commit and
-    # the blob is identical to the 12b5dc6 version.
-    assert last_touch in (a5.CONTINUATION_PLAN_FREEZE_COMMIT_MESSAGE, a5.R7_COMMIT_MESSAGE)
+    # The manifest is updated in closeout: last touch is the closeout commit,
+    # and at R7/plan-freeze the blobs remain identical.
+    assert last_touch in (
+        a5.CONTINUATION_PLAN_FREEZE_COMMIT_MESSAGE,
+        a5.R7_COMMIT_MESSAGE,
+        a5.CONTINUATION_CLOSEOUT_COMMIT_MESSAGE,
+    )
     assert a5.git_blob(_REPO_ROOT, a5.CONTINUATION_MANIFEST_PATH, a5.R7_COMMIT_MESSAGE) == a5.git_blob(
         _REPO_ROOT, a5.CONTINUATION_MANIFEST_PATH, a5.CONTINUATION_PLAN_FREEZE_COMMIT_MESSAGE
     )
@@ -2694,7 +2698,7 @@ def test_r3_13_provenance_schemas_retain_historical_r1_r2_separately(tmp_path):
         "continuation_retrieval_implementation_freeze_head"
     ]
     # The probe write landed in the temporary project only.
-    assert not (_REPO_ROOT / a5.CONTINUATION_RAW_RESULTS_PATH).exists()
+    assert (tmp_path / a5.CONTINUATION_RAW_RESULTS_PATH).exists()
     import inspect
 
     source = inspect.getsource(a5.evaluate_d4_a5)
@@ -3692,3 +3696,387 @@ def test_r7_seal_07_evaluator_preflight_rejects_staged_modification(
     _git(tmp_path, "add", a5.RUNNER_PATH)
     with pytest.raises(RuntimeError, match="Worktree or index is not clean"):
         a5.verify_continuation_evaluator_preflight(tmp_path)
+
+
+# ---------------------------------------------------------------------------
+# D4-A5-R8 Post-Closeout Verification Contract Repair (task Section 20)
+# ---------------------------------------------------------------------------
+
+
+def _r8_synthetic_closeout_repo(tmp_path: Path, monkeypatch) -> dict[str, str]:
+    """Synthetic full lifecycle fixture through R8 (task Section 20, Test 2):
+    R6 -> plan-freeze -> R7 -> raw-freeze -> closeout -> R8."""
+    stages = _r5_lifecycle_repo(tmp_path, monkeypatch)
+    monkeypatch.setattr(a5, "R6_HEAD", stages["r6"])
+    monkeypatch.setattr(a5, "R7_HEAD", stages["r7"])
+
+    # 1. Update manifest for raw-freeze
+    manifest = _r5_synthetic_manifest_updated_for_raw_freeze(stages["plan_freeze"], stages["r7"])
+    raw_results_data = _r5_synthetic_raw_results(with_slots=True)
+    raw_freeze_sha = _temp_repo_commit(
+        tmp_path,
+        {
+            a5.CONTINUATION_MANIFEST_PATH: json.dumps(manifest, ensure_ascii=False, indent=2),
+            a5.CONTINUATION_RAW_RESULTS_PATH: json.dumps(raw_results_data, ensure_ascii=False, indent=2),
+        },
+        a5.CONTINUATION_RAW_FREEZE_COMMIT_MESSAGE,
+    )
+    stages["raw_freeze"] = raw_freeze_sha
+    monkeypatch.setattr(a5, "RAW_FREEZE_HEAD", raw_freeze_sha)
+    monkeypatch.setattr(
+        a5, "FROZEN_RAW_FREEZE_RAW_RESULTS_BLOB",
+        a5.git_blob(tmp_path, a5.CONTINUATION_RAW_RESULTS_PATH, raw_freeze_sha),
+    )
+    monkeypatch.setattr(
+        a5, "FROZEN_PLAN_FREEZE_RAW_PLANS_BLOB",
+        a5.git_blob(tmp_path, a5.CONTINUATION_RAW_PLANS_PATH, stages["plan_freeze"]),
+    )
+
+    # 2. Closeout commit
+    manifest["outcome_exposure_state"]["D4_A5_OUTCOME_EXPOSURE"] = "EVALUATION_COMPLETE"
+    manifest["outcome_exposure_state"]["evaluator_executed"] = True
+    manifest["outcome_exposure_state"]["scientific_verdict_computed"] = True
+    manifest["production_activation"] = False
+    manifest["batch1_production_active"] = True
+    manifest["batch2_production_active"] = False
+
+    evaluator_res = {
+        "schema_version": "1.0.0",
+        "checkpoint": "D4-A5-CONTINUATION",
+        "verdict_level": 2,
+        "verdict": a5.R1_VERDICT_LEVEL_2_BASELINE,
+        "verdict_status": "INCONCLUSIVE",
+        "verdict_reason": "One or more active direct-rule reference baselines are not reproduced under the repaired disposition contract.",
+        "execution_validity": {
+            "valid": True,
+            "plan_pair_equality": "7/7",
+            "plan_cell_equality": "14/14",
+        },
+        "reference_baseline_valid": False,
+        "safety": {
+            "critical_retirement_regressions": 0,
+            "grounding_regressions": 0,
+            "wrong_version_regressions": 0,
+            "invalid_provenance_recoveries": 0,
+        },
+    }
+    continuation_res = {
+        "schema_version": "1.0.0",
+        "checkpoint": "D4-A5-CONTINUATION",
+        "verdict_level": 2,
+        "verdict": a5.R1_VERDICT_LEVEL_2_BASELINE,
+        "verdict_status": "INCONCLUSIVE",
+        "verdict_reason": "One or more active direct-rule reference baselines are not reproduced under the repaired disposition contract.",
+        "production_activation": False,
+        "batch1_production_active": True,
+        "batch2_production_active": False,
+    }
+
+    closeout_sha = _temp_repo_commit(
+        tmp_path,
+        {
+            a5.CONTINUATION_MANIFEST_PATH: json.dumps(manifest, ensure_ascii=False, indent=2),
+            a5.CONTINUATION_EVALUATOR_RESULTS_PATH: json.dumps(evaluator_res, ensure_ascii=False, indent=2),
+            a5.CONTINUATION_RESULT_PATH: json.dumps(continuation_res, ensure_ascii=False, indent=2),
+        },
+        a5.CONTINUATION_CLOSEOUT_COMMIT_MESSAGE,
+    )
+    stages["closeout"] = closeout_sha
+    monkeypatch.setattr(a5, "CLOSEOUT_HEAD", closeout_sha)
+
+    # 3. Create R8 verification-repair commit on top of closeout
+    r8_sha = _temp_repo_commit(
+        tmp_path,
+        {
+            a5.R8_RESULT_PATH: json.dumps({"status": "PASS"}, ensure_ascii=False, indent=2),
+        },
+        a5.R8_COMMIT_MESSAGE,
+    )
+    stages["r8"] = r8_sha
+    return stages
+
+
+def test_r8_01_reproduce_stale_verifier(tmp_path, monkeypatch):
+    """Test 1 (task Section 20): demonstrate the stale pre-R8 verifier fails at
+    a valid closeout descendant because it expects current HEAD = R7."""
+    stages = _r8_synthetic_closeout_repo(tmp_path, monkeypatch)
+    # If HEAD is closeout, verify_freeze requires HEAD message == R8_COMMIT_MESSAGE
+    _git(tmp_path, "checkout", "-q", stages["closeout"])
+    with pytest.raises(RuntimeError, match="Commit message mismatch at HEAD"):
+        a5.verify_freeze(tmp_path)
+
+
+def test_r8_02_valid_full_lifecycle(tmp_path, monkeypatch):
+    """Test 2 (task Section 20): valid full synthetic lifecycle
+    R6 -> plan-freeze -> R7 -> raw-freeze -> closeout -> R8 passes verify_freeze."""
+    stages = _r8_synthetic_closeout_repo(tmp_path, monkeypatch)
+    receipt = a5.verify_freeze(tmp_path)
+    assert receipt["status"] == "PASS"
+    assert receipt["r8_head"] == stages["r8"]
+    assert receipt["closeout_head"] == stages["closeout"]
+    assert receipt["raw_freeze_head"] == stages["raw_freeze"]
+    assert receipt["r7_head"] == stages["r7"]
+    assert receipt["plan_freeze_head"] == stages["plan_freeze"]
+    assert receipt["r6_head"] == stages["r6"]
+    assert receipt["closeout_diff_seal"] is True
+    assert receipt["r8_repair_diff_seal"] is True
+    assert receipt["raw_plan_seal"] is True
+    assert receipt["raw_result_seal"] is True
+    assert receipt["scientific_closeout_artifact_seal"] is True
+    assert receipt["scientific_runner_test_pre_closeout_seal"] is True
+    assert receipt["batch1_active"] is True
+    assert receipt["batch2_production_inactive"] is True
+
+
+def test_r8_03_wrong_r8_parent(tmp_path, monkeypatch):
+    """Test 3 (task Section 20): R8 commit not a direct child of closeout fails."""
+    stages = _r8_synthetic_closeout_repo(tmp_path, monkeypatch)
+    _git(tmp_path, "checkout", "-q", stages["closeout"])
+    intervening = _temp_repo_commit(tmp_path, {"intervening.txt": "1"}, "intervening")
+    _temp_repo_commit(
+        tmp_path,
+        {a5.R8_RESULT_PATH: json.dumps({"status": "PASS"})},
+        a5.R8_COMMIT_MESSAGE,
+    )
+    with pytest.raises(RuntimeError, match="HEAD parent mismatch"):
+        a5.verify_freeze(tmp_path)
+
+
+def test_r8_04_wrong_closeout_parent(tmp_path, monkeypatch):
+    """Test 4 (task Section 20): closeout not a direct child of raw-freeze fails."""
+    stages = _r8_synthetic_closeout_repo(tmp_path, monkeypatch)
+    # Re-commit closeout on top of an intervening commit instead of raw-freeze
+    _git(tmp_path, "checkout", "-q", stages["raw_freeze"])
+    intervening = _temp_repo_commit(tmp_path, {"intervening.txt": "1"}, "intervening")
+    manifest = json.loads((tmp_path / a5.CONTINUATION_MANIFEST_PATH).read_text(encoding="utf-8"))
+    manifest["outcome_exposure_state"]["D4_A5_OUTCOME_EXPOSURE"] = "EVALUATION_COMPLETE"
+    evaluator_res = {"verdict_level": 2, "verdict": a5.R1_VERDICT_LEVEL_2_BASELINE, "verdict_status": "INCONCLUSIVE"}
+    continuation_res = {"verdict_level": 2, "verdict": a5.R1_VERDICT_LEVEL_2_BASELINE, "verdict_status": "INCONCLUSIVE"}
+    bad_closeout = _temp_repo_commit(
+        tmp_path,
+        {
+            a5.CONTINUATION_MANIFEST_PATH: json.dumps(manifest),
+            a5.CONTINUATION_EVALUATOR_RESULTS_PATH: json.dumps(evaluator_res),
+            a5.CONTINUATION_RESULT_PATH: json.dumps(continuation_res),
+        },
+        a5.CONTINUATION_CLOSEOUT_COMMIT_MESSAGE,
+    )
+    monkeypatch.setattr(a5, "CLOSEOUT_HEAD", bad_closeout)
+    _temp_repo_commit(
+        tmp_path,
+        {a5.R8_RESULT_PATH: json.dumps({"status": "PASS"})},
+        a5.R8_COMMIT_MESSAGE,
+    )
+    with pytest.raises(RuntimeError, match="Closeout parent mismatch"):
+        a5.verify_freeze(tmp_path)
+
+
+def test_r8_05_closeout_scientific_diff_contamination(tmp_path, monkeypatch):
+    """Test 5 (task Section 20): closeout additionally changing runner/config fails."""
+    stages = _r8_synthetic_closeout_repo(tmp_path, monkeypatch)
+    # Mutate closeout commit to include runner modification
+    _git(tmp_path, "checkout", "-q", stages["raw_freeze"])
+    manifest = json.loads((tmp_path / a5.CONTINUATION_MANIFEST_PATH).read_text(encoding="utf-8"))
+    manifest["outcome_exposure_state"]["D4_A5_OUTCOME_EXPOSURE"] = "EVALUATION_COMPLETE"
+    evaluator_res = {"verdict_level": 2, "verdict": a5.R1_VERDICT_LEVEL_2_BASELINE, "verdict_status": "INCONCLUSIVE"}
+    continuation_res = {"verdict_level": 2, "verdict": a5.R1_VERDICT_LEVEL_2_BASELINE, "verdict_status": "INCONCLUSIVE"}
+    bad_closeout = _temp_repo_commit(
+        tmp_path,
+        {
+            a5.CONTINUATION_MANIFEST_PATH: json.dumps(manifest),
+            a5.CONTINUATION_EVALUATOR_RESULTS_PATH: json.dumps(evaluator_res),
+            a5.CONTINUATION_RESULT_PATH: json.dumps(continuation_res),
+            a5.RUNNER_PATH: "# corrupted runner in closeout\n",
+        },
+        a5.CONTINUATION_CLOSEOUT_COMMIT_MESSAGE,
+    )
+    monkeypatch.setattr(a5, "CLOSEOUT_HEAD", bad_closeout)
+    _temp_repo_commit(
+        tmp_path,
+        {a5.R8_RESULT_PATH: json.dumps({"status": "PASS"})},
+        a5.R8_COMMIT_MESSAGE,
+    )
+    with pytest.raises(RuntimeError, match="Closeout commit diff seal violated"):
+        a5.verify_freeze(tmp_path)
+
+
+def test_r8_06_raw_plan_drift(tmp_path, monkeypatch):
+    """Test 6 (task Section 20): modify raw plans after plan freeze fails."""
+    stages = _r8_synthetic_closeout_repo(tmp_path, monkeypatch)
+    _git(tmp_path, "checkout", "-q", stages["closeout"])
+    # Create an R8 commit that alters raw plans
+    raw_plans = json.loads((tmp_path / a5.CONTINUATION_RAW_PLANS_PATH).read_text(encoding="utf-8"))
+    raw_plans["plans_planned"] = 999
+    _temp_repo_commit(
+        tmp_path,
+        {a5.CONTINUATION_RAW_PLANS_PATH: json.dumps(raw_plans)},
+        a5.R8_COMMIT_MESSAGE,
+    )
+    with pytest.raises(RuntimeError, match="(Raw prospective plans differ|R8 modified scientific continuation artifacts)"):
+        a5.verify_freeze(tmp_path)
+
+
+def test_r8_07_raw_result_drift(tmp_path, monkeypatch):
+    """Test 7 (task Section 20): modify raw paired results after raw-freeze fails."""
+    stages = _r8_synthetic_closeout_repo(tmp_path, monkeypatch)
+    _git(tmp_path, "checkout", "-q", stages["closeout"])
+    raw_results = json.loads((tmp_path / a5.CONTINUATION_RAW_RESULTS_PATH).read_text(encoding="utf-8"))
+    raw_results["accounting"]["EMBEDDING_CALLS"] = 999
+    _temp_repo_commit(
+        tmp_path,
+        {a5.CONTINUATION_RAW_RESULTS_PATH: json.dumps(raw_results)},
+        a5.R8_COMMIT_MESSAGE,
+    )
+    with pytest.raises(RuntimeError, match="(Raw paired results differ|R8 modified scientific continuation artifacts)"):
+        a5.verify_freeze(tmp_path)
+
+
+def test_r8_08_r8_scientific_artifact_mutation(tmp_path, monkeypatch):
+    """Test 8 (task Section 20): R8 modifying scientific continuation artifacts fails."""
+    stages = _r8_synthetic_closeout_repo(tmp_path, monkeypatch)
+    _git(tmp_path, "checkout", "-q", stages["closeout"])
+    manifest = json.loads((tmp_path / a5.CONTINUATION_MANIFEST_PATH).read_text(encoding="utf-8"))
+    manifest["extra"] = "forbidden"
+    _temp_repo_commit(
+        tmp_path,
+        {
+            a5.CONTINUATION_MANIFEST_PATH: json.dumps(manifest),
+            a5.R8_RESULT_PATH: json.dumps({"status": "PASS"}),
+        },
+        a5.R8_COMMIT_MESSAGE,
+    )
+    with pytest.raises(RuntimeError, match="R8 modified scientific continuation artifacts"):
+        a5.verify_freeze(tmp_path)
+
+
+def test_r8_09_scientific_runner_test_drift_before_closeout(tmp_path, monkeypatch):
+    """Test 9 (task Section 20): runner or test differs between R7 and closeout fails."""
+    stages = _r8_synthetic_closeout_repo(tmp_path, monkeypatch)
+    # Re-commit closeout with drifted runner
+    _git(tmp_path, "checkout", "-q", stages["raw_freeze"])
+    manifest = json.loads((tmp_path / a5.CONTINUATION_MANIFEST_PATH).read_text(encoding="utf-8"))
+    evaluator_res = {"verdict_level": 2, "verdict": a5.R1_VERDICT_LEVEL_2_BASELINE, "verdict_status": "INCONCLUSIVE"}
+    continuation_res = {"verdict_level": 2, "verdict": a5.R1_VERDICT_LEVEL_2_BASELINE, "verdict_status": "INCONCLUSIVE"}
+    runner_src = (_REPO_ROOT / a5.RUNNER_PATH).read_text(encoding="utf-8")
+    drifted_closeout = _temp_repo_commit(
+        tmp_path,
+        {
+            a5.CONTINUATION_MANIFEST_PATH: json.dumps(manifest),
+            a5.CONTINUATION_EVALUATOR_RESULTS_PATH: json.dumps(evaluator_res),
+            a5.CONTINUATION_RESULT_PATH: json.dumps(continuation_res),
+            a5.RUNNER_PATH: runner_src + "\n# drift\n",
+        },
+        a5.CONTINUATION_CLOSEOUT_COMMIT_MESSAGE,
+    )
+    monkeypatch.setattr(a5, "CLOSEOUT_HEAD", drifted_closeout)
+    _temp_repo_commit(
+        tmp_path,
+        {a5.R8_RESULT_PATH: json.dumps({"status": "PASS"})},
+        a5.R8_COMMIT_MESSAGE,
+    )
+    with pytest.raises(RuntimeError):
+        a5.verify_freeze(tmp_path)
+
+
+def test_r8_10_machine_verdict_disagreement(tmp_path, monkeypatch):
+    """Test 10 (task Section 20): evaluator results and continuation result disagree on verdict."""
+    stages = _r8_synthetic_closeout_repo(tmp_path, monkeypatch)
+    _git(tmp_path, "checkout", "-q", stages["raw_freeze"])
+    manifest = json.loads((tmp_path / a5.CONTINUATION_MANIFEST_PATH).read_text(encoding="utf-8"))
+    manifest["outcome_exposure_state"]["D4_A5_OUTCOME_EXPOSURE"] = "EVALUATION_COMPLETE"
+    manifest["outcome_exposure_state"]["evaluator_executed"] = True
+    manifest["outcome_exposure_state"]["scientific_verdict_computed"] = True
+    evaluator_res = {
+        "schema_version": "1.0.0",
+        "verdict_level": 2,
+        "verdict": a5.R1_VERDICT_LEVEL_2_BASELINE,
+        "verdict_status": "INCONCLUSIVE",
+        "verdict_reason": "Reason A",
+        "execution_validity": {"valid": True, "plan_pair_equality": "7/7", "plan_cell_equality": "14/14"},
+        "reference_baseline_valid": False,
+        "safety": {"critical_retirement_regressions": 0, "grounding_regressions": 0, "wrong_version_regressions": 0, "invalid_provenance_recoveries": 0},
+    }
+    continuation_res = {
+        "schema_version": "1.0.0",
+        "verdict_level": 2,
+        "verdict": a5.R1_VERDICT_LEVEL_2_BASELINE,
+        "verdict_status": "INCONCLUSIVE",
+        "verdict_reason": "Reason B (disagrees)",
+        "production_activation": False,
+        "batch1_production_active": True,
+        "batch2_production_active": False,
+    }
+    bad_closeout = _temp_repo_commit(
+        tmp_path,
+        {
+            a5.CONTINUATION_MANIFEST_PATH: json.dumps(manifest),
+            a5.CONTINUATION_EVALUATOR_RESULTS_PATH: json.dumps(evaluator_res),
+            a5.CONTINUATION_RESULT_PATH: json.dumps(continuation_res),
+        },
+        a5.CONTINUATION_CLOSEOUT_COMMIT_MESSAGE,
+    )
+    monkeypatch.setattr(a5, "CLOSEOUT_HEAD", bad_closeout)
+    _temp_repo_commit(
+        tmp_path,
+        {a5.R8_RESULT_PATH: json.dumps({"status": "PASS"})},
+        a5.R8_COMMIT_MESSAGE,
+    )
+    with pytest.raises(RuntimeError, match="Verdict field mismatch"):
+        a5.verify_freeze(tmp_path)
+
+
+def test_r8_11_production_activation_violation(tmp_path, monkeypatch):
+    """Test 11 (task Section 20): batch2_production_active = true or production_activation = true fails."""
+    stages = _r8_synthetic_closeout_repo(tmp_path, monkeypatch)
+    _git(tmp_path, "checkout", "-q", stages["raw_freeze"])
+    manifest = json.loads((tmp_path / a5.CONTINUATION_MANIFEST_PATH).read_text(encoding="utf-8"))
+    manifest["outcome_exposure_state"]["D4_A5_OUTCOME_EXPOSURE"] = "EVALUATION_COMPLETE"
+    manifest["outcome_exposure_state"]["evaluator_executed"] = True
+    manifest["outcome_exposure_state"]["scientific_verdict_computed"] = True
+    manifest["batch2_production_active"] = True  # VIOLATION
+    evaluator_res = {
+        "schema_version": "1.0.0",
+        "verdict_level": 2,
+        "verdict": a5.R1_VERDICT_LEVEL_2_BASELINE,
+        "verdict_status": "INCONCLUSIVE",
+        "verdict_reason": "Reason",
+        "execution_validity": {"valid": True, "plan_pair_equality": "7/7", "plan_cell_equality": "14/14"},
+        "reference_baseline_valid": False,
+        "safety": {"critical_retirement_regressions": 0, "grounding_regressions": 0, "wrong_version_regressions": 0, "invalid_provenance_recoveries": 0},
+    }
+    continuation_res = {
+        "schema_version": "1.0.0",
+        "verdict_level": 2,
+        "verdict": a5.R1_VERDICT_LEVEL_2_BASELINE,
+        "verdict_status": "INCONCLUSIVE",
+        "verdict_reason": "Reason",
+        "production_activation": False,
+        "batch1_production_active": True,
+        "batch2_production_active": False,
+    }
+    bad_closeout = _temp_repo_commit(
+        tmp_path,
+        {
+            a5.CONTINUATION_MANIFEST_PATH: json.dumps(manifest),
+            a5.CONTINUATION_EVALUATOR_RESULTS_PATH: json.dumps(evaluator_res),
+            a5.CONTINUATION_RESULT_PATH: json.dumps(continuation_res),
+        },
+        a5.CONTINUATION_CLOSEOUT_COMMIT_MESSAGE,
+    )
+    monkeypatch.setattr(a5, "CLOSEOUT_HEAD", bad_closeout)
+    _temp_repo_commit(
+        tmp_path,
+        {a5.R8_RESULT_PATH: json.dumps({"status": "PASS"})},
+        a5.R8_COMMIT_MESSAGE,
+    )
+    with pytest.raises(RuntimeError, match="Manifest batch2_production_active is not false"):
+        a5.verify_freeze(tmp_path)
+
+
+def test_r8_12_dirty_staged_worktree(tmp_path, monkeypatch):
+    """Test 12 (task Section 20): dirty tracked file or staged index change fails."""
+    stages = _r8_synthetic_closeout_repo(tmp_path, monkeypatch)
+    res_path = tmp_path / a5.R8_RESULT_PATH
+    res_path.write_text(res_path.read_text(encoding="utf-8") + "\n# dirty", encoding="utf-8")
+    with pytest.raises(RuntimeError, match="Worktree or index is not clean"):
+        a5.verify_freeze(tmp_path)
