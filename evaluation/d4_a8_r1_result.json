@@ -1,0 +1,83 @@
+{
+  "stage": "D4-A8-R1",
+  "contract_name": "Component-Sensitive Model-Factory Revalidation Contract Repair",
+  "status": "PASS",
+  "decision": "COMPONENT_SENSITIVE_MODEL_FACTORY_REVALIDATION_PREREGISTERED",
+  "starting_boundary": {
+    "starting_head": "ae2e744f6a05e711d407a02d0ae276e6e1422809",
+    "starting_commit_message": "D4-A8 preregister model-factory symbol retirement revalidation",
+    "starting_parent_head": "2da89b8223399ff184f4b2b3674f7c995ce8d390",
+    "worktree_clean": true
+  },
+  "historical_a8_classification": "HISTORICAL / PARTIAL / TARGETED_REVALIDATION_COHORT_PREREGISTERED / THREE_SYMBOL_RETIREMENT_SENSITIVITY_INSUFFICIENT",
+  "repaired_target_masks": {
+    "covered_symbol_mask": [
+      "model/PndLmdModelFactory.cxx"
+    ],
+    "uncovered_symbol_hold_mask": [
+      "model/PndLmdDPMAngModel1D.cxx",
+      "model/PndLmdDPMAngModel2D.cxx"
+    ],
+    "page_hint_hold_mask": {
+      "pflueger_2017": [
+        51,
+        57,
+        65
+      ]
+    }
+  },
+  "formal_cohort_roles": {
+    "g031": "DIRECT_MODEL_FACTORY_TREATMENT_CASE (covers model/PndLmdModelFactory.cxx via g031.e1)",
+    "g032": "DPM1D_SYMBOL_ADJACENT_NONMATCHING_CONTROL",
+    "g033": "DPM2D_SYMBOL_ADJACENT_NONMATCHING_CONTROL",
+    "g047": "PAGE_HINT_ADJACENT_NONMATCHING_CONTROL"
+  },
+  "formal_case_order": [
+    "g031",
+    "g032",
+    "g033",
+    "g047"
+  ],
+  "page_hint_gap_status": "OPEN",
+  "page_hint_gap_result": "NO_EXISTING_APPROVED_ENGLISH_CASE_FOUND",
+  "real_plan_reusability": {
+    "scanned_artifacts": [
+      "evaluation/d4_a5_continuation_raw_prospective_plans.json",
+      "evaluation/d4_a5_raw_prospective_plans.json",
+      "evaluation/d4_a2_v2_raw_plans.json",
+      "evaluation/d4_a2_v1_raw_analyzer_plan_samples.json"
+    ],
+    "all_require_fresh_acquisition": true,
+    "fresh_plan_count": 4,
+    "reusable_plan_count": 0
+  },
+  "derived_future_provider_budget": {
+    "N_formal_cases": 4,
+    "R_reusable_plans": 0,
+    "F_fresh_plans": 4,
+    "analyzer_calls": 4,
+    "embedding_calls": 8,
+    "reranker_calls": 8,
+    "qa_calls": 0,
+    "verifier_calls": 0,
+    "judge_calls": 0,
+    "scientific_evaluator_calls": 0,
+    "retries": 0,
+    "total_logical_model_calls": 20
+  },
+  "provenance_and_projection_contract": "REUSED_FROZEN_D4_A5_CONTRIBUTION_LEDGER_AND_PROVENANCE_SUBTRACTION",
+  "production_state_verified": true,
+  "production_activation_authorized": false,
+  "d4_a9_authorized": false,
+  "zero_provider_accounting": {
+    "analyzer_calls": 0,
+    "embedding_calls": 0,
+    "reranker_calls": 0,
+    "retrieval_cells": 0,
+    "qa_calls": 0,
+    "verifier_calls": 0,
+    "judge_calls": 0,
+    "scientific_evaluator_calls": 0,
+    "tokens": 0
+  }
+}

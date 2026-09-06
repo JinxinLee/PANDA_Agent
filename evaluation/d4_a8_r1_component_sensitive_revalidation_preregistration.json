@@ -1,0 +1,288 @@
+{
+  "contract_name": "D4-A8-R1 — Component-Sensitive Model-Factory Revalidation Contract Repair",
+  "lifecycle_stage": "D4-A8-R1",
+  "starting_head": "ae2e744f6a05e711d407a02d0ae276e6e1422809",
+  "starting_commit_message": "D4-A8 preregister model-factory symbol retirement revalidation",
+  "starting_parent_head": "2da89b8223399ff184f4b2b3674f7c995ce8d390",
+  "target_rule_id": "model_factory_theory",
+  "historical_a8_status": "HISTORICAL / PARTIAL / TARGETED_REVALIDATION_COHORT_PREREGISTERED / THREE_SYMBOL_RETIREMENT_SENSITIVITY_INSUFFICIENT",
+  "historical_contract_defect": {
+    "defect_class": "RETIREMENT_SENSITIVITY_INSUFFICIENT_FOR_MULTI_COMPONENT_MASK",
+    "description": "Historical D4-A8 allowed one treatment-active direct case (g031) to authorize retirement validation for all three symbol components of model_factory_theory (PndLmdDPMAngModel1D.cxx, PndLmdDPMAngModel2D.cxx, PndLmdModelFactory.cxx), even though g031's critical evidence is sensitive only to PndLmdModelFactory.cxx (generateModel), while g032 and g033 are nonmatching controls that cannot detect treatment effect.",
+    "repair_principle": "No symbol component can receive retirement-validating authority without explicit treatment-active direct critical-evidence coverage frozen before outcome exposure. Nonmatching controls are safety sentinels and cannot authorize retirement of the locators they mention. The future treatment mask is derived strictly from covered symbol components."
+  },
+  "original_symbol_mask": [
+    "model/PndLmdDPMAngModel1D.cxx",
+    "model/PndLmdDPMAngModel2D.cxx",
+    "model/PndLmdModelFactory.cxx"
+  ],
+  "component_sensitive_coverage_audit": {
+    "model/PndLmdModelFactory.cxx": {
+      "coverage_status": "DIRECT_TREATMENT_COVERAGE_FOUND",
+      "targetable": true,
+      "direct_cases": [
+        {
+          "case_id": "g031",
+          "intent": "api",
+          "language": "en",
+          "review_status": "approved",
+          "critical_evidence_groups": ["g031.e1"]
+        }
+      ]
+    },
+    "model/PndLmdDPMAngModel1D.cxx": {
+      "coverage_status": "DIRECT_TREATMENT_COVERAGE_GAP",
+      "targetable": false,
+      "direct_cases": [],
+      "note": "Required by g032.e1, but g032 does not match model_factory_theory query expansion. No other approved English question matches."
+    },
+    "model/PndLmdDPMAngModel2D.cxx": {
+      "coverage_status": "DIRECT_TREATMENT_COVERAGE_GAP",
+      "targetable": false,
+      "direct_cases": [],
+      "note": "Required by g033.e1, but g033 does not match model_factory_theory query expansion. No other approved English question matches."
+    }
+  },
+  "covered_symbol_mask": [
+    "model/PndLmdModelFactory.cxx"
+  ],
+  "uncovered_symbol_hold_mask": [
+    "model/PndLmdDPMAngModel1D.cxx",
+    "model/PndLmdDPMAngModel2D.cxx"
+  ],
+  "page_hint_hold_mask": {
+    "pflueger_2017": [
+      51,
+      57,
+      65
+    ]
+  },
+  "formal_direct_cases_by_component": {
+    "model/PndLmdModelFactory.cxx": [
+      "g031"
+    ]
+  },
+  "formal_critical_evidence_by_component": {
+    "model/PndLmdModelFactory.cxx": {
+      "g031": [
+        "g031.e1"
+      ]
+    }
+  },
+  "formal_no_op_controls": [
+    "g032",
+    "g033",
+    "g047"
+  ],
+  "formal_case_order": [
+    "g031",
+    "g032",
+    "g033",
+    "g047"
+  ],
+  "paired_cell_order": [
+    {
+      "case_id": "g031",
+      "arm": "A7_CURRENT",
+      "cell_id": "g031_A7_CURRENT"
+    },
+    {
+      "case_id": "g031",
+      "arm": "COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT",
+      "cell_id": "g031_COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT"
+    },
+    {
+      "case_id": "g032",
+      "arm": "A7_CURRENT",
+      "cell_id": "g032_A7_CURRENT"
+    },
+    {
+      "case_id": "g032",
+      "arm": "COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT",
+      "cell_id": "g032_COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT"
+    },
+    {
+      "case_id": "g033",
+      "arm": "A7_CURRENT",
+      "cell_id": "g033_A7_CURRENT"
+    },
+    {
+      "case_id": "g033",
+      "arm": "COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT",
+      "cell_id": "g033_COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT"
+    },
+    {
+      "case_id": "g047",
+      "arm": "A7_CURRENT",
+      "cell_id": "g047_A7_CURRENT"
+    },
+    {
+      "case_id": "g047",
+      "arm": "COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT",
+      "cell_id": "g047_COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT"
+    }
+  ],
+  "total_paired_cells": 8,
+  "page_hint_gap_audit": {
+    "status": "OPEN",
+    "result": "NO_EXISTING_APPROVED_ENGLISH_CASE_FOUND",
+    "explanation": "No approved English benchmark or novel question matches model_factory_theory under an intent (algorithm_theory or algorithm_implementation) that allows paper page hints to survive production plan formation. Therefore pflueger_2017 [51, 57, 65] remain strictly on HOLD."
+  },
+  "real_plan_reusability_audit": {
+    "scanned_artifacts": [
+      "evaluation/d4_a5_continuation_raw_prospective_plans.json",
+      "evaluation/d4_a5_raw_prospective_plans.json",
+      "evaluation/d4_a2_v2_raw_plans.json",
+      "evaluation/d4_a2_v1_raw_analyzer_plan_samples.json"
+    ],
+    "reusability_results": {
+      "g031": "NO_COMPATIBLE_FROZEN_PLAN",
+      "g032": "NO_COMPATIBLE_FROZEN_PLAN",
+      "g033": "NO_COMPATIBLE_FROZEN_PLAN",
+      "g047": "NO_COMPATIBLE_FROZEN_PLAN"
+    },
+    "all_require_fresh_acquisition": true,
+    "fresh_plan_count": 4,
+    "reusable_plan_count": 0
+  },
+  "fresh_plan_case_ids": [
+    "g031",
+    "g032",
+    "g033",
+    "g047"
+  ],
+  "reusable_plan_case_ids": [],
+  "real_contribution_ledger_contract": {
+    "ledger_schema": "D4-A5-R1 authoritative contribution_ledger",
+    "required_fields": [
+      "contribution_id",
+      "kind",
+      "value",
+      "source_id",
+      "pdf_page",
+      "provenance_origin_ids",
+      "origin_types",
+      "plan_present"
+    ],
+    "origin_types_supported": [
+      "reviewed_expansion_rule",
+      "accepted_analyzer_semantic_output",
+      "production_deterministic_override"
+    ]
+  },
+  "real_projection_contract": {
+    "projection_method": "subtract_model_factory_theory_covered_origins",
+    "rule_origin_to_subtract": "model_factory_theory",
+    "target_symbol_scope": [
+      "model/PndLmdModelFactory.cxx"
+    ],
+    "independent_origin_preservation": true,
+    "uncovered_symbols_untouched": true,
+    "page_hints_untouched": true,
+    "control_projection_invariant": true
+  },
+  "applicability_contract": {
+    "applicability_scope": "per_covered_component",
+    "allowed_states": [
+      "ACTIVE_IDENTIFIABLE",
+      "INACTIVE_NOT_IDENTIFIABLE",
+      "AMBIGUOUS_INVALID"
+    ],
+    "uncovered_symbols_applicability": "HOLD_NOT_APPLICABLE",
+    "page_hints_applicability": "HOLD_NOT_APPLICABLE"
+  },
+  "future_model_contract": {
+    "analyzer": {
+      "model_id": "gemini-3.8-flash",
+      "temperature": 0.0,
+      "vertex_location": "global",
+      "max_retries": 0
+    },
+    "embedding": {
+      "model_id": "gemini-embedding-2",
+      "vertex_location": "global"
+    },
+    "reranker": {
+      "model_id": "gemini-3.8-flash",
+      "temperature": 0.0,
+      "vertex_location": "global",
+      "max_retries": 0
+    }
+  },
+  "derived_future_provider_budget": {
+    "formula": {
+      "N": 4,
+      "R": 0,
+      "F": 4,
+      "analyzer": "F",
+      "embedding": "2*N",
+      "reranker": "2*N",
+      "total_logical_model_calls": "F + 4*N"
+    },
+    "N_formal_cases": 4,
+    "R_reusable_plans": 0,
+    "F_fresh_plans": 4,
+    "analyzer_calls": 4,
+    "embedding_calls": 8,
+    "reranker_calls": 8,
+    "qa_calls": 0,
+    "verifier_calls": 0,
+    "judge_calls": 0,
+    "scientific_evaluator_calls": 0,
+    "retries": 0,
+    "total_logical_model_calls": 20
+  },
+  "component_disposition_space": {
+    "allowed_dispositions": [
+      "RETIREMENT_VALIDATED_COMPONENT",
+      "DEPENDENCY_OBSERVED_RETAIN",
+      "INCONCLUSIVE_BASELINE_NOT_REPRODUCED",
+      "INCONCLUSIVE_APPLICABILITY_INCOMPLETE",
+      "HOLD_DIRECT_TREATMENT_COVERAGE_GAP",
+      "HOLD_OUTSIDE_TREATMENT_SCOPE",
+      "INVALID_PROTOCOL"
+    ],
+    "covered_components_mapping": {
+      "model/PndLmdModelFactory.cxx": "EVALUATED_BY_DIRECT_CASE_G031"
+    },
+    "held_components_mapping": {
+      "model/PndLmdDPMAngModel1D.cxx": "HOLD_DIRECT_TREATMENT_COVERAGE_GAP",
+      "model/PndLmdDPMAngModel2D.cxx": "HOLD_DIRECT_TREATMENT_COVERAGE_GAP",
+      "pflueger_2017: [51, 57, 65]": "HOLD_OUTSIDE_TREATMENT_SCOPE"
+    }
+  },
+  "overall_outcome_precedence": [
+    {
+      "level": 1,
+      "verdict": "INVALID / TARGETED_VALIDATION_PROTOCOL_FAILED",
+      "condition": "Protocol violation or ambiguous component applicability in direct cases."
+    },
+    {
+      "level": 2,
+      "verdict": "INCONCLUSIVE / ALL_COVERED_COMPONENT_BASELINES_NOT_REPRODUCED",
+      "condition": "Direct-case reference baselines for all covered components fail to reproduce."
+    },
+    {
+      "level": 3,
+      "verdict": "PARTIAL / DEPENDENCY_OBSERVED_FOR_COVERED_COMPONENTS_RETAIN",
+      "condition": "At least one covered component demonstrates genuine dependency on the retired locator origin."
+    },
+    {
+      "level": 4,
+      "verdict": "FAIL / TARGETED_CONTROL_OR_SAFETY_REGRESSION",
+      "condition": "Control divergence (non-zero origin removal or projection diff on controls) or safety regression."
+    },
+    {
+      "level": 5,
+      "verdict": "INCONCLUSIVE / COVERED_COMPONENT_APPLICABILITY_INCOMPLETE",
+      "condition": "At least one covered component is INACTIVE_NOT_IDENTIFIABLE and cannot be tested."
+    },
+    {
+      "level": 6,
+      "verdict": "PARTIAL / MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD",
+      "condition": "All covered components achieve RETIREMENT_VALIDATED_COMPONENT; controls remain invariant; safety preserved; uncovered symbols and hints remain strictly on HOLD. Note: full RETIREMENT_VALIDATED is strictly unreachable under this repaired contract."
+    }
+  ],
+  "production_activation_authorized": false,
+  "d4_a9_authorized": false
+}
