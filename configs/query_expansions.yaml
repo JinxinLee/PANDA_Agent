@@ -129,7 +129,7 @@ rules:
   - rule_id: effective_acceptance_pipeline
     triggers: ["effective acceptance", "restgas acceptance", "acceptance calculation", "有效接受度", "有效接受度"]
     repositories: [restgas_determination, luminosityfit]
-    symbols: [macro/target/prod_sim_hvmaps.C, data/PndLmdAcceptance.cxx, model/PndLmdModelFactory.cxx]
+    symbols: []
     concepts: [profile-dependent effective acceptance pipeline]
     paper_page_hints:
       li_2026: [83, 86, 89]
@@ -181,7 +181,7 @@ rules:
   - rule_id: root_macro_usage
     triggers: ["ROOT macro", "macro execution", "run a ROOT macro"]
     repositories: [pandaroot]
-    symbols: [Running/Macros.html, tools/MasterTasks/PndMasterRunSim.cxx]
+    symbols: []
     concepts: [PandaRoot macro invocation]
 
   - rule_id: restgas_workflow_usage

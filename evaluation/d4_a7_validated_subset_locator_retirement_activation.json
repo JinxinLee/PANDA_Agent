@@ -1,0 +1,169 @@
+{
+  "schema_version": "1.0.0",
+  "lifecycle_stage": "D4-A7",
+  "stage": "D4-A7 Validated-Subset Locator-Retirement Production Activation",
+  "starting_head": "41ca18f6b3348d7f20bc226867b0d628aaea2187",
+  "starting_commit_message": "D4-A6-R1 repair validated-subset production mapping contract",
+  "activation_authority": "D4-A6-R1",
+  "r1_decision": "READY_FOR_VALIDATED_SUBSET_LOCATOR_RETIREMENT",
+  "activated_rules": [
+    "effective_acceptance_pipeline",
+    "root_macro_usage"
+  ],
+  "held_rules": [
+    "model_factory_theory"
+  ],
+  "exact_activation_mapping": {
+    "effective_acceptance_pipeline": {
+      "production_migration_eligibility": "MIGRATION_ELIGIBLE",
+      "action": "RETIRE_VALIDATED_RULE_LOCAL_LOCATORS_ONLY",
+      "symbols_before": [
+        "macro/target/prod_sim_hvmaps.C",
+        "data/PndLmdAcceptance.cxx",
+        "model/PndLmdModelFactory.cxx"
+      ],
+      "symbols_after": [],
+      "structured_replacement_effective": false,
+      "structured_replacement_field_present": false,
+      "preserved_components": {
+        "triggers": [
+          "effective acceptance",
+          "restgas acceptance",
+          "acceptance calculation",
+          "有效接受度",
+          "有效接受度"
+        ],
+        "repositories": [
+          "restgas_determination",
+          "luminosityfit"
+        ],
+        "concepts": [
+          "profile-dependent effective acceptance pipeline"
+        ],
+        "paper_page_hints": {
+          "li_2026": [
+            83,
+            86,
+            89
+          ]
+        }
+      }
+    },
+    "root_macro_usage": {
+      "production_migration_eligibility": "MIGRATION_ELIGIBLE",
+      "action": "RETIRE_VALIDATED_RULE_LOCAL_LOCATORS_ONLY",
+      "symbols_before": [
+        "Running/Macros.html",
+        "tools/MasterTasks/PndMasterRunSim.cxx"
+      ],
+      "symbols_after": [],
+      "structured_replacement_effective": false,
+      "structured_replacement_field_present": false,
+      "preserved_components": {
+        "triggers": [
+          "ROOT macro",
+          "macro execution",
+          "run a ROOT macro"
+        ],
+        "repositories": [
+          "pandaroot"
+        ],
+        "concepts": [
+          "PandaRoot macro invocation"
+        ]
+      }
+    },
+    "model_factory_theory": {
+      "production_migration_eligibility": "HOLD",
+      "action": "NO_ACTION_HOLD_EXISTING_PRODUCTION_CONTRACT",
+      "symbols_before": [
+        "model/PndLmdDPMAngModel1D.cxx",
+        "model/PndLmdDPMAngModel2D.cxx",
+        "model/PndLmdModelFactory.cxx"
+      ],
+      "symbols_after": [
+        "model/PndLmdDPMAngModel1D.cxx",
+        "model/PndLmdDPMAngModel2D.cxx",
+        "model/PndLmdModelFactory.cxx"
+      ],
+      "structured_replacement_effective": false,
+      "structured_replacement_field_present": false,
+      "preserved_components": {
+        "triggers": [
+          "PndLmdModelFactory",
+          "DPM、acceptance 和 resolution",
+          "DPM acceptance resolution"
+        ],
+        "repositories": [
+          "luminosityfit"
+        ],
+        "concepts": [
+          "DPM model acceptance resolution composition"
+        ],
+        "paper_page_hints": {
+          "pflueger_2017": [
+            51,
+            57,
+            65
+          ]
+        }
+      }
+    }
+  },
+  "structured_replacement_state": {
+    "effective_acceptance_pipeline": false,
+    "root_macro_usage": false,
+    "model_factory_theory": false,
+    "event_poca_handoff": true,
+    "restgas_profile_workflow": true
+  },
+  "batch1_state": {
+    "batch1_active": true,
+    "rules": [
+      "event_poca_handoff",
+      "restgas_profile_workflow"
+    ]
+  },
+  "independent_origin_preservation": {
+    "model_factory_in_held_rule": true,
+    "model_factory_in_independent_rule": true,
+    "prod_sim_hvmaps_in_independent_rule": true,
+    "lmd_acceptance_in_independent_rule": true,
+    "running_macros_in_independent_rule": true,
+    "master_run_sim_in_independent_rule": true
+  },
+  "production_mutation_scope": {
+    "changed_production_files": [
+      "configs/query_expansions.yaml"
+    ],
+    "src_tree_modified": false,
+    "configs_other_files_modified": false
+  },
+  "zero_provider_accounting": {
+    "analyzer_calls": 0,
+    "embedding_calls": 0,
+    "reranker_calls": 0,
+    "qa_calls": 0,
+    "verifier_calls": 0,
+    "judge_calls": 0,
+    "scientific_evaluator_calls": 0,
+    "retrieval_cells": 0,
+    "db_qdrant_writes": 0,
+    "provider_attempts": 0,
+    "tokens": 0
+  },
+  "batch1_active": true,
+  "batch2_validated_subset_production_active": true,
+  "batch2_validated_subset_active_rules": [
+    "effective_acceptance_pipeline",
+    "root_macro_usage"
+  ],
+  "batch2_held_rules": [
+    "model_factory_theory"
+  ],
+  "full_batch2_production_activation": false,
+  "expected_commit_message": "D4-A7 activate validated-subset locator retirement",
+  "status": "PASS",
+  "decision": "VALIDATED_SUBSET_LOCATOR_RETIREMENT_ACTIVATED",
+  "next_stage": "STOP (await separate authorization, do not create D4-A8)"
+}
