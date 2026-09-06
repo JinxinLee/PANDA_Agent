@@ -1,0 +1,250 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint": "D4-A5-CONTINUATION",
+  "lifecycle_stage": "D4-A5 — Second-Batch Low-Risk Locator Controlled Retirement Validation (Continuation Attempt)",
+  "created_at": "2026-09-06T15:54:58.384679+00:00",
+  "attempt_id": "D4-A5_ATTEMPT_2_CONTINUATION",
+  "commit_lineage": {
+    "historical_a5_starting_head": "cb0f8c330f224a470401535b4b01f153488da99b",
+    "historical_a5_stop_head": "dc679f880cda8d2ccdfb709d725e24673c562eab",
+    "historical_r1_head": "93ad95d7f8808bc4e7ccdbb21a24457c0df30564",
+    "historical_r2_head": "a53ca0ace5280c278e32e350f5a5051b810fa6f4",
+    "historical_r3_head": "447d03e3cb9d3c1109d6f6070115f3ea4618bb7e",
+    "historical_r5_head": "cc5db408929e82b29da76d92f1439ac53a4c8cf3",
+    "continuation_plan_acquisition_implementation_freeze_head": "e91c2bb56763d56be9c7ca333aefb6c97016a150",
+    "continuation_plan_freeze_head": "12b5dc6908e7dc22f6fa88fa189252099df8f3c6",
+    "continuation_retrieval_implementation_freeze_head": "efd3651aae583ac3c8f4f2cd240d2dfb64c3e259",
+    "continuation_raw_freeze_head": "6d226e10ba2fee0eea0d14c216b41d44bab24e59"
+  },
+  "exact_selected_rules": [
+    "effective_acceptance_pipeline",
+    "root_macro_usage",
+    "model_factory_theory"
+  ],
+  "exact_component_masks": {
+    "effective_acceptance_pipeline": {
+      "rule_id": "effective_acceptance_pipeline",
+      "symbols_retired": [
+        "macro/target/prod_sim_hvmaps.C",
+        "data/PndLmdAcceptance.cxx",
+        "model/PndLmdModelFactory.cxx"
+      ],
+      "paper_page_hints_retired": {},
+      "symbols_preserved": [],
+      "paper_page_hints_preserved": {
+        "li_2026": [
+          83,
+          86,
+          89
+        ]
+      },
+      "triggers_preserved": [
+        "effective acceptance",
+        "restgas acceptance",
+        "acceptance calculation",
+        "有效接受度",
+        "有效接受度"
+      ],
+      "repositories_preserved": [
+        "restgas_determination",
+        "luminosityfit"
+      ],
+      "concepts_preserved": [
+        "profile-dependent effective acceptance pipeline"
+      ],
+      "structured_replacement_after_retirement": false
+    },
+    "root_macro_usage": {
+      "rule_id": "root_macro_usage",
+      "symbols_retired": [
+        "Running/Macros.html",
+        "tools/MasterTasks/PndMasterRunSim.cxx"
+      ],
+      "paper_page_hints_retired": {},
+      "symbols_preserved": [],
+      "paper_page_hints_preserved": {},
+      "triggers_preserved": [
+        "ROOT macro",
+        "macro execution",
+        "run a ROOT macro"
+      ],
+      "repositories_preserved": [
+        "pandaroot"
+      ],
+      "concepts_preserved": [
+        "PandaRoot macro invocation"
+      ],
+      "structured_replacement_after_retirement": false
+    },
+    "model_factory_theory": {
+      "rule_id": "model_factory_theory",
+      "symbols_retired": [
+        "model/PndLmdDPMAngModel1D.cxx",
+        "model/PndLmdDPMAngModel2D.cxx",
+        "model/PndLmdModelFactory.cxx"
+      ],
+      "paper_page_hints_retired": {
+        "pflueger_2017": [
+          51,
+          57,
+          65
+        ]
+      },
+      "symbols_preserved": [],
+      "paper_page_hints_preserved": {},
+      "triggers_preserved": [
+        "PndLmdModelFactory",
+        "DPM、acceptance 和 resolution",
+        "DPM acceptance resolution"
+      ],
+      "repositories_preserved": [
+        "luminosityfit"
+      ],
+      "concepts_preserved": [
+        "DPM model acceptance resolution composition"
+      ],
+      "structured_replacement_after_retirement": false
+    }
+  },
+  "plans_completed": 7,
+  "cells_completed": 14,
+  "cells_failed": 0,
+  "per_rule_dispositions": {
+    "effective_acceptance_pipeline": "RETIREMENT_VALIDATED",
+    "root_macro_usage": "RETIREMENT_VALIDATED",
+    "model_factory_theory": "INCONCLUSIVE_BASELINE_NOT_REPRODUCED"
+  },
+  "per_rule_component_accounting": {
+    "effective_acceptance_pipeline": {
+      "validated_active_components": [
+        {
+          "case_id": "g052",
+          "kind": "symbol",
+          "value": "macro/target/prod_sim_hvmaps.C"
+        },
+        {
+          "case_id": "g052",
+          "kind": "symbol",
+          "value": "data/PndLmdAcceptance.cxx"
+        },
+        {
+          "case_id": "g052",
+          "kind": "symbol",
+          "value": "model/PndLmdModelFactory.cxx"
+        }
+      ],
+      "held_inactive_components": []
+    },
+    "root_macro_usage": {
+      "validated_active_components": [
+        {
+          "case_id": "n004",
+          "kind": "symbol",
+          "value": "Running/Macros.html"
+        },
+        {
+          "case_id": "n004",
+          "kind": "symbol",
+          "value": "tools/MasterTasks/PndMasterRunSim.cxx"
+        }
+      ],
+      "held_inactive_components": []
+    },
+    "model_factory_theory": {
+      "validated_active_components": [
+        {
+          "case_id": "n014",
+          "kind": "symbol",
+          "value": "model/PndLmdDPMAngModel1D.cxx"
+        },
+        {
+          "case_id": "n014",
+          "kind": "symbol",
+          "value": "model/PndLmdDPMAngModel2D.cxx"
+        },
+        {
+          "case_id": "n014",
+          "kind": "symbol",
+          "value": "model/PndLmdModelFactory.cxx"
+        }
+      ],
+      "held_inactive_components": [
+        {
+          "case_id": "n014",
+          "kind": "paper_page_hint",
+          "value": "pflueger_2017#51",
+          "held_reason": "Configured retirement component was not contributed by the selected Batch-2 rule to the final canonical plan after normal production plan construction (deterministic runtime plan-formation policy); no selected-rule contribution exists to subtract. Retirement effect not identifiable for this component in this plan; component remains HOLD."
+        },
+        {
+          "case_id": "n014",
+          "kind": "paper_page_hint",
+          "value": "pflueger_2017#57",
+          "held_reason": "Configured retirement component was not contributed by the selected Batch-2 rule to the final canonical plan after normal production plan construction (deterministic runtime plan-formation policy); no selected-rule contribution exists to subtract. Retirement effect not identifiable for this component in this plan; component remains HOLD."
+        },
+        {
+          "case_id": "n014",
+          "kind": "paper_page_hint",
+          "value": "pflueger_2017#65",
+          "held_reason": "Configured retirement component was not contributed by the selected Batch-2 rule to the final canonical plan after normal production plan construction (deterministic runtime plan-formation policy); no selected-rule contribution exists to subtract. Retirement effect not identifiable for this component in this plan; component remains HOLD."
+        }
+      ]
+    }
+  },
+  "critical_regression_count": 0,
+  "grounding_regression_count": 0,
+  "wrong_version_regression_count": 0,
+  "invalid_provenance_recovery_count": 0,
+  "metric_deltas": {
+    "recall_at_5": 0.0,
+    "recall_at_10": 0.0,
+    "recall_at_20": 0.0,
+    "combined_candidate_recall": 0.0,
+    "final_evidence_recall": 0.0,
+    "critical_final_evidence_recall": 0.0
+  },
+  "diagnostic_mrr": {
+    "CURRENT_COMPAT": 1.0,
+    "BATCH2_RETIREMENT": 0.9166666666666666,
+    "delta": -0.083333
+  },
+  "tolerance_checks": {
+    "recall_at_5": {
+      "delta": 0.0,
+      "threshold": -0.05,
+      "pass": true
+    },
+    "recall_at_10": {
+      "delta": 0.0,
+      "threshold": -0.05,
+      "pass": true
+    },
+    "recall_at_20": {
+      "delta": 0.0,
+      "threshold": -0.05,
+      "pass": true
+    },
+    "combined_candidate_recall": {
+      "delta": 0.0,
+      "threshold": -0.05,
+      "pass": true
+    },
+    "final_evidence_recall": {
+      "delta": 0.0,
+      "threshold": -0.05,
+      "pass": true
+    },
+    "critical_final_evidence_recall": {
+      "delta": 0.0,
+      "threshold": 0.0,
+      "pass": true
+    }
+  },
+  "verdict_level": 2,
+  "verdict": "INCONCLUSIVE / BATCH2_REFERENCE_BASELINE_NOT_REPRODUCED",
+  "verdict_status": "INCONCLUSIVE",
+  "verdict_reason": "One or more active direct-rule reference baselines are not reproduced under the repaired disposition contract.",
+  "production_activation": false,
+  "batch1_production_active": true,
+  "batch2_production_active": false,
+  "next_stage": "D4-A6 (requires separate authorization)"
+}

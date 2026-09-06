@@ -751,15 +751,16 @@
     "token_usage": 0
   },
   "outcome_exposure_state": {
-    "D4_A5_OUTCOME_EXPOSURE": "RAW_RETRIEVAL_COMPLETE",
+    "D4_A5_OUTCOME_EXPOSURE": "EVALUATION_COMPLETE",
     "plans_completed": 7,
     "formal_cells_completed": 14,
     "formal_cells_failed": 0,
-    "evaluator_executed": false,
-    "scientific_verdict_computed": false,
+    "evaluator_executed": true,
+    "scientific_verdict_computed": true,
     "continuation_implementation_freeze_head": "e91c2bb56763d56be9c7ca333aefb6c97016a150",
     "plan_freeze_head": "12b5dc6908e7dc22f6fa88fa189252099df8f3c6",
-    "continuation_retrieval_implementation_freeze_head": "efd3651aae583ac3c8f4f2cd240d2dfb64c3e259"
+    "continuation_retrieval_implementation_freeze_head": "efd3651aae583ac3c8f4f2cd240d2dfb64c3e259",
+    "verdict": "INCONCLUSIVE / BATCH2_REFERENCE_BASELINE_NOT_REPRODUCED"
   },
   "production_activation": false,
   "batch1_production_active": true,

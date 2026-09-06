@@ -1,0 +1,719 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint": "D4-A5-CONTINUATION",
+  "stage": "Deterministic Evaluator — Batch2 Controlled Retirement Validation (Continuation Attempt, R1 contract)",
+  "created_at": "2026-09-06T15:54:58.383638+00:00",
+  "attempt_id": "D4-A5_ATTEMPT_2_CONTINUATION",
+  "frozen_input_provenance": {
+    "historical_a5_starting_head": "cb0f8c330f224a470401535b4b01f153488da99b",
+    "historical_a5_stop_head": "dc679f880cda8d2ccdfb709d725e24673c562eab",
+    "historical_r1_head": "93ad95d7f8808bc4e7ccdbb21a24457c0df30564",
+    "historical_r2_head": "a53ca0ace5280c278e32e350f5a5051b810fa6f4",
+    "historical_r3_head": "447d03e3cb9d3c1109d6f6070115f3ea4618bb7e",
+    "historical_r5_head": "cc5db408929e82b29da76d92f1439ac53a4c8cf3",
+    "continuation_plan_acquisition_implementation_freeze_head": "e91c2bb56763d56be9c7ca333aefb6c97016a150",
+    "continuation_plan_freeze_head": "12b5dc6908e7dc22f6fa88fa189252099df8f3c6",
+    "continuation_retrieval_implementation_freeze_head": "efd3651aae583ac3c8f4f2cd240d2dfb64c3e259",
+    "continuation_raw_freeze_head": "6d226e10ba2fee0eea0d14c216b41d44bab24e59",
+    "preregistration": "evaluation/d4_a4_batch2_retirement_preregistration.json",
+    "selection": "evaluation/d4_a4_batch2_low_risk_retirement_selection.json",
+    "raw_plans": "evaluation/d4_a5_continuation_raw_prospective_plans.json",
+    "raw_results": "evaluation/d4_a5_continuation_raw_paired_retirement_results.json",
+    "gold": "evaluation/benchmarks/v2_6/gold_questions.yaml",
+    "novel_dev": "evaluation/novel/v1/novel_dev.yaml"
+  },
+  "execution_validity": {
+    "valid": true,
+    "structural_validation_error": null,
+    "plan_pair_equality": "7/7",
+    "plan_cell_equality": "14/14"
+  },
+  "provider_accounting": {
+    "FORMAL_CELLS_COMPLETED": 14,
+    "FORMAL_CELLS_FAILED": 0,
+    "ANALYZER_CALLS": 0,
+    "EMBEDDING_CALLS": 14,
+    "RERANKER_CALLS": 14,
+    "LOGICAL_MODEL_CALLS": 28,
+    "PROVIDER_INTERNAL_ATTEMPTS": 28,
+    "TOTAL_TOKEN_USAGE": 248456,
+    "RETRIES": 0,
+    "QA_CALLS": 0,
+    "VERIFIER_CALLS": 0,
+    "JUDGE_CALLS": 0,
+    "DB_WRITES": 0,
+    "QDRANT_WRITES": 0,
+    "INGESTION_RUNS": 0,
+    "REINDEX_RUNS": 0,
+    "NOVEL_VALIDATION_RUNS": 0,
+    "NOVEL_HOLDOUT_RUNS": 0,
+    "PROTECTED_DATASET_ACCESS": 0
+  },
+  "group_pair_phenotypes": {
+    "g052.e1": {
+      "case_id": "g052",
+      "dataset": "dev",
+      "is_answered": true,
+      "is_negative_control_case": false,
+      "is_nonmatching_control_case": false,
+      "critical": true,
+      "current_compat_final_retained": true,
+      "batch2_retirement_final_retained": true,
+      "pair_phenotype_final": "PAIR_PRESERVED",
+      "current_compat_pool_retained": true,
+      "batch2_retirement_pool_retained": true,
+      "pair_phenotype_pre_rerank": "PAIR_PRESERVED"
+    },
+    "g055.e1": {
+      "case_id": "g055",
+      "dataset": "dev",
+      "is_answered": true,
+      "is_negative_control_case": false,
+      "is_nonmatching_control_case": true,
+      "critical": true,
+      "current_compat_final_retained": true,
+      "batch2_retirement_final_retained": true,
+      "pair_phenotype_final": "PAIR_PRESERVED",
+      "current_compat_pool_retained": true,
+      "batch2_retirement_pool_retained": true,
+      "pair_phenotype_pre_rerank": "PAIR_PRESERVED"
+    },
+    "g055.e2": {
+      "case_id": "g055",
+      "dataset": "dev",
+      "is_answered": true,
+      "is_negative_control_case": false,
+      "is_nonmatching_control_case": true,
+      "critical": true,
+      "current_compat_final_retained": true,
+      "batch2_retirement_final_retained": true,
+      "pair_phenotype_final": "PAIR_PRESERVED",
+      "current_compat_pool_retained": true,
+      "batch2_retirement_pool_retained": true,
+      "pair_phenotype_pre_rerank": "PAIR_PRESERVED"
+    },
+    "n003.e1": {
+      "case_id": "n003",
+      "dataset": "novel_dev",
+      "is_answered": true,
+      "is_negative_control_case": false,
+      "is_nonmatching_control_case": true,
+      "critical": true,
+      "current_compat_final_retained": true,
+      "batch2_retirement_final_retained": true,
+      "pair_phenotype_final": "PAIR_PRESERVED",
+      "current_compat_pool_retained": true,
+      "batch2_retirement_pool_retained": true,
+      "pair_phenotype_pre_rerank": "PAIR_PRESERVED"
+    },
+    "n003.e2": {
+      "case_id": "n003",
+      "dataset": "novel_dev",
+      "is_answered": true,
+      "is_negative_control_case": false,
+      "is_nonmatching_control_case": true,
+      "critical": true,
+      "current_compat_final_retained": false,
+      "batch2_retirement_final_retained": false,
+      "pair_phenotype_final": "PAIR_UNRESOLVED_BOTH",
+      "current_compat_pool_retained": false,
+      "batch2_retirement_pool_retained": false,
+      "pair_phenotype_pre_rerank": "PAIR_UNRESOLVED_BOTH"
+    },
+    "n004.e1": {
+      "case_id": "n004",
+      "dataset": "novel_dev",
+      "is_answered": true,
+      "is_negative_control_case": false,
+      "is_nonmatching_control_case": false,
+      "critical": true,
+      "current_compat_final_retained": true,
+      "batch2_retirement_final_retained": true,
+      "pair_phenotype_final": "PAIR_PRESERVED",
+      "current_compat_pool_retained": true,
+      "batch2_retirement_pool_retained": true,
+      "pair_phenotype_pre_rerank": "PAIR_PRESERVED"
+    },
+    "g007.e1": {
+      "case_id": "g007",
+      "dataset": "dev",
+      "is_answered": false,
+      "is_negative_control_case": true,
+      "is_nonmatching_control_case": true,
+      "critical": true,
+      "current_compat_final_retained": true,
+      "batch2_retirement_final_retained": true,
+      "pair_phenotype_final": "PAIR_PRESERVED",
+      "current_compat_pool_retained": true,
+      "batch2_retirement_pool_retained": true,
+      "pair_phenotype_pre_rerank": "PAIR_PRESERVED"
+    },
+    "n014.e1": {
+      "case_id": "n014",
+      "dataset": "novel_dev",
+      "is_answered": true,
+      "is_negative_control_case": false,
+      "is_nonmatching_control_case": false,
+      "critical": true,
+      "current_compat_final_retained": false,
+      "batch2_retirement_final_retained": false,
+      "pair_phenotype_final": "PAIR_UNRESOLVED_BOTH",
+      "current_compat_pool_retained": false,
+      "batch2_retirement_pool_retained": false,
+      "pair_phenotype_pre_rerank": "PAIR_UNRESOLVED_BOTH"
+    },
+    "n014.e2": {
+      "case_id": "n014",
+      "dataset": "novel_dev",
+      "is_answered": true,
+      "is_negative_control_case": false,
+      "is_nonmatching_control_case": false,
+      "critical": true,
+      "current_compat_final_retained": true,
+      "batch2_retirement_final_retained": true,
+      "pair_phenotype_final": "PAIR_PRESERVED",
+      "current_compat_pool_retained": true,
+      "batch2_retirement_pool_retained": true,
+      "pair_phenotype_pre_rerank": "PAIR_PRESERVED"
+    },
+    "g060.e1": {
+      "case_id": "g060",
+      "dataset": "dev",
+      "is_answered": true,
+      "is_negative_control_case": false,
+      "is_nonmatching_control_case": true,
+      "critical": true,
+      "current_compat_final_retained": true,
+      "batch2_retirement_final_retained": true,
+      "pair_phenotype_final": "PAIR_PRESERVED",
+      "current_compat_pool_retained": true,
+      "batch2_retirement_pool_retained": true,
+      "pair_phenotype_pre_rerank": "PAIR_PRESERVED"
+    },
+    "g060.e2": {
+      "case_id": "g060",
+      "dataset": "dev",
+      "is_answered": true,
+      "is_negative_control_case": false,
+      "is_nonmatching_control_case": true,
+      "critical": true,
+      "current_compat_final_retained": true,
+      "batch2_retirement_final_retained": true,
+      "pair_phenotype_final": "PAIR_PRESERVED",
+      "current_compat_pool_retained": true,
+      "batch2_retirement_pool_retained": true,
+      "pair_phenotype_pre_rerank": "PAIR_PRESERVED"
+    },
+    "g060.e3": {
+      "case_id": "g060",
+      "dataset": "dev",
+      "is_answered": true,
+      "is_negative_control_case": false,
+      "is_nonmatching_control_case": true,
+      "critical": true,
+      "current_compat_final_retained": true,
+      "batch2_retirement_final_retained": true,
+      "pair_phenotype_final": "PAIR_PRESERVED",
+      "current_compat_pool_retained": true,
+      "batch2_retirement_pool_retained": true,
+      "pair_phenotype_pre_rerank": "PAIR_PRESERVED"
+    }
+  },
+  "pair_phenotype_counts": {
+    "PAIR_PRESERVED": 10,
+    "PAIR_RETIREMENT_RECOVERY": 0,
+    "PAIR_RETIREMENT_REGRESSION": 0,
+    "PAIR_UNRESOLVED_BOTH": 2
+  },
+  "rule_attribution_receipts": {
+    "effective_acceptance_pipeline": {
+      "rule_id": "effective_acceptance_pipeline",
+      "active_case_groups": {
+        "g052": [
+          "g052.e1"
+        ]
+      },
+      "protocol_valid": true,
+      "protocol_errors": [],
+      "frozen_component_count": 3,
+      "active_component_count": 3,
+      "inactive_component_count": 0,
+      "ambiguous_component_count": 0,
+      "validated_active_components": [
+        {
+          "case_id": "g052",
+          "kind": "symbol",
+          "value": "macro/target/prod_sim_hvmaps.C"
+        },
+        {
+          "case_id": "g052",
+          "kind": "symbol",
+          "value": "data/PndLmdAcceptance.cxx"
+        },
+        {
+          "case_id": "g052",
+          "kind": "symbol",
+          "value": "model/PndLmdModelFactory.cxx"
+        }
+      ],
+      "held_inactive_components": [],
+      "effective_removal_count": 1,
+      "removed_effective_values": [
+        "model/PndLmdModelFactory.cxx"
+      ],
+      "surviving_via_independent_origin": [
+        {
+          "value": "macro/target/prod_sim_hvmaps.C",
+          "surviving_independent_origins": [
+            "reconstructed_profile_to_acceptance"
+          ]
+        },
+        {
+          "value": "data/PndLmdAcceptance.cxx",
+          "surviving_independent_origins": [
+            "reconstructed_profile_to_acceptance"
+          ]
+        }
+      ]
+    },
+    "root_macro_usage": {
+      "rule_id": "root_macro_usage",
+      "active_case_groups": {
+        "n004": [
+          "n004.e1"
+        ]
+      },
+      "protocol_valid": true,
+      "protocol_errors": [],
+      "frozen_component_count": 2,
+      "active_component_count": 2,
+      "inactive_component_count": 0,
+      "ambiguous_component_count": 0,
+      "validated_active_components": [
+        {
+          "case_id": "n004",
+          "kind": "symbol",
+          "value": "Running/Macros.html"
+        },
+        {
+          "case_id": "n004",
+          "kind": "symbol",
+          "value": "tools/MasterTasks/PndMasterRunSim.cxx"
+        }
+      ],
+      "held_inactive_components": [],
+      "effective_removal_count": 2,
+      "removed_effective_values": [
+        "Running/Macros.html",
+        "tools/MasterTasks/PndMasterRunSim.cxx"
+      ],
+      "surviving_via_independent_origin": []
+    },
+    "model_factory_theory": {
+      "rule_id": "model_factory_theory",
+      "active_case_groups": {
+        "n014": [
+          "n014.e1",
+          "n014.e2"
+        ]
+      },
+      "protocol_valid": true,
+      "protocol_errors": [],
+      "frozen_component_count": 6,
+      "active_component_count": 3,
+      "inactive_component_count": 3,
+      "ambiguous_component_count": 0,
+      "validated_active_components": [
+        {
+          "case_id": "n014",
+          "kind": "symbol",
+          "value": "model/PndLmdDPMAngModel1D.cxx"
+        },
+        {
+          "case_id": "n014",
+          "kind": "symbol",
+          "value": "model/PndLmdDPMAngModel2D.cxx"
+        },
+        {
+          "case_id": "n014",
+          "kind": "symbol",
+          "value": "model/PndLmdModelFactory.cxx"
+        }
+      ],
+      "held_inactive_components": [
+        {
+          "case_id": "n014",
+          "kind": "paper_page_hint",
+          "value": "pflueger_2017#51",
+          "held_reason": "Configured retirement component was not contributed by the selected Batch-2 rule to the final canonical plan after normal production plan construction (deterministic runtime plan-formation policy); no selected-rule contribution exists to subtract. Retirement effect not identifiable for this component in this plan; component remains HOLD."
+        },
+        {
+          "case_id": "n014",
+          "kind": "paper_page_hint",
+          "value": "pflueger_2017#57",
+          "held_reason": "Configured retirement component was not contributed by the selected Batch-2 rule to the final canonical plan after normal production plan construction (deterministic runtime plan-formation policy); no selected-rule contribution exists to subtract. Retirement effect not identifiable for this component in this plan; component remains HOLD."
+        },
+        {
+          "case_id": "n014",
+          "kind": "paper_page_hint",
+          "value": "pflueger_2017#65",
+          "held_reason": "Configured retirement component was not contributed by the selected Batch-2 rule to the final canonical plan after normal production plan construction (deterministic runtime plan-formation policy); no selected-rule contribution exists to subtract. Retirement effect not identifiable for this component in this plan; component remains HOLD."
+        }
+      ],
+      "effective_removal_count": 2,
+      "removed_effective_values": [
+        "model/PndLmdDPMAngModel1D.cxx",
+        "model/PndLmdDPMAngModel2D.cxx"
+      ],
+      "surviving_via_independent_origin": [
+        {
+          "value": "model/PndLmdModelFactory.cxx",
+          "surviving_independent_origins": [
+            "model_factory_acceptance_methods"
+          ]
+        }
+      ]
+    }
+  },
+  "per_rule_component_accounting": {
+    "effective_acceptance_pipeline": {
+      "frozen_component_count": 3,
+      "active_component_count": 3,
+      "inactive_component_count": 0,
+      "validated_active_components": [
+        {
+          "case_id": "g052",
+          "kind": "symbol",
+          "value": "macro/target/prod_sim_hvmaps.C"
+        },
+        {
+          "case_id": "g052",
+          "kind": "symbol",
+          "value": "data/PndLmdAcceptance.cxx"
+        },
+        {
+          "case_id": "g052",
+          "kind": "symbol",
+          "value": "model/PndLmdModelFactory.cxx"
+        }
+      ],
+      "held_inactive_components": []
+    },
+    "root_macro_usage": {
+      "frozen_component_count": 2,
+      "active_component_count": 2,
+      "inactive_component_count": 0,
+      "validated_active_components": [
+        {
+          "case_id": "n004",
+          "kind": "symbol",
+          "value": "Running/Macros.html"
+        },
+        {
+          "case_id": "n004",
+          "kind": "symbol",
+          "value": "tools/MasterTasks/PndMasterRunSim.cxx"
+        }
+      ],
+      "held_inactive_components": []
+    },
+    "model_factory_theory": {
+      "frozen_component_count": 6,
+      "active_component_count": 3,
+      "inactive_component_count": 3,
+      "validated_active_components": [
+        {
+          "case_id": "n014",
+          "kind": "symbol",
+          "value": "model/PndLmdDPMAngModel1D.cxx"
+        },
+        {
+          "case_id": "n014",
+          "kind": "symbol",
+          "value": "model/PndLmdDPMAngModel2D.cxx"
+        },
+        {
+          "case_id": "n014",
+          "kind": "symbol",
+          "value": "model/PndLmdModelFactory.cxx"
+        }
+      ],
+      "held_inactive_components": [
+        {
+          "case_id": "n014",
+          "kind": "paper_page_hint",
+          "value": "pflueger_2017#51",
+          "held_reason": "Configured retirement component was not contributed by the selected Batch-2 rule to the final canonical plan after normal production plan construction (deterministic runtime plan-formation policy); no selected-rule contribution exists to subtract. Retirement effect not identifiable for this component in this plan; component remains HOLD."
+        },
+        {
+          "case_id": "n014",
+          "kind": "paper_page_hint",
+          "value": "pflueger_2017#57",
+          "held_reason": "Configured retirement component was not contributed by the selected Batch-2 rule to the final canonical plan after normal production plan construction (deterministic runtime plan-formation policy); no selected-rule contribution exists to subtract. Retirement effect not identifiable for this component in this plan; component remains HOLD."
+        },
+        {
+          "case_id": "n014",
+          "kind": "paper_page_hint",
+          "value": "pflueger_2017#65",
+          "held_reason": "Configured retirement component was not contributed by the selected Batch-2 rule to the final canonical plan after normal production plan construction (deterministic runtime plan-formation policy); no selected-rule contribution exists to subtract. Retirement effect not identifiable for this component in this plan; component remains HOLD."
+        }
+      ]
+    }
+  },
+  "attributable_losses": {
+    "effective_acceptance_pipeline": [],
+    "root_macro_usage": [],
+    "model_factory_theory": []
+  },
+  "baseline_reproduction": {
+    "effective_acceptance_pipeline": true,
+    "root_macro_usage": true,
+    "model_factory_theory": false
+  },
+  "reference_baseline_valid": false,
+  "per_rule_dispositions": {
+    "effective_acceptance_pipeline": "RETIREMENT_VALIDATED",
+    "root_macro_usage": "RETIREMENT_VALIDATED",
+    "model_factory_theory": "INCONCLUSIVE_BASELINE_NOT_REPRODUCED"
+  },
+  "safety": {
+    "critical_retirement_regressions": 0,
+    "critical_regression_details": [],
+    "grounding_regressions": 0,
+    "grounding_details": [],
+    "wrong_version_regressions": 0,
+    "wrong_version_details": [],
+    "invalid_provenance_recoveries": 0,
+    "invalid_provenance_details": [],
+    "control_divergence_findings": [
+      {
+        "case_id": "n003",
+        "group_id": "n003.e2",
+        "phenotype": "PAIR_UNRESOLVED_BOTH",
+        "role": "novel_dev",
+        "note": "No-op control difference; reported as safety finding, never rule dependency."
+      }
+    ],
+    "negative_control_case": {
+      "g007": {
+        "group_phenotypes": {
+          "g007.e1": "PAIR_PRESERVED"
+        }
+      }
+    }
+  },
+  "case_metrics": {
+    "g052": {
+      "CURRENT_COMPAT": {
+        "recall_at_5": 1.0,
+        "recall_at_10": 1.0,
+        "recall_at_20": 1.0,
+        "combined_candidate_recall": 1.0,
+        "final_evidence_recall": 1.0,
+        "critical_final_evidence_recall": 1.0,
+        "mrr": 1.0
+      },
+      "BATCH2_RETIREMENT": {
+        "recall_at_5": 1.0,
+        "recall_at_10": 1.0,
+        "recall_at_20": 1.0,
+        "combined_candidate_recall": 1.0,
+        "final_evidence_recall": 1.0,
+        "critical_final_evidence_recall": 1.0,
+        "mrr": 1.0
+      }
+    },
+    "g055": {
+      "CURRENT_COMPAT": {
+        "recall_at_5": 1.0,
+        "recall_at_10": 1.0,
+        "recall_at_20": 1.0,
+        "combined_candidate_recall": 1.0,
+        "final_evidence_recall": 1.0,
+        "critical_final_evidence_recall": 1.0,
+        "mrr": 1.0
+      },
+      "BATCH2_RETIREMENT": {
+        "recall_at_5": 1.0,
+        "recall_at_10": 1.0,
+        "recall_at_20": 1.0,
+        "combined_candidate_recall": 1.0,
+        "final_evidence_recall": 1.0,
+        "critical_final_evidence_recall": 1.0,
+        "mrr": 0.5
+      }
+    },
+    "n003": {
+      "CURRENT_COMPAT": {
+        "recall_at_5": 0.5,
+        "recall_at_10": 0.5,
+        "recall_at_20": 0.5,
+        "combined_candidate_recall": 1.0,
+        "final_evidence_recall": 0.5,
+        "critical_final_evidence_recall": 0.5,
+        "mrr": 1.0
+      },
+      "BATCH2_RETIREMENT": {
+        "recall_at_5": 0.5,
+        "recall_at_10": 0.5,
+        "recall_at_20": 0.5,
+        "combined_candidate_recall": 1.0,
+        "final_evidence_recall": 0.5,
+        "critical_final_evidence_recall": 0.5,
+        "mrr": 1.0
+      }
+    },
+    "n004": {
+      "CURRENT_COMPAT": {
+        "recall_at_5": 1.0,
+        "recall_at_10": 1.0,
+        "recall_at_20": 1.0,
+        "combined_candidate_recall": 1.0,
+        "final_evidence_recall": 1.0,
+        "critical_final_evidence_recall": 1.0,
+        "mrr": 1.0
+      },
+      "BATCH2_RETIREMENT": {
+        "recall_at_5": 1.0,
+        "recall_at_10": 1.0,
+        "recall_at_20": 1.0,
+        "combined_candidate_recall": 1.0,
+        "final_evidence_recall": 1.0,
+        "critical_final_evidence_recall": 1.0,
+        "mrr": 1.0
+      }
+    },
+    "n014": {
+      "CURRENT_COMPAT": {
+        "recall_at_5": 0.5,
+        "recall_at_10": 0.5,
+        "recall_at_20": 0.5,
+        "combined_candidate_recall": 0.5,
+        "final_evidence_recall": 0.5,
+        "critical_final_evidence_recall": 0.5,
+        "mrr": 1.0
+      },
+      "BATCH2_RETIREMENT": {
+        "recall_at_5": 0.5,
+        "recall_at_10": 0.5,
+        "recall_at_20": 0.5,
+        "combined_candidate_recall": 0.5,
+        "final_evidence_recall": 0.5,
+        "critical_final_evidence_recall": 0.5,
+        "mrr": 1.0
+      }
+    },
+    "g060": {
+      "CURRENT_COMPAT": {
+        "recall_at_5": 0.3333333333333333,
+        "recall_at_10": 1.0,
+        "recall_at_20": 1.0,
+        "combined_candidate_recall": 1.0,
+        "final_evidence_recall": 1.0,
+        "critical_final_evidence_recall": 1.0,
+        "mrr": 1.0
+      },
+      "BATCH2_RETIREMENT": {
+        "recall_at_5": 0.3333333333333333,
+        "recall_at_10": 1.0,
+        "recall_at_20": 1.0,
+        "combined_candidate_recall": 1.0,
+        "final_evidence_recall": 1.0,
+        "critical_final_evidence_recall": 1.0,
+        "mrr": 1.0
+      }
+    }
+  },
+  "macro_metrics": {
+    "CURRENT_COMPAT": {
+      "recall_at_5": 0.7222222222222222,
+      "recall_at_10": 0.8333333333333334,
+      "recall_at_20": 0.8333333333333334,
+      "combined_candidate_recall": 0.9166666666666666,
+      "final_evidence_recall": 0.8333333333333334,
+      "critical_final_evidence_recall": 0.8333333333333334,
+      "mrr": 1.0
+    },
+    "BATCH2_RETIREMENT": {
+      "recall_at_5": 0.7222222222222222,
+      "recall_at_10": 0.8333333333333334,
+      "recall_at_20": 0.8333333333333334,
+      "combined_candidate_recall": 0.9166666666666666,
+      "final_evidence_recall": 0.8333333333333334,
+      "critical_final_evidence_recall": 0.8333333333333334,
+      "mrr": 0.9166666666666666
+    }
+  },
+  "metric_deltas": {
+    "recall_at_5": 0.0,
+    "recall_at_10": 0.0,
+    "recall_at_20": 0.0,
+    "combined_candidate_recall": 0.0,
+    "final_evidence_recall": 0.0,
+    "critical_final_evidence_recall": 0.0,
+    "mrr": -0.083333
+  },
+  "tolerance_checks": {
+    "recall_at_5": {
+      "delta": 0.0,
+      "threshold": -0.05,
+      "pass": true
+    },
+    "recall_at_10": {
+      "delta": 0.0,
+      "threshold": -0.05,
+      "pass": true
+    },
+    "recall_at_20": {
+      "delta": 0.0,
+      "threshold": -0.05,
+      "pass": true
+    },
+    "combined_candidate_recall": {
+      "delta": 0.0,
+      "threshold": -0.05,
+      "pass": true
+    },
+    "final_evidence_recall": {
+      "delta": 0.0,
+      "threshold": -0.05,
+      "pass": true
+    },
+    "critical_final_evidence_recall": {
+      "delta": 0.0,
+      "threshold": 0.0,
+      "pass": true
+    }
+  },
+  "answered_case_denominator": 6,
+  "answered_evidence_group_denominator": 11,
+  "verdict_inputs": {
+    "execution_valid": true,
+    "protocol_violation": false,
+    "missing_inputs": false,
+    "plan_equality_all_verified": true,
+    "analyzer_provider_calls_downstream": 0,
+    "reference_baseline_valid": false,
+    "per_rule_dispositions": {
+      "effective_acceptance_pipeline": "RETIREMENT_VALIDATED",
+      "root_macro_usage": "RETIREMENT_VALIDATED",
+      "model_factory_theory": "INCONCLUSIVE_BASELINE_NOT_REPRODUCED"
+    },
+    "critical_retirement_regressions": 0,
+    "grounding_regressions": 0,
+    "wrong_version_regressions": 0,
+    "invalid_provenance_recoveries": 0,
+    "metric_deltas": {
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "recall_at_20": 0.0,
+      "combined_candidate_recall": 0.0,
+      "final_evidence_recall": 0.0,
+      "critical_final_evidence_recall": 0.0
+    }
+  },
+  "verdict_level": 2,
+  "verdict": "INCONCLUSIVE / BATCH2_REFERENCE_BASELINE_NOT_REPRODUCED",
+  "verdict_status": "INCONCLUSIVE",
+  "verdict_reason": "One or more active direct-rule reference baselines are not reproduced under the repaired disposition contract."
+}
