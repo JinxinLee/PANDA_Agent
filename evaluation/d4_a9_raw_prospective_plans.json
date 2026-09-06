@@ -1,0 +1,3374 @@
+{
+  "plans_planned": 4,
+  "plans_recorded": 4,
+  "plans_completed": 4,
+  "provider_contract": {
+    "model_id": "gemini-3.8-flash",
+    "temperature": 0.0,
+    "location": "global",
+    "retries": 0
+  },
+  "accounting": {
+    "analyzer_calls": 4,
+    "analyzer_provider_attempts": 4,
+    "token_usage": 7199
+  },
+  "plans": [
+    {
+      "case_id": "g031",
+      "question": "Where does PndLmdModelFactory assemble the fit model?",
+      "provider_model_contract": {
+        "model_id": "gemini-3.8-flash",
+        "temperature": 0.0,
+        "location": "global",
+        "retries": 0
+      },
+      "raw_analyzer_response": {
+        "intent": "api",
+        "secondary_intents": [],
+        "routing_method": "rule",
+        "target_repositories": [
+          "luminosityfit"
+        ],
+        "resolved_versions": {
+          "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+        },
+        "version_conflicts": [],
+        "concepts": [
+          "assemble",
+          "fit model",
+          "DPM model acceptance resolution composition",
+          "acceptance injection and two-dimensional model generation"
+        ],
+        "symbols": [
+          "PndLmdModelFactory",
+          "model/PndLmdDPMAngModel1D.cxx",
+          "model/PndLmdDPMAngModel2D.cxx",
+          "model/PndLmdModelFactory.cxx",
+          "PndLmdModelFactory::setAcceptance",
+          "PndLmdModelFactory::generate2DModel"
+        ],
+        "concept_scopes": {},
+        "source_budgets": {
+          "code": 0.55,
+          "documentation": 0.2,
+          "readme": 0.1,
+          "graph": 0.1,
+          "paper": 0.05
+        },
+        "required_source_types": [
+          "code"
+        ],
+        "resolved_aliases": {},
+        "premise_corrections": [],
+        "paper_page_hints": {},
+        "analysis_diagnostics": {
+          "deterministic_parse": {
+            "fixed": {
+              "intent": "api",
+              "matched_expansion_rules": [
+                "model_factory_theory",
+                "model_factory_acceptance_methods"
+              ],
+              "paper_page_hints": {
+                "pflueger_2017": [
+                  51,
+                  57,
+                  65
+                ]
+              }
+            },
+            "fallback": {
+              "concept_scopes": {}
+            },
+            "known_partial": {
+              "target_repositories": [
+                "luminosityfit"
+              ],
+              "symbols": [
+                "model/PndLmdDPMAngModel1D.cxx",
+                "model/PndLmdDPMAngModel2D.cxx",
+                "model/PndLmdModelFactory.cxx",
+                "PndLmdModelFactory::setAcceptance",
+                "PndLmdModelFactory::generate2DModel"
+              ],
+              "concepts": [
+                "DPM model acceptance resolution composition",
+                "acceptance injection and two-dimensional model generation"
+              ]
+            },
+            "semantic_output_fields": [
+              "repository_additions",
+              "concepts",
+              "symbols",
+              "version_mentions",
+              "concept_scopes"
+            ],
+            "unresolved_semantics": {
+              "repository_additions": "augment_known_partial",
+              "target_repositories": "augment_known_partial",
+              "concepts": "augment_known_partial",
+              "symbols": "augment_known_partial",
+              "version_mentions": "resolve",
+              "concept_scopes": "resolve"
+            },
+            "provenance": {
+              "intent": [
+                {
+                  "source": "deterministic_route",
+                  "rule": "api",
+                  "value": "api",
+                  "ownership": "fixed"
+                }
+              ],
+              "query_expansions": [
+                {
+                  "source": "reviewed_expansion",
+                  "rule": "model_factory_theory",
+                  "ownership": "fixed_reviewed_rule"
+                },
+                {
+                  "source": "reviewed_expansion",
+                  "rule": "model_factory_acceptance_methods",
+                  "ownership": "fixed_reviewed_rule"
+                }
+              ]
+            }
+          },
+          "analyzer_llm_called": true,
+          "analyzer_semantic_output_fields": [
+            "repository_additions",
+            "concepts",
+            "symbols",
+            "version_mentions",
+            "concept_scopes"
+          ],
+          "analyzer_raw_semantic_delta": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "assemble",
+                "support_spans": [
+                  "assemble"
+                ]
+              },
+              {
+                "value": "fit model",
+                "support_spans": [
+                  "fit model"
+                ]
+              }
+            ],
+            "symbols": [
+              {
+                "value": "PndLmdModelFactory",
+                "support_spans": [
+                  "PndLmdModelFactory"
+                ]
+              }
+            ],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "analyzer_accepted_semantic_delta": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "assemble",
+                "support_spans": [
+                  "assemble"
+                ]
+              },
+              {
+                "value": "fit model",
+                "support_spans": [
+                  "fit model"
+                ]
+              }
+            ],
+            "symbols": [
+              {
+                "value": "PndLmdModelFactory",
+                "support_spans": [
+                  "PndLmdModelFactory"
+                ]
+              }
+            ],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "analyzer_rejected_items": [],
+          "analyzer_item_support": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "assemble",
+                "support_spans": [
+                  "assemble"
+                ]
+              },
+              {
+                "value": "fit model",
+                "support_spans": [
+                  "fit model"
+                ]
+              }
+            ],
+            "symbols": [
+              {
+                "value": "PndLmdModelFactory",
+                "support_spans": [
+                  "PndLmdModelFactory"
+                ]
+              }
+            ],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "unbound_version_tokens": [],
+          "analyzer_final": {
+            "intent": "api",
+            "target_repositories": [
+              "luminosityfit"
+            ],
+            "concepts": [
+              "assemble",
+              "fit model",
+              "DPM model acceptance resolution composition",
+              "acceptance injection and two-dimensional model generation"
+            ],
+            "symbols": [
+              "PndLmdModelFactory",
+              "model/PndLmdDPMAngModel1D.cxx",
+              "model/PndLmdDPMAngModel2D.cxx",
+              "model/PndLmdModelFactory.cxx",
+              "PndLmdModelFactory::setAcceptance",
+              "PndLmdModelFactory::generate2DModel"
+            ],
+            "requested_versions": {},
+            "concept_scopes": {}
+          },
+          "matched_expansion_rules": [
+            "model_factory_theory",
+            "model_factory_acceptance_methods"
+          ]
+        }
+      },
+      "canonical_plan": {
+        "intent": "api",
+        "secondary_intents": [],
+        "routing_method": "rule",
+        "target_repositories": [
+          "luminosityfit"
+        ],
+        "resolved_versions": {
+          "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+        },
+        "version_conflicts": [],
+        "concepts": [
+          "assemble",
+          "fit model",
+          "DPM model acceptance resolution composition",
+          "acceptance injection and two-dimensional model generation"
+        ],
+        "symbols": [
+          "PndLmdModelFactory",
+          "model/PndLmdDPMAngModel1D.cxx",
+          "model/PndLmdDPMAngModel2D.cxx",
+          "model/PndLmdModelFactory.cxx",
+          "PndLmdModelFactory::setAcceptance",
+          "PndLmdModelFactory::generate2DModel"
+        ],
+        "concept_scopes": {},
+        "source_budgets": {
+          "code": 0.55,
+          "documentation": 0.2,
+          "readme": 0.1,
+          "graph": 0.1,
+          "paper": 0.05
+        },
+        "required_source_types": [
+          "code"
+        ],
+        "resolved_aliases": {},
+        "premise_corrections": [],
+        "paper_page_hints": {},
+        "analysis_diagnostics": {
+          "deterministic_parse": {
+            "fixed": {
+              "intent": "api",
+              "matched_expansion_rules": [
+                "model_factory_theory",
+                "model_factory_acceptance_methods"
+              ],
+              "paper_page_hints": {
+                "pflueger_2017": [
+                  51,
+                  57,
+                  65
+                ]
+              }
+            },
+            "fallback": {
+              "concept_scopes": {}
+            },
+            "known_partial": {
+              "target_repositories": [
+                "luminosityfit"
+              ],
+              "symbols": [
+                "model/PndLmdDPMAngModel1D.cxx",
+                "model/PndLmdDPMAngModel2D.cxx",
+                "model/PndLmdModelFactory.cxx",
+                "PndLmdModelFactory::setAcceptance",
+                "PndLmdModelFactory::generate2DModel"
+              ],
+              "concepts": [
+                "DPM model acceptance resolution composition",
+                "acceptance injection and two-dimensional model generation"
+              ]
+            },
+            "semantic_output_fields": [
+              "repository_additions",
+              "concepts",
+              "symbols",
+              "version_mentions",
+              "concept_scopes"
+            ],
+            "unresolved_semantics": {
+              "repository_additions": "augment_known_partial",
+              "target_repositories": "augment_known_partial",
+              "concepts": "augment_known_partial",
+              "symbols": "augment_known_partial",
+              "version_mentions": "resolve",
+              "concept_scopes": "resolve"
+            },
+            "provenance": {
+              "intent": [
+                {
+                  "source": "deterministic_route",
+                  "rule": "api",
+                  "value": "api",
+                  "ownership": "fixed"
+                }
+              ],
+              "query_expansions": [
+                {
+                  "source": "reviewed_expansion",
+                  "rule": "model_factory_theory",
+                  "ownership": "fixed_reviewed_rule"
+                },
+                {
+                  "source": "reviewed_expansion",
+                  "rule": "model_factory_acceptance_methods",
+                  "ownership": "fixed_reviewed_rule"
+                }
+              ]
+            }
+          },
+          "analyzer_llm_called": true,
+          "analyzer_semantic_output_fields": [
+            "repository_additions",
+            "concepts",
+            "symbols",
+            "version_mentions",
+            "concept_scopes"
+          ],
+          "analyzer_raw_semantic_delta": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "assemble",
+                "support_spans": [
+                  "assemble"
+                ]
+              },
+              {
+                "value": "fit model",
+                "support_spans": [
+                  "fit model"
+                ]
+              }
+            ],
+            "symbols": [
+              {
+                "value": "PndLmdModelFactory",
+                "support_spans": [
+                  "PndLmdModelFactory"
+                ]
+              }
+            ],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "analyzer_accepted_semantic_delta": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "assemble",
+                "support_spans": [
+                  "assemble"
+                ]
+              },
+              {
+                "value": "fit model",
+                "support_spans": [
+                  "fit model"
+                ]
+              }
+            ],
+            "symbols": [
+              {
+                "value": "PndLmdModelFactory",
+                "support_spans": [
+                  "PndLmdModelFactory"
+                ]
+              }
+            ],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "analyzer_rejected_items": [],
+          "analyzer_item_support": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "assemble",
+                "support_spans": [
+                  "assemble"
+                ]
+              },
+              {
+                "value": "fit model",
+                "support_spans": [
+                  "fit model"
+                ]
+              }
+            ],
+            "symbols": [
+              {
+                "value": "PndLmdModelFactory",
+                "support_spans": [
+                  "PndLmdModelFactory"
+                ]
+              }
+            ],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "unbound_version_tokens": [],
+          "analyzer_final": {
+            "intent": "api",
+            "target_repositories": [
+              "luminosityfit"
+            ],
+            "concepts": [
+              "assemble",
+              "fit model",
+              "DPM model acceptance resolution composition",
+              "acceptance injection and two-dimensional model generation"
+            ],
+            "symbols": [
+              "PndLmdModelFactory",
+              "model/PndLmdDPMAngModel1D.cxx",
+              "model/PndLmdDPMAngModel2D.cxx",
+              "model/PndLmdModelFactory.cxx",
+              "PndLmdModelFactory::setAcceptance",
+              "PndLmdModelFactory::generate2DModel"
+            ],
+            "requested_versions": {},
+            "concept_scopes": {}
+          },
+          "matched_expansion_rules": [
+            "model_factory_theory",
+            "model_factory_acceptance_methods"
+          ]
+        }
+      },
+      "canonical_serialization": "{\"analysis_diagnostics\": {\"analyzer_accepted_semantic_delta\": {\"concept_scopes\": [], \"concepts\": [{\"support_spans\": [\"assemble\"], \"value\": \"assemble\"}, {\"support_spans\": [\"fit model\"], \"value\": \"fit model\"}], \"repository_additions\": [], \"symbols\": [{\"support_spans\": [\"PndLmdModelFactory\"], \"value\": \"PndLmdModelFactory\"}], \"version_mentions\": []}, \"analyzer_final\": {\"concept_scopes\": {}, \"concepts\": [\"assemble\", \"fit model\", \"DPM model acceptance resolution composition\", \"acceptance injection and two-dimensional model generation\"], \"intent\": \"api\", \"requested_versions\": {}, \"symbols\": [\"PndLmdModelFactory\", \"model/PndLmdDPMAngModel1D.cxx\", \"model/PndLmdDPMAngModel2D.cxx\", \"model/PndLmdModelFactory.cxx\", \"PndLmdModelFactory::setAcceptance\", \"PndLmdModelFactory::generate2DModel\"], \"target_repositories\": [\"luminosityfit\"]}, \"analyzer_item_support\": {\"concept_scopes\": [], \"concepts\": [{\"support_spans\": [\"assemble\"], \"value\": \"assemble\"}, {\"support_spans\": [\"fit model\"], \"value\": \"fit model\"}], \"repository_additions\": [], \"symbols\": [{\"support_spans\": [\"PndLmdModelFactory\"], \"value\": \"PndLmdModelFactory\"}], \"version_mentions\": []}, \"analyzer_llm_called\": true, \"analyzer_raw_semantic_delta\": {\"concept_scopes\": [], \"concepts\": [{\"support_spans\": [\"assemble\"], \"value\": \"assemble\"}, {\"support_spans\": [\"fit model\"], \"value\": \"fit model\"}], \"repository_additions\": [], \"symbols\": [{\"support_spans\": [\"PndLmdModelFactory\"], \"value\": \"PndLmdModelFactory\"}], \"version_mentions\": []}, \"analyzer_rejected_items\": [], \"analyzer_semantic_output_fields\": [\"repository_additions\", \"concepts\", \"symbols\", \"version_mentions\", \"concept_scopes\"], \"deterministic_parse\": {\"fallback\": {\"concept_scopes\": {}}, \"fixed\": {\"intent\": \"api\", \"matched_expansion_rules\": [\"model_factory_theory\", \"model_factory_acceptance_methods\"], \"paper_page_hints\": {\"pflueger_2017\": [51, 57, 65]}}, \"known_partial\": {\"concepts\": [\"DPM model acceptance resolution composition\", \"acceptance injection and two-dimensional model generation\"], \"symbols\": [\"model/PndLmdDPMAngModel1D.cxx\", \"model/PndLmdDPMAngModel2D.cxx\", \"model/PndLmdModelFactory.cxx\", \"PndLmdModelFactory::setAcceptance\", \"PndLmdModelFactory::generate2DModel\"], \"target_repositories\": [\"luminosityfit\"]}, \"provenance\": {\"intent\": [{\"ownership\": \"fixed\", \"rule\": \"api\", \"source\": \"deterministic_route\", \"value\": \"api\"}], \"query_expansions\": [{\"ownership\": \"fixed_reviewed_rule\", \"rule\": \"model_factory_theory\", \"source\": \"reviewed_expansion\"}, {\"ownership\": \"fixed_reviewed_rule\", \"rule\": \"model_factory_acceptance_methods\", \"source\": \"reviewed_expansion\"}]}, \"semantic_output_fields\": [\"repository_additions\", \"concepts\", \"symbols\", \"version_mentions\", \"concept_scopes\"], \"unresolved_semantics\": {\"concept_scopes\": \"resolve\", \"concepts\": \"augment_known_partial\", \"repository_additions\": \"augment_known_partial\", \"symbols\": \"augment_known_partial\", \"target_repositories\": \"augment_known_partial\", \"version_mentions\": \"resolve\"}}, \"matched_expansion_rules\": [\"model_factory_theory\", \"model_factory_acceptance_methods\"], \"unbound_version_tokens\": []}, \"concept_scopes\": {}, \"concepts\": [\"assemble\", \"fit model\", \"DPM model acceptance resolution composition\", \"acceptance injection and two-dimensional model generation\"], \"intent\": \"api\", \"paper_page_hints\": {}, \"premise_corrections\": [], \"required_source_types\": [\"code\"], \"resolved_aliases\": {}, \"resolved_versions\": {\"luminosityfit\": \"ddd83dcd1a74093bf48ef259a2849a67f9413f32\"}, \"routing_method\": \"rule\", \"secondary_intents\": [], \"source_budgets\": {\"code\": 0.55, \"documentation\": 0.2, \"graph\": 0.1, \"paper\": 0.05, \"readme\": 0.1}, \"symbols\": [\"PndLmdModelFactory\", \"model/PndLmdDPMAngModel1D.cxx\", \"model/PndLmdDPMAngModel2D.cxx\", \"model/PndLmdModelFactory.cxx\", \"PndLmdModelFactory::setAcceptance\", \"PndLmdModelFactory::generate2DModel\"], \"target_repositories\": [\"luminosityfit\"], \"version_conflicts\": []}",
+      "contribution_ledger": [
+        {
+          "contribution_id": "symbol::PndLmdModelFactory",
+          "kind": "symbol",
+          "value": "PndLmdModelFactory",
+          "source_id": null,
+          "pdf_page": null,
+          "provenance_origin_ids": [
+            "accepted_analyzer_semantic_delta"
+          ],
+          "origin_types": {
+            "accepted_analyzer_semantic_delta": "accepted_analyzer_semantic_output"
+          },
+          "plan_present": true
+        },
+        {
+          "contribution_id": "symbol::model/PndLmdDPMAngModel1D.cxx",
+          "kind": "symbol",
+          "value": "model/PndLmdDPMAngModel1D.cxx",
+          "source_id": null,
+          "pdf_page": null,
+          "provenance_origin_ids": [
+            "model_factory_theory"
+          ],
+          "origin_types": {
+            "model_factory_theory": "reviewed_expansion_rule"
+          },
+          "plan_present": true
+        },
+        {
+          "contribution_id": "symbol::model/PndLmdDPMAngModel2D.cxx",
+          "kind": "symbol",
+          "value": "model/PndLmdDPMAngModel2D.cxx",
+          "source_id": null,
+          "pdf_page": null,
+          "provenance_origin_ids": [
+            "model_factory_theory"
+          ],
+          "origin_types": {
+            "model_factory_theory": "reviewed_expansion_rule"
+          },
+          "plan_present": true
+        },
+        {
+          "contribution_id": "symbol::model/PndLmdModelFactory.cxx",
+          "kind": "symbol",
+          "value": "model/PndLmdModelFactory.cxx",
+          "source_id": null,
+          "pdf_page": null,
+          "provenance_origin_ids": [
+            "model_factory_theory",
+            "model_factory_acceptance_methods"
+          ],
+          "origin_types": {
+            "model_factory_theory": "reviewed_expansion_rule",
+            "model_factory_acceptance_methods": "reviewed_expansion_rule"
+          },
+          "plan_present": true
+        },
+        {
+          "contribution_id": "symbol::PndLmdModelFactory::setAcceptance",
+          "kind": "symbol",
+          "value": "PndLmdModelFactory::setAcceptance",
+          "source_id": null,
+          "pdf_page": null,
+          "provenance_origin_ids": [
+            "model_factory_acceptance_methods"
+          ],
+          "origin_types": {
+            "model_factory_acceptance_methods": "reviewed_expansion_rule"
+          },
+          "plan_present": true
+        },
+        {
+          "contribution_id": "symbol::PndLmdModelFactory::generate2DModel",
+          "kind": "symbol",
+          "value": "PndLmdModelFactory::generate2DModel",
+          "source_id": null,
+          "pdf_page": null,
+          "provenance_origin_ids": [
+            "model_factory_acceptance_methods"
+          ],
+          "origin_types": {
+            "model_factory_acceptance_methods": "reviewed_expansion_rule"
+          },
+          "plan_present": true
+        },
+        {
+          "contribution_id": "concept::assemble",
+          "kind": "concept",
+          "value": "assemble",
+          "source_id": null,
+          "pdf_page": null,
+          "provenance_origin_ids": [
+            "accepted_analyzer_semantic_delta"
+          ],
+          "origin_types": {
+            "accepted_analyzer_semantic_delta": "accepted_analyzer_semantic_output"
+          },
+          "plan_present": true
+        },
+        {
+          "contribution_id": "concept::fit model",
+          "kind": "concept",
+          "value": "fit model",
+          "source_id": null,
+          "pdf_page": null,
+          "provenance_origin_ids": [
+            "accepted_analyzer_semantic_delta"
+          ],
+          "origin_types": {
+            "accepted_analyzer_semantic_delta": "accepted_analyzer_semantic_output"
+          },
+          "plan_present": true
+        },
+        {
+          "contribution_id": "concept::DPM model acceptance resolution composition",
+          "kind": "concept",
+          "value": "DPM model acceptance resolution composition",
+          "source_id": null,
+          "pdf_page": null,
+          "provenance_origin_ids": [
+            "model_factory_theory"
+          ],
+          "origin_types": {
+            "model_factory_theory": "reviewed_expansion_rule"
+          },
+          "plan_present": true
+        },
+        {
+          "contribution_id": "concept::acceptance injection and two-dimensional model generation",
+          "kind": "concept",
+          "value": "acceptance injection and two-dimensional model generation",
+          "source_id": null,
+          "pdf_page": null,
+          "provenance_origin_ids": [
+            "model_factory_acceptance_methods"
+          ],
+          "origin_types": {
+            "model_factory_acceptance_methods": "reviewed_expansion_rule"
+          },
+          "plan_present": true
+        },
+        {
+          "contribution_id": "repository::luminosityfit",
+          "kind": "repository",
+          "value": "luminosityfit",
+          "source_id": null,
+          "pdf_page": null,
+          "provenance_origin_ids": [
+            "model_factory_theory",
+            "model_factory_acceptance_methods"
+          ],
+          "origin_types": {
+            "model_factory_theory": "reviewed_expansion_rule",
+            "model_factory_acceptance_methods": "reviewed_expansion_rule"
+          },
+          "plan_present": true
+        }
+      ],
+      "provenance_origin_receipts": [
+        {
+          "contribution_id": "symbol::PndLmdModelFactory",
+          "provenance_origin_ids": [
+            "accepted_analyzer_semantic_delta"
+          ],
+          "origin_types": {
+            "accepted_analyzer_semantic_delta": "accepted_analyzer_semantic_output"
+          }
+        },
+        {
+          "contribution_id": "symbol::model/PndLmdDPMAngModel1D.cxx",
+          "provenance_origin_ids": [
+            "model_factory_theory"
+          ],
+          "origin_types": {
+            "model_factory_theory": "reviewed_expansion_rule"
+          }
+        },
+        {
+          "contribution_id": "symbol::model/PndLmdDPMAngModel2D.cxx",
+          "provenance_origin_ids": [
+            "model_factory_theory"
+          ],
+          "origin_types": {
+            "model_factory_theory": "reviewed_expansion_rule"
+          }
+        },
+        {
+          "contribution_id": "symbol::model/PndLmdModelFactory.cxx",
+          "provenance_origin_ids": [
+            "model_factory_theory",
+            "model_factory_acceptance_methods"
+          ],
+          "origin_types": {
+            "model_factory_theory": "reviewed_expansion_rule",
+            "model_factory_acceptance_methods": "reviewed_expansion_rule"
+          }
+        },
+        {
+          "contribution_id": "symbol::PndLmdModelFactory::setAcceptance",
+          "provenance_origin_ids": [
+            "model_factory_acceptance_methods"
+          ],
+          "origin_types": {
+            "model_factory_acceptance_methods": "reviewed_expansion_rule"
+          }
+        },
+        {
+          "contribution_id": "symbol::PndLmdModelFactory::generate2DModel",
+          "provenance_origin_ids": [
+            "model_factory_acceptance_methods"
+          ],
+          "origin_types": {
+            "model_factory_acceptance_methods": "reviewed_expansion_rule"
+          }
+        },
+        {
+          "contribution_id": "concept::assemble",
+          "provenance_origin_ids": [
+            "accepted_analyzer_semantic_delta"
+          ],
+          "origin_types": {
+            "accepted_analyzer_semantic_delta": "accepted_analyzer_semantic_output"
+          }
+        },
+        {
+          "contribution_id": "concept::fit model",
+          "provenance_origin_ids": [
+            "accepted_analyzer_semantic_delta"
+          ],
+          "origin_types": {
+            "accepted_analyzer_semantic_delta": "accepted_analyzer_semantic_output"
+          }
+        },
+        {
+          "contribution_id": "concept::DPM model acceptance resolution composition",
+          "provenance_origin_ids": [
+            "model_factory_theory"
+          ],
+          "origin_types": {
+            "model_factory_theory": "reviewed_expansion_rule"
+          }
+        },
+        {
+          "contribution_id": "concept::acceptance injection and two-dimensional model generation",
+          "provenance_origin_ids": [
+            "model_factory_acceptance_methods"
+          ],
+          "origin_types": {
+            "model_factory_acceptance_methods": "reviewed_expansion_rule"
+          }
+        },
+        {
+          "contribution_id": "repository::luminosityfit",
+          "provenance_origin_ids": [
+            "model_factory_theory",
+            "model_factory_acceptance_methods"
+          ],
+          "origin_types": {
+            "model_factory_theory": "reviewed_expansion_rule",
+            "model_factory_acceptance_methods": "reviewed_expansion_rule"
+          }
+        }
+      ],
+      "component_applicability_receipts": [
+        {
+          "rule_id": "model_factory_theory",
+          "component_kind": "symbol",
+          "component_value": "model/PndLmdModelFactory.cxx",
+          "source_id": null,
+          "pdf_page": null,
+          "configured_in_frozen_mask": true,
+          "selected_rule_origin_present": true,
+          "provenance_origin_ids": [
+            "model_factory_theory",
+            "model_factory_acceptance_methods"
+          ],
+          "independent_origins": [
+            "model_factory_acceptance_methods"
+          ],
+          "final_canonical_plan_presence": true,
+          "applicability_status": "ACTIVE_IDENTIFIABLE",
+          "retirement_projection_action": "remove_selected_rule_origin_preserve_independent_origins",
+          "held_reason": null,
+          "provenance_ambiguity_reason": null
+        }
+      ],
+      "current_execution_projection": {
+        "intent": "api",
+        "secondary_intents": [],
+        "routing_method": "rule",
+        "target_repositories": [
+          "luminosityfit"
+        ],
+        "resolved_versions": {
+          "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+        },
+        "version_conflicts": [],
+        "concepts": [
+          "assemble",
+          "fit model",
+          "DPM model acceptance resolution composition",
+          "acceptance injection and two-dimensional model generation"
+        ],
+        "symbols": [
+          "PndLmdModelFactory",
+          "model/PndLmdDPMAngModel1D.cxx",
+          "model/PndLmdDPMAngModel2D.cxx",
+          "model/PndLmdModelFactory.cxx",
+          "PndLmdModelFactory::setAcceptance",
+          "PndLmdModelFactory::generate2DModel"
+        ],
+        "concept_scopes": {},
+        "source_budgets": {
+          "code": 0.55,
+          "documentation": 0.2,
+          "readme": 0.1,
+          "graph": 0.1,
+          "paper": 0.05
+        },
+        "required_source_types": [
+          "code"
+        ],
+        "resolved_aliases": {},
+        "premise_corrections": [],
+        "paper_page_hints": {},
+        "analysis_diagnostics": {
+          "deterministic_parse": {
+            "fixed": {
+              "intent": "api",
+              "matched_expansion_rules": [
+                "model_factory_theory",
+                "model_factory_acceptance_methods"
+              ],
+              "paper_page_hints": {
+                "pflueger_2017": [
+                  51,
+                  57,
+                  65
+                ]
+              }
+            },
+            "fallback": {
+              "concept_scopes": {}
+            },
+            "known_partial": {
+              "target_repositories": [
+                "luminosityfit"
+              ],
+              "symbols": [
+                "model/PndLmdDPMAngModel1D.cxx",
+                "model/PndLmdDPMAngModel2D.cxx",
+                "model/PndLmdModelFactory.cxx",
+                "PndLmdModelFactory::setAcceptance",
+                "PndLmdModelFactory::generate2DModel"
+              ],
+              "concepts": [
+                "DPM model acceptance resolution composition",
+                "acceptance injection and two-dimensional model generation"
+              ]
+            },
+            "semantic_output_fields": [
+              "repository_additions",
+              "concepts",
+              "symbols",
+              "version_mentions",
+              "concept_scopes"
+            ],
+            "unresolved_semantics": {
+              "repository_additions": "augment_known_partial",
+              "target_repositories": "augment_known_partial",
+              "concepts": "augment_known_partial",
+              "symbols": "augment_known_partial",
+              "version_mentions": "resolve",
+              "concept_scopes": "resolve"
+            },
+            "provenance": {
+              "intent": [
+                {
+                  "source": "deterministic_route",
+                  "rule": "api",
+                  "value": "api",
+                  "ownership": "fixed"
+                }
+              ],
+              "query_expansions": [
+                {
+                  "source": "reviewed_expansion",
+                  "rule": "model_factory_theory",
+                  "ownership": "fixed_reviewed_rule"
+                },
+                {
+                  "source": "reviewed_expansion",
+                  "rule": "model_factory_acceptance_methods",
+                  "ownership": "fixed_reviewed_rule"
+                }
+              ]
+            }
+          },
+          "analyzer_llm_called": true,
+          "analyzer_semantic_output_fields": [
+            "repository_additions",
+            "concepts",
+            "symbols",
+            "version_mentions",
+            "concept_scopes"
+          ],
+          "analyzer_raw_semantic_delta": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "assemble",
+                "support_spans": [
+                  "assemble"
+                ]
+              },
+              {
+                "value": "fit model",
+                "support_spans": [
+                  "fit model"
+                ]
+              }
+            ],
+            "symbols": [
+              {
+                "value": "PndLmdModelFactory",
+                "support_spans": [
+                  "PndLmdModelFactory"
+                ]
+              }
+            ],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "analyzer_accepted_semantic_delta": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "assemble",
+                "support_spans": [
+                  "assemble"
+                ]
+              },
+              {
+                "value": "fit model",
+                "support_spans": [
+                  "fit model"
+                ]
+              }
+            ],
+            "symbols": [
+              {
+                "value": "PndLmdModelFactory",
+                "support_spans": [
+                  "PndLmdModelFactory"
+                ]
+              }
+            ],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "analyzer_rejected_items": [],
+          "analyzer_item_support": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "assemble",
+                "support_spans": [
+                  "assemble"
+                ]
+              },
+              {
+                "value": "fit model",
+                "support_spans": [
+                  "fit model"
+                ]
+              }
+            ],
+            "symbols": [
+              {
+                "value": "PndLmdModelFactory",
+                "support_spans": [
+                  "PndLmdModelFactory"
+                ]
+              }
+            ],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "unbound_version_tokens": [],
+          "analyzer_final": {
+            "intent": "api",
+            "target_repositories": [
+              "luminosityfit"
+            ],
+            "concepts": [
+              "assemble",
+              "fit model",
+              "DPM model acceptance resolution composition",
+              "acceptance injection and two-dimensional model generation"
+            ],
+            "symbols": [
+              "PndLmdModelFactory",
+              "model/PndLmdDPMAngModel1D.cxx",
+              "model/PndLmdDPMAngModel2D.cxx",
+              "model/PndLmdModelFactory.cxx",
+              "PndLmdModelFactory::setAcceptance",
+              "PndLmdModelFactory::generate2DModel"
+            ],
+            "requested_versions": {},
+            "concept_scopes": {}
+          },
+          "matched_expansion_rules": [
+            "model_factory_theory",
+            "model_factory_acceptance_methods"
+          ]
+        }
+      },
+      "treatment_execution_projection": {
+        "intent": "api",
+        "secondary_intents": [],
+        "routing_method": "rule",
+        "target_repositories": [
+          "luminosityfit"
+        ],
+        "resolved_versions": {
+          "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+        },
+        "version_conflicts": [],
+        "concepts": [
+          "assemble",
+          "fit model",
+          "DPM model acceptance resolution composition",
+          "acceptance injection and two-dimensional model generation"
+        ],
+        "symbols": [
+          "PndLmdModelFactory",
+          "model/PndLmdDPMAngModel1D.cxx",
+          "model/PndLmdDPMAngModel2D.cxx",
+          "model/PndLmdModelFactory.cxx",
+          "PndLmdModelFactory::setAcceptance",
+          "PndLmdModelFactory::generate2DModel"
+        ],
+        "concept_scopes": {},
+        "source_budgets": {
+          "code": 0.55,
+          "documentation": 0.2,
+          "readme": 0.1,
+          "graph": 0.1,
+          "paper": 0.05
+        },
+        "required_source_types": [
+          "code"
+        ],
+        "resolved_aliases": {},
+        "premise_corrections": [],
+        "paper_page_hints": {},
+        "analysis_diagnostics": {
+          "deterministic_parse": {
+            "fixed": {
+              "intent": "api",
+              "matched_expansion_rules": [
+                "model_factory_theory",
+                "model_factory_acceptance_methods"
+              ],
+              "paper_page_hints": {
+                "pflueger_2017": [
+                  51,
+                  57,
+                  65
+                ]
+              }
+            },
+            "fallback": {
+              "concept_scopes": {}
+            },
+            "known_partial": {
+              "target_repositories": [
+                "luminosityfit"
+              ],
+              "symbols": [
+                "model/PndLmdDPMAngModel1D.cxx",
+                "model/PndLmdDPMAngModel2D.cxx",
+                "model/PndLmdModelFactory.cxx",
+                "PndLmdModelFactory::setAcceptance",
+                "PndLmdModelFactory::generate2DModel"
+              ],
+              "concepts": [
+                "DPM model acceptance resolution composition",
+                "acceptance injection and two-dimensional model generation"
+              ]
+            },
+            "semantic_output_fields": [
+              "repository_additions",
+              "concepts",
+              "symbols",
+              "version_mentions",
+              "concept_scopes"
+            ],
+            "unresolved_semantics": {
+              "repository_additions": "augment_known_partial",
+              "target_repositories": "augment_known_partial",
+              "concepts": "augment_known_partial",
+              "symbols": "augment_known_partial",
+              "version_mentions": "resolve",
+              "concept_scopes": "resolve"
+            },
+            "provenance": {
+              "intent": [
+                {
+                  "source": "deterministic_route",
+                  "rule": "api",
+                  "value": "api",
+                  "ownership": "fixed"
+                }
+              ],
+              "query_expansions": [
+                {
+                  "source": "reviewed_expansion",
+                  "rule": "model_factory_theory",
+                  "ownership": "fixed_reviewed_rule"
+                },
+                {
+                  "source": "reviewed_expansion",
+                  "rule": "model_factory_acceptance_methods",
+                  "ownership": "fixed_reviewed_rule"
+                }
+              ]
+            }
+          },
+          "analyzer_llm_called": true,
+          "analyzer_semantic_output_fields": [
+            "repository_additions",
+            "concepts",
+            "symbols",
+            "version_mentions",
+            "concept_scopes"
+          ],
+          "analyzer_raw_semantic_delta": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "assemble",
+                "support_spans": [
+                  "assemble"
+                ]
+              },
+              {
+                "value": "fit model",
+                "support_spans": [
+                  "fit model"
+                ]
+              }
+            ],
+            "symbols": [
+              {
+                "value": "PndLmdModelFactory",
+                "support_spans": [
+                  "PndLmdModelFactory"
+                ]
+              }
+            ],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "analyzer_accepted_semantic_delta": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "assemble",
+                "support_spans": [
+                  "assemble"
+                ]
+              },
+              {
+                "value": "fit model",
+                "support_spans": [
+                  "fit model"
+                ]
+              }
+            ],
+            "symbols": [
+              {
+                "value": "PndLmdModelFactory",
+                "support_spans": [
+                  "PndLmdModelFactory"
+                ]
+              }
+            ],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "analyzer_rejected_items": [],
+          "analyzer_item_support": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "assemble",
+                "support_spans": [
+                  "assemble"
+                ]
+              },
+              {
+                "value": "fit model",
+                "support_spans": [
+                  "fit model"
+                ]
+              }
+            ],
+            "symbols": [
+              {
+                "value": "PndLmdModelFactory",
+                "support_spans": [
+                  "PndLmdModelFactory"
+                ]
+              }
+            ],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "unbound_version_tokens": [],
+          "analyzer_final": {
+            "intent": "api",
+            "target_repositories": [
+              "luminosityfit"
+            ],
+            "concepts": [
+              "assemble",
+              "fit model",
+              "DPM model acceptance resolution composition",
+              "acceptance injection and two-dimensional model generation"
+            ],
+            "symbols": [
+              "PndLmdModelFactory",
+              "model/PndLmdDPMAngModel1D.cxx",
+              "model/PndLmdDPMAngModel2D.cxx",
+              "model/PndLmdModelFactory.cxx",
+              "PndLmdModelFactory::setAcceptance",
+              "PndLmdModelFactory::generate2DModel"
+            ],
+            "requested_versions": {},
+            "concept_scopes": {}
+          },
+          "matched_expansion_rules": [
+            "model_factory_theory",
+            "model_factory_acceptance_methods"
+          ]
+        }
+      },
+      "plan_signature": "{\"concept_scopes\": [], \"intent\": \"api\", \"normalized_concepts\": [\"acceptance injection and two-dimensional model generation\", \"assemble\", \"dpm model acceptance resolution composition\", \"fit model\"], \"paper_page_hints\": [], \"required_source_types\": [\"code\"], \"symbols\": [\"PndLmdModelFactory\", \"PndLmdModelFactory::generate2DModel\", \"PndLmdModelFactory::setAcceptance\", \"model/PndLmdDPMAngModel1D.cxx\", \"model/PndLmdDPMAngModel2D.cxx\", \"model/PndLmdModelFactory.cxx\"], \"target_repositories\": [\"luminosityfit\"]}",
+      "provider_accounting": {
+        "model_id": "gemini-3.8-flash",
+        "location": "global",
+        "temperature": 0.0,
+        "retries": 0,
+        "analyzer_logical_calls": 1,
+        "analyzer_provider_attempts": 1,
+        "token_usage": 1788,
+        "elapsed_seconds": 5.7
+      },
+      "matched_rule_identities": [
+        "model_factory_theory",
+        "model_factory_acceptance_methods"
+      ],
+      "role": "DIRECT_MODEL_FACTORY_TREATMENT_CASE",
+      "plan_id": "prospective_g031",
+      "persistence_state": "RETRIEVAL_ELIGIBLE",
+      "started_at": "2026-09-06T22:46:21.862148+00:00",
+      "treatment_execution_projection_diff_receipts": {
+        "matched_retirement_rules": [
+          "model_factory_theory"
+        ],
+        "mask_entry_count": 1,
+        "removed_rule_origin_entries": [
+          {
+            "contribution_id": "symbol::model/PndLmdModelFactory.cxx",
+            "kind": "symbol",
+            "value": "model/PndLmdModelFactory.cxx",
+            "source_id": null,
+            "pdf_page": null,
+            "retired_rule_origins": [
+              "model_factory_theory"
+            ],
+            "surviving_independent_origins": [
+              "model_factory_acceptance_methods"
+            ],
+            "effectively_removed": false
+          }
+        ],
+        "surviving_independent_origin_entries": [
+          {
+            "contribution_id": "symbol::model/PndLmdModelFactory.cxx",
+            "kind": "symbol",
+            "value": "model/PndLmdModelFactory.cxx",
+            "source_id": null,
+            "pdf_page": null,
+            "surviving_independent_origins": [
+              "model_factory_acceptance_methods"
+            ]
+          }
+        ],
+        "effective_removed_symbols": [],
+        "effective_removed_paper_page_hints": {},
+        "effective_removal_count": 0,
+        "canonical_plan_unchanged": true,
+        "applicability_summary": {
+          "active": 1,
+          "inactive": 0,
+          "ambiguous": 0,
+          "inactive_components": []
+        }
+      },
+      "persisted_at": "2026-09-06T22:46:21.862160+00:00",
+      "gated_at": "2026-09-06T22:46:21.865517+00:00",
+      "applicability_status": "ACTIVE_IDENTIFIABLE"
+    },
+    {
+      "case_id": "g032",
+      "question": "Which source implements the 1D DPM angular model?",
+      "provider_model_contract": {
+        "model_id": "gemini-3.8-flash",
+        "temperature": 0.0,
+        "location": "global",
+        "retries": 0
+      },
+      "raw_analyzer_response": {
+        "intent": "api",
+        "secondary_intents": [],
+        "routing_method": "rule",
+        "target_repositories": [
+          "luminosityfit",
+          "pandaroot",
+          "restgas_determination"
+        ],
+        "resolved_versions": {
+          "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+          "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357",
+          "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+        },
+        "version_conflicts": [],
+        "concepts": [
+          "1D DPM angular model"
+        ],
+        "symbols": [],
+        "concept_scopes": {},
+        "source_budgets": {
+          "code": 0.55,
+          "documentation": 0.2,
+          "readme": 0.1,
+          "graph": 0.1,
+          "paper": 0.05
+        },
+        "required_source_types": [
+          "code"
+        ],
+        "resolved_aliases": {},
+        "premise_corrections": [],
+        "paper_page_hints": {},
+        "analysis_diagnostics": {
+          "deterministic_parse": {
+            "fixed": {
+              "intent": "api"
+            },
+            "fallback": {
+              "concept_scopes": {}
+            },
+            "known_partial": {},
+            "semantic_output_fields": [
+              "repository_additions",
+              "concepts",
+              "symbols",
+              "version_mentions",
+              "concept_scopes"
+            ],
+            "unresolved_semantics": {
+              "repository_additions": "resolve",
+              "target_repositories": "resolve",
+              "concepts": "resolve",
+              "symbols": "resolve",
+              "version_mentions": "resolve",
+              "concept_scopes": "resolve"
+            },
+            "provenance": {
+              "intent": [
+                {
+                  "source": "deterministic_route",
+                  "rule": "api",
+                  "value": "api",
+                  "ownership": "fixed"
+                }
+              ]
+            }
+          },
+          "analyzer_llm_called": true,
+          "analyzer_semantic_output_fields": [
+            "repository_additions",
+            "concepts",
+            "symbols",
+            "version_mentions",
+            "concept_scopes"
+          ],
+          "analyzer_raw_semantic_delta": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "1D DPM angular model",
+                "support_spans": [
+                  "1D DPM angular model"
+                ]
+              }
+            ],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "analyzer_accepted_semantic_delta": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "1D DPM angular model",
+                "support_spans": [
+                  "1D DPM angular model"
+                ]
+              }
+            ],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "analyzer_rejected_items": [],
+          "analyzer_item_support": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "1D DPM angular model",
+                "support_spans": [
+                  "1D DPM angular model"
+                ]
+              }
+            ],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "unbound_version_tokens": [],
+          "analyzer_final": {
+            "intent": "api",
+            "target_repositories": [
+              "luminosityfit",
+              "pandaroot",
+              "restgas_determination"
+            ],
+            "concepts": [
+              "1D DPM angular model"
+            ],
+            "symbols": [],
+            "requested_versions": {},
+            "concept_scopes": {}
+          },
+          "matched_expansion_rules": []
+        }
+      },
+      "canonical_plan": {
+        "intent": "api",
+        "secondary_intents": [],
+        "routing_method": "rule",
+        "target_repositories": [
+          "luminosityfit",
+          "pandaroot",
+          "restgas_determination"
+        ],
+        "resolved_versions": {
+          "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+          "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357",
+          "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+        },
+        "version_conflicts": [],
+        "concepts": [
+          "1D DPM angular model"
+        ],
+        "symbols": [],
+        "concept_scopes": {},
+        "source_budgets": {
+          "code": 0.55,
+          "documentation": 0.2,
+          "readme": 0.1,
+          "graph": 0.1,
+          "paper": 0.05
+        },
+        "required_source_types": [
+          "code"
+        ],
+        "resolved_aliases": {},
+        "premise_corrections": [],
+        "paper_page_hints": {},
+        "analysis_diagnostics": {
+          "deterministic_parse": {
+            "fixed": {
+              "intent": "api"
+            },
+            "fallback": {
+              "concept_scopes": {}
+            },
+            "known_partial": {},
+            "semantic_output_fields": [
+              "repository_additions",
+              "concepts",
+              "symbols",
+              "version_mentions",
+              "concept_scopes"
+            ],
+            "unresolved_semantics": {
+              "repository_additions": "resolve",
+              "target_repositories": "resolve",
+              "concepts": "resolve",
+              "symbols": "resolve",
+              "version_mentions": "resolve",
+              "concept_scopes": "resolve"
+            },
+            "provenance": {
+              "intent": [
+                {
+                  "source": "deterministic_route",
+                  "rule": "api",
+                  "value": "api",
+                  "ownership": "fixed"
+                }
+              ]
+            }
+          },
+          "analyzer_llm_called": true,
+          "analyzer_semantic_output_fields": [
+            "repository_additions",
+            "concepts",
+            "symbols",
+            "version_mentions",
+            "concept_scopes"
+          ],
+          "analyzer_raw_semantic_delta": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "1D DPM angular model",
+                "support_spans": [
+                  "1D DPM angular model"
+                ]
+              }
+            ],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "analyzer_accepted_semantic_delta": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "1D DPM angular model",
+                "support_spans": [
+                  "1D DPM angular model"
+                ]
+              }
+            ],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "analyzer_rejected_items": [],
+          "analyzer_item_support": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "1D DPM angular model",
+                "support_spans": [
+                  "1D DPM angular model"
+                ]
+              }
+            ],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "unbound_version_tokens": [],
+          "analyzer_final": {
+            "intent": "api",
+            "target_repositories": [
+              "luminosityfit",
+              "pandaroot",
+              "restgas_determination"
+            ],
+            "concepts": [
+              "1D DPM angular model"
+            ],
+            "symbols": [],
+            "requested_versions": {},
+            "concept_scopes": {}
+          },
+          "matched_expansion_rules": []
+        }
+      },
+      "canonical_serialization": "{\"analysis_diagnostics\": {\"analyzer_accepted_semantic_delta\": {\"concept_scopes\": [], \"concepts\": [{\"support_spans\": [\"1D DPM angular model\"], \"value\": \"1D DPM angular model\"}], \"repository_additions\": [], \"symbols\": [], \"version_mentions\": []}, \"analyzer_final\": {\"concept_scopes\": {}, \"concepts\": [\"1D DPM angular model\"], \"intent\": \"api\", \"requested_versions\": {}, \"symbols\": [], \"target_repositories\": [\"luminosityfit\", \"pandaroot\", \"restgas_determination\"]}, \"analyzer_item_support\": {\"concept_scopes\": [], \"concepts\": [{\"support_spans\": [\"1D DPM angular model\"], \"value\": \"1D DPM angular model\"}], \"repository_additions\": [], \"symbols\": [], \"version_mentions\": []}, \"analyzer_llm_called\": true, \"analyzer_raw_semantic_delta\": {\"concept_scopes\": [], \"concepts\": [{\"support_spans\": [\"1D DPM angular model\"], \"value\": \"1D DPM angular model\"}], \"repository_additions\": [], \"symbols\": [], \"version_mentions\": []}, \"analyzer_rejected_items\": [], \"analyzer_semantic_output_fields\": [\"repository_additions\", \"concepts\", \"symbols\", \"version_mentions\", \"concept_scopes\"], \"deterministic_parse\": {\"fallback\": {\"concept_scopes\": {}}, \"fixed\": {\"intent\": \"api\"}, \"known_partial\": {}, \"provenance\": {\"intent\": [{\"ownership\": \"fixed\", \"rule\": \"api\", \"source\": \"deterministic_route\", \"value\": \"api\"}]}, \"semantic_output_fields\": [\"repository_additions\", \"concepts\", \"symbols\", \"version_mentions\", \"concept_scopes\"], \"unresolved_semantics\": {\"concept_scopes\": \"resolve\", \"concepts\": \"resolve\", \"repository_additions\": \"resolve\", \"symbols\": \"resolve\", \"target_repositories\": \"resolve\", \"version_mentions\": \"resolve\"}}, \"matched_expansion_rules\": [], \"unbound_version_tokens\": []}, \"concept_scopes\": {}, \"concepts\": [\"1D DPM angular model\"], \"intent\": \"api\", \"paper_page_hints\": {}, \"premise_corrections\": [], \"required_source_types\": [\"code\"], \"resolved_aliases\": {}, \"resolved_versions\": {\"luminosityfit\": \"ddd83dcd1a74093bf48ef259a2849a67f9413f32\", \"pandaroot\": \"18c09e91100db27867ded30e708b4dae95bd8357\", \"restgas_determination\": \"11f1edc49dcbaeb61d707491a6d3bbec390fcd42\"}, \"routing_method\": \"rule\", \"secondary_intents\": [], \"source_budgets\": {\"code\": 0.55, \"documentation\": 0.2, \"graph\": 0.1, \"paper\": 0.05, \"readme\": 0.1}, \"symbols\": [], \"target_repositories\": [\"luminosityfit\", \"pandaroot\", \"restgas_determination\"], \"version_conflicts\": []}",
+      "contribution_ledger": [
+        {
+          "contribution_id": "concept::1D DPM angular model",
+          "kind": "concept",
+          "value": "1D DPM angular model",
+          "source_id": null,
+          "pdf_page": null,
+          "provenance_origin_ids": [
+            "accepted_analyzer_semantic_delta"
+          ],
+          "origin_types": {
+            "accepted_analyzer_semantic_delta": "accepted_analyzer_semantic_output"
+          },
+          "plan_present": true
+        },
+        {
+          "contribution_id": "repository::luminosityfit",
+          "kind": "repository",
+          "value": "luminosityfit",
+          "source_id": null,
+          "pdf_page": null,
+          "provenance_origin_ids": [],
+          "origin_types": {},
+          "plan_present": true
+        },
+        {
+          "contribution_id": "repository::pandaroot",
+          "kind": "repository",
+          "value": "pandaroot",
+          "source_id": null,
+          "pdf_page": null,
+          "provenance_origin_ids": [],
+          "origin_types": {},
+          "plan_present": true
+        },
+        {
+          "contribution_id": "repository::restgas_determination",
+          "kind": "repository",
+          "value": "restgas_determination",
+          "source_id": null,
+          "pdf_page": null,
+          "provenance_origin_ids": [],
+          "origin_types": {},
+          "plan_present": true
+        }
+      ],
+      "provenance_origin_receipts": [
+        {
+          "contribution_id": "concept::1D DPM angular model",
+          "provenance_origin_ids": [
+            "accepted_analyzer_semantic_delta"
+          ],
+          "origin_types": {
+            "accepted_analyzer_semantic_delta": "accepted_analyzer_semantic_output"
+          }
+        },
+        {
+          "contribution_id": "repository::luminosityfit",
+          "provenance_origin_ids": [],
+          "origin_types": {}
+        },
+        {
+          "contribution_id": "repository::pandaroot",
+          "provenance_origin_ids": [],
+          "origin_types": {}
+        },
+        {
+          "contribution_id": "repository::restgas_determination",
+          "provenance_origin_ids": [],
+          "origin_types": {}
+        }
+      ],
+      "component_applicability_receipts": [],
+      "current_execution_projection": {
+        "intent": "api",
+        "secondary_intents": [],
+        "routing_method": "rule",
+        "target_repositories": [
+          "luminosityfit",
+          "pandaroot",
+          "restgas_determination"
+        ],
+        "resolved_versions": {
+          "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+          "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357",
+          "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+        },
+        "version_conflicts": [],
+        "concepts": [
+          "1D DPM angular model"
+        ],
+        "symbols": [],
+        "concept_scopes": {},
+        "source_budgets": {
+          "code": 0.55,
+          "documentation": 0.2,
+          "readme": 0.1,
+          "graph": 0.1,
+          "paper": 0.05
+        },
+        "required_source_types": [
+          "code"
+        ],
+        "resolved_aliases": {},
+        "premise_corrections": [],
+        "paper_page_hints": {},
+        "analysis_diagnostics": {
+          "deterministic_parse": {
+            "fixed": {
+              "intent": "api"
+            },
+            "fallback": {
+              "concept_scopes": {}
+            },
+            "known_partial": {},
+            "semantic_output_fields": [
+              "repository_additions",
+              "concepts",
+              "symbols",
+              "version_mentions",
+              "concept_scopes"
+            ],
+            "unresolved_semantics": {
+              "repository_additions": "resolve",
+              "target_repositories": "resolve",
+              "concepts": "resolve",
+              "symbols": "resolve",
+              "version_mentions": "resolve",
+              "concept_scopes": "resolve"
+            },
+            "provenance": {
+              "intent": [
+                {
+                  "source": "deterministic_route",
+                  "rule": "api",
+                  "value": "api",
+                  "ownership": "fixed"
+                }
+              ]
+            }
+          },
+          "analyzer_llm_called": true,
+          "analyzer_semantic_output_fields": [
+            "repository_additions",
+            "concepts",
+            "symbols",
+            "version_mentions",
+            "concept_scopes"
+          ],
+          "analyzer_raw_semantic_delta": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "1D DPM angular model",
+                "support_spans": [
+                  "1D DPM angular model"
+                ]
+              }
+            ],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "analyzer_accepted_semantic_delta": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "1D DPM angular model",
+                "support_spans": [
+                  "1D DPM angular model"
+                ]
+              }
+            ],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "analyzer_rejected_items": [],
+          "analyzer_item_support": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "1D DPM angular model",
+                "support_spans": [
+                  "1D DPM angular model"
+                ]
+              }
+            ],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "unbound_version_tokens": [],
+          "analyzer_final": {
+            "intent": "api",
+            "target_repositories": [
+              "luminosityfit",
+              "pandaroot",
+              "restgas_determination"
+            ],
+            "concepts": [
+              "1D DPM angular model"
+            ],
+            "symbols": [],
+            "requested_versions": {},
+            "concept_scopes": {}
+          },
+          "matched_expansion_rules": []
+        }
+      },
+      "treatment_execution_projection": {
+        "intent": "api",
+        "secondary_intents": [],
+        "routing_method": "rule",
+        "target_repositories": [
+          "luminosityfit",
+          "pandaroot",
+          "restgas_determination"
+        ],
+        "resolved_versions": {
+          "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+          "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357",
+          "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+        },
+        "version_conflicts": [],
+        "concepts": [
+          "1D DPM angular model"
+        ],
+        "symbols": [],
+        "concept_scopes": {},
+        "source_budgets": {
+          "code": 0.55,
+          "documentation": 0.2,
+          "readme": 0.1,
+          "graph": 0.1,
+          "paper": 0.05
+        },
+        "required_source_types": [
+          "code"
+        ],
+        "resolved_aliases": {},
+        "premise_corrections": [],
+        "paper_page_hints": {},
+        "analysis_diagnostics": {
+          "deterministic_parse": {
+            "fixed": {
+              "intent": "api"
+            },
+            "fallback": {
+              "concept_scopes": {}
+            },
+            "known_partial": {},
+            "semantic_output_fields": [
+              "repository_additions",
+              "concepts",
+              "symbols",
+              "version_mentions",
+              "concept_scopes"
+            ],
+            "unresolved_semantics": {
+              "repository_additions": "resolve",
+              "target_repositories": "resolve",
+              "concepts": "resolve",
+              "symbols": "resolve",
+              "version_mentions": "resolve",
+              "concept_scopes": "resolve"
+            },
+            "provenance": {
+              "intent": [
+                {
+                  "source": "deterministic_route",
+                  "rule": "api",
+                  "value": "api",
+                  "ownership": "fixed"
+                }
+              ]
+            }
+          },
+          "analyzer_llm_called": true,
+          "analyzer_semantic_output_fields": [
+            "repository_additions",
+            "concepts",
+            "symbols",
+            "version_mentions",
+            "concept_scopes"
+          ],
+          "analyzer_raw_semantic_delta": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "1D DPM angular model",
+                "support_spans": [
+                  "1D DPM angular model"
+                ]
+              }
+            ],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "analyzer_accepted_semantic_delta": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "1D DPM angular model",
+                "support_spans": [
+                  "1D DPM angular model"
+                ]
+              }
+            ],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "analyzer_rejected_items": [],
+          "analyzer_item_support": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "1D DPM angular model",
+                "support_spans": [
+                  "1D DPM angular model"
+                ]
+              }
+            ],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "unbound_version_tokens": [],
+          "analyzer_final": {
+            "intent": "api",
+            "target_repositories": [
+              "luminosityfit",
+              "pandaroot",
+              "restgas_determination"
+            ],
+            "concepts": [
+              "1D DPM angular model"
+            ],
+            "symbols": [],
+            "requested_versions": {},
+            "concept_scopes": {}
+          },
+          "matched_expansion_rules": []
+        }
+      },
+      "plan_signature": "{\"concept_scopes\": [], \"intent\": \"api\", \"normalized_concepts\": [\"1d dpm angular model\"], \"paper_page_hints\": [], \"required_source_types\": [\"code\"], \"symbols\": [], \"target_repositories\": [\"luminosityfit\", \"pandaroot\", \"restgas_determination\"]}",
+      "provider_accounting": {
+        "model_id": "gemini-3.8-flash",
+        "location": "global",
+        "temperature": 0.0,
+        "retries": 0,
+        "analyzer_logical_calls": 1,
+        "analyzer_provider_attempts": 1,
+        "token_usage": 1747,
+        "elapsed_seconds": 4.27
+      },
+      "matched_rule_identities": [],
+      "role": "DPM1D_SYMBOL_ADJACENT_NONMATCHING_CONTROL",
+      "plan_id": "prospective_g032",
+      "persistence_state": "RETRIEVAL_ELIGIBLE",
+      "started_at": "2026-09-06T22:46:26.138614+00:00",
+      "treatment_execution_projection_diff_receipts": {
+        "matched_retirement_rules": [],
+        "mask_entry_count": 0,
+        "removed_rule_origin_entries": [],
+        "surviving_independent_origin_entries": [],
+        "effective_removed_symbols": [],
+        "effective_removed_paper_page_hints": {},
+        "effective_removal_count": 0,
+        "canonical_plan_unchanged": true,
+        "applicability_summary": {
+          "active": 0,
+          "inactive": 0,
+          "ambiguous": 0,
+          "inactive_components": []
+        }
+      },
+      "persisted_at": "2026-09-06T22:46:26.138625+00:00",
+      "gated_at": "2026-09-06T22:46:26.142919+00:00"
+    },
+    {
+      "case_id": "g033",
+      "question": "Which source implements the 2D DPM angular model?",
+      "provider_model_contract": {
+        "model_id": "gemini-3.8-flash",
+        "temperature": 0.0,
+        "location": "global",
+        "retries": 0
+      },
+      "raw_analyzer_response": {
+        "intent": "api",
+        "secondary_intents": [],
+        "routing_method": "rule",
+        "target_repositories": [
+          "luminosityfit",
+          "pandaroot",
+          "restgas_determination"
+        ],
+        "resolved_versions": {
+          "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+          "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357",
+          "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+        },
+        "version_conflicts": [],
+        "concepts": [
+          "2D DPM angular model"
+        ],
+        "symbols": [],
+        "concept_scopes": {},
+        "source_budgets": {
+          "code": 0.55,
+          "documentation": 0.2,
+          "readme": 0.1,
+          "graph": 0.1,
+          "paper": 0.05
+        },
+        "required_source_types": [
+          "code"
+        ],
+        "resolved_aliases": {},
+        "premise_corrections": [],
+        "paper_page_hints": {},
+        "analysis_diagnostics": {
+          "deterministic_parse": {
+            "fixed": {
+              "intent": "api"
+            },
+            "fallback": {
+              "concept_scopes": {}
+            },
+            "known_partial": {},
+            "semantic_output_fields": [
+              "repository_additions",
+              "concepts",
+              "symbols",
+              "version_mentions",
+              "concept_scopes"
+            ],
+            "unresolved_semantics": {
+              "repository_additions": "resolve",
+              "target_repositories": "resolve",
+              "concepts": "resolve",
+              "symbols": "resolve",
+              "version_mentions": "resolve",
+              "concept_scopes": "resolve"
+            },
+            "provenance": {
+              "intent": [
+                {
+                  "source": "deterministic_route",
+                  "rule": "api",
+                  "value": "api",
+                  "ownership": "fixed"
+                }
+              ]
+            }
+          },
+          "analyzer_llm_called": true,
+          "analyzer_semantic_output_fields": [
+            "repository_additions",
+            "concepts",
+            "symbols",
+            "version_mentions",
+            "concept_scopes"
+          ],
+          "analyzer_raw_semantic_delta": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "2D DPM angular model",
+                "support_spans": [
+                  "2D DPM angular model"
+                ]
+              }
+            ],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "analyzer_accepted_semantic_delta": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "2D DPM angular model",
+                "support_spans": [
+                  "2D DPM angular model"
+                ]
+              }
+            ],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "analyzer_rejected_items": [],
+          "analyzer_item_support": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "2D DPM angular model",
+                "support_spans": [
+                  "2D DPM angular model"
+                ]
+              }
+            ],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "unbound_version_tokens": [],
+          "analyzer_final": {
+            "intent": "api",
+            "target_repositories": [
+              "luminosityfit",
+              "pandaroot",
+              "restgas_determination"
+            ],
+            "concepts": [
+              "2D DPM angular model"
+            ],
+            "symbols": [],
+            "requested_versions": {},
+            "concept_scopes": {}
+          },
+          "matched_expansion_rules": []
+        }
+      },
+      "canonical_plan": {
+        "intent": "api",
+        "secondary_intents": [],
+        "routing_method": "rule",
+        "target_repositories": [
+          "luminosityfit",
+          "pandaroot",
+          "restgas_determination"
+        ],
+        "resolved_versions": {
+          "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+          "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357",
+          "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+        },
+        "version_conflicts": [],
+        "concepts": [
+          "2D DPM angular model"
+        ],
+        "symbols": [],
+        "concept_scopes": {},
+        "source_budgets": {
+          "code": 0.55,
+          "documentation": 0.2,
+          "readme": 0.1,
+          "graph": 0.1,
+          "paper": 0.05
+        },
+        "required_source_types": [
+          "code"
+        ],
+        "resolved_aliases": {},
+        "premise_corrections": [],
+        "paper_page_hints": {},
+        "analysis_diagnostics": {
+          "deterministic_parse": {
+            "fixed": {
+              "intent": "api"
+            },
+            "fallback": {
+              "concept_scopes": {}
+            },
+            "known_partial": {},
+            "semantic_output_fields": [
+              "repository_additions",
+              "concepts",
+              "symbols",
+              "version_mentions",
+              "concept_scopes"
+            ],
+            "unresolved_semantics": {
+              "repository_additions": "resolve",
+              "target_repositories": "resolve",
+              "concepts": "resolve",
+              "symbols": "resolve",
+              "version_mentions": "resolve",
+              "concept_scopes": "resolve"
+            },
+            "provenance": {
+              "intent": [
+                {
+                  "source": "deterministic_route",
+                  "rule": "api",
+                  "value": "api",
+                  "ownership": "fixed"
+                }
+              ]
+            }
+          },
+          "analyzer_llm_called": true,
+          "analyzer_semantic_output_fields": [
+            "repository_additions",
+            "concepts",
+            "symbols",
+            "version_mentions",
+            "concept_scopes"
+          ],
+          "analyzer_raw_semantic_delta": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "2D DPM angular model",
+                "support_spans": [
+                  "2D DPM angular model"
+                ]
+              }
+            ],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "analyzer_accepted_semantic_delta": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "2D DPM angular model",
+                "support_spans": [
+                  "2D DPM angular model"
+                ]
+              }
+            ],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "analyzer_rejected_items": [],
+          "analyzer_item_support": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "2D DPM angular model",
+                "support_spans": [
+                  "2D DPM angular model"
+                ]
+              }
+            ],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "unbound_version_tokens": [],
+          "analyzer_final": {
+            "intent": "api",
+            "target_repositories": [
+              "luminosityfit",
+              "pandaroot",
+              "restgas_determination"
+            ],
+            "concepts": [
+              "2D DPM angular model"
+            ],
+            "symbols": [],
+            "requested_versions": {},
+            "concept_scopes": {}
+          },
+          "matched_expansion_rules": []
+        }
+      },
+      "canonical_serialization": "{\"analysis_diagnostics\": {\"analyzer_accepted_semantic_delta\": {\"concept_scopes\": [], \"concepts\": [{\"support_spans\": [\"2D DPM angular model\"], \"value\": \"2D DPM angular model\"}], \"repository_additions\": [], \"symbols\": [], \"version_mentions\": []}, \"analyzer_final\": {\"concept_scopes\": {}, \"concepts\": [\"2D DPM angular model\"], \"intent\": \"api\", \"requested_versions\": {}, \"symbols\": [], \"target_repositories\": [\"luminosityfit\", \"pandaroot\", \"restgas_determination\"]}, \"analyzer_item_support\": {\"concept_scopes\": [], \"concepts\": [{\"support_spans\": [\"2D DPM angular model\"], \"value\": \"2D DPM angular model\"}], \"repository_additions\": [], \"symbols\": [], \"version_mentions\": []}, \"analyzer_llm_called\": true, \"analyzer_raw_semantic_delta\": {\"concept_scopes\": [], \"concepts\": [{\"support_spans\": [\"2D DPM angular model\"], \"value\": \"2D DPM angular model\"}], \"repository_additions\": [], \"symbols\": [], \"version_mentions\": []}, \"analyzer_rejected_items\": [], \"analyzer_semantic_output_fields\": [\"repository_additions\", \"concepts\", \"symbols\", \"version_mentions\", \"concept_scopes\"], \"deterministic_parse\": {\"fallback\": {\"concept_scopes\": {}}, \"fixed\": {\"intent\": \"api\"}, \"known_partial\": {}, \"provenance\": {\"intent\": [{\"ownership\": \"fixed\", \"rule\": \"api\", \"source\": \"deterministic_route\", \"value\": \"api\"}]}, \"semantic_output_fields\": [\"repository_additions\", \"concepts\", \"symbols\", \"version_mentions\", \"concept_scopes\"], \"unresolved_semantics\": {\"concept_scopes\": \"resolve\", \"concepts\": \"resolve\", \"repository_additions\": \"resolve\", \"symbols\": \"resolve\", \"target_repositories\": \"resolve\", \"version_mentions\": \"resolve\"}}, \"matched_expansion_rules\": [], \"unbound_version_tokens\": []}, \"concept_scopes\": {}, \"concepts\": [\"2D DPM angular model\"], \"intent\": \"api\", \"paper_page_hints\": {}, \"premise_corrections\": [], \"required_source_types\": [\"code\"], \"resolved_aliases\": {}, \"resolved_versions\": {\"luminosityfit\": \"ddd83dcd1a74093bf48ef259a2849a67f9413f32\", \"pandaroot\": \"18c09e91100db27867ded30e708b4dae95bd8357\", \"restgas_determination\": \"11f1edc49dcbaeb61d707491a6d3bbec390fcd42\"}, \"routing_method\": \"rule\", \"secondary_intents\": [], \"source_budgets\": {\"code\": 0.55, \"documentation\": 0.2, \"graph\": 0.1, \"paper\": 0.05, \"readme\": 0.1}, \"symbols\": [], \"target_repositories\": [\"luminosityfit\", \"pandaroot\", \"restgas_determination\"], \"version_conflicts\": []}",
+      "contribution_ledger": [
+        {
+          "contribution_id": "concept::2D DPM angular model",
+          "kind": "concept",
+          "value": "2D DPM angular model",
+          "source_id": null,
+          "pdf_page": null,
+          "provenance_origin_ids": [
+            "accepted_analyzer_semantic_delta"
+          ],
+          "origin_types": {
+            "accepted_analyzer_semantic_delta": "accepted_analyzer_semantic_output"
+          },
+          "plan_present": true
+        },
+        {
+          "contribution_id": "repository::luminosityfit",
+          "kind": "repository",
+          "value": "luminosityfit",
+          "source_id": null,
+          "pdf_page": null,
+          "provenance_origin_ids": [],
+          "origin_types": {},
+          "plan_present": true
+        },
+        {
+          "contribution_id": "repository::pandaroot",
+          "kind": "repository",
+          "value": "pandaroot",
+          "source_id": null,
+          "pdf_page": null,
+          "provenance_origin_ids": [],
+          "origin_types": {},
+          "plan_present": true
+        },
+        {
+          "contribution_id": "repository::restgas_determination",
+          "kind": "repository",
+          "value": "restgas_determination",
+          "source_id": null,
+          "pdf_page": null,
+          "provenance_origin_ids": [],
+          "origin_types": {},
+          "plan_present": true
+        }
+      ],
+      "provenance_origin_receipts": [
+        {
+          "contribution_id": "concept::2D DPM angular model",
+          "provenance_origin_ids": [
+            "accepted_analyzer_semantic_delta"
+          ],
+          "origin_types": {
+            "accepted_analyzer_semantic_delta": "accepted_analyzer_semantic_output"
+          }
+        },
+        {
+          "contribution_id": "repository::luminosityfit",
+          "provenance_origin_ids": [],
+          "origin_types": {}
+        },
+        {
+          "contribution_id": "repository::pandaroot",
+          "provenance_origin_ids": [],
+          "origin_types": {}
+        },
+        {
+          "contribution_id": "repository::restgas_determination",
+          "provenance_origin_ids": [],
+          "origin_types": {}
+        }
+      ],
+      "component_applicability_receipts": [],
+      "current_execution_projection": {
+        "intent": "api",
+        "secondary_intents": [],
+        "routing_method": "rule",
+        "target_repositories": [
+          "luminosityfit",
+          "pandaroot",
+          "restgas_determination"
+        ],
+        "resolved_versions": {
+          "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+          "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357",
+          "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+        },
+        "version_conflicts": [],
+        "concepts": [
+          "2D DPM angular model"
+        ],
+        "symbols": [],
+        "concept_scopes": {},
+        "source_budgets": {
+          "code": 0.55,
+          "documentation": 0.2,
+          "readme": 0.1,
+          "graph": 0.1,
+          "paper": 0.05
+        },
+        "required_source_types": [
+          "code"
+        ],
+        "resolved_aliases": {},
+        "premise_corrections": [],
+        "paper_page_hints": {},
+        "analysis_diagnostics": {
+          "deterministic_parse": {
+            "fixed": {
+              "intent": "api"
+            },
+            "fallback": {
+              "concept_scopes": {}
+            },
+            "known_partial": {},
+            "semantic_output_fields": [
+              "repository_additions",
+              "concepts",
+              "symbols",
+              "version_mentions",
+              "concept_scopes"
+            ],
+            "unresolved_semantics": {
+              "repository_additions": "resolve",
+              "target_repositories": "resolve",
+              "concepts": "resolve",
+              "symbols": "resolve",
+              "version_mentions": "resolve",
+              "concept_scopes": "resolve"
+            },
+            "provenance": {
+              "intent": [
+                {
+                  "source": "deterministic_route",
+                  "rule": "api",
+                  "value": "api",
+                  "ownership": "fixed"
+                }
+              ]
+            }
+          },
+          "analyzer_llm_called": true,
+          "analyzer_semantic_output_fields": [
+            "repository_additions",
+            "concepts",
+            "symbols",
+            "version_mentions",
+            "concept_scopes"
+          ],
+          "analyzer_raw_semantic_delta": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "2D DPM angular model",
+                "support_spans": [
+                  "2D DPM angular model"
+                ]
+              }
+            ],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "analyzer_accepted_semantic_delta": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "2D DPM angular model",
+                "support_spans": [
+                  "2D DPM angular model"
+                ]
+              }
+            ],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "analyzer_rejected_items": [],
+          "analyzer_item_support": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "2D DPM angular model",
+                "support_spans": [
+                  "2D DPM angular model"
+                ]
+              }
+            ],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "unbound_version_tokens": [],
+          "analyzer_final": {
+            "intent": "api",
+            "target_repositories": [
+              "luminosityfit",
+              "pandaroot",
+              "restgas_determination"
+            ],
+            "concepts": [
+              "2D DPM angular model"
+            ],
+            "symbols": [],
+            "requested_versions": {},
+            "concept_scopes": {}
+          },
+          "matched_expansion_rules": []
+        }
+      },
+      "treatment_execution_projection": {
+        "intent": "api",
+        "secondary_intents": [],
+        "routing_method": "rule",
+        "target_repositories": [
+          "luminosityfit",
+          "pandaroot",
+          "restgas_determination"
+        ],
+        "resolved_versions": {
+          "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+          "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357",
+          "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+        },
+        "version_conflicts": [],
+        "concepts": [
+          "2D DPM angular model"
+        ],
+        "symbols": [],
+        "concept_scopes": {},
+        "source_budgets": {
+          "code": 0.55,
+          "documentation": 0.2,
+          "readme": 0.1,
+          "graph": 0.1,
+          "paper": 0.05
+        },
+        "required_source_types": [
+          "code"
+        ],
+        "resolved_aliases": {},
+        "premise_corrections": [],
+        "paper_page_hints": {},
+        "analysis_diagnostics": {
+          "deterministic_parse": {
+            "fixed": {
+              "intent": "api"
+            },
+            "fallback": {
+              "concept_scopes": {}
+            },
+            "known_partial": {},
+            "semantic_output_fields": [
+              "repository_additions",
+              "concepts",
+              "symbols",
+              "version_mentions",
+              "concept_scopes"
+            ],
+            "unresolved_semantics": {
+              "repository_additions": "resolve",
+              "target_repositories": "resolve",
+              "concepts": "resolve",
+              "symbols": "resolve",
+              "version_mentions": "resolve",
+              "concept_scopes": "resolve"
+            },
+            "provenance": {
+              "intent": [
+                {
+                  "source": "deterministic_route",
+                  "rule": "api",
+                  "value": "api",
+                  "ownership": "fixed"
+                }
+              ]
+            }
+          },
+          "analyzer_llm_called": true,
+          "analyzer_semantic_output_fields": [
+            "repository_additions",
+            "concepts",
+            "symbols",
+            "version_mentions",
+            "concept_scopes"
+          ],
+          "analyzer_raw_semantic_delta": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "2D DPM angular model",
+                "support_spans": [
+                  "2D DPM angular model"
+                ]
+              }
+            ],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "analyzer_accepted_semantic_delta": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "2D DPM angular model",
+                "support_spans": [
+                  "2D DPM angular model"
+                ]
+              }
+            ],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "analyzer_rejected_items": [],
+          "analyzer_item_support": {
+            "repository_additions": [],
+            "concepts": [
+              {
+                "value": "2D DPM angular model",
+                "support_spans": [
+                  "2D DPM angular model"
+                ]
+              }
+            ],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "unbound_version_tokens": [],
+          "analyzer_final": {
+            "intent": "api",
+            "target_repositories": [
+              "luminosityfit",
+              "pandaroot",
+              "restgas_determination"
+            ],
+            "concepts": [
+              "2D DPM angular model"
+            ],
+            "symbols": [],
+            "requested_versions": {},
+            "concept_scopes": {}
+          },
+          "matched_expansion_rules": []
+        }
+      },
+      "plan_signature": "{\"concept_scopes\": [], \"intent\": \"api\", \"normalized_concepts\": [\"2d dpm angular model\"], \"paper_page_hints\": [], \"required_source_types\": [\"code\"], \"symbols\": [], \"target_repositories\": [\"luminosityfit\", \"pandaroot\", \"restgas_determination\"]}",
+      "provider_accounting": {
+        "model_id": "gemini-3.8-flash",
+        "location": "global",
+        "temperature": 0.0,
+        "retries": 0,
+        "analyzer_logical_calls": 1,
+        "analyzer_provider_attempts": 1,
+        "token_usage": 1438,
+        "elapsed_seconds": 2.468
+      },
+      "matched_rule_identities": [],
+      "role": "DPM2D_SYMBOL_ADJACENT_NONMATCHING_CONTROL",
+      "plan_id": "prospective_g033",
+      "persistence_state": "RETRIEVAL_ELIGIBLE",
+      "started_at": "2026-09-06T22:46:28.616495+00:00",
+      "treatment_execution_projection_diff_receipts": {
+        "matched_retirement_rules": [],
+        "mask_entry_count": 0,
+        "removed_rule_origin_entries": [],
+        "surviving_independent_origin_entries": [],
+        "effective_removed_symbols": [],
+        "effective_removed_paper_page_hints": {},
+        "effective_removal_count": 0,
+        "canonical_plan_unchanged": true,
+        "applicability_summary": {
+          "active": 0,
+          "inactive": 0,
+          "ambiguous": 0,
+          "inactive_components": []
+        }
+      },
+      "persisted_at": "2026-09-06T22:46:28.616508+00:00",
+      "gated_at": "2026-09-06T22:46:28.621187+00:00"
+    },
+    {
+      "case_id": "g047",
+      "question": "What is the theoretical purpose of the DPM elastic-scattering model?",
+      "provider_model_contract": {
+        "model_id": "gemini-3.8-flash",
+        "temperature": 0.0,
+        "location": "global",
+        "retries": 0
+      },
+      "raw_analyzer_response": {
+        "intent": "algorithm_theory",
+        "secondary_intents": [],
+        "routing_method": "rule",
+        "target_repositories": [
+          "luminosityfit"
+        ],
+        "resolved_versions": {
+          "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+        },
+        "version_conflicts": [],
+        "concepts": [
+          "DPM elastic scattering model"
+        ],
+        "symbols": [],
+        "concept_scopes": {},
+        "source_budgets": {
+          "paper": 0.55,
+          "documentation": 0.1,
+          "code": 0.15,
+          "graph": 0.1,
+          "workflow": 0.1
+        },
+        "required_source_types": [
+          "paper"
+        ],
+        "resolved_aliases": {},
+        "premise_corrections": [],
+        "paper_page_hints": {
+          "pflueger_2017": [
+            51,
+            52,
+            54
+          ]
+        },
+        "analysis_diagnostics": {
+          "deterministic_parse": {
+            "fixed": {
+              "intent": "algorithm_theory",
+              "matched_expansion_rules": [
+                "dpm_model_theory"
+              ],
+              "paper_page_hints": {
+                "pflueger_2017": [
+                  51,
+                  52,
+                  54
+                ]
+              }
+            },
+            "fallback": {
+              "concept_scopes": {}
+            },
+            "known_partial": {
+              "target_repositories": [
+                "luminosityfit"
+              ],
+              "concepts": [
+                "DPM elastic scattering model"
+              ]
+            },
+            "semantic_output_fields": [
+              "repository_additions",
+              "concepts",
+              "symbols",
+              "version_mentions",
+              "concept_scopes"
+            ],
+            "unresolved_semantics": {
+              "repository_additions": "augment_known_partial",
+              "target_repositories": "augment_known_partial",
+              "concepts": "augment_known_partial",
+              "symbols": "resolve",
+              "version_mentions": "resolve",
+              "concept_scopes": "resolve"
+            },
+            "provenance": {
+              "intent": [
+                {
+                  "source": "deterministic_route",
+                  "rule": "algorithm_theory",
+                  "value": "algorithm_theory",
+                  "ownership": "fixed"
+                }
+              ],
+              "query_expansions": [
+                {
+                  "source": "reviewed_expansion",
+                  "rule": "dpm_model_theory",
+                  "ownership": "fixed_reviewed_rule"
+                }
+              ]
+            }
+          },
+          "analyzer_llm_called": true,
+          "analyzer_semantic_output_fields": [
+            "repository_additions",
+            "concepts",
+            "symbols",
+            "version_mentions",
+            "concept_scopes"
+          ],
+          "analyzer_raw_semantic_delta": {
+            "repository_additions": [],
+            "concepts": [],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "analyzer_accepted_semantic_delta": {
+            "repository_additions": [],
+            "concepts": [],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "analyzer_rejected_items": [],
+          "analyzer_item_support": {
+            "repository_additions": [],
+            "concepts": [],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "unbound_version_tokens": [],
+          "analyzer_final": {
+            "intent": "algorithm_theory",
+            "target_repositories": [
+              "luminosityfit"
+            ],
+            "concepts": [
+              "DPM elastic scattering model"
+            ],
+            "symbols": [],
+            "requested_versions": {},
+            "concept_scopes": {}
+          },
+          "matched_expansion_rules": [
+            "dpm_model_theory"
+          ]
+        }
+      },
+      "canonical_plan": {
+        "intent": "algorithm_theory",
+        "secondary_intents": [],
+        "routing_method": "rule",
+        "target_repositories": [
+          "luminosityfit"
+        ],
+        "resolved_versions": {
+          "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+        },
+        "version_conflicts": [],
+        "concepts": [
+          "DPM elastic scattering model"
+        ],
+        "symbols": [],
+        "concept_scopes": {},
+        "source_budgets": {
+          "paper": 0.55,
+          "documentation": 0.1,
+          "code": 0.15,
+          "graph": 0.1,
+          "workflow": 0.1
+        },
+        "required_source_types": [
+          "paper"
+        ],
+        "resolved_aliases": {},
+        "premise_corrections": [],
+        "paper_page_hints": {
+          "pflueger_2017": [
+            51,
+            52,
+            54
+          ]
+        },
+        "analysis_diagnostics": {
+          "deterministic_parse": {
+            "fixed": {
+              "intent": "algorithm_theory",
+              "matched_expansion_rules": [
+                "dpm_model_theory"
+              ],
+              "paper_page_hints": {
+                "pflueger_2017": [
+                  51,
+                  52,
+                  54
+                ]
+              }
+            },
+            "fallback": {
+              "concept_scopes": {}
+            },
+            "known_partial": {
+              "target_repositories": [
+                "luminosityfit"
+              ],
+              "concepts": [
+                "DPM elastic scattering model"
+              ]
+            },
+            "semantic_output_fields": [
+              "repository_additions",
+              "concepts",
+              "symbols",
+              "version_mentions",
+              "concept_scopes"
+            ],
+            "unresolved_semantics": {
+              "repository_additions": "augment_known_partial",
+              "target_repositories": "augment_known_partial",
+              "concepts": "augment_known_partial",
+              "symbols": "resolve",
+              "version_mentions": "resolve",
+              "concept_scopes": "resolve"
+            },
+            "provenance": {
+              "intent": [
+                {
+                  "source": "deterministic_route",
+                  "rule": "algorithm_theory",
+                  "value": "algorithm_theory",
+                  "ownership": "fixed"
+                }
+              ],
+              "query_expansions": [
+                {
+                  "source": "reviewed_expansion",
+                  "rule": "dpm_model_theory",
+                  "ownership": "fixed_reviewed_rule"
+                }
+              ]
+            }
+          },
+          "analyzer_llm_called": true,
+          "analyzer_semantic_output_fields": [
+            "repository_additions",
+            "concepts",
+            "symbols",
+            "version_mentions",
+            "concept_scopes"
+          ],
+          "analyzer_raw_semantic_delta": {
+            "repository_additions": [],
+            "concepts": [],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "analyzer_accepted_semantic_delta": {
+            "repository_additions": [],
+            "concepts": [],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "analyzer_rejected_items": [],
+          "analyzer_item_support": {
+            "repository_additions": [],
+            "concepts": [],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "unbound_version_tokens": [],
+          "analyzer_final": {
+            "intent": "algorithm_theory",
+            "target_repositories": [
+              "luminosityfit"
+            ],
+            "concepts": [
+              "DPM elastic scattering model"
+            ],
+            "symbols": [],
+            "requested_versions": {},
+            "concept_scopes": {}
+          },
+          "matched_expansion_rules": [
+            "dpm_model_theory"
+          ]
+        }
+      },
+      "canonical_serialization": "{\"analysis_diagnostics\": {\"analyzer_accepted_semantic_delta\": {\"concept_scopes\": [], \"concepts\": [], \"repository_additions\": [], \"symbols\": [], \"version_mentions\": []}, \"analyzer_final\": {\"concept_scopes\": {}, \"concepts\": [\"DPM elastic scattering model\"], \"intent\": \"algorithm_theory\", \"requested_versions\": {}, \"symbols\": [], \"target_repositories\": [\"luminosityfit\"]}, \"analyzer_item_support\": {\"concept_scopes\": [], \"concepts\": [], \"repository_additions\": [], \"symbols\": [], \"version_mentions\": []}, \"analyzer_llm_called\": true, \"analyzer_raw_semantic_delta\": {\"concept_scopes\": [], \"concepts\": [], \"repository_additions\": [], \"symbols\": [], \"version_mentions\": []}, \"analyzer_rejected_items\": [], \"analyzer_semantic_output_fields\": [\"repository_additions\", \"concepts\", \"symbols\", \"version_mentions\", \"concept_scopes\"], \"deterministic_parse\": {\"fallback\": {\"concept_scopes\": {}}, \"fixed\": {\"intent\": \"algorithm_theory\", \"matched_expansion_rules\": [\"dpm_model_theory\"], \"paper_page_hints\": {\"pflueger_2017\": [51, 52, 54]}}, \"known_partial\": {\"concepts\": [\"DPM elastic scattering model\"], \"target_repositories\": [\"luminosityfit\"]}, \"provenance\": {\"intent\": [{\"ownership\": \"fixed\", \"rule\": \"algorithm_theory\", \"source\": \"deterministic_route\", \"value\": \"algorithm_theory\"}], \"query_expansions\": [{\"ownership\": \"fixed_reviewed_rule\", \"rule\": \"dpm_model_theory\", \"source\": \"reviewed_expansion\"}]}, \"semantic_output_fields\": [\"repository_additions\", \"concepts\", \"symbols\", \"version_mentions\", \"concept_scopes\"], \"unresolved_semantics\": {\"concept_scopes\": \"resolve\", \"concepts\": \"augment_known_partial\", \"repository_additions\": \"augment_known_partial\", \"symbols\": \"resolve\", \"target_repositories\": \"augment_known_partial\", \"version_mentions\": \"resolve\"}}, \"matched_expansion_rules\": [\"dpm_model_theory\"], \"unbound_version_tokens\": []}, \"concept_scopes\": {}, \"concepts\": [\"DPM elastic scattering model\"], \"intent\": \"algorithm_theory\", \"paper_page_hints\": {\"pflueger_2017\": [51, 52, 54]}, \"premise_corrections\": [], \"required_source_types\": [\"paper\"], \"resolved_aliases\": {}, \"resolved_versions\": {\"luminosityfit\": \"ddd83dcd1a74093bf48ef259a2849a67f9413f32\"}, \"routing_method\": \"rule\", \"secondary_intents\": [], \"source_budgets\": {\"code\": 0.15, \"documentation\": 0.1, \"graph\": 0.1, \"paper\": 0.55, \"workflow\": 0.1}, \"symbols\": [], \"target_repositories\": [\"luminosityfit\"], \"version_conflicts\": []}",
+      "contribution_ledger": [
+        {
+          "contribution_id": "concept::DPM elastic scattering model",
+          "kind": "concept",
+          "value": "DPM elastic scattering model",
+          "source_id": null,
+          "pdf_page": null,
+          "provenance_origin_ids": [
+            "dpm_model_theory"
+          ],
+          "origin_types": {
+            "dpm_model_theory": "reviewed_expansion_rule"
+          },
+          "plan_present": true
+        },
+        {
+          "contribution_id": "repository::luminosityfit",
+          "kind": "repository",
+          "value": "luminosityfit",
+          "source_id": null,
+          "pdf_page": null,
+          "provenance_origin_ids": [
+            "dpm_model_theory"
+          ],
+          "origin_types": {
+            "dpm_model_theory": "reviewed_expansion_rule"
+          },
+          "plan_present": true
+        },
+        {
+          "contribution_id": "paper_page_hint::pflueger_2017#51",
+          "kind": "paper_page_hint",
+          "value": "pflueger_2017#51",
+          "source_id": "pflueger_2017",
+          "pdf_page": 51,
+          "provenance_origin_ids": [
+            "dpm_model_theory"
+          ],
+          "origin_types": {
+            "dpm_model_theory": "reviewed_expansion_rule"
+          },
+          "plan_present": true
+        },
+        {
+          "contribution_id": "paper_page_hint::pflueger_2017#52",
+          "kind": "paper_page_hint",
+          "value": "pflueger_2017#52",
+          "source_id": "pflueger_2017",
+          "pdf_page": 52,
+          "provenance_origin_ids": [
+            "dpm_model_theory"
+          ],
+          "origin_types": {
+            "dpm_model_theory": "reviewed_expansion_rule"
+          },
+          "plan_present": true
+        },
+        {
+          "contribution_id": "paper_page_hint::pflueger_2017#54",
+          "kind": "paper_page_hint",
+          "value": "pflueger_2017#54",
+          "source_id": "pflueger_2017",
+          "pdf_page": 54,
+          "provenance_origin_ids": [
+            "dpm_model_theory"
+          ],
+          "origin_types": {
+            "dpm_model_theory": "reviewed_expansion_rule"
+          },
+          "plan_present": true
+        }
+      ],
+      "provenance_origin_receipts": [
+        {
+          "contribution_id": "concept::DPM elastic scattering model",
+          "provenance_origin_ids": [
+            "dpm_model_theory"
+          ],
+          "origin_types": {
+            "dpm_model_theory": "reviewed_expansion_rule"
+          }
+        },
+        {
+          "contribution_id": "repository::luminosityfit",
+          "provenance_origin_ids": [
+            "dpm_model_theory"
+          ],
+          "origin_types": {
+            "dpm_model_theory": "reviewed_expansion_rule"
+          }
+        },
+        {
+          "contribution_id": "paper_page_hint::pflueger_2017#51",
+          "provenance_origin_ids": [
+            "dpm_model_theory"
+          ],
+          "origin_types": {
+            "dpm_model_theory": "reviewed_expansion_rule"
+          }
+        },
+        {
+          "contribution_id": "paper_page_hint::pflueger_2017#52",
+          "provenance_origin_ids": [
+            "dpm_model_theory"
+          ],
+          "origin_types": {
+            "dpm_model_theory": "reviewed_expansion_rule"
+          }
+        },
+        {
+          "contribution_id": "paper_page_hint::pflueger_2017#54",
+          "provenance_origin_ids": [
+            "dpm_model_theory"
+          ],
+          "origin_types": {
+            "dpm_model_theory": "reviewed_expansion_rule"
+          }
+        }
+      ],
+      "component_applicability_receipts": [],
+      "current_execution_projection": {
+        "intent": "algorithm_theory",
+        "secondary_intents": [],
+        "routing_method": "rule",
+        "target_repositories": [
+          "luminosityfit"
+        ],
+        "resolved_versions": {
+          "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+        },
+        "version_conflicts": [],
+        "concepts": [
+          "DPM elastic scattering model"
+        ],
+        "symbols": [],
+        "concept_scopes": {},
+        "source_budgets": {
+          "paper": 0.55,
+          "documentation": 0.1,
+          "code": 0.15,
+          "graph": 0.1,
+          "workflow": 0.1
+        },
+        "required_source_types": [
+          "paper"
+        ],
+        "resolved_aliases": {},
+        "premise_corrections": [],
+        "paper_page_hints": {
+          "pflueger_2017": [
+            51,
+            52,
+            54
+          ]
+        },
+        "analysis_diagnostics": {
+          "deterministic_parse": {
+            "fixed": {
+              "intent": "algorithm_theory",
+              "matched_expansion_rules": [
+                "dpm_model_theory"
+              ],
+              "paper_page_hints": {
+                "pflueger_2017": [
+                  51,
+                  52,
+                  54
+                ]
+              }
+            },
+            "fallback": {
+              "concept_scopes": {}
+            },
+            "known_partial": {
+              "target_repositories": [
+                "luminosityfit"
+              ],
+              "concepts": [
+                "DPM elastic scattering model"
+              ]
+            },
+            "semantic_output_fields": [
+              "repository_additions",
+              "concepts",
+              "symbols",
+              "version_mentions",
+              "concept_scopes"
+            ],
+            "unresolved_semantics": {
+              "repository_additions": "augment_known_partial",
+              "target_repositories": "augment_known_partial",
+              "concepts": "augment_known_partial",
+              "symbols": "resolve",
+              "version_mentions": "resolve",
+              "concept_scopes": "resolve"
+            },
+            "provenance": {
+              "intent": [
+                {
+                  "source": "deterministic_route",
+                  "rule": "algorithm_theory",
+                  "value": "algorithm_theory",
+                  "ownership": "fixed"
+                }
+              ],
+              "query_expansions": [
+                {
+                  "source": "reviewed_expansion",
+                  "rule": "dpm_model_theory",
+                  "ownership": "fixed_reviewed_rule"
+                }
+              ]
+            }
+          },
+          "analyzer_llm_called": true,
+          "analyzer_semantic_output_fields": [
+            "repository_additions",
+            "concepts",
+            "symbols",
+            "version_mentions",
+            "concept_scopes"
+          ],
+          "analyzer_raw_semantic_delta": {
+            "repository_additions": [],
+            "concepts": [],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "analyzer_accepted_semantic_delta": {
+            "repository_additions": [],
+            "concepts": [],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "analyzer_rejected_items": [],
+          "analyzer_item_support": {
+            "repository_additions": [],
+            "concepts": [],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "unbound_version_tokens": [],
+          "analyzer_final": {
+            "intent": "algorithm_theory",
+            "target_repositories": [
+              "luminosityfit"
+            ],
+            "concepts": [
+              "DPM elastic scattering model"
+            ],
+            "symbols": [],
+            "requested_versions": {},
+            "concept_scopes": {}
+          },
+          "matched_expansion_rules": [
+            "dpm_model_theory"
+          ]
+        }
+      },
+      "treatment_execution_projection": {
+        "intent": "algorithm_theory",
+        "secondary_intents": [],
+        "routing_method": "rule",
+        "target_repositories": [
+          "luminosityfit"
+        ],
+        "resolved_versions": {
+          "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+        },
+        "version_conflicts": [],
+        "concepts": [
+          "DPM elastic scattering model"
+        ],
+        "symbols": [],
+        "concept_scopes": {},
+        "source_budgets": {
+          "paper": 0.55,
+          "documentation": 0.1,
+          "code": 0.15,
+          "graph": 0.1,
+          "workflow": 0.1
+        },
+        "required_source_types": [
+          "paper"
+        ],
+        "resolved_aliases": {},
+        "premise_corrections": [],
+        "paper_page_hints": {
+          "pflueger_2017": [
+            51,
+            52,
+            54
+          ]
+        },
+        "analysis_diagnostics": {
+          "deterministic_parse": {
+            "fixed": {
+              "intent": "algorithm_theory",
+              "matched_expansion_rules": [
+                "dpm_model_theory"
+              ],
+              "paper_page_hints": {
+                "pflueger_2017": [
+                  51,
+                  52,
+                  54
+                ]
+              }
+            },
+            "fallback": {
+              "concept_scopes": {}
+            },
+            "known_partial": {
+              "target_repositories": [
+                "luminosityfit"
+              ],
+              "concepts": [
+                "DPM elastic scattering model"
+              ]
+            },
+            "semantic_output_fields": [
+              "repository_additions",
+              "concepts",
+              "symbols",
+              "version_mentions",
+              "concept_scopes"
+            ],
+            "unresolved_semantics": {
+              "repository_additions": "augment_known_partial",
+              "target_repositories": "augment_known_partial",
+              "concepts": "augment_known_partial",
+              "symbols": "resolve",
+              "version_mentions": "resolve",
+              "concept_scopes": "resolve"
+            },
+            "provenance": {
+              "intent": [
+                {
+                  "source": "deterministic_route",
+                  "rule": "algorithm_theory",
+                  "value": "algorithm_theory",
+                  "ownership": "fixed"
+                }
+              ],
+              "query_expansions": [
+                {
+                  "source": "reviewed_expansion",
+                  "rule": "dpm_model_theory",
+                  "ownership": "fixed_reviewed_rule"
+                }
+              ]
+            }
+          },
+          "analyzer_llm_called": true,
+          "analyzer_semantic_output_fields": [
+            "repository_additions",
+            "concepts",
+            "symbols",
+            "version_mentions",
+            "concept_scopes"
+          ],
+          "analyzer_raw_semantic_delta": {
+            "repository_additions": [],
+            "concepts": [],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "analyzer_accepted_semantic_delta": {
+            "repository_additions": [],
+            "concepts": [],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "analyzer_rejected_items": [],
+          "analyzer_item_support": {
+            "repository_additions": [],
+            "concepts": [],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": []
+          },
+          "unbound_version_tokens": [],
+          "analyzer_final": {
+            "intent": "algorithm_theory",
+            "target_repositories": [
+              "luminosityfit"
+            ],
+            "concepts": [
+              "DPM elastic scattering model"
+            ],
+            "symbols": [],
+            "requested_versions": {},
+            "concept_scopes": {}
+          },
+          "matched_expansion_rules": [
+            "dpm_model_theory"
+          ]
+        }
+      },
+      "plan_signature": "{\"concept_scopes\": [], \"intent\": \"algorithm_theory\", \"normalized_concepts\": [\"dpm elastic scattering model\"], \"paper_page_hints\": [[\"pflueger_2017\", [51, 52, 54]]], \"required_source_types\": [\"paper\"], \"symbols\": [], \"target_repositories\": [\"luminosityfit\"]}",
+      "provider_accounting": {
+        "model_id": "gemini-3.8-flash",
+        "location": "global",
+        "temperature": 0.0,
+        "retries": 0,
+        "analyzer_logical_calls": 1,
+        "analyzer_provider_attempts": 1,
+        "token_usage": 2226,
+        "elapsed_seconds": 5.96
+      },
+      "matched_rule_identities": [
+        "dpm_model_theory"
+      ],
+      "role": "PAGE_HINT_ADJACENT_NONMATCHING_CONTROL",
+      "plan_id": "prospective_g047",
+      "persistence_state": "RETRIEVAL_ELIGIBLE",
+      "started_at": "2026-09-06T22:46:34.585445+00:00",
+      "treatment_execution_projection_diff_receipts": {
+        "matched_retirement_rules": [],
+        "mask_entry_count": 0,
+        "removed_rule_origin_entries": [],
+        "surviving_independent_origin_entries": [],
+        "effective_removed_symbols": [],
+        "effective_removed_paper_page_hints": {},
+        "effective_removal_count": 0,
+        "canonical_plan_unchanged": true,
+        "applicability_summary": {
+          "active": 0,
+          "inactive": 0,
+          "ambiguous": 0,
+          "inactive_components": []
+        }
+      },
+      "persisted_at": "2026-09-06T22:46:34.585453+00:00",
+      "gated_at": "2026-09-06T22:46:34.591293+00:00"
+    }
+  ]
+}

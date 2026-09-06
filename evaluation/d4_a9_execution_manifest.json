@@ -217,9 +217,9 @@
     "Level 6: PARTIAL / MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD"
   ],
   "outcome_exposure_state": {
-    "D4_A9_OUTCOME_EXPOSURE": "NOT_STARTED",
+    "D4_A9_OUTCOME_EXPOSURE": "PLANS_FROZEN",
     "plan_acquisition_started": false,
-    "plans_persisted": false,
+    "plans_persisted": true,
     "plans_frozen": false,
     "retrieval_started": false,
     "raw_results_persisted": false,
@@ -228,8 +228,8 @@
     "scientific_verdict_computed": false
   },
   "accounting": {
-    "analyzer_calls": 0,
-    "analyzer_provider_attempts": 0,
+    "analyzer_calls": 4,
+    "analyzer_provider_attempts": 4,
     "embedding_calls": 0,
     "reranker_calls": 0,
     "qa_calls": 0,
@@ -237,7 +237,7 @@
     "judge_calls": 0,
     "scientific_evaluator_calls": 0,
     "retries": 0,
-    "token_usage": 0
+    "token_usage": 7199
   },
   "production_activation_authorized": false,
   "d4_a9_authorized": true
