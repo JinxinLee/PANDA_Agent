@@ -1,0 +1,88 @@
+{
+  "stage": "D4-A8-R2",
+  "status": "PASS",
+  "decision": "COMPONENT_SENSITIVE_EXECUTION_CONTRACT_SEALED",
+  "task_name": "Component-Sensitive Model-Factory Execution Contract Seal",
+  "evaluated_at": "2026-09-06T23:33:15Z",
+  "starting_head": "a357bfc4e0d846cefa295e98c5de0a8b2813cfa0",
+  "starting_parent_head": "ae2e744f6a05e711d407a02d0ae276e6e1422809",
+  "r1_target_mask_preserved": true,
+  "covered_symbol_mask": [
+    "model/PndLmdModelFactory.cxx"
+  ],
+  "uncovered_symbol_hold_mask": [
+    "model/PndLmdDPMAngModel1D.cxx",
+    "model/PndLmdDPMAngModel2D.cxx"
+  ],
+  "page_hint_hold_mask": {
+    "pflueger_2017": [
+      51,
+      57,
+      65
+    ]
+  },
+  "formal_cohort": [
+    "g031",
+    "g032",
+    "g033",
+    "g047"
+  ],
+  "formal_eligibility_complete": true,
+  "page_hint_gap_audit_complete": true,
+  "page_hint_gap_result": "NO_EXISTING_APPROVED_ENGLISH_CASE_FOUND",
+  "a5_provenance_compatibility_verified": true,
+  "a5_applicability_compatibility_verified": true,
+  "a5_projection_compatibility_verified": true,
+  "persistence_before_gate_contract_verified": true,
+  "plan_reusability_audit_complete": true,
+  "per_case_reuse_dispositions": {
+    "g031": "NO_CANDIDATE_FROZEN_PLAN",
+    "g032": "NO_CANDIDATE_FROZEN_PLAN",
+    "g033": "NO_CANDIDATE_FROZEN_PLAN",
+    "g047": "NO_CANDIDATE_FROZEN_PLAN"
+  },
+  "reusable_plan_case_ids": [],
+  "fresh_plan_case_ids": [
+    "g031",
+    "g032",
+    "g033",
+    "g047"
+  ],
+  "derived_provider_budget": {
+    "N_formal_cases": 4,
+    "R_reusable_plans": 0,
+    "F_fresh_plans": 4,
+    "analyzer_calls": 4,
+    "embedding_calls": 8,
+    "reranker_calls": 8,
+    "qa_calls": 0,
+    "verifier_calls": 0,
+    "judge_calls": 0,
+    "scientific_evaluator_calls": 0,
+    "retries": 0,
+    "total_logical_model_calls": 20
+  },
+  "fail_closed_evaluator_verified": true,
+  "zero_provider_accounting": {
+    "analyzer_calls": 0,
+    "embedding_calls": 0,
+    "reranker_calls": 0,
+    "qa_calls": 0,
+    "verifier_calls": 0,
+    "judge_calls": 0,
+    "scientific_evaluator_calls": 0,
+    "retries": 0,
+    "tokens_consumed": 0
+  },
+  "production_immutability": {
+    "src_tree_modified": false,
+    "configs_tree_modified": false
+  },
+  "historical_r1_artifact_seal": true,
+  "historical_a8_artifact_seal": true,
+  "batch1_active": true,
+  "batch2_validated_subset_active": true,
+  "full_batch2_production_activation_false": true,
+  "d4_a9_authorized": false,
+  "production_activation_authorized": false
+}

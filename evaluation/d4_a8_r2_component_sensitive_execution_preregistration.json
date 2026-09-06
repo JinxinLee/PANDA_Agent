@@ -1,0 +1,259 @@
+{
+  "lifecycle_stage": "D4-A8-R2",
+  "task_name": "Component-Sensitive Model-Factory Execution Contract Seal",
+  "created_at": "2026-09-06T23:33:00Z",
+  "starting_head": "a357bfc4e0d846cefa295e98c5de0a8b2813cfa0",
+  "starting_commit_message": "D4-A8-R1 repair component-sensitive revalidation contract",
+  "starting_parent_head": "ae2e744f6a05e711d407a02d0ae276e6e1422809",
+  "parent_commit_message": "D4-A8 preregister model-factory symbol retirement revalidation",
+  "historical_a8_status": "HISTORICAL / PARTIAL / TARGETED_REVALIDATION_COHORT_PREREGISTERED / THREE_SYMBOL_RETIREMENT_SENSITIVITY_INSUFFICIENT",
+  "historical_r1_status": "HISTORICAL / PARTIAL / COMPONENT_SENSITIVE_TARGET_MASK_CORRECT / PROVENANCE_REUSE_AND_EXECUTION_GATE_NOT_FULLY_SEALED",
+  "r1_target_mask_seal": {
+    "status": "SEALED_PRESERVED_EXACT",
+    "covered_symbol_mask": [
+      "model/PndLmdModelFactory.cxx"
+    ],
+    "uncovered_symbol_hold_mask": [
+      "model/PndLmdDPMAngModel1D.cxx",
+      "model/PndLmdDPMAngModel2D.cxx"
+    ],
+    "page_hint_hold_mask": {
+      "pflueger_2017": [
+        51,
+        57,
+        65
+      ]
+    }
+  },
+  "covered_symbol_mask": [
+    "model/PndLmdModelFactory.cxx"
+  ],
+  "uncovered_symbol_hold_mask": [
+    "model/PndLmdDPMAngModel1D.cxx",
+    "model/PndLmdDPMAngModel2D.cxx"
+  ],
+  "page_hint_hold_mask": {
+    "pflueger_2017": [
+      51,
+      57,
+      65
+    ]
+  },
+  "formal_eligibility_contract": {
+    "authority": "classify_formal_case_eligibility",
+    "gold_criteria": {
+      "language": "en",
+      "review_status": "approved",
+      "expected_status": "answered",
+      "allowed_splits": [
+        "dev",
+        "test"
+      ]
+    },
+    "novel_dev_status": "DIAGNOSTIC_ONLY"
+  },
+  "formal_case_order": [
+    "g031",
+    "g032",
+    "g033",
+    "g047"
+  ],
+  "direct_cases_by_component": {
+    "model/PndLmdModelFactory.cxx": [
+      "g031"
+    ]
+  },
+  "no_op_controls": [
+    "g032",
+    "g033",
+    "g047"
+  ],
+  "page_hint_gap_audit": {
+    "status": "OPEN",
+    "result": "NO_EXISTING_APPROVED_ENGLISH_CASE_FOUND",
+    "explanation": "No formally eligible English question matches model_factory_theory under an intent (algorithm_theory or algorithm_implementation) that allows paper page hints to survive production plan formation. Therefore pflueger_2017 [51, 57, 65] remain strictly on HOLD."
+  },
+  "a5_provenance_authority": {
+    "source_file": "evaluation/scripts/d4_a5_batch2_controlled_retirement_validation.py",
+    "compatibility_strategy": "DIRECT_PURE_HELPER_REUSE_AND_PROVEN_ADAPTER",
+    "a5_origin_types": {
+      "reviewed_expansion_rule": "reviewed_expansion_rule",
+      "accepted_analyzer_semantic_delta": "accepted_analyzer_semantic_output",
+      "runtime_deterministic_override": "production_deterministic_override"
+    }
+  },
+  "a5_origin_types": [
+    "reviewed_expansion_rule",
+    "accepted_analyzer_semantic_output",
+    "production_deterministic_override"
+  ],
+  "ledger_compatibility_contract": {
+    "schema": [
+      "contribution_id",
+      "kind",
+      "value",
+      "source_id",
+      "pdf_page",
+      "provenance_origin_ids",
+      "origin_types",
+      "plan_present"
+    ],
+    "preserves_non_rule_origins": true
+  },
+  "applicability_contract": {
+    "states": [
+      "ACTIVE_IDENTIFIABLE",
+      "INACTIVE_NOT_IDENTIFIABLE",
+      "AMBIGUOUS_INVALID",
+      "HOLD_NOT_APPLICABLE"
+    ],
+    "fail_closed_on_ambiguity": true
+  },
+  "projection_contract": {
+    "subtraction_rule": "subtract_batch2_provenance",
+    "selected_target_rule": "model_factory_theory",
+    "covered_mask": [
+      "model/PndLmdModelFactory.cxx"
+    ],
+    "uncovered_symbols_mutated": false,
+    "page_hints_mutated": false,
+    "controls_mutated": false
+  },
+  "persistence_before_gate_contract": {
+    "required_persisted_fields": [
+      "case_id",
+      "question",
+      "provider_model_contract",
+      "raw_analyzer_response",
+      "canonical_plan",
+      "canonical_serialization",
+      "contribution_ledger",
+      "provenance_origin_receipts",
+      "component_applicability_receipts",
+      "current_execution_projection",
+      "treatment_execution_projection",
+      "plan_signature",
+      "provider_accounting",
+      "matched_rule_identities"
+    ]
+  },
+  "plan_bearing_artifacts_audit": {
+    "discovery_method": "DETERMINISTIC_EVALUATION_JSON_SCAN",
+    "artifacts_scanned_count": 18,
+    "artifacts_scanned": [
+      "evaluation/d3_5_a6_phase1_pool_manifest.json",
+      "evaluation/d3_5_a6_phase1_replay_fixture.json",
+      "evaluation/d3_5_a6_phase2_raw_reranker_results.json",
+      "evaluation/d3_5_downstream_replay_fixture.json",
+      "evaluation/d4_a1_execution_manifest.json",
+      "evaluation/d4_a1_raw_three_arm_results.json",
+      "evaluation/d4_a2_execution_manifest.json",
+      "evaluation/d4_a2_raw_before_after_results.json",
+      "evaluation/d4_a2_v1_r1_historical_plan_pair.json",
+      "evaluation/d4_a2_v1_raw_analyzer_plan_samples.json",
+      "evaluation/d4_a2_v2_execution_manifest.json",
+      "evaluation/d4_a2_v2_r3_execution_manifest.json",
+      "evaluation/d4_a2_v2_raw_plans.json",
+      "evaluation/d4_a2_v2_raw_results.json",
+      "evaluation/d4_a5_continuation_execution_manifest.json",
+      "evaluation/d4_a5_continuation_raw_paired_retirement_results.json",
+      "evaluation/d4_a5_continuation_raw_prospective_plans.json",
+      "evaluation/d4_a5_execution_manifest.json"
+    ]
+  },
+  "plan_reusability_results": {
+    "g031": "NO_CANDIDATE_FROZEN_PLAN",
+    "g032": "NO_CANDIDATE_FROZEN_PLAN",
+    "g033": "NO_CANDIDATE_FROZEN_PLAN",
+    "g047": "NO_CANDIDATE_FROZEN_PLAN"
+  },
+  "plan_reusability_audit_complete": true,
+  "reusable_plan_case_ids": [],
+  "fresh_plan_case_ids": [
+    "g031",
+    "g032",
+    "g033",
+    "g047"
+  ],
+  "paired_cell_order": [
+    {
+      "case_id": "g031",
+      "arm": "A7_CURRENT",
+      "cell_id": "g031_A7_CURRENT"
+    },
+    {
+      "case_id": "g031",
+      "arm": "COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT",
+      "cell_id": "g031_COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT"
+    },
+    {
+      "case_id": "g032",
+      "arm": "A7_CURRENT",
+      "cell_id": "g032_A7_CURRENT"
+    },
+    {
+      "case_id": "g032",
+      "arm": "COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT",
+      "cell_id": "g032_COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT"
+    },
+    {
+      "case_id": "g033",
+      "arm": "A7_CURRENT",
+      "cell_id": "g033_A7_CURRENT"
+    },
+    {
+      "case_id": "g033",
+      "arm": "COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT",
+      "cell_id": "g033_COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT"
+    },
+    {
+      "case_id": "g047",
+      "arm": "A7_CURRENT",
+      "cell_id": "g047_A7_CURRENT"
+    },
+    {
+      "case_id": "g047",
+      "arm": "COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT",
+      "cell_id": "g047_COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT"
+    }
+  ],
+  "derived_provider_budget": {
+    "N_formal_cases": 4,
+    "R_reusable_plans": 0,
+    "F_fresh_plans": 4,
+    "analyzer_calls": 4,
+    "embedding_calls": 8,
+    "reranker_calls": 8,
+    "qa_calls": 0,
+    "verifier_calls": 0,
+    "judge_calls": 0,
+    "scientific_evaluator_calls": 0,
+    "retries": 0,
+    "total_logical_model_calls": 20
+  },
+  "future_model_contract": {
+    "model_id": "gemini-3.8-flash",
+    "temperature": 0.0,
+    "location": "global",
+    "retries": 0
+  },
+  "component_disposition_space": [
+    "RETIREMENT_VALIDATED_COMPONENT",
+    "DEPENDENCY_OBSERVED_RETAIN",
+    "INCONCLUSIVE_BASELINE_NOT_REPRODUCED",
+    "INCONCLUSIVE_APPLICABILITY_INCOMPLETE",
+    "HOLD_DIRECT_TREATMENT_COVERAGE_GAP",
+    "HOLD_OUTSIDE_TREATMENT_SCOPE",
+    "INVALID_PROTOCOL"
+  ],
+  "overall_outcome_precedence": [
+    "Level 1: INVALID / TARGETED_VALIDATION_PROTOCOL_FAILED",
+    "Level 2: INCONCLUSIVE / ALL_COVERED_COMPONENT_BASELINES_NOT_REPRODUCED",
+    "Level 3: PARTIAL / DEPENDENCY_OBSERVED_FOR_COVERED_COMPONENTS_RETAIN",
+    "Level 4: FAIL / TARGETED_CONTROL_OR_SAFETY_REGRESSION",
+    "Level 5: INCONCLUSIVE / COVERED_COMPONENT_APPLICABILITY_INCOMPLETE",
+    "Level 6: PARTIAL / MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD"
+  ],
+  "production_activation_authorized": false,
+  "d4_a9_authorized": false
+}
