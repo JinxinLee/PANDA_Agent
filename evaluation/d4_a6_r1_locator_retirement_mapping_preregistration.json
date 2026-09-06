@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0.0",
+  "lifecycle_stage": "D4-A6-R1",
+  "title": "D4-A6-R1 Validated-Subset Locator-Retirement Production Mapping Repair",
+  "starting_head": "b038a9e2ced817231b7a25f98dc106965f1a2688",
+  "decision": "READY_FOR_VALIDATED_SUBSET_LOCATOR_RETIREMENT",
+  "repaired_mapping": {
+    "intervention": "VALIDATED_SELECTED_RULE_LOCATOR_RETIREMENT_ONLY",
+    "structured_replacement": "REMAINS_FALSE_OR_DEFAULT_ABSENT",
+    "rules": {
+      "effective_acceptance_pipeline": {
+        "eligibility": "MIGRATION_ELIGIBLE",
+        "symbols_after": [],
+        "paper_page_hints_preserved": {
+          "li_2026": [
+            83,
+            86,
+            89
+          ]
+        },
+        "structured_replacement_after": false
+      },
+      "root_macro_usage": {
+        "eligibility": "MIGRATION_ELIGIBLE",
+        "symbols_after": [],
+        "structured_replacement_after": false
+      },
+      "model_factory_theory": {
+        "eligibility": "HOLD",
+        "mutation": "NONE",
+        "structured_replacement_after": false
+      }
+    }
+  },
+  "governance": {
+    "batch1_active": true,
+    "batch2_production_activation": false
+  },
+  "conditions_passed": {
+    "starting_boundary_exact": true,
+    "historical_defect_reproduced": true,
+    "d4_a5_scientific_verdict_preserved": true,
+    "exactly_two_rules_validated": true,
+    "model_factory_theory_held": true,
+    "full_config_drift_seal_passed": true,
+    "prospective_diff_strictly_symbol_lists": true,
+    "structured_replacement_remains_false_or_default": true,
+    "held_rule_untouched": true,
+    "independent_origins_preserved": true,
+    "production_and_scientific_artifacts_unmodified": true
+  }
+}

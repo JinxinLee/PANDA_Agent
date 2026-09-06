@@ -1,0 +1,162 @@
+{
+  "schema_version": "1.0.0",
+  "lifecycle_stage": "D4-A6-R1",
+  "stage": "D4-A6-R1 Validated-Subset Locator-Retirement Production Mapping Repair",
+  "starting_head": "b038a9e2ced817231b7a25f98dc106965f1a2688",
+  "starting_commit_message": "D4-A6 preregister validated-subset Batch2 runtime migration",
+  "starting_parent_head": "7b9d9d13903d874c000c0097304bfccc19dbbf65",
+  "closeout_parent_head": "c33f4cbe0bc2dfe6352d70396ebbdc203d3c624f",
+  "superseded_mapping_defect": {
+    "historical_stage": "D4-A6",
+    "defect_code": "PROSPECTIVE_MAPPING_ADDED_UNVALIDATED_STRUCTURED_REPLACEMENT_BEHAVIOR",
+    "explanation": "Historical D4-A6 proposed structured_replacement: true on eligible rules. Frozen D4-A4 explicitly preregistered structured_replacement_after_retirement = false, and frozen D4-A5 evaluated selected-rule locator-origin subtraction only."
+  },
+  "d4_a5_verdict": "INCONCLUSIVE / BATCH2_REFERENCE_BASELINE_NOT_REPRODUCED",
+  "d4_a5_verdict_level": 2,
+  "per_rule": {
+    "effective_acceptance_pipeline": {
+      "production_migration_eligibility": "MIGRATION_ELIGIBLE",
+      "scientific_disposition": "RETIREMENT_VALIDATED",
+      "migration_semantics": "VALIDATED_LOCATOR_RETIREMENT_ONLY",
+      "prospective_production_mutation": {
+        "action": "RETIRE_VALIDATED_RULE_LOCAL_LOCATORS_ONLY",
+        "symbols_after": [],
+        "structured_replacement_action": "PRESERVE_CURRENT_EFFECTIVE_FALSE_STATE"
+      },
+      "preserved_components": {
+        "paper_page_hints": {
+          "li_2026": [
+            83,
+            86,
+            89
+          ]
+        },
+        "triggers": [
+          "effective acceptance",
+          "restgas acceptance",
+          "acceptance calculation",
+          "\u6709\u6548\u63a5\u53d7\u5ea6",
+          "\u6709\u6548\u63a5\u53d7\u5ea6"
+        ],
+        "repositories": [
+          "restgas_determination",
+          "luminosityfit"
+        ],
+        "concepts": [
+          "profile-dependent effective acceptance pipeline"
+        ]
+      },
+      "independent_origin_nuance": "In D4-A5, active_component_count = 3, effective_removal_count = 1. macro/target/prod_sim_hvmaps.C and data/PndLmdAcceptance.cxx survive in treatment projections via reconstructed_profile_to_acceptance."
+    },
+    "root_macro_usage": {
+      "production_migration_eligibility": "MIGRATION_ELIGIBLE",
+      "scientific_disposition": "RETIREMENT_VALIDATED",
+      "migration_semantics": "VALIDATED_LOCATOR_RETIREMENT_ONLY",
+      "prospective_production_mutation": {
+        "action": "RETIRE_VALIDATED_RULE_LOCAL_LOCATORS_ONLY",
+        "symbols_after": [],
+        "structured_replacement_action": "PRESERVE_CURRENT_EFFECTIVE_FALSE_STATE"
+      },
+      "preserved_components": {
+        "triggers": [
+          "ROOT macro",
+          "macro execution",
+          "run a ROOT macro"
+        ],
+        "repositories": [
+          "pandaroot"
+        ],
+        "concepts": [
+          "PandaRoot macro invocation"
+        ]
+      }
+    },
+    "model_factory_theory": {
+      "production_migration_eligibility": "HOLD",
+      "scientific_disposition": "INCONCLUSIVE_BASELINE_NOT_REPRODUCED",
+      "migration_semantics": "HOLD_EXISTING_PRODUCTION_CONTRACT",
+      "prospective_production_mutation": {
+        "action": "NO_ACTION_HOLD_EXISTING_PRODUCTION_CONTRACT"
+      },
+      "hold_reason": "Active direct-rule evidence group n014.e1 failed to reproduce the reference baseline under the repaired disposition contract; n003.e2 is a separate nonmatching-control finding.",
+      "preserved_components": {
+        "symbols": [
+          "model/PndLmdDPMAngModel1D.cxx",
+          "model/PndLmdDPMAngModel2D.cxx",
+          "model/PndLmdModelFactory.cxx"
+        ],
+        "paper_page_hints": {
+          "pflueger_2017": [
+            51,
+            57,
+            65
+          ]
+        },
+        "triggers": [
+          "PndLmdModelFactory",
+          "DPM\u3001acceptance \u548c resolution",
+          "DPM acceptance resolution"
+        ],
+        "repositories": [
+          "luminosityfit"
+        ],
+        "concepts": [
+          "DPM model acceptance resolution composition"
+        ]
+      }
+    }
+  },
+  "production_mapping": {
+    "repaired_intervention": "VALIDATED_SELECTED_RULE_LOCATOR_RETIREMENT_ONLY",
+    "structured_replacement_behavior": "REMAINS_FALSE_OR_DEFAULT_ABSENT",
+    "independent_origin_preservation": {
+      "model_factory_in_held_rule": true,
+      "model_factory_in_independent_rule": true,
+      "prod_sim_hvmaps_in_independent_rule": true,
+      "lmd_acceptance_in_independent_rule": true,
+      "running_macros_in_independent_rule": true,
+      "master_run_sim_in_independent_rule": true
+    },
+    "prospective_changed_rule_ids": [
+      "effective_acceptance_pipeline",
+      "root_macro_usage"
+    ],
+    "prospective_changed_fields_by_rule": {
+      "effective_acceptance_pipeline": [
+        "symbols"
+      ],
+      "root_macro_usage": [
+        "symbols"
+      ]
+    },
+    "prospective_diff": "--- a/configs/query_expansions.yaml\n+++ b/configs/query_expansions.yaml\n@@ -129,7 +129,7 @@\n   - rule_id: effective_acceptance_pipeline\n     triggers: [\"effective acceptance\", \"restgas acceptance\", \"acceptance calculation\", \"\u6709\u6548\u63a5\u53d7\u5ea6\", \"\u6709\u6548\u63a5\u53d7\u5ea6\"]\n     repositories: [restgas_determination, luminosityfit]\n-    symbols: [macro/target/prod_sim_hvmaps.C, data/PndLmdAcceptance.cxx, model/PndLmdModelFactory.cxx]\n+    symbols: []\n     concepts: [profile-dependent effective acceptance pipeline]\n     paper_page_hints:\n       li_2026: [83, 86, 89]\n@@ -181,7 +181,7 @@\n   - rule_id: root_macro_usage\n     triggers: [\"ROOT macro\", \"macro execution\", \"run a ROOT macro\"]\n     repositories: [pandaroot]\n-    symbols: [Running/Macros.html, tools/MasterTasks/PndMasterRunSim.cxx]\n+    symbols: []\n     concepts: [PandaRoot macro invocation]\n \n   - rule_id: restgas_workflow_usage\n"
+  },
+  "governance": {
+    "basis": "D4-A5-R1 component-level applicability and explicit scientific validation contract",
+    "batch2_validated_subset": [
+      "effective_acceptance_pipeline",
+      "root_macro_usage"
+    ],
+    "batch2_held_rules": [
+      "model_factory_theory"
+    ],
+    "full_batch_activation": false,
+    "batch1_active": true,
+    "batch2_production_activation": false
+  },
+  "decision": "READY_FOR_VALIDATED_SUBSET_LOCATOR_RETIREMENT",
+  "decision_conditions": {
+    "starting_boundary_exact": true,
+    "historical_defect_reproduced": true,
+    "d4_a5_scientific_verdict_preserved": true,
+    "exactly_two_rules_validated": true,
+    "model_factory_theory_held": true,
+    "full_config_drift_seal_passed": true,
+    "prospective_diff_strictly_symbol_lists": true,
+    "structured_replacement_remains_false_or_default": true,
+    "held_rule_untouched": true,
+    "independent_origins_preserved": true,
+    "production_and_scientific_artifacts_unmodified": true
+  },
+  "next_authorized_stage": "D4-A7 (Validated-Subset Runtime Migration Activation, requires separate authorization)"
+}
