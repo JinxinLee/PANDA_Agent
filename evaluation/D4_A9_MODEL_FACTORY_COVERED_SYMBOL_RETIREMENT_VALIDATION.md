@@ -61,51 +61,86 @@ Excluded from formal cohort: `g064` (language `zh`, excluded from English benchm
 
 ---
 
-## 3. Provider Contract & Derived Budget
+## 3. Provider Contract & Execution Accounting
 
 - **Query Analyzer:** `gemini-3.8-flash`, `temperature = 0.0`, location `global`, `max_retries = 0`.
 - **Dense Embedding:** `gemini-embedding-2`.
 - **Reranker:** production reranker contract.
-- **Deterministic R2 Reusability Audit:** $N=4, R=0, F=4$.
-- **Exact Budget:**
-  - Analyzer calls: 4
+- **Evaluator:** 0 provider calls, 0 judge calls, 0 QA calls, 0 verifier calls.
+
+### Actual Provider Accounting
+- **Phase P (Plan Acquisition):**
+  - Analyzer logical calls: 4
+  - Analyzer provider attempts: 4
+  - Retries: 0
+  - Token usage: 7,199 tokens
+- **Phase R (Paired Retrieval):**
   - Embedding calls: 8
   - Reranker calls: 8
-  - QA calls: 0
-  - Verifier calls: 0
-  - Judge calls: 0
-  - Scientific Evaluator calls: 0
+  - Model calls: 16
   - Retries: 0
-  - Total logical model calls: 20
+  - Token usage: 131,070 tokens
+- **Evaluator:**
+  - Model calls: 0
+  - Tokens: 0
+- **Cumulative Lifecycle Total:**
+  - Total logical model calls: 20 (budget: 20)
+  - Total provider attempts: 20
+  - Retries: 0
+  - Total token usage: 138,269 tokens
 
 ---
 
-## 4. Execution Protocol & Precedence Hierarchy
+## 4. Execution Protocol & Checkpoints
 
 ### Persistence Before Gating
 State progression:
 $$\text{ACQUIRED} \longrightarrow \text{PERSISTED} \longrightarrow \text{GATED} \longrightarrow \text{RETRIEVAL\_ELIGIBLE}$$
-All 14 frozen fields are durably written to `evaluation/d4_a9_raw_prospective_plans.json` before any applicability gate can terminate execution.
+All 14 frozen fields were durably written to `evaluation/d4_a9_raw_prospective_plans.json` before any applicability gate could terminate execution.
 
 ### Shared Canonical Plan
-For each case, exactly one prospective Analyzer plan is acquired and shared across both future evaluation arms:
+For each case, exactly one prospective Analyzer plan was acquired and shared across both evaluation arms:
 1. `A7_CURRENT`
 2. `COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT`
 
 ### Paired Retrieval Schedule (8 Cells)
-1. `g031 / A7_CURRENT`
-2. `g031 / COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT`
-3. `g032 / A7_CURRENT`
-4. `g032 / COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT`
-5. `g033 / A7_CURRENT`
-6. `g033 / COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT`
-7. `g047 / A7_CURRENT`
-8. `g047 / COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT`
+1. `g031 / A7_CURRENT`: completed (12 evidence items, `g031.e1` reproduced)
+2. `g031 / COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT`: completed (12 evidence items, `g031.e1` reproduced)
+3. `g032 / A7_CURRENT`: completed (12 evidence items, `g032.e1` reproduced)
+4. `g032 / COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT`: completed (12 evidence items, `g032.e1` reproduced)
+5. `g033 / A7_CURRENT`: completed (12 evidence items, `g033.e1` reproduced)
+6. `g033 / COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT`: completed (12 evidence items, `g033.e1` reproduced)
+7. `g047 / A7_CURRENT`: completed (12 evidence items, `g047.e1` reproduced)
+8. `g047 / COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT`: completed (12 evidence items, `g047.e1` reproduced)
 
-### Outcome Precedence Hierarchy (Frozen 6 Levels)
-- **Level 1:** `INVALID / TARGETED_VALIDATION_PROTOCOL_FAILED`
-- **Level 2:** `INCONCLUSIVE / ALL_COVERED_COMPONENT_BASELINES_NOT_REPRODUCED`
-- **Level 3:** `PARTIAL / DEPENDENCY_OBSERVED_FOR_COVERED_COMPONENTS_RETAIN`
-- **Level 4:** `FAIL / TARGETED_CONTROL_OR_SAFETY_REGRESSION`
-- **Level 5:** `INCONCLUSIVE / COVERED_COMPONENT_APPLICABILITY_INCOMPLETE`
-- **Level 6:** `PARTIAL / MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD`
+---
+
+## 5. Evaluation Outcomes & Scientific Verdict
+
+### Evidence Retention Analysis
+1. **`g031` Direct Baseline & Treatment:**
+   - `g031 / A7_CURRENT` reproduced critical evidence `g031.e1` (`model/PndLmdModelFactory.cxx generateModel`).
+   - `g031 / COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT` reproduced critical evidence `g031.e1`.
+   - The selected origin `model_factory_theory` was successfully subtracted from `symbol::model/PndLmdModelFactory.cxx`.
+   - Independent origin `model_factory_acceptance_methods` survived, validly maintaining the literal symbol in the plan.
+2. **Control Cases (`g032`, `g033`, `g047`):**
+   - Critical evidence retention: 1.0/1.0 across all 3 controls in both current and treatment arms.
+   - Regressions: 0 critical regressions, 0 grounding regressions, 0 version violations.
+
+### Component Dispositions
+- `model/PndLmdModelFactory.cxx`: `RETIREMENT_VALIDATED_COMPONENT`
+- `model/PndLmdDPMAngModel1D.cxx`: `HOLD_DIRECT_TREATMENT_COVERAGE_GAP`
+- `model/PndLmdDPMAngModel2D.cxx`: `HOLD_DIRECT_TREATMENT_COVERAGE_GAP`
+- `pflueger_2017:[51, 57, 65]`: `HOLD_OUTSIDE_TREATMENT_SCOPE`
+
+### Overall Scientific Verdict
+```text
+Level 6: PARTIAL / MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD
+```
+
+### Consequences
+- The rule-local `model_factory_theory` origin for `model/PndLmdModelFactory.cxx` is scientifically validated for future retirement.
+- Both DPM symbols and Pflueger 2017 page hints remain strictly on `HOLD`.
+- Full `model_factory_theory` retirement is NOT validated.
+- Full Batch 2 production activation remains `false`.
+- Production activation authorized: `false`.

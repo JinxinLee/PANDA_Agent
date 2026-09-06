@@ -1,0 +1,42 @@
+{
+  "stage": "D4-A9",
+  "evaluated_at": "2026-09-06T22:48:44.487626+00:00",
+  "provider_calls": 0,
+  "evaluation_validity": {
+    "plan_count": 4,
+    "slot_count": 8,
+    "zero_evaluator_provider_calls": true
+  },
+  "verdict_level": 6,
+  "verdict": "PARTIAL / MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD",
+  "verdict_status": "PARTIAL",
+  "verdict_decision": "MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD",
+  "verdict_reason": "Covered component model/PndLmdModelFactory.cxx reproduced critical evidence g031.e1 in both current and treatment arms with model_factory_theory origin subtracted; zero control or safety regressions observed; uncovered DPM symbols and page hints remain strictly on HOLD.",
+  "component_dispositions": {
+    "model/PndLmdModelFactory.cxx": "RETIREMENT_VALIDATED_COMPONENT",
+    "model/PndLmdDPMAngModel1D.cxx": "HOLD_DIRECT_TREATMENT_COVERAGE_GAP",
+    "model/PndLmdDPMAngModel2D.cxx": "HOLD_DIRECT_TREATMENT_COVERAGE_GAP",
+    "pflueger_2017:[51, 57, 65]": "HOLD_OUTSIDE_TREATMENT_SCOPE"
+  },
+  "details": {
+    "g031_baseline_reproduced": true,
+    "g031_treatment_reproduced": true,
+    "control_details": {
+      "g032": {
+        "current_matched_groups": 1.0,
+        "treatment_matched_groups": 1.0,
+        "total_critical_groups": 1
+      },
+      "g033": {
+        "current_matched_groups": 1.0,
+        "treatment_matched_groups": 1.0,
+        "total_critical_groups": 1
+      },
+      "g047": {
+        "current_matched_groups": 1.0,
+        "treatment_matched_groups": 1.0,
+        "total_critical_groups": 1
+      }
+    }
+  }
+}

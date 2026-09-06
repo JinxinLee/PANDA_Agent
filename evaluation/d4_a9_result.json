@@ -1,0 +1,64 @@
+{
+  "stage": "D4-A9",
+  "status": "PARTIAL",
+  "decision": "MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD",
+  "task_name": "D4-A9 — Component-Sensitive Model-Factory Covered-Symbol Retirement Targeted Validation",
+  "evaluated_at": "2026-09-06T22:48:44.487626+00:00",
+  "starting_head": "06f853d9613c5170676d77261cc2d7b82d50958c",
+  "r2_authority_head": "06f853d9613c5170676d77261cc2d7b82d50958c",
+  "covered_symbol_mask": [
+    "model/PndLmdModelFactory.cxx"
+  ],
+  "uncovered_symbol_hold_mask": [
+    "model/PndLmdDPMAngModel1D.cxx",
+    "model/PndLmdDPMAngModel2D.cxx"
+  ],
+  "page_hint_hold_mask": {
+    "pflueger_2017": [
+      51,
+      57,
+      65
+    ]
+  },
+  "formal_cohort": [
+    "g031",
+    "g032",
+    "g033",
+    "g047"
+  ],
+  "reusable_plan_case_ids": [],
+  "fresh_plan_case_ids": [
+    "g031",
+    "g032",
+    "g033",
+    "g047"
+  ],
+  "provider_accounting": {
+    "analyzer_calls": 4,
+    "analyzer_provider_attempts": 4,
+    "embedding_calls": 8,
+    "reranker_calls": 8,
+    "qa_calls": 0,
+    "verifier_calls": 0,
+    "judge_calls": 0,
+    "scientific_evaluator_calls": 0,
+    "retries": 0,
+    "token_usage": 138269
+  },
+  "component_dispositions": {
+    "model/PndLmdModelFactory.cxx": "RETIREMENT_VALIDATED_COMPONENT",
+    "model/PndLmdDPMAngModel1D.cxx": "HOLD_DIRECT_TREATMENT_COVERAGE_GAP",
+    "model/PndLmdDPMAngModel2D.cxx": "HOLD_DIRECT_TREATMENT_COVERAGE_GAP",
+    "pflueger_2017:[51, 57, 65]": "HOLD_OUTSIDE_TREATMENT_SCOPE"
+  },
+  "verdict_level": 6,
+  "verdict": "PARTIAL / MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD",
+  "verdict_reason": "Covered component model/PndLmdModelFactory.cxx reproduced critical evidence g031.e1 in both current and treatment arms with model_factory_theory origin subtracted; zero control or safety regressions observed; uncovered DPM symbols and page hints remain strictly on HOLD.",
+  "production_immutability": true,
+  "historical_r2_artifacts_sealed": true,
+  "batch1_active": true,
+  "batch2_validated_subset_active": true,
+  "full_batch2_production_activation_false": true,
+  "d4_a9_authorized": true,
+  "production_activation_authorized": false
+}
