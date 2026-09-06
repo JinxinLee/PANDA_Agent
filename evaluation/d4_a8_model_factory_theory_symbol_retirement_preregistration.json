@@ -1,0 +1,160 @@
+{
+  "schema_version": "1.0.0",
+  "lifecycle_stage": "D4-A8",
+  "stage": "D4-A8 Model-Factory-Theory Symbol-Retirement Targeted Revalidation Preregistration",
+  "starting_head": "2da89b8223399ff184f4b2b3674f7c995ce8d390",
+  "starting_commit_message": "D4-A7 activate validated-subset locator retirement",
+  "activation_baseline": "D4-A7",
+  "target_rule": "model_factory_theory",
+  "target_symbol_mask": [
+    "model/PndLmdDPMAngModel1D.cxx",
+    "model/PndLmdDPMAngModel2D.cxx",
+    "model/PndLmdModelFactory.cxx"
+  ],
+  "held_page_hint_mask": {
+    "pflueger_2017": [
+      51,
+      57,
+      65
+    ]
+  },
+  "page_hint_status": "HOLD",
+  "formal_case_order": [
+    "g031",
+    "g032",
+    "g033",
+    "g047"
+  ],
+  "paired_cell_order": [
+    {
+      "case_id": "g031",
+      "arm": "A7_CURRENT"
+    },
+    {
+      "case_id": "g031",
+      "arm": "MODEL_FACTORY_SYMBOL_RETIREMENT"
+    },
+    {
+      "case_id": "g032",
+      "arm": "A7_CURRENT"
+    },
+    {
+      "case_id": "g032",
+      "arm": "MODEL_FACTORY_SYMBOL_RETIREMENT"
+    },
+    {
+      "case_id": "g033",
+      "arm": "A7_CURRENT"
+    },
+    {
+      "case_id": "g033",
+      "arm": "MODEL_FACTORY_SYMBOL_RETIREMENT"
+    },
+    {
+      "case_id": "g047",
+      "arm": "A7_CURRENT"
+    },
+    {
+      "case_id": "g047",
+      "arm": "MODEL_FACTORY_SYMBOL_RETIREMENT"
+    }
+  ],
+  "arm_definitions": {
+    "A7_CURRENT": {
+      "description": "Exact prospective canonical shared RetrievalPlan generated under current A7 production behavior with zero mutation."
+    },
+    "MODEL_FACTORY_SYMBOL_RETIREMENT": {
+      "description": "Uses the same frozen canonical plan. Removes only contribution-ledger origins where rule_id='model_factory_theory', component kind='symbol', component value in MODEL_FACTORY_THEORY_SYMBOL_MASK, and applicability='ACTIVE_IDENTIFIABLE'. Preserves independent origins, analyzer semantic contributions, other rules, paper_page_hints, concepts, repositories, source budgets, and routing state."
+    }
+  },
+  "shared_plan_protocol": {
+    "plans_per_case": 1,
+    "total_plans": 4,
+    "total_retrieval_cells": 8,
+    "downstream_analyzer_calls": 0,
+    "plan_redraw_allowed": false,
+    "post_outcome_selection_allowed": false
+  },
+  "applicability_contract": {
+    "target_symbols_required_state": "ACTIVE_IDENTIFIABLE",
+    "ambiguous_state_action": "PROTOCOL_INVALID_STOP",
+    "inactive_state_action": "INCOMPLETE_APPLICABILITY",
+    "full_testability_requirement": "All 3 target symbols must be ACTIVE_IDENTIFIABLE in g031."
+  },
+  "independent_origin_contract": {
+    "principle": "Retires selected-rule contribution origins only, never globally deduplicated string values.",
+    "model_factory_cxx_independent_origin": "model_factory_acceptance_methods",
+    "accounting_dimensions": [
+      "selected_rule_origins_removed",
+      "effective_values_removed",
+      "values_surviving_via_independent_origins"
+    ]
+  },
+  "page_hint_invariance_contract": {
+    "held_hints": {
+      "pflueger_2017": [
+        51,
+        57,
+        65
+      ]
+    },
+    "rule": "Paper page hints are invariant between arms and are never subtracted during this experiment."
+  },
+  "plan_reusability_audit": {
+    "audit_status": "COMPLETE",
+    "per_case": {
+      "g031": "NO_COMPATIBLE_FROZEN_PLAN",
+      "g032": "NO_COMPATIBLE_FROZEN_PLAN",
+      "g033": "NO_COMPATIBLE_FROZEN_PLAN",
+      "g047": "NO_COMPATIBLE_FROZEN_PLAN"
+    },
+    "fresh_prospective_plans_required": 4
+  },
+  "future_model_contract": {
+    "analyzer_model": "gemini-3.8-flash",
+    "embedding_model": "gemini-embedding-2",
+    "vertex_location": "global",
+    "temperature": 0.0,
+    "max_retries": 0
+  },
+  "future_provider_budget": {
+    "analyzer_calls": 4,
+    "embedding_calls": 8,
+    "reranker_calls": 8,
+    "qa_calls": 0,
+    "verifier_calls": 0,
+    "judge_calls": 0,
+    "scientific_evaluator_provider_calls": 0,
+    "total_logical_model_calls": 20,
+    "retries": 0
+  },
+  "baseline_gate": {
+    "direct_baseline_group": "g031.e1",
+    "requirement": "A7_CURRENT g031.e1 must be retained. If not reproduced, triggers Level 2 INCONCLUSIVE / TARGET_REFERENCE_BASELINE_NOT_REPRODUCED."
+  },
+  "control_gate": {
+    "control_cases": [
+      "g032",
+      "g033",
+      "g047"
+    ],
+    "requirement": "Selected-rule origins removed must be 0; treatment projection must equal baseline projection. Any treatment divergence triggers Level 4 FAIL / TARGETED_CONTROL_OR_SAFETY_REGRESSION."
+  },
+  "safety_gate": {
+    "requirement": "0 critical regressions, 0 grounding regressions, 0 version violations."
+  },
+  "outcome_precedence": {
+    "level_1": "INVALID / TARGETED_VALIDATION_PROTOCOL_FAILED",
+    "level_2": "INCONCLUSIVE / TARGET_REFERENCE_BASELINE_NOT_REPRODUCED",
+    "level_3": "DEPENDENCY_OBSERVED_RETAIN",
+    "level_4": "FAIL / TARGETED_CONTROL_OR_SAFETY_REGRESSION",
+    "level_5": "INCONCLUSIVE / SYMBOL_COMPONENT_APPLICABILITY_INCOMPLETE",
+    "level_6": "PARTIAL / MODEL_FACTORY_SYMBOL_RETIREMENT_VALIDATED_PAGE_HINTS_HOLD"
+  },
+  "successful_outcome": "PARTIAL / MODEL_FACTORY_SYMBOL_RETIREMENT_VALIDATED_PAGE_HINTS_HOLD",
+  "consequence_of_success": "Only the 3 symbol components of model_factory_theory are validated for potential future retirement. pflueger_2017 [51, 57, 65] remain HOLD. Full Batch 2 production activation remains false.",
+  "production_activation_authorized": false,
+  "d4_a9_authorized": false,
+  "status": "PASS",
+  "decision": "MODEL_FACTORY_SYMBOL_RETIREMENT_REVALIDATION_PREREGISTERED"
+}

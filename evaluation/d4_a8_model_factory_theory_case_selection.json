@@ -1,0 +1,203 @@
+{
+  "schema_version": "1.0.0",
+  "lifecycle_stage": "D4-A8",
+  "stage": "D4-A8 Model-Factory-Theory Symbol-Retirement Targeted Revalidation Preregistration",
+  "starting_head": "2da89b8223399ff184f4b2b3674f7c995ce8d390",
+  "starting_commit_message": "D4-A7 activate validated-subset locator retirement",
+  "current_production_state": {
+    "batch1_active": true,
+    "effective_acceptance_pipeline_symbols": [],
+    "root_macro_usage_symbols": [],
+    "model_factory_theory_symbols": [
+      "model/PndLmdDPMAngModel1D.cxx",
+      "model/PndLmdDPMAngModel2D.cxx",
+      "model/PndLmdModelFactory.cxx"
+    ],
+    "model_factory_theory_paper_page_hints": {
+      "pflueger_2017": [
+        51,
+        57,
+        65
+      ]
+    },
+    "model_factory_theory_structured_replacement": false,
+    "full_batch2_production_activation": false
+  },
+  "historical_problem": {
+    "historical_stage": "D4-A5",
+    "historical_verdict": "INCONCLUSIVE / BATCH2_REFERENCE_BASELINE_NOT_REPRODUCED",
+    "historical_A5_disposition": "INCONCLUSIVE_BASELINE_NOT_REPRODUCED",
+    "n014_e1": {
+      "role": "vendored_framework_status",
+      "evidence": "luminosityfit/model_framework/README.md",
+      "current_compat_status": "NOT_RETAINED",
+      "batch2_retirement_status": "NOT_RETAINED",
+      "pair_status": "PAIR_UNRESOLVED_BOTH"
+    },
+    "n014_e2": {
+      "role": "native_model_layer",
+      "evidence": "luminosityfit/model/PndLmdModelFactory.h",
+      "pair_status": "PAIR_PRESERVED"
+    },
+    "explanation": "n014 asks about model_framework directory vs native model/ directory. Its required evidence groups do not target the symbols or page hints contributed by model_factory_theory. In D4-A5, n014.e1 failed to reproduce the baseline in both arms (CURRENT_COMPAT and BATCH2_RETIREMENT). n014 is preserved as historical evidence of the baseline problem but is not reused as the sole direct targeted validation case."
+  },
+  "formal_cases": [
+    "g031",
+    "g032",
+    "g033",
+    "g047"
+  ],
+  "per_case": {
+    "g031": {
+      "split": "dev",
+      "language": "en",
+      "intent": "api",
+      "expected_status": "answered",
+      "review_status": "approved",
+      "query": "Where does PndLmdModelFactory assemble the fit model?",
+      "required_evidence_groups": [
+        {
+          "group_id": "g031.e1",
+          "role": "generate_model_implementation",
+          "critical": true,
+          "any_of": [
+            {
+              "source_id": "luminosityfit",
+              "path": "model/PndLmdModelFactory.cxx",
+              "symbol": "generateModel"
+            },
+            {
+              "source_id": "luminosityfit",
+              "path": "model/PndLmdModelFactory.cxx"
+            }
+          ]
+        }
+      ],
+      "expected_rule_match_role": "model_factory_theory matched",
+      "actual_matched_rules": [
+        "model_factory_theory",
+        "model_factory_acceptance_methods"
+      ],
+      "formal_role": "DIRECT_MODEL_FACTORY_TREATMENT_CASE"
+    },
+    "g032": {
+      "split": "dev",
+      "language": "en",
+      "intent": "api",
+      "expected_status": "answered",
+      "review_status": "approved",
+      "query": "Which source implements the 1D DPM angular model?",
+      "required_evidence_groups": [
+        {
+          "group_id": "g032.e1",
+          "role": "pnd_lmd_dpmang_model1_d_implementation",
+          "critical": true,
+          "any_of": [
+            {
+              "source_id": "luminosityfit",
+              "path": "model/PndLmdDPMAngModel1D.cxx"
+            }
+          ]
+        }
+      ],
+      "expected_rule_match_role": "model_factory_theory not matched",
+      "actual_matched_rules": [],
+      "formal_role": "DPM1D_SYMBOL_ADJACENT_NONMATCHING_CONTROL"
+    },
+    "g033": {
+      "split": "dev",
+      "language": "en",
+      "intent": "api",
+      "expected_status": "answered",
+      "review_status": "approved",
+      "query": "Which source implements the 2D DPM angular model?",
+      "required_evidence_groups": [
+        {
+          "group_id": "g033.e1",
+          "role": "pnd_lmd_dpmang_model2_d_implementation",
+          "critical": true,
+          "any_of": [
+            {
+              "source_id": "luminosityfit",
+              "path": "model/PndLmdDPMAngModel2D.cxx"
+            }
+          ]
+        }
+      ],
+      "expected_rule_match_role": "model_factory_theory not matched",
+      "actual_matched_rules": [],
+      "formal_role": "DPM2D_SYMBOL_ADJACENT_NONMATCHING_CONTROL"
+    },
+    "g047": {
+      "split": "dev",
+      "language": "en",
+      "intent": "algorithm_theory",
+      "expected_status": "answered",
+      "review_status": "approved",
+      "query": "What is the theoretical purpose of the DPM elastic-scattering model?",
+      "required_evidence_groups": [
+        {
+          "group_id": "g047.e1",
+          "role": "pflueger_2017_page_51_theory",
+          "critical": true,
+          "any_of": [
+            {
+              "source_id": "pflueger_2017",
+              "pdf_page": 51
+            },
+            {
+              "source_id": "pflueger_2017",
+              "pdf_page": 52
+            },
+            {
+              "source_id": "pflueger_2017",
+              "pdf_page": 54
+            },
+            {
+              "source_id": "li_2026",
+              "pdf_page": 66
+            },
+            {
+              "source_id": "li_2026",
+              "pdf_page": 67
+            }
+          ]
+        }
+      ],
+      "expected_rule_match_role": "model_factory_theory not matched",
+      "actual_matched_rules": [
+        "dpm_model_theory"
+      ],
+      "formal_role": "PAGE_HINT_ADJACENT_NONMATCHING_CONTROL"
+    }
+  },
+  "excluded_diagnostics": {
+    "g064": {
+      "split": "challenge",
+      "language": "zh",
+      "intent": "algorithm_implementation",
+      "query": "PndLmdModelFactory 如何结合 DPM、acceptance 和 resolution？",
+      "reason": "NON_ENGLISH_OUTSIDE_FORMAL_PRODUCT_GATE",
+      "classification": "EXISTING_NON_ENGLISH_DIAGNOSTIC_ASSET",
+      "required_evidence_groups": [
+        {
+          "group_id": "g064.e1",
+          "role": "pflueger_2017_page_51_theory"
+        },
+        {
+          "group_id": "g064.e2",
+          "role": "generate2_dmodel_implementation"
+        }
+      ]
+    }
+  },
+  "page_hint_gap_audit": {
+    "status": "OPEN",
+    "result": "NO_EXISTING_APPROVED_ENGLISH_CASE_FOUND",
+    "audited_sources": [
+      "evaluation/benchmarks/v2_6/gold_questions.yaml",
+      "evaluation/novel/v1/novel_dev.yaml"
+    ],
+    "explanation": "Static audit over exposed approved English benchmark/novel datasets confirmed that no existing approved English case matches model_factory_theory under an intent that permits paper page hints to survive normal production plan formation (algorithm_theory or algorithm_implementation). g031 matches with intent api (page hints dropped by intent policy); n014 matches with intent module_structure (page hints dropped); g064 matches with intent algorithm_implementation but is Chinese (language=zh). Therefore, the three page hints pflueger_2017 [51, 57, 65] remain OPEN and strictly HOLD."
+  }
+}
