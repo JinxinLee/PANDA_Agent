@@ -1,0 +1,68 @@
+{
+  "schema_version": "1.0.0",
+  "lifecycle_stage": "D4-A6",
+  "title": "D4-A6 Validated-Subset Batch2 Runtime Migration Preregistration",
+  "starting_head": "7b9d9d13903d874c000c0097304bfccc19dbbf65",
+  "decision": "READY_FOR_VALIDATED_SUBSET_MIGRATION",
+  "candidate_rules": {
+    "effective_acceptance_pipeline": {
+      "eligibility": "MIGRATION_ELIGIBLE",
+      "retired_symbols": [
+        "macro/target/prod_sim_hvmaps.C",
+        "data/PndLmdAcceptance.cxx",
+        "model/PndLmdModelFactory.cxx"
+      ],
+      "preserved_hints": {
+        "li_2026": [
+          83,
+          86,
+          89
+        ]
+      },
+      "structured_replacement": true
+    },
+    "root_macro_usage": {
+      "eligibility": "MIGRATION_ELIGIBLE",
+      "retired_symbols": [
+        "Running/Macros.html",
+        "tools/MasterTasks/PndMasterRunSim.cxx"
+      ],
+      "structured_replacement": true
+    },
+    "model_factory_theory": {
+      "eligibility": "HOLD",
+      "held_symbols": [
+        "model/PndLmdDPMAngModel1D.cxx",
+        "model/PndLmdDPMAngModel2D.cxx",
+        "model/PndLmdModelFactory.cxx"
+      ],
+      "held_hints": {
+        "pflueger_2017": [
+          51,
+          57,
+          65
+        ]
+      },
+      "structured_replacement": false,
+      "reason": "Active direct-rule evidence group n014.e1 baseline not reproduced; n003.e2 is separate nonmatching-control."
+    }
+  },
+  "prospective_diff_summary": {
+    "file": "configs/query_expansions.yaml",
+    "rules_modified": [
+      "effective_acceptance_pipeline",
+      "root_macro_usage"
+    ],
+    "rules_held": [
+      "model_factory_theory"
+    ],
+    "symbols_retired_count": 5,
+    "hints_retired_count": 0
+  },
+  "safety_invariants": {
+    "no_production_mutation_in_d4_a6": true,
+    "no_scientific_recomputation": true,
+    "batch1_remains_active": true,
+    "batch2_full_activation_remains_false": true
+  }
+}

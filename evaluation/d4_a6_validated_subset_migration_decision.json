@@ -1,0 +1,172 @@
+{
+  "schema_version": "1.0.0",
+  "lifecycle_stage": "D4-A6",
+  "stage": "D4-A6 Validated-Subset Batch2 Runtime Migration Preregistration",
+  "starting_head": "7b9d9d13903d874c000c0097304bfccc19dbbf65",
+  "starting_message": "D4-A5-R8 repair post-closeout verification contract",
+  "d4_a5_closeout_head": "c33f4cbe0bc2dfe6352d70396ebbdc203d3c624f",
+  "d4_a5_closeout_message": "D4-A5 continuation close controlled retirement validation",
+  "d4_a5_r8_identity": {
+    "message": "D4-A5-R8 repair post-closeout verification contract",
+    "head": "7b9d9d13903d874c000c0097304bfccc19dbbf65",
+    "semantics": "Non-self-referential forward verification repair commit"
+  },
+  "d4_a5_verdict": "INCONCLUSIVE / BATCH2_REFERENCE_BASELINE_NOT_REPRODUCED",
+  "d4_a5_verdict_level": 2,
+  "d4_a5_reference_baseline_valid": null,
+  "per_rule": {
+    "effective_acceptance_pipeline": {
+      "scientific_disposition": "RETIREMENT_VALIDATED",
+      "production_migration_eligibility": "MIGRATION_ELIGIBLE",
+      "frozen_retirement_components": {
+        "symbols": [
+          "macro/target/prod_sim_hvmaps.C",
+          "data/PndLmdAcceptance.cxx",
+          "model/PndLmdModelFactory.cxx"
+        ],
+        "paper_page_hints": {}
+      },
+      "preserved_components": {
+        "paper_page_hints": {
+          "li_2026": [
+            83,
+            86,
+            89
+          ]
+        },
+        "triggers": [
+          "effective acceptance",
+          "restgas acceptance",
+          "acceptance calculation",
+          "\u6709\u6548\u63a5\u53d7\u5ea6",
+          "\u6709\u6548\u63a5\u53d7\u5ea6"
+        ],
+        "repositories": [
+          "restgas_determination",
+          "luminosityfit"
+        ],
+        "concepts": [
+          "profile-dependent effective acceptance pipeline"
+        ]
+      },
+      "prospective_production_mutation": {
+        "action": "RETIRE_VALIDATED_LOCATORS_AND_ACTIVATE_STRUCTURED_REPLACEMENT",
+        "symbols": [],
+        "structured_replacement": true
+      }
+    },
+    "root_macro_usage": {
+      "scientific_disposition": "RETIREMENT_VALIDATED",
+      "production_migration_eligibility": "MIGRATION_ELIGIBLE",
+      "frozen_retirement_components": {
+        "symbols": [
+          "Running/Macros.html",
+          "tools/MasterTasks/PndMasterRunSim.cxx"
+        ],
+        "paper_page_hints": {}
+      },
+      "preserved_components": {
+        "paper_page_hints": {},
+        "triggers": [
+          "ROOT macro",
+          "macro execution",
+          "run a ROOT macro"
+        ],
+        "repositories": [
+          "pandaroot"
+        ],
+        "concepts": [
+          "PandaRoot macro invocation"
+        ]
+      },
+      "prospective_production_mutation": {
+        "action": "RETIRE_VALIDATED_LOCATORS_AND_ACTIVATE_STRUCTURED_REPLACEMENT",
+        "symbols": [],
+        "structured_replacement": true
+      }
+    },
+    "model_factory_theory": {
+      "scientific_disposition": "INCONCLUSIVE_BASELINE_NOT_REPRODUCED",
+      "production_migration_eligibility": "HOLD",
+      "frozen_components_held": {
+        "symbols": [
+          "model/PndLmdDPMAngModel1D.cxx",
+          "model/PndLmdDPMAngModel2D.cxx",
+          "model/PndLmdModelFactory.cxx"
+        ],
+        "paper_page_hints": {
+          "pflueger_2017": [
+            51,
+            57,
+            65
+          ]
+        }
+      },
+      "preserved_components": {
+        "symbols": [
+          "model/PndLmdDPMAngModel1D.cxx",
+          "model/PndLmdDPMAngModel2D.cxx",
+          "model/PndLmdModelFactory.cxx"
+        ],
+        "paper_page_hints": {
+          "pflueger_2017": [
+            51,
+            57,
+            65
+          ]
+        },
+        "triggers": [
+          "PndLmdModelFactory",
+          "DPM\u3001acceptance \u548c resolution",
+          "DPM acceptance resolution"
+        ],
+        "repositories": [
+          "luminosityfit"
+        ],
+        "concepts": [
+          "DPM model acceptance resolution composition"
+        ]
+      },
+      "hold_reason": "Active direct-rule evidence group n014.e1 failed to reproduce the CURRENT_COMPAT reference baseline under the repaired disposition contract; n003.e2 is a separate nonmatching-control finding.",
+      "prospective_production_mutation": {
+        "action": "NO_ACTION_HOLD_EXISTING_PRODUCTION_CONTRACT"
+      }
+    }
+  },
+  "production_mapping": {
+    "existing_generic_mechanism_reusable": true,
+    "structured_replacement_behavior": "d3_5_selectivity_v2 with bounded_rerank_admission k=3",
+    "selected_rule_origin_semantics": "Selected-rule fixed-locator suppression; independent origins preserved",
+    "independent_origin_preservation": {
+      "model/PndLmdModelFactory.cxx_in_held_rule": true,
+      "macro/target/prod_sim_hvmaps.C_in_independent_rule": true,
+      "data/PndLmdAcceptance.cxx_in_independent_rule": true
+    },
+    "all_or_nothing_coupling_present": false,
+    "prospective_diff": "--- a/configs/query_expansions.yaml\n+++ b/configs/query_expansions.yaml\n@@ -129,8 +129,9 @@\n   - rule_id: effective_acceptance_pipeline\n     triggers: [\"effective acceptance\", \"restgas acceptance\", \"acceptance calculation\", \"\u6709\u6548\u63a5\u53d7\u5ea6\", \"\u6709\u6548\u63a5\u53d7\u5ea6\"]\n     repositories: [restgas_determination, luminosityfit]\n-    symbols: [macro/target/prod_sim_hvmaps.C, data/PndLmdAcceptance.cxx, model/PndLmdModelFactory.cxx]\n+    symbols: []\n     concepts: [profile-dependent effective acceptance pipeline]\n+    structured_replacement: true\n     paper_page_hints:\n       li_2026: [83, 86, 89]\n \n@@ -181,8 +182,9 @@\n   - rule_id: root_macro_usage\n     triggers: [\"ROOT macro\", \"macro execution\", \"run a ROOT macro\"]\n     repositories: [pandaroot]\n-    symbols: [Running/Macros.html, tools/MasterTasks/PndMasterRunSim.cxx]\n+    symbols: []\n     concepts: [PandaRoot macro invocation]\n+    structured_replacement: true\n \n   - rule_id: restgas_workflow_usage\n     triggers: [\"two-pass reconstruction workflow\", \"restgas two-pass reconstruction\"]\n"
+  },
+  "governance": {
+    "basis": "D4-A5-R1 component-level applicability and explicit scientific validation contract",
+    "batch2_validated_subset": [
+      "effective_acceptance_pipeline",
+      "root_macro_usage"
+    ],
+    "batch2_held_rules": [
+      "model_factory_theory"
+    ],
+    "full_batch_activation": false,
+    "batch1_active": true,
+    "batch2_production_activation": false
+  },
+  "decision": "READY_FOR_VALIDATED_SUBSET_MIGRATION",
+  "decision_conditions": {
+    "exactly_two_rules_validated": true,
+    "model_factory_theory_held": true,
+    "no_production_config_drift": true,
+    "existing_generic_mechanism_reusable": true,
+    "rule_local_activation_representable": true,
+    "prospective_diff_strictly_limited_to_eligible": true,
+    "independent_origins_preserved": true
+  },
+  "next_authorized_stage": "D4-A7 (Validated-Subset Runtime Migration Activation, requires separate authorization)"
+}
