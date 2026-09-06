@@ -1,0 +1,244 @@
+{
+  "lifecycle_stage": "D4-A9",
+  "task_name": "D4-A9 — Component-Sensitive Model-Factory Covered-Symbol Retirement Targeted Validation",
+  "created_at": "2026-09-07T00:45:00Z",
+  "starting_head": "06f853d9613c5170676d77261cc2d7b82d50958c",
+  "starting_commit_message": "D4-A8-R2 seal component-sensitive execution contract",
+  "starting_parent_head": "a357bfc4e0d846cefa295e98c5de0a8b2813cfa0",
+  "r2_authority_head": "06f853d9613c5170676d77261cc2d7b82d50958c",
+  "r2_status": "PASS",
+  "r2_decision": "COMPONENT_SENSITIVE_EXECUTION_CONTRACT_SEALED",
+  "formal_case_order": [
+    "g031",
+    "g032",
+    "g033",
+    "g047"
+  ],
+  "case_roles": {
+    "g031": {
+      "role": "DIRECT_MODEL_FACTORY_TREATMENT_CASE",
+      "covered_component": "model/PndLmdModelFactory.cxx",
+      "critical_evidence_group": "g031.e1",
+      "expected_matching_target_rule": true
+    },
+    "g032": {
+      "role": "DPM1D_SYMBOL_ADJACENT_NONMATCHING_CONTROL",
+      "adjacent_component": "model/PndLmdDPMAngModel1D.cxx",
+      "critical_evidence_group": "g032.e1",
+      "expected_matching_target_rule": false
+    },
+    "g033": {
+      "role": "DPM2D_SYMBOL_ADJACENT_NONMATCHING_CONTROL",
+      "adjacent_component": "model/PndLmdDPMAngModel2D.cxx",
+      "critical_evidence_group": "g033.e1",
+      "expected_matching_target_rule": false
+    },
+    "g047": {
+      "role": "PAGE_HINT_ADJACENT_NONMATCHING_CONTROL",
+      "adjacent_page_hint": {
+        "source_id": "pflueger_2017",
+        "pdf_page": 51
+      },
+      "critical_evidence_group": "g047.e1",
+      "expected_matching_target_rule": false
+    }
+  },
+  "covered_symbol_mask": [
+    "model/PndLmdModelFactory.cxx"
+  ],
+  "uncovered_symbol_hold_mask": [
+    "model/PndLmdDPMAngModel1D.cxx",
+    "model/PndLmdDPMAngModel2D.cxx"
+  ],
+  "page_hint_hold_mask": {
+    "pflueger_2017": [
+      51,
+      57,
+      65
+    ]
+  },
+  "fresh_plan_case_ids": [
+    "g031",
+    "g032",
+    "g033",
+    "g047"
+  ],
+  "reusable_plan_case_ids": [],
+  "provider_model_contract": {
+    "model_id": "gemini-3.8-flash",
+    "temperature": 0.0,
+    "location": "global",
+    "retries": 0
+  },
+  "provider_budget": {
+    "N_formal_cases": 4,
+    "R_reusable_plans": 0,
+    "F_fresh_plans": 4,
+    "analyzer_calls": 4,
+    "embedding_calls": 8,
+    "reranker_calls": 8,
+    "qa_calls": 0,
+    "verifier_calls": 0,
+    "judge_calls": 0,
+    "scientific_evaluator_calls": 0,
+    "retries": 0,
+    "total_logical_model_calls": 20
+  },
+  "paired_cell_order": [
+    {
+      "cell_index": 1,
+      "cell_id": "g031_A7_CURRENT",
+      "case_id": "g031",
+      "arm": "A7_CURRENT",
+      "role": "DIRECT_MODEL_FACTORY_TREATMENT_CASE"
+    },
+    {
+      "cell_index": 2,
+      "cell_id": "g031_COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT",
+      "case_id": "g031",
+      "arm": "COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT",
+      "role": "DIRECT_MODEL_FACTORY_TREATMENT_CASE"
+    },
+    {
+      "cell_index": 3,
+      "cell_id": "g032_A7_CURRENT",
+      "case_id": "g032",
+      "arm": "A7_CURRENT",
+      "role": "DPM1D_SYMBOL_ADJACENT_NONMATCHING_CONTROL"
+    },
+    {
+      "cell_index": 4,
+      "cell_id": "g032_COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT",
+      "case_id": "g032",
+      "arm": "COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT",
+      "role": "DPM1D_SYMBOL_ADJACENT_NONMATCHING_CONTROL"
+    },
+    {
+      "cell_index": 5,
+      "cell_id": "g033_A7_CURRENT",
+      "case_id": "g033",
+      "arm": "A7_CURRENT",
+      "role": "DPM2D_SYMBOL_ADJACENT_NONMATCHING_CONTROL"
+    },
+    {
+      "cell_index": 6,
+      "cell_id": "g033_COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT",
+      "case_id": "g033",
+      "arm": "COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT",
+      "role": "DPM2D_SYMBOL_ADJACENT_NONMATCHING_CONTROL"
+    },
+    {
+      "cell_index": 7,
+      "cell_id": "g047_A7_CURRENT",
+      "case_id": "g047",
+      "arm": "A7_CURRENT",
+      "role": "PAGE_HINT_ADJACENT_NONMATCHING_CONTROL"
+    },
+    {
+      "cell_index": 8,
+      "cell_id": "g047_COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT",
+      "case_id": "g047",
+      "arm": "COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT",
+      "role": "PAGE_HINT_ADJACENT_NONMATCHING_CONTROL"
+    }
+  ],
+  "r2_a5_authority_path": "evaluation/scripts/d4_a5_batch2_controlled_retirement_validation.py",
+  "component_sensitive_mask": {
+    "model_factory_theory": {
+      "rule_id": "model_factory_theory",
+      "symbols_retired": [
+        "model/PndLmdModelFactory.cxx"
+      ],
+      "paper_page_hints_retired": {},
+      "symbols_preserved": [
+        "model/PndLmdDPMAngModel1D.cxx",
+        "model/PndLmdDPMAngModel2D.cxx"
+      ],
+      "paper_page_hints_preserved": {
+        "pflueger_2017": [
+          51,
+          57,
+          65
+        ]
+      },
+      "triggers_preserved": [
+        "PndLmdModelFactory",
+        "DPM、acceptance 和 resolution",
+        "DPM acceptance resolution"
+      ],
+      "repositories_preserved": [
+        "luminosityfit"
+      ],
+      "concepts_preserved": [
+        "DPM model acceptance resolution composition"
+      ],
+      "structured_replacement_after_retirement": false
+    }
+  },
+  "persistence_before_gate_contract": {
+    "states": [
+      "ACQUIRED",
+      "PERSISTED",
+      "GATED",
+      "RETRIEVAL_ELIGIBLE"
+    ],
+    "required_persisted_fields": [
+      "case_id",
+      "question",
+      "provider_model_contract",
+      "raw_analyzer_response",
+      "canonical_plan",
+      "canonical_serialization",
+      "contribution_ledger",
+      "provenance_origin_receipts",
+      "component_applicability_receipts",
+      "current_execution_projection",
+      "treatment_execution_projection",
+      "plan_signature",
+      "provider_accounting",
+      "matched_rule_identities"
+    ]
+  },
+  "component_disposition_space": [
+    "RETIREMENT_VALIDATED_COMPONENT",
+    "DEPENDENCY_OBSERVED_RETAIN",
+    "INCONCLUSIVE_BASELINE_NOT_REPRODUCED",
+    "INCONCLUSIVE_APPLICABILITY_INCOMPLETE",
+    "HOLD_DIRECT_TREATMENT_COVERAGE_GAP",
+    "HOLD_OUTSIDE_TREATMENT_SCOPE",
+    "INVALID_PROTOCOL"
+  ],
+  "overall_outcome_precedence": [
+    "Level 1: INVALID / TARGETED_VALIDATION_PROTOCOL_FAILED",
+    "Level 2: INCONCLUSIVE / ALL_COVERED_COMPONENT_BASELINES_NOT_REPRODUCED",
+    "Level 3: PARTIAL / DEPENDENCY_OBSERVED_FOR_COVERED_COMPONENTS_RETAIN",
+    "Level 4: FAIL / TARGETED_CONTROL_OR_SAFETY_REGRESSION",
+    "Level 5: INCONCLUSIVE / COVERED_COMPONENT_APPLICABILITY_INCOMPLETE",
+    "Level 6: PARTIAL / MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD"
+  ],
+  "outcome_exposure_state": {
+    "D4_A9_OUTCOME_EXPOSURE": "NOT_STARTED",
+    "plan_acquisition_started": false,
+    "plans_persisted": false,
+    "plans_frozen": false,
+    "retrieval_started": false,
+    "raw_results_persisted": false,
+    "raw_results_frozen": false,
+    "evaluator_executed": false,
+    "scientific_verdict_computed": false
+  },
+  "accounting": {
+    "analyzer_calls": 0,
+    "analyzer_provider_attempts": 0,
+    "embedding_calls": 0,
+    "reranker_calls": 0,
+    "qa_calls": 0,
+    "verifier_calls": 0,
+    "judge_calls": 0,
+    "scientific_evaluator_calls": 0,
+    "retries": 0,
+    "token_usage": 0
+  },
+  "production_activation_authorized": false,
+  "d4_a9_authorized": true
+}
