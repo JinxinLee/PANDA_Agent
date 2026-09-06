@@ -1,0 +1,150 @@
+{
+  "schema_version": "1.0.0",
+  "lifecycle_id": "D4-A5-R7",
+  "stage": "D4-A5-R7 — Minimal Post-Plan-Freeze Gate Repair",
+  "created_at": "2026-09-06T01:00:00.000000+00:00",
+  "repair_status": "COMPLETE / PASS",
+  "repair_commit": "D4-A5-R7 repair post-plan-freeze gate and continuation handoff",
+  "defect_repaired": {
+    "defect": "PLAN_FREEZE_GATE_FALSE_DRIFT_ON_R2_ARTIFACTS",
+    "pre_repair": "verify_continuation_plan_freeze_gate compared R1 and R2 repair artifacts against R1_HEAD; R2 artifacts were introduced at R2_HEAD (after R1), so git_blob(R1_HEAD, R2 artifact) = None != real blob -> false drift that blocked the real-repository plan-freeze verification after successful Phase P.",
+    "post_repair": "The gate uses per-stage owning-commit baselines via historical_baseline_drift (R6 semantics): A5 artifacts -> A5_STOP_HEAD, R1 -> R1_HEAD, R2 -> R2_HEAD, R3 -> R3_HEAD, R5 -> R5_HEAD. Missing-at-owning-stage and changed-after-owning-stage fail closed; later-stage absence at an earlier stage is not drift."
+  },
+  "frozen_plans_untouched": {
+    "plan_freeze_head": "12b5dc6908e7dc22f6fa88fa189252099df8f3c6",
+    "raw_plans_git_object_unchanged": true,
+    "plans_planned": 7,
+    "plans_completed": 7,
+    "all_provenance_gates_pass": true,
+    "phase_p_accounting_preserved": {
+      "analyzer_logical_calls": 7,
+      "analyzer_provider_attempts": 7,
+      "retries": 0,
+      "recorded_token_usage": 17043,
+      "embedding_calls": 0,
+      "reranker_calls": 0
+    }
+  },
+  "post_plan_lineage": {
+    "r6_plan_acquisition_implementation_freeze_head": "e91c2bb56763d56be9c7ca333aefb6c97016a150",
+    "plan_freeze_head": "12b5dc6908e7dc22f6fa88fa189252099df8f3c6",
+    "r7_post_plan_retrieval_implementation_freeze_head": "R7 commit identified only by Git (HEAD message exact, HEAD parent = plan-freeze); its stable SHA is persisted only at future Phase-R runtime",
+    "future_raw_freeze_parent": "R7",
+    "future_raw_freeze_allowlist": [
+      "evaluation/d4_a5_continuation_execution_manifest.json",
+      "evaluation/d4_a5_continuation_raw_paired_retirement_results.json"
+    ],
+    "raw_plan_r6_provenance_fields_untouched": true
+  },
+  "phase_r_preflight": {
+    "executable_at_r7_head": true,
+    "success_result": "READY_FOR_PHASE_R",
+    "checks": [
+      "R6 message/parent",
+      "plan-freeze message/parent = R6",
+      "R6->plan-freeze allowlist",
+      "R7 message/parent = plan-freeze",
+      "raw plans at R7 == raw plans at plan freeze",
+      "7 plans structurally complete",
+      "per-stage baselines",
+      "production immutability",
+      "exposure PLANS_FROZEN"
+    ]
+  },
+  "verification": {
+    "focused_tests_total": 140,
+    "compile_static_check": "passed",
+    "json_parse": "passed",
+    "git_diff_check": "passed",
+    "plan_freeze_to_r7_changed_file_audit": "exactly the 7-file R7 repair contract (continuation manifest excluded)",
+    "raw_plan_git_object_identity": "verified",
+    "historical_per_stage_identity": "verified",
+    "production_identity": "verified",
+    "real_post_commit_phase_r_preflight": "READY_FOR_PHASE_R",
+    "dirty_worktree_phase_r_seal_tests": "passed (raw plans / runner / staged)",
+    "dirty_worktree_raw_freeze_evaluator_seal_tests": "passed (raw results / runner / staged)",
+    "r7_manifest_diff_rejection_test": "passed"
+  },
+  "zero_exposure": {
+    "analyzer_calls": 0,
+    "plan_acquisitions": 0,
+    "plan_redraws": 0,
+    "embedding_calls": 0,
+    "reranker_calls": 0,
+    "retrieval_cells": 0,
+    "qa_verifier_judge_calls": 0,
+    "scientific_evaluator_executions": 0,
+    "db_qdrant_writes": 0,
+    "batch2_production_activations": 0
+  },
+  "lifecycle_state": {
+    "d4_a5_first_attempt": "HISTORICAL / INVALID / PRE-OUTCOME STOP / PRESERVED",
+    "d4_a5_r1": "HISTORICAL REPAIR RECORD PRESERVED",
+    "d4_a5_r2": "HISTORICAL REPAIR RECORD PRESERVED",
+    "d4_a5_r3": "HISTORICAL REPAIR RECORD PRESERVED",
+    "d4_a5_r5": "HISTORICAL REPAIR RECORD PRESERVED",
+    "d4_a5_r6": "HISTORICAL REPAIR RECORD PRESERVED",
+    "d4_a5_continuation_phase_p": "COMPLETE / 7_OF_7_PROSPECTIVE_SHARED_PLANS_FROZEN",
+    "plan_freeze": "12b5dc6908e7dc22f6fa88fa189252099df8f3c6 PRESERVED / IMMUTABLE",
+    "d4_a5_r7": "COMPLETE / PASS / POST_PLAN_FREEZE_GATE_AND_EXECUTION_INTEGRITY_SEALED",
+    "d4_a5_continuation": "IN_PROGRESS / READY_FOR_SEPARATELY_AUTHORIZED_PAIRED_RETRIEVAL",
+    "phase_r": "NOT_STARTED",
+    "batch1": "ACTIVE",
+    "batch2_production": false,
+    "d4_a6": "NOT_STARTED",
+    "no_r4_stage": true
+  },
+  "no_self_referential_sha": {
+    "rule": "R7 SHA depends on the commit tree; the commit tree must not depend on the R7 SHA",
+    "r7_manifest_modified": false,
+    "r7_preregistration_contains_own_sha": false,
+    "r7_result_contains_own_sha": false,
+    "r7_report_contains_own_sha": false,
+    "identity_established_only_by_git": "HEAD message + HEAD parent + HEAD SHA after commit exists",
+    "stable_r7_sha_consumed_at": "future Phase-R runtime (persisted into the manifest before the first retrieval call)"
+  },
+  "continuation_manifest_unchanged_in_r7": true,
+  "phase_r_runtime_provenance_handoff": {
+    "sequence": [
+      "current HEAD is already the committed R7",
+      "verify_phase_r_preflight PASS",
+      "stable R7 SHA is now known",
+      "retrieval_implementation_freeze_head and plan_freeze_head written into the runtime manifest",
+      "then Phase-R retrieval begins"
+    ],
+    "field_names": [
+      "retrieval_implementation_freeze_head",
+      "plan_freeze_head"
+    ],
+    "written_during_phase_r_runtime": true,
+    "test": "test_r7_runtime_provenance_handoff"
+  },
+  "future_raw_freeze_contract": {
+    "parent": "R7 retrieval implementation freeze",
+    "raw_plans_at_raw_freeze": "== raw plans at 12b5dc6",
+    "runner_test_at_raw_freeze": "== runner/test at R7",
+    "allowlist": [
+      "manifest",
+      "raw results"
+    ]
+  },
+  "focused_tests_total": 140,
+  "focused_tests_total_at_plan_freeze_baseline": 134,
+  "r7_tests_added": 6,
+  "execution_integrity_seals": {
+    "audit_finding": "R7 historical-gate refactoring removed the previous clean-worktree/index seal: commit-to-commit Git checks could pass while Phase R or the evaluator consumed dirty worktree files, because execute_phase_r reads the worktree raw plans and the evaluator reads the worktree raw results.",
+    "phase_r_preflight_seal": "verify_phase_r_preflight now begins with assert_clean_worktree (worktree AND index) before any other authorization check",
+    "raw_freeze_gate_seal": "verify_continuation_raw_freeze_gate now begins with assert_clean_worktree; verify_continuation_evaluator_preflight inherits the seal through its call chain",
+    "historical_plan_freeze_verifier_unchanged": "verify_continuation_plan_freeze_gate stays head-independent and does not require a clean worktree (it validates the immutable 12b5dc6 boundary from a later descendant HEAD)",
+    "r7_repair_allowlist": "7 files exactly; evaluation/d4_a5_continuation_execution_manifest.json removed from R7_ALLOWED_REPAIR_FILES so a manifest change in an R7 commit is rejected by the Phase-R preflight repair-diff seal",
+    "regression_tests_added": [
+      "test_r7_seal_01_phase_r_preflight_rejects_dirty_raw_plans",
+      "test_r7_seal_02_phase_r_preflight_rejects_dirty_runner",
+      "test_r7_seal_03_phase_r_preflight_rejects_staged_modification",
+      "test_r7_seal_04_phase_r_preflight_rejects_manifest_change_in_r7_commit",
+      "test_r7_seal_05_evaluator_preflight_rejects_dirty_raw_results",
+      "test_r7_seal_06_evaluator_preflight_rejects_dirty_runner",
+      "test_r7_seal_07_evaluator_preflight_rejects_staged_modification"
+    ]
+  }
+}

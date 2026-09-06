@@ -1,0 +1,131 @@
+{
+  "schema_version": "1.0.0",
+  "lifecycle_id": "D4-A5-R7",
+  "stage": "D4-A5-R7 — Minimal Post-Plan-Freeze Gate Repair",
+  "created_at": "2026-09-06T00:55:00.000000+00:00",
+  "starting_head": "12b5dc6908e7dc22f6fa88fa189252099df8f3c6",
+  "starting_commit_message": "D4-A5 continuation freeze prospective shared plans",
+  "starting_parent": "e91c2bb56763d56be9c7ca333aefb6c97016a150",
+  "task_classification": {
+    "type": "pre-exposure continuation-integrity repair (post-plan-freeze)",
+    "is_not": [
+      "a new scientific validation stage",
+      "D4-A6",
+      "a new Batch-2 selection",
+      "plan acquisition or redraw",
+      "paired retrieval",
+      "evaluator execution",
+      "scientific result computation",
+      "production activation"
+    ]
+  },
+  "audit_defect_repaired": {
+    "finding": "verify_continuation_plan_freeze_gate compared R1 artifacts AND R2 artifacts against R1_HEAD. R2 artifacts did not exist at R1_HEAD, so valid R2 artifacts at the plan-freeze boundary were falsely reported as drift, blocking the real-repository plan-freeze verification after successful Phase P.",
+    "mechanical_confirmation": {
+      "R2_artifacts_at_R1_HEAD": "absent (None)",
+      "R2_artifacts_at_R2_HEAD": "present (real blobs)",
+      "R2_artifacts_at_plan_freeze_HEAD": "identical to R2_HEAD blobs",
+      "conclusion": "None != valid R2 blob -> false historical drift"
+    },
+    "repair": "The plan-freeze gate now uses the R6 per-stage baseline semantics via historical_baseline_drift(): A5 artifacts -> A5_STOP_HEAD, R1 artifacts -> R1_HEAD, R2 artifacts -> R2_HEAD, R3 artifacts -> R3_HEAD, R5 artifacts -> R5_HEAD. Later-stage artifact absence at an earlier stage is not drift; missing-at-owning-stage and changed-after-owning-stage both fail closed. The defective R1_HEAD common-baseline block was removed."
+  },
+  "frozen_plan_preservation": {
+    "plan_freeze_head": "12b5dc6908e7dc22f6fa88fa189252099df8f3c6",
+    "raw_plans_artifact": "evaluation/d4_a5_continuation_raw_prospective_plans.json",
+    "raw_plans_blob_unchanged": true,
+    "plans_planned": 7,
+    "plans_recorded": 7,
+    "plans_completed": 7,
+    "plans_reused": 0,
+    "plans_provider_failed": 0,
+    "plans_gate_stopped": 0,
+    "retries": 0,
+    "analyzer_logical_calls": 7,
+    "analyzer_provider_attempts": 7,
+    "recorded_token_usage": 17043,
+    "embedding_calls": 0,
+    "reranker_calls": 0,
+    "all_records_completed_with_gates_pass": true,
+    "not_reacquired_redrawn_edited_or_replaced": true
+  },
+  "post_plan_lineage": {
+    "R6_plan_acquisition_implementation_freeze": "e91c2bb56763d56be9c7ca333aefb6c97016a150",
+    "plan_freeze_head": "12b5dc6908e7dc22f6fa88fa189252099df8f3c6",
+    "R7_post_plan_retrieval_implementation_freeze": "post-plan retrieval implementation freeze commit identified only by Git (HEAD message exact, HEAD parent = plan-freeze); its stable SHA is persisted only at future Phase-R runtime",
+    "future_raw_freeze": "direct child of R7 (not yet created)",
+    "chain": "R6 -> plan-freeze -> R7 -> future raw-freeze",
+    "historical_r5_head": "cc5db408929e82b29da76d92f1439ac53a4c8cf3",
+    "no_r4_stage": true,
+    "raw_plan_r6_provenance_fields_untouched": true
+  },
+  "phase_r_preflight_adaptation": {
+    "executable_at_r7_head": true,
+    "proves": [
+      "R6 message/parent correct",
+      "plan-freeze message correct; parent = R6",
+      "R6 -> plan-freeze diff limited to manifest + raw plans",
+      "R7 message correct; parent = frozen plan-freeze HEAD",
+      "worktree/index clean",
+      "raw plans at R7 == raw plans at plan freeze",
+      "7 frozen plans structurally complete",
+      "per-stage historical baselines pass",
+      "production/scientific authorities unchanged",
+      "Phase R not yet executed"
+    ],
+    "success_result": "READY_FOR_PHASE_R"
+  },
+  "downstream_lineage_plumbing": {
+    "raw_freeze_gate": "parent(raw-freeze) = R7; raw plans at raw-freeze == raw plans at 12b5dc6; strict R7 -> raw-freeze allowlist {manifest, raw results}",
+    "evaluator_preflight": "proves R6 -> plan-freeze -> R7 -> raw-freeze with per-stage baselines, runner/test blob seal to R7, production immutability, and manifest cross-check",
+    "minimal_scope": "no schema migration; no rename of historical/raw-plan fields"
+  },
+  "scientific_non_scope": {
+    "analyzer_logic": "unchanged",
+    "query_expansion_behavior": "unchanged",
+    "frozen_batch2_masks": "unchanged including pflueger_2017: [51, 57, 65]",
+    "case_cohort_order": "unchanged",
+    "applicability_semantics": "unchanged",
+    "projections": "unchanged",
+    "retrieval_selectivity_reranker_evidence_selector": "unchanged",
+    "metrics_thresholds_dispositions_verdict": "unchanged",
+    "accounting_and_retry": "unchanged",
+    "n014_pflueger_special_case": "none; exposed Phase-P applicability outcomes do not influence implementation"
+  },
+  "historical_records_immutable": [
+    "evaluation/d4_a5_execution_manifest.json",
+    "evaluation/d4_a5_result.json",
+    "evaluation/d4_a4_batch2_retirement_preregistration.json",
+    "evaluation/d4_a4_batch2_low_risk_retirement_selection.json",
+    "evaluation/d4_a5_r1_retirement_applicability_preregistration.json",
+    "evaluation/d4_a5_r1_result.json",
+    "evaluation/D4_A5_R1_RETIREMENT_APPLICABILITY_AND_PROVENANCE_CONTRACT_REPAIR.md",
+    "evaluation/d4_a5_r2_continuation_contract_preregistration.json",
+    "evaluation/d4_a5_r2_result.json",
+    "evaluation/D4_A5_R2_CONTINUATION_FREEZE_AND_ACCOUNTING_CONTRACT_REPAIR.md",
+    "evaluation/d4_a5_r3_continuation_lineage_accounting_preregistration.json",
+    "evaluation/d4_a5_r3_result.json",
+    "evaluation/D4_A5_R3_CONTINUATION_LINEAGE_AND_END_TO_END_ACCOUNTING_REPAIR.md",
+    "evaluation/d4_a5_r5_raw_freeze_evaluator_integrity_preregistration.json",
+    "evaluation/d4_a5_r5_result.json",
+    "evaluation/D4_A5_R5_RAW_FREEZE_EVALUATOR_INTEGRITY_SEAL.md",
+    "evaluation/d4_a5_r6_historical_baseline_evaluator_lineage_preregistration.json",
+    "evaluation/d4_a5_r6_result.json",
+    "evaluation/D4_A5_R6_HISTORICAL_BASELINE_AND_EVALUATOR_LINEAGE_PREFLIGHT_REPAIR.md"
+  ],
+  "execution_integrity_seal_amend": {
+    "audit_finding": "R7 historical-gate refactoring removed the previous clean-worktree/index seal: commit-to-commit Git checks could pass while Phase R or the evaluator consumed dirty worktree files (execute_phase_r reads the worktree raw plans; the evaluator reads the worktree raw results).",
+    "repair_A": "verify_phase_r_preflight begins with assert_clean_worktree (worktree AND index) before any other authorization check; READY_FOR_PHASE_R is impossible unless HEAD is a valid R7, the worktree/index are clean, the raw-plans committed blob is unchanged, the historical plan boundary is valid, and the production/scientific authorities are unchanged.",
+    "repair_B": "verify_continuation_raw_freeze_gate begins with assert_clean_worktree; verify_continuation_evaluator_preflight inherits the seal through its call chain (no duplicated checks).",
+    "repair_C": "R7_ALLOWED_REPAIR_FILES is exactly the 7-file R7 repair contract; evaluation/d4_a5_continuation_execution_manifest.json is excluded, so an R7 commit that modifies the continuation manifest is rejected by the Phase-R preflight repair-diff seal.",
+    "historical_plan_freeze_verifier_unchanged": "verify_continuation_plan_freeze_gate stays head-independent (validates the immutable 12b5dc6 boundary from a later descendant HEAD) and gains no clean-worktree requirement.",
+    "regression_tests": "7 added: dirty raw plans / dirty runner / staged modification at the Phase-R boundary; dirty raw results / dirty runner / staged modification at the raw-freeze-evaluator boundary; R7 manifest-diff rejection.",
+    "zero_exposure": "no analyzer, retrieval, embedding, reranker, QA, verifier, judge, evaluator execution, DB/Qdrant write, or Batch2 production activation"
+  },
+  "zero_exposure_boundary": {
+    "analyzer_calls": 0, "plan_acquisitions": 0, "plan_redraws": 0,
+    "embedding_calls": 0, "reranker_calls": 0, "retrieval_cells": 0,
+    "qa_calls": 0, "verifier_calls": 0, "judge_calls": 0,
+    "scientific_evaluator_executions": 0, "db_writes": 0, "qdrant_writes": 0,
+    "batch2_production_activations": 0
+  }
+}

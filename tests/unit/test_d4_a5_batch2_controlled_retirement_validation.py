@@ -874,7 +874,7 @@ def _write_synthetic_project(tmp_path: Path) -> Path:
     manifest["checkpoint"] = "D4-A5-CONTINUATION"
     manifest["outcome_exposure_state"] = {
         "D4_A5_OUTCOME_EXPOSURE": "RAW_RETRIEVAL_COMPLETE",
-        "continuation_implementation_freeze_head": "0" * 40,
+        "continuation_retrieval_implementation_freeze_head": "0" * 40,
         "plan_freeze_head": "1" * 40,
         "plans_completed": 7,
         "formal_cells_completed": 14,
@@ -951,8 +951,9 @@ def test_37_evaluator_runs_with_zero_provider_calls(tmp_path, monkeypatch):
         a5,
         "verify_continuation_evaluator_preflight",
         lambda *_a, **_k: {
-            "continuation_implementation_freeze_head": "0" * 40,
+            "continuation_plan_acquisition_implementation_freeze_head": "r6head",
             "continuation_plan_freeze_head": "1" * 40,
+            "continuation_retrieval_implementation_freeze_head": "0" * 40,
             "continuation_raw_freeze_head": "synthetic",
             "evaluator_integrity_sealed": True,
         },
@@ -1030,8 +1031,9 @@ def test_37b_evaluator_counts_control_divergence_as_safety_finding(tmp_path, mon
         a5,
         "verify_continuation_evaluator_preflight",
         lambda *_a, **_k: {
-            "continuation_implementation_freeze_head": "0" * 40,
+            "continuation_plan_acquisition_implementation_freeze_head": "r6head",
             "continuation_plan_freeze_head": "1" * 40,
+            "continuation_retrieval_implementation_freeze_head": "0" * 40,
             "continuation_raw_freeze_head": "synthetic",
             "evaluator_integrity_sealed": True,
         },
@@ -1953,7 +1955,7 @@ def _temp_repo_commit(tmp_path: Path, files: dict[str, str], message: str) -> st
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text(content, encoding="utf-8")
     _git(tmp_path, "add", "-A")
-    _git(tmp_path, "commit", "-q", "-m", message)
+    _git(tmp_path, "commit", "-q", "--allow-empty", "-m", message)
     return _git(tmp_path, "rev-parse", "HEAD")
 
 
@@ -2105,10 +2107,16 @@ def test_r2_01_real_manifest_committed_in_r2_freeze_commit():
     last_touch = _git(
         _REPO_ROOT, "log", "-1", "--format=%s", "--", a5.CONTINUATION_MANIFEST_PATH
     )
-    assert last_touch == a5.R6_COMMIT_MESSAGE
+    # The manifest is UNCHANGED in R7: last touch is the plan-freeze commit and
+    # the blob is identical to the 12b5dc6 version.
+    assert last_touch in (a5.CONTINUATION_PLAN_FREEZE_COMMIT_MESSAGE, a5.R7_COMMIT_MESSAGE)
+    assert a5.git_blob(_REPO_ROOT, a5.CONTINUATION_MANIFEST_PATH, a5.R7_COMMIT_MESSAGE) == a5.git_blob(
+        _REPO_ROOT, a5.CONTINUATION_MANIFEST_PATH, a5.CONTINUATION_PLAN_FREEZE_COMMIT_MESSAGE
+    )
     manifest = json.loads(
         (_REPO_ROOT / a5.CONTINUATION_MANIFEST_PATH).read_text(encoding="utf-8")
     )
+    # R6-era vocabulary preserved verbatim (historical plan-acquisition contract).
     assert manifest["implementation_freeze_contract"]["expected_commit_message"] == (
         a5.R6_COMMIT_MESSAGE
     )
@@ -2120,17 +2128,14 @@ def test_r2_01_real_manifest_committed_in_r2_freeze_commit():
     assert manifest["continuation_lineage"][
         "continuation_implementation_freeze_message"
     ] == a5.R6_COMMIT_MESSAGE
+    assert manifest["continuation_lineage"][
+        "continuation_plan_freeze_message"
+    ] == a5.CONTINUATION_PLAN_FREEZE_COMMIT_MESSAGE
+    assert manifest["continuation_lineage"][
+        "continuation_raw_freeze_message"
+    ] == a5.CONTINUATION_RAW_FREEZE_COMMIT_MESSAGE
     assert manifest["raw_freeze_gate_contract"]["strict_diff_allowlist"] == list(
         a5.RAW_FREEZE_DIFF_ALLOWLIST
-    )
-    assert manifest["plan_freeze_gate_contract"]["expected_commit_message"] == (
-        a5.CONTINUATION_PLAN_FREEZE_COMMIT_MESSAGE
-    )
-    assert manifest["raw_freeze_gate_contract"]["expected_commit_message"] == (
-        a5.CONTINUATION_RAW_FREEZE_COMMIT_MESSAGE
-    )
-    assert manifest["closeout_gate_contract"]["expected_commit_message"] == (
-        a5.CONTINUATION_CLOSEOUT_COMMIT_MESSAGE
     )
     # The old first-attempt messages appear only as labeled historical references.
     assert manifest["historical_first_attempt_freeze_messages"]["status"].startswith(
@@ -2485,37 +2490,66 @@ def _synthetic_completed_plans_artifact() -> dict[str, Any]:
     }
 
 
-def test_r3_09_10_synthetic_handoff_plan_freeze_then_phase_r_preflight(
-    tmp_path, monkeypatch
-):
-    """Real-lineage synthetic flow: clean R3 freeze -> completed Phase-P state ->
-    continuation plan-freeze commit -> plan-freeze gate -> Phase-R preflight.
-    Phase R consumes continuation_implementation_freeze_head; no stale
-    r1_freeze_head is required. No provider or retrieval call occurs."""
+def _synthetic_plan_freeze_repo(tmp_path: Path, monkeypatch) -> dict[str, str]:
+    """Synthetic lineage mirroring the real topology through the plan-freeze
+    boundary: per-stage historical artifact commits -> R6 -> plan freeze
+    (direct child of R6, manifest -> PLANS_FROZEN, 7 provenance-gated plans).
+    The worktree is clean on return."""
     _git(tmp_path, "init", "-q")
     _git(tmp_path, "config", "user.email", "test@example.com")
     _git(tmp_path, "config", "user.name", "test")
-    r1_sha = _temp_repo_commit(tmp_path, {"base.txt": "base"}, "base commit")
+    # A5 stop boundary commit with the historical A5 artifacts.
+    a5_stop_sha = _temp_repo_commit(
+        tmp_path,
+        {
+            "base.txt": "base",
+            a5.HISTORICAL_MANIFEST_PATH: "{}",
+            a5.RESULT_PATH: '{"verdict": "historical"}',
+            a5.PREREGISTRATION_PATH: "{}",
+            a5.SELECTION_PATH: "{}",
+        },
+        a5.A5_STOP_COMMIT_MESSAGE,
+    )
+    monkeypatch.setattr(a5, "A5_STOP_HEAD", a5_stop_sha)
+    monkeypatch.setattr(a5, "STARTING_HEAD", a5_stop_sha)
+    r1_sha = _temp_repo_commit(
+        tmp_path,
+        {a5.R1_PREREGISTRATION_PATH: "{}", a5.R1_RESULT_PATH: "{}", a5.R1_REPORT_PATH: "#"},
+        a5.R1_COMMIT_MESSAGE,
+    )
     monkeypatch.setattr(a5, "R1_HEAD", r1_sha)
-    monkeypatch.setattr(a5, "A5_STOP_HEAD", r1_sha)
-    monkeypatch.setattr(a5, "STARTING_HEAD", r1_sha)
-    r2_sha = _temp_repo_commit(tmp_path, {"r2.txt": "r2"}, a5.R2_COMMIT_MESSAGE)
+    r2_sha = _temp_repo_commit(
+        tmp_path,
+        {a5.R2_PREREGISTRATION_PATH: "{}", a5.R2_RESULT_PATH: "{}", a5.R2_REPORT_PATH: "#"},
+        a5.R2_COMMIT_MESSAGE,
+    )
     monkeypatch.setattr(a5, "R2_HEAD", r2_sha)
-    r3_sha = _temp_repo_commit(tmp_path, {"r3.txt": "r3"}, a5.R3_COMMIT_MESSAGE)
+    r3_sha = _temp_repo_commit(
+        tmp_path,
+        {a5.R3_PREREGISTRATION_PATH: "{}", a5.R3_RESULT_PATH: "{}", a5.R3_REPORT_PATH: "#"},
+        a5.R3_COMMIT_MESSAGE,
+    )
     monkeypatch.setattr(a5, "R3_HEAD", r3_sha)
-    r5_sha = _temp_repo_commit(tmp_path, {"r5.txt": "r5"}, a5.R5_COMMIT_MESSAGE)
+    r5_sha = _temp_repo_commit(
+        tmp_path,
+        {a5.R5_PREREGISTRATION_PATH: "{}", a5.R5_RESULT_PATH: "{}", a5.R5_REPORT_PATH: "#"},
+        a5.R5_COMMIT_MESSAGE,
+    )
     monkeypatch.setattr(a5, "R5_HEAD", r5_sha)
 
+    # The manifest records the acquisition freeze by MESSAGE; the head is derived
+    # from the Git chain, so building it before the R6 commit is correct.
     manifest = a5.build_continuation_manifest(_REPO_ROOT, a5.audit_historical_plan_reusability(_REPO_ROOT))
     r6_sha = _temp_repo_commit(
         tmp_path,
         {a5.CONTINUATION_MANIFEST_PATH: json.dumps(manifest, ensure_ascii=False, indent=2)},
         a5.R6_COMMIT_MESSAGE,
     )
+    monkeypatch.setattr(a5, "R6_HEAD", r6_sha)
 
-    # Simulate a completed 7-plan Phase-P state and freeze it as a direct child
-    # of the R6 implementation freeze.
+    # Plan freeze: direct child of R6 with the 7 frozen synthetic plans.
     manifest["outcome_exposure_state"]["D4_A5_OUTCOME_EXPOSURE"] = "PLANS_FROZEN"
+    manifest["outcome_exposure_state"]["plans_completed"] = 7
     plan_freeze_sha = _temp_repo_commit(
         tmp_path,
         {
@@ -2526,28 +2560,94 @@ def test_r3_09_10_synthetic_handoff_plan_freeze_then_phase_r_preflight(
         },
         a5.CONTINUATION_PLAN_FREEZE_COMMIT_MESSAGE,
     )
+    monkeypatch.setattr(a5, "PLAN_FREEZE_HEAD", plan_freeze_sha)
     assert _git(tmp_path, "rev-parse", f"{plan_freeze_sha}^") == r6_sha
+    return {
+        "a5_stop": a5_stop_sha,
+        "r1": r1_sha,
+        "r2": r2_sha,
+        "r3": r3_sha,
+        "r5": r5_sha,
+        "r6": r6_sha,
+        "plan_freeze": plan_freeze_sha,
+    }
 
-    preflight = a5.verify_phase_r_preflight(tmp_path, r6_sha)
-    assert preflight["continuation_implementation_freeze_head"] == r6_sha
-    assert preflight["continuation_plan_freeze_head"] == plan_freeze_sha
-    gate = a5.verify_continuation_plan_freeze_gate(tmp_path, r6_sha)
-    assert gate["continuation_plan_freeze_head"] == plan_freeze_sha
+
+def _synthetic_r7_commit(tmp_path: Path) -> str:
+    """Valid synthetic R7 commit (task Section 13): changes only allowed R7
+    repair artifacts; the continuation manifest and the raw plans are
+    untouched (non-self-referential R7 contract)."""
+    return _temp_repo_commit(
+        tmp_path,
+        {
+            a5.RUNNER_PATH: "# synthetic runner (R7 repair)\n",
+            a5.R7_RESULT_PATH: json.dumps({"lifecycle_id": "D4-A5-R7"}, ensure_ascii=False),
+        },
+        a5.R7_COMMIT_MESSAGE,
+    )
+
+
+def test_r3_09_10_synthetic_handoff_plan_freeze_then_phase_r_preflight(
+    tmp_path, monkeypatch
+):
+    """Real-lineage synthetic flow (R7 topology): per-stage historical artifact
+    commits -> R6 -> plan freeze (direct child of R6) -> R7 retrieval
+    implementation freeze (manifest untouched; allowed R7 repair artifacts
+    only) -> Phase-R preflight PASS. No provider or retrieval call occurs; the
+    preflight derives the acquisition freeze from Git."""
+    stages = _synthetic_plan_freeze_repo(tmp_path, monkeypatch)
+    r7_sha = _synthetic_r7_commit(tmp_path)
+
+    preflight = a5.verify_phase_r_preflight(tmp_path)
+    assert preflight["status"] == "READY_FOR_PHASE_R"
+    assert preflight["continuation_plan_acquisition_implementation_freeze_head"] == stages["r6"]
+    assert preflight["continuation_plan_freeze_head"] == stages["plan_freeze"]
+    assert preflight["continuation_retrieval_implementation_freeze_head"] == r7_sha
 
 
 def test_r3_11_wrong_plan_freeze_parent_fails(tmp_path, monkeypatch):
+    """A plan freeze whose parent is NOT the R6 plan-acquisition implementation
+    freeze (an intervening commit sits between) must fail the boundary parent
+    check — the R7-era regression guard for the false-drift repair."""
     _git(tmp_path, "init", "-q")
     _git(tmp_path, "config", "user.email", "test@example.com")
     _git(tmp_path, "config", "user.name", "test")
-    r1_sha = _temp_repo_commit(tmp_path, {"base.txt": "base"}, "base commit")
+    a5_stop_sha = _temp_repo_commit(
+        tmp_path,
+        {
+            "base.txt": "base",
+            a5.HISTORICAL_MANIFEST_PATH: "{}",
+            a5.RESULT_PATH: '{"verdict": "historical"}',
+            a5.PREREGISTRATION_PATH: "{}",
+            a5.SELECTION_PATH: "{}",
+        },
+        a5.A5_STOP_COMMIT_MESSAGE,
+    )
+    monkeypatch.setattr(a5, "A5_STOP_HEAD", a5_stop_sha)
+    monkeypatch.setattr(a5, "STARTING_HEAD", a5_stop_sha)
+    r1_sha = _temp_repo_commit(
+        tmp_path,
+        {a5.R1_PREREGISTRATION_PATH: "{}", a5.R1_RESULT_PATH: "{}", a5.R1_REPORT_PATH: "#"},
+        a5.R1_COMMIT_MESSAGE,
+    )
     monkeypatch.setattr(a5, "R1_HEAD", r1_sha)
-    monkeypatch.setattr(a5, "A5_STOP_HEAD", r1_sha)
-    monkeypatch.setattr(a5, "STARTING_HEAD", r1_sha)
-    r2_sha = _temp_repo_commit(tmp_path, {"r2.txt": "r2"}, a5.R2_COMMIT_MESSAGE)
+    r2_sha = _temp_repo_commit(
+        tmp_path,
+        {a5.R2_PREREGISTRATION_PATH: "{}", a5.R2_RESULT_PATH: "{}", a5.R2_REPORT_PATH: "#"},
+        a5.R2_COMMIT_MESSAGE,
+    )
     monkeypatch.setattr(a5, "R2_HEAD", r2_sha)
-    r3_sha = _temp_repo_commit(tmp_path, {"r3.txt": "r3"}, a5.R3_COMMIT_MESSAGE)
+    r3_sha = _temp_repo_commit(
+        tmp_path,
+        {a5.R3_PREREGISTRATION_PATH: "{}", a5.R3_RESULT_PATH: "{}", a5.R3_REPORT_PATH: "#"},
+        a5.R3_COMMIT_MESSAGE,
+    )
     monkeypatch.setattr(a5, "R3_HEAD", r3_sha)
-    r5_sha = _temp_repo_commit(tmp_path, {"r5.txt": "r5"}, a5.R5_COMMIT_MESSAGE)
+    r5_sha = _temp_repo_commit(
+        tmp_path,
+        {a5.R5_PREREGISTRATION_PATH: "{}", a5.R5_RESULT_PATH: "{}", a5.R5_REPORT_PATH: "#"},
+        a5.R5_COMMIT_MESSAGE,
+    )
     monkeypatch.setattr(a5, "R5_HEAD", r5_sha)
     manifest = a5.build_continuation_manifest(_REPO_ROOT, a5.audit_historical_plan_reusability(_REPO_ROOT))
     r6_sha = _temp_repo_commit(
@@ -2555,7 +2655,11 @@ def test_r3_11_wrong_plan_freeze_parent_fails(tmp_path, monkeypatch):
         {a5.CONTINUATION_MANIFEST_PATH: json.dumps(manifest, ensure_ascii=False, indent=2)},
         a5.R6_COMMIT_MESSAGE,
     )
-    _temp_repo_commit(
+    monkeypatch.setattr(a5, "R6_HEAD", r6_sha)
+    # Intervening commit between R6 and the plan freeze: the plan freeze's
+    # parent is no longer the R6 implementation freeze.
+    _temp_repo_commit(tmp_path, {"between.txt": "x"}, "intervening commit")
+    plan_freeze_sha = _temp_repo_commit(
         tmp_path,
         {
             a5.CONTINUATION_MANIFEST_PATH: json.dumps(manifest, ensure_ascii=False, indent=2),
@@ -2565,20 +2669,16 @@ def test_r3_11_wrong_plan_freeze_parent_fails(tmp_path, monkeypatch):
         },
         a5.CONTINUATION_PLAN_FREEZE_COMMIT_MESSAGE,
     )
-    # A stale implementation-freeze input (e.g. a historical R1/R3/R5 head)
-    # must not satisfy the plan-freeze gate: the actual parent is the R6 freeze.
-    with pytest.raises(RuntimeError, match="parent"):
-        a5.verify_phase_r_preflight(tmp_path, r1_sha)
-    with pytest.raises(RuntimeError, match="parent"):
-        a5.verify_phase_r_preflight(tmp_path, r3_sha)
-    with pytest.raises(RuntimeError, match="parent"):
-        a5.verify_phase_r_preflight(tmp_path, r5_sha)
+    monkeypatch.setattr(a5, "PLAN_FREEZE_HEAD", plan_freeze_sha)
+    with pytest.raises(RuntimeError, match="Plan-freeze parent mismatch"):
+        a5.verify_continuation_plan_freeze_gate(tmp_path)
 
 
 def test_r3_13_provenance_schemas_retain_historical_r1_r2_separately(tmp_path):
     freeze = {
-        "continuation_implementation_freeze_head": "r3head",
-        "head": "planfreezehead",
+        "continuation_plan_acquisition_implementation_freeze_head": "r3head",
+        "continuation_plan_freeze_head": "planfreezehead",
+        "continuation_retrieval_implementation_freeze_head": "r7head",
     }
     (tmp_path / "evaluation").mkdir(parents=True, exist_ok=True)
     artifact = a5._write_raw_results(
@@ -2588,10 +2688,10 @@ def test_r3_13_provenance_schemas_retain_historical_r1_r2_separately(tmp_path):
     assert artifact["historical_r2_head"] == a5.R2_HEAD
     assert artifact["historical_r3_head"] == a5.R3_HEAD
     assert artifact["historical_r5_head"] == a5.R5_HEAD
-    assert artifact["continuation_implementation_freeze_head"] == "r3head"
+    assert artifact["continuation_plan_acquisition_implementation_freeze_head"] == "r3head"
     assert artifact["continuation_plan_freeze_head"] == "planfreezehead"
     assert artifact["historical_r1_head"] != artifact[
-        "continuation_implementation_freeze_head"
+        "continuation_retrieval_implementation_freeze_head"
     ]
     # The probe write landed in the temporary project only.
     assert not (_REPO_ROOT / a5.CONTINUATION_RAW_RESULTS_PATH).exists()
@@ -2601,7 +2701,8 @@ def test_r3_13_provenance_schemas_retain_historical_r1_r2_separately(tmp_path):
     for key in (
         "historical_a5_starting_head", "historical_a5_stop_head",
         "historical_r1_head", "historical_r2_head",
-        "continuation_implementation_freeze_head",
+        "continuation_plan_acquisition_implementation_freeze_head",
+        "continuation_retrieval_implementation_freeze_head",
         "continuation_plan_freeze_head", "continuation_raw_freeze_head",
     ):
         assert key in source
@@ -2897,9 +2998,20 @@ def _r5_lifecycle_repo(tmp_path: Path, monkeypatch) -> dict[str, str]:
         },
         a5.CONTINUATION_PLAN_FREEZE_COMMIT_MESSAGE,
     )
+    monkeypatch.setattr(a5, "PLAN_FREEZE_HEAD", plan_freeze_sha)
     manifest["outcome_exposure_state"]["plan_freeze_head"] = plan_freeze_sha
-    manifest["outcome_exposure_state"]["D4_A5_OUTCOME_EXPOSURE"] = "RAW_RETRIEVAL_COMPLETE"
-    # Rewrite the manifest with the real plan-freeze head before the raw freeze.
+    manifest["outcome_exposure_state"]["D4_A5_OUTCOME_EXPOSURE"] = "PLANS_FROZEN"
+    # R7 is non-self-referential: the continuation manifest is NOT modified in
+    # the R7 commit; only allowed R7 repair artifacts change (task Section 13).
+    r7_sha = _temp_repo_commit(
+        tmp_path,
+        {
+            a5.RUNNER_PATH: "# synthetic runner (R7 repair)\n",
+            a5.R7_RESULT_PATH: json.dumps({"lifecycle_id": "D4-A5-R7"}, ensure_ascii=False),
+        },
+        a5.R7_COMMIT_MESSAGE,
+    )
+    manifest["outcome_exposure_state"]["continuation_retrieval_implementation_freeze_head"] = r7_sha
     (tmp_path / a5.CONTINUATION_MANIFEST_PATH).write_text(
         json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8"
     )
@@ -2911,6 +3023,7 @@ def _r5_lifecycle_repo(tmp_path: Path, monkeypatch) -> dict[str, str]:
         "r5": r5_sha,
         "r6": r6_sha,
         "plan_freeze": plan_freeze_sha,
+        "r7": r7_sha,
     }
 
 
@@ -2934,9 +3047,9 @@ def test_r5_13a_valid_raw_freeze_passes_strict_allowlist(tmp_path, monkeypatch):
     r6_sha = stages["r6"]
     plan_freeze_sha = stages["plan_freeze"]
     raw_freeze_sha = _r5_raw_freeze_commit(tmp_path)
-    receipt = a5.verify_continuation_raw_freeze_gate(tmp_path, plan_freeze_sha, r6_sha)
+    receipt = a5.verify_continuation_raw_freeze_gate(tmp_path)
     assert receipt["continuation_raw_freeze_head"] == raw_freeze_sha
-    assert receipt["plan_freeze_head"] == plan_freeze_sha
+    assert receipt["continuation_plan_freeze_head"] == plan_freeze_sha
     assert receipt["raw_freeze_diff_allowlist_respected"] is True
 
 
@@ -2947,7 +3060,7 @@ def test_r5_13b_runner_mutation_in_raw_freeze_rejected(tmp_path, monkeypatch):
     runner = (_REPO_ROOT / a5.RUNNER_PATH).read_text(encoding="utf-8")
     _r5_raw_freeze_commit(tmp_path, {a5.RUNNER_PATH: runner + "\n# drifted\n"})
     with pytest.raises(RuntimeError, match="strict evaluator-integrity allowlist"):
-        a5.verify_continuation_raw_freeze_gate(tmp_path, plan_freeze_sha, r6_sha)
+        a5.verify_continuation_raw_freeze_gate(tmp_path)
 
 
 def test_r5_13c_test_mutation_in_raw_freeze_rejected(tmp_path, monkeypatch):
@@ -2957,7 +3070,7 @@ def test_r5_13c_test_mutation_in_raw_freeze_rejected(tmp_path, monkeypatch):
     test_src = (_REPO_ROOT / a5.TEST_PATH).read_text(encoding="utf-8")
     _r5_raw_freeze_commit(tmp_path, {a5.TEST_PATH: test_src + "\n# drifted\n"})
     with pytest.raises(RuntimeError, match="strict evaluator-integrity allowlist"):
-        a5.verify_continuation_raw_freeze_gate(tmp_path, plan_freeze_sha, r6_sha)
+        a5.verify_continuation_raw_freeze_gate(tmp_path)
 
 
 def test_r5_13d_raw_plan_mutation_in_raw_freeze_rejected(tmp_path, monkeypatch):
@@ -2973,7 +3086,7 @@ def test_r5_13d_raw_plan_mutation_in_raw_freeze_rejected(tmp_path, monkeypatch):
         {a5.CONTINUATION_RAW_PLANS_PATH: json.dumps(plans, ensure_ascii=False, indent=2)},
     )
     with pytest.raises(RuntimeError, match="strict evaluator-integrity allowlist"):
-        a5.verify_continuation_raw_freeze_gate(tmp_path, plan_freeze_sha, r6_sha)
+        a5.verify_continuation_raw_freeze_gate(tmp_path)
 
 
 def test_r5_13e_unrelated_file_in_raw_freeze_rejected(tmp_path, monkeypatch):
@@ -2982,7 +3095,7 @@ def test_r5_13e_unrelated_file_in_raw_freeze_rejected(tmp_path, monkeypatch):
     plan_freeze_sha = stages["plan_freeze"]
     _r5_raw_freeze_commit(tmp_path, {"notes.txt": "unrelated"})
     with pytest.raises(RuntimeError, match="strict evaluator-integrity allowlist"):
-        a5.verify_continuation_raw_freeze_gate(tmp_path, plan_freeze_sha, r6_sha)
+        a5.verify_continuation_raw_freeze_gate(tmp_path)
 
 
 def test_r5_13f_wrong_raw_freeze_parent_rejected(tmp_path, monkeypatch):
@@ -3004,62 +3117,70 @@ def test_r5_13f_wrong_raw_freeze_parent_rejected(tmp_path, monkeypatch):
     raw_freeze_sha = _temp_repo_commit(tmp_path, files, a5.CONTINUATION_RAW_FREEZE_COMMIT_MESSAGE)
     assert _git(tmp_path, "rev-parse", f"{raw_freeze_sha}^") == intervening
     with pytest.raises(RuntimeError, match="parent"):
-        a5.verify_continuation_raw_freeze_gate(tmp_path, plan_freeze_sha, r6_sha)
+        a5.verify_continuation_raw_freeze_gate(tmp_path)
+
+
+def _r5_synthetic_manifest_updated_for_raw_freeze(
+    plan_freeze_sha: str, retrieval_implementation_freeze_sha: str
+) -> dict[str, Any]:
+    manifest = _r5_synthetic_manifest()
+    manifest["outcome_exposure_state"]["D4_A5_OUTCOME_EXPOSURE"] = "RAW_RETRIEVAL_COMPLETE"
+    manifest["outcome_exposure_state"]["continuation_retrieval_implementation_freeze_head"] = retrieval_implementation_freeze_sha
+    manifest["outcome_exposure_state"]["plan_freeze_head"] = plan_freeze_sha
+    return manifest
 
 
 def test_r5_14a_evaluator_preflight_passes_on_valid_chain(tmp_path, monkeypatch):
     stages = _r5_lifecycle_repo(tmp_path, monkeypatch)
-    r6_sha = stages["r6"]
-    plan_freeze_sha = stages["plan_freeze"]
-    # Full 14-slot raw results so the structural validation also passes.
     (tmp_path / a5.CONTINUATION_MANIFEST_PATH).write_text(
-        json.dumps(_r5_synthetic_manifest_updated_for_raw_freeze(plan_freeze_sha, r6_sha), ensure_ascii=False, indent=2),
-        encoding="utf-8",
+        json.dumps(
+            _r5_synthetic_manifest_updated_for_raw_freeze(
+                stages['plan_freeze'], stages['r7']
+            ),
+            ensure_ascii=False,
+            indent=2,
+        ),
+        encoding='utf-8',
     )
     files = {
         a5.CONTINUATION_MANIFEST_PATH: (tmp_path / a5.CONTINUATION_MANIFEST_PATH).read_text(
-            encoding="utf-8"
+            encoding='utf-8'
         ),
         a5.CONTINUATION_RAW_RESULTS_PATH: json.dumps(
             _r5_synthetic_raw_results(with_slots=True), ensure_ascii=False, indent=2
         ),
     }
     raw_freeze_sha = _temp_repo_commit(tmp_path, files, a5.CONTINUATION_RAW_FREEZE_COMMIT_MESSAGE)
-    receipt = a5.verify_continuation_evaluator_preflight(tmp_path, plan_freeze_sha, r6_sha)
-    assert receipt["continuation_raw_freeze_head"] == raw_freeze_sha
-    assert receipt["evaluator_integrity_sealed"] is True
-    assert receipt["provider_calls"] == 0
-
-
-def _r5_synthetic_manifest_updated_for_raw_freeze(
-    plan_freeze_sha: str, implementation_freeze_sha: str
-) -> dict[str, Any]:
-    manifest = _r5_synthetic_manifest()
-    manifest["outcome_exposure_state"]["D4_A5_OUTCOME_EXPOSURE"] = "RAW_RETRIEVAL_COMPLETE"
-    manifest["outcome_exposure_state"]["continuation_implementation_freeze_head"] = implementation_freeze_sha
-    manifest["outcome_exposure_state"]["plan_freeze_head"] = plan_freeze_sha
-    return manifest
+    receipt = a5.verify_continuation_evaluator_preflight(tmp_path)
+    assert receipt['continuation_raw_freeze_head'] == raw_freeze_sha
+    assert receipt['continuation_retrieval_implementation_freeze_head'] == stages['r7']
+    assert receipt['evaluator_integrity_sealed'] is True
+    assert receipt['provider_calls'] == 0
 
 
 def test_r5_14b_evaluator_preflight_rejects_runner_drift_before_outcomes(
     tmp_path, monkeypatch
 ):
     stages = _r5_lifecycle_repo(tmp_path, monkeypatch)
-    r6_sha = stages["r6"]
-    plan_freeze_sha = stages["plan_freeze"]
     (tmp_path / a5.CONTINUATION_MANIFEST_PATH).write_text(
-        json.dumps(_r5_synthetic_manifest_updated_for_raw_freeze(plan_freeze_sha, r6_sha), ensure_ascii=False, indent=2),
-        encoding="utf-8",
+        json.dumps(
+            _r5_synthetic_manifest_updated_for_raw_freeze(
+                stages['plan_freeze'], stages['r7']
+            ),
+            ensure_ascii=False,
+            indent=2,
+        ),
+        encoding='utf-8',
     )
-    runner = (_REPO_ROOT / a5.RUNNER_PATH).read_text(encoding="utf-8")
+    runner = (_REPO_ROOT / a5.RUNNER_PATH).read_text(encoding='utf-8')
     files = {
         a5.CONTINUATION_MANIFEST_PATH: (tmp_path / a5.CONTINUATION_MANIFEST_PATH).read_text(
-            encoding="utf-8"
+            encoding='utf-8'
         ),
         a5.CONTINUATION_RAW_RESULTS_PATH: json.dumps(
             _r5_synthetic_raw_results(with_slots=True), ensure_ascii=False, indent=2
         ),
-        a5.RUNNER_PATH: runner + "\n# post-retrieval drift\n",
+        a5.RUNNER_PATH: runner + '# post-retrieval drift',
     }
     _temp_repo_commit(tmp_path, files, a5.CONTINUATION_RAW_FREEZE_COMMIT_MESSAGE)
 
@@ -3067,36 +3188,34 @@ def test_r5_14b_evaluator_preflight_rejects_runner_drift_before_outcomes(
         pass
 
     def _sentinel(*_a: Any, **_k: Any):
-        raise _Sentinel("deterministic evaluation body reached")
+        raise _Sentinel('deterministic evaluation body reached')
 
     def _forbidden(*_a: Any, **_k: Any) -> None:
-        raise AssertionError("provider construction forbidden")
+        raise AssertionError('provider construction forbidden')
 
-    monkeypatch.setattr(a5, "Retriever", _forbidden)
-    monkeypatch.setattr(a5, "load_gold_dataset", _sentinel)
-    # The runner drift is rejected by the strict raw-freeze allowlist inside the
-    # preflight chain, before any retrieval outcome is consumed.
-    with pytest.raises(RuntimeError, match="strict evaluator-integrity allowlist"):
+    monkeypatch.setattr(a5, 'Retriever', _forbidden)
+    monkeypatch.setattr(a5, 'load_gold_dataset', _sentinel)
+    with pytest.raises(RuntimeError, match='strict evaluator-integrity allowlist'):
         a5.evaluate_d4_a5(tmp_path)
 
 
 def test_r5_14c_evaluator_reaches_deterministic_boundary_after_real_gate(
     tmp_path, monkeypatch
 ):
-    """Valid R5 -> valid plan freeze -> valid raw freeze -> the evaluator passes
-    the REAL raw-freeze integrity gate and reaches the deterministic evaluation
-    body (proven by a sentinel), with provider construction forbidden and no
-    scientific result produced."""
     stages = _r5_lifecycle_repo(tmp_path, monkeypatch)
-    r6_sha = stages["r6"]
-    plan_freeze_sha = stages["plan_freeze"]
     (tmp_path / a5.CONTINUATION_MANIFEST_PATH).write_text(
-        json.dumps(_r5_synthetic_manifest_updated_for_raw_freeze(plan_freeze_sha, r6_sha), ensure_ascii=False, indent=2),
-        encoding="utf-8",
+        json.dumps(
+            _r5_synthetic_manifest_updated_for_raw_freeze(
+                stages['plan_freeze'], stages['r7']
+            ),
+            ensure_ascii=False,
+            indent=2,
+        ),
+        encoding='utf-8',
     )
     files = {
         a5.CONTINUATION_MANIFEST_PATH: (tmp_path / a5.CONTINUATION_MANIFEST_PATH).read_text(
-            encoding="utf-8"
+            encoding='utf-8'
         ),
         a5.CONTINUATION_RAW_RESULTS_PATH: json.dumps(
             _r5_synthetic_raw_results(with_slots=True), ensure_ascii=False, indent=2
@@ -3108,252 +3227,150 @@ def test_r5_14c_evaluator_reaches_deterministic_boundary_after_real_gate(
         pass
 
     def _sentinel(*_a: Any, **_k: Any):
-        raise _Sentinel("deterministic evaluation body reached")
+        raise _Sentinel('deterministic evaluation body reached')
 
     def _forbidden(*_a: Any, **_k: Any) -> None:
-        raise AssertionError("provider construction forbidden")
+        raise AssertionError('provider construction forbidden')
 
-    monkeypatch.setattr(a5, "Retriever", _forbidden)
-    monkeypatch.setattr(a5, "load_gold_dataset", _sentinel)
-    # The REAL evaluator preflight (not monkeypatched) must pass first; the
-    # sentinel then proves the deterministic body was entered.
+    monkeypatch.setattr(a5, 'Retriever', _forbidden)
+    monkeypatch.setattr(a5, 'load_gold_dataset', _sentinel)
     with pytest.raises(_Sentinel):
         a5.evaluate_d4_a5(tmp_path)
-
-
-# ===========================================================================
-# D4-A5-R6 — Historical Baseline and Evaluator Lineage Preflight tests
-# ===========================================================================
 
 
 def test_r6_13a_realistic_history_fixture_reproduces_defect_shape_and_passes(
     tmp_path, monkeypatch
 ):
-    """The realistic fixture introduces later repair artifacts at their own
-    stages, so they are ABSENT at A5_STOP_HEAD — exactly the shape that made
-    the old common-A5_STOP baseline falsely reject the real repository. Under
-    the R6 per-stage baselines the evaluator preflight must PASS."""
     stages = _r5_lifecycle_repo(tmp_path, monkeypatch)
-    # Defect shape: R1 artifacts are absent at A5_STOP_HEAD but present at
-    # R1_HEAD and at the raw-freeze HEAD.
-    assert a5.git_blob(tmp_path, a5.R1_RESULT_PATH, stages["a5_stop"]) is None
-    assert a5.git_blob(tmp_path, a5.R1_RESULT_PATH, stages["r1"]) is not None
+    assert a5.git_blob(tmp_path, a5.R1_RESULT_PATH, stages['a5_stop']) is None
+    assert a5.git_blob(tmp_path, a5.R1_RESULT_PATH, stages['r1']) is not None
 
-    # Complete the lifecycle: plan freeze (already committed by the fixture) and
-    # a valid raw freeze carrying only manifest + raw results.
-    manifest_update = json.loads(json.dumps(manifest := _r5_synthetic_manifest()))
-    manifest_update = manifest
-    manifest_update["outcome_exposure_state"]["D4_A5_OUTCOME_EXPOSURE"] = (
-        "RAW_RETRIEVAL_COMPLETE"
-    )
-    manifest_update["outcome_exposure_state"]["continuation_implementation_freeze_head"] = (
-        stages["r6"]
-    )
-    manifest_update["outcome_exposure_state"]["plan_freeze_head"] = stages["plan_freeze"]
+    manifest_update = _r5_synthetic_manifest()
+    manifest_update['outcome_exposure_state']['D4_A5_OUTCOME_EXPOSURE'] = 'RAW_RETRIEVAL_COMPLETE'
+    manifest_update['outcome_exposure_state']['continuation_retrieval_implementation_freeze_head'] = stages['r7']
+    manifest_update['outcome_exposure_state']['plan_freeze_head'] = stages['plan_freeze']
     (tmp_path / a5.CONTINUATION_MANIFEST_PATH).write_text(
-        json.dumps(manifest_update, ensure_ascii=False, indent=2), encoding="utf-8"
+        json.dumps(manifest_update, ensure_ascii=False, indent=2), encoding='utf-8'
     )
     raw_freeze_sha = _temp_repo_commit(
         tmp_path,
         {
             a5.CONTINUATION_MANIFEST_PATH: (
                 tmp_path / a5.CONTINUATION_MANIFEST_PATH
-            ).read_text(encoding="utf-8"),
+            ).read_text(encoding='utf-8'),
             a5.CONTINUATION_RAW_RESULTS_PATH: json.dumps(
                 _r5_synthetic_raw_results(with_slots=False), ensure_ascii=False, indent=2
             ),
         },
         a5.CONTINUATION_RAW_FREEZE_COMMIT_MESSAGE,
     )
-    # The old common-baseline implementation would report drift here; R6 must not.
     assert a5.historical_baseline_drift(tmp_path, raw_freeze_sha) == []
-    receipt = a5.verify_continuation_evaluator_preflight(
-        tmp_path, stages["plan_freeze"], stages["r6"]
-    )
-    assert receipt["historical_stage_baselines_verified"] is True
-    assert receipt["chain_proven"]["implementation_freeze_parent"] == stages["r5"]
-    assert receipt["chain_proven"]["plan_freeze_parent"] == stages["r6"]
-    assert receipt["chain_proven"]["raw_freeze_parent"] == stages["plan_freeze"]
+    receipt = a5.verify_continuation_evaluator_preflight(tmp_path)
+    assert receipt['historical_stage_baselines_verified'] is True
+    assert receipt['chain_proven']['plan_acquisition_implementation_freeze_parent'] == stages['r5']
+    assert receipt['chain_proven']['plan_freeze_parent'] == stages['r6']
+    assert receipt['chain_proven']['retrieval_implementation_freeze_parent'] == stages['plan_freeze']
+    assert receipt['chain_proven']['raw_freeze_parent'] == stages['r7']
 
 
-def test_r6_13b_per_stage_drift_detection_for_every_stage(tmp_path, monkeypatch):
-    """Every stage's artifacts are checked against their OWN freeze commit:
-    drifting any one of them at the raw-freeze head is reported."""
-    stages = _r5_lifecycle_repo(tmp_path, monkeypatch)
-    head = stages["plan_freeze"]  # any head after all stages works
-    assert a5.historical_baseline_drift(tmp_path, head) == []
-
-    cases = [
-        (a5.R1_RESULT_PATH, stages["r1"]),
-        (a5.R2_RESULT_PATH, stages["r2"]),
-        (a5.R3_RESULT_PATH, stages["r3"]),
-        (a5.R5_RESULT_PATH, stages["r5"]),
-        (a5.RESULT_PATH, stages["a5_stop"]),
-    ]
-    for drifted_path, owning_stage in cases:
-        # Simulate the drift by comparing against a HEAD where the artifact
-        # differs: rewrite the file content and commit it on a detached branch
-        # of history (drift is what the helper must report regardless of how a
-        # real attacker would introduce it).
-        drifted_head = _temp_repo_commit(
-            tmp_path, {drifted_path: '{"drifted": true}'}, "drift commit"
-        )
-        drift = a5.historical_baseline_drift(tmp_path, drifted_head)
-        assert any(drifted_path in entry for entry in drift), (drifted_path, drift)
-        # Restore: revert to the pre-drift head content for the next case.
-        original = a5.git_blob(tmp_path, drifted_path, head)
-        assert original is not None
-        _git(tmp_path, "reset", "-q", "--hard", head)
-    # After restoration everything is clean again.
-    assert a5.historical_baseline_drift(tmp_path, head) == []
-
-
-def test_r6_13c_missing_at_owning_stage_fails_closed(tmp_path, monkeypatch):
-    """An artifact that should exist at its owning stage but does not is drift
-    (fail-closed), never a tolerated absence: a repository lacking every
-    historical artifact reports all of them as missing."""
-    fresh = tmp_path / "fresh"
-    fresh.mkdir()
-    _git(fresh, "init", "-q")
-    _git(fresh, "config", "user.email", "test@example.com")
-    _git(fresh, "config", "user.name", "test")
-    head = _temp_repo_commit(fresh, {"empty.txt": "x"}, "empty commit")
-    drift = a5.historical_baseline_drift(fresh, head)
-    for rel in (a5.R1_RESULT_PATH, a5.R5_RESULT_PATH, a5.RESULT_PATH):
-        assert any(rel in entry and "missing" in entry for entry in drift), (rel, drift)
-
-
-def test_r6_14a_preflight_rejects_stale_r5_as_implementation_freeze(
+def test_r6_14a_preflight_rejects_stale_r5_as_retrieval_implementation_freeze(
     tmp_path, monkeypatch
 ):
-    """Passing the historical R5 head as the current implementation freeze must
-    fail the identity check (wrong message and wrong parent)."""
     stages = _r5_lifecycle_repo(tmp_path, monkeypatch)
     manifest = json.loads(
-        (tmp_path / a5.CONTINUATION_MANIFEST_PATH).read_text(encoding="utf-8")
+        (tmp_path / a5.CONTINUATION_MANIFEST_PATH).read_text(encoding='utf-8')
     )
-    manifest["outcome_exposure_state"]["D4_A5_OUTCOME_EXPOSURE"] = "RAW_RETRIEVAL_COMPLETE"
-    manifest["outcome_exposure_state"]["continuation_implementation_freeze_head"] = (
-        stages["r5"]
-    )
-    manifest["outcome_exposure_state"]["plan_freeze_head"] = stages["plan_freeze"]
+    manifest['outcome_exposure_state']['D4_A5_OUTCOME_EXPOSURE'] = 'RAW_RETRIEVAL_COMPLETE'
+    manifest['outcome_exposure_state']['continuation_retrieval_implementation_freeze_head'] = stages['r5']
     (tmp_path / a5.CONTINUATION_MANIFEST_PATH).write_text(
-        json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8"
+        json.dumps(manifest, ensure_ascii=False, indent=2), encoding='utf-8'
     )
     _temp_repo_commit(
         tmp_path,
         {
             a5.CONTINUATION_MANIFEST_PATH: (
                 tmp_path / a5.CONTINUATION_MANIFEST_PATH
-            ).read_text(encoding="utf-8"),
+            ).read_text(encoding='utf-8'),
             a5.CONTINUATION_RAW_RESULTS_PATH: json.dumps(
                 _r5_synthetic_raw_results(with_slots=False), ensure_ascii=False, indent=2
             ),
         },
         a5.CONTINUATION_RAW_FREEZE_COMMIT_MESSAGE,
     )
-    with pytest.raises(RuntimeError, match="implementation freeze message mismatch"):
-        a5.verify_continuation_evaluator_preflight(
-            tmp_path, stages["plan_freeze"], stages["r5"]
-        )
+    with pytest.raises(RuntimeError, match='manifest-recorded retrieval implementation freeze head'):
+        a5.verify_continuation_evaluator_preflight(tmp_path)
 
 
-def test_r6_14b_preflight_rejects_wrong_implementation_message_and_parent(
-    tmp_path, monkeypatch
-):
+def test_r6_14b_preflight_rejects_forged_plan_freeze_head(tmp_path, monkeypatch):
     stages = _r5_lifecycle_repo(tmp_path, monkeypatch)
-    # Commit a valid raw freeze, then pass the historical R5 head as the
-    # implementation freeze: the identity check rejects the wrong message.
     manifest = json.loads(
-        (tmp_path / a5.CONTINUATION_MANIFEST_PATH).read_text(encoding="utf-8")
+        (tmp_path / a5.CONTINUATION_MANIFEST_PATH).read_text(encoding='utf-8')
     )
-    manifest["outcome_exposure_state"]["D4_A5_OUTCOME_EXPOSURE"] = "RAW_RETRIEVAL_COMPLETE"
-    manifest["outcome_exposure_state"]["continuation_implementation_freeze_head"] = (
-        stages["r6"]
-    )
-    manifest["outcome_exposure_state"]["plan_freeze_head"] = stages["plan_freeze"]
+    manifest['outcome_exposure_state']['D4_A5_OUTCOME_EXPOSURE'] = 'RAW_RETRIEVAL_COMPLETE'
+    manifest['outcome_exposure_state']['continuation_retrieval_implementation_freeze_head'] = stages['r7']
+    manifest['outcome_exposure_state']['plan_freeze_head'] = stages['r5']
     (tmp_path / a5.CONTINUATION_MANIFEST_PATH).write_text(
-        json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8"
+        json.dumps(manifest, ensure_ascii=False, indent=2), encoding='utf-8'
     )
     _temp_repo_commit(
         tmp_path,
         {
             a5.CONTINUATION_MANIFEST_PATH: (
                 tmp_path / a5.CONTINUATION_MANIFEST_PATH
-            ).read_text(encoding="utf-8"),
+            ).read_text(encoding='utf-8'),
             a5.CONTINUATION_RAW_RESULTS_PATH: json.dumps(
                 _r5_synthetic_raw_results(with_slots=False), ensure_ascii=False, indent=2
             ),
         },
         a5.CONTINUATION_RAW_FREEZE_COMMIT_MESSAGE,
     )
-    with pytest.raises(RuntimeError, match="implementation freeze message mismatch"):
-        a5.verify_continuation_evaluator_preflight(
-            tmp_path, stages["plan_freeze"], stages["r5"]
-        )
+    with pytest.raises(RuntimeError, match='plan-freeze head'):
+        a5.verify_continuation_evaluator_preflight(tmp_path)
 
 
-def test_r6_14c_preflight_rejects_plan_freeze_not_direct_child_of_r6(
+def test_r6_14c_preflight_rejects_r7_not_direct_child_of_plan_freeze(
     tmp_path, monkeypatch
 ):
     stages = _r5_lifecycle_repo(tmp_path, monkeypatch)
-    # Create an intervening commit after R6, then the plan freeze on top: the
-    # plan-freeze parent is no longer the implementation freeze.
     manifest = json.loads(
-        (tmp_path / a5.CONTINUATION_MANIFEST_PATH).read_text(encoding="utf-8")
+        (tmp_path / a5.CONTINUATION_MANIFEST_PATH).read_text(encoding='utf-8')
     )
-    manifest["outcome_exposure_state"]["D4_A5_OUTCOME_EXPOSURE"] = "PLANS_FROZEN"
-    manifest["outcome_exposure_state"]["continuation_implementation_freeze_head"] = (
-        stages["r6"]
-    )
-    _temp_repo_commit(tmp_path, {"between.txt": "x"}, "intervening commit")
-    plan_freeze_sha = _temp_repo_commit(
+    _temp_repo_commit(tmp_path, {'between.txt': 'x'}, 'intervening commit')
+    manifest['outcome_exposure_state']['D4_A5_OUTCOME_EXPOSURE'] = 'PLANS_FROZEN'
+    # The R7 commit changes only allowed R7 repair artifacts; the manifest stays
+    # as committed by the intervening-commit state (task Section 13).
+    r7_sha = _temp_repo_commit(
         tmp_path,
-        {
-            a5.CONTINUATION_MANIFEST_PATH: json.dumps(manifest, ensure_ascii=False, indent=2),
-            a5.CONTINUATION_RAW_PLANS_PATH: json.dumps(
-                _synthetic_completed_plans_artifact(), ensure_ascii=False, indent=2
-            ),
-        },
-        a5.CONTINUATION_PLAN_FREEZE_COMMIT_MESSAGE,
+        {a5.R7_RESULT_PATH: json.dumps({"lifecycle_id": "D4-A5-R7"}, ensure_ascii=False)},
+        a5.R7_COMMIT_MESSAGE,
     )
-    # Complete the chain with a raw freeze so HEAD is the raw-freeze commit and
-    # the preflight reaches the plan-freeze parent identity check.
-    manifest["outcome_exposure_state"]["D4_A5_OUTCOME_EXPOSURE"] = "RAW_RETRIEVAL_COMPLETE"
-    manifest["outcome_exposure_state"]["plan_freeze_head"] = plan_freeze_sha
+    manifest['outcome_exposure_state']['D4_A5_OUTCOME_EXPOSURE'] = 'RAW_RETRIEVAL_COMPLETE'
+    manifest['outcome_exposure_state']['continuation_retrieval_implementation_freeze_head'] = r7_sha
+    manifest['outcome_exposure_state']['plan_freeze_head'] = stages['plan_freeze']
     (tmp_path / a5.CONTINUATION_MANIFEST_PATH).write_text(
-        json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8"
+        json.dumps(manifest, ensure_ascii=False, indent=2), encoding='utf-8'
     )
     _temp_repo_commit(
         tmp_path,
         {
             a5.CONTINUATION_MANIFEST_PATH: (
                 tmp_path / a5.CONTINUATION_MANIFEST_PATH
-            ).read_text(encoding="utf-8"),
+            ).read_text(encoding='utf-8'),
             a5.CONTINUATION_RAW_RESULTS_PATH: json.dumps(
                 _r5_synthetic_raw_results(with_slots=False), ensure_ascii=False, indent=2
             ),
         },
         a5.CONTINUATION_RAW_FREEZE_COMMIT_MESSAGE,
     )
-    with pytest.raises(RuntimeError, match="plan-freeze parent mismatch"):
-        a5.verify_continuation_evaluator_preflight(
-            tmp_path, plan_freeze_sha, stages["r6"]
-        )
+    with pytest.raises(RuntimeError, match='R7 post-plan commit parent mismatch'):
+        a5.verify_continuation_evaluator_preflight(tmp_path)
 
 
 def test_r6_14d_preflight_rejects_wrong_plan_freeze_message(tmp_path, monkeypatch):
     stages = _r5_lifecycle_repo(tmp_path, monkeypatch)
     manifest = json.loads(
-        (tmp_path / a5.CONTINUATION_MANIFEST_PATH).read_text(encoding="utf-8")
+        (tmp_path / a5.CONTINUATION_MANIFEST_PATH).read_text(encoding='utf-8')
     )
-    manifest["outcome_exposure_state"]["D4_A5_OUTCOME_EXPOSURE"] = "PLANS_FROZEN"
-    manifest["outcome_exposure_state"]["continuation_implementation_freeze_head"] = (
-        stages["r6"]
-    )
-    # Wrong plan-freeze message, but otherwise a well-formed chain (the
-    # raw-freeze commit is still its direct child), so the plan-freeze message
-    # identity check is what fires.
     plan_freeze_sha = _temp_repo_commit(
         tmp_path,
         {
@@ -3362,135 +3379,123 @@ def test_r6_14d_preflight_rejects_wrong_plan_freeze_message(tmp_path, monkeypatc
                 _synthetic_completed_plans_artifact(), ensure_ascii=False, indent=2
             ),
         },
-        "wrong plan-freeze message",
+        'wrong plan-freeze message',
+    )
+    monkeypatch.setattr(a5, "PLAN_FREEZE_HEAD", plan_freeze_sha)
+    manifest['outcome_exposure_state']['D4_A5_OUTCOME_EXPOSURE'] = 'RAW_RETRIEVAL_COMPLETE'
+    manifest['outcome_exposure_state']['continuation_retrieval_implementation_freeze_head'] = stages['r7']
+    manifest['outcome_exposure_state']['plan_freeze_head'] = plan_freeze_sha
+    (tmp_path / a5.CONTINUATION_MANIFEST_PATH).write_text(
+        json.dumps(manifest, ensure_ascii=False, indent=2), encoding='utf-8'
+    )
+    manifest["outcome_exposure_state"]["D4_A5_OUTCOME_EXPOSURE"] = "PLANS_FROZEN"
+    r7_sha = _temp_repo_commit(
+        tmp_path,
+        {a5.R7_RESULT_PATH: json.dumps({"lifecycle_id": "D4-A5-R7"}, ensure_ascii=False)},
+        a5.R7_COMMIT_MESSAGE,
     )
     manifest["outcome_exposure_state"]["D4_A5_OUTCOME_EXPOSURE"] = "RAW_RETRIEVAL_COMPLETE"
-    manifest["outcome_exposure_state"]["plan_freeze_head"] = plan_freeze_sha
-    (tmp_path / a5.CONTINUATION_MANIFEST_PATH).write_text(
-        json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8"
-    )
+    manifest["outcome_exposure_state"]["continuation_retrieval_implementation_freeze_head"] = r7_sha
     _temp_repo_commit(
         tmp_path,
         {
             a5.CONTINUATION_MANIFEST_PATH: (
                 tmp_path / a5.CONTINUATION_MANIFEST_PATH
-            ).read_text(encoding="utf-8"),
+            ).read_text(encoding='utf-8'),
             a5.CONTINUATION_RAW_RESULTS_PATH: json.dumps(
                 _r5_synthetic_raw_results(with_slots=False), ensure_ascii=False, indent=2
             ),
         },
         a5.CONTINUATION_RAW_FREEZE_COMMIT_MESSAGE,
     )
-    with pytest.raises(RuntimeError, match="plan-freeze message mismatch"):
-        a5.verify_continuation_evaluator_preflight(
-            tmp_path, plan_freeze_sha, stages["r6"]
-        )
+    with pytest.raises(RuntimeError, match='plan-freeze message mismatch'):
+        a5.verify_continuation_evaluator_preflight(tmp_path)
 
 
-def test_r6_14e_preflight_rejects_raw_freeze_not_direct_child_of_plan_freeze(
+def test_r6_14e_preflight_rejects_raw_freeze_not_direct_child_of_r7(
     tmp_path, monkeypatch
 ):
     stages = _r5_lifecycle_repo(tmp_path, monkeypatch)
-    # Intervening commit between plan freeze and raw freeze.
-    _temp_repo_commit(tmp_path, {"between.txt": "x"}, "intervening commit")
     manifest = json.loads(
-        (tmp_path / a5.CONTINUATION_MANIFEST_PATH).read_text(encoding="utf-8")
+        (tmp_path / a5.CONTINUATION_MANIFEST_PATH).read_text(encoding='utf-8')
     )
-    manifest["outcome_exposure_state"]["D4_A5_OUTCOME_EXPOSURE"] = "RAW_RETRIEVAL_COMPLETE"
-    manifest["outcome_exposure_state"]["continuation_implementation_freeze_head"] = (
-        stages["r6"]
-    )
-    manifest["outcome_exposure_state"]["plan_freeze_head"] = stages["plan_freeze"]
+    _temp_repo_commit(tmp_path, {'between.txt': 'x'}, 'intervening commit')
+    manifest['outcome_exposure_state']['D4_A5_OUTCOME_EXPOSURE'] = 'RAW_RETRIEVAL_COMPLETE'
+    manifest['outcome_exposure_state']['continuation_retrieval_implementation_freeze_head'] = stages['r7']
+    manifest['outcome_exposure_state']['plan_freeze_head'] = stages['plan_freeze']
     (tmp_path / a5.CONTINUATION_MANIFEST_PATH).write_text(
-        json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8"
+        json.dumps(manifest, ensure_ascii=False, indent=2), encoding='utf-8'
     )
     _temp_repo_commit(
         tmp_path,
         {
             a5.CONTINUATION_MANIFEST_PATH: (
                 tmp_path / a5.CONTINUATION_MANIFEST_PATH
-            ).read_text(encoding="utf-8"),
+            ).read_text(encoding='utf-8'),
             a5.CONTINUATION_RAW_RESULTS_PATH: json.dumps(
                 _r5_synthetic_raw_results(with_slots=False), ensure_ascii=False, indent=2
             ),
         },
         a5.CONTINUATION_RAW_FREEZE_COMMIT_MESSAGE,
     )
-    with pytest.raises(RuntimeError, match="parent"):
-        a5.verify_continuation_evaluator_preflight(
-            tmp_path, stages["plan_freeze"], stages["r6"]
-        )
+    with pytest.raises(RuntimeError, match='Raw-freeze parent mismatch'):
+        a5.verify_continuation_evaluator_preflight(tmp_path)
 
 
 def test_r6_14f_preflight_rejects_forged_manifest_lineage(tmp_path, monkeypatch):
-    """A manifest forged to record a false implementation-freeze head must be
-    rejected: Git parentage/messages are authoritative, manifest values are
-    only cross-checked candidates."""
     stages = _r5_lifecycle_repo(tmp_path, monkeypatch)
     manifest = json.loads(
-        (tmp_path / a5.CONTINUATION_MANIFEST_PATH).read_text(encoding="utf-8")
+        (tmp_path / a5.CONTINUATION_MANIFEST_PATH).read_text(encoding='utf-8')
     )
-    manifest["outcome_exposure_state"]["D4_A5_OUTCOME_EXPOSURE"] = "RAW_RETRIEVAL_COMPLETE"
-    # Forge: claim the historical R5 head as the current implementation freeze
-    # even though the actual R6 freeze (and its parent chain) differs.
-    manifest["outcome_exposure_state"]["continuation_implementation_freeze_head"] = (
-        stages["r5"]
-    )
-    manifest["outcome_exposure_state"]["plan_freeze_head"] = stages["plan_freeze"]
+    manifest['outcome_exposure_state']['D4_A5_OUTCOME_EXPOSURE'] = 'RAW_RETRIEVAL_COMPLETE'
+    manifest['outcome_exposure_state']['continuation_retrieval_implementation_freeze_head'] = stages['r5']
+    manifest['outcome_exposure_state']['plan_freeze_head'] = stages['plan_freeze']
     (tmp_path / a5.CONTINUATION_MANIFEST_PATH).write_text(
-        json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8"
+        json.dumps(manifest, ensure_ascii=False, indent=2), encoding='utf-8'
     )
     _temp_repo_commit(
         tmp_path,
         {
             a5.CONTINUATION_MANIFEST_PATH: (
                 tmp_path / a5.CONTINUATION_MANIFEST_PATH
-            ).read_text(encoding="utf-8"),
+            ).read_text(encoding='utf-8'),
             a5.CONTINUATION_RAW_RESULTS_PATH: json.dumps(
                 _r5_synthetic_raw_results(with_slots=False), ensure_ascii=False, indent=2
             ),
         },
         a5.CONTINUATION_RAW_FREEZE_COMMIT_MESSAGE,
     )
-    with pytest.raises(RuntimeError, match="implementation freeze message mismatch"):
-        a5.verify_continuation_evaluator_preflight(
-            tmp_path, stages["plan_freeze"], stages["r5"]
-        )
+    with pytest.raises(RuntimeError, match='manifest-recorded retrieval implementation freeze head'):
+        a5.verify_continuation_evaluator_preflight(tmp_path)
 
 
 def test_r6_14g_preflight_cross_checks_manifest_recorded_plan_head(
     tmp_path, monkeypatch
 ):
-    """A manifest-recorded plan-freeze head that disagrees with the Git-proven
-    plan-freeze head is rejected even when the implementation chain is valid."""
     stages = _r5_lifecycle_repo(tmp_path, monkeypatch)
     manifest = json.loads(
-        (tmp_path / a5.CONTINUATION_MANIFEST_PATH).read_text(encoding="utf-8")
+        (tmp_path / a5.CONTINUATION_MANIFEST_PATH).read_text(encoding='utf-8')
     )
-    manifest["outcome_exposure_state"]["D4_A5_OUTCOME_EXPOSURE"] = "RAW_RETRIEVAL_COMPLETE"
-    manifest["outcome_exposure_state"]["continuation_implementation_freeze_head"] = (
-        stages["r6"]
-    )
-    manifest["outcome_exposure_state"]["plan_freeze_head"] = stages["r5"]  # forged
+    manifest['outcome_exposure_state']['D4_A5_OUTCOME_EXPOSURE'] = 'RAW_RETRIEVAL_COMPLETE'
+    manifest['outcome_exposure_state']['continuation_retrieval_implementation_freeze_head'] = stages['r7']
+    manifest['outcome_exposure_state']['plan_freeze_head'] = stages['r5']
     (tmp_path / a5.CONTINUATION_MANIFEST_PATH).write_text(
-        json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8"
+        json.dumps(manifest, ensure_ascii=False, indent=2), encoding='utf-8'
     )
     _temp_repo_commit(
         tmp_path,
         {
             a5.CONTINUATION_MANIFEST_PATH: (
                 tmp_path / a5.CONTINUATION_MANIFEST_PATH
-            ).read_text(encoding="utf-8"),
+            ).read_text(encoding='utf-8'),
             a5.CONTINUATION_RAW_RESULTS_PATH: json.dumps(
                 _r5_synthetic_raw_results(with_slots=False), ensure_ascii=False, indent=2
             ),
         },
         a5.CONTINUATION_RAW_FREEZE_COMMIT_MESSAGE,
     )
-    with pytest.raises(RuntimeError, match="plan-freeze head"):
-        a5.verify_continuation_evaluator_preflight(
-            tmp_path, stages["plan_freeze"], stages["r6"]
-        )
+    with pytest.raises(RuntimeError, match='plan-freeze head'):
+        a5.verify_continuation_evaluator_preflight(tmp_path)
 
 
 def test_r6_31_scientific_invariants_unchanged_by_r6():
@@ -3508,3 +3513,182 @@ def test_r6_31_scientific_invariants_unchanged_by_r6():
         "evaluation/d4_a5_continuation_execution_manifest.json",
         "evaluation/d4_a5_continuation_raw_paired_retirement_results.json",
     )
+
+
+def test_r7_runtime_provenance_handoff(tmp_path, monkeypatch):
+    """Test 8 (task Section 15): with HEAD at the R7 post-plan repair commit and
+    the preflight PASS, execute_phase_r enters runtime setup and persists
+    retrieval_implementation_freeze_head (= R7) and plan_freeze_head into the
+    manifest BEFORE the first retrieval call. The mock stops execution before
+    any retrieval provider execution; no real providers are used."""
+    project = _prepare_tmp_continuation(tmp_path)
+    # Bring the continuation manifest to the Phase-P-completed (PLANS_FROZEN)
+    # state, as the real plan-freeze boundary leaves it.
+    m = json.loads((project / a5.CONTINUATION_MANIFEST_PATH).read_text(encoding="utf-8"))
+    m["outcome_exposure_state"]["D4_A5_OUTCOME_EXPOSURE"] = "PLANS_FROZEN"
+    m["outcome_exposure_state"]["plans_completed"] = 7
+    a5._save_json(project / a5.CONTINUATION_MANIFEST_PATH, m)
+    a5._save_json(
+        project / a5.CONTINUATION_RAW_PLANS_PATH,
+        _synthetic_completed_plans_artifact(),
+    )
+    questions = _phase_p_question_index()
+    plans = _fake_plans_all_inactive(questions)
+    fake = _FakeRetriever(plans, _FakeQueryExpansions(_real_query_expansions(), stripped=True))
+
+    class _StopBeforeRetrieval(RuntimeError):
+        pass
+
+    # The preflight passes (real gate against the temp-repo state is exercised
+    # elsewhere); here we monkeypatch it to the temp repo's R7 head, then let
+    # execute_phase_r persist the runtime heads before the first retrieval.
+    monkeypatch.setattr(
+        a5,
+        "verify_phase_r_preflight",
+        lambda *_a, **_k: {
+            "status": "READY_FOR_PHASE_R",
+            "continuation_plan_acquisition_implementation_freeze_head": stages_r6_head,
+            "continuation_plan_freeze_head": stages_plan_freeze_head,
+            "continuation_retrieval_implementation_freeze_head": stages_r7_head,
+        },
+    )
+    stages_r6_head = "r6" * 8
+    stages_plan_freeze_head = "pf" * 8
+    stages_r7_head = "r7" * 8
+
+    def _stop_before_retrieval(*_a: Any, **_k: Any):
+        raise _StopBeforeRetrieval("stopped before retrieval")
+
+    monkeypatch.setattr(a5, "Retriever", _stop_before_retrieval)
+    monkeypatch.setattr(a5, "load_gold_dataset", _real_dataset_loader)
+
+    with pytest.raises(_StopBeforeRetrieval):
+        a5.execute_phase_r(project)
+
+    manifest = json.loads(
+        (project / a5.CONTINUATION_MANIFEST_PATH).read_text(encoding="utf-8")
+    )
+    exposure = manifest["outcome_exposure_state"]
+    assert exposure["D4_A5_OUTCOME_EXPOSURE"] == "RAW_RETRIEVAL_STARTED"
+    assert exposure["continuation_retrieval_implementation_freeze_head"] == "r7" * 8
+    assert exposure["plan_freeze_head"] == "pf" * 8
+    # The retrieval freeze head is persisted at Phase-R runtime, not in R7 files.
+
+
+# ---------------------------------------------------------------------------
+# R7 execution-integrity seals (clean worktree/index) at execution boundaries.
+# Committed blob identity alone cannot stop Phase R or the evaluator from
+# consuming drifted worktree files (execute_phase_r reads the worktree raw
+# plans; the evaluator reads the worktree raw results). These regressions
+# prove the seals fail closed before any provider/retrieval/evaluator
+# activity (amend task Sections 10-12).
+# ---------------------------------------------------------------------------
+
+
+def test_r7_seal_01_phase_r_preflight_rejects_dirty_raw_plans(tmp_path, monkeypatch):
+    """Task Section 10.1: the committed raw-plan blob can equal the plan-freeze
+    blob while the worktree raw-plan file drifts; a dirty worktree must fail
+    the Phase-R preflight before any provider/retrieval activity."""
+    _synthetic_plan_freeze_repo(tmp_path, monkeypatch)
+    _synthetic_r7_commit(tmp_path)
+    raw_plans = tmp_path / a5.CONTINUATION_RAW_PLANS_PATH
+    plans = json.loads(raw_plans.read_text(encoding="utf-8"))
+    plans["plans"][0]["case_id"] = "g999"
+    raw_plans.write_text(json.dumps(plans, ensure_ascii=False, indent=2), encoding="utf-8")
+    with pytest.raises(RuntimeError, match="Worktree or index is not clean"):
+        a5.verify_phase_r_preflight(tmp_path)
+
+
+def test_r7_seal_02_phase_r_preflight_rejects_dirty_runner(tmp_path, monkeypatch):
+    """Task Section 10.2: an uncommitted worktree runner modification must
+    fail the Phase-R preflight clean-worktree seal."""
+    _synthetic_plan_freeze_repo(tmp_path, monkeypatch)
+    _synthetic_r7_commit(tmp_path)
+    runner = tmp_path / a5.RUNNER_PATH
+    runner.write_text(
+        runner.read_text(encoding="utf-8") + "\n# uncommitted drift\n", encoding="utf-8"
+    )
+    with pytest.raises(RuntimeError, match="Worktree or index is not clean"):
+        a5.verify_phase_r_preflight(tmp_path)
+
+
+def test_r7_seal_03_phase_r_preflight_rejects_staged_modification(tmp_path, monkeypatch):
+    """Task Section 10.3: a staged (index) modification without a commit must
+    fail the Phase-R preflight — the seal covers the index, not only the
+    unstaged worktree."""
+    _synthetic_plan_freeze_repo(tmp_path, monkeypatch)
+    _synthetic_r7_commit(tmp_path)
+    runner = tmp_path / a5.RUNNER_PATH
+    runner.write_text(
+        runner.read_text(encoding="utf-8") + "\n# staged drift\n", encoding="utf-8"
+    )
+    _git(tmp_path, "add", a5.RUNNER_PATH)
+    with pytest.raises(RuntimeError, match="Worktree or index is not clean"):
+        a5.verify_phase_r_preflight(tmp_path)
+
+
+def test_r7_seal_04_phase_r_preflight_rejects_manifest_change_in_r7_commit(
+    tmp_path, monkeypatch
+):
+    """Task Section 12: the R7 repair-diff allowlist excludes the continuation
+    manifest — manifest immutability in R7 is executable policy, not merely
+    documentation. A synthetic R7 commit that modifies the manifest must fail
+    the Phase-R preflight with a repair-diff seal violation."""
+    _synthetic_plan_freeze_repo(tmp_path, monkeypatch)
+    manifest = json.loads(
+        (tmp_path / a5.CONTINUATION_MANIFEST_PATH).read_text(encoding="utf-8")
+    )
+    manifest["outcome_exposure_state"][
+        "continuation_retrieval_implementation_freeze_head"
+    ] = "TO_BE_FILLED"
+    _temp_repo_commit(
+        tmp_path,
+        {a5.CONTINUATION_MANIFEST_PATH: json.dumps(manifest, ensure_ascii=False, indent=2)},
+        a5.R7_COMMIT_MESSAGE,
+    )
+    with pytest.raises(RuntimeError, match="R7 repair-diff seal violated"):
+        a5.verify_phase_r_preflight(tmp_path)
+
+
+def test_r7_seal_05_evaluator_preflight_rejects_dirty_raw_results(tmp_path, monkeypatch):
+    """Task Section 11.1: a worktree-only raw-results modification after the
+    raw-freeze commit must fail the evaluator preflight through the raw-freeze
+    clean-worktree seal."""
+    _r5_lifecycle_repo(tmp_path, monkeypatch)
+    _r5_raw_freeze_commit(tmp_path)
+    raw_results = tmp_path / a5.CONTINUATION_RAW_RESULTS_PATH
+    raw_results.write_text(
+        raw_results.read_text(encoding="utf-8") + "\n# uncommitted drift\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(RuntimeError, match="Worktree or index is not clean"):
+        a5.verify_continuation_evaluator_preflight(tmp_path)
+
+
+def test_r7_seal_06_evaluator_preflight_rejects_dirty_runner(tmp_path, monkeypatch):
+    """Task Section 11.2: a worktree-only runner modification after the
+    raw-freeze commit must fail the evaluator preflight clean-worktree seal."""
+    _r5_lifecycle_repo(tmp_path, monkeypatch)
+    _r5_raw_freeze_commit(tmp_path)
+    runner = tmp_path / a5.RUNNER_PATH
+    runner.write_text(
+        runner.read_text(encoding="utf-8") + "\n# uncommitted drift\n", encoding="utf-8"
+    )
+    with pytest.raises(RuntimeError, match="Worktree or index is not clean"):
+        a5.verify_continuation_evaluator_preflight(tmp_path)
+
+
+def test_r7_seal_07_evaluator_preflight_rejects_staged_modification(
+    tmp_path, monkeypatch
+):
+    """Task Section 11.3: a staged (index) modification without a commit must
+    fail the evaluator preflight through the raw-freeze clean-worktree seal."""
+    _r5_lifecycle_repo(tmp_path, monkeypatch)
+    _r5_raw_freeze_commit(tmp_path)
+    runner = tmp_path / a5.RUNNER_PATH
+    runner.write_text(
+        runner.read_text(encoding="utf-8") + "\n# staged drift\n", encoding="utf-8"
+    )
+    _git(tmp_path, "add", a5.RUNNER_PATH)
+    with pytest.raises(RuntimeError, match="Worktree or index is not clean"):
+        a5.verify_continuation_evaluator_preflight(tmp_path)
