@@ -1,0 +1,35 @@
+{
+  "lifecycle_stage": "D4-A9-R2",
+  "recovery_from_failed_r1_attempt": true,
+  "starting_incident_commit": "1f52957099f3bfd41b9624d863dee0fdddb59ee4",
+  "incident_commit_is_not_scientific_r2_authority": true,
+  "incident_message_interpretation": "D4-A9-R2-Fail records the unaccepted D4-A9-R1 administrative incident; it is not scientific R2 authority.",
+  "verification_only": true,
+  "zero_scientific_provider": true,
+  "real_data_access_before_verifier_freeze": "forbidden",
+  "formal_cohort_unchanged": true,
+  "treatment_unchanged": true,
+  "HOLD_unchanged": true,
+  "scientific_criteria_unchanged": true,
+  "precedence_unchanged": true,
+  "production_activation_authorized": false,
+  "D4_A10_authorized": false,
+  "freeze_guard": "First live statement checks direct-parent incident commit, exact message, six-path checkpoint, ancestry, and committed/working verifier-script/test/contract identity.",
+  "synthetic_isolation": "Supplied in-memory objects only; tests intercept builtin/io opens of embargo paths and all Git content readers. Static AST audit rejects raw path literals/constants and direct/aliased live entrypoint calls.",
+  "safety_authority": {
+    "critical": "src/panda_agent/evaluation.py:_matched_evidence_groups; approved Gold v2.6 required_evidence_groups with critical=true; treatment-only critical group loss.",
+    "version": "src/panda_agent/evaluation.py deterministic evidence loop: item.source_version_id not in case.allowed_source_versions is a violation, including missing IDs. All final evidence is governed; not_governed=0.",
+    "grounding": "Canonical object_lookup resolution as used by _matched_evidence_groups; exact canonical object_id/source_id/source_version_id identity; GoldEvidenceSelector.matches on frozen final evidence for forbidden_evidence, as in deterministic_metrics. Compute violations independently for both arms, subtract matching canonical identity and violation/selector. Required source types use the existing deterministic_metrics source_type/required_source_coverage logic; only treatment-only missing source types are regressions, with symmetric baseline accounting.",
+    "identity": "Canonical lookup is indexed by object_id; comparisons retain canonical source_id and source_version_id, never collapse to an ancestor, path, or a merely similar object. Unresolved items retain their frozen exact object/source/version identity.",
+    "variance": "Non-critical evidence additions/removals and final evidence order differences are diagnostic only; no overlap or ranking threshold.",
+    "plan_signature": "Exact JSON signature semantics of D4-A5 compute_plan_signature; serialization is not a new scientific metric.",
+    "persistence": "Read frozen executor at 8e332acb8a1d4658a860ad5e251c9223319bfa42 through Git; program order plus persisted_at <= gated_at, not disk reload."
+  },
+  "authority_commits": {
+    "a8_r2": "06f853d9613c5170676d77261cc2d7b82d50958c",
+    "a9": "07b8cc921b4e36dc2acf2ae4ba0b27f4b3edf115"
+  },
+  "blob_policy": "Derive historical A9, failed-R1 and A8-R2 blobs from actual Git objects. Do not reuse failed R1 constants.",
+  "accounting_limit": "Frozen A9 per-cell model_calls counts provider attempts; zero downstream categories cross-checked with historical A9 result. Successful persisted plans provide success receipts; absent separate failure counters are bounded by attempts equal logical calls and zero retries. AGY orchestration is separate; no AGY invoked in this R2 run.",
+  "local_lookup_limit": "Use the existing latest-ingestion-report normalized catalog selection, read-only. Frozen evidence and locked catalog must resolve canonically. No database or provider access."
+}

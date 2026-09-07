@@ -1,3 +1,13 @@
+# D4-A9-R2 current recovery state — 2026-09-07
+
+IN_PROGRESS / VERIFIER_FREEZE_CHECKPOINT_READY. The commit containing these six R2 paths is the prospective verifier checkpoint; live access remains guard-protected.
+
+The starting commit 1f52957099f3bfd41b9624d863dee0fdddb59ee4 has message D4-A9-R2-Fail, but records the failed, unaccepted R1 attempt. It is preserved as administrative incident evidence, not scientific R2 authority. R2 is a newly authorized forward recovery. The historical incident content below remains unchanged.
+
+Real outcome-bearing A9 artifact access is embargoed until the direct-child verifier-freeze checkpoint is mechanically verified. No R2 scientific verdict or result JSON exists yet. Only synthetic tests and outcome-blind contract/static audits are authorized before that checkpoint. Production activation remains false. D4-A10 = NOT_STARTED / NOT_AUTHORIZED.
+
+---
+
 # PANDA Agent — Generalization Roadmap
 
 D4-A9-R1 attempt: FAIL / BLOCKED / NOT_FROZEN / HOST_ACCEPTANCE_FAILED.
