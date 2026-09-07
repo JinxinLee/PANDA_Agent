@@ -174,7 +174,9 @@ Do not silently relax global thresholds. Citation-integrity failures, wrong-vers
 
 ## 11. Completion and stop rule
 
-Report implementation, changed files, every evaluation and its cost, measured before/after metrics, exactly `PASS`/`FAIL`/`INCONCLUSIVE`, concrete limitations, and only the next roadmap task. Stop at the authorized tier and task boundary.
+Follow the task completion criteria in `AGENTS.md`: complete all requested deliverables and authorized required steps with proportionate verification. If blocked, complete independent authorized work and report completed work and outstanding steps separately. A status label does not substitute for completing remaining authorized work.
+
+Report implementation, changed files, every evaluation and its cost, measured before/after metrics where applicable, exactly `PASS`/`FAIL`/`INCONCLUSIVE` for the stated verification scope, and concrete limitations. Do not imply that unrun evaluations passed. Identify the next roadmap task only if it is established and relevant; do not execute it. End after completing the current authorized scope or exhausting independent authorized work when blocked. Stop at the authorized tier and task boundary.
 
 Do not automatically escalate:
 

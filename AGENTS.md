@@ -7,12 +7,14 @@ Prototype development does not require freezing every implementation state.
 Do not create frozen candidates, integrity manifests, per-file hashes, or
 clean-tree checkpoints during ordinary roadmap-task development.
 
-Use normal Git commits as the primary development history.
+When commits are requested or required by the authorized workflow, use normal Git commits as the primary development history. This instruction does not require a commit or a clean working tree to complete ordinary development work.
 
 A strict frozen implementation identity is required only when:
 - the user explicitly requests a frozen candidate;
-- an authorized T3/T5 or formal phase-boundary evaluation requires one;
-- a release or acceptance comparison requires immutable provenance.
+- an explicitly authorized T3/T5 or formal phase-boundary evaluation requires immutable provenance;
+- an explicitly authorized release or acceptance comparison requires immutable provenance.
+
+Ordinary development checks are not formal acceptance comparisons. A provenance requirement does not itself authorize an evaluation.
 
 Small targeted tests and ordinary before/after development checks may run
 against the current working tree. Record relevant changes and limitations,
@@ -25,11 +27,12 @@ but do not turn them into formal frozen candidates.
 - `docs/EVALUATION_POLICY.md`: evaluation tiers, failure taxonomy, cost controls, and gates.
 - `docs/EVALUATION_STATUS.md`: one current status followed by labelled historical records.
 
-Code and actual artifacts are authoritative when documentation is stale.
+Use code and actual artifacts to establish implemented behavior and observed results when descriptive documentation is stale. They do not grant authorization or override explicit scope, evaluation, or lifecycle restrictions. Resolve descriptive discrepancies within the requested scope; ask only when a material authorization conflict remains.
 
 ## Development scope
 
-- Implement only the roadmap task explicitly requested by the user, then stop. Do not automatically start the next task.
+- Complete the user's requested task, including necessary investigation, implementation, relevant documentation, proportionate verification, and fixes for failures caused by the change. A roadmap task ID is not required when the requested outcome is clear. Do not start a subsequent roadmap task or cross an explicit evaluation or lifecycle boundary without authorization.
+- Resolve routine implementation details using repository conventions and reasonable assumptions. Ask for clarification only when missing information materially affects correctness, scope, or authorization and cannot be resolved from available context. Honor authorization already given for the same task; ask again only if the proposed action exceeds it. If a step is blocked, complete independent authorized work and report the blocked step, the reason, and the specific input or authorization needed.
 - Prefer the smallest general mechanism that addresses the observed failure class.
 - Avoid unrelated refactoring and do not introduce future roadmap architecture early.
 - Preserve existing behavior outside the requested scope where practical.
@@ -61,6 +64,8 @@ Do not compensate at a downstream layer for an upstream failure.
 
 ## Completion
 
+A task is complete when all requested deliverables and authorized required steps are finished and proportionately verified. A status label does not substitute for completing remaining authorized work. If blocked, report completed work and outstanding steps separately. Apply PASS, FAIL, or INCONCLUSIVE to the stated verification scope; do not imply that unrun evaluations passed.
+
 After each roadmap task:
 
 1. summarize implementation;
@@ -69,5 +74,5 @@ After each roadmap task:
 4. report before/after metrics where applicable;
 5. state exactly `PASS`, `FAIL`, or `INCONCLUSIVE`;
 6. list concrete limitations;
-7. name the next roadmap task only;
-8. stop.
+7. identify the next roadmap task if it is established and relevant; do not execute it;
+8. end after completing the current authorized scope or exhausting independent authorized work when blocked.
