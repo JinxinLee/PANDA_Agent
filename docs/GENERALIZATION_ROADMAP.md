@@ -1,5 +1,10 @@
 # PANDA Agent — Generalization Roadmap
 
+D4-A9-R1 attempt: FAIL / BLOCKED / NOT_FROZEN / HOST_ACCEPTANCE_FAILED.
+
+The delegated worker reported running its focused test suite. Tests 04-08 and 39 call verify_closeout_r1 against the real repository, which unconditionally calls run_live_audit without a synthetic replacement. The required verifier-checkpoint-before-real-data-recomputation order was therefore not preserved. No R1 scientific verdict is accepted or sealed, and no retroactive freeze is permitted. Six draft paths remain uncommitted; no R1 result JSON exists. Historical A9 authority is preserved, not superseded by an accepted R1 receipt. Production activation remains false. D4-A10 = NOT_STARTED / NOT_AUTHORIZED. User review is required before lifecycle recovery. See evaluation/D4_A9_R1_POST_OUTCOME_CLOSEOUT_VERIFICATION_REPAIR.md. STOP.
+
+
 > This document is a roadmap, not a single implementation task.
 > Codex must implement only the roadmap task explicitly requested in the
 > current user instruction and must stop after that task.

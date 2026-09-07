@@ -11,6 +11,12 @@ When records conflict, use the single section explicitly marked **Current author
 
 # Current authoritative state — 2026-09-07
 
+D4-A9-R1 attempt: FAIL / BLOCKED / NOT_FROZEN / HOST_ACCEPTANCE_FAILED.
+
+The delegated worker reported running its focused test suite. Tests 04-08 and 39 call verify_closeout_r1 against the real repository, which unconditionally calls run_live_audit without a synthetic replacement. The required verifier-checkpoint-before-real-data-recomputation order was therefore not preserved. No R1 scientific verdict is accepted or sealed, and no retroactive freeze is permitted. Six draft paths remain uncommitted; no R1 result JSON exists. Historical A9 authority is preserved, not superseded by an accepted R1 receipt. Production activation remains false. D4-A10 = NOT_STARTED / NOT_AUTHORIZED. User review is required before lifecycle recovery. See evaluation/D4_A9_R1_POST_OUTCOME_CLOSEOUT_VERIFICATION_REPAIR.md. STOP.
+
+## Preserved historical A9 closeout record (R1 not sealed)
+
 ## D4-A9 Component-Sensitive Model-Factory Covered-Symbol Retirement Targeted Validation — 2026-09-07
 
 - `D4-A9 = COMPLETE / PASS / PARTIAL / MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD`; `D4-A8-R2 = HISTORICAL / PRESERVED / IMMUTABLE / COMPLETE / PASS / COMPONENT_SENSITIVE_EXECUTION_CONTRACT_SEALED`; `D4-A8-R1 = HISTORICAL / PARTIAL / COMPONENT_SENSITIVE_TARGET_MASK_CORRECT / PROVENANCE_REUSE_AND_EXECUTION_GATE_NOT_FULLY_SEALED`; `D4-A8 = HISTORICAL / PARTIAL / TARGETED_REVALIDATION_COHORT_PREREGISTERED / THREE_SYMBOL_RETIREMENT_SENSITIVITY_INSUFFICIENT`; `D4-A7 = PRESERVED / IMMUTABLE / VALIDATED_SUBSET_LOCATOR_RETIREMENT_ACTIVATED`; `D4-A6-R1 = PRESERVED / IMMUTABLE / VALIDATED_SUBSET_LOCATOR_RETIREMENT_MAPPING_PREREGISTERED_AND_VERIFICATION_SEALED`; `D4-A5 SCIENTIFIC OUTCOME = PRESERVED / IMMUTABLE / LEVEL_2_INCONCLUSIVE / BATCH2_REFERENCE_BASELINE_NOT_REPRODUCED`; `STARTING HEAD = 06f853d9613c5170676d77261cc2d7b82d50958c (D4-A8-R2)`; `STARTING PARENT HEAD = a357bfc4e0d846cefa295e98c5de0a8b2813cfa0 (D4-A8-R1)`; `BATCH1 = ACTIVE`; `BATCH2_VALIDATED_SUBSET = ACTIVE`; `BATCH2_VALIDATED_SUBSET_ACTIVE_RULES = [effective_acceptance_pipeline, root_macro_usage]`; `BATCH2_HELD_RULES = [model_factory_theory]`; `FULL_BATCH2_PRODUCTION_ACTIVATION = false`; `PRODUCTION_ACTIVATION_AUTHORIZED = false`; `D4_A9_AUTHORIZED = true`; `NEXT_STAGE = STOP (AWAIT_SEPARATE_AUTHORIZATION / NO_FUTURE_STAGE_AUTOMATICALLY_STARTED)`.

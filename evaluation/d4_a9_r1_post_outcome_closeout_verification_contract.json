@@ -1,0 +1,309 @@
+{
+  "lifecycle_stage": "D4-A9-R1",
+  "task_name": "D4-A9-R1 — Post-Outcome Closeout Verification Repair",
+  "created_at": "2026-09-07T14:00:00Z",
+  "contract_nature": {
+    "is_new_scientific_preregistration": false,
+    "repair_and_verification_contract_only": true,
+    "does_not_change_scientific_criteria": true,
+    "does_not_change_treatment": true,
+    "does_not_change_cohort": true,
+    "does_not_change_frozen_evidence": true,
+    "does_not_authorize_provider_execution": true,
+    "does_not_authorize_production_activation": true
+  },
+  "starting_boundary": {
+    "head": "07b8cc921b4e36dc2acf2ae4ba0b27f4b3edf115",
+    "commit_message": "D4-A9 close component-sensitive model-factory validation",
+    "parent": "2419d4f1818277656c1b3be93e423134e877657f",
+    "clean_worktree_required": true
+  },
+  "raw_scientific_artifacts_freeze_seals": {
+    "raw_prospective_plans": {
+      "path": "evaluation/d4_a9_raw_prospective_plans.json",
+      "freeze_commit": "443d832258bf99a8f049ea524995b05922cdae80",
+      "expected_git_blob": "99891321c0d3ba3e0f54158441f2d739eca2db6f"
+    },
+    "raw_paired_results": {
+      "path": "evaluation/d4_a9_raw_paired_results.json",
+      "freeze_commit": "2419d4f1818277656c1b3be93e423134e877657f",
+      "expected_git_blob": "4f44ac31c9fd917c1212f8d64c59974f90e4cfd6"
+    }
+  },
+  "historical_a9_artifacts_seals": {
+    "evaluation/D4_A9_MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATION.md": "ceabb77f1bce26e542894cd5e6966d6bec9ba810",
+    "evaluation/d4_a9_execution_manifest.json": "e9ace2740a02b1ac827a47fe7a9c14758dddbdee",
+    "evaluation/d4_a9_raw_prospective_plans.json": "99891321c0d3ba3e0f54158441f2d739eca2db6f",
+    "evaluation/d4_a9_raw_paired_results.json": "4f44ac31c9fd917c1212f8d64c59974f90e4cfd6",
+    "evaluation/d4_a9_evaluator_results.json": "77f299d0ca9c3c4b7fc4dabb611eebc3979458b8",
+    "evaluation/d4_a9_result.json": "f4e27c51d326fe703274f25d015c6c0d2f90335e",
+    "evaluation/scripts/d4_a9_model_factory_covered_symbol_retirement_validation.py": "90d3dd33808ccb21d210f4ca151136586fe0469e",
+    "tests/unit/test_d4_a9_model_factory_covered_symbol_retirement_validation.py": "9dc8f48a4a21ce3c22b32dd951a4a3fc8e827405"
+  },
+  "r2_authority_head": "06f853d9613c5170676d77261cc2d7b82d50958c",
+  "r2_authority_artifacts_seals": {
+    "evaluation/D4_A8_R2_COMPONENT_SENSITIVE_EXECUTION_CONTRACT_SEAL.md": "00fce9d3434aa3d242fbdf10629a8f4c2c543666",
+    "evaluation/d4_a8_r2_component_sensitive_execution_preregistration.json": "44a88edb9f2a2fa684ae49d7b08f8c1b38dfca12",
+    "evaluation/d4_a8_r2_result.json": "7cf52ea0fbc696c77fb1e85b9d81bd65998a2022",
+    "evaluation/scripts/d4_a8_r2_component_sensitive_execution_contract_seal.py": "a59ba7d9bcdd095ff597cfc1d07c030d95955bca",
+    "tests/unit/test_d4_a8_r2_component_sensitive_execution_contract_seal.py": "f6e80b271dc7f44d57ba8d6f51cb0cb630db00d6"
+  },
+  "production_and_config_immutability": {
+    "src_unmodified": true,
+    "configs_unmodified": true
+  },
+  "allowed_cumulative_changed_paths": [
+    "docs/EVALUATION_STATUS.md",
+    "docs/GENERALIZATION_ROADMAP.md",
+    "evaluation/D4_A9_R1_POST_OUTCOME_CLOSEOUT_VERIFICATION_REPAIR.md",
+    "evaluation/d4_a9_r1_post_outcome_closeout_verification_contract.json",
+    "evaluation/d4_a9_r1_result.json",
+    "evaluation/scripts/d4_a9_r1_post_outcome_closeout_verification_repair.py",
+    "tests/unit/test_d4_a9_r1_post_outcome_closeout_verification_repair.py"
+  ],
+  "formal_cohort": [
+    "g031",
+    "g032",
+    "g033",
+    "g047"
+  ],
+  "case_roles": {
+    "g031": {
+      "role": "DIRECT_MODEL_FACTORY_TREATMENT_CASE",
+      "covered_component": "model/PndLmdModelFactory.cxx",
+      "critical_evidence_group": "g031.e1",
+      "expected_matching_target_rule": true
+    },
+    "g032": {
+      "role": "DPM1D_SYMBOL_ADJACENT_NONMATCHING_CONTROL",
+      "adjacent_component": "model/PndLmdDPMAngModel1D.cxx",
+      "critical_evidence_group": "g032.e1",
+      "expected_matching_target_rule": false
+    },
+    "g033": {
+      "role": "DPM2D_SYMBOL_ADJACENT_NONMATCHING_CONTROL",
+      "adjacent_component": "model/PndLmdDPMAngModel2D.cxx",
+      "critical_evidence_group": "g033.e1",
+      "expected_matching_target_rule": false
+    },
+    "g047": {
+      "role": "PAGE_HINT_ADJACENT_NONMATCHING_CONTROL",
+      "adjacent_page_hint": {
+        "source_id": "pflueger_2017",
+        "pdf_page": 51
+      },
+      "critical_evidence_group": "g047.e1",
+      "expected_matching_target_rule": false
+    }
+  },
+  "target_rule_id": "model_factory_theory",
+  "covered_symbol_mask": [
+    "model/PndLmdModelFactory.cxx"
+  ],
+  "uncovered_symbol_hold_mask": [
+    "model/PndLmdDPMAngModel1D.cxx",
+    "model/PndLmdDPMAngModel2D.cxx"
+  ],
+  "page_hint_hold_mask": {
+    "pflueger_2017": [
+      51,
+      57,
+      65
+    ]
+  },
+  "shared_plan_invariants": {
+    "plans_required": 4,
+    "plans_per_case": 1,
+    "required_persisted_fields": [
+      "case_id",
+      "question",
+      "provider_model_contract",
+      "raw_analyzer_response",
+      "canonical_plan",
+      "canonical_serialization",
+      "contribution_ledger",
+      "provenance_origin_receipts",
+      "component_applicability_receipts",
+      "current_execution_projection",
+      "treatment_execution_projection",
+      "plan_signature",
+      "provider_accounting",
+      "matched_rule_identities"
+    ],
+    "persistence_before_gate": true,
+    "persisted_before_gated_timestamp_order": true,
+    "terminal_persistence_state": "RETRIEVAL_ELIGIBLE"
+  },
+  "exact_schedule_8": [
+    {
+      "cell_index": 1,
+      "cell_id": "g031_A7_CURRENT",
+      "case_id": "g031",
+      "arm": "A7_CURRENT",
+      "role": "DIRECT_MODEL_FACTORY_TREATMENT_CASE"
+    },
+    {
+      "cell_index": 2,
+      "cell_id": "g031_COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT",
+      "case_id": "g031",
+      "arm": "COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT",
+      "role": "DIRECT_MODEL_FACTORY_TREATMENT_CASE"
+    },
+    {
+      "cell_index": 3,
+      "cell_id": "g032_A7_CURRENT",
+      "case_id": "g032",
+      "arm": "A7_CURRENT",
+      "role": "DPM1D_SYMBOL_ADJACENT_NONMATCHING_CONTROL"
+    },
+    {
+      "cell_index": 4,
+      "cell_id": "g032_COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT",
+      "case_id": "g032",
+      "arm": "COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT",
+      "role": "DPM1D_SYMBOL_ADJACENT_NONMATCHING_CONTROL"
+    },
+    {
+      "cell_index": 5,
+      "cell_id": "g033_A7_CURRENT",
+      "case_id": "g033",
+      "arm": "A7_CURRENT",
+      "role": "DPM2D_SYMBOL_ADJACENT_NONMATCHING_CONTROL"
+    },
+    {
+      "cell_index": 6,
+      "cell_id": "g033_COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT",
+      "case_id": "g033",
+      "arm": "COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT",
+      "role": "DPM2D_SYMBOL_ADJACENT_NONMATCHING_CONTROL"
+    },
+    {
+      "cell_index": 7,
+      "cell_id": "g047_A7_CURRENT",
+      "case_id": "g047",
+      "arm": "A7_CURRENT",
+      "role": "PAGE_HINT_ADJACENT_NONMATCHING_CONTROL"
+    },
+    {
+      "cell_index": 8,
+      "cell_id": "g047_COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT",
+      "case_id": "g047",
+      "arm": "COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT",
+      "role": "PAGE_HINT_ADJACENT_NONMATCHING_CONTROL"
+    }
+  ],
+  "actual_plan_projection_identity_required": true,
+  "provider_accounting_authority": {
+    "analyzer_logical_calls": 4,
+    "analyzer_provider_attempts": 4,
+    "embedding_calls": 8,
+    "reranker_calls": 8,
+    "qa_calls": 0,
+    "verifier_calls": 0,
+    "judge_calls": 0,
+    "scientific_evaluator_calls": 0,
+    "retries": 0,
+    "total_logical_calls": 20,
+    "total_provider_attempts": 20,
+    "analyzer_tokens_by_case": {
+      "g031": 1788,
+      "g032": 1747,
+      "g033": 1438,
+      "g047": 2226,
+      "total": 7199
+    },
+    "retrieval_tokens_total": 131070,
+    "total_tokens_consumed": 138269,
+    "r1_zero_provider_execution": true
+  },
+  "historical_manifest_supersession": {
+    "policy": "SUPERSEDE_NOT_REPAIR",
+    "stale_booleans_classification": "HISTORICAL_RECEIPT_STALE_NON_AUTHORITATIVE",
+    "superseding_receipt": {
+      "prospective_plans_frozen": true,
+      "prospective_plan_freeze_commit": "443d832258bf99a8f049ea524995b05922cdae80",
+      "paired_results_frozen": true,
+      "paired_result_freeze_commit": "2419d4f1818277656c1b3be93e423134e877657f",
+      "retrieval_execution_observed": true,
+      "retrieval_slots_completed": 8,
+      "evaluation_executed": true
+    }
+  },
+  "safety_predicates": {
+    "critical_control_safety": {
+      "authority": "Gold evidence group matching semantics (critical=True)",
+      "requirement": "Control cases g032, g033, g047 must not experience any treatment-only critical evidence group loss relative to current arm.",
+      "failure_classification": "TARGETED_CONTROL_OR_SAFETY_REGRESSION",
+      "failure_level": 4
+    },
+    "version_safety": {
+      "authority": "Gold allowed_source_versions against retrieved evidence source_id and source_version_id",
+      "requirement": "Zero version violations across all final evidence items in all 8 formal retrieval slots.",
+      "failure_classification": "TARGETED_CONTROL_OR_SAFETY_REGRESSION",
+      "failure_level": 4
+    },
+    "grounding_safety": {
+      "authority": "Gold forbidden_evidence selectors and object_lookup resolution",
+      "requirement": "Zero treatment-only forbidden evidence occurrences or unresolvable objects in treatment arm relative to current baseline.",
+      "failure_classification": "TARGETED_CONTROL_OR_SAFETY_REGRESSION",
+      "failure_level": 4
+    },
+    "diagnostic_non_critical_retrieval_variance": {
+      "nature": "DIAGNOSTIC_ONLY",
+      "is_regression_gate": false,
+      "explanation": "Variations in non-critical final evidence sets or rank orders among controls do not constitute safety regressions unless governed by pre-outcome contract."
+    }
+  },
+  "precedence_order": [
+    {
+      "level": 1,
+      "verdict": "INVALID / TARGETED_VALIDATION_PROTOCOL_FAILED",
+      "trigger": "Protocol, schema, structural, or provenance failures"
+    },
+    {
+      "level": 2,
+      "verdict": "INCONCLUSIVE / ALL_COVERED_COMPONENT_BASELINES_NOT_REPRODUCED",
+      "trigger": "g031 current baseline fails to reproduce critical evidence group g031.e1"
+    },
+    {
+      "level": 3,
+      "verdict": "PARTIAL / DEPENDENCY_OBSERVED_FOR_COVERED_COMPONENTS_RETAIN",
+      "trigger": "g031 baseline reproduces but treatment loses g031.e1 upon target origin subtraction"
+    },
+    {
+      "level": 4,
+      "verdict": "FAIL / TARGETED_CONTROL_OR_SAFETY_REGRESSION",
+      "trigger": "Control critical evidence loss, or version violations > 0, or grounding regressions > 0"
+    },
+    {
+      "level": 5,
+      "verdict": "INCONCLUSIVE / COVERED_COMPONENT_APPLICABILITY_INCOMPLETE",
+      "trigger": "Applicability incomplete under frozen semantics"
+    },
+    {
+      "level": 6,
+      "verdict": "PARTIAL / MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD",
+      "trigger": "g031 reproduces in both arms, independent origin survives, zero control regressions, zero version violations, zero grounding regressions"
+    }
+  ],
+  "component_dispositions": {
+    "model/PndLmdModelFactory.cxx": {
+      "role": "COVERED_COMPONENT",
+      "candidate_level_6_disposition": "RETIREMENT_VALIDATED_COMPONENT"
+    },
+    "model/PndLmdDPMAngModel1D.cxx": {
+      "role": "UNCOVERED_COMPONENT",
+      "invariant_disposition": "HOLD_DIRECT_TREATMENT_COVERAGE_GAP"
+    },
+    "model/PndLmdDPMAngModel2D.cxx": {
+      "role": "UNCOVERED_COMPONENT",
+      "invariant_disposition": "HOLD_DIRECT_TREATMENT_COVERAGE_GAP"
+    },
+    "pflueger_2017:[51, 57, 65]": {
+      "role": "OUTSIDE_TREATMENT_SCOPE",
+      "invariant_disposition": "HOLD_OUTSIDE_TREATMENT_SCOPE"
+    }
+  },
+  "production_activation_authorized": false,
+  "next_stage_authorized": false
+}
