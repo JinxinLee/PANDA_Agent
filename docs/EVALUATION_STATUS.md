@@ -1,10 +1,16 @@
-# D4-A9-R2 current recovery state — 2026-09-07
+# Current authoritative recovery state — D4-A9-R2 — 2026-09-07
 
-IN_PROGRESS / VERIFIER_FREEZE_CHECKPOINT_READY. The commit containing these six R2 paths is the prospective verifier checkpoint; live access remains guard-protected.
+D4-A9-R2 = COMPLETE / PASS / POST_OUTCOME_CLOSEOUT_VERIFICATION_RECOVERED_AND_SEALED / LEVEL_6_PARTIAL_MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED.
 
-The starting commit 1f52957099f3bfd41b9624d863dee0fdddb59ee4 has message D4-A9-R2-Fail, but records the failed, unaccepted R1 attempt. It is preserved as administrative incident evidence, not scientific R2 authority. R2 is a newly authorized forward recovery. The historical incident content below remains unchanged.
+The first live audit ran only after verifier checkpoint `a0b612f0abc3f5ee8cb6a8d2633c5504cfc485c0` (direct parent `1f52957099f3bfd41b9624d863dee0fdddb59ee4`) passed metadata identity checks. Technical audit PASS; scientific Level 6. This closeout is accepted only when the required post-commit `--mode verify` also passes exact topology, seven-path, historical-seal, and committed-result equality checks.
 
-Real outcome-bearing A9 artifact access is embargoed until the direct-child verifier-freeze checkpoint is mechanically verified. No R2 scientific verdict or result JSON exists yet. Only synthetic tests and outcome-blind contract/static audits are authorized before that checkpoint. Production activation remains false. D4-A10 = NOT_STARTED / NOT_AUTHORIZED.
+D4-A9 = HISTORICAL / SCIENTIFIC_EXECUTION_COMPLETE / RAW_ARTIFACTS_FROZEN / PROVISIONAL_CLOSEOUT_SUPERSEDED_BY_D4-A9-R2. D4-A9-R1 = FAILED_ATTEMPT / NOT_FROZEN / NO_SCIENTIFIC_AUTHORITY. The misleadingly named `D4-A9-R2-Fail` commit is the R1 administrative incident record, retained intact below.
+
+ModelFactory covered symbol: RETIREMENT_VALIDATED_COMPONENT. Both DPM symbols: HOLD_DIRECT_TREATMENT_COVERAGE_GAP. Pflueger_2017 [51,57,65]: HOLD_OUTSIDE_TREATMENT_SCOPE. Critical control losses=0; grounding regressions=0; version violations=0. All 96 final evidence items resolve and have allowed versions. Exact current/treatment projections and eight-cell schedule pass; control evidence lists are not claimed identical.
+
+R2 scientific provider/retrieval calls, retries, tokens and DB writes=0. No AGY orchestration was invoked in this R2 run. FULL_BATCH2_PRODUCTION_ACTIVATION=false; PRODUCTION_ACTIVATION_AUTHORIZED=false. D4-A10=NOT_STARTED/NOT_AUTHORIZED. STOP.
+
+The content below is the unchanged historical incident/roadmap record, not current R2 authority.
 
 ---
 

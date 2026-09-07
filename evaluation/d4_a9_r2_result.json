@@ -1,0 +1,1837 @@
+{
+  "errors": [],
+  "formal_cohort": [
+    "g031",
+    "g032",
+    "g033",
+    "g047"
+  ],
+  "target_rule": "model_factory_theory",
+  "covered_symbol_mask": [
+    "model/PndLmdModelFactory.cxx"
+  ],
+  "hold_masks": {
+    "symbols": [
+      "model/PndLmdDPMAngModel1D.cxx",
+      "model/PndLmdDPMAngModel2D.cxx"
+    ],
+    "paper_pages": {
+      "pflueger_2017": [
+        51,
+        57,
+        65
+      ]
+    }
+  },
+  "matched_rules": {
+    "g031": [
+      "model_factory_theory",
+      "model_factory_acceptance_methods"
+    ],
+    "g032": [],
+    "g033": [],
+    "g047": [
+      "dpm_model_theory"
+    ]
+  },
+  "analyzer_accounting": {
+    "per_case": {
+      "g031": {
+        "logical_calls": 1,
+        "attempts": 1,
+        "tokens": 1788,
+        "successful_plan_persisted": true
+      },
+      "g032": {
+        "logical_calls": 1,
+        "attempts": 1,
+        "tokens": 1747,
+        "successful_plan_persisted": true
+      },
+      "g033": {
+        "logical_calls": 1,
+        "attempts": 1,
+        "tokens": 1438,
+        "successful_plan_persisted": true
+      },
+      "g047": {
+        "logical_calls": 1,
+        "attempts": 1,
+        "tokens": 2226,
+        "successful_plan_persisted": true
+      }
+    },
+    "total_tokens": 7199
+  },
+  "provider_accounting": {
+    "analyzer_calls": 4,
+    "analyzer_provider_attempts": 4,
+    "embedding_calls": 8,
+    "reranker_calls": 8,
+    "retrieval_provider_attempts": 16,
+    "token_usage": 138269,
+    "qa_calls": 0,
+    "verifier_calls": 0,
+    "judge_calls": 0,
+    "scientific_evaluator_calls": 0,
+    "retries": 0,
+    "total_logical_calls": 20,
+    "total_attempts": 20
+  },
+  "projection_receipts": {
+    "g031": {
+      "matched_retirement_rules": [
+        "model_factory_theory"
+      ],
+      "mask_entry_count": 1,
+      "removed_rule_origin_entries": [
+        {
+          "contribution_id": "symbol::model/PndLmdModelFactory.cxx",
+          "kind": "symbol",
+          "value": "model/PndLmdModelFactory.cxx",
+          "source_id": null,
+          "pdf_page": null,
+          "retired_rule_origins": [
+            "model_factory_theory"
+          ],
+          "surviving_independent_origins": [
+            "model_factory_acceptance_methods"
+          ],
+          "effectively_removed": false
+        }
+      ],
+      "surviving_independent_origin_entries": [
+        {
+          "contribution_id": "symbol::model/PndLmdModelFactory.cxx",
+          "kind": "symbol",
+          "value": "model/PndLmdModelFactory.cxx",
+          "source_id": null,
+          "pdf_page": null,
+          "surviving_independent_origins": [
+            "model_factory_acceptance_methods"
+          ]
+        }
+      ],
+      "effective_removed_symbols": [],
+      "effective_removed_paper_page_hints": {},
+      "effective_removal_count": 0,
+      "canonical_plan_unchanged": true,
+      "applicability_summary": {
+        "active": 1,
+        "inactive": 0,
+        "ambiguous": 0,
+        "inactive_components": []
+      }
+    },
+    "g032": {
+      "matched_retirement_rules": [],
+      "mask_entry_count": 0,
+      "removed_rule_origin_entries": [],
+      "surviving_independent_origin_entries": [],
+      "effective_removed_symbols": [],
+      "effective_removed_paper_page_hints": {},
+      "effective_removal_count": 0,
+      "canonical_plan_unchanged": true,
+      "applicability_summary": {
+        "active": 0,
+        "inactive": 0,
+        "ambiguous": 0,
+        "inactive_components": []
+      }
+    },
+    "g033": {
+      "matched_retirement_rules": [],
+      "mask_entry_count": 0,
+      "removed_rule_origin_entries": [],
+      "surviving_independent_origin_entries": [],
+      "effective_removed_symbols": [],
+      "effective_removed_paper_page_hints": {},
+      "effective_removal_count": 0,
+      "canonical_plan_unchanged": true,
+      "applicability_summary": {
+        "active": 0,
+        "inactive": 0,
+        "ambiguous": 0,
+        "inactive_components": []
+      }
+    },
+    "g047": {
+      "matched_retirement_rules": [],
+      "mask_entry_count": 0,
+      "removed_rule_origin_entries": [],
+      "surviving_independent_origin_entries": [],
+      "effective_removed_symbols": [],
+      "effective_removed_paper_page_hints": {},
+      "effective_removal_count": 0,
+      "canonical_plan_unchanged": true,
+      "applicability_summary": {
+        "active": 0,
+        "inactive": 0,
+        "ambiguous": 0,
+        "inactive_components": []
+      }
+    }
+  },
+  "persistence_program_order": {
+    "passed": true,
+    "zero_downstream_analyzer_program_guard": true,
+    "first_save_line": 919,
+    "formal_gate_line": 927,
+    "executor_commit": "8e332acb8a1d4658a860ad5e251c9223319bfa42",
+    "proof": "Frozen program order plus persisted_at <= gated_at receipts; no disk reload claim."
+  },
+  "critical_safety": {
+    "g031": {
+      "A7_CURRENT": {
+        "recall": 1.0,
+        "matched_groups": [
+          "g031.e1"
+        ],
+        "provenance": [
+          {
+            "group_id": "g031.e1",
+            "object_id": "object.432011cd3810787037f8b091",
+            "selector_index": 0,
+            "provenance": "direct",
+            "final_evidence_position_1based": 1
+          }
+        ]
+      },
+      "COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT": {
+        "recall": 1.0,
+        "matched_groups": [
+          "g031.e1"
+        ],
+        "provenance": [
+          {
+            "group_id": "g031.e1",
+            "object_id": "object.432011cd3810787037f8b091",
+            "selector_index": 0,
+            "provenance": "direct",
+            "final_evidence_position_1based": 1
+          }
+        ]
+      },
+      "lost_groups": [],
+      "delta": 0.0
+    },
+    "g032": {
+      "A7_CURRENT": {
+        "recall": 1.0,
+        "matched_groups": [
+          "g032.e1"
+        ],
+        "provenance": [
+          {
+            "group_id": "g032.e1",
+            "object_id": "object.230b6af59b9cf223a8341977",
+            "selector_index": 0,
+            "provenance": "direct",
+            "final_evidence_position_1based": 1
+          }
+        ]
+      },
+      "COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT": {
+        "recall": 1.0,
+        "matched_groups": [
+          "g032.e1"
+        ],
+        "provenance": [
+          {
+            "group_id": "g032.e1",
+            "object_id": "object.230b6af59b9cf223a8341977",
+            "selector_index": 0,
+            "provenance": "direct",
+            "final_evidence_position_1based": 1
+          }
+        ]
+      },
+      "lost_groups": [],
+      "delta": 0.0
+    },
+    "g033": {
+      "A7_CURRENT": {
+        "recall": 1.0,
+        "matched_groups": [
+          "g033.e1"
+        ],
+        "provenance": [
+          {
+            "group_id": "g033.e1",
+            "object_id": "object.2d358b6c7f326a93a4ec1c24",
+            "selector_index": 0,
+            "provenance": "direct",
+            "final_evidence_position_1based": 2
+          }
+        ]
+      },
+      "COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT": {
+        "recall": 1.0,
+        "matched_groups": [
+          "g033.e1"
+        ],
+        "provenance": [
+          {
+            "group_id": "g033.e1",
+            "object_id": "object.2d358b6c7f326a93a4ec1c24",
+            "selector_index": 0,
+            "provenance": "direct",
+            "final_evidence_position_1based": 1
+          }
+        ]
+      },
+      "lost_groups": [],
+      "delta": 0.0
+    },
+    "g047": {
+      "A7_CURRENT": {
+        "recall": 1.0,
+        "matched_groups": [
+          "g047.e1"
+        ],
+        "provenance": [
+          {
+            "group_id": "g047.e1",
+            "object_id": "object.f4196a5a00e35fc8550a1da9",
+            "selector_index": 1,
+            "provenance": "direct",
+            "final_evidence_position_1based": 1
+          }
+        ]
+      },
+      "COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT": {
+        "recall": 1.0,
+        "matched_groups": [
+          "g047.e1"
+        ],
+        "provenance": [
+          {
+            "group_id": "g047.e1",
+            "object_id": "object.f4196a5a00e35fc8550a1da9",
+            "selector_index": 1,
+            "provenance": "direct",
+            "final_evidence_position_1based": 1
+          }
+        ]
+      },
+      "lost_groups": [],
+      "delta": 0.0
+    }
+  },
+  "grounding_safety": {
+    "g031": {
+      "A7_CURRENT": {
+        "resolved": [
+          {
+            "object_id": "object.432011cd3810787037f8b091",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "object.230b6af59b9cf223a8341977",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "object.dc8be82193c3acfd81e8b269",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "object.ceb44bd02a5e3a790cf2dfad",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "concept.luminosityfit.luminosity_fit_model",
+            "source_id": "curated_panda_domain",
+            "source_version_id": "curated_panda_domain@1.0"
+          },
+          {
+            "object_id": "subsystem.luminosityfit.model_and_fit",
+            "source_id": "curated_panda_domain",
+            "source_version_id": "curated_panda_domain@1.0"
+          },
+          {
+            "object_id": "object.086846aef68dccf5e066a34b",
+            "source_id": "pflueger_2017",
+            "source_version_id": "pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3"
+          },
+          {
+            "object_id": "object.57d0e09e565d57d3407cfefa",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "object.30fd51f18f0e397439c78234",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "object.630393ee6d957db4a9de62d9",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "object.d884768f7fab1286c9e52448",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "object.4321d4e41f520bc60247a99f",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          }
+        ],
+        "unresolved": [],
+        "forbidden": [],
+        "violations": [],
+        "source_types": [
+          "code",
+          "paper"
+        ],
+        "missing_required_source_types": []
+      },
+      "COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT": {
+        "resolved": [
+          {
+            "object_id": "object.432011cd3810787037f8b091",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "object.230b6af59b9cf223a8341977",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "object.dc8be82193c3acfd81e8b269",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "object.ceb44bd02a5e3a790cf2dfad",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "concept.luminosityfit.luminosity_fit_model",
+            "source_id": "curated_panda_domain",
+            "source_version_id": "curated_panda_domain@1.0"
+          },
+          {
+            "object_id": "subsystem.luminosityfit.model_and_fit",
+            "source_id": "curated_panda_domain",
+            "source_version_id": "curated_panda_domain@1.0"
+          },
+          {
+            "object_id": "object.086846aef68dccf5e066a34b",
+            "source_id": "pflueger_2017",
+            "source_version_id": "pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3"
+          },
+          {
+            "object_id": "object.30fd51f18f0e397439c78234",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "object.57d0e09e565d57d3407cfefa",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "object.630393ee6d957db4a9de62d9",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "object.d884768f7fab1286c9e52448",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "object.0025b2d964d8f2ff56cc6fc1",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          }
+        ],
+        "unresolved": [],
+        "forbidden": [],
+        "violations": [],
+        "source_types": [
+          "code",
+          "paper"
+        ],
+        "missing_required_source_types": []
+      },
+      "treatment_only_regressions": []
+    },
+    "g032": {
+      "A7_CURRENT": {
+        "resolved": [
+          {
+            "object_id": "object.230b6af59b9cf223a8341977",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "object.06b6deb8e15a4656f5f146d5",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "object.f9ad625d84af25a06f1f7e3a",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "object.0c1d954791a22370e7405c8a",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "object.faaced8bd5058b2a19ba9528",
+            "source_id": "pflueger_2017",
+            "source_version_id": "pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3"
+          },
+          {
+            "object_id": "object.0586173b1fe85b12e5259595",
+            "source_id": "pandaroot",
+            "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357"
+          },
+          {
+            "object_id": "object.11c96a51b1bf8ee19a6f8d11",
+            "source_id": "pandaroot",
+            "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357"
+          },
+          {
+            "object_id": "object.9cccd7b5f855bd9b86a8e674",
+            "source_id": "pandaroot",
+            "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357"
+          },
+          {
+            "object_id": "object.284d9e0acf4a9c3b1f213655",
+            "source_id": "restgas_determination",
+            "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+          },
+          {
+            "object_id": "object.f347ab5b656e80a7f62939eb",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "object.e9fde1c69c616f8ca0fb292d",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "object.bb2fa241dc3f66c886697cc3",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          }
+        ],
+        "unresolved": [],
+        "forbidden": [],
+        "violations": [],
+        "source_types": [
+          "code",
+          "documentation",
+          "paper"
+        ],
+        "missing_required_source_types": []
+      },
+      "COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT": {
+        "resolved": [
+          {
+            "object_id": "object.230b6af59b9cf223a8341977",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "object.06b6deb8e15a4656f5f146d5",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "object.f9ad625d84af25a06f1f7e3a",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "object.0c1d954791a22370e7405c8a",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "object.0586173b1fe85b12e5259595",
+            "source_id": "pandaroot",
+            "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357"
+          },
+          {
+            "object_id": "object.abcb9c3017ce8b0394048551",
+            "source_id": "pflueger_2017",
+            "source_version_id": "pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3"
+          },
+          {
+            "object_id": "object.11c96a51b1bf8ee19a6f8d11",
+            "source_id": "pandaroot",
+            "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357"
+          },
+          {
+            "object_id": "object.9cccd7b5f855bd9b86a8e674",
+            "source_id": "pandaroot",
+            "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357"
+          },
+          {
+            "object_id": "object.284d9e0acf4a9c3b1f213655",
+            "source_id": "restgas_determination",
+            "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+          },
+          {
+            "object_id": "object.f347ab5b656e80a7f62939eb",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "object.e9fde1c69c616f8ca0fb292d",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "object.a44196965a5dac655e440f17",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          }
+        ],
+        "unresolved": [],
+        "forbidden": [],
+        "violations": [],
+        "source_types": [
+          "code",
+          "documentation",
+          "paper"
+        ],
+        "missing_required_source_types": []
+      },
+      "treatment_only_regressions": []
+    },
+    "g033": {
+      "A7_CURRENT": {
+        "resolved": [
+          {
+            "object_id": "object.e9fde1c69c616f8ca0fb292d",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "object.2d358b6c7f326a93a4ec1c24",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "object.177d41ef1a6b7a53a1194361",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "object.9bcd252e8a556fd0d56b4b73",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "object.7922c4010c073df3d3e7dbdd",
+            "source_id": "li_2026",
+            "source_version_id": "li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a"
+          },
+          {
+            "object_id": "object.0586173b1fe85b12e5259595",
+            "source_id": "pandaroot",
+            "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357"
+          },
+          {
+            "object_id": "object.11c96a51b1bf8ee19a6f8d11",
+            "source_id": "pandaroot",
+            "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357"
+          },
+          {
+            "object_id": "object.284d9e0acf4a9c3b1f213655",
+            "source_id": "restgas_determination",
+            "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+          },
+          {
+            "object_id": "object.9cccd7b5f855bd9b86a8e674",
+            "source_id": "pandaroot",
+            "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357"
+          },
+          {
+            "object_id": "object.23848a49d011d7b1b25cacda",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "object.bb2fa241dc3f66c886697cc3",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "object.f347ab5b656e80a7f62939eb",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          }
+        ],
+        "unresolved": [],
+        "forbidden": [],
+        "violations": [],
+        "source_types": [
+          "code",
+          "documentation",
+          "paper"
+        ],
+        "missing_required_source_types": []
+      },
+      "COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT": {
+        "resolved": [
+          {
+            "object_id": "object.2d358b6c7f326a93a4ec1c24",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "object.177d41ef1a6b7a53a1194361",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "object.e9fde1c69c616f8ca0fb292d",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "object.9bcd252e8a556fd0d56b4b73",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "object.7922c4010c073df3d3e7dbdd",
+            "source_id": "li_2026",
+            "source_version_id": "li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a"
+          },
+          {
+            "object_id": "object.0586173b1fe85b12e5259595",
+            "source_id": "pandaroot",
+            "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357"
+          },
+          {
+            "object_id": "object.11c96a51b1bf8ee19a6f8d11",
+            "source_id": "pandaroot",
+            "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357"
+          },
+          {
+            "object_id": "object.284d9e0acf4a9c3b1f213655",
+            "source_id": "restgas_determination",
+            "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+          },
+          {
+            "object_id": "object.9cccd7b5f855bd9b86a8e674",
+            "source_id": "pandaroot",
+            "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357"
+          },
+          {
+            "object_id": "object.23848a49d011d7b1b25cacda",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "object.bb2fa241dc3f66c886697cc3",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "object.ca426e4e6a46de57f4924e29",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          }
+        ],
+        "unresolved": [],
+        "forbidden": [],
+        "violations": [],
+        "source_types": [
+          "code",
+          "documentation",
+          "paper"
+        ],
+        "missing_required_source_types": []
+      },
+      "treatment_only_regressions": []
+    },
+    "g047": {
+      "A7_CURRENT": {
+        "resolved": [
+          {
+            "object_id": "object.f4196a5a00e35fc8550a1da9",
+            "source_id": "pflueger_2017",
+            "source_version_id": "pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3"
+          },
+          {
+            "object_id": "object.faaced8bd5058b2a19ba9528",
+            "source_id": "pflueger_2017",
+            "source_version_id": "pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3"
+          },
+          {
+            "object_id": "object.760a25f4170d730f136cfdbe",
+            "source_id": "pflueger_2017",
+            "source_version_id": "pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3"
+          },
+          {
+            "object_id": "object.21ade3bc1b265169efad5300",
+            "source_id": "li_2026",
+            "source_version_id": "li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a"
+          },
+          {
+            "object_id": "object.fdce122aee775d9038f08328",
+            "source_id": "li_2026",
+            "source_version_id": "li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a"
+          },
+          {
+            "object_id": "object.84d4cae9b1ce4009dfe06a25",
+            "source_id": "karavdina_2015",
+            "source_version_id": "karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b"
+          },
+          {
+            "object_id": "object.6186443f8f63cc299ec5a4da",
+            "source_id": "karavdina_2015",
+            "source_version_id": "karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b"
+          },
+          {
+            "object_id": "object.da3c44d15f5b5402c156a3d6",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "object.5fc0020a59573b7cb8a6e9da",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "object.0c1d954791a22370e7405c8a",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "object.a6aab90b5fb2abbb3324b995",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "object.bc24ec6d79c17497c2fedfb1",
+            "source_id": "karavdina_2015",
+            "source_version_id": "karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b"
+          }
+        ],
+        "unresolved": [],
+        "forbidden": [],
+        "violations": [],
+        "source_types": [
+          "code",
+          "documentation",
+          "paper"
+        ],
+        "missing_required_source_types": []
+      },
+      "COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT": {
+        "resolved": [
+          {
+            "object_id": "object.f4196a5a00e35fc8550a1da9",
+            "source_id": "pflueger_2017",
+            "source_version_id": "pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3"
+          },
+          {
+            "object_id": "object.faaced8bd5058b2a19ba9528",
+            "source_id": "pflueger_2017",
+            "source_version_id": "pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3"
+          },
+          {
+            "object_id": "object.760a25f4170d730f136cfdbe",
+            "source_id": "pflueger_2017",
+            "source_version_id": "pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3"
+          },
+          {
+            "object_id": "object.21ade3bc1b265169efad5300",
+            "source_id": "li_2026",
+            "source_version_id": "li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a"
+          },
+          {
+            "object_id": "object.fdce122aee775d9038f08328",
+            "source_id": "li_2026",
+            "source_version_id": "li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a"
+          },
+          {
+            "object_id": "object.84d4cae9b1ce4009dfe06a25",
+            "source_id": "karavdina_2015",
+            "source_version_id": "karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b"
+          },
+          {
+            "object_id": "object.6186443f8f63cc299ec5a4da",
+            "source_id": "karavdina_2015",
+            "source_version_id": "karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b"
+          },
+          {
+            "object_id": "object.0c1d954791a22370e7405c8a",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "object.a6aab90b5fb2abbb3324b995",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "object.89eab2fef654d8c95fd2e678",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "object.da3c44d15f5b5402c156a3d6",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          },
+          {
+            "object_id": "object.bc24ec6d79c17497c2fedfb1",
+            "source_id": "karavdina_2015",
+            "source_version_id": "karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b"
+          }
+        ],
+        "unresolved": [],
+        "forbidden": [],
+        "violations": [],
+        "source_types": [
+          "code",
+          "documentation",
+          "paper"
+        ],
+        "missing_required_source_types": []
+      },
+      "treatment_only_regressions": []
+    }
+  },
+  "version_safety": {
+    "g031": {
+      "A7_CURRENT": {
+        "items": [
+          {
+            "object_id": "object.432011cd3810787037f8b091",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.230b6af59b9cf223a8341977",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.dc8be82193c3acfd81e8b269",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.ceb44bd02a5e3a790cf2dfad",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "concept.luminosityfit.luminosity_fit_model",
+            "source_id": "curated_panda_domain",
+            "source_version_id": "curated_panda_domain@1.0",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "subsystem.luminosityfit.model_and_fit",
+            "source_id": "curated_panda_domain",
+            "source_version_id": "curated_panda_domain@1.0",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.086846aef68dccf5e066a34b",
+            "source_id": "pflueger_2017",
+            "source_version_id": "pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.57d0e09e565d57d3407cfefa",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.30fd51f18f0e397439c78234",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.630393ee6d957db4a9de62d9",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.d884768f7fab1286c9e52448",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.4321d4e41f520bc60247a99f",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          }
+        ],
+        "valid": 12,
+        "violations": 0,
+        "missing_invalid": 0,
+        "not_governed": 0
+      },
+      "COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT": {
+        "items": [
+          {
+            "object_id": "object.432011cd3810787037f8b091",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.230b6af59b9cf223a8341977",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.dc8be82193c3acfd81e8b269",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.ceb44bd02a5e3a790cf2dfad",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "concept.luminosityfit.luminosity_fit_model",
+            "source_id": "curated_panda_domain",
+            "source_version_id": "curated_panda_domain@1.0",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "subsystem.luminosityfit.model_and_fit",
+            "source_id": "curated_panda_domain",
+            "source_version_id": "curated_panda_domain@1.0",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.086846aef68dccf5e066a34b",
+            "source_id": "pflueger_2017",
+            "source_version_id": "pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.30fd51f18f0e397439c78234",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.57d0e09e565d57d3407cfefa",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.630393ee6d957db4a9de62d9",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.d884768f7fab1286c9e52448",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.0025b2d964d8f2ff56cc6fc1",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          }
+        ],
+        "valid": 12,
+        "violations": 0,
+        "missing_invalid": 0,
+        "not_governed": 0
+      }
+    },
+    "g032": {
+      "A7_CURRENT": {
+        "items": [
+          {
+            "object_id": "object.230b6af59b9cf223a8341977",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.06b6deb8e15a4656f5f146d5",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.f9ad625d84af25a06f1f7e3a",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.0c1d954791a22370e7405c8a",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.faaced8bd5058b2a19ba9528",
+            "source_id": "pflueger_2017",
+            "source_version_id": "pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.0586173b1fe85b12e5259595",
+            "source_id": "pandaroot",
+            "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.11c96a51b1bf8ee19a6f8d11",
+            "source_id": "pandaroot",
+            "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.9cccd7b5f855bd9b86a8e674",
+            "source_id": "pandaroot",
+            "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.284d9e0acf4a9c3b1f213655",
+            "source_id": "restgas_determination",
+            "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.f347ab5b656e80a7f62939eb",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.e9fde1c69c616f8ca0fb292d",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.bb2fa241dc3f66c886697cc3",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          }
+        ],
+        "valid": 12,
+        "violations": 0,
+        "missing_invalid": 0,
+        "not_governed": 0
+      },
+      "COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT": {
+        "items": [
+          {
+            "object_id": "object.230b6af59b9cf223a8341977",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.06b6deb8e15a4656f5f146d5",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.f9ad625d84af25a06f1f7e3a",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.0c1d954791a22370e7405c8a",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.0586173b1fe85b12e5259595",
+            "source_id": "pandaroot",
+            "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.abcb9c3017ce8b0394048551",
+            "source_id": "pflueger_2017",
+            "source_version_id": "pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.11c96a51b1bf8ee19a6f8d11",
+            "source_id": "pandaroot",
+            "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.9cccd7b5f855bd9b86a8e674",
+            "source_id": "pandaroot",
+            "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.284d9e0acf4a9c3b1f213655",
+            "source_id": "restgas_determination",
+            "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.f347ab5b656e80a7f62939eb",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.e9fde1c69c616f8ca0fb292d",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.a44196965a5dac655e440f17",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          }
+        ],
+        "valid": 12,
+        "violations": 0,
+        "missing_invalid": 0,
+        "not_governed": 0
+      }
+    },
+    "g033": {
+      "A7_CURRENT": {
+        "items": [
+          {
+            "object_id": "object.e9fde1c69c616f8ca0fb292d",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.2d358b6c7f326a93a4ec1c24",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.177d41ef1a6b7a53a1194361",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.9bcd252e8a556fd0d56b4b73",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.7922c4010c073df3d3e7dbdd",
+            "source_id": "li_2026",
+            "source_version_id": "li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.0586173b1fe85b12e5259595",
+            "source_id": "pandaroot",
+            "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.11c96a51b1bf8ee19a6f8d11",
+            "source_id": "pandaroot",
+            "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.284d9e0acf4a9c3b1f213655",
+            "source_id": "restgas_determination",
+            "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.9cccd7b5f855bd9b86a8e674",
+            "source_id": "pandaroot",
+            "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.23848a49d011d7b1b25cacda",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.bb2fa241dc3f66c886697cc3",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.f347ab5b656e80a7f62939eb",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          }
+        ],
+        "valid": 12,
+        "violations": 0,
+        "missing_invalid": 0,
+        "not_governed": 0
+      },
+      "COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT": {
+        "items": [
+          {
+            "object_id": "object.2d358b6c7f326a93a4ec1c24",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.177d41ef1a6b7a53a1194361",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.e9fde1c69c616f8ca0fb292d",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.9bcd252e8a556fd0d56b4b73",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.7922c4010c073df3d3e7dbdd",
+            "source_id": "li_2026",
+            "source_version_id": "li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.0586173b1fe85b12e5259595",
+            "source_id": "pandaroot",
+            "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.11c96a51b1bf8ee19a6f8d11",
+            "source_id": "pandaroot",
+            "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.284d9e0acf4a9c3b1f213655",
+            "source_id": "restgas_determination",
+            "source_version_id": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.9cccd7b5f855bd9b86a8e674",
+            "source_id": "pandaroot",
+            "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.23848a49d011d7b1b25cacda",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.bb2fa241dc3f66c886697cc3",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.ca426e4e6a46de57f4924e29",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          }
+        ],
+        "valid": 12,
+        "violations": 0,
+        "missing_invalid": 0,
+        "not_governed": 0
+      }
+    },
+    "g047": {
+      "A7_CURRENT": {
+        "items": [
+          {
+            "object_id": "object.f4196a5a00e35fc8550a1da9",
+            "source_id": "pflueger_2017",
+            "source_version_id": "pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.faaced8bd5058b2a19ba9528",
+            "source_id": "pflueger_2017",
+            "source_version_id": "pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.760a25f4170d730f136cfdbe",
+            "source_id": "pflueger_2017",
+            "source_version_id": "pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.21ade3bc1b265169efad5300",
+            "source_id": "li_2026",
+            "source_version_id": "li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.fdce122aee775d9038f08328",
+            "source_id": "li_2026",
+            "source_version_id": "li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.84d4cae9b1ce4009dfe06a25",
+            "source_id": "karavdina_2015",
+            "source_version_id": "karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.6186443f8f63cc299ec5a4da",
+            "source_id": "karavdina_2015",
+            "source_version_id": "karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.da3c44d15f5b5402c156a3d6",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.5fc0020a59573b7cb8a6e9da",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.0c1d954791a22370e7405c8a",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.a6aab90b5fb2abbb3324b995",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.bc24ec6d79c17497c2fedfb1",
+            "source_id": "karavdina_2015",
+            "source_version_id": "karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b",
+            "state": "VALID_VERSION"
+          }
+        ],
+        "valid": 12,
+        "violations": 0,
+        "missing_invalid": 0,
+        "not_governed": 0
+      },
+      "COMPONENT_SENSITIVE_MODEL_FACTORY_RETIREMENT": {
+        "items": [
+          {
+            "object_id": "object.f4196a5a00e35fc8550a1da9",
+            "source_id": "pflueger_2017",
+            "source_version_id": "pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.faaced8bd5058b2a19ba9528",
+            "source_id": "pflueger_2017",
+            "source_version_id": "pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.760a25f4170d730f136cfdbe",
+            "source_id": "pflueger_2017",
+            "source_version_id": "pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.21ade3bc1b265169efad5300",
+            "source_id": "li_2026",
+            "source_version_id": "li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.fdce122aee775d9038f08328",
+            "source_id": "li_2026",
+            "source_version_id": "li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.84d4cae9b1ce4009dfe06a25",
+            "source_id": "karavdina_2015",
+            "source_version_id": "karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.6186443f8f63cc299ec5a4da",
+            "source_id": "karavdina_2015",
+            "source_version_id": "karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.0c1d954791a22370e7405c8a",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.a6aab90b5fb2abbb3324b995",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.89eab2fef654d8c95fd2e678",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.da3c44d15f5b5402c156a3d6",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "state": "VALID_VERSION"
+          },
+          {
+            "object_id": "object.bc24ec6d79c17497c2fedfb1",
+            "source_id": "karavdina_2015",
+            "source_version_id": "karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b",
+            "state": "VALID_VERSION"
+          }
+        ],
+        "valid": 12,
+        "violations": 0,
+        "missing_invalid": 0,
+        "not_governed": 0
+      }
+    }
+  },
+  "diagnostic_noncritical_variance": {
+    "g031": {
+      "diagnostic_only": true,
+      "evidence_set_equal": false,
+      "rank_order_equal": false,
+      "noncritical_additions": [],
+      "noncritical_removals": []
+    },
+    "g032": {
+      "diagnostic_only": true,
+      "evidence_set_equal": false,
+      "rank_order_equal": false,
+      "noncritical_additions": [
+        "object.a44196965a5dac655e440f17",
+        "object.abcb9c3017ce8b0394048551"
+      ],
+      "noncritical_removals": [
+        "object.bb2fa241dc3f66c886697cc3",
+        "object.faaced8bd5058b2a19ba9528"
+      ]
+    },
+    "g033": {
+      "diagnostic_only": true,
+      "evidence_set_equal": false,
+      "rank_order_equal": false,
+      "noncritical_additions": [
+        "object.ca426e4e6a46de57f4924e29"
+      ],
+      "noncritical_removals": [
+        "object.f347ab5b656e80a7f62939eb"
+      ]
+    },
+    "g047": {
+      "diagnostic_only": true,
+      "evidence_set_equal": false,
+      "rank_order_equal": false,
+      "noncritical_additions": [
+        "object.89eab2fef654d8c95fd2e678"
+      ],
+      "noncritical_removals": [
+        "object.5fc0020a59573b7cb8a6e9da"
+      ]
+    }
+  },
+  "g031_baseline_result": {
+    "recall": 1.0,
+    "matched_groups": [
+      "g031.e1"
+    ],
+    "provenance": [
+      {
+        "group_id": "g031.e1",
+        "object_id": "object.432011cd3810787037f8b091",
+        "selector_index": 0,
+        "provenance": "direct",
+        "final_evidence_position_1based": 1
+      }
+    ]
+  },
+  "g031_treatment_result": {
+    "recall": 1.0,
+    "matched_groups": [
+      "g031.e1"
+    ],
+    "provenance": [
+      {
+        "group_id": "g031.e1",
+        "object_id": "object.432011cd3810787037f8b091",
+        "selector_index": 0,
+        "provenance": "direct",
+        "final_evidence_position_1based": 1
+      }
+    ]
+  },
+  "selected_origin_subtraction": [
+    {
+      "contribution_id": "symbol::model/PndLmdModelFactory.cxx",
+      "kind": "symbol",
+      "value": "model/PndLmdModelFactory.cxx",
+      "source_id": null,
+      "pdf_page": null,
+      "retired_rule_origins": [
+        "model_factory_theory"
+      ],
+      "surviving_independent_origins": [
+        "model_factory_acceptance_methods"
+      ],
+      "effectively_removed": false
+    }
+  ],
+  "independent_origin_preservation": [
+    {
+      "contribution_id": "symbol::model/PndLmdModelFactory.cxx",
+      "kind": "symbol",
+      "value": "model/PndLmdModelFactory.cxx",
+      "source_id": null,
+      "pdf_page": null,
+      "surviving_independent_origins": [
+        "model_factory_acceptance_methods"
+      ]
+    }
+  ],
+  "verification_status": "PASS",
+  "scientific_verdict_level": 6,
+  "scientific_verdict": "PARTIAL / MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD",
+  "scientific_decision": "MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD",
+  "component_dispositions": {
+    "model/PndLmdModelFactory.cxx": "RETIREMENT_VALIDATED_COMPONENT",
+    "model/PndLmdDPMAngModel1D.cxx": "HOLD_DIRECT_TREATMENT_COVERAGE_GAP",
+    "model/PndLmdDPMAngModel2D.cxx": "HOLD_DIRECT_TREATMENT_COVERAGE_GAP",
+    "pflueger_2017:[51,57,65]": "HOLD_OUTSIDE_TREATMENT_SCOPE"
+  },
+  "shared_plan_integrity": true,
+  "persistence_integrity": true,
+  "schedule_integrity": true,
+  "plan_projection_integrity": true,
+  "provider_accounting_integrity": true,
+  "lifecycle_stage": "D4-A9-R2",
+  "starting_incident_head": "1f52957099f3bfd41b9624d863dee0fdddb59ee4",
+  "verifier_freeze_head": "a0b612f0abc3f5ee8cb6a8d2633c5504cfc485c0",
+  "first_live_audit_after_freeze": true,
+  "first_live_audit_command": "python evaluation/scripts/d4_a9_r2_post_outcome_closeout_verification_recovery.py --project-root . --mode live-audit",
+  "verification_only": true,
+  "scientific_provider_calls": 0,
+  "scientific_tokens": 0,
+  "scientific_retries": 0,
+  "db_writes": 0,
+  "scientific_execution_path": "No provider or retrieval constructors/imports; deterministic local inputs only",
+  "git_seals": {
+    "historical_a9": {
+      "evaluation/d4_a9_raw_prospective_plans.json": {
+        "authority_commit": "07b8cc921b4e36dc2acf2ae4ba0b27f4b3edf115",
+        "authority_blob": "99891321c0d3ba3e0f54158441f2d739eca2db6f",
+        "verified": true
+      },
+      "evaluation/d4_a9_raw_paired_results.json": {
+        "authority_commit": "07b8cc921b4e36dc2acf2ae4ba0b27f4b3edf115",
+        "authority_blob": "4f44ac31c9fd917c1212f8d64c59974f90e4cfd6",
+        "verified": true
+      },
+      "evaluation/d4_a9_result.json": {
+        "authority_commit": "07b8cc921b4e36dc2acf2ae4ba0b27f4b3edf115",
+        "authority_blob": "f4e27c51d326fe703274f25d015c6c0d2f90335e",
+        "verified": true
+      },
+      "evaluation/d4_a9_evaluator_results.json": {
+        "authority_commit": "07b8cc921b4e36dc2acf2ae4ba0b27f4b3edf115",
+        "authority_blob": "77f299d0ca9c3c4b7fc4dabb611eebc3979458b8",
+        "verified": true
+      },
+      "evaluation/scripts/d4_a9_model_factory_covered_symbol_retirement_validation.py": {
+        "authority_commit": "07b8cc921b4e36dc2acf2ae4ba0b27f4b3edf115",
+        "authority_blob": "90d3dd33808ccb21d210f4ca151136586fe0469e",
+        "verified": true
+      },
+      "evaluation/d4_a9_execution_manifest.json": {
+        "authority_commit": "07b8cc921b4e36dc2acf2ae4ba0b27f4b3edf115",
+        "authority_blob": "e9ace2740a02b1ac827a47fe7a9c14758dddbdee",
+        "verified": true
+      },
+      "evaluation/D4_A9_MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATION.md": {
+        "authority_commit": "07b8cc921b4e36dc2acf2ae4ba0b27f4b3edf115",
+        "authority_blob": "ceabb77f1bce26e542894cd5e6966d6bec9ba810",
+        "verified": true
+      },
+      "tests/unit/test_d4_a9_model_factory_covered_symbol_retirement_validation.py": {
+        "authority_commit": "07b8cc921b4e36dc2acf2ae4ba0b27f4b3edf115",
+        "authority_blob": "9dc8f48a4a21ce3c22b32dd951a4a3fc8e827405",
+        "verified": true
+      }
+    },
+    "failed_r1": {
+      "evaluation/D4_A9_R1_POST_OUTCOME_CLOSEOUT_VERIFICATION_REPAIR.md": {
+        "authority_commit": "1f52957099f3bfd41b9624d863dee0fdddb59ee4",
+        "authority_blob": "aea4cb69b93aefa765ce645b962503c08037de86",
+        "verified": true
+      },
+      "evaluation/d4_a9_r1_post_outcome_closeout_verification_contract.json": {
+        "authority_commit": "1f52957099f3bfd41b9624d863dee0fdddb59ee4",
+        "authority_blob": "510d1d4c41d2aabd9d0df84b38fdcb402ef020f5",
+        "verified": true
+      },
+      "evaluation/scripts/d4_a9_r1_post_outcome_closeout_verification_repair.py": {
+        "authority_commit": "1f52957099f3bfd41b9624d863dee0fdddb59ee4",
+        "authority_blob": "1045f41022a59508c074cda83b2ef78214886427",
+        "verified": true
+      },
+      "tests/unit/test_d4_a9_r1_post_outcome_closeout_verification_repair.py": {
+        "authority_commit": "1f52957099f3bfd41b9624d863dee0fdddb59ee4",
+        "authority_blob": "73af7a0cff39c81893c4c7828cf6ca2046f1ce0a",
+        "verified": true
+      }
+    },
+    "a8_r2": {
+      "evaluation/D4_A8_R2_COMPONENT_SENSITIVE_EXECUTION_CONTRACT_SEAL.md": {
+        "authority_commit": "06f853d9613c5170676d77261cc2d7b82d50958c",
+        "authority_blob": "e5d73f0bde20076a909d72aa015f9ffdd9cd8b66",
+        "verified": true
+      },
+      "evaluation/d4_a8_r2_component_sensitive_execution_preregistration.json": {
+        "authority_commit": "06f853d9613c5170676d77261cc2d7b82d50958c",
+        "authority_blob": "44a88edb9f2a2fa684ae49d7b08f8c1b38dfca12",
+        "verified": true
+      },
+      "evaluation/d4_a8_r2_result.json": {
+        "authority_commit": "06f853d9613c5170676d77261cc2d7b82d50958c",
+        "authority_blob": "7cf52ea0fbc696c77fb1e85b9d81bd65998a2022",
+        "verified": true
+      },
+      "evaluation/scripts/d4_a8_r2_component_sensitive_execution_contract_seal.py": {
+        "authority_commit": "06f853d9613c5170676d77261cc2d7b82d50958c",
+        "authority_blob": "539454dedde6f4bdd1c8a47a42260061ec3a6353",
+        "verified": true
+      },
+      "tests/unit/test_d4_a8_r2_component_sensitive_execution_contract_seal.py": {
+        "authority_commit": "06f853d9613c5170676d77261cc2d7b82d50958c",
+        "authority_blob": "3f3a277a87f72422b436438db016303ff9c19a89",
+        "verified": true
+      }
+    },
+    "gold": {
+      "evaluation/benchmarks/v2_6/gold_questions.yaml": {
+        "authority_commit": "8e332acb8a1d4658a860ad5e251c9223319bfa42",
+        "authority_blob": "ed3239d6595efa80c9e38b5858f5a43e98eb276e",
+        "verified": true
+      }
+    },
+    "evaluation_semantics": {
+      "src/panda_agent/evaluation.py": {
+        "authority_commit": "8e332acb8a1d4658a860ad5e251c9223319bfa42",
+        "authority_blob": "598acb49a69822335ca91a5e2fb2840c4591bf81",
+        "verified": true
+      }
+    },
+    "raw_freeze": {
+      "evaluation/d4_a9_raw_prospective_plans.json": {
+        "authority_commit": "443d832258bf99a8f049ea524995b05922cdae80",
+        "authority_blob": "99891321c0d3ba3e0f54158441f2d739eca2db6f",
+        "verified": true
+      },
+      "evaluation/d4_a9_raw_paired_results.json": {
+        "authority_commit": "2419d4f1818277656c1b3be93e423134e877657f",
+        "authority_blob": "4f44ac31c9fd917c1212f8d64c59974f90e4cfd6",
+        "verified": true
+      }
+    },
+    "production": {
+      "src": {
+        "authority_commit": null,
+        "authority_blob": "11501cc119a2bf827b6af909540c041f4071d41c",
+        "verified": true
+      },
+      "configs": {
+        "authority_commit": null,
+        "authority_blob": "05d16b67b071dff5d49ae329be0cf1c4257cfd85",
+        "verified": true
+      }
+    }
+  },
+  "production_immutable": true,
+  "local_lookup_path": "data/normalized/9925ec31a6122e05388806990f79aae036f3b0989c4584d24f2092bc4edb3d94/knowledge_objects.jsonl",
+  "production_activation_authorized": false,
+  "D4_A10_authorized": false,
+  "historical_manifest_supersession": {
+    "classification": "HISTORICAL_RECEIPT_STALE_NON_AUTHORITATIVE",
+    "prospective_plans_frozen": true,
+    "paired_results_frozen": true,
+    "retrieval_slots_completed": 8,
+    "evaluation_execution_recorded_in_git": true
+  }
+}
