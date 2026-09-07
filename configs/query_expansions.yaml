@@ -288,7 +288,7 @@ rules:
   - rule_id: model_factory_theory
     triggers: ["PndLmdModelFactory", "DPM、acceptance 和 resolution", "DPM acceptance resolution"]
     repositories: [luminosityfit]
-    symbols: [model/PndLmdDPMAngModel1D.cxx, model/PndLmdDPMAngModel2D.cxx, model/PndLmdModelFactory.cxx]
+    symbols: [model/PndLmdDPMAngModel1D.cxx, model/PndLmdDPMAngModel2D.cxx]
     concepts: [DPM model acceptance resolution composition]
     paper_page_hints:
       pflueger_2017: [51, 57, 65]

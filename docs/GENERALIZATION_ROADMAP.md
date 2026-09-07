@@ -1,3 +1,17 @@
+# Current authoritative activation state — D4-A10 — 2026-09-07
+
+D4-A10 = COMPLETE / PASS / VALIDATED_MODEL_FACTORY_LOCATOR_RETIREMENT_ACTIVATED.
+
+Starting authority: 661c82abfd2251a9bb4f941e441dfed59a3b6e89; D4-A9-R2 remains COMPLETE / PASS / POST_OUTCOME_CLOSEOUT_VERIFICATION_RECOVERED_AND_SEALED (Level 6 / PARTIAL).
+
+Production activation removes only model/PndLmdModelFactory.cxx from model_factory_theory.symbols. The remaining symbols are model/PndLmdDPMAngModel1D.cxx and model/PndLmdDPMAngModel2D.cxx (HOLD_DIRECT_TREATMENT_COVERAGE_GAP). Pflueger_2017 [51,57,65] remains unchanged (HOLD_OUTSIDE_TREATMENT_SCOPE). Structured replacement remains absent/default false. Independent ModelFactory references, matcher fields, and all other rules and prior activations are unchanged. This does not retire the entire rule.
+
+Verification: existing focused query-expansion configuration loading/uniqueness test, exact parsed before/after configuration comparison, final diff review, and git diff --check. No scientific provider or retrieval execution. FULL_BATCH2_PRODUCTION_ACTIVATION=false. No D4-A11 or further stage created. STOP.
+
+The records below are historical; their production-immutability statements apply to their respective stages before this separately authorized activation.
+
+---
+
 # Current authoritative recovery state — D4-A9-R2 — 2026-09-07
 
 D4-A9-R2 = COMPLETE / PASS / POST_OUTCOME_CLOSEOUT_VERIFICATION_RECOVERED_AND_SEALED / LEVEL_6_PARTIAL_MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED.
