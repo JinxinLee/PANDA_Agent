@@ -7,6 +7,10 @@ execution remains pending the reviewed-cohort prerequisite. This is a prospectiv
 T2 shadow decomposition experiment, not T3/T5, retrieval, QA, production activation,
 or E2/E3. No acceptance verdict exists yet.
 
+E1-R2-HR1 implements required pre-freeze human-review amendments to two paraphrases
+and selected support spans; the accepted scientific design is unchanged and final
+human approval of the amended exact cohort remains pending.
+
 Starting and implementation HEAD: `87cc34dd919d8431bb774003a7f76a9fff3a7567`.
 The working tree was clean. E1-R1 prompt `2.0.0` and schema
 `e1.question_decomposition.v2` are already committed. Do not repair or tune them

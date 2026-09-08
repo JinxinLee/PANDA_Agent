@@ -127,7 +127,8 @@
           "text": "Identify the geometry loader implementation entry point.",
           "facet_type": "locator",
           "support_spans": [
-            "geometry loader"
+            "geometry loader",
+            "respective implementation entry points"
           ]
         },
         {
@@ -136,7 +137,8 @@
           "text": "Identify the calibration reader implementation entry point.",
           "facet_type": "locator",
           "support_spans": [
-            "calibration reader"
+            "calibration reader",
+            "respective implementation entry points"
           ]
         }
       ]
@@ -243,7 +245,9 @@
           "text": "Explain the alignment constants' contribution to event reconstruction.",
           "facet_type": "mechanism",
           "support_spans": [
-            "alignment constants"
+            "alignment constants",
+            "separate contributions",
+            "to event reconstruction"
           ]
         },
         {
@@ -252,7 +256,9 @@
           "text": "Explain the timing offsets' contribution to event reconstruction.",
           "facet_type": "mechanism",
           "support_spans": [
-            "timing offsets"
+            "timing offsets",
+            "separate contributions",
+            "to event reconstruction"
           ]
         }
       ]
@@ -491,7 +497,7 @@
       "language": "en",
       "source_group": "fresh_synthetic_exploratory",
       "shape": "mixed_three",
-      "question": "Locate the residual calculation, define a fit residual, and compare a residual with a pull.",
+      "question": "Locate where the residual calculation is implemented, define a fit residual, and compare a residual with a pull.",
       "reference_points": [
         {
           "reference_point_id": "r2p09.paraphrase.ref1",
@@ -517,7 +523,7 @@
           "text": "Locate the residual calculation implementation.",
           "facet_type": "locator",
           "support_spans": [
-            "Locate the residual calculation"
+            "Locate where the residual calculation is implemented"
           ]
         }
       ]
@@ -622,6 +628,7 @@
           "text": "State the event time window unit.",
           "facet_type": "constraint",
           "support_spans": [
+            "event time window",
             "state its unit"
           ]
         },
@@ -631,6 +638,7 @@
           "text": "Identify the component applying the event time window.",
           "facet_type": "locator",
           "support_spans": [
+            "event time window",
             "identify the component that applies it"
           ]
         },
@@ -640,6 +648,7 @@
           "text": "Explain the event time window's excluded upper boundary.",
           "facet_type": "cause_reason",
           "support_spans": [
+            "event time window",
             "explain why its upper boundary is excluded"
           ]
         }
@@ -652,7 +661,7 @@
       "language": "en",
       "source_group": "fresh_synthetic_exploratory",
       "shape": "four_obligations",
-      "question": "For an event time window, explain the exclusion of the upper boundary, name the component applying the window, give the unit, and provide a definition.",
+      "question": "For an event time window, explain why the upper boundary is excluded, name the component applying the window, give the unit, and provide a definition.",
       "reference_points": [
         {
           "reference_point_id": "r2p11.paraphrase.ref1",
@@ -660,6 +669,7 @@
           "text": "Define an event time window.",
           "facet_type": "definition",
           "support_spans": [
+            "event time window",
             "provide a definition"
           ]
         },
@@ -669,6 +679,7 @@
           "text": "State the event time window unit.",
           "facet_type": "constraint",
           "support_spans": [
+            "event time window",
             "give the unit"
           ]
         },
@@ -678,6 +689,7 @@
           "text": "Identify the component applying the event time window.",
           "facet_type": "locator",
           "support_spans": [
+            "event time window",
             "name the component applying the window"
           ]
         },
@@ -687,7 +699,8 @@
           "text": "Explain the event time window's excluded upper boundary.",
           "facet_type": "cause_reason",
           "support_spans": [
-            "explain the exclusion of the upper boundary"
+            "event time window",
+            "explain why the upper boundary is excluded"
           ]
         }
       ]
@@ -707,6 +720,7 @@
           "text": "Explain the hit cache purpose.",
           "facet_type": "definition",
           "support_spans": [
+            "hit cache",
             "give its purpose"
           ]
         },
@@ -716,6 +730,7 @@
           "text": "Describe the hit cache key format.",
           "facet_type": "constraint",
           "support_spans": [
+            "hit cache",
             "the key format"
           ]
         },
@@ -725,6 +740,7 @@
           "text": "State the hit cache eviction condition.",
           "facet_type": "constraint",
           "support_spans": [
+            "hit cache",
             "the eviction condition"
           ]
         },
@@ -734,6 +750,7 @@
           "text": "Describe hit cache miss behavior.",
           "facet_type": "api_behavior",
           "support_spans": [
+            "hit cache",
             "the behavior on a miss"
           ]
         },
@@ -743,6 +760,7 @@
           "text": "Locate the hit cache implementation.",
           "facet_type": "locator",
           "support_spans": [
+            "hit cache",
             "the location of its implementation"
           ]
         }

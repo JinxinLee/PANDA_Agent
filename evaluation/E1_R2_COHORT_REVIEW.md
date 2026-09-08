@@ -4,7 +4,20 @@ Status: DRAFT_PENDING_HUMAN_REVIEW. No scientific model outputs exist.
 
 These newly authored English questions are synthetic exploratory reconstruction/software needs, not factual assertions about available PANDA implementations. They are not protected or representative novel data. They were authored after the E1-R1 implementation commit; no runtime repair may use their outcomes. Review all questions, equivalent paraphrases, reference granularity and domain relevance before live acceptance. Reference needs are not answer facts. Reordered paraphrases intentionally test semantic slots rather than literal IDs.
 
-Human reviewer: pending. Review of this document approves the exact manifest questions and references only when explicitly recorded; automated review does not count as human approval.
+Human reviewer: pending final approval after amendment review. Review of this document approves the exact manifest questions and references only when explicitly recorded; automated review does not count as human approval.
+
+## Human-review amendments
+
+E1-R2-HR1 implements the human review decision APPROVE_WITH_REQUIRED_PRE_FREEZE_EDITS, starting from `a377fc40ae9187f869102308ff99324d4dcb2bc6`. Two pre-freeze paraphrase-equivalence issues were corrected:
+
+- r2p09 preserves explicit implementation-location semantics.
+- r2p11 preserves explicit causal `why` semantics.
+
+Support spans in r2p02/r2p04 bases now jointly ground the subject and requested relation. Contextual spans in r2p11 and the r2p12 base additionally ground the event time window or hit cache referent. Exact span arrays are in the manifest; r2p12 paraphrase spans remain unchanged.
+
+No case, pair, semantic slot, reference text/count, shape, gate, model, runtime, budget, runner or scientific design changed. This amendment is not final human approval or a preregistration freeze.
+
+Post-amendment host static review: all 12 pairs preserve equivalent explicit slots, independent obligation atomicity and relational non-splitting, with sufficient question-grounding spans and no added or removed obligation (PASS). Manifest invariants and offline validation passed; existing focused fake tests passed 27/27. Scientific/provider calls and token usage for E1-R2-HR1 are zero. Final human approval remains pending.
 
 ## r2p01 — independent_locations (2 obligations)
 
@@ -94,7 +107,7 @@ Reference obligations:
 
 Base: What does a fit residual mean, how is it different from a pull, and where is the residual calculation implemented?
 
-Paraphrase: Locate the residual calculation, define a fit residual, and compare a residual with a pull.
+Paraphrase: Locate where the residual calculation is implemented, define a fit residual, and compare a residual with a pull.
 
 Reference obligations:
 
@@ -118,7 +131,7 @@ Reference obligations:
 
 Base: Define an event time window, state its unit, identify the component that applies it, and explain why its upper boundary is excluded.
 
-Paraphrase: For an event time window, explain the exclusion of the upper boundary, name the component applying the window, give the unit, and provide a definition.
+Paraphrase: For an event time window, explain why the upper boundary is excluded, name the component applying the window, give the unit, and provide a definition.
 
 Reference obligations:
 
@@ -140,5 +153,3 @@ Reference obligations:
 3. State the hit cache eviction condition.
 4. Describe hit cache miss behavior.
 5. Locate the hit cache implementation.
-
-
