@@ -17,8 +17,12 @@ The single `Current authoritative state` section is authoritative over historica
 
 ## Current authoritative state
 
-Repository head (E1-R1 working-tree starting baseline):
-6bb43ec8b76069639c00ca4ff697056fbfd49d15
+Repository head (E1-R2 starting baseline):
+87cc34dd919d8431bb774003a7f76a9fff3a7567
+
+Current authorized task:
+E1-R2 — Prospective Semantic Answer-Point Revalidation
+IN_PROGRESS / PREREGISTRATION_DRAFT / HUMAN_REVIEW_PENDING
 
 Latest completed shadow repair:
 E1-R1
@@ -55,7 +59,8 @@ MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD
 Current planning state:
 D4 = PAUSED / ROADMAP_RECONCILIATION
 D4 overall completion = UNDECIDED
-NEXT_TASK_RECOMMENDATION = E1-R2 — Prospective Semantic Answer-Point Revalidation / NOT AUTHORIZED
+CURRENT_TASK_EXECUTION_AUTHORIZED = E1-R2; live execution awaits human cohort review and preregistration freeze
+NEXT_TASK_RECOMMENDATION = E1-R2 outcome-dependent closure or repair decision / NOT AUTHORIZED
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 
 No D4-A11 exists.
@@ -64,7 +69,28 @@ E1 = IN_PROGRESS / REPAIR_IMPLEMENTED / REVALIDATION_PENDING.
 Phase F = IN_PROGRESS / F1_COMPLETE.
 F2 = NOT_STARTED / SCOPE_PRESERVED.
 F3 = SCOPE_RECONCILIATION_REQUIRED / PARTIALLY_SUPERSEDED_BY_D4.
-No further D4, Phase-E, or Phase-F task is authorized after E1-R1.
+No further D4, Phase-E, or Phase-F task is authorized after E1-R2.
+
+## E1-R2 preparation checkpoint
+
+The user authorized E1-R2. The repaired v2 implementation is committed at the
+starting HEAD. A fresh 24-question / 12-pair English synthetic exploratory cohort
+with 54 explicit reference obligations, a separate v2 semantic judge/scorer,
+raw-before-judge Git freeze boundaries and targeted fake tests are prepared.
+
+Human review of generated questions, reference obligations, paraphrase equivalence
+and exploratory domain relevance remains pending under Evaluation Policy section 6.
+The manifest is DRAFT_PENDING_HUMAN_REVIEW and live phases reject it. No scientific
+decomposition/judge calls occurred; no scientific metrics or PASS/FAIL verdict exist.
+Scientific verification status = INCONCLUSIVE / NOT_EXECUTED_PENDING_HUMAN_REVIEW.
+One completed AGY static protocol review is separate: its provider call/token totals
+are unavailable. Its review is not human approval.
+
+Review package: `evaluation/E1_R2_COHORT_REVIEW.md`.
+Protocol: `evaluation/E1_R2_REVALIDATION_PREREGISTRATION.md`.
+E1-A2 remains FAIL; E1 remains REVALIDATION_PENDING. E2/E3 and production activation
+remain out of scope. A synthetic exploratory PASS would require an explicit E1
+closure/scope decision, not automatically establish representative generalization.
 
 ## E1-R1 shadow repair closeout
 

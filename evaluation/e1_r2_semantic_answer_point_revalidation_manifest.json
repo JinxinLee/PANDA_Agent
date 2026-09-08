@@ -1,0 +1,808 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint": "E1-R2",
+  "status": "DRAFT_PENDING_HUMAN_REVIEW",
+  "implementation_commit": "87cc34dd919d8431bb774003a7f76a9fff3a7567",
+  "prompt_version": "2.0.0",
+  "decomposition_schema_version": "e1.question_decomposition.v2",
+  "runtime": {
+    "python": "3.13.14",
+    "pydantic": "2.13.4",
+    "google-genai": "2.13.0"
+  },
+  "human_review": {
+    "status": "pending",
+    "reviewer": null,
+    "reviewed_at": null,
+    "scope": "All 24 questions, paraphrase equivalence, explicit reference obligations, and exploratory domain relevance. Agent review does not substitute for human review."
+  },
+  "models": {
+    "generation_model": "gemini-3.8-flash",
+    "judge_model": "gemini-3.8-flash",
+    "location": "global",
+    "timeout_ms": 120000
+  },
+  "cohort": {
+    "case_count": 24,
+    "pair_count": 12,
+    "reference_points": 54,
+    "base_reference_count_strata": {
+      "1": 4,
+      "2": 4,
+      "3": 2,
+      "4": 1,
+      "5": 1
+    },
+    "representativeness": "exploratory; synthetic reconstruction/software questions, not reviewed representative PANDA coverage",
+    "authorship": "Codex authored after E1-R1 implementation commit, before any v2 live predictions",
+    "protected_data_accessed": false,
+    "old_e1_a2_cases_reused": false
+  },
+  "gates": {
+    "valid_cases": 23,
+    "micro_reference_recall": 0.9,
+    "micro_prediction_precision": 0.9,
+    "under_decomposed_cases": 4,
+    "over_decomposed_cases": 4,
+    "exact_count_cases": 20,
+    "stable_pairs": 10,
+    "hidden_prerequisite_predictions": 0
+  },
+  "budget": {
+    "decomposition_logical_calls": 24,
+    "judge_logical_calls_max": 24,
+    "total_logical_calls_max": 48
+  },
+  "cases": [
+    {
+      "case_id": "r2p01.base",
+      "pair_id": "r2p01",
+      "variant": "base",
+      "language": "en",
+      "source_group": "fresh_synthetic_exploratory",
+      "shape": "independent_locations",
+      "question": "In the reconstruction code, which file defines the track seed builder, and which file defines the hit filter?",
+      "reference_points": [
+        {
+          "reference_point_id": "r2p01.base.ref1",
+          "reference_slot_id": "slot1",
+          "text": "Locate the track seed builder definition.",
+          "facet_type": "locator",
+          "support_spans": [
+            "which file defines the track seed builder"
+          ]
+        },
+        {
+          "reference_point_id": "r2p01.base.ref2",
+          "reference_slot_id": "slot2",
+          "text": "Locate the hit filter definition.",
+          "facet_type": "locator",
+          "support_spans": [
+            "which file defines the hit filter"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "r2p01.paraphrase",
+      "pair_id": "r2p01",
+      "variant": "paraphrase",
+      "language": "en",
+      "source_group": "fresh_synthetic_exploratory",
+      "shape": "independent_locations",
+      "question": "Identify the source file for the hit filter as well as the source file for the track seed builder.",
+      "reference_points": [
+        {
+          "reference_point_id": "r2p01.paraphrase.ref1",
+          "reference_slot_id": "slot1",
+          "text": "Locate the track seed builder definition.",
+          "facet_type": "locator",
+          "support_spans": [
+            "source file for the track seed builder"
+          ]
+        },
+        {
+          "reference_point_id": "r2p01.paraphrase.ref2",
+          "reference_slot_id": "slot2",
+          "text": "Locate the hit filter definition.",
+          "facet_type": "locator",
+          "support_spans": [
+            "source file for the hit filter"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "r2p02.base",
+      "pair_id": "r2p02",
+      "variant": "base",
+      "language": "en",
+      "source_group": "fresh_synthetic_exploratory",
+      "shape": "independent_locations",
+      "question": "For the geometry loader and the calibration reader, give their respective implementation entry points.",
+      "reference_points": [
+        {
+          "reference_point_id": "r2p02.base.ref1",
+          "reference_slot_id": "slot1",
+          "text": "Identify the geometry loader implementation entry point.",
+          "facet_type": "locator",
+          "support_spans": [
+            "geometry loader"
+          ]
+        },
+        {
+          "reference_point_id": "r2p02.base.ref2",
+          "reference_slot_id": "slot2",
+          "text": "Identify the calibration reader implementation entry point.",
+          "facet_type": "locator",
+          "support_spans": [
+            "calibration reader"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "r2p02.paraphrase",
+      "pair_id": "r2p02",
+      "variant": "paraphrase",
+      "language": "en",
+      "source_group": "fresh_synthetic_exploratory",
+      "shape": "independent_locations",
+      "question": "Name the implementation entry point of the calibration reader; also name the entry point of the geometry loader.",
+      "reference_points": [
+        {
+          "reference_point_id": "r2p02.paraphrase.ref1",
+          "reference_slot_id": "slot1",
+          "text": "Identify the geometry loader implementation entry point.",
+          "facet_type": "locator",
+          "support_spans": [
+            "entry point of the geometry loader"
+          ]
+        },
+        {
+          "reference_point_id": "r2p02.paraphrase.ref2",
+          "reference_slot_id": "slot2",
+          "text": "Identify the calibration reader implementation entry point.",
+          "facet_type": "locator",
+          "support_spans": [
+            "implementation entry point of the calibration reader"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "r2p03.base",
+      "pair_id": "r2p03",
+      "variant": "base",
+      "language": "en",
+      "source_group": "fresh_synthetic_exploratory",
+      "shape": "independent_contributions",
+      "question": "What role does the residual calculator play in the fit, and what role does the outlier mask play?",
+      "reference_points": [
+        {
+          "reference_point_id": "r2p03.base.ref1",
+          "reference_slot_id": "slot1",
+          "text": "Explain the residual calculator's contribution to the fit.",
+          "facet_type": "mechanism",
+          "support_spans": [
+            "What role does the residual calculator play in the fit"
+          ]
+        },
+        {
+          "reference_point_id": "r2p03.base.ref2",
+          "reference_slot_id": "slot2",
+          "text": "Explain the outlier mask's contribution to the fit.",
+          "facet_type": "mechanism",
+          "support_spans": [
+            "what role does the outlier mask play"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "r2p03.paraphrase",
+      "pair_id": "r2p03",
+      "variant": "paraphrase",
+      "language": "en",
+      "source_group": "fresh_synthetic_exploratory",
+      "shape": "independent_contributions",
+      "question": "Explain the outlier mask's contribution to the fit and the residual calculator's contribution.",
+      "reference_points": [
+        {
+          "reference_point_id": "r2p03.paraphrase.ref1",
+          "reference_slot_id": "slot1",
+          "text": "Explain the residual calculator's contribution to the fit.",
+          "facet_type": "mechanism",
+          "support_spans": [
+            "residual calculator's contribution"
+          ]
+        },
+        {
+          "reference_point_id": "r2p03.paraphrase.ref2",
+          "reference_slot_id": "slot2",
+          "text": "Explain the outlier mask's contribution to the fit.",
+          "facet_type": "mechanism",
+          "support_spans": [
+            "outlier mask's contribution to the fit"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "r2p04.base",
+      "pair_id": "r2p04",
+      "variant": "base",
+      "language": "en",
+      "source_group": "fresh_synthetic_exploratory",
+      "shape": "independent_contributions",
+      "question": "Explain the separate contributions of the alignment constants and the timing offsets to event reconstruction.",
+      "reference_points": [
+        {
+          "reference_point_id": "r2p04.base.ref1",
+          "reference_slot_id": "slot1",
+          "text": "Explain the alignment constants' contribution to event reconstruction.",
+          "facet_type": "mechanism",
+          "support_spans": [
+            "alignment constants"
+          ]
+        },
+        {
+          "reference_point_id": "r2p04.base.ref2",
+          "reference_slot_id": "slot2",
+          "text": "Explain the timing offsets' contribution to event reconstruction.",
+          "facet_type": "mechanism",
+          "support_spans": [
+            "timing offsets"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "r2p04.paraphrase",
+      "pair_id": "r2p04",
+      "variant": "paraphrase",
+      "language": "en",
+      "source_group": "fresh_synthetic_exploratory",
+      "shape": "independent_contributions",
+      "question": "In reconstructing an event, what is contributed by the timing offsets? What is contributed by the alignment constants?",
+      "reference_points": [
+        {
+          "reference_point_id": "r2p04.paraphrase.ref1",
+          "reference_slot_id": "slot1",
+          "text": "Explain the alignment constants' contribution to event reconstruction.",
+          "facet_type": "mechanism",
+          "support_spans": [
+            "contributed by the alignment constants"
+          ]
+        },
+        {
+          "reference_point_id": "r2p04.paraphrase.ref2",
+          "reference_slot_id": "slot2",
+          "text": "Explain the timing offsets' contribution to event reconstruction.",
+          "facet_type": "mechanism",
+          "support_spans": [
+            "contributed by the timing offsets"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "r2p05.base",
+      "pair_id": "r2p05",
+      "variant": "base",
+      "language": "en",
+      "source_group": "fresh_synthetic_exploratory",
+      "shape": "single_comparison",
+      "question": "How does a weighted track fit differ from an unweighted track fit?",
+      "reference_points": [
+        {
+          "reference_point_id": "r2p05.base.ref1",
+          "reference_slot_id": "slot1",
+          "text": "Compare weighted and unweighted track fitting.",
+          "facet_type": "comparison",
+          "support_spans": [
+            "How does a weighted track fit differ from an unweighted track fit?"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "r2p05.paraphrase",
+      "pair_id": "r2p05",
+      "variant": "paraphrase",
+      "language": "en",
+      "source_group": "fresh_synthetic_exploratory",
+      "shape": "single_comparison",
+      "question": "Compare weighted and unweighted track fitting.",
+      "reference_points": [
+        {
+          "reference_point_id": "r2p05.paraphrase.ref1",
+          "reference_slot_id": "slot1",
+          "text": "Compare weighted and unweighted track fitting.",
+          "facet_type": "comparison",
+          "support_spans": [
+            "Compare weighted and unweighted track fitting."
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "r2p06.base",
+      "pair_id": "r2p06",
+      "variant": "base",
+      "language": "en",
+      "source_group": "fresh_synthetic_exploratory",
+      "shape": "single_comparison",
+      "question": "Contrast the failure behavior of a strict configuration parser with that of a permissive parser.",
+      "reference_points": [
+        {
+          "reference_point_id": "r2p06.base.ref1",
+          "reference_slot_id": "slot1",
+          "text": "Compare strict and permissive configuration parsing failure behavior.",
+          "facet_type": "comparison",
+          "support_spans": [
+            "failure behavior of a strict configuration parser with that of a permissive parser"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "r2p06.paraphrase",
+      "pair_id": "r2p06",
+      "variant": "paraphrase",
+      "language": "en",
+      "source_group": "fresh_synthetic_exploratory",
+      "shape": "single_comparison",
+      "question": "What differences in failure behavior distinguish strict and permissive configuration parsing?",
+      "reference_points": [
+        {
+          "reference_point_id": "r2p06.paraphrase.ref1",
+          "reference_slot_id": "slot1",
+          "text": "Compare strict and permissive configuration parsing failure behavior.",
+          "facet_type": "comparison",
+          "support_spans": [
+            "differences in failure behavior distinguish strict and permissive configuration parsing"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "r2p07.base",
+      "pair_id": "r2p07",
+      "variant": "base",
+      "language": "en",
+      "source_group": "fresh_synthetic_exploratory",
+      "shape": "single_flow",
+      "question": "Describe the path of an event record from the input reader to the output writer.",
+      "reference_points": [
+        {
+          "reference_point_id": "r2p07.base.ref1",
+          "reference_slot_id": "slot1",
+          "text": "Describe event-record flow from input reader to output writer.",
+          "facet_type": "data_flow",
+          "support_spans": [
+            "path of an event record from the input reader to the output writer"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "r2p07.paraphrase",
+      "pair_id": "r2p07",
+      "variant": "paraphrase",
+      "language": "en",
+      "source_group": "fresh_synthetic_exploratory",
+      "shape": "single_flow",
+      "question": "How does an event record travel from the input reader through to the output writer?",
+      "reference_points": [
+        {
+          "reference_point_id": "r2p07.paraphrase.ref1",
+          "reference_slot_id": "slot1",
+          "text": "Describe event-record flow from input reader to output writer.",
+          "facet_type": "data_flow",
+          "support_spans": [
+            "event record travel from the input reader through to the output writer"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "r2p08.base",
+      "pair_id": "r2p08",
+      "variant": "base",
+      "language": "en",
+      "source_group": "fresh_synthetic_exploratory",
+      "shape": "single_flow",
+      "question": "How are detector coordinates transformed into the coordinate system used by the track fit?",
+      "reference_points": [
+        {
+          "reference_point_id": "r2p08.base.ref1",
+          "reference_slot_id": "slot1",
+          "text": "Explain coordinate transformation from detector space to track-fit space.",
+          "facet_type": "data_flow",
+          "support_spans": [
+            "detector coordinates transformed into the coordinate system used by the track fit"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "r2p08.paraphrase",
+      "pair_id": "r2p08",
+      "variant": "paraphrase",
+      "language": "en",
+      "source_group": "fresh_synthetic_exploratory",
+      "shape": "single_flow",
+      "question": "Explain the transformation from detector coordinates to the track fit's coordinate system.",
+      "reference_points": [
+        {
+          "reference_point_id": "r2p08.paraphrase.ref1",
+          "reference_slot_id": "slot1",
+          "text": "Explain coordinate transformation from detector space to track-fit space.",
+          "facet_type": "data_flow",
+          "support_spans": [
+            "transformation from detector coordinates to the track fit's coordinate system"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "r2p09.base",
+      "pair_id": "r2p09",
+      "variant": "base",
+      "language": "en",
+      "source_group": "fresh_synthetic_exploratory",
+      "shape": "mixed_three",
+      "question": "What does a fit residual mean, how is it different from a pull, and where is the residual calculation implemented?",
+      "reference_points": [
+        {
+          "reference_point_id": "r2p09.base.ref1",
+          "reference_slot_id": "slot1",
+          "text": "Define a fit residual.",
+          "facet_type": "definition",
+          "support_spans": [
+            "What does a fit residual mean"
+          ]
+        },
+        {
+          "reference_point_id": "r2p09.base.ref2",
+          "reference_slot_id": "slot2",
+          "text": "Compare a fit residual with a pull.",
+          "facet_type": "comparison",
+          "support_spans": [
+            "how is it different from a pull"
+          ]
+        },
+        {
+          "reference_point_id": "r2p09.base.ref3",
+          "reference_slot_id": "slot3",
+          "text": "Locate the residual calculation implementation.",
+          "facet_type": "locator",
+          "support_spans": [
+            "where is the residual calculation implemented"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "r2p09.paraphrase",
+      "pair_id": "r2p09",
+      "variant": "paraphrase",
+      "language": "en",
+      "source_group": "fresh_synthetic_exploratory",
+      "shape": "mixed_three",
+      "question": "Locate the residual calculation, define a fit residual, and compare a residual with a pull.",
+      "reference_points": [
+        {
+          "reference_point_id": "r2p09.paraphrase.ref1",
+          "reference_slot_id": "slot1",
+          "text": "Define a fit residual.",
+          "facet_type": "definition",
+          "support_spans": [
+            "define a fit residual"
+          ]
+        },
+        {
+          "reference_point_id": "r2p09.paraphrase.ref2",
+          "reference_slot_id": "slot2",
+          "text": "Compare a fit residual with a pull.",
+          "facet_type": "comparison",
+          "support_spans": [
+            "compare a residual with a pull"
+          ]
+        },
+        {
+          "reference_point_id": "r2p09.paraphrase.ref3",
+          "reference_slot_id": "slot3",
+          "text": "Locate the residual calculation implementation.",
+          "facet_type": "locator",
+          "support_spans": [
+            "Locate the residual calculation"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "r2p10.base",
+      "pair_id": "r2p10",
+      "variant": "base",
+      "language": "en",
+      "source_group": "fresh_synthetic_exploratory",
+      "shape": "mixed_three",
+      "question": "Which component reads the run configuration, what happens when a required field is absent, and why are defaults disallowed for that field?",
+      "reference_points": [
+        {
+          "reference_point_id": "r2p10.base.ref1",
+          "reference_slot_id": "slot1",
+          "text": "Identify the component reading the run configuration.",
+          "facet_type": "locator",
+          "support_spans": [
+            "Which component reads the run configuration"
+          ]
+        },
+        {
+          "reference_point_id": "r2p10.base.ref2",
+          "reference_slot_id": "slot2",
+          "text": "Describe behavior when a required configuration field is absent.",
+          "facet_type": "api_behavior",
+          "support_spans": [
+            "what happens when a required field is absent"
+          ]
+        },
+        {
+          "reference_point_id": "r2p10.base.ref3",
+          "reference_slot_id": "slot3",
+          "text": "Explain why defaults are disallowed for the required field.",
+          "facet_type": "cause_reason",
+          "support_spans": [
+            "why are defaults disallowed for that field"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "r2p10.paraphrase",
+      "pair_id": "r2p10",
+      "variant": "paraphrase",
+      "language": "en",
+      "source_group": "fresh_synthetic_exploratory",
+      "shape": "mixed_three",
+      "question": "Explain why that required configuration field cannot use a default, identify the component reading the run configuration, and describe the behavior if the field is missing.",
+      "reference_points": [
+        {
+          "reference_point_id": "r2p10.paraphrase.ref1",
+          "reference_slot_id": "slot1",
+          "text": "Identify the component reading the run configuration.",
+          "facet_type": "locator",
+          "support_spans": [
+            "identify the component reading the run configuration"
+          ]
+        },
+        {
+          "reference_point_id": "r2p10.paraphrase.ref2",
+          "reference_slot_id": "slot2",
+          "text": "Describe behavior when a required configuration field is absent.",
+          "facet_type": "api_behavior",
+          "support_spans": [
+            "describe the behavior if the field is missing"
+          ]
+        },
+        {
+          "reference_point_id": "r2p10.paraphrase.ref3",
+          "reference_slot_id": "slot3",
+          "text": "Explain why defaults are disallowed for the required field.",
+          "facet_type": "cause_reason",
+          "support_spans": [
+            "why that required configuration field cannot use a default"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "r2p11.base",
+      "pair_id": "r2p11",
+      "variant": "base",
+      "language": "en",
+      "source_group": "fresh_synthetic_exploratory",
+      "shape": "four_obligations",
+      "question": "Define an event time window, state its unit, identify the component that applies it, and explain why its upper boundary is excluded.",
+      "reference_points": [
+        {
+          "reference_point_id": "r2p11.base.ref1",
+          "reference_slot_id": "slot1",
+          "text": "Define an event time window.",
+          "facet_type": "definition",
+          "support_spans": [
+            "Define an event time window"
+          ]
+        },
+        {
+          "reference_point_id": "r2p11.base.ref2",
+          "reference_slot_id": "slot2",
+          "text": "State the event time window unit.",
+          "facet_type": "constraint",
+          "support_spans": [
+            "state its unit"
+          ]
+        },
+        {
+          "reference_point_id": "r2p11.base.ref3",
+          "reference_slot_id": "slot3",
+          "text": "Identify the component applying the event time window.",
+          "facet_type": "locator",
+          "support_spans": [
+            "identify the component that applies it"
+          ]
+        },
+        {
+          "reference_point_id": "r2p11.base.ref4",
+          "reference_slot_id": "slot4",
+          "text": "Explain the event time window's excluded upper boundary.",
+          "facet_type": "cause_reason",
+          "support_spans": [
+            "explain why its upper boundary is excluded"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "r2p11.paraphrase",
+      "pair_id": "r2p11",
+      "variant": "paraphrase",
+      "language": "en",
+      "source_group": "fresh_synthetic_exploratory",
+      "shape": "four_obligations",
+      "question": "For an event time window, explain the exclusion of the upper boundary, name the component applying the window, give the unit, and provide a definition.",
+      "reference_points": [
+        {
+          "reference_point_id": "r2p11.paraphrase.ref1",
+          "reference_slot_id": "slot1",
+          "text": "Define an event time window.",
+          "facet_type": "definition",
+          "support_spans": [
+            "provide a definition"
+          ]
+        },
+        {
+          "reference_point_id": "r2p11.paraphrase.ref2",
+          "reference_slot_id": "slot2",
+          "text": "State the event time window unit.",
+          "facet_type": "constraint",
+          "support_spans": [
+            "give the unit"
+          ]
+        },
+        {
+          "reference_point_id": "r2p11.paraphrase.ref3",
+          "reference_slot_id": "slot3",
+          "text": "Identify the component applying the event time window.",
+          "facet_type": "locator",
+          "support_spans": [
+            "name the component applying the window"
+          ]
+        },
+        {
+          "reference_point_id": "r2p11.paraphrase.ref4",
+          "reference_slot_id": "slot4",
+          "text": "Explain the event time window's excluded upper boundary.",
+          "facet_type": "cause_reason",
+          "support_spans": [
+            "explain the exclusion of the upper boundary"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "r2p12.base",
+      "pair_id": "r2p12",
+      "variant": "base",
+      "language": "en",
+      "source_group": "fresh_synthetic_exploratory",
+      "shape": "five_obligations",
+      "question": "For the hit cache, give its purpose, the key format, the eviction condition, the behavior on a miss, and the location of its implementation.",
+      "reference_points": [
+        {
+          "reference_point_id": "r2p12.base.ref1",
+          "reference_slot_id": "slot1",
+          "text": "Explain the hit cache purpose.",
+          "facet_type": "definition",
+          "support_spans": [
+            "give its purpose"
+          ]
+        },
+        {
+          "reference_point_id": "r2p12.base.ref2",
+          "reference_slot_id": "slot2",
+          "text": "Describe the hit cache key format.",
+          "facet_type": "constraint",
+          "support_spans": [
+            "the key format"
+          ]
+        },
+        {
+          "reference_point_id": "r2p12.base.ref3",
+          "reference_slot_id": "slot3",
+          "text": "State the hit cache eviction condition.",
+          "facet_type": "constraint",
+          "support_spans": [
+            "the eviction condition"
+          ]
+        },
+        {
+          "reference_point_id": "r2p12.base.ref4",
+          "reference_slot_id": "slot4",
+          "text": "Describe hit cache miss behavior.",
+          "facet_type": "api_behavior",
+          "support_spans": [
+            "the behavior on a miss"
+          ]
+        },
+        {
+          "reference_point_id": "r2p12.base.ref5",
+          "reference_slot_id": "slot5",
+          "text": "Locate the hit cache implementation.",
+          "facet_type": "locator",
+          "support_spans": [
+            "the location of its implementation"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "r2p12.paraphrase",
+      "pair_id": "r2p12",
+      "variant": "paraphrase",
+      "language": "en",
+      "source_group": "fresh_synthetic_exploratory",
+      "shape": "five_obligations",
+      "question": "Where is the hit cache implemented, what happens on a cache miss, when are entries evicted, how is a key structured, and what purpose does the cache serve?",
+      "reference_points": [
+        {
+          "reference_point_id": "r2p12.paraphrase.ref1",
+          "reference_slot_id": "slot1",
+          "text": "Explain the hit cache purpose.",
+          "facet_type": "definition",
+          "support_spans": [
+            "what purpose does the cache serve"
+          ]
+        },
+        {
+          "reference_point_id": "r2p12.paraphrase.ref2",
+          "reference_slot_id": "slot2",
+          "text": "Describe the hit cache key format.",
+          "facet_type": "constraint",
+          "support_spans": [
+            "how is a key structured"
+          ]
+        },
+        {
+          "reference_point_id": "r2p12.paraphrase.ref3",
+          "reference_slot_id": "slot3",
+          "text": "State the hit cache eviction condition.",
+          "facet_type": "constraint",
+          "support_spans": [
+            "when are entries evicted"
+          ]
+        },
+        {
+          "reference_point_id": "r2p12.paraphrase.ref4",
+          "reference_slot_id": "slot4",
+          "text": "Describe hit cache miss behavior.",
+          "facet_type": "api_behavior",
+          "support_spans": [
+            "what happens on a cache miss"
+          ]
+        },
+        {
+          "reference_point_id": "r2p12.paraphrase.ref5",
+          "reference_slot_id": "slot5",
+          "text": "Locate the hit cache implementation.",
+          "facet_type": "locator",
+          "support_spans": [
+            "Where is the hit cache implemented"
+          ]
+        }
+      ]
+    }
+  ]
+}
