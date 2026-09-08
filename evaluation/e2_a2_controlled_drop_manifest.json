@@ -1,0 +1,857 @@
+{
+  "preregistration_commit": "78969ceee0bd316e7a9632440c175bcdac04f3bc",
+  "implementation": "df52bcddf612515418be298fafde6ebcb32d4a67",
+  "natural_raw_commit": "ee8049e760c9ef46d2096fd91ff6e5e9716dcde8",
+  "natural_judged_commit": "3f50f15c6359145dd77acacf715a38e660bd3b6f",
+  "entries": [
+    {
+      "execution_id": "e1a2.b07.rep1",
+      "pair_id": "e1a2.pair07",
+      "source_case_id": "n001",
+      "variant": "base",
+      "eligible": true,
+      "runtime_answer_points": [
+        {
+          "answer_point_id": "point.1",
+          "text": "Which FairSoft/FairRoot pairs and paths are encoded in configSettings.sh"
+        },
+        {
+          "answer_point_id": "point.2",
+          "text": "Which environment variables configSettings.sh assigns"
+        },
+        {
+          "answer_point_id": "point.3",
+          "text": "What the script actually does for unmatched input as written"
+        }
+      ],
+      "baseline_truth": {
+        "alignments": [
+          {
+            "answer_point_id": "point.1",
+            "reference_slot_id": "slot.1"
+          },
+          {
+            "answer_point_id": "point.2",
+            "reference_slot_id": "slot.2"
+          },
+          {
+            "answer_point_id": "point.3",
+            "reference_slot_id": "slot.3"
+          }
+        ],
+        "missing_reference_slot_ids": [],
+        "extra_answer_point_ids": [],
+        "claim_mappings": [
+          {
+            "claim_id": "claim.1",
+            "answer_point_ids": [
+              "point.1"
+            ]
+          },
+          {
+            "claim_id": "claim.2",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          },
+          {
+            "claim_id": "claim.3",
+            "answer_point_ids": [
+              "point.3"
+            ]
+          }
+        ],
+        "covered_answer_point_ids": [
+          "point.1",
+          "point.2",
+          "point.3"
+        ],
+        "missing_answer_point_ids": []
+      },
+      "reason": "ELIGIBLE",
+      "target": "point.3",
+      "removed_claim_ids": [
+        "claim.3"
+      ],
+      "retained_claim_ids": [
+        "claim.1",
+        "claim.2"
+      ],
+      "expected_missing_answer_point_ids": [
+        "point.3"
+      ]
+    },
+    {
+      "execution_id": "e1a2.p07.rep1",
+      "pair_id": "e1a2.pair07",
+      "source_case_id": "n001",
+      "variant": "paraphrase",
+      "eligible": true,
+      "runtime_answer_points": [
+        {
+          "answer_point_id": "point.1",
+          "text": "What FairSoft/FairRoot pairs and paths configSettings.sh encodes for a build of the RestgasDetermination fork on the GSI cluster"
+        },
+        {
+          "answer_point_id": "point.2",
+          "text": "What environment variables configSettings.sh sets"
+        },
+        {
+          "answer_point_id": "point.3",
+          "text": "How configSettings.sh handles unmatched input as currently written"
+        }
+      ],
+      "baseline_truth": {
+        "alignments": [
+          {
+            "answer_point_id": "point.1",
+            "reference_slot_id": "slot.1"
+          },
+          {
+            "answer_point_id": "point.2",
+            "reference_slot_id": "slot.2"
+          },
+          {
+            "answer_point_id": "point.3",
+            "reference_slot_id": "slot.3"
+          }
+        ],
+        "missing_reference_slot_ids": [],
+        "extra_answer_point_ids": [],
+        "claim_mappings": [
+          {
+            "claim_id": "claim.restgas_config_pairs_and_paths",
+            "answer_point_ids": [
+              "point.1"
+            ]
+          },
+          {
+            "claim_id": "claim.restgas_config_env_vars",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          },
+          {
+            "claim_id": "claim.restgas_config_unmatched_handling",
+            "answer_point_ids": [
+              "point.3"
+            ]
+          }
+        ],
+        "covered_answer_point_ids": [
+          "point.1",
+          "point.2",
+          "point.3"
+        ],
+        "missing_answer_point_ids": []
+      },
+      "reason": "ELIGIBLE",
+      "target": "point.3",
+      "removed_claim_ids": [
+        "claim.restgas_config_unmatched_handling"
+      ],
+      "retained_claim_ids": [
+        "claim.restgas_config_pairs_and_paths",
+        "claim.restgas_config_env_vars"
+      ],
+      "expected_missing_answer_point_ids": [
+        "point.3"
+      ]
+    },
+    {
+      "execution_id": "e1a2.b08.rep1",
+      "pair_id": "e1a2.pair08",
+      "source_case_id": "n008",
+      "variant": "base",
+      "eligible": true,
+      "runtime_answer_points": [
+        {
+          "answer_point_id": "point.1",
+          "text": "Which track-search approaches were developed for the LMD"
+        },
+        {
+          "answer_point_id": "point.2",
+          "text": "How the track-search approaches developed for the LMD compare to each other"
+        }
+      ],
+      "baseline_truth": {
+        "alignments": [
+          {
+            "answer_point_id": "point.1",
+            "reference_slot_id": "slot.1"
+          },
+          {
+            "answer_point_id": "point.2",
+            "reference_slot_id": "slot.2"
+          }
+        ],
+        "missing_reference_slot_ids": [],
+        "extra_answer_point_ids": [],
+        "claim_mappings": [
+          {
+            "claim_id": "claim.1",
+            "answer_point_ids": [
+              "point.1"
+            ]
+          },
+          {
+            "claim_id": "claim.2",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          },
+          {
+            "claim_id": "claim.3",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          }
+        ],
+        "covered_answer_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "missing_answer_point_ids": []
+      },
+      "reason": "ELIGIBLE",
+      "target": "point.2",
+      "removed_claim_ids": [
+        "claim.2",
+        "claim.3"
+      ],
+      "retained_claim_ids": [
+        "claim.1"
+      ],
+      "expected_missing_answer_point_ids": [
+        "point.2"
+      ]
+    },
+    {
+      "execution_id": "e1a2.p08.rep1",
+      "pair_id": "e1a2.pair08",
+      "source_case_id": "n008",
+      "variant": "paraphrase",
+      "eligible": true,
+      "runtime_answer_points": [
+        {
+          "answer_point_id": "point.1",
+          "text": "What track-search approaches were developed for the LMD"
+        },
+        {
+          "answer_point_id": "point.2",
+          "text": "What are the differences between the developed track-search approaches"
+        }
+      ],
+      "baseline_truth": {
+        "alignments": [
+          {
+            "answer_point_id": "point.1",
+            "reference_slot_id": "slot.1"
+          },
+          {
+            "answer_point_id": "point.2",
+            "reference_slot_id": "slot.2"
+          }
+        ],
+        "missing_reference_slot_ids": [],
+        "extra_answer_point_ids": [],
+        "claim_mappings": [
+          {
+            "claim_id": "claim_1",
+            "answer_point_ids": [
+              "point.1"
+            ]
+          },
+          {
+            "claim_id": "claim_2",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          },
+          {
+            "claim_id": "claim_3",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          }
+        ],
+        "covered_answer_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "missing_answer_point_ids": []
+      },
+      "reason": "ELIGIBLE",
+      "target": "point.2",
+      "removed_claim_ids": [
+        "claim_2",
+        "claim_3"
+      ],
+      "retained_claim_ids": [
+        "claim_1"
+      ],
+      "expected_missing_answer_point_ids": [
+        "point.2"
+      ]
+    },
+    {
+      "execution_id": "e1a2.b09.rep1",
+      "pair_id": "e1a2.pair09",
+      "source_case_id": "n020",
+      "variant": "base",
+      "eligible": true,
+      "runtime_answer_points": [
+        {
+          "answer_point_id": "point.1",
+          "text": "Identify which task picks up the hits left unassigned by the standard track finder in the restgas determination analysis."
+        },
+        {
+          "answer_point_id": "point.2",
+          "text": "Describe what the downstream displaced-track finder contributes before the final fit."
+        },
+        {
+          "answer_point_id": "point.3",
+          "text": "Describe what the downstream z-recovery stage contributes before the final fit."
+        }
+      ],
+      "baseline_truth": {
+        "alignments": [
+          {
+            "answer_point_id": "point.1",
+            "reference_slot_id": "slot.1"
+          },
+          {
+            "answer_point_id": "point.2",
+            "reference_slot_id": "slot.2"
+          },
+          {
+            "answer_point_id": "point.3",
+            "reference_slot_id": "slot.3"
+          }
+        ],
+        "missing_reference_slot_ids": [],
+        "extra_answer_point_ids": [],
+        "claim_mappings": [
+          {
+            "claim_id": "claim.1",
+            "answer_point_ids": [
+              "point.1"
+            ]
+          },
+          {
+            "claim_id": "claim.2",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          },
+          {
+            "claim_id": "claim.3",
+            "answer_point_ids": [
+              "point.3"
+            ]
+          },
+          {
+            "claim_id": "claim.4",
+            "answer_point_ids": [
+              "point.1"
+            ]
+          }
+        ],
+        "covered_answer_point_ids": [
+          "point.1",
+          "point.2",
+          "point.3"
+        ],
+        "missing_answer_point_ids": []
+      },
+      "reason": "ELIGIBLE",
+      "target": "point.3",
+      "removed_claim_ids": [
+        "claim.3"
+      ],
+      "retained_claim_ids": [
+        "claim.1",
+        "claim.2",
+        "claim.4"
+      ],
+      "expected_missing_answer_point_ids": [
+        "point.3"
+      ]
+    },
+    {
+      "execution_id": "e1a2.p09.rep1",
+      "pair_id": "e1a2.pair09",
+      "source_case_id": "n020",
+      "variant": "paraphrase",
+      "eligible": false,
+      "runtime_answer_points": [
+        {
+          "answer_point_id": "point.1",
+          "text": "Identify which task collects the hits left unassigned by the standard track finder in restgas determination analysis."
+        },
+        {
+          "answer_point_id": "point.2",
+          "text": "Identify what the downstream displaced-track finder stage contributes before the final fit."
+        },
+        {
+          "answer_point_id": "point.3",
+          "text": "Identify what the z-recovery stage contributes before the final fit."
+        }
+      ],
+      "baseline_truth": {
+        "alignments": [
+          {
+            "answer_point_id": "point.1",
+            "reference_slot_id": "slot.1"
+          },
+          {
+            "answer_point_id": "point.2",
+            "reference_slot_id": "slot.2"
+          },
+          {
+            "answer_point_id": "point.3",
+            "reference_slot_id": "slot.3"
+          }
+        ],
+        "missing_reference_slot_ids": [],
+        "extra_answer_point_ids": [],
+        "claim_mappings": [
+          {
+            "claim_id": "claim.1",
+            "answer_point_ids": [
+              "point.1"
+            ]
+          },
+          {
+            "claim_id": "claim.2",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          },
+          {
+            "claim_id": "claim.3",
+            "answer_point_ids": [
+              "point.3"
+            ]
+          },
+          {
+            "claim_id": "claim.4",
+            "answer_point_ids": [
+              "point.1",
+              "point.2",
+              "point.3"
+            ]
+          }
+        ],
+        "covered_answer_point_ids": [
+          "point.1",
+          "point.2",
+          "point.3"
+        ],
+        "missing_answer_point_ids": []
+      },
+      "reason": "NO_ISOLATABLE_DROP_TARGET"
+    },
+    {
+      "execution_id": "e1a2.b10.rep1",
+      "pair_id": "e1a2.pair10",
+      "source_case_id": "n022",
+      "variant": "base",
+      "eligible": true,
+      "runtime_answer_points": [
+        {
+          "answer_point_id": "point.1",
+          "text": "What the first worker step leaves behind for the second analysis step in the restgas analysis two-step POCA workflow"
+        },
+        {
+          "answer_point_id": "point.2",
+          "text": "How the fitted vertex is fed into the reprocessing"
+        }
+      ],
+      "baseline_truth": {
+        "alignments": [
+          {
+            "answer_point_id": "point.1",
+            "reference_slot_id": "slot.1"
+          },
+          {
+            "answer_point_id": "point.2",
+            "reference_slot_id": "slot.2"
+          }
+        ],
+        "missing_reference_slot_ids": [],
+        "extra_answer_point_ids": [],
+        "claim_mappings": [
+          {
+            "claim_id": "claim_poca_worker_step1_products",
+            "answer_point_ids": [
+              "point.1"
+            ]
+          },
+          {
+            "claim_id": "claim_poca_step2_env_configuration",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          },
+          {
+            "claim_id": "claim_poca_reprocessing_consumption",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          },
+          {
+            "claim_id": "claim_poca_second_pass_pid_workflow",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          }
+        ],
+        "covered_answer_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "missing_answer_point_ids": []
+      },
+      "reason": "ELIGIBLE",
+      "target": "point.2",
+      "removed_claim_ids": [
+        "claim_poca_step2_env_configuration",
+        "claim_poca_reprocessing_consumption",
+        "claim_poca_second_pass_pid_workflow"
+      ],
+      "retained_claim_ids": [
+        "claim_poca_worker_step1_products"
+      ],
+      "expected_missing_answer_point_ids": [
+        "point.2"
+      ]
+    },
+    {
+      "execution_id": "e1a2.p10.rep1",
+      "pair_id": "e1a2.pair10",
+      "source_case_id": "n022",
+      "variant": "paraphrase",
+      "eligible": true,
+      "runtime_answer_points": [
+        {
+          "answer_point_id": "point.1",
+          "text": "What is passed from the first worker step to the second analysis step"
+        },
+        {
+          "answer_point_id": "point.2",
+          "text": "How the fitted vertex enters the reprocessing"
+        }
+      ],
+      "baseline_truth": {
+        "alignments": [
+          {
+            "answer_point_id": "point.1",
+            "reference_slot_id": "slot.1"
+          },
+          {
+            "answer_point_id": "point.2",
+            "reference_slot_id": "slot.2"
+          }
+        ],
+        "missing_reference_slot_ids": [],
+        "extra_answer_point_ids": [],
+        "claim_mappings": [
+          {
+            "claim_id": "claim_1",
+            "answer_point_ids": [
+              "point.1"
+            ]
+          },
+          {
+            "claim_id": "claim_2",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          },
+          {
+            "claim_id": "claim_3",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          },
+          {
+            "claim_id": "claim_4",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          }
+        ],
+        "covered_answer_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "missing_answer_point_ids": []
+      },
+      "reason": "ELIGIBLE",
+      "target": "point.2",
+      "removed_claim_ids": [
+        "claim_2",
+        "claim_3",
+        "claim_4"
+      ],
+      "retained_claim_ids": [
+        "claim_1"
+      ],
+      "expected_missing_answer_point_ids": [
+        "point.2"
+      ]
+    },
+    {
+      "execution_id": "e1a2.b11.rep1",
+      "pair_id": "e1a2.pair11",
+      "source_case_id": "n030",
+      "variant": "base",
+      "eligible": true,
+      "runtime_answer_points": [
+        {
+          "answer_point_id": "point.1",
+          "text": "Explain why the standard laboratory frame is insufficient for the track data before the luminosity fit runs."
+        },
+        {
+          "answer_point_id": "point.2",
+          "text": "Explain what the IP alignment transformation accomplishes."
+        }
+      ],
+      "baseline_truth": {
+        "alignments": [
+          {
+            "answer_point_id": "point.1",
+            "reference_slot_id": "slot.1"
+          },
+          {
+            "answer_point_id": "point.2",
+            "reference_slot_id": "slot.2"
+          }
+        ],
+        "missing_reference_slot_ids": [],
+        "extra_answer_point_ids": [],
+        "claim_mappings": [
+          {
+            "claim_id": "claim_ip_standard_lab_insufficient",
+            "answer_point_ids": [
+              "point.1"
+            ]
+          },
+          {
+            "claim_id": "claim_ip_alignment_accomplishment_and_order",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          }
+        ],
+        "covered_answer_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "missing_answer_point_ids": []
+      },
+      "reason": "ELIGIBLE",
+      "target": "point.2",
+      "removed_claim_ids": [
+        "claim_ip_alignment_accomplishment_and_order"
+      ],
+      "retained_claim_ids": [
+        "claim_ip_standard_lab_insufficient"
+      ],
+      "expected_missing_answer_point_ids": [
+        "point.2"
+      ]
+    },
+    {
+      "execution_id": "e1a2.p11.rep1",
+      "pair_id": "e1a2.pair11",
+      "source_case_id": "n030",
+      "variant": "paraphrase",
+      "eligible": true,
+      "runtime_answer_points": [
+        {
+          "answer_point_id": "point.1",
+          "text": "Explain why the standard laboratory frame is inadequate for preprocessing track data before the luminosity fit."
+        },
+        {
+          "answer_point_id": "point.2",
+          "text": "Explain what is achieved by the IP alignment transformation."
+        }
+      ],
+      "baseline_truth": {
+        "alignments": [
+          {
+            "answer_point_id": "point.1",
+            "reference_slot_id": "slot.1"
+          },
+          {
+            "answer_point_id": "point.2",
+            "reference_slot_id": "slot.2"
+          }
+        ],
+        "missing_reference_slot_ids": [],
+        "extra_answer_point_ids": [],
+        "claim_mappings": [
+          {
+            "claim_id": "claim.1",
+            "answer_point_ids": [
+              "point.1"
+            ]
+          },
+          {
+            "claim_id": "claim.2",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          },
+          {
+            "claim_id": "claim.3",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          }
+        ],
+        "covered_answer_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "missing_answer_point_ids": []
+      },
+      "reason": "ELIGIBLE",
+      "target": "point.2",
+      "removed_claim_ids": [
+        "claim.2",
+        "claim.3"
+      ],
+      "retained_claim_ids": [
+        "claim.1"
+      ],
+      "expected_missing_answer_point_ids": [
+        "point.2"
+      ]
+    },
+    {
+      "execution_id": "e1a2.b12.rep1",
+      "pair_id": "e1a2.pair12",
+      "source_case_id": "n031",
+      "variant": "base",
+      "eligible": true,
+      "runtime_answer_points": [
+        {
+          "answer_point_id": "point.1",
+          "text": "How PandaRoot's event-generator categories differ"
+        },
+        {
+          "answer_point_id": "point.2",
+          "text": "Which generator is the current standard for background"
+        }
+      ],
+      "baseline_truth": {
+        "alignments": [
+          {
+            "answer_point_id": "point.1",
+            "reference_slot_id": "slot.1"
+          },
+          {
+            "answer_point_id": "point.2",
+            "reference_slot_id": "slot.2"
+          }
+        ],
+        "missing_reference_slot_ids": [],
+        "extra_answer_point_ids": [],
+        "claim_mappings": [
+          {
+            "claim_id": "claim_1",
+            "answer_point_ids": [
+              "point.1"
+            ]
+          },
+          {
+            "claim_id": "claim_2",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          }
+        ],
+        "covered_answer_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "missing_answer_point_ids": []
+      },
+      "reason": "ELIGIBLE",
+      "target": "point.2",
+      "removed_claim_ids": [
+        "claim_2"
+      ],
+      "retained_claim_ids": [
+        "claim_1"
+      ],
+      "expected_missing_answer_point_ids": [
+        "point.2"
+      ]
+    },
+    {
+      "execution_id": "e1a2.p12.rep1",
+      "pair_id": "e1a2.pair12",
+      "source_case_id": "n031",
+      "variant": "paraphrase",
+      "eligible": true,
+      "runtime_answer_points": [
+        {
+          "answer_point_id": "point.1",
+          "text": "What distinguishes PandaRoot's event-generator categories"
+        },
+        {
+          "answer_point_id": "point.2",
+          "text": "Which generator is currently standard for background"
+        }
+      ],
+      "baseline_truth": {
+        "alignments": [
+          {
+            "answer_point_id": "point.1",
+            "reference_slot_id": "slot.1"
+          },
+          {
+            "answer_point_id": "point.2",
+            "reference_slot_id": "slot.2"
+          }
+        ],
+        "missing_reference_slot_ids": [],
+        "extra_answer_point_ids": [],
+        "claim_mappings": [
+          {
+            "claim_id": "claim_1",
+            "answer_point_ids": [
+              "point.1"
+            ]
+          },
+          {
+            "claim_id": "claim_2",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          }
+        ],
+        "covered_answer_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "missing_answer_point_ids": []
+      },
+      "reason": "ELIGIBLE",
+      "target": "point.2",
+      "removed_claim_ids": [
+        "claim_2"
+      ],
+      "retained_claim_ids": [
+        "claim_1"
+      ],
+      "expected_missing_answer_point_ids": [
+        "point.2"
+      ]
+    }
+  ]
+}
