@@ -1,0 +1,3349 @@
+{
+  "preregistration_commit": "78969ceee0bd316e7a9632440c175bcdac04f3bc",
+  "implementation": "df52bcddf612515418be298fafde6ebcb32d4a67",
+  "natural_raw_commit": "ee8049e760c9ef46d2096fd91ff6e5e9716dcde8",
+  "records": [
+    {
+      "execution_id": "e1a2.b07.rep1",
+      "state": "COMPLETE",
+      "input": {
+        "question": "I am building the RestgasDetermination fork on the GSI cluster. Which FairSoft/FairRoot pairs and paths are encoded in configSettings.sh, which environment variables does it assign, and what does the script actually do for unmatched input as written?",
+        "reference_slots": [
+          {
+            "reference_slot_id": "slot.1",
+            "text": "Which FairSoft/FairRoot pairs and paths configSettings.sh encodes for the RestgasDetermination build on the GSI cluster"
+          },
+          {
+            "reference_slot_id": "slot.2",
+            "text": "Which environment variables configSettings.sh assigns"
+          },
+          {
+            "reference_slot_id": "slot.3",
+            "text": "What configSettings.sh actually does with unmatched input as written"
+          }
+        ],
+        "runtime_answer_points": [
+          {
+            "answer_point_id": "point.1",
+            "text": "Which FairSoft/FairRoot pairs and paths are encoded in configSettings.sh"
+          },
+          {
+            "answer_point_id": "point.2",
+            "text": "Which environment variables configSettings.sh assigns"
+          },
+          {
+            "answer_point_id": "point.3",
+            "text": "What the script actually does for unmatched input as written"
+          }
+        ],
+        "claims": [
+          {
+            "claim_id": "claim.1",
+            "claim_text": "In configSettings.sh, the encoded version pairs and placeholder paths are: FAIRSOFT_VERSION=\"may16p1\" with FAIRROOT_VERSION=\"v-17.10b\" (associated with <path to the FairSoft may16p1 build folder> and <path to the FairRoot v-17.10b install folder>), and FAIRSOFT_VERSION=\"oct17\" with FAIRROOT_VERSION=\"dev\" (associated with <path to the FairSoft oct17 build folder> and <path to the FairRoot dev install folder>)."
+          },
+          {
+            "claim_id": "claim.2",
+            "claim_text": "The script configSettings.sh assigns and exports the environment variables SIMPATH and FAIRROOTPATH."
+          },
+          {
+            "claim_id": "claim.3",
+            "claim_text": "For unmatched input as written, the script enters the else branch, setting neither SIMPATH nor FAIRROOTPATH, and prints 'No valid FAIRSOFT_VERSION: ' $FAIRSOFT_VERSION followed by 'of FAIRROOT_VERSION: ' $FAIRROOT_VERSION."
+          }
+        ]
+      },
+      "judgment": {
+        "alignments": [
+          {
+            "answer_point_id": "point.1",
+            "reference_slot_id": "slot.1"
+          },
+          {
+            "answer_point_id": "point.2",
+            "reference_slot_id": "slot.2"
+          },
+          {
+            "answer_point_id": "point.3",
+            "reference_slot_id": "slot.3"
+          }
+        ],
+        "missing_reference_slot_ids": [],
+        "extra_answer_point_ids": [],
+        "claim_mappings": [
+          {
+            "claim_id": "claim.1",
+            "answer_point_ids": [
+              "point.1"
+            ]
+          },
+          {
+            "claim_id": "claim.2",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          },
+          {
+            "claim_id": "claim.3",
+            "answer_point_ids": [
+              "point.3"
+            ]
+          }
+        ],
+        "covered_answer_point_ids": [
+          "point.1",
+          "point.2",
+          "point.3"
+        ],
+        "missing_answer_point_ids": []
+      },
+      "usage": [
+        {
+          "stage": "judge",
+          "logical_calls": 1,
+          "response": {
+            "alignments": [
+              {
+                "answer_point_id": "point.1",
+                "reference_slot_id": "slot.1"
+              },
+              {
+                "answer_point_id": "point.2",
+                "reference_slot_id": "slot.2"
+              },
+              {
+                "answer_point_id": "point.3",
+                "reference_slot_id": "slot.3"
+              }
+            ],
+            "missing_reference_slot_ids": [],
+            "extra_answer_point_ids": [],
+            "claim_mappings": [
+              {
+                "claim_id": "claim.1",
+                "answer_point_ids": [
+                  "point.1"
+                ]
+              },
+              {
+                "claim_id": "claim.2",
+                "answer_point_ids": [
+                  "point.2"
+                ]
+              },
+              {
+                "claim_id": "claim.3",
+                "answer_point_ids": [
+                  "point.3"
+                ]
+              }
+            ],
+            "covered_answer_point_ids": [
+              "point.1",
+              "point.2",
+              "point.3"
+            ],
+            "missing_answer_point_ids": []
+          },
+          "returned_model_calls": 1,
+          "adapter_requests": 1,
+          "tokens": 1919
+        }
+      ],
+      "applicability": [
+        true,
+        "APPLICABLE"
+      ]
+    },
+    {
+      "execution_id": "e1a2.p07.rep1",
+      "state": "COMPLETE",
+      "input": {
+        "question": "For a build of the RestgasDetermination fork on the GSI cluster, what FairSoft/FairRoot pairs and paths does configSettings.sh encode, what environment variables does it set, and how does the script handle unmatched input as currently written?",
+        "reference_slots": [
+          {
+            "reference_slot_id": "slot.1",
+            "text": "Which FairSoft/FairRoot pairs and paths configSettings.sh encodes for the RestgasDetermination build on the GSI cluster"
+          },
+          {
+            "reference_slot_id": "slot.2",
+            "text": "Which environment variables configSettings.sh assigns"
+          },
+          {
+            "reference_slot_id": "slot.3",
+            "text": "What configSettings.sh actually does with unmatched input as written"
+          }
+        ],
+        "runtime_answer_points": [
+          {
+            "answer_point_id": "point.1",
+            "text": "What FairSoft/FairRoot pairs and paths configSettings.sh encodes for a build of the RestgasDetermination fork on the GSI cluster"
+          },
+          {
+            "answer_point_id": "point.2",
+            "text": "What environment variables configSettings.sh sets"
+          },
+          {
+            "answer_point_id": "point.3",
+            "text": "How configSettings.sh handles unmatched input as currently written"
+          }
+        ],
+        "claims": [
+          {
+            "claim_id": "claim.restgas_config_pairs_and_paths",
+            "claim_text": "In the RestgasDetermination fork, configSettings.sh encodes two FairSoft/FairRoot version combinations using placeholder paths: FairSoft \"may16p1\" with FairRoot \"v-17.10b\" (pointing to \"<path to the FairSoft may16p1 build folder>\" and \"<path to the FairRoot v-17.10b install folder>\"), and FairSoft \"oct17\" with FairRoot \"dev\" (pointing to \"<path to the FairSoft oct17 build folder>\" and \"<path to the FairRoot dev install folder>\")."
+          },
+          {
+            "claim_id": "claim.restgas_config_env_vars",
+            "claim_text": "configSettings.sh sets and exports the environment variables SIMPATH and FAIRROOTPATH."
+          },
+          {
+            "claim_id": "claim.restgas_config_unmatched_handling",
+            "claim_text": "As currently written, when the version variables do not match either configured branch, configSettings.sh executes the else block to print \"No valid FAIRSOFT_VERSION: \" $FAIRSOFT_VERSION followed by \"of FAIRROOT_VERSION: \" $FAIRROOT_VERSION, leaving SIMPATH and FAIRROOTPATH unset."
+          }
+        ]
+      },
+      "judgment": {
+        "alignments": [
+          {
+            "answer_point_id": "point.1",
+            "reference_slot_id": "slot.1"
+          },
+          {
+            "answer_point_id": "point.2",
+            "reference_slot_id": "slot.2"
+          },
+          {
+            "answer_point_id": "point.3",
+            "reference_slot_id": "slot.3"
+          }
+        ],
+        "missing_reference_slot_ids": [],
+        "extra_answer_point_ids": [],
+        "claim_mappings": [
+          {
+            "claim_id": "claim.restgas_config_pairs_and_paths",
+            "answer_point_ids": [
+              "point.1"
+            ]
+          },
+          {
+            "claim_id": "claim.restgas_config_env_vars",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          },
+          {
+            "claim_id": "claim.restgas_config_unmatched_handling",
+            "answer_point_ids": [
+              "point.3"
+            ]
+          }
+        ],
+        "covered_answer_point_ids": [
+          "point.1",
+          "point.2",
+          "point.3"
+        ],
+        "missing_answer_point_ids": []
+      },
+      "usage": [
+        {
+          "stage": "judge",
+          "logical_calls": 1,
+          "response": {
+            "alignments": [
+              {
+                "answer_point_id": "point.1",
+                "reference_slot_id": "slot.1"
+              },
+              {
+                "answer_point_id": "point.2",
+                "reference_slot_id": "slot.2"
+              },
+              {
+                "answer_point_id": "point.3",
+                "reference_slot_id": "slot.3"
+              }
+            ],
+            "missing_reference_slot_ids": [],
+            "extra_answer_point_ids": [],
+            "claim_mappings": [
+              {
+                "claim_id": "claim.restgas_config_pairs_and_paths",
+                "answer_point_ids": [
+                  "point.1"
+                ]
+              },
+              {
+                "claim_id": "claim.restgas_config_env_vars",
+                "answer_point_ids": [
+                  "point.2"
+                ]
+              },
+              {
+                "claim_id": "claim.restgas_config_unmatched_handling",
+                "answer_point_ids": [
+                  "point.3"
+                ]
+              }
+            ],
+            "covered_answer_point_ids": [
+              "point.1",
+              "point.2",
+              "point.3"
+            ],
+            "missing_answer_point_ids": []
+          },
+          "returned_model_calls": 1,
+          "adapter_requests": 1,
+          "tokens": 2148
+        }
+      ],
+      "applicability": [
+        true,
+        "APPLICABLE"
+      ]
+    },
+    {
+      "execution_id": "e1a2.b08.rep1",
+      "state": "COMPLETE",
+      "input": {
+        "question": "Before tracks can be fitted in the luminosity detector, the hits have to be grouped into track candidates. Which track-search approaches were developed for the LMD, and how do they compare?",
+        "reference_slots": [
+          {
+            "reference_slot_id": "slot.1",
+            "text": "Which track-search approaches were developed for the LMD"
+          },
+          {
+            "reference_slot_id": "slot.2",
+            "text": "How the LMD track-search approaches compare"
+          }
+        ],
+        "runtime_answer_points": [
+          {
+            "answer_point_id": "point.1",
+            "text": "Which track-search approaches were developed for the LMD"
+          },
+          {
+            "answer_point_id": "point.2",
+            "text": "How the track-search approaches developed for the LMD compare to each other"
+          }
+        ],
+        "claims": [
+          {
+            "claim_id": "claim.1",
+            "claim_text": "Two track-search algorithms were developed for the Luminosity Detector (LMD) in PandaRoot: Track Following (TF) and Cellular Automaton (CA)."
+          },
+          {
+            "claim_id": "claim.2",
+            "claim_text": "Track Following is a sequential local approach that builds track seeds from neighboring planes and propagates them layer-by-layer searching within a corridor, whereas Cellular Automaton is a global parallel approach that constructs hit-to-hit segments (cells) across all layers and evolves them into tracks using neighborhood rules."
+          },
+          {
+            "claim_id": "claim.3",
+            "claim_text": "Cellular Automaton is the default and preferred method for LMD reconstruction, as it is robust against local inefficiencies and handles high-multiplicity events better than Track Following, which can suffer from combinatorial ambiguities in high-rate environments."
+          }
+        ]
+      },
+      "judgment": {
+        "alignments": [
+          {
+            "answer_point_id": "point.1",
+            "reference_slot_id": "slot.1"
+          },
+          {
+            "answer_point_id": "point.2",
+            "reference_slot_id": "slot.2"
+          }
+        ],
+        "missing_reference_slot_ids": [],
+        "extra_answer_point_ids": [],
+        "claim_mappings": [
+          {
+            "claim_id": "claim.1",
+            "answer_point_ids": [
+              "point.1"
+            ]
+          },
+          {
+            "claim_id": "claim.2",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          },
+          {
+            "claim_id": "claim.3",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          }
+        ],
+        "covered_answer_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "missing_answer_point_ids": []
+      },
+      "usage": [
+        {
+          "stage": "judge",
+          "logical_calls": 1,
+          "response": {
+            "alignments": [
+              {
+                "answer_point_id": "point.1",
+                "reference_slot_id": "slot.1"
+              },
+              {
+                "answer_point_id": "point.2",
+                "reference_slot_id": "slot.2"
+              }
+            ],
+            "missing_reference_slot_ids": [],
+            "extra_answer_point_ids": [],
+            "claim_mappings": [
+              {
+                "claim_id": "claim.1",
+                "answer_point_ids": [
+                  "point.1"
+                ]
+              },
+              {
+                "claim_id": "claim.2",
+                "answer_point_ids": [
+                  "point.2"
+                ]
+              },
+              {
+                "claim_id": "claim.3",
+                "answer_point_ids": [
+                  "point.2"
+                ]
+              }
+            ],
+            "covered_answer_point_ids": [
+              "point.1",
+              "point.2"
+            ],
+            "missing_answer_point_ids": []
+          },
+          "returned_model_calls": 1,
+          "adapter_requests": 1,
+          "tokens": 1707
+        }
+      ],
+      "applicability": [
+        true,
+        "APPLICABLE"
+      ]
+    },
+    {
+      "execution_id": "e1a2.p08.rep1",
+      "state": "COMPLETE",
+      "input": {
+        "question": "LMD hits must be grouped into track candidates before fitting tracks in the luminosity detector. What track-search approaches were developed for the LMD, and what are the differences between them?",
+        "reference_slots": [
+          {
+            "reference_slot_id": "slot.1",
+            "text": "Which track-search approaches were developed for the LMD"
+          },
+          {
+            "reference_slot_id": "slot.2",
+            "text": "How the LMD track-search approaches compare"
+          }
+        ],
+        "runtime_answer_points": [
+          {
+            "answer_point_id": "point.1",
+            "text": "What track-search approaches were developed for the LMD"
+          },
+          {
+            "answer_point_id": "point.2",
+            "text": "What are the differences between the developed track-search approaches"
+          }
+        ],
+        "claims": [
+          {
+            "claim_id": "claim_1",
+            "claim_text": "Two track-search algorithms were developed for the LMD in the PandaRoot framework: Track Following (TF) and Cellular Automaton (CA)."
+          },
+          {
+            "claim_id": "claim_2",
+            "claim_text": "Whereas Track Following operates as a sequential local approach that builds track candidate seeds from hits on neighboring planes and propagates them layer-by-layer searching within a distance corridor, Cellular Automaton operates as a global parallel approach that creates short hit-to-hit segments (cells) across all layers simultaneously and evolves them into continuous tracks using neighborhood rules."
+          },
+          {
+            "claim_id": "claim_3",
+            "claim_text": "Unlike Track Following, which is effective in low-occupancy conditions but subject to combinatorial ambiguities in high-rate scenarios, Cellular Automaton handles high-multiplicity events better at low beam energies, exhibits robustness against local hit inefficiencies, and serves as the default track-finding algorithm for LMD analysis."
+          }
+        ]
+      },
+      "judgment": {
+        "alignments": [
+          {
+            "answer_point_id": "point.1",
+            "reference_slot_id": "slot.1"
+          },
+          {
+            "answer_point_id": "point.2",
+            "reference_slot_id": "slot.2"
+          }
+        ],
+        "missing_reference_slot_ids": [],
+        "extra_answer_point_ids": [],
+        "claim_mappings": [
+          {
+            "claim_id": "claim_1",
+            "answer_point_ids": [
+              "point.1"
+            ]
+          },
+          {
+            "claim_id": "claim_2",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          },
+          {
+            "claim_id": "claim_3",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          }
+        ],
+        "covered_answer_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "missing_answer_point_ids": []
+      },
+      "usage": [
+        {
+          "stage": "judge",
+          "logical_calls": 1,
+          "response": {
+            "alignments": [
+              {
+                "answer_point_id": "point.1",
+                "reference_slot_id": "slot.1"
+              },
+              {
+                "answer_point_id": "point.2",
+                "reference_slot_id": "slot.2"
+              }
+            ],
+            "missing_reference_slot_ids": [],
+            "extra_answer_point_ids": [],
+            "claim_mappings": [
+              {
+                "claim_id": "claim_1",
+                "answer_point_ids": [
+                  "point.1"
+                ]
+              },
+              {
+                "claim_id": "claim_2",
+                "answer_point_ids": [
+                  "point.2"
+                ]
+              },
+              {
+                "claim_id": "claim_3",
+                "answer_point_ids": [
+                  "point.2"
+                ]
+              }
+            ],
+            "covered_answer_point_ids": [
+              "point.1",
+              "point.2"
+            ],
+            "missing_answer_point_ids": []
+          },
+          "returned_model_calls": 1,
+          "adapter_requests": 1,
+          "tokens": 1681
+        }
+      ],
+      "applicability": [
+        true,
+        "APPLICABLE"
+      ]
+    },
+    {
+      "execution_id": "e1a2.b09.rep1",
+      "state": "COMPLETE",
+      "input": {
+        "question": "In the restgas determination analysis, the standard track finder leaves part of the hits unassigned. Which task picks up those leftover hits, and what do the downstream displaced-track finder and z-recovery stages each contribute before the final fit?",
+        "reference_slots": [
+          {
+            "reference_slot_id": "slot.1",
+            "text": "Which task picks up the leftover hits in restgas determination analysis"
+          },
+          {
+            "reference_slot_id": "slot.2",
+            "text": "What the downstream displaced-track finder contributes before the final fit"
+          },
+          {
+            "reference_slot_id": "slot.3",
+            "text": "What the z-recovery stage contributes before the final fit"
+          }
+        ],
+        "runtime_answer_points": [
+          {
+            "answer_point_id": "point.1",
+            "text": "Identify which task picks up the hits left unassigned by the standard track finder in the restgas determination analysis."
+          },
+          {
+            "answer_point_id": "point.2",
+            "text": "Describe what the downstream displaced-track finder contributes before the final fit."
+          },
+          {
+            "answer_point_id": "point.3",
+            "text": "Describe what the downstream z-recovery stage contributes before the final fit."
+          }
+        ],
+        "claims": [
+          {
+            "claim_id": "claim.1",
+            "claim_text": "In the restgas determination reconstruction workflow configured in macro/target/reco_complete.C, following initial tracking by PndTrkTracking2, the task PndUnassignedHitsTask picks up the hits left unassigned by the standard track finder across detector subsystems including the STT, MVD, and GEM."
+          },
+          {
+            "claim_id": "claim.2",
+            "claim_text": "The downstream displaced-track finder PndApolloniusTripletTrackFinderTask consumes the tracking hits to reconstruct displaced two-dimensional trajectories in the xy-plane using STT drift-circle triplets and MVD/GEM information, outputting intermediate ApolloniusTripletTrack and ApolloniusTripletTrackCand products."
+          },
+          {
+            "claim_id": "claim.3",
+            "claim_text": "The subsequent z-recovery stage PndSttSkewStrawPzFinderTask consumes ApolloniusTripletTrack and ApolloniusTripletTrackCand to determine the longitudinal track component (recovering pz and the z-origin from skewed STT straw layers) and produces FinalTrack and FinalTrackCand before passing them to the final track fit in PndRecoKalmanTask2."
+          },
+          {
+            "claim_id": "claim.4",
+            "claim_text": "The restgas determination analysis operates as a two-pass reconstruction and longitudinal efficiency correction workflow, in which PndUnassignedHitsTask executes after the standard reconstruction stage to collect unassigned hits for the dedicated displaced-track reconstruction chain."
+          }
+        ]
+      },
+      "judgment": {
+        "alignments": [
+          {
+            "answer_point_id": "point.1",
+            "reference_slot_id": "slot.1"
+          },
+          {
+            "answer_point_id": "point.2",
+            "reference_slot_id": "slot.2"
+          },
+          {
+            "answer_point_id": "point.3",
+            "reference_slot_id": "slot.3"
+          }
+        ],
+        "missing_reference_slot_ids": [],
+        "extra_answer_point_ids": [],
+        "claim_mappings": [
+          {
+            "claim_id": "claim.1",
+            "answer_point_ids": [
+              "point.1"
+            ]
+          },
+          {
+            "claim_id": "claim.2",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          },
+          {
+            "claim_id": "claim.3",
+            "answer_point_ids": [
+              "point.3"
+            ]
+          },
+          {
+            "claim_id": "claim.4",
+            "answer_point_ids": [
+              "point.1"
+            ]
+          }
+        ],
+        "covered_answer_point_ids": [
+          "point.1",
+          "point.2",
+          "point.3"
+        ],
+        "missing_answer_point_ids": []
+      },
+      "usage": [
+        {
+          "stage": "judge",
+          "logical_calls": 1,
+          "response": {
+            "alignments": [
+              {
+                "answer_point_id": "point.1",
+                "reference_slot_id": "slot.1"
+              },
+              {
+                "answer_point_id": "point.2",
+                "reference_slot_id": "slot.2"
+              },
+              {
+                "answer_point_id": "point.3",
+                "reference_slot_id": "slot.3"
+              }
+            ],
+            "missing_reference_slot_ids": [],
+            "extra_answer_point_ids": [],
+            "claim_mappings": [
+              {
+                "claim_id": "claim.1",
+                "answer_point_ids": [
+                  "point.1"
+                ]
+              },
+              {
+                "claim_id": "claim.2",
+                "answer_point_ids": [
+                  "point.2"
+                ]
+              },
+              {
+                "claim_id": "claim.3",
+                "answer_point_ids": [
+                  "point.3"
+                ]
+              },
+              {
+                "claim_id": "claim.4",
+                "answer_point_ids": [
+                  "point.1"
+                ]
+              }
+            ],
+            "covered_answer_point_ids": [
+              "point.1",
+              "point.2",
+              "point.3"
+            ],
+            "missing_answer_point_ids": []
+          },
+          "returned_model_calls": 1,
+          "adapter_requests": 1,
+          "tokens": 2107
+        }
+      ],
+      "applicability": [
+        true,
+        "APPLICABLE"
+      ]
+    },
+    {
+      "execution_id": "e1a2.p09.rep1",
+      "state": "COMPLETE",
+      "input": {
+        "question": "In restgas determination analysis, some hits remain unassigned by the standard track finder. Which task collects these hits, and what does each of the downstream displaced-track finder and z-recovery stages contribute before the final fit?",
+        "reference_slots": [
+          {
+            "reference_slot_id": "slot.1",
+            "text": "Which task picks up the leftover hits in restgas determination analysis"
+          },
+          {
+            "reference_slot_id": "slot.2",
+            "text": "What the downstream displaced-track finder contributes before the final fit"
+          },
+          {
+            "reference_slot_id": "slot.3",
+            "text": "What the z-recovery stage contributes before the final fit"
+          }
+        ],
+        "runtime_answer_points": [
+          {
+            "answer_point_id": "point.1",
+            "text": "Identify which task collects the hits left unassigned by the standard track finder in restgas determination analysis."
+          },
+          {
+            "answer_point_id": "point.2",
+            "text": "Identify what the downstream displaced-track finder stage contributes before the final fit."
+          },
+          {
+            "answer_point_id": "point.3",
+            "text": "Identify what the z-recovery stage contributes before the final fit."
+          }
+        ],
+        "claims": [
+          {
+            "claim_id": "claim.1",
+            "claim_text": "In the restgas reconstruction macro macro/target/reco_complete.C, following initial tracking by PndTrkTracking2 and skewed combination by PndSttSkewedCombineTask, the task PndUnassignedHitsTask collects the hits left unassigned by the standard track finder across branches such as STTHit, MVDHitsPixel, MVDHitsStrip, and GEMHit with branch extension AfterStandardTrack."
+          },
+          {
+            "claim_id": "claim.2",
+            "claim_text": "The downstream displaced-track finder stage PndApolloniusTripletTrackFinderTask performs local pattern recognition in the xy-plane from hit triplets to find tracks originating away from the nominal interaction point, producing intermediate candidate products registered as ApolloniusTripletTrack and ApolloniusTripletTrackCand."
+          },
+          {
+            "claim_id": "claim.3",
+            "claim_text": "Consuming ApolloniusTripletTrack and ApolloniusTripletTrackCand, the z-recovery stage PndSttSkewStrawPzFinderTask uses skewed STT layers along with MVD and GEM hits to reconstruct the longitudinal z-component and momentum, outputting FinalTrack and FinalTrackCand before the final fit stage executed by PndRecoKalmanTask or PndRecoKalmanTask2."
+          },
+          {
+            "claim_id": "claim.4",
+            "claim_text": "Within the restgas determination two-pass reconstruction and longitudinal efficiency correction workflow, the reconstruction procedure in macro/target/reco_complete.C executes PndUnassignedHitsTask after standard tracking to collect unassigned hits, followed sequentially by PndApolloniusTripletTrackFinderTask for xy-plane displaced-track finding and PndSttSkewStrawPzFinderTask for longitudinal z-recovery before handing tracks off to the final Kalman fit."
+          }
+        ]
+      },
+      "judgment": {
+        "alignments": [
+          {
+            "answer_point_id": "point.1",
+            "reference_slot_id": "slot.1"
+          },
+          {
+            "answer_point_id": "point.2",
+            "reference_slot_id": "slot.2"
+          },
+          {
+            "answer_point_id": "point.3",
+            "reference_slot_id": "slot.3"
+          }
+        ],
+        "missing_reference_slot_ids": [],
+        "extra_answer_point_ids": [],
+        "claim_mappings": [
+          {
+            "claim_id": "claim.1",
+            "answer_point_ids": [
+              "point.1"
+            ]
+          },
+          {
+            "claim_id": "claim.2",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          },
+          {
+            "claim_id": "claim.3",
+            "answer_point_ids": [
+              "point.3"
+            ]
+          },
+          {
+            "claim_id": "claim.4",
+            "answer_point_ids": [
+              "point.1",
+              "point.2",
+              "point.3"
+            ]
+          }
+        ],
+        "covered_answer_point_ids": [
+          "point.1",
+          "point.2",
+          "point.3"
+        ],
+        "missing_answer_point_ids": []
+      },
+      "usage": [
+        {
+          "stage": "judge",
+          "logical_calls": 1,
+          "response": {
+            "alignments": [
+              {
+                "answer_point_id": "point.1",
+                "reference_slot_id": "slot.1"
+              },
+              {
+                "answer_point_id": "point.2",
+                "reference_slot_id": "slot.2"
+              },
+              {
+                "answer_point_id": "point.3",
+                "reference_slot_id": "slot.3"
+              }
+            ],
+            "missing_reference_slot_ids": [],
+            "extra_answer_point_ids": [],
+            "claim_mappings": [
+              {
+                "claim_id": "claim.1",
+                "answer_point_ids": [
+                  "point.1"
+                ]
+              },
+              {
+                "claim_id": "claim.2",
+                "answer_point_ids": [
+                  "point.2"
+                ]
+              },
+              {
+                "claim_id": "claim.3",
+                "answer_point_ids": [
+                  "point.3"
+                ]
+              },
+              {
+                "claim_id": "claim.4",
+                "answer_point_ids": [
+                  "point.1",
+                  "point.2",
+                  "point.3"
+                ]
+              }
+            ],
+            "covered_answer_point_ids": [
+              "point.1",
+              "point.2",
+              "point.3"
+            ],
+            "missing_answer_point_ids": []
+          },
+          "returned_model_calls": 1,
+          "adapter_requests": 1,
+          "tokens": 2146
+        }
+      ],
+      "applicability": [
+        true,
+        "APPLICABLE"
+      ]
+    },
+    {
+      "execution_id": "e1a2.b10.rep1",
+      "state": "COMPLETE",
+      "input": {
+        "question": "The restgas analysis determines the event vertex through a two-step POCA workflow. What does the first worker step leave behind for the second analysis step, and how is the fitted vertex fed into the reprocessing?",
+        "reference_slots": [
+          {
+            "reference_slot_id": "slot.1",
+            "text": "What the first POCA worker step leaves for the second analysis step"
+          },
+          {
+            "reference_slot_id": "slot.2",
+            "text": "How the fitted vertex feeds into reprocessing"
+          }
+        ],
+        "runtime_answer_points": [
+          {
+            "answer_point_id": "point.1",
+            "text": "What the first worker step leaves behind for the second analysis step in the restgas analysis two-step POCA workflow"
+          },
+          {
+            "answer_point_id": "point.2",
+            "text": "How the fitted vertex is fed into the reprocessing"
+          }
+        ],
+        "claims": [
+          {
+            "claim_id": "claim_poca_worker_step1_products",
+            "claim_text": "In the restgas POCA workflow, after preceding stages of simulation (prod_sim_hvmaps.C), digitization (prod_aod_hvmaps.C), track reconstruction (reco_complete.C), and initial PID without back-propagation (pid_complete.C), the first worker step executes ana_dpm.C to calculate track POCAs and output both <prefix>_vtx_fit.json (containing the fitted mean vertex coordinates) and <prefix>_boost.root (containing the event_poca tree)."
+          },
+          {
+            "claim_id": "claim_poca_step2_env_configuration",
+            "claim_text": "To feed the vertex into the second pass, poca_step2_analysis.py parses <prefix>_vtx_fit.json and sets the environment variables FIT_VERTEX_X, FIT_VERTEX_Y, and FIT_VERTEX_Z to the mean fitted coordinates, while setting POCA_VERTEX_FILE to point to the file containing the event_poca tree."
+          },
+          {
+            "claim_id": "claim_poca_reprocessing_consumption",
+            "claim_text": "During reprocessing in prod_aod_complete.C with option \"fitvertex\", PndPidCorrelator loads the event-level event_poca tree specified by POCA_VERTEX_FILE to back-propagate each event's tracks to its own POCA (with FIT_VERTEX_* environment variables serving as a fallback), preceding final NTuple generation in ana_complete.C."
+          },
+          {
+            "claim_id": "claim_poca_second_pass_pid_workflow",
+            "claim_text": "In the restgas second-pass PID workflow stage, the event_poca data structure is read via POCA_VERTEX_FILE to produce and write the final PID product."
+          }
+        ]
+      },
+      "judgment": {
+        "alignments": [
+          {
+            "answer_point_id": "point.1",
+            "reference_slot_id": "slot.1"
+          },
+          {
+            "answer_point_id": "point.2",
+            "reference_slot_id": "slot.2"
+          }
+        ],
+        "missing_reference_slot_ids": [],
+        "extra_answer_point_ids": [],
+        "claim_mappings": [
+          {
+            "claim_id": "claim_poca_worker_step1_products",
+            "answer_point_ids": [
+              "point.1"
+            ]
+          },
+          {
+            "claim_id": "claim_poca_step2_env_configuration",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          },
+          {
+            "claim_id": "claim_poca_reprocessing_consumption",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          },
+          {
+            "claim_id": "claim_poca_second_pass_pid_workflow",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          }
+        ],
+        "covered_answer_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "missing_answer_point_ids": []
+      },
+      "usage": [
+        {
+          "stage": "judge",
+          "logical_calls": 1,
+          "response": {
+            "alignments": [
+              {
+                "answer_point_id": "point.1",
+                "reference_slot_id": "slot.1"
+              },
+              {
+                "answer_point_id": "point.2",
+                "reference_slot_id": "slot.2"
+              }
+            ],
+            "missing_reference_slot_ids": [],
+            "extra_answer_point_ids": [],
+            "claim_mappings": [
+              {
+                "claim_id": "claim_poca_worker_step1_products",
+                "answer_point_ids": [
+                  "point.1"
+                ]
+              },
+              {
+                "claim_id": "claim_poca_step2_env_configuration",
+                "answer_point_ids": [
+                  "point.2"
+                ]
+              },
+              {
+                "claim_id": "claim_poca_reprocessing_consumption",
+                "answer_point_ids": [
+                  "point.2"
+                ]
+              },
+              {
+                "claim_id": "claim_poca_second_pass_pid_workflow",
+                "answer_point_ids": [
+                  "point.2"
+                ]
+              }
+            ],
+            "covered_answer_point_ids": [
+              "point.1",
+              "point.2"
+            ],
+            "missing_answer_point_ids": []
+          },
+          "returned_model_calls": 1,
+          "adapter_requests": 1,
+          "tokens": 2228
+        }
+      ],
+      "applicability": [
+        true,
+        "APPLICABLE"
+      ]
+    },
+    {
+      "execution_id": "e1a2.p10.rep1",
+      "state": "COMPLETE",
+      "input": {
+        "question": "The restgas analysis uses a two-step POCA workflow to determine the event vertex. What is passed from the first worker step to the second analysis step, and how does the fitted vertex enter the reprocessing?",
+        "reference_slots": [
+          {
+            "reference_slot_id": "slot.1",
+            "text": "What the first POCA worker step leaves for the second analysis step"
+          },
+          {
+            "reference_slot_id": "slot.2",
+            "text": "How the fitted vertex feeds into reprocessing"
+          }
+        ],
+        "runtime_answer_points": [
+          {
+            "answer_point_id": "point.1",
+            "text": "What is passed from the first worker step to the second analysis step"
+          },
+          {
+            "answer_point_id": "point.2",
+            "text": "How the fitted vertex enters the reprocessing"
+          }
+        ],
+        "claims": [
+          {
+            "claim_id": "claim_1",
+            "claim_text": "In the initial worker pass, the workflow executes prod_sim_hvmaps.C, prod_aod_hvmaps.C, reco_complete.C, and initial PID via pid_complete.C before ana_dpm.C calculates track POCAs and performs vertex fitting; ana_dpm.C produces <prefix>_vtx_fit.json containing fitted mean coordinates (X, Y, Z) and exports the event-by-event event_poca tree in <prefix>_boost.root for the second-pass runner."
+          },
+          {
+            "claim_id": "claim_2",
+            "claim_text": "The analysis orchestration script parses <prefix>_vtx_fit.json and sets environment variables FIT_VERTEX_X, FIT_VERTEX_Y, and FIT_VERTEX_Z alongside POCA_VERTEX_FILE set to <prefix>_boost.root, passing them into the second pass macro prod_aod_complete.C invoked with the \"fitvertex\" option."
+          },
+          {
+            "claim_id": "claim_3",
+            "claim_text": "During reprocessing, the \"fitvertex\" option enables SetUseFittedVertex(kTRUE), causing PndPidCorrelator to read the event_poca tree via POCA_VERTEX_FILE (falling back to FIT_VERTEX_X/Y/Z) so PndPidTrackInfo sets the GEANE target point and back-propagates tracks with PropagateToPCA(1, -1) before ana_complete.C writes the final ntuples."
+          },
+          {
+            "claim_id": "claim_4",
+            "claim_text": "In the second-pass PID workflow stage, event_poca is read through POCA_VERTEX_FILE to produce the final PID product."
+          }
+        ]
+      },
+      "judgment": {
+        "alignments": [
+          {
+            "answer_point_id": "point.1",
+            "reference_slot_id": "slot.1"
+          },
+          {
+            "answer_point_id": "point.2",
+            "reference_slot_id": "slot.2"
+          }
+        ],
+        "missing_reference_slot_ids": [],
+        "extra_answer_point_ids": [],
+        "claim_mappings": [
+          {
+            "claim_id": "claim_1",
+            "answer_point_ids": [
+              "point.1"
+            ]
+          },
+          {
+            "claim_id": "claim_2",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          },
+          {
+            "claim_id": "claim_3",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          },
+          {
+            "claim_id": "claim_4",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          }
+        ],
+        "covered_answer_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "missing_answer_point_ids": []
+      },
+      "usage": [
+        {
+          "stage": "judge",
+          "logical_calls": 1,
+          "response": {
+            "alignments": [
+              {
+                "answer_point_id": "point.1",
+                "reference_slot_id": "slot.1"
+              },
+              {
+                "answer_point_id": "point.2",
+                "reference_slot_id": "slot.2"
+              }
+            ],
+            "missing_reference_slot_ids": [],
+            "extra_answer_point_ids": [],
+            "claim_mappings": [
+              {
+                "claim_id": "claim_1",
+                "answer_point_ids": [
+                  "point.1"
+                ]
+              },
+              {
+                "claim_id": "claim_2",
+                "answer_point_ids": [
+                  "point.2"
+                ]
+              },
+              {
+                "claim_id": "claim_3",
+                "answer_point_ids": [
+                  "point.2"
+                ]
+              },
+              {
+                "claim_id": "claim_4",
+                "answer_point_ids": [
+                  "point.2"
+                ]
+              }
+            ],
+            "covered_answer_point_ids": [
+              "point.1",
+              "point.2"
+            ],
+            "missing_answer_point_ids": []
+          },
+          "returned_model_calls": 1,
+          "adapter_requests": 1,
+          "tokens": 2248
+        }
+      ],
+      "applicability": [
+        true,
+        "APPLICABLE"
+      ]
+    },
+    {
+      "execution_id": "e1a2.b11.rep1",
+      "state": "COMPLETE",
+      "input": {
+        "question": "Before the luminosity fit runs, the framework applies a coordinate-system preprocessing step to the track data. Why is the standard laboratory frame insufficient there, and what does the IP alignment transformation accomplish?",
+        "reference_slots": [
+          {
+            "reference_slot_id": "slot.1",
+            "text": "Why the standard laboratory frame is insufficient for the preprocessing before the luminosity fit"
+          },
+          {
+            "reference_slot_id": "slot.2",
+            "text": "What the IP alignment transformation accomplishes"
+          }
+        ],
+        "runtime_answer_points": [
+          {
+            "answer_point_id": "point.1",
+            "text": "Explain why the standard laboratory frame is insufficient for the track data before the luminosity fit runs."
+          },
+          {
+            "answer_point_id": "point.2",
+            "text": "Explain what the IP alignment transformation accomplishes."
+          }
+        ],
+        "claims": [
+          {
+            "claim_id": "claim_ip_standard_lab_insufficient",
+            "claim_text": "The standard laboratory frame is insufficient because it assumes the interaction point is located at (0, 0, 0), whereas real beam operations introduce a transverse displacement (x0, y0) that breaks the azimuthal symmetry of the tracks and detector acceptance, causing systematic bias in the luminosity determination."
+          },
+          {
+            "claim_id": "claim_ip_alignment_accomplishment_and_order",
+            "claim_text": "Following the predecessor track back-propagation stage that determines the mean interaction point (x0, y0, 0) from the Point of Closest Approach distribution, the IP alignment transformation applies a global coordinate shift to all track data so that the interaction point coincides with the origin, restoring the azimuthal symmetry required for the successor 2D luminosity fit model and removing the beam offset bias."
+          }
+        ]
+      },
+      "judgment": {
+        "alignments": [
+          {
+            "answer_point_id": "point.1",
+            "reference_slot_id": "slot.1"
+          },
+          {
+            "answer_point_id": "point.2",
+            "reference_slot_id": "slot.2"
+          }
+        ],
+        "missing_reference_slot_ids": [],
+        "extra_answer_point_ids": [],
+        "claim_mappings": [
+          {
+            "claim_id": "claim_ip_standard_lab_insufficient",
+            "answer_point_ids": [
+              "point.1"
+            ]
+          },
+          {
+            "claim_id": "claim_ip_alignment_accomplishment_and_order",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          }
+        ],
+        "covered_answer_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "missing_answer_point_ids": []
+      },
+      "usage": [
+        {
+          "stage": "judge",
+          "logical_calls": 1,
+          "response": {
+            "alignments": [
+              {
+                "answer_point_id": "point.1",
+                "reference_slot_id": "slot.1"
+              },
+              {
+                "answer_point_id": "point.2",
+                "reference_slot_id": "slot.2"
+              }
+            ],
+            "missing_reference_slot_ids": [],
+            "extra_answer_point_ids": [],
+            "claim_mappings": [
+              {
+                "claim_id": "claim_ip_standard_lab_insufficient",
+                "answer_point_ids": [
+                  "point.1"
+                ]
+              },
+              {
+                "claim_id": "claim_ip_alignment_accomplishment_and_order",
+                "answer_point_ids": [
+                  "point.2"
+                ]
+              }
+            ],
+            "covered_answer_point_ids": [
+              "point.1",
+              "point.2"
+            ],
+            "missing_answer_point_ids": []
+          },
+          "returned_model_calls": 1,
+          "adapter_requests": 1,
+          "tokens": 1682
+        }
+      ],
+      "applicability": [
+        true,
+        "APPLICABLE"
+      ]
+    },
+    {
+      "execution_id": "e1a2.p11.rep1",
+      "state": "COMPLETE",
+      "input": {
+        "question": "Before running the luminosity fit, the framework preprocesses track data with a coordinate-system step. Why is the standard laboratory frame inadequate for this, and what is achieved by the IP alignment transformation?",
+        "reference_slots": [
+          {
+            "reference_slot_id": "slot.1",
+            "text": "Why the standard laboratory frame is insufficient for the preprocessing before the luminosity fit"
+          },
+          {
+            "reference_slot_id": "slot.2",
+            "text": "What the IP alignment transformation accomplishes"
+          }
+        ],
+        "runtime_answer_points": [
+          {
+            "answer_point_id": "point.1",
+            "text": "Explain why the standard laboratory frame is inadequate for preprocessing track data before the luminosity fit."
+          },
+          {
+            "answer_point_id": "point.2",
+            "text": "Explain what is achieved by the IP alignment transformation."
+          }
+        ],
+        "claims": [
+          {
+            "claim_id": "claim.1",
+            "claim_text": "The standard laboratory frame is inadequate because it assumes the interaction point is at (0, 0, 0), whereas realistic beam operations exhibit a transverse offset (x_0, y_0) that shifts the primary vertex away from the nominal detector center and breaks the azimuthal symmetry of the tracks and detector acceptance, introducing systematic bias into the luminosity determination."
+          },
+          {
+            "claim_id": "claim.2",
+            "claim_text": "Following the preceding track backpropagation stage—where the mean interaction point (x_0, y_0, 0) is determined from the arithmetic mean of each track's Point of Closest Approach (POCA) to the origin—the IP alignment transformation applies a global coordinate shift that virtually shifts the detector system so the interaction point coincides with the origin."
+          },
+          {
+            "claim_id": "claim.3",
+            "claim_text": "By calculating reconstructed quantities relative to this physically determined center prior to the succeeding condition-specific Monte Carlo production and 2D luminosity fit, the IP alignment transformation restores the required azimuthal symmetry and removes systematic biases induced by the beam offset."
+          }
+        ]
+      },
+      "judgment": {
+        "alignments": [
+          {
+            "answer_point_id": "point.1",
+            "reference_slot_id": "slot.1"
+          },
+          {
+            "answer_point_id": "point.2",
+            "reference_slot_id": "slot.2"
+          }
+        ],
+        "missing_reference_slot_ids": [],
+        "extra_answer_point_ids": [],
+        "claim_mappings": [
+          {
+            "claim_id": "claim.1",
+            "answer_point_ids": [
+              "point.1"
+            ]
+          },
+          {
+            "claim_id": "claim.2",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          },
+          {
+            "claim_id": "claim.3",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          }
+        ],
+        "covered_answer_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "missing_answer_point_ids": []
+      },
+      "usage": [
+        {
+          "stage": "judge",
+          "logical_calls": 1,
+          "response": {
+            "alignments": [
+              {
+                "answer_point_id": "point.1",
+                "reference_slot_id": "slot.1"
+              },
+              {
+                "answer_point_id": "point.2",
+                "reference_slot_id": "slot.2"
+              }
+            ],
+            "missing_reference_slot_ids": [],
+            "extra_answer_point_ids": [],
+            "claim_mappings": [
+              {
+                "claim_id": "claim.1",
+                "answer_point_ids": [
+                  "point.1"
+                ]
+              },
+              {
+                "claim_id": "claim.2",
+                "answer_point_ids": [
+                  "point.2"
+                ]
+              },
+              {
+                "claim_id": "claim.3",
+                "answer_point_ids": [
+                  "point.2"
+                ]
+              }
+            ],
+            "covered_answer_point_ids": [
+              "point.1",
+              "point.2"
+            ],
+            "missing_answer_point_ids": []
+          },
+          "returned_model_calls": 1,
+          "adapter_requests": 1,
+          "tokens": 1707
+        }
+      ],
+      "applicability": [
+        true,
+        "APPLICABLE"
+      ]
+    },
+    {
+      "execution_id": "e1a2.b12.rep1",
+      "state": "COMPLETE",
+      "input": {
+        "question": "For different studies I need realistic background, one specific signal channel, and simple particle scans. How do PandaRoot's event-generator categories differ, and which generator is the current standard for background?",
+        "reference_slots": [
+          {
+            "reference_slot_id": "slot.1",
+            "text": "How PandaRoot's event-generator categories differ for the stated studies"
+          },
+          {
+            "reference_slot_id": "slot.2",
+            "text": "Which generator is the current standard for background"
+          }
+        ],
+        "runtime_answer_points": [
+          {
+            "answer_point_id": "point.1",
+            "text": "How PandaRoot's event-generator categories differ"
+          },
+          {
+            "answer_point_id": "point.2",
+            "text": "Which generator is the current standard for background"
+          }
+        ],
+        "claims": [
+          {
+            "claim_id": "claim_1",
+            "claim_text": "In PandaRoot, generator categories differ by their simulation function: background generators simulate beam-target interactions for the most important physics processes with the highest cross-sections, event generators such as EvtGen generate one specific physics channel, whereas box generators (particle guns like BoxGenerator and FixStepParticleGun) do not simulate an interaction but produce particles of a given type with defined distributions."
+          },
+          {
+            "claim_id": "claim_2",
+            "claim_text": "FTFGenerator is the current standard background generator in PandaRoot, whereas DPMGenerator is the previous generator that remains usable."
+          }
+        ]
+      },
+      "judgment": {
+        "alignments": [
+          {
+            "answer_point_id": "point.1",
+            "reference_slot_id": "slot.1"
+          },
+          {
+            "answer_point_id": "point.2",
+            "reference_slot_id": "slot.2"
+          }
+        ],
+        "missing_reference_slot_ids": [],
+        "extra_answer_point_ids": [],
+        "claim_mappings": [
+          {
+            "claim_id": "claim_1",
+            "answer_point_ids": [
+              "point.1"
+            ]
+          },
+          {
+            "claim_id": "claim_2",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          }
+        ],
+        "covered_answer_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "missing_answer_point_ids": []
+      },
+      "usage": [
+        {
+          "stage": "judge",
+          "logical_calls": 1,
+          "response": {
+            "alignments": [
+              {
+                "answer_point_id": "point.1",
+                "reference_slot_id": "slot.1"
+              },
+              {
+                "answer_point_id": "point.2",
+                "reference_slot_id": "slot.2"
+              }
+            ],
+            "missing_reference_slot_ids": [],
+            "extra_answer_point_ids": [],
+            "claim_mappings": [
+              {
+                "claim_id": "claim_1",
+                "answer_point_ids": [
+                  "point.1"
+                ]
+              },
+              {
+                "claim_id": "claim_2",
+                "answer_point_ids": [
+                  "point.2"
+                ]
+              }
+            ],
+            "covered_answer_point_ids": [
+              "point.1",
+              "point.2"
+            ],
+            "missing_answer_point_ids": []
+          },
+          "returned_model_calls": 1,
+          "adapter_requests": 1,
+          "tokens": 1477
+        }
+      ],
+      "applicability": [
+        true,
+        "APPLICABLE"
+      ]
+    },
+    {
+      "execution_id": "e1a2.p12.rep1",
+      "state": "COMPLETE",
+      "input": {
+        "question": "My studies require realistic background, a specific signal channel, and simple particle scans. What distinguishes PandaRoot's event-generator categories, and which generator is currently standard for background?",
+        "reference_slots": [
+          {
+            "reference_slot_id": "slot.1",
+            "text": "How PandaRoot's event-generator categories differ for the stated studies"
+          },
+          {
+            "reference_slot_id": "slot.2",
+            "text": "Which generator is the current standard for background"
+          }
+        ],
+        "runtime_answer_points": [
+          {
+            "answer_point_id": "point.1",
+            "text": "What distinguishes PandaRoot's event-generator categories"
+          },
+          {
+            "answer_point_id": "point.2",
+            "text": "Which generator is currently standard for background"
+          }
+        ],
+        "claims": [
+          {
+            "claim_id": "claim_1",
+            "claim_text": "PandaRoot defines three event-generator categories: background generators simulate beam-target interactions to produce the most important physics processes with the highest cross-sections, event generators (such as EvtGen) produce one specific physics channel, and box generators (particle guns such as BoxGenerator and FixStepParticleGun) produce particles of a given type with defined distributions without simulating an interaction."
+          },
+          {
+            "claim_id": "claim_2",
+            "claim_text": "FTFGenerator is the current standard background generator in PandaRoot, whereas DPMGenerator is the previous generator that remains usable within the framework."
+          }
+        ]
+      },
+      "judgment": {
+        "alignments": [
+          {
+            "answer_point_id": "point.1",
+            "reference_slot_id": "slot.1"
+          },
+          {
+            "answer_point_id": "point.2",
+            "reference_slot_id": "slot.2"
+          }
+        ],
+        "missing_reference_slot_ids": [],
+        "extra_answer_point_ids": [],
+        "claim_mappings": [
+          {
+            "claim_id": "claim_1",
+            "answer_point_ids": [
+              "point.1"
+            ]
+          },
+          {
+            "claim_id": "claim_2",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          }
+        ],
+        "covered_answer_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "missing_answer_point_ids": []
+      },
+      "usage": [
+        {
+          "stage": "judge",
+          "logical_calls": 1,
+          "response": {
+            "alignments": [
+              {
+                "answer_point_id": "point.1",
+                "reference_slot_id": "slot.1"
+              },
+              {
+                "answer_point_id": "point.2",
+                "reference_slot_id": "slot.2"
+              }
+            ],
+            "missing_reference_slot_ids": [],
+            "extra_answer_point_ids": [],
+            "claim_mappings": [
+              {
+                "claim_id": "claim_1",
+                "answer_point_ids": [
+                  "point.1"
+                ]
+              },
+              {
+                "claim_id": "claim_2",
+                "answer_point_ids": [
+                  "point.2"
+                ]
+              }
+            ],
+            "covered_answer_point_ids": [
+              "point.1",
+              "point.2"
+            ],
+            "missing_answer_point_ids": []
+          },
+          "returned_model_calls": 1,
+          "adapter_requests": 1,
+          "tokens": 1566
+        }
+      ],
+      "applicability": [
+        true,
+        "APPLICABLE"
+      ]
+    },
+    {
+      "execution_id": "e1a2.b07.rep2",
+      "state": "COMPLETE",
+      "input": {
+        "question": "I am building the RestgasDetermination fork on the GSI cluster. Which FairSoft/FairRoot pairs and paths are encoded in configSettings.sh, which environment variables does it assign, and what does the script actually do for unmatched input as written?",
+        "reference_slots": [
+          {
+            "reference_slot_id": "slot.1",
+            "text": "Which FairSoft/FairRoot pairs and paths configSettings.sh encodes for the RestgasDetermination build on the GSI cluster"
+          },
+          {
+            "reference_slot_id": "slot.2",
+            "text": "Which environment variables configSettings.sh assigns"
+          },
+          {
+            "reference_slot_id": "slot.3",
+            "text": "What configSettings.sh actually does with unmatched input as written"
+          }
+        ],
+        "runtime_answer_points": [
+          {
+            "answer_point_id": "point.1",
+            "text": "Which FairSoft/FairRoot pairs and paths are encoded in configSettings.sh"
+          },
+          {
+            "answer_point_id": "point.2",
+            "text": "Which environment variables configSettings.sh assigns"
+          },
+          {
+            "answer_point_id": "point.3",
+            "text": "What the script actually does for unmatched input as written"
+          }
+        ],
+        "claims": [
+          {
+            "claim_id": "claim_1",
+            "claim_text": "In configSettings.sh, the encoded version pairs and placeholder paths are: FAIRSOFT_VERSION==\"may16p1\" with FAIRROOT_VERSION==\"v-17.10b\", which configures SIMPATH to <path to the FairSoft may16p1 build folder> and FAIRROOTPATH to <path to the FairRoot v-17.10b install folder>; and FAIRSOFT_VERSION==\"oct17\" with FAIRROOT_VERSION==\"dev\", which configures SIMPATH to <path to the FairSoft oct17 build folder> and FAIRROOTPATH to <path to the FairRoot dev install folder>."
+          },
+          {
+            "claim_id": "claim_2",
+            "claim_text": "configSettings.sh exports and assigns two environment variables: SIMPATH and FAIRROOTPATH."
+          },
+          {
+            "claim_id": "claim_3",
+            "claim_text": "For unmatched input, configSettings.sh executes the else branch and prints \"No valid FAIRSOFT_VERSION: \" $FAIRSOFT_VERSION followed by \"of FAIRROOT_VERSION: \" $FAIRROOT_VERSION."
+          }
+        ]
+      },
+      "judgment": {
+        "alignments": [
+          {
+            "answer_point_id": "point.1",
+            "reference_slot_id": "slot.1"
+          },
+          {
+            "answer_point_id": "point.2",
+            "reference_slot_id": "slot.2"
+          },
+          {
+            "answer_point_id": "point.3",
+            "reference_slot_id": "slot.3"
+          }
+        ],
+        "missing_reference_slot_ids": [],
+        "extra_answer_point_ids": [],
+        "claim_mappings": [
+          {
+            "claim_id": "claim_1",
+            "answer_point_ids": [
+              "point.1"
+            ]
+          },
+          {
+            "claim_id": "claim_2",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          },
+          {
+            "claim_id": "claim_3",
+            "answer_point_ids": [
+              "point.3"
+            ]
+          }
+        ],
+        "covered_answer_point_ids": [
+          "point.1",
+          "point.2",
+          "point.3"
+        ],
+        "missing_answer_point_ids": []
+      },
+      "usage": [
+        {
+          "stage": "judge",
+          "logical_calls": 1,
+          "response": {
+            "alignments": [
+              {
+                "answer_point_id": "point.1",
+                "reference_slot_id": "slot.1"
+              },
+              {
+                "answer_point_id": "point.2",
+                "reference_slot_id": "slot.2"
+              },
+              {
+                "answer_point_id": "point.3",
+                "reference_slot_id": "slot.3"
+              }
+            ],
+            "missing_reference_slot_ids": [],
+            "extra_answer_point_ids": [],
+            "claim_mappings": [
+              {
+                "claim_id": "claim_1",
+                "answer_point_ids": [
+                  "point.1"
+                ]
+              },
+              {
+                "claim_id": "claim_2",
+                "answer_point_ids": [
+                  "point.2"
+                ]
+              },
+              {
+                "claim_id": "claim_3",
+                "answer_point_ids": [
+                  "point.3"
+                ]
+              }
+            ],
+            "covered_answer_point_ids": [
+              "point.1",
+              "point.2",
+              "point.3"
+            ],
+            "missing_answer_point_ids": []
+          },
+          "returned_model_calls": 1,
+          "adapter_requests": 1,
+          "tokens": 1932
+        }
+      ],
+      "applicability": [
+        true,
+        "APPLICABLE"
+      ]
+    },
+    {
+      "execution_id": "e1a2.p07.rep2",
+      "state": "COMPLETE",
+      "input": {
+        "question": "For a build of the RestgasDetermination fork on the GSI cluster, what FairSoft/FairRoot pairs and paths does configSettings.sh encode, what environment variables does it set, and how does the script handle unmatched input as currently written?",
+        "reference_slots": [
+          {
+            "reference_slot_id": "slot.1",
+            "text": "Which FairSoft/FairRoot pairs and paths configSettings.sh encodes for the RestgasDetermination build on the GSI cluster"
+          },
+          {
+            "reference_slot_id": "slot.2",
+            "text": "Which environment variables configSettings.sh assigns"
+          },
+          {
+            "reference_slot_id": "slot.3",
+            "text": "What configSettings.sh actually does with unmatched input as written"
+          }
+        ],
+        "runtime_answer_points": [
+          {
+            "answer_point_id": "point.1",
+            "text": "What FairSoft/FairRoot pairs and paths configSettings.sh encodes for a build of the RestgasDetermination fork on the GSI cluster"
+          },
+          {
+            "answer_point_id": "point.2",
+            "text": "What environment variables configSettings.sh sets"
+          },
+          {
+            "answer_point_id": "point.3",
+            "text": "How the script handles unmatched input as currently written"
+          }
+        ],
+        "claims": [
+          {
+            "claim_id": "claim.1",
+            "claim_text": "In the RestgasDetermination repository, configSettings.sh encodes two FairSoft and FairRoot version pairings with placeholder paths: FAIRSOFT_VERSION \"may16p1\" with FAIRROOT_VERSION \"v-17.10b\" (pointing SIMPATH to \"<path to the FairSoft may16p1 build folder>\" and FAIRROOTPATH to \"<path to the FairRoot v-17.10b install folder>\"), and FAIRSOFT_VERSION \"oct17\" with FAIRROOT_VERSION \"dev\" (pointing SIMPATH to \"<path to the FairSoft oct17 build folder>\" and FAIRROOTPATH to \"<path to the FairRoot dev install folder>\")."
+          },
+          {
+            "claim_id": "claim.2",
+            "claim_text": "The script sets and exports two environment variables: SIMPATH (specifying the FairSoft build folder) and FAIRROOTPATH (specifying the FairRoot installation folder)."
+          },
+          {
+            "claim_id": "claim.3",
+            "claim_text": "When input variables do not match either configured pairing, the script falls through to an else clause that prints \"No valid FAIRSOFT_VERSION: \" followed by $FAIRSOFT_VERSION and \"of FAIRROOT_VERSION: \" followed by $FAIRROOT_VERSION without exporting SIMPATH or FAIRROOTPATH."
+          }
+        ]
+      },
+      "judgment": {
+        "alignments": [
+          {
+            "answer_point_id": "point.1",
+            "reference_slot_id": "slot.1"
+          },
+          {
+            "answer_point_id": "point.2",
+            "reference_slot_id": "slot.2"
+          },
+          {
+            "answer_point_id": "point.3",
+            "reference_slot_id": "slot.3"
+          }
+        ],
+        "missing_reference_slot_ids": [],
+        "extra_answer_point_ids": [],
+        "claim_mappings": [
+          {
+            "claim_id": "claim.1",
+            "answer_point_ids": [
+              "point.1"
+            ]
+          },
+          {
+            "claim_id": "claim.2",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          },
+          {
+            "claim_id": "claim.3",
+            "answer_point_ids": [
+              "point.3"
+            ]
+          }
+        ],
+        "covered_answer_point_ids": [
+          "point.1",
+          "point.2",
+          "point.3"
+        ],
+        "missing_answer_point_ids": []
+      },
+      "usage": [
+        {
+          "stage": "judge",
+          "logical_calls": 1,
+          "response": {
+            "alignments": [
+              {
+                "answer_point_id": "point.1",
+                "reference_slot_id": "slot.1"
+              },
+              {
+                "answer_point_id": "point.2",
+                "reference_slot_id": "slot.2"
+              },
+              {
+                "answer_point_id": "point.3",
+                "reference_slot_id": "slot.3"
+              }
+            ],
+            "missing_reference_slot_ids": [],
+            "extra_answer_point_ids": [],
+            "claim_mappings": [
+              {
+                "claim_id": "claim.1",
+                "answer_point_ids": [
+                  "point.1"
+                ]
+              },
+              {
+                "claim_id": "claim.2",
+                "answer_point_ids": [
+                  "point.2"
+                ]
+              },
+              {
+                "claim_id": "claim.3",
+                "answer_point_ids": [
+                  "point.3"
+                ]
+              }
+            ],
+            "covered_answer_point_ids": [
+              "point.1",
+              "point.2",
+              "point.3"
+            ],
+            "missing_answer_point_ids": []
+          },
+          "returned_model_calls": 1,
+          "adapter_requests": 1,
+          "tokens": 2090
+        }
+      ],
+      "applicability": [
+        true,
+        "APPLICABLE"
+      ]
+    },
+    {
+      "execution_id": "e1a2.b08.rep2",
+      "state": "COMPLETE",
+      "input": {
+        "question": "Before tracks can be fitted in the luminosity detector, the hits have to be grouped into track candidates. Which track-search approaches were developed for the LMD, and how do they compare?",
+        "reference_slots": [
+          {
+            "reference_slot_id": "slot.1",
+            "text": "Which track-search approaches were developed for the LMD"
+          },
+          {
+            "reference_slot_id": "slot.2",
+            "text": "How the LMD track-search approaches compare"
+          }
+        ],
+        "runtime_answer_points": [
+          {
+            "answer_point_id": "point.1",
+            "text": "Which track-search approaches were developed for the LMD"
+          },
+          {
+            "answer_point_id": "point.2",
+            "text": "How the track-search approaches developed for the LMD compare"
+          }
+        ],
+        "claims": [
+          {
+            "claim_id": "claim_1",
+            "claim_text": "Two track-search algorithms were developed for the Luminosity Detector (LMD) in the PandaRoot framework: Track Following (TF), which operates as a sequential local method, and Cellular Automaton (CA), which operates as a global parallel method."
+          },
+          {
+            "claim_id": "claim_2",
+            "claim_text": "Track Following builds a track candidate seed from hit pairs on neighboring planes and propagates it layer-by-layer within an acceptance corridor to attach compatible hits, whereas Cellular Automaton generates short hit-to-hit segments (cells) simultaneously across all planes and evolves them into tracks using local neighborhood rules."
+          },
+          {
+            "claim_id": "claim_3",
+            "claim_text": "Whereas Track Following is effective in low-occupancy environments but vulnerable to combinatorial ambiguities in high-rate conditions, Cellular Automaton handles high-multiplicity events better (especially at low beam energies), remains robust against local inefficiencies, and serves as the default and preferred track-finding choice for LMD analysis."
+          }
+        ]
+      },
+      "judgment": {
+        "alignments": [
+          {
+            "answer_point_id": "point.1",
+            "reference_slot_id": "slot.1"
+          },
+          {
+            "answer_point_id": "point.2",
+            "reference_slot_id": "slot.2"
+          }
+        ],
+        "missing_reference_slot_ids": [],
+        "extra_answer_point_ids": [],
+        "claim_mappings": [
+          {
+            "claim_id": "claim_1",
+            "answer_point_ids": [
+              "point.1",
+              "point.2"
+            ]
+          },
+          {
+            "claim_id": "claim_2",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          },
+          {
+            "claim_id": "claim_3",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          }
+        ],
+        "covered_answer_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "missing_answer_point_ids": []
+      },
+      "usage": [
+        {
+          "stage": "judge",
+          "logical_calls": 1,
+          "response": {
+            "alignments": [
+              {
+                "answer_point_id": "point.1",
+                "reference_slot_id": "slot.1"
+              },
+              {
+                "answer_point_id": "point.2",
+                "reference_slot_id": "slot.2"
+              }
+            ],
+            "missing_reference_slot_ids": [],
+            "extra_answer_point_ids": [],
+            "claim_mappings": [
+              {
+                "claim_id": "claim_1",
+                "answer_point_ids": [
+                  "point.1",
+                  "point.2"
+                ]
+              },
+              {
+                "claim_id": "claim_2",
+                "answer_point_ids": [
+                  "point.2"
+                ]
+              },
+              {
+                "claim_id": "claim_3",
+                "answer_point_ids": [
+                  "point.2"
+                ]
+              }
+            ],
+            "covered_answer_point_ids": [
+              "point.1",
+              "point.2"
+            ],
+            "missing_answer_point_ids": []
+          },
+          "returned_model_calls": 1,
+          "adapter_requests": 1,
+          "tokens": 1801
+        }
+      ],
+      "applicability": [
+        true,
+        "APPLICABLE"
+      ]
+    },
+    {
+      "execution_id": "e1a2.p08.rep2",
+      "state": "COMPLETE",
+      "input": {
+        "question": "LMD hits must be grouped into track candidates before fitting tracks in the luminosity detector. What track-search approaches were developed for the LMD, and what are the differences between them?",
+        "reference_slots": [
+          {
+            "reference_slot_id": "slot.1",
+            "text": "Which track-search approaches were developed for the LMD"
+          },
+          {
+            "reference_slot_id": "slot.2",
+            "text": "How the LMD track-search approaches compare"
+          }
+        ],
+        "runtime_answer_points": [
+          {
+            "answer_point_id": "point.1",
+            "text": "Identify the track-search approaches developed for the LMD."
+          },
+          {
+            "answer_point_id": "point.2",
+            "text": "Explain the differences between the track-search approaches developed for the LMD."
+          }
+        ],
+        "claims": [
+          {
+            "claim_id": "claim.1",
+            "claim_text": "The two track-search algorithms developed for the LMD in PandaRoot are Track Following and Cellular Automaton."
+          },
+          {
+            "claim_id": "claim.2",
+            "claim_text": "Track Following operates as a sequential local method that creates candidate seeds between neighboring planes and propagates them layer-by-layer searching within a corridor, whereas Cellular Automaton operates as a global parallel method that creates hit-to-hit segments across all layers simultaneously and evolves them based on neighborhood rules."
+          },
+          {
+            "claim_id": "claim.3",
+            "claim_text": "Whereas Track Following is effective in low-occupancy environments but can suffer from combinatorial ambiguities in high-rate conditions, Cellular Automaton handles high-multiplicity events better, provides robustness against local inefficiencies, and serves as the default and preferred track-finding algorithm for the LMD."
+          }
+        ]
+      },
+      "judgment": {
+        "alignments": [
+          {
+            "answer_point_id": "point.1",
+            "reference_slot_id": "slot.1"
+          },
+          {
+            "answer_point_id": "point.2",
+            "reference_slot_id": "slot.2"
+          }
+        ],
+        "missing_reference_slot_ids": [],
+        "extra_answer_point_ids": [],
+        "claim_mappings": [
+          {
+            "claim_id": "claim.1",
+            "answer_point_ids": [
+              "point.1"
+            ]
+          },
+          {
+            "claim_id": "claim.2",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          },
+          {
+            "claim_id": "claim.3",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          }
+        ],
+        "covered_answer_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "missing_answer_point_ids": []
+      },
+      "usage": [
+        {
+          "stage": "judge",
+          "logical_calls": 1,
+          "response": {
+            "alignments": [
+              {
+                "answer_point_id": "point.1",
+                "reference_slot_id": "slot.1"
+              },
+              {
+                "answer_point_id": "point.2",
+                "reference_slot_id": "slot.2"
+              }
+            ],
+            "missing_reference_slot_ids": [],
+            "extra_answer_point_ids": [],
+            "claim_mappings": [
+              {
+                "claim_id": "claim.1",
+                "answer_point_ids": [
+                  "point.1"
+                ]
+              },
+              {
+                "claim_id": "claim.2",
+                "answer_point_ids": [
+                  "point.2"
+                ]
+              },
+              {
+                "claim_id": "claim.3",
+                "answer_point_ids": [
+                  "point.2"
+                ]
+              }
+            ],
+            "covered_answer_point_ids": [
+              "point.1",
+              "point.2"
+            ],
+            "missing_answer_point_ids": []
+          },
+          "returned_model_calls": 1,
+          "adapter_requests": 1,
+          "tokens": 1691
+        }
+      ],
+      "applicability": [
+        true,
+        "APPLICABLE"
+      ]
+    },
+    {
+      "execution_id": "e1a2.b09.rep2",
+      "state": "COMPLETE",
+      "input": {
+        "question": "In the restgas determination analysis, the standard track finder leaves part of the hits unassigned. Which task picks up those leftover hits, and what do the downstream displaced-track finder and z-recovery stages each contribute before the final fit?",
+        "reference_slots": [
+          {
+            "reference_slot_id": "slot.1",
+            "text": "Which task picks up the leftover hits in restgas determination analysis"
+          },
+          {
+            "reference_slot_id": "slot.2",
+            "text": "What the downstream displaced-track finder contributes before the final fit"
+          },
+          {
+            "reference_slot_id": "slot.3",
+            "text": "What the z-recovery stage contributes before the final fit"
+          }
+        ],
+        "runtime_answer_points": [
+          {
+            "answer_point_id": "point.1",
+            "text": "Identify which task picks up the leftover hits left unassigned by the standard track finder in the restgas determination analysis."
+          },
+          {
+            "answer_point_id": "point.2",
+            "text": "Describe what the downstream displaced-track finder stage contributes before the final fit."
+          },
+          {
+            "answer_point_id": "point.3",
+            "text": "Describe what the z-recovery stage contributes before the final fit."
+          }
+        ],
+        "claims": [
+          {
+            "claim_id": "claim_1",
+            "claim_text": "In the restgas determination reconstruction chain configured in macro/target/reco_complete.C and documented in README.md, PndUnassignedHitsTask runs after the standard reconstruction stage (PndTrkTracking2) to collect the detector hits left unassigned by the standard track finder."
+          },
+          {
+            "claim_id": "claim_2",
+            "claim_text": "The downstream displaced-track finder stage, PndApolloniusTripletTrackFinderTask, reconstructs displaced track trajectories in the transverse (xy) plane from STT drift-circle triplets together with MVD and GEM hits, outputting the intermediate products ApolloniusTripletTrack and ApolloniusTripletTrackCand."
+          },
+          {
+            "claim_id": "claim_3",
+            "claim_text": "The subsequent z-recovery stage, PndSttSkewStrawPzFinderTask, consumes ApolloniusTripletTrack and ApolloniusTripletTrackCand, resolves the third dimension and longitudinal track component (pz, dip angle, and longitudinal origin) using skewed STT straw layers, and hands off the resulting FinalTrack and FinalTrackCand products to PndRecoKalmanTask2 for the final fit."
+          },
+          {
+            "claim_id": "claim_4",
+            "claim_text": "Operationally, the restgas determination analysis employs a two-pass reconstruction and longitudinal efficiency correction workflow, wherein the dedicated displaced-track reconstruction procedure uses PndUnassignedHitsTask to harvest unassigned hits following standard tracking."
+          }
+        ]
+      },
+      "judgment": {
+        "alignments": [
+          {
+            "answer_point_id": "point.1",
+            "reference_slot_id": "slot.1"
+          },
+          {
+            "answer_point_id": "point.2",
+            "reference_slot_id": "slot.2"
+          },
+          {
+            "answer_point_id": "point.3",
+            "reference_slot_id": "slot.3"
+          }
+        ],
+        "missing_reference_slot_ids": [],
+        "extra_answer_point_ids": [],
+        "claim_mappings": [
+          {
+            "claim_id": "claim_1",
+            "answer_point_ids": [
+              "point.1"
+            ]
+          },
+          {
+            "claim_id": "claim_2",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          },
+          {
+            "claim_id": "claim_3",
+            "answer_point_ids": [
+              "point.3"
+            ]
+          },
+          {
+            "claim_id": "claim_4",
+            "answer_point_ids": [
+              "point.1"
+            ]
+          }
+        ],
+        "covered_answer_point_ids": [
+          "point.1",
+          "point.2",
+          "point.3"
+        ],
+        "missing_answer_point_ids": []
+      },
+      "usage": [
+        {
+          "stage": "judge",
+          "logical_calls": 1,
+          "response": {
+            "alignments": [
+              {
+                "answer_point_id": "point.1",
+                "reference_slot_id": "slot.1"
+              },
+              {
+                "answer_point_id": "point.2",
+                "reference_slot_id": "slot.2"
+              },
+              {
+                "answer_point_id": "point.3",
+                "reference_slot_id": "slot.3"
+              }
+            ],
+            "missing_reference_slot_ids": [],
+            "extra_answer_point_ids": [],
+            "claim_mappings": [
+              {
+                "claim_id": "claim_1",
+                "answer_point_ids": [
+                  "point.1"
+                ]
+              },
+              {
+                "claim_id": "claim_2",
+                "answer_point_ids": [
+                  "point.2"
+                ]
+              },
+              {
+                "claim_id": "claim_3",
+                "answer_point_ids": [
+                  "point.3"
+                ]
+              },
+              {
+                "claim_id": "claim_4",
+                "answer_point_ids": [
+                  "point.1"
+                ]
+              }
+            ],
+            "covered_answer_point_ids": [
+              "point.1",
+              "point.2",
+              "point.3"
+            ],
+            "missing_answer_point_ids": []
+          },
+          "returned_model_calls": 1,
+          "adapter_requests": 1,
+          "tokens": 2120
+        }
+      ],
+      "applicability": [
+        true,
+        "APPLICABLE"
+      ]
+    },
+    {
+      "execution_id": "e1a2.p09.rep2",
+      "state": "COMPLETE",
+      "input": {
+        "question": "In restgas determination analysis, some hits remain unassigned by the standard track finder. Which task collects these hits, and what does each of the downstream displaced-track finder and z-recovery stages contribute before the final fit?",
+        "reference_slots": [
+          {
+            "reference_slot_id": "slot.1",
+            "text": "Which task picks up the leftover hits in restgas determination analysis"
+          },
+          {
+            "reference_slot_id": "slot.2",
+            "text": "What the downstream displaced-track finder contributes before the final fit"
+          },
+          {
+            "reference_slot_id": "slot.3",
+            "text": "What the z-recovery stage contributes before the final fit"
+          }
+        ],
+        "runtime_answer_points": [
+          {
+            "answer_point_id": "point.1",
+            "text": "Identify which task collects the hits remaining unassigned by the standard track finder in restgas determination analysis."
+          },
+          {
+            "answer_point_id": "point.2",
+            "text": "Describe what the downstream displaced-track finder stage contributes before the final fit."
+          },
+          {
+            "answer_point_id": "point.3",
+            "text": "Describe what the z-recovery stage contributes before the final fit."
+          }
+        ],
+        "claims": [
+          {
+            "claim_id": "claim_1",
+            "claim_text": "Following standard tracking with PndTrkTracking2 and hit combination with PndSttSkewedCombineTask in macro/target/reco_complete.C, PndUnassignedHitsTask collects remaining unassigned hits across STTHit, MVDHitsPixel, MVDHitsStrip, and GEMHit branches using the extension AfterStandardTrack."
+          },
+          {
+            "claim_id": "claim_2",
+            "claim_text": "The downstream displaced-track finder stage PndApolloniusTripletTrackFinderTask takes these tracking hits and performs local pattern recognition in the xy-plane using hit triplets and the Apollonius calculation, producing intermediate ApolloniusTripletTrack and ApolloniusTripletTrackCand data products."
+          },
+          {
+            "claim_id": "claim_3",
+            "claim_text": "The z-recovery stage PndSttSkewStrawPzFinderTask consumes the ApolloniusTripletTrack and ApolloniusTripletTrackCand products together with skewed STT straw hits to extract longitudinal (z/pz) track information, outputting FinalTrack and FinalTrackCand before passing them to the final fit task PndRecoKalmanTask or PndRecoKalmanTask2."
+          },
+          {
+            "claim_id": "claim_4",
+            "claim_text": "In the restgas profile reconstruction workflow, the displaced-track reconstruction procedure operates within a two-pass reconstruction and longitudinal efficiency correction workflow to recover tracks with reaction vertices distributed along the beam axis before the final fit."
+          }
+        ]
+      },
+      "judgment": {
+        "alignments": [
+          {
+            "answer_point_id": "point.1",
+            "reference_slot_id": "slot.1"
+          },
+          {
+            "answer_point_id": "point.2",
+            "reference_slot_id": "slot.2"
+          },
+          {
+            "answer_point_id": "point.3",
+            "reference_slot_id": "slot.3"
+          }
+        ],
+        "missing_reference_slot_ids": [],
+        "extra_answer_point_ids": [],
+        "claim_mappings": [
+          {
+            "claim_id": "claim_1",
+            "answer_point_ids": [
+              "point.1"
+            ]
+          },
+          {
+            "claim_id": "claim_2",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          },
+          {
+            "claim_id": "claim_3",
+            "answer_point_ids": [
+              "point.3"
+            ]
+          },
+          {
+            "claim_id": "claim_4",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          }
+        ],
+        "covered_answer_point_ids": [
+          "point.1",
+          "point.2",
+          "point.3"
+        ],
+        "missing_answer_point_ids": []
+      },
+      "usage": [
+        {
+          "stage": "judge",
+          "logical_calls": 1,
+          "response": {
+            "alignments": [
+              {
+                "answer_point_id": "point.1",
+                "reference_slot_id": "slot.1"
+              },
+              {
+                "answer_point_id": "point.2",
+                "reference_slot_id": "slot.2"
+              },
+              {
+                "answer_point_id": "point.3",
+                "reference_slot_id": "slot.3"
+              }
+            ],
+            "missing_reference_slot_ids": [],
+            "extra_answer_point_ids": [],
+            "claim_mappings": [
+              {
+                "claim_id": "claim_1",
+                "answer_point_ids": [
+                  "point.1"
+                ]
+              },
+              {
+                "claim_id": "claim_2",
+                "answer_point_ids": [
+                  "point.2"
+                ]
+              },
+              {
+                "claim_id": "claim_3",
+                "answer_point_ids": [
+                  "point.3"
+                ]
+              },
+              {
+                "claim_id": "claim_4",
+                "answer_point_ids": [
+                  "point.2"
+                ]
+              }
+            ],
+            "covered_answer_point_ids": [
+              "point.1",
+              "point.2",
+              "point.3"
+            ],
+            "missing_answer_point_ids": []
+          },
+          "returned_model_calls": 1,
+          "adapter_requests": 1,
+          "tokens": 2224
+        }
+      ],
+      "applicability": [
+        true,
+        "APPLICABLE"
+      ]
+    },
+    {
+      "execution_id": "e1a2.b10.rep2",
+      "state": "COMPLETE",
+      "input": {
+        "question": "The restgas analysis determines the event vertex through a two-step POCA workflow. What does the first worker step leave behind for the second analysis step, and how is the fitted vertex fed into the reprocessing?",
+        "reference_slots": [
+          {
+            "reference_slot_id": "slot.1",
+            "text": "What the first POCA worker step leaves for the second analysis step"
+          },
+          {
+            "reference_slot_id": "slot.2",
+            "text": "How the fitted vertex feeds into reprocessing"
+          }
+        ],
+        "runtime_answer_points": [
+          {
+            "answer_point_id": "point.1",
+            "text": "What the first worker step leaves behind for the second analysis step"
+          },
+          {
+            "answer_point_id": "point.2",
+            "text": "How the fitted vertex is fed into the reprocessing"
+          }
+        ],
+        "claims": [
+          {
+            "claim_id": "claim_1",
+            "claim_text": "In the POCA workflow executed by poca_step1_worker.py, merge.py, and poca_step2_analysis.py, the first pass concludes at ana_dpm.C, which generates two intermediate outputs for the second step: <prefix>_boost.root containing the per-event event_poca tree (with event_id, x, y, z, and valid) and <prefix>_vtx_fit.json containing the fitted sample-level mean vertex coordinates and widths."
+          },
+          {
+            "claim_id": "claim_2",
+            "claim_text": "For the second step, poca_step2_analysis.py calls get_vertex_from_file to extract the fitted vertex means from the JSON output into the environment variables FIT_VERTEX_X, FIT_VERTEX_Y, and FIT_VERTEX_Z, and assigns the POCA ROOT file path to POCA_VERTEX_FILE."
+          },
+          {
+            "claim_id": "claim_3",
+            "claim_text": "During reprocessing in prod_aod_complete.C with option \"fitvertex\", PndPidCorrelator reads the event_poca tree from POCA_VERTEX_FILE to propagate each event's tracks to its event-specific POCA vertex, falling back to FIT_VERTEX_X, FIT_VERTEX_Y, and FIT_VERTEX_Z when the event vertex tree is not used."
+          }
+        ]
+      },
+      "judgment": {
+        "alignments": [
+          {
+            "answer_point_id": "point.1",
+            "reference_slot_id": "slot.1"
+          },
+          {
+            "answer_point_id": "point.2",
+            "reference_slot_id": "slot.2"
+          }
+        ],
+        "missing_reference_slot_ids": [],
+        "extra_answer_point_ids": [],
+        "claim_mappings": [
+          {
+            "claim_id": "claim_1",
+            "answer_point_ids": [
+              "point.1"
+            ]
+          },
+          {
+            "claim_id": "claim_2",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          },
+          {
+            "claim_id": "claim_3",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          }
+        ],
+        "covered_answer_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "missing_answer_point_ids": []
+      },
+      "usage": [
+        {
+          "stage": "judge",
+          "logical_calls": 1,
+          "response": {
+            "alignments": [
+              {
+                "answer_point_id": "point.1",
+                "reference_slot_id": "slot.1"
+              },
+              {
+                "answer_point_id": "point.2",
+                "reference_slot_id": "slot.2"
+              }
+            ],
+            "missing_reference_slot_ids": [],
+            "extra_answer_point_ids": [],
+            "claim_mappings": [
+              {
+                "claim_id": "claim_1",
+                "answer_point_ids": [
+                  "point.1"
+                ]
+              },
+              {
+                "claim_id": "claim_2",
+                "answer_point_ids": [
+                  "point.2"
+                ]
+              },
+              {
+                "claim_id": "claim_3",
+                "answer_point_ids": [
+                  "point.2"
+                ]
+              }
+            ],
+            "covered_answer_point_ids": [
+              "point.1",
+              "point.2"
+            ],
+            "missing_answer_point_ids": []
+          },
+          "returned_model_calls": 1,
+          "adapter_requests": 1,
+          "tokens": 2061
+        }
+      ],
+      "applicability": [
+        true,
+        "APPLICABLE"
+      ]
+    },
+    {
+      "execution_id": "e1a2.p10.rep2",
+      "state": "COMPLETE",
+      "input": {
+        "question": "The restgas analysis uses a two-step POCA workflow to determine the event vertex. What is passed from the first worker step to the second analysis step, and how does the fitted vertex enter the reprocessing?",
+        "reference_slots": [
+          {
+            "reference_slot_id": "slot.1",
+            "text": "What the first POCA worker step leaves for the second analysis step"
+          },
+          {
+            "reference_slot_id": "slot.2",
+            "text": "How the fitted vertex feeds into reprocessing"
+          }
+        ],
+        "runtime_answer_points": [
+          {
+            "answer_point_id": "point.1",
+            "text": "Identify what is passed from the first worker step to the second analysis step in the two-step POCA workflow."
+          },
+          {
+            "answer_point_id": "point.2",
+            "text": "Explain how the fitted vertex enters the reprocessing."
+          }
+        ],
+        "claims": [
+          {
+            "claim_id": "claim_1",
+            "claim_text": "In the two-step POCA workflow, the first pass runs simulation, digitization, reconstruction, initial PID, and ana_dpm.C to produce two intermediate vertex products for the second pass: <prefix>_boost.root containing the event-level event_poca tree, and <prefix>_vtx_fit.json containing the fitted sample-level vertex coordinate means."
+          },
+          {
+            "claim_id": "claim_2",
+            "claim_text": "Before reprocessing begins, orchestration scripts such as runall_prod_hvmaps.py and poca_step2_analysis.py read the vertex coordinates from <prefix>_vtx_fit.json and export them as the environment variables FIT_VERTEX_X, FIT_VERTEX_Y, and FIT_VERTEX_Z, while setting POCA_VERTEX_FILE to point to <prefix>_boost.root."
+          },
+          {
+            "claim_id": "claim_3",
+            "claim_text": "During the second-pass reprocessing in prod_aod_complete.C, PndPidCorrelator enters vertex refinement by reading the event_poca tree from POCA_VERTEX_FILE to back-propagate each event's tracks to its own POCA vertex (or falling back to the FIT_VERTEX_* environment variables) before ana_complete.C produces final analysis NTuples."
+          }
+        ]
+      },
+      "judgment": {
+        "alignments": [
+          {
+            "answer_point_id": "point.1",
+            "reference_slot_id": "slot.1"
+          },
+          {
+            "answer_point_id": "point.2",
+            "reference_slot_id": "slot.2"
+          }
+        ],
+        "missing_reference_slot_ids": [],
+        "extra_answer_point_ids": [],
+        "claim_mappings": [
+          {
+            "claim_id": "claim_1",
+            "answer_point_ids": [
+              "point.1"
+            ]
+          },
+          {
+            "claim_id": "claim_2",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          },
+          {
+            "claim_id": "claim_3",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          }
+        ],
+        "covered_answer_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "missing_answer_point_ids": []
+      },
+      "usage": [
+        {
+          "stage": "judge",
+          "logical_calls": 1,
+          "response": {
+            "alignments": [
+              {
+                "answer_point_id": "point.1",
+                "reference_slot_id": "slot.1"
+              },
+              {
+                "answer_point_id": "point.2",
+                "reference_slot_id": "slot.2"
+              }
+            ],
+            "missing_reference_slot_ids": [],
+            "extra_answer_point_ids": [],
+            "claim_mappings": [
+              {
+                "claim_id": "claim_1",
+                "answer_point_ids": [
+                  "point.1"
+                ]
+              },
+              {
+                "claim_id": "claim_2",
+                "answer_point_ids": [
+                  "point.2"
+                ]
+              },
+              {
+                "claim_id": "claim_3",
+                "answer_point_ids": [
+                  "point.2"
+                ]
+              }
+            ],
+            "covered_answer_point_ids": [
+              "point.1",
+              "point.2"
+            ],
+            "missing_answer_point_ids": []
+          },
+          "returned_model_calls": 1,
+          "adapter_requests": 1,
+          "tokens": 1955
+        }
+      ],
+      "applicability": [
+        true,
+        "APPLICABLE"
+      ]
+    },
+    {
+      "execution_id": "e1a2.b11.rep2",
+      "state": "COMPLETE",
+      "input": {
+        "question": "Before the luminosity fit runs, the framework applies a coordinate-system preprocessing step to the track data. Why is the standard laboratory frame insufficient there, and what does the IP alignment transformation accomplish?",
+        "reference_slots": [
+          {
+            "reference_slot_id": "slot.1",
+            "text": "Why the standard laboratory frame is insufficient for the preprocessing before the luminosity fit"
+          },
+          {
+            "reference_slot_id": "slot.2",
+            "text": "What the IP alignment transformation accomplishes"
+          }
+        ],
+        "runtime_answer_points": [
+          {
+            "answer_point_id": "point.1",
+            "text": "Explain why the standard laboratory frame is insufficient for the coordinate-system preprocessing step applied to the track data before the luminosity fit."
+          },
+          {
+            "answer_point_id": "point.2",
+            "text": "Explain what the IP alignment transformation accomplishes."
+          }
+        ],
+        "claims": [
+          {
+            "claim_id": "claim_ip_alignment_lab_frame_insufficient",
+            "claim_text": "The standard laboratory frame is insufficient because it assumes the interaction point is located at (0, 0, 0), whereas realistic beam operations introduce a transverse displacement (x0, y0) that shifts the primary vertex away from the nominal detector center and breaks the azimuthal symmetry required for the luminosity fit model."
+          },
+          {
+            "claim_id": "claim_ip_alignment_poca_workflow",
+            "claim_text": "In the workflow execution order, track reconstruction and track back-propagation precede IP determination, wherein the Point of Closest Approach (POCA) of back-propagated tracks to the nominal origin is determined, and the arithmetic mean of these POCA coordinates yields the mean interaction point (x0, y0, 0)."
+          },
+          {
+            "claim_id": "claim_ip_alignment_transformation_effect",
+            "claim_text": "The IP alignment transformation accomplishes a global coordinate shift of all track data into the beam reference frame, virtually shifting the detector system so the interaction point coincides with the coordinate origin, thereby restoring azimuthal symmetry and removing beam-offset systematic bias prior to track filtering, fit model construction, and the final luminosity fit."
+          },
+          {
+            "claim_id": "claim_workflow_order_stages",
+            "claim_text": "In the integrated workflow execution order, IP determination is followed in sequence by condition-specific Monte Carlo production (which takes the determined IP parameters to produce the acceptance map and detector resolution function), track filtering and preparation, fit model construction, and the final luminosity fit."
+          }
+        ]
+      },
+      "judgment": {
+        "alignments": [
+          {
+            "answer_point_id": "point.1",
+            "reference_slot_id": "slot.1"
+          },
+          {
+            "answer_point_id": "point.2",
+            "reference_slot_id": "slot.2"
+          }
+        ],
+        "missing_reference_slot_ids": [],
+        "extra_answer_point_ids": [],
+        "claim_mappings": [
+          {
+            "claim_id": "claim_ip_alignment_lab_frame_insufficient",
+            "answer_point_ids": [
+              "point.1"
+            ]
+          },
+          {
+            "claim_id": "claim_ip_alignment_poca_workflow",
+            "answer_point_ids": []
+          },
+          {
+            "claim_id": "claim_ip_alignment_transformation_effect",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          },
+          {
+            "claim_id": "claim_workflow_order_stages",
+            "answer_point_ids": []
+          }
+        ],
+        "covered_answer_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "missing_answer_point_ids": []
+      },
+      "usage": [
+        {
+          "stage": "judge",
+          "logical_calls": 1,
+          "response": {
+            "alignments": [
+              {
+                "answer_point_id": "point.1",
+                "reference_slot_id": "slot.1"
+              },
+              {
+                "answer_point_id": "point.2",
+                "reference_slot_id": "slot.2"
+              }
+            ],
+            "missing_reference_slot_ids": [],
+            "extra_answer_point_ids": [],
+            "claim_mappings": [
+              {
+                "claim_id": "claim_ip_alignment_lab_frame_insufficient",
+                "answer_point_ids": [
+                  "point.1"
+                ]
+              },
+              {
+                "claim_id": "claim_ip_alignment_poca_workflow",
+                "answer_point_ids": []
+              },
+              {
+                "claim_id": "claim_ip_alignment_transformation_effect",
+                "answer_point_ids": [
+                  "point.2"
+                ]
+              },
+              {
+                "claim_id": "claim_workflow_order_stages",
+                "answer_point_ids": []
+              }
+            ],
+            "covered_answer_point_ids": [
+              "point.1",
+              "point.2"
+            ],
+            "missing_answer_point_ids": []
+          },
+          "returned_model_calls": 1,
+          "adapter_requests": 1,
+          "tokens": 2182
+        }
+      ],
+      "applicability": [
+        true,
+        "APPLICABLE"
+      ]
+    },
+    {
+      "execution_id": "e1a2.p11.rep2",
+      "state": "COMPLETE",
+      "input": {
+        "question": "Before running the luminosity fit, the framework preprocesses track data with a coordinate-system step. Why is the standard laboratory frame inadequate for this, and what is achieved by the IP alignment transformation?",
+        "reference_slots": [
+          {
+            "reference_slot_id": "slot.1",
+            "text": "Why the standard laboratory frame is insufficient for the preprocessing before the luminosity fit"
+          },
+          {
+            "reference_slot_id": "slot.2",
+            "text": "What the IP alignment transformation accomplishes"
+          }
+        ],
+        "runtime_answer_points": [
+          {
+            "answer_point_id": "point.1",
+            "text": "Explain why the standard laboratory frame is inadequate for preprocessing track data before running the luminosity fit."
+          },
+          {
+            "answer_point_id": "point.2",
+            "text": "Explain what is achieved by the IP alignment transformation."
+          }
+        ],
+        "claims": [
+          {
+            "claim_id": "claim_1",
+            "claim_text": "The standard laboratory frame is inadequate because it assumes an interaction point at (0, 0, 0), whereas real beam operations introduce a transverse displacement (x_0, y_0) that breaks the azimuthal symmetry of the detector acceptance and track distribution, causing systematic biases in the extracted luminosity."
+          },
+          {
+            "claim_id": "claim_2",
+            "claim_text": "In the execution workflow, after track reconstruction and magnetic field back-propagation determine the mean interaction point via the Point of Closest Approach (POCA) distribution, the IP alignment transformation applies a global shift to the track data so the interaction point coincides with the origin."
+          },
+          {
+            "claim_id": "claim_3",
+            "claim_text": "This coordinate transformation establishes the beam reference frame to restore the azimuthal symmetry required by the 2D luminosity fit model and eliminate beam-offset systematic bias before subsequent condition-specific Monte Carlo simulation, track filtering, and model fitting."
+          }
+        ]
+      },
+      "judgment": {
+        "alignments": [
+          {
+            "answer_point_id": "point.1",
+            "reference_slot_id": "slot.1"
+          },
+          {
+            "answer_point_id": "point.2",
+            "reference_slot_id": "slot.2"
+          }
+        ],
+        "missing_reference_slot_ids": [],
+        "extra_answer_point_ids": [],
+        "claim_mappings": [
+          {
+            "claim_id": "claim_1",
+            "answer_point_ids": [
+              "point.1"
+            ]
+          },
+          {
+            "claim_id": "claim_2",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          },
+          {
+            "claim_id": "claim_3",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          }
+        ],
+        "covered_answer_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "missing_answer_point_ids": []
+      },
+      "usage": [
+        {
+          "stage": "judge",
+          "logical_calls": 1,
+          "response": {
+            "alignments": [
+              {
+                "answer_point_id": "point.1",
+                "reference_slot_id": "slot.1"
+              },
+              {
+                "answer_point_id": "point.2",
+                "reference_slot_id": "slot.2"
+              }
+            ],
+            "missing_reference_slot_ids": [],
+            "extra_answer_point_ids": [],
+            "claim_mappings": [
+              {
+                "claim_id": "claim_1",
+                "answer_point_ids": [
+                  "point.1"
+                ]
+              },
+              {
+                "claim_id": "claim_2",
+                "answer_point_ids": [
+                  "point.2"
+                ]
+              },
+              {
+                "claim_id": "claim_3",
+                "answer_point_ids": [
+                  "point.2"
+                ]
+              }
+            ],
+            "covered_answer_point_ids": [
+              "point.1",
+              "point.2"
+            ],
+            "missing_answer_point_ids": []
+          },
+          "returned_model_calls": 1,
+          "adapter_requests": 1,
+          "tokens": 1703
+        }
+      ],
+      "applicability": [
+        true,
+        "APPLICABLE"
+      ]
+    },
+    {
+      "execution_id": "e1a2.b12.rep2",
+      "state": "COMPLETE",
+      "input": {
+        "question": "For different studies I need realistic background, one specific signal channel, and simple particle scans. How do PandaRoot's event-generator categories differ, and which generator is the current standard for background?",
+        "reference_slots": [
+          {
+            "reference_slot_id": "slot.1",
+            "text": "How PandaRoot's event-generator categories differ for the stated studies"
+          },
+          {
+            "reference_slot_id": "slot.2",
+            "text": "Which generator is the current standard for background"
+          }
+        ],
+        "runtime_answer_points": [
+          {
+            "answer_point_id": "point.1",
+            "text": "How PandaRoot's event-generator categories differ"
+          },
+          {
+            "answer_point_id": "point.2",
+            "text": "Which generator is the current standard for background"
+          }
+        ],
+        "claims": [
+          {
+            "claim_id": "claim.1",
+            "claim_text": "In PandaRoot, event-generator categories differ in their scope and mechanism: background generators simulate the dominant physics processes with the highest cross-sections, event generators such as EvtGen simulate a single specific physics channel, and box generators (particle guns) do not simulate a beam-target interaction but instead produce particles of a specified type with defined random (BoxGenerator) or fixed (FixStepParticleGun) distributions."
+          },
+          {
+            "claim_id": "claim.2",
+            "claim_text": "FTFGenerator is the current standard background generator in PandaRoot, whereas DPMGenerator is the previous background generator retained for use."
+          }
+        ]
+      },
+      "judgment": {
+        "alignments": [
+          {
+            "answer_point_id": "point.1",
+            "reference_slot_id": "slot.1"
+          },
+          {
+            "answer_point_id": "point.2",
+            "reference_slot_id": "slot.2"
+          }
+        ],
+        "missing_reference_slot_ids": [],
+        "extra_answer_point_ids": [],
+        "claim_mappings": [
+          {
+            "claim_id": "claim.1",
+            "answer_point_ids": [
+              "point.1"
+            ]
+          },
+          {
+            "claim_id": "claim.2",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          }
+        ],
+        "covered_answer_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "missing_answer_point_ids": []
+      },
+      "usage": [
+        {
+          "stage": "judge",
+          "logical_calls": 1,
+          "response": {
+            "alignments": [
+              {
+                "answer_point_id": "point.1",
+                "reference_slot_id": "slot.1"
+              },
+              {
+                "answer_point_id": "point.2",
+                "reference_slot_id": "slot.2"
+              }
+            ],
+            "missing_reference_slot_ids": [],
+            "extra_answer_point_ids": [],
+            "claim_mappings": [
+              {
+                "claim_id": "claim.1",
+                "answer_point_ids": [
+                  "point.1"
+                ]
+              },
+              {
+                "claim_id": "claim.2",
+                "answer_point_ids": [
+                  "point.2"
+                ]
+              }
+            ],
+            "covered_answer_point_ids": [
+              "point.1",
+              "point.2"
+            ],
+            "missing_answer_point_ids": []
+          },
+          "returned_model_calls": 1,
+          "adapter_requests": 1,
+          "tokens": 1510
+        }
+      ],
+      "applicability": [
+        true,
+        "APPLICABLE"
+      ]
+    },
+    {
+      "execution_id": "e1a2.p12.rep2",
+      "state": "COMPLETE",
+      "input": {
+        "question": "My studies require realistic background, a specific signal channel, and simple particle scans. What distinguishes PandaRoot's event-generator categories, and which generator is currently standard for background?",
+        "reference_slots": [
+          {
+            "reference_slot_id": "slot.1",
+            "text": "How PandaRoot's event-generator categories differ for the stated studies"
+          },
+          {
+            "reference_slot_id": "slot.2",
+            "text": "Which generator is the current standard for background"
+          }
+        ],
+        "runtime_answer_points": [
+          {
+            "answer_point_id": "point.1",
+            "text": "What distinguishes PandaRoot's event-generator categories"
+          },
+          {
+            "answer_point_id": "point.2",
+            "text": "Which generator is currently standard for background"
+          }
+        ],
+        "claims": [
+          {
+            "claim_id": "claim_1",
+            "claim_text": "PandaRoot divides generators into three categories based on their function: background generators simulate the dominant physics processes with the highest cross-sections; event generators (such as EvtGen) generate a single specific physics channel; whereas box generators (or particle guns, such as BoxGenerator and FixStepParticleGun) do not simulate beam-target interactions, producing instead particles of a specified type with defined random or fixed spatial patterns."
+          },
+          {
+            "claim_id": "claim_2",
+            "claim_text": "FTFGenerator is the current standard background generator in PandaRoot, whereas DPMGenerator serves as the previous generator that remains usable within the framework."
+          }
+        ]
+      },
+      "judgment": {
+        "alignments": [
+          {
+            "answer_point_id": "point.1",
+            "reference_slot_id": "slot.1"
+          },
+          {
+            "answer_point_id": "point.2",
+            "reference_slot_id": "slot.2"
+          }
+        ],
+        "missing_reference_slot_ids": [],
+        "extra_answer_point_ids": [],
+        "claim_mappings": [
+          {
+            "claim_id": "claim_1",
+            "answer_point_ids": [
+              "point.1"
+            ]
+          },
+          {
+            "claim_id": "claim_2",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          }
+        ],
+        "covered_answer_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "missing_answer_point_ids": []
+      },
+      "usage": [
+        {
+          "stage": "judge",
+          "logical_calls": 1,
+          "response": {
+            "alignments": [
+              {
+                "answer_point_id": "point.1",
+                "reference_slot_id": "slot.1"
+              },
+              {
+                "answer_point_id": "point.2",
+                "reference_slot_id": "slot.2"
+              }
+            ],
+            "missing_reference_slot_ids": [],
+            "extra_answer_point_ids": [],
+            "claim_mappings": [
+              {
+                "claim_id": "claim_1",
+                "answer_point_ids": [
+                  "point.1"
+                ]
+              },
+              {
+                "claim_id": "claim_2",
+                "answer_point_ids": [
+                  "point.2"
+                ]
+              }
+            ],
+            "covered_answer_point_ids": [
+              "point.1",
+              "point.2"
+            ],
+            "missing_answer_point_ids": []
+          },
+          "returned_model_calls": 1,
+          "adapter_requests": 1,
+          "tokens": 1529
+        }
+      ],
+      "applicability": [
+        true,
+        "APPLICABLE"
+      ]
+    }
+  ]
+}
