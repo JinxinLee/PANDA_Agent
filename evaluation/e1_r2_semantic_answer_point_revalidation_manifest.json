@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "checkpoint": "E1-R2",
-  "status": "DRAFT_PENDING_HUMAN_REVIEW",
+  "status": "APPROVED_FOR_PREREGISTRATION",
   "implementation_commit": "87cc34dd919d8431bb774003a7f76a9fff3a7567",
   "prompt_version": "2.0.0",
   "decomposition_schema_version": "e1.question_decomposition.v2",
@@ -11,9 +11,9 @@
     "google-genai": "2.13.0"
   },
   "human_review": {
-    "status": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "status": "approved",
+    "reviewer": "Jinxin Li",
+    "reviewed_at": "2026-09-08T13:48:52+02:00",
     "scope": "All 24 questions, paraphrase equivalence, explicit reference obligations, and exploratory domain relevance. Agent review does not substitute for human review."
   },
   "models": {

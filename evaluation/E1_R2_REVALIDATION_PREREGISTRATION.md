@@ -2,14 +2,16 @@
 
 ## Current state
 
-DRAFT_PENDING_HUMAN_REVIEW / NOT_EXECUTED. The user authorized E1-R2; scientific
-execution remains pending the reviewed-cohort prerequisite. This is a prospective
+APPROVED_FOR_PREREGISTRATION / NOT_EXECUTED. The user authorized E1-R2; scientific
+execution remains pending preregistration freeze. This is a prospective
 T2 shadow decomposition experiment, not T3/T5, retrieval, QA, production activation,
 or E2/E3. No acceptance verdict exists yet.
 
 E1-R2-HR1 implements required pre-freeze human-review amendments to two paraphrases
 and selected support spans; the accepted scientific design is unchanged and final
-human approval of the amended exact cohort remains pending.
+human approval of the amended exact cohort was explicitly confirmed by Jinxin Li, recorded
+at 2026-09-08T13:48:52+02:00, against cohort commit
+`4cd0305c53541bcba75c00fbf935d87c63ba3069`. No scientific freeze is recorded.
 
 Starting and implementation HEAD: `87cc34dd919d8431bb774003a7f76a9fff3a7567`.
 The working tree was clean. E1-R1 prompt `2.0.0` and schema
@@ -165,7 +167,8 @@ Production source/configuration and historical E1-A2 runner, tests and scientifi
 artifacts have no diff. No full suite or historical scientific rerun was performed.
 Scientific decomposition/judge calls and returned tokens are zero so far; the AGY
 review usage is separately unavailable as recorded above. Preparation is not an
-experimental PASS. Changes remain uncommitted while the cohort awaits review.
+experimental PASS. Those preparation changes were subsequently committed; HR1 amendments are recorded
+at `4cd0305c53541bcba75c00fbf935d87c63ba3069`, and final approval is recorded above.
 
 PASS requires complete scoring and every primary gate. It supports the bounded
 synthetic exploratory shadow validation only, not a representative PANDA
@@ -174,7 +177,7 @@ with a failed product gate. INCONCLUSIVE covers incomplete execution/scoring.
 With only one base each for four/five-point strata, no stratum-wide accuracy claim
 is justified. Paired questions are correlated, not 24 independent samples.
 
-Current E1-R2 = IN_PROGRESS / PREREGISTRATION_DRAFT / HUMAN_REVIEW_PENDING.
+Current E1-R2 = IN_PROGRESS / PREREGISTRATION_DRAFT / HUMAN_REVIEW_APPROVED.
 E1 = IN_PROGRESS / REPAIR_IMPLEMENTED / REVALIDATION_PENDING.
 After a bounded PASS, recommend an E1 closure/scope decision before starting E2;
 do not automatically close general E1 acceptance from an exploratory cohort.

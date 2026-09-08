@@ -1,10 +1,10 @@
 # E1-R2 — Prospective Cohort Human Review
 
-Status: DRAFT_PENDING_HUMAN_REVIEW. No scientific model outputs exist.
+Status: APPROVED_FOR_PREREGISTRATION. No scientific model outputs exist.
 
 These newly authored English questions are synthetic exploratory reconstruction/software needs, not factual assertions about available PANDA implementations. They are not protected or representative novel data. They were authored after the E1-R1 implementation commit; no runtime repair may use their outcomes. Review all questions, equivalent paraphrases, reference granularity and domain relevance before live acceptance. Reference needs are not answer facts. Reordered paraphrases intentionally test semantic slots rather than literal IDs.
 
-Human reviewer: pending final approval after amendment review. Review of this document approves the exact manifest questions and references only when explicitly recorded; automated review does not count as human approval.
+Human reviewer: Jinxin Li. Final approval of the amended exact cohort was explicitly confirmed by the user and recorded at 2026-09-08T13:48:52+02:00. The approved cohort is the amended content at Git commit `4cd0305c53541bcba75c00fbf935d87c63ba3069`. This records human approval; preregistration freeze and scientific execution have not occurred.
 
 ## Human-review amendments
 
@@ -17,7 +17,7 @@ Support spans in r2p02/r2p04 bases now jointly ground the subject and requested 
 
 No case, pair, semantic slot, reference text/count, shape, gate, model, runtime, budget, runner or scientific design changed. This amendment is not final human approval or a preregistration freeze.
 
-Post-amendment host static review: all 12 pairs preserve equivalent explicit slots, independent obligation atomicity and relational non-splitting, with sufficient question-grounding spans and no added or removed obligation (PASS). Manifest invariants and offline validation passed; existing focused fake tests passed 27/27. Scientific/provider calls and token usage for E1-R2-HR1 are zero. Final human approval remains pending.
+Post-amendment host static review: all 12 pairs preserve equivalent explicit slots, independent obligation atomicity and relational non-splitting, with sufficient question-grounding spans and no added or removed obligation (PASS). Manifest invariants and offline validation passed; existing focused fake tests passed 27/27. Scientific/provider calls and token usage for E1-R2-HR1 are zero. Final human approval was pending at HR1 closeout; Jinxin Li has now explicitly approved the amended cohort.
 
 ## r2p01 — independent_locations (2 obligations)
 

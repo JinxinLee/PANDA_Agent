@@ -22,7 +22,7 @@ Repository head (E1-R2 starting baseline):
 
 Current authorized task:
 E1-R2 — Prospective Semantic Answer-Point Revalidation
-IN_PROGRESS / PREREGISTRATION_DRAFT / HUMAN_REVIEW_PENDING
+IN_PROGRESS / PREREGISTRATION_DRAFT / HUMAN_REVIEW_APPROVED
 
 Latest completed shadow repair:
 E1-R1
@@ -59,7 +59,7 @@ MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD
 Current planning state:
 D4 = PAUSED / ROADMAP_RECONCILIATION
 D4 overall completion = UNDECIDED
-CURRENT_TASK_EXECUTION_AUTHORIZED = E1-R2; live execution awaits human cohort review and preregistration freeze
+CURRENT_TASK_EXECUTION_AUTHORIZED = E1-R2; human review approved by Jinxin Li; live execution awaits preregistration freeze
 NEXT_TASK_RECOMMENDATION = E1-R2 outcome-dependent closure or repair decision / NOT AUTHORIZED
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 
@@ -79,10 +79,12 @@ with 54 explicit reference obligations, a separate v2 semantic judge/scorer,
 raw-before-judge Git freeze boundaries and targeted fake tests are prepared.
 
 Human review of generated questions, reference obligations, paraphrase equivalence
-and exploratory domain relevance remains pending under Evaluation Policy section 6.
-The manifest is DRAFT_PENDING_HUMAN_REVIEW and live phases reject it. No scientific
+and exploratory domain relevance was explicitly approved by Jinxin Li, recorded at
+2026-09-08T13:48:52+02:00, for amended cohort commit
+`4cd0305c53541bcba75c00fbf935d87c63ba3069`. The manifest is
+APPROVED_FOR_PREREGISTRATION; preregistration freeze remains pending. No scientific
 decomposition/judge calls occurred; no scientific metrics or PASS/FAIL verdict exist.
-Scientific verification status = INCONCLUSIVE / NOT_EXECUTED_PENDING_HUMAN_REVIEW.
+Scientific verification status = INCONCLUSIVE / NOT_EXECUTED_PENDING_PREREGISTRATION_FREEZE.
 One completed AGY static protocol review is separate: its provider call/token totals
 are unavailable. Its review is not human approval.
 
