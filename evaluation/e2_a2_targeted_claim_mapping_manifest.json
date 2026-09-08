@@ -1,0 +1,478 @@
+{
+  "task": "E2-A2",
+  "implementation": "df52bcddf612515418be298fafde6ebcb32d4a67",
+  "source_commit": "77ea6bc27beb1657673e57be763b05419c98bc05",
+  "source_path": "evaluation/e1_a2_dynamic_question_decomposition_validation_manifest.json",
+  "selected_pair_ids": [
+    "e1a2.pair07",
+    "e1a2.pair08",
+    "e1a2.pair09",
+    "e1a2.pair10",
+    "e1a2.pair11",
+    "e1a2.pair12"
+  ],
+  "source_case_ids": [
+    "n001",
+    "n008",
+    "n020",
+    "n022",
+    "n030",
+    "n031"
+  ],
+  "cases": [
+    {
+      "case_id": "e1a2.b07",
+      "pair_id": "e1a2.pair07",
+      "variant": "base",
+      "source_group": "novel_dev",
+      "source_case_id": "n001",
+      "source_path": "evaluation/novel/v1/novel_dev.yaml",
+      "source_version": "novel-v1-dev-0.3.0",
+      "source_split": "novel_dev",
+      "language": "en",
+      "question": "I am building the RestgasDetermination fork on the GSI cluster. Which FairSoft/FairRoot pairs and paths are encoded in configSettings.sh, which environment variables does it assign, and what does the script actually do for unmatched input as written?",
+      "reference_points": [
+        {
+          "reference_point_id": "e1a2.b07.ref1",
+          "reference_slot_id": "slot.1",
+          "facet_type": "constraint",
+          "text": "Which FairSoft/FairRoot pairs and paths configSettings.sh encodes for the RestgasDetermination build on the GSI cluster",
+          "support_spans": [
+            "Which FairSoft/FairRoot pairs and paths are encoded in configSettings.sh"
+          ]
+        },
+        {
+          "reference_point_id": "e1a2.b07.ref2",
+          "reference_slot_id": "slot.2",
+          "facet_type": "api_behavior",
+          "text": "Which environment variables configSettings.sh assigns",
+          "support_spans": [
+            "which environment variables does it assign"
+          ]
+        },
+        {
+          "reference_point_id": "e1a2.b07.ref3",
+          "reference_slot_id": "slot.3",
+          "facet_type": "api_behavior",
+          "text": "What configSettings.sh actually does with unmatched input as written",
+          "support_spans": [
+            "what does the script actually do for unmatched input as written"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "e1a2.p07",
+      "pair_id": "e1a2.pair07",
+      "variant": "paraphrase",
+      "source_group": "novel_dev",
+      "source_case_id": "n001",
+      "source_path": "evaluation/novel/v1/novel_dev.yaml",
+      "source_version": "novel-v1-dev-0.3.0",
+      "source_split": "novel_dev",
+      "language": "en",
+      "question": "For a build of the RestgasDetermination fork on the GSI cluster, what FairSoft/FairRoot pairs and paths does configSettings.sh encode, what environment variables does it set, and how does the script handle unmatched input as currently written?",
+      "reference_points": [
+        {
+          "reference_point_id": "e1a2.p07.ref1",
+          "reference_slot_id": "slot.1",
+          "facet_type": "constraint",
+          "text": "Which FairSoft/FairRoot pairs and paths configSettings.sh encodes for the RestgasDetermination build on the GSI cluster",
+          "support_spans": [
+            "what FairSoft/FairRoot pairs and paths does configSettings.sh encode"
+          ]
+        },
+        {
+          "reference_point_id": "e1a2.p07.ref2",
+          "reference_slot_id": "slot.2",
+          "facet_type": "api_behavior",
+          "text": "Which environment variables configSettings.sh assigns",
+          "support_spans": [
+            "what environment variables does it set"
+          ]
+        },
+        {
+          "reference_point_id": "e1a2.p07.ref3",
+          "reference_slot_id": "slot.3",
+          "facet_type": "api_behavior",
+          "text": "What configSettings.sh actually does with unmatched input as written",
+          "support_spans": [
+            "how does the script handle unmatched input as currently written"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "e1a2.b08",
+      "pair_id": "e1a2.pair08",
+      "variant": "base",
+      "source_group": "novel_dev",
+      "source_case_id": "n008",
+      "source_path": "evaluation/novel/v1/novel_dev.yaml",
+      "source_version": "novel-v1-dev-0.3.0",
+      "source_split": "novel_dev",
+      "language": "en",
+      "question": "Before tracks can be fitted in the luminosity detector, the hits have to be grouped into track candidates. Which track-search approaches were developed for the LMD, and how do they compare?",
+      "reference_points": [
+        {
+          "reference_point_id": "e1a2.b08.ref1",
+          "reference_slot_id": "slot.1",
+          "facet_type": "definition",
+          "text": "Which track-search approaches were developed for the LMD",
+          "support_spans": [
+            "Which track-search approaches were developed for the LMD"
+          ]
+        },
+        {
+          "reference_point_id": "e1a2.b08.ref2",
+          "reference_slot_id": "slot.2",
+          "facet_type": "comparison",
+          "text": "How the LMD track-search approaches compare",
+          "support_spans": [
+            "how do they compare"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "e1a2.p08",
+      "pair_id": "e1a2.pair08",
+      "variant": "paraphrase",
+      "source_group": "novel_dev",
+      "source_case_id": "n008",
+      "source_path": "evaluation/novel/v1/novel_dev.yaml",
+      "source_version": "novel-v1-dev-0.3.0",
+      "source_split": "novel_dev",
+      "language": "en",
+      "question": "LMD hits must be grouped into track candidates before fitting tracks in the luminosity detector. What track-search approaches were developed for the LMD, and what are the differences between them?",
+      "reference_points": [
+        {
+          "reference_point_id": "e1a2.p08.ref1",
+          "reference_slot_id": "slot.1",
+          "facet_type": "definition",
+          "text": "Which track-search approaches were developed for the LMD",
+          "support_spans": [
+            "What track-search approaches were developed for the LMD"
+          ]
+        },
+        {
+          "reference_point_id": "e1a2.p08.ref2",
+          "reference_slot_id": "slot.2",
+          "facet_type": "comparison",
+          "text": "How the LMD track-search approaches compare",
+          "support_spans": [
+            "what are the differences between them"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "e1a2.b09",
+      "pair_id": "e1a2.pair09",
+      "variant": "base",
+      "source_group": "novel_dev",
+      "source_case_id": "n020",
+      "source_path": "evaluation/novel/v1/novel_dev.yaml",
+      "source_version": "novel-v1-dev-0.3.0",
+      "source_split": "novel_dev",
+      "language": "en",
+      "question": "In the restgas determination analysis, the standard track finder leaves part of the hits unassigned. Which task picks up those leftover hits, and what do the downstream displaced-track finder and z-recovery stages each contribute before the final fit?",
+      "reference_points": [
+        {
+          "reference_point_id": "e1a2.b09.ref1",
+          "reference_slot_id": "slot.1",
+          "facet_type": "locator",
+          "text": "Which task picks up the leftover hits in restgas determination analysis",
+          "support_spans": [
+            "Which task picks up those leftover hits"
+          ]
+        },
+        {
+          "reference_point_id": "e1a2.b09.ref2",
+          "reference_slot_id": "slot.2",
+          "facet_type": "workflow",
+          "text": "What the downstream displaced-track finder contributes before the final fit",
+          "support_spans": [
+            "what do the downstream displaced-track finder",
+            "each contribute before the final fit"
+          ]
+        },
+        {
+          "reference_point_id": "e1a2.b09.ref3",
+          "reference_slot_id": "slot.3",
+          "facet_type": "workflow",
+          "text": "What the z-recovery stage contributes before the final fit",
+          "support_spans": [
+            "z-recovery stages each contribute before the final fit"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "e1a2.p09",
+      "pair_id": "e1a2.pair09",
+      "variant": "paraphrase",
+      "source_group": "novel_dev",
+      "source_case_id": "n020",
+      "source_path": "evaluation/novel/v1/novel_dev.yaml",
+      "source_version": "novel-v1-dev-0.3.0",
+      "source_split": "novel_dev",
+      "language": "en",
+      "question": "In restgas determination analysis, some hits remain unassigned by the standard track finder. Which task collects these hits, and what does each of the downstream displaced-track finder and z-recovery stages contribute before the final fit?",
+      "reference_points": [
+        {
+          "reference_point_id": "e1a2.p09.ref1",
+          "reference_slot_id": "slot.1",
+          "facet_type": "locator",
+          "text": "Which task picks up the leftover hits in restgas determination analysis",
+          "support_spans": [
+            "Which task collects these hits"
+          ]
+        },
+        {
+          "reference_point_id": "e1a2.p09.ref2",
+          "reference_slot_id": "slot.2",
+          "facet_type": "workflow",
+          "text": "What the downstream displaced-track finder contributes before the final fit",
+          "support_spans": [
+            "what does each of the downstream displaced-track finder",
+            "contribute before the final fit"
+          ]
+        },
+        {
+          "reference_point_id": "e1a2.p09.ref3",
+          "reference_slot_id": "slot.3",
+          "facet_type": "workflow",
+          "text": "What the z-recovery stage contributes before the final fit",
+          "support_spans": [
+            "z-recovery stages contribute before the final fit"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "e1a2.b10",
+      "pair_id": "e1a2.pair10",
+      "variant": "base",
+      "source_group": "novel_dev",
+      "source_case_id": "n022",
+      "source_path": "evaluation/novel/v1/novel_dev.yaml",
+      "source_version": "novel-v1-dev-0.3.0",
+      "source_split": "novel_dev",
+      "language": "en",
+      "question": "The restgas analysis determines the event vertex through a two-step POCA workflow. What does the first worker step leave behind for the second analysis step, and how is the fitted vertex fed into the reprocessing?",
+      "reference_points": [
+        {
+          "reference_point_id": "e1a2.b10.ref1",
+          "reference_slot_id": "slot.1",
+          "facet_type": "data_flow",
+          "text": "What the first POCA worker step leaves for the second analysis step",
+          "support_spans": [
+            "What does the first worker step leave behind for the second analysis step"
+          ]
+        },
+        {
+          "reference_point_id": "e1a2.b10.ref2",
+          "reference_slot_id": "slot.2",
+          "facet_type": "data_flow",
+          "text": "How the fitted vertex feeds into reprocessing",
+          "support_spans": [
+            "how is the fitted vertex fed into the reprocessing"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "e1a2.p10",
+      "pair_id": "e1a2.pair10",
+      "variant": "paraphrase",
+      "source_group": "novel_dev",
+      "source_case_id": "n022",
+      "source_path": "evaluation/novel/v1/novel_dev.yaml",
+      "source_version": "novel-v1-dev-0.3.0",
+      "source_split": "novel_dev",
+      "language": "en",
+      "question": "The restgas analysis uses a two-step POCA workflow to determine the event vertex. What is passed from the first worker step to the second analysis step, and how does the fitted vertex enter the reprocessing?",
+      "reference_points": [
+        {
+          "reference_point_id": "e1a2.p10.ref1",
+          "reference_slot_id": "slot.1",
+          "facet_type": "data_flow",
+          "text": "What the first POCA worker step leaves for the second analysis step",
+          "support_spans": [
+            "What is passed from the first worker step to the second analysis step"
+          ]
+        },
+        {
+          "reference_point_id": "e1a2.p10.ref2",
+          "reference_slot_id": "slot.2",
+          "facet_type": "data_flow",
+          "text": "How the fitted vertex feeds into reprocessing",
+          "support_spans": [
+            "how does the fitted vertex enter the reprocessing"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "e1a2.b11",
+      "pair_id": "e1a2.pair11",
+      "variant": "base",
+      "source_group": "novel_dev",
+      "source_case_id": "n030",
+      "source_path": "evaluation/novel/v1/novel_dev.yaml",
+      "source_version": "novel-v1-dev-0.3.0",
+      "source_split": "novel_dev",
+      "language": "en",
+      "question": "Before the luminosity fit runs, the framework applies a coordinate-system preprocessing step to the track data. Why is the standard laboratory frame insufficient there, and what does the IP alignment transformation accomplish?",
+      "reference_points": [
+        {
+          "reference_point_id": "e1a2.b11.ref1",
+          "reference_slot_id": "slot.1",
+          "facet_type": "cause_reason",
+          "text": "Why the standard laboratory frame is insufficient for the preprocessing before the luminosity fit",
+          "support_spans": [
+            "Why is the standard laboratory frame insufficient there"
+          ]
+        },
+        {
+          "reference_point_id": "e1a2.b11.ref2",
+          "reference_slot_id": "slot.2",
+          "facet_type": "mechanism",
+          "text": "What the IP alignment transformation accomplishes",
+          "support_spans": [
+            "what does the IP alignment transformation accomplish"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "e1a2.p11",
+      "pair_id": "e1a2.pair11",
+      "variant": "paraphrase",
+      "source_group": "novel_dev",
+      "source_case_id": "n030",
+      "source_path": "evaluation/novel/v1/novel_dev.yaml",
+      "source_version": "novel-v1-dev-0.3.0",
+      "source_split": "novel_dev",
+      "language": "en",
+      "question": "Before running the luminosity fit, the framework preprocesses track data with a coordinate-system step. Why is the standard laboratory frame inadequate for this, and what is achieved by the IP alignment transformation?",
+      "reference_points": [
+        {
+          "reference_point_id": "e1a2.p11.ref1",
+          "reference_slot_id": "slot.1",
+          "facet_type": "cause_reason",
+          "text": "Why the standard laboratory frame is insufficient for the preprocessing before the luminosity fit",
+          "support_spans": [
+            "Why is the standard laboratory frame inadequate for this"
+          ]
+        },
+        {
+          "reference_point_id": "e1a2.p11.ref2",
+          "reference_slot_id": "slot.2",
+          "facet_type": "mechanism",
+          "text": "What the IP alignment transformation accomplishes",
+          "support_spans": [
+            "what is achieved by the IP alignment transformation"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "e1a2.b12",
+      "pair_id": "e1a2.pair12",
+      "variant": "base",
+      "source_group": "novel_dev",
+      "source_case_id": "n031",
+      "source_path": "evaluation/novel/v1/novel_dev.yaml",
+      "source_version": "novel-v1-dev-0.3.0",
+      "source_split": "novel_dev",
+      "language": "en",
+      "question": "For different studies I need realistic background, one specific signal channel, and simple particle scans. How do PandaRoot's event-generator categories differ, and which generator is the current standard for background?",
+      "reference_points": [
+        {
+          "reference_point_id": "e1a2.b12.ref1",
+          "reference_slot_id": "slot.1",
+          "facet_type": "comparison",
+          "text": "How PandaRoot's event-generator categories differ for the stated studies",
+          "support_spans": [
+            "How do PandaRoot's event-generator categories differ"
+          ]
+        },
+        {
+          "reference_point_id": "e1a2.b12.ref2",
+          "reference_slot_id": "slot.2",
+          "facet_type": "definition",
+          "text": "Which generator is the current standard for background",
+          "support_spans": [
+            "which generator is the current standard for background"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "e1a2.p12",
+      "pair_id": "e1a2.pair12",
+      "variant": "paraphrase",
+      "source_group": "novel_dev",
+      "source_case_id": "n031",
+      "source_path": "evaluation/novel/v1/novel_dev.yaml",
+      "source_version": "novel-v1-dev-0.3.0",
+      "source_split": "novel_dev",
+      "language": "en",
+      "question": "My studies require realistic background, a specific signal channel, and simple particle scans. What distinguishes PandaRoot's event-generator categories, and which generator is currently standard for background?",
+      "reference_points": [
+        {
+          "reference_point_id": "e1a2.p12.ref1",
+          "reference_slot_id": "slot.1",
+          "facet_type": "comparison",
+          "text": "How PandaRoot's event-generator categories differ for the stated studies",
+          "support_spans": [
+            "What distinguishes PandaRoot's event-generator categories"
+          ]
+        },
+        {
+          "reference_point_id": "e1a2.p12.ref2",
+          "reference_slot_id": "slot.2",
+          "facet_type": "definition",
+          "text": "Which generator is the current standard for background",
+          "support_spans": [
+            "which generator is currently standard for background"
+          ]
+        }
+      ]
+    }
+  ],
+  "repetitions": [
+    "rep1",
+    "rep2"
+  ],
+  "gates": {
+    "N1_per_rep": 10,
+    "N1_pooled": 20,
+    "N2": 0.9,
+    "N3": 0.9,
+    "N4": 0.85,
+    "N5": 0.95,
+    "N6": 0.9,
+    "D1": 8,
+    "D2": 0.9,
+    "D3": 0.9,
+    "D4": 0.8
+  },
+  "provider": {
+    "project": "gen-lang-client-0694751367",
+    "generation_model": "gemini-3.8-flash",
+    "evaluation_judge_model": "gemini-3.8-flash",
+    "location": "global",
+    "embedding_model": "gemini-embedding-2",
+    "embedding_dimensions": 3072,
+    "timeout_ms": 120000
+  },
+  "protected_data_access": false,
+  "temperature": 0,
+  "qa_prompt_version": "3.8.0",
+  "decomposition_prompt_version": "2.0.0",
+  "decomposition_schema": "e1.question_decomposition.v2",
+  "target_rule": "last_runtime_point_with_nonempty_exclusive_support_rep1_only"
+}
