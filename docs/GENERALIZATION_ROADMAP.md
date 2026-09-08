@@ -25,16 +25,18 @@ The roadmap is governed by the following core development principles:
 ## Current planning state
 
 E1-CLOSURE-REVIEW = COMPLETE / PASS / REAL_PANDA_STYLE_CONFIRMATION_REQUIRED_BEFORE_CLOSURE.
-Current authorized task: E1-C1 = IN_PROGRESS / PREREGISTERED / EXECUTION_PENDING.
-C1 uses exactly the six English novel_dev pairs07-12 from historical E1-A2 Git
-manifest, with strict no-regression gates. If C1 passes, E1 closes directly;
-otherwise it remains open. No E2 execution is authorized.
+E1-C1 = COMPLETE / PASS / REAL_PANDA_STYLE_EXPOSED_DEVELOPMENT_CONFIRMATION_PASSED.
+E1 = COMPLETE / PASS / QUESTION_ONLY_SEMANTIC_ANSWER_POINT_DECOMPOSITION_VALIDATED.
+C1 met all eight strict gates and the original pair09 atomicity sentinel. Per the
+accepted closure decision, E1 closes directly. E2/E3 remain NOT_STARTED.
 Decision: `evaluation/E1_CLOSURE_SCOPE_REVIEW.md`.
-Protocol: `evaluation/E1_C1_REAL_STYLE_CONFIRMATION_PREREGISTRATION.md`.
+Report: `evaluation/E1_C1_REAL_STYLE_CONFIRMATION.md`.
+Preregistration: `2517b691245c38175222064e6ca546d06fd21e9a`.
+Raw freeze: `7eab1e8fe099fed6ff06384c4fa0eb48dcf52677`.
 
 
 Repository planning baseline:
-4cd0305c53541bcba75c00fbf935d87c63ba3069 (E1-R2 execution starting HEAD)
+781007c810b113537025dbe93c28728a59e318bc (E1-C1 starting HEAD)
 
 Latest accepted production action:
 D4-A10
@@ -54,10 +56,10 @@ Phase D:
 PAUSED / ROADMAP_RECONCILIATION
 
 Phase E:
-IN_PROGRESS / E1
+IN_PROGRESS / E1_COMPLETE / E2_NEXT
 
 E1:
-IN_PROGRESS / REPAIR_PROSPECTIVELY_VALIDATED / CLOSURE_REVIEW_PENDING
+COMPLETE / PASS / QUESTION_ONLY_SEMANTIC_ANSWER_POINT_DECOMPOSITION_VALIDATED
 
 E1-A1:
 COMPLETE / PASS / QUESTION_ONLY_DIAGNOSTIC_DECOMPOSITION_IMPLEMENTED
@@ -84,14 +86,14 @@ D4 overall completion:
 UNDECIDED
 
 Next task recommendation:
-E1-C1 outcome-dependent next task / NOT AUTHORIZED
+E2 — Answer-Point Coverage and Claim Mapping / NOT AUTHORIZED
 
 Current task authorization:
-E1-R2 completed within authorization; no subsequent task is authorized.
+E1-C1 completed and E1 closed within authorization; E2 is recommended but not authorized.
 
 No D4-A11 exists.
 No further D4 task is currently authorized.
-No further Phase-E task is currently authorized after E1-R2.
+No further Phase-E task is currently authorized after E1-C1.
 No further Phase-F task is currently authorized.
 
 ## Phase overview
@@ -108,7 +110,7 @@ No further Phase-F task is currently authorized.
 - **Phase D — Concept and entity knowledge abstraction:** `PAUSED / ROADMAP_RECONCILIATION`
   Structured domain concept/entity representation, bounded resolver authority, and generic evidence-link bridging established. Bounded query-expansion migrations are active in production, while broader residual scope remains unreconciled.
 
-- **Phase E — Answer generalization:** `IN_PROGRESS / E1`
+- **Phase E — Answer generalization:** `IN_PROGRESS / E1_COMPLETE / E2_NEXT`
   Dynamic question decomposition, answer-point coverage, claim-to-evidence mapping, and targeted completeness recovery.
 
 - **Phase F — Benchmark dependency cleanup and final answering:** `IN_PROGRESS / F1_COMPLETE`
@@ -436,7 +438,7 @@ Phase E addresses answer synthesis, facet coverage, claim-to-evidence grounding,
 
 ### E1 — Dynamic question decomposition
 
-- **Status:** IN_PROGRESS / REPAIR_PROSPECTIVELY_VALIDATED / CLOSURE_REVIEW_PENDING
+- **Status:** COMPLETE / PASS / QUESTION_ONLY_SEMANTIC_ANSWER_POINT_DECOMPOSITION_VALIDATED
 - **E1-A1 outcome:** COMPLETE / PASS / QUESTION_ONLY_DIAGNOSTIC_DECOMPOSITION_IMPLEMENTED. Question-only 1–5 facet contract and explicit shadow diagnostic seam implemented; normal QA does not invoke it. Existing `question_core` remains authoritative and compatibility requirements remain active. Focused fake-based T0 checks passed. E1-A1 PASS is not E1 PASS.
 - **E1-A2 outcome:** COMPLETE / FAIL / G7_FACET_TYPE_ACCURACY_AND_G8_PAIR_STABILITY_FAILED. Frozen 24-case T2 cohort fully scored: valid 24/24, question-only reference recall 40/44, precision 40/40, under 4/24, over 0/24, exact count 20/24, hidden prerequisites 0. G7 type accuracy 28/40 (70%) and G8 strict reference-conformant pairs 7/12 failed; all other gates passed. Production and preregistration contracts remained unchanged. Small exposed-development results are not release generalization estimates; source and language are confounded.
 - **E1-A2 evidence:** `evaluation/e1_a2_dynamic_question_decomposition_validation_result.json`, `evaluation/E1_A2_DYNAMIC_QUESTION_DECOMPOSITION_VALIDATION.md`; preregistration commit `77ea6bc27beb1657673e57be763b05419c98bc05`.
@@ -446,7 +448,7 @@ Phase E addresses answer synthesis, facet coverage, claim-to-evidence grounding,
 - **E1-R1 evidence:** `evaluation/E1_R1_SEMANTIC_ANSWER_POINT_CONTRACT_REPAIR.md`.
 - **Evidence:** `evaluation/e1_a1_dynamic_question_decomposition_contract.json`, `evaluation/E1_A1_DYNAMIC_QUESTION_DECOMPOSITION_CONTRACT.md`.
 - **E1-R2 outcome:** COMPLETE / PASS / TARGETED_PROSPECTIVE_SEMANTIC_ANSWER_POINT_REVALIDATION_PASSED. Human-approved fresh synthetic exploratory English cohort: 24/24 valid, semantic recall 54/54, precision 54/54, under/over 0, exact count 24/24, semantic-complete pairs 12/12, hidden prerequisites 0; all eight gates passed. Raw records were committed before judging. Preregistration `3d0d8ca650d159681fecec324a081d28e8e945eb`; raw freeze `a5275dfee6c4134f3ad790a5598ca0c0a51f1a58`. Report: `evaluation/E1_R2_SEMANTIC_ANSWER_POINT_REVALIDATION.md`; result: `evaluation/e1_r2_semantic_answer_point_revalidation_result.json`.
-- **Next task recommendation:** E1 CLOSURE / SCOPE REVIEW; not authorized. An exploratory synthetic PASS alone does not establish representative PANDA generalization or automatically authorize E2.
+- **Next task recommendation:** E2 — Answer-Point Coverage and Claim Mapping; NOT AUTHORIZED. E1 is complete at bounded shadow decomposition scope; production compatibility requirements remain unchanged.
 - **Problem:** A single `question_core` plus domain-specific requirements can be complete on known questions but miss unseen multi-part structure.
 - **Goal:** Derive 1–5 evidence-independent, independently satisfiable explicit response obligations from the question itself, each independently checkable for omission.
 - **Why this stage:** Retrieval generalization and structured knowledge must be established before asking decomposition to drive completeness.
@@ -454,7 +456,7 @@ Phase E addresses answer synthesis, facet coverage, claim-to-evidence grounding,
 - **Functional requirements:** Question-only input, 1–5 points, unique code-assigned IDs independent of taxonomy in both sorting and identity, exact question support spans, semantic-slot paraphrase stability, over/under-decomposition checks, and trace/audit output. Literal ID equality across paraphrases is not required.
 - **Explicit out of scope:** Deriving points from retrieved evidence, removing existing requirements, targeted retrieval, or benchmark templates.
 - **Dependencies:** Phases C/D and curated answer-point annotations.
-- **Evaluation scope:** E1-A1 T0, E1-A2 targeted T2, E1-AR static review, E1-R1 implementation/T0 and E1-R2 prospective T2 completed. E1-R2 used 24 decomposition plus 24 judge calls and 54941 returned tokens; no retrieval or QA calls. Its synthetic exploratory PASS is not representative PANDA generalization. Historical E1-A2 FAIL and gates remain unchanged.
+- **E1-C1 outcome:** COMPLETE / PASS / REAL_PANDA_STYLE_EXPOSED_DEVELOPMENT_CONFIRMATION_PASSED. Exact historical English novel_dev pairs07-12:12/12 valid,28/28 recall and precision,0 under/over,12/12 exact count,6/6 complete pairs,0 hidden prerequisites; pair09 both variants3/3 matched with3 predictions and no extras. Scientific calls24, returned tokens30099. Report: `evaluation/E1_C1_REAL_STYLE_CONFIRMATION.md`. Together with R2 this meets the accepted E1 closure condition; historical A2 FAIL remains. No representative generalization or production integration claim.
 - **Future primary metrics:** Structural validity, question-only semantic reference-point recall, semantic prediction precision, under/over-decomposition, exact point count, semantic-slot paraphrase stability, and hidden-prerequisite inference. Legacy answer facts are not E1 ground truth.
 - **Secondary diagnostics:** Exact facet-type agreement, taxonomy distribution and facet-label paraphrase stability; source-group gaps remain diagnostic. Historical E1-A2's strict reference-conformant pair gate remains unchanged and must not be presented as pure semantic paraphrase stability.
 - **Acceptance criteria:** Decomposition captures required question facets generically without mirroring whatever evidence was found.
@@ -576,11 +578,11 @@ At release, Generalization Gap means benchmark score minus novel score. Benchmar
 2. **Remaining D4 candidate disposition:** Does the remaining unassessed D4 inventory contain another naturally testable, high-value migration batch, or should residual entries remain on HOLD?
 3. **Phase-F scope boundary:** F1 has established the bounded non-D4 residual inventory and candidate owners. Which candidates warrant a separately authorized treatment remains undecided.
 4. **Bottleneck prioritization:** Is answer completeness and decomposition (Phase E) now a larger production bottleneck than residual retrieval shortcut dependency?
-5. **Phase execution ordering:** F1 found zero substantiated E1 blockers. E1-A2 remains failed; E1-R1 implemented the revised semantic contract and E1-R2 passed targeted prospective synthetic exploratory validation. E1 CLOSURE / SCOPE REVIEW is recommended to decide whether this suffices or a small real PANDA-style exposed-development confirmation is warranted. That review and E2/E3 are not authorized.
+5. **Phase execution ordering:** F1 found zero E1 blockers. E1-R2 passed targeted prospective synthetic validation and E1-C1 passed exposed real-style confirmation, including the original atomicity sentinel. E1 is closed under the accepted scope decision. E2 is next and not authorized; no further E1 confirmation is required.
 
 ```text
-CURRENT_TASK = E1-C1 / AUTHORIZED / EXECUTION_PENDING
-NEXT_TASK_RECOMMENDATION = E1-C1 outcome-dependent next task
+CURRENT_TASK = E1-C1 / COMPLETE / PASS
+NEXT_TASK_RECOMMENDATION = E2 — Answer-Point Coverage and Claim Mapping
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 NEXT_STAGE_AUTHORIZED = false
 ```

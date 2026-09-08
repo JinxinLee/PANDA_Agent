@@ -18,16 +18,18 @@ The single `Current authoritative state` section is authoritative over historica
 ## Current authoritative state
 
 E1-CLOSURE-REVIEW = COMPLETE / PASS / REAL_PANDA_STYLE_CONFIRMATION_REQUIRED_BEFORE_CLOSURE.
-Current authorized task: E1-C1 = IN_PROGRESS / PREREGISTERED / EXECUTION_PENDING.
-C1 uses exactly the six English novel_dev pairs07-12 from historical E1-A2 Git
-manifest, with strict no-regression gates. If C1 passes, E1 closes directly;
-otherwise it remains open. No E2 execution is authorized.
+E1-C1 = COMPLETE / PASS / REAL_PANDA_STYLE_EXPOSED_DEVELOPMENT_CONFIRMATION_PASSED.
+E1 = COMPLETE / PASS / QUESTION_ONLY_SEMANTIC_ANSWER_POINT_DECOMPOSITION_VALIDATED.
+C1 met all eight strict gates and the original pair09 atomicity sentinel. Per the
+accepted closure decision, E1 closes directly. E2/E3 remain NOT_STARTED.
 Decision: `evaluation/E1_CLOSURE_SCOPE_REVIEW.md`.
-Protocol: `evaluation/E1_C1_REAL_STYLE_CONFIRMATION_PREREGISTRATION.md`.
+Report: `evaluation/E1_C1_REAL_STYLE_CONFIRMATION.md`.
+Preregistration: `2517b691245c38175222064e6ca546d06fd21e9a`.
+Raw freeze: `7eab1e8fe099fed6ff06384c4fa0eb48dcf52677`.
 
 
-Repository head (E1-R2 execution starting baseline):
-4cd0305c53541bcba75c00fbf935d87c63ba3069
+Repository head (E1-C1 starting baseline):
+781007c810b113537025dbe93c28728a59e318bc
 
 Latest completed prospective validation:
 E1-R2 — Prospective Semantic Answer-Point Revalidation
@@ -70,19 +72,34 @@ MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD
 Current planning state:
 D4 = PAUSED / ROADMAP_RECONCILIATION
 D4 overall completion = UNDECIDED
-CURRENT_TASK = E1-C1 / AUTHORIZED / EXECUTION_PENDING
-NEXT_TASK_RECOMMENDATION = E1-C1 outcome-dependent next task / NOT AUTHORIZED
+CURRENT_TASK = E1-C1 / COMPLETE / PASS
+NEXT_TASK_RECOMMENDATION = E2 — Answer-Point Coverage and Claim Mapping / NOT AUTHORIZED
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 
 No D4-A11 exists.
-Phase E = IN_PROGRESS / E1.
-E1 = IN_PROGRESS / REPAIR_PROSPECTIVELY_VALIDATED / CLOSURE_REVIEW_PENDING.
+Phase E = IN_PROGRESS / E1_COMPLETE / E2_NEXT.
+E1 = COMPLETE / PASS / QUESTION_ONLY_SEMANTIC_ANSWER_POINT_DECOMPOSITION_VALIDATED.
 E2 = NOT_STARTED.
 E3 = NOT_STARTED.
 Phase F = IN_PROGRESS / F1_COMPLETE.
 F2 = NOT_STARTED / SCOPE_PRESERVED.
 F3 = SCOPE_RECONCILIATION_REQUIRED / PARTIALLY_SUPERSEDED_BY_D4.
-No further D4, Phase-E, or Phase-F task is authorized after E1-R2.
+No further D4, Phase-E, or Phase-F task is authorized after E1-C1.
+
+## E1-C1 closeout
+
+Exact historical English novel_dev pairs07-12:12 cases,6 pairs,28 references.
+All12 valid, recall28/28, precision28/28, under/over0, exact count12/12,
+semantic-complete pairs6/6, hidden prerequisites0. Pair09/n020 base and paraphrase
+both matched3/3 with3 predictions and zero extras. All strict gates and sentinel PASS.
+Scientific usage:12 decomposition calls/16417 tokens plus12 judge calls/13682 tokens;
+24 returned model calls and30099 tokens total. Other pipeline stages zero.
+Focused tests30/30 and independent post-run reconciliation passed. AGY static review
+crashed on local lock EPERM without a result; its usage is unavailable, not zero.
+The exposed confirmation supplements fresh synthetic R2 evidence. E1 closure is
+bounded to shadow question decomposition; representative generalization, production
+integration and compatibility replacement are not established. No extra confirmation,
+E2/E3 execution or production activation occurred. Historical A2 FAIL and R2 PASS remain.
 
 ## Historical checkpoint — E1-R2 scientific closeout
 

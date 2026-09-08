@@ -1,0 +1,530 @@
+{
+  "preregistration_commit": "2517b691245c38175222064e6ca546d06fd21e9a",
+  "raw_commit": "7eab1e8fe099fed6ff06384c4fa0eb48dcf52677",
+  "records": [
+    {
+      "case_id": "e1a2.b07",
+      "stage": "complete",
+      "scoreable": true,
+      "raw_judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "e1a2.b07.ref1",
+            "prediction_point_id": "point.1"
+          },
+          {
+            "reference_point_id": "e1a2.b07.ref2",
+            "prediction_point_id": "point.2"
+          },
+          {
+            "reference_point_id": "e1a2.b07.ref3",
+            "prediction_point_id": "point.3"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "e1a2.b07.ref1",
+            "prediction_point_id": "point.1"
+          },
+          {
+            "reference_point_id": "e1a2.b07.ref2",
+            "prediction_point_id": "point.2"
+          },
+          {
+            "reference_point_id": "e1a2.b07.ref3",
+            "prediction_point_id": "point.3"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "usage": {
+        "generation_calls": 1,
+        "token_usage": 1224,
+        "model_calls": 1,
+        "embedding_calls": 0
+      }
+    },
+    {
+      "case_id": "e1a2.p07",
+      "stage": "complete",
+      "scoreable": true,
+      "raw_judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "e1a2.p07.ref1",
+            "prediction_point_id": "point.1"
+          },
+          {
+            "reference_point_id": "e1a2.p07.ref2",
+            "prediction_point_id": "point.2"
+          },
+          {
+            "reference_point_id": "e1a2.p07.ref3",
+            "prediction_point_id": "point.3"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "e1a2.p07.ref1",
+            "prediction_point_id": "point.1"
+          },
+          {
+            "reference_point_id": "e1a2.p07.ref2",
+            "prediction_point_id": "point.2"
+          },
+          {
+            "reference_point_id": "e1a2.p07.ref3",
+            "prediction_point_id": "point.3"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "usage": {
+        "generation_calls": 1,
+        "token_usage": 1330,
+        "model_calls": 1,
+        "embedding_calls": 0
+      }
+    },
+    {
+      "case_id": "e1a2.b08",
+      "stage": "complete",
+      "scoreable": true,
+      "raw_judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "e1a2.b08.ref1",
+            "prediction_point_id": "point.1"
+          },
+          {
+            "reference_point_id": "e1a2.b08.ref2",
+            "prediction_point_id": "point.2"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "e1a2.b08.ref1",
+            "prediction_point_id": "point.1"
+          },
+          {
+            "reference_point_id": "e1a2.b08.ref2",
+            "prediction_point_id": "point.2"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "usage": {
+        "generation_calls": 1,
+        "token_usage": 1116,
+        "model_calls": 1,
+        "embedding_calls": 0
+      }
+    },
+    {
+      "case_id": "e1a2.p08",
+      "stage": "complete",
+      "scoreable": true,
+      "raw_judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "e1a2.p08.ref1",
+            "prediction_point_id": "point.1"
+          },
+          {
+            "reference_point_id": "e1a2.p08.ref2",
+            "prediction_point_id": "point.2"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "e1a2.p08.ref1",
+            "prediction_point_id": "point.1"
+          },
+          {
+            "reference_point_id": "e1a2.p08.ref2",
+            "prediction_point_id": "point.2"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "usage": {
+        "generation_calls": 1,
+        "token_usage": 1065,
+        "model_calls": 1,
+        "embedding_calls": 0
+      }
+    },
+    {
+      "case_id": "e1a2.b09",
+      "stage": "complete",
+      "scoreable": true,
+      "raw_judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "e1a2.b09.ref1",
+            "prediction_point_id": "point.1"
+          },
+          {
+            "reference_point_id": "e1a2.b09.ref2",
+            "prediction_point_id": "point.2"
+          },
+          {
+            "reference_point_id": "e1a2.b09.ref3",
+            "prediction_point_id": "point.3"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "e1a2.b09.ref1",
+            "prediction_point_id": "point.1"
+          },
+          {
+            "reference_point_id": "e1a2.b09.ref2",
+            "prediction_point_id": "point.2"
+          },
+          {
+            "reference_point_id": "e1a2.b09.ref3",
+            "prediction_point_id": "point.3"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "usage": {
+        "generation_calls": 1,
+        "token_usage": 1331,
+        "model_calls": 1,
+        "embedding_calls": 0
+      }
+    },
+    {
+      "case_id": "e1a2.p09",
+      "stage": "complete",
+      "scoreable": true,
+      "raw_judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "e1a2.p09.ref1",
+            "prediction_point_id": "point.1"
+          },
+          {
+            "reference_point_id": "e1a2.p09.ref2",
+            "prediction_point_id": "point.2"
+          },
+          {
+            "reference_point_id": "e1a2.p09.ref3",
+            "prediction_point_id": "point.3"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "e1a2.p09.ref1",
+            "prediction_point_id": "point.1"
+          },
+          {
+            "reference_point_id": "e1a2.p09.ref2",
+            "prediction_point_id": "point.2"
+          },
+          {
+            "reference_point_id": "e1a2.p09.ref3",
+            "prediction_point_id": "point.3"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "usage": {
+        "generation_calls": 1,
+        "token_usage": 1271,
+        "model_calls": 1,
+        "embedding_calls": 0
+      }
+    },
+    {
+      "case_id": "e1a2.b10",
+      "stage": "complete",
+      "scoreable": true,
+      "raw_judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "e1a2.b10.ref1",
+            "prediction_point_id": "point.1"
+          },
+          {
+            "reference_point_id": "e1a2.b10.ref2",
+            "prediction_point_id": "point.2"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "e1a2.b10.ref1",
+            "prediction_point_id": "point.1"
+          },
+          {
+            "reference_point_id": "e1a2.b10.ref2",
+            "prediction_point_id": "point.2"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "usage": {
+        "generation_calls": 1,
+        "token_usage": 1087,
+        "model_calls": 1,
+        "embedding_calls": 0
+      }
+    },
+    {
+      "case_id": "e1a2.p10",
+      "stage": "complete",
+      "scoreable": true,
+      "raw_judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "e1a2.p10.ref1",
+            "prediction_point_id": "point.1"
+          },
+          {
+            "reference_point_id": "e1a2.p10.ref2",
+            "prediction_point_id": "point.2"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "e1a2.p10.ref1",
+            "prediction_point_id": "point.1"
+          },
+          {
+            "reference_point_id": "e1a2.p10.ref2",
+            "prediction_point_id": "point.2"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "usage": {
+        "generation_calls": 1,
+        "token_usage": 1075,
+        "model_calls": 1,
+        "embedding_calls": 0
+      }
+    },
+    {
+      "case_id": "e1a2.b11",
+      "stage": "complete",
+      "scoreable": true,
+      "raw_judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "e1a2.b11.ref1",
+            "prediction_point_id": "point.1"
+          },
+          {
+            "reference_point_id": "e1a2.b11.ref2",
+            "prediction_point_id": "point.2"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "e1a2.b11.ref1",
+            "prediction_point_id": "point.1"
+          },
+          {
+            "reference_point_id": "e1a2.b11.ref2",
+            "prediction_point_id": "point.2"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "usage": {
+        "generation_calls": 1,
+        "token_usage": 997,
+        "model_calls": 1,
+        "embedding_calls": 0
+      }
+    },
+    {
+      "case_id": "e1a2.p11",
+      "stage": "complete",
+      "scoreable": true,
+      "raw_judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "e1a2.p11.ref1",
+            "prediction_point_id": "point.1"
+          },
+          {
+            "reference_point_id": "e1a2.p11.ref2",
+            "prediction_point_id": "point.2"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "e1a2.p11.ref1",
+            "prediction_point_id": "point.1"
+          },
+          {
+            "reference_point_id": "e1a2.p11.ref2",
+            "prediction_point_id": "point.2"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "usage": {
+        "generation_calls": 1,
+        "token_usage": 1061,
+        "model_calls": 1,
+        "embedding_calls": 0
+      }
+    },
+    {
+      "case_id": "e1a2.b12",
+      "stage": "complete",
+      "scoreable": true,
+      "raw_judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "e1a2.b12.ref1",
+            "prediction_point_id": "point.1"
+          },
+          {
+            "reference_point_id": "e1a2.b12.ref2",
+            "prediction_point_id": "point.2"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "e1a2.b12.ref1",
+            "prediction_point_id": "point.1"
+          },
+          {
+            "reference_point_id": "e1a2.b12.ref2",
+            "prediction_point_id": "point.2"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "usage": {
+        "generation_calls": 1,
+        "token_usage": 1098,
+        "model_calls": 1,
+        "embedding_calls": 0
+      }
+    },
+    {
+      "case_id": "e1a2.p12",
+      "stage": "complete",
+      "scoreable": true,
+      "raw_judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "e1a2.p12.ref1",
+            "prediction_point_id": "point.1"
+          },
+          {
+            "reference_point_id": "e1a2.p12.ref2",
+            "prediction_point_id": "point.2"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "e1a2.p12.ref1",
+            "prediction_point_id": "point.1"
+          },
+          {
+            "reference_point_id": "e1a2.p12.ref2",
+            "prediction_point_id": "point.2"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "usage": {
+        "generation_calls": 1,
+        "token_usage": 1027,
+        "model_calls": 1,
+        "embedding_calls": 0
+      }
+    }
+  ]
+}

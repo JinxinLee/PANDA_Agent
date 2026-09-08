@@ -1,0 +1,273 @@
+{
+  "checkpoint": "E1-C1",
+  "verdict": "PASS",
+  "metrics": {
+    "valid_cases": 12,
+    "matched_points": 28,
+    "reference_points": 28,
+    "predicted_points": 28,
+    "micro_reference_recall": 1.0,
+    "micro_prediction_precision": 1.0,
+    "under_decomposed_cases": 0,
+    "over_decomposed_cases": 0,
+    "exact_count_cases": 12,
+    "stable_pairs": 6,
+    "hidden_prerequisite_predictions": 0,
+    "semantic_complete_cases": 12
+  },
+  "gates": {
+    "valid_cases": {
+      "observed": 12,
+      "threshold": 12,
+      "passed": true
+    },
+    "micro_reference_recall": {
+      "observed": 1.0,
+      "threshold": 1.0,
+      "passed": true
+    },
+    "micro_prediction_precision": {
+      "observed": 1.0,
+      "threshold": 1.0,
+      "passed": true
+    },
+    "under_decomposed_cases": {
+      "observed": 0,
+      "threshold": 0,
+      "passed": true
+    },
+    "over_decomposed_cases": {
+      "observed": 0,
+      "threshold": 0,
+      "passed": true
+    },
+    "exact_count_cases": {
+      "observed": 12,
+      "threshold": 12,
+      "passed": true
+    },
+    "stable_pairs": {
+      "observed": 6,
+      "threshold": 6,
+      "passed": true
+    },
+    "hidden_prerequisite_predictions": {
+      "observed": 0,
+      "threshold": 0,
+      "passed": true
+    }
+  },
+  "logical_calls": {
+    "decomposition": 12,
+    "judge": 12
+  },
+  "provider_usage_by_role": {
+    "decomposition": {
+      "model_calls": 12,
+      "generation_calls": 12,
+      "embedding_calls": 0,
+      "token_usage": 16417
+    },
+    "judge": {
+      "model_calls": 12,
+      "generation_calls": 12,
+      "embedding_calls": 0,
+      "token_usage": 13682
+    }
+  },
+  "failure_categories": {},
+  "pair09_sentinel": {
+    "base": {
+      "case_id": "e1a2.b09",
+      "reference_count": 3,
+      "predicted_count": 3,
+      "matched_references": 3,
+      "missing_reference_ids": [],
+      "extra_prediction_ids": [],
+      "semantic_complete": true,
+      "passed": true
+    },
+    "paraphrase": {
+      "case_id": "e1a2.p09",
+      "reference_count": 3,
+      "predicted_count": 3,
+      "matched_references": 3,
+      "missing_reference_ids": [],
+      "extra_prediction_ids": [],
+      "semantic_complete": true,
+      "passed": true
+    },
+    "passed": true
+  },
+  "per_pair": {
+    "e1a2.pair07": {
+      "source_case_id": "n001",
+      "variants": {
+        "base": {
+          "case_id": "e1a2.b07",
+          "reference_count": 3,
+          "predicted_count": 3,
+          "matched_references": 3,
+          "missing_reference_ids": [],
+          "extra_prediction_ids": [],
+          "semantic_complete": true
+        },
+        "paraphrase": {
+          "case_id": "e1a2.p07",
+          "reference_count": 3,
+          "predicted_count": 3,
+          "matched_references": 3,
+          "missing_reference_ids": [],
+          "extra_prediction_ids": [],
+          "semantic_complete": true
+        }
+      }
+    },
+    "e1a2.pair08": {
+      "source_case_id": "n008",
+      "variants": {
+        "base": {
+          "case_id": "e1a2.b08",
+          "reference_count": 2,
+          "predicted_count": 2,
+          "matched_references": 2,
+          "missing_reference_ids": [],
+          "extra_prediction_ids": [],
+          "semantic_complete": true
+        },
+        "paraphrase": {
+          "case_id": "e1a2.p08",
+          "reference_count": 2,
+          "predicted_count": 2,
+          "matched_references": 2,
+          "missing_reference_ids": [],
+          "extra_prediction_ids": [],
+          "semantic_complete": true
+        }
+      }
+    },
+    "e1a2.pair09": {
+      "source_case_id": "n020",
+      "variants": {
+        "base": {
+          "case_id": "e1a2.b09",
+          "reference_count": 3,
+          "predicted_count": 3,
+          "matched_references": 3,
+          "missing_reference_ids": [],
+          "extra_prediction_ids": [],
+          "semantic_complete": true
+        },
+        "paraphrase": {
+          "case_id": "e1a2.p09",
+          "reference_count": 3,
+          "predicted_count": 3,
+          "matched_references": 3,
+          "missing_reference_ids": [],
+          "extra_prediction_ids": [],
+          "semantic_complete": true
+        }
+      }
+    },
+    "e1a2.pair10": {
+      "source_case_id": "n022",
+      "variants": {
+        "base": {
+          "case_id": "e1a2.b10",
+          "reference_count": 2,
+          "predicted_count": 2,
+          "matched_references": 2,
+          "missing_reference_ids": [],
+          "extra_prediction_ids": [],
+          "semantic_complete": true
+        },
+        "paraphrase": {
+          "case_id": "e1a2.p10",
+          "reference_count": 2,
+          "predicted_count": 2,
+          "matched_references": 2,
+          "missing_reference_ids": [],
+          "extra_prediction_ids": [],
+          "semantic_complete": true
+        }
+      }
+    },
+    "e1a2.pair11": {
+      "source_case_id": "n030",
+      "variants": {
+        "base": {
+          "case_id": "e1a2.b11",
+          "reference_count": 2,
+          "predicted_count": 2,
+          "matched_references": 2,
+          "missing_reference_ids": [],
+          "extra_prediction_ids": [],
+          "semantic_complete": true
+        },
+        "paraphrase": {
+          "case_id": "e1a2.p11",
+          "reference_count": 2,
+          "predicted_count": 2,
+          "matched_references": 2,
+          "missing_reference_ids": [],
+          "extra_prediction_ids": [],
+          "semantic_complete": true
+        }
+      }
+    },
+    "e1a2.pair12": {
+      "source_case_id": "n031",
+      "variants": {
+        "base": {
+          "case_id": "e1a2.b12",
+          "reference_count": 2,
+          "predicted_count": 2,
+          "matched_references": 2,
+          "missing_reference_ids": [],
+          "extra_prediction_ids": [],
+          "semantic_complete": true
+        },
+        "paraphrase": {
+          "case_id": "e1a2.p12",
+          "reference_count": 2,
+          "predicted_count": 2,
+          "matched_references": 2,
+          "missing_reference_ids": [],
+          "extra_prediction_ids": [],
+          "semantic_complete": true
+        }
+      }
+    }
+  },
+  "historical_source": {
+    "commit": "77ea6bc27beb1657673e57be763b05419c98bc05",
+    "path": "evaluation/e1_a2_dynamic_question_decomposition_validation_manifest.json",
+    "selected_pair_ids": [
+      "e1a2.pair07",
+      "e1a2.pair08",
+      "e1a2.pair09",
+      "e1a2.pair10",
+      "e1a2.pair11",
+      "e1a2.pair12"
+    ]
+  },
+  "scope": "exposed real PANDA-style closure confirmation; not fresh or representative; shadow-only",
+  "taxonomy_diagnostics": {
+    "predicted_label_distribution": {
+      "definition": 4,
+      "api_behavior": 2,
+      "mechanism": 9,
+      "comparison": 4,
+      "locator": 2,
+      "data_flow": 4,
+      "cause_reason": 2,
+      "omitted": 1
+    },
+    "labeled_semantic_matches": 27,
+    "exact_label_matches": 17,
+    "primary_gate": false
+  },
+  "preregistration_commit": "2517b691245c38175222064e6ca546d06fd21e9a",
+  "raw_freeze_commit": "7eab1e8fe099fed6ff06384c4fa0eb48dcf52677",
+  "implementation_commit": "87cc34dd919d8431bb774003a7f76a9fff3a7567"
+}
