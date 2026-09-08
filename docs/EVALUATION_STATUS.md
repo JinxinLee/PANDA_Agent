@@ -17,8 +17,12 @@ The single `Current authoritative state` section is authoritative over historica
 
 ## Current authoritative state
 
-Repository head (E1-A2 starting baseline):
-709321657016762ee11ee38d21d53c30ffa7b951
+Repository head (E1-AR starting baseline):
+33173907ecf3d5313868a50c8549721564f5c16f
+
+Latest completed architecture review:
+E1-AR
+COMPLETE / PASS / REVISED_SEMANTIC_ANSWER_POINT_CONTRACT_ESTABLISHED
 
 Latest completed decomposition validation:
 E1-A2
@@ -47,18 +51,30 @@ MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD
 Current planning state:
 D4 = PAUSED / ROADMAP_RECONCILIATION
 D4 overall completion = UNDECIDED
-NEXT_TASK_RECOMMENDATION = E1 ARCHITECTURE REVIEW / NOT AUTHORIZED
+NEXT_TASK_RECOMMENDATION = E1-R1 — Semantic Answer-Point Contract Repair / NOT AUTHORIZED
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 
 No D4-A11 exists.
 Phase E = IN_PROGRESS / E1.
-E1 = IN_PROGRESS / VALIDATION_FAILED.
+E1 = IN_PROGRESS / ARCHITECTURE_REVIEW_COMPLETE / REPAIR_REQUIRED.
 Phase F = IN_PROGRESS / F1_COMPLETE.
 F2 = NOT_STARTED / SCOPE_PRESERVED.
 F3 = SCOPE_RECONCILIATION_REQUIRED / PARTIALLY_SUPERSEDED_BY_D4.
-No further D4, Phase-E, or Phase-F task is authorized after E1-A2.
+No further D4, Phase-E, or Phase-F task is authorized after E1-AR.
 
-## E1-A2 targeted validation closeout
+## E1-AR architecture review closeout
+
+E1's primary abstraction is an independently satisfiable explicit question obligation whose omission can be independently detected. The revised architecture makes `facet_type` optional diagnostic metadata, not semantic correctness, a primary acceptance gate, or a dependency of point ordering/identity. Future E1-R1 should assign type-independent question-order IDs, retain exact question support spans and diagnostic ambiguity, and teach generic obligation atomicity without lexical or benchmark triggers. These are architecture decisions; current code remains unchanged.
+
+Static counterfactual diagnostics from preserved E1-A2 matches: semantic-complete cases ignoring type 20/24; semantic-slot stable pairs ignoring type 10/12; type disagreements 12/40 matches; granularity failures 4 cases in pairs05/09. Those four cases leave four independent reference slots unmatched through merges; no additional standalone unexpressed need was established. Taxonomy disagreement and semantic omission are distinct. Historical G8's 7/12 is strict reference conformance, not pure paraphrase stability.
+
+E1-A2 remains FAIL under its frozen preregistered contract. No regrading, provider/judge/scorer execution, pytest, source dataset reopening, protected-data access, production change or E1-A2 artifact mutation occurred. JSON/count/lifecycle/path checks and `git diff --check` passed. All model calls and token usage for E1-AR were zero.
+
+E1-AR PASS establishes a revised contract only; repair and fresh prospective validation remain required. E1-R1 is recommended but not authorized. A later separately authorized E1-R2 must use a fresh prospective acceptance cohort; E1-A2 may be exposed regression diagnostics, not its sole acceptance cohort. `question_core` and compatibility requirements remain authoritative, E2/E3 remain NOT_STARTED, and production activation remains false.
+
+Artifacts: `evaluation/e1_architecture_review.json`, `evaluation/E1_ARCHITECTURE_REVIEW.md`.
+
+## Historical checkpoint — E1-A2 targeted validation closeout
 
 All 24 preregistered cases (12 bases and 12 controlled paraphrases) completed and were scoreable. Valid decomposition 24/24; question-only reference recall 40/44 (90.91%); prediction precision 40/40 (100%); under-decomposed 4/24; over-decomposed 0/24; exact count 20/24; hidden prerequisites 0. G7 failed at 28/40 (70%) matched facet-type accuracy against >=90%; G8 failed at 7/12 strict reference-conformant pairs against >=10/12. All other gates passed. No structural/provider/judge-infrastructure failures occurred.
 

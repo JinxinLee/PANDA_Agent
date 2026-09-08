@@ -25,7 +25,7 @@ The roadmap is governed by the following core development principles:
 ## Current planning state
 
 Repository planning baseline:
-709321657016762ee11ee38d21d53c30ffa7b951 (E1-A2 starting HEAD)
+33173907ecf3d5313868a50c8549721564f5c16f (E1-AR starting HEAD)
 
 Latest accepted production action:
 D4-A10
@@ -48,13 +48,16 @@ Phase E:
 IN_PROGRESS / E1
 
 E1:
-IN_PROGRESS / VALIDATION_FAILED
+IN_PROGRESS / ARCHITECTURE_REVIEW_COMPLETE / REPAIR_REQUIRED
 
 E1-A1:
 COMPLETE / PASS / QUESTION_ONLY_DIAGNOSTIC_DECOMPOSITION_IMPLEMENTED
 
 E1-A2:
 COMPLETE / FAIL / G7_FACET_TYPE_ACCURACY_AND_G8_PAIR_STABILITY_FAILED
+
+E1-AR:
+COMPLETE / PASS / REVISED_SEMANTIC_ANSWER_POINT_CONTRACT_ESTABLISHED
 
 Phase F:
 IN_PROGRESS / F1_COMPLETE
@@ -66,11 +69,11 @@ D4 overall completion:
 UNDECIDED
 
 Next task recommendation:
-E1 ARCHITECTURE REVIEW / NOT AUTHORIZED
+E1-R1 — Semantic Answer-Point Contract Repair / NOT AUTHORIZED
 
 No D4-A11 exists.
 No further D4 task is currently authorized.
-No further Phase-E task is currently authorized after E1-A2.
+No further Phase-E task is currently authorized after E1-AR.
 No further Phase-F task is currently authorized.
 
 ## Phase overview
@@ -415,23 +418,26 @@ Phase E addresses answer synthesis, facet coverage, claim-to-evidence grounding,
 
 ### E1 — Dynamic question decomposition
 
-- **Status:** IN_PROGRESS / VALIDATION_FAILED
+- **Status:** IN_PROGRESS / ARCHITECTURE_REVIEW_COMPLETE / REPAIR_REQUIRED
 - **E1-A1 outcome:** COMPLETE / PASS / QUESTION_ONLY_DIAGNOSTIC_DECOMPOSITION_IMPLEMENTED. Question-only 1–5 facet contract and explicit shadow diagnostic seam implemented; normal QA does not invoke it. Existing `question_core` remains authoritative and compatibility requirements remain active. Focused fake-based T0 checks passed. E1-A1 PASS is not E1 PASS.
 - **E1-A2 outcome:** COMPLETE / FAIL / G7_FACET_TYPE_ACCURACY_AND_G8_PAIR_STABILITY_FAILED. Frozen 24-case T2 cohort fully scored: valid 24/24, question-only reference recall 40/44, precision 40/40, under 4/24, over 0/24, exact count 20/24, hidden prerequisites 0. G7 type accuracy 28/40 (70%) and G8 strict reference-conformant pairs 7/12 failed; all other gates passed. Production and preregistration contracts remained unchanged. Small exposed-development results are not release generalization estimates; source and language are confounded.
 - **E1-A2 evidence:** `evaluation/e1_a2_dynamic_question_decomposition_validation_result.json`, `evaluation/E1_A2_DYNAMIC_QUESTION_DECOMPOSITION_VALIDATION.md`; preregistration commit `77ea6bc27beb1657673e57be763b05419c98bc05`.
+- **E1-AR outcome:** COMPLETE / PASS / REVISED_SEMANTIC_ANSWER_POINT_CONTRACT_ESTABLISHED. Static architectural diagnostics ignoring type: semantic-complete 20/24, semantic-slot stable pairs 10/12; taxonomy disagreements 12/40 matched points; granularity merges in 4 cases. E1-A2 remains FAIL under its original G7/G8; these are not new acceptance results. No implementation or scientific rerun occurred.
+- **E1-AR evidence:** `evaluation/e1_architecture_review.json`, `evaluation/E1_ARCHITECTURE_REVIEW.md`.
 - **Evidence:** `evaluation/e1_a1_dynamic_question_decomposition_contract.json`, `evaluation/E1_A1_DYNAMIC_QUESTION_DECOMPOSITION_CONTRACT.md`.
-- **Next task recommendation:** E1 ARCHITECTURE REVIEW of generic taxonomy boundaries and point granularity; execution not authorized.
+- **Next task recommendation:** E1-R1 — Semantic Answer-Point Contract Repair, shadow-only implementation plus focused T0 and no live validation; execution not authorized. Later E1-R2 prospective revalidation requires separate authorization and a fresh acceptance cohort; E1-A2 cases may be exposed regression diagnostics, not the sole acceptance cohort.
 - **Problem:** A single `question_core` plus domain-specific requirements can be complete on known questions but miss unseen multi-part structure.
-- **Goal:** Derive approximately 1–5 evidence-independent answer points from the question itself.
+- **Goal:** Derive 1–5 evidence-independent, independently satisfiable explicit response obligations from the question itself, each independently checkable for omission.
 - **Why this stage:** Retrieval generalization and structured knowledge must be established before asking decomposition to drive completeness.
-- **Intended design:** Represent mechanism, implementation, data flow, comparison, locator, workflow step, cause/reason, or API behavior; initially run diagnostically alongside existing requirements.
-- **Functional requirements:** Question-only input, stable IDs, limited count, paraphrase stability, over-decomposition checks, and trace/audit output.
+- **Intended design:** Question-only semantic obligations with exact support spans and deterministic, type-independent question-order IDs; optional facet taxonomy and ambiguity are diagnostic metadata, not semantic correctness authority. Split independently satisfiable explicit obligations, not merely multiple entities or clauses; preserve a requested comparison or end-to-end flow as one unit absent separate asks. Remain shadow-only alongside existing compatibility requirements.
+- **Functional requirements:** Question-only input, 1–5 points, unique code-assigned IDs independent of taxonomy in both sorting and identity, exact question support spans, semantic-slot paraphrase stability, over/under-decomposition checks, and trace/audit output. Literal ID equality across paraphrases is not required.
 - **Explicit out of scope:** Deriving points from retrieved evidence, removing existing requirements, targeted retrieval, or benchmark templates.
 - **Dependencies:** Phases C/D and curated answer-point annotations.
-- **Evaluation scope:** E1-A1 T0 and E1-A2 targeted T2 completed. Any repair or further validation requires separate authorization.
-- **Primary metrics:** E1-specific frozen question-only reference-facet recall (prospectively replacing legacy Gold answer-rubric recall in E1-A2), over-decomposition rate, strict reference-conformant paraphrase stability, and diagnostic benchmark-versus-novel gap. Legacy answer facts are not E1 ground truth.
+- **Evaluation scope:** E1-A1 T0, E1-A2 targeted T2 and E1-AR static review completed. Repair and fresh prospective validation remain separately unauthorized. No new numeric thresholds or retrospective E1-A2 gates are set by E1-AR.
+- **Future primary metrics:** Structural validity, question-only semantic reference-point recall, semantic prediction precision, under/over-decomposition, exact point count, semantic-slot paraphrase stability, and hidden-prerequisite inference. Legacy answer facts are not E1 ground truth.
+- **Secondary diagnostics:** Exact facet-type agreement, taxonomy distribution and facet-label paraphrase stability; source-group gaps remain diagnostic. Historical E1-A2's strict reference-conformant pair gate remains unchanged and must not be presented as pure semantic paraphrase stability.
 - **Acceptance criteria:** Decomposition captures required question facets generically without mirroring whatever evidence was found.
-- **Failure handling:** Reduce/merge unstable points or mark ambiguity; retain old requirements during diagnosis. Stop after E1.
+- **Failure handling:** Repair generic explicit-obligation granularity without benchmark or lexical triggers; keep taxonomy and ambiguity diagnostic and retain old requirements. Freeze any future repair before separately authorized prospective validation. Stop after the current authorized E1 task.
 
 ### E2 — Answer-point coverage and claim mapping
 
@@ -439,7 +445,7 @@ Phase E addresses answer synthesis, facet coverage, claim-to-evidence grounding,
 - **Problem:** Atomic claims are not generically accountable to the facets the user asked to have answered.
 - **Goal:** Map every generated claim to one or more answer-point IDs and evidence IDs, then measure completeness and support.
 - **Why this stage:** E1 quality must be proven before its points become a runtime completeness contract.
-- **Intended design:** Maintain explicit `claim -> answer_points -> evidence` mapping; run old answer requirements in parallel for regression comparison.
+- **Intended design:** Maintain explicit `claim -> answer_points -> evidence` mapping; consume semantic point IDs/text without requiring exact facet labels. Run old answer requirements in parallel for regression comparison.
 - **Functional requirements:** Validate IDs, point coverage, unsupported/missing-point detection, audit-only versus user-visible claims, and refusal semantics.
 - **Explicit out of scope:** Immediate deletion of existing requirements, targeted retrieval, composer, or benchmark-specific mappings.
 - **Dependencies:** E1 and current evidence-bound claim/verifier architecture.
@@ -549,10 +555,10 @@ At release, Generalization Gap means benchmark score minus novel score. Benchmar
 2. **Remaining D4 candidate disposition:** Does the remaining unassessed D4 inventory contain another naturally testable, high-value migration batch, or should residual entries remain on HOLD?
 3. **Phase-F scope boundary:** F1 has established the bounded non-D4 residual inventory and candidate owners. Which candidates warrant a separately authorized treatment remains undecided.
 4. **Bottleneck prioritization:** Is answer completeness and decomposition (Phase E) now a larger production bottleneck than residual retrieval shortcut dependency?
-5. **Phase execution ordering:** The authorized F1 inventory preceded Phase E and found zero substantiated E1 blockers. E1-A2 completed with failed taxonomy and pair-stability gates; E1 ARCHITECTURE REVIEW is recommended next and is not authorized.
+5. **Phase execution ordering:** The authorized F1 inventory preceded Phase E and found zero substantiated E1 blockers. E1-A2 remains failed; E1-AR established the revised semantic-obligation architecture. E1-R1 repair is recommended next and is not authorized.
 
 ```text
-NEXT_TASK_RECOMMENDATION = E1 ARCHITECTURE REVIEW
+NEXT_TASK_RECOMMENDATION = E1-R1 — Semantic Answer-Point Contract Repair
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 NEXT_STAGE_AUTHORIZED = false
 ```

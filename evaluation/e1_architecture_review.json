@@ -1,0 +1,564 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint": "E1-AR",
+  "stage": "e1_architecture_review",
+  "starting_head": "33173907ecf3d5313868a50c8549721564f5c16f",
+  "status": "COMPLETE",
+  "verdict": "PASS / REVISED_SEMANTIC_ANSWER_POINT_CONTRACT_ESTABLISHED",
+  "e1_a2_authority": {
+    "original_verdict_preserved": true,
+    "original_verdict": "FAIL",
+    "original_failed_gates": [
+      "G7",
+      "G8"
+    ],
+    "preregistration_commit": "77ea6bc27beb1657673e57be763b05419c98bc05",
+    "retroactive_regrading": false,
+    "original_strict_reference_conformant_pairs": {
+      "numerator": 7,
+      "denominator": 12
+    }
+  },
+  "decisions": {
+    "primary_abstraction": "INDEPENDENTLY_SATISFIABLE_EXPLICIT_ANSWER_OBLIGATION",
+    "definition": "One explicitly requested response obligation that can be independently satisfied and whose omission can be independently detected.",
+    "facet_type_role": "OPTIONAL_DIAGNOSTIC_METADATA",
+    "facet_type_authoritative": false,
+    "facet_type_primary_gate": false,
+    "facet_type_in_point_identity": false,
+    "facet_type_in_ordering": false,
+    "point_id_strategy": "TYPE_INDEPENDENT_QUESTION_ORDER",
+    "recommended_id_examples": [
+      "point.1",
+      "point.2",
+      "point.3"
+    ],
+    "cross_paraphrase_literal_id_equality_required": false,
+    "authoritative_fields": [
+      "answer_point_id",
+      "text",
+      "support_spans"
+    ],
+    "support_spans": "RETAIN_EXACT_QUESTION_GROUNDING",
+    "support_spans_prove_semantic_correctness": false,
+    "ambiguity": "DIAGNOSTIC_ONLY",
+    "production_activation": false,
+    "decision_applies_to": "FUTURE_SEPARATELY_AUTHORIZED_E1_R1",
+    "runtime_contract_changed": false
+  },
+  "static_diagnostics": {
+    "interpretation": "COUNTERFACTUAL_ARCHITECTURAL_DIAGNOSTICS_ONLY_NOT_ACCEPTANCE",
+    "method": "Read preserved case matches and original reference slots, removing only the facet-equality condition for D1/D2. Inspect raw question and broad point text manually for D4; no new matching or scientific scorer execution.",
+    "semantic_complete_cases_ignoring_type": {
+      "numerator": 20,
+      "denominator": 24,
+      "case_ids": [
+        "e1a2.b01",
+        "e1a2.p01",
+        "e1a2.b02",
+        "e1a2.p02",
+        "e1a2.b03",
+        "e1a2.p03",
+        "e1a2.b04",
+        "e1a2.p04",
+        "e1a2.b06",
+        "e1a2.p06",
+        "e1a2.b07",
+        "e1a2.p07",
+        "e1a2.b08",
+        "e1a2.p08",
+        "e1a2.b10",
+        "e1a2.p10",
+        "e1a2.b11",
+        "e1a2.p11",
+        "e1a2.b12",
+        "e1a2.p12"
+      ]
+    },
+    "semantic_slot_stable_pairs_ignoring_type": {
+      "numerator": 10,
+      "denominator": 12,
+      "pair_ids": [
+        "e1a2.pair01",
+        "e1a2.pair02",
+        "e1a2.pair03",
+        "e1a2.pair04",
+        "e1a2.pair06",
+        "e1a2.pair07",
+        "e1a2.pair08",
+        "e1a2.pair10",
+        "e1a2.pair11",
+        "e1a2.pair12"
+      ]
+    },
+    "taxonomy_only_mismatches": {
+      "numerator": 12,
+      "denominator": 40,
+      "affected_cases": 7,
+      "affected_pairs": 4,
+      "entries": [
+        {
+          "case_id": "e1a2.b06",
+          "pair_id": "e1a2.pair06",
+          "reference_slot_id": "slot.1",
+          "reference_type": "locator",
+          "prediction_type": "data_flow",
+          "prediction_point_id": "data_flow.1",
+          "cases_jsonl_line": 11
+        },
+        {
+          "case_id": "e1a2.b06",
+          "pair_id": "e1a2.pair06",
+          "reference_slot_id": "slot.2",
+          "reference_type": "locator",
+          "prediction_type": "data_flow",
+          "prediction_point_id": "data_flow.2",
+          "cases_jsonl_line": 11
+        },
+        {
+          "case_id": "e1a2.p06",
+          "pair_id": "e1a2.pair06",
+          "reference_slot_id": "slot.1",
+          "reference_type": "locator",
+          "prediction_type": "data_flow",
+          "prediction_point_id": "data_flow.1",
+          "cases_jsonl_line": 12
+        },
+        {
+          "case_id": "e1a2.p06",
+          "pair_id": "e1a2.pair06",
+          "reference_slot_id": "slot.2",
+          "reference_type": "locator",
+          "prediction_type": "data_flow",
+          "prediction_point_id": "data_flow.2",
+          "cases_jsonl_line": 12
+        },
+        {
+          "case_id": "e1a2.b07",
+          "pair_id": "e1a2.pair07",
+          "reference_slot_id": "slot.1",
+          "reference_type": "constraint",
+          "prediction_type": "implementation",
+          "prediction_point_id": "implementation.1",
+          "cases_jsonl_line": 13
+        },
+        {
+          "case_id": "e1a2.b07",
+          "pair_id": "e1a2.pair07",
+          "reference_slot_id": "slot.2",
+          "reference_type": "api_behavior",
+          "prediction_type": "implementation",
+          "prediction_point_id": "implementation.2",
+          "cases_jsonl_line": 13
+        },
+        {
+          "case_id": "e1a2.p07",
+          "pair_id": "e1a2.pair07",
+          "reference_slot_id": "slot.1",
+          "reference_type": "constraint",
+          "prediction_type": "implementation",
+          "prediction_point_id": "implementation.1",
+          "cases_jsonl_line": 14
+        },
+        {
+          "case_id": "e1a2.p07",
+          "pair_id": "e1a2.pair07",
+          "reference_slot_id": "slot.2",
+          "reference_type": "api_behavior",
+          "prediction_type": "implementation",
+          "prediction_point_id": "implementation.2",
+          "cases_jsonl_line": 14
+        },
+        {
+          "case_id": "e1a2.p07",
+          "pair_id": "e1a2.pair07",
+          "reference_slot_id": "slot.3",
+          "reference_type": "api_behavior",
+          "prediction_type": "mechanism",
+          "prediction_point_id": "mechanism.1",
+          "cases_jsonl_line": 14
+        },
+        {
+          "case_id": "e1a2.p08",
+          "pair_id": "e1a2.pair08",
+          "reference_slot_id": "slot.1",
+          "reference_type": "definition",
+          "prediction_type": "implementation",
+          "prediction_point_id": "implementation.1",
+          "cases_jsonl_line": 16
+        },
+        {
+          "case_id": "e1a2.b09",
+          "pair_id": "e1a2.pair09",
+          "reference_slot_id": "slot.2",
+          "reference_type": "workflow",
+          "prediction_type": "mechanism",
+          "prediction_point_id": "mechanism.1",
+          "cases_jsonl_line": 17
+        },
+        {
+          "case_id": "e1a2.p09",
+          "pair_id": "e1a2.pair09",
+          "reference_slot_id": "slot.2",
+          "reference_type": "workflow",
+          "prediction_type": "mechanism",
+          "prediction_point_id": "mechanism.1",
+          "cases_jsonl_line": 18
+        }
+      ]
+    },
+    "granularity_failure_cases": 4,
+    "granularity_failure_case_ids": [
+      "e1a2.b05",
+      "e1a2.p05",
+      "e1a2.b09",
+      "e1a2.p09"
+    ],
+    "granularity_failure_pairs": [
+      "e1a2.pair05",
+      "e1a2.pair09"
+    ],
+    "unmatched_reference_slots": [
+      {
+        "case_id": "e1a2.b05",
+        "reference_point_id": "e1a2.b05.ref2",
+        "reference_slot_id": "slot.2"
+      },
+      {
+        "case_id": "e1a2.p05",
+        "reference_point_id": "e1a2.p05.ref2",
+        "reference_slot_id": "slot.2"
+      },
+      {
+        "case_id": "e1a2.b09",
+        "reference_point_id": "e1a2.b09.ref3",
+        "reference_slot_id": "slot.3"
+      },
+      {
+        "case_id": "e1a2.p09",
+        "reference_point_id": "e1a2.p09.ref3",
+        "reference_slot_id": "slot.3"
+      }
+    ],
+    "paraphrase_type_drift": [
+      {
+        "pair_id": "e1a2.pair07",
+        "reference_slot_id": "slot.3",
+        "base_type": "api_behavior",
+        "paraphrase_type": "mechanism"
+      },
+      {
+        "pair_id": "e1a2.pair08",
+        "reference_slot_id": "slot.1",
+        "base_type": "definition",
+        "paraphrase_type": "implementation"
+      }
+    ],
+    "hidden_prerequisite_predictions": 0,
+    "structural_failure_cases": 0
+  },
+  "failure_diagnosis": [
+    {
+      "pair_id": "e1a2.pair05",
+      "source_case_id": "g066",
+      "categories": [
+        "SEMANTIC_GRANULARITY_MERGE",
+        "SEMANTIC_SLOT_OMISSION"
+      ],
+      "finding": "Both variants combine the separately requested implementation locations of two named models. Each location can be satisfied while the other is omitted; both must be separately addressable.",
+      "independently_requested_slots_merged": [
+        "slot.1",
+        "slot.2"
+      ],
+      "variants": [
+        {
+          "case_id": "e1a2.b05",
+          "cases_jsonl_line": 9,
+          "semantic_complete_ignoring_type": false,
+          "matched_reference_count": 1,
+          "reference_count": 2,
+          "prediction_count": 1,
+          "missing_reference_ids": [
+            "e1a2.b05.ref2"
+          ],
+          "taxonomy_mismatch_count": 0,
+          "merged_prediction_ids": [
+            "locator.1"
+          ]
+        },
+        {
+          "case_id": "e1a2.p05",
+          "cases_jsonl_line": 10,
+          "semantic_complete_ignoring_type": false,
+          "matched_reference_count": 1,
+          "reference_count": 2,
+          "prediction_count": 1,
+          "missing_reference_ids": [
+            "e1a2.p05.ref2"
+          ],
+          "taxonomy_mismatch_count": 0,
+          "merged_prediction_ids": [
+            "locator.1"
+          ]
+        }
+      ]
+    },
+    {
+      "pair_id": "e1a2.pair06",
+      "source_case_id": "g081",
+      "categories": [
+        "TAXONOMY_BOUNDARY_DISAGREEMENT"
+      ],
+      "finding": "Both producer and consumer identity needs are recovered in both variants. locator versus data_flow describes overlapping ontology boundaries, not different information needs.",
+      "independently_requested_slots_merged": [],
+      "variants": [
+        {
+          "case_id": "e1a2.b06",
+          "cases_jsonl_line": 11,
+          "semantic_complete_ignoring_type": true,
+          "matched_reference_count": 2,
+          "reference_count": 2,
+          "prediction_count": 2,
+          "missing_reference_ids": [],
+          "taxonomy_mismatch_count": 2,
+          "merged_prediction_ids": []
+        },
+        {
+          "case_id": "e1a2.p06",
+          "cases_jsonl_line": 12,
+          "semantic_complete_ignoring_type": true,
+          "matched_reference_count": 2,
+          "reference_count": 2,
+          "prediction_count": 2,
+          "missing_reference_ids": [],
+          "taxonomy_mismatch_count": 2,
+          "merged_prediction_ids": []
+        }
+      ]
+    },
+    {
+      "pair_id": "e1a2.pair07",
+      "source_case_id": "n001",
+      "categories": [
+        "TAXONOMY_BOUNDARY_DISAGREEMENT",
+        "PARAPHRASE_TYPE_DRIFT"
+      ],
+      "finding": "All three needs are recovered in both variants: encoded pairs/paths, variable assignments, and unmatched-input behavior. Labels differ at constraint/implementation and api_behavior/implementation boundaries; the last slot changes api_behavior to mechanism across wording.",
+      "independently_requested_slots_merged": [],
+      "variants": [
+        {
+          "case_id": "e1a2.b07",
+          "cases_jsonl_line": 13,
+          "semantic_complete_ignoring_type": true,
+          "matched_reference_count": 3,
+          "reference_count": 3,
+          "prediction_count": 3,
+          "missing_reference_ids": [],
+          "taxonomy_mismatch_count": 2,
+          "merged_prediction_ids": []
+        },
+        {
+          "case_id": "e1a2.p07",
+          "cases_jsonl_line": 14,
+          "semantic_complete_ignoring_type": true,
+          "matched_reference_count": 3,
+          "reference_count": 3,
+          "prediction_count": 3,
+          "missing_reference_ids": [],
+          "taxonomy_mismatch_count": 3,
+          "merged_prediction_ids": []
+        }
+      ]
+    },
+    {
+      "pair_id": "e1a2.pair08",
+      "source_case_id": "n008",
+      "categories": [
+        "TAXONOMY_BOUNDARY_DISAGREEMENT",
+        "PARAPHRASE_TYPE_DRIFT"
+      ],
+      "finding": "Both approach identification and comparison are recovered in both variants. Only the identification label changes from definition to implementation in the paraphrase.",
+      "independently_requested_slots_merged": [],
+      "variants": [
+        {
+          "case_id": "e1a2.b08",
+          "cases_jsonl_line": 15,
+          "semantic_complete_ignoring_type": true,
+          "matched_reference_count": 2,
+          "reference_count": 2,
+          "prediction_count": 2,
+          "missing_reference_ids": [],
+          "taxonomy_mismatch_count": 0,
+          "merged_prediction_ids": []
+        },
+        {
+          "case_id": "e1a2.p08",
+          "cases_jsonl_line": 16,
+          "semantic_complete_ignoring_type": true,
+          "matched_reference_count": 2,
+          "reference_count": 2,
+          "prediction_count": 2,
+          "missing_reference_ids": [],
+          "taxonomy_mismatch_count": 1,
+          "merged_prediction_ids": []
+        }
+      ]
+    },
+    {
+      "pair_id": "e1a2.pair09",
+      "source_case_id": "n020",
+      "categories": [
+        "SEMANTIC_GRANULARITY_MERGE",
+        "SEMANTIC_SLOT_OMISSION",
+        "TAXONOMY_BOUNDARY_DISAGREEMENT"
+      ],
+      "finding": "The leftover-hit task is separately identified, but the two explicitly requested downstream contributions share one broad point in both variants. A contribution can be omitted independently. The matched contribution also differs at workflow/mechanism.",
+      "independently_requested_slots_merged": [
+        "slot.2",
+        "slot.3"
+      ],
+      "variants": [
+        {
+          "case_id": "e1a2.b09",
+          "cases_jsonl_line": 17,
+          "semantic_complete_ignoring_type": false,
+          "matched_reference_count": 2,
+          "reference_count": 3,
+          "prediction_count": 2,
+          "missing_reference_ids": [
+            "e1a2.b09.ref3"
+          ],
+          "taxonomy_mismatch_count": 1,
+          "merged_prediction_ids": [
+            "mechanism.1"
+          ]
+        },
+        {
+          "case_id": "e1a2.p09",
+          "cases_jsonl_line": 18,
+          "semantic_complete_ignoring_type": false,
+          "matched_reference_count": 2,
+          "reference_count": 3,
+          "prediction_count": 2,
+          "missing_reference_ids": [
+            "e1a2.p09.ref3"
+          ],
+          "taxonomy_mismatch_count": 1,
+          "merged_prediction_ids": [
+            "mechanism.1"
+          ]
+        }
+      ]
+    }
+  ],
+  "diagnostic_category_summary": {
+    "SEMANTIC_GRANULARITY_MERGE": {
+      "cases": 4,
+      "pairs": 2
+    },
+    "TAXONOMY_BOUNDARY_DISAGREEMENT": {
+      "matched_points": 12,
+      "cases": 7,
+      "pairs": 4
+    },
+    "PARAPHRASE_TYPE_DRIFT": {
+      "slot_transitions": 2,
+      "pairs": 2
+    },
+    "SEMANTIC_SLOT_OMISSION": {
+      "unmatched_slots": 4,
+      "cases": 4,
+      "pairs": 2,
+      "interpretation": "All four overlap granularity merges; the broad texts mention both needs. No additional standalone unexpressed information need is established."
+    },
+    "HIDDEN_PREREQUISITE": {
+      "points": 0,
+      "cases": 0
+    },
+    "STRUCTURAL_FAILURE": {
+      "cases": 0
+    }
+  },
+  "atomicity": {
+    "split_rule": "Split explicit obligations when one can be satisfied while another is independently omitted.",
+    "non_split_rule": "Do not split a requested relation, comparison, or end-to-end data flow solely because it names multiple entities.",
+    "lexical_trigger_rules_recommended": false,
+    "hidden_stages_permitted": false
+  },
+  "retained_boundaries": [
+    "Raw question only; no retrieval/evidence/plan input.",
+    "No legacy Gold input or benchmark completeness templates.",
+    "1-5 point bound and exact non-empty question support spans.",
+    "Model cannot generate IDs; deterministic unique IDs without hashes, UUIDs or randomness.",
+    "No hidden prerequisite inference.",
+    "Shadow diagnostic role and no default QA invocation.",
+    "question_core and existing compatibility requirements remain authoritative.",
+    "Retain _answer_requirements, _requirement_evidence, _deterministic_missing_requirement_ids, required_boundary_locators and planned locator/data-flow augmentation.",
+    "No E2/E3 implementation or production activation."
+  ],
+  "future_validation": {
+    "primary_dimensions": [
+      "structural_validity",
+      "semantic_reference_point_recall",
+      "semantic_prediction_precision",
+      "under_decomposition",
+      "over_decomposition",
+      "exact_point_count",
+      "semantic_slot_paraphrase_stability",
+      "hidden_prerequisite_inference"
+    ],
+    "secondary_dimensions": [
+      "exact_facet_type_agreement",
+      "facet_taxonomy_distribution",
+      "facet_label_paraphrase_stability"
+    ],
+    "new_numeric_thresholds_set": false,
+    "revalidation_task": "E1-R2 — Prospective Semantic Answer-Point Revalidation",
+    "fresh_prospective_acceptance_cohort_required": true,
+    "e1_a2_cases_role": "EXPOSED_REGRESSION_DIAGNOSTICS_NOT_SOLE_ACCEPTANCE_COHORT",
+    "execution_authorized": false
+  },
+  "verification": {
+    "mode": "STATIC_ONLY",
+    "json_parse": "PASS",
+    "direct_case_diagnostic_check": "PASS",
+    "e1_a2_artifacts_changed": false,
+    "production_or_test_files_changed": false,
+    "pytest_executed": false,
+    "evaluation_runner_executed": false,
+    "git_diff_check": "PASS",
+    "source_datasets_reopened": false,
+    "protected_data_accessed": false
+  },
+  "cost": {
+    "analyzer_calls": 0,
+    "embedding_calls": 0,
+    "reranker_calls": 0,
+    "qa_calls": 0,
+    "decomposition_calls": 0,
+    "judge_calls": 0,
+    "total_model_calls": 0,
+    "token_usage": 0
+  },
+  "limitations": [
+    "Static interpretation reuses the original judge matches and question-only annotations; it is not a new independent semantic evaluation.",
+    "Small exposed cohort with source/language confounding and no independent human reference review.",
+    "Semantic-slot stability requires complete reference coverage in both variants; it is not pure pairwise similarity.",
+    "Four independently addressable slots remain absent as separate points despite type-independent diagnostics.",
+    "The type-independent contract is not implemented or prospectively validated by this review."
+  ],
+  "lifecycle": {
+    "e1_ar": "COMPLETE / PASS / REVISED_SEMANTIC_ANSWER_POINT_CONTRACT_ESTABLISHED",
+    "e1_a2": "COMPLETE / FAIL / G7_FACET_TYPE_ACCURACY_AND_G8_PAIR_STABILITY_FAILED",
+    "e1": "IN_PROGRESS / ARCHITECTURE_REVIEW_COMPLETE / REPAIR_REQUIRED",
+    "phase_e": "IN_PROGRESS / E1",
+    "d4": "PAUSED / ROADMAP_RECONCILIATION",
+    "d4_overall_completion": "UNDECIDED",
+    "f1": "COMPLETE / PASS / RESIDUAL_BENCHMARK_DEPENDENCY_INVENTORY_ESTABLISHED",
+    "phase_f": "IN_PROGRESS / F1_COMPLETE",
+    "e2": "NOT_STARTED",
+    "e3": "NOT_STARTED"
+  },
+  "next_task_recommendation": "E1-R1 — Semantic Answer-Point Contract Repair",
+  "next_task_execution_authorized": false
+}
