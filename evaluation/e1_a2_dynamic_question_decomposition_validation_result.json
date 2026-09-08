@@ -1,0 +1,510 @@
+{
+  "checkpoint": "E1-A2",
+  "stage": "targeted_dynamic_question_decomposition_validation",
+  "starting_head": "709321657016762ee11ee38d21d53c30ffa7b951",
+  "preregistration_commit": "77ea6bc27beb1657673e57be763b05419c98bc05",
+  "implementation_identity": {
+    "implementation_commit": "709321657016762ee11ee38d21d53c30ffa7b951",
+    "prompt_version": "1.0.0",
+    "schema_version": "e1.question_decomposition.v1"
+  },
+  "provider_identity": {
+    "generation_model": "gemini-3.8-flash",
+    "evaluation_judge_model": "gemini-3.8-flash",
+    "location": "global",
+    "temperature": 0,
+    "maximum_decomposition_logical_calls": 24,
+    "maximum_judge_logical_calls": 24,
+    "maximum_total_logical_calls": 48
+  },
+  "status": "COMPLETE",
+  "verdict": "FAIL",
+  "outcome": "PRODUCT_QUALITY_GATES_FAILED",
+  "cohort": {
+    "base_cases": 12,
+    "paraphrase_cases": 12,
+    "total_cases": 24,
+    "pairs": 12,
+    "base_source_distribution": {
+      "benchmark_dev": 6,
+      "novel_dev": 6
+    },
+    "base_language_distribution": {
+      "zh": 6,
+      "en": 6
+    },
+    "base_reference_count_distribution": {
+      "1": 4,
+      "2": 6,
+      "3": 2
+    },
+    "base_facet_distribution": {
+      "implementation": 2,
+      "comparison": 3,
+      "cause_reason": 2,
+      "locator": 5,
+      "constraint": 1,
+      "api_behavior": 2,
+      "definition": 2,
+      "workflow": 2,
+      "data_flow": 2,
+      "mechanism": 1
+    },
+    "total_reference_points": 44
+  },
+  "execution_error": null,
+  "recorded_cases": 24,
+  "scoreable_cases": 24,
+  "primary_metrics": {
+    "cases": 24,
+    "valid_cases": 24,
+    "valid_rate": 1.0,
+    "matched_points": 40,
+    "reference_points": 44,
+    "predicted_points": 40,
+    "micro_reference_recall": 0.9090909090909091,
+    "micro_prediction_precision": 1.0,
+    "under_decomposed_cases": 4,
+    "under_decomposition_rate": 0.16666666666666666,
+    "over_decomposed_cases": 0,
+    "over_decomposition_rate": 0.0,
+    "exact_count_cases": 20,
+    "exact_count_accuracy": 0.8333333333333334,
+    "matched_facet_correct": 28,
+    "matched_facet_accuracy": 0.7,
+    "stable_pairs": 7,
+    "stable_pair_rate": 0.5833333333333334,
+    "successful_cases": 15,
+    "hidden_prerequisite_predictions": 0,
+    "hidden_prerequisite_affected_cases": 0
+  },
+  "gates": {
+    "G1": {
+      "metric": "valid_cases",
+      "observed": 24,
+      "operator": ">=",
+      "threshold": 23,
+      "passed": true
+    },
+    "G2": {
+      "metric": "micro_reference_recall",
+      "observed": 0.9090909090909091,
+      "operator": ">=",
+      "threshold": 0.9,
+      "passed": true
+    },
+    "G3": {
+      "metric": "micro_prediction_precision",
+      "observed": 1.0,
+      "operator": ">=",
+      "threshold": 0.9,
+      "passed": true
+    },
+    "G4": {
+      "metric": "under_decomposed_cases",
+      "observed": 4,
+      "operator": "<=",
+      "threshold": 4,
+      "passed": true
+    },
+    "G5": {
+      "metric": "over_decomposed_cases",
+      "observed": 0,
+      "operator": "<=",
+      "threshold": 4,
+      "passed": true
+    },
+    "G6": {
+      "metric": "exact_count_cases",
+      "observed": 20,
+      "operator": ">=",
+      "threshold": 20,
+      "passed": true
+    },
+    "G7": {
+      "metric": "matched_facet_accuracy",
+      "observed": 0.7,
+      "operator": ">=",
+      "threshold": 0.9,
+      "passed": false
+    },
+    "G8": {
+      "metric": "stable_pairs",
+      "observed": 7,
+      "operator": ">=",
+      "threshold": 10,
+      "passed": false
+    },
+    "G9": {
+      "metric": "hidden_prerequisite_predictions",
+      "observed": 0,
+      "operator": "==",
+      "threshold": 0,
+      "passed": true
+    }
+  },
+  "secondary_diagnostics": {
+    "variant": {
+      "base": {
+        "cases": 12,
+        "valid_cases": 12,
+        "valid_rate": 1.0,
+        "matched_points": 20,
+        "reference_points": 22,
+        "predicted_points": 20,
+        "micro_reference_recall": 0.9090909090909091,
+        "micro_prediction_precision": 1.0,
+        "under_decomposed_cases": 2,
+        "under_decomposition_rate": 0.16666666666666666,
+        "over_decomposed_cases": 0,
+        "over_decomposition_rate": 0.0,
+        "exact_count_cases": 10,
+        "exact_count_accuracy": 0.8333333333333334,
+        "matched_facet_correct": 15,
+        "matched_facet_accuracy": 0.75,
+        "stable_pairs": 0,
+        "stable_pair_rate": 0.0,
+        "successful_cases": 8,
+        "hidden_prerequisite_predictions": 0,
+        "hidden_prerequisite_affected_cases": 0
+      },
+      "paraphrase": {
+        "cases": 12,
+        "valid_cases": 12,
+        "valid_rate": 1.0,
+        "matched_points": 20,
+        "reference_points": 22,
+        "predicted_points": 20,
+        "micro_reference_recall": 0.9090909090909091,
+        "micro_prediction_precision": 1.0,
+        "under_decomposed_cases": 2,
+        "under_decomposition_rate": 0.16666666666666666,
+        "over_decomposed_cases": 0,
+        "over_decomposition_rate": 0.0,
+        "exact_count_cases": 10,
+        "exact_count_accuracy": 0.8333333333333334,
+        "matched_facet_correct": 13,
+        "matched_facet_accuracy": 0.65,
+        "stable_pairs": 0,
+        "stable_pair_rate": 0.0,
+        "successful_cases": 7,
+        "hidden_prerequisite_predictions": 0,
+        "hidden_prerequisite_affected_cases": 0
+      }
+    },
+    "language": {
+      "zh": {
+        "cases": 12,
+        "valid_cases": 12,
+        "valid_rate": 1.0,
+        "matched_points": 14,
+        "reference_points": 16,
+        "predicted_points": 14,
+        "micro_reference_recall": 0.875,
+        "micro_prediction_precision": 1.0,
+        "under_decomposed_cases": 2,
+        "under_decomposition_rate": 0.16666666666666666,
+        "over_decomposed_cases": 0,
+        "over_decomposition_rate": 0.0,
+        "exact_count_cases": 10,
+        "exact_count_accuracy": 0.8333333333333334,
+        "matched_facet_correct": 10,
+        "matched_facet_accuracy": 0.7142857142857143,
+        "stable_pairs": 4,
+        "stable_pair_rate": 0.6666666666666666,
+        "successful_cases": 8,
+        "hidden_prerequisite_predictions": 0,
+        "hidden_prerequisite_affected_cases": 0
+      },
+      "en": {
+        "cases": 12,
+        "valid_cases": 12,
+        "valid_rate": 1.0,
+        "matched_points": 26,
+        "reference_points": 28,
+        "predicted_points": 26,
+        "micro_reference_recall": 0.9285714285714286,
+        "micro_prediction_precision": 1.0,
+        "under_decomposed_cases": 2,
+        "under_decomposition_rate": 0.16666666666666666,
+        "over_decomposed_cases": 0,
+        "over_decomposition_rate": 0.0,
+        "exact_count_cases": 10,
+        "exact_count_accuracy": 0.8333333333333334,
+        "matched_facet_correct": 18,
+        "matched_facet_accuracy": 0.6923076923076923,
+        "stable_pairs": 3,
+        "stable_pair_rate": 0.5,
+        "successful_cases": 7,
+        "hidden_prerequisite_predictions": 0,
+        "hidden_prerequisite_affected_cases": 0
+      }
+    },
+    "source_group": {
+      "benchmark_dev": {
+        "cases": 12,
+        "valid_cases": 12,
+        "valid_rate": 1.0,
+        "matched_points": 14,
+        "reference_points": 16,
+        "predicted_points": 14,
+        "micro_reference_recall": 0.875,
+        "micro_prediction_precision": 1.0,
+        "under_decomposed_cases": 2,
+        "under_decomposition_rate": 0.16666666666666666,
+        "over_decomposed_cases": 0,
+        "over_decomposition_rate": 0.0,
+        "exact_count_cases": 10,
+        "exact_count_accuracy": 0.8333333333333334,
+        "matched_facet_correct": 10,
+        "matched_facet_accuracy": 0.7142857142857143,
+        "stable_pairs": 4,
+        "stable_pair_rate": 0.6666666666666666,
+        "successful_cases": 8,
+        "hidden_prerequisite_predictions": 0,
+        "hidden_prerequisite_affected_cases": 0
+      },
+      "novel_dev": {
+        "cases": 12,
+        "valid_cases": 12,
+        "valid_rate": 1.0,
+        "matched_points": 26,
+        "reference_points": 28,
+        "predicted_points": 26,
+        "micro_reference_recall": 0.9285714285714286,
+        "micro_prediction_precision": 1.0,
+        "under_decomposed_cases": 2,
+        "under_decomposition_rate": 0.16666666666666666,
+        "over_decomposed_cases": 0,
+        "over_decomposition_rate": 0.0,
+        "exact_count_cases": 10,
+        "exact_count_accuracy": 0.8333333333333334,
+        "matched_facet_correct": 18,
+        "matched_facet_accuracy": 0.6923076923076923,
+        "stable_pairs": 3,
+        "stable_pair_rate": 0.5,
+        "successful_cases": 7,
+        "hidden_prerequisite_predictions": 0,
+        "hidden_prerequisite_affected_cases": 0
+      }
+    },
+    "reference_count": {
+      "1": {
+        "cases": 8,
+        "valid_cases": 8,
+        "valid_rate": 1.0,
+        "matched_points": 8,
+        "reference_points": 8,
+        "predicted_points": 8,
+        "micro_reference_recall": 1.0,
+        "micro_prediction_precision": 1.0,
+        "under_decomposed_cases": 0,
+        "under_decomposition_rate": 0.0,
+        "over_decomposed_cases": 0,
+        "over_decomposition_rate": 0.0,
+        "exact_count_cases": 8,
+        "exact_count_accuracy": 1.0,
+        "matched_facet_correct": 8,
+        "matched_facet_accuracy": 1.0,
+        "stable_pairs": 4,
+        "stable_pair_rate": 1.0,
+        "successful_cases": 8,
+        "hidden_prerequisite_predictions": 0,
+        "hidden_prerequisite_affected_cases": 0
+      },
+      "2": {
+        "cases": 12,
+        "valid_cases": 12,
+        "valid_rate": 1.0,
+        "matched_points": 22,
+        "reference_points": 24,
+        "predicted_points": 22,
+        "micro_reference_recall": 0.9166666666666666,
+        "micro_prediction_precision": 1.0,
+        "under_decomposed_cases": 2,
+        "under_decomposition_rate": 0.16666666666666666,
+        "over_decomposed_cases": 0,
+        "over_decomposition_rate": 0.0,
+        "exact_count_cases": 10,
+        "exact_count_accuracy": 0.8333333333333334,
+        "matched_facet_correct": 17,
+        "matched_facet_accuracy": 0.7727272727272727,
+        "stable_pairs": 3,
+        "stable_pair_rate": 0.5,
+        "successful_cases": 7,
+        "hidden_prerequisite_predictions": 0,
+        "hidden_prerequisite_affected_cases": 0
+      },
+      "3": {
+        "cases": 4,
+        "valid_cases": 4,
+        "valid_rate": 1.0,
+        "matched_points": 10,
+        "reference_points": 12,
+        "predicted_points": 10,
+        "micro_reference_recall": 0.8333333333333334,
+        "micro_prediction_precision": 1.0,
+        "under_decomposed_cases": 2,
+        "under_decomposition_rate": 0.5,
+        "over_decomposed_cases": 0,
+        "over_decomposition_rate": 0.0,
+        "exact_count_cases": 2,
+        "exact_count_accuracy": 0.5,
+        "matched_facet_correct": 3,
+        "matched_facet_accuracy": 0.3,
+        "stable_pairs": 0,
+        "stable_pair_rate": 0.0,
+        "successful_cases": 0,
+        "hidden_prerequisite_predictions": 0,
+        "hidden_prerequisite_affected_cases": 0
+      }
+    },
+    "ambiguity_rate": 0.0,
+    "facet_type": {
+      "api_behavior": {
+        "reference_points": 4,
+        "matched_references": 4,
+        "predicted_points": 1,
+        "recall": 1.0,
+        "precision": 1.0,
+        "matched_facet_accuracy": 0.25
+      },
+      "cause_reason": {
+        "reference_points": 4,
+        "matched_references": 4,
+        "predicted_points": 4,
+        "recall": 1.0,
+        "precision": 1.0,
+        "matched_facet_accuracy": 1.0
+      },
+      "comparison": {
+        "reference_points": 6,
+        "matched_references": 6,
+        "predicted_points": 6,
+        "recall": 1.0,
+        "precision": 1.0,
+        "matched_facet_accuracy": 1.0
+      },
+      "constraint": {
+        "reference_points": 2,
+        "matched_references": 2,
+        "predicted_points": 0,
+        "recall": 1.0,
+        "precision": 0.0,
+        "matched_facet_accuracy": 0.0
+      },
+      "data_flow": {
+        "reference_points": 4,
+        "matched_references": 4,
+        "predicted_points": 8,
+        "recall": 1.0,
+        "precision": 1.0,
+        "matched_facet_accuracy": 1.0
+      },
+      "definition": {
+        "reference_points": 4,
+        "matched_references": 4,
+        "predicted_points": 3,
+        "recall": 1.0,
+        "precision": 1.0,
+        "matched_facet_accuracy": 0.75
+      },
+      "implementation": {
+        "reference_points": 4,
+        "matched_references": 4,
+        "predicted_points": 9,
+        "recall": 1.0,
+        "precision": 1.0,
+        "matched_facet_accuracy": 1.0
+      },
+      "locator": {
+        "reference_points": 10,
+        "matched_references": 8,
+        "predicted_points": 4,
+        "recall": 0.8,
+        "precision": 1.0,
+        "matched_facet_accuracy": 0.5
+      },
+      "mechanism": {
+        "reference_points": 2,
+        "matched_references": 2,
+        "predicted_points": 5,
+        "recall": 1.0,
+        "precision": 1.0,
+        "matched_facet_accuracy": 1.0
+      },
+      "workflow": {
+        "reference_points": 4,
+        "matched_references": 2,
+        "predicted_points": 0,
+        "recall": 0.5,
+        "precision": 0.0,
+        "matched_facet_accuracy": 0.0
+      }
+    },
+    "benchmark_minus_novel_diagnostic_gap": {
+      "micro_reference_recall": -0.0535714285714286,
+      "micro_prediction_precision": 0.0,
+      "valid_rate": 0.0
+    }
+  },
+  "structural_failure_counts": {
+    "SCHEMA_VALIDATION": 0,
+    "INVALID_SUPPORT_SPAN": 0,
+    "DUPLICATE_POINT": 0,
+    "POINT_COUNT": 0,
+    "OTHER_VALIDATION": 0,
+    "PROVIDER_INFRASTRUCTURE": 0
+  },
+  "evaluation_infrastructure_failures": 0,
+  "hidden_prerequisite_findings": [],
+  "logical_calls": {
+    "decomposition": 24,
+    "judge": 24,
+    "analyzer": 0,
+    "embedding": 0,
+    "reranker": 0,
+    "qa_answer": 0,
+    "qa_review": 0,
+    "qa_revision": 0,
+    "retrieval": 0,
+    "total_model_calls": 48
+  },
+  "provider_usage_by_role": {
+    "decomposition": {
+      "model_calls": 24,
+      "generation_calls": 24,
+      "embedding_calls": 0,
+      "token_usage": 31820
+    },
+    "judge": {
+      "model_calls": 24,
+      "generation_calls": 24,
+      "embedding_calls": 0,
+      "token_usage": 31798
+    }
+  },
+  "actual_request_counters": {
+    "model_calls": 48,
+    "generation_calls": 48,
+    "embedding_calls": 0,
+    "token_usage": 63618
+  },
+  "protected_data_accounting": {
+    "novel_validation_accessed": false,
+    "novel_holdout_accessed": false,
+    "protected_split_accessed": false,
+    "legacy_gold_ground_truth_used": false
+  },
+  "production_activation": false,
+  "next_task_recommendation": "E1 ARCHITECTURE REVIEW",
+  "next_task_execution_authorized": false,
+  "limitations": [
+    "Small purposive exposed-development cohort, not a release generalization estimate.",
+    "Source group and language are fully confounded.",
+    "Agent-authored question-only references and paraphrases; no independent human reference review.",
+    "One semantic judge per valid output; same configured model family in separate roles.",
+    "Chinese cases are explicitly authorized diagnostics, not multilingual product activation.",
+    "No retrieval, answer quality, E2 coverage, or E3 recovery measured."
+  ]
+}

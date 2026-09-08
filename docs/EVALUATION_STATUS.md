@@ -17,8 +17,13 @@ The single `Current authoritative state` section is authoritative over historica
 
 ## Current authoritative state
 
-Repository head (E1-A1 accepted starting baseline):
-80b5aa29ac81cc294c2d72e8fe3234d218da3ed0
+Repository head (E1-A2 starting baseline):
+709321657016762ee11ee38d21d53c30ffa7b951
+
+Latest completed decomposition validation:
+E1-A2
+COMPLETE / FAIL / G7_FACET_TYPE_ACCURACY_AND_G8_PAIR_STABILITY_FAILED
+Preregistration commit: 77ea6bc27beb1657673e57be763b05419c98bc05
 
 Latest completed diagnostic implementation:
 E1-A1
@@ -42,18 +47,30 @@ MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD
 Current planning state:
 D4 = PAUSED / ROADMAP_RECONCILIATION
 D4 overall completion = UNDECIDED
-NEXT_TASK_RECOMMENDATION = E1-A2 — Targeted Dynamic Question Decomposition Validation / NOT AUTHORIZED
+NEXT_TASK_RECOMMENDATION = E1 ARCHITECTURE REVIEW / NOT AUTHORIZED
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 
 No D4-A11 exists.
 Phase E = IN_PROGRESS / E1.
-E1 = IN_PROGRESS / DIAGNOSTIC_IMPLEMENTATION_COMPLETE / VALIDATION_PENDING.
+E1 = IN_PROGRESS / VALIDATION_FAILED.
 Phase F = IN_PROGRESS / F1_COMPLETE.
 F2 = NOT_STARTED / SCOPE_PRESERVED.
 F3 = SCOPE_RECONCILIATION_REQUIRED / PARTIALLY_SUPERSEDED_BY_D4.
-No further D4, Phase-E, or Phase-F task is authorized after E1-A1.
+No further D4, Phase-E, or Phase-F task is authorized after E1-A2.
 
-## E1-A1 diagnostic implementation closeout
+## E1-A2 targeted validation closeout
+
+All 24 preregistered cases (12 bases and 12 controlled paraphrases) completed and were scoreable. Valid decomposition 24/24; question-only reference recall 40/44 (90.91%); prediction precision 40/40 (100%); under-decomposed 4/24; over-decomposed 0/24; exact count 20/24; hidden prerequisites 0. G7 failed at 28/40 (70%) matched facet-type accuracy against >=90%; G8 failed at 7/12 strict reference-conformant pairs against >=10/12. All other gates passed. No structural/provider/judge-infrastructure failures occurred.
+
+The frozen verdict is FAIL. Type disagreement and merged independently requested needs warrant architecture review; five non-conforming pairs must not all be described as semantic paraphrase drift. Sources and languages are fully confounded in this small exposed-development cohort. References were question-only, not legacy Gold answer rubrics. No protected question content was accessed.
+
+Execution used 24 decomposition and 24 semantic-judge logical calls, 48 actual generation requests, 63,618 tokens. Analyzer, embedding, reranker, retrieval and QA answer/review/revision calls were zero. Frozen-run verification and an independent offline count/gate/usage audit reproduced the results; no provider rerun or mid-run repair occurred.
+
+The E1-A1 implementation remains shadow diagnostic, with normal QA, `question_core`, compatibility requirements and production source/configuration unchanged. No E2/E3 or production activation occurred. E1 ARCHITECTURE REVIEW is recommended, not authorized.
+
+Artifacts: `evaluation/e1_a2_dynamic_question_decomposition_validation_manifest.json`, `evaluation/E1_A2_DYNAMIC_QUESTION_DECOMPOSITION_VALIDATION_PREREGISTRATION.md`, `evaluation/e1_a2_dynamic_question_decomposition_validation_cases.jsonl`, `evaluation/e1_a2_dynamic_question_decomposition_validation_result.json`, `evaluation/E1_A2_DYNAMIC_QUESTION_DECOMPOSITION_VALIDATION.md`.
+
+## Historical checkpoint — E1-A1 diagnostic implementation closeout
 
 The explicit `QAAgent.decompose_question` seam accepts only the raw question and returns 1–5 validated shadow diagnostic facets. Exact question support spans, normalized-text duplicate rejection, question-order normalization, and code-assigned facet ordinals are implemented. Ambiguity remains diagnostic only.
 

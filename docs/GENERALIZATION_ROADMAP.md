@@ -25,7 +25,7 @@ The roadmap is governed by the following core development principles:
 ## Current planning state
 
 Repository planning baseline:
-80b5aa29ac81cc294c2d72e8fe3234d218da3ed0 (E1-A1 starting HEAD)
+709321657016762ee11ee38d21d53c30ffa7b951 (E1-A2 starting HEAD)
 
 Latest accepted production action:
 D4-A10
@@ -48,10 +48,13 @@ Phase E:
 IN_PROGRESS / E1
 
 E1:
-IN_PROGRESS / DIAGNOSTIC_IMPLEMENTATION_COMPLETE / VALIDATION_PENDING
+IN_PROGRESS / VALIDATION_FAILED
 
 E1-A1:
 COMPLETE / PASS / QUESTION_ONLY_DIAGNOSTIC_DECOMPOSITION_IMPLEMENTED
+
+E1-A2:
+COMPLETE / FAIL / G7_FACET_TYPE_ACCURACY_AND_G8_PAIR_STABILITY_FAILED
 
 Phase F:
 IN_PROGRESS / F1_COMPLETE
@@ -63,11 +66,11 @@ D4 overall completion:
 UNDECIDED
 
 Next task recommendation:
-E1-A2 — Targeted Dynamic Question Decomposition Validation / NOT AUTHORIZED
+E1 ARCHITECTURE REVIEW / NOT AUTHORIZED
 
 No D4-A11 exists.
 No further D4 task is currently authorized.
-No further Phase-E task is currently authorized after E1-A1.
+No further Phase-E task is currently authorized after E1-A2.
 No further Phase-F task is currently authorized.
 
 ## Phase overview
@@ -412,10 +415,12 @@ Phase E addresses answer synthesis, facet coverage, claim-to-evidence grounding,
 
 ### E1 — Dynamic question decomposition
 
-- **Status:** IN_PROGRESS / DIAGNOSTIC_IMPLEMENTATION_COMPLETE / VALIDATION_PENDING
-- **E1-A1 outcome:** COMPLETE / PASS / QUESTION_ONLY_DIAGNOSTIC_DECOMPOSITION_IMPLEMENTED. Question-only 1–5 facet contract and explicit shadow diagnostic seam implemented; normal QA does not invoke it. Existing `question_core` remains authoritative and compatibility requirements remain active. Focused fake-based T0 checks passed; semantic validation and all quality metrics below remain pending. E1-A1 PASS is not E1 PASS.
+- **Status:** IN_PROGRESS / VALIDATION_FAILED
+- **E1-A1 outcome:** COMPLETE / PASS / QUESTION_ONLY_DIAGNOSTIC_DECOMPOSITION_IMPLEMENTED. Question-only 1–5 facet contract and explicit shadow diagnostic seam implemented; normal QA does not invoke it. Existing `question_core` remains authoritative and compatibility requirements remain active. Focused fake-based T0 checks passed. E1-A1 PASS is not E1 PASS.
+- **E1-A2 outcome:** COMPLETE / FAIL / G7_FACET_TYPE_ACCURACY_AND_G8_PAIR_STABILITY_FAILED. Frozen 24-case T2 cohort fully scored: valid 24/24, question-only reference recall 40/44, precision 40/40, under 4/24, over 0/24, exact count 20/24, hidden prerequisites 0. G7 type accuracy 28/40 (70%) and G8 strict reference-conformant pairs 7/12 failed; all other gates passed. Production and preregistration contracts remained unchanged. Small exposed-development results are not release generalization estimates; source and language are confounded.
+- **E1-A2 evidence:** `evaluation/e1_a2_dynamic_question_decomposition_validation_result.json`, `evaluation/E1_A2_DYNAMIC_QUESTION_DECOMPOSITION_VALIDATION.md`; preregistration commit `77ea6bc27beb1657673e57be763b05419c98bc05`.
 - **Evidence:** `evaluation/e1_a1_dynamic_question_decomposition_contract.json`, `evaluation/E1_A1_DYNAMIC_QUESTION_DECOMPOSITION_CONTRACT.md`.
-- **Next task recommendation:** E1-A2 — Targeted Dynamic Question Decomposition Validation; execution not authorized.
+- **Next task recommendation:** E1 ARCHITECTURE REVIEW of generic taxonomy boundaries and point granularity; execution not authorized.
 - **Problem:** A single `question_core` plus domain-specific requirements can be complete on known questions but miss unseen multi-part structure.
 - **Goal:** Derive approximately 1–5 evidence-independent answer points from the question itself.
 - **Why this stage:** Retrieval generalization and structured knowledge must be established before asking decomposition to drive completeness.
@@ -423,8 +428,8 @@ Phase E addresses answer synthesis, facet coverage, claim-to-evidence grounding,
 - **Functional requirements:** Question-only input, stable IDs, limited count, paraphrase stability, over-decomposition checks, and trace/audit output.
 - **Explicit out of scope:** Deriving points from retrieved evidence, removing existing requirements, targeted retrieval, or benchmark templates.
 - **Dependencies:** Phases C/D and curated answer-point annotations.
-- **Remaining planned evaluation scope (not authorized):** Targeted T2 multi-part/paraphrase validation; E1-A1 completed only deterministic T0 contract checks.
-- **Primary metrics:** Gold answer-point recall, over-decomposition rate, paraphrase stability, and benchmark-versus-novel gap.
+- **Evaluation scope:** E1-A1 T0 and E1-A2 targeted T2 completed. Any repair or further validation requires separate authorization.
+- **Primary metrics:** E1-specific frozen question-only reference-facet recall (prospectively replacing legacy Gold answer-rubric recall in E1-A2), over-decomposition rate, strict reference-conformant paraphrase stability, and diagnostic benchmark-versus-novel gap. Legacy answer facts are not E1 ground truth.
 - **Acceptance criteria:** Decomposition captures required question facets generically without mirroring whatever evidence was found.
 - **Failure handling:** Reduce/merge unstable points or mark ambiguity; retain old requirements during diagnosis. Stop after E1.
 
@@ -544,10 +549,10 @@ At release, Generalization Gap means benchmark score minus novel score. Benchmar
 2. **Remaining D4 candidate disposition:** Does the remaining unassessed D4 inventory contain another naturally testable, high-value migration batch, or should residual entries remain on HOLD?
 3. **Phase-F scope boundary:** F1 has established the bounded non-D4 residual inventory and candidate owners. Which candidates warrant a separately authorized treatment remains undecided.
 4. **Bottleneck prioritization:** Is answer completeness and decomposition (Phase E) now a larger production bottleneck than residual retrieval shortcut dependency?
-5. **Phase execution ordering:** The authorized F1 inventory preceded Phase E and found zero substantiated E1 blockers. E1-A1 diagnostic implementation is complete; E1-A2 validation is recommended next and is not authorized.
+5. **Phase execution ordering:** The authorized F1 inventory preceded Phase E and found zero substantiated E1 blockers. E1-A2 completed with failed taxonomy and pair-stability gates; E1 ARCHITECTURE REVIEW is recommended next and is not authorized.
 
 ```text
-NEXT_TASK_RECOMMENDATION = E1-A2 — Targeted Dynamic Question Decomposition Validation
+NEXT_TASK_RECOMMENDATION = E1 ARCHITECTURE REVIEW
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 NEXT_STAGE_AUTHORIZED = false
 ```
