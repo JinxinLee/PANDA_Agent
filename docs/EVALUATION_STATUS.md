@@ -17,6 +17,15 @@ The single `Current authoritative state` section is authoritative over historica
 
 ## Current authoritative state
 
+E1-CLOSURE-REVIEW = COMPLETE / PASS / REAL_PANDA_STYLE_CONFIRMATION_REQUIRED_BEFORE_CLOSURE.
+Current authorized task: E1-C1 = IN_PROGRESS / PREREGISTERED / EXECUTION_PENDING.
+C1 uses exactly the six English novel_dev pairs07-12 from historical E1-A2 Git
+manifest, with strict no-regression gates. If C1 passes, E1 closes directly;
+otherwise it remains open. No E2 execution is authorized.
+Decision: `evaluation/E1_CLOSURE_SCOPE_REVIEW.md`.
+Protocol: `evaluation/E1_C1_REAL_STYLE_CONFIRMATION_PREREGISTRATION.md`.
+
+
 Repository head (E1-R2 execution starting baseline):
 4cd0305c53541bcba75c00fbf935d87c63ba3069
 
@@ -61,8 +70,8 @@ MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD
 Current planning state:
 D4 = PAUSED / ROADMAP_RECONCILIATION
 D4 overall completion = UNDECIDED
-CURRENT_TASK = E1-R2 / COMPLETE / PASS
-NEXT_TASK_RECOMMENDATION = E1 CLOSURE / SCOPE REVIEW / NOT AUTHORIZED
+CURRENT_TASK = E1-C1 / AUTHORIZED / EXECUTION_PENDING
+NEXT_TASK_RECOMMENDATION = E1-C1 outcome-dependent next task / NOT AUTHORIZED
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 
 No D4-A11 exists.
@@ -75,7 +84,7 @@ F2 = NOT_STARTED / SCOPE_PRESERVED.
 F3 = SCOPE_RECONCILIATION_REQUIRED / PARTIALLY_SUPERSEDED_BY_D4.
 No further D4, Phase-E, or Phase-F task is authorized after E1-R2.
 
-## E1-R2 scientific closeout
+## Historical checkpoint — E1-R2 scientific closeout
 
 The approved amended cohort passed all eight frozen primary gates: 24/24 valid,
 54/54 semantic reference recall, 54/54 prediction precision, 0 under/over-decomposed

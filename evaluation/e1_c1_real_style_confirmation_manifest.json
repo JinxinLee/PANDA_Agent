@@ -1,0 +1,72 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint": "E1-C1",
+  "status": "PREREGISTERED_EXECUTION_PENDING",
+  "starting_head": "781007c810b113537025dbe93c28728a59e318bc",
+  "source_manifest_commit": "77ea6bc27beb1657673e57be763b05419c98bc05",
+  "source_manifest_path": "evaluation/e1_a2_dynamic_question_decomposition_validation_manifest.json",
+  "selected_pair_ids": [
+    "e1a2.pair07",
+    "e1a2.pair08",
+    "e1a2.pair09",
+    "e1a2.pair10",
+    "e1a2.pair11",
+    "e1a2.pair12"
+  ],
+  "expected_source_case_ids": [
+    "n001",
+    "n008",
+    "n020",
+    "n022",
+    "n030",
+    "n031"
+  ],
+  "expected_counts": {
+    "cases": 12,
+    "pairs": 6,
+    "references": 28,
+    "base": 6,
+    "paraphrase": 6,
+    "base_strata": {
+      "2": 4,
+      "3": 2
+    }
+  },
+  "implementation_commit": "87cc34dd919d8431bb774003a7f76a9fff3a7567",
+  "prompt_version": "2.0.0",
+  "decomposition_schema_version": "e1.question_decomposition.v2",
+  "models": {
+    "generation_model": "gemini-3.8-flash",
+    "judge_model": "gemini-3.8-flash",
+    "location": "global",
+    "timeout_ms": 120000
+  },
+  "runtime": {
+    "python": "3.13.14",
+    "pydantic": "2.13.4",
+    "google-genai": "2.13.0"
+  },
+  "gates": {
+    "valid_cases": 12,
+    "micro_reference_recall": 1.0,
+    "micro_prediction_precision": 1.0,
+    "under_decomposed_cases": 0,
+    "over_decomposed_cases": 0,
+    "exact_count_cases": 12,
+    "stable_pairs": 6,
+    "hidden_prerequisite_predictions": 0
+  },
+  "sentinel": {
+    "pair_id": "e1a2.pair09",
+    "source_case_id": "n020",
+    "required_predictions_per_variant": 3,
+    "required_matches_per_variant": 3,
+    "no_extras": true
+  },
+  "budget": {
+    "decomposition_logical_calls": 12,
+    "judge_logical_calls_max": 12,
+    "total_logical_calls_max": 24
+  },
+  "scope": "Exposed real PANDA-style regression/closure confirmation; not fresh, representative, protected or release evidence. User-authorized exact historical selector; no annotation changes or additional human review needed."
+}

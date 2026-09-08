@@ -24,6 +24,15 @@ The roadmap is governed by the following core development principles:
 
 ## Current planning state
 
+E1-CLOSURE-REVIEW = COMPLETE / PASS / REAL_PANDA_STYLE_CONFIRMATION_REQUIRED_BEFORE_CLOSURE.
+Current authorized task: E1-C1 = IN_PROGRESS / PREREGISTERED / EXECUTION_PENDING.
+C1 uses exactly the six English novel_dev pairs07-12 from historical E1-A2 Git
+manifest, with strict no-regression gates. If C1 passes, E1 closes directly;
+otherwise it remains open. No E2 execution is authorized.
+Decision: `evaluation/E1_CLOSURE_SCOPE_REVIEW.md`.
+Protocol: `evaluation/E1_C1_REAL_STYLE_CONFIRMATION_PREREGISTRATION.md`.
+
+
 Repository planning baseline:
 4cd0305c53541bcba75c00fbf935d87c63ba3069 (E1-R2 execution starting HEAD)
 
@@ -75,7 +84,7 @@ D4 overall completion:
 UNDECIDED
 
 Next task recommendation:
-E1 CLOSURE / SCOPE REVIEW / NOT AUTHORIZED
+E1-C1 outcome-dependent next task / NOT AUTHORIZED
 
 Current task authorization:
 E1-R2 completed within authorization; no subsequent task is authorized.
@@ -570,8 +579,8 @@ At release, Generalization Gap means benchmark score minus novel score. Benchmar
 5. **Phase execution ordering:** F1 found zero substantiated E1 blockers. E1-A2 remains failed; E1-R1 implemented the revised semantic contract and E1-R2 passed targeted prospective synthetic exploratory validation. E1 CLOSURE / SCOPE REVIEW is recommended to decide whether this suffices or a small real PANDA-style exposed-development confirmation is warranted. That review and E2/E3 are not authorized.
 
 ```text
-CURRENT_TASK = E1-R2 / COMPLETE / PASS
-NEXT_TASK_RECOMMENDATION = E1 CLOSURE / SCOPE REVIEW
+CURRENT_TASK = E1-C1 / AUTHORIZED / EXECUTION_PENDING
+NEXT_TASK_RECOMMENDATION = E1-C1 outcome-dependent next task
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 NEXT_STAGE_AUTHORIZED = false
 ```
