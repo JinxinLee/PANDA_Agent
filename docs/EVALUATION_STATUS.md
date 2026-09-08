@@ -17,8 +17,12 @@ The single `Current authoritative state` section is authoritative over historica
 
 ## Current authoritative state
 
-Repository head (E1-AR starting baseline):
-33173907ecf3d5313868a50c8549721564f5c16f
+Repository head (E1-R1 working-tree starting baseline):
+6bb43ec8b76069639c00ca4ff697056fbfd49d15
+
+Latest completed shadow repair:
+E1-R1
+COMPLETE / PASS / SHADOW_SEMANTIC_ANSWER_POINT_CONTRACT_REPAIRED
 
 Latest completed architecture review:
 E1-AR
@@ -51,18 +55,28 @@ MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD
 Current planning state:
 D4 = PAUSED / ROADMAP_RECONCILIATION
 D4 overall completion = UNDECIDED
-NEXT_TASK_RECOMMENDATION = E1-R1 — Semantic Answer-Point Contract Repair / NOT AUTHORIZED
+NEXT_TASK_RECOMMENDATION = E1-R2 — Prospective Semantic Answer-Point Revalidation / NOT AUTHORIZED
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 
 No D4-A11 exists.
 Phase E = IN_PROGRESS / E1.
-E1 = IN_PROGRESS / ARCHITECTURE_REVIEW_COMPLETE / REPAIR_REQUIRED.
+E1 = IN_PROGRESS / REPAIR_IMPLEMENTED / REVALIDATION_PENDING.
 Phase F = IN_PROGRESS / F1_COMPLETE.
 F2 = NOT_STARTED / SCOPE_PRESERVED.
 F3 = SCOPE_RECONCILIATION_REQUIRED / PARTIALLY_SUPERSEDED_BY_D4.
-No further D4, Phase-E, or Phase-F task is authorized after E1-AR.
+No further D4, Phase-E, or Phase-F task is authorized after E1-R1.
 
-## E1-AR architecture review closeout
+## E1-R1 shadow repair closeout
+
+Decomposition prompt 2.0.0 / schema e1.question_decomposition.v2 implements the semantic-obligation contract in the explicit shadow seam. Points use type-independent question-order IDs (`point.N`). Optional facet metadata cannot affect validity of otherwise valid semantic points, ordering or identity; unusable metadata is omitted. The prompt teaches independently satisfiable explicit obligations, with no lexical splitting heuristics. Question-only input, 1–5 bound, exact spans and diagnostic ambiguity remain.
+
+V2 focused fake tests: 32 passed. A directly relevant frozen E1-A2 test run against v2 returned 23 passed / 1 failed because its fake judge still requires v1 IDs; the same unmodified tests passed 24/24 with the original preregistered v1 module loaded in-memory. This version mismatch remains explicit; historical scientific evidence was not rerun or changed. `git diff --check` passed. All live calls and token usage were zero.
+
+E1-R1 PASS covers implementation/T0 only; real-model granularity and semantic quality remain unmeasured for v2. Normal QA, `question_core`, legacy completeness requirements, production prompts, E2/E3 and retrieval remain unchanged. E1-A2 retains its original FAIL. E1-R2 requires separately authorized prospective validation with a fresh acceptance cohort.
+
+Report: `evaluation/E1_R1_SEMANTIC_ANSWER_POINT_CONTRACT_REPAIR.md`.
+
+## Historical checkpoint — E1-AR architecture review closeout
 
 E1's primary abstraction is an independently satisfiable explicit question obligation whose omission can be independently detected. The revised architecture makes `facet_type` optional diagnostic metadata, not semantic correctness, a primary acceptance gate, or a dependency of point ordering/identity. Future E1-R1 should assign type-independent question-order IDs, retain exact question support spans and diagnostic ambiguity, and teach generic obligation atomicity without lexical or benchmark triggers. These are architecture decisions; current code remains unchanged.
 
