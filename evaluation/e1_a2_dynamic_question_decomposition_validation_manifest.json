@@ -1,0 +1,792 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint": "E1-A2",
+  "stage": "targeted_dynamic_question_decomposition_validation",
+  "starting_head": "709321657016762ee11ee38d21d53c30ffa7b951",
+  "e1_a1_identity": {
+    "implementation_commit": "709321657016762ee11ee38d21d53c30ffa7b951",
+    "prompt_version": "1.0.0",
+    "schema_version": "e1.question_decomposition.v1"
+  },
+  "provider": {
+    "generation_model": "gemini-3.8-flash",
+    "evaluation_judge_model": "gemini-3.8-flash",
+    "location": "global",
+    "temperature": 0,
+    "maximum_decomposition_logical_calls": 24,
+    "maximum_judge_logical_calls": 24,
+    "maximum_total_logical_calls": 48
+  },
+  "cohort": {
+    "base_cases": 12,
+    "paraphrase_cases": 12,
+    "total_cases": 24,
+    "pairs": 12,
+    "base_source_distribution": {
+      "benchmark_dev": 6,
+      "novel_dev": 6
+    },
+    "base_language_distribution": {
+      "zh": 6,
+      "en": 6
+    },
+    "base_reference_count_distribution": {
+      "1": 4,
+      "2": 6,
+      "3": 2
+    },
+    "base_facet_distribution": {
+      "implementation": 2,
+      "comparison": 3,
+      "cause_reason": 2,
+      "locator": 5,
+      "constraint": 1,
+      "api_behavior": 2,
+      "definition": 2,
+      "workflow": 2,
+      "data_flow": 2,
+      "mechanism": 1
+    },
+    "total_reference_points": 44
+  },
+  "cases": [
+    {
+      "case_id": "e1a2.b01",
+      "pair_id": "e1a2.pair01",
+      "variant": "base",
+      "source_group": "benchmark_dev",
+      "source_case_id": "g063",
+      "source_path": "evaluation/benchmarks/v2_6/gold_questions.yaml",
+      "source_version": "m6-benchmark-v2.6",
+      "source_split": "dev",
+      "language": "zh",
+      "question": "Restgas effective acceptance 在代码中如何实现？",
+      "reference_points": [
+        {
+          "reference_point_id": "e1a2.b01.ref1",
+          "reference_slot_id": "slot.1",
+          "facet_type": "implementation",
+          "text": "How Restgas effective acceptance is implemented in code",
+          "support_spans": [
+            "Restgas effective acceptance 在代码中如何实现"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "e1a2.p01",
+      "pair_id": "e1a2.pair01",
+      "variant": "paraphrase",
+      "source_group": "benchmark_dev",
+      "source_case_id": "g063",
+      "source_path": "evaluation/benchmarks/v2_6/gold_questions.yaml",
+      "source_version": "m6-benchmark-v2.6",
+      "source_split": "dev",
+      "language": "zh",
+      "question": "Restgas effective acceptance 是怎样在代码中实现的？",
+      "reference_points": [
+        {
+          "reference_point_id": "e1a2.p01.ref1",
+          "reference_slot_id": "slot.1",
+          "facet_type": "implementation",
+          "text": "How Restgas effective acceptance is implemented in code",
+          "support_spans": [
+            "Restgas effective acceptance 是怎样在代码中实现的"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "e1a2.b02",
+      "pair_id": "e1a2.pair02",
+      "variant": "base",
+      "source_group": "benchmark_dev",
+      "source_case_id": "g067",
+      "source_path": "evaluation/benchmarks/v2_6/gold_questions.yaml",
+      "source_version": "m6-benchmark-v2.6",
+      "source_split": "dev",
+      "language": "zh",
+      "question": "Restgas longitudinal efficiency correction 如何实现？",
+      "reference_points": [
+        {
+          "reference_point_id": "e1a2.b02.ref1",
+          "reference_slot_id": "slot.1",
+          "facet_type": "implementation",
+          "text": "How Restgas longitudinal efficiency correction is implemented",
+          "support_spans": [
+            "Restgas longitudinal efficiency correction 如何实现"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "e1a2.p02",
+      "pair_id": "e1a2.pair02",
+      "variant": "paraphrase",
+      "source_group": "benchmark_dev",
+      "source_case_id": "g067",
+      "source_path": "evaluation/benchmarks/v2_6/gold_questions.yaml",
+      "source_version": "m6-benchmark-v2.6",
+      "source_split": "dev",
+      "language": "zh",
+      "question": "请说明 Restgas longitudinal efficiency correction 的实现方式。",
+      "reference_points": [
+        {
+          "reference_point_id": "e1a2.p02.ref1",
+          "reference_slot_id": "slot.1",
+          "facet_type": "implementation",
+          "text": "How Restgas longitudinal efficiency correction is implemented",
+          "support_spans": [
+            "Restgas longitudinal efficiency correction 的实现方式"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "e1a2.b03",
+      "pair_id": "e1a2.pair03",
+      "variant": "base",
+      "source_group": "benchmark_dev",
+      "source_case_id": "g072",
+      "source_path": "evaluation/benchmarks/v2_6/gold_questions.yaml",
+      "source_version": "m6-benchmark-v2.6",
+      "source_split": "dev",
+      "language": "zh",
+      "question": "如何在实现层面区分 angular acceptance 与 epsilon_reco(z)？",
+      "reference_points": [
+        {
+          "reference_point_id": "e1a2.b03.ref1",
+          "reference_slot_id": "slot.1",
+          "facet_type": "comparison",
+          "text": "How angular acceptance and epsilon_reco(z) differ at the implementation level",
+          "support_spans": [
+            "如何在实现层面区分 angular acceptance 与 epsilon_reco(z)"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "e1a2.p03",
+      "pair_id": "e1a2.pair03",
+      "variant": "paraphrase",
+      "source_group": "benchmark_dev",
+      "source_case_id": "g072",
+      "source_path": "evaluation/benchmarks/v2_6/gold_questions.yaml",
+      "source_version": "m6-benchmark-v2.6",
+      "source_split": "dev",
+      "language": "zh",
+      "question": "从实现角度看，angular acceptance 和 epsilon_reco(z) 有什么区别？",
+      "reference_points": [
+        {
+          "reference_point_id": "e1a2.p03.ref1",
+          "reference_slot_id": "slot.1",
+          "facet_type": "comparison",
+          "text": "How angular acceptance and epsilon_reco(z) differ at the implementation level",
+          "support_spans": [
+            "从实现角度看，angular acceptance 和 epsilon_reco(z) 有什么区别"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "e1a2.b04",
+      "pair_id": "e1a2.pair04",
+      "variant": "base",
+      "source_group": "benchmark_dev",
+      "source_case_id": "g073",
+      "source_path": "evaluation/benchmarks/v2_6/gold_questions.yaml",
+      "source_version": "m6-benchmark-v2.6",
+      "source_split": "dev",
+      "language": "zh",
+      "question": "为什么 Restgas effective acceptance 不是一个独立 C++ class？",
+      "reference_points": [
+        {
+          "reference_point_id": "e1a2.b04.ref1",
+          "reference_slot_id": "slot.1",
+          "facet_type": "cause_reason",
+          "text": "Why Restgas effective acceptance is not an independent C++ class",
+          "support_spans": [
+            "为什么 Restgas effective acceptance 不是一个独立 C++ class"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "e1a2.p04",
+      "pair_id": "e1a2.pair04",
+      "variant": "paraphrase",
+      "source_group": "benchmark_dev",
+      "source_case_id": "g073",
+      "source_path": "evaluation/benchmarks/v2_6/gold_questions.yaml",
+      "source_version": "m6-benchmark-v2.6",
+      "source_split": "dev",
+      "language": "zh",
+      "question": "Restgas effective acceptance 为什么不是独立的 C++ class？",
+      "reference_points": [
+        {
+          "reference_point_id": "e1a2.p04.ref1",
+          "reference_slot_id": "slot.1",
+          "facet_type": "cause_reason",
+          "text": "Why Restgas effective acceptance is not an independent C++ class",
+          "support_spans": [
+            "Restgas effective acceptance 为什么不是独立的 C++ class"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "e1a2.b05",
+      "pair_id": "e1a2.pair05",
+      "variant": "base",
+      "source_group": "benchmark_dev",
+      "source_case_id": "g066",
+      "source_path": "evaluation/benchmarks/v2_6/gold_questions.yaml",
+      "source_version": "m6-benchmark-v2.6",
+      "source_split": "dev",
+      "language": "zh",
+      "question": "DPM 1D 与 2D angular model 分别在哪里实现？",
+      "reference_points": [
+        {
+          "reference_point_id": "e1a2.b05.ref1",
+          "reference_slot_id": "slot.1",
+          "facet_type": "locator",
+          "text": "Where DPM 1D angular model is implemented",
+          "support_spans": [
+            "DPM 1D",
+            "angular model 分别在哪里实现"
+          ]
+        },
+        {
+          "reference_point_id": "e1a2.b05.ref2",
+          "reference_slot_id": "slot.2",
+          "facet_type": "locator",
+          "text": "Where DPM 2D angular model is implemented",
+          "support_spans": [
+            "2D angular model 分别在哪里实现"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "e1a2.p05",
+      "pair_id": "e1a2.pair05",
+      "variant": "paraphrase",
+      "source_group": "benchmark_dev",
+      "source_case_id": "g066",
+      "source_path": "evaluation/benchmarks/v2_6/gold_questions.yaml",
+      "source_version": "m6-benchmark-v2.6",
+      "source_split": "dev",
+      "language": "zh",
+      "question": "DPM 1D 和 2D angular model 各自的实现位于哪里？",
+      "reference_points": [
+        {
+          "reference_point_id": "e1a2.p05.ref1",
+          "reference_slot_id": "slot.1",
+          "facet_type": "locator",
+          "text": "Where DPM 1D angular model is implemented",
+          "support_spans": [
+            "DPM 1D",
+            "angular model 各自的实现位于哪里"
+          ]
+        },
+        {
+          "reference_point_id": "e1a2.p05.ref2",
+          "reference_slot_id": "slot.2",
+          "facet_type": "locator",
+          "text": "Where DPM 2D angular model is implemented",
+          "support_spans": [
+            "2D angular model 各自的实现位于哪里"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "e1a2.b06",
+      "pair_id": "e1a2.pair06",
+      "variant": "base",
+      "source_group": "benchmark_dev",
+      "source_case_id": "g081",
+      "source_path": "evaluation/benchmarks/v2_6/gold_questions.yaml",
+      "source_version": "m6-benchmark-v2.6",
+      "source_split": "dev",
+      "language": "zh",
+      "question": "谁产生 event_poca，谁消费它？",
+      "reference_points": [
+        {
+          "reference_point_id": "e1a2.b06.ref1",
+          "reference_slot_id": "slot.1",
+          "facet_type": "locator",
+          "text": "Who produces event_poca",
+          "support_spans": [
+            "谁产生 event_poca"
+          ]
+        },
+        {
+          "reference_point_id": "e1a2.b06.ref2",
+          "reference_slot_id": "slot.2",
+          "facet_type": "locator",
+          "text": "Who consumes event_poca",
+          "support_spans": [
+            "event_poca",
+            "谁消费它"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "e1a2.p06",
+      "pair_id": "e1a2.pair06",
+      "variant": "paraphrase",
+      "source_group": "benchmark_dev",
+      "source_case_id": "g081",
+      "source_path": "evaluation/benchmarks/v2_6/gold_questions.yaml",
+      "source_version": "m6-benchmark-v2.6",
+      "source_split": "dev",
+      "language": "zh",
+      "question": "event_poca 由谁生成，又由谁消费？",
+      "reference_points": [
+        {
+          "reference_point_id": "e1a2.p06.ref1",
+          "reference_slot_id": "slot.1",
+          "facet_type": "locator",
+          "text": "Who produces event_poca",
+          "support_spans": [
+            "event_poca 由谁生成"
+          ]
+        },
+        {
+          "reference_point_id": "e1a2.p06.ref2",
+          "reference_slot_id": "slot.2",
+          "facet_type": "locator",
+          "text": "Who consumes event_poca",
+          "support_spans": [
+            "event_poca",
+            "由谁消费"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "e1a2.b07",
+      "pair_id": "e1a2.pair07",
+      "variant": "base",
+      "source_group": "novel_dev",
+      "source_case_id": "n001",
+      "source_path": "evaluation/novel/v1/novel_dev.yaml",
+      "source_version": "novel-v1-dev-0.3.0",
+      "source_split": "novel_dev",
+      "language": "en",
+      "question": "I am building the RestgasDetermination fork on the GSI cluster. Which FairSoft/FairRoot pairs and paths are encoded in configSettings.sh, which environment variables does it assign, and what does the script actually do for unmatched input as written?",
+      "reference_points": [
+        {
+          "reference_point_id": "e1a2.b07.ref1",
+          "reference_slot_id": "slot.1",
+          "facet_type": "constraint",
+          "text": "Which FairSoft/FairRoot pairs and paths configSettings.sh encodes for the RestgasDetermination build on the GSI cluster",
+          "support_spans": [
+            "Which FairSoft/FairRoot pairs and paths are encoded in configSettings.sh"
+          ]
+        },
+        {
+          "reference_point_id": "e1a2.b07.ref2",
+          "reference_slot_id": "slot.2",
+          "facet_type": "api_behavior",
+          "text": "Which environment variables configSettings.sh assigns",
+          "support_spans": [
+            "which environment variables does it assign"
+          ]
+        },
+        {
+          "reference_point_id": "e1a2.b07.ref3",
+          "reference_slot_id": "slot.3",
+          "facet_type": "api_behavior",
+          "text": "What configSettings.sh actually does with unmatched input as written",
+          "support_spans": [
+            "what does the script actually do for unmatched input as written"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "e1a2.p07",
+      "pair_id": "e1a2.pair07",
+      "variant": "paraphrase",
+      "source_group": "novel_dev",
+      "source_case_id": "n001",
+      "source_path": "evaluation/novel/v1/novel_dev.yaml",
+      "source_version": "novel-v1-dev-0.3.0",
+      "source_split": "novel_dev",
+      "language": "en",
+      "question": "For a build of the RestgasDetermination fork on the GSI cluster, what FairSoft/FairRoot pairs and paths does configSettings.sh encode, what environment variables does it set, and how does the script handle unmatched input as currently written?",
+      "reference_points": [
+        {
+          "reference_point_id": "e1a2.p07.ref1",
+          "reference_slot_id": "slot.1",
+          "facet_type": "constraint",
+          "text": "Which FairSoft/FairRoot pairs and paths configSettings.sh encodes for the RestgasDetermination build on the GSI cluster",
+          "support_spans": [
+            "what FairSoft/FairRoot pairs and paths does configSettings.sh encode"
+          ]
+        },
+        {
+          "reference_point_id": "e1a2.p07.ref2",
+          "reference_slot_id": "slot.2",
+          "facet_type": "api_behavior",
+          "text": "Which environment variables configSettings.sh assigns",
+          "support_spans": [
+            "what environment variables does it set"
+          ]
+        },
+        {
+          "reference_point_id": "e1a2.p07.ref3",
+          "reference_slot_id": "slot.3",
+          "facet_type": "api_behavior",
+          "text": "What configSettings.sh actually does with unmatched input as written",
+          "support_spans": [
+            "how does the script handle unmatched input as currently written"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "e1a2.b08",
+      "pair_id": "e1a2.pair08",
+      "variant": "base",
+      "source_group": "novel_dev",
+      "source_case_id": "n008",
+      "source_path": "evaluation/novel/v1/novel_dev.yaml",
+      "source_version": "novel-v1-dev-0.3.0",
+      "source_split": "novel_dev",
+      "language": "en",
+      "question": "Before tracks can be fitted in the luminosity detector, the hits have to be grouped into track candidates. Which track-search approaches were developed for the LMD, and how do they compare?",
+      "reference_points": [
+        {
+          "reference_point_id": "e1a2.b08.ref1",
+          "reference_slot_id": "slot.1",
+          "facet_type": "definition",
+          "text": "Which track-search approaches were developed for the LMD",
+          "support_spans": [
+            "Which track-search approaches were developed for the LMD"
+          ]
+        },
+        {
+          "reference_point_id": "e1a2.b08.ref2",
+          "reference_slot_id": "slot.2",
+          "facet_type": "comparison",
+          "text": "How the LMD track-search approaches compare",
+          "support_spans": [
+            "how do they compare"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "e1a2.p08",
+      "pair_id": "e1a2.pair08",
+      "variant": "paraphrase",
+      "source_group": "novel_dev",
+      "source_case_id": "n008",
+      "source_path": "evaluation/novel/v1/novel_dev.yaml",
+      "source_version": "novel-v1-dev-0.3.0",
+      "source_split": "novel_dev",
+      "language": "en",
+      "question": "LMD hits must be grouped into track candidates before fitting tracks in the luminosity detector. What track-search approaches were developed for the LMD, and what are the differences between them?",
+      "reference_points": [
+        {
+          "reference_point_id": "e1a2.p08.ref1",
+          "reference_slot_id": "slot.1",
+          "facet_type": "definition",
+          "text": "Which track-search approaches were developed for the LMD",
+          "support_spans": [
+            "What track-search approaches were developed for the LMD"
+          ]
+        },
+        {
+          "reference_point_id": "e1a2.p08.ref2",
+          "reference_slot_id": "slot.2",
+          "facet_type": "comparison",
+          "text": "How the LMD track-search approaches compare",
+          "support_spans": [
+            "what are the differences between them"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "e1a2.b09",
+      "pair_id": "e1a2.pair09",
+      "variant": "base",
+      "source_group": "novel_dev",
+      "source_case_id": "n020",
+      "source_path": "evaluation/novel/v1/novel_dev.yaml",
+      "source_version": "novel-v1-dev-0.3.0",
+      "source_split": "novel_dev",
+      "language": "en",
+      "question": "In the restgas determination analysis, the standard track finder leaves part of the hits unassigned. Which task picks up those leftover hits, and what do the downstream displaced-track finder and z-recovery stages each contribute before the final fit?",
+      "reference_points": [
+        {
+          "reference_point_id": "e1a2.b09.ref1",
+          "reference_slot_id": "slot.1",
+          "facet_type": "locator",
+          "text": "Which task picks up the leftover hits in restgas determination analysis",
+          "support_spans": [
+            "Which task picks up those leftover hits"
+          ]
+        },
+        {
+          "reference_point_id": "e1a2.b09.ref2",
+          "reference_slot_id": "slot.2",
+          "facet_type": "workflow",
+          "text": "What the downstream displaced-track finder contributes before the final fit",
+          "support_spans": [
+            "what do the downstream displaced-track finder",
+            "each contribute before the final fit"
+          ]
+        },
+        {
+          "reference_point_id": "e1a2.b09.ref3",
+          "reference_slot_id": "slot.3",
+          "facet_type": "workflow",
+          "text": "What the z-recovery stage contributes before the final fit",
+          "support_spans": [
+            "z-recovery stages each contribute before the final fit"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "e1a2.p09",
+      "pair_id": "e1a2.pair09",
+      "variant": "paraphrase",
+      "source_group": "novel_dev",
+      "source_case_id": "n020",
+      "source_path": "evaluation/novel/v1/novel_dev.yaml",
+      "source_version": "novel-v1-dev-0.3.0",
+      "source_split": "novel_dev",
+      "language": "en",
+      "question": "In restgas determination analysis, some hits remain unassigned by the standard track finder. Which task collects these hits, and what does each of the downstream displaced-track finder and z-recovery stages contribute before the final fit?",
+      "reference_points": [
+        {
+          "reference_point_id": "e1a2.p09.ref1",
+          "reference_slot_id": "slot.1",
+          "facet_type": "locator",
+          "text": "Which task picks up the leftover hits in restgas determination analysis",
+          "support_spans": [
+            "Which task collects these hits"
+          ]
+        },
+        {
+          "reference_point_id": "e1a2.p09.ref2",
+          "reference_slot_id": "slot.2",
+          "facet_type": "workflow",
+          "text": "What the downstream displaced-track finder contributes before the final fit",
+          "support_spans": [
+            "what does each of the downstream displaced-track finder",
+            "contribute before the final fit"
+          ]
+        },
+        {
+          "reference_point_id": "e1a2.p09.ref3",
+          "reference_slot_id": "slot.3",
+          "facet_type": "workflow",
+          "text": "What the z-recovery stage contributes before the final fit",
+          "support_spans": [
+            "z-recovery stages contribute before the final fit"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "e1a2.b10",
+      "pair_id": "e1a2.pair10",
+      "variant": "base",
+      "source_group": "novel_dev",
+      "source_case_id": "n022",
+      "source_path": "evaluation/novel/v1/novel_dev.yaml",
+      "source_version": "novel-v1-dev-0.3.0",
+      "source_split": "novel_dev",
+      "language": "en",
+      "question": "The restgas analysis determines the event vertex through a two-step POCA workflow. What does the first worker step leave behind for the second analysis step, and how is the fitted vertex fed into the reprocessing?",
+      "reference_points": [
+        {
+          "reference_point_id": "e1a2.b10.ref1",
+          "reference_slot_id": "slot.1",
+          "facet_type": "data_flow",
+          "text": "What the first POCA worker step leaves for the second analysis step",
+          "support_spans": [
+            "What does the first worker step leave behind for the second analysis step"
+          ]
+        },
+        {
+          "reference_point_id": "e1a2.b10.ref2",
+          "reference_slot_id": "slot.2",
+          "facet_type": "data_flow",
+          "text": "How the fitted vertex feeds into reprocessing",
+          "support_spans": [
+            "how is the fitted vertex fed into the reprocessing"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "e1a2.p10",
+      "pair_id": "e1a2.pair10",
+      "variant": "paraphrase",
+      "source_group": "novel_dev",
+      "source_case_id": "n022",
+      "source_path": "evaluation/novel/v1/novel_dev.yaml",
+      "source_version": "novel-v1-dev-0.3.0",
+      "source_split": "novel_dev",
+      "language": "en",
+      "question": "The restgas analysis uses a two-step POCA workflow to determine the event vertex. What is passed from the first worker step to the second analysis step, and how does the fitted vertex enter the reprocessing?",
+      "reference_points": [
+        {
+          "reference_point_id": "e1a2.p10.ref1",
+          "reference_slot_id": "slot.1",
+          "facet_type": "data_flow",
+          "text": "What the first POCA worker step leaves for the second analysis step",
+          "support_spans": [
+            "What is passed from the first worker step to the second analysis step"
+          ]
+        },
+        {
+          "reference_point_id": "e1a2.p10.ref2",
+          "reference_slot_id": "slot.2",
+          "facet_type": "data_flow",
+          "text": "How the fitted vertex feeds into reprocessing",
+          "support_spans": [
+            "how does the fitted vertex enter the reprocessing"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "e1a2.b11",
+      "pair_id": "e1a2.pair11",
+      "variant": "base",
+      "source_group": "novel_dev",
+      "source_case_id": "n030",
+      "source_path": "evaluation/novel/v1/novel_dev.yaml",
+      "source_version": "novel-v1-dev-0.3.0",
+      "source_split": "novel_dev",
+      "language": "en",
+      "question": "Before the luminosity fit runs, the framework applies a coordinate-system preprocessing step to the track data. Why is the standard laboratory frame insufficient there, and what does the IP alignment transformation accomplish?",
+      "reference_points": [
+        {
+          "reference_point_id": "e1a2.b11.ref1",
+          "reference_slot_id": "slot.1",
+          "facet_type": "cause_reason",
+          "text": "Why the standard laboratory frame is insufficient for the preprocessing before the luminosity fit",
+          "support_spans": [
+            "Why is the standard laboratory frame insufficient there"
+          ]
+        },
+        {
+          "reference_point_id": "e1a2.b11.ref2",
+          "reference_slot_id": "slot.2",
+          "facet_type": "mechanism",
+          "text": "What the IP alignment transformation accomplishes",
+          "support_spans": [
+            "what does the IP alignment transformation accomplish"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "e1a2.p11",
+      "pair_id": "e1a2.pair11",
+      "variant": "paraphrase",
+      "source_group": "novel_dev",
+      "source_case_id": "n030",
+      "source_path": "evaluation/novel/v1/novel_dev.yaml",
+      "source_version": "novel-v1-dev-0.3.0",
+      "source_split": "novel_dev",
+      "language": "en",
+      "question": "Before running the luminosity fit, the framework preprocesses track data with a coordinate-system step. Why is the standard laboratory frame inadequate for this, and what is achieved by the IP alignment transformation?",
+      "reference_points": [
+        {
+          "reference_point_id": "e1a2.p11.ref1",
+          "reference_slot_id": "slot.1",
+          "facet_type": "cause_reason",
+          "text": "Why the standard laboratory frame is insufficient for the preprocessing before the luminosity fit",
+          "support_spans": [
+            "Why is the standard laboratory frame inadequate for this"
+          ]
+        },
+        {
+          "reference_point_id": "e1a2.p11.ref2",
+          "reference_slot_id": "slot.2",
+          "facet_type": "mechanism",
+          "text": "What the IP alignment transformation accomplishes",
+          "support_spans": [
+            "what is achieved by the IP alignment transformation"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "e1a2.b12",
+      "pair_id": "e1a2.pair12",
+      "variant": "base",
+      "source_group": "novel_dev",
+      "source_case_id": "n031",
+      "source_path": "evaluation/novel/v1/novel_dev.yaml",
+      "source_version": "novel-v1-dev-0.3.0",
+      "source_split": "novel_dev",
+      "language": "en",
+      "question": "For different studies I need realistic background, one specific signal channel, and simple particle scans. How do PandaRoot's event-generator categories differ, and which generator is the current standard for background?",
+      "reference_points": [
+        {
+          "reference_point_id": "e1a2.b12.ref1",
+          "reference_slot_id": "slot.1",
+          "facet_type": "comparison",
+          "text": "How PandaRoot's event-generator categories differ for the stated studies",
+          "support_spans": [
+            "How do PandaRoot's event-generator categories differ"
+          ]
+        },
+        {
+          "reference_point_id": "e1a2.b12.ref2",
+          "reference_slot_id": "slot.2",
+          "facet_type": "definition",
+          "text": "Which generator is the current standard for background",
+          "support_spans": [
+            "which generator is the current standard for background"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "e1a2.p12",
+      "pair_id": "e1a2.pair12",
+      "variant": "paraphrase",
+      "source_group": "novel_dev",
+      "source_case_id": "n031",
+      "source_path": "evaluation/novel/v1/novel_dev.yaml",
+      "source_version": "novel-v1-dev-0.3.0",
+      "source_split": "novel_dev",
+      "language": "en",
+      "question": "My studies require realistic background, a specific signal channel, and simple particle scans. What distinguishes PandaRoot's event-generator categories, and which generator is currently standard for background?",
+      "reference_points": [
+        {
+          "reference_point_id": "e1a2.p12.ref1",
+          "reference_slot_id": "slot.1",
+          "facet_type": "comparison",
+          "text": "How PandaRoot's event-generator categories differ for the stated studies",
+          "support_spans": [
+            "What distinguishes PandaRoot's event-generator categories"
+          ]
+        },
+        {
+          "reference_point_id": "e1a2.p12.ref2",
+          "reference_slot_id": "slot.2",
+          "facet_type": "definition",
+          "text": "Which generator is the current standard for background",
+          "support_spans": [
+            "which generator is currently standard for background"
+          ]
+        }
+      ]
+    }
+  ]
+}
