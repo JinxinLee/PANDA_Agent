@@ -1,0 +1,784 @@
+{
+  "preregistration_commit": "2517b691245c38175222064e6ca546d06fd21e9a",
+  "raw_commit": null,
+  "records": [
+    {
+      "case_id": "e1a2.b07",
+      "valid": true,
+      "prediction": {
+        "schema_version": "e1.question_decomposition.v2",
+        "mode": "shadow_diagnostic",
+        "points": [
+          {
+            "text": "Identify which FairSoft/FairRoot pairs and paths are encoded in configSettings.sh.",
+            "support_spans": [
+              "Which FairSoft/FairRoot pairs and paths are encoded in configSettings.sh"
+            ],
+            "facet_type": "definition",
+            "answer_point_id": "point.1"
+          },
+          {
+            "text": "Identify which environment variables configSettings.sh assigns.",
+            "support_spans": [
+              "which environment variables does it assign"
+            ],
+            "facet_type": "api_behavior",
+            "answer_point_id": "point.2"
+          },
+          {
+            "text": "Describe what configSettings.sh does for unmatched input as written.",
+            "support_spans": [
+              "what does the script actually do for unmatched input as written?"
+            ],
+            "facet_type": "mechanism",
+            "answer_point_id": "point.3"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "failure_category": null,
+      "stage": "complete",
+      "raw_proposal": {
+        "points": [
+          {
+            "text": "Identify which FairSoft/FairRoot pairs and paths are encoded in configSettings.sh.",
+            "support_spans": [
+              "Which FairSoft/FairRoot pairs and paths are encoded in configSettings.sh"
+            ],
+            "facet_type": "definition"
+          },
+          {
+            "text": "Identify which environment variables configSettings.sh assigns.",
+            "support_spans": [
+              "which environment variables does it assign"
+            ],
+            "facet_type": "api_behavior"
+          },
+          {
+            "text": "Describe what configSettings.sh does for unmatched input as written.",
+            "support_spans": [
+              "what does the script actually do for unmatched input as written?"
+            ],
+            "facet_type": "mechanism"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "usage": {
+        "embedding_calls": 0,
+        "model_calls": 1,
+        "generation_calls": 1,
+        "token_usage": 1353
+      }
+    },
+    {
+      "case_id": "e1a2.p07",
+      "valid": true,
+      "prediction": {
+        "schema_version": "e1.question_decomposition.v2",
+        "mode": "shadow_diagnostic",
+        "points": [
+          {
+            "text": "What FairSoft/FairRoot pairs and paths configSettings.sh encodes for a build of the RestgasDetermination fork on the GSI cluster",
+            "support_spans": [
+              "what FairSoft/FairRoot pairs and paths does configSettings.sh encode"
+            ],
+            "facet_type": "definition",
+            "answer_point_id": "point.1"
+          },
+          {
+            "text": "What environment variables configSettings.sh sets",
+            "support_spans": [
+              "what environment variables does it set"
+            ],
+            "facet_type": "api_behavior",
+            "answer_point_id": "point.2"
+          },
+          {
+            "text": "How configSettings.sh handles unmatched input as currently written",
+            "support_spans": [
+              "how does the script handle unmatched input as currently written"
+            ],
+            "facet_type": "mechanism",
+            "answer_point_id": "point.3"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "failure_category": null,
+      "stage": "complete",
+      "raw_proposal": {
+        "points": [
+          {
+            "text": "What FairSoft/FairRoot pairs and paths configSettings.sh encodes for a build of the RestgasDetermination fork on the GSI cluster",
+            "support_spans": [
+              "what FairSoft/FairRoot pairs and paths does configSettings.sh encode"
+            ],
+            "facet_type": "definition"
+          },
+          {
+            "text": "What environment variables configSettings.sh sets",
+            "support_spans": [
+              "what environment variables does it set"
+            ],
+            "facet_type": "api_behavior"
+          },
+          {
+            "text": "How configSettings.sh handles unmatched input as currently written",
+            "support_spans": [
+              "how does the script handle unmatched input as currently written"
+            ],
+            "facet_type": "mechanism"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "usage": {
+        "embedding_calls": 0,
+        "model_calls": 1,
+        "generation_calls": 1,
+        "token_usage": 1366
+      }
+    },
+    {
+      "case_id": "e1a2.b08",
+      "valid": true,
+      "prediction": {
+        "schema_version": "e1.question_decomposition.v2",
+        "mode": "shadow_diagnostic",
+        "points": [
+          {
+            "text": "Identify which track-search approaches were developed for the LMD to group hits into track candidates before tracks can be fitted in the luminosity detector.",
+            "support_spans": [
+              "Which track-search approaches were developed for the LMD"
+            ],
+            "facet_type": "mechanism",
+            "answer_point_id": "point.1"
+          },
+          {
+            "text": "Compare the track-search approaches developed for the LMD.",
+            "support_spans": [
+              "how do they compare?"
+            ],
+            "facet_type": "comparison",
+            "answer_point_id": "point.2"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "failure_category": null,
+      "stage": "complete",
+      "raw_proposal": {
+        "points": [
+          {
+            "text": "Identify which track-search approaches were developed for the LMD to group hits into track candidates before tracks can be fitted in the luminosity detector.",
+            "support_spans": [
+              "Which track-search approaches were developed for the LMD"
+            ],
+            "facet_type": "mechanism"
+          },
+          {
+            "text": "Compare the track-search approaches developed for the LMD.",
+            "support_spans": [
+              "how do they compare?"
+            ],
+            "facet_type": "comparison"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "usage": {
+        "embedding_calls": 0,
+        "model_calls": 1,
+        "generation_calls": 1,
+        "token_usage": 1157
+      }
+    },
+    {
+      "case_id": "e1a2.p08",
+      "valid": true,
+      "prediction": {
+        "schema_version": "e1.question_decomposition.v2",
+        "mode": "shadow_diagnostic",
+        "points": [
+          {
+            "text": "What track-search approaches were developed for the LMD",
+            "support_spans": [
+              "What track-search approaches were developed for the LMD"
+            ],
+            "facet_type": "mechanism",
+            "answer_point_id": "point.1"
+          },
+          {
+            "text": "What are the differences between the track-search approaches developed for the LMD",
+            "support_spans": [
+              "what are the differences between them?"
+            ],
+            "facet_type": "comparison",
+            "answer_point_id": "point.2"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "failure_category": null,
+      "stage": "complete",
+      "raw_proposal": {
+        "points": [
+          {
+            "text": "What track-search approaches were developed for the LMD",
+            "support_spans": [
+              "What track-search approaches were developed for the LMD"
+            ],
+            "facet_type": "mechanism"
+          },
+          {
+            "text": "What are the differences between the track-search approaches developed for the LMD",
+            "support_spans": [
+              "what are the differences between them?"
+            ],
+            "facet_type": "comparison"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "usage": {
+        "embedding_calls": 0,
+        "model_calls": 1,
+        "generation_calls": 1,
+        "token_usage": 1429
+      }
+    },
+    {
+      "case_id": "e1a2.b09",
+      "valid": true,
+      "prediction": {
+        "schema_version": "e1.question_decomposition.v2",
+        "mode": "shadow_diagnostic",
+        "points": [
+          {
+            "text": "Identify which task picks up the leftover hits unassigned by the standard track finder in the restgas determination analysis.",
+            "support_spans": [
+              "Which task picks up those leftover hits"
+            ],
+            "facet_type": "locator",
+            "answer_point_id": "point.1"
+          },
+          {
+            "text": "Explain what the downstream displaced-track finder stage contributes before the final fit.",
+            "support_spans": [
+              "what do the downstream displaced-track finder and z-recovery stages each contribute before the final fit?"
+            ],
+            "facet_type": "mechanism",
+            "answer_point_id": "point.2"
+          },
+          {
+            "text": "Explain what the z-recovery stage contributes before the final fit.",
+            "support_spans": [
+              "what do the downstream displaced-track finder and z-recovery stages each contribute before the final fit?"
+            ],
+            "facet_type": "mechanism",
+            "answer_point_id": "point.3"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "failure_category": null,
+      "stage": "complete",
+      "raw_proposal": {
+        "points": [
+          {
+            "text": "Identify which task picks up the leftover hits unassigned by the standard track finder in the restgas determination analysis.",
+            "support_spans": [
+              "Which task picks up those leftover hits"
+            ],
+            "facet_type": "locator"
+          },
+          {
+            "text": "Explain what the downstream displaced-track finder stage contributes before the final fit.",
+            "support_spans": [
+              "what do the downstream displaced-track finder and z-recovery stages each contribute before the final fit?"
+            ],
+            "facet_type": "mechanism"
+          },
+          {
+            "text": "Explain what the z-recovery stage contributes before the final fit.",
+            "support_spans": [
+              "what do the downstream displaced-track finder and z-recovery stages each contribute before the final fit?"
+            ],
+            "facet_type": "mechanism"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "usage": {
+        "embedding_calls": 0,
+        "model_calls": 1,
+        "generation_calls": 1,
+        "token_usage": 1551
+      }
+    },
+    {
+      "case_id": "e1a2.p09",
+      "valid": true,
+      "prediction": {
+        "schema_version": "e1.question_decomposition.v2",
+        "mode": "shadow_diagnostic",
+        "points": [
+          {
+            "text": "Identify which task collects the hits left unassigned by the standard track finder in restgas determination analysis.",
+            "support_spans": [
+              "Which task collects these hits"
+            ],
+            "facet_type": "locator",
+            "answer_point_id": "point.1"
+          },
+          {
+            "text": "Describe what the downstream displaced-track finder stage contributes before the final fit.",
+            "support_spans": [
+              "what does each of the downstream displaced-track finder and z-recovery stages contribute before the final fit?"
+            ],
+            "facet_type": "mechanism",
+            "answer_point_id": "point.2"
+          },
+          {
+            "text": "Describe what the downstream z-recovery stage contributes before the final fit.",
+            "support_spans": [
+              "what does each of the downstream displaced-track finder and z-recovery stages contribute before the final fit?"
+            ],
+            "facet_type": "mechanism",
+            "answer_point_id": "point.3"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "failure_category": null,
+      "stage": "complete",
+      "raw_proposal": {
+        "points": [
+          {
+            "text": "Identify which task collects the hits left unassigned by the standard track finder in restgas determination analysis.",
+            "support_spans": [
+              "Which task collects these hits"
+            ],
+            "facet_type": "locator"
+          },
+          {
+            "text": "Describe what the downstream displaced-track finder stage contributes before the final fit.",
+            "support_spans": [
+              "what does each of the downstream displaced-track finder and z-recovery stages contribute before the final fit?"
+            ],
+            "facet_type": "mechanism"
+          },
+          {
+            "text": "Describe what the downstream z-recovery stage contributes before the final fit.",
+            "support_spans": [
+              "what does each of the downstream displaced-track finder and z-recovery stages contribute before the final fit?"
+            ],
+            "facet_type": "mechanism"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "usage": {
+        "embedding_calls": 0,
+        "model_calls": 1,
+        "generation_calls": 1,
+        "token_usage": 1989
+      }
+    },
+    {
+      "case_id": "e1a2.b10",
+      "valid": true,
+      "prediction": {
+        "schema_version": "e1.question_decomposition.v2",
+        "mode": "shadow_diagnostic",
+        "points": [
+          {
+            "text": "What the first worker step leaves behind for the second analysis step",
+            "support_spans": [
+              "What does the first worker step leave behind for the second analysis step"
+            ],
+            "facet_type": "data_flow",
+            "answer_point_id": "point.1"
+          },
+          {
+            "text": "How the fitted vertex is fed into the reprocessing",
+            "support_spans": [
+              "how is the fitted vertex fed into the reprocessing?"
+            ],
+            "facet_type": "data_flow",
+            "answer_point_id": "point.2"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "failure_category": null,
+      "stage": "complete",
+      "raw_proposal": {
+        "points": [
+          {
+            "text": "What the first worker step leaves behind for the second analysis step",
+            "support_spans": [
+              "What does the first worker step leave behind for the second analysis step"
+            ],
+            "facet_type": "data_flow"
+          },
+          {
+            "text": "How the fitted vertex is fed into the reprocessing",
+            "support_spans": [
+              "how is the fitted vertex fed into the reprocessing?"
+            ],
+            "facet_type": "data_flow"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "usage": {
+        "embedding_calls": 0,
+        "model_calls": 1,
+        "generation_calls": 1,
+        "token_usage": 1264
+      }
+    },
+    {
+      "case_id": "e1a2.p10",
+      "valid": true,
+      "prediction": {
+        "schema_version": "e1.question_decomposition.v2",
+        "mode": "shadow_diagnostic",
+        "points": [
+          {
+            "text": "What is passed from the first worker step to the second analysis step",
+            "support_spans": [
+              "What is passed from the first worker step to the second analysis step"
+            ],
+            "facet_type": "data_flow",
+            "answer_point_id": "point.1"
+          },
+          {
+            "text": "How the fitted vertex enters the reprocessing",
+            "support_spans": [
+              "how does the fitted vertex enter the reprocessing"
+            ],
+            "facet_type": "data_flow",
+            "answer_point_id": "point.2"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "failure_category": null,
+      "stage": "complete",
+      "raw_proposal": {
+        "points": [
+          {
+            "text": "What is passed from the first worker step to the second analysis step",
+            "support_spans": [
+              "What is passed from the first worker step to the second analysis step"
+            ],
+            "facet_type": "data_flow"
+          },
+          {
+            "text": "How the fitted vertex enters the reprocessing",
+            "support_spans": [
+              "how does the fitted vertex enter the reprocessing"
+            ],
+            "facet_type": "data_flow"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "usage": {
+        "embedding_calls": 0,
+        "model_calls": 1,
+        "generation_calls": 1,
+        "token_usage": 1296
+      }
+    },
+    {
+      "case_id": "e1a2.b11",
+      "valid": true,
+      "prediction": {
+        "schema_version": "e1.question_decomposition.v2",
+        "mode": "shadow_diagnostic",
+        "points": [
+          {
+            "text": "Explain why the standard laboratory frame is insufficient for the track data before the luminosity fit runs.",
+            "support_spans": [
+              "Why is the standard laboratory frame insufficient there"
+            ],
+            "facet_type": "cause_reason",
+            "answer_point_id": "point.1"
+          },
+          {
+            "text": "Explain what the IP alignment transformation accomplishes.",
+            "support_spans": [
+              "what does the IP alignment transformation accomplish?"
+            ],
+            "facet_type": "mechanism",
+            "answer_point_id": "point.2"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "failure_category": null,
+      "stage": "complete",
+      "raw_proposal": {
+        "points": [
+          {
+            "text": "Explain why the standard laboratory frame is insufficient for the track data before the luminosity fit runs.",
+            "support_spans": [
+              "Why is the standard laboratory frame insufficient there"
+            ],
+            "facet_type": "cause_reason"
+          },
+          {
+            "text": "Explain what the IP alignment transformation accomplishes.",
+            "support_spans": [
+              "what does the IP alignment transformation accomplish?"
+            ],
+            "facet_type": "mechanism"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "usage": {
+        "embedding_calls": 0,
+        "model_calls": 1,
+        "generation_calls": 1,
+        "token_usage": 1262
+      }
+    },
+    {
+      "case_id": "e1a2.p11",
+      "valid": true,
+      "prediction": {
+        "schema_version": "e1.question_decomposition.v2",
+        "mode": "shadow_diagnostic",
+        "points": [
+          {
+            "text": "Explain why the standard laboratory frame is inadequate for preprocessing track data before the luminosity fit.",
+            "support_spans": [
+              "Why is the standard laboratory frame inadequate for this"
+            ],
+            "facet_type": "cause_reason",
+            "answer_point_id": "point.1"
+          },
+          {
+            "text": "Explain what is achieved by the IP alignment transformation.",
+            "support_spans": [
+              "what is achieved by the IP alignment transformation?"
+            ],
+            "answer_point_id": "point.2"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "failure_category": null,
+      "stage": "complete",
+      "raw_proposal": {
+        "points": [
+          {
+            "text": "Explain why the standard laboratory frame is inadequate for preprocessing track data before the luminosity fit.",
+            "support_spans": [
+              "Why is the standard laboratory frame inadequate for this"
+            ],
+            "facet_type": "cause_reason"
+          },
+          {
+            "text": "Explain what is achieved by the IP alignment transformation.",
+            "support_spans": [
+              "what is achieved by the IP alignment transformation?"
+            ]
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "usage": {
+        "embedding_calls": 0,
+        "model_calls": 1,
+        "generation_calls": 1,
+        "token_usage": 1205
+      }
+    },
+    {
+      "case_id": "e1a2.b12",
+      "valid": true,
+      "prediction": {
+        "schema_version": "e1.question_decomposition.v2",
+        "mode": "shadow_diagnostic",
+        "points": [
+          {
+            "text": "How PandaRoot's event-generator categories differ",
+            "support_spans": [
+              "How do PandaRoot's event-generator categories differ"
+            ],
+            "facet_type": "comparison",
+            "answer_point_id": "point.1"
+          },
+          {
+            "text": "Which generator is the current standard for background",
+            "support_spans": [
+              "which generator is the current standard for background?"
+            ],
+            "facet_type": "definition",
+            "answer_point_id": "point.2"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "failure_category": null,
+      "stage": "complete",
+      "raw_proposal": {
+        "points": [
+          {
+            "text": "How PandaRoot's event-generator categories differ",
+            "support_spans": [
+              "How do PandaRoot's event-generator categories differ"
+            ],
+            "facet_type": "comparison"
+          },
+          {
+            "text": "Which generator is the current standard for background",
+            "support_spans": [
+              "which generator is the current standard for background?"
+            ],
+            "facet_type": "definition"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "usage": {
+        "embedding_calls": 0,
+        "model_calls": 1,
+        "generation_calls": 1,
+        "token_usage": 1253
+      }
+    },
+    {
+      "case_id": "e1a2.p12",
+      "valid": true,
+      "prediction": {
+        "schema_version": "e1.question_decomposition.v2",
+        "mode": "shadow_diagnostic",
+        "points": [
+          {
+            "text": "What distinguishes PandaRoot's event-generator categories",
+            "support_spans": [
+              "What distinguishes PandaRoot's event-generator categories"
+            ],
+            "facet_type": "comparison",
+            "answer_point_id": "point.1"
+          },
+          {
+            "text": "Which generator is currently standard for background",
+            "support_spans": [
+              "which generator is currently standard for background?"
+            ],
+            "facet_type": "definition",
+            "answer_point_id": "point.2"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "failure_category": null,
+      "stage": "complete",
+      "raw_proposal": {
+        "points": [
+          {
+            "text": "What distinguishes PandaRoot's event-generator categories",
+            "support_spans": [
+              "What distinguishes PandaRoot's event-generator categories"
+            ],
+            "facet_type": "comparison"
+          },
+          {
+            "text": "Which generator is currently standard for background",
+            "support_spans": [
+              "which generator is currently standard for background?"
+            ],
+            "facet_type": "definition"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "usage": {
+        "embedding_calls": 0,
+        "model_calls": 1,
+        "generation_calls": 1,
+        "token_usage": 1292
+      }
+    }
+  ]
+}
