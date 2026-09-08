@@ -1,0 +1,1534 @@
+{
+  "preregistration_commit": "3d0d8ca650d159681fecec324a081d28e8e945eb",
+  "raw_commit": null,
+  "records": [
+    {
+      "case_id": "r2p01.base",
+      "valid": true,
+      "prediction": {
+        "schema_version": "e1.question_decomposition.v2",
+        "mode": "shadow_diagnostic",
+        "points": [
+          {
+            "text": "Identify which file defines the track seed builder in the reconstruction code",
+            "support_spans": [
+              "which file defines the track seed builder"
+            ],
+            "facet_type": "locator",
+            "answer_point_id": "point.1"
+          },
+          {
+            "text": "Identify which file defines the hit filter in the reconstruction code",
+            "support_spans": [
+              "which file defines the hit filter"
+            ],
+            "facet_type": "locator",
+            "answer_point_id": "point.2"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "failure_category": null,
+      "stage": "complete",
+      "raw_proposal": {
+        "points": [
+          {
+            "text": "Identify which file defines the track seed builder in the reconstruction code",
+            "support_spans": [
+              "which file defines the track seed builder"
+            ],
+            "facet_type": "locator"
+          },
+          {
+            "text": "Identify which file defines the hit filter in the reconstruction code",
+            "support_spans": [
+              "which file defines the hit filter"
+            ],
+            "facet_type": "locator"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "usage": {
+        "generation_calls": 1,
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "token_usage": 1164
+      }
+    },
+    {
+      "case_id": "r2p01.paraphrase",
+      "valid": true,
+      "prediction": {
+        "schema_version": "e1.question_decomposition.v2",
+        "mode": "shadow_diagnostic",
+        "points": [
+          {
+            "text": "Identify the source file for the hit filter",
+            "support_spans": [
+              "Identify the source file for the hit filter"
+            ],
+            "facet_type": "locator",
+            "answer_point_id": "point.1"
+          },
+          {
+            "text": "Identify the source file for the track seed builder",
+            "support_spans": [
+              "source file for the track seed builder"
+            ],
+            "facet_type": "locator",
+            "answer_point_id": "point.2"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "failure_category": null,
+      "stage": "complete",
+      "raw_proposal": {
+        "points": [
+          {
+            "text": "Identify the source file for the hit filter",
+            "support_spans": [
+              "Identify the source file for the hit filter"
+            ],
+            "facet_type": "locator"
+          },
+          {
+            "text": "Identify the source file for the track seed builder",
+            "support_spans": [
+              "source file for the track seed builder"
+            ],
+            "facet_type": "locator"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "usage": {
+        "generation_calls": 1,
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "token_usage": 1273
+      }
+    },
+    {
+      "case_id": "r2p02.base",
+      "valid": true,
+      "prediction": {
+        "schema_version": "e1.question_decomposition.v2",
+        "mode": "shadow_diagnostic",
+        "points": [
+          {
+            "text": "Give the implementation entry point for the calibration reader.",
+            "support_spans": [
+              "For the geometry loader and the calibration reader, give their respective implementation entry points."
+            ],
+            "facet_type": "locator",
+            "answer_point_id": "point.1"
+          },
+          {
+            "text": "Give the implementation entry point for the geometry loader.",
+            "support_spans": [
+              "For the geometry loader and the calibration reader, give their respective implementation entry points."
+            ],
+            "facet_type": "locator",
+            "answer_point_id": "point.2"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "failure_category": null,
+      "stage": "complete",
+      "raw_proposal": {
+        "points": [
+          {
+            "text": "Give the implementation entry point for the geometry loader.",
+            "support_spans": [
+              "For the geometry loader and the calibration reader, give their respective implementation entry points."
+            ],
+            "facet_type": "locator"
+          },
+          {
+            "text": "Give the implementation entry point for the calibration reader.",
+            "support_spans": [
+              "For the geometry loader and the calibration reader, give their respective implementation entry points."
+            ],
+            "facet_type": "locator"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "usage": {
+        "generation_calls": 1,
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "token_usage": 1266
+      }
+    },
+    {
+      "case_id": "r2p02.paraphrase",
+      "valid": true,
+      "prediction": {
+        "schema_version": "e1.question_decomposition.v2",
+        "mode": "shadow_diagnostic",
+        "points": [
+          {
+            "text": "Name the implementation entry point of the calibration reader",
+            "support_spans": [
+              "Name the implementation entry point of the calibration reader"
+            ],
+            "facet_type": "locator",
+            "answer_point_id": "point.1"
+          },
+          {
+            "text": "Name the entry point of the geometry loader",
+            "support_spans": [
+              "name the entry point of the geometry loader"
+            ],
+            "facet_type": "locator",
+            "answer_point_id": "point.2"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "failure_category": null,
+      "stage": "complete",
+      "raw_proposal": {
+        "points": [
+          {
+            "text": "Name the implementation entry point of the calibration reader",
+            "support_spans": [
+              "Name the implementation entry point of the calibration reader"
+            ],
+            "facet_type": "locator"
+          },
+          {
+            "text": "Name the entry point of the geometry loader",
+            "support_spans": [
+              "name the entry point of the geometry loader"
+            ],
+            "facet_type": "locator"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "usage": {
+        "generation_calls": 1,
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "token_usage": 1140
+      }
+    },
+    {
+      "case_id": "r2p03.base",
+      "valid": true,
+      "prediction": {
+        "schema_version": "e1.question_decomposition.v2",
+        "mode": "shadow_diagnostic",
+        "points": [
+          {
+            "text": "What role the residual calculator plays in the fit",
+            "support_spans": [
+              "What role does the residual calculator play in the fit"
+            ],
+            "facet_type": "mechanism",
+            "answer_point_id": "point.1"
+          },
+          {
+            "text": "What role the outlier mask plays",
+            "support_spans": [
+              "what role does the outlier mask play"
+            ],
+            "facet_type": "mechanism",
+            "answer_point_id": "point.2"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "failure_category": null,
+      "stage": "complete",
+      "raw_proposal": {
+        "points": [
+          {
+            "text": "What role the residual calculator plays in the fit",
+            "support_spans": [
+              "What role does the residual calculator play in the fit"
+            ],
+            "facet_type": "mechanism"
+          },
+          {
+            "text": "What role the outlier mask plays",
+            "support_spans": [
+              "what role does the outlier mask play"
+            ],
+            "facet_type": "mechanism"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "usage": {
+        "generation_calls": 1,
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "token_usage": 1225
+      }
+    },
+    {
+      "case_id": "r2p03.paraphrase",
+      "valid": true,
+      "prediction": {
+        "schema_version": "e1.question_decomposition.v2",
+        "mode": "shadow_diagnostic",
+        "points": [
+          {
+            "text": "Explain the outlier mask's contribution to the fit.",
+            "support_spans": [
+              "outlier mask's contribution to the fit"
+            ],
+            "facet_type": "mechanism",
+            "answer_point_id": "point.1"
+          },
+          {
+            "text": "Explain the residual calculator's contribution.",
+            "support_spans": [
+              "residual calculator's contribution"
+            ],
+            "facet_type": "mechanism",
+            "answer_point_id": "point.2"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "failure_category": null,
+      "stage": "complete",
+      "raw_proposal": {
+        "points": [
+          {
+            "text": "Explain the outlier mask's contribution to the fit.",
+            "support_spans": [
+              "outlier mask's contribution to the fit"
+            ],
+            "facet_type": "mechanism"
+          },
+          {
+            "text": "Explain the residual calculator's contribution.",
+            "support_spans": [
+              "residual calculator's contribution"
+            ],
+            "facet_type": "mechanism"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "usage": {
+        "generation_calls": 1,
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "token_usage": 1151
+      }
+    },
+    {
+      "case_id": "r2p04.base",
+      "valid": true,
+      "prediction": {
+        "schema_version": "e1.question_decomposition.v2",
+        "mode": "shadow_diagnostic",
+        "points": [
+          {
+            "text": "Explain the contribution of the alignment constants to event reconstruction",
+            "support_spans": [
+              "contributions of the alignment constants",
+              "to event reconstruction"
+            ],
+            "facet_type": "mechanism",
+            "answer_point_id": "point.1"
+          },
+          {
+            "text": "Explain the contribution of the timing offsets to event reconstruction",
+            "support_spans": [
+              "timing offsets to event reconstruction"
+            ],
+            "facet_type": "mechanism",
+            "answer_point_id": "point.2"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "failure_category": null,
+      "stage": "complete",
+      "raw_proposal": {
+        "points": [
+          {
+            "text": "Explain the contribution of the alignment constants to event reconstruction",
+            "support_spans": [
+              "contributions of the alignment constants",
+              "to event reconstruction"
+            ],
+            "facet_type": "mechanism"
+          },
+          {
+            "text": "Explain the contribution of the timing offsets to event reconstruction",
+            "support_spans": [
+              "timing offsets to event reconstruction"
+            ],
+            "facet_type": "mechanism"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "usage": {
+        "generation_calls": 1,
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "token_usage": 1567
+      }
+    },
+    {
+      "case_id": "r2p04.paraphrase",
+      "valid": true,
+      "prediction": {
+        "schema_version": "e1.question_decomposition.v2",
+        "mode": "shadow_diagnostic",
+        "points": [
+          {
+            "text": "What is contributed by the timing offsets in reconstructing an event",
+            "support_spans": [
+              "In reconstructing an event, what is contributed by the timing offsets?"
+            ],
+            "facet_type": "mechanism",
+            "answer_point_id": "point.1"
+          },
+          {
+            "text": "What is contributed by the alignment constants in reconstructing an event",
+            "support_spans": [
+              "What is contributed by the alignment constants?"
+            ],
+            "facet_type": "mechanism",
+            "answer_point_id": "point.2"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "failure_category": null,
+      "stage": "complete",
+      "raw_proposal": {
+        "points": [
+          {
+            "text": "What is contributed by the timing offsets in reconstructing an event",
+            "support_spans": [
+              "In reconstructing an event, what is contributed by the timing offsets?"
+            ],
+            "facet_type": "mechanism"
+          },
+          {
+            "text": "What is contributed by the alignment constants in reconstructing an event",
+            "support_spans": [
+              "What is contributed by the alignment constants?"
+            ],
+            "facet_type": "mechanism"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "usage": {
+        "generation_calls": 1,
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "token_usage": 1413
+      }
+    },
+    {
+      "case_id": "r2p05.base",
+      "valid": true,
+      "prediction": {
+        "schema_version": "e1.question_decomposition.v2",
+        "mode": "shadow_diagnostic",
+        "points": [
+          {
+            "text": "How a weighted track fit differs from an unweighted track fit",
+            "support_spans": [
+              "How does a weighted track fit differ from an unweighted track fit?"
+            ],
+            "facet_type": "comparison",
+            "answer_point_id": "point.1"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "failure_category": null,
+      "stage": "complete",
+      "raw_proposal": {
+        "points": [
+          {
+            "text": "How a weighted track fit differs from an unweighted track fit",
+            "support_spans": [
+              "How does a weighted track fit differ from an unweighted track fit?"
+            ],
+            "facet_type": "comparison"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "usage": {
+        "generation_calls": 1,
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "token_usage": 1147
+      }
+    },
+    {
+      "case_id": "r2p05.paraphrase",
+      "valid": true,
+      "prediction": {
+        "schema_version": "e1.question_decomposition.v2",
+        "mode": "shadow_diagnostic",
+        "points": [
+          {
+            "text": "Compare weighted and unweighted track fitting.",
+            "support_spans": [
+              "Compare weighted and unweighted track fitting."
+            ],
+            "facet_type": "comparison",
+            "answer_point_id": "point.1"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "failure_category": null,
+      "stage": "complete",
+      "raw_proposal": {
+        "points": [
+          {
+            "text": "Compare weighted and unweighted track fitting.",
+            "support_spans": [
+              "Compare weighted and unweighted track fitting."
+            ],
+            "facet_type": "comparison"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "usage": {
+        "generation_calls": 1,
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "token_usage": 1184
+      }
+    },
+    {
+      "case_id": "r2p06.base",
+      "valid": true,
+      "prediction": {
+        "schema_version": "e1.question_decomposition.v2",
+        "mode": "shadow_diagnostic",
+        "points": [
+          {
+            "text": "Contrast the failure behavior of a strict configuration parser with that of a permissive parser.",
+            "support_spans": [
+              "Contrast the failure behavior of a strict configuration parser with that of a permissive parser."
+            ],
+            "facet_type": "comparison",
+            "answer_point_id": "point.1"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "failure_category": null,
+      "stage": "complete",
+      "raw_proposal": {
+        "points": [
+          {
+            "text": "Contrast the failure behavior of a strict configuration parser with that of a permissive parser.",
+            "support_spans": [
+              "Contrast the failure behavior of a strict configuration parser with that of a permissive parser."
+            ],
+            "facet_type": "comparison"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "usage": {
+        "generation_calls": 1,
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "token_usage": 1220
+      }
+    },
+    {
+      "case_id": "r2p06.paraphrase",
+      "valid": true,
+      "prediction": {
+        "schema_version": "e1.question_decomposition.v2",
+        "mode": "shadow_diagnostic",
+        "points": [
+          {
+            "text": "The differences in failure behavior between strict and permissive configuration parsing",
+            "support_spans": [
+              "What differences in failure behavior distinguish strict and permissive configuration parsing?"
+            ],
+            "facet_type": "comparison",
+            "answer_point_id": "point.1"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "failure_category": null,
+      "stage": "complete",
+      "raw_proposal": {
+        "points": [
+          {
+            "text": "The differences in failure behavior between strict and permissive configuration parsing",
+            "support_spans": [
+              "What differences in failure behavior distinguish strict and permissive configuration parsing?"
+            ],
+            "facet_type": "comparison"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "usage": {
+        "generation_calls": 1,
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "token_usage": 1125
+      }
+    },
+    {
+      "case_id": "r2p07.base",
+      "valid": true,
+      "prediction": {
+        "schema_version": "e1.question_decomposition.v2",
+        "mode": "shadow_diagnostic",
+        "points": [
+          {
+            "text": "Describe the path of an event record from the input reader to the output writer.",
+            "support_spans": [
+              "Describe the path of an event record from the input reader to the output writer."
+            ],
+            "facet_type": "data_flow",
+            "answer_point_id": "point.1"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "failure_category": null,
+      "stage": "complete",
+      "raw_proposal": {
+        "points": [
+          {
+            "text": "Describe the path of an event record from the input reader to the output writer.",
+            "support_spans": [
+              "Describe the path of an event record from the input reader to the output writer."
+            ],
+            "facet_type": "data_flow"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "usage": {
+        "generation_calls": 1,
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "token_usage": 1154
+      }
+    },
+    {
+      "case_id": "r2p07.paraphrase",
+      "valid": true,
+      "prediction": {
+        "schema_version": "e1.question_decomposition.v2",
+        "mode": "shadow_diagnostic",
+        "points": [
+          {
+            "text": "How an event record travels from the input reader through to the output writer",
+            "support_spans": [
+              "How does an event record travel from the input reader through to the output writer?"
+            ],
+            "facet_type": "data_flow",
+            "answer_point_id": "point.1"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "failure_category": null,
+      "stage": "complete",
+      "raw_proposal": {
+        "points": [
+          {
+            "text": "How an event record travels from the input reader through to the output writer",
+            "support_spans": [
+              "How does an event record travel from the input reader through to the output writer?"
+            ],
+            "facet_type": "data_flow"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "usage": {
+        "generation_calls": 1,
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "token_usage": 1194
+      }
+    },
+    {
+      "case_id": "r2p08.base",
+      "valid": true,
+      "prediction": {
+        "schema_version": "e1.question_decomposition.v2",
+        "mode": "shadow_diagnostic",
+        "points": [
+          {
+            "text": "How detector coordinates are transformed into the coordinate system used by the track fit",
+            "support_spans": [
+              "How are detector coordinates transformed into the coordinate system used by the track fit?"
+            ],
+            "facet_type": "mechanism",
+            "answer_point_id": "point.1"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "failure_category": null,
+      "stage": "complete",
+      "raw_proposal": {
+        "points": [
+          {
+            "text": "How detector coordinates are transformed into the coordinate system used by the track fit",
+            "support_spans": [
+              "How are detector coordinates transformed into the coordinate system used by the track fit?"
+            ],
+            "facet_type": "mechanism"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "usage": {
+        "generation_calls": 1,
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "token_usage": 1123
+      }
+    },
+    {
+      "case_id": "r2p08.paraphrase",
+      "valid": true,
+      "prediction": {
+        "schema_version": "e1.question_decomposition.v2",
+        "mode": "shadow_diagnostic",
+        "points": [
+          {
+            "text": "Explain the transformation from detector coordinates to the track fit's coordinate system",
+            "support_spans": [
+              "Explain the transformation from detector coordinates to the track fit's coordinate system."
+            ],
+            "facet_type": "mechanism",
+            "answer_point_id": "point.1"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "failure_category": null,
+      "stage": "complete",
+      "raw_proposal": {
+        "points": [
+          {
+            "text": "Explain the transformation from detector coordinates to the track fit's coordinate system",
+            "support_spans": [
+              "Explain the transformation from detector coordinates to the track fit's coordinate system."
+            ],
+            "facet_type": "mechanism"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "usage": {
+        "generation_calls": 1,
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "token_usage": 1114
+      }
+    },
+    {
+      "case_id": "r2p09.base",
+      "valid": true,
+      "prediction": {
+        "schema_version": "e1.question_decomposition.v2",
+        "mode": "shadow_diagnostic",
+        "points": [
+          {
+            "text": "What a fit residual means",
+            "support_spans": [
+              "What does a fit residual mean"
+            ],
+            "facet_type": "definition",
+            "answer_point_id": "point.1"
+          },
+          {
+            "text": "How a fit residual is different from a pull",
+            "support_spans": [
+              "how is it different from a pull"
+            ],
+            "facet_type": "comparison",
+            "answer_point_id": "point.2"
+          },
+          {
+            "text": "Where the residual calculation is implemented",
+            "support_spans": [
+              "where is the residual calculation implemented"
+            ],
+            "facet_type": "locator",
+            "answer_point_id": "point.3"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "failure_category": null,
+      "stage": "complete",
+      "raw_proposal": {
+        "points": [
+          {
+            "text": "What a fit residual means",
+            "support_spans": [
+              "What does a fit residual mean"
+            ],
+            "facet_type": "definition"
+          },
+          {
+            "text": "How a fit residual is different from a pull",
+            "support_spans": [
+              "how is it different from a pull"
+            ],
+            "facet_type": "comparison"
+          },
+          {
+            "text": "Where the residual calculation is implemented",
+            "support_spans": [
+              "where is the residual calculation implemented"
+            ],
+            "facet_type": "locator"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "usage": {
+        "generation_calls": 1,
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "token_usage": 1167
+      }
+    },
+    {
+      "case_id": "r2p09.paraphrase",
+      "valid": true,
+      "prediction": {
+        "schema_version": "e1.question_decomposition.v2",
+        "mode": "shadow_diagnostic",
+        "points": [
+          {
+            "text": "Locate where the residual calculation is implemented",
+            "support_spans": [
+              "Locate where the residual calculation is implemented"
+            ],
+            "facet_type": "locator",
+            "answer_point_id": "point.1"
+          },
+          {
+            "text": "Define a fit residual",
+            "support_spans": [
+              "define a fit residual"
+            ],
+            "facet_type": "definition",
+            "answer_point_id": "point.2"
+          },
+          {
+            "text": "Compare a residual with a pull",
+            "support_spans": [
+              "compare a residual with a pull"
+            ],
+            "facet_type": "comparison",
+            "answer_point_id": "point.3"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "failure_category": null,
+      "stage": "complete",
+      "raw_proposal": {
+        "points": [
+          {
+            "text": "Locate where the residual calculation is implemented",
+            "support_spans": [
+              "Locate where the residual calculation is implemented"
+            ],
+            "facet_type": "locator"
+          },
+          {
+            "text": "Define a fit residual",
+            "support_spans": [
+              "define a fit residual"
+            ],
+            "facet_type": "definition"
+          },
+          {
+            "text": "Compare a residual with a pull",
+            "support_spans": [
+              "compare a residual with a pull"
+            ],
+            "facet_type": "comparison"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "usage": {
+        "generation_calls": 1,
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "token_usage": 1276
+      }
+    },
+    {
+      "case_id": "r2p10.base",
+      "valid": true,
+      "prediction": {
+        "schema_version": "e1.question_decomposition.v2",
+        "mode": "shadow_diagnostic",
+        "points": [
+          {
+            "text": "Identify which component reads the run configuration.",
+            "support_spans": [
+              "Which component reads the run configuration"
+            ],
+            "facet_type": "locator",
+            "answer_point_id": "point.1"
+          },
+          {
+            "text": "Describe what happens when a required field is absent.",
+            "support_spans": [
+              "what happens when a required field is absent"
+            ],
+            "facet_type": "api_behavior",
+            "answer_point_id": "point.2"
+          },
+          {
+            "text": "Explain why defaults are disallowed for that field.",
+            "support_spans": [
+              "why are defaults disallowed for that field"
+            ],
+            "facet_type": "cause_reason",
+            "answer_point_id": "point.3"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "failure_category": null,
+      "stage": "complete",
+      "raw_proposal": {
+        "points": [
+          {
+            "text": "Identify which component reads the run configuration.",
+            "support_spans": [
+              "Which component reads the run configuration"
+            ],
+            "facet_type": "locator"
+          },
+          {
+            "text": "Describe what happens when a required field is absent.",
+            "support_spans": [
+              "what happens when a required field is absent"
+            ],
+            "facet_type": "api_behavior"
+          },
+          {
+            "text": "Explain why defaults are disallowed for that field.",
+            "support_spans": [
+              "why are defaults disallowed for that field"
+            ],
+            "facet_type": "cause_reason"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "usage": {
+        "generation_calls": 1,
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "token_usage": 1244
+      }
+    },
+    {
+      "case_id": "r2p10.paraphrase",
+      "valid": true,
+      "prediction": {
+        "schema_version": "e1.question_decomposition.v2",
+        "mode": "shadow_diagnostic",
+        "points": [
+          {
+            "text": "Explain why the required configuration field cannot use a default.",
+            "support_spans": [
+              "Explain why that required configuration field cannot use a default"
+            ],
+            "facet_type": "cause_reason",
+            "answer_point_id": "point.1"
+          },
+          {
+            "text": "Identify the component reading the run configuration.",
+            "support_spans": [
+              "identify the component reading the run configuration"
+            ],
+            "facet_type": "locator",
+            "answer_point_id": "point.2"
+          },
+          {
+            "text": "Describe the behavior if the field is missing.",
+            "support_spans": [
+              "describe the behavior if the field is missing"
+            ],
+            "facet_type": "api_behavior",
+            "answer_point_id": "point.3"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "failure_category": null,
+      "stage": "complete",
+      "raw_proposal": {
+        "points": [
+          {
+            "text": "Explain why the required configuration field cannot use a default.",
+            "support_spans": [
+              "Explain why that required configuration field cannot use a default"
+            ],
+            "facet_type": "cause_reason"
+          },
+          {
+            "text": "Identify the component reading the run configuration.",
+            "support_spans": [
+              "identify the component reading the run configuration"
+            ],
+            "facet_type": "locator"
+          },
+          {
+            "text": "Describe the behavior if the field is missing.",
+            "support_spans": [
+              "describe the behavior if the field is missing"
+            ],
+            "facet_type": "api_behavior"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "usage": {
+        "generation_calls": 1,
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "token_usage": 1188
+      }
+    },
+    {
+      "case_id": "r2p11.base",
+      "valid": true,
+      "prediction": {
+        "schema_version": "e1.question_decomposition.v2",
+        "mode": "shadow_diagnostic",
+        "points": [
+          {
+            "text": "Define an event time window",
+            "support_spans": [
+              "Define an event time window"
+            ],
+            "facet_type": "definition",
+            "answer_point_id": "point.1"
+          },
+          {
+            "text": "State the unit of an event time window",
+            "support_spans": [
+              "state its unit"
+            ],
+            "answer_point_id": "point.2"
+          },
+          {
+            "text": "Identify the component that applies the event time window",
+            "support_spans": [
+              "identify the component that applies it"
+            ],
+            "answer_point_id": "point.3"
+          },
+          {
+            "text": "Explain why the upper boundary of an event time window is excluded",
+            "support_spans": [
+              "explain why its upper boundary is excluded"
+            ],
+            "facet_type": "cause_reason",
+            "answer_point_id": "point.4"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "failure_category": null,
+      "stage": "complete",
+      "raw_proposal": {
+        "points": [
+          {
+            "text": "Define an event time window",
+            "support_spans": [
+              "Define an event time window"
+            ],
+            "facet_type": "definition"
+          },
+          {
+            "text": "State the unit of an event time window",
+            "support_spans": [
+              "state its unit"
+            ]
+          },
+          {
+            "text": "Identify the component that applies the event time window",
+            "support_spans": [
+              "identify the component that applies it"
+            ]
+          },
+          {
+            "text": "Explain why the upper boundary of an event time window is excluded",
+            "support_spans": [
+              "explain why its upper boundary is excluded"
+            ],
+            "facet_type": "cause_reason"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "usage": {
+        "generation_calls": 1,
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "token_usage": 1353
+      }
+    },
+    {
+      "case_id": "r2p11.paraphrase",
+      "valid": true,
+      "prediction": {
+        "schema_version": "e1.question_decomposition.v2",
+        "mode": "shadow_diagnostic",
+        "points": [
+          {
+            "text": "Explain why the upper boundary is excluded for an event time window",
+            "support_spans": [
+              "explain why the upper boundary is excluded"
+            ],
+            "facet_type": "cause_reason",
+            "answer_point_id": "point.1"
+          },
+          {
+            "text": "Name the component applying the event time window",
+            "support_spans": [
+              "name the component applying the window"
+            ],
+            "facet_type": "implementation",
+            "answer_point_id": "point.2"
+          },
+          {
+            "text": "Give the unit for the event time window",
+            "support_spans": [
+              "give the unit"
+            ],
+            "facet_type": "constraint",
+            "answer_point_id": "point.3"
+          },
+          {
+            "text": "Provide a definition for an event time window",
+            "support_spans": [
+              "provide a definition"
+            ],
+            "facet_type": "definition",
+            "answer_point_id": "point.4"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "failure_category": null,
+      "stage": "complete",
+      "raw_proposal": {
+        "points": [
+          {
+            "text": "Explain why the upper boundary is excluded for an event time window",
+            "support_spans": [
+              "explain why the upper boundary is excluded"
+            ],
+            "facet_type": "cause_reason"
+          },
+          {
+            "text": "Name the component applying the event time window",
+            "support_spans": [
+              "name the component applying the window"
+            ],
+            "facet_type": "implementation"
+          },
+          {
+            "text": "Give the unit for the event time window",
+            "support_spans": [
+              "give the unit"
+            ],
+            "facet_type": "constraint"
+          },
+          {
+            "text": "Provide a definition for an event time window",
+            "support_spans": [
+              "provide a definition"
+            ],
+            "facet_type": "definition"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "usage": {
+        "generation_calls": 1,
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "token_usage": 1375
+      }
+    },
+    {
+      "case_id": "r2p12.base",
+      "valid": true,
+      "prediction": {
+        "schema_version": "e1.question_decomposition.v2",
+        "mode": "shadow_diagnostic",
+        "points": [
+          {
+            "text": "Purpose of the hit cache",
+            "support_spans": [
+              "give its purpose"
+            ],
+            "facet_type": "definition",
+            "answer_point_id": "point.1"
+          },
+          {
+            "text": "Key format of the hit cache",
+            "support_spans": [
+              "the key format"
+            ],
+            "facet_type": "definition",
+            "answer_point_id": "point.2"
+          },
+          {
+            "text": "Eviction condition for the hit cache",
+            "support_spans": [
+              "the eviction condition"
+            ],
+            "facet_type": "mechanism",
+            "answer_point_id": "point.3"
+          },
+          {
+            "text": "Behavior of the hit cache on a miss",
+            "support_spans": [
+              "the behavior on a miss"
+            ],
+            "facet_type": "api_behavior",
+            "answer_point_id": "point.4"
+          },
+          {
+            "text": "Location where the hit cache is implemented",
+            "support_spans": [
+              "the location of its implementation"
+            ],
+            "facet_type": "locator",
+            "answer_point_id": "point.5"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "failure_category": null,
+      "stage": "complete",
+      "raw_proposal": {
+        "points": [
+          {
+            "text": "Purpose of the hit cache",
+            "support_spans": [
+              "give its purpose"
+            ],
+            "facet_type": "definition"
+          },
+          {
+            "text": "Key format of the hit cache",
+            "support_spans": [
+              "the key format"
+            ],
+            "facet_type": "definition"
+          },
+          {
+            "text": "Eviction condition for the hit cache",
+            "support_spans": [
+              "the eviction condition"
+            ],
+            "facet_type": "mechanism"
+          },
+          {
+            "text": "Behavior of the hit cache on a miss",
+            "support_spans": [
+              "the behavior on a miss"
+            ],
+            "facet_type": "api_behavior"
+          },
+          {
+            "text": "Location where the hit cache is implemented",
+            "support_spans": [
+              "the location of its implementation"
+            ],
+            "facet_type": "locator"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "usage": {
+        "generation_calls": 1,
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "token_usage": 1478
+      }
+    },
+    {
+      "case_id": "r2p12.paraphrase",
+      "valid": true,
+      "prediction": {
+        "schema_version": "e1.question_decomposition.v2",
+        "mode": "shadow_diagnostic",
+        "points": [
+          {
+            "text": "Where the hit cache is implemented",
+            "support_spans": [
+              "Where is the hit cache implemented"
+            ],
+            "facet_type": "locator",
+            "answer_point_id": "point.1"
+          },
+          {
+            "text": "What happens on a cache miss",
+            "support_spans": [
+              "what happens on a cache miss"
+            ],
+            "facet_type": "mechanism",
+            "answer_point_id": "point.2"
+          },
+          {
+            "text": "When entries are evicted",
+            "support_spans": [
+              "when are entries evicted"
+            ],
+            "facet_type": "mechanism",
+            "answer_point_id": "point.3"
+          },
+          {
+            "text": "How a key is structured",
+            "support_spans": [
+              "how is a key structured"
+            ],
+            "facet_type": "definition",
+            "answer_point_id": "point.4"
+          },
+          {
+            "text": "What purpose the cache serves",
+            "support_spans": [
+              "what purpose does the cache serve"
+            ],
+            "facet_type": "cause_reason",
+            "answer_point_id": "point.5"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "failure_category": null,
+      "stage": "complete",
+      "raw_proposal": {
+        "points": [
+          {
+            "text": "Where the hit cache is implemented",
+            "support_spans": [
+              "Where is the hit cache implemented"
+            ],
+            "facet_type": "locator"
+          },
+          {
+            "text": "What happens on a cache miss",
+            "support_spans": [
+              "what happens on a cache miss"
+            ],
+            "facet_type": "mechanism"
+          },
+          {
+            "text": "When entries are evicted",
+            "support_spans": [
+              "when are entries evicted"
+            ],
+            "facet_type": "mechanism"
+          },
+          {
+            "text": "How a key is structured",
+            "support_spans": [
+              "how is a key structured"
+            ],
+            "facet_type": "definition"
+          },
+          {
+            "text": "What purpose the cache serves",
+            "support_spans": [
+              "what purpose does the cache serve"
+            ],
+            "facet_type": "cause_reason"
+          }
+        ],
+        "ambiguity": {
+          "status": "clear",
+          "reason": ""
+        }
+      },
+      "usage": {
+        "generation_calls": 1,
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "token_usage": 1515
+      }
+    }
+  ]
+}
