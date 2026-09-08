@@ -27,8 +27,11 @@ The roadmap is governed by the following core development principles:
 E1-CLOSURE-REVIEW = COMPLETE / PASS / REAL_PANDA_STYLE_CONFIRMATION_REQUIRED_BEFORE_CLOSURE.
 E1-C1 = COMPLETE / PASS / REAL_PANDA_STYLE_EXPOSED_DEVELOPMENT_CONFIRMATION_PASSED.
 E1 = COMPLETE / PASS / QUESTION_ONLY_SEMANTIC_ANSWER_POINT_DECOMPOSITION_VALIDATED.
+E2-A1 = COMPLETE / PASS / SHADOW_ANSWER_POINT_COVERAGE_CONTRACT_IMPLEMENTED.
+E2 = IN_PROGRESS / SHADOW_COVERAGE_CONTRACT_IMPLEMENTED / TARGETED_VALIDATION_PENDING.
+E2-A1 report: `evaluation/E2_A1_SHADOW_ANSWER_POINT_COVERAGE_CONTRACT.md`.
 C1 met all eight strict gates and the original pair09 atomicity sentinel. Per the
-accepted closure decision, E1 closes directly. E2/E3 remain NOT_STARTED.
+accepted closure decision, E1 is complete. E2-A1 implements the shadow coverage contract; E3 remains NOT_STARTED.
 Decision: `evaluation/E1_CLOSURE_SCOPE_REVIEW.md`.
 Report: `evaluation/E1_C1_REAL_STYLE_CONFIRMATION.md`.
 Preregistration: `2517b691245c38175222064e6ca546d06fd21e9a`.
@@ -36,7 +39,7 @@ Raw freeze: `7eab1e8fe099fed6ff06384c4fa0eb48dcf52677`.
 
 
 Repository planning baseline:
-781007c810b113537025dbe93c28728a59e318bc (E1-C1 starting HEAD)
+860faf60417fe099baa6d3a0b4ba59926363ca90 (E2-A1 starting HEAD)
 
 Latest accepted production action:
 D4-A10
@@ -56,7 +59,7 @@ Phase D:
 PAUSED / ROADMAP_RECONCILIATION
 
 Phase E:
-IN_PROGRESS / E1_COMPLETE / E2_NEXT
+IN_PROGRESS / E2
 
 E1:
 COMPLETE / PASS / QUESTION_ONLY_SEMANTIC_ANSWER_POINT_DECOMPOSITION_VALIDATED
@@ -86,14 +89,14 @@ D4 overall completion:
 UNDECIDED
 
 Next task recommendation:
-E2 — Answer-Point Coverage and Claim Mapping / NOT AUTHORIZED
+E2-A2 — Targeted Claim-Mapping and Missing-Point Validation / NOT AUTHORIZED
 
 Current task authorization:
-E1-C1 completed and E1 closed within authorization; E2 is recommended but not authorized.
+E2-A1 completed within authorization. E2-A2 and E3 are not authorized.
 
 No D4-A11 exists.
 No further D4 task is currently authorized.
-No further Phase-E task is currently authorized after E1-C1.
+No further Phase-E task is currently authorized after E2-A1.
 No further Phase-F task is currently authorized.
 
 ## Phase overview
@@ -110,7 +113,7 @@ No further Phase-F task is currently authorized.
 - **Phase D — Concept and entity knowledge abstraction:** `PAUSED / ROADMAP_RECONCILIATION`
   Structured domain concept/entity representation, bounded resolver authority, and generic evidence-link bridging established. Bounded query-expansion migrations are active in production, while broader residual scope remains unreconciled.
 
-- **Phase E — Answer generalization:** `IN_PROGRESS / E1_COMPLETE / E2_NEXT`
+- **Phase E — Answer generalization:** `IN_PROGRESS / E2`
   Dynamic question decomposition, answer-point coverage, claim-to-evidence mapping, and targeted completeness recovery.
 
 - **Phase F — Benchmark dependency cleanup and final answering:** `IN_PROGRESS / F1_COMPLETE`
@@ -448,7 +451,7 @@ Phase E addresses answer synthesis, facet coverage, claim-to-evidence grounding,
 - **E1-R1 evidence:** `evaluation/E1_R1_SEMANTIC_ANSWER_POINT_CONTRACT_REPAIR.md`.
 - **Evidence:** `evaluation/e1_a1_dynamic_question_decomposition_contract.json`, `evaluation/E1_A1_DYNAMIC_QUESTION_DECOMPOSITION_CONTRACT.md`.
 - **E1-R2 outcome:** COMPLETE / PASS / TARGETED_PROSPECTIVE_SEMANTIC_ANSWER_POINT_REVALIDATION_PASSED. Human-approved fresh synthetic exploratory English cohort: 24/24 valid, semantic recall 54/54, precision 54/54, under/over 0, exact count 24/24, semantic-complete pairs 12/12, hidden prerequisites 0; all eight gates passed. Raw records were committed before judging. Preregistration `3d0d8ca650d159681fecec324a081d28e8e945eb`; raw freeze `a5275dfee6c4134f3ad790a5598ca0c0a51f1a58`. Report: `evaluation/E1_R2_SEMANTIC_ANSWER_POINT_REVALIDATION.md`; result: `evaluation/e1_r2_semantic_answer_point_revalidation_result.json`.
-- **Next task recommendation:** E2 — Answer-Point Coverage and Claim Mapping; NOT AUTHORIZED. E1 is complete at bounded shadow decomposition scope; production compatibility requirements remain unchanged.
+- **Next task recommendation:** E2-A2 — Targeted Claim-Mapping and Missing-Point Validation; NOT AUTHORIZED. E1 is complete at bounded shadow decomposition scope; production compatibility requirements remain unchanged.
 - **Problem:** A single `question_core` plus domain-specific requirements can be complete on known questions but miss unseen multi-part structure.
 - **Goal:** Derive 1–5 evidence-independent, independently satisfiable explicit response obligations from the question itself, each independently checkable for omission.
 - **Why this stage:** Retrieval generalization and structured knowledge must be established before asking decomposition to drive completeness.
@@ -464,7 +467,9 @@ Phase E addresses answer synthesis, facet coverage, claim-to-evidence grounding,
 
 ### E2 — Answer-point coverage and claim mapping
 
-- **Status:** NOT_STARTED
+- **Status:** IN_PROGRESS / SHADOW_COVERAGE_CONTRACT_IMPLEMENTED / TARGETED_VALIDATION_PENDING
+- **E2-A1 outcome:** COMPLETE / PASS / SHADOW_ANSWER_POINT_COVERAGE_CONTRACT_IMPLEMENTED. Explicit diagnostic entrypoint projects E1 IDs/text into the existing QA graph. The existing evidence review independently checks claim mapping and collective completeness; missing points reuse one revision with existing evidence. Normal QA, public DTOs, retrieval, and legacy requirements remain unchanged. Focused fake-based checks passed: 42 E2-A1 and 38 QA tests; 32 E1 decomposition tests also passed. No live scientific calls. Report: `evaluation/E2_A1_SHADOW_ANSWER_POINT_COVERAGE_CONTRACT.md`.
+- **Next task:** E2-A2 — Targeted Claim-Mapping and Missing-Point Validation; NOT AUTHORIZED. Real semantic mapping and missing-point quality remain unvalidated.
 - **Problem:** Atomic claims are not generically accountable to the facets the user asked to have answered.
 - **Goal:** Map every generated claim to one or more answer-point IDs and evidence IDs, then measure completeness and support.
 - **Why this stage:** E1 quality must be proven before its points become a runtime completeness contract.
@@ -578,11 +583,11 @@ At release, Generalization Gap means benchmark score minus novel score. Benchmar
 2. **Remaining D4 candidate disposition:** Does the remaining unassessed D4 inventory contain another naturally testable, high-value migration batch, or should residual entries remain on HOLD?
 3. **Phase-F scope boundary:** F1 has established the bounded non-D4 residual inventory and candidate owners. Which candidates warrant a separately authorized treatment remains undecided.
 4. **Bottleneck prioritization:** Is answer completeness and decomposition (Phase E) now a larger production bottleneck than residual retrieval shortcut dependency?
-5. **Phase execution ordering:** F1 found zero E1 blockers. E1-R2 passed targeted prospective synthetic validation and E1-C1 passed exposed real-style confirmation, including the original atomicity sentinel. E1 is closed under the accepted scope decision. E2 is next and not authorized; no further E1 confirmation is required.
+5. **Phase execution ordering:** F1 found zero E1 blockers. E1-R2 passed targeted prospective synthetic validation and E1-C1 passed exposed real-style confirmation, including the original atomicity sentinel. E1 is closed under the accepted scope decision. E2-A1 is complete; E2-A2 is next and not authorized. No further E1 confirmation is required.
 
 ```text
-CURRENT_TASK = E1-C1 / COMPLETE / PASS
-NEXT_TASK_RECOMMENDATION = E2 — Answer-Point Coverage and Claim Mapping
+CURRENT_TASK = E2-A1 / COMPLETE / PASS
+NEXT_TASK_RECOMMENDATION = E2-A2 — Targeted Claim-Mapping and Missing-Point Validation
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 NEXT_STAGE_AUTHORIZED = false
 ```

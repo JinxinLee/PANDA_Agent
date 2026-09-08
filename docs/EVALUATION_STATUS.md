@@ -20,16 +20,19 @@ The single `Current authoritative state` section is authoritative over historica
 E1-CLOSURE-REVIEW = COMPLETE / PASS / REAL_PANDA_STYLE_CONFIRMATION_REQUIRED_BEFORE_CLOSURE.
 E1-C1 = COMPLETE / PASS / REAL_PANDA_STYLE_EXPOSED_DEVELOPMENT_CONFIRMATION_PASSED.
 E1 = COMPLETE / PASS / QUESTION_ONLY_SEMANTIC_ANSWER_POINT_DECOMPOSITION_VALIDATED.
+E2-A1 = COMPLETE / PASS / SHADOW_ANSWER_POINT_COVERAGE_CONTRACT_IMPLEMENTED.
+E2 = IN_PROGRESS / SHADOW_COVERAGE_CONTRACT_IMPLEMENTED / TARGETED_VALIDATION_PENDING.
+E2-A1 report: `evaluation/E2_A1_SHADOW_ANSWER_POINT_COVERAGE_CONTRACT.md`.
 C1 met all eight strict gates and the original pair09 atomicity sentinel. Per the
-accepted closure decision, E1 closes directly. E2/E3 remain NOT_STARTED.
+accepted closure decision, E1 is complete. E2-A1 implements the shadow coverage contract; E3 remains NOT_STARTED.
 Decision: `evaluation/E1_CLOSURE_SCOPE_REVIEW.md`.
 Report: `evaluation/E1_C1_REAL_STYLE_CONFIRMATION.md`.
 Preregistration: `2517b691245c38175222064e6ca546d06fd21e9a`.
 Raw freeze: `7eab1e8fe099fed6ff06384c4fa0eb48dcf52677`.
 
 
-Repository head (E1-C1 starting baseline):
-781007c810b113537025dbe93c28728a59e318bc
+Repository head (E2-A1 starting baseline):
+860faf60417fe099baa6d3a0b4ba59926363ca90
 
 Latest completed prospective validation:
 E1-R2 — Prospective Semantic Answer-Point Revalidation
@@ -72,21 +75,21 @@ MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD
 Current planning state:
 D4 = PAUSED / ROADMAP_RECONCILIATION
 D4 overall completion = UNDECIDED
-CURRENT_TASK = E1-C1 / COMPLETE / PASS
-NEXT_TASK_RECOMMENDATION = E2 — Answer-Point Coverage and Claim Mapping / NOT AUTHORIZED
+CURRENT_TASK = E2-A1 / COMPLETE / PASS
+NEXT_TASK_RECOMMENDATION = E2-A2 — Targeted Claim-Mapping and Missing-Point Validation / NOT AUTHORIZED
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 
 No D4-A11 exists.
-Phase E = IN_PROGRESS / E1_COMPLETE / E2_NEXT.
+Phase E = IN_PROGRESS / E2.
 E1 = COMPLETE / PASS / QUESTION_ONLY_SEMANTIC_ANSWER_POINT_DECOMPOSITION_VALIDATED.
-E2 = NOT_STARTED.
+E2 = IN_PROGRESS / SHADOW_COVERAGE_CONTRACT_IMPLEMENTED / TARGETED_VALIDATION_PENDING.
 E3 = NOT_STARTED.
 Phase F = IN_PROGRESS / F1_COMPLETE.
 F2 = NOT_STARTED / SCOPE_PRESERVED.
 F3 = SCOPE_RECONCILIATION_REQUIRED / PARTIALLY_SUPERSEDED_BY_D4.
-No further D4, Phase-E, or Phase-F task is authorized after E1-C1.
+No further D4, Phase-E, or Phase-F task is authorized after E2-A1.
 
-## E1-C1 closeout
+## Historical E1-C1 closeout
 
 Exact historical English novel_dev pairs07-12:12 cases,6 pairs,28 references.
 All12 valid, recall28/28, precision28/28, under/over0, exact count12/12,

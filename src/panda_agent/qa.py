@@ -14,6 +14,8 @@ from panda_agent.llm.vertex import VertexAIClient, VertexSettings
 from panda_agent.models import ClaimCitation, QAResult, QAStatus, RetrievalPlan
 from panda_agent.prompts import (
     ANSWER_SYSTEM_PROMPT,
+    ANSWER_POINT_COVERAGE_REVIEW_SYSTEM_PROMPT,
+    ANSWER_POINT_COVERAGE_REVISION_SYSTEM_PROMPT,
     EVIDENCE_REVIEW_SYSTEM_PROMPT,
     REVISION_SYSTEM_PROMPT,
 )
@@ -60,6 +62,23 @@ REVIEW_SCHEMA = {
 
 
 RUNTIME_ANSWER_POINT_ID = "question_core"
+ANSWER_POINT_COVERAGE_REVIEW_SCHEMA = {
+    **REVIEW_SCHEMA,
+    "properties": {
+        **REVIEW_SCHEMA["properties"],
+        "claim_answer_point_mappings": {
+            "type": "array", "items": {
+                "type": "object", "properties": {
+                    "claim_id": {"type": "string"},
+                    "answer_point_ids": {"type": "array", "items": {"type": "string"}},
+                },
+                "required": ["claim_id", "answer_point_ids"], "additionalProperties": False,
+            },
+        },
+        "missing_answer_point_ids": {"type": "array", "items": {"type": "string"}},
+    },
+    "required": [*REVIEW_SCHEMA["required"], "claim_answer_point_mappings", "missing_answer_point_ids"],
+}
 _INTERNAL_CLAIM_IDS = frozenset({"required_workflow", "required_code"})
 _INTERNAL_CLAIM_PREFIXES = ("scope_", "dataflow_locator_")
 _INTERNAL_CLAIM_TEXT_MARKERS = ("curated_panda_domain",)
@@ -508,6 +527,71 @@ def _runtime_answer_points(question: str) -> list[dict[str, str]]:
     return [{"answer_point_id": RUNTIME_ANSWER_POINT_ID, "text": question}]
 
 
+def _coverage_shadow(state: QAState) -> bool:
+    return state.get("answer_point_coverage_mode") == "shadow_e1_v2"
+
+
+def _active_runtime_answer_points(state: QAState) -> list[dict[str, str]]:
+    if not _coverage_shadow(state):
+        return _runtime_answer_points(str(state.get("question", "")))
+    points = state.get("runtime_answer_points")
+    if not isinstance(points, list) or not points:
+        raise ValueError("shadow answer points must be a non-empty list")
+    projected = []
+    seen = set()
+    for point in points:
+        if not isinstance(point, dict) or any(
+            not isinstance(point.get(k), str) or not point[k].strip()
+            for k in ("answer_point_id", "text")
+        ) or point["answer_point_id"] in seen:
+            raise ValueError("shadow answer points require unique non-empty IDs and texts")
+        seen.add(point["answer_point_id"])
+        projected.append({k: point[k] for k in ("answer_point_id", "text")})
+    return projected
+
+
+def _model_claims(claims: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Project model-facing claims; private provenance cannot be model-authored."""
+    return [{k: c.get(k) for k in ("claim_id", "claim_text", "evidence_ids", "answer_point_ids")}
+            for c in claims]
+
+
+def _validate_answer_point_review(
+    review: Any, claims: list[dict[str, Any]], point_ids: set[str], requirement_ids: set[str]
+) -> dict[str, list[str]]:
+    """Validate semantic decisions without turning mapping presence into coverage."""
+    def require(ok: bool, message: str) -> None:
+        if not ok:
+            raise ValueError(message)
+
+    require(isinstance(review, dict) and set(review) == set(ANSWER_POINT_COVERAGE_REVIEW_SCHEMA["required"]),
+            "invalid coverage review fields")
+    require(type(review["supported"]) is bool and isinstance(review["reason"], str), "invalid review types")
+    known = {c["claim_id"] for c in claims}
+    def ids(value: Any, allowed: set[str]) -> list[str]:
+        require(isinstance(value, list) and all(isinstance(v, str) for v in value), "review IDs must be strings")
+        require(len(value) == len(set(value)) and set(value) <= allowed, "unknown or duplicate review ID")
+        return value
+
+    unsupported = set(ids(review["unsupported_claim_ids"], known))
+    irrelevant = set(ids(review["irrelevant_claim_ids"], known))
+    missing = set(ids(review["missing_answer_point_ids"], point_ids))
+    ids(review["missing_requirement_ids"], requirement_ids)
+    records = review["claim_answer_point_mappings"]
+    require(isinstance(records, list), "mapping records must be a list")
+    mappings = {}
+    for record in records:
+        require(isinstance(record, dict) and set(record) == {"claim_id", "answer_point_ids"}, "invalid mapping record")
+        cid = record["claim_id"]
+        require(isinstance(cid, str) and cid in known and cid not in mappings, "unknown or repeated mapping claim")
+        mappings[cid] = ids(record["answer_point_ids"], point_ids)
+        require(bool(mappings[cid]) or cid in unsupported | irrelevant, "unmapped claim must be unsupported or irrelevant")
+    require(set(mappings) == known, "each reviewable claim requires one mapping")
+    contributing = {pid for cid, values in mappings.items() if cid not in unsupported | irrelevant for pid in values}
+    require(point_ids - missing <= contributing, "covered point lacks a supported relevant mapped claim")
+    return mappings
+
+
 def _normalise_claim_answer_points(
     claims: list[dict[str, Any]], question: str
 ) -> list[dict[str, Any]]:
@@ -881,6 +965,10 @@ def render_verified_answer(claims: list[ClaimCitation]) -> str:
 
 class QAState(TypedDict, total=False):
     question: str
+    answer_point_coverage_mode: str
+    runtime_answer_points: list[dict[str, str]]
+    missing_answer_point_ids: list[str]
+    answer_point_audit: dict[str, Any]
     bundle: dict[str, Any]
     sufficient: bool
     draft: dict[str, Any]
@@ -1171,7 +1259,8 @@ class QAAgent:
                     "claim_id": claim_id,
                     "claim_text": f"The relevant implementation locator is {display} at {raw}.",
                     "evidence_ids": [item["evidence_id"] for item in matches[:2]],
-                    "answer_point_ids": [RUNTIME_ANSWER_POINT_ID],
+                    "answer_point_ids": [] if _coverage_shadow(state) else [RUNTIME_ANSWER_POINT_ID],
+                    **({"_unresolved_locator_mapping": True} if _coverage_shadow(state) else {}),
                 }
             )
             additions += 1
@@ -1280,7 +1369,7 @@ class QAAgent:
             {
                 "task": "create_atomic_evidence_bound_claims",
                 "untrusted_question": question,
-                "runtime_answer_points": _runtime_answer_points(question),
+                "runtime_answer_points": _active_runtime_answer_points(state),
                 "answer_requirements": answer_requirements,
                 "retrieval_plan": {
                     "intent": state["bundle"]["plan"].get("intent"),
@@ -1306,6 +1395,8 @@ class QAAgent:
         draft = self.vertex.generate_json(
             prompt, ANSWER_SCHEMA, system_instruction=ANSWER_SYSTEM_PROMPT
         )
+        if _coverage_shadow(state):
+            draft = {"claims": _model_claims(list(draft.get("claims", [])))}
         draft = self._augment_planned_locators(draft, state)
         draft = self._augment_required_dataflow_evidence(draft, state)
         # Version scope is deterministic metadata, not a model guess.  It is
@@ -1384,6 +1475,8 @@ class QAAgent:
         return {"draft": draft, "answer_requirements": answer_requirements}
 
     def _verify(self, state: QAState) -> dict[str, Any]:
+        shadow = _coverage_shadow(state)
+        runtime_points = _active_runtime_answer_points(state)
         draft = state["draft"]
         evidence = {item["evidence_id"]: item for item in state["bundle"]["evidence"]}
         errors: list[str] = []
@@ -1403,7 +1496,7 @@ class QAAgent:
             errors.append("no user-visible claims")
         if len(claim_ids) != len(set(claim_ids)) or any(not value for value in claim_ids):
             errors.append("claim IDs must be unique and non-empty")
-        runtime_answer_point_ids = {item["answer_point_id"] for item in _runtime_answer_points(str(state.get("question", "")))}
+        runtime_answer_point_ids = {item["answer_point_id"] for item in runtime_points}
         expected_code_versions = {
             repo: f"{repo}@{sha}"
             for repo, sha in state["bundle"]["plan"].get("resolved_versions", {}).items()
@@ -1411,12 +1504,20 @@ class QAAgent:
         for claim in claims:
             claim_id = str(claim.get("claim_id") or "")
             claim_errors.setdefault(claim_id, [])
+            if shadow and (not claim_id or claim_ids.count(claim.get("claim_id")) != 1):
+                claim_errors[claim_id].append("claim IDs must be unique and non-empty")
             answer_point_ids = claim.get("answer_point_ids")
-            if not isinstance(answer_point_ids, list) or not answer_point_ids:
+            unresolved_locator = shadow and claim.get("_unresolved_locator_mapping") is True
+            if not isinstance(answer_point_ids, list) or (not answer_point_ids and not unresolved_locator):
                 message = f"claim lacks runtime answer-point mapping: {claim_id}"
                 errors.append(message)
                 claim_errors[claim_id].append(message)
             elif not set(str(value) for value in answer_point_ids).issubset(runtime_answer_point_ids):
+                message = f"claim has invalid runtime answer-point mapping: {claim_id}"
+                errors.append(message)
+                claim_errors[claim_id].append(message)
+            elif shadow and (any(not isinstance(v, str) for v in answer_point_ids)
+                             or len(answer_point_ids) != len(set(answer_point_ids))):
                 message = f"claim has invalid runtime answer-point mapping: {claim_id}"
                 errors.append(message)
                 claim_errors[claim_id].append(message)
@@ -1592,21 +1693,38 @@ class QAAgent:
         )
         known_requirement_ids = {str(item["id"]) for item in answer_requirements}
         requirement_evidence = _requirement_evidence(answer_requirements, evidence)
+        reviewable_claims = [c for c in claims if not claim_errors.get(str(c.get("claim_id") or ""))] if shadow else claims
         review = self.vertex.generate_json(
             json.dumps(
                 {
                     "task": "review_claim_support_and_relevance",
-                    "runtime_answer_points": _runtime_answer_points(str(state.get("question", ""))),
+                    "runtime_answer_points": runtime_points,
                     "answer_requirements": answer_requirements,
                     "requirement_evidence": requirement_evidence,
-                    "untrusted_claims": claims,
+                    "untrusted_claims": _model_claims(reviewable_claims) if shadow else claims,
                     "untrusted_evidence": review_evidence,
                 },
                 ensure_ascii=False,
             ),
-            REVIEW_SCHEMA,
-            system_instruction=EVIDENCE_REVIEW_SYSTEM_PROMPT,
+            ANSWER_POINT_COVERAGE_REVIEW_SCHEMA if shadow else REVIEW_SCHEMA,
+            system_instruction=ANSWER_POINT_COVERAGE_REVIEW_SYSTEM_PROMPT if shadow else EVIDENCE_REVIEW_SYSTEM_PROMPT,
         )
+        verified_mappings: dict[str, list[str]] = {}
+        coverage_review_error = None
+        missing_points: list[str] = []
+        if shadow:
+            try:
+                verified_mappings = _validate_answer_point_review(
+                    review, reviewable_claims, runtime_answer_point_ids, known_requirement_ids
+                )
+            except ValueError as exc:
+                coverage_review_error = str(exc)
+                errors.append(f"invalid answer-point coverage review: {exc}")
+                review = {"supported": False, "unsupported_claim_ids": [c["claim_id"] for c in reviewable_claims],
+                          "irrelevant_claim_ids": [], "missing_requirement_ids": [], "reason": str(exc),
+                          "missing_answer_point_ids": [p["answer_point_id"] for p in runtime_points]}
+            missing_points = list(review["missing_answer_point_ids"])
+            errors.extend(f"missing answer point {pid}" for pid in missing_points)
         unsupported = review.get("unsupported_claim_ids", [])
         irrelevant = review.get("irrelevant_claim_ids", [])
         missing_requirements = [str(value) for value in review.get("missing_requirement_ids", [])]
@@ -1615,7 +1733,7 @@ class QAAgent:
         )
         known_claim_ids = set(claim_ids)
         for claim_id in unsupported:
-            if claim_id in deterministically_supported_claims:
+            if not shadow and claim_id in deterministically_supported_claims:
                 continue
             message = f"unsupported claim {claim_id}" if claim_id in known_claim_ids else f"review returned unknown claim {claim_id}"
             errors.append(message)
@@ -1640,13 +1758,14 @@ class QAAgent:
         # A missing completeness requirement is not a verdict that every
         # already-supported claim is invalid.  Preserve those claims and let
         # the one bounded revision add only the missing factual link.
-        if not review["supported"] and not unsupported and not irrelevant and not accepted_missing_requirements:
+        if not review["supported"] and not unsupported and not irrelevant and not accepted_missing_requirements and not missing_points:
             errors.append(review.get("reason") or "evidence review failed")
         global_review_failure = (
             not review["supported"]
             and not unsupported
             and not irrelevant
             and not accepted_missing_requirements
+            and not missing_points
         )
         supported_claims = [
             claim
@@ -1660,7 +1779,33 @@ class QAAgent:
             for claim in claims
             if claim not in supported_claims and claim.get("claim_id")
         ]
+        coverage_update = {}
+        if shadow:
+            if global_review_failure:
+                missing_points = [p["answer_point_id"] for p in runtime_points]
+            supported_ids = {c["claim_id"] for c in supported_claims}
+            mapping_audit = [{
+                "claim_id": str(c.get("claim_id") or ""),
+                "declared_answer_point_ids": list(c.get("declared_answer_point_ids", c.get("answer_point_ids")) or []),
+                "verified_answer_point_ids": verified_mappings.get(c.get("claim_id"), []),
+                "evidence_ids": list(c.get("evidence_ids") or []),
+                "supported": c.get("claim_id") in supported_ids,
+                "rendered": False,
+            } for c in claims]
+            supported_claims = [{**c,
+                "declared_answer_point_ids": list(c.get("declared_answer_point_ids", c.get("answer_point_ids")) or []),
+                "answer_point_ids": verified_mappings[c["claim_id"]],
+            } for c in supported_claims]
+            covered = [p["answer_point_id"] for p in runtime_points if p["answer_point_id"] not in missing_points]
+            coverage_update = {"missing_answer_point_ids": missing_points, "answer_point_audit": {
+                "mode": "shadow_e1_v2", "answer_points": runtime_points, "claim_mappings": mapping_audit,
+                "covered_answer_point_ids": covered, "missing_answer_point_ids": missing_points,
+                "coverage_complete": not missing_points and not coverage_review_error and not global_review_failure,
+                "coverage_evaluable": not coverage_review_error and not global_review_failure,
+                "review_error": coverage_review_error,
+            }}
         return {
+            **coverage_update,
             "errors": list(dict.fromkeys(errors)),
             "supported_claims": supported_claims,
             "unsupported_claim_ids": list(dict.fromkeys(unsupported_ids)),
@@ -1670,6 +1815,8 @@ class QAAgent:
         }
 
     def _revise(self, state: QAState) -> dict[str, Any]:
+        shadow = _coverage_shadow(state)
+        runtime_points = _active_runtime_answer_points(state)
         supported = list(state.get("supported_claims", []))
         unsupported_ids = set(state.get("unsupported_claim_ids", []))
         unsupported_draft = {
@@ -1696,24 +1843,31 @@ class QAAgent:
             {
                 "task": "revise_unsupported_claims_once",
                 "untrusted_question": state["question"],
-                "runtime_answer_points": _runtime_answer_points(str(state["question"])),
+                "runtime_answer_points": runtime_points,
+                **({
+                    "missing_answer_point_ids": list(state.get("missing_answer_point_ids", [])),
+                    "missing_answer_points": [p for p in runtime_points if p["answer_point_id"] in state.get("missing_answer_point_ids", [])],
+                } if shadow else {}),
                 "answer_requirements": answer_requirements,
                 "missing_requirement_ids": missing_requirement_ids,
                 "requirement_evidence": requirement_evidence,
                 "revision_scope": (
                     "Add only evidence-backed, user-relevant claims needed to satisfy "
-                    "missing_requirement_ids; do not add a claim when evidence does not establish it."
+                    + ("missing_answer_point_ids and/or missing_requirement_ids; " if shadow else "missing_requirement_ids; ")
+                    + "do not add a claim when evidence does not establish it."
                 ),
-                "already_verified_claims_do_not_repeat": supported,
-                "untrusted_draft": unsupported_draft,
+                "already_verified_claims_do_not_repeat": _model_claims(supported) if shadow else supported,
+                "untrusted_draft": {"claims": _model_claims(unsupported_draft["claims"])} if shadow else unsupported_draft,
                 "verification_errors": state["errors"],
                 "untrusted_evidence": state["bundle"]["evidence"],
             },
             ensure_ascii=False,
         )
         revised = self.vertex.generate_json(
-            prompt, ANSWER_SCHEMA, system_instruction=REVISION_SYSTEM_PROMPT
+            prompt, ANSWER_SCHEMA, system_instruction=ANSWER_POINT_COVERAGE_REVISION_SYSTEM_PROMPT if shadow else REVISION_SYSTEM_PROMPT
         )
+        if shadow:
+            revised = {"claims": _model_claims(list(revised.get("claims", [])))}
         revised_claims = _normalise_claim_answer_points(
             _strip_nonessential_external_identifiers(
                 list(revised.get("claims", [])), str(state["question"]), state["bundle"]["plan"]
@@ -1974,7 +2128,21 @@ class QAAgent:
             for claim in state.get("supported_claims", [])
             if not _internal_claim_reason(claim)
         ]
+        coverage_update = {}
+        if _coverage_shadow(state):
+            points = _active_runtime_answer_points(state)
+            audit = dict(state.get("answer_point_audit") or {
+                "mode": "shadow_e1_v2", "answer_points": points, "claim_mappings": [],
+                "covered_answer_point_ids": [],
+                "missing_answer_point_ids": [p["answer_point_id"] for p in points],
+                "coverage_complete": False, "coverage_evaluable": False,
+            })
+            rendered_ids = {c.claim_id for c in result.claims} if result.status == QAStatus.ANSWERED else set()
+            audit["claim_mappings"] = [{**m, "rendered": m["supported"] and m["claim_id"] in rendered_ids}
+                                       for m in audit["claim_mappings"]]
+            coverage_update["answer_point_audit"] = audit
         return {
+            **coverage_update,
             "result": result.model_dump(mode="json"),
             "claim_audit": [
                 *state.get("claim_audit", []),
@@ -1987,9 +2155,25 @@ class QAAgent:
 
     def run_detailed(self, question: str) -> dict[str, Any]:
         """Execute only the QA graph and expose sanitized workflow diagnostics."""
+        return self._run_detailed(question)
+
+    def run_answer_point_coverage_diagnostic(self, question: str) -> dict[str, Any]:
+        """Explicit E1-v2 shadow coverage; not exposed through normal QA/API."""
+        return self._run_detailed(question, coverage_shadow=True)
+
+    def _run_detailed(self, question: str, *, coverage_shadow: bool = False) -> dict[str, Any]:
         started = time.perf_counter()
         stats_before = self._stats_snapshot()
-        state = self.graph.invoke({"question": question})
+        initial: QAState = {"question": question}
+        decomposition = None
+        decomposition_ms = 0
+        if coverage_shadow:
+            decomposition_started = time.perf_counter()
+            decomposition = self.decompose_question(question)
+            initial.update(answer_point_coverage_mode="shadow_e1_v2", runtime_answer_points=decomposition["points"])
+            initial["runtime_answer_points"] = _active_runtime_answer_points(initial)
+            decomposition_ms = int(round((time.perf_counter() - decomposition_started) * 1000))
+        state = self.graph.invoke(initial)
         duration_ms = int(round((time.perf_counter() - started) * 1000))
         result = QAResult.model_validate(state["result"])
         bundle = state.get("bundle", {})
@@ -2012,10 +2196,14 @@ class QAAgent:
             "verification_errors": state.get("errors", []),
             "claim_audit": state.get("claim_audit", []),
         }
+        if coverage_shadow:
+            diagnostics.update(question_decomposition=decomposition, answer_point_audit=state["answer_point_audit"])
         return {
             "result": result.model_dump(mode="json"),
             "diagnostics": diagnostics,
-            "node_timings_ms": {**state.get("node_timings_ms", {}), "workflow": duration_ms},
+            "node_timings_ms": {**state.get("node_timings_ms", {}),
+                                **({"question_decomposition": decomposition_ms} if coverage_shadow else {}),
+                                "workflow": duration_ms},
             "model_usage": self._model_usage_delta(stats_before),
         }
 

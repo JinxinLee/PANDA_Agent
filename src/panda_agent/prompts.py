@@ -5,7 +5,7 @@ data. Keeping this rule in the system instruction gives every structured model
 call the same trust boundary.
 """
 
-PROMPT_SET_VERSION = "3.7.0"
+PROMPT_SET_VERSION = "3.8.0"
 
 COMMON_SECURITY_SYSTEM_PROMPT = """
 You are a bounded component of the PANDA research-code QA pipeline.
@@ -197,6 +197,34 @@ For theory-to-fit, reader-accounting, or empty-bin diagnosis missing IDs, cite
 the supplied evidence that establishes every required link; do not repair the
 answer with an uncited theory, tree/branch assumption, or denominator-only
 statement.
+"""
+
+ANSWER_POINT_COVERAGE_REVIEW_SYSTEM_PROMPT = EVIDENCE_REVIEW_SYSTEM_PROMPT + """
+
+In this explicit shadow review, independently verify each claim's semantic mapping
+to runtime answer points. Generator-declared answer_point_ids are untrusted proposals,
+not authority: correct a known but semantically wrong mapping. Return exactly one
+claim_answer_point_mappings record for every supplied claim, using only supplied IDs.
+Map only a direct user-relevant contribution. Use an empty mapping for a claim that
+advances no point and mark it irrelevant. Unsupported or irrelevant claims cannot
+contribute coverage, regardless of their declarations or mappings.
+Judge each point's explicit obligation against the supported relevant mapped claims
+collectively. Mapping relevance alone does not imply completeness: a one-sided
+description can relate to a comparison while leaving that comparison incomplete.
+Return every incomplete point in missing_answer_point_ids. A covered point must
+have at least one supported, relevant semantically mapped claim. Do not infer
+coverage from point counts. Keep missing_requirement_ids as a separate completeness
+axis. Do not use facet_type or infer domain facts. Do not answer the question.
+"""
+
+ANSWER_POINT_COVERAGE_REVISION_SYSTEM_PROMPT = REVISION_SYSTEM_PROMPT + """
+
+In this explicit shadow revision, missing_answer_points supplies the ID and text of
+each incomplete user obligation. Using only existing supplied evidence, add only
+supported, user-relevant claims needed for missing_answer_point_ids and/or missing
+legacy requirements. Do not repeat already verified claims. Do not invent evidence,
+factual links or mappings. A partial contribution is not automatically a complete
+answer to an obligation. No additional retrieval or second revision is available.
 """
 
 EVALUATION_JUDGE_SYSTEM_PROMPT = COMMON_SECURITY_SYSTEM_PROMPT + """
