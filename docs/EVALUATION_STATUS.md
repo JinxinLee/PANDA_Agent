@@ -17,8 +17,12 @@ The single `Current authoritative state` section is authoritative over historica
 
 ## Current authoritative state
 
-Repository head (F1 accepted starting baseline):
-53356ab81c1b81abe0c5ae04834f6112f6d2c1a8
+Repository head (E1-A1 accepted starting baseline):
+80b5aa29ac81cc294c2d72e8fe3234d218da3ed0
+
+Latest completed diagnostic implementation:
+E1-A1
+COMPLETE / PASS / QUESTION_ONLY_DIAGNOSTIC_DECOMPOSITION_IMPLEMENTED
 
 Latest completed static inventory:
 F1
@@ -38,15 +42,28 @@ MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD
 Current planning state:
 D4 = PAUSED / ROADMAP_RECONCILIATION
 D4 overall completion = UNDECIDED
-NEXT_TASK_RECOMMENDATION = E1 — Dynamic Question Decomposition / NOT AUTHORIZED
+NEXT_TASK_RECOMMENDATION = E1-A2 — Targeted Dynamic Question Decomposition Validation / NOT AUTHORIZED
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 
 No D4-A11 exists.
-Phase E = NOT_STARTED.
+Phase E = IN_PROGRESS / E1.
+E1 = IN_PROGRESS / DIAGNOSTIC_IMPLEMENTATION_COMPLETE / VALIDATION_PENDING.
 Phase F = IN_PROGRESS / F1_COMPLETE.
 F2 = NOT_STARTED / SCOPE_PRESERVED.
 F3 = SCOPE_RECONCILIATION_REQUIRED / PARTIALLY_SUPERSEDED_BY_D4.
-No further D4, Phase-E, or Phase-F task is authorized.
+No further D4, Phase-E, or Phase-F task is authorized after E1-A1.
+
+## E1-A1 diagnostic implementation closeout
+
+The explicit `QAAgent.decompose_question` seam accepts only the raw question and returns 1–5 validated shadow diagnostic facets. Exact question support spans, normalized-text duplicate rejection, question-order normalization, and code-assigned facet ordinals are implemented. Ambiguity remains diagnostic only.
+
+The normal QA path does not invoke decomposition. `question_core`, existing answer requirements, production prompts, retrieval, and claim coverage remain unchanged; E2/E3 and production activation were not implemented.
+
+Focused T0 verification: 19 decomposition contract tests and 2 existing QA tests passed; `git diff --check` passed. An initial collection attempt lacked `PYTHONPATH=src`; setting the command-local source path resolved it. All provider calls and token usage were zero. No benchmark/novel dataset or Gold annotation was accessed.
+
+E1-A1 PASS does not mean E1 PASS. Real-model quality, Gold recall, semantic over/under-decomposition, paraphrase stability, and generalization remain unmeasured. E1-A2 is recommended but not authorized.
+
+Artifacts: `evaluation/e1_a1_dynamic_question_decomposition_contract.json`, `evaluation/E1_A1_DYNAMIC_QUESTION_DECOMPOSITION_CONTRACT.md`.
 
 ## F1 static inventory closeout
 

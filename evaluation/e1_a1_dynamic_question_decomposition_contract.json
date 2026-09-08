@@ -1,0 +1,83 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint": "E1-A1",
+  "stage": "dynamic_question_decomposition_contract",
+  "starting_head": "80b5aa29ac81cc294c2d72e8fe3234d218da3ed0",
+  "status": "COMPLETE",
+  "verdict": "PASS / QUESTION_ONLY_DIAGNOSTIC_DECOMPOSITION_IMPLEMENTED",
+  "runtime_role": "SHADOW_DIAGNOSTIC",
+  "production_activation": false,
+  "contract": {
+    "prompt_version": "1.0.0",
+    "output_schema_version": "e1.question_decomposition.v1",
+    "question_only_input": true,
+    "min_points": 1,
+    "max_points": 5,
+    "model_generated_ids": false,
+    "id_policy": "Earliest support position, facet type, normalized casefolded text; facet ordinal starts at 1.",
+    "duplicate_point_policy": "Reject whitespace-normalized, casefolded duplicate text.",
+    "exact_question_support_spans": true,
+    "invalid_span_policy": "Reject the entire result if any span is empty, whitespace-only, or absent from the raw question.",
+    "ambiguity_diagnostic_only": true,
+    "retrieval_evidence_input": false,
+    "gold_input": false,
+    "authoritative_runtime_answer_points_changed": false,
+    "legacy_answer_requirements_changed": false,
+    "default_qa_invokes_decomposer": false,
+    "e2_implemented": false,
+    "e3_implemented": false
+  },
+  "verification": {
+    "tier": "T0",
+    "purpose": "Validate deterministic contracts and non-activation using synthetic questions and fake models.",
+    "environment": "PYTHONPATH=src",
+    "test_runs": [
+      {
+        "command": "python -m pytest tests/unit/test_question_decomposition.py -q",
+        "result": "Collection error before tests: panda_agent not importable without PYTHONPATH=src."
+      },
+      {
+        "command": "python -m pytest tests/unit/test_question_decomposition.py -q",
+        "result": "19 passed after setting PYTHONPATH=src."
+      },
+      {
+        "command": "python -m pytest tests/unit/test_question_decomposition.py -q",
+        "result": "19 passed after strengthening normal-QA assertions to require answered status and exactly two existing fake calls."
+      },
+      {
+        "command": "python -m pytest tests/unit/test_qa.py -q -k 'test_answered_path_is_bounded_and_cited or test_agent_core_run_has_no_service_import_or_database_persistence'",
+        "result": "2 passed, 36 deselected."
+      }
+    ],
+    "git_diff_check": "PASS",
+    "protected_or_benchmark_dataset_accessed": false,
+    "scientific_evaluations": 0
+  },
+  "cost": {
+    "analyzer_calls": 0,
+    "embedding_calls": 0,
+    "reranker_calls": 0,
+    "answer_generation_live_calls": 0,
+    "decomposition_live_calls": 0,
+    "judge_calls": 0,
+    "live_model_calls": 0,
+    "token_usage": 0
+  },
+  "limitations": [
+    "Real-model decomposition quality and provider schema acceptance not measured.",
+    "Gold answer-point recall not measured.",
+    "Semantic over-decomposition and under-decomposition rates not measured.",
+    "Paraphrase stability not measured; deterministic IDs do not prove it.",
+    "Benchmark-versus-novel generalization not measured.",
+    "Exact support spans establish lexical grounding, not semantic adequacy."
+  ],
+  "lifecycle": {
+    "e1": "IN_PROGRESS / DIAGNOSTIC_IMPLEMENTATION_COMPLETE / VALIDATION_PENDING",
+    "phase_e": "IN_PROGRESS / E1",
+    "d4": "PAUSED / ROADMAP_RECONCILIATION",
+    "d4_overall_completion": "UNDECIDED",
+    "phase_f": "IN_PROGRESS / F1_COMPLETE"
+  },
+  "next_task_recommendation": "E1-A2 — Targeted Dynamic Question Decomposition Validation",
+  "next_task_execution_authorized": false
+}

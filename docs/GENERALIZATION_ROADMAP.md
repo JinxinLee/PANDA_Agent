@@ -25,7 +25,7 @@ The roadmap is governed by the following core development principles:
 ## Current planning state
 
 Repository planning baseline:
-53356ab81c1b81abe0c5ae04834f6112f6d2c1a8 (F1 starting HEAD)
+80b5aa29ac81cc294c2d72e8fe3234d218da3ed0 (E1-A1 starting HEAD)
 
 Latest accepted production action:
 D4-A10
@@ -45,7 +45,13 @@ Phase D:
 PAUSED / ROADMAP_RECONCILIATION
 
 Phase E:
-NOT_STARTED
+IN_PROGRESS / E1
+
+E1:
+IN_PROGRESS / DIAGNOSTIC_IMPLEMENTATION_COMPLETE / VALIDATION_PENDING
+
+E1-A1:
+COMPLETE / PASS / QUESTION_ONLY_DIAGNOSTIC_DECOMPOSITION_IMPLEMENTED
 
 Phase F:
 IN_PROGRESS / F1_COMPLETE
@@ -57,11 +63,11 @@ D4 overall completion:
 UNDECIDED
 
 Next task recommendation:
-E1 — Dynamic Question Decomposition / NOT AUTHORIZED
+E1-A2 — Targeted Dynamic Question Decomposition Validation / NOT AUTHORIZED
 
 No D4-A11 exists.
 No further D4 task is currently authorized.
-No Phase-E task is currently authorized.
+No further Phase-E task is currently authorized after E1-A1.
 No further Phase-F task is currently authorized.
 
 ## Phase overview
@@ -78,7 +84,7 @@ No further Phase-F task is currently authorized.
 - **Phase D — Concept and entity knowledge abstraction:** `PAUSED / ROADMAP_RECONCILIATION`
   Structured domain concept/entity representation, bounded resolver authority, and generic evidence-link bridging established. Bounded query-expansion migrations are active in production, while broader residual scope remains unreconciled.
 
-- **Phase E — Answer generalization:** `NOT_STARTED`
+- **Phase E — Answer generalization:** `IN_PROGRESS / E1`
   Dynamic question decomposition, answer-point coverage, claim-to-evidence mapping, and targeted completeness recovery.
 
 - **Phase F — Benchmark dependency cleanup and final answering:** `IN_PROGRESS / F1_COMPLETE`
@@ -391,7 +397,7 @@ No D4-A11 is authorized. Detailed scientific and repair provenance remains in `e
 ## Phase E — Answer generalization
 
 Status:
-NOT_STARTED
+IN_PROGRESS / E1
 
 Phase E addresses answer synthesis, facet coverage, claim-to-evidence grounding, and targeted recovery of missing answer points.
 
@@ -406,7 +412,10 @@ Phase E addresses answer synthesis, facet coverage, claim-to-evidence grounding,
 
 ### E1 — Dynamic question decomposition
 
-- **Status:** NOT_STARTED
+- **Status:** IN_PROGRESS / DIAGNOSTIC_IMPLEMENTATION_COMPLETE / VALIDATION_PENDING
+- **E1-A1 outcome:** COMPLETE / PASS / QUESTION_ONLY_DIAGNOSTIC_DECOMPOSITION_IMPLEMENTED. Question-only 1–5 facet contract and explicit shadow diagnostic seam implemented; normal QA does not invoke it. Existing `question_core` remains authoritative and compatibility requirements remain active. Focused fake-based T0 checks passed; semantic validation and all quality metrics below remain pending. E1-A1 PASS is not E1 PASS.
+- **Evidence:** `evaluation/e1_a1_dynamic_question_decomposition_contract.json`, `evaluation/E1_A1_DYNAMIC_QUESTION_DECOMPOSITION_CONTRACT.md`.
+- **Next task recommendation:** E1-A2 — Targeted Dynamic Question Decomposition Validation; execution not authorized.
 - **Problem:** A single `question_core` plus domain-specific requirements can be complete on known questions but miss unseen multi-part structure.
 - **Goal:** Derive approximately 1–5 evidence-independent answer points from the question itself.
 - **Why this stage:** Retrieval generalization and structured knowledge must be established before asking decomposition to drive completeness.
@@ -414,7 +423,7 @@ Phase E addresses answer synthesis, facet coverage, claim-to-evidence grounding,
 - **Functional requirements:** Question-only input, stable IDs, limited count, paraphrase stability, over-decomposition checks, and trace/audit output.
 - **Explicit out of scope:** Deriving points from retrieved evidence, removing existing requirements, targeted retrieval, or benchmark templates.
 - **Dependencies:** Phases C/D and curated answer-point annotations.
-- **Planned evaluation scope (not authorized):** T0 and targeted T2 multi-part/paraphrase set.
+- **Remaining planned evaluation scope (not authorized):** Targeted T2 multi-part/paraphrase validation; E1-A1 completed only deterministic T0 contract checks.
 - **Primary metrics:** Gold answer-point recall, over-decomposition rate, paraphrase stability, and benchmark-versus-novel gap.
 - **Acceptance criteria:** Decomposition captures required question facets generically without mirroring whatever evidence was found.
 - **Failure handling:** Reduce/merge unstable points or mark ambiguity; retain old requirements during diagnosis. Stop after E1.
@@ -535,9 +544,10 @@ At release, Generalization Gap means benchmark score minus novel score. Benchmar
 2. **Remaining D4 candidate disposition:** Does the remaining unassessed D4 inventory contain another naturally testable, high-value migration batch, or should residual entries remain on HOLD?
 3. **Phase-F scope boundary:** F1 has established the bounded non-D4 residual inventory and candidate owners. Which candidates warrant a separately authorized treatment remains undecided.
 4. **Bottleneck prioritization:** Is answer completeness and decomposition (Phase E) now a larger production bottleneck than residual retrieval shortcut dependency?
-5. **Phase execution ordering:** The authorized F1 inventory preceded Phase E and found zero substantiated E1 blockers. E1 is recommended next; no subsequent execution is authorized.
+5. **Phase execution ordering:** The authorized F1 inventory preceded Phase E and found zero substantiated E1 blockers. E1-A1 diagnostic implementation is complete; E1-A2 validation is recommended next and is not authorized.
 
 ```text
-NEXT_TASK_RECOMMENDATION = E1 — Dynamic Question Decomposition
+NEXT_TASK_RECOMMENDATION = E1-A2 — Targeted Dynamic Question Decomposition Validation
+NEXT_TASK_EXECUTION_AUTHORIZED = false
 NEXT_STAGE_AUTHORIZED = false
 ```

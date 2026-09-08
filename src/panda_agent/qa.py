@@ -17,6 +17,7 @@ from panda_agent.prompts import (
     EVIDENCE_REVIEW_SYSTEM_PROMPT,
     REVISION_SYSTEM_PROMPT,
 )
+from panda_agent.question_decomposition import QuestionDecomposer
 from panda_agent.retrieval import Retriever
 
 ANSWER_SCHEMA = {
@@ -931,6 +932,10 @@ class QAAgent:
         graph.add_edge("revise", "verify")
         graph.add_edge("finalize", END)
         self.graph = graph.compile()
+
+    def decompose_question(self, question: str) -> dict[str, Any]:
+        """Explicit shadow diagnostic; never invoked by the production graph."""
+        return QuestionDecomposer(self.vertex).decompose(question)
 
     def _retrieve(self, state: QAState) -> dict[str, Any]:
         return {"bundle": self.retriever.retrieve(state["question"]), "revision_count": 0, "retrieval_count": 0}
