@@ -1,0 +1,633 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint": "F1",
+  "stage": "residual_benchmark_dependency_inventory",
+  "starting_head": "53356ab81c1b81abe0c5ae04834f6112f6d2c1a8",
+  "status": "COMPLETE",
+  "verdict": "PASS / RESIDUAL_BENCHMARK_DEPENDENCY_INVENTORY_ESTABLISHED",
+  "scope": {
+    "production_behavior_modified": false,
+    "production_config_modified": false,
+    "d4_query_expansion_reinventory": false,
+    "provider_calls": 0,
+    "scientific_evaluations": 0,
+    "novel_dev_accessed": false,
+    "novel_validation_accessed": false,
+    "novel_holdout_accessed": false,
+    "live_database_accessed": false
+  },
+  "audit_method": {
+    "entry_path": "QAService.execute -> QAAgent.run_detailed -> graph retrieve/sufficiency/answer/verify/revise/finalize; Retriever.retrieve -> analyze and channels/selection",
+    "entry_references": [
+      "src/panda_agent/service.py:136,188",
+      "src/panda_agent/qa.py:899-953,1980-1987"
+    ],
+    "counting_rule": "One row per bounded behavior family. production_residual_findings counts is_production_residual=true only. HOLD, generic/domain, aggregate D4 and evaluator-only rows are excluded. Candidate-owner counts use production residual rows only; keep counts use primary classification. R04 includes its coupled finalizer locator; R10 is excluded from R08/R09 totals.",
+    "provenance_limit": "Four targeted git log -S checks plus pointer/policy follow-ups and targeted blame trace suspicious literals to initial imported source 3d90848. Import age alone does not prove benchmark origin."
+  },
+  "summary": {
+    "inspected_candidates": 21,
+    "production_residual_findings": 12,
+    "f2_candidates": 4,
+    "f3_candidates": 3,
+    "e1_e2_compatibility_items": 3,
+    "e3_boundary_review_items": 2,
+    "keep_generic_items": 2,
+    "keep_domain_items": 2,
+    "d4_excluded_items": 1,
+    "hold_items": 3,
+    "evaluation_only_items": 1,
+    "e1_blockers": 0
+  },
+  "findings": [
+    {
+      "finding_id": "F1-R01",
+      "location": {
+        "path": "configs/retrieval_policies.yaml",
+        "line": 25,
+        "symbol_or_anchor": "intents.algorithm_theory / algorithm_implementation.required_sources"
+      },
+      "runtime_reachability": "PRODUCTION_CONDITIONAL",
+      "classification": "BENCHMARK_DERIVED_RUNTIME_POLICY",
+      "is_production_residual": true,
+      "behavior": "Intent policy mandates paper for theory and paper plus code for implementation. analyze transfers requirements into the plan; paper retrieval, selection, and QA sufficiency consume them.",
+      "benchmark_provenance": {
+        "status": "EXPLICIT",
+        "evidence": [
+          "src/panda_agent/retrieval.py:1150-1155 explicitly says gold policy requires literature for these two intents",
+          "src/panda_agent/retrieval.py:1222-1231",
+          "src/panda_agent/retrieval.py:1470-1488",
+          "src/panda_agent/qa.py:1090-1110"
+        ]
+      },
+      "d4_relationship": "NONE",
+      "risk": "HIGH",
+      "future_owner": "F2_CANDIDATE",
+      "e1_blocking": false,
+      "e1_blocking_rationale": "E1 can derive question-only facets without adopting intent-to-source mandates.",
+      "recommended_action": "Do not change in F1; Consider question-grounded source obligations in a separately authorized F2 change; preserve safety and assess E3 interaction.",
+      "rationale": "Explicit provenance applies to the paper-intent policy, not automatically to every other source requirement or budget."
+    },
+    {
+      "finding_id": "F1-R02",
+      "location": {
+        "path": "configs/retrieval_policies.yaml",
+        "line": 18,
+        "symbol_or_anchor": "non-paper intent required_sources"
+      },
+      "runtime_reachability": "PRODUCTION_CONDITIONAL",
+      "classification": "HOLD_UNCERTAIN_PROVENANCE",
+      "is_production_residual": false,
+      "behavior": "Installation requires documentation; usage documentation/code; API code; data_flow workflow/code; module_structure code/graph; troubleshooting documentation/code. These affect production sufficiency.",
+      "benchmark_provenance": {
+        "status": "UNKNOWN",
+        "evidence": [
+          "configs/retrieval_policies.yaml:18-42",
+          "src/panda_agent/retrieval.py:1228-1229",
+          "src/panda_agent/qa.py:1107-1110"
+        ]
+      },
+      "d4_relationship": "NONE",
+      "risk": "MEDIUM",
+      "future_owner": "HOLD",
+      "e1_blocking": false,
+      "e1_blocking_rationale": "Question-only decomposition is separable from these downstream source requirements.",
+      "recommended_action": "Do not change in F1; Retain pending product-contract/provenance review; do not count as substantiated benchmark debt.",
+      "rationale": "The mappings are observable; available comments do not establish a Gold origin for each non-paper mapping. Determinism and domain specificity alone are insufficient."
+    },
+    {
+      "finding_id": "F1-R03",
+      "location": {
+        "path": "src/panda_agent/retrieval.py",
+        "line": 1146,
+        "symbol_or_anchor": "Retriever.analyze feedback paper-page override"
+      },
+      "runtime_reachability": "PRODUCTION_CONDITIONAL",
+      "classification": "FIXED_LOCATOR_SHORTCUT_OUTSIDE_D4",
+      "is_production_residual": true,
+      "behavior": "For algorithm_theory with feed back/feedback/reconstructed restgas profile and an existing li_2026 hint, replace that source's page set with [141,149,151].",
+      "benchmark_provenance": {
+        "status": "STRONG",
+        "evidence": [
+          "src/panda_agent/retrieval.py:1146-1149",
+          "src/panda_agent/retrieval.py:1488-1514,1853-1867",
+          "evaluation/d4_a0_expansion_component_inventory.json rules[rule_id=reconstructed_profile_to_acceptance]",
+          "git blame: trigger/page assignment present in initial source commit 3d90848"
+        ]
+      },
+      "d4_relationship": "RELATED_BUT_OUTSIDE_D4",
+      "risk": "HIGH",
+      "future_owner": "F3_CANDIDATE",
+      "e1_blocking": false,
+      "e1_blocking_rationale": "Retrieval locator selection is not the E1 question-only decomposition contract.",
+      "recommended_action": "Do not change in F1; Retain until separately authorized F3 replacement; coordinate overlapping origins with D4 instead of deleting shared page values globally.",
+      "rationale": "Direct code-level answer-location shortcut. Matching page values in D4 do not transfer ownership of this independent code origin; exact originating benchmark case is not established."
+    },
+    {
+      "finding_id": "F1-R04",
+      "location": {
+        "path": "src/panda_agent/qa.py",
+        "line": 1071,
+        "symbol_or_anchor": "QAAgent._sufficiency / _finalize exact negative control"
+      },
+      "runtime_reachability": "PRODUCTION_CONDITIONAL",
+      "classification": "CASE_SPECIFIC_NEGATIVE_CONTROL",
+      "is_production_residual": true,
+      "behavior": "Exact PndUniversalRestgasDeconvolver branch checks retrieved definitions, refuses, and optionally cites efficiency_correction_2.C; final refusal also asserts the alternative implementation without requiring that replacement evidence.",
+      "benchmark_provenance": {
+        "status": "EXPLICIT",
+        "evidence": [
+          "src/panda_agent/qa.py:1071-1089 negative-control comment and literal",
+          "src/panda_agent/qa.py:1819-1849",
+          "src/panda_agent/qa.py:955-983,1013-1026"
+        ]
+      },
+      "d4_relationship": "RELATED_BUT_OUTSIDE_D4",
+      "risk": "HIGH",
+      "future_owner": "F2_CANDIDATE",
+      "e1_blocking": false,
+      "e1_blocking_rationale": "E1 can be implemented independently without copying the dedicated refusal branch.",
+      "recommended_action": "Do not change in F1; Generalize class/premise handling and evidence-grounded refusal together under F2; do not assume the current generic API guard already replaces this branch.",
+      "rationale": "One coupled negative-control finding covers both refusal and its fixed response locator, avoiding double counting. Generic locked-symbol infrastructure exists, but current generic guard checks qualified APIs, not every bare class."
+    },
+    {
+      "finding_id": "F1-R05",
+      "location": {
+        "path": "src/panda_agent/qa.py",
+        "line": 1850,
+        "symbol_or_anchor": "QAAgent._finalize unsupported-API header fallback"
+      },
+      "runtime_reachability": "PRODUCTION_CONDITIONAL",
+      "classification": "FIXED_LOCATOR_SHORTCUT_OUTSIDE_D4",
+      "is_production_residual": true,
+      "behavior": "Unsupported-API finalization selects an already retrieved class-matching item OR any path ending PndPidCorrelator.h, even without a query/class relationship to that header.",
+      "benchmark_provenance": {
+        "status": "STRONG",
+        "evidence": [
+          "src/panda_agent/qa.py:1850-1891"
+        ]
+      },
+      "d4_relationship": "NONE",
+      "risk": "MEDIUM",
+      "future_owner": "F3_CANDIDATE",
+      "e1_blocking": false,
+      "e1_blocking_rationale": "A final-response citation fallback does not constrain independent E1 design.",
+      "recommended_action": "Do not change in F1; Replace only the fixed fallback when a generic query-grounded refusal-basis selector is established; preserve the generic API guard.",
+      "rationale": "Evidence presence is required and no retrieval is added, but the unconditional exact-header alternative can control the public citation independently of the requested class. Historical case origin is unknown."
+    },
+    {
+      "finding_id": "F1-R06",
+      "location": {
+        "path": "src/panda_agent/qa.py",
+        "line": 1892,
+        "symbol_or_anchor": "QAAgent._finalize deleted-runtime fallback"
+      },
+      "runtime_reachability": "PRODUCTION_CONDITIONAL",
+      "classification": "FIXED_LOCATOR_SHORTCUT_OUTSIDE_D4",
+      "is_production_residual": true,
+      "behavior": "Generic deleted-runtime refusal selects retrieved macro/target/ana_dpm.C and hard-codes event_poca in response wording, although the guard also matches other runtime artifacts.",
+      "benchmark_provenance": {
+        "status": "STRONG",
+        "evidence": [
+          "src/panda_agent/qa.py:1027-1033",
+          "src/panda_agent/qa.py:1892-1922"
+        ]
+      },
+      "d4_relationship": "RELATED_BUT_OUTSIDE_D4",
+      "risk": "MEDIUM",
+      "future_owner": "F3_CANDIDATE",
+      "e1_blocking": false,
+      "e1_blocking_rationale": "E1 need not inherit the refusal template.",
+      "recommended_action": "Do not change in F1; Retain the generic refusal; separately review the code-level locator and wording under F3 with F2 coordination.",
+      "rationale": "Separate generic impossibility guard from the fixed presentation/citation shortcut; public event_poca wording is not conditional on a query-specific match or replacement evidence."
+    },
+    {
+      "finding_id": "F1-R07",
+      "location": {
+        "path": "src/panda_agent/qa.py",
+        "line": 1053,
+        "symbol_or_anchor": "QAAgent._sufficiency exact_memory_question"
+      },
+      "runtime_reachability": "PRODUCTION_CONDITIONAL",
+      "classification": "HOLD_UNCERTAIN_PROVENANCE",
+      "is_production_residual": false,
+      "behavior": "Exact/minimum plus gpu/memory/ram triggers a resource-specific refusal unless an evidence-text proximity regex matches; it does not validate an actual numeric value or unit.",
+      "benchmark_provenance": {
+        "status": "UNKNOWN",
+        "evidence": [
+          "src/panda_agent/qa.py:1053-1070",
+          "src/panda_agent/prompts.py:80-84",
+          "git blame -L 1053,1075: present in initial source commit 3d90848; no earlier local provenance"
+        ]
+      },
+      "d4_relationship": "NONE",
+      "risk": "MEDIUM",
+      "future_owner": "HOLD",
+      "e1_blocking": false,
+      "e1_blocking_rationale": "E1 can express requested exact numeric facets without using this guard.",
+      "recommended_action": "Do not change in F1; Retain on HOLD for numeric-sufficiency provenance/contract review; do not label it a proven benchmark-specific rule.",
+      "rationale": "Generic exact-numeric evidence caution is legitimate. This implementation is narrower, but available static history does not prove benchmark derivation; no runtime defect is repaired or empirically asserted."
+    },
+    {
+      "finding_id": "F1-R08",
+      "location": {
+        "path": "src/panda_agent/qa.py",
+        "line": 290,
+        "symbol_or_anchor": "_answer_requirements / generation-review-revision prompt contract"
+      },
+      "runtime_reachability": "PRODUCTION_CONDITIONAL",
+      "classification": "BENCHMARK_SHAPED_COMPATIBILITY_LAYER",
+      "is_production_residual": true,
+      "behavior": "Live question and plan activate workflow, handoff, factory, acceptance, reader, theory-fit, module and troubleshooting obligations used during generation/review/revision.",
+      "benchmark_provenance": {
+        "status": "STRONG",
+        "evidence": [
+          "src/panda_agent/qa.py:290-482,1271-1297,1584-1609,1677-1705",
+          "src/panda_agent/prompts.py:46-200",
+          "tests/unit/test_qa.py:452-505,847-891,1228-1238"
+        ]
+      },
+      "d4_relationship": "NONE",
+      "risk": "MEDIUM",
+      "future_owner": "E1_E2_COMPATIBILITY",
+      "e1_blocking": false,
+      "e1_blocking_rationale": "E1 question-only output can run alongside these legacy obligations with separate provenance.",
+      "recommended_action": "Do not change in F1; Retain during diagnostic E1 work; map migration to dynamic decomposition and claim/point coverage in E1/E2.",
+      "rationale": "Regression-shaped obligations use actual question/plan and require evidence-backed answers; there is no runtime Gold answer-point input. Treat as compatibility, not immediate F2 deletion. Pointer-specific enforcement is separately R10."
+    },
+    {
+      "finding_id": "F1-R09",
+      "location": {
+        "path": "src/panda_agent/qa.py",
+        "line": 563,
+        "symbol_or_anchor": "_requirement_evidence / _compact_requirement_evidence / _deterministic_missing_requirement_ids"
+      },
+      "runtime_reachability": "PRODUCTION_CONDITIONAL",
+      "classification": "BENCHMARK_SHAPED_COMPATIBILITY_LAYER",
+      "is_production_residual": true,
+      "behavior": "Selects existing evidence by named requirement, truncates around domain anchors, and checks required claim vocabulary and, for selected requirements, cited-evidence links. Missing requirements drive one revision and may coexist with salvaged supported claims.",
+      "benchmark_provenance": {
+        "status": "STRONG",
+        "evidence": [
+          "src/panda_agent/qa.py:563-784,796-860,1605-1664,1736-1743,1933-1962",
+          "tests/unit/test_qa.py:612-670,948-1060"
+        ]
+      },
+      "d4_relationship": "NONE",
+      "risk": "MEDIUM",
+      "future_owner": "E1_E2_COMPATIBILITY",
+      "e1_blocking": false,
+      "e1_blocking_rationale": "E1 can remain question-only and diagnostic; eventual replacement of enforcement belongs to E2.",
+      "recommended_action": "Do not change in F1; Retain and assess coverage equivalence in E1/E2; do not translate keyword checks into new Gold-shaped decomposition points.",
+      "rationale": "Named domain checks are bespoke but currently support completeness over live evidence. Not every check itself verifies entailment; ordinary citation/review checks remain separate. Excludes R10 pointer literal."
+    },
+    {
+      "finding_id": "F1-R10",
+      "location": {
+        "path": "src/panda_agent/qa.py",
+        "line": 785,
+        "symbol_or_anchor": "_deterministic_missing_requirement_ids pointer_identifier_normalization"
+      },
+      "runtime_reachability": "PRODUCTION_CONDITIONAL",
+      "classification": "BESPOKE_SUFFICIENCY_OR_COMPLETENESS",
+      "is_production_residual": true,
+      "behavior": "A generic pointer-normalization request activates a check that specifically requires pndlmdtrackq and underlying/pointer-syntax wording; evidence compaction also uses PndLmdTrackQ anchors.",
+      "benchmark_provenance": {
+        "status": "STRONG",
+        "evidence": [
+          "src/panda_agent/qa.py:409-417,614-618,675-677,785-795",
+          "tests/unit/test_qa.py:847-910 test_regression_protected_requirements_reject_incomplete_claims"
+        ]
+      },
+      "d4_relationship": "NONE",
+      "risk": "HIGH",
+      "future_owner": "F2_CANDIDATE",
+      "e1_blocking": false,
+      "e1_blocking_rationale": "E1 is not blocked if it derives facets from the question and does not reuse this hard-coded completion predicate.",
+      "recommended_action": "Do not change in F1; Review genericization of the hard-coded symbol under F2 in coordination with E1/E2; preserve existing behavior in F1.",
+      "rationale": "Regression-protected exact-symbol enforcement is stronger than the generic live-query trigger. Distinct narrow specialization within R08/R09, not evidence that all completeness obligations should be removed."
+    },
+    {
+      "finding_id": "F1-R11",
+      "location": {
+        "path": "src/panda_agent/qa.py",
+        "line": 1114,
+        "symbol_or_anchor": "planned locators / dataflow augmentation / required_boundary_locators"
+      },
+      "runtime_reachability": "PRODUCTION_CONDITIONAL",
+      "classification": "BENCHMARK_SHAPED_COMPATIBILITY_LAYER",
+      "is_production_residual": true,
+      "behavior": "Planned-locator augmentation requires a query-named planned identifier and selected evidence; dataflow augmentation uses planned symbols/required types and actual evidence. Module-boundary prompts treat plan symbols as required components.",
+      "benchmark_provenance": {
+        "status": "STRONG",
+        "evidence": [
+          "src/panda_agent/qa.py:1114-1269,1287-1295,1304-1305",
+          "src/panda_agent/prompts.py:112-115",
+          "src/panda_agent/qa.py:485-526,1385-1393",
+          "tests/unit/test_qa.py:1508-1518"
+        ]
+      },
+      "d4_relationship": "RELATED_BUT_OUTSIDE_D4",
+      "risk": "MEDIUM",
+      "future_owner": "E1_E2_COMPATIBILITY",
+      "e1_blocking": false,
+      "e1_blocking_rationale": "E1 can derive requirements without plan symbols or retrieved evidence and be observed separately.",
+      "recommended_action": "Do not change in F1; Retain compatibility; E1/E2 should distinguish question requirements from upstream plan suggestions before replacing it.",
+      "rationale": "No new fixed answer path is encoded by the helpers. Plan may contain D4-derived symbols; internal required_* and dataflow_locator_* claims are filtered from public answers. required_boundary_locators can still shape generated content."
+    },
+    {
+      "finding_id": "F1-R12",
+      "location": {
+        "path": "src/panda_agent/qa.py",
+        "line": 917,
+        "symbol_or_anchor": "sufficiency routing / QAAgent._targeted_retrieve"
+      },
+      "runtime_reachability": "PRODUCTION_CONDITIONAL",
+      "classification": "BESPOKE_SUFFICIENCY_OR_COMPLETENESS",
+      "is_production_residual": true,
+      "behavior": "Insufficiency triggers one retry except version conflicts; query suffix includes required source types and error text, missing-symbol errors extend the reused plan, and evidence merges with a fixed 12-item truncation.",
+      "benchmark_provenance": {
+        "status": "UNKNOWN",
+        "evidence": [
+          "src/panda_agent/qa.py:917-953",
+          "configs/retrieval_policies.yaml:5",
+          "src/panda_agent/retrieval.py:1634-1640"
+        ]
+      },
+      "d4_relationship": "NONE",
+      "risk": "MEDIUM",
+      "future_owner": "E3_BOUNDARY_REVIEW",
+      "e1_blocking": false,
+      "e1_blocking_rationale": "E1 decomposition can be implemented independently of targeted retrieval activation.",
+      "recommended_action": "Do not change in F1; Review before E3 becomes authoritative, preserving C8/global-merge boundary; do not execute targeted retrieval in F1.",
+      "rationale": "Mechanism follows sufficiency errors, not missing decomposed answer points, and generic refusals can also enter it. Static architectural mismatch is clear; exact benchmark origin is not."
+    },
+    {
+      "finding_id": "F1-R13",
+      "location": {
+        "path": "src/panda_agent/qa.py",
+        "line": 1482,
+        "symbol_or_anchor": "QAAgent._verify deterministically_supported_claims"
+      },
+      "runtime_reachability": "PRODUCTION_CONDITIONAL",
+      "classification": "BESPOKE_SUFFICIENCY_OR_COMPLETENESS",
+      "is_production_residual": true,
+      "behavior": "Identifier/path matches, code-source membership and comparison wording can mark whole claims deterministically supported; such claims skip semantic unsupported-claim errors. Explicit token whitelist includes createLmdFitData, fillData and other names.",
+      "benchmark_provenance": {
+        "status": "UNKNOWN",
+        "evidence": [
+          "src/panda_agent/qa.py:1482-1543,1611-1618",
+          "src/panda_agent/qa.py:1500-1505"
+        ]
+      },
+      "d4_relationship": "NONE",
+      "risk": "HIGH",
+      "future_owner": "F2_CANDIDATE",
+      "e1_blocking": false,
+      "e1_blocking_rationale": "Downstream claim verification can be kept unchanged during an independently observable E1 implementation.",
+      "recommended_action": "Do not change in F1; Review support-override generalization under F2 and the later verifier-role boundary; preserve citation/version checks.",
+      "rationale": "Observed bespoke support override, not ordinary citation-integrity checking: matching identifiers is not semantic entailment. Exact historical benchmark derivation is unproven; static policy risk is sufficient for a bounded guard candidate, not a measured regression claim."
+    },
+    {
+      "finding_id": "F1-R14",
+      "location": {
+        "path": "src/panda_agent/retrieval.py",
+        "line": 1803,
+        "symbol_or_anchor": "post-rerank promotion / select_final_evidence"
+      },
+      "runtime_reachability": "PRODUCTION_DEFAULT",
+      "classification": "BENCHMARK_SHAPED_COMPATIBILITY_LAYER",
+      "is_production_residual": true,
+      "behavior": "Plan hints, required types and exact symbols are promoted before reranker order; mandatory symbols can bypass caps; two-pass backfill admits required types only into unused capacity.",
+      "benchmark_provenance": {
+        "status": "STRONG",
+        "evidence": [
+          "src/panda_agent/retrieval.py:678-784,1803-1877",
+          "docs/GENERALIZATION_ROADMAP.md Phase B/B5 and C7 deferred coverage/ranking outcome"
+        ]
+      },
+      "d4_relationship": "RELATED_BUT_OUTSIDE_D4",
+      "risk": "MEDIUM",
+      "future_owner": "E3_BOUNDARY_REVIEW",
+      "e1_blocking": false,
+      "e1_blocking_rationale": "Selection debt does not prevent question-only E1 design.",
+      "recommended_action": "Do not change in F1; Retain current selector; reconcile coverage and merge semantics before E3, without reopening C7 or tuning weights in F1.",
+      "rationale": "Current accepted selector is production-authoritative and works on runtime candidates. This row covers the generic selection policy, not D4 locator values or a new review of C7 scientific results."
+    },
+    {
+      "finding_id": "F1-R15",
+      "location": {
+        "path": "src/panda_agent/retrieval.py",
+        "line": 1537,
+        "symbol_or_anchor": "Retriever._workflow / _graph curated fallback"
+      },
+      "runtime_reachability": "PRODUCTION_CONDITIONAL",
+      "classification": "HOLD_UNCERTAIN_PROVENANCE",
+      "is_production_residual": false,
+      "behavior": "When required workflow lacks a workflow object, or required graph has no edges, fallback selects bounded curated objects by object_id without question-term/seed relevance conditions.",
+      "benchmark_provenance": {
+        "status": "UNKNOWN",
+        "evidence": [
+          "src/panda_agent/retrieval.py:1537-1550,1587-1598"
+        ]
+      },
+      "d4_relationship": "NONE",
+      "risk": "MEDIUM",
+      "future_owner": "HOLD",
+      "e1_blocking": false,
+      "e1_blocking_rationale": "E1 can operate solely on user text; fallback relevance is downstream.",
+      "recommended_action": "Do not change in F1; Retain on HOLD for relevance/ownership review at retrieval/E3 boundary; do not count as proven benchmark debt.",
+      "rationale": "Potential source-coverage accommodation is observable, but sparse-corpus fallback may be legitimate. Historical origin and usefulness are not established by static evidence; not classified as a fixed exact-object shortcut."
+    },
+    {
+      "finding_id": "F1-R16",
+      "location": {
+        "path": "src/panda_agent/qa.py",
+        "line": 985,
+        "symbol_or_anchor": "_answerability_guard / query-grounded refusal bases"
+      },
+      "runtime_reachability": "PRODUCTION_CONDITIONAL",
+      "classification": "GENERIC_LEGITIMATE_MECHANISM",
+      "is_production_residual": false,
+      "behavior": "Generic future-runtime impossibility, same-domain formal-proof sufficiency, qualified unknown-API catalog lookup and deleted-runtime impossibility apply across question classes; refusal bases can rank already retrieved query-related evidence.",
+      "benchmark_provenance": {
+        "status": "NONE",
+        "evidence": [
+          "src/panda_agent/qa.py:130-272,955-1034,1768-1818",
+          "tests/unit/test_qa.py:395-450,1084-1226"
+        ]
+      },
+      "d4_relationship": "NONE",
+      "risk": "LOW",
+      "future_owner": "KEEP_GENERIC",
+      "e1_blocking": false,
+      "e1_blocking_rationale": "Generic safety is compatible with independent E1.",
+      "recommended_action": "Do not change in F1; Keep generic guards and their evidence boundaries; do not claim they already cover every bare unknown class.",
+      "rationale": "No benchmark case ID or dedicated answer locator is required by the generic guard core. Fixed finalizer exceptions are separately R04-R06; catalog coverage limitations do not make the generic mechanism benchmark debt."
+    },
+    {
+      "finding_id": "F1-R17",
+      "location": {
+        "path": "src/panda_agent/qa.py",
+        "line": 505,
+        "symbol_or_anchor": "runtime question objective / citation integrity / internal claim filtering"
+      },
+      "runtime_reachability": "PRODUCTION_DEFAULT",
+      "classification": "GENERIC_LEGITIMATE_MECHANISM",
+      "is_production_residual": false,
+      "behavior": "Runtime objective is question_core from the actual question. Validate claim/evidence IDs, versions and precise locators; filter internal scope/coverage claims; suppress unrequested external identifiers; render supported claims only.",
+      "benchmark_provenance": {
+        "status": "NONE",
+        "evidence": [
+          "src/panda_agent/qa.py:485-552,1381-1481,1544-1573,1933-1962",
+          "src/panda_agent/prompts.py:9-43"
+        ]
+      },
+      "d4_relationship": "NONE",
+      "risk": "LOW",
+      "future_owner": "KEEP_GENERIC",
+      "e1_blocking": false,
+      "e1_blocking_rationale": "The single-point interface is an implementation integration seam, not an unavoidable benchmark-derived decomposition constraint.",
+      "recommended_action": "Do not change in F1; Keep integrity checks; E1/E2 may intentionally replace the single runtime point with question-derived multiple points under separate authorization.",
+      "rationale": "Generic provenance/presentation boundaries are distinct from R13 semantic support overrides. The hard-coded Sphinx date in scope_* construction is internal audit text filtered before public claims."
+    },
+    {
+      "finding_id": "F1-R18",
+      "location": {
+        "path": "src/panda_agent/retrieval.py",
+        "line": 970,
+        "symbol_or_anchor": "deterministic routing / domain scopes / accepted aliases"
+      },
+      "runtime_reachability": "PRODUCTION_CONDITIONAL",
+      "classification": "DOMAIN_KNOWLEDGE_OR_ROUTING",
+      "is_production_residual": false,
+      "behavior": "Operational intent routes, repository names, Restgas/LMD scope distinctions and accepted versioned aliases supply question interpretation; aliases carry reviewed corpus provenance and corrective terms.",
+      "benchmark_provenance": {
+        "status": "NONE",
+        "evidence": [
+          "src/panda_agent/retrieval.py:614-645,970-1018,1804-1810",
+          "configs/aliases.yaml:3-28",
+          "configs/retrieval_policies.yaml:7-16"
+        ]
+      },
+      "d4_relationship": "NONE",
+      "risk": "LOW",
+      "future_owner": "KEEP_DOMAIN",
+      "e1_blocking": false,
+      "e1_blocking_rationale": "Domain identity context can remain distinct from E1 question-only requirements.",
+      "recommended_action": "Do not change in F1; Keep terminology, accepted aliases and domain routing; no multilingual/product-scope change is made.",
+      "rationale": "Domain terminology/routing is not automatically benchmark debt. Alias corpus provenance is recorded in configuration; live database materialization and corpus truth were not revalidated. D4 expansion injection excluded separately."
+    },
+    {
+      "finding_id": "F1-R19",
+      "location": {
+        "path": "src/panda_agent/retrieval.py",
+        "line": 1470,
+        "symbol_or_anchor": "locked source taxonomy / per-paper diversification"
+      },
+      "runtime_reachability": "PRODUCTION_CONDITIONAL",
+      "classification": "DOMAIN_KNOWLEDGE_OR_ROUTING",
+      "is_production_residual": false,
+      "behavior": "Known paper IDs and source types route and version-filter corpus retrieval; per-paper dense search diversifies evidence. Paper IDs alone do not specify answer pages.",
+      "benchmark_provenance": {
+        "status": "NONE",
+        "evidence": [
+          "src/panda_agent/retrieval.py:949-957,1470-1522",
+          "src/panda_agent/qa.py:1090-1106"
+        ]
+      },
+      "d4_relationship": "NONE",
+      "risk": "LOW",
+      "future_owner": "KEEP_DOMAIN",
+      "e1_blocking": false,
+      "e1_blocking_rationale": "Source identity does not define E1 answer facets.",
+      "recommended_action": "Do not change in F1; Keep locked corpus/source identity and generic diversification; do not reinventory hinted pages.",
+      "rationale": "Separate source universe from R01's requirement policy and R03/D4 fixed hints. No conclusion that all domain-specific source handling is a shortcut."
+    },
+    {
+      "finding_id": "F1-R20",
+      "location": {
+        "path": "src/panda_agent/retrieval.py",
+        "line": 1022,
+        "symbol_or_anchor": "D4 expansion consumption and active structured replacement"
+      },
+      "runtime_reachability": "PRODUCTION_CONDITIONAL",
+      "classification": "D4_OWNED_EXCLUDED",
+      "is_production_residual": false,
+      "behavior": "Existing expansion rule contributions and bounded D4 migrations remain owned by D4; aggregate exclusion only, not a new row for each historical rule.",
+      "benchmark_provenance": {
+        "status": "NONE",
+        "evidence": [
+          "evaluation/d4_a0_expansion_component_inventory.json checkpoint/stage/inventory_summary and selected ownership rows",
+          "evaluation/d4_a9_r2_result.json target_rule/covered_symbol_mask/hold_masks",
+          "docs/EVALUATION_STATUS.md Current D4 production state",
+          "src/panda_agent/retrieval.py:1022-1036,1701-1735"
+        ]
+      },
+      "d4_relationship": "D4_OWNED_EXCLUDED",
+      "risk": "LOW",
+      "future_owner": "D4_EXCLUDED",
+      "e1_blocking": false,
+      "e1_blocking_rationale": "D4 inventory completeness is not a prerequisite for independent question-only E1.",
+      "recommended_action": "Do not change in F1; Leave D4 paused with completion undecided; preserve all D4 artifacts and production semantics.",
+      "rationale": "D4 partial activation and HOLDs remain intact. No query_expansions.yaml reinventory, no reassessment of remaining locator contributions; code origins R03/R04/R06/R11/R14 are distinct."
+    },
+    {
+      "finding_id": "F1-R21",
+      "location": {
+        "path": "src/panda_agent/evaluation_runner.py",
+        "line": 875,
+        "symbol_or_anchor": "_execute_evaluation_case / external Gold judge"
+      },
+      "runtime_reachability": "EVALUATION_ONLY",
+      "classification": "EVALUATION_ONLY_NON_PRODUCTION",
+      "is_production_residual": false,
+      "behavior": "Only case.query enters QAAgent.run_detailed; deterministic Gold metrics and optional external judge are applied after the production result returns.",
+      "benchmark_provenance": {
+        "status": "EXPLICIT",
+        "evidence": [
+          "src/panda_agent/evaluation_runner.py:875-903,755-789",
+          "src/panda_agent/prompts.py:202-250"
+        ]
+      },
+      "d4_relationship": "NONE",
+      "risk": "LOW",
+      "future_owner": "KEEP_GENERIC",
+      "e1_blocking": false,
+      "e1_blocking_rationale": "E1's runtime input need not include external Gold annotations.",
+      "recommended_action": "Do not change in F1; Exclude evaluation scoring from production residual totals; no judge or dataset execution.",
+      "rationale": "Gold required-answer-points, protected rubric logic and judge instructions are evaluation-only. Tests support provenance but do not become production findings merely by mentioning cases."
+    }
+  ],
+  "exclusions": {
+    "d4": "Existing query-expansion components/migrations remain D4-owned. Only ownership metadata and two directly related historical rule rows were inspected; no full rule re-enumeration or residual page reassessment.",
+    "evaluation_only": "Post-QA Gold metrics/judge/protected rubric logic and test-only fixtures do not affect production input.",
+    "legitimate_domain_knowledge": "Accepted versioned aliases, domain scopes, source identities and generic safety/integrity retained."
+  },
+  "verification": {
+    "json_parse": "PASS",
+    "artifact_consistency": "PASS",
+    "git_diff_check": "PASS",
+    "production_paths_unchanged": "PASS"
+  },
+  "cost": {
+    "analyzer_calls": 0,
+    "embedding_calls": 0,
+    "reranker_calls": 0,
+    "qa_calls": 0,
+    "runtime_review_calls": 0,
+    "revision_calls": 0,
+    "judge_calls": 0,
+    "total_model_calls": 0,
+    "token_usage": 0
+  },
+  "limitations": [
+    "Bounded default-call-graph static inventory, not whole-repository or database audit.",
+    "No empirical frequency, quality loss, generic replacement efficacy or deletion safety measured.",
+    "Three local provenance HOLDs remain; fixed-locator and bespoke findings do not all have proven benchmark-case ancestry.",
+    "No protected split, novel-dev content or raw case-level outcome inspected; no production execution.",
+    "D4 overall residual scope and Phase-F completion remain unresolved."
+  ],
+  "next_task_recommendation": "E1 — Dynamic Question Decomposition",
+  "next_task_execution_authorized": false
+}

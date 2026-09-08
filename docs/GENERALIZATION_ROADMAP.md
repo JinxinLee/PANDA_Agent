@@ -25,7 +25,7 @@ The roadmap is governed by the following core development principles:
 ## Current planning state
 
 Repository planning baseline:
-e977ea420134842041e15f3ae60572c7c0670934
+53356ab81c1b81abe0c5ae04834f6112f6d2c1a8 (F1 starting HEAD)
 
 Latest accepted production action:
 D4-A10
@@ -48,18 +48,21 @@ Phase E:
 NOT_STARTED
 
 Phase F:
-NOT_STARTED / SCOPE_RECONCILIATION_REQUIRED
+IN_PROGRESS / F1_COMPLETE
+
+F1:
+COMPLETE / PASS / RESIDUAL_BENCHMARK_DEPENDENCY_INVENTORY_ESTABLISHED
 
 D4 overall completion:
 UNDECIDED
 
-Next technical/scientific task:
-UNDECIDED / NOT AUTHORIZED
+Next task recommendation:
+E1 — Dynamic Question Decomposition / NOT AUTHORIZED
 
 No D4-A11 exists.
 No further D4 task is currently authorized.
 No Phase-E task is currently authorized.
-No Phase-F task is currently authorized.
+No further Phase-F task is currently authorized.
 
 ## Phase overview
 
@@ -78,8 +81,8 @@ No Phase-F task is currently authorized.
 - **Phase E — Answer generalization:** `NOT_STARTED`
   Dynamic question decomposition, answer-point coverage, claim-to-evidence mapping, and targeted completeness recovery.
 
-- **Phase F — Benchmark dependency cleanup and final answering:** `NOT_STARTED / SCOPE_RECONCILIATION_REQUIRED`
-  Residual benchmark-dependency cleanup, guard generalization, answer-generation vs semantic-verification role separation, bounded answer composition, and release evaluation. Original F3 overlaps D4 work already performed and requires scope reconciliation.
+- **Phase F — Benchmark dependency cleanup and final answering:** `IN_PROGRESS / F1_COMPLETE`
+  F1 established the bounded non-D4 residual inventory without production cleanup. F2/F3 and later work remain unstarted; original F3 overlaps D4 and still requires scope reconciliation.
 
 ## Phase A — Evaluation infrastructure and versioned baseline
 
@@ -449,18 +452,21 @@ Phase E addresses answer synthesis, facet coverage, claim-to-evidence grounding,
 ## Phase F — Benchmark dependency cleanup and final answering
 
 Status:
-NOT_STARTED / SCOPE_RECONCILIATION_REQUIRED
+IN_PROGRESS / F1_COMPLETE
 
 Phase F addresses the audit and retirement of remaining benchmark-specific dependencies, generalization of guard logic, role separation between answer generation and semantic verification, bounded answer composition, and release evaluation.
 
-Original Phase-F planning predates the substantial shortcut migrations completed in D4. Consequently, Phase-F scope must be reconciled against current production before any Phase-F task is authorized or executed.
+Original Phase-F planning predates the substantial shortcut migrations completed in D4. F1 has now inventoried bounded non-D4 residual dependencies; remaining Phase-F execution still requires separate scope reconciliation and authorization.
 
 ### F1 — Residual benchmark-dependency inventory
 
-- **Status:** NOT_STARTED / POTENTIALLY_VALID
+- **Status:** COMPLETE / PASS
 - **Goal:** Audit residual benchmark dependencies outside already-reconciled D4 query-expansion work.
 - **Scope:** Inspect code and configuration guards, negative controls, special prompt requirements, and bespoke sufficiency logic across retrieval and QA.
 - **Constraint:** Do not repeat the historical D4 inventory or already-reconciled migrations. Broader residual D4 scope remains undecided.
+- **Outcome:** Classified 21 candidates: 12 production residuals (4 F2, 3 F3, 3 E1/E2 compatibility, 2 E3 boundary review), 3 provenance HOLDs, 4 generic/domain mechanisms retained, 1 aggregate D4 exclusion and 1 evaluator-only exclusion. No production cleanup or scientific execution occurred.
+- **Planning implication:** Zero substantiated E1 blockers. Recommend E1 — Dynamic Question Decomposition, without authorizing execution; preserve compatibility until a generic replacement is established.
+- **Evidence:** `evaluation/f1_residual_benchmark_dependency_inventory.json` and `evaluation/F1_RESIDUAL_BENCHMARK_DEPENDENCY_INVENTORY.md`.
 
 ### F2 — Generalize benchmark-specific guards
 
@@ -527,11 +533,11 @@ At release, Generalization Gap means benchmark score minus novel score. Benchmar
 
 1. **Residual query-expansion impact:** Is residual query-expansion dependency still a material generalization bottleneck in production after the D4-A10 activation?
 2. **Remaining D4 candidate disposition:** Does the remaining unassessed D4 inventory contain another naturally testable, high-value migration batch, or should residual entries remain on HOLD?
-3. **Phase-F scope boundary:** Which concrete benchmark dependencies remain outside D4 (e.g., in prompts, QA logic, or guards) and therefore belong in a re-scoped Phase F?
+3. **Phase-F scope boundary:** F1 has established the bounded non-D4 residual inventory and candidate owners. Which candidates warrant a separately authorized treatment remains undecided.
 4. **Bottleneck prioritization:** Is answer completeness and decomposition (Phase E) now a larger production bottleneck than residual retrieval shortcut dependency?
-5. **Phase execution ordering:** Should the historical E-before-F sequencing remain intact, or should a narrow residual dependency inventory (F1) precede Phase E?
+5. **Phase execution ordering:** The authorized F1 inventory preceded Phase E and found zero substantiated E1 blockers. E1 is recommended next; no subsequent execution is authorized.
 
 ```text
-NEXT_TASK = UNDECIDED
+NEXT_TASK_RECOMMENDATION = E1 — Dynamic Question Decomposition
 NEXT_STAGE_AUTHORIZED = false
 ```

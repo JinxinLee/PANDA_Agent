@@ -17,8 +17,12 @@ The single `Current authoritative state` section is authoritative over historica
 
 ## Current authoritative state
 
-Repository head (accepted starting baseline for this documentation reconciliation):
-e977ea420134842041e15f3ae60572c7c0670934
+Repository head (F1 accepted starting baseline):
+53356ab81c1b81abe0c5ae04834f6112f6d2c1a8
+
+Latest completed static inventory:
+F1
+COMPLETE / PASS / RESIDUAL_BENCHMARK_DEPENDENCY_INVENTORY_ESTABLISHED
 
 Latest accepted production action:
 D4-A10
@@ -34,13 +38,25 @@ MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD
 Current planning state:
 D4 = PAUSED / ROADMAP_RECONCILIATION
 D4 overall completion = UNDECIDED
-NEXT_TASK = UNDECIDED / NOT AUTHORIZED
+NEXT_TASK_RECOMMENDATION = E1 — Dynamic Question Decomposition / NOT AUTHORIZED
+NEXT_TASK_EXECUTION_AUTHORIZED = false
 
 No D4-A11 exists.
 Phase E = NOT_STARTED.
-Phase F = NOT_STARTED / SCOPE_RECONCILIATION_REQUIRED.
+Phase F = IN_PROGRESS / F1_COMPLETE.
+F2 = NOT_STARTED / SCOPE_PRESERVED.
 F3 = SCOPE_RECONCILIATION_REQUIRED / PARTIALLY_SUPERSEDED_BY_D4.
 No further D4, Phase-E, or Phase-F task is authorized.
+
+## F1 static inventory closeout
+
+F1 classified 21 candidates: 12 production residuals, 3 provenance HOLDs, 2 generic mechanisms, 2 domain mechanisms, 1 aggregate D4 exclusion, and 1 evaluator-only exclusion. Residual ownership: 4 F2 candidates, 3 F3 candidates, 3 E1/E2 compatibility items, and 2 E3 boundary reviews. E1 blockers = 0.
+
+Keep the current answer-completeness compatibility layer until a generic E1/E2 replacement is established. The three local HOLDs concern non-paper intent source-policy provenance, the exact GPU-memory guard, and curated workflow/graph fallback provenance. They are not counted as substantiated production residuals.
+
+PASS applies only to the bounded static inventory. No production source/configuration changed, no D4 reinventory occurred, no protected split was accessed, and scientific/provider/model calls and token usage were zero. F1 does not complete Phase F or D4, remove dependencies, or authorize E1/F2/F3.
+
+Artifacts: `evaluation/f1_residual_benchmark_dependency_inventory.json`, `evaluation/F1_RESIDUAL_BENCHMARK_DEPENDENCY_INVENTORY.md`.
 
 ---
 
