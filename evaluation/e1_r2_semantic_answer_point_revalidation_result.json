@@ -1,0 +1,100 @@
+{
+  "checkpoint": "E1-R2",
+  "verdict": "PASS",
+  "metrics": {
+    "valid_cases": 24,
+    "matched_points": 54,
+    "reference_points": 54,
+    "predicted_points": 54,
+    "micro_reference_recall": 1.0,
+    "micro_prediction_precision": 1.0,
+    "under_decomposed_cases": 0,
+    "over_decomposed_cases": 0,
+    "exact_count_cases": 24,
+    "stable_pairs": 12,
+    "hidden_prerequisite_predictions": 0,
+    "semantic_complete_cases": 24
+  },
+  "gates": {
+    "valid_cases": {
+      "observed": 24,
+      "threshold": 23,
+      "passed": true
+    },
+    "micro_reference_recall": {
+      "observed": 1.0,
+      "threshold": 0.9,
+      "passed": true
+    },
+    "micro_prediction_precision": {
+      "observed": 1.0,
+      "threshold": 0.9,
+      "passed": true
+    },
+    "under_decomposed_cases": {
+      "observed": 0,
+      "threshold": 4,
+      "passed": true
+    },
+    "over_decomposed_cases": {
+      "observed": 0,
+      "threshold": 4,
+      "passed": true
+    },
+    "exact_count_cases": {
+      "observed": 24,
+      "threshold": 20,
+      "passed": true
+    },
+    "stable_pairs": {
+      "observed": 12,
+      "threshold": 10,
+      "passed": true
+    },
+    "hidden_prerequisite_predictions": {
+      "observed": 0,
+      "threshold": 0,
+      "passed": true
+    }
+  },
+  "logical_calls": {
+    "decomposition": 24,
+    "judge": 24
+  },
+  "provider_usage_by_role": {
+    "decomposition": {
+      "model_calls": 24,
+      "generation_calls": 24,
+      "embedding_calls": 0,
+      "token_usage": 30056
+    },
+    "judge": {
+      "model_calls": 24,
+      "generation_calls": 24,
+      "embedding_calls": 0,
+      "token_usage": 24885
+    }
+  },
+  "failure_categories": {},
+  "scope": "fresh synthetic exploratory T2; shadow-only; no representative generalization or production claim",
+  "taxonomy_diagnostics": {
+    "predicted_label_distribution": {
+      "locator": 14,
+      "mechanism": 13,
+      "comparison": 6,
+      "data_flow": 2,
+      "definition": 7,
+      "api_behavior": 3,
+      "cause_reason": 5,
+      "omitted": 2,
+      "implementation": 1,
+      "constraint": 1
+    },
+    "labeled_semantic_matches": 52,
+    "exact_label_matches": 43,
+    "primary_gate": false
+  },
+  "preregistration_commit": "3d0d8ca650d159681fecec324a081d28e8e945eb",
+  "raw_freeze_commit": "a5275dfee6c4134f3ad790a5598ca0c0a51f1a58",
+  "implementation_commit": "87cc34dd919d8431bb774003a7f76a9fff3a7567"
+}

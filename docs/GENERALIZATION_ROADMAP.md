@@ -25,7 +25,7 @@ The roadmap is governed by the following core development principles:
 ## Current planning state
 
 Repository planning baseline:
-87cc34dd919d8431bb774003a7f76a9fff3a7567 (E1-R2 starting HEAD)
+4cd0305c53541bcba75c00fbf935d87c63ba3069 (E1-R2 execution starting HEAD)
 
 Latest accepted production action:
 D4-A10
@@ -48,7 +48,7 @@ Phase E:
 IN_PROGRESS / E1
 
 E1:
-IN_PROGRESS / REPAIR_IMPLEMENTED / REVALIDATION_PENDING
+IN_PROGRESS / REPAIR_PROSPECTIVELY_VALIDATED / CLOSURE_REVIEW_PENDING
 
 E1-A1:
 COMPLETE / PASS / QUESTION_ONLY_DIAGNOSTIC_DECOMPOSITION_IMPLEMENTED
@@ -63,7 +63,7 @@ E1-R1:
 COMPLETE / PASS / SHADOW_SEMANTIC_ANSWER_POINT_CONTRACT_REPAIRED
 
 E1-R2:
-IN_PROGRESS / PREREGISTRATION_DRAFT / HUMAN_REVIEW_APPROVED
+COMPLETE / PASS / TARGETED_PROSPECTIVE_SEMANTIC_ANSWER_POINT_REVALIDATION_PASSED
 
 Phase F:
 IN_PROGRESS / F1_COMPLETE
@@ -75,10 +75,10 @@ D4 overall completion:
 UNDECIDED
 
 Next task recommendation:
-E1-R2 outcome-dependent closure or repair decision / NOT AUTHORIZED
+E1 CLOSURE / SCOPE REVIEW / NOT AUTHORIZED
 
 Current task authorization:
-E1-R2 authorized; human review approved by Jinxin Li; live execution awaits preregistration freeze.
+E1-R2 completed within authorization; no subsequent task is authorized.
 
 No D4-A11 exists.
 No further D4 task is currently authorized.
@@ -427,7 +427,7 @@ Phase E addresses answer synthesis, facet coverage, claim-to-evidence grounding,
 
 ### E1 — Dynamic question decomposition
 
-- **Status:** IN_PROGRESS / REPAIR_IMPLEMENTED / REVALIDATION_PENDING
+- **Status:** IN_PROGRESS / REPAIR_PROSPECTIVELY_VALIDATED / CLOSURE_REVIEW_PENDING
 - **E1-A1 outcome:** COMPLETE / PASS / QUESTION_ONLY_DIAGNOSTIC_DECOMPOSITION_IMPLEMENTED. Question-only 1–5 facet contract and explicit shadow diagnostic seam implemented; normal QA does not invoke it. Existing `question_core` remains authoritative and compatibility requirements remain active. Focused fake-based T0 checks passed. E1-A1 PASS is not E1 PASS.
 - **E1-A2 outcome:** COMPLETE / FAIL / G7_FACET_TYPE_ACCURACY_AND_G8_PAIR_STABILITY_FAILED. Frozen 24-case T2 cohort fully scored: valid 24/24, question-only reference recall 40/44, precision 40/40, under 4/24, over 0/24, exact count 20/24, hidden prerequisites 0. G7 type accuracy 28/40 (70%) and G8 strict reference-conformant pairs 7/12 failed; all other gates passed. Production and preregistration contracts remained unchanged. Small exposed-development results are not release generalization estimates; source and language are confounded.
 - **E1-A2 evidence:** `evaluation/e1_a2_dynamic_question_decomposition_validation_result.json`, `evaluation/E1_A2_DYNAMIC_QUESTION_DECOMPOSITION_VALIDATION.md`; preregistration commit `77ea6bc27beb1657673e57be763b05419c98bc05`.
@@ -436,8 +436,8 @@ Phase E addresses answer synthesis, facet coverage, claim-to-evidence grounding,
 - **E1-R1 outcome:** COMPLETE / PASS / SHADOW_SEMANTIC_ANSWER_POINT_CONTRACT_REPAIRED. Prompt 2.0.0 / schema e1.question_decomposition.v2 implements obligation atomicity guidance, optional diagnostic taxonomy, and type-independent question-order IDs. Focused v2 T0: 32 passed; real-model repair quality remains unmeasured. Normal QA and compatibility requirements remain unchanged. Historical v1 test fixtures require their original implementation, as documented in the repair report.
 - **E1-R1 evidence:** `evaluation/E1_R1_SEMANTIC_ANSWER_POINT_CONTRACT_REPAIR.md`.
 - **Evidence:** `evaluation/e1_a1_dynamic_question_decomposition_contract.json`, `evaluation/E1_A1_DYNAMIC_QUESTION_DECOMPOSITION_CONTRACT.md`.
-- **E1-R2 status:** IN_PROGRESS / PREREGISTRATION_DRAFT / HUMAN_REVIEW_APPROVED. Authorized prospective T2 uses a draft fresh synthetic exploratory English cohort (24 cases, 12 pairs, 54 reference obligations). Human question/reference/paraphrase review and Git preregistration freeze precede live calls. Scientific execution has not started. Protocol: `evaluation/E1_R2_REVALIDATION_PREREGISTRATION.md`; human review package: `evaluation/E1_R2_COHORT_REVIEW.md`.
-- **Next task recommendation:** E1-R2 outcome-dependent closure or repair decision; not authorized. An exploratory synthetic PASS alone does not establish representative PANDA generalization or automatically authorize E2.
+- **E1-R2 outcome:** COMPLETE / PASS / TARGETED_PROSPECTIVE_SEMANTIC_ANSWER_POINT_REVALIDATION_PASSED. Human-approved fresh synthetic exploratory English cohort: 24/24 valid, semantic recall 54/54, precision 54/54, under/over 0, exact count 24/24, semantic-complete pairs 12/12, hidden prerequisites 0; all eight gates passed. Raw records were committed before judging. Preregistration `3d0d8ca650d159681fecec324a081d28e8e945eb`; raw freeze `a5275dfee6c4134f3ad790a5598ca0c0a51f1a58`. Report: `evaluation/E1_R2_SEMANTIC_ANSWER_POINT_REVALIDATION.md`; result: `evaluation/e1_r2_semantic_answer_point_revalidation_result.json`.
+- **Next task recommendation:** E1 CLOSURE / SCOPE REVIEW; not authorized. An exploratory synthetic PASS alone does not establish representative PANDA generalization or automatically authorize E2.
 - **Problem:** A single `question_core` plus domain-specific requirements can be complete on known questions but miss unseen multi-part structure.
 - **Goal:** Derive 1–5 evidence-independent, independently satisfiable explicit response obligations from the question itself, each independently checkable for omission.
 - **Why this stage:** Retrieval generalization and structured knowledge must be established before asking decomposition to drive completeness.
@@ -445,7 +445,7 @@ Phase E addresses answer synthesis, facet coverage, claim-to-evidence grounding,
 - **Functional requirements:** Question-only input, 1–5 points, unique code-assigned IDs independent of taxonomy in both sorting and identity, exact question support spans, semantic-slot paraphrase stability, over/under-decomposition checks, and trace/audit output. Literal ID equality across paraphrases is not required.
 - **Explicit out of scope:** Deriving points from retrieved evidence, removing existing requirements, targeted retrieval, or benchmark templates.
 - **Dependencies:** Phases C/D and curated answer-point annotations.
-- **Evaluation scope:** E1-A1 T0, E1-A2 targeted T2, E1-AR static review and E1-R1 implementation/T0 completed. E1-R2 prospective T2 is authorized, with generated-cohort human review approved by Jinxin Li and preregistration freeze pending. No live E1-R2 call or old E1-A2 gate/verdict change occurred.
+- **Evaluation scope:** E1-A1 T0, E1-A2 targeted T2, E1-AR static review, E1-R1 implementation/T0 and E1-R2 prospective T2 completed. E1-R2 used 24 decomposition plus 24 judge calls and 54941 returned tokens; no retrieval or QA calls. Its synthetic exploratory PASS is not representative PANDA generalization. Historical E1-A2 FAIL and gates remain unchanged.
 - **Future primary metrics:** Structural validity, question-only semantic reference-point recall, semantic prediction precision, under/over-decomposition, exact point count, semantic-slot paraphrase stability, and hidden-prerequisite inference. Legacy answer facts are not E1 ground truth.
 - **Secondary diagnostics:** Exact facet-type agreement, taxonomy distribution and facet-label paraphrase stability; source-group gaps remain diagnostic. Historical E1-A2's strict reference-conformant pair gate remains unchanged and must not be presented as pure semantic paraphrase stability.
 - **Acceptance criteria:** Decomposition captures required question facets generically without mirroring whatever evidence was found.
@@ -567,11 +567,11 @@ At release, Generalization Gap means benchmark score minus novel score. Benchmar
 2. **Remaining D4 candidate disposition:** Does the remaining unassessed D4 inventory contain another naturally testable, high-value migration batch, or should residual entries remain on HOLD?
 3. **Phase-F scope boundary:** F1 has established the bounded non-D4 residual inventory and candidate owners. Which candidates warrant a separately authorized treatment remains undecided.
 4. **Bottleneck prioritization:** Is answer completeness and decomposition (Phase E) now a larger production bottleneck than residual retrieval shortcut dependency?
-5. **Phase execution ordering:** The authorized F1 inventory preceded Phase E and found zero substantiated E1 blockers. E1-A2 remains failed; E1-R1 implements the E1-AR semantic-obligation contract in shadow mode. E1-R2 is authorized and human-approved by Jinxin Li, pending preregistration freeze before prospective execution. No subsequent phase task is authorized.
+5. **Phase execution ordering:** F1 found zero substantiated E1 blockers. E1-A2 remains failed; E1-R1 implemented the revised semantic contract and E1-R2 passed targeted prospective synthetic exploratory validation. E1 CLOSURE / SCOPE REVIEW is recommended to decide whether this suffices or a small real PANDA-style exposed-development confirmation is warranted. That review and E2/E3 are not authorized.
 
 ```text
-CURRENT_TASK = E1-R2 / AUTHORIZED / HUMAN_REVIEW_APPROVED
-NEXT_TASK_RECOMMENDATION = E1-R2 outcome-dependent closure or repair decision
+CURRENT_TASK = E1-R2 / COMPLETE / PASS
+NEXT_TASK_RECOMMENDATION = E1 CLOSURE / SCOPE REVIEW
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 NEXT_STAGE_AUTHORIZED = false
 ```

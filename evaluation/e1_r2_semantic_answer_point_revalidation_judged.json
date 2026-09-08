@@ -1,0 +1,1038 @@
+{
+  "preregistration_commit": "3d0d8ca650d159681fecec324a081d28e8e945eb",
+  "raw_commit": "a5275dfee6c4134f3ad790a5598ca0c0a51f1a58",
+  "records": [
+    {
+      "case_id": "r2p01.base",
+      "stage": "complete",
+      "scoreable": true,
+      "raw_judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p01.base.ref1",
+            "prediction_point_id": "point.1"
+          },
+          {
+            "reference_point_id": "r2p01.base.ref2",
+            "prediction_point_id": "point.2"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p01.base.ref1",
+            "prediction_point_id": "point.1"
+          },
+          {
+            "reference_point_id": "r2p01.base.ref2",
+            "prediction_point_id": "point.2"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "usage": {
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "generation_calls": 1,
+        "token_usage": 977
+      }
+    },
+    {
+      "case_id": "r2p01.paraphrase",
+      "stage": "complete",
+      "scoreable": true,
+      "raw_judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p01.paraphrase.ref1",
+            "prediction_point_id": "point.2"
+          },
+          {
+            "reference_point_id": "r2p01.paraphrase.ref2",
+            "prediction_point_id": "point.1"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p01.paraphrase.ref1",
+            "prediction_point_id": "point.2"
+          },
+          {
+            "reference_point_id": "r2p01.paraphrase.ref2",
+            "prediction_point_id": "point.1"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "usage": {
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "generation_calls": 1,
+        "token_usage": 994
+      }
+    },
+    {
+      "case_id": "r2p02.base",
+      "stage": "complete",
+      "scoreable": true,
+      "raw_judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p02.base.ref1",
+            "prediction_point_id": "point.2"
+          },
+          {
+            "reference_point_id": "r2p02.base.ref2",
+            "prediction_point_id": "point.1"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p02.base.ref1",
+            "prediction_point_id": "point.2"
+          },
+          {
+            "reference_point_id": "r2p02.base.ref2",
+            "prediction_point_id": "point.1"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "usage": {
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "generation_calls": 1,
+        "token_usage": 993
+      }
+    },
+    {
+      "case_id": "r2p02.paraphrase",
+      "stage": "complete",
+      "scoreable": true,
+      "raw_judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p02.paraphrase.ref1",
+            "prediction_point_id": "point.2"
+          },
+          {
+            "reference_point_id": "r2p02.paraphrase.ref2",
+            "prediction_point_id": "point.1"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p02.paraphrase.ref1",
+            "prediction_point_id": "point.2"
+          },
+          {
+            "reference_point_id": "r2p02.paraphrase.ref2",
+            "prediction_point_id": "point.1"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "usage": {
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "generation_calls": 1,
+        "token_usage": 1003
+      }
+    },
+    {
+      "case_id": "r2p03.base",
+      "stage": "complete",
+      "scoreable": true,
+      "raw_judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p03.base.ref1",
+            "prediction_point_id": "point.1"
+          },
+          {
+            "reference_point_id": "r2p03.base.ref2",
+            "prediction_point_id": "point.2"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p03.base.ref1",
+            "prediction_point_id": "point.1"
+          },
+          {
+            "reference_point_id": "r2p03.base.ref2",
+            "prediction_point_id": "point.2"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "usage": {
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "generation_calls": 1,
+        "token_usage": 984
+      }
+    },
+    {
+      "case_id": "r2p03.paraphrase",
+      "stage": "complete",
+      "scoreable": true,
+      "raw_judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p03.paraphrase.ref1",
+            "prediction_point_id": "point.2"
+          },
+          {
+            "reference_point_id": "r2p03.paraphrase.ref2",
+            "prediction_point_id": "point.1"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p03.paraphrase.ref1",
+            "prediction_point_id": "point.2"
+          },
+          {
+            "reference_point_id": "r2p03.paraphrase.ref2",
+            "prediction_point_id": "point.1"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "usage": {
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "generation_calls": 1,
+        "token_usage": 1042
+      }
+    },
+    {
+      "case_id": "r2p04.base",
+      "stage": "complete",
+      "scoreable": true,
+      "raw_judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p04.base.ref1",
+            "prediction_point_id": "point.1"
+          },
+          {
+            "reference_point_id": "r2p04.base.ref2",
+            "prediction_point_id": "point.2"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p04.base.ref1",
+            "prediction_point_id": "point.1"
+          },
+          {
+            "reference_point_id": "r2p04.base.ref2",
+            "prediction_point_id": "point.2"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "usage": {
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "generation_calls": 1,
+        "token_usage": 963
+      }
+    },
+    {
+      "case_id": "r2p04.paraphrase",
+      "stage": "complete",
+      "scoreable": true,
+      "raw_judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p04.paraphrase.ref1",
+            "prediction_point_id": "point.2"
+          },
+          {
+            "reference_point_id": "r2p04.paraphrase.ref2",
+            "prediction_point_id": "point.1"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p04.paraphrase.ref1",
+            "prediction_point_id": "point.2"
+          },
+          {
+            "reference_point_id": "r2p04.paraphrase.ref2",
+            "prediction_point_id": "point.1"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "usage": {
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "generation_calls": 1,
+        "token_usage": 1034
+      }
+    },
+    {
+      "case_id": "r2p05.base",
+      "stage": "complete",
+      "scoreable": true,
+      "raw_judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p05.base.ref1",
+            "prediction_point_id": "point.1"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p05.base.ref1",
+            "prediction_point_id": "point.1"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "usage": {
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "generation_calls": 1,
+        "token_usage": 867
+      }
+    },
+    {
+      "case_id": "r2p05.paraphrase",
+      "stage": "complete",
+      "scoreable": true,
+      "raw_judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p05.paraphrase.ref1",
+            "prediction_point_id": "point.1"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p05.paraphrase.ref1",
+            "prediction_point_id": "point.1"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "usage": {
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "generation_calls": 1,
+        "token_usage": 826
+      }
+    },
+    {
+      "case_id": "r2p06.base",
+      "stage": "complete",
+      "scoreable": true,
+      "raw_judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p06.base.ref1",
+            "prediction_point_id": "point.1"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p06.base.ref1",
+            "prediction_point_id": "point.1"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "usage": {
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "generation_calls": 1,
+        "token_usage": 852
+      }
+    },
+    {
+      "case_id": "r2p06.paraphrase",
+      "stage": "complete",
+      "scoreable": true,
+      "raw_judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p06.paraphrase.ref1",
+            "prediction_point_id": "point.1"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p06.paraphrase.ref1",
+            "prediction_point_id": "point.1"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "usage": {
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "generation_calls": 1,
+        "token_usage": 828
+      }
+    },
+    {
+      "case_id": "r2p07.base",
+      "stage": "complete",
+      "scoreable": true,
+      "raw_judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p07.base.ref1",
+            "prediction_point_id": "point.1"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p07.base.ref1",
+            "prediction_point_id": "point.1"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "usage": {
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "generation_calls": 1,
+        "token_usage": 896
+      }
+    },
+    {
+      "case_id": "r2p07.paraphrase",
+      "stage": "complete",
+      "scoreable": true,
+      "raw_judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p07.paraphrase.ref1",
+            "prediction_point_id": "point.1"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p07.paraphrase.ref1",
+            "prediction_point_id": "point.1"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "usage": {
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "generation_calls": 1,
+        "token_usage": 897
+      }
+    },
+    {
+      "case_id": "r2p08.base",
+      "stage": "complete",
+      "scoreable": true,
+      "raw_judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p08.base.ref1",
+            "prediction_point_id": "point.1"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p08.base.ref1",
+            "prediction_point_id": "point.1"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "usage": {
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "generation_calls": 1,
+        "token_usage": 858
+      }
+    },
+    {
+      "case_id": "r2p08.paraphrase",
+      "stage": "complete",
+      "scoreable": true,
+      "raw_judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p08.paraphrase.ref1",
+            "prediction_point_id": "point.1"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p08.paraphrase.ref1",
+            "prediction_point_id": "point.1"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "usage": {
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "generation_calls": 1,
+        "token_usage": 855
+      }
+    },
+    {
+      "case_id": "r2p09.base",
+      "stage": "complete",
+      "scoreable": true,
+      "raw_judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p09.base.ref1",
+            "prediction_point_id": "point.1"
+          },
+          {
+            "reference_point_id": "r2p09.base.ref2",
+            "prediction_point_id": "point.2"
+          },
+          {
+            "reference_point_id": "r2p09.base.ref3",
+            "prediction_point_id": "point.3"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p09.base.ref1",
+            "prediction_point_id": "point.1"
+          },
+          {
+            "reference_point_id": "r2p09.base.ref2",
+            "prediction_point_id": "point.2"
+          },
+          {
+            "reference_point_id": "r2p09.base.ref3",
+            "prediction_point_id": "point.3"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "usage": {
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "generation_calls": 1,
+        "token_usage": 1087
+      }
+    },
+    {
+      "case_id": "r2p09.paraphrase",
+      "stage": "complete",
+      "scoreable": true,
+      "raw_judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p09.paraphrase.ref1",
+            "prediction_point_id": "point.2"
+          },
+          {
+            "reference_point_id": "r2p09.paraphrase.ref2",
+            "prediction_point_id": "point.3"
+          },
+          {
+            "reference_point_id": "r2p09.paraphrase.ref3",
+            "prediction_point_id": "point.1"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p09.paraphrase.ref1",
+            "prediction_point_id": "point.2"
+          },
+          {
+            "reference_point_id": "r2p09.paraphrase.ref2",
+            "prediction_point_id": "point.3"
+          },
+          {
+            "reference_point_id": "r2p09.paraphrase.ref3",
+            "prediction_point_id": "point.1"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "usage": {
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "generation_calls": 1,
+        "token_usage": 1160
+      }
+    },
+    {
+      "case_id": "r2p10.base",
+      "stage": "complete",
+      "scoreable": true,
+      "raw_judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p10.base.ref1",
+            "prediction_point_id": "point.1"
+          },
+          {
+            "reference_point_id": "r2p10.base.ref2",
+            "prediction_point_id": "point.2"
+          },
+          {
+            "reference_point_id": "r2p10.base.ref3",
+            "prediction_point_id": "point.3"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p10.base.ref1",
+            "prediction_point_id": "point.1"
+          },
+          {
+            "reference_point_id": "r2p10.base.ref2",
+            "prediction_point_id": "point.2"
+          },
+          {
+            "reference_point_id": "r2p10.base.ref3",
+            "prediction_point_id": "point.3"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "usage": {
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "generation_calls": 1,
+        "token_usage": 1112
+      }
+    },
+    {
+      "case_id": "r2p10.paraphrase",
+      "stage": "complete",
+      "scoreable": true,
+      "raw_judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p10.paraphrase.ref1",
+            "prediction_point_id": "point.2"
+          },
+          {
+            "reference_point_id": "r2p10.paraphrase.ref2",
+            "prediction_point_id": "point.3"
+          },
+          {
+            "reference_point_id": "r2p10.paraphrase.ref3",
+            "prediction_point_id": "point.1"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p10.paraphrase.ref1",
+            "prediction_point_id": "point.2"
+          },
+          {
+            "reference_point_id": "r2p10.paraphrase.ref2",
+            "prediction_point_id": "point.3"
+          },
+          {
+            "reference_point_id": "r2p10.paraphrase.ref3",
+            "prediction_point_id": "point.1"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "usage": {
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "generation_calls": 1,
+        "token_usage": 1214
+      }
+    },
+    {
+      "case_id": "r2p11.base",
+      "stage": "complete",
+      "scoreable": true,
+      "raw_judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p11.base.ref1",
+            "prediction_point_id": "point.1"
+          },
+          {
+            "reference_point_id": "r2p11.base.ref2",
+            "prediction_point_id": "point.2"
+          },
+          {
+            "reference_point_id": "r2p11.base.ref3",
+            "prediction_point_id": "point.3"
+          },
+          {
+            "reference_point_id": "r2p11.base.ref4",
+            "prediction_point_id": "point.4"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p11.base.ref1",
+            "prediction_point_id": "point.1"
+          },
+          {
+            "reference_point_id": "r2p11.base.ref2",
+            "prediction_point_id": "point.2"
+          },
+          {
+            "reference_point_id": "r2p11.base.ref3",
+            "prediction_point_id": "point.3"
+          },
+          {
+            "reference_point_id": "r2p11.base.ref4",
+            "prediction_point_id": "point.4"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "usage": {
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "generation_calls": 1,
+        "token_usage": 1239
+      }
+    },
+    {
+      "case_id": "r2p11.paraphrase",
+      "stage": "complete",
+      "scoreable": true,
+      "raw_judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p11.paraphrase.ref1",
+            "prediction_point_id": "point.4"
+          },
+          {
+            "reference_point_id": "r2p11.paraphrase.ref2",
+            "prediction_point_id": "point.3"
+          },
+          {
+            "reference_point_id": "r2p11.paraphrase.ref3",
+            "prediction_point_id": "point.2"
+          },
+          {
+            "reference_point_id": "r2p11.paraphrase.ref4",
+            "prediction_point_id": "point.1"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p11.paraphrase.ref1",
+            "prediction_point_id": "point.4"
+          },
+          {
+            "reference_point_id": "r2p11.paraphrase.ref2",
+            "prediction_point_id": "point.3"
+          },
+          {
+            "reference_point_id": "r2p11.paraphrase.ref3",
+            "prediction_point_id": "point.2"
+          },
+          {
+            "reference_point_id": "r2p11.paraphrase.ref4",
+            "prediction_point_id": "point.1"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "usage": {
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "generation_calls": 1,
+        "token_usage": 1383
+      }
+    },
+    {
+      "case_id": "r2p12.base",
+      "stage": "complete",
+      "scoreable": true,
+      "raw_judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p12.base.ref1",
+            "prediction_point_id": "point.1"
+          },
+          {
+            "reference_point_id": "r2p12.base.ref2",
+            "prediction_point_id": "point.2"
+          },
+          {
+            "reference_point_id": "r2p12.base.ref3",
+            "prediction_point_id": "point.3"
+          },
+          {
+            "reference_point_id": "r2p12.base.ref4",
+            "prediction_point_id": "point.4"
+          },
+          {
+            "reference_point_id": "r2p12.base.ref5",
+            "prediction_point_id": "point.5"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p12.base.ref1",
+            "prediction_point_id": "point.1"
+          },
+          {
+            "reference_point_id": "r2p12.base.ref2",
+            "prediction_point_id": "point.2"
+          },
+          {
+            "reference_point_id": "r2p12.base.ref3",
+            "prediction_point_id": "point.3"
+          },
+          {
+            "reference_point_id": "r2p12.base.ref4",
+            "prediction_point_id": "point.4"
+          },
+          {
+            "reference_point_id": "r2p12.base.ref5",
+            "prediction_point_id": "point.5"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "usage": {
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "generation_calls": 1,
+        "token_usage": 1431
+      }
+    },
+    {
+      "case_id": "r2p12.paraphrase",
+      "stage": "complete",
+      "scoreable": true,
+      "raw_judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p12.paraphrase.ref1",
+            "prediction_point_id": "point.5"
+          },
+          {
+            "reference_point_id": "r2p12.paraphrase.ref2",
+            "prediction_point_id": "point.4"
+          },
+          {
+            "reference_point_id": "r2p12.paraphrase.ref3",
+            "prediction_point_id": "point.3"
+          },
+          {
+            "reference_point_id": "r2p12.paraphrase.ref4",
+            "prediction_point_id": "point.2"
+          },
+          {
+            "reference_point_id": "r2p12.paraphrase.ref5",
+            "prediction_point_id": "point.1"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "judgment": {
+        "matched_pairs": [
+          {
+            "reference_point_id": "r2p12.paraphrase.ref1",
+            "prediction_point_id": "point.5"
+          },
+          {
+            "reference_point_id": "r2p12.paraphrase.ref2",
+            "prediction_point_id": "point.4"
+          },
+          {
+            "reference_point_id": "r2p12.paraphrase.ref3",
+            "prediction_point_id": "point.3"
+          },
+          {
+            "reference_point_id": "r2p12.paraphrase.ref4",
+            "prediction_point_id": "point.2"
+          },
+          {
+            "reference_point_id": "r2p12.paraphrase.ref5",
+            "prediction_point_id": "point.1"
+          }
+        ],
+        "missing_reference_ids": [],
+        "extra_prediction_ids": [],
+        "hidden_prerequisite_prediction_ids": []
+      },
+      "usage": {
+        "model_calls": 1,
+        "embedding_calls": 0,
+        "generation_calls": 1,
+        "token_usage": 1390
+      }
+    }
+  ]
+}

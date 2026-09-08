@@ -17,12 +17,14 @@ The single `Current authoritative state` section is authoritative over historica
 
 ## Current authoritative state
 
-Repository head (E1-R2 starting baseline):
-87cc34dd919d8431bb774003a7f76a9fff3a7567
+Repository head (E1-R2 execution starting baseline):
+4cd0305c53541bcba75c00fbf935d87c63ba3069
 
-Current authorized task:
+Latest completed prospective validation:
 E1-R2 — Prospective Semantic Answer-Point Revalidation
-IN_PROGRESS / PREREGISTRATION_DRAFT / HUMAN_REVIEW_APPROVED
+COMPLETE / PASS / TARGETED_PROSPECTIVE_SEMANTIC_ANSWER_POINT_REVALIDATION_PASSED
+Preregistration: 3d0d8ca650d159681fecec324a081d28e8e945eb
+Raw freeze: a5275dfee6c4134f3ad790a5598ca0c0a51f1a58
 
 Latest completed shadow repair:
 E1-R1
@@ -32,7 +34,7 @@ Latest completed architecture review:
 E1-AR
 COMPLETE / PASS / REVISED_SEMANTIC_ANSWER_POINT_CONTRACT_ESTABLISHED
 
-Latest completed decomposition validation:
+Historical decomposition validation:
 E1-A2
 COMPLETE / FAIL / G7_FACET_TYPE_ACCURACY_AND_G8_PAIR_STABILITY_FAILED
 Preregistration commit: 77ea6bc27beb1657673e57be763b05419c98bc05
@@ -59,19 +61,42 @@ MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD
 Current planning state:
 D4 = PAUSED / ROADMAP_RECONCILIATION
 D4 overall completion = UNDECIDED
-CURRENT_TASK_EXECUTION_AUTHORIZED = E1-R2; human review approved by Jinxin Li; live execution awaits preregistration freeze
-NEXT_TASK_RECOMMENDATION = E1-R2 outcome-dependent closure or repair decision / NOT AUTHORIZED
+CURRENT_TASK = E1-R2 / COMPLETE / PASS
+NEXT_TASK_RECOMMENDATION = E1 CLOSURE / SCOPE REVIEW / NOT AUTHORIZED
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 
 No D4-A11 exists.
 Phase E = IN_PROGRESS / E1.
-E1 = IN_PROGRESS / REPAIR_IMPLEMENTED / REVALIDATION_PENDING.
+E1 = IN_PROGRESS / REPAIR_PROSPECTIVELY_VALIDATED / CLOSURE_REVIEW_PENDING.
+E2 = NOT_STARTED.
+E3 = NOT_STARTED.
 Phase F = IN_PROGRESS / F1_COMPLETE.
 F2 = NOT_STARTED / SCOPE_PRESERVED.
 F3 = SCOPE_RECONCILIATION_REQUIRED / PARTIALLY_SUPERSEDED_BY_D4.
 No further D4, Phase-E, or Phase-F task is authorized after E1-R2.
 
-## E1-R2 preparation checkpoint
+## E1-R2 scientific closeout
+
+The approved amended cohort passed all eight frozen primary gates: 24/24 valid,
+54/54 semantic reference recall, 54/54 prediction precision, 0 under/over-decomposed
+cases, 24/24 exact count, 12/12 semantic-complete pairs, zero hidden prerequisites.
+All 24 judgments were scoreable. Facet taxonomy is diagnostic only; two predictions
+omitted labels and nine labeled semantic matches differed from reference labels.
+
+All 24 raw decomposition records were committed before judging. Frozen inputs and
+approved case content remained unchanged. Scientific usage: decomposition 24 logical /
+24 returned model calls / 30056 tokens; judge 24 / 24 / 24885 tokens; total 48 calls /
+54941 returned tokens. Analyzer, embeddings, reranker, retrieval and QA calls were zero.
+Focused pre-freeze tests passed 27/27; offline validation and independent post-report
+count/usage/provenance reconciliation passed. No scientific retry or next task occurred.
+
+Report: `evaluation/E1_R2_SEMANTIC_ANSWER_POINT_REVALIDATION.md`.
+Result: `evaluation/e1_r2_semantic_answer_point_revalidation_result.json`.
+This is targeted prospective synthetic exploratory shadow evidence, not representative
+PANDA generalization or production readiness. E1-A2 remains FAIL. E1 awaits separately
+authorized E1 CLOSURE / SCOPE REVIEW; E2/E3 remain NOT_STARTED.
+
+## Historical checkpoint — E1-R2 preparation
 
 The user authorized E1-R2. The repaired v2 implementation is committed at the
 starting HEAD. A fresh 24-question / 12-pair English synthetic exploratory cohort
@@ -94,7 +119,7 @@ E1-A2 remains FAIL; E1 remains REVALIDATION_PENDING. E2/E3 and production activa
 remain out of scope. A synthetic exploratory PASS would require an explicit E1
 closure/scope decision, not automatically establish representative generalization.
 
-## E1-R1 shadow repair closeout
+## Historical checkpoint — E1-R1 shadow repair closeout
 
 Decomposition prompt 2.0.0 / schema e1.question_decomposition.v2 implements the semantic-obligation contract in the explicit shadow seam. Points use type-independent question-order IDs (`point.N`). Optional facet metadata cannot affect validity of otherwise valid semantic points, ordering or identity; unusable metadata is omitted. The prompt teaches independently satisfiable explicit obligations, with no lexical splitting heuristics. Question-only input, 1–5 bound, exact spans and diagnostic ambiguity remain.
 
