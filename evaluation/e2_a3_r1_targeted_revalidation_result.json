@@ -1,0 +1,342 @@
+{
+  "candidate_commit": "0dd7adf2c5aa456396b39890dbf968df1bcb4161",
+  "starting_head": "e5941c5f9aac45d98b739a48b245be53a41c6d80",
+  "raw_commit": "4092209a11f57ac757502b01e2c55332b88a0519",
+  "judged_commit": "8e73df44d0d39dde93cb9349d8896c15dafefe7f",
+  "counts": {
+    "better": 2,
+    "critical_runtime_regressions": 0,
+    "equivalent": 2,
+    "legacy_correct": 5,
+    "new_false_answer": 0,
+    "new_false_refusal": 0,
+    "runtime_correct": 5,
+    "scoreable": 5,
+    "worse": 1
+  },
+  "gates": {
+    "P1": true,
+    "P2": false,
+    "P3": true,
+    "P4": true,
+    "P5": true,
+    "P6": false,
+    "P7": true,
+    "P8": true,
+    "P9": true
+  },
+  "mean_additional_generation_calls": 1.0,
+  "overhead_denominator": 5,
+  "overhead_numerator": 5,
+  "per_case": [
+    {
+      "additional_generation_calls": -1,
+      "coverage_complete": true,
+      "coverage_evaluable": true,
+      "decomposition_valid": true,
+      "id": "g112",
+      "legacy_decomposition_calls": 0,
+      "legacy_integrity": [
+        "unsupported_identifier"
+      ],
+      "legacy_status": "answered",
+      "new_integrity": [],
+      "post_verify_retrieval": 0,
+      "quality": "better",
+      "runtime_decomposition_calls": 1,
+      "runtime_integrity": [],
+      "runtime_revision_count": 0,
+      "runtime_status": "answered",
+      "scoreable": true,
+      "structural_review": false
+    },
+    {
+      "additional_generation_calls": 1,
+      "coverage_complete": true,
+      "coverage_evaluable": true,
+      "decomposition_valid": true,
+      "id": "g110",
+      "legacy_decomposition_calls": 0,
+      "legacy_integrity": [],
+      "legacy_status": "answered",
+      "new_integrity": [],
+      "post_verify_retrieval": 0,
+      "quality": "better",
+      "runtime_decomposition_calls": 1,
+      "runtime_integrity": [],
+      "runtime_revision_count": 0,
+      "runtime_status": "answered",
+      "scoreable": true,
+      "structural_review": false
+    },
+    {
+      "additional_generation_calls": 1,
+      "coverage_complete": true,
+      "coverage_evaluable": true,
+      "decomposition_valid": true,
+      "id": "g002",
+      "legacy_decomposition_calls": 0,
+      "legacy_integrity": [
+        "unsupported_identifier"
+      ],
+      "legacy_status": "answered",
+      "new_integrity": [],
+      "post_verify_retrieval": 0,
+      "quality": "worse",
+      "runtime_decomposition_calls": 1,
+      "runtime_integrity": [
+        "unsupported_identifier"
+      ],
+      "runtime_revision_count": 1,
+      "runtime_status": "answered",
+      "scoreable": true,
+      "structural_review": false
+    },
+    {
+      "additional_generation_calls": 1,
+      "coverage_complete": true,
+      "coverage_evaluable": true,
+      "decomposition_valid": true,
+      "id": "g044",
+      "legacy_decomposition_calls": 0,
+      "legacy_integrity": [],
+      "legacy_status": "answered",
+      "new_integrity": [],
+      "post_verify_retrieval": 0,
+      "quality": "equivalent",
+      "runtime_decomposition_calls": 1,
+      "runtime_integrity": [],
+      "runtime_revision_count": 0,
+      "runtime_status": "answered",
+      "scoreable": true,
+      "structural_review": false
+    },
+    {
+      "additional_generation_calls": 3,
+      "coverage_complete": true,
+      "coverage_evaluable": true,
+      "decomposition_valid": true,
+      "id": "g027",
+      "legacy_decomposition_calls": 0,
+      "legacy_integrity": [],
+      "legacy_status": "answered",
+      "new_integrity": [
+        "incomplete_citation"
+      ],
+      "post_verify_retrieval": 0,
+      "quality": "equivalent",
+      "runtime_decomposition_calls": 1,
+      "runtime_integrity": [
+        "incomplete_citation"
+      ],
+      "runtime_revision_count": 1,
+      "runtime_status": "answered",
+      "scoreable": true,
+      "structural_review": false
+    }
+  ],
+  "static_gates": {
+    "S1": true,
+    "S10": true,
+    "S11": true,
+    "S12": true,
+    "S2": true,
+    "S3": true,
+    "S4": true,
+    "S5": true,
+    "S6": true,
+    "S7": true,
+    "S8": true,
+    "S9": true
+  },
+  "usage": {
+    "judge": {
+      "analyzer": {
+        "adapter_requests": 0,
+        "logical_calls": 0,
+        "returned_model_calls": 0,
+        "tokens": 0
+      },
+      "controlled_review": {
+        "adapter_requests": 0,
+        "logical_calls": 0,
+        "returned_model_calls": 0,
+        "tokens": 0
+      },
+      "decomposition": {
+        "adapter_requests": 0,
+        "logical_calls": 0,
+        "returned_model_calls": 0,
+        "tokens": 0
+      },
+      "embedding": {
+        "adapter_requests": 0,
+        "logical_calls": 0,
+        "returned_model_calls": 0,
+        "tokens": 0
+      },
+      "judge": {
+        "adapter_requests": 5,
+        "logical_calls": 5,
+        "returned_model_calls": 5,
+        "tokens": 170970
+      },
+      "qa_answer": {
+        "adapter_requests": 0,
+        "logical_calls": 0,
+        "returned_model_calls": 0,
+        "tokens": 0
+      },
+      "qa_review": {
+        "adapter_requests": 0,
+        "logical_calls": 0,
+        "returned_model_calls": 0,
+        "tokens": 0
+      },
+      "qa_revision": {
+        "adapter_requests": 0,
+        "logical_calls": 0,
+        "returned_model_calls": 0,
+        "tokens": 0
+      },
+      "reranker": {
+        "adapter_requests": 0,
+        "logical_calls": 0,
+        "returned_model_calls": 0,
+        "tokens": 0
+      },
+      "retrieval": {
+        "adapter_requests": 0,
+        "logical_calls": 0,
+        "returned_model_calls": 0,
+        "tokens": 0
+      }
+    },
+    "legacy": {
+      "analyzer": {
+        "adapter_requests": 5,
+        "logical_calls": 5,
+        "returned_model_calls": 5,
+        "tokens": 9993
+      },
+      "controlled_review": {
+        "adapter_requests": 0,
+        "logical_calls": 0,
+        "returned_model_calls": 0,
+        "tokens": 0
+      },
+      "decomposition": {
+        "adapter_requests": 0,
+        "logical_calls": 0,
+        "returned_model_calls": 0,
+        "tokens": 0
+      },
+      "embedding": {
+        "adapter_requests": 5,
+        "logical_calls": 5,
+        "returned_model_calls": 5,
+        "tokens": 0
+      },
+      "judge": {
+        "adapter_requests": 0,
+        "logical_calls": 0,
+        "returned_model_calls": 0,
+        "tokens": 0
+      },
+      "qa_answer": {
+        "adapter_requests": 5,
+        "logical_calls": 5,
+        "returned_model_calls": 5,
+        "tokens": 187817
+      },
+      "qa_review": {
+        "adapter_requests": 7,
+        "logical_calls": 7,
+        "returned_model_calls": 7,
+        "tokens": 235005
+      },
+      "qa_revision": {
+        "adapter_requests": 2,
+        "logical_calls": 2,
+        "returned_model_calls": 2,
+        "tokens": 57583
+      },
+      "reranker": {
+        "adapter_requests": 5,
+        "logical_calls": 5,
+        "returned_model_calls": 5,
+        "tokens": 89129
+      },
+      "retrieval": {
+        "adapter_requests": 0,
+        "logical_calls": 5,
+        "returned_model_calls": 0,
+        "tokens": 0
+      }
+    },
+    "runtime": {
+      "analyzer": {
+        "adapter_requests": 5,
+        "logical_calls": 5,
+        "returned_model_calls": 5,
+        "tokens": 11446
+      },
+      "controlled_review": {
+        "adapter_requests": 0,
+        "logical_calls": 0,
+        "returned_model_calls": 0,
+        "tokens": 0
+      },
+      "decomposition": {
+        "adapter_requests": 5,
+        "logical_calls": 5,
+        "returned_model_calls": 5,
+        "tokens": 6117
+      },
+      "embedding": {
+        "adapter_requests": 5,
+        "logical_calls": 5,
+        "returned_model_calls": 5,
+        "tokens": 0
+      },
+      "judge": {
+        "adapter_requests": 0,
+        "logical_calls": 0,
+        "returned_model_calls": 0,
+        "tokens": 0
+      },
+      "qa_answer": {
+        "adapter_requests": 5,
+        "logical_calls": 5,
+        "returned_model_calls": 5,
+        "tokens": 186850
+      },
+      "qa_review": {
+        "adapter_requests": 7,
+        "logical_calls": 7,
+        "returned_model_calls": 7,
+        "tokens": 251857
+      },
+      "qa_revision": {
+        "adapter_requests": 2,
+        "logical_calls": 2,
+        "returned_model_calls": 2,
+        "tokens": 73172
+      },
+      "reranker": {
+        "adapter_requests": 5,
+        "logical_calls": 5,
+        "returned_model_calls": 5,
+        "tokens": 90053
+      },
+      "retrieval": {
+        "adapter_requests": 0,
+        "logical_calls": 5,
+        "returned_model_calls": 0,
+        "tokens": 0
+      }
+    }
+  },
+  "verdict": "FAIL",
+  "zero_tolerance_violations": []
+}
