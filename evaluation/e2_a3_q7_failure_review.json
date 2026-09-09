@@ -1,0 +1,1560 @@
+{
+  "starting_head": "e503dba67b7ed6b7dab6edd89b4158471b93fb54",
+  "raw_commit": "8ba275addf44a5c7e96bf83a292c6737fbe07b38",
+  "decision": "REPAIR_JUSTIFIED",
+  "historical_a3_verdict": "FAIL / Q7",
+  "record_count": 56,
+  "serialized_claim_copies": 299,
+  "distinct_claim_snapshots": 157,
+  "counts_by_mode": {
+    "legacy_question_core": 81,
+    "runtime_e1_v2": 76
+  },
+  "normalization_changed_all_tokens": {
+    "token_occurrences": 41,
+    "distinct_claim_snapshots": 36,
+    "case_ids": [
+      "e1a2.b07",
+      "e1a2.b08",
+      "e1a2.b10",
+      "e1a2.p07",
+      "e1a2.p08",
+      "e1a2.p10",
+      "e1a2.p12",
+      "g013",
+      "g059",
+      "g105",
+      "g110",
+      "g112"
+    ],
+    "by_mode": {
+      "legacy_question_core": 25,
+      "runtime_e1_v2": 16
+    },
+    "unique_tokens": [
+      "FAIRROOT_VERSION:",
+      "FAIRSOFT_VERSION:",
+      "PandaRoot:",
+      "PndLmdDataReader:",
+      "PndLmdDataReader::fillData:",
+      "addData:",
+      "assumptions:",
+      "candidates:",
+      "categories:",
+      "checked:",
+      "consumer:",
+      "createLmdFitData:",
+      "defined:",
+      "execution:",
+      "files:",
+      "filling:",
+      "inputs:",
+      "logic:",
+      "matches:",
+      "messages:",
+      "mode:",
+      "multi-threading:",
+      "pairs:",
+      "paths:",
+      "producer:",
+      "products:",
+      "rejection:",
+      "tasks:",
+      "variables:"
+    ]
+  },
+  "normalization_changed_identifier_path_tokens": {
+    "token_occurrences": 1,
+    "distinct_claim_snapshots": 1,
+    "case_ids": [
+      "g112"
+    ],
+    "by_mode": {
+      "runtime_e1_v2": 1
+    },
+    "unique_tokens": [
+      "PndLmdDataReader::fillData:"
+    ]
+  },
+  "punctuation_classes": {
+    "single_colon": {
+      "token_occurrences": 41,
+      "distinct_claim_snapshots": 36,
+      "case_ids": [
+        "e1a2.b07",
+        "e1a2.b08",
+        "e1a2.b10",
+        "e1a2.p07",
+        "e1a2.p08",
+        "e1a2.p10",
+        "e1a2.p12",
+        "g013",
+        "g059",
+        "g105",
+        "g110",
+        "g112"
+      ],
+      "by_mode": {
+        "legacy_question_core": 25,
+        "runtime_e1_v2": 16
+      },
+      "unique_tokens": [
+        "FAIRROOT_VERSION:",
+        "FAIRSOFT_VERSION:",
+        "PandaRoot:",
+        "PndLmdDataReader:",
+        "PndLmdDataReader::fillData:",
+        "addData:",
+        "assumptions:",
+        "candidates:",
+        "categories:",
+        "checked:",
+        "consumer:",
+        "createLmdFitData:",
+        "defined:",
+        "execution:",
+        "files:",
+        "filling:",
+        "inputs:",
+        "logic:",
+        "matches:",
+        "messages:",
+        "mode:",
+        "multi-threading:",
+        "pairs:",
+        "paths:",
+        "producer:",
+        "products:",
+        "rejection:",
+        "tasks:",
+        "variables:"
+      ]
+    },
+    "double_colon": {
+      "token_occurrences": 0,
+      "distinct_claim_snapshots": 0,
+      "case_ids": [],
+      "by_mode": {},
+      "unique_tokens": []
+    },
+    "period": {
+      "token_occurrences": 140,
+      "distinct_claim_snapshots": 140,
+      "case_ids": [
+        "e1a2.b07",
+        "e1a2.b08",
+        "e1a2.b09",
+        "e1a2.b10",
+        "e1a2.b11",
+        "e1a2.b12",
+        "e1a2.p07",
+        "e1a2.p08",
+        "e1a2.p09",
+        "e1a2.p10",
+        "e1a2.p11",
+        "e1a2.p12",
+        "g001",
+        "g002",
+        "g012",
+        "g013",
+        "g025",
+        "g026",
+        "g027",
+        "g028",
+        "g044",
+        "g047",
+        "g059",
+        "g060",
+        "g105",
+        "g110",
+        "g112"
+      ],
+      "by_mode": {
+        "legacy_question_core": 74,
+        "runtime_e1_v2": 66
+      },
+      "unique_tokens": [
+        "ApolloniusTripletTrackCand.",
+        "CVMFS.",
+        "FAIRROOTPATH.",
+        "FAIRROOT_VERSION.",
+        "FinalGenTrack.",
+        "FinalTrackCand.",
+        "GEMHit.",
+        "LMD.",
+        "NTuples.",
+        "PndLmdSmearingConvolutionModel2D.",
+        "PndRecoKalmanTask2.",
+        "_boost.root.",
+        "acceptance.",
+        "ana_complete.C.",
+        "approach.",
+        "argument.",
+        "axis.",
+        "better.",
+        "branches.",
+        "cafebabe.",
+        "choice.",
+        "collections.",
+        "commit-specific.",
+        "contents.",
+        "coordinates.",
+        "counter.",
+        "determination.",
+        "dimensions.",
+        "directory.",
+        "disabled.",
+        "distributions.",
+        "docs/Installation/Install_PandaRoot.md.",
+        "downstream.",
+        "energies.",
+        "entry.",
+        "eval.",
+        "extraction.",
+        "factor.",
+        "false.",
+        "file.",
+        "finder.",
+        "fit.",
+        "flow.",
+        "framework.",
+        "guide.",
+        "inefficiencies.",
+        "information.",
+        "instead.",
+        "interaction.",
+        "j4.",
+        "luminosity.",
+        "maps.",
+        "measurement.",
+        "method.",
+        "model.",
+        "models.",
+        "object.",
+        "objects.",
+        "occurs.",
+        "offset.",
+        "origin.",
+        "output.",
+        "packages.",
+        "parameter.",
+        "parameters.",
+        "patterns.",
+        "pgenerators/Target/PndTargetGenerator.cxx.",
+        "pid/PidCorr/PndPidCorrelator.cxx.",
+        "pid/PidCorr/PndPidCorrelator.h.",
+        "plots.",
+        "prefix.",
+        "product.",
+        "products.",
+        "reference.",
+        "rules.",
+        "runner.",
+        "runs.",
+        "set.",
+        "setResolutions.",
+        "setSmearingParameterization.",
+        "simulation.",
+        "snapshot.",
+        "stages.",
+        "studies.",
+        "tracking.",
+        "true.",
+        "uncertainties.",
+        "usable.",
+        "used.",
+        "variable.",
+        "variables.",
+        "version.",
+        "weights.",
+        "widths.",
+        "workflow."
+      ]
+    }
+  },
+  "changed_tokens": [
+    {
+      "case_id": "g059",
+      "mode": "legacy_question_core",
+      "claim_id": "smearing_convolution_execution",
+      "origins": [
+        "usage[4].qa_answer",
+        "final_public"
+      ],
+      "raw": "multi-threading:",
+      "current": "multi-threading:",
+      "proposed": "multi-threading",
+      "row": 1
+    },
+    {
+      "case_id": "g105",
+      "mode": "legacy_question_core",
+      "claim_id": "luminosityfit_model_layer_role",
+      "origins": [
+        "usage[4].qa_answer",
+        "final_public"
+      ],
+      "raw": "logic:",
+      "current": "logic:",
+      "proposed": "logic",
+      "row": 21
+    },
+    {
+      "case_id": "g110",
+      "mode": "legacy_question_core",
+      "claim_id": "claim_inspect_upstream_inputs",
+      "origins": [
+        "usage[4].qa_answer"
+      ],
+      "raw": "inputs:",
+      "current": "inputs:",
+      "proposed": "inputs",
+      "row": 31
+    },
+    {
+      "case_id": "g110",
+      "mode": "legacy_question_core",
+      "claim_id": "claim_inspect_producer",
+      "origins": [
+        "usage[4].qa_answer"
+      ],
+      "raw": "producer:",
+      "current": "producer:",
+      "proposed": "producer",
+      "row": 32
+    },
+    {
+      "case_id": "g110",
+      "mode": "legacy_question_core",
+      "claim_id": "claim_inspect_consumer_and_schema",
+      "origins": [
+        "usage[4].qa_answer",
+        "final_public"
+      ],
+      "raw": "consumer:",
+      "current": "consumer:",
+      "proposed": "consumer",
+      "row": 33
+    },
+    {
+      "case_id": "g110",
+      "mode": "legacy_question_core",
+      "claim_id": "claim_inspect_upstream_inputs",
+      "origins": [
+        "usage[6].qa_revision",
+        "final_public"
+      ],
+      "raw": "inputs:",
+      "current": "inputs:",
+      "proposed": "inputs",
+      "row": 34
+    },
+    {
+      "case_id": "g110",
+      "mode": "legacy_question_core",
+      "claim_id": "claim_inspect_producer",
+      "origins": [
+        "usage[6].qa_revision",
+        "final_public"
+      ],
+      "raw": "producer:",
+      "current": "producer:",
+      "proposed": "producer",
+      "row": 35
+    },
+    {
+      "case_id": "g013",
+      "mode": "legacy_question_core",
+      "claim_id": "panda_master_run_task_lifecycle",
+      "origins": [
+        "usage[4].qa_answer"
+      ],
+      "raw": "tasks:",
+      "current": "tasks:",
+      "proposed": "tasks",
+      "row": 38
+    },
+    {
+      "case_id": "g013",
+      "mode": "runtime_e1_v2",
+      "claim_id": "claim_3",
+      "origins": [
+        "usage[5].qa_answer"
+      ],
+      "raw": "execution:",
+      "current": "execution:",
+      "proposed": "execution",
+      "row": 42
+    },
+    {
+      "case_id": "g112",
+      "mode": "runtime_e1_v2",
+      "claim_id": "claim_1",
+      "origins": [
+        "usage[5].qa_answer",
+        "final_public"
+      ],
+      "raw": "createLmdFitData:",
+      "current": "createLmdFitData:",
+      "proposed": "createLmdFitData",
+      "row": 67
+    },
+    {
+      "case_id": "g112",
+      "mode": "runtime_e1_v2",
+      "claim_id": "claim_2",
+      "origins": [
+        "usage[5].qa_answer",
+        "final_public"
+      ],
+      "raw": "assumptions:",
+      "current": "assumptions:",
+      "proposed": "assumptions",
+      "row": 68
+    },
+    {
+      "case_id": "g112",
+      "mode": "runtime_e1_v2",
+      "claim_id": "claim_3",
+      "origins": [
+        "usage[5].qa_answer"
+      ],
+      "raw": "PndLmdDataReader::fillData:",
+      "current": "PndLmdDataReader::fillData:",
+      "proposed": "PndLmdDataReader::fillData",
+      "row": 69
+    },
+    {
+      "case_id": "g112",
+      "mode": "runtime_e1_v2",
+      "claim_id": "claim_4",
+      "origins": [
+        "usage[5].qa_answer",
+        "final_public"
+      ],
+      "raw": "addData:",
+      "current": "addData:",
+      "proposed": "addData",
+      "row": 70
+    },
+    {
+      "case_id": "g112",
+      "mode": "runtime_e1_v2",
+      "claim_id": "claim_3",
+      "origins": [
+        "usage[7].qa_revision",
+        "final_public"
+      ],
+      "raw": "PndLmdDataReader:",
+      "current": "PndLmdDataReader:",
+      "proposed": "PndLmdDataReader",
+      "row": 71
+    },
+    {
+      "case_id": "g112",
+      "mode": "legacy_question_core",
+      "claim_id": "claim_1",
+      "origins": [
+        "usage[4].qa_answer",
+        "final_public"
+      ],
+      "raw": "mode:",
+      "current": "mode:",
+      "proposed": "mode",
+      "row": 72
+    },
+    {
+      "case_id": "g112",
+      "mode": "legacy_question_core",
+      "claim_id": "claim_2",
+      "origins": [
+        "usage[4].qa_answer",
+        "final_public"
+      ],
+      "raw": "assumptions:",
+      "current": "assumptions:",
+      "proposed": "assumptions",
+      "row": 73
+    },
+    {
+      "case_id": "g112",
+      "mode": "legacy_question_core",
+      "claim_id": "claim_3",
+      "origins": [
+        "usage[4].qa_answer",
+        "final_public"
+      ],
+      "raw": "rejection:",
+      "current": "rejection:",
+      "proposed": "rejection",
+      "row": 74
+    },
+    {
+      "case_id": "g112",
+      "mode": "legacy_question_core",
+      "claim_id": "claim_4",
+      "origins": [
+        "usage[4].qa_answer",
+        "final_public"
+      ],
+      "raw": "filling:",
+      "current": "filling:",
+      "proposed": "filling",
+      "row": 75
+    },
+    {
+      "case_id": "e1a2.b07",
+      "mode": "legacy_question_core",
+      "claim_id": "configsettings_pairs_and_paths",
+      "origins": [
+        "usage[4].qa_answer",
+        "final_public"
+      ],
+      "raw": "checked:",
+      "current": "checked:",
+      "proposed": "checked",
+      "row": 81
+    },
+    {
+      "case_id": "e1a2.b07",
+      "mode": "legacy_question_core",
+      "claim_id": "configsettings_environment_variables",
+      "origins": [
+        "usage[4].qa_answer",
+        "final_public"
+      ],
+      "raw": "variables:",
+      "current": "variables:",
+      "proposed": "variables",
+      "row": 82
+    },
+    {
+      "case_id": "e1a2.b07",
+      "mode": "legacy_question_core",
+      "claim_id": "configsettings_unmatched_behavior",
+      "origins": [
+        "usage[4].qa_answer",
+        "final_public"
+      ],
+      "raw": "messages:",
+      "current": "messages:",
+      "proposed": "messages",
+      "row": 83
+    },
+    {
+      "case_id": "e1a2.b07",
+      "mode": "legacy_question_core",
+      "claim_id": "configsettings_unmatched_behavior",
+      "origins": [
+        "usage[4].qa_answer",
+        "final_public"
+      ],
+      "raw": "FAIRSOFT_VERSION:",
+      "current": "FAIRSOFT_VERSION:",
+      "proposed": "FAIRSOFT_VERSION",
+      "row": 83
+    },
+    {
+      "case_id": "e1a2.b07",
+      "mode": "legacy_question_core",
+      "claim_id": "configsettings_unmatched_behavior",
+      "origins": [
+        "usage[4].qa_answer",
+        "final_public"
+      ],
+      "raw": "FAIRROOT_VERSION:",
+      "current": "FAIRROOT_VERSION:",
+      "proposed": "FAIRROOT_VERSION",
+      "row": 83
+    },
+    {
+      "case_id": "e1a2.b07",
+      "mode": "runtime_e1_v2",
+      "claim_id": "claim_config_pairs_and_paths",
+      "origins": [
+        "usage[5].qa_answer",
+        "final_public"
+      ],
+      "raw": "defined:",
+      "current": "defined:",
+      "proposed": "defined",
+      "row": 84
+    },
+    {
+      "case_id": "e1a2.b07",
+      "mode": "runtime_e1_v2",
+      "claim_id": "claim_config_env_vars",
+      "origins": [
+        "usage[5].qa_answer",
+        "final_public"
+      ],
+      "raw": "variables:",
+      "current": "variables:",
+      "proposed": "variables",
+      "row": 85
+    },
+    {
+      "case_id": "e1a2.b07",
+      "mode": "runtime_e1_v2",
+      "claim_id": "claim_config_unmatched_input",
+      "origins": [
+        "usage[5].qa_answer",
+        "final_public"
+      ],
+      "raw": "FAIRSOFT_VERSION:",
+      "current": "FAIRSOFT_VERSION:",
+      "proposed": "FAIRSOFT_VERSION",
+      "row": 86
+    },
+    {
+      "case_id": "e1a2.b07",
+      "mode": "runtime_e1_v2",
+      "claim_id": "claim_config_unmatched_input",
+      "origins": [
+        "usage[5].qa_answer",
+        "final_public"
+      ],
+      "raw": "FAIRROOT_VERSION:",
+      "current": "FAIRROOT_VERSION:",
+      "proposed": "FAIRROOT_VERSION",
+      "row": 86
+    },
+    {
+      "case_id": "e1a2.p07",
+      "mode": "runtime_e1_v2",
+      "claim_id": "claim_1",
+      "origins": [
+        "usage[5].qa_answer",
+        "final_public"
+      ],
+      "raw": "paths:",
+      "current": "paths:",
+      "proposed": "paths",
+      "row": 87
+    },
+    {
+      "case_id": "e1a2.p07",
+      "mode": "runtime_e1_v2",
+      "claim_id": "claim_2",
+      "origins": [
+        "usage[5].qa_answer",
+        "final_public"
+      ],
+      "raw": "matches:",
+      "current": "matches:",
+      "proposed": "matches",
+      "row": 88
+    },
+    {
+      "case_id": "e1a2.p07",
+      "mode": "runtime_e1_v2",
+      "claim_id": "claim_3",
+      "origins": [
+        "usage[5].qa_answer",
+        "final_public"
+      ],
+      "raw": "FAIRSOFT_VERSION:",
+      "current": "FAIRSOFT_VERSION:",
+      "proposed": "FAIRSOFT_VERSION",
+      "row": 89
+    },
+    {
+      "case_id": "e1a2.p07",
+      "mode": "runtime_e1_v2",
+      "claim_id": "claim_3",
+      "origins": [
+        "usage[5].qa_answer",
+        "final_public"
+      ],
+      "raw": "FAIRROOT_VERSION:",
+      "current": "FAIRROOT_VERSION:",
+      "proposed": "FAIRROOT_VERSION",
+      "row": 89
+    },
+    {
+      "case_id": "e1a2.p07",
+      "mode": "legacy_question_core",
+      "claim_id": "config_env_vars_and_pairs",
+      "origins": [
+        "usage[4].qa_answer",
+        "final_public"
+      ],
+      "raw": "pairs:",
+      "current": "pairs:",
+      "proposed": "pairs",
+      "row": 90
+    },
+    {
+      "case_id": "e1a2.p07",
+      "mode": "legacy_question_core",
+      "claim_id": "config_unmatched_handling",
+      "origins": [
+        "usage[4].qa_answer",
+        "final_public"
+      ],
+      "raw": "FAIRSOFT_VERSION:",
+      "current": "FAIRSOFT_VERSION:",
+      "proposed": "FAIRSOFT_VERSION",
+      "row": 91
+    },
+    {
+      "case_id": "e1a2.p07",
+      "mode": "legacy_question_core",
+      "claim_id": "config_unmatched_handling",
+      "origins": [
+        "usage[4].qa_answer",
+        "final_public"
+      ],
+      "raw": "FAIRROOT_VERSION:",
+      "current": "FAIRROOT_VERSION:",
+      "proposed": "FAIRROOT_VERSION",
+      "row": 91
+    },
+    {
+      "case_id": "e1a2.b08",
+      "mode": "legacy_question_core",
+      "claim_id": "lmd_track_search_algorithms_overview",
+      "origins": [
+        "usage[4].qa_answer",
+        "final_public"
+      ],
+      "raw": "PandaRoot:",
+      "current": "PandaRoot:",
+      "proposed": "PandaRoot",
+      "row": 92
+    },
+    {
+      "case_id": "e1a2.p08",
+      "mode": "legacy_question_core",
+      "claim_id": "lmd_track_search_algorithms",
+      "origins": [
+        "usage[4].qa_answer",
+        "final_public"
+      ],
+      "raw": "candidates:",
+      "current": "candidates:",
+      "proposed": "candidates",
+      "row": 101
+    },
+    {
+      "case_id": "e1a2.b10",
+      "mode": "legacy_question_core",
+      "claim_id": "poca_step1_outputs_and_preceding_flow",
+      "origins": [
+        "usage[4].qa_answer",
+        "final_public"
+      ],
+      "raw": "products:",
+      "current": "products:",
+      "proposed": "products",
+      "row": 123
+    },
+    {
+      "case_id": "e1a2.b10",
+      "mode": "runtime_e1_v2",
+      "claim_id": "claim_poca_first_pass_artifacts",
+      "origins": [
+        "usage[5].qa_answer",
+        "final_public"
+      ],
+      "raw": "files:",
+      "current": "files:",
+      "proposed": "files",
+      "row": 125
+    },
+    {
+      "case_id": "e1a2.p10",
+      "mode": "legacy_question_core",
+      "claim_id": "claim_2",
+      "origins": [
+        "usage[4].qa_answer",
+        "final_public"
+      ],
+      "raw": "files:",
+      "current": "files:",
+      "proposed": "files",
+      "row": 133
+    },
+    {
+      "case_id": "e1a2.p12",
+      "mode": "runtime_e1_v2",
+      "claim_id": "claim_1",
+      "origins": [
+        "usage[5].qa_answer",
+        "final_public"
+      ],
+      "raw": "categories:",
+      "current": "categories:",
+      "proposed": "categories",
+      "row": 153
+    },
+    {
+      "case_id": "e1a2.p12",
+      "mode": "legacy_question_core",
+      "claim_id": "generator_category_distinctions",
+      "origins": [
+        "usage[4].qa_answer",
+        "final_public"
+      ],
+      "raw": "categories:",
+      "current": "categories:",
+      "proposed": "categories",
+      "row": 155
+    }
+  ],
+  "verifier_deltas": [
+    {
+      "case_id": "g112",
+      "mode": "runtime_e1_v2",
+      "claim_id": "claim_3",
+      "claim_text": "Inspect track selection filters in PndLmdDataReader::fillData: tracks are immediately skipped from registered acceptances if track_info.IsSecondary is true (evaluated from track->GetSecondary() >= 0), and tracks are rejected if getTrackParameterValue fails dimension_range.isDataWithinRange for any selection dimension in data->getSelectorSet().",
+      "evidence_ids": [
+        "evidence.2912806314dc84af87470e1b",
+        "evidence.9b11380bf90f5bf9e8f0e312"
+      ],
+      "origins": [
+        "usage[5].qa_answer"
+      ],
+      "before": [
+        "unsupported identifier PndLmdDataReader::fillData:"
+      ],
+      "after": []
+    }
+  ],
+  "g112": {
+    "question": "createLmdFitData returns no acceptance: which data mode, Lumi_TrksQA input/tree assumptions, selection filters, and accepted/generated histogram filling should I inspect?",
+    "legacy_initial_claims": [
+      {
+        "claim_id": "claim_1",
+        "claim_text": "Upstream input and data mode: verify that createLmdFitData is executed with data type mode '-t' containing 'e' (efficiency/acceptance, distinct from 'a', 'r', and 'v') and that input files matching 'Lumi_TrksQA*.root' (or specified via '-f') exist in the input directory.",
+        "evidence_ids": [
+          "evidence.bdc0bacaf9e495ca91a97b6f",
+          "evidence.a38328afd315febbdd3a10e5"
+        ],
+        "answer_point_ids": [
+          "question_core"
+        ]
+      },
+      {
+        "claim_id": "claim_2",
+        "claim_text": "Tree and branch schema assumptions: inspect whether the input ROOT files contain the TTree named 'pndsim' and the branch 'LMDTrackQ' storing a TClonesArray of PndLmdTrackQ objects, which PndLmdCombinedDataReader binds to populate track kinematic and status information.",
+        "evidence_ids": [
+          "evidence.2912806314dc84af87470e1b",
+          "evidence.5217beaee62e7e533679993f"
+        ],
+        "answer_point_ids": [
+          "question_core"
+        ]
+      },
+      {
+        "claim_id": "claim_3",
+        "claim_text": "Selection filters and secondary rejection: in PndLmdDataReader::fillData, verify that tracks satisfy 'track_info.IsSecondary == false' (evaluated from '0 <= track->GetSecondary()') because secondary tracks are explicitly skipped with continue, and confirm that track parameters fall inside dimension_range via 'isDataWithinRange' for every filter in the data object's selector set.",
+        "evidence_ids": [
+          "evidence.2912806314dc84af87470e1b",
+          "evidence.9b11380bf90f5bf9e8f0e312"
+        ],
+        "answer_point_ids": [
+          "question_core"
+        ]
+      },
+      {
+        "claim_id": "claim_4",
+        "claim_text": "Accepted-versus-generated histogram filling: inspect whether tracks satisfy wasReconstructed ('track_info.IsReconstructedAtIP', set when '0 <= track->GetTrkRecStatus()'); passing tracks are fed to 'registered_acceptances[i]->addData(track_accepted, ...)', which fills the generated denominator count for all filtered tracks and the accepted numerator count only when track_accepted is true.",
+        "evidence_ids": [
+          "evidence.2912806314dc84af87470e1b",
+          "evidence.9b11380bf90f5bf9e8f0e312"
+        ],
+        "answer_point_ids": [
+          "question_core"
+        ]
+      }
+    ],
+    "legacy_final_claims": [
+      {
+        "claim_id": "claim_1",
+        "claim_text": "Upstream input and data mode: verify that createLmdFitData is executed with data type mode '-t' containing 'e' (efficiency/acceptance, distinct from 'a', 'r', and 'v') and that input files matching 'Lumi_TrksQA*.root' (or specified via '-f') exist in the input directory.",
+        "evidence_ids": [
+          "evidence.bdc0bacaf9e495ca91a97b6f",
+          "evidence.a38328afd315febbdd3a10e5"
+        ]
+      },
+      {
+        "claim_id": "claim_2",
+        "claim_text": "Tree and branch schema assumptions: inspect whether the input ROOT files contain the TTree named 'pndsim' and the branch 'LMDTrackQ' storing a TClonesArray of PndLmdTrackQ objects, which PndLmdCombinedDataReader binds to populate track kinematic and status information.",
+        "evidence_ids": [
+          "evidence.2912806314dc84af87470e1b",
+          "evidence.5217beaee62e7e533679993f"
+        ]
+      },
+      {
+        "claim_id": "claim_3",
+        "claim_text": "Selection filters and secondary rejection: in PndLmdDataReader::fillData, verify that tracks satisfy 'track_info.IsSecondary == false' (evaluated from '0 <= track->GetSecondary()') because secondary tracks are explicitly skipped with continue, and confirm that track parameters fall inside dimension_range via 'isDataWithinRange' for every filter in the data object's selector set.",
+        "evidence_ids": [
+          "evidence.2912806314dc84af87470e1b",
+          "evidence.9b11380bf90f5bf9e8f0e312"
+        ]
+      },
+      {
+        "claim_id": "claim_4",
+        "claim_text": "Accepted-versus-generated histogram filling: inspect whether tracks satisfy wasReconstructed ('track_info.IsReconstructedAtIP', set when '0 <= track->GetTrkRecStatus()'); passing tracks are fed to 'registered_acceptances[i]->addData(track_accepted, ...)', which fills the generated denominator count for all filtered tracks and the accepted numerator count only when track_accepted is true.",
+        "evidence_ids": [
+          "evidence.2912806314dc84af87470e1b",
+          "evidence.9b11380bf90f5bf9e8f0e312"
+        ]
+      }
+    ],
+    "legacy_reviews": [
+      {
+        "errors": [],
+        "audit": null,
+        "claim_audit": []
+      }
+    ],
+    "runtime_initial_claims": [
+      {
+        "claim_id": "claim_1",
+        "claim_text": "Inspect the requested data mode configured via the -t command-line flag in createLmdFitData: valid data types are specified using 'a' (angular), 'e' (efficiency), 'r' (resolution), and 'v' (vertex). If efficiency mode 'e' is not specified, no acceptance objects are registered in registered_acceptances, resulting in combineAllRegisteredDataObjects reporting zero registered acceptance objects.",
+        "evidence_ids": [
+          "evidence.a38328afd315febbdd3a10e5",
+          "evidence.9b11380bf90f5bf9e8f0e312"
+        ],
+        "answer_point_ids": [
+          "point.1"
+        ]
+      },
+      {
+        "claim_id": "claim_2",
+        "claim_text": "Upstream of the reader, inspect the Lumi_TrksQA files and ROOT schema assumptions: PndLmdCombinedDataReader loads input files matching the pattern Lumi_TrksQA*.root (or a specified filelist) and requires a TTree named \"pndsim\" containing a branch named \"LMDTrackQ\" filled with a TClonesArray of PndLmdTrackQ objects.",
+        "evidence_ids": [
+          "evidence.bdc0bacaf9e495ca91a97b6f",
+          "evidence.2912806314dc84af87470e1b",
+          "evidence.ead9fa6fd4e4953b9a2eb49c"
+        ],
+        "answer_point_ids": [
+          "point.2"
+        ]
+      },
+      {
+        "claim_id": "claim_3",
+        "claim_text": "Inspect track selection filters in PndLmdDataReader::fillData: tracks are immediately skipped from registered acceptances if track_info.IsSecondary is true (evaluated from track->GetSecondary() >= 0), and tracks are rejected if getTrackParameterValue fails dimension_range.isDataWithinRange for any selection dimension in data->getSelectorSet().",
+        "evidence_ids": [
+          "evidence.2912806314dc84af87470e1b",
+          "evidence.9b11380bf90f5bf9e8f0e312"
+        ],
+        "answer_point_ids": [
+          "point.3"
+        ]
+      },
+      {
+        "claim_id": "claim_4",
+        "claim_text": "Inspect accepted-versus-generated histogram filling in registered_acceptances[i]->addData: each non-secondary track passing selection dimension ranges is recorded with a boolean track_accepted determined by wasReconstructed(track_info) (requiring track_info.IsReconstructedAtIP, set when track->GetTrkRecStatus() >= 0), where reconstructed tracks yield true and non-reconstructed tracks yield false.",
+        "evidence_ids": [
+          "evidence.2912806314dc84af87470e1b",
+          "evidence.9b11380bf90f5bf9e8f0e312"
+        ],
+        "answer_point_ids": [
+          "point.4"
+        ]
+      }
+    ],
+    "runtime_failing_claim": {
+      "claim_id": "claim_3",
+      "claim_text": "Inspect track selection filters in PndLmdDataReader::fillData: tracks are immediately skipped from registered acceptances if track_info.IsSecondary is true (evaluated from track->GetSecondary() >= 0), and tracks are rejected if getTrackParameterValue fails dimension_range.isDataWithinRange for any selection dimension in data->getSelectorSet().",
+      "evidence_ids": [
+        "evidence.2912806314dc84af87470e1b",
+        "evidence.9b11380bf90f5bf9e8f0e312"
+      ],
+      "answer_point_ids": [
+        "point.3"
+      ]
+    },
+    "runtime_cited_evidence": [
+      {
+        "evidence_id": "evidence.2912806314dc84af87470e1b",
+        "object_id": "object.04b079cb4f083d29d694e47a",
+        "source_id": "luminosityfit",
+        "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+        "locator": {
+          "path": "data/PndLmdCombinedDataReader.cxx",
+          "symbol": null,
+          "start_line": 1,
+          "end_line": 85,
+          "pdf_page": null,
+          "printed_page": null,
+          "section_path": [],
+          "url": null,
+          "snapshot_date": null
+        },
+        "retrieval_channels": [
+          "exact"
+        ],
+        "score": 0.03125,
+        "authority_level": "primary",
+        "text_excerpt": [],
+        "full_text_source": "e2_a3_paired_runtime_raw.json / g112.runtime_e1_v2 / diagnostic.diagnostics.selected_evidence / evidence.2912806314dc84af87470e1b"
+      },
+      {
+        "evidence_id": "evidence.9b11380bf90f5bf9e8f0e312",
+        "object_id": "object.e81331a63fc64027a237dda0",
+        "source_id": "luminosityfit",
+        "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+        "locator": {
+          "path": "data/PndLmdDataReader.cxx",
+          "symbol": null,
+          "start_line": 1,
+          "end_line": 444,
+          "pdf_page": null,
+          "printed_page": null,
+          "section_path": [],
+          "url": null,
+          "snapshot_date": null
+        },
+        "retrieval_channels": [
+          "exact"
+        ],
+        "score": 0.028985507246376812,
+        "authority_level": "primary",
+        "text_excerpt": [
+          {
+            "excerpt_line": 217,
+            "text": "void PndLmdDataReader::fillData(const Lmd::Data::TrackPairInfo &track_info) {"
+          }
+        ],
+        "full_text_source": "e2_a3_paired_runtime_raw.json / g112.runtime_e1_v2 / diagnostic.diagnostics.selected_evidence / evidence.9b11380bf90f5bf9e8f0e312"
+      }
+    ],
+    "runtime_first_review": {
+      "errors": [
+        "unsupported identifier PndLmdDataReader::fillData:",
+        "missing answer point point.3",
+        "missing answer requirement reader_selection_histogram_accounting"
+      ],
+      "audit": {
+        "mode": "runtime_e1_v2",
+        "answer_points": [
+          {
+            "answer_point_id": "point.1",
+            "text": "Which data mode to inspect when createLmdFitData returns no acceptance"
+          },
+          {
+            "answer_point_id": "point.2",
+            "text": "Which Lumi_TrksQA input/tree assumptions to inspect when createLmdFitData returns no acceptance"
+          },
+          {
+            "answer_point_id": "point.3",
+            "text": "Which selection filters to inspect when createLmdFitData returns no acceptance"
+          },
+          {
+            "answer_point_id": "point.4",
+            "text": "Which accepted/generated histogram filling to inspect when createLmdFitData returns no acceptance"
+          }
+        ],
+        "claim_mappings": [
+          {
+            "claim_id": "claim_1",
+            "declared_answer_point_ids": [
+              "point.1"
+            ],
+            "verified_answer_point_ids": [
+              "point.1"
+            ],
+            "evidence_ids": [
+              "evidence.a38328afd315febbdd3a10e5",
+              "evidence.9b11380bf90f5bf9e8f0e312"
+            ],
+            "supported": true,
+            "rendered": false
+          },
+          {
+            "claim_id": "claim_2",
+            "declared_answer_point_ids": [
+              "point.2"
+            ],
+            "verified_answer_point_ids": [
+              "point.2"
+            ],
+            "evidence_ids": [
+              "evidence.bdc0bacaf9e495ca91a97b6f",
+              "evidence.2912806314dc84af87470e1b",
+              "evidence.ead9fa6fd4e4953b9a2eb49c"
+            ],
+            "supported": true,
+            "rendered": false
+          },
+          {
+            "claim_id": "claim_3",
+            "declared_answer_point_ids": [
+              "point.3"
+            ],
+            "verified_answer_point_ids": [],
+            "evidence_ids": [
+              "evidence.2912806314dc84af87470e1b",
+              "evidence.9b11380bf90f5bf9e8f0e312"
+            ],
+            "supported": false,
+            "rendered": false
+          },
+          {
+            "claim_id": "claim_4",
+            "declared_answer_point_ids": [
+              "point.4"
+            ],
+            "verified_answer_point_ids": [
+              "point.4"
+            ],
+            "evidence_ids": [
+              "evidence.2912806314dc84af87470e1b",
+              "evidence.9b11380bf90f5bf9e8f0e312"
+            ],
+            "supported": true,
+            "rendered": false
+          }
+        ],
+        "covered_answer_point_ids": [
+          "point.1",
+          "point.2",
+          "point.4"
+        ],
+        "missing_answer_point_ids": [
+          "point.3"
+        ],
+        "coverage_complete": false,
+        "coverage_evaluable": true,
+        "review_error": null
+      },
+      "claim_audit": []
+    },
+    "runtime_revised_claims": [
+      {
+        "claim_id": "claim_3",
+        "claim_text": "Inspect the selection filters in PndLmdDataReader: tracks are excluded from registered acceptances if track_info.IsSecondary is true (determined by track->GetSecondary() >= 0 in PndLmdCombinedDataReader), and candidate tracks are rejected by successfullyPassedFilters if getTrackParameterValue fails dimension_range.isDataWithinRange for any selection dimension in data->getSelectorSet().",
+        "evidence_ids": [
+          "evidence.2912806314dc84af87470e1b",
+          "evidence.9b11380bf90f5bf9e8f0e312"
+        ],
+        "answer_point_ids": [
+          "point.3"
+        ]
+      }
+    ],
+    "runtime_final_review": {
+      "errors": [
+        "missing answer requirement troubleshoot_upstream_to_downstream",
+        "missing answer requirement explicit_compatibility_check"
+      ],
+      "audit": {
+        "mode": "runtime_e1_v2",
+        "answer_points": [
+          {
+            "answer_point_id": "point.1",
+            "text": "Which data mode to inspect when createLmdFitData returns no acceptance"
+          },
+          {
+            "answer_point_id": "point.2",
+            "text": "Which Lumi_TrksQA input/tree assumptions to inspect when createLmdFitData returns no acceptance"
+          },
+          {
+            "answer_point_id": "point.3",
+            "text": "Which selection filters to inspect when createLmdFitData returns no acceptance"
+          },
+          {
+            "answer_point_id": "point.4",
+            "text": "Which accepted/generated histogram filling to inspect when createLmdFitData returns no acceptance"
+          }
+        ],
+        "claim_mappings": [
+          {
+            "claim_id": "claim_1",
+            "declared_answer_point_ids": [
+              "point.1"
+            ],
+            "verified_answer_point_ids": [
+              "point.1"
+            ],
+            "evidence_ids": [
+              "evidence.a38328afd315febbdd3a10e5",
+              "evidence.9b11380bf90f5bf9e8f0e312"
+            ],
+            "supported": true,
+            "rendered": false
+          },
+          {
+            "claim_id": "claim_2",
+            "declared_answer_point_ids": [
+              "point.2"
+            ],
+            "verified_answer_point_ids": [
+              "point.2"
+            ],
+            "evidence_ids": [
+              "evidence.bdc0bacaf9e495ca91a97b6f",
+              "evidence.2912806314dc84af87470e1b",
+              "evidence.ead9fa6fd4e4953b9a2eb49c"
+            ],
+            "supported": true,
+            "rendered": false
+          },
+          {
+            "claim_id": "claim_4",
+            "declared_answer_point_ids": [
+              "point.4"
+            ],
+            "verified_answer_point_ids": [
+              "point.4"
+            ],
+            "evidence_ids": [
+              "evidence.2912806314dc84af87470e1b",
+              "evidence.9b11380bf90f5bf9e8f0e312"
+            ],
+            "supported": true,
+            "rendered": false
+          },
+          {
+            "claim_id": "claim_3",
+            "declared_answer_point_ids": [
+              "point.3"
+            ],
+            "verified_answer_point_ids": [
+              "point.3"
+            ],
+            "evidence_ids": [
+              "evidence.2912806314dc84af87470e1b",
+              "evidence.9b11380bf90f5bf9e8f0e312"
+            ],
+            "supported": true,
+            "rendered": false
+          }
+        ],
+        "covered_answer_point_ids": [
+          "point.1",
+          "point.2",
+          "point.3",
+          "point.4"
+        ],
+        "missing_answer_point_ids": [],
+        "coverage_complete": true,
+        "coverage_evaluable": true,
+        "review_error": null
+      },
+      "claim_audit": []
+    },
+    "runtime_final_public_result": {
+      "status": "answered",
+      "answer": "Inspect the requested data mode configured via the -t command-line flag in createLmdFitData: valid data types are specified using 'a' (angular), 'e' (efficiency), 'r' (resolution), and 'v' (vertex). If efficiency mode 'e' is not specified, no acceptance objects are registered in registered_acceptances, resulting in combineAllRegisteredDataObjects reporting zero registered acceptance objects. [evidence.a38328afd315febbdd3a10e5, evidence.9b11380bf90f5bf9e8f0e312]\nUpstream of the reader, inspect the Lumi_TrksQA files and ROOT schema assumptions: PndLmdCombinedDataReader loads input files matching the pattern Lumi_TrksQA*.root (or a specified filelist) and requires a TTree named \"pndsim\" containing a branch named \"LMDTrackQ\" filled with a TClonesArray of PndLmdTrackQ objects. [evidence.bdc0bacaf9e495ca91a97b6f, evidence.2912806314dc84af87470e1b, evidence.ead9fa6fd4e4953b9a2eb49c]\nInspect accepted-versus-generated histogram filling in registered_acceptances[i]->addData: each non-secondary track passing selection dimension ranges is recorded with a boolean track_accepted determined by wasReconstructed(track_info) (requiring track_info.IsReconstructedAtIP, set when track->GetTrkRecStatus() >= 0), where reconstructed tracks yield true and non-reconstructed tracks yield false. [evidence.2912806314dc84af87470e1b, evidence.9b11380bf90f5bf9e8f0e312]\nInspect the selection filters in PndLmdDataReader: tracks are excluded from registered acceptances if track_info.IsSecondary is true (determined by track->GetSecondary() >= 0 in PndLmdCombinedDataReader), and candidate tracks are rejected by successfullyPassedFilters if getTrackParameterValue fails dimension_range.isDataWithinRange for any selection dimension in data->getSelectorSet(). [evidence.2912806314dc84af87470e1b, evidence.9b11380bf90f5bf9e8f0e312]",
+      "claims": [
+        {
+          "claim_id": "claim_1",
+          "claim_text": "Inspect the requested data mode configured via the -t command-line flag in createLmdFitData: valid data types are specified using 'a' (angular), 'e' (efficiency), 'r' (resolution), and 'v' (vertex). If efficiency mode 'e' is not specified, no acceptance objects are registered in registered_acceptances, resulting in combineAllRegisteredDataObjects reporting zero registered acceptance objects.",
+          "evidence_ids": [
+            "evidence.a38328afd315febbdd3a10e5",
+            "evidence.9b11380bf90f5bf9e8f0e312"
+          ]
+        },
+        {
+          "claim_id": "claim_2",
+          "claim_text": "Upstream of the reader, inspect the Lumi_TrksQA files and ROOT schema assumptions: PndLmdCombinedDataReader loads input files matching the pattern Lumi_TrksQA*.root (or a specified filelist) and requires a TTree named \"pndsim\" containing a branch named \"LMDTrackQ\" filled with a TClonesArray of PndLmdTrackQ objects.",
+          "evidence_ids": [
+            "evidence.bdc0bacaf9e495ca91a97b6f",
+            "evidence.2912806314dc84af87470e1b",
+            "evidence.ead9fa6fd4e4953b9a2eb49c"
+          ]
+        },
+        {
+          "claim_id": "claim_4",
+          "claim_text": "Inspect accepted-versus-generated histogram filling in registered_acceptances[i]->addData: each non-secondary track passing selection dimension ranges is recorded with a boolean track_accepted determined by wasReconstructed(track_info) (requiring track_info.IsReconstructedAtIP, set when track->GetTrkRecStatus() >= 0), where reconstructed tracks yield true and non-reconstructed tracks yield false.",
+          "evidence_ids": [
+            "evidence.2912806314dc84af87470e1b",
+            "evidence.9b11380bf90f5bf9e8f0e312"
+          ]
+        },
+        {
+          "claim_id": "claim_3",
+          "claim_text": "Inspect the selection filters in PndLmdDataReader: tracks are excluded from registered acceptances if track_info.IsSecondary is true (determined by track->GetSecondary() >= 0 in PndLmdCombinedDataReader), and candidate tracks are rejected by successfullyPassedFilters if getTrackParameterValue fails dimension_range.isDataWithinRange for any selection dimension in data->getSelectorSet().",
+          "evidence_ids": [
+            "evidence.2912806314dc84af87470e1b",
+            "evidence.9b11380bf90f5bf9e8f0e312"
+          ]
+        }
+      ],
+      "resolved_versions": {
+        "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357",
+        "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+        "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+      },
+      "verification_errors": [
+        "missing answer requirement troubleshoot_upstream_to_downstream",
+        "missing answer requirement explicit_compatibility_check"
+      ]
+    },
+    "runtime_frozen_semantic_reviews": [
+      {
+        "supported": true,
+        "unsupported_claim_ids": [],
+        "irrelevant_claim_ids": [],
+        "missing_requirement_ids": [
+          "reader_selection_histogram_accounting"
+        ],
+        "reason": "All claims are supported by their cited evidence and directly address runtime answer points. However, the claims omit coverage for point.3 regarding selection filter inspection, leaving answer point 3 missing and failing the requirement to inspect selection and filter conditions alongside histogram accounting.",
+        "claim_answer_point_mappings": [
+          {
+            "claim_id": "claim_1",
+            "answer_point_ids": [
+              "point.1"
+            ]
+          },
+          {
+            "claim_id": "claim_2",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          },
+          {
+            "claim_id": "claim_4",
+            "answer_point_ids": [
+              "point.4"
+            ]
+          }
+        ],
+        "missing_answer_point_ids": [
+          "point.3"
+        ]
+      },
+      {
+        "supported": true,
+        "unsupported_claim_ids": [],
+        "irrelevant_claim_ids": [],
+        "missing_requirement_ids": [
+          "troubleshoot_upstream_to_downstream",
+          "explicit_compatibility_check"
+        ],
+        "reason": "All four claims are supported by their cited evidence and directly answer the four runtime answer points. However, the deterministic answer requirements to troubleshoot upstream to downstream across producer and consumer stages and to state an explicit compatibility condition were omitted.",
+        "claim_answer_point_mappings": [
+          {
+            "claim_id": "claim_1",
+            "answer_point_ids": [
+              "point.1"
+            ]
+          },
+          {
+            "claim_id": "claim_2",
+            "answer_point_ids": [
+              "point.2"
+            ]
+          },
+          {
+            "claim_id": "claim_3",
+            "answer_point_ids": [
+              "point.3"
+            ]
+          },
+          {
+            "claim_id": "claim_4",
+            "answer_point_ids": [
+              "point.4"
+            ]
+          }
+        ],
+        "missing_answer_point_ids": []
+      }
+    ],
+    "counterfactual": {
+      "raw_token": "PndLmdDataReader::fillData:",
+      "current": "PndLmdDataReader::fillData:",
+      "proposed": "PndLmdDataReader::fillData",
+      "current_supported": false,
+      "base_supported": true,
+      "before": [
+        "unsupported identifier PndLmdDataReader::fillData:"
+      ],
+      "after": [],
+      "cited_scoped_tokens": [
+        "Lmd::Data::TrackPairInfo",
+        "LumiFit::DIFF_RECO_MC",
+        "LumiFit::IP",
+        "LumiFit::LMD",
+        "LumiFit::LmdDimension",
+        "LumiFit::MC",
+        "LumiFit::MC_ACC",
+        "LumiFit::PARTICLE_ID",
+        "LumiFit::PHI",
+        "LumiFit::RECO",
+        "LumiFit::SECONDARY",
+        "LumiFit::T",
+        "LumiFit::THETA",
+        "LumiFit::THETA_X",
+        "LumiFit::THETA_Y",
+        "LumiFit::X",
+        "LumiFit::Y",
+        "LumiFit::Z",
+        "PndLmdCombinedDataReader::",
+        "PndLmdCombinedDataReader::PndLmdCombinedDataReader",
+        "PndLmdCombinedDataReader::clearDataStream",
+        "PndLmdCombinedDataReader::getEntries",
+        "PndLmdCombinedDataReader::getEntry",
+        "PndLmdCombinedDataReader::initDataStream",
+        "PndLmdDataReader::",
+        "PndLmdDataReader::PndLmdDataReader",
+        "PndLmdDataReader::addFileList",
+        "PndLmdDataReader::addFilePath",
+        "PndLmdDataReader::cleanup",
+        "PndLmdDataReader::clearRegisters",
+        "PndLmdDataReader::combineAllRegisteredDataObjects",
+        "PndLmdDataReader::fillData",
+        "PndLmdDataReader::getNextMinEventIndex",
+        "PndLmdDataReader::getTrackParameterValue",
+        "PndLmdDataReader::isGoodTrack",
+        "PndLmdDataReader::read",
+        "PndLmdDataReader::registerAcceptance",
+        "PndLmdDataReader::registerAcceptances",
+        "PndLmdDataReader::registerData",
+        "PndLmdDataReader::registerMapData",
+        "PndLmdDataReader::removeFinished",
+        "PndLmdDataReader::setBeam",
+        "PndLmdDataReader::skipDataObject",
+        "PndLmdDataReader::successfullyPassedFilters",
+        "PndLmdDataReader::wasReconstructed",
+        "TDatabasePDG::Instance",
+        "TMath::Pi",
+        "boost::progress_display",
+        "std::cout",
+        "std::endl",
+        "std::getline",
+        "std::ifstream",
+        "std::set",
+        "std::string",
+        "std::vector"
+      ]
+    },
+    "revision_input_reconstruction": {
+      "provenance": "Reconstructed from frozen first review, draft, evidence and current _revise prompt construction; raw artifact does not record request prompt bytes.",
+      "task": "revise_unsupported_claims_once",
+      "untrusted_question": "createLmdFitData returns no acceptance: which data mode, Lumi_TrksQA input/tree assumptions, selection filters, and accepted/generated histogram filling should I inspect?",
+      "runtime_answer_points": [
+        {
+          "answer_point_id": "point.1",
+          "text": "Which data mode to inspect when createLmdFitData returns no acceptance"
+        },
+        {
+          "answer_point_id": "point.2",
+          "text": "Which Lumi_TrksQA input/tree assumptions to inspect when createLmdFitData returns no acceptance"
+        },
+        {
+          "answer_point_id": "point.3",
+          "text": "Which selection filters to inspect when createLmdFitData returns no acceptance"
+        },
+        {
+          "answer_point_id": "point.4",
+          "text": "Which accepted/generated histogram filling to inspect when createLmdFitData returns no acceptance"
+        }
+      ],
+      "missing_answer_point_ids": [
+        "point.3"
+      ],
+      "missing_requirement_ids": [
+        "reader_selection_histogram_accounting"
+      ],
+      "verification_errors": [
+        "unsupported identifier PndLmdDataReader::fillData:",
+        "missing answer point point.3",
+        "missing answer requirement reader_selection_histogram_accounting"
+      ],
+      "untrusted_draft": {
+        "claims": [
+          {
+            "claim_id": "claim_3",
+            "claim_text": "Inspect track selection filters in PndLmdDataReader::fillData: tracks are immediately skipped from registered acceptances if track_info.IsSecondary is true (evaluated from track->GetSecondary() >= 0), and tracks are rejected if getTrackParameterValue fails dimension_range.isDataWithinRange for any selection dimension in data->getSelectorSet().",
+            "evidence_ids": [
+              "evidence.2912806314dc84af87470e1b",
+              "evidence.9b11380bf90f5bf9e8f0e312"
+            ],
+            "answer_point_ids": [
+              "point.3"
+            ]
+          }
+        ]
+      },
+      "already_verified_claims_do_not_repeat": [
+        {
+          "claim_id": "claim_1",
+          "claim_text": "Inspect the requested data mode configured via the -t command-line flag in createLmdFitData: valid data types are specified using 'a' (angular), 'e' (efficiency), 'r' (resolution), and 'v' (vertex). If efficiency mode 'e' is not specified, no acceptance objects are registered in registered_acceptances, resulting in combineAllRegisteredDataObjects reporting zero registered acceptance objects.",
+          "evidence_ids": [
+            "evidence.a38328afd315febbdd3a10e5",
+            "evidence.9b11380bf90f5bf9e8f0e312"
+          ],
+          "answer_point_ids": [
+            "point.1"
+          ]
+        },
+        {
+          "claim_id": "claim_2",
+          "claim_text": "Upstream of the reader, inspect the Lumi_TrksQA files and ROOT schema assumptions: PndLmdCombinedDataReader loads input files matching the pattern Lumi_TrksQA*.root (or a specified filelist) and requires a TTree named \"pndsim\" containing a branch named \"LMDTrackQ\" filled with a TClonesArray of PndLmdTrackQ objects.",
+          "evidence_ids": [
+            "evidence.bdc0bacaf9e495ca91a97b6f",
+            "evidence.2912806314dc84af87470e1b",
+            "evidence.ead9fa6fd4e4953b9a2eb49c"
+          ],
+          "answer_point_ids": [
+            "point.2"
+          ]
+        },
+        {
+          "claim_id": "claim_4",
+          "claim_text": "Inspect accepted-versus-generated histogram filling in registered_acceptances[i]->addData: each non-secondary track passing selection dimension ranges is recorded with a boolean track_accepted determined by wasReconstructed(track_info) (requiring track_info.IsReconstructedAtIP, set when track->GetTrkRecStatus() >= 0), where reconstructed tracks yield true and non-reconstructed tracks yield false.",
+          "evidence_ids": [
+            "evidence.2912806314dc84af87470e1b",
+            "evidence.9b11380bf90f5bf9e8f0e312"
+          ],
+          "answer_point_ids": [
+            "point.4"
+          ]
+        }
+      ],
+      "untrusted_evidence_source": "Same frozen g112 runtime selected_evidence bundle; no retrieval after verification."
+    }
+  },
+  "future_sentinel_matrix": {
+    "PndLmdDataReader::fillData": "PndLmdDataReader::fillData",
+    "PndLmdDataReader::fillData.": "PndLmdDataReader::fillData",
+    "PndLmdDataReader::fillData:": "PndLmdDataReader::fillData",
+    "Namespace::Class": "Namespace::Class",
+    "Namespace::": "Namespace::",
+    "std::vector": "std::vector",
+    "src/foo.C": "src/foo.C",
+    "C:/path/to/file": "C:/path/to/file",
+    "Namespace::.": "Namespace::",
+    "PndLmdDataReader::fillData:.": "PndLmdDataReader::fillData",
+    "SIMPATH/bin/cmake": "SIMPATH/bin/cmake",
+    "prefix_pid.root": "prefix_pid.root",
+    "prefix_boost.root": "prefix_boost.root"
+  },
+  "scientific_calls": 0,
+  "scientific_tokens": 0,
+  "scan_definition": "Recursively verified all 299 serialized claim_text objects; 157 unique per-execution snapshots keyed by claim_id, claim_text, ordered evidence_ids. Response and final copies deduplicated; revised text retained separately. All token occurrences counted before verifier set deduplication.",
+  "counterfactual_scope": "Execute exact AST of unsupported-identifier loop with frozen claim and cited text. In-memory variant inserts single-terminal-colon removal after existing rstrip period; no product source change or semantic review replay.",
+  "newly_accepted_currently_rejected_token_occurrences": 1,
+  "newly_accepted_genuinely_unsupported_base_identifiers": 0,
+  "valid_identifier_semantic_changes_observed": 0,
+  "recommended_revalidation": {
+    "paired_cases": [
+      "g112",
+      "g110",
+      "g002",
+      "g044",
+      "g027"
+    ],
+    "count": 5,
+    "full_a3_rerun_required": false,
+    "pair09": "T0 integration sentinel; live pair09 not required for this local rejection-loop scope.",
+    "new_candidate_required": true,
+    "historical_a3_remains_fail": true
+  },
+  "agy": {
+    "job_id": "staffer-mtua77he-6e69ccc0",
+    "status": "done",
+    "configured_model": "gemini-3.8-flash-high",
+    "worker_self_report": "Gemini 3.8 Flash (High effort / high reasoning mode)",
+    "independently_observed_model_effort": false,
+    "tokens": null,
+    "scope": "abstract static critique; no repository access"
+  }
+}

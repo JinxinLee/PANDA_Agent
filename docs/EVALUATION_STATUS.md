@@ -25,8 +25,10 @@ E2-A2 = COMPLETE / PASS / TARGETED_CLAIM_MAPPING_AND_MISSING_POINT_VALIDATION_PA
 E2-A2 report: `evaluation/E2_A2_TARGETED_CLAIM_MAPPING_VALIDATION.md`.
 E2-A3 = COMPLETE / FAIL / Q7.
 E2-A3 report: `evaluation/E2_A3_RUNTIME_ACTIVATION_REGRESSION.md`.
+E2-A3 FAILURE REVIEW = COMPLETE / PASS / Q7_VERIFIER_IDENTIFIER_NORMALIZATION_REPAIR_JUSTIFIED.
+Review: `evaluation/E2_A3_Q7_FAILURE_REVIEW.md`.
 Normal default = `legacy_question_core`; runtime activation did not occur.
-E2 = IN_PROGRESS / RUNTIME_ACTIVATION_FAILED / REPAIR_DECISION_PENDING.
+E2 = IN_PROGRESS / RUNTIME_ACTIVATION_FAILED / BOUNDED_VERIFIER_REPAIR_PENDING.
 E2-A1 report: `evaluation/E2_A1_SHADOW_ANSWER_POINT_COVERAGE_CONTRACT.md`.
 C1 met all eight strict gates and the original pair09 atomicity sentinel. Per the
 accepted closure decision, E1 is complete. E2-A2 passed targeted shadow validation. E2-A3 failed Q7; normal QA remains legacy and E3 remains NOT_STARTED.
@@ -80,21 +82,34 @@ MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD
 Current planning state:
 D4 = PAUSED / ROADMAP_RECONCILIATION
 D4 overall completion = UNDECIDED
-CURRENT_TASK = E2-A3 / COMPLETE / FAIL / Q7
-NEXT_TASK_RECOMMENDATION = E2-A3 FAILURE REVIEW / REPAIR DECISION / NOT AUTHORIZED
+CURRENT_TASK = E2-A3-FR1 / COMPLETE / PASS / REPAIR_JUSTIFIED
+NEXT_TASK_RECOMMENDATION = E2-A3-R1 — Deterministic Identifier Normalization Repair / NOT AUTHORIZED
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 
 No D4-A11 exists.
 Phase E = IN_PROGRESS / E2.
 E1 = COMPLETE / PASS / QUESTION_ONLY_SEMANTIC_ANSWER_POINT_DECOMPOSITION_VALIDATED.
-E2 = IN_PROGRESS / RUNTIME_ACTIVATION_FAILED / REPAIR_DECISION_PENDING.
+E2 = IN_PROGRESS / RUNTIME_ACTIVATION_FAILED / BOUNDED_VERIFIER_REPAIR_PENDING.
 E3 = NOT_STARTED.
 Phase F = IN_PROGRESS / F1_COMPLETE.
 F2 = NOT_STARTED / SCOPE_PRESERVED.
 F3 = SCOPE_RECONCILIATION_REQUIRED / PARTIALLY_SUPERSEDED_BY_D4.
-No further D4, Phase-E, or Phase-F task is authorized after E2-A3.
+No further D4, Phase-E, or Phase-F task is authorized after E2-A3-FR1.
 
-## E2-A3 closeout
+## E2-A3-FR1 failure review closeout
+
+Static/offline review confirmed V1 verification false rejection: the g112 cited
+source contains PndLmdDataReader::fillData, while the rejecting tokenizer retains
+the trailing prose colon. Across 56 frozen executions / 157 distinct claim
+snapshots, the narrow counterfactual changes one identifier rejection (g112
+runtime); existing g110/g002 unsupported-token controls remain rejected.
+Decision: REPAIR_JUSTIFIED. Future scope is only deterministic rejecting-token
+normalization; recommend T0, full frozen impact scan, and five fresh paired
+prospective cases under a new candidate. No repair or activation was implemented.
+Scientific calls/tokens: 0/0; one separate abstract AGY review completed.
+Report: `evaluation/E2_A3_Q7_FAILURE_REVIEW.md`.
+
+## Historical E2-A3 closeout
 
 Complete bounded execution: retrieval 24/24, paired QA 56/56, blinded judgments
 28/28. Gold expected-status accuracy remained 14/16 in both arms. Runtime was
