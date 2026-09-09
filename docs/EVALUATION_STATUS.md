@@ -23,18 +23,21 @@ E1 = COMPLETE / PASS / QUESTION_ONLY_SEMANTIC_ANSWER_POINT_DECOMPOSITION_VALIDAT
 E2-A1 = COMPLETE / PASS / SHADOW_ANSWER_POINT_COVERAGE_CONTRACT_IMPLEMENTED.
 E2-A2 = COMPLETE / PASS / TARGETED_CLAIM_MAPPING_AND_MISSING_POINT_VALIDATION_PASSED.
 E2-A2 report: `evaluation/E2_A2_TARGETED_CLAIM_MAPPING_VALIDATION.md`.
-E2 = IN_PROGRESS / TARGETED_COVERAGE_VALIDATED / RUNTIME_ACTIVATION_PENDING.
+E2-A3 = COMPLETE / FAIL / Q7.
+E2-A3 report: `evaluation/E2_A3_RUNTIME_ACTIVATION_REGRESSION.md`.
+Normal default = `legacy_question_core`; runtime activation did not occur.
+E2 = IN_PROGRESS / RUNTIME_ACTIVATION_FAILED / REPAIR_DECISION_PENDING.
 E2-A1 report: `evaluation/E2_A1_SHADOW_ANSWER_POINT_COVERAGE_CONTRACT.md`.
 C1 met all eight strict gates and the original pair09 atomicity sentinel. Per the
-accepted closure decision, E1 is complete. E2-A2 passed targeted shadow validation; runtime activation is pending and E3 remains NOT_STARTED.
+accepted closure decision, E1 is complete. E2-A2 passed targeted shadow validation. E2-A3 failed Q7; normal QA remains legacy and E3 remains NOT_STARTED.
 Decision: `evaluation/E1_CLOSURE_SCOPE_REVIEW.md`.
 Report: `evaluation/E1_C1_REAL_STYLE_CONFIRMATION.md`.
 Preregistration: `2517b691245c38175222064e6ca546d06fd21e9a`.
 Raw freeze: `7eab1e8fe099fed6ff06384c4fa0eb48dcf52677`.
 
 
-Repository head (E2-A2 starting baseline):
-df52bcddf612515418be298fafde6ebcb32d4a67
+Repository head (E2-A3 starting baseline):
+ffedb2117f578515ea9d74eca92105956b8a3dcb
 
 Latest completed prospective validation:
 E1-R2 — Prospective Semantic Answer-Point Revalidation
@@ -77,21 +80,35 @@ MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD
 Current planning state:
 D4 = PAUSED / ROADMAP_RECONCILIATION
 D4 overall completion = UNDECIDED
-CURRENT_TASK = E2-A2 / COMPLETE / PASS
-NEXT_TASK_RECOMMENDATION = E2-A3 — Bounded Runtime Activation and Regression Check / NOT AUTHORIZED
+CURRENT_TASK = E2-A3 / COMPLETE / FAIL / Q7
+NEXT_TASK_RECOMMENDATION = E2-A3 FAILURE REVIEW / REPAIR DECISION / NOT AUTHORIZED
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 
 No D4-A11 exists.
 Phase E = IN_PROGRESS / E2.
 E1 = COMPLETE / PASS / QUESTION_ONLY_SEMANTIC_ANSWER_POINT_DECOMPOSITION_VALIDATED.
-E2 = IN_PROGRESS / TARGETED_COVERAGE_VALIDATED / RUNTIME_ACTIVATION_PENDING.
+E2 = IN_PROGRESS / RUNTIME_ACTIVATION_FAILED / REPAIR_DECISION_PENDING.
 E3 = NOT_STARTED.
 Phase F = IN_PROGRESS / F1_COMPLETE.
 F2 = NOT_STARTED / SCOPE_PRESERVED.
 F3 = SCOPE_RECONCILIATION_REQUIRED / PARTIALLY_SUPERSEDED_BY_D4.
-No further D4, Phase-E, or Phase-F task is authorized after E2-A2.
+No further D4, Phase-E, or Phase-F task is authorized after E2-A3.
 
-## E2-A2 closeout
+## E2-A3 closeout
+
+Complete bounded execution: retrieval 24/24, paired QA 56/56, blinded judgments
+28/28. Gold expected-status accuracy remained 14/16 in both arms. Runtime was
+better/equivalent/worse in 6/21/1 pairs, with zero critical user-visible regressions.
+All gates passed except Q7: g112 added an unsupported-identifier review error.
+The existing revision removed that error, but the preregistered gate includes
+initial reviews. No default activation or repair occurred. Novel validity,
+evaluability, and final completeness were each 12/12; pair09 retained three points.
+Scientific usage: 526 logical operations, 442 returned model responses, 446
+adapter attempts, 5,387,384 observable tokens; embedding tokens and monetary cost
+are unavailable. Focused pre-freeze tests: 107 passed; offline rescore reproduced
+FAIL/Q7. Report: `evaluation/E2_A3_RUNTIME_ACTIVATION_REGRESSION.md`.
+
+## Historical E2-A2 closeout
 
 Frozen targeted exposed validation passed all N1-N6 and D1-D4 gates.
 Natural applicability: rep1 12/12, rep2 12/12. Mapping precision 74/79,
