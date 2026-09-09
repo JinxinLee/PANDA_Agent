@@ -1,0 +1,449 @@
+{
+  "candidate_commit": "85ec7e353a65c31f0f1b491d5e00bad59b044c58",
+  "starting_head": "ee719bde5331f4102c9d79dd929e31a8063fc9ae",
+  "raw_commit": "12ae8138bd8268e9246d4d477a1d9f07cafc854f",
+  "judged_commit": "5992cd1e7b354583cd395fd7e7552f509ce03b75",
+  "verdict": "PASS",
+  "gates": {
+    "P1": true,
+    "P2": true,
+    "P3": true,
+    "P4": true,
+    "P5": true,
+    "P6": true,
+    "P7": true,
+    "P8": true,
+    "P9": true,
+    "P10": true,
+    "P11": true
+  },
+  "static_gates": {
+    "S1": true,
+    "S2": true,
+    "S3": true,
+    "S4": true,
+    "S5": true,
+    "S6": true,
+    "S7": true,
+    "S8": true,
+    "S9": true,
+    "S10": true,
+    "S11": true,
+    "S12": true,
+    "S13": true
+  },
+  "counts": {
+    "better": 1,
+    "critical_runtime_regressions": 0,
+    "equivalent": 5,
+    "legacy_correct": 6,
+    "new_false_answer": 0,
+    "new_false_refusal": 0,
+    "runtime_correct": 6,
+    "scoreable": 6,
+    "legacy_supported": 6,
+    "runtime_supported": 6
+  },
+  "per_case": [
+    {
+      "additional_generation_calls": 3,
+      "coverage_complete": true,
+      "coverage_evaluable": true,
+      "decomposition_valid": true,
+      "id": "g013",
+      "legacy_decomposition_calls": 0,
+      "legacy_integrity": [],
+      "legacy_status": "answered",
+      "new_integrity": [],
+      "post_verify_retrieval": 0,
+      "quality": "better",
+      "runtime_decomposition_calls": 1,
+      "runtime_integrity": [],
+      "runtime_revision_count": 1,
+      "runtime_status": "answered",
+      "scoreable": true,
+      "structural_review": false,
+      "legacy_supported": true,
+      "runtime_supported": true,
+      "judge_reason": "Both models accurately address the prompt using the available evidence. Model B is preferred as it provides more complete information about how the Master Tasks and master macros organize the simulation and reconstruction workflow stages.",
+      "critical_runtime_regression": false,
+      "complete_sphinx_selected": {
+        "legacy_question_core": [
+          "evidence.f551d55d17d5cb81bfc328ed",
+          "evidence.c9f2e7cf447698eee811be50",
+          "evidence.a4310ac60df7ce4194e2bb45",
+          "evidence.9f7ff602a351747e89aa3e1e",
+          "evidence.36627f22a2d5b9a3b6bb9fd4",
+          "evidence.313a8b2279977a05e35b0453",
+          "evidence.e4202de164d7e958cae7a451"
+        ],
+        "runtime_e1_v2": [
+          "evidence.f551d55d17d5cb81bfc328ed",
+          "evidence.c9f2e7cf447698eee811be50",
+          "evidence.a4310ac60df7ce4194e2bb45",
+          "evidence.36627f22a2d5b9a3b6bb9fd4",
+          "evidence.9f7ff602a351747e89aa3e1e",
+          "evidence.313a8b2279977a05e35b0453",
+          "evidence.e4202de164d7e958cae7a451"
+        ]
+      }
+    },
+    {
+      "additional_generation_calls": 1,
+      "coverage_complete": true,
+      "coverage_evaluable": true,
+      "decomposition_valid": true,
+      "id": "g027",
+      "legacy_decomposition_calls": 0,
+      "legacy_integrity": [],
+      "legacy_status": "answered",
+      "new_integrity": [],
+      "post_verify_retrieval": 0,
+      "quality": "equivalent",
+      "runtime_decomposition_calls": 1,
+      "runtime_integrity": [],
+      "runtime_revision_count": 0,
+      "runtime_status": "answered",
+      "scoreable": true,
+      "structural_review": false,
+      "runtime_supported": true,
+      "legacy_supported": true,
+      "judge_reason": "Both models accurately provide the file path for PndTargetGenerator in both the locked PandaRoot snapshot and the RestgasDetermination fork (pgenerators/Target/PndTargetGenerator.cxx), and correctly explain why version scoping is essential due to identical file paths and class names having repository-specific simulation configurations in PndMasterRunSim.cxx. Both responses are fully supported by their citations.",
+      "critical_runtime_regression": false,
+      "complete_sphinx_selected": {
+        "legacy_question_core": [],
+        "runtime_e1_v2": []
+      }
+    },
+    {
+      "additional_generation_calls": 1,
+      "coverage_complete": true,
+      "coverage_evaluable": true,
+      "decomposition_valid": true,
+      "id": "g112",
+      "legacy_decomposition_calls": 0,
+      "legacy_integrity": [],
+      "legacy_status": "answered",
+      "new_integrity": [],
+      "post_verify_retrieval": 0,
+      "quality": "equivalent",
+      "runtime_decomposition_calls": 1,
+      "runtime_integrity": [],
+      "runtime_revision_count": 0,
+      "runtime_status": "answered",
+      "scoreable": true,
+      "structural_review": false,
+      "legacy_supported": true,
+      "runtime_supported": true,
+      "judge_reason": "Both models accurately and comprehensively answer all four components of the question (data mode '-t' containing 'e', Lumi_TrksQA Box generator files with TTree 'pndsim' and branch 'LMDTrackQ', selection filters including secondary veto and dimension range checks, and accepted vs. generated filling via addData(track_accepted, ...)). All claims in both outputs are well-supported by the cited evidence.",
+      "critical_runtime_regression": false,
+      "complete_sphinx_selected": {
+        "legacy_question_core": [],
+        "runtime_e1_v2": []
+      }
+    },
+    {
+      "additional_generation_calls": 1,
+      "coverage_complete": true,
+      "coverage_evaluable": true,
+      "decomposition_valid": true,
+      "id": "g002",
+      "legacy_decomposition_calls": 0,
+      "legacy_integrity": [
+        "unsupported_identifier"
+      ],
+      "legacy_status": "answered",
+      "new_integrity": [],
+      "post_verify_retrieval": 0,
+      "quality": "equivalent",
+      "runtime_decomposition_calls": 1,
+      "runtime_integrity": [
+        "unsupported_identifier"
+      ],
+      "runtime_revision_count": 1,
+      "runtime_status": "answered",
+      "scoreable": true,
+      "structural_review": false,
+      "runtime_supported": true,
+      "legacy_supported": true,
+      "judge_reason": "Both outputs correctly identify the documented prerequisites from the Sphinx documentation (setting SIMPATH and FAIRROOTPATH to the installed external packages and FairRoot, and note the requirement/fallback for CMake). Both outputs are fully supported by their cited evidence.",
+      "critical_runtime_regression": false,
+      "complete_sphinx_selected": {
+        "legacy_question_core": [
+          "evidence.5a11164fa567115c8dd9c9c6",
+          "evidence.851155a13fdb1e1daacb2db9",
+          "evidence.0f915590e3376baf0536ba61",
+          "evidence.27cb2be644d39b61fcda7fcf"
+        ],
+        "runtime_e1_v2": [
+          "evidence.5a11164fa567115c8dd9c9c6",
+          "evidence.851155a13fdb1e1daacb2db9",
+          "evidence.0f915590e3376baf0536ba61",
+          "evidence.27cb2be644d39b61fcda7fcf"
+        ]
+      }
+    },
+    {
+      "additional_generation_calls": 1,
+      "coverage_complete": true,
+      "coverage_evaluable": true,
+      "decomposition_valid": true,
+      "id": "g044",
+      "legacy_decomposition_calls": 0,
+      "legacy_integrity": [],
+      "legacy_status": "answered",
+      "new_integrity": [],
+      "post_verify_retrieval": 0,
+      "quality": "equivalent",
+      "runtime_decomposition_calls": 1,
+      "runtime_integrity": [],
+      "runtime_revision_count": 0,
+      "runtime_status": "answered",
+      "scoreable": true,
+      "structural_review": false,
+      "legacy_supported": true,
+      "runtime_supported": true,
+      "judge_reason": "Both answers correctly and comprehensively explain why angular acceptance is required in the luminosity fit using primary thesis sources. Both accurately describe the detector geometry and reconstruction inefficiencies that cause event loss, as well as the forward-folding fit methodology. All claims in both outputs are well-supported by their cited evidence.",
+      "critical_runtime_regression": false,
+      "complete_sphinx_selected": {
+        "legacy_question_core": [],
+        "runtime_e1_v2": []
+      }
+    },
+    {
+      "additional_generation_calls": 1,
+      "coverage_complete": true,
+      "coverage_evaluable": true,
+      "decomposition_valid": true,
+      "id": "g110",
+      "legacy_decomposition_calls": 0,
+      "legacy_integrity": [],
+      "legacy_status": "answered",
+      "new_integrity": [],
+      "post_verify_retrieval": 0,
+      "quality": "equivalent",
+      "runtime_decomposition_calls": 1,
+      "runtime_integrity": [],
+      "runtime_revision_count": 0,
+      "runtime_status": "answered",
+      "scoreable": true,
+      "structural_review": false,
+      "runtime_supported": true,
+      "legacy_supported": true,
+      "judge_reason": "Both models provide complete, fully supported answers that address all key points: checking the upstream first-pass analysis run and output file (<prefix>_boost.root from ana_dpm.C), verifying the event_poca tree schema and entries, and inspecting the consumer configuration (PndPidCorrelator / POCA_VERTEX_FILE).",
+      "critical_runtime_regression": false,
+      "complete_sphinx_selected": {
+        "legacy_question_core": [
+          "evidence.15fbbe02200ad2c4e239b098",
+          "evidence.a333304e0017a395a4148137"
+        ],
+        "runtime_e1_v2": [
+          "evidence.15fbbe02200ad2c4e239b098",
+          "evidence.a333304e0017a395a4148137"
+        ]
+      }
+    }
+  ],
+  "invalid_public_claim_edges": [],
+  "incomplete_web_review_errors": [],
+  "admission_errors": [],
+  "historical_colon_errors": [],
+  "zero_tolerance_violations": [],
+  "mean_additional_generation_calls": 1.3333333333333333,
+  "overhead_numerator": 8,
+  "overhead_denominator": 6,
+  "usage": {
+    "judge": {
+      "analyzer": {
+        "adapter_requests": 0,
+        "logical_calls": 0,
+        "returned_model_calls": 0,
+        "tokens": 0
+      },
+      "controlled_review": {
+        "adapter_requests": 0,
+        "logical_calls": 0,
+        "returned_model_calls": 0,
+        "tokens": 0
+      },
+      "decomposition": {
+        "adapter_requests": 0,
+        "logical_calls": 0,
+        "returned_model_calls": 0,
+        "tokens": 0
+      },
+      "embedding": {
+        "adapter_requests": 0,
+        "logical_calls": 0,
+        "returned_model_calls": 0,
+        "tokens": 0
+      },
+      "judge": {
+        "adapter_requests": 6,
+        "logical_calls": 6,
+        "returned_model_calls": 6,
+        "tokens": 180548
+      },
+      "qa_answer": {
+        "adapter_requests": 0,
+        "logical_calls": 0,
+        "returned_model_calls": 0,
+        "tokens": 0
+      },
+      "qa_review": {
+        "adapter_requests": 0,
+        "logical_calls": 0,
+        "returned_model_calls": 0,
+        "tokens": 0
+      },
+      "qa_revision": {
+        "adapter_requests": 0,
+        "logical_calls": 0,
+        "returned_model_calls": 0,
+        "tokens": 0
+      },
+      "reranker": {
+        "adapter_requests": 0,
+        "logical_calls": 0,
+        "returned_model_calls": 0,
+        "tokens": 0
+      },
+      "retrieval": {
+        "adapter_requests": 0,
+        "logical_calls": 0,
+        "returned_model_calls": 0,
+        "tokens": 0
+      }
+    },
+    "legacy": {
+      "analyzer": {
+        "adapter_requests": 6,
+        "logical_calls": 6,
+        "returned_model_calls": 6,
+        "tokens": 12697
+      },
+      "controlled_review": {
+        "adapter_requests": 0,
+        "logical_calls": 0,
+        "returned_model_calls": 0,
+        "tokens": 0
+      },
+      "decomposition": {
+        "adapter_requests": 0,
+        "logical_calls": 0,
+        "returned_model_calls": 0,
+        "tokens": 0
+      },
+      "embedding": {
+        "adapter_requests": 6,
+        "logical_calls": 6,
+        "returned_model_calls": 6,
+        "tokens": 0
+      },
+      "judge": {
+        "adapter_requests": 0,
+        "logical_calls": 0,
+        "returned_model_calls": 0,
+        "tokens": 0
+      },
+      "qa_answer": {
+        "adapter_requests": 6,
+        "logical_calls": 6,
+        "returned_model_calls": 6,
+        "tokens": 190459
+      },
+      "qa_review": {
+        "adapter_requests": 7,
+        "logical_calls": 7,
+        "returned_model_calls": 7,
+        "tokens": 198736
+      },
+      "qa_revision": {
+        "adapter_requests": 1,
+        "logical_calls": 1,
+        "returned_model_calls": 1,
+        "tokens": 9763
+      },
+      "reranker": {
+        "adapter_requests": 6,
+        "logical_calls": 6,
+        "returned_model_calls": 6,
+        "tokens": 108740
+      },
+      "retrieval": {
+        "adapter_requests": 0,
+        "logical_calls": 6,
+        "returned_model_calls": 0,
+        "tokens": 0
+      }
+    },
+    "runtime": {
+      "analyzer": {
+        "adapter_requests": 6,
+        "logical_calls": 6,
+        "returned_model_calls": 6,
+        "tokens": 13123
+      },
+      "controlled_review": {
+        "adapter_requests": 0,
+        "logical_calls": 0,
+        "returned_model_calls": 0,
+        "tokens": 0
+      },
+      "decomposition": {
+        "adapter_requests": 6,
+        "logical_calls": 6,
+        "returned_model_calls": 6,
+        "tokens": 14367
+      },
+      "embedding": {
+        "adapter_requests": 6,
+        "logical_calls": 6,
+        "returned_model_calls": 6,
+        "tokens": 0
+      },
+      "judge": {
+        "adapter_requests": 0,
+        "logical_calls": 0,
+        "returned_model_calls": 0,
+        "tokens": 0
+      },
+      "qa_answer": {
+        "adapter_requests": 6,
+        "logical_calls": 6,
+        "returned_model_calls": 6,
+        "tokens": 189243
+      },
+      "qa_review": {
+        "adapter_requests": 8,
+        "logical_calls": 8,
+        "returned_model_calls": 8,
+        "tokens": 218111
+      },
+      "qa_revision": {
+        "adapter_requests": 2,
+        "logical_calls": 2,
+        "returned_model_calls": 2,
+        "tokens": 25585
+      },
+      "reranker": {
+        "adapter_requests": 6,
+        "logical_calls": 6,
+        "returned_model_calls": 6,
+        "tokens": 109573
+      },
+      "retrieval": {
+        "adapter_requests": 0,
+        "logical_calls": 6,
+        "returned_model_calls": 0,
+        "tokens": 0
+      }
+    }
+  },
+  "embedding_tokens": "unavailable",
+  "scientific_calls_before_candidate_freeze": 0,
+  "historical_P6_FAIL_preserved": true,
+  "P6_waiver_granted": false,
+  "noncritical_worse_is_gate": false,
+  "runtime_activated": false
+}

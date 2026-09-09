@@ -31,9 +31,11 @@ E2-A3-R1 = COMPLETE / FAIL / P2_P6.
 R1 report: `evaluation/E2_A3_R1_IDENTIFIER_NORMALIZATION_REPAIR.md`.
 E2-A3-R1 FAILURE REVIEW = COMPLETE / PASS / P2_REPAIR_REQUIRED_P6_NO_PRODUCT_REPAIR.
 P2/P6 review: `evaluation/E2_A3_R1_P2_P6_FAILURE_REVIEW.md`.
-The deterministic repair passed static verification; prospective activation gates failed. No runtime default promotion occurred.
+E2-A3-R2 = COMPLETE / PASS / CITATION_ELIGIBLE_EVIDENCE_SELECTION_REPAIR_VALIDATED.
+R2 report: `evaluation/E2_A3_R2_CITATION_ELIGIBLE_EVIDENCE_REPAIR.md`.
+Historical A3/R1 activation gates failed; R2 passed bounded repair validation only. No runtime default promotion occurred.
 Normal default = `legacy_question_core`; runtime activation did not occur.
-E2 = IN_PROGRESS / RUNTIME_ACTIVATION_FAILED / BOUNDED_P2_REPAIR_PENDING.
+E2 = IN_PROGRESS / RUNTIME_ACTIVATION_FAILED / FINAL_ACTIVATION_REASSESSMENT_PENDING.
 E2-A1 report: `evaluation/E2_A1_SHADOW_ANSWER_POINT_COVERAGE_CONTRACT.md`.
 C1 met all eight strict gates and the original pair09 atomicity sentinel. Per the
 accepted closure decision, E1 is complete. E2-A2 passed targeted shadow validation. E2-A3 failed Q7; normal QA remains legacy and E3 remains NOT_STARTED.
@@ -87,21 +89,49 @@ MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD
 Current planning state:
 D4 = PAUSED / ROADMAP_RECONCILIATION
 D4 overall completion = UNDECIDED
-CURRENT_TASK = E2-A3-R1-FR1 / COMPLETE / PASS / P2_REPAIR_REQUIRED_P6_NO_PRODUCT_REPAIR
-NEXT_TASK_RECOMMENDATION = E2-A3-R2 — Citation-Eligible Evidence Selection Repair / NOT AUTHORIZED
+CURRENT_TASK = E2-A3-R2 / COMPLETE / PASS / CITATION_ELIGIBLE_EVIDENCE_SELECTION_REPAIR_VALIDATED
+NEXT_TASK_RECOMMENDATION = E2-A3-R3 — Bounded Runtime Activation Reassessment / NOT AUTHORIZED
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 
 No D4-A11 exists.
 Phase E = IN_PROGRESS / E2.
 E1 = COMPLETE / PASS / QUESTION_ONLY_SEMANTIC_ANSWER_POINT_DECOMPOSITION_VALIDATED.
-E2 = IN_PROGRESS / RUNTIME_ACTIVATION_FAILED / BOUNDED_P2_REPAIR_PENDING.
+E2 = IN_PROGRESS / RUNTIME_ACTIVATION_FAILED / FINAL_ACTIVATION_REASSESSMENT_PENDING.
 E3 = NOT_STARTED.
 Phase F = IN_PROGRESS / F1_COMPLETE.
 F2 = NOT_STARTED / SCOPE_PRESERVED.
 F3 = SCOPE_RECONCILIATION_REQUIRED / PARTIALLY_SUPERSEDED_BY_D4.
-No further D4, Phase-E, or Phase-F task is authorized after E2-A3-R1-FR1.
+No further D4, Phase-E, or Phase-F task is authorized after E2-A3-R2.
 
-## E2-A3-R1-FR1 failure review closeout
+## E2-A3-R2 scientific closeout
+
+S1-S13 and P1-P11 all PASS. Historical selected Sphinx reconciliation:
+144 occurrences = 106 complete retained + 38 ineligible excluded; three historical
+invalid citation edges excluded from admission; all 18 historical final edges
+remain complete. Production repair is answer/revision admission only, including
+the revision requirement-evidence input; retrieval bundle and verifier unchanged.
+126 focused T0 tests passed with zero scientific calls before candidate freeze.
+
+Six fresh legacy/runtime pairs and six blinded judgments completed. Expected
+status and supported judgments 6/6 per arm. Invalid Sphinx public citations 0;
+incomplete-web review errors 0; new runtime verifier categories 0. Runtime
+better/equivalent/worse 1/5/0; critical regressions 0. g002 has the same initial
+SIMPATH/bin/cmake rejection in both arms, clean final reviews, complete runtime
+coverage and equivalent supported answers. Historical P6 FAIL is preserved,
+with no waiver or product tuning. Overhead 8/6 = 1.333333 generation calls;
+runtime decomposition 6, revisions <=1, post-verify retrieval 0.
+
+Candidate: `85ec7e353a65c31f0f1b491d5e00bad59b044c58`.
+Raw freeze: `12ae8138bd8268e9246d4d477a1d9f07cafc854f`.
+Judged freeze: `5992cd1e7b354583cd395fd7e7552f509ce03b75`.
+Result: `evaluation/e2_a3_r2_targeted_revalidation_result.json`.
+Usage: 90 logical operations, 78 returned responses, 78 adapter attempts,
+1,270,945 observable tokens; embedding tokens and monetary cost unavailable.
+No activation: default legacy_question_core, E2 IN_PROGRESS, E3 NOT_STARTED.
+Recommend R3 independent activation reassessment, execution NOT AUTHORIZED;
+no future activation cohort or threshold is established here.
+
+## Historical E2-A3-R1-FR1 failure review closeout
 
 P2 ownership: R3 citation-eligible evidence admission. The offending whole-page
 Sphinx object intentionally has no section_path; its headings remain in source
