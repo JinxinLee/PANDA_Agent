@@ -62,6 +62,8 @@ REVIEW_SCHEMA = {
 
 
 RUNTIME_ANSWER_POINT_ID = "question_core"
+DEFAULT_ANSWER_POINT_MODE = "legacy_question_core"
+_ANSWER_POINT_MODES = {"legacy_question_core", "shadow_e1_v2", "runtime_e1_v2"}
 ANSWER_POINT_COVERAGE_REVIEW_SCHEMA = {
     **REVIEW_SCHEMA,
     "properties": {
@@ -528,7 +530,7 @@ def _runtime_answer_points(question: str) -> list[dict[str, str]]:
 
 
 def _coverage_shadow(state: QAState) -> bool:
-    return state.get("answer_point_coverage_mode") == "shadow_e1_v2"
+    return state.get("answer_point_coverage_mode") in {"shadow_e1_v2", "runtime_e1_v2"}
 
 
 def _active_runtime_answer_points(state: QAState) -> list[dict[str, str]]:
@@ -1798,7 +1800,7 @@ class QAAgent:
             } for c in supported_claims]
             covered = [p["answer_point_id"] for p in runtime_points if p["answer_point_id"] not in missing_points]
             coverage_update = {"missing_answer_point_ids": missing_points, "answer_point_audit": {
-                "mode": "shadow_e1_v2", "answer_points": runtime_points, "claim_mappings": mapping_audit,
+                "mode": state["answer_point_coverage_mode"], "answer_points": runtime_points, "claim_mappings": mapping_audit,
                 "covered_answer_point_ids": covered, "missing_answer_point_ids": missing_points,
                 "coverage_complete": not missing_points and not coverage_review_error and not global_review_failure,
                 "coverage_evaluable": not coverage_review_error and not global_review_failure,
@@ -2132,7 +2134,7 @@ class QAAgent:
         if _coverage_shadow(state):
             points = _active_runtime_answer_points(state)
             audit = dict(state.get("answer_point_audit") or {
-                "mode": "shadow_e1_v2", "answer_points": points, "claim_mappings": [],
+                "mode": state["answer_point_coverage_mode"], "answer_points": points, "claim_mappings": [],
                 "covered_answer_point_ids": [],
                 "missing_answer_point_ids": [p["answer_point_id"] for p in points],
                 "coverage_complete": False, "coverage_evaluable": False,
@@ -2154,14 +2156,18 @@ class QAAgent:
         return QAResult.model_validate(self.run_detailed(question)["result"])
 
     def run_detailed(self, question: str) -> dict[str, Any]:
-        """Execute only the QA graph and expose sanitized workflow diagnostics."""
-        return self._run_detailed(question)
+        """Execute the selected normal QA mode with sanitized diagnostics."""
+        return self._run_detailed(question, mode=DEFAULT_ANSWER_POINT_MODE)
 
     def run_answer_point_coverage_diagnostic(self, question: str) -> dict[str, Any]:
         """Explicit E1-v2 shadow coverage; not exposed through normal QA/API."""
-        return self._run_detailed(question, coverage_shadow=True)
+        return self._run_detailed(question, mode="shadow_e1_v2")
 
-    def _run_detailed(self, question: str, *, coverage_shadow: bool = False) -> dict[str, Any]:
+    def _run_detailed(self, question: str, *, mode: str = "legacy_question_core") -> dict[str, Any]:
+        """Internal paired-evaluation seam; not a public API selector."""
+        if mode not in _ANSWER_POINT_MODES:
+            raise ValueError(f"unsupported answer-point mode: {mode}")
+        coverage_shadow = mode in {"shadow_e1_v2", "runtime_e1_v2"}
         started = time.perf_counter()
         stats_before = self._stats_snapshot()
         initial: QAState = {"question": question}
@@ -2170,7 +2176,7 @@ class QAAgent:
         if coverage_shadow:
             decomposition_started = time.perf_counter()
             decomposition = self.decompose_question(question)
-            initial.update(answer_point_coverage_mode="shadow_e1_v2", runtime_answer_points=decomposition["points"])
+            initial.update(answer_point_coverage_mode=mode, runtime_answer_points=decomposition["points"])
             initial["runtime_answer_points"] = _active_runtime_answer_points(initial)
             decomposition_ms = int(round((time.perf_counter() - decomposition_started) * 1000))
         state = self.graph.invoke(initial)
