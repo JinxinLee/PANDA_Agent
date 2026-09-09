@@ -29,9 +29,11 @@ E2-A3 FAILURE REVIEW = COMPLETE / PASS / Q7_VERIFIER_IDENTIFIER_NORMALIZATION_RE
 Review: `evaluation/E2_A3_Q7_FAILURE_REVIEW.md`.
 E2-A3-R1 = COMPLETE / FAIL / P2_P6.
 R1 report: `evaluation/E2_A3_R1_IDENTIFIER_NORMALIZATION_REPAIR.md`.
+E2-A3-R1 FAILURE REVIEW = COMPLETE / PASS / P2_REPAIR_REQUIRED_P6_NO_PRODUCT_REPAIR.
+P2/P6 review: `evaluation/E2_A3_R1_P2_P6_FAILURE_REVIEW.md`.
 The deterministic repair passed static verification; prospective activation gates failed. No runtime default promotion occurred.
 Normal default = `legacy_question_core`; runtime activation did not occur.
-E2 = IN_PROGRESS / RUNTIME_ACTIVATION_FAILED / REPAIR_REASSESSMENT_PENDING.
+E2 = IN_PROGRESS / RUNTIME_ACTIVATION_FAILED / BOUNDED_P2_REPAIR_PENDING.
 E2-A1 report: `evaluation/E2_A1_SHADOW_ANSWER_POINT_COVERAGE_CONTRACT.md`.
 C1 met all eight strict gates and the original pair09 atomicity sentinel. Per the
 accepted closure decision, E1 is complete. E2-A2 passed targeted shadow validation. E2-A3 failed Q7; normal QA remains legacy and E3 remains NOT_STARTED.
@@ -85,21 +87,36 @@ MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD
 Current planning state:
 D4 = PAUSED / ROADMAP_RECONCILIATION
 D4 overall completion = UNDECIDED
-CURRENT_TASK = E2-A3-R1 / COMPLETE / FAIL / P2_P6
-NEXT_TASK_RECOMMENDATION = E2-A3-R1 FAILURE REVIEW / REPAIR REASSESSMENT / NOT AUTHORIZED
+CURRENT_TASK = E2-A3-R1-FR1 / COMPLETE / PASS / P2_REPAIR_REQUIRED_P6_NO_PRODUCT_REPAIR
+NEXT_TASK_RECOMMENDATION = E2-A3-R2 — Citation-Eligible Evidence Selection Repair / NOT AUTHORIZED
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 
 No D4-A11 exists.
 Phase E = IN_PROGRESS / E2.
 E1 = COMPLETE / PASS / QUESTION_ONLY_SEMANTIC_ANSWER_POINT_DECOMPOSITION_VALIDATED.
-E2 = IN_PROGRESS / RUNTIME_ACTIVATION_FAILED / REPAIR_REASSESSMENT_PENDING.
+E2 = IN_PROGRESS / RUNTIME_ACTIVATION_FAILED / BOUNDED_P2_REPAIR_PENDING.
 E3 = NOT_STARTED.
 Phase F = IN_PROGRESS / F1_COMPLETE.
 F2 = NOT_STARTED / SCOPE_PRESERVED.
 F3 = SCOPE_RECONCILIATION_REQUIRED / PARTIALLY_SUPERSEDED_BY_D4.
-No further D4, Phase-E, or Phase-F task is authorized after E2-A3-R1.
+No further D4, Phase-E, or Phase-F task is authorized after E2-A3-R1-FR1.
 
-## E2-A3-R1 closeout
+## E2-A3-R1-FR1 failure review closeout
+
+P2 ownership: R3 citation-eligible evidence admission. The offending whole-page
+Sphinx object intentionally has no section_path; its headings remain in source
+metadata. It should not be offered as public claim citation under the established
+URL/date/heading contract. Across A3/R1, 27 distinct public-candidate Sphinx
+citation edges include 24 complete and 3 empty-section edges; final published
+edges are 18/18 complete. Fragment relaxation changes zero decisions.
+P6: no generic product repair justified. Spack/CVMFS are optional details, absent
+in both observed runtime outputs and present in both legacy outputs; this limited
+repeat evidence does not prove a broad required-content defect. Historical P6
+FAIL remains valid; no waiver. Recommend bounded P2 repair and separately
+preregistered prospective evidence. Scientific calls/tokens 0/0.
+Report: `evaluation/E2_A3_R1_P2_P6_FAILURE_REVIEW.md`.
+
+## Historical E2-A3-R1 closeout
 
 S1-S12 passed, with exactly one historical rejecting-token delta. Five fresh
 legacy/runtime pairs and five blinded judgments completed. Prospective FAIL:
