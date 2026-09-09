@@ -21,18 +21,20 @@ E1-CLOSURE-REVIEW = COMPLETE / PASS / REAL_PANDA_STYLE_CONFIRMATION_REQUIRED_BEF
 E1-C1 = COMPLETE / PASS / REAL_PANDA_STYLE_EXPOSED_DEVELOPMENT_CONFIRMATION_PASSED.
 E1 = COMPLETE / PASS / QUESTION_ONLY_SEMANTIC_ANSWER_POINT_DECOMPOSITION_VALIDATED.
 E2-A1 = COMPLETE / PASS / SHADOW_ANSWER_POINT_COVERAGE_CONTRACT_IMPLEMENTED.
-E2 = IN_PROGRESS / SHADOW_COVERAGE_CONTRACT_IMPLEMENTED / TARGETED_VALIDATION_PENDING.
+E2-A2 = COMPLETE / PASS / TARGETED_CLAIM_MAPPING_AND_MISSING_POINT_VALIDATION_PASSED.
+E2-A2 report: `evaluation/E2_A2_TARGETED_CLAIM_MAPPING_VALIDATION.md`.
+E2 = IN_PROGRESS / TARGETED_COVERAGE_VALIDATED / RUNTIME_ACTIVATION_PENDING.
 E2-A1 report: `evaluation/E2_A1_SHADOW_ANSWER_POINT_COVERAGE_CONTRACT.md`.
 C1 met all eight strict gates and the original pair09 atomicity sentinel. Per the
-accepted closure decision, E1 is complete. E2-A1 implements the shadow coverage contract; E3 remains NOT_STARTED.
+accepted closure decision, E1 is complete. E2-A2 passed targeted shadow validation; runtime activation is pending and E3 remains NOT_STARTED.
 Decision: `evaluation/E1_CLOSURE_SCOPE_REVIEW.md`.
 Report: `evaluation/E1_C1_REAL_STYLE_CONFIRMATION.md`.
 Preregistration: `2517b691245c38175222064e6ca546d06fd21e9a`.
 Raw freeze: `7eab1e8fe099fed6ff06384c4fa0eb48dcf52677`.
 
 
-Repository head (E2-A1 starting baseline):
-860faf60417fe099baa6d3a0b4ba59926363ca90
+Repository head (E2-A2 starting baseline):
+df52bcddf612515418be298fafde6ebcb32d4a67
 
 Latest completed prospective validation:
 E1-R2 — Prospective Semantic Answer-Point Revalidation
@@ -75,19 +77,40 @@ MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD
 Current planning state:
 D4 = PAUSED / ROADMAP_RECONCILIATION
 D4 overall completion = UNDECIDED
-CURRENT_TASK = E2-A1 / COMPLETE / PASS
-NEXT_TASK_RECOMMENDATION = E2-A2 — Targeted Claim-Mapping and Missing-Point Validation / NOT AUTHORIZED
+CURRENT_TASK = E2-A2 / COMPLETE / PASS
+NEXT_TASK_RECOMMENDATION = E2-A3 — Bounded Runtime Activation and Regression Check / NOT AUTHORIZED
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 
 No D4-A11 exists.
 Phase E = IN_PROGRESS / E2.
 E1 = COMPLETE / PASS / QUESTION_ONLY_SEMANTIC_ANSWER_POINT_DECOMPOSITION_VALIDATED.
-E2 = IN_PROGRESS / SHADOW_COVERAGE_CONTRACT_IMPLEMENTED / TARGETED_VALIDATION_PENDING.
+E2 = IN_PROGRESS / TARGETED_COVERAGE_VALIDATED / RUNTIME_ACTIVATION_PENDING.
 E3 = NOT_STARTED.
 Phase F = IN_PROGRESS / F1_COMPLETE.
 F2 = NOT_STARTED / SCOPE_PRESERVED.
 F3 = SCOPE_RECONCILIATION_REQUIRED / PARTIALLY_SUPERSEDED_BY_D4.
-No further D4, Phase-E, or Phase-F task is authorized after E2-A1.
+No further D4, Phase-E, or Phase-F task is authorized after E2-A2.
+
+## E2-A2 closeout
+
+Frozen targeted exposed validation passed all N1-N6 and D1-D4 gates.
+Natural applicability: rep1 12/12, rep2 12/12. Mapping precision 74/79,
+recall 74/75, exact claim mapping 68/74; coverage precision/recall 56/56.
+Controlled: 11/12 eligible, one non-isolatable baseline; detection, missing-set
+precision and exact-set accuracy each 11/11. Structural/infrastructure failures 0.
+Residual mapping errors: five extra edges and one missed edge; no repairs made.
+Exact serialized recomputation matches. The frozen repeat-score CLI has a
+nonfatal tuple/list equality limitation; it remains unchanged and is documented
+in the report. Scientific execution and independent judging completed normally.
+Scientific usage: 217 logical operations, 193 returned responses (169 generation,
+24 embedding), 2,090,933 returned token-counter total. Embedding tokens unavailable.
+Same-model-family independent-role blinded judge; no representative or production
+readiness claim. Preregistration `78969ceee0bd316e7a9632440c175bcdac04f3bc`;
+natural raw `ee8049e760c9ef46d2096fd91ff6e5e9716dcde8`; judgments
+`3f50f15c6359145dd77acacf715a38e660bd3b6f`; controlled manifest
+`a9368e5404c164b9b32a72617e9b664ec241e2ef`.
+Report: `evaluation/E2_A2_TARGETED_CLAIM_MAPPING_VALIDATION.md`.
+No E2-A3, production activation, E3, compatibility removal, D4 or Phase-F continuation.
 
 ## Historical E1-C1 closeout
 

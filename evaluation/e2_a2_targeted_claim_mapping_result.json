@@ -1,0 +1,2102 @@
+{
+  "preregistration_commit": "78969ceee0bd316e7a9632440c175bcdac04f3bc",
+  "implementation": "df52bcddf612515418be298fafde6ebcb32d4a67",
+  "verdict": "PASS",
+  "zero_tolerance_violations": [],
+  "gates": {
+    "N1": true,
+    "D1": true,
+    "N2": true,
+    "N3": true,
+    "N4": true,
+    "N5": true,
+    "N6": true,
+    "D2": true,
+    "D3": true,
+    "D4": true
+  },
+  "natural": {
+    "counts": {
+      "mapping_tp": 74,
+      "mapping_pred": 79,
+      "mapping_truth": 75,
+      "exact_claims": 68,
+      "claims": 74,
+      "coverage_tp": 56,
+      "coverage_pred": 56,
+      "coverage_truth": 56,
+      "exact_coverage": 24,
+      "false_covered": 0,
+      "false_missing": 0,
+      "false_positive_edges": 5,
+      "false_negative_edges": 1,
+      "overmapped_claims": 5
+    },
+    "N2": 0.9367088607594937,
+    "N3": 0.9866666666666667,
+    "N4": 0.918918918918919,
+    "N5": 1.0,
+    "N6": 1.0,
+    "per_execution": [
+      {
+        "execution_id": "e1a2.b07.rep1",
+        "repetition": "rep1",
+        "pair_id": "e1a2.pair07",
+        "source_case_id": "n001",
+        "variant": "base",
+        "applicable": true,
+        "reason": "APPLICABLE",
+        "counts": {
+          "mapping_tp": 3,
+          "mapping_pred": 3,
+          "mapping_truth": 3,
+          "exact_claims": 3,
+          "claims": 3,
+          "coverage_tp": 3,
+          "coverage_pred": 3,
+          "coverage_truth": 3,
+          "exact_coverage": 1,
+          "false_covered": 0,
+          "false_missing": 0,
+          "false_positive_edges": 0,
+          "false_negative_edges": 0,
+          "overmapped_claims": 0
+        },
+        "predicted_edges": [
+          [
+            "claim.1",
+            "point.1"
+          ],
+          [
+            "claim.2",
+            "point.2"
+          ],
+          [
+            "claim.3",
+            "point.3"
+          ]
+        ],
+        "truth_edges": [
+          [
+            "claim.1",
+            "point.1"
+          ],
+          [
+            "claim.2",
+            "point.2"
+          ],
+          [
+            "claim.3",
+            "point.3"
+          ]
+        ],
+        "predicted_covered": [
+          "point.1",
+          "point.2",
+          "point.3"
+        ],
+        "truth_covered": [
+          "point.1",
+          "point.2",
+          "point.3"
+        ]
+      },
+      {
+        "execution_id": "e1a2.p07.rep1",
+        "repetition": "rep1",
+        "pair_id": "e1a2.pair07",
+        "source_case_id": "n001",
+        "variant": "paraphrase",
+        "applicable": true,
+        "reason": "APPLICABLE",
+        "counts": {
+          "mapping_tp": 3,
+          "mapping_pred": 3,
+          "mapping_truth": 3,
+          "exact_claims": 3,
+          "claims": 3,
+          "coverage_tp": 3,
+          "coverage_pred": 3,
+          "coverage_truth": 3,
+          "exact_coverage": 1,
+          "false_covered": 0,
+          "false_missing": 0,
+          "false_positive_edges": 0,
+          "false_negative_edges": 0,
+          "overmapped_claims": 0
+        },
+        "predicted_edges": [
+          [
+            "claim.restgas_config_env_vars",
+            "point.2"
+          ],
+          [
+            "claim.restgas_config_pairs_and_paths",
+            "point.1"
+          ],
+          [
+            "claim.restgas_config_unmatched_handling",
+            "point.3"
+          ]
+        ],
+        "truth_edges": [
+          [
+            "claim.restgas_config_env_vars",
+            "point.2"
+          ],
+          [
+            "claim.restgas_config_pairs_and_paths",
+            "point.1"
+          ],
+          [
+            "claim.restgas_config_unmatched_handling",
+            "point.3"
+          ]
+        ],
+        "predicted_covered": [
+          "point.1",
+          "point.2",
+          "point.3"
+        ],
+        "truth_covered": [
+          "point.1",
+          "point.2",
+          "point.3"
+        ]
+      },
+      {
+        "execution_id": "e1a2.b08.rep1",
+        "repetition": "rep1",
+        "pair_id": "e1a2.pair08",
+        "source_case_id": "n008",
+        "variant": "base",
+        "applicable": true,
+        "reason": "APPLICABLE",
+        "counts": {
+          "mapping_tp": 3,
+          "mapping_pred": 4,
+          "mapping_truth": 3,
+          "exact_claims": 2,
+          "claims": 3,
+          "coverage_tp": 2,
+          "coverage_pred": 2,
+          "coverage_truth": 2,
+          "exact_coverage": 1,
+          "false_covered": 0,
+          "false_missing": 0,
+          "false_positive_edges": 1,
+          "false_negative_edges": 0,
+          "overmapped_claims": 1
+        },
+        "predicted_edges": [
+          [
+            "claim.1",
+            "point.1"
+          ],
+          [
+            "claim.2",
+            "point.1"
+          ],
+          [
+            "claim.2",
+            "point.2"
+          ],
+          [
+            "claim.3",
+            "point.2"
+          ]
+        ],
+        "truth_edges": [
+          [
+            "claim.1",
+            "point.1"
+          ],
+          [
+            "claim.2",
+            "point.2"
+          ],
+          [
+            "claim.3",
+            "point.2"
+          ]
+        ],
+        "predicted_covered": [
+          "point.1",
+          "point.2"
+        ],
+        "truth_covered": [
+          "point.1",
+          "point.2"
+        ]
+      },
+      {
+        "execution_id": "e1a2.p08.rep1",
+        "repetition": "rep1",
+        "pair_id": "e1a2.pair08",
+        "source_case_id": "n008",
+        "variant": "paraphrase",
+        "applicable": true,
+        "reason": "APPLICABLE",
+        "counts": {
+          "mapping_tp": 3,
+          "mapping_pred": 3,
+          "mapping_truth": 3,
+          "exact_claims": 3,
+          "claims": 3,
+          "coverage_tp": 2,
+          "coverage_pred": 2,
+          "coverage_truth": 2,
+          "exact_coverage": 1,
+          "false_covered": 0,
+          "false_missing": 0,
+          "false_positive_edges": 0,
+          "false_negative_edges": 0,
+          "overmapped_claims": 0
+        },
+        "predicted_edges": [
+          [
+            "claim_1",
+            "point.1"
+          ],
+          [
+            "claim_2",
+            "point.2"
+          ],
+          [
+            "claim_3",
+            "point.2"
+          ]
+        ],
+        "truth_edges": [
+          [
+            "claim_1",
+            "point.1"
+          ],
+          [
+            "claim_2",
+            "point.2"
+          ],
+          [
+            "claim_3",
+            "point.2"
+          ]
+        ],
+        "predicted_covered": [
+          "point.1",
+          "point.2"
+        ],
+        "truth_covered": [
+          "point.1",
+          "point.2"
+        ]
+      },
+      {
+        "execution_id": "e1a2.b09.rep1",
+        "repetition": "rep1",
+        "pair_id": "e1a2.pair09",
+        "source_case_id": "n020",
+        "variant": "base",
+        "applicable": true,
+        "reason": "APPLICABLE",
+        "counts": {
+          "mapping_tp": 4,
+          "mapping_pred": 4,
+          "mapping_truth": 4,
+          "exact_claims": 4,
+          "claims": 4,
+          "coverage_tp": 3,
+          "coverage_pred": 3,
+          "coverage_truth": 3,
+          "exact_coverage": 1,
+          "false_covered": 0,
+          "false_missing": 0,
+          "false_positive_edges": 0,
+          "false_negative_edges": 0,
+          "overmapped_claims": 0
+        },
+        "predicted_edges": [
+          [
+            "claim.1",
+            "point.1"
+          ],
+          [
+            "claim.2",
+            "point.2"
+          ],
+          [
+            "claim.3",
+            "point.3"
+          ],
+          [
+            "claim.4",
+            "point.1"
+          ]
+        ],
+        "truth_edges": [
+          [
+            "claim.1",
+            "point.1"
+          ],
+          [
+            "claim.2",
+            "point.2"
+          ],
+          [
+            "claim.3",
+            "point.3"
+          ],
+          [
+            "claim.4",
+            "point.1"
+          ]
+        ],
+        "predicted_covered": [
+          "point.1",
+          "point.2",
+          "point.3"
+        ],
+        "truth_covered": [
+          "point.1",
+          "point.2",
+          "point.3"
+        ]
+      },
+      {
+        "execution_id": "e1a2.p09.rep1",
+        "repetition": "rep1",
+        "pair_id": "e1a2.pair09",
+        "source_case_id": "n020",
+        "variant": "paraphrase",
+        "applicable": true,
+        "reason": "APPLICABLE",
+        "counts": {
+          "mapping_tp": 6,
+          "mapping_pred": 6,
+          "mapping_truth": 6,
+          "exact_claims": 4,
+          "claims": 4,
+          "coverage_tp": 3,
+          "coverage_pred": 3,
+          "coverage_truth": 3,
+          "exact_coverage": 1,
+          "false_covered": 0,
+          "false_missing": 0,
+          "false_positive_edges": 0,
+          "false_negative_edges": 0,
+          "overmapped_claims": 0
+        },
+        "predicted_edges": [
+          [
+            "claim.1",
+            "point.1"
+          ],
+          [
+            "claim.2",
+            "point.2"
+          ],
+          [
+            "claim.3",
+            "point.3"
+          ],
+          [
+            "claim.4",
+            "point.1"
+          ],
+          [
+            "claim.4",
+            "point.2"
+          ],
+          [
+            "claim.4",
+            "point.3"
+          ]
+        ],
+        "truth_edges": [
+          [
+            "claim.1",
+            "point.1"
+          ],
+          [
+            "claim.2",
+            "point.2"
+          ],
+          [
+            "claim.3",
+            "point.3"
+          ],
+          [
+            "claim.4",
+            "point.1"
+          ],
+          [
+            "claim.4",
+            "point.2"
+          ],
+          [
+            "claim.4",
+            "point.3"
+          ]
+        ],
+        "predicted_covered": [
+          "point.1",
+          "point.2",
+          "point.3"
+        ],
+        "truth_covered": [
+          "point.1",
+          "point.2",
+          "point.3"
+        ]
+      },
+      {
+        "execution_id": "e1a2.b10.rep1",
+        "repetition": "rep1",
+        "pair_id": "e1a2.pair10",
+        "source_case_id": "n022",
+        "variant": "base",
+        "applicable": true,
+        "reason": "APPLICABLE",
+        "counts": {
+          "mapping_tp": 4,
+          "mapping_pred": 4,
+          "mapping_truth": 4,
+          "exact_claims": 4,
+          "claims": 4,
+          "coverage_tp": 2,
+          "coverage_pred": 2,
+          "coverage_truth": 2,
+          "exact_coverage": 1,
+          "false_covered": 0,
+          "false_missing": 0,
+          "false_positive_edges": 0,
+          "false_negative_edges": 0,
+          "overmapped_claims": 0
+        },
+        "predicted_edges": [
+          [
+            "claim_poca_reprocessing_consumption",
+            "point.2"
+          ],
+          [
+            "claim_poca_second_pass_pid_workflow",
+            "point.2"
+          ],
+          [
+            "claim_poca_step2_env_configuration",
+            "point.2"
+          ],
+          [
+            "claim_poca_worker_step1_products",
+            "point.1"
+          ]
+        ],
+        "truth_edges": [
+          [
+            "claim_poca_reprocessing_consumption",
+            "point.2"
+          ],
+          [
+            "claim_poca_second_pass_pid_workflow",
+            "point.2"
+          ],
+          [
+            "claim_poca_step2_env_configuration",
+            "point.2"
+          ],
+          [
+            "claim_poca_worker_step1_products",
+            "point.1"
+          ]
+        ],
+        "predicted_covered": [
+          "point.1",
+          "point.2"
+        ],
+        "truth_covered": [
+          "point.1",
+          "point.2"
+        ]
+      },
+      {
+        "execution_id": "e1a2.p10.rep1",
+        "repetition": "rep1",
+        "pair_id": "e1a2.pair10",
+        "source_case_id": "n022",
+        "variant": "paraphrase",
+        "applicable": true,
+        "reason": "APPLICABLE",
+        "counts": {
+          "mapping_tp": 4,
+          "mapping_pred": 5,
+          "mapping_truth": 4,
+          "exact_claims": 3,
+          "claims": 4,
+          "coverage_tp": 2,
+          "coverage_pred": 2,
+          "coverage_truth": 2,
+          "exact_coverage": 1,
+          "false_covered": 0,
+          "false_missing": 0,
+          "false_positive_edges": 1,
+          "false_negative_edges": 0,
+          "overmapped_claims": 1
+        },
+        "predicted_edges": [
+          [
+            "claim_1",
+            "point.1"
+          ],
+          [
+            "claim_2",
+            "point.1"
+          ],
+          [
+            "claim_2",
+            "point.2"
+          ],
+          [
+            "claim_3",
+            "point.2"
+          ],
+          [
+            "claim_4",
+            "point.2"
+          ]
+        ],
+        "truth_edges": [
+          [
+            "claim_1",
+            "point.1"
+          ],
+          [
+            "claim_2",
+            "point.2"
+          ],
+          [
+            "claim_3",
+            "point.2"
+          ],
+          [
+            "claim_4",
+            "point.2"
+          ]
+        ],
+        "predicted_covered": [
+          "point.1",
+          "point.2"
+        ],
+        "truth_covered": [
+          "point.1",
+          "point.2"
+        ]
+      },
+      {
+        "execution_id": "e1a2.b11.rep1",
+        "repetition": "rep1",
+        "pair_id": "e1a2.pair11",
+        "source_case_id": "n030",
+        "variant": "base",
+        "applicable": true,
+        "reason": "APPLICABLE",
+        "counts": {
+          "mapping_tp": 2,
+          "mapping_pred": 2,
+          "mapping_truth": 2,
+          "exact_claims": 2,
+          "claims": 2,
+          "coverage_tp": 2,
+          "coverage_pred": 2,
+          "coverage_truth": 2,
+          "exact_coverage": 1,
+          "false_covered": 0,
+          "false_missing": 0,
+          "false_positive_edges": 0,
+          "false_negative_edges": 0,
+          "overmapped_claims": 0
+        },
+        "predicted_edges": [
+          [
+            "claim_ip_alignment_accomplishment_and_order",
+            "point.2"
+          ],
+          [
+            "claim_ip_standard_lab_insufficient",
+            "point.1"
+          ]
+        ],
+        "truth_edges": [
+          [
+            "claim_ip_alignment_accomplishment_and_order",
+            "point.2"
+          ],
+          [
+            "claim_ip_standard_lab_insufficient",
+            "point.1"
+          ]
+        ],
+        "predicted_covered": [
+          "point.1",
+          "point.2"
+        ],
+        "truth_covered": [
+          "point.1",
+          "point.2"
+        ]
+      },
+      {
+        "execution_id": "e1a2.p11.rep1",
+        "repetition": "rep1",
+        "pair_id": "e1a2.pair11",
+        "source_case_id": "n030",
+        "variant": "paraphrase",
+        "applicable": true,
+        "reason": "APPLICABLE",
+        "counts": {
+          "mapping_tp": 3,
+          "mapping_pred": 3,
+          "mapping_truth": 3,
+          "exact_claims": 3,
+          "claims": 3,
+          "coverage_tp": 2,
+          "coverage_pred": 2,
+          "coverage_truth": 2,
+          "exact_coverage": 1,
+          "false_covered": 0,
+          "false_missing": 0,
+          "false_positive_edges": 0,
+          "false_negative_edges": 0,
+          "overmapped_claims": 0
+        },
+        "predicted_edges": [
+          [
+            "claim.1",
+            "point.1"
+          ],
+          [
+            "claim.2",
+            "point.2"
+          ],
+          [
+            "claim.3",
+            "point.2"
+          ]
+        ],
+        "truth_edges": [
+          [
+            "claim.1",
+            "point.1"
+          ],
+          [
+            "claim.2",
+            "point.2"
+          ],
+          [
+            "claim.3",
+            "point.2"
+          ]
+        ],
+        "predicted_covered": [
+          "point.1",
+          "point.2"
+        ],
+        "truth_covered": [
+          "point.1",
+          "point.2"
+        ]
+      },
+      {
+        "execution_id": "e1a2.b12.rep1",
+        "repetition": "rep1",
+        "pair_id": "e1a2.pair12",
+        "source_case_id": "n031",
+        "variant": "base",
+        "applicable": true,
+        "reason": "APPLICABLE",
+        "counts": {
+          "mapping_tp": 2,
+          "mapping_pred": 2,
+          "mapping_truth": 2,
+          "exact_claims": 2,
+          "claims": 2,
+          "coverage_tp": 2,
+          "coverage_pred": 2,
+          "coverage_truth": 2,
+          "exact_coverage": 1,
+          "false_covered": 0,
+          "false_missing": 0,
+          "false_positive_edges": 0,
+          "false_negative_edges": 0,
+          "overmapped_claims": 0
+        },
+        "predicted_edges": [
+          [
+            "claim_1",
+            "point.1"
+          ],
+          [
+            "claim_2",
+            "point.2"
+          ]
+        ],
+        "truth_edges": [
+          [
+            "claim_1",
+            "point.1"
+          ],
+          [
+            "claim_2",
+            "point.2"
+          ]
+        ],
+        "predicted_covered": [
+          "point.1",
+          "point.2"
+        ],
+        "truth_covered": [
+          "point.1",
+          "point.2"
+        ]
+      },
+      {
+        "execution_id": "e1a2.p12.rep1",
+        "repetition": "rep1",
+        "pair_id": "e1a2.pair12",
+        "source_case_id": "n031",
+        "variant": "paraphrase",
+        "applicable": true,
+        "reason": "APPLICABLE",
+        "counts": {
+          "mapping_tp": 2,
+          "mapping_pred": 2,
+          "mapping_truth": 2,
+          "exact_claims": 2,
+          "claims": 2,
+          "coverage_tp": 2,
+          "coverage_pred": 2,
+          "coverage_truth": 2,
+          "exact_coverage": 1,
+          "false_covered": 0,
+          "false_missing": 0,
+          "false_positive_edges": 0,
+          "false_negative_edges": 0,
+          "overmapped_claims": 0
+        },
+        "predicted_edges": [
+          [
+            "claim_1",
+            "point.1"
+          ],
+          [
+            "claim_2",
+            "point.2"
+          ]
+        ],
+        "truth_edges": [
+          [
+            "claim_1",
+            "point.1"
+          ],
+          [
+            "claim_2",
+            "point.2"
+          ]
+        ],
+        "predicted_covered": [
+          "point.1",
+          "point.2"
+        ],
+        "truth_covered": [
+          "point.1",
+          "point.2"
+        ]
+      },
+      {
+        "execution_id": "e1a2.b07.rep2",
+        "repetition": "rep2",
+        "pair_id": "e1a2.pair07",
+        "source_case_id": "n001",
+        "variant": "base",
+        "applicable": true,
+        "reason": "APPLICABLE",
+        "counts": {
+          "mapping_tp": 3,
+          "mapping_pred": 3,
+          "mapping_truth": 3,
+          "exact_claims": 3,
+          "claims": 3,
+          "coverage_tp": 3,
+          "coverage_pred": 3,
+          "coverage_truth": 3,
+          "exact_coverage": 1,
+          "false_covered": 0,
+          "false_missing": 0,
+          "false_positive_edges": 0,
+          "false_negative_edges": 0,
+          "overmapped_claims": 0
+        },
+        "predicted_edges": [
+          [
+            "claim_1",
+            "point.1"
+          ],
+          [
+            "claim_2",
+            "point.2"
+          ],
+          [
+            "claim_3",
+            "point.3"
+          ]
+        ],
+        "truth_edges": [
+          [
+            "claim_1",
+            "point.1"
+          ],
+          [
+            "claim_2",
+            "point.2"
+          ],
+          [
+            "claim_3",
+            "point.3"
+          ]
+        ],
+        "predicted_covered": [
+          "point.1",
+          "point.2",
+          "point.3"
+        ],
+        "truth_covered": [
+          "point.1",
+          "point.2",
+          "point.3"
+        ]
+      },
+      {
+        "execution_id": "e1a2.p07.rep2",
+        "repetition": "rep2",
+        "pair_id": "e1a2.pair07",
+        "source_case_id": "n001",
+        "variant": "paraphrase",
+        "applicable": true,
+        "reason": "APPLICABLE",
+        "counts": {
+          "mapping_tp": 3,
+          "mapping_pred": 3,
+          "mapping_truth": 3,
+          "exact_claims": 3,
+          "claims": 3,
+          "coverage_tp": 3,
+          "coverage_pred": 3,
+          "coverage_truth": 3,
+          "exact_coverage": 1,
+          "false_covered": 0,
+          "false_missing": 0,
+          "false_positive_edges": 0,
+          "false_negative_edges": 0,
+          "overmapped_claims": 0
+        },
+        "predicted_edges": [
+          [
+            "claim.1",
+            "point.1"
+          ],
+          [
+            "claim.2",
+            "point.2"
+          ],
+          [
+            "claim.3",
+            "point.3"
+          ]
+        ],
+        "truth_edges": [
+          [
+            "claim.1",
+            "point.1"
+          ],
+          [
+            "claim.2",
+            "point.2"
+          ],
+          [
+            "claim.3",
+            "point.3"
+          ]
+        ],
+        "predicted_covered": [
+          "point.1",
+          "point.2",
+          "point.3"
+        ],
+        "truth_covered": [
+          "point.1",
+          "point.2",
+          "point.3"
+        ]
+      },
+      {
+        "execution_id": "e1a2.b08.rep2",
+        "repetition": "rep2",
+        "pair_id": "e1a2.pair08",
+        "source_case_id": "n008",
+        "variant": "base",
+        "applicable": true,
+        "reason": "APPLICABLE",
+        "counts": {
+          "mapping_tp": 3,
+          "mapping_pred": 4,
+          "mapping_truth": 4,
+          "exact_claims": 1,
+          "claims": 3,
+          "coverage_tp": 2,
+          "coverage_pred": 2,
+          "coverage_truth": 2,
+          "exact_coverage": 1,
+          "false_covered": 0,
+          "false_missing": 0,
+          "false_positive_edges": 1,
+          "false_negative_edges": 1,
+          "overmapped_claims": 1
+        },
+        "predicted_edges": [
+          [
+            "claim_1",
+            "point.1"
+          ],
+          [
+            "claim_2",
+            "point.1"
+          ],
+          [
+            "claim_2",
+            "point.2"
+          ],
+          [
+            "claim_3",
+            "point.2"
+          ]
+        ],
+        "truth_edges": [
+          [
+            "claim_1",
+            "point.1"
+          ],
+          [
+            "claim_1",
+            "point.2"
+          ],
+          [
+            "claim_2",
+            "point.2"
+          ],
+          [
+            "claim_3",
+            "point.2"
+          ]
+        ],
+        "predicted_covered": [
+          "point.1",
+          "point.2"
+        ],
+        "truth_covered": [
+          "point.1",
+          "point.2"
+        ]
+      },
+      {
+        "execution_id": "e1a2.p08.rep2",
+        "repetition": "rep2",
+        "pair_id": "e1a2.pair08",
+        "source_case_id": "n008",
+        "variant": "paraphrase",
+        "applicable": true,
+        "reason": "APPLICABLE",
+        "counts": {
+          "mapping_tp": 3,
+          "mapping_pred": 3,
+          "mapping_truth": 3,
+          "exact_claims": 3,
+          "claims": 3,
+          "coverage_tp": 2,
+          "coverage_pred": 2,
+          "coverage_truth": 2,
+          "exact_coverage": 1,
+          "false_covered": 0,
+          "false_missing": 0,
+          "false_positive_edges": 0,
+          "false_negative_edges": 0,
+          "overmapped_claims": 0
+        },
+        "predicted_edges": [
+          [
+            "claim.1",
+            "point.1"
+          ],
+          [
+            "claim.2",
+            "point.2"
+          ],
+          [
+            "claim.3",
+            "point.2"
+          ]
+        ],
+        "truth_edges": [
+          [
+            "claim.1",
+            "point.1"
+          ],
+          [
+            "claim.2",
+            "point.2"
+          ],
+          [
+            "claim.3",
+            "point.2"
+          ]
+        ],
+        "predicted_covered": [
+          "point.1",
+          "point.2"
+        ],
+        "truth_covered": [
+          "point.1",
+          "point.2"
+        ]
+      },
+      {
+        "execution_id": "e1a2.b09.rep2",
+        "repetition": "rep2",
+        "pair_id": "e1a2.pair09",
+        "source_case_id": "n020",
+        "variant": "base",
+        "applicable": true,
+        "reason": "APPLICABLE",
+        "counts": {
+          "mapping_tp": 4,
+          "mapping_pred": 4,
+          "mapping_truth": 4,
+          "exact_claims": 4,
+          "claims": 4,
+          "coverage_tp": 3,
+          "coverage_pred": 3,
+          "coverage_truth": 3,
+          "exact_coverage": 1,
+          "false_covered": 0,
+          "false_missing": 0,
+          "false_positive_edges": 0,
+          "false_negative_edges": 0,
+          "overmapped_claims": 0
+        },
+        "predicted_edges": [
+          [
+            "claim_1",
+            "point.1"
+          ],
+          [
+            "claim_2",
+            "point.2"
+          ],
+          [
+            "claim_3",
+            "point.3"
+          ],
+          [
+            "claim_4",
+            "point.1"
+          ]
+        ],
+        "truth_edges": [
+          [
+            "claim_1",
+            "point.1"
+          ],
+          [
+            "claim_2",
+            "point.2"
+          ],
+          [
+            "claim_3",
+            "point.3"
+          ],
+          [
+            "claim_4",
+            "point.1"
+          ]
+        ],
+        "predicted_covered": [
+          "point.1",
+          "point.2",
+          "point.3"
+        ],
+        "truth_covered": [
+          "point.1",
+          "point.2",
+          "point.3"
+        ]
+      },
+      {
+        "execution_id": "e1a2.p09.rep2",
+        "repetition": "rep2",
+        "pair_id": "e1a2.pair09",
+        "source_case_id": "n020",
+        "variant": "paraphrase",
+        "applicable": true,
+        "reason": "APPLICABLE",
+        "counts": {
+          "mapping_tp": 4,
+          "mapping_pred": 4,
+          "mapping_truth": 4,
+          "exact_claims": 4,
+          "claims": 4,
+          "coverage_tp": 3,
+          "coverage_pred": 3,
+          "coverage_truth": 3,
+          "exact_coverage": 1,
+          "false_covered": 0,
+          "false_missing": 0,
+          "false_positive_edges": 0,
+          "false_negative_edges": 0,
+          "overmapped_claims": 0
+        },
+        "predicted_edges": [
+          [
+            "claim_1",
+            "point.1"
+          ],
+          [
+            "claim_2",
+            "point.2"
+          ],
+          [
+            "claim_3",
+            "point.3"
+          ],
+          [
+            "claim_4",
+            "point.2"
+          ]
+        ],
+        "truth_edges": [
+          [
+            "claim_1",
+            "point.1"
+          ],
+          [
+            "claim_2",
+            "point.2"
+          ],
+          [
+            "claim_3",
+            "point.3"
+          ],
+          [
+            "claim_4",
+            "point.2"
+          ]
+        ],
+        "predicted_covered": [
+          "point.1",
+          "point.2",
+          "point.3"
+        ],
+        "truth_covered": [
+          "point.1",
+          "point.2",
+          "point.3"
+        ]
+      },
+      {
+        "execution_id": "e1a2.b10.rep2",
+        "repetition": "rep2",
+        "pair_id": "e1a2.pair10",
+        "source_case_id": "n022",
+        "variant": "base",
+        "applicable": true,
+        "reason": "APPLICABLE",
+        "counts": {
+          "mapping_tp": 3,
+          "mapping_pred": 3,
+          "mapping_truth": 3,
+          "exact_claims": 3,
+          "claims": 3,
+          "coverage_tp": 2,
+          "coverage_pred": 2,
+          "coverage_truth": 2,
+          "exact_coverage": 1,
+          "false_covered": 0,
+          "false_missing": 0,
+          "false_positive_edges": 0,
+          "false_negative_edges": 0,
+          "overmapped_claims": 0
+        },
+        "predicted_edges": [
+          [
+            "claim_1",
+            "point.1"
+          ],
+          [
+            "claim_2",
+            "point.2"
+          ],
+          [
+            "claim_3",
+            "point.2"
+          ]
+        ],
+        "truth_edges": [
+          [
+            "claim_1",
+            "point.1"
+          ],
+          [
+            "claim_2",
+            "point.2"
+          ],
+          [
+            "claim_3",
+            "point.2"
+          ]
+        ],
+        "predicted_covered": [
+          "point.1",
+          "point.2"
+        ],
+        "truth_covered": [
+          "point.1",
+          "point.2"
+        ]
+      },
+      {
+        "execution_id": "e1a2.p10.rep2",
+        "repetition": "rep2",
+        "pair_id": "e1a2.pair10",
+        "source_case_id": "n022",
+        "variant": "paraphrase",
+        "applicable": true,
+        "reason": "APPLICABLE",
+        "counts": {
+          "mapping_tp": 3,
+          "mapping_pred": 3,
+          "mapping_truth": 3,
+          "exact_claims": 3,
+          "claims": 3,
+          "coverage_tp": 2,
+          "coverage_pred": 2,
+          "coverage_truth": 2,
+          "exact_coverage": 1,
+          "false_covered": 0,
+          "false_missing": 0,
+          "false_positive_edges": 0,
+          "false_negative_edges": 0,
+          "overmapped_claims": 0
+        },
+        "predicted_edges": [
+          [
+            "claim_1",
+            "point.1"
+          ],
+          [
+            "claim_2",
+            "point.2"
+          ],
+          [
+            "claim_3",
+            "point.2"
+          ]
+        ],
+        "truth_edges": [
+          [
+            "claim_1",
+            "point.1"
+          ],
+          [
+            "claim_2",
+            "point.2"
+          ],
+          [
+            "claim_3",
+            "point.2"
+          ]
+        ],
+        "predicted_covered": [
+          "point.1",
+          "point.2"
+        ],
+        "truth_covered": [
+          "point.1",
+          "point.2"
+        ]
+      },
+      {
+        "execution_id": "e1a2.b11.rep2",
+        "repetition": "rep2",
+        "pair_id": "e1a2.pair11",
+        "source_case_id": "n030",
+        "variant": "base",
+        "applicable": true,
+        "reason": "APPLICABLE",
+        "counts": {
+          "mapping_tp": 2,
+          "mapping_pred": 4,
+          "mapping_truth": 2,
+          "exact_claims": 2,
+          "claims": 4,
+          "coverage_tp": 2,
+          "coverage_pred": 2,
+          "coverage_truth": 2,
+          "exact_coverage": 1,
+          "false_covered": 0,
+          "false_missing": 0,
+          "false_positive_edges": 2,
+          "false_negative_edges": 0,
+          "overmapped_claims": 2
+        },
+        "predicted_edges": [
+          [
+            "claim_ip_alignment_lab_frame_insufficient",
+            "point.1"
+          ],
+          [
+            "claim_ip_alignment_poca_workflow",
+            "point.2"
+          ],
+          [
+            "claim_ip_alignment_transformation_effect",
+            "point.2"
+          ],
+          [
+            "claim_workflow_order_stages",
+            "point.2"
+          ]
+        ],
+        "truth_edges": [
+          [
+            "claim_ip_alignment_lab_frame_insufficient",
+            "point.1"
+          ],
+          [
+            "claim_ip_alignment_transformation_effect",
+            "point.2"
+          ]
+        ],
+        "predicted_covered": [
+          "point.1",
+          "point.2"
+        ],
+        "truth_covered": [
+          "point.1",
+          "point.2"
+        ]
+      },
+      {
+        "execution_id": "e1a2.p11.rep2",
+        "repetition": "rep2",
+        "pair_id": "e1a2.pair11",
+        "source_case_id": "n030",
+        "variant": "paraphrase",
+        "applicable": true,
+        "reason": "APPLICABLE",
+        "counts": {
+          "mapping_tp": 3,
+          "mapping_pred": 3,
+          "mapping_truth": 3,
+          "exact_claims": 3,
+          "claims": 3,
+          "coverage_tp": 2,
+          "coverage_pred": 2,
+          "coverage_truth": 2,
+          "exact_coverage": 1,
+          "false_covered": 0,
+          "false_missing": 0,
+          "false_positive_edges": 0,
+          "false_negative_edges": 0,
+          "overmapped_claims": 0
+        },
+        "predicted_edges": [
+          [
+            "claim_1",
+            "point.1"
+          ],
+          [
+            "claim_2",
+            "point.2"
+          ],
+          [
+            "claim_3",
+            "point.2"
+          ]
+        ],
+        "truth_edges": [
+          [
+            "claim_1",
+            "point.1"
+          ],
+          [
+            "claim_2",
+            "point.2"
+          ],
+          [
+            "claim_3",
+            "point.2"
+          ]
+        ],
+        "predicted_covered": [
+          "point.1",
+          "point.2"
+        ],
+        "truth_covered": [
+          "point.1",
+          "point.2"
+        ]
+      },
+      {
+        "execution_id": "e1a2.b12.rep2",
+        "repetition": "rep2",
+        "pair_id": "e1a2.pair12",
+        "source_case_id": "n031",
+        "variant": "base",
+        "applicable": true,
+        "reason": "APPLICABLE",
+        "counts": {
+          "mapping_tp": 2,
+          "mapping_pred": 2,
+          "mapping_truth": 2,
+          "exact_claims": 2,
+          "claims": 2,
+          "coverage_tp": 2,
+          "coverage_pred": 2,
+          "coverage_truth": 2,
+          "exact_coverage": 1,
+          "false_covered": 0,
+          "false_missing": 0,
+          "false_positive_edges": 0,
+          "false_negative_edges": 0,
+          "overmapped_claims": 0
+        },
+        "predicted_edges": [
+          [
+            "claim.1",
+            "point.1"
+          ],
+          [
+            "claim.2",
+            "point.2"
+          ]
+        ],
+        "truth_edges": [
+          [
+            "claim.1",
+            "point.1"
+          ],
+          [
+            "claim.2",
+            "point.2"
+          ]
+        ],
+        "predicted_covered": [
+          "point.1",
+          "point.2"
+        ],
+        "truth_covered": [
+          "point.1",
+          "point.2"
+        ]
+      },
+      {
+        "execution_id": "e1a2.p12.rep2",
+        "repetition": "rep2",
+        "pair_id": "e1a2.pair12",
+        "source_case_id": "n031",
+        "variant": "paraphrase",
+        "applicable": true,
+        "reason": "APPLICABLE",
+        "counts": {
+          "mapping_tp": 2,
+          "mapping_pred": 2,
+          "mapping_truth": 2,
+          "exact_claims": 2,
+          "claims": 2,
+          "coverage_tp": 2,
+          "coverage_pred": 2,
+          "coverage_truth": 2,
+          "exact_coverage": 1,
+          "false_covered": 0,
+          "false_missing": 0,
+          "false_positive_edges": 0,
+          "false_negative_edges": 0,
+          "overmapped_claims": 0
+        },
+        "predicted_edges": [
+          [
+            "claim_1",
+            "point.1"
+          ],
+          [
+            "claim_2",
+            "point.2"
+          ]
+        ],
+        "truth_edges": [
+          [
+            "claim_1",
+            "point.1"
+          ],
+          [
+            "claim_2",
+            "point.2"
+          ]
+        ],
+        "predicted_covered": [
+          "point.1",
+          "point.2"
+        ],
+        "truth_covered": [
+          "point.1",
+          "point.2"
+        ]
+      }
+    ],
+    "applicable": {
+      "rep1": 12,
+      "rep2": 12
+    },
+    "conformant": {
+      "rep1": 12,
+      "rep2": 12
+    },
+    "reasons": {
+      "APPLICABLE": 24
+    },
+    "by_repetition": {
+      "rep1": {
+        "counts": {
+          "mapping_tp": 39,
+          "mapping_pred": 41,
+          "mapping_truth": 39,
+          "exact_claims": 35,
+          "claims": 37,
+          "coverage_tp": 28,
+          "coverage_pred": 28,
+          "coverage_truth": 28,
+          "exact_coverage": 12,
+          "false_covered": 0,
+          "false_missing": 0,
+          "false_positive_edges": 2,
+          "false_negative_edges": 0,
+          "overmapped_claims": 2
+        },
+        "N2": 0.9512195121951219,
+        "N3": 1.0,
+        "N4": 0.9459459459459459,
+        "N5": 1.0,
+        "N6": 1.0
+      },
+      "rep2": {
+        "counts": {
+          "mapping_tp": 35,
+          "mapping_pred": 38,
+          "mapping_truth": 36,
+          "exact_claims": 33,
+          "claims": 37,
+          "coverage_tp": 28,
+          "coverage_pred": 28,
+          "coverage_truth": 28,
+          "exact_coverage": 12,
+          "false_covered": 0,
+          "false_missing": 0,
+          "false_positive_edges": 3,
+          "false_negative_edges": 1,
+          "overmapped_claims": 3
+        },
+        "N2": 0.9210526315789473,
+        "N3": 0.9722222222222222,
+        "N4": 0.8918918918918919,
+        "N5": 1.0,
+        "N6": 1.0
+      }
+    },
+    "by_source": {
+      "n001": {
+        "counts": {
+          "mapping_tp": 12,
+          "mapping_pred": 12,
+          "mapping_truth": 12,
+          "exact_claims": 12,
+          "claims": 12,
+          "coverage_tp": 12,
+          "coverage_pred": 12,
+          "coverage_truth": 12,
+          "exact_coverage": 4,
+          "false_covered": 0,
+          "false_missing": 0,
+          "false_positive_edges": 0,
+          "false_negative_edges": 0,
+          "overmapped_claims": 0
+        },
+        "N2": 1.0,
+        "N3": 1.0,
+        "N4": 1.0,
+        "N5": 1.0,
+        "N6": 1.0
+      },
+      "n008": {
+        "counts": {
+          "mapping_tp": 12,
+          "mapping_pred": 14,
+          "mapping_truth": 13,
+          "exact_claims": 9,
+          "claims": 12,
+          "coverage_tp": 8,
+          "coverage_pred": 8,
+          "coverage_truth": 8,
+          "exact_coverage": 4,
+          "false_covered": 0,
+          "false_missing": 0,
+          "false_positive_edges": 2,
+          "false_negative_edges": 1,
+          "overmapped_claims": 2
+        },
+        "N2": 0.8571428571428571,
+        "N3": 0.9230769230769231,
+        "N4": 0.75,
+        "N5": 1.0,
+        "N6": 1.0
+      },
+      "n020": {
+        "counts": {
+          "mapping_tp": 18,
+          "mapping_pred": 18,
+          "mapping_truth": 18,
+          "exact_claims": 16,
+          "claims": 16,
+          "coverage_tp": 12,
+          "coverage_pred": 12,
+          "coverage_truth": 12,
+          "exact_coverage": 4,
+          "false_covered": 0,
+          "false_missing": 0,
+          "false_positive_edges": 0,
+          "false_negative_edges": 0,
+          "overmapped_claims": 0
+        },
+        "N2": 1.0,
+        "N3": 1.0,
+        "N4": 1.0,
+        "N5": 1.0,
+        "N6": 1.0
+      },
+      "n022": {
+        "counts": {
+          "mapping_tp": 14,
+          "mapping_pred": 15,
+          "mapping_truth": 14,
+          "exact_claims": 13,
+          "claims": 14,
+          "coverage_tp": 8,
+          "coverage_pred": 8,
+          "coverage_truth": 8,
+          "exact_coverage": 4,
+          "false_covered": 0,
+          "false_missing": 0,
+          "false_positive_edges": 1,
+          "false_negative_edges": 0,
+          "overmapped_claims": 1
+        },
+        "N2": 0.9333333333333333,
+        "N3": 1.0,
+        "N4": 0.9285714285714286,
+        "N5": 1.0,
+        "N6": 1.0
+      },
+      "n030": {
+        "counts": {
+          "mapping_tp": 10,
+          "mapping_pred": 12,
+          "mapping_truth": 10,
+          "exact_claims": 10,
+          "claims": 12,
+          "coverage_tp": 8,
+          "coverage_pred": 8,
+          "coverage_truth": 8,
+          "exact_coverage": 4,
+          "false_covered": 0,
+          "false_missing": 0,
+          "false_positive_edges": 2,
+          "false_negative_edges": 0,
+          "overmapped_claims": 2
+        },
+        "N2": 0.8333333333333334,
+        "N3": 1.0,
+        "N4": 0.8333333333333334,
+        "N5": 1.0,
+        "N6": 1.0
+      },
+      "n031": {
+        "counts": {
+          "mapping_tp": 8,
+          "mapping_pred": 8,
+          "mapping_truth": 8,
+          "exact_claims": 8,
+          "claims": 8,
+          "coverage_tp": 8,
+          "coverage_pred": 8,
+          "coverage_truth": 8,
+          "exact_coverage": 4,
+          "false_covered": 0,
+          "false_missing": 0,
+          "false_positive_edges": 0,
+          "false_negative_edges": 0,
+          "overmapped_claims": 0
+        },
+        "N2": 1.0,
+        "N3": 1.0,
+        "N4": 1.0,
+        "N5": 1.0,
+        "N6": 1.0
+      }
+    },
+    "by_pair": {
+      "e1a2.pair07": {
+        "counts": {
+          "mapping_tp": 12,
+          "mapping_pred": 12,
+          "mapping_truth": 12,
+          "exact_claims": 12,
+          "claims": 12,
+          "coverage_tp": 12,
+          "coverage_pred": 12,
+          "coverage_truth": 12,
+          "exact_coverage": 4,
+          "false_covered": 0,
+          "false_missing": 0,
+          "false_positive_edges": 0,
+          "false_negative_edges": 0,
+          "overmapped_claims": 0
+        },
+        "N2": 1.0,
+        "N3": 1.0,
+        "N4": 1.0,
+        "N5": 1.0,
+        "N6": 1.0
+      },
+      "e1a2.pair08": {
+        "counts": {
+          "mapping_tp": 12,
+          "mapping_pred": 14,
+          "mapping_truth": 13,
+          "exact_claims": 9,
+          "claims": 12,
+          "coverage_tp": 8,
+          "coverage_pred": 8,
+          "coverage_truth": 8,
+          "exact_coverage": 4,
+          "false_covered": 0,
+          "false_missing": 0,
+          "false_positive_edges": 2,
+          "false_negative_edges": 1,
+          "overmapped_claims": 2
+        },
+        "N2": 0.8571428571428571,
+        "N3": 0.9230769230769231,
+        "N4": 0.75,
+        "N5": 1.0,
+        "N6": 1.0
+      },
+      "e1a2.pair09": {
+        "counts": {
+          "mapping_tp": 18,
+          "mapping_pred": 18,
+          "mapping_truth": 18,
+          "exact_claims": 16,
+          "claims": 16,
+          "coverage_tp": 12,
+          "coverage_pred": 12,
+          "coverage_truth": 12,
+          "exact_coverage": 4,
+          "false_covered": 0,
+          "false_missing": 0,
+          "false_positive_edges": 0,
+          "false_negative_edges": 0,
+          "overmapped_claims": 0
+        },
+        "N2": 1.0,
+        "N3": 1.0,
+        "N4": 1.0,
+        "N5": 1.0,
+        "N6": 1.0
+      },
+      "e1a2.pair10": {
+        "counts": {
+          "mapping_tp": 14,
+          "mapping_pred": 15,
+          "mapping_truth": 14,
+          "exact_claims": 13,
+          "claims": 14,
+          "coverage_tp": 8,
+          "coverage_pred": 8,
+          "coverage_truth": 8,
+          "exact_coverage": 4,
+          "false_covered": 0,
+          "false_missing": 0,
+          "false_positive_edges": 1,
+          "false_negative_edges": 0,
+          "overmapped_claims": 1
+        },
+        "N2": 0.9333333333333333,
+        "N3": 1.0,
+        "N4": 0.9285714285714286,
+        "N5": 1.0,
+        "N6": 1.0
+      },
+      "e1a2.pair11": {
+        "counts": {
+          "mapping_tp": 10,
+          "mapping_pred": 12,
+          "mapping_truth": 10,
+          "exact_claims": 10,
+          "claims": 12,
+          "coverage_tp": 8,
+          "coverage_pred": 8,
+          "coverage_truth": 8,
+          "exact_coverage": 4,
+          "false_covered": 0,
+          "false_missing": 0,
+          "false_positive_edges": 2,
+          "false_negative_edges": 0,
+          "overmapped_claims": 2
+        },
+        "N2": 0.8333333333333334,
+        "N3": 1.0,
+        "N4": 0.8333333333333334,
+        "N5": 1.0,
+        "N6": 1.0
+      },
+      "e1a2.pair12": {
+        "counts": {
+          "mapping_tp": 8,
+          "mapping_pred": 8,
+          "mapping_truth": 8,
+          "exact_claims": 8,
+          "claims": 8,
+          "coverage_tp": 8,
+          "coverage_pred": 8,
+          "coverage_truth": 8,
+          "exact_coverage": 4,
+          "false_covered": 0,
+          "false_missing": 0,
+          "false_positive_edges": 0,
+          "false_negative_edges": 0,
+          "overmapped_claims": 0
+        },
+        "N2": 1.0,
+        "N3": 1.0,
+        "N4": 1.0,
+        "N5": 1.0,
+        "N6": 1.0
+      }
+    },
+    "attempted": {
+      "rep1": 12,
+      "rep2": 12
+    },
+    "coverage_unevaluable": 0,
+    "refusals": 0
+  },
+  "controlled": {
+    "counts": {
+      "eligible": 11,
+      "detected": 11,
+      "reported": 11,
+      "exact": 11,
+      "collateral": 0,
+      "empty": 0,
+      "all_missing": 0
+    },
+    "D2": 1.0,
+    "D3": 1.0,
+    "D4": 1.0,
+    "ineligible": {
+      "NO_ISOLATABLE_DROP_TARGET": 1
+    },
+    "per_execution": [
+      {
+        "execution_id": "e1a2.b07.rep1",
+        "expected": [
+          "point.3"
+        ],
+        "missing": [
+          "point.3"
+        ],
+        "error": null
+      },
+      {
+        "execution_id": "e1a2.p07.rep1",
+        "expected": [
+          "point.3"
+        ],
+        "missing": [
+          "point.3"
+        ],
+        "error": null
+      },
+      {
+        "execution_id": "e1a2.b08.rep1",
+        "expected": [
+          "point.2"
+        ],
+        "missing": [
+          "point.2"
+        ],
+        "error": null
+      },
+      {
+        "execution_id": "e1a2.p08.rep1",
+        "expected": [
+          "point.2"
+        ],
+        "missing": [
+          "point.2"
+        ],
+        "error": null
+      },
+      {
+        "execution_id": "e1a2.b09.rep1",
+        "expected": [
+          "point.3"
+        ],
+        "missing": [
+          "point.3"
+        ],
+        "error": null
+      },
+      {
+        "execution_id": "e1a2.b10.rep1",
+        "expected": [
+          "point.2"
+        ],
+        "missing": [
+          "point.2"
+        ],
+        "error": null
+      },
+      {
+        "execution_id": "e1a2.p10.rep1",
+        "expected": [
+          "point.2"
+        ],
+        "missing": [
+          "point.2"
+        ],
+        "error": null
+      },
+      {
+        "execution_id": "e1a2.b11.rep1",
+        "expected": [
+          "point.2"
+        ],
+        "missing": [
+          "point.2"
+        ],
+        "error": null
+      },
+      {
+        "execution_id": "e1a2.p11.rep1",
+        "expected": [
+          "point.2"
+        ],
+        "missing": [
+          "point.2"
+        ],
+        "error": null
+      },
+      {
+        "execution_id": "e1a2.b12.rep1",
+        "expected": [
+          "point.2"
+        ],
+        "missing": [
+          "point.2"
+        ],
+        "error": null
+      },
+      {
+        "execution_id": "e1a2.p12.rep1",
+        "expected": [
+          "point.2"
+        ],
+        "missing": [
+          "point.2"
+        ],
+        "error": null
+      }
+    ]
+  },
+  "structural_failures": 0,
+  "infrastructure_failures": 0,
+  "usage": {
+    "decomposition": {
+      "logical_calls": 24,
+      "returned_model_calls": 24,
+      "adapter_requests": 24,
+      "tokens": 34011
+    },
+    "analyzer": {
+      "logical_calls": 24,
+      "returned_model_calls": 24,
+      "adapter_requests": 24,
+      "tokens": 57834
+    },
+    "embedding": {
+      "logical_calls": 24,
+      "returned_model_calls": 24,
+      "adapter_requests": 24,
+      "tokens": 0
+    },
+    "reranker": {
+      "logical_calls": 24,
+      "returned_model_calls": 24,
+      "adapter_requests": 24,
+      "tokens": 387351
+    },
+    "retrieval": {
+      "logical_calls": 24,
+      "returned_model_calls": 0,
+      "adapter_requests": 0,
+      "tokens": 0
+    },
+    "qa_answer": {
+      "logical_calls": 24,
+      "returned_model_calls": 24,
+      "adapter_requests": 24,
+      "tokens": 508227
+    },
+    "qa_review": {
+      "logical_calls": 31,
+      "returned_model_calls": 31,
+      "adapter_requests": 31,
+      "tokens": 660696
+    },
+    "qa_revision": {
+      "logical_calls": 7,
+      "returned_model_calls": 7,
+      "adapter_requests": 7,
+      "tokens": 181320
+    },
+    "judge": {
+      "logical_calls": 24,
+      "returned_model_calls": 24,
+      "adapter_requests": 24,
+      "tokens": 45414
+    },
+    "controlled_review": {
+      "logical_calls": 11,
+      "returned_model_calls": 11,
+      "adapter_requests": 11,
+      "tokens": 216080
+    }
+  },
+  "interpretation": "12 exposed questions, two correlated repetitions; same-model-family blinded judge; no activation"
+}

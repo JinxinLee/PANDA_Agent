@@ -1,0 +1,1331 @@
+{
+  "preregistration_commit": "78969ceee0bd316e7a9632440c175bcdac04f3bc",
+  "implementation": "df52bcddf612515418be298fafde6ebcb32d4a67",
+  "controlled_manifest_commit": "a9368e5404c164b9b32a72617e9b664ec241e2ef",
+  "records": [
+    {
+      "execution_id": "e1a2.b07.rep1",
+      "state": "COMPLETE",
+      "output": {
+        "missing_answer_point_ids": [
+          "point.3"
+        ],
+        "answer_point_audit": {
+          "mode": "shadow_e1_v2",
+          "answer_points": [
+            {
+              "answer_point_id": "point.1",
+              "text": "Which FairSoft/FairRoot pairs and paths are encoded in configSettings.sh"
+            },
+            {
+              "answer_point_id": "point.2",
+              "text": "Which environment variables configSettings.sh assigns"
+            },
+            {
+              "answer_point_id": "point.3",
+              "text": "What the script actually does for unmatched input as written"
+            }
+          ],
+          "claim_mappings": [
+            {
+              "claim_id": "claim.1",
+              "declared_answer_point_ids": [
+                "point.1"
+              ],
+              "verified_answer_point_ids": [
+                "point.1"
+              ],
+              "evidence_ids": [
+                "evidence.ff0dc6b46e0aff26c5fd08a1"
+              ],
+              "supported": true,
+              "rendered": false
+            },
+            {
+              "claim_id": "claim.2",
+              "declared_answer_point_ids": [
+                "point.2"
+              ],
+              "verified_answer_point_ids": [
+                "point.2"
+              ],
+              "evidence_ids": [
+                "evidence.ff0dc6b46e0aff26c5fd08a1"
+              ],
+              "supported": true,
+              "rendered": false
+            }
+          ],
+          "covered_answer_point_ids": [
+            "point.1",
+            "point.2"
+          ],
+          "missing_answer_point_ids": [
+            "point.3"
+          ],
+          "coverage_complete": false,
+          "coverage_evaluable": true,
+          "review_error": null
+        },
+        "errors": [
+          "missing answer point point.3"
+        ],
+        "supported_claims": [
+          {
+            "claim_id": "claim.1",
+            "claim_text": "In configSettings.sh, the encoded version pairs and placeholder paths are: FAIRSOFT_VERSION=\"may16p1\" with FAIRROOT_VERSION=\"v-17.10b\" (associated with <path to the FairSoft may16p1 build folder> and <path to the FairRoot v-17.10b install folder>), and FAIRSOFT_VERSION=\"oct17\" with FAIRROOT_VERSION=\"dev\" (associated with <path to the FairSoft oct17 build folder> and <path to the FairRoot dev install folder>).",
+            "evidence_ids": [
+              "evidence.ff0dc6b46e0aff26c5fd08a1"
+            ],
+            "answer_point_ids": [
+              "point.1"
+            ],
+            "declared_answer_point_ids": [
+              "point.1"
+            ]
+          },
+          {
+            "claim_id": "claim.2",
+            "claim_text": "The script configSettings.sh assigns and exports the environment variables SIMPATH and FAIRROOTPATH.",
+            "evidence_ids": [
+              "evidence.ff0dc6b46e0aff26c5fd08a1"
+            ],
+            "answer_point_ids": [
+              "point.2"
+            ],
+            "declared_answer_point_ids": [
+              "point.2"
+            ]
+          }
+        ],
+        "unsupported_claim_ids": [],
+        "missing_requirement_ids": [],
+        "answer_requirements": [],
+        "claim_audit": []
+      },
+      "usage": [
+        {
+          "stage": "controlled_review",
+          "logical_calls": 1,
+          "response": {
+            "supported": true,
+            "unsupported_claim_ids": [],
+            "irrelevant_claim_ids": [],
+            "missing_requirement_ids": [],
+            "reason": "Both claims are fully entailed by the cited configSettings.sh evidence and map directly to runtime answer points 1 and 2. However, point 3 regarding what the script does for unmatched input is not addressed by any claim.",
+            "claim_answer_point_mappings": [
+              {
+                "claim_id": "claim.1",
+                "answer_point_ids": [
+                  "point.1"
+                ]
+              },
+              {
+                "claim_id": "claim.2",
+                "answer_point_ids": [
+                  "point.2"
+                ]
+              }
+            ],
+            "missing_answer_point_ids": [
+              "point.3"
+            ]
+          },
+          "returned_model_calls": 1,
+          "adapter_requests": 1,
+          "tokens": 39745
+        }
+      ]
+    },
+    {
+      "execution_id": "e1a2.p07.rep1",
+      "state": "COMPLETE",
+      "output": {
+        "missing_answer_point_ids": [
+          "point.3"
+        ],
+        "answer_point_audit": {
+          "mode": "shadow_e1_v2",
+          "answer_points": [
+            {
+              "answer_point_id": "point.1",
+              "text": "What FairSoft/FairRoot pairs and paths configSettings.sh encodes for a build of the RestgasDetermination fork on the GSI cluster"
+            },
+            {
+              "answer_point_id": "point.2",
+              "text": "What environment variables configSettings.sh sets"
+            },
+            {
+              "answer_point_id": "point.3",
+              "text": "How configSettings.sh handles unmatched input as currently written"
+            }
+          ],
+          "claim_mappings": [
+            {
+              "claim_id": "claim.restgas_config_pairs_and_paths",
+              "declared_answer_point_ids": [
+                "point.1"
+              ],
+              "verified_answer_point_ids": [
+                "point.1"
+              ],
+              "evidence_ids": [
+                "evidence.ff0dc6b46e0aff26c5fd08a1"
+              ],
+              "supported": true,
+              "rendered": false
+            },
+            {
+              "claim_id": "claim.restgas_config_env_vars",
+              "declared_answer_point_ids": [
+                "point.2"
+              ],
+              "verified_answer_point_ids": [
+                "point.2"
+              ],
+              "evidence_ids": [
+                "evidence.ff0dc6b46e0aff26c5fd08a1"
+              ],
+              "supported": true,
+              "rendered": false
+            }
+          ],
+          "covered_answer_point_ids": [
+            "point.1",
+            "point.2"
+          ],
+          "missing_answer_point_ids": [
+            "point.3"
+          ],
+          "coverage_complete": false,
+          "coverage_evaluable": true,
+          "review_error": null
+        },
+        "errors": [
+          "missing answer point point.3"
+        ],
+        "supported_claims": [
+          {
+            "claim_id": "claim.restgas_config_pairs_and_paths",
+            "claim_text": "In the RestgasDetermination fork, configSettings.sh encodes two FairSoft/FairRoot version combinations using placeholder paths: FairSoft \"may16p1\" with FairRoot \"v-17.10b\" (pointing to \"<path to the FairSoft may16p1 build folder>\" and \"<path to the FairRoot v-17.10b install folder>\"), and FairSoft \"oct17\" with FairRoot \"dev\" (pointing to \"<path to the FairSoft oct17 build folder>\" and \"<path to the FairRoot dev install folder>\").",
+            "evidence_ids": [
+              "evidence.ff0dc6b46e0aff26c5fd08a1"
+            ],
+            "answer_point_ids": [
+              "point.1"
+            ],
+            "declared_answer_point_ids": [
+              "point.1"
+            ]
+          },
+          {
+            "claim_id": "claim.restgas_config_env_vars",
+            "claim_text": "configSettings.sh sets and exports the environment variables SIMPATH and FAIRROOTPATH.",
+            "evidence_ids": [
+              "evidence.ff0dc6b46e0aff26c5fd08a1"
+            ],
+            "answer_point_ids": [
+              "point.2"
+            ],
+            "declared_answer_point_ids": [
+              "point.2"
+            ]
+          }
+        ],
+        "unsupported_claim_ids": [],
+        "missing_requirement_ids": [],
+        "answer_requirements": [],
+        "claim_audit": []
+      },
+      "usage": [
+        {
+          "stage": "controlled_review",
+          "logical_calls": 1,
+          "response": {
+            "supported": true,
+            "unsupported_claim_ids": [],
+            "irrelevant_claim_ids": [],
+            "missing_requirement_ids": [],
+            "reason": "Both claims are fully supported by the cited configSettings.sh script and address points 1 and 2, but runtime answer point 3 (how unmatched input is handled) is not addressed by any claim.",
+            "claim_answer_point_mappings": [
+              {
+                "claim_id": "claim.restgas_config_pairs_and_paths",
+                "answer_point_ids": [
+                  "point.1"
+                ]
+              },
+              {
+                "claim_id": "claim.restgas_config_env_vars",
+                "answer_point_ids": [
+                  "point.2"
+                ]
+              }
+            ],
+            "missing_answer_point_ids": [
+              "point.3"
+            ]
+          },
+          "returned_model_calls": 1,
+          "adapter_requests": 1,
+          "tokens": 38315
+        }
+      ]
+    },
+    {
+      "execution_id": "e1a2.b08.rep1",
+      "state": "COMPLETE",
+      "output": {
+        "missing_answer_point_ids": [
+          "point.2"
+        ],
+        "answer_point_audit": {
+          "mode": "shadow_e1_v2",
+          "answer_points": [
+            {
+              "answer_point_id": "point.1",
+              "text": "Which track-search approaches were developed for the LMD"
+            },
+            {
+              "answer_point_id": "point.2",
+              "text": "How the track-search approaches developed for the LMD compare to each other"
+            }
+          ],
+          "claim_mappings": [
+            {
+              "claim_id": "claim.1",
+              "declared_answer_point_ids": [
+                "point.1"
+              ],
+              "verified_answer_point_ids": [
+                "point.1"
+              ],
+              "evidence_ids": [
+                "evidence.f8c47488810a839c0ae1d6b7",
+                "evidence.cf9250a22f41f3a6c06ceded",
+                "evidence.e08b6c0991a6c78b05df645a"
+              ],
+              "supported": true,
+              "rendered": false
+            }
+          ],
+          "covered_answer_point_ids": [
+            "point.1"
+          ],
+          "missing_answer_point_ids": [
+            "point.2"
+          ],
+          "coverage_complete": false,
+          "coverage_evaluable": true,
+          "review_error": null
+        },
+        "errors": [
+          "missing answer point point.2"
+        ],
+        "supported_claims": [
+          {
+            "claim_id": "claim.1",
+            "claim_text": "Two track-search algorithms were developed for the Luminosity Detector (LMD) in PandaRoot: Track Following (TF) and Cellular Automaton (CA).",
+            "evidence_ids": [
+              "evidence.f8c47488810a839c0ae1d6b7",
+              "evidence.cf9250a22f41f3a6c06ceded",
+              "evidence.e08b6c0991a6c78b05df645a"
+            ],
+            "answer_point_ids": [
+              "point.1"
+            ],
+            "declared_answer_point_ids": [
+              "point.1"
+            ]
+          }
+        ],
+        "unsupported_claim_ids": [],
+        "missing_requirement_ids": [],
+        "answer_requirements": [],
+        "claim_audit": []
+      },
+      "usage": [
+        {
+          "stage": "controlled_review",
+          "logical_calls": 1,
+          "response": {
+            "supported": true,
+            "unsupported_claim_ids": [],
+            "irrelevant_claim_ids": [],
+            "missing_requirement_ids": [],
+            "reason": "The claim is fully supported by the cited evidence and directly addresses point.1 by identifying Track Following and Cellular Automaton as the two track-search algorithms developed for the LMD. However, point.2 is left uncovered as no comparison between the algorithms was provided.",
+            "claim_answer_point_mappings": [
+              {
+                "claim_id": "claim.1",
+                "answer_point_ids": [
+                  "point.1"
+                ]
+              }
+            ],
+            "missing_answer_point_ids": [
+              "point.2"
+            ]
+          },
+          "returned_model_calls": 1,
+          "adapter_requests": 1,
+          "tokens": 9780
+        }
+      ]
+    },
+    {
+      "execution_id": "e1a2.p08.rep1",
+      "state": "COMPLETE",
+      "output": {
+        "missing_answer_point_ids": [
+          "point.2"
+        ],
+        "answer_point_audit": {
+          "mode": "shadow_e1_v2",
+          "answer_points": [
+            {
+              "answer_point_id": "point.1",
+              "text": "What track-search approaches were developed for the LMD"
+            },
+            {
+              "answer_point_id": "point.2",
+              "text": "What are the differences between the developed track-search approaches"
+            }
+          ],
+          "claim_mappings": [
+            {
+              "claim_id": "claim_1",
+              "declared_answer_point_ids": [
+                "point.1"
+              ],
+              "verified_answer_point_ids": [
+                "point.1"
+              ],
+              "evidence_ids": [
+                "evidence.cf9250a22f41f3a6c06ceded",
+                "evidence.f8c47488810a839c0ae1d6b7",
+                "evidence.bd5571dcaf0a1d525b66b9c1",
+                "evidence.e08b6c0991a6c78b05df645a"
+              ],
+              "supported": true,
+              "rendered": false
+            }
+          ],
+          "covered_answer_point_ids": [
+            "point.1"
+          ],
+          "missing_answer_point_ids": [
+            "point.2"
+          ],
+          "coverage_complete": false,
+          "coverage_evaluable": true,
+          "review_error": null
+        },
+        "errors": [
+          "missing answer point point.2"
+        ],
+        "supported_claims": [
+          {
+            "claim_id": "claim_1",
+            "claim_text": "Two track-search algorithms were developed for the LMD in the PandaRoot framework: Track Following (TF) and Cellular Automaton (CA).",
+            "evidence_ids": [
+              "evidence.cf9250a22f41f3a6c06ceded",
+              "evidence.f8c47488810a839c0ae1d6b7",
+              "evidence.bd5571dcaf0a1d525b66b9c1",
+              "evidence.e08b6c0991a6c78b05df645a"
+            ],
+            "answer_point_ids": [
+              "point.1"
+            ],
+            "declared_answer_point_ids": [
+              "point.1"
+            ]
+          }
+        ],
+        "unsupported_claim_ids": [],
+        "missing_requirement_ids": [],
+        "answer_requirements": [],
+        "claim_audit": []
+      },
+      "usage": [
+        {
+          "stage": "controlled_review",
+          "logical_calls": 1,
+          "response": {
+            "supported": true,
+            "unsupported_claim_ids": [],
+            "irrelevant_claim_ids": [],
+            "missing_requirement_ids": [],
+            "reason": "Claim 1 is fully supported by the cited evidence and directly addresses point.1 by identifying the two track-search algorithms (Track Following and Cellular Automaton) developed for the LMD in PandaRoot. However, point.2 concerning the differences between the approaches is not covered by any claim.",
+            "claim_answer_point_mappings": [
+              {
+                "claim_id": "claim_1",
+                "answer_point_ids": [
+                  "point.1"
+                ]
+              }
+            ],
+            "missing_answer_point_ids": [
+              "point.2"
+            ]
+          },
+          "returned_model_calls": 1,
+          "adapter_requests": 1,
+          "tokens": 13054
+        }
+      ]
+    },
+    {
+      "execution_id": "e1a2.b09.rep1",
+      "state": "COMPLETE",
+      "output": {
+        "missing_answer_point_ids": [
+          "point.3"
+        ],
+        "answer_point_audit": {
+          "mode": "shadow_e1_v2",
+          "answer_points": [
+            {
+              "answer_point_id": "point.1",
+              "text": "Identify which task picks up the hits left unassigned by the standard track finder in the restgas determination analysis."
+            },
+            {
+              "answer_point_id": "point.2",
+              "text": "Describe what the downstream displaced-track finder contributes before the final fit."
+            },
+            {
+              "answer_point_id": "point.3",
+              "text": "Describe what the downstream z-recovery stage contributes before the final fit."
+            }
+          ],
+          "claim_mappings": [
+            {
+              "claim_id": "claim.1",
+              "declared_answer_point_ids": [
+                "point.1"
+              ],
+              "verified_answer_point_ids": [
+                "point.1"
+              ],
+              "evidence_ids": [
+                "evidence.3d1be3b1ea5a49c749fe872b",
+                "evidence.2a6e96993552eec7f7c94347"
+              ],
+              "supported": true,
+              "rendered": false
+            },
+            {
+              "claim_id": "claim.2",
+              "declared_answer_point_ids": [
+                "point.2"
+              ],
+              "verified_answer_point_ids": [
+                "point.2"
+              ],
+              "evidence_ids": [
+                "evidence.3d1be3b1ea5a49c749fe872b",
+                "evidence.2a6e96993552eec7f7c94347",
+                "evidence.d5a56f774e7f932f502eab56",
+                "evidence.1b1c6c7f25d05af9ea662bd5"
+              ],
+              "supported": true,
+              "rendered": false
+            },
+            {
+              "claim_id": "claim.4",
+              "declared_answer_point_ids": [
+                "point.1"
+              ],
+              "verified_answer_point_ids": [
+                "point.1"
+              ],
+              "evidence_ids": [
+                "evidence.7a51cadc010e94735760c2e5",
+                "evidence.3d1be3b1ea5a49c749fe872b"
+              ],
+              "supported": true,
+              "rendered": false
+            }
+          ],
+          "covered_answer_point_ids": [
+            "point.1",
+            "point.2"
+          ],
+          "missing_answer_point_ids": [
+            "point.3"
+          ],
+          "coverage_complete": false,
+          "coverage_evaluable": true,
+          "review_error": null
+        },
+        "errors": [
+          "missing answer point point.3",
+          "missing answer requirement workflow_order",
+          "missing answer requirement complete_dataflow_handoff"
+        ],
+        "supported_claims": [
+          {
+            "claim_id": "claim.1",
+            "claim_text": "In the restgas determination reconstruction workflow configured in macro/target/reco_complete.C, following initial tracking by PndTrkTracking2, the task PndUnassignedHitsTask picks up the hits left unassigned by the standard track finder across detector subsystems including the STT, MVD, and GEM.",
+            "evidence_ids": [
+              "evidence.3d1be3b1ea5a49c749fe872b",
+              "evidence.2a6e96993552eec7f7c94347"
+            ],
+            "answer_point_ids": [
+              "point.1"
+            ],
+            "declared_answer_point_ids": [
+              "point.1"
+            ]
+          },
+          {
+            "claim_id": "claim.2",
+            "claim_text": "The downstream displaced-track finder PndApolloniusTripletTrackFinderTask consumes the tracking hits to reconstruct displaced two-dimensional trajectories in the xy-plane using STT drift-circle triplets and MVD/GEM information, outputting intermediate ApolloniusTripletTrack and ApolloniusTripletTrackCand products.",
+            "evidence_ids": [
+              "evidence.3d1be3b1ea5a49c749fe872b",
+              "evidence.2a6e96993552eec7f7c94347",
+              "evidence.d5a56f774e7f932f502eab56",
+              "evidence.1b1c6c7f25d05af9ea662bd5"
+            ],
+            "answer_point_ids": [
+              "point.2"
+            ],
+            "declared_answer_point_ids": [
+              "point.2"
+            ]
+          },
+          {
+            "claim_id": "claim.4",
+            "claim_text": "The restgas determination analysis operates as a two-pass reconstruction and longitudinal efficiency correction workflow, in which PndUnassignedHitsTask executes after the standard reconstruction stage to collect unassigned hits for the dedicated displaced-track reconstruction chain.",
+            "evidence_ids": [
+              "evidence.7a51cadc010e94735760c2e5",
+              "evidence.3d1be3b1ea5a49c749fe872b"
+            ],
+            "answer_point_ids": [
+              "point.1"
+            ],
+            "declared_answer_point_ids": [
+              "point.1"
+            ]
+          }
+        ],
+        "unsupported_claim_ids": [],
+        "missing_requirement_ids": [
+          "workflow_order",
+          "complete_dataflow_handoff"
+        ],
+        "answer_requirements": [
+          {
+            "id": "workflow_order",
+            "instruction": "State the evidence-backed stages in execution order; when a middle stage is discussed, include its predecessor and successor when supplied evidence establishes them."
+          },
+          {
+            "id": "complete_dataflow_handoff",
+            "instruction": "Describe each evidence-backed handoff completely: producer, named intermediate input/product, and next consumer, including a second hop when the question asks for downstream flow."
+          },
+          {
+            "id": "workflow_or_operational_grounding",
+            "instruction": "Include a user-relevant factual workflow or operational-documentation claim that explains a concrete stage, handoff, or procedure; never expose retrieval metadata or coverage labels."
+          }
+        ],
+        "claim_audit": []
+      },
+      "usage": [
+        {
+          "stage": "controlled_review",
+          "logical_calls": 1,
+          "response": {
+            "supported": false,
+            "unsupported_claim_ids": [],
+            "irrelevant_claim_ids": [],
+            "missing_requirement_ids": [
+              "workflow_order",
+              "complete_dataflow_handoff"
+            ],
+            "reason": "The claim set is rejected as incomplete because it fails to cover runtime answer point 'point.3' (the downstream z-recovery stage). Furthermore, it omits the evidence-established successor stage PndSttSkewStrawPzFinderTask following PndApolloniusTripletTrackFinderTask and fails to complete the downstream dataflow handoff detailing the next consumer of ApolloniusTripletTrack and ApolloniusTripletTrackCand.",
+            "claim_answer_point_mappings": [
+              {
+                "claim_id": "claim.1",
+                "answer_point_ids": [
+                  "point.1"
+                ]
+              },
+              {
+                "claim_id": "claim.2",
+                "answer_point_ids": [
+                  "point.2"
+                ]
+              },
+              {
+                "claim_id": "claim.4",
+                "answer_point_ids": [
+                  "point.1"
+                ]
+              }
+            ],
+            "missing_answer_point_ids": [
+              "point.3"
+            ]
+          },
+          "returned_model_calls": 1,
+          "adapter_requests": 1,
+          "tokens": 33794
+        }
+      ]
+    },
+    {
+      "execution_id": "e1a2.b10.rep1",
+      "state": "COMPLETE",
+      "output": {
+        "missing_answer_point_ids": [
+          "point.2"
+        ],
+        "answer_point_audit": {
+          "mode": "shadow_e1_v2",
+          "answer_points": [
+            {
+              "answer_point_id": "point.1",
+              "text": "What the first worker step leaves behind for the second analysis step in the restgas analysis two-step POCA workflow"
+            },
+            {
+              "answer_point_id": "point.2",
+              "text": "How the fitted vertex is fed into the reprocessing"
+            }
+          ],
+          "claim_mappings": [
+            {
+              "claim_id": "claim_poca_worker_step1_products",
+              "declared_answer_point_ids": [
+                "point.1"
+              ],
+              "verified_answer_point_ids": [
+                "point.1"
+              ],
+              "evidence_ids": [
+                "evidence.27a3f94ba524e1cf02a503ee",
+                "evidence.5212466c1e2a4793ad9b8f80",
+                "evidence.bcf1377bc34cedc6ff8bf0bf"
+              ],
+              "supported": true,
+              "rendered": false
+            }
+          ],
+          "covered_answer_point_ids": [
+            "point.1"
+          ],
+          "missing_answer_point_ids": [
+            "point.2"
+          ],
+          "coverage_complete": false,
+          "coverage_evaluable": true,
+          "review_error": null
+        },
+        "errors": [
+          "missing answer point point.2",
+          "missing answer requirement workflow_order",
+          "missing answer requirement complete_dataflow_handoff",
+          "missing answer requirement workflow_or_operational_grounding"
+        ],
+        "supported_claims": [
+          {
+            "claim_id": "claim_poca_worker_step1_products",
+            "claim_text": "In the restgas POCA workflow, after preceding stages of simulation (prod_sim_hvmaps.C), digitization (prod_aod_hvmaps.C), track reconstruction (reco_complete.C), and initial PID without back-propagation (pid_complete.C), the first worker step executes ana_dpm.C to calculate track POCAs and output both <prefix>_vtx_fit.json (containing the fitted mean vertex coordinates) and <prefix>_boost.root (containing the event_poca tree).",
+            "evidence_ids": [
+              "evidence.27a3f94ba524e1cf02a503ee",
+              "evidence.5212466c1e2a4793ad9b8f80",
+              "evidence.bcf1377bc34cedc6ff8bf0bf"
+            ],
+            "answer_point_ids": [
+              "point.1"
+            ],
+            "declared_answer_point_ids": [
+              "point.1"
+            ]
+          }
+        ],
+        "unsupported_claim_ids": [],
+        "missing_requirement_ids": [
+          "workflow_order",
+          "complete_dataflow_handoff",
+          "workflow_or_operational_grounding"
+        ],
+        "answer_requirements": [
+          {
+            "id": "workflow_order",
+            "instruction": "State the evidence-backed stages in execution order; when a middle stage is discussed, include its predecessor and successor when supplied evidence establishes them."
+          },
+          {
+            "id": "complete_dataflow_handoff",
+            "instruction": "Describe each evidence-backed handoff completely: producer, named intermediate input/product, and next consumer, including a second hop when the question asks for downstream flow."
+          },
+          {
+            "id": "workflow_or_operational_grounding",
+            "instruction": "Include a user-relevant factual workflow or operational-documentation claim that explains a concrete stage, handoff, or procedure; never expose retrieval metadata or coverage labels."
+          }
+        ],
+        "claim_audit": []
+      },
+      "usage": [
+        {
+          "stage": "controlled_review",
+          "logical_calls": 1,
+          "response": {
+            "supported": true,
+            "unsupported_claim_ids": [],
+            "irrelevant_claim_ids": [],
+            "missing_requirement_ids": [
+              "workflow_order",
+              "complete_dataflow_handoff"
+            ],
+            "reason": "The claim is fully supported by the cited evidence and directly addresses point.1 by describing the products generated by ana_dpm.C during the first worker step. However, point.2 regarding how the fitted vertex is fed into reprocessing is not addressed by any claim. Additionally, workflow_order is not satisfied because the successor stage is omitted, and complete_dataflow_handoff is incomplete as it does not describe the consumer or the downstream handoff.",
+            "claim_answer_point_mappings": [
+              {
+                "claim_id": "claim_poca_worker_step1_products",
+                "answer_point_ids": [
+                  "point.1"
+                ]
+              }
+            ],
+            "missing_answer_point_ids": [
+              "point.2"
+            ]
+          },
+          "returned_model_calls": 1,
+          "adapter_requests": 1,
+          "tokens": 15250
+        }
+      ]
+    },
+    {
+      "execution_id": "e1a2.p10.rep1",
+      "state": "COMPLETE",
+      "output": {
+        "missing_answer_point_ids": [
+          "point.2"
+        ],
+        "answer_point_audit": {
+          "mode": "shadow_e1_v2",
+          "answer_points": [
+            {
+              "answer_point_id": "point.1",
+              "text": "What is passed from the first worker step to the second analysis step"
+            },
+            {
+              "answer_point_id": "point.2",
+              "text": "How the fitted vertex enters the reprocessing"
+            }
+          ],
+          "claim_mappings": [
+            {
+              "claim_id": "claim_1",
+              "declared_answer_point_ids": [
+                "point.1"
+              ],
+              "verified_answer_point_ids": [
+                "point.1"
+              ],
+              "evidence_ids": [
+                "evidence.39f00bef06a208f69d334ceb",
+                "evidence.e3488ddaf5327327c02ca235",
+                "evidence.13c79a42a4230f6d40bf7335"
+              ],
+              "supported": true,
+              "rendered": false
+            }
+          ],
+          "covered_answer_point_ids": [
+            "point.1"
+          ],
+          "missing_answer_point_ids": [
+            "point.2"
+          ],
+          "coverage_complete": false,
+          "coverage_evaluable": true,
+          "review_error": null
+        },
+        "errors": [
+          "missing answer point point.2",
+          "missing answer requirement workflow_order",
+          "missing answer requirement complete_dataflow_handoff",
+          "missing answer requirement workflow_or_operational_grounding"
+        ],
+        "supported_claims": [
+          {
+            "claim_id": "claim_1",
+            "claim_text": "In the initial worker pass, the workflow executes prod_sim_hvmaps.C, prod_aod_hvmaps.C, reco_complete.C, and initial PID via pid_complete.C before ana_dpm.C calculates track POCAs and performs vertex fitting; ana_dpm.C produces <prefix>_vtx_fit.json containing fitted mean coordinates (X, Y, Z) and exports the event-by-event event_poca tree in <prefix>_boost.root for the second-pass runner.",
+            "evidence_ids": [
+              "evidence.39f00bef06a208f69d334ceb",
+              "evidence.e3488ddaf5327327c02ca235",
+              "evidence.13c79a42a4230f6d40bf7335"
+            ],
+            "answer_point_ids": [
+              "point.1"
+            ],
+            "declared_answer_point_ids": [
+              "point.1"
+            ]
+          }
+        ],
+        "unsupported_claim_ids": [],
+        "missing_requirement_ids": [
+          "workflow_order",
+          "complete_dataflow_handoff",
+          "workflow_or_operational_grounding"
+        ],
+        "answer_requirements": [
+          {
+            "id": "workflow_order",
+            "instruction": "State the evidence-backed stages in execution order; when a middle stage is discussed, include its predecessor and successor when supplied evidence establishes them."
+          },
+          {
+            "id": "complete_dataflow_handoff",
+            "instruction": "Describe each evidence-backed handoff completely: producer, named intermediate input/product, and next consumer, including a second hop when the question asks for downstream flow."
+          },
+          {
+            "id": "workflow_or_operational_grounding",
+            "instruction": "Include a user-relevant factual workflow or operational-documentation claim that explains a concrete stage, handoff, or procedure; never expose retrieval metadata or coverage labels."
+          }
+        ],
+        "claim_audit": []
+      },
+      "usage": [
+        {
+          "stage": "controlled_review",
+          "logical_calls": 1,
+          "response": {
+            "supported": true,
+            "unsupported_claim_ids": [],
+            "irrelevant_claim_ids": [],
+            "missing_requirement_ids": [
+              "workflow_order",
+              "complete_dataflow_handoff"
+            ],
+            "reason": "Claim 1 is fully supported by the cited evidence and directly addresses point.1 by describing the outputs of the initial worker pass. However, point.2 is completely unaddressed because the claim omits how the fitted vertex and event POCA tree enter the reprocessing step. Consequently, complete_dataflow_handoff is unmet due to missing the downstream consumer handoff, and workflow_order is unmet because the successor reprocessing stages established by the evidence are omitted.",
+            "claim_answer_point_mappings": [
+              {
+                "claim_id": "claim_1",
+                "answer_point_ids": [
+                  "point.1"
+                ]
+              }
+            ],
+            "missing_answer_point_ids": [
+              "point.2"
+            ]
+          },
+          "returned_model_calls": 1,
+          "adapter_requests": 1,
+          "tokens": 13843
+        }
+      ]
+    },
+    {
+      "execution_id": "e1a2.b11.rep1",
+      "state": "COMPLETE",
+      "output": {
+        "missing_answer_point_ids": [
+          "point.2"
+        ],
+        "answer_point_audit": {
+          "mode": "shadow_e1_v2",
+          "answer_points": [
+            {
+              "answer_point_id": "point.1",
+              "text": "Explain why the standard laboratory frame is insufficient for the track data before the luminosity fit runs."
+            },
+            {
+              "answer_point_id": "point.2",
+              "text": "Explain what the IP alignment transformation accomplishes."
+            }
+          ],
+          "claim_mappings": [
+            {
+              "claim_id": "claim_ip_standard_lab_insufficient",
+              "declared_answer_point_ids": [
+                "point.1"
+              ],
+              "verified_answer_point_ids": [
+                "point.1"
+              ],
+              "evidence_ids": [
+                "evidence.0b0800ddf24d615bdd584ace",
+                "evidence.73b7ce4cf3e4e896107f8f73"
+              ],
+              "supported": true,
+              "rendered": false
+            }
+          ],
+          "covered_answer_point_ids": [
+            "point.1"
+          ],
+          "missing_answer_point_ids": [
+            "point.2"
+          ],
+          "coverage_complete": false,
+          "coverage_evaluable": true,
+          "review_error": null
+        },
+        "errors": [
+          "missing answer point point.2",
+          "missing answer requirement workflow_order"
+        ],
+        "supported_claims": [
+          {
+            "claim_id": "claim_ip_standard_lab_insufficient",
+            "claim_text": "The standard laboratory frame is insufficient because it assumes the interaction point is located at (0, 0, 0), whereas real beam operations introduce a transverse displacement (x0, y0) that breaks the azimuthal symmetry of the tracks and detector acceptance, causing systematic bias in the luminosity determination.",
+            "evidence_ids": [
+              "evidence.0b0800ddf24d615bdd584ace",
+              "evidence.73b7ce4cf3e4e896107f8f73"
+            ],
+            "answer_point_ids": [
+              "point.1"
+            ],
+            "declared_answer_point_ids": [
+              "point.1"
+            ]
+          }
+        ],
+        "unsupported_claim_ids": [],
+        "missing_requirement_ids": [
+          "workflow_order"
+        ],
+        "answer_requirements": [
+          {
+            "id": "workflow_order",
+            "instruction": "State the evidence-backed stages in execution order; when a middle stage is discussed, include its predecessor and successor when supplied evidence establishes them."
+          }
+        ],
+        "claim_audit": []
+      },
+      "usage": [
+        {
+          "stage": "controlled_review",
+          "logical_calls": 1,
+          "response": {
+            "supported": true,
+            "unsupported_claim_ids": [],
+            "irrelevant_claim_ids": [],
+            "missing_requirement_ids": [
+              "workflow_order"
+            ],
+            "reason": "The single claim is fully supported by the cited evidence and directly addresses point.1. However, point.2 is left completely unaddressed, and the response fails to state the evidence-backed stages in execution order as required by workflow_order.",
+            "claim_answer_point_mappings": [
+              {
+                "claim_id": "claim_ip_standard_lab_insufficient",
+                "answer_point_ids": [
+                  "point.1"
+                ]
+              }
+            ],
+            "missing_answer_point_ids": [
+              "point.2"
+            ]
+          },
+          "returned_model_calls": 1,
+          "adapter_requests": 1,
+          "tokens": 15882
+        }
+      ]
+    },
+    {
+      "execution_id": "e1a2.p11.rep1",
+      "state": "COMPLETE",
+      "output": {
+        "missing_answer_point_ids": [
+          "point.2"
+        ],
+        "answer_point_audit": {
+          "mode": "shadow_e1_v2",
+          "answer_points": [
+            {
+              "answer_point_id": "point.1",
+              "text": "Explain why the standard laboratory frame is inadequate for preprocessing track data before the luminosity fit."
+            },
+            {
+              "answer_point_id": "point.2",
+              "text": "Explain what is achieved by the IP alignment transformation."
+            }
+          ],
+          "claim_mappings": [
+            {
+              "claim_id": "claim.1",
+              "declared_answer_point_ids": [
+                "point.1"
+              ],
+              "verified_answer_point_ids": [
+                "point.1"
+              ],
+              "evidence_ids": [
+                "evidence.0b0800ddf24d615bdd584ace",
+                "evidence.386c212d0a781ef328ea7402"
+              ],
+              "supported": true,
+              "rendered": false
+            }
+          ],
+          "covered_answer_point_ids": [
+            "point.1"
+          ],
+          "missing_answer_point_ids": [
+            "point.2"
+          ],
+          "coverage_complete": false,
+          "coverage_evaluable": true,
+          "review_error": null
+        },
+        "errors": [
+          "missing answer point point.2",
+          "missing answer requirement workflow_order"
+        ],
+        "supported_claims": [
+          {
+            "claim_id": "claim.1",
+            "claim_text": "The standard laboratory frame is inadequate because it assumes the interaction point is at (0, 0, 0), whereas realistic beam operations exhibit a transverse offset (x_0, y_0) that shifts the primary vertex away from the nominal detector center and breaks the azimuthal symmetry of the tracks and detector acceptance, introducing systematic bias into the luminosity determination.",
+            "evidence_ids": [
+              "evidence.0b0800ddf24d615bdd584ace",
+              "evidence.386c212d0a781ef328ea7402"
+            ],
+            "answer_point_ids": [
+              "point.1"
+            ],
+            "declared_answer_point_ids": [
+              "point.1"
+            ]
+          }
+        ],
+        "unsupported_claim_ids": [],
+        "missing_requirement_ids": [
+          "workflow_order"
+        ],
+        "answer_requirements": [
+          {
+            "id": "workflow_order",
+            "instruction": "State the evidence-backed stages in execution order; when a middle stage is discussed, include its predecessor and successor when supplied evidence establishes them."
+          }
+        ],
+        "claim_audit": []
+      },
+      "usage": [
+        {
+          "stage": "controlled_review",
+          "logical_calls": 1,
+          "response": {
+            "supported": true,
+            "unsupported_claim_ids": [],
+            "irrelevant_claim_ids": [],
+            "missing_requirement_ids": [
+              "workflow_order"
+            ],
+            "reason": "Claim 1 is fully supported by the cited evidence and directly addresses point.1 by explaining why the standard laboratory frame is inadequate. However, point.2 is completely unaddressed by any claim, and the mandatory requirement 'workflow_order' is omitted as no evidence-backed stages in execution order (including predecessor and successor stages) are stated.",
+            "claim_answer_point_mappings": [
+              {
+                "claim_id": "claim.1",
+                "answer_point_ids": [
+                  "point.1"
+                ]
+              }
+            ],
+            "missing_answer_point_ids": [
+              "point.2"
+            ]
+          },
+          "returned_model_calls": 1,
+          "adapter_requests": 1,
+          "tokens": 16161
+        }
+      ]
+    },
+    {
+      "execution_id": "e1a2.b12.rep1",
+      "state": "COMPLETE",
+      "output": {
+        "missing_answer_point_ids": [
+          "point.2"
+        ],
+        "answer_point_audit": {
+          "mode": "shadow_e1_v2",
+          "answer_points": [
+            {
+              "answer_point_id": "point.1",
+              "text": "How PandaRoot's event-generator categories differ"
+            },
+            {
+              "answer_point_id": "point.2",
+              "text": "Which generator is the current standard for background"
+            }
+          ],
+          "claim_mappings": [
+            {
+              "claim_id": "claim_1",
+              "declared_answer_point_ids": [
+                "point.1"
+              ],
+              "verified_answer_point_ids": [
+                "point.1"
+              ],
+              "evidence_ids": [
+                "evidence.da39050357a6680bac2928cf"
+              ],
+              "supported": true,
+              "rendered": false
+            }
+          ],
+          "covered_answer_point_ids": [
+            "point.1"
+          ],
+          "missing_answer_point_ids": [
+            "point.2"
+          ],
+          "coverage_complete": false,
+          "coverage_evaluable": true,
+          "review_error": null
+        },
+        "errors": [
+          "missing answer point point.2"
+        ],
+        "supported_claims": [
+          {
+            "claim_id": "claim_1",
+            "claim_text": "In PandaRoot, generator categories differ by their simulation function: background generators simulate beam-target interactions for the most important physics processes with the highest cross-sections, event generators such as EvtGen generate one specific physics channel, whereas box generators (particle guns like BoxGenerator and FixStepParticleGun) do not simulate an interaction but produce particles of a given type with defined distributions.",
+            "evidence_ids": [
+              "evidence.da39050357a6680bac2928cf"
+            ],
+            "answer_point_ids": [
+              "point.1"
+            ],
+            "declared_answer_point_ids": [
+              "point.1"
+            ]
+          }
+        ],
+        "unsupported_claim_ids": [],
+        "missing_requirement_ids": [],
+        "answer_requirements": [],
+        "claim_audit": []
+      },
+      "usage": [
+        {
+          "stage": "controlled_review",
+          "logical_calls": 1,
+          "response": {
+            "supported": true,
+            "unsupported_claim_ids": [],
+            "irrelevant_claim_ids": [],
+            "missing_requirement_ids": [],
+            "reason": "Claim 1 is fully supported by evidence.da39050357a6680bac2928cf and directly answers point.1 by describing how background, event, and box generators differ in function. However, point.2 regarding the current standard background generator (FTFGenerator) is left unaddressed by the claim set.",
+            "claim_answer_point_mappings": [
+              {
+                "claim_id": "claim_1",
+                "answer_point_ids": [
+                  "point.1"
+                ]
+              }
+            ],
+            "missing_answer_point_ids": [
+              "point.2"
+            ]
+          },
+          "returned_model_calls": 1,
+          "adapter_requests": 1,
+          "tokens": 11215
+        }
+      ]
+    },
+    {
+      "execution_id": "e1a2.p12.rep1",
+      "state": "COMPLETE",
+      "output": {
+        "missing_answer_point_ids": [
+          "point.2"
+        ],
+        "answer_point_audit": {
+          "mode": "shadow_e1_v2",
+          "answer_points": [
+            {
+              "answer_point_id": "point.1",
+              "text": "What distinguishes PandaRoot's event-generator categories"
+            },
+            {
+              "answer_point_id": "point.2",
+              "text": "Which generator is currently standard for background"
+            }
+          ],
+          "claim_mappings": [
+            {
+              "claim_id": "claim_1",
+              "declared_answer_point_ids": [
+                "point.1"
+              ],
+              "verified_answer_point_ids": [
+                "point.1"
+              ],
+              "evidence_ids": [
+                "evidence.da39050357a6680bac2928cf",
+                "evidence.4a834e1758150ee8d0c9a063"
+              ],
+              "supported": true,
+              "rendered": false
+            }
+          ],
+          "covered_answer_point_ids": [
+            "point.1"
+          ],
+          "missing_answer_point_ids": [
+            "point.2"
+          ],
+          "coverage_complete": false,
+          "coverage_evaluable": true,
+          "review_error": null
+        },
+        "errors": [
+          "missing answer point point.2"
+        ],
+        "supported_claims": [
+          {
+            "claim_id": "claim_1",
+            "claim_text": "PandaRoot defines three event-generator categories: background generators simulate beam-target interactions to produce the most important physics processes with the highest cross-sections, event generators (such as EvtGen) produce one specific physics channel, and box generators (particle guns such as BoxGenerator and FixStepParticleGun) produce particles of a given type with defined distributions without simulating an interaction.",
+            "evidence_ids": [
+              "evidence.da39050357a6680bac2928cf",
+              "evidence.4a834e1758150ee8d0c9a063"
+            ],
+            "answer_point_ids": [
+              "point.1"
+            ],
+            "declared_answer_point_ids": [
+              "point.1"
+            ]
+          }
+        ],
+        "unsupported_claim_ids": [],
+        "missing_requirement_ids": [],
+        "answer_requirements": [],
+        "claim_audit": []
+      },
+      "usage": [
+        {
+          "stage": "controlled_review",
+          "logical_calls": 1,
+          "response": {
+            "supported": false,
+            "unsupported_claim_ids": [],
+            "irrelevant_claim_ids": [],
+            "missing_requirement_ids": [],
+            "reason": "Claim 1 is fully supported by the cited documentation and addresses what distinguishes PandaRoot's event-generator categories (point.1). However, the claim set does not address which generator is currently standard for background (point.2), leaving point.2 uncovered.",
+            "claim_answer_point_mappings": [
+              {
+                "claim_id": "claim_1",
+                "answer_point_ids": [
+                  "point.1"
+                ]
+              }
+            ],
+            "missing_answer_point_ids": [
+              "point.2"
+            ]
+          },
+          "returned_model_calls": 1,
+          "adapter_requests": 1,
+          "tokens": 9041
+        }
+      ]
+    }
+  ]
+}
