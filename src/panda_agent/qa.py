@@ -62,6 +62,16 @@ REVIEW_SCHEMA = {
 
 
 RUNTIME_ANSWER_POINT_ID = "question_core"
+
+
+def _normalise_rejected_identifier_token(token: str) -> str:
+    """Remove terminal prose punctuation without consuming a scope operator."""
+    token = token.rstrip(".")
+    if token.endswith(":") and not token.endswith("::"):
+        token = token[:-1]
+    return token
+
+
 DEFAULT_ANSWER_POINT_MODE = "legacy_question_core"
 _ANSWER_POINT_MODES = {"legacy_question_core", "shadow_e1_v2", "runtime_e1_v2"}
 ANSWER_POINT_COVERAGE_REVIEW_SCHEMA = {
@@ -1673,7 +1683,7 @@ class QAAgent:
                     errors.append(message)
                     claim_errors[claim_id].append(message)
             for token in set(re.findall(r"[A-Za-z_][A-Za-z0-9_:./-]+", claim.get("claim_text", ""))):
-                token = token.rstrip(".")
+                token = _normalise_rejected_identifier_token(token)
                 is_path = token.count("/") >= 2 or token.startswith(("macro/", "src/", "data/", "pgenerators/", "model/", "fit/")) or token.endswith((".C", ".py", ".root", ".h", ".hpp", ".cpp", ".cxx", ".json", ".txt", ".yaml", ".yml"))
                 if ("::" in token or is_path) and token not in cited:
                     message = f"unsupported identifier {token}"

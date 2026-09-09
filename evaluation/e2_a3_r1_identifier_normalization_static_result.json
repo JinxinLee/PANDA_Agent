@@ -1,0 +1,111 @@
+{
+  "starting_head": "e5941c5f9aac45d98b739a48b245be53a41c6d80",
+  "historical_raw_commit": "8ba275addf44a5c7e96bf83a292c6737fbe07b38",
+  "gates": {
+    "S1": true,
+    "S2": true,
+    "S3": true,
+    "S4": true,
+    "S5": true,
+    "S6": true,
+    "S7": true,
+    "S8": true,
+    "S9": true,
+    "S10": true,
+    "S11": true,
+    "S12": true
+  },
+  "executions": 56,
+  "serialized_claim_copies": 299,
+  "distinct_claim_snapshots": 157,
+  "snapshots_by_mode": {
+    "legacy_question_core": 81,
+    "runtime_e1_v2": 76
+  },
+  "normalization_matrix": {
+    "PndLmdDataReader::fillData": "PndLmdDataReader::fillData",
+    "PndLmdDataReader::fillData.": "PndLmdDataReader::fillData",
+    "PndLmdDataReader::fillData:": "PndLmdDataReader::fillData",
+    "Namespace::Class": "Namespace::Class",
+    "Namespace::": "Namespace::",
+    "Namespace::.": "Namespace::",
+    "Namespace:::": "Namespace:::",
+    "std::vector": "std::vector",
+    "src/foo.C": "src/foo.C",
+    "C:/path/to/file": "C:/path/to/file",
+    "Class::method:.": "Class::method"
+  },
+  "changed_rejection_outcomes": [
+    {
+      "case_id": "g112",
+      "mode": "runtime_e1_v2",
+      "claim_id": "claim_3",
+      "claim_text": "Inspect track selection filters in PndLmdDataReader::fillData: tracks are immediately skipped from registered acceptances if track_info.IsSecondary is true (evaluated from track->GetSecondary() >= 0), and tracks are rejected if getTrackParameterValue fails dimension_range.isDataWithinRange for any selection dimension in data->getSelectorSet().",
+      "source_path": "record.usage[5].response.claims[2]",
+      "before": [
+        "unsupported identifier PndLmdDataReader::fillData:"
+      ],
+      "after": []
+    }
+  ],
+  "negative_controls": [
+    {
+      "case_id": "g110",
+      "mode": "legacy_question_core",
+      "claim_id": "claim_inspect_upstream_inputs",
+      "claim_text": "First inspect upstream inputs: verify that the first-pass input files (such as prefix_pid.root) exist and that POCA_VERTEX_FILE correctly points to the expected prefix_boost.root file.",
+      "source_path": "record.usage[4].response.claims[0]",
+      "before": [
+        "unsupported identifier prefix_boost.root",
+        "unsupported identifier prefix_pid.root"
+      ],
+      "after": [
+        "unsupported identifier prefix_boost.root",
+        "unsupported identifier prefix_pid.root"
+      ]
+    },
+    {
+      "case_id": "g110",
+      "mode": "legacy_question_core",
+      "claim_id": "claim_inspect_producer",
+      "claim_text": "Next inspect the producer: verify that macro/target/ana_dpm.C was run to generate and write the event_poca TTree into prefix_boost.root, and check that events contain proton and antiproton candidates required by RhoVtxPoca to evaluate valid vertex coordinates.",
+      "source_path": "record.usage[4].response.claims[1]",
+      "before": [
+        "unsupported identifier prefix_boost.root"
+      ],
+      "after": [
+        "unsupported identifier prefix_boost.root"
+      ]
+    },
+    {
+      "case_id": "g002",
+      "mode": "legacy_question_core",
+      "claim_id": "pandaroot_cmake_prerequisite",
+      "claim_text": "PandaRoot requires CMake to configure the build; if the host system's CMake version is too old, the CMake binary provided by the external packages at $SIMPATH/bin/cmake can be used.",
+      "source_path": "record.usage[4].response.claims[1]",
+      "before": [
+        "unsupported identifier SIMPATH/bin/cmake"
+      ],
+      "after": [
+        "unsupported identifier SIMPATH/bin/cmake"
+      ]
+    },
+    {
+      "case_id": "g002",
+      "mode": "runtime_e1_v2",
+      "claim_id": "claim_pandaroot_build_prereqs_cmake",
+      "claim_text": "The documented build process requires CMake; if the system CMake installation is too old, CMake installed with the external packages at $SIMPATH/bin/cmake is used instead.",
+      "source_path": "record.usage[5].response.claims[1]",
+      "before": [
+        "unsupported identifier SIMPATH/bin/cmake"
+      ],
+      "after": [
+        "unsupported identifier SIMPATH/bin/cmake"
+      ]
+    }
+  ],
+  "previously_accepted_newly_rejected": 0,
+  "genuinely_unsupported_newly_accepted": 0,
+  "valid_syntax_damaged": 0,
+  "scientific_calls_before_freeze": 0
+}
