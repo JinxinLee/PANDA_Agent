@@ -73,6 +73,16 @@ def _normalise_rejected_identifier_token(token: str) -> str:
 
 
 DEFAULT_ANSWER_POINT_MODE = "legacy_question_core"
+
+
+def _is_public_claim_citation_eligible(evidence: dict[str, Any]) -> bool:
+    """Apply the existing Sphinx citation contract at claim evidence admission."""
+    if "sphinx" in evidence["source_id"]:
+        locator = evidence.get("locator") or {}
+        return bool(locator.get("url") and locator.get("snapshot_date") and locator.get("section_path"))
+    return True
+
+
 _ANSWER_POINT_MODES = {"legacy_question_core", "shadow_e1_v2", "runtime_e1_v2"}
 ANSWER_POINT_COVERAGE_REVIEW_SCHEMA = {
     **REVIEW_SCHEMA,
@@ -1377,6 +1387,7 @@ class QAAgent:
     def _answer(self, state: QAState) -> dict[str, Any]:
         question = str(state["question"])
         answer_requirements = _answer_requirements(question, state["bundle"]["plan"])
+        claim_evidence = [item for item in state["bundle"]["evidence"] if _is_public_claim_citation_eligible(item)]
         prompt = json.dumps(
             {
                 "task": "create_atomic_evidence_bound_claims",
@@ -1400,7 +1411,7 @@ class QAAgent:
                         else []
                     ),
                 },
-                "untrusted_evidence": state["bundle"]["evidence"],
+                "untrusted_evidence": claim_evidence,
             },
             ensure_ascii=False,
         )
@@ -1843,13 +1854,14 @@ class QAAgent:
             or _answer_requirements(str(state["question"]), state["bundle"]["plan"])
         )
         missing_requirement_ids = list(state.get("missing_requirement_ids", []))
+        claim_evidence = [item for item in state["bundle"]["evidence"] if _is_public_claim_citation_eligible(item)]
         requirement_evidence = _requirement_evidence(
             [
                 item
                 for item in answer_requirements
                 if str(item["id"]) in set(missing_requirement_ids)
             ],
-            {item["evidence_id"]: item for item in state["bundle"]["evidence"]},
+            {item["evidence_id"]: item for item in claim_evidence},
         )
         prompt = json.dumps(
             {
@@ -1871,7 +1883,7 @@ class QAAgent:
                 "already_verified_claims_do_not_repeat": _model_claims(supported) if shadow else supported,
                 "untrusted_draft": {"claims": _model_claims(unsupported_draft["claims"])} if shadow else unsupported_draft,
                 "verification_errors": state["errors"],
-                "untrusted_evidence": state["bundle"]["evidence"],
+                "untrusted_evidence": claim_evidence,
             },
             ensure_ascii=False,
         )

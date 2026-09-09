@@ -1,0 +1,1002 @@
+{
+  "starting_head": "ee719bde5331f4102c9d79dd929e31a8063fc9ae",
+  "candidate_identity": "Git commit containing this manifest; full SHA supplied to runner and persisted in raw/judged artifacts",
+  "qa_cases": [
+    {
+      "id": "g013",
+      "source": "Gold",
+      "question": "How do I set up the terminal and run a ROOT simulation macro in PandaRoot, and how does the master run task participate in the lifecycle?",
+      "expected_status": "answered",
+      "gold": {
+        "id": "g013",
+        "split": "dev",
+        "language": "en",
+        "intent": "usage",
+        "accepted_intents": [],
+        "query": "How do I set up the terminal and run a ROOT simulation macro in PandaRoot, and how does the master run task participate in the lifecycle?",
+        "expected_status": "answered",
+        "allowed_source_versions": [
+          "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+          "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+          "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a",
+          "karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b",
+          "pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3",
+          "pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87",
+          "curated_panda_domain@1.0"
+        ],
+        "required_evidence_groups": [
+          {
+            "group_id": "g013.e1",
+            "role": "macros_documentation",
+            "critical": true,
+            "any_of": [
+              {
+                "object_id": null,
+                "source_id": "pandaroot_sphinx_2023_08_25_dev",
+                "source_version_id": null,
+                "object_type": null,
+                "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Running/Macros.html",
+                "symbol": null,
+                "start_line": null,
+                "end_line": null,
+                "pdf_page": null,
+                "pdf_page_end": null,
+                "title_contains": null,
+                "section_contains": null
+              },
+              {
+                "object_id": null,
+                "source_id": "pandaroot_sphinx_2023_08_25_dev",
+                "source_version_id": "pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87",
+                "object_type": null,
+                "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Running/MasterTasks.html",
+                "symbol": null,
+                "start_line": null,
+                "end_line": null,
+                "pdf_page": null,
+                "pdf_page_end": null,
+                "title_contains": null,
+                "section_contains": null
+              },
+              {
+                "object_id": null,
+                "source_id": "pandaroot_sphinx_2023_08_25_dev",
+                "source_version_id": "pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87",
+                "object_type": null,
+                "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tools/PndMasterTasks/PndMasterRunSim.html",
+                "symbol": null,
+                "start_line": null,
+                "end_line": null,
+                "pdf_page": null,
+                "pdf_page_end": null,
+                "title_contains": null,
+                "section_contains": null
+              }
+            ]
+          },
+          {
+            "group_id": "g013.e2",
+            "role": "pnd_master_run_sim_interface",
+            "critical": true,
+            "any_of": [
+              {
+                "object_id": null,
+                "source_id": "pandaroot",
+                "source_version_id": null,
+                "object_type": "class",
+                "path": "tools/MasterTasks/PndMasterRunSim.h",
+                "symbol": "PndMasterRunSim",
+                "start_line": null,
+                "end_line": null,
+                "pdf_page": null,
+                "pdf_page_end": null,
+                "title_contains": null,
+                "section_contains": null
+              },
+              {
+                "object_id": null,
+                "source_id": "pandaroot",
+                "source_version_id": null,
+                "object_type": "function",
+                "path": "tools/MasterTasks/PndMasterRunSim.cxx",
+                "symbol": "Setup",
+                "start_line": null,
+                "end_line": null,
+                "pdf_page": null,
+                "pdf_page_end": null,
+                "title_contains": null,
+                "section_contains": null
+              },
+              {
+                "object_id": null,
+                "source_id": "pandaroot",
+                "source_version_id": null,
+                "object_type": "function",
+                "path": "tools/MasterTasks/PndMasterRunSim.cxx",
+                "symbol": "SetGenerator",
+                "start_line": null,
+                "end_line": null,
+                "pdf_page": null,
+                "pdf_page_end": null,
+                "title_contains": null,
+                "section_contains": null
+              },
+              {
+                "object_id": null,
+                "source_id": "pandaroot",
+                "source_version_id": null,
+                "object_type": "function",
+                "path": "tools/MasterTasks/PndMasterRunSim.cxx",
+                "symbol": "AddSimTasks",
+                "start_line": null,
+                "end_line": null,
+                "pdf_page": null,
+                "pdf_page_end": null,
+                "title_contains": null,
+                "section_contains": null
+              },
+              {
+                "object_id": null,
+                "source_id": "pandaroot",
+                "source_version_id": null,
+                "object_type": "function",
+                "path": "tools/MasterTasks/PndMasterRunSim.cxx",
+                "symbol": "Finish",
+                "start_line": null,
+                "end_line": null,
+                "pdf_page": null,
+                "pdf_page_end": null,
+                "title_contains": null,
+                "section_contains": null
+              },
+              {
+                "object_id": null,
+                "source_id": "pandaroot_sphinx_2023_08_25_dev",
+                "source_version_id": "pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87",
+                "object_type": null,
+                "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tools/PndMasterTasks/PndMasterRunSim.html",
+                "symbol": null,
+                "start_line": null,
+                "end_line": null,
+                "pdf_page": null,
+                "pdf_page_end": null,
+                "title_contains": null,
+                "section_contains": null
+              },
+              {
+                "object_id": null,
+                "source_id": "pandaroot",
+                "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+                "object_type": null,
+                "path": "macro/master/Readme.md",
+                "symbol": null,
+                "start_line": null,
+                "end_line": null,
+                "pdf_page": null,
+                "pdf_page_end": null,
+                "title_contains": null,
+                "section_contains": null
+              }
+            ]
+          }
+        ],
+        "required_source_types": [
+          "documentation"
+        ],
+        "required_answer_points": [
+          {
+            "point_id": "p1",
+            "text": "Explain how to initialize the PandaRoot environment before running a macro.",
+            "weight": 1.0,
+            "critical": true
+          },
+          {
+            "point_id": "p2",
+            "text": "Give the documented ROOT macro invocation pattern.",
+            "weight": 1.0,
+            "critical": true
+          },
+          {
+            "point_id": "p3",
+            "text": "Explain how a master run task is configured and orchestrates the simulation event loop.",
+            "weight": 1.0,
+            "critical": true
+          }
+        ],
+        "required_identifiers": [],
+        "forbidden_evidence": [],
+        "concept_scopes": {},
+        "cluster_id": "cluster-g013",
+        "challenge_tags": [],
+        "review_status": "approved",
+        "reviewer": "OpenAI GPT-5.6 Thinking",
+        "reviewed_at": "2026-08-02T19:49:00+02:00"
+      }
+    },
+    {
+      "id": "g027",
+      "source": "Gold",
+      "question": "Where is PndTargetGenerator defined in the locked PandaRoot snapshot and the RestgasDetermination fork, and why does version scope matter?",
+      "expected_status": "answered",
+      "gold": {
+        "id": "g027",
+        "split": "dev",
+        "language": "en",
+        "intent": "api",
+        "accepted_intents": [],
+        "query": "Where is PndTargetGenerator defined in the locked PandaRoot snapshot and the RestgasDetermination fork, and why does version scope matter?",
+        "expected_status": "answered",
+        "allowed_source_versions": [
+          "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+          "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+          "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a",
+          "karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b",
+          "pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3",
+          "pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87",
+          "curated_panda_domain@1.0"
+        ],
+        "required_evidence_groups": [
+          {
+            "group_id": "g027.pandaroot",
+            "role": "upstream_target_generator_definition",
+            "critical": true,
+            "any_of": [
+              {
+                "object_id": null,
+                "source_id": "pandaroot",
+                "source_version_id": null,
+                "object_type": null,
+                "path": "pgenerators/Target/PndTargetGenerator.h",
+                "symbol": null,
+                "start_line": null,
+                "end_line": null,
+                "pdf_page": null,
+                "pdf_page_end": null,
+                "title_contains": null,
+                "section_contains": null
+              },
+              {
+                "object_id": null,
+                "source_id": "pandaroot",
+                "source_version_id": null,
+                "object_type": null,
+                "path": "pgenerators/Target/PndTargetGenerator.cxx",
+                "symbol": null,
+                "start_line": null,
+                "end_line": null,
+                "pdf_page": null,
+                "pdf_page_end": null,
+                "title_contains": null,
+                "section_contains": null
+              }
+            ]
+          },
+          {
+            "group_id": "g027.restgas_fork",
+            "role": "fork_target_generator_definition",
+            "critical": true,
+            "any_of": [
+              {
+                "object_id": null,
+                "source_id": "restgas_determination",
+                "source_version_id": null,
+                "object_type": null,
+                "path": "pgenerators/Target/PndTargetGenerator.h",
+                "symbol": null,
+                "start_line": null,
+                "end_line": null,
+                "pdf_page": null,
+                "pdf_page_end": null,
+                "title_contains": null,
+                "section_contains": null
+              },
+              {
+                "object_id": null,
+                "source_id": "restgas_determination",
+                "source_version_id": null,
+                "object_type": null,
+                "path": "pgenerators/Target/PndTargetGenerator.cxx",
+                "symbol": null,
+                "start_line": null,
+                "end_line": null,
+                "pdf_page": null,
+                "pdf_page_end": null,
+                "title_contains": null,
+                "section_contains": null
+              }
+            ]
+          }
+        ],
+        "required_source_types": [
+          "code"
+        ],
+        "required_answer_points": [
+          {
+            "point_id": "p1",
+            "text": "Give the PndTargetGenerator path in the locked PandaRoot snapshot.",
+            "weight": 1.0,
+            "critical": true
+          },
+          {
+            "point_id": "p2",
+            "text": "Give the corresponding path in the locked RestgasDetermination fork.",
+            "weight": 1.0,
+            "critical": true
+          },
+          {
+            "point_id": "p3",
+            "text": "Explain that behavior must be resolved against the requested source version.",
+            "weight": 1.0,
+            "critical": true
+          }
+        ],
+        "required_identifiers": [
+          {
+            "text": "PndTargetGenerator",
+            "kind": "code_symbol",
+            "critical": true
+          }
+        ],
+        "forbidden_evidence": [],
+        "concept_scopes": {},
+        "cluster_id": "cluster-g015",
+        "challenge_tags": [],
+        "review_status": "approved",
+        "reviewer": "OpenAI GPT-5.6 Thinking",
+        "reviewed_at": "2026-08-02T19:49:00+02:00"
+      }
+    },
+    {
+      "id": "g112",
+      "source": "Gold",
+      "question": "createLmdFitData returns no acceptance: which data mode, Lumi_TrksQA input/tree assumptions, selection filters, and accepted/generated histogram filling should I inspect?",
+      "expected_status": "answered",
+      "gold": {
+        "id": "g112",
+        "split": "dev",
+        "language": "mixed",
+        "intent": "troubleshooting",
+        "accepted_intents": [],
+        "query": "createLmdFitData returns no acceptance: which data mode, Lumi_TrksQA input/tree assumptions, selection filters, and accepted/generated histogram filling should I inspect?",
+        "expected_status": "answered",
+        "allowed_source_versions": [
+          "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+          "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+          "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a",
+          "karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b",
+          "pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3",
+          "pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87",
+          "curated_panda_domain@1.0"
+        ],
+        "required_evidence_groups": [
+          {
+            "group_id": "g112.e2",
+            "role": "create_lmd_fit_data_implementation",
+            "critical": true,
+            "any_of": [
+              {
+                "object_id": null,
+                "source_id": "luminosityfit",
+                "source_version_id": null,
+                "object_type": null,
+                "path": "apps/createLmdFitData.cxx",
+                "symbol": null,
+                "start_line": null,
+                "end_line": null,
+                "pdf_page": null,
+                "pdf_page_end": null,
+                "title_contains": null,
+                "section_contains": null
+              }
+            ]
+          },
+          {
+            "group_id": "g112.e3",
+            "role": "read_implementation",
+            "critical": true,
+            "any_of": [
+              {
+                "object_id": null,
+                "source_id": "luminosityfit",
+                "source_version_id": null,
+                "object_type": "function",
+                "path": "data/PndLmdDataReader.cxx",
+                "symbol": "read",
+                "start_line": null,
+                "end_line": null,
+                "pdf_page": null,
+                "pdf_page_end": null,
+                "title_contains": null,
+                "section_contains": null
+              },
+              {
+                "object_id": null,
+                "source_id": "luminosityfit",
+                "source_version_id": null,
+                "object_type": "function",
+                "path": "data/PndLmdDataReader.cxx",
+                "symbol": "fillData",
+                "start_line": null,
+                "end_line": null,
+                "pdf_page": null,
+                "pdf_page_end": null,
+                "title_contains": null,
+                "section_contains": null
+              },
+              {
+                "object_id": null,
+                "source_id": "luminosityfit",
+                "source_version_id": null,
+                "object_type": "function",
+                "path": "data/PndLmdDataReader.cxx",
+                "symbol": "successfullyPassedFilters",
+                "start_line": null,
+                "end_line": null,
+                "pdf_page": null,
+                "pdf_page_end": null,
+                "title_contains": null,
+                "section_contains": null
+              },
+              {
+                "object_id": null,
+                "source_id": "luminosityfit",
+                "source_version_id": null,
+                "object_type": "function",
+                "path": "data/PndLmdDataReader.cxx",
+                "symbol": "skipDataObject",
+                "start_line": null,
+                "end_line": null,
+                "pdf_page": null,
+                "pdf_page_end": null,
+                "title_contains": null,
+                "section_contains": null
+              },
+              {
+                "object_id": null,
+                "source_id": "luminosityfit",
+                "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+                "object_type": null,
+                "path": "data/PndLmdDataReader.cxx",
+                "symbol": null,
+                "start_line": null,
+                "end_line": null,
+                "pdf_page": null,
+                "pdf_page_end": null,
+                "title_contains": null,
+                "section_contains": null
+              }
+            ]
+          }
+        ],
+        "required_source_types": [
+          "code"
+        ],
+        "required_answer_points": [
+          {
+            "point_id": "p1",
+            "text": "Verify the requested createLmdFitData data mode.",
+            "weight": 1.0,
+            "critical": true
+          },
+          {
+            "point_id": "p2",
+            "text": "Verify the input Lumi_TrksQA files and expected ROOT tree or branch assumptions.",
+            "weight": 1.0,
+            "critical": true
+          },
+          {
+            "point_id": "p3",
+            "text": "Verify selection and filtering conditions.",
+            "weight": 1.0,
+            "critical": true
+          },
+          {
+            "point_id": "p4",
+            "text": "Verify accepted and generated histogram filling in PndLmdDataReader.",
+            "weight": 1.0,
+            "critical": true
+          }
+        ],
+        "required_identifiers": [
+          {
+            "text": "createLmdFitData",
+            "kind": "code_symbol",
+            "critical": true
+          }
+        ],
+        "forbidden_evidence": [],
+        "concept_scopes": {},
+        "cluster_id": "cluster-g017",
+        "challenge_tags": [],
+        "review_status": "approved",
+        "reviewer": "OpenAI GPT-5.6 Thinking",
+        "reviewed_at": "2026-08-02T19:49:00+02:00"
+      }
+    },
+    {
+      "id": "g002",
+      "source": "Gold",
+      "question": "What are the documented prerequisites before building PandaRoot?",
+      "expected_status": "answered",
+      "gold": {
+        "id": "g002",
+        "split": "dev",
+        "language": "en",
+        "intent": "installation",
+        "accepted_intents": [],
+        "query": "What are the documented prerequisites before building PandaRoot?",
+        "expected_status": "answered",
+        "allowed_source_versions": [
+          "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+          "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+          "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a",
+          "karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b",
+          "pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3",
+          "pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87",
+          "curated_panda_domain@1.0"
+        ],
+        "required_evidence_groups": [
+          {
+            "group_id": "g002.e1",
+            "role": "installing_running_panda_root_documentation",
+            "critical": true,
+            "any_of": [
+              {
+                "object_id": null,
+                "source_id": "pandaroot_sphinx_2023_08_25_dev",
+                "source_version_id": null,
+                "object_type": null,
+                "path": null,
+                "symbol": null,
+                "start_line": null,
+                "end_line": null,
+                "pdf_page": null,
+                "pdf_page_end": null,
+                "title_contains": "Installing & running PandaRoot",
+                "section_contains": null
+              }
+            ]
+          }
+        ],
+        "required_source_types": [
+          "documentation"
+        ],
+        "required_answer_points": [
+          {
+            "point_id": "p1",
+            "text": "List only prerequisites explicitly documented by the locked Sphinx page.",
+            "weight": 1.0,
+            "critical": true
+          }
+        ],
+        "required_identifiers": [],
+        "forbidden_evidence": [],
+        "concept_scopes": {},
+        "cluster_id": "cluster-g002",
+        "challenge_tags": [],
+        "review_status": "approved",
+        "reviewer": "OpenAI GPT-5.6 Thinking",
+        "reviewed_at": "2026-08-02T19:49:00+02:00"
+      }
+    },
+    {
+      "id": "g044",
+      "source": "Gold",
+      "question": "Why is angular acceptance needed in a luminosity fit?",
+      "expected_status": "answered",
+      "gold": {
+        "id": "g044",
+        "split": "dev",
+        "language": "en",
+        "intent": "algorithm_theory",
+        "accepted_intents": [],
+        "query": "Why is angular acceptance needed in a luminosity fit?",
+        "expected_status": "answered",
+        "allowed_source_versions": [
+          "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+          "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+          "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a",
+          "karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b",
+          "pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3",
+          "pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87",
+          "curated_panda_domain@1.0"
+        ],
+        "required_evidence_groups": [
+          {
+            "group_id": "g044.e1",
+            "role": "pflueger_2017_page_57_theory",
+            "critical": true,
+            "any_of": [
+              {
+                "object_id": null,
+                "source_id": "pflueger_2017",
+                "source_version_id": null,
+                "object_type": null,
+                "path": null,
+                "symbol": null,
+                "start_line": null,
+                "end_line": null,
+                "pdf_page": 57,
+                "pdf_page_end": null,
+                "title_contains": null,
+                "section_contains": null
+              },
+              {
+                "object_id": null,
+                "source_id": "pflueger_2017",
+                "source_version_id": null,
+                "object_type": null,
+                "path": null,
+                "symbol": null,
+                "start_line": null,
+                "end_line": null,
+                "pdf_page": 58,
+                "pdf_page_end": null,
+                "title_contains": null,
+                "section_contains": null
+              },
+              {
+                "object_id": null,
+                "source_id": "pflueger_2017",
+                "source_version_id": null,
+                "object_type": null,
+                "path": null,
+                "symbol": null,
+                "start_line": null,
+                "end_line": null,
+                "pdf_page": 62,
+                "pdf_page_end": null,
+                "title_contains": null,
+                "section_contains": null
+              }
+            ]
+          }
+        ],
+        "required_source_types": [
+          "paper"
+        ],
+        "required_answer_points": [
+          {
+            "point_id": "p1",
+            "text": "Explain the efficiency/acceptance factor using the thesis, not source-code inference.",
+            "weight": 1.0,
+            "critical": true
+          }
+        ],
+        "required_identifiers": [],
+        "forbidden_evidence": [],
+        "concept_scopes": {
+          "efficiency": "angular_acceptance"
+        },
+        "cluster_id": "cluster-g030",
+        "challenge_tags": [],
+        "review_status": "approved",
+        "reviewer": "OpenAI GPT-5.6 Thinking",
+        "reviewed_at": "2026-08-02T19:49:00+02:00"
+      }
+    },
+    {
+      "id": "g110",
+      "source": "Gold",
+      "question": "event_poca is missing: what should I inspect first?",
+      "expected_status": "answered",
+      "gold": {
+        "id": "g110",
+        "split": "dev",
+        "language": "mixed",
+        "intent": "troubleshooting",
+        "accepted_intents": [],
+        "query": "event_poca is missing: what should I inspect first?",
+        "expected_status": "answered",
+        "allowed_source_versions": [
+          "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+          "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+          "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a",
+          "karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b",
+          "pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3",
+          "pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87",
+          "curated_panda_domain@1.0"
+        ],
+        "required_evidence_groups": [
+          {
+            "group_id": "g110.e1",
+            "role": "ana_dpm_implementation",
+            "critical": true,
+            "any_of": [
+              {
+                "object_id": null,
+                "source_id": "restgas_determination",
+                "source_version_id": null,
+                "object_type": "function",
+                "path": "macro/target/ana_dpm.C",
+                "symbol": "ana_dpm",
+                "start_line": null,
+                "end_line": null,
+                "pdf_page": null,
+                "pdf_page_end": null,
+                "title_contains": null,
+                "section_contains": null
+              },
+              {
+                "object_id": null,
+                "source_id": "restgas_determination",
+                "source_version_id": null,
+                "object_type": "source_file",
+                "path": "macro/target/ana_dpm.C",
+                "symbol": null,
+                "start_line": null,
+                "end_line": null,
+                "pdf_page": null,
+                "pdf_page_end": null,
+                "title_contains": null,
+                "section_contains": null
+              }
+            ]
+          },
+          {
+            "group_id": "g110.e2",
+            "role": "poca_workflow_documentation",
+            "critical": true,
+            "any_of": [
+              {
+                "object_id": null,
+                "source_id": "restgas_determination",
+                "source_version_id": null,
+                "object_type": "readme_section",
+                "path": "macro/target/README.md",
+                "symbol": null,
+                "start_line": null,
+                "end_line": null,
+                "pdf_page": null,
+                "pdf_page_end": null,
+                "title_contains": "POCA Workflow",
+                "section_contains": null
+              }
+            ]
+          }
+        ],
+        "required_source_types": [
+          "documentation",
+          "code"
+        ],
+        "required_answer_points": [
+          {
+            "point_id": "p1",
+            "text": "Check whether first-pass analysis ran and wrote its output file.",
+            "weight": 1.0,
+            "critical": true
+          },
+          {
+            "point_id": "p2",
+            "text": "Check that the event_poca tree/product exists and has entries.",
+            "weight": 1.0,
+            "critical": true
+          },
+          {
+            "point_id": "p3",
+            "text": "Check the upstream first-pass PID input and file/prefix path used by the POCA analysis.",
+            "weight": 1.0,
+            "critical": true
+          }
+        ],
+        "required_identifiers": [
+          {
+            "text": "event_poca",
+            "kind": "code_symbol",
+            "critical": true
+          }
+        ],
+        "forbidden_evidence": [],
+        "concept_scopes": {},
+        "cluster_id": "cluster-g036",
+        "challenge_tags": [],
+        "review_status": "approved",
+        "reviewer": "OpenAI GPT-5.6 Thinking",
+        "reviewed_at": "2026-08-02T19:49:00+02:00"
+      }
+    }
+  ],
+  "roles": {
+    "g013": "historical incomplete-Sphinx citation sentinel",
+    "g027": "R1 incomplete-Sphinx citation sentinel",
+    "g112": "identifier-normalization regression guard",
+    "g002": "complete-Sphinx citation and optional-quality sentinel",
+    "g044": "clean non-web citation control",
+    "g110": "code/path verifier negative control"
+  },
+  "order": [
+    [
+      "g013.legacy_question_core",
+      {
+        "case_id": "g013",
+        "index": 0,
+        "mode": "legacy_question_core",
+        "question": "How do I set up the terminal and run a ROOT simulation macro in PandaRoot, and how does the master run task participate in the lifecycle?",
+        "source": "Gold"
+      }
+    ],
+    [
+      "g013.runtime_e1_v2",
+      {
+        "case_id": "g013",
+        "index": 0,
+        "mode": "runtime_e1_v2",
+        "question": "How do I set up the terminal and run a ROOT simulation macro in PandaRoot, and how does the master run task participate in the lifecycle?",
+        "source": "Gold"
+      }
+    ],
+    [
+      "g027.runtime_e1_v2",
+      {
+        "case_id": "g027",
+        "index": 1,
+        "mode": "runtime_e1_v2",
+        "question": "Where is PndTargetGenerator defined in the locked PandaRoot snapshot and the RestgasDetermination fork, and why does version scope matter?",
+        "source": "Gold"
+      }
+    ],
+    [
+      "g027.legacy_question_core",
+      {
+        "case_id": "g027",
+        "index": 1,
+        "mode": "legacy_question_core",
+        "question": "Where is PndTargetGenerator defined in the locked PandaRoot snapshot and the RestgasDetermination fork, and why does version scope matter?",
+        "source": "Gold"
+      }
+    ],
+    [
+      "g112.legacy_question_core",
+      {
+        "case_id": "g112",
+        "index": 2,
+        "mode": "legacy_question_core",
+        "question": "createLmdFitData returns no acceptance: which data mode, Lumi_TrksQA input/tree assumptions, selection filters, and accepted/generated histogram filling should I inspect?",
+        "source": "Gold"
+      }
+    ],
+    [
+      "g112.runtime_e1_v2",
+      {
+        "case_id": "g112",
+        "index": 2,
+        "mode": "runtime_e1_v2",
+        "question": "createLmdFitData returns no acceptance: which data mode, Lumi_TrksQA input/tree assumptions, selection filters, and accepted/generated histogram filling should I inspect?",
+        "source": "Gold"
+      }
+    ],
+    [
+      "g002.runtime_e1_v2",
+      {
+        "case_id": "g002",
+        "index": 3,
+        "mode": "runtime_e1_v2",
+        "question": "What are the documented prerequisites before building PandaRoot?",
+        "source": "Gold"
+      }
+    ],
+    [
+      "g002.legacy_question_core",
+      {
+        "case_id": "g002",
+        "index": 3,
+        "mode": "legacy_question_core",
+        "question": "What are the documented prerequisites before building PandaRoot?",
+        "source": "Gold"
+      }
+    ],
+    [
+      "g044.legacy_question_core",
+      {
+        "case_id": "g044",
+        "index": 4,
+        "mode": "legacy_question_core",
+        "question": "Why is angular acceptance needed in a luminosity fit?",
+        "source": "Gold"
+      }
+    ],
+    [
+      "g044.runtime_e1_v2",
+      {
+        "case_id": "g044",
+        "index": 4,
+        "mode": "runtime_e1_v2",
+        "question": "Why is angular acceptance needed in a luminosity fit?",
+        "source": "Gold"
+      }
+    ],
+    [
+      "g110.runtime_e1_v2",
+      {
+        "case_id": "g110",
+        "index": 5,
+        "mode": "runtime_e1_v2",
+        "question": "event_poca is missing: what should I inspect first?",
+        "source": "Gold"
+      }
+    ],
+    [
+      "g110.legacy_question_core",
+      {
+        "case_id": "g110",
+        "index": 5,
+        "mode": "legacy_question_core",
+        "question": "event_poca is missing: what should I inspect first?",
+        "source": "Gold"
+      }
+    ]
+  ],
+  "labels": [
+    {
+      "A": "legacy_question_core",
+      "B": "runtime_e1_v2"
+    },
+    {
+      "A": "runtime_e1_v2",
+      "B": "legacy_question_core"
+    },
+    {
+      "A": "legacy_question_core",
+      "B": "runtime_e1_v2"
+    },
+    {
+      "A": "runtime_e1_v2",
+      "B": "legacy_question_core"
+    },
+    {
+      "A": "legacy_question_core",
+      "B": "runtime_e1_v2"
+    },
+    {
+      "A": "runtime_e1_v2",
+      "B": "legacy_question_core"
+    }
+  ],
+  "provider": {
+    "project": "gen-lang-client-0694751367",
+    "generation_model": "gemini-3.8-flash",
+    "evaluation_judge_model": "gemini-3.8-flash",
+    "location": "global",
+    "embedding_model": "gemini-embedding-2",
+    "embedding_dimensions": 3072,
+    "timeout_ms": 120000
+  },
+  "static_gates": [
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "S6",
+    "S7",
+    "S8",
+    "S9",
+    "S10",
+    "S11",
+    "S12",
+    "S13"
+  ],
+  "prospective_gates": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6",
+    "P7",
+    "P8",
+    "P9",
+    "P10",
+    "P11"
+  ],
+  "preregistration": "E2_A3_R2_CITATION_ELIGIBLE_EVIDENCE_PREREGISTRATION.md",
+  "scientific_calls_before_candidate_freeze": 0,
+  "runtime_activation_authorized": false,
+  "next_task_execution_authorized": false
+}
