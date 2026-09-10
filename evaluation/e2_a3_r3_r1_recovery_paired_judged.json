@@ -1,0 +1,991 @@
+{
+  "starting_head": "29bc2864a95b797ecfc07d3824711c5dc855ff95",
+  "product_candidate_commit": "fd0aed4c7e491a569bf39271825cc0950630863d",
+  "protocol_commit": "3a93f081a77e8bb507b14729a981dc1fa9c1f449",
+  "raw_commit": "0bc039d39211540843863d73ef9dd2be430087cd",
+  "records": [
+    {
+      "execution_id": "g059",
+      "state": "COMPLETE",
+      "original_r3_index": 0,
+      "input": {
+        "question": "How is detector-resolution smearing implemented in LuminosityFit?",
+        "approved_reference": {
+          "expected_status": "answered",
+          "answer_points": [
+            {
+              "critical": true,
+              "point_id": "p1",
+              "text": "Identify the detector-resolution response data/model.",
+              "weight": 1.0
+            },
+            {
+              "critical": true,
+              "point_id": "p2",
+              "text": "Explain construction of the 2D smearing/convolution component.",
+              "weight": 1.0
+            },
+            {
+              "critical": true,
+              "point_id": "p3",
+              "text": "Explain how PndLmdModelFactory composes it into the fit model.",
+              "weight": 1.0
+            }
+          ],
+          "required_identifiers": [
+            {
+              "critical": true,
+              "kind": "code_symbol",
+              "text": "PndLmdSmearingConvolutionModel2D"
+            },
+            {
+              "critical": true,
+              "kind": "code_symbol",
+              "text": "PndLmdModelFactory"
+            }
+          ],
+          "allowed_source_versions": [
+            "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+            "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+            "li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a",
+            "karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b",
+            "pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3",
+            "pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87",
+            "curated_panda_domain@1.0"
+          ]
+        },
+        "A": {
+          "status": "answered",
+          "answer": "In model/PndLmdModelFactory.cxx, when resolution_smearing_active is configured, PndLmdModelFactory::generate2DModel invokes generate2DSmearingModel to construct a PndLmdSmearingModel2D from simulation-derived resolution map data—populating RecoBinSmearingContributions with Monte Carlo coordinate bin centers and calculated smear weights—and wraps the current 2D model into a PndLmdSmearingConvolutionModel2D. [evidence.08873b527eb593d445b58bdf, evidence.fd8267293affa84d7e14da7f]\nIn model/PndLmdSmearingConvolutionModel2D.cxx, PndLmdSmearingConvolutionModel2D implements resolution smearing by generating a 2D model grid across threads; for each reconstructed bin, it queries smearing_model->getListOfContributors, evaluates the unsmeared model at each contributor's Monte Carlo coordinates, weights each evaluation by smear_weight, sums the contributions into model_grid, and serves these precalculated values via eval(). [evidence.c76b20774ae141162e1caf97]\nIn PndLmdModelFactory, resolution input data is supplied through setters like setResolutionMapData or setResolutions; generateModel evaluates the configuration property tree for fit_dimension == 2 and delegates to generate2DModel, which verifies resolution_smearing_active, builds the PndLmdSmearingModel2D via generate2DSmearingModel, wraps the base model into a PndLmdSmearingConvolutionModel2D, and calls current_model->init() before returning the resulting fit model. [evidence.08873b527eb593d445b58bdf, evidence.fd8267293affa84d7e14da7f]",
+          "claims": [
+            {
+              "claim_id": "smearing_factory_composition",
+              "claim_text": "In model/PndLmdModelFactory.cxx, when resolution_smearing_active is configured, PndLmdModelFactory::generate2DModel invokes generate2DSmearingModel to construct a PndLmdSmearingModel2D from simulation-derived resolution map data—populating RecoBinSmearingContributions with Monte Carlo coordinate bin centers and calculated smear weights—and wraps the current 2D model into a PndLmdSmearingConvolutionModel2D.",
+              "evidence_ids": [
+                "evidence.08873b527eb593d445b58bdf",
+                "evidence.fd8267293affa84d7e14da7f"
+              ]
+            },
+            {
+              "claim_id": "smearing_convolution_grid_evaluation",
+              "claim_text": "In model/PndLmdSmearingConvolutionModel2D.cxx, PndLmdSmearingConvolutionModel2D implements resolution smearing by generating a 2D model grid across threads; for each reconstructed bin, it queries smearing_model->getListOfContributors, evaluates the unsmeared model at each contributor's Monte Carlo coordinates, weights each evaluation by smear_weight, sums the contributions into model_grid, and serves these precalculated values via eval().",
+              "evidence_ids": [
+                "evidence.c76b20774ae141162e1caf97"
+              ]
+            },
+            {
+              "claim_id": "resolution_smearing_factory_pipeline",
+              "claim_text": "In PndLmdModelFactory, resolution input data is supplied through setters like setResolutionMapData or setResolutions; generateModel evaluates the configuration property tree for fit_dimension == 2 and delegates to generate2DModel, which verifies resolution_smearing_active, builds the PndLmdSmearingModel2D via generate2DSmearingModel, wraps the base model into a PndLmdSmearingConvolutionModel2D, and calls current_model->init() before returning the resulting fit model.",
+              "evidence_ids": [
+                "evidence.08873b527eb593d445b58bdf",
+                "evidence.fd8267293affa84d7e14da7f"
+              ]
+            }
+          ],
+          "evidence": [
+            {
+              "evidence_id": "evidence.fd8267293affa84d7e14da7f",
+              "object_id": "object.0025b2d964d8f2ff56cc6fc1",
+              "source_id": "luminosityfit",
+              "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+              "text": "rbsc.contributor_coordinate_weight_list.reserve(iter->second.size());\r\n    std::map<LumiFit::BinDimension, double>::iterator contribution_list_iter;\r\n    for (contribution_list_iter = iter->second.begin();\r\n         contribution_list_iter != iter->second.end();\r\n         ++contribution_list_iter) {\r\n      ContributorCoordinateWeight cw;\r\n      cw.bin_center_x =\r\n          contribution_list_iter->first.x_range.getDimensionMean();\r\n      cw.bin_center_y =\r\n          contribution_list_iter->first.y_range.getDimensionMean();\r\n\r\n      //      cw.area =\r\n      //      contribution_list_iter->first.x_range.getDimensionLength()\r\n      //          * contribution_list_iter->first.y_range.getDimensionLength();\r\n      cw.smear_weight = contribution_list_iter->second;\r\n      rbsc.contributor_coordinate_weight_list.push_back(cw);\r\n    }\r\n    smearing_param.push_back(rbsc);\r\n  }\r\n  std::cout << \"done!\" << std::endl;\r\n\r\n  std::shared_ptr<PndLmdSmearingModel2D> detector_smearing_model(\r\n      new PndLmdSmearingModel2D(dimx, dimy));\r\n\r\n  detector_smearing_model->setSmearingParameterization(smearing_param);\r\n  return detector_smearing_model;\r\n}",
+              "locator": {
+                "path": "model/PndLmdModelFactory.cxx",
+                "symbol": "generate2DSmearingModel",
+                "start_line": 416,
+                "end_line": 442,
+                "pdf_page": null,
+                "printed_page": null,
+                "section_path": [],
+                "url": null,
+                "snapshot_date": null
+              },
+              "retrieval_channels": [
+                "exact"
+              ],
+              "score": 0.027777777777777776,
+              "authority_level": "primary"
+            },
+            {
+              "evidence_id": "evidence.c76b20774ae141162e1caf97",
+              "object_id": "object.07ef66cefee5946e0798c652",
+              "source_id": "luminosityfit",
+              "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+              "text": "#include \"PndLmdSmearingConvolutionModel2D.h\"\r\n#include \"ui/PndLmdRuntimeConfiguration.h\"\r\n\r\n#include <cmath>\r\n#include <iomanip>\r\n\r\n#include <boost/thread.hpp>\r\n\r\nPndLmdSmearingConvolutionModel2D::PndLmdSmearingConvolutionModel2D(\r\n    std::string name_, std::shared_ptr<Model2D> unsmeared_model_,\r\n    std::shared_ptr<PndLmdSmearingModel2D> smearing_model_,\r\n    const LumiFit::LmdDimension &data_dim_x_,\r\n    const LumiFit::LmdDimension &data_dim_y_)\r\n    : Model2D(name_), data_dim_x(data_dim_x_), data_dim_y(data_dim_y_) {\r\n  nthreads = PndLmdRuntimeConfiguration::Instance().getNumberOfThreads();\r\n\r\n  unsmeared_model = unsmeared_model_;\r\n  smearing_model = smearing_model_;\r\n\r\n  addModelToList(unsmeared_model);\r\n\r\n  // setVar1Domain(-TMath::Pi(), TMath::Pi());\r\n  // setVar2Domain(-TMath::Pi(), TMath::Pi());\r\n\r\n  model_grid = new mydouble *[data_dim_x.bins];\r\n  for (unsigned int i = 0; i < data_dim_x.bins; i++) {\r\n    model_grid[i] = new mydouble[data_dim_y.bins];\r\n  }\r\n}\r\n\r\nPndLmdSmearingConvolutionModel2D::~PndLmdSmearingConvolutionModel2D() {\r\n  for (unsigned int i = 0; i < data_dim_x.bins; i++) {\r\n    delete[](model_grid[i]);\r\n  }\r\n  delete[](model_grid);\r\n}\r\n\r\nvoid PndLmdSmearingConvolutionModel2D::initModelParameters() {}\r\n\r\nvoid PndLmdSmearingConvolutionModel2D::injectModelParameter(\r\n    std::shared_ptr<ModelPar> model_param) {\r\n  getModelParameterSet().addModelParameter(model_param);\r\n}\r\n\r\nvoid PndLmdSmearingConvolutionModel2D::generateModelGrid2D() {\r\n  std::cout << \"generating resolution smeared grid...\" << std::endl;\r\n  // create threads and let them evaluate a part of the data\r\n  boost::thread_group threads;\r\n\r\n  for (unsigned int i = 0; i < nthreads; i++) {\r\n    threads.create_thread(boost::bind(\r\n        &PndLmdSmearingConvolutionModel2D::generateModelGrid2D, this, i));\r\n  }\r\n\r\n  threads.join_all();\r\n  std::cout << \"done!\" << std::endl;\r\n}\r\nvoid PndLmdSmearingConvolutionModel2D::generateModelGrid2D(unsigned int index) {\r\n  auto const &res_param = smearing_model->getListOfContributors(index);\r\n\r\n  mydouble xx[2];\r\n  for (auto const &reco_bin : res_param) {\r\n    std::vector<mydouble> numbers;\r\n    numbers.reserve(reco_bin.contributor_coordinate_weight_list.size() + 1);\r\n    numbers.push_back(0.0);\r\n    for (auto const &mc_element_coordinate_and_weight :\r\n         reco_bin.contributor_coordinate_weight_list) {\r\n      xx[0] = mc_element_coordinate_and_weight.bin_center_x;\r\n      xx[1] = mc_element_coordinate_and_weight.bin_center_y;\r\n      mydouble integral_unsmeared_model = unsmeared_model->evaluate(xx);\r\n      /*integral_unsmeared_model = integral_unsmeared_model\r\n       * mc_element_coordinate_and_weight.area;*/\r\n      // value = value\r\n      //    + integral_unsmeared_model\r\n      //        * mc_element_coordinate_and_weight.smear_weight;\r\n      numbers.push_back(integral_unsmeared_model *\r\n                        mc_element_coordinate_and_weight.smear_weight);\r\n      /* if (std::isnan(integral_unsmeared_model)\r\n           || std::isnan(mc_element_coordinate_and_weight.smear_weight))\r\n         std::cout << xx[0] << \" : \" << xx[1] << \" -> \"\r\n             << integral_unsmeared_model << \" * \"\r\n             << mc_element_coordinate_and_weight.smear_weight << std::endl;*/\r\n    }\r\n\r\n    while (numbers.size() > 2) {\r\n      std::vector<mydouble> temp_sum;\r\n      temp_sum.reserve(numbers.size() / 2 + 1);\r\n      if (numbers.size() % 2 == 0) {\r\n        for (unsigned int i = 0; i < numbers.size(); i = i + 2) {\r\n          temp_sum.push_back(numbers[i] + numbers[i + 1]);\r\n        }\r\n      } else {\r\n        for (unsigned int i = 0; i < numbers.size() - 1; i = i + 2) {\r\n          temp_sum.push_back(numbers[i] + numbers[i + 1]);\r\n        }\r\n        temp_sum.push_back(numbers.back());\r\n      }\r\n      numbers = temp_sum;\r\n    }\r\n    mydouble sum_value(numbers[0]);\r\n    if (numbers.size() == 2)\r\n      sum_value += numbers[1];\r\n\r\n    int ix = (reco_bin.reco_bin_x - data_dim_x.dimension_range.getRangeLow()) /\r\n             data_dim_x.bin_size;\r\n    int iy = (reco_bin.reco_bin_y - data_dim_y.dimension_range.getRangeLow()) /\r\n             data_dim_y.bin_size;\r\n\r\n    //    std::cout<<res_param[i].reco_bin_x<<\" -\r\n    //    \"<<data_dim_x.dimension_range.getRangeLow()<<std::endl;\r\n\r\n    /*   if (std::isnan(sum_value))\r\n         std::cout << ix << \" \" << iy << \" \" << sum_value << std::endl;*/\r\n    model_grid[ix][iy] = sum_value;\r\n  }\r\n}\r\n\r\nmydouble PndLmdSmearingConvolutionModel2D::eval(const mydouble *x) const {\r\n  int ix =\r\n      (x[0] - data_dim_x.dimension_range.getRangeLow()) / data_dim_x.bin_size;\r\n  int iy =\r\n      (x[1] - data_dim_y.dimension_range.getRangeLow()) / data_dim_y.bin_size;\r\n\r\n  /*std::cout << ix << \" \" << iy << \" \" << data_dim_x.bins << \" \"\r\n   << data_dim_y.bins << \" \" << x[0] << \" \"\r\n   << data_dim_x.dimension_range.getRangeLow() << \" - \"\r\n   << data_dim_x.dimension_range.getRangeHigh() << \" \" << x[1] << \" \"\r\n   << data_dim_y.dimension_range.getRangeLow() << \" - \"\r\n   << data_dim_y.dimension_range.getRangeHigh() << std::endl;*/\r\n\r\n  if (ix >= data_dim_x.bins || iy >= data_dim_y.bins || ix < 0 || iy < 0)\r\n    return 0.0;\r\n\r\n  /*if(std::isnan(model_grid[ix][iy]))\r\n    std::cout<<ix<<\" \"<<iy<<\" is nan!\\n\";*/\r\n\r\n  return model_grid[ix][iy];\r\n}\r\n\r\nvoid PndLmdSmearingConvolutionModel2D::updateDomain() {\r\n  smearing_model->updateSmearingModel();\r\n  generateModelGrid2D();\r\n}\r\n",
+              "locator": {
+                "path": "model/PndLmdSmearingConvolutionModel2D.cxx",
+                "symbol": null,
+                "start_line": 1,
+                "end_line": 143,
+                "pdf_page": null,
+                "printed_page": null,
+                "section_path": [],
+                "url": null,
+                "snapshot_date": null
+              },
+              "retrieval_channels": [
+                "exact"
+              ],
+              "score": 0.03225806451612903,
+              "authority_level": "primary"
+            },
+            {
+              "evidence_id": "evidence.08873b527eb593d445b58bdf",
+              "object_id": "object.ceb44bd02a5e3a790cf2dfad",
+              "source_id": "luminosityfit",
+              "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+              "text": "/*\r\n * PndLmdModelFactory.cxx\r\n *\r\n *  Created on: Dec 18, 2012\r\n *      Author: steve\r\n */\r\n\r\n#include \"PndLmdModelFactory.h\"\r\n#include \"AsymmetricGaussianModel1D.h\"\r\n#include \"CachedModel2D.h\"\r\n#include \"PndLmdDPMAngModel1D.h\"\r\n#include \"PndLmdDPMAngModel2D.h\"\r\n#include \"PndLmdDPMMTModel1D.h\"\r\n#include \"PndLmdDivergenceSmearingModel2D.h\"\r\n#include \"PndLmdFastDPMAngModel2D.h\"\r\n#include \"PndLmdROOTDataModel1D.h\"\r\n#include \"PndLmdROOTDataModel2D.h\"\r\n#include \"data/PndLmdAcceptance.h\"\r\n#include \"fit/ModelFitResult.h\"\r\n#include \"fit/PndLmdLumiFitResult.h\"\r\n#include \"models1d/DoubleGaussianModel1D.h\"\r\n#include \"models1d/GaussianModel1D.h\"\r\n#include \"models2d/DataModel2D.h\"\r\n#include \"models2d/GaussianModel2D.h\"\r\n#include \"ui/PndLmdRuntimeConfiguration.h\"\r\n\r\n#include \"PndLmdBackgroundModel1D.h\"\r\n#include \"PndLmdSignalBackgroundModel1D.h\"\r\n\r\n#include \"PndLmdDPMModelParametrization.h\"\r\n#include \"model/PndLmdDifferentialSmearingConvolutionModel2D.h\"\r\n#include \"model/PndLmdSmearingConvolutionModel2D.h\"\r\n#include \"operators1d/ProductModel1D.h\"\r\n#include \"operators1d/convolution/NumericConvolutionModel1D.h\"\r\n#include \"operators1d/convolution/SmearingConvolutionModel1D.h\"\r\n#include \"operators2d/ProductModel2D.h\"\r\n#include \"operators2d/integration/SimpleIntegralStrategy2D.h\"\r\n\r\n#include \"data/PndLmdAngularData.h\"\r\n\r\n#include <iostream>\r\n\r\n#include \"boost/property_tree/ptree.hpp\"\r\n\r\n#include \"TCanvas.h\"\r\n#include \"TEfficiency.h\"\r\n#include \"TH2.h\"\r\n\r\nPndLmdModelFactory::PndLmdModelFactory() {}\r\n\r\nPndLmdModelFactory::~PndLmdModelFactory() {}\r\n\r\nstd::shared_ptr<PndLmdSmearingModel2D>\r\nPndLmdModelFactory::generate2DSmearingModel(\r\n    const LumiFit::LmdDimension &dimx,\r\n    const LumiFit::LmdDimension &dimy) const {\r\n  // convert to a vector for faster access due to better caching\r\n  std::cout << \"converting detector smearing contributions to vector for fast \"\r\n               \"access...\"\r\n            << std::endl;\r\n\r\n  // TH2D histx(\"ax\", \"\", 200, -0.013, 0.013, 200, -0.013, 0.013);\r\n  // TH2D histy(\"ay\", \"\", 200, -0.013, 0.013, 200, -0.013, 0.013);\r\n\r\n  /*TTree *tree = (TTree*)resolution_map_data.getDataTree()->Clone(\"asdf\");\r\n   Point2D mc;\r\n   Point2D reco;\r\n   tree->SetBranchAddress(\"reco_x\", &reco.x);\r\n   tree->SetBranchAddress(\"reco_y\", &reco.y);\r\n   tree->SetBranchAddress(\"mc_x\", &mc.x);\r\n   tree->SetBranchAddress(\"mc_y\", &mc.y);\r\n\r\n   std::map<Point2D, Point2DCloud> prefill_map;\r\n\r\n   for (unsigned int i = 0; i < tree->GetEntries(); ++i) {\r\n   tree->GetEntry(i);\r\n\r\n   ++prefill_map[reco].points[mc];\r\n   ++prefill_map[reco].total_count;\r\n   }*/\r\n\r\n  const auto &hit_map = resolution_map_data.getHitMap();\r\n\r\n  std::cout << \"hit map size: \" << hit_map.size() << std::endl;\r\n\r\n  std::map<Point2D, std::map<Point2D, double>> temp_map;\r\n\r\n  unsigned long average_contributors(0);\r\n  for (auto const &mc_bin : hit_map) {\r\n    unsigned int overall_count(0);\r\n    average_contributors += mc_bin.second.points.size();\r\n    for (auto const &reco_bin_item : mc_bin.second.points) {\r\n      temp_map[reco_bin_item.first][mc_bin.first] +=\r\n          (1.0 * reco_bin_item.second) / mc_bin.second.total_count;\r\n\r\n      overall_count += reco_bin_item.second;\r\n    }\r\n    if (overall_count != mc_bin.second.total_count)\r\n      std::cout << \"overall_count missmatch! (should be \"\r\n                << mc_bin.second.total_count << \"): \" << overall_count\r\n                << std::endl;\r\n  }\r\n  std::cout << \"average reco bins per mc bin: \"\r\n            << 1.0 * average_contributors / hit_map.size() << std::endl;\r\n\r\n  std::vector<RecoBinSmearingContributions> smearing_param;\r\n  smearing_param.reserve(temp_map.size());\r\n\r\n  average_contributors = 0;\r\n  for (auto const &reco_bin : temp_map) {\r\n    if (reco_bin.first.x < dimx.dimension_range.getRangeLow())\r\n      continue;\r\n    if (reco_bin.first.x > dimx.dimension_range.getRangeHigh())\r\n      continue;\r\n    if (reco_bin.first.y < dimy.dimension_range.getRangeLow())\r\n      continue;\r\n    if (reco_bin.first.y > dimy.dimension_range.getRangeHigh())\r\n      continue;\r\n    RecoBinSmearingContributions rbsc;\r\n    rbsc.reco_bin_x = reco_bin.first.x;\r\n    rbsc.reco_bin_y = reco_bin.first.y;\r\n\r\n    rbsc.contributor_coordinate_weight_list.reserve(reco_bin.second.size());\r\n\r\n    double overall_smear(0.0);\r\n    average_contributors += reco_bin.second.size();\r\n    // std::cout<<\"size: \"<<reco_bin.second.size()<<std::endl;\r\n    for (auto const &contribution_list_item : reco_bin.second) {\r\n      ContributorCoordinateWeight cw;\r\n      cw.bin_center_x = contribution_list_item.first.x;\r\n      cw.bin_center_y = contribution_list_item.first.y;\r\n\r\n      // cw.area = resolution_map_data.getPrimaryDimension().bin_size\r\n      // * resolution_map_data.getSecondaryDimension().bin_size;\r\n      cw.smear_weight = contribution_list_item.second;\r\n      rbsc.contributor_coordinate_weight_list.push_back(cw);\r\n\r\n      overall_smear += cw.smear_weight;\r\n      // histx.Fill(rbsc.reco_bin_x - cw.bin_center_x,\r\n      //    rbsc.reco_bin_y - cw.bin_center_y);\r\n      //   histy.Fill(rbsc.reco_bin_y, cw.bin_center_y);\r\n      // std::cout << rbsc.reco_bin_x << \" : \" << rbsc.reco_bin_y << \" -> \"\r\n      // << cw.bin_center_x << \" : \" << cw.bin_center_y << \" = \"\r\n      // << cw.smear_weight << std::endl;\r\n    }\r\n    smearing_param.push_back(rbsc);\r\n    // std::cout << \"smear weight: \" << overall_smear << std::endl;\r\n  }\r\n  std::cout << \"average mc bins per reco bin: \"\r\n            << 1.0 * average_contributors / temp_map.size() << std::endl;\r\n  std::cout << \"done!\" << std::endl;\r\n\r\n  // TVirtualPad *current_pad = gPad;\r\n  // TCanvas can;\r\n  // histx.Draw(\"colz\");\r\n  // can.Update();\r\n  // can.SaveAs(\"corrx.pdf\");\r\n  // histy.Draw(\"colz\");\r\n  // can.Update();\r\n  // can.SaveAs(\"corry.pdf\");\r\n\r\n  // gPad = current_pad; // reset pad to the one before*/\r\n\r\n  std::shared_ptr<PndLmdSmearingModel2D> detector_smearing_model(\r\n      new PndLmdSmearingModel2D(dimx, dimy));\r\n\r\n  detector_smearing_model->setSmearingParameterization(smearing_param);\r\n  // detector_smearing_model->setSearchDistances(\r\n  //    resolution_map_data.getPrimaryDimension().bin_size / 2,\r\n  //    resolution_map_data.getSecondaryDimension().bin_size / 2);\r\n  return detector_smearing_model;\r\n}\r\n\r\nstd::shared_ptr<PndLmdSmearingModel2D>\r\nPndLmdModelFactory::generate2DSmearingModel(\r\n    const PndLmdHistogramData &data, const LumiFit::LmdDimension &dimx,\r\n    const LumiFit::LmdDimension &dimy) const {\r\n  std::map<std::pair<double, double>, std::map<LumiFit::BinDimension, double>>\r\n      resolution_map;\r\n\r\n  TH2D *recohist2d = data.get2DHistogram();\r\n\r\n  int prim_dim_bins = data.getPrimaryDimension().bins;\r\n  double prim_dim_binsize = data.getPrimaryDimension().bin_size;\r\n  double prim_dim_start =\r\n      data.getPrimaryDimension().dimension_range.getRangeLow();\r\n\r\n  int sec_dim_bins = data.getSecondaryDimension().bins;\r\n  double sec_dim_binsize = data.getSecondaryDimension().bin_size;\r\n  double sec_dim_start =\r\n      data.getSecondaryDimension().dimension_range.getRangeLow();\r\n\r\n  double binning_factor = 1 / sec_dim_binsize / prim_dim_binsize;\r\n\r\n  std::cout << \"calculating detector smearing contributions from \"\r\n            << resolutions.size() << \" objects...\" << std::endl;\r\n\r\n  // loop over all resolution objects\r\n  for (unsigned int i = 0; i < resolutions.size(); i++) {\r\n    // std::cout << \"processing resolution \" << i << std::endl;\r\n    if (resolutions[i].getSecondaryDimension().is_active) {\r\n      // try to find the selction dimension (mc values)\r\n      LumiFit::LmdDimension prim_dim;\r\n      LumiFit::LmdDimension sec_dim;\r\n\r\n      bool found_primary_selection(false);\r\n      bool found_secondary_selection(false);\r\n\r\n      const std::set<LumiFit::LmdDimension> &selection_set =\r\n          resolutions[i].getSelectorSet();\r\n      std::set<LumiFit::LmdDimension>::const_iterator selection_set_it;\r\n      for (selection_set_it = selection_set.begin();\r\n           selection_set_it != selection_set.end(); selection_set_it++) {\r\n        if (selection_set_it->dimension_options.dimension_type ==\r\n            data.getPrimaryDimension().dimension_options.dimension_type) {\r\n          prim_dim = *selection_set_it;\r\n          found_primary_selection = true;\r\n        } else if (selection_set_it->dimension_options.dimension_type ==\r\n                   data.getSecondaryDimension()\r\n                       .dimension_options.dimension_type) {\r\n          sec_dim = *selection_set_it;\r\n          found_secondary_selection = true;\r\n        }\r\n      }\r\n\r\n      if (found_primary_selection && found_secondary_selection) {\r\n        // ok we found the selection dimensions\r\n        TH2D *hist2d = resolutions[i].get2DHistogram();\r\n        // calculated normalization integral\r\n        double hist_integral = hist2d->Integral();\r\n        if (hist_integral <= 0.0)\r\n          continue;\r\n\r\n        double total_smearing_probability = 0.0;\r\n        double total_smearing_probability_noweight = 0.0;\r\n        int counter = 0;\r\n\r\n        // loop over the resolution histogram bins\r\n        for (unsigned int ibinx = 1; ibinx <= hist2d->GetNbinsX(); ++ibinx) {\r\n          for (unsigned int ibiny = 1; ibiny <= hist2d->GetNbinsY(); ++ibiny) {\r\n            // ok so now we just need to find the reco bins (there could be some\r\n            // overlap with multiple reco bins) for each of the resolution bins\r\n            // and weight the full bin probability according to the overlap\r\n            if (hist2d->GetBinContent(ibinx, ibiny) > 0.0) {\r\n              double smearing_probability =\r\n                  hist2d->GetBinContent(ibinx, ibiny) / hist_integral *\r\n                  binning_factor;\r\n\r\n              // total_smearing_probability_noweight += smearing_probability\r\n              //\t\t/ binning_factor;\r\n\r\n              // std::cout << \"smearing probability: \" << smearing_probability\r\n              //<< std::endl;\r\n\r\n              LumiFit::BinDimension reso_bin;\r\n              reso_bin.x_range.range_low =\r\n                  (prim_dim.dimension_range.getDimensionMean() +\r\n                   hist2d->GetXaxis()->GetBinLowEdge(ibinx));\r\n              reso_bin.x_range.range_high =\r\n                  (prim_dim.dimension_range.getDimensionMean() +\r\n                   hist2d->GetXaxis()->GetBinUpEdge(ibinx));\r\n              reso_bin.y_range.range_low =\r\n                  (sec_dim.dimension_range.getDimensionMean() +\r\n                   hist2d->GetYaxis()->GetBinLowEdge(ibiny));\r\n              reso_bin.y_range.range_high =\r\n                  (sec_dim.dimension_range.getDimensionMean() +\r\n                   hist2d->GetYaxis()->GetBinUpEdge(ibiny));\r\n\r\n              LumiFit::BinDimension reco_bin;\r\n\r\n              // calculated boundaries\r\n              int recbinx_min = (reso_bin.x_range.range_low - prim_dim_start) /\r\n                                    prim_dim_binsize +\r\n                                1;\r\n              int recbinx_max = (reso_bin.x_range.range_high - prim_dim_start) /\r\n                                    prim_dim_binsize +\r\n                                1;\r\n              int recbiny_min = (reso_bin.y_range.range_low - sec_dim_start) /\r\n                                    sec_dim_binsize +\r\n                                1;\r\n              int recbiny_max = (reso_bin.y_range.range_high - sec_dim_start) /\r\n                                    sec_dim_binsize +\r\n                                1;\r\n\r\n              // in case the resolution bin is further down the lower bound of\r\n              // the reco hist just skip\r\n\r\n              /*if (recbinx_max <= 0 || recbinx_min >= prim_dim_bins)\r\n               std::cout << recbinx_min << \" \" << recbinx_max << \" \"\r\n               << prim_dim_bins << std::endl;\r\n               if (recbiny_max <= 0 || recbiny_min >= sec_dim_bins)\r\n               std::cout << recbiny_min << \" \" << recbiny_max << \" \"\r\n               << sec_dim_bins << std::endl;*/\r\n\r\n              if (recbinx_max <= 0 || recbinx_min >= prim_dim_bins)\r\n                continue;\r\n              if (recbiny_max <= 0 || recbiny_min >= sec_dim_bins)\r\n                continue;\r\n\r\n              /*std::cout << theta_start << \" asdf \" << phi_start << std::endl;\r\n               std::cout << recbinx_min << \" = \" << reso_bin.x_min << \" \"\r\n               << theta_start << \" \" << theta_binsize << std::endl;\r\n               std::cout << recbinx_max << \" = \" << reso_bin.x_max << \" \"\r\n               << theta_start << \" \" << theta_binsize << std::endl;\r\n               std::cout << recbiny_min << \" = \" << reso_bin.y_min << \" \"\r\n               << phi_start << \" \" << phi_binsize << std::endl;\r\n               std::cout << recbiny_max << \" = \" << reso_bin.y_max << \" \"\r\n               << phi_start << \" \" << phi_binsize << std::endl;*/\r\n\r\n              for (unsigned int irecbinx = recbinx_min; irecbinx <= recbinx_max;\r\n                   irecbinx++) {\r\n                for (unsigned int irecbiny = recbiny_min;\r\n                     irecbiny <= recbiny_max; irecbiny++) {\r\n                  // calculate overlap with elastic data reco bins\r\n\r\n                  reco_bin.x_range.range_low =\r\n                      recohist2d->GetXaxis()->GetBinLowEdge(irecbinx);\r\n                  reco_bin.x_range.range_high =\r\n                      recohist2d->GetXaxis()->GetBinUpEdge(irecbinx);\r\n                  reco_bin.y_range.range_low =\r\n                      recohist2d->GetYaxis()->GetBinLowEdge(irecbiny);\r\n                  reco_bin.y_range.range_high =\r\n                      recohist2d->GetYaxis()->GetBinUpEdge(irecbiny);\r\n\r\n                  double weight =\r\n                      LumiFit::calculateBinOverlap(reco_bin, reso_bin);\r\n\r\n                  if (weight < 1e-14)\r\n                    continue;\r\n\r\n                  double prim_var_rec =\r\n                      recohist2d->GetXaxis()->GetBinCenter(irecbinx);\r\n                  double sec_var_rec =\r\n                      recohist2d->GetYaxis()->GetBinCenter(irecbiny);\r\n\r\n                  // std::cout << \"weight: \" << weight << std::endl;\r\n\r\n                  if (resolution_map[std::make_pair(prim_var_rec, sec_var_rec)]\r\n                          .find(\r\n                              LumiFit::BinDimension(prim_dim.dimension_range,\r\n                                                    sec_dim.dimension_range)) ==\r\n                      resolution_map[std::make_pair(prim_var_rec, sec_var_rec)]\r\n                          .end()) {\r\n                    resolution_map[std::make_pair(prim_var_rec, sec_var_rec)]\r\n                                  [LumiFit::BinDimension(\r\n                                      prim_dim.dimension_range,\r\n                                      sec_dim.dimension_range)] =\r\n                                      weight * smearing_probability;\r\n                  } else {\r\n                    resolution_map[std::make_pair(prim_var_rec, sec_var_rec)]\r\n                                  [LumiFit::BinDimension(\r\n                                      prim_dim.dimension_range,\r\n                                      sec_dim.dimension_range)] +=\r\n                        weight * smearing_probability;\r\n                  }\r\n\r\n                  total_smearing_probability +=\r\n                      weight * smearing_probability / binning_factor;\r\n                  counter++;\r\n                }\r\n              }\r\n            }\r\n          }\r\n        }\r\n        /*if (total_smearing_probability < 0.99) {\r\n         std::cout << \"probability for \"\r\n         << prim_dim.dimension_range.getDimensionMean() << \", \"\r\n         << sec_dim.dimension_range.getDimensionMean() << std::endl;\r\n         std::cout << \"total smearing probs: \" << total_smearing_probability\r\n         << \" \" << total_smearing_probability_noweight << std::endl;\r\n         std::cout << counter << std::endl;\r\n         }*/\r\n      }\r\n    }\r\n  }\r\n\r\n  /*std::map<PndLmdLumiHelper::bin_dimension, std::pair<double, int> > test_map;\r\n\r\n   std::map<std::pair<double, double>,\r\n   std::map<PndLmdLumiHelper::bin_dimension, double> >::iterator it;\r\n\r\n   for (it = resolution_map.begin(); it != resolution_map.end(); it++) {\r\n   std::map<PndLmdLumiHelper::bin_dimension, double>::iterator it2;\r\n   for (it2 = it->second.begin(); it2 != it->second.end(); it2++) {\r\n   if (test_map.find(it2->first) == test_map.end())\r\n   test_map[it2->first] = std::make_pair(it2->second, 1);\r\n   else {\r\n   test_map[it2->first].first += it2->second;\r\n   test_map[it2->first].second++;\r\n   }\r\n   }\r\n   }\r\n\r\n   std::map<PndLmdLumiHelper::bin_dimension, std::pair<double, int> >::iterator\r\n   it2; for (it2 = test_map.begin(); it2 != test_map.end(); it2++) { std::cout\r\n   << \"probability for \" << it2->first.x_range.range_low << \", \"\r\n   << it2->first.x_range.range_high << \": \" << it2->second.second << \" \"\r\n   << it2->second.first << std::endl;\r\n   }*/\r\n\r\n  // convert to a vector for faster access due to better caching\r\n  std::cout << \"converting detector smearing contributions to vector for fast \"\r\n               \"access...\"\r\n            << std::endl;\r\n\r\n  std::vector<RecoBinSmearingContributions> smearing_param;\r\n  smearing_param.reserve(resolution_map.size());\r\n\r\n  std::map<std::pair<double, double>,\r\n           std::map<LumiFit::BinDimension, double>>::iterator iter;\r\n  for (iter = resolution_map.begin(); iter != resolution_map.end(); ++iter) {\r\n    RecoBinSmearingContributions rbsc;\r\n    rbsc.reco_bin_x = iter->first.first;\r\n    rbsc.reco_bin_y = iter->first.second;\r\n\r\n    rbsc.contributor_coordinate_weight_list.reserve(iter->second.size());\r\n    std::map<LumiFit::BinDimension, double>::iterator contribution_list_iter;\r\n    for (contribution_list_iter = iter->second.begin();\r\n         contribution_list_iter != iter->second.end();\r\n         ++contribution_list_iter) {\r\n      ContributorCoordinateWeight cw;\r\n      cw.bin_center_x =\r\n          contribution_list_iter->first.x_range.getDimensionMean();\r\n      cw.bin_center_y =\r\n          contribution_list_iter->first.y_range.getDimensionMean();\r\n\r\n      //      cw.area =\r\n      //      contribution_list_iter->first.x_range.getDimensionLength()\r\n      //          * contribution_list_iter->first.y_range.getDimensionLength();\r\n      cw.smear_weight = contribution_list_iter->second;\r\n      rbsc.contributor_coordinate_weight_list.push_back(cw);\r\n    }\r\n    smearing_param.push_back(rbsc);\r\n  }\r\n  std::cout << \"done!\" << std::endl;\r\n\r\n  std::shared_ptr<PndLmdSmearingModel2D> detector_smearing_model(\r\n      new PndLmdSmearingModel2D(dimx, dimy));\r\n\r\n  detector_smearing_model->setSmearingParameterization(smearing_param);\r\n  return detector_smearing_model;\r\n}\r\n\r\ndouble PndLmdModelFactory::getMomentumTransferFromTheta(double plab,\r\n                                                        double theta) const {\r\n  PndLmdDPMAngModel1D model(\"dpm_angular_1d\", LumiFit::ALL, LumiFit::APPROX);\r\n  std::shared_ptr<Parametrization> para(\r\n      new PndLmdDPMModelParametrization(model.getModelParameterSet()));\r\n  model.getModelParameterHandler().registerParametrizations(\r\n      model.getModelParameterSet(), para);\r\n  model.getModelParameterSet().setModelParameterValue(\"p_lab\", plab);\r\n  ((Model1D *)&model)->init();\r\n  return -model.getMomentumTransferFromTheta(theta);\r\n}\r\n\r\nstd::shared_ptr<Model1D> PndLmdModelFactory::generate1DModel(\r\n    const boost::property_tree::ptree &model_opt_ptree,\r\n    const PndLmdAngularData &data) const {\r\n  std::shared_ptr<Model1D> current_model;\r\n\r\n  LumiFit::DPMElasticParts elastic_parts = LumiFit::StringToDPMElasticParts.at(\r\n      model_opt_ptree.get<std::string>(\"dpm_elastic_parts\"));\r\n\r\n  LumiFit::TransformationOption trans_option =\r\n      LumiFit::StringToTransformationOption.at(\r\n          model_opt_ptree.get<std::string>(\"theta_t_trafo_option\"));\r\n\r\n  if (model_opt_ptree.get<bool>(\"momentum_transfer_active\")) {\r\n    current_model.reset(new PndLmdDPMMTModel1D(\"dpm_mt_1d\", elastic_parts));\r\n    // set free parameters\r\n  } else {\r\n    current_model.reset(\r\n        new PndLmdDPMAngModel1D(\"dpm_angular_1d\", elastic_parts, trans_option));\r\n  }\r\n\r\n  std::shared_ptr<Parametrization> dpm_parametrization(\r\n      new PndLmdDPMModelParametrization(current_model->getModelParameterSet()));\r\n  current_model->getModelParameterHandler().registerParametrizations(\r\n      current_model->getModelParameterSet(), dpm_parametrization);\r\n\r\n  if (model_opt_ptree.get<bool>(\r\n          \"acceptance_correction_active\")) { // with acceptance corr\r\n    if (acceptance.getAcceptance1D()) {\r\n      // translate acceptance interpolation option\r\n      PndLmdROOTDataModel1D *data_model =\r\n          new PndLmdROOTDataModel1D(\"acceptance_1d\");\r\n\r\n      TVirtualPad *current_pad = gPad;\r\n      TCanvas can;\r\n      acceptance.getAcceptance1D()->Draw();\r\n      can.Update();\r\n\r\n      data_model->setGraph(acceptance.getAcceptance1D()->GetPaintedGraph());\r\n      data_model->setIntpolType(LumiFit::StringToInterpolationType.at(\r\n          model_opt_ptree.get<std::string>(\"acceptance_interpolation\")));\r\n      if (!model_opt_ptree.get<bool>(\r\n              \"automatic_acceptance_boundary_finding_active\")) {\r\n        data_model->setAcceptanceBounds(\r\n            model_opt_ptree.get<double>(\"acceptance_bound_low\"),\r\n            model_opt_ptree.get<double>(\"acceptance_bound_high\"));\r\n      }\r\n      data_model->setDataDimension(\r\n          acceptance.getPrimaryDimension().dimension_range);\r\n      std::shared_ptr<Model1D> acc(data_model);\r\n\r\n      current_model.reset(\r\n          new ProductModel1D(\"acceptance_corrected_1d\", current_model, acc));\r\n\r\n      gPad = current_pad; // reset pad to the one before\r\n    } else {\r\n      std::cout << \"ERROR: requesting an acceptance corrected model without an \"\r\n                   \"acceptance object!\"\r\n                << std::endl;\r\n    }\r\n  }\r\n\r\n  if (model_opt_ptree.get<bool>(\r\n          \"resolution_smearing_active\")) { // with resolution smearing\r\n    // ok since we have smearing on, generate smearing model\r\n  }\r\n\r\n  // every model has superior parameters which have to be set by the user\r\n  // if they are kept fixed\r\n  // in this case its the lab momentum plab\r\n  current_model->getModelParameterSet().setModelParameterValue(\r\n      \"p_lab\", data.getLabMomentum());\r\n  // the luminosity (we set it to 1.0 as a default value)\r\n  current_model->getModelParameterSet().setModelParameterValue(\"luminosity\",\r\n                                                               1.0);\r\n  if (current_model->init()) {\r\n    std::cout << \"ERROR: Not all parameters of the model were successfully \"\r\n                 \"initialized!\"\r\n              << std::endl;\r\n    current_model->getModelParameterSet().printInfo();\r\n  }\r\n\r\n  return current_model;\r\n}\r\n\r\nstd::shared_ptr<Model2D> PndLmdModelFactory::generate2DModel(\r\n    const boost::property_tree::ptree &model_opt_ptree,\r\n    const PndLmdAngularData &data) const {\r\n  std::shared_ptr<Model2D> current_model;\r\n\r\n  std::stringstream model_name;\r\n  model_name << \"dpm_angular_2d\";\r\n\r\n  LumiFit::TransformationOption trans_option =\r\n      LumiFit::StringToTransformationOption.at(\r\n          model_opt_ptree.get<std::string>(\"theta_t_trafo_option\"));\r\n\r\n  std::shared_ptr<PndLmdDPMAngModel1D> dpm_angular_1d(new PndLmdDPMAngModel1D(\r\n      \"dpm_angular_1d\",\r\n      LumiFit::StringToDPMElasticParts.at(\r\n          model_opt_ptree.get<std::string>(\"dpm_elastic_parts\")),\r\n      trans_option));\r\n\r\n  std::shared_ptr<Parametrization> dpm_parametrization(\r\n      new PndLmdDPMModelParametrization(\r\n          dpm_angular_1d->getModelParameterSet()));\r\n  dpm_angular_1d->getModelParameterHandler().registerParametrizations(\r\n      dpm_angular_1d->getModelParameterSet(), dpm_parametrization);\r\n\r\n  const LumiFit::LmdDimension &data_primary_dimension =\r\n      data.getPrimaryDimension();\r\n  const LumiFit::LmdDimension &data_secondary_dimension =\r\n      data.getSecondaryDimension();\r\n\r\n  if (data_primary_dimension.dimension_options.dimension_type ==\r\n          LumiFit::THETA_X &&\r\n      data_secondary_dimension.dimension_options.dimension_type ==\r\n          LumiFit::THETA_Y) {\r\n\r\n    std::cout << \"using fast 2d dpm model...\" << std::endl;\r\n\r\n    LumiFit::LmdDimension temp_prim_dim(data.getPrimaryDimension());\r\n    LumiFit::LmdDimension temp_sec_dim(data.getSecondaryDimension());\r\n    unsigned int combine = 1;\r\n    temp_prim_dim.bins *= combine;\r\n    temp_sec_dim.bins *= combine;\r\n    temp_prim_dim.calculateBinSize();\r\n    temp_sec_dim.calculateBinSize();\r\n\r\n    std::shared_ptr<PndLmdFastDPMAngModel2D> dpm_model_2d(\r\n        new PndLmdFastDPMAngModel2D(model_name.str(), dpm_angular_1d));\r\n\r\n    model_name << \"_cached\";\r\n\r\n    current_model.reset(new CachedModel2D(model_name.str(), dpm_model_2d,\r\n                                          temp_prim_dim, temp_sec_dim));\r\n\r\n    if (model_opt_ptree.get<bool>(\"divergence_smearing_active\") &&\r\n        data_primary_dimension.is_active &&\r\n        data_secondary_dimension.is_active) {\r\n      // add the divergence smearing on top\r\n      // at this point we introduce \"non numerical\" discretization from the data\r\n      // thats why the data object is required here\r\n\r\n      std::shared_ptr<GaussianModel2D> divergence_model(\r\n          new GaussianModel2D(\"divergence_model\", 5.0));\r\n\r\n      divergence_model->init();\r\n\r\n      std::shared_ptr<PndLmdDivergenceSmearingModel2D>\r\n          divergence_smearing_model(new PndLmdDivergenceSmearingModel2D(\r\n              divergence_model, temp_prim_dim, temp_sec_dim));\r\n\r\n      model_name << \"_div_smeared\";\r\n\r\n      std::shared_ptr<PndLmdDifferentialSmearingConvolutionModel2D>\r\n          div_smeared_model(new PndLmdDifferentialSmearingConvolutionModel2D(\r\n              model_name.str(), current_model, divergence_smearing_model,\r\n              data_primary_dimension, data_secondary_dimension, combine));\r\n      div_smeared_model->injectModelParameter(\r\n          divergence_model->getModelParameterSet().getModelParameter(\r\n              \"gauss_sigma_var1\"));\r\n      div_smeared_model->injectModelParameter(\r\n          divergence_model->getModelParameterSet().getModelParameter(\r\n              \"gauss_sigma_var2\"));\r\n\r\n      current_model = div_smeared_model;\r\n    }\r\n  } else {\r\n    if (model_opt_ptree.get<bool>(\"divergence_smearing_active\") &&\r\n        data_primary_dimension.is_active &&\r\n        data_secondary_dimension.is_active) {\r\n      std::cout << \"WARNING: Divergence smearing is not available in this \"\r\n                   \"coordinate system!<<\"\r\n                   \" Please use the theta_xy frame.\"\r\n                << std::endl;\r\n    }\r\n\r\n    std::cout << \"using correct 2d dpm model...\" << std::endl;\r\n    current_model.reset(\r\n        new PndLmdDPMAngModel2D(model_name.str(), dpm_angular_1d));\r\n  }\r\n\r\n  if (model_opt_ptree.get<bool>(\r\n          \"acceptance_correction_active\")) { // with acceptance corr\r\n    if (acceptance.getAcceptance2D()) {\r\n      std::shared_ptr<DataModel2D> acc(new DataModel2D(\r\n          \"acceptance_2d\",\r\n          LumiFit::StringToInterpolationType.at(\r\n              model_opt_ptree.get<std::string>(\"acceptance_interpolation\"))));\r\n\r\n      TVirtualPad *curpad = gPad;\r\n      TCanvas c;\r\n      TEfficiency *eff2 = acceptance.getAcceptance2D();\r\n      eff2->Draw(\"colz\");\r\n      c.Update();\r\n      TH2 *hist = acceptance.getAcceptance2D()->GetPaintedHistogram();\r\n\r\n      double angular_offsets[2];\r\n      angular_offsets[0] = 0.0;\r\n      angular_offsets[1] = 0.0;\r\n\r\n      if (model_opt_ptree.get<bool>(\"automatic_acceptance_shifting_active\")) {\r\n        std::cout << \"Applying automatic acceptance shifting!\\n\";\r\n        // get offset values as measured by the offset determination (user\r\n        // should have specified that)\r\n        std::pair<double, double> ip_offsets = data.getIPOffsets();\r\n\r\n        // print the offsets\r\n        std::cout << \"ip offsets: \" << ip_offsets.first << \" \"\r\n                  << ip_offsets.second << std::endl;\r\n\r\n        // then read transformation json file\r\n        auto pt = PndLmdRuntimeConfiguration::Instance()\r\n                      .getAcceptanceOffsetsTranformationParameters();\r\n\r\n        double trans_params[6];\r\n        trans_params[0] = pt.get_child(\"matrix\").get<double>(\"m11\");\r\n        trans_params[1] = pt.get_child(\"matrix\").get<double>(\"m12\");\r\n        trans_params[2] = pt.get_child(\"matrix\").get<double>(\"m21\");\r\n        trans_params[3] = pt.get_child(\"matrix\").get<double>(\"m22\");\r\n        trans_params[4] = pt.get_child(\"before_translation\").get<double>(\"t1\");\r\n        trans_params[5] = pt.get_child(\"before_translation\").get<double>(\"t2\");\r\n\r\n        // and do the transformation from offset coordinates to the angular\r\n        // shift coordinates\r\n\r\n        ip_offsets.first += trans_params[4];\r\n        ip_offsets.second += trans_params[5];\r\n        angular_offsets[0] = trans_params[0] * ip_offsets.first +\r\n                             trans_params[1] * ip_offsets.second;\r\n        angular_offsets[1] = trans_params[2] * ip_offsets.first +\r\n                             trans_params[3] * ip_offsets.second;\r\n        angular_offsets[0] /= 1000.0; // convert to mrad\r\n        angular_offsets[1] /= 1000.0;\r\n\r\n        // and print the angular offsets\r\n        std::cout << \"angular offsets: \" << angular_offsets[0] << \" \"\r\n                  << angular_offsets[1] << std::endl;\r\n      }\r\n\r\n      std::pair<mydouble, mydouble> acceptance_masscenter(0.0, 0.0);\r\n      double acceptancesum(0.0);\r\n\r\n      // then use these coordinates to create a corrected acceptance\r\n      std::pair<mydouble, mydouble> pos;\r\n      std::pair<mydouble, mydouble> eval_pos;\r\n      std::map<std::pair<mydouble, mydouble>, mydouble> datamap;\r\n      for (unsigned int ix = 0; ix < data_primary_dimension.bins; ix++) {\r\n        for (unsigned int iy = 0; iy < data_secondary_dimension.bins; iy++) {\r\n          pos.first = data_primary_dimension.dimension_range.getRangeLow() +\r\n                      (0.5 + ix) * data_primary_dimension.bin_size;\r\n          pos.second = data_secondary_dimension.dimension_range.getRangeLow() +\r\n                       (0.5 + iy) * data_secondary_dimension.bin_size;\r\n\r\n          eval_pos.first = pos.first - angular_offsets[0];\r\n          eval_pos.second = pos.second - angular_offsets[1];\r\n\r\n          if (eval_pos.first <\r\n                  data_primary_dimension.dimension_range.getRangeLow() ||\r\n              eval_pos.first >\r\n                  data_primary_dimension.dimension_range.getRangeHigh() ||\r\n              eval_pos.second <\r\n                  data_secondary_dimension.dimension_range.getRangeLow() ||\r\n              eval_pos.first >\r\n                  data_secondary_dimension.dimension_range.getRangeHigh()) {\r\n            datamap[pos] = 0.0;\r\n          } else {\r\n            datamap[pos] = hist->Interpolate(eval_pos.first, eval_pos.second);\r\n          }\r\n\r\n          acceptance_masscenter.first += datamap[pos] * eval_pos.first;\r\n          acceptance_masscenter.second += datamap[pos] * eval_pos.second;\r\n          acceptancesum += datamap[pos];\r\n        }\r\n      }\r\n      acceptance_masscenter.first /= acceptancesum;\r\n      acceptance_masscenter.second /= acceptancesum;\r\n\r\n      boost::optional<bool> clean_lower_acceptance =\r\n          model_opt_ptree.get_optional<bool>(\"clean_lower_acceptance\");\r\n\r\n      // TODO: repair this logic, it doesn't do what it's supposed to do\r\n      if (clean_lower_acceptance.is_initialized() &&\r\n          clean_lower_acceptance.get()) {\r\n        // clean the acceptance! Non-zero efficiency values inside the\r\n        // acceptance hole can lead to systematic errors due to the divergence\r\n        // of the model in this domain. These efficiency values have to be set\r\n        // to zero!\r\n\r\n        // FIXME: get this parameter from the fitconfig file!\r\n        mydouble inner_acceptance_edge_inner_radius(0.003);\r\n        mydouble inner_acceptance_edge_upper_radius_squared(\r\n            std::pow(0.0035, 2));\r\n\r\n        boost::optional<double> forced_lower_acc_bound =\r\n            model_opt_ptree.get_optional<double>(\r\n                \"override_lower_acceptance_bound\");\r\n        if (forced_lower_acc_bound) {\r\n          inner_acceptance_edge_inner_radius = forced_lower_acc_bound.get();\r\n          std::cout << \"INFO: using forced lower acceptance radius of \"\r\n                    << forced_lower_acc_bound.get() << std::endl;\r\n        }\r\n        int tooLow = 0, tooLittleEffinMiddle = 0;\r\n        // clean inner part of acceptance\r\n        double efficiency_threshold(0.2);\r\n        std::cout << \"INFO: setting acceptance to zero in the circle around (\"\r\n                  << acceptance_masscenter.first << \",\"\r\n                  << acceptance_masscenter.second << \") with a radius of \"\r\n                  << inner_acceptance_edge_inner_radius << std::endl;\r\n        double lowboundsquared(std::pow(inner_acceptance_edge_inner_radius, 2));\r\n        std::vector<std::pair<mydouble, mydouble>> keystoremove;\r\n        for (auto const &x : datamap) {\r\n          double distance_from_center(\r\n              std::pow(x.first.first - acceptance_masscenter.first, 2) +\r\n              std::pow(x.first.second - acceptance_masscenter.second, 2));\r\n          if (distance_from_center < lowboundsquared) {\r\n            // just remove efficiency values inside the\r\n            keystoremove.push_back(x.first);\r\n            tooLow++;\r\n\r\n          } else if (distance_from_center <\r\n                     inner_acceptance_edge_upper_radius_squared) {\r\n            if (x.second < efficiency_threshold) {\r\n              // we only cut acceptance edges below threshold\r\n              // this cleans up the inner acceptance edge\r\n              keystoremove.push_back(x.first);\r\n              tooLittleEffinMiddle++;\r\n            }\r\n          }\r\n        }\r\n\r\n        std::cout << \"INFO: erasing \" << keystoremove.size()\r\n                  << \" efficiency entries, which are either:\"\r\n                  << \"\\n- below the bound of \"\r\n                  << inner_acceptance_edge_inner_radius << \" (\" << tooLow << \")\"\r\n                  << \"\\n- below the bound of \"\r\n                  << std::sqrt(inner_acceptance_edge_upper_radius_squared)\r\n                  << \" (\" << tooLittleEffinMiddle << \")\"\r\n                  << \" and a efficiency below \" << efficiency_threshold\r\n                  << std::endl;\r\n        for (auto k : keystoremove)\r\n          datamap.erase(k);\r\n      }\r\n\r\n      gPad = curpad;\r\n\r\n      acc->setData(datamap);\r\n\r\n      model_name << \"_acceptance_corrected\";\r\n\r\n      current_model.reset(\r\n          new ProductModel2D(model_name.str(), current_model, acc));\r\n\r\n      // TODO: why are the offsets set back to zero here?!\r\n      current_model->getModelParameterSet()\r\n          .getModelParameter(\"offset_x\")\r\n          ->setValue(0.0);\r\n      current_model->getModelParameterSet()\r\n          .getModelParameter(\"offset_y\")\r\n          ->setValue(0.0);\r\n    } else {\r\n      std::cout << \"ERROR: requesting an acceptance corrected model without an \"\r\n                   \"acceptance object!\"\r\n                << std::endl;\r\n    }\r\n  }\r\n\r\n  if (model_opt_ptree.get<bool>(\r\n          \"resolution_smearing_active\")) { // with resolution smearing\r\n    // ok since we have smearing on, generate smearing model\r\n\r\n    model_name << \"_res_smeared\";\r\n\r\n    current_model.reset(new PndLmdSmearingConvolutionModel2D(\r\n        model_name.str(), current_model,\r\n        generate2DSmearingModel(data.getPrimaryDimension(),\r\n                                data.getSecondaryDimension()),\r\n        data.getPrimaryDimension(), data.getSecondaryDimension()));\r\n  }\r\n\r\n  // every model has superior parameters which have to be set by the user\r\n  // if they are kept fixed\r\n  // in this case its the lab momentum plab\r\n  dpm_angular_1d->getModelParameterSet().setModelParameterValue(\r\n      \"p_lab\", data.getLabMomentum());\r\n  // free the luminosity (we set it to 1.0 as a default value)\r\n  /*dpm_angular_1d->getModelParameterSet().freeModelParameter(\"luminosity\");\r\n   dpm_angular_1d->getModelParameterSet().setModelParameterValue(\"luminosity\",\r\n   1.0);*/\r\n\r\n  current_model->init();\r\n\r\n  return current_model;\r\n}\r\n\r\nconst PndLmdAcceptance &PndLmdModelFactory::getAcceptance() const {\r\n  return acceptance;\r\n}\r\nconst PndLmdMapData &PndLmdModelFactory::getResolutionMapData() const {\r\n  return resolution_map_data;\r\n}\r\n\r\nvoid PndLmdModelFactory::setAcceptance(const PndLmdAcceptance &acceptance_) {\r\n  acceptance = acceptance_;\r\n}\r\n\r\nvoid PndLmdModelFactory::setResolutionMapData(const PndLmdMapData &res_map_) {\r\n  resolution_map_data = res_map_;\r\n}\r\n\r\nvoid PndLmdModelFactory::setResolutions(\r\n    const std::vector<PndLmdHistogramData> &resolutions_) {\r\n  resolutions = resolutions_;\r\n}\r\n\r\nstd::shared_ptr<Model1D> PndLmdModelFactory::generate1DVertexModel(\r\n    const boost::property_tree::ptree &model_opt_ptree) const {\r\n  std::shared_ptr<Model1D> vertex_model;\r\n\r\n  LumiFit::ModelType model_type(LumiFit::StringToModelType.at(\r\n      model_opt_ptree.get<std::string>(\"model_type\")));\r\n\r\n  if (model_type == LumiFit::UNIFORM) {\r\n    vertex_model.reset(new DoubleGaussianModel1D(\"vertex_double_gaussian_1d\"));\r\n  } else if (model_type == LumiFit::GAUSSIAN) {\r\n    vertex_model.reset(new GaussianModel1D(\"vertex_gaussian_1d\"));\r\n  } else {\r\n    std::cout\r\n        << \"Unknown vertex model! Only uniform and gaussian model is allowed.\"\r\n        << std::endl;\r\n  }\r\n\r\n  return vertex_model;\r\n}\r\n\r\nstd::shared_ptr<Model> PndLmdModelFactory::generateModel(\r\n    const boost::property_tree::ptree &model_opt_ptree,\r\n    const PndLmdAngularData &data) const {\r\n  std::shared_ptr<Model> current_model;\r\n\r\n  std::cout << \"Generating model ... \" << std::endl;\r\n\r\n  unsigned int fit_dimension =\r\n      model_opt_ptree.get<unsigned int>(\"fit_dimension\");\r\n  if (fit_dimension == 1) {\r\n    current_model = generate1DModel(model_opt_ptree, data);\r\n  } else if (fit_dimension == 2) {\r\n    current_model = generate2DModel(model_opt_ptree, data);\r\n  } else {\r\n    std::cout << \"WARNING: Requesting a model of dimension \" << fit_dimension\r\n              << \" which is NOT available! Returning NULL pointer.\"\r\n              << std::endl;\r\n  }\r\n  return current_model;\r\n}\r\n",
+              "locator": {
+                "path": "model/PndLmdModelFactory.cxx",
+                "symbol": null,
+                "start_line": 1,
+                "end_line": 910,
+                "pdf_page": null,
+                "printed_page": null,
+                "section_path": [],
+                "url": null,
+                "snapshot_date": null
+              },
+              "retrieval_channels": [
+                "exact"
+              ],
+              "score": 0.031746031746031744,
+              "authority_level": "primary"
+            }
+          ]
+        },
+        "B": {
+          "status": "answered",
+          "answer": "In PndLmdModelFactory::generate2DModel, when the configuration option 'resolution_smearing_active' is enabled in model_opt_ptree, the factory creates a detector smearing component via generate2DSmearingModel and wraps the existing unsmeared fit model into a PndLmdSmearingConvolutionModel2D. [evidence.08873b527eb593d445b58bdf]\nIn PndLmdModelFactory::generate2DSmearingModel, simulation resolution data provided via setResolutionMapData (or setResolutions) is converted into reconstructed-bin contributor lists (an internal support type<RecoBinSmearingContributions>) storing Monte Carlo bin centers and normalized smear weights, which are injected into the constructed PndLmdSmearingModel2D. [evidence.08873b527eb593d445b58bdf, evidence.fd8267293affa84d7e14da7f]\nWithin PndLmdSmearingConvolutionModel2D, generateModelGrid2D uses multi-threading to evaluate the unsmeared model at each contributor MC coordinate, weights it by smear_weight, sums the contributions into a discrete 2D model_grid, and serves these precalculated values in eval. [evidence.c76b20774ae141162e1caf97]",
+          "claims": [
+            {
+              "claim_id": "claim.1",
+              "claim_text": "In PndLmdModelFactory::generate2DModel, when the configuration option 'resolution_smearing_active' is enabled in model_opt_ptree, the factory creates a detector smearing component via generate2DSmearingModel and wraps the existing unsmeared fit model into a PndLmdSmearingConvolutionModel2D.",
+              "evidence_ids": [
+                "evidence.08873b527eb593d445b58bdf"
+              ]
+            },
+            {
+              "claim_id": "claim.2",
+              "claim_text": "In PndLmdModelFactory::generate2DSmearingModel, simulation resolution data provided via setResolutionMapData (or setResolutions) is converted into reconstructed-bin contributor lists (an internal support type<RecoBinSmearingContributions>) storing Monte Carlo bin centers and normalized smear weights, which are injected into the constructed PndLmdSmearingModel2D.",
+              "evidence_ids": [
+                "evidence.08873b527eb593d445b58bdf",
+                "evidence.fd8267293affa84d7e14da7f"
+              ]
+            },
+            {
+              "claim_id": "claim.3",
+              "claim_text": "Within PndLmdSmearingConvolutionModel2D, generateModelGrid2D uses multi-threading to evaluate the unsmeared model at each contributor MC coordinate, weights it by smear_weight, sums the contributions into a discrete 2D model_grid, and serves these precalculated values in eval.",
+              "evidence_ids": [
+                "evidence.c76b20774ae141162e1caf97"
+              ]
+            }
+          ],
+          "evidence": [
+            {
+              "evidence_id": "evidence.c76b20774ae141162e1caf97",
+              "object_id": "object.07ef66cefee5946e0798c652",
+              "source_id": "luminosityfit",
+              "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+              "text": "#include \"PndLmdSmearingConvolutionModel2D.h\"\r\n#include \"ui/PndLmdRuntimeConfiguration.h\"\r\n\r\n#include <cmath>\r\n#include <iomanip>\r\n\r\n#include <boost/thread.hpp>\r\n\r\nPndLmdSmearingConvolutionModel2D::PndLmdSmearingConvolutionModel2D(\r\n    std::string name_, std::shared_ptr<Model2D> unsmeared_model_,\r\n    std::shared_ptr<PndLmdSmearingModel2D> smearing_model_,\r\n    const LumiFit::LmdDimension &data_dim_x_,\r\n    const LumiFit::LmdDimension &data_dim_y_)\r\n    : Model2D(name_), data_dim_x(data_dim_x_), data_dim_y(data_dim_y_) {\r\n  nthreads = PndLmdRuntimeConfiguration::Instance().getNumberOfThreads();\r\n\r\n  unsmeared_model = unsmeared_model_;\r\n  smearing_model = smearing_model_;\r\n\r\n  addModelToList(unsmeared_model);\r\n\r\n  // setVar1Domain(-TMath::Pi(), TMath::Pi());\r\n  // setVar2Domain(-TMath::Pi(), TMath::Pi());\r\n\r\n  model_grid = new mydouble *[data_dim_x.bins];\r\n  for (unsigned int i = 0; i < data_dim_x.bins; i++) {\r\n    model_grid[i] = new mydouble[data_dim_y.bins];\r\n  }\r\n}\r\n\r\nPndLmdSmearingConvolutionModel2D::~PndLmdSmearingConvolutionModel2D() {\r\n  for (unsigned int i = 0; i < data_dim_x.bins; i++) {\r\n    delete[](model_grid[i]);\r\n  }\r\n  delete[](model_grid);\r\n}\r\n\r\nvoid PndLmdSmearingConvolutionModel2D::initModelParameters() {}\r\n\r\nvoid PndLmdSmearingConvolutionModel2D::injectModelParameter(\r\n    std::shared_ptr<ModelPar> model_param) {\r\n  getModelParameterSet().addModelParameter(model_param);\r\n}\r\n\r\nvoid PndLmdSmearingConvolutionModel2D::generateModelGrid2D() {\r\n  std::cout << \"generating resolution smeared grid...\" << std::endl;\r\n  // create threads and let them evaluate a part of the data\r\n  boost::thread_group threads;\r\n\r\n  for (unsigned int i = 0; i < nthreads; i++) {\r\n    threads.create_thread(boost::bind(\r\n        &PndLmdSmearingConvolutionModel2D::generateModelGrid2D, this, i));\r\n  }\r\n\r\n  threads.join_all();\r\n  std::cout << \"done!\" << std::endl;\r\n}\r\nvoid PndLmdSmearingConvolutionModel2D::generateModelGrid2D(unsigned int index) {\r\n  auto const &res_param = smearing_model->getListOfContributors(index);\r\n\r\n  mydouble xx[2];\r\n  for (auto const &reco_bin : res_param) {\r\n    std::vector<mydouble> numbers;\r\n    numbers.reserve(reco_bin.contributor_coordinate_weight_list.size() + 1);\r\n    numbers.push_back(0.0);\r\n    for (auto const &mc_element_coordinate_and_weight :\r\n         reco_bin.contributor_coordinate_weight_list) {\r\n      xx[0] = mc_element_coordinate_and_weight.bin_center_x;\r\n      xx[1] = mc_element_coordinate_and_weight.bin_center_y;\r\n      mydouble integral_unsmeared_model = unsmeared_model->evaluate(xx);\r\n      /*integral_unsmeared_model = integral_unsmeared_model\r\n       * mc_element_coordinate_and_weight.area;*/\r\n      // value = value\r\n      //    + integral_unsmeared_model\r\n      //        * mc_element_coordinate_and_weight.smear_weight;\r\n      numbers.push_back(integral_unsmeared_model *\r\n                        mc_element_coordinate_and_weight.smear_weight);\r\n      /* if (std::isnan(integral_unsmeared_model)\r\n           || std::isnan(mc_element_coordinate_and_weight.smear_weight))\r\n         std::cout << xx[0] << \" : \" << xx[1] << \" -> \"\r\n             << integral_unsmeared_model << \" * \"\r\n             << mc_element_coordinate_and_weight.smear_weight << std::endl;*/\r\n    }\r\n\r\n    while (numbers.size() > 2) {\r\n      std::vector<mydouble> temp_sum;\r\n      temp_sum.reserve(numbers.size() / 2 + 1);\r\n      if (numbers.size() % 2 == 0) {\r\n        for (unsigned int i = 0; i < numbers.size(); i = i + 2) {\r\n          temp_sum.push_back(numbers[i] + numbers[i + 1]);\r\n        }\r\n      } else {\r\n        for (unsigned int i = 0; i < numbers.size() - 1; i = i + 2) {\r\n          temp_sum.push_back(numbers[i] + numbers[i + 1]);\r\n        }\r\n        temp_sum.push_back(numbers.back());\r\n      }\r\n      numbers = temp_sum;\r\n    }\r\n    mydouble sum_value(numbers[0]);\r\n    if (numbers.size() == 2)\r\n      sum_value += numbers[1];\r\n\r\n    int ix = (reco_bin.reco_bin_x - data_dim_x.dimension_range.getRangeLow()) /\r\n             data_dim_x.bin_size;\r\n    int iy = (reco_bin.reco_bin_y - data_dim_y.dimension_range.getRangeLow()) /\r\n             data_dim_y.bin_size;\r\n\r\n    //    std::cout<<res_param[i].reco_bin_x<<\" -\r\n    //    \"<<data_dim_x.dimension_range.getRangeLow()<<std::endl;\r\n\r\n    /*   if (std::isnan(sum_value))\r\n         std::cout << ix << \" \" << iy << \" \" << sum_value << std::endl;*/\r\n    model_grid[ix][iy] = sum_value;\r\n  }\r\n}\r\n\r\nmydouble PndLmdSmearingConvolutionModel2D::eval(const mydouble *x) const {\r\n  int ix =\r\n      (x[0] - data_dim_x.dimension_range.getRangeLow()) / data_dim_x.bin_size;\r\n  int iy =\r\n      (x[1] - data_dim_y.dimension_range.getRangeLow()) / data_dim_y.bin_size;\r\n\r\n  /*std::cout << ix << \" \" << iy << \" \" << data_dim_x.bins << \" \"\r\n   << data_dim_y.bins << \" \" << x[0] << \" \"\r\n   << data_dim_x.dimension_range.getRangeLow() << \" - \"\r\n   << data_dim_x.dimension_range.getRangeHigh() << \" \" << x[1] << \" \"\r\n   << data_dim_y.dimension_range.getRangeLow() << \" - \"\r\n   << data_dim_y.dimension_range.getRangeHigh() << std::endl;*/\r\n\r\n  if (ix >= data_dim_x.bins || iy >= data_dim_y.bins || ix < 0 || iy < 0)\r\n    return 0.0;\r\n\r\n  /*if(std::isnan(model_grid[ix][iy]))\r\n    std::cout<<ix<<\" \"<<iy<<\" is nan!\\n\";*/\r\n\r\n  return model_grid[ix][iy];\r\n}\r\n\r\nvoid PndLmdSmearingConvolutionModel2D::updateDomain() {\r\n  smearing_model->updateSmearingModel();\r\n  generateModelGrid2D();\r\n}\r\n",
+              "locator": {
+                "path": "model/PndLmdSmearingConvolutionModel2D.cxx",
+                "symbol": null,
+                "start_line": 1,
+                "end_line": 143,
+                "pdf_page": null,
+                "printed_page": null,
+                "section_path": [],
+                "url": null,
+                "snapshot_date": null
+              },
+              "retrieval_channels": [
+                "exact"
+              ],
+              "score": 0.03225806451612903,
+              "authority_level": "primary"
+            },
+            {
+              "evidence_id": "evidence.08873b527eb593d445b58bdf",
+              "object_id": "object.ceb44bd02a5e3a790cf2dfad",
+              "source_id": "luminosityfit",
+              "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+              "text": "/*\r\n * PndLmdModelFactory.cxx\r\n *\r\n *  Created on: Dec 18, 2012\r\n *      Author: steve\r\n */\r\n\r\n#include \"PndLmdModelFactory.h\"\r\n#include \"AsymmetricGaussianModel1D.h\"\r\n#include \"CachedModel2D.h\"\r\n#include \"PndLmdDPMAngModel1D.h\"\r\n#include \"PndLmdDPMAngModel2D.h\"\r\n#include \"PndLmdDPMMTModel1D.h\"\r\n#include \"PndLmdDivergenceSmearingModel2D.h\"\r\n#include \"PndLmdFastDPMAngModel2D.h\"\r\n#include \"PndLmdROOTDataModel1D.h\"\r\n#include \"PndLmdROOTDataModel2D.h\"\r\n#include \"data/PndLmdAcceptance.h\"\r\n#include \"fit/ModelFitResult.h\"\r\n#include \"fit/PndLmdLumiFitResult.h\"\r\n#include \"models1d/DoubleGaussianModel1D.h\"\r\n#include \"models1d/GaussianModel1D.h\"\r\n#include \"models2d/DataModel2D.h\"\r\n#include \"models2d/GaussianModel2D.h\"\r\n#include \"ui/PndLmdRuntimeConfiguration.h\"\r\n\r\n#include \"PndLmdBackgroundModel1D.h\"\r\n#include \"PndLmdSignalBackgroundModel1D.h\"\r\n\r\n#include \"PndLmdDPMModelParametrization.h\"\r\n#include \"model/PndLmdDifferentialSmearingConvolutionModel2D.h\"\r\n#include \"model/PndLmdSmearingConvolutionModel2D.h\"\r\n#include \"operators1d/ProductModel1D.h\"\r\n#include \"operators1d/convolution/NumericConvolutionModel1D.h\"\r\n#include \"operators1d/convolution/SmearingConvolutionModel1D.h\"\r\n#include \"operators2d/ProductModel2D.h\"\r\n#include \"operators2d/integration/SimpleIntegralStrategy2D.h\"\r\n\r\n#include \"data/PndLmdAngularData.h\"\r\n\r\n#include <iostream>\r\n\r\n#include \"boost/property_tree/ptree.hpp\"\r\n\r\n#include \"TCanvas.h\"\r\n#include \"TEfficiency.h\"\r\n#include \"TH2.h\"\r\n\r\nPndLmdModelFactory::PndLmdModelFactory() {}\r\n\r\nPndLmdModelFactory::~PndLmdModelFactory() {}\r\n\r\nstd::shared_ptr<PndLmdSmearingModel2D>\r\nPndLmdModelFactory::generate2DSmearingModel(\r\n    const LumiFit::LmdDimension &dimx,\r\n    const LumiFit::LmdDimension &dimy) const {\r\n  // convert to a vector for faster access due to better caching\r\n  std::cout << \"converting detector smearing contributions to vector for fast \"\r\n               \"access...\"\r\n            << std::endl;\r\n\r\n  // TH2D histx(\"ax\", \"\", 200, -0.013, 0.013, 200, -0.013, 0.013);\r\n  // TH2D histy(\"ay\", \"\", 200, -0.013, 0.013, 200, -0.013, 0.013);\r\n\r\n  /*TTree *tree = (TTree*)resolution_map_data.getDataTree()->Clone(\"asdf\");\r\n   Point2D mc;\r\n   Point2D reco;\r\n   tree->SetBranchAddress(\"reco_x\", &reco.x);\r\n   tree->SetBranchAddress(\"reco_y\", &reco.y);\r\n   tree->SetBranchAddress(\"mc_x\", &mc.x);\r\n   tree->SetBranchAddress(\"mc_y\", &mc.y);\r\n\r\n   std::map<Point2D, Point2DCloud> prefill_map;\r\n\r\n   for (unsigned int i = 0; i < tree->GetEntries(); ++i) {\r\n   tree->GetEntry(i);\r\n\r\n   ++prefill_map[reco].points[mc];\r\n   ++prefill_map[reco].total_count;\r\n   }*/\r\n\r\n  const auto &hit_map = resolution_map_data.getHitMap();\r\n\r\n  std::cout << \"hit map size: \" << hit_map.size() << std::endl;\r\n\r\n  std::map<Point2D, std::map<Point2D, double>> temp_map;\r\n\r\n  unsigned long average_contributors(0);\r\n  for (auto const &mc_bin : hit_map) {\r\n    unsigned int overall_count(0);\r\n    average_contributors += mc_bin.second.points.size();\r\n    for (auto const &reco_bin_item : mc_bin.second.points) {\r\n      temp_map[reco_bin_item.first][mc_bin.first] +=\r\n          (1.0 * reco_bin_item.second) / mc_bin.second.total_count;\r\n\r\n      overall_count += reco_bin_item.second;\r\n    }\r\n    if (overall_count != mc_bin.second.total_count)\r\n      std::cout << \"overall_count missmatch! (should be \"\r\n                << mc_bin.second.total_count << \"): \" << overall_count\r\n                << std::endl;\r\n  }\r\n  std::cout << \"average reco bins per mc bin: \"\r\n            << 1.0 * average_contributors / hit_map.size() << std::endl;\r\n\r\n  std::vector<RecoBinSmearingContributions> smearing_param;\r\n  smearing_param.reserve(temp_map.size());\r\n\r\n  average_contributors = 0;\r\n  for (auto const &reco_bin : temp_map) {\r\n    if (reco_bin.first.x < dimx.dimension_range.getRangeLow())\r\n      continue;\r\n    if (reco_bin.first.x > dimx.dimension_range.getRangeHigh())\r\n      continue;\r\n    if (reco_bin.first.y < dimy.dimension_range.getRangeLow())\r\n      continue;\r\n    if (reco_bin.first.y > dimy.dimension_range.getRangeHigh())\r\n      continue;\r\n    RecoBinSmearingContributions rbsc;\r\n    rbsc.reco_bin_x = reco_bin.first.x;\r\n    rbsc.reco_bin_y = reco_bin.first.y;\r\n\r\n    rbsc.contributor_coordinate_weight_list.reserve(reco_bin.second.size());\r\n\r\n    double overall_smear(0.0);\r\n    average_contributors += reco_bin.second.size();\r\n    // std::cout<<\"size: \"<<reco_bin.second.size()<<std::endl;\r\n    for (auto const &contribution_list_item : reco_bin.second) {\r\n      ContributorCoordinateWeight cw;\r\n      cw.bin_center_x = contribution_list_item.first.x;\r\n      cw.bin_center_y = contribution_list_item.first.y;\r\n\r\n      // cw.area = resolution_map_data.getPrimaryDimension().bin_size\r\n      // * resolution_map_data.getSecondaryDimension().bin_size;\r\n      cw.smear_weight = contribution_list_item.second;\r\n      rbsc.contributor_coordinate_weight_list.push_back(cw);\r\n\r\n      overall_smear += cw.smear_weight;\r\n      // histx.Fill(rbsc.reco_bin_x - cw.bin_center_x,\r\n      //    rbsc.reco_bin_y - cw.bin_center_y);\r\n      //   histy.Fill(rbsc.reco_bin_y, cw.bin_center_y);\r\n      // std::cout << rbsc.reco_bin_x << \" : \" << rbsc.reco_bin_y << \" -> \"\r\n      // << cw.bin_center_x << \" : \" << cw.bin_center_y << \" = \"\r\n      // << cw.smear_weight << std::endl;\r\n    }\r\n    smearing_param.push_back(rbsc);\r\n    // std::cout << \"smear weight: \" << overall_smear << std::endl;\r\n  }\r\n  std::cout << \"average mc bins per reco bin: \"\r\n            << 1.0 * average_contributors / temp_map.size() << std::endl;\r\n  std::cout << \"done!\" << std::endl;\r\n\r\n  // TVirtualPad *current_pad = gPad;\r\n  // TCanvas can;\r\n  // histx.Draw(\"colz\");\r\n  // can.Update();\r\n  // can.SaveAs(\"corrx.pdf\");\r\n  // histy.Draw(\"colz\");\r\n  // can.Update();\r\n  // can.SaveAs(\"corry.pdf\");\r\n\r\n  // gPad = current_pad; // reset pad to the one before*/\r\n\r\n  std::shared_ptr<PndLmdSmearingModel2D> detector_smearing_model(\r\n      new PndLmdSmearingModel2D(dimx, dimy));\r\n\r\n  detector_smearing_model->setSmearingParameterization(smearing_param);\r\n  // detector_smearing_model->setSearchDistances(\r\n  //    resolution_map_data.getPrimaryDimension().bin_size / 2,\r\n  //    resolution_map_data.getSecondaryDimension().bin_size / 2);\r\n  return detector_smearing_model;\r\n}\r\n\r\nstd::shared_ptr<PndLmdSmearingModel2D>\r\nPndLmdModelFactory::generate2DSmearingModel(\r\n    const PndLmdHistogramData &data, const LumiFit::LmdDimension &dimx,\r\n    const LumiFit::LmdDimension &dimy) const {\r\n  std::map<std::pair<double, double>, std::map<LumiFit::BinDimension, double>>\r\n      resolution_map;\r\n\r\n  TH2D *recohist2d = data.get2DHistogram();\r\n\r\n  int prim_dim_bins = data.getPrimaryDimension().bins;\r\n  double prim_dim_binsize = data.getPrimaryDimension().bin_size;\r\n  double prim_dim_start =\r\n      data.getPrimaryDimension().dimension_range.getRangeLow();\r\n\r\n  int sec_dim_bins = data.getSecondaryDimension().bins;\r\n  double sec_dim_binsize = data.getSecondaryDimension().bin_size;\r\n  double sec_dim_start =\r\n      data.getSecondaryDimension().dimension_range.getRangeLow();\r\n\r\n  double binning_factor = 1 / sec_dim_binsize / prim_dim_binsize;\r\n\r\n  std::cout << \"calculating detector smearing contributions from \"\r\n            << resolutions.size() << \" objects...\" << std::endl;\r\n\r\n  // loop over all resolution objects\r\n  for (unsigned int i = 0; i < resolutions.size(); i++) {\r\n    // std::cout << \"processing resolution \" << i << std::endl;\r\n    if (resolutions[i].getSecondaryDimension().is_active) {\r\n      // try to find the selction dimension (mc values)\r\n      LumiFit::LmdDimension prim_dim;\r\n      LumiFit::LmdDimension sec_dim;\r\n\r\n      bool found_primary_selection(false);\r\n      bool found_secondary_selection(false);\r\n\r\n      const std::set<LumiFit::LmdDimension> &selection_set =\r\n          resolutions[i].getSelectorSet();\r\n      std::set<LumiFit::LmdDimension>::const_iterator selection_set_it;\r\n      for (selection_set_it = selection_set.begin();\r\n           selection_set_it != selection_set.end(); selection_set_it++) {\r\n        if (selection_set_it->dimension_options.dimension_type ==\r\n            data.getPrimaryDimension().dimension_options.dimension_type) {\r\n          prim_dim = *selection_set_it;\r\n          found_primary_selection = true;\r\n        } else if (selection_set_it->dimension_options.dimension_type ==\r\n                   data.getSecondaryDimension()\r\n                       .dimension_options.dimension_type) {\r\n          sec_dim = *selection_set_it;\r\n          found_secondary_selection = true;\r\n        }\r\n      }\r\n\r\n      if (found_primary_selection && found_secondary_selection) {\r\n        // ok we found the selection dimensions\r\n        TH2D *hist2d = resolutions[i].get2DHistogram();\r\n        // calculated normalization integral\r\n        double hist_integral = hist2d->Integral();\r\n        if (hist_integral <= 0.0)\r\n          continue;\r\n\r\n        double total_smearing_probability = 0.0;\r\n        double total_smearing_probability_noweight = 0.0;\r\n        int counter = 0;\r\n\r\n        // loop over the resolution histogram bins\r\n        for (unsigned int ibinx = 1; ibinx <= hist2d->GetNbinsX(); ++ibinx) {\r\n          for (unsigned int ibiny = 1; ibiny <= hist2d->GetNbinsY(); ++ibiny) {\r\n            // ok so now we just need to find the reco bins (there could be some\r\n            // overlap with multiple reco bins) for each of the resolution bins\r\n            // and weight the full bin probability according to the overlap\r\n            if (hist2d->GetBinContent(ibinx, ibiny) > 0.0) {\r\n              double smearing_probability =\r\n                  hist2d->GetBinContent(ibinx, ibiny) / hist_integral *\r\n                  binning_factor;\r\n\r\n              // total_smearing_probability_noweight += smearing_probability\r\n              //\t\t/ binning_factor;\r\n\r\n              // std::cout << \"smearing probability: \" << smearing_probability\r\n              //<< std::endl;\r\n\r\n              LumiFit::BinDimension reso_bin;\r\n              reso_bin.x_range.range_low =\r\n                  (prim_dim.dimension_range.getDimensionMean() +\r\n                   hist2d->GetXaxis()->GetBinLowEdge(ibinx));\r\n              reso_bin.x_range.range_high =\r\n                  (prim_dim.dimension_range.getDimensionMean() +\r\n                   hist2d->GetXaxis()->GetBinUpEdge(ibinx));\r\n              reso_bin.y_range.range_low =\r\n                  (sec_dim.dimension_range.getDimensionMean() +\r\n                   hist2d->GetYaxis()->GetBinLowEdge(ibiny));\r\n              reso_bin.y_range.range_high =\r\n                  (sec_dim.dimension_range.getDimensionMean() +\r\n                   hist2d->GetYaxis()->GetBinUpEdge(ibiny));\r\n\r\n              LumiFit::BinDimension reco_bin;\r\n\r\n              // calculated boundaries\r\n              int recbinx_min = (reso_bin.x_range.range_low - prim_dim_start) /\r\n                                    prim_dim_binsize +\r\n                                1;\r\n              int recbinx_max = (reso_bin.x_range.range_high - prim_dim_start) /\r\n                                    prim_dim_binsize +\r\n                                1;\r\n              int recbiny_min = (reso_bin.y_range.range_low - sec_dim_start) /\r\n                                    sec_dim_binsize +\r\n                                1;\r\n              int recbiny_max = (reso_bin.y_range.range_high - sec_dim_start) /\r\n                                    sec_dim_binsize +\r\n                                1;\r\n\r\n              // in case the resolution bin is further down the lower bound of\r\n              // the reco hist just skip\r\n\r\n              /*if (recbinx_max <= 0 || recbinx_min >= prim_dim_bins)\r\n               std::cout << recbinx_min << \" \" << recbinx_max << \" \"\r\n               << prim_dim_bins << std::endl;\r\n               if (recbiny_max <= 0 || recbiny_min >= sec_dim_bins)\r\n               std::cout << recbiny_min << \" \" << recbiny_max << \" \"\r\n               << sec_dim_bins << std::endl;*/\r\n\r\n              if (recbinx_max <= 0 || recbinx_min >= prim_dim_bins)\r\n                continue;\r\n              if (recbiny_max <= 0 || recbiny_min >= sec_dim_bins)\r\n                continue;\r\n\r\n              /*std::cout << theta_start << \" asdf \" << phi_start << std::endl;\r\n               std::cout << recbinx_min << \" = \" << reso_bin.x_min << \" \"\r\n               << theta_start << \" \" << theta_binsize << std::endl;\r\n               std::cout << recbinx_max << \" = \" << reso_bin.x_max << \" \"\r\n               << theta_start << \" \" << theta_binsize << std::endl;\r\n               std::cout << recbiny_min << \" = \" << reso_bin.y_min << \" \"\r\n               << phi_start << \" \" << phi_binsize << std::endl;\r\n               std::cout << recbiny_max << \" = \" << reso_bin.y_max << \" \"\r\n               << phi_start << \" \" << phi_binsize << std::endl;*/\r\n\r\n              for (unsigned int irecbinx = recbinx_min; irecbinx <= recbinx_max;\r\n                   irecbinx++) {\r\n                for (unsigned int irecbiny = recbiny_min;\r\n                     irecbiny <= recbiny_max; irecbiny++) {\r\n                  // calculate overlap with elastic data reco bins\r\n\r\n                  reco_bin.x_range.range_low =\r\n                      recohist2d->GetXaxis()->GetBinLowEdge(irecbinx);\r\n                  reco_bin.x_range.range_high =\r\n                      recohist2d->GetXaxis()->GetBinUpEdge(irecbinx);\r\n                  reco_bin.y_range.range_low =\r\n                      recohist2d->GetYaxis()->GetBinLowEdge(irecbiny);\r\n                  reco_bin.y_range.range_high =\r\n                      recohist2d->GetYaxis()->GetBinUpEdge(irecbiny);\r\n\r\n                  double weight =\r\n                      LumiFit::calculateBinOverlap(reco_bin, reso_bin);\r\n\r\n                  if (weight < 1e-14)\r\n                    continue;\r\n\r\n                  double prim_var_rec =\r\n                      recohist2d->GetXaxis()->GetBinCenter(irecbinx);\r\n                  double sec_var_rec =\r\n                      recohist2d->GetYaxis()->GetBinCenter(irecbiny);\r\n\r\n                  // std::cout << \"weight: \" << weight << std::endl;\r\n\r\n                  if (resolution_map[std::make_pair(prim_var_rec, sec_var_rec)]\r\n                          .find(\r\n                              LumiFit::BinDimension(prim_dim.dimension_range,\r\n                                                    sec_dim.dimension_range)) ==\r\n                      resolution_map[std::make_pair(prim_var_rec, sec_var_rec)]\r\n                          .end()) {\r\n                    resolution_map[std::make_pair(prim_var_rec, sec_var_rec)]\r\n                                  [LumiFit::BinDimension(\r\n                                      prim_dim.dimension_range,\r\n                                      sec_dim.dimension_range)] =\r\n                                      weight * smearing_probability;\r\n                  } else {\r\n                    resolution_map[std::make_pair(prim_var_rec, sec_var_rec)]\r\n                                  [LumiFit::BinDimension(\r\n                                      prim_dim.dimension_range,\r\n                                      sec_dim.dimension_range)] +=\r\n                        weight * smearing_probability;\r\n                  }\r\n\r\n                  total_smearing_probability +=\r\n                      weight * smearing_probability / binning_factor;\r\n                  counter++;\r\n                }\r\n              }\r\n            }\r\n          }\r\n        }\r\n        /*if (total_smearing_probability < 0.99) {\r\n         std::cout << \"probability for \"\r\n         << prim_dim.dimension_range.getDimensionMean() << \", \"\r\n         << sec_dim.dimension_range.getDimensionMean() << std::endl;\r\n         std::cout << \"total smearing probs: \" << total_smearing_probability\r\n         << \" \" << total_smearing_probability_noweight << std::endl;\r\n         std::cout << counter << std::endl;\r\n         }*/\r\n      }\r\n    }\r\n  }\r\n\r\n  /*std::map<PndLmdLumiHelper::bin_dimension, std::pair<double, int> > test_map;\r\n\r\n   std::map<std::pair<double, double>,\r\n   std::map<PndLmdLumiHelper::bin_dimension, double> >::iterator it;\r\n\r\n   for (it = resolution_map.begin(); it != resolution_map.end(); it++) {\r\n   std::map<PndLmdLumiHelper::bin_dimension, double>::iterator it2;\r\n   for (it2 = it->second.begin(); it2 != it->second.end(); it2++) {\r\n   if (test_map.find(it2->first) == test_map.end())\r\n   test_map[it2->first] = std::make_pair(it2->second, 1);\r\n   else {\r\n   test_map[it2->first].first += it2->second;\r\n   test_map[it2->first].second++;\r\n   }\r\n   }\r\n   }\r\n\r\n   std::map<PndLmdLumiHelper::bin_dimension, std::pair<double, int> >::iterator\r\n   it2; for (it2 = test_map.begin(); it2 != test_map.end(); it2++) { std::cout\r\n   << \"probability for \" << it2->first.x_range.range_low << \", \"\r\n   << it2->first.x_range.range_high << \": \" << it2->second.second << \" \"\r\n   << it2->second.first << std::endl;\r\n   }*/\r\n\r\n  // convert to a vector for faster access due to better caching\r\n  std::cout << \"converting detector smearing contributions to vector for fast \"\r\n               \"access...\"\r\n            << std::endl;\r\n\r\n  std::vector<RecoBinSmearingContributions> smearing_param;\r\n  smearing_param.reserve(resolution_map.size());\r\n\r\n  std::map<std::pair<double, double>,\r\n           std::map<LumiFit::BinDimension, double>>::iterator iter;\r\n  for (iter = resolution_map.begin(); iter != resolution_map.end(); ++iter) {\r\n    RecoBinSmearingContributions rbsc;\r\n    rbsc.reco_bin_x = iter->first.first;\r\n    rbsc.reco_bin_y = iter->first.second;\r\n\r\n    rbsc.contributor_coordinate_weight_list.reserve(iter->second.size());\r\n    std::map<LumiFit::BinDimension, double>::iterator contribution_list_iter;\r\n    for (contribution_list_iter = iter->second.begin();\r\n         contribution_list_iter != iter->second.end();\r\n         ++contribution_list_iter) {\r\n      ContributorCoordinateWeight cw;\r\n      cw.bin_center_x =\r\n          contribution_list_iter->first.x_range.getDimensionMean();\r\n      cw.bin_center_y =\r\n          contribution_list_iter->first.y_range.getDimensionMean();\r\n\r\n      //      cw.area =\r\n      //      contribution_list_iter->first.x_range.getDimensionLength()\r\n      //          * contribution_list_iter->first.y_range.getDimensionLength();\r\n      cw.smear_weight = contribution_list_iter->second;\r\n      rbsc.contributor_coordinate_weight_list.push_back(cw);\r\n    }\r\n    smearing_param.push_back(rbsc);\r\n  }\r\n  std::cout << \"done!\" << std::endl;\r\n\r\n  std::shared_ptr<PndLmdSmearingModel2D> detector_smearing_model(\r\n      new PndLmdSmearingModel2D(dimx, dimy));\r\n\r\n  detector_smearing_model->setSmearingParameterization(smearing_param);\r\n  return detector_smearing_model;\r\n}\r\n\r\ndouble PndLmdModelFactory::getMomentumTransferFromTheta(double plab,\r\n                                                        double theta) const {\r\n  PndLmdDPMAngModel1D model(\"dpm_angular_1d\", LumiFit::ALL, LumiFit::APPROX);\r\n  std::shared_ptr<Parametrization> para(\r\n      new PndLmdDPMModelParametrization(model.getModelParameterSet()));\r\n  model.getModelParameterHandler().registerParametrizations(\r\n      model.getModelParameterSet(), para);\r\n  model.getModelParameterSet().setModelParameterValue(\"p_lab\", plab);\r\n  ((Model1D *)&model)->init();\r\n  return -model.getMomentumTransferFromTheta(theta);\r\n}\r\n\r\nstd::shared_ptr<Model1D> PndLmdModelFactory::generate1DModel(\r\n    const boost::property_tree::ptree &model_opt_ptree,\r\n    const PndLmdAngularData &data) const {\r\n  std::shared_ptr<Model1D> current_model;\r\n\r\n  LumiFit::DPMElasticParts elastic_parts = LumiFit::StringToDPMElasticParts.at(\r\n      model_opt_ptree.get<std::string>(\"dpm_elastic_parts\"));\r\n\r\n  LumiFit::TransformationOption trans_option =\r\n      LumiFit::StringToTransformationOption.at(\r\n          model_opt_ptree.get<std::string>(\"theta_t_trafo_option\"));\r\n\r\n  if (model_opt_ptree.get<bool>(\"momentum_transfer_active\")) {\r\n    current_model.reset(new PndLmdDPMMTModel1D(\"dpm_mt_1d\", elastic_parts));\r\n    // set free parameters\r\n  } else {\r\n    current_model.reset(\r\n        new PndLmdDPMAngModel1D(\"dpm_angular_1d\", elastic_parts, trans_option));\r\n  }\r\n\r\n  std::shared_ptr<Parametrization> dpm_parametrization(\r\n      new PndLmdDPMModelParametrization(current_model->getModelParameterSet()));\r\n  current_model->getModelParameterHandler().registerParametrizations(\r\n      current_model->getModelParameterSet(), dpm_parametrization);\r\n\r\n  if (model_opt_ptree.get<bool>(\r\n          \"acceptance_correction_active\")) { // with acceptance corr\r\n    if (acceptance.getAcceptance1D()) {\r\n      // translate acceptance interpolation option\r\n      PndLmdROOTDataModel1D *data_model =\r\n          new PndLmdROOTDataModel1D(\"acceptance_1d\");\r\n\r\n      TVirtualPad *current_pad = gPad;\r\n      TCanvas can;\r\n      acceptance.getAcceptance1D()->Draw();\r\n      can.Update();\r\n\r\n      data_model->setGraph(acceptance.getAcceptance1D()->GetPaintedGraph());\r\n      data_model->setIntpolType(LumiFit::StringToInterpolationType.at(\r\n          model_opt_ptree.get<std::string>(\"acceptance_interpolation\")));\r\n      if (!model_opt_ptree.get<bool>(\r\n              \"automatic_acceptance_boundary_finding_active\")) {\r\n        data_model->setAcceptanceBounds(\r\n            model_opt_ptree.get<double>(\"acceptance_bound_low\"),\r\n            model_opt_ptree.get<double>(\"acceptance_bound_high\"));\r\n      }\r\n      data_model->setDataDimension(\r\n          acceptance.getPrimaryDimension().dimension_range);\r\n      std::shared_ptr<Model1D> acc(data_model);\r\n\r\n      current_model.reset(\r\n          new ProductModel1D(\"acceptance_corrected_1d\", current_model, acc));\r\n\r\n      gPad = current_pad; // reset pad to the one before\r\n    } else {\r\n      std::cout << \"ERROR: requesting an acceptance corrected model without an \"\r\n                   \"acceptance object!\"\r\n                << std::endl;\r\n    }\r\n  }\r\n\r\n  if (model_opt_ptree.get<bool>(\r\n          \"resolution_smearing_active\")) { // with resolution smearing\r\n    // ok since we have smearing on, generate smearing model\r\n  }\r\n\r\n  // every model has superior parameters which have to be set by the user\r\n  // if they are kept fixed\r\n  // in this case its the lab momentum plab\r\n  current_model->getModelParameterSet().setModelParameterValue(\r\n      \"p_lab\", data.getLabMomentum());\r\n  // the luminosity (we set it to 1.0 as a default value)\r\n  current_model->getModelParameterSet().setModelParameterValue(\"luminosity\",\r\n                                                               1.0);\r\n  if (current_model->init()) {\r\n    std::cout << \"ERROR: Not all parameters of the model were successfully \"\r\n                 \"initialized!\"\r\n              << std::endl;\r\n    current_model->getModelParameterSet().printInfo();\r\n  }\r\n\r\n  return current_model;\r\n}\r\n\r\nstd::shared_ptr<Model2D> PndLmdModelFactory::generate2DModel(\r\n    const boost::property_tree::ptree &model_opt_ptree,\r\n    const PndLmdAngularData &data) const {\r\n  std::shared_ptr<Model2D> current_model;\r\n\r\n  std::stringstream model_name;\r\n  model_name << \"dpm_angular_2d\";\r\n\r\n  LumiFit::TransformationOption trans_option =\r\n      LumiFit::StringToTransformationOption.at(\r\n          model_opt_ptree.get<std::string>(\"theta_t_trafo_option\"));\r\n\r\n  std::shared_ptr<PndLmdDPMAngModel1D> dpm_angular_1d(new PndLmdDPMAngModel1D(\r\n      \"dpm_angular_1d\",\r\n      LumiFit::StringToDPMElasticParts.at(\r\n          model_opt_ptree.get<std::string>(\"dpm_elastic_parts\")),\r\n      trans_option));\r\n\r\n  std::shared_ptr<Parametrization> dpm_parametrization(\r\n      new PndLmdDPMModelParametrization(\r\n          dpm_angular_1d->getModelParameterSet()));\r\n  dpm_angular_1d->getModelParameterHandler().registerParametrizations(\r\n      dpm_angular_1d->getModelParameterSet(), dpm_parametrization);\r\n\r\n  const LumiFit::LmdDimension &data_primary_dimension =\r\n      data.getPrimaryDimension();\r\n  const LumiFit::LmdDimension &data_secondary_dimension =\r\n      data.getSecondaryDimension();\r\n\r\n  if (data_primary_dimension.dimension_options.dimension_type ==\r\n          LumiFit::THETA_X &&\r\n      data_secondary_dimension.dimension_options.dimension_type ==\r\n          LumiFit::THETA_Y) {\r\n\r\n    std::cout << \"using fast 2d dpm model...\" << std::endl;\r\n\r\n    LumiFit::LmdDimension temp_prim_dim(data.getPrimaryDimension());\r\n    LumiFit::LmdDimension temp_sec_dim(data.getSecondaryDimension());\r\n    unsigned int combine = 1;\r\n    temp_prim_dim.bins *= combine;\r\n    temp_sec_dim.bins *= combine;\r\n    temp_prim_dim.calculateBinSize();\r\n    temp_sec_dim.calculateBinSize();\r\n\r\n    std::shared_ptr<PndLmdFastDPMAngModel2D> dpm_model_2d(\r\n        new PndLmdFastDPMAngModel2D(model_name.str(), dpm_angular_1d));\r\n\r\n    model_name << \"_cached\";\r\n\r\n    current_model.reset(new CachedModel2D(model_name.str(), dpm_model_2d,\r\n                                          temp_prim_dim, temp_sec_dim));\r\n\r\n    if (model_opt_ptree.get<bool>(\"divergence_smearing_active\") &&\r\n        data_primary_dimension.is_active &&\r\n        data_secondary_dimension.is_active) {\r\n      // add the divergence smearing on top\r\n      // at this point we introduce \"non numerical\" discretization from the data\r\n      // thats why the data object is required here\r\n\r\n      std::shared_ptr<GaussianModel2D> divergence_model(\r\n          new GaussianModel2D(\"divergence_model\", 5.0));\r\n\r\n      divergence_model->init();\r\n\r\n      std::shared_ptr<PndLmdDivergenceSmearingModel2D>\r\n          divergence_smearing_model(new PndLmdDivergenceSmearingModel2D(\r\n              divergence_model, temp_prim_dim, temp_sec_dim));\r\n\r\n      model_name << \"_div_smeared\";\r\n\r\n      std::shared_ptr<PndLmdDifferentialSmearingConvolutionModel2D>\r\n          div_smeared_model(new PndLmdDifferentialSmearingConvolutionModel2D(\r\n              model_name.str(), current_model, divergence_smearing_model,\r\n              data_primary_dimension, data_secondary_dimension, combine));\r\n      div_smeared_model->injectModelParameter(\r\n          divergence_model->getModelParameterSet().getModelParameter(\r\n              \"gauss_sigma_var1\"));\r\n      div_smeared_model->injectModelParameter(\r\n          divergence_model->getModelParameterSet().getModelParameter(\r\n              \"gauss_sigma_var2\"));\r\n\r\n      current_model = div_smeared_model;\r\n    }\r\n  } else {\r\n    if (model_opt_ptree.get<bool>(\"divergence_smearing_active\") &&\r\n        data_primary_dimension.is_active &&\r\n        data_secondary_dimension.is_active) {\r\n      std::cout << \"WARNING: Divergence smearing is not available in this \"\r\n                   \"coordinate system!<<\"\r\n                   \" Please use the theta_xy frame.\"\r\n                << std::endl;\r\n    }\r\n\r\n    std::cout << \"using correct 2d dpm model...\" << std::endl;\r\n    current_model.reset(\r\n        new PndLmdDPMAngModel2D(model_name.str(), dpm_angular_1d));\r\n  }\r\n\r\n  if (model_opt_ptree.get<bool>(\r\n          \"acceptance_correction_active\")) { // with acceptance corr\r\n    if (acceptance.getAcceptance2D()) {\r\n      std::shared_ptr<DataModel2D> acc(new DataModel2D(\r\n          \"acceptance_2d\",\r\n          LumiFit::StringToInterpolationType.at(\r\n              model_opt_ptree.get<std::string>(\"acceptance_interpolation\"))));\r\n\r\n      TVirtualPad *curpad = gPad;\r\n      TCanvas c;\r\n      TEfficiency *eff2 = acceptance.getAcceptance2D();\r\n      eff2->Draw(\"colz\");\r\n      c.Update();\r\n      TH2 *hist = acceptance.getAcceptance2D()->GetPaintedHistogram();\r\n\r\n      double angular_offsets[2];\r\n      angular_offsets[0] = 0.0;\r\n      angular_offsets[1] = 0.0;\r\n\r\n      if (model_opt_ptree.get<bool>(\"automatic_acceptance_shifting_active\")) {\r\n        std::cout << \"Applying automatic acceptance shifting!\\n\";\r\n        // get offset values as measured by the offset determination (user\r\n        // should have specified that)\r\n        std::pair<double, double> ip_offsets = data.getIPOffsets();\r\n\r\n        // print the offsets\r\n        std::cout << \"ip offsets: \" << ip_offsets.first << \" \"\r\n                  << ip_offsets.second << std::endl;\r\n\r\n        // then read transformation json file\r\n        auto pt = PndLmdRuntimeConfiguration::Instance()\r\n                      .getAcceptanceOffsetsTranformationParameters();\r\n\r\n        double trans_params[6];\r\n        trans_params[0] = pt.get_child(\"matrix\").get<double>(\"m11\");\r\n        trans_params[1] = pt.get_child(\"matrix\").get<double>(\"m12\");\r\n        trans_params[2] = pt.get_child(\"matrix\").get<double>(\"m21\");\r\n        trans_params[3] = pt.get_child(\"matrix\").get<double>(\"m22\");\r\n        trans_params[4] = pt.get_child(\"before_translation\").get<double>(\"t1\");\r\n        trans_params[5] = pt.get_child(\"before_translation\").get<double>(\"t2\");\r\n\r\n        // and do the transformation from offset coordinates to the angular\r\n        // shift coordinates\r\n\r\n        ip_offsets.first += trans_params[4];\r\n        ip_offsets.second += trans_params[5];\r\n        angular_offsets[0] = trans_params[0] * ip_offsets.first +\r\n                             trans_params[1] * ip_offsets.second;\r\n        angular_offsets[1] = trans_params[2] * ip_offsets.first +\r\n                             trans_params[3] * ip_offsets.second;\r\n        angular_offsets[0] /= 1000.0; // convert to mrad\r\n        angular_offsets[1] /= 1000.0;\r\n\r\n        // and print the angular offsets\r\n        std::cout << \"angular offsets: \" << angular_offsets[0] << \" \"\r\n                  << angular_offsets[1] << std::endl;\r\n      }\r\n\r\n      std::pair<mydouble, mydouble> acceptance_masscenter(0.0, 0.0);\r\n      double acceptancesum(0.0);\r\n\r\n      // then use these coordinates to create a corrected acceptance\r\n      std::pair<mydouble, mydouble> pos;\r\n      std::pair<mydouble, mydouble> eval_pos;\r\n      std::map<std::pair<mydouble, mydouble>, mydouble> datamap;\r\n      for (unsigned int ix = 0; ix < data_primary_dimension.bins; ix++) {\r\n        for (unsigned int iy = 0; iy < data_secondary_dimension.bins; iy++) {\r\n          pos.first = data_primary_dimension.dimension_range.getRangeLow() +\r\n                      (0.5 + ix) * data_primary_dimension.bin_size;\r\n          pos.second = data_secondary_dimension.dimension_range.getRangeLow() +\r\n                       (0.5 + iy) * data_secondary_dimension.bin_size;\r\n\r\n          eval_pos.first = pos.first - angular_offsets[0];\r\n          eval_pos.second = pos.second - angular_offsets[1];\r\n\r\n          if (eval_pos.first <\r\n                  data_primary_dimension.dimension_range.getRangeLow() ||\r\n              eval_pos.first >\r\n                  data_primary_dimension.dimension_range.getRangeHigh() ||\r\n              eval_pos.second <\r\n                  data_secondary_dimension.dimension_range.getRangeLow() ||\r\n              eval_pos.first >\r\n                  data_secondary_dimension.dimension_range.getRangeHigh()) {\r\n            datamap[pos] = 0.0;\r\n          } else {\r\n            datamap[pos] = hist->Interpolate(eval_pos.first, eval_pos.second);\r\n          }\r\n\r\n          acceptance_masscenter.first += datamap[pos] * eval_pos.first;\r\n          acceptance_masscenter.second += datamap[pos] * eval_pos.second;\r\n          acceptancesum += datamap[pos];\r\n        }\r\n      }\r\n      acceptance_masscenter.first /= acceptancesum;\r\n      acceptance_masscenter.second /= acceptancesum;\r\n\r\n      boost::optional<bool> clean_lower_acceptance =\r\n          model_opt_ptree.get_optional<bool>(\"clean_lower_acceptance\");\r\n\r\n      // TODO: repair this logic, it doesn't do what it's supposed to do\r\n      if (clean_lower_acceptance.is_initialized() &&\r\n          clean_lower_acceptance.get()) {\r\n        // clean the acceptance! Non-zero efficiency values inside the\r\n        // acceptance hole can lead to systematic errors due to the divergence\r\n        // of the model in this domain. These efficiency values have to be set\r\n        // to zero!\r\n\r\n        // FIXME: get this parameter from the fitconfig file!\r\n        mydouble inner_acceptance_edge_inner_radius(0.003);\r\n        mydouble inner_acceptance_edge_upper_radius_squared(\r\n            std::pow(0.0035, 2));\r\n\r\n        boost::optional<double> forced_lower_acc_bound =\r\n            model_opt_ptree.get_optional<double>(\r\n                \"override_lower_acceptance_bound\");\r\n        if (forced_lower_acc_bound) {\r\n          inner_acceptance_edge_inner_radius = forced_lower_acc_bound.get();\r\n          std::cout << \"INFO: using forced lower acceptance radius of \"\r\n                    << forced_lower_acc_bound.get() << std::endl;\r\n        }\r\n        int tooLow = 0, tooLittleEffinMiddle = 0;\r\n        // clean inner part of acceptance\r\n        double efficiency_threshold(0.2);\r\n        std::cout << \"INFO: setting acceptance to zero in the circle around (\"\r\n                  << acceptance_masscenter.first << \",\"\r\n                  << acceptance_masscenter.second << \") with a radius of \"\r\n                  << inner_acceptance_edge_inner_radius << std::endl;\r\n        double lowboundsquared(std::pow(inner_acceptance_edge_inner_radius, 2));\r\n        std::vector<std::pair<mydouble, mydouble>> keystoremove;\r\n        for (auto const &x : datamap) {\r\n          double distance_from_center(\r\n              std::pow(x.first.first - acceptance_masscenter.first, 2) +\r\n              std::pow(x.first.second - acceptance_masscenter.second, 2));\r\n          if (distance_from_center < lowboundsquared) {\r\n            // just remove efficiency values inside the\r\n            keystoremove.push_back(x.first);\r\n            tooLow++;\r\n\r\n          } else if (distance_from_center <\r\n                     inner_acceptance_edge_upper_radius_squared) {\r\n            if (x.second < efficiency_threshold) {\r\n              // we only cut acceptance edges below threshold\r\n              // this cleans up the inner acceptance edge\r\n              keystoremove.push_back(x.first);\r\n              tooLittleEffinMiddle++;\r\n            }\r\n          }\r\n        }\r\n\r\n        std::cout << \"INFO: erasing \" << keystoremove.size()\r\n                  << \" efficiency entries, which are either:\"\r\n                  << \"\\n- below the bound of \"\r\n                  << inner_acceptance_edge_inner_radius << \" (\" << tooLow << \")\"\r\n                  << \"\\n- below the bound of \"\r\n                  << std::sqrt(inner_acceptance_edge_upper_radius_squared)\r\n                  << \" (\" << tooLittleEffinMiddle << \")\"\r\n                  << \" and a efficiency below \" << efficiency_threshold\r\n                  << std::endl;\r\n        for (auto k : keystoremove)\r\n          datamap.erase(k);\r\n      }\r\n\r\n      gPad = curpad;\r\n\r\n      acc->setData(datamap);\r\n\r\n      model_name << \"_acceptance_corrected\";\r\n\r\n      current_model.reset(\r\n          new ProductModel2D(model_name.str(), current_model, acc));\r\n\r\n      // TODO: why are the offsets set back to zero here?!\r\n      current_model->getModelParameterSet()\r\n          .getModelParameter(\"offset_x\")\r\n          ->setValue(0.0);\r\n      current_model->getModelParameterSet()\r\n          .getModelParameter(\"offset_y\")\r\n          ->setValue(0.0);\r\n    } else {\r\n      std::cout << \"ERROR: requesting an acceptance corrected model without an \"\r\n                   \"acceptance object!\"\r\n                << std::endl;\r\n    }\r\n  }\r\n\r\n  if (model_opt_ptree.get<bool>(\r\n          \"resolution_smearing_active\")) { // with resolution smearing\r\n    // ok since we have smearing on, generate smearing model\r\n\r\n    model_name << \"_res_smeared\";\r\n\r\n    current_model.reset(new PndLmdSmearingConvolutionModel2D(\r\n        model_name.str(), current_model,\r\n        generate2DSmearingModel(data.getPrimaryDimension(),\r\n                                data.getSecondaryDimension()),\r\n        data.getPrimaryDimension(), data.getSecondaryDimension()));\r\n  }\r\n\r\n  // every model has superior parameters which have to be set by the user\r\n  // if they are kept fixed\r\n  // in this case its the lab momentum plab\r\n  dpm_angular_1d->getModelParameterSet().setModelParameterValue(\r\n      \"p_lab\", data.getLabMomentum());\r\n  // free the luminosity (we set it to 1.0 as a default value)\r\n  /*dpm_angular_1d->getModelParameterSet().freeModelParameter(\"luminosity\");\r\n   dpm_angular_1d->getModelParameterSet().setModelParameterValue(\"luminosity\",\r\n   1.0);*/\r\n\r\n  current_model->init();\r\n\r\n  return current_model;\r\n}\r\n\r\nconst PndLmdAcceptance &PndLmdModelFactory::getAcceptance() const {\r\n  return acceptance;\r\n}\r\nconst PndLmdMapData &PndLmdModelFactory::getResolutionMapData() const {\r\n  return resolution_map_data;\r\n}\r\n\r\nvoid PndLmdModelFactory::setAcceptance(const PndLmdAcceptance &acceptance_) {\r\n  acceptance = acceptance_;\r\n}\r\n\r\nvoid PndLmdModelFactory::setResolutionMapData(const PndLmdMapData &res_map_) {\r\n  resolution_map_data = res_map_;\r\n}\r\n\r\nvoid PndLmdModelFactory::setResolutions(\r\n    const std::vector<PndLmdHistogramData> &resolutions_) {\r\n  resolutions = resolutions_;\r\n}\r\n\r\nstd::shared_ptr<Model1D> PndLmdModelFactory::generate1DVertexModel(\r\n    const boost::property_tree::ptree &model_opt_ptree) const {\r\n  std::shared_ptr<Model1D> vertex_model;\r\n\r\n  LumiFit::ModelType model_type(LumiFit::StringToModelType.at(\r\n      model_opt_ptree.get<std::string>(\"model_type\")));\r\n\r\n  if (model_type == LumiFit::UNIFORM) {\r\n    vertex_model.reset(new DoubleGaussianModel1D(\"vertex_double_gaussian_1d\"));\r\n  } else if (model_type == LumiFit::GAUSSIAN) {\r\n    vertex_model.reset(new GaussianModel1D(\"vertex_gaussian_1d\"));\r\n  } else {\r\n    std::cout\r\n        << \"Unknown vertex model! Only uniform and gaussian model is allowed.\"\r\n        << std::endl;\r\n  }\r\n\r\n  return vertex_model;\r\n}\r\n\r\nstd::shared_ptr<Model> PndLmdModelFactory::generateModel(\r\n    const boost::property_tree::ptree &model_opt_ptree,\r\n    const PndLmdAngularData &data) const {\r\n  std::shared_ptr<Model> current_model;\r\n\r\n  std::cout << \"Generating model ... \" << std::endl;\r\n\r\n  unsigned int fit_dimension =\r\n      model_opt_ptree.get<unsigned int>(\"fit_dimension\");\r\n  if (fit_dimension == 1) {\r\n    current_model = generate1DModel(model_opt_ptree, data);\r\n  } else if (fit_dimension == 2) {\r\n    current_model = generate2DModel(model_opt_ptree, data);\r\n  } else {\r\n    std::cout << \"WARNING: Requesting a model of dimension \" << fit_dimension\r\n              << \" which is NOT available! Returning NULL pointer.\"\r\n              << std::endl;\r\n  }\r\n  return current_model;\r\n}\r\n",
+              "locator": {
+                "path": "model/PndLmdModelFactory.cxx",
+                "symbol": null,
+                "start_line": 1,
+                "end_line": 910,
+                "pdf_page": null,
+                "printed_page": null,
+                "section_path": [],
+                "url": null,
+                "snapshot_date": null
+              },
+              "retrieval_channels": [
+                "exact"
+              ],
+              "score": 0.031746031746031744,
+              "authority_level": "primary"
+            },
+            {
+              "evidence_id": "evidence.fd8267293affa84d7e14da7f",
+              "object_id": "object.0025b2d964d8f2ff56cc6fc1",
+              "source_id": "luminosityfit",
+              "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+              "text": "rbsc.contributor_coordinate_weight_list.reserve(iter->second.size());\r\n    std::map<LumiFit::BinDimension, double>::iterator contribution_list_iter;\r\n    for (contribution_list_iter = iter->second.begin();\r\n         contribution_list_iter != iter->second.end();\r\n         ++contribution_list_iter) {\r\n      ContributorCoordinateWeight cw;\r\n      cw.bin_center_x =\r\n          contribution_list_iter->first.x_range.getDimensionMean();\r\n      cw.bin_center_y =\r\n          contribution_list_iter->first.y_range.getDimensionMean();\r\n\r\n      //      cw.area =\r\n      //      contribution_list_iter->first.x_range.getDimensionLength()\r\n      //          * contribution_list_iter->first.y_range.getDimensionLength();\r\n      cw.smear_weight = contribution_list_iter->second;\r\n      rbsc.contributor_coordinate_weight_list.push_back(cw);\r\n    }\r\n    smearing_param.push_back(rbsc);\r\n  }\r\n  std::cout << \"done!\" << std::endl;\r\n\r\n  std::shared_ptr<PndLmdSmearingModel2D> detector_smearing_model(\r\n      new PndLmdSmearingModel2D(dimx, dimy));\r\n\r\n  detector_smearing_model->setSmearingParameterization(smearing_param);\r\n  return detector_smearing_model;\r\n}",
+              "locator": {
+                "path": "model/PndLmdModelFactory.cxx",
+                "symbol": "generate2DSmearingModel",
+                "start_line": 416,
+                "end_line": 442,
+                "pdf_page": null,
+                "printed_page": null,
+                "section_path": [],
+                "url": null,
+                "snapshot_date": null
+              },
+              "retrieval_channels": [
+                "exact"
+              ],
+              "score": 0.027777777777777776,
+              "authority_level": "primary"
+            }
+          ]
+        }
+      },
+      "judgment": {
+        "preferred": "equivalent",
+        "critical_regression": false,
+        "A_supported": true,
+        "B_supported": true,
+        "reason": "Both models answer the question accurately, satisfy all criteria in the reference, include the required code identifiers, and are fully supported by the cited code snippets."
+      },
+      "usage": [
+        {
+          "stage": "judge",
+          "logical_calls": 1,
+          "response": {
+            "preferred": "equivalent",
+            "critical_regression": false,
+            "A_supported": true,
+            "B_supported": true,
+            "reason": "Both models answer the question accurately, satisfy all criteria in the reference, include the required code identifiers, and are fully supported by the cited code snippets."
+          },
+          "returned_model_calls": 1,
+          "adapter_requests": 1,
+          "tokens": 37887
+        }
+      ]
+    },
+    {
+      "execution_id": "g047",
+      "state": "COMPLETE",
+      "original_r3_index": 1,
+      "input": {
+        "question": "What is the theoretical purpose of the DPM elastic-scattering model?",
+        "approved_reference": {
+          "expected_status": "answered",
+          "answer_points": [
+            {
+              "critical": true,
+              "point_id": "p1",
+              "text": "Relate the elastic differential cross section to luminosity extraction.",
+              "weight": 1.0
+            }
+          ],
+          "required_identifiers": [],
+          "allowed_source_versions": [
+            "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+            "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+            "li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a",
+            "karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b",
+            "pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3",
+            "pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87",
+            "curated_panda_domain@1.0"
+          ]
+        },
+        "A": {
+          "status": "answered",
+          "answer": "The theoretical purpose of the Dual Parton Model (DPM) elastic-scattering parameterization is to phenomenologically describe the hadronic amplitude of high-energy pbar-p elastic scattering across a wide range of four-momentum transfers |t|, capturing diffractive structures such as dips and secondary maxima where simple exponential parameterizations fail. [evidence.9b25e3c227798bc426619240, evidence.09e1e56c03a9c1741b55b69c, evidence.67f23bc6024df70e7eb06da3, evidence.9f50b0df9d3d7078f1ea1dc8]\nIn the context of PANDA luminosity determination, the DPM hadronic amplitude is combined with the Coulomb amplitude to form the full elastic differential cross-section model used to fit the measured angular distribution, allowing stable extraction of absolute luminosity as the normalization parameter across beam momenta where hadronic interactions become significant or dominant without relying on unstable free fit parameters. [evidence.9b25e3c227798bc426619240, evidence.09e1e56c03a9c1741b55b69c, evidence.4bfb7160f3c8158ba59d70f2]",
+          "claims": [
+            {
+              "claim_id": "claim_1",
+              "claim_text": "The theoretical purpose of the Dual Parton Model (DPM) elastic-scattering parameterization is to phenomenologically describe the hadronic amplitude of high-energy pbar-p elastic scattering across a wide range of four-momentum transfers |t|, capturing diffractive structures such as dips and secondary maxima where simple exponential parameterizations fail.",
+              "evidence_ids": [
+                "evidence.9b25e3c227798bc426619240",
+                "evidence.09e1e56c03a9c1741b55b69c",
+                "evidence.67f23bc6024df70e7eb06da3",
+                "evidence.9f50b0df9d3d7078f1ea1dc8"
+              ]
+            },
+            {
+              "claim_id": "claim_2",
+              "claim_text": "In the context of PANDA luminosity determination, the DPM hadronic amplitude is combined with the Coulomb amplitude to form the full elastic differential cross-section model used to fit the measured angular distribution, allowing stable extraction of absolute luminosity as the normalization parameter across beam momenta where hadronic interactions become significant or dominant without relying on unstable free fit parameters.",
+              "evidence_ids": [
+                "evidence.9b25e3c227798bc426619240",
+                "evidence.09e1e56c03a9c1741b55b69c",
+                "evidence.4bfb7160f3c8158ba59d70f2"
+              ]
+            }
+          ],
+          "evidence": [
+            {
+              "evidence_id": "evidence.4bfb7160f3c8158ba59d70f2",
+              "object_id": "object.faaced8bd5058b2a19ba9528",
+              "source_id": "pflueger_2017",
+              "source_version_id": "pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3",
+              "text": "4\nLUMINOSITY DETERMINATION - THE LUMINOSITY FIT FRAMEWORK\nThis chapter presents the LuminosityFit software, which counts as major work effort of this thesis, and can be found on the github platform [ 107 ]. It is responsible for the determination of the luminosity with the highest possible precision from the reconstructed data of the LMD. Recalling chapter 3 , this is achieved by comparing the measured elastic scattering angular distribution with the theoretical model distribution. The normalization variable is the absolute luminosity L . However the measured angular distribution N ( θ ) cannot simply be compared to the theoretical model σ ( θ ) , because several inevitable measurement effects alter the original pure elastic scattering distribution. There are two possible paths to overcome this obstacle. One possibility is to correct the measured data for the effects introduced by the ¯ PANDA spectrometer, which then allows a direct comparison with the pure elastic scattering model. Alternatively, the pure model can be modified to include all of the effects that arise during the measurement, so that is directly comparable with the data. The first option is in practice not feasible as required operations such as deconvolutions, which undo the detector resolution of the data, require very large amounts of data and a constant resolution to work reliably. On these grounds the second option was chosen, allowing for far more flexibility, extraction power and precision. The construction of the fit model with all of the transformations and correction procedures of the elastic scattering cross section is presented in detail in the following. Results on the extracted luminosity precision and studies of systematic uncertainties are presented in the next chapter.\n4 . 1 the elastic scattering model\nThe cross section for elastic ¯ pp scattering was introduced in section 3 . 3 . Apart from the calculable coulomb part of the total elastic cross section, two possible parameterizations for the description of the hadronic part exist. Both parameterizations are implemented in the LuminosityFit software. Despite the fact that the E 760 parameterization is more suitable, because it uses more measurements in the four momentum range of the LMD, the DPM parameterization was chosen for the studies in this thesis (see equation 18 ). The reasoning is that the DPM generator is the only official generator for the ¯ PANDA experiment that includes elastic ¯ pp processes 1 . Moreover the operability of the LuminosityFit software and the validity of its extraction precision and studies on systematic uncertainties are not influenced by the chosen parameterization, as long as the behavior of the true physics cross section is described approximated. To ensure meaningful results of the systematic effects, the parameterization of the event generator and the fit model of the luminosity extraction software are identical.\n1 The official version of the DPM generator unfortunately uses 32 bit floating point precision. For the small excerpt of the angular spectrum of the LMD, the numerical precision was not good enough. Therefore a special 64 bit precision version of this generator is used in the simulation studies\n45",
+              "locator": {
+                "path": "raw_pdf/Diss_2017_Pflueger_Stefan.pdf",
+                "symbol": null,
+                "start_line": null,
+                "end_line": null,
+                "pdf_page": 51,
+                "printed_page": null,
+                "section_path": [
+                  "5 track reconstruction 43"
+                ],
+                "url": null,
+                "snapshot_date": null
+              },
+              "retrieval_channels": [
+                "dense",
+                "sparse",
+                "paper"
+              ],
+              "score": 0.04979892602843423,
+              "authority_level": "primary"
+            },
+            {
+              "evidence_id": "evidence.9b25e3c227798bc426619240",
+              "object_id": "object.21ade3bc1b265169efad5300",
+              "source_id": "li_2026",
+              "source_version_id": "li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a",
+              "text": "To overcome the severe limitations of simple analytical parameterizations, the Dual Parton Model (DPM) is employed as a robust phenomenological framework to describe high-energy ¯ 𝑝𝑝 elastic scattering [124, 125]. For the specific purpose of luminosity determination at PANDA, the primary practical advantage of the DPM lies in its ability to accurately model the hadronic amplitude across a wide range of momentum transfers ( | 𝑡 | ) without relying on unstable free parameters. Simple exponential parameterizations of the hadronic amplitude (e.g., 𝑒 -𝑏 | 𝑡 | ) via Eq. 3.6 are valid only at small momentum transfers [126, 127]. They completely fail to describe the complex diffractive structures, such as pronounced dips and secondary maxima, that inherently appear at larger | 𝑡 | values in ¯ 𝑝𝑝 scattering. Furthermore, attempting to extract the luminosity by treating fundamental variables like 𝜎 𝑡𝑜𝑡 , 𝑏 , and 𝜌 as independent free parameters for every single energy scan point can easily lead to unphysical mathematical fluctuations in the fit results. To overcome these experimental and phenomenological limitations, a more complicated DPM-based model is employed [128]:\nTrack Reconstruction and Event Preparation\n59\nwhere 𝐴 1 , 𝐴 2 , 𝐴 3 , 𝑡 1 , and 𝑡 2 are parameters determined by fitting existing experimental data on ¯ 𝑝𝑝 elastic scattering over a wide range of beam momenta. Here 𝑡 1 is fixed at value of 0.0899 for all momenta, while all other parameters are fitted via smooth functions of the beam momentum 𝑝 𝑙𝑎𝑏 :\nwhere 𝑥 represents the DPM parameters ( 𝐴 1 , 𝐴 2 , 𝐴 3 , or 𝑡 2 ), and 𝑎 , 𝑐 , and 𝑑 are constants determined from the fit. For beam momenta in the range of 2 ≤ 𝑝 𝑙𝑎𝑏 ≤ 16 GeV /𝑐 , the fitted parameters are listed in Table 3.1. This model captures the\nTable 3.1: Fitted parameters for the DPM model in Eq. 3.12.\nessential features of the hadronic amplitude, including the diffractive structures, and provides a more accurate description of the differential cross section across the relevant | 𝑡 | range in PANDA LMD acceptance. Then the hadronic amplitude derived from the DPM model is used to form the full interference model with the Coulomb amplitude. By using this robust description, PANDA can reliably determine the luminosity even in large | 𝑡 | regions, where the simple exponential ansatz breaks down, ensuring the stability required for high-precision resonance scans. Figure 3.4 shows the Coulomb, Hadronic (from DPM), and Interference components of the differential cross section at four different beam momenta, where the accurate magnetic field maps exists in PANDA simulation software. These differential cross sections will then be used for the luminosity determination in the following sections.\nThe DPM generator is also used to produce the simulate events for comparison with events measured with the future LMD. These events are tracked through the detector and the information is provided in the same style as the real experiment would produce.\n3.4 Track Reconstruction and Event Preparation\nThe raw data acquired by the Luminosity Detector consists of digitized pixel hits distributed across four detector planes. To perform a precision luminosity analysis, these discrete electronic signals must be transformed into physical particle trajectories and, crucially, propagated back to the interaction point (IP) through the complex magnetic field to determine the scattering angles. The reconstruction chain is fully implemented within the PandaRoot framework as discussed before. The procedure consists of four sequential stages: Digitization and Hit Reconstruction, Track Finding, Track Fitting, Track Filtering and Back-Propagation, as illustrated in Figure 3.5.",
+              "locator": {
+                "path": "raw_pdf/thesis.pdf",
+                "symbol": null,
+                "start_line": null,
+                "end_line": null,
+                "pdf_page": 67,
+                "printed_page": null,
+                "section_path": [
+                  "3.4 Track Reconstruction and Event Preparation"
+                ],
+                "url": null,
+                "snapshot_date": null
+              },
+              "retrieval_channels": [
+                "dense",
+                "sparse",
+                "paper"
+              ],
+              "score": 0.05059849076242519,
+              "authority_level": "primary"
+            },
+            {
+              "evidence_id": "evidence.09e1e56c03a9c1741b55b69c",
+              "object_id": "object.fdce122aee775d9038f08328",
+              "source_id": "li_2026",
+              "source_version_id": "li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a",
+              "text": "The LMD detects antiprotons scattered at very small angles (3 -9 mrad). Using Eqs. 3.9 and 3.10, the corresponding momentum transfer | 𝑡 | can be calculated, as shown in Figure 3.3. Unfortunately, | 𝑡 | is not always at very small values where the Coulomb term dominates. At the beam momentum of 3 . 5 GeV /𝑐 , the hadronic term begins to take great effects, while at 12 GeV /𝑐 , the hadronic term dominates. Therefore, the full expression of Eq. 3.8 must be used to fit the measured differential cross section to extract the luminosity.\n58\nLuminosity Determination\nFigure 3.3: Momentum transfer | 𝑡 | range covered by the LMD ( 𝜃 𝑙𝑎𝑏 : 3 -9 mrad) for the momentum range covered by PANDA. The blue line indicates the | 𝑡 | where the Coulomb term equals to the Hadronic term. Figure adapted from [108].\nThe Dual Parton Model (DPM)\nTo overcome the severe limitations of simple analytical parameterizations, the Dual Parton Model (DPM) is employed as a robust phenomenological framework to describe high-energy ¯ 𝑝𝑝 elastic scattering [124, 125]. For the specific purpose of luminosity determination at PANDA, the primary practical advantage of the DPM lies in its ability to accurately model the hadronic amplitude across a wide range of momentum transfers ( | 𝑡 | ) without relying on unstable free parameters. Simple exponential parameterizations of the hadronic amplitude (e.g., 𝑒 -𝑏 | 𝑡 | ) via Eq. 3.6 are valid only at small momentum transfers [126, 127]. They completely fail to describe the complex diffractive structures, such as pronounced dips and secondary maxima, that inherently appear at larger | 𝑡 | values in ¯ 𝑝𝑝 scattering. Furthermore, attempting to extract the luminosity by treating fundamental variables like 𝜎 𝑡𝑜𝑡 , 𝑏 , and 𝜌 as independent free parameters for every single energy scan point can easily lead to unphysical mathematical fluctuations in the fit results. To overcome these experimental and phenomenological limitations, a more complicated DPM-based model is employed [128]:",
+              "locator": {
+                "path": "raw_pdf/thesis.pdf",
+                "symbol": null,
+                "start_line": null,
+                "end_line": null,
+                "pdf_page": 66,
+                "printed_page": null,
+                "section_path": [
+                  "3.3 Method at PANDA"
+                ],
+                "url": null,
+                "snapshot_date": null
+              },
+              "retrieval_channels": [
+                "dense",
+                "sparse",
+                "paper"
+              ],
+              "score": 0.04829963235294117,
+              "authority_level": "primary"
+            },
+            {
+              "evidence_id": "evidence.67f23bc6024df70e7eb06da3",
+              "object_id": "object.6186443f8f63cc299ec5a4da",
+              "source_id": "karavdina_2015",
+              "source_version_id": "karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b",
+              "text": "42\n3.3.2\nModels and their uncertainties\nThe hadronic part of forward elastic scattering cannot be calculated from ﬁrst principles.\nThere are diﬀerent ways to describe the diﬀerential cross section of this term. Currently\nthere are two models available. One is called DPM model [49]. It is a part of the DPM\nbackground events generator in PANDAroot framework (in more details discussed in\nthe following chapters). Another one is called the E760 model, because it was tuned\nand used in the E760 experiment for the luminosity extraction [50]. The last one is not\nimplemented as a generator in the PANDAroot framework yet. Nevertheless, as shown\nby results of in the following, it is more accurate and most probably will be used for the\nluminosity extraction and the production of the simulation data in the future.\n, GeV/c\nlab\nP\n2\n4\n6\n8\n10\n12\n14\n, %\nσ\n/\ncontrib\nσ\n0\n20\n40\n60\n80\n100\ncoul\ninterf\nhad\nFigure 3.5: Contribution of the terms to the elastic p ¯p scattering cross section inte-\ngrated in the scattering angle θ between 3–9mrad (solid line – estimation according\nto DPM elastic scattering model, dashed line – estimation according to E760 model)\nFig. 3.5 shows the contributions of the terms in Eq. 3.9 to the elastic scattering cross\nsection integrated in the LMD range for the both models. These two models give only\nslightly diﬀerent predictions concerning the relative contributions of diﬀerent terms\nof elastic scattering. Therefore in estimations related to count rates in the LMD, e.g\nradiation damage, the DPM generator is well suited too.\n3.3.2.1\nDPM model\nAs discussed in [49], the description via Eq. 3.10 fails to describe the diﬀerential cross\nsection behavior at large |t| values. A more complicated function is introduced for this\n",
+              "locator": {
+                "path": "raw_pdf/Diss_2015_Karavdina_Anastasia.pdf",
+                "symbol": null,
+                "start_line": null,
+                "end_line": null,
+                "pdf_page": 50,
+                "printed_page": null,
+                "section_path": [
+                  "Chapter 7"
+                ],
+                "url": null,
+                "snapshot_date": null
+              },
+              "retrieval_channels": [
+                "exact",
+                "dense",
+                "sparse",
+                "paper"
+              ],
+              "score": 0.08359333685880488,
+              "authority_level": "primary"
+            },
+            {
+              "evidence_id": "evidence.9f50b0df9d3d7078f1ea1dc8",
+              "object_id": "object.bc24ec6d79c17497c2fedfb1",
+              "source_id": "karavdina_2015",
+              "source_version_id": "karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b",
+              "text": "43\npurpose in the DPM generator:\ndσhad\ndt\n= A1 ·[et/2t1 −A2 ·et/2t2]2 +A3 ·et/t2\n(3.13)\nParameters A1, A2, A3, t1, t2 were extracted from previous measurements at six diﬀerent\nbeam momenta. These ﬁt results were taken to establish the momentum dependence\nof the parameters (t1 was kept ﬁx at value 0.0899 for all momenta). All parameters\nfollow the function:\nx\n=\nc+a·e−plab/d\n(3.14)\nwhere x denotes A1, A2, A3 or t2 and c, a, d are constants extracted from the ﬁt. The\nvalues used in the DPM code are indicated in Tab. 3.1 on the left.\nIn order to determine the uncertainty of the DPM model, the uncertainty of all pa-\nrameters is needed. These are not provided in [49]. Also the parameters in the DPM\ngenerator software code and the values in [49] do not match. Therefore the ﬁt of the\nbeam momentum dependence for each DPM parameter was repeated. Comparison with\nthe DPM parameters is presented in Tab. 3.1 and Fig. 3.6. The ﬁt result is close to the\nparameter description used in the DPM code. The diﬀerence stays below 1%.\nParameter\nDPM value\nﬁt value\nA1\nc\n115.\n115.7 ± 7.9\na\n650\n656.9 ± 31.9\nd\n4.08\n4.03 ± 0.32\nA2\nc\n0.0687\n0.0687 ± 0.0087\na\n0.307\n0.300 ± 0.143\nd\n2.367\n2.406 ± 1.184\nt2\nc\n-2.979\n-2.978 ± 0.096\na\n3.353\n3.354 ± 0.096\nd\n483.4\n471.4 ± 132.9\nA3\nc\n0.8372\n0.8411 ± 0.1002\na\n39.53\n40.07 ± 51.97\nd\n0.765\n0.761 ± 0.292\nTable 3.1: DPM parameters for the elastic scattering and their parameters for the mo-\nmentum dependence\nFor the estimation of the model uncertainty, the error of each parameter has to be\npropagated via Gaussian error propagation. An uncertainty of function f(a,b) depen-\n",
+              "locator": {
+                "path": "raw_pdf/Diss_2015_Karavdina_Anastasia.pdf",
+                "symbol": null,
+                "start_line": null,
+                "end_line": null,
+                "pdf_page": 51,
+                "printed_page": null,
+                "section_path": [
+                  "Chapter 7"
+                ],
+                "url": null,
+                "snapshot_date": null
+              },
+              "retrieval_channels": [
+                "dense",
+                "sparse",
+                "paper"
+              ],
+              "score": 0.040875526500526504,
+              "authority_level": "primary"
+            }
+          ]
+        },
+        "B": {
+          "status": "answered",
+          "answer": "The theoretical purpose of the Dual Parton Model (DPM) is to provide a robust phenomenological framework describing the hadronic amplitude of antiproton-proton elastic scattering across a wide range of four-momentum transfer |t|, capturing diffractive structures such as dips and secondary maxima where simple exponential parameterizations fail without relying on unstable free fit parameters. [evidence.9b25e3c227798bc426619240, evidence.09e1e56c03a9c1741b55b69c]\nIn the PANDA Luminosity Detector (LMD) analysis, the hadronic amplitude derived from the DPM model is combined with the Coulomb and interference terms to construct the full differential cross section, which is fitted to the measured elastic-scattering angular distribution to extract the absolute luminosity as the normalization parameter across beam momenta where the hadronic contribution becomes significant or dominant. [evidence.4bfb7160f3c8158ba59d70f2, evidence.9b25e3c227798bc426619240, evidence.09e1e56c03a9c1741b55b69c]\nThe DPM parameterization is additionally used in LuminosityFit so that the theoretical cross-section fit model is identical to the parameterization used by the official PANDA DPM event generator, ensuring consistent evaluations of detector systematic uncertainties. [evidence.4bfb7160f3c8158ba59d70f2, evidence.bbe63751026dc7d7efec3a73]",
+          "claims": [
+            {
+              "claim_id": "claim_dpm_theoretical_purpose",
+              "claim_text": "The theoretical purpose of the Dual Parton Model (DPM) is to provide a robust phenomenological framework describing the hadronic amplitude of antiproton-proton elastic scattering across a wide range of four-momentum transfer |t|, capturing diffractive structures such as dips and secondary maxima where simple exponential parameterizations fail without relying on unstable free fit parameters.",
+              "evidence_ids": [
+                "evidence.9b25e3c227798bc426619240",
+                "evidence.09e1e56c03a9c1741b55b69c"
+              ]
+            },
+            {
+              "claim_id": "claim_dpm_luminosity_fit_connection",
+              "claim_text": "In the PANDA Luminosity Detector (LMD) analysis, the hadronic amplitude derived from the DPM model is combined with the Coulomb and interference terms to construct the full differential cross section, which is fitted to the measured elastic-scattering angular distribution to extract the absolute luminosity as the normalization parameter across beam momenta where the hadronic contribution becomes significant or dominant.",
+              "evidence_ids": [
+                "evidence.4bfb7160f3c8158ba59d70f2",
+                "evidence.9b25e3c227798bc426619240",
+                "evidence.09e1e56c03a9c1741b55b69c"
+              ]
+            },
+            {
+              "claim_id": "claim_dpm_generator_model_consistency",
+              "claim_text": "The DPM parameterization is additionally used in LuminosityFit so that the theoretical cross-section fit model is identical to the parameterization used by the official PANDA DPM event generator, ensuring consistent evaluations of detector systematic uncertainties.",
+              "evidence_ids": [
+                "evidence.4bfb7160f3c8158ba59d70f2",
+                "evidence.bbe63751026dc7d7efec3a73"
+              ]
+            }
+          ],
+          "evidence": [
+            {
+              "evidence_id": "evidence.bbe63751026dc7d7efec3a73",
+              "object_id": "object.f4196a5a00e35fc8550a1da9",
+              "source_id": "pflueger_2017",
+              "source_version_id": "pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3",
+              "text": "The cross section for elastic ¯ pp scattering was introduced in section 3 . 3 . Apart from the calculable coulomb part of the total elastic cross section, two possible parameterizations for the description of the hadronic part exist. Both parameterizations are implemented in the LuminosityFit software. Despite the fact that the E 760 parameterization is more suitable, because it uses more measurements in the four momentum range of the LMD, the DPM parameterization was chosen for the studies in this thesis (see equation 18 ). The reasoning is that the DPM generator is the only official generator for the ¯ PANDA experiment that includes elastic ¯ pp processes 1 . Moreover the operability of the LuminosityFit software and the validity of its extraction precision and studies on systematic uncertainties are not influenced by the chosen parameterization, as long as the behavior of the true physics cross section is described approximated. To ensure meaningful results of the systematic effects, the parameterization of the event generator and the fit model of the luminosity extraction software are identical.\n46\nluminosity determination -the luminosity fit framework\n4 . 2 coordinate transformations\nIn general the kinematics of the elastic scattering process is defined by the momentum transfer t and the center of mass energy √ s or the beam momentum p lab. However the latter can be omitted because for measurements of the ¯ PANDA experiment the beam momentum will be fixed and measured with a relative precision of a few hundred keV/c . Hence it can be regarded as a constant and only the momentum transfer t remains as a phase space variable. In order to relate the measured quantities, the scattering angles θ lab\nFigure 25 : Elastic ¯ pp scattering cross section contributions in the LMD measurment range for various beam momenta. For these beam momenta accurate magnetic field maps exists in the simulation software.\n[mrad]\nq\n3\n4\n5\n6\n7\n8\n9\n10\n[mbarn]\nq\n/d\ns\nd\n1\n10\n2\n10\n3\n10\n4\n10\ntotal\ncoulomb\nhadron\n= 1.5 GeV/c\nlab\np\n[mrad]\nq\n3\n4\n5\n6\n7\n8\n9\n10\n[mbarn]\nq\n/d\ns\nd\n1\n10\n2\n10\n3\n10\n4\n10\ntotal\ncoulomb\nhadron\n= 4.06 GeV/c\nlab\np\n[mrad]\nq\n3\n4\n5\n6\n7\n8\n9\n10\n[mbarn]\nq\n/d\ns\nd\n1\n10\n2\n10\n3\n10\n4\n10\ntotal\ncoulomb\nhadron\n= 8.9 GeV/c\nlab\np\n[mrad]\nq\n3\n4\n5\n6\n7\n8\n9\n10\n[mbarn]\nq\n/d\ns\nd\n1\n10\n2\n10\n3\n10\n4\n10\ntotal\ncoulomb\nhadron\n= 15 GeV/c\nlab\np\nand φ lab in the laboratory system, to the momentum transfer t a coordinate transforma- tion is necessary. The relation between the four momentum transfer and the scattering angle θ lab (defined with respect to the incoming antiproton) is",
+              "locator": {
+                "path": "raw_pdf/Diss_2017_Pflueger_Stefan.pdf",
+                "symbol": null,
+                "start_line": null,
+                "end_line": null,
+                "pdf_page": 52,
+                "printed_page": null,
+                "section_path": [
+                  "5 track reconstruction 43"
+                ],
+                "url": null,
+                "snapshot_date": null
+              },
+              "retrieval_channels": [
+                "sparse",
+                "paper"
+              ],
+              "score": 0.03008247027234369,
+              "authority_level": "primary"
+            },
+            {
+              "evidence_id": "evidence.4bfb7160f3c8158ba59d70f2",
+              "object_id": "object.faaced8bd5058b2a19ba9528",
+              "source_id": "pflueger_2017",
+              "source_version_id": "pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3",
+              "text": "4\nLUMINOSITY DETERMINATION - THE LUMINOSITY FIT FRAMEWORK\nThis chapter presents the LuminosityFit software, which counts as major work effort of this thesis, and can be found on the github platform [ 107 ]. It is responsible for the determination of the luminosity with the highest possible precision from the reconstructed data of the LMD. Recalling chapter 3 , this is achieved by comparing the measured elastic scattering angular distribution with the theoretical model distribution. The normalization variable is the absolute luminosity L . However the measured angular distribution N ( θ ) cannot simply be compared to the theoretical model σ ( θ ) , because several inevitable measurement effects alter the original pure elastic scattering distribution. There are two possible paths to overcome this obstacle. One possibility is to correct the measured data for the effects introduced by the ¯ PANDA spectrometer, which then allows a direct comparison with the pure elastic scattering model. Alternatively, the pure model can be modified to include all of the effects that arise during the measurement, so that is directly comparable with the data. The first option is in practice not feasible as required operations such as deconvolutions, which undo the detector resolution of the data, require very large amounts of data and a constant resolution to work reliably. On these grounds the second option was chosen, allowing for far more flexibility, extraction power and precision. The construction of the fit model with all of the transformations and correction procedures of the elastic scattering cross section is presented in detail in the following. Results on the extracted luminosity precision and studies of systematic uncertainties are presented in the next chapter.\n4 . 1 the elastic scattering model\nThe cross section for elastic ¯ pp scattering was introduced in section 3 . 3 . Apart from the calculable coulomb part of the total elastic cross section, two possible parameterizations for the description of the hadronic part exist. Both parameterizations are implemented in the LuminosityFit software. Despite the fact that the E 760 parameterization is more suitable, because it uses more measurements in the four momentum range of the LMD, the DPM parameterization was chosen for the studies in this thesis (see equation 18 ). The reasoning is that the DPM generator is the only official generator for the ¯ PANDA experiment that includes elastic ¯ pp processes 1 . Moreover the operability of the LuminosityFit software and the validity of its extraction precision and studies on systematic uncertainties are not influenced by the chosen parameterization, as long as the behavior of the true physics cross section is described approximated. To ensure meaningful results of the systematic effects, the parameterization of the event generator and the fit model of the luminosity extraction software are identical.\n1 The official version of the DPM generator unfortunately uses 32 bit floating point precision. For the small excerpt of the angular spectrum of the LMD, the numerical precision was not good enough. Therefore a special 64 bit precision version of this generator is used in the simulation studies\n45",
+              "locator": {
+                "path": "raw_pdf/Diss_2017_Pflueger_Stefan.pdf",
+                "symbol": null,
+                "start_line": null,
+                "end_line": null,
+                "pdf_page": 51,
+                "printed_page": null,
+                "section_path": [
+                  "5 track reconstruction 43"
+                ],
+                "url": null,
+                "snapshot_date": null
+              },
+              "retrieval_channels": [
+                "dense",
+                "sparse",
+                "paper"
+              ],
+              "score": 0.04979892602843423,
+              "authority_level": "primary"
+            },
+            {
+              "evidence_id": "evidence.9b25e3c227798bc426619240",
+              "object_id": "object.21ade3bc1b265169efad5300",
+              "source_id": "li_2026",
+              "source_version_id": "li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a",
+              "text": "To overcome the severe limitations of simple analytical parameterizations, the Dual Parton Model (DPM) is employed as a robust phenomenological framework to describe high-energy ¯ 𝑝𝑝 elastic scattering [124, 125]. For the specific purpose of luminosity determination at PANDA, the primary practical advantage of the DPM lies in its ability to accurately model the hadronic amplitude across a wide range of momentum transfers ( | 𝑡 | ) without relying on unstable free parameters. Simple exponential parameterizations of the hadronic amplitude (e.g., 𝑒 -𝑏 | 𝑡 | ) via Eq. 3.6 are valid only at small momentum transfers [126, 127]. They completely fail to describe the complex diffractive structures, such as pronounced dips and secondary maxima, that inherently appear at larger | 𝑡 | values in ¯ 𝑝𝑝 scattering. Furthermore, attempting to extract the luminosity by treating fundamental variables like 𝜎 𝑡𝑜𝑡 , 𝑏 , and 𝜌 as independent free parameters for every single energy scan point can easily lead to unphysical mathematical fluctuations in the fit results. To overcome these experimental and phenomenological limitations, a more complicated DPM-based model is employed [128]:\nTrack Reconstruction and Event Preparation\n59\nwhere 𝐴 1 , 𝐴 2 , 𝐴 3 , 𝑡 1 , and 𝑡 2 are parameters determined by fitting existing experimental data on ¯ 𝑝𝑝 elastic scattering over a wide range of beam momenta. Here 𝑡 1 is fixed at value of 0.0899 for all momenta, while all other parameters are fitted via smooth functions of the beam momentum 𝑝 𝑙𝑎𝑏 :\nwhere 𝑥 represents the DPM parameters ( 𝐴 1 , 𝐴 2 , 𝐴 3 , or 𝑡 2 ), and 𝑎 , 𝑐 , and 𝑑 are constants determined from the fit. For beam momenta in the range of 2 ≤ 𝑝 𝑙𝑎𝑏 ≤ 16 GeV /𝑐 , the fitted parameters are listed in Table 3.1. This model captures the\nTable 3.1: Fitted parameters for the DPM model in Eq. 3.12.\nessential features of the hadronic amplitude, including the diffractive structures, and provides a more accurate description of the differential cross section across the relevant | 𝑡 | range in PANDA LMD acceptance. Then the hadronic amplitude derived from the DPM model is used to form the full interference model with the Coulomb amplitude. By using this robust description, PANDA can reliably determine the luminosity even in large | 𝑡 | regions, where the simple exponential ansatz breaks down, ensuring the stability required for high-precision resonance scans. Figure 3.4 shows the Coulomb, Hadronic (from DPM), and Interference components of the differential cross section at four different beam momenta, where the accurate magnetic field maps exists in PANDA simulation software. These differential cross sections will then be used for the luminosity determination in the following sections.\nThe DPM generator is also used to produce the simulate events for comparison with events measured with the future LMD. These events are tracked through the detector and the information is provided in the same style as the real experiment would produce.\n3.4 Track Reconstruction and Event Preparation\nThe raw data acquired by the Luminosity Detector consists of digitized pixel hits distributed across four detector planes. To perform a precision luminosity analysis, these discrete electronic signals must be transformed into physical particle trajectories and, crucially, propagated back to the interaction point (IP) through the complex magnetic field to determine the scattering angles. The reconstruction chain is fully implemented within the PandaRoot framework as discussed before. The procedure consists of four sequential stages: Digitization and Hit Reconstruction, Track Finding, Track Fitting, Track Filtering and Back-Propagation, as illustrated in Figure 3.5.",
+              "locator": {
+                "path": "raw_pdf/thesis.pdf",
+                "symbol": null,
+                "start_line": null,
+                "end_line": null,
+                "pdf_page": 67,
+                "printed_page": null,
+                "section_path": [
+                  "3.4 Track Reconstruction and Event Preparation"
+                ],
+                "url": null,
+                "snapshot_date": null
+              },
+              "retrieval_channels": [
+                "dense",
+                "sparse",
+                "paper"
+              ],
+              "score": 0.05059849076242519,
+              "authority_level": "primary"
+            },
+            {
+              "evidence_id": "evidence.09e1e56c03a9c1741b55b69c",
+              "object_id": "object.fdce122aee775d9038f08328",
+              "source_id": "li_2026",
+              "source_version_id": "li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a",
+              "text": "The LMD detects antiprotons scattered at very small angles (3 -9 mrad). Using Eqs. 3.9 and 3.10, the corresponding momentum transfer | 𝑡 | can be calculated, as shown in Figure 3.3. Unfortunately, | 𝑡 | is not always at very small values where the Coulomb term dominates. At the beam momentum of 3 . 5 GeV /𝑐 , the hadronic term begins to take great effects, while at 12 GeV /𝑐 , the hadronic term dominates. Therefore, the full expression of Eq. 3.8 must be used to fit the measured differential cross section to extract the luminosity.\n58\nLuminosity Determination\nFigure 3.3: Momentum transfer | 𝑡 | range covered by the LMD ( 𝜃 𝑙𝑎𝑏 : 3 -9 mrad) for the momentum range covered by PANDA. The blue line indicates the | 𝑡 | where the Coulomb term equals to the Hadronic term. Figure adapted from [108].\nThe Dual Parton Model (DPM)\nTo overcome the severe limitations of simple analytical parameterizations, the Dual Parton Model (DPM) is employed as a robust phenomenological framework to describe high-energy ¯ 𝑝𝑝 elastic scattering [124, 125]. For the specific purpose of luminosity determination at PANDA, the primary practical advantage of the DPM lies in its ability to accurately model the hadronic amplitude across a wide range of momentum transfers ( | 𝑡 | ) without relying on unstable free parameters. Simple exponential parameterizations of the hadronic amplitude (e.g., 𝑒 -𝑏 | 𝑡 | ) via Eq. 3.6 are valid only at small momentum transfers [126, 127]. They completely fail to describe the complex diffractive structures, such as pronounced dips and secondary maxima, that inherently appear at larger | 𝑡 | values in ¯ 𝑝𝑝 scattering. Furthermore, attempting to extract the luminosity by treating fundamental variables like 𝜎 𝑡𝑜𝑡 , 𝑏 , and 𝜌 as independent free parameters for every single energy scan point can easily lead to unphysical mathematical fluctuations in the fit results. To overcome these experimental and phenomenological limitations, a more complicated DPM-based model is employed [128]:",
+              "locator": {
+                "path": "raw_pdf/thesis.pdf",
+                "symbol": null,
+                "start_line": null,
+                "end_line": null,
+                "pdf_page": 66,
+                "printed_page": null,
+                "section_path": [
+                  "3.3 Method at PANDA"
+                ],
+                "url": null,
+                "snapshot_date": null
+              },
+              "retrieval_channels": [
+                "dense",
+                "sparse",
+                "paper"
+              ],
+              "score": 0.04829963235294117,
+              "authority_level": "primary"
+            }
+          ]
+        }
+      },
+      "judgment": {
+        "preferred": "equivalent",
+        "critical_regression": false,
+        "A_supported": true,
+        "B_supported": true,
+        "reason": "Both models accurately and comprehensively answer the question, meeting the approved reference by explaining both the phenomenological purpose of the DPM elastic scattering parameterization and how it is used to relate the elastic differential cross section to luminosity determination. Both answers are fully supported by their cited evidence."
+      },
+      "usage": [
+        {
+          "stage": "judge",
+          "logical_calls": 1,
+          "response": {
+            "preferred": "equivalent",
+            "critical_regression": false,
+            "A_supported": true,
+            "B_supported": true,
+            "reason": "Both models accurately and comprehensively answer the question, meeting the approved reference by explaining both the phenomenological purpose of the DPM elastic scattering parameterization and how it is used to relate the elastic differential cross section to luminosity determination. Both answers are fully supported by their cited evidence."
+          },
+          "returned_model_calls": 1,
+          "adapter_requests": 1,
+          "tokens": 10953
+        }
+      ]
+    },
+    {
+      "execution_id": "g001",
+      "state": "COMPLETE",
+      "original_r3_index": 3,
+      "input": {
+        "question": "How do I install the locked PandaRoot development snapshot?",
+        "approved_reference": {
+          "expected_status": "answered",
+          "answer_points": [
+            {
+              "critical": true,
+              "point_id": "p1",
+              "text": "Use the locked 2023-dev installation documentation and state that repository behavior is commit-specific.",
+              "weight": 1.0
+            }
+          ],
+          "required_identifiers": [],
+          "allowed_source_versions": [
+            "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+            "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+            "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+            "li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a",
+            "karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b",
+            "pflueger_2017@1b6ec987fc1430be085f2a7ba631d634f6580115ff0a90dff090dfcba5e990f3",
+            "pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87",
+            "curated_panda_domain@1.0"
+          ]
+        },
+        "A": {
+          "status": "answered",
+          "answer": "In PandaRoot, developers are directed to docs/Installation/Install_Developers.md (titled Installation of PandaRoot for Developers in docs/Installation/Install_Developers.rst), although the specific developer workflow steps beyond the document title are not detailed in the supplied evidence. [evidence.3c80d1da5887ef3ee98fd191, evidence.a5c121832f17c058e2344921, evidence.3b4af011e964b0498dab48ec]\nAccording to docs/Installation/Install_PandaRoot.rst, the installation setup requires configuring the environment variables SIMPATH and FAIRROOTPATH to point to the external packages and FairRoot installation directories. [evidence.77425787ad04c01992cc8842, evidence.afe1338f948eb37357a506ad]\nThe documented build and installation commands in docs/Installation/Install_PandaRoot.rst involve creating and entering a build directory, configuring the project with cmake -DCMAKE_INSTALL_PREFIX=../install ../source, and compiling with make install -j4. [evidence.afe1338f948eb37357a506ad]",
+          "claims": [
+            {
+              "claim_id": "claim.1",
+              "claim_text": "In PandaRoot, developers are directed to docs/Installation/Install_Developers.md (titled Installation of PandaRoot for Developers in docs/Installation/Install_Developers.rst), although the specific developer workflow steps beyond the document title are not detailed in the supplied evidence.",
+              "evidence_ids": [
+                "evidence.3c80d1da5887ef3ee98fd191",
+                "evidence.a5c121832f17c058e2344921",
+                "evidence.3b4af011e964b0498dab48ec"
+              ]
+            },
+            {
+              "claim_id": "claim.2",
+              "claim_text": "According to docs/Installation/Install_PandaRoot.rst, the installation setup requires configuring the environment variables SIMPATH and FAIRROOTPATH to point to the external packages and FairRoot installation directories.",
+              "evidence_ids": [
+                "evidence.77425787ad04c01992cc8842",
+                "evidence.afe1338f948eb37357a506ad"
+              ]
+            },
+            {
+              "claim_id": "claim.3",
+              "claim_text": "The documented build and installation commands in docs/Installation/Install_PandaRoot.rst involve creating and entering a build directory, configuring the project with cmake -DCMAKE_INSTALL_PREFIX=../install ../source, and compiling with make install -j4.",
+              "evidence_ids": [
+                "evidence.afe1338f948eb37357a506ad"
+              ]
+            }
+          ],
+          "evidence": [
+            {
+              "evidence_id": "evidence.a5c121832f17c058e2344921",
+              "object_id": "object.2de0c11066dd97bc1177de1c",
+              "source_id": "pandaroot_sphinx_2023_08_25_dev",
+              "source_version_id": "pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87",
+              "text": "Installation\n¶\nFor\nuser installation\ninstructions please refer to\nInstalling & running PandaRoot\nIf you do\ndevelopment\n, please follow the instructions in\nInstallation of PandaRoot for Developers\nThe installation at the\nGSI cluster\nVirgo is described in\nInstallation of PandaRoot on the Virgo cluster at GSI\nContents:\nInstalling & running PandaRoot\nInstallation of PandaRoot for Developers\nInstallation of PandaRoot on the Virgo cluster at GSI\nTroubleshooting\nCernVM-FS installation\nBuilding the documentation\nBuilding an external package",
+              "locator": {
+                "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Installation/Installation.html",
+                "symbol": null,
+                "start_line": null,
+                "end_line": null,
+                "pdf_page": null,
+                "printed_page": null,
+                "section_path": [
+                  "Installation ¶",
+                  "Installation ¶"
+                ],
+                "url": "https://webdocs.gsi.de/~pandacc/documentation/2023-08-25-dev/sphinx/Installation/Installation.html#installation",
+                "snapshot_date": "2026-07-30"
+              },
+              "retrieval_channels": [
+                "dense",
+                "sparse"
+              ],
+              "score": 0.030679156908665108,
+              "authority_level": "operational"
+            },
+            {
+              "evidence_id": "evidence.3b4af011e964b0498dab48ec",
+              "object_id": "object.1904af36be705225b8c161c0",
+              "source_id": "pandaroot",
+              "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+              "text": "Installation of PandaRoot for Developers\n========================================",
+              "locator": {
+                "path": "docs/Installation/Install_Developers.rst",
+                "symbol": null,
+                "start_line": 1,
+                "end_line": 2,
+                "pdf_page": null,
+                "printed_page": null,
+                "section_path": [],
+                "url": null,
+                "snapshot_date": null
+              },
+              "retrieval_channels": [
+                "dense",
+                "sparse"
+              ],
+              "score": 0.03021353930031804,
+              "authority_level": "primary"
+            },
+            {
+              "evidence_id": "evidence.3c80d1da5887ef3ee98fd191",
+              "object_id": "object.3f695bf388d11068f5fd5f9e",
+              "source_id": "pandaroot",
+              "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+              "text": "# PandaRoot\n\nThis software is designed to the specific needs of the PANDA experiment. It is used to perform event generation, particle transport (\"simulation\"), detector digitisation and reconstruction, particle identification as well as event analysis.\n\n\n### Installation\nFor **user installation** instructions please refer to [docs/Installation/Install_PandaRoot.md](docs/Installation/Install_PandaRoot.md)\n\nIf you do **development**, please follow the instructions in [docs/Installation/Install_Developers.md](docs/Installation/Install_Developers.md)\n\nThe installation at the **GSI cluster** Virgo is described in [docs/Installation/Install_GSI.md](docs/Installation/Install_GSI.md)\n\n### Examples\nTo run a simulation chain with PandaRoot you can refer to `macro/master` which contains the most recent macros. More detailed examples and tutorials are found under `tutorials`. The most recent one is `tutorials/thailand2017`.\n\n### Overview\n\nThere are many event generators, which can be found in `pgenerators`. The detector code is put at `detectors`. Under `geometry` the root geometries and related files are stored. \nThe input and the parameters are located in `config`, `gconfig`, `input` and `macro/params`. Tracking and PID code is located in `tracking`, `genfit`, `genfit2` and `pid`. \nThe analysis related classes are found in `analysis`. \nAll data formats are separated from the actual algorithms and can be referenced in `pnddata`.\n\nUnder `macro/QA` you will find the quality assurance checks, which are performed each night. Their results can be found at [https://cdash.gsi.de/index.php?project=PandaRoot](https://cdash.gsi.de/index.php?project=PandaRoot).\n\n",
+              "locator": {
+                "path": "Readme.md",
+                "symbol": null,
+                "start_line": 1,
+                "end_line": 24,
+                "pdf_page": null,
+                "printed_page": null,
+                "section_path": [],
+                "url": null,
+                "snapshot_date": null
+              },
+              "retrieval_channels": [
+                "dense",
+                "sparse"
+              ],
+              "score": 0.027777777777777776,
+              "authority_level": "operational"
+            },
+            {
+              "evidence_id": "evidence.afe1338f948eb37357a506ad",
+              "object_id": "object.0447d5a81ed65175eb676490",
+              "source_id": "pandaroot",
+              "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+              "text": "export SIMPATH=/home/pandauser/fairsoft_XXX/install\n  mkdir build\n  cd build\n  cmake -DCMAKE_INSTALL_PREFIX=../install ../source\n  make install -j4",
+              "locator": {
+                "path": "docs/Installation/Install_PandaRoot.rst",
+                "symbol": null,
+                "start_line": 46,
+                "end_line": 50,
+                "pdf_page": null,
+                "printed_page": null,
+                "section_path": [],
+                "url": null,
+                "snapshot_date": null
+              },
+              "retrieval_channels": [
+                "exact"
+              ],
+              "score": 0.028169014084507043,
+              "authority_level": "primary"
+            },
+            {
+              "evidence_id": "evidence.77425787ad04c01992cc8842",
+              "object_id": "object.01597673b2dc353b82f56fb4",
+              "source_id": "pandaroot",
+              "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+              "text": "First you need to set the environment variables SIMPATH and FAIRROOTPATH, which are the folders where you have the installed the external packages and FairRoot. If the installation was done with Spack, both folders may be the same. On a cluster this may be already pre-installed for you, e.g. on a CVMFS.",
+              "locator": {
+                "path": "docs/Installation/Install_PandaRoot.rst",
+                "symbol": null,
+                "start_line": 92,
+                "end_line": 92,
+                "pdf_page": null,
+                "printed_page": null,
+                "section_path": [],
+                "url": null,
+                "snapshot_date": null
+              },
+              "retrieval_channels": [
+                "exact"
+              ],
+              "score": 0.029850746268656716,
+              "authority_level": "primary"
+            }
+          ]
+        },
+        "B": {
+          "status": "answered",
+          "answer": "In PandaRoot at commit 18c09e91100db27867ded30e708b4dae95bd8357, Readme.md instructs developers to follow docs/Installation/Install_Developers.md (referenced in the documentation as Installation of PandaRoot for Developers), but the supplied evidence does not contain the complete developer-specific installation instructions from that file. [evidence.3c80d1da5887ef3ee98fd191, evidence.3b4af011e964b0498dab48ec, evidence.a5c121832f17c058e2344921]\nThe repository's documented installation base in docs/Installation/Install_PandaRoot.rst specifies setting SIMPATH and FAIRROOTPATH environment variables, creating a build folder, configuring with cmake -DCMAKE_INSTALL_PREFIX=../install ../source, and running make install -j4. [evidence.77425787ad04c01992cc8842, evidence.afe1338f948eb37357a506ad]",
+          "claims": [
+            {
+              "claim_id": "pandaroot_dev_install_reference",
+              "claim_text": "In PandaRoot at commit 18c09e91100db27867ded30e708b4dae95bd8357, Readme.md instructs developers to follow docs/Installation/Install_Developers.md (referenced in the documentation as Installation of PandaRoot for Developers), but the supplied evidence does not contain the complete developer-specific installation instructions from that file.",
+              "evidence_ids": [
+                "evidence.3c80d1da5887ef3ee98fd191",
+                "evidence.3b4af011e964b0498dab48ec",
+                "evidence.a5c121832f17c058e2344921"
+              ]
+            },
+            {
+              "claim_id": "pandaroot_user_install_base_procedure",
+              "claim_text": "The repository's documented installation base in docs/Installation/Install_PandaRoot.rst specifies setting SIMPATH and FAIRROOTPATH environment variables, creating a build folder, configuring with cmake -DCMAKE_INSTALL_PREFIX=../install ../source, and running make install -j4.",
+              "evidence_ids": [
+                "evidence.77425787ad04c01992cc8842",
+                "evidence.afe1338f948eb37357a506ad"
+              ]
+            }
+          ],
+          "evidence": [
+            {
+              "evidence_id": "evidence.a5c121832f17c058e2344921",
+              "object_id": "object.2de0c11066dd97bc1177de1c",
+              "source_id": "pandaroot_sphinx_2023_08_25_dev",
+              "source_version_id": "pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87",
+              "text": "Installation\n¶\nFor\nuser installation\ninstructions please refer to\nInstalling & running PandaRoot\nIf you do\ndevelopment\n, please follow the instructions in\nInstallation of PandaRoot for Developers\nThe installation at the\nGSI cluster\nVirgo is described in\nInstallation of PandaRoot on the Virgo cluster at GSI\nContents:\nInstalling & running PandaRoot\nInstallation of PandaRoot for Developers\nInstallation of PandaRoot on the Virgo cluster at GSI\nTroubleshooting\nCernVM-FS installation\nBuilding the documentation\nBuilding an external package",
+              "locator": {
+                "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Installation/Installation.html",
+                "symbol": null,
+                "start_line": null,
+                "end_line": null,
+                "pdf_page": null,
+                "printed_page": null,
+                "section_path": [
+                  "Installation ¶",
+                  "Installation ¶"
+                ],
+                "url": "https://webdocs.gsi.de/~pandacc/documentation/2023-08-25-dev/sphinx/Installation/Installation.html#installation",
+                "snapshot_date": "2026-07-30"
+              },
+              "retrieval_channels": [
+                "dense",
+                "sparse"
+              ],
+              "score": 0.030679156908665108,
+              "authority_level": "operational"
+            },
+            {
+              "evidence_id": "evidence.3c80d1da5887ef3ee98fd191",
+              "object_id": "object.3f695bf388d11068f5fd5f9e",
+              "source_id": "pandaroot",
+              "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+              "text": "# PandaRoot\n\nThis software is designed to the specific needs of the PANDA experiment. It is used to perform event generation, particle transport (\"simulation\"), detector digitisation and reconstruction, particle identification as well as event analysis.\n\n\n### Installation\nFor **user installation** instructions please refer to [docs/Installation/Install_PandaRoot.md](docs/Installation/Install_PandaRoot.md)\n\nIf you do **development**, please follow the instructions in [docs/Installation/Install_Developers.md](docs/Installation/Install_Developers.md)\n\nThe installation at the **GSI cluster** Virgo is described in [docs/Installation/Install_GSI.md](docs/Installation/Install_GSI.md)\n\n### Examples\nTo run a simulation chain with PandaRoot you can refer to `macro/master` which contains the most recent macros. More detailed examples and tutorials are found under `tutorials`. The most recent one is `tutorials/thailand2017`.\n\n### Overview\n\nThere are many event generators, which can be found in `pgenerators`. The detector code is put at `detectors`. Under `geometry` the root geometries and related files are stored. \nThe input and the parameters are located in `config`, `gconfig`, `input` and `macro/params`. Tracking and PID code is located in `tracking`, `genfit`, `genfit2` and `pid`. \nThe analysis related classes are found in `analysis`. \nAll data formats are separated from the actual algorithms and can be referenced in `pnddata`.\n\nUnder `macro/QA` you will find the quality assurance checks, which are performed each night. Their results can be found at [https://cdash.gsi.de/index.php?project=PandaRoot](https://cdash.gsi.de/index.php?project=PandaRoot).\n\n",
+              "locator": {
+                "path": "Readme.md",
+                "symbol": null,
+                "start_line": 1,
+                "end_line": 24,
+                "pdf_page": null,
+                "printed_page": null,
+                "section_path": [],
+                "url": null,
+                "snapshot_date": null
+              },
+              "retrieval_channels": [
+                "dense",
+                "sparse"
+              ],
+              "score": 0.027777777777777776,
+              "authority_level": "operational"
+            },
+            {
+              "evidence_id": "evidence.3b4af011e964b0498dab48ec",
+              "object_id": "object.1904af36be705225b8c161c0",
+              "source_id": "pandaroot",
+              "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+              "text": "Installation of PandaRoot for Developers\n========================================",
+              "locator": {
+                "path": "docs/Installation/Install_Developers.rst",
+                "symbol": null,
+                "start_line": 1,
+                "end_line": 2,
+                "pdf_page": null,
+                "printed_page": null,
+                "section_path": [],
+                "url": null,
+                "snapshot_date": null
+              },
+              "retrieval_channels": [
+                "dense",
+                "sparse"
+              ],
+              "score": 0.03021353930031804,
+              "authority_level": "primary"
+            },
+            {
+              "evidence_id": "evidence.afe1338f948eb37357a506ad",
+              "object_id": "object.0447d5a81ed65175eb676490",
+              "source_id": "pandaroot",
+              "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+              "text": "export SIMPATH=/home/pandauser/fairsoft_XXX/install\n  mkdir build\n  cd build\n  cmake -DCMAKE_INSTALL_PREFIX=../install ../source\n  make install -j4",
+              "locator": {
+                "path": "docs/Installation/Install_PandaRoot.rst",
+                "symbol": null,
+                "start_line": 46,
+                "end_line": 50,
+                "pdf_page": null,
+                "printed_page": null,
+                "section_path": [],
+                "url": null,
+                "snapshot_date": null
+              },
+              "retrieval_channels": [
+                "exact"
+              ],
+              "score": 0.030303030303030304,
+              "authority_level": "primary"
+            },
+            {
+              "evidence_id": "evidence.77425787ad04c01992cc8842",
+              "object_id": "object.01597673b2dc353b82f56fb4",
+              "source_id": "pandaroot",
+              "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+              "text": "First you need to set the environment variables SIMPATH and FAIRROOTPATH, which are the folders where you have the installed the external packages and FairRoot. If the installation was done with Spack, both folders may be the same. On a cluster this may be already pre-installed for you, e.g. on a CVMFS.",
+              "locator": {
+                "path": "docs/Installation/Install_PandaRoot.rst",
+                "symbol": null,
+                "start_line": 92,
+                "end_line": 92,
+                "pdf_page": null,
+                "printed_page": null,
+                "section_path": [],
+                "url": null,
+                "snapshot_date": null
+              },
+              "retrieval_channels": [
+                "exact"
+              ],
+              "score": 0.03125,
+              "authority_level": "primary"
+            }
+          ]
+        }
+      },
+      "judgment": {
+        "preferred": "B",
+        "critical_regression": false,
+        "A_supported": true,
+        "B_supported": true,
+        "reason": "Model B explicitly specifies the commit hash for the snapshot behavior, directly addressing the reference requirement that repository behavior is commit-specific."
+      },
+      "usage": [
+        {
+          "stage": "judge",
+          "logical_calls": 1,
+          "response": {
+            "preferred": "B",
+            "critical_regression": false,
+            "A_supported": true,
+            "B_supported": true,
+            "reason": "Model B explicitly specifies the commit hash for the snapshot behavior, directly addressing the reference requirement that repository behavior is commit-specific."
+          },
+          "returned_model_calls": 1,
+          "adapter_requests": 1,
+          "tokens": 7047
+        }
+      ]
+    }
+  ]
+}
