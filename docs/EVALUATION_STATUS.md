@@ -35,11 +35,13 @@ E2-A3-R2 = COMPLETE / PASS / CITATION_ELIGIBLE_EVIDENCE_SELECTION_REPAIR_VALIDAT
 R2 report: `evaluation/E2_A3_R2_CITATION_ELIGIBLE_EVIDENCE_REPAIR.md`.
 E2-A3-R3 = COMPLETE / INCONCLUSIVE / CONNECTION_TIMEOUT_AND_PROVIDER_429_INCOMPLETE_PAIRS.
 E2-A3-R3-R1 = COMPLETE / FAIL / G11.
+E2-A3-R3-R1 G11 FAILURE REVIEW = COMPLETE / PASS / PRODUCT_REPAIR_AND_GATE_REDESIGN_RECOMMENDED.
+G11 review: `evaluation/E2_A3_R3_R1_G11_FAILURE_REVIEW.md`.
 Recovery report: `evaluation/E2_A3_R3_R1_INFRASTRUCTURE_RECOVERY.md`.
 R3 report: `evaluation/E2_A3_R3_RUNTIME_ACTIVATION_REASSESSMENT.md`.
 Historical A3/R1 activation gates failed; R2 passed bounded repair validation only. No runtime default promotion occurred.
 Normal default = `legacy_question_core`; runtime activation did not occur.
-E2 = IN_PROGRESS / RUNTIME_ACTIVATION_FAILED / ACTIVATION_COMPLETION_FAILED.
+E2 = IN_PROGRESS / RUNTIME_ACTIVATION_FAILED / GENERIC_SANITIZATION_REPAIR_AND_GATE_REDESIGN_PENDING.
 E2-A1 report: `evaluation/E2_A1_SHADOW_ANSWER_POINT_COVERAGE_CONTRACT.md`.
 C1 met all eight strict gates and the original pair09 atomicity sentinel. Per the
 accepted closure decision, E1 is complete. E2-A2 passed targeted shadow validation. E2-A3 failed Q7; normal QA remains legacy and E3 remains NOT_STARTED.
@@ -93,21 +95,38 @@ MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD
 Current planning state:
 D4 = PAUSED / ROADMAP_RECONCILIATION
 D4 overall completion = UNDECIDED
-CURRENT_TASK = E2-A3-R3-R1 / COMPLETE / FAIL / G11
-NEXT_TASK_RECOMMENDATION = E2-A3-R3-R1 G11 FAILURE REVIEW / NOT AUTHORIZED
+CURRENT_TASK = E2-A3-R3-R1-FR1 / COMPLETE / PASS / PRODUCT_REPAIR_AND_GATE_REDESIGN_RECOMMENDED
+NEXT_TASK_RECOMMENDATION = E2-A3-R4 — Generic Claim Sanitization Repair and Prospective Activation Gate Redesign / NOT AUTHORIZED
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 
 No D4-A11 exists.
 Phase E = IN_PROGRESS / E2.
 E1 = COMPLETE / PASS / QUESTION_ONLY_SEMANTIC_ANSWER_POINT_DECOMPOSITION_VALIDATED.
-E2 = IN_PROGRESS / RUNTIME_ACTIVATION_FAILED / ACTIVATION_COMPLETION_FAILED.
+E2 = IN_PROGRESS / RUNTIME_ACTIVATION_FAILED / GENERIC_SANITIZATION_REPAIR_AND_GATE_REDESIGN_PENDING.
 E3 = NOT_STARTED.
 Phase F = IN_PROGRESS / F1_COMPLETE.
 F2 = NOT_STARTED / SCOPE_PRESERVED.
 F3 = SCOPE_RECONCILIATION_REQUIRED / PARTIALLY_SUPERSEDED_BY_D4.
-No further recovery, D4, Phase-E, or Phase-F task is authorized after E2-A3-R3-R1.
+No further recovery, D4, Phase-E, or Phase-F task is authorized after E2-A3-R3-R1-FR1.
 
-## E2-A3-R3-R1 scientific closeout
+## E2-A3-R3-R1-FR1 static review closeout
+
+COMPLETE / PASS / PRODUCT_REPAIR_AND_GATE_REDESIGN_RECOMMENDED.
+Historical G11 FAIL and 1/11/2 remain immutable. Exact g001 public wording omits
+commit-specific scope (not merely a SHA); support/coverage flags do not establish
+all Gold clauses. g029 optional boundary elaboration differs, and its malformed
+type phrase is exactly reproduced by the shared pre-existing identifier sanitizer;
+g059 supplies a second compatible transform. Narrow A1 shared sanitization repair
+is justified, without claiming a common g001/g029/g002 runtime defect. Future gate
+redesign should separately audit explicit obligations and material noncritical loss.
+No current gate change, repair, rejudge, waiver or activation. Offline review only:
+all scientific calls/tokens zero; abstract AGY review separately reported.
+Report: `evaluation/E2_A3_R3_R1_G11_FAILURE_REVIEW.md`.
+Artifact: `evaluation/e2_a3_r3_r1_g11_failure_review.json`.
+The prior closeout's metrics below remain frozen; the new Gold-clause observation
+is not a rescore of those gates. Next R4 requires separate authorization.
+
+## Historical E2-A3-R3-R1 scientific closeout
 
 COMPLETE / FAIL / G11. Recovery g059/g047/g001 completed all six fresh arms and
 three blinded judgments with zero terminal infrastructure failures or case replays.
