@@ -41,7 +41,13 @@ Recovery report: `evaluation/E2_A3_R3_R1_INFRASTRUCTURE_RECOVERY.md`.
 R3 report: `evaluation/E2_A3_R3_RUNTIME_ACTIVATION_REASSESSMENT.md`.
 Historical A3/R1 activation gates failed; R2 passed bounded repair validation only. No runtime default promotion occurred.
 Normal default = `legacy_question_core`; runtime activation did not occur.
-E2 = IN_PROGRESS / RUNTIME_ACTIVATION_FAILED / GENERIC_SANITIZATION_REPAIR_AND_GATE_REDESIGN_PENDING.
+E2 = COMPLETE / CORE_MECHANISM_VALIDATED / DEFAULT_PROMOTION_DEFERRED.
+E2-LR1 = COMPLETE / PASS / POST_A3_LIFECYCLE_RECONCILED.
+E2-A3-R4 = NOT_STARTED / SUPERSEDED_BY_LIFECYCLE_SIMPLIFICATION.
+E2 DEFAULT PROMOTION = DEFERRED / ACTIVATION_ACCEPTANCE_NOT_MET.
+runtime_e1_v2 = VALIDATED_EXPERIMENTAL_PATH / EXPLICIT_SELECTION_ONLY.
+E2 DEFAULT-PROMOTION GATE REDESIGN = DEFERRED / REVISIT_AT_PHASE_E_PROMOTION_BOUNDARY.
+Reconciliation: `evaluation/E2_POST_A3_LIFECYCLE_RECONCILIATION.md`.
 E2-A1 report: `evaluation/E2_A1_SHADOW_ANSWER_POINT_COVERAGE_CONTRACT.md`.
 C1 met all eight strict gates and the original pair09 atomicity sentinel. Per the
 accepted closure decision, E1 is complete. E2-A2 passed targeted shadow validation. E2-A3 failed Q7; normal QA remains legacy and E3 remains NOT_STARTED.
@@ -95,21 +101,43 @@ MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD
 Current planning state:
 D4 = PAUSED / ROADMAP_RECONCILIATION
 D4 overall completion = UNDECIDED
-CURRENT_TASK = E2-A3-R3-R1-FR1 / COMPLETE / PASS / PRODUCT_REPAIR_AND_GATE_REDESIGN_RECOMMENDED
-NEXT_TASK_RECOMMENDATION = E2-A3-R4 — Generic Claim Sanitization Repair and Prospective Activation Gate Redesign / NOT AUTHORIZED
+CURRENT_TASK = E2-LR1 / COMPLETE / PASS / POST_A3_LIFECYCLE_RECONCILED
+NEXT_TASK_RECOMMENDATION = QA-M1 — Generic Claim Sanitization Repair / NOT AUTHORIZED
 NEXT_TASK_EXECUTION_AUTHORIZED = false
+FOLLOWING_ARCHITECTURE_TASK = E3 — Missing-Point Targeted Retrieval
 
 No D4-A11 exists.
-Phase E = IN_PROGRESS / E2.
+Phase E = IN_PROGRESS / E2_CORE_COMPLETE / E3_NEXT.
 E1 = COMPLETE / PASS / QUESTION_ONLY_SEMANTIC_ANSWER_POINT_DECOMPOSITION_VALIDATED.
-E2 = IN_PROGRESS / RUNTIME_ACTIVATION_FAILED / GENERIC_SANITIZATION_REPAIR_AND_GATE_REDESIGN_PENDING.
-E3 = NOT_STARTED.
+E2 = COMPLETE / CORE_MECHANISM_VALIDATED / DEFAULT_PROMOTION_DEFERRED.
+E3 = NOT_STARTED / ARCHITECTURALLY_UNBLOCKED.
 Phase F = IN_PROGRESS / F1_COMPLETE.
 F2 = NOT_STARTED / SCOPE_PRESERVED.
 F3 = SCOPE_RECONCILIATION_REQUIRED / PARTIALLY_SUPERSEDED_BY_D4.
-No further recovery, D4, Phase-E, or Phase-F task is authorized after E2-A3-R3-R1-FR1.
+No further recovery, D4, Phase-E, or Phase-F task is authorized after E2-LR1.
 
-## E2-A3-R3-R1-FR1 static review closeout
+## E2-LR1 lifecycle reconciliation
+
+E2 core implementation and targeted validation are sufficient for further
+architecture development; default-promotion acceptance is not met. This is
+lifecycle completion, not E2 scientific PASS or a historical rescore. The G11
+review recommendation is preserved below but its immediate combined A3-R4 task
+is superseded, never executed. Shared sanitizer maintenance is QA-M1, not an E2
+reopening requirement and not an architectural E3 blocker.
+
+E3 is architecturally unblocked on explicitly selected runtime_e1_v2 or the
+appropriate experimental/shadow path. It remains NOT_STARTED and unauthorized.
+Normal legacy QA retains existing retrieval behavior; future missing-point
+retrieval must not silently enter ordinary QA. No behavior is implemented here.
+Promotion and rubric redesign are deferred until a materially broader Phase-E
+candidate exists, naturally after E3 or another explicit Phase-E completion
+decision. The prior 28-case/two-judge/materiality proposals are design ideas,
+not active gates. No future experiment is defined or frozen here.
+
+Recommended order: QA-M1 maintenance, then E3 architecture. Neither is authorized.
+See `evaluation/E2_POST_A3_LIFECYCLE_RECONCILIATION.md` for evidence and boundaries.
+
+## Historical E2-A3-R3-R1-FR1 static review closeout
 
 COMPLETE / PASS / PRODUCT_REPAIR_AND_GATE_REDESIGN_RECOMMENDED.
 Historical G11 FAIL and 1/11/2 remain immutable. Exact g001 public wording omits
