@@ -1,0 +1,20 @@
+{
+  "gates": {
+    "R-F1": true,
+    "R-F2": true,
+    "R-F3": true,
+    "R-F4": true,
+    "R-F5": true,
+    "R-F6": true,
+    "R-F7": true,
+    "R-F8": true,
+    "R-F9": true,
+    "R-F10": true,
+    "R-F11": true
+  },
+  "starting_head": "29bc2864a95b797ecfc07d3824711c5dc855ff95",
+  "product_candidate_commit": "fd0aed4c7e491a569bf39271825cc0950630863d",
+  "focused_tests_passed": 32,
+  "protected_access": 0,
+  "scientific_provider_calls_before_protocol_freeze": 0
+}
