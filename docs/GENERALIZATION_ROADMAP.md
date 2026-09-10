@@ -40,9 +40,11 @@ E2-A3-R1 FAILURE REVIEW = COMPLETE / PASS / P2_REPAIR_REQUIRED_P6_NO_PRODUCT_REP
 P2/P6 review: `evaluation/E2_A3_R1_P2_P6_FAILURE_REVIEW.md`.
 E2-A3-R2 = COMPLETE / PASS / CITATION_ELIGIBLE_EVIDENCE_SELECTION_REPAIR_VALIDATED.
 R2 report: `evaluation/E2_A3_R2_CITATION_ELIGIBLE_EVIDENCE_REPAIR.md`.
+E2-A3-R3 = INCONCLUSIVE / CONNECTION_TIMEOUT_AND_PROVIDER_429_INCOMPLETE_PAIRS.
+R3 report: `evaluation/E2_A3_R3_RUNTIME_ACTIVATION_REASSESSMENT.md`.
 Historical A3/R1 activation gates failed; R2 passed bounded repair validation only. No runtime default promotion occurred.
 Normal default = `legacy_question_core`; runtime activation did not occur.
-E2 = IN_PROGRESS / RUNTIME_ACTIVATION_FAILED / FINAL_ACTIVATION_REASSESSMENT_PENDING.
+E2 = IN_PROGRESS / RUNTIME_ACTIVATION_FAILED / FINAL_ACTIVATION_REASSESSMENT_INCONCLUSIVE.
 E2-A1 report: `evaluation/E2_A1_SHADOW_ANSWER_POINT_COVERAGE_CONTRACT.md`.
 C1 met all eight strict gates and the original pair09 atomicity sentinel. Per the
 accepted closure decision, E1 is complete. E2-A2 passed targeted shadow validation. E2-A3 failed Q7; normal QA remains legacy and E3 remains NOT_STARTED.
@@ -103,10 +105,10 @@ D4 overall completion:
 UNDECIDED
 
 Next task recommendation:
-E2-A3-R3 — Bounded Runtime Activation Reassessment / NOT AUTHORIZED
+E2-A3-R3 INFRASTRUCTURE / ACTIVATION DECISION REASSESSMENT / NOT AUTHORIZED
 
 Current task authorization:
-E2-A3-R2 completed within authorization: citation-eligible evidence admission repaired and six-pair prospective validation passed. Historical P6 FAIL and no-product-repair decision remain. No activation, R3 execution or E3 is authorized.
+E2-A3-R3 closed INCONCLUSIVE within authorization: four infrastructure failures left eleven authoritative pairs. No product repair or activation. Further recovery/reassessment and E3 are not authorized; historical A3/R1 FAIL and R2 PASS remain.
 
 No D4-A11 exists.
 No further D4 task is currently authorized.
@@ -465,7 +467,7 @@ Phase E addresses answer synthesis, facet coverage, claim-to-evidence grounding,
 - **E1-R1 evidence:** `evaluation/E1_R1_SEMANTIC_ANSWER_POINT_CONTRACT_REPAIR.md`.
 - **Evidence:** `evaluation/e1_a1_dynamic_question_decomposition_contract.json`, `evaluation/E1_A1_DYNAMIC_QUESTION_DECOMPOSITION_CONTRACT.md`.
 - **E1-R2 outcome:** COMPLETE / PASS / TARGETED_PROSPECTIVE_SEMANTIC_ANSWER_POINT_REVALIDATION_PASSED. Human-approved fresh synthetic exploratory English cohort: 24/24 valid, semantic recall 54/54, precision 54/54, under/over 0, exact count 24/24, semantic-complete pairs 12/12, hidden prerequisites 0; all eight gates passed. Raw records were committed before judging. Preregistration `3d0d8ca650d159681fecec324a081d28e8e945eb`; raw freeze `a5275dfee6c4134f3ad790a5598ca0c0a51f1a58`. Report: `evaluation/E1_R2_SEMANTIC_ANSWER_POINT_REVALIDATION.md`; result: `evaluation/e1_r2_semantic_answer_point_revalidation_result.json`.
-- **Next task recommendation:** E2-A3-R3 — Bounded Runtime Activation Reassessment; NOT AUTHORIZED. E1 is complete at bounded shadow decomposition scope; production compatibility requirements remain unchanged.
+- **Next task recommendation:** E2-A3-R3 INFRASTRUCTURE / ACTIVATION DECISION REASSESSMENT; NOT AUTHORIZED. E1 is complete at bounded shadow decomposition scope; production compatibility requirements remain unchanged.
 - **Problem:** A single `question_core` plus domain-specific requirements can be complete on known questions but miss unseen multi-part structure.
 - **Goal:** Derive 1–5 evidence-independent, independently satisfiable explicit response obligations from the question itself, each independently checkable for omission.
 - **Why this stage:** Retrieval generalization and structured knowledge must be established before asking decomposition to drive completeness.
@@ -481,7 +483,7 @@ Phase E addresses answer synthesis, facet coverage, claim-to-evidence grounding,
 
 ### E2 — Answer-point coverage and claim mapping
 
-- **Status:** IN_PROGRESS / RUNTIME_ACTIVATION_FAILED / FINAL_ACTIVATION_REASSESSMENT_PENDING
+- **Status:** IN_PROGRESS / RUNTIME_ACTIVATION_FAILED / FINAL_ACTIVATION_REASSESSMENT_INCONCLUSIVE
 - **E2-A1 outcome:** COMPLETE / PASS / SHADOW_ANSWER_POINT_COVERAGE_CONTRACT_IMPLEMENTED. Explicit diagnostic entrypoint projects E1 IDs/text into the existing QA graph. The existing evidence review independently checks claim mapping and collective completeness; missing points reuse one revision with existing evidence. Normal QA, public DTOs, retrieval, and legacy requirements remain unchanged. Focused fake-based checks passed: 42 E2-A1 and 38 QA tests; 32 E1 decomposition tests also passed. No live scientific calls. Report: `evaluation/E2_A1_SHADOW_ANSWER_POINT_COVERAGE_CONTRACT.md`.
 - **E2-A2 outcome:** COMPLETE / PASS / TARGETED_CLAIM_MAPPING_AND_MISSING_POINT_VALIDATION_PASSED. Twelve exposed English questions in two fresh repetitions: applicable 12/12 each; mapping precision 74/79, recall 74/75, exact claim mapping 68/74; coverage precision/recall 56/56. Controlled rep1 variants: 11 eligible, target detection/missing precision/exact missing set 11/11 each; one non-isolatable baseline. Zero structural or infrastructure failures. Five extra mapping edges and one missed edge remain. Scientific usage: 217 logical operations, 193 returned responses (169 generation and 24 embedding), 2,090,933 returned token-counter total; embedding token usage unavailable. Same-model-family blinded judge; targeted exposed evidence only. Report: `evaluation/E2_A2_TARGETED_CLAIM_MAPPING_VALIDATION.md`.
 - **E2-A3 outcome:** COMPLETE / FAIL / Q7. Retrieval 24/24; paired QA 56/56; scoreable judgments 28/28. Gold status 14/16 in both arms; runtime better/equivalent/worse 6/21/1. Novel decomposition/evaluable/complete 12/12; pair09 three points. One new unsupported-identifier verifier category on g112 fails the all-reviews integrity gate despite final recovery. No default activation; normal QA remains legacy_question_core. Report: `evaluation/E2_A3_RUNTIME_ACTIVATION_REGRESSION.md`.
@@ -489,7 +491,8 @@ Phase E addresses answer synthesis, facet coverage, claim-to-evidence grounding,
 - **E2-A3-R1 outcome:** COMPLETE / FAIL / P2_P6. Rejection-only normalization implemented; S1-S12 passed with one frozen rejection delta. Five fresh pairs and judgments completed: g112 sentinel passed, status 5/5 each, quality 2 better / 2 equivalent / 1 worse. g027 new incomplete citation fails P2; g002 worse judgment fails P6. No activation; default legacy_question_core. Report: `evaluation/E2_A3_R1_IDENTIFIER_NORMALIZATION_REPAIR.md`.
 - **E2-A3-R1-FR1 outcome:** COMPLETE / PASS / P2_REPAIR_REQUIRED_P6_NO_PRODUCT_REPAIR. P2 is R3 citation-incomplete page admission, not lost page metadata or verifier false rejection. Frozen citation scan: 27 candidate edges, 3 incomplete, 18 final edges all complete. P6 optional-detail difference does not justify generic product repair. Historical A3/R1 FAIL and colon-repair success preserved; zero scientific calls; no waiver or activation. Report: `evaluation/E2_A3_R1_P2_P6_FAILURE_REVIEW.md`.
 - **E2-A3-R2 outcome:** COMPLETE / PASS / CITATION_ELIGIBLE_EVIDENCE_SELECTION_REPAIR_VALIDATED. Admission-only Sphinx projection in answer/revision and revision requirement map; verifier, retrieval, E1/E2, compatibility and default preserved. Historical scan 144 = 106 retained + 38 excluded; three invalid historical candidate edges barred from admission. T0 126 passed. Six fresh pairs/judgments: status and support 6/6 each, incomplete-web errors 0, new runtime categories 0, quality 1 better / 5 equivalent / 0 worse, critical regressions 0, overhead 1.333333. Historical A3/R1 FAIL and P6 no-repair/no-waiver preserved. No activation; E2 remains in progress. Report: `evaluation/E2_A3_R2_CITATION_ELIGIBLE_EVIDENCE_REPAIR.md`.
-- **Next task:** E2-A3-R3 — Bounded Runtime Activation Reassessment; NOT AUTHORIZED. E2 remains in progress; normal QA activation and E3 have not occurred.
+- **E2-A3-R3 outcome:** INCONCLUSIVE / CONNECTION_TIMEOUT_AND_PROVIDER_429_INCOMPLETE_PAIRS. Product unchanged from R2. Fixed 14 English Gold/dev questions (10 answered/4 controls), excluding R2 six; F1-F10 and 30 focused tests passed. All 28 attempt records terminal; 12 successful QA outputs per arm and 11 authoritative paired judgments due to three connection timeouts plus one 429. Scoreable quality 1/9/1, support 11/11 each, no critical regression or observed new verifier category. G1/G7/G9/G11 lack complete authority; no activation or rerun. Full fourteen-pair overhead unavailable; 15/11=1.363636 is diagnostic only. Report: `evaluation/E2_A3_R3_RUNTIME_ACTIVATION_REASSESSMENT.md`.
+- **Next task:** E2-A3-R3 INFRASTRUCTURE / ACTIVATION DECISION REASSESSMENT; NOT AUTHORIZED. E2 remains in progress; normal QA activation and E3 have not occurred.
 - **Problem:** Atomic claims are not generically accountable to the facets the user asked to have answered.
 - **Goal:** Map every generated claim to one or more answer-point IDs and evidence IDs, then measure completeness and support.
 - **Why this stage:** E1 quality must be proven before its points become a runtime completeness contract.
@@ -603,11 +606,11 @@ At release, Generalization Gap means benchmark score minus novel score. Benchmar
 2. **Remaining D4 candidate disposition:** Does the remaining unassessed D4 inventory contain another naturally testable, high-value migration batch, or should residual entries remain on HOLD?
 3. **Phase-F scope boundary:** F1 has established the bounded non-D4 residual inventory and candidate owners. Which candidates warrant a separately authorized treatment remains undecided.
 4. **Bottleneck prioritization:** Is answer completeness and decomposition (Phase E) now a larger production bottleneck than residual retrieval shortcut dependency?
-5. **Phase execution ordering:** F1 found zero E1 blockers. E1-R2 passed targeted prospective synthetic validation and E1-C1 passed exposed real-style confirmation, including the original atomicity sentinel. E1 is closed under the accepted scope decision. E2-A3 remains FAIL/Q7. E2-A3-FR1 completed with REPAIR_JUSTIFIED. R1 remains FAIL/P2_P6. R2 repaired citation eligibility and passed S1-S13/P1-P11 in six fresh pairs. Historical P6 FAIL remains without waiver or product tuning; E2 awaits an independently justified R3 activation reassessment, which is not authorized. No further E1 confirmation is required.
+5. **Phase execution ordering:** F1 found zero E1 blockers. E1-R2 passed targeted prospective synthetic validation and E1-C1 passed exposed real-style confirmation, including the original atomicity sentinel. E1 is closed under the accepted scope decision. E2-A3 remains FAIL/Q7. E2-A3-FR1 completed with REPAIR_JUSTIFIED. R1 remains FAIL/P2_P6. R2 repaired citation eligibility and passed S1-S13/P1-P11 in six fresh pairs. Historical P6 FAIL remains without waiver or product tuning; R3 is now INCONCLUSIVE after four infrastructure failures; E2 awaits a separately authorized infrastructure/activation decision reassessment. No further E1 confirmation is required.
 
 ```text
-CURRENT_TASK = E2-A3-R2 / COMPLETE / PASS / CITATION_ELIGIBLE_EVIDENCE_SELECTION_REPAIR_VALIDATED
-NEXT_TASK_RECOMMENDATION = E2-A3-R3 — Bounded Runtime Activation Reassessment
+CURRENT_TASK = E2-A3-R3 / INCONCLUSIVE / CONNECTION_TIMEOUT_AND_PROVIDER_429_INCOMPLETE_PAIRS
+NEXT_TASK_RECOMMENDATION = E2-A3-R3 INFRASTRUCTURE / ACTIVATION DECISION REASSESSMENT
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 NEXT_STAGE_AUTHORIZED = false
 ```
