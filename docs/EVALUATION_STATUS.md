@@ -43,6 +43,8 @@ Historical A3/R1 activation gates failed; R2 passed bounded repair validation on
 Normal default = `legacy_question_core`; runtime activation did not occur.
 E2 = COMPLETE / CORE_MECHANISM_VALIDATED / DEFAULT_PROMOTION_DEFERRED.
 E2-LR1 = COMPLETE / PASS / POST_A3_LIFECYCLE_RECONCILED.
+QA-M1 = COMPLETE / PASS / GENERIC_CLAIM_SANITIZATION_REPAIR_VALIDATED.
+Maintenance report: `evaluation/QA_M1_GENERIC_CLAIM_SANITIZATION_REPAIR.md`.
 E2-A3-R4 = NOT_STARTED / SUPERSEDED_BY_LIFECYCLE_SIMPLIFICATION.
 E2 DEFAULT PROMOTION = DEFERRED / ACTIVATION_ACCEPTANCE_NOT_MET.
 runtime_e1_v2 = VALIDATED_EXPERIMENTAL_PATH / EXPLICIT_SELECTION_ONLY.
@@ -101,8 +103,8 @@ MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD
 Current planning state:
 D4 = PAUSED / ROADMAP_RECONCILIATION
 D4 overall completion = UNDECIDED
-CURRENT_TASK = E2-LR1 / COMPLETE / PASS / POST_A3_LIFECYCLE_RECONCILED
-NEXT_TASK_RECOMMENDATION = QA-M1 — Generic Claim Sanitization Repair / NOT AUTHORIZED
+CURRENT_TASK = QA-M1 / COMPLETE / PASS / GENERIC_CLAIM_SANITIZATION_REPAIR_VALIDATED
+NEXT_TASK_RECOMMENDATION = E3 — Missing-Point Targeted Retrieval / NOT AUTHORIZED
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 FOLLOWING_ARCHITECTURE_TASK = E3 — Missing-Point Targeted Retrieval
 
@@ -114,9 +116,21 @@ E3 = NOT_STARTED / ARCHITECTURALLY_UNBLOCKED.
 Phase F = IN_PROGRESS / F1_COMPLETE.
 F2 = NOT_STARTED / SCOPE_PRESERVED.
 F3 = SCOPE_RECONCILIATION_REQUIRED / PARTIALLY_SUPERSEDED_BY_D4.
-No further recovery, D4, Phase-E, or Phase-F task is authorized after E2-LR1.
+No further recovery, D4, Phase-E, or Phase-F task is authorized after QA-M1.
 
-## E2-LR1 lifecycle reconciliation
+## QA-M1 maintenance closeout
+
+COMPLETE / PASS / GENERIC_CLAIM_SANITIZATION_REPAIR_VALIDATED. Shared external
+template sanitization now consumes balanced wrappers and retains payload meaning;
+requested identifiers remain intact. Focused T0: 14 tests and 2 subtests passed.
+Offline scan: 290 initial/revision claim snapshots, 2 intended changes (g029/g059),
+288 unchanged and zero unexpected collateral changes. All scientific/provider
+calls and tokens are zero. Historical G11 FAIL/preferences unchanged; no activation.
+E2 core remains complete with promotion deferred. Next E3 is architecturally
+unblocked but NOT_STARTED and not authorized. Report:
+`evaluation/QA_M1_GENERIC_CLAIM_SANITIZATION_REPAIR.md`.
+
+## Historical E2-LR1 lifecycle reconciliation
 
 E2 core implementation and targeted validation are sufficient for further
 architecture development; default-promotion acceptance is not met. This is

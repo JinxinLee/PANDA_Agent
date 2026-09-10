@@ -634,6 +634,41 @@ def _normalise_claim_answer_points(
     return normalized
 
 
+def _abstract_external_type_text(text: str, allowed: str) -> str:
+    """Abstract external wrappers while retaining balanced template payloads."""
+    parts: list[str] = []
+    cursor = 0
+    pattern = re.compile(r"\b(?:boost|std)::[A-Za-z_][A-Za-z0-9_:]*")
+    while match := pattern.search(text, cursor):
+        parts.append(text[cursor:match.start()])
+        end = match.end()
+        opening = end
+        while opening < len(text) and text[opening].isspace():
+            opening += 1
+        payload = None
+        if opening < len(text) and text[opening] == "<":
+            depth = 1
+            end = opening + 1
+            while end < len(text) and depth:
+                depth += (text[end] == "<") - (text[end] == ">")
+                end += 1
+            if depth:
+                # Do not manufacture a partial replacement for an incomplete type.
+                parts.append(text[match.start():])
+                return "".join(parts)
+            payload = text[opening + 1:end - 1]
+        if match.group().casefold() in allowed:
+            parts.append(text[match.start():end])
+        else:
+            replacement = "an internal support type"
+            if payload is not None and payload.strip():
+                replacement += f" containing ({_abstract_external_type_text(payload, allowed)})"
+            parts.append(replacement)
+        cursor = end
+    parts.append(text[cursor:])
+    return "".join(parts)
+
+
 def _strip_nonessential_external_identifiers(
     claims: list[dict[str, Any]], question: str, plan: dict[str, Any]
 ) -> list[dict[str, Any]]:
@@ -651,10 +686,7 @@ def _strip_nonessential_external_identifiers(
     for raw_claim in claims:
         claim = dict(raw_claim)
         text = str(claim.get("claim_text") or "")
-        for identifier in set(re.findall(r"\b(?:boost|std)::[A-Za-z_][A-Za-z0-9_:]*", text)):
-            if identifier.casefold() not in allowed:
-                text = text.replace(identifier, "an internal support type")
-        claim["claim_text"] = text
+        claim["claim_text"] = _abstract_external_type_text(text, allowed)
         cleaned.append(claim)
     return cleaned
 

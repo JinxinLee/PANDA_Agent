@@ -50,6 +50,8 @@ Historical A3/R1 activation gates failed; R2 passed bounded repair validation on
 Normal default = `legacy_question_core`; runtime activation did not occur.
 E2 = COMPLETE / CORE_MECHANISM_VALIDATED / DEFAULT_PROMOTION_DEFERRED.
 E2-LR1 = COMPLETE / PASS / POST_A3_LIFECYCLE_RECONCILED.
+QA-M1 = COMPLETE / PASS / GENERIC_CLAIM_SANITIZATION_REPAIR_VALIDATED.
+Maintenance report: `evaluation/QA_M1_GENERIC_CLAIM_SANITIZATION_REPAIR.md`.
 E2-A3-R4 = NOT_STARTED / SUPERSEDED_BY_LIFECYCLE_SIMPLIFICATION.
 E2 DEFAULT PROMOTION = DEFERRED / ACTIVATION_ACCEPTANCE_NOT_MET.
 runtime_e1_v2 = VALIDATED_EXPERIMENTAL_PATH / EXPLICIT_SELECTION_ONLY.
@@ -115,18 +117,17 @@ D4 overall completion:
 UNDECIDED
 
 Next task recommendation:
-QA-M1 — Generic Claim Sanitization Repair / NOT AUTHORIZED
+E3 — Missing-Point Targeted Retrieval / NOT AUTHORIZED
 
 Current task authorization:
-E2-LR1 documentation reconciliation is complete. E2 core mechanism completion is
-separate from deferred default promotion. Historical scientific outcomes and the
-G11 review remain unchanged. Proposed A3-R4 is superseded without execution.
-Recommend QA-M1 shared maintenance then E3 architecture; neither is authorized.
-QA-M1 blocks neither E2 lifecycle completion nor E3 architecturally.
+QA-M1 shared maintenance is complete: balanced external-template sanitization,
+focused T0 and offline impact scan only. E2 core completion and deferred promotion
+remain unchanged. E3 is the next architecture task, NOT_STARTED and not authorized.
+No scientific calls, runtime promotion, gate redesign or A3-R4 execution occurred.
 
 No D4-A11 exists.
 No further D4 task is currently authorized.
-No further Phase-E task is currently authorized after E2-LR1.
+No further Phase-E task is currently authorized after QA-M1.
 No further Phase-F task is currently authorized.
 
 ## Phase overview
@@ -488,7 +489,7 @@ cohort, judge structure, schema or threshold is active or frozen by E2-LR1.
 - **E1-R1 evidence:** `evaluation/E1_R1_SEMANTIC_ANSWER_POINT_CONTRACT_REPAIR.md`.
 - **Evidence:** `evaluation/e1_a1_dynamic_question_decomposition_contract.json`, `evaluation/E1_A1_DYNAMIC_QUESTION_DECOMPOSITION_CONTRACT.md`.
 - **E1-R2 outcome:** COMPLETE / PASS / TARGETED_PROSPECTIVE_SEMANTIC_ANSWER_POINT_REVALIDATION_PASSED. Human-approved fresh synthetic exploratory English cohort: 24/24 valid, semantic recall 54/54, precision 54/54, under/over 0, exact count 24/24, semantic-complete pairs 12/12, hidden prerequisites 0; all eight gates passed. Raw records were committed before judging. Preregistration `3d0d8ca650d159681fecec324a081d28e8e945eb`; raw freeze `a5275dfee6c4134f3ad790a5598ca0c0a51f1a58`. Report: `evaluation/E1_R2_SEMANTIC_ANSWER_POINT_REVALIDATION.md`; result: `evaluation/e1_r2_semantic_answer_point_revalidation_result.json`.
-- **Next task recommendation:** QA-M1 — Generic Claim Sanitization Repair; NOT AUTHORIZED. Following architecture task: E3, architecturally unblocked. E1 is complete at bounded shadow decomposition scope; production compatibility requirements remain unchanged.
+- **Next task recommendation:** E3 — Missing-Point Targeted Retrieval; NOT AUTHORIZED. QA-M1 shared maintenance is complete. E1 is complete at bounded shadow decomposition scope; production compatibility requirements remain unchanged.
 - **Problem:** A single `question_core` plus domain-specific requirements can be complete on known questions but miss unseen multi-part structure.
 - **Goal:** Derive 1–5 evidence-independent, independently satisfiable explicit response obligations from the question itself, each independently checkable for omission.
 - **Why this stage:** Retrieval generalization and structured knowledge must be established before asking decomposition to drive completeness.
@@ -517,8 +518,8 @@ cohort, judge structure, schema or threshold is active or frozen by E2-LR1.
 - **E2-A3-R3-R1-FR1 outcome:** COMPLETE / PASS / PRODUCT_REPAIR_AND_GATE_REDESIGN_RECOMMENDED. Static review identifies shared deterministic partial-template sanitization in g029/g059 (A1); g001 separately omits explicit version scope, not just a SHA. No shared g001/g029/g002 cause established. Recommend narrow generic sanitization repair and prospective obligation/materiality gate design; historical G11 FAIL 1/11/2 preserved. Zero scientific calls, no repair, gate change or activation. Report: `evaluation/E2_A3_R3_R1_G11_FAILURE_REVIEW.md`.
 - **E2-LR1 interpretation:** Core mechanism implemented and sufficiently targeted-validated for architecture continuation; default acceptance not met. This is not E2 scientific PASS. Historical outcomes above remain immutable, including G11 quality 1/11/2.
 - **E2-A3-R4:** NOT_STARTED / SUPERSEDED_BY_LIFECYCLE_SIMPLIFICATION. The historical G11 review recommendation remains recorded; E2-LR1 supersedes its immediate combined activation loop.
-- **Maintenance:** QA-M1 — Generic Claim Sanitization Repair. Shared pre-existing QA bug, not E2-specific: complete type-expression handling, focused T0 and frozen/static impact scan; no activation decision. Does not block E2 completion or E3 architecturally.
-- **Next task:** QA-M1 maintenance, then E3 — Missing-Point Targeted Retrieval; neither authorized. Default promotion and gate redesign deferred to a broader Phase-E promotion boundary.
+- **QA-M1 outcome:** COMPLETE / PASS / GENERIC_CLAIM_SANITIZATION_REPAIR_VALIDATED. Balanced external-wrapper abstraction preserves domain payload and requested names. Focused T0 14 tests/2 subtests passed; frozen scan 290 claim snapshots, 2 intended changes, 0 collateral changes. Shared maintenance only; zero scientific calls and no activation decision. Report: `evaluation/QA_M1_GENERIC_CLAIM_SANITIZATION_REPAIR.md`.
+- **Next task:** E3 — Missing-Point Targeted Retrieval; NOT AUTHORIZED. QA-M1 maintenance is complete. Default promotion and gate redesign deferred to a broader Phase-E promotion boundary.
 - **Problem:** Atomic claims are not generically accountable to the facets the user asked to have answered.
 - **Goal:** Map every generated claim to one or more answer-point IDs and evidence IDs, then measure completeness and support.
 - **Why this stage:** E1 quality must be proven before its points become a runtime completeness contract.
@@ -633,11 +634,11 @@ At release, Generalization Gap means benchmark score minus novel score. Benchmar
 2. **Remaining D4 candidate disposition:** Does the remaining unassessed D4 inventory contain another naturally testable, high-value migration batch, or should residual entries remain on HOLD?
 3. **Phase-F scope boundary:** F1 has established the bounded non-D4 residual inventory and candidate owners. Which candidates warrant a separately authorized treatment remains undecided.
 4. **Bottleneck prioritization:** Is answer completeness and decomposition (Phase E) now a larger production bottleneck than residual retrieval shortcut dependency?
-5. **Phase execution ordering:** F1 found zero E1 blockers. E1-R2 passed targeted prospective synthetic validation and E1-C1 passed exposed real-style confirmation, including the original atomicity sentinel. E1 is closed under the accepted scope decision. E2-A3 remains FAIL/Q7. E2-A3-FR1 completed with REPAIR_JUSTIFIED. R1 remains FAIL/P2_P6. R2 repaired citation eligibility and passed S1-S13/P1-P11 in six fresh pairs. Historical P6 FAIL remains without waiver or product tuning; historical R3 remains INCONCLUSIVE after four infrastructure failures. R3-R1 completed the missing paired evidence and failed G11 at 2/14 noncritical worse; FR1 subsequently completed a static review recommending shared claim sanitization repair and prospective gate redesign. E2-LR1 subsequently separates completed core mechanisms from deferred promotion and supersedes immediate A3-R4. QA-M1 maintenance then architecturally unblocked E3 are recommended, with separate execution authorization required. No further E1 confirmation is required.
+5. **Phase execution ordering:** F1 found zero E1 blockers. E1-R2 passed targeted prospective synthetic validation and E1-C1 passed exposed real-style confirmation, including the original atomicity sentinel. E1 is closed under the accepted scope decision. E2-A3 remains FAIL/Q7. E2-A3-FR1 completed with REPAIR_JUSTIFIED. R1 remains FAIL/P2_P6. R2 repaired citation eligibility and passed S1-S13/P1-P11 in six fresh pairs. Historical P6 FAIL remains without waiver or product tuning; historical R3 remains INCONCLUSIVE after four infrastructure failures. R3-R1 completed the missing paired evidence and failed G11 at 2/14 noncritical worse; FR1 subsequently completed a static review recommending shared claim sanitization repair and prospective gate redesign. E2-LR1 subsequently separates completed core mechanisms from deferred promotion and supersedes immediate A3-R4. QA-M1 maintenance subsequently completed with focused T0/static checks. Architecturally unblocked E3 is next and requires separate execution authorization. No further E1 confirmation is required.
 
 ```text
-CURRENT_TASK = E2-LR1 / COMPLETE / PASS / POST_A3_LIFECYCLE_RECONCILED
-NEXT_TASK_RECOMMENDATION = QA-M1 — Generic Claim Sanitization Repair
+CURRENT_TASK = QA-M1 / COMPLETE / PASS / GENERIC_CLAIM_SANITIZATION_REPAIR_VALIDATED
+NEXT_TASK_RECOMMENDATION = E3 — Missing-Point Targeted Retrieval
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 FOLLOWING_ARCHITECTURE_TASK = E3 — Missing-Point Targeted Retrieval
 NEXT_STAGE_AUTHORIZED = false

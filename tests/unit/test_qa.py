@@ -1542,5 +1542,94 @@ class QATests(unittest.TestCase):
         self.assertEqual([item["claim_id"] for item in finalized["result"]["claims"]], ["c1"])
 
 
+
+
+class ExternalTypeSanitizationTests(unittest.TestCase):
+    def sanitize(self, text, question="Explain the data boundary.", symbols=None):
+        from panda_agent.qa import _strip_nonessential_external_identifiers
+        return _strip_nonessential_external_identifiers(
+            [{"claim_text": text}], question, {"symbols": symbols or []}
+        )[0]["claim_text"]
+
+    def test_external_identifier_simple_template(self):
+        self.assertEqual(self.sanitize("Uses std::vector<Foo>."),
+                         "Uses an internal support type containing (Foo).")
+
+    def test_external_identifier_domain_payload(self):
+        self.assertEqual(self.sanitize("Uses std::vector<Lmd::Data::TrackPairInfo>."),
+                         "Uses an internal support type containing (Lmd::Data::TrackPairInfo).")
+
+    def test_external_identifier_unseen_payload(self):
+        self.assertEqual(self.sanitize("Uses std::deque<WaveformPacket>."),
+                         "Uses an internal support type containing (WaveformPacket).")
+
+    def test_external_identifier_nested_template(self):
+        self.assertEqual(self.sanitize("Uses std::vector<std::pair<Foo, Bar>>."),
+                         "Uses an internal support type containing (an internal support type containing (Foo, Bar)).")
+
+    def test_external_identifier_boost_template(self):
+        self.assertEqual(self.sanitize("Uses boost::shared_ptr<SensorFrame>."),
+                         "Uses an internal support type containing (SensorFrame).")
+
+    def test_external_identifier_non_template(self):
+        self.assertEqual(self.sanitize("Uses boost::property_tree::ptree and std::string."),
+                         "Uses an internal support type and an internal support type.")
+
+    def test_external_identifier_requested_question(self):
+        text = "Uses std::vector<std::pair<Foo, Bar>>."
+        self.assertEqual(self.sanitize(text, question="Explain std::vector."), text)
+
+    def test_external_identifier_requested_plan(self):
+        text = "Uses boost::shared_ptr<SensorFrame>."
+        self.assertEqual(self.sanitize(text, symbols=["boost::shared_ptr"]), text)
+
+    def test_external_identifier_unrelated_claim(self):
+        text = "Domain::Buffer<Foo> is defined in src/buffer.h."
+        self.assertEqual(self.sanitize(text), text)
+
+    def test_external_identifier_metadata_preserved(self):
+        from copy import deepcopy
+        from panda_agent.qa import _strip_nonessential_external_identifiers
+        claim = dict(claim_id="c1", claim_text="Uses std::vector<Foo>.",
+                     evidence_ids=["e1"], answer_point_ids=["point.1"], extra={"value": 7})
+        before = deepcopy(claim)
+        result = _strip_nonessential_external_identifiers([claim], "Explain storage.", {})[0]
+        self.assertEqual(claim, before)
+        self.assertEqual({k: v for k, v in result.items() if k != "claim_text"},
+                         {k: v for k, v in before.items() if k != "claim_text"})
+
+    def test_external_identifier_multiple_and_spaced_templates(self):
+        self.assertEqual(self.sanitize("std::vector <Foo> and std::vector<Bar>"),
+                         "an internal support type containing (Foo) and an internal support type containing (Bar)")
+
+    def test_external_identifier_incomplete_template_preserved(self):
+        text = "Uses std::vector<Foo"
+        self.assertEqual(self.sanitize(text), text)
+
+    def test_external_identifier_answer_revision_integration(self):
+        from copy import deepcopy
+        claim = dict(claim_id="c1", claim_text="Uses std::vector<SensorPacket>.",
+                     evidence_ids=["e1"], answer_point_ids=["point.1"])
+        class Vertex:
+            def generate_json(self, prompt, schema, **kwargs):
+                return {"claims": [deepcopy(claim)]}
+        bundle = bundle_for(code_evidence(text="Uses std::vector<SensorPacket>."))
+        for mode in ("legacy_question_core", "runtime_e1_v2"):
+            with self.subTest(mode=mode):
+                agent = QAAgent(Path.cwd(), retriever=FakeRetriever(bundle), vertex=Vertex())
+                state = dict(question="Explain storage.", bundle=bundle,
+                             answer_point_coverage_mode=mode,
+                             runtime_answer_points=[{"answer_point_id": "point.1", "text": "Explain storage."}])
+                answer = agent._answer(state)
+                revised = agent._revise({**state, **answer, "unsupported_claim_ids": ["c1"],
+                                         "supported_claims": [], "errors": ["unsupported claim c1"]})
+                expected = "Uses an internal support type containing (SensorPacket)."
+                self.assertEqual(answer["draft"]["claims"][0]["claim_text"], expected)
+                self.assertEqual(revised["draft"]["claims"][0]["claim_text"], expected)
+                self.assertEqual(revised["draft"]["claims"][0]["evidence_ids"], ["e1"])
+                self.assertEqual(revised["revision_count"], 1)
+                self.assertEqual(agent.retriever.calls, 0)
+
+
 if __name__ == "__main__":
     unittest.main()
