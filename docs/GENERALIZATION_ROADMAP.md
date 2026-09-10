@@ -52,6 +52,9 @@ E2 = COMPLETE / CORE_MECHANISM_VALIDATED / DEFAULT_PROMOTION_DEFERRED.
 E2-LR1 = COMPLETE / PASS / POST_A3_LIFECYCLE_RECONCILED.
 QA-M1 = COMPLETE / PASS / GENERIC_CLAIM_SANITIZATION_REPAIR_VALIDATED.
 Maintenance report: `evaluation/QA_M1_GENERIC_CLAIM_SANITIZATION_REPAIR.md`.
+E3-A0 = COMPLETE / PASS / MISSING_POINT_TARGETED_RETRIEVAL_CONTRACT_ESTABLISHED.
+E3-A0 report: `evaluation/E3_A0_MISSING_POINT_TARGETED_RETRIEVAL_CONTRACT.md`.
+E3 = IN_PROGRESS / A0_COMPLETE / A1_NEXT.
 E2-A3-R4 = NOT_STARTED / SUPERSEDED_BY_LIFECYCLE_SIMPLIFICATION.
 E2 DEFAULT PROMOTION = DEFERRED / ACTIVATION_ACCEPTANCE_NOT_MET.
 runtime_e1_v2 = VALIDATED_EXPERIMENTAL_PATH / EXPLICIT_SELECTION_ONLY.
@@ -59,7 +62,7 @@ E2 DEFAULT-PROMOTION GATE REDESIGN = DEFERRED / REVISIT_AT_PHASE_E_PROMOTION_BOU
 Reconciliation: `evaluation/E2_POST_A3_LIFECYCLE_RECONCILIATION.md`.
 E2-A1 report: `evaluation/E2_A1_SHADOW_ANSWER_POINT_COVERAGE_CONTRACT.md`.
 C1 met all eight strict gates and the original pair09 atomicity sentinel. Per the
-accepted closure decision, E1 is complete. E2-A2 passed targeted shadow validation. E2-A3 failed Q7; normal QA remains legacy and E3 remains NOT_STARTED.
+accepted closure decision, E1 is complete. E2-A2 passed targeted shadow validation. E2-A3 failed Q7; normal QA remains legacy. E3-A0 established the missing-point targeted retrieval contract; E3 is IN_PROGRESS with E3-A1 next (unauthorized).
 Decision: `evaluation/E1_CLOSURE_SCOPE_REVIEW.md`.
 Report: `evaluation/E1_C1_REAL_STYLE_CONFIRMATION.md`.
 Preregistration: `2517b691245c38175222064e6ca546d06fd21e9a`.
@@ -87,7 +90,7 @@ Phase D:
 PAUSED / ROADMAP_RECONCILIATION
 
 Phase E:
-IN_PROGRESS / E2_CORE_COMPLETE / E3_NEXT
+IN_PROGRESS / E2_CORE_COMPLETE / E3_IN_PROGRESS
 
 E1:
 COMPLETE / PASS / QUESTION_ONLY_SEMANTIC_ANSWER_POINT_DECOMPOSITION_VALIDATED
@@ -107,6 +110,12 @@ COMPLETE / PASS / SHADOW_SEMANTIC_ANSWER_POINT_CONTRACT_REPAIRED
 E1-R2:
 COMPLETE / PASS / TARGETED_PROSPECTIVE_SEMANTIC_ANSWER_POINT_REVALIDATION_PASSED
 
+E3-A0:
+COMPLETE / PASS / MISSING_POINT_TARGETED_RETRIEVAL_CONTRACT_ESTABLISHED
+
+E3:
+IN_PROGRESS / A0_COMPLETE / A1_NEXT
+
 Phase F:
 IN_PROGRESS / F1_COMPLETE
 
@@ -117,17 +126,19 @@ D4 overall completion:
 UNDECIDED
 
 Next task recommendation:
-E3 — Missing-Point Targeted Retrieval / NOT AUTHORIZED
+E3-A1 — Experimental Missing-Point Targeted Retrieval Implementation / NOT AUTHORIZED
 
 Current task authorization:
-QA-M1 shared maintenance is complete: balanced external-template sanitization,
-focused T0 and offline impact scan only. E2 core completion and deferred promotion
-remain unchanged. E3 is the next architecture task, NOT_STARTED and not authorized.
-No scientific calls, runtime promotion, gate redesign or A3-R4 execution occurred.
+E3-A0 architecture and dependency contract is complete: reconstructed current QA graph from source,
+distinguished pre-answer from post-verify targeted retrieval, reconciled C8 candidate pool design
+principles without claiming treatment validation, established strict question-derived trigger and
+objective contracts, defined bounded recovery with retained-support evidence ledger, minimal A1 seam,
+and focused T1-T20 test contract. E3 is IN_PROGRESS with E3-A1 next and unauthorized. No product
+files changed and zero scientific calls occurred.
 
 No D4-A11 exists.
 No further D4 task is currently authorized.
-No further Phase-E task is currently authorized after QA-M1.
+No further Phase-E task is currently authorized after E3-A0.
 No further Phase-F task is currently authorized.
 
 ## Phase overview
@@ -144,7 +155,7 @@ No further Phase-F task is currently authorized.
 - **Phase D — Concept and entity knowledge abstraction:** `PAUSED / ROADMAP_RECONCILIATION`
   Structured domain concept/entity representation, bounded resolver authority, and generic evidence-link bridging established. Bounded query-expansion migrations are active in production, while broader residual scope remains unreconciled.
 
-- **Phase E — Answer generalization:** `IN_PROGRESS / E2_CORE_COMPLETE / E3_NEXT`
+- **Phase E — Answer generalization:** `IN_PROGRESS / E2_CORE_COMPLETE / E3_IN_PROGRESS`
   Dynamic question decomposition, answer-point coverage, claim-to-evidence mapping, and targeted completeness recovery.
 
 - **Phase F — Benchmark dependency cleanup and final answering:** `IN_PROGRESS / F1_COMPLETE`
@@ -457,16 +468,16 @@ No D4-A11 is authorized. Detailed scientific and repair provenance remains in `e
 ## Phase E — Answer generalization
 
 Status:
-IN_PROGRESS / E2_CORE_COMPLETE / E3_NEXT
+IN_PROGRESS / E2_CORE_COMPLETE / E3_IN_PROGRESS
 
 Phase E addresses answer synthesis, facet coverage, claim-to-evidence grounding, and targeted recovery of missing answer points.
-E2 core mechanism is complete; default promotion remains deferred. E3 can use
-explicit runtime_e1_v2 or an appropriate experimental/shadow path without default
-promotion. Normal legacy QA must retain existing retrieval behavior; missing-point
-retrieval belongs only to a later explicitly authorized experimental E3 path.
-Promotion may be reconsidered after a materially broader Phase-E candidate,
-naturally after E3 or another explicit Phase-E completion decision. No future
-cohort, judge structure, schema or threshold is active or frozen by E2-LR1.
+E2 core mechanism is complete; default promotion remains deferred. E3-A0 has established the
+missing-point targeted retrieval architecture and dependency contract. E3 experimental implementation
+(E3-A1) can use explicit runtime_e1_v2 execution without default promotion. Normal legacy QA must
+retain existing retrieval behavior; missing-point retrieval belongs only to the explicitly authorized
+experimental path. Promotion may be reconsidered after a materially broader Phase-E candidate,
+naturally after E3 or another explicit Phase-E completion decision. No future cohort, judge structure,
+schema or threshold is active or frozen by E2-LR1.
 
 ### Architecture-level downstream requirements
 
@@ -489,7 +500,7 @@ cohort, judge structure, schema or threshold is active or frozen by E2-LR1.
 - **E1-R1 evidence:** `evaluation/E1_R1_SEMANTIC_ANSWER_POINT_CONTRACT_REPAIR.md`.
 - **Evidence:** `evaluation/e1_a1_dynamic_question_decomposition_contract.json`, `evaluation/E1_A1_DYNAMIC_QUESTION_DECOMPOSITION_CONTRACT.md`.
 - **E1-R2 outcome:** COMPLETE / PASS / TARGETED_PROSPECTIVE_SEMANTIC_ANSWER_POINT_REVALIDATION_PASSED. Human-approved fresh synthetic exploratory English cohort: 24/24 valid, semantic recall 54/54, precision 54/54, under/over 0, exact count 24/24, semantic-complete pairs 12/12, hidden prerequisites 0; all eight gates passed. Raw records were committed before judging. Preregistration `3d0d8ca650d159681fecec324a081d28e8e945eb`; raw freeze `a5275dfee6c4134f3ad790a5598ca0c0a51f1a58`. Report: `evaluation/E1_R2_SEMANTIC_ANSWER_POINT_REVALIDATION.md`; result: `evaluation/e1_r2_semantic_answer_point_revalidation_result.json`.
-- **Next task recommendation:** E3 — Missing-Point Targeted Retrieval; NOT AUTHORIZED. QA-M1 shared maintenance is complete. E1 is complete at bounded shadow decomposition scope; production compatibility requirements remain unchanged.
+- **Next task recommendation:** E3-A1 — Experimental Missing-Point Targeted Retrieval Implementation; NOT AUTHORIZED. E3-A0 contract is complete. E1 is complete at bounded shadow decomposition scope; production compatibility requirements remain unchanged.
 - **Problem:** A single `question_core` plus domain-specific requirements can be complete on known questions but miss unseen multi-part structure.
 - **Goal:** Derive 1–5 evidence-independent, independently satisfiable explicit response obligations from the question itself, each independently checkable for omission.
 - **Why this stage:** Retrieval generalization and structured knowledge must be established before asking decomposition to drive completeness.
@@ -519,7 +530,7 @@ cohort, judge structure, schema or threshold is active or frozen by E2-LR1.
 - **E2-LR1 interpretation:** Core mechanism implemented and sufficiently targeted-validated for architecture continuation; default acceptance not met. This is not E2 scientific PASS. Historical outcomes above remain immutable, including G11 quality 1/11/2.
 - **E2-A3-R4:** NOT_STARTED / SUPERSEDED_BY_LIFECYCLE_SIMPLIFICATION. The historical G11 review recommendation remains recorded; E2-LR1 supersedes its immediate combined activation loop.
 - **QA-M1 outcome:** COMPLETE / PASS / GENERIC_CLAIM_SANITIZATION_REPAIR_VALIDATED. Balanced external-wrapper abstraction preserves domain payload and requested names. Focused T0 14 tests/2 subtests passed; frozen scan 290 claim snapshots, 2 intended changes, 0 collateral changes. Shared maintenance only; zero scientific calls and no activation decision. Report: `evaluation/QA_M1_GENERIC_CLAIM_SANITIZATION_REPAIR.md`.
-- **Next task:** E3 — Missing-Point Targeted Retrieval; NOT AUTHORIZED. QA-M1 maintenance is complete. Default promotion and gate redesign deferred to a broader Phase-E promotion boundary.
+- **Next task:** E3-A1 — Experimental Missing-Point Targeted Retrieval Implementation; NOT AUTHORIZED. E3-A0 contract is complete. Default promotion and gate redesign deferred to a broader Phase-E promotion boundary.
 - **Problem:** Atomic claims are not generically accountable to the facets the user asked to have answered.
 - **Goal:** Map every generated claim to one or more answer-point IDs and evidence IDs, then measure completeness and support.
 - **Why this stage:** E1 quality must be proven before its points become a runtime completeness contract.
@@ -534,16 +545,18 @@ cohort, judge structure, schema or threshold is active or frozen by E2-LR1.
 
 ### E3 — Missing-point targeted retrieval
 
-- **Status:** NOT_STARTED / ARCHITECTURALLY_UNBLOCKED
-- **Execution boundary:** Separate authorization required. Use explicit runtime_e1_v2 or an appropriate experimental/shadow path; normal legacy runs retain existing retrieval behavior. No missing-point retrieval implementation or default change occurs in E2-LR1.
+- **Status:** IN_PROGRESS / A0_COMPLETE / A1_NEXT
+- **Execution boundary:** Separate authorization required. Use explicit runtime_e1_v2 experimental path; normal legacy runs retain existing retrieval behavior. No missing-point retrieval implementation or default change occurs in E3-A0.
+- **E3-A0 outcome:** COMPLETE / PASS / MISSING_POINT_TARGETED_RETRIEVAL_CONTRACT_ESTABLISHED. Reconstructed current QA graph from source (`src/panda_agent/qa.py`); distinguished pre-answer sufficiency-based targeted retrieval from post-verify semantic missing-point targeted retrieval; reconciled historical C8 dependency (design reuse without validation claims); established question-derived trigger/objective contract; specified bounded one-attempt recovery; proposed resolution for citation displacement via retained-support evidence ledger and immutable retained-supported-claims snapshot without selection pinning or limit expansion; established minimal A1 seam and T1-T20 test contract (local test IDs, none executed in A0). Zero product edits, zero scientific calls. Report: `evaluation/E3_A0_MISSING_POINT_TARGETED_RETRIEVAL_CONTRACT.md`.
+- **Next task:** E3-A1 — Experimental Missing-Point Targeted Retrieval Implementation; NOT AUTHORIZED.
 - **Problem:** Once a genuine answer point is missing, the system needs a generic retrieval objective rather than hidden domain requirements.
-- **Goal:** Use missing answer points to trigger one bounded targeted retrieval, followed by the global C8 merge/rerank/selection path.
-- **Why this stage:** Requires proven decomposition, claim mapping, and global targeted-rerank behavior.
-- **Intended design:** Initial evidence → point coverage → missing point → targeted retrieval → global rerank → updated evidence → answer/verification.
+- **Goal:** Use missing answer points to trigger one bounded targeted retrieval, followed by global candidate reconsideration (best-rank RRF + rerank + selection) and retained-support evidence preservation.
+- **Why this stage:** Requires validated E1 decomposition and E2 claim mapping; global candidate reconsideration is a proposed architectural seam to be implemented and tested in A1 (C8 treatment validation is not a prerequisite per D1).
+- **Intended design:** `verify` -> `missing-point targeted retrieval` -> `global candidate reconsideration (best-rank RRF + rerank + selection) + retained-support evidence ledger` -> `bounded revision` -> `second verify` -> `finalize`.
 - **Functional requirements:** Bounded loops, explicit objectives, trace provenance, version safety, recovery measurement, and no arbitrary hidden requirements.
 - **Explicit out of scope:** New benchmark rules, unbounded retries, answer composer, or removing compatibility behavior before Phase F.
-- **Dependencies:** Validated E1 and completed E2 core mechanism plus C8. E2 default promotion is not a dependency; QA-M1 is maintenance, not an architectural prerequisite.
-- **Planned evaluation scope (not authorized):** T0, targeted T2 multi-hop/cross-repository/workflow/multi-part novel cases, then small Phase-E T4.
+- **Dependencies:** Validated E1 and completed E2 core mechanism; C8 global candidate-pool design principles (C8 treatment validation not a prerequisite). E2 default promotion is not a dependency; QA-M1 is maintenance, not an architectural prerequisite.
+- **Planned evaluation scope (not authorized):** T0 fake/static unit tests (T1–T20), then targeted T2 multi-hop/cross-repository/workflow/multi-part novel cases, then small Phase-E T4.
 - **Primary metrics:** Missing-point recovery, targeted retrieval success, final point coverage, unsupported claims, and cost.
 - **Acceptance criteria:** Missing requested facets are recovered more often without displacing strong evidence or increasing unsupported claims.
 - **Failure handling:** Stop after the bounded attempt and return an honest incomplete/refusal outcome; never invent a requirement or fact. Stop after E3.
@@ -634,12 +647,12 @@ At release, Generalization Gap means benchmark score minus novel score. Benchmar
 2. **Remaining D4 candidate disposition:** Does the remaining unassessed D4 inventory contain another naturally testable, high-value migration batch, or should residual entries remain on HOLD?
 3. **Phase-F scope boundary:** F1 has established the bounded non-D4 residual inventory and candidate owners. Which candidates warrant a separately authorized treatment remains undecided.
 4. **Bottleneck prioritization:** Is answer completeness and decomposition (Phase E) now a larger production bottleneck than residual retrieval shortcut dependency?
-5. **Phase execution ordering:** F1 found zero E1 blockers. E1-R2 passed targeted prospective synthetic validation and E1-C1 passed exposed real-style confirmation, including the original atomicity sentinel. E1 is closed under the accepted scope decision. E2-A3 remains FAIL/Q7. E2-A3-FR1 completed with REPAIR_JUSTIFIED. R1 remains FAIL/P2_P6. R2 repaired citation eligibility and passed S1-S13/P1-P11 in six fresh pairs. Historical P6 FAIL remains without waiver or product tuning; historical R3 remains INCONCLUSIVE after four infrastructure failures. R3-R1 completed the missing paired evidence and failed G11 at 2/14 noncritical worse; FR1 subsequently completed a static review recommending shared claim sanitization repair and prospective gate redesign. E2-LR1 subsequently separates completed core mechanisms from deferred promotion and supersedes immediate A3-R4. QA-M1 maintenance subsequently completed with focused T0/static checks. Architecturally unblocked E3 is next and requires separate execution authorization. No further E1 confirmation is required.
+5. **Phase execution ordering:** F1 found zero E1 blockers. E1-R2 passed targeted prospective synthetic validation and E1-C1 passed exposed real-style confirmation, including the original atomicity sentinel. E1 is closed under the accepted scope decision. E2-A3 remains FAIL/Q7. E2-A3-FR1 completed with REPAIR_JUSTIFIED. R1 remains FAIL/P2_P6. R2 repaired citation eligibility and passed S1-S13/P1-P11 in six fresh pairs. Historical P6 FAIL remains without waiver or product tuning; historical R3 remains INCONCLUSIVE after four infrastructure failures. R3-R1 completed the missing paired evidence and failed G11 at 2/14 noncritical worse; FR1 subsequently completed a static review recommending shared claim sanitization repair and prospective gate redesign. E2-LR1 subsequently separates completed core mechanisms from deferred promotion and supersedes immediate A3-R4. QA-M1 maintenance subsequently completed with focused T0/static checks. E3-A0 architecture contract is complete (MISSING_POINT_TARGETED_RETRIEVAL_CONTRACT_ESTABLISHED; E3 IN_PROGRESS; E3-A1 next). Next E3-A1 implementation requires separate execution authorization. No further E1 confirmation is required.
 
 ```text
-CURRENT_TASK = QA-M1 / COMPLETE / PASS / GENERIC_CLAIM_SANITIZATION_REPAIR_VALIDATED
-NEXT_TASK_RECOMMENDATION = E3 — Missing-Point Targeted Retrieval
+CURRENT_TASK = E3-A0 / COMPLETE / PASS / MISSING_POINT_TARGETED_RETRIEVAL_CONTRACT_ESTABLISHED
+NEXT_TASK_RECOMMENDATION = E3-A1 — Experimental Missing-Point Targeted Retrieval Implementation
 NEXT_TASK_EXECUTION_AUTHORIZED = false
-FOLLOWING_ARCHITECTURE_TASK = E3 — Missing-Point Targeted Retrieval
+FOLLOWING_ARCHITECTURE_TASK = E3-A1 — Experimental Missing-Point Targeted Retrieval Implementation
 NEXT_STAGE_AUTHORIZED = false
 ```

@@ -45,6 +45,9 @@ E2 = COMPLETE / CORE_MECHANISM_VALIDATED / DEFAULT_PROMOTION_DEFERRED.
 E2-LR1 = COMPLETE / PASS / POST_A3_LIFECYCLE_RECONCILED.
 QA-M1 = COMPLETE / PASS / GENERIC_CLAIM_SANITIZATION_REPAIR_VALIDATED.
 Maintenance report: `evaluation/QA_M1_GENERIC_CLAIM_SANITIZATION_REPAIR.md`.
+E3-A0 = COMPLETE / PASS / MISSING_POINT_TARGETED_RETRIEVAL_CONTRACT_ESTABLISHED.
+E3-A0 report: `evaluation/E3_A0_MISSING_POINT_TARGETED_RETRIEVAL_CONTRACT.md`.
+E3 = IN_PROGRESS / A0_COMPLETE / A1_NEXT.
 E2-A3-R4 = NOT_STARTED / SUPERSEDED_BY_LIFECYCLE_SIMPLIFICATION.
 E2 DEFAULT PROMOTION = DEFERRED / ACTIVATION_ACCEPTANCE_NOT_MET.
 runtime_e1_v2 = VALIDATED_EXPERIMENTAL_PATH / EXPLICIT_SELECTION_ONLY.
@@ -52,7 +55,7 @@ E2 DEFAULT-PROMOTION GATE REDESIGN = DEFERRED / REVISIT_AT_PHASE_E_PROMOTION_BOU
 Reconciliation: `evaluation/E2_POST_A3_LIFECYCLE_RECONCILIATION.md`.
 E2-A1 report: `evaluation/E2_A1_SHADOW_ANSWER_POINT_COVERAGE_CONTRACT.md`.
 C1 met all eight strict gates and the original pair09 atomicity sentinel. Per the
-accepted closure decision, E1 is complete. E2-A2 passed targeted shadow validation. E2-A3 failed Q7; normal QA remains legacy and E3 remains NOT_STARTED.
+accepted closure decision, E1 is complete. E2-A2 passed targeted shadow validation. E2-A3 failed Q7; normal QA remains legacy. E3-A0 established the missing-point targeted retrieval architecture contract (contract-only); E3 is IN_PROGRESS with E3-A1 next (unauthorized).
 Decision: `evaluation/E1_CLOSURE_SCOPE_REVIEW.md`.
 Report: `evaluation/E1_C1_REAL_STYLE_CONFIRMATION.md`.
 Preregistration: `2517b691245c38175222064e6ca546d06fd21e9a`.
@@ -103,22 +106,46 @@ MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD
 Current planning state:
 D4 = PAUSED / ROADMAP_RECONCILIATION
 D4 overall completion = UNDECIDED
-CURRENT_TASK = QA-M1 / COMPLETE / PASS / GENERIC_CLAIM_SANITIZATION_REPAIR_VALIDATED
-NEXT_TASK_RECOMMENDATION = E3 — Missing-Point Targeted Retrieval / NOT AUTHORIZED
+CURRENT_TASK = E3-A0 / COMPLETE / PASS / MISSING_POINT_TARGETED_RETRIEVAL_CONTRACT_ESTABLISHED
+NEXT_TASK_RECOMMENDATION = E3-A1 — Experimental Missing-Point Targeted Retrieval Implementation / NOT AUTHORIZED
 NEXT_TASK_EXECUTION_AUTHORIZED = false
-FOLLOWING_ARCHITECTURE_TASK = E3 — Missing-Point Targeted Retrieval
+FOLLOWING_ARCHITECTURE_TASK = E3-A1 — Experimental Missing-Point Targeted Retrieval Implementation
 
 No D4-A11 exists.
-Phase E = IN_PROGRESS / E2_CORE_COMPLETE / E3_NEXT.
+Phase E = IN_PROGRESS / E2_CORE_COMPLETE / E3_IN_PROGRESS.
 E1 = COMPLETE / PASS / QUESTION_ONLY_SEMANTIC_ANSWER_POINT_DECOMPOSITION_VALIDATED.
 E2 = COMPLETE / CORE_MECHANISM_VALIDATED / DEFAULT_PROMOTION_DEFERRED.
-E3 = NOT_STARTED / ARCHITECTURALLY_UNBLOCKED.
+E3-A0 = COMPLETE / PASS / MISSING_POINT_TARGETED_RETRIEVAL_CONTRACT_ESTABLISHED.
+E3 = IN_PROGRESS / A0_COMPLETE / A1_NEXT.
 Phase F = IN_PROGRESS / F1_COMPLETE.
 F2 = NOT_STARTED / SCOPE_PRESERVED.
 F3 = SCOPE_RECONCILIATION_REQUIRED / PARTIALLY_SUPERSEDED_BY_D4.
-No further recovery, D4, Phase-E, or Phase-F task is authorized after QA-M1.
+No further recovery, D4, Phase-E, or Phase-F task is authorized after E3-A0.
 
-## QA-M1 maintenance closeout
+## E3-A0 architecture contract closeout
+
+COMPLETE / PASS / MISSING_POINT_TARGETED_RETRIEVAL_CONTRACT_ESTABLISHED.
+Static architecture and dependency contract only; zero product code modified, zero scientific
+validation or evaluation calls. Reconstructed current QA graph from source (`src/panda_agent/qa.py`);
+formally distinguished pre-answer sufficiency-based targeted retrieval from post-verify semantic
+missing-point targeted retrieval. Reconciled historical C8 dependency: preserved C8 DEFERRED /
+INSUFFICIENT_NATURAL_TARGETED_APPLICABILITY without false validation claims; reused C8 candidate-pool
+design principles (object_id identity, per-pass/channel provenance, best-rank RRF, no BOTH bonus,
+lexicographic tie-breaking, unchanged selector/budgets). Established strict question-derived trigger
+and retrieval objective (question + missing point texts in question order; forbidden evaluator/gold/reason
+signals). Contract specifies dedicated E3 budget (missing_point_retrieval_count <= 1) and bounded
+recovery (`verify -> optional E3 -> revise -> verify -> finalize`; never answer again) while preserving
+configured pre-answer budget (`policies.max_targeted_retrievals`). Contract proposes resolution for
+supported-claim citation displacement via internal immutable retained-supported-claims snapshot
+(exact original claim text, citation IDs, point mappings) and retained-support evidence ledger
+(claim-scoped to unchanged supported claims, preserving original evidence IDs and payloads, normal
+verifier recheck without waivers, public QAResult shape unchanged) without pinning selection or inflating
+the configured final evidence limit (currently 12; policy-selected). Defined minimal A1 implementation
+seam in `qa.py` / `retrieval.py` and focused T1-T20 test contract (local test IDs, none executed in A0).
+All PANDA scientific/evaluation calls and tokens are zero; zero product or test code modified.
+Report: `evaluation/E3_A0_MISSING_POINT_TARGETED_RETRIEVAL_CONTRACT.md`.
+
+## Historical QA-M1 maintenance closeout
 
 COMPLETE / PASS / GENERIC_CLAIM_SANITIZATION_REPAIR_VALIDATED. Shared external
 template sanitization now consumes balanced wrappers and retains payload meaning;
@@ -126,8 +153,8 @@ requested identifiers remain intact. Focused T0: 14 tests and 2 subtests passed.
 Offline scan: 290 initial/revision claim snapshots, 2 intended changes (g029/g059),
 288 unchanged and zero unexpected collateral changes. All scientific/provider
 calls and tokens are zero. Historical G11 FAIL/preferences unchanged; no activation.
-E2 core remains complete with promotion deferred. Next E3 is architecturally
-unblocked but NOT_STARTED and not authorized. Report:
+E2 core remains complete with promotion deferred. Historical baseline prior to E3-A0
+contract establishment. Report:
 `evaluation/QA_M1_GENERIC_CLAIM_SANITIZATION_REPAIR.md`.
 
 ## Historical E2-LR1 lifecycle reconciliation
