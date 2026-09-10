@@ -33,11 +33,13 @@ E2-A3-R1 FAILURE REVIEW = COMPLETE / PASS / P2_REPAIR_REQUIRED_P6_NO_PRODUCT_REP
 P2/P6 review: `evaluation/E2_A3_R1_P2_P6_FAILURE_REVIEW.md`.
 E2-A3-R2 = COMPLETE / PASS / CITATION_ELIGIBLE_EVIDENCE_SELECTION_REPAIR_VALIDATED.
 R2 report: `evaluation/E2_A3_R2_CITATION_ELIGIBLE_EVIDENCE_REPAIR.md`.
-E2-A3-R3 = INCONCLUSIVE / CONNECTION_TIMEOUT_AND_PROVIDER_429_INCOMPLETE_PAIRS.
+E2-A3-R3 = COMPLETE / INCONCLUSIVE / CONNECTION_TIMEOUT_AND_PROVIDER_429_INCOMPLETE_PAIRS.
+E2-A3-R3-R1 = COMPLETE / FAIL / G11.
+Recovery report: `evaluation/E2_A3_R3_R1_INFRASTRUCTURE_RECOVERY.md`.
 R3 report: `evaluation/E2_A3_R3_RUNTIME_ACTIVATION_REASSESSMENT.md`.
 Historical A3/R1 activation gates failed; R2 passed bounded repair validation only. No runtime default promotion occurred.
 Normal default = `legacy_question_core`; runtime activation did not occur.
-E2 = IN_PROGRESS / RUNTIME_ACTIVATION_FAILED / FINAL_ACTIVATION_REASSESSMENT_INCONCLUSIVE.
+E2 = IN_PROGRESS / RUNTIME_ACTIVATION_FAILED / ACTIVATION_COMPLETION_FAILED.
 E2-A1 report: `evaluation/E2_A1_SHADOW_ANSWER_POINT_COVERAGE_CONTRACT.md`.
 C1 met all eight strict gates and the original pair09 atomicity sentinel. Per the
 accepted closure decision, E1 is complete. E2-A2 passed targeted shadow validation. E2-A3 failed Q7; normal QA remains legacy and E3 remains NOT_STARTED.
@@ -91,21 +93,45 @@ MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD
 Current planning state:
 D4 = PAUSED / ROADMAP_RECONCILIATION
 D4 overall completion = UNDECIDED
-CURRENT_TASK = E2-A3-R3 / INCONCLUSIVE / CONNECTION_TIMEOUT_AND_PROVIDER_429_INCOMPLETE_PAIRS
-NEXT_TASK_RECOMMENDATION = E2-A3-R3 INFRASTRUCTURE / ACTIVATION DECISION REASSESSMENT / NOT AUTHORIZED
+CURRENT_TASK = E2-A3-R3-R1 / COMPLETE / FAIL / G11
+NEXT_TASK_RECOMMENDATION = E2-A3-R3-R1 G11 FAILURE REVIEW / NOT AUTHORIZED
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 
 No D4-A11 exists.
 Phase E = IN_PROGRESS / E2.
 E1 = COMPLETE / PASS / QUESTION_ONLY_SEMANTIC_ANSWER_POINT_DECOMPOSITION_VALIDATED.
-E2 = IN_PROGRESS / RUNTIME_ACTIVATION_FAILED / FINAL_ACTIVATION_REASSESSMENT_INCONCLUSIVE.
+E2 = IN_PROGRESS / RUNTIME_ACTIVATION_FAILED / ACTIVATION_COMPLETION_FAILED.
 E3 = NOT_STARTED.
 Phase F = IN_PROGRESS / F1_COMPLETE.
 F2 = NOT_STARTED / SCOPE_PRESERVED.
 F3 = SCOPE_RECONCILIATION_REQUIRED / PARTIALLY_SUPERSEDED_BY_D4.
-No further recovery, D4, Phase-E, or Phase-F task is authorized after E2-A3-R3.
+No further recovery, D4, Phase-E, or Phase-F task is authorized after E2-A3-R3-R1.
 
-## E2-A3-R3 scientific closeout
+## E2-A3-R3-R1 scientific closeout
+
+COMPLETE / FAIL / G11. Recovery g059/g047/g001 completed all six fresh arms and
+three blinded judgments with zero terminal infrastructure failures or case replays.
+Exactly eleven original complete pairs plus three fresh recovery pairs establish
+14/14 QA outputs per arm and 14 judgments. Correct status and supported answers
+are 14/14 per arm; new false answers/refusals and critical regressions are zero.
+Quality is 1 better / 11 equivalent / 2 worse: new g001 plus historical g029 fail
+G11's unchanged <=1 worse and >=13 non-worse requirements. All other G1-G13 gates
+PASS with complete authority. Coverage is complete for 10/10 applicable answered
+runtime outputs, decomposition valid 14/14, and no new registered verifier category
+or invalid Sphinx citation is observed. G12 = (75 - 61)/14 = 1.0.
+
+Protocol: `3a93f081a77e8bb507b14729a981dc1fa9c1f449`.
+Raw: `0bc039d39211540843863d73ef9dd2be430087cd`.
+Judged: `5f260a3fa92ade82528825669e0f5360fe1bc34e`.
+Result: `evaluation/e2_a3_r3_r1_activation_completion_result.json`.
+Report: `evaluation/E2_A3_R3_R1_INFRASTRUCTURE_RECOVERY.md`.
+Focused evaluator tests: 32 passed before freeze. Recovery usage: 44 logical
+operations, 38 returned responses, 40 adapter requests, 475016 observable tokens.
+Embedding tokens and monetary cost unavailable. Original historical usage and
+failed-attempt expenditure remain separately preserved. No product change,
+activation, rejudge, P6 waiver, or automatic next task. Default remains legacy.
+
+## Historical E2-A3-R3 scientific closeout
 
 INCONCLUSIVE: three connection timeouts (g059 both arms, g047 runtime) and
 one provider 429 (g001 legacy) prevent three authoritative pairs. All 28 attempt
