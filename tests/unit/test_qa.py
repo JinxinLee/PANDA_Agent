@@ -10,7 +10,9 @@ from panda_agent.qa import (
     ANSWER_SCHEMA,
     QAAgent,
     _answer_requirements,
+    _compact_requirement_evidence,
     _deterministic_missing_requirement_ids,
+    _requirement_evidence,
 )
 
 
@@ -890,7 +892,11 @@ class QATests(unittest.TestCase):
         )
 
     def test_regression_protected_requirements_reject_incomplete_claims(self):
-        pointer_requirement = [{"id": "pointer_identifier_normalization", "instruction": ""}]
+        pointer_requirement = [{
+            "id": "pointer_identifier_normalization",
+            "instruction": "",
+            "target_symbol": "PndLmdTrackQ",
+        }]
         old_pointer_claim = [{
             "claim_id": "c1",
             "claim_text": "PndLmdCombinedDataReader casts an entry to PndLmdTrackQ* and consumes it.",
@@ -1790,6 +1796,140 @@ class VerifierSupportSemanticTests(unittest.TestCase):
         })
         self.assertIn("wrong code version e1", checked["errors"])
         self.assertIn("unsupported identifier PndLmdMissing::Symbol", checked["errors"])
+
+
+class PointerNormalizationCompletenessTests(unittest.TestCase):
+    """F2-A2 contract: the pointer-normalization completeness requirement
+    derives its target symbol from the live question's pointer type
+    expression; no fixed PndLmdTrackQ/lmdtrackq dependency remains anywhere in
+    the R10 completeness, evidence-selection, or compaction contract."""
+
+    POINTER_PLAN = {
+        "intent": "api",
+        "symbols": ["PndLmdTrackQ"],
+        "concepts": ["pointer type normalization"],
+    }
+
+    def _requirement(self, question, plan=None):
+        requirements = _answer_requirements(question, plan or dict(self.POINTER_PLAN))
+        matches = [r for r in requirements if r["id"] == "pointer_identifier_normalization"]
+        return matches[0] if matches else None
+
+    # T1 — historical symbol still works generically
+    def test_historical_symbol_derived_from_question_and_complete_answer_passes(self):
+        requirement = self._requirement(
+            "PndLmdTrackQ* appears in adapter code. How should this pointer type be normalized?"
+        )
+        self.assertEqual(requirement["target_symbol"], "PndLmdTrackQ")
+        complete_claim = [{
+            "claim_id": "c1",
+            "claim_text": "The pointer type expression PndLmdTrackQ* normalizes to the underlying PndLmdTrackQ symbol; the asterisk is pointer syntax and is not part of a new identifier.",
+            "evidence_ids": [],
+        }]
+        self.assertEqual(
+            _deterministic_missing_requirement_ids([requirement], complete_claim, {}),
+            [],
+        )
+
+    # T2 — unseen symbol works end to end
+    def test_unseen_symbol_derived_and_complete_answer_passes(self):
+        requirement = self._requirement(
+            "SensorFrame* appears in the adapter. How should this pointer type be normalized?"
+        )
+        self.assertEqual(requirement["target_symbol"], "SensorFrame")
+        complete_claim = [{
+            "claim_id": "c1",
+            "claim_text": "SensorFrame* is a pointer type expression; SensorFrame is the underlying code symbol, and the asterisk is pointer syntax and is not part of a new identifier.",
+            "evidence_ids": [],
+        }]
+        self.assertEqual(
+            _deterministic_missing_requirement_ids([requirement], complete_claim, {}),
+            [],
+        )
+
+    # T3 — wrong known symbol cannot satisfy an unseen query
+    def test_wrong_known_symbol_cannot_satisfy_unseen_target(self):
+        requirement = self._requirement(
+            "SensorFrame* appears in the adapter. How should this pointer type be normalized?"
+        )
+        historical_claim = [{
+            "claim_id": "c1",
+            "claim_text": "The pointer type expression PndLmdTrackQ* normalizes to the underlying PndLmdTrackQ symbol; the asterisk is pointer syntax and is not part of a new identifier.",
+            "evidence_ids": [],
+        }]
+        self.assertEqual(
+            _deterministic_missing_requirement_ids([requirement], historical_claim, {}),
+            ["pointer_identifier_normalization"],
+        )
+
+    # T4 — right symbol but incomplete semantics fails
+    def test_right_symbol_with_incomplete_semantics_remains_missing(self):
+        requirement = self._requirement(
+            "SensorFrame* appears in the adapter. How should this pointer type be normalized?"
+        )
+        for claim_text in (
+            "SensorFrame is used by the adapter.",
+            "SensorFrame* is passed between the adapter layers.",
+        ):
+            with self.subTest(claim_text=claim_text):
+                claims = [{"claim_id": "c1", "claim_text": claim_text, "evidence_ids": []}]
+                self.assertEqual(
+                    _deterministic_missing_requirement_ids([requirement], claims, {}),
+                    ["pointer_identifier_normalization"],
+                )
+
+    # T5 — pointer qualifier semantics required
+    def test_missing_qualifier_explanation_remains_missing(self):
+        requirement = self._requirement(
+            "SensorFrame* appears in the adapter. How should this pointer type be normalized?"
+        )
+        no_qualifier = [{
+            "claim_id": "c1",
+            "claim_text": "SensorFrame is the underlying code symbol used by the adapter.",
+            "evidence_ids": [],
+        }]
+        self.assertEqual(
+            _deterministic_missing_requirement_ids([requirement], no_qualifier, {}),
+            ["pointer_identifier_normalization"],
+        )
+
+    # T6 — non-pointer question does not activate
+    def test_non_pointer_question_does_not_activate(self):
+        self.assertIsNone(self._requirement("Where is SensorFrame defined?"))
+
+    # T7 — plan-only symbol does not become target
+    def test_plan_only_symbol_does_not_manufacture_requirement(self):
+        self.assertIsNone(self._requirement("Where is PndLmdTrackQ defined?"))
+        self.assertIsNone(self._requirement("How is the pointer parameter passed?"))
+        requirement = self._requirement(
+            "SensorFrame* appears in the adapter. How should this pointer type be normalized?"
+        )
+        self.assertEqual(requirement["target_symbol"], "SensorFrame")
+
+    # T8 — evidence selection and compaction are dynamic
+    def test_evidence_selection_and_compaction_follow_dynamic_target(self):
+        requirement = {
+            "id": "pointer_identifier_normalization",
+            "instruction": "",
+            "target_symbol": "SensorFrame",
+        }
+        target_evidence = {
+            "e1": {"evidence_id": "e1", "source_id": "pandaroot", "text": "SensorFrame carries the adapter frame payload.", "locator": {}},
+        }
+        historical_evidence = {
+            "e2": {"evidence_id": "e2", "source_id": "pandaroot", "text": "PndLmdTrackQ tracks particles.", "locator": {}},
+        }
+        selected = _requirement_evidence([requirement], {**target_evidence, **historical_evidence})
+        selected_ids = [item["evidence_id"] for item in selected["pointer_identifier_normalization"]]
+        self.assertIn("e1", selected_ids)
+        self.assertNotIn("e2", selected_ids)
+        compacted = _compact_requirement_evidence(
+            selected["pointer_identifier_normalization"],
+            "pointer_identifier_normalization",
+            "SensorFrame",
+        )
+        self.assertTrue(compacted)
+        self.assertIn("sensorframe", compacted[0]["text"].casefold())
 
 
 if __name__ == "__main__":

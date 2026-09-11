@@ -70,6 +70,8 @@ F2-A1 = COMPLETE / PASS / GENERIC_VERIFIER_SUPPORT_SEMANTICS_ESTABLISHED.
 F2-A1 report: `evaluation/F2_A1_VERIFIER_SUPPORT_SEMANTIC_CLEANUP.md` (initial closeout corrected by F2-A1-R1).
 F2-A1-R1 = COMPLETE / PASS / WHOLE_CLAIM_SEMANTIC_BYPASS_REMOVED.
 F2-A1-R1 report: `evaluation/F2_A1_R1_VERIFIER_SUPPORT_SEMANTIC_ENTAILMENT_REPAIR.md`.
+F2-A2 = COMPLETE / PASS / QUESTION_DERIVED_POINTER_NORMALIZATION_COMPLETENESS_ESTABLISHED.
+F2-A2 report: `evaluation/F2_A2_DETERMINISTIC_COMPLETENESS_SEMANTIC_CLEANUP.md`.
 Phase E = COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED.
 E2-A1 report: `evaluation/E2_A1_SHADOW_ANSWER_POINT_COVERAGE_CONTRACT.md`.
 C1 met all eight strict gates and the original pair09 atomicity sentinel. Per the
@@ -119,6 +121,8 @@ F2-A1
 COMPLETE / PASS / GENERIC_VERIFIER_SUPPORT_SEMANTICS_ESTABLISHED
 F2-A1-R1
 COMPLETE / PASS / WHOLE_CLAIM_SEMANTIC_BYPASS_REMOVED
+F2-A2
+COMPLETE / PASS / QUESTION_DERIVED_POINTER_NORMALIZATION_COMPLETENESS_ESTABLISHED
 
 Latest accepted production action:
 D4-A10
@@ -134,10 +138,10 @@ MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD
 Current planning state:
 D4 = PAUSED / ROADMAP_RECONCILIATION
 D4 overall completion = UNDECIDED
-CURRENT_TASK = F2-A1-R1 / COMPLETE / PASS / WHOLE_CLAIM_SEMANTIC_BYPASS_REMOVED
-NEXT_TASK_RECOMMENDATION = F2-A2 — Deterministic Completeness Semantic Cleanup / RECOMMENDED / NOT AUTHORIZED
+CURRENT_TASK = F2-A2 / COMPLETE / PASS / QUESTION_DERIVED_POINTER_NORMALIZATION_COMPLETENESS_ESTABLISHED
+NEXT_TASK_RECOMMENDATION = F2-A3 — E1/E2 Compatibility Retirement / RECOMMENDED / NOT AUTHORIZED
 NEXT_TASK_EXECUTION_AUTHORIZED = false
-FOLLOWING_ARCHITECTURE_TASK = bounded Phase-F production cleanup per the PF-LR1 recommended order (F2-A2 next)
+FOLLOWING_ARCHITECTURE_TASK = bounded Phase-F production cleanup per the PF-LR1 recommended order (F2-A3 next)
 
 No D4-A11 exists.
 Phase E = COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED.
@@ -150,10 +154,10 @@ E3-LR1 = COMPLETE / PASS / POST_A2_LIFECYCLE_RECONCILED.
 E3 = COMPLETE / BOUNDED_LOW_FREQUENCY_FALLBACK_IMPLEMENTED / SCIENTIFIC_RECOVERY_BENEFIT_UNRESOLVED.
 PE-LR1 = COMPLETE / PASS / PHASE_E_CLOSED_PROMOTION_DEFERRED_UNTIL_MATERIAL_CANDIDATE.
 Phase E = COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED.
-Phase F = IN_PROGRESS / F2_A1_COMPLETE.
-F2 = IN_PROGRESS / A1_COMPLETE.
+Phase F = IN_PROGRESS / F2_A2_COMPLETE.
+F2 = IN_PROGRESS / A1_A2_COMPLETE.
 F3 = NOT_STARTED / UNEXECUTED.
-No further recovery, D4, Phase-E, or Phase-F production task is authorized after F2-A1; F2-A2 — Deterministic Completeness Semantic Cleanup is recommended but NOT AUTHORIZED.
+No further recovery, D4, Phase-E, or Phase-F production task is authorized after F2-A2; F2-A3 — E1/E2 Compatibility Retirement is recommended but NOT AUTHORIZED.
 
 ## E3-A1 experimental implementation closeout
 
@@ -332,6 +336,36 @@ authorization.
 NEXT_TASK_RECOMMENDATION = F2-A2 — Deterministic Completeness Semantic Cleanup (PF-LR1 Group B / F1 residual R10)
 (RECOMMENDED / NOT AUTHORIZED).
 Report: `evaluation/F2_A1_R1_VERIFIER_SUPPORT_SEMANTIC_ENTAILMENT_REPAIR.md`.
+
+## F2-A2 deterministic completeness semantic cleanup closeout
+
+COMPLETE / PASS / QUESTION_DERIVED_POINTER_NORMALIZATION_COMPLETENESS_ESTABLISHED. Bounded production cleanup of the
+PF-LR1 Group B pointer-normalization completeness specialization (F1 residual R10) at HEAD `071ad16`; zero PANDA
+scientific/evaluation calls or tokens; zero protected-data access. Old specialization: generic question-grounded
+activation (pointer type expression + normalization vocabulary) flowed into a hard-coded completion rule —
+`_requirement_evidence` selected through fixed anchors (pndlmdtrackq, pointer, tclonesarray),
+`_compact_requirement_evidence` compacted through (pndlmdtrackq, pointer, tclonesarray, lmdtrackq), and
+`_deterministic_missing_requirement_ids` required the claim to mention PndLmdTrackQ*/underlying PndLmdTrackQ.
+Repair: `_answer_requirements` extracts the pointer type expression from the live question and emits the
+requirement with bounded metadata target_symbol (activation additionally requires a named pointer type expression;
+plan-only symbol presence never creates the requirement); `_requirement_evidence` selects on the dynamic target or
+generic normalization vocabulary (pointer, type expression); `_compact_requirement_evidence` gained an optional
+target_symbol parameter with dynamic anchors; `_deterministic_missing_requirement_ids` evaluates the three-part
+semantic contract (pointer type expression stated, underlying target symbol named, qualifier explained as syntax)
+against the question-derived target, and a targetless requirement stays missing (never weakened to keyword
+presence). No hard-coded pndlmdtrackq/lmdtrackq/tclonesarray remains in qa.py. Other requirements, F2-A1/F2-A1-R1
+semantics, integrity checks, retrieval, selection, DTOs, prompts, modes, and E3 surfaces unchanged; Group C
+retirement not begun. Genericity/adversarial contracts T1-T8 (historical symbol generic regression; unseen
+SensorFrame* end to end; wrong historical symbol cannot satisfy an unseen target; incomplete semantics fails;
+qualifier explanation required; non-pointer question inactive; plan-only symbol not a target; dynamic evidence
+selection/compaction) all pass. Verification: tests/unit/test_qa.py 66 passed + 4 subtests; authoritative focused
+E3 deterministic set (E3-LR1 §9: 49 focused E3 tests) plus 42 neighboring E2-A1 shadow tests → 91 passed
+(deterministic regression check only; E3 lifecycle not reopened). F2 remains incomplete (Groups C/D/E outstanding).
+Normal default remains legacy_question_core; runtime_e1_v2 remains explicit-selection-only; default promotion
+remains deferred (D3); promotion relevance is not promotion authorization.
+NEXT_TASK_RECOMMENDATION = F2-A3 — E1/E2 Compatibility Retirement (PF-LR1 Group C / F1 residuals R08, R09, R11)
+(RECOMMENDED / NOT AUTHORIZED).
+Report: `evaluation/F2_A2_DETERMINISTIC_COMPLETENESS_SEMANTIC_CLEANUP.md`.
 
 ## Historical E3-A0 architecture contract closeout
 

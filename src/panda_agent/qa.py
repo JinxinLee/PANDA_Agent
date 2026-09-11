@@ -449,15 +449,17 @@ def _answer_requirements(question: str, plan: dict[str, Any]) -> list[dict[str, 
             "For a data-reader efficiency/accounting question, inspect the evidence-backed selection or filter conditions and the accepted-versus-generated histogram filling; do not stop at tree or branch assumptions.",
         )
 
+    pointer_type_match = re.search(r"[A-Za-z_][A-Za-z0-9_:]*\*", question)
     pointer_normalization_triggered = (
-        "*" in question
+        pointer_type_match
         and _contains_any(text + " " + plan_text, ("pointer", "type expression", "normalize", "normalization"))
     )
     if pointer_normalization_triggered:
-        add(
-            "pointer_identifier_normalization",
-            "State the identifier normalization explicitly: remove pointer/reference syntax from the type expression, name the underlying code symbol, and say that the qualifier is not part of a new identifier before explaining where the symbol is consumed.",
-        )
+        requirements.append({
+            "id": "pointer_identifier_normalization",
+            "instruction": "State the identifier normalization explicitly: remove pointer/reference syntax from the type expression, name the underlying code symbol, and say that the qualifier is not part of a new identifier before explaining where the symbol is consumed.",
+            "target_symbol": pointer_type_match.group(0).rstrip("*"),
+        })
 
     model_layer_inventory_triggered = (
         intent == "module_structure"
@@ -752,9 +754,11 @@ def _requirement_evidence(
                 )
             ]
         elif requirement_id == "pointer_identifier_normalization":
+            pointer_target = str(requirement.get("target_symbol") or "").casefold()
             matches = [
                 item for item in evidence.values()
-                if _contains_any(_evidence_search_text(item), ("pndlmdtrackq", "pointer", "tclonesarray"))
+                if (bool(pointer_target) and pointer_target in _evidence_search_text(item))
+                or _contains_any(_evidence_search_text(item), ("pointer", "type expression"))
             ]
         elif requirement_id == "model_layer_component_inventory":
             matches = [
@@ -794,12 +798,14 @@ def _requirement_evidence(
         else:
             matches = []
         if matches:
-            selected[requirement_id] = _compact_requirement_evidence(matches, requirement_id)
+            selected[requirement_id] = _compact_requirement_evidence(
+                matches, requirement_id, str(requirement.get("target_symbol") or "")
+            )
     return selected
 
 
 def _compact_requirement_evidence(
-    matches: list[dict[str, Any]], requirement_id: str
+    matches: list[dict[str, Any]], requirement_id: str, target_symbol: str = ""
 ) -> list[dict[str, Any]]:
     """Keep the model-facing requirement subset near the relevant factory code."""
     anchors = {
@@ -812,9 +818,6 @@ def _compact_requirement_evidence(
         "reader_selection_histogram_accounting": (
             "pndlmddatareader", "selection", "filter", "accepted", "generated", "histogram",
         ),
-        "pointer_identifier_normalization": (
-            "pndlmdtrackq", "pointer", "tclonesarray", "lmdtrackq",
-        ),
         "model_layer_component_inventory": (
             "dpm", "acceptance", "smearing", "resolution", "divergence", "modelfactory",
         ),
@@ -825,6 +828,9 @@ def _compact_requirement_evidence(
             "numerator", "reconstructed", "migration", "denominator", "zero efficiency", "binning", "profile",
         ),
     }.get(requirement_id, ())
+    if requirement_id == "pointer_identifier_normalization":
+        anchors = (target_symbol.casefold(),) if target_symbol else ()
+        anchors += ("pointer", "type expression")
     compact: list[dict[str, Any]] = []
     for item in matches[:4]:
         clone = dict(item)
@@ -923,10 +929,19 @@ def _deterministic_missing_requirement_ids(
             if not (has_reader and has_selection and has_accounting and cited_accounting):
                 missing.append(requirement_id)
         elif requirement_id == "pointer_identifier_normalization":
-            has_pointer_type = "pndlmdtrackq*" in claim_text or (
-                "pndlmdtrackq" in claim_text and "pointer" in claim_text
+            pointer_target = str(requirement.get("target_symbol") or "").casefold()
+            has_pointer_type = (
+                bool(pointer_target)
+                and (
+                    f"{pointer_target}*" in claim_text
+                    or (pointer_target in claim_text and "pointer" in claim_text)
+                )
             )
-            has_underlying_symbol = "underlying" in claim_text and "pndlmdtrackq" in claim_text
+            has_underlying_symbol = (
+                bool(pointer_target)
+                and "underlying" in claim_text
+                and pointer_target in claim_text
+            )
             has_qualifier_rule = (
                 any(term in claim_text for term in ("asterisk", "pointer syntax", "type-expression syntax", "type expression syntax"))
                 and any(term in claim_text for term in ("not part", "does not form", "not a new", "remove", "strip"))
