@@ -59,8 +59,8 @@ FUTURE_E3_EVIDENCE = ACCUMULATE_OPPORTUNISTICALLY_IN_BROADER_AUTHORIZED_EVALUATI
 E2-A3-R4 = NOT_STARTED / SUPERSEDED_BY_LIFECYCLE_SIMPLIFICATION.
 E2 DEFAULT PROMOTION = DEFERRED / ACTIVATION_ACCEPTANCE_NOT_MET.
 runtime_e1_v2 = VALIDATED_EXPERIMENTAL_PATH / EXPLICIT_SELECTION_ONLY.
-E2 DEFAULT-PROMOTION GATE REDESIGN = CLOSED / NO_IMMEDIATE_REVALIDATION_DEFINED / REOPEN_ONLY_FOR_MATERIAL_CANDIDATE_OR_RELEASE_BOUNDARY.
-DEFAULT_PROMOTION_RECONSIDERATION_TRIGGER = materially behavior-changing post-Phase-E candidate (normally Phase-F compatibility/benchmark-dependency cleanup: F1-R08/R09/R11, R13, R10, R14, R04; or another independently justified architecture change) OR an explicitly authorized release/acceptance candidate evaluation requiring the normal-default decision.
+E2 DEFAULT-PROMOTION GATE REDESIGN = CLOSED / NO_IMMEDIATE_REVALIDATION_DEFINED / REOPEN_ONLY_FOR_PROMOTION_RELEVANT_MATERIAL_CANDIDATE_OR_RELEASE_BOUNDARY.
+DEFAULT_PROMOTION_RECONSIDERATION_TRIGGER = a promotion-relevant materially behavior-changing post-Phase-E candidate that either (1) materially affects the unresolved default-promotion failure surface (completeness, verification, compatibility, evidence-selection, or other behavior implicated in the failed activation lineage — normally Phase-F cleanup of F1-R08/R09/R11, R13, R10, R14, R04) or (2) otherwise creates a decision-relevant new integrated runtime candidate whose default acceptance needs assessment; OR (3) an explicitly authorized release/acceptance candidate evaluation requiring the normal-default decision.
 Reconciliation: `evaluation/E2_POST_A3_LIFECYCLE_RECONCILIATION.md`.
 PE-LR1 = COMPLETE / PASS / PHASE_E_CLOSED_PROMOTION_DEFERRED_UNTIL_MATERIAL_CANDIDATE.
 PE-LR1 report: `evaluation/PE_LR1_PHASE_E_PROMOTION_BOUNDARY_RECONCILIATION.md`.
@@ -119,9 +119,9 @@ Current planning state:
 D4 = PAUSED / ROADMAP_RECONCILIATION
 D4 overall completion = UNDECIDED
 CURRENT_TASK = PE-LR1 / COMPLETE / PASS / PHASE_E_CLOSED_PROMOTION_DEFERRED_UNTIL_MATERIAL_CANDIDATE
-NEXT_TASK_RECOMMENDATION = Phase-F scope reconciliation and F2 bounded benchmark-dependency cleanup planning / NOT AUTHORIZED
+NEXT_TASK_RECOMMENDATION = Phase-F scope reconciliation and bounded benchmark-dependency cleanup planning / NOT AUTHORIZED
 NEXT_TASK_EXECUTION_AUTHORIZED = false
-FOLLOWING_ARCHITECTURE_TASK = Phase-F scope reconciliation and F2 bounded benchmark-dependency cleanup planning
+FOLLOWING_ARCHITECTURE_TASK = Phase-F scope reconciliation and bounded benchmark-dependency cleanup planning
 
 No D4-A11 exists.
 Phase E = COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED.
@@ -137,7 +137,7 @@ Phase E = COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAUL
 Phase F = IN_PROGRESS / F1_COMPLETE.
 F2 = NOT_STARTED / SCOPE_PRESERVED.
 F3 = SCOPE_RECONCILIATION_REQUIRED / PARTIALLY_SUPERSEDED_BY_D4.
-No further recovery, D4, Phase-E, or Phase-F task is authorized after PE-LR1; Phase-E scope reconciliation and F2 bounded benchmark-dependency cleanup planning is recommended but NOT AUTHORIZED.
+No further recovery, D4, Phase-E, or Phase-F task is authorized after PE-LR1; Phase-F scope reconciliation and bounded benchmark-dependency cleanup planning is recommended but NOT AUTHORIZED.
 
 ## E3-A1 experimental implementation closeout
 
@@ -208,20 +208,24 @@ COMPLETE / PASS / PHASE_E_CLOSED_PROMOTION_DEFERRED_UNTIL_MATERIAL_CANDIDATE. St
 HEAD `71e8861`; zero PANDA scientific/evaluation calls or tokens; zero product changes; only the decision report,
 this status file, and the roadmap changed. Four questions separated: P1 Phase-E architecture complete = yes
 (E1/E2/E3 all present with accepted dispositions); P2 runtime_e1_v2 valid experimental path = yes; P3 normal-default
-promotion now = no (historical activation failures E2-A3 Q7, R1 P2_P6, R3-R1 G11 remain binding; no materially new
-candidate exists since the failed lineage — QA-M1 was generic maintenance, E3 added a runtime-only bounded fallback
-with one descriptive case, E3-LR1/PE-LR1 are documentation); P4 reopening trigger recorded. F1-R08/R09/R11
+promotion now = no (historical activation failures E2-A3 Q7, R1 P2_P6, R3-R1 G11 remain binding; a materially
+changed runtime candidate does exist after the failed lineage because E3-A1 introduced real runtime_e1_v2 behavior,
+but E3 is a rare post-verify fallback that does not repair or directly resolve that failure surface, its standalone
+efficacy remains unresolved, and no current product decision depends on immediate promotion — so it is not a
+promotion-relevant material improvement; QA-M1 was generic maintenance and E3-LR1/PE-LR1 are documentation); P4 reopening trigger recorded. F1-R08/R09/R11
 compatibility cluster does not block Phase-E completion; contributes-but-not-sole-blocker for promotion; ownership
 remains Phase F. Material-candidate set for a future promotion decision: R08/R09/R11 cluster, R13 verifier-support
-override, R10 deterministic requirements, R14 selection policy, R04 refusal path. Component-wise analysis:
+override, R10 deterministic requirements, R14 selection policy, R04 refusal path; F1-R01 remains the fourth
+F2 candidate inside Phase-F scope reconciliation even if less promotion-relevant (prioritization
+consideration, not a reclassification). Component-wise analysis:
 runtime_e1_v2 is a coupled mode (single answer_point_coverage_mode switch selects E1 decomposition + E2 coverage
 semantics + E3 eligibility); independent component promotion is unsupported and not decision-relevant. Decision
 matrices selected Phase-E OPTION A (COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED /
-DEFAULT_PROMOTION_DEFERRED) and promotion D3 (defer until material candidate change or explicit release boundary).
+DEFAULT_PROMOTION_DEFERRED) and promotion D3 (defer until a promotion-relevant material candidate change or explicit release boundary).
 Retired the E2 DEFAULT-PROMOTION GATE REDESIGN deferral as CLOSED / NO_IMMEDIATE_REVALIDATION_DEFINED /
-REOPEN_ONLY_FOR_MATERIAL_CANDIDATE_OR_RELEASE_BOUNDARY — no historical E2 outcome altered. Recorded
+REOPEN_ONLY_FOR_PROMOTION_RELEVANT_MATERIAL_CANDIDATE_OR_RELEASE_BOUNDARY — no historical E2 outcome altered. Recorded
 DEFAULT_PROMOTION_RECONSIDERATION_TRIGGER. Legacy default is an accepted stable outcome, not an incomplete state.
-NEXT_TASK_RECOMMENDATION = Phase-F scope reconciliation and F2 bounded benchmark-dependency cleanup planning
+NEXT_TASK_RECOMMENDATION = Phase-F scope reconciliation and bounded benchmark-dependency cleanup planning
 (NOT AUTHORIZED).
 Report: `evaluation/PE_LR1_PHASE_E_PROMOTION_BOUNDARY_RECONCILIATION.md`.
 

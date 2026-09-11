@@ -69,33 +69,57 @@ E2-A3-R3   = COMPLETE / INCONCLUSIVE (connection timeout / provider 429)
 E2-A3-R3-R1= COMPLETE / FAIL / G11         (quality: 1 better, 11 equivalent, 2 worse)
 ```
 
-No materially new runtime candidate exists since `fd0aed4` (the candidate that
-failed this lineage): QA-M1 was generic sanitizer maintenance (E2-LR1 explicitly
-non-activation); E3 added a runtime-only bounded fallback whose prospective
-evidence is one descriptive case; E3-LR1 and the present reconciliation are
-documentation. Architectural completion is not a waiver. Promotion now = no.
+A materially changed runtime candidate does exist after `fd0aed4`: E3-A1
+introduced real runtime behavior under `runtime_e1_v2` (post-verify
+missing-point retrieval, cross-pass candidate reconsideration, global rerank,
+authoritative evidence reselection, a retained-support ledger, and new
+routing/state/trace semantics), and QA-M1 made a small generic sanitizer
+repair (E2-LR1 explicitly non-activation). However, a material runtime change
+is not the same as a promotion-relevant material improvement: E3 does not
+repair, invalidate, or directly resolve the historical E2 default-activation
+failure surface (Q7/P2_P6/G11 verifier and review semantics); it is a rare
+post-verify fallback; its standalone recovery efficacy remains unresolved (a
+single descriptive case); and no current product decision depends on immediate
+default promotion. Another immediate promotion experiment therefore still
+lacks sufficient decision value. Architectural completion is not a waiver.
+Promotion now = no.
 
 ## 6. P4 — Future-reconsideration trigger
 
 ```text
 DEFAULT_PROMOTION_RECONSIDERATION_TRIGGER =
 
-  a materially behavior-changing post-Phase-E candidate — normally produced by
-  Phase-F compatibility / benchmark-dependency cleanup (notably the
-  E1_E2_COMPATIBILITY cluster F1-R08/R09/R11, verifier-support semantics
-  F1-R13, deterministic-requirement semantics F1-R10, selection policy
-  F1-R14, or refusal-path F1-R04) or another independently justified
-  architecture change,
+  a promotion-relevant materially behavior-changing post-Phase-E candidate,
+  meaning a materially behavior-changing candidate that either:
+
+  1. materially affects the unresolved default-promotion failure surface —
+     completeness, verification, compatibility, evidence-selection, or other
+     behavior implicated in the failed activation lineage — normally via
+     Phase-F compatibility / benchmark-dependency cleanup (notably the
+     E1_E2_COMPATIBILITY cluster F1-R08/R09/R11, verifier-support semantics
+     F1-R13, deterministic-requirement semantics F1-R10, selection policy
+     F1-R14, or refusal-path F1-R04) or another independently justified
+     architecture change;
 
   OR
 
-  an explicitly authorized release/acceptance candidate evaluation (T4/T5
-  boundary) whose scope requires deciding the normal default.
+  2. otherwise creates a decision-relevant new integrated runtime candidate
+     whose default acceptance needs to be assessed;
+
+  OR
+
+  3. an explicitly authorized release/acceptance candidate evaluation (T4/T5
+     boundary) whose scope requires deciding the normal default.
 ```
 
-Not sufficient by themselves: elapsed time, rerunning the same exposed cases,
-increasing sample size to chase activation, E3 lifecycle closure, minor
-sanitizer maintenance, documentation-only changes.
+Examples that MAY satisfy the trigger: substantial replacement/retirement of
+the R08/R09/R11 compatibility behavior; material verifier-support changes
+(R13); material deterministic-completeness changes (R10); material
+evidence-selection changes (R14); other independently justified integrated
+runtime redesign. Not sufficient by themselves: E3 lifecycle closure itself, a
+rare bounded fallback that does not address the failed activation surface,
+elapsed time, rerunning the same exposed cases, increasing sample size to
+chase activation, minor sanitizer maintenance, documentation-only changes.
 
 ## 7. E2 activation-history synthesis
 
@@ -121,7 +145,7 @@ future promotion decision inherits E3 behavior as part of the coupled mode
 
 ## 9. F1 R08/R09/R11 compatibility analysis
 
-| Item | Blocks Phase-E completion? | Blocks default promotion? | Owner | Removal creates material candidate? |
+| Item | Blocks Phase-E completion? | Blocks default promotion? | Owner | Removal creates promotion-relevant material candidate? |
 |---|---|---|---|---|
 | F1-R08 `_answer_requirements` compatibility contract | no | contributes-but-not-sole-blocker | Phase F | yes (part of cluster) |
 | F1-R09 requirement-evidence / deterministic missing requirements | no | contributes-but-not-sole-blocker | Phase F | yes (part of cluster) |
@@ -138,8 +162,8 @@ behavior materially and is precisely the kind of change that reopens promotion
 
 ## 10. Relevant Phase-F material-candidate analysis
 
-F1 findings whose future repair/retirement could create a
-`MATERIAL_PHASE_E_PROMOTION_CANDIDATE`:
+F1 findings whose future repair/retirement could create a promotion-relevant
+materially changed runtime candidate (i.e., reopen promotion under §6):
 
 ```text
 F1-R08/R09/R11  E1_E2_COMPATIBILITY cluster (generation/review/revision contract)
@@ -152,9 +176,13 @@ F1-R04          exact negative-control refusal path (HIGH, F2)
 Not material to promotion by themselves: F1-R05/R06 (localized finalize
 fallbacks, F3), F1-R15 (HOLD), F1-R12 (reconciled in E3-LR1; a material
 pre-answer-retrieval change must assess E3 interaction in that change's own
-broader validation). Phase F is not a blanket blocker: a small unrelated
-Phase-F cleanup does not reopen promotion; a significant replacement of
-compatibility/completeness/verifier behavior does.
+broader validation). F1-R01 (benchmark-derived per-intent required_sources,
+HIGH) remains the fourth F2 candidate and must stay inside Phase-F scope
+reconciliation even if it is not currently classified among the strongest
+promotion-material candidates — a prioritization consideration for the future
+scope reconciliation, not a reclassification. Phase F is not a blanket
+blocker: a small unrelated Phase-F cleanup does not reopen promotion; a
+significant replacement of compatibility/completeness/verifier behavior does.
 
 ## 11. Component-wise promotion analysis
 
@@ -187,7 +215,7 @@ review/revision path (which already has the one-bounded-revision behavior).
 | E3 lifecycle completion | closed (bounded fallback) | closed | closed |
 | Remaining benchmark-shaped compatibility | owned by Phase F (R08/R09/R11 cluster) | same | same |
 | Current runtime candidate identity | unchanged from failed lineage (`fd0aed4` + QA-M1/E3 additions) | same | same |
-| Need for additional scientific evidence | none for closure; promotion evidence only via material candidate | yes — but no material candidate exists | n/a |
+| Need for additional scientific evidence | none for closure; promotion evidence only via a promotion-relevant material candidate | yes — but no promotion-relevant candidate exists | n/a |
 | Risk of activation chasing | low (closes the phase) | high ("stay open and rerun") | low |
 | Ownership of remaining work | Phase F (already inventoried) | blurs Phase-E/Phase-F boundary | n/a |
 
@@ -198,10 +226,10 @@ chasing that E2-LR1 stopped.
 
 ## 13. Promotion D1/D2/D3 decision matrix
 
-| Criterion | D1: promote now | D2: new immediate promotion experiment | D3: defer until material candidate |
+| Criterion | D1: promote now | D2: new immediate promotion experiment | D3: defer until promotion-relevant material candidate |
 |---|---|---|---|
-| Waives E2-A3/R3-R1 failures? | would have to — no defensible standard is met | n/a (new experiment ≠ waiver; requires new candidate) | no waiver; failures remain binding |
-| Materially new candidate exists? | no | no (§10: none since `fd0aed4`) | n/a — trigger defines when one counts |
+| Waives E2-A3/R3-R1 failures? | would have to — no defensible standard is met | n/a (new experiment ≠ waiver; requires a promotion-relevant new candidate) | no waiver; failures remain binding |
+| Materially changed runtime candidate exists? | yes (E3-A1), but not promotion-relevant to the failed surface | yes as a runtime change; not promotion-relevant to the failed activation surface | n/a — trigger requires a promotion-relevant material change |
 | Current product decision depends on promotion? | no | no | n/a |
 | Proportionate information gain? | negative (chasing) | low (same candidate re-run) | high when trigger fires |
 | Consistent with anti-activation-chasing rule | no | no | yes |
@@ -226,12 +254,17 @@ production acceptance, release acceptance, or generalization.
 ## 15. Selected default-promotion disposition
 
 ```text
-DEFAULT_PROMOTION DISPOSITION = D3 — DEFER UNTIL MATERIAL CANDIDATE CHANGE
+DEFAULT_PROMOTION DISPOSITION =
+D3 — DEFER UNTIL PROMOTION-RELEVANT MATERIAL CANDIDATE CHANGE
 
 E2 DEFAULT-PROMOTION GATE REDESIGN =
 CLOSED / NO_IMMEDIATE_REVALIDATION_DEFINED /
-REOPEN_ONLY_FOR_MATERIAL_CANDIDATE_OR_RELEASE_BOUNDARY
+REOPEN_ONLY_FOR_PROMOTION_RELEVANT_MATERIAL_CANDIDATE_OR_RELEASE_BOUNDARY
 ```
+
+Core meaning: promotion remains deferred; no immediate promotion experiment is
+justified; reconsideration requires a decision-relevant candidate change
+(§6 trigger) or an explicit release/acceptance boundary.
 
 The G11 review's prospective "gate redesign justified" is thereby retired as a
 standing obligation: no redesigned gate is defined now, the historical
@@ -244,10 +277,11 @@ outcome.
 
 ```text
 NEXT_TASK_RECOMMENDATION =
-Phase-F scope reconciliation and F2 bounded benchmark-dependency cleanup planning
-(F2 candidates F1-R04/R10/R13 plus the R08/R09/R11 compatibility cluster and
-F1-R14 selection policy; F3/D4 residual ownership folded into the same
-scope reconciliation)
+Phase-F scope reconciliation and bounded benchmark-dependency cleanup planning
+(F2 candidates F1-R01/R04/R10/R13 — R01 included per the authoritative F1
+inventory even if less promotion-relevant — plus the R08/R09/R11
+E1_E2_COMPATIBILITY cluster and the F1-R14 shared-selection / E3-boundary
+item; F3/D4 residual ownership folded into the same scope reconciliation)
 
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 ```
@@ -257,7 +291,7 @@ owners, but F2 scope (which candidates are treated, in what order — notably
 the HIGH verifier-support override F1-R13), F3 scope (partially superseded by
 D4), and paused D4 reconciliation are undecided; that reconciliation is the
 most coherent next planning task and is the natural producer of the §6
-material candidate.
+promotion-relevant material candidate.
 
 ## 17. Scientific/model call accounting
 
