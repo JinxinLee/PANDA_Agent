@@ -70,6 +70,8 @@ PE-LR1 = COMPLETE / PASS / PHASE_E_CLOSED_PROMOTION_DEFERRED_UNTIL_MATERIAL_CAND
 PE-LR1 report: `evaluation/PE_LR1_PHASE_E_PROMOTION_BOUNDARY_RECONCILIATION.md`.
 PF-LR1 = COMPLETE / PASS / PHASE_F_SCOPE_RECONCILED_BOUNDED_CLEANUP_PLAN_ESTABLISHED.
 PF-LR1 report: `evaluation/PF_LR1_PHASE_F_SCOPE_RECONCILIATION.md`.
+F2-A1 = COMPLETE / PASS / GENERIC_VERIFIER_SUPPORT_SEMANTICS_ESTABLISHED.
+F2-A1 report: `evaluation/F2_A1_VERIFIER_SUPPORT_SEMANTIC_CLEANUP.md`.
 Reconciliation: `evaluation/E2_POST_A3_LIFECYCLE_RECONCILIATION.md`.
 E2-A1 report: `evaluation/E2_A1_SHADOW_ANSWER_POINT_COVERAGE_CONTRACT.md`.
 C1 met all eight strict gates and the original pair09 atomicity sentinel. Per the
@@ -142,14 +144,17 @@ COMPLETE / PASS / PHASE_E_CLOSED_PROMOTION_DEFERRED_UNTIL_MATERIAL_CANDIDATE
 PF-LR1:
 COMPLETE / PASS / PHASE_F_SCOPE_RECONCILED_BOUNDED_CLEANUP_PLAN_ESTABLISHED
 
+F2-A1:
+COMPLETE / PASS / GENERIC_VERIFIER_SUPPORT_SEMANTICS_ESTABLISHED
+
 Phase F:
-IN_PROGRESS / F1_COMPLETE / PF_LR1_SCOPE_RECONCILED
+IN_PROGRESS / F2_A1_COMPLETE
 
 F1:
 COMPLETE / PASS / RESIDUAL_BENCHMARK_DEPENDENCY_INVENTORY_ESTABLISHED
 
 F2:
-NOT_STARTED / UNEXECUTED
+IN_PROGRESS / A1_COMPLETE
 
 F3:
 NOT_STARTED / UNEXECUTED
@@ -158,7 +163,7 @@ D4 overall completion:
 UNDECIDED
 
 Next task recommendation:
-R13 bounded verifier-support semantic cleanup / RECOMMENDED / NOT AUTHORIZED
+F2-A2 — Deterministic Completeness Semantic Cleanup / RECOMMENDED / NOT AUTHORIZED
 
 Current task authorization:
 E3-A1 experimental missing-point targeted retrieval implementation is complete:
@@ -174,8 +179,8 @@ E3-A2 completed INCONCLUSIVE (1/11 natural applicability; the single applicable 
 
 No D4-A11 exists.
 No further D4 task is currently authorized.
-Phase E is COMPLETE (closed by PE-LR1); no further Phase-E task exists. Phase-F scope reconciliation is complete (PF-LR1).
-No further Phase-F production task is currently authorized; R13 bounded verifier-support semantic cleanup is recommended but NOT AUTHORIZED.
+Phase E is COMPLETE (closed by PE-LR1); no further Phase-E task exists. Phase-F scope reconciliation is complete (PF-LR1); F2-A1 verifier-support semantic cleanup is complete.
+No further Phase-F production task is currently authorized; F2-A2 — Deterministic Completeness Semantic Cleanup is recommended but NOT AUTHORIZED.
 
 ## Phase overview
 
@@ -194,8 +199,8 @@ No further Phase-F production task is currently authorized; R13 bounded verifier
 - **Phase E — Answer generalization:** `COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED`
   Dynamic question decomposition, answer-point coverage, claim-to-evidence mapping, and targeted completeness recovery. E1 validated (shadow scope), E2 core complete, E3 closed as a bounded low-frequency fallback; PE-LR1 closed the phase at the promotion boundary with the normal default remaining `legacy_question_core` and promotion reconsideration gated on a material candidate change or an explicitly authorized release-boundary decision.
 
-- **Phase F — Benchmark dependency cleanup and final answering:** `IN_PROGRESS / F1_COMPLETE / PF_LR1_SCOPE_RECONCILED`
-  F1 established the bounded non-D4 residual inventory without production cleanup. PF-LR1 reconciled the Phase-F scope into a bounded F2/F3 execution map; F2/F3 remain unstarted.
+- **Phase F — Benchmark dependency cleanup and final answering:** `IN_PROGRESS / F2_A1_COMPLETE`
+  F1 established the bounded non-D4 residual inventory without production cleanup. PF-LR1 reconciled the Phase-F scope into a bounded F2/F3 execution map. F2-A1 removed the benchmark-shaped verifier-support dependencies (R13); remaining F2 groups and F3 remain unstarted.
 
 ## Phase A — Evaluation infrastructure and versioned baseline
 
@@ -635,7 +640,8 @@ Original Phase-F planning predates the substantial shortcut migrations completed
 
 ### F2 — Generalize benchmark-specific guards
 
-- **Status:** NOT_STARTED / UNEXECUTED
+- **Status:** IN_PROGRESS / A1_COMPLETE
+- **F2-A1 outcome:** COMPLETE / PASS / GENERIC_VERIFIER_SUPPORT_SEMANTICS_ESTABLISHED. Removed the hard-coded explicit-code-token whitelist and both comparison-wording deterministic-support branches from `_verify`; deterministic support is now granted only by generic shape-based, evidence-grounded coverage invariants (full identifier/path coverage, path coverage over a cited code repository, multi-symbol coverage). Three new focused contract tests plus the authoritative focused E3 deterministic set (49) and neighboring E2-A1 tests (91 total) passed with zero scientific calls. Report: `evaluation/F2_A1_VERIFIER_SUPPORT_SEMANTIC_CLEANUP.md`.
 - **Bounded scope (PF-LR1):** Groups A–E above (R13; R10; R08/R09/R11 compatibility retirement; R04; R01). R12 is not an F2 task; R14 remains outside mandatory modification unless a present defect is evidenced.
 - **Goal:** Replace hard-coded symbol or premise guards with generic handling of false premises, unknown symbols, locked-corpus existence checks, and generic refusal logic.
 - **Scope:** Generalize failure-class guards not reducible to D4 locator migration, ensuring robust behavior across unseen symbols.
@@ -704,9 +710,9 @@ At release, Generalization Gap means benchmark score minus novel score. Benchmar
 5. **Phase execution ordering:** F1 found zero E1 blockers. E1-R2 passed targeted prospective synthetic validation and E1-C1 passed exposed real-style confirmation, including the original atomicity sentinel. E1 is closed under the accepted scope decision. E2-A3 remains FAIL/Q7. E2-A3-FR1 completed with REPAIR_JUSTIFIED. R1 remains FAIL/P2_P6. R2 repaired citation eligibility and passed S1-S13/P1-P11 in six fresh pairs. Historical P6 FAIL remains without waiver or product tuning; historical R3 remains INCONCLUSIVE after four infrastructure failures. R3-R1 completed the missing paired evidence and failed G11 at 2/14 noncritical worse; FR1 subsequently completed a static review recommending shared claim sanitization repair and prospective gate redesign. E2-LR1 subsequently separates completed core mechanisms from deferred promotion and supersedes immediate A3-R4. QA-M1 maintenance subsequently completed with focused T0/static checks. E3-A0 architecture contract is complete; E3-A1 implemented the experimental mechanism under runtime_e1_v2; E3-A2 completed INCONCLUSIVE with insufficient natural applicability; E3-LR1 closed E3 as a bounded low-frequency fallback with standalone recovery benefit unresolved. No further E1 confirmation is required.
 
 ```text
-CURRENT_TASK = PF-LR1 / COMPLETE / PASS / PHASE_F_SCOPE_RECONCILED_BOUNDED_CLEANUP_PLAN_ESTABLISHED
-NEXT_TASK_RECOMMENDATION = R13 bounded verifier-support semantic cleanup / RECOMMENDED / NOT AUTHORIZED
+CURRENT_TASK = F2-A1 / COMPLETE / PASS / GENERIC_VERIFIER_SUPPORT_SEMANTICS_ESTABLISHED
+NEXT_TASK_RECOMMENDATION = F2-A2 — Deterministic Completeness Semantic Cleanup / RECOMMENDED / NOT AUTHORIZED
 NEXT_TASK_EXECUTION_AUTHORIZED = false
-FOLLOWING_ARCHITECTURE_TASK = bounded Phase-F production cleanup per the PF-LR1 recommended order (R13 first)
+FOLLOWING_ARCHITECTURE_TASK = bounded Phase-F production cleanup per the PF-LR1 recommended order (F2-A2 next)
 NEXT_STAGE_AUTHORIZED = false
 ```

@@ -2050,7 +2050,6 @@ class QAAgent:
                 if token.startswith("Pnd")
                 or "::" in token
                 or (token[:1].isupper() and len(token) > 3)
-                or token in {"createLmdFitData", "fillData", "successfullyPassedFilters", "GetTubeID", "CheckZInfo", "Init", "Exec"}
             ]
             if (
                 cited_source_ids & code_sources
@@ -2069,24 +2068,6 @@ class QAAgent:
                 cited_source_ids & code_sources
                 and path_tokens
                 and all(token in cited for token in path_tokens)
-            ):
-                deterministically_supported_claims.add(claim.get("claim_id"))
-            if (
-                len(cited_source_ids & code_sources) >= 2
-                and path_tokens
-                and all(token in cited for token in path_tokens)
-                and any(term in claim.get("claim_text", "").casefold() for term in ("whereas", "unlike", "相比", "而在"))
-            ):
-                deterministically_supported_claims.add(claim.get("claim_id"))
-            cited_paths = [
-                str((_claim_ev(evidence_id).get("locator") or {}).get("path") or "")
-                for evidence_id in evidence_ids
-            ]
-            claim_text_lower = claim.get("claim_text", "").casefold()
-            if (
-                len(cited_source_ids & code_sources) >= 2
-                and any(path and path.casefold() in claim_text_lower for path in cited_paths)
-                and any(term in claim_text_lower for term in ("different implementation", "multiple repositor", "whereas", "unlike", "相比", "而在"))
             ):
                 deterministically_supported_claims.add(claim.get("claim_id"))
             for evidence_id in evidence_ids:

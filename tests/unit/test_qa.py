@@ -1631,5 +1631,86 @@ class ExternalTypeSanitizationTests(unittest.TestCase):
                 self.assertEqual(agent.retriever.calls, 0)
 
 
+class UnsupportedReviewVertex(FakeVertex):
+    """Review double whose semantic review conservatively rejects every claim."""
+
+    def generate_json(self, prompt, schema, **kwargs):
+        if "supported" in schema.get("properties", {}):
+            payload = json.loads(prompt)
+            return {
+                "supported": False,
+                "unsupported_claim_ids": [item["claim_id"] for item in payload["untrusted_claims"]],
+                "irrelevant_claim_ids": [],
+                "missing_requirement_ids": [],
+                "reason": "conservative review",
+            }
+        return super().generate_json(prompt, schema, **kwargs)
+
+
+class VerifierSupportSemanticTests(unittest.TestCase):
+    """F2-A1 contract: deterministic support comes from generic claim/evidence
+    semantics, never from benchmark token lists or case-shaped wording."""
+
+    def _verify_under_conservative_review(self, claims, bundle):
+        agent = QAAgent(Path.cwd(), retriever=FakeRetriever(bundle), vertex=UnsupportedReviewVertex())
+        return agent._verify({
+            "question": "Explain this implementation.",
+            "bundle": bundle,
+            "draft": {"claims": claims},
+        })
+
+    def test_generic_path_anchor_support_survives_conservative_review(self):
+        evidence = code_evidence(
+            text="The reconstruction macro prepares the restgas profile steps.",
+            path="macro/target/ana_dpm.C",
+        )
+        bundle = bundle_for(evidence)
+        rejected = self._verify_under_conservative_review([{
+            "claim_id": "c1",
+            "claim_text": "macro/target/ana_dpm.C prepares the restgas profile steps.",
+            "evidence_ids": ["e1"],
+            "answer_point_ids": ["question_core"],
+        }], bundle)
+        self.assertNotIn("unsupported claim c1", rejected["errors"])
+
+    def test_removed_token_whitelist_no_longer_grants_support(self):
+        evidence = code_evidence(
+            text="fillData and successfullyPassedFilters fill accepted histograms.",
+            path="data/PndLmdDataReader.cxx",
+        )
+        bundle = bundle_for(evidence)
+        rejected = self._verify_under_conservative_review([{
+            "claim_id": "c1",
+            "claim_text": "fillData and successfullyPassedFilters fill accepted histograms.",
+            "evidence_ids": ["e1"],
+            "answer_point_ids": ["question_core"],
+        }], bundle)
+        self.assertIn("unsupported claim c1", rejected["errors"])
+
+    def test_comparison_wording_no_longer_grants_support(self):
+        root = code_evidence(
+            evidence_id="root",
+            text="The target macro coordinates reconstruction steps.",
+            path="macro/target/ana_dpm.C",
+        )
+        fit = code_evidence(
+            evidence_id="fit",
+            source_id="luminosityfit",
+            text="The model factory composes the fit model.",
+            path="model/PndLmdModelFactory.cxx",
+        )
+        bundle = bundle_for([root, fit])
+        bundle["plan"]["resolved_versions"]["luminosityfit"] = (
+            "luminosityfit@11f1edc49dcbaeb61d707491a6d3bbec390fcd42"
+        )
+        rejected = self._verify_under_conservative_review([{
+            "claim_id": "c1",
+            "claim_text": "macro/target/ana_dpm.C and model/PndLmdMystery.cxx show a different implementation.",
+            "evidence_ids": ["root", "fit"],
+            "answer_point_ids": ["question_core"],
+        }], bundle)
+        self.assertIn("unsupported claim c1", rejected["errors"])
+
+
 if __name__ == "__main__":
     unittest.main()
