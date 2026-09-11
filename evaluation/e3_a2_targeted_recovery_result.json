@@ -1,0 +1,736 @@
+{
+  "task": "E3-A2 — Targeted Missing-Point Recovery Validation",
+  "tier": "T2",
+  "verdict": "INCONCLUSIVE",
+  "provenance": {
+    "candidate_head": "54d548321c65169569b173d97b92731018314ce2",
+    "preregistration_commit": "50eada9e4c62980f4437d7b2ce0850667109305c",
+    "dataset_benchmark_version": "novel-v1-dev-0.3.0",
+    "selector": {
+      "review_status": "approved",
+      "language": "en",
+      "expected_status": "answered",
+      "curation_representativeness_class": "representative",
+      "min_critical_required_answer_points": 2,
+      "min_critical_required_evidence_groups": 2,
+      "at_least_one_of": [
+        "coverage.evidence_topology != single_hop",
+        "coverage.source_scope == cross_source",
+        "coverage.repository_scope == cross_repository"
+      ],
+      "ordering": "dataset question order (numeric question id)"
+    },
+    "cohort_ids": [
+      "n003",
+      "n005",
+      "n006",
+      "n009",
+      "n010",
+      "n014",
+      "n019",
+      "n020",
+      "n021",
+      "n022",
+      "n024"
+    ],
+    "cohort_count": 11
+  },
+  "applicability": {
+    "selected_cases": 11,
+    "recorded_cases": 11,
+    "e3_applicable_cases": 1,
+    "applicability_rate": 0.09090909090909091,
+    "first_missing_runtime_points": 2,
+    "missing_points_per_applicable_case": 2.0,
+    "non_applicable": [
+      {
+        "question_id": "n003",
+        "trigger_reason": "no_missing_answer_points",
+        "reached_first_verify": true
+      },
+      {
+        "question_id": "n005",
+        "trigger_reason": "no_missing_answer_points",
+        "reached_first_verify": true
+      },
+      {
+        "question_id": "n009",
+        "trigger_reason": "no_missing_answer_points",
+        "reached_first_verify": true
+      },
+      {
+        "question_id": "n010",
+        "trigger_reason": "no_missing_answer_points",
+        "reached_first_verify": true
+      },
+      {
+        "question_id": "n014",
+        "trigger_reason": "no_missing_answer_points",
+        "reached_first_verify": true
+      },
+      {
+        "question_id": "n019",
+        "trigger_reason": "no_missing_answer_points",
+        "reached_first_verify": true
+      },
+      {
+        "question_id": "n020",
+        "trigger_reason": "no_missing_answer_points",
+        "reached_first_verify": true
+      },
+      {
+        "question_id": "n021",
+        "trigger_reason": "no_missing_answer_points",
+        "reached_first_verify": true
+      },
+      {
+        "question_id": "n022",
+        "trigger_reason": "no_missing_answer_points",
+        "reached_first_verify": true
+      },
+      {
+        "question_id": "n024",
+        "trigger_reason": "no_missing_answer_points",
+        "reached_first_verify": true
+      }
+    ],
+    "infrastructure_failures": [],
+    "judged_failures": [],
+    "missing_records": []
+  },
+  "recovery": {
+    "control_recovered_points": [],
+    "treatment_recovered_points": [],
+    "control_recovery_rate": 0.0,
+    "treatment_recovery_rate": 0.0,
+    "net_additional_recovered_points": 0,
+    "verdict_counts": {
+      "control": {
+        "satisfied_supported": 0,
+        "partial": 0,
+        "absent": 2,
+        "unsupported": 0
+      },
+      "treatment": {
+        "satisfied_supported": 0,
+        "partial": 1,
+        "absent": 1,
+        "unsupported": 0
+      }
+    }
+  },
+  "preservation": {
+    "treatment_only_lost_points": [],
+    "treatment_only_degraded_points": []
+  },
+  "safety": {
+    "treatment_only_unsupported_claims": [],
+    "treatment_only_contradiction": false,
+    "treatment_only_citation_failures": [],
+    "unsupported_union_sizes": {
+      "control": 3,
+      "treatment": 0
+    }
+  },
+  "retrieval": {
+    "atomic_update_counts": {
+      "success": 1,
+      "no_gain": 0,
+      "failure": 0
+    },
+    "treatment_only_recovery_cases": [],
+    "treatment_only_recovery_cases_with_new_evidence": 0
+  },
+  "bounded_execution": {
+    "max_missing_point_retrieval_count": 1,
+    "max_revision_count": 1,
+    "targeted_local_rerank_calls": 0,
+    "max_global_rerank_calls_per_treatment_case": 1,
+    "analyzer_calls_in_treatment_cases": 0
+  },
+  "cases": [
+    {
+      "question_id": "n003",
+      "applicable": false,
+      "trigger_reason": "no_missing_answer_points",
+      "missing_answer_point_ids": [],
+      "covered_answer_point_ids": [
+        "point.1",
+        "point.2"
+      ],
+      "reached_first_verify": true
+    },
+    {
+      "question_id": "n005",
+      "applicable": false,
+      "trigger_reason": "no_missing_answer_points",
+      "missing_answer_point_ids": [],
+      "covered_answer_point_ids": [
+        "point.1",
+        "point.2"
+      ],
+      "reached_first_verify": true
+    },
+    {
+      "question_id": "n006",
+      "applicable": true,
+      "trigger_reason": "genuine_missing_point",
+      "missing_answer_point_ids": [
+        "point.1",
+        "point.2"
+      ],
+      "covered_answer_point_ids": [],
+      "reached_first_verify": true,
+      "control": {
+        "status": "insufficient_evidence",
+        "runtime_unsupported_claim_ids": [
+          "claim_filename_creator_helper",
+          "claim_workflow_chain_helper_coverage",
+          "claim_helper_stage_extensions"
+        ],
+        "runtime_citation_failures": [],
+        "revision_count": 1,
+        "missing_point_retrieval_count": 0,
+        "recovered_point_ids": [],
+        "missing_point_verdicts": {
+          "point.1": "absent",
+          "point.2": "absent"
+        },
+        "preserved_point_verdicts": {},
+        "judge_unsupported_claim_ids": [],
+        "judge_contradiction_present": false,
+        "judge_citation_concern": false
+      },
+      "treatment": {
+        "status": "answered",
+        "runtime_unsupported_claim_ids": [],
+        "runtime_citation_failures": [],
+        "revision_count": 1,
+        "missing_point_retrieval_count": 1,
+        "recovered_point_ids": [],
+        "missing_point_verdicts": {
+          "point.1": "partial",
+          "point.2": "absent"
+        },
+        "preserved_point_verdicts": {},
+        "judge_unsupported_claim_ids": [],
+        "judge_contradiction_present": false,
+        "judge_citation_concern": false
+      },
+      "overall_preference": "B",
+      "retrieval": {
+        "targeted_candidate_count": 78,
+        "newly_admitted_object_ids": [
+          "object.93bb5847fc4afc7ebe57ef9c"
+        ],
+        "displaced_selected_evidence_ids": [
+          "evidence.52f8587ac023cc2ef3c7e83a"
+        ],
+        "retained_support_evidence_ids": [
+          "evidence.2b117cdf07ae0ed765ed2ea0",
+          "evidence.732617ed15eaaadb88d8d0ba"
+        ],
+        "atomic_update_status": "success",
+        "global_selected_evidence_count": 12,
+        "missing_point_retrieval_count": 1,
+        "revision_count": 1,
+        "original_plan_preserved": true,
+        "retrieval_logical_calls_in_treatment": 1,
+        "reranker_calls_in_treatment": 1,
+        "analyzer_calls_in_treatment": 0
+      }
+    },
+    {
+      "question_id": "n009",
+      "applicable": false,
+      "trigger_reason": "no_missing_answer_points",
+      "missing_answer_point_ids": [],
+      "covered_answer_point_ids": [
+        "point.1",
+        "point.2",
+        "point.3",
+        "point.4"
+      ],
+      "reached_first_verify": true
+    },
+    {
+      "question_id": "n010",
+      "applicable": false,
+      "trigger_reason": "no_missing_answer_points",
+      "missing_answer_point_ids": [],
+      "covered_answer_point_ids": [
+        "point.1",
+        "point.2"
+      ],
+      "reached_first_verify": true
+    },
+    {
+      "question_id": "n014",
+      "applicable": false,
+      "trigger_reason": "no_missing_answer_points",
+      "missing_answer_point_ids": [],
+      "covered_answer_point_ids": [
+        "point.1",
+        "point.2"
+      ],
+      "reached_first_verify": true
+    },
+    {
+      "question_id": "n019",
+      "applicable": false,
+      "trigger_reason": "no_missing_answer_points",
+      "missing_answer_point_ids": [],
+      "covered_answer_point_ids": [
+        "point.1",
+        "point.2",
+        "point.3",
+        "point.4"
+      ],
+      "reached_first_verify": true
+    },
+    {
+      "question_id": "n020",
+      "applicable": false,
+      "trigger_reason": "no_missing_answer_points",
+      "missing_answer_point_ids": [],
+      "covered_answer_point_ids": [
+        "point.1",
+        "point.2",
+        "point.3"
+      ],
+      "reached_first_verify": true
+    },
+    {
+      "question_id": "n021",
+      "applicable": false,
+      "trigger_reason": "no_missing_answer_points",
+      "missing_answer_point_ids": [],
+      "covered_answer_point_ids": [
+        "point.1",
+        "point.2"
+      ],
+      "reached_first_verify": true
+    },
+    {
+      "question_id": "n022",
+      "applicable": false,
+      "trigger_reason": "no_missing_answer_points",
+      "missing_answer_point_ids": [],
+      "covered_answer_point_ids": [
+        "point.1",
+        "point.2"
+      ],
+      "reached_first_verify": true
+    },
+    {
+      "question_id": "n024",
+      "applicable": false,
+      "trigger_reason": "no_missing_answer_points",
+      "missing_answer_point_ids": [],
+      "covered_answer_point_ids": [
+        "point.1",
+        "point.2",
+        "point.3"
+      ],
+      "reached_first_verify": true
+    }
+  ],
+  "gates": {
+    "G1_protocol_execution_integrity": {
+      "pass": true,
+      "preregistration_commit": "50eada9e4c62980f4437d7b2ce0850667109305c",
+      "no_product_edit_after_preregistration": true,
+      "frozen_protocol_unchanged": true,
+      "runtime_default_unchanged": true,
+      "provider_complete": true,
+      "protected_data_access": false,
+      "novel_validation_or_holdout_accessed": false
+    },
+    "G2_natural_applicability": {
+      "pass": false,
+      "applicable_cases": 1,
+      "first_missing_runtime_points": 2,
+      "thresholds": {
+        "applicable_cases": 4,
+        "first_missing_runtime_points": 4
+      }
+    },
+    "G3_missing_point_recovery_benefit": {
+      "pass": false,
+      "treatment_recovery_rate": 0.0,
+      "treatment_recovered": 0,
+      "control_recovered": 0,
+      "required_margin": 2
+    },
+    "G4_no_requested_content_regression": {
+      "pass": true,
+      "treatment_only_lost_points": [],
+      "treatment_only_degraded_points": []
+    },
+    "G5_no_new_unsupported_answer_regression": {
+      "pass": true,
+      "treatment_only_unsupported_claims": [],
+      "treatment_only_contradiction": false,
+      "treatment_only_citation_failures": []
+    },
+    "G6_retrieval_contribution_consistency": {
+      "pass": true,
+      "treatment_only_recovery_cases": []
+    },
+    "G7_bounded_execution_integrity": {
+      "pass": true,
+      "max_missing_point_retrieval_count": 1,
+      "max_revision_count": 1,
+      "targeted_local_rerank_calls": 0,
+      "max_global_rerank_calls_per_treatment_case": 1,
+      "analyzer_calls_in_treatment_cases": 0,
+      "max_retrieval_logical_calls_per_treatment_case": 1
+    }
+  },
+  "usage": {
+    "shared": {
+      "stages": {
+        "decomposition": {
+          "logical_calls": 11,
+          "returned_model_calls": 11,
+          "adapter_requests": 12,
+          "generation_calls": 12,
+          "embedding_calls": 0,
+          "tokens": 17801
+        },
+        "analyzer": {
+          "logical_calls": 11,
+          "returned_model_calls": 11,
+          "adapter_requests": 13,
+          "generation_calls": 13,
+          "embedding_calls": 0,
+          "tokens": 27700
+        },
+        "embedding": {
+          "logical_calls": 11,
+          "returned_model_calls": 11,
+          "adapter_requests": 11,
+          "generation_calls": 0,
+          "embedding_calls": 11,
+          "tokens": 0
+        },
+        "retrieval": {
+          "logical_calls": 11,
+          "returned_model_calls": 0,
+          "adapter_requests": 0,
+          "generation_calls": 0,
+          "embedding_calls": 0,
+          "tokens": 0
+        },
+        "reranker": {
+          "logical_calls": 11,
+          "returned_model_calls": 11,
+          "adapter_requests": 12,
+          "generation_calls": 12,
+          "embedding_calls": 0,
+          "tokens": 193414
+        },
+        "qa_answer": {
+          "logical_calls": 11,
+          "returned_model_calls": 11,
+          "adapter_requests": 12,
+          "generation_calls": 12,
+          "embedding_calls": 0,
+          "tokens": 192570
+        },
+        "qa_review": {
+          "logical_calls": 11,
+          "returned_model_calls": 11,
+          "adapter_requests": 11,
+          "generation_calls": 11,
+          "embedding_calls": 0,
+          "tokens": 198581
+        },
+        "qa_revision": {
+          "logical_calls": 0,
+          "returned_model_calls": 0,
+          "adapter_requests": 0,
+          "generation_calls": 0,
+          "embedding_calls": 0,
+          "tokens": 0
+        },
+        "judge": {
+          "logical_calls": 0,
+          "returned_model_calls": 0,
+          "adapter_requests": 0,
+          "generation_calls": 0,
+          "embedding_calls": 0,
+          "tokens": 0
+        }
+      },
+      "model_calls": 71,
+      "generation_calls": 60,
+      "embedding_calls": 11,
+      "retrieval_logical_calls": 11,
+      "reranker_calls": 11,
+      "revision_calls": 0,
+      "review_calls": 11,
+      "judge_calls": 0,
+      "tokens": 630066
+    },
+    "control": {
+      "stages": {
+        "decomposition": {
+          "logical_calls": 0,
+          "returned_model_calls": 0,
+          "adapter_requests": 0,
+          "generation_calls": 0,
+          "embedding_calls": 0,
+          "tokens": 0
+        },
+        "analyzer": {
+          "logical_calls": 0,
+          "returned_model_calls": 0,
+          "adapter_requests": 0,
+          "generation_calls": 0,
+          "embedding_calls": 0,
+          "tokens": 0
+        },
+        "embedding": {
+          "logical_calls": 0,
+          "returned_model_calls": 0,
+          "adapter_requests": 0,
+          "generation_calls": 0,
+          "embedding_calls": 0,
+          "tokens": 0
+        },
+        "retrieval": {
+          "logical_calls": 0,
+          "returned_model_calls": 0,
+          "adapter_requests": 0,
+          "generation_calls": 0,
+          "embedding_calls": 0,
+          "tokens": 0
+        },
+        "reranker": {
+          "logical_calls": 0,
+          "returned_model_calls": 0,
+          "adapter_requests": 0,
+          "generation_calls": 0,
+          "embedding_calls": 0,
+          "tokens": 0
+        },
+        "qa_answer": {
+          "logical_calls": 0,
+          "returned_model_calls": 0,
+          "adapter_requests": 0,
+          "generation_calls": 0,
+          "embedding_calls": 0,
+          "tokens": 0
+        },
+        "qa_review": {
+          "logical_calls": 1,
+          "returned_model_calls": 1,
+          "adapter_requests": 1,
+          "generation_calls": 1,
+          "embedding_calls": 0,
+          "tokens": 24007
+        },
+        "qa_revision": {
+          "logical_calls": 1,
+          "returned_model_calls": 1,
+          "adapter_requests": 1,
+          "generation_calls": 1,
+          "embedding_calls": 0,
+          "tokens": 23322
+        },
+        "judge": {
+          "logical_calls": 0,
+          "returned_model_calls": 0,
+          "adapter_requests": 0,
+          "generation_calls": 0,
+          "embedding_calls": 0,
+          "tokens": 0
+        }
+      },
+      "model_calls": 2,
+      "generation_calls": 2,
+      "embedding_calls": 0,
+      "retrieval_logical_calls": 0,
+      "reranker_calls": 0,
+      "revision_calls": 1,
+      "review_calls": 1,
+      "judge_calls": 0,
+      "tokens": 47329
+    },
+    "treatment": {
+      "stages": {
+        "decomposition": {
+          "logical_calls": 0,
+          "returned_model_calls": 0,
+          "adapter_requests": 0,
+          "generation_calls": 0,
+          "embedding_calls": 0,
+          "tokens": 0
+        },
+        "analyzer": {
+          "logical_calls": 0,
+          "returned_model_calls": 0,
+          "adapter_requests": 0,
+          "generation_calls": 0,
+          "embedding_calls": 0,
+          "tokens": 0
+        },
+        "embedding": {
+          "logical_calls": 1,
+          "returned_model_calls": 1,
+          "adapter_requests": 1,
+          "generation_calls": 0,
+          "embedding_calls": 1,
+          "tokens": 0
+        },
+        "retrieval": {
+          "logical_calls": 1,
+          "returned_model_calls": 0,
+          "adapter_requests": 0,
+          "generation_calls": 0,
+          "embedding_calls": 0,
+          "tokens": 0
+        },
+        "reranker": {
+          "logical_calls": 1,
+          "returned_model_calls": 1,
+          "adapter_requests": 1,
+          "generation_calls": 1,
+          "embedding_calls": 0,
+          "tokens": 16560
+        },
+        "qa_answer": {
+          "logical_calls": 0,
+          "returned_model_calls": 0,
+          "adapter_requests": 0,
+          "generation_calls": 0,
+          "embedding_calls": 0,
+          "tokens": 0
+        },
+        "qa_review": {
+          "logical_calls": 1,
+          "returned_model_calls": 1,
+          "adapter_requests": 1,
+          "generation_calls": 1,
+          "embedding_calls": 0,
+          "tokens": 18256
+        },
+        "qa_revision": {
+          "logical_calls": 1,
+          "returned_model_calls": 1,
+          "adapter_requests": 1,
+          "generation_calls": 1,
+          "embedding_calls": 0,
+          "tokens": 23743
+        },
+        "judge": {
+          "logical_calls": 0,
+          "returned_model_calls": 0,
+          "adapter_requests": 0,
+          "generation_calls": 0,
+          "embedding_calls": 0,
+          "tokens": 0
+        }
+      },
+      "model_calls": 4,
+      "generation_calls": 3,
+      "embedding_calls": 1,
+      "retrieval_logical_calls": 1,
+      "reranker_calls": 1,
+      "revision_calls": 1,
+      "review_calls": 1,
+      "judge_calls": 0,
+      "tokens": 58559
+    },
+    "judge": {
+      "stages": {
+        "decomposition": {
+          "logical_calls": 0,
+          "returned_model_calls": 0,
+          "adapter_requests": 0,
+          "generation_calls": 0,
+          "embedding_calls": 0,
+          "tokens": 0
+        },
+        "analyzer": {
+          "logical_calls": 0,
+          "returned_model_calls": 0,
+          "adapter_requests": 0,
+          "generation_calls": 0,
+          "embedding_calls": 0,
+          "tokens": 0
+        },
+        "embedding": {
+          "logical_calls": 0,
+          "returned_model_calls": 0,
+          "adapter_requests": 0,
+          "generation_calls": 0,
+          "embedding_calls": 0,
+          "tokens": 0
+        },
+        "retrieval": {
+          "logical_calls": 0,
+          "returned_model_calls": 0,
+          "adapter_requests": 0,
+          "generation_calls": 0,
+          "embedding_calls": 0,
+          "tokens": 0
+        },
+        "reranker": {
+          "logical_calls": 0,
+          "returned_model_calls": 0,
+          "adapter_requests": 0,
+          "generation_calls": 0,
+          "embedding_calls": 0,
+          "tokens": 0
+        },
+        "qa_answer": {
+          "logical_calls": 0,
+          "returned_model_calls": 0,
+          "adapter_requests": 0,
+          "generation_calls": 0,
+          "embedding_calls": 0,
+          "tokens": 0
+        },
+        "qa_review": {
+          "logical_calls": 0,
+          "returned_model_calls": 0,
+          "adapter_requests": 0,
+          "generation_calls": 0,
+          "embedding_calls": 0,
+          "tokens": 0
+        },
+        "qa_revision": {
+          "logical_calls": 0,
+          "returned_model_calls": 0,
+          "adapter_requests": 0,
+          "generation_calls": 0,
+          "embedding_calls": 0,
+          "tokens": 0
+        },
+        "judge": {
+          "logical_calls": 1,
+          "returned_model_calls": 1,
+          "adapter_requests": 1,
+          "generation_calls": 1,
+          "embedding_calls": 0,
+          "tokens": 10639
+        }
+      },
+      "model_calls": 1,
+      "generation_calls": 1,
+      "embedding_calls": 0,
+      "retrieval_logical_calls": 0,
+      "reranker_calls": 0,
+      "revision_calls": 0,
+      "review_calls": 0,
+      "judge_calls": 1,
+      "tokens": 10639
+    }
+  },
+  "usage_notes": [
+    "tokens are the observed returned-token counter (adapter usage_metadata); embedding billed tokens cannot be inferred from returned-token metadata and are not claimed as zero.",
+    "AGY reviewer/worker usage is development delegation and is excluded from PANDA scientific counts."
+  ]
+}

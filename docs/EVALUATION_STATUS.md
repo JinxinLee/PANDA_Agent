@@ -49,7 +49,9 @@ E3-A0 = COMPLETE / PASS / MISSING_POINT_TARGETED_RETRIEVAL_CONTRACT_ESTABLISHED.
 E3-A0 report: `evaluation/E3_A0_MISSING_POINT_TARGETED_RETRIEVAL_CONTRACT.md`.
 E3-A1 = COMPLETE / PASS / EXPERIMENTAL_MISSING_POINT_TARGETED_RETRIEVAL_IMPLEMENTED.
 E3-A1 report: `evaluation/E3_A1_EXPERIMENTAL_MISSING_POINT_RETRIEVAL_IMPLEMENTATION.md`.
-E3 = IN_PROGRESS / A1_COMPLETE / VALIDATION_NEXT.
+E3-A2 = COMPLETE / INCONCLUSIVE / INSUFFICIENT_NATURAL_MISSING_POINT_APPLICABILITY.
+E3-A2 report: `evaluation/E3_A2_TARGETED_MISSING_POINT_RECOVERY_VALIDATION.md`.
+E3 = IN_PROGRESS / A2_COMPLETE_INCONCLUSIVE / PENDING_FUTURE_LIFECYCLE_DECISION.
 E2-A3-R4 = NOT_STARTED / SUPERSEDED_BY_LIFECYCLE_SIMPLIFICATION.
 E2 DEFAULT PROMOTION = DEFERRED / ACTIVATION_ACCEPTANCE_NOT_MET.
 runtime_e1_v2 = VALIDATED_EXPERIMENTAL_PATH / EXPLICIT_SELECTION_ONLY.
@@ -57,7 +59,7 @@ E2 DEFAULT-PROMOTION GATE REDESIGN = DEFERRED / REVISIT_AT_PHASE_E_PROMOTION_BOU
 Reconciliation: `evaluation/E2_POST_A3_LIFECYCLE_RECONCILIATION.md`.
 E2-A1 report: `evaluation/E2_A1_SHADOW_ANSWER_POINT_COVERAGE_CONTRACT.md`.
 C1 met all eight strict gates and the original pair09 atomicity sentinel. Per the
-accepted closure decision, E1 is complete. E2-A2 passed targeted shadow validation. E2-A3 failed Q7; normal QA remains legacy. E3-A0 established the missing-point targeted retrieval architecture contract; E3-A1 implemented the experimental mechanism under runtime_e1_v2; E3 is IN_PROGRESS with E3-A2 next (unauthorized).
+accepted closure decision, E1 is complete. E2-A2 passed targeted shadow validation. E2-A3 failed Q7; normal QA remains legacy. E3-A0 established the missing-point targeted retrieval architecture contract; E3-A1 implemented the experimental mechanism under runtime_e1_v2. E3-A2 completed INCONCLUSIVE: on the frozen 11-case cohort only 1 case (n006, 2 missing points) was naturally E3-applicable, below the G2 threshold (>=4 cases, >=4 points); the single applicable pair was descriptive only (no recovered point on either arm; treatment moved one point absent→partial and was preferred by the blinded judge within all safety/bounds gates). E3 remains incomplete pending a future lifecycle decision.
 Decision: `evaluation/E1_CLOSURE_SCOPE_REVIEW.md`.
 Report: `evaluation/E1_C1_REAL_STYLE_CONFIRMATION.md`.
 Preregistration: `2517b691245c38175222064e6ca546d06fd21e9a`.
@@ -108,10 +110,10 @@ MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD
 Current planning state:
 D4 = PAUSED / ROADMAP_RECONCILIATION
 D4 overall completion = UNDECIDED
-CURRENT_TASK = E3-A1 / COMPLETE / PASS / EXPERIMENTAL_MISSING_POINT_TARGETED_RETRIEVAL_IMPLEMENTED
-NEXT_TASK_RECOMMENDATION = E3-A2 — Targeted Missing-Point Recovery Validation / NOT AUTHORIZED
+CURRENT_TASK = E3-A2 / COMPLETE / INCONCLUSIVE / INSUFFICIENT_NATURAL_MISSING_POINT_APPLICABILITY
+NEXT_TASK_RECOMMENDATION = E3 lifecycle decision (future E3 validation design must address the observed 9.1% natural applicability; no task authorized) / NOT AUTHORIZED
 NEXT_TASK_EXECUTION_AUTHORIZED = false
-FOLLOWING_ARCHITECTURE_TASK = E3-A2 — Targeted Missing-Point Recovery Validation
+FOLLOWING_ARCHITECTURE_TASK = E3 lifecycle decision (pending future authorization)
 
 No D4-A11 exists.
 Phase E = IN_PROGRESS / E2_CORE_COMPLETE / E3_IN_PROGRESS.
@@ -119,11 +121,12 @@ E1 = COMPLETE / PASS / QUESTION_ONLY_SEMANTIC_ANSWER_POINT_DECOMPOSITION_VALIDAT
 E2 = COMPLETE / CORE_MECHANISM_VALIDATED / DEFAULT_PROMOTION_DEFERRED.
 E3-A0 = COMPLETE / PASS / MISSING_POINT_TARGETED_RETRIEVAL_CONTRACT_ESTABLISHED.
 E3-A1 = COMPLETE / PASS / EXPERIMENTAL_MISSING_POINT_TARGETED_RETRIEVAL_IMPLEMENTED.
-E3 = IN_PROGRESS / A1_COMPLETE / VALIDATION_NEXT.
+E3-A2 = COMPLETE / INCONCLUSIVE / INSUFFICIENT_NATURAL_MISSING_POINT_APPLICABILITY.
+E3 = IN_PROGRESS / A2_COMPLETE_INCONCLUSIVE / PENDING_FUTURE_LIFECYCLE_DECISION.
 Phase F = IN_PROGRESS / F1_COMPLETE.
 F2 = NOT_STARTED / SCOPE_PRESERVED.
 F3 = SCOPE_RECONCILIATION_REQUIRED / PARTIALLY_SUPERSEDED_BY_D4.
-No further recovery, D4, Phase-E, or Phase-F task is authorized after E3-A1.
+No further recovery, D4, Phase-E, or Phase-F task is authorized after E3-A2.
 
 ## E3-A1 experimental implementation closeout
 
@@ -144,6 +147,29 @@ Initial implementation baseline `2af8ac95` verified 42 E3 tests covering T1–T2
 Historical initial implementation review reported PASS; host inspection then identified 8 defect areas resolved by the fix worker, with removal of the `TypeError` retry and test-only agent state confirmed at initial closeout.
 Independent post-implementation contract review identified two bounded implementation gaps: (1) structured/supplemental candidate capture and global reconsideration omitted structured-replacement candidates and suffered chronological starvation in saturated candidate pools (>=30), corrected via cross-pass bounded eligible union reservation without fake channel ranks; (2) deterministic requirement evaluation during E3 second verify falsely failed unchanged retained claims whose cited evidence was displaced, corrected via a claim-scoped deterministic valid claim/evidence view strictly preventing new/modified claims from using ledger-only evidence. Corrected final focused verification: 49 E3 tests and 147 neighboring tests; 196 passed, 9 subtests passed. Separate final AGY review PASS; Codex accepted the bounded corrections after inspecting the source/test diffs. All PANDA scientific/evaluation calls and tokens are zero. E3 is IN_PROGRESS / A1_COMPLETE / VALIDATION_NEXT; next task is E3-A2 — Targeted Missing-Point Recovery Validation (NOT AUTHORIZED, execution false); no cohort or threshold is frozen.
 Report: `evaluation/E3_A1_EXPERIMENTAL_MISSING_POINT_RETRIEVAL_IMPLEMENTATION.md`.
+
+## E3-A2 targeted recovery validation closeout
+
+COMPLETE / INCONCLUSIVE / INSUFFICIENT_NATURAL_MISSING_POINT_APPLICABILITY.
+Prospective T2 validation of E3-A1 under the preregistration commit `50eada9e4c62980f4437d7b2ce0850667109305c`
+(candidate HEAD `54d5483`). Mechanically selected exposed novel_dev cohort of 11 cases
+(n003, n005, n006, n009, n010, n014, n019, n020, n021, n022, n024) from the frozen selector
+(representative, >=2 critical answer points and evidence groups, non-single-hop or cross-source/repo topology).
+Evaluation-only harness forked the identical first-verify checkpoint into a pre-E3 existing-evidence-only
+revision control and the current E3 treatment; product frozen; default mode unchanged. All 11 cases terminal.
+Natural applicability failed G2: only n006 was E3-applicable (2 first-missing runtime points; both thresholds
+require >=4). The single blinded pair is descriptive only: no `satisfied_supported` point on either arm
+(control absent/absent, insufficient_evidence; treatment partial/absent, answered; judge preferred treatment,
+even-id mask control=Arm A), zero treatment-only preservation/safety regressions, E3 executed within all bounds
+(1 targeted retrieval, 1 global rerank, 1 revision, atomic success, 1 newly admitted object, plan preserved).
+G1/G4/G5/G6/G7 PASS; G3 FAIL; G2 FAIL → overall INCONCLUSIVE per the frozen precedence. No synthetic missing
+points, no post-hoc cohort change, no product repair inside A2. Observed scientific usage: 78 model calls,
+746,593 returned tokens (shared 71/630,066; control 2/47,329; treatment 4/58,559; judge 1/10,639); AGY workers 0
+(AGY CLI unavailable in this environment; the §38 review gate ran as two rounds of an independent read-only
+reviewer agent: defects found → cleared for execution). Limitations: single-case descriptive evidence;
+judge model family equals generation model family; future E3 validation design must address the observed
+9.1% natural applicability. E3 = IN_PROGRESS / A2_COMPLETE_INCONCLUSIVE / PENDING_FUTURE_LIFECYCLE_DECISION.
+Report: `evaluation/E3_A2_TARGETED_MISSING_POINT_RECOVERY_VALIDATION.md`.
 
 ## Historical E3-A0 architecture contract closeout
 
