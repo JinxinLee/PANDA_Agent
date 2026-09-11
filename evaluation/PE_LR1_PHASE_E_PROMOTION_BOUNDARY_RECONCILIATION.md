@@ -214,7 +214,7 @@ review/revision path (which already has the one-bounded-revision behavior).
 | E2 default-activation evidence | unmet, preserved | would require a new gate → gate chasing risk | n/a |
 | E3 lifecycle completion | closed (bounded fallback) | closed | closed |
 | Remaining benchmark-shaped compatibility | owned by Phase F (R08/R09/R11 cluster) | same | same |
-| Current runtime candidate identity | unchanged from failed lineage (`fd0aed4` + QA-M1/E3 additions) | same | same |
+| Current runtime candidate identity | materially changed from `fd0aed4` by E3-A1, but the E3 change is not promotion-relevant to the unresolved historical activation failure surface | same | same |
 | Need for additional scientific evidence | none for closure; promotion evidence only via a promotion-relevant material candidate | yes — but no promotion-relevant candidate exists | n/a |
 | Risk of activation chasing | low (closes the phase) | high ("stay open and rerun") | low |
 | Ownership of remaining work | Phase F (already inventoried) | blurs Phase-E/Phase-F boundary | n/a |
@@ -231,7 +231,7 @@ chasing that E2-LR1 stopped.
 | Waives E2-A3/R3-R1 failures? | would have to — no defensible standard is met | n/a (new experiment ≠ waiver; requires a promotion-relevant new candidate) | no waiver; failures remain binding |
 | Materially changed runtime candidate exists? | yes (E3-A1), but not promotion-relevant to the failed surface | yes as a runtime change; not promotion-relevant to the failed activation surface | n/a — trigger requires a promotion-relevant material change |
 | Current product decision depends on promotion? | no | no | n/a |
-| Proportionate information gain? | negative (chasing) | low (same candidate re-run) | high when trigger fires |
+| Proportionate information gain? | negative (chasing) | low: the current candidate is materially changed by E3, but the change does not target the historical activation failure surface, its standalone benefit remains unresolved and low-frequency, and no current product decision requires immediate promotion | high when trigger fires |
 | Consistent with anti-activation-chasing rule | no | no | yes |
 
 **Selected: D3.**
