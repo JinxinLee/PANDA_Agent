@@ -51,7 +51,11 @@ E3-A1 = COMPLETE / PASS / EXPERIMENTAL_MISSING_POINT_TARGETED_RETRIEVAL_IMPLEMEN
 E3-A1 report: `evaluation/E3_A1_EXPERIMENTAL_MISSING_POINT_RETRIEVAL_IMPLEMENTATION.md`.
 E3-A2 = COMPLETE / INCONCLUSIVE / INSUFFICIENT_NATURAL_MISSING_POINT_APPLICABILITY.
 E3-A2 report: `evaluation/E3_A2_TARGETED_MISSING_POINT_RECOVERY_VALIDATION.md`.
-E3 = IN_PROGRESS / A2_COMPLETE_INCONCLUSIVE / PENDING_FUTURE_LIFECYCLE_DECISION.
+E3-LR1 = COMPLETE / PASS / POST_A2_LIFECYCLE_RECONCILED.
+E3-LR1 report: `evaluation/E3_LR1_POST_A2_LIFECYCLE_DECISION.md`.
+E3 = COMPLETE / BOUNDED_LOW_FREQUENCY_FALLBACK_IMPLEMENTED / SCIENTIFIC_RECOVERY_BENEFIT_UNRESOLVED.
+DEDICATED_E3_REVALIDATION = NOT_PLANNED / LOW_NATURAL_APPLICABILITY_AND_LOW_DECISION_VALUE.
+FUTURE_E3_EVIDENCE = ACCUMULATE_OPPORTUNISTICALLY_IN_BROADER_AUTHORIZED_EVALUATIONS.
 E2-A3-R4 = NOT_STARTED / SUPERSEDED_BY_LIFECYCLE_SIMPLIFICATION.
 E2 DEFAULT PROMOTION = DEFERRED / ACTIVATION_ACCEPTANCE_NOT_MET.
 runtime_e1_v2 = VALIDATED_EXPERIMENTAL_PATH / EXPLICIT_SELECTION_ONLY.
@@ -59,7 +63,7 @@ E2 DEFAULT-PROMOTION GATE REDESIGN = DEFERRED / REVISIT_AT_PHASE_E_PROMOTION_BOU
 Reconciliation: `evaluation/E2_POST_A3_LIFECYCLE_RECONCILIATION.md`.
 E2-A1 report: `evaluation/E2_A1_SHADOW_ANSWER_POINT_COVERAGE_CONTRACT.md`.
 C1 met all eight strict gates and the original pair09 atomicity sentinel. Per the
-accepted closure decision, E1 is complete. E2-A2 passed targeted shadow validation. E2-A3 failed Q7; normal QA remains legacy. E3-A0 established the missing-point targeted retrieval architecture contract; E3-A1 implemented the experimental mechanism under runtime_e1_v2. E3-A2 completed INCONCLUSIVE: on the frozen 11-case cohort only 1 case (n006, 2 missing points) was naturally E3-applicable, below the G2 threshold (>=4 cases, >=4 points); the single applicable pair was descriptive only (no recovered point on either arm; treatment moved one point absent→partial and was preferred by the blinded judge within all safety/bounds gates). E3 remains incomplete pending a future lifecycle decision.
+accepted closure decision, E1 is complete. E2-A2 passed targeted shadow validation. E2-A3 failed Q7; normal QA remains legacy. E3-A0 established the missing-point targeted retrieval architecture contract; E3-A1 implemented the experimental mechanism under runtime_e1_v2. E3-A2 completed INCONCLUSIVE: on the frozen 11-case cohort only 1 case (n006, 2 missing points) was naturally E3-applicable, below the G2 threshold (>=4 cases, >=4 points); the single applicable pair was descriptive only (no recovered point on either arm; treatment moved one point absent→partial and was preferred by the blinded judge within all safety/bounds gates). E3-LR1 subsequently reconciled the E3 lifecycle (static, zero scientific calls): E3 closes as a bounded low-frequency experimental fallback with standalone recovery benefit unresolved; dedicated revalidation is not planned; future E3 evidence accumulates opportunistically in broader authorized evaluations.
 Decision: `evaluation/E1_CLOSURE_SCOPE_REVIEW.md`.
 Report: `evaluation/E1_C1_REAL_STYLE_CONFIRMATION.md`.
 Preregistration: `2517b691245c38175222064e6ca546d06fd21e9a`.
@@ -110,23 +114,24 @@ MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD
 Current planning state:
 D4 = PAUSED / ROADMAP_RECONCILIATION
 D4 overall completion = UNDECIDED
-CURRENT_TASK = E3-A2 / COMPLETE / INCONCLUSIVE / INSUFFICIENT_NATURAL_MISSING_POINT_APPLICABILITY
-NEXT_TASK_RECOMMENDATION = E3 lifecycle decision (future E3 validation design must address the observed 9.1% natural applicability; no task authorized) / NOT AUTHORIZED
+CURRENT_TASK = E3-LR1 / COMPLETE / PASS / POST_A2_LIFECYCLE_RECONCILED
+NEXT_TASK_RECOMMENDATION = Phase-E lifecycle / promotion-boundary reconciliation / NOT AUTHORIZED
 NEXT_TASK_EXECUTION_AUTHORIZED = false
-FOLLOWING_ARCHITECTURE_TASK = E3 lifecycle decision (pending future authorization)
+FOLLOWING_ARCHITECTURE_TASK = Phase-E lifecycle / promotion-boundary reconciliation
 
 No D4-A11 exists.
-Phase E = IN_PROGRESS / E2_CORE_COMPLETE / E3_IN_PROGRESS.
+Phase E = IN_PROGRESS / E3_FALLBACK_COMPLETE / PROMOTION_BOUNDARY_RECONCILIATION_NEXT.
 E1 = COMPLETE / PASS / QUESTION_ONLY_SEMANTIC_ANSWER_POINT_DECOMPOSITION_VALIDATED.
 E2 = COMPLETE / CORE_MECHANISM_VALIDATED / DEFAULT_PROMOTION_DEFERRED.
 E3-A0 = COMPLETE / PASS / MISSING_POINT_TARGETED_RETRIEVAL_CONTRACT_ESTABLISHED.
 E3-A1 = COMPLETE / PASS / EXPERIMENTAL_MISSING_POINT_TARGETED_RETRIEVAL_IMPLEMENTED.
 E3-A2 = COMPLETE / INCONCLUSIVE / INSUFFICIENT_NATURAL_MISSING_POINT_APPLICABILITY.
-E3 = IN_PROGRESS / A2_COMPLETE_INCONCLUSIVE / PENDING_FUTURE_LIFECYCLE_DECISION.
+E3-LR1 = COMPLETE / PASS / POST_A2_LIFECYCLE_RECONCILED.
+E3 = COMPLETE / BOUNDED_LOW_FREQUENCY_FALLBACK_IMPLEMENTED / SCIENTIFIC_RECOVERY_BENEFIT_UNRESOLVED.
 Phase F = IN_PROGRESS / F1_COMPLETE.
 F2 = NOT_STARTED / SCOPE_PRESERVED.
 F3 = SCOPE_RECONCILIATION_REQUIRED / PARTIALLY_SUPERSEDED_BY_D4.
-No further recovery, D4, Phase-E, or Phase-F task is authorized after E3-A2.
+No further recovery, D4, Phase-E, or Phase-F task is authorized after E3-LR1; the Phase-E promotion-boundary reconciliation is recommended but NOT AUTHORIZED.
 
 ## E3-A1 experimental implementation closeout
 
@@ -170,6 +175,26 @@ reviewer agent: defects found → cleared for execution). Limitations: single-ca
 judge model family equals generation model family; future E3 validation design must address the observed
 9.1% natural applicability. E3 = IN_PROGRESS / A2_COMPLETE_INCONCLUSIVE / PENDING_FUTURE_LIFECYCLE_DECISION.
 Report: `evaluation/E3_A2_TARGETED_MISSING_POINT_RECOVERY_VALIDATION.md`.
+
+## E3-LR1 post-A2 lifecycle reconciliation closeout
+
+COMPLETE / PASS / POST_A2_LIFECYCLE_RECONCILED. Static lifecycle/architecture/scope review at HEAD `c57ee18`;
+zero PANDA scientific/evaluation calls or tokens; zero product changes; only the decision report, this status
+file, and the roadmap changed. Separated architecture (Q1 justified, A0 PASS), implementation safety/bounds
+(Q2 validated, A1 PASS plus observed bounds), and standalone recovery benefit (Q3 UNRESOLVED /
+INSUFFICIENT_NATURAL_APPLICABILITY). Reconciled F1-R12 (pre-answer sufficiency routing: coexists with E3 on
+different failure information; not a blocker; ownership remains Phase F/retrieval cleanup) and F1-R14
+(E3 global reconsideration reuses authoritative `select_final_evidence`; not a blocker; shared-selection
+changes must rerun focused E3 tests). Maintenance burden classified MODERATE (shared-path seams, mode-gated,
+deterministically tested); proportionate to rare-but-important recovery value. Recorded the non-outcome-impacting
+A2 G6 protocol-wording ambiguity as a future cleanup note only (A2 not reopened/rescored). Determined that
+first-verify-failure-focused cohorts are outcome-conditioned selection: diagnostically useful, never prospective
+applicability authority. Decision matrix selected OPTION A: E3 = COMPLETE /
+BOUNDED_LOW_FREQUENCY_FALLBACK_IMPLEMENTED / SCIENTIFIC_RECOVERY_BENEFIT_UNRESOLVED; DEDICATED_E3_REVALIDATION =
+NOT_PLANNED / LOW_NATURAL_APPLICABILITY_AND_LOW_DECISION_VALUE; FUTURE_E3_EVIDENCE = ACCUMULATE_OPPORTUNISTICALLY
+_IN_BROADER_AUTHORIZED_EVALUATIONS. No default promotion; E2 promotion remains DEFERRED.
+NEXT_TASK_RECOMMENDATION = Phase-E lifecycle / promotion-boundary reconciliation (NOT AUTHORIZED).
+Report: `evaluation/E3_LR1_POST_A2_LIFECYCLE_DECISION.md`.
 
 ## Historical E3-A0 architecture contract closeout
 
