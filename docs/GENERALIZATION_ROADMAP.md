@@ -68,6 +68,8 @@ E2 DEFAULT-PROMOTION GATE REDESIGN = CLOSED / NO_IMMEDIATE_REVALIDATION_DEFINED 
 DEFAULT_PROMOTION_RECONSIDERATION_TRIGGER = a promotion-relevant materially behavior-changing post-Phase-E candidate that either (1) materially affects the unresolved default-promotion failure surface (completeness, verification, compatibility, evidence-selection, or other behavior implicated in the failed activation lineage — normally Phase-F cleanup of F1-R08/R09/R11, R13, R10, R14, R04) or (2) otherwise creates a decision-relevant new integrated runtime candidate whose default acceptance needs assessment; OR (3) an explicitly authorized release/acceptance candidate evaluation requiring the normal-default decision.
 PE-LR1 = COMPLETE / PASS / PHASE_E_CLOSED_PROMOTION_DEFERRED_UNTIL_MATERIAL_CANDIDATE.
 PE-LR1 report: `evaluation/PE_LR1_PHASE_E_PROMOTION_BOUNDARY_RECONCILIATION.md`.
+PF-LR1 = COMPLETE / PASS / PHASE_F_SCOPE_RECONCILED_BOUNDED_CLEANUP_PLAN_ESTABLISHED.
+PF-LR1 report: `evaluation/PF_LR1_PHASE_F_SCOPE_RECONCILIATION.md`.
 Reconciliation: `evaluation/E2_POST_A3_LIFECYCLE_RECONCILIATION.md`.
 E2-A1 report: `evaluation/E2_A1_SHADOW_ANSWER_POINT_COVERAGE_CONTRACT.md`.
 C1 met all eight strict gates and the original pair09 atomicity sentinel. Per the
@@ -137,17 +139,26 @@ COMPLETE / BOUNDED_LOW_FREQUENCY_FALLBACK_IMPLEMENTED / SCIENTIFIC_RECOVERY_BENE
 PE-LR1:
 COMPLETE / PASS / PHASE_E_CLOSED_PROMOTION_DEFERRED_UNTIL_MATERIAL_CANDIDATE
 
+PF-LR1:
+COMPLETE / PASS / PHASE_F_SCOPE_RECONCILED_BOUNDED_CLEANUP_PLAN_ESTABLISHED
+
 Phase F:
-IN_PROGRESS / F1_COMPLETE
+IN_PROGRESS / F1_COMPLETE / PF_LR1_SCOPE_RECONCILED
 
 F1:
 COMPLETE / PASS / RESIDUAL_BENCHMARK_DEPENDENCY_INVENTORY_ESTABLISHED
+
+F2:
+NOT_STARTED / UNEXECUTED
+
+F3:
+NOT_STARTED / UNEXECUTED
 
 D4 overall completion:
 UNDECIDED
 
 Next task recommendation:
-Phase-F scope reconciliation and bounded benchmark-dependency cleanup planning / NOT AUTHORIZED
+R13 bounded verifier-support semantic cleanup / RECOMMENDED / NOT AUTHORIZED
 
 Current task authorization:
 E3-A1 experimental missing-point targeted retrieval implementation is complete:
@@ -163,8 +174,8 @@ E3-A2 completed INCONCLUSIVE (1/11 natural applicability; the single applicable 
 
 No D4-A11 exists.
 No further D4 task is currently authorized.
-Phase E is COMPLETE (closed by PE-LR1); no further Phase-E task exists. Phase-F scope reconciliation and bounded benchmark-dependency cleanup planning is recommended but NOT AUTHORIZED.
-No further Phase-F task is currently authorized.
+Phase E is COMPLETE (closed by PE-LR1); no further Phase-E task exists. Phase-F scope reconciliation is complete (PF-LR1).
+No further Phase-F production task is currently authorized; R13 bounded verifier-support semantic cleanup is recommended but NOT AUTHORIZED.
 
 ## Phase overview
 
@@ -183,8 +194,8 @@ No further Phase-F task is currently authorized.
 - **Phase E — Answer generalization:** `COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED`
   Dynamic question decomposition, answer-point coverage, claim-to-evidence mapping, and targeted completeness recovery. E1 validated (shadow scope), E2 core complete, E3 closed as a bounded low-frequency fallback; PE-LR1 closed the phase at the promotion boundary with the normal default remaining `legacy_question_core` and promotion reconsideration gated on a material candidate change or an explicitly authorized release-boundary decision.
 
-- **Phase F — Benchmark dependency cleanup and final answering:** `IN_PROGRESS / F1_COMPLETE`
-  F1 established the bounded non-D4 residual inventory without production cleanup. F2/F3 and later work remain unstarted; original F3 overlaps D4 and still requires scope reconciliation.
+- **Phase F — Benchmark dependency cleanup and final answering:** `IN_PROGRESS / F1_COMPLETE / PF_LR1_SCOPE_RECONCILED`
+  F1 established the bounded non-D4 residual inventory without production cleanup. PF-LR1 reconciled the Phase-F scope into a bounded F2/F3 execution map; F2/F3 remain unstarted.
 
 ## Phase A — Evaluation infrastructure and versioned baseline
 
@@ -614,18 +625,27 @@ Original Phase-F planning predates the substantial shortcut migrations completed
 - **Planning implication:** Zero substantiated E1 blockers. Recommend E1 — Dynamic Question Decomposition, without authorizing execution; preserve compatibility until a generic replacement is established.
 - **Evidence:** `evaluation/f1_residual_benchmark_dependency_inventory.json` and `evaluation/F1_RESIDUAL_BENCHMARK_DEPENDENCY_INVENTORY.md`.
 
+### PF-LR1 — Phase-F scope reconciliation
+
+- **Status:** COMPLETE / PASS / PHASE_F_SCOPE_RECONCILED_BOUNDED_CLEANUP_PLAN_ESTABLISHED
+- **Goal:** Convert the F1 residual inventory (R01–R21) into a bounded lifecycle/execution map so future Phase-F production tasks can be authorized without re-deriving scope.
+- **Outcome:** All 21 F1 anchors revalidated at HEAD `a2920d9` with no reclassification. Formal F2 scope = five bounded groups: A R13 verifier-support semantics; B R10 deterministic completeness semantics; C R08/R09/R11 E1/E2 compatibility retirement as one bounded named step inside F2 (coverage-equivalence condition; no new top-level phase); D R04 premise/refusal generalization; E R01 semantic source obligations. R13 and R10 are independently implementable; R13-first is RECOMMENDED_SEMANTIC_SEQUENCING (SOFT_ARCHITECTURAL_ORDERING) only, not a hard prerequisite. R12 = E3_RECONCILED_NO_STANDALONE_ACTION (E3-LR1 §8; interaction boundary only). R14 = PHASE_F_SHARED_BOUNDARY_REVIEW / NO_CHANGE_CURRENTLY_JUSTIFIED (E3-LR1 §9 governs any future shared-selection change). F3 = bounded R03/R05/R06 fixed-locator/fallback package; D4 owns the YAML query-expansion locator-retirement pattern, the confirmed HOLDs, and R20, while R03/R05/R06 are independent code origins outside the D4 rule inventory. Promotion materiality: R13/R10/R08-R09-R11/R04 promotion-relevant material; R01/R14 potentially material when coupled; R03/R05/R06 localized non-material. Recommended execution order: R13 → R10 → R08/R09/R11 → R14 review (conditional) → R04 → R01 → R03/R05/R06; recommendation only, each step separately authorized.
+- **Planning implication:** NEXT_TASK_RECOMMENDATION = R13 bounded verifier-support semantic cleanup; RECOMMENDED, NOT AUTHORIZED. Promotion relevance is not promotion authorization; default promotion stays deferred (D3).
+- **Evidence:** `evaluation/PF_LR1_PHASE_F_SCOPE_RECONCILIATION.md` and `evaluation/pf_lr1_phase_f_scope_reconciliation.json`.
+
 ### F2 — Generalize benchmark-specific guards
 
-- **Status:** NOT_STARTED / SCOPE_PRESERVED
+- **Status:** NOT_STARTED / UNEXECUTED
+- **Bounded scope (PF-LR1):** Groups A–E above (R13; R10; R08/R09/R11 compatibility retirement; R04; R01). R12 is not an F2 task; R14 remains outside mandatory modification unless a present defect is evidenced.
 - **Goal:** Replace hard-coded symbol or premise guards with generic handling of false premises, unknown symbols, locked-corpus existence checks, and generic refusal logic.
 - **Scope:** Generalize failure-class guards not reducible to D4 locator migration, ensuring robust behavior across unseen symbols.
 - **Dependencies:** F1, C5, D2, and existing verifier contracts.
 
 ### F3 — Incremental shortcut removal
 
-- **Status:** SCOPE_RECONCILIATION_REQUIRED / PARTIALLY_SUPERSEDED_BY_D4
-- **Goal:** Reconcile residual shortcut removal against completed D4 migrations.
-- **Context:** Original F3 planned incremental retirement of phrase-to-answer-location shortcuts once generic replacements were proven. D4 has already implemented this pattern for bounded query-expansion locators. F3 must not duplicate D4; remaining F3 scope is undecided pending residual dependency inventory reconciliation.
+- **Status:** NOT_STARTED / UNEXECUTED
+- **Bounded scope (PF-LR1):** The R03/R05/R06 fixed-locator/fallback cleanup package. Ownership was reconciled against D4 by implementation origin and lifecycle ownership: D4 already implemented the phrase-to-answer-location retirement pattern for YAML query-expansion locators (five active migrations) and owns R20 plus the confirmed HOLDs; R03/R05/R06 are independent code origins in `retrieval.py`/`qa.py` outside the D4 rule inventory. Shared literals with D4 rules are coordinated, never globally deleted. D4 is not reopened and no D4-A11 is created.
+- **Context:** Original F3 planned incremental retirement of phrase-to-answer-location shortcuts once generic replacements were proven. That pattern was implemented by D4 for bounded query-expansion locators; that portion of F3 closes as superseded without new implementation.
 - **Dependencies:** F1, F2, and Phase D/E outcomes.
 
 ### F4 — Separate answer-generation and semantic-verification roles
@@ -684,9 +704,9 @@ At release, Generalization Gap means benchmark score minus novel score. Benchmar
 5. **Phase execution ordering:** F1 found zero E1 blockers. E1-R2 passed targeted prospective synthetic validation and E1-C1 passed exposed real-style confirmation, including the original atomicity sentinel. E1 is closed under the accepted scope decision. E2-A3 remains FAIL/Q7. E2-A3-FR1 completed with REPAIR_JUSTIFIED. R1 remains FAIL/P2_P6. R2 repaired citation eligibility and passed S1-S13/P1-P11 in six fresh pairs. Historical P6 FAIL remains without waiver or product tuning; historical R3 remains INCONCLUSIVE after four infrastructure failures. R3-R1 completed the missing paired evidence and failed G11 at 2/14 noncritical worse; FR1 subsequently completed a static review recommending shared claim sanitization repair and prospective gate redesign. E2-LR1 subsequently separates completed core mechanisms from deferred promotion and supersedes immediate A3-R4. QA-M1 maintenance subsequently completed with focused T0/static checks. E3-A0 architecture contract is complete; E3-A1 implemented the experimental mechanism under runtime_e1_v2; E3-A2 completed INCONCLUSIVE with insufficient natural applicability; E3-LR1 closed E3 as a bounded low-frequency fallback with standalone recovery benefit unresolved. No further E1 confirmation is required.
 
 ```text
-CURRENT_TASK = PE-LR1 / COMPLETE / PASS / PHASE_E_CLOSED_PROMOTION_DEFERRED_UNTIL_MATERIAL_CANDIDATE
-NEXT_TASK_RECOMMENDATION = Phase-F scope reconciliation and bounded benchmark-dependency cleanup planning
+CURRENT_TASK = PF-LR1 / COMPLETE / PASS / PHASE_F_SCOPE_RECONCILED_BOUNDED_CLEANUP_PLAN_ESTABLISHED
+NEXT_TASK_RECOMMENDATION = R13 bounded verifier-support semantic cleanup / RECOMMENDED / NOT AUTHORIZED
 NEXT_TASK_EXECUTION_AUTHORIZED = false
-FOLLOWING_ARCHITECTURE_TASK = Phase-F scope reconciliation and bounded benchmark-dependency cleanup planning
+FOLLOWING_ARCHITECTURE_TASK = bounded Phase-F production cleanup per the PF-LR1 recommended order (R13 first)
 NEXT_STAGE_AUTHORIZED = false
 ```

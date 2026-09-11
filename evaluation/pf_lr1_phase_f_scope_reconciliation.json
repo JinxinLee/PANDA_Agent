@@ -1,0 +1,744 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint": "PF-LR1",
+  "stage": "phase_f_scope_reconciliation",
+  "starting_head": "a2920d91781c3f99633a57e8c9d3d6e2e9c3ef26",
+  "status": "COMPLETE",
+  "verdict": "PASS / PHASE_F_SCOPE_RECONCILED_BOUNDED_CLEANUP_PLAN_ESTABLISHED",
+  "scope": {
+    "production_behavior_modified": false,
+    "production_config_modified": false,
+    "protected_data_accessed": false,
+    "provider_calls": 0,
+    "scientific_evaluations": 0,
+    "promotion_reconsidered": false,
+    "e3_reopened": false,
+    "d4_a11_created": false
+  },
+  "lifecycle_context": {
+    "phase_d": "PAUSED / ROADMAP_RECONCILIATION",
+    "d4_overall_completion": "UNDECIDED",
+    "latest_accepted_production_action": "D4-A10 COMPLETE / PASS / VALIDATED_MODEL_FACTORY_LOCATOR_RETIREMENT_ACTIVATED",
+    "d4_a11": "DOES_NOT_EXIST",
+    "phase_e": "COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED",
+    "e1": "COMPLETE / PASS / QUESTION_ONLY_SEMANTIC_ANSWER_POINT_DECOMPOSITION_VALIDATED",
+    "e2": "COMPLETE / CORE_MECHANISM_VALIDATED / DEFAULT_PROMOTION_DEFERRED",
+    "e3": "COMPLETE / BOUNDED_LOW_FREQUENCY_FALLBACK_IMPLEMENTED / SCIENTIFIC_RECOVERY_BENEFIT_UNRESOLVED",
+    "pe_lr1": "COMPLETE / PASS / PHASE_E_CLOSED_PROMOTION_DEFERRED_UNTIL_MATERIAL_CANDIDATE",
+    "f1": "COMPLETE / PASS / RESIDUAL_BENCHMARK_DEPENDENCY_INVENTORY_ESTABLISHED",
+    "pf_lr1": "COMPLETE / PASS / PHASE_F_SCOPE_RECONCILED_BOUNDED_CLEANUP_PLAN_ESTABLISHED",
+    "phase_f": "IN_PROGRESS",
+    "f2": "NOT_STARTED / UNEXECUTED",
+    "f3": "NOT_STARTED / UNEXECUTED",
+    "normal_default": "legacy_question_core",
+    "runtime_e1_v2": "VALIDATED_EXPERIMENTAL_PATH / EXPLICIT_SELECTION_ONLY",
+    "default_promotion_disposition": "D3 — DEFER UNTIL PROMOTION-RELEVANT MATERIAL CANDIDATE CHANGE",
+    "e2_default_promotion_gate_redesign": "CLOSED / NO_IMMEDIATE_REVALIDATION_DEFINED / REOPEN_ONLY_FOR_PROMOTION_RELEVANT_MATERIAL_CANDIDATE_OR_RELEASE_BOUNDARY"
+  },
+  "dependency_type_vocabulary": [
+    "HARD_PREREQUISITE",
+    "SOFT_ARCHITECTURAL_ORDERING",
+    "VALIDATION_COUPLING",
+    "NO_DEPENDENCY"
+  ],
+  "promotion_materiality_vocabulary": [
+    "PROMOTION_RELEVANT_MATERIAL",
+    "POTENTIALLY_MATERIAL_WHEN_COUPLED",
+    "LOCAL_NON_MATERIAL",
+    "NOT_APPLICABLE"
+  ],
+  "findings": [
+    {
+      "id": "F1-R01",
+      "current_class": "BENCHMARK_DERIVED_RUNTIME_POLICY",
+      "current_code_surface": "configs/retrieval_policies.yaml intents.algorithm_theory / algorithm_implementation required_sources (lines 25-31); transfer in src/panda_agent/retrieval.py; consumption in src/panda_agent/qa.py sufficiency",
+      "current_status_at_HEAD": "PRESENT_VERIFIED",
+      "final_pf_lr1_disposition": "F2_GENERIC_POLICY_CLEANUP",
+      "owner": "PHASE_F_F2",
+      "phase_f_action_required": true,
+      "standalone_task_allowed": true,
+      "coupling_group": "F2_GROUP_E_SEMANTIC_SOURCE_OBLIGATIONS",
+      "dependency_or_prerequisite": "NO_DEPENDENCY",
+      "recommended_execution_order": 6,
+      "promotion_materiality": "POTENTIALLY_MATERIAL_WHEN_COUPLED",
+      "promotion_materiality_reason": "PE-LR1 §10 keeps R01 inside Phase-F scope reconciliation while noting it is not among the strongest promotion-material candidates. Source obligations change sufficiency and refusal outcomes but are not themselves the unresolved activation failure surface; if a replacement materially alters sufficiency/refusal behavior, reassess materiality within that change's own validation.",
+      "d4_boundary": "NONE",
+      "e3_boundary": "INDIRECT_ONLY — required sources are consumed by pre-answer sufficiency; no direct E3 seam",
+      "retirement_or_replacement_condition": "Fixed intent-to-required-source mappings are replaced by question-grounded semantic source-obligation logic with safety behavior (for example version-conflict rejection and honest sufficiency/refusal) preserved.",
+      "evidence": [
+        "configs/retrieval_policies.yaml:25-31 verified at HEAD a2920d9",
+        "src/panda_agent/retrieval.py explicit gold-policy comment for the two paper intents (F1 inventory)",
+        "evaluation/f1_residual_benchmark_dependency_inventory.json finding F1-R01 (provenance EXPLICIT)"
+      ],
+      "notes": "Remains inside Phase-F scope; replacement must be question-grounded, not benchmark-derived; no deletion of safety behavior."
+    },
+    {
+      "id": "F1-R02",
+      "current_class": "HOLD_UNCERTAIN_PROVENANCE",
+      "current_code_surface": "configs/retrieval_policies.yaml:18-42 non-paper intent required_sources",
+      "current_status_at_HEAD": "PRESENT_VERIFIED",
+      "final_pf_lr1_disposition": "HOLD_UNCERTAIN_PROVENANCE",
+      "owner": "HOLD",
+      "phase_f_action_required": false,
+      "standalone_task_allowed": false,
+      "coupling_group": "NONE",
+      "dependency_or_prerequisite": "NO_DEPENDENCY",
+      "recommended_execution_order": null,
+      "promotion_materiality": "NOT_APPLICABLE",
+      "promotion_materiality_reason": "No Phase-F action; provenance uncertainty is unresolved.",
+      "d4_boundary": "NONE",
+      "e3_boundary": "NONE",
+      "retirement_or_replacement_condition": "Revisited only if product-contract/provenance evidence resolves the mapping origins.",
+      "evidence": [
+        "configs/retrieval_policies.yaml:18-42 verified at HEAD a2920d9",
+        "evaluation/f1_residual_benchmark_dependency_inventory.json finding F1-R02 (provenance UNKNOWN)"
+      ],
+      "notes": "Remains HOLD; no cleanup merely to reduce residual count; determinism and domain specificity alone do not establish benchmark origin."
+    },
+    {
+      "id": "F1-R03",
+      "current_class": "FIXED_LOCATOR_SHORTCUT_OUTSIDE_D4",
+      "current_code_surface": "src/panda_agent/retrieval.py:1147-1149 Retriever.analyze feedback paper-page override",
+      "current_status_at_HEAD": "PRESENT_VERIFIED",
+      "final_pf_lr1_disposition": "F3_FIXED_LOCATOR_CLEANUP",
+      "owner": "PHASE_F_F3",
+      "phase_f_action_required": true,
+      "standalone_task_allowed": true,
+      "coupling_group": "F3_FIXED_LOCATOR_PACKAGE",
+      "dependency_or_prerequisite": "NO_DEPENDENCY",
+      "recommended_execution_order": 7,
+      "promotion_materiality": "LOCAL_NON_MATERIAL",
+      "promotion_materiality_reason": "Localized retrieval-side page override; consistent with PE-LR1 §10 treating localized fixed-locator/fallback items as not material to promotion by themselves. F1 HIGH static risk is not promotion materiality.",
+      "d4_boundary": "RELATED_BUT_OUTSIDE_D4 — independent code origin in Retriever.analyze; the D4 rule reconstructed_profile_to_acceptance shares page values li_2026 [141,149,151] but remains unmigrated (NEEDS_EVIDENCE); matching literals do not transfer ownership",
+      "e3_boundary": "NONE",
+      "retirement_or_replacement_condition": "The code-level page-set replacement is retired once a generic query/plan-grounded locator policy covers the behavior; shared page values with D4 rules are coordinated, never globally deleted.",
+      "evidence": [
+        "src/panda_agent/retrieval.py:1147-1149 verified at HEAD a2920d9",
+        "evaluation/d4_a0_expansion_component_inventory.json rule reconstructed_profile_to_acceptance (NEEDS_EVIDENCE, unmigrated)",
+        "configs/query_expansions.yaml reconstructed_profile_to_acceptance paper_page_hints li_2026: [141, 149, 151]"
+      ],
+      "notes": "Ownership decided by implementation origin and lifecycle ownership, not duplicate literals; D4 is not reopened."
+    },
+    {
+      "id": "F1-R04",
+      "current_class": "CASE_SPECIFIC_NEGATIVE_CONTROL",
+      "current_code_surface": "src/panda_agent/qa.py _sufficiency exact negative-control branch (requested_symbol PndUniversalRestgasDeconvolver at line 1585) and _finalize fixed refusal/locator presentation (lines 2511-2538)",
+      "current_status_at_HEAD": "PRESENT_VERIFIED",
+      "final_pf_lr1_disposition": "F2_GENERIC_POLICY_CLEANUP",
+      "owner": "PHASE_F_F2",
+      "phase_f_action_required": true,
+      "standalone_task_allowed": true,
+      "coupling_group": "F2_GROUP_D_PREMISE_REFUSAL_GENERALIZATION",
+      "dependency_or_prerequisite": "NO_DEPENDENCY — R16 (KEEP_GENERIC) is a design foundation for bare-class coverage and evidence-grounded refusal, not a hard prerequisite; extending that coverage is part of the R04 work itself",
+      "recommended_execution_order": 5,
+      "promotion_materiality": "PROMOTION_RELEVANT_MATERIAL",
+      "promotion_materiality_reason": "Refusal correctness is explicitly named by PE-LR1 §6/§10 as part of the promotion-relevant failure surface; the exact negative-control path is a HIGH-risk benchmark-derived refusal behavior.",
+      "d4_boundary": "RELATED_BUT_OUTSIDE_D4 — D4 rule nonexistent_restgas_deconvolver shares the trigger literal and efficiency_correction_2.C symbol but remains unmigrated (NEEDS_EVIDENCE); the qa.py branch is an independent code origin",
+      "e3_boundary": "Refusal can enter pre-answer sufficiency routing; no E3 reopening; E3 interaction assessed within the change's own validation if pre-answer semantics change materially",
+      "retirement_or_replacement_condition": "The exact negative-control branch is replaced by generic class/premise handling plus evidence-grounded refusal; behavior is never merely deleted without a semantic replacement.",
+      "evidence": [
+        "src/panda_agent/qa.py:1585,2511-2538 verified at HEAD a2920d9",
+        "evaluation/d4_a0_expansion_component_inventory.json rule nonexistent_restgas_deconvolver (NEEDS_EVIDENCE, unmigrated)",
+        "evaluation/f1_residual_benchmark_dependency_inventory.json finding F1-R04 (provenance EXPLICIT)"
+      ],
+      "notes": "Generic guard (R16) currently checks qualified APIs only and does not already replace the bare-class branch."
+    },
+    {
+      "id": "F1-R05",
+      "current_class": "FIXED_LOCATOR_SHORTCUT_OUTSIDE_D4",
+      "current_code_surface": "src/panda_agent/qa.py _finalize unsupported-API header fallback (PndPidCorrelator.h alternative at line 2560)",
+      "current_status_at_HEAD": "PRESENT_VERIFIED",
+      "final_pf_lr1_disposition": "F3_FIXED_LOCATOR_CLEANUP",
+      "owner": "PHASE_F_F3",
+      "phase_f_action_required": true,
+      "standalone_task_allowed": true,
+      "coupling_group": "F3_FIXED_LOCATOR_PACKAGE",
+      "dependency_or_prerequisite": "SOFT_ARCHITECTURAL_ORDERING — cleanup follows R04 so a generic query-grounded refusal-basis selector exists as the replacement basis; not a hard code dependency",
+      "recommended_execution_order": 7,
+      "promotion_materiality": "LOCAL_NON_MATERIAL",
+      "promotion_materiality_reason": "PE-LR1 §10 explicitly lists F1-R05/R06 localized finalize fallbacks as not material to promotion by themselves.",
+      "d4_boundary": "NONE — no D4 rule supplies a replacement for the finalizer fallback",
+      "e3_boundary": "NONE",
+      "retirement_or_replacement_condition": "Only the unconditional exact-header fallback is removed once a generic query-grounded refusal-basis selector is established; the generic unsupported-API guard is preserved.",
+      "evidence": [
+        "src/panda_agent/qa.py:2560 verified at HEAD a2920d9",
+        "evaluation/f1_residual_benchmark_dependency_inventory.json finding F1-R05"
+      ],
+      "notes": "Targeted residual is the fixed fallback, not the generic API guard."
+    },
+    {
+      "id": "F1-R06",
+      "current_class": "FIXED_LOCATOR_SHORTCUT_OUTSIDE_D4",
+      "current_code_surface": "src/panda_agent/qa.py _finalize deleted-runtime fallback (ana_dpm.C selection and fixed event_poca wording, lines 2592-2610); generic guard at lines 1027-1033 era (F1 anchor)",
+      "current_status_at_HEAD": "PRESENT_VERIFIED",
+      "final_pf_lr1_disposition": "F3_FIXED_LOCATOR_CLEANUP",
+      "owner": "PHASE_F_F3",
+      "phase_f_action_required": true,
+      "standalone_task_allowed": true,
+      "coupling_group": "F3_FIXED_LOCATOR_PACKAGE",
+      "dependency_or_prerequisite": "SOFT_ARCHITECTURAL_ORDERING — presentation/locator cleanup follows R04 refusal generalization; the generic impossibility refusal itself is retained and is not a cleanup target",
+      "recommended_execution_order": 7,
+      "promotion_materiality": "LOCAL_NON_MATERIAL",
+      "promotion_materiality_reason": "PE-LR1 §10 explicitly lists F1-R05/R06 localized finalize fallbacks as not material to promotion by themselves.",
+      "d4_boundary": "RELATED_BUT_OUTSIDE_D4 — the active D4 structured replacement event_poca_handoff covers the YAML query-expansion rule contribution, not the qa.py finalizer locator/wording",
+      "e3_boundary": "NONE",
+      "retirement_or_replacement_condition": "Generic impossibility handling is retained; the fixed macro/target locator and hard-coded presentation wording are replaced by query-grounded presentation once refusal generalization provides the basis.",
+      "evidence": [
+        "src/panda_agent/qa.py:2592-2610 verified at HEAD a2920d9",
+        "configs/query_expansions.yaml:14-19 event_poca_handoff structured_replacement: true",
+        "evaluation/f1_residual_benchmark_dependency_inventory.json finding F1-R06"
+      ],
+      "notes": "D4's structured replacement does not supersede this code-level finalizer behavior."
+    },
+    {
+      "id": "F1-R07",
+      "current_class": "HOLD_UNCERTAIN_PROVENANCE",
+      "current_code_surface": "src/panda_agent/qa.py _sufficiency exact_memory_question guard (lines 1566-1576)",
+      "current_status_at_HEAD": "PRESENT_VERIFIED",
+      "final_pf_lr1_disposition": "HOLD_UNCERTAIN_PROVENANCE",
+      "owner": "HOLD",
+      "phase_f_action_required": false,
+      "standalone_task_allowed": false,
+      "coupling_group": "NONE",
+      "dependency_or_prerequisite": "NO_DEPENDENCY",
+      "recommended_execution_order": null,
+      "promotion_materiality": "NOT_APPLICABLE",
+      "promotion_materiality_reason": "No Phase-F action; provenance uncertainty is unresolved.",
+      "d4_boundary": "NONE",
+      "e3_boundary": "NONE",
+      "retirement_or_replacement_condition": "Revisited only if numeric-sufficiency provenance/contract evidence resolves the origin.",
+      "evidence": [
+        "src/panda_agent/qa.py:1566-1576 verified at HEAD a2920d9",
+        "evaluation/f1_residual_benchmark_dependency_inventory.json finding F1-R07 (provenance UNKNOWN; git blame limited to initial import)"
+      ],
+      "notes": "Generic exact-numeric evidence caution is legitimate; this narrower implementation is not labeled proven benchmark debt."
+    },
+    {
+      "id": "F1-R08",
+      "current_class": "BENCHMARK_SHAPED_COMPATIBILITY_LAYER",
+      "current_code_surface": "src/panda_agent/qa.py:333 _answer_requirements; consumed at 1784, 2138, 2362; prompts contract in src/panda_agent/prompts.py",
+      "current_status_at_HEAD": "PRESENT_VERIFIED",
+      "final_pf_lr1_disposition": "E1_E2_COMPATIBILITY_RETIREMENT",
+      "owner": "PHASE_F_F2 — bounded named compatibility-retirement step inside F2",
+      "phase_f_action_required": true,
+      "standalone_task_allowed": true,
+      "coupling_group": "F2_GROUP_C_E1E2_COMPATIBILITY_RETIREMENT",
+      "dependency_or_prerequisite": "SOFT_ARCHITECTURAL_ORDERING — retirement is recommended after R13/R10 so generic verifier/completeness semantics are stable first; VALIDATION_COUPLING — retirement requires established coverage equivalence with the E1/E2 claim-to-answer-point-to-evidence architecture; no hard code dependency is claimed",
+      "recommended_execution_order": 3,
+      "promotion_materiality": "PROMOTION_RELEVANT_MATERIAL",
+      "promotion_materiality_reason": "PE-LR1 §9 marks cluster retirement as a promotion-relevant material candidate; the cluster is part of the benchmark-shaped risk surface of the candidate that failed the activation lineage.",
+      "d4_boundary": "NONE for R08/R09; R11 RELATED_BUT_OUTSIDE_D4 (plan may contain D4-derived symbols; distinguished within the cluster)",
+      "e3_boundary": "Active in both modes; E1/E2 validation ran with this layer present; runtime_e1_v2 is a coupled mode (E1 decomposition + E2 coverage semantics + E3 eligibility)",
+      "retirement_or_replacement_condition": "Retirement depends on established coverage equivalence / semantic replacement by the E1/E2 architecture (runtime claim-to-answer-point coverage), never blanket deletion.",
+      "evidence": [
+        "src/panda_agent/qa.py:333,1784,2138,2362 verified at HEAD a2920d9",
+        "evaluation/PE_LR1_PHASE_E_PROMOTION_BOUNDARY_RECONCILIATION.md §9 and §10",
+        "evaluation/f1_residual_benchmark_dependency_inventory.json findings F1-R08/R09/R11"
+      ],
+      "notes": "Handled as one coherent cluster; no new top-level lifecycle phase is created for it."
+    },
+    {
+      "id": "F1-R09",
+      "current_class": "BENCHMARK_SHAPED_COMPATIBILITY_LAYER",
+      "current_code_surface": "src/panda_agent/qa.py:703 _requirement_evidence, 801 _compact_requirement_evidence, 841 _deterministic_missing_requirement_ids; enforcement at 2141-2205, 2366",
+      "current_status_at_HEAD": "PRESENT_VERIFIED",
+      "final_pf_lr1_disposition": "E1_E2_COMPATIBILITY_RETIREMENT",
+      "owner": "PHASE_F_F2 — bounded named compatibility-retirement step inside F2",
+      "phase_f_action_required": true,
+      "standalone_task_allowed": true,
+      "coupling_group": "F2_GROUP_C_E1E2_COMPATIBILITY_RETIREMENT",
+      "dependency_or_prerequisite": "SOFT_ARCHITECTURAL_ORDERING — see R08; R10 is an independent repair inside this machinery and must not be collapsed into the retirement; VALIDATION_COUPLING with E1/E2 coverage equivalence",
+      "recommended_execution_order": 3,
+      "promotion_materiality": "PROMOTION_RELEVANT_MATERIAL",
+      "promotion_materiality_reason": "Part of the E1/E2 compatibility cluster; PE-LR1 §9 marks cluster retirement as promotion-relevant material.",
+      "d4_boundary": "NONE",
+      "e3_boundary": "Active in both modes; E1/E2 validation ran with this layer present",
+      "retirement_or_replacement_condition": "Named requirement checks are replaced only when E1/E2 claim-to-point coverage establishes equivalent completeness semantics; vocabulary checks are never translated into new Gold-shaped decomposition points.",
+      "evidence": [
+        "src/panda_agent/qa.py:703,801,841,2141-2205,2366 verified at HEAD a2920d9",
+        "evaluation/PE_LR1_PHASE_E_PROMOTION_BOUNDARY_RECONCILIATION.md §9",
+        "evaluation/f1_residual_benchmark_dependency_inventory.json finding F1-R09"
+      ],
+      "notes": "R10 (hard-coded pointer-symbol predicate) is separately owned and repaired independently."
+    },
+    {
+      "id": "F1-R10",
+      "current_class": "BESPOKE_SUFFICIENCY_OR_COMPLETENESS",
+      "current_code_surface": "src/panda_agent/qa.py pointer_identifier_normalization predicate: 757, 816, 926-929 (pndlmdtrackq / underlying pointer-syntax checks inside _deterministic_missing_requirement_ids)",
+      "current_status_at_HEAD": "PRESENT_VERIFIED",
+      "final_pf_lr1_disposition": "F2_CORE_BEHAVIORAL_CLEANUP",
+      "owner": "PHASE_F_F2",
+      "phase_f_action_required": true,
+      "standalone_task_allowed": true,
+      "coupling_group": "F2_GROUP_B_DETERMINISTIC_COMPLETENESS",
+      "dependency_or_prerequisite": "NO_DEPENDENCY — R13 and R10 are independently implementable F2 surfaces; the R13 -> R10 sequence is RECOMMENDED_SEMANTIC_SEQUENCING (SOFT_ARCHITECTURAL_ORDERING) for architectural clarity, causal isolation, and easier validation, not a hard prerequisite, code dependency, dataflow dependency, or implementation blocker. A future R13 task ending in HOLD/DEFERRED/INCONCLUSIVE does not by itself block R10.",
+      "recommended_execution_order": 2,
+      "promotion_materiality": "PROMOTION_RELEVANT_MATERIAL",
+      "promotion_materiality_reason": "Deterministic-completeness changes are explicitly named by PE-LR1 §6/§10 as potential promotion-relevant material changes; the predicate defines generic semantic completeness behavior.",
+      "d4_boundary": "NONE",
+      "e3_boundary": "NONE — completeness enforcement is mode-shared but not an E3 seam",
+      "retirement_or_replacement_condition": "The hard-coded pointer-symbol completion predicate is generalized to question-grounded completeness semantics; regression-protected coverage of genuine incompleteness is preserved.",
+      "evidence": [
+        "src/panda_agent/qa.py:757,816,926-929 verified at HEAD a2920d9",
+        "tests/unit/test_qa.py regression-protected requirements (F1 evidence anchor)",
+        "evaluation/PE_LR1_PHASE_E_PROMOTION_BOUNDARY_RECONCILIATION.md §6/§10"
+      ],
+      "notes": "Distinct narrow specialization within the R08/R09 machinery; independent repair, not a reason to remove all completeness obligations."
+    },
+    {
+      "id": "F1-R11",
+      "current_class": "BENCHMARK_SHAPED_COMPATIBILITY_LAYER",
+      "current_code_surface": "src/panda_agent/qa.py planned-locator/dataflow augmentation: 106 (_INTERNAL_CLAIM_PREFIXES), 1772 (dataflow_locator_), 1799 (required_boundary_locators)",
+      "current_status_at_HEAD": "PRESENT_VERIFIED",
+      "final_pf_lr1_disposition": "E1_E2_COMPATIBILITY_RETIREMENT",
+      "owner": "PHASE_F_F2 — bounded named compatibility-retirement step inside F2",
+      "phase_f_action_required": true,
+      "standalone_task_allowed": true,
+      "coupling_group": "F2_GROUP_C_E1E2_COMPATIBILITY_RETIREMENT",
+      "dependency_or_prerequisite": "SOFT_ARCHITECTURAL_ORDERING — see R08; VALIDATION_COUPLING with E1/E2 coverage equivalence; question requirements must be distinguished from upstream plan suggestions before replacement",
+      "recommended_execution_order": 3,
+      "promotion_materiality": "PROMOTION_RELEVANT_MATERIAL",
+      "promotion_materiality_reason": "Part of the E1/E2 compatibility cluster; PE-LR1 §9 marks cluster retirement as promotion-relevant material.",
+      "d4_boundary": "RELATED_BUT_OUTSIDE_D4 — plan may contain D4-derived symbols; the augmentation helpers encode no new fixed answer path",
+      "e3_boundary": "Active in both modes; internal required_*/dataflow_locator_* claims are filtered from public answers",
+      "retirement_or_replacement_condition": "Retired with the cluster only after E1/E2 question-derived coverage establishes the semantic replacement; plan-derived suggestions must not become decomposition ground truth.",
+      "evidence": [
+        "src/panda_agent/qa.py:106,1772,1799 verified at HEAD a2920d9",
+        "evaluation/PE_LR1_PHASE_E_PROMOTION_BOUNDARY_RECONCILIATION.md §9",
+        "evaluation/f1_residual_benchmark_dependency_inventory.json finding F1-R11"
+      ],
+      "notes": "No new fixed answer path is encoded by the helpers; retirement is part of the single cluster step."
+    },
+    {
+      "id": "F1-R12",
+      "current_class": "BESPOKE_SUFFICIENCY_OR_COMPLETENESS",
+      "current_code_surface": "src/panda_agent/qa.py sufficiency routing 1091-1106 and _targeted_retrieve 1145; coexists with the E3 missing_point_retrieve node at 1094",
+      "current_status_at_HEAD": "PRESENT_VERIFIED",
+      "final_pf_lr1_disposition": "E3_RECONCILED_NO_STANDALONE_ACTION",
+      "owner": "E3_LIFECYCLE_RECONCILED — interaction boundary only; no Phase-F standalone owner",
+      "phase_f_action_required": false,
+      "standalone_task_allowed": false,
+      "coupling_group": "E3_INTERACTION_BOUNDARY",
+      "dependency_or_prerequisite": "NO_DEPENDENCY",
+      "recommended_execution_order": null,
+      "promotion_materiality": "NOT_APPLICABLE",
+      "promotion_materiality_reason": "E3-LR1 §8 reconciled R12 as a non-blocker with justified coexistence; no Phase-F cleanup task exists for it and none may be created from this reconciliation.",
+      "d4_boundary": "NONE",
+      "e3_boundary": "GOVERNED_BY_E3_LR1_§8 — pre-answer sufficiency targeting and post-verify missing-point retrieval operate on different failure information and coexist by design. R12 may only be revisited as an interaction boundary if a broader future Phase-F production change materially modifies the pre-answer retrieval/sufficiency path; such a change must assess E3 interaction within its own broader authorized validation, and the focused E3 validation prescribed by the authoritative E3 lifecycle artifact (E3-LR1 §9 cites the 49 focused E3 tests) applies to shared-path changes.",
+      "retirement_or_replacement_condition": "None required — reconciled by E3-LR1; not an outstanding F2 or F3 cleanup item and not a reason to reopen E3.",
+      "evidence": [
+        "src/panda_agent/qa.py:1091-1106,1145 verified at HEAD a2920d9 (sufficiency routing and E3 seam coexist)",
+        "evaluation/E3_LR1_POST_A2_LIFECYCLE_DECISION.md §8 (F1-R12 boundary decision)",
+        "docs/EVALUATION_STATUS.md E3-LR1 closeout"
+      ],
+      "notes": "Mandatory disposition from PF-LR1 review: not ORDINARY_CLEANUP, not outstanding F2/F3 cleanup, not an E3 reopening reason."
+    },
+    {
+      "id": "F1-R13",
+      "current_class": "BESPOKE_SUFFICIENCY_OR_COMPLETENESS",
+      "current_code_surface": "src/panda_agent/qa.py deterministically_supported_claims set (1911) and support overrides (2001-2067), token whitelist at 2053 (createLmdFitData, fillData, and other names)",
+      "current_status_at_HEAD": "PRESENT_VERIFIED",
+      "final_pf_lr1_disposition": "F2_CORE_BEHAVIORAL_CLEANUP",
+      "owner": "PHASE_F_F2",
+      "phase_f_action_required": true,
+      "standalone_task_allowed": true,
+      "coupling_group": "F2_GROUP_A_VERIFIER_SUPPORT_SEMANTICS",
+      "dependency_or_prerequisite": "NO_DEPENDENCY — independently implementable; recommended first in F2 for semantic and causal clarity, not because any other F2 surface has a hard implementation dependency on it",
+      "recommended_execution_order": 1,
+      "promotion_materiality": "PROMOTION_RELEVANT_MATERIAL",
+      "promotion_materiality_reason": "Verifier/support semantics are explicitly named by PE-LR1 §6 as the primary promotion-relevant surface; R13 changes the semantics of what counts as verified/supported, the exact behavior implicated in the failed activation lineage.",
+      "d4_boundary": "NONE",
+      "e3_boundary": "No direct E3 seam; changes feed the unresolved default-promotion failure surface",
+      "retirement_or_replacement_condition": "Bespoke support overrides are generalized to verifier-support semantics consistent with the evidence-claim relationship (identifier/path matching is not semantic entailment); citation/version integrity checks are preserved; the token whitelist is either justified generically or removed.",
+      "evidence": [
+        "src/panda_agent/qa.py:1911,2001-2067,2053 verified at HEAD a2920d9",
+        "evaluation/PE_LR1_PHASE_E_PROMOTION_BOUNDARY_RECONCILIATION.md §6/§10",
+        "evaluation/f1_residual_benchmark_dependency_inventory.json finding F1-R13"
+      ],
+      "notes": "Strongest candidate for the first future bounded Phase-F production task; recommended, NOT AUTHORIZED by PF-LR1."
+    },
+    {
+      "id": "F1-R14",
+      "current_class": "BENCHMARK_SHAPED_COMPATIBILITY_LAYER",
+      "current_code_surface": "src/panda_agent/retrieval.py:678 select_final_evidence (two-pass hard budget, mandatory exact-symbol exemption, required-type backfill); production call at 1977",
+      "current_status_at_HEAD": "PRESENT_VERIFIED",
+      "final_pf_lr1_disposition": "PHASE_F_SHARED_BOUNDARY_REVIEW",
+      "owner": "PHASE_F — shared evidence-selection boundary review; no implementation task",
+      "phase_f_action_required": false,
+      "standalone_task_allowed": false,
+      "coupling_group": "E3_SHARED_SELECTION_BOUNDARY",
+      "dependency_or_prerequisite": "NO_DEPENDENCY — no implementation task is created; VALIDATION_COUPLING applies to any future change of shared selection semantics: E3-LR1 §9 requires at minimum the focused E3 validation prescribed by the authoritative E3 lifecycle artifact (cited there as the 49 focused E3 tests), and renewed scientific validation only if reconsideration semantics change materially",
+      "recommended_execution_order": 4,
+      "promotion_materiality": "POTENTIALLY_MATERIAL_WHEN_COUPLED",
+      "promotion_materiality_reason": "The no-current-change disposition itself has no materiality; a material change to shared evidence-selection semantics is named by PE-LR1 §6/§10 as potentially satisfying the promotion-reconsideration trigger.",
+      "d4_boundary": "RELATED_BUT_OUTSIDE_D4 — this row is the generic selection policy, not D4 locator values",
+      "e3_boundary": "GOVERNED_BY_E3_LR1_§9 — E3 global reconsideration deliberately reuses select_final_evidence; E3 closure is not blocked and E3 is not reopened",
+      "retirement_or_replacement_condition": "current_implementation_action = NO_CHANGE_CURRENTLY_JUSTIFIED. C7 retained CURRENT_SELECTOR as production-authoritative and no present defect justifies modification. A future implementation becomes justified only on an observed defect in selection semantics or a promotion/release-boundary need, with E3-boundary-aware focused validation.",
+      "evidence": [
+        "src/panda_agent/retrieval.py:678-700,1977,2030 verified at HEAD a2920d9",
+        "docs/EVALUATION_STATUS.md C7-A4 closeout (CURRENT_SELECTOR retained production-authoritative)",
+        "evaluation/E3_LR1_POST_A2_LIFECYCLE_DECISION.md §9",
+        "docs/GENERALIZATION_ROADMAP.md C7 deferred coverage/ranking outcome"
+      ],
+      "notes": "No production task is manufactured for R14 solely because it exists in F1."
+    },
+    {
+      "id": "F1-R15",
+      "current_class": "HOLD_UNCERTAIN_PROVENANCE",
+      "current_code_surface": "src/panda_agent/retrieval.py:1524 _workflow, 1552 _graph curated object fallback",
+      "current_status_at_HEAD": "PRESENT_VERIFIED",
+      "final_pf_lr1_disposition": "HOLD_UNCERTAIN_PROVENANCE",
+      "owner": "HOLD",
+      "phase_f_action_required": false,
+      "standalone_task_allowed": false,
+      "coupling_group": "NONE",
+      "dependency_or_prerequisite": "NO_DEPENDENCY",
+      "recommended_execution_order": null,
+      "promotion_materiality": "NOT_APPLICABLE",
+      "promotion_materiality_reason": "No Phase-F action; provenance uncertainty is unresolved.",
+      "d4_boundary": "NONE",
+      "e3_boundary": "Relevance/ownership review at the retrieval/E3 boundary remains HOLD per F1",
+      "retirement_or_replacement_condition": "Revisited only if relevance/ownership evidence at the retrieval/E3 boundary resolves the fallback's status.",
+      "evidence": [
+        "src/panda_agent/retrieval.py:1524,1552 verified at HEAD a2920d9",
+        "evaluation/f1_residual_benchmark_dependency_inventory.json finding F1-R15 (provenance UNKNOWN)"
+      ],
+      "notes": "Sparse-corpus fallback may be legitimate; not classified as a fixed exact-object shortcut."
+    },
+    {
+      "id": "F1-R16",
+      "current_class": "GENERIC_LEGITIMATE_MECHANISM",
+      "current_code_surface": "src/panda_agent/qa.py:1495 _answerability_guard; query-grounded refusal bases; qualified unknown-API catalog lookup",
+      "current_status_at_HEAD": "PRESENT_VERIFIED",
+      "final_pf_lr1_disposition": "KEEP_GENERIC",
+      "owner": "RETAINED_PRODUCTION_MECHANISM",
+      "phase_f_action_required": false,
+      "standalone_task_allowed": false,
+      "coupling_group": "R04_DESIGN_FOUNDATION",
+      "dependency_or_prerequisite": "NO_DEPENDENCY — design relationship to R04: future R04 generalization can build on the qualified-API catalog lookup and query-grounded refusal bases, extending bare-class coverage; that is a design foundation, not a hard prerequisite",
+      "recommended_execution_order": null,
+      "promotion_materiality": "NOT_APPLICABLE",
+      "promotion_materiality_reason": "Retained generic mechanism; no change contemplated.",
+      "d4_boundary": "NONE",
+      "e3_boundary": "NONE",
+      "retirement_or_replacement_condition": "Not applicable — permanent generic mechanism; must not be removed in pursuit of zero residuals; catalog coverage limitations do not make it benchmark debt.",
+      "evidence": [
+        "src/panda_agent/qa.py:1495 verified at HEAD a2920d9",
+        "evaluation/f1_residual_benchmark_dependency_inventory.json finding F1-R16"
+      ],
+      "notes": "Current generic guard checks qualified APIs, not every bare class; that gap belongs to R04's work, not to a defect in R16."
+    },
+    {
+      "id": "F1-R17",
+      "current_class": "GENERIC_LEGITIMATE_MECHANISM",
+      "current_code_surface": "src/panda_agent/qa.py runtime question objective (question_core, 65/76), citation eligibility (79), claim/evidence ID/version/locator integrity, internal claim filtering, supported-claim rendering",
+      "current_status_at_HEAD": "PRESENT_VERIFIED",
+      "final_pf_lr1_disposition": "KEEP_GENERIC",
+      "owner": "RETAINED_PRODUCTION_MECHANISM",
+      "phase_f_action_required": false,
+      "standalone_task_allowed": false,
+      "coupling_group": "F2_PRESERVATION_BOUNDARY",
+      "dependency_or_prerequisite": "NO_DEPENDENCY",
+      "recommended_execution_order": null,
+      "promotion_materiality": "NOT_APPLICABLE",
+      "promotion_materiality_reason": "Retained generic mechanism; all F2 work must preserve these integrity boundaries.",
+      "d4_boundary": "NONE",
+      "e3_boundary": "NONE",
+      "retirement_or_replacement_condition": "Not applicable — integrity checks are preserved by all F2 groups; E1/E2 may intentionally replace the single runtime point with question-derived points only under separate authorization.",
+      "evidence": [
+        "src/panda_agent/qa.py:65,76,79 verified at HEAD a2920d9",
+        "evaluation/f1_residual_benchmark_dependency_inventory.json finding F1-R17"
+      ],
+      "notes": "Distinct from R13 semantic support overrides; internal scope claims with a fixed audit date are filtered before public output."
+    },
+    {
+      "id": "F1-R18",
+      "current_class": "DOMAIN_KNOWLEDGE_OR_ROUTING",
+      "current_code_surface": "src/panda_agent/retrieval.py deterministic routing / domain scopes; accepted versioned aliases (resolved_aliases, knowledge_aliases review_status='accepted' at 1010-1015); configs/aliases.yaml",
+      "current_status_at_HEAD": "PRESENT_VERIFIED",
+      "final_pf_lr1_disposition": "KEEP_DOMAIN",
+      "owner": "RETAINED_PRODUCTION_MECHANISM",
+      "phase_f_action_required": false,
+      "standalone_task_allowed": false,
+      "coupling_group": "NONE",
+      "dependency_or_prerequisite": "NO_DEPENDENCY",
+      "recommended_execution_order": null,
+      "promotion_materiality": "NOT_APPLICABLE",
+      "promotion_materiality_reason": "Domain knowledge/routing is not benchmark contamination; no change contemplated.",
+      "d4_boundary": "NONE — D4 expansion injection is separately excluded as R20",
+      "e3_boundary": "NONE",
+      "retirement_or_replacement_condition": "Not applicable — legitimate terminology, aliases, normalization, and domain routing are preserved by roadmap principle.",
+      "evidence": [
+        "src/panda_agent/retrieval.py:1010-1015 verified at HEAD a2920d9",
+        "configs/aliases.yaml accepted aliases with reviewed corpus provenance",
+        "evaluation/f1_residual_benchmark_dependency_inventory.json finding F1-R18"
+      ],
+      "notes": "Alias provenance is recorded in configuration; corpus materialization was not revalidated (F1 limitation, unchanged)."
+    },
+    {
+      "id": "F1-R19",
+      "current_class": "DOMAIN_KNOWLEDGE_OR_ROUTING",
+      "current_code_surface": "src/panda_agent/retrieval.py locked source taxonomy / per-paper diversification (paper_ids at 1481; required paper branch 1478-1484)",
+      "current_status_at_HEAD": "PRESENT_VERIFIED",
+      "final_pf_lr1_disposition": "KEEP_DOMAIN",
+      "owner": "RETAINED_PRODUCTION_MECHANISM",
+      "phase_f_action_required": false,
+      "standalone_task_allowed": false,
+      "coupling_group": "NONE",
+      "dependency_or_prerequisite": "NO_DEPENDENCY",
+      "recommended_execution_order": null,
+      "promotion_materiality": "NOT_APPLICABLE",
+      "promotion_materiality_reason": "Source identity and diversification are domain mechanisms, not answer-location shortcuts; no change contemplated.",
+      "d4_boundary": "NONE — separate source universe from R01's requirement policy and R03/D4 fixed hints",
+      "e3_boundary": "NONE",
+      "retirement_or_replacement_condition": "Not applicable — locked corpus/source identity and generic per-paper diversification are retained; paper IDs alone do not specify answer pages.",
+      "evidence": [
+        "src/panda_agent/retrieval.py:1478-1484 verified at HEAD a2920d9",
+        "evaluation/f1_residual_benchmark_dependency_inventory.json finding F1-R19"
+      ],
+      "notes": "Hinted pages are not reinventoried here; that remains D4-side where applicable."
+    },
+    {
+      "id": "F1-R20",
+      "current_class": "D4_OWNED_EXCLUDED",
+      "current_code_surface": "src/panda_agent/retrieval.py:1022 expansion consumption (select_matching_query_expansions); configs/query_expansions.yaml active structured replacements",
+      "current_status_at_HEAD": "PRESENT_VERIFIED",
+      "final_pf_lr1_disposition": "D4_OWNED_EXCLUDED",
+      "owner": "D4 — paused lifecycle owner",
+      "phase_f_action_required": false,
+      "standalone_task_allowed": false,
+      "coupling_group": "NONE",
+      "dependency_or_prerequisite": "NO_DEPENDENCY",
+      "recommended_execution_order": null,
+      "promotion_materiality": "NOT_APPLICABLE",
+      "promotion_materiality_reason": "D4-owned work is excluded from Phase F; no Phase-F action exists.",
+      "d4_boundary": "D4_OWNED — expansion rule contributions and active structured migrations (event_poca_handoff, restgas_profile_workflow, effective_acceptance_pipeline, root_macro_usage, model_factory_theory rule-local) remain D4-owned; confirmed HOLDs (DPM1D, DPM2D, pflueger_2017 [51,57,65]) are D4-side; broader D4 inventory reconciliation is pending and D4 overall completion is UNDECIDED",
+      "e3_boundary": "NONE",
+      "retirement_or_replacement_condition": "Not applicable in Phase F — D4 is not reopened and no D4-A11 is created.",
+      "evidence": [
+        "configs/query_expansions.yaml verified at HEAD a2920d9 (model_factory_theory symbols DPM1D/DPM2D only; structured_replacement active for event_poca_handoff/restgas_profile_workflow)",
+        "docs/EVALUATION_STATUS.md Current D4 production state and D4 checkpoints",
+        "evaluation/f1_residual_benchmark_dependency_inventory.json finding F1-R20"
+      ],
+      "notes": "Aggregate exclusion, not a per-rule inventory; ownership decided by implementation origin and lifecycle ownership."
+    },
+    {
+      "id": "F1-R21",
+      "current_class": "EVALUATION_ONLY_NON_PRODUCTION",
+      "current_code_surface": "src/panda_agent/evaluation_runner.py:875 _execute_evaluation_case; called at 1576; only case.query enters production QA",
+      "current_status_at_HEAD": "PRESENT_VERIFIED",
+      "final_pf_lr1_disposition": "EVALUATION_ONLY_EXCLUDED",
+      "owner": "EVALUATION_INFRASTRUCTURE",
+      "phase_f_action_required": false,
+      "standalone_task_allowed": false,
+      "coupling_group": "NONE",
+      "dependency_or_prerequisite": "NO_DEPENDENCY",
+      "recommended_execution_order": null,
+      "promotion_materiality": "NOT_APPLICABLE",
+      "promotion_materiality_reason": "Evaluation-only behavior is not production runtime cleanup.",
+      "d4_boundary": "NONE",
+      "e3_boundary": "NONE",
+      "retirement_or_replacement_condition": "Not applicable — external Gold/judge metrics and protected rubric logic stay outside production input.",
+      "evidence": [
+        "src/panda_agent/evaluation_runner.py:875,1576 verified at HEAD a2920d9",
+        "evaluation/f1_residual_benchmark_dependency_inventory.json finding F1-R21"
+      ],
+      "notes": "Shared storage of judge prompts in prompts.py does not make them production-reachable (F1 finding, unchanged)."
+    }
+  ],
+  "f2_scope": {
+    "status": "NOT_STARTED / UNEXECUTED",
+    "owner": "PHASE_F",
+    "groups": [
+      {
+        "group": "A",
+        "name": "verifier-support semantics",
+        "items": ["F1-R13"],
+        "semantic_invariant_changed": "Which claims may bypass semantic unsupported-claim review as deterministically supported (identifier/path matching, code-source membership, comparison wording, explicit token whitelist).",
+        "preserved_behavior": "Citation/version/locator integrity checks, ordinary unsupported-claim detection, refusal semantics, public DTO and prompt invariance.",
+        "replacement_or_retirement_condition": "Support determination becomes consistent with the evidence-claim relationship rather than identifier/path literals; the token whitelist is justified generically or removed.",
+        "likely_future_validation": "T0 verifier fixtures and focused deterministic verifier tests; targeted supported/unsupported-claim checks; the focused E3 validation prescribed by the authoritative E3 lifecycle artifact applies if shared verify paths change.",
+        "promotion_materiality": "PROMOTION_RELEVANT_MATERIAL",
+        "interactions": "E2 claim-to-evidence accountability; E3 second-verify retained-support view (mode-gated); feeds the unresolved default-promotion failure surface."
+      },
+      {
+        "group": "B",
+        "name": "deterministic completeness semantics",
+        "items": ["F1-R10"],
+        "semantic_invariant_changed": "The deterministic missing-requirement predicate that currently requires a hard-coded pointer symbol and pointer-syntax wording.",
+        "preserved_behavior": "Generic completeness obligations over live evidence, one bounded revision, salvage of supported claims, honest incomplete/refusal outcomes.",
+        "replacement_or_retirement_condition": "The symbol-specific predicate is generalized to question-grounded completeness semantics without translating keyword checks into Gold-shaped decomposition points.",
+        "likely_future_validation": "T0 plus regression-protected requirement tests.",
+        "promotion_materiality": "PROMOTION_RELEVANT_MATERIAL",
+        "interactions": "Hosted inside the R09 requirement machinery; E1/E2 must remain the source of any future question-derived coverage semantics."
+      },
+      {
+        "group": "C",
+        "name": "E1/E2 compatibility retirement",
+        "items": ["F1-R08", "F1-R09", "F1-R11"],
+        "semantic_invariant_changed": "The legacy generation/review/revision requirement contract: obligation derivation, named-requirement evidence enforcement, planned-locator/dataflow augmentation.",
+        "preserved_behavior": "Evidence-backed answering, citation integrity, internal claim filtering, bounded revision, E1/E2 runtime semantics, public DTO invariance.",
+        "replacement_or_retirement_condition": "Retirement requires established coverage equivalence with the E1/E2 claim-to-answer-point-to-evidence architecture; question requirements are distinguished from upstream plan suggestions; never blanket deletion.",
+        "likely_future_validation": "Cluster-level focused deterministic tests plus E1/E2 seam tests; any prospective scientific validation only under separate authorization.",
+        "promotion_materiality": "PROMOTION_RELEVANT_MATERIAL",
+        "interactions": "runtime_e1_v2 is a coupled mode (E1 decomposition + E2 coverage semantics + E3 eligibility); E1/E2 validation ran with this layer active; handled as one bounded named step inside F2, not a new top-level lifecycle phase."
+      },
+      {
+        "group": "D",
+        "name": "premise/refusal generalization",
+        "items": ["F1-R04"],
+        "semantic_invariant_changed": "The exact case-specific negative-control refusal path and its fixed response locator.",
+        "preserved_behavior": "Generic refusal correctness, evidence-grounded refusal bases, safety boundaries (future-runtime impossibility, same-domain formal-proof sufficiency, deleted-runtime impossibility).",
+        "replacement_or_retirement_condition": "Exact negative control is replaced by generic class/premise handling plus evidence-grounded refusal, building on R16's generic foundation; behavior is never merely deleted.",
+        "likely_future_validation": "T0 refusal fixtures including bare-class and premise-mismatch sentinels.",
+        "promotion_materiality": "PROMOTION_RELEVANT_MATERIAL",
+        "interactions": "Refusal can enter pre-answer sufficiency routing; R05/R06 presentation cleanup coordinates with this group; no E3 reopening."
+      },
+      {
+        "group": "E",
+        "name": "semantic source obligations",
+        "items": ["F1-R01"],
+        "semantic_invariant_changed": "Fixed intent-to-required-source mappings that drive plan requirements, retrieval, selection, and sufficiency.",
+        "preserved_behavior": "Safety behavior including version-conflict rejection and honest sufficiency/refusal outcomes.",
+        "replacement_or_retirement_condition": "Mappings are replaced by question-grounded semantic source-obligation logic.",
+        "likely_future_validation": "T0 policy/config tests plus sufficiency-focused checks.",
+        "promotion_materiality": "POTENTIALLY_MATERIAL_WHEN_COUPLED",
+        "interactions": "Sufficiency/refusal outcomes; no direct E3 seam; reassess materiality within the change's own validation if behavior materially alters the failure surface."
+      }
+    ],
+    "excluded_from_f2": [
+      "F1-R12 is not an F2 task (E3_RECONCILED_NO_STANDALONE_ACTION).",
+      "F1-R14 remains outside mandatory modification; NO_CHANGE_CURRENTLY_JUSTIFIED unless a present defect is evidenced."
+    ]
+  },
+  "compatibility_retirement": {
+    "items": ["F1-R08", "F1-R09", "F1-R11"],
+    "owner": "PHASE_F_F2",
+    "structure": "BOUNDED_NAMED_STEP_INSIDE_F2",
+    "new_top_level_phase_created": false,
+    "condition": "Coverage-equivalence / semantic replacement by the E1/E2 architecture; cluster is retired as one coherent unit.",
+    "rationale": "The three items form one mechanism family (derive obligations, enforce over evidence, augment locators); splitting them or creating a separate lifecycle node would add process overhead without causal gain."
+  },
+  "f3_scope": {
+    "status": "NOT_STARTED / UNEXECUTED",
+    "items": ["F1-R03", "F1-R05", "F1-R06"],
+    "package": "BOUNDED_FIXED_LOCATOR_FALLBACK_CLEANUP",
+    "d4_boundary": {
+      "d4_owns": [
+        "YAML query-expansion rule inventory (54 rules) and its locator-retirement pattern",
+        "Five active production migrations: event_poca_handoff and restgas_profile_workflow (structured replacements), effective_acceptance_pipeline and root_macro_usage (validated locator retirements), model_factory_theory rule-local retirement",
+        "Confirmed HOLDs: model/PndLmdDPMAngModel1D.cxx, model/PndLmdDPMAngModel2D.cxx, pflueger_2017 [51,57,65]",
+        "F1-R20 aggregate: expansion consumption and active structured replacement"
+      ],
+      "phase_f_owns": [
+        "F1-R03: independent code origin in Retriever.analyze (retrieval.py:1147-1149); the D4 rule reconstructed_profile_to_acceptance shares page values but is unmigrated (NEEDS_EVIDENCE)",
+        "F1-R05: independent _finalize header fallback (qa.py:2560); no D4 rule supplies a replacement",
+        "F1-R06: independent _finalize locator/wording (qa.py:2592-2610); the active event_poca_handoff structured replacement covers the YAML rule contribution, not the finalizer"
+      ],
+      "ownership_rationale": "Ownership is decided by implementation origin, owning runtime layer, existing structured replacement, and lifecycle ownership — not by matching filenames, pages, macros, symbols, or literals. R20 is D4-owned because it IS the D4 expansion-consumption mechanism and its migrations; R03/R05/R06 are Phase-F-owned because their code origins live in retrieval.py/qa.py production branches outside the D4 rule inventory, and no D4 migration has superseded those branches.",
+      "d4_not_reopened": true,
+      "d4_a11_created": false,
+      "superseded_by_d4": "The original F3 goal of incremental phrase-to-answer-location retirement as a pattern was implemented by D4 for YAML query-expansion locators; that portion of F3 closes as superseded without new implementation.",
+      "coordination_rule": "Shared literals between R03 and D4 rules are coordinated, never globally deleted; no D4 rule or page removal is proposed here."
+    }
+  },
+  "e3_reconciliation": {
+    "r12": {
+      "final_pf_lr1_disposition": "E3_RECONCILED_NO_STANDALONE_ACTION",
+      "phase_f_action_required": false,
+      "standalone_task_allowed": false,
+      "promotion_materiality": "NOT_APPLICABLE",
+      "condition": "E3-LR1 §8 reconciled R12 as a non-blocker with justified coexistence. Revisitable only as an interaction boundary if a broader future Phase-F production change materially modifies the pre-answer retrieval/sufficiency path; that change must assess E3 interaction within its own broader authorized validation, with the focused E3 validation prescribed by the authoritative E3 lifecycle artifact."
+    },
+    "r14": {
+      "final_pf_lr1_disposition": "PHASE_F_SHARED_BOUNDARY_REVIEW",
+      "current_implementation_action": "NO_CHANGE_CURRENTLY_JUSTIFIED",
+      "phase_f_action_required": false,
+      "standalone_task_allowed": false,
+      "promotion_materiality": "POTENTIALLY_MATERIAL_WHEN_COUPLED",
+      "condition": "C7 retained CURRENT_SELECTOR production-authoritative; no present defect justifies modification; E3-LR1 §9 directly governs the boundary (E3 reuses select_final_evidence). Any future shared-selection semantic change requires E3-boundary-aware focused validation — at minimum the focused E3 validation prescribed by the authoritative E3 lifecycle artifact (E3-LR1 §9 cites the 49 focused E3 tests) — and renewed scientific validation only if reconsideration semantics change materially. No production task is manufactured for R14 solely because it exists in F1."
+    },
+    "e3_reopened": false
+  },
+  "dependency_summary": {
+    "independent_residuals": ["F1-R01", "F1-R03", "F1-R04", "F1-R13"],
+    "coupled_residuals": {
+      "r13_r10": "SOFT_ARCHITECTURAL_ORDERING only (RECOMMENDED_SEMANTIC_SEQUENCING); independently implementable; no hard prerequisite, code dependency, or dataflow dependency",
+      "r08_r09_r11": "one coherent cluster; retired as a unit",
+      "r04_r05_r06": "finalize refusal/presentation surface; R05/R06 cleanup follows R04 generalization",
+      "r10_vs_cluster": "R10 is an independent narrow repair; must not be collapsed into the cluster retirement"
+    },
+    "same_owning_layer_groups": {
+      "qa_verifier_completeness": ["F1-R13", "F1-R10", "F1-R08", "F1-R09", "F1-R11"],
+      "qa_refusal_finalize": ["F1-R04", "F1-R05", "F1-R06"],
+      "retrieval_policy": ["F1-R01", "F1-R03", "F1-R12", "F1-R14"]
+    },
+    "must_remain_separate": [
+      "F1-R10 vs F1-R08/R09/R11 (narrow predicate repair vs wholesale retirement)",
+      "F1-R04 vs F1-R05/R06 (F2 premise/refusal generalization vs F3 presentation cleanup)",
+      "F1-R03 vs D4 rule reconstructed_profile_to_acceptance (same page values, different code origins)",
+      "F1-R13 vs F1-R16/R17 (semantic support overrides vs generic citation integrity)"
+    ],
+    "d4_overlapping_items": ["F1-R03", "F1-R04", "F1-R06", "F1-R11", "F1-R20"]
+  },
+  "execution_order": [
+    {"order": 1, "item": "F1-R13", "dependency_type": "NO_DEPENDENCY", "rationale": "Verifier-support semantics are the input end of the QA behavior sequence and the primary promotion-relevant surface; recommended first for semantic and causal clarity."},
+    {"order": 2, "item": "F1-R10", "dependency_type": "SOFT_ARCHITECTURAL_ORDERING", "rationale": "Independently implementable; R13-first is recommended semantic sequencing for architectural clarity, causal isolation, and easier validation, not a hard prerequisite."},
+    {"order": 3, "item": "F1-R08/F1-R09/F1-R11", "dependency_type": "SOFT_ARCHITECTURAL_ORDERING + VALIDATION_COUPLING", "rationale": "Compatibility retirement is recommended after generic verifier/completeness semantics are stable; it requires established E1/E2 coverage equivalence regardless of ordering."},
+    {"order": 4, "item": "F1-R14", "dependency_type": "NO_DEPENDENCY", "rationale": "Boundary review only; NO_CHANGE_CURRENTLY_JUSTIFIED, so this step is conditional and creates no implementation task unless a present defect or promotion-boundary need is evidenced."},
+    {"order": 5, "item": "F1-R04", "dependency_type": "NO_DEPENDENCY", "rationale": "Independent refusal layer; builds on R16 as a design foundation; establishes the generic refusal-basis selector that R05/R06 replacement conditions reference."},
+    {"order": 6, "item": "F1-R01", "dependency_type": "NO_DEPENDENCY", "rationale": "Largely independent config/policy cleanup; placed late in F2 for causal clarity."},
+    {"order": 7, "item": "F1-R03/F1-R05/F1-R06", "dependency_type": "SOFT_ARCHITECTURAL_ORDERING (R05/R06 after R04); R03 NO_DEPENDENCY", "rationale": "Fixed-locator/fallback package stays isolated from behavioral F2 work unless actual code coupling requires otherwise; D4 coordination is recorded."}
+  ],
+  "promotion_materiality_summary": {
+    "governing_authority": "PE-LR1 §6/§10 (DEFAULT_PROMOTION_RECONSIDERATION_TRIGGER)",
+    "PROMOTION_RELEVANT_MATERIAL": ["F1-R13", "F1-R10", "F1-R08", "F1-R09", "F1-R11", "F1-R04"],
+    "POTENTIALLY_MATERIAL_WHEN_COUPLED": ["F1-R01", "F1-R14"],
+    "LOCAL_NON_MATERIAL": ["F1-R03", "F1-R05", "F1-R06"],
+    "NOT_APPLICABLE": ["F1-R02", "F1-R07", "F1-R12", "F1-R15", "F1-R16", "F1-R17", "F1-R18", "F1-R19", "F1-R20", "F1-R21"],
+    "boundary": "A material Phase-F candidate may satisfy the PE-LR1 condition for reopening a separate promotion decision; it does not itself promote the experimental runtime, authorize a promotion evaluation, authorize protected evaluation, or make Phase F a blanket prerequisite for promotion. Promotion relevance is not promotion authorization."
+  },
+  "hold_keep_excluded": {
+    "HOLD_UNCERTAIN_PROVENANCE": ["F1-R02", "F1-R07", "F1-R15"],
+    "KEEP_GENERIC": ["F1-R16", "F1-R17"],
+    "KEEP_DOMAIN": ["F1-R18", "F1-R19"],
+    "D4_OWNED_EXCLUDED": ["F1-R20"],
+    "EVALUATION_ONLY_EXCLUDED": ["F1-R21"],
+    "E3_RECONCILED_NO_STANDALONE_ACTION": ["F1-R12"]
+  },
+  "next_task_recommendation": {
+    "task": "R13 bounded verifier-support semantic cleanup (F2 group A)",
+    "status": "RECOMMENDED / NOT AUTHORIZED",
+    "authorized": false,
+    "owner": "PHASE_F_F2",
+    "note": "PF-LR1 may recommend R13 as the first future bounded Phase-F production task; PF-LR1 does not authorize it."
+  },
+  "verification": {
+    "json_parse": "PASS",
+    "r01_r21_exactly_once": "PASS",
+    "markdown_json_disposition_consistency": "PASS",
+    "lifecycle_state_consistency": "PASS",
+    "r13_r10_not_hard_prerequisite": "PASS",
+    "r12_e3_reconciled_no_standalone_action": "PASS",
+    "r12_no_standalone_authorization": "PASS",
+    "production_code_unchanged": "PASS"
+  },
+  "cost": {
+    "analyzer_calls": 0,
+    "embedding_calls": 0,
+    "reranker_calls": 0,
+    "qa_calls": 0,
+    "runtime_review_calls": 0,
+    "revision_calls": 0,
+    "judge_calls": 0,
+    "total_model_calls": 0,
+    "token_usage": 0
+  },
+  "limitations": [
+    "Static reconciliation at HEAD a2920d9; no runtime behavior was executed or measured.",
+    "F1's provenance limits (initial-import history) are inherited unchanged for HOLD items.",
+    "D4 overall completion remains UNDECIDED and is not resolved by PF-LR1.",
+    "Execution order is a recommendation; each future task requires separate authorization and its own validation design.",
+    "The 49 focused E3 test count is cited from E3-LR1 §9 as recorded historical evidence, not re-derived or converted into a new standing invariant by PF-LR1."
+  ]
+}
