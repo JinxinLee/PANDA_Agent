@@ -101,9 +101,15 @@ sufficiency errors before answer generation, while E3 triggers on verified
 semantic answer-point omission after the first verify; their seams, triggers,
 and objectives are separate (`qa.py` sufficiency routing vs
 `_missing_point_retrieve`). Coexistence is not duplication. F1-R12 does not
-block E3 lifecycle closure; ownership remains Phase F / retrieval policy
-cleanup; changing it would not require renewed E3 scientific validation
-(though shared-node changes must rerun the focused E3 fake tests).
+block E3 lifecycle closure; ownership remains Phase F / retrieval-policy
+cleanup. A future change to pre-answer sufficiency routing /
+`_targeted_retrieve` does not automatically require a new dedicated E3
+validation. However, a material change to pre-answer retrieval semantics can
+change the initial evidence, answer, first-verify state,
+`missing_answer_point_ids`, and therefore E3 applicability; such a material
+change must assess E3 interaction within the broader authorized validation for
+that future change (the focused E3 deterministic tests must rerun in any
+case).
 
 ## 9. F1-R14 boundary decision (post-rerank promotion / `select_final_evidence`)
 

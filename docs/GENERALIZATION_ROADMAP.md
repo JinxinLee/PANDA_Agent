@@ -151,7 +151,7 @@ candidate), single global rerank on original question only, atomic bundle update
 boundary, narrow retained-support claims ledger, and invariant public DTO/prompts. Initial baseline (commit `2af8ac95`)
 verified with 189 passed, 9 subtests. Independent post-implementation review corrections (structured bounded eligible
 union reservation across passes and deterministic valid retained claim/evidence view in second verify) were incorporated
-and verified with deterministic fakes (196 passed, 9 subtests passed; 49 E3 tests). Separate final AGY review PASS; Codex accepted the bounded corrections after inspecting the source/test diffs. Zero scientific calls occurred. E3 is IN_PROGRESS with E3-A2 next and unauthorized.
+and verified with deterministic fakes (196 passed, 9 subtests passed; 49 E3 tests). Separate final AGY review PASS; Codex accepted the bounded corrections after inspecting the source/test diffs. Zero scientific calls occurred at E3-A1 closeout; the current E3 state is given by the E3-A2 and E3-LR1 entries below.
 
 E3-A2 completed INCONCLUSIVE (1/11 natural applicability; the single applicable pair was descriptive only). E3-LR1 subsequently reconciled the lifecycle with zero scientific calls: E3 closes as a bounded low-frequency fallback (SCIENTIFIC_RECOVERY_BENEFIT_UNRESOLVED); dedicated revalidation is not planned; future E3 evidence accumulates opportunistically in broader authorized evaluations.
 
