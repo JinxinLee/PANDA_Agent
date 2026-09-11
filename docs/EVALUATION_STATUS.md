@@ -67,7 +67,9 @@ PE-LR1 report: `evaluation/PE_LR1_PHASE_E_PROMOTION_BOUNDARY_RECONCILIATION.md`.
 PF-LR1 = COMPLETE / PASS / PHASE_F_SCOPE_RECONCILED_BOUNDED_CLEANUP_PLAN_ESTABLISHED.
 PF-LR1 report: `evaluation/PF_LR1_PHASE_F_SCOPE_RECONCILIATION.md`.
 F2-A1 = COMPLETE / PASS / GENERIC_VERIFIER_SUPPORT_SEMANTICS_ESTABLISHED.
-F2-A1 report: `evaluation/F2_A1_VERIFIER_SUPPORT_SEMANTIC_CLEANUP.md`.
+F2-A1 report: `evaluation/F2_A1_VERIFIER_SUPPORT_SEMANTIC_CLEANUP.md` (initial closeout corrected by F2-A1-R1).
+F2-A1-R1 = COMPLETE / PASS / WHOLE_CLAIM_SEMANTIC_BYPASS_REMOVED.
+F2-A1-R1 report: `evaluation/F2_A1_R1_VERIFIER_SUPPORT_SEMANTIC_ENTAILMENT_REPAIR.md`.
 Phase E = COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED.
 E2-A1 report: `evaluation/E2_A1_SHADOW_ANSWER_POINT_COVERAGE_CONTRACT.md`.
 C1 met all eight strict gates and the original pair09 atomicity sentinel. Per the
@@ -115,6 +117,8 @@ COMPLETE / PASS / PHASE_F_SCOPE_RECONCILED_BOUNDED_CLEANUP_PLAN_ESTABLISHED
 Latest completed Phase-F production cleanup:
 F2-A1
 COMPLETE / PASS / GENERIC_VERIFIER_SUPPORT_SEMANTICS_ESTABLISHED
+F2-A1-R1
+COMPLETE / PASS / WHOLE_CLAIM_SEMANTIC_BYPASS_REMOVED
 
 Latest accepted production action:
 D4-A10
@@ -130,7 +134,7 @@ MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD
 Current planning state:
 D4 = PAUSED / ROADMAP_RECONCILIATION
 D4 overall completion = UNDECIDED
-CURRENT_TASK = F2-A1 / COMPLETE / PASS / GENERIC_VERIFIER_SUPPORT_SEMANTICS_ESTABLISHED
+CURRENT_TASK = F2-A1-R1 / COMPLETE / PASS / WHOLE_CLAIM_SEMANTIC_BYPASS_REMOVED
 NEXT_TASK_RECOMMENDATION = F2-A2 — Deterministic Completeness Semantic Cleanup / RECOMMENDED / NOT AUTHORIZED
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 FOLLOWING_ARCHITECTURE_TASK = bounded Phase-F production cleanup per the PF-LR1 recommended order (F2-A2 next)
@@ -298,6 +302,36 @@ remains legacy_question_core; runtime_e1_v2 remains explicit-selection-only; def
 NEXT_TASK_RECOMMENDATION = F2-A2 — Deterministic Completeness Semantic Cleanup (PF-LR1 Group B / F1 residual R10)
 (RECOMMENDED / NOT AUTHORIZED).
 Report: `evaluation/F2_A1_VERIFIER_SUPPORT_SEMANTIC_CLEANUP.md`.
+
+## F2-A1-R1 verifier-support semantic entailment repair closeout
+
+COMPLETE / PASS / WHOLE_CLAIM_SEMANTIC_BYPASS_REMOVED. Corrective repair of F2-A1 at HEAD `32abb1c`; zero PANDA
+scientific/evaluation calls or tokens; zero protected-data access. Post-commit audit did not accept F2-A1's
+initial terminal PASS: generic lexical identifier/path/symbol coverage branches still marked whole claims as
+deterministically supported, causing an explicit semantic-review unsupported verdict to be ignored (citation/
+locator/identifier grounding is not whole-claim semantic entailment). Repair: deleted the
+`deterministically_supported_claims` set entirely — the scope-claim branch (unreachable: internal-claim filtering
+precedes it), the identifier-coverage branch, the path-coverage-over-code-repository branches, the multi-symbol
+coverage branch, and the unsupported-claim exemption in the verify loop. No live claim class has a fully
+structured whole-claim entailment contract, so the override was removed entirely rather than narrowed; no
+replacement whitelist was introduced. The semantic review's unsupported_claim_ids verdict is now always honored.
+Preserved unchanged: unsupported-identifier, wrong-code-version, and incomplete code/paper/web citation checks,
+internal-claim filtering, R10 (`_deterministic_missing_requirement_ids`, pointer predicate, zero diff),
+requirement logic, retrieval, reranking, evidence selection, public DTOs, prompts, mode selection, default
+routing, E3 trigger semantics, retained-support protections. Valid F2-A1 removals (token whitelist, comparison
+wording) remain removed; commit `32abb1c` preserved in history, original F2-A1 report carries a correction/
+supersession notice. Adversarial contracts T1-T6 (correct path + false semantics; correct symbols + false
+relationship; multiple identifiers + false predicate; legitimate supported claim still accepted; former
+whitelist/comparison regressions stay removed; integrity checks remain active) all pass.
+Verification: tests/unit/test_qa.py 58 passed + 2 subtests; authoritative focused E3 deterministic set (E3-LR1
+§9: 49 focused E3 tests) plus 42 neighboring E2-A1 shadow tests → 91 passed (deterministic regression check
+only; E3 lifecycle not reopened). F2-A1's final lifecycle state (GENERIC_VERIFIER_SUPPORT_SEMANTICS_ESTABLISHED)
+is achieved only after this repair. Normal default remains legacy_question_core; runtime_e1_v2 remains
+explicit-selection-only; default promotion remains deferred (D3); promotion relevance is not promotion
+authorization.
+NEXT_TASK_RECOMMENDATION = F2-A2 — Deterministic Completeness Semantic Cleanup (PF-LR1 Group B / F1 residual R10)
+(RECOMMENDED / NOT AUTHORIZED).
+Report: `evaluation/F2_A1_R1_VERIFIER_SUPPORT_SEMANTIC_ENTAILMENT_REPAIR.md`.
 
 ## Historical E3-A0 architecture contract closeout
 

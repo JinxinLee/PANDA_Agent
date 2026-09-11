@@ -1908,7 +1908,6 @@ class QAAgent:
                 continue
             claims.append(claim)
         claim_errors: dict[str, list[str]] = {}
-        deterministically_supported_claims: set[str] = set()
         claim_ids = [claim.get("claim_id") for claim in claims]
         if not claims:
             errors.append("no user-visible claims")
@@ -1968,37 +1967,6 @@ class QAAgent:
                 message = f"invalid evidence for {claim_id}"
                 errors.append(message)
                 claim_errors[claim_id].append(message)
-            # Scope claims are derived from the source-version and Sphinx
-            # snapshot metadata carried by the cited evidence.  Treat them as
-            # deterministically supported when those anchors match the plan;
-            # a semantic reviewer must not delete authoritative provenance.
-            if claim_id.startswith("scope_") and evidence_ids:
-                repo = claim_id.removeprefix("scope_")
-                expected_version = expected_code_versions.get(repo)
-                has_locked_repo = any(
-                    _claim_ev(evidence_id).get("source_id") == repo
-                    and _claim_ev(evidence_id).get("source_version_id") == expected_version
-                    for evidence_id in evidence_ids
-                )
-                mentions_sphinx = "sphinx" in str(claim.get("claim_text", "")).casefold()
-                has_locked_sphinx = any(
-                    "sphinx" in str(_claim_ev(evidence_id).get("source_id", "")).casefold()
-                    and bool((_claim_ev(evidence_id).get("locator") or {}).get("snapshot_date"))
-                    for evidence_id in evidence_ids
-                )
-                plan_version_is_explicit = bool(
-                    expected_version
-                    and expected_version in str(claim.get("claim_text", ""))
-                )
-                if (
-                    has_locked_repo and (not mentions_sphinx or has_locked_sphinx)
-                ) or (
-                    repo == "pandaroot"
-                    and mentions_sphinx
-                    and has_locked_sphinx
-                    and plan_version_is_explicit
-                ):
-                    deterministically_supported_claims.add(claim_id)
             cited_parts: list[str] = []
             for evidence_id in evidence_ids:
                 item = _claim_ev(evidence_id)
@@ -2015,61 +1983,6 @@ class QAAgent:
                     ]
                 )
             cited = " ".join(cited_parts)
-            identifier_tokens = []
-            for token in set(re.findall(r"[A-Za-z_][A-Za-z0-9_:./-]+", claim.get("claim_text", ""))):
-                token = token.rstrip(".")
-                is_path = (
-                    token.count("/") >= 2
-                    or token.startswith(("macro/", "src/", "data/", "docs/", "doc/", "model/", "fit/", "pgenerators/"))
-                    or token.endswith((".C", ".py", ".root", ".h", ".hpp", ".cpp", ".cxx", ".json", ".txt", ".yaml", ".yml"))
-                    or "::" in token
-                    or token.startswith("Pnd")
-                )
-                if is_path:
-                    identifier_tokens.append(token)
-            if identifier_tokens and all(token in cited for token in identifier_tokens):
-                deterministically_supported_claims.add(claim.get("claim_id"))
-            # Source-code claims can be faithful paraphrases of a complete
-            # excerpt even when Gemini's semantic review is conservative.  A
-            # cited source path plus an explicit code symbol in the cited text
-            # provides a deterministic provenance anchor for that claim.
-            code_sources = {"luminosityfit", "pandaroot", "restgas_determination"}
-            cited_source_ids = {
-                _claim_ev(evidence_id).get("source_id")
-                for evidence_id in evidence_ids
-                if evidence_id in evidence or (is_retained_unchanged and evidence_id in retained_evidence)
-            }
-            path_tokens = [
-                token
-                for token in identifier_tokens
-                if "/" in token or token.endswith((".C", ".cxx", ".cpp", ".h", ".hpp", ".py"))
-            ]
-            explicit_code_tokens = [
-                token
-                for token in set(re.findall(r"[A-Za-z_][A-Za-z0-9_:./-]+", claim.get("claim_text", "")))
-                if token.startswith("Pnd")
-                or "::" in token
-                or (token[:1].isupper() and len(token) > 3)
-            ]
-            if (
-                cited_source_ids & code_sources
-                and path_tokens
-                and all(token in cited for token in path_tokens)
-                and any(token in cited for token in explicit_code_tokens)
-            ):
-                deterministically_supported_claims.add(claim.get("claim_id"))
-            if (
-                cited_source_ids & code_sources
-                and len(explicit_code_tokens) >= 2
-                and all(token in cited for token in explicit_code_tokens)
-            ):
-                deterministically_supported_claims.add(claim.get("claim_id"))
-            if (
-                cited_source_ids & code_sources
-                and path_tokens
-                and all(token in cited for token in path_tokens)
-            ):
-                deterministically_supported_claims.add(claim.get("claim_id"))
             for evidence_id in evidence_ids:
                 item = _claim_ev(evidence_id)
                 if not item:
@@ -2187,8 +2100,6 @@ class QAAgent:
         )
         known_claim_ids = set(claim_ids)
         for claim_id in unsupported:
-            if not shadow and claim_id in deterministically_supported_claims:
-                continue
             message = f"unsupported claim {claim_id}" if claim_id in known_claim_ids else f"review returned unknown claim {claim_id}"
             errors.append(message)
             if claim_id in known_claim_ids:

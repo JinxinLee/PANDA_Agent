@@ -1,5 +1,16 @@
 # F2-A1 — Verifier-Support Semantic Cleanup
 
+> **CORRECTION / SUPERSESSION NOTICE (F2-A1-R1).** This report's initial
+> terminal `COMPLETE / PASS / GENERIC_VERIFIER_SUPPORT_SEMANTICS_ESTABLISHED`
+> closeout was subsequently found incomplete by an independent post-commit
+> audit: the generic lexical identifier/path/symbol coverage branches it
+> retained could still override a whole-claim semantic `unsupported` verdict.
+> That defect is repaired by `evaluation/F2_A1_R1_VERIFIER_SUPPORT_SEMANTIC_ENTAILMENT_REPAIR.md`
+> (F2-A1-R1 = `COMPLETE / PASS / WHOLE_CLAIM_SEMANTIC_BYPASS_REMOVED`), which is
+> the authoritative final lifecycle record for this surface. The whitelist and
+> comparison-wording removals described below remain valid. The narrative below
+> is preserved unchanged for historical transparency.
+
 Status: `COMPLETE / PASS / GENERIC_VERIFIER_SUPPORT_SEMANTICS_ESTABLISHED`
 Type: bounded production implementation + deterministic verification. Zero PANDA
 scientific/evaluation calls; zero protected-data access.

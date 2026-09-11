@@ -1648,8 +1648,11 @@ class UnsupportedReviewVertex(FakeVertex):
 
 
 class VerifierSupportSemanticTests(unittest.TestCase):
-    """F2-A1 contract: deterministic support comes from generic claim/evidence
-    semantics, never from benchmark token lists or case-shaped wording."""
+    """F2-A1/F2-A1-R1 contract: citation, locator, and identifier grounding are
+    deterministic integrity checks, not whole-claim semantic entailment.  Only
+    the semantic review decides whole-claim support; lexical coverage can never
+    override an unsupported verdict, and integrity checks stay independent of
+    that verdict."""
 
     def _verify_under_conservative_review(self, claims, bundle):
         agent = QAAgent(Path.cwd(), retriever=FakeRetriever(bundle), vertex=UnsupportedReviewVertex())
@@ -1659,7 +1662,8 @@ class VerifierSupportSemanticTests(unittest.TestCase):
             "draft": {"claims": claims},
         })
 
-    def test_generic_path_anchor_support_survives_conservative_review(self):
+    # T1 — correct path, unsupported semantics
+    def test_correct_path_with_unsupported_semantics_remains_unsupported(self):
         evidence = code_evidence(
             text="The reconstruction macro prepares the restgas profile steps.",
             path="macro/target/ana_dpm.C",
@@ -1667,12 +1671,65 @@ class VerifierSupportSemanticTests(unittest.TestCase):
         bundle = bundle_for(evidence)
         rejected = self._verify_under_conservative_review([{
             "claim_id": "c1",
-            "claim_text": "macro/target/ana_dpm.C prepares the restgas profile steps.",
+            "claim_text": "macro/target/ana_dpm.C proves that detector noise is exactly zero.",
             "evidence_ids": ["e1"],
             "answer_point_ids": ["question_core"],
         }], bundle)
-        self.assertNotIn("unsupported claim c1", rejected["errors"])
+        self.assertIn("unsupported claim c1", rejected["errors"])
 
+    # T2 — correct symbols, unsupported semantics
+    def test_correct_symbols_with_unsupported_relationship_remains_unsupported(self):
+        evidence = code_evidence(
+            text="class PndPidCorrelator {}; void PndPidCorrelator::Exec(Option_t* option);",
+            path="pid/PndPidCorrelator.h",
+        )
+        bundle = bundle_for(evidence)
+        rejected = self._verify_under_conservative_review([{
+            "claim_id": "c1",
+            "claim_text": "PndPidCorrelator::Exec destroys the accepted histogram data.",
+            "evidence_ids": ["e1"],
+            "answer_point_ids": ["question_core"],
+        }], bundle)
+        self.assertIn("unsupported claim c1", rejected["errors"])
+
+    # T3 — multiple correct identifiers joined by an unsupported predicate are
+    # still not entailment
+    def test_multiple_identifiers_with_false_predicate_remains_unsupported(self):
+        evidence = code_evidence(
+            text="PndLmdDataReader reads calibration entries; PndLmdTrackQ normalizes pointer syntax.",
+            path="data/PndLmdDataReader.cxx",
+        )
+        bundle = bundle_for(evidence)
+        rejected = self._verify_under_conservative_review([{
+            "claim_id": "c1",
+            "claim_text": "PndLmdDataReader forwards every entry to PndLmdTrackQ and deletes the raw output.",
+            "evidence_ids": ["e1"],
+            "answer_point_ids": ["question_core"],
+        }], bundle)
+        self.assertIn("unsupported claim c1", rejected["errors"])
+
+    # T4 — legitimate semantic support still succeeds
+    def test_legitimate_supported_claim_still_accepted(self):
+        evidence = code_evidence(
+            text="The reconstruction macro prepares the restgas profile steps.",
+            path="macro/target/ana_dpm.C",
+        )
+        bundle = bundle_for(evidence)
+        agent = QAAgent(Path.cwd(), retriever=FakeRetriever(bundle), vertex=FakeVertex())
+        accepted = agent._verify({
+            "question": "Explain this implementation.",
+            "bundle": bundle,
+            "draft": {"claims": [{
+                "claim_id": "c1",
+                "claim_text": "macro/target/ana_dpm.C prepares the restgas profile steps.",
+                "evidence_ids": ["e1"],
+                "answer_point_ids": ["question_core"],
+            }]},
+        })
+        self.assertNotIn("unsupported claim c1", accepted["errors"])
+        self.assertIn("c1", [claim["claim_id"] for claim in accepted["supported_claims"]])
+
+    # T5 — former F2-A1 removals stay removed
     def test_removed_token_whitelist_no_longer_grants_support(self):
         evidence = code_evidence(
             text="fillData and successfullyPassedFilters fill accepted histograms.",
@@ -1710,6 +1767,29 @@ class VerifierSupportSemanticTests(unittest.TestCase):
             "answer_point_ids": ["question_core"],
         }], bundle)
         self.assertIn("unsupported claim c1", rejected["errors"])
+
+    # T6 — deterministic integrity checks remain active and independent of the
+    # semantic verdict
+    def test_deterministic_integrity_checks_remain_active(self):
+        evidence = code_evidence(
+            source_id="luminosityfit",
+            text="The fit model composes acceptance components.",
+            path="model/PndLmdModelFactory.cxx",
+        )
+        bundle = bundle_for(evidence)
+        agent = QAAgent(Path.cwd(), retriever=FakeRetriever(bundle), vertex=FakeVertex())
+        checked = agent._verify({
+            "question": "Explain this implementation.",
+            "bundle": bundle,
+            "draft": {"claims": [{
+                "claim_id": "c1",
+                "claim_text": "PndLmdMissing::Symbol lives in model/PndLmdModelFactory.cxx.",
+                "evidence_ids": ["e1"],
+                "answer_point_ids": ["question_core"],
+            }]},
+        })
+        self.assertIn("wrong code version e1", checked["errors"])
+        self.assertIn("unsupported identifier PndLmdMissing::Symbol", checked["errors"])
 
 
 if __name__ == "__main__":
