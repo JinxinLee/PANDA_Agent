@@ -64,11 +64,14 @@ E3 = COMPLETE / BOUNDED_LOW_FREQUENCY_FALLBACK_IMPLEMENTED / SCIENTIFIC_RECOVERY
 E2-A3-R4 = NOT_STARTED / SUPERSEDED_BY_LIFECYCLE_SIMPLIFICATION.
 E2 DEFAULT PROMOTION = DEFERRED / ACTIVATION_ACCEPTANCE_NOT_MET.
 runtime_e1_v2 = VALIDATED_EXPERIMENTAL_PATH / EXPLICIT_SELECTION_ONLY.
-E2 DEFAULT-PROMOTION GATE REDESIGN = DEFERRED / REVISIT_AT_PHASE_E_PROMOTION_BOUNDARY.
+E2 DEFAULT-PROMOTION GATE REDESIGN = CLOSED / NO_IMMEDIATE_REVALIDATION_DEFINED / REOPEN_ONLY_FOR_MATERIAL_CANDIDATE_OR_RELEASE_BOUNDARY.
+DEFAULT_PROMOTION_RECONSIDERATION_TRIGGER = materially behavior-changing post-Phase-E candidate (normally Phase-F compatibility/benchmark-dependency cleanup: F1-R08/R09/R11, R13, R10, R14, R04; or another independently justified architecture change) OR an explicitly authorized release/acceptance candidate evaluation requiring the normal-default decision.
+PE-LR1 = COMPLETE / PASS / PHASE_E_CLOSED_PROMOTION_DEFERRED_UNTIL_MATERIAL_CANDIDATE.
+PE-LR1 report: `evaluation/PE_LR1_PHASE_E_PROMOTION_BOUNDARY_RECONCILIATION.md`.
 Reconciliation: `evaluation/E2_POST_A3_LIFECYCLE_RECONCILIATION.md`.
 E2-A1 report: `evaluation/E2_A1_SHADOW_ANSWER_POINT_COVERAGE_CONTRACT.md`.
 C1 met all eight strict gates and the original pair09 atomicity sentinel. Per the
-accepted closure decision, E1 is complete. E2-A2 passed targeted shadow validation. E2-A3 failed Q7; normal QA remains legacy. E3-A0 established the missing-point targeted retrieval contract; E3-A1 implemented the experimental mechanism under runtime_e1_v2; E3-A2 completed INCONCLUSIVE with insufficient natural applicability (1/11); E3-LR1 closed E3 as a bounded low-frequency fallback with standalone recovery benefit unresolved and no dedicated revalidation planned.
+accepted closure decision, E1 is complete. E2-A2 passed targeted shadow validation. E2-A3 failed Q7; normal QA remains legacy. E3-A0 established the missing-point targeted retrieval contract; E3-A1 implemented the experimental mechanism under runtime_e1_v2; E3-A2 completed INCONCLUSIVE with insufficient natural applicability (1/11); E3-LR1 closed E3 as a bounded low-frequency fallback with standalone recovery benefit unresolved and no dedicated revalidation planned. PE-LR1 closed Phase E at the promotion boundary: architecture complete, normal default remains `legacy_question_core`, promotion deferred until a material candidate change or an explicitly authorized release-boundary decision.
 Decision: `evaluation/E1_CLOSURE_SCOPE_REVIEW.md`.
 Report: `evaluation/E1_C1_REAL_STYLE_CONFIRMATION.md`.
 Preregistration: `2517b691245c38175222064e6ca546d06fd21e9a`.
@@ -96,7 +99,7 @@ Phase D:
 PAUSED / ROADMAP_RECONCILIATION
 
 Phase E:
-IN_PROGRESS / E3_FALLBACK_COMPLETE / PROMOTION_BOUNDARY_RECONCILIATION_NEXT
+COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED
 
 E1:
 COMPLETE / PASS / QUESTION_ONLY_SEMANTIC_ANSWER_POINT_DECOMPOSITION_VALIDATED
@@ -131,6 +134,9 @@ COMPLETE / PASS / POST_A2_LIFECYCLE_RECONCILED
 E3:
 COMPLETE / BOUNDED_LOW_FREQUENCY_FALLBACK_IMPLEMENTED / SCIENTIFIC_RECOVERY_BENEFIT_UNRESOLVED
 
+PE-LR1:
+COMPLETE / PASS / PHASE_E_CLOSED_PROMOTION_DEFERRED_UNTIL_MATERIAL_CANDIDATE
+
 Phase F:
 IN_PROGRESS / F1_COMPLETE
 
@@ -141,7 +147,7 @@ D4 overall completion:
 UNDECIDED
 
 Next task recommendation:
-Phase-E lifecycle / promotion-boundary reconciliation / NOT AUTHORIZED
+Phase-F scope reconciliation and F2 bounded benchmark-dependency cleanup planning / NOT AUTHORIZED
 
 Current task authorization:
 E3-A1 experimental missing-point targeted retrieval implementation is complete:
@@ -157,7 +163,7 @@ E3-A2 completed INCONCLUSIVE (1/11 natural applicability; the single applicable 
 
 No D4-A11 exists.
 No further D4 task is currently authorized.
-No further Phase-E task is currently authorized after E3-LR1; the Phase-E promotion-boundary reconciliation is recommended but NOT AUTHORIZED.
+Phase E is COMPLETE (closed by PE-LR1); no further Phase-E task exists. Phase-F scope reconciliation and F2 bounded benchmark-dependency cleanup planning is recommended but NOT AUTHORIZED.
 No further Phase-F task is currently authorized.
 
 ## Phase overview
@@ -174,8 +180,8 @@ No further Phase-F task is currently authorized.
 - **Phase D — Concept and entity knowledge abstraction:** `PAUSED / ROADMAP_RECONCILIATION`
   Structured domain concept/entity representation, bounded resolver authority, and generic evidence-link bridging established. Bounded query-expansion migrations are active in production, while broader residual scope remains unreconciled.
 
-- **Phase E — Answer generalization:** `IN_PROGRESS / E3_FALLBACK_COMPLETE / PROMOTION_BOUNDARY_RECONCILIATION_NEXT`
-  Dynamic question decomposition, answer-point coverage, claim-to-evidence mapping, and targeted completeness recovery. E1 validated (shadow scope), E2 core complete (default promotion deferred), E3 closed as a bounded low-frequency fallback with recovery benefit unresolved; the remaining Phase-E question is the promotion-boundary reconciliation.
+- **Phase E — Answer generalization:** `COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED`
+  Dynamic question decomposition, answer-point coverage, claim-to-evidence mapping, and targeted completeness recovery. E1 validated (shadow scope), E2 core complete, E3 closed as a bounded low-frequency fallback; PE-LR1 closed the phase at the promotion boundary with the normal default remaining `legacy_question_core` and promotion reconsideration gated on a material candidate change or an explicitly authorized release-boundary decision.
 
 - **Phase F — Benchmark dependency cleanup and final answering:** `IN_PROGRESS / F1_COMPLETE`
   F1 established the bounded non-D4 residual inventory without production cleanup. F2/F3 and later work remain unstarted; original F3 overlaps D4 and still requires scope reconciliation.
@@ -487,19 +493,22 @@ No D4-A11 is authorized. Detailed scientific and repair provenance remains in `e
 ## Phase E — Answer generalization
 
 Status:
-IN_PROGRESS / E3_FALLBACK_COMPLETE / PROMOTION_BOUNDARY_RECONCILIATION_NEXT
+COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED
 
-Phase E addresses answer synthesis, facet coverage, claim-to-evidence grounding, and targeted recovery of missing answer points.
-E2 core mechanism is complete; default promotion remains deferred. E3-A0 established the
+Phase E addressed answer synthesis, facet coverage, claim-to-evidence grounding, and targeted recovery of missing answer
+points. E2 core mechanism is complete; default promotion remains deferred. E3-A0 established the
 missing-point targeted retrieval architecture and dependency contract. E3-A1 implemented the
 experimental path through explicit runtime_e1_v2 execution without default promotion. E3-A2 completed
 INCONCLUSIVE (insufficient natural applicability); E3-LR1 closed E3 as a bounded low-frequency fallback with
-standalone recovery benefit unresolved. Normal legacy QA must
+standalone recovery benefit unresolved. PE-LR1 closed the phase at the promotion boundary: architecture complete,
+normal default remains `legacy_question_core`, promotion reconsideration is gated on
+DEFAULT_PROMOTION_RECONSIDERATION_TRIGGER (a materially behavior-changing post-Phase-E candidate — normally from
+Phase-F compatibility/benchmark-dependency cleanup — or an explicitly authorized release/acceptance candidate
+evaluation requiring the normal-default decision). Normal legacy QA must
 retain existing retrieval behavior; missing-point retrieval belongs only to the explicitly authorized
-experimental path. The remaining Phase-E question is the promotion-boundary reconciliation (whether, under
-what gates, and for which components runtime_e1_v2 or any Phase-E candidate ever becomes the default);
-E3's unresolved efficacy is one input to that boundary, not a blocker for holding it. No future cohort, judge
-structure, schema or threshold is active or frozen by E2-LR1 or E3-LR1.
+experimental path. No future cohort, judge
+structure, schema or threshold is active or frozen by E2-LR1, E3-LR1, or PE-LR1; the E2 gate-redesign deferral is
+closed.
 
 ### Architecture-level downstream requirements
 
@@ -522,7 +531,7 @@ structure, schema or threshold is active or frozen by E2-LR1 or E3-LR1.
 - **E1-R1 evidence:** `evaluation/E1_R1_SEMANTIC_ANSWER_POINT_CONTRACT_REPAIR.md`.
 - **Evidence:** `evaluation/e1_a1_dynamic_question_decomposition_contract.json`, `evaluation/E1_A1_DYNAMIC_QUESTION_DECOMPOSITION_CONTRACT.md`.
 - **E1-R2 outcome:** COMPLETE / PASS / TARGETED_PROSPECTIVE_SEMANTIC_ANSWER_POINT_REVALIDATION_PASSED. Human-approved fresh synthetic exploratory English cohort: 24/24 valid, semantic recall 54/54, precision 54/54, under/over 0, exact count 24/24, semantic-complete pairs 12/12, hidden prerequisites 0; all eight gates passed. Raw records were committed before judging. Preregistration `3d0d8ca650d159681fecec324a081d28e8e945eb`; raw freeze `a5275dfee6c4134f3ad790a5598ca0c0a51f1a58`. Report: `evaluation/E1_R2_SEMANTIC_ANSWER_POINT_REVALIDATION.md`; result: `evaluation/e1_r2_semantic_answer_point_revalidation_result.json`.
-- **Next task recommendation (current):** Phase-E lifecycle / promotion-boundary reconciliation; NOT AUTHORIZED. E1 is complete at bounded shadow decomposition scope; production compatibility requirements remain unchanged. (Historical chain: E3-A1 → E3-A2 → E3-LR1; see the E3 section.)
+- **Next task recommendation (current):** Phase-F scope reconciliation and F2 bounded benchmark-dependency cleanup planning; NOT AUTHORIZED. E1 is complete at bounded shadow decomposition scope; production compatibility requirements remain unchanged. (Historical chain: E3-A1 → E3-A2 → E3-LR1; Phase E closed by PE-LR1; see the Phase E and E3 sections.)
 - **Problem:** A single `question_core` plus domain-specific requirements can be complete on known questions but miss unseen multi-part structure.
 - **Goal:** Derive 1–5 evidence-independent, independently satisfiable explicit response obligations from the question itself, each independently checkable for omission.
 - **Why this stage:** Retrieval generalization and structured knowledge must be established before asking decomposition to drive completeness.
@@ -552,7 +561,7 @@ structure, schema or threshold is active or frozen by E2-LR1 or E3-LR1.
 - **E2-LR1 interpretation:** Core mechanism implemented and sufficiently targeted-validated for architecture continuation; default acceptance not met. This is not E2 scientific PASS. Historical outcomes above remain immutable, including G11 quality 1/11/2.
 - **E2-A3-R4:** NOT_STARTED / SUPERSEDED_BY_LIFECYCLE_SIMPLIFICATION. The historical G11 review recommendation remains recorded; E2-LR1 supersedes its immediate combined activation loop.
 - **QA-M1 outcome:** COMPLETE / PASS / GENERIC_CLAIM_SANITIZATION_REPAIR_VALIDATED. Balanced external-wrapper abstraction preserves domain payload and requested names. Focused T0 14 tests/2 subtests passed; frozen scan 290 claim snapshots, 2 intended changes, 0 collateral changes. Shared maintenance only; zero scientific calls and no activation decision. Report: `evaluation/QA_M1_GENERIC_CLAIM_SANITIZATION_REPAIR.md`.
-- **Next task (current):** Phase-E lifecycle / promotion-boundary reconciliation; NOT AUTHORIZED. Default promotion and gate redesign remain deferred to that boundary. (Historical chain: E3-A1 → E3-A2 → E3-LR1; see the E3 section.)
+- **Next task (current):** Phase-F scope reconciliation and F2 bounded benchmark-dependency cleanup planning; NOT AUTHORIZED. Default promotion is deferred under the PE-LR1 recorded trigger; the gate-redesign deferral is closed. (Historical chain: E3-A1 → E3-A2 → E3-LR1; Phase E closed by PE-LR1.)
 - **Problem:** Atomic claims are not generically accountable to the facets the user asked to have answered.
 - **Goal:** Map every generated claim to one or more answer-point IDs and evidence IDs, then measure completeness and support.
 - **Why this stage:** E1 quality must be proven before its points become a runtime completeness contract.
@@ -573,7 +582,7 @@ structure, schema or threshold is active or frozen by E2-LR1 or E3-LR1.
 - **E3-A1 outcome:** COMPLETE / PASS / EXPERIMENTAL_MISSING_POINT_TARGETED_RETRIEVAL_IMPLEMENTED. Implemented runtime-only post-verify targeted retrieval seam in `qa.py` and `retrieval.py` under `runtime_e1_v2`. Enforced strict A0 trigger, question-derived collection objective, original plan snapshot preservation, dedicated `missing_point_retrieval_count <= 1`, candidate capture without duplicate calls, cross-pass best-channel-rank RRF (`RRF_K=60`, experimental candidate, not validated optimal), single global rerank on original question only, authoritative final evidence selection, atomic bundle update with single try/except exception boundary, narrow retained-support claims ledger protecting unchanged supported claims, and public schema invariance. Initial baseline `2af8ac95` verified 42 E3 tests and 147 neighboring tests (189 passed, 9 subtests passed). Independent post-implementation review corrections incorporated cross-pass bounded eligible union candidate reservation and deterministic valid retained claim/evidence view in second verify, bringing focused verification to 49 E3 tests and 147 neighboring tests (196 passed, 9 subtests passed). Separate final AGY review PASS; Codex accepted the bounded corrections after inspecting the source/test diffs. Zero scientific/evaluation calls or tokens. Report: `evaluation/E3_A1_EXPERIMENTAL_MISSING_POINT_RETRIEVAL_IMPLEMENTATION.md`.
 - **E3-A2 outcome:** COMPLETE / INCONCLUSIVE / INSUFFICIENT_NATURAL_MISSING_POINT_APPLICABILITY. Prospective T2 validation under preregistration `50eada9e4c62980f4437d7b2ce0850667109305c` on a mechanically enriched 11-case novel_dev cohort (n003, n005, n006, n009, n010, n014, n019, n020, n021, n022, n024). An evaluation-only harness forked the identical first-verify checkpoint into a pre-E3 existing-evidence-only revision control and the current E3 treatment; product frozen; default mode unchanged. Only n006 was naturally E3-applicable (2 first-missing points) — below the frozen G2 authority threshold (>=4 cases, >=4 points) — so the recovery hypothesis was never tested with authority. The single blinded pair is descriptive only: no `satisfied_supported` point on either arm (control absent/absent, insufficient_evidence; treatment partial/absent, answered; judge preferred treatment); zero treatment-only preservation/safety regressions; E3 within all bounds (1 targeted retrieval, 1 global rerank, 1 revision, atomic success, 1 newly admitted object, plan preserved). G1/G4/G5/G6/G7 PASS; G3 FAIL; G2 FAIL → overall INCONCLUSIVE. Observed usage 78 model calls / 746,593 returned tokens. Report: `evaluation/E3_A2_TARGETED_MISSING_POINT_RECOVERY_VALIDATION.md`.
 - **E3-LR1 outcome:** COMPLETE / PASS / POST_A2_LIFECYCLE_RECONCILED. Static lifecycle decision, zero scientific calls. Separated architecture (justified), implementation safety (validated), and efficacy (unresolved). F1-R12 and F1-R14 reconciled as non-blockers owned by Phase F/retrieval cleanup. Maintenance burden MODERATE and default-isolated. Selected OPTION A: E3 closes as a bounded low-frequency fallback; DEDICATED_E3_REVALIDATION = NOT_PLANNED / LOW_NATURAL_APPLICABILITY_AND_LOW_DECISION_VALUE; FUTURE_E3_EVIDENCE = ACCUMULATE_OPPORTUNISTICALLY_IN_BROADER_AUTHORIZED_EVALUATIONS. First-verify-failure-focused cohorts are outcome-conditioned selection and cannot serve as prospective applicability authority. No default promotion. Report: `evaluation/E3_LR1_POST_A2_LIFECYCLE_DECISION.md`.
-- **Next task:** Phase-E lifecycle / promotion-boundary reconciliation; NOT AUTHORIZED.
+- **Next task (current):** Phase-F scope reconciliation and F2 bounded benchmark-dependency cleanup planning; NOT AUTHORIZED. (The Phase-E promotion-boundary reconciliation this section previously pointed to is complete: PE-LR1.)
 - **Problem:** Once a genuine answer point is missing, the system needs a generic retrieval objective rather than hidden domain requirements.
 - **Goal:** Use missing answer points to trigger one bounded targeted retrieval, followed by global candidate reconsideration (best-rank RRF + rerank + selection) and retained-support evidence preservation.
 - **Why this stage:** Requires validated E1 decomposition and E2 claim mapping; global candidate reconsideration is an implemented architectural seam verified in A1 (C8 treatment validation is not a prerequisite per D1).
@@ -675,9 +684,9 @@ At release, Generalization Gap means benchmark score minus novel score. Benchmar
 5. **Phase execution ordering:** F1 found zero E1 blockers. E1-R2 passed targeted prospective synthetic validation and E1-C1 passed exposed real-style confirmation, including the original atomicity sentinel. E1 is closed under the accepted scope decision. E2-A3 remains FAIL/Q7. E2-A3-FR1 completed with REPAIR_JUSTIFIED. R1 remains FAIL/P2_P6. R2 repaired citation eligibility and passed S1-S13/P1-P11 in six fresh pairs. Historical P6 FAIL remains without waiver or product tuning; historical R3 remains INCONCLUSIVE after four infrastructure failures. R3-R1 completed the missing paired evidence and failed G11 at 2/14 noncritical worse; FR1 subsequently completed a static review recommending shared claim sanitization repair and prospective gate redesign. E2-LR1 subsequently separates completed core mechanisms from deferred promotion and supersedes immediate A3-R4. QA-M1 maintenance subsequently completed with focused T0/static checks. E3-A0 architecture contract is complete; E3-A1 implemented the experimental mechanism under runtime_e1_v2; E3-A2 completed INCONCLUSIVE with insufficient natural applicability; E3-LR1 closed E3 as a bounded low-frequency fallback with standalone recovery benefit unresolved. No further E1 confirmation is required.
 
 ```text
-CURRENT_TASK = E3-LR1 / COMPLETE / PASS / POST_A2_LIFECYCLE_RECONCILED
-NEXT_TASK_RECOMMENDATION = Phase-E lifecycle / promotion-boundary reconciliation
+CURRENT_TASK = PE-LR1 / COMPLETE / PASS / PHASE_E_CLOSED_PROMOTION_DEFERRED_UNTIL_MATERIAL_CANDIDATE
+NEXT_TASK_RECOMMENDATION = Phase-F scope reconciliation and F2 bounded benchmark-dependency cleanup planning
 NEXT_TASK_EXECUTION_AUTHORIZED = false
-FOLLOWING_ARCHITECTURE_TASK = Phase-E lifecycle / promotion-boundary reconciliation
+FOLLOWING_ARCHITECTURE_TASK = Phase-F scope reconciliation and F2 bounded benchmark-dependency cleanup planning
 NEXT_STAGE_AUTHORIZED = false
 ```

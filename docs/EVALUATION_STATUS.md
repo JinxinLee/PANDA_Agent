@@ -59,11 +59,15 @@ FUTURE_E3_EVIDENCE = ACCUMULATE_OPPORTUNISTICALLY_IN_BROADER_AUTHORIZED_EVALUATI
 E2-A3-R4 = NOT_STARTED / SUPERSEDED_BY_LIFECYCLE_SIMPLIFICATION.
 E2 DEFAULT PROMOTION = DEFERRED / ACTIVATION_ACCEPTANCE_NOT_MET.
 runtime_e1_v2 = VALIDATED_EXPERIMENTAL_PATH / EXPLICIT_SELECTION_ONLY.
-E2 DEFAULT-PROMOTION GATE REDESIGN = DEFERRED / REVISIT_AT_PHASE_E_PROMOTION_BOUNDARY.
+E2 DEFAULT-PROMOTION GATE REDESIGN = CLOSED / NO_IMMEDIATE_REVALIDATION_DEFINED / REOPEN_ONLY_FOR_MATERIAL_CANDIDATE_OR_RELEASE_BOUNDARY.
+DEFAULT_PROMOTION_RECONSIDERATION_TRIGGER = materially behavior-changing post-Phase-E candidate (normally Phase-F compatibility/benchmark-dependency cleanup: F1-R08/R09/R11, R13, R10, R14, R04; or another independently justified architecture change) OR an explicitly authorized release/acceptance candidate evaluation requiring the normal-default decision.
 Reconciliation: `evaluation/E2_POST_A3_LIFECYCLE_RECONCILIATION.md`.
+PE-LR1 = COMPLETE / PASS / PHASE_E_CLOSED_PROMOTION_DEFERRED_UNTIL_MATERIAL_CANDIDATE.
+PE-LR1 report: `evaluation/PE_LR1_PHASE_E_PROMOTION_BOUNDARY_RECONCILIATION.md`.
+Phase E = COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED.
 E2-A1 report: `evaluation/E2_A1_SHADOW_ANSWER_POINT_COVERAGE_CONTRACT.md`.
 C1 met all eight strict gates and the original pair09 atomicity sentinel. Per the
-accepted closure decision, E1 is complete. E2-A2 passed targeted shadow validation. E2-A3 failed Q7; normal QA remains legacy. E3-A0 established the missing-point targeted retrieval architecture contract; E3-A1 implemented the experimental mechanism under runtime_e1_v2. E3-A2 completed INCONCLUSIVE: on the frozen 11-case cohort only 1 case (n006, 2 missing points) was naturally E3-applicable, below the G2 threshold (>=4 cases, >=4 points); the single applicable pair was descriptive only (no recovered point on either arm; treatment moved one point absent→partial and was preferred by the blinded judge within all safety/bounds gates). E3-LR1 subsequently reconciled the E3 lifecycle (static, zero scientific calls): E3 closes as a bounded low-frequency experimental fallback with standalone recovery benefit unresolved; dedicated revalidation is not planned; future E3 evidence accumulates opportunistically in broader authorized evaluations.
+accepted closure decision, E1 is complete. E2-A2 passed targeted shadow validation. E2-A3 failed Q7; normal QA remains legacy. E3-A0 established the missing-point targeted retrieval architecture contract; E3-A1 implemented the experimental mechanism under runtime_e1_v2. E3-A2 completed INCONCLUSIVE: on the frozen 11-case cohort only 1 case (n006, 2 missing points) was naturally E3-applicable, below the G2 threshold (>=4 cases, >=4 points); the single applicable pair was descriptive only (no recovered point on either arm; treatment moved one point absent→partial and was preferred by the blinded judge within all safety/bounds gates). E3-LR1 subsequently reconciled the E3 lifecycle (static, zero scientific calls): E3 closes as a bounded low-frequency experimental fallback with standalone recovery benefit unresolved; dedicated revalidation is not planned; future E3 evidence accumulates opportunistically in broader authorized evaluations. PE-LR1 subsequently closed Phase E at the promotion boundary: architecture complete, normal default remains legacy_question_core, promotion deferred until a material candidate change or an explicitly authorized release-boundary decision; the E2 gate-redesign deferral is retired (closed, reopen only under the recorded trigger).
 Decision: `evaluation/E1_CLOSURE_SCOPE_REVIEW.md`.
 Report: `evaluation/E1_C1_REAL_STYLE_CONFIRMATION.md`.
 Preregistration: `2517b691245c38175222064e6ca546d06fd21e9a`.
@@ -114,13 +118,13 @@ MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD
 Current planning state:
 D4 = PAUSED / ROADMAP_RECONCILIATION
 D4 overall completion = UNDECIDED
-CURRENT_TASK = E3-LR1 / COMPLETE / PASS / POST_A2_LIFECYCLE_RECONCILED
-NEXT_TASK_RECOMMENDATION = Phase-E lifecycle / promotion-boundary reconciliation / NOT AUTHORIZED
+CURRENT_TASK = PE-LR1 / COMPLETE / PASS / PHASE_E_CLOSED_PROMOTION_DEFERRED_UNTIL_MATERIAL_CANDIDATE
+NEXT_TASK_RECOMMENDATION = Phase-F scope reconciliation and F2 bounded benchmark-dependency cleanup planning / NOT AUTHORIZED
 NEXT_TASK_EXECUTION_AUTHORIZED = false
-FOLLOWING_ARCHITECTURE_TASK = Phase-E lifecycle / promotion-boundary reconciliation
+FOLLOWING_ARCHITECTURE_TASK = Phase-F scope reconciliation and F2 bounded benchmark-dependency cleanup planning
 
 No D4-A11 exists.
-Phase E = IN_PROGRESS / E3_FALLBACK_COMPLETE / PROMOTION_BOUNDARY_RECONCILIATION_NEXT.
+Phase E = COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED.
 E1 = COMPLETE / PASS / QUESTION_ONLY_SEMANTIC_ANSWER_POINT_DECOMPOSITION_VALIDATED.
 E2 = COMPLETE / CORE_MECHANISM_VALIDATED / DEFAULT_PROMOTION_DEFERRED.
 E3-A0 = COMPLETE / PASS / MISSING_POINT_TARGETED_RETRIEVAL_CONTRACT_ESTABLISHED.
@@ -128,10 +132,12 @@ E3-A1 = COMPLETE / PASS / EXPERIMENTAL_MISSING_POINT_TARGETED_RETRIEVAL_IMPLEMEN
 E3-A2 = COMPLETE / INCONCLUSIVE / INSUFFICIENT_NATURAL_MISSING_POINT_APPLICABILITY.
 E3-LR1 = COMPLETE / PASS / POST_A2_LIFECYCLE_RECONCILED.
 E3 = COMPLETE / BOUNDED_LOW_FREQUENCY_FALLBACK_IMPLEMENTED / SCIENTIFIC_RECOVERY_BENEFIT_UNRESOLVED.
+PE-LR1 = COMPLETE / PASS / PHASE_E_CLOSED_PROMOTION_DEFERRED_UNTIL_MATERIAL_CANDIDATE.
+Phase E = COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED.
 Phase F = IN_PROGRESS / F1_COMPLETE.
 F2 = NOT_STARTED / SCOPE_PRESERVED.
 F3 = SCOPE_RECONCILIATION_REQUIRED / PARTIALLY_SUPERSEDED_BY_D4.
-No further recovery, D4, Phase-E, or Phase-F task is authorized after E3-LR1; the Phase-E promotion-boundary reconciliation is recommended but NOT AUTHORIZED.
+No further recovery, D4, Phase-E, or Phase-F task is authorized after PE-LR1; Phase-E scope reconciliation and F2 bounded benchmark-dependency cleanup planning is recommended but NOT AUTHORIZED.
 
 ## E3-A1 experimental implementation closeout
 
@@ -195,6 +201,29 @@ NOT_PLANNED / LOW_NATURAL_APPLICABILITY_AND_LOW_DECISION_VALUE; FUTURE_E3_EVIDEN
 _IN_BROADER_AUTHORIZED_EVALUATIONS. No default promotion; E2 promotion remains DEFERRED.
 NEXT_TASK_RECOMMENDATION = Phase-E lifecycle / promotion-boundary reconciliation (NOT AUTHORIZED).
 Report: `evaluation/E3_LR1_POST_A2_LIFECYCLE_DECISION.md`.
+
+## PE-LR1 Phase-E promotion-boundary reconciliation closeout
+
+COMPLETE / PASS / PHASE_E_CLOSED_PROMOTION_DEFERRED_UNTIL_MATERIAL_CANDIDATE. Static promotion-boundary decision at
+HEAD `71e8861`; zero PANDA scientific/evaluation calls or tokens; zero product changes; only the decision report,
+this status file, and the roadmap changed. Four questions separated: P1 Phase-E architecture complete = yes
+(E1/E2/E3 all present with accepted dispositions); P2 runtime_e1_v2 valid experimental path = yes; P3 normal-default
+promotion now = no (historical activation failures E2-A3 Q7, R1 P2_P6, R3-R1 G11 remain binding; no materially new
+candidate exists since the failed lineage — QA-M1 was generic maintenance, E3 added a runtime-only bounded fallback
+with one descriptive case, E3-LR1/PE-LR1 are documentation); P4 reopening trigger recorded. F1-R08/R09/R11
+compatibility cluster does not block Phase-E completion; contributes-but-not-sole-blocker for promotion; ownership
+remains Phase F. Material-candidate set for a future promotion decision: R08/R09/R11 cluster, R13 verifier-support
+override, R10 deterministic requirements, R14 selection policy, R04 refusal path. Component-wise analysis:
+runtime_e1_v2 is a coupled mode (single answer_point_coverage_mode switch selects E1 decomposition + E2 coverage
+semantics + E3 eligibility); independent component promotion is unsupported and not decision-relevant. Decision
+matrices selected Phase-E OPTION A (COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED /
+DEFAULT_PROMOTION_DEFERRED) and promotion D3 (defer until material candidate change or explicit release boundary).
+Retired the E2 DEFAULT-PROMOTION GATE REDESIGN deferral as CLOSED / NO_IMMEDIATE_REVALIDATION_DEFINED /
+REOPEN_ONLY_FOR_MATERIAL_CANDIDATE_OR_RELEASE_BOUNDARY — no historical E2 outcome altered. Recorded
+DEFAULT_PROMOTION_RECONSIDERATION_TRIGGER. Legacy default is an accepted stable outcome, not an incomplete state.
+NEXT_TASK_RECOMMENDATION = Phase-F scope reconciliation and F2 bounded benchmark-dependency cleanup planning
+(NOT AUTHORIZED).
+Report: `evaluation/PE_LR1_PHASE_E_PROMOTION_BOUNDARY_RECONCILIATION.md`.
 
 ## Historical E3-A0 architecture contract closeout
 
