@@ -47,7 +47,9 @@ QA-M1 = COMPLETE / PASS / GENERIC_CLAIM_SANITIZATION_REPAIR_VALIDATED.
 Maintenance report: `evaluation/QA_M1_GENERIC_CLAIM_SANITIZATION_REPAIR.md`.
 E3-A0 = COMPLETE / PASS / MISSING_POINT_TARGETED_RETRIEVAL_CONTRACT_ESTABLISHED.
 E3-A0 report: `evaluation/E3_A0_MISSING_POINT_TARGETED_RETRIEVAL_CONTRACT.md`.
-E3 = IN_PROGRESS / A0_COMPLETE / A1_NEXT.
+E3-A1 = COMPLETE / PASS / EXPERIMENTAL_MISSING_POINT_TARGETED_RETRIEVAL_IMPLEMENTED.
+E3-A1 report: `evaluation/E3_A1_EXPERIMENTAL_MISSING_POINT_RETRIEVAL_IMPLEMENTATION.md`.
+E3 = IN_PROGRESS / A1_COMPLETE / VALIDATION_NEXT.
 E2-A3-R4 = NOT_STARTED / SUPERSEDED_BY_LIFECYCLE_SIMPLIFICATION.
 E2 DEFAULT PROMOTION = DEFERRED / ACTIVATION_ACCEPTANCE_NOT_MET.
 runtime_e1_v2 = VALIDATED_EXPERIMENTAL_PATH / EXPLICIT_SELECTION_ONLY.
@@ -55,7 +57,7 @@ E2 DEFAULT-PROMOTION GATE REDESIGN = DEFERRED / REVISIT_AT_PHASE_E_PROMOTION_BOU
 Reconciliation: `evaluation/E2_POST_A3_LIFECYCLE_RECONCILIATION.md`.
 E2-A1 report: `evaluation/E2_A1_SHADOW_ANSWER_POINT_COVERAGE_CONTRACT.md`.
 C1 met all eight strict gates and the original pair09 atomicity sentinel. Per the
-accepted closure decision, E1 is complete. E2-A2 passed targeted shadow validation. E2-A3 failed Q7; normal QA remains legacy. E3-A0 established the missing-point targeted retrieval architecture contract (contract-only); E3 is IN_PROGRESS with E3-A1 next (unauthorized).
+accepted closure decision, E1 is complete. E2-A2 passed targeted shadow validation. E2-A3 failed Q7; normal QA remains legacy. E3-A0 established the missing-point targeted retrieval architecture contract; E3-A1 implemented the experimental mechanism under runtime_e1_v2; E3 is IN_PROGRESS with E3-A2 next (unauthorized).
 Decision: `evaluation/E1_CLOSURE_SCOPE_REVIEW.md`.
 Report: `evaluation/E1_C1_REAL_STYLE_CONFIRMATION.md`.
 Preregistration: `2517b691245c38175222064e6ca546d06fd21e9a`.
@@ -106,23 +108,46 @@ MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD
 Current planning state:
 D4 = PAUSED / ROADMAP_RECONCILIATION
 D4 overall completion = UNDECIDED
-CURRENT_TASK = E3-A0 / COMPLETE / PASS / MISSING_POINT_TARGETED_RETRIEVAL_CONTRACT_ESTABLISHED
-NEXT_TASK_RECOMMENDATION = E3-A1 — Experimental Missing-Point Targeted Retrieval Implementation / NOT AUTHORIZED
+CURRENT_TASK = E3-A1 / COMPLETE / PASS / EXPERIMENTAL_MISSING_POINT_TARGETED_RETRIEVAL_IMPLEMENTED
+NEXT_TASK_RECOMMENDATION = E3-A2 — Targeted Missing-Point Recovery Validation / NOT AUTHORIZED
 NEXT_TASK_EXECUTION_AUTHORIZED = false
-FOLLOWING_ARCHITECTURE_TASK = E3-A1 — Experimental Missing-Point Targeted Retrieval Implementation
+FOLLOWING_ARCHITECTURE_TASK = E3-A2 — Targeted Missing-Point Recovery Validation
 
 No D4-A11 exists.
 Phase E = IN_PROGRESS / E2_CORE_COMPLETE / E3_IN_PROGRESS.
 E1 = COMPLETE / PASS / QUESTION_ONLY_SEMANTIC_ANSWER_POINT_DECOMPOSITION_VALIDATED.
 E2 = COMPLETE / CORE_MECHANISM_VALIDATED / DEFAULT_PROMOTION_DEFERRED.
 E3-A0 = COMPLETE / PASS / MISSING_POINT_TARGETED_RETRIEVAL_CONTRACT_ESTABLISHED.
-E3 = IN_PROGRESS / A0_COMPLETE / A1_NEXT.
+E3-A1 = COMPLETE / PASS / EXPERIMENTAL_MISSING_POINT_TARGETED_RETRIEVAL_IMPLEMENTED.
+E3 = IN_PROGRESS / A1_COMPLETE / VALIDATION_NEXT.
 Phase F = IN_PROGRESS / F1_COMPLETE.
 F2 = NOT_STARTED / SCOPE_PRESERVED.
 F3 = SCOPE_RECONCILIATION_REQUIRED / PARTIALLY_SUPERSEDED_BY_D4.
-No further recovery, D4, Phase-E, or Phase-F task is authorized after E3-A0.
+No further recovery, D4, Phase-E, or Phase-F task is authorized after E3-A1.
 
-## E3-A0 architecture contract closeout
+## E3-A1 experimental implementation closeout
+
+COMPLETE / PASS / EXPERIMENTAL_MISSING_POINT_TARGETED_RETRIEVAL_IMPLEMENTED.
+Implemented bounded post-verify missing-point targeted retrieval and candidate reconsideration under explicit
+`runtime_e1_v2` mode only. Normal default remains `legacy_question_core`; `shadow_e1_v2` unchanged. Trigger
+strictly requires all A0 trigger conditions. Targeted collection query uses original question + exact missing point
+text(s) in original order; global reranker receives original question only. Original retrieval plan snapshot
+preserved without mutation or expanded budgets. Candidate capture uses private opt-in `capture_candidates=True`
+with zero duplicate retrieval calls. Cross-pass candidates deduplicated by `object_id` with best channel rank
+RRF (`RRF_K=60`, experimental candidate, not validated optimal) and strict payload content validation. Exactly
+one global rerank on successful path; zero local targeted reranks; reuses authoritative `_prioritize_and_select_evidence`
+(`select_final_evidence`). Atomic bundle update with single try/except exception boundary and honest no-gain fallback.
+Retained-support claims ledger protects unchanged supported claims whose cited evidence was displaced; new/modified
+claims rejected from citing ledger evidence; normal deterministic integrity checks enforced without waiver.
+Final cited evidence appends cited retained support items in deterministic sorted order. Public DTOs and prompts unchanged.
+Final host verification: 42 E3 tests covering T1–T20, Sentinels 1–3 and defect regressions, plus 147 affected neighboring tests; 189 passed, 9 subtests passed.
+Historical review initially reported PASS; host inspection identified 8 defect areas resolved by fix worker; host
+final acceptance confirmed removal of `TypeError` retry / test-only agent state. All PANDA scientific/evaluation calls and
+tokens are zero. E3 is IN_PROGRESS / A1_COMPLETE / VALIDATION_NEXT; next task is E3-A2 — Targeted Missing-Point Recovery
+Validation (NOT AUTHORIZED, execution false); no cohort or threshold is frozen.
+Report: `evaluation/E3_A1_EXPERIMENTAL_MISSING_POINT_RETRIEVAL_IMPLEMENTATION.md`.
+
+## Historical E3-A0 architecture contract closeout
 
 COMPLETE / PASS / MISSING_POINT_TARGETED_RETRIEVAL_CONTRACT_ESTABLISHED.
 Static architecture and dependency contract only; zero product code modified, zero scientific

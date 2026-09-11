@@ -1624,21 +1624,12 @@ class Retriever:
                 raise ValueError("D3 plan/config mismatch")
         return diagnostics
 
-    def retrieve(
+    def _collect_channel_rankings(
         self,
         question: str,
-        plan: RetrievalPlan | None = None,
-        *,
-        d3_config: D3ExperimentConfig | D3_5ExperimentConfig | None = None,
-    ) -> dict[str, Any]:
-        plan_was_supplied = plan is not None
-        plan = plan or self.analyze(question, d3_config=d3_config)
-        d3_diagnostics: dict[str, Any] | None = None
-        if d3_config is not None:
-            d3_diagnostics = self._validate_d3_plan(plan, d3_config)
-        elif plan_was_supplied and "d3_experiment" in plan.analysis_diagnostics:
-            raise ValueError("a D3 plan requires its explicit D3 config at retrieval time")
-        limit = self.policies.candidate_pool_per_channel
+        plan: RetrievalPlan,
+        limit: int,
+    ) -> tuple[dict[str, list[dict[str, Any]]], SemanticQuery, list[float]]:
         rankings: dict[str, list[dict[str, Any]]] = {"exact": self._exact(plan, question, limit)}
         dense, sparse, query_vector, semantic_query = self._vector(question, plan, limit)
         rankings["dense"] = [hit.payload for hit in dense]
@@ -1648,6 +1639,25 @@ class Retriever:
             rankings["paper"] = paper
         rankings["workflow"] = self._workflow(question, plan, limit)
         rankings["graph"] = self._graph([*rankings["exact"],*rankings["dense"],*rankings["sparse"]], plan, limit)
+        return rankings, semantic_query, query_vector
+
+    def retrieve(
+        self,
+        question: str,
+        plan: RetrievalPlan | None = None,
+        *,
+        d3_config: D3ExperimentConfig | D3_5ExperimentConfig | None = None,
+        capture_candidates: bool = False,
+    ) -> dict[str, Any]:
+        plan_was_supplied = plan is not None
+        plan = plan or self.analyze(question, d3_config=d3_config)
+        d3_diagnostics: dict[str, Any] | None = None
+        if d3_config is not None:
+            d3_diagnostics = self._validate_d3_plan(plan, d3_config)
+        elif plan_was_supplied and "d3_experiment" in plan.analysis_diagnostics:
+            raise ValueError("a D3 plan requires its explicit D3 config at retrieval time")
+        limit = self.policies.candidate_pool_per_channel
+        rankings, semantic_query, query_vector = self._collect_channel_rankings(question, plan, limit)
         structured_contribution = None
         if d3_config is not None and d3_config.structured_treatment_enabled:
             structured_contribution = build_structured_contribution_from_storage(
@@ -1800,80 +1810,15 @@ class Retriever:
             rerank_schema,
             system_instruction=RERANK_SYSTEM_PROMPT,
         )["ranked_object_ids"] if rerank_pool else []
-        ordered = list(dict.fromkeys([*reranked, *rerank_pool, *fused_order]))
-        preferred_sources = list(plan.target_repositories)
-        lowered_question = question.casefold()
-        if any(term in lowered_question for term in ("restgas", "off-ip", "event_poca", "poca", "displaced")):
-            preferred_sources = ["restgas_determination", "pandaroot", "luminosityfit", *preferred_sources]
-        elif "pandaroot" in lowered_question:
-            preferred_sources = ["pandaroot", "restgas_determination", "luminosityfit", *preferred_sources]
-        preferred_sources = list(dict.fromkeys(preferred_sources))
-        source_rank = {source_id: rank for rank, source_id in enumerate(preferred_sources)}
-        symbol_first=[]
-        # Full paths are stronger locators than a bare class/symbol name.  They
-        # are considered first so a source-file object wins over a header or a
-        # similarly named implementation chunk before source-diversity caps are
-        # applied.
-        def symbol_order(value: str) -> tuple[int, int]:
-            normalized = value.replace("\\", "/").lower()
-            if plan.intent == "troubleshooting" and ("readme" in normalized or "running/" in normalized):
-                return (0, 0)
-            return (1, 0 if "/" in value or "." in value else 1)
-        symbols = sorted(plan.symbols, key=symbol_order)
-        for symbol in symbols:
-            literal=symbol.replace("*","").replace("?","")
-            matches = []
-            for item in rankings["exact"]:
-                locator=item.get("locator") or {}
-                if literal and (
-                    literal in (item.get("title") or "")
-                    or literal in (locator.get("symbol") or "")
-                    or literal in (locator.get("path") or "")
-                    or literal in (item.get("text") or "")
-                ):
-                    matches.append(item)
-            if matches:
-                def match_priority(item: dict[str, Any]) -> tuple[int, int, int, str]:
-                    locator = item.get("locator") or {}
-                    path = (locator.get("path") or "").replace("\\", "/")
-                    exact_path = int(bool(literal and (
-                        path == literal
-                        or ("/" in literal and path.endswith("/" + literal))
-                    )))
-                    page_level = int(item.get("object_type") in {"sphinx_page", "source_file", "readme_section"})
-                    return (source_rank.get(item.get("source_id"), 999), -exact_path, -page_level, item["object_id"])
-                matches.sort(key=match_priority)
-                symbol_first.append(matches[0]["object_id"])
-        required_first=[]
-        for required in plan.required_source_types:
-            for oid in ordered:
-                source_type=self._source_type(payloads[oid])
-                if source_type==required or (required in {"workflow","graph"} and required in channels[oid]):
-                    required_first.append(oid); break
-        hinted_first=[]
-        for oid in ordered:
-            item = payloads[oid]
-            source_id = item.get("source_id")
-            page = (item.get("locator") or {}).get("pdf_page")
-            if source_id in plan.paper_page_hints and page is not None and int(page) in plan.paper_page_hints[source_id]:
-                hinted_first.append(oid)
-        # Reviewed paper anchors take precedence over implementation symbols for
-        # paper-required plans.  Code symbols remain immediately afterwards, so
-        # mixed theory/implementation questions still retain both evidence types.
-        # Satisfy explicit source-type requirements before general symbol
-        # diversity.  Otherwise a long list of same-source implementation
-        # symbols can consume the cap and make a required workflow/document
-        # object unreachable even when it was retrieved.
-        ordered=list(dict.fromkeys([*hinted_first,*required_first,*symbol_first,*ordered]))
-        ranked_object_ids = ordered[:30]
-        selected, excluded, backfill_admissions = select_final_evidence(
-            ordered,
-            payloads,
-            scores,
-            channels,
-            plan,
-            self.policies.final_evidence_limit,
-            set(symbol_first),
+        ordered, ranked_object_ids, selected, excluded, backfill_admissions, symbol_first = self._prioritize_and_select_evidence(
+            question=question,
+            plan=plan,
+            ordered=list(dict.fromkeys([*reranked, *rerank_pool, *fused_order])),
+            payloads=payloads,
+            scores=scores,
+            channels=channels,
+            exact_candidates=rankings.get("exact", []),
+            final_evidence_limit=self.policies.final_evidence_limit,
         )
         lexical_query = build_lexical_query(question, plan)
         lexical_payload = lexical_query.as_dict()
@@ -1904,6 +1849,11 @@ class Retriever:
             "backfill_admissions": backfill_admissions,
             "evidence": [item.model_dump(mode="json") for item in selected],
         }
+        if capture_candidates:
+            result["candidate_snapshot"] = {
+                "pass_origin": "initial",
+                "rankings": {key: [dict(item) for item in value] for key, value in rankings.items()},
+            }
         if structured_replacement_receipt is not None:
             result["structured_replacement"] = structured_replacement_receipt
         if d3_config is not None and d3_diagnostics is not None:
@@ -1924,3 +1874,320 @@ class Retriever:
             d3_receipt["diagnostic_counters"] = counters
             result["d3_experiment"] = d3_receipt
         return result
+
+    def _prioritize_and_select_evidence(
+        self,
+        question: str,
+        plan: RetrievalPlan,
+        ordered: list[str],
+        payloads: dict[str, dict[str, Any]],
+        scores: dict[str, float],
+        channels: dict[str, list[str]],
+        exact_candidates: list[dict[str, Any]],
+        final_evidence_limit: int,
+    ) -> tuple[list[str], list[str], list[Evidence], list[dict[str, Any]], list[dict[str, Any]], list[str]]:
+        preferred_sources = list(plan.target_repositories)
+        lowered_question = question.casefold()
+        if any(term in lowered_question for term in ("restgas", "off-ip", "event_poca", "poca", "displaced")):
+            preferred_sources = ["restgas_determination", "pandaroot", "luminosityfit", *preferred_sources]
+        elif "pandaroot" in lowered_question:
+            preferred_sources = ["pandaroot", "restgas_determination", "luminosityfit", *preferred_sources]
+        preferred_sources = list(dict.fromkeys(preferred_sources))
+        source_rank = {source_id: rank for rank, source_id in enumerate(preferred_sources)}
+        symbol_first = []
+
+        def symbol_order(value: str) -> tuple[int, int]:
+            normalized = value.replace("\\", "/").lower()
+            if plan.intent == "troubleshooting" and ("readme" in normalized or "running/" in normalized):
+                return (0, 0)
+            return (1, 0 if "/" in value or "." in value else 1)
+
+        symbols = sorted(plan.symbols, key=symbol_order)
+        for symbol in symbols:
+            literal = symbol.replace("*", "").replace("?", "")
+            matches = []
+            for item in exact_candidates:
+                locator = item.get("locator") or {}
+                if literal and (
+                    literal in (item.get("title") or "")
+                    or literal in (locator.get("symbol") or "")
+                    or literal in (locator.get("path") or "")
+                    or literal in (item.get("text") or "")
+                ):
+                    matches.append(item)
+            if matches:
+                def match_priority(item: dict[str, Any]) -> tuple[int, int, int, str]:
+                    locator = item.get("locator") or {}
+                    path = (locator.get("path") or "").replace("\\", "/")
+                    exact_path = int(bool(literal and (
+                        path == literal
+                        or ("/" in literal and path.endswith("/" + literal))
+                    )))
+                    page_level = int(item.get("object_type") in {"sphinx_page", "source_file", "readme_section"})
+                    return (source_rank.get(item.get("source_id"), 999), -exact_path, -page_level, item["object_id"])
+                matches.sort(key=match_priority)
+                symbol_first.append(matches[0]["object_id"])
+
+        required_first = []
+        for required in plan.required_source_types:
+            for oid in ordered:
+                source_type = self._source_type(payloads[oid])
+                if source_type == required or (required in {"workflow", "graph"} and required in channels.get(oid, [])):
+                    required_first.append(oid)
+                    break
+
+        hinted_first = []
+        for oid in ordered:
+            item = payloads[oid]
+            source_id = item.get("source_id")
+            page = (item.get("locator") or {}).get("pdf_page")
+            if source_id in plan.paper_page_hints and page is not None and int(page) in plan.paper_page_hints[source_id]:
+                hinted_first.append(oid)
+
+        ordered = list(dict.fromkeys([*hinted_first, *required_first, *symbol_first, *ordered]))
+        ranked_object_ids = ordered[:30]
+        selected, excluded, backfill_admissions = select_final_evidence(
+            ordered,
+            payloads,
+            scores,
+            channels,
+            plan,
+            final_evidence_limit,
+            set(symbol_first),
+        )
+        return ordered, ranked_object_ids, selected, excluded, backfill_admissions, symbol_first
+
+    def collect_channel_candidates(
+        self,
+        question: str,
+        plan: RetrievalPlan,
+    ) -> dict[str, list[dict[str, Any]]]:
+        """Collect bounded channel candidates without LLM reranking or final selection."""
+        limit = self.policies.candidate_pool_per_channel
+        rankings, _, _ = self._collect_channel_rankings(question, plan, limit)
+        return {key: [dict(item) for item in value] for key, value in rankings.items()}
+
+    def consolidate_and_select_candidates(
+        self,
+        original_question: str,
+        plan: RetrievalPlan,
+        pass_snapshots: list[dict[str, Any]],
+        current_selected_evidence: list[dict[str, Any]] | None = None,
+    ) -> dict[str, Any]:
+        """Global candidate consolidation and selection across all executed passes.
+
+        Consolidates candidate occurrences across initial, pre-answer targeted,
+        and E3 targeted passes by object_id using minimum rank per channel,
+        frozen weighted RRF, single global LLM rerank (original question only),
+        and authoritative policy selection (select_final_evidence).
+        """
+        if isinstance(plan, dict):
+            plan = RetrievalPlan.model_validate(plan)
+
+        if not pass_snapshots:
+            return {
+                "status": "empty_candidates",
+                "failure_reason": "no pass snapshots provided",
+                "selected_evidence": [dict(x) for x in (current_selected_evidence or [])],
+                "newly_admitted_object_ids": [],
+                "displaced_evidence_ids": [],
+                "fused_candidate_ids": [],
+                "reranked_object_ids": [],
+                "ranked_object_ids": [],
+                "best_channel_ranks": {},
+                "scores": {},
+                "payloads": {},
+                "pass_occurrences": {},
+            }
+
+        payloads: dict[str, dict[str, Any]] = {}
+        best_ranks: dict[str, dict[str, int]] = defaultdict(dict)
+        pass_occurrences: dict[str, list[dict[str, Any]]] = defaultdict(list)
+        consistency_failures: list[str] = []
+
+        for p_idx, snapshot in enumerate(pass_snapshots):
+            pass_origin = snapshot.get("pass_origin", f"pass_{p_idx}")
+            pass_rankings = snapshot.get("rankings", {})
+            for channel, items in pass_rankings.items():
+                for rank, item in enumerate(items, 1):
+                    oid = item.get("object_id")
+                    if not oid:
+                        continue
+                    if oid in payloads:
+                        prev = payloads[oid]
+                        mismatches = []
+                        if prev.get("source_id") != item.get("source_id"):
+                            mismatches.append(f"source_id: {prev.get('source_id')} vs {item.get('source_id')}")
+                        if prev.get("source_version_id") != item.get("source_version_id"):
+                            mismatches.append(f"source_version_id: {prev.get('source_version_id')} vs {item.get('source_version_id')}")
+                        prev_loc = json.dumps(prev.get("locator") or {}, sort_keys=True)
+                        item_loc = json.dumps(item.get("locator") or {}, sort_keys=True)
+                        if prev_loc != item_loc:
+                            mismatches.append("locator mismatch")
+                        if (prev.get("text") or "") != (item.get("text") or ""):
+                            mismatches.append("text mismatch")
+                        if prev.get("object_type") != item.get("object_type"):
+                            mismatches.append(f"object_type: {prev.get('object_type')} vs {item.get('object_type')}")
+                        if (prev.get("title") or "") != (item.get("title") or ""):
+                            mismatches.append(f"title: {prev.get('title')} vs {item.get('title')}")
+                        if mismatches:
+                            consistency_failures.append(f"{oid}: {'; '.join(mismatches)}")
+                    else:
+                        payloads[oid] = dict(item)
+
+                    if channel not in best_ranks[oid] or rank < best_ranks[oid][channel]:
+                        best_ranks[oid][channel] = rank
+                    pass_occurrences[oid].append({
+                        "pass_origin": pass_origin,
+                        "channel": channel,
+                        "rank": rank,
+                    })
+
+        if consistency_failures:
+            return {
+                "status": "consistency_failure",
+                "failure_reason": "; ".join(consistency_failures),
+                "consistency_failures": consistency_failures,
+                "selected_evidence": [dict(x) for x in (current_selected_evidence or [])],
+                "newly_admitted_object_ids": [],
+                "displaced_evidence_ids": [],
+                "fused_candidate_ids": [],
+                "reranked_object_ids": [],
+                "ranked_object_ids": [],
+                "best_channel_ranks": dict(best_ranks),
+                "scores": {},
+                "payloads": payloads,
+                "pass_occurrences": dict(pass_occurrences),
+            }
+
+        if not payloads:
+            return {
+                "status": "empty_candidates",
+                "failure_reason": "no candidates in pass snapshots",
+                "selected_evidence": [dict(x) for x in (current_selected_evidence or [])],
+                "newly_admitted_object_ids": [],
+                "displaced_evidence_ids": [],
+                "fused_candidate_ids": [],
+                "reranked_object_ids": [],
+                "ranked_object_ids": [],
+                "best_channel_ranks": {},
+                "scores": {},
+                "payloads": {},
+                "pass_occurrences": {},
+            }
+
+        weights = {"exact": 2.0, "dense": 1.0, "sparse": 1.0, "paper": 1.15, "workflow": 1.2, "graph": 0.8}
+        rrf_k = 60
+        scores: dict[str, float] = {}
+        channels: dict[str, list[str]] = {}
+        for oid, ch_ranks in best_ranks.items():
+            s = 0.0
+            for ch, r in ch_ranks.items():
+                if ch in weights:
+                    s += weights[ch] / (rrf_k + r)
+            scores[oid] = s
+            channels[oid] = list(ch_ranks.keys())
+
+        # Deterministic tie-break: object_id lexicographic order
+        fused_order = sorted(scores.keys(), key=lambda oid: (-scores[oid], oid))
+        rerank_pool = fused_order[:30]
+
+        # Single Global LLM Rerank: question MUST be original question only
+        rerank_payload = [
+            {
+                "object_id": oid,
+                "title": payloads[oid].get("title"),
+                "source_id": payloads[oid].get("source_id"),
+                "text": (payloads[oid].get("text") or "")[:2000],
+            }
+            for oid in rerank_pool
+        ]
+        rerank_schema = {
+            "type": "object",
+            "properties": {
+                "ranked_object_ids": {
+                    "type": "array",
+                    "items": {"type": "string", "enum": rerank_pool},
+                }
+            },
+            "required": ["ranked_object_ids"],
+            "additionalProperties": False,
+        }
+        reranked = (
+            self.vertex.generate_json(
+                json.dumps(
+                    {
+                        "task": "rerank_evidence",
+                        "untrusted_question": original_question,
+                        "untrusted_candidates": rerank_payload,
+                    },
+                    ensure_ascii=False,
+                ),
+                rerank_schema,
+                system_instruction=RERANK_SYSTEM_PROMPT,
+            ).get("ranked_object_ids", [])
+            if (rerank_pool and self.vertex is not None)
+            else []
+        )
+
+        final_evidence_limit = getattr(getattr(self, "policies", None), "final_evidence_limit", 12)
+
+        # E3 exact candidate ordering derived deterministically from best channel ranks
+        exact_candidates = [
+            payloads[oid]
+            for oid in sorted(
+                [oid for oid in payloads if "exact" in best_ranks.get(oid, {})],
+                key=lambda oid: (best_ranks[oid]["exact"], oid),
+            )
+        ]
+        ordered, ranked_object_ids, selected, excluded, backfill_admissions, symbol_first = self._prioritize_and_select_evidence(
+            question=original_question,
+            plan=plan,
+            ordered=list(dict.fromkeys([*reranked, *rerank_pool, *fused_order])),
+            payloads=payloads,
+            scores=scores,
+            channels=channels,
+            exact_candidates=exact_candidates,
+            final_evidence_limit=final_evidence_limit,
+        )
+
+        prior_selected_object_ids = set()
+        prior_evidence_lookup = {}
+        if current_selected_evidence:
+            for item in current_selected_evidence:
+                oid = item.get("object_id")
+                if oid:
+                    prior_selected_object_ids.add(oid)
+                eid = item.get("evidence_id")
+                if eid:
+                    prior_evidence_lookup[eid] = item
+
+        selected_evidence_dicts = [item.model_dump(mode="json") for item in selected]
+        new_selected_object_ids = [item.object_id for item in selected]
+        new_admissions = [oid for oid in new_selected_object_ids if oid not in prior_selected_object_ids]
+        displaced_evidence_ids = [
+            eid for eid, item in prior_evidence_lookup.items()
+            if item.get("object_id") not in set(new_selected_object_ids)
+        ]
+
+        if current_selected_evidence is not None and not new_admissions:
+            status = "no_gain"
+            failure_reason = "no_newly_admitted_objects"
+        else:
+            status = "success"
+            failure_reason = None
+
+        return {
+            "status": status,
+            "selected_evidence": selected_evidence_dicts,
+            "newly_admitted_object_ids": new_admissions,
+            "displaced_evidence_ids": displaced_evidence_ids,
+            "fused_candidate_ids": fused_order,
+            "reranked_object_ids": reranked,
+            "ranked_object_ids": ordered[:30],
+            "best_channel_ranks": dict(best_ranks),
+            "scores": scores,
+            "payloads": payloads,
+            "pass_occurrences": dict(pass_occurrences),
+            "failure_reason": failure_reason,
+        }

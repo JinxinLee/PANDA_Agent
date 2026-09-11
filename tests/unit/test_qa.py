@@ -25,7 +25,7 @@ class FakeRetriever:
         self.storage = storage or CatalogStorage([])
         self.calls = 0
 
-    def retrieve(self, question, plan=None):
+    def retrieve(self, question, plan=None, capture_candidates: bool = False):
         self.calls += 1
         return self.bundle
 

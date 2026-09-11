@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from copy import deepcopy
 import json
 import re
 import time
@@ -1034,8 +1035,47 @@ class QAState(TypedDict, total=False):
     claim_audit: list[dict[str, Any]]
     revision_count: int
     retrieval_count: int
+    missing_point_retrieval_count: int
+    original_plan: dict[str, Any]
+    candidate_snapshots: list[dict[str, Any]]
+    retained_supported_claims: list[dict[str, Any]]
+    retained_support_evidence: dict[str, dict[str, Any]]
+    e3_trace: dict[str, Any]
     node_timings_ms: dict[str, int]
     result: dict[str, Any]
+
+
+def _build_missing_point_retrieval_objective(
+    question: str,
+    missing_point_ids: list[str],
+    runtime_answer_points: list[dict[str, Any]],
+) -> str:
+    missing_id_set = set(missing_point_ids)
+    missing_points = [
+        p for p in runtime_answer_points
+        if p.get("answer_point_id") in missing_id_set
+    ]
+    lines = [question.strip(), "", "Target missing question aspects:"]
+    for p in missing_points:
+        text = p.get("text", "").strip()
+        if text:
+            lines.append(f"- {text}")
+    return "\n".join(lines)
+
+
+def _claim_matches_retained(claim: dict[str, Any], retained: dict[str, Any]) -> bool:
+    if claim.get("claim_id") != retained.get("claim_id"):
+        return False
+    if claim.get("claim_text") != retained.get("claim_text"):
+        return False
+    if list(claim.get("evidence_ids") or []) != list(retained.get("evidence_ids") or []):
+        return False
+    if list(claim.get("answer_point_ids") or []) != list(retained.get("answer_point_ids") or []):
+        return False
+    if "declared_answer_point_ids" in retained:
+        if list(claim.get("declared_answer_point_ids", claim.get("answer_point_ids", []))) != list(retained.get("declared_answer_point_ids", [])):
+            return False
+    return True
 
 
 class QAAgent:
@@ -1051,6 +1091,7 @@ class QAAgent:
             ("targeted_retrieve", self._targeted_retrieve),
             ("answer", self._answer),
             ("verify", self._verify),
+            ("missing_point_retrieve", self._missing_point_retrieve),
             ("revise", self._revise),
             ("finalize", self._finalize),
         ):
@@ -1068,9 +1109,10 @@ class QAAgent:
         graph.add_edge("answer", "verify")
         graph.add_conditional_edges(
             "verify",
-            lambda state: "revise" if state.get("errors") and state.get("revision_count", 0) < 1 else "finalize",
-            {"revise": "revise", "finalize": "finalize"},
+            self._after_verify_route,
+            {"missing_point_retrieve": "missing_point_retrieve", "revise": "revise", "finalize": "finalize"},
         )
+        graph.add_edge("missing_point_retrieve", "revise")
         graph.add_edge("revise", "verify")
         graph.add_edge("finalize", END)
         self.graph = graph.compile()
@@ -1080,7 +1122,25 @@ class QAAgent:
         return QuestionDecomposer(self.vertex).decompose(question)
 
     def _retrieve(self, state: QAState) -> dict[str, Any]:
-        return {"bundle": self.retriever.retrieve(state["question"]), "revision_count": 0, "retrieval_count": 0}
+        is_runtime = state.get("answer_point_coverage_mode") == "runtime_e1_v2"
+        if not is_runtime:
+            return {
+                "bundle": self.retriever.retrieve(state["question"]),
+                "revision_count": 0,
+                "retrieval_count": 0,
+            }
+        bundle = self.retriever.retrieve(state["question"], capture_candidates=True)
+        snapshots = []
+        if "candidate_snapshot" in bundle:
+            snapshots.append(bundle["candidate_snapshot"])
+        return {
+            "bundle": bundle,
+            "original_plan": deepcopy(bundle.get("plan", {})),
+            "candidate_snapshots": snapshots,
+            "revision_count": 0,
+            "retrieval_count": 0,
+            "missing_point_retrieval_count": 0,
+        }
 
     def _targeted_retrieve(self, state: QAState) -> dict[str, Any]:
         required = ", ".join(state["bundle"]["plan"]["required_source_types"])
@@ -1092,12 +1152,303 @@ class QAAgent:
             if "symbol:" in error
         ]
         plan.symbols = list(dict.fromkeys([*missing_symbols, *plan.symbols]))
-        extra = self.retriever.retrieve(
-            state["question"] + f"\nTarget missing evidence sources: {required}. Missing evidence details: {missing}",
-            plan=plan,
-        )
+        is_runtime = state.get("answer_point_coverage_mode") == "runtime_e1_v2"
+        current_retrieval_count = state.get("retrieval_count", 0) + 1
+        query = state["question"] + f"\nTarget missing evidence sources: {required}. Missing evidence details: {missing}"
+        if is_runtime:
+            extra = self.retriever.retrieve(query, plan=plan, capture_candidates=True)
+        else:
+            extra = self.retriever.retrieve(query, plan=plan)
         merged = {item["evidence_id"]: item for item in [*extra["evidence"], *state["bundle"]["evidence"]]}
-        return {"bundle": {**state["bundle"], "evidence": list(merged.values())[:12]}, "retrieval_count": state.get("retrieval_count", 0) + 1}
+        update: dict[str, Any] = {
+            "bundle": {**state["bundle"], "evidence": list(merged.values())[:12]},
+            "retrieval_count": current_retrieval_count,
+        }
+        if is_runtime:
+            snapshots = list(state.get("candidate_snapshots", []))
+            if "candidate_snapshot" in extra:
+                snap = dict(extra["candidate_snapshot"])
+                snap["pass_origin"] = f"pre_answer_targeted_{current_retrieval_count}"
+                snapshots.append(snap)
+            update["candidate_snapshots"] = snapshots
+        return update
+
+    def _check_e3_trigger(
+        self,
+        state: QAState,
+        missing_answer_point_ids: list[str] | None = None,
+        audit: dict[str, Any] | None = None,
+    ) -> tuple[bool, str]:
+        if state.get("answer_point_coverage_mode") != "runtime_e1_v2":
+            return False, "mode_not_runtime_e1_v2"
+        if state.get("revision_count", 0) != 0:
+            return False, "revision_count_not_zero"
+        if state.get("missing_point_retrieval_count", 0) != 0:
+            return False, "missing_point_retrieval_count_not_zero"
+
+        plan = state.get("bundle", {}).get("plan", {})
+        if plan.get("version_conflicts"):
+            return False, "version_conflicts"
+
+        if audit is None:
+            audit = state.get("answer_point_audit") or {}
+        if audit.get("review_error"):
+            return False, "coverage_review_structural_error"
+        if audit.get("coverage_evaluable") is not True:
+            return False, "coverage_not_evaluable"
+
+        missing_ids = missing_answer_point_ids if missing_answer_point_ids is not None else state.get("missing_answer_point_ids")
+        if not missing_ids:
+            return False, "no_missing_answer_points"
+
+        runtime_points = state.get("runtime_answer_points") or []
+        known_point_ids = {
+            p["answer_point_id"]
+            for p in runtime_points
+            if isinstance(p, dict) and "answer_point_id" in p
+        }
+        if not set(missing_ids).issubset(known_point_ids):
+            return False, "unknown_answer_point_id"
+
+        return True, "genuine_missing_point"
+
+    def _is_e3_trigger_eligible(self, state: QAState) -> bool:
+        eligible, _ = self._check_e3_trigger(state)
+        return eligible
+
+    def _after_verify_route(self, state: QAState) -> str:
+        if self._is_e3_trigger_eligible(state):
+            return "missing_point_retrieve"
+        if state.get("errors") and state.get("revision_count", 0) < 1:
+            return "revise"
+        return "finalize"
+
+    def _missing_point_retrieve(self, state: QAState) -> dict[str, Any]:
+        missing_point_retrieval_count = state.get("missing_point_retrieval_count", 0) + 1
+        state["missing_point_retrieval_count"] = missing_point_retrieval_count
+
+        supported_claims = list(state.get("supported_claims", []))
+        retained_supported_claims = [
+            {
+                "claim_id": str(c.get("claim_id", "")),
+                "claim_text": str(c.get("claim_text", "")),
+                "evidence_ids": list(c.get("evidence_ids", [])),
+                "answer_point_ids": list(c.get("answer_point_ids", [])),
+                "declared_answer_point_ids": list(c.get("declared_answer_point_ids", c.get("answer_point_ids", []))),
+            }
+            for c in supported_claims
+        ]
+
+        prior_evidence = list(state.get("bundle", {}).get("evidence", []))
+        prior_evidence_lookup = {item["evidence_id"]: deepcopy(item) for item in prior_evidence if "evidence_id" in item}
+        cited_support_ids = {eid for c in retained_supported_claims for eid in c.get("evidence_ids", [])}
+        retained_support_evidence = {
+            eid: prior_evidence_lookup[eid]
+            for eid in cited_support_ids
+            if eid in prior_evidence_lookup
+        }
+
+        question = str(state.get("question", ""))
+        missing_ids = list(state.get("missing_answer_point_ids", []))
+        runtime_points = list(state.get("runtime_answer_points", []))
+        retrieval_objective = _build_missing_point_retrieval_objective(question, missing_ids, runtime_points)
+        final_limit = getattr(getattr(self.retriever, "policies", None), "final_evidence_limit", 12)
+        pass_snapshots = list(state.get("candidate_snapshots", []))
+
+        try:
+            if not pass_snapshots:
+                raise RuntimeError("missing candidate snapshot from initial pass")
+
+            original_plan_dict = state.get("original_plan") or state.get("bundle", {}).get("plan", {})
+            frozen_plan = RetrievalPlan.model_validate(deepcopy(original_plan_dict))
+
+            if not hasattr(self.retriever, "collect_channel_candidates"):
+                raise RuntimeError("retriever lacks collect_channel_candidates capability")
+
+            targeted_rankings = self.retriever.collect_channel_candidates(retrieval_objective, frozen_plan)
+            targeted_snapshot = {
+                "pass_origin": "e3_targeted",
+                "rankings": targeted_rankings,
+            }
+
+            all_snapshots = [*pass_snapshots, targeted_snapshot]
+
+            has_targeted = any(bool(items) for items in targeted_rankings.values())
+            if not has_targeted:
+                # Empty targeted candidates must stop E3 rerank/update even if old unselected candidates could now enter
+                e3_trace = {
+                    "triggered": True,
+                    "trigger_reason": "genuine_missing_point",
+                    "missing_answer_point_ids": missing_ids,
+                    "missing_answer_points": [
+                        p for p in runtime_points if p.get("answer_point_id") in set(missing_ids)
+                    ],
+                    "retrieval_objective": retrieval_objective,
+                    "missing_point_retrieval_count": missing_point_retrieval_count,
+                    "pre_answer_retrieval_count": state.get("retrieval_count", 0),
+                    "initial_selected_evidence_ids": [item.get("evidence_id") for item in prior_evidence],
+                    "candidate_pass_provenance": [
+                        {"pass_origin": s.get("pass_origin"), "channels": list(s.get("rankings", {}).keys())}
+                        for s in all_snapshots
+                    ],
+                    "targeted_candidate_object_ids": [],
+                    "dedup_result": {
+                        "total_unique_objects": len(prior_evidence),
+                        "consistency_failures": [],
+                    },
+                    "pass_occurrences": {},
+                    "global_fused_candidate_object_ids": [],
+                    "globally_selected_evidence_ids": [item.get("evidence_id") for item in prior_evidence],
+                    "global_selected_object_ids": [item.get("object_id") for item in prior_evidence],
+                    "newly_admitted_object_ids": [],
+                    "displaced_selected_evidence_ids": [],
+                    "retained_support_evidence_ids": list(retained_support_evidence.keys()),
+                    "retained_supported_claims": retained_supported_claims,
+                    "selected_evidence_count": len(prior_evidence),
+                    "selected_evidence_budget": final_limit,
+                    "retained_support_context_count": len(retained_support_evidence),
+                    "atomic_update_status": "no_gain",
+                    "no_gain": True,
+                    "failure_reason": "empty_targeted_candidates",
+                    "post_retrieval_missing_point_result": None,
+                    "post_retrieval_coverage_evaluable": None,
+                    "recovered_answer_point_ids": [],
+                    "remaining_missing_answer_point_ids": missing_ids,
+                }
+                return {
+                    "bundle": dict(state.get("bundle", {})),
+                    "missing_point_retrieval_count": missing_point_retrieval_count,
+                    "retained_supported_claims": retained_supported_claims,
+                    "retained_support_evidence": retained_support_evidence,
+                    "e3_trace": e3_trace,
+                }
+
+            if not hasattr(self.retriever, "consolidate_and_select_candidates"):
+                raise RuntimeError("retriever lacks consolidate_and_select_candidates capability")
+
+            consolidation = self.retriever.consolidate_and_select_candidates(
+                original_question=question,
+                plan=frozen_plan,
+                pass_snapshots=all_snapshots,
+                current_selected_evidence=prior_evidence,
+            )
+
+            status = consolidation.get("status", "no_gain")
+            failure_reason = consolidation.get("failure_reason")
+            newly_admitted_ids = consolidation.get("newly_admitted_object_ids", [])
+            displaced_ids = consolidation.get("displaced_evidence_ids", [])
+            fused_candidate_ids = consolidation.get("fused_candidate_ids", [])
+            targeted_candidate_object_ids = [
+                item["object_id"]
+                for items in targeted_rankings.values()
+                for item in items
+                if "object_id" in item
+            ]
+
+            bundle = dict(state.get("bundle", {}))
+            if status == "success" and consolidation.get("selected_evidence"):
+                bundle["evidence"] = consolidation["selected_evidence"]
+                atomic_status = "success"
+            else:
+                atomic_status = status
+
+            selected_evidence_ids = [item.get("evidence_id") for item in bundle.get("evidence", [])]
+            selected_object_ids = [item.get("object_id") for item in bundle.get("evidence", [])]
+
+            e3_trace = {
+                "triggered": True,
+                "trigger_reason": "genuine_missing_point",
+                "missing_answer_point_ids": missing_ids,
+                "missing_answer_points": [
+                    p for p in runtime_points if p.get("answer_point_id") in set(missing_ids)
+                ],
+                "retrieval_objective": retrieval_objective,
+                "missing_point_retrieval_count": missing_point_retrieval_count,
+                "pre_answer_retrieval_count": state.get("retrieval_count", 0),
+                "initial_selected_evidence_ids": [item.get("evidence_id") for item in prior_evidence],
+                "candidate_pass_provenance": [
+                    {"pass_origin": s.get("pass_origin"), "channels": list(s.get("rankings", {}).keys())}
+                    for s in all_snapshots
+                ],
+                "targeted_candidate_object_ids": targeted_candidate_object_ids,
+                "dedup_result": {
+                    "total_unique_objects": len(consolidation.get("best_channel_ranks", {})),
+                    "consistency_failures": consolidation.get("consistency_failures", []),
+                },
+                "pass_occurrences": consolidation.get("pass_occurrences", {}),
+                "global_fused_candidate_object_ids": fused_candidate_ids,
+                "globally_selected_evidence_ids": selected_evidence_ids,
+                "global_selected_object_ids": selected_object_ids,
+                "newly_admitted_object_ids": newly_admitted_ids,
+                "displaced_selected_evidence_ids": displaced_ids,
+                "retained_support_evidence_ids": list(retained_support_evidence.keys()),
+                "retained_supported_claims": retained_supported_claims,
+                "selected_evidence_count": len(selected_evidence_ids),
+                "selected_evidence_budget": final_limit,
+                "retained_support_context_count": len(retained_support_evidence),
+                "atomic_update_status": atomic_status,
+                "no_gain": atomic_status == "no_gain",
+                "failure_reason": failure_reason,
+                "post_retrieval_missing_point_result": None,
+                "post_retrieval_coverage_evaluable": None,
+                "recovered_answer_point_ids": [],
+                "remaining_missing_answer_point_ids": missing_ids,
+            }
+
+            return {
+                "bundle": bundle,
+                "missing_point_retrieval_count": missing_point_retrieval_count,
+                "retained_supported_claims": retained_supported_claims,
+                "retained_support_evidence": retained_support_evidence,
+                "e3_trace": e3_trace,
+            }
+
+        except Exception as exc:
+            # Catch ordinary collection/fusion/rerank/selection failure once
+            # Retain prior bundle and support, return trace failure and count=1
+            e3_trace = {
+                "triggered": True,
+                "trigger_reason": "genuine_missing_point",
+                "missing_answer_point_ids": missing_ids,
+                "missing_answer_points": [
+                    p for p in runtime_points if p.get("answer_point_id") in set(missing_ids)
+                ],
+                "retrieval_objective": retrieval_objective,
+                "missing_point_retrieval_count": missing_point_retrieval_count,
+                "pre_answer_retrieval_count": state.get("retrieval_count", 0),
+                "initial_selected_evidence_ids": [item.get("evidence_id") for item in prior_evidence],
+                "candidate_pass_provenance": [],
+                "targeted_candidate_object_ids": [],
+                "dedup_result": {
+                    "total_unique_objects": 0,
+                    "consistency_failures": [],
+                },
+                "pass_occurrences": {},
+                "global_fused_candidate_object_ids": [],
+                "globally_selected_evidence_ids": [item.get("evidence_id") for item in prior_evidence],
+                "global_selected_object_ids": [item.get("object_id") for item in prior_evidence],
+                "newly_admitted_object_ids": [],
+                "displaced_selected_evidence_ids": [],
+                "retained_support_evidence_ids": list(retained_support_evidence.keys()),
+                "retained_supported_claims": retained_supported_claims,
+                "selected_evidence_count": len(prior_evidence),
+                "selected_evidence_budget": final_limit,
+                "retained_support_context_count": len(retained_support_evidence),
+                "atomic_update_status": "failure",
+                "no_gain": True,
+                "failure_reason": str(exc),
+                "post_retrieval_missing_point_result": None,
+                "post_retrieval_coverage_evaluable": None,
+                "recovered_answer_point_ids": [],
+                "remaining_missing_answer_point_ids": missing_ids,
+            }
+            return {
+                "bundle": dict(state.get("bundle", {})),
+                "missing_point_retrieval_count": missing_point_retrieval_count,
+                "retained_supported_claims": retained_supported_claims,
+                "retained_support_evidence": retained_support_evidence,
+                "e3_trace": e3_trace,
+            }
 
     def _locked_symbols(self) -> dict[str, set[str]]:
         """Load the restored database identifier catalog once per Agent."""
@@ -1556,9 +1907,21 @@ class QAAgent:
             repo: f"{repo}@{sha}"
             for repo, sha in state["bundle"]["plan"].get("resolved_versions", {}).items()
         }
+        retained_claims = state.get("retained_supported_claims") or []
+        retained_evidence = state.get("retained_support_evidence") or {}
         for claim in claims:
             claim_id = str(claim.get("claim_id") or "")
             claim_errors.setdefault(claim_id, [])
+            is_retained_unchanged = any(
+                _claim_matches_retained(claim, ret) for ret in retained_claims
+            )
+
+            def _claim_ev(eid: str) -> dict[str, Any]:
+                it = evidence.get(eid)
+                if it is None and is_retained_unchanged:
+                    it = retained_evidence.get(eid)
+                return it or {}
+
             if shadow and (not claim_id or claim_ids.count(claim.get("claim_id")) != 1):
                 claim_errors[claim_id].append("claim IDs must be unique and non-empty")
             answer_point_ids = claim.get("answer_point_ids")
@@ -1577,7 +1940,19 @@ class QAAgent:
                 errors.append(message)
                 claim_errors[claim_id].append(message)
             evidence_ids = claim.get("evidence_ids", [])
-            if not evidence_ids or any(evidence_id not in evidence for evidence_id in evidence_ids):
+            has_invalid_evidence = False
+            if not evidence_ids:
+                has_invalid_evidence = True
+            else:
+                for eid in evidence_ids:
+                    if eid in evidence:
+                        pass
+                    elif is_retained_unchanged and eid in retained_evidence:
+                        pass
+                    else:
+                        has_invalid_evidence = True
+                        break
+            if has_invalid_evidence:
                 message = f"invalid evidence for {claim_id}"
                 errors.append(message)
                 claim_errors[claim_id].append(message)
@@ -1589,14 +1964,14 @@ class QAAgent:
                 repo = claim_id.removeprefix("scope_")
                 expected_version = expected_code_versions.get(repo)
                 has_locked_repo = any(
-                    evidence.get(evidence_id, {}).get("source_id") == repo
-                    and evidence.get(evidence_id, {}).get("source_version_id") == expected_version
+                    _claim_ev(evidence_id).get("source_id") == repo
+                    and _claim_ev(evidence_id).get("source_version_id") == expected_version
                     for evidence_id in evidence_ids
                 )
                 mentions_sphinx = "sphinx" in str(claim.get("claim_text", "")).casefold()
                 has_locked_sphinx = any(
-                    "sphinx" in str(evidence.get(evidence_id, {}).get("source_id", "")).casefold()
-                    and bool((evidence.get(evidence_id, {}).get("locator") or {}).get("snapshot_date"))
+                    "sphinx" in str(_claim_ev(evidence_id).get("source_id", "")).casefold()
+                    and bool((_claim_ev(evidence_id).get("locator") or {}).get("snapshot_date"))
                     for evidence_id in evidence_ids
                 )
                 plan_version_is_explicit = bool(
@@ -1614,7 +1989,7 @@ class QAAgent:
                     deterministically_supported_claims.add(claim_id)
             cited_parts: list[str] = []
             for evidence_id in evidence_ids:
-                item = evidence.get(evidence_id)
+                item = _claim_ev(evidence_id)
                 if not item:
                     continue
                 locator = item.get("locator") or {}
@@ -1648,9 +2023,9 @@ class QAAgent:
             # provides a deterministic provenance anchor for that claim.
             code_sources = {"luminosityfit", "pandaroot", "restgas_determination"}
             cited_source_ids = {
-                evidence.get(evidence_id, {}).get("source_id")
+                _claim_ev(evidence_id).get("source_id")
                 for evidence_id in evidence_ids
-                if evidence_id in evidence
+                if evidence_id in evidence or (is_retained_unchanged and evidence_id in retained_evidence)
             }
             path_tokens = [
                 token
@@ -1692,7 +2067,7 @@ class QAAgent:
             ):
                 deterministically_supported_claims.add(claim.get("claim_id"))
             cited_paths = [
-                str((evidence.get(evidence_id, {}).get("locator") or {}).get("path") or "")
+                str((_claim_ev(evidence_id).get("locator") or {}).get("path") or "")
                 for evidence_id in evidence_ids
             ]
             claim_text_lower = claim.get("claim_text", "").casefold()
@@ -1703,11 +2078,11 @@ class QAAgent:
             ):
                 deterministically_supported_claims.add(claim.get("claim_id"))
             for evidence_id in evidence_ids:
-                if evidence_id not in evidence:
+                item = _claim_ev(evidence_id)
+                if not item:
                     continue
-                item = evidence[evidence_id]
                 locator = item.get("locator", {})
-                source_id = item["source_id"]
+                source_id = item.get("source_id")
                 if source_id in {"luminosityfit", "pandaroot", "restgas_determination"}:
                     if item.get("source_version_id") != expected_code_versions.get(source_id):
                         message = f"wrong code version {evidence_id}"
@@ -1721,7 +2096,7 @@ class QAAgent:
                     message = f"incomplete paper citation {evidence_id}"
                     errors.append(message)
                     claim_errors[claim_id].append(message)
-                elif "sphinx" in source_id and not (locator.get("url") and locator.get("snapshot_date") and locator.get("section_path")):
+                elif source_id and "sphinx" in source_id and not (locator.get("url") and locator.get("snapshot_date") and locator.get("section_path")):
                     message = f"incomplete web citation {evidence_id}"
                     errors.append(message)
                     claim_errors[claim_id].append(message)
@@ -1732,6 +2107,10 @@ class QAAgent:
                     message = f"unsupported identifier {token}"
                     errors.append(message)
                     claim_errors[claim_id].append(message)
+        review_evidence_lookup = {item["evidence_id"]: item for item in evidence.values() if "evidence_id" in item}
+        if retained_evidence:
+            for eid, item in retained_evidence.items():
+                review_evidence_lookup.setdefault(eid, item)
         review_evidence = [
             {
                 "evidence_id": item.get("evidence_id"),
@@ -1740,14 +2119,14 @@ class QAAgent:
                 "locator": item.get("locator", {}),
                 "text": item.get("text", ""),
             }
-            for item in evidence.values()
+            for item in review_evidence_lookup.values()
         ]
         answer_requirements = list(
             state.get("answer_requirements")
             or _answer_requirements(str(state.get("question", "")), state["bundle"]["plan"])
         )
         known_requirement_ids = {str(item["id"]) for item in answer_requirements}
-        requirement_evidence = _requirement_evidence(answer_requirements, evidence)
+        requirement_evidence = _requirement_evidence(answer_requirements, review_evidence_lookup)
         reviewable_claims = [c for c in claims if not claim_errors.get(str(c.get("claim_id") or ""))] if shadow else claims
         review = self.vertex.generate_json(
             json.dumps(
@@ -1859,6 +2238,64 @@ class QAAgent:
                 "coverage_evaluable": not coverage_review_error and not global_review_failure,
                 "review_error": coverage_review_error,
             }}
+            if state.get("answer_point_coverage_mode") == "runtime_e1_v2":
+                evaluable = not coverage_review_error and not global_review_failure
+                if state.get("missing_point_retrieval_count", 0) == 0 and state.get("revision_count", 0) == 0:
+                    eligible, reason = self._check_e3_trigger(
+                        state,
+                        missing_answer_point_ids=missing_points,
+                        audit=coverage_update["answer_point_audit"],
+                    )
+                    if not eligible:
+                        coverage_update["e3_trace"] = {
+                            "triggered": False,
+                            "trigger_reason": reason,
+                            "missing_answer_point_ids": missing_points,
+                            "missing_answer_points": [p for p in runtime_points if p.get("answer_point_id") in set(missing_points)],
+                            "retrieval_objective": None,
+                            "missing_point_retrieval_count": 0,
+                            "pre_answer_retrieval_count": state.get("retrieval_count", 0),
+                            "initial_selected_evidence_ids": [item.get("evidence_id") for item in state.get("bundle", {}).get("evidence", [])],
+                            "candidate_pass_provenance": [],
+                            "targeted_candidate_object_ids": [],
+                            "dedup_result": {},
+                            "pass_occurrences": {},
+                            "global_fused_candidate_object_ids": [],
+                            "globally_selected_evidence_ids": [item.get("evidence_id") for item in state.get("bundle", {}).get("evidence", [])],
+                            "global_selected_object_ids": [item.get("object_id") for item in state.get("bundle", {}).get("evidence", [])],
+                            "newly_admitted_object_ids": [],
+                            "displaced_selected_evidence_ids": [],
+                            "retained_support_evidence_ids": [],
+                            "retained_supported_claims": [],
+                            "selected_evidence_count": len(state.get("bundle", {}).get("evidence", [])),
+                            "selected_evidence_budget": getattr(getattr(self.retriever, "policies", None), "final_evidence_limit", 12),
+                            "retained_support_context_count": 0,
+                            "atomic_update_status": "not_triggered",
+                            "no_gain": False,
+                            "failure_reason": None,
+                            "post_retrieval_missing_point_result": None,
+                            "post_retrieval_coverage_evaluable": None,
+                            "recovered_answer_point_ids": [],
+                            "remaining_missing_answer_point_ids": missing_points,
+                        }
+                elif state.get("e3_trace") and state["e3_trace"].get("triggered") and state.get("revision_count", 0) >= 1:
+                    trace = dict(state["e3_trace"])
+                    curr_missing = set(missing_points)
+                    prev_missing = trace.get("missing_answer_point_ids", [])
+                    if evaluable:
+                        recovered = [pid for pid in prev_missing if pid not in curr_missing]
+                        trace["post_retrieval_coverage_evaluable"] = True
+                        trace["post_retrieval_missing_point_result"] = "complete" if not missing_points else ("partial" if recovered else "unrecovered")
+                        trace["recovered_answer_point_ids"] = recovered
+                        trace["remaining_missing_answer_point_ids"] = missing_points
+                        trace["recovered_on_revision"] = len(recovered) > 0
+                    else:
+                        trace["post_retrieval_coverage_evaluable"] = False
+                        trace["post_retrieval_missing_point_result"] = "unevaluable"
+                        trace["recovered_answer_point_ids"] = []
+                        trace["remaining_missing_answer_point_ids"] = missing_points
+                        trace["recovered_on_revision"] = False
+                    coverage_update["e3_trace"] = trace
         return {
             **coverage_update,
             "errors": list(dict.fromkeys(errors)),
@@ -2162,11 +2599,20 @@ class QAAgent:
                 for item in claim_items
             ]
             cited_ids = {evidence_id for claim in claims for evidence_id in claim.evidence_ids}
-            cited_evidence = [
+            bundle_evidence = [
                 item
-                for item in state["bundle"]["evidence"]
+                for item in state.get("bundle", {}).get("evidence", [])
                 if item.get("evidence_id") in cited_ids
             ]
+            included_ids = {item.get("evidence_id") for item in bundle_evidence}
+            retained_cited = []
+            if state.get("answer_point_coverage_mode") == "runtime_e1_v2":
+                retained_map = state.get("retained_support_evidence") or {}
+                for eid in sorted(cited_ids):
+                    if eid not in included_ids and eid in retained_map:
+                        retained_cited.append(retained_map[eid])
+                        included_ids.add(eid)
+            cited_evidence = [*bundle_evidence, *retained_cited]
             result = QAResult(
                 status=QAStatus.ANSWERED,
                 answer=render_verified_answer(claims),
@@ -2258,6 +2704,43 @@ class QAAgent:
         }
         if coverage_shadow:
             diagnostics.update(question_decomposition=decomposition, answer_point_audit=state["answer_point_audit"])
+        if mode == "runtime_e1_v2":
+            e3_trace = state.get("e3_trace")
+            if e3_trace is None:
+                plan = bundle.get("plan", {})
+                reason = "version_conflicts" if plan.get("version_conflicts") else "insufficient_evidence"
+                e3_trace = {
+                    "triggered": False,
+                    "trigger_reason": reason,
+                    "missing_answer_point_ids": [],
+                    "missing_answer_points": [],
+                    "retrieval_objective": None,
+                    "missing_point_retrieval_count": state.get("missing_point_retrieval_count", 0),
+                    "pre_answer_retrieval_count": state.get("retrieval_count", 0),
+                    "initial_selected_evidence_ids": [item.get("evidence_id") for item in bundle.get("evidence", [])],
+                    "candidate_pass_provenance": [],
+                    "targeted_candidate_object_ids": [],
+                    "dedup_result": {},
+                    "pass_occurrences": {},
+                    "global_fused_candidate_object_ids": [],
+                    "globally_selected_evidence_ids": [item.get("evidence_id") for item in bundle.get("evidence", [])],
+                    "global_selected_object_ids": [item.get("object_id") for item in bundle.get("evidence", [])],
+                    "newly_admitted_object_ids": [],
+                    "displaced_selected_evidence_ids": [],
+                    "retained_support_evidence_ids": [],
+                    "retained_supported_claims": [],
+                    "selected_evidence_count": len(bundle.get("evidence", [])),
+                    "selected_evidence_budget": getattr(getattr(self.retriever, "policies", None), "final_evidence_limit", 12),
+                    "retained_support_context_count": 0,
+                    "atomic_update_status": "not_triggered",
+                    "no_gain": False,
+                    "failure_reason": None,
+                    "post_retrieval_missing_point_result": None,
+                    "post_retrieval_coverage_evaluable": None,
+                    "recovered_answer_point_ids": [],
+                    "remaining_missing_answer_point_ids": [],
+                }
+            diagnostics["e3_trace"] = e3_trace
         return {
             "result": result.model_dump(mode="json"),
             "diagnostics": diagnostics,
