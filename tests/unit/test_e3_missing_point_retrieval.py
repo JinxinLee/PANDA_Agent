@@ -1524,3 +1524,605 @@ def test_pre_answer_snapshot_capture_path(tmp_path: Path) -> None:
     state_legacy["answer_point_coverage_mode"] = "legacy_question_core"
     res_legacy = a._targeted_retrieve(state_legacy)
     assert "candidate_snapshots" not in res_legacy
+
+
+# ---------------------------------------------------------------------------
+# E3-A1 Bounded Contract Correction Regressions (Fix 1 & Fix 2)
+# ---------------------------------------------------------------------------
+
+def test_e3_real_retriever_methods_saturated_pool_reaches_global_reranker(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Correction 1 (Finding 1 & 3): Real Retriever.retrieve + collect_channel_candidates
+    + _apply_structured_replacement with saturated >= 30 base pool and initial3 + targeted3
+    supplemental candidates all reaching single global reranker with original question."""
+    init_base_items = [make_evidence(f"base_{i:02d}", channel="exact") for i in range(32)]
+    tgt_base_items = [make_evidence(f"tgt_b_{i:02d}", channel="exact") for i in range(5)]
+    init_supp_ids = ["init_s1", "init_s2", "init_s3"]
+    tgt_supp_ids = ["tgt_s1", "tgt_s2", "tgt_s3"]
+
+    vertex = FakeVertex(
+        answers=[
+            make_claim(
+                "c1",
+                "point.1",
+                "Initial draft claim.",
+                [stable_id("base_00", "exact", prefix="evidence")],
+            )
+        ],
+        reviews=[
+            make_review(mappings={"c1": ["point.1"]}, missing=["point.2"]),
+            make_review(mappings={"c1": ["point.1"]}, missing=[]),
+        ],
+        rerank_order=["init_s1", "tgt_s1", "base_00", "base_01"],
+    )
+
+    retriever = Retriever.__new__(Retriever)
+    retriever.vertex = vertex
+    retriever.policies = SimpleNamespace(
+        candidate_pool_per_channel=35,
+        final_evidence_limit=12,
+        max_relation_hops=2,
+    )
+    retriever._source_type = lambda payload: "code"
+    retriever.analyze = lambda q, **kwargs: make_plan(symbols=["sym1"])
+    retriever.query_expansions = SimpleNamespace(
+        rules=[SimpleNamespace(rule_id="rule_sr", structured_replacement=True, triggers=["pndpidcorrelator", "what", "target"])]
+    )
+    retriever.storage = CatalogStorage([])
+    retriever.context_sources = None
+
+    channel_calls: list[tuple[str, Any, int]] = []
+    def fake_collect_channel_rankings(question: str, plan: Any, limit: int) -> tuple[dict[str, list[dict[str, Any]]], Any, Any]:
+        channel_calls.append((question, plan, limit))
+        semantic_query = SimpleNamespace(
+            text=question, intent="general", symbols=[], as_dict=lambda: {"intent": "general", "symbols": []}
+        )
+        if len(channel_calls) == 1:
+            rankings = {"exact": init_base_items, "dense": [], "sparse": [], "paper": [], "workflow": [], "graph": []}
+        else:
+            rankings = {"exact": tgt_base_items, "dense": [], "sparse": [], "paper": [], "workflow": [], "graph": []}
+        return rankings, semantic_query, [0.1, 0.2]
+    retriever._collect_channel_rankings = fake_collect_channel_rankings
+
+    contribution_calls: list[tuple[str, Any]] = []
+    def fake_build_contribution(question: str, plan: Any, **kwargs: Any) -> Any:
+        contribution_calls.append((question, plan))
+        if len(contribution_calls) == 1:
+            supp_ids = init_supp_ids
+        else:
+            supp_ids = tgt_supp_ids
+        return SimpleNamespace(
+            bridged_payloads={oid: make_evidence(oid) for oid in supp_ids},
+            bridge_receipts=[],
+            reachability_receipts=[],
+            resolution_receipt={},
+            candidates=[],
+        )
+    monkeypatch.setattr("panda_agent.retrieval.build_structured_contribution_from_storage", fake_build_contribution)
+
+    def fake_select_v2(question: str, plan: Any, eligible_candidates: Any, payload_registry: Any, **kwargs: Any) -> dict[str, Any]:
+        if len(contribution_calls) == 1:
+            selected_ids = init_supp_ids
+        else:
+            selected_ids = tgt_supp_ids
+        return {
+            "policy_version": "v2",
+            "selected_object_ids": selected_ids,
+            "candidate_receipts": [],
+            "selected_rank_keys": [],
+        }
+    monkeypatch.setattr("panda_agent.retrieval.select_structured_candidates_v2", fake_select_v2)
+
+    agent = make_agent(tmp_path, vertex=vertex, retriever=retriever)
+    out = agent._run_detailed(QUESTION, mode="runtime_e1_v2")
+    trace = out["diagnostics"]["e3_trace"]
+    assert trace["triggered"] is True
+
+    # Call accounting invariants:
+    # 2 channel collection calls: 1 initial retrieve, 1 targeted collection
+    assert len(channel_calls) == 2
+    # 2 structured contribution calls: 1 initial retrieve, 1 targeted collection
+    assert len(contribution_calls) == 2
+
+    # Rerank calls: exactly 1 in initial retrieve, 0 in targeted collection, exactly 1 in global rerank
+    rerank_calls = [c for c in vertex.calls if c[0].get("task") == "rerank_evidence"]
+    assert len(rerank_calls) == 2  # initial pass local rerank + E3 global rerank (targeted local rerank = 0)
+    global_rerank_call = rerank_calls[1]
+
+    # Global rerank query MUST be original question only
+    assert global_rerank_call[0]["untrusted_question"] == QUESTION
+
+    # Global rerank candidates payload
+    rerank_cands = [c["object_id"] for c in global_rerank_call[0]["untrusted_candidates"]]
+    # Saturated 30-item global pool: 24 base + 6 supplemental
+    assert len(rerank_cands) == 30
+    # Both initial 3 and targeted 3 supplemental candidates ALL reach the global reranker:
+    for oid in init_supp_ids:
+        assert oid in rerank_cands, f"initial supplemental candidate {oid} missing from global reranker"
+    for oid in tgt_supp_ids:
+        assert oid in rerank_cands, f"targeted supplemental candidate {oid} missing from global reranker"
+
+    # Truthful provenance in pass_occurrences
+    pass_occ = trace["pass_occurrences"]
+    for oid in [*init_supp_ids, *tgt_supp_ids]:
+        assert any(o["channel"] == "structured_replacement" and o["rank"] is None for o in pass_occ[oid])
+
+    # Selector may reject: only selected evidence within final limit is kept
+    final_eids = {e["object_id"] for e in out["diagnostics"]["selected_evidence"]}
+    assert len(final_eids) <= 12
+    assert not all(oid in final_eids for oid in [*init_supp_ids, *tgt_supp_ids])
+
+
+def test_e3_real_retriever_preanswer_and_localbase_overlap_eligibility(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Correction 1 (Finding 2): Multi-pass consolidation preserves eligibility
+    of structured candidate already in local base pool when it later drops global top-30,
+    and includes pre-answer targeted supplemental candidate in global reranker."""
+    init_base_items = [make_evidence(f"base_{i:02d}", channel="exact") for i in range(25)]
+    overlap_item = make_evidence("overlap_s", channel="exact")
+    init_base_items.append(overlap_item)  # rank 25 in initial base pool
+    init_supp_ids = ["init_s1", "overlap_s"]
+
+    pre_base_items = [make_evidence(f"pre_b_{i:02d}", channel="exact") for i in range(16)]
+    pre_supp_ids = ["pre_s1"]
+
+    tgt_base_items = [make_evidence(f"tgt_b_{i:02d}", channel="exact") for i in range(16)]
+    tgt_supp_ids = ["tgt_s1"]
+
+    vertex = FakeVertex(rerank_order=["overlap_s", "pre_s1", "init_s1", "tgt_s1"])
+    retriever = Retriever.__new__(Retriever)
+    retriever.vertex = vertex
+    retriever.policies = SimpleNamespace(
+        candidate_pool_per_channel=35,
+        final_evidence_limit=12,
+        max_relation_hops=2,
+    )
+    retriever._source_type = lambda payload: "code"
+    retriever.analyze = lambda q, **kwargs: make_plan(symbols=["sym1"])
+    retriever.query_expansions = SimpleNamespace(
+        rules=[SimpleNamespace(rule_id="rule_sr", structured_replacement=True, triggers=["pndpidcorrelator", "what", "target", "objective"])]
+    )
+    retriever.storage = None
+    retriever.context_sources = None
+
+    plan = make_plan()
+
+    # Pass 0: initial retrieve
+    retriever._collect_channel_rankings = lambda q, p, lim: (
+        {"exact": init_base_items, "dense": [], "sparse": [], "paper": [], "workflow": [], "graph": []},
+        SimpleNamespace(text=q, intent="general", symbols=[], as_dict=lambda: {"intent": "general", "symbols": []}),
+        [0.1, 0.2],
+    )
+    monkeypatch.setattr(
+        "panda_agent.retrieval.build_structured_contribution_from_storage",
+        lambda q, p, **kwargs: SimpleNamespace(
+            bridged_payloads={oid: make_evidence(oid) for oid in init_supp_ids},
+            bridge_receipts=[],
+            reachability_receipts=[],
+            resolution_receipt={},
+            candidates=[],
+        ),
+    )
+    monkeypatch.setattr(
+        "panda_agent.retrieval.select_structured_candidates_v2",
+        lambda q, p, ec, pr, **kwargs: {
+            "policy_version": "v2",
+            "selected_object_ids": init_supp_ids,
+            "candidate_receipts": [],
+            "selected_rank_keys": [],
+        },
+    )
+    init_bundle = retriever.retrieve(QUESTION, plan=plan, capture_candidates=True)
+    snap0 = init_bundle["candidate_snapshot"]
+    assert "overlap_s" in [item["object_id"] for item in snap0["supplemental_candidates"]]
+
+    # Pass 1: pre-answer targeted pass snapshot
+    snap1 = {
+        "pass_origin": "pre_answer_targeted_1",
+        "rankings": {"exact": pre_base_items},
+        "supplemental_candidates": [make_evidence(oid) for oid in pre_supp_ids],
+    }
+
+    # Pass 2: E3 targeted pass via real collect_channel_candidates
+    retriever._collect_channel_rankings = lambda q, p, lim: (
+        {"exact": tgt_base_items, "dense": [], "sparse": [], "paper": [], "workflow": [], "graph": []},
+        SimpleNamespace(text=q, intent="general", symbols=[], as_dict=lambda: {"intent": "general", "symbols": []}),
+        [0.1, 0.2],
+    )
+    monkeypatch.setattr(
+        "panda_agent.retrieval.build_structured_contribution_from_storage",
+        lambda q, p, **kwargs: SimpleNamespace(
+            bridged_payloads={oid: make_evidence(oid) for oid in tgt_supp_ids},
+            bridge_receipts=[],
+            reachability_receipts=[],
+            resolution_receipt={},
+            candidates=[],
+        ),
+    )
+    monkeypatch.setattr(
+        "panda_agent.retrieval.select_structured_candidates_v2",
+        lambda q, p, ec, pr, **kwargs: {
+            "policy_version": "v2",
+            "selected_object_ids": tgt_supp_ids,
+            "candidate_receipts": [],
+            "selected_rank_keys": [],
+        },
+    )
+    tgt_coll = retriever.collect_channel_candidates("objective", plan)
+    snap2 = {
+        "pass_origin": "e3_targeted",
+        "rankings": tgt_coll["rankings"],
+        "supplemental_candidates": tgt_coll["supplemental_candidates"],
+    }
+
+    # Global consolidation across all 3 passes
+    res = retriever.consolidate_and_select_candidates(
+        original_question=QUESTION,
+        plan=plan,
+        pass_snapshots=[snap0, snap1, snap2],
+    )
+    assert res["status"] == "success"
+
+    # Total base candidates: 26 + 16 + 16 = 58 candidates
+    # Confirm overlap_s dropped out of the base top 30
+    scores = res["scores"]
+    base_fused = sorted([oid for oid in scores if res["best_channel_ranks"].get(oid)], key=lambda oid: (-scores[oid], oid))
+    assert len(base_fused) > 30
+    assert "overlap_s" not in base_fused[:30], "overlap_s should have dropped below top 30 base candidates"
+
+    # Despite dropping out of top-30 base RRF, overlap_s was eligible supplemental and MUST reach global reranker:
+    rerank_calls = [c for c in vertex.calls if c[0].get("task") == "rerank_evidence"]
+    assert len(rerank_calls) == 2  # 1 in initial retrieve, 1 in global consolidate_and_select_candidates
+    global_rerank_call = rerank_calls[1]
+    rerank_cands = [c["object_id"] for c in global_rerank_call[0]["untrusted_candidates"]]
+    assert len(rerank_cands) <= 30
+    assert "overlap_s" in rerank_cands, "local base overlap structured candidate must be preserved in global rerank pool"
+    assert "init_s1" in rerank_cands
+    assert "pre_s1" in rerank_cands
+    assert "tgt_s1" in rerank_cands
+
+
+def test_sentinel_3_structured_capture_no_duplicate_helper_calls(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Correction 1 (Section 18): Candidate capture incurs zero duplicate structured contribution/helper calls."""
+    retriever = Retriever.__new__(Retriever)
+    vertex = FakeVertex(rerank_order=["obj1"])
+    retriever.vertex = vertex
+    retriever.policies = SimpleNamespace(
+        candidate_pool_per_channel=10,
+        final_evidence_limit=12,
+        max_relation_hops=2,
+    )
+    retriever._source_type = lambda payload: "code"
+    retriever.analyze = lambda q, **kwargs: make_plan()
+    retriever.query_expansions = SimpleNamespace(
+        rules=[SimpleNamespace(rule_id="r1", structured_replacement=True)]
+    )
+    retriever.storage = None
+    retriever.context_sources = None
+
+    plan = make_plan()
+    plan.analysis_diagnostics = {"matched_expansion_rules": ["r1"]}
+
+    channel_calls: list[tuple[str, Any, int]] = []
+    def fake_collect_channel_rankings(question: str, p: Any, limit: int) -> tuple[dict[str, list[dict[str, Any]]], Any, Any]:
+        channel_calls.append((question, p, limit))
+        ev = make_evidence("obj1", channel="exact")
+        rankings = {"exact": [ev], "dense": [], "sparse": [], "paper": [], "workflow": [], "graph": []}
+        semantic_query = SimpleNamespace(
+            text="test question",
+            intent="general",
+            symbols=[],
+            as_dict=lambda: {"intent": "general", "symbols": []},
+        )
+        return rankings, semantic_query, [0.1, 0.2]
+    retriever._collect_channel_rankings = fake_collect_channel_rankings
+
+    structured_contribution_calls: list[tuple[str, Any]] = []
+    def spy_build_contribution(question: str, p: Any, **kwargs: Any) -> Any:
+        structured_contribution_calls.append((question, p))
+        return SimpleNamespace(
+            bridged_payloads={"obj_struct": make_evidence("obj_struct")},
+            bridge_receipts=[],
+            reachability_receipts=[],
+            resolution_receipt={},
+            candidates=[],
+        )
+    monkeypatch.setattr("panda_agent.retrieval.build_structured_contribution_from_storage", spy_build_contribution)
+
+    monkeypatch.setattr(
+        "panda_agent.retrieval.select_structured_candidates_v2",
+        lambda q, p, ec, pr, **kwargs: {
+            "policy_version": "v2",
+            "selected_object_ids": ["obj_struct"],
+            "candidate_receipts": [],
+            "selected_rank_keys": [],
+        },
+    )
+
+    # Call 1: capture_candidates=False
+    bundle_normal = retriever.retrieve("test question", plan=plan, capture_candidates=False)
+    assert len(channel_calls) == 1
+    assert len(structured_contribution_calls) == 1
+
+    # Call 2: capture_candidates=True
+    bundle_captured = retriever.retrieve("test question", plan=plan, capture_candidates=True)
+    assert len(channel_calls) == 2  # Exactly 1 channel call per retrieve
+    assert len(structured_contribution_calls) == 2  # Exactly 1 structured contribution call per retrieve: ZERO duplicate calls!
+
+    # Truthful provenance: supplemental candidate captured in supplemental_candidates, not in rankings
+    snapshot = bundle_captured["candidate_snapshot"]
+    assert "obj_struct" not in [item["object_id"] for item in snapshot["rankings"].get("exact", [])]
+    assert "obj_struct" in [item["object_id"] for item in snapshot.get("supplemental_candidates", [])]
+
+
+def test_e3_second_verify_unchanged_retained_claim_satisfies_deterministic_requirement(tmp_path: Path) -> None:
+    """Correction 2 (Section 19): Unchanged retained claim resolves displaced evidence and satisfies deterministic requirement."""
+    agent = make_agent(tmp_path)
+    e_old = {
+        "evidence_id": stable_id("obj_old", "exact", prefix="evidence"),
+        "object_id": "obj_old",
+        "source_id": "luminosityfit",
+        "source_version_id": "luminosityfit@18c09e91",
+        "text": "PndLmdAcceptance stored via SetAcceptance member is used by generate1dmodel to apply acceptance factor.",
+        "locator": {
+            "path": "src/PndLmdFitFactory.cxx",
+            "start_line": 10,
+            "end_line": 30,
+            "symbol": "PndLmdFitFactory::Create",
+        },
+        "retrieval_channels": ["exact"],
+        "score": 1.0,
+        "authority_level": "primary",
+    }
+    e_new = make_evidence("obj_new")
+
+    claim_c = {
+        "claim_id": "c1",
+        "claim_text": "PndLmdAcceptance is stored via SetAcceptance and passed to generate1dmodel to apply the acceptance factor.",
+        "evidence_ids": [e_old["evidence_id"]],
+        "answer_point_ids": ["point.1"],
+        "declared_answer_point_ids": ["point.1"],
+    }
+
+    state: dict[str, Any] = {
+        "question": QUESTION,
+        "bundle": {
+            "evidence": [e_new],  # e_old is displaced from newly selected bundle
+            "plan": {"resolved_versions": {"luminosityfit": "18c09e91"}},
+        },
+        "draft": {
+            "claims": [deepcopy(claim_c)],
+        },
+        "retained_supported_claims": [
+            deepcopy(claim_c),
+        ],
+        "retained_support_evidence": {
+            e_old["evidence_id"]: e_old,
+        },
+        "answer_point_coverage_mode": "runtime_e1_v2",
+        "runtime_answer_points": [{"answer_point_id": "point.1", "text": "Point 1"}],
+        "answer_requirements": [
+            {"id": "acceptance_factory_application", "text": "Acceptance factory application requirement."}
+        ],
+        "missing_point_retrieval_count": 1,
+        "revision_count": 1,
+    }
+
+    v_out = agent._verify(state)
+    # Claim c1 is valid via retained ledger
+    assert not any("invalid evidence for c1" in err for err in v_out["errors"])
+    # Deterministic requirement acceptance_factory_application is satisfied: no false missing requirement!
+    assert "acceptance_factory_application" not in v_out.get("missing_requirement_ids", [])
+    assert not any("acceptance_factory_application" in err for err in v_out["errors"])
+
+
+def test_e3_second_verify_new_claim_cannot_satisfy_deterministic_requirement_via_ledger(tmp_path: Path) -> None:
+    """Correction 2 (Section 20): New claim citing ledger-only evidence is marked invalid and cannot satisfy requirement."""
+    agent = make_agent(tmp_path)
+    e_old = {
+        "evidence_id": stable_id("obj_old", "exact", prefix="evidence"),
+        "object_id": "obj_old",
+        "source_id": "luminosityfit",
+        "source_version_id": "luminosityfit@18c09e91",
+        "text": "PndLmdAcceptance stored via SetAcceptance member is used by generate1dmodel to apply acceptance factor.",
+        "locator": {
+            "path": "src/PndLmdFitFactory.cxx",
+            "start_line": 10,
+            "end_line": 30,
+            "symbol": "PndLmdFitFactory::Create",
+        },
+        "retrieval_channels": ["exact"],
+        "score": 1.0,
+        "authority_level": "primary",
+    }
+    e_new = make_evidence("obj_new")
+
+    # Round 1 had claim c1
+    claim_c1 = {
+        "claim_id": "c1",
+        "claim_text": "Round 1 original text.",
+        "evidence_ids": [e_old["evidence_id"]],
+        "answer_point_ids": ["point.1"],
+        "declared_answer_point_ids": ["point.1"],
+    }
+
+    # In round 2, a new claim c_new tries to cite e_old (displaced, ledger-only)
+    claim_new = {
+        "claim_id": "c_new",
+        "claim_text": "PndLmdAcceptance is stored via SetAcceptance and passed to generate1dmodel to apply the acceptance factor.",
+        "evidence_ids": [e_old["evidence_id"]],
+        "answer_point_ids": ["point.1"],
+        "declared_answer_point_ids": ["point.1"],
+    }
+
+    state: dict[str, Any] = {
+        "question": QUESTION,
+        "bundle": {
+            "evidence": [e_new],  # e_old is NOT in bundle
+            "plan": {"resolved_versions": {"luminosityfit": "18c09e91"}},
+        },
+        "draft": {
+            "claims": [deepcopy(claim_new)],
+        },
+        "retained_supported_claims": [
+            deepcopy(claim_c1),  # c_new is NOT in retained_supported_claims
+        ],
+        "retained_support_evidence": {
+            e_old["evidence_id"]: e_old,
+        },
+        "answer_point_coverage_mode": "runtime_e1_v2",
+        "runtime_answer_points": [{"answer_point_id": "point.1", "text": "Point 1"}],
+        "answer_requirements": [
+            {"id": "acceptance_factory_application", "text": "Acceptance factory application requirement."}
+        ],
+        "missing_point_retrieval_count": 1,
+        "revision_count": 1,
+    }
+
+    v_out = agent._verify(state)
+    # 1. Claim-level check marks c_new invalid
+    assert any("invalid evidence for c_new" in err for err in v_out["errors"])
+    # 2. c_new cannot satisfy deterministic requirement through ledger-only e_old!
+    assert any("missing answer requirement acceptance_factory_application" in err for err in v_out["errors"])
+    assert "acceptance_factory_application" in v_out.get("missing_requirement_ids", [])
+
+
+def test_e3_second_verify_modified_claim_same_id_cannot_satisfy_deterministic_requirement_via_ledger(tmp_path: Path) -> None:
+    """Correction 2 (Negative modifiedsameID): Claim keeping the same claim_id as retained claim
+    but with modified text is recognized as modified, marked invalid, and cannot use ledger."""
+    agent = make_agent(tmp_path)
+    e_old = {
+        "evidence_id": stable_id("obj_old", "exact", prefix="evidence"),
+        "object_id": "obj_old",
+        "source_id": "luminosityfit",
+        "source_version_id": "luminosityfit@18c09e91",
+        "text": "PndLmdAcceptance stored via SetAcceptance member is used by generate1dmodel to apply acceptance factor.",
+        "locator": {
+            "path": "src/PndLmdFitFactory.cxx",
+            "start_line": 10,
+            "end_line": 30,
+            "symbol": "PndLmdFitFactory::Create",
+        },
+        "retrieval_channels": ["exact"],
+        "score": 1.0,
+        "authority_level": "primary",
+    }
+    e_new = make_evidence("obj_new")
+
+    # Round 1 had claim c1
+    claim_c1_original = {
+        "claim_id": "c1",
+        "claim_text": "Round 1 original text for claim c1.",
+        "evidence_ids": [e_old["evidence_id"]],
+        "answer_point_ids": ["point.1"],
+        "declared_answer_point_ids": ["point.1"],
+    }
+
+    # In round 2, claim c1 keeps the same claim_id 'c1', but modifies its claim_text!
+    claim_c1_modified = {
+        "claim_id": "c1",
+        "claim_text": "Modified text for claim c1 attempting to satisfy acceptance_factory_application.",
+        "evidence_ids": [e_old["evidence_id"]],
+        "answer_point_ids": ["point.1"],
+        "declared_answer_point_ids": ["point.1"],
+    }
+
+    state: dict[str, Any] = {
+        "question": QUESTION,
+        "bundle": {
+            "evidence": [e_new],  # e_old is NOT in bundle
+            "plan": {"resolved_versions": {"luminosityfit": "18c09e91"}},
+        },
+        "draft": {
+            "claims": [deepcopy(claim_c1_modified)],
+        },
+        "retained_supported_claims": [
+            deepcopy(claim_c1_original),
+        ],
+        "retained_support_evidence": {
+            e_old["evidence_id"]: e_old,
+        },
+        "answer_point_coverage_mode": "runtime_e1_v2",
+        "runtime_answer_points": [{"answer_point_id": "point.1", "text": "Point 1"}],
+        "answer_requirements": [
+            {"id": "acceptance_factory_application", "text": "Acceptance factory application requirement."}
+        ],
+        "missing_point_retrieval_count": 1,
+        "revision_count": 1,
+    }
+
+    v_out = agent._verify(state)
+    # Claim-level verification MUST mark modified c1 invalid because e_old is displaced and claim text changed
+    assert any("invalid evidence for c1" in err for err in v_out["errors"])
+    # Modified c1 CANNOT satisfy requirement via displaced ledger evidence
+    assert any("missing answer requirement acceptance_factory_application" in err for err in v_out["errors"])
+    assert "acceptance_factory_application" in v_out.get("missing_requirement_ids", [])
+
+
+def test_e3_second_verify_gate_not_active_when_not_e3_second_verify(tmp_path: Path) -> None:
+    """Correction 2 (Gate invariant): Gate only opens on runtime E3 second verify (mode runtime_e1_v2,
+    missing_point_retrieval_count 1, revision_count 1). Outside that, ledger evidence does not satisfy requirements."""
+    agent = make_agent(tmp_path)
+    e_old = {
+        "evidence_id": stable_id("obj_old", "exact", prefix="evidence"),
+        "object_id": "obj_old",
+        "source_id": "luminosityfit",
+        "source_version_id": "luminosityfit@18c09e91",
+        "text": "PndLmdAcceptance stored via SetAcceptance member is used by generate1dmodel to apply acceptance factor.",
+        "locator": {
+            "path": "src/PndLmdFitFactory.cxx",
+            "start_line": 10,
+            "end_line": 30,
+            "symbol": "PndLmdFitFactory::Create",
+        },
+        "retrieval_channels": ["exact"],
+        "score": 1.0,
+        "authority_level": "primary",
+    }
+    e_new = make_evidence("obj_new")
+
+    claim_c = {
+        "claim_id": "c1",
+        "claim_text": "PndLmdAcceptance is stored via SetAcceptance and passed to generate1dmodel to apply the acceptance factor.",
+        "evidence_ids": [e_old["evidence_id"]],
+        "answer_point_ids": ["point.1"],
+        "declared_answer_point_ids": ["point.1"],
+    }
+
+    base_state: dict[str, Any] = {
+        "question": QUESTION,
+        "bundle": {
+            "evidence": [e_new],
+            "plan": {"resolved_versions": {"luminosityfit": "18c09e91"}},
+        },
+        "draft": {
+            "claims": [deepcopy(claim_c)],
+        },
+        "retained_supported_claims": [
+            deepcopy(claim_c),
+        ],
+        "retained_support_evidence": {
+            e_old["evidence_id"]: e_old,
+        },
+        "runtime_answer_points": [{"answer_point_id": "point.1", "text": "Point 1"}],
+        "answer_requirements": [
+            {"id": "acceptance_factory_application", "text": "Acceptance factory application requirement."}
+        ],
+    }
+
+    # Case 1: mode is legacy_question_core (not runtime_e1_v2)
+    s1 = dict(base_state, answer_point_coverage_mode="legacy_question_core", missing_point_retrieval_count=1, revision_count=1)
+    v1 = agent._verify(s1)
+    assert "acceptance_factory_application" in v1.get("missing_requirement_ids", [])
+
+    # Case 2: missing_point_retrieval_count is 0 (initial verify, not second verify)
+    s2 = dict(base_state, answer_point_coverage_mode="runtime_e1_v2", missing_point_retrieval_count=0, revision_count=1)
+    v2 = agent._verify(s2)
+    assert "acceptance_factory_application" in v2.get("missing_requirement_ids", [])
+
+    # Case 3: revision_count is 0 (draft turn, not revised turn)
+    s3 = dict(base_state, answer_point_coverage_mode="runtime_e1_v2", missing_point_retrieval_count=1, revision_count=0)
+    v3 = agent._verify(s3)
+    assert "acceptance_factory_application" in v3.get("missing_requirement_ids", [])

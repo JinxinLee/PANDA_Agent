@@ -3,6 +3,7 @@
 **Status:** COMPLETE
 **Verdict:** COMPLETE / PASS / EXPERIMENTAL_MISSING_POINT_TARGETED_RETRIEVAL_IMPLEMENTED
 **Starting Baseline HEAD:** `6d0515e0c30ac3038546a3139ddf8916c6d606b0`
+**Correction Baseline HEAD:** `2af8ac95fdd9a967947dd32edaed964af1856b48`
 **Authoritative Contract:** `evaluation/E3_A0_MISSING_POINT_TARGETED_RETRIEVAL_CONTRACT.md`
 
 ---
@@ -64,9 +65,39 @@
 
 ---
 
-## 3. Focused Verification & Test Accounting
+## 3. Independent Post-Implementation Review Corrections
 
-Final host verification used deterministic fakes only:
+Following the initial A1 implementation baseline (`2af8ac95fdd9a967947dd32edaed964af1856b48`), an independent review identified two concrete contract implementation gaps:
+
+1. **Review Finding 1 — Structured / Supplemental Candidate Universe & Saturated Pool Starvation:**
+   - *Problem:* The initial candidate snapshot in `retrieve()` and `collect_channel_candidates()` recorded base channel rankings but omitted structured-replacement / bridged payloads that entered the actual pass-local rerank/selection universe. An intermediate correction attempt in `consolidate_and_select_candidates()` applied per-pass `build_treatment_pool(..., k=3)` truncation, which caused chronological starvation of subsequent passes when the base fused pool was saturated (>= 30) and dropped local-base candidates that lost global base RRF rank.
+   - *Correction:* In `src/panda_agent/retrieval.py`, `_apply_structured_replacement()` records selected structured objects reserved for or already present in the local base rerank pool (`oid in reserved_set or oid in rerank_pool_set`) as `eligible_supplemental_ids`. `retrieve()` preserves `supplemental_candidates` in snapshots, and `collect_channel_candidates()` executes `_apply_structured_replacement()` to collect both `rankings` and `supplemental_candidates` with zero local LLM reranks. `consolidate_and_select_candidates()` replaces per-pass k=3 truncation with a global cross-pass bounded eligible union reservation strategy (`supp_pool = list(dict.fromkeys(eligible_supplemental_ids))[:30]`), allocating remaining slots to base fused channels. Genuine provenance is preserved without fake channel ranks (`channel="structured_replacement"`, `rank=None`).
+   - *Regression Coverage:*
+     - `test_e3_real_retriever_methods_saturated_pool_reaches_global_reranker`: verifies that in a saturated base pool (>= 30), initial and targeted supplemental candidates reach the single global reranker with the original question query.
+     - `test_e3_real_retriever_preanswer_and_localbase_overlap_eligibility`: verifies that candidates overlapping local base pools retain supplemental eligibility when falling below global base RRF top-30, and pre-answer targeted supplemental candidates participate in global rerank.
+
+2. **Review Finding 2 — Deterministic Requirement Backstop with Retained Evidence:**
+   - *Problem:* In E3 second verification (`revision_count == 1`), `_deterministic_missing_requirement_ids()` only evaluated evidence present in `bundle["evidence"]`. Consequently, exact unchanged supported claims whose cited evidence was displaced to `retained_support_evidence` passed claim-level verification and semantic review but triggered false deterministic `missing answer requirement` rejections solely due to displacement.
+   - *Correction:* In `src/panda_agent/qa.py` (`QAAgent._verify()`), added an explicit gate for runtime E3 second verification (`answer_point_coverage_mode == "runtime_e1_v2" and missing_point_retrieval_count == 1 and revision_count == 1`). When gated, constructs a deterministic valid claim and evidence view:
+     - Claims with claim-level errors (including invalid citation errors) are excluded from satisfying requirements.
+     - To expose retained evidence, claims must match retained supported claims verbatim via `_claim_matches_retained()` (identical text, evidence IDs, answer points).
+     - Retained evidence is visible to the deterministic requirement check only if cited by exact unchanged valid retained claims.
+     - New or modified claims attempting to cite ledger-only evidence fail claim-level checks and cannot satisfy deterministic requirements through ledger evidence. Outside the gate, baseline behavior is strictly preserved.
+   - *Regression Coverage:*
+     - `test_e3_second_verify_unchanged_retained_claim_satisfies_deterministic_requirement`: verifies that an unchanged retained claim satisfies deterministic requirements via retained evidence displaced from the bundle.
+     - `test_e3_second_verify_new_claim_cannot_satisfy_deterministic_requirement_via_ledger` (negative test): verifies that a new claim citing displaced ledger evidence is marked invalid and fails deterministic requirement satisfaction.
+     - `test_e3_second_verify_modified_claim_same_id_cannot_satisfy_deterministic_requirement_via_ledger` (negative test): verifies that a modified claim with the same claim ID is marked invalid and cannot use ledger evidence.
+     - `test_e3_second_verify_gate_not_active_when_not_e3_second_verify`: verifies that outside runtime E3 second verification, the gate remains closed.
+
+- **Review State:** Separate final AGY review PASS; Codex inspected source/test diffs and accepted both bounded corrections.
+- **Correction verification:** 196 passed, 9 subtests passed across the same six-file neighborhood (49 E3 tests, including 7 new correction regressions; 147 neighboring tests). The structured capture-cost sentinel verifies one contribution per initial pass with capture both disabled and enabled. All verification used deterministic fakes; PANDA scientific/evaluation calls and tokens remain zero.
+- **Correction delegation:** Five completed AGY development jobs covered implementation, initial review, corrective implementation, final independent review, and documentation. Runner logs report `gemini-3.8-flash-high` and `SUCCESS`; this is separate from PANDA scientific usage. No billing amount was measured.
+
+---
+
+## 4. Initial Implementation Verification History
+
+At the initial implementation baseline, final host verification used deterministic fakes only:
 
 ```powershell
 $env:PYTHONPATH = 'src;tests/unit'
@@ -90,7 +121,7 @@ five completed jobs, each runner log reports `gemini-3.8-flash-high` and `SUCCES
 No claim of zero AGY cost is made; no billing amount was measured.
 
 ---
-## 4. Concrete Limitations & Next Task
+## 5. Concrete Limitations & Next Task
 
 1. **Runtime Experimental Scope Only:** E3 operates exclusively under explicit `runtime_e1_v2` selection. Normal legacy QA is unchanged.
 2. **Single Bounded Attempt:** `missing_point_retrieval_count <= 1` and `revision_count <= 1`. No multi-turn retrieval or repair loops.
@@ -98,7 +129,9 @@ No claim of zero AGY cost is made; no billing amount was measured.
 4. **No Scientific Benefit Claim:** Implementation verification only; does not establish benchmark/novel QA quality improvement.
 5. **Next Roadmap Task:** **E3-A2 — Targeted Missing-Point Recovery Validation** (`NEXT_TASK_EXECUTION_AUTHORIZED = false`). No A2 cohort or acceptance threshold is frozen here.
 
-## 5. Internal Trace
+---
+
+## 6. Internal Trace
 
 Trace records trigger/reason, question-derived missing points/objective, independent counters,
 pre-E3 and targeted pass provenance, object/channel ranks, fusion and selected IDs,

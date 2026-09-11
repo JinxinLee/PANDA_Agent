@@ -1265,15 +1265,23 @@ class QAAgent:
             if not hasattr(self.retriever, "collect_channel_candidates"):
                 raise RuntimeError("retriever lacks collect_channel_candidates capability")
 
-            targeted_rankings = self.retriever.collect_channel_candidates(retrieval_objective, frozen_plan)
+            targeted_result = self.retriever.collect_channel_candidates(retrieval_objective, frozen_plan)
+            if isinstance(targeted_result, dict) and "rankings" in targeted_result:
+                targeted_rankings = targeted_result["rankings"]
+                targeted_supplemental = list(targeted_result.get("supplemental_candidates") or [])
+            else:
+                targeted_rankings = targeted_result or {}
+                targeted_supplemental = []
+
             targeted_snapshot = {
                 "pass_origin": "e3_targeted",
                 "rankings": targeted_rankings,
+                "supplemental_candidates": targeted_supplemental,
             }
 
             all_snapshots = [*pass_snapshots, targeted_snapshot]
 
-            has_targeted = any(bool(items) for items in targeted_rankings.values())
+            has_targeted = any(bool(items) for items in targeted_rankings.values()) or bool(targeted_supplemental)
             if not has_targeted:
                 # Empty targeted candidates must stop E3 rerank/update even if old unselected candidates could now enter
                 e3_trace = {
@@ -1338,12 +1346,16 @@ class QAAgent:
             newly_admitted_ids = consolidation.get("newly_admitted_object_ids", [])
             displaced_ids = consolidation.get("displaced_evidence_ids", [])
             fused_candidate_ids = consolidation.get("fused_candidate_ids", [])
-            targeted_candidate_object_ids = [
+            targeted_candidate_object_ids = list(dict.fromkeys([
                 item["object_id"]
                 for items in targeted_rankings.values()
                 for item in items
                 if "object_id" in item
-            ]
+            ] + [
+                item["object_id"]
+                for item in targeted_supplemental
+                if "object_id" in item
+            ]))
 
             bundle = dict(state.get("bundle", {}))
             if status == "success" and consolidation.get("selected_evidence"):
@@ -1372,7 +1384,7 @@ class QAAgent:
                 ],
                 "targeted_candidate_object_ids": targeted_candidate_object_ids,
                 "dedup_result": {
-                    "total_unique_objects": len(consolidation.get("best_channel_ranks", {})),
+                    "total_unique_objects": len(consolidation.get("payloads", consolidation.get("best_channel_ranks", {}))),
                     "consistency_failures": consolidation.get("consistency_failures", []),
                 },
                 "pass_occurrences": consolidation.get("pass_occurrences", {}),
@@ -2161,9 +2173,36 @@ class QAAgent:
             errors.extend(f"missing answer point {pid}" for pid in missing_points)
         unsupported = review.get("unsupported_claim_ids", [])
         irrelevant = review.get("irrelevant_claim_ids", [])
+        deterministic_evidence = dict(evidence)
+        deterministic_claims = list(claims)
+        is_e3_second_verify = (
+            state.get("answer_point_coverage_mode") == "runtime_e1_v2"
+            and state.get("missing_point_retrieval_count") == 1
+            and state.get("revision_count") == 1
+        )
+        if is_e3_second_verify and retained_evidence and retained_claims:
+            valid_claims = []
+            cited_retained_evidence_ids: set[str] = set()
+            for c in claims:
+                cid = str(c.get("claim_id") or "")
+                c_errors = claim_errors.get(cid, [])
+                if c_errors:
+                    continue
+                valid_claims.append(c)
+                is_unchanged = any(_claim_matches_retained(c, ret) for ret in retained_claims)
+                if is_unchanged:
+                    for eid in c.get("evidence_ids", []):
+                        if eid in retained_evidence:
+                            cited_retained_evidence_ids.add(eid)
+
+            for eid in cited_retained_evidence_ids:
+                if eid in retained_evidence:
+                    deterministic_evidence[eid] = retained_evidence[eid]
+            deterministic_claims = valid_claims
+
         missing_requirements = [str(value) for value in review.get("missing_requirement_ids", [])]
         missing_requirements.extend(
-            _deterministic_missing_requirement_ids(answer_requirements, claims, evidence)
+            _deterministic_missing_requirement_ids(answer_requirements, deterministic_claims, deterministic_evidence)
         )
         known_claim_ids = set(claim_ids)
         for claim_id in unsupported:

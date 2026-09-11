@@ -140,11 +140,9 @@ one global rerank on successful path; zero local targeted reranks; reuses author
 Retained-support claims ledger protects unchanged supported claims whose cited evidence was displaced; new/modified
 claims rejected from citing ledger evidence; normal deterministic integrity checks enforced without waiver.
 Final cited evidence appends cited retained support items in deterministic sorted order. Public DTOs and prompts unchanged.
-Final host verification: 42 E3 tests covering T1–T20, Sentinels 1–3 and defect regressions, plus 147 affected neighboring tests; 189 passed, 9 subtests passed.
-Historical review initially reported PASS; host inspection identified 8 defect areas resolved by fix worker; host
-final acceptance confirmed removal of `TypeError` retry / test-only agent state. All PANDA scientific/evaluation calls and
-tokens are zero. E3 is IN_PROGRESS / A1_COMPLETE / VALIDATION_NEXT; next task is E3-A2 — Targeted Missing-Point Recovery
-Validation (NOT AUTHORIZED, execution false); no cohort or threshold is frozen.
+Initial implementation baseline `2af8ac95` verified 42 E3 tests covering T1–T20, Sentinels 1–3 and defect regressions, plus 147 affected neighboring tests (189 passed, 9 subtests passed).
+Historical initial implementation review reported PASS; host inspection then identified 8 defect areas resolved by the fix worker, with removal of the `TypeError` retry and test-only agent state confirmed at initial closeout.
+Independent post-implementation contract review identified two bounded implementation gaps: (1) structured/supplemental candidate capture and global reconsideration omitted structured-replacement candidates and suffered chronological starvation in saturated candidate pools (>=30), corrected via cross-pass bounded eligible union reservation without fake channel ranks; (2) deterministic requirement evaluation during E3 second verify falsely failed unchanged retained claims whose cited evidence was displaced, corrected via a claim-scoped deterministic valid claim/evidence view strictly preventing new/modified claims from using ledger-only evidence. Corrected final focused verification: 49 E3 tests and 147 neighboring tests; 196 passed, 9 subtests passed. Separate final AGY review PASS; Codex accepted the bounded corrections after inspecting the source/test diffs. All PANDA scientific/evaluation calls and tokens are zero. E3 is IN_PROGRESS / A1_COMPLETE / VALIDATION_NEXT; next task is E3-A2 — Targeted Missing-Point Recovery Validation (NOT AUTHORIZED, execution false); no cohort or threshold is frozen.
 Report: `evaluation/E3_A1_EXPERIMENTAL_MISSING_POINT_RETRIEVAL_IMPLEMENTATION.md`.
 
 ## Historical E3-A0 architecture contract closeout
