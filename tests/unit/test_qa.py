@@ -3,9 +3,14 @@ import inspect
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 from panda_agent.models import QAStatus
-from panda_agent.prompts import PROMPT_SET_VERSION
+from panda_agent.prompts import (
+    ANSWER_POINT_COVERAGE_REVIEW_SYSTEM_PROMPT,
+    EVIDENCE_REVIEW_SYSTEM_PROMPT,
+    PROMPT_SET_VERSION,
+)
 from panda_agent.retrieval import _question_grounded_source_obligations
 from panda_agent.qa import (
     ANSWER_SCHEMA,
@@ -2837,12 +2842,543 @@ class TestFixedRefusalLocatorRetirement(unittest.TestCase):
 
         self.assertNotIn("PndPidCorrelator.h", inspect.getsource(qa_module))
 
-    # T18 — the historical fixed macro path authority is gone from the
-    # source (the bare "ana_dpm" mention elsewhere is legitimate).
+    # T18 — the historical fixed macro path authority is gone from the source
+    # (the bare "ana_dpm" mention elsewhere is legitimate).
     def test_no_fixed_macro_authority_in_source(self):
         import panda_agent.qa as qa_module
 
         self.assertNotIn("macro/target/ana_dpm.C", inspect.getsource(qa_module))
+
+
+class FakeSettings:
+    """Duck-typed stand-in for the VertexSettings role fields."""
+
+    def __init__(self, generation_model, verification_model=None, evaluation_judge_model=None):
+        self.generation_model = generation_model
+        self.verification_model = verification_model
+        self.evaluation_judge_model = evaluation_judge_model
+
+    def for_verification_model(self):
+        effective = self.verification_model or self.generation_model
+        return FakeSettings(effective, self.verification_model, self.evaluation_judge_model)
+
+
+class RecordingRoleVertex(FakeVertex):
+    """Role-aware double: records every generate_json call (task, schema,
+    kwargs), mirrors the VertexAIClient usage_stage accounting, optionally
+    exposes settings, and can be configured to fail or to reject claims
+    semantically.  Used as one role client or the other, never both."""
+
+    def __init__(self, *, settings=None, error=None, supported=True, unsupported_claim_ids=()):
+        self.settings = settings
+        self.error = error
+        self.supported = supported
+        self.unsupported_claim_ids = list(unsupported_claim_ids)
+        self.calls = []
+        self.stats = {}
+
+    def generate_json(self, prompt, schema, **kwargs):
+        if self.error is not None:
+            raise self.error
+        payload = json.loads(prompt)
+        self.calls.append({"task": payload.get("task"), "schema": schema, "kwargs": dict(kwargs)})
+        self._record_usage(kwargs)
+        if "supported" in schema.get("properties", {}):
+            review = {
+                "supported": self.supported,
+                "unsupported_claim_ids": [] if self.supported else list(self.unsupported_claim_ids),
+                "irrelevant_claim_ids": [],
+                "missing_requirement_ids": [],
+                "reason": "" if self.supported else "conservative semantic review",
+            }
+            if "claim_answer_point_mappings" in schema.get("properties", {}):
+                review["claim_answer_point_mappings"] = [
+                    {
+                        "claim_id": item["claim_id"],
+                        "answer_point_ids": list(item.get("answer_point_ids") or []),
+                    }
+                    for item in payload["untrusted_claims"]
+                ]
+                review["missing_answer_point_ids"] = []
+            return review
+        return super().generate_json(prompt, schema, **kwargs)
+
+    def _record_usage(self, kwargs):
+        stage = kwargs.get("usage_stage")
+        if stage is None:
+            return
+        self.stats["model_calls"] = self.stats.get("model_calls", 0) + 1
+        self.stats["generation_calls"] = self.stats.get("generation_calls", 0) + 1
+        self.stats["token_usage"] = self.stats.get("token_usage", 0) + 7
+        self.stats[f"{stage}_calls"] = self.stats.get(f"{stage}_calls", 0) + 1
+        self.stats[f"{stage}_token_usage"] = self.stats.get(f"{stage}_token_usage", 0) + 7
+
+    def stats_snapshot(self):
+        return dict(self.stats)
+
+    def stats_delta(self, previous):
+        after = self.stats_snapshot()
+        return {key: after.get(key, 0) - previous.get(key, 0) for key in after.keys() | previous.keys()}
+
+
+class TestGenerationVerificationRoleSeparation(unittest.TestCase):
+    """F4: answer generation and semantic verification are separate roles with
+    separate client paths, dedicated usage labeling, aggregated usage
+    accounting, and no cross-role fallback."""
+
+    # Realistic locked-catalog rows so full-flow runs answer instead of
+    # refusing the bare-locator premise.
+    PID_CATALOG_ROWS = [
+        ({"symbol": "PndPidCorrelator", "path": "pid/PndPidCorrelator.h"}, "class PndPidCorrelator {};")
+    ]
+
+    def _two_role_agent(self, bundle, **gen_kwargs):
+        gen = RecordingRoleVertex(**gen_kwargs)
+        ver = RecordingRoleVertex()
+        agent = QAAgent(
+            Path.cwd(),
+            retriever=FakeRetriever(bundle, storage=CatalogStorage(list(self.PID_CATALOG_ROWS))),
+            vertex=gen,
+            verification_vertex=ver,
+        )
+        return agent, gen, ver
+
+    def _verify_state(self, bundle, *, claim_text="The class is present.", evidence_ids=("e1",), claim_id="c1"):
+        return {
+            "question": "Explain this implementation.",
+            "bundle": bundle,
+            "draft": {"claims": [{
+                "claim_id": claim_id,
+                "claim_text": claim_text,
+                "evidence_ids": list(evidence_ids),
+                "answer_point_ids": ["question_core"],
+            }]},
+        }
+
+    def _coverage_state(self, bundle, mode):
+        return {
+            "question": "Explain the factory composition.",
+            "bundle": bundle,
+            "draft": {"claims": [{
+                "claim_id": "c1",
+                "claim_text": "The factory composes the model from its inputs.",
+                "evidence_ids": ["e1"],
+                "answer_point_ids": ["point.1"],
+            }]},
+            "answer_point_coverage_mode": mode,
+            "runtime_answer_points": [
+                {"answer_point_id": "point.1", "text": "Explain the factory composition."}
+            ],
+        }
+
+    # T4 — the production default builds two distinct client objects, keeps the
+    # legacy alias, and hands the generation client to the retriever.
+    def test_production_default_builds_distinct_role_client_paths(self):
+        import panda_agent.qa as qa_module
+
+        settings = FakeSettings(generation_model="model-X", verification_model=None, evaluation_judge_model="model-C")
+        constructed = []
+
+        class RecordingClient:
+            def __init__(self, client_settings):
+                self.settings = client_settings
+                constructed.append(self)
+
+        class RecordingRetriever:
+            def __init__(self, project_root, vertex=None):
+                self.project_root = project_root
+                self.vertex = vertex
+
+        with mock.patch.object(qa_module, "VertexSettings") as settings_cls, \
+                mock.patch.object(qa_module, "VertexAIClient", RecordingClient), \
+                mock.patch.object(qa_module, "Retriever", RecordingRetriever):
+            settings_cls.from_env.return_value = settings
+            agent = QAAgent(Path.cwd())
+
+        settings_cls.from_env.assert_called_once_with()
+        self.assertIsNot(agent.generation_vertex, agent.verification_vertex)
+        self.assertIs(agent.vertex, agent.generation_vertex)
+        self.assertEqual(len(constructed), 2)
+        self.assertIs(constructed[0].settings, settings)
+        self.assertIsNot(constructed[1].settings, settings)
+        self.assertEqual(constructed[1].settings.generation_model, "model-X")
+        self.assertIsNone(constructed[1].settings.verification_model)
+        self.assertIs(agent.retriever.vertex, agent.generation_vertex)
+        roles = agent._model_roles_diagnostics()
+        self.assertEqual(roles["answer_generation_model"], "model-X")
+        self.assertEqual(roles["semantic_verification_model"], "model-X")
+        self.assertTrue(roles["same_model_id"])
+        self.assertTrue(roles["distinct_client_paths"])
+
+    # T5 — documented compatibility seam: a sole vertex= injection serves both
+    # roles and stays reachable through the legacy alias.
+    def test_legacy_vertex_injection_serves_both_roles(self):
+        bundle = bundle_for(code_evidence())
+        fake = RecordingRoleVertex()
+        agent = QAAgent(Path.cwd(), retriever=FakeRetriever(bundle), vertex=fake)
+        self.assertIs(agent.generation_vertex, fake)
+        self.assertIs(agent.verification_vertex, fake)
+        self.assertIs(agent.vertex, fake)
+        self.assertFalse(agent._model_roles_diagnostics()["distinct_client_paths"])
+
+    # T6 — explicit two-client injection maps each role to its own client.
+    def test_explicit_two_client_injection(self):
+        bundle = bundle_for(code_evidence())
+        gen = RecordingRoleVertex(settings=FakeSettings("model-G"))
+        ver = RecordingRoleVertex(settings=FakeSettings("model-V", verification_model="model-V"))
+        agent = QAAgent(Path.cwd(), retriever=FakeRetriever(bundle), vertex=gen, verification_vertex=ver)
+        self.assertIs(agent.generation_vertex, gen)
+        self.assertIs(agent.verification_vertex, ver)
+        self.assertIs(agent.vertex, gen)
+
+    # T7 — the answer call goes to the generation role only.
+    def test_answer_routes_to_generation_role_only(self):
+        bundle = bundle_for(code_evidence())
+        agent, gen, ver = self._two_role_agent(bundle)
+        agent._answer({"question": "Explain this implementation.", "bundle": bundle})
+        self.assertEqual(len(gen.calls), 1)
+        self.assertEqual(gen.calls[0]["task"], "create_atomic_evidence_bound_claims")
+        self.assertEqual(gen.calls[0]["kwargs"].get("usage_stage"), "qa_generation")
+        self.assertEqual(ver.calls, [])
+
+    # T8 — the bounded revision call goes to the generation role only.
+    def test_revision_routes_to_generation_role_only(self):
+        bundle = bundle_for(code_evidence())
+        agent, gen, ver = self._two_role_agent(bundle)
+        agent._revise({
+            "question": "Explain this implementation.",
+            "bundle": bundle,
+            "draft": {"claims": [{
+                "claim_id": "c1",
+                "claim_text": "The class is present.",
+                "evidence_ids": ["e1"],
+                "answer_point_ids": ["question_core"],
+            }]},
+            "supported_claims": [],
+            "unsupported_claim_ids": ["c1"],
+            "missing_requirement_ids": [],
+            "errors": ["unsupported claim c1"],
+        })
+        self.assertEqual(len(gen.calls), 1)
+        self.assertEqual(gen.calls[0]["task"], "revise_unsupported_claims_once")
+        self.assertEqual(gen.calls[0]["kwargs"].get("usage_stage"), "qa_generation")
+        self.assertEqual(ver.calls, [])
+
+    # T9 — the semantic review goes to the verification role only.
+    def test_verify_routes_to_verification_role(self):
+        bundle = bundle_for(code_evidence())
+        agent, gen, ver = self._two_role_agent(bundle)
+        verified = agent._verify(self._verify_state(bundle))
+        self.assertEqual(len(ver.calls), 1)
+        self.assertEqual(ver.calls[0]["task"], "review_claim_support_and_relevance")
+        self.assertEqual(ver.calls[0]["kwargs"].get("usage_stage"), "qa_semantic_verification")
+        self.assertEqual(ver.calls[0]["kwargs"].get("system_instruction"), EVIDENCE_REVIEW_SYSTEM_PROMPT)
+        self.assertEqual(gen.calls, [])
+        self.assertIn("c1", [claim["claim_id"] for claim in verified["supported_claims"]])
+
+    # T10 — the E1 coverage review carries the coverage system prompt and goes
+    # to the verification role.
+    def test_coverage_review_routes_to_verification_role(self):
+        bundle = bundle_for(code_evidence())
+        agent, gen, ver = self._two_role_agent(bundle)
+        out = agent._verify(self._coverage_state(bundle, "shadow_e1_v2"))
+        self.assertEqual(len(ver.calls), 1)
+        self.assertEqual(ver.calls[0]["task"], "review_claim_support_and_relevance")
+        self.assertEqual(ver.calls[0]["kwargs"].get("usage_stage"), "qa_semantic_verification")
+        self.assertEqual(
+            ver.calls[0]["kwargs"].get("system_instruction"),
+            ANSWER_POINT_COVERAGE_REVIEW_SYSTEM_PROMPT,
+        )
+        self.assertEqual(gen.calls, [])
+        self.assertEqual([claim["claim_id"] for claim in out["supported_claims"]], ["c1"])
+
+    # T11 — the runtime E1 (E3) review path, including the post-revision second
+    # verify entry, stays on the verification role.
+    def test_post_e3_review_uses_verification_role(self):
+        bundle = bundle_for(code_evidence())
+        agent, gen, ver = self._two_role_agent(bundle)
+        agent._verify(self._coverage_state(bundle, "runtime_e1_v2"))
+        agent._verify({**self._coverage_state(bundle, "runtime_e1_v2"), "revision_count": 1})
+        review_calls = [call for call in ver.calls if call["task"] == "review_claim_support_and_relevance"]
+        self.assertEqual(len(review_calls), 2)
+        for call in review_calls:
+            self.assertEqual(call["kwargs"].get("usage_stage"), "qa_semantic_verification")
+        self.assertEqual(gen.calls, [])
+
+    # T12 — a claim citing a nonexistent evidence ID is rejected
+    # deterministically even when the verifier reports full support.
+    def test_deterministic_invalid_evidence_cannot_be_waived(self):
+        bundle = bundle_for(code_evidence())
+        agent, gen, ver = self._two_role_agent(bundle)
+        out = agent._verify(self._verify_state(bundle, evidence_ids=("nonexistent",)))
+        self.assertIn("invalid evidence for c1", out["errors"])
+        self.assertEqual(out["supported_claims"], [])
+
+    # T13 — a wrong source version is rejected deterministically even when the
+    # verifier reports full support.
+    def test_deterministic_wrong_version_cannot_be_waived(self):
+        evidence = code_evidence(
+            source_id="luminosityfit",
+            text="The fit model composes acceptance components.",
+            path="model/PndLmdModelFactory.cxx",
+        )
+        bundle = bundle_for(evidence)
+        agent, gen, ver = self._two_role_agent(bundle)
+        out = agent._verify(self._verify_state(bundle, claim_text="The fit model composes acceptance components."))
+        self.assertIn("wrong code version e1", out["errors"])
+        self.assertEqual(out["supported_claims"], [])
+
+    # T14 — an incomplete code locator is rejected deterministically even when
+    # the verifier reports full support.
+    def test_deterministic_incomplete_locator_cannot_be_waived(self):
+        evidence = code_evidence()
+        evidence["locator"] = {
+            "path": "pid/PndPidCorrelator.h",
+            "symbol": "PndPidCorrelator",
+            "start_line": None,
+            "end_line": None,
+            "section_path": [],
+        }
+        bundle = bundle_for(evidence)
+        agent, gen, ver = self._two_role_agent(bundle)
+        out = agent._verify(self._verify_state(bundle))
+        self.assertIn("incomplete code citation e1", out["errors"])
+        self.assertEqual(out["supported_claims"], [])
+
+    # T15 — a deterministic-clean claim listed as semantically unsupported is
+    # still rejected.
+    def test_semantically_unsupported_claim_still_rejected(self):
+        bundle = bundle_for(code_evidence())
+        gen = RecordingRoleVertex()
+        ver = RecordingRoleVertex(supported=False, unsupported_claim_ids=["c1"])
+        agent = QAAgent(
+            Path.cwd(),
+            retriever=FakeRetriever(bundle, storage=CatalogStorage(list(self.PID_CATALOG_ROWS))),
+            vertex=gen,
+            verification_vertex=ver,
+        )
+        out = agent._verify(self._verify_state(bundle))
+        self.assertIn("unsupported claim c1", out["errors"])
+        self.assertEqual(out["supported_claims"], [])
+
+    # T16 — a deterministic-clean, semantically supported claim is accepted.
+    def test_semantically_supported_claim_succeeds(self):
+        bundle = bundle_for(code_evidence())
+        agent, gen, ver = self._two_role_agent(bundle)
+        out = agent._verify(self._verify_state(bundle))
+        self.assertNotIn("unsupported claim c1", out["errors"])
+        self.assertIn("c1", [claim["claim_id"] for claim in out["supported_claims"]])
+
+    # T17 — a verification-role failure propagates; the generator is never used
+    # as a fallback verifier.
+    def test_verification_failure_does_not_fall_back_to_generator(self):
+        bundle = bundle_for(code_evidence())
+        gen = RecordingRoleVertex()
+        ver = RecordingRoleVertex(error=RuntimeError("verification unavailable"))
+        agent = QAAgent(
+            Path.cwd(),
+            retriever=FakeRetriever(bundle, storage=CatalogStorage(list(self.PID_CATALOG_ROWS))),
+            vertex=gen,
+            verification_vertex=ver,
+        )
+        with self.assertRaisesRegex(RuntimeError, "verification unavailable"):
+            agent._verify(self._verify_state(bundle))
+        self.assertEqual(gen.calls, [])
+
+    # T18 — a generation-role failure propagates; the verifier is never invoked.
+    def test_generation_failure_does_not_invoke_verifier(self):
+        bundle = bundle_for(code_evidence())
+        gen = RecordingRoleVertex(error=RuntimeError("generation unavailable"))
+        ver = RecordingRoleVertex()
+        agent = QAAgent(
+            Path.cwd(),
+            retriever=FakeRetriever(bundle, storage=CatalogStorage(list(self.PID_CATALOG_ROWS))),
+            vertex=gen,
+            verification_vertex=ver,
+        )
+        with self.assertRaisesRegex(RuntimeError, "generation unavailable"):
+            agent._answer({"question": "Explain this implementation.", "bundle": bundle})
+        self.assertEqual(ver.calls, [])
+
+    # T19 — usage aggregation sums the distinct role clients once each,
+    # including per-role keys, and the role diagnostics report both models.
+    def test_aggregate_usage_sums_unique_role_clients(self):
+        bundle = bundle_for(code_evidence())
+        gen = RecordingRoleVertex(settings=FakeSettings("model-G"))
+        ver = RecordingRoleVertex(settings=FakeSettings("model-V", verification_model="model-V"))
+        agent = QAAgent(
+            Path.cwd(),
+            retriever=FakeRetriever(bundle, storage=CatalogStorage(list(self.PID_CATALOG_ROWS))),
+            vertex=gen,
+            verification_vertex=ver,
+        )
+        before = agent._stats_snapshot()
+        gen.stats.update({
+            "model_calls": 2, "token_usage": 140, "generation_calls": 2,
+            "embedding_calls": 0, "qa_generation_calls": 2,
+        })
+        ver.stats.update({
+            "model_calls": 1, "token_usage": 70, "generation_calls": 1,
+            "embedding_calls": 0, "qa_semantic_verification_calls": 1,
+        })
+        delta = agent._model_usage_delta(before)
+        self.assertEqual(delta["model_calls"], 3)
+        self.assertEqual(delta["token_usage"], 210)
+        self.assertEqual(delta["generation_calls"], 3)
+        self.assertEqual(delta["embedding_calls"], 0)
+        self.assertEqual(delta["qa_generation_calls"], 2)
+        self.assertEqual(delta["qa_semantic_verification_calls"], 1)
+        roles = agent._model_roles_diagnostics()
+        self.assertEqual(roles["answer_generation_model"], "model-G")
+        self.assertEqual(roles["semantic_verification_model"], "model-V")
+        self.assertFalse(roles["same_model_id"])
+        self.assertTrue(roles["distinct_client_paths"])
+
+    # T20 — a shared legacy injected client appearing in both roles is counted
+    # exactly once.
+    def test_shared_injected_client_counted_once(self):
+        bundle = bundle_for(code_evidence())
+        shared = RecordingRoleVertex()
+        agent = QAAgent(Path.cwd(), retriever=FakeRetriever(bundle), vertex=shared)
+        self.assertEqual(agent._role_clients(), [shared])
+        before = agent._stats_snapshot()
+        shared.stats["model_calls"] = shared.stats.get("model_calls", 0) + 4
+        delta = agent._model_usage_delta(before)
+        self.assertEqual(delta["model_calls"], 4)
+
+    # T21 — role call counters separate the QA roles across a full run.
+    def test_role_call_counters_separate_qa_roles(self):
+        bundle = bundle_for(code_evidence())
+        gen = RecordingRoleVertex(settings=FakeSettings("model-G"))
+        ver = RecordingRoleVertex(settings=FakeSettings("model-V", verification_model="model-V"))
+        agent = QAAgent(
+            Path.cwd(),
+            retriever=FakeRetriever(bundle, storage=CatalogStorage(list(self.PID_CATALOG_ROWS))),
+            vertex=gen,
+            verification_vertex=ver,
+        )
+        detailed = agent.run_detailed("Where is PndPidCorrelator?")
+        gen_stages = [call["kwargs"].get("usage_stage") for call in gen.calls]
+        ver_stages = [call["kwargs"].get("usage_stage") for call in ver.calls]
+        self.assertIn("qa_generation", gen_stages)
+        self.assertNotIn("qa_semantic_verification", gen_stages)
+        self.assertTrue(ver_stages)
+        self.assertEqual(set(ver_stages), {"qa_semantic_verification"})
+        usage = detailed["model_usage"]
+        self.assertGreaterEqual(usage.get("qa_generation_calls", 0), 1)
+        self.assertGreaterEqual(usage.get("qa_semantic_verification_calls", 0), 1)
+        self.assertEqual(
+            usage["model_calls"],
+            usage["qa_generation_calls"] + usage["qa_semantic_verification_calls"],
+        )
+
+    # T23 — usage labeling happens only at the three QA call sites; retrieval
+    # receives the generation client but never a QA usage_stage label.
+    def test_retrieval_calls_not_labeled_qa_generation(self):
+        import panda_agent.qa as qa_module
+
+        bundle = bundle_for(code_evidence())
+        gen = RecordingRoleVertex()
+        ver = RecordingRoleVertex()
+        retriever = FakeRetriever(bundle, storage=CatalogStorage(list(self.PID_CATALOG_ROWS)))
+        agent = QAAgent(Path.cwd(), retriever=retriever, vertex=gen, verification_vertex=ver)
+        agent.run_detailed("Where is PndPidCorrelator?")
+        self.assertGreaterEqual(retriever.calls, 1)
+        for call in gen.calls:
+            self.assertIn(
+                call["task"],
+                {"create_atomic_evidence_bound_claims", "revise_unsupported_claims_once"},
+            )
+        stages = {
+            call["kwargs"].get("usage_stage") for call in [*gen.calls, *ver.calls]
+        }
+        self.assertTrue(stages <= {None, "qa_generation", "qa_semantic_verification"})
+        self.assertEqual(inspect.getsource(qa_module).count("usage_stage="), 3)
+
+    # T24 — the evaluation judge is never wired into normal QA roles.
+    def test_evaluation_judge_never_used_by_normal_qa(self):
+        import panda_agent.qa as qa_module
+
+        source = inspect.getsource(qa_module)
+        self.assertNotIn("evaluation_judge", source)
+        self.assertNotIn("EVALUATION_JUDGE", source)
+        bundle = bundle_for(code_evidence())
+        gen = RecordingRoleVertex(
+            settings=FakeSettings("model-G", verification_model=None, evaluation_judge_model="model-J")
+        )
+        ver = RecordingRoleVertex(
+            settings=FakeSettings("model-V", verification_model="model-V", evaluation_judge_model="model-J")
+        )
+        agent = QAAgent(
+            Path.cwd(),
+            retriever=FakeRetriever(bundle, storage=CatalogStorage(list(self.PID_CATALOG_ROWS))),
+            vertex=gen,
+            verification_vertex=ver,
+        )
+        detailed = agent.run_detailed("Where is PndPidCorrelator?")
+        roles = detailed["diagnostics"]["model_roles"]
+        self.assertEqual(roles["answer_generation_model"], "model-G")
+        self.assertEqual(roles["semantic_verification_model"], "model-V")
+        self.assertNotIn("model-J", json.dumps(detailed))
+
+    # T25 — the public QAResult shape is unchanged and free of role keys.
+    def test_public_qa_result_schema_unchanged(self):
+        bundle = bundle_for(code_evidence())
+        agent, gen, ver = self._two_role_agent(bundle)
+        detailed = agent.run_detailed("Where is PndPidCorrelator?")
+        result = detailed["result"]
+        self.assertEqual(
+            set(result.keys()),
+            {"status", "answer", "claims", "evidence", "resolved_versions", "verification_errors"},
+        )
+        self.assertEqual(result["status"], QAStatus.ANSWERED.value)
+        self.assertTrue(result["claims"])
+        result_json = json.dumps(result)
+        for forbidden in ("model_roles", "qa_generation", "qa_semantic_verification"):
+            self.assertNotIn(forbidden, result_json)
+
+    # T26 — the default run_detailed mode stays legacy_question_core.
+    def test_default_mode_unchanged(self):
+        import panda_agent.qa as qa_module
+
+        self.assertIn("DEFAULT_ANSWER_POINT_MODE", inspect.getsource(qa_module.QAAgent.run_detailed))
+        bundle = bundle_for(code_evidence())
+        agent, gen, ver = self._two_role_agent(bundle)
+        detailed = agent.run_detailed("Where is PndPidCorrelator?")
+        self.assertNotIn("answer_point_audit", detailed["diagnostics"])
+        self.assertNotIn("question_decomposition", detailed["diagnostics"])
+        self.assertNotIn("e3_trace", detailed["diagnostics"])
+
+    # T30 — the F3 fixed-locator retirement is intact in the QA source.
+    def test_f3_fixed_locator_retirement_intact(self):
+        import panda_agent.qa as qa_module
+
+        source = inspect.getsource(qa_module)
+        self.assertNotIn("PndPidCorrelator.h", source)
+        self.assertNotIn("macro/target/ana_dpm.C", source)
+
+    # Role diagnostics markers: settings-less fakes yield None markers,
+    # configured fakes yield per-role model IDs, and path distinctness matches
+    # the construction.
+    def test_model_roles_diagnostics_markers(self):
+        bundle = bundle_for(code_evidence())
+        agent, gen, ver = self._two_role_agent(bundle)
+        roles = agent._model_roles_diagnostics()
+        self.assertIsNone(roles["answer_generation_model"])
+        self.assertIsNone(roles["semantic_verification_model"])
+        self.assertIsNone(roles["same_model_id"])
+        self.assertTrue(roles["distinct_client_paths"])
+        gen2 = RecordingRoleVertex(settings=FakeSettings("model-G"))
+        ver2 = RecordingRoleVertex(settings=FakeSettings("model-V", verification_model="model-V"))
+        agent2 = QAAgent(Path.cwd(), retriever=FakeRetriever(bundle), vertex=gen2, verification_vertex=ver2)
+        roles2 = agent2._model_roles_diagnostics()
+        self.assertEqual(roles2["answer_generation_model"], "model-G")
+        self.assertEqual(roles2["semantic_verification_model"], "model-V")
+        self.assertIs(roles2["same_model_id"], False)
+        self.assertTrue(roles2["distinct_client_paths"])
+        shared = RecordingRoleVertex()
+        agent3 = QAAgent(Path.cwd(), retriever=FakeRetriever(bundle), vertex=shared)
+        self.assertFalse(agent3._model_roles_diagnostics()["distinct_client_paths"])
 
 
 if __name__ == "__main__":

@@ -62,6 +62,21 @@ class FakeClient:
         self.models = FakeModels(embedding_dimensions, response_dimensions, response_counts)
 
 
+class FakeUsageModels(FakeModels):
+    """FakeModels whose generation responses carry token-usage metadata."""
+
+    def __init__(self, embedding_dimensions: int, total_token_count: int) -> None:
+        super().__init__(embedding_dimensions)
+        self.total_token_count = total_token_count
+
+    def generate_content(self, **kwargs):
+        self.generation_calls.append(kwargs)
+        return SimpleNamespace(
+            text=json.dumps({"status": "ok"}),
+            usage_metadata=SimpleNamespace(total_token_count=self.total_token_count),
+        )
+
+
 def _settings(**overrides) -> VertexSettings:
     defaults = {
         "project": "test-project",
@@ -133,6 +148,70 @@ class VertexTests(unittest.TestCase):
             settings.for_generation_model(settings.evaluation_judge_model).generation_model,
             "test-evaluation-judge-model",
         )
+
+    def test_verification_model_defaults_to_generation_model(self) -> None:
+        with patch.dict(
+            os.environ,
+            {
+                "QA_GCP_PROJECT_ID": "test-project",
+                "QA_GENERATION_MODEL_ID": "test-generation-model",
+                "QA_EVALUATION_JUDGE_MODEL_ID": "test-evaluation-judge-model",
+            },
+            clear=True,
+        ):
+            settings = VertexSettings.from_env()
+        self.assertIsNone(settings.verification_model)
+        self.assertEqual(
+            settings.effective_verification_model, settings.generation_model
+        )
+
+    def test_explicit_verification_model_override(self) -> None:
+        with patch.dict(
+            os.environ,
+            {
+                "QA_GCP_PROJECT_ID": "test-project",
+                "QA_GENERATION_MODEL_ID": "model-A",
+                "QA_VERIFICATION_MODEL_ID": "model-B",
+                "QA_EVALUATION_JUDGE_MODEL_ID": "test-evaluation-judge-model",
+            },
+            clear=True,
+        ):
+            settings = VertexSettings.from_env()
+        self.assertEqual(settings.generation_model, "model-A")
+        self.assertEqual(settings.verification_model, "model-B")
+        self.assertEqual(
+            settings.evaluation_judge_model, "test-evaluation-judge-model"
+        )
+        self.assertEqual(settings.effective_verification_model, "model-B")
+        verification_settings = settings.for_verification_model()
+        self.assertEqual(verification_settings.generation_model, "model-B")
+        self.assertEqual(verification_settings.verification_model, "model-B")
+        self.assertEqual(
+            verification_settings.evaluation_judge_model,
+            "test-evaluation-judge-model",
+        )
+        self.assertEqual(
+            verification_settings.for_verification_model(), verification_settings
+        )
+
+    def test_three_model_roles_remain_distinct(self) -> None:
+        settings = _settings(
+            generation_model="model-A",
+            verification_model="model-B",
+            evaluation_judge_model="model-C",
+        )
+        self.assertEqual(
+            {
+                settings.generation_model,
+                settings.verification_model,
+                settings.evaluation_judge_model,
+            },
+            {"model-A", "model-B", "model-C"},
+        )
+        verification_settings = settings.for_verification_model()
+        self.assertEqual(verification_settings.generation_model, "model-B")
+        self.assertEqual(verification_settings.verification_model, "model-B")
+        self.assertEqual(verification_settings.evaluation_judge_model, "model-C")
 
     def test_generation_health_check_reports_model_role(self) -> None:
         result = self.client.generation_health_check()
@@ -230,6 +309,66 @@ class VertexTests(unittest.TestCase):
             self.client.stats_delta(before),
             {"model_calls": 2, "token_usage": 0, "generation_calls": 1, "embedding_calls": 1},
         )
+
+    def test_usage_stage_records_role_call_counters(self) -> None:
+        schema = {"type": "object", "properties": {"status": {"type": "string"}}}
+        self.client.generate_json("health", schema, usage_stage="qa_generation")
+        self.client.generate_json(
+            "health", schema, usage_stage="qa_semantic_verification"
+        )
+        stats = self.client.stats_snapshot()
+        self.assertEqual(stats["qa_generation_calls"], 1)
+        self.assertEqual(stats["qa_semantic_verification_calls"], 1)
+        self.assertEqual(stats["generation_calls"], 2)
+        self.assertEqual(stats["model_calls"], 2)
+
+    def test_usage_stage_attributes_tokens_to_role(self) -> None:
+        schema = {"type": "object", "properties": {"status": {"type": "string"}}}
+
+        labeled_fake = FakeClient(self.settings.embedding_dimensions)
+        labeled_fake.models = FakeUsageModels(
+            self.settings.embedding_dimensions, total_token_count=123
+        )
+        labeled_client = VertexAIClient(self.settings, client=labeled_fake)
+        labeled_client.generate_json("health", schema, usage_stage="qa_generation")
+        labeled_stats = labeled_client.stats_snapshot()
+        self.assertEqual(labeled_stats["token_usage"], 123)
+        self.assertEqual(labeled_stats["qa_generation_token_usage"], 123)
+
+        unlabeled_fake = FakeClient(self.settings.embedding_dimensions)
+        unlabeled_fake.models = FakeUsageModels(
+            self.settings.embedding_dimensions, total_token_count=123
+        )
+        unlabeled_client = VertexAIClient(self.settings, client=unlabeled_fake)
+        unlabeled_client.generate_json("health", schema)
+        unlabeled_stats = unlabeled_client.stats_snapshot()
+        self.assertEqual(unlabeled_stats["token_usage"], 123)
+        self.assertFalse(
+            any(key.startswith("qa_") for key in unlabeled_stats)
+        )
+
+    def test_unlabeled_calls_keep_prior_aggregate_behavior(self) -> None:
+        before = self.client.stats_snapshot()
+        self.client.generate_json(
+            "health", {"type": "object", "properties": {"status": {"type": "string"}}}
+        )
+        self.client.embed_query("query")
+        stats = self.client.stats_snapshot()
+        self.assertFalse(any(key.startswith("qa_") for key in stats))
+        self.assertEqual(
+            self.client.stats_delta(before),
+            {"model_calls": 2, "token_usage": 0, "generation_calls": 1, "embedding_calls": 1},
+        )
+
+    def test_usage_stage_absent_by_default(self) -> None:
+        result = self.client.generate_json(
+            "health", {"type": "object", "properties": {"status": {"type": "string"}}}
+        )
+        self.assertEqual(result, {"status": "ok"})
+        stats = self.client.stats_snapshot()
+        self.assertEqual(stats["model_calls"], 1)
+        self.assertEqual(stats["generation_calls"], 1)
+        self.assertFalse(any(key.startswith("qa_") for key in stats))
 
 
 if __name__ == "__main__":

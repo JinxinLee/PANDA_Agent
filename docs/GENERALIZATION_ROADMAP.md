@@ -188,7 +188,7 @@ F2-A5-R1:
 COMPLETE / PASS / SOURCE_OBLIGATION_MATCHING_BOUNDARY_ESTABLISHED
 
 Phase F:
-IN_PROGRESS / F3_COMPLETE_F4_NOT_STARTED
+IN_PROGRESS / F4_COMPLETE_F5_NOT_STARTED
 
 F1:
 COMPLETE / PASS / RESIDUAL_BENCHMARK_DEPENDENCY_INVENTORY_ESTABLISHED
@@ -199,11 +199,14 @@ COMPLETE / PASS / A1_A2_A3_A4_A5_COMPLETE
 F3:
 COMPLETE / PASS / FIXED_LOCATOR_FALLBACK_SHORTCUTS_RETIRED
 
+F4:
+COMPLETE / PASS / ANSWER_GENERATION_SEMANTIC_VERIFICATION_ROLES_SEPARATED
+
 D4 overall completion:
 UNDECIDED
 
 Next task recommendation:
-F4 — Separate Answer-Generation and Semantic-Verification Roles / RECOMMENDED / NOT AUTHORIZED
+F5 — Bounded Answer Composer / RECOMMENDED / NOT AUTHORIZED
 
 Current task authorization:
 E3-A1 experimental missing-point targeted retrieval implementation is complete:
@@ -219,8 +222,8 @@ E3-A2 completed INCONCLUSIVE (1/11 natural applicability; the single applicable 
 
 No D4-A11 exists.
 No further D4 task is currently authorized.
-Phase E is COMPLETE (closed by PE-LR1); no further Phase-E task exists. Phase-F scope reconciliation is complete (PF-LR1); F2-A1/F2-A1-R1 verifier-support repair, F2-A2 pointer-normalization completeness cleanup, and F2-A3 E1/E2 compatibility authority reconciliation (completed by F2-A3-R1) and F2-A4 premise/refusal generalization (completed by F2-A4-R1) and F2-A5 semantic source obligation generalization are complete; all five PF-LR1 F2 groups are closed (F2 = COMPLETE / PASS / A1_A2_A3_A4_A5_COMPLETE). F3 fixed-locator/fallback cleanup (R03/R05/R06) is COMPLETE / PASS / FIXED_LOCATOR_FALLBACK_SHORTCUTS_RETIRED.
-No further Phase-F production task is currently authorized; F4 — Separate Answer-Generation and Semantic-Verification Roles is recommended but NOT AUTHORIZED.
+Phase E is COMPLETE (closed by PE-LR1); no further Phase-E task exists. Phase-F scope reconciliation is complete (PF-LR1); F2-A1/F2-A1-R1 verifier-support repair, F2-A2 pointer-normalization completeness cleanup, and F2-A3 E1/E2 compatibility authority reconciliation (completed by F2-A3-R1) and F2-A4 premise/refusal generalization (completed by F2-A4-R1) and F2-A5 semantic source obligation generalization are complete; all five PF-LR1 F2 groups are closed (F2 = COMPLETE / PASS / A1_A2_A3_A4_A5_COMPLETE). F3 fixed-locator/fallback cleanup (R03/R05/R06) is COMPLETE / PASS / FIXED_LOCATOR_FALLBACK_SHORTCUTS_RETIRED. F4 generation/semantic-verification role separation is COMPLETE / PASS / ANSWER_GENERATION_SEMANTIC_VERIFICATION_ROLES_SEPARATED (distinct production client paths, independently configurable verification model, judge isolated offline, role-specific usage accounting).
+No further Phase-F production task is currently authorized; F5 — Bounded Answer Composer is recommended but NOT AUTHORIZED.
 
 ## Phase overview
 
@@ -239,8 +242,8 @@ No further Phase-F production task is currently authorized; F4 — Separate Answ
 - **Phase E — Answer generalization:** `COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED`
   Dynamic question decomposition, answer-point coverage, claim-to-evidence mapping, and targeted completeness recovery. E1 validated (shadow scope), E2 core complete, E3 closed as a bounded low-frequency fallback; PE-LR1 closed the phase at the promotion boundary with the normal default remaining `legacy_question_core` and promotion reconsideration gated on a material candidate change or an explicitly authorized release-boundary decision.
 
-- **Phase F — Benchmark dependency cleanup and final answering:** `IN_PROGRESS / F3_COMPLETE_F4_NOT_STARTED`
-  F1 established the bounded non-D4 residual inventory without production cleanup. PF-LR1 reconciled the Phase-F scope into a bounded F2/F3 execution map. F2-A1 removed the benchmark-shaped verifier-support dependencies (R13), F2-A1-R1 removed the remaining whole-claim lexical semantic bypass (the initial F2-A1 closeout was corrected by R1), F2-A2 established question-derived pointer-normalization completeness (R10), and F2-A3 reconciled E1/E2 compatibility authority (R08/R09/R11: coverage modes own completeness, the named-requirement contract remains a legacy bridge); F2-A4 established generic question-grounded premise refusals through the locked-corpus catalog (R04), and F2-A5 established raw-question-grounded paper/code source obligations for the R01 intents (fixed config mappings retired; R02/HOLD mappings and all source budgets unchanged), with the matching boundary completed by F2-A5-R1 (bounded whole-token/phrase matching); with all five PF-LR1 F2 groups complete, F2 is closed. F3 retired the three PF-LR1 code-origin fixed locators (R03 feedback page override, R05 fixed-header unsupported-API fallback, R06 fixed-macro/event_poca deleted-runtime presentation) behind reviewed-expansion and question-grounded generic mechanisms with the D4 YAML untouched.
+- **Phase F — Benchmark dependency cleanup and final answering:** `IN_PROGRESS / F4_COMPLETE_F5_NOT_STARTED`
+  F1 established the bounded non-D4 residual inventory without production cleanup. PF-LR1 reconciled the Phase-F scope into a bounded F2/F3 execution map. F2-A1 removed the benchmark-shaped verifier-support dependencies (R13), F2-A1-R1 removed the remaining whole-claim lexical semantic bypass (the initial F2-A1 closeout was corrected by R1), F2-A2 established question-derived pointer-normalization completeness (R10), and F2-A3 reconciled E1/E2 compatibility authority (R08/R09/R11: coverage modes own completeness, the named-requirement contract remains a legacy bridge); F2-A4 established generic question-grounded premise refusals through the locked-corpus catalog (R04), and F2-A5 established raw-question-grounded paper/code source obligations for the R01 intents (fixed config mappings retired; R02/HOLD mappings and all source budgets unchanged), with the matching boundary completed by F2-A5-R1 (bounded whole-token/phrase matching); with all five PF-LR1 F2 groups complete, F2 is closed. F3 retired the three PF-LR1 code-origin fixed locators (R03 feedback page override, R05 fixed-header unsupported-API fallback, R06 fixed-macro/event_poca deleted-runtime presentation) behind reviewed-expansion and question-grounded generic mechanisms with the D4 YAML untouched. F4 separated the answer/revision generation role from the product semantic-verification role at the settings, client-path, invocation, and usage-accounting levels (distinct production client paths, optional `QA_VERIFICATION_MODEL_ID` defaulting to the generation model, evaluation judge still offline-only, role-specific usage counters and internal role diagnostics) without changing any QA graph semantics or the public default.
 
 ## Phase A — Evaluation infrastructure and versioned baseline
 
@@ -705,7 +708,7 @@ Original Phase-F planning predates the substantial shortcut migrations completed
 
 ### F4 — Separate answer-generation and semantic-verification roles
 
-- **Status:** NOT_STARTED
+- **Status:** COMPLETE / PASS / ANSWER_GENERATION_SEMANTIC_VERIFICATION_ROLES_SEPARATED
 - **Problem:** One client/model role for generation and review creates correlated failures and hides objectively checkable verification.
 - **Goal:** Make generation and verification roles/configuration/client paths separable, even if they initially share a model.
 - **Why this stage:** Answer completeness is generic and shortcut dependency is reduced, allowing role separation without confounded behavior.
@@ -717,6 +720,7 @@ Original Phase-F planning predates the substantial shortcut migrations completed
 - **Primary metrics:** False acceptance, false rejection, deterministic coverage, model-call/token cost, and grounding.
 - **Acceptance criteria:** Roles are independently configurable/auditable and objective facts are checked deterministically without quality regression.
 - **Failure handling:** Retain the safe existing verifier path when separation is inconclusive; never silently bypass verification. Stop after F4.
+- **Outcome:** COMPLETE / PASS / ANSWER_GENERATION_SEMANTIC_VERIFICATION_ROLES_SEPARATED. `VertexSettings` gained the optional `verification_model` (`QA_VERIFICATION_MODEL_ID`, defaulting to the generation model) plus `effective_verification_model`/`for_verification_model()`; `generate_json` gained a `usage_stage` label with additive role-specific call/token counters (`qa_generation_*`, `qa_semantic_verification_*`) that leaves unlabeled aggregate behavior byte-compatible; the production default builds distinct generation/verification client paths even at equal model IDs; `_answer`/`_revise` route to the generation role, `_verify` semantic review (legacy + coverage + E3 second verify) routes to the verification role; usage aggregation sums unique role clients without double-counting a shared injected client; internal `model_roles` diagnostics added. The evaluation judge remains offline-only; deterministic integrity checks stay application authority and the semantic unsupported verdict stays authoritative; failure semantics fail closed with no cross-role fallback; sole legacy `vertex=` injection serves both roles as an explicit compatibility seam. Adversarial contract T1–T30 passes; zero scientific/evaluation calls. Report: `evaluation/F4_GENERATION_VERIFICATION_ROLE_SEPARATION.md`.
 
 ### F5 — Bounded Answer Composer
 
@@ -759,9 +763,9 @@ At release, Generalization Gap means benchmark score minus novel score. Benchmar
 5. **Phase execution ordering:** F1 found zero E1 blockers. E1-R2 passed targeted prospective synthetic validation and E1-C1 passed exposed real-style confirmation, including the original atomicity sentinel. E1 is closed under the accepted scope decision. E2-A3 remains FAIL/Q7. E2-A3-FR1 completed with REPAIR_JUSTIFIED. R1 remains FAIL/P2_P6. R2 repaired citation eligibility and passed S1-S13/P1-P11 in six fresh pairs. Historical P6 FAIL remains without waiver or product tuning; historical R3 remains INCONCLUSIVE after four infrastructure failures. R3-R1 completed the missing paired evidence and failed G11 at 2/14 noncritical worse; FR1 subsequently completed a static review recommending shared claim sanitization repair and prospective gate redesign. E2-LR1 subsequently separates completed core mechanisms from deferred promotion and supersedes immediate A3-R4. QA-M1 maintenance subsequently completed with focused T0/static checks. E3-A0 architecture contract is complete; E3-A1 implemented the experimental mechanism under runtime_e1_v2; E3-A2 completed INCONCLUSIVE with insufficient natural applicability; E3-LR1 closed E3 as a bounded low-frequency fallback with standalone recovery benefit unresolved. No further E1 confirmation is required.
 
 ```text
-CURRENT_TASK = F3 / COMPLETE / PASS / FIXED_LOCATOR_FALLBACK_SHORTCUTS_RETIRED
-NEXT_TASK_RECOMMENDATION = F4 — Separate Answer-Generation and Semantic-Verification Roles / RECOMMENDED / NOT AUTHORIZED
+CURRENT_TASK = F4 / COMPLETE / PASS / ANSWER_GENERATION_SEMANTIC_VERIFICATION_ROLES_SEPARATED
+NEXT_TASK_RECOMMENDATION = F5 — Bounded Answer Composer / RECOMMENDED / NOT AUTHORIZED
 NEXT_TASK_EXECUTION_AUTHORIZED = false
-FOLLOWING_ARCHITECTURE_TASK = F4 — Separate Answer-Generation and Semantic-Verification Roles
+FOLLOWING_ARCHITECTURE_TASK = F5 — Bounded Answer Composer
 NEXT_STAGE_AUTHORIZED = false
 ```

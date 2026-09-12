@@ -1198,10 +1198,29 @@ def _claim_matches_retained(claim: dict[str, Any], retained: dict[str, Any]) -> 
 
 
 class QAAgent:
-    def __init__(self, project_root: Path, retriever: Retriever | None = None, vertex: VertexAIClient | None = None) -> None:
+    def __init__(
+        self,
+        project_root: Path,
+        retriever: Retriever | None = None,
+        vertex: VertexAIClient | None = None,
+        verification_vertex: VertexAIClient | None = None,
+    ) -> None:
         self.project_root = project_root
-        self.vertex = vertex or VertexAIClient(VertexSettings.from_env())
-        self.retriever = retriever or Retriever(project_root, vertex=self.vertex)
+        if vertex is None:
+            settings = VertexSettings.from_env()
+            self.generation_vertex = VertexAIClient(settings)
+            # F4: production default builds a DISTINCT verification client path
+            # even when the effective verification model equals the generation
+            # model.
+            self.verification_vertex = VertexAIClient(settings.for_verification_model())
+        else:
+            # Legacy test/injection compatibility: a sole ``vertex=`` injection
+            # serves both roles until a ``verification_vertex=`` is supplied
+            # explicitly.
+            self.generation_vertex = vertex
+            self.verification_vertex = verification_vertex or vertex
+        self.vertex = self.generation_vertex  # legacy alias
+        self.retriever = retriever or Retriever(project_root, vertex=self.generation_vertex)
         self._locked_identifier_symbols: dict[str, set[str]] | None = None
         graph = StateGraph(QAState)
         for name, node in (
@@ -1238,7 +1257,7 @@ class QAAgent:
 
     def decompose_question(self, question: str) -> dict[str, Any]:
         """Explicit shadow diagnostic; never invoked by the production graph."""
-        return QuestionDecomposer(self.vertex).decompose(question)
+        return QuestionDecomposer(self.generation_vertex).decompose(question)
 
     def _retrieve(self, state: QAState) -> dict[str, Any]:
         is_runtime = state.get("answer_point_coverage_mode") == "runtime_e1_v2"
@@ -1934,8 +1953,11 @@ class QAAgent:
             },
             ensure_ascii=False,
         )
-        draft = self.vertex.generate_json(
-            prompt, ANSWER_SCHEMA, system_instruction=ANSWER_SYSTEM_PROMPT
+        draft = self.generation_vertex.generate_json(
+            prompt,
+            ANSWER_SCHEMA,
+            system_instruction=ANSWER_SYSTEM_PROMPT,
+            usage_stage="qa_generation",
         )
         if _coverage_shadow(state):
             draft = {"claims": _model_claims(list(draft.get("claims", [])))}
@@ -2167,7 +2189,7 @@ class QAAgent:
             {} if shadow else _requirement_evidence(answer_requirements, review_evidence_lookup)
         )
         reviewable_claims = [c for c in claims if not claim_errors.get(str(c.get("claim_id") or ""))] if shadow else claims
-        review = self.vertex.generate_json(
+        review = self.verification_vertex.generate_json(
             json.dumps(
                 {
                     "task": "review_claim_support_and_relevance",
@@ -2181,6 +2203,7 @@ class QAAgent:
             ),
             ANSWER_POINT_COVERAGE_REVIEW_SCHEMA if shadow else REVIEW_SCHEMA,
             system_instruction=ANSWER_POINT_COVERAGE_REVIEW_SYSTEM_PROMPT if shadow else EVIDENCE_REVIEW_SYSTEM_PROMPT,
+            usage_stage="qa_semantic_verification",
         )
         verified_mappings: dict[str, list[str]] = {}
         coverage_review_error = None
@@ -2431,8 +2454,11 @@ class QAAgent:
             },
             ensure_ascii=False,
         )
-        revised = self.vertex.generate_json(
-            prompt, ANSWER_SCHEMA, system_instruction=ANSWER_POINT_COVERAGE_REVISION_SYSTEM_PROMPT if shadow else REVISION_SYSTEM_PROMPT
+        revised = self.generation_vertex.generate_json(
+            prompt,
+            ANSWER_SCHEMA,
+            system_instruction=ANSWER_POINT_COVERAGE_REVISION_SYSTEM_PROMPT if shadow else REVISION_SYSTEM_PROMPT,
+            usage_stage="qa_generation",
         )
         if shadow:
             revised = {"claims": _model_claims(list(revised.get("claims", [])))}
@@ -2780,6 +2806,7 @@ class QAAgent:
             "verification_errors": state.get("errors", []),
             "claim_audit": state.get("claim_audit", []),
         }
+        diagnostics["model_roles"] = self._model_roles_diagnostics()
         if coverage_shadow:
             diagnostics.update(question_decomposition=decomposition, answer_point_audit=state["answer_point_audit"])
         if mode == "runtime_e1_v2":
@@ -2828,20 +2855,54 @@ class QAAgent:
             "model_usage": self._model_usage_delta(stats_before),
         }
 
+    def _role_clients(self) -> list[Any]:
+        """Distinct role clients in deterministic order; a shared legacy injected
+        client appearing as both roles is counted once."""
+        return list(dict.fromkeys((self.generation_vertex, self.verification_vertex)))
+
     def _stats_snapshot(self) -> dict[str, int]:
-        snapshot = getattr(self.vertex, "stats_snapshot", None)
-        return dict(snapshot()) if callable(snapshot) else {}
+        snapshot: dict[str, int] = {}
+        seen = False
+        for client in self._role_clients():
+            read = getattr(client, "stats_snapshot", None)
+            if not callable(read):
+                continue
+            seen = True
+            for key, value in dict(read()).items():
+                snapshot[key] = snapshot.get(key, 0) + int(value)
+        return snapshot if seen else {}
 
     def _model_usage_delta(self, before: dict[str, int]) -> dict[str, int]:
-        delta = getattr(self.vertex, "stats_delta", None)
-        if callable(delta):
-            usage = dict(delta(before))
-        else:
-            after = self._stats_snapshot()
-            usage = {key: after.get(key, 0) - before.get(key, 0) for key in after}
+        after = self._stats_snapshot()
+        usage = {
+            key: after.get(key, 0) - before.get(key, 0)
+            for key in after.keys() | before.keys()
+        }
         for key in ("model_calls", "token_usage", "generation_calls", "embedding_calls"):
             usage.setdefault(key, 0)
         return usage
+
+    def _model_roles_diagnostics(self) -> dict[str, Any]:
+        """Internal role-identity receipt. No project IDs, credentials, prompts, or responses."""
+        def role_model(client: Any) -> str | None:
+            settings = getattr(client, "settings", None)
+            if settings is None:
+                return None
+            verification = getattr(settings, "verification_model", None)
+            generation = getattr(settings, "generation_model", None)
+            return verification or generation
+        generation_model = role_model(self.generation_vertex)
+        verification_model = role_model(self.verification_vertex)
+        return {
+            "answer_generation_model": generation_model,
+            "semantic_verification_model": verification_model,
+            "same_model_id": (
+                generation_model == verification_model
+                if generation_model is not None and verification_model is not None
+                else None
+            ),
+            "distinct_client_paths": self.generation_vertex is not self.verification_vertex,
+        }
 
     @staticmethod
     def _timed_node(name: str, node: Any) -> Any:

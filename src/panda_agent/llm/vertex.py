@@ -32,6 +32,7 @@ class VertexSettings:
     embedding_model: str = "gemini-embedding-2"
     embedding_dimensions: int = 3072
     timeout_ms: int = 120_000
+    verification_model: str | None = None
 
     @classmethod
     def from_env(cls) -> "VertexSettings":
@@ -50,10 +51,12 @@ class VertexSettings:
             raise VertexConfigurationError(
                 "QA_EVALUATION_JUDGE_MODEL_ID is required for Vertex AI"
             )
+        verification_model = os.getenv("QA_VERIFICATION_MODEL_ID") or None
         return cls(
             project=project,
             generation_model=generation_model,
             evaluation_judge_model=evaluation_judge_model,
+            verification_model=verification_model,
             location=(
                 os.getenv("QA_VERTEX_LOCATION")
                 or os.getenv("GCP_LOCATION")
@@ -69,6 +72,15 @@ class VertexSettings:
     def for_generation_model(self, model: str) -> "VertexSettings":
         """Return equivalent settings for a separate structured-generation role."""
         return replace(self, generation_model=model)
+
+    @property
+    def effective_verification_model(self) -> str:
+        """Product semantic-verification model; defaults to the generation model."""
+        return self.verification_model or self.generation_model
+
+    def for_verification_model(self) -> "VertexSettings":
+        """Return equivalent settings for the product semantic-verification role."""
+        return replace(self, generation_model=self.effective_verification_model)
 
 
 @dataclass(frozen=True)
@@ -97,17 +109,21 @@ class VertexAIClient:
             http_options=types.HttpOptions(timeout=settings.timeout_ms),
         )
 
-    def _record_request(self, stage: str) -> None:
+    def _record_request(self, stage: str, usage_stage: str | None = None) -> None:
         with self._stats_lock:
             self._stats["model_calls"] += 1
             self._stats[f"{stage}_calls"] += 1
+            if usage_stage:
+                self._stats[f"{usage_stage}_calls"] += 1
 
-    def _record_usage(self, response: Any) -> None:
+    def _record_usage(self, response: Any, usage_stage: str | None = None) -> None:
         usage = getattr(response, "usage_metadata", None)
         total = getattr(usage, "total_token_count", None) if usage else None
         if total is not None:
             with self._stats_lock:
                 self._stats["token_usage"] += int(total)
+                if usage_stage:
+                    self._stats[f"{usage_stage}_token_usage"] += int(total)
 
     @staticmethod
     def _is_transient_error(message: str) -> bool:
@@ -151,11 +167,12 @@ class VertexAIClient:
         *,
         system_instruction: str | None = None,
         temperature: float = 0.0,
+        usage_stage: str | None = None,
     ) -> dict[str, Any]:
         last_error: Exception | None = None
         for attempt in range(3):
             try:
-                self._record_request("generation")
+                self._record_request("generation", usage_stage=usage_stage)
                 response = self.client.models.generate_content(
                     model=self.settings.generation_model,
                     contents=prompt,
@@ -166,7 +183,7 @@ class VertexAIClient:
                         response_json_schema=response_schema,
                     ),
                 )
-                self._record_usage(response)
+                self._record_usage(response, usage_stage=usage_stage)
                 text = getattr(response, "text", None)
                 if not text:
                     raise ValueError("Vertex returned an empty structured response")

@@ -86,6 +86,8 @@ F2-A5-R1 = COMPLETE / PASS / SOURCE_OBLIGATION_MATCHING_BOUNDARY_ESTABLISHED.
 F2-A5-R1 report: `evaluation/F2_A5_R1_SOURCE_OBLIGATION_BOUNDARY_REPAIR.md`.
 F3 = COMPLETE / PASS / FIXED_LOCATOR_FALLBACK_SHORTCUTS_RETIRED.
 F3 report: `evaluation/F3_FIXED_LOCATOR_FALLBACK_CLEANUP.md`.
+F4 = COMPLETE / PASS / ANSWER_GENERATION_SEMANTIC_VERIFICATION_ROLES_SEPARATED.
+F4 report: `evaluation/F4_GENERATION_VERIFICATION_ROLE_SEPARATION.md`.
 Phase E = COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED.
 E2-A1 report: `evaluation/E2_A1_SHADOW_ANSWER_POINT_COVERAGE_CONTRACT.md`.
 C1 met all eight strict gates and the original pair09 atomicity sentinel. Per the
@@ -151,6 +153,8 @@ F2-A5-R1
 COMPLETE / PASS / SOURCE_OBLIGATION_MATCHING_BOUNDARY_ESTABLISHED
 F3
 COMPLETE / PASS / FIXED_LOCATOR_FALLBACK_SHORTCUTS_RETIRED
+F4
+COMPLETE / PASS / ANSWER_GENERATION_SEMANTIC_VERIFICATION_ROLES_SEPARATED
 
 Latest accepted production action:
 D4-A10
@@ -166,10 +170,10 @@ MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD
 Current planning state:
 D4 = PAUSED / ROADMAP_RECONCILIATION
 D4 overall completion = UNDECIDED
-CURRENT_TASK = F3 / COMPLETE / PASS / FIXED_LOCATOR_FALLBACK_SHORTCUTS_RETIRED
-NEXT_TASK_RECOMMENDATION = F4 — Separate Answer-Generation and Semantic-Verification Roles / RECOMMENDED / NOT AUTHORIZED
+CURRENT_TASK = F4 / COMPLETE / PASS / ANSWER_GENERATION_SEMANTIC_VERIFICATION_ROLES_SEPARATED
+NEXT_TASK_RECOMMENDATION = F5 — Bounded Answer Composer / RECOMMENDED / NOT AUTHORIZED
 NEXT_TASK_EXECUTION_AUTHORIZED = false
-FOLLOWING_ARCHITECTURE_TASK = F4 — Separate Answer-Generation and Semantic-Verification Roles
+FOLLOWING_ARCHITECTURE_TASK = F5 — Bounded Answer Composer
 
 No D4-A11 exists.
 Phase E = COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED.
@@ -182,10 +186,11 @@ E3-LR1 = COMPLETE / PASS / POST_A2_LIFECYCLE_RECONCILED.
 E3 = COMPLETE / BOUNDED_LOW_FREQUENCY_FALLBACK_IMPLEMENTED / SCIENTIFIC_RECOVERY_BENEFIT_UNRESOLVED.
 PE-LR1 = COMPLETE / PASS / PHASE_E_CLOSED_PROMOTION_DEFERRED_UNTIL_MATERIAL_CANDIDATE.
 Phase E = COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED.
-Phase F = IN_PROGRESS / F3_COMPLETE_F4_NOT_STARTED.
+Phase F = IN_PROGRESS / F4_COMPLETE_F5_NOT_STARTED.
 F2 = COMPLETE / PASS / A1_A2_A3_A4_A5_COMPLETE.
 F3 = COMPLETE / PASS / FIXED_LOCATOR_FALLBACK_SHORTCUTS_RETIRED.
-No further recovery, D4, Phase-E, or Phase-F production task is authorized after F3; F4 — Separate Answer-Generation and Semantic-Verification Roles is recommended but NOT AUTHORIZED.
+F4 = COMPLETE / PASS / ANSWER_GENERATION_SEMANTIC_VERIFICATION_ROLES_SEPARATED.
+No further recovery, D4, Phase-E, or Phase-F production task is authorized after F4; F5 — Bounded Answer Composer is recommended but NOT AUTHORIZED.
 
 ## E3-A1 experimental implementation closeout
 
@@ -602,6 +607,39 @@ authorization.
 NEXT_TASK_RECOMMENDATION = F4 — Separate Answer-Generation and Semantic-Verification Roles
 (RECOMMENDED / NOT AUTHORIZED).
 Report: `evaluation/F3_FIXED_LOCATOR_FALLBACK_CLEANUP.md`.
+
+## F4 generation / verification role separation closeout
+
+COMPLETE / PASS / ANSWER_GENERATION_SEMANTIC_VERIFICATION_ROLES_SEPARATED. Architecture-only role separation at
+HEAD `ba521bb`; zero PANDA scientific/evaluation calls or tokens; zero protected-data access; no model comparison
+and no promotion evaluation. Pre-F4 coupling: one client (`self.vertex = vertex or VertexAIClient(from_env())`)
+served `_answer`, the `_verify` semantic review (single call site shared by legacy and coverage review), and
+`_revise`; prompt separation existed, role/client separation did not. Changes: `VertexSettings` gained an optional
+`verification_model` field (from_env reads optional `QA_VERIFICATION_MODEL_ID`; not required),
+`effective_verification_model` (= verification_model or generation_model), and `for_verification_model()`;
+`generate_json` gained a keyword-only `usage_stage` label recording additive role counters
+(`qa_generation_calls`/`qa_generation_token_usage`/`qa_semantic_verification_calls`/
+`qa_semantic_verification_token_usage`) with aggregate counters and unlabeled call behavior byte-compatible;
+`QAAgent.__init__` gained `verification_vertex=` and the production default builds two DISTINCT clients
+(generation + `settings.for_verification_model()`) even when both effective model IDs are equal; a sole legacy
+`vertex=` injection serves both roles as an explicit compatibility seam; routing: `_answer`/`_revise` →
+generation role, `_verify` semantic review (legacy + coverage + E3 second verify via re-entry) → verification
+role; retrieval/analyzer/embedding/decomposition paths unchanged; role-agnostic usage aggregation sums unique
+role clients by object identity (a shared injected client is counted once) preserving the four aggregate keys;
+internal `model_roles` diagnostics receipt added to `run_detailed` diagnostics. Failure semantics stay fail-closed
+with no cross-role fallback and no new retries. The evaluation judge remains a third, offline role — never wired
+into product QA. Deterministic integrity checks remain application authority (a `supported=true` verdict cannot
+waive invalid-evidence/wrong-version/incomplete-locator errors) and F2-A1 semantic unsupported authority is
+preserved. Adversarial contract T1-T30 all PASS, including both central sentinels (same-model-ID operation with
+distinct client paths; three-model isolation generation/verification/judge). Public `QAResult`/schema/default
+unchanged; role labels never appear in public content; E1/E2/E3 and all F2/F3 outcomes preserved. Verification:
+tests/unit/test_vertex.py 20 passed (13 pre-existing unmodified + 7 new); tests/unit/test_qa.py 135 passed + 19
+subtests (111 pre-existing unmodified + 24 new); integrated focused run 155 passed + 19 subtests;
+test_retrieval.py regression 59 passed + 27 subtests. Normal default remains legacy_question_core;
+runtime_e1_v2 remains explicit-selection-only; default promotion remains deferred; promotion evaluation not
+authorized. F4 validates architecture and deterministic routing only; no verifier-quality claim is made.
+NEXT_TASK_RECOMMENDATION = F5 — Bounded Answer Composer (RECOMMENDED / NOT AUTHORIZED).
+Report: `evaluation/F4_GENERATION_VERIFICATION_ROLE_SEPARATION.md`.
 
 ## Historical E3-A0 architecture contract closeout
 
