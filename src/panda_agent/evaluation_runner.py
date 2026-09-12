@@ -38,6 +38,10 @@ from panda_agent.evaluator_catalog import catalog_receipt, load_evaluator_catalo
 from panda_agent.indexing import IndexIdentity, normalized_dir
 from panda_agent.llm.vertex import VertexAIClient, VertexSettings
 from panda_agent.prompts import (
+    ANSWER_COMPOSER_REVIEW_SYSTEM_PROMPT,
+    ANSWER_COMPOSER_SYSTEM_PROMPT,
+    ANSWER_POINT_COVERAGE_REVIEW_SYSTEM_PROMPT,
+    ANSWER_POINT_COVERAGE_REVISION_SYSTEM_PROMPT,
     ANSWER_SYSTEM_PROMPT,
     EVALUATION_JUDGE_SYSTEM_PROMPT,
     EVIDENCE_REVIEW_SYSTEM_PROMPT,
@@ -343,8 +347,19 @@ def sha256_file(path: Path) -> str:
 
 
 def prompt_fingerprint() -> str:
+    """Fingerprint every behavior-affecting model prompt in the runtime.
+
+    F6 release identity requires the full active prompt set, including the
+    answer-point coverage review/revision contracts and the F5 composer and
+    composer-review prompts; the offline judge is recorded as architecture
+    metadata. Any prompt change must change this hash.
+    """
     payload = {
         "answer": ANSWER_SYSTEM_PROMPT,
+        "answer_composer": ANSWER_COMPOSER_SYSTEM_PROMPT,
+        "answer_composer_review": ANSWER_COMPOSER_REVIEW_SYSTEM_PROMPT,
+        "answer_point_coverage_review": ANSWER_POINT_COVERAGE_REVIEW_SYSTEM_PROMPT,
+        "answer_point_coverage_revision": ANSWER_POINT_COVERAGE_REVISION_SYSTEM_PROMPT,
         "evaluation_judge": EVALUATION_JUDGE_SYSTEM_PROMPT,
         "evidence_review": EVIDENCE_REVIEW_SYSTEM_PROMPT,
         "query_analyzer": QUERY_ANALYZER_SYSTEM_PROMPT,

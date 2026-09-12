@@ -14,7 +14,13 @@ from typing import Any
 from panda_agent.evaluation_runner import package_versions, prompt_fingerprint
 from panda_agent.indexing import IndexIdentity, normalized_dir
 from panda_agent.llm.vertex import VertexSettings
+from panda_agent.qa import DEFAULT_ANSWER_POINT_MODE
 from panda_agent.storage import Storage
+
+
+# F6 authoritative exposed benchmark: the freezer must bind the same signed
+# identity the evaluator resolves (m6-benchmark-v2.6), not the historical v2.
+BENCHMARK_DIR = Path("evaluation") / "benchmarks" / "v2_6"
 
 
 def _sha256_bytes(data: bytes) -> str:
@@ -92,11 +98,31 @@ def _qdrant_state(storage: Storage, expected_dimensions: int) -> dict[str, Any]:
         }
 
 
+def _benchmark_identity(project_root: Path) -> dict[str, Any]:
+    """Validate and record the signed exposed-benchmark identity for the freeze."""
+    benchmark_dir = project_root / BENCHMARK_DIR
+    manifest = json.loads(
+        (benchmark_dir / "benchmark_manifest.json").read_text(encoding="utf-8")
+    )
+    dataset_hash = _sha256_file(benchmark_dir / manifest["dataset"])
+    if manifest.get("dataset_sha256") != dataset_hash:
+        raise RuntimeError(
+            "benchmark manifest dataset hash mismatch for m6-benchmark-v2.6 identity"
+        )
+    return {
+        "benchmark_version": manifest["benchmark_version"],
+        "benchmark_question_count": manifest["question_count"],
+        "benchmark_dataset_sha256": dataset_hash,
+        "benchmark_status": manifest["status"],
+    }
+
+
 def _current_manifest(project_root: Path, candidate_id: str) -> dict[str, Any]:
     settings = VertexSettings.from_env()
     source_manifest = project_root / "data" / "manifests" / "source_manifest.json"
-    dataset = project_root / "evaluation" / "benchmarks" / "v2" / "gold_questions.yaml"
-    audit = project_root / "evaluation" / "benchmarks" / "v2" / "audit_resolution.yaml"
+    benchmark_dir = project_root / BENCHMARK_DIR
+    dataset = benchmark_dir / "gold_questions.yaml"
+    adjudications = benchmark_dir / "manual_adjudications.yaml"
     normalized = normalized_dir(project_root)
     ingestion_report = json.loads(
         (normalized / "ingestion_report.json").read_text(encoding="utf-8")
@@ -123,7 +149,7 @@ def _current_manifest(project_root: Path, candidate_id: str) -> dict[str, Any]:
         "pyproject.toml": _sha256_file(project_root / "pyproject.toml"),
         ".env.example": _sha256_file(project_root / ".env.example"),
         "gold_questions.yaml": _sha256_file(dataset),
-        "audit_resolution.yaml": _sha256_file(audit),
+        "manual_adjudications.yaml": _sha256_file(adjudications),
         "retrieval_policies.yaml": _sha256_file(
             project_root / "configs" / "retrieval_policies.yaml"
         ),
@@ -149,16 +175,20 @@ def _current_manifest(project_root: Path, candidate_id: str) -> dict[str, Any]:
         "index_identity_payload": row[1],
         "qdrant": qdrant,
         "runtime_generation_model_id": settings.generation_model,
+        "runtime_verification_model_id": settings.verification_model,
+        "effective_verification_model_id": settings.effective_verification_model,
         "evaluation_judge_model_id": settings.evaluation_judge_model,
         "embedding_model_id": settings.embedding_model,
         "embedding_dimensions": settings.embedding_dimensions,
         "vertex_location": settings.location,
+        "primary_answer_point_mode": DEFAULT_ANSWER_POINT_MODE,
         "prompt_version": __import__("panda_agent.prompts", fromlist=["PROMPT_SET_VERSION"]).PROMPT_SET_VERSION,
         "prompt_hash": prompt_fingerprint(),
         "retrieval_policy_hash": protected_files["retrieval_policies.yaml"],
         "query_expansion_hash": protected_files["query_expansions.yaml"],
         "gold_dataset_hash": protected_files["gold_questions.yaml"],
-        "audit_resolution_hash": protected_files["audit_resolution.yaml"],
+        "manual_adjudications_hash": protected_files["manual_adjudications.yaml"],
+        **_benchmark_identity(project_root),
         "protected_file_hashes": protected_files,
         "source_tree_hash": _tree_hash(project_root / "src"),
         "config_tree_hash": _tree_hash(project_root / "configs"),
