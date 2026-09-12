@@ -1773,35 +1773,47 @@ def report_evaluation(project_root: Path, run_id: str) -> dict[str, Any]:
     )
     calibration = load_product_language_calibration(project_root)
     product_development_gate = None
-    if calibration is not None and full_dev_execution:
-        try:
-            product_ids = set(
-                english_product_case_ids(dataset, "dev", calibration=calibration)
-            )
+    if calibration is not None:
+        product_ids = set(
+            english_product_case_ids(dataset, "dev", calibration=calibration)
+        )
+        product_record_map = {
+            str(record.get("id")): record
+            for record in records_for_metrics
+            if str(record.get("id")) in product_ids
+        }
+        # Stage A0 (§5.5): the formal product gate is computable from the exact
+        # selector cohort alone.  Running the full dev split remains a
+        # diagnostic option and is no longer a prerequisite for recognizing a
+        # complete selector-defined product-scope execution.
+        product_selector_complete = (
+            len(product_record_map) == len(product_ids)
+            and set(product_record_map) == product_ids
+        )
+        if product_selector_complete:
             product_records = [
-                record
-                for record in records_for_metrics
-                if str(record.get("id")) in product_ids
+                product_record_map[case_id] for case_id in sorted(product_record_map)
             ]
             product_metrics = aggregate_metrics(product_records)
-            product_development_gate = evaluate_product_development_gate(
-                product_metrics,
-                product_records,
-                dataset,
-                mode=manifest["mode"],
-                calibration=calibration,
-                dataset_path=(
-                    Path(manifest_dataset_path)
-                    if manifest_dataset_path
-                    else project_root / "evaluation" / "gold_questions.yaml"
-                ),
-            )
-        except ValueError as exc:
-            product_development_gate = {
-                "compatible": False,
-                "reason": str(exc),
-                "passed": None,
-            }
+            try:
+                product_development_gate = evaluate_product_development_gate(
+                    product_metrics,
+                    product_records,
+                    dataset,
+                    mode=manifest["mode"],
+                    calibration=calibration,
+                    dataset_path=(
+                        Path(manifest_dataset_path)
+                        if manifest_dataset_path
+                        else project_root / "evaluation" / "gold_questions.yaml"
+                    ),
+                )
+            except ValueError as exc:
+                product_development_gate = {
+                    "compatible": False,
+                    "reason": str(exc),
+                    "passed": None,
+                }
     official_gate_run = (
         manifest.get("official") is True
         and manifest.get("mode") == "full"

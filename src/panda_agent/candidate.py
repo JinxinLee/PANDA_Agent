@@ -179,6 +179,52 @@ def _implementation_git_commit(project_root: Path) -> str:
     return repository_identity(project_root)["commit"]
 
 
+def _product_scope_identity(project_root: Path) -> dict[str, Any]:
+    """Record the reviewed product-language calibration identity and the exact
+    formal-English selector output hash, enforcing the same calibration/dataset
+    compatibility contract the evaluator enforces (freezer/evaluator authority
+    equivalence, F6-A Stage A0 debt A)."""
+    import hashlib as _hashlib
+
+    from panda_agent.evaluation import (
+        calibration_compatibility,
+        derive_product_language_ids,
+        load_gold_dataset,
+        load_product_language_calibration,
+    )
+    from panda_agent.evaluation_runner import default_gold_dataset_path
+
+    manifests_dir = project_root / "evaluation" / "baselines" / "manifests"
+    calibration_path = manifests_dir / "phase_b_t3_product_language_scope_v2.json"
+    successor = manifests_dir / "phase_b_t3_product_language_scope_v3.json"
+    if successor.is_file():
+        calibration_path = successor
+    calibration = load_product_language_calibration(project_root)
+    if calibration is None:
+        return {"product_language_calibration_id": None, "formal_product_scope_selector_hash": None}
+    dataset = load_gold_dataset(default_gold_dataset_path(project_root))
+    compatibility = calibration_compatibility(
+        calibration, dataset, dataset_path=default_gold_dataset_path(project_root)
+    )
+    if not compatibility["compatible"]:
+        raise RuntimeError(
+            f"product-language calibration incompatible with active Gold: "
+            f"{compatibility['reason']}"
+        )
+    english_ids, _ = derive_product_language_ids(dataset, calibration)
+    selector_canonical = json.dumps(sorted(english_ids), ensure_ascii=False)
+    return {
+        "product_language_calibration_id": calibration["calibration_id"],
+        "product_language_calibration_sha256": _hashlib.sha256(
+            calibration_path.read_bytes()
+        ).hexdigest(),
+        "formal_product_scope_selector_sha256": _hashlib.sha256(
+            selector_canonical.encode("utf-8")
+        ).hexdigest(),
+        "formal_product_scope_selector_count": len(english_ids),
+    }
+
+
 def _current_manifest(project_root: Path, candidate_id: str) -> dict[str, Any]:
     settings = VertexSettings.from_env()
     source_manifest = project_root / "data" / "manifests" / "source_manifest.json"
@@ -253,6 +299,7 @@ def _current_manifest(project_root: Path, candidate_id: str) -> dict[str, Any]:
         "gold_dataset_hash": protected_files["gold_questions.yaml"],
         "manual_adjudications_hash": protected_files["manual_adjudications.yaml"],
         **_benchmark_identity(project_root),
+        **_product_scope_identity(project_root),
         "protected_file_hashes": protected_files,
         "source_tree_hash": _tree_hash(project_root / "src"),
         "config_tree_hash": _tree_hash(project_root / "configs"),

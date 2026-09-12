@@ -1739,14 +1739,19 @@ def load_product_language_calibration(
     project_root: Path,
     path: Path | None = None,
 ) -> dict[str, Any] | None:
-    """Load and validate the reviewed product-language calibration artifact."""
-    calibration_path = path or (
-        project_root
-        / "evaluation"
-        / "baselines"
-        / "manifests"
-        / "phase_b_t3_product_language_scope_v2.json"
-    )
+    """Load and validate the reviewed product-language calibration artifact.
+
+    Versioned successors take precedence: the newest reconciliation (v3) is
+    loaded when present, otherwise the historical v2 artifact is used.
+    """
+    if path is not None:
+        calibration_path = path
+    else:
+        manifests_dir = project_root / "evaluation" / "baselines" / "manifests"
+        calibration_path = manifests_dir / "phase_b_t3_product_language_scope_v2.json"
+        successor = manifests_dir / "phase_b_t3_product_language_scope_v3.json"
+        if successor.is_file():
+            calibration_path = successor
     if not calibration_path.is_file():
         return None
     calibration = json.loads(calibration_path.read_text(encoding="utf-8"))

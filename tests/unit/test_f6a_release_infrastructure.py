@@ -280,5 +280,87 @@ class ManifestIdentitySourceTests(unittest.TestCase):
         self.assertIn("must be clean", source)
 
 
+class ProductScopeSelectorTests(unittest.TestCase):
+    """F6-A Stage A0: the reviewed product-language calibration must be
+    mechanically reconcilable with the current Gold, the loader must prefer the
+    versioned successor, and the freezer must record the calibration identity
+    plus the exact selector output hash."""
+
+    PROJECT_ROOT = Path(__file__).resolve().parents[2]
+
+    def test_successor_calibration_is_loaded_and_compatible(self):
+        from panda_agent.evaluation import (
+            calibration_compatibility,
+            load_gold_dataset,
+            load_product_language_calibration,
+        )
+        from panda_agent.evaluation_runner import default_gold_dataset_path
+
+        calibration = load_product_language_calibration(self.PROJECT_ROOT)
+        self.assertIsNotNone(calibration)
+        self.assertEqual(
+            calibration["calibration_id"], "phase_b_t3_product_language_scope_v3"
+        )
+        dataset = load_gold_dataset(default_gold_dataset_path(self.PROJECT_ROOT))
+        self.assertEqual(dataset.benchmark_version, "m6-benchmark-v2.6")
+        compatibility = calibration_compatibility(
+            calibration, dataset, dataset_path=default_gold_dataset_path(self.PROJECT_ROOT)
+        )
+        self.assertTrue(compatibility["compatible"], compatibility["reason"])
+
+    def test_reconciliation_mechanically_reproduces_declared_ids(self):
+        from panda_agent.evaluation import (
+            derive_product_language_ids,
+            load_gold_dataset,
+            load_product_language_calibration,
+        )
+        from panda_agent.evaluation_runner import default_gold_dataset_path
+
+        calibration = load_product_language_calibration(self.PROJECT_ROOT)
+        dataset = load_gold_dataset(default_gold_dataset_path(self.PROJECT_ROOT))
+        derived_en, derived_non = derive_product_language_ids(dataset, calibration)
+        self.assertEqual(sorted(derived_en), sorted(calibration["formal_english_ids"]))
+        self.assertEqual(sorted(derived_non), sorted(calibration["non_english_ids"]))
+
+    def test_reconciliation_records_provenance_and_no_fresh_review_claim(self):
+        calibration_path = (
+            self.PROJECT_ROOT / "evaluation" / "baselines" / "manifests"
+            / "phase_b_t3_product_language_scope_v3.json"
+        )
+        calibration = json.loads(calibration_path.read_text(encoding="utf-8"))
+        self.assertEqual(
+            calibration["predecessor_calibration"]["calibration_id"],
+            "phase_b_t3_product_language_scope_v2",
+        )
+        self.assertEqual(calibration["source_gold"]["sha256"], "6f12d54b4db3fdd87fb30670e730ffd8c025a55a968c90a4ea63ab7cecdb878f")
+        self.assertTrue(calibration["reconciliation"]["no_fresh_human_review_claimed"])
+        self.assertEqual(calibration["reconciliation"]["mechanical_verification"]["formal_english_count"], 59)
+
+    def test_freezer_records_calibration_and_selector_identity(self):
+        identity = candidate._product_scope_identity(self.PROJECT_ROOT)
+        self.assertEqual(
+            identity["product_language_calibration_id"],
+            "phase_b_t3_product_language_scope_v3",
+        )
+        self.assertEqual(identity["formal_product_scope_selector_count"], 59)
+        self.assertTrue(identity["formal_product_scope_selector_sha256"])
+        self.assertTrue(identity["product_language_calibration_sha256"])
+
+    def test_selector_hash_is_deterministic(self):
+        first = candidate._product_scope_identity(self.PROJECT_ROOT)
+        second = candidate._product_scope_identity(self.PROJECT_ROOT)
+        self.assertEqual(
+            first["formal_product_scope_selector_sha256"],
+            second["formal_product_scope_selector_sha256"],
+        )
+
+    def test_runner_computes_product_gate_from_selector_completeness(self):
+        source = (
+            self.PROJECT_ROOT / "src" / "panda_agent" / "evaluation_runner.py"
+        ).read_text(encoding="utf-8")
+        self.assertIn("product_selector_complete", source)
+        self.assertNotIn("and full_dev_execution:", source)
+
+
 if __name__ == "__main__":
     unittest.main()
