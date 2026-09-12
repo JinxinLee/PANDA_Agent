@@ -11,16 +11,21 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-from panda_agent.evaluation_runner import package_versions, prompt_fingerprint
+from panda_agent.evaluation_runner import package_versions, prompt_fingerprint, repository_identity
 from panda_agent.indexing import IndexIdentity, normalized_dir
 from panda_agent.llm.vertex import VertexSettings
 from panda_agent.qa import DEFAULT_ANSWER_POINT_MODE
 from panda_agent.storage import Storage
 
 
-# F6 authoritative exposed benchmark: the freezer must bind the same signed
+# F6-A authoritative exposed benchmark: the freezer must bind the same signed
 # identity the evaluator resolves (m6-benchmark-v2.6), not the historical v2.
 BENCHMARK_DIR = Path("evaluation") / "benchmarks" / "v2_6"
+BENCHMARK_VERSION = "m6-benchmark-v2.6"
+# F6-A Docker contract (Option A): the compose-managed PostgreSQL/Qdrant
+# services materially define the evaluated runtime's data infrastructure, so
+# their image identities are release-critical and must be captured non-empty.
+REQUIRED_DOCKER_SERVICES = ("postgres", "qdrant")
 
 
 def _sha256_bytes(data: bytes) -> str:
@@ -99,22 +104,67 @@ def _qdrant_state(storage: Storage, expected_dimensions: int) -> dict[str, Any]:
 
 
 def _benchmark_identity(project_root: Path) -> dict[str, Any]:
-    """Validate and record the signed exposed-benchmark identity for the freeze."""
+    """Validate and record the signed exposed-benchmark identity for the freeze.
+
+    Enforces the same authority contract as the evaluator: the manifest's
+    dataset hash must match the file, the official-validation flags must both
+    be true, and the version must be the current authoritative benchmark.
+    """
     benchmark_dir = project_root / BENCHMARK_DIR
-    manifest = json.loads(
-        (benchmark_dir / "benchmark_manifest.json").read_text(encoding="utf-8")
-    )
+    manifest_path = benchmark_dir / "benchmark_manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     dataset_hash = _sha256_file(benchmark_dir / manifest["dataset"])
     if manifest.get("dataset_sha256") != dataset_hash:
         raise RuntimeError(
-            "benchmark manifest dataset hash mismatch for m6-benchmark-v2.6 identity"
+            "benchmark manifest dataset hash mismatch for the v2.6 identity"
+        )
+    official = manifest.get("project_official_validation") or {}
+    if official.get("official_ready") is not True or official.get("structurally_valid") is not True:
+        raise RuntimeError(
+            "benchmark manifest is not official-ready/structurally-valid for release identity"
+        )
+    if manifest.get("benchmark_version") != BENCHMARK_VERSION:
+        raise RuntimeError(
+            f"benchmark version mismatch: expected {BENCHMARK_VERSION}, "
+            f"got {manifest.get('benchmark_version')}"
         )
     return {
+        "benchmark_manifest_sha256": _sha256_file(manifest_path),
         "benchmark_version": manifest["benchmark_version"],
         "benchmark_question_count": manifest["question_count"],
         "benchmark_dataset_sha256": dataset_hash,
+        "benchmark_official_ready": True,
+        "benchmark_structurally_valid": True,
         "benchmark_status": manifest["status"],
     }
+
+
+def _docker_release_identity(images: dict[str, Any]) -> dict[str, Any]:
+    """Enforce the Option-A Docker contract: required service images must be
+    captured with concrete identities (no empty image set)."""
+    if images.get("status") != "ok":
+        return {"release_critical": True, "satisfied": False, "reason": "docker unavailable"}
+    entries = images.get("images") or []
+    if not entries:
+        return {"release_critical": True, "satisfied": False, "reason": "no compose images recorded"}
+    names = " ".join(
+        str(entry.get("Service") or entry.get("Name") or entry.get("Image") or "")
+        for entry in entries
+        if isinstance(entry, dict)
+    ).casefold()
+    missing = [service for service in REQUIRED_DOCKER_SERVICES if service not in names]
+    if missing:
+        return {
+            "release_critical": True,
+            "satisfied": False,
+            "reason": f"required compose services missing from image identity: {missing}",
+        }
+    return {"release_critical": True, "satisfied": True, "services": REQUIRED_DOCKER_SERVICES}
+
+
+def _implementation_git_commit(project_root: Path) -> str:
+    """Record the exact implementation HEAD the candidate freezes from."""
+    return repository_identity(project_root)["commit"]
 
 
 def _current_manifest(project_root: Path, candidate_id: str) -> dict[str, Any]:
@@ -160,6 +210,7 @@ def _current_manifest(project_root: Path, candidate_id: str) -> dict[str, Any]:
     qdrant = _qdrant_state(storage, settings.embedding_dimensions)
     if qdrant.get("status") != "ok" or not qdrant.get("dimensions_match"):
         raise RuntimeError("Qdrant collection is unavailable or has the wrong dense dimension")
+    docker = _docker_images(project_root)
     return {
         "schema_version": "1.0",
         "candidate_id": candidate_id,
@@ -181,6 +232,7 @@ def _current_manifest(project_root: Path, candidate_id: str) -> dict[str, Any]:
         "embedding_model_id": settings.embedding_model,
         "embedding_dimensions": settings.embedding_dimensions,
         "vertex_location": settings.location,
+        "implementation_git_commit": _implementation_git_commit(project_root),
         "primary_answer_point_mode": DEFAULT_ANSWER_POINT_MODE,
         "prompt_version": __import__("panda_agent.prompts", fromlist=["PROMPT_SET_VERSION"]).PROMPT_SET_VERSION,
         "prompt_hash": prompt_fingerprint(),
@@ -193,7 +245,8 @@ def _current_manifest(project_root: Path, candidate_id: str) -> dict[str, Any]:
         "source_tree_hash": _tree_hash(project_root / "src"),
         "config_tree_hash": _tree_hash(project_root / "configs"),
         "migration_tree_hash": _tree_hash(project_root / "migrations"),
-        "docker": _docker_images(project_root),
+        "docker": docker,
+        "docker_release_identity": _docker_release_identity(docker),
     }
 
 
@@ -209,11 +262,29 @@ def _write_json(path: Path, value: dict[str, Any]) -> None:
 def freeze_candidate(project_root: Path, candidate_id: str) -> dict[str, Any]:
     if not candidate_id or any(char not in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_" for char in candidate_id):
         raise ValueError("candidate_id must contain only letters, digits, '-' or '_'")
+    git_status = subprocess.run(
+        ["git", "status", "--porcelain"],
+        cwd=project_root,
+        capture_output=True,
+        text=True,
+        check=True,
+    ).stdout
+    if git_status.strip():
+        raise RuntimeError(
+            "implementation working tree must be clean when freezing a candidate; "
+            "commit or stash implementation changes first (evaluation run artifacts "
+            "generated after the freeze do not block verification)"
+        )
     candidate_dir = project_root / "evaluation" / "candidates" / candidate_id
     manifest_path = candidate_dir / "candidate_manifest.json"
     manifest = _current_manifest(project_root, candidate_id)
     if manifest["docker"].get("status") != "ok":
         raise RuntimeError("Docker image digests are unavailable; candidate cannot be frozen")
+    if not manifest["docker_release_identity"].get("satisfied"):
+        raise RuntimeError(
+            f"Docker release identity contract failed: "
+            f"{manifest['docker_release_identity'].get('reason')}"
+        )
     # Do not leave an empty candidate directory when the environment gate fails.
     candidate_dir.mkdir(parents=True, exist_ok=True)
     if manifest_path.exists():

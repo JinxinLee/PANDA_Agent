@@ -386,6 +386,39 @@ def package_versions() -> dict[str, str]:
     return values
 
 
+def f6a_release_score(records: list[dict[str, Any]]) -> dict[str, Any]:
+    """Deterministic F6-A release score over complete cases.
+
+    A case scores ``answer_point_coverage`` when the expected status is
+    answered, otherwise 1.0/0.0 for expected-status correctness. A case with a
+    missing required metric is incomplete (never silently scored as zero); the
+    denominator is always reported.
+    """
+    scores: list[float] = []
+    incomplete: list[str] = []
+    for record in records:
+        case_id = str(record.get("id"))
+        metrics = record.get("metrics") or {}
+        if record.get("exception") is not None:
+            incomplete.append(case_id)
+            continue
+        expected = str(record.get("expected_status"))
+        if expected == "answered":
+            value = metrics.get("answer_point_coverage")
+        else:
+            value = 1.0 if metrics.get("expected_status_correct") else 0.0
+        if value is None:
+            incomplete.append(case_id)
+            continue
+        scores.append(float(value))
+    return {
+        "release_score": sum(scores) / len(scores) if scores else None,
+        "complete_case_count": len(scores),
+        "incomplete_case_ids": incomplete,
+        "denominator": len(scores),
+    }
+
+
 def _selected_questions(dataset: GoldDataset, split: EvaluationSplit) -> list[GoldQuestion]:
     if split == "all":
         return list(dataset.questions)
