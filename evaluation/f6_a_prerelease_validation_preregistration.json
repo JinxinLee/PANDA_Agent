@@ -6,7 +6,7 @@
     "reason": "the 120-question full-benchmark cohort interpretation is obsolete for F6-A; the formal Gold cohort is the exact formal-English product-scope selector output",
     "terminated_partial_run": "data/evaluation/runs/f6a-rc1-gold-full-20260913 (9/120 preserved, not F6-A evidence)"
   },
-  "implementation_head": "f30d907",
+  "implementation_head": "28be3955",
   "candidate_id": "f6a-rc1-20260913",
   "primary_runtime_mode": "legacy_question_core",
   "model_identities": {
@@ -215,5 +215,11 @@
     "expected_applicability": 0,
     "recovery_benefit": "UNRESOLVED"
   },
-  "measured_outcomes": "none"
+  "measured_outcomes": "none",
+  "implementation_head_lineage": {
+    "preregistration_baseline": "f30d907",
+    "preregistration_commit": "500409c",
+    "freeze_head": "28be3955",
+    "note": "the freeze HEAD differs from the preregistration baseline only by the non-behavioral deletion of the superseded candidate artifacts; no product/evaluator/config change separates them"
+  }
 }

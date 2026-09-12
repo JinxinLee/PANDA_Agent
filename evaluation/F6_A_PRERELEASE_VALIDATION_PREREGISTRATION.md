@@ -16,9 +16,10 @@ not F6-A evidence.
 
 ## 1. Implementation and candidate identity
 
-- Implementation HEAD at preregistration: `f30d907` ("Prepare selector-defined
-  F6-A evaluation identity"; lineage includes the A0 infrastructure commits
-  `6e92a37`, `7b02db2`, `c9227f8`).
+- Implementation HEAD at preregistration baseline: `f30d907` ("Prepare
+  selector-defined F6-A evaluation identity"); freeze HEAD: `28be395` (differs
+  from the baseline only by the non-behavioral deletion of the superseded
+  candidate artifacts; no product/evaluator/config change separates them).
 - Candidate ID: `f6a-rc1-20260913` — refrozen after this preregistration
   commit against this HEAD (the earlier freeze under the superseded plan was
   never bound to any scientific run and its manifest is superseded).
