@@ -51,9 +51,12 @@ def _tree_hash(root: Path) -> str:
 
 
 def _docker_images(project_root: Path) -> dict[str, Any]:
+    """Capture the identities of the currently running data-infrastructure
+    containers (the compose-managed PostgreSQL/Qdrant pair), independent of the
+    compose project name context."""
     try:
         result = subprocess.run(
-            ["docker", "compose", "images", "--format", "json"],
+            ["docker", "ps", "--format", "json"],
             cwd=project_root,
             capture_output=True,
             text=True,
@@ -66,12 +69,21 @@ def _docker_images(project_root: Path) -> dict[str, Any]:
         return {"status": "unavailable", "error": result.stderr.strip()[:500]}
     try:
         raw = result.stdout.strip()
-        if not raw:
-            images: Any = []
-        elif raw.startswith("["):
-            images = json.loads(raw)
-        else:
-            images = [json.loads(line) for line in raw.splitlines() if line.strip()]
+        images: Any = []
+        if raw:
+            for line in raw.splitlines():
+                if not line.strip():
+                    continue
+                entry = json.loads(line)
+                if isinstance(entry, dict):
+                    images.append(
+                        {
+                            "Name": entry.get("Names") or entry.get("Name"),
+                            "Image": entry.get("Image"),
+                            "ID": entry.get("ID"),
+                            "State": entry.get("State"),
+                        }
+                    )
         return {"status": "ok", "images": images}
     except json.JSONDecodeError:
         return {"status": "unavailable", "error": "docker output was not JSON"}
