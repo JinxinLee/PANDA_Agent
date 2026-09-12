@@ -1177,7 +1177,10 @@ _COMPOSER_CAUSAL_CUES = ("because", "therefore", "thus", "causes", "caused by", 
 _COMPOSER_COMPARISON_CUES = ("unlike", "whereas", "compared with", "compared to", "higher", "lower", "more than", "less than", "different from", "相比", "不同", "更高", "更低")
 _COMPOSER_TOKEN_PATTERN = re.compile(r"[A-Za-z0-9_:@./-]+")
 _COMPOSER_INNER_CASE_TRANSITION = re.compile(r"[a-z][A-Z]|[A-Z][a-z]")
-_COMPOSER_NUMERIC_PATTERN = re.compile(r"-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?%?")
+# Numeric literals carry an explicit sign only when it directly precedes the
+# digits, and a lookbehind keeps digits embedded in technical identifiers
+# (PndPidCorrelatorV2, sha256, v1.2) from becoming standalone literals (F5-R1).
+_COMPOSER_NUMERIC_PATTERN = re.compile(r"(?<![\w.])[+-]?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?%?")
 
 
 def _composer_technical_tokens(text: str) -> list[str]:
@@ -1265,11 +1268,25 @@ def _validate_composed_paragraphs(paragraphs: Any, claims: list[ClaimCitation]) 
         source_text = " ".join(claim_map[claim_id].claim_text for claim_id in source_ids)
         source_casefold = source_text.casefold()
         paragraph_text = paragraph["text"]
+        # Exact extracted-token provenance (F5-R1): paragraph technical tokens
+        # and numeric literals must each appear verbatim among the tokens
+        # extracted from the referenced claims; substring membership against
+        # source prose is not sufficient (e.g. -3 vs 3, PndPidCorrelatorV2 vs
+        # PndPidCorrelator).
+        source_tokens = set(_composer_technical_tokens(source_text))
+        source_token_aliases = {token.casefold() for token in source_tokens}
         for token in _composer_technical_tokens(paragraph_text):
-            if token.casefold() not in source_casefold:
+            if token not in source_tokens:
                 _fail("new_identifier")
+        for word in re.findall(r"[A-Za-z_][A-Za-z0-9_]*", paragraph_text):
+            # Casing-alteration sentinel: a word that case-insensitively aliases
+            # a source technical token but differs in exact spelling no longer
+            # looks technical and must not bypass exact preservation.
+            if word.casefold() in source_token_aliases and word not in source_tokens:
+                _fail("new_identifier")
+        source_literals = set(_composer_numeric_literals(source_text))
         for literal in _composer_numeric_literals(paragraph_text):
-            if literal not in source_text:
+            if literal not in source_literals:
                 _fail("new_numeric_literal")
         if _contains_any(paragraph_text.casefold(), _COMPOSER_CAUSAL_CUES) and not _contains_any(
             source_casefold, _COMPOSER_CAUSAL_CUES

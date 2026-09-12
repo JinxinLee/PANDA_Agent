@@ -1263,7 +1263,8 @@ class QATests(unittest.TestCase):
         )
 
         # F5 bumped the prompt set for the bounded answer composer.
-        self.assertEqual(PROMPT_SET_VERSION, "3.10.0")
+        # F5-R1 bumped the prompt set for the bounded provenance clarification.
+        self.assertEqual(PROMPT_SET_VERSION, "3.10.1")
         for prompt in (ANSWER_SYSTEM_PROMPT, REVISION_SYSTEM_PROMPT):
             self.assertIn("answer_requirements", prompt)
         self.assertIn("factory/composition", EVALUATION_JUDGE_SYSTEM_PROMPT)
@@ -4438,6 +4439,186 @@ class TestBoundedAnswerComposer(unittest.TestCase):
         self.assertNotRegex(composer_source, r"\w+\.(?:h|C|hpp|cxx|py)\b")
         for prompt in (ANSWER_COMPOSER_SYSTEM_PROMPT, ANSWER_COMPOSER_REVIEW_SYSTEM_PROMPT):
             self.assertNotRegex(prompt, r"\w+\.(?:h|C|hpp|cxx)\b")
+
+
+class TestComposerProvenanceBoundary(unittest.TestCase):
+    """F5-R1: composer provenance compares exact extracted tokens, not prose
+    substrings. Numeric literals must match source literals exactly (sign,
+    decimals, percent, scientific spelling), digits embedded in technical
+    identifiers never become standalone numerics, technical tokens must match
+    source technical tokens exactly, case-altered aliases and shortened paths
+    are rejected, and every deterministic provenance failure happens before
+    semantic review with the exact deterministic fallback."""
+
+    def _claims(self, source_text):
+        return [
+            {"claim_id": "c1", "claim_text": source_text, "evidence_ids": ["e1"]},
+            {"claim_id": "c2", "claim_text": "The workflow completes.", "evidence_ids": ["e2"]},
+        ]
+
+    def _state(self, source_text):
+        claims = self._claims(source_text)
+        bundle = bundle_for([code_evidence(evidence_id="e1"), code_evidence(evidence_id="e2")])
+        return {
+            "question": "Explain this implementation.",
+            "bundle": bundle,
+            "sufficient": True,
+            "errors": [],
+            "supported_claims": claims,
+        }, claims
+
+    def _agent(self, state, composer_result, *, review_error=False):
+        ver = ComposerFakeVertex(
+            composer_result=None,
+            review_result=None
+            if review_error
+            else {
+                "valid": True,
+                "unsupported_paragraph_indexes": [],
+                "missing_or_distorted_claim_ids": [],
+                "reason": "",
+            },
+            review_error=RuntimeError("review unavailable") if review_error else None,
+        )
+        gen = ComposerFakeVertex(composer_result=composer_result)
+        agent = QAAgent(
+            Path.cwd(),
+            retriever=FakeRetriever(state["bundle"]),
+            vertex=gen,
+            verification_vertex=ver,
+        )
+        return agent, gen, ver
+
+    def _composer_result(self, text):
+        return {"paragraphs": [{"text": text, "source_claim_ids": ["c1", "c2"]}]}
+
+    def _run_finalize(self, source_text, paragraph_text):
+        state, claims = self._state(source_text)
+        agent, gen, ver = self._agent(state, self._composer_result(paragraph_text))
+        outcome = agent._finalize(state)
+        return outcome, gen, ver, claims
+
+    # N1 — sign spelling is authoritative: source "-3" cannot justify "3".
+    def test_numeric_sign_spelling_collision_rejected(self):
+        outcome, gen, ver, _ = self._run_finalize(
+            "The measured efficiency is -3 units.", "The measured efficiency is 3 units."
+        )
+        diag = outcome["composer_diagnostics"]
+        self.assertIn("new_numeric_literal", diag["deterministic_error_codes"])
+        self.assertFalse(diag["semantic_review_called"])
+        self.assertTrue(diag["fallback_used"])
+        self.assertEqual(len(gen.calls), 1)
+        self.assertEqual(len(ver.calls), 0)
+
+    # N2 — substring digits do not prove provenance: "13" cannot justify "3".
+    def test_numeric_substring_collision_rejected(self):
+        outcome, _, ver, _ = self._run_finalize("Retry 13 times.", "Retry 3 times.")
+        self.assertIn("new_numeric_literal", outcome["composer_diagnostics"]["deterministic_error_codes"])
+        self.assertEqual(len(ver.calls), 0)
+
+    # N3 — percent spelling is authoritative: "10%" cannot justify "10".
+    def test_numeric_percent_spelling_collision_rejected(self):
+        outcome, _, _, _ = self._run_finalize("Share is 10%.", "Share is 10.")
+        self.assertIn("new_numeric_literal", outcome["composer_diagnostics"]["deterministic_error_codes"])
+
+    # N4 — an explicit plus is a distinct spelling: "3" cannot justify "+3".
+    def test_numeric_explicit_plus_collision_rejected(self):
+        outcome, _, _, _ = self._run_finalize("Value is 3.", "Value is +3.")
+        self.assertIn("new_numeric_literal", outcome["composer_diagnostics"]["deterministic_error_codes"])
+
+    # N5 — decimal spelling is authoritative: "3.0" cannot justify "3".
+    def test_numeric_decimal_spelling_collision_rejected(self):
+        outcome, _, _, _ = self._run_finalize("Value is 3.0.", "Value is 3.")
+        self.assertIn("new_numeric_literal", outcome["composer_diagnostics"]["deterministic_error_codes"])
+
+    # N6 — scientific spelling is authoritative: "1e3" cannot justify "1e+3".
+    def test_numeric_scientific_spelling_collision_rejected(self):
+        outcome, _, _, _ = self._run_finalize("Rate is 1e3.", "Rate is 1e+3.")
+        self.assertIn("new_numeric_literal", outcome["composer_diagnostics"]["deterministic_error_codes"])
+
+    # N7 — an exactly preserved signed literal is accepted.
+    def test_exact_signed_literal_accepted(self):
+        outcome, gen, ver, _ = self._run_finalize(
+            "The measured efficiency is -3 units.", "The measured efficiency is -3 units."
+        )
+        self.assertTrue(outcome["composer_diagnostics"]["accepted"])
+        self.assertEqual(len(gen.calls), 1)
+        self.assertEqual(len(ver.calls), 1)
+
+    # N8 — an exactly preserved percent literal is accepted.
+    def test_exact_percent_literal_accepted(self):
+        outcome, _, _, _ = self._run_finalize("Share is 10%.", "Share is 10%.")
+        self.assertTrue(outcome["composer_diagnostics"]["accepted"])
+
+    # N9 — digits inside technical identifiers create no standalone numeric
+    # provenance obligation; exact identifiers with embedded digits are fine.
+    def test_identifier_embedded_digits_inert(self):
+        outcome, _, _, _ = self._run_finalize(
+            "PndPidCorrelatorV2 and sha256 checks run.", "PndPidCorrelatorV2 and sha256 checks run."
+        )
+        self.assertTrue(outcome["composer_diagnostics"]["accepted"])
+        self.assertEqual(outcome["composer_diagnostics"]["deterministic_error_codes"], [])
+
+    # I1 — a shortened identifier is a new identifier, not a substring match.
+    def test_identifier_prefix_collision_rejected(self):
+        outcome, _, ver, _ = self._run_finalize(
+            "PndPidCorrelatorV2 provides the analysis.", "PndPidCorrelator provides the analysis."
+        )
+        self.assertIn("new_identifier", outcome["composer_diagnostics"]["deterministic_error_codes"])
+        self.assertEqual(len(ver.calls), 0)
+
+    # I2 — dropping a suffix segment is rejected (createLmdFitDataLegacy).
+    def test_identifier_suffix_collision_rejected(self):
+        outcome, _, _, _ = self._run_finalize(
+            "createLmdFitDataLegacy builds the model.", "createLmdFitData builds the model."
+        )
+        self.assertIn("new_identifier", outcome["composer_diagnostics"]["deterministic_error_codes"])
+
+    # I3 — a case-altered alias of a source technical token is rejected even
+    # though it no longer looks technical to the extraction heuristic.
+    def test_identifier_case_alteration_rejected(self):
+        outcome, _, _, _ = self._run_finalize(
+            "PndPidCorrelator is used.", "pndpidcorrelator is used."
+        )
+        self.assertIn("new_identifier", outcome["composer_diagnostics"]["deterministic_error_codes"])
+
+    # I4 — a path shortened to its filename is rejected.
+    def test_identifier_path_shortening_rejected(self):
+        outcome, _, _, _ = self._run_finalize(
+            "Defined in src/foo/TrackBuilder.cxx.", "Defined in TrackBuilder.cxx."
+        )
+        self.assertIn("new_identifier", outcome["composer_diagnostics"]["deterministic_error_codes"])
+
+    # I5/I6 — exactly preserved identifiers and paths are accepted.
+    def test_exact_identifier_and_path_accepted(self):
+        for source, paragraph in (
+            ("PndPidCorrelator is used.", "PndPidCorrelator is used."),
+            ("Defined in src/foo/TrackBuilder.cxx.", "Defined in src/foo/TrackBuilder.cxx."),
+        ):
+            with self.subTest(source=source):
+                outcome, _, _, _ = self._run_finalize(source, paragraph)
+                self.assertTrue(outcome["composer_diagnostics"]["accepted"])
+
+    # T17/T18 — every deterministic provenance failure returns the exact old
+    # renderer output and never retries the composer.
+    def test_provenance_failures_fall_back_exactly_without_retry(self):
+        state, claims = self._state("The measured efficiency is -3 units.")
+        agent, gen, ver = self._agent(state, self._composer_result("The measured efficiency is 3 units."))
+        outcome = agent._finalize(state)
+        expected = render_verified_answer([ClaimCitation.model_validate(c) for c in claims])
+        self.assertEqual(outcome["result"]["answer"], expected)
+        self.assertEqual(len(gen.calls), 1)
+        self.assertEqual(len(ver.calls), 0)
+
+    # T19 — the semantic composition review still runs after a deterministic
+    # provenance pass (the reviewer remains the second safety layer).
+    def test_semantic_review_still_runs_after_deterministic_pass(self):
+        outcome, gen, ver, _ = self._run_finalize(
+            "The workflow completes.", "The workflow completes."
+        )
+        self.assertTrue(outcome["composer_diagnostics"]["accepted"])
+        self.assertEqual(len(gen.calls), 1)
+        self.assertEqual(len(ver.calls), 1)
 
 
 if __name__ == "__main__":

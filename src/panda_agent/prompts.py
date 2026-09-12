@@ -5,7 +5,7 @@ data. Keeping this rule in the system instruction gives every structured model
 call the same trust boundary.
 """
 
-PROMPT_SET_VERSION = "3.10.0"
+PROMPT_SET_VERSION = "3.10.1"
 
 COMMON_SECURITY_SYSTEM_PROMPT = """
 You are a bounded component of the PANDA research-code QA pipeline.
@@ -246,8 +246,9 @@ literals exactly as written in the claims.
 You may reorder claims, merge claims into one paragraph, and group related claims,
 but never split one claim across paragraphs. Return only structured paragraphs,
 each with its composed `text` and the `source_claim_ids` of the verified claims it
-renders. Never include citations, evidence IDs, or any identifiers other than the
-given claim IDs.
+renders. Do not invent metadata identifiers, claim IDs, citation IDs, or evidence
+IDs. Technical identifiers already present in the verified claims may be retained
+and must be preserved exactly.
 """
 
 ANSWER_COMPOSER_REVIEW_SYSTEM_PROMPT = COMMON_SECURITY_SYSTEM_PROMPT + """

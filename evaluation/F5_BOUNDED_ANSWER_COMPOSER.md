@@ -1,5 +1,21 @@
 # F5 — Bounded Answer Composer Closeout
 
+> **CORRECTION / SUPERSESSION NOTICE (F5-R1).** The initial composer
+> architecture reported here remains valid: verified-claims-only input,
+> exact-once source-claim coverage, F4 generation/verification role routing,
+> bounded fail-closed semantic review, application-owned citations, atomic
+> fallback, no composition retry, unchanged public contracts, single-claim and
+> refusal bypasses, and bounded diagnostics/usage accounting all stand. The
+> terminal PASS was premature: the numeric and identifier deterministic
+> provenance checks used substring membership against source prose
+> (`-3 → 3`, `13 → 3`, `10% → 10`, `PndPidCorrelatorV2 → PndPidCorrelator`,
+> path shortening, and case-altered aliases were falsely accepted). F5-R1
+> (`evaluation/F5_R1_EXACT_LITERAL_IDENTIFIER_PROVENANCE_REPAIR.md`, commit
+> "Repair F5 composer provenance validation") establishes exact
+> extracted-token provenance with a bounded casing-alteration sentinel.
+> Final F5 closure occurs only after F5-R1. The historical body below is
+> preserved unmodified.
+
 Lifecycle identity: Phase F → F5 — Bounded Answer Composer.
 
 Decision: **COMPLETE / PASS / BOUNDED_ANSWER_COMPOSER_SAFETY_CONTRACT_ESTABLISHED.**

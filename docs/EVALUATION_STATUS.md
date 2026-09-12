@@ -90,8 +90,10 @@ F4 = COMPLETE / PASS / ANSWER_GENERATION_SEMANTIC_VERIFICATION_ROLES_SEPARATED (
 F4 report: `evaluation/F4_GENERATION_VERIFICATION_ROLE_SEPARATION.md` (initial closeout corrected by F4-R1).
 F4-R1 = COMPLETE / PASS / PRODUCTION_MODEL_ROLE_DIAGNOSTICS_CORRECTED.
 F4-R1 report: `evaluation/F4_R1_PRODUCTION_MODEL_ROLE_DIAGNOSTICS_CORRECTION.md`.
-F5 = COMPLETE / PASS / BOUNDED_ANSWER_COMPOSER_SAFETY_CONTRACT_ESTABLISHED.
-F5 report: `evaluation/F5_BOUNDED_ANSWER_COMPOSER.md` (READABILITY_BENEFIT = NOT_EMPIRICALLY_EVALUATED_IN_F5).
+F5 = COMPLETE / PASS / BOUNDED_ANSWER_COMPOSER_SAFETY_CONTRACT_ESTABLISHED (final closure achieved only after F5-R1).
+F5 report: `evaluation/F5_BOUNDED_ANSWER_COMPOSER.md` (initial closeout corrected by F5-R1; READABILITY_BENEFIT = NOT_EMPIRICALLY_EVALUATED_IN_F5).
+F5-R1 = COMPLETE / PASS / EXACT_LITERAL_IDENTIFIER_PROVENANCE_BOUNDARY_ESTABLISHED.
+F5-R1 report: `evaluation/F5_R1_EXACT_LITERAL_IDENTIFIER_PROVENANCE_REPAIR.md`.
 Phase E = COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED.
 E2-A1 report: `evaluation/E2_A1_SHADOW_ANSWER_POINT_COVERAGE_CONTRACT.md`.
 C1 met all eight strict gates and the original pair09 atomicity sentinel. Per the
@@ -163,6 +165,8 @@ F4-R1
 COMPLETE / PASS / PRODUCTION_MODEL_ROLE_DIAGNOSTICS_CORRECTED
 F5
 COMPLETE / PASS / BOUNDED_ANSWER_COMPOSER_SAFETY_CONTRACT_ESTABLISHED
+F5-R1
+COMPLETE / PASS / EXACT_LITERAL_IDENTIFIER_PROVENANCE_BOUNDARY_ESTABLISHED
 
 Latest accepted production action:
 D4-A10
@@ -178,7 +182,7 @@ MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD
 Current planning state:
 D4 = PAUSED / ROADMAP_RECONCILIATION
 D4 overall completion = UNDECIDED
-CURRENT_TASK = F5 / COMPLETE / PASS / BOUNDED_ANSWER_COMPOSER_SAFETY_CONTRACT_ESTABLISHED
+CURRENT_TASK = F5-R1 / COMPLETE / PASS / EXACT_LITERAL_IDENTIFIER_PROVENANCE_BOUNDARY_ESTABLISHED
 NEXT_TASK_RECOMMENDATION = F6 — Release Evaluation and Generalization Gate / RECOMMENDED / NOT AUTHORIZED
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 FOLLOWING_ARCHITECTURE_TASK = F6 — Release Evaluation and Generalization Gate (requires separate explicit T5/release authorization)
@@ -200,7 +204,8 @@ F3 = COMPLETE / PASS / FIXED_LOCATOR_FALLBACK_SHORTCUTS_RETIRED.
 F4 = COMPLETE / PASS / ANSWER_GENERATION_SEMANTIC_VERIFICATION_ROLES_SEPARATED.
 F4-R1 = COMPLETE / PASS / PRODUCTION_MODEL_ROLE_DIAGNOSTICS_CORRECTED.
 F5 = COMPLETE / PASS / BOUNDED_ANSWER_COMPOSER_SAFETY_CONTRACT_ESTABLISHED.
-No further recovery, D4, Phase-E, or Phase-F production task is authorized after F5; F6 — Release Evaluation and Generalization Gate is recommended but NOT AUTHORIZED (requires separate explicit T5/release authorization).
+F5-R1 = COMPLETE / PASS / EXACT_LITERAL_IDENTIFIER_PROVENANCE_BOUNDARY_ESTABLISHED.
+No further recovery, D4, Phase-E, or Phase-F production task is authorized after F5-R1; F6 — Release Evaluation and Generalization Gate is recommended but NOT AUTHORIZED (requires separate explicit T5/release authorization).
 
 ## E3-A1 experimental implementation closeout
 
@@ -712,6 +717,40 @@ explicit-selection-only; default promotion remains deferred; promotion evaluatio
 NEXT_TASK_RECOMMENDATION = F6 — Release Evaluation and Generalization Gate (RECOMMENDED / NOT AUTHORIZED;
 requires separate explicit T5/release authorization).
 Report: `evaluation/F5_BOUNDED_ANSWER_COMPOSER.md`.
+
+## F5-R1 exact literal and identifier provenance repair closeout
+
+COMPLETE / PASS / EXACT_LITERAL_IDENTIFIER_PROVENANCE_BOUNDARY_ESTABLISHED. Corrective repair of F5 at HEAD
+`2299cc0`; zero PANDA scientific/evaluation calls or tokens; zero protected-data access; reporting-boundary fix
+only. Post-commit audit did not accept F5's initial terminal PASS: both deterministic provenance checks used
+substring membership against arbitrary source prose instead of exact extracted-token membership. Reproduced at
+the starting HEAD: numeric `-3 → 3` accepted ("3" in "-3"), `13 → 3`, `10% → 10` accepted; identifier
+`PndPidCorrelatorV2 → PndPidCorrelator` accepted ("pndpidcorrelator" in "pndpidcorrelatorv2"), path shortening
+`src/foo/TrackBuilder.cxx → TrackBuilder.cxx` accepted. Repair (`_validate_composed_paragraphs` + numeric
+pattern only): numeric extraction gained explicit `+`/`-` sign attribution and a `(?<![\w.])` lookbehind so
+digits embedded in technical identifiers (PndPidCorrelatorV2, sha256, v1.2) never become standalone literals;
+paragraph numeric literals must exactly equal a literal extracted from the referenced source claims (sign,
+decimal, percent, and scientific spellings are distinct; no normalization); paragraph technical tokens must
+appear verbatim (case- and spelling-sensitive) among technical tokens extracted from the referenced claims; a
+bounded casing-alteration sentinel rejects ordinary word tokens that case-insensitively alias a source technical
+token while differing in exact spelling (closing the pndpidcorrelator bypass without generic proper-noun
+validation). All R1 rejects fail before semantic review (review calls = 0) and fall back to the exact
+deterministic renderer; no retry; claims/evidence/verification_errors untouched. Error codes remain
+`new_numeric_literal`/`new_identifier`. Composer input boundary, exact-once coverage, semantic review as second
+layer, deterministic citations, F4/F4-R1 routing and diagnostics, `qa_composer_*` accounting, single-claim/
+refusal bypasses, public schema, E3 behavior, F2/F3, and the default are zero-diff. Applied the authorized
+bounded prompt clarification ("Do not invent metadata identifiers, claim IDs, citation IDs, or evidence IDs.
+Technical identifiers already present in the verified claims may be retained and must be preserved exactly.");
+PROMPT_SET_VERSION 3.10.0 -> 3.10.1 with the dependent assertion updated. Adversarial contract T1-T30 all PASS
+(16 new methods in TestComposerProvenanceBoundary; T20-T30 via pre-existing suites). Verification:
+tests/unit/test_qa.py 195 passed + 21 subtests; tests/unit/test_e3_missing_point_retrieval.py 49 passed
+(test_vertex.py not rerun — vertex.py zero diff). Original F5 commit `2299cc0` preserved; the original F5
+report carries a correction/supersession notice. F5's final lifecycle state
+(BOUNDED_ANSWER_COMPOSER_SAFETY_CONTRACT_ESTABLISHED) is achieved only after this repair. Normal default
+remains legacy_question_core; default promotion remains deferred; promotion evaluation not authorized.
+NEXT_TASK_RECOMMENDATION = F6 — Release Evaluation and Generalization Gate (RECOMMENDED / NOT AUTHORIZED;
+requires separate explicit T5/release authorization).
+Report: `evaluation/F5_R1_EXACT_LITERAL_IDENTIFIER_PROVENANCE_REPAIR.md`.
 
 ## Historical E3-A0 architecture contract closeout
 
