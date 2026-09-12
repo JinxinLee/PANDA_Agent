@@ -90,6 +90,8 @@ F4 = COMPLETE / PASS / ANSWER_GENERATION_SEMANTIC_VERIFICATION_ROLES_SEPARATED (
 F4 report: `evaluation/F4_GENERATION_VERIFICATION_ROLE_SEPARATION.md` (initial closeout corrected by F4-R1).
 F4-R1 = COMPLETE / PASS / PRODUCTION_MODEL_ROLE_DIAGNOSTICS_CORRECTED.
 F4-R1 report: `evaluation/F4_R1_PRODUCTION_MODEL_ROLE_DIAGNOSTICS_CORRECTION.md`.
+F5 = COMPLETE / PASS / BOUNDED_ANSWER_COMPOSER_SAFETY_CONTRACT_ESTABLISHED.
+F5 report: `evaluation/F5_BOUNDED_ANSWER_COMPOSER.md` (READABILITY_BENEFIT = NOT_EMPIRICALLY_EVALUATED_IN_F5).
 Phase E = COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED.
 E2-A1 report: `evaluation/E2_A1_SHADOW_ANSWER_POINT_COVERAGE_CONTRACT.md`.
 C1 met all eight strict gates and the original pair09 atomicity sentinel. Per the
@@ -159,6 +161,8 @@ F4
 COMPLETE / PASS / ANSWER_GENERATION_SEMANTIC_VERIFICATION_ROLES_SEPARATED
 F4-R1
 COMPLETE / PASS / PRODUCTION_MODEL_ROLE_DIAGNOSTICS_CORRECTED
+F5
+COMPLETE / PASS / BOUNDED_ANSWER_COMPOSER_SAFETY_CONTRACT_ESTABLISHED
 
 Latest accepted production action:
 D4-A10
@@ -174,10 +178,10 @@ MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD
 Current planning state:
 D4 = PAUSED / ROADMAP_RECONCILIATION
 D4 overall completion = UNDECIDED
-CURRENT_TASK = F4-R1 / COMPLETE / PASS / PRODUCTION_MODEL_ROLE_DIAGNOSTICS_CORRECTED
-NEXT_TASK_RECOMMENDATION = F5 — Bounded Answer Composer / RECOMMENDED / NOT AUTHORIZED
+CURRENT_TASK = F5 / COMPLETE / PASS / BOUNDED_ANSWER_COMPOSER_SAFETY_CONTRACT_ESTABLISHED
+NEXT_TASK_RECOMMENDATION = F6 — Release Evaluation and Generalization Gate / RECOMMENDED / NOT AUTHORIZED
 NEXT_TASK_EXECUTION_AUTHORIZED = false
-FOLLOWING_ARCHITECTURE_TASK = F5 — Bounded Answer Composer
+FOLLOWING_ARCHITECTURE_TASK = F6 — Release Evaluation and Generalization Gate (requires separate explicit T5/release authorization)
 
 No D4-A11 exists.
 Phase E = COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED.
@@ -190,12 +194,13 @@ E3-LR1 = COMPLETE / PASS / POST_A2_LIFECYCLE_RECONCILED.
 E3 = COMPLETE / BOUNDED_LOW_FREQUENCY_FALLBACK_IMPLEMENTED / SCIENTIFIC_RECOVERY_BENEFIT_UNRESOLVED.
 PE-LR1 = COMPLETE / PASS / PHASE_E_CLOSED_PROMOTION_DEFERRED_UNTIL_MATERIAL_CANDIDATE.
 Phase E = COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED.
-Phase F = IN_PROGRESS / F4_COMPLETE_F5_NOT_STARTED.
+Phase F = IN_PROGRESS / F5_COMPLETE_F6_NOT_STARTED.
 F2 = COMPLETE / PASS / A1_A2_A3_A4_A5_COMPLETE.
 F3 = COMPLETE / PASS / FIXED_LOCATOR_FALLBACK_SHORTCUTS_RETIRED.
 F4 = COMPLETE / PASS / ANSWER_GENERATION_SEMANTIC_VERIFICATION_ROLES_SEPARATED.
 F4-R1 = COMPLETE / PASS / PRODUCTION_MODEL_ROLE_DIAGNOSTICS_CORRECTED.
-No further recovery, D4, Phase-E, or Phase-F production task is authorized after F4-R1; F5 — Bounded Answer Composer is recommended but NOT AUTHORIZED.
+F5 = COMPLETE / PASS / BOUNDED_ANSWER_COMPOSER_SAFETY_CONTRACT_ESTABLISHED.
+No further recovery, D4, Phase-E, or Phase-F production task is authorized after F5; F6 — Release Evaluation and Generalization Gate is recommended but NOT AUTHORIZED (requires separate explicit T5/release authorization).
 
 ## E3-A1 experimental implementation closeout
 
@@ -673,6 +678,40 @@ remains legacy_question_core; runtime_e1_v2 remains explicit-selection-only; def
 promotion evaluation not authorized.
 NEXT_TASK_RECOMMENDATION = F5 — Bounded Answer Composer (RECOMMENDED / NOT AUTHORIZED).
 Report: `evaluation/F4_R1_PRODUCTION_MODEL_ROLE_DIAGNOSTICS_CORRECTION.md`.
+
+## F5 bounded answer composer closeout
+
+COMPLETE / PASS / BOUNDED_ANSWER_COMPOSER_SAFETY_CONTRACT_ESTABLISHED.
+READABILITY_BENEFIT = NOT_EMPIRICALLY_EVALUATED_IN_F5. Architecture implementation with deterministic/adversarial
+T0-style validation at HEAD `6d24c5b`; zero PANDA scientific/evaluation calls or tokens; zero protected-data
+access; no live Vertex calls. The deterministic `render_verified_answer` is byte-identical and is the mandatory
+fallback. The composer receives ONLY verified claim ids/texts (`{task, verified_claims}` — no question, evidence,
+evidence_ids, locators, plan, answer points, requirements, or drafts; citations are application-owned) through
+the F4 generation role (`self.generation_vertex`, `usage_stage="qa_composer"`), returns structured paragraphs
+with source claim ids, and is deterministically validated before any semantic review: exact-once claim coverage
+(unknown/duplicate/missing/empty/invalid_structure), conservative technical-identifier provenance
+(`new_identifier` via the shared `_CODE_DATA_EXTENSIONS` set), exact numeric-literal provenance
+(`new_numeric_literal`), and bounded causal/comparison cue gates (`new_causal_relation`/
+`new_comparison_relation`). Exactly one bounded semantic composition review runs on the F4 verification role
+(reviewer sees only claims + paragraphs, no raw evidence; entailment/preservation only, fail-closed review
+validation including valid=true-with-nonempty-lists and out-of-range/unknown references). Atomic acceptance:
+any composer/reviewer exception, validation failure, or rejection falls back to
+`render_verified_answer(original verified claims)` — the QA request never fails, verification_errors are never
+touched, no partial salvage, no retries (max 1 composer + 1 review = 2 F5 calls; 0 for bypassed paths).
+Single-claim (`single_claim_bypass`) and all refusal/conflict paths bypass the composer. Citations are
+deterministically derived per paragraph (source-claim-order dedup union); `QAResult.claims`/`evidence`/schema/
+default unchanged; no ComposedClaim public type; composer diagnostics are the sanitized 8-key internal
+`diagnostics["composer"]` receipt only. Composer/review usage aggregates as `qa_composer_calls`/
+`qa_composer_token_usage` without touching F4 counters. E3 retained claims/evidence flow through the same gate
+and deterministic citation rendering. Adversarial contract T1-T43 all PASS, including both central security
+sentinels (composer/reviewer payload boundaries). Verification: tests/unit/test_qa.py 179 passed + 19 subtests
+(136 pre-existing incl. F4/F4-R1 + 43 new; two pre-existing assertions updated only as mandated by the prompt
+version bump and the two new labeled call sites); tests/unit/test_e3_missing_point_retrieval.py 49 passed
+(fallback preserves E3 finalizations). Normal default remains legacy_question_core; runtime_e1_v2 remains
+explicit-selection-only; default promotion remains deferred; promotion evaluation not authorized.
+NEXT_TASK_RECOMMENDATION = F6 — Release Evaluation and Generalization Gate (RECOMMENDED / NOT AUTHORIZED;
+requires separate explicit T5/release authorization).
+Report: `evaluation/F5_BOUNDED_ANSWER_COMPOSER.md`.
 
 ## Historical E3-A0 architecture contract closeout
 

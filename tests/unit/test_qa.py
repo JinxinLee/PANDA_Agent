@@ -5,8 +5,10 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from panda_agent.models import QAStatus
+from panda_agent.models import ClaimCitation, QAStatus
 from panda_agent.prompts import (
+    ANSWER_COMPOSER_REVIEW_SYSTEM_PROMPT,
+    ANSWER_COMPOSER_SYSTEM_PROMPT,
     ANSWER_POINT_COVERAGE_REVIEW_SYSTEM_PROMPT,
     EVIDENCE_REVIEW_SYSTEM_PROMPT,
     PROMPT_SET_VERSION,
@@ -14,6 +16,8 @@ from panda_agent.prompts import (
 from panda_agent.retrieval import _question_grounded_source_obligations
 from panda_agent.qa import (
     ANSWER_SCHEMA,
+    COMPOSER_REVIEW_SCHEMA,
+    COMPOSER_SCHEMA,
     QAAgent,
     _answer_requirements,
     _compact_requirement_evidence,
@@ -21,6 +25,7 @@ from panda_agent.qa import (
     _refusal_basis_evidence,
     _requested_bare_class_symbols,
     _requirement_evidence,
+    render_verified_answer,
 )
 
 
@@ -1257,7 +1262,8 @@ class QATests(unittest.TestCase):
             REVISION_SYSTEM_PROMPT,
         )
 
-        self.assertEqual(PROMPT_SET_VERSION, "3.9.0")
+        # F5 bumped the prompt set for the bounded answer composer.
+        self.assertEqual(PROMPT_SET_VERSION, "3.10.0")
         for prompt in (ANSWER_SYSTEM_PROMPT, REVISION_SYSTEM_PROMPT):
             self.assertIn("answer_requirements", prompt)
         self.assertIn("factory/composition", EVALUATION_JUDGE_SYSTEM_PROMPT)
@@ -3316,8 +3322,10 @@ class TestGenerationVerificationRoleSeparation(unittest.TestCase):
             usage["qa_generation_calls"] + usage["qa_semantic_verification_calls"],
         )
 
-    # T23 — usage labeling happens only at the three QA call sites; retrieval
-    # receives the generation client but never a QA usage_stage label.
+    # T23 — usage labeling happens only at the five QA call sites (answer,
+    # review, revise, composer, composer review per F5); retrieval receives the
+    # generation client but never a QA usage_stage label.  F5 added the two
+    # qa_composer call sites, so the static call-site count moved from 3 to 5.
     def test_retrieval_calls_not_labeled_qa_generation(self):
         import panda_agent.qa as qa_module
 
@@ -3337,7 +3345,7 @@ class TestGenerationVerificationRoleSeparation(unittest.TestCase):
             call["kwargs"].get("usage_stage") for call in [*gen.calls, *ver.calls]
         }
         self.assertTrue(stages <= {None, "qa_generation", "qa_semantic_verification"})
-        self.assertEqual(inspect.getsource(qa_module).count("usage_stage="), 3)
+        self.assertEqual(inspect.getsource(qa_module).count("usage_stage="), 5)
 
     # T24 — the evaluation judge is never wired into normal QA roles.
     def test_evaluation_judge_never_used_by_normal_qa(self):
@@ -3423,6 +3431,1013 @@ class TestGenerationVerificationRoleSeparation(unittest.TestCase):
         shared = RecordingRoleVertex()
         agent3 = QAAgent(Path.cwd(), retriever=FakeRetriever(bundle), vertex=shared)
         self.assertFalse(agent3._model_roles_diagnostics()["distinct_client_paths"])
+
+
+class ComposerFakeVertex(FakeVertex):
+    """F5 role-aware double for the bounded answer composer: records every
+    generate_json call as a (payload, schema, kwargs) tuple, returns the
+    configured result for the composer/review schemas, raises configured
+    errors, can serve configured draft claims for full-flow runs, and mirrors
+    the VertexAIClient usage_stage accounting with a configurable token count.
+    Used as one role client or the other, never both."""
+
+    def __init__(
+        self,
+        *,
+        composer_result=None,
+        review_result=None,
+        composer_error=None,
+        review_error=None,
+        draft_claims=None,
+        token_count=7,
+    ):
+        self.calls = []
+        self.stats = {}
+        self.composer_result = composer_result
+        self.review_result = review_result
+        self.composer_error = composer_error
+        self.review_error = review_error
+        self.draft_claims = draft_claims
+        self.token_count = token_count
+
+    def generate_json(self, prompt, schema, **kwargs):
+        self.calls.append((json.loads(prompt), schema, dict(kwargs)))
+        if schema == COMPOSER_SCHEMA:
+            if self.composer_error is not None:
+                raise self.composer_error
+            self._record_usage(kwargs)
+            if self.composer_result is not None:
+                return self.composer_result
+            return super().generate_json(prompt, schema, **kwargs)
+        if schema == COMPOSER_REVIEW_SCHEMA:
+            if self.review_error is not None:
+                raise self.review_error
+            self._record_usage(kwargs)
+            if self.review_result is not None:
+                return self.review_result
+            return super().generate_json(prompt, schema, **kwargs)
+        self._record_usage(kwargs)
+        if self.draft_claims is not None and "supported" not in schema.get("properties", {}):
+            return {"claims": [dict(claim) for claim in self.draft_claims]}
+        return super().generate_json(prompt, schema, **kwargs)
+
+    def _record_usage(self, kwargs):
+        stage = kwargs.get("usage_stage")
+        if stage is None:
+            return
+        self.stats["model_calls"] = self.stats.get("model_calls", 0) + 1
+        self.stats["generation_calls"] = self.stats.get("generation_calls", 0) + 1
+        self.stats["token_usage"] = self.stats.get("token_usage", 0) + self.token_count
+        self.stats[f"{stage}_calls"] = self.stats.get(f"{stage}_calls", 0) + 1
+        self.stats[f"{stage}_token_usage"] = self.stats.get(f"{stage}_token_usage", 0) + self.token_count
+
+    def stats_snapshot(self):
+        return dict(self.stats)
+
+    def stats_delta(self, previous):
+        after = self.stats_snapshot()
+        return {key: after.get(key, 0) - previous.get(key, 0) for key in after.keys() | previous.keys()}
+
+
+class TestBoundedAnswerComposer(unittest.TestCase):
+    """F5: successful multi-claim answers may pass through one optional bounded
+    readability composer (generation role) plus at most one semantic review
+    (verification role). The composer sees only verified public claims, can
+    never introduce facts (deterministic gate + fail-closed semantic review),
+    never retries, and every failure falls back to the untouched deterministic
+    renderer without failing the request or touching verification_errors."""
+
+    DEFAULT_CLAIM_TEXTS = (
+        "The class is present in the locked corpus.",
+        "The workflow runs after the ingest stage.",
+        "The result is stored in the output tree.",
+    )
+
+    # ------------------------------------------------------------------ helpers
+
+    def _claims(self, count=3, *, texts=None, evidence=None):
+        source_texts = texts or self.DEFAULT_CLAIM_TEXTS[:count]
+        claims = []
+        for index, text in enumerate(source_texts, start=1):
+            claim_id = f"c{index}"
+            evidence_ids = list((evidence or {}).get(claim_id, [f"e{index}"]))
+            claims.append({"claim_id": claim_id, "claim_text": text, "evidence_ids": evidence_ids})
+        return claims
+
+    def _state(self, claims, *, bundle=None, **extra):
+        if bundle is None:
+            cited_ids = []
+            for claim in claims:
+                for evidence_id in claim["evidence_ids"]:
+                    if evidence_id not in cited_ids:
+                        cited_ids.append(evidence_id)
+            bundle = bundle_for([code_evidence(evidence_id=evidence_id) for evidence_id in cited_ids])
+        state = {
+            "question": "Explain this implementation.",
+            "bundle": bundle,
+            "sufficient": True,
+            "errors": [],
+            "supported_claims": claims,
+        }
+        state.update(extra)
+        return state
+
+    def _agent(self, state, *, gen=None, ver=None):
+        gen = gen if gen is not None else ComposerFakeVertex()
+        ver = ver if ver is not None else ComposerFakeVertex()
+        agent = QAAgent(
+            Path.cwd(),
+            retriever=FakeRetriever(state["bundle"]),
+            vertex=gen,
+            verification_vertex=ver,
+        )
+        return agent, gen, ver
+
+    @staticmethod
+    def _paragraph(text, *claim_ids):
+        return {"text": text, "source_claim_ids": list(claim_ids)}
+
+    @staticmethod
+    def _composer_result(*paragraphs):
+        return {"paragraphs": list(paragraphs)}
+
+    @staticmethod
+    def _review_ok():
+        return {
+            "valid": True,
+            "unsupported_paragraph_indexes": [],
+            "missing_or_distorted_claim_ids": [],
+            "reason": "",
+        }
+
+    def _identity_paragraphs(self, claims=None):
+        claims = claims if claims is not None else self._claims()
+        return [self._paragraph(claim["claim_text"], claim["claim_id"]) for claim in claims]
+
+    @staticmethod
+    def _citations(claims):
+        return [
+            ClaimCitation.model_validate(
+                {key: claim.get(key) for key in ("claim_id", "claim_text", "evidence_ids")}
+            )
+            for claim in claims
+        ]
+
+    def _accepted_agent(self, claims, **gen_kwargs):
+        state = self._state(claims)
+        gen = ComposerFakeVertex(
+            composer_result=self._composer_result(*self._identity_paragraphs(claims)),
+            review_result=None,
+            **gen_kwargs,
+        )
+        ver = ComposerFakeVertex(review_result=self._review_ok())
+        agent, gen, ver = self._agent(state, gen=gen, ver=ver)
+        return agent, state, gen, ver
+
+    def _accepted_finalize(self, claims, **gen_kwargs):
+        agent, state, gen, ver = self._accepted_agent(claims, **gen_kwargs)
+        out = agent._finalize(state)
+        return out, state, gen, ver
+
+    def _full_flow_agent(self, *, gen, ver):
+        draft_claims = [
+            {
+                "claim_id": "c1",
+                "claim_text": "The class is present in the locked corpus.",
+                "evidence_ids": ["e1"],
+                "answer_point_ids": ["question_core"],
+            },
+            {
+                "claim_id": "c2",
+                "claim_text": "The workflow runs after the ingest stage.",
+                "evidence_ids": ["e2"],
+                "answer_point_ids": ["question_core"],
+            },
+        ]
+        bundle = bundle_for([
+            code_evidence(),
+            code_evidence(
+                evidence_id="e2",
+                text="The workflow runs after the ingest stage.",
+                path="pid/Workflow.h",
+            ),
+        ])
+        gen.draft_claims = draft_claims
+        agent = QAAgent(Path.cwd(), retriever=FakeRetriever(bundle), vertex=gen, verification_vertex=ver)
+        return agent, draft_claims
+
+    # --------------------------------------------------- payload boundary (T1/T2)
+
+    # T1 — central security sentinel: the composer payload carries exactly the
+    # task marker and the verified claim IDs/texts; nothing else.
+    def test_composer_receives_verified_claims_only(self):
+        claims = self._claims()
+        state = self._state(claims)
+        gen = ComposerFakeVertex(
+            composer_result=self._composer_result(*self._identity_paragraphs(claims)),
+        )
+        ver = ComposerFakeVertex(review_result=self._review_ok())
+        agent, gen, ver = self._agent(state, gen=gen, ver=ver)
+        agent._finalize(state)
+        composer_calls = [call for call in gen.calls if call[1] == COMPOSER_SCHEMA]
+        self.assertEqual(len(composer_calls), 1)
+        payload = composer_calls[0][0]
+        self.assertEqual(set(payload.keys()), {"task", "verified_claims"})
+        self.assertEqual(payload["task"], "compose_verified_claims")
+        self.assertEqual(
+            payload["verified_claims"],
+            [{"claim_id": claim["claim_id"], "claim_text": claim["claim_text"]} for claim in claims],
+        )
+        for item in payload["verified_claims"]:
+            self.assertEqual(set(item.keys()), {"claim_id", "claim_text"})
+        serialized = json.dumps(payload)
+        for forbidden in (
+            "question", "evidence", "evidence_ids", "locator", "plan",
+            "answer_point_ids", "answer_requirements", "source_version_id",
+        ):
+            self.assertNotIn(forbidden, serialized)
+
+    # T2 — the semantic reviewer sees only the verified claims and the composed
+    # paragraphs; no evidence, no question, no plan.
+    def test_reviewer_receives_only_claims_and_paragraphs(self):
+        claims = self._claims(2)
+        state = self._state(claims)
+        gen = ComposerFakeVertex(composer_result=self._composer_result(*self._identity_paragraphs(claims)))
+        ver = ComposerFakeVertex(review_result=self._review_ok())
+        agent, gen, ver = self._agent(state, gen=gen, ver=ver)
+        agent._finalize(state)
+        review_calls = [call for call in ver.calls if call[1] == COMPOSER_REVIEW_SCHEMA]
+        self.assertEqual(len(review_calls), 1)
+        payload = review_calls[0][0]
+        self.assertEqual(set(payload.keys()), {"task", "verified_claims", "paragraphs"})
+        self.assertEqual(payload["task"], "review_composed_answer")
+        self.assertEqual(
+            payload["verified_claims"],
+            [{"claim_id": claim["claim_id"], "claim_text": claim["claim_text"]} for claim in claims],
+        )
+        self.assertEqual(
+            payload["paragraphs"],
+            [{"text": claim["claim_text"], "source_claim_ids": [claim["claim_id"]]} for claim in claims],
+        )
+        serialized = json.dumps(payload)
+        for forbidden in ("question", "evidence", "plan"):
+            self.assertNotIn(forbidden, serialized)
+
+    # ------------------------------------------------- accepted compositions
+
+    # T3 — exact-once coverage of all verified claims is accepted.
+    def test_exact_coverage_accepted(self):
+        claims = self._claims()
+        out, state, gen, ver = self._accepted_finalize(claims)
+        result = out["result"]
+        self.assertEqual(result["status"], QAStatus.ANSWERED.value)
+        diagnostics = out["composer_diagnostics"]
+        self.assertTrue(diagnostics["attempted"])
+        self.assertTrue(diagnostics["accepted"])
+        self.assertFalse(diagnostics["fallback_used"])
+        self.assertEqual(diagnostics["reason"], "composed")
+        self.assertEqual(diagnostics["source_claim_count"], 3)
+        self.assertEqual(diagnostics["paragraph_count"], 3)
+        self.assertEqual(diagnostics["deterministic_error_codes"], [])
+        self.assertTrue(diagnostics["semantic_review_called"])
+        self.assertEqual(result["answer"].count("["), 3)
+
+    # T4 — reordering paragraphs is allowed.
+    def test_reordered_paragraphs_accepted(self):
+        claims = self._claims(2)
+        state = self._state(claims)
+        gen = ComposerFakeVertex(
+            composer_result=self._composer_result(
+                self._paragraph(claims[1]["claim_text"], "c2"),
+                self._paragraph(claims[0]["claim_text"], "c1"),
+            )
+        )
+        ver = ComposerFakeVertex(review_result=self._review_ok())
+        agent, gen, ver = self._agent(state, gen=gen, ver=ver)
+        out = agent._finalize(state)
+        self.assertTrue(out["composer_diagnostics"]["accepted"])
+        answer = out["result"]["answer"]
+        first_line, second_line = answer.split("\n")
+        self.assertIn("workflow runs after the ingest stage", first_line)
+        self.assertIn("class is present", second_line)
+
+    # T5 — merging two claims into one paragraph is allowed; the citation is
+    # the stable deduplicated evidence union in source-claim order.
+    def test_merged_claims_accepted_with_stable_evidence_union(self):
+        claims = self._claims(2, evidence={"c1": ["e1"], "c2": ["e2", "e3"]})
+        state = self._state(claims)
+        gen = ComposerFakeVertex(
+            composer_result=self._composer_result(
+                self._paragraph(
+                    "Additionally, the class is present in the locked corpus. "
+                    "Also, the workflow runs after the ingest stage.",
+                    "c2",
+                    "c1",
+                )
+            )
+        )
+        ver = ComposerFakeVertex(review_result=self._review_ok())
+        agent, gen, ver = self._agent(state, gen=gen, ver=ver)
+        out = agent._finalize(state)
+        self.assertTrue(out["composer_diagnostics"]["accepted"])
+        self.assertEqual(out["composer_diagnostics"]["paragraph_count"], 1)
+        self.assertTrue(out["result"]["answer"].endswith("[e2, e3, e1]"))
+
+    # ------------------------------------------ deterministic gate rejections
+
+    def _fallback_finalize(self, claims, composer_result):
+        state = self._state(claims)
+        gen = ComposerFakeVertex(composer_result=composer_result)
+        ver = ComposerFakeVertex(review_error=RuntimeError("semantic review must not run"))
+        agent, gen, ver = self._agent(state, gen=gen, ver=ver)
+        out = agent._finalize(state)
+        return out, state, gen, ver
+
+    def _assert_deterministic_fallback(self, out, state, ver, code=None):
+        result = out["result"]
+        diagnostics = out["composer_diagnostics"]
+        self.assertEqual(result["status"], QAStatus.ANSWERED.value)
+        self.assertTrue(diagnostics["attempted"])
+        self.assertFalse(diagnostics["accepted"])
+        self.assertTrue(diagnostics["fallback_used"])
+        self.assertEqual(diagnostics["reason"], "deterministic_validation_failed")
+        self.assertFalse(diagnostics["semantic_review_called"])
+        self.assertEqual(ver.calls, [])
+        self.assertEqual(
+            result["answer"],
+            render_verified_answer(self._citations(state["supported_claims"])),
+        )
+        if code is not None:
+            self.assertIn(code, diagnostics["deterministic_error_codes"])
+        return diagnostics
+
+    # T6 — an unknown source claim id fails deterministically before review.
+    def test_unknown_source_claim_id_falls_back(self):
+        claims = self._claims()
+        composer_result = self._composer_result(
+            self._paragraph(claims[0]["claim_text"], "c1"),
+            self._paragraph("Ghost paragraph.", "c9"),
+        )
+        out, state, gen, ver = self._fallback_finalize(claims, composer_result)
+        diagnostics = self._assert_deterministic_fallback(out, state, ver, code="unknown_claim_id")
+        self.assertEqual(len(gen.calls), 1)
+
+    # T7 — a verified claim left uncovered fails deterministically.
+    def test_missing_claim_id_falls_back(self):
+        claims = self._claims()
+        composer_result = self._composer_result(
+            self._paragraph(claims[0]["claim_text"], "c1"),
+            self._paragraph(claims[1]["claim_text"], "c2"),
+        )
+        out, state, gen, ver = self._fallback_finalize(claims, composer_result)
+        diagnostics = self._assert_deterministic_fallback(out, state, ver)
+        self.assertEqual(diagnostics["deterministic_error_codes"], ["missing_claim_id"])
+
+    # T8 — a claim assigned twice (across paragraphs) fails deterministically.
+    def test_duplicate_claim_id_falls_back(self):
+        claims = self._claims(2)
+        composer_result = self._composer_result(
+            self._paragraph(claims[0]["claim_text"], "c1"),
+            self._paragraph(claims[0]["claim_text"], "c1"),
+        )
+        out, state, gen, ver = self._fallback_finalize(claims, composer_result)
+        self._assert_deterministic_fallback(out, state, ver, code="duplicate_claim_id")
+
+    # T9 — a blank paragraph fails deterministically.
+    def test_empty_paragraph_falls_back(self):
+        claims = self._claims(2)
+        composer_result = self._composer_result(
+            self._paragraph(claims[0]["claim_text"], "c1"),
+            {"text": "   ", "source_claim_ids": ["c2"]},
+        )
+        out, state, gen, ver = self._fallback_finalize(claims, composer_result)
+        self._assert_deterministic_fallback(out, state, ver, code="empty_paragraph")
+
+    # T10 — a new technical identifier is rejected before semantic review.
+    def test_new_technical_identifier_rejected(self):
+        claims = [
+            {"claim_id": "c1", "claim_text": "PndPidCorrelator is present in the locked corpus.", "evidence_ids": ["e1"]},
+            {"claim_id": "c2", "claim_text": "The workflow runs after the ingest stage.", "evidence_ids": ["e2"]},
+        ]
+        composer_result = self._composer_result(
+            self._paragraph("The ImaginaryTracker extends PndPidCorrelator in the locked corpus.", "c1"),
+            self._paragraph(claims[1]["claim_text"], "c2"),
+        )
+        out, state, gen, ver = self._fallback_finalize(claims, composer_result)
+        self._assert_deterministic_fallback(out, state, ver, code="new_identifier")
+
+    # T11 — a new path is rejected before semantic review.
+    def test_new_path_rejected(self):
+        claims = [
+            {"claim_id": "c1", "claim_text": "The macro runs in the locked corpus.", "evidence_ids": ["e1"]},
+            {"claim_id": "c2", "claim_text": "The workflow runs after the ingest stage.", "evidence_ids": ["e2"]},
+        ]
+        composer_result = self._composer_result(
+            self._paragraph("See macro/imaginary/x.C for the macro run.", "c1"),
+            self._paragraph(claims[1]["claim_text"], "c2"),
+        )
+        out, state, gen, ver = self._fallback_finalize(claims, composer_result)
+        self._assert_deterministic_fallback(out, state, ver, code="new_identifier")
+
+    # T12 — a preserved existing identifier is accepted.
+    def test_preserved_identifier_accepted(self):
+        claims = [
+            {"claim_id": "c1", "claim_text": "PndPidCorrelator is present in the locked corpus.", "evidence_ids": ["e1"]},
+            {"claim_id": "c2", "claim_text": "The workflow runs after the ingest stage.", "evidence_ids": ["e2"]},
+        ]
+        state = self._state(claims)
+        gen = ComposerFakeVertex(
+            composer_result=self._composer_result(
+                self._paragraph("Also, PndPidCorrelator is present in the locked corpus.", "c1"),
+                self._paragraph(claims[1]["claim_text"], "c2"),
+            )
+        )
+        ver = ComposerFakeVertex(review_result=self._review_ok())
+        agent, gen, ver = self._agent(state, gen=gen, ver=ver)
+        out = agent._finalize(state)
+        self.assertTrue(out["composer_diagnostics"]["accepted"])
+        self.assertIn("PndPidCorrelator", out["result"]["answer"])
+
+    # T13 — a new numeric literal is rejected.
+    def test_new_numeric_literal_rejected(self):
+        claims = [
+            {"claim_id": "c1", "claim_text": "The correlation value is 3.", "evidence_ids": ["e1"]},
+            {"claim_id": "c2", "claim_text": "The workflow runs after the ingest stage.", "evidence_ids": ["e2"]},
+        ]
+        composer_result = self._composer_result(
+            self._paragraph("The correlation value is 4.", "c1"),
+            self._paragraph(claims[1]["claim_text"], "c2"),
+        )
+        out, state, gen, ver = self._fallback_finalize(claims, composer_result)
+        self._assert_deterministic_fallback(out, state, ver, code="new_numeric_literal")
+
+    # T14 — a preserved numeric literal is accepted.
+    def test_preserved_numeric_accepted(self):
+        claims = [
+            {"claim_id": "c1", "claim_text": "The correlation value is 3.", "evidence_ids": ["e1"]},
+            {"claim_id": "c2", "claim_text": "The workflow runs after the ingest stage.", "evidence_ids": ["e2"]},
+        ]
+        state = self._state(claims)
+        gen = ComposerFakeVertex(
+            composer_result=self._composer_result(
+                self._paragraph("The correlation value is 3.", "c1"),
+                self._paragraph(claims[1]["claim_text"], "c2"),
+            )
+        )
+        ver = ComposerFakeVertex(review_result=self._review_ok())
+        agent, gen, ver = self._agent(state, gen=gen, ver=ver)
+        out = agent._finalize(state)
+        self.assertTrue(out["composer_diagnostics"]["accepted"])
+
+    # T15 — new causality between two neutral claims is rejected.
+    def test_new_causal_relation_rejected(self):
+        claims = [
+            {"claim_id": "c1", "claim_text": "The workflow runs the ingest stage.", "evidence_ids": ["e1"]},
+            {"claim_id": "c2", "claim_text": "The workflow writes the output tree.", "evidence_ids": ["e2"]},
+        ]
+        composer_result = self._composer_result(
+            self._paragraph(
+                "The workflow runs the ingest stage, therefore it writes the output tree.",
+                "c1",
+                "c2",
+            )
+        )
+        out, state, gen, ver = self._fallback_finalize(claims, composer_result)
+        self._assert_deterministic_fallback(out, state, ver, code="new_causal_relation")
+
+    # T16 — causality is allowed when a source claim already states it.
+    def test_source_supported_causal_accepted(self):
+        claims = [
+            {"claim_id": "c1", "claim_text": "The fit fails because the input is empty.", "evidence_ids": ["e1"]},
+            {"claim_id": "c2", "claim_text": "The workflow stops at the ingest stage.", "evidence_ids": ["e2"]},
+        ]
+        state = self._state(claims)
+        gen = ComposerFakeVertex(
+            composer_result=self._composer_result(
+                self._paragraph(
+                    "The fit fails because the input is empty; therefore the workflow stops at the ingest stage.",
+                    "c1",
+                    "c2",
+                )
+            )
+        )
+        ver = ComposerFakeVertex(review_result=self._review_ok())
+        agent, gen, ver = self._agent(state, gen=gen, ver=ver)
+        out = agent._finalize(state)
+        self.assertTrue(out["composer_diagnostics"]["accepted"])
+
+    # T17 — a new comparison is rejected.
+    def test_new_comparison_rejected(self):
+        claims = [
+            {"claim_id": "c1", "claim_text": "The angular acceptance uses one binning.", "evidence_ids": ["e1"]},
+            {"claim_id": "c2", "claim_text": "The longitudinal profile uses another binning.", "evidence_ids": ["e2"]},
+        ]
+        composer_result = self._composer_result(
+            self._paragraph(
+                "Unlike the longitudinal profile, the angular acceptance uses one binning.",
+                "c1",
+                "c2",
+            )
+        )
+        out, state, gen, ver = self._fallback_finalize(claims, composer_result)
+        self._assert_deterministic_fallback(out, state, ver, code="new_comparison_relation")
+
+    # T18 — a comparison is allowed when a source claim already states it.
+    def test_source_supported_comparison_accepted(self):
+        claims = [
+            {"claim_id": "c1", "claim_text": "The angular acceptance is higher than the longitudinal one.", "evidence_ids": ["e1"]},
+            {"claim_id": "c2", "claim_text": "The profile average comes from the workflow.", "evidence_ids": ["e2"]},
+        ]
+        state = self._state(claims)
+        gen = ComposerFakeVertex(
+            composer_result=self._composer_result(
+                self._paragraph("The angular acceptance is higher than the longitudinal one.", "c1"),
+                self._paragraph("Additionally, the profile average comes from the workflow.", "c2"),
+            )
+        )
+        ver = ComposerFakeVertex(review_result=self._review_ok())
+        agent, gen, ver = self._agent(state, gen=gen, ver=ver)
+        out = agent._finalize(state)
+        self.assertTrue(out["composer_diagnostics"]["accepted"])
+
+    # T19 — neutral connectors are accepted.
+    def test_neutral_connectors_accepted(self):
+        claims = self._claims(2)
+        state = self._state(claims)
+        gen = ComposerFakeVertex(
+            composer_result=self._composer_result(
+                self._paragraph(
+                    "Additionally, the class is present in the locked corpus. "
+                    "Also, the workflow runs after the ingest stage.",
+                    "c1",
+                    "c2",
+                )
+            )
+        )
+        ver = ComposerFakeVertex(review_result=self._review_ok())
+        agent, gen, ver = self._agent(state, gen=gen, ver=ver)
+        out = agent._finalize(state)
+        self.assertTrue(out["composer_diagnostics"]["accepted"])
+        self.assertEqual(out["composer_diagnostics"]["reason"], "composed")
+
+    # ------------------------------------------------ semantic review layer
+
+    # T20 — a deterministically clean but subtly unsupported composition is
+    # rejected by the fail-closed semantic review.
+    def test_semantic_review_rejection_falls_back(self):
+        claims = self._claims(2)
+        state = self._state(claims)
+        gen = ComposerFakeVertex(composer_result=self._composer_result(*self._identity_paragraphs(claims)))
+        ver = ComposerFakeVertex(
+            review_result={
+                "valid": False,
+                "unsupported_paragraph_indexes": [0],
+                "missing_or_distorted_claim_ids": [],
+                "reason": "paragraph adds a subtle new fact",
+            }
+        )
+        agent, gen, ver = self._agent(state, gen=gen, ver=ver)
+        out = agent._finalize(state)
+        diagnostics = out["composer_diagnostics"]
+        self.assertTrue(diagnostics["fallback_used"])
+        self.assertEqual(diagnostics["reason"], "semantic_review_rejected")
+        self.assertTrue(diagnostics["semantic_review_called"])
+        self.assertEqual(diagnostics["deterministic_error_codes"], [])
+        self.assertEqual(
+            out["result"]["answer"],
+            render_verified_answer(self._citations(claims)),
+        )
+
+    # T21 — a reviewer that reports missing or distorted claims is rejected.
+    def test_reviewer_missing_or_distorted_ids_falls_back(self):
+        claims = self._claims(2)
+        state = self._state(claims)
+        gen = ComposerFakeVertex(composer_result=self._composer_result(*self._identity_paragraphs(claims)))
+        ver = ComposerFakeVertex(
+            review_result={
+                "valid": True,
+                "unsupported_paragraph_indexes": [],
+                "missing_or_distorted_claim_ids": ["c2"],
+                "reason": "c2 lost its substantive content",
+            }
+        )
+        agent, gen, ver = self._agent(state, gen=gen, ver=ver)
+        out = agent._finalize(state)
+        diagnostics = out["composer_diagnostics"]
+        self.assertEqual(diagnostics["reason"], "semantic_review_rejected")
+        self.assertTrue(diagnostics["semantic_review_called"])
+        self.assertTrue(diagnostics["fallback_used"])
+
+    # T22 — a review-role failure falls back deterministically; the generation
+    # client is never used as a reviewer fallback.
+    def test_review_failure_does_not_fall_back_to_generator(self):
+        claims = self._claims(2)
+        state = self._state(claims)
+        gen = ComposerFakeVertex(composer_result=self._composer_result(*self._identity_paragraphs(claims)))
+        ver = ComposerFakeVertex(review_error=RuntimeError("review unavailable"))
+        agent, gen, ver = self._agent(state, gen=gen, ver=ver)
+        out = agent._finalize(state)
+        diagnostics = out["composer_diagnostics"]
+        self.assertEqual(diagnostics["reason"], "composer_review_failed")
+        self.assertTrue(diagnostics["semantic_review_called"])
+        self.assertTrue(diagnostics["fallback_used"])
+        self.assertEqual(len(gen.calls), 1)
+        self.assertEqual(gen.calls[0][0]["task"], "compose_verified_claims")
+        self.assertEqual(
+            out["result"]["answer"],
+            render_verified_answer(self._citations(claims)),
+        )
+
+    # T23 — a composer generation failure never fails the QA request: the
+    # result stays ANSWERED, verification_errors are untouched, and the
+    # deterministic renderer output is served (full run_detailed path).
+    def test_composer_generation_failure_keeps_request_answered(self):
+        gen = ComposerFakeVertex(composer_error=RuntimeError("composer unavailable"))
+        ver = ComposerFakeVertex()
+        agent, draft_claims = self._full_flow_agent(gen=gen, ver=ver)
+        detailed = agent.run_detailed("Explain this implementation.")
+        result = detailed["result"]
+        self.assertEqual(result["status"], QAStatus.ANSWERED.value)
+        self.assertEqual(result["verification_errors"], [])
+        composer_diag = detailed["diagnostics"]["composer"]
+        self.assertEqual(composer_diag["reason"], "composer_generation_failed")
+        self.assertTrue(composer_diag["fallback_used"])
+        self.assertFalse(composer_diag["semantic_review_called"])
+        self.assertEqual(
+            result["answer"],
+            render_verified_answer(self._citations(draft_claims)),
+        )
+
+    # T24 — no free retry: a composer exception records exactly one composer
+    # call and zero review calls; an accepted path records exactly one of each.
+    def test_no_free_retry_bounded_calls(self):
+        claims = self._claims(2)
+        state = self._state(claims)
+        gen = ComposerFakeVertex(composer_error=RuntimeError("boom"))
+        ver = ComposerFakeVertex(review_error=RuntimeError("must not run"))
+        agent, gen, ver = self._agent(state, gen=gen, ver=ver)
+        agent._finalize(state)
+        self.assertEqual(len(gen.calls), 1)
+        self.assertEqual(len(ver.calls), 0)
+
+        gen2 = ComposerFakeVertex(composer_result=self._composer_result(*self._identity_paragraphs(claims)))
+        ver2 = ComposerFakeVertex(review_result=self._review_ok())
+        agent2, gen2, ver2 = self._agent(state, gen=gen2, ver=ver2)
+        agent2._finalize(state)
+        self.assertEqual(len(gen2.calls), 1)
+        self.assertEqual(len(ver2.calls), 1)
+
+    # T25 — a deterministic validation failure skips the semantic review.
+    def test_deterministic_failure_skips_semantic_review(self):
+        claims = self._claims(2)
+        state = self._state(claims)
+        gen = ComposerFakeVertex(
+            composer_result=self._composer_result(self._paragraph("Ghost paragraph.", "c9"))
+        )
+        ver = ComposerFakeVertex(review_error=RuntimeError("review must not run"))
+        agent, gen, ver = self._agent(state, gen=gen, ver=ver)
+        out = agent._finalize(state)
+        self.assertEqual(out["composer_diagnostics"]["reason"], "deterministic_validation_failed")
+        self.assertEqual(out["composer_diagnostics"]["semantic_review_called"], False)
+        self.assertEqual(ver.calls, [])
+        self.assertEqual(len(gen.calls), 1)
+
+    # ---------------------------------------------- application-derived output
+
+    # T26 — accepted compositions carry app-derived citations in
+    # source-claim order; the model never chose evidence IDs.
+    def test_accepted_citations_are_application_derived(self):
+        claims = self._claims()
+        state = self._state(claims)
+        gen = ComposerFakeVertex(
+            composer_result=self._composer_result(
+                self._paragraph(
+                    "The workflow runs after the ingest stage. "
+                    "Additionally, the result is stored in the output tree. "
+                    "Also, the class is present in the locked corpus.",
+                    "c2",
+                    "c3",
+                    "c1",
+                )
+            )
+        )
+        ver = ComposerFakeVertex(review_result=self._review_ok())
+        agent, gen, ver = self._agent(state, gen=gen, ver=ver)
+        out = agent._finalize(state)
+        self.assertTrue(out["composer_diagnostics"]["accepted"])
+        answer = out["result"]["answer"]
+        self.assertTrue(answer.endswith("[e2, e3, e1]"))
+        composer_payload = next(call[0] for call in gen.calls if call[1] == COMPOSER_SCHEMA)
+        self.assertNotIn("evidence", json.dumps(composer_payload))
+
+    # T27 — a merged paragraph's citation is the stable deduplicated evidence
+    # union across its source claims.
+    def test_merged_paragraph_citation_is_deduplicated_union(self):
+        claims = self._claims(2, evidence={"c1": ["e3", "e1"], "c2": ["e2", "e3"]})
+        state = self._state(claims)
+        gen = ComposerFakeVertex(
+            composer_result=self._composer_result(
+                self._paragraph(
+                    "Additionally, the class is present in the locked corpus. "
+                    "Also, the workflow runs after the ingest stage.",
+                    "c2",
+                    "c1",
+                )
+            )
+        )
+        ver = ComposerFakeVertex(review_result=self._review_ok())
+        agent, gen, ver = self._agent(state, gen=gen, ver=ver)
+        out = agent._finalize(state)
+        self.assertTrue(out["composer_diagnostics"]["accepted"])
+        answer = out["result"]["answer"]
+        self.assertEqual(answer.count("\n"), 0)
+        self.assertTrue(answer.endswith("[e2, e3, e1]"))
+
+    # T28 — QAResult.claims stays byte-equal to the verified claims on the
+    # accepted path (the composer cannot alter the public claim set).
+    def test_result_claims_unchanged(self):
+        claims = self._claims(2)
+        out, state, gen, ver = self._accepted_finalize(claims)
+        self.assertEqual(out["result"]["claims"], state["supported_claims"])
+
+    # T29 — QAResult.evidence is identical to the non-composer (fallback) path.
+    def test_result_evidence_matches_non_composer_path(self):
+        claims = self._claims(2)
+        accepted_out, state, gen, ver = self._accepted_finalize(claims)
+        fallback_state = self._state(claims)
+        fallback_gen = ComposerFakeVertex(composer_error=RuntimeError("boom"))
+        fallback_ver = ComposerFakeVertex()
+        fallback_agent, fallback_gen, fallback_ver = self._agent(
+            fallback_state, gen=fallback_gen, ver=fallback_ver
+        )
+        fallback_out = fallback_agent._finalize(fallback_state)
+        self.assertEqual(
+            [item["evidence_id"] for item in accepted_out["result"]["evidence"]],
+            [item["evidence_id"] for item in fallback_out["result"]["evidence"]],
+        )
+
+    # ------------------------------------------------------- applicability gate
+
+    # T30 — a single verified claim deterministically bypasses the composer.
+    def test_single_claim_bypass(self):
+        claims = self._claims(1)
+        state = self._state(claims)
+        gen = ComposerFakeVertex(composer_error=RuntimeError("composer must not be called"))
+        ver = ComposerFakeVertex(review_error=RuntimeError("review must not be called"))
+        agent, gen, ver = self._agent(state, gen=gen, ver=ver)
+        out = agent._finalize(state)
+        diagnostics = out["composer_diagnostics"]
+        self.assertFalse(diagnostics["attempted"])
+        self.assertFalse(diagnostics["accepted"])
+        self.assertFalse(diagnostics["fallback_used"])
+        self.assertEqual(diagnostics["reason"], "single_claim_bypass")
+        self.assertEqual(diagnostics["source_claim_count"], 1)
+        self.assertEqual(diagnostics["paragraph_count"], 0)
+        self.assertFalse(diagnostics["semantic_review_called"])
+        self.assertEqual(gen.calls, [])
+        self.assertEqual(ver.calls, [])
+        self.assertEqual(
+            out["result"]["answer"],
+            render_verified_answer(self._citations(claims)),
+        )
+
+    # T31 — refusal paths never call the composer and carry no diagnostics.
+    def test_refusal_path_skips_composer(self):
+        bundle = bundle_for(code_evidence())
+        state = {
+            "question": "Explain this implementation.",
+            "bundle": bundle,
+            "sufficient": False,
+            "errors": ["insufficient evidence for the requested details"],
+            "supported_claims": [],
+        }
+        gen = ComposerFakeVertex(composer_error=RuntimeError("composer must not be called"))
+        ver = ComposerFakeVertex(review_error=RuntimeError("review must not be called"))
+        agent, gen, ver = self._agent(state, gen=gen, ver=ver)
+        out = agent._finalize(state)
+        self.assertIsNone(out["composer_diagnostics"])
+        self.assertEqual(out["result"]["status"], QAStatus.INSUFFICIENT_EVIDENCE.value)
+        self.assertEqual(gen.calls, [])
+        self.assertEqual(ver.calls, [])
+
+    # ------------------------------------------------------------ role routing
+
+    def _two_client_accepted_flow(self):
+        gen = ComposerFakeVertex(
+            composer_result=self._composer_result(
+                self._paragraph("Additionally, the class is present in the locked corpus.", "c1"),
+                self._paragraph("Also, the workflow runs after the ingest stage.", "c2"),
+            )
+        )
+        ver = ComposerFakeVertex(review_result=self._review_ok())
+        agent, draft_claims = self._full_flow_agent(gen=gen, ver=ver)
+        detailed = agent.run_detailed("Explain this implementation.")
+        return agent, detailed, gen, ver
+
+    # T32 — the composer call hits the generation client only.
+    def test_composer_routes_to_generation_client(self):
+        agent, detailed, gen, ver = self._two_client_accepted_flow()
+        gen_tasks = [call[0].get("task") for call in gen.calls]
+        self.assertIn("compose_verified_claims", gen_tasks)
+        self.assertNotIn("review_composed_answer", gen_tasks)
+        composer_call = next(call for call in gen.calls if call[0].get("task") == "compose_verified_claims")
+        self.assertEqual(composer_call[2].get("usage_stage"), "qa_composer")
+        self.assertTrue(detailed["result"]["status"] == QAStatus.ANSWERED.value)
+
+    # T33 — the composer semantic review hits the verification client only.
+    def test_composer_review_routes_to_verification_client(self):
+        agent, detailed, gen, ver = self._two_client_accepted_flow()
+        ver_tasks = [call[0].get("task") for call in ver.calls]
+        self.assertIn("review_composed_answer", ver_tasks)
+        self.assertNotIn("compose_verified_claims", ver_tasks)
+        review_call = next(call for call in ver.calls if call[0].get("task") == "review_composed_answer")
+        self.assertEqual(review_call[2].get("usage_stage"), "qa_composer")
+        self.assertTrue(detailed["diagnostics"]["composer"]["accepted"])
+
+    # T34 — no third model client exists in the composer flow; the two role
+    # clients are the only reachable paths (static judge guard lives in the
+    # existing F4 suite).
+    def test_no_third_model_client_in_composer_flow(self):
+        agent, detailed, gen, ver = self._two_client_accepted_flow()
+        self.assertEqual(agent._role_clients(), [gen, ver])
+        composer_calls = [
+            call
+            for call in [*gen.calls, *ver.calls]
+            if call[0].get("task") in {"compose_verified_claims", "review_composed_answer"}
+        ]
+        self.assertEqual(
+            sorted(id(call[1]) for call in composer_calls),
+            sorted(id(schema) for schema in (COMPOSER_SCHEMA, COMPOSER_REVIEW_SCHEMA)),
+        )
+
+    # ------------------------------------------------------------ usage accounting
+
+    # T35 — qa_composer_calls aggregates composer + review across both role
+    # clients and leaves the existing QA role counters untouched.
+    def test_qa_composer_usage_stage_aggregation(self):
+        claims = self._claims(2)
+        state = self._state(claims)
+        gen = ComposerFakeVertex(composer_result=self._composer_result(*self._identity_paragraphs(claims)))
+        ver = ComposerFakeVertex(review_result=self._review_ok())
+        agent, gen, ver = self._agent(state, gen=gen, ver=ver)
+        before = agent._stats_snapshot()
+        agent._finalize(state)
+        usage = agent._model_usage_delta(before)
+        self.assertEqual(usage["qa_composer_calls"], 2)
+        self.assertEqual(usage.get("qa_generation_calls", 0), 0)
+        self.assertEqual(usage.get("qa_semantic_verification_calls", 0), 0)
+
+    # T36 — composer token usage comes only from mirrored response metadata
+    # (no estimation): both labeled calls add exactly the configured total.
+    def test_qa_composer_token_usage_from_response_metadata(self):
+        claims = self._claims(2)
+        state = self._state(claims)
+        gen = ComposerFakeVertex(
+            composer_result=self._composer_result(*self._identity_paragraphs(claims)),
+            token_count=13,
+        )
+        ver = ComposerFakeVertex(review_result=self._review_ok(), token_count=13)
+        agent, gen, ver = self._agent(state, gen=gen, ver=ver)
+        before = agent._stats_snapshot()
+        out = agent._finalize(state)
+        self.assertTrue(out["composer_diagnostics"]["accepted"])
+        usage = agent._model_usage_delta(before)
+        self.assertEqual(usage["qa_composer_token_usage"], 26)
+        self.assertEqual(usage["token_usage"], 26)
+
+    # ------------------------------------------------------------- hygiene
+
+    # T37 — composer diagnostics carry counts and fixed reason codes only; no
+    # prompt, claim, evidence, or model text ever reaches diagnostics.
+    def test_diagnostics_carry_no_untrusted_text(self):
+        claims = self._claims(2)
+        state = self._state(claims)
+        gen = ComposerFakeVertex(composer_error=RuntimeError("boom"))
+        ver = ComposerFakeVertex()
+        agent, gen, ver = self._agent(state, gen=gen, ver=ver)
+        fallback_out = agent._finalize(state)
+        accepted_out, state, gen, ver = self._accepted_finalize(claims)
+        allowed_keys = {
+            "attempted", "accepted", "fallback_used", "reason", "source_claim_count",
+            "paragraph_count", "deterministic_error_codes", "semantic_review_called",
+        }
+        for diagnostics in (fallback_out["composer_diagnostics"], accepted_out["composer_diagnostics"]):
+            self.assertEqual(set(diagnostics.keys()), allowed_keys)
+            serialized = json.dumps(diagnostics)
+            for claim in claims:
+                self.assertNotIn(claim["claim_text"], serialized)
+            for evidence_id in ("e1", "e2"):
+                self.assertNotIn(f'"{evidence_id}"', serialized)
+
+    # -------------------------------------------------- mode/regression guards
+
+    # T38 — the default run_detailed mode is unchanged: single-claim answers
+    # bypass the composer and no coverage diagnostics appear.
+    def test_default_mode_unchanged(self):
+        bundle = bundle_for(code_evidence())
+        gen = ComposerFakeVertex()
+        ver = ComposerFakeVertex()
+        agent = QAAgent(Path.cwd(), retriever=FakeRetriever(bundle), vertex=gen, verification_vertex=ver)
+        detailed = agent.run_detailed("Explain this implementation.")
+        self.assertEqual(detailed["result"]["status"], QAStatus.ANSWERED.value)
+        self.assertNotIn("answer_point_audit", detailed["diagnostics"])
+        self.assertNotIn("question_decomposition", detailed["diagnostics"])
+        self.assertNotIn("e3_trace", detailed["diagnostics"])
+        self.assertEqual(detailed["diagnostics"]["composer"]["reason"], "single_claim_bypass")
+        self.assertEqual(len(detailed["result"]["claims"]), 1)
+
+    # T39 — coverage-mode finalizations still compose through the same gate
+    # and keep their coverage audit unchanged.
+    def test_coverage_shadow_mode_finalize_still_audits(self):
+        claims = self._claims(2)
+        state = self._state(
+            claims,
+            answer_point_coverage_mode="shadow_e1_v2",
+            runtime_answer_points=[{"answer_point_id": "point.1", "text": "Explain this implementation."}],
+        )
+        gen = ComposerFakeVertex(composer_result=self._composer_result(*self._identity_paragraphs(claims)))
+        ver = ComposerFakeVertex(review_result=self._review_ok())
+        agent, gen, ver = self._agent(state, gen=gen, ver=ver)
+        out = agent._finalize(state)
+        self.assertTrue(out["composer_diagnostics"]["accepted"])
+        audit = out["answer_point_audit"]
+        self.assertEqual(audit["mode"], "shadow_e1_v2")
+        for key in ("answer_points", "claim_mappings", "covered_answer_point_ids",
+                    "missing_answer_point_ids", "coverage_complete", "coverage_evaluable"):
+            self.assertIn(key, audit)
+
+    # T40 — E3 retained-claim behavior is intact: retained evidence still
+    # reaches the cited evidence, the composer receives the final verified
+    # claims including retained ones, and citations derive correctly.
+    def test_retained_claims_still_compose_with_retained_evidence(self):
+        claims = [
+            {"claim_id": "c1", "claim_text": "The class is present in the locked corpus.", "evidence_ids": ["e1"]},
+            {"claim_id": "rc", "claim_text": "The retained workflow runs after the ingest stage.", "evidence_ids": ["r1"]},
+        ]
+        bundle = bundle_for([code_evidence()])
+        retained_evidence = {
+            "r1": code_evidence(
+                evidence_id="r1",
+                text="The retained workflow runs after the ingest stage.",
+                path="pid/Retained.h",
+            ),
+        }
+        state = self._state(
+            claims,
+            bundle=bundle,
+            answer_point_coverage_mode="runtime_e1_v2",
+            runtime_answer_points=[{"answer_point_id": "point.1", "text": "Explain this implementation."}],
+            retained_support_evidence=retained_evidence,
+        )
+        gen = ComposerFakeVertex(
+            composer_result=self._composer_result(
+                self._paragraph(
+                    "Additionally, the class is present in the locked corpus. "
+                    "Also, the retained workflow runs after the ingest stage.",
+                    "c1",
+                    "rc",
+                )
+            )
+        )
+        ver = ComposerFakeVertex(review_result=self._review_ok())
+        agent, gen, ver = self._agent(state, gen=gen, ver=ver)
+        out = agent._finalize(state)
+        self.assertTrue(out["composer_diagnostics"]["accepted"])
+        composer_payload = next(call[0] for call in gen.calls if call[1] == COMPOSER_SCHEMA)
+        self.assertEqual([item["claim_id"] for item in composer_payload["verified_claims"]], ["c1", "rc"])
+        result = out["result"]
+        self.assertEqual([item["evidence_id"] for item in result["evidence"]], ["e1", "r1"])
+        self.assertIn("[e1, r1]", result["answer"])
+
+    # T41 — F4 role-routing/failure contracts stay intact: runtime proof lives
+    # in T32/T33 plus the unmodified F4 suite above; this only pins the two
+    # composer call sites to the two role clients.
+    def test_f4_role_routing_contracts_intact(self):
+        import panda_agent.qa as qa_module
+
+        source = inspect.getsource(qa_module.QAAgent._compose_verified_answer)
+        self.assertIn("self.generation_vertex.generate_json", source)
+        self.assertIn("self.verification_vertex.generate_json", source)
+
+    # T42 — F2 untrusted-payload contracts stay in the existing suites; the
+    # composer prompts inherit the same common security boundary and receive
+    # only claim/paragraph fields (T1/T2).
+    def test_f2_security_boundary_contracts_intact(self):
+        from panda_agent.prompts import COMMON_SECURITY_SYSTEM_PROMPT
+
+        self.assertTrue(ANSWER_COMPOSER_SYSTEM_PROMPT.startswith(COMMON_SECURITY_SYSTEM_PROMPT))
+        self.assertTrue(ANSWER_COMPOSER_REVIEW_SYSTEM_PROMPT.startswith(COMMON_SECURITY_SYSTEM_PROMPT))
+
+    # T43 — F3 fixed-locator retirement stays intact (existing static guard
+    # covers the whole module); this checks the new composer surface added no
+    # fixed locator authority of its own.
+    def test_f3_fixed_locator_retirement_intact(self):
+        import panda_agent.qa as qa_module
+
+        composer_source = inspect.getsource(qa_module.QAAgent._compose_verified_answer)
+        self.assertNotRegex(composer_source, r"\w+\.(?:h|C|hpp|cxx|py)\b")
+        for prompt in (ANSWER_COMPOSER_SYSTEM_PROMPT, ANSWER_COMPOSER_REVIEW_SYSTEM_PROMPT):
+            self.assertNotRegex(prompt, r"\w+\.(?:h|C|hpp|cxx)\b")
 
 
 if __name__ == "__main__":

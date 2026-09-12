@@ -14,6 +14,8 @@ from langgraph.graph import END, START, StateGraph
 from panda_agent.llm.vertex import VertexAIClient, VertexSettings
 from panda_agent.models import ClaimCitation, QAResult, QAStatus, RetrievalPlan
 from panda_agent.prompts import (
+    ANSWER_COMPOSER_REVIEW_SYSTEM_PROMPT,
+    ANSWER_COMPOSER_SYSTEM_PROMPT,
     ANSWER_SYSTEM_PROMPT,
     ANSWER_POINT_COVERAGE_REVIEW_SYSTEM_PROMPT,
     ANSWER_POINT_COVERAGE_REVISION_SYSTEM_PROMPT,
@@ -73,6 +75,9 @@ def _normalise_rejected_identifier_token(token: str) -> str:
     return token
 
 
+_CODE_DATA_EXTENSIONS = (".C", ".py", ".root", ".h", ".hpp", ".cpp", ".cxx", ".json", ".txt", ".yaml", ".yml")
+
+
 DEFAULT_ANSWER_POINT_MODE = "legacy_question_core"
 
 
@@ -101,6 +106,37 @@ ANSWER_POINT_COVERAGE_REVIEW_SCHEMA = {
         "missing_answer_point_ids": {"type": "array", "items": {"type": "string"}},
     },
     "required": [*REVIEW_SCHEMA["required"], "claim_answer_point_mappings", "missing_answer_point_ids"],
+}
+COMPOSER_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "paragraphs": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "type": "object",
+                "properties": {
+                    "text": {"type": "string"},
+                    "source_claim_ids": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+                },
+                "required": ["text", "source_claim_ids"],
+                "additionalProperties": False,
+            },
+        }
+    },
+    "required": ["paragraphs"],
+    "additionalProperties": False,
+}
+COMPOSER_REVIEW_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "valid": {"type": "boolean"},
+        "unsupported_paragraph_indexes": {"type": "array", "items": {"type": "integer"}},
+        "missing_or_distorted_claim_ids": {"type": "array", "items": {"type": "string"}},
+        "reason": {"type": "string"},
+    },
+    "required": ["valid", "unsupported_paragraph_indexes", "missing_or_distorted_claim_ids", "reason"],
+    "additionalProperties": False,
 }
 _INTERNAL_CLAIM_IDS = frozenset({"required_workflow", "required_code"})
 _INTERNAL_CLAIM_PREFIXES = ("scope_", "dataflow_locator_")
@@ -1137,6 +1173,154 @@ def render_verified_answer(claims: list[ClaimCitation]) -> str:
     )
 
 
+_COMPOSER_CAUSAL_CUES = ("because", "therefore", "thus", "causes", "caused by", "leads to", "results in", "hence", "因此", "因为", "导致", "从而")
+_COMPOSER_COMPARISON_CUES = ("unlike", "whereas", "compared with", "compared to", "higher", "lower", "more than", "less than", "different from", "相比", "不同", "更高", "更低")
+_COMPOSER_TOKEN_PATTERN = re.compile(r"[A-Za-z0-9_:@./-]+")
+_COMPOSER_INNER_CASE_TRANSITION = re.compile(r"[a-z][A-Z]|[A-Z][a-z]")
+_COMPOSER_NUMERIC_PATTERN = re.compile(r"-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?%?")
+
+
+def _composer_technical_tokens(text: str) -> list[str]:
+    """Conservatively extract code-like tokens whose spelling must be preserved.
+
+    A candidate token is kept only when it is plausibly code or data: a scoped
+    name, a path, a code/data file extension, a repo@version form, an
+    underscore identifier, or a token with an inner case transition. Plain
+    Capitalized and plain lowercase prose words are not technical tokens.
+    """
+    tokens: list[str] = []
+    for candidate in _COMPOSER_TOKEN_PATTERN.findall(text):
+        token = _normalise_rejected_identifier_token(candidate)
+        if not token:
+            continue
+        is_technical = (
+            "::" in token
+            or "/" in token
+            or token.endswith(_CODE_DATA_EXTENSIONS)
+            or "@" in token
+            or ("_" in token and len(token) >= 4)
+            or bool(_COMPOSER_INNER_CASE_TRANSITION.search(token[1:]))
+        )
+        if is_technical and token not in tokens:
+            tokens.append(token)
+    return tokens
+
+
+def _composer_numeric_literals(text: str) -> list[str]:
+    """Extract exact numeric literals (no normalization) in first-seen order."""
+    literals: list[str] = []
+    for literal in _COMPOSER_NUMERIC_PATTERN.findall(text):
+        if literal not in literals:
+            literals.append(literal)
+    return literals
+
+
+def _validate_composed_paragraphs(paragraphs: Any, claims: list[ClaimCitation]) -> tuple[bool, list[str]]:
+    """Run every deterministic composer guard and return (ok, error codes).
+
+    Error codes: invalid_structure, empty_paragraph, unknown_claim_id,
+    duplicate_claim_id, missing_claim_id (exact-once coverage), new_identifier,
+    new_numeric_literal, new_causal_relation, new_comparison_relation.
+    """
+    codes: list[str] = []
+
+    def _fail(code: str) -> None:
+        if code not in codes:
+            codes.append(code)
+
+    if not isinstance(paragraphs, list) or not paragraphs:
+        return False, ["invalid_structure"]
+    claim_map = {claim.claim_id: claim for claim in claims}
+    content_paragraphs: list[dict[str, Any]] = []
+    for paragraph in paragraphs:
+        if (
+            not isinstance(paragraph, dict)
+            or not isinstance(paragraph.get("text"), str)
+            or not isinstance(paragraph.get("source_claim_ids"), list)
+            or not paragraph["source_claim_ids"]
+            or any(not isinstance(claim_id, str) or not claim_id for claim_id in paragraph["source_claim_ids"])
+        ):
+            _fail("invalid_structure")
+            continue
+        if not paragraph["text"].strip():
+            _fail("empty_paragraph")
+            continue
+        content_paragraphs.append(paragraph)
+    flattened_ids = [
+        claim_id
+        for paragraph in content_paragraphs
+        for claim_id in paragraph["source_claim_ids"]
+    ]
+    if any(claim_id not in claim_map for claim_id in flattened_ids):
+        _fail("unknown_claim_id")
+    if len(flattened_ids) != len(set(flattened_ids)):
+        _fail("duplicate_claim_id")
+    if sorted(flattened_ids) != sorted(claim_map):
+        _fail("missing_claim_id")
+    for paragraph in content_paragraphs:
+        source_ids = paragraph["source_claim_ids"]
+        if any(claim_id not in claim_map for claim_id in source_ids):
+            # Unknown ids already recorded; content checks need real claims.
+            continue
+        source_text = " ".join(claim_map[claim_id].claim_text for claim_id in source_ids)
+        source_casefold = source_text.casefold()
+        paragraph_text = paragraph["text"]
+        for token in _composer_technical_tokens(paragraph_text):
+            if token.casefold() not in source_casefold:
+                _fail("new_identifier")
+        for literal in _composer_numeric_literals(paragraph_text):
+            if literal not in source_text:
+                _fail("new_numeric_literal")
+        if _contains_any(paragraph_text.casefold(), _COMPOSER_CAUSAL_CUES) and not _contains_any(
+            source_casefold, _COMPOSER_CAUSAL_CUES
+        ):
+            _fail("new_causal_relation")
+        if _contains_any(paragraph_text.casefold(), _COMPOSER_COMPARISON_CUES) and not _contains_any(
+            source_casefold, _COMPOSER_COMPARISON_CUES
+        ):
+            _fail("new_comparison_relation")
+    return not codes, codes
+
+
+def _validate_composer_review(review: Any, paragraph_count: int, claim_ids: set[str]) -> bool:
+    """Fail-closed acceptance check for the composer semantic review verdict."""
+    if not isinstance(review, dict):
+        return False
+    if review.get("valid") is not True:
+        return False
+    unsupported = review.get("unsupported_paragraph_indexes")
+    missing_or_distorted = review.get("missing_or_distorted_claim_ids")
+    if not isinstance(unsupported, list) or unsupported:
+        return False
+    if not isinstance(missing_or_distorted, list) or missing_or_distorted:
+        return False
+    if any(
+        not isinstance(index, int) or isinstance(index, bool) or not 0 <= index < paragraph_count
+        for index in unsupported
+    ):
+        return False
+    if any(
+        not isinstance(claim_id, str) or claim_id not in claim_ids
+        for claim_id in missing_or_distorted
+    ):
+        return False
+    return isinstance(review.get("reason"), str)
+
+
+def render_composed_answer(paragraphs: list[dict], claims: list[ClaimCitation]) -> str:
+    """Render an accepted composition with app-derived, deduplicated citations."""
+    claim_map = {claim.claim_id: claim for claim in claims}
+    lines: list[str] = []
+    for paragraph in paragraphs:
+        evidence_ids: list[str] = []
+        for claim_id in paragraph["source_claim_ids"]:
+            for evidence_id in claim_map[claim_id].evidence_ids:
+                if evidence_id not in evidence_ids:
+                    evidence_ids.append(evidence_id)
+        lines.append(f"{paragraph['text'].strip()} [{', '.join(evidence_ids)}]")
+    return "\n".join(lines)
+
+
 class QAState(TypedDict, total=False):
     question: str
     answer_point_coverage_mode: str
@@ -1161,6 +1345,7 @@ class QAState(TypedDict, total=False):
     retained_support_evidence: dict[str, dict[str, Any]]
     e3_trace: dict[str, Any]
     node_timings_ms: dict[str, int]
+    composer_diagnostics: dict[str, Any]
     result: dict[str, Any]
 
 
@@ -2157,7 +2342,7 @@ class QAAgent:
                     claim_errors[claim_id].append(message)
             for token in set(re.findall(r"[A-Za-z_][A-Za-z0-9_:./-]+", claim.get("claim_text", ""))):
                 token = _normalise_rejected_identifier_token(token)
-                is_path = token.count("/") >= 2 or token.startswith(("macro/", "src/", "data/", "pgenerators/", "model/", "fit/")) or token.endswith((".C", ".py", ".root", ".h", ".hpp", ".cpp", ".cxx", ".json", ".txt", ".yaml", ".yml"))
+                is_path = token.count("/") >= 2 or token.startswith(("macro/", "src/", "data/", "pgenerators/", "model/", "fit/")) or token.endswith(_CODE_DATA_EXTENSIONS)
                 if ("::" in token or is_path) and token not in cited:
                     message = f"unsupported identifier {token}"
                     errors.append(message)
@@ -2486,8 +2671,127 @@ class QAAgent:
             "answer_requirements": answer_requirements,
         }
 
+    def _compose_verified_answer(self, claims: list[ClaimCitation]) -> tuple[str, dict[str, Any]]:
+        """F5 bounded readability composer over already verified public claims.
+
+        Exactly one composer call (generation role) and at most one semantic
+        review call (verification role), no retries. Every failure falls back
+        to the untouched deterministic renderer; the QA request never fails and
+        verification_errors are never touched. Diagnostics carry counts and
+        fixed reason codes only — never prompt, claim, evidence, or model text.
+        """
+        fallback_answer = render_verified_answer(claims)
+
+        def _diagnostics(
+            *,
+            attempted: bool,
+            accepted: bool,
+            reason: str,
+            paragraph_count: int,
+            deterministic_error_codes: list[str],
+            semantic_review_called: bool,
+        ) -> dict[str, Any]:
+            return {
+                "attempted": attempted,
+                "accepted": accepted,
+                "fallback_used": attempted and not accepted,
+                "reason": reason,
+                "source_claim_count": len(claims),
+                "paragraph_count": paragraph_count,
+                "deterministic_error_codes": deterministic_error_codes,
+                "semantic_review_called": semantic_review_called,
+            }
+
+        if len(claims) < 2:
+            return fallback_answer, _diagnostics(
+                attempted=False,
+                accepted=False,
+                reason="single_claim_bypass",
+                paragraph_count=0,
+                deterministic_error_codes=[],
+                semantic_review_called=False,
+            )
+        verified_claims = [
+            {"claim_id": claim.claim_id, "claim_text": claim.claim_text}
+            for claim in claims
+        ]
+        try:
+            composer_output = self.generation_vertex.generate_json(
+                json.dumps(
+                    {"task": "compose_verified_claims", "verified_claims": verified_claims},
+                    ensure_ascii=False,
+                ),
+                COMPOSER_SCHEMA,
+                system_instruction=ANSWER_COMPOSER_SYSTEM_PROMPT,
+                usage_stage="qa_composer",
+            )
+        except Exception:
+            return fallback_answer, _diagnostics(
+                attempted=True,
+                accepted=False,
+                reason="composer_generation_failed",
+                paragraph_count=0,
+                deterministic_error_codes=[],
+                semantic_review_called=False,
+            )
+        paragraphs = composer_output.get("paragraphs") if isinstance(composer_output, dict) else None
+        ok, codes = _validate_composed_paragraphs(paragraphs, claims)
+        if not ok:
+            return fallback_answer, _diagnostics(
+                attempted=True,
+                accepted=False,
+                reason="deterministic_validation_failed",
+                paragraph_count=len(paragraphs) if isinstance(paragraphs, list) else 0,
+                deterministic_error_codes=codes,
+                semantic_review_called=False,
+            )
+        try:
+            review = self.verification_vertex.generate_json(
+                json.dumps(
+                    {
+                        "task": "review_composed_answer",
+                        "verified_claims": verified_claims,
+                        "paragraphs": [
+                            {"text": paragraph["text"], "source_claim_ids": paragraph["source_claim_ids"]}
+                            for paragraph in paragraphs
+                        ],
+                    },
+                    ensure_ascii=False,
+                ),
+                COMPOSER_REVIEW_SCHEMA,
+                system_instruction=ANSWER_COMPOSER_REVIEW_SYSTEM_PROMPT,
+                usage_stage="qa_composer",
+            )
+        except Exception:
+            return fallback_answer, _diagnostics(
+                attempted=True,
+                accepted=False,
+                reason="composer_review_failed",
+                paragraph_count=len(paragraphs),
+                deterministic_error_codes=[],
+                semantic_review_called=True,
+            )
+        if not _validate_composer_review(review, len(paragraphs), {claim.claim_id for claim in claims}):
+            return fallback_answer, _diagnostics(
+                attempted=True,
+                accepted=False,
+                reason="semantic_review_rejected",
+                paragraph_count=len(paragraphs),
+                deterministic_error_codes=[],
+                semantic_review_called=True,
+            )
+        return render_composed_answer(paragraphs, claims), _diagnostics(
+            attempted=True,
+            accepted=True,
+            reason="composed",
+            paragraph_count=len(paragraphs),
+            deterministic_error_codes=[],
+            semantic_review_called=True,
+        )
+
     def _finalize(self, state: QAState) -> dict[str, Any]:
         plan = state.get("bundle", {}).get("plan", {})
+        composer_diagnostics = None
         salvageable = (
             state.get("sufficient")
             and not plan.get("version_conflicts")
@@ -2717,9 +3021,15 @@ class QAAgent:
                         retained_cited.append(retained_map[eid])
                         included_ids.add(eid)
             cited_evidence = [*bundle_evidence, *retained_cited]
+            # F5: the optional bounded composer runs only here; every failure
+            # mode falls back to the deterministic renderer below.
+            if claims:
+                answer, composer_diagnostics = self._compose_verified_answer(claims)
+            else:
+                answer = render_verified_answer(claims)
             result = QAResult(
                 status=QAStatus.ANSWERED,
-                answer=render_verified_answer(claims),
+                answer=answer,
                 claims=claims,
                 evidence=cited_evidence,
                 verification_errors=state.get("errors", []),
@@ -2754,6 +3064,7 @@ class QAAgent:
                 *state.get("claim_audit", []),
                 *visible_mapping_audit,
             ],
+            "composer_diagnostics": composer_diagnostics,
         }
 
     def run(self, question: str) -> QAResult:
@@ -2807,6 +3118,8 @@ class QAAgent:
             "claim_audit": state.get("claim_audit", []),
         }
         diagnostics["model_roles"] = self._model_roles_diagnostics()
+        if state.get("composer_diagnostics") is not None:
+            diagnostics["composer"] = state["composer_diagnostics"]
         if coverage_shadow:
             diagnostics.update(question_decomposition=decomposition, answer_point_audit=state["answer_point_audit"])
         if mode == "runtime_e1_v2":
