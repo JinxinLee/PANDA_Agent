@@ -278,6 +278,19 @@ def _refusal_basis_evidence(
             and any(anchor in _evidence_search_text(item) for anchor in question_anchors)
         ]
         preferred_terms = ()
+    elif kind == "deleted_runtime":
+        # Deleted-runtime context may only cite already-selected code/workflow
+        # evidence that explicitly overlaps an identifier-like artifact anchor
+        # from the live question (e.g. event_poca, sensor_hits).  Generic prose
+        # overlap never qualifies, and no historical path receives preference.
+        artifact_anchors = {token for token in question_anchors if "_" in token}
+        candidates = [
+            item
+            for item in evidence
+            if _is_code_or_workflow_evidence(item)
+            and any(anchor in _evidence_search_text(item) for anchor in artifact_anchors)
+        ]
+        preferred_terms = ()
     else:
         raise ValueError(f"unknown refusal basis kind: {kind}")
     if not candidates:
@@ -285,7 +298,7 @@ def _refusal_basis_evidence(
 
     def score(item: dict[str, Any]) -> tuple[int, str]:
         text = _evidence_search_text(item)
-        ranking_anchors = question_anchors if kind == "unsupported_symbol" else anchors
+        ranking_anchors = question_anchors if kind in {"unsupported_symbol", "deleted_runtime"} else anchors
         overlap = sum(anchor in text for anchor in ranking_anchors)
         shared_request_terms = sum(
             term in question_text and term in text for term in preferred_terms
@@ -316,7 +329,7 @@ def _refusal_basis_evidence(
                 or object_type in {"documentation", "readme", "sphinx_page"}
             )
             source_preference = 1000 * int(exact_plan_anchor) + 200 * int(executable_or_producer) - 100 * int(documentation)
-        elif kind == "unsupported_symbol":
+        elif kind in {"unsupported_symbol", "deleted_runtime"}:
             # Rank purely by query-anchor overlap; no source-type or path
             # preference, so no historical locator receives special treatment.
             source_preference = 100 * overlap
@@ -2575,6 +2588,11 @@ class QAAgent:
                     if str(error).startswith("unsupported requested API symbol:")
                 )
                 requested = error.split(":", 1)[1].strip()
+                # The locked-catalog API absence is the refusal authority.  A
+                # cited replacement must be evidence whose own locator matches
+                # the requested owner; no historical header path receives
+                # preference, and the claim asserts only what the evidence
+                # supports.
                 replacement = next(
                     (
                         item
@@ -2583,19 +2601,18 @@ class QAAgent:
                         in str((item.get("locator") or {}).get("path") or "")
                         or requested.rsplit("::", 1)[0]
                         == str((item.get("locator") or {}).get("symbol") or "")
-                        or str((item.get("locator") or {}).get("path") or "").endswith(
-                            "PndPidCorrelator.h"
-                        )
                     ),
                     None,
                 )
                 if replacement:
+                    owner = requested.rsplit("::", 1)[0].split("::", 1)[-1]
+                    location = _refusal_basis_location(replacement)
                     claims = [
                         ClaimCitation(
                             claim_id="unsupported_api_guard",
                             claim_text=(
-                                f"The locked corpus does not declare the exact API signature {requested}; "
-                                "the requested method cannot be verified from the available header."
+                                f"The cited locked code at {location} documents {owner}, "
+                                f"but does not establish the exact requested API signature {requested}."
                             ),
                             evidence_ids=[replacement["evidence_id"]],
                         )
@@ -2611,31 +2628,26 @@ class QAAgent:
                 str(error).startswith("runtime artifact records cannot be reconstructed")
                 for error in state.get("errors", [])
             ):
-                replacement = next(
-                    (
-                        item
-                        for item in state.get("bundle", {}).get("evidence", [])
-                        if str((item.get("locator") or {}).get("path") or "")
-                        == "macro/target/ana_dpm.C"
-                    ),
-                    None,
-                )
-                if replacement:
+                # The deleted-runtime refusal may cite only already-selected
+                # code/workflow evidence that overlaps an identifier-like
+                # artifact anchor from the live question; the base refusal is
+                # artifact-neutral.
+                basis = _refusal_basis_evidence(state, kind="deleted_runtime")
+                if basis:
+                    location = _refusal_basis_location(basis)
+                    subject = _refusal_basis_subject(question, basis)
                     claims = [
                         ClaimCitation(
                             claim_id="runtime_artifact_guard",
                             claim_text=(
-                                "The source defines the event_poca schema and production logic, "
-                                "but deleted runtime event records cannot be reconstructed from source code alone."
+                                f"The cited locked code at {location} documents {subject}, "
+                                "but source code does not contain deleted runtime records."
                             ),
-                            evidence_ids=[replacement["evidence_id"]],
+                            evidence_ids=[str(basis["evidence_id"])],
                         )
                     ]
-                    cited_evidence = [replacement]
-                answer = (
-                    "The deleted runtime event records cannot be reconstructed from source code alone; "
-                    "the source can only verify the event_poca schema and production logic."
-                )
+                    cited_evidence = [basis]
+                answer = "Deleted runtime records cannot be reconstructed from source code alone."
                 if claims:
                     answer += "\n" + render_verified_answer(claims)
             else:

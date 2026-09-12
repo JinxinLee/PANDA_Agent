@@ -1196,10 +1196,6 @@ class Retriever:
                     limited_hints[source_id] = selected
                     remaining -= len(selected)
             paper_page_hints = limited_hints
-        if intent == "algorithm_theory" and any(
-            term in lowered for term in ("feed back", "feedback", "reconstructed restgas profile")
-        ) and "li_2026" in paper_page_hints:
-            paper_page_hints["li_2026"] = [141, 149, 151]
         # Operational, API, and troubleshooting questions should not spend
         # their small evidence budget on thesis anchors.  Papers remain part of
         # the plan for the two intents whose gold policy explicitly requires

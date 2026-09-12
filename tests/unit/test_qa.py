@@ -2621,5 +2621,229 @@ class PremiseRefusalGeneralizationTests(unittest.TestCase):
         )
 
 
+class TestFixedRefusalLocatorRetirement(unittest.TestCase):
+    """F3 R05/R06: the fixed historical locators in the unsupported-API and
+    deleted-runtime refusal finalizers are retired.  Cited refusal basis is
+    selected only through the generic, question-grounded helper mechanisms."""
+
+    def _guard_agent(self, bundle, catalog_rows=()):
+        storage = CatalogStorage(list(catalog_rows))
+        retriever = FakeRetriever(bundle)
+        retriever.storage = storage
+        return QAAgent(Path.cwd(), retriever=retriever, vertex=FakeVertex())
+
+    @staticmethod
+    def _refusal_state(bundle, *, question, errors):
+        return {
+            "question": question,
+            "bundle": bundle,
+            "sufficient": False,
+            "errors": errors,
+            "supported_claims": [],
+        }
+
+    # T6 — an unsupported-API refusal may cite evidence whose own locator
+    # matches the requested owner, and the claim asserts exactly what that
+    # evidence supports (no header assumption).
+    def test_unsupported_api_owner_relevant_evidence_may_be_cited(self):
+        bundle = bundle_for(code_evidence())
+        state = self._refusal_state(
+            bundle,
+            question="What is PndPidCorrelator::ImaginaryMethod?",
+            errors=["unsupported requested API symbol: PndPidCorrelator::ImaginaryMethod"],
+        )
+        result = QAAgent(Path.cwd(), retriever=FakeRetriever(bundle), vertex=FakeVertex())._finalize(state)["result"]
+        self.assertEqual(result["status"], QAStatus.INSUFFICIENT_EVIDENCE.value)
+        self.assertTrue(result["claims"])
+        claim_text = result["claims"][0]["claim_text"]
+        self.assertIn("pid/PndPidCorrelator.h", claim_text)
+        self.assertIn("PndPidCorrelator", claim_text)
+        self.assertIn("PndPidCorrelator::ImaginaryMethod", claim_text)
+        self.assertEqual(result["evidence"][0]["evidence_id"], "e1")
+        self.assertIn("insufficiently evidenced", result["answer"])
+
+    # T7 — central sentinel: an unseen API owner must never receive the
+    # historical PndPidCorrelator header citation.
+    def test_unseen_api_owner_gets_no_historical_header_citation(self):
+        bundle = bundle_for(code_evidence())
+        state = self._refusal_state(
+            bundle,
+            question="What is ImaginaryController::missingMethod?",
+            errors=["unsupported requested API symbol: ImaginaryController::missingMethod"],
+        )
+        result = QAAgent(Path.cwd(), retriever=FakeRetriever(bundle), vertex=FakeVertex())._finalize(state)["result"]
+        self.assertEqual(result["claims"], [])
+        self.assertEqual(result["evidence"], [])
+        self.assertIn(
+            "does not declare the exact API signature ImaginaryController::missingMethod",
+            result["answer"],
+        )
+
+    # T8 — an unseen owner with genuinely matching selected evidence may
+    # still be cited through the generic owner-matching conditions.
+    def test_unseen_api_with_matching_owner_evidence_may_be_cited(self):
+        evidence = code_evidence(text="class SensorGhostBuilder {};", path="src/SensorGhostBuilder.cxx")
+        bundle = bundle_for(evidence)
+        state = self._refusal_state(
+            bundle,
+            question="What is SensorGhostBuilder::missingMethod?",
+            errors=["unsupported requested API symbol: SensorGhostBuilder::missingMethod"],
+        )
+        result = QAAgent(Path.cwd(), retriever=FakeRetriever(bundle), vertex=FakeVertex())._finalize(state)["result"]
+        self.assertTrue(result["claims"])
+        self.assertIn("src/SensorGhostBuilder.cxx", result["claims"][0]["claim_text"])
+        self.assertEqual(result["evidence"][0]["evidence_id"], evidence["evidence_id"])
+
+    # T9 — no owner-matching selected evidence means zero claims and zero
+    # citations.
+    def test_unsupported_api_without_relevant_evidence_cites_nothing(self):
+        bundle = bundle_for(code_evidence(text="Unrelated workflow notes", path="docs/notes.md"))
+        state = self._refusal_state(
+            bundle,
+            question="What is ImaginaryController::missingMethod?",
+            errors=["unsupported requested API symbol: ImaginaryController::missingMethod"],
+        )
+        result = QAAgent(Path.cwd(), retriever=FakeRetriever(bundle), vertex=FakeVertex())._finalize(state)["result"]
+        self.assertEqual(result["claims"], [])
+        self.assertEqual(result["evidence"], [])
+
+    # T10 — the locked-catalog API guard boundary itself is unchanged: an
+    # absent symbol is refused, a cataloged symbol is not.
+    def test_locked_catalog_api_guard_boundary_unchanged(self):
+        bundle = bundle_for(code_evidence())
+        agent = self._guard_agent(bundle)
+        self.assertEqual(
+            agent._answerability_guard({
+                "question": "How does PndPidCorrelator::MissingSeed build the fit?",
+                "bundle": bundle,
+            }),
+            ["unsupported requested API symbol: PndPidCorrelator::MissingSeed"],
+        )
+        catalog_rows = [
+            (
+                {"symbol": "PndPidCorrelator::MissingSeed", "path": "pid/PndPidCorrelator.h"},
+                "class PndPidCorrelator {};",
+            )
+        ]
+        cataloged = self._guard_agent(bundle, catalog_rows)
+        cataloged_bundle = bundle_for(code_evidence(), symbols=["PndPidCorrelator::MissingSeed"])
+        self.assertEqual(
+            cataloged._answerability_guard({
+                "question": "Explain the requested PndPidCorrelator::MissingSeed behavior.",
+                "bundle": cataloged_bundle,
+            }),
+            [],
+        )
+
+    # T11 — a deleted-runtime refusal may cite selected evidence whose text
+    # overlaps the question's identifier-like artifact anchor, with a
+    # generic, artifact-neutral claim.
+    def test_deleted_runtime_relevant_producer_context_may_be_cited(self):
+        bundle = bundle_for(
+            code_evidence(text="event_poca tree is written by ana_dpm.C", path="macro/target/ana_dpm.C")
+        )
+        state = self._refusal_state(
+            bundle,
+            question="Can deleted event_poca records be reconstructed from source code?",
+            errors=["runtime artifact records cannot be reconstructed"],
+        )
+        result = QAAgent(Path.cwd(), retriever=FakeRetriever(bundle), vertex=FakeVertex())._finalize(state)["result"]
+        self.assertTrue(result["claims"])
+        claim_text = result["claims"][0]["claim_text"]
+        self.assertIn("macro/target/ana_dpm.C", claim_text)
+        self.assertIn("does not contain deleted runtime records", claim_text)
+        self.assertNotIn("schema and production logic", claim_text)
+        self.assertTrue(
+            result["answer"].startswith(
+                "Deleted runtime records cannot be reconstructed from source code alone."
+            )
+        )
+
+    # T12/T19 — central sentinel: an unseen artifact gets the generic
+    # refusal with no unconditional event_poca wording and no fixed
+    # historical locator.
+    def test_unseen_deleted_runtime_artifact_gets_generic_refusal(self):
+        bundle = bundle_for(
+            code_evidence(
+                text="ana_dpm.C writes the event_poca output tree during the analysis workflow.",
+                path="macro/target/ana_dpm.C",
+            )
+        )
+        state = self._refusal_state(
+            bundle,
+            question="Can deleted sensor_hits.root event records be reconstructed from source code?",
+            errors=["runtime artifact records cannot be reconstructed"],
+        )
+        result = QAAgent(Path.cwd(), retriever=FakeRetriever(bundle), vertex=FakeVertex())._finalize(state)["result"]
+        self.assertEqual(result["claims"], [])
+        self.assertEqual(result["evidence"], [])
+        self.assertNotIn("event_poca", result["answer"])
+
+    # T13 — an unseen artifact with genuinely relevant producer evidence is
+    # cited through the generic anchor-overlap mechanism.
+    def test_unseen_artifact_with_relevant_producer_evidence_may_be_cited(self):
+        evidence = code_evidence(
+            text="digitization macro writes sensor_hits.root during simulation",
+            path="macro/digi/digi_sensor.C",
+        )
+        bundle = bundle_for(evidence)
+        state = self._refusal_state(
+            bundle,
+            question="Can deleted sensor_hits.root event records be reconstructed from source code?",
+            errors=["runtime artifact records cannot be reconstructed"],
+        )
+        result = QAAgent(Path.cwd(), retriever=FakeRetriever(bundle), vertex=FakeVertex())._finalize(state)["result"]
+        self.assertTrue(result["claims"])
+        claim_text = result["claims"][0]["claim_text"]
+        self.assertIn("sensor_hits", claim_text)
+        self.assertIn("does not contain deleted runtime records", claim_text)
+        self.assertEqual(result["evidence"][0]["evidence_id"], evidence["evidence_id"])
+
+    # T14 — no anchor-relevant selected evidence produces the exact bare
+    # generic refusal.
+    def test_deleted_runtime_without_relevant_evidence_is_bare_refusal(self):
+        bundle = bundle_for(code_evidence(text="Unrelated helper notes", path="docs/notes.md"))
+        state = self._refusal_state(
+            bundle,
+            question="Can deleted event_poca records be reconstructed from source code?",
+            errors=["runtime artifact records cannot be reconstructed"],
+        )
+        result = QAAgent(Path.cwd(), retriever=FakeRetriever(bundle), vertex=FakeVertex())._finalize(state)["result"]
+        self.assertEqual(result["claims"], [])
+        self.assertEqual(result["evidence"], [])
+        self.assertEqual(
+            result["answer"],
+            "Deleted runtime records cannot be reconstructed from source code alone.",
+        )
+
+    # T15 — the guard's deleted-runtime trigger is artifact-neutral: both the
+    # historical and an unseen artifact produce the same generic error.
+    def test_deleted_runtime_guard_genericity_unchanged(self):
+        bundle = bundle_for(code_evidence())
+        agent = self._guard_agent(bundle)
+        for question in (
+            "Can deleted event_poca records be reconstructed from source code?",
+            "Can deleted sensor_hits.root records be restored?",
+        ):
+            with self.subTest(question=question):
+                self.assertEqual(
+                    agent._answerability_guard({"question": question, "bundle": bundle}),
+                    ["runtime artifact records cannot be reconstructed from source code alone"],
+                )
+
+    # T17 — the historical fixed header authority is gone from the source.
+    def test_no_fixed_header_authority_in_source(self):
+        import panda_agent.qa as qa_module
+
+        self.assertNotIn("PndPidCorrelator.h", inspect.getsource(qa_module))
+
+    # T18 — the historical fixed macro path authority is gone from the
+    # source (the bare "ana_dpm" mention elsewhere is legitimate).
+    def test_no_fixed_macro_authority_in_source(self):
+        import panda_agent.qa as qa_module
+
+        self.assertNotIn("macro/target/ana_dpm.C", inspect.getsource(qa_module))
+
+
 if __name__ == "__main__":
     unittest.main()

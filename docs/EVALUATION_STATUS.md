@@ -84,6 +84,8 @@ F2-A5 = COMPLETE / PASS / QUESTION_GROUNDED_SOURCE_OBLIGATION_SEMANTICS_ESTABLIS
 F2-A5 report: `evaluation/F2_A5_SEMANTIC_SOURCE_OBLIGATION_GENERALIZATION.md` (initial closeout corrected by F2-A5-R1).
 F2-A5-R1 = COMPLETE / PASS / SOURCE_OBLIGATION_MATCHING_BOUNDARY_ESTABLISHED.
 F2-A5-R1 report: `evaluation/F2_A5_R1_SOURCE_OBLIGATION_BOUNDARY_REPAIR.md`.
+F3 = COMPLETE / PASS / FIXED_LOCATOR_FALLBACK_SHORTCUTS_RETIRED.
+F3 report: `evaluation/F3_FIXED_LOCATOR_FALLBACK_CLEANUP.md`.
 Phase E = COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED.
 E2-A1 report: `evaluation/E2_A1_SHADOW_ANSWER_POINT_COVERAGE_CONTRACT.md`.
 C1 met all eight strict gates and the original pair09 atomicity sentinel. Per the
@@ -147,6 +149,8 @@ F2-A5
 COMPLETE / PASS / QUESTION_GROUNDED_SOURCE_OBLIGATION_SEMANTICS_ESTABLISHED
 F2-A5-R1
 COMPLETE / PASS / SOURCE_OBLIGATION_MATCHING_BOUNDARY_ESTABLISHED
+F3
+COMPLETE / PASS / FIXED_LOCATOR_FALLBACK_SHORTCUTS_RETIRED
 
 Latest accepted production action:
 D4-A10
@@ -162,10 +166,10 @@ MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD
 Current planning state:
 D4 = PAUSED / ROADMAP_RECONCILIATION
 D4 overall completion = UNDECIDED
-CURRENT_TASK = F2-A5-R1 / COMPLETE / PASS / SOURCE_OBLIGATION_MATCHING_BOUNDARY_ESTABLISHED
-NEXT_TASK_RECOMMENDATION = F3 — Fixed Locator/Fallback Cleanup (R03/R05/R06) / RECOMMENDED / NOT AUTHORIZED
+CURRENT_TASK = F3 / COMPLETE / PASS / FIXED_LOCATOR_FALLBACK_SHORTCUTS_RETIRED
+NEXT_TASK_RECOMMENDATION = F4 — Separate Answer-Generation and Semantic-Verification Roles / RECOMMENDED / NOT AUTHORIZED
 NEXT_TASK_EXECUTION_AUTHORIZED = false
-FOLLOWING_ARCHITECTURE_TASK = F3 — Fixed Locator/Fallback Cleanup (PF-LR1 bounded R03/R05/R06 package)
+FOLLOWING_ARCHITECTURE_TASK = F4 — Separate Answer-Generation and Semantic-Verification Roles
 
 No D4-A11 exists.
 Phase E = COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED.
@@ -178,10 +182,10 @@ E3-LR1 = COMPLETE / PASS / POST_A2_LIFECYCLE_RECONCILED.
 E3 = COMPLETE / BOUNDED_LOW_FREQUENCY_FALLBACK_IMPLEMENTED / SCIENTIFIC_RECOVERY_BENEFIT_UNRESOLVED.
 PE-LR1 = COMPLETE / PASS / PHASE_E_CLOSED_PROMOTION_DEFERRED_UNTIL_MATERIAL_CANDIDATE.
 Phase E = COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED.
-Phase F = IN_PROGRESS / F2_COMPLETE_F3_NOT_STARTED.
+Phase F = IN_PROGRESS / F3_COMPLETE_F4_NOT_STARTED.
 F2 = COMPLETE / PASS / A1_A2_A3_A4_A5_COMPLETE.
-F3 = NOT_STARTED / UNEXECUTED.
-No further recovery, D4, Phase-E, or Phase-F production task is authorized after F2-A5; F3 — Fixed Locator/Fallback Cleanup (R03/R05/R06) is recommended but NOT AUTHORIZED.
+F3 = COMPLETE / PASS / FIXED_LOCATOR_FALLBACK_SHORTCUTS_RETIRED.
+No further recovery, D4, Phase-E, or Phase-F production task is authorized after F3; F4 — Separate Answer-Generation and Semantic-Verification Roles is recommended but NOT AUTHORIZED.
 
 ## E3-A1 experimental implementation closeout
 
@@ -567,6 +571,37 @@ promotion relevance is not promotion authorization.
 NEXT_TASK_RECOMMENDATION = F3 — Fixed Locator/Fallback Cleanup (PF-LR1 bounded package: R03, R05, R06)
 (RECOMMENDED / NOT AUTHORIZED).
 Report: `evaluation/F2_A5_R1_SOURCE_OBLIGATION_BOUNDARY_REPAIR.md`.
+
+## F3 fixed locator / fallback cleanup closeout
+
+COMPLETE / PASS / FIXED_LOCATOR_FALLBACK_SHORTCUTS_RETIRED. Bounded PF-LR1 F3 package (F1 residuals R03/R05/R06,
+all LOCAL_NON_MATERIAL) at HEAD `a7109e3`; zero PANDA scientific/evaluation calls or tokens; zero protected-data
+access. R03: deleted the `Retriever.analyze` feedback page override (algorithm_theory + feedback phrases +
+existing li_2026 hints -> forced `[141, 149, 151]`); reviewed query-expansion semantics are the only remaining
+page-hint authority and the D4-owned `reconstructed_profile_to_acceptance` YAML rule is unchanged. R05: removed
+the unsupported-API finalizer's fixed `PndPidCorrelator.h` endswith fallback; the generic requested-owner
+matching (owner-in-path / owner==symbol) is preserved and the optional claim now states exactly what the cited
+evidence supports ("The cited locked code at <location> documents <owner>, but does not establish the exact
+requested API signature <requested>.") with no header assumption; no relevant evidence keeps `claims = []` /
+`evidence = []`. R06: removed the deleted-runtime finalizer's fixed `macro/target/ana_dpm.C` lookup and
+unconditional event_poca wording; the base refusal is artifact-neutral ("Deleted runtime records cannot be
+reconstructed from source code alone.") and optional context comes from a bounded `deleted_runtime` kind in the
+generic `_refusal_basis_evidence` selector (already-selected bundle only, identifier-like question artifact
+anchors, question-anchor-overlap ranking, no fixed path preference, None when nothing is relevant; existing
+future_runtime/universal_proof/unsupported_symbol kinds byte-identical). No replacement fixed locator, new
+configuration, model call, or retrieval was introduced (static sentinels assert the three historical literals
+are absent from production sources). Adversarial contract T1-T24 all PASS, including both central sentinels
+(unseen API owner gets no historical header citation; unseen deleted-runtime artifact gets a generic refusal
+with no event_poca leakage). D4 YAML and `select_final_evidence` zero-diff; R14/R15/R07/R20 and E3 boundaries
+untouched; both pre-existing fallback-dependent tests pass unmodified through the generic mechanisms.
+Verification: tests/unit/test_retrieval.py 59 passed + 27 subtests; tests/unit/test_qa.py 111 passed + 19
+subtests; integrated focused run 170 passed + 46 subtests. R03/R05/R06 = RETIRED; per-residual matrix and
+T1-T24 record in the report. Normal default remains legacy_question_core; runtime_e1_v2 remains
+explicit-selection-only; default promotion remains deferred (D3); promotion relevance is not promotion
+authorization.
+NEXT_TASK_RECOMMENDATION = F4 — Separate Answer-Generation and Semantic-Verification Roles
+(RECOMMENDED / NOT AUTHORIZED).
+Report: `evaluation/F3_FIXED_LOCATOR_FALLBACK_CLEANUP.md`.
 
 ## Historical E3-A0 architecture contract closeout
 

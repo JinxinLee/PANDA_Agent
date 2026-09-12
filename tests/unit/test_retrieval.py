@@ -1085,4 +1085,114 @@ class SourceObligationBoundaryTests(unittest.TestCase):
         )
 
 
+class TheoryVertex:
+    """FakeVertex variant whose unresolved-intent classification is theory."""
+
+    def generate_json(self, prompt, schema, **kwargs):
+        import json
+
+        payload = json.loads(prompt)
+        question = payload["untrusted_question"]
+        result = {
+            "repository_additions": [],
+            "concepts": [],
+            "symbols": [],
+            "version_mentions": [],
+            "concept_scopes": [],
+        }
+        if payload["deterministic_context"]["fixed"].get("intent") is None:
+            result["intent"] = {
+                "value": "algorithm_theory",
+                "support_spans": [question[: min(24, len(question))]],
+            }
+        return result
+
+
+class TestFixedFeedbackPageOverrideRetirement(unittest.TestCase):
+    """F3-R03: the Python shortcut that force-overrode li_2026 page hints for
+    feedback-worded theory questions is retired.  The reviewed query-expansion
+    YAML remains the only authority for paper page hints."""
+
+    def make_retriever(self, vertex=None):
+        retriever = RetrievalTests().make_retriever()
+        retriever.vertex = vertex if vertex is not None else TheoryVertex()
+        return retriever
+
+    def test_reviewed_expansion_pages_survive_feedback_wording(self):
+        # T1 differential: the word "feedback" must no longer override the
+        # reviewed longitudinal_efficiency pages with [141, 149, 151].
+        plan = self.make_retriever().analyze(
+            "How is the longitudinal efficiency feedback used in the reconstruction?"
+        )
+        rules = plan.analysis_diagnostics["matched_expansion_rules"]
+        self.assertIn("longitudinal_efficiency", rules)
+        self.assertNotIn("reconstructed_profile_to_acceptance", rules)
+        self.assertEqual(plan.paper_page_hints.get("li_2026"), [138, 142, 147])
+
+    def test_feedback_question_without_reviewed_expansion_gets_no_injected_pages(self):
+        # T1b / Case A: the retired override's own trigger wording must not
+        # manufacture li_2026 pages.  "restgas profile" is a substring of the
+        # question, so the reviewed restgas_profile_workflow rule matches, but
+        # it contributes no page hints and no Python branch injects pages.
+        plan = self.make_retriever().analyze(
+            "How is the reconstructed restgas profile fed back?"
+        )
+        self.assertEqual(
+            plan.analysis_diagnostics["matched_expansion_rules"],
+            ["restgas_profile_workflow"],
+        )
+        self.assertNotIn("li_2026", plan.paper_page_hints)
+
+    def test_reviewed_expansion_remains_page_hint_authority(self):
+        # T2 / Case B: [141, 149, 151] originates from the reviewed
+        # reconstructed_profile_to_acceptance YAML rule, not Python control
+        # flow.  The suggested "acceptance calculation" wording is avoided
+        # because it also matches effective_acceptance_pipeline, whose earlier
+        # page set would merge in front of [141, 149, 151].
+        plan = self.make_retriever().analyze(
+            "How does the reconstructed rho enter the acceptance model?"
+        )
+        self.assertEqual(
+            plan.analysis_diagnostics["matched_expansion_rules"],
+            ["reconstructed_profile_to_acceptance"],
+        )
+        self.assertEqual(plan.paper_page_hints.get("li_2026"), [141, 149, 151])
+
+    def test_d4_owned_yaml_rule_unchanged(self):
+        # T3/T23 sentinel: F3 did not touch the D4-owned expansion config.
+        expansions = load_query_expansions(PROJECT_ROOT / "configs" / "query_expansions.yaml")
+        rule = next(
+            item for item in expansions.rules
+            if item.rule_id == "reconstructed_profile_to_acceptance"
+        )
+        self.assertEqual(rule.paper_page_hints, {"li_2026": [141, 149, 151]})
+
+    def test_unrelated_theory_question_gets_no_page_hints(self):
+        # T4: a theory question with no reviewed trigger and no feedback terms
+        # receives no expansion rules and no page hints from any layer.
+        plan = self.make_retriever().analyze(
+            "How is the luminosity extraction method derived in theory?"
+        )
+        self.assertEqual(plan.analysis_diagnostics["matched_expansion_rules"], [])
+        self.assertEqual(plan.paper_page_hints, {})
+
+    def test_implementation_hint_limiting_unchanged(self):
+        # T5: with the override gone, implementation-intent questions still cap
+        # merged reviewed hints at 3 pages and the first reviewed anchor set
+        # wins: [138, 142, 147] + [131, 138] deduplicates to
+        # [138, 142, 147, 131] and is truncated to [138, 142, 147].
+        plan = self.make_retriever(FakeVertex()).analyze(
+            "How is the event id alignment handled in the longitudinal efficiency correction?"
+        )
+        self.assertEqual(plan.paper_page_hints, {"li_2026": [138, 142, 147]})
+
+    def test_no_python_branch_maps_feedback_terms_to_fixed_pages(self):
+        # T16 static sentinel: no active Python branch maps feedback terms to
+        # the fixed page set anywhere in retrieval.py.
+        source = (PROJECT_ROOT / "src" / "panda_agent" / "retrieval.py").read_text(
+            encoding="utf-8"
+        )
+        self.assertNotIn("141, 149, 151", source)
+
+
 if __name__ == "__main__": unittest.main()

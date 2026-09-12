@@ -188,7 +188,7 @@ F2-A5-R1:
 COMPLETE / PASS / SOURCE_OBLIGATION_MATCHING_BOUNDARY_ESTABLISHED
 
 Phase F:
-IN_PROGRESS / F2_COMPLETE_F3_NOT_STARTED
+IN_PROGRESS / F3_COMPLETE_F4_NOT_STARTED
 
 F1:
 COMPLETE / PASS / RESIDUAL_BENCHMARK_DEPENDENCY_INVENTORY_ESTABLISHED
@@ -197,13 +197,13 @@ F2:
 COMPLETE / PASS / A1_A2_A3_A4_A5_COMPLETE
 
 F3:
-NOT_STARTED / UNEXECUTED
+COMPLETE / PASS / FIXED_LOCATOR_FALLBACK_SHORTCUTS_RETIRED
 
 D4 overall completion:
 UNDECIDED
 
 Next task recommendation:
-F3 — Fixed Locator/Fallback Cleanup (R03/R05/R06) / RECOMMENDED / NOT AUTHORIZED
+F4 — Separate Answer-Generation and Semantic-Verification Roles / RECOMMENDED / NOT AUTHORIZED
 
 Current task authorization:
 E3-A1 experimental missing-point targeted retrieval implementation is complete:
@@ -219,8 +219,8 @@ E3-A2 completed INCONCLUSIVE (1/11 natural applicability; the single applicable 
 
 No D4-A11 exists.
 No further D4 task is currently authorized.
-Phase E is COMPLETE (closed by PE-LR1); no further Phase-E task exists. Phase-F scope reconciliation is complete (PF-LR1); F2-A1/F2-A1-R1 verifier-support repair, F2-A2 pointer-normalization completeness cleanup, and F2-A3 E1/E2 compatibility authority reconciliation (completed by F2-A3-R1) and F2-A4 premise/refusal generalization (completed by F2-A4-R1) and F2-A5 semantic source obligation generalization are complete; all five PF-LR1 F2 groups are closed (F2 = COMPLETE / PASS / A1_A2_A3_A4_A5_COMPLETE).
-No further Phase-F production task is currently authorized; F3 — Fixed Locator/Fallback Cleanup (R03/R05/R06) is recommended but NOT AUTHORIZED.
+Phase E is COMPLETE (closed by PE-LR1); no further Phase-E task exists. Phase-F scope reconciliation is complete (PF-LR1); F2-A1/F2-A1-R1 verifier-support repair, F2-A2 pointer-normalization completeness cleanup, and F2-A3 E1/E2 compatibility authority reconciliation (completed by F2-A3-R1) and F2-A4 premise/refusal generalization (completed by F2-A4-R1) and F2-A5 semantic source obligation generalization are complete; all five PF-LR1 F2 groups are closed (F2 = COMPLETE / PASS / A1_A2_A3_A4_A5_COMPLETE). F3 fixed-locator/fallback cleanup (R03/R05/R06) is COMPLETE / PASS / FIXED_LOCATOR_FALLBACK_SHORTCUTS_RETIRED.
+No further Phase-F production task is currently authorized; F4 — Separate Answer-Generation and Semantic-Verification Roles is recommended but NOT AUTHORIZED.
 
 ## Phase overview
 
@@ -239,8 +239,8 @@ No further Phase-F production task is currently authorized; F3 — Fixed Locator
 - **Phase E — Answer generalization:** `COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED`
   Dynamic question decomposition, answer-point coverage, claim-to-evidence mapping, and targeted completeness recovery. E1 validated (shadow scope), E2 core complete, E3 closed as a bounded low-frequency fallback; PE-LR1 closed the phase at the promotion boundary with the normal default remaining `legacy_question_core` and promotion reconsideration gated on a material candidate change or an explicitly authorized release-boundary decision.
 
-- **Phase F — Benchmark dependency cleanup and final answering:** `IN_PROGRESS / F2_COMPLETE_F3_NOT_STARTED`
-  F1 established the bounded non-D4 residual inventory without production cleanup. PF-LR1 reconciled the Phase-F scope into a bounded F2/F3 execution map. F2-A1 removed the benchmark-shaped verifier-support dependencies (R13), F2-A1-R1 removed the remaining whole-claim lexical semantic bypass (the initial F2-A1 closeout was corrected by R1), F2-A2 established question-derived pointer-normalization completeness (R10), and F2-A3 reconciled E1/E2 compatibility authority (R08/R09/R11: coverage modes own completeness, the named-requirement contract remains a legacy bridge); F2-A4 established generic question-grounded premise refusals through the locked-corpus catalog (R04), and F2-A5 established raw-question-grounded paper/code source obligations for the R01 intents (fixed config mappings retired; R02/HOLD mappings and all source budgets unchanged), with the matching boundary completed by F2-A5-R1 (bounded whole-token/phrase matching); with all five PF-LR1 F2 groups complete, F2 is closed and F3 remains unstarted.
+- **Phase F — Benchmark dependency cleanup and final answering:** `IN_PROGRESS / F3_COMPLETE_F4_NOT_STARTED`
+  F1 established the bounded non-D4 residual inventory without production cleanup. PF-LR1 reconciled the Phase-F scope into a bounded F2/F3 execution map. F2-A1 removed the benchmark-shaped verifier-support dependencies (R13), F2-A1-R1 removed the remaining whole-claim lexical semantic bypass (the initial F2-A1 closeout was corrected by R1), F2-A2 established question-derived pointer-normalization completeness (R10), and F2-A3 reconciled E1/E2 compatibility authority (R08/R09/R11: coverage modes own completeness, the named-requirement contract remains a legacy bridge); F2-A4 established generic question-grounded premise refusals through the locked-corpus catalog (R04), and F2-A5 established raw-question-grounded paper/code source obligations for the R01 intents (fixed config mappings retired; R02/HOLD mappings and all source budgets unchanged), with the matching boundary completed by F2-A5-R1 (bounded whole-token/phrase matching); with all five PF-LR1 F2 groups complete, F2 is closed. F3 retired the three PF-LR1 code-origin fixed locators (R03 feedback page override, R05 fixed-header unsupported-API fallback, R06 fixed-macro/event_poca deleted-runtime presentation) behind reviewed-expansion and question-grounded generic mechanisms with the D4 YAML untouched.
 
 ## Phase A — Evaluation infrastructure and versioned baseline
 
@@ -697,9 +697,10 @@ Original Phase-F planning predates the substantial shortcut migrations completed
 
 ### F3 — Incremental shortcut removal
 
-- **Status:** NOT_STARTED / UNEXECUTED
+- **Status:** COMPLETE / PASS / FIXED_LOCATOR_FALLBACK_SHORTCUTS_RETIRED
 - **Bounded scope (PF-LR1):** The R03/R05/R06 fixed-locator/fallback cleanup package. Ownership was reconciled against D4 by implementation origin and lifecycle ownership: D4 already implemented the phrase-to-answer-location retirement pattern for YAML query-expansion locators (five active migrations) and owns R20 plus the confirmed HOLDs; R03/R05/R06 are independent code origins in `retrieval.py`/`qa.py` outside the D4 rule inventory. Shared literals with D4 rules are coordinated, never globally deleted. D4 is not reopened and no D4-A11 is created.
 - **Context:** Original F3 planned incremental retirement of phrase-to-answer-location shortcuts once generic replacements were proven. That pattern was implemented by D4 for bounded query-expansion locators; that portion of F3 closes as superseded without new implementation.
+- **Outcome:** COMPLETE / PASS / FIXED_LOCATOR_FALLBACK_SHORTCUTS_RETIRED. R03: the `Retriever.analyze` feedback page override (theory intent + feedback phrases + existing li_2026 hints → forced `[141, 149, 151]`) was deleted; reviewed query-expansion semantics are the only page-hint authority and the D4-owned `reconstructed_profile_to_acceptance` rule keeps its shared page values. R05: the unsupported-API finalizer's fixed `PndPidCorrelator.h` fallback was removed; generic requested-owner matching survives and the optional claim asserts only what the cited evidence supports with no header assumption. R06: the deleted-runtime finalizer's fixed `ana_dpm.C` lookup and unconditional `event_poca` wording were replaced by an artifact-neutral refusal plus a bounded `deleted_runtime` kind in the generic `_refusal_basis_evidence` selector (already-selected bundle, identifier-like question artifact anchors, no fixed path preference, `None` when nothing is relevant). Static sentinels assert the three historical literals are gone from production sources; adversarial contract T1–T24 passes (170 passed + 46 subtests across both focused test files); zero scientific/evaluation calls. Report: `evaluation/F3_FIXED_LOCATOR_FALLBACK_CLEANUP.md`.
 - **Dependencies:** F1, F2, and Phase D/E outcomes.
 
 ### F4 — Separate answer-generation and semantic-verification roles
@@ -758,9 +759,9 @@ At release, Generalization Gap means benchmark score minus novel score. Benchmar
 5. **Phase execution ordering:** F1 found zero E1 blockers. E1-R2 passed targeted prospective synthetic validation and E1-C1 passed exposed real-style confirmation, including the original atomicity sentinel. E1 is closed under the accepted scope decision. E2-A3 remains FAIL/Q7. E2-A3-FR1 completed with REPAIR_JUSTIFIED. R1 remains FAIL/P2_P6. R2 repaired citation eligibility and passed S1-S13/P1-P11 in six fresh pairs. Historical P6 FAIL remains without waiver or product tuning; historical R3 remains INCONCLUSIVE after four infrastructure failures. R3-R1 completed the missing paired evidence and failed G11 at 2/14 noncritical worse; FR1 subsequently completed a static review recommending shared claim sanitization repair and prospective gate redesign. E2-LR1 subsequently separates completed core mechanisms from deferred promotion and supersedes immediate A3-R4. QA-M1 maintenance subsequently completed with focused T0/static checks. E3-A0 architecture contract is complete; E3-A1 implemented the experimental mechanism under runtime_e1_v2; E3-A2 completed INCONCLUSIVE with insufficient natural applicability; E3-LR1 closed E3 as a bounded low-frequency fallback with standalone recovery benefit unresolved. No further E1 confirmation is required.
 
 ```text
-CURRENT_TASK = F2-A5-R1 / COMPLETE / PASS / SOURCE_OBLIGATION_MATCHING_BOUNDARY_ESTABLISHED
-NEXT_TASK_RECOMMENDATION = F3 — Fixed Locator/Fallback Cleanup (R03/R05/R06) / RECOMMENDED / NOT AUTHORIZED
+CURRENT_TASK = F3 / COMPLETE / PASS / FIXED_LOCATOR_FALLBACK_SHORTCUTS_RETIRED
+NEXT_TASK_RECOMMENDATION = F4 — Separate Answer-Generation and Semantic-Verification Roles / RECOMMENDED / NOT AUTHORIZED
 NEXT_TASK_EXECUTION_AUTHORIZED = false
-FOLLOWING_ARCHITECTURE_TASK = F3 — Fixed Locator/Fallback Cleanup (PF-LR1 bounded R03/R05/R06 package)
+FOLLOWING_ARCHITECTURE_TASK = F4 — Separate Answer-Generation and Semantic-Verification Roles
 NEXT_STAGE_AUTHORIZED = false
 ```
