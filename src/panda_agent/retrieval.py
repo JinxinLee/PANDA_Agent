@@ -936,6 +936,38 @@ def build_dense_query_bundle(question: str, plan: RetrievalPlan) -> DenseQueryBu
     return DenseQueryBundle.from_semantic_query(question, build_semantic_query(question, plan))
 
 
+_R01_SOURCE_OBLIGATION_INTENTS = frozenset({"algorithm_theory", "algorithm_implementation"})
+_PAPER_OBLIGATION_TERMS = ("paper", "thesis", "publication", "literature", "journal")
+_CODE_OBLIGATION_TERMS = (
+    "source code", "implementation", "implemented", "signature",
+    "which file", "which source", "macro",
+)
+
+
+def _question_grounded_source_obligations(question: str) -> dict[str, Any]:
+    """Derive hard paper/code source obligations from the raw user question.
+
+    R01 replacement (F2-A5): for the algorithm-theory/implementation intents
+    the intent only selects this question-grounded regime; the raw question
+    alone decides which source classes are hard obligations.  Analyzer
+    concepts/symbols, plan symbols, page hints, and query expansions are never
+    consulted, and the bounded vocabulary keeps technical questions from
+    automatically becoming code requirements.
+    """
+    lowered = question.casefold()
+    obligations: list[str] = []
+    matches: list[dict[str, str]] = []
+    for source_type, terms in (
+        ("paper", _PAPER_OBLIGATION_TERMS),
+        ("code", _CODE_OBLIGATION_TERMS),
+    ):
+        hit = next((term for term in terms if term in lowered), None)
+        if hit:
+            obligations.append(source_type)
+            matches.append({"source_type": source_type, "support_span": hit})
+    return {"required_source_types": obligations, "matches": matches}
+
+
 class Retriever:
     def __init__(self, project_root: Path, *, storage: Storage | None = None, vertex: VertexAIClient | None = None) -> None:
         self.project_root = Path(project_root).resolve()
@@ -1219,6 +1251,29 @@ class Retriever:
             analysis_diagnostics["structured_replacement_rules"] = list(parsed.structured_replacement_rules)
         if parsed.d3_experiment is not None:
             analysis_diagnostics["d3_experiment"] = parsed.d3_experiment
+        if intent in _R01_SOURCE_OBLIGATION_INTENTS:
+            # F2-A5 (R01): the intent only selects the question-grounded
+            # source-obligation regime; the raw question alone decides which
+            # source classes are hard obligations.  The retired fixed
+            # config mapping (theory -> paper, implementation -> paper+code)
+            # no longer carries runtime authority.
+            obligation = _question_grounded_source_obligations(question)
+            required_source_types = obligation["required_source_types"]
+            analysis_diagnostics["source_obligations"] = {
+                "mode": "question_grounded_r01",
+                "authority": "raw_question",
+                **obligation,
+            }
+        else:
+            # R02/HOLD intents retain their existing intent-level policy
+            # mapping unchanged (F1 HOLD_UNCERTAIN_PROVENANCE disposition).
+            required_source_types = list(policy.required_sources)
+            analysis_diagnostics["source_obligations"] = {
+                "mode": "retained_intent_policy_r02",
+                "authority": "intent_policy",
+                "required_source_types": required_source_types,
+                "matches": [],
+            }
         return RetrievalPlan(
             intent=intent, routing_method="rule" if parsed.intent else "llm", target_repositories=targets,
             resolved_versions={repo: self.fixed_versions[repo] for repo in targets},
@@ -1226,7 +1281,7 @@ class Retriever:
             concepts=list(dict.fromkeys(expanded_concepts)),
             symbols=list(dict.fromkeys(expanded_symbols)),
             concept_scopes=scopes, source_budgets=policy.source_budgets,
-            required_source_types=policy.required_sources,
+            required_source_types=required_source_types,
             resolved_aliases=parsed.resolved_aliases, premise_corrections=parsed.premise_corrections,
             paper_page_hints={key: list(dict.fromkeys(value)) for key, value in paper_page_hints.items()},
             analysis_diagnostics=analysis_diagnostics,

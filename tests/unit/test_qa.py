@@ -2452,6 +2452,44 @@ class PremiseRefusalGeneralizationTests(unittest.TestCase):
         self.assertNotIn("MissingTrackAdapter", related["text"])
         self.assertTrue(result["answer"].startswith("The locked corpus does not define MissingTrackAdapter"))
 
+    # T15/T16 (F2-A5) - sufficiency honors explicit question-derived source
+    # obligations against the actual source-type classification.
+    def test_sufficiency_honors_explicit_source_obligations(self):
+        cases = (
+            (["paper"], "missing required source: paper", code_evidence()),
+            (["code"], "missing required source: code", code_evidence(source_id="li_2026")),
+        )
+        for required, expected_error, evidence in cases:
+            with self.subTest(required=required):
+                bundle = bundle_for(evidence)
+                bundle["plan"]["required_source_types"] = list(required)
+                agent = QAAgent(Path.cwd(), retriever=FakeRetriever(bundle), vertex=FakeVertex())
+                out = agent._sufficiency({
+                    "question": "According to the paper, how is this implemented?",
+                    "bundle": bundle,
+                })
+                self.assertFalse(out["sufficient"])
+                self.assertIn(expected_error, out["errors"])
+
+    # T17/T18 (F2-A5) - no hard R01 obligation means no source-class refusal,
+    # while zero evidence remains insufficient.
+    def test_no_obligation_and_no_evidence_refusals_unchanged(self):
+        bundle = bundle_for(code_evidence())
+        bundle["plan"]["required_source_types"] = []
+        agent = QAAgent(Path.cwd(), retriever=FakeRetriever(bundle), vertex=FakeVertex())
+        out = agent._sufficiency({
+            "question": "How does this correction work?",
+            "bundle": bundle,
+        })
+        self.assertTrue(out["sufficient"])
+        self.assertEqual(out["errors"], [])
+        empty = bundle_for(code_evidence())
+        empty["evidence"] = []
+        empty["plan"]["required_source_types"] = []
+        out = agent._sufficiency({"question": "How does this correction work?", "bundle": empty})
+        self.assertFalse(out["sufficient"])
+        self.assertEqual(out["errors"], ["no evidence"])
+
     # T1 (R1) — central plan-contamination sentinel: plan-only suggestions can
     # never make unrelated evidence the optional refusal basis.
     def test_plan_only_suggestion_cannot_become_refusal_basis(self):

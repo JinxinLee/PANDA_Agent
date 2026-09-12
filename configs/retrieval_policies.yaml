@@ -24,10 +24,10 @@ intents:
     required_sources: [documentation, code]
   algorithm_theory:
     source_budgets: {paper: 0.55, documentation: 0.10, code: 0.15, graph: 0.10, workflow: 0.10}
-    required_sources: [paper]
+    required_sources: []
   algorithm_implementation:
     source_budgets: {paper: 0.30, code: 0.40, graph: 0.15, documentation: 0.10, workflow: 0.05}
-    required_sources: [paper, code]
+    required_sources: []
   api:
     source_budgets: {code: 0.55, documentation: 0.20, readme: 0.10, graph: 0.10, paper: 0.05}
     required_sources: [code]

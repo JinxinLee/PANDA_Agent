@@ -80,6 +80,8 @@ F2-A4 = COMPLETE / PASS / GENERIC_PREMISE_REFUSAL_SEMANTICS_ESTABLISHED.
 F2-A4 report: `evaluation/F2_A4_PREMISE_REFUSAL_GENERALIZATION.md` (initial closeout corrected by F2-A4-R1).
 F2-A4-R1 = COMPLETE / PASS / QUESTION_GROUNDED_PREMISE_REFUSAL_BOUNDARY_ESTABLISHED.
 F2-A4-R1 report: `evaluation/F2_A4_R1_QUESTION_GROUNDED_PREMISE_REFUSAL_REPAIR.md`.
+F2-A5 = COMPLETE / PASS / QUESTION_GROUNDED_SOURCE_OBLIGATION_SEMANTICS_ESTABLISHED.
+F2-A5 report: `evaluation/F2_A5_SEMANTIC_SOURCE_OBLIGATION_GENERALIZATION.md`.
 Phase E = COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED.
 E2-A1 report: `evaluation/E2_A1_SHADOW_ANSWER_POINT_COVERAGE_CONTRACT.md`.
 C1 met all eight strict gates and the original pair09 atomicity sentinel. Per the
@@ -139,6 +141,8 @@ F2-A4
 COMPLETE / PASS / GENERIC_PREMISE_REFUSAL_SEMANTICS_ESTABLISHED
 F2-A4-R1
 COMPLETE / PASS / QUESTION_GROUNDED_PREMISE_REFUSAL_BOUNDARY_ESTABLISHED
+F2-A5
+COMPLETE / PASS / QUESTION_GROUNDED_SOURCE_OBLIGATION_SEMANTICS_ESTABLISHED
 
 Latest accepted production action:
 D4-A10
@@ -154,10 +158,10 @@ MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD
 Current planning state:
 D4 = PAUSED / ROADMAP_RECONCILIATION
 D4 overall completion = UNDECIDED
-CURRENT_TASK = F2-A4-R1 / COMPLETE / PASS / QUESTION_GROUNDED_PREMISE_REFUSAL_BOUNDARY_ESTABLISHED
-NEXT_TASK_RECOMMENDATION = F2-A5 — Semantic Source Obligation Generalization / RECOMMENDED / NOT AUTHORIZED
+CURRENT_TASK = F2-A5 / COMPLETE / PASS / QUESTION_GROUNDED_SOURCE_OBLIGATION_SEMANTICS_ESTABLISHED
+NEXT_TASK_RECOMMENDATION = F3 — Fixed Locator/Fallback Cleanup (R03/R05/R06) / RECOMMENDED / NOT AUTHORIZED
 NEXT_TASK_EXECUTION_AUTHORIZED = false
-FOLLOWING_ARCHITECTURE_TASK = bounded Phase-F production cleanup per the PF-LR1 recommended order (F2-A4 next)
+FOLLOWING_ARCHITECTURE_TASK = F3 — Fixed Locator/Fallback Cleanup (PF-LR1 bounded R03/R05/R06 package)
 
 No D4-A11 exists.
 Phase E = COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED.
@@ -170,10 +174,10 @@ E3-LR1 = COMPLETE / PASS / POST_A2_LIFECYCLE_RECONCILED.
 E3 = COMPLETE / BOUNDED_LOW_FREQUENCY_FALLBACK_IMPLEMENTED / SCIENTIFIC_RECOVERY_BENEFIT_UNRESOLVED.
 PE-LR1 = COMPLETE / PASS / PHASE_E_CLOSED_PROMOTION_DEFERRED_UNTIL_MATERIAL_CANDIDATE.
 Phase E = COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED.
-Phase F = IN_PROGRESS / F2_A4_COMPLETE.
-F2 = IN_PROGRESS / A1_A2_A3_A4_COMPLETE.
+Phase F = IN_PROGRESS / F2_COMPLETE_F3_NOT_STARTED.
+F2 = COMPLETE / PASS / A1_A2_A3_A4_A5_COMPLETE.
 F3 = NOT_STARTED / UNEXECUTED.
-No further recovery, D4, Phase-E, or Phase-F production task is authorized after F2-A4; F2-A5 — Semantic Source Obligation Generalization is recommended but NOT AUTHORIZED.
+No further recovery, D4, Phase-E, or Phase-F production task is authorized after F2-A5; F3 — Fixed Locator/Fallback Cleanup (R03/R05/R06) is recommended but NOT AUTHORIZED.
 
 ## E3-A1 experimental implementation closeout
 
@@ -494,6 +498,40 @@ deferred (D3); promotion relevance is not promotion authorization.
 NEXT_TASK_RECOMMENDATION = F2-A5 — Semantic Source Obligation Generalization (PF-LR1 Group E / F1 residual R01)
 (RECOMMENDED / NOT AUTHORIZED).
 Report: `evaluation/F2_A4_R1_QUESTION_GROUNDED_PREMISE_REFUSAL_REPAIR.md`.
+
+## F2-A5 semantic source obligation generalization closeout
+
+COMPLETE / PASS / QUESTION_GROUNDED_SOURCE_OBLIGATION_SEMANTICS_ESTABLISHED. Bounded Group-E cleanup (F1 residual
+R01) at HEAD `79df30e`; zero PANDA scientific/evaluation calls or tokens; zero protected-data access. Historical
+chain: fixed config mappings (algorithm_theory -> paper; algorithm_implementation -> paper+code, F1 EXPLICIT gold
+provenance) flowed through Retriever.analyze into RetrievalPlan.required_source_types and gated exact-paper
+priority, the dedicated _paper channel, required-first/backfill selection, and _sufficiency hard refusals. Repair:
+`_question_grounded_source_obligations` derives bounded paper/code obligations from the raw user question only
+(paper: paper/thesis/publication/literature/journal; code: source code/implementation/implemented/signature/which
+file/which source/macro); `Retriever.analyze` applies it for the R01 intents (the intent only selects the
+question-grounded regime; analyzer concepts/symbols, plan symbols, page hints, and query expansions are never
+consulted) and retains policy.required_sources unchanged for the R02/HOLD intents; a source_obligations receipt
+(mode/authority/required_source_types/matches) is recorded in plan.analysis_diagnostics. The two R01 config
+required_sources entries are retired to [] with all source_budgets byte-identical; all six R02 mappings are
+exactly preserved (asserted) and an R02 probe proves the paper vocabulary in a question cannot replace an R02
+policy mapping. Consumers keep gating purely on the dynamic plan field (inspect-audited: _paper, exact-paper
+priority, _prioritize_and_select_evidence, select_final_evidence, _sufficiency — no intent-keyed requirement
+logic; selector algorithm unchanged). Sufficiency honors explicit paper/code obligations (missing required source:
+paper|code) while no-obligation questions are not refused for source-class absence and zero evidence is still
+refused. R03, R14, R19, D4 boundaries preserved (diff-audited); F2-A1..A4-R1 preservation sentinels pass; E3
+indirect boundary intact (explicit source insufficiency still terminates pre-answer; E3 not reopened).
+Verification: tests/unit/test_retrieval.py 47 passed + 7 subtests (13 new SourceObligationTests); tests/unit/
+test_qa.py 91 passed + 16 subtests; combined focused run with E2-A1 42, focused E3 49, test_service 13 -> 249
+passed + 25 subtests. F2 closure: PF-LR1 defines exactly five F2 groups; A (R13, closed by F2-A1-R1), B (R10),
+C (R08/R09/R11, closed by F2-A3-R1), D (R04, closed by F2-A4-R1), and E (R01) are all COMPLETE/PASS, so
+F2 = COMPLETE / PASS / A1_A2_A3_A4_A5_COMPLETE; R12/R14/R02/R03-R05-R06 are not unfinished F2 work. Phase F =
+IN_PROGRESS / F2_COMPLETE_F3_NOT_STARTED. Future-applicability note only: the accumulated F2 package may
+constitute a future promotion-relevant material candidate under the PE-LR1 trigger; this authorizes nothing.
+Normal default remains legacy_question_core; runtime_e1_v2 remains explicit-selection-only; default promotion
+remains deferred (D3); promotion relevance is not promotion authorization.
+NEXT_TASK_RECOMMENDATION = F3 — Fixed Locator/Fallback Cleanup (PF-LR1 bounded package: R03, R05, R06)
+(RECOMMENDED / NOT AUTHORIZED).
+Report: `evaluation/F2_A5_SEMANTIC_SOURCE_OBLIGATION_GENERALIZATION.md`.
 
 ## Historical E3-A0 architecture contract closeout
 

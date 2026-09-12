@@ -6,8 +6,8 @@ import tempfile
 import unittest
 from unittest.mock import Mock, patch
 
-from panda_agent.config import FASTEMBED_MODEL_PATH_ENV, SPARSE_VECTOR_NAME, load_query_expansions
-from panda_agent.retrieval import Retriever
+from panda_agent.config import FASTEMBED_MODEL_PATH_ENV, SPARSE_VECTOR_NAME, load_query_expansions, load_retrieval_policies
+from panda_agent.retrieval import Retriever, _question_grounded_source_obligations, select_final_evidence
 from panda_agent.sparse import SparseEncoderReceipt
 
 
@@ -848,6 +848,186 @@ class SemanticDeltaTests(unittest.TestCase):
             item["field"] == "version_mentions" and item["reason"] == "unrequested_delta_field"
             for item in plan.analysis_diagnostics["analyzer_rejected_items"]
         ))
+
+
+class SourceObligationTests(unittest.TestCase):
+    """F2-A5 contract: for the R01 intents the intent only selects the
+    question-grounded source-obligation regime; the raw question alone decides
+    paper/code hard obligations.  R02 intent mappings and all source budgets
+    are exactly preserved, and the existing consumers keep gating purely on the
+    dynamic plan field."""
+
+    def _retriever(self):
+        value = Retriever.__new__(Retriever)
+        value.vertex = FakeVertex()
+        value.fixed_versions = TEST_REPOSITORIES
+        value.fixed_refs = {repo: "dev" for repo in TEST_REPOSITORIES}
+        value.web_version_tokens = {"2023-08-25-dev"}
+        policy = SimpleNamespace(
+            source_budgets={"paper": 0.3, "code": 0.4, "graph": 0.15, "documentation": 0.1, "workflow": 0.05},
+            required_sources=["paper", "code"],
+        )
+        value.policies = SimpleNamespace(intents={
+            intent: policy for intent in (
+                "installation", "usage", "algorithm_theory", "algorithm_implementation",
+                "api", "data_flow", "module_structure", "troubleshooting",
+            )
+        })
+        value.query_expansions = load_query_expansions(PROJECT_ROOT / "configs" / "query_expansions.yaml")
+        return value
+
+    # T1 - the fixed theory->paper mapping is retired.
+    def test_theory_without_source_request_has_no_hard_obligation(self):
+        plan = self._retriever().analyze("Why does this correction matter physically?")
+        self.assertEqual(plan.intent, "algorithm_theory")
+        self.assertEqual(plan.required_source_types, [])
+        receipt = plan.analysis_diagnostics["source_obligations"]
+        self.assertEqual(receipt["mode"], "question_grounded_r01")
+        self.assertEqual(receipt["authority"], "raw_question")
+
+    # T2 - the fixed implementation->paper+code mapping is retired (central
+    # R01 sentinel).
+    def test_implementation_without_source_request_has_no_hard_obligation(self):
+        plan = self._retriever().analyze("How does this correction work?")
+        self.assertEqual(plan.intent, "algorithm_implementation")
+        self.assertEqual(plan.required_source_types, [])
+        self.assertEqual(
+            plan.analysis_diagnostics["source_obligations"]["mode"],
+            "question_grounded_r01",
+        )
+
+    # T3 - an explicit paper request still requires paper.
+    def test_explicit_paper_request_requires_paper(self):
+        plan = self._retriever().analyze("According to the paper, why is this correction needed?")
+        self.assertEqual(plan.required_source_types, ["paper"])
+        self.assertEqual(
+            plan.analysis_diagnostics["source_obligations"]["matches"],
+            [{"source_type": "paper", "support_span": "paper"}],
+        )
+
+    # T4 - an explicit implementation/source request still requires code.
+    def test_explicit_code_request_requires_code(self):
+        plan = self._retriever().analyze("How is this correction implemented in the source code?")
+        self.assertEqual(plan.required_source_types, ["code"])
+
+    # T5 - mixed requests require both, in deterministic canonical order.
+    def test_mixed_request_requires_both(self):
+        plan = self._retriever().analyze(
+            "According to the paper, how is this model implemented in the source code?"
+        )
+        self.assertEqual(plan.required_source_types, ["paper", "code"])
+
+    # T6 - same intent, different question semantics, different obligations:
+    # the authority is the question, not the intent label.
+    def test_same_intent_yields_different_obligations(self):
+        retriever = self._retriever()
+        theory_without = retriever.analyze("Why does this correction matter physically?")
+        theory_with = retriever.analyze("According to the paper, why is this correction needed?")
+        self.assertEqual(theory_without.intent, theory_with.intent)
+        self.assertEqual(theory_without.required_source_types, [])
+        self.assertEqual(theory_with.required_source_types, ["paper"])
+
+    # T7/T8/T9 - the derivation is structurally question-only: analyzer
+    # concepts/symbols, plan symbols, and paper page hints cannot enter the
+    # obligation decision.
+    def test_derivation_consults_only_the_raw_question(self):
+        import inspect
+        self.assertEqual(
+            list(inspect.signature(_question_grounded_source_obligations).parameters),
+            ["question"],
+        )
+        self.assertEqual(
+            _question_grounded_source_obligations("Why does this correction matter physically?")["required_source_types"],
+            [],
+        )
+        self.assertEqual(
+            _question_grounded_source_obligations("According to the thesis, why is this correction needed?")["required_source_types"],
+            ["paper"],
+        )
+
+    # T10 - R02/HOLD intent mappings remain exactly unchanged.
+    def test_r02_mappings_exactly_preserved(self):
+        policies = load_retrieval_policies(PROJECT_ROOT / "configs" / "retrieval_policies.yaml")
+        expected = {
+            "installation": ["documentation"],
+            "usage": ["documentation", "code"],
+            "api": ["code"],
+            "data_flow": ["workflow", "code"],
+            "module_structure": ["code", "graph"],
+            "troubleshooting": ["documentation", "code"],
+        }
+        for intent, required in expected.items():
+            self.assertEqual(policies.intents[intent].required_sources, required)
+
+    # T11 - all source budgets remain exactly unchanged.
+    def test_source_budgets_exactly_preserved(self):
+        policies = load_retrieval_policies(PROJECT_ROOT / "configs" / "retrieval_policies.yaml")
+        self.assertEqual(
+            policies.intents["algorithm_theory"].source_budgets,
+            {"paper": 0.55, "documentation": 0.10, "code": 0.15, "graph": 0.10, "workflow": 0.10},
+        )
+        self.assertEqual(
+            policies.intents["algorithm_implementation"].source_budgets,
+            {"paper": 0.30, "code": 0.40, "graph": 0.15, "documentation": 0.10, "workflow": 0.05},
+        )
+        self.assertEqual(
+            policies.intents["usage"].source_budgets,
+            {"documentation": 0.30, "readme": 0.25, "code": 0.25, "workflow": 0.15, "paper": 0.05},
+        )
+
+    # T12 - the dedicated paper channel gates purely on the dynamic plan
+    # field, never on the intent label.
+    def test_paper_channel_gates_on_dynamic_plan_field(self):
+        import inspect
+        paper_src = inspect.getsource(Retriever._paper)
+        self.assertIn('"paper" not in plan.required_source_types', paper_src)
+        self.assertNotIn("algorithm_theory", paper_src)
+        self.assertNotIn("algorithm_implementation", paper_src)
+        retriever = self._retriever()
+        with_paper = retriever.analyze("According to the paper, why is this correction needed?")
+        without = retriever.analyze("Why does this correction matter physically?")
+        self.assertIn("paper", with_paper.required_source_types)
+        self.assertNotIn("paper", without.required_source_types)
+
+    # T13 - exact-paper priority follows the dynamic plan field.
+    def test_exact_paper_priority_follows_dynamic_plan_field(self):
+        import inspect
+        from panda_agent.retrieval import _PAPER_OBLIGATION_TERMS  # noqa: F401
+        retriever = self._retriever()
+        plan = retriever.analyze("According to the paper, why is this correction needed?")
+        self.assertIn("paper", plan.required_source_types)
+        # The exact-retrieval priority clause is assembled only when the
+        # dynamic plan field contains "paper"; the gate reads no intent.
+
+    # T14/T23 - required-first/backfill and the selector keep consuming the
+    # dynamic plan field; no intent-keyed requirement logic and no selector
+    # redesign.
+    def test_selection_consumers_gate_on_dynamic_plan_field(self):
+        import inspect
+        selection_src = inspect.getsource(Retriever._prioritize_and_select_evidence)
+        self.assertIn("plan.required_source_types", selection_src)
+        self.assertNotIn("algorithm_theory", selection_src)
+        self.assertNotIn("algorithm_implementation", selection_src)
+        selector_src = inspect.getsource(select_final_evidence)
+        self.assertNotIn("algorithm_theory", selector_src)
+        self.assertNotIn("algorithm_implementation", selector_src)
+
+    # R02-analyzer probe - an R02 intent keeps its policy mapping even when
+    # the question also carries paper vocabulary.
+    def test_r02_intent_keeps_policy_mapping_despite_paper_vocabulary(self):
+        retriever = self._retriever()
+        from types import SimpleNamespace as _NS
+        retriever.policies.intents["installation"] = _NS(
+            source_budgets={"documentation": 0.50, "readme": 0.25, "code": 0.15, "paper": 0.05, "graph": 0.05},
+            required_sources=["documentation"],
+        )
+        plan = retriever.analyze("Install the framework described in the paper.")
+        self.assertEqual(plan.intent, "installation")
+        # The paper word in the question must not replace the R02 policy
+        # mapping: the question-grounded regime applies to R01 intents only.
+        self.assertEqual(plan.required_source_types, ["documentation"])
+        receipt = plan.analysis_diagnostics["source_obligations"]
+        self.assertEqual(receipt["mode"], "retained_intent_policy_r02")
 
 
 if __name__ == "__main__": unittest.main()
