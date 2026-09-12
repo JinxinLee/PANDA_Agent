@@ -73,7 +73,9 @@ F2-A1-R1 report: `evaluation/F2_A1_R1_VERIFIER_SUPPORT_SEMANTIC_ENTAILMENT_REPAI
 F2-A2 = COMPLETE / PASS / QUESTION_DERIVED_POINTER_NORMALIZATION_COMPLETENESS_ESTABLISHED.
 F2-A2 report: `evaluation/F2_A2_DETERMINISTIC_COMPLETENESS_SEMANTIC_CLEANUP.md`.
 F2-A3 = COMPLETE / PASS / E1_E2_COMPATIBILITY_AUTHORITY_RECONCILED.
-F2-A3 report: `evaluation/F2_A3_E1_E2_COMPATIBILITY_RETIREMENT.md`.
+F2-A3 report: `evaluation/F2_A3_E1_E2_COMPATIBILITY_RETIREMENT.md` (initial closeout corrected by F2-A3-R1).
+F2-A3-R1 = COMPLETE / PASS / COVERAGE_MODE_LEGACY_PROMPT_AUTHORITY_REMOVED.
+F2-A3-R1 report: `evaluation/F2_A3_R1_COVERAGE_MODE_LEGACY_PROMPT_AUTHORITY_REPAIR.md`.
 Phase E = COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED.
 E2-A1 report: `evaluation/E2_A1_SHADOW_ANSWER_POINT_COVERAGE_CONTRACT.md`.
 C1 met all eight strict gates and the original pair09 atomicity sentinel. Per the
@@ -127,6 +129,8 @@ F2-A2
 COMPLETE / PASS / QUESTION_DERIVED_POINTER_NORMALIZATION_COMPLETENESS_ESTABLISHED
 F2-A3
 COMPLETE / PASS / E1_E2_COMPATIBILITY_AUTHORITY_RECONCILED
+F2-A3-R1
+COMPLETE / PASS / COVERAGE_MODE_LEGACY_PROMPT_AUTHORITY_REMOVED
 
 Latest accepted production action:
 D4-A10
@@ -142,7 +146,7 @@ MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD
 Current planning state:
 D4 = PAUSED / ROADMAP_RECONCILIATION
 D4 overall completion = UNDECIDED
-CURRENT_TASK = F2-A3 / COMPLETE / PASS / E1_E2_COMPATIBILITY_AUTHORITY_RECONCILED
+CURRENT_TASK = F2-A3-R1 / COMPLETE / PASS / COVERAGE_MODE_LEGACY_PROMPT_AUTHORITY_REMOVED
 NEXT_TASK_RECOMMENDATION = F2-A4 — Premise and Refusal Generalization / RECOMMENDED / NOT AUTHORIZED
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 FOLLOWING_ARCHITECTURE_TASK = bounded Phase-F production cleanup per the PF-LR1 recommended order (F2-A4 next)
@@ -398,6 +402,33 @@ promotion authorization.
 NEXT_TASK_RECOMMENDATION = F2-A4 — Premise and Refusal Generalization (PF-LR1 Group D / F1 residual R04)
 (RECOMMENDED / NOT AUTHORIZED).
 Report: `evaluation/F2_A3_E1_E2_COMPATIBILITY_RETIREMENT.md`.
+
+## F2-A3-R1 coverage-mode legacy prompt authority repair closeout
+
+COMPLETE / PASS / COVERAGE_MODE_LEGACY_PROMPT_AUTHORITY_REMOVED. Corrective repair of F2-A3 at HEAD `7bf0df4`; zero
+PANDA scientific/evaluation calls or tokens; zero protected-data access. Post-commit audit did not accept F2-A3's
+initial terminal PASS: legacy answer_requirements were retired as downstream code-side authority but remained live
+in model-facing payloads — generation, coverage review, and revision all received the full legacy set (with
+requirement evidence), the inherited/coverage prompt contracts still treated them as a completeness axis, and a
+stale supported=false verdict explained only by known legacy requirement ids could still create global_review_failure.
+Repair: coverage-mode model-facing generation/review/revision payloads now carry answer_requirements=[],
+requirement_evidence={}, and missing_requirement_ids=[]; the full legacy set remains in state only for the
+unknown-requirement guard, diagnostics, and legacy execution; a supported=false explained solely by known legacy
+ids with every authoritative axis clean is treated as obsolete (no global failure) while unknown ids keep the
+coverage-review structural guard and unexplained/other supported=false keeps conservative failure; coverage-specific
+review/revision prompt extensions now state that named legacy requirements are non-authoritative and must be
+returned empty (legacy review/revision prompt contracts unchanged; PROMPT_SET_VERSION 3.8.0 -> 3.9.0). Adversarial
+contracts T1-T12 (mode-scoped generation payload; empty coverage review/revision axes; stale-legacy sentinel with
+coverage complete/evaluable in shadow+runtime; unknown-id guard; genuine failures retained; legacy bridge and
+F2-A3 R11 scoping, F2-A2, F2-A1/F2-A1-R1 preservation) all pass. Verification: tests/unit/test_qa.py 76 passed +
+11 subtests; E2-A1 42 + focused E3 deterministic set 49 -> 91 passed (shared _verify/_revise model-facing
+regression only; E3 lifecycle not reopened); combined 167 passed + 11 subtests. Commit `7bf0df4` preserved; the
+original F2-A3 report carries a correction/supersession notice. F2-A3's final lifecycle state is achieved only
+after this repair. Normal default remains legacy_question_core; runtime_e1_v2 remains explicit-selection-only;
+default promotion remains deferred (D3); promotion relevance is not promotion authorization.
+NEXT_TASK_RECOMMENDATION = F2-A4 — Premise and Refusal Generalization (PF-LR1 Group D / F1 residual R04)
+(RECOMMENDED / NOT AUTHORIZED).
+Report: `evaluation/F2_A3_R1_COVERAGE_MODE_LEGACY_PROMPT_AUTHORITY_REPAIR.md`.
 
 ## Historical E3-A0 architecture contract closeout
 

@@ -1238,7 +1238,7 @@ class QATests(unittest.TestCase):
             REVISION_SYSTEM_PROMPT,
         )
 
-        self.assertEqual(PROMPT_SET_VERSION, "3.8.0")
+        self.assertEqual(PROMPT_SET_VERSION, "3.9.0")
         for prompt in (ANSWER_SYSTEM_PROMPT, REVISION_SYSTEM_PROMPT):
             self.assertIn("answer_requirements", prompt)
         self.assertIn("factory/composition", EVALUATION_JUDGE_SYSTEM_PROMPT)
@@ -1934,22 +1934,52 @@ class PointerNormalizationCompletenessTests(unittest.TestCase):
 
 class CoverageReviewVertex(FakeVertex):
     """Coverage-mode review double: full answer-point coverage, while the model
-    still returns the given legacy missing-requirement ids."""
+    still returns the given legacy missing-requirement ids. Records every
+    payload, including revision calls."""
 
     def __init__(self, missing_requirement_ids=()):
         self.missing_requirement_ids = list(missing_requirement_ids)
         self.prompts = []
 
     def generate_json(self, prompt, schema, **kwargs):
+        self.prompts.append(json.loads(prompt))
         if "supported" in schema.get("properties", {}):
-            payload = json.loads(prompt)
-            self.prompts.append(payload)
+            payload = self.prompts[-1]
             review = {
                 "supported": True,
                 "unsupported_claim_ids": [],
                 "irrelevant_claim_ids": [],
                 "missing_requirement_ids": self.missing_requirement_ids,
                 "reason": "",
+            }
+            if "claim_answer_point_mappings" in schema.get("properties", {}):
+                review["claim_answer_point_mappings"] = [
+                    {
+                        "claim_id": item["claim_id"],
+                        "answer_point_ids": list(item.get("answer_point_ids") or []),
+                    }
+                    for item in payload["untrusted_claims"]
+                ]
+                review["missing_answer_point_ids"] = []
+            return review
+        return super().generate_json(prompt, schema, **kwargs)
+
+
+class StaleLegacyReviewVertex(CoverageReviewVertex):
+    """Coverage review double that reports stale legacy incompleteness: the
+    aggregate supported flag is false only because of retired legacy
+    requirements, while every authoritative answer-point axis is clean."""
+
+    def generate_json(self, prompt, schema, **kwargs):
+        if "supported" in schema.get("properties", {}):
+            payload = json.loads(prompt)
+            self.prompts.append(payload)
+            review = {
+                "supported": False,
+                "unsupported_claim_ids": [],
+                "irrelevant_claim_ids": [],
+                "missing_requirement_ids": self.missing_requirement_ids,
+                "reason": "legacy completeness obligation not satisfied",
             }
             if "claim_answer_point_mappings" in schema.get("properties", {}):
                 review["claim_answer_point_mappings"] = [
@@ -2053,6 +2083,117 @@ class E1E2CompatibilityAuthorityTests(unittest.TestCase):
             agent.vertex.prompts[1]["retrieval_plan"]["required_boundary_locators"],
             bundle["plan"]["symbols"],
         )
+
+    # T1/T8 — coverage-mode generation carries no legacy requirement authority;
+    # a plan-shaped requirement that legacy mode would activate is absent.
+    def test_generation_payload_authority_is_mode_scoped(self):
+        bundle = bundle_for(code_evidence(), intent="algorithm_implementation")
+        bundle["plan"]["symbols"] = ["model/PndLmdModelFactory.cxx"]
+        cases = (
+            ("shadow_e1_v2", []),
+            ("runtime_e1_v2", []),
+            (None, ["factory_composition"]),
+        )
+        for mode, expected_ids in cases:
+            with self.subTest(mode=mode or "legacy_question_core"):
+                agent = QAAgent(Path.cwd(), retriever=FakeRetriever(bundle), vertex=CapturingVertex())
+                state = {"question": "Explain the factory composition.", "bundle": bundle}
+                if mode:
+                    state["answer_point_coverage_mode"] = mode
+                    state["runtime_answer_points"] = [
+                        {"answer_point_id": "point.1", "text": "Explain the factory composition."}
+                    ]
+                agent._answer(state)
+                payload_ids = [
+                    item["id"] for item in agent.vertex.prompts[0]["answer_requirements"]
+                ]
+                if expected_ids:
+                    self.assertIn("factory_composition", payload_ids)
+                else:
+                    self.assertEqual(payload_ids, expected_ids)
+
+    # T3 — coverage-mode review payload has no legacy completeness axis.
+    def test_coverage_review_payload_has_no_legacy_axis(self):
+        bundle = bundle_for(code_evidence())
+        vertex = CoverageReviewVertex(["factory_composition"])
+        agent = QAAgent(Path.cwd(), retriever=FakeRetriever(bundle), vertex=vertex)
+        agent._verify(self._state(bundle, "shadow_e1_v2"))
+        payload = vertex.prompts[0]
+        self.assertEqual(payload["answer_requirements"], [])
+        self.assertEqual(payload["requirement_evidence"], {})
+
+    # T4 — coverage-mode revision payload is driven only by missing answer
+    # points; stale state-level legacy requirement ids cannot leak back in.
+    def test_coverage_revision_payload_has_no_legacy_axis(self):
+        bundle = bundle_for(code_evidence())
+        vertex = CoverageReviewVertex()
+        agent = QAAgent(Path.cwd(), retriever=FakeRetriever(bundle), vertex=vertex)
+        state = {
+            "question": "Explain this implementation.",
+            "bundle": bundle,
+            "draft": {"claims": [{
+                "claim_id": "c1",
+                "claim_text": "The model is composed.",
+                "evidence_ids": ["e1"],
+                "answer_point_ids": [],
+            }]},
+            "supported_claims": [],
+            "unsupported_claim_ids": [],
+            "missing_requirement_ids": ["factory_composition"],
+            "missing_answer_point_ids": ["point.1"],
+            "answer_requirements": [{"id": "factory_composition", "instruction": "legacy"}],
+            "answer_point_coverage_mode": "shadow_e1_v2",
+            "runtime_answer_points": [
+                {"answer_point_id": "point.1", "text": "Explain this implementation."}
+            ],
+            "errors": ["missing answer point point.1"],
+        }
+        agent._revise(state)
+        payload = vertex.prompts[0]
+        self.assertEqual(payload["missing_answer_point_ids"], ["point.1"])
+        self.assertEqual(payload["answer_requirements"], [])
+        self.assertEqual(payload["missing_requirement_ids"], [])
+        self.assertEqual(payload["requirement_evidence"], {})
+        self.assertIn("missing_answer_point_ids", payload["revision_scope"])
+        self.assertNotIn("missing_requirement_ids", payload["revision_scope"])
+
+    # T5 — the central repair sentinel: a stale known legacy missing
+    # requirement with supported=false must not fail a coverage-complete
+    # answer.
+    def test_stale_legacy_missing_requirement_does_not_fail_coverage_answer(self):
+        bundle = bundle_for(code_evidence())
+        for mode in ("shadow_e1_v2", "runtime_e1_v2"):
+            with self.subTest(mode=mode):
+                vertex = StaleLegacyReviewVertex(["factory_composition"])
+                agent = QAAgent(Path.cwd(), retriever=FakeRetriever(bundle), vertex=vertex)
+                out = agent._verify(self._state(bundle, mode))
+                self.assertNotIn("missing answer requirement factory_composition", out["errors"])
+                self.assertFalse(any("evidence review failed" in err for err in out["errors"]))
+                self.assertEqual([c["claim_id"] for c in out["supported_claims"]], ["c1"])
+                audit = out["answer_point_audit"]
+                self.assertTrue(audit["coverage_complete"])
+                self.assertTrue(audit["coverage_evaluable"])
+
+    # T6 — unknown requirement ids remain a structural/hallucination guard
+    # (caught by coverage-review validation) with conservative failure; R1 is
+    # not blanket missing-id suppression.
+    def test_unknown_missing_requirement_remains_guarded(self):
+        bundle = bundle_for(code_evidence())
+        vertex = StaleLegacyReviewVertex(["nonexistent_requirement"])
+        agent = QAAgent(Path.cwd(), retriever=FakeRetriever(bundle), vertex=vertex)
+        out = agent._verify(self._state(bundle, "shadow_e1_v2"))
+        self.assertTrue(
+            any("invalid answer-point coverage review" in err for err in out["errors"])
+        )
+        self.assertEqual(out["supported_claims"], [])
+        self.assertTrue(out["answer_point_audit"]["review_error"])
+
+    # T7 — genuine unsupported-claim verdicts still fail in coverage modes.
+    def test_genuine_unsupported_claim_still_fails_in_coverage_mode(self):
+        bundle = bundle_for(code_evidence())
+        agent = QAAgent(Path.cwd(), retriever=FakeRetriever(bundle), vertex=UnsupportedReviewVertex())
+        out = agent._verify(self._state(bundle, "shadow_e1_v2"))
+        self.assertTrue(any("unsupported claim c1" in err for err in out["errors"]))
 
 
 if __name__ == "__main__":

@@ -1,5 +1,19 @@
 # F2-A3 — E1/E2 Compatibility Retirement
 
+> **CORRECTION / SUPERSESSION NOTICE (F2-A3-R1).** This report's initial
+> terminal `COMPLETE / PASS / E1_E2_COMPATIBILITY_AUTHORITY_RECONCILED`
+> closeout was subsequently found premature by an independent post-commit
+> audit: while the code-side retirement steps below are valid and were
+> preserved, legacy `answer_requirements` were still sent to the generation,
+> coverage-review, and revision models in coverage modes, the coverage prompt
+> contracts still treated them as a completeness axis, and a stale
+> `supported=false` verdict explained only by legacy requirements could still
+> create `global_review_failure`. That model-facing authority leak is repaired
+> by `evaluation/F2_A3_R1_COVERAGE_MODE_LEGACY_PROMPT_AUTHORITY_REPAIR.md`
+> (F2-A3-R1 = `COMPLETE / PASS / COVERAGE_MODE_LEGACY_PROMPT_AUTHORITY_REMOVED`),
+> which is the authoritative final lifecycle record for this surface. The
+> narrative below is preserved unchanged for historical transparency.
+
 Status: `COMPLETE / PASS / E1_E2_COMPATIBILITY_AUTHORITY_RECONCILED`
 Type: bounded cluster production cleanup + deterministic verification (PF-LR1
 Group C). Zero PANDA scientific/evaluation calls; zero protected-data access.

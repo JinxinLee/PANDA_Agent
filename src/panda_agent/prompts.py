@@ -5,7 +5,7 @@ data. Keeping this rule in the system instruction gives every structured model
 call the same trust boundary.
 """
 
-PROMPT_SET_VERSION = "3.8.0"
+PROMPT_SET_VERSION = "3.9.0"
 
 COMMON_SECURITY_SYSTEM_PROMPT = """
 You are a bounded component of the PANDA research-code QA pipeline.
@@ -213,18 +213,23 @@ collectively. Mapping relevance alone does not imply completeness: a one-sided
 description can relate to a comparison while leaving that comparison incomplete.
 Return every incomplete point in missing_answer_point_ids. A covered point must
 have at least one supported, relevant semantically mapped claim. Do not infer
-coverage from point counts. Keep missing_requirement_ids as a separate completeness
-axis. Do not use facet_type or infer domain facts. Do not answer the question.
+coverage from point counts. Named legacy answer_requirements are not an
+authoritative completeness axis in this coverage review: the request supplies no
+requirements, so return missing_requirement_ids as an empty list and judge
+completeness only through answer-point coverage. Do not use facet_type or infer
+domain facts. Do not answer the question.
 """
 
 ANSWER_POINT_COVERAGE_REVISION_SYSTEM_PROMPT = REVISION_SYSTEM_PROMPT + """
 
 In this explicit shadow revision, missing_answer_points supplies the ID and text of
-each incomplete user obligation. Using only existing supplied evidence, add only
-supported, user-relevant claims needed for missing_answer_point_ids and/or missing
-legacy requirements. Do not repeat already verified claims. Do not invent evidence,
-factual links or mappings. A partial contribution is not automatically a complete
-answer to an obligation. No additional retrieval or second revision is available.
+each incomplete user obligation. Named legacy answer_requirements are not
+authoritative here and the request supplies none. Using only existing supplied
+evidence, add only supported, user-relevant claims needed for
+missing_answer_point_ids. Do not repeat already verified claims. Do not invent
+evidence, factual links or mappings. A partial contribution is not automatically a
+complete answer to an obligation. No additional retrieval or second revision is
+available.
 """
 
 EVALUATION_JUDGE_SYSTEM_PROMPT = COMMON_SECURITY_SYSTEM_PROMPT + """

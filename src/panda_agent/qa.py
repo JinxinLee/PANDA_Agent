@@ -1803,7 +1803,16 @@ class QAAgent:
 
     def _answer(self, state: QAState) -> dict[str, Any]:
         question = str(state["question"])
-        answer_requirements = _answer_requirements(question, state["bundle"]["plan"])
+        # Legacy named requirements are authoritative only in legacy mode.  In
+        # E1/E2 coverage modes the model-facing generation payload carries none
+        # of them: the shared generation prompt instructs the model to satisfy
+        # every supplied obligation, so a non-empty payload would let plan-
+        # derived requirements shape public content even though downstream
+        # enforcement was retired (F2-A3-R1).
+        legacy_answer_requirements = _answer_requirements(question, state["bundle"]["plan"])
+        answer_requirements = (
+            [] if _coverage_shadow(state) else legacy_answer_requirements
+        )
         claim_evidence = [item for item in state["bundle"]["evidence"] if _is_public_claim_citation_eligible(item)]
         prompt = json.dumps(
             {
@@ -1913,7 +1922,10 @@ class QAAgent:
             ),
             question,
         )
-        return {"draft": draft, "answer_requirements": answer_requirements}
+        # Keep the full legacy set in state for the unknown-requirement guard
+        # and diagnostics; it carries no model-facing authority in coverage
+        # modes.
+        return {"draft": draft, "answer_requirements": legacy_answer_requirements}
 
     def _verify(self, state: QAState) -> dict[str, Any]:
         shadow = _coverage_shadow(state)
@@ -2054,15 +2066,21 @@ class QAAgent:
             state.get("answer_requirements")
             or _answer_requirements(str(state.get("question", "")), state["bundle"]["plan"])
         )
+        # Full legacy set feeds only the unknown-requirement guard here.  In
+        # coverage modes the review payload carries no legacy requirements:
+        # answer-point coverage is the sole completeness axis (F2-A3-R1).
         known_requirement_ids = {str(item["id"]) for item in answer_requirements}
-        requirement_evidence = _requirement_evidence(answer_requirements, review_evidence_lookup)
+        model_answer_requirements = [] if shadow else answer_requirements
+        requirement_evidence = (
+            {} if shadow else _requirement_evidence(answer_requirements, review_evidence_lookup)
+        )
         reviewable_claims = [c for c in claims if not claim_errors.get(str(c.get("claim_id") or ""))] if shadow else claims
         review = self.vertex.generate_json(
             json.dumps(
                 {
                     "task": "review_claim_support_and_relevance",
                     "runtime_answer_points": runtime_points,
-                    "answer_requirements": answer_requirements,
+                    "answer_requirements": model_answer_requirements,
                     "requirement_evidence": requirement_evidence,
                     "untrusted_claims": _model_claims(reviewable_claims) if shadow else claims,
                     "untrusted_evidence": review_evidence,
@@ -2126,7 +2144,25 @@ class QAAgent:
         # A missing completeness requirement is not a verdict that every
         # already-supported claim is invalid.  Preserve those claims and let
         # the one bounded revision add only the missing factual link.
-        if not review["supported"] and not unsupported and not irrelevant and not accepted_missing_requirements and not missing_points:
+        # A stale legacy completeness verdict must not fail a coverage-mode
+        # answer: if the only structured explanation for supported=false is a
+        # set of known (retired-in-coverage) legacy requirement ids while every
+        # authoritative axis is clean, treat the aggregate boolean as obsolete.
+        # Anything else (no explanation, unknown ids) keeps the conservative
+        # global failure.
+        stale_legacy_only = (
+            shadow
+            and bool(missing_requirements)
+            and all(requirement_id in known_requirement_ids for requirement_id in missing_requirements)
+        )
+        if (
+            not review["supported"]
+            and not unsupported
+            and not irrelevant
+            and not accepted_missing_requirements
+            and not missing_points
+            and not stale_legacy_only
+        ):
             errors.append(review.get("reason") or "evidence review failed")
         global_review_failure = (
             not review["supported"]
@@ -2134,6 +2170,7 @@ class QAAgent:
             and not irrelevant
             and not accepted_missing_requirements
             and not missing_points
+            and not stale_legacy_only
         )
         supported_claims = [
             claim
@@ -2259,17 +2296,24 @@ class QAAgent:
         # In E1/E2 coverage modes the legacy named-requirement contract is a
         # non-authoritative bridge; bounded revision there is driven by missing
         # answer points (and unsupported claims), not by named requirements.
+        # The model-facing payload carries no legacy requirement authority
+        # (F2-A3-R1); the full set stays in state for diagnostics only.
         missing_requirement_ids = (
             [] if shadow else list(state.get("missing_requirement_ids", []))
         )
+        model_answer_requirements = [] if shadow else answer_requirements
         claim_evidence = [item for item in state["bundle"]["evidence"] if _is_public_claim_citation_eligible(item)]
-        requirement_evidence = _requirement_evidence(
-            [
-                item
-                for item in answer_requirements
-                if str(item["id"]) in set(missing_requirement_ids)
-            ],
-            {item["evidence_id"]: item for item in claim_evidence},
+        requirement_evidence = (
+            {}
+            if shadow
+            else _requirement_evidence(
+                [
+                    item
+                    for item in answer_requirements
+                    if str(item["id"]) in set(missing_requirement_ids)
+                ],
+                {item["evidence_id"]: item for item in claim_evidence},
+            )
         )
         prompt = json.dumps(
             {
@@ -2280,7 +2324,7 @@ class QAAgent:
                     "missing_answer_point_ids": list(state.get("missing_answer_point_ids", [])),
                     "missing_answer_points": [p for p in runtime_points if p["answer_point_id"] in state.get("missing_answer_point_ids", [])],
                 } if shadow else {}),
-                "answer_requirements": answer_requirements,
+                "answer_requirements": model_answer_requirements,
                 "missing_requirement_ids": missing_requirement_ids,
                 "requirement_evidence": requirement_evidence,
                 "revision_scope": (
