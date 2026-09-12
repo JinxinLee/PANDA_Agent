@@ -81,7 +81,9 @@ F2-A4 report: `evaluation/F2_A4_PREMISE_REFUSAL_GENERALIZATION.md` (initial clos
 F2-A4-R1 = COMPLETE / PASS / QUESTION_GROUNDED_PREMISE_REFUSAL_BOUNDARY_ESTABLISHED.
 F2-A4-R1 report: `evaluation/F2_A4_R1_QUESTION_GROUNDED_PREMISE_REFUSAL_REPAIR.md`.
 F2-A5 = COMPLETE / PASS / QUESTION_GROUNDED_SOURCE_OBLIGATION_SEMANTICS_ESTABLISHED.
-F2-A5 report: `evaluation/F2_A5_SEMANTIC_SOURCE_OBLIGATION_GENERALIZATION.md`.
+F2-A5 report: `evaluation/F2_A5_SEMANTIC_SOURCE_OBLIGATION_GENERALIZATION.md` (initial closeout corrected by F2-A5-R1).
+F2-A5-R1 = COMPLETE / PASS / SOURCE_OBLIGATION_MATCHING_BOUNDARY_ESTABLISHED.
+F2-A5-R1 report: `evaluation/F2_A5_R1_SOURCE_OBLIGATION_BOUNDARY_REPAIR.md`.
 Phase E = COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED.
 E2-A1 report: `evaluation/E2_A1_SHADOW_ANSWER_POINT_COVERAGE_CONTRACT.md`.
 C1 met all eight strict gates and the original pair09 atomicity sentinel. Per the
@@ -143,6 +145,8 @@ F2-A4-R1
 COMPLETE / PASS / QUESTION_GROUNDED_PREMISE_REFUSAL_BOUNDARY_ESTABLISHED
 F2-A5
 COMPLETE / PASS / QUESTION_GROUNDED_SOURCE_OBLIGATION_SEMANTICS_ESTABLISHED
+F2-A5-R1
+COMPLETE / PASS / SOURCE_OBLIGATION_MATCHING_BOUNDARY_ESTABLISHED
 
 Latest accepted production action:
 D4-A10
@@ -158,7 +162,7 @@ MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD
 Current planning state:
 D4 = PAUSED / ROADMAP_RECONCILIATION
 D4 overall completion = UNDECIDED
-CURRENT_TASK = F2-A5 / COMPLETE / PASS / QUESTION_GROUNDED_SOURCE_OBLIGATION_SEMANTICS_ESTABLISHED
+CURRENT_TASK = F2-A5-R1 / COMPLETE / PASS / SOURCE_OBLIGATION_MATCHING_BOUNDARY_ESTABLISHED
 NEXT_TASK_RECOMMENDATION = F3 — Fixed Locator/Fallback Cleanup (R03/R05/R06) / RECOMMENDED / NOT AUTHORIZED
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 FOLLOWING_ARCHITECTURE_TASK = F3 — Fixed Locator/Fallback Cleanup (PF-LR1 bounded R03/R05/R06 package)
@@ -532,6 +536,37 @@ remains deferred (D3); promotion relevance is not promotion authorization.
 NEXT_TASK_RECOMMENDATION = F3 — Fixed Locator/Fallback Cleanup (PF-LR1 bounded package: R03, R05, R06)
 (RECOMMENDED / NOT AUTHORIZED).
 Report: `evaluation/F2_A5_SEMANTIC_SOURCE_OBLIGATION_GENERALIZATION.md`.
+
+## F2-A5-R1 source obligation boundary repair closeout
+
+COMPLETE / PASS / SOURCE_OBLIGATION_MATCHING_BOUNDARY_ESTABLISHED. Corrective repair of F2-A5 at HEAD `3eca78d`;
+zero PANDA scientific/evaluation calls or tokens; zero protected-data access. Post-commit audit did not accept
+F2-A5's initial terminal PASS (nor the aggregate F2 closure): the question-grounded helper used unbounded substring
+matching, behavior-confirmed false positives — "Why is this hypothesis physically reasonable?" -> ["paper"]
+("thesis" inside "hypothesis"), "Why is the macroscopic behavior different?" -> ["code"] ("macro" inside
+"macroscopic"), "How does a paperless workflow behave?" -> ["paper"], and "Which source of systematic uncertainty
+dominates ...?" -> ["code"] from the ambiguous bare "which source" — each feeding a hard sufficiency gate. Repair
+(helper-local, no negative-word patching): `_PAPER_OBLIGATION_PATTERNS` / `_CODE_OBLIGATION_PATTERNS` +
+`_first_source_obligation_match` — multi-word phrases match as phrases, single tokens require regex word
+boundaries; the ambiguous bare "which source" was removed as a sufficient code trigger (bounded replacements:
+"which source file", "which code file", "source file"); support spans record the actual matched phrase; obligation
+order remains deterministically paper, code; the helper still accepts only the raw question; the consumer chain
+(_exact paper priority, _paper, _prioritize_and_select_evidence, select_final_evidence, _sufficiency) is untouched
+(diff-audited zero consumer/selector/R03 changes). Post-fix precision matrix: paper/thesis/publication/
+literature/journal -> paper; hypothesis/paperless/journaled -> none; source code/implementation/implemented/
+signature/macro/which file/which source file -> code; macroscopic/which-source-of-uncertainty/source-of-background
+-> none; receipt spans record actual phrases. Adversarial contracts T1-T26 pass, including the end-to-end sentinel
+(lexical false positives cannot fail sufficiency) and R02/budget/consumer preservation. Verification:
+tests/unit/test_retrieval.py 52 passed + 7 subtests; tests/unit/test_qa.py 93 passed + 16 subtests; combined
+focused run with E2-A1 42, focused E3 49, test_service 13 -> 255 passed + 47 subtests (E3 run as an optional
+bounded regression; E3 lifecycle not reopened). Commit `3eca78d` preserved; the original F2-A5 report carries a
+correction/supersession notice. F2-A5's final lifecycle state is achieved only after this repair, and the
+aggregate F2 = COMPLETE / PASS / A1_A2_A3_A4_A5_COMPLETE is re-validated after R1. Normal default remains
+legacy_question_core; runtime_e1_v2 remains explicit-selection-only; default promotion remains deferred (D3);
+promotion relevance is not promotion authorization.
+NEXT_TASK_RECOMMENDATION = F3 — Fixed Locator/Fallback Cleanup (PF-LR1 bounded package: R03, R05, R06)
+(RECOMMENDED / NOT AUTHORIZED).
+Report: `evaluation/F2_A5_R1_SOURCE_OBLIGATION_BOUNDARY_REPAIR.md`.
 
 ## Historical E3-A0 architecture contract closeout
 

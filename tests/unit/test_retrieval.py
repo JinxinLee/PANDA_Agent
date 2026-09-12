@@ -992,7 +992,6 @@ class SourceObligationTests(unittest.TestCase):
     # T13 - exact-paper priority follows the dynamic plan field.
     def test_exact_paper_priority_follows_dynamic_plan_field(self):
         import inspect
-        from panda_agent.retrieval import _PAPER_OBLIGATION_TERMS  # noqa: F401
         retriever = self._retriever()
         plan = retriever.analyze("According to the paper, why is this correction needed?")
         self.assertIn("paper", plan.required_source_types)
@@ -1028,6 +1027,62 @@ class SourceObligationTests(unittest.TestCase):
         self.assertEqual(plan.required_source_types, ["documentation"])
         receipt = plan.analysis_diagnostics["source_obligations"]
         self.assertEqual(receipt["mode"], "retained_intent_policy_r02")
+
+
+class SourceObligationBoundaryTests(unittest.TestCase):
+    """F2-A5-R1 contract: source obligations match bounded whole tokens /
+    explicit phrases; unrelated substrings and the ambiguous bare "which
+    source" never manufacture a hard paper/code obligation."""
+
+    PRECISION_MATRIX = (
+        ("paper", "paper"), ("thesis", "paper"), ("publication", "paper"),
+        ("literature", "paper"), ("journal", "paper"),
+        ("hypothesis", None), ("paperless", None), ("journaled", None),
+        ("source code", "code"), ("implementation", "code"),
+        ("implemented", "code"), ("signature", "code"), ("macro", "code"),
+        ("which file", "code"), ("which source file", "code"),
+        ("macroscopic", None), ("which source of systematic uncertainty", None),
+        ("source of background", None),
+    )
+
+    def test_matching_precision_matrix(self):
+        for question, expected in self.PRECISION_MATRIX:
+            with self.subTest(question=question):
+                obligations = _question_grounded_source_obligations(question)["required_source_types"]
+                self.assertEqual(obligations, [] if expected is None else [expected])
+
+    def test_receipt_span_records_actual_matched_phrase(self):
+        matches = _question_grounded_source_obligations(
+            "Which source file defines this implementation?"
+        )["matches"]
+        self.assertEqual(
+            matches,
+            [{"source_type": "code", "support_span": "which source file"}],
+        )
+
+    def test_ambiguous_bare_which_source_is_not_a_code_trigger(self):
+        for question in (
+            "Which source produces the uncertainty?",
+            "What source of background is largest?",
+        ):
+            with self.subTest(question=question):
+                self.assertEqual(
+                    _question_grounded_source_obligations(question)["required_source_types"],
+                    [],
+                )
+
+    def test_mixed_request_canonical_order_unchanged(self):
+        result = _question_grounded_source_obligations(
+            "According to the paper, how is this model implemented in the source code?"
+        )
+        self.assertEqual(result["required_source_types"], ["paper", "code"])
+
+    def test_derivation_remains_raw_question_only(self):
+        import inspect
+        self.assertEqual(
+            list(inspect.signature(_question_grounded_source_obligations).parameters),
+            ["question"],
+        )
 
 
 if __name__ == "__main__": unittest.main()

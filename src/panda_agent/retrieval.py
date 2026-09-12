@@ -937,11 +937,32 @@ def build_dense_query_bundle(question: str, plan: RetrievalPlan) -> DenseQueryBu
 
 
 _R01_SOURCE_OBLIGATION_INTENTS = frozenset({"algorithm_theory", "algorithm_implementation"})
-_PAPER_OBLIGATION_TERMS = ("paper", "thesis", "publication", "literature", "journal")
-_CODE_OBLIGATION_TERMS = (
-    "source code", "implementation", "implemented", "signature",
-    "which file", "which source", "macro",
+_PAPER_OBLIGATION_PATTERNS = ("paper", "thesis", "publication", "literature", "journal")
+# Multi-word phrases first, then single tokens; the ambiguous bare "which
+# source" is deliberately not a sufficient code trigger (an uncertainty or
+# background "source" is not source code).
+_CODE_OBLIGATION_PATTERNS = (
+    "which source file", "which code file", "source code", "which file",
+    "source file", "implementation", "implemented", "signature", "macro",
 )
+
+
+def _first_source_obligation_match(question: str, patterns: tuple[str, ...]) -> str | None:
+    """Return the first bounded source-request match, or None.
+
+    Multi-word phrases match as phrases; single tokens require word
+    boundaries, so substrings inside unrelated words ("thesis" inside
+    "hypothesis", "paper" inside "paperless", "macro" inside "macroscopic")
+    never create a hard source obligation.
+    """
+    lowered = question.casefold()
+    for pattern in patterns:
+        if " " in pattern:
+            if pattern in lowered:
+                return pattern
+        elif re.search(rf"\b{re.escape(pattern)}\b", lowered):
+            return pattern
+    return None
 
 
 def _question_grounded_source_obligations(question: str) -> dict[str, Any]:
@@ -951,17 +972,17 @@ def _question_grounded_source_obligations(question: str) -> dict[str, Any]:
     the intent only selects this question-grounded regime; the raw question
     alone decides which source classes are hard obligations.  Analyzer
     concepts/symbols, plan symbols, page hints, and query expansions are never
-    consulted, and the bounded vocabulary keeps technical questions from
-    automatically becoming code requirements.
+    consulted.  Matching is bounded whole-token / explicit-phrase source-
+    request matching (F2-A5-R1), so unrelated substrings cannot manufacture a
+    hard obligation.
     """
-    lowered = question.casefold()
     obligations: list[str] = []
     matches: list[dict[str, str]] = []
-    for source_type, terms in (
-        ("paper", _PAPER_OBLIGATION_TERMS),
-        ("code", _CODE_OBLIGATION_TERMS),
+    for source_type, patterns in (
+        ("paper", _PAPER_OBLIGATION_PATTERNS),
+        ("code", _CODE_OBLIGATION_PATTERNS),
     ):
-        hit = next((term for term in terms if term in lowered), None)
+        hit = _first_source_obligation_match(question, patterns)
         if hit:
             obligations.append(source_type)
             matches.append({"source_type": source_type, "support_span": hit})

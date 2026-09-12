@@ -6,6 +6,7 @@ from pathlib import Path
 
 from panda_agent.models import QAStatus
 from panda_agent.prompts import PROMPT_SET_VERSION
+from panda_agent.retrieval import _question_grounded_source_obligations
 from panda_agent.qa import (
     ANSWER_SCHEMA,
     QAAgent,
@@ -2489,6 +2490,26 @@ class PremiseRefusalGeneralizationTests(unittest.TestCase):
         out = agent._sufficiency({"question": "How does this correction work?", "bundle": empty})
         self.assertFalse(out["sufficient"])
         self.assertEqual(out["errors"], ["no evidence"])
+
+    # T22 (F2-A5-R1) - central end-to-end sentinel: lexical false positives
+    # cannot create source-type insufficiency.
+    def test_lexical_false_positives_cannot_fail_sufficiency(self):
+        for question in (
+            "Why is this hypothesis physically reasonable?",
+            "Why is the macroscopic behavior different?",
+        ):
+            with self.subTest(question=question):
+                bundle = bundle_for(code_evidence())
+                bundle["plan"]["required_source_types"] = list(
+                    _question_grounded_source_obligations(question)["required_source_types"]
+                )
+                agent = QAAgent(Path.cwd(), retriever=FakeRetriever(bundle), vertex=FakeVertex())
+                out = agent._sufficiency({
+                    "question": question,
+                    "bundle": bundle,
+                })
+                self.assertTrue(out["sufficient"])
+                self.assertFalse(any("missing required source" in err for err in out["errors"]))
 
     # T1 (R1) — central plan-contamination sentinel: plan-only suggestions can
     # never make unrelated evidence the optional refusal basis.

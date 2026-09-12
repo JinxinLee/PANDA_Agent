@@ -1,5 +1,20 @@
 # F2-A5 — Semantic Source Obligation Generalization
 
+> **CORRECTION / SUPERSESSION NOTICE (F2-A5-R1).** This report's initial
+> terminal `COMPLETE / PASS / QUESTION_GROUNDED_SOURCE_OBLIGATION_SEMANTICS_ESTABLISHED`
+> closeout (and the aggregate `F2 = COMPLETE / PASS / A1_A2_A3_A4_A5_COMPLETE`)
+> was subsequently found premature by an independent post-commit audit: the
+> architecture below is valid and was preserved, but the question-grounded
+> helper used unbounded substring matching — "hypothesis" triggered a hard
+> paper obligation ("thesis" substring), "macroscopic" triggered a hard code
+> obligation ("macro" substring), "paperless" triggered paper, and the
+> ambiguous bare "which source" triggered code. Those boundaries are repaired
+> by `evaluation/F2_A5_R1_SOURCE_OBLIGATION_BOUNDARY_REPAIR.md`
+> (F2-A5-R1 = `COMPLETE / PASS / SOURCE_OBLIGATION_MATCHING_BOUNDARY_ESTABLISHED`),
+> which is the authoritative final lifecycle record for this surface; the
+> aggregate F2 closure is re-validated only after R1. The narrative below is
+> preserved unchanged for historical transparency.
+
 Status: `COMPLETE / PASS / QUESTION_GROUNDED_SOURCE_OBLIGATION_SEMANTICS_ESTABLISHED`
 Type: bounded production cleanup + deterministic verification (PF-LR1 Group E).
 Zero PANDA scientific/evaluation calls; zero protected-data access.
