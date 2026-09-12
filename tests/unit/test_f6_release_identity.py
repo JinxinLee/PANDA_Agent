@@ -62,7 +62,7 @@ class BenchmarkIdentityTests(unittest.TestCase):
         self.assertEqual(identity["benchmark_version"], "m6-benchmark-v2.6")
         self.assertEqual(identity["benchmark_question_count"], 120)
         self.assertEqual(identity["benchmark_dataset_sha256"], manifest["dataset_sha256"])
-        self.assertIn("official", identity["benchmark_status"])
+        self.assertIn("approved", identity["benchmark_status"])
 
     def test_benchmark_identity_rejects_dataset_hash_mismatch(self):
         with tempfile.TemporaryDirectory() as tmp:
