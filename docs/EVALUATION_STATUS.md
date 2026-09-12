@@ -94,8 +94,11 @@ F5 = COMPLETE / PASS / BOUNDED_ANSWER_COMPOSER_SAFETY_CONTRACT_ESTABLISHED (fina
 F5 report: `evaluation/F5_BOUNDED_ANSWER_COMPOSER.md` (initial closeout corrected by F5-R1; READABILITY_BENEFIT = NOT_EMPIRICALLY_EVALUATED_IN_F5).
 F5-R1 = COMPLETE / PASS / EXACT_LITERAL_IDENTIFIER_PROVENANCE_BOUNDARY_ESTABLISHED.
 F5-R1 report: `evaluation/F5_R1_EXACT_LITERAL_IDENTIFIER_PROVENANCE_REPAIR.md`.
-F6 = HOLD / PROTECTED_HOLDOUT_PRECONDITION_NOT_MET.
-F6 record: `evaluation/F6_RELEASE_EVALUATION_AND_GENERALIZATION_GATE.md` (zero-outcome preflight HOLD; result JSON `evaluation/f6_release_evaluation_result.json`).
+F6 = staged release gate reconciled by F6-LR1 (attempt 1 = HISTORICAL / HOLD / PROTECTED_HOLDOUT_PRECONDITION_NOT_MET / ZERO_OUTCOME).
+F6-LR1 = COMPLETE / PASS / RELEASE_GATE_STAGING_RECONCILED.
+F6-LR1 record: `evaluation/F6_LR1_RELEASE_GATE_STAGING_RECONCILIATION.md` (companion `evaluation/f6_lr1_release_gate_staging_reconciliation.json`).
+F6-A = NOT_STARTED / READY_FOR_SEPARATE_EXECUTION.
+F6-B = NOT_STARTED / LOCKED_PENDING_F6_A_PASS.
 Phase E = COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED.
 E2-A1 report: `evaluation/E2_A1_SHADOW_ANSWER_POINT_COVERAGE_CONTRACT.md`.
 C1 met all eight strict gates and the original pair09 atomicity sentinel. Per the
@@ -170,7 +173,9 @@ COMPLETE / PASS / BOUNDED_ANSWER_COMPOSER_SAFETY_CONTRACT_ESTABLISHED
 F5-R1
 COMPLETE / PASS / EXACT_LITERAL_IDENTIFIER_PROVENANCE_BOUNDARY_ESTABLISHED
 F6
-HOLD / PROTECTED_HOLDOUT_PRECONDITION_NOT_MET
+HOLD / PROTECTED_HOLDOUT_PRECONDITION_NOT_MET (attempt 1, HISTORICAL)
+F6-LR1
+COMPLETE / PASS / RELEASE_GATE_STAGING_RECONCILED
 
 Latest accepted production action:
 D4-A10
@@ -186,10 +191,10 @@ MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD
 Current planning state:
 D4 = PAUSED / ROADMAP_RECONCILIATION
 D4 overall completion = UNDECIDED
-CURRENT_TASK = F6 / HOLD / PROTECTED_HOLDOUT_PRECONDITION_NOT_MET
-NEXT_TASK_RECOMMENDATION = F6 retry (fresh preregistration + candidate identity) after the protected external holdout package is provisioned in its governed execution environment
+CURRENT_TASK = F6-LR1 / COMPLETE / PASS / RELEASE_GATE_STAGING_RECONCILED
+NEXT_TASK_RECOMMENDATION = F6-A — Pre-Release Validation & Generalization Gate (Stage A0 must first resolve the carried-forward release-freeze engineering debt) / RECOMMENDED / NOT AUTHORIZED
 NEXT_TASK_EXECUTION_AUTHORIZED = false
-FOLLOWING_ARCHITECTURE_TASK = F6 — Release Evaluation and Generalization Gate (blocked on protected holdout availability; requires separate explicit authorization)
+FOLLOWING_ARCHITECTURE_TASK = F6-B — Protected Blind Release Gate (locked until F6-A PASS)
 
 No D4-A11 exists.
 Phase E = COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED.
@@ -202,15 +207,18 @@ E3-LR1 = COMPLETE / PASS / POST_A2_LIFECYCLE_RECONCILED.
 E3 = COMPLETE / BOUNDED_LOW_FREQUENCY_FALLBACK_IMPLEMENTED / SCIENTIFIC_RECOVERY_BENEFIT_UNRESOLVED.
 PE-LR1 = COMPLETE / PASS / PHASE_E_CLOSED_PROMOTION_DEFERRED_UNTIL_MATERIAL_CANDIDATE.
 Phase E = COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED.
-Phase F = IN_PROGRESS / F5_COMPLETE_F6_HOLD.
+Phase F = IN_PROGRESS / F6_A_READY.
 F2 = COMPLETE / PASS / A1_A2_A3_A4_A5_COMPLETE.
 F3 = COMPLETE / PASS / FIXED_LOCATOR_FALLBACK_SHORTCUTS_RETIRED.
 F4 = COMPLETE / PASS / ANSWER_GENERATION_SEMANTIC_VERIFICATION_ROLES_SEPARATED.
 F4-R1 = COMPLETE / PASS / PRODUCTION_MODEL_ROLE_DIAGNOSTICS_CORRECTED.
 F5 = COMPLETE / PASS / BOUNDED_ANSWER_COMPOSER_SAFETY_CONTRACT_ESTABLISHED.
 F5-R1 = COMPLETE / PASS / EXACT_LITERAL_IDENTIFIER_PROVENANCE_BOUNDARY_ESTABLISHED.
-F6 = HOLD / PROTECTED_HOLDOUT_PRECONDITION_NOT_MET (zero-outcome preflight: the protected external holdout package is not available on the execution machine; no cohort exposed; scientific/evaluation calls = 0; the candidate freezer was corrected to bind signed m6-benchmark-v2.6, record the F4 three-model-role identities and runtime mode, and fingerprint the complete active prompt set, and the signed v2_6 manifest record was aligned to the authorized D4-A2-R1 g021 dataset correction that had silently diverted the evaluator to v2_5).
-No further recovery, D4, Phase-E, or Phase-F production task is authorized; an F6 retry requires the protected holdout package to be provisioned plus a separate explicit authorization (fresh preregistration + candidate identity).
+F6 attempt 1 = HISTORICAL / HOLD / PROTECTED_HOLDOUT_PRECONDITION_NOT_MET / ZERO_OUTCOME (valid under the then-authorized protocol).
+F6-LR1 = COMPLETE / PASS / RELEASE_GATE_STAGING_RECONCILED (static reconciliation: holdout governance/metadata integrity is the F6-A precondition; physical package availability is the F6-B precondition only; F6-A excludes holdout execution and its positive terminal state is HOLDOUT_ELIGIBLE; F6-B is the only protected blind release decision; candidate identity must be identical across A/B; §14 release-freeze engineering debt is carried into F6-A Stage A0 without implementation).
+F6-A = NOT_STARTED / READY_FOR_SEPARATE_EXECUTION.
+F6-B = NOT_STARTED / LOCKED_PENDING_F6_A_PASS.
+No further recovery, D4, Phase-E, or Phase-F production task is authorized; F6-A requires separate explicit authorization after its Stage A0 engineering-debt resolution.
 
 ## E3-A1 experimental implementation closeout
 
@@ -782,6 +790,32 @@ legacy_question_core; runtime_e1_v2 remains explicit-selection-only; default pro
 NEXT_TASK_RECOMMENDATION = F6 retry (fresh preregistration + candidate identity) after the protected external
 holdout package is provisioned in its governed execution environment.
 Report: `evaluation/F6_RELEASE_EVALUATION_AND_GENERALIZATION_GATE.md`.
+
+## F6-LR1 release-gate staging reconciliation record
+
+COMPLETE / PASS / RELEASE_GATE_STAGING_RECONCILED. Static lifecycle/protocol reconciliation at HEAD `03fc400`;
+zero product/evaluator/freezer/manifest changes; zero model calls; zero scientific/evaluation calls or tokens.
+Correction: the first F6 attempt treated physical protected-holdout availability as a prerequisite for ANY F6
+scientific execution — over-strict, because the exposed/validation cohorts have different exposure economics
+than the sealed holdout. Reconciled structure: F6-A — Pre-Release Validation & Generalization Gate (Gold v2.6,
+novel_dev, novel_validation, approved evaluation-only ablation, composer release audit; holdout governance/
+metadata integrity is its precondition; its positive terminal state is HOLDOUT_ELIGIBLE, not release PASS) and
+F6-B — Protected Blind Release Gate (the only protected blind release decision; requires
+F6-A = COMPLETE / PASS / HOLDOUT_ELIGIBLE with an identical frozen candidate identity; physical package
+availability and the protected workspace are F6-B prerequisites B1/B2). Dataset roles formalized (Gold =
+EXPOSED_BENCHMARK_REFERENCE; novel_dev = EXPOSED_DEVELOPMENT_GENERALIZATION_DIAGNOSTIC; novel_validation =
+CANDIDATE_LEVEL_PRE_RELEASE_GENERALIZATION_GATE with PRISTINE_FOR_CURRENT_LINEAGE semantics and exposure-ledger
+rules; novel_holdout = FINAL_PROTECTED_BLIND_RELEASE_EVIDENCE, not required during F6-A). Holdout-budget
+principle recorded (do not consume holdout before F6-A PASS; a failed F6-A never triggers holdout). Run orders
+A0–A7 / B0–B5 fixed; the five attempt-1 preflight engineering findings are carried into F6-A Stage A0 without
+implementation (freezer/evaluator authority equivalence, benchmark-manifest identity in the freeze, Docker
+image identity semantics decision, candidate_changes_after_freeze = NOT_REACHED when unfrozen, g021
+post-signing provenance traceability). Attempt-1 artifacts preserved unmodified as historical records; no
+product/evaluator/manifest/Gold content changed. Normal default remains legacy_question_core; default
+promotion remains deferred.
+NEXT_TASK_RECOMMENDATION = F6-A — Pre-Release Validation & Generalization Gate (RECOMMENDED / NOT AUTHORIZED;
+Stage A0 engineering debt first).
+Report: `evaluation/F6_LR1_RELEASE_GATE_STAGING_RECONCILIATION.md`.
 
 ## Historical E3-A0 architecture contract closeout
 

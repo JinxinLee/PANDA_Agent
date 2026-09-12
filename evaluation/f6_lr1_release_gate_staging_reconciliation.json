@@ -1,0 +1,62 @@
+{
+  "schema_version": "f6-lr1-reconciliation-v1",
+  "task": "F6-LR1 — Release-Gate Staging Reconciliation",
+  "terminal_state": "COMPLETE / PASS / RELEASE_GATE_STAGING_RECONCILED",
+  "starting_head": "03fc400e54d66f24d9009f3ab7378c0d6dde0882",
+  "historical_attempts": [
+    {
+      "attempt": 1,
+      "state": "HISTORICAL / HOLD / PROTECTED_HOLDOUT_PRECONDITION_NOT_MET / ZERO_OUTCOME",
+      "record": "evaluation/F6_RELEASE_EVALUATION_AND_GENERALIZATION_GATE.md",
+      "record_json": "evaluation/f6_release_evaluation_result.json",
+      "note": "Valid under the then-authorized protocol; superseded prospectively by F6-LR1 staging."
+    }
+  ],
+  "structure": {
+    "F6-A": {
+      "name": "Pre-Release Validation & Generalization Gate",
+      "state": "NOT_STARTED / READY_FOR_SEPARATE_EXECUTION",
+      "allowed_evidence": [
+        "gold_v2_6",
+        "novel_dev",
+        "novel_validation",
+        "approved_evaluation_only_ablation",
+        "composer_release_audit"
+      ],
+      "excludes": "protected_holdout_execution",
+      "positive_terminal_state": "COMPLETE / PASS / HOLDOUT_ELIGIBLE",
+      "run_order": ["A0_preflight", "A1_preregistration_and_freeze", "A2_gold_full", "A3_gold_ablation", "A4_novel_dev_diagnostic", "A5_novel_validation", "A6_composer_audit", "A7_gate_decision"]
+    },
+    "F6-B": {
+      "name": "Protected Blind Release Gate",
+      "state": "NOT_STARTED / LOCKED_PENDING_F6_A_PASS",
+      "requires": "F6-A COMPLETE / PASS / HOLDOUT_ELIGIBLE with identical candidate identity",
+      "positive_terminal_state": "COMPLETE / PASS / PROTECTED_BLIND_RELEASE_GATE_PASSED",
+      "run_order": ["B0_identity_verify", "B1_protected_preflight", "B2_sealed_identity_verify", "B3_single_blind_run", "B4_sanitized_receipt", "B5_final_gate_decision"]
+    }
+  },
+  "dataset_roles": {
+    "gold_v2_6": "EXPOSED_BENCHMARK_REFERENCE",
+    "novel_dev": "EXPOSED_DEVELOPMENT_GENERALIZATION_DIAGNOSTIC",
+    "novel_validation": "CANDIDATE_LEVEL_PRE_RELEASE_GENERALIZATION_GATE",
+    "novel_holdout": "FINAL_PROTECTED_BLIND_RELEASE_EVIDENCE"
+  },
+  "key_corrections": [
+    "holdout governance/metadata integrity is the F6-A precondition; physical package availability is the F6-B precondition only",
+    "candidate identity must be identical across F6-A PASS and F6-B; any behavior-affecting change strips HOLDOUT_ELIGIBLE",
+    "novel_validation is PRISTINE_FOR_CURRENT_LINEAGE now; aggregate observation keeps it historical evidence; case-level development use requires exposure-ledger events",
+    "a failed F6-A must not consume holdout"
+  ],
+  "engineering_debt_for_f6_a_stage_a0": [
+    "evaluator/freezer benchmark-authority equivalence",
+    "freeze the benchmark manifest identity (manifest hash/version/dataset hash/question count/official flags)",
+    "decide Docker image identity semantics (mandatory digests vs diagnostic-only)",
+    "candidate_changes_after_freeze = NOT_REACHED/NOT_APPLICABLE when no candidate is frozen",
+    "keep D4-A2-R1 g021 post-signing amendment provenance traceable"
+  ],
+  "usage": {
+    "panda_scientific_evaluation_calls": 0,
+    "panda_scientific_evaluation_tokens": 0
+  },
+  "next_recommendation": "F6-A — Pre-Release Validation & Generalization Gate (separate authorization required)"
+}
