@@ -72,6 +72,8 @@ F2-A1-R1 = COMPLETE / PASS / WHOLE_CLAIM_SEMANTIC_BYPASS_REMOVED.
 F2-A1-R1 report: `evaluation/F2_A1_R1_VERIFIER_SUPPORT_SEMANTIC_ENTAILMENT_REPAIR.md`.
 F2-A2 = COMPLETE / PASS / QUESTION_DERIVED_POINTER_NORMALIZATION_COMPLETENESS_ESTABLISHED.
 F2-A2 report: `evaluation/F2_A2_DETERMINISTIC_COMPLETENESS_SEMANTIC_CLEANUP.md`.
+F2-A3 = COMPLETE / PASS / E1_E2_COMPATIBILITY_AUTHORITY_RECONCILED.
+F2-A3 report: `evaluation/F2_A3_E1_E2_COMPATIBILITY_RETIREMENT.md`.
 Phase E = COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED.
 E2-A1 report: `evaluation/E2_A1_SHADOW_ANSWER_POINT_COVERAGE_CONTRACT.md`.
 C1 met all eight strict gates and the original pair09 atomicity sentinel. Per the
@@ -123,6 +125,8 @@ F2-A1-R1
 COMPLETE / PASS / WHOLE_CLAIM_SEMANTIC_BYPASS_REMOVED
 F2-A2
 COMPLETE / PASS / QUESTION_DERIVED_POINTER_NORMALIZATION_COMPLETENESS_ESTABLISHED
+F2-A3
+COMPLETE / PASS / E1_E2_COMPATIBILITY_AUTHORITY_RECONCILED
 
 Latest accepted production action:
 D4-A10
@@ -138,10 +142,10 @@ MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD
 Current planning state:
 D4 = PAUSED / ROADMAP_RECONCILIATION
 D4 overall completion = UNDECIDED
-CURRENT_TASK = F2-A2 / COMPLETE / PASS / QUESTION_DERIVED_POINTER_NORMALIZATION_COMPLETENESS_ESTABLISHED
-NEXT_TASK_RECOMMENDATION = F2-A3 — E1/E2 Compatibility Retirement / RECOMMENDED / NOT AUTHORIZED
+CURRENT_TASK = F2-A3 / COMPLETE / PASS / E1_E2_COMPATIBILITY_AUTHORITY_RECONCILED
+NEXT_TASK_RECOMMENDATION = F2-A4 — Premise and Refusal Generalization / RECOMMENDED / NOT AUTHORIZED
 NEXT_TASK_EXECUTION_AUTHORIZED = false
-FOLLOWING_ARCHITECTURE_TASK = bounded Phase-F production cleanup per the PF-LR1 recommended order (F2-A3 next)
+FOLLOWING_ARCHITECTURE_TASK = bounded Phase-F production cleanup per the PF-LR1 recommended order (F2-A4 next)
 
 No D4-A11 exists.
 Phase E = COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED.
@@ -154,10 +158,10 @@ E3-LR1 = COMPLETE / PASS / POST_A2_LIFECYCLE_RECONCILED.
 E3 = COMPLETE / BOUNDED_LOW_FREQUENCY_FALLBACK_IMPLEMENTED / SCIENTIFIC_RECOVERY_BENEFIT_UNRESOLVED.
 PE-LR1 = COMPLETE / PASS / PHASE_E_CLOSED_PROMOTION_DEFERRED_UNTIL_MATERIAL_CANDIDATE.
 Phase E = COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED.
-Phase F = IN_PROGRESS / F2_A2_COMPLETE.
-F2 = IN_PROGRESS / A1_A2_COMPLETE.
+Phase F = IN_PROGRESS / F2_A3_COMPLETE.
+F2 = IN_PROGRESS / A1_A2_A3_COMPLETE.
 F3 = NOT_STARTED / UNEXECUTED.
-No further recovery, D4, Phase-E, or Phase-F production task is authorized after F2-A2; F2-A3 — E1/E2 Compatibility Retirement is recommended but NOT AUTHORIZED.
+No further recovery, D4, Phase-E, or Phase-F production task is authorized after F2-A3; F2-A4 — Premise and Refusal Generalization is recommended but NOT AUTHORIZED.
 
 ## E3-A1 experimental implementation closeout
 
@@ -366,6 +370,34 @@ remains deferred (D3); promotion relevance is not promotion authorization.
 NEXT_TASK_RECOMMENDATION = F2-A3 — E1/E2 Compatibility Retirement (PF-LR1 Group C / F1 residuals R08, R09, R11)
 (RECOMMENDED / NOT AUTHORIZED).
 Report: `evaluation/F2_A2_DETERMINISTIC_COMPLETENESS_SEMANTIC_CLEANUP.md`.
+
+## F2-A3 E1/E2 compatibility retirement closeout
+
+COMPLETE / PASS / E1_E2_COMPATIBILITY_AUTHORITY_RECONCILED. Bounded Group-C cluster cleanup (F1 residuals R08/R09/
+R11) at HEAD `d480fc2`; zero PANDA scientific/evaluation calls or tokens; zero protected-data access. Authority
+reconciliation: in E1/E2 coverage modes (shadow_e1_v2, runtime_e1_v2) whole-answer completeness is owned by the
+claim-to-answer-point coverage review and bounded revision via missing_answer_point_ids; the legacy named-requirement
+contract is retained in full as a legacy_question_core bridge and is non-authoritative in coverage modes — the
+deterministic missing-requirement check is not executed there, the review's known missing_requirement_ids are
+ignored (unknown-id hallucination guard kept), revision scope asks only for missing_answer_point_ids, plan-driven
+dataflow augmentation (required_*/dataflow_locator_*, internal-filtered) is disabled, and required_boundary_locators
+payloads are empty. The E3 second-verify deterministic-requirement view was retired with its consumer; claim-level
+retained-ledger protection (invalid evidence) is preserved. _augment_planned_locators is preserved in all modes
+(question-grounded: locator vocabulary + question-named planned symbol). Seam tests prove the ownership transfer:
+a coverage-complete answer with a model-returned legacy missing requirement passes in both coverage modes
+(test_coverage_mode_legacy_requirement_is_non_authoritative, shadow+runtime) while legacy_question_core still
+enforces it (test_legacy_default_still_enforces_requirements); plan-only suggestions synthesize no claims and inject
+no boundary locators in coverage modes (test_dataflow_augmentation_is_mode_scoped,
+test_boundary_locators_are_mode_scoped). One E2 and three E3 tests were updated from asserting coverage-mode
+named-requirement authority to asserting the retired mode-scoped semantics. Verification: tests/unit/test_qa.py
+70 passed + 6 subtests; E2-A1 42 + focused E3 deterministic set 49 → 91 passed; combined 161 passed + 6 subtests.
+Prompts.py and question_decomposition.py unchanged; retrieval/selection/R04/R01/R14/F3/D4/default/promotion
+untouched; F2 remains incomplete (Groups D/E outstanding). Normal default remains legacy_question_core;
+runtime_e1_v2 remains explicit-selection-only; default promotion remains deferred (D3); promotion relevance is not
+promotion authorization.
+NEXT_TASK_RECOMMENDATION = F2-A4 — Premise and Refusal Generalization (PF-LR1 Group D / F1 residual R04)
+(RECOMMENDED / NOT AUTHORIZED).
+Report: `evaluation/F2_A3_E1_E2_COMPATIBILITY_RETIREMENT.md`.
 
 ## Historical E3-A0 architecture contract closeout
 

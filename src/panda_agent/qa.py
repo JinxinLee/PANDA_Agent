@@ -1712,7 +1712,14 @@ class QAAgent:
         For data-flow questions, add narrow locator claims for supplied plan
         symbols and one supplied workflow/code item per required source type.
         This never invents a locator or fetches new evidence.
+
+        E1/E2 coverage modes own completeness through claim-to-answer-point
+        coverage, so plan-suggested source types and symbols must not synthesize
+        additional claims there; this augmentation stays a legacy-default
+        bridge.
         """
+        if _coverage_shadow(state):
+            return draft
         plan = state.get("bundle", {}).get("plan", {})
         if plan.get("intent") != "data_flow":
             return draft
@@ -1813,7 +1820,8 @@ class QAAgent:
                     "premise_corrections": state["bundle"]["plan"].get("premise_corrections", []),
                     "required_boundary_locators": (
                         state["bundle"]["plan"].get("symbols", [])
-                        if state["bundle"]["plan"].get("intent") == "module_structure"
+                        if not _coverage_shadow(state)
+                        and state["bundle"]["plan"].get("intent") == "module_structure"
                         and any(
                             "boundary" in str(value).casefold()
                             for value in state["bundle"]["plan"].get("concepts", [])
@@ -2082,37 +2090,11 @@ class QAAgent:
             errors.extend(f"missing answer point {pid}" for pid in missing_points)
         unsupported = review.get("unsupported_claim_ids", [])
         irrelevant = review.get("irrelevant_claim_ids", [])
-        deterministic_evidence = dict(evidence)
-        deterministic_claims = list(claims)
-        is_e3_second_verify = (
-            state.get("answer_point_coverage_mode") == "runtime_e1_v2"
-            and state.get("missing_point_retrieval_count") == 1
-            and state.get("revision_count") == 1
-        )
-        if is_e3_second_verify and retained_evidence and retained_claims:
-            valid_claims = []
-            cited_retained_evidence_ids: set[str] = set()
-            for c in claims:
-                cid = str(c.get("claim_id") or "")
-                c_errors = claim_errors.get(cid, [])
-                if c_errors:
-                    continue
-                valid_claims.append(c)
-                is_unchanged = any(_claim_matches_retained(c, ret) for ret in retained_claims)
-                if is_unchanged:
-                    for eid in c.get("evidence_ids", []):
-                        if eid in retained_evidence:
-                            cited_retained_evidence_ids.add(eid)
-
-            for eid in cited_retained_evidence_ids:
-                if eid in retained_evidence:
-                    deterministic_evidence[eid] = retained_evidence[eid]
-            deterministic_claims = valid_claims
-
         missing_requirements = [str(value) for value in review.get("missing_requirement_ids", [])]
-        missing_requirements.extend(
-            _deterministic_missing_requirement_ids(answer_requirements, deterministic_claims, deterministic_evidence)
-        )
+        if not shadow:
+            missing_requirements.extend(
+                _deterministic_missing_requirement_ids(answer_requirements, claims, evidence)
+            )
         known_claim_ids = set(claim_ids)
         for claim_id in unsupported:
             message = f"unsupported claim {claim_id}" if claim_id in known_claim_ids else f"review returned unknown claim {claim_id}"
@@ -2132,6 +2114,12 @@ class QAAgent:
         for requirement_id in missing_requirements:
             if requirement_id not in known_requirement_ids:
                 errors.append(f"review returned unknown answer requirement {requirement_id}")
+                continue
+            if shadow:
+                # E1/E2 answer-point coverage owns whole-answer completeness in
+                # the coverage modes; the legacy named-requirement contract is a
+                # legacy-default bridge and must not act as a second hidden
+                # answer key there.
                 continue
             accepted_missing_requirements.append(requirement_id)
             errors.append(f"missing answer requirement {requirement_id}")
@@ -2268,7 +2256,12 @@ class QAAgent:
             state.get("answer_requirements")
             or _answer_requirements(str(state["question"]), state["bundle"]["plan"])
         )
-        missing_requirement_ids = list(state.get("missing_requirement_ids", []))
+        # In E1/E2 coverage modes the legacy named-requirement contract is a
+        # non-authoritative bridge; bounded revision there is driven by missing
+        # answer points (and unsupported claims), not by named requirements.
+        missing_requirement_ids = (
+            [] if shadow else list(state.get("missing_requirement_ids", []))
+        )
         claim_evidence = [item for item in state["bundle"]["evidence"] if _is_public_claim_citation_eligible(item)]
         requirement_evidence = _requirement_evidence(
             [
@@ -2292,7 +2285,7 @@ class QAAgent:
                 "requirement_evidence": requirement_evidence,
                 "revision_scope": (
                     "Add only evidence-backed, user-relevant claims needed to satisfy "
-                    + ("missing_answer_point_ids and/or missing_requirement_ids; " if shadow else "missing_requirement_ids; ")
+                    + ("missing_answer_point_ids; " if shadow else "missing_requirement_ids; ")
                     + "do not add a claim when evidence does not establish it."
                 ),
                 "already_verified_claims_do_not_repeat": _model_claims(supported) if shadow else supported,

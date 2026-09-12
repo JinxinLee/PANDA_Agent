@@ -1919,7 +1919,10 @@ def test_e3_second_verify_unchanged_retained_claim_satisfies_deterministic_requi
 
 
 def test_e3_second_verify_new_claim_cannot_satisfy_deterministic_requirement_via_ledger(tmp_path: Path) -> None:
-    """Correction 2 (Section 20): New claim citing ledger-only evidence is marked invalid and cannot satisfy requirement."""
+    """Claim-level ledger protection retained: a new claim citing ledger-only
+    evidence is marked invalid. After F2-A3, deterministic named-requirement
+    enforcement is non-authoritative in coverage modes, so no missing-requirement
+    failure is produced either."""
     agent = make_agent(tmp_path)
     e_old = {
         "evidence_id": stable_id("obj_old", "exact", prefix="evidence"),
@@ -1982,16 +1985,19 @@ def test_e3_second_verify_new_claim_cannot_satisfy_deterministic_requirement_via
     }
 
     v_out = agent._verify(state)
-    # 1. Claim-level check marks c_new invalid
+    # 1. Claim-level check marks c_new invalid (ledger protection retained)
     assert any("invalid evidence for c_new" in err for err in v_out["errors"])
-    # 2. c_new cannot satisfy deterministic requirement through ledger-only e_old!
-    assert any("missing answer requirement acceptance_factory_application" in err for err in v_out["errors"])
-    assert "acceptance_factory_application" in v_out.get("missing_requirement_ids", [])
+    # 2. F2-A3: deterministic named-requirement enforcement is retired in
+    # coverage modes; the claim-level invalid-evidence error is the failure.
+    assert not any("missing answer requirement" in err for err in v_out["errors"])
+    assert v_out.get("missing_requirement_ids", []) == []
 
 
 def test_e3_second_verify_modified_claim_same_id_cannot_satisfy_deterministic_requirement_via_ledger(tmp_path: Path) -> None:
-    """Correction 2 (Negative modifiedsameID): Claim keeping the same claim_id as retained claim
-    but with modified text is recognized as modified, marked invalid, and cannot use ledger."""
+    """Claim-level ledger protection retained: a claim keeping the same claim_id
+    as a retained claim but with modified text is recognized as modified, marked
+    invalid, and cannot use the ledger. After F2-A3, deterministic
+    named-requirement enforcement is non-authoritative in coverage modes."""
     agent = make_agent(tmp_path)
     e_old = {
         "evidence_id": stable_id("obj_old", "exact", prefix="evidence"),
@@ -2056,14 +2062,16 @@ def test_e3_second_verify_modified_claim_same_id_cannot_satisfy_deterministic_re
     v_out = agent._verify(state)
     # Claim-level verification MUST mark modified c1 invalid because e_old is displaced and claim text changed
     assert any("invalid evidence for c1" in err for err in v_out["errors"])
-    # Modified c1 CANNOT satisfy requirement via displaced ledger evidence
-    assert any("missing answer requirement acceptance_factory_application" in err for err in v_out["errors"])
-    assert "acceptance_factory_application" in v_out.get("missing_requirement_ids", [])
+    # F2-A3: deterministic named-requirement enforcement is retired in coverage
+    # modes; the claim-level invalid-evidence error is the failure signal.
+    assert not any("missing answer requirement" in err for err in v_out["errors"])
+    assert v_out.get("missing_requirement_ids", []) == []
 
 
 def test_e3_second_verify_gate_not_active_when_not_e3_second_verify(tmp_path: Path) -> None:
-    """Correction 2 (Gate invariant): Gate only opens on runtime E3 second verify (mode runtime_e1_v2,
-    missing_point_retrieval_count 1, revision_count 1). Outside that, ledger evidence does not satisfy requirements."""
+    """F2-A3 mode boundary: legacy named-requirement enforcement stays a
+    legacy-default bridge (legacy_question_core) and is non-authoritative in
+    coverage modes (runtime_e1_v2) regardless of E3 second-verify gating."""
     agent = make_agent(tmp_path)
     e_old = {
         "evidence_id": stable_id("obj_old", "exact", prefix="evidence"),
@@ -2112,17 +2120,17 @@ def test_e3_second_verify_gate_not_active_when_not_e3_second_verify(tmp_path: Pa
         ],
     }
 
-    # Case 1: mode is legacy_question_core (not runtime_e1_v2)
+    # Case 1: mode is legacy_question_core — the legacy bridge still enforces
     s1 = dict(base_state, answer_point_coverage_mode="legacy_question_core", missing_point_retrieval_count=1, revision_count=1)
     v1 = agent._verify(s1)
     assert "acceptance_factory_application" in v1.get("missing_requirement_ids", [])
 
-    # Case 2: missing_point_retrieval_count is 0 (initial verify, not second verify)
+    # Case 2: coverage mode — named-requirement enforcement retired
     s2 = dict(base_state, answer_point_coverage_mode="runtime_e1_v2", missing_point_retrieval_count=0, revision_count=1)
     v2 = agent._verify(s2)
-    assert "acceptance_factory_application" in v2.get("missing_requirement_ids", [])
+    assert "acceptance_factory_application" not in v2.get("missing_requirement_ids", [])
 
-    # Case 3: revision_count is 0 (draft turn, not revised turn)
+    # Case 3: coverage mode — named-requirement enforcement retired
     s3 = dict(base_state, answer_point_coverage_mode="runtime_e1_v2", missing_point_retrieval_count=1, revision_count=0)
     v3 = agent._verify(s3)
-    assert "acceptance_factory_application" in v3.get("missing_requirement_ids", [])
+    assert "acceptance_factory_application" not in v3.get("missing_requirement_ids", [])

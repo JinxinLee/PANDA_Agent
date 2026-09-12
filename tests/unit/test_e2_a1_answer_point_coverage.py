@@ -211,12 +211,13 @@ def test_deterministic_locator_requires_semantic_mapping(tmp_path):
 
 
 @pytest.mark.parametrize("missing_point",[True,False])
-def test_requirements_and_answer_points_are_independent(tmp_path,missing_point):
+def test_legacy_requirements_are_non_authoritative_in_coverage_modes(tmp_path,missing_point):
     rs=review({"c1":["point.1"],"c2":["point.2"]},missing=["point.2"] if missing_point else [],requirements=[] if missing_point else ["custom_obligation"])
     a=agent(tmp_path,Vertex(reviews=[rs]));s=state(a,[claim(),claim("c2","point.2","The output is a table.")])
     s["answer_requirements"]=[{"id":"custom_obligation","instruction":"An independent compatibility obligation."}]
     o=a._verify(s)
-    assert o["missing_requirement_ids"]==([] if missing_point else ["custom_obligation"])
+    assert o["missing_requirement_ids"]==[]
+    assert not any("missing answer requirement" in err for err in o["errors"])
     assert o["missing_answer_point_ids"]==(["point.2"] if missing_point else [])
 
 

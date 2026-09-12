@@ -1932,5 +1932,128 @@ class PointerNormalizationCompletenessTests(unittest.TestCase):
         self.assertIn("sensorframe", compacted[0]["text"].casefold())
 
 
+class CoverageReviewVertex(FakeVertex):
+    """Coverage-mode review double: full answer-point coverage, while the model
+    still returns the given legacy missing-requirement ids."""
+
+    def __init__(self, missing_requirement_ids=()):
+        self.missing_requirement_ids = list(missing_requirement_ids)
+        self.prompts = []
+
+    def generate_json(self, prompt, schema, **kwargs):
+        if "supported" in schema.get("properties", {}):
+            payload = json.loads(prompt)
+            self.prompts.append(payload)
+            review = {
+                "supported": True,
+                "unsupported_claim_ids": [],
+                "irrelevant_claim_ids": [],
+                "missing_requirement_ids": self.missing_requirement_ids,
+                "reason": "",
+            }
+            if "claim_answer_point_mappings" in schema.get("properties", {}):
+                review["claim_answer_point_mappings"] = [
+                    {
+                        "claim_id": item["claim_id"],
+                        "answer_point_ids": list(item.get("answer_point_ids") or []),
+                    }
+                    for item in payload["untrusted_claims"]
+                ]
+                review["missing_answer_point_ids"] = []
+            return review
+        return super().generate_json(prompt, schema, **kwargs)
+
+
+class E1E2CompatibilityAuthorityTests(unittest.TestCase):
+    """F2-A3 seam contract: in E1/E2 coverage modes the claim-to-answer-point
+    coverage review owns whole-answer completeness and plan-only suggestions
+    never become mandatory public-answer content; the legacy named-requirement
+    contract remains a legacy_question_core bridge."""
+
+    def _state(self, bundle, mode=None):
+        state = {
+            "question": "Explain the factory composition.",
+            "bundle": bundle,
+            "draft": {"claims": [{
+                "claim_id": "c1",
+                "claim_text": "The factory composes the model from its inputs.",
+                "evidence_ids": ["e1"],
+            }]},
+            "answer_requirements": [
+                {"id": "factory_composition", "instruction": "legacy completeness obligation"}
+            ],
+        }
+        if mode:
+            state["answer_point_coverage_mode"] = mode
+            state["draft"]["claims"][0]["answer_point_ids"] = ["point.1"]
+            state["runtime_answer_points"] = [
+                {"answer_point_id": "point.1", "text": "Explain the factory composition."}
+            ]
+        return state
+
+    # T2/T6 — full answer-point coverage plus a legacy missing requirement
+    # produces no independent legacy failure in coverage modes.
+    def test_coverage_mode_legacy_requirement_is_non_authoritative(self):
+        bundle = bundle_for(code_evidence())
+        for mode in ("shadow_e1_v2", "runtime_e1_v2"):
+            with self.subTest(mode=mode):
+                vertex = CoverageReviewVertex(["factory_composition"])
+                agent = QAAgent(Path.cwd(), retriever=FakeRetriever(bundle), vertex=vertex)
+                out = agent._verify(self._state(bundle, mode))
+                self.assertEqual(out["missing_requirement_ids"], [])
+                self.assertFalse(any("missing answer requirement" in err for err in out["errors"]))
+                self.assertEqual([c["claim_id"] for c in out["supported_claims"]], ["c1"])
+
+    # T7 — legacy_question_core keeps named-requirement enforcement (bridge).
+    def test_legacy_default_still_enforces_requirements(self):
+        bundle = bundle_for(code_evidence())
+        vertex = CoverageReviewVertex(["factory_composition"])
+        agent = QAAgent(Path.cwd(), retriever=FakeRetriever(bundle), vertex=vertex)
+        out = agent._verify(self._state(bundle))
+        self.assertEqual(out["missing_requirement_ids"], ["factory_composition"])
+        self.assertTrue(any("missing answer requirement factory_composition" in err for err in out["errors"]))
+
+    # T3 — plan-only data-flow suggestions synthesize claims only in legacy mode.
+    def test_dataflow_augmentation_is_mode_scoped(self):
+        bundle = bundle_for(
+            code_evidence(text="The workflow stage runs after ingest.", object_type="workflow"),
+            intent="data_flow",
+        )
+        bundle["plan"]["required_source_types"] = ["workflow", "code"]
+        bundle["plan"]["symbols"] = ["src/Factory.cxx"]
+        agent = QAAgent(Path.cwd(), retriever=FakeRetriever(bundle), vertex=FakeVertex())
+        shadow_state = {
+            "question": "Explain the data flow.",
+            "bundle": bundle,
+            "draft": {"claims": []},
+            "answer_point_coverage_mode": "shadow_e1_v2",
+        }
+        self.assertEqual(agent._augment_required_dataflow_evidence({"claims": []}, shadow_state)["claims"], [])
+        legacy_state = {key: value for key, value in shadow_state.items() if key != "answer_point_coverage_mode"}
+        legacy = agent._augment_required_dataflow_evidence({"claims": []}, legacy_state)
+        self.assertTrue(any(claim["claim_id"].startswith("required_") for claim in legacy["claims"]))
+
+    # T3 — plan symbols do not become mandatory boundary components in
+    # coverage modes.
+    def test_boundary_locators_are_mode_scoped(self):
+        bundle = bundle_for(code_evidence(), intent="module_structure", concepts=["model boundary"])
+        agent = QAAgent(Path.cwd(), retriever=FakeRetriever(bundle), vertex=CapturingVertex())
+        shadow_state = {
+            "question": "Map the module boundary.",
+            "bundle": bundle,
+            "answer_point_coverage_mode": "shadow_e1_v2",
+            "runtime_answer_points": [
+                {"answer_point_id": "point.1", "text": "Map the module boundary."}
+            ],
+        }
+        agent._answer(shadow_state)
+        self.assertEqual(agent.vertex.prompts[0]["retrieval_plan"]["required_boundary_locators"], [])
+        agent._answer({"question": "Map the module boundary.", "bundle": bundle})
+        self.assertEqual(
+            agent.vertex.prompts[1]["retrieval_plan"]["required_boundary_locators"],
+            bundle["plan"]["symbols"],
+        )
+
+
 if __name__ == "__main__":
     unittest.main()
