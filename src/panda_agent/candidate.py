@@ -171,7 +171,7 @@ def _docker_release_identity(images: dict[str, Any]) -> dict[str, Any]:
             "satisfied": False,
             "reason": f"required compose services missing from image identity: {missing}",
         }
-    return {"release_critical": True, "satisfied": True, "services": REQUIRED_DOCKER_SERVICES}
+    return {"release_critical": True, "satisfied": True, "services": list(REQUIRED_DOCKER_SERVICES)}
 
 
 def _implementation_git_commit(project_root: Path) -> str:

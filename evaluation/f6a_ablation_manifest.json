@@ -1,0 +1,10 @@
+{
+  "schema_version": "f6a-ablation-manifest-v1",
+  "ablation_id": "disable_query_expansion_injection",
+  "description": "Disable the reviewed query-expansion injection layer (D4-owned YAML trigger rules contributing symbols/concepts/repositories/page hints); all other candidate behavior is identical to the primary candidate.",
+  "mechanism": "runtime overlay in the isolated ablation process (panda_agent.f6a_ablation.install patches Retriever.load_query_expansions to an empty rule set)",
+  "changed_surfaces": ["retrieval.query_expansions"],
+  "unchanged_surfaces": ["qa", "prompts", "models", "retrieval_policies", "index", "runtime_mode"],
+  "primary_candidate_id": "f6a-rc1-20260913",
+  "preregistration": "evaluation/f6_a_pre_release_validation_preregistration.json"
+}
