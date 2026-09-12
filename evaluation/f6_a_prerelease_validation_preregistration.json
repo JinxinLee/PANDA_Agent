@@ -1,0 +1,219 @@
+{
+  "schema_version": "f6a-preregistration-v2",
+  "task": "F6-A — Prerelease Validation & Generalization Gate",
+  "supersedes": {
+    "preregistration": "evaluation/F6_A_PRE_RELEASE_VALIDATION_PREREGISTRATION.md",
+    "reason": "the 120-question full-benchmark cohort interpretation is obsolete for F6-A; the formal Gold cohort is the exact formal-English product-scope selector output",
+    "terminated_partial_run": "data/evaluation/runs/f6a-rc1-gold-full-20260913 (9/120 preserved, not F6-A evidence)"
+  },
+  "implementation_head": "f30d907",
+  "candidate_id": "f6a-rc1-20260913",
+  "primary_runtime_mode": "legacy_question_core",
+  "model_identities": {
+    "generation": "gemini-3.8-flash",
+    "verification_configured": null,
+    "effective_verification": "gemini-3.8-flash",
+    "evaluation_judge": "gemini-3.8-flash",
+    "embedding": "gemini-embedding-2",
+    "embedding_dimensions": 3072,
+    "distinct_client_paths": true
+  },
+  "prompt_identity": {
+    "prompt_set_version": "3.10.1",
+    "prompt_hash": "23d73b036646ec62f3095fac4bdfafdfc7ecf6676fd27d18475b86773db4e6d5"
+  },
+  "corpus_identity": {
+    "index_fingerprint": "8172f9a640e62977be6e911bfb4848ce3aecd0994f1f3ba51a0985bffec62cb9",
+    "collection": "panda_knowledge_v1"
+  },
+  "product_language_calibration": {
+    "calibration_id": "phase_b_t3_product_language_scope_v3",
+    "artifact_sha256": "f8d05d8769ff84ba2199117f1471a3b8f98cea87397c79ac655094d6815eccac",
+    "predecessor_calibration_id": "phase_b_t3_product_language_scope_v2",
+    "reconciliation": "reviewed-classification compatibility reconciliation (g021 criticality-only change; mechanical re-derivation reproduces declared IDs exactly; no fresh human review claimed)"
+  },
+  "gold_identity": {
+    "benchmark_version": "m6-benchmark-v2.6",
+    "question_count_universe": 120,
+    "dataset_sha256": "6f12d54b4db3fdd87fb30670e730ffd8c025a55a968c90a4ea63ab7cecdb878f"
+  },
+  "formal_english_case_ids": [
+    "g001",
+    "g002",
+    "g003",
+    "g004",
+    "g005",
+    "g006",
+    "g007",
+    "g008",
+    "g009",
+    "g010",
+    "g011",
+    "g012",
+    "g013",
+    "g014",
+    "g015",
+    "g016",
+    "g017",
+    "g018",
+    "g019",
+    "g020",
+    "g021",
+    "g022",
+    "g023",
+    "g024",
+    "g025",
+    "g026",
+    "g027",
+    "g028",
+    "g029",
+    "g030",
+    "g031",
+    "g032",
+    "g033",
+    "g034",
+    "g035",
+    "g036",
+    "g037",
+    "g039",
+    "g040",
+    "g041",
+    "g042",
+    "g044",
+    "g047",
+    "g050",
+    "g051",
+    "g052",
+    "g055",
+    "g057",
+    "g058",
+    "g059",
+    "g060",
+    "g105",
+    "g108",
+    "g110",
+    "g112",
+    "g113",
+    "g114",
+    "g115",
+    "g119"
+  ],
+  "formal_english_case_count": 59,
+  "formal_product_scope_selector_sha256": "e27ef67a866274b4a8441b789ca78fc3ccb7e022eed537c7442e15230777a0e5",
+  "non_english_dev_ids_excluded": [
+    "g063",
+    "g066",
+    "g067",
+    "g068",
+    "g069",
+    "g070",
+    "g072",
+    "g073",
+    "g074",
+    "g076",
+    "g077",
+    "g078",
+    "g079",
+    "g081",
+    "g085",
+    "g086",
+    "g088",
+    "g089",
+    "g095",
+    "g096",
+    "g102"
+  ],
+  "bootstrap_reference": {
+    "artifact": "evaluation/baselines/manifests/english_gold_stratified_bootstrap_v1.json",
+    "role": "historical low-cost reference only; preserved unchanged"
+  },
+  "run_ids": {
+    "stage_a1_gold_formal_full": "f6a-rc1-gold-formal-full-20260913",
+    "stage_a2_gold_formal_ablation": "f6a-rc1-gold-formal-ablation-20260913",
+    "stage_a3_novel_dev_full": "f6a-rc1-novel-dev-full-20260913",
+    "stage_a4_novel_validation_full": "f6a-rc1-novel-validation-full-20260913",
+    "stage_a5_composer_audit": "f6a-rc1-composer-audit-20260913"
+  },
+  "release_score": {
+    "formula": "answered -> answer_point_coverage; else 1.0 if expected_status_correct else 0.0; mean over the complete formal cohort",
+    "none_is_not_zero": true,
+    "incomplete_cases_reported_by_id": true
+  },
+  "gold_quality_thresholds": {
+    "gold_recall_at_10": 0.95,
+    "final_evidence_recall": 0.9,
+    "critical_final_evidence_recall": 1.0,
+    "intent_accuracy": 0.9,
+    "per_intent_gold_recall_at_10": 0.75,
+    "per_intent_intent_accuracy": 0.8,
+    "expected_status_accuracy": 0.975,
+    "citation_integrity": 1.0,
+    "wrong_version_evidence_count": 0,
+    "forbidden_evidence_count": 0,
+    "required_source_coverage_answered": 0.97,
+    "identifier_hallucination_rate": 0.03,
+    "paper_code_dual_source_rate": 1.0,
+    "answer_point_coverage": 0.9,
+    "critical_answer_point_miss_count": 0,
+    "contradiction_count": 0,
+    "major_unsupported_claim_count": 0,
+    "unhandled_exception_count": 0
+  },
+  "hard_safety_invariants": {
+    "citation_integrity": 1.0,
+    "wrong_version_evidence_count": 0,
+    "forbidden_evidence_count": 0,
+    "contradiction_count": 0,
+    "major_unsupported_claim_count": 0,
+    "critical_answer_point_miss_count": 0,
+    "unhandled_exception_count": 0,
+    "cohorts": [
+      "gold_formal",
+      "novel_dev",
+      "novel_validation"
+    ]
+  },
+  "generalization_gap": {
+    "formula": "formal_gold_release_score - novel_validation_release_score",
+    "threshold": 0.1
+  },
+  "benchmark_dependency": {
+    "formula": "formal_gold_primary_release_score - formal_gold_ablation_release_score",
+    "threshold": 0.05,
+    "ablation_id": "disable_query_expansion_injection",
+    "ablation_mechanism": "runtime overlay (panda_agent.f6a_ablation.install): empty query-expansion rule set; evaluation-only",
+    "ablation_manifest": "evaluation/f6a_ablation_manifest.json",
+    "novel_validation_ablation": false
+  },
+  "composer_audit": {
+    "eligible_pairs": "ANSWERED + composer accepted + >=2 verified claims from frozen formal-Gold + novel_validation records",
+    "factuality_gate": "composer_new_fact_rate == 0",
+    "readability_gate": "eligible_pairs >= 10 AND composed_preferred > deterministic_preferred",
+    "counterbalance": "first embedded case-ID number; even -> composed labeled A",
+    "insufficient_pairs": "COMPLETE / INCONCLUSIVE / COMPOSER_READABILITY_EVIDENCE_INSUFFICIENT"
+  },
+  "fail_fast_order": [
+    "A1_gold_formal_full",
+    "A2_gold_formal_ablation",
+    "A3_novel_dev",
+    "A4_novel_validation",
+    "A5_composer_audit",
+    "gate_decision"
+  ],
+  "terminal_outcomes": [
+    "COMPLETE / PASS / PRERELEASE_VALIDATION_AND_GENERALIZATION_GATE_PASSED",
+    "COMPLETE / FAIL / <specific failed gate>",
+    "COMPLETE / INCONCLUSIVE / <reason>",
+    "HOLD / <precondition> (pre-outcome only)"
+  ],
+  "gate_semantics": {
+    "candidate_changes_after_freeze_unfrozen": "NOT_REACHED",
+    "post_freeze_immutability": "zero behavior-changing edits until the F6-A verdict",
+    "no_holdout_access": true
+  },
+  "e3": {
+    "expected_applicability": 0,
+    "recovery_benefit": "UNRESOLVED"
+  },
+  "measured_outcomes": "none"
+}
