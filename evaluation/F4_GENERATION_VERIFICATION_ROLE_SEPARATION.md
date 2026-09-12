@@ -1,5 +1,20 @@
 # F4 — Generation / Semantic-Verification Role Separation Closeout
 
+> **CORRECTION / SUPERSESSION NOTICE (F4-R1).** The initial F4 routing
+> architecture reported here was valid: distinct generation/verification client
+> paths, independently configurable verification model, `_answer`/`_revise` →
+> generation role, `_verify` → semantic-verification role, evaluation-judge
+> isolation, role-specific usage accounting, and fail-closed cross-role behavior
+> all stand. The terminal PASS was premature: the internal `model_roles`
+> diagnostic receipt could misidentify the generation model when
+> `QA_GENERATION_MODEL_ID != QA_VERIFICATION_MODEL_ID` (reporting B/B and
+> `same_model_id=true` for an A/B configuration). F4-R1
+> (`evaluation/F4_R1_PRODUCTION_MODEL_ROLE_DIAGNOSTICS_CORRECTION.md`, commit
+> "Repair F4 model role diagnostics") is the authoritative final correction:
+> the receipt now reports each role client's actual model
+> (`settings.generation_model`). Final F4 closure is achieved only after F4-R1.
+> The historical body below is preserved unmodified.
+
 Lifecycle identity: Phase F → F4 — Separate Answer-Generation and Semantic-Verification Roles.
 
 Decision: **COMPLETE / PASS / ANSWER_GENERATION_SEMANTIC_VERIFICATION_ROLES_SEPARATED.**

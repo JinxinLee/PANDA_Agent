@@ -3010,6 +3010,50 @@ class TestGenerationVerificationRoleSeparation(unittest.TestCase):
         self.assertTrue(roles["same_model_id"])
         self.assertTrue(roles["distinct_client_paths"])
 
+    # T1 (F4-R1 central regression): with the production-shaped A/B/C base
+    # settings — the generation client carrying BOTH generation_model=A and
+    # verification_model=B — the receipt must report each role client's actual
+    # model (settings.generation_model), never the base verification_model
+    # configuration field (which previously misreported A/B as B/B).
+    def test_production_ab_config_diagnostics_report_actual_role_models(self):
+        import panda_agent.qa as qa_module
+
+        from panda_agent.llm.vertex import VertexSettings
+
+        settings = VertexSettings(
+            project="test",
+            generation_model="model-A",
+            verification_model="model-B",
+            evaluation_judge_model="model-C",
+        )
+
+        class RecordingClient:
+            def __init__(self, client_settings):
+                self.settings = client_settings
+
+        class RecordingRetriever:
+            def __init__(self, project_root, vertex=None):
+                self.vertex = vertex
+
+        with mock.patch.object(qa_module, "VertexSettings") as settings_cls, \
+                mock.patch.object(qa_module, "VertexAIClient", RecordingClient), \
+                mock.patch.object(qa_module, "Retriever", RecordingRetriever):
+            settings_cls.from_env.return_value = settings
+            agent = QAAgent(Path.cwd())
+
+        self.assertEqual(agent.generation_vertex.settings.generation_model, "model-A")
+        self.assertEqual(agent.verification_vertex.settings.generation_model, "model-B")
+        self.assertIsNot(agent.generation_vertex, agent.verification_vertex)
+        self.assertEqual(
+            agent._model_roles_diagnostics(),
+            {
+                "answer_generation_model": "model-A",
+                "semantic_verification_model": "model-B",
+                "same_model_id": False,
+                "distinct_client_paths": True,
+            },
+        )
+
     # T5 — documented compatibility seam: a sole vertex= injection serves both
     # roles and stays reachable through the legacy alias.
     def test_legacy_vertex_injection_serves_both_roles(self):

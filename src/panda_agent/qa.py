@@ -2885,12 +2885,14 @@ class QAAgent:
     def _model_roles_diagnostics(self) -> dict[str, Any]:
         """Internal role-identity receipt. No project IDs, credentials, prompts, or responses."""
         def role_model(client: Any) -> str | None:
+            # Report the model this client actually sends generate_json calls to
+            # (settings.generation_model on the role client), not the base
+            # verification_model configuration field, which only names the model
+            # used to derive the verification client (F4-R1).
             settings = getattr(client, "settings", None)
             if settings is None:
                 return None
-            verification = getattr(settings, "verification_model", None)
-            generation = getattr(settings, "generation_model", None)
-            return verification or generation
+            return getattr(settings, "generation_model", None)
         generation_model = role_model(self.generation_vertex)
         verification_model = role_model(self.verification_vertex)
         return {

@@ -86,8 +86,10 @@ F2-A5-R1 = COMPLETE / PASS / SOURCE_OBLIGATION_MATCHING_BOUNDARY_ESTABLISHED.
 F2-A5-R1 report: `evaluation/F2_A5_R1_SOURCE_OBLIGATION_BOUNDARY_REPAIR.md`.
 F3 = COMPLETE / PASS / FIXED_LOCATOR_FALLBACK_SHORTCUTS_RETIRED.
 F3 report: `evaluation/F3_FIXED_LOCATOR_FALLBACK_CLEANUP.md`.
-F4 = COMPLETE / PASS / ANSWER_GENERATION_SEMANTIC_VERIFICATION_ROLES_SEPARATED.
-F4 report: `evaluation/F4_GENERATION_VERIFICATION_ROLE_SEPARATION.md`.
+F4 = COMPLETE / PASS / ANSWER_GENERATION_SEMANTIC_VERIFICATION_ROLES_SEPARATED (final closure achieved only after F4-R1).
+F4 report: `evaluation/F4_GENERATION_VERIFICATION_ROLE_SEPARATION.md` (initial closeout corrected by F4-R1).
+F4-R1 = COMPLETE / PASS / PRODUCTION_MODEL_ROLE_DIAGNOSTICS_CORRECTED.
+F4-R1 report: `evaluation/F4_R1_PRODUCTION_MODEL_ROLE_DIAGNOSTICS_CORRECTION.md`.
 Phase E = COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED.
 E2-A1 report: `evaluation/E2_A1_SHADOW_ANSWER_POINT_COVERAGE_CONTRACT.md`.
 C1 met all eight strict gates and the original pair09 atomicity sentinel. Per the
@@ -155,6 +157,8 @@ F3
 COMPLETE / PASS / FIXED_LOCATOR_FALLBACK_SHORTCUTS_RETIRED
 F4
 COMPLETE / PASS / ANSWER_GENERATION_SEMANTIC_VERIFICATION_ROLES_SEPARATED
+F4-R1
+COMPLETE / PASS / PRODUCTION_MODEL_ROLE_DIAGNOSTICS_CORRECTED
 
 Latest accepted production action:
 D4-A10
@@ -170,7 +174,7 @@ MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD
 Current planning state:
 D4 = PAUSED / ROADMAP_RECONCILIATION
 D4 overall completion = UNDECIDED
-CURRENT_TASK = F4 / COMPLETE / PASS / ANSWER_GENERATION_SEMANTIC_VERIFICATION_ROLES_SEPARATED
+CURRENT_TASK = F4-R1 / COMPLETE / PASS / PRODUCTION_MODEL_ROLE_DIAGNOSTICS_CORRECTED
 NEXT_TASK_RECOMMENDATION = F5 — Bounded Answer Composer / RECOMMENDED / NOT AUTHORIZED
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 FOLLOWING_ARCHITECTURE_TASK = F5 — Bounded Answer Composer
@@ -190,7 +194,8 @@ Phase F = IN_PROGRESS / F4_COMPLETE_F5_NOT_STARTED.
 F2 = COMPLETE / PASS / A1_A2_A3_A4_A5_COMPLETE.
 F3 = COMPLETE / PASS / FIXED_LOCATOR_FALLBACK_SHORTCUTS_RETIRED.
 F4 = COMPLETE / PASS / ANSWER_GENERATION_SEMANTIC_VERIFICATION_ROLES_SEPARATED.
-No further recovery, D4, Phase-E, or Phase-F production task is authorized after F4; F5 — Bounded Answer Composer is recommended but NOT AUTHORIZED.
+F4-R1 = COMPLETE / PASS / PRODUCTION_MODEL_ROLE_DIAGNOSTICS_CORRECTED.
+No further recovery, D4, Phase-E, or Phase-F production task is authorized after F4-R1; F5 — Bounded Answer Composer is recommended but NOT AUTHORIZED.
 
 ## E3-A1 experimental implementation closeout
 
@@ -640,6 +645,34 @@ runtime_e1_v2 remains explicit-selection-only; default promotion remains deferre
 authorized. F4 validates architecture and deterministic routing only; no verifier-quality claim is made.
 NEXT_TASK_RECOMMENDATION = F5 — Bounded Answer Composer (RECOMMENDED / NOT AUTHORIZED).
 Report: `evaluation/F4_GENERATION_VERIFICATION_ROLE_SEPARATION.md`.
+
+## F4-R1 production model-role diagnostics correction closeout
+
+COMPLETE / PASS / PRODUCTION_MODEL_ROLE_DIAGNOSTICS_CORRECTED. Corrective repair of F4 at HEAD `a9f3897`;
+zero PANDA scientific/evaluation calls or tokens; zero protected-data access; reporting-only fix. Post-commit
+audit did not accept F4's initial terminal PASS: with the production-shaped A/B/C configuration the internal
+`model_roles` receipt misidentified the generation role — `role_model()` computed
+`verification_model or generation_model` for BOTH role clients, but `verification_model` is the base-settings
+field naming the model used to DERIVE the verification client, while the model any role client actually sends
+`generate_json` calls to is `client.settings.generation_model`. Reproduction at the starting HEAD (real
+production construction path, only from_env/VertexAIClient/Retriever mocked): generation client actual model
+model-A, verification client actual model model-B, yet the receipt reported
+`{answer_generation_model: model-B, semantic_verification_model: model-B, same_model_id: true}`. Repair
+(`QAAgent._model_roles_diagnostics` only): `role_model()` now returns each role client's actual
+`settings.generation_model` (settings-less fakes still report None markers). Post-fix the same production-shaped
+reproduction reports `{answer_generation_model: model-A, semantic_verification_model: model-B, same_model_id:
+false, distinct_client_paths: true}`. Routing, client construction, usage accounting (role counters, aggregate
+summing, shared-client dedup, `usage_stage` labels), failure semantics, judge isolation, deterministic/semantic
+authority, Vertex settings semantics, public schema, and the normal default have zero diff. New central
+regression test uses real A/B/C base settings through the production-default construction path. T1-T18 all pass
+(T2-T18 via pre-existing tests, unmodified). Verification: tests/unit/test_qa.py 136 passed + 19 subtests
+(test_vertex.py not rerun — vertex.py zero diff). Initial F4 commit `a9f3897` preserved; the original F4 report
+carries a correction/supersession notice. F4's final lifecycle state
+(ANSWER_GENERATION_SEMANTIC_VERIFICATION_ROLES_SEPARATED) is achieved only after this repair. Normal default
+remains legacy_question_core; runtime_e1_v2 remains explicit-selection-only; default promotion remains deferred;
+promotion evaluation not authorized.
+NEXT_TASK_RECOMMENDATION = F5 — Bounded Answer Composer (RECOMMENDED / NOT AUTHORIZED).
+Report: `evaluation/F4_R1_PRODUCTION_MODEL_ROLE_DIAGNOSTICS_CORRECTION.md`.
 
 ## Historical E3-A0 architecture contract closeout
 
