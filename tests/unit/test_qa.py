@@ -12,6 +12,8 @@ from panda_agent.qa import (
     _answer_requirements,
     _compact_requirement_evidence,
     _deterministic_missing_requirement_ids,
+    _refusal_basis_evidence,
+    _requested_bare_class_symbols,
     _requirement_evidence,
 )
 
@@ -337,9 +339,20 @@ class ExternalIdentifierVertex(FakeVertex):
 
 
 class QATests(unittest.TestCase):
+    # Realistic locked-catalog fixture: the production premise guard consults
+    # the locked-corpus catalog for bare locator questions, so full-path tests
+    # must run against a catalog that actually contains the requested class.
+    PID_CATALOG_ROWS = [
+        ({"symbol": "PndPidCorrelator", "path": "pid/PndPidCorrelator.h"}, "class PndPidCorrelator {};")
+    ]
+
     def test_run_detailed_reports_per_request_workflow_and_model_usage(self):
         bundle = bundle_for(code_evidence())
-        detailed = QAAgent(Path.cwd(), retriever=FakeRetriever(bundle), vertex=ObservedVertex()).run_detailed(
+        detailed = QAAgent(
+            Path.cwd(),
+            retriever=FakeRetriever(bundle, storage=CatalogStorage(self.PID_CATALOG_ROWS)),
+            vertex=ObservedVertex(),
+        ).run_detailed(
             "Where is PndPidCorrelator?"
         )
 
@@ -1253,7 +1266,7 @@ class QATests(unittest.TestCase):
 
     def test_answered_path_is_bounded_and_cited(self):
         bundle = bundle_for(code_evidence())
-        retriever = FakeRetriever(bundle)
+        retriever = FakeRetriever(bundle, storage=CatalogStorage(self.PID_CATALOG_ROWS))
         result = QAAgent(Path.cwd(), retriever=retriever, vertex=FakeVertex()).run(
             "Where is PndPidCorrelator?"
         )
@@ -1263,7 +1276,7 @@ class QATests(unittest.TestCase):
         self.assertEqual(result.claims[0].model_dump().keys(), {"claim_id", "claim_text", "evidence_ids"})
 
     def test_agent_core_run_has_no_service_import_or_database_persistence(self):
-        storage = CatalogStorage([])
+        storage = CatalogStorage(self.PID_CATALOG_ROWS)
         agent = QAAgent(
             Path.cwd(), retriever=FakeRetriever(bundle_for(code_evidence()), storage=storage), vertex=FakeVertex()
         )
@@ -2197,6 +2210,9 @@ class E1E2CompatibilityAuthorityTests(unittest.TestCase):
 
 
 class PremiseRefusalGeneralizationTests(unittest.TestCase):
+    PID_CATALOG_ROWS = [
+        ({"symbol": "PndPidCorrelator", "path": "pid/PndPidCorrelator.h"}, "class PndPidCorrelator {};")
+    ]
     """F2-A4 contract: bare-class premise refusals are generic, question-
     grounded, and decided by the locked-corpus catalog; selected evidence can
     only supply a narrow cited context statement, never a substitute
@@ -2435,6 +2451,115 @@ class PremiseRefusalGeneralizationTests(unittest.TestCase):
         result = agent._finalize(state)["result"]
         self.assertNotIn("MissingTrackAdapter", related["text"])
         self.assertTrue(result["answer"].startswith("The locked corpus does not define MissingTrackAdapter"))
+
+    # T1 (R1) — central plan-contamination sentinel: plan-only suggestions can
+    # never make unrelated evidence the optional refusal basis.
+    def test_plan_only_suggestion_cannot_become_refusal_basis(self):
+        plan_only = code_evidence(
+            text="PndLmdDataReader applies event selection.",
+            path="data/PndLmdDataReader.cxx",
+        )
+        bundle = bundle_for(plan_only, symbols=["PndLmdDataReader"])
+        agent = self._agent(bundle, catalog_rows=[])
+        question = "How does ImaginaryRestgasCorrector implement the correction?"
+        basis = _refusal_basis_evidence(
+            {"question": question, "bundle": bundle}, kind="unsupported_symbol"
+        )
+        self.assertIsNone(basis)
+        state = {
+            "question": question,
+            "bundle": bundle,
+            "sufficient": False,
+            "errors": ["unsupported requested symbol: ImaginaryRestgasCorrector"],
+            "supported_claims": [],
+        }
+        result = agent._finalize(state)["result"]
+        self.assertEqual(result["claims"], [])
+        self.assertEqual(result["evidence"], [])
+
+    # T2 (R1) — question-relevant basis still works under question-only
+    # anchors.
+    def test_question_relevant_basis_still_selected(self):
+        relevant = code_evidence(
+            evidence_id="rel",
+            text="The restgas correction workflow prepares the profile.",
+            path="src/Workflow.cxx",
+        )
+        bundle = bundle_for(relevant, symbols=["PndLmdDataReader"])
+        agent = self._agent(bundle, catalog_rows=[])
+        basis = _refusal_basis_evidence(
+            {
+                "question": "How does ImaginaryRestgasCorrector apply the restgas correction?",
+                "bundle": bundle,
+            },
+            kind="unsupported_symbol",
+        )
+        self.assertIsNotNone(basis)
+        self.assertEqual(basis["evidence_id"], "rel")
+
+    # T3 (R1) — natural-language "class of" is not a code symbol.
+    def test_natural_language_class_of_does_not_trigger(self):
+        self.assertEqual(_requested_bare_class_symbols("What class of problem is this?"), [])
+        bundle = bundle_for(code_evidence())
+        agent = self._agent(bundle, catalog_rows=[])
+        self.assertEqual(
+            agent._answerability_guard({
+                "question": "What class of problem is this?",
+                "bundle": bundle,
+            }),
+            [],
+        )
+
+    # T4 (R1) — natural-language "struct layout" is not a code symbol.
+    def test_natural_language_struct_layout_does_not_trigger(self):
+        self.assertEqual(_requested_bare_class_symbols("Explain the struct layout used here."), [])
+        bundle = bundle_for(code_evidence())
+        agent = self._agent(bundle, catalog_rows=[])
+        self.assertEqual(
+            agent._answerability_guard({
+                "question": "Explain the struct layout used here.",
+                "bundle": bundle,
+            }),
+            [],
+        )
+
+    # T6 (R1) — bare locator premise without "defined" is recognized.
+    def test_bare_locator_premise_is_recognized(self):
+        bundle = bundle_for(code_evidence())
+        agent = self._agent(bundle, catalog_rows=[])
+        self.assertEqual(
+            agent._answerability_guard({
+                "question": "Where is MissingTrackAdapter?",
+                "bundle": bundle,
+            }),
+            ["unsupported requested symbol: MissingTrackAdapter"],
+        )
+
+    # T7 (R1) — known bare locator survives with a realistic catalog fixture.
+    def test_known_bare_locator_with_catalog_support_is_not_refused(self):
+        bundle = bundle_for(code_evidence())
+        agent = self._agent(bundle, catalog_rows=self.PID_CATALOG_ROWS)
+        self.assertEqual(
+            agent._answerability_guard({
+                "question": "Where is PndPidCorrelator?",
+                "bundle": bundle,
+            }),
+            [],
+        )
+
+    # T13 (R1) — pointer premise extraction still recognizes the underlying
+    # code symbol.
+    def test_pointer_premise_extraction_remains_supported(self):
+        self.assertEqual(_requested_bare_class_symbols("SensorGhostBuilder*"), ["SensorGhostBuilder"])
+        bundle = bundle_for(code_evidence())
+        agent = self._agent(bundle, catalog_rows=[])
+        self.assertEqual(
+            agent._answerability_guard({
+                "question": "How should SensorGhostBuilder* be normalized?",
+                "bundle": bundle,
+            }),
+            ["unsupported requested symbol: SensorGhostBuilder"],
+        )
 
 
 if __name__ == "__main__":

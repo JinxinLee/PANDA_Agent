@@ -234,7 +234,11 @@ def _refusal_basis_evidence(
     question = str(state.get("question") or "")
     plan = state.get("bundle", {}).get("plan", {})
     evidence = list(state.get("bundle", {}).get("evidence", []))
-    anchors = _question_domain_tokens(question)
+    # Question-only anchors are the relevance authority for the
+    # unsupported_symbol kind: a plan-only suggestion must never make
+    # unrelated evidence look like a refusal basis (F2-A4-R1).
+    question_anchors = _question_domain_tokens(question)
+    anchors = set(question_anchors)
     for value in [*plan.get("symbols", []), *plan.get("concepts", [])]:
         anchors.update(_question_domain_tokens(str(value)))
     question_text = question.casefold()
@@ -265,12 +269,13 @@ def _refusal_basis_evidence(
     elif kind == "unsupported_symbol":
         # The locked-catalog absence is the refusal authority.  Selected
         # evidence may at most supply a narrow, cited, query-relevant context
-        # statement; unrelated evidence is never selected.
+        # statement; relevance is judged by question-only anchors, so plan-only
+        # symbols/concepts cannot admit unrelated evidence.
         candidates = [
             item
             for item in evidence
             if _is_code_or_workflow_evidence(item)
-            and any(anchor in _evidence_search_text(item) for anchor in anchors)
+            and any(anchor in _evidence_search_text(item) for anchor in question_anchors)
         ]
         preferred_terms = ()
     else:
@@ -280,7 +285,8 @@ def _refusal_basis_evidence(
 
     def score(item: dict[str, Any]) -> tuple[int, str]:
         text = _evidence_search_text(item)
-        overlap = sum(anchor in text for anchor in anchors)
+        ranking_anchors = question_anchors if kind == "unsupported_symbol" else anchors
+        overlap = sum(anchor in text for anchor in ranking_anchors)
         shared_request_terms = sum(
             term in question_text and term in text for term in preferred_terms
         )
@@ -349,8 +355,19 @@ def _is_class_shaped_identifier(token: str) -> bool:
 
 _REQUESTED_SYMBOL_CONTEXT_TERMS = (
     "how does", "how should", "how is", "what does",
+    "where is", "where's", "which file", "which code", "path",
     "defined", "implemented", "implement",
 )
+
+
+def _is_code_like_identifier(token: str) -> bool:
+    """Bounded plausibility check for an explicit class/struct/enum token.
+
+    Accepts identifiers that are plausibly code (initially capitalized or
+    underscore-bearing); rejects ordinary lowercase prose continuations such
+    as "of", "layout", or "type".
+    """
+    return len(token) > 2 and (token[0].isupper() or "_" in token)
 
 
 def _requested_bare_class_symbols(question: str) -> list[str]:
@@ -377,9 +394,15 @@ def _requested_bare_class_symbols(question: str) -> list[str]:
             candidates.append(name)
 
     for match in re.finditer(r"\b(?:class|struct|enum)\s+([A-Za-z_][A-Za-z0-9_]*)", question):
-        add(match.group(1))
+        token = match.group(1)
+        # Natural-language continuations ("class of", "struct layout") are not
+        # code symbols; require a plausible identifier shape.
+        if _is_code_like_identifier(token):
+            add(token)
     for match in re.finditer(r"\b([A-Za-z_][A-Za-z0-9_]*)\*", question):
-        add(match.group(1))
+        token = match.group(1)
+        if _is_code_like_identifier(token):
+            add(token)
     if any(term in question.casefold() for term in _REQUESTED_SYMBOL_CONTEXT_TERMS):
         for match in re.finditer(r"\b[A-Za-z_][A-Za-z0-9_]*\b", question):
             token = match.group(0)

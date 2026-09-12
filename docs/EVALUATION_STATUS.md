@@ -77,7 +77,9 @@ F2-A3 report: `evaluation/F2_A3_E1_E2_COMPATIBILITY_RETIREMENT.md` (initial clos
 F2-A3-R1 = COMPLETE / PASS / COVERAGE_MODE_LEGACY_PROMPT_AUTHORITY_REMOVED.
 F2-A3-R1 report: `evaluation/F2_A3_R1_COVERAGE_MODE_LEGACY_PROMPT_AUTHORITY_REPAIR.md`.
 F2-A4 = COMPLETE / PASS / GENERIC_PREMISE_REFUSAL_SEMANTICS_ESTABLISHED.
-F2-A4 report: `evaluation/F2_A4_PREMISE_REFUSAL_GENERALIZATION.md`.
+F2-A4 report: `evaluation/F2_A4_PREMISE_REFUSAL_GENERALIZATION.md` (initial closeout corrected by F2-A4-R1).
+F2-A4-R1 = COMPLETE / PASS / QUESTION_GROUNDED_PREMISE_REFUSAL_BOUNDARY_ESTABLISHED.
+F2-A4-R1 report: `evaluation/F2_A4_R1_QUESTION_GROUNDED_PREMISE_REFUSAL_REPAIR.md`.
 Phase E = COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED.
 E2-A1 report: `evaluation/E2_A1_SHADOW_ANSWER_POINT_COVERAGE_CONTRACT.md`.
 C1 met all eight strict gates and the original pair09 atomicity sentinel. Per the
@@ -135,6 +137,8 @@ F2-A3-R1
 COMPLETE / PASS / COVERAGE_MODE_LEGACY_PROMPT_AUTHORITY_REMOVED
 F2-A4
 COMPLETE / PASS / GENERIC_PREMISE_REFUSAL_SEMANTICS_ESTABLISHED
+F2-A4-R1
+COMPLETE / PASS / QUESTION_GROUNDED_PREMISE_REFUSAL_BOUNDARY_ESTABLISHED
 
 Latest accepted production action:
 D4-A10
@@ -150,7 +154,7 @@ MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD
 Current planning state:
 D4 = PAUSED / ROADMAP_RECONCILIATION
 D4 overall completion = UNDECIDED
-CURRENT_TASK = F2-A4 / COMPLETE / PASS / GENERIC_PREMISE_REFUSAL_SEMANTICS_ESTABLISHED
+CURRENT_TASK = F2-A4-R1 / COMPLETE / PASS / QUESTION_GROUNDED_PREMISE_REFUSAL_BOUNDARY_ESTABLISHED
 NEXT_TASK_RECOMMENDATION = F2-A5 — Semantic Source Obligation Generalization / RECOMMENDED / NOT AUTHORIZED
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 FOLLOWING_ARCHITECTURE_TASK = bounded Phase-F production cleanup per the PF-LR1 recommended order (F2-A4 next)
@@ -461,6 +465,35 @@ authorization.
 NEXT_TASK_RECOMMENDATION = F2-A5 — Semantic Source Obligation Generalization (PF-LR1 Group E / F1 residual R01)
 (RECOMMENDED / NOT AUTHORIZED).
 Report: `evaluation/F2_A4_PREMISE_REFUSAL_GENERALIZATION.md`.
+
+## F2-A4-R1 question-grounded premise refusal repair closeout
+
+COMPLETE / PASS / QUESTION_GROUNDED_PREMISE_REFUSAL_BOUNDARY_ESTABLISHED. Corrective repair of F2-A4 at HEAD
+`4f9c87e`; zero PANDA scientific/evaluation calls or tokens; zero protected-data access. Post-commit audit did not
+accept F2-A4's initial terminal PASS; three behavior-confirmed defects: (1) unsupported_symbol refusal-basis
+relevance mixed plan-only symbols/concepts into the anchors (plan-suggested unrelated evidence could become the
+optional basis); (2) explicit class/struct/enum capture did not validate the token ("What class of problem is
+this?" extracted "of"; "Explain the struct layout used here." extracted "layout"); (3) the bare locator premise
+("Where is MissingTrackAdapter?") was under-detected after "where is" had been dropped. Repair: question-only
+anchors (`question_anchors`) are the admission and ranking authority for the unsupported_symbol kind while
+future_runtime/universal_proof rankings are unchanged; explicit and pointer captures require the code-like shape
+predicate (`_is_code_like_identifier`: length > 2, initially capitalized or underscore-bearing); locator contexts
+restored ("where is", "where's", "which file", "which code", "path") with class-shape still required; per the R1
+rule the fixtures of four full-path tests asking "Where is PndPidCorrelator?" were corrected with a realistic
+catalog row instead of weakening production semantics. Adversarial sentinels: plan-only basis contamination ->
+basis None and zero optional claims; question-relevant basis still selected; "class of"/"struct layout" -> no
+trigger; bare "Where is MissingTrackAdapter?" -> refused; "Where is PndPidCorrelator?" with catalog -> no refusal;
+plan-only unknown symbol still inert; historical/unseen negative controls still generic; selected-evidence-vs-
+catalog and premise-mismatch sentinels intact; R05/R06 untouched; coverage-mode early refusal still never reaches
+E3 inputs; F2-A3-R1 authority contract intact. Verification: tests/unit/test_qa.py 95 passed + 16 subtests;
+combined focused run with E2-A1 42, focused E3 49, test_service 13 -> 200 passed + 16 subtests (E3 run as an
+optional bounded regression; E3 lifecycle not reopened). Commit `4f9c87e` preserved; the original F2-A4 report
+carries a correction/supersession notice. F2-A4's final lifecycle state is achieved only after this repair. Normal
+default remains legacy_question_core; runtime_e1_v2 remains explicit-selection-only; default promotion remains
+deferred (D3); promotion relevance is not promotion authorization.
+NEXT_TASK_RECOMMENDATION = F2-A5 — Semantic Source Obligation Generalization (PF-LR1 Group E / F1 residual R01)
+(RECOMMENDED / NOT AUTHORIZED).
+Report: `evaluation/F2_A4_R1_QUESTION_GROUNDED_PREMISE_REFUSAL_REPAIR.md`.
 
 ## Historical E3-A0 architecture contract closeout
 

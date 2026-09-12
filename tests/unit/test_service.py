@@ -432,7 +432,7 @@ class QAServiceContractTests(unittest.TestCase):
         self.assertEqual(len(set(observed)), len(observed))
 
     def test_canonical_output_matches_frozen_fixtures_with_existing_fakes(self):
-        from test_qa import FakeRetriever, FakeVertex, bundle_for, code_evidence
+        from test_qa import CatalogStorage, FakeRetriever, FakeVertex, bundle_for, code_evidence
         from panda_agent.qa import QAAgent
 
         fixtures = Path(__file__).parents[1] / "fixtures" / "qa_service_invariance"
@@ -451,7 +451,16 @@ class QAServiceContractTests(unittest.TestCase):
         }
         for fixture_name, (bundle, question) in cases.items():
             bundle["plan"]["source_budgets"] = {"code": 1.0}
-            agent = QAAgent(Path.cwd(), retriever=FakeRetriever(bundle), vertex=FakeVertex())
+            agent = QAAgent(
+                Path.cwd(),
+                retriever=FakeRetriever(
+                    bundle,
+                    storage=CatalogStorage([
+                        ({"symbol": "PndPidCorrelator", "path": "pid/PndPidCorrelator.h"}, "class PndPidCorrelator {};")
+                    ]),
+                ),
+                vertex=FakeVertex(),
+            )
             actual = QAService.canonical_output(QAService(agent=agent, origin="api").run_detailed(question))
             expected = json.loads((fixtures / fixture_name).read_text(encoding="utf-8"))
             self.assertEqual(actual, expected, fixture_name)

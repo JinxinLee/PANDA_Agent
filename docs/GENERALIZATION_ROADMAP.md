@@ -81,7 +81,9 @@ F2-A3 report: `evaluation/F2_A3_E1_E2_COMPATIBILITY_RETIREMENT.md` (initial clos
 F2-A3-R1 = COMPLETE / PASS / COVERAGE_MODE_LEGACY_PROMPT_AUTHORITY_REMOVED.
 F2-A3-R1 report: `evaluation/F2_A3_R1_COVERAGE_MODE_LEGACY_PROMPT_AUTHORITY_REPAIR.md`.
 F2-A4 = COMPLETE / PASS / GENERIC_PREMISE_REFUSAL_SEMANTICS_ESTABLISHED.
-F2-A4 report: `evaluation/F2_A4_PREMISE_REFUSAL_GENERALIZATION.md`.
+F2-A4 report: `evaluation/F2_A4_PREMISE_REFUSAL_GENERALIZATION.md` (initial closeout corrected by F2-A4-R1).
+F2-A4-R1 = COMPLETE / PASS / QUESTION_GROUNDED_PREMISE_REFUSAL_BOUNDARY_ESTABLISHED.
+F2-A4-R1 report: `evaluation/F2_A4_R1_QUESTION_GROUNDED_PREMISE_REFUSAL_REPAIR.md`.
 Reconciliation: `evaluation/E2_POST_A3_LIFECYCLE_RECONCILIATION.md`.
 E2-A1 report: `evaluation/E2_A1_SHADOW_ANSWER_POINT_COVERAGE_CONTRACT.md`.
 C1 met all eight strict gates and the original pair09 atomicity sentinel. Per the
@@ -172,6 +174,9 @@ COMPLETE / PASS / COVERAGE_MODE_LEGACY_PROMPT_AUTHORITY_REMOVED
 F2-A4:
 COMPLETE / PASS / GENERIC_PREMISE_REFUSAL_SEMANTICS_ESTABLISHED
 
+F2-A4-R1:
+COMPLETE / PASS / QUESTION_GROUNDED_PREMISE_REFUSAL_BOUNDARY_ESTABLISHED
+
 Phase F:
 IN_PROGRESS / F2_A4_COMPLETE
 
@@ -204,7 +209,7 @@ E3-A2 completed INCONCLUSIVE (1/11 natural applicability; the single applicable 
 
 No D4-A11 exists.
 No further D4 task is currently authorized.
-Phase E is COMPLETE (closed by PE-LR1); no further Phase-E task exists. Phase-F scope reconciliation is complete (PF-LR1); F2-A1/F2-A1-R1 verifier-support repair, F2-A2 pointer-normalization completeness cleanup, and F2-A3 E1/E2 compatibility authority reconciliation (completed by F2-A3-R1) and F2-A4 premise/refusal generalization are complete.
+Phase E is COMPLETE (closed by PE-LR1); no further Phase-E task exists. Phase-F scope reconciliation is complete (PF-LR1); F2-A1/F2-A1-R1 verifier-support repair, F2-A2 pointer-normalization completeness cleanup, and F2-A3 E1/E2 compatibility authority reconciliation (completed by F2-A3-R1) and F2-A4 premise/refusal generalization (completed by F2-A4-R1) are complete.
 No further Phase-F production task is currently authorized; F2-A5 — Semantic Source Obligation Generalization is recommended but NOT AUTHORIZED.
 
 ## Phase overview
@@ -672,6 +677,7 @@ Original Phase-F planning predates the substantial shortcut migrations completed
 - **F2-A3 outcome:** COMPLETE / PASS / E1_E2_COMPATIBILITY_AUTHORITY_RECONCILED. In coverage modes (shadow_e1_v2, runtime_e1_v2) whole-answer completeness is owned by claim-to-answer-point coverage and bounded revision via missing_answer_point_ids; deterministic missing-requirement enforcement is not executed, the review's known missing_requirement_ids are ignored, plan-driven dataflow augmentation is disabled, and required_boundary_locators payloads are empty. The named-requirement contract remains fully active as the legacy_question_core bridge. The E3 second-verify deterministic-requirement view was retired with its consumer; claim-level retained-ledger protection is preserved; _augment_planned_locators is retained (question-grounded). Seam tests prove the ownership transfer in both coverage modes and legacy preservation; one E2 and three E3 tests updated accordingly; test_qa 70 passed + 6 subtests, E2-A1 42 + focused E3 49 → 91 passed. Report: `evaluation/F2_A3_E1_E2_COMPATIBILITY_RETIREMENT.md`.
 - **F2-A3-R1 outcome:** COMPLETE / PASS / COVERAGE_MODE_LEGACY_PROMPT_AUTHORITY_REMOVED. Corrective repair: an independent post-commit audit found the legacy requirement axis still live in model-facing payloads — coverage-mode generation/review/revision received the full legacy answer_requirements, the coverage prompt contracts treated them as a completeness axis, and a stale supported=false explained only by legacy ids could still create global failure. Coverage-mode model-facing payloads now carry no legacy requirements, the coverage prompt extensions declare them non-authoritative (PROMPT_SET_VERSION 3.8.0 -> 3.9.0), stale known legacy ids are reconciled as obsolete, unknown ids remain structurally guarded, and genuine failures are retained. T1-T12 pass; tests/unit/test_qa.py 76 passed + 11 subtests, E2-A1 42 + focused E3 49 -> 91 passed. Report: `evaluation/F2_A3_R1_COVERAGE_MODE_LEGACY_PROMPT_AUTHORITY_REPAIR.md`.
 - **F2-A4 outcome:** COMPLETE / PASS / GENERIC_PREMISE_REFUSAL_SEMANTICS_ESTABLISHED. The exact bare-class negative control (R04) was generalized: `_requested_bare_class_symbols` extracts question-grounded candidates (explicit class/struct/enum wording, pointer expressions, compound-cased identifiers in request/definition contexts; plan-only symbols and plain prose excluded), `_answerability_guard` checks the locked-corpus catalog (not selected evidence) and emits the structured error `unsupported requested symbol: <symbol>`, `_sufficiency`'s exact branch was removed, and `_finalize` emits dynamic generic refusal wording with an optional anchor-ranked evidence-grounded basis claim — no fixed historical locator and no substitute-implementation assertion remain. T1-T15 plus the catalog-authority and premise-mismatch sentinels pass; test_qa 89 passed + 16 subtests, combined focused run 193 passed. Report: `evaluation/F2_A4_PREMISE_REFUSAL_GENERALIZATION.md`.
+- **F2-A4-R1 outcome:** COMPLETE / PASS / QUESTION_GROUNDED_PREMISE_REFUSAL_BOUNDARY_ESTABLISHED. Corrective repair: plan-only anchors no longer admit or rank unsupported_symbol refusal bases (question-only anchors), explicit class/struct/enum and pointer captures require a code-like identifier shape ("class of"/"struct layout" inert), and locator contexts ("where is", "which file", "path", ...) restore the bare locator premise; four full-path test fixtures were corrected with realistic catalog rows instead of weakening production semantics. Plan-contamination, natural-language, bare-locator, catalog-authority, premise-mismatch, R05/R06, E3-early-refusal, and F2-A3-R1 sentinels all pass; test_qa 95 passed + 16 subtests, combined focused run 200 passed. Report: `evaluation/F2_A4_R1_QUESTION_GROUNDED_PREMISE_REFUSAL_REPAIR.md`.
 - **Bounded scope (PF-LR1):** Groups A–E above (R13; R10; R08/R09/R11 compatibility retirement; R04; R01). R12 is not an F2 task; R14 remains outside mandatory modification unless a present defect is evidenced.
 - **Goal:** Replace hard-coded symbol or premise guards with generic handling of false premises, unknown symbols, locked-corpus existence checks, and generic refusal logic.
 - **Scope:** Generalize failure-class guards not reducible to D4 locator migration, ensuring robust behavior across unseen symbols.
@@ -740,7 +746,7 @@ At release, Generalization Gap means benchmark score minus novel score. Benchmar
 5. **Phase execution ordering:** F1 found zero E1 blockers. E1-R2 passed targeted prospective synthetic validation and E1-C1 passed exposed real-style confirmation, including the original atomicity sentinel. E1 is closed under the accepted scope decision. E2-A3 remains FAIL/Q7. E2-A3-FR1 completed with REPAIR_JUSTIFIED. R1 remains FAIL/P2_P6. R2 repaired citation eligibility and passed S1-S13/P1-P11 in six fresh pairs. Historical P6 FAIL remains without waiver or product tuning; historical R3 remains INCONCLUSIVE after four infrastructure failures. R3-R1 completed the missing paired evidence and failed G11 at 2/14 noncritical worse; FR1 subsequently completed a static review recommending shared claim sanitization repair and prospective gate redesign. E2-LR1 subsequently separates completed core mechanisms from deferred promotion and supersedes immediate A3-R4. QA-M1 maintenance subsequently completed with focused T0/static checks. E3-A0 architecture contract is complete; E3-A1 implemented the experimental mechanism under runtime_e1_v2; E3-A2 completed INCONCLUSIVE with insufficient natural applicability; E3-LR1 closed E3 as a bounded low-frequency fallback with standalone recovery benefit unresolved. No further E1 confirmation is required.
 
 ```text
-CURRENT_TASK = F2-A4 / COMPLETE / PASS / GENERIC_PREMISE_REFUSAL_SEMANTICS_ESTABLISHED
+CURRENT_TASK = F2-A4-R1 / COMPLETE / PASS / QUESTION_GROUNDED_PREMISE_REFUSAL_BOUNDARY_ESTABLISHED
 NEXT_TASK_RECOMMENDATION = F2-A5 — Semantic Source Obligation Generalization / RECOMMENDED / NOT AUTHORIZED
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 FOLLOWING_ARCHITECTURE_TASK = bounded Phase-F production cleanup per the PF-LR1 recommended order (F2-A4 next)

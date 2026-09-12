@@ -1,5 +1,20 @@
 # F2-A4 — Premise and Refusal Generalization
 
+> **CORRECTION / SUPERSESSION NOTICE (F2-A4-R1).** This report's initial
+> terminal `COMPLETE / PASS / GENERIC_PREMISE_REFUSAL_SEMANTICS_ESTABLISHED`
+> closeout was subsequently found premature by an independent post-commit
+> audit: the corpus-level existence authority and historical-literal removals
+> below are valid and were preserved, but (1) `unsupported_symbol`
+> refusal-basis relevance still mixed plan-only symbols/concepts into its
+> anchors, (2) explicit `class|struct|enum` extraction did not validate the
+> captured token ("class of" / "struct layout" false positives), and (3) the
+> bare locator premise ("Where is MissingTrackAdapter?") was under-detected.
+> Those boundaries are repaired by
+> `evaluation/F2_A4_R1_QUESTION_GROUNDED_PREMISE_REFUSAL_REPAIR.md`
+> (F2-A4-R1 = `COMPLETE / PASS / QUESTION_GROUNDED_PREMISE_REFUSAL_BOUNDARY_ESTABLISHED`),
+> which is the authoritative final lifecycle record for this surface. The
+> narrative below is preserved unchanged for historical transparency.
+
 Status: `COMPLETE / PASS / GENERIC_PREMISE_REFUSAL_SEMANTICS_ESTABLISHED`
 Type: bounded production cleanup + deterministic verification (PF-LR1 Group D).
 Zero PANDA scientific/evaluation calls; zero protected-data access.
