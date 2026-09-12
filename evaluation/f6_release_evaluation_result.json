@@ -1,0 +1,72 @@
+{
+  "schema_version": "f6-result-v1",
+  "task": "F6 — Release Evaluation and Generalization Gate",
+  "terminal_state": "HOLD",
+  "hold_reason": "PROTECTED_HOLDOUT_PRECONDITION_NOT_MET",
+  "hold_detail": "The protected external holdout package (panda-novel-holdout-v1, FROZEN_SEALED, expected_count 13, externally_managed) is not available on this machine; bounded discovery found no package or protected execution workspace. Per the fail-fast release order the evaluation stopped before any T5 call.",
+  "starting_head": "47789f83cccb05affce7b72cb2ac1f6c78b93f50",
+  "preregistration": {
+    "created": false,
+    "reason": "No scientific execution is authorized while the holdout precondition is unmet; preregistration is deferred to the executing attempt."
+  },
+  "candidate_identity": {
+    "frozen": false,
+    "reason": "Candidate freeze is deferred to the executing attempt (after preregistration)."
+  },
+  "preflight_corrections": [
+    {
+      "commit": "c871444",
+      "message": "Prepare F6 release evaluation identity",
+      "summary": "Candidate freezer bound to signed m6-benchmark-v2.6 (gold_questions.yaml + manual_adjudications.yaml), F4 verification-role identity, primary_answer_point_mode identity, benchmark identity block with dataset-hash validation, and a complete ten-prompt fingerprint."
+    },
+    {
+      "commit": "99fdbab",
+      "message": "Fix release identity test assertion",
+      "summary": "Corrected a test assertion to the actual signed status string."
+    }
+  ],
+  "benchmark_identity": {
+    "benchmark_version": "m6-benchmark-v2.6",
+    "question_count": 120,
+    "manifest_record_aligned": true,
+    "alignment_note": "The signed v2_6 manifest dataset_sha256 lagged the authorized D4-A2-R1 g021 criticality correction (commit 9b007b5); the evaluator silently fell back to v2_5. The manifest record was aligned to the authorized corrected dataset with full provenance; question content unchanged.",
+    "resolved_after_alignment": "m6-benchmark-v2.6 / 120 questions"
+  },
+  "dataset_status": {
+    "gold": "EXPOSED_BENCHMARK_REFERENCE / validated / unrun",
+    "novel_dev": "EXPOSED_DEVELOPMENT_GENERALIZATION_DIAGNOSTIC / validated / unrun",
+    "novel_validation": "PRISTINE / validated / unrun",
+    "holdout": "FROZEN_SEALED metadata only / package unavailable"
+  },
+  "runs": [],
+  "metrics": null,
+  "gates": {
+    "gold_completion": "NOT_REACHED",
+    "gold_absolute_quality": "NOT_REACHED",
+    "gold_hard_safety": "NOT_REACHED",
+    "benchmark_dependency": "NOT_REACHED",
+    "novel_validation_completion": "NOT_REACHED",
+    "generalization_gap": "NOT_REACHED",
+    "novel_validation_hard_safety": "NOT_REACHED",
+    "composer_new_fact_rate": "NOT_REACHED",
+    "composer_readability": "NOT_REACHED",
+    "holdout_completion": "NOT_REACHED",
+    "blind_holdout_gap": "NOT_REACHED",
+    "holdout_hard_safety": "NOT_REACHED",
+    "protected_content_leakage": "PASS",
+    "candidate_changes_after_freeze": "PASS",
+    "holdout_driven_tuning": "PASS"
+  },
+  "usage": {
+    "panda_scientific_evaluation_calls": 0,
+    "panda_scientific_evaluation_tokens": 0
+  },
+  "integrity": {
+    "product_changes_in_f6": 0,
+    "threshold_changes": 0,
+    "holdout_driven_tuning": 0,
+    "protected_content_leakage": 0,
+    "cohort_exposure": 0
+  },
+  "next_action": "Provision the protected external holdout package in its governed execution environment, then re-authorize an F6 attempt with fresh preregistration and candidate identity."
+}

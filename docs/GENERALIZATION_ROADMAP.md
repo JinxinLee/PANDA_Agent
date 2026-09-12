@@ -211,11 +211,14 @@ COMPLETE / PASS / BOUNDED_ANSWER_COMPOSER_SAFETY_CONTRACT_ESTABLISHED
 F5-R1:
 COMPLETE / PASS / EXACT_LITERAL_IDENTIFIER_PROVENANCE_BOUNDARY_ESTABLISHED
 
+F6:
+HOLD / PROTECTED_HOLDOUT_PRECONDITION_NOT_MET
+
 D4 overall completion:
 UNDECIDED
 
 Next task recommendation:
-F6 — Release Evaluation and Generalization Gate / RECOMMENDED / NOT AUTHORIZED (requires separate explicit T5/release authorization)
+F6 retry (fresh preregistration + candidate identity) after the protected external holdout package is provisioned in its governed execution environment
 
 Current task authorization:
 E3-A1 experimental missing-point targeted retrieval implementation is complete:
@@ -231,8 +234,8 @@ E3-A2 completed INCONCLUSIVE (1/11 natural applicability; the single applicable 
 
 No D4-A11 exists.
 No further D4 task is currently authorized.
-Phase E is COMPLETE (closed by PE-LR1); no further Phase-E task exists. Phase-F scope reconciliation is complete (PF-LR1); F2-A1/F2-A1-R1 verifier-support repair, F2-A2 pointer-normalization completeness cleanup, and F2-A3 E1/E2 compatibility authority reconciliation (completed by F2-A3-R1) and F2-A4 premise/refusal generalization (completed by F2-A4-R1) and F2-A5 semantic source obligation generalization are complete; all five PF-LR1 F2 groups are closed (F2 = COMPLETE / PASS / A1_A2_A3_A4_A5_COMPLETE). F3 fixed-locator/fallback cleanup (R03/R05/R06) is COMPLETE / PASS / FIXED_LOCATOR_FALLBACK_SHORTCUTS_RETIRED. F4 generation/semantic-verification role separation is COMPLETE / PASS / ANSWER_GENERATION_SEMANTIC_VERIFICATION_ROLES_SEPARATED (distinct production client paths, independently configurable verification model, judge isolated offline, role-specific usage accounting), with the role diagnostics corrected by F4-R1 (COMPLETE / PASS / PRODUCTION_MODEL_ROLE_DIAGNOSTICS_CORRECTED: the receipt now reports each role client's actual `settings.generation_model`). F5 bounded answer composer is COMPLETE / PASS / BOUNDED_ANSWER_COMPOSER_SAFETY_CONTRACT_ESTABLISHED (verified-claims-only input, deterministic provenance validation, one bounded semantic composition review, atomic deterministic fallback; READABILITY_BENEFIT = NOT_EMPIRICALLY_EVALUATED_IN_F5), with exact provenance established by F5-R1 (COMPLETE / PASS / EXACT_LITERAL_IDENTIFIER_PROVENANCE_BOUNDARY_ESTABLISHED: numeric literals and technical identifiers now compare exact extracted tokens with sign/spelling sensitivity and a bounded casing-alteration sentinel, replacing substring membership).
-No further Phase-F production task is currently authorized; F6 — Release Evaluation and Generalization Gate is recommended but NOT AUTHORIZED (requires separate explicit T5/release authorization).
+Phase E is COMPLETE (closed by PE-LR1); no further Phase-E task exists. Phase-F scope reconciliation is complete (PF-LR1); F2-A1/F2-A1-R1 verifier-support repair, F2-A2 pointer-normalization completeness cleanup, and F2-A3 E1/E2 compatibility authority reconciliation (completed by F2-A3-R1) and F2-A4 premise/refusal generalization (completed by F2-A4-R1) and F2-A5 semantic source obligation generalization are complete; all five PF-LR1 F2 groups are closed (F2 = COMPLETE / PASS / A1_A2_A3_A4_A5_COMPLETE). F3 fixed-locator/fallback cleanup (R03/R05/R06) is COMPLETE / PASS / FIXED_LOCATOR_FALLBACK_SHORTCUTS_RETIRED. F4 generation/semantic-verification role separation is COMPLETE / PASS / ANSWER_GENERATION_SEMANTIC_VERIFICATION_ROLES_SEPARATED (distinct production client paths, independently configurable verification model, judge isolated offline, role-specific usage accounting), with the role diagnostics corrected by F4-R1 (COMPLETE / PASS / PRODUCTION_MODEL_ROLE_DIAGNOSTICS_CORRECTED: the receipt now reports each role client's actual `settings.generation_model`). F5 bounded answer composer is COMPLETE / PASS / BOUNDED_ANSWER_COMPOSER_SAFETY_CONTRACT_ESTABLISHED (verified-claims-only input, deterministic provenance validation, one bounded semantic composition review, atomic deterministic fallback; READABILITY_BENEFIT = NOT_EMPIRICALLY_EVALUATED_IN_F5), with exact provenance established by F5-R1 (COMPLETE / PASS / EXACT_LITERAL_IDENTIFIER_PROVENANCE_BOUNDARY_ESTABLISHED: numeric literals and technical identifiers now compare exact extracted tokens with sign/spelling sensitivity and a bounded casing-alteration sentinel, replacing substring membership). F6 release evaluation is HOLD / PROTECTED_HOLDOUT_PRECONDITION_NOT_MET: the zero-outcome preflight found the protected external holdout package unavailable on the execution machine, fixed the stale candidate-freeze identity (signed m6-benchmark-v2.6 binding, F4 three-model-role identities, runtime mode, complete ten-prompt fingerprint) and a signed v2_6 manifest record lag that had silently diverted the evaluator to v2_5, and preserved every cohort unexposed with zero scientific/evaluation calls.
+No further Phase-F production task is currently authorized; an F6 retry requires the protected holdout package to be provisioned plus a separate explicit authorization (fresh preregistration + candidate identity).
 
 ## Phase overview
 
@@ -251,7 +254,7 @@ No further Phase-F production task is currently authorized; F6 — Release Evalu
 - **Phase E — Answer generalization:** `COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED`
   Dynamic question decomposition, answer-point coverage, claim-to-evidence mapping, and targeted completeness recovery. E1 validated (shadow scope), E2 core complete, E3 closed as a bounded low-frequency fallback; PE-LR1 closed the phase at the promotion boundary with the normal default remaining `legacy_question_core` and promotion reconsideration gated on a material candidate change or an explicitly authorized release-boundary decision.
 
-- **Phase F — Benchmark dependency cleanup and final answering:** `IN_PROGRESS / F5_COMPLETE_F6_NOT_STARTED`
+- **Phase F — Benchmark dependency cleanup and final answering:** `IN_PROGRESS / F5_COMPLETE_F6_HOLD`
   F1 established the bounded non-D4 residual inventory without production cleanup. PF-LR1 reconciled the Phase-F scope into a bounded F2/F3 execution map. F2-A1 removed the benchmark-shaped verifier-support dependencies (R13), F2-A1-R1 removed the remaining whole-claim lexical semantic bypass (the initial F2-A1 closeout was corrected by R1), F2-A2 established question-derived pointer-normalization completeness (R10), and F2-A3 reconciled E1/E2 compatibility authority (R08/R09/R11: coverage modes own completeness, the named-requirement contract remains a legacy bridge); F2-A4 established generic question-grounded premise refusals through the locked-corpus catalog (R04), and F2-A5 established raw-question-grounded paper/code source obligations for the R01 intents (fixed config mappings retired; R02/HOLD mappings and all source budgets unchanged), with the matching boundary completed by F2-A5-R1 (bounded whole-token/phrase matching); with all five PF-LR1 F2 groups complete, F2 is closed. F3 retired the three PF-LR1 code-origin fixed locators (R03 feedback page override, R05 fixed-header unsupported-API fallback, R06 fixed-macro/event_poca deleted-runtime presentation) behind reviewed-expansion and question-grounded generic mechanisms with the D4 YAML untouched. F4 separated the answer/revision generation role from the product semantic-verification role at the settings, client-path, invocation, and usage-accounting levels (distinct production client paths, optional `QA_VERIFICATION_MODEL_ID` defaulting to the generation model, evaluation judge still offline-only, role-specific usage counters and internal role diagnostics) without changing any QA graph semantics or the public default.
 
 ## Phase A — Evaluation infrastructure and versioned baseline
@@ -751,7 +754,7 @@ Original Phase-F planning predates the substantial shortcut migrations completed
 
 ### F6 — Release evaluation and generalization gate
 
-- **Status:** NOT_STARTED
+- **Status:** HOLD / PROTECTED_HOLDOUT_PRECONDITION_NOT_MET
 - **Problem:** Final readiness requires simultaneous evidence on exposed benchmark, novel validation, protected holdout, and shortcut-dependency ablations.
 - **Goal:** Execute the complete release measurement and decide whether generalization improved without sacrificing grounding/version safety.
 - **Why this stage:** This is the final gate only after all requested architecture and cleanup tasks are complete/frozen.
@@ -763,6 +766,7 @@ Original Phase-F planning predates the substantial shortcut migrations completed
 - **Primary metrics:** Index/embedding integrity; intent/symbol/concept metrics; Recall@5/@10/@20, MRR, final-evidence recall; point coverage, unsupported claims, citations/identifiers; targeted success; composer new-fact/readability; benchmark score, novel score, Generalization Gap, and Benchmark Dependency.
 - **Acceptance criteria:** Planned thresholds are declared before running; grounding/citation/version invariants pass; novel performance and dependency/gap meet the approved release criteria with only bounded benchmark regression.
 - **Failure handling:** Report `FAIL` or `INCONCLUSIVE`, archive immutable evidence, and do not tune on protected holdout. A later fix requires a new explicitly requested roadmap task and candidate. Stop after F6.
+- **Outcome (first attempt):** HOLD / PROTECTED_HOLDOUT_PRECONDITION_NOT_MET. The task was explicitly authorized including T5, but the staged fail-fast order stopped at the zero-outcome preflight: the protected external holdout package (panda-novel-holdout-v1) is not available on the execution machine and no protected execution workspace exists there. No cohort was exposed; scientific/evaluation calls = 0. Completed reusable preflight: the candidate freezer now binds signed m6-benchmark-v2.6 (`manual_adjudications.yaml`), records the F4 runtime/effective verification-model identities and `primary_answer_point_mode`, and fingerprints the complete ten-prompt active set (commit `c871444` + `99fdbab`); a signed v2_6 manifest record lag behind the authorized D4-A2-R1 g021 correction — which had silently diverted the evaluator to m6-benchmark-v2.5 — was aligned with full provenance, restoring v2.6/120 as the evaluator authority. Preregistration and candidate freeze were deferred to the executing attempt. Report: `evaluation/F6_RELEASE_EVALUATION_AND_GENERALIZATION_GATE.md`.
 
 At release, Generalization Gap means benchmark score minus novel score. Benchmark Dependency is the score difference between full compatibility behavior and the approved generic/shortcut-ablation configuration. Neither measurement is authorized here.
 
@@ -775,8 +779,8 @@ At release, Generalization Gap means benchmark score minus novel score. Benchmar
 5. **Phase execution ordering:** F1 found zero E1 blockers. E1-R2 passed targeted prospective synthetic validation and E1-C1 passed exposed real-style confirmation, including the original atomicity sentinel. E1 is closed under the accepted scope decision. E2-A3 remains FAIL/Q7. E2-A3-FR1 completed with REPAIR_JUSTIFIED. R1 remains FAIL/P2_P6. R2 repaired citation eligibility and passed S1-S13/P1-P11 in six fresh pairs. Historical P6 FAIL remains without waiver or product tuning; historical R3 remains INCONCLUSIVE after four infrastructure failures. R3-R1 completed the missing paired evidence and failed G11 at 2/14 noncritical worse; FR1 subsequently completed a static review recommending shared claim sanitization repair and prospective gate redesign. E2-LR1 subsequently separates completed core mechanisms from deferred promotion and supersedes immediate A3-R4. QA-M1 maintenance subsequently completed with focused T0/static checks. E3-A0 architecture contract is complete; E3-A1 implemented the experimental mechanism under runtime_e1_v2; E3-A2 completed INCONCLUSIVE with insufficient natural applicability; E3-LR1 closed E3 as a bounded low-frequency fallback with standalone recovery benefit unresolved. No further E1 confirmation is required.
 
 ```text
-CURRENT_TASK = F5-R1 / COMPLETE / PASS / EXACT_LITERAL_IDENTIFIER_PROVENANCE_BOUNDARY_ESTABLISHED
-NEXT_TASK_RECOMMENDATION = F6 — Release Evaluation and Generalization Gate / RECOMMENDED / NOT AUTHORIZED (requires separate explicit T5/release authorization)
+CURRENT_TASK = F6 / HOLD / PROTECTED_HOLDOUT_PRECONDITION_NOT_MET
+NEXT_TASK_RECOMMENDATION = F6 retry (fresh preregistration + candidate identity) after the protected external holdout package is provisioned in its governed execution environment
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 FOLLOWING_ARCHITECTURE_TASK = F6 — Release Evaluation and Generalization Gate
 NEXT_STAGE_AUTHORIZED = false

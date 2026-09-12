@@ -94,6 +94,8 @@ F5 = COMPLETE / PASS / BOUNDED_ANSWER_COMPOSER_SAFETY_CONTRACT_ESTABLISHED (fina
 F5 report: `evaluation/F5_BOUNDED_ANSWER_COMPOSER.md` (initial closeout corrected by F5-R1; READABILITY_BENEFIT = NOT_EMPIRICALLY_EVALUATED_IN_F5).
 F5-R1 = COMPLETE / PASS / EXACT_LITERAL_IDENTIFIER_PROVENANCE_BOUNDARY_ESTABLISHED.
 F5-R1 report: `evaluation/F5_R1_EXACT_LITERAL_IDENTIFIER_PROVENANCE_REPAIR.md`.
+F6 = HOLD / PROTECTED_HOLDOUT_PRECONDITION_NOT_MET.
+F6 record: `evaluation/F6_RELEASE_EVALUATION_AND_GENERALIZATION_GATE.md` (zero-outcome preflight HOLD; result JSON `evaluation/f6_release_evaluation_result.json`).
 Phase E = COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED.
 E2-A1 report: `evaluation/E2_A1_SHADOW_ANSWER_POINT_COVERAGE_CONTRACT.md`.
 C1 met all eight strict gates and the original pair09 atomicity sentinel. Per the
@@ -167,6 +169,8 @@ F5
 COMPLETE / PASS / BOUNDED_ANSWER_COMPOSER_SAFETY_CONTRACT_ESTABLISHED
 F5-R1
 COMPLETE / PASS / EXACT_LITERAL_IDENTIFIER_PROVENANCE_BOUNDARY_ESTABLISHED
+F6
+HOLD / PROTECTED_HOLDOUT_PRECONDITION_NOT_MET
 
 Latest accepted production action:
 D4-A10
@@ -182,10 +186,10 @@ MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD
 Current planning state:
 D4 = PAUSED / ROADMAP_RECONCILIATION
 D4 overall completion = UNDECIDED
-CURRENT_TASK = F5-R1 / COMPLETE / PASS / EXACT_LITERAL_IDENTIFIER_PROVENANCE_BOUNDARY_ESTABLISHED
-NEXT_TASK_RECOMMENDATION = F6 — Release Evaluation and Generalization Gate / RECOMMENDED / NOT AUTHORIZED
+CURRENT_TASK = F6 / HOLD / PROTECTED_HOLDOUT_PRECONDITION_NOT_MET
+NEXT_TASK_RECOMMENDATION = F6 retry (fresh preregistration + candidate identity) after the protected external holdout package is provisioned in its governed execution environment
 NEXT_TASK_EXECUTION_AUTHORIZED = false
-FOLLOWING_ARCHITECTURE_TASK = F6 — Release Evaluation and Generalization Gate (requires separate explicit T5/release authorization)
+FOLLOWING_ARCHITECTURE_TASK = F6 — Release Evaluation and Generalization Gate (blocked on protected holdout availability; requires separate explicit authorization)
 
 No D4-A11 exists.
 Phase E = COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED.
@@ -198,14 +202,15 @@ E3-LR1 = COMPLETE / PASS / POST_A2_LIFECYCLE_RECONCILED.
 E3 = COMPLETE / BOUNDED_LOW_FREQUENCY_FALLBACK_IMPLEMENTED / SCIENTIFIC_RECOVERY_BENEFIT_UNRESOLVED.
 PE-LR1 = COMPLETE / PASS / PHASE_E_CLOSED_PROMOTION_DEFERRED_UNTIL_MATERIAL_CANDIDATE.
 Phase E = COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED.
-Phase F = IN_PROGRESS / F5_COMPLETE_F6_NOT_STARTED.
+Phase F = IN_PROGRESS / F5_COMPLETE_F6_HOLD.
 F2 = COMPLETE / PASS / A1_A2_A3_A4_A5_COMPLETE.
 F3 = COMPLETE / PASS / FIXED_LOCATOR_FALLBACK_SHORTCUTS_RETIRED.
 F4 = COMPLETE / PASS / ANSWER_GENERATION_SEMANTIC_VERIFICATION_ROLES_SEPARATED.
 F4-R1 = COMPLETE / PASS / PRODUCTION_MODEL_ROLE_DIAGNOSTICS_CORRECTED.
 F5 = COMPLETE / PASS / BOUNDED_ANSWER_COMPOSER_SAFETY_CONTRACT_ESTABLISHED.
 F5-R1 = COMPLETE / PASS / EXACT_LITERAL_IDENTIFIER_PROVENANCE_BOUNDARY_ESTABLISHED.
-No further recovery, D4, Phase-E, or Phase-F production task is authorized after F5-R1; F6 — Release Evaluation and Generalization Gate is recommended but NOT AUTHORIZED (requires separate explicit T5/release authorization).
+F6 = HOLD / PROTECTED_HOLDOUT_PRECONDITION_NOT_MET (zero-outcome preflight: the protected external holdout package is not available on the execution machine; no cohort exposed; scientific/evaluation calls = 0; the candidate freezer was corrected to bind signed m6-benchmark-v2.6, record the F4 three-model-role identities and runtime mode, and fingerprint the complete active prompt set, and the signed v2_6 manifest record was aligned to the authorized D4-A2-R1 g021 dataset correction that had silently diverted the evaluator to v2_5).
+No further recovery, D4, Phase-E, or Phase-F production task is authorized; an F6 retry requires the protected holdout package to be provisioned plus a separate explicit authorization (fresh preregistration + candidate identity).
 
 ## E3-A1 experimental implementation closeout
 
@@ -751,6 +756,32 @@ remains legacy_question_core; default promotion remains deferred; promotion eval
 NEXT_TASK_RECOMMENDATION = F6 — Release Evaluation and Generalization Gate (RECOMMENDED / NOT AUTHORIZED;
 requires separate explicit T5/release authorization).
 Report: `evaluation/F5_R1_EXACT_LITERAL_IDENTIFIER_PROVENANCE_REPAIR.md`.
+
+## F6 release evaluation pre-outcome HOLD record
+
+HOLD / PROTECTED_HOLDOUT_PRECONDITION_NOT_MET. F6 was explicitly authorized including T5, but the staged
+fail-fast release order stopped at the zero-outcome preflight: the protected external holdout package
+(panda-novel-holdout-v1, FROZEN_SEALED, expected 13, externally managed) is not available on the execution
+machine — bounded discovery across the repository parent directory, user profile locations, the D: drive root,
+and the sanitized governance documents found no package and no protected execution workspace
+(`PANDA_Agent_Holdout` is a conceptual external workspace). No cohort was exposed; scientific/evaluation calls
+and tokens are exactly 0. Completed preflight value: (1) candidate-freeze audit found and fixed the stale v2
+benchmark binding (now signed m6-benchmark-v2.6 with manual_adjudications.yaml), added the F4
+runtime/effective verification-model identities and primary_answer_point_mode, and extended prompt_fingerprint
+to the full ten-prompt set including the F5 composer prompts (commit `c871444`, assertion fix `99fdbab`);
+(2) an extra identity defect was found and fixed: the signed v2_6 benchmark manifest dataset_sha256 lagged the
+authorized D4-A2-R1 g021 correction (commit `9b007b5`), which had silently diverted the evaluator to
+m6-benchmark-v2.5 — the manifest record was aligned to the authorized corrected dataset with full provenance,
+restoring m6-benchmark-v2.6 / 120 questions as the evaluator authority; (3) dataset roles were revalidated
+(Gold exposed reference; novel_dev exposed development; novel_validation pristine/UNSEEN per historical run
+records; holdout metadata-only), PostgreSQL/Qdrant/index identity confirmed reachable, and the integrity audit
+recorded zero product changes, zero threshold changes, zero holdout-driven tuning, zero protected-content
+leakage, and zero cohort exposure. Preregistration and candidate freeze were deferred to the executing attempt.
+Phase F remains IN_PROGRESS / F5_COMPLETE_F6_HOLD; F1–F5 outcomes unchanged. Normal default remains
+legacy_question_core; runtime_e1_v2 remains explicit-selection-only; default promotion remains deferred.
+NEXT_TASK_RECOMMENDATION = F6 retry (fresh preregistration + candidate identity) after the protected external
+holdout package is provisioned in its governed execution environment.
+Report: `evaluation/F6_RELEASE_EVALUATION_AND_GENERALIZATION_GATE.md`.
 
 ## Historical E3-A0 architecture contract closeout
 
