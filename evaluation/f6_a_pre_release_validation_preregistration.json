@@ -1,0 +1,146 @@
+{
+  "schema_version": "f6a-preregistration-v1",
+  "task": "F6-A — Pre-Release Validation & Generalization Gate",
+  "implementation_head": "6e92a37",
+  "implementation_head_parent": "5385d9aa7e2a3335f5da0e70f7882a4f3691590a",
+  "candidate_id": "f6a-rc1-20260913",
+  "primary_runtime_mode": "legacy_question_core",
+  "model_identities": {
+    "generation": "gemini-3.8-flash",
+    "verification_configured": null,
+    "effective_verification": "gemini-3.8-flash",
+    "evaluation_judge": "gemini-3.8-flash",
+    "embedding": "gemini-embedding-2",
+    "embedding_dimensions": 3072,
+    "distinct_client_paths": true
+  },
+  "prompt_identity": {
+    "prompt_set_version": "3.10.1",
+    "prompt_hash": "23d73b036646ec62f3095fac4bdfafdfc7ecf6676fd27d18475b86773db4e6d5"
+  },
+  "corpus_identity": {
+    "index_fingerprint": "8172f9a640e62977be6e911bfb4848ce3aecd0994f1f3ba51a0985bffec62cb9",
+    "collection": "panda_knowledge_v1"
+  },
+  "packages": {
+    "python": "3.13.14",
+    "panda-research-qa-agent": "0.1.0",
+    "google-genai": "2.13.0",
+    "langgraph": "1.2.11",
+    "psycopg": "3.3.4",
+    "qdrant-client": "1.19.0"
+  },
+  "docker_contract": {
+    "option": "A_release_critical",
+    "required_services": ["postgres", "qdrant"]
+  },
+  "datasets": {
+    "gold": {
+      "benchmark_version": "m6-benchmark-v2.6",
+      "question_count": 120,
+      "dataset_sha256": "6f12d54b4db3fdd87fb30670e730ffd8c025a55a968c90a4ea63ab7cecdb878f",
+      "role": "EXPOSED_BENCHMARK_REFERENCE"
+    },
+    "novel_dev": {
+      "benchmark_version": "novel-v1-dev-0.3.0",
+      "question_count": 28,
+      "role": "EXPOSED_DEVELOPMENT_GENERALIZATION_DIAGNOSTIC"
+    },
+    "novel_validation": {
+      "benchmark_version": "novel-v1-validation-0.2.0",
+      "question_count": 15,
+      "independent_families": 15,
+      "representative": 15,
+      "exploratory": 0,
+      "role": "CANDIDATE_LEVEL_PRE_RELEASE_GENERALIZATION_GATE",
+      "exposure_state": "PRISTINE_FOR_CURRENT_LINEAGE"
+    },
+    "novel_holdout": {
+      "dataset_identity": "panda-novel-holdout-v1",
+      "status": "FROZEN_SEALED",
+      "expected_count": 13,
+      "role": "metadata only in F6-A"
+    }
+  },
+  "run_ids": [
+    "f6a-rc1-gold-full-20260913",
+    "f6a-rc1-gold-ablation-full-20260913",
+    "f6a-rc1-novel-dev-full-20260913",
+    "f6a-rc1-novel-validation-full-20260913",
+    "f6a-rc1-composer-audit-20260913"
+  ],
+  "release_score": {
+    "formula": "answered -> answer_point_coverage; else 1.0 if expected_status_correct else 0.0; mean over complete cohort",
+    "none_is_not_zero": true,
+    "incomplete_cases_reported_by_id": true
+  },
+  "gold_quality_thresholds": {
+    "gold_recall_at_10": 0.95,
+    "final_evidence_recall": 0.90,
+    "critical_final_evidence_recall": 1.00,
+    "intent_accuracy": 0.90,
+    "per_intent_gold_recall_at_10": 0.75,
+    "per_intent_intent_accuracy": 0.80,
+    "expected_status_accuracy": 0.975,
+    "citation_integrity": 1.00,
+    "wrong_version_evidence_count": 0,
+    "forbidden_evidence_count": 0,
+    "required_source_coverage_answered": 0.97,
+    "identifier_hallucination_rate": 0.03,
+    "paper_code_dual_source_rate": 1.00,
+    "answer_point_coverage": 0.90,
+    "critical_answer_point_miss_count": 0,
+    "contradiction_count": 0,
+    "major_unsupported_claim_count": 0,
+    "unhandled_exception_count": 0
+  },
+  "hard_safety_invariants": {
+    "citation_integrity": 1.0,
+    "wrong_version_evidence_count": 0,
+    "forbidden_evidence_count": 0,
+    "contradiction_count": 0,
+    "major_unsupported_claim_count": 0,
+    "critical_answer_point_miss_count": 0,
+    "unhandled_exception_count": 0,
+    "cohorts": ["gold", "novel_dev", "novel_validation"]
+  },
+  "generalization_gap": {
+    "formula": "gold_release_score - novel_validation_release_score",
+    "threshold": 0.10
+  },
+  "benchmark_dependency": {
+    "formula": "gold_primary_release_score - gold_ablation_release_score",
+    "threshold": 0.05,
+    "novel_validation_ablation": false
+  },
+  "ablation": {
+    "ablation_id": "disable_query_expansion_injection",
+    "mechanism": "runtime overlay: Retriever.load_query_expansions returns an empty rule set",
+    "unchanged_surfaces": ["qa", "prompts", "models", "retrieval_policies", "index", "runtime_mode"],
+    "manifest": "evaluation/f6a_ablation_manifest.json"
+  },
+  "composer_audit": {
+    "eligible_pairs": "ANSWERED + composer accepted + >=2 verified claims from frozen Gold + novel_validation records",
+    "factuality_gate": "composer_new_fact_rate == 0",
+    "readability_gate": "eligible_pairs >= 10 AND composed_preferred > deterministic_preferred",
+    "counterbalance": "first embedded case-ID number; even -> composed labeled A",
+    "insufficient_pairs": "COMPLETE / INCONCLUSIVE / COMPOSER_READABILITY_EVIDENCE_INSUFFICIENT"
+  },
+  "fail_fast_order": ["A2_gold_primary", "A3_gold_ablation", "A4_novel_dev", "A5_novel_validation", "A6_composer_audit", "A7_gate_decision"],
+  "terminal_outcomes": [
+    "COMPLETE / PASS / HOLDOUT_ELIGIBLE",
+    "COMPLETE / FAIL / <specific failed gate>",
+    "COMPLETE / INCONCLUSIVE / <specific evidence gap>",
+    "HOLD / PRE_RELEASE_PRECONDITION_NOT_MET (pre-outcome only)"
+  ],
+  "gate_semantics": {
+    "candidate_changes_after_freeze_unfrozen": "NOT_REACHED",
+    "post_freeze_immutability": "zero behavior-changing edits until the F6-A verdict",
+    "no_holdout_access": true
+  },
+  "e3": {
+    "expected_applicability": 0,
+    "recovery_benefit": "UNRESOLVED"
+  },
+  "measured_outcomes": "none"
+}
