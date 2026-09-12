@@ -76,6 +76,8 @@ F2-A3 = COMPLETE / PASS / E1_E2_COMPATIBILITY_AUTHORITY_RECONCILED.
 F2-A3 report: `evaluation/F2_A3_E1_E2_COMPATIBILITY_RETIREMENT.md` (initial closeout corrected by F2-A3-R1).
 F2-A3-R1 = COMPLETE / PASS / COVERAGE_MODE_LEGACY_PROMPT_AUTHORITY_REMOVED.
 F2-A3-R1 report: `evaluation/F2_A3_R1_COVERAGE_MODE_LEGACY_PROMPT_AUTHORITY_REPAIR.md`.
+F2-A4 = COMPLETE / PASS / GENERIC_PREMISE_REFUSAL_SEMANTICS_ESTABLISHED.
+F2-A4 report: `evaluation/F2_A4_PREMISE_REFUSAL_GENERALIZATION.md`.
 Phase E = COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED.
 E2-A1 report: `evaluation/E2_A1_SHADOW_ANSWER_POINT_COVERAGE_CONTRACT.md`.
 C1 met all eight strict gates and the original pair09 atomicity sentinel. Per the
@@ -131,6 +133,8 @@ F2-A3
 COMPLETE / PASS / E1_E2_COMPATIBILITY_AUTHORITY_RECONCILED
 F2-A3-R1
 COMPLETE / PASS / COVERAGE_MODE_LEGACY_PROMPT_AUTHORITY_REMOVED
+F2-A4
+COMPLETE / PASS / GENERIC_PREMISE_REFUSAL_SEMANTICS_ESTABLISHED
 
 Latest accepted production action:
 D4-A10
@@ -146,8 +150,8 @@ MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD
 Current planning state:
 D4 = PAUSED / ROADMAP_RECONCILIATION
 D4 overall completion = UNDECIDED
-CURRENT_TASK = F2-A3-R1 / COMPLETE / PASS / COVERAGE_MODE_LEGACY_PROMPT_AUTHORITY_REMOVED
-NEXT_TASK_RECOMMENDATION = F2-A4 — Premise and Refusal Generalization / RECOMMENDED / NOT AUTHORIZED
+CURRENT_TASK = F2-A4 / COMPLETE / PASS / GENERIC_PREMISE_REFUSAL_SEMANTICS_ESTABLISHED
+NEXT_TASK_RECOMMENDATION = F2-A5 — Semantic Source Obligation Generalization / RECOMMENDED / NOT AUTHORIZED
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 FOLLOWING_ARCHITECTURE_TASK = bounded Phase-F production cleanup per the PF-LR1 recommended order (F2-A4 next)
 
@@ -162,10 +166,10 @@ E3-LR1 = COMPLETE / PASS / POST_A2_LIFECYCLE_RECONCILED.
 E3 = COMPLETE / BOUNDED_LOW_FREQUENCY_FALLBACK_IMPLEMENTED / SCIENTIFIC_RECOVERY_BENEFIT_UNRESOLVED.
 PE-LR1 = COMPLETE / PASS / PHASE_E_CLOSED_PROMOTION_DEFERRED_UNTIL_MATERIAL_CANDIDATE.
 Phase E = COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED.
-Phase F = IN_PROGRESS / F2_A3_COMPLETE.
-F2 = IN_PROGRESS / A1_A2_A3_COMPLETE.
+Phase F = IN_PROGRESS / F2_A4_COMPLETE.
+F2 = IN_PROGRESS / A1_A2_A3_A4_COMPLETE.
 F3 = NOT_STARTED / UNEXECUTED.
-No further recovery, D4, Phase-E, or Phase-F production task is authorized after F2-A3; F2-A4 — Premise and Refusal Generalization is recommended but NOT AUTHORIZED.
+No further recovery, D4, Phase-E, or Phase-F production task is authorized after F2-A4; F2-A5 — Semantic Source Obligation Generalization is recommended but NOT AUTHORIZED.
 
 ## E3-A1 experimental implementation closeout
 
@@ -429,6 +433,34 @@ default promotion remains deferred (D3); promotion relevance is not promotion au
 NEXT_TASK_RECOMMENDATION = F2-A4 — Premise and Refusal Generalization (PF-LR1 Group D / F1 residual R04)
 (RECOMMENDED / NOT AUTHORIZED).
 Report: `evaluation/F2_A3_R1_COVERAGE_MODE_LEGACY_PROMPT_AUTHORITY_REPAIR.md`.
+
+## F2-A4 premise and refusal generalization closeout
+
+COMPLETE / PASS / GENERIC_PREMISE_REFUSAL_SEMANTICS_ESTABLISHED. Bounded Group-D cleanup (F1 residual R04) at HEAD
+`bb1a639`; zero PANDA scientific/evaluation calls or tokens; zero protected-data access. Historical specialization:
+`_sufficiency` triggered on the exact literal PndUniversalRestgasDeconvolver and used the currently selected
+evidence as the whole-corpus existence authority; `_finalize` matched that exact error, searched the fixed locator
+macro/target/correction/efficiency_correction_2.C, and asserted a substitute implementation in the public refusal.
+Repair: a question-grounded extractor (`_requested_bare_class_symbols`; explicit class/struct/enum wording, pointer
+type expressions, and compound-cased identifiers inside request/definition contexts — plain capitalized prose and
+plan-only symbols excluded by construction, the plan is never read) feeds a generic bare-class premise check in
+`_answerability_guard` against `_locked_symbols()`; catalog absence — not selected-evidence absence — produces the
+structured error `unsupported requested symbol: <symbol>`. `_sufficiency`'s exact branch was removed; `_finalize`
+now parses the requested symbol from the structured error and emits dynamic generic refusal wording with an
+optional evidence-grounded basis: `_refusal_basis_evidence` gained an unsupported_symbol kind (code/workflow
+evidence with question-anchor overlap, ranked purely by overlap, None when nothing is relevant) producing at most
+one claim ("The cited locked code at <location> documents <subject>.") with no substitution assertion. No
+production control-flow literal remains for the historical class or locator. Preservation audit: zero diff touches
+on F2-A1/A1-R1, F2-A2, F2-A3/A3-R1, R16, R05/R06, R14, E1/E2, E3, retrieval, selection, default, promotion.
+Adversarial contracts T1-T15 plus the selected-evidence-vs-catalog sentinel and the premise-mismatch sentinel all
+pass. Verification: tests/unit/test_qa.py 89 passed + 16 subtests; combined focused run with E2-A1 42, focused E3
+49, and test_service 13 -> 193 passed + 16 subtests (E3 run as a bounded regression; E3 lifecycle not reopened).
+F2 remains incomplete (Group E outstanding). Normal default remains legacy_question_core; runtime_e1_v2 remains
+explicit-selection-only; default promotion remains deferred (D3); promotion relevance is not promotion
+authorization.
+NEXT_TASK_RECOMMENDATION = F2-A5 — Semantic Source Obligation Generalization (PF-LR1 Group E / F1 residual R01)
+(RECOMMENDED / NOT AUTHORIZED).
+Report: `evaluation/F2_A4_PREMISE_REFUSAL_GENERALIZATION.md`.
 
 ## Historical E3-A0 architecture contract closeout
 

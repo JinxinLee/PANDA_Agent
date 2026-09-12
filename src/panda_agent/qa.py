@@ -262,6 +262,17 @@ def _refusal_basis_evidence(
             )
         ]
         preferred_terms = _FINITE_EVALUATION_TERMS
+    elif kind == "unsupported_symbol":
+        # The locked-catalog absence is the refusal authority.  Selected
+        # evidence may at most supply a narrow, cited, query-relevant context
+        # statement; unrelated evidence is never selected.
+        candidates = [
+            item
+            for item in evidence
+            if _is_code_or_workflow_evidence(item)
+            and any(anchor in _evidence_search_text(item) for anchor in anchors)
+        ]
+        preferred_terms = ()
     else:
         raise ValueError(f"unknown refusal basis kind: {kind}")
     if not candidates:
@@ -299,6 +310,10 @@ def _refusal_basis_evidence(
                 or object_type in {"documentation", "readme", "sphinx_page"}
             )
             source_preference = 1000 * int(exact_plan_anchor) + 200 * int(executable_or_producer) - 100 * int(documentation)
+        elif kind == "unsupported_symbol":
+            # Rank purely by query-anchor overlap; no source-type or path
+            # preference, so no historical locator receives special treatment.
+            source_preference = 100 * overlap
         else:
             # A refusal of an open-domain proof should cite the closest
             # query-specific finite validation or convergence result, rather
@@ -318,6 +333,59 @@ def _refusal_basis_evidence(
 def _refusal_basis_location(item: dict[str, Any]) -> str:
     locator = item.get("locator") or {}
     return str(locator.get("path") or locator.get("symbol") or item.get("source_id") or "the cited source")
+
+
+def _is_class_shaped_identifier(token: str) -> bool:
+    """Compound-cased identifier shape; plain capitalized prose is excluded."""
+    return (
+        len(token) >= 2
+        and token[0].isupper()
+        and any(
+            token[i].islower() and token[i + 1].isupper()
+            for i in range(len(token) - 1)
+        )
+    )
+
+
+_REQUESTED_SYMBOL_CONTEXT_TERMS = (
+    "how does", "how should", "how is", "what does",
+    "defined", "implemented", "implement",
+)
+
+
+def _requested_bare_class_symbols(question: str) -> list[str]:
+    """Extract code symbols the user question itself requests or assumes.
+
+    Bounded question-grounded sources only:
+
+    * explicit ``class Foo`` / ``struct Foo`` / ``enum Foo`` wording;
+    * pointer type expressions such as ``Foo*``;
+    * class-shaped (compound-cased) identifiers named inside a
+      request/definition context such as "How does X ...", "Where is X
+      defined", so ordinary capitalized prose words never become requested
+      classes.
+
+    The caller checks the locked-corpus catalog; retrieval-plan symbols are
+    never consulted, so a plan-only symbol can never create a refusal.
+    """
+    candidates: list[str] = []
+    seen: set[str] = set()
+
+    def add(name: str) -> None:
+        if name and name not in seen:
+            seen.add(name)
+            candidates.append(name)
+
+    for match in re.finditer(r"\b(?:class|struct|enum)\s+([A-Za-z_][A-Za-z0-9_]*)", question):
+        add(match.group(1))
+    for match in re.finditer(r"\b([A-Za-z_][A-Za-z0-9_]*)\*", question):
+        add(match.group(1))
+    if any(term in question.casefold() for term in _REQUESTED_SYMBOL_CONTEXT_TERMS):
+        for match in re.finditer(r"\b[A-Za-z_][A-Za-z0-9_]*\b", question):
+            token = match.group(0)
+            if _is_class_shaped_identifier(token):
+                add(token)
+    return candidates
 
 
 def _refusal_basis_subject(question: str, item: dict[str, Any]) -> str:
@@ -1549,6 +1617,13 @@ class QAAgent:
             method = raw.rsplit("::", 1)[-1]
             if method not in catalog["symbols"] and raw not in catalog["symbols"]:
                 return [f"unsupported requested API symbol: {raw}"]
+        # Generic bare-class premise guard: the question itself must request or
+        # assume the symbol, and the locked-corpus catalog — not the currently
+        # selected evidence — decides whether it exists (F2-A4).
+        for raw in _requested_bare_class_symbols(question):
+            if raw in catalog["symbols"] or raw in catalog["paths"]:
+                continue
+            return [f"unsupported requested symbol: {raw}"]
         deleted_artifact_request = (
             any(term in question_lower for term in ("deleted", "removed", "丢失", "删除"))
             and any(term in question_lower for term in ("recover", "reconstruct", "restore", "恢复", "重建"))
@@ -1593,25 +1668,6 @@ class QAAgent:
                 "sufficient": False,
                 "errors": ["evidence does not establish an exact GPU-memory requirement"],
             }
-        # Negative-control questions may ask for implementation details of a
-        # symbol that the locked corpus never defines.  Do not let semantically
-        # related Restgas classes turn that false premise into an answered
-        # result.  The check is deliberately exact and definition-oriented.
-        requested_symbol = "PndUniversalRestgasDeconvolver"
-        if requested_symbol.casefold() in question_lower:
-            definition_pattern = re.compile(
-                rf"\b(?:class|struct)\s+{re.escape(requested_symbol)}\b"
-            )
-            symbol_defined = any(
-                str((item.get("locator") or {}).get("symbol") or "") == requested_symbol
-                or bool(definition_pattern.search(str(item.get("text") or "")))
-                for item in evidence
-            )
-            if not symbol_defined:
-                return {
-                    "sufficient": False,
-                    "errors": [f"unsupported requested symbol: {requested_symbol}"],
-                }
         source_types = set()
         for item in evidence:
             source_id = item["source_id"]
@@ -2452,34 +2508,38 @@ class QAAgent:
                 if claims:
                     answer += "\n" + render_verified_answer(claims)
             elif any(
-                str(error).startswith("unsupported requested symbol: PndUniversalRestgasDeconvolver")
+                str(error).startswith("unsupported requested symbol: ")
                 for error in state.get("errors", [])
             ):
-                replacement = next(
-                    (
-                        item
-                        for item in state.get("bundle", {}).get("evidence", [])
-                        if str((item.get("locator") or {}).get("path") or "")
-                        == "macro/target/correction/efficiency_correction_2.C"
-                    ),
-                    None,
+                # Generic unsupported-requested-symbol refusal (F2-A4): the
+                # locked-catalog absence is the authority; the requested symbol
+                # comes from the structured error, and any optional basis claim
+                # cites only query-relevant selected evidence.  No fixed
+                # replacement locator and no asserted substitute implementation.
+                error = next(
+                    str(error)
+                    for error in state.get("errors", [])
+                    if str(error).startswith("unsupported requested symbol: ")
                 )
-                if replacement:
-                    claim = ClaimCitation(
-                        claim_id="existing_efficiency_correction",
-                        claim_text=(
-                            "The locked corpus provides the Restgas longitudinal efficiency-correction "
-                            "implementation at macro/target/correction/efficiency_correction_2.C."
-                        ),
-                        evidence_ids=[replacement["evidence_id"]],
-                    )
-                    claims = [claim]
-                    cited_evidence = [replacement]
+                requested = error.split(":", 1)[1].strip()
+                basis = _refusal_basis_evidence(state, kind="unsupported_symbol")
+                if basis:
+                    location = _refusal_basis_location(basis)
+                    subject = _refusal_basis_subject(question, basis)
+                    claims = [
+                        ClaimCitation(
+                            claim_id="unsupported_symbol_context",
+                            claim_text=(
+                                f"The cited locked code at {location} documents {subject}."
+                            ),
+                            evidence_ids=[str(basis["evidence_id"])],
+                        )
+                    ]
+                    cited_evidence = [basis]
                 refusal = (
-                    "锁定语料没有定义 PndUniversalRestgasDeconvolver，因此不能提供该类的实现细节；"
-                    "现有实现采用纵向效率修正宏，而不是这个类。"
+                    f"锁定语料未定义 {requested}，因此无法验证该符号的实现细节。"
                     if is_chinese
-                    else "The locked corpus does not define PndUniversalRestgasDeconvolver, so its implementation details cannot be provided; the existing implementation uses a longitudinal efficiency-correction macro instead."
+                    else f"The locked corpus does not define {requested}, so its implementation details cannot be verified."
                 )
                 answer = refusal + ("\n" + render_verified_answer(claims) if claims else "")
             elif any(

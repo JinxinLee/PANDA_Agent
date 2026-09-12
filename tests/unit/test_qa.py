@@ -2196,5 +2196,246 @@ class E1E2CompatibilityAuthorityTests(unittest.TestCase):
         self.assertTrue(any("unsupported claim c1" in err for err in out["errors"]))
 
 
+class PremiseRefusalGeneralizationTests(unittest.TestCase):
+    """F2-A4 contract: bare-class premise refusals are generic, question-
+    grounded, and decided by the locked-corpus catalog; selected evidence can
+    only supply a narrow cited context statement, never a substitute
+    implementation or a fixed historical locator."""
+
+    def _agent(self, bundle, catalog_rows=()):
+        storage = CatalogStorage(list(catalog_rows))
+        retriever = FakeRetriever(bundle)
+        retriever.storage = storage
+        return QAAgent(Path.cwd(), retriever=retriever, vertex=FakeVertex())
+
+    def _finalize_result(self, agent, question, bundle):
+        state = {
+            "question": question,
+            "bundle": bundle,
+            "sufficient": False,
+            "errors": [
+                "unsupported requested symbol: "
+                + ("PndUniversalRestgasDeconvolver" if "PndUniversalRestgasDeconvolver" in question else "ImaginaryRestgasCorrector")
+            ],
+            "supported_claims": [],
+        }
+        return agent._finalize(state)["result"]
+
+    # T1 — historical negative control now uses the generic path.
+    def test_historical_negative_control_uses_generic_path(self):
+        bundle = bundle_for(code_evidence())
+        agent = self._agent(bundle)
+        question = "How does PndUniversalRestgasDeconvolver normalize the restgas profile?"
+        self.assertEqual(
+            agent._answerability_guard({"question": question, "bundle": bundle}),
+            ["unsupported requested symbol: PndUniversalRestgasDeconvolver"],
+        )
+        state = {
+            "question": question,
+            "bundle": bundle,
+            "sufficient": False,
+            "errors": ["unsupported requested symbol: PndUniversalRestgasDeconvolver"],
+            "supported_claims": [],
+        }
+        result = agent._finalize(state)["result"]
+        self.assertEqual(result["status"], QAStatus.INSUFFICIENT_EVIDENCE.value)
+        self.assertIn("does not define PndUniversalRestgasDeconvolver", result["answer"])
+        self.assertNotIn("efficiency_correction", result["answer"])
+        self.assertNotIn("instead", result["answer"])
+
+    # T2 — unseen nonexistent class behaves the same.
+    def test_unseen_nonexistent_class_uses_generic_path(self):
+        bundle = bundle_for(code_evidence())
+        agent = self._agent(bundle)
+        question = "How does ImaginaryRestgasCorrector implement the correction?"
+        self.assertEqual(
+            agent._answerability_guard({"question": question, "bundle": bundle}),
+            ["unsupported requested symbol: ImaginaryRestgasCorrector"],
+        )
+        result = self._finalize_result(agent, question, bundle)
+        self.assertIn("does not define ImaginaryRestgasCorrector", result["answer"])
+        self.assertNotIn("instead", result["answer"])
+
+    # T3 / §20 sentinel — a known class absent from selected evidence is not
+    # refused: the locked catalog, not selected evidence, is the authority.
+    def test_known_class_absent_from_selected_evidence_is_not_refused(self):
+        bundle = bundle_for(code_evidence())  # evidence mentions PndPidCorrelator only
+        catalog_rows = [({"symbol": "SensorFrame", "path": "src/SensorFrame.h"}, "class SensorFrame {};")]
+        agent = self._agent(bundle, catalog_rows)
+        self.assertEqual(
+            agent._answerability_guard({
+                "question": "How does SensorFrame implement the correction?",
+                "bundle": bundle,
+            }),
+            [],
+        )
+
+    # T4 — plan-only unknown symbol does not create a refusal.
+    def test_plan_only_unknown_symbol_does_not_create_refusal(self):
+        bundle = bundle_for(code_evidence(), symbols=["ImaginaryRestgasCorrector"])
+        agent = self._agent(bundle)
+        self.assertEqual(
+            agent._answerability_guard({
+                "question": "Explain the restgas workflow in this corpus.",
+                "bundle": bundle,
+            }),
+            [],
+        )
+
+    # T5 — explicit simple class syntax is handled without plan support.
+    def test_explicit_class_wording_is_handled(self):
+        bundle = bundle_for(code_evidence())
+        agent = self._agent(bundle)
+        self.assertEqual(
+            agent._answerability_guard({
+                "question": "Where is class MissingTrackAdapter defined?",
+                "bundle": bundle,
+            }),
+            ["unsupported requested symbol: MissingTrackAdapter"],
+        )
+
+    # T6 — ordinary capitalized prose tokens never become requested classes.
+    def test_ordinary_prose_tokens_are_not_refused(self):
+        bundle = bundle_for(code_evidence())
+        agent = self._agent(bundle)
+        for question in (
+            "What does Implementation mean here?",
+            "What is the SHA-256 checksum of the locked source file?",
+        ):
+            with self.subTest(question=question):
+                self.assertEqual(
+                    agent._answerability_guard({"question": question, "bundle": bundle}),
+                    [],
+                )
+
+    # T7 — the historical locator receives no special preference: the
+    # query-relevant evidence outranks it under the generic ranking.
+    def test_no_fixed_alternative_locator_preference(self):
+        relevant = code_evidence(
+            evidence_id="rel",
+            text="The restgas correction workflow prepares the profile.",
+            path="src/Workflow.cxx",
+        )
+        historical = code_evidence(
+            evidence_id="hist",
+            text="Longitudinal efficiency correction macro.",
+            path="macro/target/correction/efficiency_correction_2.C",
+        )
+        bundle = bundle_for([relevant, historical])
+        agent = self._agent(bundle)
+        question = "How does ImaginaryRestgasCorrector apply the restgas correction?"
+        state = {
+            "question": question,
+            "bundle": bundle,
+            "sufficient": False,
+            "errors": ["unsupported requested symbol: ImaginaryRestgasCorrector"],
+            "supported_claims": [],
+        }
+        result = agent._finalize(state)["result"]
+        cited_ids = [claim["evidence_ids"][0] for claim in result["claims"]]
+        self.assertTrue(cited_ids)
+        self.assertNotIn("hist", cited_ids)
+        self.assertNotIn("efficiency_correction_2.C", result["answer"])
+
+    # T8 — no speculative replacement-implementation claim.
+    def test_no_speculative_replacement_claim(self):
+        bundle = bundle_for(code_evidence())
+        agent = self._agent(bundle)
+        result = self._finalize_result(agent, "How does ImaginaryRestgasCorrector implement the correction?", bundle)
+        for claim in result["claims"]:
+            self.assertNotIn("instead", claim["claim_text"].casefold())
+            self.assertNotIn("replacement", claim["claim_text"].casefold())
+        self.assertNotIn("uses a longitudinal", result["answer"])
+
+    # T9 — no relevant selected evidence produces a bare refusal with zero
+    # optional claims and zero fabricated citations.
+    def test_no_relevant_basis_produces_zero_optional_claims(self):
+        unrelated = code_evidence(
+            text="The luminosity fit extracts the luminosity value.",
+            path="fit/LuminosityFit.cxx",
+        )
+        bundle = bundle_for(unrelated)
+        agent = self._agent(bundle)
+        result = self._finalize_result(agent, "How does ImaginaryRestgasCorrector implement the correction?", bundle)
+        self.assertEqual(result["claims"], [])
+        self.assertEqual(result["evidence"], [])
+        self.assertIn("does not define ImaginaryRestgasCorrector", result["answer"])
+
+    # T10 — a query-relevant basis is evidence-grounded and names only what
+    # the evidence supports.
+    def test_relevant_basis_is_evidence_grounded(self):
+        relevant = code_evidence(
+            evidence_id="rel",
+            text="The restgas correction workflow prepares the profile.",
+            path="src/Workflow.cxx",
+        )
+        bundle = bundle_for(relevant)
+        agent = self._agent(bundle)
+        result = self._finalize_result(agent, "How does ImaginaryRestgasCorrector apply the restgas correction?", bundle)
+        self.assertEqual(len(result["claims"]), 1)
+        self.assertEqual(result["claims"][0]["evidence_ids"], ["rel"])
+        self.assertIn("documents", result["claims"][0]["claim_text"])
+        self.assertNotIn("instead", result["answer"])
+
+    # T11 — qualified unsupported-API refusal unchanged (R05 fallback untouched).
+    def test_unsupported_api_refusal_unchanged(self):
+        bundle = bundle_for(code_evidence())
+        agent = self._agent(bundle)
+        self.assertEqual(
+            agent._answerability_guard({
+                "question": "How does PndPidCorrelator::MissingSeed build the fit?",
+                "bundle": bundle,
+            }),
+            ["unsupported requested API symbol: PndPidCorrelator::MissingSeed"],
+        )
+
+    # T14 — a coverage-mode early refusal ends at insufficiency and never
+    # reaches the E3 missing-point trigger inputs.
+    def test_coverage_mode_early_refusal_does_not_reach_e3(self):
+        bundle = bundle_for(code_evidence())
+        agent = self._agent(bundle)
+        state = {
+            "question": "How does ImaginaryRestgasCorrector implement the correction?",
+            "bundle": bundle,
+            "answer_point_coverage_mode": "runtime_e1_v2",
+            "runtime_answer_points": [
+                {"answer_point_id": "point.1", "text": "Explain the correction."}
+            ],
+        }
+        out = agent._sufficiency(state)
+        self.assertFalse(out["sufficient"])
+        self.assertEqual(
+            out["errors"],
+            ["unsupported requested symbol: ImaginaryRestgasCorrector"],
+        )
+        self.assertNotIn("missing_answer_point_ids", out)
+        self.assertNotIn("missing_point_retrieval_count", out)
+
+    # §21 premise-mismatch sentinel — a question assuming an unavailable class
+    # implementation is refused without hallucinating from related evidence.
+    def test_premise_mismatch_refuses_without_hallucination(self):
+        related = code_evidence(
+            text="The restgas profile is reconstructed from the corrected density.",
+            path="src/RestgasProfile.cxx",
+        )
+        bundle = bundle_for(related)
+        agent = self._agent(bundle)
+        question = "How does MissingTrackAdapter apply the restgas correction?"
+        self.assertEqual(
+            agent._answerability_guard({"question": question, "bundle": bundle}),
+            ["unsupported requested symbol: MissingTrackAdapter"],
+        )
+        state = {
+            "question": question,
+            "bundle": bundle,
+            "sufficient": False,
+            "errors": ["unsupported requested symbol: MissingTrackAdapter"],
+            "supported_claims": [],
+        }
+        result = agent._finalize(state)["result"]
+        self.assertNotIn("MissingTrackAdapter", related["text"])
+        self.assertTrue(result["answer"].startswith("The locked corpus does not define MissingTrackAdapter"))
+
+
 if __name__ == "__main__":
     unittest.main()
