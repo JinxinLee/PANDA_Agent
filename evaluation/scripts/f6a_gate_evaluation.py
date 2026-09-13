@@ -1,13 +1,15 @@
-"""F6-A gate evaluation (evaluation-only, deterministic).
+"""F6-A gate evaluation (evaluation-only, deterministic, zero model calls).
 
-Aggregates the frozen formal-Gold run records into the preregistered F6-A gate
-matrix. No model calls.
+Aggregates the frozen formal-Gold run records through the canonical evaluator
+aggregation (`evaluation.aggregate_metrics`) and derives the preregistered
+F6-A gate matrix from its output. The release score remains the only
+F6-A-specific arithmetic.
 
 Usage:
   PYTHONPATH=src python evaluation/scripts/f6a_gate_evaluation.py \
       --run-id f6a-rc1-gold-formal-full-20260913 \
       --prereg evaluation/f6_a_prerelease_validation_preregistration.json \
-      --output evaluation/f6a_gold_gate_matrix.json
+      --output evaluation/f6a_gold_gate_matrix_r1.json
 """
 
 from __future__ import annotations
@@ -16,140 +18,152 @@ import argparse
 import json
 from pathlib import Path
 
+from panda_agent.evaluation import aggregate_metrics
 from panda_agent.evaluation_runner import f6a_release_score, load_run_records
 
 
-def _metric_values(records: list[dict], key: str) -> tuple[list[float], list[str]]:
-    """Collect a metric over records where it is applicable (not None)."""
-    values, inapplicable = [], []
-    for record in records:
-        value = (record.get("metrics") or {}).get(key)
-        if value is None:
-            inapplicable.append(str(record.get("id")))
-        elif isinstance(value, bool):
-            values.append(1.0 if value else 0.0)
-        else:
-            values.append(float(value))
-    return values, inapplicable
-
-
-def _count(records: list[dict], key: str) -> tuple[int, int]:
-    """Count non-zero occurrences of a boolean/count/list metric; returns (count, applicable)."""
-    total, applicable = 0, 0
-    for record in records:
-        value = (record.get("metrics") or {}).get(key)
-        if value is None:
-            continue
-        applicable += 1
-        if isinstance(value, bool):
-            total += 1 if value else 0
-        elif isinstance(value, (int, float)):
-            total += int(value)
-        elif isinstance(value, list):
-            total += len(value)
-    return total, applicable
-
-
-def evaluate_gates(records: list[dict], prereg: dict) -> dict:
+def derive_gate_matrix(aggregate: dict, records: list[dict], prereg: dict) -> dict:
     thresholds = prereg["gold_quality_thresholds"]
     release = f6a_release_score(records)
     gates: dict[str, dict] = {}
 
-    def rate_gate(name: str, key: str, minimum: float, inclusive: bool):
-        values, inapplicable = _metric_values(records, key)
-        if not values:
-            gates[name] = {"value": None, "threshold": minimum, "passed": None, "inapplicable_ids": inapplicable}
-            return
-        value = sum(values) / len(values)
-        passed = value >= minimum if inclusive else value > minimum
+    def rate_gate(name: str, value, denominator, minimum: float, inclusive: bool, upper: bool = False):
+        # ``upper=True`` marks an upper-bound gate (value must stay strictly
+        # below the threshold, e.g. identifier_hallucination_rate < 0.03);
+        # all other preregistered rate gates are lower bounds.
+        if value is None:
+            passed = None
+        elif upper:
+            passed = value < minimum
+        else:
+            passed = value >= minimum if inclusive else value > minimum
         gates[name] = {
             "value": value,
             "threshold": minimum,
             "inclusive": inclusive,
+            "upper_bound": upper,
             "passed": passed,
-            "denominator": len(values),
-            "inapplicable_ids": inapplicable,
+            "denominator": denominator,
         }
 
-    def zero_gate(name: str, key: str):
-        total, applicable = _count(records, key)
-        gates[name] = {"value": total, "threshold": 0, "passed": total == 0, "applicable_denominator": applicable}
+    def zero_gate(name: str, count_key: str):
+        gates[name] = {
+            "value": aggregate.get(count_key),
+            "threshold": 0,
+            "passed": (aggregate.get(count_key) or 0) == 0,
+        }
 
-    rate_gate("gold_recall_at_10", "gold_recall_at_10", thresholds["gold_recall_at_10"], True)
-    rate_gate("final_evidence_recall", "final_evidence_recall", thresholds["final_evidence_recall"], True)
+    rate_gate(
+        "gold_recall_at_10",
+        aggregate.get("gold_recall_at_10"),
+        aggregate.get("gold_recall_at_10_denominator"),
+        thresholds["gold_recall_at_10"],
+        True,
+    )
+    rate_gate(
+        "final_evidence_recall",
+        aggregate.get("final_evidence_recall"),
+        aggregate.get("final_evidence_recall_denominator"),
+        thresholds["final_evidence_recall"],
+        True,
+    )
     rate_gate(
         "critical_final_evidence_recall",
-        "critical_final_evidence_recall",
+        aggregate.get("critical_final_evidence_recall"),
+        aggregate.get("critical_final_evidence_recall_denominator"),
         thresholds["critical_final_evidence_recall"],
         True,
     )
-    rate_gate("intent_accuracy", "intent_correct", thresholds["intent_accuracy"], True)
+    rate_gate(
+        "intent_accuracy",
+        aggregate.get("intent_accuracy"),
+        aggregate.get("expected_status_accuracy_denominator"),
+        thresholds["intent_accuracy"],
+        True,
+    )
     rate_gate(
         "per_intent_gold_recall_at_10",
-        "gold_recall_at_10",
+        min(
+            (
+                entry.get("gold_recall_at_10")
+                for entry in (aggregate.get("per_intent") or {}).values()
+                if entry.get("gold_recall_at_10") is not None
+            ),
+            default=None,
+        ),
+        "per-intent minimum",
         thresholds["per_intent_gold_recall_at_10"],
         True,
     )
     rate_gate(
         "per_intent_intent_accuracy",
-        "intent_correct",
+        min(
+            (
+                entry.get("intent_accuracy")
+                for entry in (aggregate.get("per_intent") or {}).values()
+                if entry.get("intent_accuracy") is not None
+            ),
+            default=None,
+        ),
+        "per-intent minimum",
         thresholds["per_intent_intent_accuracy"],
         True,
     )
     rate_gate(
         "expected_status_accuracy",
-        "expected_status_correct",
+        aggregate.get("expected_status_accuracy"),
+        aggregate.get("expected_status_accuracy_denominator"),
         thresholds["expected_status_accuracy"],
         True,
     )
-    rate_gate("citation_integrity", "citation_integrity", thresholds["citation_integrity"], True)
-    zero_gate("wrong_version_evidence_count", "wrong_version_evidence")
-    zero_gate("forbidden_evidence_count", "forbidden_evidence")
+    rate_gate(
+        "citation_integrity",
+        aggregate.get("citation_integrity"),
+        aggregate.get("citation_integrity_denominator"),
+        thresholds["citation_integrity"],
+        True,
+    )
+    zero_gate("wrong_version_evidence_count", "wrong_version_evidence_count")
+    zero_gate("forbidden_evidence_count", "forbidden_evidence_count")
     rate_gate(
         "required_source_coverage_answered",
-        "required_source_coverage",
+        aggregate.get("required_source_coverage_answered"),
+        aggregate.get("required_source_coverage_answered_denominator"),
         thresholds["required_source_coverage_answered"],
         True,
     )
-    hallucination_count, _ = _count(records, "hallucinated_identifiers")
-    identifier_mentions, identifier_denominator_count = _count(records, "identifier_mentions")
-    identifier_denominator = identifier_denominator_count
-    gates["identifier_hallucination_rate"] = {
-        "value": (hallucination_count / identifier_denominator) if identifier_denominator else None,
-        "threshold": thresholds["identifier_hallucination_rate"],
-        "inclusive": False,
-        "passed": (
-            (hallucination_count / identifier_denominator) < thresholds["identifier_hallucination_rate"]
-            if identifier_denominator
-            else None
-        ),
-        "hallucination_count": hallucination_count,
-        "identifier_mentions": identifier_mentions,
-        "denominator": identifier_denominator,
+    rate_gate(
+        "identifier_hallucination_rate",
+        aggregate.get("identifier_hallucination_rate"),
+        aggregate.get("identifier_hallucination_denominator"),
+        thresholds["identifier_hallucination_rate"],
+        False,
+        upper=True,
+    )
+    rate_gate(
+        "paper_code_dual_source_rate",
+        aggregate.get("paper_code_dual_source_rate"),
+        aggregate.get("paper_code_dual_source_denominator"),
+        thresholds["paper_code_dual_source_rate"],
+        True,
+    )
+    rate_gate(
+        "answer_point_coverage",
+        aggregate.get("answer_point_coverage"),
+        aggregate.get("answer_point_coverage_denominator"),
+        thresholds["answer_point_coverage"],
+        True,
+    )
+    zero_gate("critical_answer_point_miss_count", "critical_answer_point_miss_count")
+    zero_gate("contradiction_count", "contradiction_count")
+    zero_gate("major_unsupported_claim_count", "major_unsupported_claim_count")
+    zero_gate("unhandled_exception_count", "unhandled_exception_count")
+    gates["release_score"] = {
+        "value": release["release_score"],
+        "denominator": release["denominator"],
+        "incomplete_case_ids": release["incomplete_case_ids"],
+        "note": "F6-A-specific gap/dependency accounting metric; not itself a gate",
     }
-    dual_values, dual_inapplicable = _metric_values(records, "paper_code_dual_source")
-    gates["paper_code_dual_source_rate"] = {
-        "value": (sum(dual_values) / len(dual_values)) if dual_values else None,
-        "threshold": thresholds["paper_code_dual_source_rate"],
-        "passed": (
-            (sum(dual_values) / len(dual_values)) >= thresholds["paper_code_dual_source_rate"]
-            if dual_values
-            else None
-        ),
-        "denominator": len(dual_values),
-        "inapplicable_ids": dual_inapplicable,
-        "note": "applicable only to dual-source questions",
-    }
-    rate_gate("answer_point_coverage", "answer_point_coverage", thresholds["answer_point_coverage"], True)
-    zero_gate("critical_answer_point_miss_count", "critical_answer_points_missing")
-    zero_gate("contradiction_count", "contradictions")
-    zero_gate("major_unsupported_claim_count", "major_unsupported_claim_ids")
-    gates["unhandled_exception_count"] = {
-        "value": len([r for r in records if r.get("exception")]),
-        "threshold": 0,
-        "passed": not any(r.get("exception") for r in records),
-    }
-    gates["release_score"] = release
     return gates
 
 
@@ -163,16 +177,29 @@ def main() -> None:
     run_dir = args.project_root / "data" / "evaluation" / "runs" / args.run_id
     records = load_run_records(run_dir)
     prereg = json.loads(args.prereg.read_text(encoding="utf-8"))
-    gates = evaluate_gates(records, prereg)
+    aggregate = aggregate_metrics(records)
+    gates = derive_gate_matrix(aggregate, records, prereg)
+    failed = sorted(name for name, gate in gates.items() if gate.get("passed") is False)
     output = {
-        "schema_version": "f6a-gate-matrix-v1",
+        "schema_version": "f6a-gate-matrix-r1-v1",
         "run_id": args.run_id,
-        "record_count": len(records),
+        "source_record_count": len(records),
+        "evaluator_revision": "canonical aggregate_metrics (offline rescore; zero model calls)",
+        "scientific_calls": 0,
+        "scientific_tokens": 0,
+        "aggregate_metrics": aggregate,
         "gates": gates,
+        "failed_gate_names": failed,
+        "failed_gate_count": len(failed),
+        "per_intent_breakdown": aggregate.get("per_intent"),
+        "measured_model_outputs": "immutable per-case records under data/evaluation/runs/"
+        + args.run_id,
+        "offline_derived_metrics": "everything in this file",
     }
     args.output.write_text(json.dumps(output, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     for name, gate in gates.items():
         print(f"{name}: value={gate.get('value')} passed={gate.get('passed')}")
+    print("failed_gate_count:", len(failed), failed)
 
 
 if __name__ == "__main__":

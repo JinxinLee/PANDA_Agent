@@ -851,6 +851,26 @@ aggregate analysis only. Normal default remains legacy_question_core; default pr
 NEXT_TASK_RECOMMENDATION = SEPARATELY AUTHORIZED POST-F6-A FAILURE REVIEW / NEW CANDIDATE WORK ONLY.
 Report: `evaluation/F6_A_PRERELEASE_VALIDATION_AND_GENERALIZATION_GATE.md`.
 
+## F6-A-R1 offline gate / identity / archival reconciliation record
+
+COMPLETE / PASS / OFFLINE_GATE_IDENTITY_ARCHIVAL_RECONCILED. Zero-model-call evaluator/release-identity/archival
+correction at HEAD `e34ecdc`; the F6-A terminal FAIL is preserved. Corrections derived from the canonical
+`aggregate_metrics` on the immutable 59-case records: (A) paper_code_dual_source_rate denominator corrected to
+the single dual-source-required answered case (rate 0.1633 -> 0.0; FAIL unchanged); (B/C) per-intent gates now
+evaluated truly per intent (minimum across 7 intents: recall 0.9583, accuracy 0.9286 — both PASS, replacing the
+whole-cohort means); (D) identifier_hallucination_rate denominator corrected to total identifier mentions (121;
+rate 0.0; PASS unchanged) with an upper-bound direction bug fixed; (E) failed-gate count derived from the
+corrected matrix = 9 (prose/JSON count inconsistency resolved). The archival statement was corrected: case-level
+inspection of already-exposed Gold failures occurred for classification after the frozen Stage A1 outcome, with
+no repair/rerun following. Usage reconciled: formal F6-A 383 calls/3,348,432 tokens; superseded 9/120 plan
+61 calls/339,150 tokens; total during F6-A work 444 calls/3,687,582 tokens. Identity chronology audit: all 59
+records completed before the only post-freeze src change (candidate.py verifier corrections); single product
+behavior identity; no mixed execution identity. The broad evaluation-infrastructure verification whitelist was
+removed (strict source_tree_hash + ancestor-HEAD semantics; offline rescore identity recorded separately).
+Original F6-A artifacts remain byte-unchanged; R1 is additive. novel_validation pristine; holdout access 0.
+NEXT_TASK_RECOMMENDATION = POST-F6-A EXPOSED-GOLD FAILURE REVIEW / NEW CANDIDATE DEVELOPMENT (NOT AUTHORIZED).
+Report: `evaluation/F6_A_R1_OFFLINE_GATE_IDENTITY_ARCHIVAL_RECONCILIATION.md`.
+
 ## Historical E3-A0 architecture contract closeout
 
 COMPLETE / PASS / MISSING_POINT_TARGETED_RETRIEVAL_CONTRACT_ESTABLISHED.

@@ -1,0 +1,100 @@
+{
+  "schema_version": "f6a-r1-reconciliation-v1",
+  "task": "F6-A-R1 — Offline Gate / Identity / Archival Reconciliation",
+  "terminal_state": "COMPLETE / PASS / OFFLINE_GATE_IDENTITY_ARCHIVAL_RECONCILED",
+  "starting_head": "e34ecdc9bfc265a35e679a361c98ee64348e19c1",
+  "offline_rescore_revision": "canonical aggregate_metrics via evaluation/scripts/f6a_gate_evaluation.py (R1)",
+  "scientific_calls": 0,
+  "scientific_tokens": 0,
+  "source_run_id": "f6a-rc1-gold-formal-full-20260913",
+  "source_record_count": 59,
+  "source_gate_matrix": "evaluation/f6a_gold_gate_matrix.json (historical, superseded for derived arithmetic)",
+  "corrected_gate_matrix": "evaluation/f6a_gold_gate_matrix_r1.json",
+  "preregistration_identity": "evaluation/f6_a_prerelease_validation_preregistration.json",
+  "corrections": {
+    "A_dual_source": {
+      "original": {
+        "rate": 0.1633,
+        "denominator": 49
+      },
+      "corrected": {
+        "rate": 0.0,
+        "denominator": 1,
+        "applicability": "answered + applicable + required paper&code"
+      },
+      "gate_result": "FAIL (unchanged)"
+    },
+    "B_per_intent_gold_recall": {
+      "original": "whole-cohort mean 0.9898",
+      "corrected": "per-intent minimum 0.9583 (usage); all 7 intents PASS at >=0.75"
+    },
+    "C_per_intent_intent_accuracy": {
+      "original": "whole-cohort mean 0.9831",
+      "corrected": "per-intent minimum 0.9286 (usage); all 7 intents PASS at >=0.80"
+    },
+    "D_identifier_hallucination": {
+      "original": {
+        "rate": 0.0,
+        "denominator": "records with mentions field"
+      },
+      "corrected": {
+        "rate": 0.0,
+        "denominator": 121,
+        "mentions": "total identifier mentions"
+      },
+      "gate_result": "PASS (unchanged); upper-bound direction bug fixed"
+    },
+    "E_failed_gate_count": {
+      "original_prose": 10,
+      "original_json": 9,
+      "corrected": 9,
+      "failed_gate_names": [
+        "answer_point_coverage",
+        "contradiction_count",
+        "critical_answer_point_miss_count",
+        "critical_final_evidence_recall",
+        "expected_status_accuracy",
+        "final_evidence_recall",
+        "major_unsupported_claim_count",
+        "paper_code_dual_source_rate",
+        "required_source_coverage_answered"
+      ]
+    }
+  },
+  "terminal_verdict_effect": "F6-A FAIL preserved: nine mandatory Gold gate failures remain after correction",
+  "archival_correction": "case-level inspection of already-exposed Gold failures occurred for classification after the frozen Stage A1 outcome; no repair/rerun followed; novel_validation pristine",
+  "usage": {
+    "formal_f6a_evidence": {
+      "calls": 383,
+      "tokens": 3348432,
+      "runtime": "319/2980205",
+      "judge": "64/368227"
+    },
+    "superseded_plan": {
+      "records": 9,
+      "calls": 61,
+      "tokens": 339150,
+      "runtime": "52/302469",
+      "judge": "9/36681"
+    },
+    "total_during_f6a_work": {
+      "calls": 444,
+      "tokens": 3687582
+    }
+  },
+  "identity_chronology": {
+    "freeze_head": "28be3955",
+    "all_59_records_completed_by": "2026-09-13T00:31:43Z",
+    "post_freeze_src_changes": [
+      "src/panda_agent/candidate.py (a4ee4ac 02:37:24+02:00, f62d4e1 02:39:22+02:00)"
+    ],
+    "changes_after_last_record": true,
+    "verifier_only": true,
+    "mixed_execution_identity": false
+  },
+  "verifier_repair": "broad EVALUATION_INFRASTRUCTURE_PATHS whitelist removed; strict source_tree_hash + ancestor-HEAD semantics; offline rescore identity recorded separately",
+  "product_changes": 0,
+  "validation_holdout_exposure": 0,
+  "next_recommendation": "POST-F6-A EXPOSED-GOLD FAILURE REVIEW / NEW CANDIDATE DEVELOPMENT (separately authorized)",
+  "next_task_execution_authorized": false
+}
