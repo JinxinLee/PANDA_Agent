@@ -1,0 +1,11 @@
+{
+ "schema_version": "f6a-a3-freeze-receipt-v1",
+ "attempt": 3,
+ "preregistration_commit": "2f9a4a3",
+ "preregistration_artifact_sha256": "6ef37ca8d248eacb8376950cf8a59cb38bcacb683e04a94758c4a02a9f656e5d",
+ "freeze_source_commit": "2f9a4a32a41330326976bce4cf29e726ceac908e",
+ "candidate_id": "f6a-rc3-20260914",
+ "candidate_manifest_sha256": "be2101a4709aa2ab2f324ba00b58d90e561ff1e359fc44b28ab26a5b3be155ca",
+ "product_behavior_lineage_head": "d323f790655c62e18b782d606a02f593a673f3cd",
+ "note": "freeze-time identity recorded here per the GOLD-9 chronology contract; the preregistration artifact itself remains immutable"
+}
