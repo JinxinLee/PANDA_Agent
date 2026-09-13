@@ -1,0 +1,524 @@
+{
+  "schema_version": "f6a-gate-matrix-r1r1-v1",
+  "run_id": "f6a-rc1-gold-formal-full-20260913",
+  "source_record_count": 59,
+  "evaluator_revision": "canonical aggregate_metrics (offline rescore; zero model calls; R1-R1 gate semantics)",
+  "scientific_calls": 0,
+  "scientific_tokens": 0,
+  "aggregate_metrics": {
+    "cases_completed": 59,
+    "scored_cases": 59,
+    "intent_accuracy": 0.9830508474576272,
+    "gold_recall_at_5": 0.8945578231292517,
+    "gold_recall_at_5_denominator": 49,
+    "gold_recall_at_10": 0.9897959183673469,
+    "gold_recall_at_10_denominator": 49,
+    "gold_recall_at_20": 0.9897959183673469,
+    "gold_recall_at_20_denominator": 49,
+    "mrr": 0.7683673469387755,
+    "mrr_denominator": 49,
+    "combined_candidate_recall": 0.9591836734693877,
+    "combined_candidate_recall_denominator": 49,
+    "final_evidence_recall": 0.8129251700680272,
+    "final_evidence_recall_denominator": 49,
+    "critical_final_evidence_recall": 0.8231292517006803,
+    "critical_final_evidence_recall_denominator": 49,
+    "refusal_evidence_recall": 0.6,
+    "refusal_evidence_recall_denominator": 5,
+    "expected_status_accuracy": 0.864406779661017,
+    "expected_status_accuracy_denominator": 59,
+    "citation_integrity": 1.0,
+    "citation_integrity_denominator": 59,
+    "required_source_coverage": 0.9387755102040817,
+    "required_source_coverage_denominator": 49,
+    "required_source_coverage_answered": 0.9387755102040817,
+    "required_source_coverage_answered_denominator": 49,
+    "wrong_version_evidence_count": 0,
+    "forbidden_evidence_count": 0,
+    "identifier_miss_count": 3,
+    "identifier_miss_denominator": 49,
+    "identifier_mentions": 121,
+    "identifier_hallucination_count": 0,
+    "identifier_hallucination_denominator": 121,
+    "identifier_hallucination_rate": 0.0,
+    "answer_point_coverage": 0.844632768361582,
+    "answer_point_coverage_denominator": 59,
+    "contradiction_count": 4,
+    "contradiction_count_denominator": 59,
+    "unsupported_claim_count": 1,
+    "unsupported_claim_count_denominator": 59,
+    "major_unsupported_claim_count": 1,
+    "major_unsupported_claim_count_denominator": 59,
+    "minor_unsupported_claim_count": 2,
+    "minor_unsupported_claim_count_denominator": 59,
+    "critical_answer_point_miss_count": 18,
+    "critical_answer_point_miss_count_denominator": 59,
+    "paper_code_dual_source_rate": 0.0,
+    "paper_code_dual_source_denominator": 1,
+    "unhandled_exception_count": 0,
+    "latency_ms": {
+      "mean": 85475.81776271186,
+      "p95": 231866.275
+    },
+    "model_calls": 383,
+    "token_usage": 3348432,
+    "model_usage_by_role": {
+      "runtime": {
+        "model_calls": 319,
+        "token_usage": 2980205
+      },
+      "evaluation_judge": {
+        "model_calls": 64,
+        "token_usage": 368227
+      }
+    },
+    "metric_applicability": {
+      "citation_integrity": true,
+      "required_identifiers": true,
+      "identifier_hallucination_rate": true,
+      "answer_point_coverage": true,
+      "contradictions": true,
+      "unsupported_claim_ids": true,
+      "major_unsupported_claim_ids": true,
+      "minor_unsupported_claim_ids": true,
+      "critical_answer_points_missing": true
+    },
+    "per_intent": {
+      "algorithm_implementation": {
+        "cases": 2,
+        "intent_accuracy": 1.0,
+        "gold_recall_at_5": 1.0,
+        "gold_recall_at_10": 1.0,
+        "gold_recall_at_20": 1.0,
+        "mrr": 1.0,
+        "combined_candidate_recall": 1.0,
+        "gold_recall_at_10_denominator": 2,
+        "final_evidence_recall": 0.16666666666666666,
+        "final_evidence_recall_denominator": 2
+      },
+      "algorithm_theory": {
+        "cases": 8,
+        "intent_accuracy": 1.0,
+        "gold_recall_at_5": 0.9166666666666666,
+        "gold_recall_at_10": 1.0,
+        "gold_recall_at_20": 1.0,
+        "mrr": 0.8333333333333334,
+        "combined_candidate_recall": 1.0,
+        "gold_recall_at_10_denominator": 6,
+        "final_evidence_recall": 0.8333333333333334,
+        "final_evidence_recall_denominator": 6
+      },
+      "api": {
+        "cases": 15,
+        "intent_accuracy": 1.0,
+        "gold_recall_at_5": 1.0,
+        "gold_recall_at_10": 1.0,
+        "gold_recall_at_20": 1.0,
+        "mrr": 0.9615384615384616,
+        "combined_candidate_recall": 0.9230769230769231,
+        "gold_recall_at_10_denominator": 13,
+        "final_evidence_recall": 0.9230769230769231,
+        "final_evidence_recall_denominator": 13
+      },
+      "installation": {
+        "cases": 12,
+        "intent_accuracy": 1.0,
+        "gold_recall_at_5": 0.95,
+        "gold_recall_at_10": 1.0,
+        "gold_recall_at_20": 1.0,
+        "mrr": 0.8033333333333333,
+        "combined_candidate_recall": 1.0,
+        "gold_recall_at_10_denominator": 10,
+        "final_evidence_recall": 0.75,
+        "final_evidence_recall_denominator": 10
+      },
+      "module_structure": {
+        "cases": 2,
+        "intent_accuracy": 1.0,
+        "gold_recall_at_5": 0.3333333333333333,
+        "gold_recall_at_10": 1.0,
+        "gold_recall_at_20": 1.0,
+        "mrr": 1.0,
+        "combined_candidate_recall": 1.0,
+        "gold_recall_at_10_denominator": 1,
+        "final_evidence_recall": 1.0,
+        "final_evidence_recall_denominator": 1
+      },
+      "troubleshooting": {
+        "cases": 6,
+        "intent_accuracy": 1.0,
+        "gold_recall_at_5": 0.8,
+        "gold_recall_at_10": 1.0,
+        "gold_recall_at_20": 1.0,
+        "mrr": 0.4333333333333333,
+        "combined_candidate_recall": 1.0,
+        "gold_recall_at_10_denominator": 5,
+        "final_evidence_recall": 1.0,
+        "final_evidence_recall_denominator": 5
+      },
+      "usage": {
+        "cases": 14,
+        "intent_accuracy": 0.9285714285714286,
+        "gold_recall_at_5": 0.7916666666666666,
+        "gold_recall_at_10": 0.9583333333333334,
+        "gold_recall_at_20": 0.9583333333333334,
+        "mrr": 0.5791666666666667,
+        "combined_candidate_recall": 0.9166666666666666,
+        "gold_recall_at_10_denominator": 12,
+        "final_evidence_recall": 0.75,
+        "final_evidence_recall_denominator": 12
+      }
+    }
+  },
+  "gates": {
+    "gold_recall_at_10": {
+      "value": 0.9897959183673469,
+      "threshold": 0.95,
+      "inclusive": true,
+      "upper_bound": false,
+      "passed": true,
+      "denominator": 49
+    },
+    "final_evidence_recall": {
+      "value": 0.8129251700680272,
+      "threshold": 0.9,
+      "inclusive": true,
+      "upper_bound": false,
+      "passed": false,
+      "denominator": 49
+    },
+    "critical_final_evidence_recall": {
+      "value": 0.8231292517006803,
+      "threshold": 1.0,
+      "inclusive": true,
+      "upper_bound": false,
+      "passed": false,
+      "denominator": 49
+    },
+    "intent_accuracy": {
+      "value": 0.9830508474576272,
+      "threshold": 0.9,
+      "inclusive": true,
+      "upper_bound": false,
+      "passed": true,
+      "denominator": 59
+    },
+    "per_intent_gold_recall_at_10": {
+      "value": 0.9583333333333334,
+      "threshold": 0.75,
+      "inclusive": true,
+      "passed": true,
+      "per_intent_details": [
+        {
+          "intent": "algorithm_implementation",
+          "case_count": 2,
+          "applicable_denominator": 2,
+          "metric_value": 1.0,
+          "threshold": 0.75,
+          "passed": true
+        },
+        {
+          "intent": "algorithm_theory",
+          "case_count": 8,
+          "applicable_denominator": 6,
+          "metric_value": 1.0,
+          "threshold": 0.75,
+          "passed": true
+        },
+        {
+          "intent": "api",
+          "case_count": 15,
+          "applicable_denominator": 13,
+          "metric_value": 1.0,
+          "threshold": 0.75,
+          "passed": true
+        },
+        {
+          "intent": "installation",
+          "case_count": 12,
+          "applicable_denominator": 10,
+          "metric_value": 1.0,
+          "threshold": 0.75,
+          "passed": true
+        },
+        {
+          "intent": "module_structure",
+          "case_count": 2,
+          "applicable_denominator": 1,
+          "metric_value": 1.0,
+          "threshold": 0.75,
+          "passed": true
+        },
+        {
+          "intent": "troubleshooting",
+          "case_count": 6,
+          "applicable_denominator": 5,
+          "metric_value": 1.0,
+          "threshold": 0.75,
+          "passed": true
+        },
+        {
+          "intent": "usage",
+          "case_count": 14,
+          "applicable_denominator": 12,
+          "metric_value": 0.9583333333333334,
+          "threshold": 0.75,
+          "passed": true
+        }
+      ]
+    },
+    "per_intent_intent_accuracy": {
+      "value": 0.9285714285714286,
+      "threshold": 0.8,
+      "inclusive": true,
+      "passed": true,
+      "per_intent_details": [
+        {
+          "intent": "algorithm_implementation",
+          "case_count": 2,
+          "applicable_denominator": null,
+          "metric_value": 1.0,
+          "threshold": 0.8,
+          "passed": true
+        },
+        {
+          "intent": "algorithm_theory",
+          "case_count": 8,
+          "applicable_denominator": null,
+          "metric_value": 1.0,
+          "threshold": 0.8,
+          "passed": true
+        },
+        {
+          "intent": "api",
+          "case_count": 15,
+          "applicable_denominator": null,
+          "metric_value": 1.0,
+          "threshold": 0.8,
+          "passed": true
+        },
+        {
+          "intent": "installation",
+          "case_count": 12,
+          "applicable_denominator": null,
+          "metric_value": 1.0,
+          "threshold": 0.8,
+          "passed": true
+        },
+        {
+          "intent": "module_structure",
+          "case_count": 2,
+          "applicable_denominator": null,
+          "metric_value": 1.0,
+          "threshold": 0.8,
+          "passed": true
+        },
+        {
+          "intent": "troubleshooting",
+          "case_count": 6,
+          "applicable_denominator": null,
+          "metric_value": 1.0,
+          "threshold": 0.8,
+          "passed": true
+        },
+        {
+          "intent": "usage",
+          "case_count": 14,
+          "applicable_denominator": null,
+          "metric_value": 0.9285714285714286,
+          "threshold": 0.8,
+          "passed": true
+        }
+      ]
+    },
+    "expected_status_accuracy": {
+      "value": 0.864406779661017,
+      "threshold": 0.975,
+      "inclusive": true,
+      "upper_bound": false,
+      "passed": false,
+      "denominator": 59
+    },
+    "citation_integrity": {
+      "value": 1.0,
+      "threshold": 1.0,
+      "inclusive": true,
+      "upper_bound": false,
+      "passed": true,
+      "denominator": 59
+    },
+    "wrong_version_evidence_count": {
+      "value": 0,
+      "threshold": 0,
+      "passed": true
+    },
+    "forbidden_evidence_count": {
+      "value": 0,
+      "threshold": 0,
+      "passed": true
+    },
+    "required_source_coverage_answered": {
+      "value": 0.9387755102040817,
+      "threshold": 0.97,
+      "inclusive": true,
+      "upper_bound": false,
+      "passed": false,
+      "denominator": 49
+    },
+    "identifier_hallucination_rate": {
+      "value": 0.0,
+      "threshold": 0.03,
+      "inclusive": false,
+      "upper_bound": true,
+      "passed": true,
+      "denominator": 121
+    },
+    "paper_code_dual_source_rate": {
+      "value": 0.0,
+      "threshold": 1.0,
+      "inclusive": true,
+      "upper_bound": false,
+      "passed": false,
+      "denominator": 1
+    },
+    "answer_point_coverage": {
+      "value": 0.844632768361582,
+      "threshold": 0.9,
+      "inclusive": true,
+      "upper_bound": false,
+      "passed": false,
+      "denominator": 59
+    },
+    "critical_answer_point_miss_count": {
+      "value": 18,
+      "threshold": 0,
+      "passed": false
+    },
+    "contradiction_count": {
+      "value": 4,
+      "threshold": 0,
+      "passed": false
+    },
+    "major_unsupported_claim_count": {
+      "value": 1,
+      "threshold": 0,
+      "passed": false
+    },
+    "unhandled_exception_count": {
+      "value": 0,
+      "threshold": 0,
+      "passed": true
+    },
+    "release_score": {
+      "value": 0.8276836158192091,
+      "denominator": 59,
+      "incomplete_case_ids": [],
+      "note": "F6-A-specific gap/dependency accounting metric; not itself a gate"
+    }
+  },
+  "dual_source_applicable_ids": [
+    "g060"
+  ],
+  "failed_gate_names": [
+    "answer_point_coverage",
+    "contradiction_count",
+    "critical_answer_point_miss_count",
+    "critical_final_evidence_recall",
+    "expected_status_accuracy",
+    "final_evidence_recall",
+    "major_unsupported_claim_count",
+    "paper_code_dual_source_rate",
+    "required_source_coverage_answered"
+  ],
+  "failed_gate_count": 9,
+  "incomplete_gate_names": [],
+  "incomplete_gate_count": 0,
+  "per_intent_breakdown": {
+    "algorithm_implementation": {
+      "cases": 2,
+      "intent_accuracy": 1.0,
+      "gold_recall_at_5": 1.0,
+      "gold_recall_at_10": 1.0,
+      "gold_recall_at_20": 1.0,
+      "mrr": 1.0,
+      "combined_candidate_recall": 1.0,
+      "gold_recall_at_10_denominator": 2,
+      "final_evidence_recall": 0.16666666666666666,
+      "final_evidence_recall_denominator": 2
+    },
+    "algorithm_theory": {
+      "cases": 8,
+      "intent_accuracy": 1.0,
+      "gold_recall_at_5": 0.9166666666666666,
+      "gold_recall_at_10": 1.0,
+      "gold_recall_at_20": 1.0,
+      "mrr": 0.8333333333333334,
+      "combined_candidate_recall": 1.0,
+      "gold_recall_at_10_denominator": 6,
+      "final_evidence_recall": 0.8333333333333334,
+      "final_evidence_recall_denominator": 6
+    },
+    "api": {
+      "cases": 15,
+      "intent_accuracy": 1.0,
+      "gold_recall_at_5": 1.0,
+      "gold_recall_at_10": 1.0,
+      "gold_recall_at_20": 1.0,
+      "mrr": 0.9615384615384616,
+      "combined_candidate_recall": 0.9230769230769231,
+      "gold_recall_at_10_denominator": 13,
+      "final_evidence_recall": 0.9230769230769231,
+      "final_evidence_recall_denominator": 13
+    },
+    "installation": {
+      "cases": 12,
+      "intent_accuracy": 1.0,
+      "gold_recall_at_5": 0.95,
+      "gold_recall_at_10": 1.0,
+      "gold_recall_at_20": 1.0,
+      "mrr": 0.8033333333333333,
+      "combined_candidate_recall": 1.0,
+      "gold_recall_at_10_denominator": 10,
+      "final_evidence_recall": 0.75,
+      "final_evidence_recall_denominator": 10
+    },
+    "module_structure": {
+      "cases": 2,
+      "intent_accuracy": 1.0,
+      "gold_recall_at_5": 0.3333333333333333,
+      "gold_recall_at_10": 1.0,
+      "gold_recall_at_20": 1.0,
+      "mrr": 1.0,
+      "combined_candidate_recall": 1.0,
+      "gold_recall_at_10_denominator": 1,
+      "final_evidence_recall": 1.0,
+      "final_evidence_recall_denominator": 1
+    },
+    "troubleshooting": {
+      "cases": 6,
+      "intent_accuracy": 1.0,
+      "gold_recall_at_5": 0.8,
+      "gold_recall_at_10": 1.0,
+      "gold_recall_at_20": 1.0,
+      "mrr": 0.4333333333333333,
+      "combined_candidate_recall": 1.0,
+      "gold_recall_at_10_denominator": 5,
+      "final_evidence_recall": 1.0,
+      "final_evidence_recall_denominator": 5
+    },
+    "usage": {
+      "cases": 14,
+      "intent_accuracy": 0.9285714285714286,
+      "gold_recall_at_5": 0.7916666666666666,
+      "gold_recall_at_10": 0.9583333333333334,
+      "gold_recall_at_20": 0.9583333333333334,
+      "mrr": 0.5791666666666667,
+      "combined_candidate_recall": 0.9166666666666666,
+      "gold_recall_at_10_denominator": 12,
+      "final_evidence_recall": 0.75,
+      "final_evidence_recall_denominator": 12
+    }
+  },
+  "measured_model_outputs": "immutable per-case records under data/evaluation/runs/f6a-rc1-gold-formal-full-20260913",
+  "offline_derived_metrics": "everything in this file"
+}

@@ -52,7 +52,7 @@ Canonical applicability (answered + `metric_applicability.paper_code_dual_source
 (denominator was incorrectly 49 all-answered cases).
 
 ```text
-applicable_case_ids: the single dual-source-required answered case
+applicable_case_ids: [g060]
 denominator: 1
 passing_case_count: 0
 corrected_rate: 0.0
@@ -63,21 +63,24 @@ gate_result: FAIL (unchanged)
 ### Corrections B/C — true per-intent gates
 
 Per-intent values from canonical per-intent aggregation (7 represented
-intents; case counts derived from records):
+intents; case counts verified from the authoritative corrected matrix
+`evaluation/f6a_gold_gate_matrix_r1.json`):
 
 | intent | cases | gold_recall_at_10 (≥0.75) | intent_accuracy (≥0.80) |
 | ------ | ----- | ------------------------- | ----------------------- |
-| algorithm_implementation | 33 | 1.0 PASS | 1.0 PASS |
-| algorithm_theory | 4 | 1.0 PASS | 1.0 PASS |
-| api | 4 | 1.0 PASS | 1.0 PASS |
-| installation | 4 | 1.0 PASS | 1.0 PASS |
-| module_structure | 3 | 1.0 PASS | 1.0 PASS |
-| troubleshooting | 4 | 1.0 PASS | 1.0 PASS |
-| usage | 11 | 0.9583 PASS | 0.9286 PASS |
+| algorithm_implementation | 2 | 1.0 PASS | 1.0 PASS |
+| algorithm_theory | 8 | 1.0 PASS | 1.0 PASS |
+| api | 15 | 1.0 PASS | 1.0 PASS |
+| installation | 12 | 1.0 PASS | 1.0 PASS |
+| module_structure | 2 | 1.0 PASS | 1.0 PASS |
+| troubleshooting | 6 | 1.0 PASS | 1.0 PASS |
+| usage | 14 | 0.9583 PASS | 0.9286 PASS |
 
-(The per-intent case counts are reported by the corrected matrix; the initial
-script collapsed all intents into single whole-cohort means, masking the
-weakest intent. The aggregate per-intent gate PASSES under corrected
+(The initial version of this table carried incorrect case counts; the counts
+above match the authoritative corrected matrix
+`evaluation/f6a_gold_gate_matrix_r1.json` exactly and sum to 59. The
+initial script collapsed all intents into single whole-cohort means, masking
+the weakest intent. The aggregate per-intent gate PASSES under corrected
 semantics — `min(recall)=0.9583`, `min(accuracy)=0.9286`.)
 
 ### Correction D — identifier hallucination denominator
@@ -185,6 +188,14 @@ All values are deterministic aggregations of preserved per-case
   chronology above via commit timestamps and record completion times.
 
 ## 7. Candidate verifier repair (§16/§17)
+
+> **R1-R1 note:** the gate-helper semantics were subsequently hardened
+> (zero-gate missing measurements are INCOMPLETE, never PASS; the global
+> intent-accuracy denominator uses its own case count; per-intent gates keep
+> every represented intent visible with INCOMPLETE semantics; failed vs
+> incomplete gate counts are reported separately) and the authoritative
+> corrected matrix is `evaluation/f6a_gold_gate_matrix_r1_r1.json`. See
+> `evaluation/F6_A_R1_R1_ARCHIVAL_AND_GATE_HELPER_CONSISTENCY_REPAIR.md`.
 
 The broad `EVALUATION_INFRASTRUCTURE_PATHS` whitelist (which could drop
 `source_tree_hash` from mismatches when only candidate/runner/evaluator/CLI

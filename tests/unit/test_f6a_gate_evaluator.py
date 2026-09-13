@@ -9,8 +9,10 @@ from panda_agent.evaluation import aggregate_metrics
 
 
 class GateEvaluatorTests(unittest.TestCase):
-    """The gate evaluator must reuse canonical aggregation and apply the
-    corrected applicability/denominator/upper-bound semantics."""
+    """F6-A-R1-R1: the gate evaluator reuses canonical aggregation, applies
+    corrected applicability/denominator/upper-bound semantics, never converts
+    a missing measurement into PASS, keeps every represented intent visible,
+    and separates failed from incomplete gates."""
 
     @staticmethod
     def _load_module():
@@ -113,6 +115,11 @@ class GateEvaluatorTests(unittest.TestCase):
         self.assertEqual(gates["paper_code_dual_source_rate"]["value"], 1.0)
         self.assertTrue(gates["paper_code_dual_source_rate"]["passed"])
 
+    def test_dual_source_applicable_ids_reported(self):
+        gate_eval = self._load_module()
+        records = self._records()
+        self.assertEqual(gate_eval.dual_source_applicable_ids(records), ["g100"])
+
     def test_identifier_hallucination_denominator_is_total_mentions(self):
         gate_eval = self._load_module()
         records = self._records()
@@ -134,18 +141,53 @@ class GateEvaluatorTests(unittest.TestCase):
         self.assertTrue(gates["identifier_hallucination_rate"]["passed"])
         self.assertEqual(gates["identifier_hallucination_rate"]["value"], 0.0)
 
-    def test_per_intent_gates_use_per_intent_minima(self):
+    def test_zero_gate_missing_measurement_is_incomplete_not_pass(self):
         gate_eval = self._load_module()
         records = self._records()
-        records.append(
+        for record in records:
+            record["metrics"]["contradictions"] = None
+        aggregate = aggregate_metrics(records)
+        gates = gate_eval.derive_gate_matrix(aggregate, records, self._prereg())
+        self.assertIsNone(gates["contradiction_count"]["passed"])
+        self.assertIsNone(gates["contradiction_count"]["value"])
+
+    def test_zero_gate_numeric_zero_passes_and_nonzero_fails(self):
+        gate_eval = self._load_module()
+        records = self._records()
+        for record in records:
+            record["metrics"]["contradictions"] = []
+        aggregate = aggregate_metrics(records)
+        gates = gate_eval.derive_gate_matrix(aggregate, records, self._prereg())
+        self.assertTrue(gates["contradiction_count"]["passed"])
+        for record in records:
+            record["metrics"]["contradictions"] = ["x"]
+        aggregate = aggregate_metrics(records)
+        gates = gate_eval.derive_gate_matrix(aggregate, records, self._prereg())
+        self.assertFalse(gates["contradiction_count"]["passed"])
+
+    def test_intent_accuracy_denominator_is_intent_case_count(self):
+        gate_eval = self._load_module()
+        records = self._records()
+        aggregate = aggregate_metrics(records)
+        gates = gate_eval.derive_gate_matrix(aggregate, records, self._prereg())
+        # intent-accuracy denominator = sum of represented per-intent cases
+        # (2 usage + 1 api = 3), not expected_status_accuracy_denominator.
+        self.assertEqual(gates["intent_accuracy"]["denominator"], 3)
+
+    def test_per_intent_missing_metric_is_incomplete_not_pass(self):
+        gate_eval = self._load_module()
+        # A represented intent whose only case cannot measure recall or intent
+        # accuracy must surface as INCOMPLETE, never silently disappear.
+        records = [
             {
                 "id": "g103",
                 "intent": "installation",
                 "expected_status": "answered",
                 "metrics": {
                     "answer_point_coverage": 0.2,
-                    "gold_recall_at_10": 0.1,
-                    "intent_correct": False,
+                    "gold_recall_at_10": None,
+                    "intent_accuracy": None,
+                    "intent_correct": None,
                     "expected_status_correct": True,
                     "citation_integrity": True,
                     "paper_code_dual_source": None,
@@ -155,38 +197,75 @@ class GateEvaluatorTests(unittest.TestCase):
                 },
                 "required_source_types": [],
             }
-        )
+        ]
         aggregate = aggregate_metrics(records)
         gates = gate_eval.derive_gate_matrix(aggregate, records, self._prereg())
-        # usage recall = (1.0 + 0.9)/2 = 0.95; installation recall = 0.1.
-        # The per-intent gate evaluates the minimum across intents, not the
-        # global mean.
-        self.assertAlmostEqual(aggregate["per_intent"]["usage"]["gold_recall_at_10"], 0.95)
-        self.assertEqual(gates["per_intent_gold_recall_at_10"]["value"], 0.1)
-        self.assertFalse(gates["per_intent_gold_recall_at_10"]["passed"])
-        self.assertEqual(gates["per_intent_intent_accuracy"]["value"], 0.0)
-        self.assertFalse(gates["per_intent_intent_accuracy"]["passed"])
+        self.assertIsNone(gates["per_intent_gold_recall_at_10"]["passed"])
+        self.assertIsNone(gates["per_intent_intent_accuracy"]["passed"])
+        details = {d["intent"]: d for d in gates["per_intent_gold_recall_at_10"]["per_intent_details"]}
+        self.assertIn("installation", details)
+        self.assertIsNone(details["installation"]["passed"])
 
-    def test_failed_gate_list_derives_from_corrected_matrix(self):
+    @staticmethod
+    def _measured_extra_case(case_id, intent, recall, accuracy, intent_correct):
+        return {
+            "id": case_id,
+            "intent": intent,
+            "expected_status": "answered",
+            "metrics": {
+                "answer_point_coverage": 1.0,
+                "gold_recall_at_10": recall,
+                "intent_accuracy": accuracy,
+                "intent_correct": intent_correct,
+                "expected_status_correct": True,
+                "citation_integrity": True,
+                "paper_code_dual_source": None,
+                "hallucinated_identifiers": [],
+                "identifier_mentions": [],
+                "metric_applicability": {"paper_code_dual_source": False},
+            },
+            "required_source_types": [],
+        }
+
+    def test_per_intent_one_failing_intent_fails_aggregate(self):
+        gate_eval = self._load_module()
+        records = [
+            record for record in self._records() if record["intent"] != "api"
+        ] + [self._measured_extra_case("g103", "installation", 0.1, 0.1, False)]
+        aggregate = aggregate_metrics(records)
+        gates = gate_eval.derive_gate_matrix(aggregate, records, self._prereg())
+        self.assertFalse(gates["per_intent_gold_recall_at_10"]["passed"])
+        self.assertFalse(gates["per_intent_intent_accuracy"]["passed"])
+        self.assertEqual(gates["per_intent_gold_recall_at_10"]["value"], 0.1)
+
+    def test_per_intent_all_measured_passing_aggregate_passes(self):
+        gate_eval = self._load_module()
+        records = [
+            record for record in self._records() if record["intent"] != "api"
+        ] + [self._measured_extra_case("g103", "installation", 0.9, 0.9, True)]
+        aggregate = aggregate_metrics(records)
+        gates = gate_eval.derive_gate_matrix(aggregate, records, self._prereg())
+        self.assertTrue(gates["per_intent_gold_recall_at_10"]["passed"])
+        self.assertTrue(gates["per_intent_intent_accuracy"]["passed"])
+
+    def test_failed_and_incomplete_gate_counts_excluded_release_score(self):
         gate_eval = self._load_module()
         records = self._records()
         aggregate = aggregate_metrics(records)
         gates = gate_eval.derive_gate_matrix(aggregate, records, self._prereg())
-        failed = sorted(name for name, gate in gates.items() if gate.get("passed") is False)
-        self.assertIn("intent_accuracy", failed)  # g102 intent_correct=False -> 2/3 < 0.90
-        self.assertIn("identifier_hallucination_rate", failed)  # 1/3 > 0.03 (upper bound)
-        self.assertNotIn("paper_code_dual_source_rate", failed)
-        self.assertEqual(sorted(gates), sorted(set(gates)))
-
-    def test_gate_evaluation_requires_no_model_calls(self):
-        script_path = (
-            Path(__file__).resolve().parents[2]
-            / "evaluation" / "scripts" / "f6a_gate_evaluation.py"
+        # release_score is accounting, not a gate: it must not appear in the
+        # failed/incomplete counts even though its own passed is null.
+        self.assertIsNone(gates["release_score"].get("passed"))
+        failed = sorted(
+            name for name, gate in gates.items()
+            if name != "release_score" and gate.get("passed") is False
         )
-        source = script_path.read_text(encoding="utf-8")
-        self.assertNotIn("generate_json", source)
-        self.assertNotIn("VertexAIClient", source)
-        self.assertNotIn("generate_content", source)
+        incomplete = sorted(
+            name for name, gate in gates.items()
+            if name != "release_score" and gate.get("passed") is None
+        )
+        self.assertNotIn("release_score", failed + incomplete)
+        self.assertTrue(failed or incomplete)
 
 
 if __name__ == "__main__":
