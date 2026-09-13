@@ -1,0 +1,78 @@
+{
+  "schema_version": "f6a2-fr2-development-closeout-v1",
+  "task": "F6-A2-FR2 — Bounded Product Repair and New Candidate Development",
+  "decision": "COMPLETE / PASS / RESIDUAL_PRODUCT_MECHANISMS_REPAIRED_AND_NEW_CANDIDATE_DEVELOPED",
+  "starting_head": "7411caa9e2ae203dfaaa7442dfa560c95eb4836e",
+  "gold_authority": {"benchmark": "m6-benchmark-v2.9", "dataset_sha256": "eaacd3ed6595821b24b28823c6344abc4dfb954eb71846e682080b42c2f689be", "modified": false},
+  "calibration_authority": {"id": "phase_b_t3_product_language_scope_v6", "compatible": true, "modified": false},
+  "selector": {"count": 59, "sha256": "e27ef67a866274b4a8441b789ca78fc3ccb7e022eed537c7442e15230777a0e5"},
+  "scientific_calls": 0,
+  "scientific_tokens": 0,
+  "r0_rebase": "all eight prior residual targets remain applicable under v2.9; no target removed as non-applicable",
+  "root_cause_clusters": [
+    {
+      "cluster": "A — source-obligation evidence retention",
+      "status": "REPAIRED",
+      "prior_cases": ["g013", "g016", "g022", "g060"],
+      "root_cause": "source obligations gate retrieval sufficiency only (selected-evidence layer); final-evidence projection is strictly supported_claims -> cited evidence, so an answer whose claims never cite the obligated source type silently drops already-selected evidence for it",
+      "repair": "_augment_source_obligation_evidence: at most one evidence-bound anchor claim per uncovered required source type, only for selected citation-eligible evidence sharing a question domain anchor, asserting only what the evidence shows (mirrors _augment_planned_locators); helper _primary_evidence_source_type",
+      "generic": "no case IDs, no Gold literals, no new source types, no unanchored attachment; claim passes normal semantic verification"
+    },
+    {
+      "cluster": "D — unsupported-claim revision discipline",
+      "status": "REPAIRED",
+      "prior_cases": ["g113"],
+      "root_cause": "_revise re-enters revised claims for a second model verification; the same materially unchanged text can flip to supported on the second pass, resurrecting a known-unsupported claim as an asserted fact",
+      "repair": "_revise drops any revision restating a claim just found unsupported with an identical normalized text; substantively narrowed/reworded revisions pass; verifier result stays visible in verification_errors",
+      "generic": "text-normalization comparison only; no severity thresholds invented; no global claim discards"
+    },
+    {
+      "cluster": "B — pool-to-final selection",
+      "status": "DEFERRED_NO_SAFE_GENERIC_FIX",
+      "prior_cases": ["g011", "g020"],
+      "reason": "a generic diversity/completeness rule inside select_final_evidence would reshape whole-product ranking and risk precision regressions unmeasurable without scientific calls; both cases were MIXED in FR1 (partial Gold-contract component)"
+    },
+    {
+      "cluster": "C — genuine retrieval miss",
+      "status": "DEFERRED_NO_SAFE_GENERIC_FIX",
+      "prior_cases": ["g021"],
+      "reason": "safe generic recall repair (query reformulation/expansion) would recreate retired shortcut territory or require a new retrieval subsystem"
+    }
+  ],
+  "files_changed": ["src/panda_agent/qa.py", "tests/unit/test_qa.py"],
+  "tests": {
+    "new_test_first": [
+      "test_identical_unsupported_revision_is_dropped",
+      "test_substantively_revised_claim_survives (control)",
+      "test_source_obligation_claim_added_for_uncovered_required_type",
+      "test_source_obligation_claim_not_added_when_type_already_cited (control)",
+      "test_source_obligation_claim_not_added_without_question_anchor (control)",
+      "test_single_source_answer_unaffected (control)"
+    ],
+    "updated": "test_external_identifier_answer_revision_integration (revision input substantively rewritten; QA-M1 sanitize contract preserved)",
+    "results": "test_qa + test_retrieval 269 passed + 50 subtests; QAAgent-dependent suites show exactly the pre-existing baseline failures (19 d4_a5 + 5 e2/e1) — zero new regressions"
+  },
+  "integrity": {
+    "gold_changes": 0,
+    "evaluator_changes": 0,
+    "threshold_changes": 0,
+    "gold_scientific_runs": 0,
+    "novel_dev_access": 0,
+    "novel_validation_access": 0,
+    "holdout_access": 0,
+    "protected_content_leakage": 0,
+    "novel_validation": "PRISTINE_FOR_CURRENT_LINEAGE"
+  },
+  "new_candidate_development_head": "ef9a8dbbd1dca789372592ce0c9b247cfb8379ee",
+  "candidate_frozen": false,
+  "attempt_3_preregistered": false,
+  "attempt_3_executed": false,
+  "lifecycle": {
+    "F6-A2-FR2": "COMPLETE / PASS / RESIDUAL_PRODUCT_MECHANISMS_REPAIRED_AND_NEW_CANDIDATE_DEVELOPED",
+    "F6-A_attempt_2": "COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED (v2.6, unchanged)",
+    "F6-B": "LOCKED / F6_A_DID_NOT_PASS",
+    "Phase_F": "IN_PROGRESS / PRODUCT_REPAIR_COMPLETE_NEW_CANDIDATE_READY_FOR_ATTEMPT_3_PREREGISTRATION"
+  },
+  "next_recommendation": "F6-A ATTEMPT 3 / NEW CANDIDATE PREREGISTRATION AND FREEZE (bound to m6-benchmark-v2.9 and calibration v6)",
+  "next_task_execution_authorized": false
+}

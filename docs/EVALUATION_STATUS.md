@@ -1059,6 +1059,31 @@ NEXT_TASK_RECOMMENDATION = F6-A2-FR2 / BOUNDED PRODUCT REPAIR AND NEW CANDIDATE 
 STABILIZED GOLD AUTHORITY) (NOT AUTHORIZED).
 Report: `evaluation/F6_A2_GR1_R2_DOXYGEN_STUB_SELECTOR_AUDIT.md`.
 
+## F6-A2-FR2 bounded product repair and new candidate development record
+
+COMPLETE / PASS / RESIDUAL_PRODUCT_MECHANISMS_REPAIRED_AND_NEW_CANDIDATE_DEVELOPED. Zero-scientific-call
+development task at HEAD `7411caa` against the stabilized m6-benchmark-v2.9 authority (dataset eaacd3ed…,
+calibration v6 compatible, selector 59 IDs e27ef67a… re-verified; Gold/evaluator/thresholds untouched). R0 rebase
+confirmed all eight prior residual targets still applicable. Two generic mechanisms repaired (test-first, red
+before green): (A) source-obligation evidence retention — obligations gated retrieval sufficiency only, so an
+answer whose claims never cited the obligated source type silently dropped already-selected evidence at the
+final projection (g013/g016/g022 documentation; g060 paper → dual-source 0.0); new
+_augment_source_obligation_evidence adds at most one evidence-bound anchor claim per uncovered required source
+type, only for selected citation-eligible evidence sharing a question domain anchor, asserting only what the
+evidence shows (mirrors _augment_planned_locators). (D) unsupported-claim revision discipline — _revise re-entered
+revised claims for a second model verification where the same materially unchanged text could flip to supported,
+resurrecting a known-unsupported claim (g113); _revise now drops an identical-normalized-text restatement of a
+claim just found unsupported, while substantively narrowed revisions pass. Two clusters legitimately deferred:
+pool→final selection diversity (g011/g020; whole-product ranking reshaping unmeasurable without scientific calls)
+and genuine retrieval miss (g021; safe generic recall repair would recreate retired shortcut territory).
+Verification: 6 new ResidualRepairTests (positive + controls), test_qa + test_retrieval 269 passed + 50 subtests;
+QAAgent-dependent suites show exactly the pre-existing baseline failures (19 d4_a5 + 5 e2/e1) — zero new
+regressions. PROMPTS untouched. novel_validation pristine; holdout access 0; Gold/novel/holdout scientific
+activity 0.
+NEXT_TASK_RECOMMENDATION = F6-A ATTEMPT 3 / NEW CANDIDATE PREREGISTRATION AND FREEZE (bound to m6-benchmark-v2.9
+and calibration v6) (NOT AUTHORIZED).
+Report: `evaluation/F6_A2_FR2_BOUNDED_PRODUCT_REPAIR_AND_NEW_CANDIDATE_DEVELOPMENT.md`.
+
 ## Historical E3-A0 architecture contract closeout
 
 COMPLETE / PASS / MISSING_POINT_TARGETED_RETRIEVAL_CONTRACT_ESTABLISHED.

@@ -135,7 +135,8 @@ Gold changes = 0; evaluator changes = 0; threshold changes = 0
 ## 6. New candidate development state
 
 ```text
-NEW_CANDIDATE_DEVELOPMENT_HEAD = <product-fix commit "Repair residual answer evidence and claim handling">
+NEW_CANDIDATE_DEVELOPMENT_HEAD = ef9a8dbbd1dca789372592ce0c9b247cfb8379ee
+("Repair residual answer evidence and claim handling")
 candidate frozen = false
 Attempt 3 preregistered = false
 Attempt 3 executed = false
