@@ -1,0 +1,39 @@
+{
+  "schema_version": "f6a2-gr1-r2-selector-audit-v1",
+  "task": "F6-A2-GR1-R2 — Doxygen-Stub Evidence-Selector Cleanup",
+  "starting_head": "deab588872fb39a8db8b300beb76e7c7881a007d",
+  "scientific_calls": 0,
+  "scientific_tokens": 0,
+  "audit_universe": {
+    "derivation": "set-difference of source_id=pandaroot, path=docs/... selectors between v2.6 and v2.7 Gold datasets",
+    "triples": 22,
+    "unique_paths": 11,
+    "background_already_retired": {"path": "docs/EventGenerators/DPMGenerator.rst", "by": "GR1-R1 in v2.8", "note": "outside the inherited v2.8 universe"},
+    "inherited_v2_8_universe": {"triples": 21, "unique_paths": 10}
+  },
+  "classifications": {
+    "CONTENT_BEARING_DOCUMENT": [
+      {"path": "docs/Installation/Install_Developers.rst", "size_bytes": 6029, "groups": ["g001.installation", "g011.e1"], "disposition": "KEEP"},
+      {"path": "docs/Installation/Install_PandaRoot.rst", "size_bytes": 5886, "groups": ["g001.installation", "g008.e2", "g011.e1"], "disposition": "KEEP"},
+      {"path": "docs/Running/MasterTasks.rst", "size_bytes": 10878, "groups": ["g013.e1"], "disposition": "KEEP"},
+      {"path": "docs/Running/Running_Sequence.rst", "size_bytes": 1746, "groups": ["g014.e2"], "disposition": "KEEP"},
+      {"path": "docs/Tutorials/tut_02_02_analysis_pid.rst", "size_bytes": 9838, "groups": ["g022.e2"], "disposition": "KEEP"}
+    ],
+    "INCLUDE_AGGREGATOR_WITH_CLOSED_CORPUS_TARGETS": [
+      {"path": "docs/Installation/Installation.rst", "size_bytes": 523, "groups": ["g001.installation"], "targets": ["docs/Installation/Install_PandaRoot.rst", "docs/Installation/Install_Developers.rst", "docs/Installation/Install_GSI.rst", "docs/Installation/Troubleshooting.rst", "docs/Installation/CVMFS.rst", "docs/Installation/Building_Documentation.rst", "docs/Installation/Building_ExternalPackage.rst"], "targets_in_corpus": true, "disposition": "KEEP"},
+      {"path": "docs/Running/Macros.rst", "size_bytes": 331, "groups": ["g013.e1"], "targets": ["macro/macro.rst", "macro/master/Readme.md", "macro/master/mastermacros.rst", "macro/run/runmacros.rst"], "targets_in_corpus": "all four verified IN CORPUS", "disposition": "KEEP"},
+      {"path": "docs/Running/Running.rst", "size_bytes": 4069, "groups": ["g014.e2", "g101.e1", "g109.e1"], "targets": ["docs/Running/Running_Sequence.rst", "docs/Running/MasterTasks.rst", "docs/Running/Logging.rst"], "targets_in_corpus": true, "note": "plus own substantive overview text", "disposition": "KEEP"},
+      {"path": "docs/Tools/PndMasterTasks/PndMasterTasks.rst", "size_bytes": 709, "groups": ["g014.e2", "g101.e3", "g106.e1"], "targets": ["docs/Tools/PndMasterTasks/PndMasterRunSim.rst", "docs/Tools/PndMasterTasks/PndMasterSimTask.rst", "docs/Tools/PndMasterTasks/PndMasterRunAna.rst", "docs/Tools/PndMasterTasks/PndMasterDigiTask.rst", "docs/Tools/PndMasterTasks/PndMasterDigiOnlyTask.rst", "docs/Tools/PndMasterTasks/PndMasterRecoTask.rst", "docs/Tools/PndMasterTasks/PndMasterRecoIdealTask.rst", "docs/Tools/PndMasterTasks/PndMasterLocalRecoTask.rst", "docs/Tools/PndMasterTasks/PndMasterMultiPidTask.rst"], "targets_in_corpus": true, "note": "plus own substantive introduction (default task set for simulation/digitization/reconstruction/pid)", "disposition": "KEEP"}
+    ],
+    "DOXYGEN_OR_EMPTY_POINTER_STUB": [
+      {"path": "docs/Tools/PndMasterTasks/PndMasterRunSim.rst", "size_bytes": 105, "content": "header + '.. doxygenclass:: PndMasterRunSim' only; rendered content generated from code annotations", "groups": ["g013.e1", "g013.e2", "g015.e1", "g016.e2", "g089.e1"], "disposition": "REMOVE_FORWARD_ONLY", "reason": "cannot independently satisfy any group role; affected groups retain sphinx selectors, actual code selectors (tools/MasterTasks/PndMasterRunSim.h/.cxx in g013.e2/g016.e2), README/documentation selectors, and for g013.e1 the two valid repo-documentation selectors; no group becomes empty"}
+    ]
+  },
+  "g013_special_care": "g013.e1 keeps docs/Running/Macros.rst (closed include chain; its targets include the macro/master/mastermacros.rst content Attempt 2 cited) and docs/Running/MasterTasks.rst (content-bearing); only the doxygen stub is removed",
+  "candidate_outcome_independence": "classifications rest on file content, size, and in-corpus target closure; no selector retired because a candidate failed and none kept because a candidate passed",
+  "governance_decision": "exactly one invalid selector remains in v2.8 -> forward-only successor m6-benchmark-v2.9 authorized (derived from v2.8; remove only that selector from the five affected groups; no new selectors; no semantic changes)",
+  "lifecycle_context": {
+    "F6-A2-GR1-R2": "audit artifact committed before benchmark mutation",
+    "v2_8": "PROVISIONAL_FORWARD_ONLY_SUCCESSOR / NOT_YET_STABILIZED (pending v2.9)"
+  }
+}
