@@ -1,0 +1,113 @@
+{
+  "schema_version": "f6a2-gr1-adjudication-v1",
+  "task": "F6-A2-GR1 — Forward-Only Gold Contract Adjudication",
+  "starting_head": "7ad90a99037f2f3656fd120912e993a6c3f5be0c",
+  "scientific_calls": 0,
+  "scientific_tokens": 0,
+  "governing_principle": "every correction must be justified independently of Attempt-2 outcomes (question entailment, deterministic source lineage/equivalence, scoring validity)",
+  "equivalence_rule": {
+    "mapping": "pandaroot_sphinx_2023_08_25_dev/.../sphinx/<Section>/<Page>.html <-> docs/<Section>/<Page>.rst (source_id pandaroot)",
+    "evidence": [
+      "path structure isomorphic across verified sections (Installation, Docker, Running, Tools/PndMasterTasks, EventGenerators, Tutorials)",
+      "Install_PandaRoot content verification: 308/357 repo word types (86%) in sphinx page; 19/40 sampled sentences verbatim; key installation commands present in both",
+      "sphinx Running.html renders the docs/Running/ toctree; Running_Sequence.rst is the direct source of its 'Running Sequence' section",
+      "both sides in the same 2023-08-25-dev documentation generation"
+    ]
+  },
+  "case_decisions": [
+    {
+      "case_id": "g001",
+      "query": "How do I install the locked PandaRoot development snapshot?",
+      "reviewed_contract_component": "g001.installation evidence group + p1 answer point",
+      "current_contract": "any_of accepts only sphinx titles 'Installation —' / 'Installation of PandaRoot for Developers'; p1 critical: 'Use the locked 2023-dev installation documentation and state that repository behavior is commit-specific.'",
+      "independent_evidence": "docs/Installation/{Installation,Install_Developers,Install_PandaRoot}.rst carry the same documentation (verified lineage/content); commit-specificity not entailed by the install query",
+      "question_entailment": "documentation need, not representation need; commit-specificity statement is author elaboration",
+      "source_equivalence_finding": "equivalent (verified lineage + content + version generation)",
+      "criticality_finding": "documented installation guidance remains core; wording revised",
+      "disposition": "BROADEN_SEMANTICALLY_EQUIVALENT_EVIDENCE + REVISE_ANSWER_POINT_SCOPE",
+      "exact_proposed_change": "add repo path selectors docs/Installation/Installation.rst, docs/Installation/Install_Developers.rst, docs/Installation/Install_PandaRoot.rst; reword p1 to 'Use the locked 2023-dev installation documentation (rendered pages or their repository source files) to describe how to install the development snapshot.' (critical retained)",
+      "confidence": "high",
+      "candidate_outcome_independence": "lineage/content facts hold regardless of any candidate answer"
+    },
+    {
+      "case_id": "g005",
+      "query": "How is a PandaRoot developer environment used inside Docker?",
+      "reviewed_contract_component": "p1 answer point",
+      "current_contract": "p1 critical: 'Distinguish developing inside the container from merely running an image.'",
+      "independent_evidence": "docs/Docker/DevelopingInContainer.rst (the g005.e1 target, 6153 chars) contains no develop-vs-run contrast; sections: TL;DR/Why?/How?/Detailed Steps/Remote Containers/Make/Extensions/Drawbacks/SSH; query asks how the environment is used, not for a usage contrast",
+      "question_entailment": "contrast not entailed; point as written cannot be answered from the required evidence at all",
+      "source_equivalence_finding": "n/a (answer-point issue; g005.e1 itself matched in Attempt 2)",
+      "criticality_finding": "describing the documented container development workflow remains the core; criticality retained",
+      "disposition": "REVISE_ANSWER_POINT_SCOPE",
+      "exact_proposed_change": "reword p1 to 'Describe how PandaRoot development is performed inside the documented Docker container workflow.' (critical retained)",
+      "confidence": "high",
+      "candidate_outcome_independence": "absence of the contrast in the required evidence is a document fact"
+    },
+    {
+      "case_id": "g011",
+      "query": "What is the difference between the native and container setup paths in the locked documentation?",
+      "reviewed_contract_component": "g011.e1 evidence group",
+      "current_contract": "any_of accepts only sphinx 'Installing & running PandaRoot' / 'Installation of PandaRoot for Developers'",
+      "independent_evidence": "docs/Installation/Install_PandaRoot.rst and Install_Developers.rst are the same documentation's source forms; native-vs-container two-path requirement is question-entailed and untouched",
+      "question_entailment": "two-path semantic requirement kept; representation lock not entailed",
+      "source_equivalence_finding": "equivalent",
+      "criticality_finding": "n/a",
+      "disposition": "BROADEN_SEMANTICALLY_EQUIVALENT_EVIDENCE",
+      "exact_proposed_change": "add docs/Installation/Install_PandaRoot.rst and docs/Installation/Install_Developers.rst path selectors",
+      "confidence": "high",
+      "candidate_outcome_independence": "same deterministic equivalence rule"
+    },
+    {
+      "case_id": "g014",
+      "query": "What is the documented PandaRoot simulation-to-analysis sequence?",
+      "reviewed_contract_component": "g014.e2 evidence group",
+      "current_contract": "any_of accepts only sphinx Tools/PndMasterTasks/PndMasterTasks.html (section) and Running/Running.html",
+      "independent_evidence": "docs/Tools/PndMasterTasks/PndMasterTasks.rst, docs/Running/Running.rst, and docs/Running/Running_Sequence.rst are the same documentation's source forms; Running_Sequence.rst is the direct source of the sphinx page's 'Running Sequence' section — the exact query target",
+      "question_entailment": "sequence documentation need; representation lock not entailed",
+      "source_equivalence_finding": "equivalent (incl. section-level source mapping)",
+      "criticality_finding": "n/a",
+      "disposition": "BROADEN_SEMANTICALLY_EQUIVALENT_EVIDENCE",
+      "exact_proposed_change": "add the three repo source-path selectors; sphinx selectors preserved",
+      "confidence": "high",
+      "candidate_outcome_independence": "deterministic lineage"
+    },
+    {
+      "case_id": "g044",
+      "query": "Why is angular acceptance needed in a luminosity fit?",
+      "reviewed_contract_component": "g044.e1 evidence group",
+      "current_contract": "locks pflueger_2017 pdf pages 57/58/62; role pflueger_2017_page_57_theory; required_source_types=['paper']; p1 'Explain the efficiency/acceptance factor using the thesis, not source-code inference.'",
+      "independent_evidence": "the group deliberately anchors the theory role to the specific theoretical source; li_2026 semantic equivalence not established (no corresponding theory passage located); p1/policy carry any-paper, but the evidence lock is an intentional provenance requirement",
+      "question_entailment": "query does not name a source, but the benchmark intentionally tests source-specific theoretical grounding here",
+      "source_equivalence_finding": "not established",
+      "criticality_finding": "n/a",
+      "disposition": "KEEP_AS_IS",
+      "exact_proposed_change": "none",
+      "confidence": "medium-high",
+      "candidate_outcome_independence": "broadening would be motivated only by Attempt-2's answer choice — prohibited rationale; Attempt-2's g044 failure is attributed to the product dropping a selected satisfying object"
+    }
+  ],
+  "consistency_sweep": {
+    "rule": "sphinx-form-only selector where the isomorphic repo rst exists",
+    "path_pattern_affected_pairs": 12,
+    "additional_groups_corrected_in_v2_7": [
+      "g008.e2", "g013.e1", "g013.e2", "g015.e1", "g016.e2", "g089.e1",
+      "g101.e1", "g101.e3", "g106.e1", "g109.e1"
+    ],
+    "title_pattern_kept_as_is": [
+      "g002.e1", "g003.e1", "g004.e1", "g005.e1", "g006.e1", "g007.e1",
+      "g008.e1", "g009.e1", "g010.e1", "g011.e2", "g012.e1", "g014.e1",
+      "g022.e1", "g023.e1", "g023.e2", "g024.e1", "g094.e1", "g101.e2"
+    ],
+    "no_redesign_rationale": "extending all title-form groups would exceed the bounded sweep; recorded for any future comprehensive contract review"
+  },
+  "accepted_change_set": {
+    "evidence_group_extensions_additive": [
+      "g001.installation", "g008.e2", "g011.e1", "g013.e1", "g013.e2",
+      "g014.e2", "g015.e1", "g016.e1", "g016.e2", "g022.e2", "g089.e1",
+      "g101.e1", "g101.e3", "g106.e1", "g109.e1"
+    ],
+    "answer_point_rewordings": ["g001 p1", "g005 p1"],
+    "changed_cases": ["g001", "g005", "g008", "g011", "g013", "g014", "g015", "g016", "g022", "g089", "g101", "g106", "g109"],
+    "kept_as_is_notable": ["g044.e1", "g060.e1 (source-specific theory locks)", "all expected_status values", "all thresholds", "all other answer points"]
+  }
+}
