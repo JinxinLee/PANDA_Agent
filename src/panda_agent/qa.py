@@ -89,6 +89,29 @@ def _is_public_claim_citation_eligible(evidence: dict[str, Any]) -> bool:
     return True
 
 
+def _normalized_claim_text(text: Any) -> str:
+    """Case/whitespace/punctuation-insensitive form for claim restatement checks."""
+    return re.sub(r"[\W_]+", "", str(text or "").casefold())
+
+
+def _primary_evidence_source_type(item: dict[str, Any]) -> str:
+    """Single source-type classifier mirroring the sufficiency obligation logic.
+
+    Readme/workflow side classifications are intentionally not part of this
+    primary type: obligation retention only needs the coarse paper /
+    documentation / code distinction that the sufficiency check gates on.
+    """
+    source_id = str(item.get("source_id") or "")
+    if source_id in {"li_2026", "karavdina_2015", "pflueger_2017"}:
+        return "paper"
+    if "sphinx" in source_id:
+        return "documentation"
+    path = str((item.get("locator") or {}).get("path") or "").replace("\\", "/").lower()
+    if path.startswith(("docs/", "doc/")):
+        return "documentation"
+    return "code"
+
+
 _ANSWER_POINT_MODES = {"legacy_question_core", "shadow_e1_v2", "runtime_e1_v2"}
 ANSWER_POINT_COVERAGE_REVIEW_SCHEMA = {
     **REVIEW_SCHEMA,
@@ -1954,6 +1977,74 @@ class QAAgent:
             "errors": [f"missing required source: {value}" for value in missing] if evidence else ["no evidence"],
         }
 
+    def _augment_source_obligation_evidence(self, draft: dict[str, Any], state: QAState) -> dict[str, Any]:
+        """Add at most one minimal anchor claim per uncovered required source type.
+
+        F6-A2-FR2: question-grounded source obligations (F2-A5) gate retrieval
+        sufficiency only; an answer whose claims never cite the obligated
+        source type silently drops the already-selected evidence for it at the
+        final-evidence projection. Mirroring ``_augment_planned_locators``,
+        this adds a bounded, evidence-bound claim for a required source type
+        only when selected citation-eligible evidence of that type shares a
+        question anchor with the query, and asserts only what the cited
+        evidence itself shows. It never invents content, adds source types, or
+        attaches unanchored evidence.
+        """
+        required = [str(value) for value in state["bundle"]["plan"].get("required_source_types", [])]
+        if not required:
+            return draft
+        question = str(state.get("question", ""))
+        anchors = _question_domain_tokens(question)
+        if not anchors:
+            return draft
+        claims = list(draft.get("claims", []))
+        eligible = [
+            item
+            for item in state["bundle"].get("evidence", [])
+            if _is_public_claim_citation_eligible(item)
+        ]
+        cited_ids = {
+            str(evidence_id)
+            for claim in claims
+            for evidence_id in claim.get("evidence_ids", [])
+        }
+        cited_types = {
+            _primary_evidence_source_type(item)
+            for item in eligible
+            if str(item.get("evidence_id") or "") in cited_ids
+        }
+        for source_type in required:
+            if source_type in cited_types:
+                continue
+            best = None
+            best_key = None
+            for item in eligible:
+                if _primary_evidence_source_type(item) != source_type:
+                    continue
+                if str(item.get("evidence_id") or "") in cited_ids:
+                    continue
+                text = _evidence_search_text(item)
+                overlap = sum(1 for anchor in anchors if anchor in text)
+                if not overlap:
+                    continue
+                key = (-overlap, str(item.get("evidence_id") or ""))
+                if best_key is None or key < best_key:
+                    best, best_key = item, key
+            if best is None:
+                continue
+            subject = _refusal_basis_subject(question, best)
+            location = _refusal_basis_location(best)
+            claims.append(
+                {
+                    "claim_id": f"source_obligation_{source_type}",
+                    "claim_text": f"The cited {source_type} at {location} documents {subject}.",
+                    "evidence_ids": [str(best.get("evidence_id") or "")],
+                }
+            )
+            cited_ids.add(str(best.get("evidence_id") or ""))
+            cited_types.add(source_type)
+        return {**draft, "claims": claims}
+
     @staticmethod
     def _augment_planned_locators(draft: dict[str, Any], state: QAState) -> dict[str, Any]:
         """Add a minimal locator claim when an exact planned symbol was retrieved
@@ -2171,6 +2262,7 @@ class QAAgent:
             draft = {"claims": _model_claims(list(draft.get("claims", [])))}
         draft = self._augment_planned_locators(draft, state)
         draft = self._augment_required_dataflow_evidence(draft, state)
+        draft = self._augment_source_obligation_evidence(draft, state)
         # Version scope is deterministic metadata, not a model guess.  It is
         # retained only as internal audit material, and only for a genuine
         # version-disambiguation request.  In particular, ``resolved_versions``
@@ -2676,11 +2768,26 @@ class QAAgent:
             ),
             str(state["question"]),
         )
+        # F6-A2-FR2 revision discipline: a restatement identical (normalized) to
+        # a claim just found unsupported is not a revision — the same text
+        # cannot both lack and carry evidential support, so re-entering it
+        # would let an unstable re-verdict resurrect a known-unsupported claim
+        # as an asserted fact. Substantively narrowed/reworded revisions pass.
+        unsupported_texts = {
+            str(claim.get("claim_id") or ""): _normalized_claim_text(claim.get("claim_text"))
+            for claim in unsupported_draft["claims"]
+            if claim.get("claim_id")
+        }
         merged: list[dict[str, Any]] = []
         seen: set[str] = set()
         for claim in [*supported, *revised_claims]:
             claim_id = str(claim.get("claim_id") or "")
             if not claim_id or claim_id in seen:
+                continue
+            if (
+                claim_id in unsupported_texts
+                and _normalized_claim_text(claim.get("claim_text")) == unsupported_texts[claim_id]
+            ):
                 continue
             seen.add(claim_id)
             merged.append(claim)
