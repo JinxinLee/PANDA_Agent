@@ -205,6 +205,54 @@ class RetrievalTests(unittest.TestCase):
         plan=self.make_retriever().analyze("Use PandaRoot commit deadbeef for PndTargetGenerator")
         self.assertTrue(plan.version_conflicts)
 
+    # F6-A-FR1 (RC2): a repository-scoped commit request whose qualifier is
+    # separated from the repository by a preposition is still an explicit
+    # version request and must reach the locked-version comparison.
+    def test_prepositional_commit_request_binds_and_conflicts(self):
+        plan = self.make_retriever().analyze(
+            "Install PandaRoot from commit deadbeef instead of the locked corpus commit."
+        )
+        self.assertEqual(
+            plan.version_conflicts,
+            ["pandaroot: requested deadbeef, locked 18c09e91100db27867ded30e708b4dae95bd8357"],
+        )
+
+    def test_prepositional_requested_commit_request_conflicts(self):
+        plan = self.make_retriever().analyze(
+            "Run LuminosityFit from requested commit cafebabe rather than the locked master snapshot."
+        )
+        self.assertTrue(
+            any(
+                "luminosityfit: requested cafebabe" in conflict
+                for conflict in plan.version_conflicts
+            )
+        )
+
+    def test_prepositional_binding_requires_named_repository(self):
+        # Without a named repository the SHA stays unbound and no conflict
+        # fires (unchanged bare-SHA semantics).
+        plan = self.make_retriever().analyze(
+            "Install from commit deadbeef instead of the locked corpus commit."
+        )
+        self.assertEqual(plan.version_conflicts, [])
+        self.assertEqual(plan.analysis_diagnostics["unbound_version_tokens"], ["deadbeef"])
+
+    def test_locked_commit_request_does_not_conflict(self):
+        plan = self.make_retriever().analyze(
+            "Install PandaRoot from commit 18c09e9."
+        )
+        self.assertEqual(plan.version_conflicts, [])
+
+    def test_repository_display_name_is_a_repository_reference(self):
+        # F6-A-FR1 (RC1): manifest repository display names (PascalCase forms
+        # of repo ids) are repository identities, not code symbols.
+        retriever = self.make_retriever()
+        self.assertTrue(retriever.is_repository_reference("PandaRoot"))
+        self.assertTrue(retriever.is_repository_reference("LuminosityFit"))
+        self.assertTrue(retriever.is_repository_reference("RestgasDetermination"))
+        self.assertFalse(retriever.is_repository_reference("PndLmdFitFacade"))
+        self.assertFalse(retriever.is_repository_reference("PandaRootSnapshot"))
+
     def test_ambiguous_intent_remains_analyzer_owned(self):
         retriever = self.make_retriever()
         retriever.vertex = CapturingVertex()

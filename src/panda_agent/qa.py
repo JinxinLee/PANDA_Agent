@@ -1877,8 +1877,14 @@ class QAAgent:
         # Generic bare-class premise guard: the question itself must request or
         # assume the symbol, and the locked-corpus catalog — not the currently
         # selected evidence — decides whether it exists (F2-A4).
+        # A manifest repository reference named in the question ("PandaRoot",
+        # "LuminosityFit") is retrieval scope, not a code symbol: the locked
+        # object catalog decides code symbols, the repository manifest decides
+        # repository identities (F6-A-FR1).
         for raw in _requested_bare_class_symbols(question):
             if raw in catalog["symbols"] or raw in catalog["paths"]:
+                continue
+            if self.retriever.is_repository_reference(raw):
                 continue
             return [f"unsupported requested symbol: {raw}"]
         deleted_artifact_request = (

@@ -39,6 +39,15 @@ class FakeRetriever:
         self.bundle = bundle
         self.storage = storage or CatalogStorage([])
         self.calls = 0
+        self.fixed_versions = {}
+
+    def is_repository_reference(self, token):
+        from panda_agent.retrieval import _has_explicit_repository_reference
+
+        return any(
+            _has_explicit_repository_reference(token, repo)
+            for repo in self.fixed_versions
+        )
 
     def retrieve(self, question, plan=None, capture_candidates: bool = False):
         self.calls += 1
@@ -1318,6 +1327,22 @@ class QATests(unittest.TestCase):
         self.assertFalse(result.claims)
         self.assertNotIn("scope_", result.answer)
 
+    # F6-A-FR1 (RC2) — an established version conflict must not degrade to
+    # generic insufficient evidence when no evidence was retrieved (the
+    # conflict precedence decision, not evidence sufficiency, controls status).
+    def test_version_conflict_precedes_insufficient_evidence_without_evidence(self):
+        bundle = bundle_for(
+            [],
+            conflicts=[
+                "pandaroot: requested deadbeef, locked 18c09e91100db27867ded30e708b4dae95bd8357"
+            ],
+        )
+        result = QAAgent(
+            Path.cwd(), retriever=FakeRetriever(bundle), vertex=FakeVertex()
+        ).run("Install PandaRoot from commit deadbeef instead of the locked corpus commit.")
+        self.assertEqual(result.status, QAStatus.VERSION_CONFLICT)
+        self.assertIn("deadbeef", result.answer)
+
     def test_internal_claims_are_audited_but_not_rendered(self):
         web = web_evidence()
         code = code_evidence()
@@ -2336,6 +2361,63 @@ class PremiseRefusalGeneralizationTests(unittest.TestCase):
                     agent._answerability_guard({"question": question, "bundle": bundle}),
                     [],
                 )
+
+    # T-repo (F6-A-FR1 RC1) — a manifest repository display name named inside
+    # a request/definition context is retrieval scope, not a bare class
+    # symbol; the locked object catalog is not expected to contain it.
+    def test_repository_display_name_is_not_a_requested_class_symbol(self):
+        bundle = bundle_for(code_evidence())
+        agent = self._agent(bundle)
+        agent.retriever.fixed_versions = {
+            "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357",
+            "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+        }
+        for question in (
+            "How is a PandaRoot developer environment used inside Docker?",
+            "Where is detector-resolution convolution implemented in LuminosityFit?",
+        ):
+            with self.subTest(question=question):
+                self.assertEqual(
+                    agent._answerability_guard({"question": question, "bundle": bundle}),
+                    [],
+                )
+
+    # T-repo-mixed (F6-A-FR1 RC1) — a genuine cataloged class plus repository
+    # display names: only the class symbol is checked against the catalog.
+    def test_genuine_class_alongside_repository_names_is_not_refused(self):
+        bundle = bundle_for(code_evidence())
+        catalog_rows = [
+            ({"symbol": "PndTargetGenerator", "path": "pgenerators/Target/PndTargetGenerator.cxx"}, "class PndTargetGenerator {};"),
+        ]
+        agent = self._agent(bundle, catalog_rows)
+        agent.retriever.fixed_versions = {
+            "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357",
+            "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+        }
+        question = (
+            "Where is PndTargetGenerator defined in the locked PandaRoot snapshot "
+            "and the RestgasDetermination fork, and why does version scope matter?"
+        )
+        self.assertEqual(
+            agent._answerability_guard({"question": question, "bundle": bundle}),
+            [],
+        )
+
+    # T-repo-negative (F6-A-FR1 RC1) — the repository-identity exclusion does
+    # not extend to genuinely uncataloged compound-cased class tokens.
+    def test_uncataloged_class_shaped_token_is_still_refused(self):
+        bundle = bundle_for(code_evidence())
+        agent = self._agent(bundle)
+        agent.retriever.fixed_versions = {
+            "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357",
+        }
+        self.assertEqual(
+            agent._answerability_guard({
+                "question": "How does ImaginaryWidgetFactory build the widgets?",
+                "bundle": bundle,
+            }),
+            ["unsupported requested symbol: ImaginaryWidgetFactory"],
+        )
 
     # T7 — the historical locator receives no special preference: the
     # query-relevant evidence outranks it under the generic ranking.

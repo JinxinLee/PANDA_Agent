@@ -301,8 +301,13 @@ def _has_explicit_version_repository_binding(
     token_pattern = rf"(?<![a-z0-9]){re.escape(token)}(?![a-z0-9])"
     qualifier = r"(?:commit|sha|version|ref)"
     separator = r"[\s:=-]+"
+    # A repository and its version qualifier may be separated by a preposition
+    # and an optional article/modifier ("Install PandaRoot from commit
+    # deadbeef", "... from requested commit ..."); without this the SHA falls
+    # out of the version-conflict comparison entirely.
+    connector = r"(?:\s+(?:from|at|using|with|of|in|for))?(?:\s+(?:the|a|requested|specific|given))?"
     patterns = (
-        rf"{repository_pattern}{separator}{qualifier}{separator}{token_pattern}",
+        rf"{repository_pattern}{connector}{separator}{qualifier}{separator}{token_pattern}",
         rf"{repository_pattern}\s*@\s*{token_pattern}",
         rf"{qualifier}{separator}{token_pattern}{separator}(?:for|of|in){separator}{repository_pattern}",
     )
@@ -1009,6 +1014,19 @@ class Retriever:
             for item in manifest["web_documents"]
             for match in re.finditer(r"\b\d{4}(?:-\d{2}-\d{2})?-dev\b", item["entry_url"], re.IGNORECASE)
         }
+
+    def is_repository_reference(self, token: str) -> bool:
+        """True when the token itself names a manifest repository identity.
+
+        Repository display names (PascalCase forms of the manifest repo ids,
+        e.g. "PandaRoot" for "pandaroot") are retrieval scope, not code
+        symbols; consumers such as the QA premise guard must not treat them as
+        uncataloged class symbols.
+        """
+        return any(
+            _has_explicit_repository_reference(token, repo)
+            for repo in self.fixed_versions
+        )
 
     def _preparse(
         self,
