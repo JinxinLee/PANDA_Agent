@@ -1,0 +1,160 @@
+{
+  "schema_version": "f6a-fr1-root-cause-matrix-v1",
+  "task": "F6-A-FR1",
+  "source_run_id": "f6a-rc1-gold-formal-full-20260913",
+  "source_run_record_count": 59,
+  "gate_matrix_authority": "evaluation/f6a_gold_gate_matrix_r1_r1_r1.json",
+  "starting_head": "557327e3923b0c0f074ec32812928c1b5bdc1797",
+  "scientific_calls": 0,
+  "scientific_tokens": 0,
+  "cases": [
+    {
+      "case_id": "g005",
+      "expected_status": "answered",
+      "actual_status": "insufficient_evidence",
+      "primary_root_cause": "RC1",
+      "secondary_effects": [
+        "expected_status_accuracy miss",
+        "final_evidence_recall miss",
+        "answer_point_coverage miss",
+        "contradiction_count (refusal text vs cited pandaroot evidence)"
+      ],
+      "affected_product_stage": "premise/refusal guard (qa.py _answerability_guard)",
+      "generic_or_case_specific": "generic",
+      "candidate_fix_surface": "Retriever.is_repository_reference + guard repository-identity exclusion",
+      "evidence": "verification_errors=['unsupported requested symbol: PandaRoot']; analyzer provenance rule=manifest_repo_id target=pandaroot; cited evidence docs/Docker/DevelopingInContainer.rst"
+    },
+    {
+      "case_id": "g013",
+      "expected_status": "answered",
+      "actual_status": "insufficient_evidence",
+      "primary_root_cause": "RC1",
+      "secondary_effects": [
+        "expected_status_accuracy miss",
+        "final_evidence_recall miss",
+        "answer_point_coverage miss",
+        "contradiction_count"
+      ],
+      "affected_product_stage": "premise/refusal guard (qa.py _answerability_guard)",
+      "generic_or_case_specific": "generic",
+      "candidate_fix_surface": "Retriever.is_repository_reference + guard repository-identity exclusion",
+      "evidence": "verification_errors=['unsupported requested symbol: PandaRoot']; cited evidence pandaroot_sphinx Running/Macros.html"
+    },
+    {
+      "case_id": "g027",
+      "expected_status": "answered",
+      "actual_status": "insufficient_evidence",
+      "primary_root_cause": "RC1",
+      "secondary_effects": [
+        "expected_status_accuracy miss",
+        "final_evidence_recall miss",
+        "answer_point_coverage miss"
+      ],
+      "affected_product_stage": "premise/refusal guard (qa.py _answerability_guard)",
+      "generic_or_case_specific": "generic",
+      "candidate_fix_surface": "Retriever.is_repository_reference + guard repository-identity exclusion",
+      "evidence": "genuine class PndTargetGenerator is cataloged; refusal triggered by repository display names PandaRoot and RestgasDetermination"
+    },
+    {
+      "case_id": "g034",
+      "expected_status": "answered",
+      "actual_status": "insufficient_evidence",
+      "primary_root_cause": "RC1",
+      "secondary_effects": [
+        "expected_status_accuracy miss",
+        "final_evidence_recall miss",
+        "answer_point_coverage miss",
+        "contradiction_count",
+        "major_unsupported_claim_count (unsupported_symbol_context)"
+      ],
+      "affected_product_stage": "premise/refusal guard (qa.py _answerability_guard)",
+      "generic_or_case_specific": "generic",
+      "candidate_fix_surface": "Retriever.is_repository_reference + guard repository-identity exclusion",
+      "evidence": "verification_errors=['unsupported requested symbol: LuminosityFit']; cited model/PndLmdSmearingConvolutionModel2D.cxx from luminosityfit"
+    },
+    {
+      "case_id": "g059",
+      "expected_status": "answered",
+      "actual_status": "insufficient_evidence",
+      "primary_root_cause": "RC1",
+      "secondary_effects": [
+        "expected_status_accuracy miss",
+        "final_evidence_recall miss",
+        "answer_point_coverage miss",
+        "contradiction_count"
+      ],
+      "affected_product_stage": "premise/refusal guard (qa.py _answerability_guard)",
+      "generic_or_case_specific": "generic",
+      "candidate_fix_surface": "Retriever.is_repository_reference + guard repository-identity exclusion",
+      "evidence": "verification_errors=['unsupported requested symbol: LuminosityFit']; cited ui/PndLmdFitFacade.cxx from luminosityfit"
+    },
+    {
+      "case_id": "g060",
+      "expected_status": "answered",
+      "actual_status": "insufficient_evidence",
+      "primary_root_cause": "RC1",
+      "secondary_effects": [
+        "expected_status_accuracy miss",
+        "final_evidence_recall miss",
+        "answer_point_coverage miss",
+        "paper_code_dual_source_rate = 0.0 (single applicable case)"
+      ],
+      "affected_product_stage": "premise/refusal guard (qa.py _answerability_guard)",
+      "generic_or_case_specific": "generic",
+      "candidate_fix_surface": "Retriever.is_repository_reference + guard repository-identity exclusion (no standalone dual-source fix)",
+      "evidence": "verification_errors=['unsupported requested symbol: LuminosityFit']; required_source_types=[paper, code]"
+    },
+    {
+      "case_id": "g012",
+      "expected_status": "version_conflict",
+      "actual_status": "insufficient_evidence",
+      "primary_root_cause": "RC2",
+      "secondary_effects": [
+        "expected_status_accuracy miss",
+        "final_evidence_recall miss"
+      ],
+      "affected_product_stage": "requested-version parsing / conflict detection (retrieval.py _has_explicit_version_repository_binding)",
+      "generic_or_case_specific": "generic",
+      "candidate_fix_surface": "prepositional connector in version-repository binding syntax",
+      "evidence": "query='Install PandaRoot from commit deadbeef instead of the locked corpus commit.'; diagnostics unbound_version_tokens=['deadbeef']; plan.version_conflicts=[]"
+    },
+    {
+      "case_id": "g026",
+      "expected_status": "version_conflict",
+      "actual_status": "answered",
+      "primary_root_cause": "RC2",
+      "secondary_effects": [
+        "expected_status_accuracy miss"
+      ],
+      "affected_product_stage": "requested-version parsing / conflict detection (retrieval.py _has_explicit_version_repository_binding)",
+      "generic_or_case_specific": "generic",
+      "candidate_fix_surface": "prepositional connector in version-repository binding syntax",
+      "evidence": "query='Run LuminosityFit from requested commit cafebabe rather than the locked master snapshot.'; resolved_versions locked master only; cafebabe silently ignored"
+    }
+  ],
+  "root_causes": {
+    "RC1": {
+      "name": "repository display names treated as requested bare class symbols",
+      "cases": ["g005", "g013", "g027", "g034", "g059", "g060"],
+      "affected_stage": "premise/refusal guard",
+      "fix": "repository-identity exclusion via Retriever.is_repository_reference (manifest-driven, reuses analyzer matching semantics)"
+    },
+    "RC2": {
+      "name": "prepositional commit requests never reach version-conflict detection",
+      "cases": ["g012", "g026"],
+      "affected_stage": "requested-version parsing / conflict detection",
+      "fix": "bounded prepositional connector in _has_explicit_version_repository_binding; status precedence audited and confirmed correct"
+    }
+  },
+  "gate_explanations": {
+    "expected_status_accuracy": "RC1 (6) + RC2 (2) = all 8 status mismatches",
+    "final_evidence_recall": "RC1 refusals + RC2 g012 refusal",
+    "critical_final_evidence_recall": "RC1 refusals + RC2 g012 refusal",
+    "answer_point_coverage": "RC1 refusals (+ RC2 g012)",
+    "critical_answer_point_miss_count": "RC1 refusals (+ RC2 g012)",
+    "required_source_coverage_answered": "RC1 refusals",
+    "paper_code_dual_source_rate": "RC1 g060 refusal",
+    "contradiction_count": "RC1 refusal text vs cited evidence (g005/g013/g034/g059)",
+    "major_unsupported_claim_count": "RC1 (g034)"
+  }
+}
