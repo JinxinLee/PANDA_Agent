@@ -97,8 +97,9 @@ F5-R1 report: `evaluation/F5_R1_EXACT_LITERAL_IDENTIFIER_PROVENANCE_REPAIR.md`.
 F6 = staged release gate reconciled by F6-LR1 (attempt 1 = HISTORICAL / HOLD / PROTECTED_HOLDOUT_PRECONDITION_NOT_MET / ZERO_OUTCOME).
 F6-LR1 = COMPLETE / PASS / RELEASE_GATE_STAGING_RECONCILED.
 F6-LR1 record: `evaluation/F6_LR1_RELEASE_GATE_STAGING_RECONCILIATION.md` (companion `evaluation/f6_lr1_release_gate_staging_reconciliation.json`).
-F6-A = NOT_STARTED / READY_FOR_SEPARATE_EXECUTION.
-F6-B = NOT_STARTED / LOCKED_PENDING_F6_A_PASS.
+F6-A = COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED.
+F6-A record: `evaluation/F6_A_PRERELEASE_VALIDATION_AND_GENERALIZATION_GATE.md` (result JSON `evaluation/f6_a_prerelease_validation_result.json`).
+F6-B = LOCKED / F6_A_DID_NOT_PASS.
 Phase E = COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED.
 E2-A1 report: `evaluation/E2_A1_SHADOW_ANSWER_POINT_COVERAGE_CONTRACT.md`.
 C1 met all eight strict gates and the original pair09 atomicity sentinel. Per the
@@ -191,10 +192,10 @@ MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD
 Current planning state:
 D4 = PAUSED / ROADMAP_RECONCILIATION
 D4 overall completion = UNDECIDED
-CURRENT_TASK = F6-LR1 / COMPLETE / PASS / RELEASE_GATE_STAGING_RECONCILED
-NEXT_TASK_RECOMMENDATION = F6-A — Pre-Release Validation & Generalization Gate (Stage A0 must first resolve the carried-forward release-freeze engineering debt) / RECOMMENDED / NOT AUTHORIZED
+CURRENT_TASK = F6-A / COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED
+NEXT_TASK_RECOMMENDATION = SEPARATELY AUTHORIZED POST-F6-A FAILURE REVIEW / NEW CANDIDATE WORK ONLY
 NEXT_TASK_EXECUTION_AUTHORIZED = false
-FOLLOWING_ARCHITECTURE_TASK = F6-B — Protected Blind Release Gate (locked until F6-A PASS)
+FOLLOWING_ARCHITECTURE_TASK = F6-B — Protected Blind Release Gate (LOCKED / F6_A_DID_NOT_PASS)
 
 No D4-A11 exists.
 Phase E = COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED.
@@ -207,7 +208,7 @@ E3-LR1 = COMPLETE / PASS / POST_A2_LIFECYCLE_RECONCILED.
 E3 = COMPLETE / BOUNDED_LOW_FREQUENCY_FALLBACK_IMPLEMENTED / SCIENTIFIC_RECOVERY_BENEFIT_UNRESOLVED.
 PE-LR1 = COMPLETE / PASS / PHASE_E_CLOSED_PROMOTION_DEFERRED_UNTIL_MATERIAL_CANDIDATE.
 Phase E = COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED.
-Phase F = IN_PROGRESS / F6_A_READY.
+Phase F = IN_PROGRESS / F6_A_RELEASE_GATE_FAILED.
 F2 = COMPLETE / PASS / A1_A2_A3_A4_A5_COMPLETE.
 F3 = COMPLETE / PASS / FIXED_LOCATOR_FALLBACK_SHORTCUTS_RETIRED.
 F4 = COMPLETE / PASS / ANSWER_GENERATION_SEMANTIC_VERIFICATION_ROLES_SEPARATED.
@@ -215,10 +216,10 @@ F4-R1 = COMPLETE / PASS / PRODUCTION_MODEL_ROLE_DIAGNOSTICS_CORRECTED.
 F5 = COMPLETE / PASS / BOUNDED_ANSWER_COMPOSER_SAFETY_CONTRACT_ESTABLISHED.
 F5-R1 = COMPLETE / PASS / EXACT_LITERAL_IDENTIFIER_PROVENANCE_BOUNDARY_ESTABLISHED.
 F6 attempt 1 = HISTORICAL / HOLD / PROTECTED_HOLDOUT_PRECONDITION_NOT_MET / ZERO_OUTCOME (valid under the then-authorized protocol).
-F6-LR1 = COMPLETE / PASS / RELEASE_GATE_STAGING_RECONCILED (static reconciliation: holdout governance/metadata integrity is the F6-A precondition; physical package availability is the F6-B precondition only; F6-A excludes holdout execution and its positive terminal state is HOLDOUT_ELIGIBLE; F6-B is the only protected blind release decision; candidate identity must be identical across A/B; §14 release-freeze engineering debt is carried into F6-A Stage A0 without implementation).
-F6-A = NOT_STARTED / READY_FOR_SEPARATE_EXECUTION.
-F6-B = NOT_STARTED / LOCKED_PENDING_F6_A_PASS.
-No further recovery, D4, Phase-E, or Phase-F production task is authorized; F6-A requires separate explicit authorization after its Stage A0 engineering-debt resolution.
+F6-LR1 = COMPLETE / PASS / RELEASE_GATE_STAGING_RECONCILED (static reconciliation: holdout governance/metadata integrity is the F6-A precondition; physical package availability is the F6-B precondition only).
+F6-A = COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED. Selector-defined formal-English Gold cohort (59 IDs, calibration v3 reconciliation) executed mode=full under frozen candidate f6a-rc1-20260913 after zero-outcome Stage A0. Release score 0.8277 (59/59 complete). Ten preregistered gates failed: final_evidence_recall 0.8129 (<0.90), critical_final_evidence_recall 0.8231 (==1.00), expected_status_accuracy 0.8644 (<0.975), required_source_coverage_answered 0.9388 (<0.97), paper_code_dual_source_rate 0.1633 (==1.00), answer_point_coverage 0.8446 (<0.90), critical_answer_point_miss_count 18 (==0), contradiction_count 4 (==0), major_unsupported_claim_count 1 (==0). Passing: gold_recall_at_10 0.9898, intent_accuracy 0.9831, citation_integrity 1.00, wrong/forbidden evidence 0, identifier_hallucination_rate 0.00, unhandled exceptions 0. Failure pattern: six erroneous insufficient-evidence refusals on Gold-answered questions (four asserting "not defined in the locked corpus" against cited contrary evidence — g005/g013/g034/g059) plus two version-conflict handling errors (g012/g026). Fail-fast froze the FAIL before ablation/novel_dev/novel_validation/composer-audit exposure; novel_validation remains PRISTINE_FOR_CURRENT_LINEAGE. Infrastructure incidents (three external process terminations, two Vertex 429 quota failures retried after recovery) recovered under the same frozen identity; usage: 383 scientific/evaluation calls, 3,348,432 tokens.
+F6-B = LOCKED / F6_A_DID_NOT_PASS.
+No further recovery, D4, Phase-E, or Phase-F production task is authorized; a repaired candidate requires a separately authorized post-F6-A failure review and new candidate work, then a new F6-A attempt.
 
 ## E3-A1 experimental implementation closeout
 
@@ -816,6 +817,39 @@ promotion remains deferred.
 NEXT_TASK_RECOMMENDATION = F6-A — Pre-Release Validation & Generalization Gate (RECOMMENDED / NOT AUTHORIZED;
 Stage A0 engineering debt first).
 Report: `evaluation/F6_LR1_RELEASE_GATE_STAGING_RECONCILIATION.md`.
+
+## F6-A prerelease validation result record
+
+COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED. First executed F6-A under the corrected staged
+protocol at preregistration HEAD lineage `f30d907`/`28be395` (candidate f6a-rc1-20260913, refrozen against the
+selector-defined identity; the superseded 120-question plan's preregistration/freeze and its terminated 9/120
+partial run are preserved as historical records). Stage A0 closed all carried engineering debt: freezer/evaluator
+signed-authority equivalence, benchmark-manifest identity, Docker Option A (release-critical postgres/qdrant
+identities), clean-implementation-tree freeze + ancestor-HEAD verification with evaluation-infrastructure-only
+drift accepted as diagnostic, unfrozen-gate NOT_REACHED semantics, and g021 provenance confirmed sufficient. The
+reviewed product-language calibration was mechanically reconciled as versioned successor v3 (g021 criticality-only
+change; re-derivation reproduces the declared 59/21 IDs exactly; no fresh human review claimed) and the stale
+"full-dev before product gate" coupling was removed — the product gate is now computed from selector-cohort
+completeness. Stage A1 executed the exact 59-ID formal-English Gold cohort mode=full (59/59 complete after three
+external process terminations resumed under the same identity and two Vertex 429 quota failures retried after
+recovery; retry transparently recorded). Release score 0.8277 (59/59). Ten preregistered gates FAILED:
+final_evidence_recall 0.8129, critical_final_evidence_recall 0.8231, expected_status_accuracy 0.8644,
+required_source_coverage_answered 0.9388, paper_code_dual_source_rate 0.1633, answer_point_coverage 0.8446,
+critical_answer_point_miss_count 18, contradiction_count 4, major_unsupported_claim_count 1, plus the same
+failure pattern surfacing in expected_status_accuracy. Six Gold-answered cases were erroneously refused
+(g005/g013/g027/g034/g059/g060), four with the contradiction pattern of claiming "not defined in the locked
+corpus" against cited contrary evidence; two version-conflict cases were mishandled (g012/g026). Passing gates:
+gold_recall_at_10 0.9898, intent_accuracy 0.9831, citation_integrity 1.00, wrong/forbidden evidence 0,
+identifier_hallucination_rate 0.00, unhandled product exceptions 0. The FAIL was frozen before exposing
+ablation/novel_dev/novel_validation/composer-audit cohorts; novel_validation remains
+PRISTINE_FOR_CURRENT_LINEAGE; composer diagnostics within A1 were healthy (35 attempted / 32 accepted) but the
+empirical audit is NOT_REACHED. Usage: 383 scientific/evaluation calls, 3,348,432 tokens (runtime 319/2,980,205
+incl. qa_generation 69 + qa_composer 38; judge 64/368,227; includes the two 429-failed first attempts).
+Integrity: zero post-freeze product changes, zero threshold changes, zero validation-driven tuning, zero holdout
+access, zero protected-content leakage, zero mixed identities. No case-level failure inspection was performed;
+aggregate analysis only. Normal default remains legacy_question_core; default promotion remains deferred.
+NEXT_TASK_RECOMMENDATION = SEPARATELY AUTHORIZED POST-F6-A FAILURE REVIEW / NEW CANDIDATE WORK ONLY.
+Report: `evaluation/F6_A_PRERELEASE_VALIDATION_AND_GENERALIZATION_GATE.md`.
 
 ## Historical E3-A0 architecture contract closeout
 

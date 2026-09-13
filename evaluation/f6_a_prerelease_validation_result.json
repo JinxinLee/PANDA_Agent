@@ -1,0 +1,306 @@
+{
+  "schema_version": "f6a-result-v1",
+  "task": "F6-A — Prerelease Validation & Generalization Gate",
+  "terminal_state": "COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED",
+  "f6_b_state": "LOCKED / F6_A_DID_NOT_PASS",
+  "phase_f_state": "IN_PROGRESS / F6_A_RELEASE_GATE_FAILED",
+  "starting_head_expected": "5385d9aa7e2a3335f5da0e70f7882a4f3691590a",
+  "a0_infrastructure_commit": "f30d907",
+  "preregistration_commit": "500409c",
+  "candidate_id": "f6a-rc1-20260913",
+  "candidate_freeze_head": "28be3955",
+  "candidate_manifest_sha256_prefix": "e331a5bc1c7309fb",
+  "gold_identity": {
+    "benchmark_version": "m6-benchmark-v2.6",
+    "universe_question_count": 120,
+    "dataset_sha256": "6f12d54b4db3fdd87fb30670e730ffd8c025a55a968c90a4ea63ab7cecdb878f"
+  },
+  "product_language_calibration": {
+    "calibration_id": "phase_b_t3_product_language_scope_v3",
+    "predecessor": "phase_b_t3_product_language_scope_v2",
+    "reconciliation": "mechanical; g021 criticality-only change; no fresh human review",
+    "formal_english_count": 59
+  },
+  "bootstrap_reference_unchanged": true,
+  "hundred_twenty_case_full_run_occurred": true,
+  "hundred_twenty_case_run_detail": {
+    "plan": "superseded 120-question plan (before the corrected F6-A protocol)",
+    "records": "9/120 preserved at data/evaluation/runs/f6a-rc1-gold-full-20260913",
+    "terminated_by_user": true,
+    "not_f6a_evidence": true
+  },
+  "run_ids": {
+    "stage_a1_gold_formal_full": "f6a-rc1-gold-formal-full-20260913",
+    "stage_a2_ablation": "NOT_RUN (fail-fast after Stage A1 FAIL)",
+    "stage_a3_novel_dev": "NOT_RUN",
+    "stage_a4_novel_validation": "NOT_RUN",
+    "stage_a5_composer_audit": "NOT_RUN"
+  },
+  "completion": {
+    "formal_gold": "59/59 exact selector cohort",
+    "after_recovery": "two 429-error records retried after quota recovery; backup at results.jsonl.pre-retry-backup"
+  },
+  "release_score": 0.8276836158192091,
+  "release_score_denominator": 59,
+  "gold_gates": {
+    "gold_recall_at_10": {
+      "value": 0.9897959183673469,
+      "threshold": 0.95,
+      "inclusive": true,
+      "passed": true,
+      "denominator": 49,
+      "inapplicable_ids": [
+        "g007",
+        "g012",
+        "g025",
+        "g026",
+        "g041",
+        "g042",
+        "g057",
+        "g058",
+        "g108",
+        "g119"
+      ]
+    },
+    "final_evidence_recall": {
+      "value": 0.8129251700680272,
+      "threshold": 0.9,
+      "inclusive": true,
+      "passed": false,
+      "denominator": 49,
+      "inapplicable_ids": [
+        "g007",
+        "g012",
+        "g025",
+        "g026",
+        "g041",
+        "g042",
+        "g057",
+        "g058",
+        "g108",
+        "g119"
+      ]
+    },
+    "critical_final_evidence_recall": {
+      "value": 0.8231292517006803,
+      "threshold": 1.0,
+      "inclusive": true,
+      "passed": false,
+      "denominator": 49,
+      "inapplicable_ids": [
+        "g007",
+        "g012",
+        "g025",
+        "g026",
+        "g041",
+        "g042",
+        "g057",
+        "g058",
+        "g108",
+        "g119"
+      ]
+    },
+    "intent_accuracy": {
+      "value": 0.9830508474576272,
+      "threshold": 0.9,
+      "inclusive": true,
+      "passed": true,
+      "denominator": 59,
+      "inapplicable_ids": []
+    },
+    "per_intent_gold_recall_at_10": {
+      "value": 0.9897959183673469,
+      "threshold": 0.75,
+      "inclusive": true,
+      "passed": true,
+      "denominator": 49,
+      "inapplicable_ids": [
+        "g007",
+        "g012",
+        "g025",
+        "g026",
+        "g041",
+        "g042",
+        "g057",
+        "g058",
+        "g108",
+        "g119"
+      ]
+    },
+    "per_intent_intent_accuracy": {
+      "value": 0.9830508474576272,
+      "threshold": 0.8,
+      "inclusive": true,
+      "passed": true,
+      "denominator": 59,
+      "inapplicable_ids": []
+    },
+    "expected_status_accuracy": {
+      "value": 0.864406779661017,
+      "threshold": 0.975,
+      "inclusive": true,
+      "passed": false,
+      "denominator": 59,
+      "inapplicable_ids": []
+    },
+    "citation_integrity": {
+      "value": 1.0,
+      "threshold": 1.0,
+      "inclusive": true,
+      "passed": true,
+      "denominator": 59,
+      "inapplicable_ids": []
+    },
+    "wrong_version_evidence_count": {
+      "value": 0,
+      "threshold": 0,
+      "passed": true,
+      "applicable_denominator": 59
+    },
+    "forbidden_evidence_count": {
+      "value": 0,
+      "threshold": 0,
+      "passed": true,
+      "applicable_denominator": 59
+    },
+    "required_source_coverage_answered": {
+      "value": 0.9387755102040817,
+      "threshold": 0.97,
+      "inclusive": true,
+      "passed": false,
+      "denominator": 49,
+      "inapplicable_ids": [
+        "g007",
+        "g012",
+        "g025",
+        "g026",
+        "g041",
+        "g042",
+        "g057",
+        "g058",
+        "g108",
+        "g119"
+      ]
+    },
+    "identifier_hallucination_rate": {
+      "value": 0.0,
+      "threshold": 0.03,
+      "inclusive": false,
+      "passed": true,
+      "hallucination_count": 0,
+      "identifier_mentions": 127,
+      "denominator": 59
+    },
+    "paper_code_dual_source_rate": {
+      "value": 0.16326530612244897,
+      "threshold": 1.0,
+      "passed": false,
+      "denominator": 49,
+      "inapplicable_ids": [
+        "g007",
+        "g012",
+        "g025",
+        "g026",
+        "g041",
+        "g042",
+        "g057",
+        "g058",
+        "g108",
+        "g119"
+      ],
+      "note": "applicable only to dual-source questions"
+    },
+    "answer_point_coverage": {
+      "value": 0.844632768361582,
+      "threshold": 0.9,
+      "inclusive": true,
+      "passed": false,
+      "denominator": 59,
+      "inapplicable_ids": []
+    },
+    "critical_answer_point_miss_count": {
+      "value": 18,
+      "threshold": 0,
+      "passed": false,
+      "applicable_denominator": 59
+    },
+    "contradiction_count": {
+      "value": 4,
+      "threshold": 0,
+      "passed": false,
+      "applicable_denominator": 59
+    },
+    "major_unsupported_claim_count": {
+      "value": 1,
+      "threshold": 0,
+      "passed": false,
+      "applicable_denominator": 59
+    },
+    "unhandled_exception_count": {
+      "value": 0,
+      "threshold": 0,
+      "passed": true
+    },
+    "release_score": {
+      "release_score": 0.8276836158192091,
+      "complete_case_count": 59,
+      "incomplete_case_ids": [],
+      "denominator": 59
+    }
+  },
+  "failed_gates": [
+    "final_evidence_recall",
+    "critical_final_evidence_recall",
+    "expected_status_accuracy",
+    "required_source_coverage_answered",
+    "paper_code_dual_source_rate",
+    "answer_point_coverage",
+    "critical_answer_point_miss_count",
+    "contradiction_count",
+    "major_unsupported_claim_count"
+  ],
+  "generalization_gap": "NOT_REACHED (novel_validation preserved pristine)",
+  "benchmark_dependency": "NOT_REACHED (ablation not run after Gold FAIL)",
+  "composer_metrics": {
+    "stage_a1_diagnostics": "attempted 35 / accepted 32",
+    "empirical_audit": "NOT_REACHED"
+  },
+  "e3_opportunistic": {
+    "applicable": 0,
+    "recovery_benefit": "UNRESOLVED"
+  },
+  "usage": {
+    "panda_scientific_evaluation_calls": 383,
+    "panda_scientific_evaluation_tokens": 3348432,
+    "breakdown": {
+      "product_runtime": {
+        "calls": 319,
+        "tokens": 2980205,
+        "roles": {
+          "qa_generation_calls": 69,
+          "qa_composer_calls": 38
+        }
+      },
+      "external_judge": {
+        "calls": 64,
+        "tokens": 368227
+      }
+    },
+    "note": "includes the two 429-failed first attempts (g112/g113)"
+  },
+  "infrastructure_incidents": [
+    "three external process terminations without traceback; resumed same run ID/candidate/preregistration with completed records reused",
+    "g112/g113 first attempts failed with Vertex 429 RESOURCE_EXHAUSTED; retried successfully after quota recovery under the same frozen identity"
+  ],
+  "integrity": {
+    "product_changes_after_freeze": 0,
+    "threshold_changes_after_prereg": 0,
+    "validation_driven_tuning": 0,
+    "holdout_access": 0,
+    "protected_content_leakage": 0,
+    "mixed_candidate_identities": 0
+  },
+  "failure_review_boundary": "aggregate analysis only; case-level development inspection deferred to a separately authorized task under exposure-ledger policy",
+  "next_recommendation": "SEPARATELY_AUTHORIZED POST-F6-A FAILURE REVIEW / NEW CANDIDATE WORK ONLY",
+  "next_task_execution_authorized": false
+}
