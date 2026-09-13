@@ -1,0 +1,183 @@
+{
+  "schema_version": "f6a2-fr1-residual-review-v1",
+  "task": "F6-A2-FR1",
+  "decision": "COMPLETE / PASS / RESIDUAL_FAILURES_CLASSIFIED",
+  "starting_head": "e3d780938959206359ff420494a01b6f7a54d5b3",
+  "scientific_calls": 0,
+  "scientific_tokens": 0,
+  "attempt_2_verdict_unchanged": "COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED",
+  "attempt_2_fail_robustness": "PRODUCT_DEFECT class alone keeps critical_final_evidence_recall <= 0.929, critical_answer_point_miss_count >= 2, paper_code_dual_source_rate = 0.0, major_unsupported_claim_count >= 1 even if every GOLD/MIXED component is corrected favorably",
+  "contributors": [
+    {
+      "case_id": "g001",
+      "failed_gates": ["final_evidence_recall", "critical_final_evidence_recall", "critical_answer_point_miss_count"],
+      "reviewed_failure_items": ["g001.installation DROPPED_AT_FINAL_ANSWER_EVIDENCE", "p1 missing"],
+      "primary_classification": "GOLD_CONTRACT_DEFECT",
+      "secondary_classification": "PRODUCT_DEFECT",
+      "product_stage": "gold evidence-group selector scope (forward-only) / answer content",
+      "evidence": "group any_of accepts only sphinx 'Installation —' pages; answer cites same-content repository source form docs/Installation/Install_PandaRoot.rst + Install_Developers.rst; p1 additionally requires a 'commit-specific' statement the question does not entail",
+      "recommended_action": "GOLD_CONTRACT_REVIEW",
+      "confidence": "medium-high"
+    },
+    {
+      "case_id": "g005",
+      "failed_gates": ["critical_answer_point_miss_count"],
+      "reviewed_failure_items": ["p1 missing (evidence recall fully satisfied)"],
+      "primary_classification": "MIXED",
+      "secondary_classification": "EXPECTED_STOCHASTIC_VARIATION",
+      "product_stage": "answer content choice / gold criticality scope (forward-only)",
+      "evidence": "answer cites the matched sphinx Docker/DevelopingInContainer page and answers the need via a valid evidenced VSCode Dev Containers route, but never performs the 'distinguish developing inside the container from merely running an image' contrast p1 makes critical",
+      "recommended_action": "GOLD_CONTRACT_REVIEW",
+      "confidence": "medium"
+    },
+    {
+      "case_id": "g011",
+      "failed_gates": ["final_evidence_recall", "critical_final_evidence_recall"],
+      "reviewed_failure_items": ["g011.e1 RETRIEVED_BUT_NOT_SELECTED"],
+      "primary_classification": "MIXED",
+      "secondary_classification": "PRODUCT_DEFECT",
+      "product_stage": "pool-to-final evidence selection / gold page-title scope",
+      "evidence": "4 satisfying installation-page objects reach the pool but never the trace-final evidence; answer covers the native-vs-container need from the sphinx Docker page",
+      "recommended_action": "GOLD_CONTRACT_REVIEW",
+      "confidence": "medium"
+    },
+    {
+      "case_id": "g013",
+      "failed_gates": ["final_evidence_recall", "critical_final_evidence_recall", "critical_answer_point_miss_count"],
+      "reviewed_failure_items": ["g013.e1 DROPPED_AT_FINAL_ANSWER_EVIDENCE", "p3 missing"],
+      "primary_classification": "PRODUCT_DEFECT",
+      "secondary_classification": null,
+      "product_stage": "answer generation / verification (evidence retention + false insufficiency claim)",
+      "evidence": "5 satisfying sphinx Running/Macros+MasterTasks+PndMasterRunSim objects are trace-final but uncited; answer asserts 'the supplied evidence does not document lower-level task lifecycle stages' against already-selected documentation",
+      "recommended_action": "PRODUCT_FIX_CANDIDATE",
+      "confidence": "high"
+    },
+    {
+      "case_id": "g014",
+      "failed_gates": ["final_evidence_recall", "critical_final_evidence_recall"],
+      "reviewed_failure_items": ["g014.e2 DROPPED_AT_FINAL_ANSWER_EVIDENCE"],
+      "primary_classification": "GOLD_CONTRACT_DEFECT",
+      "secondary_classification": "PRODUCT_DEFECT",
+      "product_stage": "gold evidence-group selector scope (forward-only) / answer evidence",
+      "evidence": "group accepts only sphinx PndMasterTasks.html/Running.html; answer cites docs/Running/Running_Sequence.rst (Running page repository source form) plus a weak sphinx index citation",
+      "recommended_action": "GOLD_CONTRACT_REVIEW",
+      "confidence": "medium"
+    },
+    {
+      "case_id": "g016",
+      "failed_gates": ["final_evidence_recall", "critical_final_evidence_recall", "required_source_coverage_answered"],
+      "reviewed_failure_items": ["g016.e1 DROPPED_AT_FINAL_ANSWER_EVIDENCE", "documentation source missing"],
+      "primary_classification": "PRODUCT_DEFECT",
+      "secondary_classification": null,
+      "product_stage": "answer/composer evidence retention",
+      "evidence": "4 satisfying sphinx DPMGenerator documentation objects selected but answer cites only PndMasterRunSim.h twice; required documentation source type uncovered",
+      "recommended_action": "PRODUCT_FIX_CANDIDATE",
+      "confidence": "high"
+    },
+    {
+      "case_id": "g020",
+      "failed_gates": ["final_evidence_recall", "critical_final_evidence_recall"],
+      "reviewed_failure_items": ["g020.e1 RETRIEVED_BUT_NOT_SELECTED"],
+      "primary_classification": "MIXED",
+      "secondary_classification": "PRODUCT_DEFECT",
+      "product_stage": "pool-to-final evidence selection",
+      "evidence": "README 'POCA Workflow' section objects reach the pool but are not selected; answer describes the runall workflow without the POCA-specific second-pass semantics",
+      "recommended_action": "PRODUCT_FIX_CANDIDATE",
+      "confidence": "medium"
+    },
+    {
+      "case_id": "g021",
+      "failed_gates": ["final_evidence_recall"],
+      "reviewed_failure_items": ["g021.e2 RETRIEVAL_MISS"],
+      "primary_classification": "PRODUCT_DEFECT",
+      "secondary_classification": null,
+      "product_stage": "retrieval",
+      "evidence": "restgas fork pgenerators/Target/PndTargetGenerator.cxx (9 satisfying index objects) never enters the candidate pool",
+      "recommended_action": "PRODUCT_FIX_CANDIDATE",
+      "confidence": "medium"
+    },
+    {
+      "case_id": "g022",
+      "failed_gates": ["final_evidence_recall", "critical_final_evidence_recall", "critical_answer_point_miss_count"],
+      "reviewed_failure_items": ["g022.e2 DROPPED_AT_FINAL_ANSWER_EVIDENCE", "p2 missing"],
+      "primary_classification": "PRODUCT_DEFECT",
+      "secondary_classification": null,
+      "product_stage": "answer evidence retention",
+      "evidence": "the single satisfying object tut_02_02_analysis_pid.html is trace-final but dropped; answer identifies the Data Access page and only mentions PID selection",
+      "recommended_action": "PRODUCT_FIX_CANDIDATE",
+      "confidence": "high"
+    },
+    {
+      "case_id": "g044",
+      "failed_gates": ["final_evidence_recall", "critical_final_evidence_recall"],
+      "reviewed_failure_items": ["g044.e1 DROPPED_AT_FINAL_ANSWER_EVIDENCE"],
+      "primary_classification": "MIXED",
+      "secondary_classification": "PRODUCT_DEFECT",
+      "product_stage": "gold single-source lock (forward-only) / answer evidence substitution",
+      "evidence": "group locks pflueger_2017 pages 57/58/62; answer answers the same theoretical need from li_2026 while one satisfying pflueger object is dropped at answer time",
+      "recommended_action": "GOLD_CONTRACT_REVIEW",
+      "confidence": "medium"
+    },
+    {
+      "case_id": "g060",
+      "failed_gates": ["final_evidence_recall", "critical_final_evidence_recall", "required_source_coverage_answered", "paper_code_dual_source_rate"],
+      "reviewed_failure_items": ["g060.e1 DROPPED_AT_FINAL_ANSWER_EVIDENCE", "paper source missing", "dual-source 0.0"],
+      "primary_classification": "PRODUCT_DEFECT",
+      "secondary_classification": null,
+      "product_stage": "answer/composer evidence retention",
+      "evidence": "both satisfying pflueger_2017 paper objects are trace-final but final answer evidence contains only luminosityfit code; paper+code obligation is question-entailed by the preregistered contract",
+      "recommended_action": "PRODUCT_FIX_CANDIDATE",
+      "confidence": "high"
+    },
+    {
+      "case_id": "g113",
+      "failed_gates": ["major_unsupported_claim_count"],
+      "reviewed_failure_items": ["claim_3_efficiency_empty_bin_diagnosis major unsupported"],
+      "primary_classification": "PRODUCT_DEFECT",
+      "secondary_classification": null,
+      "product_stage": "answer claim generation discipline",
+      "evidence": "causal diagnosis (empty bins from failed reconstruction selection; specific cut/profile assertions) not substantiated by cited PndLmdDataReader.cxx / efficiency_correction macros; verifier flags major-unsupported but the claim still ships in the final answer",
+      "recommended_action": "PRODUCT_FIX_CANDIDATE",
+      "confidence": "high"
+    }
+  ],
+  "non_gate_contributing_diagnostics": "refusal/version-conflict cases (g007, g012, g026, g042, g058, g108, g119) carry unmatched evidence groups but final-evidence recall does not apply to non-answered cases; no gate impact",
+  "evaluator_defects": "none (zero selected-but-not-credited groups; no new inconsistency in corrected R1/R1-R1/R1-R1-R1 semantics)",
+  "stochastic_variations": "none stands alone; FR1-sensitive cases changed exactly as intended and residual differences trace to deterministic layers or the Gold contract",
+  "classification_matrix": {
+    "PRODUCT_DEFECT": ["g013", "g016", "g021", "g022", "g060", "g113"],
+    "GOLD_CONTRACT_DEFECT": ["g001", "g014"],
+    "EVALUATOR_DEFECT": [],
+    "EXPECTED_STOCHASTIC_VARIATION": [],
+    "MIXED": ["g005", "g011", "g020", "g044"],
+    "INCONCLUSIVE": []
+  },
+  "affected_gates_by_class": {
+    "PRODUCT_DEFECT": ["final_evidence_recall", "critical_final_evidence_recall", "required_source_coverage_answered", "paper_code_dual_source_rate", "critical_answer_point_miss_count", "major_unsupported_claim_count"],
+    "GOLD_CONTRACT_DEFECT": ["final_evidence_recall", "critical_final_evidence_recall", "critical_answer_point_miss_count"],
+    "MIXED": ["final_evidence_recall", "critical_final_evidence_recall", "critical_answer_point_miss_count"]
+  },
+  "usage_reconciliation": {
+    "qa_generation_labeled": {"calls": 67, "tokens": 1566586},
+    "qa_composer_labeled": {"calls": 46, "tokens": 75888},
+    "product_verifier": "NOT_SEPARATELY_RECOVERABLE_FROM_STORED_RECORDS",
+    "other_runtime_generation": {"calls": 137, "tokens": 1260974},
+    "embedding": {"calls": 64, "tokens": "NOT_SEPARATELY_RECOVERABLE_FROM_STORED_RECORDS"},
+    "evaluation_judge": {"calls": 62, "tokens": 410203},
+    "total": {"calls": 376, "tokens": 3313651}
+  },
+  "provenance_finding": "freeze bookkeeping populated lineage fields inside the committed preregistration JSON; no scientific contract changed; candidate manifest correctly freezes 3f1f16e; Attempt 2 not invalidated; future attempts keep preregistration immutable and record freeze provenance in a separate receipt",
+  "protected_cohorts": {
+    "novel_validation": "PRISTINE_FOR_CURRENT_LINEAGE",
+    "holdout_access": 0,
+    "protected_content_leakage": 0
+  },
+  "lifecycle": {
+    "F6-A2-FR1": "COMPLETE / PASS / RESIDUAL_FAILURES_CLASSIFIED",
+    "F6-A_attempt_2": "COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED (unchanged)",
+    "F6-B": "LOCKED / F6_A_DID_NOT_PASS",
+    "Phase_F": "IN_PROGRESS / ATTEMPT_2_RESIDUAL_FAILURE_REVIEW_COMPLETE"
+  },
+  "next_recommendation": "FORWARD-ONLY GOLD CONTRACT REVIEW first, then F6-A2-FR2 / BOUNDED PRODUCT REPAIR AND NEW CANDIDATE DEVELOPMENT",
+  "next_task_execution_authorized": false
+}

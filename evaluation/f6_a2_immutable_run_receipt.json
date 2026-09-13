@@ -1,0 +1,61 @@
+{
+  "schema_version": "f6a-a2-immutable-run-receipt-v1",
+  "role": "archival receipt / committed audit pointer for the gitignored local run; raw local run remains the scientific evidence; the submitted result MD/JSON remains the lifecycle interpretation",
+  "run_id": "f6a-rc2-gold-formal-full-20260913",
+  "candidate_id": "f6a-rc2-20260913",
+  "candidate_manifest_sha256": "5c70357757967ee33464b61db86f6af5dd618fbfb0e1a056d5879214b8916098",
+  "record_count": 59,
+  "case_id_set_sha256": "914ee1b4b3f937e6839416932b44de06fb0401589fd59825a63ac430c5361d1c",
+  "case_id_set_hash_method": "sha256 over compact JSON array (separators ',', ':') of the sorted 59 record IDs",
+  "results_file_sha256": "e82bf74a7bdb62b425de203ab3660aed068fc9927f4e5dd348da46edc728ce9c",
+  "gate_matrix_sha256": "adf3703e8cc54079dcaadfdae8ad0b97c5d106eee3802f1f1551f80a0273fc03",
+  "traces_combined_sha256": "8e4829b2347448cbf0121a8c722d62f38bfc9661013eb15c620ed3593391e708",
+  "traces_combined_hash_method": "sha256 over the concatenation of the 59 per-case trace files in sorted filename order",
+  "trace_file_count": 59,
+  "status_distribution": {
+    "answered": 49,
+    "insufficient_evidence": 5,
+    "version_conflict": 5
+  },
+  "status_mismatch_count": 0,
+  "failed_gate_names": [
+    "final_evidence_recall",
+    "critical_final_evidence_recall",
+    "required_source_coverage_answered",
+    "paper_code_dual_source_rate",
+    "critical_answer_point_miss_count",
+    "major_unsupported_claim_count"
+  ],
+  "failed_gate_count": 6,
+  "incomplete_gate_names": [],
+  "release_score": 0.9463276836158192,
+  "per_failed_gate_failing_case_ids": {
+    "final_evidence_recall": ["g001", "g011", "g013", "g014", "g016", "g020", "g021", "g022", "g044", "g060"],
+    "critical_final_evidence_recall": ["g001", "g011", "g013", "g014", "g016", "g020", "g022", "g044", "g060"],
+    "required_source_coverage_answered": ["g016", "g060"],
+    "paper_code_dual_source_rate": ["g060"],
+    "critical_answer_point_miss_count": ["g001", "g005", "g013", "g022"],
+    "major_unsupported_claim_count": ["g113"]
+  },
+  "usage": {
+    "total": {"calls": 376, "tokens": 3313651},
+    "runtime": {
+      "generation_calls_total": 250,
+      "embedding_calls": 64,
+      "qa_generation_labeled": {"calls": 67, "tokens": 1566586},
+      "qa_composer_labeled": {"calls": 46, "tokens": 75888},
+      "runtime_tokens_total": 2903448
+    },
+    "evaluation_judge": {"calls": 62, "tokens": 410203}
+  },
+  "source_paths": {
+    "raw_run_dir": "data/evaluation/runs/f6a-rc2-gold-formal-full-20260913 (gitignored; local immutable)",
+    "results": "data/evaluation/runs/f6a-rc2-gold-formal-full-20260913/results.jsonl",
+    "gate_matrix": "data/evaluation/runs/f6a-rc2-gold-formal-full-20260913/gate_matrix.json",
+    "traces": "data/evaluation/runs/f6a-rc2-gold-formal-full-20260913/traces/*.json",
+    "candidate_manifest": "evaluation/candidates/f6a-rc2-20260913/candidate_manifest.json"
+  },
+  "generated_at": "2026-09-13",
+  "scientific_calls_this_receipt": 0,
+  "scientific_tokens_this_receipt": 0
+}

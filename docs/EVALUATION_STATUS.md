@@ -954,6 +954,30 @@ not reached); holdout access 0; F6-B not executed.
 NEXT_TASK_RECOMMENDATION = POST-ATTEMPT-2 EXPOSED-GOLD FAILURE REVIEW / NEW CANDIDATE DEVELOPMENT (NOT AUTHORIZED).
 Report: `evaluation/F6_A2_PRERELEASE_VALIDATION_RESULT.md`.
 
+## F6-A2-FR1 residual exposed-Gold failure review record
+
+COMPLETE / PASS / RESIDUAL_FAILURES_CLASSIFIED. Zero-scientific-call review-only attribution at HEAD `e3d7809`;
+the Attempt-2 terminal FAIL is preserved and shown robust (the PRODUCT_DEFECT class alone keeps
+critical_final_evidence_recall ≤ 0.929, critical misses ≥ 2, dual-source 0.0, and major unsupported ≥ 1 even
+under fully favorable GOLD/MIXED corrections). Complete contributor sets for all six failed gates were derived
+from the immutable records with exact aggregation cross-checks (weighted missing 5.8333/5.3333 over the 49
+answered cases reproduces 0.880952/0.891156); committed immutable run receipt records hashes of results.jsonl /
+gate_matrix / traces / candidate manifest. Three-layer group attribution (index / candidate pool /
+trace-final-vs-answer evidence): of the 10 gate-contributing groups, 7 are selected-but-dropped at the final
+answer evidence layer, 2 retrieved-but-not-selected, 1 retrieval miss; zero index-unsatisfiable, zero
+selected-but-not-credited (no evaluator defect). Classification: PRODUCT_DEFECT g013/g016/g021/g022/g060/g113
+(answer drops already-selected evidence, retrieval miss, unsupported causal claim shipped in the answer);
+GOLD_CONTRACT_DEFECT g001/g014 (group selectors lock rendered sphinx forms, rejecting same-content repository
+source files); MIXED g005/g011/g020/g044; EXPECTED_STOCHASTIC_VARIATION none stands alone; INCONCLUSIVE none.
+Usage reconciliation: qa_generation 67/1,566,586, qa_composer 46/75,888, judge 62/410,203, other runtime
+137/1,260,974, embedding 64 calls; product_verifier/embedding tokens NOT_SEPARATELY_RECOVERABLE; total unchanged
+376/3,313,651. Provenance nuance documented (freeze bookkeeping populated lineage fields in the committed
+preregistration JSON; no contract change; not invalidating; future attempts keep preregistration immutable).
+novel_validation pristine; holdout access 0; Gold/evaluator/product code unchanged.
+NEXT_TASK_RECOMMENDATION = FORWARD-ONLY GOLD CONTRACT REVIEW, then F6-A2-FR2 / BOUNDED PRODUCT REPAIR AND NEW
+CANDIDATE DEVELOPMENT (NOT AUTHORIZED).
+Report: `evaluation/F6_A2_FR1_RESIDUAL_EXPOSED_GOLD_FAILURE_REVIEW.md`.
+
 ## Historical E3-A0 architecture contract closeout
 
 COMPLETE / PASS / MISSING_POINT_TARGETED_RETRIEVAL_CONTRACT_ESTABLISHED.
