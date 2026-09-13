@@ -909,6 +909,30 @@ pristine; holdout access 0; product changes 0; scientific calls/tokens 0.
 NEXT_TASK_RECOMMENDATION = POST-F6-A EXPOSED-GOLD FAILURE REVIEW / NEW CANDIDATE DEVELOPMENT (NOT AUTHORIZED).
 Report: `evaluation/F6_A_R1_R1_R1_PER_INTENT_DENOMINATOR_EMISSION_REPAIR.md`.
 
+## F6-A-FR1 exposed Gold failure review and candidate development record
+
+COMPLETE / PASS / ROOT_CAUSES_ESTABLISHED_AND_BOUNDED_FIXES_IMPLEMENTED. Zero-scientific-call development task at
+HEAD `557327e`: all eight exposed status-mismatch cases (g005/g012/g013/g026/g027/g034/g059/g060) inventoried
+before any code change and explained by two generic root causes — RC1: repository display names (PandaRoot/
+LuminosityFit/RestgasDetermination) were extracted as requested bare class symbols by the question-grounded
+guard while the locked object catalog legitimately lacks repository identities, producing six false
+"unsupported requested symbol" refusals whose refusal text contradicted the cited in-repository evidence (all 4
+contradictions + the 1 major unsupported claim); RC2: prepositional commit requests ("repo from (requested)
+commit SHA") failed the adjacency-based version-repository binding, so the SHA stayed unbound and never reached
+the locked-version comparison (g012 degraded to insufficient evidence, g026 silently answered the locked
+snapshot). The status-precedence audit confirmed the existing VERSION_CONFLICT > INSUFFICIENT_EVIDENCE >
+ANSWERED ordering was correct. Bounded generic fixes: Retriever.is_repository_reference (manifest-driven,
+reusing analyzer matching semantics) with the QA guard excluding repository identities, and a bounded
+prepositional connector in _has_explicit_version_repository_binding. Nine new regression tests written first
+(red before fix, green after) including preserved-refusal controls (uncataloged class tokens, bare-SHA-unbound,
+multi-repository-no-bind, conflict-never-degrades). F2-A4/F2-A5 and QAAgent-dependent suites pass unchanged;
+the 24 baseline test failures (19 d4_a5 + 5 e2/e1) plus the fastapi collection gap were verified pre-existing
+via stash baseline — zero new failures introduced. Product-fix HEAD: `45f14ba`. F6-A remains FAIL; F6-B LOCKED;
+Phase F = IN_PROGRESS / POST_F6_A_FAILURE_REVIEW_COMPLETE_NEW_CANDIDATE_DEVELOPED. novel_validation pristine;
+holdout access 0; threshold/Gold changes 0; scientific calls/tokens 0.
+NEXT_TASK_RECOMMENDATION = NEW F6-A ATTEMPT / NEW CANDIDATE PREREGISTRATION AND FREEZE (NOT AUTHORIZED).
+Report: `evaluation/F6_A_FR1_EXPOSED_GOLD_FAILURE_REVIEW_AND_CANDIDATE_DEVELOPMENT.md`.
+
 ## Historical E3-A0 architecture contract closeout
 
 COMPLETE / PASS / MISSING_POINT_TARGETED_RETRIEVAL_CONTRACT_ESTABLISHED.

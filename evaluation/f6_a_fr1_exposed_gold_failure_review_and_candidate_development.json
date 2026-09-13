@@ -1,0 +1,85 @@
+{
+  "schema_version": "f6a-fr1-development-closeout-v1",
+  "task": "F6-A-FR1",
+  "task_type": "zero-scientific-call development task",
+  "decision": "COMPLETE / PASS / ROOT_CAUSES_ESTABLISHED_AND_BOUNDED_FIXES_IMPLEMENTED",
+  "starting_head": "557327e3923b0c0f074ec32812928c1b5bdc1797",
+  "scientific_calls": 0,
+  "scientific_tokens": 0,
+  "exposed_cases_reviewed": ["g005", "g012", "g013", "g026", "g027", "g034", "g059", "g060"],
+  "root_cause_classes": {
+    "RC1": {
+      "name": "repository display names treated as requested bare class symbols",
+      "cases": ["g005", "g013", "g027", "g034", "g059", "g060"],
+      "stage": "premise/refusal guard (qa.py _answerability_guard)",
+      "downstream_symptoms": [
+        "6 expected_status mismatches",
+        "final/critical evidence-recall misses",
+        "answer_point_coverage misses",
+        "required_source_coverage misses",
+        "paper_code_dual_source_rate 0.0 via g060",
+        "4 contradictions (g005/g013/g034/g059)",
+        "1 major unsupported claim (g034)"
+      ]
+    },
+    "RC2": {
+      "name": "prepositional commit requests never reach version-conflict detection",
+      "cases": ["g012", "g026"],
+      "stage": "requested-version parsing / conflict detection (retrieval.py)",
+      "downstream_symptoms": ["2 expected_status mismatches", "g012 evidence/recall misses"],
+      "status_precedence_audit": "existing precedence VERSION_CONFLICT > INSUFFICIENT_EVIDENCE > ANSWERED confirmed correct; defect was detection-layer only"
+    }
+  },
+  "files_changed": [
+    "src/panda_agent/retrieval.py",
+    "src/panda_agent/qa.py",
+    "tests/unit/test_retrieval.py",
+    "tests/unit/test_qa.py"
+  ],
+  "generic_fix_rationale": "manifest-driven repository-identity exclusion (reuses analyzer matching semantics) and bounded prepositional version-binding connector; no case IDs, no benchmark literals, no fixed locators, no threshold logic, no downstream metric filter, no prompt changes",
+  "regression_tests": {
+    "new": [
+      "test_prepositional_commit_request_binds_and_conflicts",
+      "test_prepositional_requested_commit_request_conflicts",
+      "test_prepositional_binding_requires_named_repository",
+      "test_locked_commit_request_does_not_conflict",
+      "test_repository_display_name_is_a_repository_reference",
+      "test_repository_display_name_is_not_a_requested_class_symbol",
+      "test_genuine_class_alongside_repository_names_is_not_refused",
+      "test_uncataloged_class_shaped_token_is_still_refused",
+      "test_version_conflict_precedes_insufficient_evidence_without_evidence"
+    ],
+    "test_first": "red before fix, green after fix",
+    "preserved_suites": "test_qa.py (F2-A4/F2-A5, composer/provenance), test_retrieval.py, QAAgent-dependent e1/e2/e3/c8/d4 suites"
+  },
+  "pre_existing_failures": {
+    "test_d4_a5_batch2": 19,
+    "test_e2_a1/test_e2_a3/test_e1_a2": 5,
+    "collection_gaps": "test_diagnostics/test_service require fastapi (not installed); service layer untouched",
+    "new_failures_introduced": 0
+  },
+  "residual_risks": [
+    "repaired behavior unmeasured on the cohort by design; requires a future authorized F6-A attempt",
+    "explicit SHA with no resolvable repository stays unbound without conflict (conservative, unchanged)",
+    "non-manifest project aliases are not exempted from the class-symbol guard (conservative)"
+  ],
+  "protected_cohort_integrity": {
+    "novel_validation_access": 0,
+    "holdout_access": 0,
+    "protected_content_leakage": 0,
+    "new_f6a_run": 0,
+    "gold_question_changes": 0,
+    "threshold_changes": 0
+  },
+  "new_candidate_development_head": "45f14ba (product-fix commit 'Repair generic refusal and version-conflict handling')",
+  "candidate_frozen": false,
+  "new_f6a_preregistered": false,
+  "lifecycle": {
+    "F6-A-FR1": "COMPLETE / PASS / ROOT_CAUSES_ESTABLISHED_AND_BOUNDED_FIXES_IMPLEMENTED",
+    "F6-A": "COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED",
+    "F6-B": "LOCKED / F6_A_DID_NOT_PASS",
+    "Phase F": "IN_PROGRESS / POST_F6_A_FAILURE_REVIEW_COMPLETE_NEW_CANDIDATE_DEVELOPED"
+  },
+  "next_recommendation": "NEW F6-A ATTEMPT / NEW CANDIDATE PREREGISTRATION AND FREEZE",
+  "next_task_execution_authorized": false
+}
