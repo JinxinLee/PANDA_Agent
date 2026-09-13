@@ -1,0 +1,78 @@
+{
+  "schema_version": "f6a2-fr2-r1-boundary-repair-v1",
+  "task": "F6-A2-FR2-R1 — Source-Obligation Public-Content and Coverage-Mode Boundary Repair",
+  "decision": "COMPLETE / PASS / SOURCE_OBLIGATION_PUBLIC_CONTENT_AND_COVERAGE_BOUNDARIES_REPAIRED",
+  "corrected_overall_fr2": {
+    "decision": "COMPLETE / PASS / RESIDUAL_PRODUCT_MECHANISMS_RECONCILED_AND_NEW_CANDIDATE_DEVELOPED",
+    "cluster_a": "REPAIRED",
+    "cluster_b": "DEFERRED_NO_SAFE_GENERIC_FIX",
+    "cluster_c": "DEFERRED_NO_SAFE_GENERIC_FIX",
+    "cluster_d": "REPAIRED"
+  },
+  "starting_head": "223a1e258dabf1a78b6c870fe8fd0ade902d0b30",
+  "scientific_calls": 0,
+  "scientific_tokens": 0,
+  "rejected_fr2_behavior": {
+    "mechanism": "_augment_source_obligation_evidence synthesized public source_obligation_<type> claims ('The cited paper at <location> documents <subject>.')",
+    "reasons": [
+      "provenance bookkeeping synthesized as user-facing content",
+      "source types survived final-evidence projection through meta-claims instead of supporting substantive claims",
+      "ran in coverage modes, letting plan.required_source_types synthesize public content despite F2-A3-R1",
+      "divergent paper/documentation/code-only classifier"
+    ],
+    "disposition": "mechanism retired entirely; internal-prefix hiding explicitly rejected"
+  },
+  "corrected_design": {
+    "requirement": {
+      "id": "source_role_grounding",
+      "scope": "multi-source plans only (len(required_source_types) >= 2)",
+      "instruction_semantics": "ground each part of the explanation in the source kind that actually supports it; provenance-only/coverage-only statements forbidden",
+      "contract": "legacy answer-requirement path; coverage modes receive model_answer_requirements = [] (F2-A3-R1 preserved)"
+    },
+    "deterministic_backstop": "_deterministic_missing_requirement_ids: requirement missing when cited evidence does not cover every required source kind",
+    "revision_mapping": "_requirement_evidence maps the required kinds' selected evidence into the legacy revision payload; the model writes the substantive grounded claim; the semantic verifier stays authoritative",
+    "classifier": "_evidence_source_types centralized (exact per-item extraction of sufficiency semantics incl. readme/workflow/channel kinds); _sufficiency refactored onto it; divergent _primary_evidence_source_type removed"
+  },
+  "cluster_d_preservation": "identical-normalized-text restatement of a claim just found unsupported is still dropped; substantively narrowed revisions pass (regression-locked)",
+  "files_changed": ["src/panda_agent/qa.py", "tests/unit/test_qa.py"],
+  "focused_verification": {
+    "new_tests": [
+      "test_multi_source_plan_requires_source_role_grounding",
+      "test_single_source_plan_has_no_source_role_grounding (control)",
+      "test_legacy_generation_receives_source_role_grounding",
+      "test_coverage_modes_do_not_receive_source_role_grounding (shadow_e1_v2 + runtime_e1_v2)",
+      "test_answer_never_synthesizes_provenance_only_claims",
+      "test_deterministic_backstop_reports_uncited_source_role",
+      "test_deterministic_backstop_passes_when_roles_are_grounded (control)",
+      "test_cluster_d_identical_unsupported_revision_is_dropped (preservation)",
+      "test_cluster_d_substantively_revised_claim_survives (preservation)"
+    ],
+    "red_before_green": true,
+    "results": "test_qa + test_retrieval 274 passed + 52 subtests; QAAgent-dependent suites show exactly the pre-existing baseline failures (19 d4_a5 + 5 e2/e1) — zero new regressions"
+  },
+  "integrity": {
+    "gold_changes": 0,
+    "evaluator_changes": 0,
+    "threshold_changes": 0,
+    "prompt_changes": 0,
+    "gold_scientific_runs": 0,
+    "novel_dev_access": 0,
+    "novel_validation_access": 0,
+    "holdout_access": 0,
+    "protected_content_leakage": 0,
+    "novel_validation": "PRISTINE_FOR_CURRENT_LINEAGE"
+  },
+  "new_candidate_development_head": "d323f790655c62e18b782d606a02f593a673f3cd",
+  "candidate_frozen": false,
+  "attempt_3_preregistered": false,
+  "attempt_3_executed": false,
+  "lifecycle": {
+    "F6-A2-FR2-R1": "COMPLETE / PASS / SOURCE_OBLIGATION_PUBLIC_CONTENT_AND_COVERAGE_BOUNDARIES_REPAIRED",
+    "F6-A2-FR2": "COMPLETE / PASS / RESIDUAL_PRODUCT_MECHANISMS_RECONCILED_AND_NEW_CANDIDATE_DEVELOPED",
+    "F6-A_attempt_2": "COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED (v2.6, unchanged)",
+    "F6-B": "LOCKED / F6_A_DID_NOT_PASS",
+    "Phase_F": "IN_PROGRESS / PRODUCT_REPAIR_RECONCILED_NEW_CANDIDATE_READY_FOR_ATTEMPT_3_PREREGISTRATION"
+  },
+  "next_recommendation": "F6-A ATTEMPT 3 / NEW CANDIDATE PREREGISTRATION AND FREEZE (bound to m6-benchmark-v2.9 and calibration v6)",
+  "next_task_execution_authorized": false
+}

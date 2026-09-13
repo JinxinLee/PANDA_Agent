@@ -1084,6 +1084,33 @@ NEXT_TASK_RECOMMENDATION = F6-A ATTEMPT 3 / NEW CANDIDATE PREREGISTRATION AND FR
 and calibration v6) (NOT AUTHORIZED).
 Report: `evaluation/F6_A2_FR2_BOUNDED_PRODUCT_REPAIR_AND_NEW_CANDIDATE_DEVELOPMENT.md`.
 
+## F6-A2-FR2-R1 source-obligation boundary repair record
+
+COMPLETE / PASS / SOURCE_OBLIGATION_PUBLIC_CONTENT_AND_COVERAGE_BOUNDARIES_REPAIRED. Zero-scientific-call bounded
+correction at HEAD `223a1e2`; the initial FR2 closeout above is historical and corrected by this record (Cluster D
+preserved; B/C defer preserved). Rejected Cluster-A behavior retired: `_augment_source_obligation_evidence`
+synthesized public provenance-meta claims ("The cited paper at X documents Y.") — bookkeeping, not user-facing
+content — letting source types survive final-evidence projection through meta-claims, ran in coverage modes against
+the F2-A3-R1 contract, and used a divergent paper/documentation/code-only classifier. Corrected design: the augment
+mechanism is removed entirely; question-grounded multi-source obligations are expressed through the legacy
+answer-requirement contract — `source_role_grounding` (multi-source plans only) instructs grounding each part of the
+explanation in the source kind that actually supports it (provenance-only statements explicitly forbidden);
+`_deterministic_missing_requirement_ids` backstops it via cited-evidence coverage of every required kind;
+`_requirement_evidence` maps required kinds' selected evidence into the legacy revision payload so the model writes
+the substantive grounded claim and the semantic verifier stays authoritative. Source-type classification centralized
+into `_evidence_source_types` (exact per-item extraction of sufficiency semantics incl. readme/workflow/channel
+kinds) with `_sufficiency` refactored onto it. Coverage firewall regression-locked: shadow_e1_v2/runtime_e1_v2
+generation payloads carry `answer_requirements = []` (F2-A3-R1 preserved). Focused verification: new
+SourceObligationBoundaryTests (legacy prompt carries the requirement; coverage prompts do not; no synthesized
+provenance claims; backstop positive + control; Cluster-D preservation) — red before green; test_qa + test_retrieval
+274 passed + 52 subtests; QAAgent-dependent suites show exactly the pre-existing baseline failures (19 d4_a5 +
+5 e2/e1) — zero new regressions. Product files: qa.py, test_qa.py; prompts.py untouched. New candidate-development
+HEAD `d323f79`; candidate frozen = false; Attempt 3 preregistered/executed = false. novel_validation pristine;
+holdout access 0; Gold/evaluator/thresholds unchanged; scientific calls/tokens 0.
+NEXT_TASK_RECOMMENDATION = F6-A ATTEMPT 3 / NEW CANDIDATE PREREGISTRATION AND FREEZE (bound to m6-benchmark-v2.9
+and calibration v6) (NOT AUTHORIZED).
+Report: `evaluation/F6_A2_FR2_R1_SOURCE_OBLIGATION_BOUNDARY_REPAIR.md`.
+
 ## Historical E3-A0 architecture contract closeout
 
 COMPLETE / PASS / MISSING_POINT_TARGETED_RETRIEVAL_CONTRACT_ESTABLISHED.
