@@ -978,6 +978,36 @@ NEXT_TASK_RECOMMENDATION = FORWARD-ONLY GOLD CONTRACT REVIEW, then F6-A2-FR2 / B
 CANDIDATE DEVELOPMENT (NOT AUTHORIZED).
 Report: `evaluation/F6_A2_FR1_RESIDUAL_EXPOSED_GOLD_FAILURE_REVIEW.md`.
 
+## F6-A2-GR1 forward-only Gold contract adjudication record
+
+COMPLETE / PASS / FORWARD_ONLY_GOLD_CONTRACT_ADJUDICATED_AND_SUCCESSOR_ESTABLISHED. Zero-scientific-call
+benchmark-governance task at HEAD `7ad90a9`; adjudication committed before any benchmark change (`88ecbb4`).
+Established rule (deterministic lineage/content evidence, independent of Attempt-2 outcomes): the locked sphinx
+web snapshot and the frozen PandaRoot repository carry the same documentation with a mechanical whole-tree
+mapping sphinx/<Section>/<Page>.html ↔ docs/<Section>/<Page>.rst (path isomorphism; Install_PandaRoot content
+check 308/357 word types + 19/40 sampled sentences verbatim + key install commands in both; sphinx Running.html
+renders the docs/Running/ toctree with Running_Sequence.rst as its Running-Sequence section source; same
+2023-08-25-dev generation). Dispositions: g001 BROADEN (repo installation-doc source selectors added; p1
+reworded — the commit-specificity statement is not entailed by the install query) / g005 p1 REVISE_ANSWER_POINT_SCOPE
+(reworded to the documented container development workflow; the develop-vs-run contrast does not exist anywhere
+in the required 6,153-char evidence document) / g011 BROADEN / g014 BROADEN (incl. Running_Sequence.rst) /
+g044 KEEP_AS_IS (the pflueger pages 57/58/62 lock is an intentional source-specific theory contract; li_2026
+equivalence not established; broadening would be motivated only by Attempt-2's answer choice). Bounded
+consistency sweep: same-pattern path-form groups corrected additively (g008.e2, g013.e1/e2, g015.e1, g016.e1/e2,
+g022.e2, g089.e1, g101.e1/e3, g106.e1, g109.e1; original sphinx selectors preserved everywhere); title-form
+groups without demonstrated failure recorded KEEP_AS_IS (no redesign). Successor benchmark m6-benchmark-v2.7
+created (`evaluation/benchmarks/v2_7/`; dataset SHA 4dcc9d06…; 120 questions; split/status counts unchanged;
+13 changed cases: g001/g005/g008/g011/g013/g014/g015/g016/g022/g089/g101/g106/g109; patch + change report +
+manifest with product-validator green: structurally_valid, official_ready, zero unmatched evidence groups, all
+24 new repo-docs selectors index-satisfied). Successor calibration phase_b_t3_product_language_scope_v4
+mechanically carries v3 assignments, binds v2.7 SHA, compatibility verified; formal-English selector re-derived:
+59 IDs, sha e27ef67a…, membership identical to v3. Attempts 1 and 2 remain evaluated against v2.6; Attempt-2
+FAIL unchanged; no retroactive rescoring. novel_validation pristine; holdout access 0; product/evaluator code
+unchanged; scientific calls/tokens 0.
+NEXT_TASK_RECOMMENDATION = F6-A2-FR2 / BOUNDED PRODUCT REPAIR AND NEW CANDIDATE DEVELOPMENT (USING v2.7 AS THE
+STABILIZED GOLD AUTHORITY) (NOT AUTHORIZED).
+Report: `evaluation/F6_A2_GR1_FORWARD_ONLY_GOLD_CONTRACT_ADJUDICATION.md`.
+
 ## Historical E3-A0 architecture contract closeout
 
 COMPLETE / PASS / MISSING_POINT_TARGETED_RETRIEVAL_CONTRACT_ESTABLISHED.
