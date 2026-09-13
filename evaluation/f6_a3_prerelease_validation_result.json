@@ -1,0 +1,79 @@
+{
+  "schema_version": "f6a-a3-result-v1",
+  "task": "F6-A Attempt 3 — Prerelease Validation & Generalization Gate",
+  "decision": "HOLD / PRE_RELEASE_PRECONDITION_NOT_MET",
+  "hold_stage": "A0 zero-outcome preflight",
+  "starting_head": "52713da2092579c3697a56d6bee9d5b1e7baf2fa",
+  "product_behavior_lineage_head": "d323f790655c62e18b782d606a02f593a673f3cd",
+  "product_drift_after_lineage_head": "none (d323f79..HEAD touches lifecycle docs and FR2-R1 artifacts only)",
+  "scientific_calls": 0,
+  "scientific_tokens": 0,
+  "authority_verification": {
+    "gold_v2_9": {
+      "dataset_sha256": "eaacd3ed6595821b24b28823c6344abc4dfb954eb71846e682080b42c2f689be",
+      "match": true,
+      "manifest_status": "approved_exposed_development_benchmark_v2_9",
+      "official_ready": true,
+      "structurally_valid": true
+    },
+    "calibration_loader_gap": {
+      "default_loaded": "phase_b_t3_product_language_scope_v3",
+      "on_disk_unloaded": ["phase_b_t3_product_language_scope_v4", "phase_b_t3_product_language_scope_v5", "phase_b_t3_product_language_scope_v6"],
+      "consequence": "v3 is incompatible with the v2.9 dataset (calibration_compatibility=False); candidate-freezer product-scope identity would raise; the pipeline cannot select v6"
+    },
+    "selector_derivation_v2_9_plus_v6": {"count": 59, "sha256": "e27ef67a866274b4a8441b789ca78fc3ccb7e022eed537c7442e15230777a0e5", "derived": true},
+    "docker_runtime": ["postgres:17-alpine (healthy)", "qdrant:v1.15.5 (healthy)"],
+    "index_fingerprint_match": true
+  },
+  "preregistration_blockers": [
+    {
+      "blocker": 1,
+      "title": "candidate freezer binds Gold v2.6",
+      "evidence": "src/panda_agent/candidate.py hard-codes BENCHMARK_DIR=evaluation/benchmarks/v2_6 and BENCHMARK_VERSION=m6-benchmark-v2.6; _current_manifest reads gold_questions.yaml and manual_adjudications.yaml from that directory; evaluation/benchmarks/v2_9/ has no manual_adjudications.yaml; no override mechanism exists",
+      "consequence": "any frozen candidate would bind v2.6 identities (or fail), conflicting with the required v2.9 binding"
+    },
+    {
+      "blocker": 2,
+      "title": "calibration loader successor chain stops at v3",
+      "evidence": "load_product_language_calibration resolves only v2->v3; v4/v5/v6 exist on disk but the default-loaded calibration is v3, incompatible with v2.9",
+      "consequence": "freezer product-scope identity raises 'calibration incompatible with active Gold'; evaluation pipeline cannot select the authoritative v6"
+    }
+  ],
+  "focused_tests": "325 passed + 70 subtests (FR2-R1 boundary, Cluster-D discipline, F2-A3-R1/F2-A5, FR1 regressions, freezer identity, gate helper, test_qa, test_retrieval) — zero new regressions; the blockers are authority-binding gaps, not test failures",
+  "product_boundary_audit": {
+    "source_obligation_synthetic_claims": "absent",
+    "gold_case_ids_in_product": 0,
+    "benchmark_paths_as_product_logic": "absent",
+    "production_answer_point_mode": "legacy_question_core"
+  },
+  "stage_status": {
+    "a0_preflight": "HOLD",
+    "preregistration": "NOT_CREATED",
+    "candidate_freeze": "NOT_CREATED",
+    "a1_formal_gold": "NOT_REACHED",
+    "a2_gold_ablation": "NOT_REACHED",
+    "a3_novel_dev": "NOT_REACHED",
+    "a4_novel_validation": "NOT_REACHED",
+    "a5_composer_audit": "NOT_REACHED"
+  },
+  "protected_cohorts": {
+    "novel_validation": "PRISTINE_FOR_CURRENT_LINEAGE",
+    "holdout_access": 0,
+    "protected_content_leakage": 0,
+    "f6b_execution": 0
+  },
+  "integrity": {
+    "gold_changes": 0,
+    "calibration_changes": 0,
+    "product_changes": 0
+  },
+  "lifecycle": {
+    "F6-A_attempt_3": "HOLD / PRE_RELEASE_PRECONDITION_NOT_MET",
+    "F6-A_attempt_1": "COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED (v2.6, historical)",
+    "F6-A_attempt_2": "COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED (v2.6, historical)",
+    "F6-B": "LOCKED / F6_A_DID_NOT_PASS",
+    "Phase_F": "IN_PROGRESS / F6_A_ATTEMPT_3_HOLD"
+  },
+  "next_recommendation": "GOLD-9 AUTHORITY BINDING INFRASTRUCTURE RECONCILIATION (candidate-freezer binding to v2.9 incl. manual-adjudications disposition; calibration loader successor chain to v6), then re-run F6-A Attempt 3 preflight",
+  "next_task_execution_authorized": false
+}

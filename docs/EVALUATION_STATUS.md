@@ -1111,6 +1111,27 @@ NEXT_TASK_RECOMMENDATION = F6-A ATTEMPT 3 / NEW CANDIDATE PREREGISTRATION AND FR
 and calibration v6) (NOT AUTHORIZED).
 Report: `evaluation/F6_A2_FR2_R1_SOURCE_OBLIGATION_BOUNDARY_REPAIR.md`.
 
+## F6-A Attempt 3 preflight hold record
+
+HOLD / PRE_RELEASE_PRECONDITION_NOT_MET. Zero-outcome preflight at HEAD `52713da`; scientific/evaluation execution
+never started (calls/tokens 0). Verified clean: product-behavior lineage d323f79 (d323f79..HEAD touches docs/
+artifacts only — zero product drift), product boundary audit clean (no synthetic source_obligation claims, no Gold
+case IDs, production mode legacy_question_core), Gold v2.9 identity (dataset eaacd3ed…, official_ready,
+structurally_valid), selector re-derived 59 IDs / e27ef67a… against v2.9+v6, Docker/index identities match, focused
+tests 325 passed + 70 subtests (zero regressions). Two preregistration blockers discovered, both evaluation-
+infrastructure authority-binding gaps from the GR1 chain: (1) candidate freezer hard-binds BENCHMARK_DIR/
+BENCHMARK_VERSION to v2_6/m6-benchmark-v2.6 — _current_manifest reads v2_6's gold_questions.yaml and
+manual_adjudications.yaml (absent in v2_9) — so any frozen candidate would bind v2.6, conflicting with the required
+v2.9 binding; (2) load_product_language_calibration's successor chain stops at v3 — v4/v5/v6 exist on disk but the
+default-loaded calibration (v3) is incompatible with v2.9, so freezer product-scope identity would raise and the
+pipeline cannot select v6. Per the Attempt-3 protocol A0 is validation, not development (product files and
+Gold/calibration may not change during Attempt 3); no repair performed, no preregistration, no freeze. Stages
+A1–A5 NOT_REACHED; novel_validation = PRISTINE_FOR_CURRENT_LINEAGE. Attempt-1/2 historical FAILs preserved.
+NEXT_TASK_RECOMMENDATION = GOLD-9 AUTHORITY BINDING INFRASTRUCTURE RECONCILIATION (freezer binding to v2.9 incl.
+manual-adjudications disposition; calibration loader successor chain to v6), then re-run Attempt-3 preflight
+(NOT AUTHORIZED).
+Report: `evaluation/F6_A3_PRERELEASE_VALIDATION_RESULT.md`.
+
 ## Historical E3-A0 architecture contract closeout
 
 COMPLETE / PASS / MISSING_POINT_TARGETED_RETRIEVAL_CONTRACT_ESTABLISHED.
