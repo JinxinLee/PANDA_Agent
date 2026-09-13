@@ -1,0 +1,174 @@
+{
+  "schema_version": "f6a-preregistration-v2",
+  "task": "F6-A Attempt 2 — Prerelease Validation & Generalization Gate",
+  "attempt_lineage": {
+    "attempt": 2,
+    "prior_attempt": "F6-A attempt 1 = COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED (candidate f6a-rc1-20260913; run f6a-rc1-gold-formal-full-20260913; artifacts immutable)",
+    "intervening_development": "F6-A-FR1 = COMPLETE / PASS / ROOT_CAUSES_ESTABLISHED_AND_BOUNDED_FIXES_IMPLEMENTED; product-fix commit 45f14ba6e8d974cdee0f7e053801368d97d7768c ('Repair generic refusal and version-conflict handling')",
+    "fr1_change_boundary_audit": {
+      "audited_range": "557327e..HEAD (src/ and configs/)",
+      "authorized_behavior_changes": [
+        "manifest repository display names are excluded from the bare-class-symbol premise refusal (qa.py _answerability_guard via Retriever.is_repository_reference)",
+        "bounded prepositional connector in _has_explicit_version_repository_binding (retrieval.py)"
+      ],
+      "unexpected_changes_found": "none (prompts, composer, verification role, retrieval ranking, query-expansion policy, Gold, thresholds, candidate mode, calibration semantics all unchanged)",
+      "stale_roadmap_correction": "roadmap F6-A summary 'ten preregistered gates failed' corrected to 'nine' per the R1-corrected matrix (documentation consistency only, commit 619128b)"
+    }
+  },
+  "supersedes": {
+    "preregistration": "evaluation/f6_a_prerelease_validation_preregistration.json",
+    "reason": "new F6-A attempt with fresh candidate identity after the authorized FR1 product fixes; attempt-1 preregistration and all attempt-1 artifacts remain immutable historical records"
+  },
+  "implementation_head": "619128b",
+  "candidate_id": "f6a-rc2-20260913",
+  "primary_runtime_mode": "legacy_question_core",
+  "model_identities": {
+    "generation": "gemini-3.8-flash",
+    "verification_configured": null,
+    "effective_verification": "gemini-3.8-flash",
+    "evaluation_judge": "gemini-3.8-flash",
+    "embedding": "gemini-embedding-2",
+    "embedding_dimensions": 3072,
+    "distinct_client_paths": true
+  },
+  "prompt_identity": {
+    "prompt_set_version": "3.10.1",
+    "prompt_hash": "23d73b036646ec62f3095fac4bdfafdfc7ecf6676fd27d18475b86773db4e6d5"
+  },
+  "corpus_identity": {
+    "index_fingerprint": "8172f9a640e62977be6e911bfb4848ce3aecd0994f1f3ba51a0985bffec62cb9",
+    "collection": "panda_knowledge_v1",
+    "docker_runtime": {
+      "postgres": "postgres:17-alpine",
+      "qdrant": "qdrant:v1.15.5",
+      "contract": "running-container identity verified at freeze; release-critical per the F6 candidate contract"
+    }
+  },
+  "product_language_calibration": {
+    "calibration_id": "phase_b_t3_product_language_scope_v3",
+    "artifact_sha256": "f8d05d8769ff84ba2199117f1471a3b8f98cea87397c79ac655094d6815eccac",
+    "compatibility_verified": true,
+    "compatibility_scope": "Gold version + dataset file SHA-256 + split + overrides + declared/derived ID equality"
+  },
+  "gold_identity": {
+    "benchmark_version": "m6-benchmark-v2.6",
+    "question_count_universe": 120,
+    "dataset_sha256": "6f12d54b4db3fdd87fb30670e730ffd8c025a55a968c90a4ea63ab7cecdb878f",
+    "manifest_status": "approved_exposed_development_benchmark_v2_6"
+  },
+  "formal_english_selector": {
+    "definition": "english_product_case_ids(dataset, 'dev', calibration=phase_b_t3_product_language_scope_v3); split==dev AND review_status==approved AND effective_product_language==en",
+    "derived_count": 59,
+    "derived_sha256": "e27ef67a866274b4a8441b789ca78fc3ccb7e022eed537c7442e15230777a0e5",
+    "count_is_derived_not_hard_coded": true
+  },
+  "non_english_dev_ids_excluded": ["g063", "g066", "g067", "g068", "g069", "g070", "g072", "g073", "g074", "g076", "g077", "g078", "g079", "g081", "g085", "g086", "g088", "g089", "g095", "g096", "g102"],
+  "run_ids": {
+    "stage_a1_gold_formal_full": "f6a-rc2-gold-formal-full-20260913",
+    "stage_a2_gold_formal_ablation": "f6a-rc2-gold-formal-ablation-20260913",
+    "stage_a3_novel_dev_full": "f6a-rc2-novel-dev-full-20260913",
+    "stage_a4_novel_validation_full": "f6a-rc2-novel-validation-full-20260913",
+    "stage_a5_composer_audit": "f6a-rc2-composer-audit-20260913"
+  },
+  "release_score": {
+    "formula": "answered -> answer_point_coverage; else 1.0 if expected_status_correct else 0.0; mean over the complete formal cohort",
+    "none_is_not_zero": true,
+    "incomplete_cases_reported_by_id": true
+  },
+  "gold_quality_thresholds": {
+    "gold_recall_at_10": 0.95,
+    "final_evidence_recall": 0.9,
+    "critical_final_evidence_recall": 1.0,
+    "intent_accuracy": 0.9,
+    "per_intent_gold_recall_at_10": 0.75,
+    "per_intent_intent_accuracy": 0.8,
+    "expected_status_accuracy": 0.975,
+    "citation_integrity": 1.0,
+    "wrong_version_evidence_count": 0,
+    "forbidden_evidence_count": 0,
+    "required_source_coverage_answered": 0.97,
+    "identifier_hallucination_rate": 0.03,
+    "paper_code_dual_source_rate": 1.0,
+    "answer_point_coverage": 0.9,
+    "critical_answer_point_miss_count": 0,
+    "contradiction_count": 0,
+    "major_unsupported_claim_count": 0,
+    "unhandled_exception_count": 0
+  },
+  "threshold_immutability": "identical to the attempt-1 preregistered thresholds; no relaxation after the attempt-1 FAIL; evaluated with the corrected R1/R1-R1/R1-R1-R1 gate semantics (canonical aggregate_metrics + f6a_gate_evaluation.py)",
+  "hard_safety_invariants": {
+    "citation_integrity": 1.0,
+    "wrong_version_evidence_count": 0,
+    "forbidden_evidence_count": 0,
+    "contradiction_count": 0,
+    "major_unsupported_claim_count": 0,
+    "critical_answer_point_miss_count": 0,
+    "unhandled_exception_count": 0,
+    "cohorts": ["gold_formal", "novel_dev", "novel_validation"]
+  },
+  "generalization_gap": {
+    "formula": "formal_english_gold_release_score - novel_validation_release_score",
+    "threshold": 0.1,
+    "novel_dev_is_not_gap_cohort": true
+  },
+  "benchmark_dependency": {
+    "formula": "formal_gold_primary_release_score - formal_gold_ablation_release_score",
+    "threshold": 0.05,
+    "ablation_id": "disable_query_expansion_injection",
+    "ablation_mechanism": "runtime overlay (panda_agent.f6a_ablation.install): empty query-expansion rule set; evaluation-only",
+    "ablation_manifest": "evaluation/f6a_ablation_manifest.json",
+    "novel_validation_ablation": false,
+    "runs_only_if_a1_passes": true
+  },
+  "composer_audit": {
+    "eligible_pairs": "ANSWERED + composer accepted + >=2 verified claims from frozen attempt-2 formal-Gold + novel_validation records; no QA rerun to manufacture pairs",
+    "factuality_gate": "composer_new_fact_rate == 0",
+    "readability_gate": "eligible_pairs >= 10 AND composed_preferred > deterministic_preferred",
+    "counterbalance": "first embedded case-ID number; even -> composed labeled A",
+    "insufficient_pairs": "COMPLETE / INCONCLUSIVE / COMPOSER_AUDIT_NOT_APPLICABLE per the established contract",
+    "runs_only_if_prior_mandatory_gates_pass": true
+  },
+  "fail_fast_order": [
+    "A1_gold_formal_full",
+    "A2_gold_formal_ablation",
+    "A3_novel_dev",
+    "A4_novel_validation",
+    "A5_composer_audit",
+    "gate_decision"
+  ],
+  "novel_exposure_policy": {
+    "novel_dev_role": "EXPOSED DEVELOPMENT DIAGNOSTIC (not pristine generalization evidence); hard-safety failure stops before novel_validation; ordinary diagnostic quality alone is not a new release gate",
+    "novel_validation_status_before_a4": "PRISTINE_FOR_CURRENT_LINEAGE",
+    "exposure_transition": "the first attempt-2 novel_validation model outcome ends PRISTINE_FOR_CURRENT_LINEAGE for subsequent candidate development in this lineage; transition recorded explicitly at A4",
+    "if_a4_not_reached": "novel_validation remains PRISTINE_FOR_CURRENT_LINEAGE"
+  },
+  "interruption_resume_contract": {
+    "resume_allowed_only_if": ["same candidate", "same preregistration", "same run ID", "no behavior change"],
+    "provider_429_retry": "allowed under the established infrastructure-recovery contract (failed attempt preserved; same candidate/run; no product change; failed-attempt usage counted)"
+  },
+  "terminal_outcomes": [
+    "COMPLETE / PASS / PRERELEASE_VALIDATION_AND_GENERALIZATION_GATE_PASSED (HOLDOUT_ELIGIBLE)",
+    "COMPLETE / FAIL / <specific failed gate>",
+    "COMPLETE / INCONCLUSIVE / <reason>",
+    "HOLD / <precondition> (pre-outcome only)"
+  ],
+  "gate_semantics": {
+    "post_freeze_immutability": "zero product/config/prompt/model/retrieval/dataset/selector changes until the attempt-2 verdict; result artifacts only",
+    "no_pass_chasing": "PASS, FAIL, HOLD and INCONCLUSIVE are legitimate terminal states; no repair during the attempt",
+    "no_holdout_access": true,
+    "f6_b_not_authorized_in_this_task": true
+  },
+  "usage_accounting": {
+    "zero_calls_before_freeze": true,
+    "breakdown_required": ["gold_primary", "gold_ablation", "novel_dev", "novel_validation", "composer_audit", "runtime", "product_verifier", "evaluation_judge"],
+    "attempt_1_usage_not_merged": true,
+    "attempt_1_historical_usage": "formal 383 calls / 3,348,432 tokens; superseded 9/120 plan 61 calls / 339,150 tokens"
+  },
+  "measured_outcomes": "none",
+  "implementation_head_lineage": {
+    "preregistration_baseline": "619128b",
+    "preregistration_commit": null,
+    "freeze_head": null,
+    "note": "preregistration_commit and freeze_head are recorded at the freeze bookkeeping commit; the candidate is frozen from the actual clean committed HEAD after this preregistration chronology is established"
+  }
+}
