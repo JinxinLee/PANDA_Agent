@@ -1,0 +1,66 @@
+{
+  "schema_version": "f6a-r1r1-reconciliation-v1",
+  "task": "F6-A-R1-R1 — R1 Archival and Gate-Helper Consistency Repair",
+  "terminal_state": "COMPLETE / PASS / R1_ARCHIVAL_AND_GATE_HELPER_CONSISTENCY_REPAIRED",
+  "starting_head": "8d43fe8262f90b42fb68f7f891c9adcfff62e7c7",
+  "archival_discrepancy": {
+    "r1_markdown_intent_counts": "incorrect (33/4/4/4/3/4/11 set)",
+    "authoritative_intent_counts": {
+      "algorithm_implementation": 2,
+      "algorithm_theory": 8,
+      "api": 15,
+      "installation": 12,
+      "module_structure": 2,
+      "troubleshooting": 6,
+      "usage": 14
+    },
+    "total": 59
+  },
+  "dual_source_applicable": {
+    "applicable_case_ids": [
+      "g060"
+    ],
+    "denominator": 1,
+    "passing_case_count": 0,
+    "rate": 0.0,
+    "gate_result": "FAIL (unchanged)"
+  },
+  "gate_helper_repairs": {
+    "zero_gate_missing_measurement": "None -> passed=null (INCOMPLETE); only numeric zero passes",
+    "intent_accuracy_denominator": "sum of represented per-intent cases (intent-accuracy's own count)",
+    "per_intent_missing_metric": "represented intent without a valid measurement -> INCOMPLETE; aggregate FAIL if any intent fails, INCOMPLETE if any incomplete, PASS only if all measured and passing",
+    "failed_incomplete_representation": "failed_gate_names/count and incomplete_gate_names/count reported separately; release_score excluded (accounting metric)"
+  },
+  "new_matrix": {
+    "path": "evaluation/f6a_gold_gate_matrix_r1_r1.json",
+    "source_run_id": "f6a-rc1-gold-formal-full-20260913",
+    "source_record_count": 59,
+    "source_r1_matrix": "evaluation/f6a_gold_gate_matrix_r1.json (preserved unchanged)",
+    "evaluator_revision": "canonical aggregate_metrics with R1-R1 gate semantics (offline; zero model calls)"
+  },
+  "failed_gate_count": 9,
+  "failed_gate_names": [
+    "answer_point_coverage",
+    "contradiction_count",
+    "critical_answer_point_miss_count",
+    "critical_final_evidence_recall",
+    "expected_status_accuracy",
+    "final_evidence_recall",
+    "major_unsupported_claim_count",
+    "paper_code_dual_source_rate",
+    "required_source_coverage_answered"
+  ],
+  "incomplete_gate_count": 0,
+  "incomplete_gate_names": [],
+  "terminal_verdict_effect": "NO_CHANGE / F6-A remains COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED",
+  "scientific_calls": 0,
+  "scientific_tokens": 0,
+  "product_changes": 0,
+  "protected_cohort_exposure": {
+    "novel_validation": "PRISTINE_FOR_CURRENT_LINEAGE",
+    "holdout_access": 0,
+    "leakage": 0
+  },
+  "next_recommendation": "POST-F6-A EXPOSED-GOLD FAILURE REVIEW / NEW CANDIDATE DEVELOPMENT (separately authorized)",
+  "next_task_execution_authorized": false
+}

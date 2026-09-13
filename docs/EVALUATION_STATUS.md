@@ -871,6 +871,23 @@ Original F6-A artifacts remain byte-unchanged; R1 is additive. novel_validation 
 NEXT_TASK_RECOMMENDATION = POST-F6-A EXPOSED-GOLD FAILURE REVIEW / NEW CANDIDATE DEVELOPMENT (NOT AUTHORIZED).
 Report: `evaluation/F6_A_R1_OFFLINE_GATE_IDENTITY_ARCHIVAL_RECONCILIATION.md`.
 
+## F6-A-R1-R1 archival and gate-helper consistency repair record
+
+COMPLETE / PASS / R1_ARCHIVAL_AND_GATE_HELPER_CONSISTENCY_REPAIRED. Zero-model-call archival/gate-helper
+consistency repair at HEAD `8d43fe8`; the F6-A terminal FAIL is preserved. Corrections: the R1 Markdown
+per-intent case counts were corrected to the authoritative values (algorithm_implementation 2, algorithm_theory
+8, api 15, installation 12, module_structure 2, troubleshooting 6, usage 14; total 59) matching the corrected
+matrix exactly; the dual-source applicable case ID (g060) is now recorded; gate-helper semantics hardened —
+zero-count gates with missing measurements are INCOMPLETE (passed=null) and can never silently PASS, the global
+intent-accuracy denominator is its own case count (sum of represented per-intent cases), per-intent gates keep
+every represented intent visible with FAIL/INCOMPLETE/PASS aggregation semantics, and failed vs incomplete gate
+counts are reported separately with release_score excluded as accounting. New authoritative matrix
+`evaluation/f6a_gold_gate_matrix_r1_r1.json` (R1 matrix preserved): failed_gate_count = 9 (identical gate list),
+incomplete_gate_count = 0, terminal verdict effect NO_CHANGE. F6-A-R1 is fully accepted after R1-R1.
+novel_validation pristine; holdout access 0; product changes 0; scientific calls/tokens 0.
+NEXT_TASK_RECOMMENDATION = POST-F6-A EXPOSED-GOLD FAILURE REVIEW / NEW CANDIDATE DEVELOPMENT (NOT AUTHORIZED).
+Report: `evaluation/F6_A_R1_R1_ARCHIVAL_AND_GATE_HELPER_CONSISTENCY_REPAIR.md`.
+
 ## Historical E3-A0 architecture contract closeout
 
 COMPLETE / PASS / MISSING_POINT_TARGETED_RETRIEVAL_CONTRACT_ESTABLISHED.
