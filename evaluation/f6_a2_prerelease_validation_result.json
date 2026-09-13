@@ -1,0 +1,132 @@
+{
+  "schema_version": "f6a-a2-result-v1",
+  "task": "F6-A Attempt 2 — Prerelease Validation & Generalization Gate",
+  "decision": "COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED",
+  "fail_fast_stage": "A1_gold_formal_full",
+  "starting_head": "758963f2b2bad03d0b9200b6ab0db7d63be62d42",
+  "chronology": {
+    "commit_a_preflight": "619128b",
+    "commit_b_preregistration": "3f1f16ee2dcf02b2cfb88ff8f93f97f574e48448",
+    "candidate_freeze_commit": "1f32eef",
+    "preregistration": "evaluation/f6_a2_prerelease_validation_preregistration.json"
+  },
+  "candidate": {
+    "candidate_id": "f6a-rc2-20260913",
+    "implementation_git_commit": "3f1f16ee2dcf02b2cfb88ff8f93f97f574e48448",
+    "manifest_sha256": "5c70357757967ee33464b61db86f6af5dd618fbfb0e1a056d5879214b8916098",
+    "verify_valid": true,
+    "verify_mismatches": 0
+  },
+  "preflight": {
+    "gold_identity": "m6-benchmark-v2.6 / 6f12d54b4db3fdd87fb30670e730ffd8c025a55a968c90a4ea63ab7cecdb878f / 120",
+    "calibration": "phase_b_t3_product_language_scope_v3 compatible",
+    "selector_count": 59,
+    "selector_sha256": "e27ef67a866274b4a8441b789ca78fc3ccb7e022eed537c7442e15230777a0e5",
+    "non_english_dev_ids_excluded": 21,
+    "index_fingerprint": "8172f9a640e62977be6e911bfb4848ce3aecd0994f1f3ba51a0985bffec62cb9",
+    "docker": ["postgres:17-alpine", "qdrant:v1.15.5"],
+    "prompt_set_version": "3.10.1",
+    "prompt_hash": "23d73b036646ec62f3095fac4bdfafdfc7ecf6676fd27d18475b86773db4e6d5",
+    "models": {
+      "generation": "gemini-3.8-flash",
+      "effective_verification": "gemini-3.8-flash",
+      "evaluation_judge": "gemini-3.8-flash",
+      "embedding": "gemini-embedding-2"
+    },
+    "focused_tests": "314 passed + 68 subtests",
+    "stale_roadmap_correction": "ten -> nine preregistered gates failed",
+    "fr1_boundary_audit": "clean; exactly the two authorized behavior changes; zero unexpected changes"
+  },
+  "stage_a1_gold_formal": {
+    "run_id": "f6a-rc2-gold-formal-full-20260913",
+    "mode": "full",
+    "records": 59,
+    "complete": true,
+    "error_records": 0,
+    "status_outcomes": {"answered": 49, "insufficient_evidence": 5, "version_conflict": 5},
+    "expected_status_accuracy": 1.0,
+    "status_mismatches": 0,
+    "release_score": 0.9463276836158192,
+    "gate_matrix": "data/evaluation/runs/f6a-rc2-gold-formal-full-20260913/gate_matrix.json"
+  },
+  "gates": {
+    "failed_gate_count": 6,
+    "failed_gate_names": [
+      "final_evidence_recall",
+      "critical_final_evidence_recall",
+      "required_source_coverage_answered",
+      "paper_code_dual_source_rate",
+      "critical_answer_point_miss_count",
+      "major_unsupported_claim_count"
+    ],
+    "incomplete_gate_count": 0,
+    "incomplete_gate_names": [],
+    "passed_gates": [
+      "gold_recall_at_10",
+      "intent_accuracy",
+      "per_intent_gold_recall_at_10",
+      "per_intent_intent_accuracy",
+      "expected_status_accuracy",
+      "citation_integrity",
+      "wrong_version_evidence_count",
+      "forbidden_evidence_count",
+      "identifier_hallucination_rate",
+      "answer_point_coverage",
+      "contradiction_count",
+      "unhandled_exception_count"
+    ]
+  },
+  "attempt_1_comparison": {
+    "role": "diagnostic only; gates unchanged",
+    "release_score": {"attempt_1": 0.8276836158192091, "attempt_2": 0.9463276836158192},
+    "expected_status_accuracy": {"attempt_1": 0.8644067796610169, "attempt_2": 1.0},
+    "failed_gate_count": {"attempt_1": 9, "attempt_2": 6},
+    "fr1_eight_cases_attempt_2": {
+      "g005": "answered", "g013": "answered", "g027": "answered",
+      "g034": "answered", "g059": "answered", "g060": "answered",
+      "g012": "version_conflict", "g026": "version_conflict",
+      "all_match_gold": true
+    },
+    "residual_failure_detail": {
+      "critical_answer_point_misses": ["g001", "g005", "g013", "g022"],
+      "required_source_coverage_false": ["g016", "g060"],
+      "dual_source_applicable_g060": "answered but evidence set contains no paper source",
+      "major_unsupported": ["g113 claim_3_efficiency_empty_bin_diagnosis"],
+      "evidence_recall": "final 0.8810 / critical 0.8912 vs thresholds 0.90 / 1.00"
+    }
+  },
+  "stages_not_reached": {
+    "a2_gold_ablation": "NOT_REACHED (A1 fail-fast)",
+    "a3_novel_dev": "NOT_REACHED",
+    "a4_novel_validation": "NOT_REACHED",
+    "a5_composer_audit": "NOT_REACHED"
+  },
+  "usage": {
+    "attempt_2_total": {"calls": 376, "tokens": 3313651},
+    "stage_a1_gold_formal": {
+      "calls": 376,
+      "tokens": 3313651,
+      "runtime": {"calls": 314, "tokens": 2903448},
+      "evaluation_judge": {"calls": 62, "tokens": 410203}
+    },
+    "attempt_1_historical_not_merged": {
+      "formal": {"calls": 383, "tokens": 3348432},
+      "superseded_9_120": {"calls": 61, "tokens": 339150}
+    }
+  },
+  "protected_cohorts": {
+    "novel_validation": "PRISTINE_FOR_CURRENT_LINEAGE",
+    "exposure_transition": "none (A4 not reached)",
+    "holdout_access": 0,
+    "protected_content_leakage": 0,
+    "f6b_execution": 0
+  },
+  "lifecycle": {
+    "F6-A_attempt_2": "COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED",
+    "F6-A_attempt_1": "COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED (historical, unchanged)",
+    "F6-B": "LOCKED / F6_A_DID_NOT_PASS",
+    "Phase_F": "IN_PROGRESS / F6_A_ATTEMPT_2_FAILED"
+  },
+  "next_recommendation": "POST-ATTEMPT-2 EXPOSED-GOLD FAILURE REVIEW / NEW CANDIDATE DEVELOPMENT",
+  "next_task_execution_authorized": false
+}

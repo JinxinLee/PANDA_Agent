@@ -933,6 +933,27 @@ holdout access 0; threshold/Gold changes 0; scientific calls/tokens 0.
 NEXT_TASK_RECOMMENDATION = NEW F6-A ATTEMPT / NEW CANDIDATE PREREGISTRATION AND FREEZE (NOT AUTHORIZED).
 Report: `evaluation/F6_A_FR1_EXPOSED_GOLD_FAILURE_REVIEW_AND_CANDIDATE_DEVELOPMENT.md`.
 
+## F6-A attempt 2 prerelease validation record
+
+COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED (Stage A1 fail-fast; A2 ablation, A3 novel_dev,
+A4 novel_validation, A5 composer audit NOT_REACHED). Fresh identity: preregistration commit `3f1f16e`,
+candidate f6a-rc2-20260913 frozen from the clean preregistration HEAD (`1f32eef`; verify-candidate valid),
+zero post-freeze changes. A0 preflight zero-call: Gold m6-benchmark-v2.6 authority valid (6f12d54b), calibration
+v3 compatible, selector re-derived (59 IDs, e27ef67a, 21 non-English excluded; count derived, not hard-coded),
+Docker/index identities verified, stale roadmap "ten→nine" corrected (619128b), focused tests 314 passed + 68
+subtests, FR1 boundary audit clean. Stage A1 run f6a-rc2-gold-formal-full-20260913 (mode=full): 59/59 complete,
+zero errors, zero status mismatches — expected_status_accuracy 1.0 (attempt-1 0.8644); all eight FR1-reviewed
+cases now match Gold (six former false refusals answered, both version-conflict cases version_conflict).
+Six preregistered gates still fail: final_evidence_recall 0.8810 (≥0.90), critical_final_evidence_recall 0.8912
+(=1.00), required_source_coverage_answered 0.9592 (≥0.97), paper_code_dual_source_rate 0.0 (g060 answered but no
+paper source), critical_answer_point_miss_count 4 (g001/g005/g013/g022), major_unsupported_claim_count 1 (g113).
+Release score 0.9463276836158192 (attempt-1 0.8277); failed gates 9→6. Diagnostic comparison only; no gate
+changes; no repair during the attempt. Usage (attempt 2): 376 calls / 3,313,651 tokens (runtime 314 / 2,903,448;
+judge 62 / 410,203); attempt-1 historical usage not merged. novel_validation = PRISTINE_FOR_CURRENT_LINEAGE (A4
+not reached); holdout access 0; F6-B not executed.
+NEXT_TASK_RECOMMENDATION = POST-ATTEMPT-2 EXPOSED-GOLD FAILURE REVIEW / NEW CANDIDATE DEVELOPMENT (NOT AUTHORIZED).
+Report: `evaluation/F6_A2_PRERELEASE_VALIDATION_RESULT.md`.
+
 ## Historical E3-A0 architecture contract closeout
 
 COMPLETE / PASS / MISSING_POINT_TARGETED_RETRIEVAL_CONTRACT_ESTABLISHED.
