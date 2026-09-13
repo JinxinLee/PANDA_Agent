@@ -1,0 +1,52 @@
+schema_version: '1.0'
+benchmark_version: m6-benchmark-v2.9
+base_benchmark_version: m6-benchmark-v2.8
+base_dataset_sha256: 67c992ce9556995ae01efc17e72038a477a341b621d0ebf590e6f42f2eff34eb
+audit:
+  artifact: evaluation/F6_A2_GR1_R2_DOXYGEN_STUB_SELECTOR_AUDIT.md
+  companion: evaluation/f6_a2_gr1_r2_doxygen_stub_selector_audit.json
+  task: F6-A2-GR1-R2
+semantic_case_deltas:
+  g013: retire the doxygen-stub selector docs/Tools/PndMasterTasks/PndMasterRunSim.rst from g013.e1 and
+    g013.e2 (105-byte pointer; rendered content generated from code annotations); all other selectors
+    preserved
+  g015: retire the doxygen-stub selector docs/Tools/PndMasterTasks/PndMasterRunSim.rst from g015.e1; all
+    other selectors preserved
+  g016: retire the doxygen-stub selector docs/Tools/PndMasterTasks/PndMasterRunSim.rst from g016.e2; all
+    other selectors preserved
+  g089: retire the doxygen-stub selector docs/Tools/PndMasterTasks/PndMasterRunSim.rst from g089.e1; all
+    other selectors preserved
+selector_changes:
+- case_id: g013
+  group_id: g013.e1
+  change: remove repository selector docs/Tools/PndMasterTasks/PndMasterRunSim.rst (pointer/doxygen stub
+    lacks independent evidence content); original sphinx selectors, code selectors, README/documentation
+    selectors, and valid repo-documentation selectors preserved
+- case_id: g013
+  group_id: g013.e2
+  change: remove repository selector docs/Tools/PndMasterTasks/PndMasterRunSim.rst (pointer/doxygen stub
+    lacks independent evidence content); original sphinx selectors, code selectors, README/documentation
+    selectors, and valid repo-documentation selectors preserved
+- case_id: g015
+  group_id: g015.e1
+  change: remove repository selector docs/Tools/PndMasterTasks/PndMasterRunSim.rst (pointer/doxygen stub
+    lacks independent evidence content); original sphinx selectors, code selectors, README/documentation
+    selectors, and valid repo-documentation selectors preserved
+- case_id: g016
+  group_id: g016.e2
+  change: remove repository selector docs/Tools/PndMasterTasks/PndMasterRunSim.rst (pointer/doxygen stub
+    lacks independent evidence content); original sphinx selectors, code selectors, README/documentation
+    selectors, and valid repo-documentation selectors preserved
+- case_id: g089
+  group_id: g089.e1
+  change: remove repository selector docs/Tools/PndMasterTasks/PndMasterRunSim.rst (pointer/doxygen stub
+    lacks independent evidence content); original sphinx selectors, code selectors, README/documentation
+    selectors, and valid repo-documentation selectors preserved
+kept_as_is_notable:
+- all other v2.8 changes
+- all expected_status values
+- all answer points
+- all thresholds
+policy: Forward-only successor per F6-A2-GR1-R2 audit; retires only the remaining doxygen/pointer stub
+  selector; no question, expected_status, answer-point, criticality, source-obligation, threshold, or
+  evaluator change.

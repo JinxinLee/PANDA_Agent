@@ -1,0 +1,32 @@
+{
+ "benchmark_version": "m6-benchmark-v2.9",
+ "base_benchmark_version": "m6-benchmark-v2.8",
+ "base_dataset_sha256": "67c992ce9556995ae01efc17e72038a477a341b621d0ebf590e6f42f2eff34eb",
+ "audit_artifact": "evaluation/F6_A2_GR1_R2_DOXYGEN_STUB_SELECTOR_AUDIT.md",
+ "gold_changed_cases": [
+  "g013",
+  "g015",
+  "g016",
+  "g089"
+ ],
+ "removed_selectors": [
+  {
+   "selector": "docs/Tools/PndMasterTasks/PndMasterRunSim.rst",
+   "groups": [
+    "g013.e1",
+    "g013.e2",
+    "g015.e1",
+    "g016.e2",
+    "g089.e1"
+   ],
+   "reason": "pointer/doxygen stub lacks independent evidence content"
+  }
+ ],
+ "authority_chain": {
+  "v2.6": "Attempts 1/2 authority (historical)",
+  "v2.7": "historical provisional successor",
+  "v2.8": "historical provisional successor",
+  "v2.9": "future authority candidate"
+ },
+ "policy": "Forward-only successor benchmark (F6-A2-GR1-R2). Attempts 1 and 2 remain evaluated against v2.6; no retroactive rescoring. v2.9 is the stabilized authority for future attempts only."
+}

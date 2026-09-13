@@ -1035,6 +1035,30 @@ NEXT_TASK_RECOMMENDATION = F6-A2-FR2 / BOUNDED PRODUCT REPAIR AND NEW CANDIDATE 
 STABILIZED GOLD AUTHORITY) (NOT AUTHORIZED).
 Report: `evaluation/F6_A2_GR1_R1_GOLD_SUCCESSOR_PROVENANCE_RECONCILIATION.md`.
 
+## F6-A2-GR1-R2 doxygen-stub evidence-selector cleanup record
+
+COMPLETE / PASS / REMAINING_POINTER_STUB_SELECTORS_RETIRED_FORWARD_ONLY. Zero-scientific-call benchmark-governance
+cleanup at HEAD `deab588`; audit committed before benchmark mutation (`0468852`). Mechanically derived universe
+(v2.6->v2.7 repo-docs selector set-difference): 22 (case,group,path) triples over 11 unique paths, of which
+docs/EventGenerators/DPMGenerator.rst (g016.e1) was already retired by GR1-R1 — inherited v2.8 universe 21 triples /
+10 paths. Every underlying file read in full and classified: CONTENT_BEARING_DOCUMENT — Install_Developers.rst
+(6029B), Install_PandaRoot.rst (5886B), MasterTasks.rst (10878B), Running_Sequence.rst (1746B),
+tut_02_02_analysis_pid.rst (9838B); INCLUDE_AGGREGATOR_WITH_CLOSED_CORPUS_TARGETS — Installation.rst (523B toctree,
+targets inside docs/Installation/), Macros.rst (331B include chain, all four targets verified IN CORPUS), Running.rst
+(4069B toctree + own overview text), PndMasterTasks.rst (709B introduction + 9-target toctree verified IN CORPUS);
+DOXYGEN_OR_EMPTY_POINTER_STUB — docs/Tools/PndMasterTasks/PndMasterRunSim.rst (105B, doxygenclass pointer) removed
+forward-only from g013.e1/g013.e2/g015.e1/g016.e2/g089.e1 (groups retain sphinx/code/README/valid repo-doc
+selectors; none empty; g013 special care honored — Macros.rst and MasterTasks.rst kept). Forward-only successor
+m6-benchmark-v2.9 created from v2.8 (dataset SHA eaacd3ed…; changed cases g013/g015/g016/g089; product validator
+green). Calibration phase_b_t3_product_language_scope_v6 mechanically carried from v5, bound to v2.9, compatible;
+selector re-derived 59 IDs / e27ef67a…, membership identical to v3/v4/v5. Authority: v2.6 = Attempts 1/2 historical;
+v2.7 and v2.8 = historical provisional successors (never used scientifically); v2.9 = stabilized future Gold
+authority. Attempt-2 FAIL unchanged; no retroactive rescoring. novel_validation pristine; holdout access 0;
+product/evaluator code unchanged; scientific calls/tokens 0.
+NEXT_TASK_RECOMMENDATION = F6-A2-FR2 / BOUNDED PRODUCT REPAIR AND NEW CANDIDATE DEVELOPMENT (USING v2.9 AS THE
+STABILIZED GOLD AUTHORITY) (NOT AUTHORIZED).
+Report: `evaluation/F6_A2_GR1_R2_DOXYGEN_STUB_SELECTOR_AUDIT.md`.
+
 ## Historical E3-A0 architecture contract closeout
 
 COMPLETE / PASS / MISSING_POINT_TARGETED_RETRIEVAL_CONTRACT_ESTABLISHED.

@@ -798,6 +798,18 @@ Original Phase-F planning predates the substantial shortcut migrations completed
   v2.6 historical for Attempts 1/2; v2.7 historical provisional successor (never used scientifically); v2.8 stabilized for future
   attempts. Attempt-2 FAIL unchanged; no retroactive rescoring. Report:
   `evaluation/F6_A2_GR1_R1_GOLD_SUCCESSOR_PROVENANCE_RECONCILIATION.md`.
+- **F6-A2-GR1-R2 — Doxygen-Stub Evidence-Selector Cleanup:** COMPLETE / PASS / REMAINING_POINTER_STUB_SELECTORS_RETIRED_FORWARD_ONLY
+  (zero-scientific-call governance cleanup; audit committed before benchmark mutation). Mechanically derived universe: 22
+  (case,group,path) triples / 11 unique paths (21/10 inherited by v2.8 after the GR1-R1 DPMGenerator retirement). Classification:
+  5 CONTENT_BEARING_DOCUMENT, 4 INCLUDE_AGGREGATOR_WITH_CLOSED_CORPUS_TARGETS (Installation.rst/Macros.rst/Running.rst/
+  PndMasterTasks.rst — all include/toctree targets verified inside the frozen corpus), 1 DOXYGEN_OR_EMPTY_POINTER_STUB
+  (docs/Tools/PndMasterTasks/PndMasterRunSim.rst, 105 bytes) retired forward-only from g013.e1/g013.e2/g015.e1/g016.e2/g089.e1
+  with no group emptied and no legitimate coverage weakened. Forward-only successor m6-benchmark-v2.9 created from v2.8 (dataset SHA
+  eaacd3ed…; changed cases g013/g015/g016/g089; product validator green) with calibration
+  phase_b_t3_product_language_scope_v6 (mechanical carry-forward; selector 59 IDs e27ef67a…, membership identical to v3/v4/v5).
+  Authority: v2.6 = Attempts 1/2 historical; v2.7/v2.8 = historical provisional successors (never used scientifically); v2.9 =
+  stabilized future Gold authority. Attempt-2 FAIL unchanged; no retroactive rescoring. Report:
+  `evaluation/F6_A2_GR1_R2_DOXYGEN_STUB_SELECTOR_AUDIT.md`.
 - **F6-A-FR1 — Exposed Gold Failure Review & New Candidate Development:** COMPLETE / PASS / ROOT_CAUSES_ESTABLISHED_AND_BOUNDED_FIXES_IMPLEMENTED (zero-scientific-call development task; all eight exposed status mismatches explained by two generic root causes — RC1 repository display names refused as bare class symbols by the premise guard while the object catalog legitimately lacks repository identities, RC2 prepositional commit requests missing the version-repository binding so the SHA never reached the locked-version comparison with the status precedence itself confirmed correct; bounded generic fixes: manifest-driven Retriever.is_repository_reference + guard repository-identity exclusion, and a bounded prepositional connector in _has_explicit_version_repository_binding; nine test-first regression tests added, preserved-refusal controls intact, zero new test failures; F6-A FAIL preserved; product-fix HEAD `45f14ba`; candidate NOT frozen, F6-A NOT preregistered). Report: `evaluation/F6_A_FR1_EXPOSED_GOLD_FAILURE_REVIEW_AND_CANDIDATE_DEVELOPMENT.md`.
 - **F6-B — Protected Blind Release Gate:** LOCKED / F6_A_DID_NOT_PASS (requires an F6-A PASS with the identical frozen candidate; physical protected holdout availability required; single protected blind release attempt; the only protected blind release decision)
 - **Problem:** Final readiness requires simultaneous evidence on exposed benchmark, novel validation, protected holdout, and shortcut-dependency ablations.
