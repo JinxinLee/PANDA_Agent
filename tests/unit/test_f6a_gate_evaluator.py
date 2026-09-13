@@ -206,6 +206,119 @@ class GateEvaluatorTests(unittest.TestCase):
         self.assertIn("installation", details)
         self.assertIsNone(details["installation"]["passed"])
 
+    def test_per_intent_intent_accuracy_denominators_emitted(self):
+        gate_eval = self._load_module()
+        records = self._records()
+        aggregate = aggregate_metrics(records)
+        gates = gate_eval.derive_gate_matrix(aggregate, records, self._prereg())
+        # F6-A-R1-R1-R1: every fully measured intent reports a concrete
+        # applicable_denominator equal to its measurable case count.
+        details = {
+            detail["intent"]: detail
+            for detail in gates["per_intent_intent_accuracy"]["per_intent_details"]
+        }
+        self.assertEqual(details["usage"]["case_count"], 2)
+        self.assertEqual(details["usage"]["applicable_denominator"], 2)
+        self.assertEqual(details["api"]["case_count"], 1)
+        self.assertEqual(details["api"]["applicable_denominator"], 1)
+        # usage is fully measured and passes; api's single measured case
+        # (g102, intent_correct=False) fails the 0.80 threshold.
+        self.assertTrue(details["usage"]["passed"])
+        self.assertFalse(details["api"]["passed"])
+
+    def test_per_intent_intent_accuracy_partial_measurement_distinct_counts(self):
+        gate_eval = self._load_module()
+        records = [
+            record for record in self._records() if record["intent"] != "usage"
+        ] + [
+            self._measured_extra_case("g104", "troubleshooting", 0.9, 0.9, True),
+            {
+                "id": "g105",
+                "intent": "troubleshooting",
+                "expected_status": "answered",
+                "metrics": {
+                    "answer_point_coverage": 0.5,
+                    "gold_recall_at_10": 0.8,
+                    "intent_correct": None,
+                    "expected_status_correct": True,
+                    "citation_integrity": True,
+                    "paper_code_dual_source": None,
+                    "hallucinated_identifiers": [],
+                    "identifier_mentions": [],
+                    "metric_applicability": {"paper_code_dual_source": False},
+                },
+                "required_source_types": [],
+            },
+        ]
+        aggregate = aggregate_metrics(records)
+        gates = gate_eval.derive_gate_matrix(aggregate, records, self._prereg())
+        details = {
+            detail["intent"]: detail
+            for detail in gates["per_intent_intent_accuracy"]["per_intent_details"]
+        }
+        # case_count and applicable_denominator are distinct when only a
+        # subset of the intent's cases carries a measurable intent_correct.
+        self.assertEqual(details["troubleshooting"]["case_count"], 2)
+        self.assertEqual(details["troubleshooting"]["applicable_denominator"], 1)
+        self.assertEqual(details["api"]["applicable_denominator"], 1)
+
+    def test_per_intent_intent_accuracy_fully_unmeasured_zero_denominator_incomplete(self):
+        gate_eval = self._load_module()
+        # Exclude the api fixture: its failing measurement would make the
+        # aggregate gate FAIL by precedence; this test isolates INCOMPLETE.
+        records = [
+            record for record in self._records() if record["intent"] != "api"
+        ] + [
+            {
+                "id": "g106",
+                "intent": "installation",
+                "expected_status": "answered",
+                "metrics": {
+                    "answer_point_coverage": 0.5,
+                    "gold_recall_at_10": 0.8,
+                    "intent_correct": None,
+                    "expected_status_correct": True,
+                    "citation_integrity": True,
+                    "paper_code_dual_source": None,
+                    "hallucinated_identifiers": [],
+                    "identifier_mentions": [],
+                    "metric_applicability": {"paper_code_dual_source": False},
+                },
+                "required_source_types": [],
+            },
+        ]
+        aggregate = aggregate_metrics(records)
+        gates = gate_eval.derive_gate_matrix(aggregate, records, self._prereg())
+        details = {
+            detail["intent"]: detail
+            for detail in gates["per_intent_intent_accuracy"]["per_intent_details"]
+        }
+        # Represented but fully unmeasured: denominator 0, no metric value,
+        # per-intent INCOMPLETE and the aggregate gate stays INCOMPLETE.
+        self.assertEqual(details["installation"]["case_count"], 1)
+        self.assertEqual(details["installation"]["applicable_denominator"], 0)
+        self.assertIsNone(details["installation"]["metric_value"])
+        self.assertIsNone(details["installation"]["passed"])
+        self.assertIsNone(gates["per_intent_intent_accuracy"]["passed"])
+
+    def test_per_intent_intent_accuracy_applicability_override_excluded(self):
+        gate_eval = self._load_module()
+        records = self._records()
+        # Canonical measurement rule: an explicit metric_applicability=False
+        # excludes the case from the intent-accuracy denominator even when a
+        # non-None intent_correct value is present.
+        records[0]["metrics"]["metric_applicability"]["intent_correct"] = False
+        aggregate = aggregate_metrics(records)
+        gates = gate_eval.derive_gate_matrix(aggregate, records, self._prereg())
+        details = {
+            detail["intent"]: detail
+            for detail in gates["per_intent_intent_accuracy"]["per_intent_details"]
+        }
+        self.assertEqual(details["usage"]["case_count"], 2)
+        self.assertEqual(details["usage"]["applicable_denominator"], 1)
+        # usage metric becomes the mean over the one measured case (g101 True).
+        self.assertEqual(details["usage"]["metric_value"], 1.0)
+
     @staticmethod
     def _measured_extra_case(case_id, intent, recall, accuracy, intent_correct):
         return {

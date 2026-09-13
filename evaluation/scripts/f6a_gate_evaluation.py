@@ -11,16 +11,25 @@ zero-count gates and per-intent gates distinguish PASS / FAIL / INCOMPLETE
 intent-accuracy denominator is the intent-accuracy case count (sum of
 represented per-intent cases), not another metric's denominator.
 
+R1-R1-R1 semantics: per-intent intent-accuracy details emit a
+measurement-derived ``applicable_denominator`` (canonical ``aggregate_metrics``
+exposes per-intent denominators for recall metrics only). With
+``--source-matrix`` the successor matrix additionally verifies that every
+other gate datum matches the prior matrix exactly and refuses to write on any
+divergence, so a NO_CHANGE verdict is checked, not assumed.
+
 Usage:
   PYTHONPATH=src python evaluation/scripts/f6a_gate_evaluation.py \
       --run-id f6a-rc1-gold-formal-full-20260913 \
       --prereg evaluation/f6_a_prerelease_validation_preregistration.json \
-      --output evaluation/f6a_gold_gate_matrix_r1_r1.json
+      --source-matrix evaluation/f6a_gold_gate_matrix_r1_r1.json \
+      --output evaluation/f6a_gold_gate_matrix_r1_r1_r1.json
 """
 
 from __future__ import annotations
 
 import argparse
+import copy
 import json
 from pathlib import Path
 
@@ -40,6 +49,29 @@ def dual_source_applicable_ids(records: list[dict]) -> list[str]:
         )
         and {"paper", "code"}.issubset(set(record.get("required_source_types") or []))
     )
+
+
+def per_intent_intent_accuracy_denominators(records: list[dict]) -> dict[str, int]:
+    """Measurement-derived per-intent intent-accuracy applicability denominators.
+
+    F6-A-R1-R1-R1: canonical ``aggregate_metrics`` exposes per-intent
+    denominators for the recall metrics only, so the intent-accuracy
+    applicability denominator is derived here from the same immutable records
+    under the canonical measurement rule (``metric_applicability`` override
+    plus a non-None ``intent_correct`` value — exactly the cases the canonical
+    ``intent_accuracy`` mean includes). A represented intent with zero
+    measurable cases therefore reports denominator 0 and stays INCOMPLETE.
+    """
+    counts: dict[str, int] = {}
+    for record in records:
+        metrics = record.get("metrics") or {}
+        if metrics.get("intent_correct") is None:
+            continue
+        if not (metrics.get("metric_applicability") or {}).get("intent_correct", True):
+            continue
+        intent = str(record["intent"])
+        counts[intent] = counts.get(intent, 0) + 1
+    return counts
 
 
 def derive_gate_matrix(aggregate: dict, records: list[dict], prereg: dict) -> dict:
@@ -77,23 +109,37 @@ def derive_gate_matrix(aggregate: dict, records: list[dict], prereg: dict) -> di
             "passed": (value == 0) if value is not None else None,
         }
 
-    def per_intent_gate(name: str, metric_key: str, threshold: float, inclusive: bool = True):
+    def per_intent_gate(
+        name: str,
+        metric_key: str,
+        threshold: float,
+        inclusive: bool = True,
+        denominators: dict[str, int] | None = None,
+    ):
         # F6-A-R1-R1 (defect E): every represented intent stays visible. A
         # represented intent without a valid measurement is INCOMPLETE; the
         # aggregate gate FAILs if any intent fails, is INCOMPLETE if none fail
         # but some intent lacks the metric, and PASSes only when every
         # represented intent is measured and passes.
+        # F6-A-R1-R1-R1: ``denominators`` supplies measurement-derived
+        # applicability counts for metrics the canonical aggregation does not
+        # expose a per-intent denominator for (intent_accuracy); without it the
+        # canonical ``{metric_key}_denominator`` entry is used unchanged.
         per_intent = aggregate.get("per_intent") or {}
         details = []
         for intent in sorted(per_intent):
             entry = per_intent[intent]
             value = entry.get(metric_key)
             passed = None if value is None else (value >= threshold if inclusive else value > threshold)
+            if denominators is not None:
+                applicable_denominator = denominators.get(intent, 0)
+            else:
+                applicable_denominator = entry.get(f"{metric_key}_denominator")
             details.append(
                 {
                     "intent": intent,
                     "case_count": entry.get("cases"),
-                    "applicable_denominator": entry.get(f"{metric_key}_denominator"),
+                    "applicable_denominator": applicable_denominator,
                     "metric_value": value,
                     "threshold": threshold,
                     "passed": passed,
@@ -163,6 +209,7 @@ def derive_gate_matrix(aggregate: dict, records: list[dict], prereg: dict) -> di
         "intent_accuracy",
         thresholds["per_intent_intent_accuracy"],
         True,
+        denominators=per_intent_intent_accuracy_denominators(records),
     )
     rate_gate(
         "expected_status_accuracy",
@@ -222,11 +269,33 @@ def derive_gate_matrix(aggregate: dict, records: list[dict], prereg: dict) -> di
     return gates
 
 
+def _gate_comparison_view(gates: dict) -> dict:
+    """Return gates with the repaired ``applicable_denominator`` field stripped.
+
+    F6-A-R1-R1-R1 source-matrix verification: every other gate datum (values,
+    thresholds, passed states, canonical denominators, per-intent details) must
+    match the prior matrix exactly; only this field is expected to differ.
+    """
+    normalized = copy.deepcopy(gates)
+    for gate in normalized.values():
+        for detail in gate.get("per_intent_details") or []:
+            detail.pop("applicable_denominator", None)
+    return normalized
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--project-root", type=Path, default=Path.cwd())
     parser.add_argument("--run-id", required=True)
     parser.add_argument("--prereg", type=Path, required=True)
+    parser.add_argument(
+        "--source-matrix",
+        type=Path,
+        default=None,
+        help="prior gate matrix; when given, gate data must match exactly "
+        "except the repaired applicable_denominator field, else no output "
+        "is written",
+    )
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     run_dir = args.project_root / "data" / "evaluation" / "runs" / args.run_id
@@ -239,20 +308,49 @@ def main() -> None:
     gate_names = [name for name in gates if name != "release_score"]
     failed = sorted(name for name in gate_names if gates[name].get("passed") is False)
     incomplete = sorted(name for name in gate_names if gates[name].get("passed") is None)
+    source_r1_r1_matrix = None
+    terminal_verdict_effect = None
+    if args.source_matrix is not None:
+        prior = json.loads(args.source_matrix.read_text(encoding="utf-8"))
+        divergence = []
+        if prior.get("failed_gate_names") != failed:
+            divergence.append("failed_gate_names")
+        if prior.get("incomplete_gate_names") != incomplete:
+            divergence.append("incomplete_gate_names")
+        if _gate_comparison_view(prior.get("gates") or {}) != _gate_comparison_view(gates):
+            divergence.append("gate values/passed states")
+        if divergence:
+            raise SystemExit(
+                f"gate divergence from {args.source_matrix}: "
+                f"{', '.join(divergence)}; successor matrix not written"
+            )
+        source_r1_r1_matrix = args.source_matrix.as_posix()
+        terminal_verdict_effect = (
+            "NO_CHANGE / F6-A remains COMPLETE / FAIL / "
+            "EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED"
+        )
     output = {
-        "schema_version": "f6a-gate-matrix-r1r1-v1",
-        "run_id": args.run_id,
+        "schema_version": "f6a-gate-matrix-r1r1r1-v1",
+        "source_run_id": args.run_id,
         "source_record_count": len(records),
-        "evaluator_revision": "canonical aggregate_metrics (offline rescore; zero model calls; R1-R1 gate semantics)",
+        "source_r1_r1_matrix": source_r1_r1_matrix,
+        "evaluator_revision": "canonical aggregate_metrics (offline rescore; zero model calls; "
+        "R1-R1 gate semantics; R1-R1-R1 measurement-derived per-intent "
+        "intent-accuracy denominators)",
         "scientific_calls": 0,
         "scientific_tokens": 0,
         "aggregate_metrics": aggregate,
         "gates": gates,
+        "per_intent_details": {
+            name: gates[name]["per_intent_details"]
+            for name in ("per_intent_gold_recall_at_10", "per_intent_intent_accuracy")
+        },
         "dual_source_applicable_ids": dual_source_applicable_ids(records),
         "failed_gate_names": failed,
         "failed_gate_count": len(failed),
         "incomplete_gate_names": incomplete,
         "incomplete_gate_count": len(incomplete),
+        "terminal_verdict_effect": terminal_verdict_effect,
         "per_intent_breakdown": aggregate.get("per_intent"),
         "measured_model_outputs": "immutable per-case records under data/evaluation/runs/"
         + args.run_id,

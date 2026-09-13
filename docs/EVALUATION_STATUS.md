@@ -888,6 +888,27 @@ novel_validation pristine; holdout access 0; product changes 0; scientific calls
 NEXT_TASK_RECOMMENDATION = POST-F6-A EXPOSED-GOLD FAILURE REVIEW / NEW CANDIDATE DEVELOPMENT (NOT AUTHORIZED).
 Report: `evaluation/F6_A_R1_R1_ARCHIVAL_AND_GATE_HELPER_CONSISTENCY_REPAIR.md`.
 
+## F6-A-R1-R1-R1 per-intent denominator emission repair record
+
+COMPLETE / PASS / PER_INTENT_INTENT_ACCURACY_DENOMINATOR_EMISSION_REPAIRED. Zero-model-call machine-readable
+consistency repair at HEAD `5730e92`; R1-R1 remains substantively accepted and only its machine-readable
+denominator emission is repaired: `per_intent_intent_accuracy.per_intent_details[*].applicable_denominator` was
+`null` for every represented intent because canonical `aggregate_metrics` per_intent entries expose recall
+denominators only (no `intent_accuracy_denominator`). The gate helper now derives the intent-accuracy
+applicability denominator deterministically from the same immutable records under the canonical measurement rule
+(`metric_applicability` override plus non-None `intent_correct` — never hard-coded counts, never unconditionally
+case_count); zero measurable cases report denominator 0 and stay INCOMPLETE; recall per-intent denominators keep
+canonical behavior. Successor matrix `evaluation/f6a_gold_gate_matrix_r1_r1_r1.json` (schema
+f6a-gate-matrix-r1r1r1-v1; R1-R1 matrix preserved) verifies against the prior matrix — every gate datum must
+match exactly except the repaired field, any divergence refuses to write. Current denominators 2/8/15/12/2/6/14
+(metric values and PASS states unchanged; failed_gate_count = 9, identical gate list; incomplete_gate_count = 0;
+dual-source applicable IDs [g060]; release_score 0.8276836158192091; terminal verdict effect NO_CHANGE).
+Focused tests: 15 passed (11 prior + 4 new: full/partial/zero measurement and applicability override). The
+reconciliation chain F6-A-R1-R1 / F6-A-R1 / F6-A / F6-B / Phase F is closed and unchanged. novel_validation
+pristine; holdout access 0; product changes 0; scientific calls/tokens 0.
+NEXT_TASK_RECOMMENDATION = POST-F6-A EXPOSED-GOLD FAILURE REVIEW / NEW CANDIDATE DEVELOPMENT (NOT AUTHORIZED).
+Report: `evaluation/F6_A_R1_R1_R1_PER_INTENT_DENOMINATOR_EMISSION_REPAIR.md`.
+
 ## Historical E3-A0 architecture contract closeout
 
 COMPLETE / PASS / MISSING_POINT_TARGETED_RETRIEVAL_CONTRACT_ESTABLISHED.

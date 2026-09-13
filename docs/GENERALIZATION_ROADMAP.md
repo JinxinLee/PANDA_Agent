@@ -785,6 +785,17 @@ Original Phase-F planning predates the substantial shortcut migrations completed
   and the authoritative matrix is now `evaluation/f6a_gold_gate_matrix_r1_r1.json` (failed_gate_count = 9,
   incomplete = 0, terminal F6-A FAIL unchanged). F6-A-R1 fully accepted after R1-R1. Report:
   `evaluation/F6_A_R1_R1_ARCHIVAL_AND_GATE_HELPER_CONSISTENCY_REPAIR.md`.
+- **F6-A-R1-R1-R1 outcome (per-intent denominator emission repair):** COMPLETE / PASS /
+  PER_INTENT_INTENT_ACCURACY_DENOMINATOR_EMISSION_REPAIRED. Zero-model-call machine-readable consistency repair;
+  R1-R1 remains substantively accepted and only its machine-readable denominator emission is repaired. The
+  per-intent intent-accuracy details now emit measurement-derived `applicable_denominator` values (canonical
+  measurement rule: metric_applicability override + non-None intent_correct; never hard-coded counts, never
+  unconditionally case_count) — current values 2/8/15/12/2/6/14 with metric values and PASS states unchanged;
+  zero measurable cases stay INCOMPLETE. Successor matrix `evaluation/f6a_gold_gate_matrix_r1_r1_r1.json`
+  (R1-R1 matrix preserved) self-verifies against the prior matrix (any gate divergence except the repaired
+  field refuses to write): failed_gate_count = 9 (identical list), incomplete = 0, dual-source applicable IDs
+  [g060], terminal verdict effect NO_CHANGE. The reconciliation chain is closed. Report:
+  `evaluation/F6_A_R1_R1_R1_PER_INTENT_DENOMINATOR_EMISSION_REPAIR.md`.
 - **F6-A-R1 outcome (offline gate/identity/archival reconciliation):** COMPLETE / PASS /
   OFFLINE_GATE_IDENTITY_ARCHIVAL_RECONCILED. Zero-model-call correction of the derived F6-A gate arithmetic:
   dual-source denominator corrected (1 applicable case; rate 0.0; FAIL unchanged), per-intent gates evaluated
