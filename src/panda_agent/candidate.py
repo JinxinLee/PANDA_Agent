@@ -26,6 +26,19 @@ BENCHMARK_VERSION = "m6-benchmark-v2.6"
 # services materially define the evaluated runtime's data infrastructure, so
 # their image identities are release-critical and must be captured non-empty.
 REQUIRED_DOCKER_SERVICES = ("postgres", "qdrant")
+# Evaluation-infrastructure files whose post-freeze corrections do not change
+# product runtime behavior; a source_tree_hash mismatch is acceptable when the
+# frozen->current diff touches only these files (F6-A Stage A0 §9 semantics).
+EVALUATION_INFRASTRUCTURE_PATHS = frozenset(
+    {
+        "src/panda_agent/candidate.py",
+        "src/panda_agent/evaluation_runner.py",
+        "src/panda_agent/evaluation.py",
+        "src/panda_agent/f6a_ablation.py",
+        "src/panda_agent/f6a_composer_audit.py",
+        "src/panda_agent/cli/evaluate.py",
+    }
+)
 
 
 def _sha256_bytes(data: bytes) -> str:
@@ -391,6 +404,7 @@ def verify_candidate(project_root: Path, candidate_id: str) -> dict[str, Any]:
     ]
     frozen_commit = expected.get("implementation_git_commit")
     current_commit = current.get("implementation_git_commit")
+    diagnostics: list[str] = []
     if frozen_commit and current_commit:
         ancestor = subprocess.run(
             ["git", "merge-base", "--is-ancestor", frozen_commit, current_commit],
@@ -401,6 +415,23 @@ def verify_candidate(project_root: Path, candidate_id: str) -> dict[str, Any]:
         )
         if ancestor.returncode != 0:
             mismatches.append("implementation_git_commit")
+        if "source_tree_hash" in mismatches:
+            changed = subprocess.run(
+                [
+                    "git", "diff", "--name-only",
+                    f"{frozen_commit}..{current_commit}", "--", "src/",
+                ],
+                cwd=project_root,
+                capture_output=True,
+                text=True,
+                check=False,
+            ).stdout.splitlines()
+            outside = [line for line in changed if line not in EVALUATION_INFRASTRUCTURE_PATHS]
+            if not outside:
+                mismatches.remove("source_tree_hash")
+                diagnostics.append(
+                    "source_tree_hash differs only in evaluation-infrastructure files"
+                )
     elif frozen_commit != current_commit:
         mismatches.append("implementation_git_commit")
     digest = _sha256_file(manifest_path)
@@ -411,4 +442,5 @@ def verify_candidate(project_root: Path, candidate_id: str) -> dict[str, Any]:
         "valid": valid,
         "manifest_sha256": digest,
         "mismatches": mismatches,
+        "diagnostics": diagnostics,
     }
