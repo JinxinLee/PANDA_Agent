@@ -1,0 +1,77 @@
+{
+  "schema_version": "f6a2-gr1-r1-provenance-reconciliation-v1",
+  "task": "F6-A2-GR1-R1 — Gold Successor Provenance Reconciliation",
+  "starting_head": "9c9593eccefa6db9eb600f248d70aeff3213607f",
+  "scientific_calls": 0,
+  "scientific_tokens": 0,
+  "original_inconsistency": {
+    "g016_e1": "included in the v2.7 accepted change set but is title-form (title_contains 'DPMGenerator'); never one of the five primary adjudication targets nor one of the documented path-form sweep pairs; lacked independent adjudication",
+    "g022_e2": "valid path-form pair (sphinx Tutorials/tut_02_02_analysis_pid.html <-> docs/Tutorials/tut_02_02_analysis_pid.rst) omitted from the GR1 textual consistency-sweep enumeration"
+  },
+  "g016_e1_adjudication": {
+    "v2_6_contract": {"group_id": "g016.e1", "role": "dpmgenerator_documentation", "selector": "source_id=pandaroot_sphinx_2023_08_25_dev, title_contains='DPMGenerator'"},
+    "v2_7_delta": {"added_selector": "source_id=pandaroot, path=docs/EventGenerators/DPMGenerator.rst"},
+    "sphinx_identity": "EventGenerators/DPMGenerator.html — doxygen API rendering of class PndDpmDirect (3596 chars / 3 objects); content generated from code annotations",
+    "repo_identity": "docs/EventGenerators/DPMGenerator.rst — 96-byte doxygen stub (single .. doxygenclass:: PndDpmDirect directive); 3 indexed objects / 165 chars / 7 word types; no sentence content",
+    "lineage_evidence": "stub -> rendered API page build lineage is real, but the stub carries no documentation substance",
+    "content_equivalence_evidence": "ABSENT — rendered-page content derives from code annotations, not from the rst; contrast with content-bearing accepted extensions (Install_PandaRoot.rst 5886B, Install_Developers.rst 6029B, tut_02_02_analysis_pid.rst 9838B with verified overlap)",
+    "role_check": "a 96-byte pointer cannot serve as evidence for the dpmgenerator_documentation role",
+    "candidate_outcome_independence_test": "Would docs/EventGenerators/DPMGenerator.rst have been added had Attempt 2 never failed g016? NO — it fails the GR1 rule's materially-equivalent-content requirement on its face; the only motivations were mechanical path-isomorphism application to a title-form group plus the Attempt-2 outcome",
+    "final_disposition": "REJECT_UNJUSTIFIED_V2_7_DELTA"
+  },
+  "path_form_consistency_sweep": {
+    "reconstruction": "deterministic from v2.6: groups whose sphinx selectors use explicit rendered-page paths",
+    "primary_path_form_adjudicated_group": "g014.e2",
+    "additional_path_form_groups": ["g008.e2", "g013.e1", "g013.e2", "g015.e1", "g016.e2", "g022.e2", "g089.e1", "g101.e1", "g101.e3", "g106.e1", "g109.e1"],
+    "total_pairs": 12,
+    "g022_e2": "CONFIRMED part of the original bounded path-form sweep; omission was bookkeeping-only; its v2.7 extension (docs/Tutorials/tut_02_02_analysis_pid.rst, 9838 bytes substantive) is independently valid and retained",
+    "g016_e1_status_after_reconciliation": "independently adjudicated title-form source-equivalence case with a REJECTED delta — not a path-form sweep correction"
+  },
+  "open_finding_recorded": {
+    "finding": "docs/Tools/PndMasterTasks/PndMasterRunSim.rst (105 bytes) is likewise a doxygen stub (.. doxygenclass:: PndMasterRunSim), added by the v2.7 path-form sweep to g013.e1/g013.e2/g015.e1/g016.e2/g089.e1",
+    "authority_scope": "retirement is OUTSIDE the GR1-R1 authorization (g016.e1 only); recorded verbatim in the v2.8 change report for the next benchmark-governance task",
+    "contrast": "docs/Running/Macros.rst (added to g013.e1) is an include-aggregation stub whose targets (macro/master/mastermacros.rst etc.) live inside the indexed corpus, so its equivalence chain closes within the corpus; retained"
+  },
+  "benchmark_authority": {
+    "v2_6": "historical authority for Attempts 1 and 2 (byte-unchanged)",
+    "v2_7": "historical provisional successor; NOT used for any scientific release attempt",
+    "v2_8": {
+      "status": "STABILIZED_FORWARD_ONLY_GOLD_AUTHORITY_FOR_FUTURE_ATTEMPTS",
+      "path": "evaluation/benchmarks/v2_8/",
+      "derived_from": "v2.7 (4dcc9d066a275269d01b094aefa69b4e7794f18ad6a6dfce4d88d94ad3977b56)",
+      "dataset_sha256": "67c992ce9556995ae01efc17e72038a477a341b621d0ebf590e6f42f2eff34eb",
+      "changed_cases": ["g016"],
+      "repair": "removal of the unjustified g016.e1 repo-source selector only; every other accepted v2.7 change preserved",
+      "validation": "GoldDataset strict validation; product validator green (structurally_valid=true, official_ready=true, question_count=120, split/status counts unchanged, zero unmatched evidence groups, zero unknown allowed source versions)"
+    }
+  },
+  "calibration": {
+    "authoritative": "phase_b_t3_product_language_scope_v5",
+    "carry_forward": "mechanical from v4; predecessor v4 recorded; no fresh human language review claimed",
+    "binding": "v2.8 dataset SHA",
+    "compatibility": "verified",
+    "selector": {"count": 59, "sha256": "e27ef67a866274b4a8441b789ca78fc3ccb7e022eed537c7442e15230777a0e5", "membership_identical_to_v3_v4": true}
+  },
+  "historical_attempt_integrity": {
+    "attempt_1_evaluated_against": "v2.6",
+    "attempt_2_evaluated_against": "v2.6",
+    "attempt_2_fail": "COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED (unchanged)",
+    "retroactive_rescoring": "none; no hypothetical v2.7/v2.8 scores computed"
+  },
+  "integrity": {
+    "product_behavior_changes": 0,
+    "evaluator_behavior_changes": 0,
+    "novel_validation": "PRISTINE_FOR_CURRENT_LINEAGE",
+    "holdout_access": 0,
+    "protected_content_leakage": 0
+  },
+  "lifecycle": {
+    "F6-A2-GR1-R1": "COMPLETE / PASS / UNJUSTIFIED_V2_7_DELTA_RETIRED_FORWARD_ONLY",
+    "F6-A2-GR1": "COMPLETE / PASS / FORWARD_ONLY_GOLD_CONTRACT_ADJUDICATED_AND_SUCCESSOR_ESTABLISHED",
+    "F6-A_attempt_2": "COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED",
+    "F6-B": "LOCKED / F6_A_DID_NOT_PASS",
+    "Phase_F": "IN_PROGRESS / GOLD_AUTHORITY_STABILIZED_PRODUCT_REPAIR_PENDING"
+  },
+  "next_recommendation": "F6-A2-FR2 / BOUNDED PRODUCT REPAIR AND NEW CANDIDATE DEVELOPMENT (using v2.8 as the stabilized Gold authority; PndMasterRunSim.rst stub finding routed to the next benchmark-governance task)",
+  "next_task_execution_authorized": false
+}
