@@ -1,0 +1,121 @@
+{
+  "benchmark_dataset_sha256": "6f12d54b4db3fdd87fb30670e730ffd8c025a55a968c90a4ea63ab7cecdb878f",
+  "benchmark_manifest_sha256": "7e0e37fe8af79b74ad96dc6b08aded86eb3deab1a00e9e4c539de86286c1961a",
+  "benchmark_official_ready": true,
+  "benchmark_question_count": 120,
+  "benchmark_status": "approved_exposed_development_benchmark_v2_6",
+  "benchmark_structurally_valid": true,
+  "benchmark_version": "m6-benchmark-v2.6",
+  "candidate_id": "f6a-rc2-20260913",
+  "config_tree_hash": "1baeb298af2858f49994bf38e4cff57aa6387aa84a556750727344db1ba62ab6",
+  "docker": {
+    "images": [
+      {
+        "ID": "23bec0362456",
+        "Image": "postgres:17-alpine",
+        "Name": "panda_agent-postgres-1",
+        "State": "running"
+      },
+      {
+        "ID": "377b96bcb759",
+        "Image": "qdrant/qdrant:v1.15.5",
+        "Name": "panda_agent-qdrant-1",
+        "State": "running"
+      }
+    ],
+    "status": "ok"
+  },
+  "docker_release_identity": {
+    "release_critical": true,
+    "satisfied": true,
+    "services": [
+      "postgres",
+      "qdrant"
+    ]
+  },
+  "effective_verification_model_id": "gemini-3.8-flash",
+  "embedding_dimensions": 3072,
+  "embedding_model_id": "gemini-embedding-2",
+  "evaluation_judge_model_id": "gemini-3.8-flash",
+  "formal_product_scope_selector_count": 59,
+  "formal_product_scope_selector_sha256": "e27ef67a866274b4a8441b789ca78fc3ccb7e022eed537c7442e15230777a0e5",
+  "frozen_at": "2026-09-13T14:42:03.317593+00:00",
+  "gold_dataset_hash": "6f12d54b4db3fdd87fb30670e730ffd8c025a55a968c90a4ea63ab7cecdb878f",
+  "implementation_git_commit": "3f1f16ee2dcf02b2cfb88ff8f93f97f574e48448",
+  "index_fingerprint": "8172f9a640e62977be6e911bfb4848ce3aecd0994f1f3ba51a0985bffec62cb9",
+  "index_identity": "8172f9a640e62977be6e911bfb4848ce3aecd0994f1f3ba51a0985bffec62cb9",
+  "index_identity_payload": {
+    "distance": "cosine",
+    "embedding_dimensions": 3072,
+    "embedding_model": "gemini-embedding-2",
+    "index_schema_version": "4",
+    "sparse": {
+      "avg_len": 256.0,
+      "b": 0.75,
+      "disable_stemmer": false,
+      "fastembed_version": "0.7.4",
+      "hash_function": "mmh3.hash",
+      "k": 1.2,
+      "language": "english",
+      "mmh3_version": "5.2.1",
+      "model_name": "Qdrant/bm25",
+      "modifier": "idf",
+      "py_rust_stemmers_version": "0.1.8",
+      "stemmer": "SnowballStemmer",
+      "stopwords_sha256": "019f104ba2ed07436d05f9cdd3383034ad66014edc27fc651f837e1a038b6451",
+      "token_max_length": 40,
+      "tokenizer": "SimpleTokenizer",
+      "vector_name": "sparse"
+    }
+  },
+  "manual_adjudications_hash": "43d2a67686060bbf30e0ad99b515520465e32a12f7e279805b7ad2d2dc81a920",
+  "migration_tree_hash": "b3a8994ea1782feafa5eef7958fc81e93b0bfbbb88a3c4b2c7ab8ab1220075af",
+  "normalized_output_hashes": {
+    "aliases": "2e59201f5bcb7f5c515ec6c573af1f15f18e8a8bd97dbd34ceb54aa0fc1fe7da",
+    "errors": "ea0b09cc07dc78ae83851fb247a31514350cd6ae1abd7fcdd03c61e4a20e1d7d",
+    "objects": "bf0168747f1c9b424048cef57fc6c0873f21a50844a2a45557c514239cc75316",
+    "relation_candidates": "b45264ff7451573c63c7d1e0b9fc169f79a97c5e256f3f70fd996517dfb80048",
+    "relations": "f6ef2298162bd99354a44395357ab8f3524413dea87426f2db7dd8bbfb70b395",
+    "workflows": "cee7d4406cab5490ed0002710d4ae9013e35ea0a515cac2c0785386a825e9026"
+  },
+  "normalized_report_hash": "d14a45412383731d06d0308ab73adab17c3cfe320f9b3cfc4d03fc7b9ba7d635",
+  "package_versions": {
+    "google-genai": "2.13.0",
+    "langgraph": "1.2.11",
+    "panda-research-qa-agent": "0.1.0",
+    "psycopg": "3.3.4",
+    "python": "3.13.14",
+    "qdrant-client": "1.19.0"
+  },
+  "primary_answer_point_mode": "legacy_question_core",
+  "product_language_calibration_id": "phase_b_t3_product_language_scope_v3",
+  "product_language_calibration_sha256": "f8d05d8769ff84ba2199117f1471a3b8f98cea87397c79ac655094d6815eccac",
+  "prompt_hash": "23d73b036646ec62f3095fac4bdfafdfc7ecf6676fd27d18475b86773db4e6d5",
+  "prompt_version": "3.10.1",
+  "protected_file_hashes": {
+    ".env.example": "e1de836bd55e8ee297e0d1cf3c582356f2f6f28908871b1345488f73856dfb95",
+    "gold_questions.yaml": "6f12d54b4db3fdd87fb30670e730ffd8c025a55a968c90a4ea63ab7cecdb878f",
+    "manual_adjudications.yaml": "43d2a67686060bbf30e0ad99b515520465e32a12f7e279805b7ad2d2dc81a920",
+    "pyproject.toml": "bc7c1b7543479b09429dfc1e5f3eaeeffe74c9e664d58dad93040335fe829e83",
+    "query_expansions.yaml": "b4faca437af6d333f6690bc3376b5dc2c214034bb1a90737ff46bebf0ecd07e0",
+    "retrieval_policies.yaml": "fb2cd99bf500d5924931cf0fa6d5ea801efc7939b4c469fad8fbc0b5b082ced9"
+  },
+  "python_version": "3.13.14",
+  "qdrant": {
+    "collection_name": "panda_knowledge_v1",
+    "dense_dimensions": 3072,
+    "dimensions_match": true,
+    "expected_dense_dimensions": 3072,
+    "points_count": 104973,
+    "status": "ok"
+  },
+  "query_expansion_hash": "b4faca437af6d333f6690bc3376b5dc2c214034bb1a90737ff46bebf0ecd07e0",
+  "retrieval_policy_hash": "fb2cd99bf500d5924931cf0fa6d5ea801efc7939b4c469fad8fbc0b5b082ced9",
+  "runtime_generation_model_id": "gemini-3.8-flash",
+  "runtime_verification_model_id": null,
+  "schema_version": "1.0",
+  "source_manifest_hash": "9925ec31a6122e05388806990f79aae036f3b0989c4584d24f2092bc4edb3d94",
+  "source_tree_hash": "c3637d686e931ac8670f1b253e85d3fb1df2e2e7f4721424ce9ece94bfb54670",
+  "status": "frozen",
+  "vertex_location": "global"
+}

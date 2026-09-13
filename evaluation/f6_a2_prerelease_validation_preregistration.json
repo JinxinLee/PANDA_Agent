@@ -167,8 +167,8 @@
   "measured_outcomes": "none",
   "implementation_head_lineage": {
     "preregistration_baseline": "619128b",
-    "preregistration_commit": null,
-    "freeze_head": null,
-    "note": "preregistration_commit and freeze_head are recorded at the freeze bookkeeping commit; the candidate is frozen from the actual clean committed HEAD after this preregistration chronology is established"
+    "preregistration_commit": "3f1f16ee2dcf02b2cfb88ff8f93f97f574e48448",
+    "freeze_head": "3f1f16ee2dcf02b2cfb88ff8f93f97f574e48448",
+    "note": "the candidate was frozen from the clean committed preregistration HEAD (manifest implementation_git_commit = 3f1f16e); the freeze bookkeeping commit adds only the candidate artifacts and this lineage record — no product/evaluator/config change separates baseline, preregistration, and freeze"
   }
 }
