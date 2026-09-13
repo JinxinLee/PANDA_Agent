@@ -213,7 +213,7 @@ class BenchmarkAuthorityFlagTests(unittest.TestCase):
 
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            benchmark_dir = root / candidate.BENCHMARK_DIR
+            benchmark_dir = root / "evaluation" / "benchmarks" / "v2_6"
             benchmark_dir.mkdir(parents=True)
             (benchmark_dir / "gold_questions.yaml").write_bytes(dataset_bytes)
             manifest = BenchmarkAuthorityFlagTests._manifest(
@@ -240,19 +240,53 @@ class BenchmarkAuthorityFlagTests(unittest.TestCase):
             self.assertEqual(identity["benchmark_manifest_sha256"], expected)
 
     def test_official_ready_false_rejected(self):
-        with self.assertRaises(RuntimeError):
+        # GOLD-9: an unqualified directory is simply not resolved; a root with
+        # no qualified benchmark raises FileNotFoundError instead of freezing.
+        with self.assertRaises((RuntimeError, FileNotFoundError)):
             self._identity_with_dataset(b"questions: []\n", official=False)
 
     def test_structurally_valid_false_rejected(self):
-        with self.assertRaises(RuntimeError):
+        with self.assertRaises((RuntimeError, FileNotFoundError)):
             self._identity_with_dataset(b"questions: []\n", structural=False)
 
-    def test_wrong_benchmark_version_rejected(self):
-        with self.assertRaises(RuntimeError):
-            self._identity_with_dataset(b"questions: []\n", version="m6-benchmark-v2.5")
+    def test_resolves_newest_qualified_benchmark_directory(self):
+        # GOLD-9: directory discovery picks the highest qualified version, so a
+        # stale v2.6 directory is not selected while a valid v2.9 exists.
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+
+            def _make(version_dir, dataset_bytes, version):
+                benchmark_dir = root / "evaluation" / "benchmarks" / version_dir
+                benchmark_dir.mkdir(parents=True)
+                (benchmark_dir / "gold_questions.yaml").write_bytes(dataset_bytes)
+                (benchmark_dir / "benchmark_manifest.json").write_text(
+                    json.dumps(
+                        {
+                            "benchmark_version": version,
+                            "question_count": 120,
+                            "status": f"approved_exposed_development_benchmark_{version_dir}",
+                            "dataset": "gold_questions.yaml",
+                            "dataset_sha256": hashlib.sha256(dataset_bytes).hexdigest(),
+                            "project_official_validation": {
+                                "official_ready": True,
+                                "structurally_valid": True,
+                            },
+                        }
+                    ),
+                    encoding="utf-8",
+                )
+
+            _make("v2_6", b"v26 questions\n", "m6-benchmark-v2.6")
+            _make("v2_9", b"v29 questions\n", "m6-benchmark-v2.9")
+            self.assertEqual(
+                candidate._benchmark_identity(root)["benchmark_version"],
+                "m6-benchmark-v2.9",
+            )
 
     def test_manifest_hash_sensitivity(self):
-        manifest_path = Path("evaluation/benchmarks/v2_6/benchmark_manifest.json")
+        manifest_path = Path("evaluation/benchmarks/v2_9/benchmark_manifest.json")
         original = manifest_path.read_bytes()
         before = candidate._benchmark_identity(Path.cwd())["benchmark_manifest_sha256"]
         try:
@@ -262,6 +296,55 @@ class BenchmarkAuthorityFlagTests(unittest.TestCase):
         finally:
             manifest_path.write_bytes(original)
         self.assertEqual(candidate._benchmark_identity(Path.cwd())["benchmark_manifest_sha256"], before)
+
+    def test_missing_manual_adjudications_is_optional_not_fatal(self):
+        # GOLD-9 §5.4: Gold v2.9 carries no manual_adjudications.yaml; the
+        # freezer records the absence (hash None) instead of requiring a
+        # legacy adjudication artifact copied forward.
+        from types import SimpleNamespace
+        from unittest import mock
+
+        from panda_agent.candidate import _current_manifest
+
+        settings = SimpleNamespace(
+            generation_model="g",
+            verification_model=None,
+            effective_verification_model="g",
+            evaluation_judge_model="j",
+            embedding_model="e",
+            embedding_dimensions=3072,
+            location="global",
+        )
+        with mock.patch("panda_agent.candidate.VertexSettings") as vertex_settings, mock.patch(
+            "panda_agent.candidate.IndexIdentity"
+        ) as index_identity:
+            vertex_settings.from_env.return_value = settings
+            # Match the real stored index identity so the freezer's authority
+            # checks pass and only the adjudications disposition is exercised.
+            index_identity.from_settings.return_value.fingerprint.return_value = (
+                "8172f9a640e62977be6e911bfb4848ce3aecd0994f1f3ba51a0985bffec62cb9"
+            )
+            manifest = _current_manifest(Path.cwd(), "authority-binding-probe")
+        self.assertIsNone(manifest["manual_adjudications_hash"])
+        self.assertIn("gold_questions.yaml", manifest["protected_file_hashes"])
+        self.assertNotIn("manual_adjudications.yaml", manifest["protected_file_hashes"])
+
+    def test_old_checkout_falls_back_to_historical_chain(self):
+        # GOLD-9: an old checkout without any signed exposed benchmark still
+        # resolves through the historical fallback chain (v2.2 raw file).
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            legacy = root / "evaluation" / "benchmarks" / "v2_2"
+            legacy.mkdir(parents=True)
+            (legacy / "gold_questions.yaml").write_text("questions: []\n", encoding="utf-8")
+            from panda_agent.evaluation_runner import default_gold_dataset_path
+
+            self.assertEqual(
+                default_gold_dataset_path(root),
+                legacy / "gold_questions.yaml",
+            )
 
 
 class ManifestIdentitySourceTests(unittest.TestCase):
@@ -299,10 +382,10 @@ class ProductScopeSelectorTests(unittest.TestCase):
         calibration = load_product_language_calibration(self.PROJECT_ROOT)
         self.assertIsNotNone(calibration)
         self.assertEqual(
-            calibration["calibration_id"], "phase_b_t3_product_language_scope_v3"
+            calibration["calibration_id"], "phase_b_t3_product_language_scope_v6"
         )
         dataset = load_gold_dataset(default_gold_dataset_path(self.PROJECT_ROOT))
-        self.assertEqual(dataset.benchmark_version, "m6-benchmark-v2.6")
+        self.assertEqual(dataset.benchmark_version, "m6-benchmark-v2.9")
         compatibility = calibration_compatibility(
             calibration, dataset, dataset_path=default_gold_dataset_path(self.PROJECT_ROOT)
         )
@@ -340,11 +423,17 @@ class ProductScopeSelectorTests(unittest.TestCase):
         identity = candidate._product_scope_identity(self.PROJECT_ROOT)
         self.assertEqual(
             identity["product_language_calibration_id"],
-            "phase_b_t3_product_language_scope_v3",
+            "phase_b_t3_product_language_scope_v6",
         )
         self.assertEqual(identity["formal_product_scope_selector_count"], 59)
-        self.assertTrue(identity["formal_product_scope_selector_sha256"])
-        self.assertTrue(identity["product_language_calibration_sha256"])
+        self.assertEqual(
+            identity["formal_product_scope_selector_sha256"],
+            "e27ef67a866274b4a8441b789ca78fc3ccb7e022eed537c7442e15230777a0e5",
+        )
+        self.assertEqual(
+            identity["product_language_calibration_sha256"],
+            "fe56d4ca1112194643054d0d7627804956b4a35965495e18cbede59a937854a9",
+        )
 
     def test_selector_hash_is_deterministic(self):
         first = candidate._product_scope_identity(self.PROJECT_ROOT)

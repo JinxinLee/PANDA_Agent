@@ -1735,23 +1735,82 @@ def validate_product_language_calibration(calibration: dict[str, Any]) -> None:
         raise ValueError("counts.non_english does not match non_english_ids")
 
 
+def newest_signed_exposed_gold_dir(project_root: Path) -> Path:
+    """Resolve the newest signed exposed benchmark directory.
+
+    Candidate directories are discovered from ``evaluation/benchmarks/v2_N``
+    names, so adding a successor benchmark requires no resolver change.  A
+    directory qualifies only when its manifest dataset hash matches the
+    dataset file and both official-validation flags are true; the highest
+    version number wins.  Raises FileNotFoundError when no directory
+    qualifies (old checkouts fall back to the historical resolver chain in
+    ``evaluation_runner.default_gold_dataset_path``).
+    """
+    benchmarks_dir = project_root / "evaluation" / "benchmarks"
+    qualified: list[tuple[int, Path]] = []
+    if benchmarks_dir.is_dir():
+        for child in benchmarks_dir.iterdir():
+            match = re.fullmatch(r"v2_(\d+)", child.name)
+            if not match or not child.is_dir():
+                continue
+            manifest_path = child / "benchmark_manifest.json"
+            dataset_path = child / "gold_questions.yaml"
+            if not manifest_path.is_file() or not dataset_path.is_file():
+                continue
+            try:
+                manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            except (OSError, ValueError, json.JSONDecodeError):
+                continue
+            official = manifest.get("project_official_validation") or {}
+            if (
+                manifest.get("dataset_sha256") == sha256_file(dataset_path)
+                and official.get("official_ready") is True
+                and official.get("structurally_valid") is True
+            ):
+                qualified.append((int(match.group(1)), child))
+    if not qualified:
+        raise FileNotFoundError(
+            "no signed exposed benchmark with a consistent official manifest found"
+        )
+    return max(qualified, key=lambda entry: entry[0])[1]
+
+
+def newest_product_language_calibration_path(project_root: Path) -> Path | None:
+    """Return the newest reviewed product-language calibration artifact path.
+
+    Mechanical successor discovery over
+    ``phase_b_t3_product_language_scope_vN.json``; the highest version number
+    is authoritative (GOLD-9).
+    """
+    manifests_dir = project_root / "evaluation" / "baselines" / "manifests"
+    versions = sorted(
+        int(match.group(1))
+        for candidate in manifests_dir.glob("phase_b_t3_product_language_scope_v*.json")
+        if (match := re.search(r"_v(\d+)\.json$", candidate.name))
+    ) if manifests_dir.is_dir() else []
+    if not versions:
+        return None
+    return manifests_dir / f"phase_b_t3_product_language_scope_v{versions[-1]}.json"
+
+
 def load_product_language_calibration(
     project_root: Path,
     path: Path | None = None,
 ) -> dict[str, Any] | None:
     """Load and validate the reviewed product-language calibration artifact.
 
-    Versioned successors take precedence: the newest reconciliation (v3) is
-    loaded when present, otherwise the historical v2 artifact is used.
+    The newest ``phase_b_t3_product_language_scope_vN.json`` in the manifests
+    directory is authoritative (GOLD-9), so the resolution advances with each
+    reviewed successor instead of stopping at an older hard-coded one.
+    Compatibility with the active Gold is validated by the caller; an older
+    calibration is never silently substituted for the newest one.
     """
     if path is not None:
         calibration_path = path
     else:
-        manifests_dir = project_root / "evaluation" / "baselines" / "manifests"
-        calibration_path = manifests_dir / "phase_b_t3_product_language_scope_v2.json"
-        successor = manifests_dir / "phase_b_t3_product_language_scope_v3.json"
-        if successor.is_file():
-            calibration_path = successor
+        calibration_path = newest_product_language_calibration_path(project_root)
+        if calibration_path is None:
+            return None
     if not calibration_path.is_file():
         return None
     calibration = json.loads(calibration_path.read_text(encoding="utf-8"))

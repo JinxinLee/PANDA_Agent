@@ -11,6 +11,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+from panda_agent.evaluation import newest_signed_exposed_gold_dir
 from panda_agent.evaluation_runner import package_versions, prompt_fingerprint, repository_identity
 from panda_agent.indexing import IndexIdentity, normalized_dir
 from panda_agent.llm.vertex import VertexSettings
@@ -20,8 +21,6 @@ from panda_agent.storage import Storage
 
 # F6-A authoritative exposed benchmark: the freezer must bind the same signed
 # identity the evaluator resolves (m6-benchmark-v2.6), not the historical v2.
-BENCHMARK_DIR = Path("evaluation") / "benchmarks" / "v2_6"
-BENCHMARK_VERSION = "m6-benchmark-v2.6"
 # F6-A Docker contract (Option A): the compose-managed PostgreSQL/Qdrant
 # services materially define the evaluated runtime's data infrastructure, so
 # their image identities are release-critical and must be captured non-empty.
@@ -122,23 +121,22 @@ def _benchmark_identity(project_root: Path) -> dict[str, Any]:
     dataset hash must match the file, the official-validation flags must both
     be true, and the version must be the current authoritative benchmark.
     """
-    benchmark_dir = project_root / BENCHMARK_DIR
+    # GOLD-9: the freezer binds the same signed exposed benchmark the
+    # evaluator resolves — the newest directory with a consistent
+    # official-ready manifest — never a hard-coded older authority.
+    benchmark_dir = newest_signed_exposed_gold_dir(project_root)
     manifest_path = benchmark_dir / "benchmark_manifest.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     dataset_hash = _sha256_file(benchmark_dir / manifest["dataset"])
     if manifest.get("dataset_sha256") != dataset_hash:
         raise RuntimeError(
-            "benchmark manifest dataset hash mismatch for the v2.6 identity"
+            "benchmark manifest dataset hash mismatch for the resolved "
+            f"{benchmark_dir.name} identity"
         )
     official = manifest.get("project_official_validation") or {}
     if official.get("official_ready") is not True or official.get("structurally_valid") is not True:
         raise RuntimeError(
             "benchmark manifest is not official-ready/structurally-valid for release identity"
-        )
-    if manifest.get("benchmark_version") != BENCHMARK_VERSION:
-        raise RuntimeError(
-            f"benchmark version mismatch: expected {BENCHMARK_VERSION}, "
-            f"got {manifest.get('benchmark_version')}"
         )
     return {
         "benchmark_manifest_sha256": _sha256_file(manifest_path),
@@ -187,6 +185,8 @@ def _product_scope_identity(project_root: Path) -> dict[str, Any]:
     import hashlib as _hashlib
 
     from panda_agent.evaluation import (
+        newest_signed_exposed_gold_dir,
+        newest_product_language_calibration_path,
         calibration_compatibility,
         derive_product_language_ids,
         load_gold_dataset,
@@ -194,11 +194,7 @@ def _product_scope_identity(project_root: Path) -> dict[str, Any]:
     )
     from panda_agent.evaluation_runner import default_gold_dataset_path
 
-    manifests_dir = project_root / "evaluation" / "baselines" / "manifests"
-    calibration_path = manifests_dir / "phase_b_t3_product_language_scope_v2.json"
-    successor = manifests_dir / "phase_b_t3_product_language_scope_v3.json"
-    if successor.is_file():
-        calibration_path = successor
+    calibration_path = newest_product_language_calibration_path(project_root)
     calibration = load_product_language_calibration(project_root)
     if calibration is None:
         return {"product_language_calibration_id": None, "formal_product_scope_selector_hash": None}
@@ -228,7 +224,7 @@ def _product_scope_identity(project_root: Path) -> dict[str, Any]:
 def _current_manifest(project_root: Path, candidate_id: str) -> dict[str, Any]:
     settings = VertexSettings.from_env()
     source_manifest = project_root / "data" / "manifests" / "source_manifest.json"
-    benchmark_dir = project_root / BENCHMARK_DIR
+    benchmark_dir = newest_signed_exposed_gold_dir(project_root)
     dataset = benchmark_dir / "gold_questions.yaml"
     adjudications = benchmark_dir / "manual_adjudications.yaml"
     normalized = normalized_dir(project_root)
@@ -257,7 +253,6 @@ def _current_manifest(project_root: Path, candidate_id: str) -> dict[str, Any]:
         "pyproject.toml": _sha256_file(project_root / "pyproject.toml"),
         ".env.example": _sha256_file(project_root / ".env.example"),
         "gold_questions.yaml": _sha256_file(dataset),
-        "manual_adjudications.yaml": _sha256_file(adjudications),
         "retrieval_policies.yaml": _sha256_file(
             project_root / "configs" / "retrieval_policies.yaml"
         ),
@@ -265,6 +260,8 @@ def _current_manifest(project_root: Path, candidate_id: str) -> dict[str, Any]:
             project_root / "configs" / "query_expansions.yaml"
         ),
     }
+    if adjudications.is_file():
+        protected_files["manual_adjudications.yaml"] = _sha256_file(adjudications)
     qdrant = _qdrant_state(storage, settings.embedding_dimensions)
     if qdrant.get("status") != "ok" or not qdrant.get("dimensions_match"):
         raise RuntimeError("Qdrant collection is unavailable or has the wrong dense dimension")
@@ -297,7 +294,7 @@ def _current_manifest(project_root: Path, candidate_id: str) -> dict[str, Any]:
         "retrieval_policy_hash": protected_files["retrieval_policies.yaml"],
         "query_expansion_hash": protected_files["query_expansions.yaml"],
         "gold_dataset_hash": protected_files["gold_questions.yaml"],
-        "manual_adjudications_hash": protected_files["manual_adjudications.yaml"],
+        "manual_adjudications_hash": protected_files.get("manual_adjudications.yaml"),
         **_benchmark_identity(project_root),
         **_product_scope_identity(project_root),
         "protected_file_hashes": protected_files,

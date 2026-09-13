@@ -16,6 +16,7 @@ from typing import Any, Literal
 import yaml
 
 from panda_agent.evaluation import (
+    newest_signed_exposed_gold_dir,
     EvaluationRunStore,
     GoldDataset,
     GoldQuestion,
@@ -118,6 +119,10 @@ def repository_identity(project_root: Path) -> dict[str, Any]:
 
 def default_gold_dataset_path(project_root: Path) -> Path:
     """Return the newest signed exposed benchmark, falling back for old checkouts."""
+    try:
+        return newest_signed_exposed_gold_dir(project_root) / "gold_questions.yaml"
+    except FileNotFoundError:
+        pass
     reviewed_v26 = project_root / "evaluation" / "benchmarks" / "v2_6" / "gold_questions.yaml"
     reviewed_v26_manifest = reviewed_v26.with_name("benchmark_manifest.json")
     if reviewed_v26.is_file() and reviewed_v26_manifest.is_file():

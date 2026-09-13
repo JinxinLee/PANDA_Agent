@@ -1132,6 +1132,30 @@ manual-adjudications disposition; calibration loader successor chain to v6), the
 (NOT AUTHORIZED).
 Report: `evaluation/F6_A3_PRERELEASE_VALIDATION_RESULT.md`.
 
+## GOLD-9 authority binding infrastructure reconciliation record
+
+COMPLETE / PASS / RELEASE_AUTHORITY_CHAIN_RECONCILED. Zero-scientific-call bounded reconciliation at HEAD `8403369`
+(after the Attempt-3 preflight HOLD above; that HOLD is preserved as the historical terminal result of that
+preflight). Root causes confirmed and repaired: (1) candidate freezer hard-bound v2_6/m6-benchmark-v2.6 — replaced
+by the shared resolver `evaluation.newest_signed_exposed_gold_dir` (mechanical discovery of
+evaluation/benchmarks/v2_N, qualified by manifest-internal consistency + official-ready/structurally-valid, highest
+version wins; freezer and evaluator now bind the same authority); (2) `default_gold_dataset_path` walked a
+hand-written v2_6->v2_2 chain — now resolver-first with the historical chain preserved as old-checkout fallback;
+(3) `load_product_language_calibration` successor chain stopped at v3 — replaced by mechanical discovery of the
+newest `phase_b_t3_product_language_scope_vN` artifact (v6), with `newest_product_language_calibration_path` shared
+so `_product_scope_identity` hashes the same resolved artifact (v6 content/v3 hash mismatch eliminated);
+(4) manual-adjudication disposition: v2.9 carries no manual_adjudications.yaml and its signed manifest+dataset is
+the authority — the freezer dependency is optional (hash None recorded when absent; v2.6 artifacts untouched; no
+convenience copy). Cross-layer consistency demonstrated: resolver/default-dataset-path/freezer identity/product-
+scope identity all resolve Gold v2.9 (eaacd3ed…) + calibration v6 (fe56d4ca…) + formal selector 59 IDs
+(e27ef67a…) without fallback ambiguity. Focused tests: freezer/identity/gate suites 53 passed + 18 subtests;
+test_qa + test_retrieval 274 passed + 52 subtests — zero new regressions; product QA behavior untouched.
+Historical outcomes preserved (Attempt-1/2 FAIL under v2.6; Attempt-3 HOLD as the terminal result of that
+preflight; F6-B LOCKED; novel_validation pristine).
+NEXT_TASK_RECOMMENDATION = F6-A ATTEMPT 3 / RE-RUN ZERO-OUTCOME A0 PREFLIGHT, THEN PREREGISTER AND FREEZE ONLY IF
+ALL PRECONDITIONS PASS (NOT AUTHORIZED).
+Report: `evaluation/GOLD_9_AUTHORITY_BINDING_INFRASTRUCTURE_RECONCILIATION.md`.
+
 ## Historical E3-A0 architecture contract closeout
 
 COMPLETE / PASS / MISSING_POINT_TARGETED_RETRIEVAL_CONTRACT_ESTABLISHED.

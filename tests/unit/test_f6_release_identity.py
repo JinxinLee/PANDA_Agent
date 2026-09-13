@@ -52,14 +52,17 @@ class PromptFingerprintTests(unittest.TestCase):
 
 
 class BenchmarkIdentityTests(unittest.TestCase):
-    def test_benchmark_identity_binds_signed_v2_6(self):
+    def test_benchmark_identity_binds_newest_signed_exposed_gold(self):
+        # GOLD-9: the freezer binds the same newest qualified benchmark the
+        # evaluator resolves (currently m6-benchmark-v2.9), never an older
+        # hard-coded authority.
         identity = candidate._benchmark_identity(PROJECT_ROOT)
         manifest = json.loads(
-            (PROJECT_ROOT / candidate.BENCHMARK_DIR / "benchmark_manifest.json").read_text(
+            (PROJECT_ROOT / "evaluation" / "benchmarks" / "v2_9" / "benchmark_manifest.json").read_text(
                 encoding="utf-8"
             )
         )
-        self.assertEqual(identity["benchmark_version"], "m6-benchmark-v2.6")
+        self.assertEqual(identity["benchmark_version"], "m6-benchmark-v2.9")
         self.assertEqual(identity["benchmark_question_count"], 120)
         self.assertEqual(identity["benchmark_dataset_sha256"], manifest["dataset_sha256"])
         self.assertIn("approved", identity["benchmark_status"])
@@ -67,7 +70,7 @@ class BenchmarkIdentityTests(unittest.TestCase):
     def test_benchmark_identity_rejects_dataset_hash_mismatch(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            benchmark_dir = root / candidate.BENCHMARK_DIR
+            benchmark_dir = root / "evaluation" / "benchmarks" / "v2_6"
             benchmark_dir.mkdir(parents=True)
             (benchmark_dir / "gold_questions.yaml").write_text("questions: []\n", encoding="utf-8")
             (benchmark_dir / "benchmark_manifest.json").write_text(
@@ -82,7 +85,9 @@ class BenchmarkIdentityTests(unittest.TestCase):
                 ),
                 encoding="utf-8",
             )
-            with self.assertRaises(RuntimeError):
+            # GOLD-9: a hash-mismatched directory is not qualified, so the
+            # resolver skips it and the root has no frozen-able authority.
+            with self.assertRaises((RuntimeError, FileNotFoundError)):
                 candidate._benchmark_identity(root)
 
 
@@ -94,7 +99,7 @@ class CandidateManifestIdentityTests(unittest.TestCase):
     def test_manifest_source_records_required_identity_fields(self):
         source = (PROJECT_ROOT / "src" / "panda_agent" / "candidate.py").read_text(encoding="utf-8")
         for fragment in (
-            'benchmarks" / "v2_6"',
+            'newest_signed_exposed_gold_dir',
             "runtime_verification_model_id",
             "effective_verification_model_id",
             "evaluation_judge_model_id",

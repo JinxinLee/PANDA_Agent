@@ -1,0 +1,63 @@
+{
+  "schema_version": "gold9-authority-reconciliation-v1",
+  "task": "GOLD-9 AUTHORITY BINDING INFRASTRUCTURE RECONCILIATION",
+  "decision": "COMPLETE / PASS / RELEASE_AUTHORITY_CHAIN_RECONCILED",
+  "starting_head": "840336962a98518a31875f0a5e446abc53fbe3d5",
+  "scientific_calls": 0,
+  "scientific_tokens": 0,
+  "root_causes_confirmed": {
+    "freezer_authority": "candidate.py hard-bound BENCHMARK_DIR=v2_6 / BENCHMARK_VERSION=m6-benchmark-v2.6; _current_manifest required manual_adjudications.yaml (absent in v2_9)",
+    "default_gold_resolver": "default_gold_dataset_path walked a hand-written v2_6->v2_2 chain, never resolving v2_7/v2_8/v2_9",
+    "calibration_resolver": "load_product_language_calibration resolved only v2->v3; v4/v5/v6 on disk but unselectable; v3 incompatible with v2.9",
+    "manual_adjudication_disposition": "v2.9 manifest records manual_adjudications_sha256=None; the legacy adjudication file is not part of the v2.9 release-critical identity; freezer dependency made optional instead of copying a v2.6 artifact"
+  },
+  "implementation": {
+    "shared_resolver": "evaluation.newest_signed_exposed_gold_dir: mechanical discovery of evaluation/benchmarks/v2_N, qualified by manifest-internal consistency (dataset SHA match) + official-ready/structurally-valid, highest version wins",
+    "default_gold_dataset_path": "resolver-first with the historical v2_6->v2_2 chain preserved as old-checkout fallback",
+    "candidate_freezer": "_benchmark_identity/_current_manifest bind the resolver-selected directory (currently v2.9); version-constant check superseded by resolver discovery + manifest-internal consistency; manual_adjudications.yaml optional (hash None when absent)",
+    "calibration": "newest_product_language_calibration_path mechanically selects the highest scope_vN artifact (v6); loader consumes it; no silent v3 fallback; _product_scope_identity hashes the same resolved artifact"
+  },
+  "cross_layer_consistency": {
+    "resolver_dir": "v2_9",
+    "default_gold_dataset_path": "evaluation/benchmarks/v2_9/gold_questions.yaml",
+    "freezer_benchmark_version": "m6-benchmark-v2.9",
+    "freezer_dataset_sha256": "eaacd3ed6595821b24b28823c6344abc4dfb954eb71846e682080b42c2f689be",
+    "calibration_id": "phase_b_t3_product_language_scope_v6",
+    "calibration_sha256": "fe56d4ca1112194643054d0d7627804956b4a35965495e18cbede59a937854a9",
+    "selector_count": 59,
+    "selector_sha256": "e27ef67a866274b4a8441b789ca78fc3ccb7e022eed537c7442e15230777a0e5",
+    "all_consistent": true
+  },
+  "files_changed": [
+    "src/panda_agent/evaluation.py",
+    "src/panda_agent/evaluation_runner.py",
+    "src/panda_agent/candidate.py",
+    "tests/unit/test_f6a_release_infrastructure.py",
+    "tests/unit/test_f6_release_identity.py"
+  ],
+  "focused_verification": {
+    "freezer_identity_gate_suites": "53 passed + 18 subtests",
+    "qa_retrieval_suites": "274 passed + 52 subtests (product QA behavior untouched)",
+    "new_regressions": 0
+  },
+  "integrity": {
+    "gold_changes": 0,
+    "calibration_changes": 0,
+    "qa_behavior_changes": 0,
+    "novel_validation": "PRISTINE_FOR_CURRENT_LINEAGE",
+    "holdout_access": 0,
+    "f6b_execution": 0
+  },
+  "preserved_outcomes": {
+    "F6-A_attempt_1": "COMPLETE / FAIL (v2.6, historical)",
+    "F6-A_attempt_2": "COMPLETE / FAIL (v2.6, historical)",
+    "F6-A_attempt_3": "HOLD / PRE_RELEASE_PRECONDITION_NOT_MET (historical terminal result of that preflight)",
+    "F6-B": "LOCKED / F6_A_DID_NOT_PASS"
+  },
+  "lifecycle": {
+    "GOLD-9": "COMPLETE / PASS / RELEASE_AUTHORITY_CHAIN_RECONCILED",
+    "Phase_F": "IN_PROGRESS / ATTEMPT_3_INFRASTRUCTURE_RECONCILED_READY_FOR_NEW_PREFLIGHT"
+  },
+  "next_recommendation": "F6-A ATTEMPT 3 / RE-RUN ZERO-OUTCOME A0 PREFLIGHT, THEN PREREGISTER AND FREEZE ONLY IF ALL PRECONDITIONS PASS",
+  "next_task_execution_authorized": false
+}
