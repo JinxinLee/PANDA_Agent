@@ -378,7 +378,31 @@ def verify_candidate(project_root: Path, candidate_id: str) -> dict[str, Any]:
     expected = json.loads(manifest_path.read_text(encoding="utf-8"))
     current = _current_manifest(project_root, candidate_id)
     immutable_keys = [key for key in expected if key != "frozen_at"]
-    mismatches = [key for key in immutable_keys if expected.get(key) != current.get(key)]
+    # The implementation HEAD may advance after the freeze through non-behavior
+    # commits (preregistration bookkeeping, evaluation artifacts); the frozen
+    # behavior identity (source/config/prompt/index hashes) is what must stay
+    # identical. The recorded commit must simply be an ancestor of (or equal
+    # to) the current HEAD so implementation rollback/branch switches fail.
+    special_keys = {"implementation_git_commit"}
+    mismatches = [
+        key
+        for key in immutable_keys
+        if key not in special_keys and expected.get(key) != current.get(key)
+    ]
+    frozen_commit = expected.get("implementation_git_commit")
+    current_commit = current.get("implementation_git_commit")
+    if frozen_commit and current_commit:
+        ancestor = subprocess.run(
+            ["git", "merge-base", "--is-ancestor", frozen_commit, current_commit],
+            cwd=project_root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if ancestor.returncode != 0:
+            mismatches.append("implementation_git_commit")
+    elif frozen_commit != current_commit:
+        mismatches.append("implementation_git_commit")
     digest = _sha256_file(manifest_path)
     lock = json.loads((candidate_dir / "freeze.lock").read_text(encoding="utf-8"))
     valid = not mismatches and lock.get("manifest_sha256") == digest
