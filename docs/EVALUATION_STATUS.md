@@ -1008,6 +1008,33 @@ NEXT_TASK_RECOMMENDATION = F6-A2-FR2 / BOUNDED PRODUCT REPAIR AND NEW CANDIDATE 
 STABILIZED GOLD AUTHORITY) (NOT AUTHORIZED).
 Report: `evaluation/F6_A2_GR1_FORWARD_ONLY_GOLD_CONTRACT_ADJUDICATION.md`.
 
+## F6-A2-GR1-R1 Gold successor provenance reconciliation record
+
+COMPLETE / PASS / UNJUSTIFIED_V2_7_DELTA_RETIRED_FORWARD_ONLY. Zero-scientific-call governance reconciliation at
+HEAD `9c9593e`; original GR1 adjudication and v2.7 creation commit history preserved untouched. Issue A
+(g016.e1): the v2.7 change set included a title-form group that had never received the independent adjudication
+the GR1 rule requires — independent deterministic adjudication now REJECTS the delta: docs/EventGenerators/
+DPMGenerator.rst is a 96-byte doxygen stub (single .. doxygenclass:: PndDpmDirect directive; 3 indexed objects /
+165 chars / 7 word types) whose rendered sphinx page (3596 chars) is generated from code annotations, not from
+the rst; content equivalence required by the GR1 rule is absent, and the file would not have been added had
+Attempt 2 never failed g016. Issue B (g022.e2): confirmed a valid path-form pair and part of the original
+bounded sweep; the omission was bookkeeping-only (its 9,838-byte substantive rst extension is retained). The
+exact path-form set was reconstructed deterministically from v2.6: 12 pairs (primary g014.e2 + g008.e2,
+g013.e1/e2, g015.e1, g016.e2, g022.e2, g089.e1, g101.e1/e3, g106.e1, g109.e1); g016.e1 is recorded separately
+as an independently adjudicated title-form case with a rejected delta. Open finding recorded outside task
+authority: docs/Tools/PndMasterTasks/PndMasterRunSim.rst (105 bytes) is likewise a doxygen stub added by the
+v2.7 sweep to five groups — routed to the next benchmark-governance task (whereas docs/Running/Macros.rst is an
+include-aggregation stub whose targets live inside the corpus and is retained). Forward-only successor
+m6-benchmark-v2.8 created from v2.7 (dataset SHA 67c992ce…; only governance repair = removal of the unjustified
+g016.e1 repo selector; changed case g016 only; product validator green). Calibration
+phase_b_t3_product_language_scope_v5 mechanically carried from v4, bound to v2.8, compatible; selector
+re-derived 59 IDs / e27ef67a…, membership identical to v3/v4. Authority: v2.6 = historical for Attempts 1/2;
+v2.7 = historical provisional successor, not used for any scientific release attempt; v2.8 = stabilized
+forward-only authority for future attempts. Attempt-2 FAIL unchanged; no retroactive rescoring.
+NEXT_TASK_RECOMMENDATION = F6-A2-FR2 / BOUNDED PRODUCT REPAIR AND NEW CANDIDATE DEVELOPMENT (USING v2.8 AS THE
+STABILIZED GOLD AUTHORITY) (NOT AUTHORIZED).
+Report: `evaluation/F6_A2_GR1_R1_GOLD_SUCCESSOR_PROVENANCE_RECONCILIATION.md`.
+
 ## Historical E3-A0 architecture contract closeout
 
 COMPLETE / PASS / MISSING_POINT_TARGETED_RETRIEVAL_CONTRACT_ESTABLISHED.

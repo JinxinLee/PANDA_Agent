@@ -1,0 +1,29 @@
+schema_version: '1.0'
+benchmark_version: m6-benchmark-v2.8
+base_benchmark_version: m6-benchmark-v2.7
+base_dataset_sha256: 4dcc9d066a275269d01b094aefa69b4e7794f18ad6a6dfce4d88d94ad3977b56
+adjudication:
+  artifact: evaluation/F6_A2_GR1_R1_GOLD_SUCCESSOR_PROVENANCE_RECONCILIATION.md
+  companion: evaluation/f6_a2_gr1_r1_gold_successor_provenance_reconciliation.json
+  task: F6-A2-GR1-R1
+semantic_case_deltas:
+  g016: 'retire the unjustified repository source-path selector docs/EventGenerators/DPMGenerator.rst
+    from g016.e1: the file is a 96-byte doxygen stub (a single .. doxygenclass:: PndDpmDirect directive)
+    that carries no documentation content, while the rendered sphinx page''s content is generated from
+    the PndDpmDirect code annotations; content equivalence required by the GR1 source-form rule is absent,
+    and the delta would not have been added had g016 never failed in Attempt 2'
+selector_changes:
+- case_id: g016
+  group_id: g016.e1
+  change: remove repository source-path selector docs/EventGenerators/DPMGenerator.rst; the original sphinx
+    title selector (title_contains 'DPMGenerator') is preserved unchanged
+recorded_open_findings:
+- docs/Tools/PndMasterTasks/PndMasterRunSim.rst (105 bytes) is likewise a doxygen stub; it was added by
+  the v2.7 path-form sweep to g013.e1/g013.e2/g015.e1/g016.e2/g089.e1. Its retirement is OUTSIDE the GR1-R1
+  authorization (which covers g016.e1 only) and is recorded for the next benchmark-governance task.
+kept_as_is_notable:
+- all other v2.7 changes
+- all expected_status values
+- all thresholds
+policy: Forward-only successor per F6-A2-GR1-R1 adjudication; removes only the unjustified g016.e1 repository
+  source-form delta; no expected_status, threshold, evaluator, or gate-semantics change.

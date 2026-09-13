@@ -1,0 +1,16 @@
+{
+ "benchmark_version": "m6-benchmark-v2.8",
+ "base_benchmark_version": "m6-benchmark-v2.7",
+ "base_dataset_sha256": "4dcc9d066a275269d01b094aefa69b4e7794f18ad6a6dfce4d88d94ad3977b56",
+ "adjudication_artifact": "evaluation/F6_A2_GR1_R1_GOLD_SUCCESSOR_PROVENANCE_RECONCILIATION.md",
+ "gold_changed_cases": [
+  "g016"
+ ],
+ "selector_changes": [
+  "g016.e1: repository source-path selector docs/EventGenerators/DPMGenerator.rst removed (doxygen stub; no content equivalence)"
+ ],
+ "recorded_open_findings": [
+  "docs/Tools/PndMasterTasks/PndMasterRunSim.rst (105 bytes) is likewise a doxygen stub; it was added by the v2.7 path-form sweep to g013.e1/g013.e2/g015.e1/g016.e2/g089.e1. Its retirement is OUTSIDE the GR1-R1 authorization (which covers g016.e1 only) and is recorded for the next benchmark-governance task."
+ ],
+ "policy": "Forward-only successor benchmark (F6-A2-GR1-R1). Attempts 1 and 2 remain evaluated against v2.6; v2.7 remains a historical provisional successor not used for any scientific release attempt; v2.8 is the stabilized authority for future attempts only. No retroactive rescoring."
+}
