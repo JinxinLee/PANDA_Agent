@@ -1,0 +1,98 @@
+schema_version: '1.0'
+benchmark_version: m6-benchmark-v2.7
+base_benchmark_version: m6-benchmark-v2.6
+base_dataset_sha256: 6f12d54b4db3fdd87fb30670e730ffd8c025a55a968c90a4ea63ab7cecdb878f
+adjudication:
+  artifact: evaluation/F6_A2_GR1_FORWARD_ONLY_GOLD_CONTRACT_ADJUDICATION.md
+  companion: evaluation/f6_a2_gr1_forward_only_gold_contract_adjudication.json
+  task: F6-A2-GR1
+semantic_case_deltas:
+  g001: accept repository source files of the same locked installation documentation as equivalent evidence
+    selectors; reword p1 to the question-entailed documentation requirement
+  g005: reword p1 to the documented container development workflow (the develop-vs-run contrast does not
+    exist in the required evidence)
+  g008: accept the repository source file of the same documentation page as an equivalent selector
+  g011: accept repository source files of the same installation documentation as equivalent selectors
+  g013: accept repository source files of the same Running/MasterTasks documentation as equivalent selectors
+  g014: accept repository source files of the same Running/MasterTasks documentation, including the direct
+    source of the sphinx Running Sequence section
+  g015: accept the repository source file of the same documentation page as an equivalent selector
+  g016: accept the repository source file of the DPMGenerator documentation page as an equivalent selector
+  g022: accept the repository source file of the PID tutorial page as an equivalent selector
+  g089: accept the repository source file of the same documentation page as an equivalent selector
+  g101: accept repository source files of the same Running documentation pages as equivalent selectors
+  g106: accept the repository source file of the same documentation page as an equivalent selector
+  g109: accept the repository source file of the same Running documentation page as an equivalent selector
+selector_changes:
+- case_id: g001
+  group_id: g001.installation
+  change: add repository source-path selector(s) docs/Installation/Installation.rst, docs/Installation/Install_Developers.rst,
+    docs/Installation/Install_PandaRoot.rst (original sphinx selectors preserved)
+- case_id: g008
+  group_id: g008.e2
+  change: add repository source-path selector(s) docs/Installation/Install_PandaRoot.rst (original sphinx
+    selectors preserved)
+- case_id: g011
+  group_id: g011.e1
+  change: add repository source-path selector(s) docs/Installation/Install_PandaRoot.rst, docs/Installation/Install_Developers.rst
+    (original sphinx selectors preserved)
+- case_id: g013
+  group_id: g013.e1
+  change: add repository source-path selector(s) docs/Running/Macros.rst, docs/Running/MasterTasks.rst,
+    docs/Tools/PndMasterTasks/PndMasterRunSim.rst (original sphinx selectors preserved)
+- case_id: g013
+  group_id: g013.e2
+  change: add repository source-path selector(s) docs/Tools/PndMasterTasks/PndMasterRunSim.rst (original
+    sphinx selectors preserved)
+- case_id: g014
+  group_id: g014.e2
+  change: add repository source-path selector(s) docs/Tools/PndMasterTasks/PndMasterTasks.rst, docs/Running/Running.rst,
+    docs/Running/Running_Sequence.rst (original sphinx selectors preserved)
+- case_id: g015
+  group_id: g015.e1
+  change: add repository source-path selector(s) docs/Tools/PndMasterTasks/PndMasterRunSim.rst (original
+    sphinx selectors preserved)
+- case_id: g016
+  group_id: g016.e1
+  change: add repository source-path selector(s) docs/EventGenerators/DPMGenerator.rst (original sphinx
+    selectors preserved)
+- case_id: g016
+  group_id: g016.e2
+  change: add repository source-path selector(s) docs/Tools/PndMasterTasks/PndMasterRunSim.rst (original
+    sphinx selectors preserved)
+- case_id: g022
+  group_id: g022.e2
+  change: add repository source-path selector(s) docs/Tutorials/tut_02_02_analysis_pid.rst (original sphinx
+    selectors preserved)
+- case_id: g089
+  group_id: g089.e1
+  change: add repository source-path selector(s) docs/Tools/PndMasterTasks/PndMasterRunSim.rst (original
+    sphinx selectors preserved)
+- case_id: g101
+  group_id: g101.e1
+  change: add repository source-path selector(s) docs/Running/Running.rst (original sphinx selectors preserved)
+- case_id: g101
+  group_id: g101.e3
+  change: add repository source-path selector(s) docs/Tools/PndMasterTasks/PndMasterTasks.rst (original
+    sphinx selectors preserved)
+- case_id: g106
+  group_id: g106.e1
+  change: add repository source-path selector(s) docs/Tools/PndMasterTasks/PndMasterTasks.rst (original
+    sphinx selectors preserved)
+- case_id: g109
+  group_id: g109.e1
+  change: add repository source-path selector(s) docs/Running/Running.rst (original sphinx selectors preserved)
+answer_point_changes:
+- case_id: g001
+  point_id: p1
+  change: rewording; criticality retained
+- case_id: g005
+  point_id: p1
+  change: rewording; criticality retained
+kept_as_is_notable:
+- g044.e1
+- g060.e1 (source-specific theory locks)
+- all expected_status values
+- all thresholds
+policy: Forward-only successor contract per F6-A2-GR1 adjudication; rendered/repo source-form equivalence
+  only; no expected_status, threshold, evaluator, or gate-semantics change.

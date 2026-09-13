@@ -1,0 +1,51 @@
+{
+ "schema_version": "1.0",
+ "status": "approved_exposed_development_benchmark_v2_7",
+ "dataset": "gold_questions.yaml",
+ "dataset_sha256": "4dcc9d066a275269d01b094aefa69b4e7794f18ad6a6dfce4d88d94ad3977b56",
+ "benchmark_version": "m6-benchmark-v2.7",
+ "base_benchmark_version": "m6-benchmark-v2.6",
+ "base_dataset_sha256": "6f12d54b4db3fdd87fb30670e730ffd8c025a55a968c90a4ea63ab7cecdb878f",
+ "question_count": 120,
+ "review_count": 120,
+ "reviewer": "F6-A2-GR1 forward-only adjudication (deterministic; zero model calls)",
+ "reviewed_at": "2026-09-13",
+ "split_counts": {
+  "dev": 80,
+  "challenge": 24,
+  "regression": 16
+ },
+ "status_counts": {
+  "answered": 102,
+  "insufficient_evidence": 10,
+  "version_conflict": 8
+ },
+ "release_eligible": false,
+ "acceptance_exposed": true,
+ "hidden_acceptance_status": "not_created",
+ "project_official_validation": {
+  "structurally_valid": true,
+  "official_ready": true,
+  "unknown_allowed_source_versions": [],
+  "unmatched_evidence_groups": []
+ },
+ "changed_cases": [
+  "g001",
+  "g005",
+  "g008",
+  "g011",
+  "g013",
+  "g014",
+  "g015",
+  "g016",
+  "g022",
+  "g089",
+  "g101",
+  "g106",
+  "g109"
+ ],
+ "protected_real_failures": [],
+ "gold_v2_7_patch_sha256": "11eee3865a5186920263a693d386cc0ea38dab6ca726c2faed603d48eabb9570",
+ "gold_v2_7_change_report_sha256": "57a4af00b6bc23a1178466c53dd1e7fb676e5459a6485ec7afaf369fd94a80b4",
+ "manual_adjudications_sha256": null
+}

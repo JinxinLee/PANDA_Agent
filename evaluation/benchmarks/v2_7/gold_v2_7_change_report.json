@@ -1,0 +1,60 @@
+{
+ "benchmark_version": "m6-benchmark-v2.7",
+ "base_benchmark_version": "m6-benchmark-v2.6",
+ "base_dataset_sha256": "6f12d54b4db3fdd87fb30670e730ffd8c025a55a968c90a4ea63ab7cecdb878f",
+ "adjudication_artifact": "evaluation/F6_A2_GR1_FORWARD_ONLY_GOLD_CONTRACT_ADJUDICATION.md",
+ "gold_changed_cases": [
+  "g001",
+  "g005",
+  "g008",
+  "g011",
+  "g013",
+  "g014",
+  "g015",
+  "g016",
+  "g022",
+  "g089",
+  "g101",
+  "g106",
+  "g109"
+ ],
+ "evidence_group_extensions": [
+  "g001.installation",
+  "g008.e2",
+  "g011.e1",
+  "g013.e1",
+  "g013.e2",
+  "g014.e2",
+  "g015.e1",
+  "g016.e1",
+  "g016.e2",
+  "g022.e2",
+  "g089.e1",
+  "g101.e1",
+  "g101.e3",
+  "g106.e1",
+  "g109.e1"
+ ],
+ "answer_point_rewordings": [
+  "g001",
+  "g005"
+ ],
+ "semantic_selector_deltas": [
+  "g001.installation: repository source-path selector(s) added alongside the preserved sphinx selectors",
+  "g008.e2: repository source-path selector(s) added alongside the preserved sphinx selectors",
+  "g011.e1: repository source-path selector(s) added alongside the preserved sphinx selectors",
+  "g013.e1: repository source-path selector(s) added alongside the preserved sphinx selectors",
+  "g013.e2: repository source-path selector(s) added alongside the preserved sphinx selectors",
+  "g014.e2: repository source-path selector(s) added alongside the preserved sphinx selectors",
+  "g015.e1: repository source-path selector(s) added alongside the preserved sphinx selectors",
+  "g016.e1: repository source-path selector(s) added alongside the preserved sphinx selectors",
+  "g016.e2: repository source-path selector(s) added alongside the preserved sphinx selectors",
+  "g022.e2: repository source-path selector(s) added alongside the preserved sphinx selectors",
+  "g089.e1: repository source-path selector(s) added alongside the preserved sphinx selectors",
+  "g101.e1: repository source-path selector(s) added alongside the preserved sphinx selectors",
+  "g101.e3: repository source-path selector(s) added alongside the preserved sphinx selectors",
+  "g106.e1: repository source-path selector(s) added alongside the preserved sphinx selectors",
+  "g109.e1: repository source-path selector(s) added alongside the preserved sphinx selectors"
+ ],
+ "policy": "Forward-only successor benchmark (F6-A2-GR1). Attempts 1 and 2 remain evaluated against v2.6 and their verdicts are unchanged; v2.7 is the authority for future attempts only. No retroactive rescoring."
+}
