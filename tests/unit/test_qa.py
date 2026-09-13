@@ -573,7 +573,14 @@ class QATests(unittest.TestCase):
                 "Trace the data flow.",
                 {"intent": "data_flow", "required_source_types": ["workflow", "documentation"]},
             ),
-            ["workflow_order", "complete_dataflow_handoff", "workflow_or_operational_grounding"],
+            [
+                "workflow_order",
+                "complete_dataflow_handoff",
+                # F6-A2-FR2-R1: a multi-source plan carries the legacy
+                # source-role-grounding content requirement.
+                "source_role_grounding",
+                "workflow_or_operational_grounding",
+            ],
         )
         self.assertEqual(
             ids(
@@ -698,10 +705,14 @@ class QATests(unittest.TestCase):
                 "answer_point_ids": ["question_core"],
             }]},
         })
-        self.assertEqual(workflow_verified["missing_requirement_ids"], ["workflow_or_operational_grounding"])
-        self.assertEqual(
+        # F6-A2-FR2-R1: the multi-source plan also carries the legacy
+        # source-role-grounding requirement; the code-only draft leaves the
+        # workflow kind ungrounded, so both completeness signals fire.
+        self.assertIn("workflow_or_operational_grounding", workflow_verified["missing_requirement_ids"])
+        self.assertIn("source_role_grounding", workflow_verified["missing_requirement_ids"])
+        self.assertIn(
+            "missing answer requirement workflow_or_operational_grounding",
             workflow_verified["errors"],
-            ["missing answer requirement workflow_or_operational_grounding"],
         )
 
     def test_factory_requirements_distinguish_divergence_composition_and_acceptance_application(self):
@@ -4819,39 +4830,30 @@ class ResidualRepairTests(unittest.TestCase):
         ids = [claim["claim_id"] for claim in out["draft"]["claims"]]
         self.assertIn("c2", ids)
 
-    # Cluster A — when a question-grounded required source type has selected,
-    # citation-eligible evidence that the draft claims never cite, one minimal
-    # evidence-bound anchor claim is added so the obligation survives into the
-    # final evidence projection.
-    def test_source_obligation_claim_added_for_uncovered_required_type(self):
-        paper = code_evidence(
-            evidence_id="p1",
-            source_id="li_2026",
-            text="The angular acceptance corrects the finite detector coverage of the luminosity fit.",
-            path="raw_pdf/thesis.pdf",
-            object_type="pdf_section",
-        )
-        code = code_evidence(evidence_id="c1")
-        bundle = bundle_for([paper, code], required_source_types=["paper", "code"])
-        agent = QAAgent(Path.cwd(), retriever=FakeRetriever(bundle), vertex=FakeVertex())
-        draft = {
-            "claims": [
-                {
-                    "claim_id": "c1",
-                    "claim_text": "PndPidCorrelator is present.",
-                    "evidence_ids": ["c1"],
-                    "answer_point_ids": ["question_core"],
-                }
-            ]
-        }
-        state = {"question": "Why is angular acceptance needed in the luminosity fit?", "bundle": bundle}
-        out = agent._augment_source_obligation_evidence(draft, state)
-        added = [claim for claim in out["claims"] if claim["claim_id"] == "source_obligation_paper"]
-        self.assertEqual(len(added), 1)
-        self.assertEqual(added[0]["evidence_ids"], ["p1"])
 
-    # Control — the obligation is already cited; no augmentation.
-    def test_source_obligation_claim_not_added_when_type_already_cited(self):
+
+class RecordingPromptVertex(FakeVertex):
+    """Generation double that records parsed generation prompts."""
+
+    def __init__(self, claims=None):
+        self.prompts = []
+        self.claims = claims
+
+    def generate_json(self, prompt, schema, **kwargs):
+        self.prompts.append(json.loads(prompt))
+        if self.claims is not None and "supported" not in schema.get("properties", {}):
+            return {"claims": [dict(claim) for claim in self.claims]}
+        return super().generate_json(prompt, schema, **kwargs)
+
+
+class SourceObligationBoundaryTests(unittest.TestCase):
+    """F6-A2-FR2-R1: question-grounded multi-source obligations are expressed
+    through the legacy answer-requirement contract with a deterministic
+    citation-coverage backstop — never through synthesized public
+    provenance claims, and never inside coverage modes."""
+
+    @staticmethod
+    def _multi_source_bundle():
         paper = code_evidence(
             evidence_id="p1",
             source_id="li_2026",
@@ -4860,70 +4862,178 @@ class ResidualRepairTests(unittest.TestCase):
             object_type="pdf_section",
         )
         code = code_evidence(evidence_id="c1")
-        bundle = bundle_for([paper, code], required_source_types=["paper", "code"])
-        agent = QAAgent(Path.cwd(), retriever=FakeRetriever(bundle), vertex=FakeVertex())
-        draft = {
-            "claims": [
+        return bundle_for([paper, code], required_source_types=["paper", "code"])
+
+    def test_multi_source_plan_requires_source_role_grounding(self):
+        requirements = _answer_requirements(
+            "Why is angular acceptance needed in the luminosity fit?",
+            {"required_source_types": ["paper", "code"]},
+        )
+        grounding = [r for r in requirements if r["id"] == "source_role_grounding"]
+        self.assertEqual(len(grounding), 1)
+        self.assertEqual(grounding[0]["required_source_types"], sorted(["paper", "code"]))
+        # The instruction demands substantive grounding, never a provenance mention.
+        self.assertIn("substantive", grounding[0]["instruction"])
+        self.assertIn("provenance-only", grounding[0]["instruction"])
+
+    def test_single_source_plan_has_no_source_role_grounding(self):
+        requirements = _answer_requirements(
+            "Where is PndPidCorrelator defined?",
+            {"required_source_types": ["code"]},
+        )
+        self.assertNotIn("source_role_grounding", [r["id"] for r in requirements])
+
+    def test_legacy_generation_receives_source_role_grounding(self):
+        agent = QAAgent(Path.cwd(), retriever=FakeRetriever(self._multi_source_bundle()), vertex=RecordingPromptVertex())
+        agent._answer({"question": "Why is angular acceptance needed in the luminosity fit?", "bundle": self._multi_source_bundle()})
+        payload = agent.vertex.prompts[0]
+        self.assertIn(
+            "source_role_grounding",
+            [item["id"] for item in payload["answer_requirements"]],
+        )
+
+    def test_coverage_modes_do_not_receive_source_role_grounding(self):
+        for mode in ("shadow_e1_v2", "runtime_e1_v2"):
+            with self.subTest(mode=mode):
+                agent = QAAgent(Path.cwd(), retriever=FakeRetriever(self._multi_source_bundle()), vertex=RecordingPromptVertex())
+                agent._answer({
+                    "question": "Why is angular acceptance needed in the luminosity fit?",
+                    "bundle": self._multi_source_bundle(),
+                    "answer_point_coverage_mode": mode,
+                    "runtime_answer_points": [{"answer_point_id": "point.1", "text": "Explain the acceptance role."}],
+                })
+                payload = agent.vertex.prompts[0]
+                self.assertEqual(payload["answer_requirements"], [])
+
+    def test_answer_never_synthesizes_provenance_only_claims(self):
+        agent = QAAgent(Path.cwd(), retriever=FakeRetriever(self._multi_source_bundle()), vertex=RecordingPromptVertex())
+        outcome = agent._answer({"question": "Why is angular acceptance needed in the luminosity fit?", "bundle": self._multi_source_bundle()})
+        self.assertEqual(
+            [claim["claim_id"] for claim in outcome["draft"]["claims"] if str(claim["claim_id"]).startswith("source_obligation_")],
+            [],
+        )
+
+    def test_deterministic_backstop_reports_uncited_source_role(self):
+        agent = QAAgent(Path.cwd(), retriever=FakeRetriever(self._multi_source_bundle()), vertex=FakeVertex())
+        initial = agent._answer({"question": "Why is angular acceptance needed in the luminosity fit?", "bundle": self._multi_source_bundle()})
+        # Draft cites only the code evidence: the paper role stays uncovered.
+        review = agent._verify({"question": "Why is angular acceptance needed in the luminosity fit?", "bundle": self._multi_source_bundle(), **initial})
+        self.assertIn("source_role_grounding", review["missing_requirement_ids"])
+
+    def test_deterministic_backstop_passes_when_roles_are_grounded(self):
+        claims_vertex = RecordingPromptVertex(
+            claims=[
                 {
-                    "claim_id": "c1",
-                    "claim_text": "The angular acceptance corrects the finite detector coverage.",
+                    "claim_id": "p_claim",
+                    "claim_text": "The angular acceptance corrects the finite detector coverage of the luminosity fit.",
                     "evidence_ids": ["p1"],
                     "answer_point_ids": ["question_core"],
-                }
-            ]
-        }
-        state = {"question": "Why is angular acceptance needed in the luminosity fit?", "bundle": bundle}
-        out = agent._augment_source_obligation_evidence(draft, state)
-        self.assertEqual([claim for claim in out["claims"] if str(claim["claim_id"]).startswith("source_obligation_")], [])
-
-    # Control — no question-anchor overlap between the selected evidence and
-    # the query: nothing is blindly attached.
-    def test_source_obligation_claim_not_added_without_question_anchor(self):
-        paper = code_evidence(
-            evidence_id="p1",
-            source_id="li_2026",
-            text="Generic placeholder documentation body without the queried subject matter.",
-            path="raw_pdf/thesis.pdf",
-            object_type="pdf_section",
-        )
-        code = code_evidence(evidence_id="c1")
-        bundle = bundle_for([paper, code], required_source_types=["paper", "code"])
-        agent = QAAgent(Path.cwd(), retriever=FakeRetriever(bundle), vertex=FakeVertex())
-        draft = {
-            "claims": [
+                },
                 {
-                    "claim_id": "c1",
+                    "claim_id": "c_claim",
                     "claim_text": "PndPidCorrelator is present.",
                     "evidence_ids": ["c1"],
                     "answer_point_ids": ["question_core"],
-                }
+                },
             ]
-        }
-        state = {"question": "Why is angular acceptance needed in the luminosity fit?", "bundle": bundle}
-        out = agent._augment_source_obligation_evidence(draft, state)
-        self.assertEqual([claim for claim in out["claims"] if str(claim["claim_id"]).startswith("source_obligation_")], [])
-
-    # Control — ordinary single-source answers are unaffected.
-    def test_single_source_answer_unaffected(self):
-        code = code_evidence(evidence_id="c1")
-        bundle = bundle_for([code], required_source_types=["code"])
-        agent = QAAgent(Path.cwd(), retriever=FakeRetriever(bundle), vertex=FakeVertex())
-        draft = {
-            "claims": [
-                {
-                    "claim_id": "c1",
-                    "claim_text": "PndPidCorrelator is present.",
-                    "evidence_ids": ["c1"],
-                    "answer_point_ids": ["question_core"],
-                }
-            ]
-        }
-        state = {"question": "Where is PndPidCorrelator defined?", "bundle": bundle}
-        out = agent._augment_source_obligation_evidence(draft, state)
-        self.assertEqual(
-            [claim["claim_id"] for claim in out["claims"]],
-            ["c1"],
         )
+        agent = QAAgent(Path.cwd(), retriever=FakeRetriever(self._multi_source_bundle()), vertex=claims_vertex)
+        initial = agent._answer({"question": "Why is angular acceptance needed in the luminosity fit?", "bundle": self._multi_source_bundle()})
+        review = agent._verify({"question": "Why is angular acceptance needed in the luminosity fit?", "bundle": self._multi_source_bundle(), **initial})
+        self.assertNotIn("source_role_grounding", review["missing_requirement_ids"])
+
+    # Cluster D preservation (unchanged from FR2).
+    def test_cluster_d_identical_unsupported_revision_is_dropped(self):
+        bundle = bundle_for(code_evidence())
+        unsupported_text = "The WidgetEngine normalizes every profile before reconstruction."
+        supported = [
+            {
+                "claim_id": "c1",
+                "claim_text": "PndPidCorrelator is present.",
+                "evidence_ids": ["e1"],
+                "answer_point_ids": ["question_core"],
+            }
+        ]
+        revised = supported + [
+            {
+                "claim_id": "c2",
+                "claim_text": unsupported_text,
+                "evidence_ids": ["e1"],
+                "answer_point_ids": ["question_core"],
+            }
+        ]
+        agent = QAAgent(Path.cwd(), retriever=FakeRetriever(bundle), vertex=_RevisionPayloadVertex(revised))
+        state = {
+            "question": "How does the WidgetEngine normalize the profile?",
+            "bundle": bundle,
+            "draft": {
+                "claims": [
+                    *supported,
+                    {
+                        "claim_id": "c2",
+                        "claim_text": unsupported_text,
+                        "evidence_ids": ["e1"],
+                        "answer_point_ids": ["question_core"],
+                    },
+                ]
+            },
+            "supported_claims": list(supported),
+            "unsupported_claim_ids": ["c2"],
+            "missing_requirement_ids": [],
+            "missing_answer_point_ids": [],
+            "errors": ["unsupported claim c2"],
+            "revision_count": 0,
+        }
+        out = agent._revise(state)
+        ids = [claim["claim_id"] for claim in out["draft"]["claims"]]
+        self.assertIn("c1", ids)
+        self.assertNotIn("c2", ids)
+
+    def test_cluster_d_substantively_revised_claim_survives(self):
+        bundle = bundle_for(code_evidence())
+        supported = [
+            {
+                "claim_id": "c1",
+                "claim_text": "PndPidCorrelator is present.",
+                "evidence_ids": ["e1"],
+                "answer_point_ids": ["question_core"],
+            }
+        ]
+        revised = supported + [
+            {
+                "claim_id": "c2",
+                "claim_text": (
+                    "The cited WidgetEngine code does not establish a profile "
+                    "normalization guarantee; only the normalization hook is documented."
+                ),
+                "evidence_ids": ["e1"],
+                "answer_point_ids": ["question_core"],
+            }
+        ]
+        agent = QAAgent(Path.cwd(), retriever=FakeRetriever(bundle), vertex=_RevisionPayloadVertex(revised))
+        state = {
+            "question": "How does the WidgetEngine normalize the profile?",
+            "bundle": bundle,
+            "draft": {
+                "claims": [
+                    *supported,
+                    {
+                        "claim_id": "c2",
+                        "claim_text": "The WidgetEngine normalizes every profile before reconstruction.",
+                        "evidence_ids": ["e1"],
+                        "answer_point_ids": ["question_core"],
+                    },
+                ]
+            },
+            "supported_claims": list(supported),
+            "unsupported_claim_ids": ["c2"],
+            "missing_requirement_ids": [],
+            "missing_answer_point_ids": [],
+            "errors": ["unsupported claim c2"],
+            "revision_count": 0,
+        }
+        out = agent._revise(state)
+        self.assertIn("c2", [claim["claim_id"] for claim in out["draft"]["claims"]])
 
 
 if __name__ == "__main__":

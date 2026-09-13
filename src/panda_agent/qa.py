@@ -94,22 +94,29 @@ def _normalized_claim_text(text: Any) -> str:
     return re.sub(r"[\W_]+", "", str(text or "").casefold())
 
 
-def _primary_evidence_source_type(item: dict[str, Any]) -> str:
-    """Single source-type classifier mirroring the sufficiency obligation logic.
+def _evidence_source_types(item: dict[str, Any]) -> set[str]:
+    """Single shared source-type classifier (sufficiency + requirement backstop).
 
-    Readme/workflow side classifications are intentionally not part of this
-    primary type: obligation retention only needs the coarse paper /
-    documentation / code distinction that the sufficiency check gates on.
+    Centralized so the sufficiency gate and the legacy source-role-grounding
+    backstop can never diverge on what kind of source an evidence item is.
     """
+    source_types: set[str] = set()
     source_id = str(item.get("source_id") or "")
     if source_id in {"li_2026", "karavdina_2015", "pflueger_2017"}:
-        return "paper"
-    if "sphinx" in source_id:
-        return "documentation"
-    path = str((item.get("locator") or {}).get("path") or "").replace("\\", "/").lower()
-    if path.startswith(("docs/", "doc/")):
-        return "documentation"
-    return "code"
+        source_types.add("paper")
+    elif "sphinx" in source_id:
+        source_types.add("documentation")
+    elif str((item.get("locator") or {}).get("path") or "").replace("\\", "/").lower().startswith(("docs/", "doc/")):
+        source_types.add("documentation")
+    else:
+        source_types.add("code")
+        path = str((item.get("locator") or {}).get("path") or "")
+        if path.lower().split("/")[-1].startswith("readme"):
+            source_types.add("readme")
+        if item.get("object_type") in {"workflow", "python_script", "shell_script"}:
+            source_types.add("workflow")
+    source_types.update(channel for channel in item.get("retrieval_channels", []) if channel in {"workflow", "graph"})
+    return source_types
 
 
 _ANSWER_POINT_MODES = {"legacy_question_core", "shadow_e1_v2", "runtime_e1_v2"}
@@ -493,7 +500,7 @@ def _refusal_basis_subject(question: str, item: dict[str, Any]) -> str:
     return matches[0] if matches else "the requested artifact or domain"
 
 
-def _answer_requirements(question: str, plan: dict[str, Any]) -> list[dict[str, str]]:
+def _answer_requirements(question: str, plan: dict[str, Any]) -> list[dict[str, Any]]:
     """Derive answer-completeness obligations from the live question and plan.
 
     These are generation/review instructions, not benchmark answer points.  They
@@ -597,6 +604,27 @@ def _answer_requirements(question: str, plan: dict[str, Any]) -> list[dict[str, 
         add(
             "elastic_cross_section_luminosity_fit",
             "Connect the evidence-backed elastic differential-cross-section theory input to fitting the measured distribution and extracting luminosity; do not describe the theory or fit in isolation.",
+        )
+
+    # F6-A2-FR2-R1: when the question itself calls for more than one source
+    # role, legacy answers ground each part of the explanation in the source
+    # kind that actually supports it.  This is a user-relevant content
+    # requirement carried by the existing requirement contract — it never
+    # synthesizes a public provenance mention, and coverage modes (which
+    # receive no legacy requirements) are unaffected (F2-A3-R1).
+    if len(required_source_types) >= 2:
+        requirements.append(
+            {
+                "id": "source_role_grounding",
+                "instruction": (
+                    "Where selected evidence covers more than one of the source kinds the "
+                    "question calls for, ground each part of the explanation in the kind of "
+                    "source that actually supports it, so every cited source backs a "
+                    "substantive, user-relevant part of the answer; do not add "
+                    "provenance-only or coverage-only statements merely to mention a source kind."
+                ),
+                "required_source_types": sorted(required_source_types),
+            }
         )
 
     reader_selection_triggered = (
@@ -896,6 +924,15 @@ def _requirement_evidence(
                     ("factory", "acceptance", "setacceptance", "generate2dmodel", "generate model"),
                 )
             ]
+        elif requirement_id == "source_role_grounding":
+            # F6-A2-FR2-R1: give revision the selected evidence of each source
+            # kind the plan requires, so a substantively grounded claim can be
+            # written for an uncovered kind (never a provenance-only mention).
+            matches = [
+                item
+                for item in evidence.values()
+                if _evidence_source_types(item) & set(requirement.get("required_source_types") or [])
+            ]
         elif requirement_id == "elastic_cross_section_luminosity_fit":
             matches = [
                 item for item in evidence.values()
@@ -1057,6 +1094,20 @@ def _deterministic_missing_requirement_ids(
             )
             if not (has_acceptance and has_storage and has_construction and has_application and cited_handoff):
                 missing.append(requirement_id)
+        elif requirement_id == "source_role_grounding":
+            # F6-A2-FR2-R1: the multi-source grounding requirement is satisfied
+            # when the cited evidence covers every question-grounded source kind
+            # the plan requires; an uncovered kind means the answer never
+            # grounded any substantive part in that source.
+            required_kinds = set(requirement.get("required_source_types") or [])
+            if required_kinds:
+                cited_types: set[str] = set()
+                for evidence_id in cited_ids:
+                    item = evidence.get(evidence_id)
+                    if item is not None:
+                        cited_types |= _evidence_source_types(item)
+                if not required_kinds <= cited_types:
+                    missing.append(requirement_id)
         elif requirement_id == "elastic_cross_section_luminosity_fit":
             has_cross_section = any(
                 term in claim_text
@@ -1956,94 +2007,12 @@ class QAAgent:
             }
         source_types = set()
         for item in evidence:
-            source_id = item["source_id"]
-            if source_id in {"li_2026", "karavdina_2015", "pflueger_2017"}:
-                source_types.add("paper")
-            elif "sphinx" in source_id:
-                source_types.add("documentation")
-            elif ((item.get("locator") or {}).get("path") or "").replace("\\", "/").lower().startswith(("docs/", "doc/")):
-                source_types.add("documentation")
-            else:
-                source_types.add("code")
-                path = item.get("locator", {}).get("path") or ""
-                if path.lower().split("/")[-1].startswith("readme"):
-                    source_types.add("readme")
-                if item.get("object_type") in {"workflow", "python_script", "shell_script"}:
-                    source_types.add("workflow")
-            source_types.update(channel for channel in item.get("retrieval_channels", []) if channel in {"workflow", "graph"})
+            source_types |= _evidence_source_types(item)
         missing = [value for value in state["bundle"]["plan"]["required_source_types"] if value not in source_types]
         return {
             "sufficient": bool(evidence) and not missing,
             "errors": [f"missing required source: {value}" for value in missing] if evidence else ["no evidence"],
         }
-
-    def _augment_source_obligation_evidence(self, draft: dict[str, Any], state: QAState) -> dict[str, Any]:
-        """Add at most one minimal anchor claim per uncovered required source type.
-
-        F6-A2-FR2: question-grounded source obligations (F2-A5) gate retrieval
-        sufficiency only; an answer whose claims never cite the obligated
-        source type silently drops the already-selected evidence for it at the
-        final-evidence projection. Mirroring ``_augment_planned_locators``,
-        this adds a bounded, evidence-bound claim for a required source type
-        only when selected citation-eligible evidence of that type shares a
-        question anchor with the query, and asserts only what the cited
-        evidence itself shows. It never invents content, adds source types, or
-        attaches unanchored evidence.
-        """
-        required = [str(value) for value in state["bundle"]["plan"].get("required_source_types", [])]
-        if not required:
-            return draft
-        question = str(state.get("question", ""))
-        anchors = _question_domain_tokens(question)
-        if not anchors:
-            return draft
-        claims = list(draft.get("claims", []))
-        eligible = [
-            item
-            for item in state["bundle"].get("evidence", [])
-            if _is_public_claim_citation_eligible(item)
-        ]
-        cited_ids = {
-            str(evidence_id)
-            for claim in claims
-            for evidence_id in claim.get("evidence_ids", [])
-        }
-        cited_types = {
-            _primary_evidence_source_type(item)
-            for item in eligible
-            if str(item.get("evidence_id") or "") in cited_ids
-        }
-        for source_type in required:
-            if source_type in cited_types:
-                continue
-            best = None
-            best_key = None
-            for item in eligible:
-                if _primary_evidence_source_type(item) != source_type:
-                    continue
-                if str(item.get("evidence_id") or "") in cited_ids:
-                    continue
-                text = _evidence_search_text(item)
-                overlap = sum(1 for anchor in anchors if anchor in text)
-                if not overlap:
-                    continue
-                key = (-overlap, str(item.get("evidence_id") or ""))
-                if best_key is None or key < best_key:
-                    best, best_key = item, key
-            if best is None:
-                continue
-            subject = _refusal_basis_subject(question, best)
-            location = _refusal_basis_location(best)
-            claims.append(
-                {
-                    "claim_id": f"source_obligation_{source_type}",
-                    "claim_text": f"The cited {source_type} at {location} documents {subject}.",
-                    "evidence_ids": [str(best.get("evidence_id") or "")],
-                }
-            )
-            cited_ids.add(str(best.get("evidence_id") or ""))
-            cited_types.add(source_type)
-        return {**draft, "claims": claims}
 
     @staticmethod
     def _augment_planned_locators(draft: dict[str, Any], state: QAState) -> dict[str, Any]:
@@ -2262,7 +2231,6 @@ class QAAgent:
             draft = {"claims": _model_claims(list(draft.get("claims", [])))}
         draft = self._augment_planned_locators(draft, state)
         draft = self._augment_required_dataflow_evidence(draft, state)
-        draft = self._augment_source_obligation_evidence(draft, state)
         # Version scope is deterministic metadata, not a model guess.  It is
         # retained only as internal audit material, and only for a genuine
         # version-disambiguation request.  In particular, ``resolved_versions``
