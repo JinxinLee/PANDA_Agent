@@ -188,7 +188,7 @@ F2-A5-R1:
 COMPLETE / PASS / SOURCE_OBLIGATION_MATCHING_BOUNDARY_ESTABLISHED
 
 Phase F:
-IN_PROGRESS / F5_COMPLETE_F6_NOT_STARTED
+IN_PROGRESS / F6_A_ATTEMPT_3_FAILED
 
 F1:
 COMPLETE / PASS / RESIDUAL_BENCHMARK_DEPENDENCY_INVENTORY_ESTABLISHED
@@ -215,8 +215,16 @@ F6:
 attempt 1 = HISTORICAL / HOLD (ZERO_OUTCOME); staged by F6-LR1
 F6-LR1:
 COMPLETE / PASS / RELEASE_GATE_STAGING_RECONCILED
-F6-A:
-COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED
+F6-A Attempt 1:
+COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED (Gold v2.6, historical)
+F6-A Attempt 2:
+COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED (Gold v2.6, historical)
+F6-A Attempt 3 Preflight:
+HISTORICAL / HOLD / PRE_RELEASE_PRECONDITION_NOT_MET (zero-outcome, unblocked by GOLD-9)
+GOLD-9:
+COMPLETE / PASS / RELEASE_AUTHORITY_CHAIN_RECONCILED
+F6-A Attempt 3:
+COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED (Gold v2.9 terminal result)
 F6-B:
 LOCKED / F6_A_DID_NOT_PASS
 
@@ -224,7 +232,7 @@ D4 overall completion:
 UNDECIDED
 
 Next task recommendation:
-SEPARATELY AUTHORIZED POST-F6-A FAILURE REVIEW / NEW CANDIDATE WORK ONLY
+POST-ATTEMPT-3 READ-ONLY FAILURE AND RECOVERY-PROTOCOL REVIEW FIRST (SEPARATELY AUTHORIZED; NO QUESTION-SPECIFIC FIXES OR SOURCE REPAIRS NOW)
 
 Current task authorization:
 E3-A1 experimental missing-point targeted retrieval implementation is complete:
@@ -853,6 +861,17 @@ Original Phase-F planning predates the substantial shortcut migrations completed
   Cross-layer consistency demonstrated (resolver/default-dataset-path/freezer/product-scope all resolve v2.9
   eaacd3ed… + v6 fe56d4ca… + 59 IDs e27ef67a…). Focused tests 53+18 and 274+52 — zero new regressions; product QA
   behavior untouched. Report: `evaluation/GOLD_9_AUTHORITY_BINDING_INFRASTRUCTURE_RECONCILIATION.md`.
+- **F6-A Attempt 3 — Continuous Pre-Release Validation & Generalization Gate:** COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED
+  (continuous execution after GOLD-9; preregistration commit `2f9a4a3`; frozen candidate `f6a-rc3-20260914`, manifest SHA `be2101a4..`).
+  Formal-English Gold v2.9 cohort (59 expected, 58 scored, 1 unhandled exception g013 due to Vertex 429 RESOURCE_EXHAUSTED).
+  Release score 0.9741 (58-case diagnostic only; full-cohort release score INCOMPLETE).
+  Four mandatory gates failed: critical_final_evidence_recall 0.9410 (<1.00; failing: g011, g022, g044, g060), critical_answer_point_miss_count 3 (>0; failing: g022, g023, g115), paper_code_dual_source_rate 0.0 (<1.00; failing: g060), unhandled_exception_count 1 (>0; g013 Vertex 429).
+  Passing gates: gold_recall_at_10 0.9792, final_evidence_recall 0.9306, intent_accuracy 0.9828, per_intent_gold_recall_at_10 (min 0.9500), per_intent_intent_accuracy (min 0.9231), expected_status_accuracy 1.00, citation_integrity 1.00, wrong_version_evidence 0, forbidden_evidence 0, required_source_coverage_answered 0.9792, identifier_hallucination_rate 0.00, answer_point_coverage 0.9741, contradiction_count 0, major_unsupported_claim_count 0.
+  Raw canonical matrix evaluated 14 PASS, 4 FAIL, 0 incomplete flags strictly on available observations; raw flags are diagnostic, not complete-cohort PASS; full-cohort measurements remain INCOMPLETE due to unmeasured g013. Missing measurements are treated as INCOMPLETE (not FAIL per policy). Hard measured FAIL on evaluated cohort is terminal for the prerelease gate, while missing g013 status is INCOMPLETE separately.
+  Explicit late receipt protocol deviation: late run receipt (`evaluation/f6_a3_a1_receipt.json`) was written after failure case diagnosis was already inspected. Inherited prior execution evidence: A0 focused tests (327 passed + 70 subtests).
+  Fail-fast halted scientific execution immediately; stages A2–A5 NOT_REACHED; novel_validation remains PRISTINE_FOR_CURRENT_LINEAGE; holdout access = 0; F6-B LOCKED.
+  Observed Attempt-3 scientific usage: 397 model calls, 3,783,197 tokens (final 59 records: 387 calls / 3,745,918 tokens; preserved 3 initial 429 failed attempts: 10 calls / 37,279 tokens).
+  Report: `evaluation/F6_A3_PRERELEASE_VALIDATION_RESULT.md`, forward-only closeout audit addendum: `evaluation/f6_a3_closeout_verification.json`.
 - **F6-A-FR1 — Exposed Gold Failure Review & New Candidate Development:** COMPLETE / PASS / ROOT_CAUSES_ESTABLISHED_AND_BOUNDED_FIXES_IMPLEMENTED (zero-scientific-call development task; all eight exposed status mismatches explained by two generic root causes — RC1 repository display names refused as bare class symbols by the premise guard while the object catalog legitimately lacks repository identities, RC2 prepositional commit requests missing the version-repository binding so the SHA never reached the locked-version comparison with the status precedence itself confirmed correct; bounded generic fixes: manifest-driven Retriever.is_repository_reference + guard repository-identity exclusion, and a bounded prepositional connector in _has_explicit_version_repository_binding; nine test-first regression tests added, preserved-refusal controls intact, zero new test failures; F6-A FAIL preserved; product-fix HEAD `45f14ba`; candidate NOT frozen, F6-A NOT preregistered). Report: `evaluation/F6_A_FR1_EXPOSED_GOLD_FAILURE_REVIEW_AND_CANDIDATE_DEVELOPMENT.md`.
 - **F6-B — Protected Blind Release Gate:** LOCKED / F6_A_DID_NOT_PASS (requires an F6-A PASS with the identical frozen candidate; physical protected holdout availability required; single protected blind release attempt; the only protected blind release decision)
 - **Problem:** Final readiness requires simultaneous evidence on exposed benchmark, novel validation, protected holdout, and shortcut-dependency ablations.
@@ -910,8 +929,8 @@ At release, Generalization Gap means benchmark score minus novel score. Benchmar
 5. **Phase execution ordering:** F1 found zero E1 blockers. E1-R2 passed targeted prospective synthetic validation and E1-C1 passed exposed real-style confirmation, including the original atomicity sentinel. E1 is closed under the accepted scope decision. E2-A3 remains FAIL/Q7. E2-A3-FR1 completed with REPAIR_JUSTIFIED. R1 remains FAIL/P2_P6. R2 repaired citation eligibility and passed S1-S13/P1-P11 in six fresh pairs. Historical P6 FAIL remains without waiver or product tuning; historical R3 remains INCONCLUSIVE after four infrastructure failures. R3-R1 completed the missing paired evidence and failed G11 at 2/14 noncritical worse; FR1 subsequently completed a static review recommending shared claim sanitization repair and prospective gate redesign. E2-LR1 subsequently separates completed core mechanisms from deferred promotion and supersedes immediate A3-R4. QA-M1 maintenance subsequently completed with focused T0/static checks. E3-A0 architecture contract is complete; E3-A1 implemented the experimental mechanism under runtime_e1_v2; E3-A2 completed INCONCLUSIVE with insufficient natural applicability; E3-LR1 closed E3 as a bounded low-frequency fallback with standalone recovery benefit unresolved. No further E1 confirmation is required.
 
 ```text
-CURRENT_TASK = F6-A / COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED
-NEXT_TASK_RECOMMENDATION = SEPARATELY AUTHORIZED POST-F6-A FAILURE REVIEW / NEW CANDIDATE WORK ONLY
+CURRENT_TASK = F6-A Attempt 3 / COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED
+NEXT_TASK_RECOMMENDATION = POST-ATTEMPT-3 READ-ONLY FAILURE AND RECOVERY-PROTOCOL REVIEW FIRST (SEPARATELY AUTHORIZED; NO QUESTION-SPECIFIC FIXES OR SOURCE REPAIRS NOW)
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 FOLLOWING_ARCHITECTURE_TASK = F6-B — Protected Blind Release Gate (LOCKED / F6_A_DID_NOT_PASS)
 NEXT_STAGE_AUTHORIZED = false

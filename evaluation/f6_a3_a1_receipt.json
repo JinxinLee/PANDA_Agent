@@ -1,0 +1,133 @@
+{
+  "schema_version": "f6a-a3-a1-receipt-v1",
+  "role": "archival receipt / committed audit pointer for gitignored local run; binds current results, gate matrix, traces, selector, candidate, and exact usage",
+  "protocol_compliance": {
+    "timing": "late receipt",
+    "deviation_note": "protocol deviation: failure cases and gate diagnostics were inspected before this receipt was created; this receipt is late and MUST NOT claim pre-diagnosis compliance or backdate",
+    "backdated": false,
+    "generated_at": "2026-09-14"
+  },
+  "execution_status": {
+    "run_id": "f6a-rc3-gold-formal-full-20260914",
+    "candidate_id": "f6a-rc3-20260914",
+    "cohort_status": "INCOMPLETE (58 scored / 59 expected; g013 incomplete due to 429 RESOURCE_EXHAUSTED; not rerun because mandatory failure already observed and scientific execution stopped)",
+    "scored_cases": 58,
+    "expected_cases": 59,
+    "total_records_in_results": 59,
+    "release_score_diagnostic_58_cases": 0.9741379310344828,
+    "full_cohort_release_score": "INCOMPLETE",
+    "terminal_label": "COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED"
+  },
+  "identities": {
+    "candidate_manifest_sha256": "be2101a4709aa2ab2f324ba00b58d90e561ff1e359fc44b28ab26a5b3be155ca",
+    "implementation_git_commit": "2f9a4a32a41330326976bce4cf29e726ceac908e",
+    "product_behavior_lineage_head": "d323f790655c62e18b782d606a02f593a673f3cd",
+    "gold_benchmark_version": "m6-benchmark-v2.9",
+    "gold_dataset_sha256": "eaacd3ed6595821b24b28823c6344abc4dfb954eb71846e682080b42c2f689be",
+    "calibration_id": "phase_b_t3_product_language_scope_v6",
+    "selector_count": 59,
+    "selector_sha256": "e27ef67a866274b4a8441b789ca78fc3ccb7e022eed537c7442e15230777a0e5"
+  },
+  "artifacts_and_hashes": {
+    "case_id_set_sha256": "914ee1b4b3f937e6839416932b44de06fb0401589fd59825a63ac430c5361d1c",
+    "case_id_set_hash_method": "sha256 over compact JSON array (separators ',', ':') of the sorted 59 record IDs",
+    "results_file_sha256": "360f6c349f464bee2fb38a3d0da2ef4fa8a6de8200c15fe2975ad811b5ac8263",
+    "gate_matrix_sha256": "d40636195b0a307fe19b3884a5618f1096960e6400bd63a7fb2e2d3f47ca5398",
+    "retrieval_traces_sha256": "d8f32ef0da4f91df9598b50f6ac9a78d19dab41dc6f336503d66675ef50836f5",
+    "traces_combined_sha256": "e764d24547eb5588f59d66da4091f584821a82772f5c5c9de933c3ba10365e27",
+    "traces_combined_hash_method": "sha256 over the concatenation of the 58 per-case trace files in sorted filename order (g013 omitted due to exception)",
+    "trace_file_count": 58
+  },
+  "gate_summary": {
+    "failed_gate_count": 4,
+    "failed_gate_names": [
+      "critical_answer_point_miss_count",
+      "critical_final_evidence_recall",
+      "paper_code_dual_source_rate",
+      "unhandled_exception_count"
+    ],
+    "incomplete_gate_names": [],
+    "release_score_diagnostic_58_cases": 0.9741379310344828,
+    "full_cohort_release_score": "INCOMPLETE",
+    "per_failed_gate_failing_case_ids": {
+      "critical_answer_point_miss_count": [
+        "g022",
+        "g023",
+        "g115"
+      ],
+      "critical_final_evidence_recall": [
+        "g011",
+        "g022",
+        "g044",
+        "g060"
+      ],
+      "paper_code_dual_source_rate": [
+        "g060"
+      ],
+      "unhandled_exception_count": [
+        "g013"
+      ]
+    }
+  },
+  "exception_record": {
+    "unhandled_exception_count": 1,
+    "cases": {
+      "g013": {
+        "error_type": "VertexCallError",
+        "message": "structured generation failed for gemini-3.8-flash in global: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Resource exhausted. Please try again later. Please refer to https://cloud.google.com/vertex-ai/generative-ai/docs/error-code-429 for more details.', 'status': 'RESOURCE_EXHAUSTED'}}"
+      }
+    }
+  },
+  "recovery_history": {
+    "initial_attempt": "59 records written: 56 successful, 3 exceptions (g006, g013, g016) due to 429 RESOURCE_EXHAUSTED; backed up to results.jsonl.pre-retry-backup",
+    "resume_procedure": "Path R-A; temporary detached HEAD 11de2bd because ONLY repository_identity.commit changed due to pause commit 50f0c4b; main subsequently restored to HEAD 50f0c4b",
+    "retry_outcome": "g006 and g016 successfully recovered; g013 remained 429 RESOURCE_EXHAUSTED exception; no further rerun because mandatory failure already observed and scientific execution stopped"
+  },
+  "usage": {
+    "accounting_rule": "FINAL 59 records + ONLY ORIGINAL 3 failures from backup (g006, g013, g016); 56 initial successes are not counted twice",
+    "total": {
+      "model_calls": 397,
+      "token_usage": 3783197
+    },
+    "final_59_records": {
+      "model_calls": 387,
+      "token_usage": 3745918
+    },
+    "backup_3_failed_attempts": {
+      "model_calls": 10,
+      "token_usage": 37279
+    },
+    "per_role_accounting": {
+      "runtime": {
+        "model_calls": 336,
+        "token_usage": 3367021,
+        "generation_calls": 271,
+        "embedding_calls": 65,
+        "qa_generation": {
+          "model_calls": 89,
+          "token_usage": 2007383
+        },
+        "qa_composer": {
+          "model_calls": 41,
+          "token_usage": 79801
+        },
+        "runtime_verification": "NOT_SEPARATELY_RECOVERABLE_FROM_STORED_RECORDS"
+      },
+      "evaluation_judge": {
+        "model_calls": 61,
+        "token_usage": 416176,
+        "generation_calls": 61,
+        "embedding_calls": 0
+      }
+    }
+  },
+  "source_paths": {
+    "raw_run_dir": "data/evaluation/runs/f6a-rc3-gold-formal-full-20260914 (gitignored; local immutable)",
+    "results": "data/evaluation/runs/f6a-rc3-gold-formal-full-20260914/results.jsonl",
+    "pre_retry_backup": "data/evaluation/runs/f6a-rc3-gold-formal-full-20260914/results.jsonl.pre-retry-backup",
+    "gate_matrix": "data/evaluation/runs/f6a-rc3-gold-formal-full-20260914/gate_matrix.json",
+    "committed_gate_matrix": "evaluation/f6_a3_gate_matrix.json",
+    "traces": "data/evaluation/runs/f6a-rc3-gold-formal-full-20260914/traces/*.json",
+    "candidate_manifest": "evaluation/candidates/f6a-rc3-20260914/candidate_manifest.json"
+  }
+}

@@ -1,79 +1,459 @@
 {
   "schema_version": "f6a-a3-result-v1",
   "task": "F6-A Attempt 3 — Prerelease Validation & Generalization Gate",
-  "decision": "HOLD / PRE_RELEASE_PRECONDITION_NOT_MET",
-  "hold_stage": "A0 zero-outcome preflight",
-  "starting_head": "52713da2092579c3697a56d6bee9d5b1e7baf2fa",
-  "product_behavior_lineage_head": "d323f790655c62e18b782d606a02f593a673f3cd",
-  "product_drift_after_lineage_head": "none (d323f79..HEAD touches lifecycle docs and FR2-R1 artifacts only)",
-  "scientific_calls": 0,
-  "scientific_tokens": 0,
-  "authority_verification": {
-    "gold_v2_9": {
-      "dataset_sha256": "eaacd3ed6595821b24b28823c6344abc4dfb954eb71846e682080b42c2f689be",
-      "match": true,
-      "manifest_status": "approved_exposed_development_benchmark_v2_9",
-      "official_ready": true,
-      "structurally_valid": true
-    },
-    "calibration_loader_gap": {
-      "default_loaded": "phase_b_t3_product_language_scope_v3",
-      "on_disk_unloaded": ["phase_b_t3_product_language_scope_v4", "phase_b_t3_product_language_scope_v5", "phase_b_t3_product_language_scope_v6"],
-      "consequence": "v3 is incompatible with the v2.9 dataset (calibration_compatibility=False); candidate-freezer product-scope identity would raise; the pipeline cannot select v6"
-    },
-    "selector_derivation_v2_9_plus_v6": {"count": 59, "sha256": "e27ef67a866274b4a8441b789ca78fc3ccb7e022eed537c7442e15230777a0e5", "derived": true},
-    "docker_runtime": ["postgres:17-alpine (healthy)", "qdrant:v1.15.5 (healthy)"],
-    "index_fingerprint_match": true
+  "decision": "COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED",
+  "fail_fast_stage": "A1_gold_formal_full",
+  "cohort_execution_status": "INCOMPLETE (58 scored / 59 expected; g013 incomplete due to 429 RESOURCE_EXHAUSTED; not rerun because mandatory failure already observed and scientific execution stopped)",
+  "protocol_compliance": {
+    "timing": "late receipt",
+    "deviation_note": "protocol deviation: failure cases and gate diagnostics were inspected before receipt was created; does NOT claim pre-diagnosis compliance or backdate",
+    "backdated": false
   },
-  "preregistration_blockers": [
-    {
-      "blocker": 1,
-      "title": "candidate freezer binds Gold v2.6",
-      "evidence": "src/panda_agent/candidate.py hard-codes BENCHMARK_DIR=evaluation/benchmarks/v2_6 and BENCHMARK_VERSION=m6-benchmark-v2.6; _current_manifest reads gold_questions.yaml and manual_adjudications.yaml from that directory; evaluation/benchmarks/v2_9/ has no manual_adjudications.yaml; no override mechanism exists",
-      "consequence": "any frozen candidate would bind v2.6 identities (or fail), conflicting with the required v2.9 binding"
+  "starting_head": "1f03bbdc9da72af0bf90fe0cd15d5c061bffd567",
+  "chronology": {
+    "preregistration_commit": "2f9a4a32a41330326976bce4cf29e726ceac908e",
+    "freeze_commit": "11de2bd6b0a26176d252400c99a262b42b2a4a0d",
+    "pause_commit": "50f0c4b034d8508b88376cd9419b8ea252ef62cd",
+    "restored_main_head": "50f0c4b034d8508b88376cd9419b8ea252ef62cd",
+    "preregistration_artifact": "evaluation/f6_a3_prerelease_validation_preregistration.json",
+    "candidate_freeze_receipt": "evaluation/f6_a3_freeze_receipt.json",
+    "a1_receipt": "evaluation/f6_a3_a1_receipt.json",
+    "gate_matrix": "evaluation/f6_a3_gate_matrix.json",
+    "pre_closeout_head": "50f0c4b034d8508b88376cd9419b8ea252ef62cd",
+    "closeout_verification": "evaluation/f6_a3_closeout_verification.json"
+  },
+  "candidate": {
+    "candidate_id": "f6a-rc3-20260914",
+    "implementation_git_commit": "2f9a4a32a41330326976bce4cf29e726ceac908e",
+    "product_behavior_lineage_head": "d323f790655c62e18b782d606a02f593a673f3cd",
+    "manifest_sha256": "be2101a4709aa2ab2f324ba00b58d90e561ff1e359fc44b28ab26a5b3be155ca",
+    "verify_valid": true,
+    "verify_mismatches": 0
+  },
+  "authority": {
+    "gold_benchmark_version": "m6-benchmark-v2.9",
+    "gold_dataset": "evaluation/benchmarks/v2_9/gold_questions.yaml",
+    "gold_dataset_sha256": "eaacd3ed6595821b24b28823c6344abc4dfb954eb71846e682080b42c2f689be",
+    "calibration_id": "phase_b_t3_product_language_scope_v6",
+    "calibration_sha256": "fe56d4ca1112194643054d0d7627804956b4a35965495e18cbede59a937854a9",
+    "selector_count": 59,
+    "selector_sha256": "e27ef67a866274b4a8441b789ca78fc3ccb7e022eed537c7442e15230777a0e5",
+    "production_mode": "legacy_question_core",
+    "index_fingerprint": "8172f9a640e62977be6e911bfb4848ce3aecd0994f1f3ba51a0985bffec62cb9",
+    "docker_runtime": [
+      "postgres:17-alpine",
+      "qdrant:v1.15.5"
+    ],
+    "models": {
+      "generation": "gemini-3.8-flash",
+      "effective_verification": "gemini-3.8-flash",
+      "evaluation_judge": "gemini-3.8-flash",
+      "embedding": "gemini-embedding-2"
     },
-    {
-      "blocker": 2,
-      "title": "calibration loader successor chain stops at v3",
-      "evidence": "load_product_language_calibration resolves only v2->v3; v4/v5/v6 exist on disk but the default-loaded calibration is v3, incompatible with v2.9",
-      "consequence": "freezer product-scope identity raises 'calibration incompatible with active Gold'; evaluation pipeline cannot select the authoritative v6"
+    "prompt_set_version": "3.10.1",
+    "prompt_hash": "23d73b036646ec62f3095fac4bdfafdfc7ecf6676fd27d18475b86773db4e6d5"
+  },
+  "stage_a1_gold_formal": {
+    "run_id": "f6a-rc3-gold-formal-full-20260914",
+    "mode": "full",
+    "expected_cases": 59,
+    "records_in_results": 59,
+    "scored_cases": 58,
+    "complete": false,
+    "incomplete_cases": [
+      "g013"
+    ],
+    "unhandled_exception_count": 1,
+    "release_score": {
+      "full_cohort": "INCOMPLETE",
+      "diagnostic_58_cases": 0.9741379310344828
+    },
+    "raw_run_dir": "data/evaluation/runs/f6a-rc3-gold-formal-full-20260914",
+    "results_sha256": "360f6c349f464bee2fb38a3d0da2ef4fa8a6de8200c15fe2975ad811b5ac8263",
+    "gate_matrix_sha256": "d40636195b0a307fe19b3884a5618f1096960e6400bd63a7fb2e2d3f47ca5398",
+    "committed_gate_matrix": "evaluation/f6_a3_gate_matrix.json"
+  },
+  "gates": {
+    "failed_gate_count": 4,
+    "failed_gate_names": [
+      "critical_answer_point_miss_count",
+      "critical_final_evidence_recall",
+      "paper_code_dual_source_rate",
+      "unhandled_exception_count"
+    ],
+    "incomplete_gate_count": 0,
+    "incomplete_gate_names": [],
+    "passed_gate_count": 14,
+    "passed_gate_names": [
+      "gold_recall_at_10",
+      "final_evidence_recall",
+      "intent_accuracy",
+      "per_intent_gold_recall_at_10",
+      "per_intent_intent_accuracy",
+      "expected_status_accuracy",
+      "citation_integrity",
+      "wrong_version_evidence_count",
+      "forbidden_evidence_count",
+      "required_source_coverage_answered",
+      "identifier_hallucination_rate",
+      "answer_point_coverage",
+      "contradiction_count",
+      "major_unsupported_claim_count"
+    ],
+    "gate_evaluations": {
+      "gold_recall_at_10": {
+        "value": 0.9791666666666666,
+        "threshold": 0.95,
+        "passed": true,
+        "denominator": 48
+      },
+      "final_evidence_recall": {
+        "value": 0.9305555555555555,
+        "threshold": 0.9,
+        "passed": true,
+        "denominator": 48
+      },
+      "critical_final_evidence_recall": {
+        "value": 0.9409722222222222,
+        "threshold": 1.0,
+        "passed": false,
+        "denominator": 48,
+        "failing_cases": [
+          "g011",
+          "g022",
+          "g044",
+          "g060"
+        ]
+      },
+      "intent_accuracy": {
+        "value": 0.9827586206896551,
+        "threshold": 0.9,
+        "passed": true,
+        "denominator": 58
+      },
+      "per_intent_gold_recall_at_10": {
+        "value": 0.95,
+        "threshold": 0.75,
+        "passed": true
+      },
+      "per_intent_intent_accuracy": {
+        "value": 0.9230769230769231,
+        "threshold": 0.8,
+        "passed": true
+      },
+      "expected_status_accuracy": {
+        "value": 1.0,
+        "threshold": 0.975,
+        "passed": true,
+        "denominator": 58
+      },
+      "citation_integrity": {
+        "value": 1.0,
+        "threshold": 1.0,
+        "passed": true,
+        "denominator": 58
+      },
+      "wrong_version_evidence_count": {
+        "value": 0,
+        "threshold": 0,
+        "passed": true
+      },
+      "forbidden_evidence_count": {
+        "value": 0,
+        "threshold": 0,
+        "passed": true
+      },
+      "required_source_coverage_answered": {
+        "value": 0.9791666666666666,
+        "threshold": 0.97,
+        "passed": true,
+        "denominator": 48
+      },
+      "identifier_hallucination_rate": {
+        "value": 0.0,
+        "threshold": 0.03,
+        "passed": true,
+        "denominator": 177
+      },
+      "paper_code_dual_source_rate": {
+        "value": 0.0,
+        "threshold": 1.0,
+        "passed": false,
+        "denominator": 1,
+        "failing_cases": [
+          "g060"
+        ]
+      },
+      "answer_point_coverage": {
+        "value": 0.9741379310344828,
+        "threshold": 0.9,
+        "passed": true,
+        "denominator": 58
+      },
+      "critical_answer_point_miss_count": {
+        "value": 3,
+        "threshold": 0,
+        "passed": false,
+        "failing_cases": [
+          "g022",
+          "g023",
+          "g115"
+        ]
+      },
+      "contradiction_count": {
+        "value": 0,
+        "threshold": 0,
+        "passed": true,
+        "denominator": 58
+      },
+      "major_unsupported_claim_count": {
+        "value": 0,
+        "threshold": 0,
+        "passed": true,
+        "denominator": 58
+      },
+      "unhandled_exception_count": {
+        "value": 1,
+        "threshold": 0,
+        "passed": false,
+        "failing_cases": [
+          "g013"
+        ]
+      }
+    },
+    "canonical_matrix_raw_flags": {
+      "passed": 14,
+      "failed": 4,
+      "incomplete": 0,
+      "flag_semantics": "diagnostic on available observations (58 scored cases; exception gate on 59); not complete-cohort PASS; full cohort is INCOMPLETE due to unmeasured g013"
+    },
+    "missing_measurement_semantics": "missing measurements are INCOMPLETE (not treated as FAIL per policy); hard measured FAIL on evaluated cohort is terminal for the prerelease gate, while missing g013 status is INCOMPLETE separately"
+  },
+  "per_intent_metrics": {
+    "algorithm_implementation": {
+      "cases": 2,
+      "gold_recall_at_10": 1.0,
+      "final_evidence_recall": 0.8333333333333333,
+      "intent_accuracy": 1.0
+    },
+    "algorithm_theory": {
+      "cases": 8,
+      "gold_recall_at_10": 1.0,
+      "final_evidence_recall": 0.8333333333333334,
+      "intent_accuracy": 1.0
+    },
+    "api": {
+      "cases": 15,
+      "gold_recall_at_10": 1.0,
+      "final_evidence_recall": 1.0,
+      "intent_accuracy": 1.0
+    },
+    "installation": {
+      "cases": 12,
+      "gold_recall_at_10": 0.95,
+      "final_evidence_recall": 0.9,
+      "intent_accuracy": 1.0
+    },
+    "module_structure": {
+      "cases": 2,
+      "gold_recall_at_10": 1.0,
+      "final_evidence_recall": 1.0,
+      "intent_accuracy": 1.0
+    },
+    "troubleshooting": {
+      "cases": 6,
+      "gold_recall_at_10": 1.0,
+      "final_evidence_recall": 1.0,
+      "intent_accuracy": 1.0
+    },
+    "usage": {
+      "cases": 13,
+      "gold_recall_at_10": 0.9545454545454546,
+      "final_evidence_recall": 0.9090909090909091,
+      "intent_accuracy": 0.9230769230769231
     }
-  ],
-  "focused_tests": "325 passed + 70 subtests (FR2-R1 boundary, Cluster-D discipline, F2-A3-R1/F2-A5, FR1 regressions, freezer identity, gate helper, test_qa, test_retrieval) — zero new regressions; the blockers are authority-binding gaps, not test failures",
-  "product_boundary_audit": {
-    "source_obligation_synthetic_claims": "absent",
-    "gold_case_ids_in_product": 0,
-    "benchmark_paths_as_product_logic": "absent",
-    "production_answer_point_mode": "legacy_question_core"
   },
-  "stage_status": {
-    "a0_preflight": "HOLD",
-    "preregistration": "NOT_CREATED",
-    "candidate_freeze": "NOT_CREATED",
-    "a1_formal_gold": "NOT_REACHED",
-    "a2_gold_ablation": "NOT_REACHED",
+  "attempt_2_diagnostic_comparison": {
+    "note": "diagnostic comparison confounded by benchmark version difference (Attempt 2 evaluated Gold v2.6; Attempt 3 evaluated Gold v2.9)",
+    "benchmark_version": {
+      "attempt_2": "m6-benchmark-v2.6",
+      "attempt_3": "m6-benchmark-v2.9"
+    },
+    "scored_cases": {
+      "attempt_2": 59,
+      "attempt_3": 58
+    },
+    "failed_gate_count": {
+      "attempt_2": 6,
+      "attempt_3": 4
+    },
+    "diagnostic_release_score": {
+      "attempt_2": 0.9463276836158192,
+      "attempt_3": 0.9741379310344828
+    },
+    "expected_status_accuracy": {
+      "attempt_2": 1.0,
+      "attempt_3": 1.0
+    }
+  },
+  "stages_not_reached": {
+    "a2_gold_ablation": "NOT_REACHED (A1 fail-fast)",
     "a3_novel_dev": "NOT_REACHED",
     "a4_novel_validation": "NOT_REACHED",
     "a5_composer_audit": "NOT_REACHED"
   },
+  "usage": {
+    "accounting_rule": "FINAL 59 records + ONLY ORIGINAL 3 failures from backup (g006, g013, g016); 56 initial successes not double-counted",
+    "attempt_3_total": {
+      "calls": 397,
+      "tokens": 3783197
+    },
+    "final_59_records": {
+      "calls": 387,
+      "tokens": 3745918
+    },
+    "backup_3_failures": {
+      "calls": 10,
+      "tokens": 37279
+    },
+    "stage_a1_gold_formal": {
+      "calls": 397,
+      "tokens": 3783197,
+      "runtime": {
+        "calls": 336,
+        "tokens": 3367021,
+        "generation_calls": 271,
+        "embedding_calls": 65,
+        "qa_generation": {
+          "calls": 89,
+          "tokens": 2007383
+        },
+        "qa_composer": {
+          "calls": 41,
+          "tokens": 79801
+        },
+        "runtime_verification": "NOT_SEPARATELY_RECOVERABLE_FROM_STORED_RECORDS"
+      },
+      "evaluation_judge": {
+        "calls": 61,
+        "tokens": 416176,
+        "generation_calls": 61,
+        "embedding_calls": 0
+      }
+    }
+  },
   "protected_cohorts": {
     "novel_validation": "PRISTINE_FOR_CURRENT_LINEAGE",
+    "exposure_transition": "none (A4 not reached)",
     "holdout_access": 0,
     "protected_content_leakage": 0,
     "f6b_execution": 0
   },
-  "integrity": {
-    "gold_changes": 0,
-    "calibration_changes": 0,
-    "product_changes": 0
-  },
   "lifecycle": {
-    "F6-A_attempt_3": "HOLD / PRE_RELEASE_PRECONDITION_NOT_MET",
-    "F6-A_attempt_1": "COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED (v2.6, historical)",
+    "F6-A_attempt_3": "COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED",
+    "F6-A_attempt_3_preflight": "HISTORICAL / HOLD / PRE_RELEASE_PRECONDITION_NOT_MET (zero-outcome, unblocked by GOLD-9)",
     "F6-A_attempt_2": "COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED (v2.6, historical)",
+    "F6-A_attempt_1": "COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED (v2.6, historical)",
     "F6-B": "LOCKED / F6_A_DID_NOT_PASS",
-    "Phase_F": "IN_PROGRESS / F6_A_ATTEMPT_3_HOLD"
+    "Phase_F": "IN_PROGRESS / F6_A_ATTEMPT_3_FAILED"
   },
-  "next_recommendation": "GOLD-9 AUTHORITY BINDING INFRASTRUCTURE RECONCILIATION (candidate-freezer binding to v2.9 incl. manual-adjudications disposition; calibration loader successor chain to v6), then re-run F6-A Attempt 3 preflight",
-  "next_task_execution_authorized": false
+  "next_recommendation": "POST-ATTEMPT-3 READ-ONLY FAILURE AND RECOVERY-PROTOCOL REVIEW FIRST (read-only failure and recovery-protocol review first, requiring separate authorization; do not attempt question-specific fixes or product source repairs now)",
+  "next_task_execution_authorized": false,
+  "historical_hold_record": {
+    "schema_version": "f6a-a3-result-v1",
+    "task": "F6-A Attempt 3 — Prerelease Validation & Generalization Gate",
+    "decision": "HOLD / PRE_RELEASE_PRECONDITION_NOT_MET",
+    "hold_stage": "A0 zero-outcome preflight",
+    "starting_head": "52713da2092579c3697a56d6bee9d5b1e7baf2fa",
+    "product_behavior_lineage_head": "d323f790655c62e18b782d606a02f593a673f3cd",
+    "product_drift_after_lineage_head": "none (d323f79..HEAD touches lifecycle docs and FR2-R1 artifacts only)",
+    "scientific_calls": 0,
+    "scientific_tokens": 0,
+    "authority_verification": {
+      "gold_v2_9": {
+        "dataset_sha256": "eaacd3ed6595821b24b28823c6344abc4dfb954eb71846e682080b42c2f689be",
+        "match": true,
+        "manifest_status": "approved_exposed_development_benchmark_v2_9",
+        "official_ready": true,
+        "structurally_valid": true
+      },
+      "calibration_loader_gap": {
+        "default_loaded": "phase_b_t3_product_language_scope_v3",
+        "on_disk_unloaded": [
+          "phase_b_t3_product_language_scope_v4",
+          "phase_b_t3_product_language_scope_v5",
+          "phase_b_t3_product_language_scope_v6"
+        ],
+        "consequence": "v3 is incompatible with the v2.9 dataset (calibration_compatibility=False); candidate-freezer product-scope identity would raise; the pipeline cannot select v6"
+      },
+      "selector_derivation_v2_9_plus_v6": {
+        "count": 59,
+        "sha256": "e27ef67a866274b4a8441b789ca78fc3ccb7e022eed537c7442e15230777a0e5",
+        "derived": true
+      },
+      "docker_runtime": [
+        "postgres:17-alpine (healthy)",
+        "qdrant:v1.15.5 (healthy)"
+      ],
+      "index_fingerprint_match": true
+    },
+    "preregistration_blockers": [
+      {
+        "blocker": 1,
+        "title": "candidate freezer binds Gold v2.6",
+        "evidence": "src/panda_agent/candidate.py hard-codes BENCHMARK_DIR=evaluation/benchmarks/v2_6 and BENCHMARK_VERSION=m6-benchmark-v2.6; _current_manifest reads gold_questions.yaml and manual_adjudications.yaml from that directory; evaluation/benchmarks/v2_9/ has no manual_adjudications.yaml; no override mechanism exists",
+        "consequence": "any frozen candidate would bind v2.6 identities (or fail), conflicting with the required v2.9 binding"
+      },
+      {
+        "blocker": 2,
+        "title": "calibration loader successor chain stops at v3",
+        "evidence": "load_product_language_calibration resolves only v2->v3; v4/v5/v6 exist on disk but the default-loaded calibration is v3, incompatible with v2.9",
+        "consequence": "freezer product-scope identity raises 'calibration incompatible with active Gold'; evaluation pipeline cannot select the authoritative v6"
+      }
+    ],
+    "focused_tests": "325 passed + 70 subtests (FR2-R1 boundary, Cluster-D discipline, F2-A3-R1/F2-A5, FR1 regressions, freezer identity, gate helper, test_qa, test_retrieval) — zero new regressions; the blockers are authority-binding gaps, not test failures",
+    "product_boundary_audit": {
+      "source_obligation_synthetic_claims": "absent",
+      "gold_case_ids_in_product": 0,
+      "benchmark_paths_as_product_logic": "absent",
+      "production_answer_point_mode": "legacy_question_core"
+    },
+    "stage_status": {
+      "a0_preflight": "HOLD",
+      "preregistration": "NOT_CREATED",
+      "candidate_freeze": "NOT_CREATED",
+      "a1_formal_gold": "NOT_REACHED",
+      "a2_gold_ablation": "NOT_REACHED",
+      "a3_novel_dev": "NOT_REACHED",
+      "a4_novel_validation": "NOT_REACHED",
+      "a5_composer_audit": "NOT_REACHED"
+    },
+    "protected_cohorts": {
+      "novel_validation": "PRISTINE_FOR_CURRENT_LINEAGE",
+      "holdout_access": 0,
+      "protected_content_leakage": 0,
+      "f6b_execution": 0
+    },
+    "integrity": {
+      "gold_changes": 0,
+      "calibration_changes": 0,
+      "product_changes": 0
+    },
+    "lifecycle": {
+      "F6-A_attempt_3": "HOLD / PRE_RELEASE_PRECONDITION_NOT_MET",
+      "F6-A_attempt_1": "COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED (v2.6, historical)",
+      "F6-A_attempt_2": "COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED (v2.6, historical)",
+      "F6-B": "LOCKED / F6_A_DID_NOT_PASS",
+      "Phase_F": "IN_PROGRESS / F6_A_ATTEMPT_3_HOLD"
+    },
+    "next_recommendation": "GOLD-9 AUTHORITY BINDING INFRASTRUCTURE RECONCILIATION (candidate-freezer binding to v2.9 incl. manual-adjudications disposition; calibration loader successor chain to v6), then re-run F6-A Attempt 3 preflight",
+    "next_task_execution_authorized": false
+  },
+  "historical_hold_report_git_pointer": "50f0c4b:evaluation/F6_A3_PRERELEASE_VALIDATION_RESULT.md",
+  "stage_a0_status": {
+    "status": "PASS / INHERITED_PRIOR_EXECUTION_EVIDENCE",
+    "focused_tests": "327 passed + 70 subtests (inherited prior execution evidence from user resume summary; not rerun as current fresh verification)",
+    "scientific_calls": 0,
+    "scientific_tokens": 0
+  }
 }

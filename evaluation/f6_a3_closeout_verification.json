@@ -1,0 +1,123 @@
+{
+  "schema_version": "f6a-a3-closeout-verification-v1",
+  "role": "forward-only audit addendum for F6-A Attempt 3 terminal artifacts and run integrity verification",
+  "verified_at_utc": "2026-09-14T21:43:03.946820+00:00",
+  "receipt_file_mtime_utc": "2026-09-14T21:33:37.967759+00:00",
+  "final_receipt_sha256": "91ec198cc406ec8a881810058b94a06b1b2ec0001948c287b7b3b5b3412ba322",
+  "backup_file_sha256": "4d58a3797087cf8fc3f8d893037bd075586de37301294f23a0da636cb00df0cf",
+  "mechanical_hash_verification": {
+    "candidate_manifest_sha256": "be2101a4709aa2ab2f324ba00b58d90e561ff1e359fc44b28ab26a5b3be155ca",
+    "candidate_manifest_matches_receipt": true,
+    "case_id_set_sha256": "914ee1b4b3f937e6839416932b44de06fb0401589fd59825a63ac430c5361d1c",
+    "case_id_set_matches_receipt": true,
+    "results_file_sha256": "360f6c349f464bee2fb38a3d0da2ef4fa8a6de8200c15fe2975ad811b5ac8263",
+    "results_file_matches_receipt": true,
+    "gate_matrix_sha256": "d40636195b0a307fe19b3884a5618f1096960e6400bd63a7fb2e2d3f47ca5398",
+    "gate_matrix_matches_receipt": true,
+    "committed_gate_matrix_sha256": "d40636195b0a307fe19b3884a5618f1096960e6400bd63a7fb2e2d3f47ca5398",
+    "committed_gate_matches_run_gate": true,
+    "retrieval_traces_sha256": "d8f32ef0da4f91df9598b50f6ac9a78d19dab41dc6f336503d66675ef50836f5",
+    "retrieval_traces_matches_receipt": true,
+    "combined_traces_sha256": "e764d24547eb5588f59d66da4091f584821a82772f5c5c9de933c3ba10365e27",
+    "combined_traces_matches_receipt": true,
+    "trace_file_count": 58,
+    "mismatches_detected": 0
+  },
+  "selector_authority_verification": {
+    "gold_benchmark_version": "m6-benchmark-v2.9",
+    "gold_dataset_sha256": "eaacd3ed6595821b24b28823c6344abc4dfb954eb71846e682080b42c2f689be",
+    "calibration_id": "phase_b_t3_product_language_scope_v6",
+    "calibration_sha256": "fe56d4ca1112194643054d0d7627804956b4a35965495e18cbede59a937854a9",
+    "derived_selector_count": 59,
+    "derived_selector_sha256": "e27ef67a866274b4a8441b789ca78fc3ccb7e022eed537c7442e15230777a0e5",
+    "exact_equality_with_results_case_ids": true,
+    "holdout_accessed": false
+  },
+  "cohort_and_recovery_verification": {
+    "original_56_successful_records_unchanged": true,
+    "backup_3_failed_attempts": [
+      "g006",
+      "g013",
+      "g016"
+    ],
+    "recovery_outcomes": {
+      "g006": "recovered_success",
+      "g016": "recovered_success",
+      "g013": "unhandled_exception_429_RESOURCE_EXHAUSTED"
+    },
+    "total_records_in_results": 59,
+    "scored_cases": 58,
+    "unhandled_exceptions": 1
+  },
+  "independent_usage_verification": {
+    "accounting_rule": "FINAL 59 records + ONLY ORIGINAL 3 failures from backup (g006, g013, g016); 56 initial successes not double-counted",
+    "total_calls": 397,
+    "total_tokens": 3783197,
+    "final_59_records": {
+      "calls": 387,
+      "tokens": 3745918
+    },
+    "backup_3_failed_attempts": {
+      "calls": 10,
+      "tokens": 37279
+    },
+    "per_role_totals": {
+      "runtime": {
+        "calls": 336,
+        "tokens": 3367021,
+        "generation_calls": 271,
+        "embedding_calls": 65,
+        "qa_generation": {
+          "calls": 89,
+          "tokens": 2007383
+        },
+        "qa_composer": {
+          "calls": 41,
+          "tokens": 79801
+        }
+      },
+      "evaluation_judge": {
+        "calls": 61,
+        "tokens": 416176
+      }
+    },
+    "prior_worker_report_match": true
+  },
+  "gate_semantics": {
+    "raw_canonical_matrix_flags": {
+      "passed": 14,
+      "failed": 4,
+      "incomplete": 0,
+      "interpretation": "raw flags are diagnostic on available observations (58 scored cases; exception on 59); not complete-cohort PASS; full cohort is INCOMPLETE due to unmeasured g013"
+    },
+    "missing_measurement_rule": "missing measurements are INCOMPLETE (not treated as FAIL per policy); hard measured FAIL on evaluated cohort is terminal for prerelease gate, while missing g013 status is INCOMPLETE separately",
+    "failed_gates": [
+      "critical_answer_point_miss_count",
+      "critical_final_evidence_recall",
+      "paper_code_dual_source_rate",
+      "unhandled_exception_count"
+    ],
+    "passed_gates_count": 14
+  },
+  "known_corrections_audited": {
+    "freeze_commit_hash": "corrected invented 11de2bd27d42cf38a8f137e068fa68305c754d92 to actual git rev-parse 11de2bd = 11de2bd6b0a26176d252400c99a262b42b2a4a0d in result MD/JSON",
+    "missing_measurement_semantics": "clarified missing=INCOMPLETE, raw flags diagnostic, separate terminal FAIL and incomplete g013",
+    "hold_history": "preserved exact parsed HEAD HOLD record nested in result JSON; referenced 50f0c4b:evaluation/F6_A3_PRERELEASE_VALIDATION_RESULT.md",
+    "attempt_1_history": "restored original long Attempt 1 historical paragraph in EVALUATION_STATUS.md",
+    "stage_a0": "recorded 327+70 tests as inherited prior execution evidence in result JSON and MD",
+    "pre_closeout_head": "relabeled Final HEAD 50f0c4b to pre-closeout HEAD (parent; final commit by host)",
+    "next_recommendation": "narrowed to read-only failure and recovery-protocol review first under separate authorization"
+  },
+  "immutability_status": {
+    "evaluation/f6_a3_a1_receipt.json": "UNMODIFIED / IMMUTABLE",
+    "evaluation/f6_a3_gate_matrix.json": "UNMODIFIED / IMMUTABLE"
+  },
+  "git_storage_verification": {
+    "gate_matrix_path": "evaluation/f6_a3_gate_matrix.json",
+    "working_copy_and_run_sha256": "d40636195b0a307fe19b3884a5618f1096960e6400bd63a7fb2e2d3f47ca5398",
+    "staged_git_blob_sha256": "ddd776042ae5c89f863a25bd34b5d65c488fc21ea790ccb0e730fa8680d7185c",
+    "json_content_equal": true,
+    "difference": "Git text normalization changes CRLF to LF; the immutable receipt binds the original local run bytes. Git blob and local byte hashes are intentionally distinguished.",
+    "receipt_git_blob_matches_local_bytes": true
+  }
+}
