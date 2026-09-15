@@ -107,7 +107,7 @@ rules:
       li_2026: [138, 142, 147]
 
   - rule_id: event_alignment
-    triggers: ["event id alignment", "event alignment", "particle identification", "event ID对齐", "事件对齐"]
+    triggers: ["event id alignment", "event alignment", "event ID对齐", "事件对齐"]
     repositories: [restgas_determination]
     symbols: [macro/target/ana_dpm.C, macro/target/prod_aod_complete.C, POCA_VERTEX_FILE, event_poca]
     concepts: [event ID aligned POCA handoff]
