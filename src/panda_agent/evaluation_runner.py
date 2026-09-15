@@ -35,6 +35,12 @@ from panda_agent.evaluation import (
     normalize_run_records,
     validate_v25_adjudication_document,
 )
+from panda_agent.evaluation_finalization import (
+    classify_evaluation_exception,
+    create_stage_receipt,
+    evaluate_cohort_decision,
+    finalize_stage_evaluation,
+)
 from panda_agent.evaluator_catalog import catalog_receipt, load_evaluator_catalog
 from panda_agent.indexing import IndexIdentity, normalized_dir
 from panda_agent.llm.vertex import VertexAIClient, VertexSettings
@@ -1325,7 +1331,99 @@ def write_failure_review(
         if manifest_dataset_path
         else project_root / "evaluation" / "gold_questions.yaml"
     )
-    review = build_failure_review(dataset, manifest, load_run_records(run_dir), run_id=run_id)
+    records = load_run_records(run_dir)
+    from panda_agent.evaluation_finalization import (
+        create_stage_receipt,
+        evaluate_cohort_decision,
+        resolve_candidate_binding,
+        resolve_expected_case_ids,
+        validate_stage_receipt,
+    )
+    expected_ids = resolve_expected_case_ids(project_root, manifest)
+    _, _, candidate_valid = resolve_candidate_binding(project_root, manifest)
+
+    # Load or compute the exact same metrics and gates as report_evaluation
+    metrics_file = run_dir / "metrics.json"
+    gate_file = run_dir / "gate.json"
+    metrics = None
+    gate = None
+    if metrics_file.exists() and gate_file.exists():
+        try:
+            metrics = json.loads(metrics_file.read_text(encoding="utf-8"))
+            gate = json.loads(gate_file.read_text(encoding="utf-8"))
+        except Exception:
+            metrics = None
+            gate = None
+    if metrics is None or gate is None:
+        selected = _selected_questions(dataset, manifest["split"])
+        if manifest.get("case_ids"):
+            target_ids = {str(item) for item in manifest["case_ids"]}
+            selected = [item for item in selected if str(item.id) in target_ids]
+        if manifest.get("limit") is not None:
+            selected = selected[: int(manifest["limit"])]
+        all_approved = bool(selected) and all(item.review_status == "approved" for item in selected)
+        records_for_metrics = normalize_run_records(records, manifest)
+        metrics = aggregate_metrics(records_for_metrics)
+        metrics["result_content_hash"] = result_content_hash(records)
+        official_gate_run = (
+            manifest.get("official") is True
+            and manifest.get("mode") == "full"
+            and manifest.get("split") == "acceptance"
+            and manifest.get("limit") is None
+            and not manifest.get("case_ids")
+            and manifest.get("gold_release_eligible") is True
+            and manifest.get("gold_acceptance_exposed") is False
+            and len(records) == len(selected)
+            and len(records)
+            == manifest.get("gold_expected_split_counts", {}).get("acceptance")
+        )
+        gate = evaluate_quality_gate(
+            metrics,
+            records,
+            official=official_gate_run,
+            all_questions_approved=all_approved,
+        )
+
+    gates_passed = gate.get("passed") if gate else None
+    cohort_decision = evaluate_cohort_decision(
+        records=records,
+        expected_case_ids=expected_ids,
+        candidate_valid=candidate_valid,
+        gates_passed=gates_passed,
+        mode=manifest.get("mode"),
+    )
+    if cohort_decision["verdict"] == "RECOVERY_PENDING":
+        raise ValueError(
+            f"cannot write failure review while evaluation recovery is pending: {cohort_decision['reason']}"
+        )
+
+    receipt_path = run_dir / "stage_receipt.json"
+    if receipt_path.exists():
+        validate_stage_receipt(
+            project_root,
+            run_id,
+            records=records,
+            manifest=manifest,
+            receipt_path=receipt_path,
+        )
+    else:
+        metrics_file.write_text(
+            json.dumps(metrics, ensure_ascii=False, sort_keys=True, indent=2) + "\n",
+            encoding="utf-8",
+        )
+        gate_file.write_text(
+            json.dumps(gate, ensure_ascii=False, sort_keys=True, indent=2) + "\n",
+            encoding="utf-8",
+        )
+        create_stage_receipt(
+            project_root,
+            run_id,
+            metrics=metrics,
+            gate=gate,
+            records=records,
+            manifest=manifest,
+        )
+    review = build_failure_review(dataset, manifest, records, run_id=run_id)
     yaml_path.write_text(
         yaml.safe_dump(review, allow_unicode=True, sort_keys=False, width=120),
         encoding="utf-8",
@@ -1485,6 +1583,7 @@ def run_evaluation(
     limit: int | None = None,
     case_ids: list[str] | None = None,
     dataset_path: Path | None = None,
+    candidate_id: str | None = None,
     max_model_calls: int | None = None,
     max_token_usage: int | None = None,
     deadline_minutes: float | None = None,
@@ -1537,6 +1636,15 @@ def run_evaluation(
         split=split,
         official=not allow_draft,
     )
+    if candidate_id:
+        from panda_agent.candidate import verify_candidate
+        verification = verify_candidate(project_root, candidate_id)
+        if not verification.get("valid"):
+            raise ValueError(
+                f"candidate {candidate_id} verification failed: {verification.get('mismatches')}"
+            )
+        manifest["candidate_id"] = candidate_id
+        manifest["candidate_manifest_sha256"] = verification.get("manifest_sha256")
     manifest["limit"] = limit
     manifest["case_ids"] = [item.id for item in cases] if case_ids else None
     manifest["max_model_calls"] = max_model_calls
@@ -1563,6 +1671,26 @@ def run_evaluation(
         if existing_manifest.get("evaluator_catalog") != evaluator_catalog:
             raise ValueError("evaluation resume evaluator catalog receipt mismatch")
         manifest["run_started_at"] = existing_manifest["run_started_at"]
+        if existing_manifest.get("candidate_id"):
+            manifest["candidate_id"] = existing_manifest["candidate_id"]
+            manifest["candidate_manifest_sha256"] = existing_manifest.get("candidate_manifest_sha256")
+            from panda_agent.candidate import verify_candidate
+            c_res = verify_candidate(project_root, existing_manifest["candidate_id"])
+            if not c_res.get("valid"):
+                raise ValueError(
+                    f"evaluation resume candidate {existing_manifest['candidate_id']} verification failed: {c_res.get('mismatches')}"
+                )
+            if (
+                existing_manifest.get("candidate_manifest_sha256")
+                and c_res.get("manifest_sha256") != existing_manifest["candidate_manifest_sha256"]
+            ):
+                raise ValueError(
+                    f"evaluation resume candidate {existing_manifest['candidate_id']} manifest sha256 mismatch"
+                )
+        elif existing_manifest.get("official") or manifest.get("official"):
+            raise ValueError(
+                "unbound official lifecycle run cannot be resumed; candidate_id is required"
+            )
     else:
         manifest["run_started_at"] = datetime.now(UTC).isoformat()
     store = EvaluationRunStore(
@@ -1570,6 +1698,7 @@ def run_evaluation(
         run_id,
         manifest,
         resume=resume,
+        project_root=project_root,
     )
     boundaries = evaluation_mode_boundaries(mode)
     engine: Retriever | QAAgent = (
@@ -1586,9 +1715,7 @@ def run_evaluation(
     object_lookup = load_object_lookup(
         project_root, evaluator_catalog_path=evaluator_catalog_path,
     )
-    existing_records = load_run_records(store.run_dir)
-    cumulative_calls = sum(int(item.get("model_calls", 0)) for item in existing_records)
-    cumulative_tokens = sum(int(item.get("token_usage", 0)) for item in existing_records)
+    cumulative_calls, cumulative_tokens = store.cumulative_usage()
     # Budgets and deadlines are per execution attempt.  A resumed run keeps
     # the same manifest and completed records, but receives a fresh bounded
     # window so a prior budget stop does not make resume impossible.
@@ -1651,9 +1778,12 @@ def run_evaluation(
                 }
             )
         except Exception as exc:
+            retryable, category = classify_evaluation_exception(exc)
             record["exception"] = {
                 "type": type(exc).__name__,
                 "message": str(exc)[:2000],
+                "retryable": retryable,
+                "category": category,
             }
         record["duration_ms"] = round((time.perf_counter() - started) * 1000, 3)
         runtime_usage = _stats_delta(before_runtime, _stats_snapshot(engine))
@@ -1698,8 +1828,32 @@ def run_evaluation(
         )
         if stop_reason:
             break
+    run_records = load_run_records(store.run_dir)
+    from panda_agent.evaluation_finalization import (
+        evaluate_cohort_decision,
+        resolve_candidate_binding,
+        resolve_expected_case_ids,
+    )
+    expected_ids = resolve_expected_case_ids(project_root, manifest)
+    _, _, candidate_valid = resolve_candidate_binding(project_root, manifest)
+    cohort_decision = evaluate_cohort_decision(
+        records=run_records,
+        expected_case_ids=expected_ids,
+        candidate_valid=candidate_valid,
+        mode=manifest.get("mode"),
+    )
+    if cohort_decision["status"] == "COMPLETE":
+        exec_status = "complete"
+    elif cohort_decision["verdict"] == "RECOVERY_PENDING":
+        exec_status = "recovery_pending"
+    else:
+        exec_status = cohort_decision["verdict"].lower()
+
     run_status = {
-        "status": "budget_exhausted" if stop_reason else "complete",
+        "status": "budget_exhausted" if stop_reason else exec_status,
+        "cohort_status": cohort_decision["status"],
+        "official_decision": cohort_decision["verdict"],
+        "cohort_decision": cohort_decision,
         "stop_reason": stop_reason,
         "attempt_started_at": attempt_started_at.isoformat(),
         "attempt_completed_at": datetime.now(UTC).isoformat(),
@@ -1843,10 +1997,28 @@ def report_evaluation(project_root: Path, run_id: str) -> dict[str, Any]:
         complete_full_regression=complete_full_regression,
         all_questions_approved=all_approved,
     )
+    from panda_agent.evaluation_finalization import (
+        evaluate_cohort_decision,
+        finalize_stage_evaluation,
+        resolve_candidate_binding,
+        resolve_expected_case_ids,
+    )
+    expected_ids = resolve_expected_case_ids(project_root, manifest)
+    candidate_id, candidate_manifest_sha256, candidate_valid = resolve_candidate_binding(
+        project_root, manifest
+    )
+    cohort_decision = evaluate_cohort_decision(
+        records=records,
+        expected_case_ids=expected_ids,
+        candidate_valid=candidate_valid,
+        gates_passed=gate["passed"],
+        mode=manifest.get("mode"),
+    )
     report = {
         "run_id": run_id,
         "manifest": manifest,
         "metrics": metrics,
+        "cohort_decision": cohort_decision,
         "development_gate": development_gate,
         "product_development_gate": product_development_gate,
         "gate": gate,
@@ -1878,14 +2050,46 @@ def report_evaluation(project_root: Path, run_id: str) -> dict[str, Any]:
         + "\n",
         encoding="utf-8",
     )
-    if complete_full_dev and not development_gate["passed"]:
+    if cohort_decision["verdict"] != "RECOVERY_PENDING":
+        receipt = finalize_stage_evaluation(
+            project_root,
+            run_id,
+            metrics=metrics,
+            gate=gate,
+            records=records,
+        )
+        if receipt is not None:
+            report["stage_receipt"] = receipt
+    if (
+        complete_full_dev
+        and not development_gate["passed"]
+        and cohort_decision["verdict"] != "RECOVERY_PENDING"
+    ):
         report["failure_review"] = write_failure_review(project_root, run_id)
+
+    # Synchronize official decision and status to run_status.json without swallowing errors
+    run_status_path = run_dir / "run_status.json"
+    if run_status_path.exists():
+        rs = json.loads(run_status_path.read_text(encoding="utf-8"))
+        rs["cohort_status"] = cohort_decision["status"]
+        rs["official_decision"] = cohort_decision["verdict"]
+        rs["cohort_decision"] = cohort_decision
+        if cohort_decision["status"] == "COMPLETE":
+            rs["status"] = "complete"
+        elif cohort_decision["verdict"] == "RECOVERY_PENDING":
+            rs["status"] = "recovery_pending"
+        else:
+            rs["status"] = cohort_decision["verdict"].lower()
+        run_status_path.write_text(json.dumps(rs, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
     lines = [
         f"# Evaluation report: {run_id}",
         "",
         f"- Mode: `{manifest['mode']}`",
         f"- Split: `{manifest['split']}`",
         f"- Official: `{manifest['official']}`",
+        f"- Cohort status: `{cohort_decision['status']}`",
+        f"- Official decision: `{cohort_decision['verdict']}`",
         f"- Completed: `{len(records)}/{len(selected)}`",
         f"- Development gate passed: `{development_gate['passed']}`",
         f"- Product development gate passed: `{product_development_gate.get('passed', 'N/A') if product_development_gate is not None else 'N/A'}`",
@@ -1928,6 +2132,7 @@ def resume_evaluation(project_root: Path, run_id: str) -> Path:
         run_id=run_id,
         allow_draft=not manifest["official"],
         resume=True,
+        candidate_id=manifest.get("candidate_id"),
         limit=manifest.get("limit"),
         case_ids=manifest.get("case_ids"),
         max_model_calls=manifest.get("max_model_calls"),

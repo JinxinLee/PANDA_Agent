@@ -24,6 +24,7 @@ from panda_agent.evaluation_runner import (
 from panda_agent.benchmark_v2 import audit_dataset, build_v2_draft, rescore_run
 from panda_agent.candidate import freeze_candidate, verify_candidate
 from panda_agent.baseline import package_generalization_baseline, select_stratified_case_ids
+from panda_agent.evaluation_finalization import create_stage_receipt
 
 
 def _root(value: str | None) -> Path:
@@ -44,7 +45,8 @@ def _parse_replacement_spec(value: str) -> tuple[str, list[str]]:
 
 
 def main() -> None:
-    sys.stdout.reconfigure(encoding="utf-8")
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
     load_dotenv()
     parser = argparse.ArgumentParser(prog="panda-qa-eval")
     parser.add_argument("--project-root")
@@ -75,6 +77,7 @@ def main() -> None:
     run.add_argument("--limit", type=int)
     run.add_argument("--case-id", action="append", dest="case_ids")
     run.add_argument("--dataset", type=Path)
+    run.add_argument("--candidate-id")
     run.add_argument("--max-model-calls", type=int)
     run.add_argument("--max-token-usage", type=int)
     run.add_argument("--deadline-minutes", type=float)
@@ -84,6 +87,9 @@ def main() -> None:
 
     report = commands.add_parser("report")
     report.add_argument("--run-id", required=True)
+
+    receipt = commands.add_parser("receipt")
+    receipt.add_argument("--run-id", required=True)
 
     review = commands.add_parser("review")
     review.add_argument("--run-id", required=True)
@@ -303,6 +309,7 @@ def main() -> None:
                 limit=args.limit,
                 case_ids=args.case_ids,
                 dataset_path=args.dataset.resolve() if args.dataset else None,
+                candidate_id=args.candidate_id,
                 max_model_calls=args.max_model_calls,
                 max_token_usage=args.max_token_usage,
                 deadline_minutes=args.deadline_minutes,
@@ -318,6 +325,14 @@ def main() -> None:
         except (FileNotFoundError, ValueError) as exc:
             print(f"error: {exc}", file=sys.stderr)
             raise SystemExit(2) from exc
+        return
+    if args.command == "receipt":
+        try:
+            value = create_stage_receipt(project_root, args.run_id)
+        except (FileNotFoundError, ValueError) as exc:
+            print(f"error: {exc}", file=sys.stderr)
+            raise SystemExit(2) from exc
+        print(json.dumps(value, ensure_ascii=False, sort_keys=True, indent=2))
         return
     if args.command == "review":
         try:

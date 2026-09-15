@@ -317,7 +317,10 @@ class BenchmarkAuthorityFlagTests(unittest.TestCase):
         )
         with mock.patch("panda_agent.candidate.VertexSettings") as vertex_settings, mock.patch(
             "panda_agent.candidate.IndexIdentity"
-        ) as index_identity:
+        ) as index_identity, mock.patch(
+            "panda_agent.candidate._docker_images",
+            return_value={"status": "ok", "images": []},
+        ):
             vertex_settings.from_env.return_value = settings
             # Match the real stored index identity so the freezer's authority
             # checks pass and only the adjudications disposition is exercised.

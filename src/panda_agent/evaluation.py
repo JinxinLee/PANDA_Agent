@@ -6,13 +6,21 @@ import json
 import os
 import re
 from collections import Counter, defaultdict
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
+import subprocess
 from typing import Any, Literal
 
 import yaml
 from pydantic import Field, field_validator, model_validator
 
+from panda_agent.evaluation_finalization import (
+    RETRY_CATEGORY_TRANSPORT_PROVIDER,
+    RETRY_CATEGORY_UNPARSABLE_RESPONSE,
+    classify_evaluation_exception,
+    evaluate_cohort_decision,
+    evaluation_record_state,
+)
 from panda_agent.models import QAStatus, StrictModel
 from panda_agent.source import sha256_file
 
@@ -2028,6 +2036,11 @@ def _load_jsonl_with_partial_tail(path: Path) -> list[dict[str, Any]]:
     return values
 
 
+def verify_candidate_identity(project_root: Path, candidate_id: str) -> dict[str, Any]:
+    from panda_agent.candidate import verify_candidate
+    return verify_candidate(project_root, candidate_id)
+
+
 class EvaluationRunStore:
     def __init__(
         self,
@@ -2036,19 +2049,22 @@ class EvaluationRunStore:
         manifest: dict[str, Any],
         *,
         resume: bool = False,
+        project_root: Path | None = None,
     ) -> None:
         self.run_dir = root / run_id
         self.run_dir.mkdir(parents=True, exist_ok=True)
         self.manifest_path = self.run_dir / "manifest.json"
         self.results_path = self.run_dir / "results.jsonl"
+        self.attempts_path = self.run_dir / "attempts.jsonl"
         self.records_dir = self.run_dir / "records"
         self.records_dir.mkdir(exist_ok=True)
+        self.project_root = project_root
         if self.manifest_path.exists():
             existing = json.loads(self.manifest_path.read_text(encoding="utf-8"))
             if not resume:
                 raise FileExistsError(f"evaluation run already exists: {run_id}")
             if existing != manifest:
-                raise ValueError("evaluation manifest does not match the resumable run")
+                self._verify_resumable_manifest_compatibility(existing, manifest)
         else:
             temporary_manifest = self.run_dir / ".manifest.json.tmp"
             temporary_manifest.write_text(
@@ -2056,27 +2072,228 @@ class EvaluationRunStore:
                 encoding="utf-8",
             )
             os.replace(temporary_manifest, self.manifest_path)
+
+        self.successful_ids: set[str] = set()
+        self.retryable_ids: set[str] = set()
+        self.terminal_exception_ids: set[str] = set()
         self.completed_ids: set[str] = set()
-        for path in self.records_dir.glob("*.json"):
-            self.completed_ids.add(str(json.loads(path.read_text(encoding="utf-8"))["id"]))
+        self.current_records: dict[str, dict[str, Any]] = {}
+
+        for path in sorted(self.records_dir.glob("*.json")):
+            try:
+                rec = json.loads(path.read_text(encoding="utf-8"))
+            except Exception as exc:
+                raise ValueError(f"corrupted or malformed evaluation record: {path}: {exc}") from exc
+            if not isinstance(rec, dict) or "id" not in rec or not str(rec["id"]).strip():
+                raise ValueError(f"malformed evaluation record missing valid id: {path}")
+            self.current_records[str(rec["id"])] = rec
+
         if self.results_path.exists():
             for item in _load_jsonl_with_partial_tail(self.results_path):
-                self.completed_ids.add(str(item["id"]))
+                cid = str(item["id"])
+                if cid not in self.current_records:
+                    self.current_records[cid] = item
+
+        # Canonical recovery from attempts ledger: replay durable ledger entries
+        # so a crash after ledger append preserves the actual latest attempt
+        if self.attempts_path.exists():
+            for item in _load_jsonl_with_partial_tail(self.attempts_path):
+                if isinstance(item, dict) and "id" in item and str(item["id"]).strip():
+                    cid = str(item["id"])
+                    self.current_records[cid] = item
+
+        # Sync disk records with canonical ledger recovery state
+        for cid, rec in self.current_records.items():
+            record_path = self.records_dir / f"{cid}.json"
+            needs_write = False
+            if not record_path.exists():
+                needs_write = True
+            else:
+                try:
+                    on_disk = json.loads(record_path.read_text(encoding="utf-8"))
+                    if on_disk != rec:
+                        needs_write = True
+                except Exception:
+                    needs_write = True
+            if needs_write:
+                temp_path = self.records_dir / f".{cid}.json.tmp"
+                temp_path.write_text(json.dumps(rec, ensure_ascii=False, sort_keys=True) + "\n", encoding="utf-8")
+                os.replace(temp_path, record_path)
+
+        self._sync_results_file()
+
+        if resume and not self.attempts_path.exists() and self.current_records:
+            self._seed_attempts_ledger_if_needed()
+
+        for cid, rec in self.current_records.items():
+            state = evaluation_record_state(rec)
+            if state == "completed":
+                self.successful_ids.add(cid)
+                self.completed_ids.add(cid)
+            elif state == "terminal_exception":
+                self.terminal_exception_ids.add(cid)
+                self.completed_ids.add(cid)
+            elif state == "retryable_exception":
+                self.retryable_ids.add(cid)
+
+    def _seed_attempts_ledger_if_needed(self) -> None:
+        """Seed attempts.jsonl with prior records if mutating/resuming a legacy run without an attempts ledger."""
+        if not self.attempts_path.exists() and self.current_records:
+            temp_path = self.run_dir / ".attempts.jsonl.tmp"
+            with temp_path.open("w", encoding="utf-8", newline="\n") as stream:
+                for cid in sorted(self.current_records.keys()):
+                    attempt_record = dict(self.current_records[cid])
+                    stream.write(
+                        json.dumps(attempt_record, ensure_ascii=False, sort_keys=True) + "\n"
+                    )
+                stream.flush()
+                os.fsync(stream.fileno())
+            os.replace(temp_path, self.attempts_path)
+
+    def _verify_resumable_manifest_compatibility(
+        self, existing: dict[str, Any], manifest: dict[str, Any]
+    ) -> None:
+        """Permit ONLY lifecycle commit advance under verified candidate; fail closed on other drift."""
+        if existing.get("official") and not (existing.get("candidate_id") or manifest.get("candidate_id")):
+            raise ValueError(
+                "unbound official lifecycle run cannot be resumed; candidate_id is required"
+            )
+
+        if existing.get("candidate_manifest_sha256") and manifest.get("candidate_manifest_sha256"):
+            if existing["candidate_manifest_sha256"] != manifest["candidate_manifest_sha256"]:
+                raise ValueError(
+                    f"resumable run candidate manifest sha256 drifted: {existing['candidate_manifest_sha256']} != {manifest['candidate_manifest_sha256']}"
+                )
+
+        diff_keys = set()
+        for k in existing.keys() | manifest.keys():
+            if k in ("run_started_at",):
+                continue
+            if existing.get(k) != manifest.get(k):
+                diff_keys.add(k)
+
+        if not diff_keys:
+            return
+
+        if diff_keys != {"repository_identity"}:
+            raise ValueError(
+                f"evaluation manifest does not match the resumable run; drifted fields: {sorted(diff_keys)}"
+            )
+
+        existing_repo = existing.get("repository_identity") or {}
+        new_repo = manifest.get("repository_identity") or {}
+
+        if existing_repo.keys() != new_repo.keys():
+            raise ValueError(
+                f"resumable run repository identity fields drifted: {sorted(existing_repo.keys() ^ new_repo.keys())}"
+            )
+
+        if existing_repo.get("dirty") != new_repo.get("dirty") or new_repo.get("dirty"):
+            raise ValueError("resumable run repository is dirty or dirty state changed")
+
+        for k in existing_repo.keys() | new_repo.keys():
+            if k in ("commit", "dirty"):
+                continue
+            if existing_repo.get(k) != new_repo.get(k):
+                raise ValueError(
+                    f"resumable run repository identity field '{k}' drifted: {existing_repo.get(k)!r} != {new_repo.get(k)!r}"
+                )
+
+        existing_commit = existing_repo.get("commit")
+        new_commit = new_repo.get("commit")
+        project_root = self.project_root or Path.cwd()
+
+        if existing_commit != new_commit:
+            if not existing_commit or not new_commit:
+                raise ValueError("missing commit in repository identity for resumable run")
+            ancestor = subprocess.run(
+                ["git", "merge-base", "--is-ancestor", existing_commit, new_commit],
+                cwd=project_root,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            if ancestor.returncode != 0:
+                raise ValueError(
+                    f"resumable run commit {existing_commit} is not an ancestor of current commit {new_commit}"
+                )
+
+        candidate_id = manifest.get("candidate_id") or existing.get("candidate_id")
+        if not candidate_id:
+            raise ValueError(
+                "evaluation manifest commit changed, but no candidate identity could be resolved to verify immutability"
+            )
+
+        verification = verify_candidate_identity(project_root, candidate_id)
+        if not verification.get("valid"):
+            raise ValueError(
+                f"evaluation resume failed: candidate {candidate_id} verification failed: {verification.get('mismatches')}"
+            )
+
+    def _sync_results_file(self) -> None:
+        """Atomically sync one current result per case to results.jsonl."""
+        temp_path = self.run_dir / ".results.jsonl.tmp"
+        with temp_path.open("w", encoding="utf-8", newline="\n") as stream:
+            for cid in sorted(self.current_records.keys()):
+                stream.write(
+                    json.dumps(self.current_records[cid], ensure_ascii=False, sort_keys=True)
+                    + "\n"
+                )
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temp_path, self.results_path)
 
     def record(self, record: dict[str, Any]) -> None:
         case_id = str(record["id"])
-        if case_id in self.completed_ids:
-            raise ValueError(f"evaluation case already recorded: {case_id}")
+        if case_id in self.successful_ids:
+            raise ValueError(f"evaluation case already successfully completed: {case_id}")
+        if case_id in self.terminal_exception_ids:
+            raise ValueError(f"evaluation case already terminal: {case_id}")
+
+        self._seed_attempts_ledger_if_needed()
+
+        attempt_record = dict(record)
+        attempt_record.setdefault("attempted_at", datetime.now(timezone.utc).isoformat())
+        record = attempt_record
+        with self.attempts_path.open("a", encoding="utf-8", newline="\n") as stream:
+            stream.write(
+                json.dumps(attempt_record, ensure_ascii=False, sort_keys=True) + "\n"
+            )
+            stream.flush()
+            os.fsync(stream.fileno())
+
         record_text = json.dumps(record, ensure_ascii=False, sort_keys=True)
         record_path = self.records_dir / f"{case_id}.json"
         temporary_path = self.records_dir / f".{case_id}.json.tmp"
         temporary_path.write_text(record_text + "\n", encoding="utf-8")
         os.replace(temporary_path, record_path)
-        with self.results_path.open("a", encoding="utf-8", newline="\n") as stream:
-            stream.write(record_text + "\n")
-            stream.flush()
-            os.fsync(stream.fileno())
-        self.completed_ids.add(case_id)
+
+        self.current_records[case_id] = record
+        self._sync_results_file()
+
+        state = evaluation_record_state(record)
+        if state == "completed":
+            self.successful_ids.add(case_id)
+            self.completed_ids.add(case_id)
+            self.retryable_ids.discard(case_id)
+        elif state == "terminal_exception":
+            self.terminal_exception_ids.add(case_id)
+            self.completed_ids.add(case_id)
+            self.retryable_ids.discard(case_id)
+        elif state == "retryable_exception":
+            self.retryable_ids.add(case_id)
+            self.completed_ids.discard(case_id)
+
+    def cumulative_usage(self) -> tuple[int, int]:
+        """Return total (model_calls, token_usage) across all attempts in attempts.jsonl."""
+        if self.attempts_path.exists():
+            attempts = _load_jsonl_with_partial_tail(self.attempts_path)
+            calls = sum(int(a.get("model_calls", 0)) for a in attempts)
+            tokens = sum(int(a.get("token_usage", 0)) for a in attempts)
+            return calls, tokens
+        calls = sum(int(r.get("model_calls", 0)) for r in self.current_records.values())
+        tokens = sum(int(r.get("token_usage", 0)) for r in self.current_records.values())
+        return calls, tokens
 
 
 def load_run_records(run_dir: Path) -> list[dict[str, Any]]:
@@ -2089,6 +2306,11 @@ def load_run_records(run_dir: Path) -> list[dict[str, Any]]:
     records_dir = run_dir / "records"
     record_paths = sorted(records_dir.glob("*.json")) if records_dir.is_dir() else []
     for path in record_paths:
-        item = json.loads(path.read_text(encoding="utf-8"))
+        try:
+            item = json.loads(path.read_text(encoding="utf-8"))
+        except Exception as exc:
+            raise ValueError(f"corrupted or malformed evaluation record: {path}: {exc}") from exc
+        if not isinstance(item, dict) or "id" not in item or not str(item["id"]).strip():
+            raise ValueError(f"malformed evaluation record missing valid id: {path}")
         merged[str(item["id"])] = item
     return [merged[key] for key in sorted(merged)]
