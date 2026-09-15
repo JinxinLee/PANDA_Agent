@@ -1,0 +1,1637 @@
+{
+  "schema_version": "post-a3-failure-and-recovery-review-v1",
+  "task": "POST-ATTEMPT-3 FAILURE & EXECUTION-RECOVERY REVIEW",
+  "stage": "COMPLETE",
+  "stage_verdict": "COMPLETE / PASS / FAILURES_CLASSIFIED_RECOVERY_INFRASTRUCTURE_REPAIRED_PRODUCT_RESIDUALS_DEFERRED",
+  "starting_head": "b0e0d85e1cd41598e866426ea52a3c13bf804b37",
+  "candidate_id": "f6a-rc3-20260914",
+  "candidate_manifest_sha256": "be2101a4709aa2ab2f324ba00b58d90e561ff1e359fc44b28ab26a5b3be155ca",
+  "implementation_git_commit": "2f9a4a32a41330326976bce4cf29e726ceac908e",
+  "frozen_product_reference_head": "d323f790655c62e18b782d606a02f593a673f3cd",
+  "new_candidate_development_head": "d3a1b274b2784399a7dc51b094a17e466d208b50",
+  "product_behavior_lineage_head": "d323f790655c62e18b782d606a02f593a673f3cd",
+  "infra_commit": "74af96ae7d2ce18e44c6c9e6e7d1ad93d593fdd0",
+  "official_attempt_3": {
+    "terminal_verdict": "COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED",
+    "unchanged": true,
+    "run_id": "f6a-rc3-gold-formal-full-20260914",
+    "gold_version": "m6-benchmark-v2.9",
+    "dataset_sha256": "eaacd3ed6595821b24b28823c6344abc4dfb954eb71846e682080b42c2f689be",
+    "selector_count": 59,
+    "scored_cases": 58,
+    "incomplete_cases": 1,
+    "unhandled_exception_case_id": "g013",
+    "exception_type": "VertexCallError",
+    "exception_code": 429,
+    "release_score_diagnostic_58_cases": 0.9741379310344828,
+    "full_cohort_release_score": "INCOMPLETE",
+    "usage": {
+      "model_calls": 397,
+      "token_usage": 3783197
+    },
+    "failed_gates": [
+      "critical_answer_point_miss_count",
+      "critical_final_evidence_recall",
+      "paper_code_dual_source_rate",
+      "unhandled_exception_count"
+    ],
+    "gate_contributors": {
+      "critical_answer_point_miss_count": [
+        "g022",
+        "g023",
+        "g115"
+      ],
+      "critical_final_evidence_recall": [
+        "g011",
+        "g022",
+        "g044",
+        "g060"
+      ],
+      "paper_code_dual_source_rate": [
+        "g060"
+      ],
+      "unhandled_exception_count": [
+        "g013"
+      ]
+    }
+  },
+  "official_bound_files_immutability": {
+    "verified_before_diagnostic": true,
+    "verified_after_diagnostic": true,
+    "hashes": {
+      "results_file_sha256": "360f6c349f464bee2fb38a3d0da2ef4fa8a6de8200c15fe2975ad811b5ac8263",
+      "gate_matrix_sha256": "d40636195b0a307fe19b3884a5618f1096960e6400bd63a7fb2e2d3f47ca5398",
+      "gate_matrix_raw_crlf_sha256": "d40636195b0a307fe19b3884a5618f1096960e6400bd63a7fb2e2d3f47ca5398",
+      "gate_matrix_normalized_lf_sha256": "ddd776042ae5c89f863a25bd34b5d65c488fc21ea790ccb0e730fa8680d7185c",
+      "gate_matrix_git_blob_sha1": "0109ca860bcbe3d7d4b5db903cb4eb256c69b318",
+      "retrieval_traces_sha256": "d8f32ef0da4f91df9598b50f6ac9a78d19dab41dc6f336503d66675ef50836f5",
+      "candidate_manifest_sha256": "be2101a4709aa2ab2f324ba00b58d90e561ff1e359fc44b28ab26a5b3be155ca",
+      "traces_combined_sha256": "e764d24547eb5588f59d66da4091f584821a82772f5c5c9de933c3ba10365e27",
+      "case_id_set_sha256": "914ee1b4b3f937e6839416932b44de06fb0401589fd59825a63ac430c5361d1c"
+    }
+  },
+  "protocol_deviations": {
+    "PD1": {
+      "deviation": "A1 immutable receipt was created after case-level failure diagnosis",
+      "status": "HISTORICAL_FACT_PRESERVED",
+      "root_cause": "Receipt generation was executed as a manual post-hoc script rather than being embedded in the automated stage-finalization pipeline before entering diagnostic review APIs",
+      "enforceable_boundary_limitation": "Automation enforces receipts at the closest programmatic API boundary (embedding receipt creation into runner finalization before diagnostic inspection surfaces execute), but cannot police out-of-band raw file inspection directly from the filesystem",
+      "forward_fix": "Embed immutable receipt generation directly into the runner's stage-finalization sequence (report_evaluation) before exposing case diagnostics"
+    },
+    "PD2": {
+      "deviation": "A1 gate decision was made with 58 scored / 59 expected, before completing preregistered recovery of g013",
+      "status": "HISTORICAL_FACT_PRESERVED",
+      "root_cause": "Evaluation was terminated early because mandatory failure gates were mathematically irreversible, combined with an infrastructure defect in EvaluationRunStore.completed_ids which treats exception records as completed, blocking automatic resume without manual file manipulation",
+      "enforceable_boundary_limitation": "Automation enforces cohort completeness at the evaluation runner and gate evaluation boundary, failing closed when retryable exceptions exist unless recovery is exhausted or an explicit INCONCLUSIVE resolution is recorded",
+      "forward_fix": "Enforce strict cohort-completeness gate rules (INCOMPLETE cohorts cannot PASS/FAIL without recovery attempt or explicit INCONCLUSIVE resolution) and fix EvaluationRunStore to distinguish retryable exceptions from successful records"
+    }
+  },
+  "g013_post_terminal_diagnostic": {
+    "executed": true,
+    "run_id": "post-a3-g013-recovery-20260915",
+    "frozen_candidate_verified": {
+      "candidate_id": "f6a-rc3-20260914",
+      "valid": true,
+      "mismatches": []
+    },
+    "verdict": "COMPLETE / RECOVERED",
+    "duration_ms": 224822.721,
+    "status": "answered",
+    "scientific_accounting": {
+      "diagnostic_model_calls": 10,
+      "diagnostic_token_usage": 62370,
+      "model_call_breakdown": {
+        "judge": {
+          "embedding_calls": 0,
+          "generation_calls": 1,
+          "model_calls": 1,
+          "token_usage": 5217
+        },
+        "runtime": {
+          "embedding_calls": 1,
+          "generation_calls": 8,
+          "model_calls": 9,
+          "qa_composer_calls": 3,
+          "qa_composer_token_usage": 2054,
+          "qa_generation_calls": 3,
+          "qa_generation_token_usage": 33837,
+          "token_usage": 57153
+        }
+      }
+    },
+    "diagnostic_metrics": {
+      "answer_point_coverage": 0.6666666666666666,
+      "covered_point_ids": [
+        "p1",
+        "p2"
+      ],
+      "critical_answer_points_missing": [
+        "p3"
+      ],
+      "critical_final_evidence_recall": 0.5,
+      "final_evidence_recall": 0.5,
+      "combined_candidate_recall": 1.0,
+      "evidence_groups": {
+        "g013.e1": {
+          "matched": false,
+          "role": "macros_documentation"
+        },
+        "g013.e2": {
+          "matched": true,
+          "role": "pnd_master_run_sim_interface"
+        }
+      }
+    },
+    "diagnostic_implication": "The post-terminal diagnostic rerun observed a new outcome under isolated diagnostic conditions (covering p1 and p2, but missing p3 and g013.e1). No counterfactual claim is made that g013 would originally have failed or produced this exact outcome during the original Attempt 3 run. Official Attempt 3 terminal FAIL was already mathematically irreversible due to the three other established failure gates (critical_answer_point_miss_count > 0, critical_final_evidence_recall < 1.00, and paper_code_dual_source_rate < 1.00 across cases g011, g022, g023, g044, g060, and g115). Official Attempt 3 accounting (397 calls / 3,783,197 tokens across 58/59 cases) remains immutably preserved and separate."
+  },
+  "six_case_matrix": [
+    {
+      "case_id": "g011",
+      "query": "What is the difference between the native and container setup paths in the locked documentation?",
+      "intent": "installation",
+      "required_source_types": [
+        "documentation"
+      ],
+      "required_identifiers": [],
+      "failing_gates": [
+        "critical_final_evidence_recall"
+      ],
+      "metrics": {
+        "answer_point_coverage": 1.0,
+        "covered_point_ids": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "critical_answer_points_missing": [],
+        "critical_final_evidence_recall": 0.0,
+        "final_evidence_recall": 0.0,
+        "combined_candidate_recall": 1.0,
+        "paper_code_dual_source": false
+      },
+      "gold_contract": {
+        "points": [
+          {
+            "point_id": "p1",
+            "text": "Describe the native installation/build path documented for PandaRoot.",
+            "critical": true,
+            "weight": 1.0
+          },
+          {
+            "point_id": "p2",
+            "text": "Describe the documented container-based path.",
+            "critical": true,
+            "weight": 1.0
+          },
+          {
+            "point_id": "p3",
+            "text": "State the boundary between building a native environment and running/developing in a container without inventing host-specific details.",
+            "critical": true,
+            "weight": 1.0
+          }
+        ],
+        "evidence_groups": [
+          {
+            "group_id": "g011.e1",
+            "role": "installing_running_panda_root_documentation",
+            "critical": true,
+            "any_of": [
+              {
+                "source_id": "pandaroot_sphinx_2023_08_25_dev",
+                "title_contains": "Installing & running PandaRoot"
+              },
+              {
+                "source_id": "pandaroot_sphinx_2023_08_25_dev",
+                "title_contains": "Installation of PandaRoot for Developers"
+              },
+              {
+                "source_id": "pandaroot",
+                "path": "docs/Installation/Install_PandaRoot.rst"
+              },
+              {
+                "source_id": "pandaroot",
+                "path": "docs/Installation/Install_Developers.rst"
+              }
+            ]
+          },
+          {
+            "group_id": "g011.e2",
+            "role": "docker_containers_documentation",
+            "critical": true,
+            "any_of": [
+              {
+                "source_id": "pandaroot_sphinx_2023_08_25_dev",
+                "title_contains": "Docker Containers"
+              }
+            ]
+          }
+        ]
+      },
+      "trace_evidence": {
+        "selected_evidence_locators": [
+          {
+            "evidence_id": "evidence.7559211abc27ed65429f362c",
+            "source_id": "pandaroot_sphinx_2023_08_25_dev",
+            "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Docker/DevelopingInContainer.html",
+            "pdf_page": null,
+            "lines": null
+          },
+          {
+            "evidence_id": "evidence.f2a5bc65591eb5bfd4078e8b",
+            "source_id": "pandaroot",
+            "path": "docs/Installation/Install_GSI.rst",
+            "pdf_page": null,
+            "lines": [
+              15,
+              15
+            ]
+          },
+          {
+            "evidence_id": "evidence.ac31614074a7a932aa21de1c",
+            "source_id": "pandaroot_sphinx_2023_08_25_dev",
+            "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Installation/Install_GSI.html",
+            "pdf_page": null,
+            "lines": null
+          },
+          {
+            "evidence_id": "evidence.e2603e0177455213392824ef",
+            "source_id": "pandaroot_sphinx_2023_08_25_dev",
+            "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Installation/Install_GSI.html",
+            "pdf_page": null,
+            "lines": null
+          }
+        ],
+        "final_evidence_locators": [
+          {
+            "evidence_id": "evidence.f2a5bc65591eb5bfd4078e8b",
+            "source_id": "pandaroot",
+            "path": "docs/Installation/Install_GSI.rst",
+            "pdf_page": null,
+            "lines": [
+              15,
+              15
+            ]
+          },
+          {
+            "evidence_id": "evidence.ac31614074a7a932aa21de1c",
+            "source_id": "pandaroot_sphinx_2023_08_25_dev",
+            "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Installation/Install_GSI.html",
+            "pdf_page": null,
+            "lines": null
+          }
+        ]
+      },
+      "qa_execution": {
+        "revision_count": 0,
+        "verification_errors": [],
+        "composer": {
+          "accepted": false,
+          "attempted": false,
+          "reason": "single_claim_bypass",
+          "source_claim_count": 1
+        },
+        "claim_audit": [
+          {
+            "claim_id": "claim.pandaroot.native_vs_container_setup",
+            "filter_reason": "rendered",
+            "answer_point_ids": [
+              "question_core"
+            ]
+          }
+        ],
+        "final_claims": [
+          {
+            "claim_id": "claim.pandaroot.native_vs_container_setup",
+            "evidence_ids": [
+              "evidence.f2a5bc65591eb5bfd4078e8b",
+              "evidence.ac31614074a7a932aa21de1c"
+            ]
+          }
+        ]
+      },
+      "mechanism": "Candidate recall retrieved general native docs (g011.e1) and container docs (g011.e2). However, admission into prompt context selected DevelopingInContainer.html alongside cluster-specific GSI installation docs (Install_GSI.rst/html). The QA generator synthesized a single claim citing only Install_GSI, dropping container doc DevelopingInContainer.html and general native docs. While the judge credited conceptual coverage for p1, p2, and p3, it cannot be asserted without proof that GSI cluster-specific docs satisfy the broad native PandaRoot requirement. The Gold selector strictly targets general native documentation, resulting in critical_final_evidence_recall = 0.0.",
+      "classification": "MIXED",
+      "mechanism_clusters": [
+        "Cluster A (Selected -> final evidence drop)",
+        "Cluster D (Admission dilution)",
+        "Cluster F (Gold contract selector scope)"
+      ],
+      "disposition": "DEFERRED_NO_SAFE_GENERIC_FIX / GOLD_GOVERNANCE_REQUIRED"
+    },
+    {
+      "case_id": "g022",
+      "query": "Which documented RHO pages cover data access and particle identification?",
+      "intent": "usage",
+      "required_source_types": [
+        "documentation"
+      ],
+      "required_identifiers": [],
+      "failing_gates": [
+        "critical_answer_point_miss_count",
+        "critical_final_evidence_recall"
+      ],
+      "metrics": {
+        "answer_point_coverage": 0.5,
+        "covered_point_ids": [
+          "p1"
+        ],
+        "critical_answer_points_missing": [
+          "p2"
+        ],
+        "critical_final_evidence_recall": 0.5,
+        "final_evidence_recall": 0.5,
+        "combined_candidate_recall": 1.0,
+        "paper_code_dual_source": false
+      },
+      "gold_contract": {
+        "points": [
+          {
+            "point_id": "p1",
+            "text": "Identify the documented RHO data-access page or stage.",
+            "critical": true,
+            "weight": 1.0
+          },
+          {
+            "point_id": "p2",
+            "text": "Identify the documented particle-identification page or stage.",
+            "critical": true,
+            "weight": 1.0
+          }
+        ],
+        "evidence_groups": [
+          {
+            "group_id": "g022.e1",
+            "role": "data_access_documentation",
+            "critical": true,
+            "any_of": [
+              {
+                "source_id": "pandaroot_sphinx_2023_08_25_dev",
+                "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/tut_02_01_analysis_dataaccess.html"
+              },
+              {
+                "source_id": "pandaroot_sphinx_2023_08_25_dev",
+                "title_contains": "Data Access"
+              }
+            ]
+          },
+          {
+            "group_id": "g022.e2",
+            "role": "particle_identification_documentation",
+            "critical": true,
+            "any_of": [
+              {
+                "source_id": "pandaroot_sphinx_2023_08_25_dev",
+                "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/tut_02_02_analysis_pid.html"
+              },
+              {
+                "source_id": "pandaroot",
+                "path": "docs/Tutorials/tut_02_02_analysis_pid.rst"
+              }
+            ]
+          }
+        ]
+      },
+      "trace_evidence": {
+        "selected_evidence_locators": [
+          {
+            "evidence_id": "evidence.4c89d6aa5f12292087751125",
+            "source_id": "restgas_determination",
+            "path": "macro/target/ana_dpm.C",
+            "pdf_page": null,
+            "lines": [
+              1,
+              938
+            ]
+          },
+          {
+            "evidence_id": "evidence.fb00e5b4ad3b7cc3e1a8dac2",
+            "source_id": "restgas_determination",
+            "path": "macro/target/prod_aod_complete.C",
+            "pdf_page": null,
+            "lines": [
+              1,
+              36
+            ]
+          },
+          {
+            "evidence_id": "evidence.cf83d47d62353b6cea3af427",
+            "source_id": "restgas_determination",
+            "path": "tools/MasterTasks/PndMasterMultiPidTask.cxx",
+            "pdf_page": null,
+            "lines": [
+              1,
+              236
+            ]
+          },
+          {
+            "evidence_id": "evidence.cee3b87a63ad8e396e65d8fa",
+            "source_id": "pandaroot_sphinx_2023_08_25_dev",
+            "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/tut_02_01_analysis_dataaccess.html",
+            "pdf_page": null,
+            "lines": null
+          },
+          {
+            "evidence_id": "evidence.7bfa915e33fd99c375785933",
+            "source_id": "pandaroot_sphinx_2023_08_25_dev",
+            "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/tut_02_02_analysis_pid.html",
+            "pdf_page": null,
+            "lines": null
+          },
+          {
+            "evidence_id": "evidence.5cde262fdecdbd30e1f8f258",
+            "source_id": "pandaroot_sphinx_2023_08_25_dev",
+            "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/tut_02_01_analysis_dataaccess.html",
+            "pdf_page": null,
+            "lines": null
+          }
+        ],
+        "final_evidence_locators": [
+          {
+            "evidence_id": "evidence.5cde262fdecdbd30e1f8f258",
+            "source_id": "pandaroot_sphinx_2023_08_25_dev",
+            "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/tut_02_01_analysis_dataaccess.html",
+            "pdf_page": null,
+            "lines": null
+          }
+        ]
+      },
+      "qa_execution": {
+        "revision_count": 1,
+        "verification_errors": [],
+        "composer": {
+          "accepted": false,
+          "attempted": false,
+          "reason": "single_claim_bypass",
+          "source_claim_count": 1
+        },
+        "claim_audit": [
+          {
+            "claim_id": "rho_data_access_doc_page",
+            "filter_reason": "rendered",
+            "answer_point_ids": [
+              "question_core"
+            ]
+          }
+        ],
+        "final_claims": [
+          {
+            "claim_id": "rho_data_access_doc_page",
+            "evidence_ids": [
+              "evidence.5cde262fdecdbd30e1f8f258"
+            ]
+          }
+        ]
+      },
+      "mechanism": "Two compounding mechanisms affected g022: 1. Upstream query expansion contamination: An overly broad trigger 'particle identification' in configs/query_expansions.yaml under event_alignment erroneously matched this generic documentation query, injecting restgas macro symbols (ana_dpm.C, prod_aod_complete.C, PndMasterMultiPidTask.cxx) and shifting query intent analysis toward api/code. This trigger was VERIFIED and REPAIRED via test-driven configuration change in tests/unit/test_query_expansions.py. 2. Downstream conjunctive completeness omission: Despite both tut_02_01 (Section 2.1) and tut_02_02 (Section 2.2) being admitted into prompt context, the QA generator produced only a single claim covering Section 2.1 and mentioning PID selection therein, prematurely terminating and omitting Section 2.2. The single claim bypassed composer composition. This downstream omission remains DEFERRED_NO_SAFE_GENERIC_FIX. No claim of rerun QA improvement is made.",
+      "classification": "PRODUCT_DEFECT",
+      "mechanism_clusters": [
+        "Cluster A (Selected -> final evidence drop)",
+        "Cluster C (Conjunctive answer-point completeness miss)"
+      ],
+      "disposition": "UPSTREAM_EXPANSION_REPAIRED; DOWNSTREAM_CONJUNCTION_OMISSION_DEFERRED_NO_SAFE_GENERIC_FIX"
+    },
+    {
+      "case_id": "g023",
+      "query": "How do I use PndMasterRecoTask in the generic workflow?",
+      "intent": "usage",
+      "required_source_types": [
+        "documentation"
+      ],
+      "required_identifiers": [
+        {
+          "text": "PndMasterRecoTask",
+          "kind": "code_symbol",
+          "critical": true
+        }
+      ],
+      "failing_gates": [
+        "critical_answer_point_miss_count"
+      ],
+      "metrics": {
+        "answer_point_coverage": 0.6666666666666666,
+        "covered_point_ids": [
+          "p1",
+          "p2"
+        ],
+        "critical_answer_points_missing": [
+          "p3"
+        ],
+        "critical_final_evidence_recall": 1.0,
+        "final_evidence_recall": 1.0,
+        "combined_candidate_recall": 1.0,
+        "paper_code_dual_source": false
+      },
+      "gold_contract": {
+        "points": [
+          {
+            "point_id": "p1",
+            "text": "Identify PndMasterRecoTask as the generic reconstruction task.",
+            "critical": true,
+            "weight": 1.0
+          },
+          {
+            "point_id": "p2",
+            "text": "Place it after digitization.",
+            "critical": true,
+            "weight": 1.0
+          },
+          {
+            "point_id": "p3",
+            "text": "Place it before PID in the generic workflow.",
+            "critical": true,
+            "weight": 1.0
+          }
+        ],
+        "evidence_groups": [
+          {
+            "group_id": "g023.e1",
+            "role": "pnd_master_reco_task_documentation",
+            "critical": true,
+            "any_of": [
+              {
+                "source_id": "pandaroot_sphinx_2023_08_25_dev",
+                "title_contains": "PndMasterRecoTask"
+              }
+            ]
+          },
+          {
+            "group_id": "g023.e2",
+            "role": "running_sequence_documentation",
+            "critical": true,
+            "any_of": [
+              {
+                "source_id": "pandaroot_sphinx_2023_08_25_dev",
+                "title_contains": "Running Sequence"
+              },
+              {
+                "source_id": "pandaroot_sphinx_2023_08_25_dev",
+                "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Running/Running.html"
+              }
+            ]
+          }
+        ]
+      },
+      "trace_evidence": {
+        "selected_evidence_locators": [
+          {
+            "evidence_id": "evidence.ed289136292e433fad81514e",
+            "source_id": "pandaroot_sphinx_2023_08_25_dev",
+            "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tools/PndMasterTasks/PndMasterRecoTask.html",
+            "pdf_page": null,
+            "lines": null
+          },
+          {
+            "evidence_id": "evidence.ad4ae8121d9d774f7be0fea4",
+            "source_id": "pandaroot",
+            "path": "tools/MasterTasks/PndMasterRecoTask.h",
+            "pdf_page": null,
+            "lines": [
+              1,
+              49
+            ]
+          },
+          {
+            "evidence_id": "evidence.aa848838ccbb763f405765da",
+            "source_id": "pandaroot_sphinx_2023_08_25_dev",
+            "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Running/Running.html",
+            "pdf_page": null,
+            "lines": null
+          },
+          {
+            "evidence_id": "evidence.d452f25b295c0ce037b92b26",
+            "source_id": "pandaroot_sphinx_2023_08_25_dev",
+            "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Running/MasterTasks.html",
+            "pdf_page": null,
+            "lines": null
+          },
+          {
+            "evidence_id": "evidence.88e51e108d5fefa28e93001c",
+            "source_id": "pandaroot",
+            "path": "tools/MasterTasks/PndMasterRecoTask.cxx",
+            "pdf_page": null,
+            "lines": [
+              1,
+              266
+            ]
+          },
+          {
+            "evidence_id": "evidence.bd052f2ff5775c5795bce219",
+            "source_id": "pandaroot_sphinx_2023_08_25_dev",
+            "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tools/PndMasterTasks/PndMasterRecoTask.html",
+            "pdf_page": null,
+            "lines": null
+          },
+          {
+            "evidence_id": "evidence.80855d41b3c0930be267fe52",
+            "source_id": "pandaroot_sphinx_2023_08_25_dev",
+            "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Running/MasterTasks.html",
+            "pdf_page": null,
+            "lines": null
+          }
+        ],
+        "final_evidence_locators": [
+          {
+            "evidence_id": "evidence.ad4ae8121d9d774f7be0fea4",
+            "source_id": "pandaroot",
+            "path": "tools/MasterTasks/PndMasterRecoTask.h",
+            "pdf_page": null,
+            "lines": [
+              1,
+              49
+            ]
+          },
+          {
+            "evidence_id": "evidence.88e51e108d5fefa28e93001c",
+            "source_id": "pandaroot",
+            "path": "tools/MasterTasks/PndMasterRecoTask.cxx",
+            "pdf_page": null,
+            "lines": [
+              1,
+              266
+            ]
+          },
+          {
+            "evidence_id": "evidence.bd052f2ff5775c5795bce219",
+            "source_id": "pandaroot_sphinx_2023_08_25_dev",
+            "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tools/PndMasterTasks/PndMasterRecoTask.html",
+            "pdf_page": null,
+            "lines": null
+          },
+          {
+            "evidence_id": "evidence.80855d41b3c0930be267fe52",
+            "source_id": "pandaroot_sphinx_2023_08_25_dev",
+            "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Running/MasterTasks.html",
+            "pdf_page": null,
+            "lines": null
+          }
+        ]
+      },
+      "qa_execution": {
+        "revision_count": 1,
+        "verification_errors": [
+          "unsupported claim generic_workflow_position",
+          "missing answer requirement workflow_order"
+        ],
+        "composer": {
+          "accepted": true,
+          "attempted": true,
+          "paragraph_count": 1,
+          "reason": "composed",
+          "source_claim_count": 2
+        },
+        "claim_audit": [
+          {
+            "claim_id": "macro_usage_and_options_documentation",
+            "filter_reason": "rendered",
+            "answer_point_ids": [
+              "question_core"
+            ]
+          },
+          {
+            "claim_id": "task_composition_code_implementation",
+            "filter_reason": "rendered",
+            "answer_point_ids": [
+              "question_core"
+            ]
+          }
+        ],
+        "final_claims": [
+          {
+            "claim_id": "macro_usage_and_options_documentation",
+            "evidence_ids": [
+              "evidence.bd052f2ff5775c5795bce219",
+              "evidence.80855d41b3c0930be267fe52"
+            ]
+          },
+          {
+            "claim_id": "task_composition_code_implementation",
+            "evidence_ids": [
+              "evidence.ad4ae8121d9d774f7be0fea4",
+              "evidence.88e51e108d5fefa28e93001c"
+            ]
+          }
+        ]
+      },
+      "mechanism": "Answer requirements generated 'workflow_order'. The initial draft produced 3 claims, including 'generic_workflow_position'. The verifier rejected this draft citing unsupported claim generic_workflow_position and missing answer requirement workflow_order. In revision, the generator failed to produce a verified citation to Running.html. In finalization, safe salvage cleanly stripped the unsupported claim to preserve faithfulness, rendering two supported claims (macro_usage_and_options_documentation and task_composition_code_implementation). This covered points p1 and p2, but left point p3 ('Place it before PID') uncovered. Verifier rejection, revision loop, and safe salvage all operated as designed; this observed synthesis and revision behavior is deferred without a safe generic fix.",
+      "classification": "MIXED",
+      "mechanism_clusters": [
+        "Cluster C (Workflow sequence answer-point completeness miss)"
+      ],
+      "disposition": "DEFERRED_NO_SAFE_GENERIC_FIX"
+    },
+    {
+      "case_id": "g044",
+      "query": "Why is angular acceptance needed in a luminosity fit?",
+      "intent": "algorithm_theory",
+      "required_source_types": [
+        "paper"
+      ],
+      "required_identifiers": [],
+      "failing_gates": [
+        "critical_final_evidence_recall"
+      ],
+      "metrics": {
+        "answer_point_coverage": 1.0,
+        "covered_point_ids": [
+          "p1"
+        ],
+        "critical_answer_points_missing": [],
+        "critical_final_evidence_recall": 0.0,
+        "final_evidence_recall": 0.0,
+        "combined_candidate_recall": 1.0,
+        "paper_code_dual_source": true
+      },
+      "gold_contract": {
+        "points": [
+          {
+            "point_id": "p1",
+            "text": "Explain the efficiency/acceptance factor using the thesis, not source-code inference.",
+            "critical": true,
+            "weight": 1.0
+          }
+        ],
+        "evidence_groups": [
+          {
+            "group_id": "g044.e1",
+            "role": "pflueger_2017_page_57_theory",
+            "critical": true,
+            "any_of": [
+              {
+                "source_id": "pflueger_2017",
+                "path": "raw_pdf/Diss_2017_Pflueger_Stefan.pdf"
+              }
+            ]
+          }
+        ]
+      },
+      "trace_evidence": {
+        "selected_evidence_locators": [
+          {
+            "evidence_id": "evidence.d08dc29fa1e6b71836b02306",
+            "source_id": "pflueger_2017",
+            "path": "raw_pdf/Diss_2017_Pflueger_Stefan.pdf",
+            "pdf_page": 62,
+            "lines": null
+          },
+          {
+            "evidence_id": "evidence.1cb725748eb4f136387bed10",
+            "source_id": "li_2026",
+            "path": "raw_pdf/thesis.pdf",
+            "pdf_page": 72,
+            "lines": null
+          },
+          {
+            "evidence_id": "evidence.7c1096a68c29f4bdcf08afab",
+            "source_id": "curated_panda_domain",
+            "path": null,
+            "pdf_page": null,
+            "lines": null
+          },
+          {
+            "evidence_id": "evidence.09490ca63494447857aaa093",
+            "source_id": "li_2026",
+            "path": "raw_pdf/thesis.pdf",
+            "pdf_page": 79,
+            "lines": null
+          },
+          {
+            "evidence_id": "evidence.cdc1f073b82904230b5a9740",
+            "source_id": "pflueger_2017",
+            "path": "raw_pdf/Diss_2017_Pflueger_Stefan.pdf",
+            "pdf_page": 165,
+            "lines": null
+          },
+          {
+            "evidence_id": "evidence.2f843652cd4238c5b6a656d9",
+            "source_id": "pflueger_2017",
+            "path": "raw_pdf/Diss_2017_Pflueger_Stefan.pdf",
+            "pdf_page": 63,
+            "lines": null
+          },
+          {
+            "evidence_id": "evidence.a176d7a2f77722dffa86fe15",
+            "source_id": "li_2026",
+            "path": "raw_pdf/thesis.pdf",
+            "pdf_page": 164,
+            "lines": null
+          }
+        ],
+        "final_evidence_locators": [
+          {
+            "evidence_id": "evidence.1cb725748eb4f136387bed10",
+            "source_id": "li_2026",
+            "path": "raw_pdf/thesis.pdf",
+            "pdf_page": 72,
+            "lines": null
+          },
+          {
+            "evidence_id": "evidence.7c1096a68c29f4bdcf08afab",
+            "source_id": "curated_panda_domain",
+            "path": null,
+            "pdf_page": null,
+            "lines": null
+          },
+          {
+            "evidence_id": "evidence.09490ca63494447857aaa093",
+            "source_id": "li_2026",
+            "path": "raw_pdf/thesis.pdf",
+            "pdf_page": 79,
+            "lines": null
+          }
+        ]
+      },
+      "qa_execution": {
+        "revision_count": 0,
+        "verification_errors": [],
+        "composer": {
+          "accepted": true,
+          "attempted": true,
+          "paragraph_count": 1,
+          "reason": "composed",
+          "source_claim_count": 2
+        },
+        "claim_audit": [
+          {
+            "claim_id": "luminosity_fit_acceptance_role",
+            "filter_reason": "rendered",
+            "answer_point_ids": [
+              "question_core"
+            ]
+          },
+          {
+            "claim_id": "luminosity_fit_acceptance_application",
+            "filter_reason": "rendered",
+            "answer_point_ids": [
+              "question_core"
+            ]
+          }
+        ],
+        "final_claims": [
+          {
+            "claim_id": "luminosity_fit_acceptance_role",
+            "evidence_ids": [
+              "evidence.1cb725748eb4f136387bed10",
+              "evidence.7c1096a68c29f4bdcf08afab"
+            ]
+          },
+          {
+            "claim_id": "luminosity_fit_acceptance_application",
+            "evidence_ids": [
+              "evidence.09490ca63494447857aaa093"
+            ]
+          }
+        ]
+      },
+      "mechanism": "Stored locator reconciliation: In the selected evidence, Pflueger 2017 was present via evidence.d08dc29fa1e6b71836b02306 at raw_pdf/Diss_2017_Pflueger_Stefan.pdf, pdf_page 62 (printed page 57 in the thesis, matching the Gold role name pflueger_2017_page_57_theory), with additional chunks at pdf_page 63 and 165. Li 2026 thesis chunks were also selected at pdf_page 72 and 79. The QA generator selected Li 2026 (pages 72 and 79) and curated_panda_domain to construct two theoretical claims, which fully satisfied conceptual point p1 (coverage = 1.0). However, the Gold v2.9 selector strictly pins pflueger_2017, scoring critical_final_evidence_recall = 0.0. Whether Li 2026 is an authoritative equivalent source remains an unproven governance question; this review does not establish a Gold defect.",
+      "classification": "MIXED",
+      "mechanism_clusters": [
+        "Cluster A (Selected -> final evidence drop)",
+        "Cluster F (Gold contract thesis lock)"
+      ],
+      "disposition": "GOLD_GOVERNANCE_REQUIRED"
+    },
+    {
+      "case_id": "g060",
+      "query": "How is beam-divergence smearing implemented in LuminosityFit?",
+      "intent": "algorithm_implementation",
+      "required_source_types": [
+        "paper",
+        "code"
+      ],
+      "required_identifiers": [
+        {
+          "text": "PndLmdDivergenceSmearingModel2D",
+          "kind": "code_symbol",
+          "critical": true
+        }
+      ],
+      "failing_gates": [
+        "critical_final_evidence_recall",
+        "paper_code_dual_source_rate"
+      ],
+      "metrics": {
+        "answer_point_coverage": 1.0,
+        "covered_point_ids": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "critical_answer_points_missing": [],
+        "critical_final_evidence_recall": 0.6666666666666666,
+        "final_evidence_recall": 0.6666666666666666,
+        "combined_candidate_recall": 1.0,
+        "paper_code_dual_source": false
+      },
+      "gold_contract": {
+        "points": [
+          {
+            "point_id": "p1",
+            "text": "Identify the beam-divergence smearing model.",
+            "critical": true,
+            "weight": 1.0
+          },
+          {
+            "point_id": "p2",
+            "text": "Explain the divergence parameters or distribution used by the implementation.",
+            "critical": true,
+            "weight": 1.0
+          },
+          {
+            "point_id": "p3",
+            "text": "Explain how the factory composes divergence smearing into the fit model.",
+            "critical": true,
+            "weight": 1.0
+          }
+        ],
+        "evidence_groups": [
+          {
+            "group_id": "g060.e1",
+            "role": "pflueger_2017_page_74_theory",
+            "critical": true,
+            "any_of": [
+              {
+                "source_id": "pflueger_2017",
+                "path": "raw_pdf/Diss_2017_Pflueger_Stefan.pdf"
+              }
+            ]
+          },
+          {
+            "group_id": "g060.e2",
+            "role": "pnd_lmd_divergence_smearing_model2_d_implementation",
+            "critical": true,
+            "any_of": [
+              {
+                "source_id": "luminosityfit",
+                "path": "model/PndLmdDivergenceSmearingModel2D.cxx"
+              }
+            ]
+          },
+          {
+            "group_id": "g060.e3",
+            "role": "generate2_dmodel_implementation",
+            "critical": true,
+            "any_of": [
+              {
+                "source_id": "luminosityfit",
+                "path": "model/PndLmdModelFactory.cxx"
+              }
+            ]
+          }
+        ]
+      },
+      "trace_evidence": {
+        "selected_evidence_locators": [
+          {
+            "evidence_id": "evidence.5eafe820c8a090563c8abb46",
+            "source_id": "luminosityfit",
+            "path": "model/PndLmdDivergenceSmearingModel2D.cxx",
+            "pdf_page": null,
+            "lines": [
+              1,
+              274
+            ]
+          },
+          {
+            "evidence_id": "evidence.08873b527eb593d445b58bdf",
+            "source_id": "luminosityfit",
+            "path": "model/PndLmdModelFactory.cxx",
+            "pdf_page": null,
+            "lines": [
+              1,
+              910
+            ]
+          },
+          {
+            "evidence_id": "evidence.53c74137d1c7d3dcbfc8f768",
+            "source_id": "pflueger_2017",
+            "path": "raw_pdf/Diss_2017_Pflueger_Stefan.pdf",
+            "pdf_page": 56,
+            "lines": null
+          },
+          {
+            "evidence_id": "evidence.a8393fe1badc6e8a71322f45",
+            "source_id": "luminosityfit",
+            "path": "model/PndLmdDivergenceSmearingModel2D.cxx",
+            "pdf_page": null,
+            "lines": [
+              145,
+              214
+            ]
+          },
+          {
+            "evidence_id": "evidence.5a4652908bf6aa8e9fb96aaf",
+            "source_id": "luminosityfit",
+            "path": "model/PndLmdDivergenceSmearingModel2D.cxx",
+            "pdf_page": null,
+            "lines": [
+              138,
+              143
+            ]
+          }
+        ],
+        "final_evidence_locators": [
+          {
+            "evidence_id": "evidence.5eafe820c8a090563c8abb46",
+            "source_id": "luminosityfit",
+            "path": "model/PndLmdDivergenceSmearingModel2D.cxx",
+            "pdf_page": null,
+            "lines": [
+              1,
+              274
+            ]
+          },
+          {
+            "evidence_id": "evidence.08873b527eb593d445b58bdf",
+            "source_id": "luminosityfit",
+            "path": "model/PndLmdModelFactory.cxx",
+            "pdf_page": null,
+            "lines": [
+              1,
+              910
+            ]
+          },
+          {
+            "evidence_id": "evidence.a8393fe1badc6e8a71322f45",
+            "source_id": "luminosityfit",
+            "path": "model/PndLmdDivergenceSmearingModel2D.cxx",
+            "pdf_page": null,
+            "lines": [
+              145,
+              214
+            ]
+          }
+        ]
+      },
+      "qa_execution": {
+        "revision_count": 1,
+        "verification_errors": [],
+        "composer": {
+          "accepted": true,
+          "attempted": true,
+          "paragraph_count": 2,
+          "reason": "composed",
+          "source_claim_count": 4
+        },
+        "claim_audit": [
+          {
+            "claim_id": "claim_1",
+            "filter_reason": "rendered",
+            "answer_point_ids": [
+              "question_core"
+            ]
+          },
+          {
+            "claim_id": "claim_2",
+            "filter_reason": "rendered",
+            "answer_point_ids": [
+              "question_core"
+            ]
+          },
+          {
+            "claim_id": "claim_3",
+            "filter_reason": "rendered",
+            "answer_point_ids": [
+              "question_core"
+            ]
+          },
+          {
+            "claim_id": "claim_4",
+            "filter_reason": "rendered",
+            "answer_point_ids": [
+              "question_core"
+            ]
+          }
+        ],
+        "final_claims": [
+          {
+            "claim_id": "claim_1",
+            "evidence_ids": [
+              "evidence.08873b527eb593d445b58bdf"
+            ]
+          },
+          {
+            "claim_id": "claim_2",
+            "evidence_ids": [
+              "evidence.08873b527eb593d445b58bdf"
+            ]
+          },
+          {
+            "claim_id": "claim_3",
+            "evidence_ids": [
+              "evidence.5eafe820c8a090563c8abb46",
+              "evidence.a8393fe1badc6e8a71322f45"
+            ]
+          },
+          {
+            "claim_id": "claim_4",
+            "evidence_ids": [
+              "evidence.08873b527eb593d445b58bdf"
+            ]
+          }
+        ]
+      },
+      "mechanism": "The query asked 'How is beam-divergence smearing implemented in LuminosityFit?'. Under the F2-A5 (R01) architectural contract, raw questions dictate hard source obligations; because the question asks how an algorithm is implemented without mentioning paper theory, only 'code' was a hard obligation. The generator produced 4 claims strictly citing C++ source files (PndLmdDivergenceSmearingModel2D.cxx and PndLmdModelFactory.cxx), fully satisfying all conceptual points (p1, p2, p3 coverage = 1.0) and passing verification. However, the Gold v2.9 benchmark mandates dual sources ['paper', 'code'] for this question, causing critical_final_evidence_recall = 0.667 and paper_code_dual_source_rate = 0.0. This tension between the runtime question-grounding contract and Gold's dual-source expectation is a formal governance and evaluator reconciliation matter, not an established product bug.",
+      "classification": "MIXED",
+      "mechanism_clusters": [
+        "Cluster A (Selected -> final evidence drop)",
+        "Cluster B (Question-grounding vs dual-source expectation)"
+      ],
+      "disposition": "GOLD_GOVERNANCE_REQUIRED / EVALUATOR_RECONCILIATION_REQUIRED"
+    },
+    {
+      "case_id": "g115",
+      "query": "Why might LMD angular acceptance be confused with pvz efficiency?",
+      "intent": "troubleshooting",
+      "required_source_types": [
+        "code"
+      ],
+      "required_identifiers": [],
+      "failing_gates": [
+        "critical_answer_point_miss_count"
+      ],
+      "metrics": {
+        "answer_point_coverage": 0.6666666666666666,
+        "covered_point_ids": [
+          "p1",
+          "p2"
+        ],
+        "critical_answer_points_missing": [
+          "p3"
+        ],
+        "critical_final_evidence_recall": 1.0,
+        "final_evidence_recall": 1.0,
+        "combined_candidate_recall": 1.0,
+        "paper_code_dual_source": true
+      },
+      "gold_contract": {
+        "points": [
+          {
+            "point_id": "p1",
+            "text": "Identify the angular coordinates and data products used for LMD acceptance.",
+            "critical": true,
+            "weight": 1.0
+          },
+          {
+            "point_id": "p2",
+            "text": "Identify the longitudinal pvz coordinate and data products used for restgas efficiency.",
+            "critical": true,
+            "weight": 1.0
+          },
+          {
+            "point_id": "p3",
+            "text": "Explain how checking class/file names and histogram axes prevents mixing the two.",
+            "critical": true,
+            "weight": 1.0
+          }
+        ],
+        "evidence_groups": [
+          {
+            "group_id": "g115.e1",
+            "role": "pnd_lmd_acceptance_implementation",
+            "critical": true,
+            "any_of": [
+              {
+                "source_id": "luminosityfit",
+                "path": "data/PndLmdAcceptance.cxx"
+              }
+            ]
+          },
+          {
+            "group_id": "g115.e2",
+            "role": "efficiency_correction_2_implementation",
+            "critical": true,
+            "any_of": [
+              {
+                "source_id": "restgas_determination",
+                "path": "macro/target/correction/efficiency_correction_2.C"
+              }
+            ]
+          }
+        ]
+      },
+      "trace_evidence": {
+        "selected_evidence_locators": [
+          {
+            "evidence_id": "evidence.3323773842e278af4dc4d57e",
+            "source_id": "luminosityfit",
+            "path": "data/PndLmdAcceptance.cxx",
+            "pdf_page": null,
+            "lines": [
+              1,
+              85
+            ]
+          },
+          {
+            "evidence_id": "evidence.ed959b5c98687ff96b42df06",
+            "source_id": "restgas_determination",
+            "path": "macro/target/correction/efficiency_correction_2.C",
+            "pdf_page": null,
+            "lines": [
+              1,
+              873
+            ]
+          },
+          {
+            "evidence_id": "evidence.4c8c16a447da23f89b4b8f0b",
+            "source_id": "restgas_determination",
+            "path": "macro/target/correction/efficiency_correction_steps.C",
+            "pdf_page": null,
+            "lines": [
+              1,
+              286
+            ]
+          },
+          {
+            "evidence_id": "evidence.9136c66414b429e98e94e236",
+            "source_id": "pflueger_2017",
+            "path": "raw_pdf/Diss_2017_Pflueger_Stefan.pdf",
+            "pdf_page": 57,
+            "lines": null
+          },
+          {
+            "evidence_id": "evidence.962810aa4795fb86662f03cd",
+            "source_id": "pflueger_2017",
+            "path": "raw_pdf/Diss_2017_Pflueger_Stefan.pdf",
+            "pdf_page": 66,
+            "lines": null
+          },
+          {
+            "evidence_id": "evidence.aed1aea12b91bc1d386be2a4",
+            "source_id": "curated_panda_domain",
+            "path": null,
+            "pdf_page": null,
+            "lines": null
+          }
+        ],
+        "final_evidence_locators": [
+          {
+            "evidence_id": "evidence.aed1aea12b91bc1d386be2a4",
+            "source_id": "curated_panda_domain",
+            "path": null,
+            "pdf_page": null,
+            "lines": null
+          },
+          {
+            "evidence_id": "evidence.3323773842e278af4dc4d57e",
+            "source_id": "luminosityfit",
+            "path": "data/PndLmdAcceptance.cxx",
+            "pdf_page": null,
+            "lines": [
+              1,
+              85
+            ]
+          },
+          {
+            "evidence_id": "evidence.ed959b5c98687ff96b42df06",
+            "source_id": "restgas_determination",
+            "path": "macro/target/correction/efficiency_correction_2.C",
+            "pdf_page": null,
+            "lines": [
+              1,
+              873
+            ]
+          },
+          {
+            "evidence_id": "evidence.4c8c16a447da23f89b4b8f0b",
+            "source_id": "restgas_determination",
+            "path": "macro/target/correction/efficiency_correction_steps.C",
+            "pdf_page": null,
+            "lines": [
+              1,
+              286
+            ]
+          },
+          {
+            "evidence_id": "evidence.9136c66414b429e98e94e236",
+            "source_id": "pflueger_2017",
+            "path": "raw_pdf/Diss_2017_Pflueger_Stefan.pdf",
+            "pdf_page": 57,
+            "lines": null
+          },
+          {
+            "evidence_id": "evidence.962810aa4795fb86662f03cd",
+            "source_id": "pflueger_2017",
+            "path": "raw_pdf/Diss_2017_Pflueger_Stefan.pdf",
+            "pdf_page": 66,
+            "lines": null
+          }
+        ]
+      },
+      "qa_execution": {
+        "revision_count": 1,
+        "verification_errors": [
+          "missing answer requirement source_role_grounding"
+        ],
+        "composer": {
+          "accepted": true,
+          "attempted": true,
+          "paragraph_count": 2,
+          "reason": "composed",
+          "source_claim_count": 4
+        },
+        "claim_audit": [
+          {
+            "claim_id": "pvz_efficiency_vs_angular_acceptance_roles",
+            "filter_reason": "rendered",
+            "answer_point_ids": [
+              "question_core"
+            ]
+          },
+          {
+            "claim_id": "confusion_cause_from_ip_smearing",
+            "filter_reason": "rendered",
+            "answer_point_ids": [
+              "question_core"
+            ]
+          },
+          {
+            "claim_id": "troubleshooting_upstream_to_downstream_and_compatibility",
+            "filter_reason": "rendered",
+            "answer_point_ids": [
+              "question_core"
+            ]
+          },
+          {
+            "claim_id": "lmd_acceptance_tefficiency_and_longitudinal_efficiency_definition",
+            "filter_reason": "rendered",
+            "answer_point_ids": [
+              "question_core"
+            ]
+          }
+        ],
+        "final_claims": [
+          {
+            "claim_id": "pvz_efficiency_vs_angular_acceptance_roles",
+            "evidence_ids": [
+              "evidence.9136c66414b429e98e94e236",
+              "evidence.962810aa4795fb86662f03cd",
+              "evidence.3323773842e278af4dc4d57e",
+              "evidence.ed959b5c98687ff96b42df06"
+            ]
+          },
+          {
+            "claim_id": "confusion_cause_from_ip_smearing",
+            "evidence_ids": [
+              "evidence.9136c66414b429e98e94e236",
+              "evidence.962810aa4795fb86662f03cd",
+              "evidence.3323773842e278af4dc4d57e"
+            ]
+          },
+          {
+            "claim_id": "troubleshooting_upstream_to_downstream_and_compatibility",
+            "evidence_ids": [
+              "evidence.ed959b5c98687ff96b42df06",
+              "evidence.4c8c16a447da23f89b4b8f0b"
+            ]
+          },
+          {
+            "claim_id": "lmd_acceptance_tefficiency_and_longitudinal_efficiency_definition",
+            "evidence_ids": [
+              "evidence.3323773842e278af4dc4d57e",
+              "evidence.aed1aea12b91bc1d386be2a4"
+            ]
+          }
+        ]
+      },
+      "mechanism": "Both required code evidence groups were cited in final evidence (critical_final_evidence_recall = 1.0). The answer thoroughly addressed physical definitions, acceptance calculations, and confusion causes from IP smearing (satisfying points p1 and p2). However, point p3 was missed because Gold v2.9 requires explaining how checking class/file names and histogram axes prevents mixing the two. The user query asked 'Why might LMD angular acceptance be confused with pvz efficiency?' ('why' causal/physical demand) without asking for operational disambiguation procedures ('how to prevent'). Whether p3 (operational preventative disambiguation) is semantically entailed by the causal prompt or represents an unprompted rubric expectation is a question for Gold governance review; developers have no authority to declare Gold truth defective unilaterally.",
+      "classification": "MIXED",
+      "mechanism_clusters": [
+        "Cluster C (Troubleshooting answer-point completeness miss)",
+        "Cluster F (Gold contract preventative rubric scope)"
+      ],
+      "disposition": "GOLD_GOVERNANCE_REQUIRED"
+    }
+  ],
+  "mechanism_clusters": {
+    "Cluster_A": {
+      "name": "Selected Evidence to Final Evidence Drop",
+      "description": "Evidence satisfying Gold contract is present in selected prompt context, but the QA generator only attaches a subset of citations to final claims or drops citations during single-claim bypass.",
+      "cases": [
+        "g011",
+        "g022",
+        "g044",
+        "g060"
+      ],
+      "characterization": "Normal RAG selective citation behavior when multiple sources exist; must not be addressed by forced citation quotas or universal evidence attachment which would induce hallucinations."
+    },
+    "Cluster_B": {
+      "name": "Question-Grounding Contract vs Dual-Source Benchmark Expectation",
+      "description": "F2-A5 (R01) architectural contract mandates that raw questions alone dictate hard source obligations, whereas Gold benchmark retains legacy dual-source requirements for certain implementation queries.",
+      "cases": [
+        "g060"
+      ],
+      "characterization": "Contract reconciliation required between runtime question-grounded source obligations and Gold benchmark evaluation rules; no unilateral product patch authorized."
+    },
+    "Cluster_C": {
+      "name": "Answer-Point Completeness Miss",
+      "description": "Generator misses an answer point despite evidence availability, observed in conjunctive queries ('A and B'), pipeline sequence ordering, or unprompted preventative checks.",
+      "cases": [
+        "g022",
+        "g023",
+        "g115"
+      ],
+      "characterization": "In g022, conjunctive omission remains deferred; in g023, verifier rejection and safe salvage operated as designed with synthesis and revision behavior deferred; in g115, causal query vs operational preventative rubric scope is a governance question."
+    },
+    "Cluster_D": {
+      "name": "Candidate Admission Dilution",
+      "description": "Target documents enter candidate recall but are diluted during admission by competing specialized chunks.",
+      "cases": [
+        "g011"
+      ],
+      "characterization": "Cluster-specific GSI documentation chunks diluted general native documentation in top selected evidence."
+    },
+    "Cluster_F": {
+      "name": "Gold Benchmark Selector and Rubric Scope",
+      "description": "Gold benchmark selectors pin a specific single author's thesis or impose preventative verification points not directly prompted by the user query.",
+      "cases": [
+        "g011",
+        "g044",
+        "g115"
+      ],
+      "characterization": "Governance questions requiring formal benchmark review; developers have no authority to declare Gold truth defective unilaterally."
+    }
+  },
+  "product_verification": {
+    "query_expansion_config_repair": {
+      "file": "configs/query_expansions.yaml",
+      "rule_id": "event_alignment",
+      "action": "Removed overly broad trigger 'particle identification'",
+      "remaining_triggers": [
+        "event id alignment",
+        "event alignment",
+        "event ID对齐",
+        "事件对齐"
+      ],
+      "status": "VERIFIED_AND_REPAIRED"
+    },
+    "test_suite": "tests/unit/test_query_expansions.py, tests/unit/test_config.py, tests/unit/test_d3_structured_shortcut.py, tests/unit/test_retrieval.py, tests/unit/test_qa.py",
+    "host_verified_total": "84 passed, 42 subtests passed (retrieval/expansion/config) + 210 passed, 25 subtests passed (QA suite)",
+    "test_suite_breakdown": {
+      "test_query_expansions.py": "4 passed, 15 subtests passed in 2.34s (RED: 6 failed, 3 passed, 10 subtests)",
+      "test_config.py": "8 passed in 0.33s",
+      "test_d3_structured_shortcut.py": "8 passed in 2.32s",
+      "test_retrieval.py": "64 passed, 27 subtests passed in 3.79s",
+      "test_qa.py": "210 passed, 25 subtests passed"
+    },
+    "scientific_accounting": {
+      "model_calls": 0,
+      "token_usage": 0
+    },
+    "qa_improvement_claim": "NONE (No claim of rerun QA improvements made; downstream conjunction completeness omission remains deferred)"
+  },
+  "infrastructure_review": {
+    "status": "PASS",
+    "test_counts": "112 passed, 18 subtests passed",
+    "infra_commit": "74af96ae7d2ce18e44c6c9e6e7d1ad93d593fdd0",
+    "prior_execution_baseline": {
+      "passed_before_corrections": 105,
+      "gate_cli_passed": 23,
+      "note": "105 passed before latest helper corrections; gate 23 passed host after removing standalone create_stage_receipt"
+    },
+    "changed_file_inventory": {
+      "infrastructure_core": [
+        "src/panda_agent/evaluation.py",
+        "src/panda_agent/evaluation_finalization.py",
+        "src/panda_agent/evaluation_runner.py",
+        "src/panda_agent/cli/evaluate.py",
+        "evaluation/scripts/f6a_gate_evaluation.py"
+      ],
+      "infrastructure_tests": [
+        "tests/unit/test_f6a_release_infrastructure.py",
+        "tests/unit/test_post_a3_execution_recovery.py",
+        "tests/unit/test_post_a3_finalization_contract.py",
+        "tests/unit/test_post_a3_gate_cli.py",
+        "tests/unit/test_post_a3_runner_lifecycle.py"
+      ],
+      "product_files": [
+        "configs/query_expansions.yaml",
+        "tests/unit/test_query_expansions.py"
+      ],
+      "documentation": [
+        "evaluation/POST_A3_FAILURE_AND_EXECUTION_RECOVERY_REVIEW.md",
+        "evaluation/post_a3_failure_and_execution_recovery_review.json",
+        "docs/EVALUATION_STATUS.md",
+        "docs/GENERALIZATION_ROADMAP.md"
+      ]
+    },
+    "independent_review_findings": [
+      "empty budget stop",
+      "receipt decision tamper",
+      "malformed QA/result/mode",
+      "unbound dev truthfulness"
+    ],
+    "implemented_mechanisms": [
+      {
+        "mechanism": "EvaluationRunStore exception classification (successful vs retryable vs terminal)",
+        "status": "REPAIRED"
+      },
+      {
+        "mechanism": "Cumulative usage append ledger and crash replay accounting",
+        "status": "REPAIRED"
+      },
+      {
+        "mechanism": "Explicit candidate binding with manifest hash re-verification",
+        "status": "REPAIRED"
+      },
+      {
+        "mechanism": "Cohort recovery before gates tri-state decision rule (PASS/FAIL/RECOVERY_PENDING/INCONCLUSIVE)",
+        "status": "REPAIRED"
+      },
+      {
+        "mechanism": "Runner seal before diagnostic with payload content validation",
+        "status": "REPAIRED"
+      },
+      {
+        "mechanism": "Standalone gate adjacent input receipt binding prereg/results/matrix with pending output status (never creates run receipt)",
+        "status": "REPAIRED"
+      }
+    ],
+    "resolved_runner_seams": [
+      "store timestamp drift",
+      "review-before-report file persistence"
+    ],
+    "final_verification": {
+      "passed": 112,
+      "subtests_passed": 18,
+      "scientific_calls": 0,
+      "scientific_tokens": 0,
+      "helper_red": "6 failed, 16 passed",
+      "helper_green": "22 passed",
+      "gate_cli_red": "6 failed, 2 passed",
+      "gate_cli_green": "8 passed",
+      "runner_red": "4 failed",
+      "runner_green": "4 passed",
+      "warning": "Existing Qdrant client/server minor-version compatibility warning; no test failure."
+    }
+  },
+  "scientific_accounting": {
+    "official_attempt_3_usage": {
+      "model_calls": 397,
+      "token_usage": 3783197,
+      "status": "UNCHANGED"
+    },
+    "post_terminal_diagnostic_usage": {
+      "run_id": "post-a3-g013-recovery-20260915",
+      "model_calls": 10,
+      "token_usage": 62370,
+      "breakdown": {
+        "runtime": {
+          "model_calls": 9,
+          "token_usage": 57153
+        },
+        "judge": {
+          "model_calls": 1,
+          "token_usage": 5217
+        }
+      },
+      "status": "RECORDED_SEPARATELY"
+    },
+    "review_and_product_verification_usage": {
+      "model_calls": 0,
+      "token_usage": 0,
+      "status": "ZERO_COST"
+    }
+  },
+  "stages_a2_a5": {
+    "status": "NOT_REACHED"
+  },
+  "protected_cohorts_status": {
+    "novel_validation": "PRISTINE_FOR_CURRENT_LINEAGE",
+    "holdout_access": 0,
+    "protected_content_leakage": 0,
+    "f6_b_execution": 0,
+    "f6_b_status": "LOCKED / F6_A_DID_NOT_PASS"
+  },
+  "candidate_development_state": {
+    "starting_head": "b0e0d85e1cd41598e866426ea52a3c13bf804b37",
+    "candidate_frozen": false,
+    "attempt_4_preregistered": false,
+    "attempt_4_executed": false,
+    "frozen_product_reference_head": "d323f790655c62e18b782d606a02f593a673f3cd",
+    "new_candidate_development_head": "d3a1b274b2784399a7dc51b094a17e466d208b50",
+    "infra_commit": "74af96ae7d2ce18e44c6c9e6e7d1ad93d593fdd0",
+    "infrastructure_acceptance_status": "PASS",
+    "infrastructure_test_counts": "112 passed, 18 subtests passed",
+    "pending_host_product_commit": false
+  },
+  "lifecycle_state": {
+    "unified_task_stage": "COMPLETE",
+    "f6_a_attempt_3": "COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED",
+    "infrastructure_acceptance_status": "PASS",
+    "next_task_execution_authorized": false,
+    "next_task_recommendation": "Residual conjunction and revision evidence review alongside Gold benchmark governance preparation only; no Attempt 4 preregistration."
+  },
+  "accepted_development_state": {
+    "unified_post_a3_task_status": "COMPLETE",
+    "frozen_product_reference_head": "d323f790655c62e18b782d606a02f593a673f3cd",
+    "new_candidate_development_head": "d3a1b274b2784399a7dc51b094a17e466d208b50",
+    "infrastructure_acceptance_status": "PASS",
+    "infrastructure_test_counts": "112 passed, 18 subtests passed",
+    "infra_commit": "74af96ae7d2ce18e44c6c9e6e7d1ad93d593fdd0"
+  },
+  "focused_verification_total": {
+    "passed": 406,
+    "subtests_passed": 85,
+    "scope": "112 infrastructure + 84 expansion/config/shortcut/retrieval + 210 QA; successful unchanged product verification reused"
+  }
+}

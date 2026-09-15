@@ -104,6 +104,8 @@ GOLD-9 = COMPLETE / PASS / RELEASE_AUTHORITY_CHAIN_RECONCILED (commit `1f03bbd`)
 F6-A Attempt 3 = COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED.
 F6-A Attempt 3 record: `evaluation/F6_A3_PRERELEASE_VALIDATION_RESULT.md` (result JSON `evaluation/f6_a3_prerelease_validation_result.json`, receipt `evaluation/f6_a3_a1_receipt.json`, gate matrix `evaluation/f6_a3_gate_matrix.json`, closeout addendum `evaluation/f6_a3_closeout_verification.json`).
 F6-B = LOCKED / F6_A_DID_NOT_PASS.
+POST-ATTEMPT-3 FAILURE & EXECUTION-RECOVERY REVIEW = COMPLETE / PASS / FAILURES_CLASSIFIED_RECOVERY_INFRASTRUCTURE_REPAIRED_PRODUCT_RESIDUALS_DEFERRED.
+POST-ATTEMPT-3 review: `evaluation/POST_A3_FAILURE_AND_EXECUTION_RECOVERY_REVIEW.md` (companion JSON `evaluation/post_a3_failure_and_execution_recovery_review.json`).
 Phase E = COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED.
 E2-A1 report: `evaluation/E2_A1_SHADOW_ANSWER_POINT_COVERAGE_CONTRACT.md`.
 C1 met all eight strict gates and the original pair09 atomicity sentinel. Per the
@@ -196,8 +198,20 @@ MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD
 Current planning state:
 D4 = PAUSED / ROADMAP_RECONCILIATION
 D4 overall completion = UNDECIDED
-CURRENT_TASK = F6-A Attempt 3 / COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED
-NEXT_TASK_RECOMMENDATION = POST-ATTEMPT-3 READ-ONLY FAILURE AND RECOVERY-PROTOCOL REVIEW FIRST (SEPARATELY AUTHORIZED; NO QUESTION-SPECIFIC FIXES OR SOURCE REPAIRS NOW)
+CURRENT_TASK = POST-ATTEMPT-3 FAILURE AND EXECUTION-RECOVERY REVIEW / COMPLETE / PASS
+UNIFIED_POST_A3_TASK_STATUS = COMPLETE
+FROZEN_PRODUCT_REFERENCE_HEAD = d323f790655c62e18b782d606a02f593a673f3cd
+NEW_CANDIDATE_DEVELOPMENT_HEAD = d3a1b274b2784399a7dc51b094a17e466d208b50
+INFRASTRUCTURE_ACCEPTANCE_STATUS = PASS
+INFRASTRUCTURE_TEST_COUNTS = 112 passed, 18 subtests passed
+INFRA_COMMIT = 74af96ae7d2ce18e44c6c9e6e7d1ad93d593fdd0
+PRODUCT_CONFIG_STATUS = VERIFIED_BY_HOST (84 passed, 42 subtests across query expansions, config, shortcut, and retrieval; plus QA 210 passed, 25 subtests verified by host)
+DIAGNOSTIC_SCIENTIFIC_USAGE = 10 calls / 62,370 tokens (runtime 9 / 57,153, judge 1 / 5,217; g013 isolated diagnostic recovery; Attempt 3 accounting 397 / 3,783,197 immutable)
+STAGES_A2_A5 = NOT_REACHED
+PROTECTED_HOLDOUTS = PRISTINE (novel_validation pristine, holdout access = 0)
+F6_B = LOCKED / F6_A_DID_NOT_PASS
+ATTEMPT_4 = NOT_PREREGISTERED / NOT_EXECUTED
+NEXT_TASK_RECOMMENDATION = RESIDUAL CONJUNCTION & REVISION EVIDENCE REVIEW AND GOLD GOVERNANCE PREPARATION
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 FOLLOWING_ARCHITECTURE_TASK = F6-B — Protected Blind Release Gate (LOCKED / F6_A_DID_NOT_PASS)
 
@@ -227,7 +241,9 @@ F6-A Attempt 3 Preflight = HISTORICAL / HOLD / PRE_RELEASE_PRECONDITION_NOT_MET 
 GOLD-9 = COMPLETE / PASS / RELEASE_AUTHORITY_CHAIN_RECONCILED (commit `1f03bbd`; candidate freezer bound to Gold v2.9; calibration loader successor chain extended to v6).
 F6-A Attempt 3 = COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED. Formal-English Gold v2.9 cohort (59 expected, 58 scored, 1 unhandled exception g013 due to Vertex 429 RESOURCE_EXHAUSTED) executed under frozen candidate f6a-rc3-20260914 (manifest SHA be2101a4..). Release score 0.9741 (58-case diagnostic only; full-cohort release score INCOMPLETE). Four mandatory gates failed: critical_final_evidence_recall 0.9410 (<1.00; failing: g011, g022, g044, g060), critical_answer_point_miss_count 3 (>0; failing: g022, g023, g115), paper_code_dual_source_rate 0.0 (<1.00; failing: g060), unhandled_exception_count 1 (>0; g013 Vertex 429). Passing gates: gold_recall_at_10 0.9792, final_evidence_recall 0.9306, intent_accuracy 0.9828, per_intent_gold_recall_at_10 (min 0.9500), per_intent_intent_accuracy (min 0.9231), expected_status_accuracy 1.00, citation_integrity 1.00, wrong_version_evidence 0, forbidden_evidence 0, required_source_coverage_answered 0.9792, identifier_hallucination_rate 0.00, answer_point_coverage 0.9741, contradiction_count 0, major_unsupported_claim_count 0. Raw canonical matrix evaluated 14 PASS, 4 FAIL, 0 incomplete flags strictly on available observations; raw flags are diagnostic, not complete-cohort PASS; full cohort measurements are INCOMPLETE due to unmeasured g013. Missing measurements are treated as INCOMPLETE (not FAIL per policy). Hard measured FAIL on evaluated cohort is terminal for the prerelease gate, while missing g013 status is INCOMPLETE separately. Explicit late receipt protocol deviation: late run receipt (`evaluation/f6_a3_a1_receipt.json`) was written after failure case diagnosis was already inspected. Inherited prior execution evidence: A0 focused tests (327 passed + 70 subtests). Fail-fast halted scientific execution immediately; stages A2-A5 NOT_REACHED; novel_validation remains PRISTINE_FOR_CURRENT_LINEAGE; holdout access = 0; F6-B LOCKED. Observed Attempt-3 scientific usage: 397 model calls, 3,783,197 tokens (final 59 records: 387 calls / 3,745,918 tokens; preserved 3 initial 429 failed attempts: 10 calls / 37,279 tokens). Forward-only closeout audit addendum: `evaluation/f6_a3_closeout_verification.json`.
 F6-B = LOCKED / F6_A_DID_NOT_PASS.
-No further recovery, D4, Phase-E, or Phase-F production task is authorized; a repaired candidate requires a separately authorized post-F6-A failure review and new candidate work, then a new F6-A attempt.
+POST-ATTEMPT-3 FAILURE AND EXECUTION-RECOVERY REVIEW = COMPLETE / PASS / FAILURES_CLASSIFIED_RECOVERY_INFRASTRUCTURE_REPAIRED_PRODUCT_RESIDUALS_DEFERRED.
+Post-Attempt-3 review consolidated Stage R0 failure classification, post-terminal diagnostic execution of g013 (`post-a3-g013-recovery-20260915`, 10 calls / 62,370 tokens; Attempt 3 accounting 397 / 3,783,197 immutable), and focused product configuration repair (bare 'particle identification' removed from event_alignment; 84 passed, 42 subtests across query expansions/config/shortcut/retrieval plus QA 210 passed, 25 subtests verified by host; 0 calls / 0 tokens). Protocol deviations PD1 and PD2 preserved as historical facts. Product residuals deferred (no safe generic fixes; no Gold changes). Infrastructure mechanisms redesigned (completed_ids exception classification, append ledger failed usage + crash replay, explicit candidate reverification, cohort-completeness tri-state, runner sealing with content validation, gate input receipt); acceptance is PASS after final host verification. Novel validation remains pristine; F6-B locked; Attempt 4 not preregistered/frozen. Detailed review and exact trace locators: `evaluation/POST_A3_FAILURE_AND_EXECUTION_RECOVERY_REVIEW.md` (companion JSON `evaluation/post_a3_failure_and_execution_recovery_review.json`).
+No further production task is authorized; next recommended task is residual conjunction & revision evidence review and Gold governance preparation only (no Attempt 4 preregistration).
 
 ## E3-A1 experimental implementation closeout
 
