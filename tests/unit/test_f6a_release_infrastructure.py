@@ -286,7 +286,7 @@ class BenchmarkAuthorityFlagTests(unittest.TestCase):
             )
 
     def test_manifest_hash_sensitivity(self):
-        manifest_path = Path("evaluation/benchmarks/v2_9/benchmark_manifest.json")
+        manifest_path = Path("evaluation/benchmarks/v2_10/benchmark_manifest.json")
         original = manifest_path.read_bytes()
         before = candidate._benchmark_identity(Path.cwd())["benchmark_manifest_sha256"]
         try:
@@ -385,10 +385,10 @@ class ProductScopeSelectorTests(unittest.TestCase):
         calibration = load_product_language_calibration(self.PROJECT_ROOT)
         self.assertIsNotNone(calibration)
         self.assertEqual(
-            calibration["calibration_id"], "phase_b_t3_product_language_scope_v6"
+            calibration["calibration_id"], "phase_b_t3_product_language_scope_v7"
         )
         dataset = load_gold_dataset(default_gold_dataset_path(self.PROJECT_ROOT))
-        self.assertEqual(dataset.benchmark_version, "m6-benchmark-v2.9")
+        self.assertEqual(dataset.benchmark_version, "m6-benchmark-v2.10")
         compatibility = calibration_compatibility(
             calibration, dataset, dataset_path=default_gold_dataset_path(self.PROJECT_ROOT)
         )
@@ -426,7 +426,7 @@ class ProductScopeSelectorTests(unittest.TestCase):
         identity = candidate._product_scope_identity(self.PROJECT_ROOT)
         self.assertEqual(
             identity["product_language_calibration_id"],
-            "phase_b_t3_product_language_scope_v6",
+            "phase_b_t3_product_language_scope_v7",
         )
         self.assertEqual(identity["formal_product_scope_selector_count"], 59)
         self.assertEqual(
@@ -435,7 +435,7 @@ class ProductScopeSelectorTests(unittest.TestCase):
         )
         self.assertEqual(
             identity["product_language_calibration_sha256"],
-            "fe56d4ca1112194643054d0d7627804956b4a35965495e18cbede59a937854a9",
+            "ad68df096fc82d6c52bd984e44e99573e6b47e5047b3d522ae750a93188c49cd",
         )
 
     def test_selector_hash_is_deterministic(self):

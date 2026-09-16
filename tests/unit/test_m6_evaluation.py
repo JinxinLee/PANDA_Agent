@@ -1415,12 +1415,32 @@ class M6EvaluationTests(unittest.TestCase):
             self.assertFalse(manifest["complete_regression_gate_eligible"])
             self.assertTrue(manifest["subset_diagnostic_only"])
 
-    def test_default_dataset_is_reviewed_v2_6_and_hidden_acceptance_is_blocked(self) -> None:
+    def test_default_dataset_is_newest_signed_successor_and_hidden_acceptance_is_blocked(self) -> None:
         dataset_path = default_gold_dataset_path(self.root)
         self.assertEqual(
             dataset_path,
-            self.root / "evaluation" / "benchmarks" / "v2_6" / "gold_questions.yaml",
+            self.root / "evaluation" / "benchmarks" / "v2_10" / "gold_questions.yaml",
         )
+        successor = load_gold_dataset(dataset_path)
+        self.assertEqual(successor.benchmark_version, "m6-benchmark-v2.10")
+        predecessor = load_gold_dataset(
+            self.root / "evaluation" / "benchmarks" / "v2_9" / "gold_questions.yaml"
+        )
+        predecessor_by_id = {item.id: item.model_dump() for item in predecessor.questions}
+        successor_by_id = {item.id: item.model_dump() for item in successor.questions}
+        self.assertEqual(set(predecessor_by_id), set(successor_by_id))
+        self.assertTrue(
+            all(
+                predecessor_by_id[case_id] == successor_by_id[case_id]
+                for case_id in predecessor_by_id
+                if case_id != "g060"
+            )
+        )
+        self.assertEqual(
+            [group["group_id"] for group in successor_by_id["g060"]["required_evidence_groups"]],
+            ["g060.e2", "g060.e3"],
+        )
+        self.assertEqual(successor_by_id["g060"]["required_source_types"], ["code"])
         explicit_v25 = load_gold_dataset(
             self.root / "evaluation" / "benchmarks" / "v2_5" / "gold_questions.yaml"
         )

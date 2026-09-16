@@ -1,0 +1,43 @@
+{
+ "schema_version": "1.0",
+ "status": "approved_exposed_development_benchmark_v2_10",
+ "dataset": "gold_questions.yaml",
+ "dataset_sha256": "bdce5cbdc0a6f1645d7350b87bc2f289265c3d67311dab4b12e488b9dc499513",
+ "benchmark_version": "m6-benchmark-v2.10",
+ "base_benchmark_version": "m6-benchmark-v2.9",
+ "base_dataset_sha256": "eaacd3ed6595821b24b28823c6344abc4dfb954eb71846e682080b42c2f689be",
+ "question_count": 120,
+ "review_count": 120,
+ "reviewer": "Post-A3 residual completeness and Gold governance reconciliation (deterministic; zero model calls)",
+ "reviewed_at": "2026-09-16",
+ "split_counts": {
+  "dev": 80,
+  "challenge": 24,
+  "regression": 16
+ },
+ "status_counts": {
+  "answered": 102,
+  "insufficient_evidence": 10,
+  "version_conflict": 8
+ },
+ "release_eligible": false,
+ "acceptance_exposed": true,
+ "hidden_acceptance_status": "not_created",
+ "project_official_validation": {
+  "structurally_valid": true,
+  "official_ready": true,
+  "unknown_allowed_source_versions": [],
+  "unmatched_evidence_groups": []
+ },
+ "changed_cases": [
+  "g060"
+ ],
+ "protected_real_failures": [
+  "g011",
+  "g044",
+  "g115"
+ ],
+ "manual_adjudications_sha256": null,
+ "gold_v2_10_patch_sha256": "b5383c943723ca3de216287c800044c087cd52072fa7bdad34edca29eab637d6",
+ "gold_v2_10_change_report_sha256": "ff7e2c9c70bea21d71fb643ce951a9d967582b6cda954f44ed761f533da59d66"
+}

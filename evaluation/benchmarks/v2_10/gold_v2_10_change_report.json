@@ -1,0 +1,55 @@
+{
+ "benchmark_version": "m6-benchmark-v2.10",
+ "base_benchmark_version": "m6-benchmark-v2.9",
+ "base_dataset_sha256": "eaacd3ed6595821b24b28823c6344abc4dfb954eb71846e682080b42c2f689be",
+ "audit_artifact": "evaluation/POST_A3_RESIDUAL_COMPLETENESS_AND_GOLD_GOVERNANCE.md",
+ "gold_changed_cases": [
+  "g060"
+ ],
+ "case_dispositions": {
+  "g011": "KEEP_AS_IS / PRODUCT_RESIDUAL",
+  "g044": "KEEP_AS_IS / PRODUCT_RESIDUAL",
+  "g060": "FORWARD_ONLY_CORRECTION / CODE_ONLY_REQUIRED_SOURCE",
+  "g115": "KEEP_AS_IS / PRODUCT_RESIDUAL"
+ },
+ "g060_changes": {
+  "removed_evidence_groups": [
+   "g060.e1"
+  ],
+  "preserved_evidence_groups": [
+   "g060.e2",
+   "g060.e3"
+  ],
+  "required_source_types_before": [
+   "paper",
+   "code"
+  ],
+  "required_source_types_after": [
+   "code"
+  ],
+  "preserved_fields": [
+   "query",
+   "intent",
+   "expected_status",
+   "required_answer_points",
+   "required_identifiers",
+   "split",
+   "language",
+   "review_status"
+  ]
+ },
+ "governance_principle": "Hard source obligations must be entailed by the raw question and contribute indispensable answer content; code-only peer implementation questions establish the consistent rule when code fully supports every answer point.",
+ "evidence_basis": [
+  "The literal g060 query asks how beam-divergence smearing is implemented.",
+  "PndLmdDivergenceSmearingModel2D.cxx supports p1 and p2.",
+  "PndLmdModelFactory.cxx generate2DModel supports p3.",
+  "The direct peer g059 is code-only under the same question form and subsystem.",
+  "F2-A5 makes raw-question semantics authoritative for hard source obligations."
+ ],
+ "non_outcome_driven_basis": "The correction follows the accepted F2-A5 contract, source-level sufficiency, and a direct peer-case consistency check. Attempt 3 remains scored only against immutable v2.9.",
+ "authority_chain": {
+  "v2.9": "Attempt 3 historical authority; immutable",
+  "v2.10": "forward-only successor for a future authorized attempt"
+ },
+ "historical_policy": "No retroactive rescoring; no threshold or evaluator changes."
+}

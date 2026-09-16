@@ -1,0 +1,30 @@
+schema_version: '1.0'
+benchmark_version: m6-benchmark-v2.10
+base_benchmark_version: m6-benchmark-v2.9
+base_dataset_sha256: eaacd3ed6595821b24b28823c6344abc4dfb954eb71846e682080b42c2f689be
+audit:
+  artifact: evaluation/POST_A3_RESIDUAL_COMPLETENESS_AND_GOLD_GOVERNANCE.md
+  companion: evaluation/post_a3_residual_completeness_and_gold_governance.json
+  task: POST-A3 RESIDUAL COMPLETENESS & GOLD GOVERNANCE RECONCILIATION
+governance_principle: Hard source obligations must be entailed by the raw question and contribute indispensable answer content; peer implementation questions use code-only obligations when code fully supports every answer point.
+semantic_case_deltas:
+  g060: retire the Pflueger 2017 theory evidence group g060.e1 and the paper hard-source obligation; preserve the code implementation groups g060.e2 and g060.e3, all three answer points, the required identifier, query, intent, status, split, and review metadata.
+source_level_basis:
+- The raw query asks how beam-divergence smearing is implemented.
+- PndLmdDivergenceSmearingModel2D.cxx supports the model and implementation parameters required by p1 and p2.
+- PndLmdModelFactory.cxx generate2DModel supports the composition required by p3.
+- The direct peer g059 asks the same implementation-form question for detector-resolution smearing and correctly requires code only.
+- Accepted F2-A5 semantics derive hard paper/code obligations from the raw question rather than a fixed intent mapping.
+kept_as_is:
+- case_id: g011
+  disposition: KEEP_AS_IS / PRODUCT_RESIDUAL
+- case_id: g044
+  disposition: KEEP_AS_IS / PRODUCT_RESIDUAL
+- case_id: g115
+  disposition: KEEP_AS_IS / PRODUCT_RESIDUAL
+firewall:
+- Gold v2.9 remains byte-identical and authoritative for Attempt 3 history.
+- Attempt 3 is not rescored.
+- No expected status, answer point, identifier, threshold, evaluator metric, or language classification changes.
+- The correction is evidence- and contract-driven, not outcome-driven pass chasing.
+policy: Forward-only successor for future authorized attempts only.
