@@ -1,0 +1,25 @@
+{
+  "schema_version": "f6a-gate-receipt-v1",
+  "role": "forward-only gate receipt binding source results, manifest, prereg, and derived matrix output",
+  "run_id": "f6a-rc4-gold-formal-full-20260916",
+  "candidate_id": "f6a-rc4-20260916",
+  "candidate_manifest_sha256": null,
+  "candidate_valid": false,
+  "cohort_status": "COMPLETE",
+  "decision": "INCONCLUSIVE",
+  "gates_passed": null,
+  "source_artifacts": {
+    "manifest_sha256": "2304ddff79a163168bb6e602f5b333ec9008b815178ec75187bc60261e7b8a81",
+    "results_sha256": "83004839d4c523b79a1fd5c55ed6af8eab2ca7c4a8a0ef2e2cc50ecee4574043",
+    "record_content_hash": "4b4f734731f619a9e9fd876eae373eba9005aeb2830b68bcd0601e5b3835ea79",
+    "record_count": 59,
+    "case_id_set_sha256": "914ee1b4b3f937e6839416932b44de06fb0401589fd59825a63ac430c5361d1c",
+    "prereg_sha256": "da3cf3e124480ea737af3e901cfbd3fbcbc34a35b6b0fc3391dec824cdbc4b5d",
+    "source_matrix_sha256": null
+  },
+  "derived_output": {
+    "output_file": "gate_matrix.json",
+    "derived_output_sha256": "1bdc40a1b02257adc1ec7088bcc8485554c2a2feb3e206f756335852f0abb405"
+  },
+  "generated_at": "2026-09-16T23:47:32.688380+00:00"
+}

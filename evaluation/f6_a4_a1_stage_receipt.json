@@ -1,0 +1,53 @@
+{
+  "schema_version": "stage-receipt-v1",
+  "role": "archival stage receipt binding current results, gate summary, traces, and exact usage",
+  "execution_status": {
+    "run_id": "f6a-rc4-gold-formal-full-20260916",
+    "candidate_id": "f6a-rc4-20260916",
+    "candidate_valid": true,
+    "cohort_status": "COMPLETE",
+    "decision": "FAIL",
+    "scored_cases": 59,
+    "expected_cases": 59,
+    "terminal_label": "FAIL"
+  },
+  "identities": {
+    "candidate_id": "f6a-rc4-20260916",
+    "candidate_manifest_sha256": "dc44efe61b1745f0f4fddfdc1f17fbc8ba767c652fae17f5a2a003507ba4f4e7",
+    "implementation_git_commit": "f9e64cb5d0c60c90cb2a8432d5daf01b63ac05fa",
+    "gold_benchmark_version": null,
+    "gold_dataset_hash": "bdce5cbdc0a6f1645d7350b87bc2f289265c3d67311dab4b12e488b9dc499513",
+    "prompt_hash": "23d73b036646ec62f3095fac4bdfafdfc7ecf6676fd27d18475b86773db4e6d5"
+  },
+  "artifacts_and_hashes": {
+    "manifest_file_sha256": "2304ddff79a163168bb6e602f5b333ec9008b815178ec75187bc60261e7b8a81",
+    "case_id_set_sha256": "914ee1b4b3f937e6839416932b44de06fb0401589fd59825a63ac430c5361d1c",
+    "results_file_sha256": "83004839d4c523b79a1fd5c55ed6af8eab2ca7c4a8a0ef2e2cc50ecee4574043",
+    "result_content_hash": "4b4f734731f619a9e9fd876eae373eba9005aeb2830b68bcd0601e5b3835ea79",
+    "retrieval_traces_sha256": "66155f3eab45ac6a10294302282e1f5a3cc289e9dc0146a931214cc2d94bdeea",
+    "gate_file_sha256": "209e18a7d3c24829b078cdbb05dba5e7dc0115b5d9ada301393939cdc42e65f2",
+    "metrics_file_sha256": "b74c92f7f673f6db9c64983fd318c47ae2171cd62cd5366d3b4ba76fae530e72",
+    "attempts_file_sha256": "fba78a78d9a91233a49569cc1625fffbd82eb6248f0ed6e40a7d62ecf28a83bf",
+    "record_count": 59
+  },
+  "usage": {
+    "cumulative_model_calls": 388,
+    "cumulative_token_usage": 3647993
+  },
+  "gate_summary": {
+    "passed": false,
+    "cohort_decision": {
+      "status": "COMPLETE",
+      "verdict": "FAIL",
+      "passed": false,
+      "reason": "complete cohort (59/59 scored); quality gates failed",
+      "scored_case_count": 59,
+      "expected_case_count": 59,
+      "retryable_case_ids": [],
+      "missing_case_ids": [],
+      "terminal_exception_case_ids": [],
+      "extra_case_ids": []
+    }
+  },
+  "generated_at": "2026-09-16T23:47:19.344594+00:00"
+}

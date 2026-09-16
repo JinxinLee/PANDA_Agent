@@ -1,0 +1,590 @@
+{
+  "schema_version": "f6a-a4-result-v1",
+  "task": "F6-A Attempt 4 — Continuous Prerelease Validation & Generalization Gate",
+  "terminal_verdict": "COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED",
+  "starting_state": {
+    "starting_head": "cedebea9261db68b532c0e5477c52ddc3a8a7d1c",
+    "starting_worktree": [
+      "data/_a3_gold_args.txt (known regenerable untracked scratch)"
+    ],
+    "product_behavior_lineage_head": "d3a1b274b2784399a7dc51b094a17e466d208b50",
+    "unexpected_product_drift": false
+  },
+  "a0": {
+    "verdict": "PASS",
+    "scientific_calls": 0,
+    "scientific_tokens": 0,
+    "gold": {
+      "version": "m6-benchmark-v2.10",
+      "dataset": "evaluation/benchmarks/v2_10/gold_questions.yaml",
+      "sha256": "bdce5cbdc0a6f1645d7350b87bc2f289265c3d67311dab4b12e488b9dc499513",
+      "official_ready": true,
+      "structurally_valid": true
+    },
+    "calibration": {
+      "id": "phase_b_t3_product_language_scope_v7",
+      "sha256": "ad68df096fc82d6c52bd984e44e99573e6b47e5047b3d522ae750a93188c49cd",
+      "compatible": true,
+      "formal_english_count": 59,
+      "non_english_count": 21,
+      "selector_sha256": "e27ef67a866274b4a8441b789ca78fc3ccb7e022eed537c7442e15230777a0e5"
+    },
+    "focused_tests": {
+      "passed": 426,
+      "failed_known_fixture_debt": 2,
+      "subtests_passed": 85,
+      "new_relevant_failures": 0,
+      "known_failures": [
+        "tests/unit/test_m6_evaluation.py::M6EvaluationTests::test_aggregate_metrics_and_gate_are_deterministic",
+        "tests/unit/test_m6_evaluation.py::M6EvaluationTests::test_development_gate_is_mode_aware_and_requires_full_dev"
+      ]
+    },
+    "agy_read_only_audits": [
+      "F6-A4-A0-AUTHORITY-IDENTITY-AUDIT = PASS",
+      "F6-A4-A0-EXECUTION-CONTRACT-AUDIT = PASS"
+    ]
+  },
+  "preregistration_and_freeze": {
+    "preregistration_commit": "f9e64cb5d0c60c90cb2a8432d5daf01b63ac05fa",
+    "preregistration_sha256": "da3cf3e124480ea737af3e901cfbd3fbcbc34a35b6b0fc3391dec824cdbc4b5d",
+    "freeze_commit": "4d2ada392daa2653402d2d1ba645486db935f816",
+    "frozen_implementation_commit": "f9e64cb5d0c60c90cb2a8432d5daf01b63ac05fa",
+    "candidate_id": "f6a-rc4-20260916",
+    "candidate_manifest_sha256": "dc44efe61b1745f0f4fddfdc1f17fbc8ba767c652fae17f5a2a003507ba4f4e7",
+    "verify_candidate": {
+      "valid": true,
+      "mismatches": []
+    }
+  },
+  "frozen_identity": {
+    "answer_point_mode": "legacy_question_core",
+    "prompt_version": "3.10.1",
+    "prompt_sha256": "23d73b036646ec62f3095fac4bdfafdfc7ecf6676fd27d18475b86773db4e6d5",
+    "generation_model": "gemini-3.8-flash",
+    "configured_verification_model": null,
+    "effective_verification_model": "gemini-3.8-flash",
+    "evaluation_judge_model": "gemini-3.8-flash",
+    "embedding_model": "gemini-embedding-2",
+    "embedding_dimensions": 3072,
+    "index_fingerprint": "8172f9a640e62977be6e911bfb4848ce3aecd0994f1f3ba51a0985bffec62cb9",
+    "qdrant_points_count": 104973,
+    "docker_images": [
+      "postgres:17-alpine",
+      "qdrant/qdrant:v1.15.5"
+    ]
+  },
+  "a1": {
+    "run_id": "f6a-rc4-gold-formal-full-20260916",
+    "mode": "full",
+    "expected_cases": 59,
+    "scored_cases": 59,
+    "executed_case_ids_equal_selector": true,
+    "recovery": {
+      "case_id": "g112",
+      "attempt_count": 3,
+      "retryable_failed_attempts": 2,
+      "resume_operations": 2,
+      "successful_cases_rerun": 0,
+      "failed_attempt_usage_preserved": true
+    },
+    "cohort_decision": {
+      "status": "COMPLETE",
+      "verdict": "FAIL",
+      "passed": false,
+      "reason": "complete cohort (59/59 scored); quality gates failed",
+      "scored_case_count": 59,
+      "expected_case_count": 59,
+      "retryable_case_ids": [],
+      "missing_case_ids": [],
+      "terminal_exception_case_ids": [],
+      "extra_case_ids": []
+    },
+    "release_score": 0.9717514124293786,
+    "gates": {
+      "gold_recall_at_10": {
+        "value": 0.9897959183673469,
+        "threshold": 0.95,
+        "inclusive": true,
+        "upper_bound": false,
+        "passed": true,
+        "denominator": 49
+      },
+      "final_evidence_recall": {
+        "value": 0.9183673469387755,
+        "threshold": 0.9,
+        "inclusive": true,
+        "upper_bound": false,
+        "passed": true,
+        "denominator": 49
+      },
+      "critical_final_evidence_recall": {
+        "value": 0.9285714285714286,
+        "threshold": 1.0,
+        "inclusive": true,
+        "upper_bound": false,
+        "passed": false,
+        "denominator": 49
+      },
+      "intent_accuracy": {
+        "value": 1.0,
+        "threshold": 0.9,
+        "inclusive": true,
+        "upper_bound": false,
+        "passed": true,
+        "denominator": 59
+      },
+      "per_intent_gold_recall_at_10": {
+        "value": 0.9583333333333334,
+        "threshold": 0.75,
+        "inclusive": true,
+        "passed": true,
+        "per_intent_details": [
+          {
+            "intent": "algorithm_implementation",
+            "case_count": 2,
+            "applicable_denominator": 2,
+            "metric_value": 1.0,
+            "threshold": 0.75,
+            "passed": true
+          },
+          {
+            "intent": "algorithm_theory",
+            "case_count": 8,
+            "applicable_denominator": 6,
+            "metric_value": 1.0,
+            "threshold": 0.75,
+            "passed": true
+          },
+          {
+            "intent": "api",
+            "case_count": 15,
+            "applicable_denominator": 13,
+            "metric_value": 1.0,
+            "threshold": 0.75,
+            "passed": true
+          },
+          {
+            "intent": "installation",
+            "case_count": 12,
+            "applicable_denominator": 10,
+            "metric_value": 1.0,
+            "threshold": 0.75,
+            "passed": true
+          },
+          {
+            "intent": "module_structure",
+            "case_count": 2,
+            "applicable_denominator": 1,
+            "metric_value": 1.0,
+            "threshold": 0.75,
+            "passed": true
+          },
+          {
+            "intent": "troubleshooting",
+            "case_count": 6,
+            "applicable_denominator": 5,
+            "metric_value": 1.0,
+            "threshold": 0.75,
+            "passed": true
+          },
+          {
+            "intent": "usage",
+            "case_count": 14,
+            "applicable_denominator": 12,
+            "metric_value": 0.9583333333333334,
+            "threshold": 0.75,
+            "passed": true
+          }
+        ]
+      },
+      "per_intent_intent_accuracy": {
+        "value": 1.0,
+        "threshold": 0.8,
+        "inclusive": true,
+        "passed": true,
+        "per_intent_details": [
+          {
+            "intent": "algorithm_implementation",
+            "case_count": 2,
+            "applicable_denominator": 2,
+            "metric_value": 1.0,
+            "threshold": 0.8,
+            "passed": true
+          },
+          {
+            "intent": "algorithm_theory",
+            "case_count": 8,
+            "applicable_denominator": 8,
+            "metric_value": 1.0,
+            "threshold": 0.8,
+            "passed": true
+          },
+          {
+            "intent": "api",
+            "case_count": 15,
+            "applicable_denominator": 15,
+            "metric_value": 1.0,
+            "threshold": 0.8,
+            "passed": true
+          },
+          {
+            "intent": "installation",
+            "case_count": 12,
+            "applicable_denominator": 12,
+            "metric_value": 1.0,
+            "threshold": 0.8,
+            "passed": true
+          },
+          {
+            "intent": "module_structure",
+            "case_count": 2,
+            "applicable_denominator": 2,
+            "metric_value": 1.0,
+            "threshold": 0.8,
+            "passed": true
+          },
+          {
+            "intent": "troubleshooting",
+            "case_count": 6,
+            "applicable_denominator": 6,
+            "metric_value": 1.0,
+            "threshold": 0.8,
+            "passed": true
+          },
+          {
+            "intent": "usage",
+            "case_count": 14,
+            "applicable_denominator": 14,
+            "metric_value": 1.0,
+            "threshold": 0.8,
+            "passed": true
+          }
+        ]
+      },
+      "expected_status_accuracy": {
+        "value": 0.9830508474576272,
+        "threshold": 0.975,
+        "inclusive": true,
+        "upper_bound": false,
+        "passed": true,
+        "denominator": 59
+      },
+      "citation_integrity": {
+        "value": 1.0,
+        "threshold": 1.0,
+        "inclusive": true,
+        "upper_bound": false,
+        "passed": true,
+        "denominator": 59
+      },
+      "wrong_version_evidence_count": {
+        "value": 0,
+        "threshold": 0,
+        "passed": true
+      },
+      "forbidden_evidence_count": {
+        "value": 0,
+        "threshold": 0,
+        "passed": true
+      },
+      "required_source_coverage_answered": {
+        "value": 0.9795918367346939,
+        "threshold": 0.97,
+        "inclusive": true,
+        "upper_bound": false,
+        "passed": true,
+        "denominator": 49
+      },
+      "identifier_hallucination_rate": {
+        "value": 0.011560693641618497,
+        "threshold": 0.03,
+        "inclusive": false,
+        "upper_bound": true,
+        "passed": true,
+        "denominator": 173
+      },
+      "paper_code_dual_source_rate": {
+        "value": 1.0,
+        "threshold": 1.0,
+        "inclusive": true,
+        "upper_bound": false,
+        "passed": true,
+        "denominator": 0
+      },
+      "answer_point_coverage": {
+        "value": 0.9717514124293786,
+        "threshold": 0.9,
+        "inclusive": true,
+        "upper_bound": false,
+        "passed": true,
+        "denominator": 59
+      },
+      "critical_answer_point_miss_count": {
+        "value": 2,
+        "threshold": 0,
+        "passed": false
+      },
+      "contradiction_count": {
+        "value": 0,
+        "threshold": 0,
+        "passed": true
+      },
+      "major_unsupported_claim_count": {
+        "value": 0,
+        "threshold": 0,
+        "passed": true
+      },
+      "unhandled_exception_count": {
+        "value": 0,
+        "threshold": 0,
+        "passed": true
+      },
+      "release_score": {
+        "value": 0.9717514124293786,
+        "denominator": 59,
+        "incomplete_case_ids": [],
+        "note": "F6-A-specific gap/dependency accounting metric; not itself a gate"
+      }
+    },
+    "failed_gate_names": [
+      "critical_answer_point_miss_count",
+      "critical_final_evidence_recall"
+    ],
+    "incomplete_gate_names": [],
+    "per_intent_breakdown": {
+      "algorithm_implementation": {
+        "cases": 2,
+        "intent_accuracy": 1.0,
+        "gold_recall_at_5": 1.0,
+        "gold_recall_at_10": 1.0,
+        "gold_recall_at_20": 1.0,
+        "mrr": 0.625,
+        "combined_candidate_recall": 1.0,
+        "gold_recall_at_10_denominator": 2,
+        "final_evidence_recall": 0.75,
+        "final_evidence_recall_denominator": 2
+      },
+      "algorithm_theory": {
+        "cases": 8,
+        "intent_accuracy": 1.0,
+        "gold_recall_at_5": 0.9166666666666666,
+        "gold_recall_at_10": 1.0,
+        "gold_recall_at_20": 1.0,
+        "mrr": 0.8333333333333334,
+        "combined_candidate_recall": 1.0,
+        "gold_recall_at_10_denominator": 6,
+        "final_evidence_recall": 0.8333333333333334,
+        "final_evidence_recall_denominator": 6
+      },
+      "api": {
+        "cases": 15,
+        "intent_accuracy": 1.0,
+        "gold_recall_at_5": 1.0,
+        "gold_recall_at_10": 1.0,
+        "gold_recall_at_20": 1.0,
+        "mrr": 0.9615384615384616,
+        "combined_candidate_recall": 0.9230769230769231,
+        "gold_recall_at_10_denominator": 13,
+        "final_evidence_recall": 0.9230769230769231,
+        "final_evidence_recall_denominator": 13
+      },
+      "installation": {
+        "cases": 12,
+        "intent_accuracy": 1.0,
+        "gold_recall_at_5": 0.95,
+        "gold_recall_at_10": 1.0,
+        "gold_recall_at_20": 1.0,
+        "mrr": 0.77,
+        "combined_candidate_recall": 1.0,
+        "gold_recall_at_10_denominator": 10,
+        "final_evidence_recall": 0.95,
+        "final_evidence_recall_denominator": 10
+      },
+      "module_structure": {
+        "cases": 2,
+        "intent_accuracy": 1.0,
+        "gold_recall_at_5": 0.3333333333333333,
+        "gold_recall_at_10": 1.0,
+        "gold_recall_at_20": 1.0,
+        "mrr": 1.0,
+        "combined_candidate_recall": 1.0,
+        "gold_recall_at_10_denominator": 1,
+        "final_evidence_recall": 1.0,
+        "final_evidence_recall_denominator": 1
+      },
+      "troubleshooting": {
+        "cases": 6,
+        "intent_accuracy": 1.0,
+        "gold_recall_at_5": 0.8,
+        "gold_recall_at_10": 1.0,
+        "gold_recall_at_20": 1.0,
+        "mrr": 0.4333333333333333,
+        "combined_candidate_recall": 1.0,
+        "gold_recall_at_10_denominator": 5,
+        "final_evidence_recall": 1.0,
+        "final_evidence_recall_denominator": 5
+      },
+      "usage": {
+        "cases": 14,
+        "intent_accuracy": 1.0,
+        "gold_recall_at_5": 0.7916666666666666,
+        "gold_recall_at_10": 0.9583333333333334,
+        "gold_recall_at_20": 0.9583333333333334,
+        "mrr": 0.6458333333333334,
+        "combined_candidate_recall": 0.9166666666666666,
+        "gold_recall_at_10_denominator": 12,
+        "final_evidence_recall": 0.9166666666666666,
+        "final_evidence_recall_denominator": 12
+      }
+    },
+    "critical_answer_point_misses": {
+      "g013": [
+        "p3"
+      ],
+      "g037": [
+        "p1"
+      ]
+    },
+    "critical_final_evidence_recall_below_one": [
+      "g011",
+      "g013",
+      "g037",
+      "g044",
+      "g059"
+    ],
+    "stage_receipt": {
+      "sha256": "90fe8ecb1a3b698e0d5e3ea503ad12212f82739b3f6fee1eb04a50386bb57f28",
+      "validated": true,
+      "sealed_before_diagnostics": true
+    },
+    "authoritative_gate_matrix": {
+      "sha256": "4475f78af04a7d87d6117f5477e803bd314b72f522018dc0b99a69a366733826",
+      "receipt_sha256": "0decfa5a0ae69d882940bcf272c9ce3216264adbbbca7f852fa421f9c51e72c5",
+      "receipt_validated_by_idempotent_reexecution": true,
+      "candidate_valid": true
+    }
+  },
+  "a2": {
+    "status": "NOT_REACHED",
+    "scientific_calls": 0,
+    "scientific_tokens": 0
+  },
+  "a3": {
+    "status": "NOT_REACHED",
+    "scientific_calls": 0,
+    "scientific_tokens": 0
+  },
+  "a4": {
+    "status": "NOT_REACHED",
+    "novel_validation": "PRISTINE_FOR_CURRENT_LINEAGE",
+    "scientific_calls": 0,
+    "scientific_tokens": 0
+  },
+  "a5": {
+    "status": "NOT_REACHED",
+    "scientific_calls": 0,
+    "scientific_tokens": 0
+  },
+  "scientific_usage": {
+    "attempt_4_total": {
+      "model_calls": 388,
+      "token_usage": 3647993
+    },
+    "by_stage": {
+      "A1": {
+        "model_calls": 388,
+        "token_usage": 3647993
+      },
+      "A2": {
+        "model_calls": 0,
+        "token_usage": 0
+      },
+      "A3": {
+        "model_calls": 0,
+        "token_usage": 0
+      },
+      "A4": {
+        "model_calls": 0,
+        "token_usage": 0
+      },
+      "A5": {
+        "model_calls": 0,
+        "token_usage": 0
+      }
+    },
+    "recoverable_role_breakdown": {
+      "runtime": {
+        "model_calls": 322,
+        "token_usage": 3272550,
+        "generation_calls": 256,
+        "embedding_calls": 66,
+        "qa_generation_calls": 73,
+        "qa_generation_token_usage": 1895407,
+        "qa_composer_calls": 45,
+        "qa_composer_token_usage": 76443
+      },
+      "external_judge": {
+        "model_calls": 66,
+        "token_usage": 375443
+      },
+      "runtime_verification": "NOT_SEPARATELY_RECOVERABLE_FROM_STORED_RECORDS",
+      "embedding_token_usage": "NOT_SEPARATELY_RECOVERABLE_FROM_STORED_RECORDS"
+    },
+    "g112_attempts": [
+      {
+        "outcome": "retryable_exception",
+        "model_calls": 7,
+        "token_usage": 21338
+      },
+      {
+        "outcome": "retryable_exception",
+        "model_calls": 6,
+        "token_usage": 21887
+      },
+      {
+        "outcome": "answered",
+        "model_calls": 8,
+        "token_usage": 145936
+      }
+    ]
+  },
+  "integrity": {
+    "stage_receipt_validated": true,
+    "gate_receipt_validated": true,
+    "protocol_deviation": {
+      "id": "A4-PD1",
+      "description": "The first standalone gate command omitted .env loading and sealed a false candidate-invalid forward-only receipt. The immutable receipt was preserved; the repository-supported source-matrix successor path rederived identical gates with candidate_valid=true and was idempotently validated. No model calls or scientific outputs changed.",
+      "initial_gate_matrix_sha256": "1bdc40a1b02257adc1ec7088bcc8485554c2a2feb3e206f756335852f0abb405",
+      "initial_gate_receipt_sha256": "69efa509ae4622476f2a3f31d27e528c80da8cc6a2fb8d82fb1bf1d3b2636c9e"
+    }
+  },
+  "historical_comparison": {
+    "attempt_3_gold": "m6-benchmark-v2.9",
+    "attempt_4_gold": "m6-benchmark-v2.10",
+    "aggregate_comparison": "BENCHMARK_VERSION_CONFOUNDED",
+    "g060_contract_changed_forward_only": true,
+    "attempt_3_official_usage": {
+      "model_calls": 397,
+      "token_usage": 3783197
+    },
+    "attempt_3_post_terminal_g013_diagnostic": {
+      "model_calls": 10,
+      "token_usage": 62370,
+      "included_in_attempt_3_official_usage": false
+    }
+  },
+  "protected_holdout": {
+    "holdout_access": 0,
+    "protected_content_leakage": 0,
+    "f6_b_execution": 0
+  },
+  "lifecycle": {
+    "attempt_1": "COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED",
+    "attempt_2": "COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED",
+    "attempt_3": "COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED",
+    "attempt_4": "COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED",
+    "f6_b": "LOCKED / F6_A_DID_NOT_PASS"
+  },
+  "next_task_recommendation": "Post-Attempt-4 exposed failure review of critical answer-point and final-evidence misses; no Attempt-5 execution, novel_validation access, or F6-B.",
+  "next_task_execution_authorized": false
+}
