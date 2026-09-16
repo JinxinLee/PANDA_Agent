@@ -1,0 +1,134 @@
+{
+  "task": "POST-A3 RESIDUAL COMPLETENESS & GOLD GOVERNANCE RECONCILIATION",
+  "verdict": "COMPLETE / PASS / PRODUCT_REPAIR_DEFERRED_GOLD_GOVERNANCE_RECONCILED",
+  "starting_head": "b8dea8f7e5a3da26ba3eccae4c6b4dfc0f57b4a7",
+  "accepted_product_development_head": "d3a1b274b2784399a7dc51b094a17e466d208b50",
+  "product": {
+    "shared_generic_mechanism_established": false,
+    "repair": "NO_SAFE_GENERIC_FIX",
+    "code_changed": false,
+    "cases": {
+      "g022": {
+        "classification": "DEFERRED_NO_SAFE_GENERIC_FIX",
+        "loss_point": "conjunctive obligation representation and initial claim generation",
+        "combined_candidate_recall": 1.0
+      },
+      "g023": {
+        "classification": "DEFERRED_NO_SAFE_GENERIC_FIX",
+        "loss_point": "revision did not recover a supported workflow-order claim; safe salvage preserved faithfulness",
+        "combined_candidate_recall": 1.0
+      },
+      "g013_diagnostic": {
+        "classification": "DEFERRED_NO_SAFE_GENERIC_FIX / DIAGNOSTIC_ONLY",
+        "loss_point": "answer granularity and obligation specificity",
+        "combined_candidate_recall": 1.0,
+        "final_evidence_recall": 0.5,
+        "answer_point_coverage": 0.6667
+      }
+    }
+  },
+  "governance": {
+    "g011": "KEEP_AS_IS / PRODUCT_RESIDUAL",
+    "g044": "KEEP_AS_IS / PRODUCT_RESIDUAL",
+    "g060": "CODE_ONLY_REQUIRED_SOURCE / FORWARD_ONLY_CORRECTION",
+    "g115": "KEEP_AS_IS / PRODUCT_RESIDUAL",
+    "principle": "Hard source obligations must be entailed by the raw question and contribute indispensable answer content; peer cases apply the same rule."
+  },
+  "gold": {
+    "authority": "m6-benchmark-v2.10",
+    "path": "evaluation/benchmarks/v2_10/gold_questions.yaml",
+    "sha256": "bdce5cbdc0a6f1645d7350b87bc2f289265c3d67311dab4b12e488b9dc499513",
+    "base_version": "m6-benchmark-v2.9",
+    "base_sha256": "eaacd3ed6595821b24b28823c6344abc4dfb954eb71846e682080b42c2f689be",
+    "changed_cases": [
+      "g060"
+    ],
+    "question_count": 120,
+    "split_counts": {
+      "dev": 80,
+      "challenge": 24,
+      "regression": 16
+    },
+    "status_counts": {
+      "answered": 102,
+      "insufficient_evidence": 10,
+      "version_conflict": 8
+    },
+    "patch_sha256": "b5383c943723ca3de216287c800044c087cd52072fa7bdad34edca29eab637d6",
+    "change_report_sha256": "ff7e2c9c70bea21d71fb643ce951a9d967582b6cda954f44ed761f533da59d66",
+    "v2_9_preserved": true,
+    "attempt_3_rescored": false
+  },
+  "calibration": {
+    "calibration_id": "phase_b_t3_product_language_scope_v7",
+    "sha256": "ad68df096fc82d6c52bd984e44e99573e6b47e5047b3d522ae750a93188c49cd",
+    "compatible": true,
+    "formal_english_count": 59,
+    "non_english_count": 21,
+    "formal_selector_sha256": "e27ef67a866274b4a8441b789ca78fc3ccb7e022eed537c7442e15230777a0e5",
+    "membership_identical_to_v6": true
+  },
+  "verification": {
+    "gold_structurally_valid": true,
+    "gold_official_ready": true,
+    "unknown_allowed_source_versions": [],
+    "unmatched_evidence_groups": [],
+    "non_g060_cases_identical": 119,
+    "direct_authority_tests": {
+      "passed": 5,
+      "failed": 0
+    },
+    "coupled_filtered_tests": {
+      "passed": 92,
+      "subtests_passed": 18,
+      "deselected_pre_existing_failures": 2
+    },
+    "complete_coupled_tests": {
+      "passed": 92,
+      "subtests_passed": 18,
+      "failed_pre_existing": 2
+    },
+    "pre_existing_failures": [
+      "tests/unit/test_m6_evaluation.py::M6EvaluationTests::test_aggregate_metrics_and_gate_are_deterministic",
+      "tests/unit/test_m6_evaluation.py::M6EvaluationTests::test_development_gate_is_mode_aware_and_requires_full_dev"
+    ],
+    "git_diff_check": true
+  },
+  "scientific_accounting": {
+    "calls": 0,
+    "tokens": 0
+  },
+  "protected_state": {
+    "novel_validation": "PRISTINE_FOR_CURRENT_LINEAGE",
+    "holdout_access": 0,
+    "protected_content_leakage": 0,
+    "f6_b_execution": 0
+  },
+  "historical_state": {
+    "attempt_1": "COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED",
+    "attempt_2": "COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED",
+    "attempt_3": "COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED",
+    "attempt_3_usage": {
+      "calls": 397,
+      "tokens": 3783197
+    },
+    "g013_post_terminal_diagnostic": {
+      "status": "COMPLETE / RECOVERED",
+      "calls": 10,
+      "tokens": 62370
+    }
+  },
+  "candidate_state": {
+    "new_candidate_development_head": "d3a1b274b2784399a7dc51b094a17e466d208b50",
+    "candidate_frozen": false,
+    "attempt_4_preregistered": false,
+    "attempt_4_executed": false
+  },
+  "attempt_4_readiness": "READY",
+  "commits": {
+    "gold_governance": "208d0ed68020ae509ec1cfe2d848a339b2c6a996",
+    "product_repair": null
+  },
+  "next_task_recommendation": "F6-A ATTEMPT 4 / FRESH PREREGISTRATION, CANDIDATE FREEZE, AND CONTINUOUS PRE-RELEASE VALIDATION",
+  "next_task_execution_authorized": false
+}

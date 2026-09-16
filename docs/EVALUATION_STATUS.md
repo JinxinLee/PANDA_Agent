@@ -1680,3 +1680,12 @@ Evidence: accepted D4-A10 activation in Git history and current `configs/query_e
 - **A3**: PASS. English Gold Stratified Bootstrap Baseline established (deterministic manifest-driven selection across question classes) providing a reproducible before/after comparison reference.
 - **Novel Dataset Curation (N0–N3, ND-0)**: Established curated novel dataset splits (Novel Dev N1/N2, Validation N3-F/N3-E/N3-VF). ND-0 closed the first novel-dev retrieval generalization baseline; historical diagnostic attribution remains in its artifacts and does not establish resolver treatment efficacy.
 - **Historical Pre-Generalization Baselines**: Gold v2.6 / Evaluator 2.6.1, RC2b, Candidate v8, Candidate v5, and v2-lite RC1 baselines preserved in Git history and `evaluation/baselines/`.
+
+
+## Post-A3 residual completeness and Gold governance reconciliation
+
+COMPLETE / PASS / PRODUCT_REPAIR_DEFERRED_GOLD_GOVERNANCE_RECONCILED. Stored g022, g023, and post-terminal g013 evidence did not establish one safe generic product defect: g022 lost an unrepresented conjunctive obligation, g023 preserved faithfulness after an unsupported workflow-order claim could not be repaired, and g013 remained a diagnostic answer-granularity gap. Product code stayed unchanged and NEW_CANDIDATE_DEVELOPMENT_HEAD = d3a1b274b2784399a7dc51b094a17e466d208b50.
+
+Source-level and benchmark-wide governance kept g011, g044, and g115 unchanged and established one forward-only correction for g060. Gold m6-benchmark-v2.10 (SHA bdce5cbd...) changes only g060 and is paired with calibration v7 (59 formal-English IDs; selector SHA e27ef67a...). Gold v2.9 and Attempt-3 scoring remain immutable. Change-relevant deterministic tests passed; two unrelated gate-test failures were already present in the pre-edit AGY baseline. Scientific calls/tokens 0; novel_validation pristine; holdout access 0; F6-B execution 0. Attempt 4 is READY for fresh preregistration/freeze/execution but is not authorized by this task. Report: evaluation/POST_A3_RESIDUAL_COMPLETENESS_AND_GOLD_GOVERNANCE.md.
+
+NEXT_TASK_RECOMMENDATION = F6-A ATTEMPT 4 / FRESH PREREGISTRATION, CANDIDATE FREEZE, AND CONTINUOUS PRE-RELEASE VALIDATION (NOT AUTHORIZED).

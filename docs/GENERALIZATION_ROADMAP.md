@@ -960,3 +960,13 @@ NEXT_TASK_EXECUTION_AUTHORIZED = false
 FOLLOWING_ARCHITECTURE_TASK = F6-B — Protected Blind Release Gate (LOCKED / F6_A_DID_NOT_PASS)
 NEXT_STAGE_AUTHORIZED = false
 ```
+
+
+### Post-A3 residual completeness and Gold governance reconciliation
+
+- **Outcome:** COMPLETE / PASS / PRODUCT_REPAIR_DEFERRED_GOLD_GOVERNANCE_RECONCILED.
+- **Product:** Stored g022/g023/g013 evidence showed distinct loss mechanisms and no safe shared generic repair. Product behavior remains at d3a1b274b2784399a7dc51b094a17e466d208b50; verifier faithfulness, safe salvage, and F2-A3-R1 coverage ownership remain unchanged.
+- **Governance:** g011, g044, and g115 remain unchanged. Forward-only m6-benchmark-v2.10 corrects only g060 by retiring the non-question-grounded paper group/obligation while preserving code groups and all answer points. Calibration v7 mechanically preserves the 59/21 product-language membership.
+- **Boundary:** Gold v2.9 remains Attempt-3 historical authority; no rescore, scientific calls, protected cohort access, candidate freeze, or Attempt-4 execution occurred.
+- **Next:** F6-A Attempt 4 fresh preregistration, candidate freeze, and continuous prerelease validation is READY / NOT AUTHORIZED.
+- **Report:** evaluation/POST_A3_RESIDUAL_COMPLETENESS_AND_GOLD_GOVERNANCE.md.
