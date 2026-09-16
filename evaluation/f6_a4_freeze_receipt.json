@@ -1,0 +1,25 @@
+{
+  "schema_version": "f6a-a4-freeze-receipt-v1",
+  "attempt": 4,
+  "preregistration_commit": "f9e64cb5d0c60c90cb2a8432d5daf01b63ac05fa",
+  "preregistration_artifact_sha256": "da3cf3e124480ea737af3e901cfbd3fbcbc34a35b6b0fc3391dec824cdbc4b5d",
+  "freeze_source_commit": "f9e64cb5d0c60c90cb2a8432d5daf01b63ac05fa",
+  "candidate_id": "f6a-rc4-20260916",
+  "candidate_manifest_sha256": "dc44efe61b1745f0f4fddfdc1f17fbc8ba767c652fae17f5a2a003507ba4f4e7",
+  "product_behavior_lineage_head": "d3a1b274b2784399a7dc51b094a17e466d208b50",
+  "gold_benchmark_version": "m6-benchmark-v2.10",
+  "gold_dataset_sha256": "bdce5cbdc0a6f1645d7350b87bc2f289265c3d67311dab4b12e488b9dc499513",
+  "product_language_calibration_id": "phase_b_t3_product_language_scope_v7",
+  "product_language_calibration_sha256": "ad68df096fc82d6c52bd984e44e99573e6b47e5047b3d522ae750a93188c49cd",
+  "formal_product_scope_selector_count": 59,
+  "formal_product_scope_selector_sha256": "e27ef67a866274b4a8441b789ca78fc3ccb7e022eed537c7442e15230777a0e5",
+  "verify_candidate": {
+    "valid": true,
+    "mismatches": []
+  },
+  "scientific_usage_before_freeze": {
+    "model_calls": 0,
+    "token_usage": 0
+  },
+  "note": "Freeze-time identity for F6-A Attempt 4; the preregistration remains immutable."
+}
