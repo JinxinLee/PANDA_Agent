@@ -1,0 +1,143 @@
+{
+  "schema_version": "post-a4-exposed-failure-review-v1",
+  "task": "POST-ATTEMPT-4 EXPOSED FAILURE REVIEW & BOUNDED REPAIR",
+  "terminal_state": "COMPLETE / PASS / FAILURES_CLASSIFIED_PRODUCT_RESIDUALS_DEFERRED_INFRASTRUCTURE_REPAIRED",
+  "starting_head": "9c26efde1c1be3b5892f30ea446d0cc15a100444",
+  "infrastructure_commit": "83a51ff",
+  "product_development_head": "d3a1b274b2784399a7dc51b094a17e466d208b50",
+  "attempt_4": {
+    "status": "COMPLETE",
+    "verdict": "FAIL",
+    "reason": "EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED",
+    "gold_benchmark_version": "m6-benchmark-v2.10",
+    "calibration": "phase_b_t3_product_language_scope_v7",
+    "expected": 59,
+    "scored": 59,
+    "release_score": 0.9717514124293786,
+    "critical_final_evidence_recall": 0.9285714285714286,
+    "critical_answer_point_miss_count": 2,
+    "usage": {
+      "calls": 388,
+      "tokens": 3647993
+    },
+    "a2_a5": "NOT_REACHED"
+  },
+  "cases": [
+    {
+      "case_id": "g013",
+      "cluster": "A",
+      "primary_classification": "PRODUCT_DEFECT",
+      "disposition": "DEFERRED_NO_SAFE_GENERIC_FIX",
+      "candidate_recall": 1.0,
+      "final_evidence_recall": 0.5,
+      "answer_point_coverage": 0.6666666666666666,
+      "mechanism": "The candidate pool matched both Gold groups, but selected context contained no PndMasterRunSim implementation capable of supporting event-loop orchestration. The live question was represented only by legacy question_core rather than a tracked lifecycle obligation. Supported setup and macro claims survived without revision; no supported p3 claim ever existed, so final evidence could not recover it. A separate citation-choice loss omitted g013.e1 despite selected Macros documentation.",
+      "cross_attempt": "The post-A3 diagnostic and Attempt 4 reproduced 0.6667 answer-point coverage and 0.5 final-evidence recall with the same three final documents; Attempt 3 official ended in a 429 exception."
+    },
+    {
+      "case_id": "g037",
+      "cluster": "A",
+      "primary_classification": "EXPECTED_STOCHASTIC_VARIATION",
+      "disposition": "NO_PRODUCT_ACTION",
+      "candidate_recall": 1.0,
+      "final_evidence_recall": 0.0,
+      "answer_point_coverage": 0.0,
+      "mechanism": "Gold code was rank 1 and selected together with the downstream PndMasterMultiPidTask consumer. Stored diagnostics show no user-visible claims, one revision, and a correct safe fallback after no supported claim was produced. Attempt 3 answered correctly from the same stored retrieval context, so the isolated loss is located in model claim generation rather than deterministic retrieval or salvage code.",
+      "cross_attempt": "Attempt 3 passed with full answer and evidence coverage; Attempt 4 refused after one unsuccessful revision."
+    },
+    {
+      "case_id": "g011",
+      "cluster": "B",
+      "primary_classification": "PRODUCT_DEFECT",
+      "disposition": "DEFERRED_NO_SAFE_GENERIC_FIX",
+      "candidate_recall": 1.0,
+      "final_evidence_recall": 0.5,
+      "answer_point_coverage": 1.0,
+      "mechanism": "Both native-installation and container Gold evidence were retrieved and selected. The complete final comparison cited only Docker documentation that substantively covered both sides, leaving the separately selected native-installation source uncited. This is recurrent selective citation convergence, not retrieval or pruning loss.",
+      "cross_attempt": "Attempt 3 omitted both Gold groups from final evidence; Attempt 4 retained the Docker group but again omitted the native-installation group."
+    },
+    {
+      "case_id": "g044",
+      "cluster": "B",
+      "primary_classification": "PRODUCT_DEFECT",
+      "disposition": "DEFERRED_NO_SAFE_GENERIC_FIX",
+      "candidate_recall": 1.0,
+      "final_evidence_recall": 0.0,
+      "answer_point_coverage": 1.0,
+      "mechanism": "The required Pflueger thesis page was retrieved and selected at the top of context, but complete supported claims cited the Li 2026 thesis and curated concept instead. No evidence pruning occurred. This repeats a stable peer-authority citation preference already governed as a product residual.",
+      "cross_attempt": "Attempts 3 and 4 both fully covered the answer point while omitting the selected Pflueger evidence from final citations."
+    },
+    {
+      "case_id": "g059",
+      "cluster": "B",
+      "primary_classification": "EXPECTED_STOCHASTIC_VARIATION",
+      "disposition": "NO_PRODUCT_ACTION",
+      "candidate_recall": 1.0,
+      "final_evidence_recall": 0.5,
+      "answer_point_coverage": 1.0,
+      "mechanism": "Both Gold code files were retrieved and selected. After one revision, the complete answer cited factory and facade code but omitted the dedicated convolution-class implementation. Attempt 3 cited both Gold groups, so this isolated citation consolidation is not a stable deterministic defect.",
+      "cross_attempt": "Attempt 3 had full final-evidence recall; Attempt 4 retained only the factory group after revision."
+    }
+  ],
+  "shared_mechanisms": {
+    "stable_selective_citation": [
+      "g011",
+      "g044"
+    ],
+    "candidate_and_obligation_incompleteness": [
+      "g013"
+    ],
+    "stochastic_empty_claim_refusal": [
+      "g037"
+    ],
+    "stochastic_revision_citation_consolidation": [
+      "g059"
+    ]
+  },
+  "product_repair": {
+    "decision": "NO_SAFE_GENERIC_FIX",
+    "changed_files": [],
+    "reason": "The recurrent losses cannot be repaired without source-specific obligations, forced citation retention, or a new semantic resolver; isolated A3-to-A4 reversals do not meet the genericity threshold."
+  },
+  "infrastructure": {
+    "a4_pd1": {
+      "root_cause": "The standalone gate skipped project-root dotenv bootstrap and non-strict candidate binding masked verification exceptions as candidate_valid=false.",
+      "repair": "Load project-root .env and use strict candidate binding only in the standalone gate so exceptions abort before sealing; clean valid=false results remain INCONCLUSIVE.",
+      "historical_artifacts_modified": false
+    },
+    "stage_receipt_gold_version": {
+      "root_cause": "build_evaluation_manifest omitted dataset.benchmark_version while stage receipts read only manifest.gold_benchmark_version.",
+      "repair": "Future manifests now bind dataset.benchmark_version; legacy resume harmonizes absent/null fields and no historical receipt fallback was added.",
+      "historical_artifacts_modified": false
+    }
+  },
+  "verification": {
+    "red": "5 failed, 35 passed before implementation in focused gate/finalization tests",
+    "green": "105 passed, 1 compatibility warning across focused gate, finalization, lifecycle, recovery, F6-A release infrastructure, and F6 release identity suites",
+    "static": [
+      "git diff --check: PASS",
+      "git diff --stat: reviewed",
+      "git status --short: only review artifacts plus pre-existing data/_a3_gold_args.txt after closeout drafting"
+    ],
+    "legacy_fixture_debt": "The two declared legacy fixture tests were not run or modified."
+  },
+  "scientific_accounting": {
+    "calls": 0,
+    "tokens": 0
+  },
+  "protected_state": {
+    "novel_validation": "PRISTINE_FOR_CURRENT_LINEAGE",
+    "holdout_access": 0,
+    "protected_content_leakage": 0,
+    "f6_b_execution": 0
+  },
+  "candidate_state": {
+    "candidate_frozen": false,
+    "attempt_5_preregistered": false,
+    "attempt_5_executed": false
+  },
+  "gold_governance_required": false,
+  "evaluator_reconciliation_required": false,
+  "attempt_5_readiness": "READY",
+  "push_performed": false
+}
