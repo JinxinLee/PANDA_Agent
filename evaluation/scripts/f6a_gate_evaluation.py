@@ -36,6 +36,8 @@ import json
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv
+
 from panda_agent.evaluation import aggregate_metrics
 from panda_agent.evaluation_finalization import (
     _result_content_hash,
@@ -442,6 +444,8 @@ def main() -> None:
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
 
+    load_dotenv(args.project_root / ".env")
+
     if args.source_matrix is not None:
         if args.source_matrix.resolve() == args.output.resolve():
             raise ValueError(
@@ -466,7 +470,7 @@ def main() -> None:
     manifest = json.loads(manifest_path.read_text(encoding="utf-8")) if manifest_path.exists() else {}
     expected_case_ids = resolve_expected_case_ids(args.project_root, manifest)
     candidate_id, candidate_manifest_sha256, candidate_valid = resolve_candidate_binding(
-        args.project_root, manifest
+        args.project_root, manifest, strict=True
     )
     if candidate_valid is False:
         gates_passed = None

@@ -16,6 +16,7 @@ from __future__ import annotations
 import hashlib
 import io
 import json
+import os
 from pathlib import Path
 import sys
 import tempfile
@@ -435,6 +436,135 @@ class PostA3GateCliTests(unittest.TestCase):
             self.assertIn(data1["terminal_verdict_effect"], data2["terminal_verdict_effect"])
             self.assertTrue((root / "matrix2_receipt.json").exists())
 
+    def test_gate_cli_loads_project_root_dotenv(self):
+        """Standalone gate CLI must load project-root .env before resolving candidates."""
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            run_dir = root / "data" / "evaluation" / "runs" / "test-dotenv"
+            run_dir.mkdir(parents=True)
+            manifest = {
+                "schema_version": "1.0",
+                "mode": "qa",
+                "split": "dev",
+                "case_ids": ["g001"],
+                "official": True,
+                "candidate_id": "cand-valid",
+                "candidate_manifest_sha256": "candidate_sha",
+            }
+            (run_dir / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+            rec = self._create_minimal_record("g001")
+            (run_dir / "results.jsonl").write_text(json.dumps(rec) + "\n", encoding="utf-8")
+
+            prereg_path = root / "prereg.json"
+            self._create_minimal_prereg(prereg_path)
+            out = root / "matrix_dotenv.json"
+
+            # Write .env in project root
+            test_var_name = "PANDA_TEST_GATE_DOTENV_LOADED"
+            test_var_val = "loaded_val_42"
+            env_file = root / ".env"
+            env_file.write_text(f"{test_var_name}={test_var_val}\n", encoding="utf-8")
+
+            old_val = os.environ.pop(test_var_name, None)
+            try:
+                with patch(
+                    "panda_agent.candidate.verify_candidate",
+                    return_value={"valid": True, "manifest_sha256": "candidate_sha"},
+                ):
+                    self._run_gate([
+                        "--project-root", str(root),
+                        "--run-id", "test-dotenv",
+                        "--prereg", str(prereg_path),
+                        "--output", str(out),
+                    ])
+                self.assertEqual(os.environ.get(test_var_name), test_var_val)
+                receipt = json.loads(
+                    (root / "matrix_dotenv_receipt.json").read_text(encoding="utf-8")
+                )
+                self.assertTrue(receipt["candidate_valid"])
+                self.assertEqual(receipt["candidate_manifest_sha256"], "candidate_sha")
+            finally:
+                if old_val is not None:
+                    os.environ[test_var_name] = old_val
+                else:
+                    os.environ.pop(test_var_name, None)
+
+    def test_gate_cli_candidate_verification_exception_fails_before_output_or_receipt(self):
+        """Candidate verification exception in standalone gate CLI must raise and seal no receipt."""
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            run_dir = root / "data" / "evaluation" / "runs" / "test-cand-exc"
+            run_dir.mkdir(parents=True)
+            manifest = {
+                "schema_version": "1.0",
+                "mode": "qa",
+                "split": "dev",
+                "case_ids": ["g001"],
+                "candidate_id": "cand-exc",
+            }
+            (run_dir / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+            rec = self._create_minimal_record("g001")
+            (run_dir / "results.jsonl").write_text(json.dumps(rec) + "\n", encoding="utf-8")
+
+            prereg_path = root / "prereg.json"
+            self._create_minimal_prereg(prereg_path)
+            out = root / "matrix_cand_exc.json"
+            receipt_path = root / "matrix_cand_exc_receipt.json"
+
+            with patch(
+                "panda_agent.candidate.verify_candidate",
+                side_effect=RuntimeError("vertex credentials missing"),
+            ):
+                with self.assertRaises(RuntimeError) as ctx:
+                    self._run_gate([
+                        "--project-root", str(root),
+                        "--run-id", "test-cand-exc",
+                        "--prereg", str(prereg_path),
+                        "--output", str(out),
+                    ])
+                self.assertIn("vertex credentials missing", str(ctx.exception))
+
+            self.assertFalse(out.exists(), "matrix must not be written when verification fails")
+            self.assertFalse(receipt_path.exists(), "receipt must not be sealed when verification fails")
+
+    def test_gate_cli_actually_invalid_candidate_preserves_output_and_receipt(self):
+        """Actually invalid candidate (valid=False, no exception) writes output and seals receipt."""
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            run_dir = root / "data" / "evaluation" / "runs" / "test-cand-invalid"
+            run_dir.mkdir(parents=True)
+            manifest = {
+                "schema_version": "1.0",
+                "mode": "qa",
+                "split": "dev",
+                "case_ids": ["g001"],
+                "candidate_id": "cand-invalid",
+            }
+            (run_dir / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+            rec = self._create_minimal_record("g001")
+            (run_dir / "results.jsonl").write_text(json.dumps(rec) + "\n", encoding="utf-8")
+
+            prereg_path = root / "prereg.json"
+            self._create_minimal_prereg(prereg_path)
+            out = root / "matrix_cand_invalid.json"
+            receipt_path = root / "matrix_cand_invalid_receipt.json"
+
+            with patch(
+                "panda_agent.candidate.verify_candidate",
+                return_value={"valid": False, "manifest_sha256": "some_sha", "mismatches": ["git_commit"]},
+            ):
+                stdout, _ = self._run_gate([
+                    "--project-root", str(root),
+                    "--run-id", "test-cand-invalid",
+                    "--prereg", str(prereg_path),
+                    "--output", str(out),
+                ])
+
+            self.assertTrue(out.exists(), "matrix must be written for cleanly verified invalid candidate")
+            self.assertTrue(receipt_path.exists(), "receipt must be sealed for cleanly verified invalid candidate")
+            receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+            self.assertFalse(receipt["candidate_valid"])
+            self.assertEqual(receipt["decision"], "INCONCLUSIVE")
 
 if __name__ == "__main__":
     unittest.main()

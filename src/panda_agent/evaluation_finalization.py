@@ -467,7 +467,7 @@ def resolve_expected_case_ids(project_root: Path, manifest: dict[str, Any]) -> l
 
 
 def resolve_candidate_binding(
-    project_root: Path, manifest: dict[str, Any]
+    project_root: Path, manifest: dict[str, Any], strict: bool = False
 ) -> tuple[str | None, str | None, bool | None]:
     """Safely resolve and verify candidate binding without guessing.
 
@@ -490,6 +490,8 @@ def resolve_candidate_binding(
                 is_valid = False
             return candidate_id, verified_hash, is_valid
         except Exception:
+            if strict:
+                raise
             return candidate_id, None, False
 
     # For non-official runs, candidate verification is not required for dev usability,

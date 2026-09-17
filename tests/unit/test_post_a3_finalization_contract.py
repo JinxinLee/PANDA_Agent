@@ -123,6 +123,44 @@ class CandidateBindingContractTests(unittest.TestCase):
                 self.assertEqual(digest, "different_hash_value")
                 self.assertFalse(valid)
 
+    def test_resolve_candidate_binding_strict_mode_propagates_verification_exception(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest = {
+                "official": True,
+                "candidate_id": "cand-1",
+                "candidate_manifest_sha256": "expected_hash_value",
+            }
+            with patch("panda_agent.candidate.verify_candidate", side_effect=RuntimeError("missing environment")):
+                # Default / non-strict: catches exception and returns valid=False
+                cid, digest, valid = resolve_candidate_binding(root, manifest)
+                self.assertEqual(cid, "cand-1")
+                self.assertIsNone(digest)
+                self.assertFalse(valid)
+
+                # Strict mode: must propagate the exception
+                with self.assertRaises(RuntimeError) as ctx:
+                    resolve_candidate_binding(root, manifest, strict=True)
+                self.assertIn("missing environment", str(ctx.exception))
+
+    def test_resolve_candidate_binding_strict_mode_preserves_valid_verification_result_false(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest = {
+                "official": True,
+                "candidate_id": "cand-1",
+                "candidate_manifest_sha256": "expected_hash_value",
+            }
+            with patch(
+                "panda_agent.candidate.verify_candidate",
+                return_value={"valid": False, "manifest_sha256": "expected_hash_value"},
+            ):
+                # When verification succeeds but valid=False, strict mode returns valid=False without raising
+                cid, digest, valid = resolve_candidate_binding(root, manifest, strict=True)
+                self.assertEqual(cid, "cand-1")
+                self.assertEqual(digest, "expected_hash_value")
+                self.assertFalse(valid)
+
 
 class EvaluateCohortDecisionContractTests(unittest.TestCase):
     def test_reject_empty_records_and_empty_expected_ids(self):
@@ -671,6 +709,113 @@ class F6aGateEvaluationScriptContractTests(unittest.TestCase):
             self.assertNotIn("failed_gate_count:", printed)
             self.assertFalse((run_dir / "stage_receipt.json").exists())
 
+
+class GoldBenchmarkVersionContractTests(unittest.TestCase):
+    @patch("panda_agent.evaluation_runner.Storage")
+    @patch("panda_agent.evaluation_runner.IndexIdentity")
+    @patch("panda_agent.evaluation_runner.VertexSettings")
+    @patch("panda_agent.evaluation_runner.load_gold_dataset")
+    @patch("panda_agent.evaluation_runner.normalized_dir")
+    @patch("panda_agent.evaluation_runner.repository_identity")
+    @patch("panda_agent.evaluation_runner.sha256_file")
+    def test_build_evaluation_manifest_records_gold_benchmark_version(
+        self,
+        mock_sha256,
+        mock_repo_id,
+        mock_norm_dir,
+        mock_load_gold,
+        mock_vertex,
+        mock_index_id,
+        mock_storage,
+    ):
+        from panda_agent.evaluation_runner import build_evaluation_manifest
+
+        mock_sha256.return_value = "fake_sha"
+        mock_repo_id.return_value = {"commit": "abc", "dirty": False}
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            norm = root / "normalized"
+            norm.mkdir()
+            (norm / "ingestion_report.json").write_text(json.dumps({"output_hashes": {}}), encoding="utf-8")
+            mock_norm_dir.return_value = norm
+
+            fake_dataset = MagicMock()
+            fake_dataset.benchmark_version = "m6-benchmark-v2.6"
+            fake_dataset.release_eligible = True
+            fake_dataset.acceptance_exposed = False
+            fake_dataset.expected_split_counts = {}
+            mock_load_gold.return_value = fake_dataset
+
+            mock_conn = MagicMock()
+            mock_conn.execute.return_value.fetchone.return_value = ("fake_fingerprint", {})
+            mock_storage.return_value.connect.return_value.__enter__.return_value = mock_conn
+            mock_index_id.from_settings.return_value.fingerprint.return_value = "fake_fingerprint"
+
+            manifest = build_evaluation_manifest(
+                root,
+                root / "dummy_gold.yaml",
+                mode="qa",
+                split="dev",
+                official=True,
+            )
+            self.assertEqual(manifest.get("gold_benchmark_version"), "m6-benchmark-v2.6")
+
+    def test_stage_receipt_binds_gold_benchmark_version_from_manifest(self):
+        from panda_agent.evaluation_finalization import _build_stage_receipt, _sha256_file
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            gold_file = root / "gold.yaml"
+            gold_file.write_text("questions: []\n", encoding="utf-8")
+            manifest = {
+                "schema_version": "1.0",
+                "mode": "qa",
+                "split": "dev",
+                "case_ids": ["g001"],
+                "gold_dataset_path": str(gold_file),
+                "gold_dataset_hash": _sha256_file(gold_file),
+                "gold_benchmark_version": "m6-benchmark-v2.6",
+            }
+            records = [{"id": "g001", "result": {"status": "answered"}}]
+            receipt = _build_stage_receipt(
+                root,
+                "test-run",
+                manifest=manifest,
+                records=records,
+                gate={"passed": True},
+                metrics={},
+            )
+            self.assertEqual(receipt["identities"]["gold_benchmark_version"], "m6-benchmark-v2.6")
+            self.assertEqual(
+                receipt["identities"]["gold_dataset_hash"], _sha256_file(gold_file)
+            )
+
+    def test_historical_stage_receipt_preserves_null_without_fallback(self):
+        from panda_agent.evaluation_finalization import _build_stage_receipt, _sha256_file
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            gold_file = root / "gold.yaml"
+            gold_file.write_text("questions: []\n", encoding="utf-8")
+            # Historical manifest lacks gold_benchmark_version
+            manifest = {
+                "schema_version": "1.0",
+                "mode": "qa",
+                "split": "dev",
+                "case_ids": ["g001"],
+                "gold_dataset_path": str(gold_file),
+                "gold_dataset_hash": _sha256_file(gold_file),
+            }
+            records = [{"id": "g001", "result": {"status": "answered"}}]
+            receipt = _build_stage_receipt(
+                root,
+                "test-historical",
+                manifest=manifest,
+                records=records,
+                gate={"passed": True},
+                metrics={},
+            )
+            self.assertIsNone(receipt["identities"]["gold_benchmark_version"])
 
 if __name__ == "__main__":
     unittest.main()

@@ -506,6 +506,7 @@ def build_evaluation_manifest(
         "query_expansion_hash": sha256_file(
             project_root / "configs" / "query_expansions.yaml"
         ),
+        "gold_benchmark_version": dataset.benchmark_version,
         "gold_dataset_hash": sha256_file(dataset_path),
         "gold_dataset_path": str(dataset_path.resolve()),
         "gold_release_eligible": dataset.release_eligible,
@@ -1671,6 +1672,10 @@ def run_evaluation(
         if existing_manifest.get("evaluator_catalog") != evaluator_catalog:
             raise ValueError("evaluation resume evaluator catalog receipt mismatch")
         manifest["run_started_at"] = existing_manifest["run_started_at"]
+        if "gold_benchmark_version" not in existing_manifest:
+            manifest.pop("gold_benchmark_version", None)
+        elif existing_manifest.get("gold_benchmark_version") is None:
+            manifest["gold_benchmark_version"] = None
         if existing_manifest.get("candidate_id"):
             manifest["candidate_id"] = existing_manifest["candidate_id"]
             manifest["candidate_manifest_sha256"] = existing_manifest.get("candidate_manifest_sha256")
