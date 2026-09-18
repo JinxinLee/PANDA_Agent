@@ -1693,3 +1693,36 @@ COMPLETE / PASS / PRODUCT_REPAIR_DEFERRED_GOLD_GOVERNANCE_RECONCILED. Stored g02
 Source-level and benchmark-wide governance kept g011, g044, and g115 unchanged and established one forward-only correction for g060. Gold m6-benchmark-v2.10 (SHA bdce5cbd...) changes only g060 and is paired with calibration v7 (59 formal-English IDs; selector SHA e27ef67a...). Gold v2.9 and Attempt-3 scoring remain immutable. Change-relevant deterministic tests passed; two unrelated gate-test failures were already present in the pre-edit AGY baseline. Scientific calls/tokens 0; novel_validation pristine; holdout access 0; F6-B execution 0. Attempt 4 is READY for fresh preregistration/freeze/execution but is not authorized by this task. Report: evaluation/POST_A3_RESIDUAL_COMPLETENESS_AND_GOLD_GOVERNANCE.md.
 
 NEXT_TASK_RECOMMENDATION = F6-A ATTEMPT 4 / FRESH PREREGISTRATION, CANDIDATE FREEZE, AND CONTINUOUS PRE-RELEASE VALIDATION (NOT AUTHORIZED).
+
+## F6-A formal repeat eligibility and stochastic attempt policy
+
+COMPLETE / PASS / SAME_LINEAGE_REPEAT_PROHIBITED_WITHOUT_MATERIAL_CHANGE.
+
+A complete terminal formal F6-A result now closes its product-behavior lineage
+for ordinary single-attempt validation. Provider-hosted stochastic variation
+under the same frozen model/product identity is not a new candidate. Repeating
+the same exposed-Gold cohort until PASS, selecting the best realization,
+discarding FAIL results, or tuning between runs is prohibited optional stopping.
+Infrastructure recovery remains limited to completing an interrupted run under
+the exact frozen run identity.
+
+A fixed replicate block remains possible only as one formal design whose count,
+run identities, complete schedule, aggregate rule, hard-gate rule, failure
+treatment, usage accounting, and no-peeking boundary are preregistered before
+replicate 1. No such protocol is established by this task and it cannot be
+introduced retroactively after Attempt-4 outcomes and case diagnostics were
+inspected.
+
+Current product-behavior lineage HEAD remains
+`d3a1b274b2784399a7dc51b094a17e466d208b50`. The post-A4 gate-bootstrap and
+stage-receipt metadata repairs are infrastructure-only. Therefore
+`EXECUTION_INFRASTRUCTURE_READY = true`,
+`FORMAL_REPEAT_SCIENTIFICALLY_ELIGIBLE = false`, and
+`ATTEMPT_5_ELIGIBILITY = NOT_ELIGIBLE`. Attempt 5 was not preregistered, frozen,
+or executed. Scientific calls/tokens were 0/0; novel_validation remains
+pristine; holdout access, protected-content leakage, and F6-B execution remain
+zero.
+
+Policy: `evaluation/F6_FORMAL_REPEAT_POLICY.md`.
+
+NEXT_TASK_RECOMMENDATION = WAIT FOR A MATERIAL NEW PRODUCT CANDIDATE BEFORE ANOTHER FORMAL F6-A ATTEMPT (NOT AUTHORIZED).

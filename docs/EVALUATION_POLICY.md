@@ -172,6 +172,22 @@ Allowed review actions:
 
 Do not silently relax global thresholds. Citation-integrity failures, wrong-version evidence, contradictions, unsupported claims, and unhandled exceptions are not waived by default.
 
+### Formal repeat eligibility
+
+A complete terminal formal F6-A result closes that product-behavior lineage for
+ordinary single-attempt validation. Stochastic variation under the same frozen
+model and product identity is not a new candidate and does not justify another
+formal exposed-Gold draw. Infrastructure recovery may complete an interrupted
+run under the exact frozen run identity, but an infrastructure-only change does
+not reset a terminal lineage.
+
+A replicate design is permissible only as one preregistered formal block whose
+fixed schedule and aggregate decision are established before its first
+scientific call. It cannot be introduced after a terminal outcome or used as
+first-PASS/best-run selection. The full definitions, material-change matrix,
+contract-reconciliation rules, and current F6-A disposition are in
+`evaluation/F6_FORMAL_REPEAT_POLICY.md`.
+
 ## 11. Completion and stop rule
 
 Follow the task completion criteria in `AGENTS.md`: complete all requested deliverables and authorized required steps with proportionate verification. If blocked, complete independent authorized work and report completed work and outstanding steps separately. A status label does not substitute for completing remaining authorized work.
