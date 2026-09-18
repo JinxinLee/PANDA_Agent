@@ -169,21 +169,39 @@ class FakeVertex:
     """A deterministic model double that follows the production claim schema."""
 
     def generate_json(self, prompt, schema, **kwargs):
-        if "supported" in schema.get("properties", {}):
+        payload = json.loads(prompt)
+        if payload.get("task") == "decompose_user_question":
+            question = payload["untrusted_question"]
             return {
+                "points": [{"text": "Answer the explicit request", "support_spans": [question]}],
+                "ambiguity": {"status": "clear", "reason": ""},
+            }
+        if "supported" in schema.get("properties", {}):
+            result = {
                 "supported": True,
                 "unsupported_claim_ids": [],
                 "irrelevant_claim_ids": [],
                 "missing_requirement_ids": [],
                 "reason": "",
             }
+            if "claim_answer_point_mappings" in schema.get("properties", {}):
+                result["claim_answer_point_mappings"] = [
+                    {
+                        "claim_id": item["claim_id"],
+                        "answer_point_ids": list(item.get("answer_point_ids") or []),
+                    }
+                    for item in payload["untrusted_claims"]
+                ]
+                result["missing_answer_point_ids"] = []
+            return result
+        point_id = (payload.get("runtime_answer_points") or [{"answer_point_id": "question_core"}])[0]["answer_point_id"]
         return {
             "claims": [
                 {
                     "claim_id": "c1",
                     "claim_text": "PndPidCorrelator is present.",
                     "evidence_ids": ["e1"],
-                    "answer_point_ids": ["question_core"],
+                    "answer_point_ids": [point_id],
                 }
             ]
         }
@@ -253,22 +271,38 @@ class IrrelevantClaimVertex(FakeVertex):
 
 class PartialRevisionVertex:
     def generate_json(self, prompt, schema, **kwargs):
+        payload = json.loads(prompt)
+        if payload.get("task") == "decompose_user_question":
+            return FakeVertex().generate_json(prompt, schema, **kwargs)
         if "supported" in schema.get("properties", {}):
-            claims = json.loads(prompt)["untrusted_claims"]
+            claims = payload["untrusted_claims"]
             if any(item["claim_id"] == "c2" for item in claims):
-                return {
+                result = {
                     "supported": False,
                     "unsupported_claim_ids": ["c2"],
                     "irrelevant_claim_ids": [],
+                    "missing_requirement_ids": [],
                     "reason": "c2 is unsupported",
                 }
-            return {
+            else:
+                result = {
                 "supported": True,
                 "unsupported_claim_ids": [],
                 "irrelevant_claim_ids": [],
+                "missing_requirement_ids": [],
                 "reason": "",
-            }
-        task = json.loads(prompt)["task"]
+                }
+            if "claim_answer_point_mappings" in schema.get("properties", {}):
+                result["claim_answer_point_mappings"] = [
+                    {
+                        "claim_id": item["claim_id"],
+                        "answer_point_ids": [] if item["claim_id"] in result["unsupported_claim_ids"] else list(item.get("answer_point_ids") or []),
+                    }
+                    for item in claims
+                ]
+                result["missing_answer_point_ids"] = []
+            return result
+        task = payload["task"]
         if task == "revise_unsupported_claims_once":
             return {"claims": []}
         return {
@@ -277,13 +311,13 @@ class PartialRevisionVertex:
                     "claim_id": "c1",
                     "claim_text": "The class is present.",
                     "evidence_ids": ["e1"],
-                    "answer_point_ids": ["question_core"],
+                    "answer_point_ids": ["point.1"],
                 },
                 {
                     "claim_id": "c2",
                     "claim_text": "It performs an unrelated action.",
                     "evidence_ids": ["e1"],
-                    "answer_point_ids": ["question_core"],
+                    "answer_point_ids": ["point.1"],
                 },
             ]
         }
@@ -3451,7 +3485,11 @@ class TestGenerationVerificationRoleSeparation(unittest.TestCase):
         for call in gen.calls:
             self.assertIn(
                 call["task"],
-                {"create_atomic_evidence_bound_claims", "revise_unsupported_claims_once"},
+                {
+                    "decompose_user_question",
+                    "create_atomic_evidence_bound_claims",
+                    "revise_unsupported_claims_once",
+                },
             )
         stages = {
             call["kwargs"].get("usage_stage") for call in [*gen.calls, *ver.calls]
@@ -3501,16 +3539,22 @@ class TestGenerationVerificationRoleSeparation(unittest.TestCase):
         for forbidden in ("model_roles", "qa_generation", "qa_semantic_verification"):
             self.assertNotIn(forbidden, result_json)
 
-    # T26 — the default run_detailed mode stays legacy_question_core.
-    def test_default_mode_unchanged(self):
+    # T26 — normal QA uses the bounded production obligation mode, not E3.
+    def test_default_mode_exposes_authoritative_answer_point_audit(self):
         import panda_agent.qa as qa_module
 
         self.assertIn("DEFAULT_ANSWER_POINT_MODE", inspect.getsource(qa_module.QAAgent.run_detailed))
         bundle = bundle_for(code_evidence())
         agent, gen, ver = self._two_role_agent(bundle)
         detailed = agent.run_detailed("Where is PndPidCorrelator?")
-        self.assertNotIn("answer_point_audit", detailed["diagnostics"])
-        self.assertNotIn("question_decomposition", detailed["diagnostics"])
+        self.assertEqual(
+            detailed["diagnostics"]["answer_point_audit"]["mode"],
+            "production_answer_obligations_v1",
+        )
+        self.assertEqual(
+            detailed["diagnostics"]["question_decomposition"]["mode"],
+            "production_authoritative",
+        )
         self.assertNotIn("e3_trace", detailed["diagnostics"])
 
     # T30 — the F3 fixed-locator retirement is intact in the QA source.
@@ -3589,7 +3633,12 @@ class ComposerFakeVertex(FakeVertex):
                 return self.review_result
             return super().generate_json(prompt, schema, **kwargs)
         self._record_usage(kwargs)
-        if self.draft_claims is not None and "supported" not in schema.get("properties", {}):
+        payload = json.loads(prompt)
+        if (
+            self.draft_claims is not None
+            and payload.get("task") != "decompose_user_question"
+            and "supported" not in schema.get("properties", {})
+        ):
             return {"claims": [dict(claim) for claim in self.draft_claims]}
         return super().generate_json(prompt, schema, **kwargs)
 
@@ -3717,13 +3766,13 @@ class TestBoundedAnswerComposer(unittest.TestCase):
                 "claim_id": "c1",
                 "claim_text": "The class is present in the locked corpus.",
                 "evidence_ids": ["e1"],
-                "answer_point_ids": ["question_core"],
+                "answer_point_ids": ["point.1"],
             },
             {
                 "claim_id": "c2",
                 "claim_text": "The workflow runs after the ingest stage.",
                 "evidence_ids": ["e2"],
-                "answer_point_ids": ["question_core"],
+                "answer_point_ids": ["point.1"],
             },
         ]
         bundle = bundle_for([
@@ -4443,17 +4492,23 @@ class TestBoundedAnswerComposer(unittest.TestCase):
 
     # -------------------------------------------------- mode/regression guards
 
-    # T38 — the default run_detailed mode is unchanged: single-claim answers
-    # bypass the composer and no coverage diagnostics appear.
-    def test_default_mode_unchanged(self):
+    # T38 — the production obligation mode remains compatible with the
+    # single-claim composer bypass and exposes coverage diagnostics.
+    def test_default_mode_keeps_composer_compatible_with_answer_points(self):
         bundle = bundle_for(code_evidence())
         gen = ComposerFakeVertex()
         ver = ComposerFakeVertex()
         agent = QAAgent(Path.cwd(), retriever=FakeRetriever(bundle), vertex=gen, verification_vertex=ver)
         detailed = agent.run_detailed("Explain this implementation.")
         self.assertEqual(detailed["result"]["status"], QAStatus.ANSWERED.value)
-        self.assertNotIn("answer_point_audit", detailed["diagnostics"])
-        self.assertNotIn("question_decomposition", detailed["diagnostics"])
+        self.assertEqual(
+            detailed["diagnostics"]["answer_point_audit"]["mode"],
+            "production_answer_obligations_v1",
+        )
+        self.assertEqual(
+            detailed["diagnostics"]["question_decomposition"]["mode"],
+            "production_authoritative",
+        )
         self.assertNotIn("e3_trace", detailed["diagnostics"])
         self.assertEqual(detailed["diagnostics"]["composer"]["reason"], "single_claim_bypass")
         self.assertEqual(len(detailed["result"]["claims"]), 1)

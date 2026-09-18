@@ -795,9 +795,9 @@ def test_t19_public_qa_dto_schema_invariant(tmp_path: Path) -> None:
         assert "declared_answer_point_ids" not in claim
 
 
-def test_t20_default_answer_point_mode_legacy() -> None:
-    """T20: DEFAULT_ANSWER_POINT_MODE remains legacy_question_core."""
-    assert DEFAULT_ANSWER_POINT_MODE == "legacy_question_core"
+def test_t20_default_answer_point_mode_excludes_e3() -> None:
+    """T20: normal QA uses semantic obligations without enabling E3 retrieval."""
+    assert DEFAULT_ANSWER_POINT_MODE == "production_answer_obligations_v1"
 
 
 # ---------------------------------------------------------------------------

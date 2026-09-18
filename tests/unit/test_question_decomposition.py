@@ -121,8 +121,7 @@ def test_five_points_and_diagnostic_ambiguity():
         decompose(question, raw)
 
 
-@pytest.mark.parametrize("entry", ["run", "run_detailed"])
-def test_normal_qa_never_invokes_decomposer(entry):
+def test_explicit_legacy_mode_never_invokes_decomposer():
     class CapturingVertex(FakeVertex):
         def __init__(self):
             self.calls = 0
@@ -140,8 +139,8 @@ def test_normal_qa_never_invokes_decomposer(entry):
     vertex = CapturingVertex()
     agent = QAAgent(Path.cwd(), retriever=FakeRetriever(bundle_for(evidence)), vertex=vertex)
     with patch.object(QuestionDecomposer, "decompose", side_effect=AssertionError("unexpected decomposition")):
-        result = getattr(agent, entry)("Where is X defined?")
-    assert (result.status if entry == "run" else result["result"]["status"]) == "answered"
+        result = agent._run_detailed("Where is X defined?", mode="legacy_question_core")
+    assert result["result"]["status"] == "answered"
     assert vertex.calls == 2  # Existing answer and review calls only, both fake.
 
 

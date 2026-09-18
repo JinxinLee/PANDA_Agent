@@ -13,8 +13,8 @@ from panda_agent.models import QAResult,ClaimCitation
 from test_e2_a1_answer_point_coverage import agent,Vertex,claim,review,QUESTION,POINTS
 START='ffedb2117f578515ea9d74eca92105956b8a3dcb'
 
-def test_preverdict_default():
-    assert qa.DEFAULT_ANSWER_POINT_MODE=='legacy_question_core'
+def test_current_default_is_bounded_production_obligation_mode():
+    assert qa.DEFAULT_ANSWER_POINT_MODE=='production_answer_obligations_v1'
 
 def test_legacy_matches_starting_implementation(tmp_path):
     source=subprocess.check_output(['git','show',START+':src/panda_agent/qa.py'],text=True,encoding='utf-8')

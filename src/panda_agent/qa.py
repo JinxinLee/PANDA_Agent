@@ -78,7 +78,7 @@ def _normalise_rejected_identifier_token(token: str) -> str:
 _CODE_DATA_EXTENSIONS = (".C", ".py", ".root", ".h", ".hpp", ".cpp", ".cxx", ".json", ".txt", ".yaml", ".yml")
 
 
-DEFAULT_ANSWER_POINT_MODE = "legacy_question_core"
+DEFAULT_ANSWER_POINT_MODE = "production_answer_obligations_v1"
 
 
 def _is_public_claim_citation_eligible(evidence: dict[str, Any]) -> bool:
@@ -119,7 +119,12 @@ def _evidence_source_types(item: dict[str, Any]) -> set[str]:
     return source_types
 
 
-_ANSWER_POINT_MODES = {"legacy_question_core", "shadow_e1_v2", "runtime_e1_v2"}
+_ANSWER_POINT_MODES = {
+    "legacy_question_core",
+    "shadow_e1_v2",
+    "runtime_e1_v2",
+    "production_answer_obligations_v1",
+}
 ANSWER_POINT_COVERAGE_REVIEW_SCHEMA = {
     **REVIEW_SCHEMA,
     "properties": {
@@ -744,7 +749,11 @@ def _runtime_answer_points(question: str) -> list[dict[str, str]]:
 
 
 def _coverage_shadow(state: QAState) -> bool:
-    return state.get("answer_point_coverage_mode") in {"shadow_e1_v2", "runtime_e1_v2"}
+    return state.get("answer_point_coverage_mode") in {
+        "shadow_e1_v2",
+        "runtime_e1_v2",
+        "production_answer_obligations_v1",
+    }
 
 
 def _active_runtime_answer_points(state: QAState) -> list[dict[str, str]]:
@@ -3180,7 +3189,11 @@ class QAAgent:
         """Internal paired-evaluation seam; not a public API selector."""
         if mode not in _ANSWER_POINT_MODES:
             raise ValueError(f"unsupported answer-point mode: {mode}")
-        coverage_shadow = mode in {"shadow_e1_v2", "runtime_e1_v2"}
+        coverage_shadow = mode in {
+            "shadow_e1_v2",
+            "runtime_e1_v2",
+            "production_answer_obligations_v1",
+        }
         started = time.perf_counter()
         stats_before = self._stats_snapshot()
         initial: QAState = {"question": question}
@@ -3189,6 +3202,8 @@ class QAAgent:
         if coverage_shadow:
             decomposition_started = time.perf_counter()
             decomposition = self.decompose_question(question)
+            if mode == "production_answer_obligations_v1":
+                decomposition = {**decomposition, "mode": "production_authoritative"}
             initial.update(answer_point_coverage_mode=mode, runtime_answer_points=decomposition["points"])
             initial["runtime_answer_points"] = _active_runtime_answer_points(initial)
             decomposition_ms = int(round((time.perf_counter() - decomposition_started) * 1000))

@@ -79,9 +79,9 @@ def state(a, claims, points=None):
 
 def test_projection_explicit_entrypoint_usage_and_dto(tmp_path):
     a=agent(tmp_path); out=a.run_answer_point_coverage_diagnostic(QUESTION)
-    assert [c[0]["task"] for c in a.vertex.calls] == ["decompose_user_question","create_atomic_evidence_bound_claims","review_claim_support_and_relevance"]
+    assert [c[0]["task"] for c in a.vertex.calls] == ["decompose_user_question","create_atomic_evidence_bound_claims","review_claim_support_and_relevance","compose_verified_claims"]
     assert a.vertex.calls[0][0] == {"task":"decompose_user_question","untrusted_question":QUESTION}
-    for payload,_,_ in a.vertex.calls[1:]:
+    for payload,_,_ in a.vertex.calls[1:3]:
         assert payload["runtime_answer_points"] == POINTS
         assert all(x not in json.dumps(payload) for x in ["facet_type","support_spans","ambiguity","expected_count","Gold"])
     assert a.vertex.calls[2][1] == ANSWER_POINT_COVERAGE_REVIEW_SCHEMA
@@ -89,8 +89,8 @@ def test_projection_explicit_entrypoint_usage_and_dto(tmp_path):
     audit=out["diagnostics"]["answer_point_audit"]
     assert audit["coverage_complete"] and audit["coverage_evaluable"]
     assert all(m["rendered"] for m in audit["claim_mappings"])
-    assert out["model_usage"]["model_calls"] == 3
-    assert out["model_usage"]["token_usage"] == 15
+    assert out["model_usage"]["model_calls"] == 4
+    assert out["model_usage"]["token_usage"] == 20
     assert "question_decomposition" in out["node_timings_ms"]
     assert out["diagnostics"]["question_decomposition"]["points"][0]["facet_type"] == "definition"
     assert set(ClaimCitation.model_fields) == {"claim_id","claim_text","evidence_ids"}
@@ -98,21 +98,19 @@ def test_projection_explicit_entrypoint_usage_and_dto(tmp_path):
     assert all(set(c)==set(ClaimCitation.model_fields) for c in out["result"]["claims"])
 
 
-@pytest.mark.parametrize("entry", ["run","run_detailed"])
-def test_normal_mode_unchanged(tmp_path, entry):
+def test_explicit_legacy_mode_unchanged(tmp_path):
     r={k:v for k,v in review().items() if k in REVIEW_SCHEMA["required"]}
     v=Vertex(answers=[claim(point="question_core")],reviews=[r])
     a=agent(tmp_path,v)
-    a.decompose_question=lambda question: pytest.fail("normal mode must not decompose")
-    out=getattr(a,entry)(QUESTION)
+    a.decompose_question=lambda question: pytest.fail("explicit legacy mode must not decompose")
+    out=a._run_detailed(QUESTION, mode="legacy_question_core")
     assert len(v.calls)==2 and a.retriever.calls==1
     assert v.calls[0][1]==ANSWER_SCHEMA and v.calls[0][2]["system_instruction"]==ANSWER_SYSTEM_PROMPT
     assert v.calls[1][1]==REVIEW_SCHEMA and v.calls[1][2]["system_instruction"]==EVIDENCE_REVIEW_SYSTEM_PROMPT
     assert v.calls[0][0]["runtime_answer_points"]==[{"answer_point_id":"question_core","text":QUESTION}]
-    result=out.model_dump(mode="json") if entry=="run" else out["result"]
+    result=out["result"]
     assert "answer_point_ids" not in json.dumps(result)
-    if entry=="run_detailed":
-        assert "answer_point_audit" not in out["diagnostics"]
+    assert "answer_point_audit" not in out["diagnostics"]
 
 
 def test_semantic_mapping_corrects_proposal_and_retains_declaration(tmp_path):
@@ -155,7 +153,7 @@ def test_missing_point_reuses_one_revision_without_retrieval(tmp_path,fixed):
     v=Vertex(answers=[claim()],reviews=[first,second],revisions=[claim("c2","point.2","The output is a table.")] if fixed else [])
     a=agent(tmp_path,v);out=a.run_answer_point_coverage_diagnostic(QUESTION)
     assert a.retriever.calls==1 and out["diagnostics"]["revision_count"]==1
-    assert len(v.calls)==5
+    assert len(v.calls)==(6 if fixed else 5)
     payload,_,kw=v.calls[3]
     assert payload["missing_answer_point_ids"]==["point.2"] and payload["missing_answer_points"]==[POINTS[1]]
     assert payload["untrusted_evidence"]==a.retriever.bundle["evidence"]

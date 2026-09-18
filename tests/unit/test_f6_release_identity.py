@@ -113,7 +113,7 @@ class CandidateManifestIdentityTests(unittest.TestCase):
         self.assertNotIn('benchmarks" / "v2" / "gold_questions.yaml"', source)
 
     def test_recorded_mode_matches_product_default(self):
-        self.assertEqual(DEFAULT_ANSWER_POINT_MODE, "legacy_question_core")
+        self.assertEqual(DEFAULT_ANSWER_POINT_MODE, "production_answer_obligations_v1")
 
 
 if __name__ == "__main__":
