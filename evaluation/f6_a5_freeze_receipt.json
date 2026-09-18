@@ -1,0 +1,31 @@
+{
+  "schema_version": "f6a-a5-freeze-receipt-v1",
+  "attempt": 5,
+  "preregistration_commit": "eacbf447eee2527b85e0e47073d8584c64a4a3f4",
+  "preregistration_artifact_sha256": "92956d235256d0174908885b89e24dabf3c3e79dba12dd2e3a61867bb4d28ff4",
+  "freeze_source_commit": "eacbf447eee2527b85e0e47073d8584c64a4a3f4",
+  "candidate_id": "f6a-rc5-20260919",
+  "candidate_manifest_sha256": "db8ba89bd8a7ab490d981c6a49c2ff30f0736bcee2f46e07881efe9979514cc4",
+  "product_behavior_lineage_head": "eda7d932a9b1b7b65436cba01e247859a6f9e056",
+  "previous_product_behavior_lineage_head": "d3a1b274b2784399a7dc51b094a17e466d208b50",
+  "r1_release_identity_head": "8f61aee414aa9fa2da0e3a6bbb2f767eadb7da4c",
+  "primary_answer_point_mode": "production_answer_obligations_v1",
+  "prompt_hash": "35f1dd3cbcd6cb636e2e92e7af28cb95415787e8d920c99c3b070eae86a8f097",
+  "question_decomposition_prompt_version": "2.0.0",
+  "question_decomposition_schema_version": "e1.question_decomposition.v2",
+  "gold_benchmark_version": "m6-benchmark-v2.10",
+  "gold_dataset_sha256": "bdce5cbdc0a6f1645d7350b87bc2f289265c3d67311dab4b12e488b9dc499513",
+  "product_language_calibration_id": "phase_b_t3_product_language_scope_v7",
+  "product_language_calibration_sha256": "ad68df096fc82d6c52bd984e44e99573e6b47e5047b3d522ae750a93188c49cd",
+  "formal_product_scope_selector_count": 59,
+  "formal_product_scope_selector_sha256": "e27ef67a866274b4a8441b789ca78fc3ccb7e022eed537c7442e15230777a0e5",
+  "verify_candidate": {
+    "valid": true,
+    "mismatches": []
+  },
+  "scientific_usage_before_freeze": {
+    "model_calls": 0,
+    "token_usage": 0
+  },
+  "note": "Freeze-time identity for F6-A Attempt 5; the preregistration remains immutable."
+}
