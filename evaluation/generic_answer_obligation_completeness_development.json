@@ -1,0 +1,62 @@
+{
+  "task": "GENERIC_ANSWER_OBLIGATION_COMPLETENESS_DEVELOPMENT",
+  "status": "COMPLETE / PASS / GENERIC_ANSWER_OBLIGATION_COMPLETENESS_IMPLEMENTED",
+  "starting_head": "1b2e5600a8952a6f78601156a8ce2ee279616fad",
+  "starting_product_lineage": "d3a1b274b2784399a7dc51b094a17e466d208b50",
+  "starting_normal_mode": "legacy_question_core",
+  "selected_option": "B_BOUNDED_BRIDGE_INTO_NORMAL_QA",
+  "normal_mode": "production_answer_obligations_v1",
+  "production_path": [
+    "question_only_semantic_decomposition",
+    "generation_with_authoritative_answer_points",
+    "claim_support_and_answer_point_coverage_review",
+    "one_bounded_revision_when_needed",
+    "final_verification_and_coverage_audit"
+  ],
+  "reused": [
+    "QuestionDecomposer E1 v2",
+    "point.N application identities",
+    "E2 claim-to-answer-point review",
+    "missing_answer_point_ids",
+    "bounded revision",
+    "existing final coverage audit"
+  ],
+  "not_promoted": [
+    "E3 missing-point retrieval",
+    "candidate capture",
+    "cross-pass global reselection",
+    "retained-support ledger"
+  ],
+  "test_first": {
+    "red": "10 failed",
+    "t1_t10": "PASS",
+    "deterministic_runs": [
+      "10 failed",
+      "8 passed, 2 failed",
+      "9 passed, 1 failed",
+      "132 passed, 10 failed",
+      "130 passed, 1 failed",
+      "331 passed, 43 subtests passed, 16 failed",
+      "207 passed, 25 subtests passed, 3 failed",
+      "347 passed, 43 subtests passed"
+    ],
+    "focused_result": "347 passed, 43 subtests passed",
+    "scientific_calls": 0,
+    "scientific_tokens": 0
+  },
+  "material_product_change": true,
+  "new_candidate_development_head": "eda7d932a9b1b7b65436cba01e247859a6f9e056",
+  "attempt_5_eligibility": "ELIGIBLE_PENDING_FRESH_PREREGISTRATION_AND_CANDIDATE_FREEZE",
+  "candidate_frozen": false,
+  "attempt_5_preregistered": false,
+  "attempt_5_executed": false,
+  "protected_state": {
+    "novel_validation": "PRISTINE_FOR_CURRENT_LINEAGE",
+    "holdout_access": 0,
+    "protected_content_leakage": 0,
+    "f6_b_execution": 0
+  },
+  "exposed_case_use": "FORENSIC_ONLY",
+  "next_task_recommendation": "F6-A ATTEMPT 5 / FRESH PREREGISTRATION, CANDIDATE FREEZE, AND CONTINUOUS PRE-RELEASE VALIDATION",
+  "next_task_execution_authorized": false
+}
