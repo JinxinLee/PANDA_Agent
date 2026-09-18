@@ -1,0 +1,296 @@
+{
+ "schema_version": "f6a-preregistration-v3",
+ "task": "F6-A Attempt 5 — Fresh Preregistration, Candidate Freeze, and Continuous Pre-Release Validation",
+ "attempt": 5,
+ "starting_head": "8f61aee414aa9fa2da0e3a6bbb2f767eadb7da4c",
+ "product_behavior_lineage_head": "eda7d932a9b1b7b65436cba01e247859a6f9e056",
+ "previous_product_behavior_lineage_head": "d3a1b274b2784399a7dc51b094a17e466d208b50",
+ "r1_release_identity_head": "8f61aee414aa9fa2da0e3a6bbb2f767eadb7da4c",
+ "implementation_lineage_before_preregistration": "8f61aee414aa9fa2da0e3a6bbb2f767eadb7da4c",
+ "candidate_id": "f6a-rc5-20260919",
+ "primary_runtime_mode": "production_answer_obligations_v1",
+ "material_product_change": {
+  "mechanism": "generic answer-obligation completeness (production_answer_obligations_v1)",
+  "accepted_product_development_head": "eda7d932a9b1b7b65436cba01e247859a6f9e056",
+  "release_identity_repair_head": "8f61aee414aa9fa2da0e3a6bbb2f767eadb7da4c",
+  "release_identity_role": "identity/provenance-only; completes freeze authority; does not replace the product-behavior lineage HEAD",
+  "production_pipeline": "raw question -> QuestionDecomposer -> 1-5 question-only semantic obligations -> generation with authoritative answer points -> support + coverage verification -> missing_answer_point_ids -> at most one bounded evidence-backed revision -> final verification / coverage audit",
+  "intentionally_not_promoted": [
+   "E3 missing-point retrieval",
+   "candidate capture",
+   "cross-pass global reselection",
+   "retained-support ledger"
+  ]
+ },
+ "formal_repeat_eligibility": {
+  "same_product_lineage_formal_repeat": "PROHIBITED",
+  "eligibility_basis": "material product change after the Attempt-4 lineage; this run validates the new candidate, not another stochastic realization of the old candidate"
+ },
+ "model_identities": {
+  "generation": "gemini-3.8-flash",
+  "verification_configured": null,
+  "effective_verification": "gemini-3.8-flash",
+  "runtime_composer": "gemini-3.8-flash",
+  "evaluation_judge": "gemini-3.8-flash",
+  "embedding": "gemini-embedding-2",
+  "embedding_dimensions": 3072,
+  "distinct_generation_and_verification_client_paths": true
+ },
+ "prompt_identity": {
+  "prompt_set_version": "3.10.1",
+  "prompt_hash": "35f1dd3cbcd6cb636e2e92e7af28cb95415787e8d920c99c3b070eae86a8f097",
+  "question_decomposition_prompt_version": "2.0.0",
+  "question_decomposition_schema_version": "e1.question_decomposition.v2",
+  "fingerprint_binds_question_decomposition": true,
+  "candidate_evaluation_prompt_authority": "candidate_manifest.prompt_hash == evaluation_manifest.prompt_hash == canonical prompt_fingerprint()"
+ },
+ "corpus_identity": {
+  "index_fingerprint": "8172f9a640e62977be6e911bfb4848ce3aecd0994f1f3ba51a0985bffec62cb9",
+  "collection": "panda_knowledge_v1",
+  "qdrant_points_count": 104973,
+  "dense_dimensions": 3072,
+  "docker_runtime": {
+   "postgres": "postgres:17-alpine",
+   "qdrant": "qdrant/qdrant:v1.15.5"
+  },
+  "source_manifest_sha256": "9925ec31a6122e05388806990f79aae036f3b0989c4584d24f2092bc4edb3d94"
+ },
+ "retrieval_identity": {
+  "retrieval_policy_sha256": "fb2cd99bf500d5924931cf0fa6d5ea801efc7939b4c469fad8fbc0b5b082ced9",
+  "query_expansion_sha256": "84c93c94e70e8e7819a2cd8ecdd18f8fce41996d616d5ebc34fe2deb823e039a"
+ },
+ "gold_identity": {
+  "benchmark_version": "m6-benchmark-v2.10",
+  "dataset": "evaluation/benchmarks/v2_10/gold_questions.yaml",
+  "dataset_sha256": "bdce5cbdc0a6f1645d7350b87bc2f289265c3d67311dab4b12e488b9dc499513",
+  "question_count_universe": 120,
+  "official_ready": true,
+  "structurally_valid": true,
+  "status": "approved_exposed_development_benchmark_v2_10"
+ },
+ "product_language_calibration": {
+  "calibration_id": "phase_b_t3_product_language_scope_v7",
+  "artifact": "evaluation/baselines/manifests/phase_b_t3_product_language_scope_v7.json",
+  "artifact_sha256": "ad68df096fc82d6c52bd984e44e99573e6b47e5047b3d522ae750a93188c49cd",
+  "compatible_with_gold": true,
+  "formal_english_count": 59,
+  "non_english_count": 21
+ },
+ "formal_english_selector": {
+  "definition": "english_product_case_ids(active_gold, 'dev', calibration=phase_b_t3_product_language_scope_v7)",
+  "case_ids": [
+   "g001",
+   "g002",
+   "g003",
+   "g004",
+   "g005",
+   "g006",
+   "g007",
+   "g008",
+   "g009",
+   "g010",
+   "g011",
+   "g012",
+   "g013",
+   "g014",
+   "g015",
+   "g016",
+   "g017",
+   "g018",
+   "g019",
+   "g020",
+   "g021",
+   "g022",
+   "g023",
+   "g024",
+   "g025",
+   "g026",
+   "g027",
+   "g028",
+   "g029",
+   "g030",
+   "g031",
+   "g032",
+   "g033",
+   "g034",
+   "g035",
+   "g036",
+   "g037",
+   "g039",
+   "g040",
+   "g041",
+   "g042",
+   "g044",
+   "g047",
+   "g050",
+   "g051",
+   "g052",
+   "g055",
+   "g057",
+   "g058",
+   "g059",
+   "g060",
+   "g105",
+   "g108",
+   "g110",
+   "g112",
+   "g113",
+   "g114",
+   "g115",
+   "g119"
+  ],
+  "derived_count": 59,
+  "derived_sha256": "e27ef67a866274b4a8441b789ca78fc3ccb7e022eed537c7442e15230777a0e5"
+ },
+ "run_ids": {
+  "stage_a1_gold_formal_full": "f6a-rc5-gold-formal-full-20260919",
+  "stage_a2_gold_formal_ablation": "f6a-rc5-gold-formal-ablation-20260919",
+  "stage_a3_novel_dev_full": "f6a-rc5-novel-dev-full-20260919",
+  "stage_a4_novel_validation_full": "f6a-rc5-novel-validation-full-20260919",
+  "stage_a5_composer_audit": "f6a-rc5-composer-audit-20260919"
+ },
+ "release_score": {
+  "formula": "answered -> answer_point_coverage; otherwise 1.0 if expected_status_correct else 0.0; arithmetic mean over the complete cohort",
+  "additional_release_score_gate": false,
+  "incomplete_cases_are_not_scored_as_zero": true
+ },
+ "gold_quality_thresholds": {
+  "gold_recall_at_10": 0.95,
+  "final_evidence_recall": 0.9,
+  "critical_final_evidence_recall": 1.0,
+  "intent_accuracy": 0.9,
+  "per_intent_gold_recall_at_10": 0.75,
+  "per_intent_intent_accuracy": 0.8,
+  "expected_status_accuracy": 0.975,
+  "citation_integrity": 1.0,
+  "wrong_version_evidence_count": 0,
+  "forbidden_evidence_count": 0,
+  "required_source_coverage_answered": 0.97,
+  "identifier_hallucination_rate": 0.03,
+  "paper_code_dual_source_rate": 1.0,
+  "answer_point_coverage": 0.9,
+  "critical_answer_point_miss_count": 0,
+  "contradiction_count": 0,
+  "major_unsupported_claim_count": 0,
+  "unhandled_exception_count": 0
+ },
+ "hard_safety_invariants": {
+  "citation_integrity": 1.0,
+  "wrong_version_evidence_count": 0,
+  "forbidden_evidence_count": 0,
+  "critical_answer_point_miss_count": 0,
+  "contradiction_count": 0,
+  "major_unsupported_claim_count": 0,
+  "unhandled_exception_count": 0
+ },
+ "benchmark_dependency": {
+  "ablation_id": "disable_query_expansion_injection",
+  "implementation": "panda_agent.f6a_ablation.install",
+  "formula": "stage_a1_release_score - stage_a2_release_score",
+  "maximum": 0.05,
+  "cohort": "the exact 59-case formal-English selector",
+  "runs_only_if_a1_passes": true
+ },
+ "novel_dev_contract": {
+  "dataset": "evaluation/novel/v1/novel_dev.yaml",
+  "role": "EXPOSED_DEVELOPMENT_GENERALIZATION_DIAGNOSTIC",
+  "complete_authoritative_cohort": true,
+  "mandatory_hard_stop": "all hard_safety_invariants must pass",
+  "no_tuning_after_observation": true
+ },
+ "novel_validation_contract": {
+  "dataset": "evaluation/novel/v1/novel_validation.yaml",
+  "status_before_a4": "PRISTINE_FOR_CURRENT_LINEAGE",
+  "complete_authoritative_cohort": true,
+  "first_model_result_transition": "EXPOSED_FOR_CURRENT_LINEAGE",
+  "no_subset_selection_or_quality_retry": true,
+  "generalization_gap_formula": "stage_a1_release_score - stage_a4_release_score",
+  "generalization_gap_maximum": 0.1,
+  "hard_safety_invariants_apply": true
+ },
+ "composer_audit": {
+  "inputs": [
+   "stage_a1_gold_formal_full",
+   "stage_a4_novel_validation_full"
+  ],
+  "eligible_pair": "answered, composer attempted and accepted, at least two verified public claims",
+  "new_fact_rate_required": 0.0,
+  "readability_applicable_minimum_pairs": 10,
+  "readability_gate": "composed_preferred > deterministic_preferred",
+  "insufficient_pairs": "COMPLETE / INCONCLUSIVE / COMPOSER_AUDIT_NOT_APPLICABLE",
+  "no_extra_qa_runs_to_manufacture_pairs": true
+ },
+ "stage_order": [
+  "A1_gold_formal_full",
+  "A2_gold_formal_ablation",
+  "A3_novel_dev_full",
+  "A4_novel_validation_full",
+  "A5_composer_audit"
+ ],
+ "fail_fast": {
+  "a1_any_mandatory_gate_failure": "COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED",
+  "a2_dependency_failure": "COMPLETE / FAIL / BENCHMARK_DEPENDENCY_GATE_FAILED",
+  "a3_hard_safety_failure": "COMPLETE / FAIL / NOVEL_DEV_HARD_SAFETY_GATE_FAILED",
+  "a4_failure": "COMPLETE / FAIL / GENERALIZATION_OR_NOVEL_VALIDATION_GATE_FAILED",
+  "a5_new_fact_failure": "COMPLETE / FAIL / COMPOSER_SAFETY_GATE_FAILED",
+  "irrecoverable_incomplete": "COMPLETE / INCONCLUSIVE / PRE_RELEASE_EXECUTION_INCOMPLETE"
+ },
+ "recovery_contract": {
+  "resume_identity": "same candidate, preregistration, run ID, dataset, case set, mode, and behavior",
+  "retryable_exceptions_remain_resumable": true,
+  "successful_cases_never_rerun": true,
+  "terminal_exceptions_never_loop": true,
+  "failed_attempt_usage_is_cumulative": true,
+  "receipt_not_sealed_while_recovery_pending": true
+ },
+ "receipt_contract": {
+  "chronology": [
+   "scientific stage complete",
+   "permitted recovery complete",
+   "cohort completeness established",
+   "gate inputs and outputs persisted",
+   "immutable stage receipt sealed",
+   "stage receipt validated",
+   "case-level diagnostics exposed"
+  ],
+  "receipt_before_diagnostics": true,
+  "receipt_validation_required": true
+ },
+ "usage_accounting": {
+  "attempt_5_only": true,
+  "failed_retry_attempts_included": true,
+  "breakdown_by_stage_and_recoverable_role": true,
+  "no_estimation_for_unrecoverable_components": true
+ },
+ "decomposition_usage_accounting": {
+  "question_decomposition_counts_toward_attempt_5_usage": true,
+  "separate_reporting": "where stored accounting allows",
+  "if_not_recoverable": "NOT_SEPARATELY_RECOVERABLE_FROM_STORED_RECORDS",
+  "estimation": "prohibited"
+ },
+ "comparison_with_attempt_4": {
+  "attempt_4_mode": "legacy_question_core",
+  "attempt_5_mode": "production_answer_obligations_v1",
+  "shared_gold": "m6-benchmark-v2.10",
+  "comparison_type": "informative product-lineage comparison, not a stochastic repeat",
+  "causal_attribution": "no difference may be attributed solely to the completeness mechanism unless the evidence establishes attribution",
+  "diagnostic_attention_after_receipt_sealing": [
+   "critical answer-point misses",
+   "expected-status behavior",
+   "final evidence recall",
+   "model-call/token cost",
+   "decomposition over-splitting or refusal regressions"
+  ],
+  "no_tuning_from_observations_inside_attempt_5": true
+ },
+ "protected_boundaries": {
+  "holdout_access": 0,
+  "protected_content_leakage": 0,
+  "f6_b_execution": 0,
+  "f6_b_authorized": false
+ },
+ "post_a0_immutability": "No product, retrieval, prompt, evaluator, recovery, Gold, calibration, threshold, model, ablation, novel-cohort, or composer-contract change is permitted within Attempt 5.",
+ "measured_outcomes": null,
+ "scientific_calls_before_freeze": 0,
+ "scientific_tokens_before_freeze": 0
+}
