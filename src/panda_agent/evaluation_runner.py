@@ -15,6 +15,7 @@ from typing import Any, Literal
 
 import yaml
 
+from panda_agent import question_decomposition
 from panda_agent.evaluation import (
     newest_signed_exposed_gold_dir,
     EvaluationRunStore,
@@ -361,9 +362,10 @@ def prompt_fingerprint() -> str:
     """Fingerprint every behavior-affecting model prompt in the runtime.
 
     F6 release identity requires the full active prompt set, including the
-    answer-point coverage review/revision contracts and the F5 composer and
-    composer-review prompts; the offline judge is recorded as architecture
-    metadata. Any prompt change must change this hash.
+    production question-decomposition contract, answer-point coverage
+    review/revision contracts, and the F5 composer and composer-review prompts;
+    the offline judge is recorded as architecture metadata. Any prompt or
+    declared decomposition-contract identity change must change this hash.
     """
     payload = {
         "answer": ANSWER_SYSTEM_PROMPT,
@@ -374,6 +376,11 @@ def prompt_fingerprint() -> str:
         "evaluation_judge": EVALUATION_JUDGE_SYSTEM_PROMPT,
         "evidence_review": EVIDENCE_REVIEW_SYSTEM_PROMPT,
         "query_analyzer": QUERY_ANALYZER_SYSTEM_PROMPT,
+        "question_decomposition": {
+            "prompt": question_decomposition.QUESTION_DECOMPOSITION_SYSTEM_PROMPT,
+            "prompt_version": question_decomposition.QUESTION_DECOMPOSITION_PROMPT_VERSION,
+            "schema_version": question_decomposition.QUESTION_DECOMPOSITION_SCHEMA_VERSION,
+        },
         "rerank": RERANK_SYSTEM_PROMPT,
         "revision": REVISION_SYSTEM_PROMPT,
     }

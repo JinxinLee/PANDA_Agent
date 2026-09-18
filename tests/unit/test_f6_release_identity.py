@@ -11,9 +11,10 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import panda_agent.evaluation_runner as runner
+import panda_agent.question_decomposition as decomposition
 from panda_agent import candidate
 from panda_agent.evaluation_runner import prompt_fingerprint
 from panda_agent.qa import DEFAULT_ANSWER_POINT_MODE
@@ -49,6 +50,25 @@ class PromptFingerprintTests(unittest.TestCase):
                     self.assertNotEqual(prompt_fingerprint(), baseline)
                 finally:
                     setattr(runner, global_name, original)
+
+    def test_fingerprint_covers_question_decomposition_prompt(self):
+        baseline = prompt_fingerprint()
+        with patch.object(
+            decomposition,
+            "QUESTION_DECOMPOSITION_SYSTEM_PROMPT",
+            decomposition.QUESTION_DECOMPOSITION_SYSTEM_PROMPT + "\n altered",
+        ):
+            self.assertNotEqual(prompt_fingerprint(), baseline)
+
+    def test_fingerprint_covers_question_decomposition_prompt_version(self):
+        baseline = prompt_fingerprint()
+        with patch.object(decomposition, "QUESTION_DECOMPOSITION_PROMPT_VERSION", "test-version"):
+            self.assertNotEqual(prompt_fingerprint(), baseline)
+
+    def test_fingerprint_covers_question_decomposition_schema_version(self):
+        baseline = prompt_fingerprint()
+        with patch.object(decomposition, "QUESTION_DECOMPOSITION_SCHEMA_VERSION", "test.schema"):
+            self.assertNotEqual(prompt_fingerprint(), baseline)
 
 
 class BenchmarkIdentityTests(unittest.TestCase):
@@ -114,6 +134,71 @@ class CandidateManifestIdentityTests(unittest.TestCase):
 
     def test_recorded_mode_matches_product_default(self):
         self.assertEqual(DEFAULT_ANSWER_POINT_MODE, "production_answer_obligations_v1")
+
+    def test_candidate_and_evaluation_share_canonical_prompt_authority(self):
+        candidate_source = (PROJECT_ROOT / "src" / "panda_agent" / "candidate.py").read_text(encoding="utf-8")
+        runner_source = (PROJECT_ROOT / "src" / "panda_agent" / "evaluation_runner.py").read_text(encoding="utf-8")
+        self.assertIs(candidate.prompt_fingerprint, runner.prompt_fingerprint)
+        self.assertIn('"prompt_hash": prompt_fingerprint()', candidate_source)
+        self.assertIn('"prompt_hash": prompt_fingerprint()', runner_source)
+
+    @patch("panda_agent.evaluation_runner.Storage")
+    @patch("panda_agent.evaluation_runner.IndexIdentity")
+    @patch("panda_agent.evaluation_runner.VertexSettings")
+    @patch("panda_agent.evaluation_runner.load_gold_dataset")
+    @patch("panda_agent.evaluation_runner.normalized_dir")
+    @patch("panda_agent.evaluation_runner.repository_identity")
+    @patch("panda_agent.evaluation_runner.sha256_file")
+    def test_evaluation_manifest_uses_canonical_prompt_fingerprint(
+        self,
+        mock_sha256,
+        mock_repository_identity,
+        mock_normalized_dir,
+        mock_load_gold_dataset,
+        mock_vertex_settings,
+        mock_index_identity,
+        mock_storage,
+    ):
+        mock_sha256.return_value = "file-hash"
+        mock_repository_identity.return_value = {"commit": "abc", "dirty": False}
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            normalized = root / "normalized"
+            normalized.mkdir()
+            (normalized / "ingestion_report.json").write_text(
+                json.dumps({"output_hashes": {}}), encoding="utf-8"
+            )
+            mock_normalized_dir.return_value = normalized
+            dataset = MagicMock(
+                benchmark_version="test-benchmark",
+                release_eligible=True,
+                acceptance_exposed=False,
+                expected_split_counts={},
+            )
+            mock_load_gold_dataset.return_value = dataset
+            settings = MagicMock(
+                generation_model="generation-model",
+                evaluation_judge_model="judge-model",
+                embedding_model="embedding-model",
+                embedding_dimensions=3072,
+            )
+            mock_vertex_settings.from_env.return_value = settings
+            identity = MagicMock()
+            identity.fingerprint.return_value = "index-fingerprint"
+            mock_index_identity.from_settings.return_value = identity
+            connection = MagicMock()
+            connection.execute.return_value.fetchone.return_value = ("index-fingerprint", {})
+            mock_storage.return_value.connect.return_value.__enter__.return_value = connection
+
+            manifest = runner.build_evaluation_manifest(
+                root,
+                root / "gold.yaml",
+                mode="qa",
+                split="dev",
+                official=True,
+            )
+
+        self.assertEqual(manifest["prompt_hash"], prompt_fingerprint())
 
 
 if __name__ == "__main__":
