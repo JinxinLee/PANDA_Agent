@@ -111,6 +111,8 @@ R1 DECOMPOSITION PROMPT RELEASE IDENTITY REPAIR = COMPLETE / PASS / DECOMPOSITIO
 F6 FORMAL REPEAT POLICY = ESTABLISHED (`SAME_PRODUCT_LINEAGE_FORMAL_REPEAT = PROHIBITED`; `evaluation/F6_FORMAL_REPEAT_POLICY.md`).
 F6-A Attempt 5 = COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED (Gold v2.10 under the materially new `production_answer_obligations_v1` candidate f6a-rc5-20260919; 59/59 complete after one resume recovering ten retryable transport exceptions; failed `critical_final_evidence_recall` 0.918367, `identifier_hallucination_rate` 0.046154, and `critical_answer_point_miss_count` 4 (`g013.p3`, `g023.p3`, `g039.p1`, `g047.p1`); release score 0.949153; 563 calls / 3,201,331 tokens; A2-A5 NOT_REACHED; `novel_validation` pristine).
 F6-A Attempt 5 record: `evaluation/F6_A5_PRERELEASE_VALIDATION_RESULT.md` (result JSON `evaluation/f6_a5_prerelease_validation_result.json`, stage receipt `evaluation/f6_a5_a1_stage_receipt.json`, authoritative gate matrix `evaluation/f6_a5_gate_matrix.json`, gate receipt `evaluation/f6_a5_gate_matrix_receipt.json`).
+POST-ATTEMPT-5 FAILURE OWNERSHIP & GATE VALIDITY REVIEW = COMPLETE / PASS / FAILURE_OWNERSHIP_AND_GATE_VALIDITY_ESTABLISHED (zero scientific calls).
+Review findings: the QuestionDecomposer under-splitting hypothesis is REJECTED for all four critical answer-point misses (g013/g023/g047 = A1 obligation-content gaps; g039.p1 = Gold rubric clause beyond the literal question); five of six critical final-evidence misses are content-equivalent alternate-source citations against literal pinned groups (the same literalness handled by 17 signed final_evidence_equivalence adjudications in v2.5/v2.6, absent in v2.9/v2.10) while g011 is a genuine R2 rerank loss plus a V2 corpus-negative false acceptance; all six identifier "hallucinations" (g060 ×2, g113 ×4) are evaluator false positives — the symbols are verbatim corpus enum members invisible to build_identifier_catalog (locator.symbol + class/struct/enum type names only). Gate dispositions: critical_final_evidence_recall REDEFINE_METRIC_REQUIRED, critical_answer_point_miss_count GOLD_RECONCILIATION_REQUIRED, identifier_hallucination_rate EVALUATOR_REPAIR_REQUIRED. All 18 thresholds are INHERITED_HISTORICAL_CONSTANT (frozen M6 hidden-acceptance constants from the root commit; no derivation recorded). critical_answer_point_miss_count is a completeness/quality criterion misclassified inside hard_safety_invariants. ATTEMPT_6_READINESS = NOT_READY. Review: `evaluation/POST_A5_FAILURE_OWNERSHIP_AND_GATE_VALIDITY_REVIEW.md` (companion JSON `evaluation/post_a5_failure_ownership_and_gate_validity_review.json`).
 F6-B = LOCKED / F6_A_DID_NOT_PASS.
 POST-ATTEMPT-3 FAILURE & EXECUTION-RECOVERY REVIEW = COMPLETE / PASS / FAILURES_CLASSIFIED_RECOVERY_INFRASTRUCTURE_REPAIRED_PRODUCT_RESIDUALS_DEFERRED.
 POST-ATTEMPT-3 review: `evaluation/POST_A3_FAILURE_AND_EXECUTION_RECOVERY_REVIEW.md` (companion JSON `evaluation/post_a3_failure_and_execution_recovery_review.json`).
@@ -220,7 +222,7 @@ STAGES_A2_A5 = NOT_REACHED
 PROTECTED_HOLDOUTS = PRISTINE (novel_validation pristine, holdout access = 0)
 F6_B = LOCKED / F6_A_DID_NOT_PASS
 ATTEMPT_5 = COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED
-NEXT_TASK_RECOMMENDATION = POST-ATTEMPT-5 EXPOSED FAILURE REVIEW
+NEXT_TASK_RECOMMENDATION = IDENTIFIER CATALOG EVALUATOR REPAIR + OFFLINE RESCORE (POST-A5 REVIEW)
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 FOLLOWING_ARCHITECTURE_TASK = F6-B — Protected Blind Release Gate (LOCKED / F6_A_DID_NOT_PASS)
 

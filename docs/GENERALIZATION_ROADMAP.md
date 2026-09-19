@@ -233,6 +233,8 @@ F6-A Attempt 5:
 COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED (Gold v2.10 under the materially new production_answer_obligations_v1 candidate f6a-rc5-20260919; 59/59 complete after one resume recovering ten retryable transport exceptions; three mandatory A1 gates failed: critical_final_evidence_recall 0.918367, identifier_hallucination_rate 0.046154, critical_answer_point_miss_count 4; release score 0.949153; 563 calls / 3,201,331 tokens; A2-A5 NOT_REACHED; novel_validation pristine)
 F6-B:
 LOCKED / F6_A_DID_NOT_PASS
+POST-ATTEMPT-5 FAILURE OWNERSHIP & GATE VALIDITY REVIEW:
+COMPLETE / PASS / FAILURE_OWNERSHIP_AND_GATE_VALIDITY_ESTABLISHED (zero scientific calls; decomposition under-splitting rejected for all four critical answer-point misses — three are A1 obligation-content gaps and g039.p1 is a Gold rubric clause beyond the literal question; five of six critical final-evidence misses are equivalent alternate-source citations against literal pinned groups and g011 is a genuine R2 rerank loss plus V2 corpus-negative false acceptance; all six identifier events are evaluator false positives from the catalog's missing enum-member coverage; gate dispositions: critical_final_evidence_recall REDEFINE_METRIC_REQUIRED, critical_answer_point_miss_count GOLD_RECONCILIATION_REQUIRED, identifier_hallucination_rate EVALUATOR_REPAIR_REQUIRED; all 18 thresholds are inherited frozen M6 constants with no recorded derivation; ATTEMPT_6_READINESS = NOT_READY)
 
 POST-ATTEMPT-3 FAILURE & EXECUTION-RECOVERY REVIEW:
 COMPLETE / PASS / FAILURES_CLASSIFIED_RECOVERY_INFRASTRUCTURE_REPAIRED_PRODUCT_RESIDUALS_DEFERRED

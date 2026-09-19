@@ -1,0 +1,269 @@
+{
+  "schema_version": "post-a5-review-v1",
+  "task": "POST-ATTEMPT-5 FAILURE OWNERSHIP & F6-A GATE VALIDITY REVIEW",
+  "starting_head": "122fffe493922c08fe63ce515e63217c4d3277f8",
+  "scientific_calls": 0,
+  "scientific_tokens": 0,
+  "attempt_5_result_preserved": "COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED (immutable)",
+  "case_classifications": {
+    "critical_answer_point_misses": {
+      "g013.p3": {
+        "primary": "PRODUCT_DEFECT",
+        "owning_layer": "A1",
+        "secondary_layers": ["C1 (partial: internal event-loop detail thin in corpus)"],
+        "decomposition_hypothesis_undersplitting": "REJECTED",
+        "earliest_causal_loss": "runtime coverage correctly detected point.3 missing; one bounded revision ran but produced no point.3 claim although the directly supporting evidence (pandaroot macro/master/Readme.md 'Master run and Master Tasks ... provide default settings and operation modes') was already in the final citation set",
+        "notes": "decomposition produced all three Gold-mapped obligations; identical miss recurred in Attempt 4 with an explicit 'evidence does not document internal lifecycle stages' statement"
+      },
+      "g023.p3": {
+        "primary": "PRODUCT_DEFECT",
+        "owning_layer": "A1",
+        "secondary_layers": ["runtime coverage-review granularity (claim self-declared point.1 as covered, so revision never triggered)"],
+        "decomposition_hypothesis_undersplitting": "REJECTED",
+        "earliest_causal_loss": "generation: both critical Gold evidence groups were selected (crit-ev 1.0) and claims were composed, but no claim states the workflow position of PndMasterRecoTask (after digitization, before PID); Attempt 4 (same Gold) answered the position explicitly and passed",
+        "notes": "Gold position detail is reasonably inside the single 'use in the generic workflow' obligation; the decomposer faithfully kept one obligation per contract"
+      },
+      "g039.p1": {
+        "primary": "GOLD_CONTRACT_DEFECT",
+        "owning_layer": "GOLD",
+        "secondary_layers": ["A1 (answer carried no distinguishing content at all)", "judge application latitude (Attempt 4 passed with an 'unlike angular acceptance...' contrast that also did not name PndLmdAcceptance)"],
+        "decomposition_hypothesis_undersplitting": "REJECTED (single Gold obligation; cannot be an undersplitting case)",
+        "earliest_causal_loss": "Gold rubric: the 'distinguish it from PndLmdAcceptance' clause inside the critical point is not independently requested by the literal 'Where is X implemented?' question; the answer located efficiency_correction_2.C correctly (crit-ev 1.0)",
+        "notes": "forbidden_evidence already guards the actual failure mode (citing data/PndLmdAcceptance.cxx); the distinguish clause is anti-confusion rubric detail beyond the literal question"
+      },
+      "g047.p1": {
+        "primary": "PRODUCT_DEFECT",
+        "owning_layer": "A1",
+        "secondary_layers": [],
+        "decomposition_hypothesis_undersplitting": "REJECTED (single Gold obligation)",
+        "earliest_causal_loss": "generation: critical evidence group selected and finally cited (crit-ev 1.0), but the answer never relates the elastic differential cross section to luminosity extraction; Attempt 4 (same Gold) stated the relation explicitly and passed",
+        "notes": "judge verdicts marked all claims supported; the miss is pure content completeness inside the obligation"
+      }
+    },
+    "critical_final_evidence_misses": {
+      "g011": {
+        "primary": "PRODUCT_DEFECT",
+        "owning_layer": "R2",
+        "secondary_layers": ["R3", "V2 (false acceptance of the negative existence claim 'does not detail an independent native setup procedure')", "A1/composer citation convergence"],
+        "missing_groups": {"g011.e1": "R2 loss: 4 matching objects in the combined pool (incl. docs/Installation/Install_PandaRoot.rst chunks) all fell out of reranked and final top30", "g011.e2": "selected (DevelopingInContainer.html) then dropped from final citations"},
+        "gold_group_construct": "e1 is a genuinely necessary information role (native install path is half of the literal question); the answer contradicts the corpus",
+        "notes": "index-wide 143 objects match e1; corpus contains the native path the answer denied"
+      },
+      "g013": {
+        "primary": "GOLD_CONTRACT_DEFECT",
+        "owning_layer": "GATE",
+        "secondary_layers": ["A1 citation-source preference (macros content answered via pandaroot mastermacros.rst / Readme instead of the pinned sphinx Macros page)"],
+        "missing_groups": {"g013.e1": "selected 5 matching objects; none cited in final evidence"},
+        "gold_group_construct": "one acceptable source among several equivalent authoritative sources; answer content for p1/p2 was complete (only p3 content is a separate product defect)",
+        "notes": "historically same-literalness was handled by signed final_evidence_equivalence adjudications in v2.5/v2.6; v2.9/v2.10 carry no adjudication file"
+      },
+      "g016": {
+        "primary": "GOLD_CONTRACT_DEFECT",
+        "owning_layer": "GATE",
+        "secondary_layers": ["A1 citation-source preference (answered from PndMasterRunSim.h API and job scripts instead of the pinned DPMGenerator documentation page)"],
+        "missing_groups": {"g016.e1": "selected 4 matching objects; none cited in final evidence"},
+        "gold_group_construct": "answer content (UseDpmGenerator/SetInput/SetGenerator; SetDpmFlag modes 0/1/2) is complete and correct against AP p1/p2; crit points missing = none",
+        "notes": "source-role provenance (documentation page vs code header) is not part of the literal user request"
+      },
+      "g020": {
+        "primary": "GOLD_CONTRACT_DEFECT",
+        "owning_layer": "GATE",
+        "secondary_layers": ["A1 citation-source preference (cited repo-root README '3.4 POCA-first back-propagation' plus implementation code instead of the pinned macro/target/README.md readme_section)"],
+        "missing_groups": {"g020.e1": "a pinned-file readme_section object was selected (object.25c0757) but no final claim cited any macro/target/README.md object; the finally cited README object is the repo-root README.md"},
+        "gold_group_construct": "answer covers all four critical APs (crit_pts_missing = []); the pinned file and the cited root README describe the same two-pass workflow",
+        "notes": "identical pinned-group failure shape as g110"
+      },
+      "g044": {
+        "primary": "GOLD_CONTRACT_DEFECT",
+        "owning_layer": "GATE",
+        "secondary_layers": ["A1 citation-source preference (cited li_2026 thesis p72/79 and curated domain instead of pinned pflueger_2017 p57/58/62)"],
+        "missing_groups": {"g044.e1": "one pflueger object was selected (object.c38228e) but final citations contain only li_2026/curated"},
+        "gold_group_construct": "AP p1 says 'using the thesis, not source-code inference' — li_2026 is a thesis; the explanation (acceptance factor, MC-derived epsilon(theta), geometry/beam corrections) is substantively correct; failed the same way in Attempts 3, 4, and 5",
+        "notes": "the pinned source is one authoritative thesis among several; not a uniquely necessary source named by the user"
+      },
+      "g110": {
+        "primary": "GOLD_CONTRACT_DEFECT",
+        "owning_layer": "GATE",
+        "secondary_layers": ["A1 citation-source preference"],
+        "missing_groups": {"g110.e2": "pinned macro/target/README.md readme_section selected in the pool but cited evidence uses repo-root README plus code"},
+        "gold_group_construct": "the three-step triage answer covers all three critical APs (crit_pts_missing = [])",
+        "notes": "same mechanism as g020"
+      }
+    },
+    "identifier_hallucination_events": {
+      "g060.LumiFit::THETA_X": {"classification": "EVALUATOR_DEFECT (false positive)", "corpus_verification": "literal string present in luminosityfit corpus (48 objects), including the very evidence object cited by the claim (model/PndLmdModelFactory.cxx)"},
+      "g060.LumiFit::THETA_Y": {"classification": "EVALUATOR_DEFECT (false positive)", "corpus_verification": "literal string present (13 objects incl. LumiFitStructs.h and PndLmdModelFactory.cxx)"},
+      "g113.LumiFit::MC": {"classification": "EVALUATOR_DEFECT (false positive)", "corpus_verification": "literal string present (53 objects); both cited runLmdFit.cxx evidence objects contain it verbatim"},
+      "g113.LumiFit::MC_ACC": {"classification": "EVALUATOR_DEFECT (false positive)", "corpus_verification": "literal string present (37 objects); cited runLmdFit.cxx evidence contains it"},
+      "g113.LumiFit::RECO": {"classification": "EVALUATOR_DEFECT (false positive)", "corpus_verification": "literal string present (39 objects); cited runLmdFit.cxx evidence contains it"},
+      "g113.LumiFit::THETA_X": {"classification": "EVALUATOR_DEFECT (false positive)", "corpus_verification": "literal string present; cited runLmdFit.cxx evidence contains it"},
+      "root_cause": "build_identifier_catalog collects locator.symbol plus 'class/struct/enum <Type>' declaration names only; namespace enum MEMBERS (LumiFit::THETA_X, LumiFit::MC, LumiFit::MC_ACC, LumiFit::RECO) are not catalogued, and the '::' base-name fallback only checks catalog symbols, so genuinely existing identifiers are classified as hallucinated",
+      "history": "Attempt 4 recorded the same two g060 events (rate 0.0116, passed); Attempt 5 added four g113 events because the answer enumerated runLmdFit filters/track types more specifically"
+    }
+  },
+  "owning_layers": {
+    "g013.p3": "A1",
+    "g023.p3": "A1",
+    "g039.p1": "GOLD",
+    "g047.p1": "A1",
+    "g011": "R2",
+    "g013": "GATE",
+    "g016": "GATE",
+    "g020": "GATE",
+    "g044": "GATE",
+    "g110": "GATE",
+    "g060+g113 identifier events": "EVAL"
+  },
+  "decomposition_hypothesis_verdict": {
+    "QUESTION_DECOMPOSER_UNDERSPLITTING": "REJECTED for all four critical answer-point misses",
+    "per_case": {"g013": "REJECTED (decomposition produced 3 obligations matching all 3 Gold points)", "g023": "REJECTED (one obligation is faithful to the literal workflow question; Gold position detail is rubric detail inside the obligation)", "g039": "REJECTED (single Gold obligation)", "g047": "REJECTED (single Gold obligation)"},
+    "distribution_context": "Attempt-5 points-per-question distribution 1:52, 2:4, 3:2, 4:1 with zero decomposition failures; no over-splitting signal"
+  },
+  "gate_validity": {
+    "critical_final_evidence_recall": {
+      "threshold": "== 1.00",
+      "INTENDED_CONSTRUCT": "every critical user-required source role is represented in the final answer's support",
+      "MEASURED_CONSTRUCT": "construct B: each benchmark-author-pinned critical evidence group must literally appear in final evidence (with same-path/descendant extension); no semantic source-equivalence",
+      "SAFETY_OR_QUALITY": "QUALITY (completeness/provenance)",
+      "STOCHASTIC_SENSITIVITY": "HIGH — citation-source selection varies between runs; A4 failed {g011,g013,g037,g044,g059} vs A5 {g011,g013,g016,g020,g044,g110} on the same Gold",
+      "DEPENDENCE_ON_GOLD_LITERALITY": "HIGH — five of six A5 misses are content-equivalent alternate authoritative sources",
+      "HISTORICAL_VARIATION": "STABLE_FAIL (0.8231 / 0.8912 / 0.9410 / 0.9286 / 0.9184 across 5 attempts, 3 Gold versions, 2 product modes; never 1.00)",
+      "THRESHOLD_ORIGIN": "INHERITED_HISTORICAL_CONSTANT (frozen M6 hidden-acceptance constant from root commit 3d90848; no derivation recorded)",
+      "THRESHOLD_JUSTIFICATION": "none found in repository; M6-era origin UNKNOWN",
+      "FALSE_POSITIVE_RISK": "demonstrated: v2.5/v2.6 signed final_evidence_equivalence adjudications for 17 case-groups exist precisely because literal group matching mislabeled equivalent sources",
+      "FALSE_NEGATIVE_RISK": "low for genuine role gaps (g011 was a real failure the gate correctly caught)",
+      "CURRENT_DISPOSITION": "REDEFINE_METRIC_REQUIRED"
+    },
+    "critical_answer_point_miss_count": {
+      "threshold": "== 0",
+      "INTENDED_CONSTRUCT": "no critical user obligation left uncovered (semantic completeness)",
+      "MEASURED_CONSTRUCT": "external judge semantic coverage against Gold answer-point rubric texts, which may include anti-confusion rubric detail not independently requested by the literal question (g039)",
+      "SAFETY_OR_QUALITY": "QUALITY (completeness) — currently misclassified inside hard_safety_invariants",
+      "STOCHASTIC_SENSITIVITY": "MEDIUM — judge semantic latitude exists (A4 g039 passed on a contrast that did not literally name PndLmdAcceptance), but A4/A5 case-level deltas track real answer-content differences",
+      "DEPENDENCE_ON_GOLD_LITERALITY": "MEDIUM-HIGH (g039 clause; other three cases reflect genuine content gaps)",
+      "HISTORICAL_VARIATION": "STABLE_FAIL (18 / 4 / 3 / 2 / 4; never 0)",
+      "THRESHOLD_ORIGIN": "INHERITED_HISTORICAL_CONSTANT (root-commit M6 acceptance constant; safety framing added by F6-A preregistrations)",
+      "THRESHOLD_JUSTIFICATION": "none found for the numeric value; the ==0 completeness intent is coherent for genuine content gaps",
+      "FALSE_POSITIVE_RISK": "g039-type rubric-detail cases",
+      "FALSE_NEGATIVE_RISK": "low (g023/g047/g013 were genuine content gaps)",
+      "CURRENT_DISPOSITION": "GOLD_RECONCILIATION_REQUIRED"
+    },
+    "identifier_hallucination_rate": {
+      "threshold": "< 0.03",
+      "INTENDED_CONSTRUCT": "model must not invent identifiers absent from the locked corpus",
+      "MEASURED_CONSTRUCT": "deterministic membership test against an incomplete catalog (locator.symbol + class/struct/enum type names only); namespace enum members are invisible to it",
+      "SAFETY_OR_QUALITY": "QUALITY leaning SAFETY (fabricated symbols undermine trust) — construct itself sound",
+      "STOCHASTIC_SENSITIVITY": "HIGH in denominator terms: 130 mentions in A5; the same evaluator defect produced 2 events in A4 (passed) and 6 in A5 (failed) purely through more specific generation content",
+      "DEPENDENCE_ON_GOLD_LITERALITY": "NONE (deterministic, Gold-independent)",
+      "HISTORICAL_VARIATION": "RECENT_REGRESSION (0.0 / 0.0 / 0.0 / 0.0116 / 0.0462) — but the A5 'regression' is 100% evaluator false positives",
+      "THRESHOLD_ORIGIN": "INHERITED_HISTORICAL_CONSTANT (root-commit M6 acceptance constant; M6 retrospective shows the value in use with no derivation)",
+      "THRESHOLD_JUSTIFICATION": "none found; UNKNOWN numeric basis",
+      "FALSE_POSITIVE_RISK": "REALIZED: all 6 A5 events are false positives (verified literal corpus presence, including inside the claims' own cited evidence)",
+      "FALSE_NEGATIVE_RISK": "low for truly invented symbols",
+      "CURRENT_DISPOSITION": "EVALUATOR_REPAIR_REQUIRED"
+    }
+  },
+  "hard_safety_coherence": {
+    "coherent_members": ["citation_integrity == 1.0", "wrong_version_evidence_count == 0", "forbidden_evidence_count == 0", "contradiction_count == 0", "major_unsupported_claim_count == 0", "unhandled_exception_count == 0"],
+    "incoherent_member": "critical_answer_point_miss_count == 0",
+    "reasoning": "the six coherent members guard trustworthiness/harm (unverifiable citations, wrong versions, forbidden sources, contradictions, fabricated claims, crashes); a missing answer point does not make an answer untrustworthy or harmful — it makes it incomplete. It is a release-quality/completeness criterion and should be re-categorized in a later authorized task without changing its threshold",
+    "action": "NONE in this task (policy unchanged)"
+  },
+  "historical_gate_table": {
+    "comparability": "A1/A2 share Gold v2.6; A4/A5 share Gold v2.10; A3 (v2.9) is a separate Gold; cross-version value comparisons are benchmark-confounded and marked",
+    "attempts": [
+      {"attempt": 1, "gold": "v2.6", "mode": "legacy_question_core", "failed_gates": ["final_evidence_recall 0.8129", "critical_final_evidence_recall 0.8231", "expected_status_accuracy 0.8644", "required_source_coverage_answered 0.9388", "paper_code_dual_source_rate (corrected semantics: 0.0 on g060)", "answer_point_coverage 0.8446", "critical_answer_point_miss_count 18", "contradiction_count 4", "major_unsupported_claim_count 1"], "verdict": "COMPLETE / FAIL"},
+      {"attempt": 2, "gold": "v2.6", "mode": "legacy_question_core", "failed_gates": ["final_evidence_recall 0.8810", "critical_final_evidence_recall 0.8912", "required_source_coverage_answered 0.9592", "paper_code_dual_source_rate 0.0 (g060)", "critical_answer_point_miss_count 4 (g001, g005, g013, g022)", "major_unsupported_claim_count 1 (g113)"], "verdict": "COMPLETE / FAIL"},
+      {"attempt": 3, "gold": "v2.9", "cohort": "58/59 (g013 Vertex 429; INCOMPLETE)", "mode": "legacy_question_core", "failed_gates": ["critical_final_evidence_recall 0.9410 (g011, g022, g044, g060)", "critical_answer_point_miss_count 3 (g022, g023, g115)", "paper_code_dual_source_rate 0.0 (g060)", "unhandled_exception_count 1 (g013)"], "verdict": "COMPLETE / FAIL / cohort INCOMPLETE"},
+      {"attempt": 4, "gold": "v2.10", "mode": "legacy_question_core", "failed_gates": ["critical_final_evidence_recall 0.9286 (g011, g013, g037, g044, g059)", "critical_answer_point_miss_count 2 (g013.p3, g037.p1)"], "verdict": "COMPLETE / FAIL"},
+      {"attempt": 5, "gold": "v2.10", "mode": "production_answer_obligations_v1", "failed_gates": ["critical_final_evidence_recall 0.9184 (g011, g013, g016, g020, g044, g110)", "identifier_hallucination_rate 0.0462 (g060×2, g113×4)", "critical_answer_point_miss_count 4 (g013.p3, g023.p3, g039.p1, g047.p1)"], "verdict": "COMPLETE / FAIL"}
+    ],
+    "stability_classes": {
+      "STABLE_PASS": ["gold_recall_at_10", "intent_accuracy", "per_intent_gold_recall_at_10", "per_intent_intent_accuracy", "citation_integrity", "wrong_version_evidence_count", "forbidden_evidence_count"],
+      "STABLE_FAIL": ["critical_final_evidence_recall", "critical_answer_point_miss_count"],
+      "VOLATILE": ["final_evidence_recall", "expected_status_accuracy", "required_source_coverage_answered", "answer_point_coverage", "contradiction_count", "major_unsupported_claim_count", "unhandled_exception_count"],
+      "RECENT_REGRESSION": ["identifier_hallucination_rate (A4→A5 same-Gold pass→fail; 100% evaluator false positives)"],
+      "NOT_COMPARABLE": ["paper_code_dual_source_rate (applicable set flipped by the forward-only g060 v2.10 contract change: denominator 1 in v2.6/v2.9 → 0 in v2.10)"]
+    }
+  },
+  "threshold_origin_audit": {
+    "summary": "all 18 mandatory thresholds are INHERITED_HISTORICAL_CONSTANT: present verbatim in the root commit 3d90848 as the 'frozen M6 acceptance thresholds', explicitly re-declared as reused by the F6-A preregistrations, never recalibrated across attempts",
+    "numeric_derivation": "none found anywhere in the repository; pre-repository M6 origin UNKNOWN",
+    "evaluation_policy": "docs/EVALUATION_POLICY.md contains no numeric thresholds and no derivations; only governance rules",
+    "failing_three": {
+      "critical_final_evidence_recall": "INHERITED_HISTORICAL_CONSTANT / UNKNOWN",
+      "identifier_hallucination_rate": "INHERITED_HISTORICAL_CONSTANT / UNKNOWN",
+      "critical_answer_point_miss_count": "INHERITED_HISTORICAL_CONSTANT / UNKNOWN"
+    }
+  },
+  "confirmed_product_defects": [
+    {
+      "MECHANISM": "obligation-content coverage gap: runtime coverage review treats a claim as covering a semantic obligation when the claim self-declares that obligation, so content-level gaps inside an obligation are invisible; the bounded revision only helps when the gap is detected, and in the detected case (g013) one revision still produced no claim for the missing obligation despite supporting evidence already cited",
+      "OWNING_LAYER": "A1 (with runtime coverage-review granularity as an enabling factor)",
+      "AFFECTED_CASES": ["g013.p3", "g023.p3", "g047.p1"],
+      "GENERIC_REPAIR_HYPOTHESIS": "make coverage review evaluate semantic support of each obligation's content across claims rather than accepting claim self-mapping, and give the bounded revision an explicit content-extraction directive per missing obligation; no Gold IDs, no case-specific phrases",
+      "RISK": "medium: stricter coverage may raise revision/refusal rates; must be bounded and re-validated",
+      "MINIMUM_DEVELOPMENT_TEST": "deterministic unit test that a claim self-declaring an obligation without obligation-content support does not satisfy coverage; and that revision with supporting evidence in the citation-eligible pool emits a claim for a missing obligation"
+    },
+    {
+      "MECHANISM": "document-role sources lose reranking: documentation-page objects that match the query's information role exist in the combined candidate pool but fall out of the reranker/top30 entirely, while adjacent operational pages (e.g. GSI setup) dominate; the generator then asserts a negative existence claim ('the locked documentation does not detail ...') that the uncited corpus directly contradicts, and the verifier accepts it",
+      "OWNING_LAYER": "R2 (with V2 false acceptance as an aggravation)",
+      "AFFECTED_CASES": ["g011"],
+      "GENERIC_REPAIR_HYPOTHESIS": "preserve a bounded documentation-role quota through reranking for installation/setup intents, and require cited-corpus contradiction checks for negative existence claims about the locked corpus before acceptance; no case-specific terms",
+      "RISK": "medium: reranking quotas can hurt precision; negative-claim checks must not slow the pipeline materially",
+      "MINIMUM_DEVELOPMENT_TEST": "deterministic test that a corpus-negative claim is rejected when citation-eligible evidence contains the denied content class; replay of the stored trace to show role-preserving rerank would surface the group"
+    }
+  ],
+  "confirmed_evaluator_defects": [
+    {
+      "DEFECT": "identifier catalog omits namespace enum members (and generally any symbol that is not a locator.symbol or a class/struct/enum type name), so identifiers literally present in the locked corpus are classified as hallucinated",
+      "WHY_CURRENT_MEASUREMENT_IS_WRONG": "the metric intends to catch invented symbols; all six Attempt-5 events are verbatim corpus strings, two of them inside the very evidence objects the claims cite",
+      "AFFECTED_CASES": ["g060 (LumiFit::THETA_X, LumiFit::THETA_Y)", "g113 (LumiFit::MC, LumiFit::MC_ACC, LumiFit::RECO, LumiFit::THETA_X)"],
+      "FORWARD_ONLY_REPAIR_SCOPE": "deterministic evaluator only: extend build_identifier_catalog to harvest enum members (and/or add a locked-corpus text-presence fallback for qualified '::' symbols); no product behavior change",
+      "CAN_HISTORICAL_OUTPUTS_BE_RESCORED_OFFLINE": "YES — stored records contain all claims/evidence; offline_rescore_records recomputes the metric with zero model calls",
+      "DOES_NEW_SCIENTIFIC_EXECUTION_BECOME_NECESSARY": "NO for this metric"
+    }
+  ],
+  "confirmed_gold_defects": [
+    {
+      "DEFECT": "g039.p1 embeds anti-confusion rubric detail ('distinguish it from PndLmdAcceptance') inside a critical answer point for a literal 'Where is X implemented?' question",
+      "WHY_CURRENT_MEASUREMENT_IS_WRONG": "the clause tests work the user did not request; the answer otherwise fully and correctly locates the implementation, and the actual failure mode (citing PndLmdAcceptance) is already guarded by forbidden_evidence",
+      "AFFECTED_CASES": ["g039.p1"],
+      "FORWARD_ONLY_REPAIR_SCOPE": "Gold governance: split the distinguish clause out of the critical point text or mark it non-critical guidance, forward-only for successor Gold",
+      "CAN_HISTORICAL_OUTPUTS_BE_RESCORED_OFFLINE": "PARTIALLY — the point-coverage field is a stored judge verdict; a reworded point requires a new judge decision over stored answers (labelled contract-reconciliation evaluation, not a product attempt)",
+      "DOES_NEW_SCIENTIFIC_EXECUTION_BECOME_NECESSARY": "NO new product execution; a bounded judge re-decision over stored Attempt-5 outputs would suffice"
+    }
+  ],
+  "stochastic_cases": [],
+  "counterfactuals_non_authoritative": [
+    "COUNTERFACTUAL / NON-AUTHORITATIVE: with the identifier catalog repaired, Attempt-5 identifier_hallucination_rate recomputes to 0/130 = 0.0 (< 0.03, gate would pass); the other two failed gates remain failed and the Attempt-5 terminal verdict is unchanged",
+    "COUNTERFACTUAL / NON-AUTHORITATIVE: if verified content-equivalent alternate sources were accepted for g013.e1/g016.e1/g020.e1/g044.e1/g110.e2, critical_final_evidence_recall recomputes to 48/49 = 0.9796 — still below 1.00 because g011 is a genuine failure; the gate would remain failed",
+    "COUNTERFACTUAL / NON-AUTHORITATIVE: with g039.p1 rubric corrected, critical_answer_point_miss_count would be 3, still above 0 — the gate would remain failed on genuine content gaps (g013.p3, g023.p3, g047.p1)"
+  ],
+  "attempt_6_readiness": {
+    "ATTEMPT_6_READINESS": "NOT_READY",
+    "blockers": [
+      "unresolved evaluator defect (identifier catalog) requires repair and offline rescoring",
+      "unresolved Gold construct issue (g039.p1 rubric clause) requires forward-only governance",
+      "critical_final_evidence_recall construct requires a separately authorized redefinition decision",
+      "two confirmed product defects require bounded development with focused tests",
+      "no materially new product candidate exists"
+    ]
+  },
+  "development_process_recommendation": {
+    "sequence": "confirmed generic defect -> deterministic T0 -> affected-case diagnostic -> fixed sentinel set / T1 -> targeted T2 -> only then fresh formal Attempt 6",
+    "gate_or_evaluator_repair_must_precede_new_formal_results": true
+  },
+  "cost_aware_protocol_assessment": {
+    "DEVELOPMENT_SENTINEL_SCREEN": "RECOMMENDED — three of five attempts failed on the same two stable gates; a small fixed sentinel cohort would catch stable-gate failures before a full formal run, provided it is preregistered as a development-only screen and never gates formal outcomes",
+    "FORMAL_IRREVERSIBLE_FAILURE_EARLY_STOP": "INCONCLUSIVE — A1 completes in one cohort pass and the current fail-fast already stops downstream stages; an intra-A1 early stop saves tokens only when a zero-tolerance gate is already mathematically unreachable, and computing that reachability mid-run adds protocol complexity that has not been designed or validated"
+  },
+  "protected_state": {
+    "novel_validation": "PRISTINE_FOR_CURRENT_LINEAGE",
+    "holdout_access": 0,
+    "protected_content_leakage": 0,
+    "f6_b_execution": 0
+  },
+  "next_task_recommendation": "Repair the deterministic identifier-catalog evaluator defect (extend the catalog to namespace enum members / add a locked-corpus text-presence fallback for qualified symbols) and offline-rescore the stored Attempt-1..5 identifier metrics with zero model calls; this is the only confirmed objective measurement defect and requires no new scientific execution.",
+  "next_task_execution_authorized": false
+}
