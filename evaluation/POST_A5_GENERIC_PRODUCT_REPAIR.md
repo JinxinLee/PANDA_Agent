@@ -4,6 +4,8 @@ Status: `COMPLETE / PASS / COMPLETENESS_RECOVERY_AND_NEGATIVE_EXISTENCE_CONTRACT
 
 Zero scientific calls. Machine-readable companion: `evaluation/post_a5_generic_product_repair.json`. Product-behavior commit: `Repair completeness recovery and negative-existence safety` (this commit is the new product-behavior lineage head; docs-only descendants are not the product head).
 
+> **R1 (forward-only):** `evaluation/POST_A5_GENERIC_PRODUCT_REPAIR_R1_CAUSAL_ATTRIBUTION_AND_LINEAGE_RECONCILIATION.md` supersedes this record's Workstream A ID wording and exact-g013-causality implication, the coverage root-cause overclaim, and the prose-only product-head provenance (exact SHA `e79d3232ed132a224cbceaf3524e19a1406bd648`). All other findings stand.
+
 ## 1. Root-cause matrix
 
 | Mechanism | Confirmed | Owning layer | Action |

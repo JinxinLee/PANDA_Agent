@@ -1,0 +1,106 @@
+{
+  "schema_version": "post-a5-generic-product-repair-r1-v1",
+  "task": "POST-A5 GENERIC PRODUCT REPAIR R1 — CAUSAL-ATTRIBUTION AND LINEAGE RECONCILIATION",
+  "starting_head": "6d5d54d771fe56065d60fe2c08b0ce5011f4a343",
+  "product_behavior_head": "e79d3232ed132a224cbceaf3524e19a1406bd648",
+  "previous_product_behavior_head": "eda7d932a9b1b7b65436cba01e247859a6f9e056",
+  "repository_head_at_start": "6d5d54d771fe56065d60fe2c08b0ce5011f4a343",
+  "material_product_change": false,
+  "evaluator_contract_change": false,
+  "gold_change": false,
+  "calibration_change": false,
+  "scientific_calls": 0,
+  "scientific_tokens": 0,
+  "repair_commit_inventory": {
+    "commit": "e79d3232ed132a224cbceaf3524e19a1406bd648",
+    "subject": "Repair completeness recovery and negative-existence safety",
+    "product_files": ["src/panda_agent/prompts.py", "src/panda_agent/qa.py"],
+    "test_files": [
+      "tests/unit/test_e2_a1_answer_point_coverage.py",
+      "tests/unit/test_e3_missing_point_retrieval.py",
+      "tests/unit/test_f6_release_identity.py",
+      "tests/unit/test_generic_answer_obligation_completeness.py",
+      "tests/unit/test_post_a5_generic_product_repair.py",
+      "tests/unit/test_qa.py",
+      "tests/unit/test_rerank_role_loss_investigation.py"
+    ],
+    "total_files": 9,
+    "agrees_with_v1_files_changed_list": true
+  },
+  "causal_reconciliation": {
+    "workstream_A_bounded_revision_recovery": {
+      "generic_revision_id_collision_defect": "CONFIRMED",
+      "repair_implemented": true,
+      "g013_exact_causal_link": "NOT_ESTABLISHED_FROM_FROZEN_TRACE",
+      "accurate_pre_repair_semantics": "at 257d77a the _revise merge populated one `seen` set from supported claims followed by revised claims; a revised claim whose claim_id collided with an already-admitted ID (a supported claim, or an earlier revised claim) was unconditionally skipped. A claim whose ID matched an unsupported claim was NOT skipped by ID alone: the separate F6-A2-FR2 anti-resurrection check dropped it only when the normalized text also matched the unsupported claim's text.",
+      "correction_of_v1_wording": "the v1 phrase 'a revised claim that reused an existing local claim ID (supported or unsupported)' overstated the unsupported-ID path; unsupported IDs were governed by the text-matched anti-resurrection rule, not by unconditional ID skipping",
+      "frozen_trace_boundary": "the immutable Attempt-5 g013 record retains only the two finally rendered claims (claim_audit filter_reason=rendered) plus revision_count=1 and the missing-point error; it does not retain the pre-merge revised-claim payload, so the exact historical drop path (empty generation, ID collision, re-verification rejection, or rendering omission) cannot be reconstructed from frozen artifacts",
+      "valid_conclusion": "the repair fixes a real generic silent-loss mechanism consistent with the observed g013 failure signature, but the immutable Attempt-5 trace does not prove that this mechanism was the exact historical cause of g013"
+    },
+    "workstream_B_coverage_false_acceptance": {
+      "structural_coverage_contract_weakness": "CONFIRMED",
+      "explicit_per_point_completeness_contract": "IMPLEMENTED",
+      "deterministic_schema_consistency": "VERIFIED",
+      "g023_g047_exact_causal_link_to_schema_expressiveness": "NOT_ESTABLISHED",
+      "runtime_semantic_effect": "NOT_YET_SCIENTIFICALLY_VALIDATED",
+      "accurate_pre_repair_semantics": "the pre-repair ANSWER_POINT_COVERAGE_REVIEW_SYSTEM_PROMPT already instructed the reviewer to judge each point's explicit obligation against the supported relevant mapped claims collectively, that mapping relevance alone does not imply completeness, and to return every incomplete point in missing_answer_point_ids; the structural weakness was narrower — the response schema represented completeness only indirectly through missing_answer_point_ids plus claim mappings and required no explicit per-runtime-point record identifying supporting claims and a complete flag that could be checked for structural consistency",
+      "boundary": "the deterministic validator cannot prove semantic completeness: a semantically wrong reviewer may still return a structurally self-consistent complete=true decision; the repair strengthens the reviewer contract against the observed failure class, and T1 must determine whether the runtime failure mode is actually improved"
+    },
+    "workstream_C_negative_existence_safety": {
+      "negative_existence_contract_gap": "CONFIRMED",
+      "repair_implemented": true,
+      "runtime_scientific_effect": "NOT_YET_EVALUATED",
+      "accurate_pre_repair_semantics": "the pre-repair generation/verification prompts contained no rule forbidding the promotion of absence within a selected non-exhaustive evidence subset into corpus-wide nonexistence (the only adjacent pre-repair rule covered exact numeric/installation requirements); the repair adds the generic generation and verification contracts while preserving deterministic exact-absence/refusal paths",
+      "boundary": "T0 prompt-presence tests prove the contract exists, not model compliance in live scientific execution"
+    },
+    "workstream_D_rerank_role_loss": {
+      "rerank_role_preservation_repair": "DEFERRED / NO_SAFE_GENERIC_REPAIR_ESTABLISHED",
+      "production_e3_promotion": false,
+      "verified_mechanism": "retrieval.py builds the reranker pool as fused_order[:30] (and local_rerank_pool = fused_order[:30]); the frozen machine-readable failure review records that four g011.e1-matching objects existed in the combined candidate pool and did not survive into reranked/final top-30, with 143 index-wide matches for the native-documentation role",
+      "counts_policy": "counts are quoted only from the frozen machine-readable review artifact; no counts were recomputed or manufactured"
+    }
+  },
+  "lineage_reconciliation": {
+    "previous_product_behavior_lineage_head": "eda7d932a9b1b7b65436cba01e247859a6f9e056",
+    "current_product_behavior_lineage_head": "e79d3232ed132a224cbceaf3524e19a1406bd648",
+    "docs_only_closeout_commit_not_a_product_head": "6d5d54d771fe56065d60fe2c08b0ce5011f4a343",
+    "corrected_locations": [
+      "docs/EVALUATION_STATUS.md current authoritative planning block",
+      "docs/GENERALIZATION_ROADMAP.md current planning block"
+    ],
+    "historical_sections_untouched": true
+  },
+  "preserved_v1_findings": [
+    "implementation diff and generic repair semantics (Workstreams A/B/C)",
+    "T0 deterministic results (RED 4/8 before; 12/12 after)",
+    "prompt-fingerprint transition 35f1dd3c... -> 0a5b2909... (automatic, no hardcoding)",
+    "materiality (MATERIAL_PRODUCT_CHANGE = true for the repair commit)",
+    "zero scientific-call accounting",
+    "protected-state accounting",
+    "Workstream D DEFERRED with the fused_order[:30] mechanism",
+    "next scientific validation tier (POST-A5 PRODUCT REPAIR VALIDATION / FIXED EXPOSED SENTINEL T1)"
+  ],
+  "superseded_v1_claims": [
+    "Workstream A wording that unsupported-claim IDs were unconditionally skipped (accurate semantics: ID collision applies to already-admitted IDs from supported/earlier revised claims; unsupported IDs are governed by the text-matched anti-resurrection rule)",
+    "any implication that the frozen g013 trace proves the ID-collision path as the exact historical cause (now NOT_ESTABLISHED_FROM_FROZEN_TRACE)",
+    "any implication that the pre-repair coverage reviewer had no per-point completeness semantics at all (the prompt already carried them; the weakness was the indirect schema representation without structural consistency checks)",
+    "any implication that the g023/g047 failures are established to be caused solely by the schema expressiveness gap (now NOT_ESTABLISHED)",
+    "prose-only product-head provenance in the v1 JSON (now the exact SHA e79d3232ed132a224cbceaf3524e19a1406bd648)",
+    "stale lineage bookkeeping in the current status/roadmap planning blocks (now PREVIOUS = eda7d932..., CURRENT = e79d323...)"
+  ],
+  "deferred_mechanisms": {
+    "rerank_role_preservation_repair": "DEFERRED / NO_SAFE_GENERIC_REPAIR_ESTABLISHED"
+  },
+  "protected_state": {
+    "novel_validation": "PRISTINE_FOR_CURRENT_LINEAGE",
+    "holdout_access": 0,
+    "protected_content_leakage": 0,
+    "f6_b_execution": 0,
+    "candidate_frozen": false,
+    "attempt_6_preregistered": false,
+    "attempt_6_executed": false
+  },
+  "next_validation_recommendation": "POST-A5 PRODUCT REPAIR VALIDATION / FIXED EXPOSED SENTINEL T1",
+  "attempt_6_readiness": "NOT_READY",
+  "next_task_execution_authorized": false
+}

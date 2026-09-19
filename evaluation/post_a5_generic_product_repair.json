@@ -1,106 +1,108 @@
 {
-  "schema_version": "post-a5-generic-product-repair-v1",
-  "task": "POST-A5 GENERIC PRODUCT REPAIR — COMPLETENESS RECOVERY + NEGATIVE-EXISTENCE SAFETY",
-  "starting_head": "257d77aa1d736101110753fbdc5085b713339de0",
-  "scientific_calls": 0,
-  "scientific_tokens": 0,
-  "confirmed_mechanisms": {
-    "A_bounded_revision_recovery": {
-      "confirmed": true,
-      "owning_layer": "A1 (revision merge)",
-      "earliest_causal_failure": "the merge step in _revise silently discarded a revised claim that reused an existing local claim ID (supported or unsupported), even when its content was genuinely new; the generator sees the already-verified claim IDs in its prompt, so reusing an ID is a realistic failure mode (Attempt-5 g013 signature)",
-      "evidence": "frozen Attempt-5 g013: revision ran once (revision_count=1), supporting evidence was in the citation-eligible pool, final claims contained no missing-point content; code inspection shows the `claim_id in seen: continue` branch is the only silent-loss path that does not require any model misbehaviour"
-    },
-    "B_coverage_false_acceptance": {
-      "confirmed": true,
-      "owning_layer": "V1/coverage review (schema expressiveness)",
-      "earliest_causal_failure": "the coverage review schema had no per-point completeness structure — only claim-level mappings plus a missing list — so a reviewer that judges relevance could never be forced to state, per point, whether the requested substantive relationship is established",
-      "evidence": "ANSWER_POINT_COVERAGE_REVIEW_SCHEMA (pre-repair) contained only claim_answer_point_mappings and missing_answer_point_ids; Attempt-5 g023/g047 reviews returned empty missing lists while the external judge later found the requested relationship unstated"
-    },
-    "C_negative_existence_safety": {
-      "confirmed": true,
-      "owning_layer": "A1 generation + V1 verification (contract level)",
-      "earliest_causal_failure": "no prompt contract prohibited upgrading a local retrieval miss into a corpus-wide nonexistence statement, and the evidence-review contract did not classify such a claim as unsupported when the cited subset is non-exhaustive (Attempt-5 g011 signature)",
-      "evidence": "Attempt-5 g011 answer asserted the locked documentation lacks a native setup path while 143 corpus objects match the native-documentation role"
-    },
-    "D_retrieval_rerank_role_loss": {
-      "confirmed": true,
-      "owning_layer": "R2 (fusion/rerank input selection)",
-      "mechanism": "retrieval.py builds the reranker pool as fused_order[:30]; the Attempt-5 g011 native-documentation selectors matched four objects in the combined candidate pool but none survived into ranked top-30, so they never entered the bounded rerank pool",
-      "action": "DEFERRED"
-    }
+ "schema_version": "post-a5-generic-product-repair-v1",
+ "task": "POST-A5 GENERIC PRODUCT REPAIR — COMPLETENESS RECOVERY + NEGATIVE-EXISTENCE SAFETY",
+ "starting_head": "257d77aa1d736101110753fbdc5085b713339de0",
+ "scientific_calls": 0,
+ "scientific_tokens": 0,
+ "confirmed_mechanisms": {
+  "A_bounded_revision_recovery": {
+   "confirmed": true,
+   "owning_layer": "A1 (revision merge)",
+   "earliest_causal_failure": "the merge step in _revise silently discarded a revised claim that reused an existing local claim ID (supported or unsupported), even when its content was genuinely new; the generator sees the already-verified claim IDs in its prompt, so reusing an ID is a realistic failure mode (Attempt-5 g013 signature)",
+   "evidence": "frozen Attempt-5 g013: revision ran once (revision_count=1), supporting evidence was in the citation-eligible pool, final claims contained no missing-point content; code inspection shows the `claim_id in seen: continue` branch is the only silent-loss path that does not require any model misbehaviour"
   },
-  "implemented_repairs": {
-    "A_revision_recovery": {
-      "file": "src/panda_agent/qa.py (_revise merge)",
-      "semantics": [
-        "supported claims merge first, unchanged",
-        "a revised claim identical (normalized) to an unsupported claim under the same ID stays blocked (F6-A2-FR2 unchanged)",
-        "a revised claim whose normalized text already appears in the merged set is discarded as an exact restatement",
-        "a revised claim that reuses an existing local claim ID for genuinely new content is preserved under a fresh local ID (claim_id_r2, claim_id_r3, ...) instead of being silently dropped",
-        "the merged draft is re-verified as before; a revised claim that fails verification still ends up unsupported and the missing obligation stays missing"
-      ],
-      "boundedness": "at most one revision, unchanged; no second retrieval, no E3"
-    },
-    "B_coverage_completeness": {
-      "file": "src/panda_agent/qa.py (ANSWER_POINT_COVERAGE_REVIEW_SCHEMA, _validate_answer_point_review) + prompts.py (ANSWER_POINT_COVERAGE_REVIEW_SYSTEM_PROMPT)",
-      "semantics": [
-        "schema now requires an answer_point_coverage record per runtime answer point: {answer_point_id, supporting_claim_ids, complete}",
-        "deterministic validation: exactly one record per point; supporting claims must be known, not unsupported/irrelevant, and mapped to the point; complete=true requires at least one supported contributing claim; complete=false must be exactly the missing_answer_point_ids set",
-        "prompt instructs the reviewer to judge the substantive relationship each obligation requests (workflow ordering, purpose, comparison, location, condition, cause/effect) and to mark complete=false when the claims leave it unstated",
-        "generator-declared mappings remain non-authoritative"
-      ],
-      "no_gold_dependency": true
-    },
-    "C_negative_existence_safety": {
-      "file": "prompts.py (ANSWER_SYSTEM_PROMPT, EVIDENCE_REVIEW_SYSTEM_PROMPT)",
-      "semantics": [
-        "generation contract: retrieved evidence is a non-exhaustive subset; never state or imply corpus-wide absence from that subset alone; state only that the supplied evidence does not establish the unsupported side; corpus-wide absence belongs exclusively to deterministic exact-lookup refusal paths",
-        "verification contract: a corpus-wide absence claim inferred from a non-exhaustive subset is not evidence-supported and must be marked unsupported; when cited evidence directly establishes the denied thing, the claim is unsupported"
-      ],
-      "exact_absence_paths_preserved": true
-    }
+  "B_coverage_false_acceptance": {
+   "confirmed": true,
+   "owning_layer": "V1/coverage review (schema expressiveness)",
+   "earliest_causal_failure": "the coverage review schema had no per-point completeness structure — only claim-level mappings plus a missing list — so a reviewer that judges relevance could never be forced to state, per point, whether the requested substantive relationship is established",
+   "evidence": "ANSWER_POINT_COVERAGE_REVIEW_SCHEMA (pre-repair) contained only claim_answer_point_mappings and missing_answer_point_ids; Attempt-5 g023/g047 reviews returned empty missing lists while the external judge later found the requested relationship unstated"
   },
-  "deferred_mechanisms": {
-    "rerank_role_preservation_repair": "DEFERRED / NO_SAFE_GENERIC_REPAIR_ESTABLISHED",
-    "mechanism": "rerank_pool = fused_order[:30] bounds the reranker input; role-critical candidates ranked below the bound are lost before reranking and cannot be recovered without per-obligation retrieval signals, a documentation quota, or global reselection",
-    "defer_reason": "no existing generic per-obligation signal exists for a single-obligation query; a documentation/role quota lacks a generic architecture argument; the remaining robust options would effectively promote deferred E3/global-reselection machinery"
+  "C_negative_existence_safety": {
+   "confirmed": true,
+   "owning_layer": "A1 generation + V1 verification (contract level)",
+   "earliest_causal_failure": "no prompt contract prohibited upgrading a local retrieval miss into a corpus-wide nonexistence statement, and the evidence-review contract did not classify such a claim as unsupported when the cited subset is non-exhaustive (Attempt-5 g011 signature)",
+   "evidence": "Attempt-5 g011 answer asserted the locked documentation lacks a native setup path while 143 corpus objects match the native-documentation role"
   },
-  "files_changed": [
-    "src/panda_agent/qa.py",
-    "src/panda_agent/prompts.py",
-    "tests/unit/test_post_a5_generic_product_repair.py",
-    "tests/unit/test_qa.py",
-    "tests/unit/test_e2_a1_answer_point_coverage.py",
-    "tests/unit/test_e3_missing_point_retrieval.py",
-    "tests/unit/test_generic_answer_obligation_completeness.py",
-    "tests/unit/test_f6_release_identity.py",
-    "tests/unit/test_rerank_role_loss_investigation.py"
+  "D_retrieval_rerank_role_loss": {
+   "confirmed": true,
+   "owning_layer": "R2 (fusion/rerank input selection)",
+   "mechanism": "retrieval.py builds the reranker pool as fused_order[:30]; the Attempt-5 g011 native-documentation selectors matched four objects in the combined candidate pool but none survived into ranked top-30, so they never entered the bounded rerank pool",
+   "action": "DEFERRED"
+  }
+ },
+ "implemented_repairs": {
+  "A_revision_recovery": {
+   "file": "src/panda_agent/qa.py (_revise merge)",
+   "semantics": [
+    "supported claims merge first, unchanged",
+    "a revised claim identical (normalized) to an unsupported claim under the same ID stays blocked (F6-A2-FR2 unchanged)",
+    "a revised claim whose normalized text already appears in the merged set is discarded as an exact restatement",
+    "a revised claim that reuses an existing local claim ID for genuinely new content is preserved under a fresh local ID (claim_id_r2, claim_id_r3, ...) instead of being silently dropped",
+    "the merged draft is re-verified as before; a revised claim that fails verification still ends up unsupported and the missing obligation stays missing"
+   ],
+   "boundedness": "at most one revision, unchanged; no second retrieval, no E3"
+  },
+  "B_coverage_completeness": {
+   "file": "src/panda_agent/qa.py (ANSWER_POINT_COVERAGE_REVIEW_SCHEMA, _validate_answer_point_review) + prompts.py (ANSWER_POINT_COVERAGE_REVIEW_SYSTEM_PROMPT)",
+   "semantics": [
+    "schema now requires an answer_point_coverage record per runtime answer point: {answer_point_id, supporting_claim_ids, complete}",
+    "deterministic validation: exactly one record per point; supporting claims must be known, not unsupported/irrelevant, and mapped to the point; complete=true requires at least one supported contributing claim; complete=false must be exactly the missing_answer_point_ids set",
+    "prompt instructs the reviewer to judge the substantive relationship each obligation requests (workflow ordering, purpose, comparison, location, condition, cause/effect) and to mark complete=false when the claims leave it unstated",
+    "generator-declared mappings remain non-authoritative"
+   ],
+   "no_gold_dependency": true
+  },
+  "C_negative_existence_safety": {
+   "file": "prompts.py (ANSWER_SYSTEM_PROMPT, EVIDENCE_REVIEW_SYSTEM_PROMPT)",
+   "semantics": [
+    "generation contract: retrieved evidence is a non-exhaustive subset; never state or imply corpus-wide absence from that subset alone; state only that the supplied evidence does not establish the unsupported side; corpus-wide absence belongs exclusively to deterministic exact-lookup refusal paths",
+    "verification contract: a corpus-wide absence claim inferred from a non-exhaustive subset is not evidence-supported and must be marked unsupported; when cited evidence directly establishes the denied thing, the claim is unsupported"
+   ],
+   "exact_absence_paths_preserved": true
+  }
+ },
+ "deferred_mechanisms": {
+  "rerank_role_preservation_repair": "DEFERRED / NO_SAFE_GENERIC_REPAIR_ESTABLISHED",
+  "mechanism": "rerank_pool = fused_order[:30] bounds the reranker input; role-critical candidates ranked below the bound are lost before reranking and cannot be recovered without per-obligation retrieval signals, a documentation quota, or global reselection",
+  "defer_reason": "no existing generic per-obligation signal exists for a single-obligation query; a documentation/role quota lacks a generic architecture argument; the remaining robust options would effectively promote deferred E3/global-reselection machinery"
+ },
+ "files_changed": [
+  "src/panda_agent/qa.py",
+  "src/panda_agent/prompts.py",
+  "tests/unit/test_post_a5_generic_product_repair.py",
+  "tests/unit/test_qa.py",
+  "tests/unit/test_e2_a1_answer_point_coverage.py",
+  "tests/unit/test_e3_missing_point_retrieval.py",
+  "tests/unit/test_generic_answer_obligation_completeness.py",
+  "tests/unit/test_f6_release_identity.py",
+  "tests/unit/test_rerank_role_loss_investigation.py"
+ ],
+ "prompt_changes": {
+  "changed_prompts": [
+   "ANSWER_SYSTEM_PROMPT",
+   "EVIDENCE_REVIEW_SYSTEM_PROMPT",
+   "ANSWER_POINT_COVERAGE_REVIEW_SYSTEM_PROMPT"
   ],
-  "prompt_changes": {
-    "changed_prompts": [
-      "ANSWER_SYSTEM_PROMPT",
-      "EVIDENCE_REVIEW_SYSTEM_PROMPT",
-      "ANSWER_POINT_COVERAGE_REVIEW_SYSTEM_PROMPT"
-    ],
-    "new_prompt_fingerprint": "0a5b2909ef586671d533148979fc681c64e37528ad53781a4566cb9044835ba2",
-    "previous_prompt_fingerprint": "35f1dd3cbcd6cb636e2e92e7af28cb95415787e8d920c99c3b070eae86a8f097",
-    "fingerprint_changed_automatically": true,
-    "release_identity_tests": "tests/unit/test_f6_release_identity.py PASS (binding mechanism verified; no hash hardcoded)"
-  },
-  "product_behavior_head": "recorded as the 'Repair completeness recovery and negative-existence safety' commit (behavior-affecting qa.py/prompts.py changes)",
-  "deterministic_tests": {
-    "t0_repair_suite": "tests/unit/test_post_a5_generic_product_repair.py 12/12 (RED before implementation: 4 failed — A3/B1/C1/C4)",
-    "qa_suite": "tests/unit/test_qa.py 210 passed + 25 subtests",
-    "focused_regressions": "e2_a1 + e3 + generic completeness + f6 release identity + evaluation_runner: 336 passed; the only failure is the pre-existing stale v2.6-default-Gold assertion (unrelated, recorded debt)",
-    "pre_existing_debt": "test_e2_a3_runtime_activation.py implementation-snapshot tests fail against a stale E2-A3-era anchor (7 locked functions already differed at the starting HEAD); unrelated to this repair and not modified",
-    "combined": "test_f6a_release_infrastructure.py + test_identifier_catalog_repair.py + reconciliation tests 56/56"
-  },
-  "remaining_risks": [
-    "the per-point completeness record raises reviewer output complexity; an invalid coverage payload falls back to the existing conservative error path",
-    "the strictened negative-existence contract may shift some historically accepted claims to unsupported; this is the intended safety direction and is validated scientifically only at the next authorized evaluation tier",
-    "revision recovery depends on the generator emitting a new-content claim within one bounded revision; evidence-insufficient obligations still stay missing by design"
-  ],
-  "next_validation_recommendation": "POST-A5 PRODUCT REPAIR VALIDATION / FIXED EXPOSED SENTINEL T1",
-  "next_task_execution_authorized": false
+  "new_prompt_fingerprint": "0a5b2909ef586671d533148979fc681c64e37528ad53781a4566cb9044835ba2",
+  "previous_prompt_fingerprint": "35f1dd3cbcd6cb636e2e92e7af28cb95415787e8d920c99c3b070eae86a8f097",
+  "fingerprint_changed_automatically": true,
+  "release_identity_tests": "tests/unit/test_f6_release_identity.py PASS (binding mechanism verified; no hash hardcoded)"
+ },
+ "product_behavior_head": "recorded as the 'Repair completeness recovery and negative-existence safety' commit (behavior-affecting qa.py/prompts.py changes)",
+ "deterministic_tests": {
+  "t0_repair_suite": "tests/unit/test_post_a5_generic_product_repair.py 12/12 (RED before implementation: 4 failed — A3/B1/C1/C4)",
+  "qa_suite": "tests/unit/test_qa.py 210 passed + 25 subtests",
+  "focused_regressions": "e2_a1 + e3 + generic completeness + f6 release identity + evaluation_runner: 336 passed; the only failure is the pre-existing stale v2.6-default-Gold assertion (unrelated, recorded debt)",
+  "pre_existing_debt": "test_e2_a3_runtime_activation.py implementation-snapshot tests fail against a stale E2-A3-era anchor (7 locked functions already differed at the starting HEAD); unrelated to this repair and not modified",
+  "combined": "test_f6a_release_infrastructure.py + test_identifier_catalog_repair.py + reconciliation tests 56/56"
+ },
+ "remaining_risks": [
+  "the per-point completeness record raises reviewer output complexity; an invalid coverage payload falls back to the existing conservative error path",
+  "the strictened negative-existence contract may shift some historically accepted claims to unsupported; this is the intended safety direction and is validated scientifically only at the next authorized evaluation tier",
+  "revision recovery depends on the generator emitting a new-content claim within one bounded revision; evidence-insufficient obligations still stay missing by design"
+ ],
+ "next_validation_recommendation": "POST-A5 PRODUCT REPAIR VALIDATION / FIXED EXPOSED SENTINEL T1",
+ "next_task_execution_authorized": false,
+ "product_behavior_head_sha256": "e79d3232ed132a224cbceaf3524e19a1406bd648",
+ "r1_reconciliation": "evaluation/POST_A5_GENERIC_PRODUCT_REPAIR_R1_CAUSAL_ATTRIBUTION_AND_LINEAGE_RECONCILIATION.md supersedes the Workstream A 'supported or unsupported' ID wording and any exact-g013-causality implication, the coverage root-cause overclaim, and the prose-only product-head provenance; all other v1 findings stand"
 }
