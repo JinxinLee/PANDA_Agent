@@ -36,7 +36,13 @@ All six confirmed false positives remain cleared under exact-ownership semantics
 
 ## 5. Record-provenance reconciliation
 
-Independently derived from the immutable run stores (not from the prior report):
+Independently derived from the immutable run stores (not from the prior report). Field definitions are fixed across all attempts:
+
+- `raw_rows_in_store` / `unique_case_count` / `duplicate_case_ids` / `exception_case_ids` / `completed_case_count` describe the append-only store shape;
+- `identifier_applicable_case_count` is the number of cases for which `identifier_hallucination_rate` is actually applicable under the evaluator contract (`ordinary_applicable = expected_status == answered`) — it is **not** a row count and is independent of store shape;
+- `identifier_mentions_denominator` is the aggregate identifier mentions over the applicable answered records that carry an actual measurement.
+
+All five attempts share the same formal-English cohort semantics, so `identifier_applicable_case_count = 49` for every attempt (verified mechanically below).
 
 ### Attempt 1 — the 60↔59 discrepancy resolved
 
@@ -46,11 +52,13 @@ unique_case_count = 59
 duplicate_case_ids = {"g119": 2}
 exception_case_ids = []
 completed_case_count = 59
-identifier_applicable_case_count = 60 rows (59 answered cases; g119 counted twice)
+identifier_applicable_case_count = 49
 identifier_mentions_denominator = 121
 ```
 
-The 60th row is a **complete duplicate execution of `g119`**: both rows carry a full result/metrics payload with no exception, status `insufficient_evidence`, answers of identical length, recorded 37 seconds apart (2026-09-13T00:23:15Z and 00:23:52Z). This is recovery residue from Attempt 1's documented external process terminations — the store is append-only, so the re-executed case appended a second complete row; the later row is the final record. The historical gate-matrix aggregation summed over stored rows, so its denominator (121) includes the duplicate row's mentions; the rescore aggregates the same way, which is why 121 reproduces exactly. Counting unique cases only would give a different (non-historical) denominator; the duplicate is disclosed rather than silently collapsed.
+The 60th row is a **complete duplicate execution of `g119`**: both rows carry a full result/metrics payload with no exception, status `insufficient_evidence`, answers of identical length, recorded 37 seconds apart (2026-09-13T00:23:15Z and 00:23:52Z). This is recovery residue from Attempt 1's documented external process terminations — the store is append-only, so the re-executed case appended a second complete row; the later row is the final record.
+
+The duplicate explains the `60 raw rows vs 59 unique cases` provenance question and nothing more. `g119`'s Gold `expected_status` is `insufficient_evidence`, so under the evaluator contract (`ordinary_applicable = expected_status == answered`) **neither stored g119 row is applicable to the identifier-hallucination metric and neither contributes mentions**. `identifier_mentions_denominator = 121` is the total identifier mentions over the **49 applicable answered records** — the same applicability the historical gate-matrix aggregation used, which is why 121 reproduces exactly. The two provenance questions (store shape vs metric denominator) are kept separate.
 
 ### Attempt 3 — the 59↔58 discrepancy resolved
 
@@ -61,11 +69,11 @@ duplicate_case_ids = {}
 exception_case_ids = ["g013"]
 exception_row_count = 1
 completed_case_count = 58
-identifier_applicable_case_count = 59 rows (58 completed + the g013 exception row)
+identifier_applicable_case_count = 49
 identifier_mentions_denominator = 177
 ```
 
-The store holds 59 unique-case rows, of which `g013` is the preserved Vertex-429 provider-exception row (no result payload, zero claims, zero mentions). 58 cases are completed/scored; the g013 row contributes nothing to the identifier denominator, so the rescored denominator (177) equals the historical one while the historical formal cohort state (58/59, INCOMPLETE) is preserved and no case is manufactured.
+The store holds 59 unique-case rows, of which `g013` is the preserved Vertex-429 provider-exception row (no result payload). 58 cases are completed/scored. The 49 applicable cases are the answered-expected cases of the formal-English cohort; `g013` is one of them by Gold semantics, but its preserved exception row is **not a valid applicable identifier measurement record and contributes no identifier measurement** — the actual identifier measurements come from the 48 completed answered records. `identifier_mentions_denominator = 177` is the aggregate identifier mentions over those applicable answered records, which is why 177 reproduces the historical denominator exactly while the historical formal cohort state (58/59, INCOMPLETE) is preserved and no case is manufactured.
 
 ### Attempts 2, 4, 5
 

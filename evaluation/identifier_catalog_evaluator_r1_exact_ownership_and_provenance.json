@@ -180,7 +180,7 @@
   "attempt_1": {
    "machine_v1": "records_in_store = 60",
    "md_v1": "records = 59",
-   "resolution": "the 60th row is a complete duplicate execution of g119 (both rows full result/metrics, no exception, identical answer length, 37 seconds apart) — append-only recovery residue from Attempt 1's documented external process terminations; the later row is the final record; the historical denominator 121 sums over stored rows and therefore includes the duplicate row's mentions, which the rescore reproduces",
+   "resolution": "the 60th row is a complete duplicate execution of g119 (both rows full result/metrics, no exception, identical answer length, 37 seconds apart) — append-only recovery residue from Attempt 1's documented external process terminations; the later row is the final record. The duplicate explains 60 raw rows vs 59 unique cases and nothing more: g119's Gold expected_status is insufficient_evidence, so under the evaluator contract (ordinary_applicable = expected_status == answered) neither stored g119 row is applicable to the identifier-hallucination metric and neither contributes mentions. identifier_mentions_denominator = 121 is the total identifier mentions over the 49 applicable answered records; the historical gate-matrix aggregation used the same applicability, which is why 121 reproduces exactly",
    "raw_rows": 60,
    "unique_cases": 59,
    "duplicates": {
@@ -190,7 +190,7 @@
   "attempt_3": {
    "machine_v1": "records_in_store = 59",
    "md_v1": "records = 58 scored",
-   "resolution": "the store holds 59 unique-case rows; g013 is the preserved Vertex-429 provider-exception row (no result payload, zero claims, zero mentions); completed/scored = 58; the g013 row contributes nothing to the denominator (177 reproduces exactly); historical 58/59 INCOMPLETE cohort state preserved, no case manufactured",
+   "resolution": "the store holds 59 unique-case rows; g013 is the preserved Vertex-429 provider-exception row (no result payload); completed/scored = 58. The 49 applicable cases are the answered-expected cases of the formal-English cohort; g013 is one of them by Gold semantics but its preserved exception row is not a valid applicable identifier measurement record and contributes no identifier measurement — the actual identifier measurements come from the 48 completed answered records. identifier_mentions_denominator = 177 is the aggregate identifier mentions over those applicable answered records (177 reproduces exactly); historical 58/59 INCOMPLETE cohort state preserved, no case manufactured",
    "raw_rows": 59,
    "unique_cases": 59,
    "exceptions": [

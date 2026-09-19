@@ -80,9 +80,9 @@
   "exception_row_count": 0,
   "completed_case_count": 59,
   "identifier_applicable_case_count": 49,
-  "identifier_applicable_note": "answered expected-status rows scored by the deterministic identifier metric; exception rows without results contribute zero mentions",
+  "identifier_applicable_note": "records whose Gold expected_status is answered, for which identifier_hallucination_rate is applicable under the evaluator contract (ordinary_applicable = expected_status == answered); a preserved exception row (Attempt 3 g013) is not a valid applicable identifier measurement record and contributes no identifier measurement",
   "identifier_mentions_denominator": 155,
-  "aggregate_basis": "sum over stored rows (append-only store); a duplicate row repeats its mentions exactly as the historical gate-matrix aggregation did"
+  "aggregate_basis": "sum of identifier mentions over the applicable answered records only; non-applicable rows contribute no mentions (Attempt 1's duplicated insufficient-evidence g119 rows are not applicable and do not contribute), and the historical gate-matrix aggregation used the same applicability, which is why the denominators reproduce exactly"
  },
  "stored_records_source": "data/evaluation/runs/f6a-rc2-gold-formal-full-20260913/results.jsonl",
  "evaluator_repair": {
