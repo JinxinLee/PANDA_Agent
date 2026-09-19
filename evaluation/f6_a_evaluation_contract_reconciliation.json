@@ -1,0 +1,176 @@
+{
+  "schema_version": "f6a-evaluation-contract-reconciliation-v1",
+  "task": "F6-A EVALUATION-CONTRACT RECONCILIATION — CRITICAL-EVIDENCE EQUIVALENCE + g039 GOLD CORRECTION + HARD-SAFETY RECLASSIFICATION",
+  "starting_head": "f9aa4dfa7da02c47df86dc954ee4dc64b1433b8c",
+  "scientific_calls": 0,
+  "scientific_tokens": 0,
+  "starting_gold": {
+    "benchmark_version": "m6-benchmark-v2.10",
+    "dataset": "evaluation/benchmarks/v2_10/gold_questions.yaml",
+    "dataset_sha256": "bdce5cbdc0a6f1645d7350b87bc2f289265c3d67311dab4b12e488b9dc499513",
+    "calibration": "phase_b_t3_product_language_scope_v7",
+    "formal_english_selector": "59 IDs, SHA-256 e27ef67a866274b4a8441b789ca78fc3ccb7e022eed537c7442e15230777a0e5"
+  },
+  "successor_gold": {
+    "benchmark_version": "m6-benchmark-v2.11",
+    "dataset": "evaluation/benchmarks/v2_11/gold_questions.yaml",
+    "dataset_sha256": "39943c6a3f2152e476109c0340acd066795c8de6ff3b6bb2eac6661ac480a417",
+    "parent": "m6-benchmark-v2.10",
+    "parent_dataset_sha256": "bdce5cbdc0a6f1645d7350b87bc2f289265c3d67311dab4b12e488b9dc499513",
+    "changed_question_ids": ["g013", "g016", "g020", "g039", "g044", "g110"],
+    "changed_question_object_count": 6,
+    "unchanged_question_object_count": 114,
+    "question_count": 120,
+    "split_counts": {"dev": 80, "challenge": 24, "regression": 16},
+    "status_counts": {"answered": 102, "insufficient_evidence": 10, "version_conflict": 8},
+    "review_counts": {"approved": 120},
+    "official_ready": true,
+    "structurally_valid": true,
+    "unmatched_evidence_groups": [],
+    "unknown_allowed_source_versions": [],
+    "change_report": "evaluation/benchmarks/v2_11/gold_v2_11_change_report.json",
+    "patch": "evaluation/benchmarks/v2_11/gold_v2_11_patch.yaml",
+    "manifest": "evaluation/benchmarks/v2_11/benchmark_manifest.json",
+    "forward_only_reason": "critical-evidence role/any_of equivalence reconciliation plus g039 answer-point literal-scope correction; forward-only successor for future authorized attempts",
+    "negative_control": "g011 deliberately unchanged"
+  },
+  "successor_calibration": {
+    "calibration_id": "phase_b_t3_product_language_scope_v8",
+    "artifact": "evaluation/baselines/manifests/phase_b_t3_product_language_scope_v8.json",
+    "parent": "phase_b_t3_product_language_scope_v7",
+    "source_gold": "m6-benchmark-v2.11 / 39943c6a3f2152e476109c0340acd066795c8de6ff3b6bb2eac6661ac480a417",
+    "compatible": true,
+    "formal_english_ids_unchanged": true,
+    "non_english_ids_unchanged": true,
+    "counts": {"formal_english": 59, "non_english": 21},
+    "selector_sha256_unchanged": "e27ef67a866274b4a8441b789ca78fc3ccb7e022eed537c7442e15230777a0e5"
+  },
+  "critical_evidence_construct": {
+    "INTENDED_CONSTRUCT": "every critical evidence ROLE required by the question receives valid authoritative final support of the required source type and version",
+    "FINAL_CONTRACT": "role + explicitly reviewed any_of[] selectors; a critical group is satisfied by any reviewed acceptable selector; source-specific user requests keep their pinned selectors",
+    "IMPLEMENTATION_MECHANISM": "OPTION A: forward-only Gold successor with audited any_of selectors; evaluator matching semantics unchanged; NO EVALUATOR CODE CHANGE",
+    "THRESHOLD": "critical_final_evidence_recall == 1.00 unchanged; interpretation = 100% of required critical evidence roles represented by an explicitly approved acceptable evidence selector",
+    "evaluator_code_changed": false,
+    "free_form_runtime_semantic_equivalence": false
+  },
+  "critical_evidence_role_decisions": [
+    {
+      "case_id": "g011",
+      "critical_group_id": "g011.e1 (+g011.e2)",
+      "role": "installing_running_panda_root_documentation / docker_containers_documentation",
+      "accepted_equivalent_evidence": null,
+      "decision": "KEEP_AS_IS / PRODUCT_DEFECT / NEGATIVE_CONTROL",
+      "reason": "the Attempt-5 answer denied the existence of native-installation documentation that the locked corpus contains (143 e1-matching objects; the e1 selectors' targets fell out of rerank/top30), and the pinned Docker-documentation group was selected then dropped; the e1 role is a genuinely necessary information role for the literal native-vs-container question; g011 remains a true failure under the reconciled contract (crit-ev 0.0) and is the negative control proving the reconciled metric still catches real failures"
+    },
+    {
+      "case_id": "g013",
+      "critical_group_id": "g013.e1",
+      "role": "macros_documentation",
+      "accepted_equivalent_evidence": "pandaroot macro/master/mastermacros.rst (authoritative Master Macros documentation, finally cited by the Attempt-5 answer)",
+      "decision": "EQUIVALENCE_ACCEPTED",
+      "reason": "same macro-invocation obligation, documentation role, allowed versions; the literal question does not require the sphinx Macros page specifically; mastermacros.rst independently documents the ROOT invocation patterns"
+    },
+    {
+      "case_id": "g016",
+      "critical_group_id": "g016.e1",
+      "role": "dpmgenerator_documentation",
+      "accepted_equivalent_evidence": "pandaroot tools/MasterTasks/PndMasterRunSim.h (API documentation: UseDpmGenerator/SetInput/SetGenerator/SetDpmFlag modes 0/1/2, finally cited by the Attempt-5 answer)",
+      "decision": "EQUIVALENCE_ACCEPTED",
+      "reason": "the literal question asks how to select DPM (AP p1 names the PndMasterRunSim API); the header's API documentation satisfies the same generator-selection and mode-choice obligations; required source types documentation+code unchanged; the answer covered both critical answer points"
+    },
+    {
+      "case_id": "g020",
+      "critical_group_id": "g020.e1",
+      "role": "poca_workflow_documentation",
+      "accepted_equivalent_evidence": "restgas_determination README.md readme_section '3.4 POCA-first back-propagation' (finally cited by the Attempt-5 answer) plus implementation code",
+      "decision": "EQUIVALENCE_ACCEPTED",
+      "reason": "the root README section documents the same two-pass POCA workflow role; all four critical answer points were covered by the Attempt-5 answer (crit_pts_missing = []); selector constrained with section_contains POCA so an arbitrary root-README section does not satisfy the role"
+    },
+    {
+      "case_id": "g044",
+      "critical_group_id": "g044.e1",
+      "role": "renamed pflueger_2017_page_57_theory -> angular_acceptance_thesis_theory",
+      "accepted_equivalent_evidence": "li_2026 thesis pages 72 and 79 (thesis_section objects, finally cited by the Attempt-5 answer)",
+      "decision": "EQUIVALENCE_ACCEPTED",
+      "reason": "the answer point requires thesis-level acceptance-factor theory (not source-code inference) and the literal question does not require Pflueger specifically; li_2026 is an allowed authoritative thesis (paper source type preserved) whose pages independently provide the same theoretical support; the same failure shape recurred in Attempts 3/4/5 purely from literal pinning"
+    },
+    {
+      "case_id": "g110",
+      "critical_group_id": "g110.e2",
+      "role": "poca_workflow_documentation",
+      "accepted_equivalent_evidence": "restgas_determination README.md readme_section '3.4 POCA-first back-propagation' plus code (finally cited by the Attempt-5 answer)",
+      "decision": "EQUIVALENCE_ACCEPTED",
+      "reason": "the three-step triage answer covered all three critical answer points (crit_pts_missing = []); the root README POCA section plus code support the same troubleshooting/workflow role; selector constrained with section_contains POCA"
+    }
+  ],
+  "g039_correction": {
+    "p1_before": "Locate the profile-correction macro and distinguish it from PndLmdAcceptance.",
+    "p1_after": "Locate the longitudinal-profile efficiency-correction implementation macro.",
+    "required_identifier_preserved": "efficiency_correction_2.C (critical, kind=path)",
+    "forbidden_evidence_preserved": "data/PndLmdAcceptance.cxx",
+    "governance_principle": "forbidden evidence != mandatory answer content"
+  },
+  "hard_safety_future_contract": {
+    "category": "HARD_SAFETY / TRUSTWORTHINESS",
+    "gates": {
+      "citation_integrity": 1.0,
+      "wrong_version_evidence_count": 0,
+      "forbidden_evidence_count": 0,
+      "contradiction_count": 0,
+      "major_unsupported_claim_count": 0,
+      "unhandled_exception_count": 0
+    },
+    "note": "future F6-A contracts only; the historical Attempt-5 preregistration is not modified"
+  },
+  "strict_release_quality_future_contract": {
+    "category": "STRICT_RELEASE_QUALITY / COMPLETENESS",
+    "gates": {
+      "critical_answer_point_miss_count": 0,
+      "critical_final_evidence_recall": 1.0
+    },
+    "note": "classification changes; thresholds do not; both categories remain mandatory where a preregistered contract requires them"
+  },
+  "threshold_changes": "NONE",
+  "counterfactual_attempt5": {
+    "label": "COUNTERFACTUAL / NON-AUTHORITATIVE",
+    "method": "deterministic offline recomputation of Attempt-5 stored outputs under the v2.11 evidence groups; zero model calls",
+    "critical_final_evidence_recall": {
+      "historical_v2_10": "45/49 = 0.9183673469387755 (reproduced exactly)",
+      "counterfactual_v2_11": "48/49 = 0.9795918367346939",
+      "changed_cases": {"g013": "0.5 -> 1.0", "g016": "0.5 -> 1.0", "g020": "0.5 -> 1.0", "g044": "0.0 -> 1.0", "g110": "0.5 -> 1.0"},
+      "unchanged_cases": {"g011": "0.0 (negative control holds)"},
+      "gate_status_counterfactual": "FAIL (0.9796 != 1.00); no pass chasing"
+    },
+    "critical_answer_point_miss_count": {
+      "historical": 4,
+      "counterfactual_after_g039_governance_correction": 3,
+      "g039_basis": "the Attempt-5 answer opens by locating macro/target/correction/efficiency_correction_2.C within the efficiency_correction_2 function, the critical required identifier efficiency_correction_2.C is present (missing_identifiers = []), and the g039.e1 group is matched (crit-ev 1.0); the corrected literal-location p1 is therefore deterministically satisfied by the frozen answer",
+      "adjudication_label": "COUNTERFACTUAL / NON-AUTHORITATIVE / GOVERNANCE_ADJUDICATION",
+      "remaining_counterfactual_misses": ["g013.p3", "g023.p3", "g047.p1"],
+      "gate_status_counterfactual": "FAIL (3 != 0)"
+    },
+    "identifier_hallucination_rate": {
+      "counterfactual": "0/130 = 0.0 (established by the identifier evaluator repair line)",
+      "gate_status_counterfactual": "PASS"
+    },
+    "overall": "Attempt 5 remains COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED under every counterfactual; no retroactive PASS"
+  },
+  "historical_verdict_preservation": {
+    "attempt_1": "COMPLETE / FAIL (unchanged, Gold v2.6)",
+    "attempt_2": "COMPLETE / FAIL (unchanged, Gold v2.6)",
+    "attempt_3": "COMPLETE / FAIL (unchanged, Gold v2.9)",
+    "attempt_4": "COMPLETE / FAIL (unchanged, Gold v2.10)",
+    "attempt_5": "COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED (unchanged, Gold v2.10)"
+  },
+  "scientific_usage": {"model_calls": 0, "token_usage": 0},
+  "attempt_6_readiness": "NOT_READY",
+  "remaining_product_blockers": [
+    "g013: bounded-revision recovery insufficiency",
+    "g023/g047: answer-content omission with possible semantic-coverage verifier false acceptance",
+    "g011: document-role retrieval/reranking loss plus negative corpus-existence claim false acceptance",
+    "focused T0/T1/T2 development evidence",
+    "no materially new product candidate"
+  ],
+  "next_task_recommendation": "POST-A5 GENERIC PRODUCT REPAIR / COMPLETENESS RECOVERY + NEGATIVE-EXISTENCE SAFETY",
+  "next_task_execution_authorized": false
+}

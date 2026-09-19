@@ -172,6 +172,21 @@ Allowed review actions:
 
 Do not silently relax global thresholds. Citation-integrity failures, wrong-version evidence, contradictions, unsupported claims, and unhandled exceptions are not waived by default.
 
+### Critical evidence roles and gate categories
+
+`critical_final_evidence_recall` measures required evidence roles, not benchmark-author-pinned literal objects: a critical evidence group is satisfied when the final answer's support matches any explicitly reviewed selector in the group's `any_of[]` list. Equivalence is audited and deterministic — it lives in reviewed Gold selectors, never in runtime semantic inference, and `same source type` alone never satisfies a role. When the literal user question requires a specific source, thesis, file, page, API, or implementation location, equivalent generic evidence must not silently replace it.
+
+Forbidden evidence is not mandatory answer content: a forbidden-evidence selector may guard a known confusion without requiring the public answer to describe the forbidden alternative.
+
+Gate categories are conceptually distinct, and both remain mandatory wherever a preregistered contract requires them:
+
+- `HARD_SAFETY / TRUSTWORTHINESS`: citation integrity, wrong-version evidence, forbidden evidence, contradictions, major unsupported claims, unhandled exceptions.
+- `STRICT_RELEASE_QUALITY / COMPLETENESS`: critical answer-point completeness and critical evidence-role coverage.
+
+Moving a gate between categories changes its conceptual classification, never its threshold.
+
+Future Gold corrections are forward-only successors; historical formal attempts retain their original Gold and evaluator contracts, and any successor-contract analysis of stored historical outputs is counterfactual and non-authoritative.
+
 ### Formal repeat eligibility
 
 A complete terminal formal F6-A result closes that product-behavior lineage for

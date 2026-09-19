@@ -87,7 +87,7 @@ IdentifierKind = Literal[
 ]
 
 _PATH_INDEX_CACHE: dict[int, tuple[dict[str, dict[str, Any]], dict[tuple[str, str, str], list[dict[str, Any]]]]] = {}
-_IDENTIFIER_CATALOG_CACHE: dict[tuple[int, tuple[str, ...]], dict[str, set[str]]] = {}
+_IDENTIFIER_CATALOG_CACHE: dict[tuple[int, tuple[str, ...]], tuple[dict[str, dict[str, Any]], dict[str, set[str]]]] = {}
 
 
 def classify_identifier_mention(token: str) -> tuple[IdentifierKind | None, str]:
@@ -776,8 +776,9 @@ def build_identifier_catalog(
     """Build a deterministic identifier/path catalog for locked source versions."""
     allowed = set(allowed_source_versions or [])
     cache_key = (id(object_lookup), tuple(sorted(allowed)))
-    if cache_key in _IDENTIFIER_CATALOG_CACHE:
-        return _IDENTIFIER_CATALOG_CACHE[cache_key]
+    cached = _IDENTIFIER_CATALOG_CACHE.get(cache_key)
+    if cached is not None and cached[0] is object_lookup:
+        return cached[1]
     symbols: set[str] = set()
     paths: set[str] = set()
     for item in object_lookup.values():
@@ -817,7 +818,7 @@ def build_identifier_catalog(
         ):
             symbols.add(match.group(0))
     result = {"symbols": symbols, "paths": paths}
-    _IDENTIFIER_CATALOG_CACHE[cache_key] = result
+    _IDENTIFIER_CATALOG_CACHE[cache_key] = (object_lookup, result)
     return result
 
 

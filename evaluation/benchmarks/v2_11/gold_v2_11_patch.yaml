@@ -1,0 +1,35 @@
+schema_version: '1.0'
+benchmark_version: m6-benchmark-v2.11
+base_benchmark_version: m6-benchmark-v2.10
+base_dataset_sha256: bdce5cbdc0a6f1645d7350b87bc2f289265c3d67311dab4b12e488b9dc499513
+audit:
+  artifact: evaluation/F6_A_EVALUATION_CONTRACT_RECONCILIATION.md
+  companion: evaluation/f6_a_evaluation_contract_reconciliation.json
+  task: F6-A EVALUATION-CONTRACT RECONCILIATION
+governance_principle: critical_final_evidence_recall measures required evidence roles with explicit reviewed any-of equivalence; source-role equivalence is audited and deterministic, never runtime-inferred.
+semantic_case_deltas:
+  g039: restrict p1 to the literal locate-the-macro requirement; the PndLmdAcceptance distinction clause is not independently requested and the confusion mode remains guarded by forbidden evidence.
+  g013: append the pandaroot mastermacros.rst documentation selector to critical group g013.e1 (audited source-role equivalence).
+  g016: append the PndMasterRunSim.h API-documentation selector to critical group g016.e1 (audited source-role equivalence).
+  g020: append the restgas_determination root-README POCA readme_section selector to critical group g020.e1 (audited source-role equivalence).
+  g044: rename role g044.e1 to angular_acceptance_thesis_theory and append li_2026 thesis pages 72/79 (audited thesis-level equivalence; paper source type preserved).
+  g110: append the restgas_determination root-README POCA readme_section selector to critical group g110.e2 (audited source-role equivalence).
+source_level_basis:
+- 'g013: Attempt-5 final citations include pandaroot macro/master/mastermacros.rst (Master Macros documentation) supporting the same macro-invocation obligation.'
+- 'g016: Attempt-5 final citations include PndMasterRunSim.h whose API documentation supports the same DPM-selection and mode-choice obligations; the literal question does not require the sphinx DPMGenerator
+  page specifically.'
+- 'g020: Attempt-5 final citations include the restgas_determination root README section ''3.4 POCA-first back-propagation'' documenting the same two-pass POCA workflow; all four answer points were covered.'
+- 'g044: Attempt-5 final citations include li_2026 thesis pages 72/79 providing the same thesis-level acceptance-factor theory; the answer-point text requires thesis support, not Pflueger specifically;
+  paper source type preserved.'
+- 'g110: Attempt-5 final citations include the restgas_determination root README POCA section plus code supporting the same three-step triage obligations; all three answer points were covered.'
+- 'g011: the answer denied the existence of native-installation documentation that the locked corpus contains (143 matching objects); the e1 role is a genuinely necessary information role and remains unsatisfied.'
+- 'g039: the literal query asks where the correction is implemented; the answer located efficiency_correction_2.C correctly and the PndLmdAcceptance confusion mode is already guarded by forbidden evidence.'
+kept_as_is:
+- case_id: g011
+  disposition: KEEP_AS_IS / PRODUCT_DEFECT / NEGATIVE_CONTROL
+firewall:
+- Gold v2.10 remains byte-identical and authoritative for Attempts 4-5 history.
+- Attempts 1-5 are not rescored into PASS; any successor-contract analysis is COUNTERFACTUAL / NON-AUTHORITATIVE.
+- No expected status, intent, threshold, evaluator metric, or language classification changes.
+- 'g011 is deliberately not reconciled: it remains a genuine product-failure negative control.'
+policy: Forward-only successor for future authorized attempts only.

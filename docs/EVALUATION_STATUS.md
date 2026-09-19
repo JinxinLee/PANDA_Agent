@@ -210,9 +210,10 @@ MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD
 Current planning state:
 D4 = PAUSED / ROADMAP_RECONCILIATION
 D4 overall completion = UNDECIDED
-CURRENT_TASK = IDENTIFIER EVALUATOR R1 / COMPLETE / PASS / QUALIFIED_SYMBOL_OWNERSHIP_AND_RESCORE_PROVENANCE_RECONCILED
-IDENTIFIER_EVALUATOR_DEFECT = REPAIRED
-HISTORICAL_IDENTIFIER_RESCORE = COMPLETE (R1 exact-ownership + provenance reconciliation)
+CURRENT_TASK = F6-A EVALUATION-CONTRACT RECONCILIATION / COMPLETE / PASS / EVIDENCE_ROLE_GOLD_AND_GATE_CLASSIFICATION_RECONCILED
+ACTIVE_GOLD = m6-benchmark-v2.11 (evaluation/benchmarks/v2_11/gold_questions.yaml, SHA 39943c6a3f2152e476109c0340acd066795c8de6ff3b6bb2eac6661ac480a417; parent v2.10 byte-identical)
+ACTIVE_CALIBRATION = phase_b_t3_product_language_scope_v8 (compatible; formal-English 59 / non-English 21 unchanged; selector SHA e27ef67a866274b4a8441b789ca78fc3ccb7e022eed537c7442e15230777a0e5 unchanged)
+F6_A_EVALUATION_CONTRACT_RECONCILIATION = COMPLETE / PASS / EVIDENCE_ROLE_GOLD_AND_GATE_CLASSIFICATION_RECONCILED (zero scientific calls; critical-evidence construct = required evidence roles with explicitly reviewed any_of equivalence, evaluator matching unchanged, threshold 1.00 unchanged; successor Gold v2.11 changes exactly 6 objects — g039 p1 literal-scope correction plus audited role/any_of equivalence for g013/g016/g020/g044/g110, g044.e1 role renamed angular_acceptance_thesis_theory, g011 deliberately unchanged as negative control; Attempt-5 counterfactual crit-ev 0.918367 -> 48/49 = 0.979592 still FAIL and g011 stays 0.0; g039 governance adjudication counterfactual drops critical point misses to 3, still FAIL; identifier counterfactual 0/130 PASS; all formal verdicts unchanged; hard-safety vs strict-release-quality gate categories separated for future contracts with thresholds unchanged; NUMERICAL_THRESHOLD_CHANGES = NONE; `MATERIAL_PRODUCT_CHANGE = false`, `EVALUATION_CONTRACT_CHANGE = true`, `GOLD_SUCCESSOR_CREATED = true`). One evaluator correctness-only exception: the identifier-catalog cache received an object-identity check (no metric change). Record: `evaluation/F6_A_EVALUATION_CONTRACT_RECONCILIATION.md` (companion JSON `evaluation/f6_a_evaluation_contract_reconciliation.json`).
 PREVIOUS_PRODUCT_BEHAVIOR_LINEAGE_HEAD = d3a1b274b2784399a7dc51b094a17e466d208b50
 CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = eda7d932a9b1b7b65436cba01e247859a6f9e056
 R1_RELEASE_IDENTITY_HEAD = 8f61aee414aa9fa2da0e3a6bbb2f767eadb7da4c
@@ -226,7 +227,7 @@ STAGES_A2_A5 = NOT_REACHED
 PROTECTED_HOLDOUTS = PRISTINE (novel_validation pristine, holdout access = 0)
 F6_B = LOCKED / F6_A_DID_NOT_PASS
 ATTEMPT_5 = COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED
-NEXT_TASK_RECOMMENDATION = F6-A EVALUATION-CONTRACT RECONCILIATION / CRITICAL-EVIDENCE EQUIVALENCE + g039 GOLD CORRECTION + HARD-SAFETY RECLASSIFICATION (NO ATTEMPT 6)
+NEXT_TASK_RECOMMENDATION = POST-A5 GENERIC PRODUCT REPAIR / COMPLETENESS RECOVERY + NEGATIVE-EXISTENCE SAFETY (NO ATTEMPT 6)
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 FOLLOWING_ARCHITECTURE_TASK = F6-B — Protected Blind Release Gate (LOCKED / F6_A_DID_NOT_PASS)
 

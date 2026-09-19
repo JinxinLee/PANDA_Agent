@@ -1,0 +1,124 @@
+{
+ "benchmark_version": "m6-benchmark-v2.11",
+ "base_benchmark_version": "m6-benchmark-v2.10",
+ "base_dataset_sha256": "bdce5cbdc0a6f1645d7350b87bc2f289265c3d67311dab4b12e488b9dc499513",
+ "audit_artifact": "evaluation/F6_A_EVALUATION_CONTRACT_RECONCILIATION.md",
+ "gold_changed_cases": [
+  "g013",
+  "g016",
+  "g020",
+  "g039",
+  "g044",
+  "g110"
+ ],
+ "case_dispositions": {
+  "g011": "KEEP_AS_IS / PRODUCT_DEFECT / NEGATIVE_CONTROL",
+  "g013": "EVIDENCE_ROLE_EQUIVALENCE / mastermacros.rst ADDED TO g013.e1",
+  "g016": "EVIDENCE_ROLE_EQUIVALENCE / PndMasterRunSim.h ADDED TO g016.e1",
+  "g020": "EVIDENCE_ROLE_EQUIVALENCE / root-README POCA SECTION ADDED TO g020.e1",
+  "g039": "FORWARD_ONLY_CORRECTION / ANSWER_POINT_LITERAL_SCOPE",
+  "g044": "EVIDENCE_ROLE_EQUIVALENCE / ROLE RENAMED + li_2026 THESIS PAGES ADDED TO g044.e1",
+  "g110": "EVIDENCE_ROLE_EQUIVALENCE / root-README POCA SECTION ADDED TO g110.e2"
+ },
+ "g039_changes": {
+  "required_answer_points_before": [
+   "Locate the profile-correction macro and distinguish it from PndLmdAcceptance."
+  ],
+  "required_answer_points_after": [
+   "Locate the longitudinal-profile efficiency-correction implementation macro."
+  ],
+  "preserved_fields": [
+   "query",
+   "intent",
+   "expected_status",
+   "required_identifiers",
+   "required_evidence_groups",
+   "forbidden_evidence",
+   "required_source_types",
+   "split",
+   "language",
+   "review_status"
+  ],
+  "governance_principle": "forbidden evidence != mandatory answer content: a forbidden-evidence selector may prevent a known confusion without forcing the public answer to describe the forbidden alternative"
+ },
+ "evidence_role_equivalence_changes": {
+  "g013.e1": {
+   "added_selectors": [
+    {
+     "source_id": "pandaroot",
+     "path": "macro/master/mastermacros.rst"
+    }
+   ],
+   "basis": "pandaroot mastermacros.rst is the authoritative Master Macros documentation and is finally cited by the Attempt-5 answer for the same macro-invocation role"
+  },
+  "g016.e1": {
+   "added_selectors": [
+    {
+     "source_id": "pandaroot",
+     "path": "tools/MasterTasks/PndMasterRunSim.h"
+    }
+   ],
+   "basis": "PndMasterRunSim.h documents the DPM-selection API (UseDpmGenerator/SetInput/SetGenerator/SetDpmFlag) cited by the Attempt-5 answer for the same generator-selection role"
+  },
+  "g020.e1": {
+   "added_selectors": [
+    {
+     "source_id": "restgas_determination",
+     "object_type": "readme_section",
+     "path": "README.md",
+     "section_contains": "POCA"
+    }
+   ],
+   "basis": "the restgas_determination root README section '3.4 POCA-first back-propagation' documents the same two-pass POCA workflow role"
+  },
+  "g044.e1": {
+   "added_selectors": [
+    {
+     "source_id": "li_2026",
+     "pdf_page": 72
+    },
+    {
+     "source_id": "li_2026",
+     "pdf_page": 79
+    }
+   ],
+   "role_rename": [
+    "pflueger_2017_page_57_theory",
+    "angular_acceptance_thesis_theory"
+   ],
+   "basis": "li_2026 thesis pages 72/79 independently provide the thesis-level angular-acceptance theory support required by the literal question; the question does not require Pflueger specifically; required source type paper is unchanged"
+  },
+  "g110.e2": {
+   "added_selectors": [
+    {
+     "source_id": "restgas_determination",
+     "object_type": "readme_section",
+     "path": "README.md",
+     "section_contains": "POCA"
+    }
+   ],
+   "basis": "the restgas_determination root README section '3.4 POCA-first back-propagation' plus code support the same troubleshooting/workflow role"
+  },
+  "g011": {
+   "decision": "NO CHANGE (negative control)",
+   "basis": "the native-documentation role was genuinely lost and the answer made an incorrect negative corpus-existence claim; reconciled contract must keep catching this failure"
+  }
+ },
+ "governance_principle": "critical_final_evidence_recall measures required evidence roles with explicit reviewed any-of equivalence; source-role equivalence is audited and deterministic, never runtime-inferred.",
+ "evidence_basis": [
+  "g013: Attempt-5 final citations include pandaroot macro/master/mastermacros.rst (Master Macros documentation) supporting the same macro-invocation obligation.",
+  "g016: Attempt-5 final citations include PndMasterRunSim.h whose API documentation supports the same DPM-selection and mode-choice obligations; the literal question does not require the sphinx DPMGenerator page specifically.",
+  "g020: Attempt-5 final citations include the restgas_determination root README section '3.4 POCA-first back-propagation' documenting the same two-pass POCA workflow; all four answer points were covered.",
+  "g044: Attempt-5 final citations include li_2026 thesis pages 72/79 providing the same thesis-level acceptance-factor theory; the answer-point text requires thesis support, not Pflueger specifically; paper source type preserved.",
+  "g110: Attempt-5 final citations include the restgas_determination root README POCA section plus code supporting the same three-step triage obligations; all three answer points were covered.",
+  "g011: the answer denied the existence of native-installation documentation that the locked corpus contains (143 matching objects); the e1 role is a genuinely necessary information role and remains unsatisfied.",
+  "g039: the literal query asks where the correction is implemented; the answer located efficiency_correction_2.C correctly and the PndLmdAcceptance confusion mode is already guarded by forbidden evidence."
+ ],
+ "firewall": [
+  "Gold v2.10 remains byte-identical and authoritative for Attempts 4-5 history.",
+  "Attempts 1-5 are not rescored into PASS; any successor-contract analysis is COUNTERFACTUAL / NON-AUTHORITATIVE.",
+  "No expected status, intent, threshold, evaluator metric, or language classification changes.",
+  "g011 is deliberately not reconciled: it remains a genuine product-failure negative control."
+ ],
+ "policy": "Forward-only successor for future authorized attempts only."
+}
