@@ -236,6 +236,11 @@ LOCKED / F6_A_DID_NOT_PASS
 POST-ATTEMPT-5 FAILURE OWNERSHIP & GATE VALIDITY REVIEW:
 COMPLETE / PASS / FAILURE_OWNERSHIP_AND_GATE_VALIDITY_ESTABLISHED (zero scientific calls; decomposition under-splitting rejected for all four critical answer-point misses — three are A1 obligation-content gaps and g039.p1 is a Gold rubric clause beyond the literal question; five of six critical final-evidence misses are equivalent alternate-source citations against literal pinned groups and g011 is a genuine R2 rerank loss plus V2 corpus-negative false acceptance; all six identifier events are evaluator false positives from the catalog's missing enum-member coverage; gate dispositions: critical_final_evidence_recall REDEFINE_METRIC_REQUIRED, critical_answer_point_miss_count GOLD_RECONCILIATION_REQUIRED, identifier_hallucination_rate EVALUATOR_REPAIR_REQUIRED; all 18 thresholds are inherited frozen M6 constants with no recorded derivation; ATTEMPT_6_READINESS = NOT_READY)
 
+F6-B:
+LOCKED / F6_A_DID_NOT_PASS
+IDENTIFIER CATALOG EVALUATOR REPAIR + ATTEMPTS 1–5 OFFLINE IDENTIFIER RESCORE:
+COMPLETE / PASS / IDENTIFIER_EVALUATOR_REPAIRED_AND_HISTORY_RESCORED (zero scientific calls; `build_identifier_catalog` now harvests qualified scoped identifiers verbatim from allowed locked-corpus text with a namespace-head-guarded tail fallback; generic T1–T8 RED→GREEN suite plus production Attempt-5 regression; offline rescore 0/121→0/121, 0/155→0/155, 0/177→0/177 (58/59 stored), 2/173→0/173, 6/130→0/130 with zero events introduced and denominators reproducing the historical matrices exactly; Attempt-5 counterfactual identifier-gate PASS is COUNTERFACTUAL / NON-AUTHORITATIVE and all five terminal verdicts are unchanged; `MATERIAL_PRODUCT_CHANGE = false`, `EVALUATOR_CONTRACT_CHANGE = true`; a forward-only causal-attribution erratum was appended to the post-A5 review; `ATTEMPT_6_READINESS = NOT_READY`)
+
 POST-ATTEMPT-3 FAILURE & EXECUTION-RECOVERY REVIEW:
 COMPLETE / PASS / FAILURES_CLASSIFIED_RECOVERY_INFRASTRUCTURE_REPAIRED_PRODUCT_RESIDUALS_DEFERRED
 

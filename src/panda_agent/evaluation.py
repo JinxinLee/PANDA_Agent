@@ -780,6 +780,7 @@ def build_identifier_catalog(
         return _IDENTIFIER_CATALOG_CACHE[cache_key]
     symbols: set[str] = set()
     paths: set[str] = set()
+    namespaces: set[str] = set()
     for item in object_lookup.values():
         if allowed and item.get("source_version_id") not in allowed:
             continue
@@ -806,9 +807,38 @@ def build_identifier_catalog(
             r"\b(?:class|struct|enum)\s+([A-Za-z_][A-Za-z0-9_]*)", str(item.get("text") or "")
         ):
             symbols.add(match.group(1))
-    result = {"symbols": symbols, "paths": paths}
+        # Scoped identifiers (Namespace::Member, Class::Method, Outer::Inner::Member)
+        # are real symbols when they occur verbatim in allowed locked-corpus text,
+        # even when they are namespace enum members rather than locator symbols or
+        # type declaration names.  Their namespace heads are recorded separately so
+        # the hallucination check can reject fabricated qualifications.
+        for match in re.finditer(
+            r"\b[A-Za-z_][A-Za-z0-9_]*(?:::[A-Za-z_][A-Za-z0-9_]*)+\b", str(item.get("text") or "")
+        ):
+            qualified = match.group(0)
+            symbols.add(qualified)
+            head = qualified
+            while "::" in head:
+                head = head.rsplit("::", 1)[0]
+                namespaces.add(head)
+    result = {"symbols": symbols, "paths": paths, "namespaces": namespaces}
     _IDENTIFIER_CATALOG_CACHE[cache_key] = result
     return result
+
+
+def _qualified_symbol_exists(normalized: str, catalog: dict[str, set[str]]) -> bool:
+    """Decide whether a qualified code symbol exists in the locked corpus.
+
+    The catalog already contains every qualified literal found in allowed
+    corpus text.  The unqualified-tail fallback additionally accepts a known
+    bare symbol only when its qualification head is a namespace actually seen
+    in allowed corpus text, so a bare corpus symbol cannot legitimize a
+    fabricated namespace.
+    """
+    if normalized in catalog["symbols"] or normalized in catalog["paths"]:
+        return True
+    head, _, tail = normalized.rpartition("::")
+    return tail in catalog["symbols"] and head in catalog.get("namespaces", set())
 
 
 def deterministic_case_metrics(
@@ -928,7 +958,7 @@ def deterministic_case_metrics(
                 continue
             exists = normalized in catalog_values
             if kind == "code_symbol" and "::" in normalized:
-                exists = exists or normalized.rsplit("::", 1)[-1] in catalog["symbols"]
+                exists = exists or _qualified_symbol_exists(normalized, catalog)
             supported = normalized in cited_text or (
                 kind == "code_symbol"
                 and "::" in normalized

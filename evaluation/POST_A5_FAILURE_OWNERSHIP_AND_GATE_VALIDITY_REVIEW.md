@@ -169,3 +169,15 @@ Blockers: unresolved evaluator defect (catalog) and Gold construct issue (g039);
 Repair the deterministic identifier-catalog evaluator defect (extend the catalog to namespace enum members and/or add a locked-corpus text-presence fallback for qualified `::` symbols), then offline-rescore the stored Attempt-1..5 identifier metrics with zero model calls to validate the repair. This is the only confirmed objective measurement defect; it requires no new scientific execution.
 
 `NEXT_TASK_EXECUTION_AUTHORIZED = false`
+
+## 16. Erratum (forward-only, recorded by the identifier-catalog evaluator repair task)
+
+The review's causal wording for the confirmed obligation-content gap — "runtime coverage review treats a claim self-declared obligation mapping as coverage" — overstated the authority of generator-declared answer-point mappings. Product code and prompts establish otherwise: generator-declared `answer_point_ids` are untrusted proposals; the semantic coverage reviewer independently remaps claims (`verified_mappings` in `qa.py` is produced by `_validate_answer_point_review` from the verifier-returned review), and mapping relevance alone does not imply completeness.
+
+Refined ownership wording:
+
+- `g013.p3` = A1 bounded-revision recovery insufficiency (the missing obligation was correctly detected; one bounded revision failed to recover it).
+- `g023.p3` / `g047.p1` = A1 answer-content omission with possible V2 semantic-coverage false acceptance.
+- Generator self-declared answer-point mappings = NOT ESTABLISHED AS THE CAUSAL COMPLETENESS AUTHORITY.
+
+High-level classifications, gate dispositions, and the Attempt-5 verdict are unchanged. The historical review commit is not rewritten.

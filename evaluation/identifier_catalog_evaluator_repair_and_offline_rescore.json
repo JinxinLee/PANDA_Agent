@@ -1,0 +1,184 @@
+{
+ "schema_version": "identifier-repair-and-rescore-v1",
+ "task": "IDENTIFIER CATALOG EVALUATOR REPAIR + ATTEMPTS 1-5 HISTORICAL OFFLINE IDENTIFIER RESCORE",
+ "terminal_state": "COMPLETE / PASS / IDENTIFIER_EVALUATOR_REPAIRED_AND_HISTORY_RESCORED",
+ "scientific_calls": 0,
+ "scientific_tokens": 0,
+ "defect": "build_identifier_catalog missed namespace-scoped identifiers occurring verbatim in allowed locked-corpus text; the unqualified-tail fallback additionally legitimized fabricated namespace qualifications",
+ "repair": {
+  "file": "src/panda_agent/evaluation.py",
+  "semantics": [
+   "catalog harvests qualified scoped identifiers ([A-Za-z_][A-Za-z0-9_]*(?:::[A-Za-z_][A-Za-z0-9_]*)+) verbatim from allowed locked-corpus text into symbols",
+   "qualification heads recorded in a new namespaces set",
+   "_qualified_symbol_exists: exact literal, or known tail symbol with a corpus-seen namespace head (fallback tightened, not broadened)",
+   "existence and evidence support remain separate metrics",
+   "allowed_source_versions filtering unchanged; cache semantics unchanged"
+  ],
+  "hardcoded_identifiers_or_cases": false,
+  "material_product_change": false,
+  "evaluator_contract_change": true
+ },
+ "tests": {
+  "red": "5 failed / 4 passed (T1, T2, T7, T8 failed on verbatim-corpus identifiers; T4 failed on namespace spoof)",
+  "green": "10/10 including production-corpus Attempt-5 regression",
+  "coupled_regressions": "89 passed; failures limited to the two known m6 fixture-debt tests and one pre-existing stale v2.6-default-Gold assertion (fails identically on the unmodified tree)"
+ },
+ "rescore": [
+  {
+   "attempt": 1,
+   "gold": "m6-benchmark-v2.6",
+   "gold_identity_matches_manifest": true,
+   "records": 60,
+   "answered_scored": 49,
+   "old": {
+    "count": 0,
+    "denominator": 121,
+    "rate": 0.0
+   },
+   "new": {
+    "count": 0,
+    "denominator": 121,
+    "rate": 0.0
+   },
+   "cleared_events": {},
+   "introduced_events": {},
+   "old_gate": true,
+   "counterfactual_gate_label": "COUNTERFACTUAL / NON-AUTHORITATIVE",
+   "counterfactual_gate": true,
+   "artifact": "evaluation/identifier_catalog_evaluator_repair/attempt_1_identifier_rescore.json"
+  },
+  {
+   "attempt": 2,
+   "gold": "m6-benchmark-v2.6",
+   "gold_identity_matches_manifest": true,
+   "records": 59,
+   "answered_scored": 49,
+   "old": {
+    "count": 0,
+    "denominator": 155,
+    "rate": 0.0
+   },
+   "new": {
+    "count": 0,
+    "denominator": 155,
+    "rate": 0.0
+   },
+   "cleared_events": {},
+   "introduced_events": {},
+   "old_gate": true,
+   "counterfactual_gate_label": "COUNTERFACTUAL / NON-AUTHORITATIVE",
+   "counterfactual_gate": true,
+   "artifact": "evaluation/identifier_catalog_evaluator_repair/attempt_2_identifier_rescore.json"
+  },
+  {
+   "attempt": 3,
+   "gold": "m6-benchmark-v2.9",
+   "gold_identity_matches_manifest": true,
+   "records": 59,
+   "answered_scored": 49,
+   "old": {
+    "count": 0,
+    "denominator": 177,
+    "rate": 0.0
+   },
+   "new": {
+    "count": 0,
+    "denominator": 177,
+    "rate": 0.0
+   },
+   "cleared_events": {},
+   "introduced_events": {},
+   "old_gate": true,
+   "counterfactual_gate_label": "COUNTERFACTUAL / NON-AUTHORITATIVE",
+   "counterfactual_gate": true,
+   "artifact": "evaluation/identifier_catalog_evaluator_repair/attempt_3_identifier_rescore.json"
+  },
+  {
+   "attempt": 4,
+   "gold": "m6-benchmark-v2.10",
+   "gold_identity_matches_manifest": true,
+   "records": 59,
+   "answered_scored": 49,
+   "old": {
+    "count": 2,
+    "denominator": 173,
+    "rate": 0.011560693641618497
+   },
+   "new": {
+    "count": 0,
+    "denominator": 173,
+    "rate": 0.0
+   },
+   "cleared_events": {
+    "g060": [
+     "LumiFit::THETA_X",
+     "LumiFit::THETA_Y"
+    ]
+   },
+   "introduced_events": {},
+   "old_gate": true,
+   "counterfactual_gate_label": "COUNTERFACTUAL / NON-AUTHORITATIVE",
+   "counterfactual_gate": true,
+   "artifact": "evaluation/identifier_catalog_evaluator_repair/attempt_4_identifier_rescore.json"
+  },
+  {
+   "attempt": 5,
+   "gold": "m6-benchmark-v2.10",
+   "gold_identity_matches_manifest": true,
+   "records": 59,
+   "answered_scored": 49,
+   "old": {
+    "count": 6,
+    "denominator": 130,
+    "rate": 0.046153846153846156
+   },
+   "new": {
+    "count": 0,
+    "denominator": 130,
+    "rate": 0.0
+   },
+   "cleared_events": {
+    "g060": [
+     "LumiFit::THETA_X",
+     "LumiFit::THETA_Y"
+    ],
+    "g113": [
+     "LumiFit::MC",
+     "LumiFit::MC_ACC",
+     "LumiFit::RECO",
+     "LumiFit::THETA_X"
+    ]
+   },
+   "introduced_events": {},
+   "old_gate": false,
+   "counterfactual_gate_label": "COUNTERFACTUAL / NON-AUTHORITATIVE",
+   "counterfactual_gate": true,
+   "artifact": "evaluation/identifier_catalog_evaluator_repair/attempt_5_identifier_rescore.json"
+  }
+ ],
+ "historical_verdicts": {
+  "attempt_1": "COMPLETE / FAIL (unchanged)",
+  "attempt_2": "COMPLETE / FAIL (unchanged)",
+  "attempt_3": "COMPLETE / FAIL (unchanged)",
+  "attempt_4": "COMPLETE / FAIL (unchanged)",
+  "attempt_5": "COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED (unchanged)"
+ },
+ "attempt5_expected_check": "review predicted 6/130 -> 0/130; verified mechanically (0/130 = 0.0)",
+ "erratum": "recorded forward-only in evaluation/POST_A5_FAILURE_OWNERSHIP_AND_GATE_VALIDITY_REVIEW.md section 16 and the review JSON erratum key",
+ "attempt_6_readiness": "NOT_READY",
+ "remaining_blockers": [
+  "g039 Gold reconciliation",
+  "critical-final-evidence metric construct redesign/reconciliation",
+  "two confirmed product defects",
+  "focused T0/T1/T2 development evidence",
+  "no materially new product candidate"
+ ],
+ "protected_state": {
+  "novel_validation": "PRISTINE_FOR_CURRENT_LINEAGE",
+  "holdout_access": 0,
+  "protected_content_leakage": 0,
+  "f6_b_execution": 0
+ },
+ "next_task_recommendation": "F6-A EVALUATION-CONTRACT RECONCILIATION / CRITICAL-EVIDENCE EQUIVALENCE + g039 GOLD CORRECTION + HARD-SAFETY RECLASSIFICATION (no Attempt 6)",
+ "next_task_execution_authorized": false
+}

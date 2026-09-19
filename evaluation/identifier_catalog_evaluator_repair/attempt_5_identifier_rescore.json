@@ -1,0 +1,1260 @@
+{
+ "schema_version": "identifier-rescore-v1",
+ "attempt": 5,
+ "run_id": "f6a-rc5-gold-formal-full-20260919",
+ "gold": {
+  "benchmark_version": "m6-benchmark-v2.10",
+  "dataset": "evaluation/benchmarks/v2_10/gold_questions.yaml",
+  "dataset_sha256": "bdce5cbdc0a6f1645d7350b87bc2f289265c3d67311dab4b12e488b9dc499513",
+  "manifest_gold_dataset_sha256": "bdce5cbdc0a6f1645d7350b87bc2f289265c3d67311dab4b12e488b9dc499513",
+  "manifest_gold_benchmark_version": "m6-benchmark-v2.10",
+  "gold_identity_matches_manifest": true
+ },
+ "stored_records_source": "data/evaluation/runs/f6a-rc5-gold-formal-full-20260919/results.jsonl",
+ "records_in_store": 59,
+ "answered_records_scored": 49,
+ "cohort_note": "complete stored cohort",
+ "evaluator_repair": {
+  "repository_head_before_repair": "82a4ca3926266f5e8180a3edd312bfdd9068ee81",
+  "evaluator_state": "uncommitted working-tree repair of build_identifier_catalog in src/panda_agent/evaluation.py, committed together with these artifacts in the single 'Repair identifier catalog evaluator and rescore history' commit",
+  "description": "catalog now harvests qualified/scoped identifiers verbatim from allowed locked-corpus text (plus namespace heads); the unqualified-tail fallback for qualified symbols additionally requires the qualification head to be a namespace actually seen in allowed corpus text"
+ },
+ "rescore_timestamp_utc": "2026-09-19T14:30:42.702317+00:00",
+ "scientific_calls": 0,
+ "scientific_tokens": 0,
+ "old_identifier_metrics": {
+  "count": 6,
+  "denominator": 130,
+  "rate": 0.046153846153846156,
+  "source_matrix": "evaluation/f6_a5_gate_matrix.json"
+ },
+ "new_identifier_metrics": {
+  "count": 0,
+  "denominator": 130,
+  "rate": 0.0,
+  "hallucinated_by_case": {}
+ },
+ "per_case_new_fields": {
+  "g001": {
+   "identifier_mentions": [
+    "docs/Installation/Install_Developers.md",
+    "docs/Installation/Install_PandaRoot.rst"
+   ],
+   "identifier_mentions_by_kind": {
+    "path": [
+     "docs/Installation/Install_Developers.md",
+     "docs/Installation/Install_PandaRoot.rst"
+    ]
+   },
+   "identifier_exists_in_locked_corpus": [
+    "docs/Installation/Install_Developers.md",
+    "docs/Installation/Install_PandaRoot.rst"
+   ],
+   "identifier_supported_by_claim_evidence": [
+    "docs/Installation/Install_Developers.md",
+    "docs/Installation/Install_PandaRoot.rst"
+   ],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g002": {
+   "identifier_mentions": [],
+   "identifier_mentions_by_kind": {},
+   "identifier_exists_in_locked_corpus": [],
+   "identifier_supported_by_claim_evidence": [],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g003": {
+   "identifier_mentions": [],
+   "identifier_mentions_by_kind": {},
+   "identifier_exists_in_locked_corpus": [],
+   "identifier_supported_by_claim_evidence": [],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g004": {
+   "identifier_mentions": [],
+   "identifier_mentions_by_kind": {},
+   "identifier_exists_in_locked_corpus": [],
+   "identifier_supported_by_claim_evidence": [],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g005": {
+   "identifier_mentions": [],
+   "identifier_mentions_by_kind": {},
+   "identifier_exists_in_locked_corpus": [],
+   "identifier_supported_by_claim_evidence": [],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g006": {
+   "identifier_mentions": [],
+   "identifier_mentions_by_kind": {},
+   "identifier_exists_in_locked_corpus": [],
+   "identifier_supported_by_claim_evidence": [],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g008": {
+   "identifier_mentions": [],
+   "identifier_mentions_by_kind": {},
+   "identifier_exists_in_locked_corpus": [],
+   "identifier_supported_by_claim_evidence": [],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g009": {
+   "identifier_mentions": [
+    "docs/Installation/Install_Developers.md",
+    "docs/Installation/Install_Developers.rst"
+   ],
+   "identifier_mentions_by_kind": {
+    "path": [
+     "docs/Installation/Install_Developers.md",
+     "docs/Installation/Install_Developers.rst"
+    ]
+   },
+   "identifier_exists_in_locked_corpus": [
+    "docs/Installation/Install_Developers.md",
+    "docs/Installation/Install_Developers.rst"
+   ],
+   "identifier_supported_by_claim_evidence": [
+    "docs/Installation/Install_Developers.md",
+    "docs/Installation/Install_Developers.rst"
+   ],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g010": {
+   "identifier_mentions": [
+    "docs/Jupyter/Jupyter.rst",
+    "docs/index.rst"
+   ],
+   "identifier_mentions_by_kind": {
+    "path": [
+     "docs/Jupyter/Jupyter.rst",
+     "docs/index.rst"
+    ]
+   },
+   "identifier_exists_in_locked_corpus": [
+    "docs/Jupyter/Jupyter.rst",
+    "docs/index.rst"
+   ],
+   "identifier_supported_by_claim_evidence": [
+    "docs/Jupyter/Jupyter.rst",
+    "docs/index.rst"
+   ],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g011": {
+   "identifier_mentions": [
+    "docs/Installation/Install_GSI.rst"
+   ],
+   "identifier_mentions_by_kind": {
+    "path": [
+     "docs/Installation/Install_GSI.rst"
+    ]
+   },
+   "identifier_exists_in_locked_corpus": [
+    "docs/Installation/Install_GSI.rst"
+   ],
+   "identifier_supported_by_claim_evidence": [
+    "docs/Installation/Install_GSI.rst"
+   ],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g013": {
+   "identifier_mentions": [
+    "sim_complete.C"
+   ],
+   "identifier_mentions_by_kind": {
+    "path": [
+     "sim_complete.C"
+    ]
+   },
+   "identifier_exists_in_locked_corpus": [
+    "sim_complete.C"
+   ],
+   "identifier_supported_by_claim_evidence": [
+    "sim_complete.C"
+   ],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g014": {
+   "identifier_mentions": [
+    "ana_complete.C",
+    "digi_complete.C",
+    "full_complete.C",
+    "pid_complete.C",
+    "reco_complete.C",
+    "sim_complete.C"
+   ],
+   "identifier_mentions_by_kind": {
+    "path": [
+     "ana_complete.C",
+     "digi_complete.C",
+     "full_complete.C",
+     "pid_complete.C",
+     "reco_complete.C",
+     "sim_complete.C"
+    ]
+   },
+   "identifier_exists_in_locked_corpus": [
+    "ana_complete.C",
+    "digi_complete.C",
+    "full_complete.C",
+    "pid_complete.C",
+    "reco_complete.C",
+    "sim_complete.C"
+   ],
+   "identifier_supported_by_claim_evidence": [
+    "ana_complete.C",
+    "digi_complete.C",
+    "full_complete.C",
+    "pid_complete.C",
+    "reco_complete.C",
+    "sim_complete.C"
+   ],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g015": {
+   "identifier_mentions": [
+    "PndEventCounterTask",
+    "PndMasterRunSim",
+    "PndMasterSimTask"
+   ],
+   "identifier_mentions_by_kind": {
+    "code_symbol": [
+     "PndEventCounterTask",
+     "PndMasterRunSim",
+     "PndMasterSimTask"
+    ]
+   },
+   "identifier_exists_in_locked_corpus": [
+    "PndEventCounterTask",
+    "PndMasterRunSim",
+    "PndMasterSimTask"
+   ],
+   "identifier_supported_by_claim_evidence": [
+    "PndEventCounterTask",
+    "PndMasterRunSim",
+    "PndMasterSimTask"
+   ],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g016": {
+   "identifier_mentions": [
+    "PndMasterRunSim"
+   ],
+   "identifier_mentions_by_kind": {
+    "code_symbol": [
+     "PndMasterRunSim"
+    ]
+   },
+   "identifier_exists_in_locked_corpus": [
+    "PndMasterRunSim"
+   ],
+   "identifier_supported_by_claim_evidence": [
+    "PndMasterRunSim"
+   ],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g017": {
+   "identifier_mentions": [],
+   "identifier_mentions_by_kind": {},
+   "identifier_exists_in_locked_corpus": [],
+   "identifier_supported_by_claim_evidence": [],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g018": {
+   "identifier_mentions": [],
+   "identifier_mentions_by_kind": {},
+   "identifier_exists_in_locked_corpus": [],
+   "identifier_supported_by_claim_evidence": [],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g019": {
+   "identifier_mentions": [
+    "PndLmdFitDataBundle",
+    "apps/extractLuminosityValues.cxx",
+    "lmd_fitted_data.root",
+    "lumi-values.json"
+   ],
+   "identifier_mentions_by_kind": {
+    "code_symbol": [
+     "PndLmdFitDataBundle"
+    ],
+    "path": [
+     "apps/extractLuminosityValues.cxx",
+     "lmd_fitted_data.root",
+     "lumi-values.json"
+    ]
+   },
+   "identifier_exists_in_locked_corpus": [
+    "PndLmdFitDataBundle",
+    "apps/extractLuminosityValues.cxx",
+    "lmd_fitted_data.root",
+    "lumi-values.json"
+   ],
+   "identifier_supported_by_claim_evidence": [
+    "PndLmdFitDataBundle",
+    "apps/extractLuminosityValues.cxx",
+    "lmd_fitted_data.root",
+    "lumi-values.json"
+   ],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g020": {
+   "identifier_mentions": [
+    "PndMasterMultiPidTask",
+    "PndPidCorrelator",
+    "_boost.root",
+    "macro/target/ana_dpm.C",
+    "macro/target/runall_prod_hvmaps.py",
+    "prod_aod_complete.C"
+   ],
+   "identifier_mentions_by_kind": {
+    "code_symbol": [
+     "PndMasterMultiPidTask",
+     "PndPidCorrelator"
+    ],
+    "path": [
+     "_boost.root",
+     "macro/target/ana_dpm.C",
+     "macro/target/runall_prod_hvmaps.py",
+     "prod_aod_complete.C"
+    ]
+   },
+   "identifier_exists_in_locked_corpus": [
+    "PndMasterMultiPidTask",
+    "PndPidCorrelator",
+    "_boost.root",
+    "macro/target/ana_dpm.C",
+    "macro/target/runall_prod_hvmaps.py",
+    "prod_aod_complete.C"
+   ],
+   "identifier_supported_by_claim_evidence": [
+    "PndMasterMultiPidTask",
+    "PndPidCorrelator",
+    "_boost.root",
+    "macro/target/ana_dpm.C",
+    "macro/target/runall_prod_hvmaps.py",
+    "prod_aod_complete.C"
+   ],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g021": {
+   "identifier_mentions": [
+    "PndMasterRunSim::SetTargetMode",
+    "macro/target/prod_sim_hvmaps.C",
+    "restgas_16012024_with_cryopump.txt"
+   ],
+   "identifier_mentions_by_kind": {
+    "code_symbol": [
+     "PndMasterRunSim::SetTargetMode"
+    ],
+    "path": [
+     "macro/target/prod_sim_hvmaps.C",
+     "restgas_16012024_with_cryopump.txt"
+    ]
+   },
+   "identifier_exists_in_locked_corpus": [
+    "PndMasterRunSim::SetTargetMode",
+    "macro/target/prod_sim_hvmaps.C",
+    "restgas_16012024_with_cryopump.txt"
+   ],
+   "identifier_supported_by_claim_evidence": [
+    "PndMasterRunSim::SetTargetMode",
+    "macro/target/prod_sim_hvmaps.C",
+    "restgas_16012024_with_cryopump.txt"
+   ],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g022": {
+   "identifier_mentions": [],
+   "identifier_mentions_by_kind": {},
+   "identifier_exists_in_locked_corpus": [],
+   "identifier_supported_by_claim_evidence": [],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g023": {
+   "identifier_mentions": [
+    "PndMasterRecoTask",
+    "PndMasterTask"
+   ],
+   "identifier_mentions_by_kind": {
+    "code_symbol": [
+     "PndMasterRecoTask",
+     "PndMasterTask"
+    ]
+   },
+   "identifier_exists_in_locked_corpus": [
+    "PndMasterRecoTask",
+    "PndMasterTask"
+   ],
+   "identifier_supported_by_claim_evidence": [
+    "PndMasterRecoTask",
+    "PndMasterTask"
+   ],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g024": {
+   "identifier_mentions": [
+    "PndAnalysis"
+   ],
+   "identifier_mentions_by_kind": {
+    "code_symbol": [
+     "PndAnalysis"
+    ]
+   },
+   "identifier_exists_in_locked_corpus": [
+    "PndAnalysis"
+   ],
+   "identifier_supported_by_claim_evidence": [
+    "PndAnalysis"
+   ],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g027": {
+   "identifier_mentions": [
+    "PndTargetGenerator",
+    "pgenerators/Target/PndTargetGenerator.cxx",
+    "tools/MasterTasks/PndMasterRunSim.cxx"
+   ],
+   "identifier_mentions_by_kind": {
+    "code_symbol": [
+     "PndTargetGenerator"
+    ],
+    "path": [
+     "pgenerators/Target/PndTargetGenerator.cxx",
+     "tools/MasterTasks/PndMasterRunSim.cxx"
+    ]
+   },
+   "identifier_exists_in_locked_corpus": [
+    "PndTargetGenerator",
+    "pgenerators/Target/PndTargetGenerator.cxx",
+    "tools/MasterTasks/PndMasterRunSim.cxx"
+   ],
+   "identifier_supported_by_claim_evidence": [
+    "PndTargetGenerator",
+    "pgenerators/Target/PndTargetGenerator.cxx",
+    "tools/MasterTasks/PndMasterRunSim.cxx"
+   ],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g028": {
+   "identifier_mentions": [
+    "PndPidCorrelator",
+    "pid/PidCorr/PndPidCorrelator.cxx",
+    "pid/PidCorr/PndPidCorrelator.h"
+   ],
+   "identifier_mentions_by_kind": {
+    "code_symbol": [
+     "PndPidCorrelator"
+    ],
+    "path": [
+     "pid/PidCorr/PndPidCorrelator.cxx",
+     "pid/PidCorr/PndPidCorrelator.h"
+    ]
+   },
+   "identifier_exists_in_locked_corpus": [
+    "PndPidCorrelator",
+    "pid/PidCorr/PndPidCorrelator.cxx",
+    "pid/PidCorr/PndPidCorrelator.h"
+   ],
+   "identifier_supported_by_claim_evidence": [
+    "PndPidCorrelator",
+    "pid/PidCorr/PndPidCorrelator.cxx",
+    "pid/PidCorr/PndPidCorrelator.h"
+   ],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g029": {
+   "identifier_mentions": [
+    "Lmd::Data::TrackPairInfo",
+    "PndLmdCombinedDataReader",
+    "PndLmdDataReader",
+    "PndLmdTrackQ",
+    "data/PndLmdCombinedDataReader.cxx",
+    "data/PndLmdCombinedDataReader.h"
+   ],
+   "identifier_mentions_by_kind": {
+    "code_symbol": [
+     "Lmd::Data::TrackPairInfo",
+     "PndLmdCombinedDataReader",
+     "PndLmdDataReader",
+     "PndLmdTrackQ"
+    ],
+    "path": [
+     "data/PndLmdCombinedDataReader.cxx",
+     "data/PndLmdCombinedDataReader.h"
+    ]
+   },
+   "identifier_exists_in_locked_corpus": [
+    "Lmd::Data::TrackPairInfo",
+    "PndLmdCombinedDataReader",
+    "PndLmdDataReader",
+    "PndLmdTrackQ",
+    "data/PndLmdCombinedDataReader.cxx",
+    "data/PndLmdCombinedDataReader.h"
+   ],
+   "identifier_supported_by_claim_evidence": [
+    "Lmd::Data::TrackPairInfo",
+    "PndLmdCombinedDataReader",
+    "PndLmdDataReader",
+    "PndLmdTrackQ",
+    "data/PndLmdCombinedDataReader.cxx",
+    "data/PndLmdCombinedDataReader.h"
+   ],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g030": {
+   "identifier_mentions": [
+    "PndLmdAcceptance",
+    "data/PndLmdAcceptance.cxx"
+   ],
+   "identifier_mentions_by_kind": {
+    "code_symbol": [
+     "PndLmdAcceptance"
+    ],
+    "path": [
+     "data/PndLmdAcceptance.cxx"
+    ]
+   },
+   "identifier_exists_in_locked_corpus": [
+    "PndLmdAcceptance",
+    "data/PndLmdAcceptance.cxx"
+   ],
+   "identifier_supported_by_claim_evidence": [
+    "PndLmdAcceptance",
+    "data/PndLmdAcceptance.cxx"
+   ],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g031": {
+   "identifier_mentions": [
+    "PndLmdModelFactory",
+    "PndLmdModelFactory::generateModel",
+    "model/PndLmdModelFactory.cxx"
+   ],
+   "identifier_mentions_by_kind": {
+    "code_symbol": [
+     "PndLmdModelFactory",
+     "PndLmdModelFactory::generateModel"
+    ],
+    "path": [
+     "model/PndLmdModelFactory.cxx"
+    ]
+   },
+   "identifier_exists_in_locked_corpus": [
+    "PndLmdModelFactory",
+    "PndLmdModelFactory::generateModel",
+    "model/PndLmdModelFactory.cxx"
+   ],
+   "identifier_supported_by_claim_evidence": [
+    "PndLmdModelFactory",
+    "PndLmdModelFactory::generateModel",
+    "model/PndLmdModelFactory.cxx"
+   ],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g032": {
+   "identifier_mentions": [
+    "PndLmdDPMAngModel1D",
+    "model/PndLmdDPMAngModel1D.cxx",
+    "model/PndLmdDPMAngModel1D.h"
+   ],
+   "identifier_mentions_by_kind": {
+    "code_symbol": [
+     "PndLmdDPMAngModel1D"
+    ],
+    "path": [
+     "model/PndLmdDPMAngModel1D.cxx",
+     "model/PndLmdDPMAngModel1D.h"
+    ]
+   },
+   "identifier_exists_in_locked_corpus": [
+    "PndLmdDPMAngModel1D",
+    "model/PndLmdDPMAngModel1D.cxx",
+    "model/PndLmdDPMAngModel1D.h"
+   ],
+   "identifier_supported_by_claim_evidence": [
+    "PndLmdDPMAngModel1D",
+    "model/PndLmdDPMAngModel1D.cxx",
+    "model/PndLmdDPMAngModel1D.h"
+   ],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g033": {
+   "identifier_mentions": [
+    "PndLmdDPMAngModel2D",
+    "model/PndLmdDPMAngModel2D.cxx",
+    "model/PndLmdDPMAngModel2D.h"
+   ],
+   "identifier_mentions_by_kind": {
+    "code_symbol": [
+     "PndLmdDPMAngModel2D"
+    ],
+    "path": [
+     "model/PndLmdDPMAngModel2D.cxx",
+     "model/PndLmdDPMAngModel2D.h"
+    ]
+   },
+   "identifier_exists_in_locked_corpus": [
+    "PndLmdDPMAngModel2D",
+    "model/PndLmdDPMAngModel2D.cxx",
+    "model/PndLmdDPMAngModel2D.h"
+   ],
+   "identifier_supported_by_claim_evidence": [
+    "PndLmdDPMAngModel2D",
+    "model/PndLmdDPMAngModel2D.cxx",
+    "model/PndLmdDPMAngModel2D.h"
+   ],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g034": {
+   "identifier_mentions": [
+    "PndLmdSmearingConvolutionModel2D",
+    "model/PndLmdSmearingConvolutionModel2D.cxx"
+   ],
+   "identifier_mentions_by_kind": {
+    "code_symbol": [
+     "PndLmdSmearingConvolutionModel2D"
+    ],
+    "path": [
+     "model/PndLmdSmearingConvolutionModel2D.cxx"
+    ]
+   },
+   "identifier_exists_in_locked_corpus": [
+    "PndLmdSmearingConvolutionModel2D",
+    "model/PndLmdSmearingConvolutionModel2D.cxx"
+   ],
+   "identifier_supported_by_claim_evidence": [
+    "PndLmdSmearingConvolutionModel2D",
+    "model/PndLmdSmearingConvolutionModel2D.cxx"
+   ],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g035": {
+   "identifier_mentions": [
+    "PndLmdDifferentialSmearingConvolutionModel2D",
+    "PndLmdDivergenceSmearingModel2D",
+    "PndLmdModelFactory::generate2DModel",
+    "model/PndLmdDivergenceSmearingModel2D.cxx",
+    "model/PndLmdModelFactory.cxx"
+   ],
+   "identifier_mentions_by_kind": {
+    "code_symbol": [
+     "PndLmdDifferentialSmearingConvolutionModel2D",
+     "PndLmdDivergenceSmearingModel2D",
+     "PndLmdModelFactory::generate2DModel"
+    ],
+    "path": [
+     "model/PndLmdDivergenceSmearingModel2D.cxx",
+     "model/PndLmdModelFactory.cxx"
+    ]
+   },
+   "identifier_exists_in_locked_corpus": [
+    "PndLmdDifferentialSmearingConvolutionModel2D",
+    "PndLmdDivergenceSmearingModel2D",
+    "PndLmdModelFactory::generate2DModel",
+    "model/PndLmdDivergenceSmearingModel2D.cxx",
+    "model/PndLmdModelFactory.cxx"
+   ],
+   "identifier_supported_by_claim_evidence": [
+    "PndLmdDifferentialSmearingConvolutionModel2D",
+    "PndLmdDivergenceSmearingModel2D",
+    "PndLmdModelFactory::generate2DModel",
+    "model/PndLmdDivergenceSmearingModel2D.cxx",
+    "model/PndLmdModelFactory.cxx"
+   ],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g036": {
+   "identifier_mentions": [
+    "_boost.root",
+    "macro/target/ana_dpm.C"
+   ],
+   "identifier_mentions_by_kind": {
+    "path": [
+     "_boost.root",
+     "macro/target/ana_dpm.C"
+    ]
+   },
+   "identifier_exists_in_locked_corpus": [
+    "_boost.root",
+    "macro/target/ana_dpm.C"
+   ],
+   "identifier_supported_by_claim_evidence": [
+    "_boost.root",
+    "macro/target/ana_dpm.C"
+   ],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g037": {
+   "identifier_mentions": [
+    "PndMasterMultiPidTask",
+    "macro/target/prod_aod_complete.C"
+   ],
+   "identifier_mentions_by_kind": {
+    "code_symbol": [
+     "PndMasterMultiPidTask"
+    ],
+    "path": [
+     "macro/target/prod_aod_complete.C"
+    ]
+   },
+   "identifier_exists_in_locked_corpus": [
+    "PndMasterMultiPidTask",
+    "macro/target/prod_aod_complete.C"
+   ],
+   "identifier_supported_by_claim_evidence": [
+    "PndMasterMultiPidTask",
+    "macro/target/prod_aod_complete.C"
+   ],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g039": {
+   "identifier_mentions": [
+    "macro/target/correction/efficiency_correction_2.C",
+    "macro/target/correction/efficiency_correction_steps.C"
+   ],
+   "identifier_mentions_by_kind": {
+    "path": [
+     "macro/target/correction/efficiency_correction_2.C",
+     "macro/target/correction/efficiency_correction_steps.C"
+    ]
+   },
+   "identifier_exists_in_locked_corpus": [
+    "macro/target/correction/efficiency_correction_2.C",
+    "macro/target/correction/efficiency_correction_steps.C"
+   ],
+   "identifier_supported_by_claim_evidence": [
+    "macro/target/correction/efficiency_correction_2.C",
+    "macro/target/correction/efficiency_correction_steps.C"
+   ],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g040": {
+   "identifier_mentions": [
+    "PndApolloniusTripletTrackFinderTask",
+    "tracking/PndApolloniusTripletTrackFinder/PndApolloniusTripletTrackFinderTask.cxx"
+   ],
+   "identifier_mentions_by_kind": {
+    "code_symbol": [
+     "PndApolloniusTripletTrackFinderTask"
+    ],
+    "path": [
+     "tracking/PndApolloniusTripletTrackFinder/PndApolloniusTripletTrackFinderTask.cxx"
+    ]
+   },
+   "identifier_exists_in_locked_corpus": [
+    "PndApolloniusTripletTrackFinderTask",
+    "tracking/PndApolloniusTripletTrackFinder/PndApolloniusTripletTrackFinderTask.cxx"
+   ],
+   "identifier_supported_by_claim_evidence": [
+    "PndApolloniusTripletTrackFinderTask",
+    "tracking/PndApolloniusTripletTrackFinder/PndApolloniusTripletTrackFinderTask.cxx"
+   ],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g044": {
+   "identifier_mentions": [],
+   "identifier_mentions_by_kind": {},
+   "identifier_exists_in_locked_corpus": [],
+   "identifier_supported_by_claim_evidence": [],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g047": {
+   "identifier_mentions": [],
+   "identifier_mentions_by_kind": {},
+   "identifier_exists_in_locked_corpus": [],
+   "identifier_supported_by_claim_evidence": [],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g050": {
+   "identifier_mentions": [],
+   "identifier_mentions_by_kind": {},
+   "identifier_exists_in_locked_corpus": [],
+   "identifier_supported_by_claim_evidence": [],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g051": {
+   "identifier_mentions": [],
+   "identifier_mentions_by_kind": {},
+   "identifier_exists_in_locked_corpus": [],
+   "identifier_supported_by_claim_evidence": [],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g052": {
+   "identifier_mentions": [],
+   "identifier_mentions_by_kind": {},
+   "identifier_exists_in_locked_corpus": [],
+   "identifier_supported_by_claim_evidence": [],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g055": {
+   "identifier_mentions": [
+    "data/PndLmdAcceptance.cxx",
+    "macro/target/correction/efficiency_correction_2.C",
+    "macro/target/correction/efficiency_correction_steps.C"
+   ],
+   "identifier_mentions_by_kind": {
+    "path": [
+     "data/PndLmdAcceptance.cxx",
+     "macro/target/correction/efficiency_correction_2.C",
+     "macro/target/correction/efficiency_correction_steps.C"
+    ]
+   },
+   "identifier_exists_in_locked_corpus": [
+    "data/PndLmdAcceptance.cxx",
+    "macro/target/correction/efficiency_correction_2.C",
+    "macro/target/correction/efficiency_correction_steps.C"
+   ],
+   "identifier_supported_by_claim_evidence": [
+    "data/PndLmdAcceptance.cxx",
+    "macro/target/correction/efficiency_correction_2.C",
+    "macro/target/correction/efficiency_correction_steps.C"
+   ],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g059": {
+   "identifier_mentions": [
+    "PndLmdModelFactory::generate2DModel",
+    "PndLmdModelFactory::generate2DSmearingModel",
+    "PndLmdSmearingConvolutionModel2D",
+    "PndLmdSmearingModel2D",
+    "model/PndLmdModelFactory.cxx",
+    "model/PndLmdSmearingConvolutionModel2D.cxx"
+   ],
+   "identifier_mentions_by_kind": {
+    "code_symbol": [
+     "PndLmdModelFactory::generate2DModel",
+     "PndLmdModelFactory::generate2DSmearingModel",
+     "PndLmdSmearingConvolutionModel2D",
+     "PndLmdSmearingModel2D"
+    ],
+    "path": [
+     "model/PndLmdModelFactory.cxx",
+     "model/PndLmdSmearingConvolutionModel2D.cxx"
+    ]
+   },
+   "identifier_exists_in_locked_corpus": [
+    "PndLmdModelFactory::generate2DModel",
+    "PndLmdModelFactory::generate2DSmearingModel",
+    "PndLmdSmearingConvolutionModel2D",
+    "PndLmdSmearingModel2D",
+    "model/PndLmdModelFactory.cxx",
+    "model/PndLmdSmearingConvolutionModel2D.cxx"
+   ],
+   "identifier_supported_by_claim_evidence": [
+    "PndLmdModelFactory::generate2DModel",
+    "PndLmdModelFactory::generate2DSmearingModel",
+    "PndLmdSmearingConvolutionModel2D",
+    "PndLmdSmearingModel2D",
+    "model/PndLmdModelFactory.cxx",
+    "model/PndLmdSmearingConvolutionModel2D.cxx"
+   ],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g060": {
+   "identifier_mentions": [
+    "LumiFit::THETA_X",
+    "LumiFit::THETA_Y",
+    "PndLmdDifferentialSmearingConvolutionModel2D",
+    "PndLmdDivergenceSmearingModel2D",
+    "model/PndLmdDivergenceSmearingModel2D.cxx",
+    "model/PndLmdModelFactory.cxx"
+   ],
+   "identifier_mentions_by_kind": {
+    "code_symbol": [
+     "LumiFit::THETA_X",
+     "LumiFit::THETA_Y",
+     "PndLmdDifferentialSmearingConvolutionModel2D",
+     "PndLmdDivergenceSmearingModel2D"
+    ],
+    "path": [
+     "model/PndLmdDivergenceSmearingModel2D.cxx",
+     "model/PndLmdModelFactory.cxx"
+    ]
+   },
+   "identifier_exists_in_locked_corpus": [
+    "LumiFit::THETA_X",
+    "LumiFit::THETA_Y",
+    "PndLmdDifferentialSmearingConvolutionModel2D",
+    "PndLmdDivergenceSmearingModel2D",
+    "model/PndLmdDivergenceSmearingModel2D.cxx",
+    "model/PndLmdModelFactory.cxx"
+   ],
+   "identifier_supported_by_claim_evidence": [
+    "LumiFit::THETA_X",
+    "LumiFit::THETA_Y",
+    "PndLmdDifferentialSmearingConvolutionModel2D",
+    "PndLmdDivergenceSmearingModel2D",
+    "model/PndLmdDivergenceSmearingModel2D.cxx",
+    "model/PndLmdModelFactory.cxx"
+   ],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g105": {
+   "identifier_mentions": [
+    "Lumi_TrksQA*.root",
+    "PndLmdAcceptance",
+    "PndLmdAngularData",
+    "PndLmdCombinedDataReader",
+    "PndLmdDataFacade",
+    "PndLmdHistogramData",
+    "PndLmdMapData",
+    "PndLmdModelFactory",
+    "PndLmdRuntimeConfiguration",
+    "apps/",
+    "apps/createLmdFitData.cxx",
+    "data/",
+    "model/",
+    "model/PndLmdModelFactory.cxx",
+    "model/PndLmdModelFactory.h"
+   ],
+   "identifier_mentions_by_kind": {
+    "code_symbol": [
+     "PndLmdAcceptance",
+     "PndLmdAngularData",
+     "PndLmdCombinedDataReader",
+     "PndLmdDataFacade",
+     "PndLmdHistogramData",
+     "PndLmdMapData",
+     "PndLmdModelFactory",
+     "PndLmdRuntimeConfiguration"
+    ],
+    "glob": [
+     "Lumi_TrksQA*.root"
+    ],
+    "path": [
+     "apps/",
+     "apps/createLmdFitData.cxx",
+     "data/",
+     "model/",
+     "model/PndLmdModelFactory.cxx",
+     "model/PndLmdModelFactory.h"
+    ]
+   },
+   "identifier_exists_in_locked_corpus": [
+    "PndLmdAcceptance",
+    "PndLmdAngularData",
+    "PndLmdCombinedDataReader",
+    "PndLmdDataFacade",
+    "PndLmdHistogramData",
+    "PndLmdMapData",
+    "PndLmdModelFactory",
+    "PndLmdRuntimeConfiguration",
+    "apps/createLmdFitData.cxx",
+    "model/PndLmdModelFactory.cxx",
+    "model/PndLmdModelFactory.h"
+   ],
+   "identifier_supported_by_claim_evidence": [
+    "PndLmdAcceptance",
+    "PndLmdAngularData",
+    "PndLmdCombinedDataReader",
+    "PndLmdDataFacade",
+    "PndLmdHistogramData",
+    "PndLmdMapData",
+    "PndLmdModelFactory",
+    "PndLmdRuntimeConfiguration",
+    "apps/createLmdFitData.cxx",
+    "model/PndLmdModelFactory.cxx",
+    "model/PndLmdModelFactory.h"
+   ],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g110": {
+   "identifier_mentions": [
+    "PndPidCorrelator::Init",
+    "_boost.root",
+    "macro/target/ana_dpm.C",
+    "macro/target/prod_aod_complete.C",
+    "pid/PidCorr/PndPidCorrelator.cxx"
+   ],
+   "identifier_mentions_by_kind": {
+    "code_symbol": [
+     "PndPidCorrelator::Init"
+    ],
+    "path": [
+     "_boost.root",
+     "macro/target/ana_dpm.C",
+     "macro/target/prod_aod_complete.C",
+     "pid/PidCorr/PndPidCorrelator.cxx"
+    ]
+   },
+   "identifier_exists_in_locked_corpus": [
+    "PndPidCorrelator::Init",
+    "_boost.root",
+    "macro/target/ana_dpm.C",
+    "macro/target/prod_aod_complete.C",
+    "pid/PidCorr/PndPidCorrelator.cxx"
+   ],
+   "identifier_supported_by_claim_evidence": [
+    "PndPidCorrelator::Init",
+    "_boost.root",
+    "macro/target/ana_dpm.C",
+    "macro/target/prod_aod_complete.C",
+    "pid/PidCorr/PndPidCorrelator.cxx"
+   ],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g112": {
+   "identifier_mentions": [
+    "Lumi_TrksQA*.root",
+    "PndLmdDataReader::read",
+    "PndLmdTrackQ",
+    "apps/createLmdFitData.cxx",
+    "data/PndLmdCombinedDataReader.cxx",
+    "data/PndLmdDataReader.cxx"
+   ],
+   "identifier_mentions_by_kind": {
+    "code_symbol": [
+     "PndLmdDataReader::read",
+     "PndLmdTrackQ"
+    ],
+    "glob": [
+     "Lumi_TrksQA*.root"
+    ],
+    "path": [
+     "apps/createLmdFitData.cxx",
+     "data/PndLmdCombinedDataReader.cxx",
+     "data/PndLmdDataReader.cxx"
+    ]
+   },
+   "identifier_exists_in_locked_corpus": [
+    "PndLmdDataReader::read",
+    "PndLmdTrackQ",
+    "apps/createLmdFitData.cxx",
+    "data/PndLmdCombinedDataReader.cxx",
+    "data/PndLmdDataReader.cxx"
+   ],
+   "identifier_supported_by_claim_evidence": [
+    "PndLmdDataReader::read",
+    "PndLmdTrackQ",
+    "apps/createLmdFitData.cxx",
+    "data/PndLmdCombinedDataReader.cxx",
+    "data/PndLmdDataReader.cxx"
+   ],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g113": {
+   "identifier_mentions": [
+    "LumiFit::Comparisons::DataPrimaryDimensionOptionsFilter",
+    "LumiFit::Comparisons::NoSecondaryTrackFilter",
+    "LumiFit::MC",
+    "LumiFit::MC_ACC",
+    "LumiFit::RECO",
+    "LumiFit::THETA_X",
+    "PndLmdRuntimeConfiguration",
+    "apps/runLmdFit.cxx",
+    "lmd_acc_data_.*of1.root",
+    "lmd_data_.*of.*.root",
+    "lmd_res_data_.*of1.root",
+    "lmd_vertex_data_.*of1.root"
+   ],
+   "identifier_mentions_by_kind": {
+    "code_symbol": [
+     "LumiFit::Comparisons::DataPrimaryDimensionOptionsFilter",
+     "LumiFit::Comparisons::NoSecondaryTrackFilter",
+     "LumiFit::MC",
+     "LumiFit::MC_ACC",
+     "LumiFit::RECO",
+     "LumiFit::THETA_X",
+     "PndLmdRuntimeConfiguration"
+    ],
+    "path": [
+     "apps/runLmdFit.cxx"
+    ],
+    "regex": [
+     "lmd_acc_data_.*of1.root",
+     "lmd_data_.*of.*.root",
+     "lmd_res_data_.*of1.root",
+     "lmd_vertex_data_.*of1.root"
+    ]
+   },
+   "identifier_exists_in_locked_corpus": [
+    "LumiFit::Comparisons::DataPrimaryDimensionOptionsFilter",
+    "LumiFit::Comparisons::NoSecondaryTrackFilter",
+    "LumiFit::MC",
+    "LumiFit::MC_ACC",
+    "LumiFit::RECO",
+    "LumiFit::THETA_X",
+    "PndLmdRuntimeConfiguration",
+    "apps/runLmdFit.cxx"
+   ],
+   "identifier_supported_by_claim_evidence": [
+    "LumiFit::Comparisons::DataPrimaryDimensionOptionsFilter",
+    "LumiFit::Comparisons::NoSecondaryTrackFilter",
+    "LumiFit::MC",
+    "LumiFit::MC_ACC",
+    "LumiFit::RECO",
+    "LumiFit::THETA_X",
+    "PndLmdRuntimeConfiguration",
+    "apps/runLmdFit.cxx"
+   ],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g114": {
+   "identifier_mentions": [
+    "macro/target/ana_complete.C",
+    "macro/target/correction/efficiency_correction_2.C",
+    "macro/target/correction/efficiency_correction_steps.C"
+   ],
+   "identifier_mentions_by_kind": {
+    "path": [
+     "macro/target/ana_complete.C",
+     "macro/target/correction/efficiency_correction_2.C",
+     "macro/target/correction/efficiency_correction_steps.C"
+    ]
+   },
+   "identifier_exists_in_locked_corpus": [
+    "macro/target/ana_complete.C",
+    "macro/target/correction/efficiency_correction_2.C",
+    "macro/target/correction/efficiency_correction_steps.C"
+   ],
+   "identifier_supported_by_claim_evidence": [
+    "macro/target/ana_complete.C",
+    "macro/target/correction/efficiency_correction_2.C",
+    "macro/target/correction/efficiency_correction_steps.C"
+   ],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  },
+  "g115": {
+   "identifier_mentions": [
+    "PndLmdAcceptance.cxx",
+    "efficiency_correction_2.C"
+   ],
+   "identifier_mentions_by_kind": {
+    "path": [
+     "PndLmdAcceptance.cxx",
+     "efficiency_correction_2.C"
+    ]
+   },
+   "identifier_exists_in_locked_corpus": [
+    "PndLmdAcceptance.cxx",
+    "efficiency_correction_2.C"
+   ],
+   "identifier_supported_by_claim_evidence": [
+    "PndLmdAcceptance.cxx",
+    "efficiency_correction_2.C"
+   ],
+   "unsupported_identifiers": [],
+   "hallucinated_identifiers": [],
+   "major_identifier_hallucinations": []
+  }
+ },
+ "changed_events": {
+  "cleared": {
+   "g060": [
+    "LumiFit::THETA_X",
+    "LumiFit::THETA_Y"
+   ],
+   "g113": [
+    "LumiFit::MC",
+    "LumiFit::MC_ACC",
+    "LumiFit::RECO",
+    "LumiFit::THETA_X"
+   ]
+  },
+  "introduced": {},
+  "note": "historical formal values may additionally embed signed human adjudication waivers (e.g. v2.6 g105); this rescore reports raw repaired-evaluator deterministic values"
+ },
+ "counterfactual_gate_impact": {
+  "old_gate_status": false,
+  "counterfactual_new_gate_status": true,
+  "label": "COUNTERFACTUAL / NON-AUTHORITATIVE",
+  "terminal_verdict_note": "the historical attempt terminal verdict is unchanged regardless of this counterfactual gate status"
+ }
+}
