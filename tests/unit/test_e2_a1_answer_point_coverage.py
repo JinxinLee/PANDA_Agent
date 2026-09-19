@@ -25,11 +25,26 @@ def claim(cid="c1", point="point.1", text="The input is a record.", evidence="e1
     return dict(claim_id=cid, claim_text=text, evidence_ids=[evidence], answer_point_ids=[point])
 
 
-def review(mappings=None, missing=(), unsupported=(), irrelevant=(), requirements=()):
+def coverage_records(mappings=None, missing=(), unsupported=(), irrelevant=(), points=None):
+    excluded = set(unsupported) | set(irrelevant)
+    by_point = {}
+    for cid, pts in (mappings or {}).items():
+        if cid in excluded:
+            continue
+        for pid in pts:
+            by_point.setdefault(pid, []).append(cid)
+    return [dict(answer_point_id=p["answer_point_id"],
+                 supporting_claim_ids=by_point.get(p["answer_point_id"], []),
+                 complete=p["answer_point_id"] not in set(missing))
+            for p in (points or POINTS)]
+
+
+def review(mappings=None, missing=(), unsupported=(), irrelevant=(), requirements=(), points=None):
     return dict(supported=True, unsupported_claim_ids=list(unsupported), irrelevant_claim_ids=list(irrelevant),
                 missing_requirement_ids=list(requirements), reason="",
                 claim_answer_point_mappings=[dict(claim_id=k, answer_point_ids=v) for k,v in (mappings or {}).items()],
-                missing_answer_point_ids=list(missing))
+                missing_answer_point_ids=list(missing),
+                answer_point_coverage=coverage_records(mappings, missing, unsupported, irrelevant, points))
 
 
 def proposal():
@@ -139,7 +154,7 @@ def test_deterministically_invalid_claim_cannot_cover(tmp_path,bad):
 
 def test_mapping_relevance_not_collective_completeness(tmp_path):
     p=[{"answer_point_id":"point.1","text":"Compare the two approaches."}]
-    a=agent(tmp_path,Vertex(reviews=[review({"c1":["point.1"]},missing=["point.1"])]))
+    a=agent(tmp_path,Vertex(reviews=[review({"c1":["point.1"]},missing=["point.1"],points=p)]))
     o=a._verify(state(a,[claim(text="The first approach uses a record.")],p))
     assert o["supported_claims"] and not o["answer_point_audit"]["coverage_complete"]
     assert o["answer_point_audit"]["covered_answer_point_ids"]==[]

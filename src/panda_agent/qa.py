@@ -139,8 +139,19 @@ ANSWER_POINT_COVERAGE_REVIEW_SCHEMA = {
             },
         },
         "missing_answer_point_ids": {"type": "array", "items": {"type": "string"}},
+        "answer_point_coverage": {
+            "type": "array", "items": {
+                "type": "object", "properties": {
+                    "answer_point_id": {"type": "string"},
+                    "supporting_claim_ids": {"type": "array", "items": {"type": "string"}},
+                    "complete": {"type": "boolean"},
+                },
+                "required": ["answer_point_id", "supporting_claim_ids", "complete"],
+                "additionalProperties": False,
+            },
+        },
     },
-    "required": [*REVIEW_SCHEMA["required"], "claim_answer_point_mappings", "missing_answer_point_ids"],
+    "required": [*REVIEW_SCHEMA["required"], "claim_answer_point_mappings", "missing_answer_point_ids", "answer_point_coverage"],
 }
 COMPOSER_SCHEMA = {
     "type": "object",
@@ -814,6 +825,35 @@ def _validate_answer_point_review(
     require(set(mappings) == known, "each reviewable claim requires one mapping")
     contributing = {pid for cid, values in mappings.items() if cid not in unsupported | irrelevant for pid in values}
     require(point_ids - missing <= contributing, "covered point lacks a supported relevant mapped claim")
+    # Post-A5 completeness recovery: the reviewer must separately judge each
+    # runtime point's completeness, so mapping relevance alone can never imply
+    # coverage and contradictory review states fail deterministically.
+    coverage = review["answer_point_coverage"]
+    require(isinstance(coverage, list), "coverage records must be a list")
+    covered_points: set[str] = set()
+    complete_points: set[str] = set()
+    for record in coverage:
+        require(
+            isinstance(record, dict)
+            and set(record) == {"answer_point_id", "supporting_claim_ids", "complete"},
+            "invalid coverage record",
+        )
+        pid = record["answer_point_id"]
+        require(
+            isinstance(pid, str) and pid in point_ids and pid not in covered_points,
+            "unknown or repeated coverage point",
+        )
+        covered_points.add(pid)
+        supporters = ids(record["supporting_claim_ids"], known)
+        require(type(record["complete"]) is bool, "coverage complete flag must be boolean")
+        for cid in supporters:
+            require(cid not in unsupported | irrelevant, "unsupported or irrelevant claim cannot support a point")
+            require(pid in mappings.get(cid, []), "supporting claim must map to the point")
+        if record["complete"]:
+            require(bool(supporters), "complete point requires supported contributing claims")
+            complete_points.add(pid)
+    require(covered_points == point_ids, "each runtime point requires exactly one coverage record")
+    require(complete_points == point_ids - missing, "incomplete points must be exactly the missing points")
     return mappings
 
 
@@ -2756,18 +2796,44 @@ class QAAgent:
             if claim.get("claim_id")
         }
         merged: list[dict[str, Any]] = []
-        seen: set[str] = set()
-        for claim in [*supported, *revised_claims]:
+        seen_ids: set[str] = set()
+        seen_texts: set[str] = set()
+        for claim in supported:
             claim_id = str(claim.get("claim_id") or "")
-            if not claim_id or claim_id in seen:
+            if not claim_id or claim_id in seen_ids:
                 continue
+            seen_ids.add(claim_id)
+            normalized_text = _normalized_claim_text(claim.get("claim_text"))
+            if normalized_text:
+                seen_texts.add(normalized_text)
+            merged.append(claim)
+        for claim in revised_claims:
+            claim_id = str(claim.get("claim_id") or "")
+            if not claim_id:
+                continue
+            normalized_text = _normalized_claim_text(claim.get("claim_text"))
             if (
                 claim_id in unsupported_texts
-                and _normalized_claim_text(claim.get("claim_text")) == unsupported_texts[claim_id]
+                and normalized_text == unsupported_texts[claim_id]
             ):
                 continue
-            seen.add(claim_id)
-            merged.append(claim)
+            # Post-A5 completeness recovery: the generator may reuse an existing
+            # local claim ID for genuinely new content. Discard only an exact
+            # restatement of already-present content; keep new content alive
+            # under a fresh local ID so the single bounded revision can still
+            # recover a missing obligation. Identical-unsupported restatement
+            # above stays blocked (F6-A2-FR2 unchanged).
+            if normalized_text and normalized_text in seen_texts:
+                continue
+            if claim_id in seen_ids:
+                suffix = 2
+                while f"{claim_id}_r{suffix}" in seen_ids:
+                    suffix += 1
+                claim_id = f"{claim_id}_r{suffix}"
+            seen_ids.add(claim_id)
+            if normalized_text:
+                seen_texts.add(normalized_text)
+            merged.append({**claim, "claim_id": claim_id})
         return {
             "draft": {"claims": merged},
             "revision_count": state.get("revision_count", 0) + 1,

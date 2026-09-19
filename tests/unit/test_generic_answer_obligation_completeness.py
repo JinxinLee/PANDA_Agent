@@ -16,6 +16,10 @@ def one_point(text: str, span: str) -> dict:
     }
 
 
+def one_point_records(text: str) -> list:
+    return [{"answer_point_id": "point.1", "text": text}]
+
+
 def two_point_proposal() -> dict:
     return {
         "points": [
@@ -72,7 +76,7 @@ def test_t3_single_obligation_stays_single_and_adds_no_revision_burden(tmp_path)
     question = "How does Cedar work?"
     vertex = Vertex(
         answers=[claim(point="point.1", text="Cedar processes a record.")],
-        reviews=[review({"c1": ["point.1"]})],
+        reviews=[review({"c1": ["point.1"]}, points=one_point_records("Explain how Cedar works"))],
         decomposition=one_point("Explain how Cedar works", question),
     )
 
@@ -87,7 +91,7 @@ def test_t4_comparison_remains_one_obligation(tmp_path):
     question = "How do Cedar and Birch differ?"
     vertex = Vertex(
         answers=[claim(point="point.1", text="Cedar and Birch use different record layouts.")],
-        reviews=[review({"c1": ["point.1"]})],
+        reviews=[review({"c1": ["point.1"]}, points=one_point_records("Compare Cedar and Birch"))],
         decomposition=one_point("Compare Cedar and Birch", question),
     )
 
@@ -126,7 +130,7 @@ def test_t6_workflow_does_not_invent_substeps(tmp_path):
     question = "Describe the workflow from Cedar to Birch."
     vertex = Vertex(
         answers=[claim(point="point.1", text="The workflow carries a record from Cedar to Birch.")],
-        reviews=[review({"c1": ["point.1"]})],
+        reviews=[review({"c1": ["point.1"]}, points=one_point_records("Describe the workflow from Cedar to Birch"))],
         decomposition=one_point("Describe the workflow from Cedar to Birch", question),
     )
 

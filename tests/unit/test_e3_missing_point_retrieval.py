@@ -78,6 +78,31 @@ def make_claim(
     }
 
 
+def coverage_records(
+    mappings: dict[str, list[str]] | None = None,
+    missing: list[str] | None = None,
+    unsupported: list[str] | None = None,
+    irrelevant: list[str] | None = None,
+    points: list[dict[str, str]] | None = None,
+) -> list[dict[str, Any]]:
+    excluded = set(unsupported or []) | set(irrelevant or [])
+    by_point: dict[str, list[str]] = {}
+    for cid, pts in (mappings or {}).items():
+        if cid in excluded:
+            continue
+        for pid in pts:
+            by_point.setdefault(pid, []).append(cid)
+    missing_set = set(missing or [])
+    return [
+        {
+            "answer_point_id": p["answer_point_id"],
+            "supporting_claim_ids": by_point.get(p["answer_point_id"], []),
+            "complete": p["answer_point_id"] not in missing_set,
+        }
+        for p in (points or POINTS)
+    ]
+
+
 def make_review(
     supported: bool = True,
     mappings: dict[str, list[str]] | None = None,
@@ -86,6 +111,7 @@ def make_review(
     irrelevant: list[str] | None = None,
     requirements: list[str] | None = None,
     reason: str = "",
+    points: list[dict[str, str]] | None = None,
 ) -> dict[str, Any]:
     return {
         "supported": supported,
@@ -97,6 +123,7 @@ def make_review(
             {"claim_id": k, "answer_point_ids": v} for k, v in (mappings or {}).items()
         ],
         "missing_answer_point_ids": list(missing or []),
+        "answer_point_coverage": coverage_records(mappings, missing, unsupported, irrelevant, points),
     }
 
 
@@ -461,6 +488,11 @@ def test_t8_original_plan_preserved_no_prose_reanalysis(tmp_path: Path) -> None:
 def test_t9_multiple_missing_points_merged_single_query(tmp_path: Path) -> None:
     """T9: Multiple missing points merged into one combined query preserving order."""
     q_t9 = "What is the PndPidCorrelator configuration and how are tracks filtered and monitored?"
+    t9_points = [
+        {"answer_point_id": "point.1", "text": "PndPidCorrelator configuration options."},
+        {"answer_point_id": "point.2", "text": "Track filtering in fillData."},
+        {"answer_point_id": "point.3", "text": "Track monitoring logic."},
+    ]
     v = FakeVertex(
         decomposition=make_proposal(
             ["PndPidCorrelator configuration options.", "Track filtering in fillData.", "Track monitoring logic."],
@@ -468,8 +500,8 @@ def test_t9_multiple_missing_points_merged_single_query(tmp_path: Path) -> None:
         ),
         answers=[make_claim("c2", "point.2", "Track filtering in fillData.")],
         reviews=[
-            make_review(mappings={"c2": ["point.2"]}, missing=["point.1", "point.3"]),
-            make_review(mappings={"c2": ["point.2"]}, missing=[]),
+            make_review(mappings={"c2": ["point.2"]}, missing=["point.1", "point.3"], points=t9_points),
+            make_review(mappings={"c2": ["point.1", "point.2", "point.3"]}, missing=[], points=t9_points),
         ],
     )
     a = make_agent(tmp_path, vertex=v)

@@ -193,6 +193,27 @@ class FakeVertex:
                     for item in payload["untrusted_claims"]
                 ]
                 result["missing_answer_point_ids"] = []
+                excluded = set(result["unsupported_claim_ids"]) | set(result["irrelevant_claim_ids"])
+                supported_by_point: dict[str, list[str]] = {}
+                for mapping in result["claim_answer_point_mappings"]:
+                    if mapping["claim_id"] in excluded:
+                        continue
+                    for point_id in mapping["answer_point_ids"]:
+                        supported_by_point.setdefault(point_id, []).append(mapping["claim_id"])
+                point_ids = [p["answer_point_id"] for p in payload.get("runtime_answer_points") or []]
+                result["answer_point_coverage"] = [
+                    {
+                        "answer_point_id": point_id,
+                        "supporting_claim_ids": supported_by_point.get(point_id, []),
+                        "complete": bool(supported_by_point.get(point_id)),
+                    }
+                    for point_id in point_ids
+                ]
+                result["missing_answer_point_ids"] = [
+                    record["answer_point_id"]
+                    for record in result["answer_point_coverage"]
+                    if not record["complete"]
+                ]
             return result
         point_id = (payload.get("runtime_answer_points") or [{"answer_point_id": "question_core"}])[0]["answer_point_id"]
         return {
@@ -301,6 +322,22 @@ class PartialRevisionVertex:
                     for item in claims
                 ]
                 result["missing_answer_point_ids"] = []
+                point_ids = [p["answer_point_id"] for p in payload.get("runtime_answer_points") or []]
+                excluded = set(result["unsupported_claim_ids"]) | set(result["irrelevant_claim_ids"])
+                supported_by_point: dict[str, list[str]] = {}
+                for mapping in result["claim_answer_point_mappings"]:
+                    if mapping["claim_id"] in excluded:
+                        continue
+                    for point_id in mapping["answer_point_ids"]:
+                        supported_by_point.setdefault(point_id, []).append(mapping["claim_id"])
+                result["answer_point_coverage"] = [
+                    {
+                        "answer_point_id": point_id,
+                        "supporting_claim_ids": supported_by_point.get(point_id, []),
+                        "complete": bool(supported_by_point.get(point_id)),
+                    }
+                    for point_id in point_ids
+                ]
             return result
         task = payload["task"]
         if task == "revise_unsupported_claims_once":
@@ -2075,6 +2112,19 @@ class CoverageReviewVertex(FakeVertex):
                     for item in payload["untrusted_claims"]
                 ]
                 review["missing_answer_point_ids"] = []
+                point_ids = [p["answer_point_id"] for p in payload.get("runtime_answer_points") or []]
+                review["answer_point_coverage"] = [
+                    {
+                        "answer_point_id": point_id,
+                        "supporting_claim_ids": [
+                            m["claim_id"]
+                            for m in review["claim_answer_point_mappings"]
+                            if point_id in m["answer_point_ids"]
+                        ],
+                        "complete": True,
+                    }
+                    for point_id in point_ids
+                ]
             return review
         return super().generate_json(prompt, schema, **kwargs)
 
@@ -2104,6 +2154,19 @@ class StaleLegacyReviewVertex(CoverageReviewVertex):
                     for item in payload["untrusted_claims"]
                 ]
                 review["missing_answer_point_ids"] = []
+                point_ids = [p["answer_point_id"] for p in payload.get("runtime_answer_points") or []]
+                review["answer_point_coverage"] = [
+                    {
+                        "answer_point_id": point_id,
+                        "supporting_claim_ids": [
+                            m["claim_id"]
+                            for m in review["claim_answer_point_mappings"]
+                            if point_id in m["answer_point_ids"]
+                        ],
+                        "complete": True,
+                    }
+                    for point_id in point_ids
+                ]
             return review
         return super().generate_json(prompt, schema, **kwargs)
 
@@ -3052,6 +3115,19 @@ class RecordingRoleVertex(FakeVertex):
                     for item in payload["untrusted_claims"]
                 ]
                 review["missing_answer_point_ids"] = []
+                point_ids = [p["answer_point_id"] for p in payload.get("runtime_answer_points") or []]
+                review["answer_point_coverage"] = [
+                    {
+                        "answer_point_id": point_id,
+                        "supporting_claim_ids": [
+                            m["claim_id"]
+                            for m in review["claim_answer_point_mappings"]
+                            if point_id in m["answer_point_ids"]
+                        ],
+                        "complete": True,
+                    }
+                    for point_id in point_ids
+                ]
             return review
         return super().generate_json(prompt, schema, **kwargs)
 

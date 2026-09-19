@@ -79,6 +79,11 @@ evidence does not establish a requested exact numeric value or installation
 requirement, return an empty claim list instead of converting an absence of
 evidence into a factual assertion. For other questions, provide the strongest
 evidence-backed partial answer and state its limitation.
+Retrieved evidence is a non-exhaustive subset of the locked corpus: never state
+or imply corpus-wide absence ("the locked corpus contains no ...") from that
+subset alone. If one requested side of a comparison lacks support, state only
+that the supplied evidence does not establish that side. Corpus-wide absence
+claims belong exclusively to deterministic exact-lookup refusal paths.
 
 Use a response shape that mirrors the question: use an explicit "unlike" or
 "whereas" sentence for comparisons, an ordered sequence for workflow/data-flow
@@ -169,6 +174,12 @@ ID in `missing_requirement_ids`; use only IDs supplied in `answer_requirements`.
 Use the supplied `requirement_evidence` as a relevance-ranked subset when
 checking or repairing an obligation. Do not mark an obligation complete merely
 because an unrelated claim is factual.
+A corpus-wide absence claim inferred from a non-exhaustive evidence subset is
+not evidence-supported: the cited subset cannot prove that the locked corpus
+contains nothing of the requested kind. Mark such a claim unsupported unless
+deterministic exact-lookup machinery supplied in the evidence establishes the
+absence; when the cited evidence directly establishes the thing the claim
+denies, report the claim as unsupported.
 Do not demand an obligation that the request does not include.
 """
 
@@ -211,7 +222,16 @@ contribute coverage, regardless of their declarations or mappings.
 Judge each point's explicit obligation against the supported relevant mapped claims
 collectively. Mapping relevance alone does not imply completeness: a one-sided
 description can relate to a comparison while leaving that comparison incomplete.
-Return every incomplete point in missing_answer_point_ids. A covered point must
+Return exactly one answer_point_coverage record per runtime answer point, listing
+the supported relevant mapped claim IDs that collectively state the substantive
+relationship that obligation requests — such as workflow ordering (A before/after
+B), purpose (X used so that Y), comparison (A versus B), location (where X is
+implemented), condition (when X applies), or cause/effect (X causes or enables Y)
+— and mark the point complete only when those claims collectively establish that
+relationship as requested. Mark a point complete=false and include it in
+missing_answer_point_ids when the claims leave the requested relationship
+unstated. Generator-declared mappings and bare mapping relevance never establish
+completeness. Return every incomplete point in missing_answer_point_ids. A covered point must
 have at least one supported, relevant semantically mapped claim. Do not infer
 coverage from point counts. Named legacy answer_requirements are not an
 authoritative completeness axis in this coverage review: the request supplies no

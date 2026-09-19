@@ -74,15 +74,15 @@ class PromptFingerprintTests(unittest.TestCase):
 class BenchmarkIdentityTests(unittest.TestCase):
     def test_benchmark_identity_binds_newest_signed_exposed_gold(self):
         # GOLD-9: the freezer binds the same newest qualified benchmark the
-        # evaluator resolves (currently m6-benchmark-v2.10), never an older
+        # evaluator resolves (currently m6-benchmark-v2.11), never an older
         # hard-coded authority.
         identity = candidate._benchmark_identity(PROJECT_ROOT)
         manifest = json.loads(
-            (PROJECT_ROOT / "evaluation" / "benchmarks" / "v2_10" / "benchmark_manifest.json").read_text(
+            (PROJECT_ROOT / "evaluation" / "benchmarks" / "v2_11" / "benchmark_manifest.json").read_text(
                 encoding="utf-8"
             )
         )
-        self.assertEqual(identity["benchmark_version"], "m6-benchmark-v2.10")
+        self.assertEqual(identity["benchmark_version"], "m6-benchmark-v2.11")
         self.assertEqual(identity["benchmark_question_count"], 120)
         self.assertEqual(identity["benchmark_dataset_sha256"], manifest["dataset_sha256"])
         self.assertIn("approved", identity["benchmark_status"])
