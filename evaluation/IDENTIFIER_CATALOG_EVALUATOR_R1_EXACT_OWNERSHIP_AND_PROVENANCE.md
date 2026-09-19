@@ -39,10 +39,11 @@ All six confirmed false positives remain cleared under exact-ownership semantics
 Independently derived from the immutable run stores (not from the prior report). Field definitions are fixed across all attempts:
 
 - `raw_rows_in_store` / `unique_case_count` / `duplicate_case_ids` / `exception_case_ids` / `completed_case_count` describe the append-only store shape;
-- `identifier_applicable_case_count` is the number of cases for which `identifier_hallucination_rate` is actually applicable under the evaluator contract (`ordinary_applicable = expected_status == answered`) — it is **not** a row count and is independent of store shape;
-- `identifier_mentions_denominator` is the aggregate identifier mentions over the applicable answered records that carry an actual measurement.
+- `identifier_gold_applicable_case_count` is the number of formal cases whose Gold semantics make `identifier_hallucination_rate` applicable (`expected_status == answered`) — it is a Gold-level count, **not** a row count, and is independent of store shape;
+- `identifier_measured_record_count` is the number of stored records that actually contain a valid identifier-hallucination measurement for a Gold-applicable case — this is distinct from Gold applicability;
+- `identifier_mentions_denominator` is the aggregate identifier mentions over the gold-applicable answered records that carry an actual measurement.
 
-All five attempts share the same formal-English cohort semantics, so `identifier_applicable_case_count = 49` for every attempt (verified mechanically below).
+All five attempts share the same formal-English cohort semantics, so `identifier_gold_applicable_case_count = 49` for every attempt; the counts differ only where a Gold-applicable case lacks a valid completed measurement (Attempt 3's preserved `g013` provider-exception row). The legacy `identifier_applicable_case_count` field has been removed from the active artifacts and replaced by these two fields; it never meant "actually measured records".
 
 ### Attempt 1 — the 60↔59 discrepancy resolved
 
@@ -52,7 +53,8 @@ unique_case_count = 59
 duplicate_case_ids = {"g119": 2}
 exception_case_ids = []
 completed_case_count = 59
-identifier_applicable_case_count = 49
+identifier_gold_applicable_case_count = 49
+identifier_measured_record_count = 49
 identifier_mentions_denominator = 121
 ```
 
@@ -69,16 +71,19 @@ duplicate_case_ids = {}
 exception_case_ids = ["g013"]
 exception_row_count = 1
 completed_case_count = 58
-identifier_applicable_case_count = 49
+identifier_gold_applicable_case_count = 49
+identifier_measured_record_count = 48
+unmeasured_gold_applicable_case_ids = ["g013"]
 identifier_mentions_denominator = 177
 ```
 
-The store holds 59 unique-case rows, of which `g013` is the preserved Vertex-429 provider-exception row (no result payload). 58 cases are completed/scored. The 49 applicable cases are the answered-expected cases of the formal-English cohort; `g013` is one of them by Gold semantics, but its preserved exception row is **not a valid applicable identifier measurement record and contributes no identifier measurement** — the actual identifier measurements come from the 48 completed answered records. `identifier_mentions_denominator = 177` is the aggregate identifier mentions over those applicable answered records, which is why 177 reproduces the historical denominator exactly while the historical formal cohort state (58/59, INCOMPLETE) is preserved and no case is manufactured.
+The store holds 59 unique-case rows, of which `g013` is the preserved Vertex-429 provider-exception row (no result payload). 58 cases are completed/scored. `g013` is **Gold-applicable but unmeasured**: it belongs to the 49 answered Gold cases, but its preserved exception row contains no valid completed identifier measurement, so only 48 of the 49 gold-applicable cases carry an actual measurement. `identifier_mentions_denominator = 177` is the aggregate identifier mentions over those measured gold-applicable records, which is why 177 reproduces the historical denominator exactly while the historical formal cohort state (58/59, INCOMPLETE) is preserved and no case is manufactured.
 
 ### Attempts 2, 4, 5
 
 ```text
 raw_rows_in_store = 59; unique = 59; duplicates = {}; exceptions = []; completed = 59
+identifier_gold_applicable_case_count = 49; identifier_measured_record_count = 49
 ```
 
 ## 6. R1 offline rescore (zero model calls)

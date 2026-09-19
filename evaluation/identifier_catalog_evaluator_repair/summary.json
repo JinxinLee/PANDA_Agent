@@ -78,11 +78,13 @@
     "exception_case_ids": [],
     "exception_row_count": 0,
     "completed_case_count": 59,
-    "identifier_applicable_case_count": 49,
-    "identifier_applicable_note": "records whose Gold expected_status is answered, for which identifier_hallucination_rate is applicable under the evaluator contract (ordinary_applicable = expected_status == answered); a preserved exception row (Attempt 3 g013) is not a valid applicable identifier measurement record and contributes no identifier measurement",
     "identifier_mentions_denominator": 121,
-    "aggregate_basis": "sum of identifier mentions over the applicable answered records only; non-applicable rows contribute no mentions (Attempt 1's duplicated insufficient-evidence g119 rows are not applicable and do not contribute), and the historical gate-matrix aggregation used the same applicability, which is why the denominators reproduce exactly",
-    "duplicate_note": "the duplicated g119 rows explain raw_rows_in_store=60 vs unique_case_count=59 but are unrelated to the identifier denominator: g119's expected_status is insufficient_evidence, so neither row is applicable to identifier_hallucination_rate"
+    "aggregate_basis": "sum of identifier mentions over the gold-applicable answered records that carry an actual measurement; non-applicable rows contribute no mentions (Attempt 1's duplicated insufficient-evidence g119 rows are not gold-applicable and do not contribute), and the historical gate-matrix aggregation used the same applicability, which is why the denominators reproduce exactly",
+    "duplicate_note": "the duplicated g119 rows explain raw_rows_in_store=60 vs unique_case_count=59 but are unrelated to the identifier denominator: g119's expected_status is insufficient_evidence, so neither row is applicable to identifier_hallucination_rate",
+    "identifier_gold_applicable_case_count": 49,
+    "identifier_measured_record_count": 49,
+    "unmeasured_gold_applicable_case_ids": [],
+    "identifier_gold_applicability_note": "identifier_gold_applicable_case_count counts formal cases whose Gold semantics make identifier_hallucination_rate applicable (expected_status == answered); identifier_measured_record_count counts stored records that actually contain a valid identifier-hallucination measurement for a Gold-applicable case; the two must not be conflated"
    },
    "old": {
     "count": 0,
@@ -172,10 +174,12 @@
     "exception_case_ids": [],
     "exception_row_count": 0,
     "completed_case_count": 59,
-    "identifier_applicable_case_count": 49,
-    "identifier_applicable_note": "records whose Gold expected_status is answered, for which identifier_hallucination_rate is applicable under the evaluator contract (ordinary_applicable = expected_status == answered); a preserved exception row (Attempt 3 g013) is not a valid applicable identifier measurement record and contributes no identifier measurement",
     "identifier_mentions_denominator": 155,
-    "aggregate_basis": "sum of identifier mentions over the applicable answered records only; non-applicable rows contribute no mentions (Attempt 1's duplicated insufficient-evidence g119 rows are not applicable and do not contribute), and the historical gate-matrix aggregation used the same applicability, which is why the denominators reproduce exactly"
+    "aggregate_basis": "sum of identifier mentions over the gold-applicable answered records that carry an actual measurement; non-applicable rows contribute no mentions (Attempt 1's duplicated insufficient-evidence g119 rows are not gold-applicable and do not contribute), and the historical gate-matrix aggregation used the same applicability, which is why the denominators reproduce exactly",
+    "identifier_gold_applicable_case_count": 49,
+    "identifier_measured_record_count": 49,
+    "unmeasured_gold_applicable_case_ids": [],
+    "identifier_gold_applicability_note": "identifier_gold_applicable_case_count counts formal cases whose Gold semantics make identifier_hallucination_rate applicable (expected_status == answered); identifier_measured_record_count counts stored records that actually contain a valid identifier-hallucination measurement for a Gold-applicable case; the two must not be conflated"
    },
    "old": {
     "count": 0,
@@ -267,10 +271,14 @@
     ],
     "exception_row_count": 1,
     "completed_case_count": 58,
-    "identifier_applicable_case_count": 49,
-    "identifier_applicable_note": "records whose Gold expected_status is answered, for which identifier_hallucination_rate is applicable under the evaluator contract (ordinary_applicable = expected_status == answered); a preserved exception row (Attempt 3 g013) is not a valid applicable identifier measurement record and contributes no identifier measurement",
     "identifier_mentions_denominator": 177,
-    "aggregate_basis": "sum of identifier mentions over the applicable answered records only; non-applicable rows contribute no mentions (Attempt 1's duplicated insufficient-evidence g119 rows are not applicable and do not contribute), and the historical gate-matrix aggregation used the same applicability, which is why the denominators reproduce exactly"
+    "aggregate_basis": "sum of identifier mentions over the gold-applicable answered records that carry an actual measurement; non-applicable rows contribute no mentions (Attempt 1's duplicated insufficient-evidence g119 rows are not gold-applicable and do not contribute), and the historical gate-matrix aggregation used the same applicability, which is why the denominators reproduce exactly",
+    "identifier_gold_applicable_case_count": 49,
+    "identifier_measured_record_count": 48,
+    "unmeasured_gold_applicable_case_ids": [
+     "g013"
+    ],
+    "identifier_gold_applicability_note": "identifier_gold_applicable_case_count counts formal cases whose Gold semantics make identifier_hallucination_rate applicable (expected_status == answered); identifier_measured_record_count counts stored records that actually contain a valid identifier-hallucination measurement for a Gold-applicable case; the two must not be conflated"
    },
    "old": {
     "count": 0,
@@ -360,10 +368,12 @@
     "exception_case_ids": [],
     "exception_row_count": 0,
     "completed_case_count": 59,
-    "identifier_applicable_case_count": 49,
-    "identifier_applicable_note": "records whose Gold expected_status is answered, for which identifier_hallucination_rate is applicable under the evaluator contract (ordinary_applicable = expected_status == answered); a preserved exception row (Attempt 3 g013) is not a valid applicable identifier measurement record and contributes no identifier measurement",
     "identifier_mentions_denominator": 173,
-    "aggregate_basis": "sum of identifier mentions over the applicable answered records only; non-applicable rows contribute no mentions (Attempt 1's duplicated insufficient-evidence g119 rows are not applicable and do not contribute), and the historical gate-matrix aggregation used the same applicability, which is why the denominators reproduce exactly"
+    "aggregate_basis": "sum of identifier mentions over the gold-applicable answered records that carry an actual measurement; non-applicable rows contribute no mentions (Attempt 1's duplicated insufficient-evidence g119 rows are not gold-applicable and do not contribute), and the historical gate-matrix aggregation used the same applicability, which is why the denominators reproduce exactly",
+    "identifier_gold_applicable_case_count": 49,
+    "identifier_measured_record_count": 49,
+    "unmeasured_gold_applicable_case_ids": [],
+    "identifier_gold_applicability_note": "identifier_gold_applicable_case_count counts formal cases whose Gold semantics make identifier_hallucination_rate applicable (expected_status == answered); identifier_measured_record_count counts stored records that actually contain a valid identifier-hallucination measurement for a Gold-applicable case; the two must not be conflated"
    },
    "old": {
     "count": 2,
@@ -458,10 +468,12 @@
     "exception_case_ids": [],
     "exception_row_count": 0,
     "completed_case_count": 59,
-    "identifier_applicable_case_count": 49,
-    "identifier_applicable_note": "records whose Gold expected_status is answered, for which identifier_hallucination_rate is applicable under the evaluator contract (ordinary_applicable = expected_status == answered); a preserved exception row (Attempt 3 g013) is not a valid applicable identifier measurement record and contributes no identifier measurement",
     "identifier_mentions_denominator": 130,
-    "aggregate_basis": "sum of identifier mentions over the applicable answered records only; non-applicable rows contribute no mentions (Attempt 1's duplicated insufficient-evidence g119 rows are not applicable and do not contribute), and the historical gate-matrix aggregation used the same applicability, which is why the denominators reproduce exactly"
+    "aggregate_basis": "sum of identifier mentions over the gold-applicable answered records that carry an actual measurement; non-applicable rows contribute no mentions (Attempt 1's duplicated insufficient-evidence g119 rows are not gold-applicable and do not contribute), and the historical gate-matrix aggregation used the same applicability, which is why the denominators reproduce exactly",
+    "identifier_gold_applicable_case_count": 49,
+    "identifier_measured_record_count": 49,
+    "unmeasured_gold_applicable_case_ids": [],
+    "identifier_gold_applicability_note": "identifier_gold_applicable_case_count counts formal cases whose Gold semantics make identifier_hallucination_rate applicable (expected_status == answered); identifier_measured_record_count counts stored records that actually contain a valid identifier-hallucination measurement for a Gold-applicable case; the two must not be conflated"
    },
    "old": {
     "count": 6,

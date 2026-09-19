@@ -40,7 +40,6 @@
    },
    "exception_case_ids": [],
    "completed_case_count": 59,
-   "identifier_applicable_case_count": 49,
    "identifier_mentions_denominator": 121,
    "old": {
     "count": 0,
@@ -55,7 +54,10 @@
    "cleared": {},
    "introduced": {},
    "counterfactual_gate_label": "COUNTERFACTUAL / NON-AUTHORITATIVE",
-   "counterfactual_gate": true
+   "counterfactual_gate": true,
+   "identifier_gold_applicable_case_count": 49,
+   "identifier_measured_record_count": 49,
+   "unmeasured_gold_applicable_case_ids": []
   },
   {
    "attempt": 2,
@@ -65,7 +67,6 @@
    "duplicate_case_ids": {},
    "exception_case_ids": [],
    "completed_case_count": 59,
-   "identifier_applicable_case_count": 49,
    "identifier_mentions_denominator": 155,
    "old": {
     "count": 0,
@@ -80,7 +81,10 @@
    "cleared": {},
    "introduced": {},
    "counterfactual_gate_label": "COUNTERFACTUAL / NON-AUTHORITATIVE",
-   "counterfactual_gate": true
+   "counterfactual_gate": true,
+   "identifier_gold_applicable_case_count": 49,
+   "identifier_measured_record_count": 49,
+   "unmeasured_gold_applicable_case_ids": []
   },
   {
    "attempt": 3,
@@ -92,7 +96,6 @@
     "g013"
    ],
    "completed_case_count": 58,
-   "identifier_applicable_case_count": 49,
    "identifier_mentions_denominator": 177,
    "old": {
     "count": 0,
@@ -107,7 +110,12 @@
    "cleared": {},
    "introduced": {},
    "counterfactual_gate_label": "COUNTERFACTUAL / NON-AUTHORITATIVE",
-   "counterfactual_gate": true
+   "counterfactual_gate": true,
+   "identifier_gold_applicable_case_count": 49,
+   "identifier_measured_record_count": 48,
+   "unmeasured_gold_applicable_case_ids": [
+    "g013"
+   ]
   },
   {
    "attempt": 4,
@@ -117,7 +125,6 @@
    "duplicate_case_ids": {},
    "exception_case_ids": [],
    "completed_case_count": 59,
-   "identifier_applicable_case_count": 49,
    "identifier_mentions_denominator": 173,
    "old": {
     "count": 2,
@@ -137,7 +144,10 @@
    },
    "introduced": {},
    "counterfactual_gate_label": "COUNTERFACTUAL / NON-AUTHORITATIVE",
-   "counterfactual_gate": true
+   "counterfactual_gate": true,
+   "identifier_gold_applicable_case_count": 49,
+   "identifier_measured_record_count": 49,
+   "unmeasured_gold_applicable_case_ids": []
   },
   {
    "attempt": 5,
@@ -147,7 +157,6 @@
    "duplicate_case_ids": {},
    "exception_case_ids": [],
    "completed_case_count": 59,
-   "identifier_applicable_case_count": 49,
    "identifier_mentions_denominator": 130,
    "old": {
     "count": 6,
@@ -173,7 +182,10 @@
    },
    "introduced": {},
    "counterfactual_gate_label": "COUNTERFACTUAL / NON-AUTHORITATIVE",
-   "counterfactual_gate": true
+   "counterfactual_gate": true,
+   "identifier_gold_applicable_case_count": 49,
+   "identifier_measured_record_count": 49,
+   "unmeasured_gold_applicable_case_ids": []
   }
  ],
  "count_discrepancies": {
@@ -223,5 +235,12 @@
   "attempt_6_executed": false
  },
  "next_task_recommendation": "F6-A EVALUATION-CONTRACT RECONCILIATION / CRITICAL-EVIDENCE EQUIVALENCE + g039 GOLD CORRECTION + HARD-SAFETY RECLASSIFICATION (no Attempt 6)",
- "next_task_execution_authorized": false
+ "next_task_execution_authorized": false,
+ "provenance_schema": {
+  "schema_note": "provenance terminology finalized after the R1 closeout (PROVENANCE_DOCUMENTATION_CORRECTION; no evaluator semantic change)",
+  "identifier_gold_applicable_case_count": "number of formal cases whose Gold semantics make identifier_hallucination_rate applicable (expected_status == answered)",
+  "identifier_measured_record_count": "number of stored/completed records that actually contain a valid identifier-hallucination measurement for a Gold-applicable case",
+  "legacy_field_disposition": "identifier_applicable_case_count is removed from active artifacts (replaced by the two fields above); it never meant 'actually measured records'",
+  "unmeasured_gold_applicable_case_ids": "Gold-applicable cases whose preserved store row is not a valid completed identifier measurement (Attempt 3: g013 provider exception)"
+ }
 }
