@@ -103,6 +103,6 @@
  ],
  "next_validation_recommendation": "POST-A5 PRODUCT REPAIR VALIDATION / FIXED EXPOSED SENTINEL T1",
  "next_task_execution_authorized": false,
- "product_behavior_head_sha256": "e79d3232ed132a224cbceaf3524e19a1406bd648",
- "r1_reconciliation": "evaluation/POST_A5_GENERIC_PRODUCT_REPAIR_R1_CAUSAL_ATTRIBUTION_AND_LINEAGE_RECONCILIATION.md supersedes the Workstream A 'supported or unsupported' ID wording and any exact-g013-causality implication, the coverage root-cause overclaim, and the prose-only product-head provenance; all other v1 findings stand"
+ "r1_reconciliation": "evaluation/POST_A5_GENERIC_PRODUCT_REPAIR_R1_CAUSAL_ATTRIBUTION_AND_LINEAGE_RECONCILIATION.md supersedes the Workstream A 'supported or unsupported' ID wording and any exact-g013-causality implication, the coverage root-cause overclaim, and the prose-only product-head provenance; all other v1 findings stand",
+ "product_behavior_head_commit_sha": "e79d3232ed132a224cbceaf3524e19a1406bd648"
 }

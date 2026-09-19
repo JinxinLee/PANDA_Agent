@@ -273,18 +273,13 @@ F6_B = LOCKED / F6_A_DID_NOT_PASS
 ATTEMPT_5 = COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED
 
 Next task recommendation:
-POST-ATTEMPT-5 EXPOSED FAILURE REVIEW
-(Focus: classify the generic mechanisms behind the three failed mandatory gates — QuestionDecomposer under-splitting relative to critical Gold answer points behind the four critical misses, the LumiFit identifier hallucinations on g060/g113 at the generation/verification layer, and the six critical final-evidence misses; no candidate repair, Attempt 6, novel_validation, or F6-B execution without separate authorization.)
+POST-A5 PRODUCT REPAIR VALIDATION /
+FIXED EXPOSED SENTINEL T1
+(NO ATTEMPT 6)
 
 Current task authorization:
-E3-A1 experimental missing-point targeted retrieval implementation is complete:
-implemented runtime-only post-verify targeted retrieval, question-derived collection objective, original-plan
-preservation, candidate capture without duplicate calls, cross-pass best-channel-rank RRF (RRF_K=60, experimental
-candidate), single global rerank on original question only, atomic bundle update with single try/except exception
-boundary, narrow retained-support claims ledger, and invariant public DTO/prompts. Initial baseline (commit `2af8ac95`)
-verified with 189 passed, 9 subtests. Independent post-implementation review corrections (structured bounded eligible
-union reservation across passes and deterministic valid retained claim/evidence view in second verify) were incorporated
-and verified with deterministic fakes (196 passed, 9 subtests passed; 49 E3 tests). Separate final AGY review PASS; Codex accepted the bounded corrections after inspecting the source/test diffs. Zero scientific calls occurred at E3-A1 closeout; the current E3 state is given by the E3-A2 and E3-LR1 entries below.
+NEXT_TASK_EXECUTION_AUTHORIZED = false
+The recommended Fixed Exposed Sentinel T1 requires separate authorization.
 
 E3-A2 completed INCONCLUSIVE (1/11 natural applicability; the single applicable pair was descriptive only). E3-LR1 subsequently reconciled the lifecycle with zero scientific calls: E3 closes as a bounded low-frequency fallback (SCIENTIFIC_RECOVERY_BENEFIT_UNRESOLVED); dedicated revalidation is not planned; future E3 evidence accumulates opportunistically in broader authorized evaluations.
 
