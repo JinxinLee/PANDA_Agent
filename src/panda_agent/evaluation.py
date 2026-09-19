@@ -780,7 +780,6 @@ def build_identifier_catalog(
         return _IDENTIFIER_CATALOG_CACHE[cache_key]
     symbols: set[str] = set()
     paths: set[str] = set()
-    namespaces: set[str] = set()
     for item in object_lookup.values():
         if allowed and item.get("source_version_id") not in allowed:
             continue
@@ -810,18 +809,14 @@ def build_identifier_catalog(
         # Scoped identifiers (Namespace::Member, Class::Method, Outer::Inner::Member)
         # are real symbols when they occur verbatim in allowed locked-corpus text,
         # even when they are namespace enum members rather than locator symbols or
-        # type declaration names.  Their namespace heads are recorded separately so
-        # the hallucination check can reject fabricated qualifications.
+        # type declaration names.  Existence of a qualified identifier requires
+        # exact evidence of that qualified form itself; a known namespace head
+        # combined with an independently known bare tail never fabricates one.
         for match in re.finditer(
             r"\b[A-Za-z_][A-Za-z0-9_]*(?:::[A-Za-z_][A-Za-z0-9_]*)+\b", str(item.get("text") or "")
         ):
-            qualified = match.group(0)
-            symbols.add(qualified)
-            head = qualified
-            while "::" in head:
-                head = head.rsplit("::", 1)[0]
-                namespaces.add(head)
-    result = {"symbols": symbols, "paths": paths, "namespaces": namespaces}
+            symbols.add(match.group(0))
+    result = {"symbols": symbols, "paths": paths}
     _IDENTIFIER_CATALOG_CACHE[cache_key] = result
     return result
 
@@ -829,16 +824,12 @@ def build_identifier_catalog(
 def _qualified_symbol_exists(normalized: str, catalog: dict[str, set[str]]) -> bool:
     """Decide whether a qualified code symbol exists in the locked corpus.
 
-    The catalog already contains every qualified literal found in allowed
-    corpus text.  The unqualified-tail fallback additionally accepts a known
-    bare symbol only when its qualification head is a namespace actually seen
-    in allowed corpus text, so a bare corpus symbol cannot legitimize a
-    fabricated namespace.
+    Exact-ownership semantics: a qualified identifier exists only when that
+    exact qualified form itself is established by allowed locked-corpus
+    evidence (verbatim text or locator/declaration metadata).  Independent
+    existence of a namespace head and of a bare tail is not ownership.
     """
-    if normalized in catalog["symbols"] or normalized in catalog["paths"]:
-        return True
-    head, _, tail = normalized.rpartition("::")
-    return tail in catalog["symbols"] and head in catalog.get("namespaces", set())
+    return normalized in catalog["symbols"] or normalized in catalog["paths"]
 
 
 def deterministic_case_metrics(

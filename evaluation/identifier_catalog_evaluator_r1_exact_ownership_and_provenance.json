@@ -1,0 +1,227 @@
+{
+ "schema_version": "identifier-evaluator-r1-v1",
+ "task": "IDENTIFIER EVALUATOR R1 — QUALIFIED-SYMBOL EXACT-OWNERSHIP BOUNDARY + HISTORICAL RESCORE RECORD-PROVENANCE RECONCILIATION",
+ "terminal_state": "COMPLETE / PASS / QUALIFIED_SYMBOL_OWNERSHIP_AND_RESCORE_PROVENANCE_RECONCILED",
+ "scientific_calls": 0,
+ "scientific_tokens": 0,
+ "preserved_conclusions": {
+  "attempt_4_counterfactual": "2/173 -> 0/173",
+  "attempt_5_counterfactual": "6/130 -> 0/130",
+  "six_attempt5_events": "confirmed evaluator false positives (preserved)",
+  "material_product_change": false,
+  "evaluator_contract_change": true,
+  "historical_verdicts": {
+   "attempt_1": "COMPLETE / FAIL (unchanged)",
+   "attempt_2": "COMPLETE / FAIL (unchanged)",
+   "attempt_3": "COMPLETE / FAIL (unchanged)",
+   "attempt_4": "COMPLETE / FAIL (unchanged)",
+   "attempt_5": "COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED (unchanged)"
+  }
+ },
+ "residual_defect": "the previous _qualified_symbol_exists combinatorial fallback (known head in namespaces AND known bare tail in symbols) could validate a qualified identifier that never occurs in the locked corpus",
+ "r1_repair": {
+  "file": "src/panda_agent/evaluation.py",
+  "semantics": "exact-ownership: a qualified identifier exists only when that exact qualified form is established by allowed locked-corpus evidence (verbatim text or locator/declaration metadata); head+tail combinatorial fallback and the namespaces head set removed",
+  "overcorrection_check": "R1 rescore re-derived identical denominators (121/155/177/173/130) and zero newly hallucinated events across Attempts 1-5, proving the fallback was never load-bearing for a real identifier in any stored claim",
+  "no_hardcoded_identifiers_or_cases": true
+ },
+ "red_green": {
+  "red": "1 failed / 13 passed — test_r1_t1_known_head_plus_unrelated_known_tail_is_hallucinated FAILED ('ExampleNS::VALUE_A' not found in []); R1-T3/T5/T6 already passed",
+  "green": "14/14 including production-corpus Attempt-5 regression"
+ },
+ "provenance_reconciliation": [
+  {
+   "attempt": 1,
+   "run_id": "f6a-rc1-gold-formal-full-20260913",
+   "raw_rows_in_store": 60,
+   "unique_case_count": 59,
+   "duplicate_case_ids": {
+    "g119": 2
+   },
+   "exception_case_ids": [],
+   "completed_case_count": 59,
+   "identifier_applicable_case_count": 49,
+   "identifier_mentions_denominator": 121,
+   "old": {
+    "count": 0,
+    "denominator": 121,
+    "rate": 0.0
+   },
+   "r1": {
+    "count": 0,
+    "denominator": 121,
+    "rate": 0.0
+   },
+   "cleared": {},
+   "introduced": {},
+   "counterfactual_gate_label": "COUNTERFACTUAL / NON-AUTHORITATIVE",
+   "counterfactual_gate": true
+  },
+  {
+   "attempt": 2,
+   "run_id": "f6a-rc2-gold-formal-full-20260913",
+   "raw_rows_in_store": 59,
+   "unique_case_count": 59,
+   "duplicate_case_ids": {},
+   "exception_case_ids": [],
+   "completed_case_count": 59,
+   "identifier_applicable_case_count": 49,
+   "identifier_mentions_denominator": 155,
+   "old": {
+    "count": 0,
+    "denominator": 155,
+    "rate": 0.0
+   },
+   "r1": {
+    "count": 0,
+    "denominator": 155,
+    "rate": 0.0
+   },
+   "cleared": {},
+   "introduced": {},
+   "counterfactual_gate_label": "COUNTERFACTUAL / NON-AUTHORITATIVE",
+   "counterfactual_gate": true
+  },
+  {
+   "attempt": 3,
+   "run_id": "f6a-rc3-gold-formal-full-20260914",
+   "raw_rows_in_store": 59,
+   "unique_case_count": 59,
+   "duplicate_case_ids": {},
+   "exception_case_ids": [
+    "g013"
+   ],
+   "completed_case_count": 58,
+   "identifier_applicable_case_count": 49,
+   "identifier_mentions_denominator": 177,
+   "old": {
+    "count": 0,
+    "denominator": 177,
+    "rate": 0.0
+   },
+   "r1": {
+    "count": 0,
+    "denominator": 177,
+    "rate": 0.0
+   },
+   "cleared": {},
+   "introduced": {},
+   "counterfactual_gate_label": "COUNTERFACTUAL / NON-AUTHORITATIVE",
+   "counterfactual_gate": true
+  },
+  {
+   "attempt": 4,
+   "run_id": "f6a-rc4-gold-formal-full-20260916",
+   "raw_rows_in_store": 59,
+   "unique_case_count": 59,
+   "duplicate_case_ids": {},
+   "exception_case_ids": [],
+   "completed_case_count": 59,
+   "identifier_applicable_case_count": 49,
+   "identifier_mentions_denominator": 173,
+   "old": {
+    "count": 2,
+    "denominator": 173,
+    "rate": 0.011560693641618497
+   },
+   "r1": {
+    "count": 0,
+    "denominator": 173,
+    "rate": 0.0
+   },
+   "cleared": {
+    "g060": [
+     "LumiFit::THETA_X",
+     "LumiFit::THETA_Y"
+    ]
+   },
+   "introduced": {},
+   "counterfactual_gate_label": "COUNTERFACTUAL / NON-AUTHORITATIVE",
+   "counterfactual_gate": true
+  },
+  {
+   "attempt": 5,
+   "run_id": "f6a-rc5-gold-formal-full-20260919",
+   "raw_rows_in_store": 59,
+   "unique_case_count": 59,
+   "duplicate_case_ids": {},
+   "exception_case_ids": [],
+   "completed_case_count": 59,
+   "identifier_applicable_case_count": 49,
+   "identifier_mentions_denominator": 130,
+   "old": {
+    "count": 6,
+    "denominator": 130,
+    "rate": 0.046153846153846156
+   },
+   "r1": {
+    "count": 0,
+    "denominator": 130,
+    "rate": 0.0
+   },
+   "cleared": {
+    "g060": [
+     "LumiFit::THETA_X",
+     "LumiFit::THETA_Y"
+    ],
+    "g113": [
+     "LumiFit::MC",
+     "LumiFit::MC_ACC",
+     "LumiFit::RECO",
+     "LumiFit::THETA_X"
+    ]
+   },
+   "introduced": {},
+   "counterfactual_gate_label": "COUNTERFACTUAL / NON-AUTHORITATIVE",
+   "counterfactual_gate": true
+  }
+ ],
+ "count_discrepancies": {
+  "attempt_1": {
+   "machine_v1": "records_in_store = 60",
+   "md_v1": "records = 59",
+   "resolution": "the 60th row is a complete duplicate execution of g119 (both rows full result/metrics, no exception, identical answer length, 37 seconds apart) — append-only recovery residue from Attempt 1's documented external process terminations; the later row is the final record; the historical denominator 121 sums over stored rows and therefore includes the duplicate row's mentions, which the rescore reproduces",
+   "raw_rows": 60,
+   "unique_cases": 59,
+   "duplicates": {
+    "g119": 2
+   }
+  },
+  "attempt_3": {
+   "machine_v1": "records_in_store = 59",
+   "md_v1": "records = 58 scored",
+   "resolution": "the store holds 59 unique-case rows; g013 is the preserved Vertex-429 provider-exception row (no result payload, zero claims, zero mentions); completed/scored = 58; the g013 row contributes nothing to the denominator (177 reproduces exactly); historical 58/59 INCOMPLETE cohort state preserved, no case manufactured",
+   "raw_rows": 59,
+   "unique_cases": 59,
+   "exceptions": [
+    "g013"
+   ],
+   "completed": 58
+  }
+ },
+ "attempt_5_expected_check": "6/130 -> 0/130 re-verified mechanically under R1 exact-ownership semantics; all six identifiers remain cleared",
+ "artifacts": {
+  "r1_record": "evaluation/IDENTIFIER_CATALOG_EVALUATOR_R1_EXACT_OWNERSHIP_AND_PROVENANCE.md",
+  "rescore_artifacts": "evaluation/identifier_catalog_evaluator_repair/ (identifier-rescore-r1-v1, supersedes identifier-rescore-v1)",
+  "prior_record": "evaluation/IDENTIFIER_CATALOG_EVALUATOR_REPAIR_AND_OFFLINE_RESCORE.md (identifier metrics superseded by this R1 record; record-provenance terminology superseded)"
+ },
+ "attempt_6_readiness": "NOT_READY",
+ "remaining_blockers": [
+  "g039 Gold reconciliation",
+  "critical-final-evidence metric construct reconciliation/redesign",
+  "two confirmed product defects",
+  "focused T0/T1/T2 product-development evidence",
+  "no materially new product candidate"
+ ],
+ "protected_state": {
+  "novel_validation": "PRISTINE_FOR_CURRENT_LINEAGE",
+  "holdout_access": 0,
+  "protected_content_leakage": 0,
+  "f6_b_execution": 0,
+  "candidate_frozen": false,
+  "attempt_6_preregistered": false,
+  "attempt_6_executed": false
+ },
+ "next_task_recommendation": "F6-A EVALUATION-CONTRACT RECONCILIATION / CRITICAL-EVIDENCE EQUIVALENCE + g039 GOLD CORRECTION + HARD-SAFETY RECLASSIFICATION (no Attempt 6)",
+ "next_task_execution_authorized": false
+}

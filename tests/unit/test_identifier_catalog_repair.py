@@ -240,5 +240,72 @@ class Attempt5IdentifierRegressionTests(unittest.TestCase):
                 self.assertNotIn(identifier, metrics["hallucinated_identifiers"], case_id)
 
 
+class QualifiedOwnershipBoundaryTests(unittest.TestCase):
+    """R1 matrix: qualified existence requires exact ownership evidence; a known
+    namespace head combined with an independently known bare tail must not
+    fabricate a qualified symbol."""
+
+    def test_r1_t1_known_head_plus_unrelated_known_tail_is_hallucinated(self) -> None:
+        lookup = {
+            "enum_owner": {
+                "source_id": "repo",
+                "source_version_id": "repo@locked",
+                "object_type": "source_file_chunk",
+                "locator": {"path": "src/example.cxx", "symbol": None},
+                "text": "ExampleNS::VALUE_B selects the alternate frame.\n",
+            },
+            "bare_tail": {
+                "source_id": "repo",
+                "source_version_id": "repo@locked",
+                "object_type": "function",
+                "locator": {"path": "src/bare.cxx", "symbol": "VALUE_A"},
+                "text": "void VALUE_A() {}\n",
+            },
+        }
+        metrics = _metrics(lookup, "Uses ExampleNS::VALUE_A here.", cited_object_key="enum_owner")
+        self.assertIn("ExampleNS::VALUE_A", metrics["hallucinated_identifiers"])
+        self.assertNotIn("ExampleNS::VALUE_A", metrics["identifier_exists_in_locked_corpus"])
+
+    def test_r1_t3_nested_exact_qualified_literal_recognized(self) -> None:
+        lookup = {
+            "nested": {
+                "source_id": "repo",
+                "source_version_id": "repo@locked",
+                "object_type": "source_file_chunk",
+                "locator": {"path": "src/nested.cxx", "symbol": None},
+                "text": "Outer::Inner::VALUE_A is the nested constant.\n",
+            },
+        }
+        metrics = _metrics(lookup, "Uses Outer::Inner::VALUE_A.", cited_object_key="nested")
+        self.assertNotIn("Outer::Inner::VALUE_A", metrics["hallucinated_identifiers"])
+        self.assertIn("Outer::Inner::VALUE_A", metrics["identifier_exists_in_locked_corpus"])
+
+    def test_r1_t5_wrong_member_is_hallucinated(self) -> None:
+        lookup = {
+            "enum_owner": {
+                "source_id": "repo",
+                "source_version_id": "repo@locked",
+                "object_type": "source_file_chunk",
+                "locator": {"path": "src/example.cxx", "symbol": None},
+                "text": "ExampleNS::VALUE_A is the documented constant.\n",
+            },
+        }
+        metrics = _metrics(lookup, "Uses ExampleNS::VALUE_Z.", cited_object_key="enum_owner")
+        self.assertIn("ExampleNS::VALUE_Z", metrics["hallucinated_identifiers"])
+
+    def test_r1_t6_wrong_owner_is_hallucinated(self) -> None:
+        lookup = {
+            "enum_owner": {
+                "source_id": "repo",
+                "source_version_id": "repo@locked",
+                "object_type": "source_file_chunk",
+                "locator": {"path": "src/example.cxx", "symbol": None},
+                "text": "ExampleNS::VALUE_A is the documented constant.\n",
+            },
+        }
+        metrics = _metrics(lookup, "Uses OtherNS::VALUE_A.", cited_object_key="enum_owner")
+        self.assertIn("OtherNS::VALUE_A", metrics["hallucinated_identifiers"])
+
+
 if __name__ == "__main__":
     unittest.main()

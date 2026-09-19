@@ -2,6 +2,8 @@
 
 Status: `COMPLETE / PASS / IDENTIFIER_EVALUATOR_REPAIRED_AND_HISTORY_RESCORED`
 
+> **Superseded in part (R1):** `evaluation/IDENTIFIER_CATALOG_EVALUATOR_R1_EXACT_OWNERSHIP_AND_PROVENANCE.md` supersedes this record's identifier-metric values (exact-ownership semantics) and its record-count terminology (`records` / `records_in_store` are replaced by the normalized provenance fields `raw_rows_in_store` / `unique_case_count` / `completed_case_count` / `identifier_applicable_case_count`; the Attempt-1 60-row store holds one complete duplicate `g119` execution and Attempt 3's store holds the preserved `g013` exception row). The generic repair, test matrix, six Attempt-5 false-positive corrections, and all verdict conclusions stand unchanged.
+
 Zero scientific calls. Machine-readable summary: `evaluation/identifier_catalog_evaluator_repair_and_offline_rescore.json`; per-attempt forward-only rescore artifacts: `evaluation/identifier_catalog_evaluator_repair/attempt_{1..5}_identifier_rescore.json` plus `summary.json`.
 
 ## 1. Defect and root cause
