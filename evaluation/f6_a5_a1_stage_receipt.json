@@ -1,0 +1,53 @@
+{
+  "schema_version": "stage-receipt-v1",
+  "role": "archival stage receipt binding current results, gate summary, traces, and exact usage",
+  "execution_status": {
+    "run_id": "f6a-rc5-gold-formal-full-20260919",
+    "candidate_id": "f6a-rc5-20260919",
+    "candidate_valid": true,
+    "cohort_status": "COMPLETE",
+    "decision": "FAIL",
+    "scored_cases": 59,
+    "expected_cases": 59,
+    "terminal_label": "FAIL"
+  },
+  "identities": {
+    "candidate_id": "f6a-rc5-20260919",
+    "candidate_manifest_sha256": "db8ba89bd8a7ab490d981c6a49c2ff30f0736bcee2f46e07881efe9979514cc4",
+    "implementation_git_commit": "eacbf447eee2527b85e0e47073d8584c64a4a3f4",
+    "gold_benchmark_version": "m6-benchmark-v2.10",
+    "gold_dataset_hash": "bdce5cbdc0a6f1645d7350b87bc2f289265c3d67311dab4b12e488b9dc499513",
+    "prompt_hash": "35f1dd3cbcd6cb636e2e92e7af28cb95415787e8d920c99c3b070eae86a8f097"
+  },
+  "artifacts_and_hashes": {
+    "manifest_file_sha256": "75089429239bb9e7d3f51a60334ca85c0359c1d007fb462883389b6d50583970",
+    "case_id_set_sha256": "914ee1b4b3f937e6839416932b44de06fb0401589fd59825a63ac430c5361d1c",
+    "results_file_sha256": "9f35076e3cbcab0ceaafff5c1dec38a10eb5575aa5b5897d48a041448b61892e",
+    "result_content_hash": "f288b009f0b550f656fee524d10d74c5151307a3509501d39d1c34c2a8e279f8",
+    "retrieval_traces_sha256": "cc2aa1e52e561e24d61dede98e158045e84e090c375d954e65efebcec3183e51",
+    "gate_file_sha256": "98c39b49efbc137ab26f9ca6c34a55b6b970c729f093700164924f514cbc6c28",
+    "metrics_file_sha256": "660d15481f49d362ca1b15bfbac553df684d7f75e26eaa88a54d9700aeef7635",
+    "attempts_file_sha256": "0f79e7ec476285daee861a79c64f7c077d80c7dee463518531c4f8e42218fea5",
+    "record_count": 59
+  },
+  "usage": {
+    "cumulative_model_calls": 563,
+    "cumulative_token_usage": 3201331
+  },
+  "gate_summary": {
+    "passed": false,
+    "cohort_decision": {
+      "status": "COMPLETE",
+      "verdict": "FAIL",
+      "passed": false,
+      "reason": "complete cohort (59/59 scored); quality gates failed",
+      "scored_case_count": 59,
+      "expected_case_count": 59,
+      "retryable_case_ids": [],
+      "missing_case_ids": [],
+      "terminal_exception_case_ids": [],
+      "extra_case_ids": []
+    }
+  },
+  "generated_at": "2026-09-19T00:12:21.208904+00:00"
+}

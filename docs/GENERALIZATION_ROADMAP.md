@@ -227,6 +227,10 @@ F6-A Attempt 3:
 COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED (Gold v2.9 terminal result)
 F6-A Attempt 4:
 COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED (Gold v2.10; 59/59 complete; two mandatory A1 gates failed; A2-A5 NOT_REACHED; novel_validation pristine)
+GENERIC ANSWER-OBLIGATION COMPLETENESS (MATERIAL PRODUCT CHANGE ACCEPTED):
+COMPLETE / PASS / production_answer_obligations_v1 accepted at development HEAD eda7d932a9b1b7b65436cba01e247859a6f9e056; R1 decomposition prompt release-identity repair completed at 8f61aee414aa9fa2da0e3a6bbb2f767eadb7da4c (identity/provenance-only)
+F6-A Attempt 5:
+COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED (Gold v2.10 under the materially new production_answer_obligations_v1 candidate f6a-rc5-20260919; 59/59 complete after one resume recovering ten retryable transport exceptions; three mandatory A1 gates failed: critical_final_evidence_recall 0.918367, identifier_hallucination_rate 0.046154, critical_answer_point_miss_count 4; release score 0.949153; 563 calls / 3,201,331 tokens; A2-A5 NOT_REACHED; novel_validation pristine)
 F6-B:
 LOCKED / F6_A_DID_NOT_PASS
 
@@ -237,25 +241,24 @@ D4 overall completion:
 UNDECIDED
 
 Current task:
-F6-A ATTEMPT 4 — CONTINUOUS PRE-RELEASE VALIDATION & GENERALIZATION GATE (COMPLETE / FAIL)
-ATTEMPT_4_STATUS = COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED
-FROZEN_PRODUCT_REFERENCE_HEAD = d323f790655c62e18b782d606a02f593a673f3cd
-NEW_CANDIDATE_DEVELOPMENT_HEAD = d3a1b274b2784399a7dc51b094a17e466d208b50
-INFRASTRUCTURE_ACCEPTANCE_STATUS = PASS
-INFRASTRUCTURE_TEST_COUNTS = 112 passed, 18 subtests passed
-INFRA_COMMIT = 74af96ae7d2ce18e44c6c9e6e7d1ad93d593fdd0
-PRODUCT_CONFIG_STATUS = VERIFIED_BY_HOST (84 passed, 42 subtests across query expansions, config, shortcut, and retrieval; plus QA 210 passed, 25 subtests verified by host)
-DIAGNOSTIC_SCIENTIFIC_USAGE = 10 calls / 62,370 tokens (runtime 9 / 57,153, judge 1 / 5,217; g013 isolated diagnostic recovery; Attempt 3 accounting 397 / 3,783,197 immutable)
-ATTEMPT_4_SCIENTIFIC_USAGE = 388 calls / 3,647,993 tokens
-ATTEMPT_4_A1 = 59/59 COMPLETE / FAIL (critical_final_evidence_recall 0.928571; critical_answer_point_miss_count 2)
+F6-A ATTEMPT 5 — FRESH PREREGISTRATION, CANDIDATE FREEZE, AND CONTINUOUS PRE-RELEASE VALIDATION (COMPLETE / FAIL)
+PREVIOUS_PRODUCT_BEHAVIOR_LINEAGE_HEAD = d3a1b274b2784399a7dc51b094a17e466d208b50
+CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = eda7d932a9b1b7b65436cba01e247859a6f9e056
+R1_RELEASE_IDENTITY_HEAD = 8f61aee414aa9fa2da0e3a6bbb2f767eadb7da4c
+NORMAL_PRODUCT_MODE = production_answer_obligations_v1
+ATTEMPT_5_PREREGISTRATION_COMMIT = eacbf447eee2527b85e0e47073d8584c64a4a3f4
+ATTEMPT_5_CANDIDATE_ID = f6a-rc5-20260919
+ATTEMPT_5_CANDIDATE_MANIFEST_SHA256 = db8ba89bd8a7ab490d981c6a49c2ff30f0736bcee2f46e07881efe9979514cc4
+ATTEMPT_5_SCIENTIFIC_USAGE = 563 calls / 3,201,331 tokens
+ATTEMPT_5_A1 = 59/59 COMPLETE / FAIL (critical_final_evidence_recall 0.918367; identifier_hallucination_rate 0.046154; critical_answer_point_miss_count 4)
 STAGES_A2_A5 = NOT_REACHED
 PROTECTED_HOLDOUTS = PRISTINE (novel_validation pristine, holdout access = 0)
 F6_B = LOCKED / F6_A_DID_NOT_PASS
-ATTEMPT_4 = COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED
+ATTEMPT_5 = COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED
 
 Next task recommendation:
-POST-ATTEMPT-4 EXPOSED FAILURE REVIEW
-(Focus: classify the generic mechanisms behind the two critical answer-point misses and five critical final-evidence misses; no candidate repair, Attempt 5, novel_validation, or F6-B execution without separate authorization.)
+POST-ATTEMPT-5 EXPOSED FAILURE REVIEW
+(Focus: classify the generic mechanisms behind the three failed mandatory gates — QuestionDecomposer under-splitting relative to critical Gold answer points behind the four critical misses, the LumiFit identifier hallucinations on g060/g113 at the generation/verification layer, and the six critical final-evidence misses; no candidate repair, Attempt 6, novel_validation, or F6-B execution without separate authorization.)
 
 Current task authorization:
 E3-A1 experimental missing-point targeted retrieval implementation is complete:
@@ -272,7 +275,7 @@ E3-A2 completed INCONCLUSIVE (1/11 natural applicability; the single applicable 
 No D4-A11 exists.
 No further D4 task is currently authorized.
 Phase E is COMPLETE (closed by PE-LR1); no further Phase-E task exists. Phase-F scope reconciliation is complete (PF-LR1); F2-A1/F2-A1-R1 verifier-support repair, F2-A2 pointer-normalization completeness cleanup, and F2-A3 E1/E2 compatibility authority reconciliation (completed by F2-A3-R1) and F2-A4 premise/refusal generalization (completed by F2-A4-R1) and F2-A5 semantic source obligation generalization are complete; all five PF-LR1 F2 groups are closed (F2 = COMPLETE / PASS / A1_A2_A3_A4_A5_COMPLETE). F3 fixed-locator/fallback cleanup (R03/R05/R06) is COMPLETE / PASS / FIXED_LOCATOR_FALLBACK_SHORTCUTS_RETIRED. F4 generation/semantic-verification role separation is COMPLETE / PASS / ANSWER_GENERATION_SEMANTIC_VERIFICATION_ROLES_SEPARATED (distinct production client paths, independently configurable verification model, judge isolated offline, role-specific usage accounting), with the role diagnostics corrected by F4-R1 (COMPLETE / PASS / PRODUCTION_MODEL_ROLE_DIAGNOSTICS_CORRECTED: the receipt now reports each role client's actual `settings.generation_model`). F5 bounded answer composer is COMPLETE / PASS / BOUNDED_ANSWER_COMPOSER_SAFETY_CONTRACT_ESTABLISHED (verified-claims-only input, deterministic provenance validation, one bounded semantic composition review, atomic deterministic fallback; READABILITY_BENEFIT = NOT_EMPIRICALLY_EVALUATED_IN_F5), with exact provenance established by F5-R1 (COMPLETE / PASS / EXACT_LITERAL_IDENTIFIER_PROVENANCE_BOUNDARY_ESTABLISHED: numeric literals and technical identifiers now compare exact extracted tokens with sign/spelling sensitivity and a bounded casing-alteration sentinel, replacing substring membership). F6 release evaluation attempt 1 is HISTORICAL / HOLD / PROTECTED_HOLDOUT_PRECONDITION_NOT_MET / ZERO_OUTCOME (valid under the then-authorized protocol). F6-LR1 reconciled the staged release lifecycle (COMPLETE / PASS / RELEASE_GATE_STAGING_RECONCILED). F6-A then executed as the first staged stage (COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED): Stage A0 closed the carried release-freeze engineering debt (signed v2.6 freezer/evaluator authority equivalence, benchmark-manifest identity, Docker Option A, clean-tree freeze + ancestor-HEAD verification, selector-completeness product-gate semantics), the reviewed product-language calibration was mechanically reconciled as successor v3, and the exact 59-ID formal-English Gold cohort ran mode=full under frozen candidate f6a-rc1-20260913 (release score 0.8277). Ten preregistered gates failed — the dominant defect is a pattern of erroneous insufficient-evidence refusals on Gold-answered questions (four claiming "not defined in the locked corpus" against cited contrary evidence) plus two version-conflict handling errors — and the FAIL was frozen before exposing ablation/novel_dev/novel_validation/composer-audit cohorts (novel_validation remains pristine). F6-B is LOCKED; a repaired candidate requires a separately authorized post-F6-A failure review, new candidate work, and a new F6-A attempt.
-No further Phase-F production task is currently authorized. POST-ATTEMPT-3 FAILURE AND EXECUTION-RECOVERY REVIEW is COMPLETE / PASS and its recovery/receipt mechanisms were used by F6-A Attempt 4. Attempt 4 is COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED on Gold v2.10: 59/59 complete after two retryable `g112` recoveries, release score 0.971751, mandatory failures in critical final-evidence recall and critical answer-point misses, 388 calls / 3,647,993 tokens. A2-A5 were not reached, novel_validation remains pristine, and F6-B stays locked. Report: `evaluation/F6_A4_PRERELEASE_VALIDATION_RESULT.md`. Next recommendation is a separately authorized post-Attempt-4 exposed failure review; execution authorization is false.
+No further Phase-F production task is currently authorized. POST-ATTEMPT-3 FAILURE AND EXECUTION-RECOVERY REVIEW is COMPLETE / PASS and its recovery/receipt mechanisms were used by F6-A Attempt 4. Attempt 4 is COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED on Gold v2.10: 59/59 complete after two retryable `g112` recoveries, release score 0.971751, mandatory failures in critical final-evidence recall and critical answer-point misses, 388 calls / 3,647,993 tokens. A2-A5 were not reached, novel_validation remains pristine, and F6-B stays locked. Report: `evaluation/F6_A4_PRERELEASE_VALIDATION_RESULT.md`. A materially new candidate (generic answer-obligation completeness, `production_answer_obligations_v1`, development HEAD `eda7d932a9b1b7b65436cba01e247859a6f9e056`, release-identity repair `8f61aee`) then legitimately opened Attempt 5 under the formal repeat policy. Attempt 5 is COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED on Gold v2.10: 59/59 complete after one resume recovering ten retryable transport exceptions, release score 0.949153, mandatory failures in critical final-evidence recall (0.918367), identifier hallucination rate (0.046154; LumiFit identifiers on g060/g113), and critical answer-point misses (4). A2-A5 were not reached, novel_validation remains pristine, and F6-B stays locked. Report: `evaluation/F6_A5_PRERELEASE_VALIDATION_RESULT.md`. Next recommendation is a separately authorized post-Attempt-5 exposed failure review; execution authorization is false.
 
 ## Phase overview
 

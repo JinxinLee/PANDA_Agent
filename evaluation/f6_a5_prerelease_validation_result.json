@@ -1,0 +1,177 @@
+{
+  "schema_version": "f6a-a5-result-v1",
+  "task": "F6-A Attempt 5 — Fresh Preregistration, Candidate Freeze, and Continuous Pre-Release Validation",
+  "terminal_verdict": "COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED",
+  "starting_state": {
+    "starting_head": "8f61aee414aa9fa2da0e3a6bbb2f767eadb7da4c",
+    "expected_head_matches": true,
+    "worktree": "clean except the known regenerable untracked data/_a3_gold_args.txt (moved to gitignored tmp/ before freeze because the freezer requires a clean porcelain tree); content preserved",
+    "product_behavior_lineage_head": "eda7d932a9b1b7b65436cba01e247859a6f9e056",
+    "previous_product_behavior_lineage_head": "d3a1b274b2784399a7dc51b094a17e466d208b50",
+    "r1_release_identity_head": "8f61aee414aa9fa2da0e3a6bbb2f767eadb7da4c",
+    "prior_attempt_4_result": "COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED"
+  },
+  "a0": {
+    "outcome": "PASS",
+    "scientific_calls": 0,
+    "scientific_tokens": 0,
+    "gold_authority": "m6-benchmark-v2.10, SHA-256 bdce5cbdc0a6f1645d7350b87bc2f289265c3d67311dab4b12e488b9dc499513, official_ready=true, structurally_valid=true",
+    "calibration": "phase_b_t3_product_language_scope_v7, SHA-256 ad68df096fc82d6c52bd984e44e99573e6b47e5047b3d522ae750a93188c49cd, compatible",
+    "selector": "59 formal-English IDs, SHA-256 e27ef67a866274b4a8441b789ca78fc3ccb7e022eed537c7442e15230777a0e5; 21 non-English",
+    "production_mode": "production_answer_obligations_v1 (DEFAULT_ANSWER_POINT_MODE); E3 requires answer_point_coverage_mode == runtime_e1_v2 and is not reachable in production mode",
+    "decomposition_identity": "QUESTION_DECOMPOSITION_PROMPT_VERSION 2.0.0; QUESTION_DECOMPOSITION_SCHEMA_VERSION e1.question_decomposition.v2; bound inside canonical prompt_fingerprint()",
+    "canonical_prompt_hash": "35f1dd3cbcd6cb636e2e92e7af28cb95415787e8d920c99c3b070eae86a8f097",
+    "candidate_evaluation_prompt_authority": "candidate_manifest.prompt_hash == evaluation_manifest.prompt_hash == prompt_fingerprint()",
+    "models": "generation/effective verification/runtime composer/judge gemini-3.8-flash; embedding gemini-embedding-2 at 3072 dimensions; verification_configured null",
+    "index": "fingerprint 8172f9a640e62977be6e911bfb4848ce3aecd0994f1f3ba51a0985bffec62cb9; collection panda_knowledge_v1; 104973 points; dense 3072",
+    "docker_runtime": "postgres:17-alpine; qdrant/qdrant:v1.15.5 (both running, release identity satisfied)",
+    "source_manifest_sha256": "9925ec31a6122e05388806990f79aae036f3b0989c4584d24f2092bc4edb3d94",
+    "retrieval_policy_sha256": "fb2cd99bf500d5924931cf0fa6d5ea801efc7939b4c469fad8fbc0b5b082ced9",
+    "query_expansion_sha256": "84c93c94e70e8e7819a2cd8ecdd18f8fce41996d616d5ebc34fe2deb823e039a",
+    "focused_tests": "130 passed + 33 subtests (f6 release identity, generic answer-obligation completeness, f6a gate evaluator, f6a release infrastructure, question decomposition, post-A3 finalization contract, query expansions); 228 passed + 25 subtests (qa, calibration rank); the two known legacy test_m6_evaluation fixture failures reproduced identically; no new current-path failure",
+    "machinery_verified": "retry/resume, tri-state cohort completeness, stage receipt creation/validation, gate implementation with repaired bootstrap, A2 ablation overlay, novel cohort authority, composer audit machinery, protected holdout absence"
+  },
+  "preregistration_and_freeze": {
+    "preregistration_commit": "eacbf447eee2527b85e0e47073d8584c64a4a3f4",
+    "preregistration_artifact": "evaluation/f6_a5_prerelease_validation_preregistration.json",
+    "preregistration_artifact_sha256": "92956d235256d0174908885b89e24dabf3c3e79dba12dd2e3a61867bb4d28ff4",
+    "candidate_id": "f6a-rc5-20260919",
+    "frozen_implementation_commit": "eacbf447eee2527b85e0e47073d8584c64a4a3f4",
+    "freeze_commit": "07124a1492fca779c6024525f3a001818f04e975",
+    "candidate_manifest_sha256": "db8ba89bd8a7ab490d981c6a49c2ff30f0736bcee2f46e07881efe9979514cc4",
+    "primary_answer_point_mode": "production_answer_obligations_v1",
+    "prompt_hash": "35f1dd3cbcd6cb636e2e92e7af28cb95415787e8d920c99c3b070eae86a8f097",
+    "verify_candidate_before_a1": {"valid": true, "mismatches": []},
+    "scientific_usage_before_first_call": {"model_calls": 0, "token_usage": 0}
+  },
+  "frozen_identity": {
+    "run_ids": {
+      "a1": "f6a-rc5-gold-formal-full-20260919",
+      "a2": "f6a-rc5-gold-formal-ablation-20260919 (NOT_REACHED)",
+      "a3": "f6a-rc5-novel-dev-full-20260919 (NOT_REACHED)",
+      "a4": "f6a-rc5-novel-validation-full-20260919 (NOT_REACHED)",
+      "a5": "f6a-rc5-composer-audit-20260919 (NOT_REACHED)"
+    },
+    "models": "gemini-3.8-flash generation/effective verification/composer/judge; gemini-embedding-2 3072d",
+    "index_fingerprint": "8172f9a640e62977be6e911bfb4848ce3aecd0994f1f3ba51a0985bffec62cb9",
+    "docker": {"postgres": "postgres:17-alpine", "qdrant": "qdrant/qdrant:v1.15.5"}
+  },
+  "a1": {
+    "run_id": "f6a-rc5-gold-formal-full-20260919",
+    "mode": "full",
+    "expected_cohort": 59,
+    "scored_cohort": 59,
+    "executed_case_ids_match_selector": true,
+    "recovery": "10 retryable transport_provider_infrastructure exceptions (g001, g017, g018, g026, g029, g031, g040, g105, g108, g115) recovered by one resume operation under the identical frozen identity; all 10 succeeded on their second attempt; successful cases never rerun; attempts ledger retains all 69 entries",
+    "release_score": 0.9491525423728814,
+    "release_score_is_gate": false,
+    "metrics": {
+      "gold_recall_at_10": 0.9795918367346939,
+      "final_evidence_recall": 0.9081632653061225,
+      "critical_final_evidence_recall": 0.9183673469387755,
+      "intent_accuracy": 1.0,
+      "per_intent_gold_recall_at_10_min": 0.95,
+      "per_intent_intent_accuracy_min": 1.0,
+      "expected_status_accuracy": 1.0,
+      "citation_integrity": 1.0,
+      "wrong_version_evidence_count": 0,
+      "forbidden_evidence_count": 0,
+      "required_source_coverage_answered": 0.9795918367346939,
+      "identifier_hallucination_rate": 0.046153846153846156,
+      "paper_code_dual_source_rate": 1.0,
+      "answer_point_coverage": 0.9491525423728814,
+      "critical_answer_point_miss_count": 4,
+      "contradiction_count": 0,
+      "major_unsupported_claim_count": 0,
+      "unhandled_exception_count": 0
+    },
+    "failed_gates": [
+      "critical_final_evidence_recall (0.9183673469387755 != 1.00)",
+      "identifier_hallucination_rate (0.046153846153846156 >= 0.03)",
+      "critical_answer_point_miss_count (4 != 0)"
+    ],
+    "critical_answer_point_misses": ["g013.p3", "g023.p3", "g039.p1", "g047.p1"],
+    "critical_final_evidence_miss_cases": {
+      "g011": 0.0, "g013": 0.5, "g016": 0.5, "g020": 0.5, "g044": 0.0, "g110": 0.5
+    },
+    "identifier_hallucination_cases": {
+      "g060": ["LumiFit::THETA_X", "LumiFit::THETA_Y"],
+      "g113": ["LumiFit::MC", "LumiFit::MC_ACC", "LumiFit::RECO", "LumiFit::THETA_X"]
+    },
+    "stage_receipt": {
+      "path": "data/evaluation/runs/f6a-rc5-gold-formal-full-20260919/stage_receipt.json",
+      "archival_copy": "evaluation/f6_a5_a1_stage_receipt.json",
+      "sha256": "666007c317e6ef6d1ef9630bb6982cf334863579ed0bfd452fc0845a53486f3e",
+      "sealed_before_diagnostics": true,
+      "validated": true
+    },
+    "gate_matrix": {
+      "path": "evaluation/f6_a5_gate_matrix.json",
+      "sha256": "a6e40cf93f3d4b8593268d70ce178e0f5cfdc4ea30aa6a24bd8c506e7047046b",
+      "receipt": "evaluation/f6_a5_gate_matrix_receipt.json",
+      "receipt_sha256": "5790a591d9375e374d80469c3e8bf3863203083538096bd4ef4682ae91e099fd",
+      "candidate_valid": true,
+      "receipt_validated_idempotently": true
+    }
+  },
+  "a2": {"result": "NOT_REACHED", "scientific_calls": 0, "scientific_tokens": 0},
+  "a3": {"result": "NOT_REACHED", "scientific_calls": 0, "scientific_tokens": 0},
+  "a4": {
+    "result": "NOT_REACHED",
+    "scientific_calls": 0,
+    "scientific_tokens": 0,
+    "novel_validation_exposure": "PRISTINE_FOR_CURRENT_LINEAGE"
+  },
+  "a5": {"result": "NOT_REACHED", "scientific_calls": 0, "scientific_tokens": 0},
+  "scientific_usage": {
+    "attempt_5_total": {"model_calls": 563, "token_usage": 3201331},
+    "by_stage": {"A1": {"model_calls": 563, "token_usage": 3201331}, "A2": 0, "A3": 0, "A4": 0, "A5": 0},
+    "successful_attempts": {"model_calls": 511, "token_usage": 3051535},
+    "failed_retryable_attempts": {"model_calls": 52, "token_usage": 149796},
+    "roles_recoverable": {
+      "external_judge": {"model_calls": 85, "token_usage": 376598},
+      "runtime_total": {"model_calls": 431, "token_usage": 2824733},
+      "runtime_qa_generation_labeled": {"model_calls": 78, "token_usage": 1339203},
+      "runtime_qa_composer_labeled": {"model_calls": 53, "token_usage": 59012},
+      "runtime_embedding_calls": 69
+    },
+    "roles_not_recoverable": {
+      "question_decomposition": "NOT_SEPARATELY_RECOVERABLE_FROM_STORED_RECORDS",
+      "runtime_verification": "NOT_SEPARATELY_RECOVERABLE_FROM_STORED_RECORDS (shares the unlabeled generation bucket with question decomposition)",
+      "embedding_token_usage": "NOT_SEPARATELY_RECOVERABLE_FROM_STORED_RECORDS"
+    },
+    "accounting_notes": "attempts.jsonl retains all 69 execution attempts (59 initial + 10 retried); failed-attempt usage is included once in the total; no estimation used"
+  },
+  "integrity": {
+    "retryable_failures": 10,
+    "resume_operations": 1,
+    "successful_case_reruns": 0,
+    "cumulative_usage_preserved": true,
+    "receipt_chronology": "scientific stage completed -> permitted recovery completed -> cohort completeness established -> gate inputs/outputs persisted -> stage receipt sealed -> stage receipt validated -> case-level diagnostics",
+    "protocol_deviations": "none; the untracked regenerable scratch data/_a3_gold_args.txt was moved unchanged to gitignored tmp/ before the freeze because the freezer enforces a clean porcelain tree"
+  },
+  "historical_comparison": {
+    "type": "informative product-lineage comparison; no causal attribution",
+    "attempt_4": {"mode": "legacy_question_core", "release_score": 0.971751, "calls": 388, "tokens": 3647993},
+    "attempt_5": {"mode": "production_answer_obligations_v1", "release_score": 0.949153, "calls": 563, "tokens": 3201331},
+    "defensible_observations": [
+      "expected_status_accuracy 1.0 (Attempt 4: 0.983051); no erroneous refusal or status mismatch remained",
+      "critical answer-point misses 4 (g013.p3, g023.p3, g039.p1, g047.p1) vs Attempt 4's 2 (g013.p3, g037.p1); g037.p1 no longer missed, three new critical misses appeared",
+      "identifier_hallucination_rate worsened to 0.0462 from 0.0116, concentrated in LumiFit identifiers on g060 and g113",
+      "model calls increased (563 vs 388) while tokens decreased (3,201,331 vs 3,647,993); consistent with added decomposition/coverage/revision calls but attribution is not established",
+      "decomposition showed no failures and no over-splitting signal (1 point: 52 cases, 2: 4, 3: 2, 4: 1); product-layer missing_answer_point_ids were empty for all 59 final answers while the evaluator found 4 critical Gold points uncovered, indicating under-splitting relative to critical Gold points as a candidate mechanism for post-terminal review"
+    ]
+  },
+  "protected_holdout": {
+    "holdout_access": 0,
+    "protected_content_leakage": 0,
+    "f6_b_execution": 0
+  },
+  "lifecycle": {
+    "attempts_1_to_4_preserved": true,
+    "attempt_5_terminal": "COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED",
+    "f6_b_state": "LOCKED / F6_A_DID_NOT_PASS"
+  },
+  "next_task_recommendation": "A separately authorized post-Attempt-5 exposed failure review of the three failed mandatory gates, focused on (1) under-splitting of critical Gold answer points by the QuestionDecomposer against the four critical misses, (2) the LumiFit identifier hallucinations on g060/g113 at the generation/verification layer, and (3) the six critical final-evidence misses; classify the smallest general failure mechanisms before any candidate repair. Do not access novel_validation or the protected holdout.",
+  "next_task_execution_authorized": false
+}

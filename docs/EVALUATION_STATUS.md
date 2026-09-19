@@ -105,6 +105,12 @@ F6-A Attempt 3 = COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED.
 F6-A Attempt 3 record: `evaluation/F6_A3_PRERELEASE_VALIDATION_RESULT.md` (result JSON `evaluation/f6_a3_prerelease_validation_result.json`, receipt `evaluation/f6_a3_a1_receipt.json`, gate matrix `evaluation/f6_a3_gate_matrix.json`, closeout addendum `evaluation/f6_a3_closeout_verification.json`).
 F6-A Attempt 4 = COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED (Gold v2.10; 59/59 complete after two retryable `g112` recoveries; failed `critical_final_evidence_recall` and `critical_answer_point_miss_count`; release score 0.971751; 388 calls / 3,647,993 tokens; A2-A5 NOT_REACHED; `novel_validation` pristine).
 F6-A Attempt 4 record: `evaluation/F6_A4_PRERELEASE_VALIDATION_RESULT.md` (result JSON `evaluation/f6_a4_prerelease_validation_result.json`, stage receipt `evaluation/f6_a4_a1_stage_receipt.json`, authoritative gate matrix `evaluation/f6_a4_gate_matrix.json`, gate receipt `evaluation/f6_a4_gate_matrix_receipt.json`).
+GENERIC ANSWER-OBLIGATION COMPLETENESS = PRODUCT CHANGE ACCEPTED / MATERIAL (development HEAD `eda7d932a9b1b7b65436cba01e247859a6f9e056`; record `evaluation/GENERIC_ANSWER_OBLIGATION_COMPLETENESS_DEVELOPMENT.md`).
+NORMAL PRODUCT MODE = `production_answer_obligations_v1` (raw question → QuestionDecomposer → 1–5 question-only semantic obligations → generation with authoritative answer points → support + coverage verification → at most one bounded evidence-backed revision → final verification/coverage audit; E3 missing-point retrieval, candidate capture, cross-pass global reselection, and the retained-support ledger are not promoted).
+R1 DECOMPOSITION PROMPT RELEASE IDENTITY REPAIR = COMPLETE / PASS / DECOMPOSITION_PROMPT_RELEASE_IDENTITY_REPAIRED (HEAD `8f61aee414aa9fa2da0e3a6bbb2f767eadb7da4c`; identity/provenance-only; canonical `prompt_fingerprint()` = `35f1dd3cbcd6cb636e2e92e7af28cb95415787e8d920c99c3b070eae86a8f097`; record `evaluation/GENERIC_ANSWER_OBLIGATION_COMPLETENESS_R1_RELEASE_IDENTITY_REPAIR.md`).
+F6 FORMAL REPEAT POLICY = ESTABLISHED (`SAME_PRODUCT_LINEAGE_FORMAL_REPEAT = PROHIBITED`; `evaluation/F6_FORMAL_REPEAT_POLICY.md`).
+F6-A Attempt 5 = COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED (Gold v2.10 under the materially new `production_answer_obligations_v1` candidate f6a-rc5-20260919; 59/59 complete after one resume recovering ten retryable transport exceptions; failed `critical_final_evidence_recall` 0.918367, `identifier_hallucination_rate` 0.046154, and `critical_answer_point_miss_count` 4 (`g013.p3`, `g023.p3`, `g039.p1`, `g047.p1`); release score 0.949153; 563 calls / 3,201,331 tokens; A2-A5 NOT_REACHED; `novel_validation` pristine).
+F6-A Attempt 5 record: `evaluation/F6_A5_PRERELEASE_VALIDATION_RESULT.md` (result JSON `evaluation/f6_a5_prerelease_validation_result.json`, stage receipt `evaluation/f6_a5_a1_stage_receipt.json`, authoritative gate matrix `evaluation/f6_a5_gate_matrix.json`, gate receipt `evaluation/f6_a5_gate_matrix_receipt.json`).
 F6-B = LOCKED / F6_A_DID_NOT_PASS.
 POST-ATTEMPT-3 FAILURE & EXECUTION-RECOVERY REVIEW = COMPLETE / PASS / FAILURES_CLASSIFIED_RECOVERY_INFRASTRUCTURE_REPAIRED_PRODUCT_RESIDUALS_DEFERRED.
 POST-ATTEMPT-3 review: `evaluation/POST_A3_FAILURE_AND_EXECUTION_RECOVERY_REVIEW.md` (companion JSON `evaluation/post_a3_failure_and_execution_recovery_review.json`).
@@ -200,21 +206,21 @@ MODEL_FACTORY_COVERED_SYMBOL_RETIREMENT_VALIDATED_UNCOVERED_COMPONENTS_HOLD
 Current planning state:
 D4 = PAUSED / ROADMAP_RECONCILIATION
 D4 overall completion = UNDECIDED
-CURRENT_TASK = F6-A ATTEMPT 4 / COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED
-ATTEMPT_4_STATUS = COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED
-FROZEN_PRODUCT_REFERENCE_HEAD = d323f790655c62e18b782d606a02f593a673f3cd
-NEW_CANDIDATE_DEVELOPMENT_HEAD = d3a1b274b2784399a7dc51b094a17e466d208b50
-INFRASTRUCTURE_ACCEPTANCE_STATUS = PASS
-INFRASTRUCTURE_TEST_COUNTS = 112 passed, 18 subtests passed
-INFRA_COMMIT = 74af96ae7d2ce18e44c6c9e6e7d1ad93d593fdd0
-PRODUCT_CONFIG_STATUS = VERIFIED_BY_HOST (84 passed, 42 subtests across query expansions, config, shortcut, and retrieval; plus QA 210 passed, 25 subtests verified by host)
-ATTEMPT_4_SCIENTIFIC_USAGE = 388 calls / 3,647,993 tokens
-ATTEMPT_4_A1 = 59/59 COMPLETE / FAIL (critical_final_evidence_recall 0.928571; critical_answer_point_miss_count 2)
+CURRENT_TASK = F6-A ATTEMPT 5 / COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED
+PREVIOUS_PRODUCT_BEHAVIOR_LINEAGE_HEAD = d3a1b274b2784399a7dc51b094a17e466d208b50
+CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = eda7d932a9b1b7b65436cba01e247859a6f9e056
+R1_RELEASE_IDENTITY_HEAD = 8f61aee414aa9fa2da0e3a6bbb2f767eadb7da4c
+NORMAL_PRODUCT_MODE = production_answer_obligations_v1
+ATTEMPT_5_PREREGISTRATION_COMMIT = eacbf447eee2527b85e0e47073d8584c64a4a3f4
+ATTEMPT_5_CANDIDATE_ID = f6a-rc5-20260919
+ATTEMPT_5_CANDIDATE_MANIFEST_SHA256 = db8ba89bd8a7ab490d981c6a49c2ff30f0736bcee2f46e07881efe9979514cc4
+ATTEMPT_5_SCIENTIFIC_USAGE = 563 calls / 3,201,331 tokens
+ATTEMPT_5_A1 = 59/59 COMPLETE / FAIL (critical_final_evidence_recall 0.918367; identifier_hallucination_rate 0.046154; critical_answer_point_miss_count 4)
 STAGES_A2_A5 = NOT_REACHED
 PROTECTED_HOLDOUTS = PRISTINE (novel_validation pristine, holdout access = 0)
 F6_B = LOCKED / F6_A_DID_NOT_PASS
-ATTEMPT_4 = COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED
-NEXT_TASK_RECOMMENDATION = POST-ATTEMPT-4 EXPOSED FAILURE REVIEW
+ATTEMPT_5 = COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED
+NEXT_TASK_RECOMMENDATION = POST-ATTEMPT-5 EXPOSED FAILURE REVIEW
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 FOLLOWING_ARCHITECTURE_TASK = F6-B — Protected Blind Release Gate (LOCKED / F6_A_DID_NOT_PASS)
 
@@ -244,10 +250,11 @@ F6-A Attempt 3 Preflight = HISTORICAL / HOLD / PRE_RELEASE_PRECONDITION_NOT_MET 
 GOLD-9 = COMPLETE / PASS / RELEASE_AUTHORITY_CHAIN_RECONCILED (commit `1f03bbd`; candidate freezer bound to Gold v2.9; calibration loader successor chain extended to v6).
 F6-A Attempt 3 = COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED. Formal-English Gold v2.9 cohort (59 expected, 58 scored, 1 unhandled exception g013 due to Vertex 429 RESOURCE_EXHAUSTED) executed under frozen candidate f6a-rc3-20260914 (manifest SHA be2101a4..). Release score 0.9741 (58-case diagnostic only; full-cohort release score INCOMPLETE). Four mandatory gates failed: critical_final_evidence_recall 0.9410 (<1.00; failing: g011, g022, g044, g060), critical_answer_point_miss_count 3 (>0; failing: g022, g023, g115), paper_code_dual_source_rate 0.0 (<1.00; failing: g060), unhandled_exception_count 1 (>0; g013 Vertex 429). Passing gates: gold_recall_at_10 0.9792, final_evidence_recall 0.9306, intent_accuracy 0.9828, per_intent_gold_recall_at_10 (min 0.9500), per_intent_intent_accuracy (min 0.9231), expected_status_accuracy 1.00, citation_integrity 1.00, wrong_version_evidence 0, forbidden_evidence 0, required_source_coverage_answered 0.9792, identifier_hallucination_rate 0.00, answer_point_coverage 0.9741, contradiction_count 0, major_unsupported_claim_count 0. Raw canonical matrix evaluated 14 PASS, 4 FAIL, 0 incomplete flags strictly on available observations; raw flags are diagnostic, not complete-cohort PASS; full cohort measurements are INCOMPLETE due to unmeasured g013. Missing measurements are treated as INCOMPLETE (not FAIL per policy). Hard measured FAIL on evaluated cohort is terminal for the prerelease gate, while missing g013 status is INCOMPLETE separately. Explicit late receipt protocol deviation: late run receipt (`evaluation/f6_a3_a1_receipt.json`) was written after failure case diagnosis was already inspected. Inherited prior execution evidence: A0 focused tests (327 passed + 70 subtests). Fail-fast halted scientific execution immediately; stages A2-A5 NOT_REACHED; novel_validation remains PRISTINE_FOR_CURRENT_LINEAGE; holdout access = 0; F6-B LOCKED. Observed Attempt-3 scientific usage: 397 model calls, 3,783,197 tokens (final 59 records: 387 calls / 3,745,918 tokens; preserved 3 initial 429 failed attempts: 10 calls / 37,279 tokens). Forward-only closeout audit addendum: `evaluation/f6_a3_closeout_verification.json`.
 F6-A Attempt 4 = COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED. Formal-English Gold v2.10 cohort completed 59/59 under candidate f6a-rc4-20260916 after two retryable `g112` recoveries. Release score 0.971751. Mandatory failures: critical_final_evidence_recall 0.928571 and critical_answer_point_miss_count 2 (`g013.p3`, `g037.p1`). All other mandatory gates passed; A2-A5 were not reached; novel_validation remains pristine. Usage: 388 calls / 3,647,993 tokens. Report: `evaluation/F6_A4_PRERELEASE_VALIDATION_RESULT.md`.
+F6-A Attempt 5 = COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED. Formal-English Gold v2.10 cohort completed 59/59 under the materially new `production_answer_obligations_v1` candidate f6a-rc5-20260919 (fresh preregistration commit `eacbf44`, frozen implementation commit `eacbf44`, freeze commit `07124a1`) after one resume operation recovering ten retryable transport exceptions (g001, g017, g018, g026, g029, g031, g040, g105, g108, g115) under the identical frozen identity; successful cases were never rerun and all 69 attempt entries remain in the cumulative ledger. Release score 0.949153. Mandatory failures: critical_final_evidence_recall 0.918367, identifier_hallucination_rate 0.046154 (six major LumiFit identifier hallucinations on g060 and g113), and critical_answer_point_miss_count 4 (`g013.p3`, `g023.p3`, `g039.p1`, `g047.p1`). All other mandatory gates passed, including expected_status_accuracy 1.000000 and unhandled_exception_count 0. A2-A5 were not reached; novel_validation remains pristine. Usage: 563 calls / 3,201,331 tokens (successful attempts 511 / 3,051,535; failed retryable attempts 52 / 149,796; question-decomposition and runtime-verification usage NOT_SEPARATELY_RECOVERABLE_FROM_STORED_RECORDS). Stage receipt sealed and validated before case diagnostics; authoritative gate matrix `a6e40cf9...` with validated receipt. Report: `evaluation/F6_A5_PRERELEASE_VALIDATION_RESULT.md`.
 F6-B = LOCKED / F6_A_DID_NOT_PASS.
 POST-ATTEMPT-3 FAILURE AND EXECUTION-RECOVERY REVIEW = COMPLETE / PASS / FAILURES_CLASSIFIED_RECOVERY_INFRASTRUCTURE_REPAIRED_PRODUCT_RESIDUALS_DEFERRED.
 Post-Attempt-3 review consolidated Stage R0 failure classification, post-terminal diagnostic execution of g013 (`post-a3-g013-recovery-20260915`, 10 calls / 62,370 tokens; Attempt 3 accounting 397 / 3,783,197 immutable), and focused product configuration repair (bare 'particle identification' removed from event_alignment; 84 passed, 42 subtests across query expansions/config/shortcut/retrieval plus QA 210 passed, 25 subtests verified by host; 0 calls / 0 tokens). Protocol deviations PD1 and PD2 remain historical facts. Infrastructure recovery and receipt mechanisms were accepted and then used by Attempt 4. Detailed review and exact trace locators: `evaluation/POST_A3_FAILURE_AND_EXECUTION_RECOVERY_REVIEW.md` (companion JSON `evaluation/post_a3_failure_and_execution_recovery_review.json`).
-No further production task is authorized; the next recommendation is a post-Attempt-4 exposed failure review only.
+No further production task is authorized; the next recommendation is a post-Attempt-5 exposed failure review only.
 
 ## E3-A1 experimental implementation closeout
 
