@@ -129,8 +129,8 @@
     "successful_attempts": {"model_calls": 511, "token_usage": 3051535},
     "failed_retryable_attempts": {"model_calls": 52, "token_usage": 149796},
     "roles_recoverable": {
-      "external_judge": {"model_calls": 85, "token_usage": 376598},
-      "runtime_total": {"model_calls": 431, "token_usage": 2824733},
+      "external_judge": {"model_calls": 88, "token_usage": 376598},
+      "runtime_total": {"model_calls": 475, "token_usage": 2824733},
       "runtime_qa_generation_labeled": {"model_calls": 78, "token_usage": 1339203},
       "runtime_qa_composer_labeled": {"model_calls": 53, "token_usage": 59012},
       "runtime_embedding_calls": 69

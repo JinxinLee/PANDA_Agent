@@ -80,7 +80,7 @@ The stage receipt was sealed before case diagnostics and validated: SHA-256 `666
 
 - Attempt-5 total: **563 calls / 3,201,331 tokens**, all in A1.
 - Successful attempts: 511 calls / 3,051,535 tokens; failed retryable attempts: 52 calls / 149,796 tokens (included once).
-- Recoverable roles: external judge 85 calls / 376,598 tokens; runtime QA-generation-labeled 78 calls / 1,339,203 tokens; runtime QA-composer-labeled 53 calls / 59,012 tokens; 69 runtime embedding calls.
+- Recoverable roles: external judge 88 calls / 376,598 tokens; runtime QA-generation-labeled 78 calls / 1,339,203 tokens; runtime QA-composer-labeled 53 calls / 59,012 tokens; 69 runtime embedding calls (role figures include the failed retryable attempts).
 - Question decomposition and runtime verification token usage: `NOT_SEPARATELY_RECOVERABLE_FROM_STORED_RECORDS` (both share the unlabeled generation bucket; no estimation used). Embedding token usage likewise not separately recoverable.
 
 ## Integrity and protocol record
