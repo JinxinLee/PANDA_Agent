@@ -256,8 +256,10 @@ D4 overall completion:
 UNDECIDED
 
 Current task:
-POST-A5 T1 FAILURE REVIEW / BOUNDED ROOT-CAUSE ANALYSIS (COMPLETE / PARTIAL / TRACE_OBSERVABILITY_AND_SEMANTIC_SCOPE_LIMITS_REMAIN; offline verification PASS; zero new scientific calls)
-POST_A5_T1_FAILURE_REVIEW = COMPLETE / PARTIAL / TRACE_OBSERVABILITY_AND_SEMANTIC_SCOPE_LIMITS_REMAIN (offline verification PASS; 0 new scientific calls / 0 tokens; execution HEAD 421c13a confirmed by all eight manifests/traces/receipts; preregistration chronology VERIFIED; g013 lifecycle point present, partial eligible evidence and A1 recovery residual with unobserved request/response submechanism; g023 explicit ordering text excluded at citation admission, broad runtime point leaves specific D0-vs-V1 semantic causality unresolved; runtime/external completeness disagreement confirmed, no reviewer-only mechanism claimed; 48 raw-file digests recorded and 48 original receipt digests matched). Record: `evaluation/POST_A5_T1_FAILURE_REVIEW_AND_ROOT_CAUSE_ANALYSIS.md` (companion JSON and execution provenance receipts in evaluation/).
+POST-A5 T1 OBSERVABILITY CONTRACT RECONCILIATION / EVIDENCE-ADMISSION AND COVERAGE-SCOPE REVIEW (COMPLETE / PASS; static design-only; zero scientific calls)
+POST_A5_T1_FAILURE_REVIEW = COMPLETE / PARTIAL / TRACE_OBSERVABILITY_AND_SEMANTIC_SCOPE_LIMITS_REMAIN (historical review at 09e7759; scientific findings preserved; causal taxonomy and chronology wording superseded forward by the contract reconciliation below).
+POST_A5_T1_CONTRACT_RECONCILIATION = COMPLETE / PASS / EVIDENCE_ADMISSION_COVERAGE_SCOPE_AND_OBSERVABILITY_CONTRACT_RECONCILED (static design-only; 0 scientific calls / 0 tokens; EA is post-retrieval admission, not retrieval loss; generation/verification asymmetry INTENTIONAL_BUT_UNDER-SPECIFIED; g013 A1_RECOVERY_OUTCOME = UNSUCCESSFUL / CONFIRMED, A1_CAUSAL_DEFECT = NOT_ESTABLISHED; g023 EA exclusion CONFIRMED, unique/reviewer-only cause NOT_ESTABLISHED; question-only D0 retained, proposed evidence-grounded satisfaction scope belongs to V1/V2; proposed diagnostics.qa_stage_trace and development runner status separation are NOT_IMPLEMENTED). Record: `evaluation/POST_A5_T1_OBSERVABILITY_EVIDENCE_ADMISSION_AND_COVERAGE_SCOPE_RECONCILIATION.md` (companion JSON).
+T1_PREREGISTRATION_CHRONOLOGY = VERIFIED_WITHIN_RETAINED_LOCAL_EVIDENCE; EXECUTION_REPOSITORY_HEAD = 421c13a6efc76a845cfd61388e1e2520eea799a7. No external trusted timestamp authority; frozen T1 verdict unchanged.
 REVIEW_MATERIALITY: MATERIAL_PRODUCT_CHANGE = false; EVALUATOR_CONTRACT_CHANGE = false; GOLD_CHANGE = false; CALIBRATION_CHANGE = false. Candidate frozen = false; Attempt 6 preregistered = false; Attempt 6 executed = false; ATTEMPT_6_READINESS = NOT_READY.
 POST_A5_T1 = COMPLETE / FAIL; g013 FAIL, g023 FAIL, g047 PASS, g011 negative-existence safety PASS; controls 4x CONTROL_PASS; historical usage 65 calls / 373,265 tokens, transport recovery 0. T1 result and Attempt-5 verdict unchanged.
 ATTEMPT_5_STATUS = COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED (historical, immutable)
@@ -276,13 +278,13 @@ F6_B = LOCKED / F6_A_DID_NOT_PASS
 ATTEMPT_5 = COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED
 
 Next task recommendation:
-POST-A5 T1 OBSERVABILITY CONTRACT RECONCILIATION /
-EVIDENCE-ADMISSION AND COVERAGE-SCOPE REVIEW
+POST-A5 BOUNDED PRODUCT REPAIR DESIGN /
+EVIDENCE-ADMISSION + COVERAGE COMPLETENESS + OBSERVABILITY
 (NO ATTEMPT 6; no same-task repair; failed cases never rerun)
 
 Current task authorization:
 NEXT_TASK_EXECUTION_AUTHORIZED = false
-The authorized T1 failure review is complete. The recommended observability/evidence-scope reconciliation requires separate authorization; no product repair or scientific replay is authorized.
+The authorized observability/evidence-admission/coverage-scope reconciliation is complete. The recommended bounded product repair design requires separate authorization. No proposed design is implemented; product repair, trace implementation and scientific replay remain unauthorized.
 
 E3-A2 completed INCONCLUSIVE (1/11 natural applicability; the single applicable pair was descriptive only). E3-LR1 subsequently reconciled the lifecycle with zero scientific calls: E3 closes as a bounded low-frequency fallback (SCIENTIFIC_RECOVERY_BENEFIT_UNRESOLVED); dedicated revalidation is not planned; future E3 evidence accumulates opportunistically in broader authorized evaluations.
 

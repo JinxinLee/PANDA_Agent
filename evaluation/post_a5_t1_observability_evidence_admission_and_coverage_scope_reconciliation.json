@@ -1,0 +1,473 @@
+{
+  "schema_version": "post-a5-t1-contract-reconciliation-v1",
+  "task": "POST-A5 T1 OBSERVABILITY CONTRACT RECONCILIATION / EVIDENCE-ADMISSION AND COVERAGE-SCOPE REVIEW",
+  "status": "COMPLETE / PASS / EVIDENCE_ADMISSION_COVERAGE_SCOPE_AND_OBSERVABILITY_CONTRACT_RECONCILED",
+  "status_scope": "Static architecture/contract reconciliation only; designs not implemented or scientifically validated",
+  "starting_head": "09e7759b39b959467bf0c099383b489cab6d5b51",
+  "starting_worktree": "CLEAN",
+  "product_behavior_head": "e79d3232ed132a224cbceaf3524e19a1406bd648",
+  "prompt_fingerprint": "0a5b2909ef586671d533148979fc681c64e37528ad53781a4566cb9044835ba2",
+  "new_scientific_calls": 0,
+  "new_scientific_tokens": 0,
+  "causal_taxonomy": {
+    "D0": "question decomposition / runtime obligation construction",
+    "R1/R2": "retrieval / fusion / rerank / evidence selection",
+    "EA": "post-retrieval evidence admission / claim-citation eligibility boundary",
+    "A0": "initial answer generation",
+    "V1": "semantic support / completeness review",
+    "A1": "bounded revision generation and merge",
+    "V2": "post-revision re-verification",
+    "C": "composition / rendering",
+    "E": "external evaluation",
+    "O": "observability / persistence, cross-cutting"
+  },
+  "causal_taxonomy_scope": "Task-local refinement; no global policy taxonomy edit",
+  "evidence_admission_contract": {
+    "distinct_layer": {
+      "layer": "EA",
+      "finding": "SELECTED_BUNDLE_FILTERED_AFTER_RETRIEVAL",
+      "confidence": "CONFIRMED",
+      "basis": [
+        "src/panda_agent/qa.py:84",
+        "src/panda_agent/qa.py:2244",
+        "src/panda_agent/qa.py:2737"
+      ]
+    },
+    "history": {
+      "existing_verifier_guard_origin": "3d90848",
+      "admission_introduction_commit": "85ec7e353a65c31f0f1b491d5e00bad59b044c58",
+      "intent_source": "evaluation/E2_A3_R2_CITATION_ELIGIBLE_EVIDENCE_PREREGISTRATION.md, Hypothesis and S1-S10",
+      "finding": "Deliberately match existing Sphinx citation guard at initial/revision input; retain original bundle and verifier; forbid section synthesis and retrieval changes"
+    },
+    "original_purpose": "Public citation/provenance integrity",
+    "intentionally_governs_generation_input": true,
+    "current_predicate": "Sphinx: truthy url AND snapshot_date AND section_path; other classes pass this filter only",
+    "field_semantics": {
+      "url": "web location",
+      "snapshot_date": "captured locator version",
+      "section_path": "section-level context required by current verifier"
+    },
+    "empty_section_semantics": "No section locator asserted. Ingestion intentionally creates whole sphinx_page objects with section_path=[]; not necessarily corruption or extraction failure.",
+    "empty_section_does_not_prove": [
+      "untrusted content",
+      "semantic uselessness",
+      "no retrievability",
+      "no evaluator match",
+      "technical rendering impossibility"
+    ],
+    "current_effect": "Excluded from generation/revision offered evidence; a public claim citing it fails current incomplete-web-citation validation",
+    "source_anchors": [
+      "src/panda_agent/ingestion.py:611",
+      "src/panda_agent/models.py:69",
+      "src/panda_agent/qa.py:2471",
+      "src/panda_agent/templates/partials/result.html"
+    ],
+    "conceptual_capabilities": {
+      "retrieval_selected": "object in selected ordered bundle",
+      "semantic_use_eligible": "allowed-version untrusted reference usable for content inspection; not factual truth",
+      "generation_eligible": "admitted under chosen policy",
+      "verification_eligible": "visible for completeness/contradiction inspection",
+      "claim_support_eligible": "claim-specific entailment plus exact citation/version checks",
+      "citation_eligible": "valid source-specific locator metadata",
+      "rendering_eligible": "verified user-relevant claim with valid public citation edges",
+      "gold_matchable": "evaluation-only selector/ancestor match; never a runtime capability input"
+    },
+    "capability_model_status": "DESIGN_ONLY; object capabilities separate from claim-edge support/publication; avoid redundant flag framework"
+  },
+  "generation_verification_domain_analysis": {
+    "classification": "INTENTIONAL_BUT_UNDER-SPECIFIED",
+    "confidence": "SUPPORTED",
+    "normal_production_domains": {
+      "S": "selected bundle",
+      "G": "selected items satisfying citation predicate",
+      "revision": "same admission projection",
+      "V": "full selected bundle"
+    },
+    "relation": "G subseteq V; strict subset in affected frozen cases",
+    "experimental_path_limit": "retained-support evidence may extend V only in experimental path; not promoted",
+    "safety": "avoid known invalid citation edges; wider review may reveal contradictions without granting publication",
+    "completeness_risk": "missing relationship may be visible only to V; A1 cannot be assumed able to recover from G",
+    "coupling": "generation access tied to citation metadata; semantic usability not independently represented",
+    "current_review_input": "runtime points, reviewable claims, full selected evidence, empty legacy requirements; no separate raw-question field",
+    "semantic_gap": "cited-evidence support and broad explicit-obligation coverage do not clearly specify minimal evidence-grounded satisfaction scope"
+  },
+  "coverage_scope_contract": {
+    "status": "DESIGN_ONLY",
+    "owner": "V1/V2",
+    "question_derived_obligation": "D0 remains question-only; no guessed domain stages or Gold facts",
+    "evidence_grounded_satisfaction_scope": "Minimum necessary relationships justified by question/point and in-scope evidence; generated claims are assessed against scope, not its sole source",
+    "allowed_inputs": [
+      "question",
+      "runtime answer point",
+      "in-scope evidence",
+      "generated claims"
+    ],
+    "forbidden_inputs": [
+      "Gold answer points",
+      "benchmark annotations or case-specific rules",
+      "external evaluator verdicts",
+      "unsupported world knowledge"
+    ],
+    "minimal_extension": "relationship_checks within existing point coverage record, no new model call/agent",
+    "relationship_check_fields": [
+      "relationship_text",
+      "necessity_reason",
+      "basis_evidence_ids",
+      "exact support spans",
+      "supporting_claim_ids",
+      "satisfied",
+      "admission_state"
+    ],
+    "admission_states": [
+      "ADMITTED_BACKING_AVAILABLE",
+      "VISIBLE_ONLY_WITHOUT_CITABLE_BACKING",
+      "INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE"
+    ],
+    "rules": [
+      "Necessity anchored to question/point plus evidence; no demand for every available fact",
+      "Topical mappings alone never establish coverage",
+      "Every justified necessary relationship must be stated by supported relevant claims for complete=true",
+      "Public claim support remains limited to exact valid cited backing",
+      "Missing relation with admitted backing may enter existing bounded recovery",
+      "Visible-only relation without valid backing is an EA gap, not an obligation to invent recovery",
+      "Unresolved necessity/support must be explicit and must not certify substantive completeness",
+      "No corpus-wide absence inferred from selected-evidence absence",
+      "Structural validators cannot prove semantic truth"
+    ],
+    "boundedness": "Minimum distinct relationships only, deduplicate paraphrases, exclude optional detail; numerical limits/overflow handling belong to next design, silent truncation cannot yield complete=true",
+    "future_semantic_changes": [
+      "clarify evidence-established relationship reasoning versus forbidden invention",
+      "add raw-question context if chosen",
+      "extend coverage schema",
+      "define uncertainty/refusal/missing-point handling"
+    ],
+    "not_behavior_neutral_logging": true,
+    "g023_factor_assessment": {
+      "broad_point": "CONFIRMED; not proof of D0 defect",
+      "reviewer_lacks_selected_ordering_evidence": "NOT_SUPPORTED; source constructs broader V input",
+      "generator_lacks_selected_ordering_pages": "CONFIRMED EA exclusion",
+      "reviewer_uses_only_broad_scope": "PLAUSIBLE",
+      "missing_raw_supporters_and_reason": "CONFIRMED observability gap",
+      "EA_generation_review_interaction": "SUPPORTED; unique causality not established"
+    }
+  },
+  "observability_contract": {
+    "status": "DESIGN_ONLY",
+    "proposed_schema_version": "qa-stage-trace-v1",
+    "placement": "diagnostics.qa_stage_trace in existing per-case record; reuse record/attempt/results persistence",
+    "not_public_dto": true,
+    "not_retrieval_trace_extension": true,
+    "no_parallel_log_store": true,
+    "envelope_fields": [
+      "schema_version",
+      "run/case/attempt identity",
+      "ordered stage and round sequence",
+      "capture completeness",
+      "question/runtime-point/evidence/implementation/prompt references"
+    ],
+    "stage_snapshots": {
+      "EA_ADMISSION": [
+        "selected_evidence_ids",
+        "admitted_evidence_ids",
+        "review_visible_evidence_ids",
+        "per_item_reason_codes",
+        "exact evidence projection references"
+      ],
+      "A0_OUTPUT": [
+        "parsed raw claims before transforms",
+        "claim IDs/text",
+        "ordered evidence IDs",
+        "declared point IDs",
+        "ordinal for duplicate IDs"
+      ],
+      "V1_INPUT": [
+        "actual runtime points",
+        "actual reviewable claims",
+        "actual evidence projection",
+        "deterministic excluded-claim reasons",
+        "normalization/augmentation deltas from A0"
+      ],
+      "V1_OUTPUT": [
+        "supported",
+        "unsupported_claim_ids",
+        "irrelevant_claim_ids",
+        "claim_answer_point_mappings",
+        "answer_point_coverage with supporting_claim_ids and complete",
+        "missing_answer_point_ids",
+        "missing_requirement_ids",
+        "existing concise reason",
+        "separate validation result/error"
+      ],
+      "A1_INPUT": [
+        "missing point IDs/text",
+        "admitted evidence references",
+        "already verified claims via immutable references",
+        "unsupported draft",
+        "verification errors",
+        "actual revision scope"
+      ],
+      "A1_OUTPUT": [
+        "parsed raw revised claims",
+        "post-normalization claims/deltas"
+      ],
+      "A1_POST_MERGE": [
+        "post-merge claims",
+        "per-input ordinal disposition",
+        "old/new IDs",
+        "duplicate or anti-resurrection comparison references"
+      ],
+      "V2_OUTPUT": [
+        "same review fields as V1_OUTPUT",
+        "actual input projection using V1_INPUT format with round=2"
+      ],
+      "C_INPUT": [
+        "exact verified source claims",
+        "ordered source IDs",
+        "evidence references"
+      ],
+      "C_OUTPUT": [
+        "parsed composer paragraphs/source_claim_ids",
+        "acceptance/rejection/fallback diagnostics",
+        "final rendered output reference"
+      ]
+    },
+    "evidence_registry": "Reuse selected-evidence text/locator once; persist actual differing projections once. IDs must resolve exact model-visible text.",
+    "merge_dispositions": [
+      "retained",
+      "missing ID",
+      "normalized duplicate",
+      "identical-unsupported rejected",
+      "ID collision renamed",
+      "other actual reason"
+    ],
+    "stage_statuses": [
+      "CAPTURED",
+      "NOT_EXECUTED with reason",
+      "NOT_CAPTURED with error",
+      "NOT_RETAINED for legacy runs"
+    ],
+    "behavior_neutrality": [
+      "copy existing parsed fields before mutation",
+      "do not change model inputs/count/order, retrieval, routing, retries, or revision bound",
+      "do not request new rationale",
+      "logging failure does not change answer or cause model retry"
+    ],
+    "persistence": [
+      "UTF-8 stable-key JSON; preserve array order and exact text",
+      "reference immutable snapshots; distinguish duplicate IDs by ordinal",
+      "partial trace and parse/error metadata on failure",
+      "no blind full prompts, credentials, HTTP envelopes, hidden model reasoning or environment dumps",
+      "no silent truncation reported as complete"
+    ],
+    "bound": "Existing selected bundle, one initial generation, at most one revision, current composer attempt; no retrieval-pool duplication",
+    "protected_data": "Explicit authorized development/evaluation capture only; no protected content capture/export under this contract",
+    "hash_compatibility": "Existing _result_content_hash includes diagnostics. Future diagnostic schema changes record/receipt hashes despite behavior neutrality; keep historical v1 hashes/records immutable, no backfill. Distinguish public-result equality from artifact identity.",
+    "storage_roles": {
+      "records": "current per-case projection",
+      "attempts": "append-only attempt ledger",
+      "results": "current-record aggregate",
+      "traces": "retrieval-specific snapshots",
+      "run_status": "execution/accounting",
+      "stage_receipt": "identity/hash/usage binding",
+      "metrics": "evaluation measurements"
+    },
+    "future_acceptance": "Deterministic fake-response trace-on/off comparisons of public output, model inputs/count/order and routing; stage completeness, normalization, collision/anti-resurrection, parser/capture failures and skipped stages; no tests added or executed here"
+  },
+  "runner_status_contract": {
+    "status": "DESIGN_ONLY",
+    "observed": "official=true without candidate -> INCONCLUSIVE / INVALID_CANDIDATE_IDENTITY despite complete scored cohort",
+    "sources": [
+      "src/panda_agent/evaluation_finalization.py:285",
+      "src/panda_agent/evaluation_finalization.py:506",
+      "src/panda_agent/evaluation_runner.py:1843"
+    ],
+    "proposed_execution_classes": [
+      "development_validation",
+      "formal_release_validation"
+    ],
+    "class_rule": "Declare before execution, independent of retrieval/qa/full mode; never infer class from failure/missing candidate",
+    "separate_axes": {
+      "execution_validity": "actual completeness, infrastructure and provenance validity",
+      "scientific_experiment_verdict": "PASS/FAIL/INCONCLUSIVE/NOT_EVALUATED under named predeclared protocol",
+      "formal_candidate_validity": "VALID/INVALID for release, NOT_APPLICABLE for explicit non-release development"
+    },
+    "invariants": [
+      "development requires identity/cohort/protocol provenance but not fabricated formal candidate",
+      "complete execution is not scientific PASS",
+      "formal release remains fail-closed on candidate identity",
+      "development NOT_APPLICABLE grants no release authority",
+      "no silent reinterpretation of old official flags or receipts"
+    ],
+    "frozen_t1_conceptual_mapping_only": {
+      "execution": "complete",
+      "scientific_verdict": "FAIL",
+      "formal_candidate": "not applicable to declared development purpose",
+      "raw_runner_label": "preserved INCONCLUSIVE"
+    }
+  },
+  "g013_forward_reconciliation": {
+    "selected_but_ineligible": {
+      "layer": "EA",
+      "finding": "MASTER_RUN_OVERVIEW_EXCLUDED_AT_GENERATION_ADMISSION",
+      "confidence": "CONFIRMED",
+      "basis": "evidence.258612f18040b81459f72d3b; frozen sphinx_page with empty section_path plus qa.py predicate"
+    },
+    "not_selected": "No full configuration/event-loop account established in selected bundle; corpus recall/rerank defect NOT_ESTABLISHED",
+    "ADMITTED_EVIDENCE_SEMANTIC_SUFFICIENCY": "AMBIGUOUS / PARTIAL",
+    "A1_RECOVERY_OUTCOME": "UNSUCCESSFUL / CONFIRMED",
+    "A1_CAUSAL_DEFECT": "NOT_ESTABLISHED",
+    "A1_SUBMECHANISM": "UNRESOLVED_DUE_TO_EVIDENCE_ADMISSION_AND_TRACE_OBSERVABILITY",
+    "exact_id_collision_causality": "NOT_ESTABLISHED",
+    "limit": "Do not claim A1 should recover without sufficient admitted backing; final miss is an outcome, not a proven merge/generation defect"
+  },
+  "g023_forward_reconciliation": {
+    "old_layer": "R1/R2",
+    "old_finding": "EXPLICIT_ORDERING_TEXT_LOST_AT_SELECTED_TO_GENERATION_ADMISSION",
+    "new_classification": {
+      "layer": "EA",
+      "finding": "EXPLICIT_ORDERING_TEXT_EXCLUDED_AT_GENERATION_ADMISSION",
+      "confidence": "CONFIRMED",
+      "basis": [
+        "evidence.aa848838ccbb763f405765da",
+        "evidence.d452f25b295c0ce037b92b26",
+        "qa.py:2244",
+        "qa.py:2482"
+      ]
+    },
+    "retrieval_failure_for_these_selected_items": false,
+    "unique_cause": "NOT_ESTABLISHED",
+    "reviewer_only_root_cause": "NOT_ESTABLISHED",
+    "D0_vs_V1": "UNRESOLVED_SEMANTIC_SCOPE",
+    "outcome_level_false_acceptance": "CONFIRMED; coverage complete=true with externally missing p3; no rescore"
+  },
+  "g047_contrast": {
+    "outcome": "PASS",
+    "observed": "broad purpose point, explicit differential-cross-section/luminosity-extraction claim",
+    "presence_easier_than_absence_hypothesis": "PLAUSIBLE",
+    "limit": "single contrast; generation/evidence differences not isolated; no general proof"
+  },
+  "g011_preserved_state": {
+    "negative_existence_safety": "PASS",
+    "C_NATIVE_DOCUMENTATION_ROLE_COVERAGE": "FAIL",
+    "legacy_C_RETRIEVAL_COMPLETENESS": "FAIL",
+    "D": "DEFERRED",
+    "distinction": "positive native information present; required native-documentation role unmatched"
+  },
+  "provenance_wording_reconciliation": {
+    "old_status": "VERIFIED",
+    "new_status": "VERIFIED_WITHIN_RETAINED_LOCAL_EVIDENCE",
+    "basis": [
+      "Git commit metadata",
+      "persisted run timestamps",
+      "existing content receipts"
+    ],
+    "external_trusted_timestamp_authority": false,
+    "execution_repository_head": "421c13a6efc76a845cfd61388e1e2520eea799a7",
+    "scientific_downgrade": false,
+    "new_hashing": false
+  },
+  "candidate_design_options": [
+    {
+      "id": "EA-1",
+      "name": "strict current admission",
+      "status": "DESIGN_ONLY",
+      "genericity": "Uniform source-class guard",
+      "safety": "Retains current citation defense",
+      "provenance_integrity": "Preserves metadata prerequisite, not semantic sufficiency",
+      "complexity": "LOW",
+      "risk_of_uncited_claims": "LOW additional risk",
+      "current_verifier_compatibility": "DIRECT",
+      "g013_g023_generic_applicability": "Does not repair selected-page loss or partial admitted support"
+    },
+    {
+      "id": "EA-2",
+      "name": "semantic use plus separate citation backing",
+      "status": "DESIGN_ONLY",
+      "genericity": "Separates context and public backing",
+      "safety": "Public claim must be independently entailed by allowed citable backing",
+      "provenance_integrity": "No topic-only or ancestor-only citation substitution",
+      "complexity": "HIGHER",
+      "risk_of_uncited_claims": "HIGHER citation-laundering risk",
+      "current_verifier_compatibility": "Requires new backing resolution and input/error contracts; final valid citations still checked",
+      "g013_g023_generic_applicability": "May expose selected relations; cannot guarantee valid backing"
+    },
+    {
+      "id": "EA-3",
+      "name": "resolve valid locator/backing before admission",
+      "status": "DESIGN_ONLY",
+      "genericity": "Same-source/version content-faithful resolution",
+      "safety": "No guessed sections, changed original locators, or arbitrary child citations",
+      "provenance_integrity": "Preserve original identity, derivation and exact support span; unresolved stays ineligible",
+      "complexity": "MEDIUM",
+      "risk_of_uncited_claims": "LOW only with exact provenance and entailment checks",
+      "current_verifier_compatibility": "Compatible only after valid backing exists; no silent retrieval/backfill",
+      "g013_g023_generic_applicability": "Potentially repairs EA exclusion; cannot manufacture unselected semantic support"
+    },
+    {
+      "id": "EA-4",
+      "name": "explicit evidence capabilities",
+      "status": "DESIGN_ONLY",
+      "genericity": "Object decisions plus claim-evidence edge decisions",
+      "safety": "Flags remain diagnostic unless separately authorized as policy",
+      "provenance_integrity": "Flags neither prove entailment nor create metadata",
+      "complexity": "LOW diagnostic / HIGHER runtime framework",
+      "risk_of_uncited_claims": "No reduction from flags alone; wrong flags can grant unsafe access",
+      "current_verifier_compatibility": "Keep current verifier authority",
+      "g013_g023_generic_applicability": "Makes both failures diagnosable but alone changes no behavior"
+    }
+  ],
+  "recommended_next_design_direction": "EA-1 safety baseline; conditional EA-3 exact backing feasibility with small EA-4 diagnostic reasons; EA-2 separately justified alternative; coverage relationship checks and independent behavior-neutral trace capture",
+  "unresolved_issues": [
+    "unique frozen g013/g023 causal mechanism",
+    "availability of exact same-version section backing for selected page content",
+    "minimal coverage limits and uncertainty/refusal policy",
+    "future runner CLI/default compatibility",
+    "future trace failure-path storage compatibility"
+  ],
+  "material_product_change": false,
+  "evaluator_contract_change": false,
+  "gold_change": false,
+  "calibration_change": false,
+  "protected_state": {
+    "novel_validation": "PRISTINE_FOR_CURRENT_LINEAGE",
+    "holdout_access": 0,
+    "protected_content_leakage": 0,
+    "f6_b_execution": 0
+  },
+  "attempt_6_state": {
+    "candidate_frozen": false,
+    "attempt_6_preregistered": false,
+    "attempt_6_executed": false,
+    "attempt_6_readiness": "NOT_READY"
+  },
+  "overall_t1_verdict": "FAIL",
+  "t1_results_preserved": true,
+  "historical_t1_usage": {
+    "calls": 65,
+    "tokens": 373265,
+    "transport_recovery_count": 0
+  },
+  "sentinel_verdicts": {
+    "g013": "FAIL",
+    "g023": "FAIL",
+    "g047": "PASS",
+    "g011_negative_existence_safety": "PASS"
+  },
+  "control_results": {
+    "g010": "CONTROL_PASS",
+    "g014": "CONTROL_PASS",
+    "g022": "CONTROL_PASS",
+    "g050": "CONTROL_PASS",
+    "CONTROL_REGRESSION_COUNT": 0
+  },
+  "next_task_recommendation": "POST-A5 BOUNDED PRODUCT REPAIR DESIGN / EVIDENCE-ADMISSION + COVERAGE COMPLETENESS + OBSERVABILITY",
+  "next_task_execution_authorized": false,
+  "verification": {
+    "scope": "Static only; no pytest, model calls, replay or rescore",
+    "json_parsing": "PASS",
+    "historical_preservation": "PASS; only forward pointer permitted on RCA",
+    "source_tests_gold_calibration": "UNCHANGED",
+    "diff_check": "PASS",
+    "scope_file_count": 6
+  }
+}

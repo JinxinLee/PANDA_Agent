@@ -353,3 +353,7 @@ Changed files:
 7. `evaluation/post_a5_t1_fixed_exposed_sentinel_result.json` (forward pointer only)
 
 `NEXT_TASK_EXECUTION_AUTHORIZED = false`.
+
+## Forward contract reconciliation pointer
+
+`evaluation/POST_A5_T1_OBSERVABILITY_EVIDENCE_ADMISSION_AND_COVERAGE_SCOPE_RECONCILIATION.md` and its JSON companion supersede only causal-layer/contract interpretation and chronology wording: selected-to-generation exclusion belongs to EA, g013 unsuccessful recovery does not establish an A1 defect, and chronology is VERIFIED_WITHIN_RETAINED_LOCAL_EVIDENCE. The historical analytical body, raw receipts, scientific observations and T1 FAIL above remain unchanged. All new contracts are design-only.
