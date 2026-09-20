@@ -51,3 +51,7 @@ Per the preregistered rule: `A_CASE_OUTCOME = FAIL` and `B1_G023_OUTCOME = FAIL`
 - Attempt 6: `candidate frozen = false`; `Attempt 6 preregistered = false`; `Attempt 6 executed = false`; `ATTEMPT_6_READINESS = NOT_READY`.
 - Materiality: `MATERIAL_PRODUCT_CHANGE = false`; product-behavior lineage head unchanged (`e79d3232…`).
 - Per the preregistered next-step mapping (T1 = FAIL): `NEXT_TASK_RECOMMENDATION = POST-A5 T1 FAILURE REVIEW / BOUNDED ROOT-CAUSE ANALYSIS`; `NEXT_TASK_EXECUTION_AUTHORIZED = false`.
+
+## Forward provenance and interpretation pointer
+
+The frozen scientific body and FAIL verdict above remain unchanged. `evaluation/POST_A5_T1_FAILURE_REVIEW_AND_ROOT_CAUSE_ANALYSIS.md` and its JSON companion supersede execution-head terminology (persisted execution HEAD is `421c13a`, while `60a62fc` is the pre-preregistration base), current scientific-effect lifecycle language, and causal specificity. Compact raw-file receipts are in `evaluation/post_a5_t1_execution_provenance_receipts.json`.

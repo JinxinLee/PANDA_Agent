@@ -78,5 +78,11 @@
     "attempt_6_readiness": "NOT_READY"
   },
   "next_task_recommendation": "POST-A5 T1 FAILURE REVIEW / BOUNDED ROOT-CAUSE ANALYSIS",
-  "next_task_execution_authorized": false
+  "next_task_execution_authorized": false,
+  "forward_provenance_review": {
+    "artifact": "evaluation/post_a5_t1_failure_review_and_root_cause_analysis.json",
+    "scope": "Execution-head terminology, current lifecycle, and causal interpretation only; original scientific body and FAIL verdict preserved",
+    "execution_repository_head": "421c13a6efc76a845cfd61388e1e2520eea799a7",
+    "repository_base_head_before_preregistration": "60a62fc9d954bfaaf48e3d5dae48d914c4b0ff21"
+  }
 }

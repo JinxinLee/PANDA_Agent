@@ -1,0 +1,561 @@
+{
+  "schema_version": "post-a5-t1-failure-review-v1",
+  "task": "POST-A5 T1 FAILURE REVIEW / BOUNDED ROOT-CAUSE ANALYSIS",
+  "status": "COMPLETE / PARTIAL / TRACE_OBSERVABILITY_AND_SEMANTIC_SCOPE_LIMITS_REMAIN",
+  "verification_verdict": "PASS",
+  "verification_scope": "Offline provenance, bounded evidence classification, artifact parsing and authorized-change checks; not scientific repair validation",
+  "starting_head": "3d9ca981680ac44940816c294fcc85c9bfc19689",
+  "starting_worktree": "CLEAN",
+  "t1_result_commit": "3d9ca981680ac44940816c294fcc85c9bfc19689",
+  "t1_preregistration_commit": "421c13a6efc76a845cfd61388e1e2520eea799a7",
+  "repository_base_head_before_preregistration": "60a62fc9d954bfaaf48e3d5dae48d914c4b0ff21",
+  "execution_repository_head": "421c13a6efc76a845cfd61388e1e2520eea799a7",
+  "execution_head_provenance_status": "CONFIRMED_FROM_ALL_EIGHT_MANIFESTS_TRACES_AND_STAGE_RECEIPTS",
+  "preregistration_chronology_status": "VERIFIED",
+  "preregistration_commit_timestamp": "2026-09-20T02:00:59+02:00",
+  "execution_head_correction": "Frozen result repository_execution_head incorrectly labels the pre-preregistration base as execution head. Forward-only correction; original value preserved.",
+  "base_to_preregistration_diff": "Only two preregistration artifacts; no product-behavior change",
+  "product_behavior_head": "e79d3232ed132a224cbceaf3524e19a1406bd648",
+  "prompt_fingerprint": "0a5b2909ef586671d533148979fc681c64e37528ad53781a4566cb9044835ba2",
+  "gold_identity": {
+    "benchmark_version": "m6-benchmark-v2.11",
+    "dataset": "evaluation/benchmarks/v2_11/gold_questions.yaml",
+    "dataset_sha256": "39943c6a3f2152e476109c0340acd066795c8de6ff3b6bb2eac6661ac480a417"
+  },
+  "calibration_identity": {
+    "calibration_id": "phase_b_t3_product_language_scope_v8",
+    "formal_english": 59,
+    "non_english": 21,
+    "selector_sha256": "e27ef67a866274b4a8441b789ca78fc3ccb7e022eed537c7442e15230777a0e5"
+  },
+  "calibration_provenance_limit": "Identity is committed preregistration authority; raw per-run manifest/receipt does not persist a calibration fingerprint. Do not present this as an independently observed per-run field.",
+  "new_scientific_calls": 0,
+  "new_scientific_tokens": 0,
+  "t1_result_integrity": "NO_INVALIDATING_DEFECT_FOUND",
+  "provenance_receipt_artifact": "evaluation/post_a5_t1_execution_provenance_receipts.json",
+  "source_taxonomy": "Task-local D0/R1-R2/A0/V1/A1/V2/C/E/O; differs from historical evaluation-policy shorthand",
+  "observability_scope": "All files under the eight exact local run directories, T1 tmp summary, runner/store/Vertex/QA persistence code inspected; no raw initial/revision/coverage model payload or shell exit receipt retained there. Negative claims are limited to this retained evidence scope.",
+  "g013_root_cause_analysis": {
+    "frozen_observation": {
+      "artifact": "data/evaluation/runs/post-a5-t1-g013/records/g013.json#",
+      "runtime_points": [
+        {
+          "answer_point_id": "point.1",
+          "facet_type": "workflow",
+          "support_spans": [
+            "set up the terminal"
+          ],
+          "text": "How to set up the terminal in PandaRoot"
+        },
+        {
+          "answer_point_id": "point.2",
+          "facet_type": "workflow",
+          "support_spans": [
+            "run a ROOT simulation macro in PandaRoot"
+          ],
+          "text": "How to run a ROOT simulation macro in PandaRoot"
+        },
+        {
+          "answer_point_id": "point.3",
+          "facet_type": "mechanism",
+          "support_spans": [
+            "how does the master run task participate in the lifecycle"
+          ],
+          "text": "How the master run task participates in the lifecycle"
+        }
+      ],
+      "claims": [
+        {
+          "claim_id": "claim_terminal_setup",
+          "claim_text": "To set up the terminal environment for PandaRoot, source the build script using `. Build/config.sh -p` (or `config.sh -p`), where the `-p` flag prepends FairSoft, FairRoot, and PandaRoot executables and libraries to PATH and LD_LIBRARY_PATH (or `-a` can be used to append).",
+          "evidence_ids": [
+            "evidence.f551d55d17d5cb81bfc328ed",
+            "evidence.ab72413dbb9a54b5e68ce96d"
+          ]
+        },
+        {
+          "claim_id": "claim_run_sim_macro",
+          "claim_text": "A ROOT simulation macro such as sim_complete.C is executed from the terminal using ROOT in batch mode, for example with `root -l -b -q sim_complete.C'(100)'` or `root -l -b -q sim_complete'(100, \"TGeant3\", 6.231552, \"mytestsim\")'`.",
+          "evidence_ids": [
+            "evidence.f551d55d17d5cb81bfc328ed",
+            "evidence.ab72413dbb9a54b5e68ce96d",
+            "evidence.5781619e91d4c152182d9b8e"
+          ]
+        }
+      ],
+      "persisted_mapping_audit": [
+        {
+          "claim_id": "claim_terminal_setup",
+          "declared_answer_point_ids": [
+            "point.1"
+          ],
+          "evidence_ids": [
+            "evidence.f551d55d17d5cb81bfc328ed",
+            "evidence.ab72413dbb9a54b5e68ce96d"
+          ],
+          "rendered": true,
+          "supported": true,
+          "verified_answer_point_ids": [
+            "point.1"
+          ]
+        },
+        {
+          "claim_id": "claim_run_sim_macro",
+          "declared_answer_point_ids": [
+            "point.2"
+          ],
+          "evidence_ids": [
+            "evidence.f551d55d17d5cb81bfc328ed",
+            "evidence.ab72413dbb9a54b5e68ce96d",
+            "evidence.5781619e91d4c152182d9b8e"
+          ],
+          "rendered": true,
+          "supported": true,
+          "verified_answer_point_ids": [
+            "point.2"
+          ]
+        }
+      ],
+      "coverage_complete": false,
+      "missing_answer_point_ids": [
+        "point.3"
+      ],
+      "review_error": null,
+      "revision_count": 1,
+      "critical_answer_points_missing": [
+        "p3"
+      ],
+      "critical_final_evidence_recall": 1.0,
+      "raw_claim_answer_point_mappings": "NOT_OBSERVABLE; normalized verified mappings retained in persisted_mapping_audit",
+      "raw_answer_point_coverage": "NOT_OBSERVABLE",
+      "raw_supporting_claim_ids": "NOT_OBSERVABLE",
+      "raw_review_reason": "NOT_OBSERVABLE; review_error is structural status, not the model reason"
+    },
+    "G013_RUNTIME_POINT_COVERAGE": "PRESENT",
+    "G013_P3_SUPPORTING_EVIDENCE_AVAILABLE": "AMBIGUOUS",
+    "evidence_scope": "Partial support for the broad lifecycle role is present. The selected texts do not directly explain full master-run configuration and event-loop orchestration required by Gold p3. Critical role recall 1.0 is not semantic sufficiency.",
+    "evidence_detail": [
+      {
+        "evidence_id": "evidence.ab72413dbb9a54b5e68ce96d",
+        "path": "macro/master/Readme.md",
+        "eligible": true,
+        "finding": "Master run and Master Tasks provide default settings and operation modes; macro execution examples. No direct configured event-loop account."
+      },
+      {
+        "evidence_id": "evidence.5781619e91d4c152182d9b8e",
+        "path": "macro/master/mastermacros.rst",
+        "eligible": true,
+        "finding": "Macro stage sequence and event-generator/macro parameters; not the master-run object configuration and event-loop mechanism."
+      },
+      {
+        "evidence_id": "evidence.258612f18040b81459f72d3b",
+        "eligible": false,
+        "finding": "Master runner for simulation calls PndMasterSimTask; selected Sphinx page has section_path=[], so excluded from generation/revision claim_evidence."
+      }
+    ],
+    "G013_INITIAL_P3_CLAIM": "NOT_OBSERVABLE",
+    "pre_revision_coverage_missing_point_3": "NOT_OBSERVABLE",
+    "recovery_trigger": {
+      "layer": "V1",
+      "finding": "ONE_REVISION_WAS_TRIGGERED_BY_ERRORS",
+      "confidence": "SUPPORTED",
+      "basis": "revision_count=1 and _after_verify_route; the initial error set is not retained, so a point.3-specific trigger cannot be certified"
+    },
+    "G013_REVISION_REQUEST_WELL_FORMED": "NOT_OBSERVABLE",
+    "revision_request_code_contract": "qa.py:_revise includes runtime points, missing IDs/text, eligible selected evidence, and already_verified_claims_do_not_repeat; actual request and first-review state are not retained",
+    "REVISION_EMITTED_P3_CLAIM": "NOT_OBSERVABLE",
+    "post_merge_observation": "No user-visible p3 claim appears in the final verification mapping inventory (only claim_terminal_setup and claim_run_sim_macro); no internal filter entry appears in claim_audit. Raw post-merge draft itself is not retained.",
+    "post_revision_verification": "coverage_evaluable=true, review_error=null, missing=[point.3]; both remaining claims supported/rendered",
+    "composer": "accepted=true, source_claim_count=2; both source claims and final answer omit p3",
+    "earliest_provable_loss": {
+      "layer": "R1/R2",
+      "finding": "PARTIAL_LIFECYCLE_EVIDENCE_AT_GENERATION_ADMISSION_BOUNDARY",
+      "confidence": "SUPPORTED",
+      "basis": "selected evidence gives only broad role/macro support for full p3; the explicit master-run overview is excluded for missing Sphinx section_path. This is an upstream limitation, not proof of the unique cause of the final miss."
+    },
+    "earliest_provable_failure": {
+      "layer": "A1",
+      "finding": "BOUNDED_REVISION_RECOVERY_RESIDUAL",
+      "confidence": "SUPPORTED",
+      "basis": "One bounded revision ends with only two user-visible claims and point.3 still missing; generation versus merge submechanism cannot be separated. Evidence sufficiency is not established, so this is not a confirmed revision-generator defect."
+    },
+    "submechanism": "UNRESOLVED_DUE_TO_TRACE_OBSERVABILITY_AND_EVIDENCE_SUFFICIENCY",
+    "confirmed_observation": {
+      "layer": "V2",
+      "finding": "FINAL_REVIEW_CORRECTLY_REPORTS_POINT_3_MISSING",
+      "confidence": "CONFIRMED",
+      "basis": "data/evaluation/runs/post-a5-t1-g013/records/g013.json#/diagnostics/answer_point_audit"
+    },
+    "eliminated_hypotheses": [
+      "D0 omission of the explicit master-run lifecycle obligation",
+      "Final V2 false acceptance of point.3",
+      "Composer as the earliest point of p3 loss",
+      "Role recall 1.0 proving full p3 evidence sufficiency"
+    ],
+    "remaining_uncertainty": [
+      "Initial claim and coverage response",
+      "Actual revision request and raw revised payload",
+      "Empty/partial revision generation versus normalization/merge exclusion",
+      "Whether a partial evidence-backed lifecycle description would satisfy the external rubric"
+    ],
+    "exact_historical_id_collision_causality": "NOT_ESTABLISHED",
+    "exact_t1_id_collision_causality": "NOT_ESTABLISHED"
+  },
+  "g023_root_cause_analysis": {
+    "frozen_observation": {
+      "artifact": "data/evaluation/runs/post-a5-t1-g023/records/g023.json#",
+      "runtime_points": [
+        {
+          "answer_point_id": "point.1",
+          "facet_type": "workflow",
+          "support_spans": [
+            "How do I use PndMasterRecoTask in the generic workflow?"
+          ],
+          "text": "How to use PndMasterRecoTask in the generic workflow"
+        }
+      ],
+      "claims": [
+        {
+          "claim_id": "claim.reco_task_role",
+          "claim_text": "In the PandaRoot generic workflow, PndMasterRecoTask serves as a master wrapper task that bundles and configures the default reconstruction tasks\u2014including barrel tracking, forward tracking, and Kalman fitting\u2014for use in reconstruction macros.",
+          "evidence_ids": [
+            "evidence.ad4ae8121d9d774f7be0fea4",
+            "evidence.88e51e108d5fefa28e93001c",
+            "evidence.bd052f2ff5775c5795bce219"
+          ]
+        },
+        {
+          "claim_id": "claim.reco_task_instantiation_options",
+          "claim_text": "PndMasterRecoTask is instantiated by invoking its constructor with an option string (such as PndMasterRecoTask(TString fOptions = \"\")), where passing an empty string selects the default full setup, or specific flags (such as \"day1\", \"multikalman\", \"genfit2\", \"newGF2\", or \"ftstrack\") can be combined to configure detector configurations and tracking/fitting algorithms.",
+          "evidence_ids": [
+            "evidence.ad4ae8121d9d774f7be0fea4",
+            "evidence.250fca94a7ac7044409152c1",
+            "evidence.80855d41b3c0930be267fe52"
+          ]
+        },
+        {
+          "claim_id": "claim.reco_task_internal_assembly",
+          "claim_text": "During construction, PndMasterRecoTask evaluates the options string, creates and configures the appropriate subtasks (such as PndBarrelTrackFinder, PndTrkTracking2, forward straw tracking, and Kalman filter tasks), and registers them internally via Add((TTask *)task) so they run in the reconstruction pipeline.",
+          "evidence_ids": [
+            "evidence.88e51e108d5fefa28e93001c"
+          ]
+        }
+      ],
+      "persisted_mapping_audit": [
+        {
+          "claim_id": "claim.reco_task_role",
+          "declared_answer_point_ids": [
+            "point.1"
+          ],
+          "evidence_ids": [
+            "evidence.ad4ae8121d9d774f7be0fea4",
+            "evidence.88e51e108d5fefa28e93001c",
+            "evidence.bd052f2ff5775c5795bce219"
+          ],
+          "rendered": true,
+          "supported": true,
+          "verified_answer_point_ids": [
+            "point.1"
+          ]
+        },
+        {
+          "claim_id": "claim.reco_task_instantiation_options",
+          "declared_answer_point_ids": [
+            "point.1"
+          ],
+          "evidence_ids": [
+            "evidence.ad4ae8121d9d774f7be0fea4",
+            "evidence.250fca94a7ac7044409152c1",
+            "evidence.80855d41b3c0930be267fe52"
+          ],
+          "rendered": true,
+          "supported": true,
+          "verified_answer_point_ids": [
+            "point.1"
+          ]
+        },
+        {
+          "claim_id": "claim.reco_task_internal_assembly",
+          "declared_answer_point_ids": [
+            "point.1"
+          ],
+          "evidence_ids": [
+            "evidence.88e51e108d5fefa28e93001c"
+          ],
+          "rendered": true,
+          "supported": true,
+          "verified_answer_point_ids": [
+            "point.1"
+          ]
+        }
+      ],
+      "coverage_complete": true,
+      "missing_answer_point_ids": [],
+      "review_error": null,
+      "revision_count": 0,
+      "critical_answer_points_missing": [
+        "p3"
+      ],
+      "critical_final_evidence_recall": 1.0,
+      "raw_claim_answer_point_mappings": "NOT_OBSERVABLE; normalized verified mappings retained in persisted_mapping_audit",
+      "raw_answer_point_coverage": "NOT_OBSERVABLE",
+      "raw_supporting_claim_ids": "NOT_OBSERVABLE",
+      "raw_review_reason": "NOT_OBSERVABLE; review_error is structural status, not the model reason"
+    },
+    "G023_RUNTIME_POINT_CONTAINS_BEFORE_PID_OBLIGATION": "AMBIGUOUS",
+    "explicit_before_pid_obligation": "NO",
+    "runtime_scope_interpretation": "The single point preserves the literal broad question (How to use PndMasterRecoTask in the generic workflow). Neither raw question nor point names PID or a before/after relation. Workflow placement is a reasonable semantic reading, but no retained reviewer reason establishes that specific interpretation. Question-only decomposition forbids inserting guessed stages.",
+    "G023_SUPPORTED_CLAIMS_ESTABLISH_P3": "NO",
+    "initial_claim_observation": "With revision_count=0, the final verification inventory and result claims establish the three user-visible pre-composer claims: wrapper role, constructor/options, internal task assembly. None states before PID. The unprocessed model response is not retained.",
+    "evidence_admission": {
+      "layer": "R1/R2",
+      "finding": "EXPLICIT_ORDERING_EVIDENCE_EXCLUDED_FROM_GENERATION_INPUT",
+      "confidence": "CONFIRMED",
+      "basis": "Selected evidence.aa848838ccbb763f405765da (Running.html) and evidence.d452f25b295c0ce037b92b26 (MasterTasks.html) contain reconstruction-to-PID ordering, but both have section_path=[] and fail _is_public_claim_citation_eligible. _answer filters them; _verify reviews the full bundle."
+    },
+    "evidence_admission_limit": "A short curated generic workflow list and a different Restgas tracking/PID sequence remain eligible, as does an option section mentioning preselection before PID. They are not equivalent to an explicit PndMasterRecoTask placement account. Exclusion is confirmed; sole causality is not.",
+    "coverage_payload": {
+      "normalized_claim_answer_point_mappings": {
+        "claim.reco_task_role": [
+          "point.1"
+        ],
+        "claim.reco_task_instantiation_options": [
+          "point.1"
+        ],
+        "claim.reco_task_internal_assembly": [
+          "point.1"
+        ]
+      },
+      "raw_answer_point_coverage": null,
+      "raw_supporting_claim_ids": null,
+      "raw_review_reason": null,
+      "derived_complete_flag": true,
+      "derivation": "coverage_complete=true, missing=[], review_error=null and the unchanged validator imply an accepted point.1 complete=true record with a nonempty eligible supporter subset; exact subset is not persisted",
+      "missing_answer_point_ids": []
+    },
+    "V1_SEMANTIC_FALSE_ACCEPTANCE": "NOT_ESTABLISHED",
+    "V1_runtime_vs_external_completeness_disagreement": "CONFIRMED",
+    "schema_consistency": "VALID_BY_PERSISTED_ACCEPTED_AUDIT_AND_SOURCE; no raw-payload revalidation possible",
+    "validator_scope": [
+      "record presence",
+      "ID uniqueness and membership",
+      "mapping consistency",
+      "supporter eligibility",
+      "complete/missing-set consistency"
+    ],
+    "validator_non_guarantee": "It does not prove that claim text collectively entails an ordering relation; point text is not even an argument to _validate_answer_point_review. No deterministic validator defect established.",
+    "earliest_provable_loss": {
+      "layer": "R1/R2",
+      "finding": "EXPLICIT_ORDERING_TEXT_LOST_AT_SELECTED_TO_GENERATION_ADMISSION",
+      "confidence": "CONFIRMED",
+      "basis": "Frozen selected texts plus identical source at execution HEAD; not a replay and not a confirmed unique root cause"
+    },
+    "earliest_provable_failure": {
+      "layer": "A0",
+      "finding": "BEFORE_PID_RELATION_ABSENT_FROM_INITIAL_USER_VISIBLE_CLAIMS",
+      "confidence": "SUPPORTED",
+      "basis": "No revision; full final mapping inventory contains only the three surviving supported claims; all omit before PID. Earlier evidence-admission loss is confirmed, but its sufficiency/necessity is unresolved."
+    },
+    "D0_vs_V1": "UNRESOLVED_SEMANTIC_SCOPE; no proven D0 deletion of an explicit request and no CONFIRMED V1 specific-relation false acceptance",
+    "alternate_hypotheses_eliminated": [
+      "Revision merge as cause (revision_count=0)",
+      "Composer as first loss (input claims already lack p3)",
+      "Universal schema rejection/malfunction",
+      "A confirmed D0 loss merely because Gold contains more specific facts"
+    ],
+    "remaining_uncertainty": [
+      "Specific ordering semantics of the broad runtime point",
+      "Exact coverage supporting_claim_ids and model reason",
+      "Relative causal contribution of eligible-evidence loss, generation omission, and semantic review scope"
+    ]
+  },
+  "g047_positive_contrast": {
+    "frozen_observation": {
+      "artifact": "data/evaluation/runs/post-a5-t1-g047/records/g047.json#",
+      "runtime_points": [
+        {
+          "answer_point_id": "point.1",
+          "facet_type": "cause_reason",
+          "support_spans": [
+            "What is the theoretical purpose of the DPM elastic-scattering model?"
+          ],
+          "text": "The theoretical purpose of the DPM elastic-scattering model"
+        }
+      ],
+      "claims": [
+        {
+          "claim_id": "claim_1",
+          "claim_text": "The Dual Parton Model (DPM) serves as a phenomenological framework to describe high-energy antiproton-proton elastic scattering, specifically modeling the hadronic amplitude that cannot be calculated from first principles across a wide range of four-momentum transfers (|t|).",
+          "evidence_ids": [
+            "evidence.67b691917dee93dbb3c4255a",
+            "evidence.755ad96285cf6db81ed56b5c",
+            "evidence.a20f11b9268bd586fe9a85ac"
+          ]
+        },
+        {
+          "claim_id": "claim_2",
+          "claim_text": "Unlike simple exponential parameterizations that are only valid at small |t| and fail to describe complex diffractive structures such as dips and secondary maxima at larger |t|, the DPM formulation captures diffractive features and yields non-zero differential cross sections at higher momentum transfers without relying on unstable free parameters.",
+          "evidence_ids": [
+            "evidence.67b691917dee93dbb3c4255a",
+            "evidence.755ad96285cf6db81ed56b5c",
+            "evidence.4d7f19fe6fdd99bf01c63507"
+          ]
+        },
+        {
+          "claim_id": "claim_3",
+          "claim_text": "In the PANDA Luminosity Detector (LMD) framework, the hadronic amplitude from the DPM model is combined with the Coulomb amplitude to form the full elastic differential cross section, enabling stable and reliable luminosity extraction even in higher beam-momentum and higher |t| regimes where the hadronic contribution dominates.",
+          "evidence_ids": [
+            "evidence.67b691917dee93dbb3c4255a",
+            "evidence.755ad96285cf6db81ed56b5c",
+            "evidence.87fe97c3527155d1c11b717e"
+          ]
+        }
+      ],
+      "persisted_mapping_audit": [
+        {
+          "claim_id": "claim_1",
+          "declared_answer_point_ids": [
+            "point.1"
+          ],
+          "evidence_ids": [
+            "evidence.67b691917dee93dbb3c4255a",
+            "evidence.755ad96285cf6db81ed56b5c",
+            "evidence.a20f11b9268bd586fe9a85ac"
+          ],
+          "rendered": true,
+          "supported": true,
+          "verified_answer_point_ids": [
+            "point.1"
+          ]
+        },
+        {
+          "claim_id": "claim_2",
+          "declared_answer_point_ids": [
+            "point.1"
+          ],
+          "evidence_ids": [
+            "evidence.67b691917dee93dbb3c4255a",
+            "evidence.755ad96285cf6db81ed56b5c",
+            "evidence.4d7f19fe6fdd99bf01c63507"
+          ],
+          "rendered": true,
+          "supported": true,
+          "verified_answer_point_ids": [
+            "point.1"
+          ]
+        },
+        {
+          "claim_id": "claim_3",
+          "declared_answer_point_ids": [
+            "point.1"
+          ],
+          "evidence_ids": [
+            "evidence.67b691917dee93dbb3c4255a",
+            "evidence.755ad96285cf6db81ed56b5c",
+            "evidence.87fe97c3527155d1c11b717e"
+          ],
+          "rendered": true,
+          "supported": true,
+          "verified_answer_point_ids": [
+            "point.1"
+          ]
+        }
+      ],
+      "coverage_complete": true,
+      "missing_answer_point_ids": [],
+      "review_error": null,
+      "revision_count": 0,
+      "critical_answer_points_missing": [],
+      "critical_final_evidence_recall": 1.0,
+      "raw_claim_answer_point_mappings": "NOT_OBSERVABLE; normalized verified mappings retained in persisted_mapping_audit",
+      "raw_answer_point_coverage": "NOT_OBSERVABLE",
+      "raw_supporting_claim_ids": "NOT_OBSERVABLE",
+      "raw_review_reason": "NOT_OBSERVABLE; review_error is structural status, not the model reason"
+    },
+    "finding": {
+      "layer": "V1",
+      "finding": "BOUNDED_POSITIVE_RELATIONSHIP_CONTRAST",
+      "confidence": "CONFIRMED",
+      "basis": "claim_3 explicitly combines DPM hadronic and Coulomb amplitudes into the elastic differential cross section enabling luminosity extraction; complete=true and external p1 covered"
+    },
+    "runtime_point_specificity": "One broad purpose point, not an explicit luminosity-extraction subpoint",
+    "coverage_supporter_limit": "All three claims map to point.1; exact raw supporting_claim_ids subset is not retained",
+    "interpretation": "Consistent with case-selective content/completeness behavior and a functioning schema path; not proof that the semantic reviewer would reject an incomplete answer, and not evidence of general repair effect"
+  },
+  "g011_reconciliation": {
+    "negative_existence_safety": "PASS",
+    "C_NATIVE_DOCUMENTATION_ROLE_COVERAGE": "FAIL",
+    "legacy_t1_field": {
+      "C_RETRIEVAL_COMPLETENESS": "FAIL"
+    },
+    "workstream_D": "DEFERRED",
+    "positive_native_claim_evidence": {
+      "evidence_id": "evidence.120adb43d2fa804bd1d521df",
+      "object_id": "object.80b0b8544d4418c2bc9ebfe6",
+      "path": "Docker/Docker.html#what-is-or-should-be-included",
+      "content": "Traditional host packages and FairSoft -> FairRoot -> PandaRoot download/build sequence contrasted with container/CVMFS options"
+    },
+    "container_execution_evidence": "evidence.4d74e560e77092857621de1d / Docker/Docker.html#on-a-workstation",
+    "e1_selector_mismatch": "g011.e1 accepts Sphinx titles Installing & running PandaRoot or Installation of PandaRoot for Developers, or the corresponding PandaRoot docs/Installation/Install_PandaRoot.rst and Install_Developers.rst paths. Docker evidence satisfies neither; e2 matches via ancestor.",
+    "observation_confidence": "CONFIRMED",
+    "critical_final_evidence_recall": 0.5,
+    "interpretation": "Required native-documentation evidence-role coverage failed; information supporting a positive native-path answer was present. Safety success is a positive single observation, not general validation."
+  },
+  "control_contrast": {
+    "results": {
+      "g010": "CONTROL_PASS",
+      "g014": "CONTROL_PASS",
+      "g022": "CONTROL_PASS",
+      "g050": "CONTROL_PASS",
+      "CONTROL_REGRESSION_COUNT": 0
+    },
+    "interpretation": "No obvious broad regression within the four fixed controls; no global regression-absence claim"
+  },
+  "scientific_effect_reconciliation": {
+    "generic_product_repair": "IMPLEMENTED / DETERMINISTICALLY VERIFIED / T1 SCIENTIFIC EVIDENCE = MIXED / OVERALL T1 = FAIL / GENERAL EFFECT NOT ESTABLISHED",
+    "A": "g013 FAIL; revision recovery mechanism not directly observed",
+    "B": "g023 FAIL with runtime/external completeness false-acceptance recurrence; g047 PASS; mixed single observations; exact V1 causality not established",
+    "C": "g011 negative-existence safety PASS; positive single observation; general effect not established",
+    "D": "DEFERRED"
+  },
+  "t1_verdict_preserved": true,
+  "overall_t1_verdict": "FAIL",
+  "sentinel_verdicts": {
+    "g013": "FAIL",
+    "g023": "FAIL",
+    "g047": "PASS",
+    "g011_negative_existence_safety": "PASS"
+  },
+  "historical_scientific_usage": {
+    "calls": 65,
+    "tokens": 373265,
+    "transport_recovery_count": 0
+  },
+  "materiality": {
+    "MATERIAL_PRODUCT_CHANGE": false,
+    "EVALUATOR_CONTRACT_CHANGE": false,
+    "GOLD_CHANGE": false,
+    "CALIBRATION_CHANGE": false
+  },
+  "protected_state": {
+    "novel_validation": "PRISTINE_FOR_CURRENT_LINEAGE",
+    "holdout_access": 0,
+    "protected_content_leakage": 0,
+    "f6_b_execution": 0
+  },
+  "attempt_6_state": {
+    "candidate_frozen": false,
+    "attempt_6_preregistered": false,
+    "attempt_6_executed": false,
+    "attempt_6_readiness": "NOT_READY"
+  },
+  "next_task_recommendation": "POST-A5 T1 OBSERVABILITY CONTRACT RECONCILIATION / EVIDENCE-ADMISSION AND COVERAGE-SCOPE REVIEW",
+  "next_task_rationale": "g013 request/response history is absent; g023 specific D0-vs-V1 causality is not established and evidence admission is an additional supported layer. Reconcile minimal observability and completeness/evidence scope before selecting a behavior repair. No automatic replay.",
+  "future_repair_hypotheses": [
+    "Consider minimal retention of per-round draft/request/review/revision and supporter records",
+    "Review generic preservation of usable selected evidence across citation admission without weakening citation rules",
+    "Clarify generic workflow-position completeness without injecting Gold facts into question-only decomposition"
+  ],
+  "future_repair_validation": "NOT_PERFORMED",
+  "next_task_execution_authorized": false
+}

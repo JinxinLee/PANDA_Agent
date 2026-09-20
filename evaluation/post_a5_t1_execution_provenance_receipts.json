@@ -1,0 +1,711 @@
+{
+  "schema_version": "post-a5-t1-execution-provenance-receipts-v1",
+  "role": "Forward-only offline content receipts for already completed T1 runs; no scientific execution",
+  "starting_head": "3d9ca981680ac44940816c294fcc85c9bfc19689",
+  "t1_preregistration_commit": "421c13a6efc76a845cfd61388e1e2520eea799a7",
+  "preregistration_commit_timestamp": "2026-09-20T02:00:59+02:00",
+  "execution_repository_head": "421c13a6efc76a845cfd61388e1e2520eea799a7",
+  "preregistration_chronology_status": "VERIFIED",
+  "timestamp_caveat": "record.completed_at is populated before _execute_evaluation_case (evaluation_runner.py:1765); record.attempted_at is populated when appending the finished record (evaluation.py:2278). Preserve literal fields, use run_status attempt times for the execution interval. No filesystem timestamps used as scientific chronology.",
+  "formal_runner_decision_caveat": "All raw runs say INCONCLUSIVE / INVALID_CANDIDATE_IDENTITY because no formal candidate was bound. This was preregistered development T1, explicitly not a candidate freeze or formal release gate; complete case measurements and the fixed sentinel rule still yield T1 FAIL.",
+  "usage_artifact_note": "No separate usage file exists in these directories. run_status.json and stage_receipt.json persist usage; canonical records persist the model-call breakdown and external evaluation metrics.",
+  "hash_scope": "Six important existing files per run; existing stage-receipt digests additionally verified against six original files per run. No raw content copied into Git.",
+  "new_scientific_calls": 0,
+  "new_scientific_tokens": 0,
+  "raw_run_artifacts_committed_to_git": false,
+  "runs": [
+    {
+      "case_id": "g011",
+      "run_id": "post-a5-t1-g011",
+      "run_directory": "data/evaluation/runs/post-a5-t1-g011",
+      "manifest_run_started_at": "2026-09-20T00:01:33.475950+00:00",
+      "started_at": "2026-09-20T00:01:37.753251+00:00",
+      "completed_at": "2026-09-20T00:03:13.432051+00:00",
+      "timestamp_source": "run_status.json attempt_started_at / attempt_completed_at",
+      "raw_record_completed_at": "2026-09-20T00:01:37.753275+00:00",
+      "raw_record_attempted_at": "2026-09-20T00:03:13.403657+00:00",
+      "receipt_generated_at": "2026-09-20T00:03:13.887022+00:00",
+      "manifest_created_at": null,
+      "execution_repository_head": "421c13a6efc76a845cfd61388e1e2520eea799a7",
+      "repository_dirty": false,
+      "execution_identity_sources": [
+        "manifest.json#/repository_identity",
+        "traces/g011.json#/implementation_identity/repository_identity",
+        "stage_receipt.json#/identities/implementation_git_commit"
+      ],
+      "product_behavior_head": "e79d3232ed132a224cbceaf3524e19a1406bd648",
+      "product_behavior_head_source": "preregistration plus empty Git source/test/config/benchmark diff from product head to execution head; not a raw per-run field",
+      "prompt_fingerprint": "0a5b2909ef586671d533148979fc681c64e37528ad53781a4566cb9044835ba2",
+      "gold_identity": {
+        "benchmark_version": "m6-benchmark-v2.11",
+        "dataset_sha256": "39943c6a3f2152e476109c0340acd066795c8de6ff3b6bb2eac6661ac480a417"
+      },
+      "calibration_identity": {
+        "calibration_id": "phase_b_t3_product_language_scope_v8",
+        "formal_english": 59,
+        "non_english": 21,
+        "selector_sha256": "e27ef67a866274b4a8441b789ca78fc3ccb7e022eed537c7442e15230777a0e5"
+      },
+      "calibration_identity_source": "committed preregistration; no per-run calibration identity persisted in manifest/receipt",
+      "exit_status": null,
+      "exit_status_provenance": "shell process exit code not retained in inspected run artifacts",
+      "execution_status": "complete",
+      "cohort_status": "COMPLETE",
+      "formal_runner_decision": "INCONCLUSIVE",
+      "formal_runner_decision_reason": "INVALID_CANDIDATE_IDENTITY",
+      "calls": 8,
+      "tokens": 34056,
+      "transport_recovery_count": 0,
+      "transport_recovery_source": "one successful attempts.jsonl row per case, no exception; consistent with frozen T1 result",
+      "raw_run_artifacts_committed_to_git": false,
+      "artifacts": [
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g011/manifest.json",
+          "size": 3517,
+          "sha256": "c9c77359989096ddae28f1906f154d35f844fb0f42406394c07f81a98d9ae338"
+        },
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g011/records/g011.json",
+          "size": 48092,
+          "sha256": "f0222610000f87d26064f46f33bb7daedf45e4602690898d0b02c9c7c7d36432"
+        },
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g011/traces/g011.json",
+          "size": 91356,
+          "sha256": "a4dadef37b9a82e8a3f1ddde4f6e05838ad8fee0216c06105c63f06a2f12737c"
+        },
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g011/run_status.json",
+          "size": 933,
+          "sha256": "03548d533e87b0db98c1488f1dd195af8f897fb5819ca77db33dab057409de78"
+        },
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g011/stage_receipt.json",
+          "size": 2343,
+          "sha256": "0b6059719754b12ffaf69df32e6101af78044e1355b64c43cfe83bae863f3d2c"
+        },
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g011/metrics.json",
+          "size": 3079,
+          "sha256": "5a515d596d1b1c47bd72120f179939e1f89014bcf0dfbd10471be08f3cc0852a"
+        }
+      ],
+      "existing_receipt_file_digest_checks": {
+        "manifest.json": "MATCH",
+        "results.jsonl": "MATCH",
+        "retrieval_traces.jsonl": "MATCH",
+        "gate.json": "MATCH",
+        "metrics.json": "MATCH",
+        "attempts.jsonl": "MATCH"
+      },
+      "aggregate_record_and_trace_equal_canonical": true
+    },
+    {
+      "case_id": "g010",
+      "run_id": "post-a5-t1-g010",
+      "run_directory": "data/evaluation/runs/post-a5-t1-g010",
+      "manifest_run_started_at": "2026-09-20T00:03:19.634171+00:00",
+      "started_at": "2026-09-20T00:03:23.867865+00:00",
+      "completed_at": "2026-09-20T00:05:21.656946+00:00",
+      "timestamp_source": "run_status.json attempt_started_at / attempt_completed_at",
+      "raw_record_completed_at": "2026-09-20T00:03:23.867890+00:00",
+      "raw_record_attempted_at": "2026-09-20T00:05:21.633371+00:00",
+      "receipt_generated_at": "2026-09-20T00:05:22.103285+00:00",
+      "manifest_created_at": null,
+      "execution_repository_head": "421c13a6efc76a845cfd61388e1e2520eea799a7",
+      "repository_dirty": false,
+      "execution_identity_sources": [
+        "manifest.json#/repository_identity",
+        "traces/g010.json#/implementation_identity/repository_identity",
+        "stage_receipt.json#/identities/implementation_git_commit"
+      ],
+      "product_behavior_head": "e79d3232ed132a224cbceaf3524e19a1406bd648",
+      "product_behavior_head_source": "preregistration plus empty Git source/test/config/benchmark diff from product head to execution head; not a raw per-run field",
+      "prompt_fingerprint": "0a5b2909ef586671d533148979fc681c64e37528ad53781a4566cb9044835ba2",
+      "gold_identity": {
+        "benchmark_version": "m6-benchmark-v2.11",
+        "dataset_sha256": "39943c6a3f2152e476109c0340acd066795c8de6ff3b6bb2eac6661ac480a417"
+      },
+      "calibration_identity": {
+        "calibration_id": "phase_b_t3_product_language_scope_v8",
+        "formal_english": 59,
+        "non_english": 21,
+        "selector_sha256": "e27ef67a866274b4a8441b789ca78fc3ccb7e022eed537c7442e15230777a0e5"
+      },
+      "calibration_identity_source": "committed preregistration; no per-run calibration identity persisted in manifest/receipt",
+      "exit_status": null,
+      "exit_status_provenance": "shell process exit code not retained in inspected run artifacts",
+      "execution_status": "complete",
+      "cohort_status": "COMPLETE",
+      "formal_runner_decision": "INCONCLUSIVE",
+      "formal_runner_decision_reason": "INVALID_CANDIDATE_IDENTITY",
+      "calls": 7,
+      "tokens": 28130,
+      "transport_recovery_count": 0,
+      "transport_recovery_source": "one successful attempts.jsonl row per case, no exception; consistent with frozen T1 result",
+      "raw_run_artifacts_committed_to_git": false,
+      "artifacts": [
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g010/manifest.json",
+          "size": 3517,
+          "sha256": "4e413d579f9e09bcd6497a6cdb5534dc5951de97d5a18943e040acaa490635ba"
+        },
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g010/records/g010.json",
+          "size": 52316,
+          "sha256": "d099b120cc7b63b26bddbbb169633100f414cba780fdbf9cbc1ddbc83240f626"
+        },
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g010/traces/g010.json",
+          "size": 100580,
+          "sha256": "af578581184aeb32ea74b4b76f98ca80b24df5156aaf096a95921a9fe735d86e"
+        },
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g010/run_status.json",
+          "size": 933,
+          "sha256": "819d1142db6a6fe63c5a70b0844c911dae7cb0252325ec193870c4a2a7511c17"
+        },
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g010/stage_receipt.json",
+          "size": 2343,
+          "sha256": "891e002e647fd2a2fa9222da7fb84d307f7fc573abd662d54eae27cbe9a19a07"
+        },
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g010/metrics.json",
+          "size": 3081,
+          "sha256": "3c03beac0e19caa8b9cf480007d0ac9ff692a0d46f80ced737363c068bfcd80e"
+        }
+      ],
+      "existing_receipt_file_digest_checks": {
+        "manifest.json": "MATCH",
+        "results.jsonl": "MATCH",
+        "retrieval_traces.jsonl": "MATCH",
+        "gate.json": "MATCH",
+        "metrics.json": "MATCH",
+        "attempts.jsonl": "MATCH"
+      },
+      "aggregate_record_and_trace_equal_canonical": true
+    },
+    {
+      "case_id": "g013",
+      "run_id": "post-a5-t1-g013",
+      "run_directory": "data/evaluation/runs/post-a5-t1-g013",
+      "manifest_run_started_at": "2026-09-20T00:05:27.787041+00:00",
+      "started_at": "2026-09-20T00:05:32.016092+00:00",
+      "completed_at": "2026-09-20T00:10:06.337934+00:00",
+      "timestamp_source": "run_status.json attempt_started_at / attempt_completed_at",
+      "raw_record_completed_at": "2026-09-20T00:05:32.016121+00:00",
+      "raw_record_attempted_at": "2026-09-20T00:10:06.313145+00:00",
+      "receipt_generated_at": "2026-09-20T00:10:06.774157+00:00",
+      "manifest_created_at": null,
+      "execution_repository_head": "421c13a6efc76a845cfd61388e1e2520eea799a7",
+      "repository_dirty": false,
+      "execution_identity_sources": [
+        "manifest.json#/repository_identity",
+        "traces/g013.json#/implementation_identity/repository_identity",
+        "stage_receipt.json#/identities/implementation_git_commit"
+      ],
+      "product_behavior_head": "e79d3232ed132a224cbceaf3524e19a1406bd648",
+      "product_behavior_head_source": "preregistration plus empty Git source/test/config/benchmark diff from product head to execution head; not a raw per-run field",
+      "prompt_fingerprint": "0a5b2909ef586671d533148979fc681c64e37528ad53781a4566cb9044835ba2",
+      "gold_identity": {
+        "benchmark_version": "m6-benchmark-v2.11",
+        "dataset_sha256": "39943c6a3f2152e476109c0340acd066795c8de6ff3b6bb2eac6661ac480a417"
+      },
+      "calibration_identity": {
+        "calibration_id": "phase_b_t3_product_language_scope_v8",
+        "formal_english": 59,
+        "non_english": 21,
+        "selector_sha256": "e27ef67a866274b4a8441b789ca78fc3ccb7e022eed537c7442e15230777a0e5"
+      },
+      "calibration_identity_source": "committed preregistration; no per-run calibration identity persisted in manifest/receipt",
+      "exit_status": null,
+      "exit_status_provenance": "shell process exit code not retained in inspected run artifacts",
+      "execution_status": "complete",
+      "cohort_status": "COMPLETE",
+      "formal_runner_decision": "INCONCLUSIVE",
+      "formal_runner_decision_reason": "INVALID_CANDIDATE_IDENTITY",
+      "calls": 14,
+      "tokens": 60764,
+      "transport_recovery_count": 0,
+      "transport_recovery_source": "one successful attempts.jsonl row per case, no exception; consistent with frozen T1 result",
+      "raw_run_artifacts_committed_to_git": false,
+      "artifacts": [
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g013/manifest.json",
+          "size": 3517,
+          "sha256": "85a6c4731108d4443dffa14c2b32f7025d15dc392ced6e0472b82f716ce94c60"
+        },
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g013/records/g013.json",
+          "size": 63091,
+          "sha256": "d93e5724ab7754b65fb855f4289c662e1fbffc8321c27b83f1f6528bf3209d97"
+        },
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g013/traces/g013.json",
+          "size": 106184,
+          "sha256": "8009fcd418f3c34c72f1a072e4b3c3ccaf6c1a94ce1f17718ea68f7a7749d079"
+        },
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g013/run_status.json",
+          "size": 936,
+          "sha256": "f6319afba0d56838b2f706595a088f281a7bb89b2842da385f5c1068e316004a"
+        },
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g013/stage_receipt.json",
+          "size": 2344,
+          "sha256": "aef5d8f934cce6a42f729b4fa9ea7b2696b7a7698c449a6fa478f695c684490b"
+        },
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g013/metrics.json",
+          "size": 3091,
+          "sha256": "2fba54f095e5d9686cb77aba16f6b89db05402f8a1bae7b19830a592ab57987b"
+        }
+      ],
+      "existing_receipt_file_digest_checks": {
+        "manifest.json": "MATCH",
+        "results.jsonl": "MATCH",
+        "retrieval_traces.jsonl": "MATCH",
+        "gate.json": "MATCH",
+        "metrics.json": "MATCH",
+        "attempts.jsonl": "MATCH"
+      },
+      "aggregate_record_and_trace_equal_canonical": true
+    },
+    {
+      "case_id": "g014",
+      "run_id": "post-a5-t1-g014",
+      "run_directory": "data/evaluation/runs/post-a5-t1-g014",
+      "manifest_run_started_at": "2026-09-20T00:10:12.577089+00:00",
+      "started_at": "2026-09-20T00:10:16.975586+00:00",
+      "completed_at": "2026-09-20T00:11:49.656264+00:00",
+      "timestamp_source": "run_status.json attempt_started_at / attempt_completed_at",
+      "raw_record_completed_at": "2026-09-20T00:10:16.975610+00:00",
+      "raw_record_attempted_at": "2026-09-20T00:11:49.633825+00:00",
+      "receipt_generated_at": "2026-09-20T00:11:50.112103+00:00",
+      "manifest_created_at": null,
+      "execution_repository_head": "421c13a6efc76a845cfd61388e1e2520eea799a7",
+      "repository_dirty": false,
+      "execution_identity_sources": [
+        "manifest.json#/repository_identity",
+        "traces/g014.json#/implementation_identity/repository_identity",
+        "stage_receipt.json#/identities/implementation_git_commit"
+      ],
+      "product_behavior_head": "e79d3232ed132a224cbceaf3524e19a1406bd648",
+      "product_behavior_head_source": "preregistration plus empty Git source/test/config/benchmark diff from product head to execution head; not a raw per-run field",
+      "prompt_fingerprint": "0a5b2909ef586671d533148979fc681c64e37528ad53781a4566cb9044835ba2",
+      "gold_identity": {
+        "benchmark_version": "m6-benchmark-v2.11",
+        "dataset_sha256": "39943c6a3f2152e476109c0340acd066795c8de6ff3b6bb2eac6661ac480a417"
+      },
+      "calibration_identity": {
+        "calibration_id": "phase_b_t3_product_language_scope_v8",
+        "formal_english": 59,
+        "non_english": 21,
+        "selector_sha256": "e27ef67a866274b4a8441b789ca78fc3ccb7e022eed537c7442e15230777a0e5"
+      },
+      "calibration_identity_source": "committed preregistration; no per-run calibration identity persisted in manifest/receipt",
+      "exit_status": null,
+      "exit_status_provenance": "shell process exit code not retained in inspected run artifacts",
+      "execution_status": "complete",
+      "cohort_status": "COMPLETE",
+      "formal_runner_decision": "INCONCLUSIVE",
+      "formal_runner_decision_reason": "INVALID_CANDIDATE_IDENTITY",
+      "calls": 7,
+      "tokens": 37563,
+      "transport_recovery_count": 0,
+      "transport_recovery_source": "one successful attempts.jsonl row per case, no exception; consistent with frozen T1 result",
+      "raw_run_artifacts_committed_to_git": false,
+      "artifacts": [
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g014/manifest.json",
+          "size": 3517,
+          "sha256": "b9033c0684dafb1db5e71151ced7d529f759dbdc7feefedd1961cd8316259449"
+        },
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g014/records/g014.json",
+          "size": 62418,
+          "sha256": "6a12e03b7ef3d315bb8ec5a02c5b4f4ad1bd00d42a27e50e421dc2993883ab26"
+        },
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g014/traces/g014.json",
+          "size": 100700,
+          "sha256": "9b7c06dea60b4dfdf1e3912fcfa1209bbf34e996da3645e8d5af9e1aafed84b0"
+        },
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g014/run_status.json",
+          "size": 933,
+          "sha256": "fffe8d5e3d45c974369d07a62113cd1aa89bd31e58b9b10adf999f471d0989d8"
+        },
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g014/stage_receipt.json",
+          "size": 2343,
+          "sha256": "594c41db18f2408c40f88482721d44348e8ed4a365eef077f5a85466f72345fe"
+        },
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g014/metrics.json",
+          "size": 3072,
+          "sha256": "be3b885059bb11bdcff183a3c06d7203461f64fd7dbd4026ca8fa146c910494d"
+        }
+      ],
+      "existing_receipt_file_digest_checks": {
+        "manifest.json": "MATCH",
+        "results.jsonl": "MATCH",
+        "retrieval_traces.jsonl": "MATCH",
+        "gate.json": "MATCH",
+        "metrics.json": "MATCH",
+        "attempts.jsonl": "MATCH"
+      },
+      "aggregate_record_and_trace_equal_canonical": true
+    },
+    {
+      "case_id": "g023",
+      "run_id": "post-a5-t1-g023",
+      "run_directory": "data/evaluation/runs/post-a5-t1-g023",
+      "manifest_run_started_at": "2026-09-20T00:11:55.792278+00:00",
+      "started_at": "2026-09-20T00:12:00.103934+00:00",
+      "completed_at": "2026-09-20T00:13:30.636878+00:00",
+      "timestamp_source": "run_status.json attempt_started_at / attempt_completed_at",
+      "raw_record_completed_at": "2026-09-20T00:12:00.103971+00:00",
+      "raw_record_attempted_at": "2026-09-20T00:13:30.614215+00:00",
+      "receipt_generated_at": "2026-09-20T00:13:31.072664+00:00",
+      "manifest_created_at": null,
+      "execution_repository_head": "421c13a6efc76a845cfd61388e1e2520eea799a7",
+      "repository_dirty": false,
+      "execution_identity_sources": [
+        "manifest.json#/repository_identity",
+        "traces/g023.json#/implementation_identity/repository_identity",
+        "stage_receipt.json#/identities/implementation_git_commit"
+      ],
+      "product_behavior_head": "e79d3232ed132a224cbceaf3524e19a1406bd648",
+      "product_behavior_head_source": "preregistration plus empty Git source/test/config/benchmark diff from product head to execution head; not a raw per-run field",
+      "prompt_fingerprint": "0a5b2909ef586671d533148979fc681c64e37528ad53781a4566cb9044835ba2",
+      "gold_identity": {
+        "benchmark_version": "m6-benchmark-v2.11",
+        "dataset_sha256": "39943c6a3f2152e476109c0340acd066795c8de6ff3b6bb2eac6661ac480a417"
+      },
+      "calibration_identity": {
+        "calibration_id": "phase_b_t3_product_language_scope_v8",
+        "formal_english": 59,
+        "non_english": 21,
+        "selector_sha256": "e27ef67a866274b4a8441b789ca78fc3ccb7e022eed537c7442e15230777a0e5"
+      },
+      "calibration_identity_source": "committed preregistration; no per-run calibration identity persisted in manifest/receipt",
+      "exit_status": null,
+      "exit_status_provenance": "shell process exit code not retained in inspected run artifacts",
+      "execution_status": "complete",
+      "cohort_status": "COMPLETE",
+      "formal_runner_decision": "INCONCLUSIVE",
+      "formal_runner_decision_reason": "INVALID_CANDIDATE_IDENTITY",
+      "calls": 7,
+      "tokens": 42239,
+      "transport_recovery_count": 0,
+      "transport_recovery_source": "one successful attempts.jsonl row per case, no exception; consistent with frozen T1 result",
+      "raw_run_artifacts_committed_to_git": false,
+      "artifacts": [
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g023/manifest.json",
+          "size": 3517,
+          "sha256": "5531ec4c2b1e3eb88e3eb76ded97c59791c48d59cadefd4d17a25bb6839c6a20"
+        },
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g023/records/g023.json",
+          "size": 105596,
+          "sha256": "f58bdca342d0f745d58a477e39f190bacb316d7fb7b42aa128fed0fc2ee72fbb"
+        },
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g023/traces/g023.json",
+          "size": 145161,
+          "sha256": "e188f101cb2c8a0bf345ae8a8965827dc25aedad199f92d00f3e14461d395a8a"
+        },
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g023/run_status.json",
+          "size": 933,
+          "sha256": "3f5dbbb72c83bebb3030c84ff638ad744c2e063bfddfa6cde601b03de3d084c4"
+        },
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g023/stage_receipt.json",
+          "size": 2343,
+          "sha256": "4bb6085b811656694cb4d22a727385b740a6812ab17f2818834d4a100ec47671"
+        },
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g023/metrics.json",
+          "size": 3087,
+          "sha256": "a75a6fb08b91aaf17339f2b15c557bab5a36cea98552e3b6fb500a2a7595d022"
+        }
+      ],
+      "existing_receipt_file_digest_checks": {
+        "manifest.json": "MATCH",
+        "results.jsonl": "MATCH",
+        "retrieval_traces.jsonl": "MATCH",
+        "gate.json": "MATCH",
+        "metrics.json": "MATCH",
+        "attempts.jsonl": "MATCH"
+      },
+      "aggregate_record_and_trace_equal_canonical": true
+    },
+    {
+      "case_id": "g022",
+      "run_id": "post-a5-t1-g022",
+      "run_directory": "data/evaluation/runs/post-a5-t1-g022",
+      "manifest_run_started_at": "2026-09-20T00:13:36.705793+00:00",
+      "started_at": "2026-09-20T00:13:41.134128+00:00",
+      "completed_at": "2026-09-20T00:16:49.467755+00:00",
+      "timestamp_source": "run_status.json attempt_started_at / attempt_completed_at",
+      "raw_record_completed_at": "2026-09-20T00:13:41.134157+00:00",
+      "raw_record_attempted_at": "2026-09-20T00:16:49.446159+00:00",
+      "receipt_generated_at": "2026-09-20T00:16:49.906908+00:00",
+      "manifest_created_at": null,
+      "execution_repository_head": "421c13a6efc76a845cfd61388e1e2520eea799a7",
+      "repository_dirty": false,
+      "execution_identity_sources": [
+        "manifest.json#/repository_identity",
+        "traces/g022.json#/implementation_identity/repository_identity",
+        "stage_receipt.json#/identities/implementation_git_commit"
+      ],
+      "product_behavior_head": "e79d3232ed132a224cbceaf3524e19a1406bd648",
+      "product_behavior_head_source": "preregistration plus empty Git source/test/config/benchmark diff from product head to execution head; not a raw per-run field",
+      "prompt_fingerprint": "0a5b2909ef586671d533148979fc681c64e37528ad53781a4566cb9044835ba2",
+      "gold_identity": {
+        "benchmark_version": "m6-benchmark-v2.11",
+        "dataset_sha256": "39943c6a3f2152e476109c0340acd066795c8de6ff3b6bb2eac6661ac480a417"
+      },
+      "calibration_identity": {
+        "calibration_id": "phase_b_t3_product_language_scope_v8",
+        "formal_english": 59,
+        "non_english": 21,
+        "selector_sha256": "e27ef67a866274b4a8441b789ca78fc3ccb7e022eed537c7442e15230777a0e5"
+      },
+      "calibration_identity_source": "committed preregistration; no per-run calibration identity persisted in manifest/receipt",
+      "exit_status": null,
+      "exit_status_provenance": "shell process exit code not retained in inspected run artifacts",
+      "execution_status": "complete",
+      "cohort_status": "COMPLETE",
+      "formal_runner_decision": "INCONCLUSIVE",
+      "formal_runner_decision_reason": "INVALID_CANDIDATE_IDENTITY",
+      "calls": 8,
+      "tokens": 57804,
+      "transport_recovery_count": 0,
+      "transport_recovery_source": "one successful attempts.jsonl row per case, no exception; consistent with frozen T1 result",
+      "raw_run_artifacts_committed_to_git": false,
+      "artifacts": [
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g022/manifest.json",
+          "size": 3517,
+          "sha256": "cfe9d391c3ad9954bb6ebeb889d6c688ee6268bc589d1f0474f9d2b2c83a020b"
+        },
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g022/records/g022.json",
+          "size": 71929,
+          "sha256": "1af4c4a492582b5ab53493b949eec41b7412b1f4aa72a8db92bc589308b69be2"
+        },
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g022/traces/g022.json",
+          "size": 131765,
+          "sha256": "1d6aa078394fe5f30c6dbce189dadd69892391562fce471f7083930a27549ef3"
+        },
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g022/run_status.json",
+          "size": 933,
+          "sha256": "f4882b9eec17795565a93be3e4dbd1430d09533263ef788ea9b9c20a79df7230"
+        },
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g022/stage_receipt.json",
+          "size": 2343,
+          "sha256": "323f239c922929a40cbf08e91740f230bf52d19597bf856301e48a50f6995a80"
+        },
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g022/metrics.json",
+          "size": 3104,
+          "sha256": "9b18ca11f6b5792c9286fb5f67bc6747bfdc7003d260eb56d5b4022af36023d5"
+        }
+      ],
+      "existing_receipt_file_digest_checks": {
+        "manifest.json": "MATCH",
+        "results.jsonl": "MATCH",
+        "retrieval_traces.jsonl": "MATCH",
+        "gate.json": "MATCH",
+        "metrics.json": "MATCH",
+        "attempts.jsonl": "MATCH"
+      },
+      "aggregate_record_and_trace_equal_canonical": true
+    },
+    {
+      "case_id": "g047",
+      "run_id": "post-a5-t1-g047",
+      "run_directory": "data/evaluation/runs/post-a5-t1-g047",
+      "manifest_run_started_at": "2026-09-20T00:16:55.619339+00:00",
+      "started_at": "2026-09-20T00:17:00.134238+00:00",
+      "completed_at": "2026-09-20T00:18:32.379440+00:00",
+      "timestamp_source": "run_status.json attempt_started_at / attempt_completed_at",
+      "raw_record_completed_at": "2026-09-20T00:17:00.134261+00:00",
+      "raw_record_attempted_at": "2026-09-20T00:18:32.353784+00:00",
+      "receipt_generated_at": "2026-09-20T00:18:32.807724+00:00",
+      "manifest_created_at": null,
+      "execution_repository_head": "421c13a6efc76a845cfd61388e1e2520eea799a7",
+      "repository_dirty": false,
+      "execution_identity_sources": [
+        "manifest.json#/repository_identity",
+        "traces/g047.json#/implementation_identity/repository_identity",
+        "stage_receipt.json#/identities/implementation_git_commit"
+      ],
+      "product_behavior_head": "e79d3232ed132a224cbceaf3524e19a1406bd648",
+      "product_behavior_head_source": "preregistration plus empty Git source/test/config/benchmark diff from product head to execution head; not a raw per-run field",
+      "prompt_fingerprint": "0a5b2909ef586671d533148979fc681c64e37528ad53781a4566cb9044835ba2",
+      "gold_identity": {
+        "benchmark_version": "m6-benchmark-v2.11",
+        "dataset_sha256": "39943c6a3f2152e476109c0340acd066795c8de6ff3b6bb2eac6661ac480a417"
+      },
+      "calibration_identity": {
+        "calibration_id": "phase_b_t3_product_language_scope_v8",
+        "formal_english": 59,
+        "non_english": 21,
+        "selector_sha256": "e27ef67a866274b4a8441b789ca78fc3ccb7e022eed537c7442e15230777a0e5"
+      },
+      "calibration_identity_source": "committed preregistration; no per-run calibration identity persisted in manifest/receipt",
+      "exit_status": null,
+      "exit_status_provenance": "shell process exit code not retained in inspected run artifacts",
+      "execution_status": "complete",
+      "cohort_status": "COMPLETE",
+      "formal_runner_decision": "INCONCLUSIVE",
+      "formal_runner_decision_reason": "INVALID_CANDIDATE_IDENTITY",
+      "calls": 7,
+      "tokens": 45136,
+      "transport_recovery_count": 0,
+      "transport_recovery_source": "one successful attempts.jsonl row per case, no exception; consistent with frozen T1 result",
+      "raw_run_artifacts_committed_to_git": false,
+      "artifacts": [
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g047/manifest.json",
+          "size": 3517,
+          "sha256": "b3e19be9bb289df41c0cc25b6480b9964ed965c1f2750281220c3c6da71e5642"
+        },
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g047/records/g047.json",
+          "size": 69251,
+          "sha256": "239fc392518cf2b08e2d8630a8c60639ccb529c80630b9a1ba59aecd0256187a"
+        },
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g047/traces/g047.json",
+          "size": 88285,
+          "sha256": "875f737e47b95c2d25c0098f73e5081c6cb54759d5e114e1271d60027f25aacc"
+        },
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g047/run_status.json",
+          "size": 933,
+          "sha256": "031698bf8089bc4c8ff72deaf21f9093fe2435f69e75cdf959f4e5d4931cf9b3"
+        },
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g047/stage_receipt.json",
+          "size": 2343,
+          "sha256": "e050187d3060d6f8001f6e2da74fbcd65c7dbdc0c789fe40db99a3477172c28d"
+        },
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g047/metrics.json",
+          "size": 3083,
+          "sha256": "ee9817f52c2d4fe1bb9b426e7c4145bad351dda084dd816c930bd3d84fdc7576"
+        }
+      ],
+      "existing_receipt_file_digest_checks": {
+        "manifest.json": "MATCH",
+        "results.jsonl": "MATCH",
+        "retrieval_traces.jsonl": "MATCH",
+        "gate.json": "MATCH",
+        "metrics.json": "MATCH",
+        "attempts.jsonl": "MATCH"
+      },
+      "aggregate_record_and_trace_equal_canonical": true
+    },
+    {
+      "case_id": "g050",
+      "run_id": "post-a5-t1-g050",
+      "run_directory": "data/evaluation/runs/post-a5-t1-g050",
+      "manifest_run_started_at": "2026-09-20T00:18:38.523065+00:00",
+      "started_at": "2026-09-20T00:18:42.950046+00:00",
+      "completed_at": "2026-09-20T00:20:25.938331+00:00",
+      "timestamp_source": "run_status.json attempt_started_at / attempt_completed_at",
+      "raw_record_completed_at": "2026-09-20T00:18:42.950077+00:00",
+      "raw_record_attempted_at": "2026-09-20T00:20:25.915578+00:00",
+      "receipt_generated_at": "2026-09-20T00:20:26.359147+00:00",
+      "manifest_created_at": null,
+      "execution_repository_head": "421c13a6efc76a845cfd61388e1e2520eea799a7",
+      "repository_dirty": false,
+      "execution_identity_sources": [
+        "manifest.json#/repository_identity",
+        "traces/g050.json#/implementation_identity/repository_identity",
+        "stage_receipt.json#/identities/implementation_git_commit"
+      ],
+      "product_behavior_head": "e79d3232ed132a224cbceaf3524e19a1406bd648",
+      "product_behavior_head_source": "preregistration plus empty Git source/test/config/benchmark diff from product head to execution head; not a raw per-run field",
+      "prompt_fingerprint": "0a5b2909ef586671d533148979fc681c64e37528ad53781a4566cb9044835ba2",
+      "gold_identity": {
+        "benchmark_version": "m6-benchmark-v2.11",
+        "dataset_sha256": "39943c6a3f2152e476109c0340acd066795c8de6ff3b6bb2eac6661ac480a417"
+      },
+      "calibration_identity": {
+        "calibration_id": "phase_b_t3_product_language_scope_v8",
+        "formal_english": 59,
+        "non_english": 21,
+        "selector_sha256": "e27ef67a866274b4a8441b789ca78fc3ccb7e022eed537c7442e15230777a0e5"
+      },
+      "calibration_identity_source": "committed preregistration; no per-run calibration identity persisted in manifest/receipt",
+      "exit_status": null,
+      "exit_status_provenance": "shell process exit code not retained in inspected run artifacts",
+      "execution_status": "complete",
+      "cohort_status": "COMPLETE",
+      "formal_runner_decision": "INCONCLUSIVE",
+      "formal_runner_decision_reason": "INVALID_CANDIDATE_IDENTITY",
+      "calls": 7,
+      "tokens": 67573,
+      "transport_recovery_count": 0,
+      "transport_recovery_source": "one successful attempts.jsonl row per case, no exception; consistent with frozen T1 result",
+      "raw_run_artifacts_committed_to_git": false,
+      "artifacts": [
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g050/manifest.json",
+          "size": 3517,
+          "sha256": "0ee3e85294c9d5d0f6650caa5b42ad22e8b82684a8a038d648e0259c237c6498"
+        },
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g050/records/g050.json",
+          "size": 142455,
+          "sha256": "a9042889c5fdfbcd558c65e45c35b7b78985b893b8272b9993c20aeaf455ca9b"
+        },
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g050/traces/g050.json",
+          "size": 190710,
+          "sha256": "ebacbe3176040e828255b5555545374ca77e615646c4446a21709d2bbb114017"
+        },
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g050/run_status.json",
+          "size": 933,
+          "sha256": "55869d37069148430dbd80fdd17a52bdaf19e10eb2d06370e3eee45c5a4f3002"
+        },
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g050/stage_receipt.json",
+          "size": 2343,
+          "sha256": "6804d7af60be47ce4202b9ead89535a87b45c19047a02dacb0749c13d2e287b8"
+        },
+        {
+          "relative_path": "data/evaluation/runs/post-a5-t1-g050/metrics.json",
+          "size": 3085,
+          "sha256": "2eac97fa21ab5b4ebde809440d7a7d86c05e0e6102b6d7020da0659c1de1ced1"
+        }
+      ],
+      "existing_receipt_file_digest_checks": {
+        "manifest.json": "MATCH",
+        "results.jsonl": "MATCH",
+        "retrieval_traces.jsonl": "MATCH",
+        "gate.json": "MATCH",
+        "metrics.json": "MATCH",
+        "attempts.jsonl": "MATCH"
+      },
+      "aggregate_record_and_trace_equal_canonical": true
+    }
+  ],
+  "historical_scientific_usage": {
+    "calls": 65,
+    "tokens": 373265,
+    "transport_recovery_count": 0
+  }
+}
