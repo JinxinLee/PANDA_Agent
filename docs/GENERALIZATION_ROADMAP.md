@@ -256,18 +256,19 @@ D4 overall completion:
 UNDECIDED
 
 Current task:
-POST-A5 EA1 EXACT-BACKING EVIDENCE-ADMISSION IMPLEMENTATION (COMPLETE / PASS; deterministic validation only; material product change; zero scientific calls)
-POST_A5_EA1 = IMPLEMENTED / DETERMINISTICALLY VERIFIED / MATERIAL PRODUCT CHANGE / SCIENTIFIC EFFECT NOT YET EVALUATED (COMPLETE / PASS; 52 EA1 tests, 33 O1 tests, 332 focused regressions plus 49 subtests and 62 parent/E3 tests passed; four unrelated stale historical tests reproduced at baseline and isolated; scientific calls/tokens 0/0; prompt fingerprint unchanged). Record: `evaluation/POST_A5_EA1_EXACT_BACKING_EVIDENCE_ADMISSION_IMPLEMENTATION.md` (companion JSON). C1 = DESIGN_COMPLETE / NOT_IMPLEMENTED / NOT_AUTHORIZED; RS DEFER.
-POST_A5_O1 = IMPLEMENTED / DETERMINISTICALLY VERIFIED / BEHAVIOR_NEUTRAL (33 O1 tests pass under EA1; historical O1 implementation record preserved). Record: `evaluation/POST_A5_O1_BEHAVIOR_NEUTRAL_OBSERVABILITY_IMPLEMENTATION.md` (companion JSON).
+POST-A5 C1 BOUNDED COVERAGE-COMPLETENESS IMPLEMENTATION (COMPLETE / PASS; deterministic validation only; material product/prompt/schema change; zero scientific calls)
+POST_A5_C1 = IMPLEMENTED / DETERMINISTICALLY VERIFIED / MATERIAL PRODUCT CHANGE / SCIENTIFIC EFFECT NOT YET EVALUATED (COMPLETE / PASS; 69 C1 tests passed; 421 focused existing tests plus 49 subtests passed, including 33 O1 and 52 EA1 tests; one unrelated stale v2_6-default test reproduced at starting HEAD and isolated; scientific calls/tokens 0/0; production mode only). Prompt-set version 3.11.0; private schema coverage-satisfaction-v1; canonical fingerprint 03e1bf270898b28127a42fa2e1ccb24cfc1d87e177eeba5428ba4680d426352c. Record: `evaluation/POST_A5_C1_BOUNDED_COVERAGE_COMPLETENESS_IMPLEMENTATION.md` (companion JSON).
+POST_A5_EA1 = IMPLEMENTED / DETERMINISTICALLY VERIFIED / MATERIAL PRODUCT CHANGE / SCIENTIFIC EFFECT NOT YET EVALUATED (resolver contract unchanged; 52 focused tests pass under C1). Historical record: `evaluation/POST_A5_EA1_EXACT_BACKING_EVIDENCE_ADMISSION_IMPLEMENTATION.md` (companion JSON). RS DEFER.
+POST_A5_O1 = IMPLEMENTED / DETERMINISTICALLY VERIFIED / BEHAVIOR_NEUTRAL (33 O1 tests pass under C1; historical O1 implementation record preserved). Record: `evaluation/POST_A5_O1_BEHAVIOR_NEUTRAL_OBSERVABILITY_IMPLEMENTATION.md` (companion JSON).
 POST_A5_BOUNDED_PRODUCT_REPAIR_DESIGN = COMPLETE / PASS / BOUNDED_PRODUCT_REPAIR_DESIGN_READY (DESIGN_ONLY; 0 scientific calls / 0 tokens; O1 -> EA1 -> C1 with independent T0 gates; exact unique same-version backing with strict fallback; coverage bounds 4/point, 20 total, 2 basis references/check; RS DEFER; no implementation or scientific validation). Record: `evaluation/POST_A5_BOUNDED_PRODUCT_REPAIR_DESIGN.md` (companion JSON).
 POST_A5_T1_FAILURE_REVIEW = COMPLETE / PARTIAL / TRACE_OBSERVABILITY_AND_SEMANTIC_SCOPE_LIMITS_REMAIN (historical review at 09e7759; scientific findings preserved; causal taxonomy and chronology wording superseded forward by the contract reconciliation below).
 POST_A5_T1_CONTRACT_RECONCILIATION = COMPLETE / PASS / EVIDENCE_ADMISSION_COVERAGE_SCOPE_AND_OBSERVABILITY_CONTRACT_RECONCILED (static design-only; 0 scientific calls / 0 tokens; EA is post-retrieval admission, not retrieval loss; generation/verification asymmetry INTENTIONAL_BUT_UNDER-SPECIFIED; g013 A1_RECOVERY_OUTCOME = UNSUCCESSFUL / CONFIRMED, A1_CAUSAL_DEFECT = NOT_ESTABLISHED; g023 EA exclusion CONFIRMED, unique/reviewer-only cause NOT_ESTABLISHED; question-only D0 retained, proposed evidence-grounded satisfaction scope belongs to V1/V2; proposed diagnostics.qa_stage_trace and development runner status separation are NOT_IMPLEMENTED). Record: `evaluation/POST_A5_T1_OBSERVABILITY_EVIDENCE_ADMISSION_AND_COVERAGE_SCOPE_RECONCILIATION.md` (companion JSON).
 T1_PREREGISTRATION_CHRONOLOGY = VERIFIED_WITHIN_RETAINED_LOCAL_EVIDENCE; EXECUTION_REPOSITORY_HEAD = 421c13a6efc76a845cfd61388e1e2520eea799a7. No external trusted timestamp authority; frozen T1 verdict unchanged.
-REVIEW_MATERIALITY: MATERIAL_PRODUCT_CHANGE = false; EVALUATOR_CONTRACT_CHANGE = false; GOLD_CHANGE = false; CALIBRATION_CHANGE = false. Candidate frozen = false; Attempt 6 preregistered = false; Attempt 6 executed = false; ATTEMPT_6_READINESS = NOT_READY.
+T1_REVIEW_MATERIALITY: MATERIAL_PRODUCT_CHANGE = false; EVALUATOR_CONTRACT_CHANGE = false; GOLD_CHANGE = false; CALIBRATION_CHANGE = false. Candidate frozen = false; Attempt 6 preregistered = false; Attempt 6 executed = false; ATTEMPT_6_READINESS = NOT_READY.
 POST_A5_T1 = COMPLETE / FAIL; g013 FAIL, g023 FAIL, g047 PASS, g011 negative-existence safety PASS; controls 4x CONTROL_PASS; historical usage 65 calls / 373,265 tokens, transport recovery 0. T1 result and Attempt-5 verdict unchanged.
 ATTEMPT_5_STATUS = COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED (historical, immutable)
-PREVIOUS_PRODUCT_BEHAVIOR_LINEAGE_HEAD = e79d3232ed132a224cbceaf3524e19a1406bd648
-CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = 60dff40a671e62bffcbe0eb82d38ea6e9aeb05c4
+PREVIOUS_PRODUCT_BEHAVIOR_LINEAGE_HEAD = 60dff40a671e62bffcbe0eb82d38ea6e9aeb05c4
+CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = 5e0a3a3ae4828ea3b5831646e3d5d2c8f08cc9ed
 GENERIC_PRODUCT_REPAIR = IMPLEMENTED / DETERMINISTICALLY VERIFIED / T1 SCIENTIFIC EVIDENCE = MIXED / OVERALL T1 = FAIL / GENERAL EFFECT NOT ESTABLISHED. A: g013 FAIL, revision recovery mechanism not directly observed, exact historical/T1 ID-collision causality NOT_ESTABLISHED. B: g023 FAIL with outcome-level false-acceptance recurrence, g047 PASS, mixed single observations; specific V1-only causality NOT_ESTABLISHED. C: g011 safety PASS, positive single observation, general effect not established; C_NATIVE_DOCUMENTATION_ROLE_COVERAGE = FAIL (legacy T1 C_RETRIEVAL_COMPLETENESS = FAIL means native-documentation role coverage, not no usable native-path information). D: DEFERRED.
 NORMAL_PRODUCT_MODE = production_answer_obligations_v1
 ATTEMPT_5_PREREGISTRATION_COMMIT = eacbf447eee2527b85e0e47073d8584c64a4a3f4
@@ -281,12 +282,12 @@ F6_B = LOCKED / F6_A_DID_NOT_PASS
 ATTEMPT_5 = COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED
 
 Next task recommendation:
-POST-A5 C1 BOUNDED COVERAGE-COMPLETENESS IMPLEMENTATION
-(NOT AUTHORIZED; no RS or scientific replay; NO ATTEMPT 6)
+POST-A5 O1+EA1+C1 DETERMINISTIC INTEGRATION CLOSEOUT
+(NOT AUTHORIZED; no scientific replay; NO ATTEMPT 6)
 
 Current task authorization:
 NEXT_TASK_EXECUTION_AUTHORIZED = false
-The authorized EA1 implementation is complete and materially changes evidence admission under deterministic validation; scientific effectiveness is not evaluated. O1 remains behavior-neutral. C1 remains not implemented and requires separate authorization; RS remains deferred. No historical T1 stages were backfilled. Attempt 6 remains NOT_READY.
+The authorized C1 implementation is complete and materially changes production completeness, bounded recovery and partial-answer status under deterministic validation; scientific effectiveness is not evaluated. O1 remains behavior-neutral; EA1 and historical shadow/runtime/legacy contracts are preserved. The next deterministic integration closeout is not authorized or executed. RS remains deferred. No historical T1 stages were backfilled. Attempt 6 remains NOT_READY.
 
 E3-A2 completed INCONCLUSIVE (1/11 natural applicability; the single applicable pair was descriptive only). E3-LR1 subsequently reconciled the lifecycle with zero scientific calls: E3 closes as a bounded low-frequency fallback (SCIENTIFIC_RECOVERY_BENEFIT_UNRESOLVED); dedicated revalidation is not planned; future E3 evidence accumulates opportunistically in broader authorized evaluations.
 
