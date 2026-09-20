@@ -165,6 +165,39 @@ def bundle_for(
     }
 
 
+def production_review_fixture(result, payload):
+    """Supply explicit C1 records for older scripted production test judgments.
+
+    This is a fake judgment adapter, not a semantic oracle. Historical-mode
+    responses and explicitly authored C1 responses are returned untouched.
+    """
+    from copy import deepcopy
+    if "coverage_satisfaction_schema_version" not in payload:
+        return result
+    result = deepcopy(result)
+    records = result.get("answer_point_coverage", [])
+    if any("scope_status" in p for p in records):
+        return result
+    admitted = {e["evidence_id"]: e for e in payload["untrusted_evidence"]
+                if e["evidence_id"] in payload["admitted_evidence_ids"]}
+    claims = {c["claim_id"]: c for c in payload["untrusted_claims"]}
+    for p in records:
+        supporters = p["supporting_claim_ids"]
+        checks = []
+        for ordinal, cid in enumerate(supporters or [None]):
+            possible = set(claims.get(cid, {}).get("evidence_ids", [])) if cid else set(admitted)
+            eid = next((eid for eid in admitted if eid in possible), None)
+            if not eid:
+                continue
+            basis = [{"evidence_id": eid, "quote": admitted[eid]["text"][:400]}]
+            checks.append({"relationship_text": f"Requested contribution {ordinal} for " + p["answer_point_id"],
+                       "necessity_reason": "Scripted fixture judges this contribution necessary.", "basis": basis,
+                       "supporting_claim_ids": [cid] if cid else [], "satisfied": p["complete"],
+                       "admission_state": "ADMITTED_BACKING_AVAILABLE"})
+        p.update(scope_status="ESTABLISHED" if checks else "INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE", relationship_checks=checks)
+    return result
+
+
 class FakeVertex:
     """A deterministic model double that follows the production claim schema."""
 
@@ -214,7 +247,7 @@ class FakeVertex:
                     for record in result["answer_point_coverage"]
                     if not record["complete"]
                 ]
-            return result
+            return production_review_fixture(result, payload)
         point_id = (payload.get("runtime_answer_points") or [{"answer_point_id": "question_core"}])[0]["answer_point_id"]
         return {
             "claims": [
@@ -338,7 +371,7 @@ class PartialRevisionVertex:
                     }
                     for point_id in point_ids
                 ]
-            return result
+            return production_review_fixture(result, payload)
         task = payload["task"]
         if task == "revise_unsupported_claims_once":
             return {"claims": []}
@@ -1355,7 +1388,7 @@ class QATests(unittest.TestCase):
 
         # F5 bumped the prompt set for the bounded answer composer.
         # F5-R1 bumped the prompt set for the bounded provenance clarification.
-        self.assertEqual(PROMPT_SET_VERSION, "3.10.1")
+        self.assertEqual(PROMPT_SET_VERSION, "3.11.0")
         for prompt in (ANSWER_SYSTEM_PROMPT, REVISION_SYSTEM_PROMPT):
             self.assertIn("answer_requirements", prompt)
         self.assertIn("factory/composition", EVALUATION_JUDGE_SYSTEM_PROMPT)
@@ -2125,7 +2158,7 @@ class CoverageReviewVertex(FakeVertex):
                     }
                     for point_id in point_ids
                 ]
-            return review
+            return production_review_fixture(review, payload)
         return super().generate_json(prompt, schema, **kwargs)
 
 
@@ -3128,7 +3161,7 @@ class RecordingRoleVertex(FakeVertex):
                     }
                     for point_id in point_ids
                 ]
-            return review
+            return production_review_fixture(review, payload)
         return super().generate_json(prompt, schema, **kwargs)
 
     def _record_usage(self, kwargs):

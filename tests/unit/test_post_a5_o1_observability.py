@@ -9,7 +9,7 @@ from panda_agent.evaluation_runner import prompt_fingerprint
 from test_e2_a1_answer_point_coverage import Vertex, agent, claim, review, QUESTION
 
 
-FINGERPRINT = "0a5b2909ef586671d533148979fc681c64e37528ad53781a4566cb9044835ba2"
+FINGERPRINT = "03e1bf270898b28127a42fa2e1ccb24cfc1d87e177eeba5428ba4680d426352c"
 
 
 class RecordingVertex(Vertex):
@@ -121,7 +121,9 @@ def test_raw_structural_rejection_survives_fallback(tmp_path):
     off, on = execute(tmp_path, **args), execute(tmp_path, True, **args)
     assert_neutral(off, on)
     payload = event(on[0], "V1_OUTPUT")["payload"]
-    assert payload["response"] == bad
+    from test_qa import production_review_fixture
+    actual_input = next(json.loads(p) for p, _, _ in on[1] if json.loads(p)["task"] == "review_claim_support_and_relevance")
+    assert payload["response"] == production_review_fixture(bad, actual_input)
     assert payload["validation"]["status"] == "REJECTED"
     assert payload["validation"]["error"]
 
@@ -150,7 +152,8 @@ def test_single_claim_bypass_and_evidence_projection_registry(tmp_path):
     ref = model_input["untrusted_evidence"][0]["evidence_projection_ref"]
     actual = next(json.loads(c[0]) for c in on[1] if json.loads(c[0])["task"] == "review_claim_support_and_relevance")
     assert trace["evidence_registry"][ref] == actual["untrusted_evidence"][0]
-    assert "untrusted_question" not in model_input
+    assert model_input["untrusted_question"] == QUESTION
+    assert model_input["coverage_satisfaction_schema_version"] == "coverage-satisfaction-v1"
 
 
 @pytest.mark.parametrize("failure", ["serialization", "record", "assembly", "initialization"])

@@ -14,7 +14,7 @@ from panda_agent.qa import (
     QAAgent, ANSWER_SCHEMA, REVIEW_SCHEMA, ANSWER_POINT_COVERAGE_REVIEW_SCHEMA,
     _active_runtime_answer_points, _validate_answer_point_review,
 )
-from test_qa import FakeRetriever, bundle_for, code_evidence
+from test_qa import FakeRetriever, bundle_for, code_evidence, production_review_fixture
 
 QUESTION = "Describe the input and the output."
 POINTS = [{"answer_point_id": "point.1", "text": "Describe the input."},
@@ -74,7 +74,7 @@ class Vertex:
                 raise self.decomposition
             return deepcopy(self.decomposition)
         if p["task"] == "review_claim_support_and_relevance":
-            return deepcopy(self.reviews.pop(0))
+            return production_review_fixture(deepcopy(self.reviews.pop(0)), p)
         if p["task"] == "revise_unsupported_claims_once":
             return {"claims":deepcopy(self.revisions)}
         return {"claims":deepcopy(self.answers)}

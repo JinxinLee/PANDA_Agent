@@ -19,6 +19,8 @@ from panda_agent.prompts import (
     ANSWER_SYSTEM_PROMPT,
     ANSWER_POINT_COVERAGE_REVIEW_SYSTEM_PROMPT,
     ANSWER_POINT_COVERAGE_REVISION_SYSTEM_PROMPT,
+    PRODUCTION_COVERAGE_SATISFACTION_REVIEW_SYSTEM_PROMPT,
+    PRODUCTION_COVERAGE_SATISFACTION_REVISION_SYSTEM_PROMPT,
     EVIDENCE_REVIEW_SYSTEM_PROMPT,
     REVISION_SYSTEM_PROMPT,
 )
@@ -153,6 +155,41 @@ ANSWER_POINT_COVERAGE_REVIEW_SCHEMA = {
     },
     "required": [*REVIEW_SCHEMA["required"], "claim_answer_point_mappings", "missing_answer_point_ids", "answer_point_coverage"],
 }
+COVERAGE_SATISFACTION_SCHEMA_VERSION = "coverage-satisfaction-v1"
+PRODUCTION_COVERAGE_SATISFACTION_REVIEW_SCHEMA = deepcopy(ANSWER_POINT_COVERAGE_REVIEW_SCHEMA)
+_C1_CHECK_PROPERTIES = {
+    "relationship_text": {"type": "string", "minLength": 1, "maxLength": 240},
+    "necessity_reason": {"type": "string", "minLength": 1, "maxLength": 160},
+    "basis": {"type": "array", "maxItems": 2, "items": {
+        "type": "object", "properties": {
+            "evidence_id": {"type": "string"},
+            "quote": {"type": "string", "minLength": 1, "maxLength": 400}},
+        "required": ["evidence_id", "quote"], "additionalProperties": False}},
+    "supporting_claim_ids": {"type": "array", "maxItems": 8, "uniqueItems": True, "items": {"type": "string"}},
+    "satisfied": {"type": "boolean"},
+    "admission_state": {"type": "string", "enum": ["ADMITTED_BACKING_AVAILABLE",
+        "VISIBLE_ONLY_WITHOUT_CITABLE_BACKING", "INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE"]},
+}
+_C1_POINT_PROPERTIES = {
+    "answer_point_id": {"type": "string"},
+    "supporting_claim_ids": {"type": "array", "maxItems": 32, "uniqueItems": True, "items": {"type": "string"}},
+    "complete": {"type": "boolean"},
+    "scope_status": {"type": "string", "enum": ["ESTABLISHED", "INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE", "OVERFLOW"]},
+    "relationship_checks": {"type": "array", "maxItems": 4, "items": {
+        "type": "object", "properties": _C1_CHECK_PROPERTIES,
+        "required": list(_C1_CHECK_PROPERTIES), "additionalProperties": False}},
+}
+PRODUCTION_COVERAGE_SATISFACTION_REVIEW_SCHEMA["properties"]["answer_point_coverage"] = {
+    "type": "array", "minItems": 1, "maxItems": 5, "items": {
+        "type": "object", "properties": _C1_POINT_PROPERTIES,
+        "required": list(_C1_POINT_PROPERTIES), "additionalProperties": False}}
+C1_INCOMPLETE_NOTICE = "The available citable evidence does not establish a complete answer to this request."
+
+
+def _coverage_satisfaction_enabled(state: Any) -> bool:
+    return state.get("answer_point_coverage_mode") == "production_answer_obligations_v1"
+
+
 COMPOSER_SCHEMA = {
     "type": "object",
     "properties": {
@@ -854,6 +891,83 @@ def _validate_answer_point_review(
             complete_points.add(pid)
     require(covered_points == point_ids, "each runtime point requires exactly one coverage record")
     require(complete_points == point_ids - missing, "incomplete points must be exactly the missing points")
+    return mappings
+
+
+def _validate_coverage_satisfaction(
+    review: Any, claims: list[dict[str, Any]], point_ids: set[str], requirement_ids: set[str],
+    evidence: dict[str, dict[str, Any]], admitted_ids: set[str],
+) -> dict[str, list[str]]:
+    """Validate structure/provenance, never semantic necessity or entailment."""
+    def require(ok: bool, message: str) -> None:
+        if not ok:
+            raise ValueError(message)
+
+    require(isinstance(review, dict), "invalid production review")
+    coverage = review.get("answer_point_coverage")
+    require(isinstance(coverage, list) and 1 <= len(coverage) <= 5, "invalid production coverage count")
+    for p in coverage:
+        require(isinstance(p, dict) and set(p) == set(_C1_POINT_PROPERTIES), "invalid production point fields")
+    legacy = {**review, "answer_point_coverage": [
+        {k: p[k] for k in ("answer_point_id", "supporting_claim_ids", "complete")} for p in coverage]}
+    mappings = _validate_answer_point_review(legacy, claims, point_ids, requirement_ids)
+    claim_lookup = {c["claim_id"]: c for c in claims}
+    excluded = set(review["unsupported_claim_ids"]) | set(review["irrelevant_claim_ids"])
+    total = 0
+    for p in coverage:
+        status = p["scope_status"]
+        require(isinstance(status, str) and status in _C1_POINT_PROPERTIES["scope_status"]["enum"], "invalid scope status")
+        checks = p["relationship_checks"]
+        require(isinstance(checks, list) and len(checks) <= 4, "relationship count exceeds point bound")
+        total += len(checks)
+        require(total <= 20, "relationship count exceeds question bound")
+        require(len(p["supporting_claim_ids"]) <= 32, "point supporter bound exceeded")
+        require(status != "ESTABLISHED" or bool(checks), "established scope requires checks")
+        texts, union = set(), set()
+        for check in checks:
+            require(isinstance(check, dict) and set(check) == set(_C1_CHECK_PROPERTIES), "invalid relationship fields")
+            for key, bound in (("relationship_text", 240), ("necessity_reason", 160)):
+                value = check[key]
+                require(isinstance(value, str) and bool(value.strip()) and len(value) <= bound, f"invalid {key}")
+            normalized = " ".join(check["relationship_text"].split())
+            require(normalized not in texts, "duplicate relationship text")
+            texts.add(normalized)
+            admission = check["admission_state"]
+            require(isinstance(admission, str) and admission in _C1_CHECK_PROPERTIES["admission_state"]["enum"], "invalid admission state")
+            require(type(check["satisfied"]) is bool, "satisfied must be boolean")
+            basis = check["basis"]
+            require(isinstance(basis, list) and len(basis) <= 2, "basis bound exceeded")
+            basis_ids = set()
+            for item in basis:
+                require(isinstance(item, dict) and set(item) == {"evidence_id", "quote"}, "invalid basis fields")
+                eid, quote = item["evidence_id"], item["quote"]
+                require(isinstance(eid, str) and eid in evidence and eid not in basis_ids, "unknown or duplicate basis ID")
+                require(isinstance(quote, str) and bool(quote.strip()) and len(quote) <= 400
+                        and quote in evidence[eid].get("text", ""), "basis quote is not exact or exceeds bound")
+                basis_ids.add(eid)
+            supporters = check["supporting_claim_ids"]
+            require(isinstance(supporters, list) and len(supporters) <= 8
+                    and all(isinstance(c, str) for c in supporters), "invalid relationship supporters")
+            require(len(set(supporters)) == len(supporters), "duplicate relationship supporter")
+            for cid in supporters:
+                require(cid in claim_lookup and cid not in excluded, "unknown unsupported or irrelevant supporter")
+                require(p["answer_point_id"] in mappings[cid], "supporter maps to another point")
+                require(basis_ids <= set(claim_lookup[cid].get("evidence_ids", [])), "supporter does not cite required basis")
+            union.update(supporters)
+            if admission == "ADMITTED_BACKING_AVAILABLE":
+                require(bool(basis_ids) and basis_ids <= admitted_ids, "basis must be admitted")
+                require(not check["satisfied"] or bool(supporters), "satisfied check requires supporters")
+            else:
+                require(not check["satisfied"] and not supporters, "uncitable or uncertain check cannot be satisfied")
+                if admission == "VISIBLE_ONLY_WITHOUT_CITABLE_BACKING":
+                    require(bool(basis_ids - admitted_ids), "visible-only check requires unadmitted basis")
+            if status == "INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE":
+                require(admission == "INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE", "uncertain scope requires uncertain checks")
+        require(p["supporting_claim_ids"] == [c["claim_id"] for c in claims if c["claim_id"] in union],
+                "point supporters must equal ordered relationship union")
+        complete = status == "ESTABLISHED" and bool(checks) and all(
+            c["satisfied"] and c["admission_state"] == "ADMITTED_BACKING_AVAILABLE" for c in checks)
+        require(p["complete"] == complete, "scope completeness mismatch")
     return mappings
 
 
@@ -1620,6 +1734,10 @@ def _trace_merge(state: Any, ordinal: int, old_id: str, new_id: str | None,
 
 
 class QAState(TypedDict, total=False):
+    revisionable_relationships: list[dict[str, Any]]
+    revisionable_unsupported_claim_ids: list[str]
+    coverage_blocked: bool
+    coverage_satisfaction_status: str
     _stage_trace: Any
     _ea_cache: dict[str, Any]
     question: str
@@ -1840,6 +1958,9 @@ class QAAgent:
         return eligible
 
     def _after_verify_route(self, state: QAState) -> str:
+        if _coverage_satisfaction_enabled(state):
+            repairable = state.get("revisionable_relationships") or state.get("revisionable_unsupported_claim_ids")
+            return "revise" if repairable and state.get("revision_count", 0) < 1 else "finalize"
         if self._is_e3_trigger_eligible(state):
             return "missing_point_retrieve"
         if state.get("errors") and state.get("revision_count", 0) < 1:
@@ -2675,6 +2796,8 @@ class QAAgent:
 
     def _verify(self, state: QAState) -> dict[str, Any]:
         shadow = _coverage_shadow(state)
+        satisfaction = _coverage_satisfaction_enabled(state)
+        admitted_ids = {e["evidence_id"] for e in self._admitted_evidence(state)} if satisfaction else set()
         runtime_points = _active_runtime_answer_points(state)
         draft = state["draft"]
         evidence = {item["evidence_id"]: item for item in self._qa_evidence(state)}
@@ -2829,6 +2952,10 @@ class QAAgent:
                 "requirement_evidence": requirement_evidence,
                 "untrusted_claims": _model_claims(reviewable_claims) if shadow else claims,
                 "untrusted_evidence": review_evidence,
+                **({"untrusted_question": state["question"],
+                    "admitted_evidence_ids": [e["evidence_id"] for e in self._admitted_evidence(state)],
+                    "coverage_satisfaction_schema_version": COVERAGE_SATISFACTION_SCHEMA_VERSION,
+                } if satisfaction else {}),
             },
             ensure_ascii=False,
         )
@@ -2838,8 +2965,8 @@ class QAAgent:
             "deterministic_claim_errors": claim_errors})
         review = self.verification_vertex.generate_json(
             review_prompt,
-            ANSWER_POINT_COVERAGE_REVIEW_SCHEMA if shadow else REVIEW_SCHEMA,
-            system_instruction=ANSWER_POINT_COVERAGE_REVIEW_SYSTEM_PROMPT if shadow else EVIDENCE_REVIEW_SYSTEM_PROMPT,
+            PRODUCTION_COVERAGE_SATISFACTION_REVIEW_SCHEMA if satisfaction else (ANSWER_POINT_COVERAGE_REVIEW_SCHEMA if shadow else REVIEW_SCHEMA),
+            system_instruction=PRODUCTION_COVERAGE_SATISFACTION_REVIEW_SYSTEM_PROMPT if satisfaction else (ANSWER_POINT_COVERAGE_REVIEW_SYSTEM_PROMPT if shadow else EVIDENCE_REVIEW_SYSTEM_PROMPT),
             usage_stage="qa_semantic_verification",
         )
         _trace(state, f"V{review_round}_OUTPUT", review_round, lambda: {"response": review})
@@ -2848,13 +2975,32 @@ class QAAgent:
         missing_points: list[str] = []
         if shadow:
             try:
-                verified_mappings = _validate_answer_point_review(
-                    review, reviewable_claims, runtime_answer_point_ids, known_requirement_ids
-                )
+                if satisfaction:
+                    verified_mappings = _validate_coverage_satisfaction(
+                        review, reviewable_claims, runtime_answer_point_ids, known_requirement_ids,
+                        review_evidence_lookup, admitted_ids)
+                else:
+                    verified_mappings = _validate_answer_point_review(
+                        review, reviewable_claims, runtime_answer_point_ids, known_requirement_ids)
             except ValueError as exc:
                 coverage_review_error = str(exc)
                 errors.append(f"invalid answer-point coverage review: {exc}")
-                review = {"supported": False, "unsupported_claim_ids": [c["claim_id"] for c in reviewable_claims],
+                independent = None
+                if satisfaction and isinstance(review, dict):
+                    # Salvage only independently valid support/mapping judgments,
+                    # never manufacture a valid production relationship scope.
+                    candidate = {**review,
+                        "missing_answer_point_ids": [p["answer_point_id"] for p in runtime_points],
+                        "answer_point_coverage": [{"answer_point_id": p["answer_point_id"],
+                            "supporting_claim_ids": [], "complete": False} for p in runtime_points]}
+                    try:
+                        verified_mappings = _validate_answer_point_review(
+                            candidate, reviewable_claims, runtime_answer_point_ids, known_requirement_ids)
+                        if review["supported"] or review["unsupported_claim_ids"] or review["irrelevant_claim_ids"]:
+                            independent = candidate
+                    except ValueError:
+                        pass
+                review = independent or {"supported": False, "unsupported_claim_ids": [c["claim_id"] for c in reviewable_claims],
                           "irrelevant_claim_ids": [], "missing_requirement_ids": [], "reason": str(exc),
                           "missing_answer_point_ids": [p["answer_point_id"] for p in runtime_points]}
             missing_points = list(review["missing_answer_point_ids"])
@@ -3023,6 +3169,28 @@ class QAAgent:
                         trace["remaining_missing_answer_point_ids"] = missing_points
                         trace["recovered_on_revision"] = False
                     coverage_update["e3_trace"] = trace
+        if satisfaction:
+            relationships = []
+            repair_ids = []
+            evaluable = not coverage_review_error and not global_review_failure
+            if evaluable:
+                for point in review["answer_point_coverage"]:
+                    if point["scope_status"] == "ESTABLISHED":
+                        for check in point["relationship_checks"]:
+                            if check["admission_state"] == "ADMITTED_BACKING_AVAILABLE" and not check["satisfied"]:
+                                relationships.append({"answer_point_id": point["answer_point_id"],
+                                    "relationship_text": check["relationship_text"], "basis": deepcopy(check["basis"])})
+                repair_ids = [c["claim_id"] for c in reviewable_claims
+                    if c["claim_id"] in unsupported and c["claim_id"] not in irrelevant
+                    and c.get("evidence_ids") and set(c["evidence_ids"]) <= admitted_ids][:8]
+            coverage_update.update(revisionable_relationships=relationships,
+                revisionable_unsupported_claim_ids=repair_ids,
+                coverage_blocked=bool(missing_points) or not evaluable,
+                coverage_satisfaction_status="VALID" if evaluable else "INVALID")
+            coverage_update["answer_point_audit"].update(
+                coverage_satisfaction_schema_version=COVERAGE_SATISFACTION_SCHEMA_VERSION,
+                answer_point_coverage=deepcopy(review.get("answer_point_coverage", [])) if evaluable else None,
+                revisionable_relationships=relationships, revisionable_unsupported_claim_ids=repair_ids)
         return {
             **coverage_update,
             "errors": list(dict.fromkeys(errors)),
@@ -3035,9 +3203,12 @@ class QAAgent:
 
     def _revise(self, state: QAState) -> dict[str, Any]:
         shadow = _coverage_shadow(state)
+        satisfaction = _coverage_satisfaction_enabled(state)
         runtime_points = _active_runtime_answer_points(state)
         supported = list(state.get("supported_claims", []))
         unsupported_ids = set(state.get("unsupported_claim_ids", []))
+        if satisfaction:
+            unsupported_ids = set(state.get("revisionable_unsupported_claim_ids", []))
         unsupported_draft = {
             "claims": [
                 claim
@@ -3096,11 +3267,29 @@ class QAAgent:
             },
             ensure_ascii=False,
         )
+        if satisfaction:
+            relationships = state.get("revisionable_relationships", [])
+            recovery_ids = {b["evidence_id"] for r in relationships for b in r["basis"]}
+            recovery_ids.update(eid for c in unsupported_draft["claims"] for eid in c.get("evidence_ids", []))
+            point_ids = {r["answer_point_id"] for r in relationships}
+            point_ids.update(pid for c in unsupported_draft["claims"] for pid in c.get("answer_point_ids", []))
+            points = [p for p in runtime_points if p["answer_point_id"] in point_ids]
+            payload = json.loads(prompt)
+            payload.update(runtime_answer_points=points,
+                missing_answer_point_ids=[p["answer_point_id"] for p in points], missing_answer_points=points,
+                revisionable_relationships=relationships,
+                revisionable_answer_point_ids=[p["answer_point_id"] for p in points],
+                revisionable_answer_points=points,
+                revisionable_unsupported_claim_ids=list(state.get("revisionable_unsupported_claim_ids", [])),
+                revision_scope="Repair only listed revisionable_relationships and eligible unsupported claims; broad point text is context only.",
+                verification_errors=[f"unsupported claim {cid}" for cid in state.get("revisionable_unsupported_claim_ids", [])],
+                untrusted_evidence=[e for e in claim_evidence if e["evidence_id"] in recovery_ids])
+            prompt = json.dumps(payload, ensure_ascii=False)
         _trace(state, "A1_INPUT", 1, lambda: {"model_input": json.loads(prompt)})
         revised = self.generation_vertex.generate_json(
             prompt,
             ANSWER_SCHEMA,
-            system_instruction=ANSWER_POINT_COVERAGE_REVISION_SYSTEM_PROMPT if shadow else REVISION_SYSTEM_PROMPT,
+            system_instruction=PRODUCTION_COVERAGE_SATISFACTION_REVISION_SYSTEM_PROMPT if satisfaction else (ANSWER_POINT_COVERAGE_REVISION_SYSTEM_PROMPT if shadow else REVISION_SYSTEM_PROMPT),
             usage_stage="qa_generation",
         )
         _trace(state, "A1_OUTPUT", 1, lambda: {"response": revised,
@@ -3123,8 +3312,8 @@ class QAAgent:
         # as an asserted fact. Substantively narrowed/reworded revisions pass.
         unsupported_texts = {
             str(claim.get("claim_id") or ""): _normalized_claim_text(claim.get("claim_text"))
-            for claim in unsupported_draft["claims"]
-            if claim.get("claim_id")
+            for claim in state["draft"].get("claims", [])
+            if claim.get("claim_id") and claim.get("claim_id") in set(state.get("unsupported_claim_ids", []))
         }
         merged: list[dict[str, Any]] = []
         seen_ids: set[str] = set()
@@ -3329,12 +3518,14 @@ class QAAgent:
     def _finalize(self, state: QAState) -> dict[str, Any]:
         plan = state.get("bundle", {}).get("plan", {})
         composer_diagnostics = None
+        c1_incomplete = (_coverage_satisfaction_enabled(state) and state.get("sufficient")
+                         and not plan.get("version_conflicts") and state.get("coverage_blocked", False))
         salvageable = (
             state.get("sufficient")
             and not plan.get("version_conflicts")
             and bool(state.get("supported_claims"))
         )
-        if not state.get("sufficient") or (state.get("errors") and not salvageable):
+        if not state.get("sufficient") or (state.get("errors") and not salvageable and not c1_incomplete):
             status = QAStatus.VERSION_CONFLICT if plan.get("version_conflicts") else QAStatus.INSUFFICIENT_EVIDENCE
             question = str(state.get("question", ""))
             is_chinese = bool(re.search(r"[\u3400-\u9fff]", question))
@@ -3560,7 +3751,9 @@ class QAAgent:
             cited_evidence = [*bundle_evidence, *retained_cited]
             # F5: the optional bounded composer runs only here; every failure
             # mode falls back to the deterministic renderer below.
-            if claims:
+            if c1_incomplete:
+                answer = (render_verified_answer(claims) + "\n\n" if claims else "") + C1_INCOMPLETE_NOTICE
+            elif claims:
                 if state.get("_stage_trace") is not None:
                     answer, composer_diagnostics = self._compose_verified_answer(
                         claims, _stage_trace=state["_stage_trace"])
@@ -3569,7 +3762,7 @@ class QAAgent:
             else:
                 answer = render_verified_answer(claims)
             result = QAResult(
-                status=QAStatus.ANSWERED,
+                status=QAStatus.INSUFFICIENT_EVIDENCE if c1_incomplete else QAStatus.ANSWERED,
                 answer=answer,
                 claims=claims,
                 evidence=cited_evidence,

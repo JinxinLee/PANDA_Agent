@@ -50,6 +50,8 @@ from panda_agent.prompts import (
     ANSWER_COMPOSER_SYSTEM_PROMPT,
     ANSWER_POINT_COVERAGE_REVIEW_SYSTEM_PROMPT,
     ANSWER_POINT_COVERAGE_REVISION_SYSTEM_PROMPT,
+    PRODUCTION_COVERAGE_SATISFACTION_REVIEW_SYSTEM_PROMPT,
+    PRODUCTION_COVERAGE_SATISFACTION_REVISION_SYSTEM_PROMPT,
     ANSWER_SYSTEM_PROMPT,
     EVALUATION_JUDGE_SYSTEM_PROMPT,
     EVIDENCE_REVIEW_SYSTEM_PROMPT,
@@ -58,7 +60,8 @@ from panda_agent.prompts import (
     RERANK_SYSTEM_PROMPT,
     REVISION_SYSTEM_PROMPT,
 )
-from panda_agent.qa import DEFAULT_ANSWER_POINT_MODE, QAAgent
+from panda_agent.qa import (DEFAULT_ANSWER_POINT_MODE, QAAgent, COVERAGE_SATISFACTION_SCHEMA_VERSION,
+                           PRODUCTION_COVERAGE_SATISFACTION_REVIEW_SCHEMA)
 from panda_agent.retrieval import Retriever
 from panda_agent.retrieval_trace import build_retrieval_trace, write_retrieval_trace
 from panda_agent.storage import Storage, iter_jsonl
@@ -373,6 +376,12 @@ def prompt_fingerprint() -> str:
         "answer_composer_review": ANSWER_COMPOSER_REVIEW_SYSTEM_PROMPT,
         "answer_point_coverage_review": ANSWER_POINT_COVERAGE_REVIEW_SYSTEM_PROMPT,
         "answer_point_coverage_revision": ANSWER_POINT_COVERAGE_REVISION_SYSTEM_PROMPT,
+        "production_coverage_satisfaction": {
+            "review": PRODUCTION_COVERAGE_SATISFACTION_REVIEW_SYSTEM_PROMPT,
+            "revision": PRODUCTION_COVERAGE_SATISFACTION_REVISION_SYSTEM_PROMPT,
+            "schema_version": COVERAGE_SATISFACTION_SCHEMA_VERSION,
+            "schema": PRODUCTION_COVERAGE_SATISFACTION_REVIEW_SCHEMA,
+        },
         "evaluation_judge": EVALUATION_JUDGE_SYSTEM_PROMPT,
         "evidence_review": EVIDENCE_REVIEW_SYSTEM_PROMPT,
         "query_analyzer": QUERY_ANALYZER_SYSTEM_PROMPT,
