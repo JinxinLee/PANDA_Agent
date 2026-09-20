@@ -1,0 +1,192 @@
+{
+  "task": "POST-A5 EA1 EXACT-BACKING EVIDENCE-ADMISSION IMPLEMENTATION",
+  "verdict": "PASS",
+  "status": "IMPLEMENTED / DETERMINISTICALLY VERIFIED / MATERIAL PRODUCT CHANGE / SCIENTIFIC EFFECT NOT YET EVALUATED",
+  "starting_head": "81b1308d6c0fa03c7f83894af851fd71b4503f41",
+  "final_implementation_head": "60dff40a671e62bffcbe0eb82d38ea6e9aeb05c4",
+  "previous_product_behavior_head": "e79d3232ed132a224cbceaf3524e19a1406bd648",
+  "new_product_behavior_head": "60dff40a671e62bffcbe0eb82d38ea6e9aeb05c4",
+  "delivery_note": "One source/test implementation commit followed by documentation-only closeout referencing that actual SHA; no amend or push.",
+  "changed_files": [
+    "src/panda_agent/qa.py",
+    "src/panda_agent/storage.py",
+    "tests/unit/test_post_a5_ea1_exact_backing.py",
+    "evaluation/POST_A5_EA1_EXACT_BACKING_EVIDENCE_ADMISSION_IMPLEMENTATION.md",
+    "evaluation/post_a5_ea1_exact_backing_evidence_admission_implementation.json",
+    "docs/EVALUATION_STATUS.md",
+    "docs/GENERALIZATION_ROADMAP.md"
+  ],
+  "resolver_algorithm": [
+    "Retain directly citation-eligible selected evidence; rejected Sphinx pages remain ineligible.",
+    "Read locked web manifest at most once and perform one bounded storage lookup per QA invocation.",
+    "Validate persisted page identity and manifest source/version/snapshot/date/path/URL against the selected evidence.",
+    "Accept only real direct sphinx_section children with matching provenance and valid existing citation locator.",
+    "Require entire nonempty child text exactly once as a case-sensitive contiguous substring, including rejection of overlapping repeated occurrences.",
+    "Exactly one qualifying child resolves; zero or multiple candidates retain strict exclusion.",
+    "Reuse matching eligible already-selected child at its original position; otherwise insert actual child admission at excluded parent slot.",
+    "Invocation-local cache shared by A0/A1, verifier/finalizer, and O1; no page-to-child citation substitution."
+  ],
+  "bounds": {
+    "candidate_pages": 4,
+    "children_inspected_per_page": 16,
+    "child_rows_read_per_page": 17,
+    "new_backings": 4,
+    "child_text_characters": 12000,
+    "statement_timeout_ms": 1000,
+    "structural_selects": 2,
+    "retries": 0,
+    "manifest_parses_per_invocation": 1
+  },
+  "storage_query_contract": "Read-only repeatable-read transaction; SET LOCAL timeout. Exact page ID batch ordered with LIMIT 4; lateral child batch constrained by source/version/type/direct-parent metadata, ordered LIMIT 17 per page. Returned text capped at 12000 with full char_length for rejection. Transaction control statements are separate from the two SELECTs. Existing columns and restore_object_parent reused; no migration or whole-table loader.",
+  "reason_codes": [
+    "DIRECTLY_CITATION_ELIGIBLE",
+    "RESOLVED_EXACT_BACKING",
+    "NO_VALID_BACKING",
+    "VERSION_MISMATCH",
+    "CONTENT_RELATION_NOT_ESTABLISHED",
+    "INVALID_LOCATOR",
+    "AMBIGUOUS_BACKING",
+    "BOUND_EXCEEDED",
+    "LOOKUP_FAILED"
+  ],
+  "reason_semantics": "Zero valid children has page reason NO_VALID_BACKING; candidate_rejections retains specific VERSION_MISMATCH/INVALID_LOCATOR/content/bound reasons. Resolved decisions record both identities and half-open containment offsets.",
+  "verification": {
+    "red": {
+      "passed": 0,
+      "failed": 1,
+      "cause": "AttributeError: QAAgent has no _admitted_evidence, before implementation",
+      "test": "test_unique_exact_backing_and_cache"
+    },
+    "green": {
+      "passed": 52,
+      "file": "tests/unit/test_post_a5_ea1_exact_backing.py",
+      "scope": "T0-A through T0-Q, fake-only"
+    },
+    "o1": {
+      "passed": 33,
+      "status": "BEHAVIOR_NEUTRAL"
+    },
+    "focused_regressions": {
+      "files": [
+        "test_e2_a3_r2_citation_eligibility.py",
+        "test_e2_a3_r1_identifier_normalization.py",
+        "test_qa.py",
+        "test_e2_a1_answer_point_coverage.py",
+        "test_generic_answer_obligation_completeness.py",
+        "test_post_a5_generic_product_repair.py",
+        "test_evaluation_runner.py",
+        "test_f6_release_identity.py",
+        "test_evaluation_cli.py"
+      ],
+      "passed": 332,
+      "subtests_passed": 49,
+      "failed": 4,
+      "baseline_failures": [
+        "test_e2_a3_r2_citation_eligibility.py::test_answer_revision_auxiliary_mapping_and_original_bundle: obsolete fixture lacks generation_vertex",
+        "test_e2_a3_r2_citation_eligibility.py::test_complete_frozen_reconciliation_and_exact_scope: same obsolete fixture",
+        "test_e2_a3_r1_identifier_normalization.py::test_complete_frozen_repaired_code_scan: extracted verifier loop lacks _CODE_DATA_EXTENSIONS in its execution environment",
+        "test_evaluation_runner.py::EvaluationRunnerTests::test_v26_is_default_and_signed_dry_rescore_preserves_real_failures: v2_6 expectation versus existing v2_11 default"
+      ],
+      "baseline_isolation": "Same failures reproduced using starting-HEAD QA module; R1 static source read also separately substituted with starting-HEAD source. No checkout/reset or historical artifact edits."
+    },
+    "additional_regressions": {
+      "files": [
+        "test_d1_parent_persistence.py",
+        "test_e3_missing_point_retrieval.py"
+      ],
+      "passed": 62
+    },
+    "final_trace_assertion": {
+      "passed": 1,
+      "note": "Extended existing full-graph test to compare complete RetrievalTrace before/after admission; no extra test case."
+    },
+    "static_checks": [
+      "git diff --check",
+      "strict predicate AST unchanged",
+      "coverage helpers AST unchanged",
+      "prompt fingerprint unchanged",
+      "source diff restricted to qa.py/storage.py; no prompts, retrieval, DTO, evaluator, Gold, calibration, ingestion, schema, or protected data edits"
+    ],
+    "costs": "All tests deterministic/local; fake client counters are synthetic, not scientific usage."
+  },
+  "old_safety_gate_mapping": {
+    "S1": "unchanged strict predicate and historical predicate tests",
+    "S2": "A0 receives real backing only; parent remains excluded",
+    "S3": "same cached A0/A1 projection, full graph revision test",
+    "S4": "normal verifier rejects parent and unknown IDs, no substitution",
+    "S8": "direct selected child identity and ordering unchanged",
+    "S9": "non-Sphinx code evidence unchanged",
+    "S10": "bundle/rankings deep equality; original-page RetrievalTrace; one semantic retrieve and zero embeddings",
+    "S11": "identifier normalization source unchanged; applicable old identifier tests pass",
+    "S12": "prompt fingerprint/public schemas/evaluator sources unchanged"
+  },
+  "success_gates": {
+    "EA1-G1": "PASS (deterministic scope)",
+    "EA1-G2": "PASS (deterministic scope)",
+    "EA1-G3": "PASS (deterministic scope)",
+    "EA1-G4": "PASS (deterministic scope)",
+    "EA1-G5": "PASS (deterministic scope)",
+    "EA1-G6": "PASS (deterministic scope)",
+    "EA1-G7": "PASS (deterministic scope)",
+    "EA1-G8": "PASS (deterministic scope)",
+    "EA1-G9": "PASS (deterministic scope)",
+    "EA1-G10": "PASS (deterministic scope)",
+    "EA1-G11": "PASS (deterministic scope)",
+    "EA1-G12": "PASS (deterministic scope)",
+    "EA1-G13": "PASS (deterministic scope)",
+    "EA1-G14": "PASS (deterministic scope)",
+    "EA1-G15": "PASS (deterministic scope)"
+  },
+  "retrieval_invariance": "Selected bundle, scores, ordering, retrieval IDs/counts and RetrievalTrace remain original; backing is separate private admission evidence.",
+  "a0_a1_consistency": "One invocation-local resolution; full graph forces one revision and observes one manifest read and one structural lookup per run.",
+  "verifier_finalizer": "Verifier retains original selected evidence and adds resolved child lookup; normal semantic review still applies. Final QAResult.evidence contains actual cited child, never rewritten parent citation.",
+  "o1": "Existing bounded trace format; EA_ADMISSION merges EA reason/provenance with existing diagnostic fields. OFF/ON result, diagnostics excluding trace, model payload/schema/system instructions and calls are equal.",
+  "prompt_fingerprint_before": "0a5b2909ef586671d533148979fc681c64e37528ad53781a4566cb9044835ba2",
+  "prompt_fingerprint_after": "0a5b2909ef586671d533148979fc681c64e37528ad53781a4566cb9044835ba2",
+  "new_scientific_calls": 0,
+  "new_scientific_tokens": 0,
+  "additional_semantic_retrieval_calls": 0,
+  "additional_embedding_calls": 0,
+  "additional_model_stages": 0,
+  "materiality": {
+    "SOURCE_CHANGE": true,
+    "MATERIAL_PRODUCT_BEHAVIOR_CHANGE": true,
+    "MATERIAL_PRODUCT_CHANGE": true,
+    "PROMPT_FINGERPRINT_CHANGE": false,
+    "PUBLIC_DTO_CHANGE": false,
+    "EVALUATOR_CONTRACT_CHANGE": false,
+    "GOLD_CHANGE": false,
+    "CALIBRATION_CHANGE": false
+  },
+  "historical_t1": {
+    "status": "COMPLETE / FAIL",
+    "calls": 65,
+    "tokens": 373265,
+    "replayed": false,
+    "rescored": false
+  },
+  "protected_state": {
+    "novel_validation": "PRISTINE_FOR_CURRENT_LINEAGE",
+    "holdout_access": 0,
+    "protected_content_leakage": 0,
+    "F6_B_execution": 0
+  },
+  "attempt_6": {
+    "candidate_frozen": false,
+    "preregistered": false,
+    "executed": false,
+    "readiness": "NOT_READY"
+  },
+  "C1": "DESIGN_COMPLETE / NOT_IMPLEMENTED / NOT_AUTHORIZED",
+  "RS": "DEFER",
+  "limitations": [
+    "Scientific effectiveness not evaluated; no claim that g013/g023 are fixed.",
+    "Fake SQL contract tests only; no live PostgreSQL execution, timeout timing, or query-plan measurement. Query constrains source/version/type/parent, uses existing source index eligibility and statement timeout; physical planner choice not certified.",
+    "Statement timeout does not impose a connection establishment deadline; Storage.connect is unchanged.",
+    "Conservative ambiguity and text bounds can exclude useful pages; no normalization or semantic choice.",
+    "Experimental runtime_e1_v2/E3 retains strict admission and existing retained-support policy; EA1 does not resolve retained evidence or change E3.",
+    "Four unrelated stale historical tests remain failing; applicable deterministic checks pass."
+  ],
+  "next_recommendation": "POST-A5 C1 BOUNDED COVERAGE-COMPLETENESS IMPLEMENTATION",
+  "NEXT_TASK_EXECUTION_AUTHORIZED": false
+}

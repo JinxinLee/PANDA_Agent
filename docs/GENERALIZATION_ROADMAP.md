@@ -256,8 +256,9 @@ D4 overall completion:
 UNDECIDED
 
 Current task:
-POST-A5 O1 BEHAVIOR-NEUTRAL OBSERVABILITY IMPLEMENTATION (COMPLETE / PASS; deterministic validation only; zero scientific calls)
-POST_A5_O1 = IMPLEMENTED / DETERMINISTICALLY VERIFIED / BEHAVIOR_NEUTRAL (33 O1 tests PASS; applicable regressions PASS; one unrelated stale v2_6-default test failure reproduced at baseline and not repaired; prompt fingerprint unchanged; scientific usage 0 calls / 0 tokens; SOURCE_CHANGE=true, MATERIAL_PRODUCT_BEHAVIOR_CHANGE=false; behavior lineage remains e79d323). EA1/C1 = DESIGN_COMPLETE / NOT_IMPLEMENTED / NOT_AUTHORIZED; RS DEFER. Record: `evaluation/POST_A5_O1_BEHAVIOR_NEUTRAL_OBSERVABILITY_IMPLEMENTATION.md` (companion JSON).
+POST-A5 EA1 EXACT-BACKING EVIDENCE-ADMISSION IMPLEMENTATION (COMPLETE / PASS; deterministic validation only; material product change; zero scientific calls)
+POST_A5_EA1 = IMPLEMENTED / DETERMINISTICALLY VERIFIED / MATERIAL PRODUCT CHANGE / SCIENTIFIC EFFECT NOT YET EVALUATED (COMPLETE / PASS; 52 EA1 tests, 33 O1 tests, 332 focused regressions plus 49 subtests and 62 parent/E3 tests passed; four unrelated stale historical tests reproduced at baseline and isolated; scientific calls/tokens 0/0; prompt fingerprint unchanged). Record: `evaluation/POST_A5_EA1_EXACT_BACKING_EVIDENCE_ADMISSION_IMPLEMENTATION.md` (companion JSON). C1 = DESIGN_COMPLETE / NOT_IMPLEMENTED / NOT_AUTHORIZED; RS DEFER.
+POST_A5_O1 = IMPLEMENTED / DETERMINISTICALLY VERIFIED / BEHAVIOR_NEUTRAL (33 O1 tests pass under EA1; historical O1 implementation record preserved). Record: `evaluation/POST_A5_O1_BEHAVIOR_NEUTRAL_OBSERVABILITY_IMPLEMENTATION.md` (companion JSON).
 POST_A5_BOUNDED_PRODUCT_REPAIR_DESIGN = COMPLETE / PASS / BOUNDED_PRODUCT_REPAIR_DESIGN_READY (DESIGN_ONLY; 0 scientific calls / 0 tokens; O1 -> EA1 -> C1 with independent T0 gates; exact unique same-version backing with strict fallback; coverage bounds 4/point, 20 total, 2 basis references/check; RS DEFER; no implementation or scientific validation). Record: `evaluation/POST_A5_BOUNDED_PRODUCT_REPAIR_DESIGN.md` (companion JSON).
 POST_A5_T1_FAILURE_REVIEW = COMPLETE / PARTIAL / TRACE_OBSERVABILITY_AND_SEMANTIC_SCOPE_LIMITS_REMAIN (historical review at 09e7759; scientific findings preserved; causal taxonomy and chronology wording superseded forward by the contract reconciliation below).
 POST_A5_T1_CONTRACT_RECONCILIATION = COMPLETE / PASS / EVIDENCE_ADMISSION_COVERAGE_SCOPE_AND_OBSERVABILITY_CONTRACT_RECONCILED (static design-only; 0 scientific calls / 0 tokens; EA is post-retrieval admission, not retrieval loss; generation/verification asymmetry INTENTIONAL_BUT_UNDER-SPECIFIED; g013 A1_RECOVERY_OUTCOME = UNSUCCESSFUL / CONFIRMED, A1_CAUSAL_DEFECT = NOT_ESTABLISHED; g023 EA exclusion CONFIRMED, unique/reviewer-only cause NOT_ESTABLISHED; question-only D0 retained, proposed evidence-grounded satisfaction scope belongs to V1/V2; proposed diagnostics.qa_stage_trace and development runner status separation are NOT_IMPLEMENTED). Record: `evaluation/POST_A5_T1_OBSERVABILITY_EVIDENCE_ADMISSION_AND_COVERAGE_SCOPE_RECONCILIATION.md` (companion JSON).
@@ -265,8 +266,8 @@ T1_PREREGISTRATION_CHRONOLOGY = VERIFIED_WITHIN_RETAINED_LOCAL_EVIDENCE; EXECUTI
 REVIEW_MATERIALITY: MATERIAL_PRODUCT_CHANGE = false; EVALUATOR_CONTRACT_CHANGE = false; GOLD_CHANGE = false; CALIBRATION_CHANGE = false. Candidate frozen = false; Attempt 6 preregistered = false; Attempt 6 executed = false; ATTEMPT_6_READINESS = NOT_READY.
 POST_A5_T1 = COMPLETE / FAIL; g013 FAIL, g023 FAIL, g047 PASS, g011 negative-existence safety PASS; controls 4x CONTROL_PASS; historical usage 65 calls / 373,265 tokens, transport recovery 0. T1 result and Attempt-5 verdict unchanged.
 ATTEMPT_5_STATUS = COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED (historical, immutable)
-PREVIOUS_PRODUCT_BEHAVIOR_LINEAGE_HEAD = eda7d932a9b1b7b65436cba01e247859a6f9e056
-CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = e79d3232ed132a224cbceaf3524e19a1406bd648
+PREVIOUS_PRODUCT_BEHAVIOR_LINEAGE_HEAD = e79d3232ed132a224cbceaf3524e19a1406bd648
+CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = 60dff40a671e62bffcbe0eb82d38ea6e9aeb05c4
 GENERIC_PRODUCT_REPAIR = IMPLEMENTED / DETERMINISTICALLY VERIFIED / T1 SCIENTIFIC EVIDENCE = MIXED / OVERALL T1 = FAIL / GENERAL EFFECT NOT ESTABLISHED. A: g013 FAIL, revision recovery mechanism not directly observed, exact historical/T1 ID-collision causality NOT_ESTABLISHED. B: g023 FAIL with outcome-level false-acceptance recurrence, g047 PASS, mixed single observations; specific V1-only causality NOT_ESTABLISHED. C: g011 safety PASS, positive single observation, general effect not established; C_NATIVE_DOCUMENTATION_ROLE_COVERAGE = FAIL (legacy T1 C_RETRIEVAL_COMPLETENESS = FAIL means native-documentation role coverage, not no usable native-path information). D: DEFERRED.
 NORMAL_PRODUCT_MODE = production_answer_obligations_v1
 ATTEMPT_5_PREREGISTRATION_COMMIT = eacbf447eee2527b85e0e47073d8584c64a4a3f4
@@ -280,12 +281,12 @@ F6_B = LOCKED / F6_A_DID_NOT_PASS
 ATTEMPT_5 = COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED
 
 Next task recommendation:
-POST-A5 EA1 EXACT-BACKING EVIDENCE-ADMISSION IMPLEMENTATION
-(REQUIRES SEPARATE AUTHORIZATION; no C1/RS or scientific replay; NO ATTEMPT 6)
+POST-A5 C1 BOUNDED COVERAGE-COMPLETENESS IMPLEMENTATION
+(NOT AUTHORIZED; no RS or scientific replay; NO ATTEMPT 6)
 
 Current task authorization:
 NEXT_TASK_EXECUTION_AUTHORIZED = false
-The authorized O1 implementation is complete and behavior-neutral under deterministic validation. EA1 and C1 remain design-only and require separate authorization; RS remains deferred. The recommendation does not authorize implementation or scientific validation. No historical T1 stages were backfilled.
+The authorized EA1 implementation is complete and materially changes evidence admission under deterministic validation; scientific effectiveness is not evaluated. O1 remains behavior-neutral. C1 remains not implemented and requires separate authorization; RS remains deferred. No historical T1 stages were backfilled. Attempt 6 remains NOT_READY.
 
 E3-A2 completed INCONCLUSIVE (1/11 natural applicability; the single applicable pair was descriptive only). E3-LR1 subsequently reconciled the lifecycle with zero scientific calls: E3 closes as a bounded low-frequency fallback (SCIENTIFIC_RECOVERY_BENEFIT_UNRESOLVED); dedicated revalidation is not planned; future E3 evidence accumulates opportunistically in broader authorized evaluations.
 
