@@ -1,0 +1,106 @@
+{
+  "task": "POST-A5 C1-R1 / BOUNDED REVISION-SCOPE AND DIAGNOSTIC CONSISTENCY CLEANUP",
+  "status": "PASS",
+  "verification_scope": "Deterministic contract cleanup only; scientific effect not evaluated",
+  "starting_head": "89b9fac18acb07f181f5a7ccf8eb703c5ff2a7c7",
+  "implementation_commit": "6ed3ba361476b36744c72e76f5905733b1755f5c",
+  "final_head": "6ed3ba361476b36744c72e76f5905733b1755f5c",
+  "final_head_scope": "Verified implementation HEAD at record creation. The subsequent docs-only closeout commit contains this record and is reported as final repository HEAD in the delivery message; it is not the behavior head.",
+  "previous_product_behavior_lineage_head": "5e0a3a3ae4828ea3b5831646e3d5d2c8f08cc9ed",
+  "current_product_behavior_lineage_head": "6ed3ba361476b36744c72e76f5905733b1755f5c",
+  "corrected_seams": {
+    "R1-A": "Persist only eligible unsupported claims and their accepted verifier mappings; copy mappings into the private A1 claim projection without mutating draft/public claims. Empty mappings retain factual repair but add no point; changed mappings replace draft proposals; relationship IDs and verified repair mappings form an ordered unique union in runtime point order.",
+    "R1-B": "Use actual public result claims for rendered audit in C1 partial finalization; dropped claims remain false. Existing unrelated refusal/historical behavior unchanged.",
+    "R1-C": "An uncertain relationship requires uncertain point scope. ESTABLISHED plus visible-only stays valid, incomplete and non-revisionable. OVERFLOW stays incomplete and non-revisionable without forcing uncertainty; uncertain checks cannot contradict OVERFLOW."
+  },
+  "verification": {
+    "red": {
+      "command": "python -m pytest tests/unit/test_post_a5_c1_coverage_completeness.py -k test_r1 -q",
+      "failed": 6,
+      "passed": 2,
+      "deselected": 69,
+      "failures": "Three mapping cases, partial rendering, and two inconsistent uncertainty cases failed before source edits."
+    },
+    "green": {
+      "command": "python -m pytest tests/unit/test_post_a5_c1_coverage_completeness.py -q --tb=short",
+      "passed": 77,
+      "failed": 0
+    },
+    "focused_regressions": {
+      "files": [
+        "tests/unit/test_qa.py",
+        "tests/unit/test_e2_a1_answer_point_coverage.py",
+        "tests/unit/test_generic_answer_obligation_completeness.py",
+        "tests/unit/test_post_a5_generic_product_repair.py",
+        "tests/unit/test_post_a5_o1_observability.py",
+        "tests/unit/test_post_a5_ea1_exact_backing.py",
+        "tests/unit/test_evaluation_runner.py",
+        "tests/unit/test_f6_release_identity.py",
+        "tests/unit/test_e3_missing_point_retrieval.py"
+      ],
+      "passed": 421,
+      "subtests_passed": 49,
+      "failed": 1,
+      "isolated_failure": "EvaluationRunnerTests.test_v26_is_default_and_signed_dry_rescore_preserves_real_failures expects v2_6 but unchanged default is v2_11",
+      "baseline_check": "Verified runner, prompts and test equal starting-HEAD blobs; loaded starting-HEAD runner in memory and reproduced the same single-test assertion failure. No fix or rescore performed."
+    },
+    "intermediate_iterations": "First implementation run: 74 passed/3 failed due to mapping projection placement. An attempted move matched an earlier block; a UTF-8 read correction was needed, and the resulting intermediate run had 54 passed/23 failed. Projection was moved into _revise before payload construction; final C1 run passed all 77. These are implementation iterations, not baseline RED evidence.",
+    "static": "Complete source/test diff reviewed; git diff --check passed; source changed only qa.py; no schema, prompt, EA1, D0, storage, evaluator or retrieval edits."
+  },
+  "prompt_version_before": "3.11.0",
+  "prompt_version_after": "3.11.0",
+  "prompt_fingerprint_before": "03e1bf270898b28127a42fa2e1ccb24cfc1d87e177eeba5428ba4680d426352c",
+  "prompt_fingerprint_after": "03e1bf270898b28127a42fa2e1ccb24cfc1d87e177eeba5428ba4680d426352c",
+  "preservation": {
+    "max_revision": 1,
+    "O1": "33 focused tests pass; actual A1 scope is already observable in A1_INPUT; trace ON/OFF remains behavior-neutral; no event/schema expansion",
+    "EA1": "52 focused tests pass; resolver, predicate, admission cache, storage queries and reason codes untouched",
+    "historical_modes": "Existing QA/answer-point/generic regressions pass; production-only guards preserve shadow_e1_v2, runtime_e1_v2 and legacy_question_core",
+    "model_retrieval_embedding": "No new stage or call site. Existing fake-client call ceilings and retrieval/embedding assertions pass; C1 recovered complete path remains seven model calls, one retrieval, zero embedding calls. Input correction may affect real model responses, not a claim of scientific output invariance."
+  },
+  "scientific_calls": 0,
+  "scientific_tokens": 0,
+  "materiality": {
+    "SOURCE_CHANGE": true,
+    "MATERIAL_PRODUCT_BEHAVIOR_CHANGE": true,
+    "MATERIAL_PRODUCT_CHANGE": true,
+    "PROMPT_SCHEMA_CONTRACT_CHANGE": false,
+    "PROMPT_FINGERPRINT_CHANGE": false,
+    "PROMPT_SET_VERSION_CHANGE": false,
+    "PUBLIC_DTO_CHANGE": false,
+    "EVALUATOR_CONTRACT_CHANGE": false,
+    "GOLD_CHANGE": false,
+    "CALIBRATION_CHANGE": false,
+    "RETRIEVAL_POLICY_CHANGE": false,
+    "EA1_CONTRACT_CHANGE": false,
+    "D0_CHANGE": false
+  },
+  "T1": {
+    "status": "COMPLETE / FAIL",
+    "historical_calls": 65,
+    "historical_tokens": 373265,
+    "replay": false,
+    "rescore": false,
+    "g013_g023_fixed_claim": false
+  },
+  "protected_state": {
+    "novel_validation": "PRISTINE_FOR_CURRENT_LINEAGE",
+    "holdout_access": 0,
+    "protected_content_leakage": 0,
+    "F6_B_execution": 0,
+    "note": "Preserved by non-access; protected content was not inspected."
+  },
+  "attempt_6": {
+    "candidate_frozen": false,
+    "preregistered": false,
+    "executed": false,
+    "readiness": "NOT_READY"
+  },
+  "limitations": [
+    "Model semantic correctness and scientific effects remain unevaluated.",
+    "The unrelated stale v2_6 default test remains failing; full repository suite not run.",
+    "No T1/g013/g023 replay, T2, Attempt 6 or protected evaluation."
+  ],
+  "next_task_recommendation": "POST-A5 O1+EA1+C1 DETERMINISTIC INTEGRATION CLOSEOUT",
+  "next_task_execution_authorized": false
+}
