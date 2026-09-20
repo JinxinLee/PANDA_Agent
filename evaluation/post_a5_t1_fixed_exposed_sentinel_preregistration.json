@@ -1,0 +1,122 @@
+{
+  "schema_version": "post-a5-t1-preregistration-v1",
+  "task": "POST-A5 PRODUCT REPAIR VALIDATION / FIXED EXPOSED SENTINEL T1",
+  "stage": "T1-P0 (zero scientific calls; T1-P1 starts only after this preregistration is committed)",
+  "repository_head_before_preregistration": "60a62fc9d954bfaaf48e3d5dae48d914c4b0ff21",
+  "product_behavior_head": "e79d3232ed132a224cbceaf3524e19a1406bd648",
+  "prompt_fingerprint": "0a5b2909ef586671d533148979fc681c64e37528ad53781a4566cb9044835ba2",
+  "gold": {
+    "benchmark_version": "m6-benchmark-v2.11",
+    "dataset": "evaluation/benchmarks/v2_11/gold_questions.yaml",
+    "dataset_sha256": "39943c6a3f2152e476109c0340acd066795c8de6ff3b6bb2eac6661ac480a417"
+  },
+  "calibration": {
+    "calibration_id": "phase_b_t3_product_language_scope_v8",
+    "formal_english": 59,
+    "non_english": 21,
+    "selector_sha256": "e27ef67a866274b4a8441b789ca78fc3ccb7e022eed537c7442e15230777a0e5"
+  },
+  "normal_product_mode": "production_answer_obligations_v1",
+  "execution_nature": "development evidence only; T1 is not formal release authority, not Attempt 6, not a candidate freeze",
+  "affected_cases": ["g011", "g013", "g023", "g047"],
+  "matched_controls": {
+    "g011": {
+      "control_id": "g010",
+      "intent": "installation",
+      "eligibility_evidence": "v8 formal-English; dev; answered; approved; not affected; not in the post-A5 defect-exclusion set {g011,g013,g016,g020,g023,g039,g044,g047,g060,g110,g113}; no Attempt-5 critical answer-point miss; zero identifier hallucinations under the reconciled rescore; no contradiction/major-unsupported/wrong-version/forbidden/unhandled-exception failure; citation_integrity true; v2.11-reconciled critical_final_evidence_recall = 1.0 on the stored Attempt-5 record; not in v2.10 protected_real_failures",
+      "tie_break": "same intent as g011; numeric distance |10-11| = 1; runner-up g009 (distance 2)"
+    },
+    "g013": {
+      "control_id": "g014",
+      "intent": "usage",
+      "eligibility_evidence": "same rule as g011 control",
+      "tie_break": "same intent as g013; numeric distance |14-13| = 1; runner-up g015 (distance 2)"
+    },
+    "g023": {
+      "control_id": "g022",
+      "intent": "usage",
+      "eligibility_evidence": "same rule as g011 control",
+      "tie_break": "same intent as g023; numeric distance |22-23| = 1; runner-up g024 (distance 1, higher ID loses the tie)"
+    },
+    "g047": {
+      "control_id": "g050",
+      "intent": "algorithm_theory",
+      "eligibility_evidence": "same rule as g011 control",
+      "tie_break": "same intent as g047; numeric distance |50-47| = 3; runner-up g051 (distance 4)"
+    }
+  },
+  "control_selection_rule": {
+    "processing_order": ["g011", "g013", "g023", "g047"],
+    "eligibility": [
+      "v8 formal-English cohort member",
+      "exposed and not protected",
+      "split = dev",
+      "expected_status matches the affected case (answered)",
+      "not one of g011/g013/g023/g047",
+      "not identified in the current post-A5 failure-ownership/reconciliation artifacts as a genuine product-defect sentinel, evaluator-defect case, or Gold-contract-defect case materially involved in the Attempt-5 failure review (exclusion set: g011, g013, g016, g020, g023, g039, g044, g047, g060, g110, g113)",
+      "no critical answer-point miss in the frozen Attempt-5 record",
+      "satisfies the reconciled v2.11 critical-evidence-role contract on the stored historical evidence (critical_final_evidence_recall = 1.0)",
+      "zero identifier hallucinations under the reconciled identifier rescore",
+      "no hard-safety failure in the frozen Attempt-5 record",
+      "requires no protected or novel data"
+    ],
+    "ranking": ["same intent as affected case", "same split (all candidates are dev)", "minimum absolute numeric ID distance", "lower numeric ID"],
+    "outcome": "all four controls matched on same intent without dropping criterion 1; eligible pool = 38",
+    "selected_controls": ["g010", "g014", "g022", "g050"],
+    "controls_immutable_after_preregistration_commit": true
+  },
+  "fixed_execution_order": ["g011", "g010", "g013", "g014", "g023", "g022", "g047", "g050"],
+  "execution_mechanism": {
+    "runner": "existing panda-qa-eval infrastructure, mode=full, split=dev, official, per-case --case-id subsets (existing ID-list mechanism; no runner or evaluator modification)",
+    "invocation_plan": "eight single-case runner invocations in the fixed execution order above, one run each with run-id post-a5-t1-<case_id>, preserving the interleaved affected/control order",
+    "reordering_forbidden": true
+  },
+  "acceptance_criteria": {
+    "A_g013_completeness_recovery": {
+      "criterion": "the current answer satisfies all critical answer points under the active v2.11 Gold and the current evaluator contract (external-judge critical_answer_point_miss_count = 0), in particular the historically missed master-run-task/lifecycle obligation, with no hard-safety/trustworthiness violation",
+      "pass_condition": "critical_answer_point_miss_count = 0 and no hard-safety violation",
+      "fail_condition": "the lifecycle/master-task critical obligation is again missed",
+      "revision_mechanism_observation": "if a bounded revision is naturally triggered, inspect existing diagnostics and record whether the repaired recovery path (new-content survival across claim-ID collision) was exercised: OBSERVED / NOT_OBSERVED / NOT_OBSERVABLE; a complete answer without natural revision yields A_CASE_OUTCOME = PASS with A_REVISION_MECHANISM_ACTIVATION = NOT_OBSERVED and must not be reported as REVISION_RECOVERY_RUNTIME_EFFECT_PROVEN"
+    },
+    "B1_g023_workflow_completeness": {
+      "criterion": "all critical answer points covered, especially p3 (before PID in the generic workflow); the final answer must explicitly establish the requested workflow relation, not merely mention relevant components; no hard-safety violation",
+      "pass_condition": "critical_answer_point_miss_count = 0 with the workflow relation established",
+      "fail_condition": "the current evaluator still considers p3 missing"
+    },
+    "B2_g047_relationship_completeness": {
+      "criterion": "the critical point (relate the elastic differential cross section to luminosity extraction) is covered with no hard-safety violation; merely discussing the model without the luminosity-extraction relationship is insufficient",
+      "pass_condition": "critical_answer_point_miss_count = 0 with the relationship established",
+      "fail_condition": "the critical point is judged missing"
+    },
+    "C_g011_negative_existence_safety": {
+      "predeclared_rule": "the final rendered answer must not contain an unqualified corpus/documentation-wide negative-existence assertion about the native installation/setup path (an assertion that the locked documentation/corpus contains no independent native setup path) unless that absence is established by deterministic exact-lookup machinery referenced in the answer; a safe answer either positively describes both paths when supported or states scoped uncertainty limited to the supplied/selected evidence",
+      "detection": "deterministic inspection of the final rendered answer text plus the stored verifier/claim-support evidence; no new LLM judge is used",
+      "pass_condition": "no such unqualified corpus-wide false absence assertion survives into the final rendered answer",
+      "fail_condition": "such an unqualified corpus-wide false absence assertion survives"
+    },
+    "C_retrieval_completeness_observation": {
+      "rule": "failure to retrieve sufficient native-installation evidence is recorded separately as C_RETRIEVAL_COMPLETENESS = PASS/FAIL/NOT_APPLICABLE and does not automatically classify the negative-existence safety repair as failed; Workstream D remains DEFERRED"
+    },
+    "control_regression": {
+      "CONTROL_PASS": "critical_answer_point_miss_count = 0; no contradiction; no major unsupported claim; no forbidden evidence; no wrong-version evidence; no unhandled exception; no new inappropriate insufficient-evidence refusal; citation-source variation alone is not regression when an accepted v2.11 any_of evidence role is satisfied",
+      "CONTROL_FAIL": "a new substantive completeness or hard-safety failure develops"
+    }
+  },
+  "logical_execution_count": 8,
+  "scientific_reruns": "forbidden; no stochastic replicates; no case addition/removal/replacement; no rerun of a scientifically completed case because its outcome is undesirable",
+  "transport_recovery_policy": "a transport/infrastructure failure is not a scientific failure; only the repository's established bounded recovery applies (same case, same product/prompt/Gold/calibration identity, fully recorded); a scientifically completed case is never rerun for outcome reasons; if infrastructure prevents obtaining the fixed cohort, T1 = INCONCLUSIVE / EXECUTION_INCOMPLETE",
+  "overall_verdict_rule": {
+    "PASS": "A_CASE_OUTCOME = PASS and B1 = PASS and B2 = PASS and C_NEGATIVE_EXISTENCE_SAFETY = PASS and all 4 controls = CONTROL_PASS and all 8 fixed executions completed scientifically and no hard-safety/trustworthiness invariant failed",
+    "FAIL": "any scientifically valid fixed result shows A_CASE_OUTCOME = FAIL or B1 = FAIL or B2 = FAIL or C_NEGATIVE_EXISTENCE_SAFETY = FAIL or any control = CONTROL_FAIL or any hard-safety/trustworthiness invariant failure",
+    "INCONCLUSIVE": "the fixed experiment cannot be validly interpreted or completed for infrastructure/observability reasons; an undesirable valid result must be recorded as FAIL, not INCONCLUSIVE",
+    "notes": "C_RETRIEVAL_COMPLETENESS = FAIL does not fail T1 (Workstream D deliberately unresolved); A_REVISION_MECHANISM_ACTIVATION = NOT_OBSERVED does not fail T1 if g013 is complete without revision, provided the result states that direct runtime activation was not observed"
+  },
+  "protected_data_boundary": {
+    "novel_validation_prohibited": true,
+    "holdout_prohibited": true,
+    "f6_b_prohibited": true,
+    "attempt_6_prohibited": true,
+    "t2_prohibited": true
+  },
+  "development_evidence_disclaimer": "T1 is development evidence, not formal release authority."
+}
