@@ -58,7 +58,7 @@ from panda_agent.prompts import (
     RERANK_SYSTEM_PROMPT,
     REVISION_SYSTEM_PROMPT,
 )
-from panda_agent.qa import QAAgent
+from panda_agent.qa import DEFAULT_ANSWER_POINT_MODE, QAAgent
 from panda_agent.retrieval import Retriever
 from panda_agent.retrieval_trace import build_retrieval_trace, write_retrieval_trace
 from panda_agent.storage import Storage, iter_jsonl
@@ -946,11 +946,17 @@ def _execute_evaluation_case(
     mode: EvaluationMode,
     case: GoldQuestion,
     object_lookup: dict[str, dict[str, Any]],
+    capture_stage_trace: bool = False,
 ) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
     """Execute one case while enforcing the selected orchestration boundary."""
     boundaries = evaluation_mode_boundaries(mode)
     if boundaries["answer_generation"]:
-        detailed = engine.run_detailed(case.query)
+        if capture_stage_trace:
+            detailed = engine._run_detailed(
+                case.query, mode=DEFAULT_ANSWER_POINT_MODE, capture_stage_trace=True
+            )
+        else:
+            detailed = engine.run_detailed(case.query)
         result = detailed["result"]
         diagnostics = detailed["diagnostics"]
     else:
@@ -1580,6 +1586,28 @@ def import_failure_review_decisions(
     }
 
 
+def _configure_stage_trace(
+    manifest: dict[str, Any], requested: bool,
+    existing: dict[str, Any] | None = None,
+) -> None:
+    """Bind optional development diagnostics, preserving legacy resume manifests."""
+    if type(requested) is not bool:
+        raise ValueError("capture_stage_trace must be boolean")
+    enabled = requested
+    if existing is not None:
+        enabled = existing.get("capture_stage_trace", False)
+        if type(enabled) is not bool or (requested and not enabled):
+            raise ValueError("evaluation resume capture_stage_trace choice cannot change")
+    if enabled and (manifest.get("official") or manifest.get("candidate_id")
+                    or manifest.get("split") not in {"dev", "challenge", "regression"}
+                    or manifest.get("mode") not in {"qa", "full"}):
+        raise ValueError("stage tracing is restricted to explicit non-formal development QA runs")
+    if existing is not None and "capture_stage_trace" not in existing:
+        manifest.pop("capture_stage_trace", None)
+    else:
+        manifest["capture_stage_trace"] = enabled
+
+
 def run_evaluation(
     project_root: Path,
     *,
@@ -1596,7 +1624,12 @@ def run_evaluation(
     max_token_usage: int | None = None,
     deadline_minutes: float | None = None,
     evaluator_catalog_path: Path | None = None,
+    capture_stage_trace: bool = False,
 ) -> Path:
+    _configure_stage_trace(
+        {"official": not allow_draft, "candidate_id": candidate_id,
+         "mode": mode, "split": split}, capture_stage_trace,
+    )
     dataset_path = (dataset_path or default_gold_dataset_path(project_root)).resolve()
     evaluator_catalog = None
     if evaluator_catalog_path is not None:
@@ -1658,6 +1691,7 @@ def run_evaluation(
     manifest["max_model_calls"] = max_model_calls
     manifest["max_token_usage"] = max_token_usage
     manifest["deadline_minutes"] = deadline_minutes
+    _configure_stage_trace(manifest, capture_stage_trace)
     # The path is operational metadata only.  Resume comparison uses this
     # immutable receipt so a changed catalog at the same physical path fails.
     manifest["evaluator_catalog_path"] = (
@@ -1676,6 +1710,7 @@ def run_evaluation(
         existing_manifest = json.loads(
             existing_manifest_path.read_text(encoding="utf-8")
         )
+        _configure_stage_trace(manifest, capture_stage_trace, existing_manifest)
         if existing_manifest.get("evaluator_catalog") != evaluator_catalog:
             raise ValueError("evaluation resume evaluator catalog receipt mismatch")
         manifest["run_started_at"] = existing_manifest["run_started_at"]
@@ -1771,6 +1806,7 @@ def run_evaluation(
                 mode=mode,
                 case=case,
                 object_lookup=object_lookup,
+                capture_stage_trace=manifest.get("capture_stage_trace", False),
             )
             trace = build_retrieval_trace(
                 question_id=case.id,
@@ -2156,4 +2192,5 @@ def resume_evaluation(project_root: Path, run_id: str) -> Path:
         evaluator_catalog_path=Path(manifest["evaluator_catalog_path"])
         if manifest.get("evaluator_catalog_path")
         else None,
+        capture_stage_trace=manifest.get("capture_stage_trace", False),
     )

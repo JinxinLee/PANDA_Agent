@@ -7,7 +7,7 @@ import json
 import re
 import time
 from pathlib import Path
-from typing import Any, TypedDict
+from typing import Any, Callable, TypedDict
 
 from langgraph.graph import END, START, StateGraph
 
@@ -1461,7 +1461,160 @@ def render_composed_answer(paragraphs: list[dict], claims: list[ClaimCitation]) 
     return "\n".join(lines)
 
 
+_QA_TRACE_MAX_EVENTS = 16
+_QA_TRACE_MAX_BYTES = 2_097_152
+_QA_TRACE_STAGES = (
+    ("EA_ADMISSION", 0), ("A0_OUTPUT", 0), ("V1_INPUT", 1), ("V1_OUTPUT", 1),
+    ("EA_ADMISSION", 1), ("A1_INPUT", 1), ("A1_OUTPUT", 1), ("A1_POST_MERGE", 1),
+    ("V2_INPUT", 2), ("V2_OUTPUT", 2), ("C_INPUT", 0), ("C_OUTPUT", 0),
+)
+
+
+def _trace_json(value: Any) -> str:
+    return json.dumps(value, ensure_ascii=False, sort_keys=True, allow_nan=False)
+
+
+class _QAStageTrace:
+    """Invocation-local, best-effort parsed-data capture; never semantic authority."""
+
+    def __init__(self) -> None:
+        self.events: list[dict[str, Any]] = []
+        self.registry: dict[str, Any] = {}
+        self.incomplete = False
+        self.failure_codes: list[str] = []
+
+    def _envelope(self) -> dict[str, Any]:
+        return {"schema_version": "qa-stage-trace-v1",
+                "capture_status": "INCOMPLETE" if self.incomplete else "COMPLETE",
+                "events": self.events, "evidence_registry": self.registry,
+                "failure_codes": self.failure_codes}
+
+    def _project(self, value: Any, registry: dict[str, Any]) -> Any:
+        if isinstance(value, dict):
+            if "evidence_id" in value and "text" in value:
+                for key, old in registry.items():
+                    if old == value:
+                        return {"evidence_projection_ref": key}
+                key = f"projection.{len(registry) + 1}"
+                registry[key] = value
+                return {"evidence_projection_ref": key}
+            return {k: self._project(v, registry) for k, v in value.items()}
+        if isinstance(value, list):
+            return [self._project(v, registry) for v in value]
+        return value
+
+    def failure(self, stage: str, round_: int, code: str) -> None:
+        self.incomplete = True
+        if code not in self.failure_codes:
+            self.failure_codes.append(code)
+        item = {"stage": stage, "round": round_, "status": "NOT_CAPTURED",
+                "reason_code": code, "payload": {}}
+        for index, old in enumerate(self.events):
+            if (old["stage"], old["round"]) == (stage, round_):
+                self.events[index] = item
+                return
+        if len(self.events) < _QA_TRACE_MAX_EVENTS:
+            self.events.append(item)
+
+    def record(self, stage: str, round_: int, payload: Any, *, update: bool = False) -> None:
+        # Serialization copies parsed data and rejects non-JSON objects before they
+        # can escape into the existing evaluation store. Never retain live aliases.
+        copied = json.loads(_trace_json(payload))
+        registry = dict(self.registry)
+        projected = self._project(copied, registry)
+        index = next((i for i, e in enumerate(self.events)
+                      if (e["stage"], e["round"]) == (stage, round_)), None)
+        if index is None and len(self.events) >= _QA_TRACE_MAX_EVENTS:
+            self.failure(stage, round_, "TRACE_EVENT_BOUND_EXCEEDED")
+            return
+        if update and index is not None:
+            if self.events[index]["status"] == "NOT_CAPTURED":
+                return
+            projected = {**self.events[index]["payload"], **projected}
+        event = {"stage": stage, "round": round_, "status": "CAPTURED",
+                 "reason_code": None, "payload": projected}
+        events = list(self.events)
+        if index is None:
+            events.append(event)
+        else:
+            events[index] = event
+        envelope = {**self._envelope(), "events": events, "evidence_registry": registry}
+        if len(_trace_json(envelope).encode("utf-8")) > _QA_TRACE_MAX_BYTES:
+            self.failure(stage, round_, "TRACE_SIZE_BOUND_EXCEEDED")
+            return
+        self.events, self.registry = events, registry
+
+    def finish(self) -> dict[str, Any]:
+        for stage, round_ in _QA_TRACE_STAGES:
+            if not any((e["stage"], e["round"]) == (stage, round_) for e in self.events):
+                if len(self.events) >= _QA_TRACE_MAX_EVENTS:
+                    self.incomplete = True
+                    if "TRACE_EVENT_BOUND_EXCEEDED" not in self.failure_codes:
+                        self.failure_codes.append("TRACE_EVENT_BOUND_EXCEEDED")
+                    break
+                reason = "NO_REVISION" if round_ in {1, 2} and stage not in {"V1_INPUT", "V1_OUTPUT"} else "STAGE_NOT_REACHED"
+                self.events.append({"stage": stage, "round": round_, "status": "NOT_EXECUTED",
+                                    "reason_code": reason, "payload": {}})
+        result = self._envelope()
+        if len(_trace_json(result).encode("utf-8")) > _QA_TRACE_MAX_BYTES:
+            return _trace_incomplete("TRACE_SIZE_BOUND_EXCEEDED")
+        return result
+
+
+def _trace_incomplete(code: str) -> dict[str, Any]:
+    return {"schema_version": "qa-stage-trace-v1", "capture_status": "INCOMPLETE",
+            "reason_code": code, "events": [], "evidence_registry": {}}
+
+
+def _trace(state: Any, stage: str, round_: int, payload: Callable[[], Any],
+           *, update: bool = False) -> None:
+    collector = state.get("_stage_trace")
+    if collector is None:
+        return
+    try:
+        collector.record(stage, round_, payload(), update=update)
+    except Exception:
+        try:
+            collector.failure(stage, round_, "CAPTURE_FAILED")
+        except Exception:
+            # Optional telemetry cannot replace the original answer/exception.
+            pass
+
+
+def _trace_admission(state: Any, admitted: list[dict[str, Any]], round_: int) -> None:
+    def payload() -> dict[str, Any]:
+        selected = state["bundle"]["evidence"]
+        admitted_ids = [e["evidence_id"] for e in admitted]
+        return {"use": "A0" if round_ == 0 else "A1",
+                "selected_evidence_ids": [e["evidence_id"] for e in selected],
+                "admitted_evidence_ids": admitted_ids,
+                "rejected_evidence_ids": [e["evidence_id"] for e in selected
+                                          if e["evidence_id"] not in admitted_ids],
+                "decisions": [{"evidence_id": e["evidence_id"],
+                               "reason_code": "DIRECTLY_CITATION_ELIGIBLE" if e["evidence_id"] in admitted_ids
+                               else "INCOMPLETE_SPHINX_LOCATOR",
+                               "missing_locator_fields": [k for k in ("url", "snapshot_date", "section_path")
+                                                          if not (e.get("locator") or {}).get(k)]
+                               if e["evidence_id"] not in admitted_ids else []} for e in selected],
+                "selected_evidence": selected, "untrusted_evidence": admitted}
+    _trace(state, "EA_ADMISSION", round_, payload)
+
+
+def _trace_merge(state: Any, ordinal: int, old_id: str, new_id: str | None,
+                 code: str, retained: bool, target: Callable[[], Any],
+                 *, collection: str = "dispositions") -> None:
+    def payload() -> dict[str, Any]:
+        collector = state["_stage_trace"]
+        old = next((e["payload"].get(collection, []) for e in collector.events
+                    if e["stage"] == "A1_POST_MERGE"), [])
+        return {collection: [*old, {"input_ordinal": ordinal,
+                "old_claim_id": old_id, "new_claim_id": new_id,
+                "disposition": code, "retained": retained, "comparison_target": target()}]}
+    _trace(state, "A1_POST_MERGE", 1, payload, update=True)
+
+
 class QAState(TypedDict, total=False):
+    _stage_trace: Any
     question: str
     answer_point_coverage_mode: str
     runtime_answer_points: list[dict[str, str]]
@@ -2242,6 +2395,7 @@ class QAAgent:
             [] if _coverage_shadow(state) else legacy_answer_requirements
         )
         claim_evidence = [item for item in state["bundle"]["evidence"] if _is_public_claim_citation_eligible(item)]
+        _trace_admission(state, claim_evidence, 0)
         prompt = json.dumps(
             {
                 "task": "create_atomic_evidence_bound_claims",
@@ -2276,6 +2430,8 @@ class QAAgent:
             system_instruction=ANSWER_SYSTEM_PROMPT,
             usage_stage="qa_generation",
         )
+        _trace(state, "A0_OUTPUT", 0, lambda: {"response": draft,
+               "claim_ordinals": list(range(len(draft.get("claims", []))))})
         if _coverage_shadow(state):
             draft = {"claims": _model_claims(list(draft.get("claims", [])))}
         draft = self._augment_planned_locators(draft, state)
@@ -2506,22 +2662,28 @@ class QAAgent:
             {} if shadow else _requirement_evidence(answer_requirements, review_evidence_lookup)
         )
         reviewable_claims = [c for c in claims if not claim_errors.get(str(c.get("claim_id") or ""))] if shadow else claims
+        review_prompt = json.dumps(
+            {
+                "task": "review_claim_support_and_relevance",
+                "runtime_answer_points": runtime_points,
+                "answer_requirements": model_answer_requirements,
+                "requirement_evidence": requirement_evidence,
+                "untrusted_claims": _model_claims(reviewable_claims) if shadow else claims,
+                "untrusted_evidence": review_evidence,
+            },
+            ensure_ascii=False,
+        )
+        review_round = 2 if state.get("revision_count", 0) else 1
+        _trace(state, f"V{review_round}_INPUT", review_round, lambda: {
+            "model_input": json.loads(review_prompt), "normalized_draft": claims,
+            "deterministic_claim_errors": claim_errors})
         review = self.verification_vertex.generate_json(
-            json.dumps(
-                {
-                    "task": "review_claim_support_and_relevance",
-                    "runtime_answer_points": runtime_points,
-                    "answer_requirements": model_answer_requirements,
-                    "requirement_evidence": requirement_evidence,
-                    "untrusted_claims": _model_claims(reviewable_claims) if shadow else claims,
-                    "untrusted_evidence": review_evidence,
-                },
-                ensure_ascii=False,
-            ),
+            review_prompt,
             ANSWER_POINT_COVERAGE_REVIEW_SCHEMA if shadow else REVIEW_SCHEMA,
             system_instruction=ANSWER_POINT_COVERAGE_REVIEW_SYSTEM_PROMPT if shadow else EVIDENCE_REVIEW_SYSTEM_PROMPT,
             usage_stage="qa_semantic_verification",
         )
+        _trace(state, f"V{review_round}_OUTPUT", review_round, lambda: {"response": review})
         verified_mappings: dict[str, list[str]] = {}
         coverage_review_error = None
         missing_points: list[str] = []
@@ -2538,6 +2700,9 @@ class QAAgent:
                           "missing_answer_point_ids": [p["answer_point_id"] for p in runtime_points]}
             missing_points = list(review["missing_answer_point_ids"])
             errors.extend(f"missing answer point {pid}" for pid in missing_points)
+        _trace(state, f"V{review_round}_OUTPUT", review_round, lambda: {
+            "validation": {"status": "REJECTED" if coverage_review_error else ("ACCEPTED" if shadow else "NOT_APPLICABLE"),
+                           "error": coverage_review_error}}, update=True)
         unsupported = review.get("unsupported_claim_ids", [])
         irrelevant = review.get("irrelevant_claim_ids", [])
         missing_requirements = [str(value) for value in review.get("missing_requirement_ids", [])]
@@ -2735,6 +2900,7 @@ class QAAgent:
         )
         model_answer_requirements = [] if shadow else answer_requirements
         claim_evidence = [item for item in state["bundle"]["evidence"] if _is_public_claim_citation_eligible(item)]
+        _trace_admission(state, claim_evidence, 1)
         requirement_evidence = (
             {}
             if shadow
@@ -2771,12 +2937,15 @@ class QAAgent:
             },
             ensure_ascii=False,
         )
+        _trace(state, "A1_INPUT", 1, lambda: {"model_input": json.loads(prompt)})
         revised = self.generation_vertex.generate_json(
             prompt,
             ANSWER_SCHEMA,
             system_instruction=ANSWER_POINT_COVERAGE_REVISION_SYSTEM_PROMPT if shadow else REVISION_SYSTEM_PROMPT,
             usage_stage="qa_generation",
         )
+        _trace(state, "A1_OUTPUT", 1, lambda: {"response": revised,
+               "claim_ordinals": list(range(len(revised.get("claims", []))))})
         if shadow:
             revised = {"claims": _model_claims(list(revised.get("claims", [])))}
         revised_claims = _normalise_claim_answer_points(
@@ -2785,6 +2954,9 @@ class QAAgent:
             ),
             str(state["question"]),
         )
+        _trace(state, "A1_OUTPUT", 1, lambda: {"normalized_claims": revised_claims,
+               "transform_mapping": [{"input_ordinal": i, "normalized_ordinal": i}
+                                     for i in range(len(revised_claims))]}, update=True)
         # F6-A2-FR2 revision discipline: a restatement identical (normalized) to
         # a claim just found unsupported is not a revision — the same text
         # cannot both lack and carry evidential support, so re-entering it
@@ -2798,24 +2970,37 @@ class QAAgent:
         merged: list[dict[str, Any]] = []
         seen_ids: set[str] = set()
         seen_texts: set[str] = set()
-        for claim in supported:
+        _trace(state, "A1_POST_MERGE", 1, lambda: {"supported_prefix_input": supported,
+               "prefix_dispositions": [], "dispositions": []})
+        for prefix_ordinal, claim in enumerate(supported):
             claim_id = str(claim.get("claim_id") or "")
             if not claim_id or claim_id in seen_ids:
+                _trace_merge(state, prefix_ordinal, claim_id, None, "OTHER_EXPLICIT_REASON", False,
+                             lambda: {"reason_code": "MISSING_ID" if not claim_id else "DUPLICATE_ID"},
+                             collection="prefix_dispositions")
                 continue
+            _trace_merge(state, prefix_ordinal, claim_id, claim_id, "RETAINED", True, lambda: None,
+                         collection="prefix_dispositions")
             seen_ids.add(claim_id)
             normalized_text = _normalized_claim_text(claim.get("claim_text"))
             if normalized_text:
                 seen_texts.add(normalized_text)
             merged.append(claim)
-        for claim in revised_claims:
+        _trace(state, "A1_POST_MERGE", 1, lambda: {"supported_prefix": merged}, update=True)
+        for ordinal, claim in enumerate(revised_claims):
             claim_id = str(claim.get("claim_id") or "")
             if not claim_id:
+                _trace_merge(state, ordinal, claim_id, None, "MISSING_ID", False, lambda: None)
                 continue
             normalized_text = _normalized_claim_text(claim.get("claim_text"))
             if (
                 claim_id in unsupported_texts
                 and normalized_text == unsupported_texts[claim_id]
             ):
+                _trace_merge(state, ordinal, claim_id, None, "IDENTICAL_UNSUPPORTED_REJECTED", False,
+                             lambda: {"stage": "A1_INPUT", "unsupported_draft_ordinal": next(
+                                 i for i, c in enumerate(unsupported_draft["claims"]) if c.get("claim_id") == claim_id),
+                                 "claim_id": claim_id})
                 continue
             # Post-A5 completeness recovery: the generator may reuse an existing
             # local claim ID for genuinely new content. Discard only an exact
@@ -2824,16 +3009,25 @@ class QAAgent:
             # recover a missing obligation. Identical-unsupported restatement
             # above stays blocked (F6-A2-FR2 unchanged).
             if normalized_text and normalized_text in seen_texts:
+                _trace_merge(state, ordinal, claim_id, None, "NORMALIZED_DUPLICATE", False,
+                             lambda: {"stage": "A1_POST_MERGE", "merged_ordinal": next(
+                                 i for i, c in enumerate(merged) if _normalized_claim_text(c.get("claim_text")) == normalized_text)})
                 continue
             if claim_id in seen_ids:
                 suffix = 2
                 while f"{claim_id}_r{suffix}" in seen_ids:
                     suffix += 1
+                _trace_merge(state, ordinal, claim_id, f"{claim_id}_r{suffix}", "ID_COLLISION_RENAMED", True,
+                             lambda: {"stage": "A1_POST_MERGE", "merged_ordinal": next(
+                                 i for i, c in enumerate(merged) if c.get("claim_id") == claim_id), "claim_id": claim_id})
                 claim_id = f"{claim_id}_r{suffix}"
+            else:
+                _trace_merge(state, ordinal, claim_id, claim_id, "RETAINED", True, lambda: None)
             seen_ids.add(claim_id)
             if normalized_text:
                 seen_texts.add(normalized_text)
             merged.append({**claim, "claim_id": claim_id})
+        _trace(state, "A1_POST_MERGE", 1, lambda: {"claims": merged}, update=True)
         return {
             "draft": {"claims": merged},
             "revision_count": state.get("revision_count", 0) + 1,
@@ -2844,7 +3038,8 @@ class QAAgent:
             "answer_requirements": answer_requirements,
         }
 
-    def _compose_verified_answer(self, claims: list[ClaimCitation]) -> tuple[str, dict[str, Any]]:
+    def _compose_verified_answer(self, claims: list[ClaimCitation], *,
+                                 _stage_trace: Any = None) -> tuple[str, dict[str, Any]]:
         """F5 bounded readability composer over already verified public claims.
 
         Exactly one composer call (generation role) and at most one semantic
@@ -2853,6 +3048,10 @@ class QAAgent:
         verification_errors are never touched. Diagnostics carry counts and
         fixed reason codes only — never prompt, claim, evidence, or model text.
         """
+        trace_state = {"_stage_trace": _stage_trace}
+        _trace(trace_state, "C_INPUT", 0, lambda: {"verified_claims": [
+            {"claim_id": c.claim_id, "claim_text": c.claim_text} for c in claims],
+            "citation_edges": [{"claim_id": c.claim_id, "evidence_ids": c.evidence_ids} for c in claims]})
         fallback_answer = render_verified_answer(claims)
 
         def _diagnostics(
@@ -2864,7 +3063,7 @@ class QAAgent:
             deterministic_error_codes: list[str],
             semantic_review_called: bool,
         ) -> dict[str, Any]:
-            return {
+            result = {
                 "attempted": attempted,
                 "accepted": accepted,
                 "fallback_used": attempted and not accepted,
@@ -2874,6 +3073,10 @@ class QAAgent:
                 "deterministic_error_codes": deterministic_error_codes,
                 "semantic_review_called": semantic_review_called,
             }
+            _trace(trace_state, "C_OUTPUT", 0, lambda: {"outcome": result,
+                   "generation_status": "CAPTURED" if attempted and reason != "composer_generation_failed" else ("NOT_CAPTURED" if attempted else "NOT_EXECUTED"),
+                   "final_answer_ref": "result.answer"}, update=True)
+            return result
 
         if len(claims) < 2:
             return fallback_answer, _diagnostics(
@@ -2907,6 +3110,7 @@ class QAAgent:
                 deterministic_error_codes=[],
                 semantic_review_called=False,
             )
+        _trace(trace_state, "C_OUTPUT", 0, lambda: {"response": composer_output})
         paragraphs = composer_output.get("paragraphs") if isinstance(composer_output, dict) else None
         ok, codes = _validate_composed_paragraphs(paragraphs, claims)
         if not ok:
@@ -2944,6 +3148,7 @@ class QAAgent:
                 deterministic_error_codes=[],
                 semantic_review_called=True,
             )
+        _trace(trace_state, "C_OUTPUT", 0, lambda: {"review_response": review}, update=True)
         if not _validate_composer_review(review, len(paragraphs), {claim.claim_id for claim in claims}):
             return fallback_answer, _diagnostics(
                 attempted=True,
@@ -3197,7 +3402,11 @@ class QAAgent:
             # F5: the optional bounded composer runs only here; every failure
             # mode falls back to the deterministic renderer below.
             if claims:
-                answer, composer_diagnostics = self._compose_verified_answer(claims)
+                if state.get("_stage_trace") is not None:
+                    answer, composer_diagnostics = self._compose_verified_answer(
+                        claims, _stage_trace=state["_stage_trace"])
+                else:
+                    answer, composer_diagnostics = self._compose_verified_answer(claims)
             else:
                 answer = render_verified_answer(claims)
             result = QAResult(
@@ -3251,7 +3460,8 @@ class QAAgent:
         """Explicit E1-v2 shadow coverage; not exposed through normal QA/API."""
         return self._run_detailed(question, mode="shadow_e1_v2")
 
-    def _run_detailed(self, question: str, *, mode: str = "legacy_question_core") -> dict[str, Any]:
+    def _run_detailed(self, question: str, *, mode: str = "legacy_question_core",
+                      capture_stage_trace: bool = False) -> dict[str, Any]:
         """Internal paired-evaluation seam; not a public API selector."""
         if mode not in _ANSWER_POINT_MODES:
             raise ValueError(f"unsupported answer-point mode: {mode}")
@@ -3263,6 +3473,12 @@ class QAAgent:
         started = time.perf_counter()
         stats_before = self._stats_snapshot()
         initial: QAState = {"question": question}
+        trace_initialization_failed = False
+        if capture_stage_trace:
+            try:
+                initial["_stage_trace"] = _QAStageTrace()
+            except Exception:
+                trace_initialization_failed = True
         decomposition = None
         decomposition_ms = 0
         if coverage_shadow:
@@ -3338,6 +3554,14 @@ class QAAgent:
                     "remaining_missing_answer_point_ids": [],
                 }
             diagnostics["e3_trace"] = e3_trace
+        if capture_stage_trace:
+            try:
+                diagnostics["qa_stage_trace"] = (
+                    _trace_incomplete("CAPTURE_INITIALIZATION_FAILED") if trace_initialization_failed
+                    else initial["_stage_trace"].finish()
+                )
+            except Exception:
+                diagnostics["qa_stage_trace"] = _trace_incomplete("CAPTURE_ASSEMBLY_FAILED")
         return {
             "result": result.model_dump(mode="json"),
             "diagnostics": diagnostics,

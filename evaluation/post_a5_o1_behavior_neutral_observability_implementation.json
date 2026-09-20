@@ -1,0 +1,139 @@
+{
+  "schema_version": "post-a5-o1-implementation-v1",
+  "task": "POST-A5 O1 BEHAVIOR-NEUTRAL OBSERVABILITY IMPLEMENTATION",
+  "status": "COMPLETE / PASS / O1_BEHAVIOR_NEUTRAL_OBSERVABILITY_IMPLEMENTED_AND_DETERMINISTICALLY_VERIFIED",
+  "status_scope": "Deterministic O1 and applicable regression scope only; unrelated reproduced baseline failure disclosed; no scientific validation",
+  "starting_head": "4ba022c6f466b0f2d274417834315dc6c50de66e",
+  "starting_worktree": "CLEAN",
+  "implementation_identity": {
+    "base_head": "4ba022c6f466b0f2d274417834315dc6c50de66e",
+    "commit": "Git commit containing this implementation record; full SHA supplied in final delivery",
+    "new_repository_identity": true,
+    "new_material_product_candidate": false
+  },
+  "product_behavior_head": "e79d3232ed132a224cbceaf3524e19a1406bd648",
+  "changed_product_files": [
+    "src/panda_agent/qa.py",
+    "src/panda_agent/evaluation_runner.py"
+  ],
+  "changed_test_files": [
+    "tests/unit/test_post_a5_o1_observability.py"
+  ],
+  "capture_schema": "qa-stage-trace-v1",
+  "trace_location": "diagnostics.qa_stage_trace",
+  "bounds": {
+    "maximum_events": 16,
+    "maximum_utf8_json_bytes": 2097152
+  },
+  "stage_surfaces": "`diagnostics.qa_stage_trace`, schema_version=`qa-stage-trace-v1`:\n\n- capture_status: COMPLETE or INCOMPLETE; optional top-level fixed reason_code for\n  a minimal failure envelope; normal envelopes include bounded failure_codes.\n- events: ordered records with stage, round, status, reason_code, payload. Status\n  is CAPTURED, NOT_EXECUTED or NOT_CAPTURED. Skipped stages use NO_REVISION or\n  STAGE_NOT_REACHED, not empty successful output.\n- evidence_registry: trace-local exact evidence projections addressed by\n  evidence_projection_ref. Same projection reuses a reference; different fields\n  or text yield separate projections. Run/case/attempt identity remains in the\n  enclosing evaluation record. Array ordinals preserve duplicate claim IDs.\n\n| Stage | Implemented boundary / contents |\n| --- | --- |\n| EA_ADMISSION | After unchanged claim_evidence filter in A0/A1, before prompt serialization. Ordered selected/admitted/rejected IDs, current missing-locator reason fields, exact selected/offered projections. Round 0=A0, round 1=A1. |\n| A0_OUTPUT | Immediately after parsed generation response, before model projection, augmentation or normalization. Raw response and claim ordinals. |\n| V1_INPUT / V2_INPUT | Exact serialized reviewer input decoded into an auditable structured equivalent immediately before the existing call; normalized draft and deterministic claim errors separate from model payload. Rounds 1/2. |\n| V1_OUTPUT / V2_OUTPUT | Raw parsed response before structural validation/fallback replacement; append ACCEPTED/REJECTED/NOT_APPLICABLE validation status and existing error. |\n| A1_INPUT | Actual revision payload before the existing call; no changed missing points, scope, evidence or instructions. |\n| A1_OUTPUT | Raw parsed response/ordinals plus post-normalization claims and positional transform mapping, before merge. Current transforms preserve list positions. |\n| A1_POST_MERGE | Dispositions captured inside actual branches, supported-prefix input/retained snapshot and prefix dispositions, final ordered merged claims. |\n| C_INPUT | Exact ordered composer claims/text and separate existing citation edges; no evidence added to the model input. |\n| C_OUTPUT | Parsed composer response/review where available, existing validation/acceptance/fallback diagnostics and `final_answer_ref=result.answer`. Single-claim bypass and failed generation are distinguished in generation_status. |\n\nMerge dispositions: MISSING_ID, IDENTICAL_UNSUPPORTED_REJECTED,\nNORMALIZED_DUPLICATE, ID_COLLISION_RENAMED, RETAINED; supported-prefix skips use\nOTHER_EXPLICIT_REASON plus actual MISSING_ID/DUPLICATE_ID reason. Each revised\ninput ordinal records old/new ID, retained flag, comparison target where applicable.\nThe branch order, normalization, collision suffix algorithm and semantic result\nremain unchanged. No after-the-fact inference from final output.\n\nNo provider HTTP envelopes, credentials, environment dumps or hidden reasoning.\nExisting parsed short reason fields are retained without new model instructions.\nPublic diagnostic projection remains an explicit allowlist; it does not expose\nqa_stage_trace. The public QAResult schema remains unchanged.",
+  "implementation_surfaces": "- `src/panda_agent/qa.py`: private invocation-local collector and guarded capture\n  helpers; private `_run_detailed(..., capture_stage_trace=False)`; QAState carries\n  a per-call reference; capture at answer, verification, revision/merge and composer\n  seams. Public `run(question)` and `run_detailed(question)` signatures/defaults\n  remain unchanged and tracing stays off.\n- `src/panda_agent/evaluation_runner.py`: programmatic run option\n  `capture_stage_trace=False`, manifest binding, private QA dispatch only on opt-in,\n  and preserved resume selection. No CLI or public product parameter was needed.\n- `tests/unit/test_post_a5_o1_observability.py`: 33 focused deterministic tests,\n  including paired exact payload/role-order comparisons, failure injection and\n  existing-store round trips. Existing tests were not rewritten.\n\nNo new logging module/store/database. No EA1 resolver, structural backing lookup,\nC1 relationship_checks, review-question addition, new refusal policy, RS redesign,\nprompt/schema changes, or retrieval/ranking changes were implemented.",
+  "failure_and_persistence_contract": "Maximum **16 events / 2,097,152 UTF-8 JSON bytes** including registry. Normal full\none-revision flow requires 12 events, including two EA uses. Structured snapshots\nare copied/serialized before admission to the trace. Overflow marks NOT_CAPTURED\nwith TRACE_SIZE_BOUND_EXCEEDED or records TRACE_EVENT_BOUND_EXCEEDED; no semantic\ntext is truncated and labeled captured. Final assembly checks the complete envelope\nagain and substitutes a minimal incomplete envelope if needed.\n\nCopy/serialization/capture/initialization/final-assembly failures are isolated from\nthe answer path. They cause no retry, routing, revision, model-input or public-output\nchange. No collector is stored on QAAgent or globally; concurrent same-agent fake\nrequests have independent collectors/registries. Capture enablement does not alter\ngraph nodes/edges.\n\nPersist through existing diagnostics -> EvaluationRunStore.record -> append-only\nattempts.jsonl/current records/results.jsonl. Round-trip tests verify the same trace\nin all three. Existing disk-store failures still propagate; they are not swallowed\nas optional capture failures. Provider/parser exceptions that prevent a completed\nQA result retain existing exception behavior; O1 does not promise a durable partial\ntrace on process/model failure. No secondary exception store or historical backfill.",
+  "runner_opt_in": "`run_evaluation(..., capture_stage_trace=True)` is the explicit programmatic\ndevelopment opt-in. New run manifests record true/false. Allowed only for non-formal\ndraft runs without candidate binding, qa/full mode and dev/challenge/regression\nsplits. Protected/acceptance/other splits, formal/candidate runs and retrieval-only\ncapture requests are rejected. No scientific run was invoked by this implementation.\n\nDefault execution still calls engine.run_detailed(query). Enabled execution calls\nthe private seam with the same DEFAULT_ANSWER_POINT_MODE and capture=true.\nResume restores the stored choice; a legacy absent field means disabled and remains\nabsent, preserving old manifest compatibility. Enabling capture retroactively on a\ndisabled/legacy run is rejected. No historical manifest is rewritten. Verdicts,\ncandidate gates and evaluation metrics are unchanged; RS remains deferred.",
+  "red": {
+    "failed": 2,
+    "reason": "Missing private capture_stage_trace keyword before implementation",
+    "environment_collection_failure_not_red": "Initial missing PYTHONPATH; corrected without installation"
+  },
+  "green": {
+    "passed": 33,
+    "command": "PYTHONPATH=src python -m pytest tests/unit/test_post_a5_o1_observability.py -q"
+  },
+  "focused_regressions": {
+    "passed": 290,
+    "subtests_passed": 49,
+    "failed": 1,
+    "failure_classification": "CONFIRMED_PRE_EXISTING_UNRELATED_STALE_DATASET_EXPECTATION",
+    "failed_test": "EvaluationRunnerTests.test_v26_is_default_and_signed_dry_rescore_preserves_real_failures",
+    "baseline_reproduction": "Starting source also selects v2_11 while the test expects v2_6; fails before dry rescore",
+    "post_prefix_change_targeted_passed": 22,
+    "post_prefix_change_subtests_passed": 2,
+    "counts_overlap": true
+  },
+  "baseline_equivalence": {
+    "scenarios": 6,
+    "result": "PASS",
+    "compared": [
+      "public result",
+      "non-trace diagnostics",
+      "fake usage",
+      "exact serialized model inputs",
+      "schemas",
+      "system instructions",
+      "call order"
+    ]
+  },
+  "behavior_neutrality_evidence": "Commands used `PYTHONPATH=src` (plus tests/unit for the one-off baseline comparison).\nThe initial invocation without PYTHONPATH failed import collection; this is an\nenvironment setup issue, not RED evidence. A later optional FastAPI import check\ncould not run because FastAPI was absent; it was replaced by an AST allowlist\nboundary check rather than installing unrelated dependencies.\n\n| Verification | Observed result |\n| --- | --- |\n| Preimplementation O1 tests | RED: 2 failures, both missing `_run_detailed(capture_stage_trace=...)`; default public calls succeeded before the failure. |\n| Final `python -m pytest tests/unit/test_post_a5_o1_observability.py -q` | GREEN: 33 passed. |\n| Related existing suite: test_qa, test_e2_a1_answer_point_coverage, test_generic_answer_obligation_completeness, test_post_a5_generic_product_repair, test_evaluation_runner, test_f6_release_identity, test_evaluation_cli, two selected M6 store/resume tests | 290 passed, 49 subtests passed; one pre-existing stale default-dataset assertion failed (details below). |\n| After supported-prefix instrumentation: test_qa and test_post_a5_generic_product_repair, selected revision/collision/duplicate/resurrection tests | 22 passed, 2 subtests passed, 200 deselected. These overlap the earlier regression count and are not added to it. |\n| Starting-source vs final O1 comparison | 6 deterministic scenarios: public result, non-trace diagnostics, fake usage, exact serialized model prompt/schema/system kwargs and call order equal. Covers fallback/success/composer generation failure/review failure/rejection and collision revision. |\n| Static source checks | Existing admission predicate, coverage validator, revision routing, claim normalization/identifier stripping, composer validators, retrieval/sufficiency methods and model JSON schemas AST-identical. |\n| Unchanged file checks | prompts, D0, models/public DTO, retrieval, storage, evaluation persistence/finalization unchanged under standard Git CRLF/LF normalization and have no tracked diff. |\n\nKnown baseline failure, explicitly NOT GREEN:\n`EvaluationRunnerTests.test_v26_is_default_and_signed_dry_rescore_preserves_real_failures`\nexpects v2_6 while both starting and current source select v2_11. Reproduced its\nsame failing assertion using evaluation_runner loaded from starting Git revision.\nIt fails before dry rescore; no rescore was executed. This unrelated stale benchmark\ndefault expectation is outside O1 repair scope and is left unchanged. Applicable\nO1/QA/runner transport/persistence/identity regressions pass; the broader command\nis not described as entirely green.\n\nPairwise tests compare full result (status/answer/claims/evidence/errors), all\ndiagnostics except qa_stage_trace, model usage, retriever call count and exact\nserialized prompt/schema/system/usage-stage call sequences. Separate generation\nand verification clients also preserve role order. Only timing fields are excluded.\nCoverage includes no/one revision, ID collision, anti-resurrection, normalized\nduplicate, missing ID, repeated raw IDs, structural review fallback, composer\nsuccess/bypass/all fallback classes, early exit, capture failures, bounds, registry\nidentity/copy isolation, run option/resume, public projection and storage failure.",
+  "prompt_fingerprint_before": "0a5b2909ef586671d533148979fc681c64e37528ad53781a4566cb9044835ba2",
+  "prompt_fingerprint_after": "0a5b2909ef586671d533148979fc681c64e37528ad53781a4566cb9044835ba2",
+  "new_scientific_calls": 0,
+  "new_scientific_tokens": 0,
+  "materiality": {
+    "source_change": true,
+    "material_product_behavior_change": false,
+    "material_product_change": false,
+    "prompt_fingerprint_change": false,
+    "public_dto_change": false,
+    "evaluator_contract_change": false,
+    "gold_change": false,
+    "calibration_change": false
+  },
+  "gate_results": {
+    "O1-G1": "PASS",
+    "O1-G2": "PASS",
+    "O1-G3": "PASS",
+    "O1-G4": "PASS",
+    "O1-G5": "PASS",
+    "O1-G6": "PASS",
+    "O1-G7": "PASS",
+    "O1-G8": "PASS",
+    "O1-G9": "PASS",
+    "O1-G10": "PASS",
+    "O1-G11": "PASS",
+    "O1-G12": "PASS"
+  },
+  "gate_11_scope": "Applicable O1 regressions pass; reproduced unrelated baseline dataset assertion is excluded and explicitly not GREEN",
+  "identity_and_gates": "Before/after canonical fingerprint:\n`0a5b2909ef586671d533148979fc681c64e37528ad53781a4566cb9044835ba2`.\nMechanically asserted in O1 tests and directly computed after implementation;\nactive prompt sources and model schemas are unchanged. Expected value was not edited.\n\nSOURCE_CHANGE=true; MATERIAL_PRODUCT_BEHAVIOR_CHANGE=false;\nMATERIAL_PRODUCT_CHANGE=false; PROMPT_FINGERPRINT_CHANGE=false;\nPUBLIC_DTO_CHANGE=false; EVALUATOR_CONTRACT_CHANGE=false;\nGOLD_CHANGE=false; CALIBRATION_CHANGE=false.\n\nImplementation/repository identity changes in this commit. This is NOT a new\nmaterial product candidate; material behavior lineage stays e79d323. Trace-enabled\ndiagnostics change result/receipt hashes under existing hash semantics, not prompt\nor public behavior. No new integrity manifest, candidate freeze or historical hash\nregeneration. Ordinary Git identity provides development history.\n\nO1-G1..G10 and O1-G12 PASS within deterministic test/static scope. O1-G11 PASS for\nthe applicable O1 regression scope, with the independently reproduced unrelated\nbaseline test failure explicitly excluded and retained as known debt. No claim\nthat the repository's entire test suite passes. No model effectiveness claim.",
+  "O1": "IMPLEMENTED / DETERMINISTICALLY VERIFIED / BEHAVIOR_NEUTRAL",
+  "EA1": "DESIGN_COMPLETE / NOT_IMPLEMENTED",
+  "C1": "DESIGN_COMPLETE / NOT_IMPLEMENTED",
+  "RS": "DEFER / NOT_IMPLEMENTED",
+  "overall_t1_verdict": "FAIL",
+  "next_task_recommendation": "POST-A5 EA1 EXACT-BACKING EVIDENCE-ADMISSION IMPLEMENTATION",
+  "next_task_execution_authorized": false,
+  "limitations": [
+    "No scientific model effectiveness validation",
+    "No durable partial trace guarantee if QA does not return or the process fails",
+    "Optional FastAPI runtime absent; public projection boundary checked statically",
+    "One independently reproduced pre-existing default-dataset assertion remains failing"
+  ],
+  "protected_state": {
+    "novel_validation": "PRISTINE_FOR_CURRENT_LINEAGE",
+    "holdout_access": 0,
+    "protected_content_leakage": 0,
+    "f6_b_execution": 0
+  },
+  "attempt_6_state": {
+    "candidate_frozen": false,
+    "attempt_6_preregistered": false,
+    "attempt_6_executed": false,
+    "attempt_6_readiness": "NOT_READY"
+  },
+  "historical_t1_usage": {
+    "calls": 65,
+    "tokens": 373265,
+    "transport_recovery_count": 0
+  },
+  "sentinel_verdicts": {
+    "g013": "FAIL",
+    "g023": "FAIL",
+    "g047": "PASS",
+    "g011_negative_existence_safety": "PASS"
+  },
+  "control_results": {
+    "g010": "CONTROL_PASS",
+    "g014": "CONTROL_PASS",
+    "g022": "CONTROL_PASS",
+    "g050": "CONTROL_PASS",
+    "CONTROL_REGRESSION_COUNT": 0
+  }
+}
