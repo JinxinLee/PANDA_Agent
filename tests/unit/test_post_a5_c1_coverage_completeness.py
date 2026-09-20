@@ -356,3 +356,57 @@ def test_invalid_global_support_verdict_cannot_salvage_claims(tmp_path):
     value["answer_point_coverage"][0]["relationship_checks"] = []
     out = agent(tmp_path, RecordingVertex(reviews=[value])).run_detailed(QUESTION)
     assert out["result"]["claims"] == [] and out["diagnostics"]["revision_count"] == 0
+
+
+@pytest.mark.parametrize("verified,mixed,expected", [([], False, []), (["point.2"], False, ["point.2"]),
+    (["point.2"], True, ["point.1", "point.2"]), (["point.1"], True, ["point.1"])])
+def test_r1_verified_unsupported_mapping_owns_recovery(tmp_path, verified, mixed, expected):
+    records = [point(p["answer_point_id"], [], "INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE") for p in POINTS]
+    if mixed:
+        records[0] = point("point.1", [check(supporters=[])])
+    vertex = RecordingVertex(reviews=[c1_review(records, {"c1": verified}, unsupported=["c1"])], revisions=[])
+    runner = agent(tmp_path, vertex)
+    s = state(runner, [claim()])
+    s["answer_point_coverage_mode"] = qa.DEFAULT_ANSWER_POINT_MODE
+    original = deepcopy(s["draft"])
+    s.update(runner._verify(s))
+    assert s["revisionable_unsupported_claim_ids"] == ["c1"]
+    assert runner._after_verify_route(s) == "revise"
+    update = runner._revise(s)
+    payload = json.loads(vertex.exact_calls[-1][0])
+    assert payload["revisionable_answer_point_ids"] == expected
+    assert [p["answer_point_id"] for p in payload["runtime_answer_points"]] == expected
+    assert payload["untrusted_draft"]["claims"][0]["answer_point_ids"] == verified
+    assert s["draft"] == original
+    assert payload["revisionable_unsupported_claim_ids"] == ["c1"]
+    assert [e["evidence_id"] for e in payload["untrusted_evidence"]] == ["e1"]
+    s.update(update)
+    assert runner._after_verify_route(s) == "finalize"
+
+
+def test_r1_partial_rendered_audit_uses_public_claims(tmp_path):
+    records = [point(p["answer_point_id"], [], "INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE") for p in POINTS]
+    vertex = RecordingVertex(reviews=[c1_review(records, {"c1": ["point.1"], "c2": []}, irrelevant=["c2"])])
+    out = agent(tmp_path, vertex).run_detailed(QUESTION)
+    assert out["result"]["status"] == "insufficient_evidence"
+    assert [c["claim_id"] for c in out["result"]["claims"]] == ["c1"]
+    assert "The input is a record." in out["result"]["answer"]
+    audit = {m["claim_id"]: m["rendered"] for m in out["diagnostics"]["answer_point_audit"]["claim_mappings"]}
+    assert audit == {"c1": True, "c2": False}
+
+
+@pytest.mark.parametrize("scope", ["ESTABLISHED", "OVERFLOW"])
+def test_r1_uncertain_check_requires_uncertain_scope(tmp_path, scope):
+    uncertain = check(supporters=[], admitted="INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE")
+    value = c1_review([point("point.1", [uncertain], scope),
+                       point("point.2", [], "INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE")])
+    with pytest.raises(ValueError, match="uncertain check requires uncertain scope"):
+        validate(tmp_path, value)
+
+
+def test_r1_uncertain_and_visible_only_remain_distinct(tmp_path):
+    uncertain = check(supporters=[], admitted="INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE")
+    value = c1_review([point("point.1", [uncertain], "INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE"),
+                       point("point.2", [], "OVERFLOW")])
+    assert validate(tmp_path, value)
+    # Visible-only acceptance/no revision is separately exercised by the existing full-flow test.

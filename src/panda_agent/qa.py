@@ -963,6 +963,8 @@ def _validate_coverage_satisfaction(
                     require(bool(basis_ids - admitted_ids), "visible-only check requires unadmitted basis")
             if status == "INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE":
                 require(admission == "INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE", "uncertain scope requires uncertain checks")
+            if admission == "INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE":
+                require(status == "INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE", "uncertain check requires uncertain scope")
         require(p["supporting_claim_ids"] == [c["claim_id"] for c in claims if c["claim_id"] in union],
                 "point supporters must equal ordered relationship union")
         complete = status == "ESTABLISHED" and bool(checks) and all(
@@ -1736,6 +1738,7 @@ def _trace_merge(state: Any, ordinal: int, old_id: str, new_id: str | None,
 class QAState(TypedDict, total=False):
     revisionable_relationships: list[dict[str, Any]]
     revisionable_unsupported_claim_ids: list[str]
+    revisionable_unsupported_claim_mappings: dict[str, list[str]]
     coverage_blocked: bool
     coverage_satisfaction_status: str
     _stage_trace: Any
@@ -3185,6 +3188,7 @@ class QAAgent:
                     and c.get("evidence_ids") and set(c["evidence_ids"]) <= admitted_ids][:8]
             coverage_update.update(revisionable_relationships=relationships,
                 revisionable_unsupported_claim_ids=repair_ids,
+                revisionable_unsupported_claim_mappings={cid: list(verified_mappings[cid]) for cid in repair_ids},
                 coverage_blocked=bool(missing_points) or not evaluable,
                 coverage_satisfaction_status="VALID" if evaluable else "INVALID")
             coverage_update["answer_point_audit"].update(
@@ -3216,6 +3220,12 @@ class QAAgent:
                 if claim.get("claim_id") in unsupported_ids
             ]
         }
+        if satisfaction:
+            verified_repair_mappings = state.get("revisionable_unsupported_claim_mappings", {})
+            unsupported_draft["claims"] = [
+                {**claim, "answer_point_ids": list(verified_repair_mappings.get(claim["claim_id"], []))}
+                for claim in unsupported_draft["claims"]
+            ]
         answer_requirements = list(
             state.get("answer_requirements")
             or _answer_requirements(str(state["question"]), state["bundle"]["plan"])
@@ -3787,7 +3797,7 @@ class QAAgent:
                 "missing_answer_point_ids": [p["answer_point_id"] for p in points],
                 "coverage_complete": False, "coverage_evaluable": False,
             })
-            rendered_ids = {c.claim_id for c in result.claims} if result.status == QAStatus.ANSWERED else set()
+            rendered_ids = {c.claim_id for c in result.claims} if result.status == QAStatus.ANSWERED or c1_incomplete else set()
             audit["claim_mappings"] = [{**m, "rendered": m["supported"] and m["claim_id"] in rendered_ids}
                                        for m in audit["claim_mappings"]]
             coverage_update["answer_point_audit"] = audit
