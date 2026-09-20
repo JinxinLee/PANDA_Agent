@@ -256,7 +256,8 @@ D4 overall completion:
 UNDECIDED
 
 Current task:
-POST-A5 T1 OBSERVABILITY CONTRACT RECONCILIATION / EVIDENCE-ADMISSION AND COVERAGE-SCOPE REVIEW (COMPLETE / PASS; static design-only; zero scientific calls)
+POST-A5 BOUNDED PRODUCT REPAIR DESIGN / EVIDENCE-ADMISSION + COVERAGE COMPLETENESS + OBSERVABILITY (COMPLETE / PASS; static design-only; zero scientific calls)
+POST_A5_BOUNDED_PRODUCT_REPAIR_DESIGN = COMPLETE / PASS / BOUNDED_PRODUCT_REPAIR_DESIGN_READY (DESIGN_ONLY; 0 scientific calls / 0 tokens; O1 -> EA1 -> C1 with independent T0 gates; exact unique same-version backing with strict fallback; coverage bounds 4/point, 20 total, 2 basis references/check; RS DEFER; no implementation or scientific validation). Record: `evaluation/POST_A5_BOUNDED_PRODUCT_REPAIR_DESIGN.md` (companion JSON).
 POST_A5_T1_FAILURE_REVIEW = COMPLETE / PARTIAL / TRACE_OBSERVABILITY_AND_SEMANTIC_SCOPE_LIMITS_REMAIN (historical review at 09e7759; scientific findings preserved; causal taxonomy and chronology wording superseded forward by the contract reconciliation below).
 POST_A5_T1_CONTRACT_RECONCILIATION = COMPLETE / PASS / EVIDENCE_ADMISSION_COVERAGE_SCOPE_AND_OBSERVABILITY_CONTRACT_RECONCILED (static design-only; 0 scientific calls / 0 tokens; EA is post-retrieval admission, not retrieval loss; generation/verification asymmetry INTENTIONAL_BUT_UNDER-SPECIFIED; g013 A1_RECOVERY_OUTCOME = UNSUCCESSFUL / CONFIRMED, A1_CAUSAL_DEFECT = NOT_ESTABLISHED; g023 EA exclusion CONFIRMED, unique/reviewer-only cause NOT_ESTABLISHED; question-only D0 retained, proposed evidence-grounded satisfaction scope belongs to V1/V2; proposed diagnostics.qa_stage_trace and development runner status separation are NOT_IMPLEMENTED). Record: `evaluation/POST_A5_T1_OBSERVABILITY_EVIDENCE_ADMISSION_AND_COVERAGE_SCOPE_RECONCILIATION.md` (companion JSON).
 T1_PREREGISTRATION_CHRONOLOGY = VERIFIED_WITHIN_RETAINED_LOCAL_EVIDENCE; EXECUTION_REPOSITORY_HEAD = 421c13a6efc76a845cfd61388e1e2520eea799a7. No external trusted timestamp authority; frozen T1 verdict unchanged.
@@ -278,13 +279,12 @@ F6_B = LOCKED / F6_A_DID_NOT_PASS
 ATTEMPT_5 = COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED
 
 Next task recommendation:
-POST-A5 BOUNDED PRODUCT REPAIR DESIGN /
-EVIDENCE-ADMISSION + COVERAGE COMPLETENESS + OBSERVABILITY
-(NO ATTEMPT 6; no same-task repair; failed cases never rerun)
+POST-A5 O1 BEHAVIOR-NEUTRAL OBSERVABILITY IMPLEMENTATION
+(REQUIRES SEPARATE AUTHORIZATION; no automatic EA1/C1 or scientific replay; NO ATTEMPT 6)
 
 Current task authorization:
 NEXT_TASK_EXECUTION_AUTHORIZED = false
-The authorized observability/evidence-admission/coverage-scope reconciliation is complete. The recommended bounded product repair design requires separate authorization. No proposed design is implemented; product repair, trace implementation and scientific replay remain unauthorized.
+The authorized bounded product repair design is complete. O1, EA1 and C1 are separate future acceptance units in that order; RS is deferred. The recommended O1 implementation requires separate authorization and does not authorize EA1/C1 or scientific validation. No proposed workstream is implemented.
 
 E3-A2 completed INCONCLUSIVE (1/11 natural applicability; the single applicable pair was descriptive only). E3-LR1 subsequently reconciled the lifecycle with zero scientific calls: E3 closes as a bounded low-frequency fallback (SCIENTIFIC_RECOVERY_BENEFIT_UNRESOLVED); dedicated revalidation is not planned; future E3 evidence accumulates opportunistically in broader authorized evaluations.
 
