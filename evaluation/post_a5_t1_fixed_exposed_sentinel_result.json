@@ -1,0 +1,82 @@
+{
+  "schema_version": "post-a5-t1-result-v1",
+  "task": "POST-A5 PRODUCT REPAIR VALIDATION / FIXED EXPOSED SENTINEL T1",
+  "t1_preregistration_commit": "421c13a6efc76a845cfd61388e1e2520eea799a7",
+  "repository_execution_head": "60a62fc9d954bfaaf48e3d5dae48d914c4b0ff21 (working tree at execution start; no post-preregistration commits before any scientific call)",
+  "product_behavior_head": "e79d3232ed132a224cbceaf3524e19a1406bd648",
+  "prompt_fingerprint": "0a5b2909ef586671d533148979fc681c64e37528ad53781a4566cb9044835ba2",
+  "gold": "m6-benchmark-v2.11 / 39943c6a3f2152e476109c0340acd066795c8de6ff3b6bb2eac6661ac480a417",
+  "calibration": "phase_b_t3_product_language_scope_v8 / selector e27ef67a866274b4a8441b789ca78fc3ccb7e022eed537c7442e15230777a0e5",
+  "normal_product_mode": "production_answer_obligations_v1",
+  "case_order": ["g011", "g010", "g013", "g014", "g023", "g022", "g047", "g050"],
+  "execution_receipts": {
+    "g011": {"run_id": "post-a5-t1-g011", "calls": 8, "tokens": 34056, "transport_recovery_events": 0},
+    "g010": {"run_id": "post-a5-t1-g010", "calls": 7, "tokens": 28130, "transport_recovery_events": 0},
+    "g013": {"run_id": "post-a5-t1-g013", "calls": 14, "tokens": 60764, "transport_recovery_events": 0},
+    "g014": {"run_id": "post-a5-t1-g014", "calls": 7, "tokens": 37563, "transport_recovery_events": 0},
+    "g023": {"run_id": "post-a5-t1-g023", "calls": 7, "tokens": 42239, "transport_recovery_events": 0},
+    "g022": {"run_id": "post-a5-t1-g022", "calls": 8, "tokens": 57804, "transport_recovery_events": 0},
+    "g047": {"run_id": "post-a5-t1-g047", "calls": 7, "tokens": 45136, "transport_recovery_events": 0},
+    "g050": {"run_id": "post-a5-t1-g050", "calls": 7, "tokens": 67573, "transport_recovery_events": 0}
+  },
+  "scientific_usage": {
+    "total": {"model_calls": 65, "token_usage": 373265},
+    "external_judge": {"model_calls": 8, "token_usage": 44042},
+    "runtime_qa_generation_labeled": {"model_calls": 11, "token_usage": 155830},
+    "runtime_qa_composer_labeled": {"model_calls": 10, "token_usage": 11143},
+    "runtime_embedding_calls": 8,
+    "not_separately_recoverable": "question decomposition, semantic coverage/verification, and revision share the unlabeled runtime generation bucket; no estimation used",
+    "transport_recovery_overhead": 0
+  },
+  "per_case_results": {
+    "g011": {"status": "answered", "expected_status_correct": true, "critical_answer_points_missing": [], "critical_final_evidence_recall": 0.5, "unmatched_critical_groups": ["g011.e1 (native-documentation role)"], "matched_critical_groups": ["g011.e2 (ancestor match)"], "citation_integrity": true, "contradictions": 0, "major_unsupported": 0, "wrong_version": 0, "forbidden": 0, "unhandled_exception": 0, "identifier_hallucinations": 0},
+    "g010": {"status": "answered", "expected_status_correct": true, "critical_answer_points_missing": [], "critical_final_evidence_recall": 1.0, "citation_integrity": true, "contradictions": 0, "major_unsupported": 0, "wrong_version": 0, "forbidden": 0, "unhandled_exception": 0, "identifier_hallucinations": 0},
+    "g013": {"status": "answered", "expected_status_correct": true, "critical_answer_points_missing": ["p3"], "critical_final_evidence_recall": 1.0, "citation_integrity": true, "contradictions": 0, "major_unsupported": 0, "wrong_version": 0, "forbidden": 0, "unhandled_exception": 0, "identifier_hallucinations": 0},
+    "g014": {"status": "answered", "expected_status_correct": true, "critical_answer_points_missing": [], "critical_final_evidence_recall": 1.0, "citation_integrity": true, "contradictions": 0, "major_unsupported": 0, "wrong_version": 0, "forbidden": 0, "unhandled_exception": 0, "identifier_hallucinations": 0},
+    "g023": {"status": "answered", "expected_status_correct": true, "critical_answer_points_missing": ["p3"], "critical_final_evidence_recall": 1.0, "citation_integrity": true, "contradictions": 0, "major_unsupported": 0, "wrong_version": 0, "forbidden": 0, "unhandled_exception": 0, "identifier_hallucinations": 0},
+    "g022": {"status": "answered", "expected_status_correct": true, "critical_answer_points_missing": [], "critical_final_evidence_recall": 1.0, "citation_integrity": true, "contradictions": 0, "major_unsupported": 0, "wrong_version": 0, "forbidden": 0, "unhandled_exception": 0, "identifier_hallucinations": 0},
+    "g047": {"status": "answered", "expected_status_correct": true, "critical_answer_points_missing": [], "critical_final_evidence_recall": 1.0, "citation_integrity": true, "contradictions": 0, "major_unsupported": 0, "wrong_version": 0, "forbidden": 0, "unhandled_exception": 0, "identifier_hallucinations": 0},
+    "g050": {"status": "answered", "expected_status_correct": true, "critical_answer_points_missing": [], "critical_final_evidence_recall": 1.0, "citation_integrity": true, "contradictions": 0, "major_unsupported": 0, "wrong_version": 0, "forbidden": 0, "unhandled_exception": 0, "identifier_hallucinations": 0}
+  },
+  "workstream_results": {
+    "A_CASE_OUTCOME": "FAIL",
+    "A_REVISION_MECHANISM_ACTIVATION": "NOT_OBSERVABLE",
+    "A_REVISION_RECOVERY_RUNTIME_EFFECT": "NOT_DIRECTLY_OBSERVED",
+    "A_detail": "g013 answered with revision_count = 1 (bounded revision naturally triggered) but the master-run-task/lifecycle critical obligation (p3) was again judged missing by the current evaluator; the repaired recovery path's exercise is not observable because the revision-round pre-merge payload is not retained",
+    "B1_G023_OUTCOME": "FAIL",
+    "B1_detail": "p3 (before PID in the generic workflow) was again judged missing; the runtime coverage review false-accepted again (coverage_complete = true with missing_answer_point_ids = [] while the external judge found p3 uncovered); the final answer does not state the requested workflow position",
+    "B2_G047_OUTCOME": "PASS",
+    "B2_detail": "the critical relationship (elastic differential cross section related to luminosity extraction) was judged covered with no hard-safety violation",
+    "B_RUNTIME_SEMANTIC_EFFECT": "MIXED_SINGLE_OBSERVATION / NOT_YET_SCIENTIFICALLY_VALIDATED (B2 passed while B1's runtime coverage review still false-accepted; single observations, no general proof)",
+    "C_NEGATIVE_EXISTENCE_SAFETY": "PASS",
+    "C_detail": "the g011 final answer positively describes both the native and the container setup paths and contains no unqualified corpus/documentation-wide negative-existence assertion; both claims were verified supported; the historical false claim pattern did not recur",
+    "C_RETRIEVAL_COMPLETENESS": "FAIL",
+    "C_RETRIEVAL_detail": "the native-documentation critical role (g011.e1) remained unmatched in the final evidence (crit-ev 0.5; only g011.e2 matched via ancestor); Workstream D remains DEFERRED, so this retrieval failure was expected to be possible and is recorded separately",
+    "C_RUNTIME_SAFETY_EFFECT": "POSITIVE_SINGLE_OBSERVATION / NOT_YET_SCIENTIFICALLY_VALIDATED"
+  },
+  "control_results": {
+    "g010": "CONTROL_PASS",
+    "g014": "CONTROL_PASS",
+    "g022": "CONTROL_PASS",
+    "g050": "CONTROL_PASS",
+    "CONTROL_REGRESSION_COUNT": 0
+  },
+  "overall_t1_verdict": "FAIL",
+  "verdict_basis": "A_CASE_OUTCOME = FAIL (g013.p3 missed again) and B1_G023_OUTCOME = FAIL (g023.p3 missed again) per the preregistered rule; B2 and C_NEGATIVE_EXISTENCE_SAFETY passed; all four controls CONTROL_PASS; no hard-safety/trustworthiness invariant failed anywhere in the fixed cohort",
+  "historical_verdict_preservation": "Attempt 5 remains COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED; this T1 result is development evidence and changes no formal verdict",
+  "scientific_usage_note": "T1-only accounting; Attempt-5 usage not included",
+  "protected_state": {
+    "novel_validation": "PRISTINE_FOR_CURRENT_LINEAGE",
+    "holdout_access": 0,
+    "protected_content_leakage": 0,
+    "f6_b_execution": 0
+  },
+  "attempt_6_state": {
+    "candidate_frozen": false,
+    "attempt_6_preregistered": false,
+    "attempt_6_executed": false,
+    "attempt_6_readiness": "NOT_READY"
+  },
+  "next_task_recommendation": "POST-A5 T1 FAILURE REVIEW / BOUNDED ROOT-CAUSE ANALYSIS",
+  "next_task_execution_authorized": false
+}

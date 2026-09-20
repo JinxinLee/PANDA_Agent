@@ -256,7 +256,7 @@ D4 overall completion:
 UNDECIDED
 
 Current task:
-POST-A5 GENERIC PRODUCT REPAIR R1 — CAUSAL-ATTRIBUTION AND LINEAGE RECONCILIATION (COMPLETE / PASS; zero scientific calls)
+POST-A5 FIXED EXPOSED SENTINEL T1 — PRODUCT REPAIR VALIDATION (COMPLETE / FAIL; preregistration `421c13a` before every scientific call; fixed cohort of 4 affected sentinels + 4 same-intent controls executed in preregistered order; A g013 FAIL p3 missed again with revision triggered but repaired-path exercise NOT_OBSERVABLE; B1 g023 FAIL p3 missed again with runtime coverage false-acceptance recurring; B2 g047 PASS; C g011 NEGATIVE_EXISTENCE_SAFETY PASS with C_RETRIEVAL_COMPLETENESS FAIL and Workstream D DEFERRED; controls 4x CONTROL_PASS, zero regressions, no hard-safety failure; 65 calls / 373,265 tokens; Attempt 5 and all historical verdicts unchanged)
 ATTEMPT_5_STATUS = COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED (historical, immutable)
 PREVIOUS_PRODUCT_BEHAVIOR_LINEAGE_HEAD = eda7d932a9b1b7b65436cba01e247859a6f9e056
 CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = e79d3232ed132a224cbceaf3524e19a1406bd648
@@ -273,9 +273,9 @@ F6_B = LOCKED / F6_A_DID_NOT_PASS
 ATTEMPT_5 = COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED
 
 Next task recommendation:
-POST-A5 PRODUCT REPAIR VALIDATION /
-FIXED EXPOSED SENTINEL T1
-(NO ATTEMPT 6)
+POST-A5 T1 FAILURE REVIEW /
+BOUNDED ROOT-CAUSE ANALYSIS
+(NO ATTEMPT 6; no same-task repair; failed cases never rerun)
 
 Current task authorization:
 NEXT_TASK_EXECUTION_AUTHORIZED = false
