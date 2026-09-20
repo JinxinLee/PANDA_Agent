@@ -158,6 +158,47 @@ class Storage:
     def connect(self):
         return psycopg.connect(self.settings.database_url)
 
+    def read_sphinx_backing(self, page_ids: list[str]) -> dict[str, Any]:
+        """Two bounded structural reads, not semantic retrieval or index mutation.
+
+        Transaction controls are separate from the two SELECTs. The child query
+        restricts the existing source/version/type index before checking direct
+        parent metadata; its timeout bounds work even without a parent index.
+        """
+        ids = sorted(set(page_ids))
+        if not ids or len(ids) > 4:
+            raise ValueError("EA backing page bound exceeded")
+        columns = _OBJECT_READ_COLUMNS.split(",")
+        child_columns = ",".join("left(c.text,12000) AS text" if k == "text" else f"c.{k}"
+                                 for k in columns)
+        with self.connect() as connection:
+            with connection.transaction():
+                connection.execute("SET TRANSACTION ISOLATION LEVEL REPEATABLE READ, READ ONLY")
+                connection.execute("SET LOCAL statement_timeout = '1000ms'")
+                rows = connection.execute(
+                    f"SELECT {_OBJECT_READ_COLUMNS} FROM knowledge_objects "
+                    "WHERE object_id=ANY(%s) ORDER BY object_id LIMIT 4", (ids,),
+                ).fetchall()
+                pages = [restore_object_parent(dict(zip(columns, row))) for row in rows]
+                parents = [p for p in pages if p["object_type"] == "sphinx_page"]
+                children: dict[str, list[dict[str, Any]]] = {p["object_id"]: [] for p in parents}
+                if parents:
+                    rows = connection.execute(
+                        f"SELECT child.* FROM unnest(%s::text[],%s::text[],%s::text[]) "
+                        "AS p(object_id,source_id,source_version_id) CROSS JOIN LATERAL "
+                        f"(SELECT {child_columns},char_length(c.text) AS ea_text_length "
+                        "FROM knowledge_objects c WHERE c.source_id=p.source_id "
+                        "AND c.source_version_id=p.source_version_id AND c.object_type='sphinx_section' "
+                        "AND c.metadata->>'parent_object_id'=p.object_id "
+                        "ORDER BY c.object_id LIMIT 17) child ORDER BY child.object_id",
+                        ([p["object_id"] for p in parents], [p["source_id"] for p in parents],
+                         [p["source_version_id"] for p in parents]),
+                    ).fetchall()
+                    for row in rows:
+                        child = restore_object_parent(dict(zip([*columns, "ea_text_length"], row)))
+                        children[child["parent_object_id"]].append(child)
+        return {"pages": pages, "children": children}
+
     @staticmethod
     def _require_authoritative_sparse_receipt(receipt: SparseEncoderReceipt) -> None:
         if (

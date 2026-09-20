@@ -12,7 +12,7 @@ from typing import Any, Callable, TypedDict
 from langgraph.graph import END, START, StateGraph
 
 from panda_agent.llm.vertex import VertexAIClient, VertexSettings
-from panda_agent.models import ClaimCitation, QAResult, QAStatus, RetrievalPlan
+from panda_agent.models import ClaimCitation, Evidence, QAResult, QAStatus, RetrievalPlan, stable_id
 from panda_agent.prompts import (
     ANSWER_COMPOSER_REVIEW_SYSTEM_PROMPT,
     ANSWER_COMPOSER_SYSTEM_PROMPT,
@@ -1585,7 +1585,7 @@ def _trace_admission(state: Any, admitted: list[dict[str, Any]], round_: int) ->
     def payload() -> dict[str, Any]:
         selected = state["bundle"]["evidence"]
         admitted_ids = [e["evidence_id"] for e in admitted]
-        return {"use": "A0" if round_ == 0 else "A1",
+        payload = {"use": "A0" if round_ == 0 else "A1",
                 "selected_evidence_ids": [e["evidence_id"] for e in selected],
                 "admitted_evidence_ids": admitted_ids,
                 "rejected_evidence_ids": [e["evidence_id"] for e in selected
@@ -1597,6 +1597,12 @@ def _trace_admission(state: Any, admitted: list[dict[str, Any]], round_: int) ->
                                                           if not (e.get("locator") or {}).get(k)]
                                if e["evidence_id"] not in admitted_ids else []} for e in selected],
                 "selected_evidence": selected, "untrusted_evidence": admitted}
+        if state.get("_ea_cache", {}).get("decisions") is not None:
+            payload["decisions"] = [
+                {**original, **resolved}
+                for original, resolved in zip(payload["decisions"], state["_ea_cache"]["decisions"])
+            ]
+        return payload
     _trace(state, "EA_ADMISSION", round_, payload)
 
 
@@ -1615,6 +1621,7 @@ def _trace_merge(state: Any, ordinal: int, old_id: str, new_id: str | None,
 
 class QAState(TypedDict, total=False):
     _stage_trace: Any
+    _ea_cache: dict[str, Any]
     question: str
     answer_point_coverage_mode: str
     runtime_answer_points: list[dict[str, str]]
@@ -2382,6 +2389,158 @@ class QAAgent:
         draft["claims"] = claims
         return draft
 
+    def _admitted_evidence(self, state: QAState) -> list[dict[str, Any]]:
+        """Resolve real citation backing once, without altering retrieval evidence."""
+        selected = state["bundle"]["evidence"]
+        # E3 changes its treatment bundle after A0; preserve that experimental
+        # contract rather than reusing a pre-treatment EA cache or resolving its ledger.
+        if state.get("answer_point_coverage_mode") == "runtime_e1_v2":
+            return [e for e in selected if _is_public_claim_citation_eligible(e)]
+        cache = state.setdefault("_ea_cache", {})
+        if "projection" in cache:
+            return cache["projection"]
+        direct = [e for e in selected if _is_public_claim_citation_eligible(e)]
+        decisions = [{"evidence_id": e["evidence_id"], "object_id": e.get("object_id"),
+                      "reason_code": "DIRECTLY_CITATION_ELIGIBLE" if e in direct else "NO_VALID_BACKING"}
+                     for e in selected]
+        cache.update(projection=direct, backings=[], decisions=decisions)
+        candidates = []
+        for item, decision in zip(selected, decisions):
+            if item in direct:
+                continue
+            locator = item.get("locator") or {}
+            if not (locator.get("url") and locator.get("snapshot_date")) or locator.get("section_path"):
+                decision["reason_code"] = "INVALID_LOCATOR"
+            elif not item.get("object_id"):
+                decision["reason_code"] = "CONTENT_RELATION_NOT_ESTABLISHED"
+            else:
+                candidates.append((item, decision))
+        if len(candidates) > 4:
+            for _, decision in candidates:
+                decision["reason_code"] = "BOUND_EXCEEDED"
+            return direct
+        if not candidates:
+            return direct
+        try:
+            manifest = json.loads((self.project_root / "data/manifests/source_manifest.json").read_text(encoding="utf-8"))
+            documents = manifest["web_documents"]
+            if not isinstance(documents, list):
+                raise ValueError("invalid web manifest")
+            records = self.retriever.storage.read_sphinx_backing([e["object_id"] for e, _ in candidates])
+            pages = {p["object_id"]: p for p in records["pages"]}
+        except Exception:
+            for _, decision in candidates:
+                decision["reason_code"] = "LOOKUP_FAILED"
+            return direct
+        replacements: dict[str, dict[str, Any]] = {}
+        additions: list[dict[str, Any]] = []
+        for item, decision in candidates:
+            try:
+                page = pages.get(item["object_id"])
+                if not page or page.get("object_type") != "sphinx_page":
+                    continue
+                docs = [d for d in documents if d.get("doc_id") == item["source_id"]]
+                if len(docs) != 1:
+                    decision["reason_code"] = "VERSION_MISMATCH"
+                    continue
+                doc = docs[0]
+                snapshot, date = doc["snapshot_hash"], doc["captured_at"][:10]
+                version = f"{doc['doc_id']}@{snapshot}"
+                loc = item["locator"]
+                if (not snapshot or not date or item["source_version_id"] != version
+                    or page.get("source_id") != item["source_id"] or page.get("source_version_id") != version
+                    or page.get("metadata", {}).get("snapshot_hash") != snapshot
+                    or loc.get("snapshot_date") != date or page["locator"].get("snapshot_date") != date
+                    or (item.get("metadata") is not None and item["metadata"].get("snapshot_hash") != snapshot)):
+                    decision["reason_code"] = "VERSION_MISMATCH"
+                    continue
+                if (page.get("text") != item["text"] or page["locator"].get("section_path")
+                    or item.get("object_type", "sphinx_page") != "sphinx_page"
+                    or any(page["locator"].get(k) != loc.get(k) for k in ("path", "url"))
+                    or not any(r.get("path") == loc.get("path") and r.get("url") == loc.get("url")
+                               for r in doc["records"])):
+                    decision["reason_code"] = "CONTENT_RELATION_NOT_ESTABLISHED"
+                    continue
+                children = records["children"].get(page["object_id"], [])
+                if len(children) > 16:
+                    decision["reason_code"] = "BOUND_EXCEEDED"
+                    continue
+                qualified = []
+                rejections = []
+                for child in children:
+                    reason = self._backing_rejection(child, page, item, snapshot, date)
+                    if reason:
+                        rejections.append({"object_id": child.get("object_id"), "reason_code": reason})
+                    else:
+                        qualified.append(child)
+                decision["candidate_rejections"] = rejections
+                if len(qualified) != 1:
+                    decision["reason_code"] = "AMBIGUOUS_BACKING" if qualified else "NO_VALID_BACKING"
+                    continue
+                child = qualified[0]
+                backing = Evidence(
+                    evidence_id=stable_id(child["object_id"], "ea_exact_backing", prefix="evidence"),
+                    object_id=child["object_id"], source_id=child["source_id"],
+                    source_version_id=child["source_version_id"], text=child["text"],
+                    locator=child["locator"], authority_level=child["authority_level"],
+                    retrieval_channels=["ea_exact_backing"], score=0.0,
+                ).model_dump(mode="json")
+                existing = [e for e in selected if e.get("object_id") == child["object_id"]]
+                if existing:
+                    # An already-selected identity must agree, not be silently repaired.
+                    if len(existing) != 1 or existing[0] not in direct or any(
+                        existing[0].get(k) != backing[k] for k in
+                        ("source_id", "source_version_id", "text", "locator", "authority_level")
+                    ):
+                        decision["reason_code"] = "CONTENT_RELATION_NOT_ESTABLISHED"
+                        continue
+                    backing = existing[0]
+                else:
+                    if any(e["evidence_id"] == backing["evidence_id"] for e in selected + additions):
+                        decision["reason_code"] = "CONTENT_RELATION_NOT_ESTABLISHED"
+                        continue
+                    replacements[item["evidence_id"]] = backing
+                    additions.append(backing)
+                start = item["text"].find(child["text"])
+                decision.update(reason_code="RESOLVED_EXACT_BACKING", parent_evidence_id=item["evidence_id"],
+                                parent_object_id=item["object_id"], backing_evidence_id=backing["evidence_id"],
+                                backing_object_id=backing["object_id"], containment_offsets=[start, start + len(child["text"])])
+            except Exception:
+                decision["reason_code"] = "LOOKUP_FAILED"
+        cache["projection"] = [replacements[e["evidence_id"]] if e["evidence_id"] in replacements else e
+                               for e in selected if e in direct or e["evidence_id"] in replacements]
+        cache["backings"] = additions
+        return cache["projection"]
+
+    @staticmethod
+    def _backing_rejection(child: dict[str, Any], page: dict[str, Any], selected: dict[str, Any],
+                           snapshot: str, date: str) -> str | None:
+        if (child.get("source_id") != page["source_id"] or child.get("source_version_id") != page["source_version_id"]
+            or child.get("metadata", {}).get("snapshot_hash") != snapshot
+            or (child.get("locator") or {}).get("snapshot_date") != date):
+            return "VERSION_MISMATCH"
+        if (child.get("object_type") != "sphinx_section" or not child.get("object_id")
+            or child.get("parent_object_id") != page["object_id"]
+            or child.get("metadata", {}).get("parent_object_id") != page["object_id"]):
+            return "CONTENT_RELATION_NOT_ESTABLISHED"
+        loc = child.get("locator") or {}
+        if (not _is_public_claim_citation_eligible(child) or loc.get("path") != selected["locator"].get("path")
+            or loc.get("url", "").split("#", 1)[0] != selected["locator"]["url"].split("#", 1)[0]):
+            return "INVALID_LOCATOR"
+        text = child.get("text")
+        if not isinstance(text, str) or not text:
+            return "CONTENT_RELATION_NOT_ESTABLISHED"
+        if len(text) > 12_000 or child.get("ea_text_length", len(text)) > 12_000:
+            return "BOUND_EXCEEDED"
+        start = selected["text"].find(text)
+        if start < 0 or selected["text"].find(text, start + 1) >= 0:
+            return "CONTENT_RELATION_NOT_ESTABLISHED"
+        return None
+
+    @staticmethod
+    def _qa_evidence(state: QAState) -> list[dict[str, Any]]:
+        return [*state["bundle"]["evidence"], *state.get("_ea_cache", {}).get("backings", [])]
+
     def _answer(self, state: QAState) -> dict[str, Any]:
         question = str(state["question"])
         # Legacy named requirements are authoritative only in legacy mode.  In
@@ -2394,7 +2553,7 @@ class QAAgent:
         answer_requirements = (
             [] if _coverage_shadow(state) else legacy_answer_requirements
         )
-        claim_evidence = [item for item in state["bundle"]["evidence"] if _is_public_claim_citation_eligible(item)]
+        claim_evidence = self._admitted_evidence(state)
         _trace_admission(state, claim_evidence, 0)
         prompt = json.dumps(
             {
@@ -2518,7 +2677,7 @@ class QAAgent:
         shadow = _coverage_shadow(state)
         runtime_points = _active_runtime_answer_points(state)
         draft = state["draft"]
-        evidence = {item["evidence_id"]: item for item in state["bundle"]["evidence"]}
+        evidence = {item["evidence_id"]: item for item in self._qa_evidence(state)}
         errors: list[str] = []
         all_claims = list(draft.get("claims", []))
         claim_audit = list(state.get("claim_audit", []))
@@ -2899,7 +3058,7 @@ class QAAgent:
             [] if shadow else list(state.get("missing_requirement_ids", []))
         )
         model_answer_requirements = [] if shadow else answer_requirements
-        claim_evidence = [item for item in state["bundle"]["evidence"] if _is_public_claim_citation_eligible(item)]
+        claim_evidence = self._admitted_evidence(state)
         _trace_admission(state, claim_evidence, 1)
         requirement_evidence = (
             {}
@@ -3387,7 +3546,7 @@ class QAAgent:
             cited_ids = {evidence_id for claim in claims for evidence_id in claim.evidence_ids}
             bundle_evidence = [
                 item
-                for item in state.get("bundle", {}).get("evidence", [])
+                for item in self._qa_evidence(state)
                 if item.get("evidence_id") in cited_ids
             ]
             included_ids = {item.get("evidence_id") for item in bundle_evidence}
@@ -3472,7 +3631,7 @@ class QAAgent:
         }
         started = time.perf_counter()
         stats_before = self._stats_snapshot()
-        initial: QAState = {"question": question}
+        initial: QAState = {"question": question, "_ea_cache": {}}
         trace_initialization_failed = False
         if capture_stage_trace:
             try:
