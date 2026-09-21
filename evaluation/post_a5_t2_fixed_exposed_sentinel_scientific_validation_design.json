@@ -1,0 +1,308 @@
+{
+  "schema_version": "post-a5-t2-scientific-validation-design-v1",
+  "task": "POST-A5 REPAIRED PRODUCT SCIENTIFIC VALIDATION DESIGN / FIXED EXPOSED SENTINEL T2",
+  "status": "COMPLETE / HOLD / T2_EXECUTION_CONTRACT_NOT_CURRENTLY_AVAILABLE",
+  "blocking_reason": "HARD_BUDGET_NOT_ENFORCEABLE_WITH_CURRENT_RUNNER",
+  "starting_repository_head": "6a64891165d34346a37c5a599d837d81bdd7df9f",
+  "product_behavior_head": "6ed3ba361476b36744c72e76f5905733b1755f5c",
+  "prompt_set_version": "3.11.0",
+  "prompt_fingerprint": "03e1bf270898b28127a42fa2e1ccb24cfc1d87e177eeba5428ba4680d426352c",
+  "gold": {
+    "version": "m6-benchmark-v2.11",
+    "path": "evaluation/benchmarks/v2_11/gold_questions.yaml",
+    "sha256": "39943c6a3f2152e476109c0340acd066795c8de6ff3b6bb2eac6661ac480a417",
+    "acceptance_exposed": true,
+    "release_eligible": false
+  },
+  "calibration": {
+    "identity": "phase_b_t3_product_language_scope_v8",
+    "path": "evaluation/baselines/manifests/phase_b_t3_product_language_scope_v8.json",
+    "formal_english": 59,
+    "non_english": 21,
+    "selector_sha256": "e27ef67a866274b4a8441b789ca78fc3ccb7e022eed537c7442e15230777a0e5",
+    "compatible": true
+  },
+  "normal_product_mode": "production_answer_obligations_v1",
+  "execution_nature": "FIXED EXPOSED REPAIR-TARGET REGRESSION STUDY / development scientific evidence; not independent generalization, formal release, protected validation, candidate freeze or Attempt 6",
+  "fixed_cohort": [
+    "g011",
+    "g010",
+    "g013",
+    "g014",
+    "g023",
+    "g022",
+    "g047",
+    "g050"
+  ],
+  "affected_sentinels": [
+    "g011",
+    "g013",
+    "g023",
+    "g047"
+  ],
+  "fixed_controls": [
+    "g010",
+    "g014",
+    "g022",
+    "g050"
+  ],
+  "fixed_execution_order": [
+    "g011",
+    "g010",
+    "g013",
+    "g014",
+    "g023",
+    "g022",
+    "g047",
+    "g050"
+  ],
+  "cohort_precheck": {
+    "current_result": "PASS: all eight exist, dev, approved, expected answered; dataset acceptance_exposed=true; exact IDs/order equal T1 preregistration",
+    "future_requirement": "T2-P0 must repeat identity, exact current Gold objects, exposed/non-protected status and approval checks before any scientific call; no substitution; mismatch => HOLD / T2_COHORT_CONTRACT_NO_LONGER_MATCHES"
+  },
+  "T1_paired_baseline": {
+    "preregistration_commit": "421c13a6efc76a845cfd61388e1e2520eea799a7",
+    "result_commit": "3d9ca981680ac44940816c294fcc85c9bfc19689",
+    "overall": "FAIL",
+    "calls": 65,
+    "tokens": 373265,
+    "g013": "FAIL / p3 missing / revision_count=1 / mechanism not observable",
+    "g023": "FAIL / p3 missing / runtime complete / revision_count=0; reviewer-only causal attribution not established",
+    "g047": "PASS",
+    "g011_safety": "PASS",
+    "g011_native_documentation_role_coverage": "FAIL",
+    "controls": {
+      "g010": "CONTROL_PASS",
+      "g014": "CONTROL_PASS",
+      "g022": "CONTROL_PASS",
+      "g050": "CONTROL_PASS"
+    },
+    "execution_receipts": {
+      "g011": {
+        "run_id": "post-a5-t1-g011",
+        "calls": 8,
+        "tokens": 34056,
+        "transport_recovery_events": 0
+      },
+      "g010": {
+        "run_id": "post-a5-t1-g010",
+        "calls": 7,
+        "tokens": 28130,
+        "transport_recovery_events": 0
+      },
+      "g013": {
+        "run_id": "post-a5-t1-g013",
+        "calls": 14,
+        "tokens": 60764,
+        "transport_recovery_events": 0
+      },
+      "g014": {
+        "run_id": "post-a5-t1-g014",
+        "calls": 7,
+        "tokens": 37563,
+        "transport_recovery_events": 0
+      },
+      "g023": {
+        "run_id": "post-a5-t1-g023",
+        "calls": 7,
+        "tokens": 42239,
+        "transport_recovery_events": 0
+      },
+      "g022": {
+        "run_id": "post-a5-t1-g022",
+        "calls": 8,
+        "tokens": 57804,
+        "transport_recovery_events": 0
+      },
+      "g047": {
+        "run_id": "post-a5-t1-g047",
+        "calls": 7,
+        "tokens": 45136,
+        "transport_recovery_events": 0
+      },
+      "g050": {
+        "run_id": "post-a5-t1-g050",
+        "calls": 7,
+        "tokens": 67573,
+        "transport_recovery_events": 0
+      }
+    },
+    "comparison": "Frozen paired outcomes versus T2, no T1 replay/rescore, no p-value/statistical generalization; all cases exposed and informed repairs."
+  },
+  "execution_mode": {
+    "mode": "full",
+    "split": "dev",
+    "candidate_id": null,
+    "allow_draft": true,
+    "official": false,
+    "capture_stage_trace": true,
+    "case_ids": "one fixed ID per invocation",
+    "resume": false,
+    "supported_python_entry_point": "panda_agent.evaluation_runner.run_evaluation",
+    "example_invocation": "from pathlib import Path\nfrom panda_agent.evaluation_runner import run_evaluation\n\n# DESIGN ONLY: DO NOT EXECUTE before budget blocker closure, reviewed T2-P0\n# commit, and separate explicit authorization for scientific execution.\nroot = Path(r\"C:\\Users\\Jinxin.DESKTOP-H6SSTQH\\Desktop\\Agent_learn\\PANDA_Agent\")\nrun_evaluation(\n    root, mode=\"full\", split=\"dev\", run_id=\"post-a5-t2-g011\",\n    allow_draft=True, resume=False, case_ids=[\"g011\"],\n    dataset_path=root / \"evaluation/benchmarks/v2_11/gold_questions.yaml\",\n    candidate_id=None, capture_stage_trace=True,\n    max_model_calls=10, max_token_usage=100000,\n)\n",
+    "executable_now": false,
+    "explanation": "allow_draft selects official=false for development tracing only; does not authorize draft Gold. Explicit approved-cohort precheck remains mandatory."
+  },
+  "stage_trace_contract": {
+    "capture_stage_trace": true,
+    "manifest_retains_choice": true,
+    "stages": [
+      "EA_ADMISSION",
+      "A0_OUTPUT",
+      "V1_INPUT",
+      "V1_OUTPUT",
+      "A1_INPUT",
+      "A1_OUTPUT",
+      "A1_POST_MERGE",
+      "V2_INPUT",
+      "V2_OUTPUT",
+      "C_INPUT",
+      "C_OUTPUT"
+    ],
+    "not_executed": "Legitimate absent stages use NOT_EXECUTED; never require CAPTURED for an unexecuted stage. Capture failure/overflow is not non-activation.",
+    "required_targets": [
+      "g013",
+      "g023"
+    ],
+    "no_rerun_for_trace_failure": true
+  },
+  "external_judge_contract": {
+    "enabled": true,
+    "verified_static": "evaluation_mode_boundaries(full).external_judge=true independently of official; _configure_stage_trace allows full/dev, official=false, candidate=null; _execute_evaluation_case invokes existing judge",
+    "second_mechanism_judge": false,
+    "failure_rule": "If this combination becomes unavailable: HOLD / T2_TRACE_AND_FULL_JUDGE_CONTRACT_UNAVAILABLE; no same-task runner repair."
+  },
+  "future_run_ids": {
+    "g011": "post-a5-t2-g011",
+    "g010": "post-a5-t2-g010",
+    "g013": "post-a5-t2-g013",
+    "g014": "post-a5-t2-g014",
+    "g023": "post-a5-t2-g023",
+    "g022": "post-a5-t2-g022",
+    "g047": "post-a5-t2-g047",
+    "g050": "post-a5-t2-g050"
+  },
+  "scientific_budget": {
+    "decision": "RETAIN_REQUESTED_NUMERICAL_CEILINGS_AS_DESIGN_REQUIREMENT / ENFORCEMENT_BLOCKED; not adopted as an enforceable current-runner guarantee",
+    "per_case_calls": 10,
+    "per_case_tokens": 100000,
+    "cohort_calls": 80,
+    "cohort_tokens": 800000,
+    "logical_executions": 8,
+    "adaptive_extensions": false,
+    "historical_calls": 65,
+    "historical_tokens": 373265,
+    "historical_max_case_calls": 14,
+    "historical_max_case_tokens": 67573,
+    "derivation": "8*10=80 (15 above T1 aggregate); 8*100000=800000 (426735 above T1). Seven runtime stages are not provider attempts: add judge and embeddings and internal retries. T1 g013 already used 14 calls; caps are resource limits, not a promise all cases fit.",
+    "accounting": "Runner sums runtime model_calls plus judge model_calls and token_usage. Vertex increments model_calls per generation/embedding request attempt, not just logical stages. Usage metadata is recorded only after a response; missing metadata must not be silently treated as complete billed usage.",
+    "blocking_evidence": [
+      "evaluation_runner.py:465-468 checks observed attempt totals only",
+      "evaluation_runner.py:1777-1887 resets attempt counters per resume and checks before/after an entire case, not each provider call",
+      "llm/vertex.py:173-200 generation has up to 3 attempts; 230-268 embedding up to 5 attempts; provider attempts counted but not budget-guarded",
+      "GenerateContentConfig has no remaining-budget/max_output_tokens control here; total tokens can cross a cap before any runner check"
+    ],
+    "why_no_fixed_adjustment": "Raising a number cannot turn post-case checks into pre-call hard enforcement or bound unknown token usage. No mechanically proven finite revised cap satisfies the requested hard ceiling under current interfaces.",
+    "on_resource_limit": "Stop, no extension or fresh-budget resume. Incomplete case RESOURCE_LIMIT; overall INCONCLUSIVE only if no valid scientific FAIL already established. A valid failure observed before the stop retains FAIL precedence."
+  },
+  "transport_recovery_policy": {
+    "same_identity_required": [
+      "run ID",
+      "case",
+      "T2-P0 repository HEAD",
+      "behavior head",
+      "prompt fingerprint",
+      "Gold",
+      "calibration",
+      "evaluator",
+      "capture_stage_trace=true"
+    ],
+    "provider_policy": "Existing generation up to 3 and embedding up to 5 transport attempts; do not increase retries. All attempts count against the fixed total.",
+    "resume": "Only existing repository-classified retryable transport/infrastructure interruption; same run ID and retained completed records. Never repeat scientifically completed cases. Runner has fresh per-attempt windows, so cumulative per-case/cohort enforcement across resume is an unresolved blocker; no automatic recovery execution is authorized by this design.",
+    "no_new_recovery_policy": true
+  },
+  "scientific_rerun_policy": "Exactly 8 planned logical executions; no stochastic replicate, best-of-N, second chance, rerun for judge disagreement, non-activation, poor output or trace failure; no cohort edits.",
+  "g011_criterion": "Scientifically valid completed final result must be answered, critical_answer_point_miss_count=0, and satisfy current hard-safety/trustworthiness invariants. An inappropriate insufficient_evidence result is FAIL, not INCONCLUSIVE. Missing evaluator data is not interpreted as zero. C_NEGATIVE_EXISTENCE_SAFETY=PASS: no unqualified documentation/corpus-wide claim that no independent native setup path exists without deterministic exact-lookup absence authority. Separately record C_NATIVE_DOCUMENTATION_ROLE_COVERAGE=PASS/FAIL/NOT_APPLICABLE from active Gold critical role matching; role failure does not gate this negative-existence mechanism. Workstream D remains deferred.",
+  "g013_criterion": "Scientifically valid completed final result must be answered, critical_answer_point_miss_count=0, and satisfy current hard-safety/trustworthiness invariants. An inappropriate insufficient_evidence result is FAIL, not INCONCLUSIVE. Missing evaluator data is not interpreted as zero. All critical points, including active Gold p3 master-run-task/lifecycle obligation, must be satisfied. EA1 or A1 activation is not required. Record EA admission, initial V1 completeness, revisionable gaps, revision_count, A1 merge dispositions and V2 where applicable.",
+  "g023_criterion": "Scientifically valid completed final result must be answered, critical_answer_point_miss_count=0, and satisfy current hard-safety/trustworthiness invariants. An inappropriate insufficient_evidence result is FAIL, not INCONCLUSIVE. Missing evaluator data is not interpreted as zero. Explicitly establish active Gold p3 generic workflow placement, including the relation to PID; a bag of reconstruction/digitization/PID/PndMasterRecoTask mentions does not pass.",
+  "g047_criterion": "Scientifically valid completed final result must be answered, critical_answer_point_miss_count=0, and satisfy current hard-safety/trustworthiness invariants. An inappropriate insufficient_evidence result is FAIL, not INCONCLUSIVE. Missing evaluator data is not interpreted as zero. Explicitly relate elastic differential cross section to luminosity extraction; inappropriate new refusal fails the positive contrast.",
+  "control_criterion": "Each of g010,g014,g022,g050 is CONTROL_PASS iff answered, critical_answer_point_miss_count=0, no contradiction, no major unsupported claim, no forbidden/wrong-version evidence, no identifier hallucination under current evaluator, no unhandled exception, no hard-safety/trustworthiness violation and no new inappropriate refusal. Citation-source variation alone is not failure when v2.11 accepted evidence-role contracts are satisfied.",
+  "mechanism_observation_taxonomy": {
+    "INITIAL_COMPLETE": "A0 reviewed claims already contain all target necessary relations and accepted V1 declares complete; retain claim/relationship evidence, not verdict alone.",
+    "EA1_BACKING_RESOLVED": "EA_ADMISSION records RESOLVED_EXACT_BACKING with actual parent/child/offset identity. Participation in successful target answer requires traceable relevant child citations; resolution alone does not prove effect.",
+    "C1_GAP_DETECTED_REVISIONABLE": "Accepted V1 records ESTABLISHED unsatisfied ADMITTED_BACKING_AVAILABLE relation and A1 actual scope includes it.",
+    "C1_GAP_BLOCKED_VISIBLE_ONLY": "Necessary visible-only relation is unsatisfied and excluded from A1 repair authority.",
+    "C1_GAP_AMBIGUOUS": "Uncertain check and uncertain point scope, incomplete/non-revisionable; overflow recorded separately as blocked, never forced into uncertainty.",
+    "A1_RECOVERY_SUCCESS": "Initially missing target relation is observed; C1 authorizes bounded A1; post-merge/V2 and existing final evaluator establish recovered target relation. No global causal attribution.",
+    "A1_RECOVERY_FAILED": "Observed authorized recovery leaves target relation absent/incomplete or removed; retain actual merge disposition and final verdict.",
+    "C1_FALSE_ACCEPTANCE_RECURRENCE": "Only when retained reviewed claims establish target relation absent while actual production C1 review declares its point complete. Final judge disagreement alone is insufficient; absent trace means NOT_ESTABLISHED.",
+    "TARGET_MECHANISM_NOT_NEEDED": "Initial answer succeeds without the target recovery stage; scientific PASS is allowed; do not claim recovery proven.",
+    "NOT_OBSERVABLE": "Required trace missing/corrupt/insufficient for classification; NOT_ESTABLISHED for uncertain semantic or causal inference."
+  },
+  "mechanism_interpretation": "Ordered multiple descriptive labels allowed. Use retained structured trace, existing final judge and deterministic evaluator plus fixed Gold criteria. No additional LLM judge. No causal claim from activation alone; unsure => NOT_ESTABLISHED / NOT_OBSERVABLE.",
+  "scientific_outcome_rule": {
+    "FAIL": "Any scientifically valid fixed sentinel/control fails its fixed criterion, or valid hard-safety/trustworthiness violation occurs. Takes precedence over missing later cases/trace.",
+    "PASS": "All four sentinels PASS, all four controls CONTROL_PASS, all eight scientifically complete under bound identity, no hard-safety/trustworthiness failure.",
+    "INCONCLUSIVE": "Neither FAIL nor PASS established due to infrastructure, transport, resource limit or identity failure. Missing trace alone does not invalidate a valid scientific final answer/judge result."
+  },
+  "mechanism_observability_rule": {
+    "COMPLETE": "Both g013/g023 permit classification of initial answer, EA admission, V1, A1 authorization/non-activation and V2 if applicable. Natural non-activation observable and valid.",
+    "PARTIAL": "Valid scientific output, some target stage unclassifiable, but some target mechanism interpretation retained.",
+    "FAILED": "Required target trace absent/corrupt enough to prevent mechanism interpretation."
+  },
+  "overall_verdict_rule": {
+    "precedence": [
+      "FAIL",
+      "PASS",
+      "INCONCLUSIVE"
+    ],
+    "FAIL": "Scientific outcome FAIL, even if mechanism trace incomplete.",
+    "PASS": "Scientific outcome PASS AND mechanism observability COMPLETE.",
+    "INCONCLUSIVE": "No valid scientific FAIL and either scientific completion/identity/resources unavailable OR target observability PARTIAL/FAILED. Valid poor outputs never become INCONCLUSIVE."
+  },
+  "preregistration_chronology": [
+    "T2-DESIGN HOLD",
+    "separately authorized budget-contract review and resolution; re-review design before P0",
+    "T2-P0 zero-call preregistration commit",
+    "review plus separate explicit execution authorization",
+    "first scientific call only at committed P0 HEAD",
+    "eight cases in fixed order subject to resource/infrastructure stops",
+    "freeze terminal result before any new RCA/repair"
+  ],
+  "identity_lock": "P0 binds behavior/prompt/Gold/calibration/product mode plus existing runner model/corpus/index/environment identities; git diff behavior_head..P0 -- src/panda_agent must be empty. No source, prompt, storage, evaluator, Gold, calibration, threshold or product repair changes until terminal T2. If separate infrastructure work changes required source identity, reconcile design explicitly before P0, never silently waive source-drift gate.",
+  "protected_data_boundary": {
+    "novel_validation": "PRISTINE_FOR_CURRENT_LINEAGE",
+    "holdout_access": 0,
+    "protected_content_leakage": 0,
+    "F6_B_execution": 0,
+    "prohibited": [
+      "novel_validation",
+      "protected holdout",
+      "PANDA_Agent_Holdout",
+      "F6-B protected content"
+    ]
+  },
+  "attempt_6_boundary": {
+    "candidate_frozen": false,
+    "preregistered": false,
+    "executed": false,
+    "readiness": "NOT_READY",
+    "T2_PASS_does_not_authorize_attempt6": true
+  },
+  "scientific_calls": 0,
+  "scientific_tokens": 0,
+  "T2_preregistered": false,
+  "T2_executed": false,
+  "T2_run_directory_created": false,
+  "materiality": {
+    "SOURCE_CHANGE": false,
+    "MATERIAL_PRODUCT_CHANGE": false,
+    "PROMPT_CHANGE": false,
+    "EVALUATOR_CHANGE": false,
+    "GOLD_CHANGE": false,
+    "CALIBRATION_CHANGE": false
+  },
+  "next_task_recommendation": "POST-A5 T2 HARD-BUDGET EXECUTION CONTRACT REVIEW / BOUNDED DESIGN RESOLUTION (zero scientific calls; separately authorized; no implied implementation permission)",
+  "after_blocker_resolution_recommendation": "POST-A5 T2-P0 / FIXED EXPOSED SENTINEL PREREGISTRATION (zero calls/tokens; then separate execution authorization)",
+  "next_task_execution_authorized": false
+}
