@@ -1,7 +1,7 @@
 {
-  "schema_version": "post-a5-t2-scientific-validation-design-v2",
-  "task": "POST-A5 REPAIRED PRODUCT SCIENTIFIC VALIDATION DESIGN / FIXED EXPOSED SENTINEL T2",
-  "status": "COMPLETE / PASS / SIMPLIFIED_T2_DESIGN_PREREGISTERED",
+  "schema_version": "post-a5-t2-preregistration-v1",
+  "task": "POST-A5 T2-P0 FIXED EXPOSED SENTINEL PREREGISTRATION",
+  "status": "PREREGISTERED / ZERO SCIENTIFIC CALLS / T2 EXECUTION NOT STARTED",
   "starting_repository_head": "60708e601a0e3fbc01e1872bbb2c2578cf2453ef",
   "product_behavior_head": "6ed3ba361476b36744c72e76f5905733b1755f5c",
   "prompt_set_version": "3.11.0",
@@ -311,5 +311,6 @@
     ],
     "future_generic_defect": "Separate explicit normal product-development authorization required; does not automatically reopen F6-A."
   },
-  "repository_identity": "The commit first adding evaluation/post_a5_t2_fixed_exposed_sentinel_preregistration.json is T2-P0. Resolve exact SHA after commit with git log --diff-filter=A -1 --format=%H -- evaluation/post_a5_t2_fixed_exposed_sentinel_preregistration.json. No self-referential SHA fabricated."
+  "repository_identity": "The commit first adding evaluation/post_a5_t2_fixed_exposed_sentinel_preregistration.json is T2-P0. Resolve exact SHA after commit with git log --diff-filter=A -1 --format=%H -- evaluation/post_a5_t2_fixed_exposed_sentinel_preregistration.json. No self-referential SHA fabricated.",
+  "design_authority": "evaluation/post_a5_t2_fixed_exposed_sentinel_scientific_validation_design.json"
 }

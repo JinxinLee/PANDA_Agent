@@ -1,6 +1,6 @@
-# Simplified Post-A5 T2 Scientific Validation Design
+# Post-A5 T2-P0 Fixed Exposed Sentinel Preregistration
 
-COMPLETE / PASS / SIMPLIFIED_T2_DESIGN_PREREGISTERED
+PREREGISTERED / ZERO SCIENTIFIC CALLS / T2 EXECUTION NOT STARTED
 
 The prior HOLD/hard-budget design is preserved in Git history at `60708e601a0e3fbc01e1872bbb2c2578cf2453ef` and superseded forward by this explicitly authorized simplified protocol. Historical scientific results are unchanged.
 

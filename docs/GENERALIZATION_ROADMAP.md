@@ -24,6 +24,31 @@ The roadmap is governed by the following core development principles:
 
 ## Current planning state
 
+CURRENT_REPOSITORY_HEAD = T2-P0 commit first adding `evaluation/post_a5_t2_fixed_exposed_sentinel_preregistration.json` (resolve from Git history; exact SHA reported on delivery).
+CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = 6ed3ba361476b36744c72e76f5905733b1755f5c
+NORMAL_PRODUCT_MODE = production_answer_obligations_v1
+PROMPT_SET_VERSION = 3.11.0
+PROMPT_FINGERPRINT = 03e1bf270898b28127a42fa2e1ccb24cfc1d87e177eeba5428ba4680d426352c
+ACTIVE_GOLD = m6-benchmark-v2.11
+ACTIVE_CALIBRATION = phase_b_t3_product_language_scope_v8
+POST_A5_DETERMINISTIC_REPAIR = COMPLETE / PASS
+T2 = PREREGISTERED / NOT EXECUTED
+RESOURCE_POLICY = USAGE_ACCOUNTING_ONLY
+T2_MECHANISM_OBSERVABILITY = DIAGNOSTIC_ONLY
+F6_A_REPAIR_LOOP = ONE FINAL FIXED T2 REMAINS
+ATTEMPT_6 = DEFERRED / NOT_NEXT_STEP
+F6_B = NOT_ENTERED / NOT_NEXT_STEP
+Phase F = IN_PROGRESS / POST-A5 REPAIR ENGINEERING COMPLETE / FINAL FIXED EXPOSED T2 PREREGISTERED
+
+After terminal T2: PASS => CLOSED / EXPOSED_SENTINEL_PASS; FAIL => CLOSED / EXPOSED_SENTINEL_FAIL / LIMITATION_ACCEPTED; INCONCLUSIVE => CLOSED / VALIDATION_INCONCLUSIVE. All outcomes close F6_A_REPAIR_LOOP. No automatic repair, revalidation or release continuation.
+
+NEXT_TASK_RECOMMENDATION = POST-A5 T2 FIXED EXPOSED SENTINEL EXECUTION + TERMINAL RESULT + F6-A REPAIR LOOP CLOSEOUT
+NEXT_TASK_EXECUTION_AUTHORIZED = false
+
+Authority: `evaluation/POST_A5_T2_FIXED_EXPOSED_SENTINEL_PREREGISTRATION.md` and companion JSON. Scientific calls/tokens this task=0/0; T1 FAIL and Attempt 1-5 results immutable. Protected content untouched; no candidate freeze. Historical recommendations below are superseded forward and confer no current authorization.
+
+## Historical status chronology (superseded forward planning)
+
 E1-CLOSURE-REVIEW = COMPLETE / PASS / REAL_PANDA_STYLE_CONFIRMATION_REQUIRED_BEFORE_CLOSURE.
 E1-C1 = COMPLETE / PASS / REAL_PANDA_STYLE_EXPOSED_DEVELOPMENT_CONFIRMATION_PASSED.
 E1 = COMPLETE / PASS / QUESTION_ONLY_SEMANTIC_ANSWER_POINT_DECOMPOSITION_VALIDATED.
@@ -256,8 +281,7 @@ D4 overall completion:
 UNDECIDED
 
 Current task:
-POST-A5 T2 FIXED EXPOSED SENTINEL SCIENTIFIC VALIDATION DESIGN (COMPLETE / HOLD; design only; hard budget enforcement unavailable; zero scientific calls)
-POST_A5_T2_DESIGN = COMPLETE / HOLD / T2_EXECUTION_CONTRACT_NOT_CURRENTLY_AVAILABLE / HARD_BUDGET_NOT_ENFORCEABLE_WITH_CURRENT_RUNNER (full judge plus development O1 tracing supported; per-case pre/post checks and fresh resume windows cannot enforce fixed 10-call/100000-token and cohort 80-call/800000-token hard ceilings; no runner repair). Record: `evaluation/POST_A5_T2_FIXED_EXPOSED_SENTINEL_SCIENTIFIC_VALIDATION_DESIGN.md` (companion JSON). T2 preregistered=false; executed=false; source/materiality unchanged; calls/tokens 0/0.
+Historical T2 HOLD design: superseded by simplified T2-P0; preserved at 60708e6.
 POST_A5_DETERMINISTIC_INTEGRATION = COMPLETE / PASS / DETERMINISTIC_INTEGRATION_VERIFIED (16 dedicated integration tests; O1 33, EA1 52, C1/C1-R1 77 passed; required existing batch 498 passed + 49 subtests, one independently reproduced stale v2_6 assertion isolated; source/material product change false; scientific calls/tokens 0/0). Record: `evaluation/POST_A5_O1_EA1_C1_DETERMINISTIC_INTEGRATION_CLOSEOUT.md` (companion JSON). Scientific effectiveness NOT_EVALUATED; T1 historical FAIL and Attempt 6 NOT_READY preserved.
 POST_A5_C1 = IMPLEMENTED / DETERMINISTICALLY VERIFIED / MATERIAL PRODUCT CHANGE / C1-R1 CONTRACT CLEANUP COMPLETE / SCIENTIFIC EFFECT NOT YET EVALUATED (C1-R1 COMPLETE / PASS; 77 C1 tests passed; 421 focused existing tests plus 49 subtests passed, including O1 and EA1; one independently reproduced, unchanged stale v2_6-default assertion isolated; scientific calls/tokens 0/0). Prompt-set version 3.11.0 and fingerprint 03e1bf270898b28127a42fa2e1ccb24cfc1d87e177eeba5428ba4680d426352c unchanged; private schema coverage-satisfaction-v1 unchanged. Record: `evaluation/POST_A5_C1_R1_REVISION_SCOPE_AND_DIAGNOSTIC_CONSISTENCY_CLEANUP.md` (companion JSON). Historical C1 implementation record preserved.
 C1 CONTRACT CLOSEOUT = PASS / C1-R1 CONTRACT CLEANUP COMPLETE
@@ -284,13 +308,11 @@ PROTECTED_HOLDOUTS = PRISTINE (novel_validation pristine, holdout access = 0)
 F6_B = LOCKED / F6_A_DID_NOT_PASS
 ATTEMPT_5 = COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED
 
-Next task recommendation:
-POST-A5 T2 HARD-BUDGET EXECUTION CONTRACT REVIEW / BOUNDED DESIGN RESOLUTION
-(ZERO CALLS; NOT AUTHORIZED; no implementation permission implied; NO T2 execution)
+Historical T2 design disposition: HOLD superseded by simplified T2-P0; no budget work planned.
 
 Current task authorization:
 NEXT_TASK_EXECUTION_AUTHORIZED = false
-The authorized deterministic integration closeout is complete with PASS; source and material behavior are unchanged. Scientific effectiveness is not evaluated. O1 remains behavior-neutral; EA1, C1/C1-R1 and historical shadow/runtime/legacy contracts are preserved. The T2 design is complete with HOLD on hard-budget enforcement; the next budget-contract review is not authorized or executed. T2 is neither preregistered nor executed. RS remains deferred. No historical T1 stages were backfilled. Attempt 6 remains NOT_READY.
+The authorized deterministic integration closeout is complete with PASS; source and material behavior are unchanged. Scientific effectiveness is not evaluated. O1 remains behavior-neutral; EA1, C1/C1-R1 and historical shadow/runtime/legacy contracts are preserved. The prior T2 HOLD is superseded by simplified T2-P0; T2 is preregistered and not executed. RS remains deferred. No historical T1 stages were backfilled. Attempt 6 remains NOT_READY.
 
 E3-A2 completed INCONCLUSIVE (1/11 natural applicability; the single applicable pair was descriptive only). E3-LR1 subsequently reconciled the lifecycle with zero scientific calls: E3 closes as a bounded low-frequency fallback (SCIENTIFIC_RECOVERY_BENEFIT_UNRESOLVED); dedicated revalidation is not planned; future E3 evidence accumulates opportunistically in broader authorized evaluations.
 
@@ -316,7 +338,7 @@ No further Phase-F production task is currently authorized. POST-ATTEMPT-3 FAILU
 - **Phase E — Answer generalization:** `COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED`
   Dynamic question decomposition, answer-point coverage, claim-to-evidence mapping, and targeted completeness recovery. E1 validated (shadow scope), E2 core complete, E3 closed as a bounded low-frequency fallback; PE-LR1 closed the phase at the promotion boundary with the normal default remaining `legacy_question_core` and promotion reconsideration gated on a material candidate change or an explicitly authorized release-boundary decision.
 
-- **Phase F — Benchmark dependency cleanup and final answering:** `IN_PROGRESS / ATTEMPT_3_INFRASTRUCTURE_RECONCILED_READY_FOR_NEW_PREFLIGHT`
+- **Phase F — Benchmark dependency cleanup and final answering:** `IN_PROGRESS / POST-A5 REPAIR ENGINEERING COMPLETE / FINAL FIXED EXPOSED T2 PREREGISTERED`
   F1 established the bounded non-D4 residual inventory without production cleanup. PF-LR1 reconciled the Phase-F scope into a bounded F2/F3 execution map. F2-A1 removed the benchmark-shaped verifier-support dependencies (R13), F2-A1-R1 removed the remaining whole-claim lexical semantic bypass (the initial F2-A1 closeout was corrected by R1), F2-A2 established question-derived pointer-normalization completeness (R10), and F2-A3 reconciled E1/E2 compatibility authority (R08/R09/R11: coverage modes own completeness, the named-requirement contract remains a legacy bridge); F2-A4 established generic question-grounded premise refusals through the locked-corpus catalog (R04), and F2-A5 established raw-question-grounded paper/code source obligations for the R01 intents (fixed config mappings retired; R02/HOLD mappings and all source budgets unchanged), with the matching boundary completed by F2-A5-R1 (bounded whole-token/phrase matching); with all five PF-LR1 F2 groups complete, F2 is closed. F3 retired the three PF-LR1 code-origin fixed locators (R03 feedback page override, R05 fixed-header unsupported-API fallback, R06 fixed-macro/event_poca deleted-runtime presentation) behind reviewed-expansion and question-grounded generic mechanisms with the D4 YAML untouched. F4 separated the answer/revision generation role from the product semantic-verification role at the settings, client-path, invocation, and usage-accounting levels (distinct production client paths, optional `QA_VERIFICATION_MODEL_ID` defaulting to the generation model, evaluation judge still offline-only, role-specific usage counters and internal role diagnostics) without changing any QA graph semantics or the public default.
 
 ## Phase A — Evaluation infrastructure and versioned baseline
@@ -664,7 +686,7 @@ closed.
 - **E1-R1 evidence:** `evaluation/E1_R1_SEMANTIC_ANSWER_POINT_CONTRACT_REPAIR.md`.
 - **Evidence:** `evaluation/e1_a1_dynamic_question_decomposition_contract.json`, `evaluation/E1_A1_DYNAMIC_QUESTION_DECOMPOSITION_CONTRACT.md`.
 - **E1-R2 outcome:** COMPLETE / PASS / TARGETED_PROSPECTIVE_SEMANTIC_ANSWER_POINT_REVALIDATION_PASSED. Human-approved fresh synthetic exploratory English cohort: 24/24 valid, semantic recall 54/54, precision 54/54, under/over 0, exact count 24/24, semantic-complete pairs 12/12, hidden prerequisites 0; all eight gates passed. Raw records were committed before judging. Preregistration `3d0d8ca650d159681fecec324a081d28e8e945eb`; raw freeze `a5275dfee6c4134f3ad790a5598ca0c0a51f1a58`. Report: `evaluation/E1_R2_SEMANTIC_ANSWER_POINT_REVALIDATION.md`; result: `evaluation/e1_r2_semantic_answer_point_revalidation_result.json`.
-- **Next task recommendation (current):** Phase-F scope reconciliation and bounded benchmark-dependency cleanup planning; NOT AUTHORIZED. E1 is complete at bounded shadow decomposition scope; production compatibility requirements remain unchanged. (Historical chain: E3-A1 → E3-A2 → E3-LR1; Phase E closed by PE-LR1; see the Phase E and E3 sections.)
+- **Historical next task recommendation (superseded):** Phase-F scope reconciliation and bounded benchmark-dependency cleanup planning; NOT AUTHORIZED. E1 is complete at bounded shadow decomposition scope; production compatibility requirements remain unchanged. (Historical chain: E3-A1 → E3-A2 → E3-LR1; Phase E closed by PE-LR1; see the Phase E and E3 sections.)
 - **Problem:** A single `question_core` plus domain-specific requirements can be complete on known questions but miss unseen multi-part structure.
 - **Goal:** Derive 1–5 evidence-independent, independently satisfiable explicit response obligations from the question itself, each independently checkable for omission.
 - **Why this stage:** Retrieval generalization and structured knowledge must be established before asking decomposition to drive completeness.
@@ -694,7 +716,7 @@ closed.
 - **E2-LR1 interpretation:** Core mechanism implemented and sufficiently targeted-validated for architecture continuation; default acceptance not met. This is not E2 scientific PASS. Historical outcomes above remain immutable, including G11 quality 1/11/2.
 - **E2-A3-R4:** NOT_STARTED / SUPERSEDED_BY_LIFECYCLE_SIMPLIFICATION. The historical G11 review recommendation remains recorded; E2-LR1 supersedes its immediate combined activation loop.
 - **QA-M1 outcome:** COMPLETE / PASS / GENERIC_CLAIM_SANITIZATION_REPAIR_VALIDATED. Balanced external-wrapper abstraction preserves domain payload and requested names. Focused T0 14 tests/2 subtests passed; frozen scan 290 claim snapshots, 2 intended changes, 0 collateral changes. Shared maintenance only; zero scientific calls and no activation decision. Report: `evaluation/QA_M1_GENERIC_CLAIM_SANITIZATION_REPAIR.md`.
-- **Next task (current):** Phase-F scope reconciliation and bounded benchmark-dependency cleanup planning; NOT AUTHORIZED. Default promotion is deferred under the PE-LR1 recorded trigger; the gate-redesign deferral is closed. (Historical chain: E3-A1 → E3-A2 → E3-LR1; Phase E closed by PE-LR1.)
+- **Historical next task (superseded):** Phase-F scope reconciliation and bounded benchmark-dependency cleanup planning; NOT AUTHORIZED. Default promotion is deferred under the PE-LR1 recorded trigger; the gate-redesign deferral is closed. (Historical chain: E3-A1 → E3-A2 → E3-LR1; Phase E closed by PE-LR1.)
 - **Problem:** Atomic claims are not generically accountable to the facets the user asked to have answered.
 - **Goal:** Map every generated claim to one or more answer-point IDs and evidence IDs, then measure completeness and support.
 - **Why this stage:** E1 quality must be proven before its points become a runtime completeness contract.
@@ -715,7 +737,7 @@ closed.
 - **E3-A1 outcome:** COMPLETE / PASS / EXPERIMENTAL_MISSING_POINT_TARGETED_RETRIEVAL_IMPLEMENTED. Implemented runtime-only post-verify targeted retrieval seam in `qa.py` and `retrieval.py` under `runtime_e1_v2`. Enforced strict A0 trigger, question-derived collection objective, original plan snapshot preservation, dedicated `missing_point_retrieval_count <= 1`, candidate capture without duplicate calls, cross-pass best-channel-rank RRF (`RRF_K=60`, experimental candidate, not validated optimal), single global rerank on original question only, authoritative final evidence selection, atomic bundle update with single try/except exception boundary, narrow retained-support claims ledger protecting unchanged supported claims, and public schema invariance. Initial baseline `2af8ac95` verified 42 E3 tests and 147 neighboring tests (189 passed, 9 subtests passed). Independent post-implementation review corrections incorporated cross-pass bounded eligible union candidate reservation and deterministic valid retained claim/evidence view in second verify, bringing focused verification to 49 E3 tests and 147 neighboring tests (196 passed, 9 subtests passed). Separate final AGY review PASS; Codex accepted the bounded corrections after inspecting the source/test diffs. Zero scientific/evaluation calls or tokens. Report: `evaluation/E3_A1_EXPERIMENTAL_MISSING_POINT_RETRIEVAL_IMPLEMENTATION.md`.
 - **E3-A2 outcome:** COMPLETE / INCONCLUSIVE / INSUFFICIENT_NATURAL_MISSING_POINT_APPLICABILITY. Prospective T2 validation under preregistration `50eada9e4c62980f4437d7b2ce0850667109305c` on a mechanically enriched 11-case novel_dev cohort (n003, n005, n006, n009, n010, n014, n019, n020, n021, n022, n024). An evaluation-only harness forked the identical first-verify checkpoint into a pre-E3 existing-evidence-only revision control and the current E3 treatment; product frozen; default mode unchanged. Only n006 was naturally E3-applicable (2 first-missing points) — below the frozen G2 authority threshold (>=4 cases, >=4 points) — so the recovery hypothesis was never tested with authority. The single blinded pair is descriptive only: no `satisfied_supported` point on either arm (control absent/absent, insufficient_evidence; treatment partial/absent, answered; judge preferred treatment); zero treatment-only preservation/safety regressions; E3 within all bounds (1 targeted retrieval, 1 global rerank, 1 revision, atomic success, 1 newly admitted object, plan preserved). G1/G4/G5/G6/G7 PASS; G3 FAIL; G2 FAIL → overall INCONCLUSIVE. Observed usage 78 model calls / 746,593 returned tokens. Report: `evaluation/E3_A2_TARGETED_MISSING_POINT_RECOVERY_VALIDATION.md`.
 - **E3-LR1 outcome:** COMPLETE / PASS / POST_A2_LIFECYCLE_RECONCILED. Static lifecycle decision, zero scientific calls. Separated architecture (justified), implementation safety (validated), and efficacy (unresolved). F1-R12 and F1-R14 reconciled as non-blockers owned by Phase F/retrieval cleanup. Maintenance burden MODERATE and default-isolated. Selected OPTION A: E3 closes as a bounded low-frequency fallback; DEDICATED_E3_REVALIDATION = NOT_PLANNED / LOW_NATURAL_APPLICABILITY_AND_LOW_DECISION_VALUE; FUTURE_E3_EVIDENCE = ACCUMULATE_OPPORTUNISTICALLY_IN_BROADER_AUTHORIZED_EVALUATIONS. First-verify-failure-focused cohorts are outcome-conditioned selection and cannot serve as prospective applicability authority. No default promotion. Report: `evaluation/E3_LR1_POST_A2_LIFECYCLE_DECISION.md`.
-- **Next task (current):** Phase-F scope reconciliation and bounded benchmark-dependency cleanup planning; NOT AUTHORIZED. (The Phase-E promotion-boundary reconciliation this section previously pointed to is complete: PE-LR1.)
+- **Historical next task (superseded):** Phase-F scope reconciliation and bounded benchmark-dependency cleanup planning; NOT AUTHORIZED. (The Phase-E promotion-boundary reconciliation this section previously pointed to is complete: PE-LR1.)
 - **Problem:** Once a genuine answer point is missing, the system needs a generic retrieval objective rather than hidden domain requirements.
 - **Goal:** Use missing answer points to trigger one bounded targeted retrieval, followed by global candidate reconsideration (best-rank RRF + rerank + selection) and retained-support evidence preservation.
 - **Why this stage:** Requires validated E1 decomposition and E2 claim mapping; global candidate reconsideration is an implemented architectural seam verified in A1 (C8 treatment validation is not a prerequisite per D1).
