@@ -256,7 +256,8 @@ D4 overall completion:
 UNDECIDED
 
 Current task:
-POST-A5 C1-R1 BOUNDED REVISION-SCOPE AND DIAGNOSTIC CONSISTENCY CLEANUP (COMPLETE / PASS; deterministic validation only; material product change; prompt/schema unchanged; zero scientific calls)
+POST-A5 O1+EA1+C1 DETERMINISTIC INTEGRATION CLOSEOUT (COMPLETE / PASS; deterministic contracts only; zero scientific calls; source and material behavior unchanged)
+POST_A5_DETERMINISTIC_INTEGRATION = COMPLETE / PASS / DETERMINISTIC_INTEGRATION_VERIFIED (16 dedicated integration tests; O1 33, EA1 52, C1/C1-R1 77 passed; required existing batch 498 passed + 49 subtests, one independently reproduced stale v2_6 assertion isolated; source/material product change false; scientific calls/tokens 0/0). Record: `evaluation/POST_A5_O1_EA1_C1_DETERMINISTIC_INTEGRATION_CLOSEOUT.md` (companion JSON). Scientific effectiveness NOT_EVALUATED; T1 historical FAIL and Attempt 6 NOT_READY preserved.
 POST_A5_C1 = IMPLEMENTED / DETERMINISTICALLY VERIFIED / MATERIAL PRODUCT CHANGE / C1-R1 CONTRACT CLEANUP COMPLETE / SCIENTIFIC EFFECT NOT YET EVALUATED (C1-R1 COMPLETE / PASS; 77 C1 tests passed; 421 focused existing tests plus 49 subtests passed, including O1 and EA1; one independently reproduced, unchanged stale v2_6-default assertion isolated; scientific calls/tokens 0/0). Prompt-set version 3.11.0 and fingerprint 03e1bf270898b28127a42fa2e1ccb24cfc1d87e177eeba5428ba4680d426352c unchanged; private schema coverage-satisfaction-v1 unchanged. Record: `evaluation/POST_A5_C1_R1_REVISION_SCOPE_AND_DIAGNOSTIC_CONSISTENCY_CLEANUP.md` (companion JSON). Historical C1 implementation record preserved.
 C1 CONTRACT CLOSEOUT = PASS / C1-R1 CONTRACT CLEANUP COMPLETE
 POST_A5_EA1 = IMPLEMENTED / DETERMINISTICALLY VERIFIED / MATERIAL PRODUCT CHANGE / SCIENTIFIC EFFECT NOT YET EVALUATED (resolver contract unchanged; 52 focused tests pass under C1). Historical record: `evaluation/POST_A5_EA1_EXACT_BACKING_EVIDENCE_ADMISSION_IMPLEMENTATION.md` (companion JSON). RS DEFER.
@@ -283,12 +284,12 @@ F6_B = LOCKED / F6_A_DID_NOT_PASS
 ATTEMPT_5 = COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED
 
 Next task recommendation:
-POST-A5 O1+EA1+C1 DETERMINISTIC INTEGRATION CLOSEOUT
-(NOT AUTHORIZED; no scientific replay; NO ATTEMPT 6)
+POST-A5 REPAIRED PRODUCT SCIENTIFIC VALIDATION DESIGN / FIXED EXPOSED SENTINEL T2
+(PLANNING ONLY; NOT AUTHORIZED; no T2 preregistration or execution; NO ATTEMPT 6)
 
 Current task authorization:
 NEXT_TASK_EXECUTION_AUTHORIZED = false
-The authorized C1 implementation is complete and materially changes production completeness, bounded recovery and partial-answer status under deterministic validation; scientific effectiveness is not evaluated. O1 remains behavior-neutral; EA1 and historical shadow/runtime/legacy contracts are preserved. The next deterministic integration closeout is not authorized or executed. RS remains deferred. No historical T1 stages were backfilled. Attempt 6 remains NOT_READY.
+The authorized deterministic integration closeout is complete with PASS; source and material behavior are unchanged. Scientific effectiveness is not evaluated. O1 remains behavior-neutral; EA1, C1/C1-R1 and historical shadow/runtime/legacy contracts are preserved. The next scientific-validation design task is not authorized or executed; T2 is neither preregistered nor executed. RS remains deferred. No historical T1 stages were backfilled. Attempt 6 remains NOT_READY.
 
 E3-A2 completed INCONCLUSIVE (1/11 natural applicability; the single applicable pair was descriptive only). E3-LR1 subsequently reconciled the lifecycle with zero scientific calls: E3 closes as a bounded low-frequency fallback (SCIENTIFIC_RECOVERY_BENEFIT_UNRESOLVED); dedicated revalidation is not planned; future E3 evidence accumulates opportunistically in broader authorized evaluations.
 

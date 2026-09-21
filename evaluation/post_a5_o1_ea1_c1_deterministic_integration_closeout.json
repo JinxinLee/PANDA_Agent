@@ -1,0 +1,270 @@
+{
+  "schema_version": "post-a5-deterministic-integration-closeout-v1",
+  "task": "POST-A5 O1+EA1+C1 DETERMINISTIC INTEGRATION CLOSEOUT",
+  "status": "COMPLETE / PASS / DETERMINISTIC_INTEGRATION_VERIFIED",
+  "starting_repository_head": "1510904b57c238445e5f45859f8d258b1fc26c42",
+  "ending_repository_head": null,
+  "ending_repository_head_resolution": "The single closeout commit containing this artifact is the ending repository HEAD. Its SHA cannot be embedded in its own contents; the exact SHA is reported in the final delivery. Resolve with git log -1 --format=%H -- evaluation/post_a5_o1_ea1_c1_deterministic_integration_closeout.json.",
+  "current_product_behavior_lineage_head": "6ed3ba361476b36744c72e76f5905733b1755f5c",
+  "prompt_set_version": "3.11.0",
+  "prompt_fingerprint": "03e1bf270898b28127a42fa2e1ccb24cfc1d87e177eeba5428ba4680d426352c",
+  "O1_identity": "81b1308d6c0fa03c7f83894af851fd71b4503f41",
+  "EA1_identity": "60dff40a671e62bffcbe0eb82d38ea6e9aeb05c4",
+  "C1_identity": "5e0a3a3ae4828ea3b5831646e3d5d2c8f08cc9ed",
+  "C1_R1_identity": "6ed3ba361476b36744c72e76f5905733b1755f5c",
+  "source_change": false,
+  "test_change": true,
+  "material_product_change": false,
+  "prompt_change": false,
+  "evaluator_change": false,
+  "gold_change": false,
+  "calibration_change": false,
+  "scientific_calls": 0,
+  "scientific_tokens": 0,
+  "integration_axes": {
+    "I1": {
+      "name": "Product identity",
+      "status": "PASS",
+      "finding": "Production default remains production_answer_obligations_v1; O1 opt-in defaults false, EA1 admission and production C1 review are active; R1 mappings feed A1; historical modes distinct and E3 not promoted.",
+      "evidence": "O1 test_o1_default_and_exact_neutrality; integration test_historical_contract_is_separate; qa.py _run_detailed/_after_verify_route"
+    },
+    "I2": {
+      "name": "Prompt identity",
+      "status": "PASS",
+      "finding": "3.11.0 and canonical 03e1bf27... unchanged. Fingerprint includes production review/revision prompts, private schema and version.",
+      "evidence": "Mechanical fingerprint; C1 test_fingerprint_binds_production_prompts_schema_and_version; evaluation_runner.py prompt_fingerprint"
+    },
+    "I3": {
+      "name": "Lineage",
+      "status": "PASS",
+      "finding": "All five implementation identities are ancestors of starting HEAD. 1510904 changes four docs/records only; behavior head remains 6ed3ba3.",
+      "evidence": "git merge-base --is-ancestor; git show --stat 1510904"
+    },
+    "I4": {
+      "name": "O1 plus EA1",
+      "status": "PASS",
+      "finding": "Exact selected page resolves real section; trace records RESOLVED_EXACT_BACKING, parent page, child section, and offsets [8,53]. ON/OFF output and exact calls equal.",
+      "evidence": "integration test_resolved_backing_revision_trace_and_finalization (complete and mixed)"
+    },
+    "I5": {
+      "name": "EA1 plus C1 visibility",
+      "status": "PASS",
+      "finding": "A0/A1 contain real child only; V1/V2 see selected parent plus child, admitted IDs contain only child; both reviews accepted.",
+      "evidence": "integration test_resolved_backing_revision_trace_and_finalization"
+    },
+    "I6": {
+      "name": "Parent safety",
+      "status": "PASS",
+      "finding": "Incomplete original page remains citation-ineligible and its claim is rejected even with a resolved child. No ID substitution.",
+      "evidence": "integration test_resolved_context_preserves_blocked_paths[parent]; EA1 test_normal_verification_still_rejects"
+    },
+    "I7": {
+      "name": "C1 resolved-child revision",
+      "status": "PASS",
+      "finding": "Missing admitted relationship alone reaches A1 with child evidence, without parent text or extra retrieval.",
+      "evidence": "integration test_resolved_backing_revision_trace_and_finalization"
+    },
+    "I8": {
+      "name": "EA cache",
+      "status": "PASS",
+      "finding": "A0 and A1 projections equal; structural storage calls exactly [[page]] per invocation; no alternate child selection.",
+      "evidence": "integration test_resolved_backing_revision_trace_and_finalization; EA1 cache tests"
+    },
+    "I9": {
+      "name": "R1 mapping authority",
+      "status": "PASS",
+      "finding": "Draft point.1 with verified [] gives no A1 point; verified point.2 gives only point.2. Eligible claim remains repairable and uses resolved child.",
+      "evidence": "integration test_resolved_backing_does_not_override_verified_mapping (2 cases)"
+    },
+    "I10": {
+      "name": "Visible-only",
+      "status": "PASS",
+      "finding": "Parent-only visible necessary relationship remains incomplete; no A1 solely for it and no parent evidence enters A1.",
+      "evidence": "integration test_resolved_context_preserves_blocked_paths[visible]; mixed integration"
+    },
+    "I11": {
+      "name": "Ambiguous",
+      "status": "PASS",
+      "finding": "Uncertain relationship with uncertain scope remains incomplete and non-revisionable. Contradictory scope rejected by R1-C tests.",
+      "evidence": "integration test_resolved_context_preserves_blocked_paths[ambiguous]; C1 test_r1_uncertain_check_requires_uncertain_scope"
+    },
+    "I12": {
+      "name": "Mixed point",
+      "status": "PASS",
+      "finding": "One point contains admitted missing output relation and visible-only Heading relation. Only output reaches A1; V2 repair leaves point incomplete.",
+      "evidence": "integration test_resolved_backing_revision_trace_and_finalization[True]"
+    },
+    "I13": {
+      "name": "Partial finalization",
+      "status": "PASS",
+      "finding": "Verified claims and real child evidence retained; fixed limitation notice; composer skipped. Public claims rendered=true, dropped claim false.",
+      "evidence": "integration mixed case; test_partial_public_and_dropped_audit_with_resolved_backing"
+    },
+    "I14": {
+      "name": "Complete finalization",
+      "status": "PASS",
+      "finding": "Recovered fully satisfied case is answered, composer and composer review run, no limitation notice.",
+      "evidence": "integration test_resolved_backing_revision_trace_and_finalization[False]"
+    },
+    "I15": {
+      "name": "Hard guards",
+      "status": "PASS",
+      "finding": "Version conflict, future runtime, universal proof and unsupported requested symbol/API override C1 partial. Existing locked-catalog absence vs selected-subset absence safety preserved.",
+      "evidence": "integration test_hard_refusal_public_boundary (5 cases); C1 hard-guard tests; QA test_known_class_absent_from_selected_evidence_is_not_refused/test_nonexistent_api_guard_keeps_verified_alternative; generic product negative-existence contract tests"
+    },
+    "I16": {
+      "name": "O1 stages",
+      "status": "PASS",
+      "finding": "EA, A0, V1, A1 input/output/merge, V2 captured in causal order. Composer captured for complete path and NOT_EXECUTED for partial.",
+      "evidence": "integration test_resolved_backing_revision_trace_and_finalization; O1 suite"
+    },
+    "I17": {
+      "name": "Trace neutrality",
+      "status": "PASS",
+      "finding": "OFF/ON exact public results, diagnostics excluding trace, usage, retrieval count, model count/order, serialized payloads, schemas and kwargs all equal.",
+      "evidence": "integration assert_neutral in complete and mixed runs"
+    },
+    "I18": {
+      "name": "Call ceiling",
+      "status": "PASS",
+      "finding": "Recovered complete path exactly 7 fake model calls, partial revision 5; revision_count=1 and route bound preserved.",
+      "evidence": "integration complete/mixed cases; R1 mapping tests route finalize after one revision"
+    },
+    "I19": {
+      "name": "Retrieval/embedding",
+      "status": "PASS",
+      "finding": "One semantic retrieval and zero embeddings per integrated full run; one structural lookup does not count as semantic retrieval; production does not activate E3.",
+      "evidence": "integration complete/mixed cases; E3 focused suite; qa.py production routing"
+    },
+    "I20": {
+      "name": "Retrieval truth",
+      "status": "PASS",
+      "finding": "Deep equality of original bundle including rankings/scores/IDs; rebuilt RetrievalTrace matches original selected evidence and still records page, while public evidence is section.",
+      "evidence": "integration complete/mixed cases; EA1 test_four_pages_and_insertion_order"
+    },
+    "I21": {
+      "name": "Public DTO",
+      "status": "PASS",
+      "finding": "Public claim fields remain exactly claim_id, claim_text, evidence_ids; private coverage/trace keys absent from result across complete, partial and refusal fixtures. Model DTO source unchanged.",
+      "evidence": "integration assert_public; historical/public projection tests"
+    },
+    "I22": {
+      "name": "Historical compatibility",
+      "status": "PASS",
+      "finding": "shadow_e1_v2, runtime_e1_v2 and legacy_question_core use no production C1 schema/prompt or partial policy; existing routing/merge regressions pass.",
+      "evidence": "integration test_historical_contract_is_separate (3 cases); E2, QA and E3 suites"
+    },
+    "I23": {
+      "name": "EA1 safety",
+      "status": "PASS",
+      "finding": "52 focused tests pass: strict predicate, unique exact same-source/version/snapshot/document backing, ambiguity/overflow rejection, lookup fallback/cache and immutable retrieval.",
+      "evidence": "tests/unit/test_post_a5_ea1_exact_backing.py"
+    },
+    "I24": {
+      "name": "C1 safety",
+      "status": "PASS",
+      "finding": "All 77 current C1/C1-R1 tests pass; no coverage removed.",
+      "evidence": "tests/unit/test_post_a5_c1_coverage_completeness.py"
+    },
+    "I25": {
+      "name": "O1 safety",
+      "status": "PASS",
+      "finding": "All 33 focused tests pass, including capture failure/size-bound neutrality.",
+      "evidence": "tests/unit/test_post_a5_o1_observability.py"
+    },
+    "I26": {
+      "name": "Change audit",
+      "status": "PASS",
+      "finding": "Only one integration test module and four closeout/lifecycle documents changed. No product source, prompt, evaluator, benchmark, Gold or calibration diff.",
+      "evidence": "git diff --check; complete changed-path inventory and source diff"
+    }
+  },
+  "test_commands": [
+    "PYTHONPATH=src python -m pytest tests/unit/test_post_a5_o1_ea1_c1_integration.py -q --tb=short",
+    "PYTHONPATH=src python -m pytest tests/unit/test_post_a5_o1_observability.py tests/unit/test_post_a5_ea1_exact_backing.py tests/unit/test_post_a5_c1_coverage_completeness.py tests/unit/test_qa.py tests/unit/test_e2_a1_answer_point_coverage.py tests/unit/test_generic_answer_obligation_completeness.py tests/unit/test_post_a5_generic_product_repair.py tests/unit/test_evaluation_runner.py tests/unit/test_f6_release_identity.py tests/unit/test_e3_missing_point_retrieval.py -q --tb=short",
+    "PYTHONPATH=src python -m pytest tests/unit/test_evaluation_runner.py::EvaluationRunnerTests::test_v26_is_default_and_signed_dry_rescore_preserves_real_failures -q --tb=short"
+  ],
+  "test_results": {
+    "integration": {
+      "passed": 16,
+      "failed": 0
+    },
+    "O1": {
+      "passed": 33
+    },
+    "EA1": {
+      "passed": 52
+    },
+    "C1_C1_R1": {
+      "passed": 77
+    },
+    "existing_combined_batch": {
+      "passed": 498,
+      "subtests_passed": 49,
+      "failed": 1
+    },
+    "broader_excluding_three_core_suites": {
+      "passed": 336,
+      "subtests_passed": 49,
+      "failed": 1
+    },
+    "distinct_total": {
+      "passed": 514,
+      "subtests_passed": 49,
+      "isolated_baseline_failures": 1
+    },
+    "fixture_development": "Initial 7 integration cases passed. Extended batch initially had 15 passed/1 failure because fake legacy review queue supplied only one response; supplied two responses without weakening assertions or changing source; final 16 passed. No product RED/GREEN phase."
+  },
+  "baseline_failures": [
+    {
+      "test": "EvaluationRunnerTests.test_v26_is_default_and_signed_dry_rescore_preserves_real_failures",
+      "reason": "Expected v2_6, actual unchanged v2_11 default",
+      "independent_reproduction": "Single-test command failed identically while HEAD remained starting 1510904; source and original test diff against starting HEAD empty. Assertion fails before rescore. Isolated under explicit authorization; not fixed."
+    }
+  ],
+  "O1_preservation": "PASS; enabled/disabled strict neutrality, captured stages and skipped composer truthful; bounded capture tests pass",
+  "EA1_preservation": "PASS; real child admission, strict parent rejection, one cached structural lookup, immutable bundle",
+  "C1_preservation": "PASS; safe bounded relationship recovery, blocked scope remains incomplete, finalizer guards and composer preserved",
+  "C1_R1_preservation": "PASS; verifier mappings authoritative with EA1 child, partial rendered audit accurate, uncertain scope invariant retained",
+  "model_call_ceiling": 7,
+  "retrieval_invariance": {
+    "semantic_retrieval_calls_per_integrated_run": 1,
+    "embedding_calls": 0,
+    "structural_backing_lookups": 1,
+    "extra_stages": 0,
+    "E3_promoted": false
+  },
+  "public_dto_stability": "PASS in complete, partial and hard refusal synthetic fixtures; no DTO/source edits",
+  "historical_mode_compatibility": "PASS; three modes tested with their existing contracts, no modernization",
+  "protected_state": {
+    "novel_validation": "PRISTINE_FOR_CURRENT_LINEAGE",
+    "holdout_access": 0,
+    "protected_content_leakage": 0,
+    "F6_B_execution": 0,
+    "method": "Preserved by non-access, not inspection of protected contents"
+  },
+  "T1_state": {
+    "status": "COMPLETE / FAIL",
+    "historical_calls": 65,
+    "historical_tokens": 373265,
+    "replayed": false,
+    "rescored": false,
+    "retroactive_application": false
+  },
+  "attempt_6_state": {
+    "candidate_frozen": false,
+    "preregistered": false,
+    "executed": false,
+    "readiness": "NOT_READY"
+  },
+  "scientific_effect_status": "NOT_EVALUATED; DETERMINISTIC INTEGRATION PASS does not equal SCIENTIFIC EFFECTIVENESS PASS",
+  "unresolved_issues": [
+    "Known stale default-dataset test remains failing.",
+    "Fake fixtures establish mechanics, not model semantic correctness, g013/g023 repair or scientific effectiveness.",
+    "No live PostgreSQL/provider timing or network behavior tested; no full repository suite."
+  ],
+  "next_task_recommendation": "POST-A5 REPAIRED PRODUCT SCIENTIFIC VALIDATION DESIGN / FIXED EXPOSED SENTINEL T2",
+  "next_task_execution_authorized": false,
+  "T2_preregistered": false,
+  "T2_executed": false
+}
