@@ -24,7 +24,7 @@ The roadmap is governed by the following core development principles:
 
 ## Current planning state
 
-CURRENT_REPOSITORY_HEAD = T2-P0 commit first adding `evaluation/post_a5_t2_fixed_exposed_sentinel_preregistration.json` (resolve from Git history; exact SHA reported on delivery).
+CURRENT_REPOSITORY_HEAD = terminal T2 result and F6-A closeout commit (resolve from Git history; exact SHA reported on delivery).
 CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = 6ed3ba361476b36744c72e76f5905733b1755f5c
 NORMAL_PRODUCT_MODE = production_answer_obligations_v1
 PROMPT_SET_VERSION = 3.11.0
@@ -32,20 +32,21 @@ PROMPT_FINGERPRINT = 03e1bf270898b28127a42fa2e1ccb24cfc1d87e177eeba5428ba4680d42
 ACTIVE_GOLD = m6-benchmark-v2.11
 ACTIVE_CALIBRATION = phase_b_t3_product_language_scope_v8
 POST_A5_DETERMINISTIC_REPAIR = COMPLETE / PASS
-T2 = PREREGISTERED / NOT EXECUTED
+T2 = COMPLETE / INCONCLUSIVE / VALIDATION_INCONCLUSIVE
 RESOURCE_POLICY = USAGE_ACCOUNTING_ONLY
-T2_MECHANISM_OBSERVABILITY = DIAGNOSTIC_ONLY
-F6_A_REPAIR_LOOP = ONE FINAL FIXED T2 REMAINS
+T2_SCIENTIFIC_OUTCOME = INCONCLUSIVE / EXECUTION_INCOMPLETE
+T2_MECHANISM_OBSERVABILITY = FAILED / REQUIRED_TARGET_TRACE_UNAVAILABLE
+F6_A_REPAIR_LOOP = CLOSED
 ATTEMPT_6 = DEFERRED / NOT_NEXT_STEP
 F6_B = NOT_ENTERED / NOT_NEXT_STEP
-Phase F = IN_PROGRESS / POST-A5 REPAIR ENGINEERING COMPLETE / FINAL FIXED EXPOSED T2 PREREGISTERED
+Phase F = IN_PROGRESS / POST-A5 REPAIR ENGINEERING COMPLETE / FIXED EXPOSED T2 TERMINAL INCONCLUSIVE / F6-A CLOSED
 
-After terminal T2: PASS => CLOSED / EXPOSED_SENTINEL_PASS; FAIL => CLOSED / EXPOSED_SENTINEL_FAIL / LIMITATION_ACCEPTED; INCONCLUSIVE => CLOSED / VALIDATION_INCONCLUSIVE. All outcomes close F6_A_REPAIR_LOOP. No automatic repair, revalidation or release continuation.
+Terminal T2 outcome: `INCONCLUSIVE / VALIDATION_INCONCLUSIVE`; no valid scientific case result was formed because all eight fixed executions terminated in provider infrastructure errors. All terminal outcomes close `F6_A_REPAIR_LOOP`; no automatic repair, revalidation or release continuation.
 
-NEXT_TASK_RECOMMENDATION = POST-A5 T2 FIXED EXPOSED SENTINEL EXECUTION + TERMINAL RESULT + F6-A REPAIR LOOP CLOSEOUT
+NEXT_TASK_RECOMMENDATION = NO AUTOMATIC F6-A FOLLOW-UP; FUTURE GENERIC PRODUCT DEVELOPMENT REQUIRES SEPARATE AUTHORIZATION
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 
-Authority: `evaluation/POST_A5_T2_FIXED_EXPOSED_SENTINEL_PREREGISTRATION.md` and companion JSON. Scientific calls/tokens this task=0/0; T1 FAIL and Attempt 1-5 results immutable. Protected content untouched; no candidate freeze. Historical recommendations below are superseded forward and confer no current authorization.
+Authority: `evaluation/POST_A5_T2_FIXED_EXPOSED_SENTINEL_RESULT.md` and companion JSON, together with the preregistration. Scientific calls/tokens this task=56/288539; no valid final/judge result was formed. T1 FAIL and Attempt 1-5 results immutable. Protected content untouched; no candidate freeze. Historical recommendations below are superseded forward and confer no current authorization.
 
 ## Historical status chronology (superseded forward planning)
 

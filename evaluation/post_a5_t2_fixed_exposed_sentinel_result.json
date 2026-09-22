@@ -1,0 +1,97 @@
+{
+  "schema_version": "post-a5-t2-result-v1",
+  "task": "POST-A5 T2 FIXED EXPOSED SENTINEL EXECUTION + TERMINAL RESULT + F6-A REPAIR LOOP CLOSEOUT",
+  "status": "COMPLETE / INCONCLUSIVE / VALIDATION_INCONCLUSIVE",
+  "T2_P0_commit": "269914bd2a87ee5889832c445c8024f5bc2ef0db",
+  "execution_repository_head": "269914bd2a87ee5889832c445c8024f5bc2ef0db",
+  "terminal_result_commit": "RESOLVED_FROM_GIT_AFTER_CLOSEOUT_COMMIT",
+  "product_behavior_head": "6ed3ba361476b36744c72e76f5905733b1755f5c",
+  "prompt_set_version": "3.11.0",
+  "prompt_fingerprint": "03e1bf270898b28127a42fa2e1ccb24cfc1d87e177eeba5428ba4680d426352c",
+  "gold": {
+    "version": "m6-benchmark-v2.11",
+    "path": "evaluation/benchmarks/v2_11/gold_questions.yaml",
+    "sha256": "39943c6a3f2152e476109c0340acd066795c8de6ff3b6bb2eac6661ac480a417"
+  },
+  "calibration": {
+    "id": "phase_b_t3_product_language_scope_v8",
+    "selector_sha256": "e27ef67a866274b4a8441b789ca78fc3ccb7e022eed537c7442e15230777a0e5",
+    "formal_english": 59,
+    "non_english": 21
+  },
+  "normal_product_mode": "production_answer_obligations_v1",
+  "fixed_execution_order": ["g011", "g010", "g013", "g014", "g023", "g022", "g047", "g050"],
+  "run_ids": {
+    "g011": "post-a5-t2-g011",
+    "g010": "post-a5-t2-g010",
+    "g013": "post-a5-t2-g013",
+    "g014": "post-a5-t2-g014",
+    "g023": "post-a5-t2-g023",
+    "g022": "post-a5-t2-g022",
+    "g047": "post-a5-t2-g047",
+    "g050": "post-a5-t2-g050"
+  },
+  "execution_contract": {
+    "mode": "full",
+    "split": "dev",
+    "allow_draft": true,
+    "official": false,
+    "candidate_id": null,
+    "capture_stage_trace": true,
+    "max_model_calls": null,
+    "max_token_usage": null,
+    "external_judge_enabled": true,
+    "gold_cases_approved_dev_exposed_answered": true
+  },
+  "case_results": {
+    "g011": {"execution_status": "INFRASTRUCTURE_FAILURE / TERMINAL_NONRETRYABLE", "result_status": null, "critical_answer_point_miss_count": null, "missing_answer_point_ids": null, "hard_safety": null, "revision_count": null, "calls": 5, "tokens": 28759, "transport_recovery": 0, "scientific_verdict": "NOT_EVALUABLE / INFRASTRUCTURE_FAILURE", "exception": "VertexCallError: 400 INVALID_ARGUMENT", "mechanism_labels": ["NOT_OBSERVABLE"]},
+    "g010": {"execution_status": "INFRASTRUCTURE_FAILURE / TERMINAL_NONRETRYABLE", "result_status": null, "critical_answer_point_miss_count": null, "missing_answer_point_ids": null, "hard_safety": null, "revision_count": null, "calls": 5, "tokens": 22516, "transport_recovery": 0, "scientific_verdict": "NOT_EVALUABLE / INFRASTRUCTURE_FAILURE", "exception": "VertexCallError: 400 INVALID_ARGUMENT", "mechanism_labels": ["NOT_OBSERVABLE"]},
+    "g013": {"execution_status": "INFRASTRUCTURE_FAILURE / TERMINAL_NONRETRYABLE", "result_status": null, "critical_answer_point_miss_count": null, "missing_answer_point_ids": null, "hard_safety": null, "revision_count": null, "calls": 10, "tokens": 38202, "transport_recovery": 0, "scientific_verdict": "NOT_EVALUABLE / INFRASTRUCTURE_FAILURE", "exception": "VertexCallError: 400 INVALID_ARGUMENT", "mechanism_labels": ["NOT_OBSERVABLE"]},
+    "g014": {"execution_status": "INFRASTRUCTURE_FAILURE / TERMINAL_NONRETRYABLE", "result_status": null, "critical_answer_point_miss_count": null, "missing_answer_point_ids": null, "hard_safety": null, "revision_count": null, "calls": 7, "tokens": 30136, "transport_recovery": 0, "scientific_verdict": "NOT_EVALUABLE / INFRASTRUCTURE_FAILURE", "exception": "VertexCallError: 400 INVALID_ARGUMENT", "mechanism_labels": ["NOT_OBSERVABLE"]},
+    "g023": {"execution_status": "INFRASTRUCTURE_FAILURE / TERMINAL_NONRETRYABLE", "result_status": null, "critical_answer_point_miss_count": null, "missing_answer_point_ids": null, "hard_safety": null, "revision_count": null, "calls": 7, "tokens": 32412, "transport_recovery": 0, "scientific_verdict": "NOT_EVALUABLE / INFRASTRUCTURE_FAILURE", "exception": "VertexCallError: 400 INVALID_ARGUMENT", "mechanism_labels": ["NOT_OBSERVABLE"]},
+    "g022": {"execution_status": "INFRASTRUCTURE_FAILURE / TERMINAL_NONRETRYABLE", "result_status": null, "critical_answer_point_miss_count": null, "missing_answer_point_ids": null, "hard_safety": null, "revision_count": null, "calls": 6, "tokens": 38202, "transport_recovery": 0, "scientific_verdict": "NOT_EVALUABLE / INFRASTRUCTURE_FAILURE", "exception": "VertexCallError: 400 INVALID_ARGUMENT", "mechanism_labels": ["NOT_OBSERVABLE"]},
+    "g047": {"execution_status": "INFRASTRUCTURE_FAILURE / TERMINAL_NONRETRYABLE", "result_status": null, "critical_answer_point_miss_count": null, "missing_answer_point_ids": null, "hard_safety": null, "revision_count": null, "calls": 7, "tokens": 35103, "transport_recovery": 0, "scientific_verdict": "NOT_EVALUABLE / INFRASTRUCTURE_FAILURE", "exception": "VertexCallError: 400 INVALID_ARGUMENT", "mechanism_labels": ["NOT_OBSERVABLE"]},
+    "g050": {"execution_status": "INFRASTRUCTURE_FAILURE / RETRIED_ONCE_THEN_TERMINAL_NONRETRYABLE", "result_status": null, "critical_answer_point_miss_count": null, "missing_answer_point_ids": null, "hard_safety": null, "revision_count": null, "calls": 9, "tokens": 63209, "transport_recovery": 1, "scientific_verdict": "NOT_EVALUABLE / INFRASTRUCTURE_FAILURE", "exception": "first attempt VertexCallError: 500 INTERNAL (retryable); same-identity resume VertexCallError: 400 INVALID_ARGUMENT (terminal)", "mechanism_labels": ["NOT_OBSERVABLE"]}
+  },
+  "usage": {
+    "total_calls": 56,
+    "total_tokens": 288539,
+    "runtime_and_judge_accounting": "All recorded model/provider usage from the eight fixed run directories, including the one permitted g050 same-identity recovery.",
+    "embedding_calls": 9,
+    "judge_calls": 0,
+    "transport_recovery_events": 1,
+    "provider_errors": {"400_INVALID_ARGUMENT": 8, "500_INTERNAL_retryable": 1}
+  },
+  "g011_negative_existence": "NOT_EVALUABLE / no final answer or evaluator output",
+  "g011_native_role_coverage": "NOT_EVALUABLE",
+  "g013_mechanism_labels": ["NOT_OBSERVABLE"],
+  "g023_mechanism_labels": ["NOT_OBSERVABLE"],
+  "T2_MECHANISM_OBSERVABILITY": "FAILED / REQUIRED_TARGET_TRACE_UNAVAILABLE",
+  "T2_SCIENTIFIC_OUTCOME": "INCONCLUSIVE / EXECUTION_INCOMPLETE",
+  "OVERALL_T2_VERDICT": "INCONCLUSIVE / VALIDATION_INCONCLUSIVE",
+  "T1_to_T2_paired_comparison": {
+    "g011": "T1 negative-existence safety PASS -> T2 not evaluable",
+    "g010": "T1 CONTROL_PASS -> T2 not evaluable",
+    "g013": "T1 FAIL / p3 missing -> T2 not evaluable",
+    "g014": "T1 CONTROL_PASS -> T2 not evaluable",
+    "g023": "T1 FAIL / p3 missing -> T2 not evaluable",
+    "g022": "T1 CONTROL_PASS -> T2 not evaluable",
+    "g047": "T1 PASS -> T2 not evaluable",
+    "g050": "T1 CONTROL_PASS -> T2 not evaluable",
+    "interpretation": "No scientific paired outcome or generalization claim can be made. No T1 replay or rescore occurred."
+  },
+  "protected_state": {"novel_validation": "PRISTINE_FOR_CURRENT_LINEAGE", "holdout_access": 0, "protected_content_leakage": 0, "F6_B_execution": 0},
+  "attempt_6_state": {"candidate_frozen": false, "preregistered": false, "executed": false, "readiness": "NOT_READY", "status": "DEFERRED / NOT_NEXT_STEP"},
+  "F6_B_state": "NOT_ENTERED / NOT_NEXT_STEP",
+  "post_A5_repair_validation": "CLOSED / VALIDATION_INCONCLUSIVE",
+  "F6_A_REPAIR_LOOP": "CLOSED",
+  "scientific_reruns": "No outcome-driven reruns. One same-identity resume was used only for the repository-recognized retryable g050 500 INTERNAL failure; its terminal 400 result ended recovery.",
+  "limitations": [
+    "No case produced a valid final answer or external evaluator result, so no sentinel or control scientific criterion was evaluated.",
+    "g013 and g023 O1 mechanism behavior is not observable from these failed runs.",
+    "The repeated provider INVALID_ARGUMENT failure is recorded as infrastructure execution failure; no product, prompt, evaluator or Gold repair was attempted.",
+    "This result provides no evidence for repaired-product effectiveness or independent generalization."
+  ],
+  "next_task_recommendation": "No automatic F6-A follow-up, T2-R1, RCA, T3, Attempt 6 or F6-B. A future product improvement requires separate normal development authorization.",
+  "next_task_execution_authorized": false
+}
