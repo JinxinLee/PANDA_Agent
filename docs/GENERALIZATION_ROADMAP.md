@@ -24,31 +24,32 @@ The roadmap is governed by the following core development principles:
 
 ## Current planning state
 
-CURRENT_REPOSITORY_HEAD = C1 Vertex schema compatibility repair closeout commit (resolve from Git history; exact SHA reported on delivery).
-CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = 528499f3b42357f770c526f3e22d70f962d37b50
+CURRENT_REPOSITORY_HEAD = replacement T2 terminal records commit (resolve from Git history; exact SHA reported on delivery).
+CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = 58bd53a86627ff0e0b668915076d974272e86233
 NORMAL_PRODUCT_MODE = production_answer_obligations_v1
-PROMPT_SET_VERSION = 3.11.1
-PROMPT_FINGERPRINT = 9135b73c517f4cfac50695b2b47264749145923b60c2e2ee590149a141eca9bf
+PROMPT_SET_VERSION = 3.11.2
+PROMPT_FINGERPRINT = 878caffb022dd66111b3bc6e98c6e372340cb619db13aa856c09aaa09e8b8391
 ACTIVE_GOLD = m6-benchmark-v2.11
 ACTIVE_CALIBRATION = phase_b_t3_product_language_scope_v8
 POST_A5_DETERMINISTIC_REPAIR = COMPLETE / PASS
-PRE_REPAIR_T2_EXECUTION_ATTEMPT = ABORTED / INFRASTRUCTURE_INVALID / PROVIDER_STRUCTURED_SCHEMA_INVALID_ARGUMENT
-C1_VERTEX_SCHEMA_COMPATIBILITY = HOLD / PRIMARY_KEYWORD_FIX_INSUFFICIENT
-T2 = EXISTING P0 TERMINAL INCONCLUSIVE / REFRESH NOT PERFORMED
+PRE_REPAIR_T2_EXECUTION_ATTEMPT = ABORTED / INFRASTRUCTURE_INVALID / PROVIDER_STRUCTURED_SCHEMA_INVALID_ARGUMENT (8/8; 56 calls / 288539 tokens; historical)
+C1_VERTEX_SCHEMA_COMPATIBILITY = COMPLETE / PASS / PROVIDER_SCHEMA_COMPATIBILITY_REPAIRED
+T2 = COMPLETE / FAIL / FIXED_8_CASE_REPLACEMENT_VALIDATION
 RESOURCE_POLICY = USAGE_ACCOUNTING_ONLY
-T2_SCIENTIFIC_OUTCOME = INCONCLUSIVE / EXECUTION_INCOMPLETE (historical P0; no repaired T2)
-T2_MECHANISM_OBSERVABILITY = FAILED / REQUIRED_TARGET_TRACE_UNAVAILABLE (historical P0)
-F6_A_REPAIR_LOOP = CLOSED / NO_REPAIR_CONTINUATION_AFTER_SMOKE_HOLD
+T2_SCIENTIFIC_OUTCOME = FAIL / VALID_SENTINEL_AND_CONTROL_FAILURES
+T2_MECHANISM_OBSERVABILITY = COMPLETE / TRACE_CAPTURED / CAUSAL_RECOVERY_NOT_ESTABLISHED
+POST_A5_REPAIR_VALIDATION = COMPLETE / FAIL / REPLACEMENT_T2_VALIDATION
+F6_A_REPAIR_LOOP = CLOSED / REPLACEMENT_T2_TERMINAL_FAIL
 ATTEMPT_6 = DEFERRED / NOT_NEXT_STEP
 F6_B = NOT_ENTERED / NOT_NEXT_STEP
-Phase F = IN_PROGRESS / C1 PROVIDER-SCHEMA COMPATIBILITY HOLD / REPAIRED T2 NOT AUTHORIZED
+Phase F = IN_PROGRESS / C1 COMPATIBILITY REPAIRED / REPLACEMENT T2 TERMINAL FAIL / NO FOLLOW-ON AUTHORIZED
 
-The six classified P0 executions remain `ABORTED / INFRASTRUCTURE_INVALID / PROVIDER_STRUCTURED_SCHEMA_INVALID_ARGUMENT` with 40 calls / 190227 tokens and zero scientific observations. The bounded provider-schema repair passes deterministic tests, but one synthetic direct-provider smoke still returns `400 INVALID_ARGUMENT`; no T2 identity refresh or T2 rerun is authorized. Existing run evidence is preserved.
+The prior eight-case P0 execution remains `ABORTED / INFRASTRUCTURE_INVALID / PROVIDER_STRUCTURED_SCHEMA_INVALID_ARGUMENT` with 56 calls / 288539 tokens, 9 embedding calls, 0 judge calls, and one transport recovery; it contributes zero scientific observations. The final bounded schema repair passed the synthetic provider smoke, and the repaired fixed eight-case replacement T2 completed with 63 calls / 345411 tokens, 8 embedding calls, 10 judge calls, and one recovered transport event. Valid scientific failures were established in g013, g023, g047, and g050; g011 negative-existence safety passed, and controls g010/g014/g022 passed. Native-documentation evidence coverage for g011 is reported separately and is non-gating.
 
-NEXT_TASK_RECOMMENDATION = REVIEW REMAINING PROVIDER-FACING C1 SCHEMA INCOMPATIBILITY; NO T2 EXECUTION UNTIL SEPARATELY AUTHORIZED SMOKE PASS
+NEXT_TASK_RECOMMENDATION = TERMINAL / NO AUTOMATIC REPAIR, T2-R1, T3, ATTEMPT_6, OR F6-B
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 
-Authority: `evaluation/POST_A5_C1_VERTEX_SCHEMA_COMPATIBILITY_REPAIR.md` and companion JSON, together with the historical T2 result and preregistration. This repair used T2 scientific calls/tokens=0/0 and one compatibility smoke call with 0 reported tokens; the historical P0 usage remains 40/190227 for the classified six-case attempt. Protected content untouched; no candidate freeze. Historical recommendations below are superseded forward and confer no current authorization.
+Authority: `evaluation/POST_A5_C1_VERTEX_SCHEMA_COMPATIBILITY_REPAIR.md`, `evaluation/post_a5_c1_vertex_schema_compatibility_repair.json`, `evaluation/POST_A5_T2_REPLACEMENT_RESULT.md`, and its companion JSON, together with the preserved historical T2 result and preregistration. The replacement T2 is post-F6-A compatibility-repair validation. **Replacement T2 remains exposed repair-target evidence, not independent generalization evidence.** F6-A remains closed, protected content is untouched, and no candidate freeze or later lifecycle stage is authorized.
 
 ## Historical status chronology (superseded forward planning)
 
