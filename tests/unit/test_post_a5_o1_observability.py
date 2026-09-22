@@ -9,7 +9,7 @@ from panda_agent.evaluation_runner import prompt_fingerprint
 from test_e2_a1_answer_point_coverage import Vertex, agent, claim, review, QUESTION
 
 
-FINGERPRINT = "878caffb022dd66111b3bc6e98c6e372340cb619db13aa856c09aaa09e8b8391"
+FINGERPRINT = "5147f85c09a933609d91f4fa4e7bf3d8fbfa530684a3ecea4d3aaed72c3e04ce"
 
 
 class RecordingVertex(Vertex):
@@ -153,7 +153,7 @@ def test_single_claim_bypass_and_evidence_projection_registry(tmp_path):
     actual = next(json.loads(c[0]) for c in on[1] if json.loads(c[0])["task"] == "review_claim_support_and_relevance")
     assert trace["evidence_registry"][ref] == actual["untrusted_evidence"][0]
     assert model_input["untrusted_question"] == QUESTION
-    assert model_input["coverage_satisfaction_schema_version"] == "coverage-satisfaction-v1"
+    assert model_input["coverage_satisfaction_schema_version"] == "coverage-satisfaction-v2"
 
 
 @pytest.mark.parametrize("failure", ["serialization", "record", "assembly", "initialization"])

@@ -72,7 +72,11 @@ class Vertex:
         if p["task"] == "decompose_user_question":
             if isinstance(self.decomposition, Exception):
                 raise self.decomposition
-            return deepcopy(self.decomposition)
+            result = deepcopy(self.decomposition)
+            if "required_relations" in schema["properties"]["points"]["items"].get("required", []):
+                for point in result["points"]:
+                    point.setdefault("required_relations", [])
+            return result
         if p["task"] == "review_claim_support_and_relevance":
             return production_review_fixture(deepcopy(self.reviews.pop(0)), p)
         if p["task"] == "revise_unsupported_claims_once":
@@ -87,8 +91,12 @@ def agent(tmp_path, vertex=None, bundle=None):
 
 
 def state(a, claims, points=None):
+    runtime_points = deepcopy(points or POINTS)
+    for p in runtime_points:
+        p.setdefault("support_spans", [QUESTION])
+        p.setdefault("required_relations", [])
     return dict(question=QUESTION, bundle=a.retriever.bundle, sufficient=True,
-                answer_point_coverage_mode="shadow_e1_v2", runtime_answer_points=points or deepcopy(POINTS),
+                answer_point_coverage_mode="shadow_e1_v2", runtime_answer_points=runtime_points,
                 draft={"claims":claims}, answer_requirements=[])
 
 

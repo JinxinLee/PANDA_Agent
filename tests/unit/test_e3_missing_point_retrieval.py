@@ -188,7 +188,11 @@ class FakeVertex:
         if task == "decompose_user_question":
             if isinstance(self.decomposition, Exception):
                 raise self.decomposition
-            return deepcopy(self.decomposition)
+            result = deepcopy(self.decomposition)
+            if "required_relations" in schema["properties"]["points"]["items"].get("required", []):
+                for point in result["points"]:
+                    point.setdefault("required_relations", [])
+            return result
         if task == "review_claim_support_and_relevance":
             if not self.reviews:
                 return make_review()

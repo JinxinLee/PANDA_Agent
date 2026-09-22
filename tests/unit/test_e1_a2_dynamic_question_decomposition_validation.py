@@ -64,13 +64,13 @@ def synthetic_case():
 
 
 def predictions():
-    return [dict(answer_point_id="locator.1", facet_type="locator", text="Locate X", support_spans=["Where is X"]),
-            dict(answer_point_id="cause_reason.1", facet_type="cause_reason", text="Why X is needed", support_spans=["why is it needed"])]
+    return [dict(answer_point_id="point.1", facet_type="locator", text="Locate X", support_spans=["Where is X"]),
+            dict(answer_point_id="point.2", facet_type="cause_reason", text="Why X is needed", support_spans=["why is it needed"])]
 
 
 def judgment():
-    return dict(matched_pairs=[dict(reference_point_id="ref1", prediction_point_id="locator.1", facet_type_match=True),
-                               dict(reference_point_id="ref2", prediction_point_id="cause_reason.1", facet_type_match=True)],
+    return dict(matched_pairs=[dict(reference_point_id="ref1", prediction_point_id="point.1", facet_type_match=True),
+                               dict(reference_point_id="ref2", prediction_point_id="point.2", facet_type_match=True)],
                 missing_reference_ids=[], extra_prediction_ids=[], hidden_prerequisite_prediction_ids=[])
 
 
@@ -88,9 +88,9 @@ def test_invalid_judgments_rejected(mutation):
     elif mutation == "missing":
         j["missing_reference_ids"] = ["ref1"]
     elif mutation == "extra":
-        j["extra_prediction_ids"] = ["locator.1"]
+        j["extra_prediction_ids"] = ["point.1"]
     elif mutation == "hidden":
-        j["hidden_prerequisite_prediction_ids"] = ["locator.1"]
+        j["hidden_prerequisite_prediction_ids"] = ["point.1"]
     else:
         j["matched_pairs"][0]["facet_type_match"] = False
     with pytest.raises(ValueError):

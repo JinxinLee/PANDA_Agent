@@ -18,11 +18,14 @@ The single `Current authoritative state` section is authoritative over historica
 ## Current authoritative state
 
 ```text
-CURRENT_REPOSITORY_HEAD = G1 design-correction commit (resolve from Git history; exact SHA reported on delivery).
-CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = 58bd53a86627ff0e0b668915076d974272e86233
+CURRENT_REPOSITORY_HEAD = G1 implementation commit (resolve from Git history; exact SHA reported on delivery).
+CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = G1 implementation commit (resolve from Git history).
 NORMAL_PRODUCT_MODE = production_answer_obligations_v1
-PROMPT_SET_VERSION = 3.11.2
-PROMPT_FINGERPRINT = 878caffb022dd66111b3bc6e98c6e372340cb619db13aa856c09aaa09e8b8391
+QUESTION_DECOMPOSITION_PROMPT_VERSION = 3.0.0
+QUESTION_DECOMPOSITION_SCHEMA_VERSION = e1.question_decomposition.v3
+COVERAGE_SATISFACTION_SCHEMA_VERSION = coverage-satisfaction-v2
+PROMPT_SET_VERSION = 3.12.0
+PROMPT_FINGERPRINT = 5147f85c09a933609d91f4fa4e7bf3d8fbfa530684a3ecea4d3aaed72c3e04ce
 ACTIVE_GOLD = m6-benchmark-v2.11
 ACTIVE_CALIBRATION = phase_b_t3_product_language_scope_v8
 
@@ -42,9 +45,9 @@ GENERALIZATION_RELEASE_EVIDENCE = NOT_ESTABLISHED
 C1_VERTEX_SCHEMA_COMPATIBILITY = COMPLETE / PASS / PROVIDER_SCHEMA_COMPATIBILITY_REPAIRED
 POST_A5_REPAIR_VALIDATION = COMPLETE / FAIL / REPLACEMENT_T2_VALIDATION
 
-PHASE_G = IN_PROGRESS / DESIGN_ONLY / IMPLEMENTATION_READY
-G1 = DESIGN COMPLETE / CORRECTED / IMPLEMENTATION READY
-NEXT_TASK_RECOMMENDATION = G1 RELATIONSHIP-AWARE ANSWER OBLIGATION IMPLEMENTATION
+PHASE_G = IN_PROGRESS / G1_IMPLEMENTED
+G1 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
+NEXT_TASK_RECOMMENDATION = G2 COVERAGE REVIEW LOCAL-FAILURE ROBUSTNESS DESIGN
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 ```
 
@@ -52,9 +55,9 @@ Phase F is terminal: F1–F5 completed their bounded engineering objectives, whi
 
 Post-A5 mechanisms remain product architecture, but the replacement T2 remains `COMPLETE / FAIL`: g011 PASS, g010 CONTROL_PASS, g013 FAIL, g014 CONTROL_PASS, g023 FAIL, g022 CONTROL_PASS, g047 FAIL, g050 CONTROL_FAIL. These exposed repair-target results do not establish sufficient completeness recovery or independent generalization. Their historical verdicts and records are unchanged.
 
-Phase G is ordinary product-development planning for answer semantics and robustness. The old eight-case cohort becomes `NON_GATING REGRESSION DIAGNOSTICS` for future development; fresh `novel_dev` is the planned main empirical evidence. Phase-G implementation, `novel_validation`, and any future Release Candidate Evaluation require separate authorization. No F6-A Attempt 6 continuation is planned.
+Phase G is ordinary product development for answer semantics and robustness. The old eight-case cohort is `NON_GATING REGRESSION DIAGNOSTICS`; fresh `novel_dev` remains planned future empirical evidence. `novel_validation` and any future Release Candidate Evaluation require separate authorization. No F6-A Attempt 6 continuation is planned.
 
-G1 design is complete and corrected: [the selected design](../evaluation/G1_RELATIONSHIP_AWARE_ANSWER_OBLIGATION_DESIGN.md) gives each point exactly one completeness path—existing ordinary C1 checks for relation-free points, or canonical required-relation dispositions for relation-bearing points—and authorizes A1 targets independently after a valid review. Answer points remain the sole completeness unit; V2 rechecks the full canonical contract. Design/static acceptance is `PASS`; implementation and proposed tests are not run. Product identity is unchanged; scientific calls/tokens are 0/0. G1 is implementation-ready, but implementation remains separately authorized.
+G1 implements [the selected design](../evaluation/G1_RELATIONSHIP_AWARE_ANSWER_OBLIGATION_DESIGN.md): question-only canonical relations, ordinary C1 checks for relation-free points, required-relation dispositions for relation-bearing points, target-local A1 authorization, and full-contract V2 recheck. Focused deterministic and fake-provider regression tests passed. This is a material product/prompt/schema change within `production_answer_obligations_v1`; scientific calls/tokens are 0/0. Real-model extraction quality, provider runtime acceptance, and empirical completeness benefit remain unverified.
 
 Authority: [Phase-F closeout](../evaluation/PHASE_F_CLOSEOUT.md) and [Phase-G roadmap](GENERALIZATION_ROADMAP.md#phase-g--answer-semantics--robustness). Historical Attempts 1–5, T1/T2, evaluator/Gold corrections, O1/EA1/C1/C1-R1, and Vertex compatibility records retain their original outcomes. Older planning and next-task recommendations below are historical and confer no current authorization.
 

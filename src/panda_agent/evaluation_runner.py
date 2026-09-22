@@ -371,6 +371,7 @@ def prompt_fingerprint() -> str:
     declared decomposition-contract identity change must change this hash.
     """
     payload = {
+        "prompt_set_version": PROMPT_SET_VERSION,
         "answer": ANSWER_SYSTEM_PROMPT,
         "answer_composer": ANSWER_COMPOSER_SYSTEM_PROMPT,
         "answer_composer_review": ANSWER_COMPOSER_REVIEW_SYSTEM_PROMPT,
@@ -389,6 +390,13 @@ def prompt_fingerprint() -> str:
             "prompt": question_decomposition.QUESTION_DECOMPOSITION_SYSTEM_PROMPT,
             "prompt_version": question_decomposition.QUESTION_DECOMPOSITION_PROMPT_VERSION,
             "schema_version": question_decomposition.QUESTION_DECOMPOSITION_SCHEMA_VERSION,
+            "schema": question_decomposition.PRODUCTION_QUESTION_DECOMPOSITION_SCHEMA,
+            "v2_compatibility": {
+                "prompt": question_decomposition.QUESTION_DECOMPOSITION_V2_SYSTEM_PROMPT,
+                "prompt_version": question_decomposition.QUESTION_DECOMPOSITION_V2_PROMPT_VERSION,
+                "schema_version": question_decomposition.QUESTION_DECOMPOSITION_V2_SCHEMA_VERSION,
+                "schema": question_decomposition.QUESTION_DECOMPOSITION_V2_SCHEMA,
+            },
         },
         "rerank": RERANK_SYSTEM_PROMPT,
         "revision": REVISION_SYSTEM_PROMPT,

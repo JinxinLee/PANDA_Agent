@@ -9,9 +9,9 @@ import pytest
 
 from panda_agent.qa import QAAgent, _runtime_answer_points
 from panda_agent.question_decomposition import (
-    QUESTION_DECOMPOSITION_PROMPT_VERSION,
-    QUESTION_DECOMPOSITION_SCHEMA,
-    QUESTION_DECOMPOSITION_SYSTEM_PROMPT,
+    QUESTION_DECOMPOSITION_V2_PROMPT_VERSION as QUESTION_DECOMPOSITION_PROMPT_VERSION,
+    QUESTION_DECOMPOSITION_V2_SCHEMA as QUESTION_DECOMPOSITION_SCHEMA,
+    QUESTION_DECOMPOSITION_V2_SYSTEM_PROMPT as QUESTION_DECOMPOSITION_SYSTEM_PROMPT,
     QuestionDecomposer,
 )
 from test_qa import FakeRetriever, FakeVertex, bundle_for, code_evidence

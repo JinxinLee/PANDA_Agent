@@ -10,11 +10,11 @@ from test_post_a5_o1_observability import RecordingVertex, assert_neutral, event
 
 
 def test_production_schema_exists_and_is_distinct():
-    assert qa.COVERAGE_SATISFACTION_SCHEMA_VERSION == "coverage-satisfaction-v1"
+    assert qa.COVERAGE_SATISFACTION_SCHEMA_VERSION == "coverage-satisfaction-v2"
     schema = qa.PRODUCTION_COVERAGE_SATISFACTION_REVIEW_SCHEMA
     assert schema != qa.ANSWER_POINT_COVERAGE_REVIEW_SCHEMA
     assert set(schema["properties"]["answer_point_coverage"]["items"]["required"]) == {
-        "answer_point_id", "supporting_claim_ids", "complete", "scope_status", "relationship_checks"}
+        "answer_point_id", "supporting_claim_ids", "complete", "scope_status", "relationship_checks", "required_relation_checks"}
 
 
 def test_production_provider_schema_uses_supported_bounded_keywords():
@@ -61,7 +61,7 @@ def point(pid, checks, status="ESTABLISHED"):
     supporters = list(dict.fromkeys(cid for c in checks for cid in c["supporting_claim_ids"]))
     return {"answer_point_id": pid, "supporting_claim_ids": supporters,
             "complete": status == "ESTABLISHED" and bool(checks) and all(c["satisfied"] for c in checks),
-            "scope_status": status, "relationship_checks": checks}
+            "scope_status": status, "relationship_checks": checks, "required_relation_checks": []}
 
 
 def c1_review(points=None, mappings=None, unsupported=(), irrelevant=()):
@@ -226,7 +226,7 @@ def test_complete_composer_and_production_payload(tmp_path):
     payload, schema, kw = next((json.loads(p), s, k) for p,s,k in vertex.exact_calls if json.loads(p)["task"] == "review_claim_support_and_relevance")
     assert payload["untrusted_question"] == QUESTION and payload["admitted_evidence_ids"] == ["e1"]
     assert schema == qa.PRODUCTION_COVERAGE_SATISFACTION_REVIEW_SCHEMA
-    assert out["diagnostics"]["answer_point_audit"]["coverage_satisfaction_schema_version"] == "coverage-satisfaction-v1"
+    assert out["diagnostics"]["answer_point_audit"]["coverage_satisfaction_schema_version"] == "coverage-satisfaction-v2"
 
 
 @pytest.mark.parametrize("mode", ["shadow_e1_v2", "runtime_e1_v2"])
@@ -244,7 +244,7 @@ def test_fingerprint_binds_production_prompts_schema_and_version(monkeypatch):
     before = "0a5b2909ef586671d533148979fc681c64e37528ad53781a4566cb9044835ba2"
     value = er.prompt_fingerprint()
     assert value != before and value == er.prompt_fingerprint()
-    assert prompts.PROMPT_SET_VERSION == "3.11.2"
+    assert prompts.PROMPT_SET_VERSION == "3.12.0"
     for name in ("PRODUCTION_COVERAGE_SATISFACTION_REVIEW_SYSTEM_PROMPT",
                  "PRODUCTION_COVERAGE_SATISFACTION_REVISION_SYSTEM_PROMPT", "COVERAGE_SATISFACTION_SCHEMA_VERSION"):
         with monkeypatch.context() as patch:

@@ -155,7 +155,7 @@ ANSWER_POINT_COVERAGE_REVIEW_SCHEMA = {
     },
     "required": [*REVIEW_SCHEMA["required"], "claim_answer_point_mappings", "missing_answer_point_ids", "answer_point_coverage"],
 }
-COVERAGE_SATISFACTION_SCHEMA_VERSION = "coverage-satisfaction-v1"
+COVERAGE_SATISFACTION_SCHEMA_VERSION = "coverage-satisfaction-v2"
 PRODUCTION_COVERAGE_SATISFACTION_REVIEW_SCHEMA = deepcopy(ANSWER_POINT_COVERAGE_REVIEW_SCHEMA)
 _C1_CHECK_PROPERTIES = {
     "relationship_text": {"type": "string"},
@@ -178,6 +178,11 @@ _C1_POINT_PROPERTIES = {
     "relationship_checks": {"type": "array", "items": {
         "type": "object", "properties": _C1_CHECK_PROPERTIES,
         "required": list(_C1_CHECK_PROPERTIES), "additionalProperties": False}},
+    "required_relation_checks": {"type": "array", "items": {
+        "type": "object", "properties": {k: v for k, v in _C1_CHECK_PROPERTIES.items()
+            if k not in {"relationship_text", "necessity_reason"}} | {"relation_id": {"type": "string"}},
+        "required": ["relation_id", "basis", "supporting_claim_ids", "satisfied", "admission_state"],
+        "additionalProperties": False}},
 }
 PRODUCTION_COVERAGE_SATISFACTION_REVIEW_SCHEMA["properties"]["answer_point_coverage"] = {
     "type": "array", "items": {
@@ -804,13 +809,14 @@ def _coverage_shadow(state: QAState) -> bool:
     }
 
 
-def _active_runtime_answer_points(state: QAState) -> list[dict[str, str]]:
+def _active_runtime_answer_points(state: QAState) -> list[dict[str, Any]]:
     if not _coverage_shadow(state):
         return _runtime_answer_points(str(state.get("question", "")))
     points = state.get("runtime_answer_points")
     if not isinstance(points, list) or not points:
         raise ValueError("shadow answer points must be a non-empty list")
     projected = []
+    production = _coverage_satisfaction_enabled(state)
     seen = set()
     for point in points:
         if not isinstance(point, dict) or any(
@@ -819,7 +825,23 @@ def _active_runtime_answer_points(state: QAState) -> list[dict[str, str]]:
         ) or point["answer_point_id"] in seen:
             raise ValueError("shadow answer points require unique non-empty IDs and texts")
         seen.add(point["answer_point_id"])
-        projected.append({k: point[k] for k in ("answer_point_id", "text")})
+        normalized = {k: point[k] for k in ("answer_point_id", "text")}
+        if production:
+            supports = point.get("support_spans")
+            relations = point.get("required_relations")
+            if not isinstance(supports, list) or not supports or not all(isinstance(s, str) and s for s in supports) or not isinstance(relations, list):
+                raise ValueError("production points require exact support and required_relations")
+            normalized["support_spans"] = list(supports)
+            normalized["required_relations"] = []
+            for relation in relations:
+                if not isinstance(relation, dict) or any(not isinstance(relation.get(k), str) or not relation[k].strip()
+                    for k in ("relation_id", "text")) or not isinstance(relation.get("support_spans"), list):
+                    raise ValueError("invalid canonical relation")
+                if not relation["relation_id"].startswith(point["answer_point_id"] + ".rel."):
+                    raise ValueError("relation belongs to another point")
+                normalized["required_relations"].append({k: deepcopy(relation[k]) for k in
+                    ("relation_id", "text", "support_spans")})
+        projected.append(normalized)
     return projected
 
 
@@ -897,6 +919,7 @@ def _validate_answer_point_review(
 def _validate_coverage_satisfaction(
     review: Any, claims: list[dict[str, Any]], point_ids: set[str], requirement_ids: set[str],
     evidence: dict[str, dict[str, Any]], admitted_ids: set[str],
+    *, canonical_points: list[dict[str, Any]] | None = None,
 ) -> dict[str, list[str]]:
     """Validate structure/provenance, never semantic necessity or entailment."""
     def require(ok: bool, message: str) -> None:
@@ -904,6 +927,9 @@ def _validate_coverage_satisfaction(
             raise ValueError(message)
 
     require(isinstance(review, dict), "invalid production review")
+    canonical_relations = {p["answer_point_id"]: {r["relation_id"] for r in p.get("required_relations", [])}
+        for p in canonical_points} if canonical_points is not None else {pid: set() for pid in point_ids}
+    require(set(canonical_relations) == point_ids, "canonical point inventory mismatch")
     coverage = review.get("answer_point_coverage")
     require(isinstance(coverage, list) and 1 <= len(coverage) <= 5, "invalid production coverage count")
     for p in coverage:
@@ -917,21 +943,36 @@ def _validate_coverage_satisfaction(
     for p in coverage:
         status = p["scope_status"]
         require(isinstance(status, str) and status in _C1_POINT_PROPERTIES["scope_status"]["enum"], "invalid scope status")
-        checks = p["relationship_checks"]
-        require(isinstance(checks, list) and len(checks) <= 4, "relationship count exceeds point bound")
+        ordinary = p["relationship_checks"]
+        named = p["required_relation_checks"]
+        required_ids = canonical_relations[p["answer_point_id"]]
+        require(isinstance(ordinary, list) and isinstance(named, list), "checks must be lists")
+        if required_ids:
+            require(not ordinary and len(named) == len(required_ids), "relation-bearing point requires exact named dispositions only")
+            relation_ids = [c.get("relation_id") for c in named if isinstance(c, dict)]
+            require(len(relation_ids) == len(named) and all(isinstance(rid, str) for rid in relation_ids)
+                    and len(set(relation_ids)) == len(named)
+                    and set(relation_ids) == required_ids, "missing, duplicate or foreign required relation ID")
+            checks = named
+        else:
+            require(not named and len(ordinary) <= 4, "relation-free point requires ordinary checks only")
+            checks = ordinary
         total += len(checks)
         require(total <= 20, "relationship count exceeds question bound")
         require(len(p["supporting_claim_ids"]) <= 32, "point supporter bound exceeded")
-        require(status != "ESTABLISHED" or bool(checks), "established scope requires checks")
+        require(required_ids or status != "ESTABLISHED" or bool(checks), "established scope requires checks")
         texts, union = set(), set()
         for check in checks:
-            require(isinstance(check, dict) and set(check) == set(_C1_CHECK_PROPERTIES), "invalid relationship fields")
-            for key, bound in (("relationship_text", 240), ("necessity_reason", 160)):
+            expected_fields = ({"relation_id", "basis", "supporting_claim_ids", "satisfied", "admission_state"}
+                if required_ids else set(_C1_CHECK_PROPERTIES))
+            require(isinstance(check, dict) and set(check) == expected_fields, "invalid relationship fields")
+            for key, bound in (() if required_ids else (("relationship_text", 240), ("necessity_reason", 160))):
                 value = check[key]
                 require(isinstance(value, str) and bool(value.strip()) and len(value) <= bound, f"invalid {key}")
-            normalized = " ".join(check["relationship_text"].split())
-            require(normalized not in texts, "duplicate relationship text")
-            texts.add(normalized)
+            if not required_ids:
+                normalized = " ".join(check["relationship_text"].split())
+                require(normalized not in texts, "duplicate relationship text")
+                texts.add(normalized)
             admission = check["admission_state"]
             require(isinstance(admission, str) and admission in _C1_CHECK_PROPERTIES["admission_state"]["enum"], "invalid admission state")
             require(type(check["satisfied"]) is bool, "satisfied must be boolean")
@@ -961,14 +1002,20 @@ def _validate_coverage_satisfaction(
                 require(not check["satisfied"] and not supporters, "uncitable or uncertain check cannot be satisfied")
                 if admission == "VISIBLE_ONLY_WITHOUT_CITABLE_BACKING":
                     require(bool(basis_ids - admitted_ids), "visible-only check requires unadmitted basis")
-            if status == "INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE":
-                require(admission == "INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE", "uncertain scope requires uncertain checks")
-            if admission == "INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE":
-                require(status == "INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE", "uncertain check requires uncertain scope")
+            if not required_ids:
+                if status == "INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE":
+                    require(admission == "INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE", "uncertain scope requires uncertain checks")
+                if admission == "INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE":
+                    require(status == "INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE", "uncertain check requires uncertain scope")
         require(p["supporting_claim_ids"] == [c["claim_id"] for c in claims if c["claim_id"] in union],
                 "point supporters must equal ordered relationship union")
-        complete = status == "ESTABLISHED" and bool(checks) and all(
-            c["satisfied"] and c["admission_state"] == "ADMITTED_BACKING_AVAILABLE" for c in checks)
+        if required_ids:
+            derived_scope = ("INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE" if any(
+                c["admission_state"] == "INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE" for c in checks) else "ESTABLISHED")
+            require(status == derived_scope, "relation scope consistency mismatch")
+        complete = (bool(checks) and all(c["satisfied"] and
+            c["admission_state"] == "ADMITTED_BACKING_AVAILABLE" for c in checks)
+            and (bool(required_ids) or status == "ESTABLISHED"))
         require(p["complete"] == complete, "scope completeness mismatch")
     return mappings
 
@@ -1745,7 +1792,7 @@ class QAState(TypedDict, total=False):
     _ea_cache: dict[str, Any]
     question: str
     answer_point_coverage_mode: str
-    runtime_answer_points: list[dict[str, str]]
+    runtime_answer_points: list[dict[str, Any]]
     missing_answer_point_ids: list[str]
     answer_point_audit: dict[str, Any]
     bundle: dict[str, Any]
@@ -1785,6 +1832,8 @@ def _build_missing_point_retrieval_objective(
         text = p.get("text", "").strip()
         if text:
             lines.append(f"- {text}")
+        for relation in p.get("required_relations", []):
+            lines.append(f"  - {relation['text']}")
     return "\n".join(lines)
 
 
@@ -1861,9 +1910,9 @@ class QAAgent:
         graph.add_edge("finalize", END)
         self.graph = graph.compile()
 
-    def decompose_question(self, question: str) -> dict[str, Any]:
-        """Explicit shadow diagnostic; never invoked by the production graph."""
-        return QuestionDecomposer(self.generation_vertex).decompose(question)
+    def decompose_question(self, question: str, *, relation_aware: bool = False) -> dict[str, Any]:
+        """Decompose the raw question under the selected answer-point profile."""
+        return QuestionDecomposer(self.generation_vertex).decompose(question, relation_aware=relation_aware)
 
     def _retrieve(self, state: QAState) -> dict[str, Any]:
         is_runtime = state.get("answer_point_coverage_mode") == "runtime_e1_v2"
@@ -2981,7 +3030,7 @@ class QAAgent:
                 if satisfaction:
                     verified_mappings = _validate_coverage_satisfaction(
                         review, reviewable_claims, runtime_answer_point_ids, known_requirement_ids,
-                        review_evidence_lookup, admitted_ids)
+                        review_evidence_lookup, admitted_ids, canonical_points=runtime_points)
                 else:
                     verified_mappings = _validate_answer_point_review(
                         review, reviewable_claims, runtime_answer_point_ids, known_requirement_ids)
@@ -3178,7 +3227,16 @@ class QAAgent:
             evaluable = not coverage_review_error and not global_review_failure
             if evaluable:
                 for point in review["answer_point_coverage"]:
-                    if point["scope_status"] == "ESTABLISHED":
+                    canonical = next(p for p in runtime_points if p["answer_point_id"] == point["answer_point_id"])
+                    if canonical["required_relations"]:
+                        relation_lookup = {r["relation_id"]: r for r in canonical["required_relations"]}
+                        for check in point["required_relation_checks"]:
+                            if check["admission_state"] == "ADMITTED_BACKING_AVAILABLE" and not check["satisfied"]:
+                                relationships.append({"answer_point_id": point["answer_point_id"],
+                                    "relation_id": check["relation_id"],
+                                    "relationship_text": relation_lookup[check["relation_id"]]["text"],
+                                    "basis": deepcopy(check["basis"])})
+                    elif point["scope_status"] == "ESTABLISHED":
                         for check in point["relationship_checks"]:
                             if check["admission_state"] == "ADMITTED_BACKING_AVAILABLE" and not check["satisfied"]:
                                 relationships.append({"answer_point_id": point["answer_point_id"],
@@ -3284,6 +3342,9 @@ class QAAgent:
             point_ids = {r["answer_point_id"] for r in relationships}
             point_ids.update(pid for c in unsupported_draft["claims"] for pid in c.get("answer_point_ids", []))
             points = [p for p in runtime_points if p["answer_point_id"] in point_ids]
+            target_relation_ids = {r["relation_id"] for r in relationships if "relation_id" in r}
+            points = [{**p, "required_relations": [r for r in p["required_relations"]
+                if r["relation_id"] in target_relation_ids]} for p in points]
             payload = json.loads(prompt)
             payload.update(runtime_answer_points=points,
                 missing_answer_point_ids=[p["answer_point_id"] for p in points], missing_answer_points=points,
@@ -3845,9 +3906,8 @@ class QAAgent:
         decomposition_ms = 0
         if coverage_shadow:
             decomposition_started = time.perf_counter()
-            decomposition = self.decompose_question(question)
-            if mode == "production_answer_obligations_v1":
-                decomposition = {**decomposition, "mode": "production_authoritative"}
+            decomposition = (self.decompose_question(question, relation_aware=True)
+                if mode == "production_answer_obligations_v1" else self.decompose_question(question))
             initial.update(answer_point_coverage_mode=mode, runtime_answer_points=decomposition["points"])
             initial["runtime_answer_points"] = _active_runtime_answer_points(initial)
             decomposition_ms = int(round((time.perf_counter() - decomposition_started) * 1000))

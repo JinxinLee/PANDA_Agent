@@ -177,6 +177,8 @@ def production_review_fixture(result, payload):
     result = deepcopy(result)
     records = result.get("answer_point_coverage", [])
     if any("scope_status" in p for p in records):
+        for p in records:
+            p.setdefault("required_relation_checks", [])
         return result
     admitted = {e["evidence_id"]: e for e in payload["untrusted_evidence"]
                 if e["evidence_id"] in payload["admitted_evidence_ids"]}
@@ -194,7 +196,8 @@ def production_review_fixture(result, payload):
                        "necessity_reason": "Scripted fixture judges this contribution necessary.", "basis": basis,
                        "supporting_claim_ids": [cid] if cid else [], "satisfied": p["complete"],
                        "admission_state": "ADMITTED_BACKING_AVAILABLE"})
-        p.update(scope_status="ESTABLISHED" if checks else "INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE", relationship_checks=checks)
+        p.update(scope_status="ESTABLISHED" if checks else "INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE",
+                 relationship_checks=checks, required_relation_checks=[])
     return result
 
 
@@ -205,8 +208,10 @@ class FakeVertex:
         payload = json.loads(prompt)
         if payload.get("task") == "decompose_user_question":
             question = payload["untrusted_question"]
+            production = "required_relations" in schema["properties"]["points"]["items"].get("required", [])
             return {
-                "points": [{"text": "Answer the explicit request", "support_spans": [question]}],
+                "points": [{"text": "Answer the explicit request", "support_spans": [question],
+                            **({"required_relations": []} if production else {})}],
                 "ambiguity": {"status": "clear", "reason": ""},
             }
         if "supported" in schema.get("properties", {}):
@@ -1390,7 +1395,7 @@ class QATests(unittest.TestCase):
         # F5-R1 bumped the prompt set for the bounded provenance clarification.
         # C1 Vertex compatibility removed unsupported provider schema keywords
         # and redundant array bounds from the transport schema.
-        self.assertEqual(PROMPT_SET_VERSION, "3.11.2")
+        self.assertEqual(PROMPT_SET_VERSION, "3.12.0")
         for prompt in (ANSWER_SYSTEM_PROMPT, REVISION_SYSTEM_PROMPT):
             self.assertIn("answer_requirements", prompt)
         self.assertIn("factory/composition", EVALUATION_JUDGE_SYSTEM_PROMPT)
