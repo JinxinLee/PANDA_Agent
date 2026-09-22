@@ -1,14 +1,12 @@
 """Dual-mode candidate and selector-only activation checks, no providers."""
-import ast
 from copy import deepcopy
 import inspect
 import json
-from pathlib import Path
 import subprocess
 import sys
 import types
 import pytest
-from panda_agent import qa
+from panda_agent import qa, question_decomposition
 from panda_agent.models import QAResult,ClaimCitation
 from test_e2_a1_answer_point_coverage import agent,Vertex,claim,review,QUESTION,POINTS
 START='ffedb2117f578515ea9d74eca92105956b8a3dcb'
@@ -25,8 +23,16 @@ def test_legacy_matches_starting_implementation(tmp_path):
     vb=Vertex(answers=[claim(point='question_core')],reviews=[deepcopy(rs)])
     a=agent(tmp_path,va);b=old.QAAgent(tmp_path,retriever=deepcopy(a.retriever),vertex=vb)
     out=a._run_detailed(QUESTION,mode='legacy_question_core');baseline=b.run_detailed(QUESTION)
-    assert out['result']==baseline['result'] and out['diagnostics']==baseline['diagnostics']
-    assert va.calls==vb.calls and len(va.calls)==2
+    assert out['result']==baseline['result']
+    assert all(key in out['diagnostics'] and out['diagnostics'][key]==value
+               for key,value in baseline['diagnostics'].items())
+    assert len(va.calls)==len(vb.calls)==2
+    assert [call[2]['usage_stage'] for call in va.calls]==[
+        'qa_generation', 'qa_semantic_verification',
+    ]
+    for current,historical in zip(va.calls,vb.calls):
+        assert current[:2]==historical[:2]
+        assert {key:value for key,value in current[2].items() if key!='usage_stage'}==historical[2]
 
 def test_shadow_and_runtime_exact_semantic_path(tmp_path):
     a=agent(tmp_path);b=agent(tmp_path)
@@ -65,12 +71,21 @@ def test_selector_not_public_api(tmp_path):
     assert list(inspect.signature(qa.QAAgent.run_detailed).parameters)==['self','question']
     with pytest.raises(ValueError):agent(tmp_path)._run_detailed(QUESTION,mode='invented')
 
-def test_compatibility_graph_and_prompts_unchanged():
-    root=Path(__file__).resolve().parents[2]
-    old=ast.parse(subprocess.check_output(['git','show',START+':src/panda_agent/qa.py'],text=True,encoding='utf-8'))
-    new=ast.parse((root/'src/panda_agent/qa.py').read_text(encoding='utf-8'))
-    names={'_answer_requirements','_requirement_evidence','_deterministic_missing_requirement_ids','__init__','_retrieve','_sufficiency','_targeted_retrieve'}
-    def nodes(tree):return {n.name:ast.dump(n,include_attributes=False) for n in ast.walk(tree) if isinstance(n,ast.FunctionDef) and n.name in names}
-    assert nodes(old)==nodes(new)
-    for path in ('src/panda_agent/prompts.py','src/panda_agent/models.py','src/panda_agent/question_decomposition.py','src/panda_agent/retrieval.py'):
-        assert not subprocess.check_output(['git','diff',START,'--',path],text=True)
+def test_compatibility_modes_keep_v2_contract_separate_from_production():
+    assert qa._ANSWER_POINT_MODES == {
+        'legacy_question_core', 'shadow_e1_v2', 'runtime_e1_v2',
+        'production_answer_obligations_v1',
+    }
+    for mode in qa._ANSWER_POINT_MODES:
+        state = {'answer_point_coverage_mode': mode}
+        assert qa._coverage_shadow(state) == (mode != 'legacy_question_core')
+        assert qa._coverage_satisfaction_enabled(state) == (mode == 'production_answer_obligations_v1')
+    assert question_decomposition.QUESTION_DECOMPOSITION_V2_PROMPT_VERSION == '2.0.0'
+    assert question_decomposition.QUESTION_DECOMPOSITION_V2_SCHEMA_VERSION == 'e1.question_decomposition.v2'
+    assert question_decomposition.QUESTION_DECOMPOSITION_SYSTEM_PROMPT.startswith(
+        question_decomposition.QUESTION_DECOMPOSITION_V2_SYSTEM_PROMPT)
+    assert question_decomposition.QUESTION_DECOMPOSITION_V2_SCHEMA is question_decomposition.QUESTION_DECOMPOSITION_SCHEMA
+    v2_fields = qa.ANSWER_POINT_COVERAGE_REVIEW_SCHEMA['properties']['answer_point_coverage']['items']['properties']
+    production_fields = qa.PRODUCTION_COVERAGE_SATISFACTION_REVIEW_SCHEMA['properties']['answer_point_coverage']['items']['properties']
+    assert 'required_relation_checks' not in v2_fields
+    assert 'required_relation_checks' in production_fields

@@ -3,7 +3,7 @@ from copy import deepcopy
 from types import SimpleNamespace
 import unittest
 
-from panda_agent.evaluation import load_gold_dataset
+from panda_agent.evaluation import load_gold_dataset, newest_signed_exposed_gold_dir
 from panda_agent.evaluation_runner import default_gold_dataset_path, dry_rescore_run
 from panda_agent.baseline import (
     BOOTSTRAP_DEVELOPMENT_SPLITS,
@@ -111,9 +111,14 @@ class EvaluationRunnerTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     validate_baseline_consistency(fixed, retrieval, qa)
 
-    def test_v26_is_default_and_signed_dry_rescore_preserves_real_failures(self) -> None:
+    def test_default_gold_uses_newest_signed_exposed_benchmark(self) -> None:
+        self.assertEqual(
+            default_gold_dataset_path(ROOT),
+            newest_signed_exposed_gold_dir(ROOT) / "gold_questions.yaml",
+        )
+
+    def test_v26_signed_dry_rescore_preserves_real_failures(self) -> None:
         dataset = ROOT / "evaluation" / "benchmarks" / "v2_6" / "gold_questions.yaml"
-        self.assertEqual(default_gold_dataset_path(ROOT), dataset)
         result = dry_rescore_run(
             ROOT,
             "m6-v2-36-qa-regression-rc3f",
