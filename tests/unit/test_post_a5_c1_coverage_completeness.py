@@ -41,6 +41,7 @@ def test_production_provider_schema_uses_supported_bounded_keywords():
     observed = set(schema_keywords(qa.PRODUCTION_COVERAGE_SATISFACTION_REVIEW_SCHEMA))
     assert observed <= allowed
     assert not observed & {"uniqueItems", "minLength", "maxLength"}
+    assert not observed & {"minItems", "maxItems"}
 
 
 def test_production_invalid_scope_cannot_route_to_revision(tmp_path):
@@ -243,7 +244,7 @@ def test_fingerprint_binds_production_prompts_schema_and_version(monkeypatch):
     before = "0a5b2909ef586671d533148979fc681c64e37528ad53781a4566cb9044835ba2"
     value = er.prompt_fingerprint()
     assert value != before and value == er.prompt_fingerprint()
-    assert prompts.PROMPT_SET_VERSION == "3.11.1"
+    assert prompts.PROMPT_SET_VERSION == "3.11.2"
     for name in ("PRODUCTION_COVERAGE_SATISFACTION_REVIEW_SYSTEM_PROMPT",
                  "PRODUCTION_COVERAGE_SATISFACTION_REVISION_SYSTEM_PROMPT", "COVERAGE_SATISFACTION_SCHEMA_VERSION"):
         with monkeypatch.context() as patch:

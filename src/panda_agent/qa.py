@@ -160,27 +160,27 @@ PRODUCTION_COVERAGE_SATISFACTION_REVIEW_SCHEMA = deepcopy(ANSWER_POINT_COVERAGE_
 _C1_CHECK_PROPERTIES = {
     "relationship_text": {"type": "string"},
     "necessity_reason": {"type": "string"},
-    "basis": {"type": "array", "maxItems": 2, "items": {
+    "basis": {"type": "array", "items": {
         "type": "object", "properties": {
             "evidence_id": {"type": "string"},
             "quote": {"type": "string"}},
         "required": ["evidence_id", "quote"], "additionalProperties": False}},
-    "supporting_claim_ids": {"type": "array", "maxItems": 8, "items": {"type": "string"}},
+    "supporting_claim_ids": {"type": "array", "items": {"type": "string"}},
     "satisfied": {"type": "boolean"},
     "admission_state": {"type": "string", "enum": ["ADMITTED_BACKING_AVAILABLE",
         "VISIBLE_ONLY_WITHOUT_CITABLE_BACKING", "INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE"]},
 }
 _C1_POINT_PROPERTIES = {
     "answer_point_id": {"type": "string"},
-    "supporting_claim_ids": {"type": "array", "maxItems": 32, "items": {"type": "string"}},
+    "supporting_claim_ids": {"type": "array", "items": {"type": "string"}},
     "complete": {"type": "boolean"},
     "scope_status": {"type": "string", "enum": ["ESTABLISHED", "INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE", "OVERFLOW"]},
-    "relationship_checks": {"type": "array", "maxItems": 4, "items": {
+    "relationship_checks": {"type": "array", "items": {
         "type": "object", "properties": _C1_CHECK_PROPERTIES,
         "required": list(_C1_CHECK_PROPERTIES), "additionalProperties": False}},
 }
 PRODUCTION_COVERAGE_SATISFACTION_REVIEW_SCHEMA["properties"]["answer_point_coverage"] = {
-    "type": "array", "minItems": 1, "maxItems": 5, "items": {
+    "type": "array", "items": {
         "type": "object", "properties": _C1_POINT_PROPERTIES,
         "required": list(_C1_POINT_PROPERTIES), "additionalProperties": False}}
 C1_INCOMPLETE_NOTICE = "The available citable evidence does not establish a complete answer to this request."
