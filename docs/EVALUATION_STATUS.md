@@ -18,7 +18,7 @@ The single `Current authoritative state` section is authoritative over historica
 ## Current authoritative state
 
 ```text
-CURRENT_REPOSITORY_HEAD = G1 design commit (resolve from Git history; exact SHA reported on delivery).
+CURRENT_REPOSITORY_HEAD = G1 design-correction commit (resolve from Git history; exact SHA reported on delivery).
 CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = 58bd53a86627ff0e0b668915076d974272e86233
 NORMAL_PRODUCT_MODE = production_answer_obligations_v1
 PROMPT_SET_VERSION = 3.11.2
@@ -42,8 +42,8 @@ GENERALIZATION_RELEASE_EVIDENCE = NOT_ESTABLISHED
 C1_VERTEX_SCHEMA_COMPATIBILITY = COMPLETE / PASS / PROVIDER_SCHEMA_COMPATIBILITY_REPAIRED
 POST_A5_REPAIR_VALIDATION = COMPLETE / FAIL / REPLACEMENT_T2_VALIDATION
 
-PHASE_G = IN_PROGRESS / DESIGN_ONLY / IMPLEMENTATION_NOT_STARTED
-G1 = DESIGN COMPLETE / IMPLEMENTATION NOT STARTED
+PHASE_G = IN_PROGRESS / DESIGN_ONLY / IMPLEMENTATION_READY
+G1 = DESIGN COMPLETE / CORRECTED / IMPLEMENTATION READY
 NEXT_TASK_RECOMMENDATION = G1 RELATIONSHIP-AWARE ANSWER OBLIGATION IMPLEMENTATION
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 ```
@@ -54,7 +54,7 @@ Post-A5 mechanisms remain product architecture, but the replacement T2 remains `
 
 Phase G is ordinary product-development planning for answer semantics and robustness. The old eight-case cohort becomes `NON_GATING REGRESSION DIAGNOSTICS` for future development; fresh `novel_dev` is the planned main empirical evidence. Phase-G implementation, `novel_validation`, and any future Release Candidate Evaluation require separate authorization. No F6-A Attempt 6 continuation is planned.
 
-G1 design is complete: [the selected design](../evaluation/G1_RELATIONSHIP_AWARE_ANSWER_OBLIGATION_DESIGN.md) nests question-grounded `required_relations` within answer points, preserves ordinary-content proof, and requires one C1 disposition per canonical relation ID. Answer points remain the sole completeness unit. Design/static acceptance is `PASS`; implementation and proposed tests are not run. Product identity is unchanged; scientific calls/tokens are 0/0. The next recommendation is separately authorized G1 implementation.
+G1 design is complete and corrected: [the selected design](../evaluation/G1_RELATIONSHIP_AWARE_ANSWER_OBLIGATION_DESIGN.md) gives each point exactly one completeness path—existing ordinary C1 checks for relation-free points, or canonical required-relation dispositions for relation-bearing points—and authorizes A1 targets independently after a valid review. Answer points remain the sole completeness unit; V2 rechecks the full canonical contract. Design/static acceptance is `PASS`; implementation and proposed tests are not run. Product identity is unchanged; scientific calls/tokens are 0/0. G1 is implementation-ready, but implementation remains separately authorized.
 
 Authority: [Phase-F closeout](../evaluation/PHASE_F_CLOSEOUT.md) and [Phase-G roadmap](GENERALIZATION_ROADMAP.md#phase-g--answer-semantics--robustness). Historical Attempts 1–5, T1/T2, evaluator/Gold corrections, O1/EA1/C1/C1-R1, and Vertex compatibility records retain their original outcomes. Older planning and next-task recommendations below are historical and confer no current authorization.
 

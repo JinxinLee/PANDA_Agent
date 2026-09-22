@@ -1,12 +1,12 @@
 # G1 — Relationship-Aware Answer Obligation Design
 
-**G1 = DESIGN COMPLETE / IMPLEMENTATION NOT STARTED**
+**G1 = DESIGN COMPLETE / CORRECTED / IMPLEMENTATION READY**
 
-Design review outcome: **PASS** for D1–D10 below. This is a selected product design, not implementation verification or empirical evidence. Starting HEAD: `9944360accd6de14ebea5a543eeb5026ba523502`. Product behavior remains at `58bd53a86627ff0e0b668915076d974272e86233`, mode `production_answer_obligations_v1`, prompt set `3.11.2`, fingerprint `878caffb022dd66111b3bc6e98c6e372340cb619db13aa856c09aaa09e8b8391`. Phase F and F6 remain closed under [the Phase-F closeout](PHASE_F_CLOSEOUT.md).
+Design review outcome: **PASS** for D1–D10 below. The accepted architecture selection is unchanged; implementation has not started and requires separate authorization. This is a selected product design, not implementation verification or empirical evidence. Original design inspection HEAD: `9944360accd6de14ebea5a543eeb5026ba523502`. Product behavior remains at `58bd53a86627ff0e0b668915076d974272e86233`, mode `production_answer_obligations_v1`, prompt set `3.11.2`, fingerprint `878caffb022dd66111b3bc6e98c6e372340cb619db13aa856c09aaa09e8b8391`. Phase F and F6 remain closed under [the Phase-F closeout](PHASE_F_CLOSEOUT.md).
 
-## 1. Current architecture confirmed at starting HEAD
+## 1. Current architecture confirmed at original inspection HEAD
 
-The following are static source observations, not executed QA results. Line references refer to the starting HEAD.
+The following are static source observations, not executed QA results. Line references refer to the original inspection HEAD.
 
 | Source / seam | Confirmed behavior |
 |---|---|
@@ -40,15 +40,21 @@ Structured subject/object/source/target slots are deferred. Pronouns, clause-val
 
 ## 4. Selected representation
 
-An answer point contains zero or more question-derived required relations. It remains the only unit of whole-answer completeness. A relation is a necessary semantic condition of its parent, not an independent release gate or legacy requirement.
+An answer point contains zero or more question-derived required relations. It remains the only unit of whole-answer completeness and follows exactly one semantic-completeness path. For a relation-bearing point, the canonical required relations carry its requested semantics, including any explanation intrinsic to the relation; there is no additional ordinary-content obligation.
 
 ```text
-point.complete = point's ordinary requested content is established
-                 AND every required relation of this point is established
+if point.required_relations == []:
+    point.complete = existing ordinary C1 completeness rule
+else:
+    point.complete = exactly one valid disposition per canonical required relation
+                     AND every required relation is satisfied
+                     AND every satisfied relation has ADMITTED_BACKING_AVAILABLE
 missing_answer_point_ids = exactly the incomplete point IDs
 ```
 
 No `answer_requirements_v2`, global missing-relation gate, graph of entities, or claim-to-relation mapping is introduced. Existing `claim.answer_point_ids` remains sufficient: the verifier can inspect a claim's content and citations against each canonical relation belonging to that point.
+
+Independently omittable ordinary content plus relational content must become separate answer points. For “Where is Cedar implemented and how does Cedar feed Birch?”, one point asks for the implementation location and another carries the feed relation. “How does Cedar produce input for Birch?” is itself one relational request: its explanatory semantics belong in the canonical relation text, without a duplicate ordinary explanation requirement. Context retained in a relation-bearing `point.text` does not create another completeness obligation.
 
 ## 5. Authority model
 
@@ -84,10 +90,15 @@ Canonical normalized point, illustrated for “Does Cedar occur before Birch?”
 
 The production decomposition proposal uses this nested shape without either ID. It retains the existing `points` and diagnostic `ambiguity` envelope. `required_relations` is a required list in the new production proposal, including an explicit empty list. There is no default that silently converts a malformed new-contract proposal into a relation-free one.
 
-For C1, retain the existing ordinary-content review fields and add `required_relation_checks` inside each `answer_point_coverage` record. The new list contains only dispositions for host-known required relations. The following illustrates the **added field**, not a complete C1 response:
+For C1, retain a uniform point response shape and add `required_relation_checks` inside each `answer_point_coverage` record. The canonical relation inventory selects exactly one active completeness list. The following illustrates a relation-bearing point record, not a complete C1 review:
 
 ```json
 {
+  "answer_point_id": "point.1",
+  "scope_status": "ESTABLISHED",
+  "supporting_claim_ids": ["claim.1"],
+  "complete": true,
+  "relationship_checks": [],
   "required_relation_checks": [
     {
       "relation_id": "point.1.rel.1",
@@ -102,7 +113,7 @@ For C1, retain the existing ordinary-content review fields and add `required_rel
 
 Each ID identifies a `QUESTION_REQUIRED_RELATION`. The host resolves its semantic text from the immutable point/relation table; C1 copies the ID rather than paraphrasing the target. There is no empty-ID sentinel, model-authored ID, or text-based match. The list is required even when empty.
 
-Existing `relationship_checks`, `relationship_text`, `necessity_reason`, and `scope_status` remain the ordinary-content proof contract. They do not define additional user requirements. Retaining that bounded proof structure avoids compressing a relation-free point's existing four checks into one two-source check, which would unnecessarily reduce its evidence capacity. Both lists are subordinate to one parent `complete` value; neither publishes a separate whole-answer missing list. Existing top-level support, relevance, claim-to-point mappings, `reason`, and missing-point fields remain.
+For relation-free points, `required_relation_checks=[]` and the existing `scope_status`, ordinary `relationship_checks` (including `relationship_text` and `necessity_reason`), supporter and completeness contract remain authoritative. For relation-bearing points, local validation requires `relationship_checks=[]`; only canonical required-relation dispositions determine semantic completeness. Do not manufacture an ordinary check to satisfy the old nonempty-check invariant. The uniform `scope_status` field is derived diagnostic data for these points, as specified in section 9. Existing top-level support, relevance, claim-to-point mappings, `reason`, and missing-point fields remain.
 
 ## 7. Deterministic normalization, IDs and bounds
 
@@ -119,7 +130,7 @@ Existing `relationship_checks`, `relationship_text`, `necessity_reason`, and `sc
 | Required relations per point | 0–3: accommodates an explicitly compound placement/relationship while discouraging hiding independent requests in one point. |
 | Required relations per question | 10: modest coverage for up to five points, without a general relation graph. |
 | Relation text / support count | 1–240 characters after whitespace normalization; 1–3 exact spans. Copy a longer exact question clause when necessary; do not shorten its bytes to fit an invented span-length bound. |
-| C1 dispositions | Preserve the ordinary-content allowance of up to 4 checks per point / 20 per question; add exactly one disposition per required relation, up to 3 / 10. Combined ceiling: 7 per point / 30 per question. The two lists are siblings, not a recursive graph. |
+| C1 dispositions | Each point uses either the existing ordinary allowance of up to 4 checks, or exactly one disposition per canonical required relation (1–3); the other list is empty. The existing overall ceiling of 20 checks per question is sufficient, with at most 10 required-relation dispositions. |
 | Evidence and supporters | Preserve up to 2 distinct basis IDs per check, one exact nonempty quote of at most 400 characters per ID, 8 supporters per check, and 32 per point. |
 
 Permutation stability is guaranteed for fixed semantic texts and support sets, including changed/omitted diagnostic labels. It is not a promise of identical IDs across arbitrary paraphrases, changed questions, or a changed decomposition partition. Requests exceeding representable scope fail explicitly through the existing decomposition failure path; insufficient evidence or support beyond the check bounds is not truncated into a positive verdict.
@@ -132,7 +143,12 @@ A0 receives the raw question and those relation-aware points, with supplied admi
 
 ## 9. C1 / V1 / V2 integration
 
-The local validator must receive the canonical point/relation mapping, not only the current `point_ids` set. For each point, the keys in `required_relation_checks` must equal that parent's required relation IDs exactly, with each key occurring once. Match by ID and parent, never free text or fuzzy similarity. Require exactly one point coverage record as today. An ordinary free-text check cannot substitute for a missing named disposition, even if it describes the same relation.
+The local validator must receive the canonical point/relation mapping, not only the current `point_ids` set. Require exactly one point coverage record as today, then select its completeness path from the immutable canonical inventory, never from the model's preference:
+
+- Relation-free: `required_relations=[]` if and only if `required_relation_checks=[]`. Apply the existing ordinary C1 proof contract, including its scope/nonempty-check rules.
+- Relation-bearing: `required_relation_checks` IDs must equal that parent's exact canonical required relation ID set, with each occurring once; `relationship_checks` must be empty. The ordinary nonempty-check invariant does not apply.
+
+Match by ID and parent, never free text or fuzzy similarity. Reject missing or duplicate dispositions, foreign/cross-parent IDs, extra verifier-created relations, missing list fields, and nonempty ordinary checks on a relation-bearing point. An ordinary check cannot substitute for a required disposition, even if its prose describes the same relation.
 
 | Disposition | Completeness and recovery consequence |
 |---|---|
@@ -142,21 +158,36 @@ The local validator must receive the canonical point/relation mapping, not only 
 | INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE | Must be unsatisfied with no supporters; 0–2 valid basis references allowed. Parent incomplete; no inference, extra retrieval or A1 instruction for this relation. |
 | Missing, duplicate, foreign, or unknown key; invalid quote/support | Coverage review structurally invalid; no complete point or revision scope is accepted from it. Preserve only independently valid claim-support/mapping judgments under the existing recovery path. |
 
-After validation, derive ordinary-content completeness by the existing rule: established ordinary scope, nonempty ordinary checks, and all those checks satisfied with admitted backing. Compute the parent's final `complete` as that result AND every named required relation being satisfied with admitted backing. Reject a contradictory model flag or missing-point complement. Point supporters are the unique union of validated supporters from both lists in supplied claim order, under the existing per-point cap. A relation-list omission can never make a point vacuously complete. Honest uncertainty is a valid disposition, not a missing row.
+For a relation-free point, compute `complete` using the unchanged ordinary rule: established scope, nonempty ordinary checks, and all those checks satisfied with admitted backing. For a relation-bearing point, compute `complete` solely from its exact, validated required-relation dispositions: all must be satisfied with admitted backing. Reject a contradictory model flag or missing-point complement. A required-list omission can never make a point vacuously complete. Honest uncertainty is a valid disposition, not a missing row.
 
-`QUESTION_REQUIRED_RELATION` is an immutable condition extracted before retrieval. Existing ordinary `relationship_checks` are `VERIFIER_DERIVED_RELATIONSHIP_CHECK` proof records: they may assess how evidence and claims establish the canonical point's ordinary requested content, but cannot add an unasked stage, entity description, source requirement, or causal explanation. Their text and necessity reason must explain a demand already present in that point and the raw question; evidence alone cannot establish necessity. They never add to `required_relations`, receive a new relation ID, or serve as a substitute for a required relation's disposition.
+The point supporter union follows the same selected path. For a relation-free point, `point.supporting_claim_ids` is the ordered unique union of ordinary `relationship_checks` supporters, as today. For a relation-bearing point, it is the ordered unique union of `required_relation_checks` supporters only. Preserve supplied claim order and existing per-point limits; reject a contradictory union. No duplicate support through both lists is required.
 
-Such proof failures may affect completeness **only as failures to establish the existing ordinary request**, never as additional user obligations. For a pure comparison, ordinary proof cannot require independent descriptions of both entities; for an end-to-end workflow, it cannot require an invented intermediate stage. The semantic reviewer must enforce this scope rule, with adversarial checks covering unjustified necessity. Local quote/ID validation cannot prove semantic necessity; this limitation also applies to a single free-form point-completeness verdict. No extra semantic reviewer call is added.
+For relation-free points, `scope_status` retains its existing meaning and coupling to ordinary checks. For relation-bearing points, retain the field only with this deterministic consistency rule:
 
-Keep existing `scope_status` coupling within the ordinary proof list. Named relation scope is already known from the question, so each named disposition uses its own evidence admission state; ordinary scope uncertainty must not erase a named disposition or fabricate its backing. Mixed valid named dispositions can be recorded while the parent remains incomplete. This does **not** implement G2: a malformed basis in either list still invalidates the coverage review globally; no local malformed-item salvage is introduced. The old experimental coverage contracts are not changed.
+```text
+if any required relation has INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE:
+    scope_status = INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE
+else:
+    scope_status = ESTABLISHED
+```
+
+Visible-only backing does not make semantic scope unknown: a visible-only relation therefore permits `scope_status=ESTABLISHED` while keeping `complete=false`. Mixed valid admitted/uncertain dispositions remain valid, with uncertainty reflected in the derived scope. Local validation rejects inconsistent scope values; the model cannot use this field to override dispositions or suppress another relation's authorized revision. `OVERFLOW` remains reserved for explicit bounded-contract overflow under the applicable existing path. Decomposition overflow already fails before C1; it is not an alternative scope value for a valid, within-bounds relation-bearing inventory or a substitute for a missing disposition.
+
+`QUESTION_REQUIRED_RELATION` is authoritative for a relation-bearing point because it was extracted before retrieval. `VERIFIER_DERIVED_RELATIONSHIP_CHECK` remains part of the existing relation-free ordinary contract only. It cannot create a second mandatory list for a relation-bearing point; nonempty ordinary checks there are rejected locally. The verifier may still judge claim entailment through the existing support channel, but cannot invent a workflow stage, independent entity description, or other hidden user requirement. No extra semantic reviewer call is added.
+
+A bad quote, unknown basis, invalid supporter, duplicate relation ID, or other malformed coverage item still invalidates the coverage review globally, preserving only independently valid claim-support/mapping judgments through the existing recovery path. Target-local revision authorization happens **after a valid review**; it is not G2 local malformed-review recovery. G2 remains `PLANNED / NOT_STARTED`. The old experimental coverage contracts are unchanged.
 
 Completeness remains a semantic judgment within a question-defined envelope. Exact IDs and quote provenance prevent silent accounting loss; they cannot independently prove that a supported claim establishes a before/after, comparison, or causal answer. Future semantic adversarial checks must exercise that boundary.
 
 ## 10. A1, E3 and composer interaction
 
-**A1:** Add validated unsatisfied admitted-backed required dispositions to the existing `revisionable_relationships` payload. Each named target contains parent ID, `relation_id`, canonical semantic text resolved by the host, and approved evidence basis. Existing ordinary-content targets retain their current shape and must stay within the canonical ordinary request. Keep eligible unsupported-claim repair, verified mapping authority, anti-resurrection merge rules and `revision_count < 1` routing.
+**A1:** After a valid C1 review, authorize each repair target independently. A required relation may enter the existing `revisionable_relationships` payload when `satisfied=false`, `admission_state=ADMITTED_BACKING_AVAILABLE`, and its basis is locally valid. Each target contains parent ID, `relation_id`, canonical semantic text resolved by the host, and approved evidence basis. Visible-only or insufficient/ambiguous backing blocks only that relation. One blocked target does not invalidate or suppress another independently grounded, authorized target in the same point; there is no all-targets-must-be-revisionable prerequisite.
 
-Project only authorized named relations into A1's structured point context; broad point text remains context, not blanket repair authority. The full canonical contract stays in state for V2. Do not copy blocked relation text into a repair target or admit evidence merely because it was visible. To prevent a free-text ordinary target from bypassing a blocked named relation, admit that point's ordinary targets only when they meet the existing rules and every unsatisfied named relation of the point is also admitted-backed (vacuously true for relation-free points). This conservative projection rule protects relation-specific revision authority; it is not false-insufficiency tuning. Eligible named targets can still be repaired once, including when another named disposition or ordinary scope is uncertain. No extra revision round or automatic retry follows V2.
+For relation-free points, existing ordinary admitted-backed revision targets and authorization remain unchanged. Relation-bearing points have no ordinary check targets. Preserve eligible unsupported-claim repair under its existing rules, verified mapping authority, anti-resurrection merge rules and `revision_count < 1` routing. Multiple independently authorized targets may share the existing single bounded A1 call; do not introduce relation-by-relation calls, a second revision round, or a retry after V2.
+
+Project only authorized named relations into A1's structured point context; broad point text remains context, not blanket repair authority. Do not turn blocked relations into repair targets or admit evidence merely because it was visible. Keep the complete immutable canonical inventory in state for V2. For example, with `point.1.rel.1` admitted-backed/unsatisfied and `point.1.rel.2` visible-only/unsatisfied, A1 receives only `point.1.rel.1`; V2 still checks both. If the second relation remains blocked or unsatisfied, `point.1.complete=false` even when the first repair succeeds. The same target-local authorization holds when the sibling is uncertain and the derived point scope is insufficient. Target-local revision does not grant target-local final acceptance.
+
+This authorization correction does not introduce G4 thresholds, fallbacks or answerability policy changes. G4 remains separate and unimplemented.
 
 **E3:** Preserve the `runtime_e1_v2` trigger and production exclusion. Extend only the existing missing-point objective formatter to include canonical required-relation request text when supplied, under the same parent point and existing bounds. Old point-only inputs format as before. There is no separate relationship retrieval subsystem, candidate pool, budget, or production activation. The preserved experimental path continues to use its versioned point contract; future relation-aware E3 use would need an explicitly authorized integration, not silent promotion here.
 
@@ -186,7 +217,7 @@ Contract-aware projection, C1 validation, A1 assembly, audit payloads, prompt up
 
 The [Vertex compatibility record](POST_A5_C1_VERTEX_SCHEMA_COMPATIBILITY_REPAIR.md) establishes a real compatibility constraint; it does not establish that every array bound is universally unsupported. Use an explicit simple production proposal schema plus strict local validators, rather than exposing all Pydantic validation constraints to `response_json_schema`.
 
-Use objects, arrays, primitive types, properties, items, required fields, and closed object fields. Do not add `minItems`, `maxItems`, `minLength`, `maxLength`, `uniqueItems`, conditional schemas, participant unions, or dynamic per-question ID enums. Relation nesting adds one small layer to decomposition. C1 adds a sibling list at the existing check depth; its named records carry a copied ID instead of relationship/necessity prose. Preserve the existing ordinary proof schema. The local ceiling increases by at most ten compact required dispositions per question; it does not justify deeper evidence graphs or larger ordinary proof budgets. Diagnostic type is an optional plain string on the wire and locally bounded.
+Use objects, arrays, primitive types, properties, items, required fields, and closed object fields. Do not add `minItems`, `maxItems`, `minLength`, `maxLength`, `uniqueItems`, conditional schemas, participant unions, or dynamic per-question ID enums. Relation nesting adds one small layer to decomposition. C1 keeps a uniform point shape with sibling check lists at the existing depth; only the list selected by the canonical inventory may be nonempty. Named records carry a copied ID instead of relationship/necessity prose. Preserve the relation-free ordinary proof schema and the overall 20-check ceiling. Local validation owns path selection, empty-list requirements and scope consistency without adding provider-facing conditional schemas. Diagnostic type is an optional plain string on the wire and locally bounded.
 
 All count, length, ID, ownership, duplicate and literal-provenance checks run locally. This is a targeted schema definition, not a generic schema sanitizer. Static shape and fake-provider boundary tests are planned; an actual provider compatibility smoke, if requested later, requires explicit authorization and is not evidence from this design task.
 
@@ -199,18 +230,19 @@ All rows below are **PROPOSED / NOT_RUN**, with synthetic neutral entities. Fake
 | R01 | Does Cedar run before Birch? / after Birch? | One direction-preserving request; a grounded negative answer can satisfy it, while reversing the question's predicate or ignoring it cannot. |
 | R02 | Where does Cedar occur in the workflow relative to Birch? | One placement relation; do not decide the order in decomposition. |
 | R03 | Does Cedar depend on Birch? | One dependency request; grounded yes or no can satisfy it. |
-| R04 | How does Cedar produce input for Birch? | One input-output relation, not two unrelated descriptions. |
+| R04 | How does Cedar produce input for Birch? | One canonical input-output relation includes the requested explanation; no duplicate ordinary explanation obligation. |
 | R05 | Does Cedar cause Birch? | Causal question with polarity preserved; correlation alone is insufficient. |
-| R06 | How do Cedar and Birch differ? | One comparison, not describe-Cedar + describe-Birch + compare. |
+| R06 | How do Cedar and Birch differ? | One comparison relation, exactly one required disposition, and relationship_checks=[]; no duplicate ordinary check or independent entity descriptions. |
 | R07 | Is Cedar contained in Birch? | One containment request; no inferred component list. |
 | R08 | Describe the workflow from StageOne to StageTwo. | One end-to-end relation; no manufactured intermediate Maple obligation. |
 | R09 | How does Cedar feed Birch, and how does Birch differ from Maple? | Two independently omittable points, one relation each. |
 | R10 | Is Cedar between Birch and Maple? | Preserve both placement constraints within one composite placement point, using a bounded relation description. |
-| R11 | Where is Cedar implemented? / Define Birch. / Which file defines Maple? / What arguments does SensorFrame accept? | Each is relation-free; explicit empty list and no extra named-check burden. |
+| R11 | Where is Cedar implemented? / Define Birch. / Which file defines Maple? / What arguments does SensorFrame accept? | required_relations=[] and required_relation_checks=[]; preserve the existing ordinary C1 checks, scope and revision behavior. |
 | R12 | How does Cedar work? / What does Cedar do? | No unseen stages, Birch dependency, or invented input/output chain. |
 | R13 | Why does Cedar stop? versus Does Cedar cause Birch? | Explanation point without an invented cause participant versus an explicit causal relation. |
 | R14 | Does Cedar depend on Birch, and does it produce SensorFrame? | Preserve two requested obligations and exact antecedent context; no required subject/object slots. |
 | R15 | Compare Cedar, Birch and Maple. | One comparison request can have more than two participants without tuple expansion. |
+| R16 | Where is Cedar implemented and how does Cedar feed Birch? | Two independently omittable points: ordinary locator and canonical feed relation; never two completeness paths in one point. |
 | V01 | Relation span absent from question, case-changed, or whitespace-altered | Reject exact-support violation; no fuzzy repair. |
 | V02 | Duplicate normalized relation in one point or two owners | Reject; do not merge or move it silently. |
 | V03 | Empty/whitespace relation text; wrong field type; missing relation list | Reject malformed new contract; never substitute []. |
@@ -222,15 +254,18 @@ All rows below are **PROPOSED / NOT_RUN**, with synthetic neutral entities. Fake
 | C01 | Omit a required row but claim complete=true; omit the named list when no relations exist | Reject missing/duplicate contract data; relation-free responses require an explicit empty named list and the existing ordinary proof contract. |
 | C02 | Duplicate, unknown, cross-parent, or invented relation ID | Reject; no text-based rematching. |
 | C03 | Admitted/visible-only/uncertain required disposition variants | Only validated admitted satisfaction counts; other valid dispositions make the parent incomplete. |
-| C04 | Valid ordinary content but an unsatisfied named relation | Parent incomplete even when both participant names are mentioned and claims map to the point. |
-| C05 | Unsatisfied ordinary content with satisfied relations | Parent incomplete; named relations do not replace ordinary requested content. |
-| C06 | Add an unasked stage or background requirement through an ordinary check | Semantic fixture rejects unjustified necessity; such proof prose cannot create a user requirement or replace a named disposition. |
+| C04 | Participant mentions and mapped supported claims, but an unsatisfied named relation | Relation-bearing parent incomplete; mentions/mappings cannot substitute for required relation satisfaction. |
+| C05 | All canonical required relations have valid admitted-backed satisfaction; ordinary checks are empty | Relation-bearing point complete; do not demand an additional ordinary explanation or nonempty ordinary proof. |
+| C06 | Nonempty ordinary relationship_checks on a relation-bearing point, even if duplicating the relation | Reject locally; no verifier-created second mandatory completeness path. |
 | C07 | Wrong quote, extra basis, unsupported supporter, wrong mapping, uncited basis | Preserve strict rejection and existing independent claim-support salvage only; no G2 local repair. |
 | C08 | Model complete/missing IDs or point supporter union contradict dispositions | Reject deterministic inconsistency. |
-| C09 | Some required relations lack evidence while another has valid admitted backing | Record every named disposition; preserve ordinary scope rules separately and do not complete the parent. |
-| A01 | One admitted unsatisfied relation and one visible-only relation | One bounded authorized target; blocked relation excluded; V2 still checks the full contract. |
-| A02 | Ordinary repair text would cover a blocked named relation | Exclude that point's ordinary targets; never use broad text to bypass the named relation's admission boundary. |
+| C09 | Some required relations lack evidence while another has valid admitted backing | Record every named disposition; derive scope from those dispositions and keep the parent incomplete. |
+| C10 | Required relation uncertain versus visible-only, plus inconsistent model scope variants | Any uncertain relation derives uncertain scope; otherwise scope is ESTABLISHED. Visible-only still means complete=false. Reject inconsistent scope or spurious OVERFLOW for a valid bounded inventory. |
+| C11 | Point supporter union includes duplicates, wrong order or supporters from the inactive list | Reject inconsistent unions; use ordinary supporters for relation-free points and required-relation supporters for relation-bearing points only. |
+| A01 | One admitted-backed unsatisfied relation plus a visible-only or uncertain sibling in the same point | A1 receives the admitted target only, regardless of the blocked sibling or derived scope; V2 checks both and the point stays incomplete if the sibling remains blocked. |
+| A02 | Relation-free ordinary admitted-backed target alongside a blocked relation in another point | Preserve existing ordinary revision authorization; no G1 suppression of the valid target. |
 | A03 | Already verified claims, ID collisions, and second revision request | Preserve existing merge/provenance rules and one-revision limit. |
+| A04 | Two independently admitted-backed unsatisfied required relations in one point | Both may enter one bounded A1 request; revision_count reaches 1 once and V2 rechecks the complete canonical inventory. |
 | K01 | Old legacy/shadow/runtime profiles; relation-free production needing 1–4 proof checks or more than two basis IDs overall | Old contracts remain usable; preserve ordinary proof capacity and dispositions with no extra named relations. |
 | K02 | Existing E3 objective with/without optional canonical relations | Same missing-point subsystem; formatter preserves relation semantics when provided; no production E3 activation. |
 | K03 | Composer payload and trace ON/OFF | Composer remains verified-claims-only; trace capture does not change behavior or completeness. |
@@ -279,26 +314,26 @@ These values describe this design task only. Future implementation is expected t
 | Criterion | Selected design satisfies it by |
 |---|---|
 | D1 — Question-only authority | Raw-question-only decomposition with exact provenance; explicit semantic limitations and anti-inference fixtures. |
-| D2 — Single completeness authority | Required conditions nested within the parent; final missing/completeness decisions remain point-level. |
+| D2 — Single completeness authority | One completeness path per point; final missing/completeness decisions remain point-level. Independently omittable ordinary and relational requests split into separate points. |
 | D3 — Downstream preservation | One immutable canonical inventory, explicit production projection, authorized A1 subset and full V2 recheck. |
 | D4 — Deterministic identity/provenance | Strict local validation, sorted host-assigned IDs and diagnostic-label independence. |
-| D5 — Mandatory C1 accounting | Exactly one validated disposition per required relation; ID/parent matching, preserved ordinary proof and one final parent flag. |
-| D6 — No hidden requirement invention | Verifier-derived proof may establish only canonical ordinary content; it cannot create a requirement or replace a named disposition. Semantic necessity remains explicitly subject to future adversarial verification. |
-| D7 — Bounded revision | Existing one-revision route with admitted-backed canonical targets and blocked-scope exclusion. |
+| D5 — Mandatory C1 accounting | Each point has one completeness path. Relation-free points use the existing ordinary C1 proof contract. Relation-bearing points use exactly one validated disposition per canonical required relation and no duplicate mandatory ordinary checks. |
+| D6 — No hidden requirement invention | Relation-bearing points reject nonempty ordinary checks and unknown relation IDs; their canonical relation text carries the full requested semantics. Relation-free ordinary authority is preserved. |
+| D7 — Bounded revision | Authorization is target-local after a valid review. Any valid admitted-backed unsatisfied target may enter the existing single bounded revision; blocked targets stay blocked and V2 rechecks the full canonical contract. |
 | D8 — Provider practicality | Simple bounded-depth wire shapes, strict local bounds, no new generic sanitizer. |
 | D9 — Relation-free compatibility | Explicit empty relation lists and ordinary point checking; preserved older mode contracts. |
 | D10 — Genericity | Neutral relational semantics and adversarial matrix; no benchmark/entity/location implementation rules. |
 
 **PASS** applies to the design decision and static consistency only. Proposed tests, real-model decomposition quality, semantic coverage accuracy, runtime provider acceptance and false-refusal effects have not been executed or established in this task.
 
-Static verification confirmed the three requested Markdown paths only, matching forward-authority blocks, unchanged historical documentation sections, 17 design sections, two syntactically valid illustrative JSON snippets, and 40 proposed matrix rows. `git diff --check` passed. No source/test/Gold/calibration/prompt file changed, and no test suite or evaluation was run.
+Static verification confirmed the three requested Markdown paths only, matching forward-authority blocks, unchanged historical documentation sections, 17 design sections, two syntactically valid illustrative JSON snippets, and 44 proposed matrix rows. The corrected contract specifies one completeness path per point, target-local revision after a valid review, full-contract V2 verification, the one-revision bound and unchanged G2/G4 boundaries. `git diff --check` passed. No source/test/Gold/calibration/prompt file changed, and no test suite or evaluation was run.
 
 ## 17. Unresolved questions and next step
 
-No architectural choice remains blocking: representation B, diagnostic type authority, deferred participant slots, fixed C1 target accounting, one-revision integration and product-mode Option 1 are selected. Natural-language extraction quality, provider acceptance and the effect of existing evidence bounds are future verification uncertainties, not unresolved design alternatives or permission to execute science now.
+The accepted architecture choices remain unchanged. The corrected single completeness path and target-local revision contract make G1 implementation-ready; implementation has not started and is not authorized by this correction. Natural-language extraction quality, provider acceptance and the effect of existing evidence bounds remain future verification uncertainties, not reopened design alternatives or permission to execute science now.
 
 ```text
-G1 = DESIGN COMPLETE / IMPLEMENTATION NOT STARTED
+G1 = DESIGN COMPLETE / CORRECTED / IMPLEMENTATION READY
 NEXT_TASK_RECOMMENDATION = G1 RELATIONSHIP-AWARE ANSWER OBLIGATION IMPLEMENTATION
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 STOP.
