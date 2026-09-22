@@ -1388,7 +1388,8 @@ class QATests(unittest.TestCase):
 
         # F5 bumped the prompt set for the bounded answer composer.
         # F5-R1 bumped the prompt set for the bounded provenance clarification.
-        self.assertEqual(PROMPT_SET_VERSION, "3.11.0")
+        # C1 Vertex compatibility removed unsupported provider schema keywords.
+        self.assertEqual(PROMPT_SET_VERSION, "3.11.1")
         for prompt in (ANSWER_SYSTEM_PROMPT, REVISION_SYSTEM_PROMPT):
             self.assertIn("answer_requirements", prompt)
         self.assertIn("factory/composition", EVALUATION_JUDGE_SYSTEM_PROMPT)

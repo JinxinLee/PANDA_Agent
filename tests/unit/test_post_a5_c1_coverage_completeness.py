@@ -17,6 +17,32 @@ def test_production_schema_exists_and_is_distinct():
         "answer_point_id", "supporting_claim_ids", "complete", "scope_status", "relationship_checks"}
 
 
+def test_production_provider_schema_uses_supported_bounded_keywords():
+    allowed = {
+        "$id", "$defs", "$ref", "$anchor", "type", "format", "title", "description",
+        "enum", "items", "prefixItems", "minItems", "maxItems", "minimum", "maximum",
+        "anyOf", "oneOf", "properties", "additionalProperties", "required", "propertyOrdering",
+    }
+
+    def schema_keywords(value):
+        if isinstance(value, dict):
+            for key, child in value.items():
+                if key == "properties" and isinstance(child, dict):
+                    yield key
+                    for property_schema in child.values():
+                        yield from schema_keywords(property_schema)
+                else:
+                    yield key
+                    yield from schema_keywords(child)
+        elif isinstance(value, list):
+            for child in value:
+                yield from schema_keywords(child)
+
+    observed = set(schema_keywords(qa.PRODUCTION_COVERAGE_SATISFACTION_REVIEW_SCHEMA))
+    assert observed <= allowed
+    assert not observed & {"uniqueItems", "minLength", "maxLength"}
+
+
 def test_production_invalid_scope_cannot_route_to_revision(tmp_path):
     runner = agent(tmp_path)
     s = {"answer_point_coverage_mode": "production_answer_obligations_v1", "errors": ["invalid review"],
@@ -217,7 +243,7 @@ def test_fingerprint_binds_production_prompts_schema_and_version(monkeypatch):
     before = "0a5b2909ef586671d533148979fc681c64e37528ad53781a4566cb9044835ba2"
     value = er.prompt_fingerprint()
     assert value != before and value == er.prompt_fingerprint()
-    assert prompts.PROMPT_SET_VERSION == "3.11.0"
+    assert prompts.PROMPT_SET_VERSION == "3.11.1"
     for name in ("PRODUCTION_COVERAGE_SATISFACTION_REVIEW_SYSTEM_PROMPT",
                  "PRODUCTION_COVERAGE_SATISFACTION_REVISION_SYSTEM_PROMPT", "COVERAGE_SATISFACTION_SCHEMA_VERSION"):
         with monkeypatch.context() as patch:

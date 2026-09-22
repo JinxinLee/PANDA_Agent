@@ -5,7 +5,7 @@ data. Keeping this rule in the system instruction gives every structured model
 call the same trust boundary.
 """
 
-PROMPT_SET_VERSION = "3.11.0"
+PROMPT_SET_VERSION = "3.11.1"
 
 COMMON_SECURITY_SYSTEM_PROMPT = """
 You are a bounded component of the PANDA research-code QA pipeline.

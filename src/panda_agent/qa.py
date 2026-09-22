@@ -158,21 +158,21 @@ ANSWER_POINT_COVERAGE_REVIEW_SCHEMA = {
 COVERAGE_SATISFACTION_SCHEMA_VERSION = "coverage-satisfaction-v1"
 PRODUCTION_COVERAGE_SATISFACTION_REVIEW_SCHEMA = deepcopy(ANSWER_POINT_COVERAGE_REVIEW_SCHEMA)
 _C1_CHECK_PROPERTIES = {
-    "relationship_text": {"type": "string", "minLength": 1, "maxLength": 240},
-    "necessity_reason": {"type": "string", "minLength": 1, "maxLength": 160},
+    "relationship_text": {"type": "string"},
+    "necessity_reason": {"type": "string"},
     "basis": {"type": "array", "maxItems": 2, "items": {
         "type": "object", "properties": {
             "evidence_id": {"type": "string"},
-            "quote": {"type": "string", "minLength": 1, "maxLength": 400}},
+            "quote": {"type": "string"}},
         "required": ["evidence_id", "quote"], "additionalProperties": False}},
-    "supporting_claim_ids": {"type": "array", "maxItems": 8, "uniqueItems": True, "items": {"type": "string"}},
+    "supporting_claim_ids": {"type": "array", "maxItems": 8, "items": {"type": "string"}},
     "satisfied": {"type": "boolean"},
     "admission_state": {"type": "string", "enum": ["ADMITTED_BACKING_AVAILABLE",
         "VISIBLE_ONLY_WITHOUT_CITABLE_BACKING", "INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE"]},
 }
 _C1_POINT_PROPERTIES = {
     "answer_point_id": {"type": "string"},
-    "supporting_claim_ids": {"type": "array", "maxItems": 32, "uniqueItems": True, "items": {"type": "string"}},
+    "supporting_claim_ids": {"type": "array", "maxItems": 32, "items": {"type": "string"}},
     "complete": {"type": "boolean"},
     "scope_status": {"type": "string", "enum": ["ESTABLISHED", "INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE", "OVERFLOW"]},
     "relationship_checks": {"type": "array", "maxItems": 4, "items": {
