@@ -25,7 +25,7 @@ The roadmap is governed by the following core development principles:
 ## Current planning state
 
 ```text
-CURRENT_REPOSITORY_HEAD = Phase-F closeout commit (resolve from Git history; exact SHA reported on delivery).
+CURRENT_REPOSITORY_HEAD = G1 design commit (resolve from Git history; exact SHA reported on delivery).
 CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = 58bd53a86627ff0e0b668915076d974272e86233
 NORMAL_PRODUCT_MODE = production_answer_obligations_v1
 PROMPT_SET_VERSION = 3.11.2
@@ -49,8 +49,9 @@ GENERALIZATION_RELEASE_EVIDENCE = NOT_ESTABLISHED
 C1_VERTEX_SCHEMA_COMPATIBILITY = COMPLETE / PASS / PROVIDER_SCHEMA_COMPATIBILITY_REPAIRED
 POST_A5_REPAIR_VALIDATION = COMPLETE / FAIL / REPLACEMENT_T2_VALIDATION
 
-PHASE_G = PLANNED / NOT_STARTED
-NEXT_TASK_RECOMMENDATION = G1 RELATIONSHIP-AWARE ANSWER OBLIGATION DESIGN
+PHASE_G = IN_PROGRESS / DESIGN_ONLY / IMPLEMENTATION_NOT_STARTED
+G1 = DESIGN COMPLETE / IMPLEMENTATION NOT STARTED
+NEXT_TASK_RECOMMENDATION = G1 RELATIONSHIP-AWARE ANSWER OBLIGATION IMPLEMENTATION
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 ```
 
@@ -59,6 +60,8 @@ Phase F is terminal: F1–F5 completed their bounded engineering objectives, whi
 Post-A5 mechanisms remain product architecture, but the replacement T2 remains `COMPLETE / FAIL`: g011 PASS, g010 CONTROL_PASS, g013 FAIL, g014 CONTROL_PASS, g023 FAIL, g022 CONTROL_PASS, g047 FAIL, g050 CONTROL_FAIL. These exposed repair-target results do not establish sufficient completeness recovery or independent generalization. Their historical verdicts and records are unchanged.
 
 Phase G is ordinary product-development planning for answer semantics and robustness. The old eight-case cohort becomes `NON_GATING REGRESSION DIAGNOSTICS` for future development; fresh `novel_dev` is the planned main empirical evidence. Phase-G implementation, `novel_validation`, and any future Release Candidate Evaluation require separate authorization. No F6-A Attempt 6 continuation is planned.
+
+G1 design is complete: [the selected design](../evaluation/G1_RELATIONSHIP_AWARE_ANSWER_OBLIGATION_DESIGN.md) nests question-grounded `required_relations` within answer points, preserves ordinary-content proof, and requires one C1 disposition per canonical relation ID. Answer points remain the sole completeness unit. Design/static acceptance is `PASS`; implementation and proposed tests are not run. Product identity is unchanged; scientific calls/tokens are 0/0. The next recommendation is separately authorized G1 implementation.
 
 Authority: [Phase-F closeout](../evaluation/PHASE_F_CLOSEOUT.md) and [Phase-G roadmap](GENERALIZATION_ROADMAP.md#phase-g--answer-semantics--robustness). Historical Attempts 1–5, T1/T2, evaluator/Gold corrections, O1/EA1/C1/C1-R1, and Vertex compatibility records retain their original outcomes. Older planning and next-task recommendations below are historical and confer no current authorization.
 
@@ -358,8 +361,8 @@ No further Phase-F production task is currently authorized. POST-ATTEMPT-3 FAILU
 
   F5 established bounded composer safety; empirical readability benefit remains unestablished. F6 completed with an exposed release-gate FAIL, and Post-A5 replacement T2 also failed. Phase F is closed without release readiness or independent generalization evidence; see [the closeout](../evaluation/PHASE_F_CLOSEOUT.md).
 
-- **Phase G — Answer Semantics & Robustness:** `PLANNED / NOT_STARTED`
-  Ordinary product development around requested relationships, local review failure containment, evidence-to-answer continuity, and false-insufficiency control. G1–G6 are planning only; G1 relationship-aware answer obligation design is the next recommendation.
+- **Phase G — Answer Semantics & Robustness:** `IN_PROGRESS / DESIGN_ONLY / IMPLEMENTATION_NOT_STARTED`
+  Ordinary product development around requested relationships, local review failure containment, evidence-to-answer continuity, and false-insufficiency control. G1 design is complete; G1 implementation is the next recommendation and remains unauthorized. G2–G6 remain planning only.
 
 ## Phase A — Evaluation infrastructure and versioned baseline
 
@@ -1022,21 +1025,23 @@ At release, Generalization Gap means benchmark score minus novel score. Benchmar
 ## Phase G — Answer Semantics & Robustness
 
 ```text
-PHASE_G = PLANNED / NOT_STARTED
+PHASE_G = IN_PROGRESS / DESIGN_ONLY / IMPLEMENTATION_NOT_STARTED
+G1 = DESIGN COMPLETE / IMPLEMENTATION NOT STARTED
 ```
 
 Phase G is a new ordinary product-development phase. Its goal is to improve how the QA system represents requested semantic relationships, validates partial structured reviews, and connects retrieved evidence to answer-authorized support, without optimizing directly for exposed benchmark cases. The guiding principles are relationship-aware semantics, local failure containment, evidence-to-answer continuity, false-refusal control, fresh development evidence, and lean validation.
 
-Phase G is not an F6-A continuation, Attempt 6, T2-R1, benchmark repair cycle, or release validation. This roadmap authorizes no design execution, implementation, dataset work, model calls, or evaluation. Ordinary development follows the existing AGENTS.md and EVALUATION_POLICY.md boundaries without adding per-task frozen candidates or a new governance loop. Product mode and prompt identity remain unchanged by this planning reset.
+Phase G is not an F6-A continuation, Attempt 6, T2-R1, benchmark repair cycle, or release validation. G1 design has completed under its explicit task authorization; this roadmap authorizes no further design execution, implementation, dataset work, model calls, or evaluation. Ordinary development follows the existing AGENTS.md and EVALUATION_POLICY.md boundaries without adding per-task frozen candidates or a new governance loop. Product mode and prompt identity remain unchanged by this design task.
 
 ### G1 — Relationship-Aware Answer Obligations
 
-- **Status:** PLANNED / NOT_STARTED
+- **Status:** DESIGN COMPLETE / IMPLEMENTATION NOT STARTED
 - **Goal:** Extend question-derived answer obligations beyond topic/facet coverage so explicitly requested relations can become first-class obligations.
 - **Generic relation classes:** ordering / before-after, workflow placement, dependency, input-output, cause-effect, comparison, and composition / containment.
 - **Boundary:** Derive obligations from the live question. Do not encode benchmark entities, expected answers, source locations, or case-specific triggers. Exposed observations may motivate the generic problem but cannot specify implementation rules.
-- **Planned verification:** T0/static checks and adversarial synthetic relation questions; no scientific execution is authorized here.
-- **Next recommended step:** G1 RELATIONSHIP-AWARE ANSWER OBLIGATION DESIGN, subject to separate task authorization.
+- **Selected design:** Nested `required_relations`, exact question support, locally assigned stable IDs, and mandatory C1 relation dispositions subordinate to the existing answer point. Preserve ordinary-content proof and one bounded revision; future implementation upgrades the existing production mode with explicit prompt/schema successors. Design: [G1 relationship-aware answer obligations](../evaluation/G1_RELATIONSHIP_AWARE_ANSWER_OBLIGATION_DESIGN.md).
+- **Verification:** Design/static acceptance `PASS`; proposed neutral adversarial tests remain `NOT_RUN`. Scientific calls/tokens 0/0; no product implementation or identity change.
+- **Next recommended step:** G1 RELATIONSHIP-AWARE ANSWER OBLIGATION IMPLEMENTATION, subject to separate task authorization.
 
 ### G2 — Coverage Review Local-Failure Robustness
 
@@ -1082,7 +1087,7 @@ Only after generic deterministic/adversarial checks are satisfactory, fresh nove
 Only after material future product development and phase-level validation should the project consider a separately authorized Release Candidate Evaluation, which may eventually include protected novel_holdout under the release/T5 policy. It is not pre-named F6-A Attempt 6. No release evaluation or protected-data access is authorized now.
 
 ```text
-NEXT_TASK_RECOMMENDATION = G1 RELATIONSHIP-AWARE ANSWER OBLIGATION DESIGN
+NEXT_TASK_RECOMMENDATION = G1 RELATIONSHIP-AWARE ANSWER OBLIGATION IMPLEMENTATION
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 ```
 
