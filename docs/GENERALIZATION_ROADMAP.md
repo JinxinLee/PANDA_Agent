@@ -24,29 +24,31 @@ The roadmap is governed by the following core development principles:
 
 ## Current planning state
 
-CURRENT_REPOSITORY_HEAD = terminal T2 result and F6-A closeout commit (resolve from Git history; exact SHA reported on delivery).
-CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = 6ed3ba361476b36744c72e76f5905733b1755f5c
+CURRENT_REPOSITORY_HEAD = C1 Vertex schema compatibility repair closeout commit (resolve from Git history; exact SHA reported on delivery).
+CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = 528499f3b42357f770c526f3e22d70f962d37b50
 NORMAL_PRODUCT_MODE = production_answer_obligations_v1
-PROMPT_SET_VERSION = 3.11.0
-PROMPT_FINGERPRINT = 03e1bf270898b28127a42fa2e1ccb24cfc1d87e177eeba5428ba4680d426352c
+PROMPT_SET_VERSION = 3.11.1
+PROMPT_FINGERPRINT = 9135b73c517f4cfac50695b2b47264749145923b60c2e2ee590149a141eca9bf
 ACTIVE_GOLD = m6-benchmark-v2.11
 ACTIVE_CALIBRATION = phase_b_t3_product_language_scope_v8
 POST_A5_DETERMINISTIC_REPAIR = COMPLETE / PASS
-T2 = COMPLETE / INCONCLUSIVE / VALIDATION_INCONCLUSIVE
+PRE_REPAIR_T2_EXECUTION_ATTEMPT = ABORTED / INFRASTRUCTURE_INVALID / PROVIDER_STRUCTURED_SCHEMA_INVALID_ARGUMENT
+C1_VERTEX_SCHEMA_COMPATIBILITY = HOLD / PRIMARY_KEYWORD_FIX_INSUFFICIENT
+T2 = EXISTING P0 TERMINAL INCONCLUSIVE / REFRESH NOT PERFORMED
 RESOURCE_POLICY = USAGE_ACCOUNTING_ONLY
-T2_SCIENTIFIC_OUTCOME = INCONCLUSIVE / EXECUTION_INCOMPLETE
-T2_MECHANISM_OBSERVABILITY = FAILED / REQUIRED_TARGET_TRACE_UNAVAILABLE
-F6_A_REPAIR_LOOP = CLOSED
+T2_SCIENTIFIC_OUTCOME = INCONCLUSIVE / EXECUTION_INCOMPLETE (historical P0; no repaired T2)
+T2_MECHANISM_OBSERVABILITY = FAILED / REQUIRED_TARGET_TRACE_UNAVAILABLE (historical P0)
+F6_A_REPAIR_LOOP = CLOSED / NO_REPAIR_CONTINUATION_AFTER_SMOKE_HOLD
 ATTEMPT_6 = DEFERRED / NOT_NEXT_STEP
 F6_B = NOT_ENTERED / NOT_NEXT_STEP
-Phase F = IN_PROGRESS / POST-A5 REPAIR ENGINEERING COMPLETE / FIXED EXPOSED T2 TERMINAL INCONCLUSIVE / F6-A CLOSED
+Phase F = IN_PROGRESS / C1 PROVIDER-SCHEMA COMPATIBILITY HOLD / REPAIRED T2 NOT AUTHORIZED
 
-Terminal T2 outcome: `INCONCLUSIVE / VALIDATION_INCONCLUSIVE`; no valid scientific case result was formed because all eight fixed executions terminated in provider infrastructure errors. All terminal outcomes close `F6_A_REPAIR_LOOP`; no automatic repair, revalidation or release continuation.
+The six classified P0 executions remain `ABORTED / INFRASTRUCTURE_INVALID / PROVIDER_STRUCTURED_SCHEMA_INVALID_ARGUMENT` with 40 calls / 190227 tokens and zero scientific observations. The bounded provider-schema repair passes deterministic tests, but one synthetic direct-provider smoke still returns `400 INVALID_ARGUMENT`; no T2 identity refresh or T2 rerun is authorized. Existing run evidence is preserved.
 
-NEXT_TASK_RECOMMENDATION = NO AUTOMATIC F6-A FOLLOW-UP; FUTURE GENERIC PRODUCT DEVELOPMENT REQUIRES SEPARATE AUTHORIZATION
+NEXT_TASK_RECOMMENDATION = REVIEW REMAINING PROVIDER-FACING C1 SCHEMA INCOMPATIBILITY; NO T2 EXECUTION UNTIL SEPARATELY AUTHORIZED SMOKE PASS
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 
-Authority: `evaluation/POST_A5_T2_FIXED_EXPOSED_SENTINEL_RESULT.md` and companion JSON, together with the preregistration. Scientific calls/tokens this task=56/288539; no valid final/judge result was formed. T1 FAIL and Attempt 1-5 results immutable. Protected content untouched; no candidate freeze. Historical recommendations below are superseded forward and confer no current authorization.
+Authority: `evaluation/POST_A5_C1_VERTEX_SCHEMA_COMPATIBILITY_REPAIR.md` and companion JSON, together with the historical T2 result and preregistration. This repair used T2 scientific calls/tokens=0/0 and one compatibility smoke call with 0 reported tokens; the historical P0 usage remains 40/190227 for the classified six-case attempt. Protected content untouched; no candidate freeze. Historical recommendations below are superseded forward and confer no current authorization.
 
 ## Historical status chronology (superseded forward planning)
 
