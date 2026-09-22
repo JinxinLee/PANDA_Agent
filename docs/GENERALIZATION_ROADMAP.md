@@ -24,32 +24,43 @@ The roadmap is governed by the following core development principles:
 
 ## Current planning state
 
-CURRENT_REPOSITORY_HEAD = replacement T2 terminal records commit (resolve from Git history; exact SHA reported on delivery).
+```text
+CURRENT_REPOSITORY_HEAD = Phase-F closeout commit (resolve from Git history; exact SHA reported on delivery).
 CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = 58bd53a86627ff0e0b668915076d974272e86233
 NORMAL_PRODUCT_MODE = production_answer_obligations_v1
 PROMPT_SET_VERSION = 3.11.2
 PROMPT_FINGERPRINT = 878caffb022dd66111b3bc6e98c6e372340cb619db13aa856c09aaa09e8b8391
 ACTIVE_GOLD = m6-benchmark-v2.11
 ACTIVE_CALIBRATION = phase_b_t3_product_language_scope_v8
-POST_A5_DETERMINISTIC_REPAIR = COMPLETE / PASS
-PRE_REPAIR_T2_EXECUTION_ATTEMPT = ABORTED / INFRASTRUCTURE_INVALID / PROVIDER_STRUCTURED_SCHEMA_INVALID_ARGUMENT (8/8; 56 calls / 288539 tokens; historical)
+
+PHASE_F = COMPLETE / CORE_GENERALIZATION_ENGINEERING_COMPLETE / RELEASE_READINESS_NOT_ACHIEVED
+F1 = COMPLETE / PASS / RESIDUAL_BENCHMARK_DEPENDENCY_INVENTORY_ESTABLISHED
+F2 = COMPLETE / PASS / GENERIC_BENCHMARK-SPECIFIC_GUARD_CLEANUP_COMPLETE
+F3 = COMPLETE / PASS / FIXED_LOCATOR_FALLBACK_SHORTCUTS_RETIRED
+F4 = COMPLETE / PASS / ANSWER_GENERATION_SEMANTIC_VERIFICATION_ROLES_SEPARATED
+F5 = COMPLETE / PASS / BOUNDED_ANSWER_COMPOSER_SAFETY_CONTRACT_ESTABLISHED
+READABILITY_BENEFIT = NOT_EMPIRICALLY_ESTABLISHED
+F6 = COMPLETE / FAIL / EXPOSED_RELEASE_GATE_NOT_PASSED
+F6_A = CLOSED / TERMINAL_EXPOSED_GATE_FAIL
+F6_A_REPAIR_LOOP = CLOSED
+ATTEMPT_6 = NOT_PLANNED / PHASE_F_CLOSED
+F6_B = NOT_RUN / EXPOSED_RELEASE_GATE_NOT_PASSED
+GENERALIZATION_RELEASE_EVIDENCE = NOT_ESTABLISHED
 C1_VERTEX_SCHEMA_COMPATIBILITY = COMPLETE / PASS / PROVIDER_SCHEMA_COMPATIBILITY_REPAIRED
-T2 = COMPLETE / FAIL / FIXED_8_CASE_REPLACEMENT_VALIDATION
-RESOURCE_POLICY = USAGE_ACCOUNTING_ONLY
-T2_SCIENTIFIC_OUTCOME = FAIL / VALID_SENTINEL_AND_CONTROL_FAILURES
-T2_MECHANISM_OBSERVABILITY = COMPLETE / TRACE_CAPTURED / CAUSAL_RECOVERY_NOT_ESTABLISHED
 POST_A5_REPAIR_VALIDATION = COMPLETE / FAIL / REPLACEMENT_T2_VALIDATION
-F6_A_REPAIR_LOOP = CLOSED / REPLACEMENT_T2_TERMINAL_FAIL
-ATTEMPT_6 = DEFERRED / NOT_NEXT_STEP
-F6_B = NOT_ENTERED / NOT_NEXT_STEP
-Phase F = IN_PROGRESS / C1 COMPATIBILITY REPAIRED / REPLACEMENT T2 TERMINAL FAIL / NO FOLLOW-ON AUTHORIZED
 
-The prior eight-case P0 execution remains `ABORTED / INFRASTRUCTURE_INVALID / PROVIDER_STRUCTURED_SCHEMA_INVALID_ARGUMENT` with 56 calls / 288539 tokens, 9 embedding calls, 0 judge calls, and one transport recovery; it contributes zero scientific observations. The final bounded schema repair passed the synthetic provider smoke, and the repaired fixed eight-case replacement T2 completed with 63 calls / 345411 tokens, 8 embedding calls, 10 judge calls, and one recovered transport event. Valid scientific failures were established in g013, g023, g047, and g050; g011 negative-existence safety passed, and controls g010/g014/g022 passed. Native-documentation evidence coverage for g011 is reported separately and is non-gating.
-
-NEXT_TASK_RECOMMENDATION = TERMINAL / NO AUTOMATIC REPAIR, T2-R1, T3, ATTEMPT_6, OR F6-B
+PHASE_G = PLANNED / NOT_STARTED
+NEXT_TASK_RECOMMENDATION = G1 RELATIONSHIP-AWARE ANSWER OBLIGATION DESIGN
 NEXT_TASK_EXECUTION_AUTHORIZED = false
+```
 
-Authority: `evaluation/POST_A5_C1_VERTEX_SCHEMA_COMPATIBILITY_REPAIR.md`, `evaluation/post_a5_c1_vertex_schema_compatibility_repair.json`, `evaluation/POST_A5_T2_REPLACEMENT_RESULT.md`, and its companion JSON, together with the preserved historical T2 result and preregistration. The replacement T2 is post-F6-A compatibility-repair validation. **Replacement T2 remains exposed repair-target evidence, not independent generalization evidence.** F6-A remains closed, protected content is untouched, and no candidate freeze or later lifecycle stage is authorized.
+Phase F is terminal: F1–F5 completed their bounded engineering objectives, while F6 did not establish release readiness. Attempts 1–5 stopped at exposed Stage A1; A2 ablation, A3 release-stage `novel_dev`, A4 `novel_validation`, and A5 composer empirical audit were not reached. `novel_validation` remains pristine for this lineage; holdout access, protected leakage, and F6-B execution remain zero.
+
+Post-A5 mechanisms remain product architecture, but the replacement T2 remains `COMPLETE / FAIL`: g011 PASS, g010 CONTROL_PASS, g013 FAIL, g014 CONTROL_PASS, g023 FAIL, g022 CONTROL_PASS, g047 FAIL, g050 CONTROL_FAIL. These exposed repair-target results do not establish sufficient completeness recovery or independent generalization. Their historical verdicts and records are unchanged.
+
+Phase G is ordinary product-development planning for answer semantics and robustness. The old eight-case cohort becomes `NON_GATING REGRESSION DIAGNOSTICS` for future development; fresh `novel_dev` is the planned main empirical evidence. Phase-G implementation, `novel_validation`, and any future Release Candidate Evaluation require separate authorization. No F6-A Attempt 6 continuation is planned.
+
+Authority: [Phase-F closeout](../evaluation/PHASE_F_CLOSEOUT.md) and [Phase-G roadmap](GENERALIZATION_ROADMAP.md#phase-g--answer-semantics--robustness). Historical Attempts 1–5, T1/T2, evaluator/Gold corrections, O1/EA1/C1/C1-R1, and Vertex compatibility records retain their original outcomes. Older planning and next-task recommendations below are historical and confer no current authorization.
 
 ## Historical status chronology (superseded forward planning)
 
@@ -342,8 +353,13 @@ No further Phase-F production task is currently authorized. POST-ATTEMPT-3 FAILU
 - **Phase E — Answer generalization:** `COMPLETE / CORE_ANSWER_GENERALIZATION_ARCHITECTURE_RECONCILED / DEFAULT_PROMOTION_DEFERRED`
   Dynamic question decomposition, answer-point coverage, claim-to-evidence mapping, and targeted completeness recovery. E1 validated (shadow scope), E2 core complete, E3 closed as a bounded low-frequency fallback; PE-LR1 closed the phase at the promotion boundary with the normal default remaining `legacy_question_core` and promotion reconsideration gated on a material candidate change or an explicitly authorized release-boundary decision.
 
-- **Phase F — Benchmark dependency cleanup and final answering:** `IN_PROGRESS / POST-A5 REPAIR ENGINEERING COMPLETE / FINAL FIXED EXPOSED T2 PREREGISTERED`
+- **Phase F — Benchmark dependency cleanup and final answering:** `COMPLETE / CORE_GENERALIZATION_ENGINEERING_COMPLETE / RELEASE_READINESS_NOT_ACHIEVED`
   F1 established the bounded non-D4 residual inventory without production cleanup. PF-LR1 reconciled the Phase-F scope into a bounded F2/F3 execution map. F2-A1 removed the benchmark-shaped verifier-support dependencies (R13), F2-A1-R1 removed the remaining whole-claim lexical semantic bypass (the initial F2-A1 closeout was corrected by R1), F2-A2 established question-derived pointer-normalization completeness (R10), and F2-A3 reconciled E1/E2 compatibility authority (R08/R09/R11: coverage modes own completeness, the named-requirement contract remains a legacy bridge); F2-A4 established generic question-grounded premise refusals through the locked-corpus catalog (R04), and F2-A5 established raw-question-grounded paper/code source obligations for the R01 intents (fixed config mappings retired; R02/HOLD mappings and all source budgets unchanged), with the matching boundary completed by F2-A5-R1 (bounded whole-token/phrase matching); with all five PF-LR1 F2 groups complete, F2 is closed. F3 retired the three PF-LR1 code-origin fixed locators (R03 feedback page override, R05 fixed-header unsupported-API fallback, R06 fixed-macro/event_poca deleted-runtime presentation) behind reviewed-expansion and question-grounded generic mechanisms with the D4 YAML untouched. F4 separated the answer/revision generation role from the product semantic-verification role at the settings, client-path, invocation, and usage-accounting levels (distinct production client paths, optional `QA_VERIFICATION_MODEL_ID` defaulting to the generation model, evaluation judge still offline-only, role-specific usage counters and internal role diagnostics) without changing any QA graph semantics or the public default.
+
+  F5 established bounded composer safety; empirical readability benefit remains unestablished. F6 completed with an exposed release-gate FAIL, and Post-A5 replacement T2 also failed. Phase F is closed without release readiness or independent generalization evidence; see [the closeout](../evaluation/PHASE_F_CLOSEOUT.md).
+
+- **Phase G — Answer Semantics & Robustness:** `PLANNED / NOT_STARTED`
+  Ordinary product development around requested relationships, local review failure containment, evidence-to-answer continuity, and false-insufficiency control. G1–G6 are planning only; G1 relationship-aware answer obligation design is the next recommendation.
 
 ## Phase A — Evaluation infrastructure and versioned baseline
 
@@ -757,15 +773,15 @@ closed.
 ## Phase F — Benchmark dependency cleanup and final answering
 
 Status:
-IN_PROGRESS / F1_COMPLETE
+COMPLETE / CORE_GENERALIZATION_ENGINEERING_COMPLETE / RELEASE_READINESS_NOT_ACHIEVED
 
-Phase F addresses the audit and retirement of remaining benchmark-specific dependencies, generalization of guard logic, role separation between answer generation and semantic verification, bounded answer composition, and release evaluation.
+Phase F addressed the audit and retirement of remaining benchmark-specific dependencies, generalization of guard logic, role separation between answer generation and semantic verification, bounded answer composition, and release evaluation. F1–F5 completed the bounded engineering architecture; F6 did not establish release readiness. Later exposed-gate failures do not invalidate the bounded F1–F5 engineering acceptance.
 
-Original Phase-F planning predates the substantial shortcut migrations completed in D4. F1 has now inventoried bounded non-D4 residual dependencies; remaining Phase-F execution still requires separate scope reconciliation and authorization.
+The [Phase-F closeout](../evaluation/PHASE_F_CLOSEOUT.md) is the terminal interpretation. F6-A and its repair loop are closed, Attempt 6 is not planned, and F6-B was not run. The task cards retain their original goals, evidence, and historical recommendations as implementation history; they do not schedule further Phase-F work. Future product work belongs to the separately authorized Phase-G roadmap.
 
 ### F1 — Residual benchmark-dependency inventory
 
-- **Status:** COMPLETE / PASS
+- **Status:** COMPLETE / PASS / RESIDUAL_BENCHMARK_DEPENDENCY_INVENTORY_ESTABLISHED
 - **Goal:** Audit residual benchmark dependencies outside already-reconciled D4 query-expansion work.
 - **Scope:** Inspect code and configuration guards, negative controls, special prompt requirements, and bespoke sufficiency logic across retrieval and QA.
 - **Constraint:** Do not repeat the historical D4 inventory or already-reconciled migrations. Broader residual D4 scope remains undecided.
@@ -783,7 +799,7 @@ Original Phase-F planning predates the substantial shortcut migrations completed
 
 ### F2 — Generalize benchmark-specific guards
 
-- **Status:** COMPLETE / PASS / A1_A2_A3_A4_A5_COMPLETE
+- **Status:** COMPLETE / PASS / GENERIC_BENCHMARK-SPECIFIC_GUARD_CLEANUP_COMPLETE
 - **F2-A1 outcome:** COMPLETE / PASS / GENERIC_VERIFIER_SUPPORT_SEMANTICS_ESTABLISHED. Removed the hard-coded explicit-code-token whitelist and both comparison-wording deterministic-support branches from `_verify`; deterministic support is now granted only by generic shape-based, evidence-grounded coverage invariants (full identifier/path coverage, path coverage over a cited code repository, multi-symbol coverage). Three new focused contract tests plus the authoritative focused E3 deterministic set (49) and neighboring E2-A1 tests (91 total) passed with zero scientific calls. Report: `evaluation/F2_A1_VERIFIER_SUPPORT_SEMANTIC_CLEANUP.md`.
 - **F2-A1-R1 outcome:** COMPLETE / PASS / WHOLE_CLAIM_SEMANTIC_BYPASS_REMOVED. Corrective repair: an independent post-commit audit found that the retained lexical coverage branches could still override a whole-claim semantic `unsupported` verdict (citation/locator/identifier grounding is not whole-claim entailment). The `deterministically_supported_claims` set and all coverage-based exemption branches were deleted entirely — the semantic review's unsupported verdict is always honored. Adversarial contracts T1-T6, tests/unit/test_qa.py (58 passed + 2 subtests), the focused E3 deterministic set (49) and neighboring E2-A1 tests (91 total) passed with zero scientific calls; R10/retrieval/selection surfaces have zero diff. Report: `evaluation/F2_A1_R1_VERIFIER_SUPPORT_SEMANTIC_ENTAILMENT_REPAIR.md`.
 - **F2-A2 outcome:** COMPLETE / PASS / QUESTION_DERIVED_POINTER_NORMALIZATION_COMPLETENESS_ESTABLISHED. The pointer-normalization requirement now derives its `target_symbol` from the live question's pointer type expression; `_requirement_evidence`, `_compact_requirement_evidence`, and `_deterministic_missing_requirement_ids` evaluate against the question-derived target, and the fixed `pndlmdtrackq`/`lmdtrackq`/`tclonesarray` anchors are deleted from qa.py. Genericity/adversarial contracts T1-T8 (unseen `SensorFrame*` works end to end; the wrong historical symbol cannot satisfy an unseen target; plan-only symbols never become targets) all pass; tests/unit/test_qa.py 66 passed + 4 subtests, focused E3 deterministic set (49) plus neighboring E2-A1 tests (91 total) passed with zero scientific calls. Report: `evaluation/F2_A2_DETERMINISTIC_COMPLETENESS_SEMANTIC_CLEANUP.md`.
@@ -826,6 +842,7 @@ Original Phase-F planning predates the substantial shortcut migrations completed
 ### F5 — Bounded Answer Composer
 
 - **Status:** COMPLETE / PASS / BOUNDED_ANSWER_COMPOSER_SAFETY_CONTRACT_ESTABLISHED
+- **Terminal limitation:** READABILITY_BENEFIT = NOT_EMPIRICALLY_ESTABLISHED. The bounded safety acceptance does not assert the original empirical readability goal was met; the release-stage composer audit was not reached.
 - **Problem:** Deterministic verified-claim rendering is safe but can be mechanical and claim-by-claim.
 - **Goal:** Improve readability without reopening factual generation.
 - **Why this stage:** Only after claims, answer points, and verification roles form a stable security boundary can composition be safely added.
@@ -842,7 +859,15 @@ Original Phase-F planning predates the substantial shortcut migrations completed
 
 ### F6 — Release evaluation and generalization gate
 
-- **Status:** IN_PROGRESS / ATTEMPT_3_INFRASTRUCTURE_RECONCILED_READY_FOR_NEW_PREFLIGHT
+- **Status:** COMPLETE / FAIL / EXPOSED_RELEASE_GATE_NOT_PASSED
+- **Terminal interpretation:** Attempts 1–5 failed the exposed Stage A1 gate; A2 ablation, A3 release-stage novel_dev, A4 novel_validation, and A5 composer empirical audit were NOT_REACHED. Post-A5 replacement T2 also failed. GENERALIZATION_RELEASE_EVIDENCE = NOT_ESTABLISHED.
+- **Forward state:** F6_A = CLOSED / TERMINAL_EXPOSED_GATE_FAIL; F6_A_REPAIR_LOOP = CLOSED; ATTEMPT_6 = NOT_PLANNED / PHASE_F_CLOSED; F6_B = NOT_RUN / EXPOSED_RELEASE_GATE_NOT_PASSED.
+- **Protected state:** novel_validation remains pristine for this lineage; holdout access = 0, protected leakage = 0, F6-B execution = 0.
+
+#### Historical F6 gate design and execution records (superseded forward planning)
+
+The following contracts, attempt outcomes, and repair records remain historical. Their next-step and repeat-eligibility wording does not authorize or plan another F6-A attempt.
+
 - **F6-A — Pre-Release Validation & Generalization Gate:** COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED (attempt 1, historical: candidate f6a-rc1-20260913; nine preregistered gates failed per the R1-corrected matrix, dominated by erroneous "not defined in the locked corpus" refusals and version-conflict handling errors; fail-fast preserved novel_validation pristine; ablation/composer audit not reached)
 - **F6-A attempt 2:** COMPLETE / FAIL / EXPOSED_BENCHMARK_PRE_RELEASE_GATE_FAILED (Stage A1 fail-fast; ablation/novel/composer stages NOT_REACHED). Fresh identity: preregistration `3f1f16e`, candidate f6a-rc2-20260913 frozen from the clean preregistration HEAD (`1f32eef`, verify valid), zero post-freeze changes. Zero-call A0 preflight (Gold authority, calibration v3 compatibility, selector re-derived 59 IDs e27ef67a, Docker/index identity, roadmap ten→nine correction, 314+68 focused tests, clean FR1 boundary audit). Run f6a-rc2-gold-formal-full-20260913: 59/59 complete, zero errors, zero status mismatches, expected_status_accuracy 1.0 — all eight FR1-reviewed cases now match Gold. Six mandatory gates still fail (final_evidence_recall 0.8810, critical_final_evidence_recall 0.8912, required_source_coverage 0.9592, dual_source 0.0 with g060 answered but paperless, critical misses 4, major unsupported 1); release score 0.9463 (attempt-1 0.8277). No repair during the attempt; no pass chasing. Usage 376 calls / 3,313,651 tokens; novel_validation remains PRISTINE_FOR_CURRENT_LINEAGE. Report: `evaluation/F6_A2_PRERELEASE_VALIDATION_RESULT.md`.
 - **F6-A2-FR1 — Post-Attempt-2 Residual Failure Review:** COMPLETE / PASS / RESIDUAL_FAILURES_CLASSIFIED
@@ -994,7 +1019,76 @@ Original Phase-F planning predates the substantial shortcut migrations completed
 
 At release, Generalization Gap means benchmark score minus novel score. Benchmark Dependency is the score difference between full compatibility behavior and the approved generic/shortcut-ablation configuration. Neither measurement is authorized here.
 
-## Cross-phase unresolved planning questions
+## Phase G — Answer Semantics & Robustness
+
+```text
+PHASE_G = PLANNED / NOT_STARTED
+```
+
+Phase G is a new ordinary product-development phase. Its goal is to improve how the QA system represents requested semantic relationships, validates partial structured reviews, and connects retrieved evidence to answer-authorized support, without optimizing directly for exposed benchmark cases. The guiding principles are relationship-aware semantics, local failure containment, evidence-to-answer continuity, false-refusal control, fresh development evidence, and lean validation.
+
+Phase G is not an F6-A continuation, Attempt 6, T2-R1, benchmark repair cycle, or release validation. This roadmap authorizes no design execution, implementation, dataset work, model calls, or evaluation. Ordinary development follows the existing AGENTS.md and EVALUATION_POLICY.md boundaries without adding per-task frozen candidates or a new governance loop. Product mode and prompt identity remain unchanged by this planning reset.
+
+### G1 — Relationship-Aware Answer Obligations
+
+- **Status:** PLANNED / NOT_STARTED
+- **Goal:** Extend question-derived answer obligations beyond topic/facet coverage so explicitly requested relations can become first-class obligations.
+- **Generic relation classes:** ordering / before-after, workflow placement, dependency, input-output, cause-effect, comparison, and composition / containment.
+- **Boundary:** Derive obligations from the live question. Do not encode benchmark entities, expected answers, source locations, or case-specific triggers. Exposed observations may motivate the generic problem but cannot specify implementation rules.
+- **Planned verification:** T0/static checks and adversarial synthetic relation questions; no scientific execution is authorized here.
+- **Next recommended step:** G1 RELATIONSHIP-AWARE ANSWER OBLIGATION DESIGN, subject to separate task authorization.
+
+### G2 — Coverage Review Local-Failure Robustness
+
+- **Status:** PLANNED / NOT_STARTED
+- **Goal:** Prevent one malformed or unverifiable relationship/basis item from unnecessarily invalidating otherwise valid independent coverage judgments.
+- **Design principle:** Local invalidity should leave the affected relation unsatisfied / ungrounded. Independently valid judgments may survive only when their scope, support, and independence are established; whole-review rejection remains appropriate when integrity cannot be isolated.
+- **Boundary:** Preserve exact evidence and provenance requirements and remain fail-closed for every affected relation. Historical g050 is motivation only, not a specification or reason to accept an invalid quote.
+- **Planned verification:** Deterministic malformed-item and independence cases, including failures that must still invalidate the whole review.
+
+### G3 — Evidence Admission / Answerability Gap Audit
+
+- **Status:** PLANNED / AUDIT_FIRST
+- **Goal:** Measure where evidence is retrieved, visible, or selected but cannot become answer-authorized citable backing.
+- **Audit before implementation:** Establish frequency, classify evidence types, and identify generic repeated mechanisms. Distinguish evidence availability from citation authority.
+- **Implementation gate:** Change admission policy only if the audit establishes a generic defect. Do not broaden citation eligibility merely to repair g013 or any other exposed case.
+- **Planned evidence:** A scoped audit under separate authorization; this task does not inspect protected data, collect cases, or run retrieval.
+
+### G4 — False-Insufficiency / Conservatism Regression
+
+- **Status:** PLANNED / NOT_STARTED
+- **Goal:** Measure and control false refusal / false insufficient_evidence regressions introduced by stricter completeness verification.
+- **Product constraint:** Higher completeness sensitivity must not produce uncontrolled false insufficiency. Correct abstention and unsupported-answer prevention remain required.
+- **Planned verification:** Generic answerable/unanswerable controls and fresh development evidence, with both missed obligations and false insufficiency assessed. Historical g047 may remain one regression sentinel, not the design target.
+
+### G5 — Integrated Candidate
+
+- **Status:** PLANNED / NOT_STARTED
+- **Prerequisite:** Justified G1–G4 product work, including the G3 audit gate; an audit need not result in an admission-policy change.
+- **Goal:** Integrate compatible Phase-G improvements and assess them as one product candidate, with their interaction and false-refusal behavior considered together.
+- **Identity boundary:** production_answer_obligations_v2 is only a possible future identity. It is neither reserved nor activated here; no prompt version, runtime mode, or candidate freeze is changed by this roadmap.
+
+### G6 — Fresh Development Evaluation
+
+- **Status:** PLANNED / NOT_STARTED
+- **Goal:** Use fresh novel_dev as the main development-level empirical evidence for material Phase-G behavior after integration, under a separately authorized evaluation scope.
+- **Exposed cohort disposition:** The old eight-case T2 cohort becomes NON_GATING REGRESSION DIAGNOSTICS. It is neither an optimization target nor sufficient generalization evidence; historical T1/T2 outcomes remain unchanged.
+- **Lean validation:** Start with satisfactory generic deterministic/adversarial checks and use the smallest decision-relevant empirical scope. Do not repeat exposed-Gold release attempts as the routine product-development loop.
+
+### Phase-level validation and future release boundary
+
+Only after generic deterministic/adversarial checks are satisfactory, fresh novel_dev evidence is satisfactory, and no unacceptable exposed regression is observed may a separately authorized phase-level validation use novel_validation. The old eight-case cohort has no automatic pass-all gate; regressions inform the product-quality decision without making the cohort the optimization objective. novel_validation remains pristine until that authorized boundary and is not repair-tuning material.
+
+Only after material future product development and phase-level validation should the project consider a separately authorized Release Candidate Evaluation, which may eventually include protected novel_holdout under the release/T5 policy. It is not pre-named F6-A Attempt 6. No release evaluation or protected-data access is authorized now.
+
+```text
+NEXT_TASK_RECOMMENDATION = G1 RELATIONSHIP-AWARE ANSWER OBLIGATION DESIGN
+NEXT_TASK_EXECUTION_AUTHORIZED = false
+```
+
+## Historical cross-phase planning questions (superseded forward planning)
+
+The following unresolved questions and checkpoint snapshot are retained as history. Current phase interpretation and scheduling are governed by the current-authority block and Phase-G roadmap above; this snapshot does not reopen Phase F.
 
 1. **Residual query-expansion impact:** Is residual query-expansion dependency still a material generalization bottleneck in production after the D4-A10 activation?
 2. **Remaining D4 candidate disposition:** Does the remaining unassessed D4 inventory contain another naturally testable, high-value migration batch, or should residual entries remain on HOLD?

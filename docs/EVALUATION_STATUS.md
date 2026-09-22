@@ -17,32 +17,43 @@ The single `Current authoritative state` section is authoritative over historica
 
 ## Current authoritative state
 
-CURRENT_REPOSITORY_HEAD = replacement T2 terminal records commit (resolve from Git history; exact SHA reported on delivery).
+```text
+CURRENT_REPOSITORY_HEAD = Phase-F closeout commit (resolve from Git history; exact SHA reported on delivery).
 CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = 58bd53a86627ff0e0b668915076d974272e86233
 NORMAL_PRODUCT_MODE = production_answer_obligations_v1
 PROMPT_SET_VERSION = 3.11.2
 PROMPT_FINGERPRINT = 878caffb022dd66111b3bc6e98c6e372340cb619db13aa856c09aaa09e8b8391
 ACTIVE_GOLD = m6-benchmark-v2.11
 ACTIVE_CALIBRATION = phase_b_t3_product_language_scope_v8
-POST_A5_DETERMINISTIC_REPAIR = COMPLETE / PASS
-PRE_REPAIR_T2_EXECUTION_ATTEMPT = ABORTED / INFRASTRUCTURE_INVALID / PROVIDER_STRUCTURED_SCHEMA_INVALID_ARGUMENT (8/8; 56 calls / 288539 tokens; historical)
+
+PHASE_F = COMPLETE / CORE_GENERALIZATION_ENGINEERING_COMPLETE / RELEASE_READINESS_NOT_ACHIEVED
+F1 = COMPLETE / PASS / RESIDUAL_BENCHMARK_DEPENDENCY_INVENTORY_ESTABLISHED
+F2 = COMPLETE / PASS / GENERIC_BENCHMARK-SPECIFIC_GUARD_CLEANUP_COMPLETE
+F3 = COMPLETE / PASS / FIXED_LOCATOR_FALLBACK_SHORTCUTS_RETIRED
+F4 = COMPLETE / PASS / ANSWER_GENERATION_SEMANTIC_VERIFICATION_ROLES_SEPARATED
+F5 = COMPLETE / PASS / BOUNDED_ANSWER_COMPOSER_SAFETY_CONTRACT_ESTABLISHED
+READABILITY_BENEFIT = NOT_EMPIRICALLY_ESTABLISHED
+F6 = COMPLETE / FAIL / EXPOSED_RELEASE_GATE_NOT_PASSED
+F6_A = CLOSED / TERMINAL_EXPOSED_GATE_FAIL
+F6_A_REPAIR_LOOP = CLOSED
+ATTEMPT_6 = NOT_PLANNED / PHASE_F_CLOSED
+F6_B = NOT_RUN / EXPOSED_RELEASE_GATE_NOT_PASSED
+GENERALIZATION_RELEASE_EVIDENCE = NOT_ESTABLISHED
 C1_VERTEX_SCHEMA_COMPATIBILITY = COMPLETE / PASS / PROVIDER_SCHEMA_COMPATIBILITY_REPAIRED
-T2 = COMPLETE / FAIL / FIXED_8_CASE_REPLACEMENT_VALIDATION
-RESOURCE_POLICY = USAGE_ACCOUNTING_ONLY
-T2_SCIENTIFIC_OUTCOME = FAIL / VALID_SENTINEL_AND_CONTROL_FAILURES
-T2_MECHANISM_OBSERVABILITY = COMPLETE / TRACE_CAPTURED / CAUSAL_RECOVERY_NOT_ESTABLISHED
 POST_A5_REPAIR_VALIDATION = COMPLETE / FAIL / REPLACEMENT_T2_VALIDATION
-F6_A_REPAIR_LOOP = CLOSED / REPLACEMENT_T2_TERMINAL_FAIL
-ATTEMPT_6 = DEFERRED / NOT_NEXT_STEP
-F6_B = NOT_ENTERED / NOT_NEXT_STEP
-Phase F = IN_PROGRESS / C1 COMPATIBILITY REPAIRED / REPLACEMENT T2 TERMINAL FAIL / NO FOLLOW-ON AUTHORIZED
 
-The prior eight-case P0 execution remains `ABORTED / INFRASTRUCTURE_INVALID / PROVIDER_STRUCTURED_SCHEMA_INVALID_ARGUMENT` with 56 calls / 288539 tokens, 9 embedding calls, 0 judge calls, and one transport recovery; it contributes zero scientific observations. The final bounded schema repair passed the synthetic provider smoke, and the repaired fixed eight-case replacement T2 completed with 63 calls / 345411 tokens, 8 embedding calls, 10 judge calls, and one recovered transport event. Valid scientific failures were established in g013, g023, g047, and g050; g011 negative-existence safety passed, and controls g010/g014/g022 passed. Native-documentation evidence coverage for g011 is reported separately and is non-gating.
-
-NEXT_TASK_RECOMMENDATION = TERMINAL / NO AUTOMATIC REPAIR, T2-R1, T3, ATTEMPT_6, OR F6-B
+PHASE_G = PLANNED / NOT_STARTED
+NEXT_TASK_RECOMMENDATION = G1 RELATIONSHIP-AWARE ANSWER OBLIGATION DESIGN
 NEXT_TASK_EXECUTION_AUTHORIZED = false
+```
 
-Authority: `evaluation/POST_A5_C1_VERTEX_SCHEMA_COMPATIBILITY_REPAIR.md`, `evaluation/post_a5_c1_vertex_schema_compatibility_repair.json`, `evaluation/POST_A5_T2_REPLACEMENT_RESULT.md`, and its companion JSON, together with the preserved historical T2 result and preregistration. The replacement T2 is post-F6-A compatibility-repair validation. **Replacement T2 remains exposed repair-target evidence, not independent generalization evidence.** F6-A remains closed, protected content is untouched, and no candidate freeze or later lifecycle stage is authorized.
+Phase F is terminal: F1–F5 completed their bounded engineering objectives, while F6 did not establish release readiness. Attempts 1–5 stopped at exposed Stage A1; A2 ablation, A3 release-stage `novel_dev`, A4 `novel_validation`, and A5 composer empirical audit were not reached. `novel_validation` remains pristine for this lineage; holdout access, protected leakage, and F6-B execution remain zero.
+
+Post-A5 mechanisms remain product architecture, but the replacement T2 remains `COMPLETE / FAIL`: g011 PASS, g010 CONTROL_PASS, g013 FAIL, g014 CONTROL_PASS, g023 FAIL, g022 CONTROL_PASS, g047 FAIL, g050 CONTROL_FAIL. These exposed repair-target results do not establish sufficient completeness recovery or independent generalization. Their historical verdicts and records are unchanged.
+
+Phase G is ordinary product-development planning for answer semantics and robustness. The old eight-case cohort becomes `NON_GATING REGRESSION DIAGNOSTICS` for future development; fresh `novel_dev` is the planned main empirical evidence. Phase-G implementation, `novel_validation`, and any future Release Candidate Evaluation require separate authorization. No F6-A Attempt 6 continuation is planned.
+
+Authority: [Phase-F closeout](../evaluation/PHASE_F_CLOSEOUT.md) and [Phase-G roadmap](GENERALIZATION_ROADMAP.md#phase-g--answer-semantics--robustness). Historical Attempts 1–5, T1/T2, evaluator/Gold corrections, O1/EA1/C1/C1-R1, and Vertex compatibility records retain their original outcomes. Older planning and next-task recommendations below are historical and confer no current authorization.
 
 ## Historical status chronology (superseded forward planning)
 
