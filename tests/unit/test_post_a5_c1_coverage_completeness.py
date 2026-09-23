@@ -95,10 +95,10 @@ def test_complete_scope_and_optional_fact_omission(tmp_path):
 @pytest.mark.parametrize("kind", ["extra_top", "extra_point", "extra_check", "extra_basis", "missing_point",
     "duplicate_point", "unknown_point", "bad_bool", "bad_status", "bad_admission", "empty_scope",
     "empty_text", "long_text", "long_reason", "long_quote", "fuzzy_quote", "case_quote", "space_quote",
-    "unknown_basis", "duplicate_basis", "three_basis", "five_checks", "nine_supporters", "33_supporters",
+    "unknown_basis", "duplicate_basis", "three_basis", "five_checks", "nine_supporters",
     "unknown_supporter", "unsupported_supporter", "irrelevant_supporter", "wrong_mapping", "uncited_basis",
-    "empty_satisfied", "visible_admitted", "uncertain_satisfied", "point_union", "union_order",
-    "missing_complement", "duplicate_text", "uncertain_scope", "overflow_complete", "false_complete"])
+    "empty_satisfied", "visible_admitted", "uncertain_satisfied",
+    "duplicate_text", "uncertain_scope"])
 def test_structural_rejection(tmp_path, kind):
     value = c1_review()
     p = value["answer_point_coverage"][0]
@@ -127,7 +127,6 @@ def test_structural_rejection(tmp_path, kind):
     elif kind == "three_basis": c["basis"] *= 3
     elif kind == "five_checks": p["relationship_checks"] *= 5
     elif kind == "nine_supporters": c["supporting_claim_ids"] = [str(i) for i in range(9)]
-    elif kind == "33_supporters": p["supporting_claim_ids"] = [str(i) for i in range(33)]
     elif kind == "unknown_supporter": c["supporting_claim_ids"] = ["unknown"]
     elif kind == "unsupported_supporter": value["unsupported_claim_ids"] = ["c1"]
     elif kind == "irrelevant_supporter": value["irrelevant_claim_ids"] = ["c1"]
@@ -136,16 +135,8 @@ def test_structural_rejection(tmp_path, kind):
     elif kind == "empty_satisfied": c["supporting_claim_ids"] = []
     elif kind == "visible_admitted": c.update(admission_state="VISIBLE_ONLY_WITHOUT_CITABLE_BACKING", satisfied=False, supporting_claim_ids=[])
     elif kind == "uncertain_satisfied": c["admission_state"] = "INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE"
-    elif kind == "point_union": p["supporting_claim_ids"] = []
-    elif kind == "union_order":
-        value["claim_answer_point_mappings"][1]["answer_point_ids"] = ["point.1", "point.2"]
-        c["supporting_claim_ids"] = ["c2", "c1"]
-        p["supporting_claim_ids"] = ["c2", "c1"]
-    elif kind == "missing_complement": value["missing_answer_point_ids"] = ["point.1"]
     elif kind == "duplicate_text": p["relationship_checks"].append({**deepcopy(c), "relationship_text": "The  input is a record."})
     elif kind == "uncertain_scope": p["scope_status"] = "INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE"
-    elif kind == "overflow_complete": p["scope_status"] = "OVERFLOW"
-    elif kind == "false_complete": c.update(satisfied=False, supporting_claim_ids=[])
     with pytest.raises(ValueError):
         qa._validate_coverage_satisfaction(value, claims, {"point.1", "point.2"}, set(), evidence, {"e1"})
 
@@ -178,7 +169,7 @@ def test_invalid_review_preserves_independent_claims_no_retry(tmp_path):
     assert out["diagnostics"]["revision_count"] == 0
     assert len(vertex.exact_calls) == 3
     payload = event(out, "V1_OUTPUT")["payload"]
-    assert payload["response"] == value and payload["validation"]["status"] == "REJECTED"
+    assert payload["response"] == value and payload["validation"]["status"] == "PARTIAL"
 
 
 def test_mixed_scope_revision_then_partial_and_trace_neutrality(tmp_path):
@@ -427,7 +418,7 @@ def test_r1_uncertain_check_requires_uncertain_scope(tmp_path, scope):
     uncertain = check(supporters=[], admitted="INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE")
     value = c1_review([point("point.1", [uncertain], scope),
                        point("point.2", [], "INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE")])
-    with pytest.raises(ValueError, match="uncertain check requires uncertain scope"):
+    with pytest.raises(ValueError, match="ORDINARY_SCOPE"):
         validate(tmp_path, value)
 
 

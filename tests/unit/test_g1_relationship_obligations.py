@@ -199,12 +199,8 @@ def named_point(checks):
         deepcopy(v["answer_point_coverage"][0]["required_relation_checks"][0])),
     lambda v: v["answer_point_coverage"][0]["required_relation_checks"][0].update(relation_id="point.9.rel.1"),
     lambda v: v["answer_point_coverage"][0]["required_relation_checks"][0].update(relation_id="point.2.rel.1"),
-    lambda v: v["answer_point_coverage"][0].update(supporting_claim_ids=[]),
-    lambda v: v["answer_point_coverage"][0].update(complete=False),
-    lambda v: v.update(missing_answer_point_ids=["point.1"]),
-    lambda v: v["answer_point_coverage"][0].update(scope_status="OVERFLOW"),
 ])
-def test_named_disposition_rejects_inventory_and_consistency_errors(tmp_path, mutation):
+def test_named_disposition_rejects_unowned_or_conflicted_inventory(tmp_path, mutation):
     claims, evidence = fixture(tmp_path)
     canonical = [{"answer_point_id": "point.1", "required_relations": [{"relation_id": "point.1.rel.1"}]},
                  {"answer_point_id": "point.2", "required_relations": [{"relation_id": "point.2.rel.1"}]}]

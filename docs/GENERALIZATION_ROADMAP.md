@@ -25,8 +25,8 @@ The roadmap is governed by the following core development principles:
 ## Current planning state
 
 ```text
-CURRENT_REPOSITORY_HEAD = G2 design commit (resolve from Git history; exact SHA reported on delivery).
-CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = 9979b631191f4cf11adca1b63242ed08c45c9ea1
+CURRENT_REPOSITORY_HEAD = G2 implementation commit (resolve from Git history; exact SHA reported on delivery).
+CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = G2 implementation commit (resolve from Git history; exact SHA reported on delivery).
 NORMAL_PRODUCT_MODE = production_answer_obligations_v1
 QUESTION_DECOMPOSITION_PROMPT_VERSION = 3.0.0
 QUESTION_DECOMPOSITION_SCHEMA_VERSION = e1.question_decomposition.v3
@@ -52,10 +52,10 @@ GENERALIZATION_RELEASE_EVIDENCE = NOT_ESTABLISHED
 C1_VERTEX_SCHEMA_COMPATIBILITY = COMPLETE / PASS / PROVIDER_SCHEMA_COMPATIBILITY_REPAIRED
 POST_A5_REPAIR_VALIDATION = COMPLETE / FAIL / REPLACEMENT_T2_VALIDATION
 
-PHASE_G = IN_PROGRESS / G2_DESIGN_COMPLETE
+PHASE_G = IN_PROGRESS / G2_IMPLEMENTED
 G1 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
-G2 = DESIGN COMPLETE / IMPLEMENTATION READY
-NEXT_TASK_RECOMMENDATION = G2 COVERAGE REVIEW LOCAL-FAILURE ROBUSTNESS IMPLEMENTATION
+G2 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
+NEXT_TASK_RECOMMENDATION = G3 EVIDENCE ADMISSION / ANSWERABILITY GAP AUDIT DESIGN
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 ```
 
@@ -1029,14 +1029,14 @@ At release, Generalization Gap means benchmark score minus novel score. Benchmar
 ## Phase G — Answer Semantics & Robustness
 
 ```text
-PHASE_G = IN_PROGRESS / G2_DESIGN_COMPLETE
+PHASE_G = IN_PROGRESS / G2_IMPLEMENTED
 G1 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
-G2 = DESIGN COMPLETE / IMPLEMENTATION READY
+G2 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
 ```
 
 Phase G is a new ordinary product-development phase. Its goal is to improve how the QA system represents requested semantic relationships, validates partial structured reviews, and connects retrieved evidence to answer-authorized support, without optimizing directly for exposed benchmark cases. The guiding principles are relationship-aware semantics, local failure containment, evidence-to-answer continuity, false-refusal control, fresh development evidence, and lean validation.
 
-Phase G is not an F6-A continuation, Attempt 6, T2-R1, benchmark repair cycle, or release validation. G1 implementation and G2 design completed under separate explicit task authorizations; this roadmap authorizes no subsequent implementation, dataset work, model calls, or evaluation. Ordinary development follows the existing AGENTS.md and EVALUATION_POLICY.md boundaries without adding per-task frozen candidates or a new governance loop.
+Phase G is not an F6-A continuation, Attempt 6, T2-R1, benchmark repair cycle, or release validation. G1 and G2 implementation completed under separate explicit task authorizations; this roadmap authorizes no subsequent implementation, dataset work, model calls, or evaluation. Ordinary development follows the existing AGENTS.md and EVALUATION_POLICY.md boundaries without adding per-task frozen candidates or a new governance loop.
 
 ### G1 — Relationship-Aware Answer Obligations
 
@@ -1046,16 +1046,15 @@ Phase G is not an F6-A continuation, Attempt 6, T2-R1, benchmark repair cycle, o
 - **Boundary:** Derive obligations from the live question. Do not encode benchmark entities, expected answers, source locations, or case-specific triggers. Exposed observations may motivate the generic problem but cannot specify implementation rules.
 - **Implementation:** Nested `required_relations`, exact question support, locally assigned stable IDs, and one completeness path per point: existing ordinary C1 proof for relation-free points, or required-relation dispositions for relation-bearing points. A1 authorization is target-local after a valid review; V2 rechecks the full contract; one bounded revision remains. The existing production mode uses the new prompt/schema successors. Design: [G1 relationship-aware answer obligations](../evaluation/G1_RELATIONSHIP_AWARE_ANSWER_OBLIGATION_DESIGN.md).
 - **Verification:** Focused deterministic/fake-provider tests passed; scientific calls/tokens 0/0. Real provider behavior and empirical answer-quality effects remain unverified.
-- **Next recommended step:** G2 implementation under separate task authorization; G2 design is complete.
+- **Next recommended step:** G3 evidence admission / answerability gap audit design under separate task authorization.
 
 ### G2 — Coverage Review Local-Failure Robustness
 
-- **Status:** DESIGN COMPLETE / IMPLEMENTATION READY; implementation not started.
+- **Status:** IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED.
 - **Goal:** Prevent one malformed or unverifiable relationship/basis item from unnecessarily invalidating otherwise valid independent coverage judgments.
 - **Design principle:** Local invalidity should leave the affected relation unsatisfied / ungrounded. Independently valid judgments may survive only when their scope, support, and independence are established; whole-review rejection remains appropriate when integrity cannot be isolated.
 - **Boundary:** Preserve exact evidence and provenance requirements and remain fail-closed for every affected relation. Historical g050 is motivation only, not a specification or reason to accept an invalid quote.
-- **Planned verification:** Deterministic malformed-item and independence cases, including failures that must still invalidate the whole review.
-- **Selected design:** [G2 coverage review local-failure robustness](../evaluation/G2_COVERAGE_REVIEW_LOCAL_FAILURE_ROBUSTNESS_DESIGN.md) validates the review envelope and claim mappings once, contains uniquely owned malformed named dispositions at the canonical relation, and uses point-level containment for ordinary checks without canonical IDs. Ambiguous ownership remains whole-review fatal. The design changes no product identity or runtime behavior; implementation and deterministic verification require separate authorization.
+- **Implementation and verification:** [G2 coverage review local-failure robustness](../evaluation/G2_COVERAGE_REVIEW_LOCAL_FAILURE_ROBUSTNESS_DESIGN.md) validates the review envelope and claim mappings once, contains uniquely owned malformed named dispositions at the canonical relation, and uses point-level containment for ordinary checks without canonical IDs. Ambiguous ownership remains whole-review fatal. Deterministic and fake-provider tests cover the planned adversarial matrix, A1 locality, full-contract V2, mapping salvage, and old-mode compatibility. Scientific calls/tokens are 0/0; empirical benefit remains unestablished. Provider schema, prompts, mode, versions, fingerprint, evaluator, Gold, and calibration remain unchanged.
 
 ### G3 — Evidence Admission / Answerability Gap Audit
 
@@ -1093,7 +1092,7 @@ Only after generic deterministic/adversarial checks are satisfactory, fresh nove
 Only after material future product development and phase-level validation should the project consider a separately authorized Release Candidate Evaluation, which may eventually include protected novel_holdout under the release/T5 policy. It is not pre-named F6-A Attempt 6. No release evaluation or protected-data access is authorized now.
 
 ```text
-NEXT_TASK_RECOMMENDATION = G2 COVERAGE REVIEW LOCAL-FAILURE ROBUSTNESS IMPLEMENTATION
+NEXT_TASK_RECOMMENDATION = G3 EVIDENCE ADMISSION / ANSWERABILITY GAP AUDIT DESIGN
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 ```
 

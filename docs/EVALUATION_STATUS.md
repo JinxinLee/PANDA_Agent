@@ -18,8 +18,8 @@ The single `Current authoritative state` section is authoritative over historica
 ## Current authoritative state
 
 ```text
-CURRENT_REPOSITORY_HEAD = G2 design commit (resolve from Git history; exact SHA reported on delivery).
-CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = 9979b631191f4cf11adca1b63242ed08c45c9ea1
+CURRENT_REPOSITORY_HEAD = G2 implementation commit (resolve from Git history; exact SHA reported on delivery).
+CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = G2 implementation commit (resolve from Git history; exact SHA reported on delivery).
 NORMAL_PRODUCT_MODE = production_answer_obligations_v1
 QUESTION_DECOMPOSITION_PROMPT_VERSION = 3.0.0
 QUESTION_DECOMPOSITION_SCHEMA_VERSION = e1.question_decomposition.v3
@@ -45,10 +45,10 @@ GENERALIZATION_RELEASE_EVIDENCE = NOT_ESTABLISHED
 C1_VERTEX_SCHEMA_COMPATIBILITY = COMPLETE / PASS / PROVIDER_SCHEMA_COMPATIBILITY_REPAIRED
 POST_A5_REPAIR_VALIDATION = COMPLETE / FAIL / REPLACEMENT_T2_VALIDATION
 
-PHASE_G = IN_PROGRESS / G2_DESIGN_COMPLETE
+PHASE_G = IN_PROGRESS / G2_IMPLEMENTED
 G1 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
-G2 = DESIGN COMPLETE / IMPLEMENTATION READY
-NEXT_TASK_RECOMMENDATION = G2 COVERAGE REVIEW LOCAL-FAILURE ROBUSTNESS IMPLEMENTATION
+G2 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
+NEXT_TASK_RECOMMENDATION = G3 EVIDENCE ADMISSION / ANSWERABILITY GAP AUDIT DESIGN
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 ```
 
@@ -60,7 +60,7 @@ Phase G is ordinary product development for answer semantics and robustness. The
 
 G1 implements [the selected design](../evaluation/G1_RELATIONSHIP_AWARE_ANSWER_OBLIGATION_DESIGN.md): question-only canonical relations, ordinary C1 checks for relation-free points, required-relation dispositions for relation-bearing points, target-local A1 authorization, and full-contract V2 recheck. Focused deterministic and fake-provider regression tests passed. This is a material product/prompt/schema change within `production_answer_obligations_v1`; scientific calls/tokens are 0/0. Real-model extraction quality, provider runtime acceptance, and empirical completeness benefit remain unverified.
 
-G2 [design](../evaluation/G2_COVERAGE_REVIEW_LOCAL_FAILURE_ROBUSTNESS_DESIGN.md) is complete and implementation-ready: exact canonical relation IDs permit fail-closed local validation, while verifier-derived ordinary checks require conservative point-level containment. Ambiguous ownership and unusable global inventories still reject the whole coverage review. This is design only: no source, test, prompt, schema, evaluator, Gold or calibration change; no G2 deterministic or empirical implementation result is claimed. The post-G1 stale-test cleanup is the intervening test-only commit; G1 remains the current product-behavior lineage.
+G2 implements [the selected design](../evaluation/G2_COVERAGE_REVIEW_LOCAL_FAILURE_ROBUSTNESS_DESIGN.md): one shared claim/mapping validation seam, a production-only coverage receipt, exact canonical relation-local containment, conservative ordinary point-local containment, and whole-review rejection for ambiguous ownership or broken global authority. Independently validated children determine point aggregates and bounded A1 targets; V2 rechecks the full canonical inventory. Focused deterministic and fake-provider regression tests passed with zero scientific calls/tokens. Provider schema, prompts, mode, versions, fingerprint, evaluator, Gold, and calibration are unchanged. Real-provider malformed-output frequency, answer-quality benefit, and release readiness are unmeasured.
 
 Authority: [Phase-F closeout](../evaluation/PHASE_F_CLOSEOUT.md) and [Phase-G roadmap](GENERALIZATION_ROADMAP.md#phase-g--answer-semantics--robustness). Historical Attempts 1–5, T1/T2, evaluator/Gold corrections, O1/EA1/C1/C1-R1, and Vertex compatibility records retain their original outcomes. Older planning and next-task recommendations below are historical and confer no current authorization.
 

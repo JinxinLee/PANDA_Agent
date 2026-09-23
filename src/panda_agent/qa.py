@@ -851,10 +851,10 @@ def _model_claims(claims: list[dict[str, Any]]) -> list[dict[str, Any]]:
             for c in claims]
 
 
-def _validate_answer_point_review(
+def _validate_review_mappings(
     review: Any, claims: list[dict[str, Any]], point_ids: set[str], requirement_ids: set[str]
-) -> dict[str, list[str]]:
-    """Validate semantic decisions without turning mapping presence into coverage."""
+) -> tuple[dict[str, list[str]], set[str], set[str], set[str]]:
+    """One authority for coverage-mode claim verdicts and point mappings."""
     def require(ok: bool, message: str) -> None:
         if not ok:
             raise ValueError(message)
@@ -862,7 +862,10 @@ def _validate_answer_point_review(
     require(isinstance(review, dict) and set(review) == set(ANSWER_POINT_COVERAGE_REVIEW_SCHEMA["required"]),
             "invalid coverage review fields")
     require(type(review["supported"]) is bool and isinstance(review["reason"], str), "invalid review types")
-    known = {c["claim_id"] for c in claims}
+    claim_ids = [c.get("claim_id") for c in claims]
+    require(all(isinstance(cid, str) and cid for cid in claim_ids)
+            and len(claim_ids) == len(set(claim_ids)), "invalid reviewable claim IDs")
+    known = set(claim_ids)
     def ids(value: Any, allowed: set[str]) -> list[str]:
         require(isinstance(value, list) and all(isinstance(v, str) for v in value), "review IDs must be strings")
         require(len(value) == len(set(value)) and set(value) <= allowed, "unknown or duplicate review ID")
@@ -882,6 +885,25 @@ def _validate_answer_point_review(
         mappings[cid] = ids(record["answer_point_ids"], point_ids)
         require(bool(mappings[cid]) or cid in unsupported | irrelevant, "unmapped claim must be unsupported or irrelevant")
     require(set(mappings) == known, "each reviewable claim requires one mapping")
+    return mappings, unsupported, irrelevant, missing
+
+
+def _validate_answer_point_review(
+    review: Any, claims: list[dict[str, Any]], point_ids: set[str], requirement_ids: set[str]
+) -> dict[str, list[str]]:
+    """Validate semantic decisions without turning mapping presence into coverage."""
+    def require(ok: bool, message: str) -> None:
+        if not ok:
+            raise ValueError(message)
+
+    mappings, unsupported, irrelevant, missing = _validate_review_mappings(
+        review, claims, point_ids, requirement_ids)
+    known = {c["claim_id"] for c in claims}
+    def ids(value: Any, allowed: set[str]) -> list[str]:
+        require(isinstance(value, list) and all(isinstance(v, str) for v in value), "review IDs must be strings")
+        require(len(value) == len(set(value)) and set(value) <= allowed, "unknown or duplicate review ID")
+        return value
+
     contributing = {pid for cid, values in mappings.items() if cid not in unsupported | irrelevant for pid in values}
     require(point_ids - missing <= contributing, "covered point lacks a supported relevant mapped claim")
     # Post-A5 completeness recovery: the reviewer must separately judge each
@@ -921,103 +943,320 @@ def _validate_coverage_satisfaction(
     evidence: dict[str, dict[str, Any]], admitted_ids: set[str],
     *, canonical_points: list[dict[str, Any]] | None = None,
 ) -> dict[str, list[str]]:
-    """Validate structure/provenance, never semantic necessity or entailment."""
-    def require(ok: bool, message: str) -> None:
-        if not ok:
-            raise ValueError(message)
+    """Compatibility seam for callers requiring an entirely valid review."""
+    receipt = _build_coverage_receipt(review, claims, point_ids, requirement_ids,
+        evidence, admitted_ids, canonical_points=canonical_points)
+    if receipt["status"] != "VALID":
+        raise ValueError(receipt["errors"][0]["reason_code"])
+    return receipt["mappings"]
 
-    require(isinstance(review, dict), "invalid production review")
-    canonical_relations = {p["answer_point_id"]: {r["relation_id"] for r in p.get("required_relations", [])}
-        for p in canonical_points} if canonical_points is not None else {pid: set() for pid in point_ids}
-    require(set(canonical_relations) == point_ids, "canonical point inventory mismatch")
-    coverage = review.get("answer_point_coverage")
-    require(isinstance(coverage, list) and 1 <= len(coverage) <= 5, "invalid production coverage count")
-    for p in coverage:
-        require(isinstance(p, dict) and set(p) == set(_C1_POINT_PROPERTIES), "invalid production point fields")
-    legacy = {**review, "answer_point_coverage": [
-        {k: p[k] for k in ("answer_point_id", "supporting_claim_ids", "complete")} for p in coverage]}
-    mappings = _validate_answer_point_review(legacy, claims, point_ids, requirement_ids)
+
+class _CoverageItemError(ValueError):
+    """A known, attributable production review defect."""
+
+    def __init__(self, code: str):
+        super().__init__(code)
+        self.code = code
+
+
+def _validate_production_check(
+    check: Any, *, named: bool, point_id: str,
+    mappings: dict[str, list[str]], excluded: set[str],
+    claim_lookup: dict[str, dict[str, Any]], evidence: dict[str, dict[str, Any]],
+    admitted_ids: set[str],
+) -> dict[str, Any]:
+    """Validate one whole check; no invalid basis or supporter is discarded."""
+    def require(ok: bool, code: str) -> None:
+        if not ok:
+            raise _CoverageItemError(code)
+
+    fields = ({"relation_id", "basis", "supporting_claim_ids", "satisfied", "admission_state"}
+              if named else set(_C1_CHECK_PROPERTIES))
+    require(isinstance(check, dict) and set(check) == fields, "CHECK_SHAPE")
+    if not named:
+        for key, bound in (("relationship_text", 240), ("necessity_reason", 160)):
+            value = check[key]
+            require(isinstance(value, str) and bool(value.strip()) and len(value) <= bound, "CHECK_SHAPE")
+    admission = check["admission_state"]
+    require(isinstance(admission, str) and admission in _C1_CHECK_PROPERTIES["admission_state"]["enum"],
+            "INVALID_ADMISSION")
+    require(type(check["satisfied"]) is bool, "INVALID_SATISFACTION")
+    basis = check["basis"]
+    require(isinstance(basis, list) and len(basis) <= 2, "BASIS_BOUND")
+    basis_ids: set[str] = set()
+    for item in basis:
+        require(isinstance(item, dict) and set(item) == {"evidence_id", "quote"}, "BASIS_SHAPE")
+        eid, quote = item["evidence_id"], item["quote"]
+        require(isinstance(eid, str) and eid in evidence, "UNKNOWN_EVIDENCE")
+        require(eid not in basis_ids, "DUPLICATE_BASIS")
+        require(isinstance(quote, str) and bool(quote.strip()) and len(quote) <= 400
+                and quote in evidence[eid].get("text", ""), "BAD_QUOTE")
+        basis_ids.add(eid)
+    supporters = check["supporting_claim_ids"]
+    require(isinstance(supporters, list) and len(supporters) <= 8
+            and all(isinstance(cid, str) for cid in supporters), "INVALID_SUPPORTER")
+    require(len(set(supporters)) == len(supporters), "INVALID_SUPPORTER")
+    for cid in supporters:
+        require(cid in claim_lookup and cid not in excluded, "INVALID_SUPPORTER")
+        require(point_id in mappings[cid], "INVALID_SUPPORTER")
+        require(basis_ids <= set(claim_lookup[cid].get("evidence_ids", [])), "INVALID_SUPPORTER")
+    if admission == "ADMITTED_BACKING_AVAILABLE":
+        require(bool(basis_ids) and basis_ids <= admitted_ids, "INVALID_ADMISSION")
+        require(not check["satisfied"] or bool(supporters), "INVALID_SATISFACTION")
+    else:
+        require(not check["satisfied"] and not supporters, "INVALID_SATISFACTION")
+        if admission == "VISIBLE_ONLY_WITHOUT_CITABLE_BACKING":
+            require(bool(basis_ids - admitted_ids), "INVALID_ADMISSION")
+    return deepcopy(check)
+
+
+def _build_coverage_receipt(
+    review: Any, claims: list[dict[str, Any]], point_ids: set[str], requirement_ids: set[str],
+    evidence: dict[str, dict[str, Any]], admitted_ids: set[str],
+    *, canonical_points: list[dict[str, Any]] | None = None,
+) -> dict[str, Any]:
+    """Build a fail-closed production receipt without mutating the model review."""
+    points = canonical_points if canonical_points is not None else [
+        {"answer_point_id": pid, "required_relations": []} for pid in sorted(point_ids)]
+    errors: list[dict[str, Any]] = []
+    mappings: dict[str, list[str]] = {}
+    mapping_valid = False
+    verdict: dict[str, Any] = {"supported": False,
+        "unsupported_claim_ids": [c["claim_id"] for c in claims], "irrelevant_claim_ids": [],
+        "missing_requirement_ids": [], "reason": ""}
+    excluded: set[str] = set()
+
+    def error(code: str, scope: str, pid: str | None = None, rid: str | None = None) -> None:
+        item: dict[str, Any] = {"scope": scope, "reason_code": code}
+        if pid is not None:
+            item["answer_point_id"] = pid
+        if rid is not None:
+            item["relation_id"] = rid
+        errors.append(item)
+
+    def rejected(code: str, *, internal: bool = False) -> dict[str, Any]:
+        error(code, "REVIEW")
+        missing_ids = [p["answer_point_id"] for p in (points if isinstance(points, list) else [])
+            if isinstance(p, dict) and isinstance(p.get("answer_point_id"), str)]
+        if len(set(missing_ids)) != len(missing_ids) or set(missing_ids) != point_ids:
+            missing_ids = sorted(point_ids)
+        return {"status": "REJECTED", "mappings": mappings, "mapping_valid": mapping_valid,
+                "verdict": verdict,
+                "point_results": [], "missing_answer_point_ids": missing_ids,
+                "revisionable_relationships": [], "errors": errors,
+                "accepted_coverage": None, "internal_error": internal}
+
+    if (not isinstance(points, list) or not 1 <= len(points) <= 5
+            or not all(isinstance(p, dict) and isinstance(p.get("answer_point_id"), str)
+                       and isinstance(p.get("required_relations"), list) for p in points)):
+        return rejected("CANONICAL_INVENTORY", internal=True)
+    canonical_ids = [p["answer_point_id"] for p in points]
+    if (len(set(canonical_ids)) != len(canonical_ids) or set(canonical_ids) != point_ids
+            or any(re.fullmatch(r"point\.\d+", pid) is None for pid in canonical_ids)):
+        return rejected("CANONICAL_INVENTORY", internal=True)
+    relations: dict[str, dict[str, dict[str, Any]]] = {}
+    all_relation_owners: dict[str, str] = {}
+    for p in points:
+        pid = p["answer_point_id"]
+        listed = p["required_relations"]
+        if len(listed) > 3:
+            return rejected("CANONICAL_INVENTORY", internal=True)
+        by_id: dict[str, dict[str, Any]] = {}
+        for relation in listed:
+            if not isinstance(relation, dict):
+                return rejected("CANONICAL_INVENTORY", internal=True)
+            rid = relation.get("relation_id")
+            if (not isinstance(rid, str) or re.fullmatch(re.escape(pid) + r"\.rel\.\d+", rid) is None
+                    or rid in all_relation_owners):
+                return rejected("CANONICAL_INVENTORY", internal=True)
+            by_id[rid] = relation
+            all_relation_owners[rid] = pid
+        relations[pid] = by_id
+    if len(all_relation_owners) > 10:
+        return rejected("CANONICAL_INVENTORY", internal=True)
+
+    if not isinstance(review, dict):
+        return rejected("REVIEW_SHAPE")
+    try:
+        mappings, unsupported, irrelevant, declared_missing = _validate_review_mappings(
+            review, claims, point_ids, requirement_ids)
+    except ValueError:
+        return rejected("MAPPING_INVENTORY")
+    mapping_valid = True
+    verdict = {key: deepcopy(review[key]) for key in
+        ("supported", "unsupported_claim_ids", "irrelevant_claim_ids", "missing_requirement_ids", "reason")}
+    excluded = unsupported | irrelevant
+    coverage = review["answer_point_coverage"]
+    if not isinstance(coverage, list) or not 1 <= len(coverage) <= 5:
+        return rejected("REVIEW_SHAPE")
+    raw_points: dict[str, dict[str, Any]] = {}
+    total_checks = 0
+    for raw in coverage:
+        if not isinstance(raw, dict) or not isinstance(raw.get("answer_point_id"), str):
+            return rejected("POINT_ID_COLLISION")
+        pid = raw["answer_point_id"]
+        if pid not in point_ids or pid in raw_points:
+            return rejected("POINT_ID_COLLISION")
+        raw_points[pid] = raw
+        for key in ("relationship_checks", "required_relation_checks"):
+            rows = raw.get(key)
+            if isinstance(rows, list):
+                total_checks += len(rows)
+                if key == "required_relation_checks":
+                    for row in rows:
+                        rid = row.get("relation_id") if isinstance(row, dict) else None
+                        if isinstance(rid, str) and (all_relation_owners.get(rid, pid) != pid
+                                or (rid.startswith("point.") and not rid.startswith(pid + ".rel."))):
+                            return rejected("RELATION_FOREIGN")
+    if total_checks > 20:
+        return rejected("GLOBAL_BOUND")
+
     claim_lookup = {c["claim_id"]: c for c in claims}
-    excluded = set(review["unsupported_claim_ids"]) | set(review["irrelevant_claim_ids"])
-    total = 0
-    for p in coverage:
-        status = p["scope_status"]
-        require(isinstance(status, str) and status in _C1_POINT_PROPERTIES["scope_status"]["enum"], "invalid scope status")
-        ordinary = p["relationship_checks"]
-        named = p["required_relation_checks"]
-        required_ids = canonical_relations[p["answer_point_id"]]
-        require(isinstance(ordinary, list) and isinstance(named, list), "checks must be lists")
-        if required_ids:
-            require(not ordinary and len(named) == len(required_ids), "relation-bearing point requires exact named dispositions only")
-            relation_ids = [c.get("relation_id") for c in named if isinstance(c, dict)]
-            require(len(relation_ids) == len(named) and all(isinstance(rid, str) for rid in relation_ids)
-                    and len(set(relation_ids)) == len(named)
-                    and set(relation_ids) == required_ids, "missing, duplicate or foreign required relation ID")
-            checks = named
+    point_results: list[dict[str, Any]] = []
+    targets: list[dict[str, Any]] = []
+    accepted: list[dict[str, Any]] = []
+    local_invalid = False
+    for canonical in points:
+        pid = canonical["answer_point_id"]
+        raw = raw_points.get(pid)
+        result: dict[str, Any] = {"answer_point_id": pid, "state": "VALID", "complete": False,
+                                  "supporting_claim_ids": [], "scope_status": None,
+                                  "relations": [{"relation_id": rid, "state": "MISSING"}
+                                                for rid in relations[pid]]}
+        point_results.append(result)
+        if raw is None:
+            result["state"] = "MISSING"
+            local_invalid = True
+            error("POINT_MISSING", "POINT", pid)
+            continue
+        if set(raw) != set(_C1_POINT_PROPERTIES):
+            result["state"] = "LOCAL_INVALID"
+            for item in result["relations"]:
+                item["state"] = "LOCAL_INVALID"
+            local_invalid = True
+            error("POINT_SHAPE", "POINT", pid)
+            continue
+        ordinary, named = raw["relationship_checks"], raw["required_relation_checks"]
+        required = relations[pid]
+        if (not isinstance(ordinary, list) or not isinstance(named, list)
+                or (bool(required) and bool(ordinary)) or (not required and bool(named))):
+            result["state"] = "LOCAL_INVALID"
+            for item in result["relations"]:
+                item["state"] = "LOCAL_INVALID"
+            local_invalid = True
+            error("POINT_SHAPE", "POINT", pid)
+            continue
+        valid_checks: list[dict[str, Any]] = []
+        point_targets: list[dict[str, Any]] = []
+        if required:
+            rows: dict[str, list[dict[str, Any]]] = {}
+            invalid_inventory = False
+            for row in named:
+                rid = row.get("relation_id") if isinstance(row, dict) else None
+                if not isinstance(rid, str) or rid not in required:
+                    invalid_inventory = True
+                    break
+                rows.setdefault(rid, []).append(row)
+            if invalid_inventory:
+                result["state"] = "LOCAL_INVALID"
+                for item in result["relations"]:
+                    item["state"] = "LOCAL_INVALID"
+                local_invalid = True
+                error("POINT_SHAPE", "POINT", pid)
+                continue
+            for relation_result, (rid, relation) in zip(result["relations"], required.items()):
+                entries = rows.get(rid, [])
+                if not entries:
+                    relation_result["state"] = "MISSING"
+                    error("RELATION_MISSING", "RELATION", pid, rid)
+                elif len(entries) > 1:
+                    relation_result["state"] = "CONFLICTED"
+                    error("RELATION_DUPLICATE", "RELATION", pid, rid)
+                else:
+                    relation_result["state"] = "VALID"
+                    try:
+                        check = _validate_production_check(entries[0], named=True, point_id=pid,
+                            mappings=mappings, excluded=excluded, claim_lookup=claim_lookup,
+                            evidence=evidence, admitted_ids=admitted_ids)
+                    except _CoverageItemError as exc:
+                        relation_result["state"] = "LOCAL_INVALID"
+                        error(exc.code, "RELATION", pid, rid)
+                    else:
+                        relation_result["disposition"] = check
+                        valid_checks.append(check)
+                        if check["admission_state"] == "ADMITTED_BACKING_AVAILABLE" and not check["satisfied"]:
+                            point_targets.append({"answer_point_id": pid, "relation_id": rid,
+                                "relationship_text": relation.get("text", ""), "basis": deepcopy(check["basis"])})
+            if any(r["state"] != "VALID" for r in result["relations"]):
+                result["state"] = "LOCAL_INVALID"
+                local_invalid = True
         else:
-            require(not named and len(ordinary) <= 4, "relation-free point requires ordinary checks only")
-            checks = ordinary
-        total += len(checks)
-        require(total <= 20, "relationship count exceeds question bound")
-        require(len(p["supporting_claim_ids"]) <= 32, "point supporter bound exceeded")
-        require(required_ids or status != "ESTABLISHED" or bool(checks), "established scope requires checks")
-        texts, union = set(), set()
-        for check in checks:
-            expected_fields = ({"relation_id", "basis", "supporting_claim_ids", "satisfied", "admission_state"}
-                if required_ids else set(_C1_CHECK_PROPERTIES))
-            require(isinstance(check, dict) and set(check) == expected_fields, "invalid relationship fields")
-            for key, bound in (() if required_ids else (("relationship_text", 240), ("necessity_reason", 160))):
-                value = check[key]
-                require(isinstance(value, str) and bool(value.strip()) and len(value) <= bound, f"invalid {key}")
-            if not required_ids:
-                normalized = " ".join(check["relationship_text"].split())
-                require(normalized not in texts, "duplicate relationship text")
-                texts.add(normalized)
-            admission = check["admission_state"]
-            require(isinstance(admission, str) and admission in _C1_CHECK_PROPERTIES["admission_state"]["enum"], "invalid admission state")
-            require(type(check["satisfied"]) is bool, "satisfied must be boolean")
-            basis = check["basis"]
-            require(isinstance(basis, list) and len(basis) <= 2, "basis bound exceeded")
-            basis_ids = set()
-            for item in basis:
-                require(isinstance(item, dict) and set(item) == {"evidence_id", "quote"}, "invalid basis fields")
-                eid, quote = item["evidence_id"], item["quote"]
-                require(isinstance(eid, str) and eid in evidence and eid not in basis_ids, "unknown or duplicate basis ID")
-                require(isinstance(quote, str) and bool(quote.strip()) and len(quote) <= 400
-                        and quote in evidence[eid].get("text", ""), "basis quote is not exact or exceeds bound")
-                basis_ids.add(eid)
-            supporters = check["supporting_claim_ids"]
-            require(isinstance(supporters, list) and len(supporters) <= 8
-                    and all(isinstance(c, str) for c in supporters), "invalid relationship supporters")
-            require(len(set(supporters)) == len(supporters), "duplicate relationship supporter")
-            for cid in supporters:
-                require(cid in claim_lookup and cid not in excluded, "unknown unsupported or irrelevant supporter")
-                require(p["answer_point_id"] in mappings[cid], "supporter maps to another point")
-                require(basis_ids <= set(claim_lookup[cid].get("evidence_ids", [])), "supporter does not cite required basis")
-            union.update(supporters)
-            if admission == "ADMITTED_BACKING_AVAILABLE":
-                require(bool(basis_ids) and basis_ids <= admitted_ids, "basis must be admitted")
-                require(not check["satisfied"] or bool(supporters), "satisfied check requires supporters")
-            else:
-                require(not check["satisfied"] and not supporters, "uncitable or uncertain check cannot be satisfied")
-                if admission == "VISIBLE_ONLY_WITHOUT_CITABLE_BACKING":
-                    require(bool(basis_ids - admitted_ids), "visible-only check requires unadmitted basis")
-            if not required_ids:
-                if status == "INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE":
-                    require(admission == "INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE", "uncertain scope requires uncertain checks")
-                if admission == "INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE":
-                    require(status == "INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE", "uncertain check requires uncertain scope")
-        require(p["supporting_claim_ids"] == [c["claim_id"] for c in claims if c["claim_id"] in union],
-                "point supporters must equal ordered relationship union")
-        if required_ids:
-            derived_scope = ("INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE" if any(
-                c["admission_state"] == "INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE" for c in checks) else "ESTABLISHED")
-            require(status == derived_scope, "relation scope consistency mismatch")
-        complete = (bool(checks) and all(c["satisfied"] and
-            c["admission_state"] == "ADMITTED_BACKING_AVAILABLE" for c in checks)
-            and (bool(required_ids) or status == "ESTABLISHED"))
-        require(p["complete"] == complete, "scope completeness mismatch")
-    return mappings
+            status = raw["scope_status"]
+            if (not isinstance(status, str) or status not in _C1_POINT_PROPERTIES["scope_status"]["enum"]
+                    or len(ordinary) > 4 or (status == "ESTABLISHED" and not ordinary)):
+                result["state"] = "LOCAL_INVALID"
+                local_invalid = True
+                error("POINT_SHAPE", "POINT", pid)
+                continue
+            texts: set[str] = set()
+            try:
+                for row in ordinary:
+                    check = _validate_production_check(row, named=False, point_id=pid,
+                        mappings=mappings, excluded=excluded, claim_lookup=claim_lookup,
+                        evidence=evidence, admitted_ids=admitted_ids)
+                    normalized = " ".join(check["relationship_text"].split())
+                    if normalized in texts:
+                        raise _CoverageItemError("DUPLICATE_RELATIONSHIP_TEXT")
+                    texts.add(normalized)
+                    if ((status == "INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE") !=
+                            (check["admission_state"] == "INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE")):
+                        raise _CoverageItemError("ORDINARY_SCOPE")
+                    valid_checks.append(check)
+            except _CoverageItemError as exc:
+                result["state"] = "LOCAL_INVALID"
+                local_invalid = True
+                error(exc.code, "POINT", pid)
+                continue
+            result["scope_status"] = status
+            if status == "ESTABLISHED":
+                point_targets = [{"answer_point_id": pid, "relationship_text": c["relationship_text"],
+                    "basis": deepcopy(c["basis"])} for c in valid_checks
+                    if c["admission_state"] == "ADMITTED_BACKING_AVAILABLE" and not c["satisfied"]]
+
+        union = {cid for c in valid_checks for cid in c["supporting_claim_ids"]}
+        result["supporting_claim_ids"] = [c["claim_id"] for c in claims if c["claim_id"] in union]
+        if len(result["supporting_claim_ids"]) > 32:
+            result["state"] = "LOCAL_INVALID"
+            local_invalid = True
+            error("POINT_SUPPORTER_BOUND", "POINT", pid)
+            point_targets = []
+        if result["state"] == "VALID":
+            if required:
+                result["scope_status"] = ("INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE" if any(
+                    c["admission_state"] == "INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE" for c in valid_checks)
+                    else "ESTABLISHED")
+            result["complete"] = bool(valid_checks) and all(c["satisfied"] and
+                c["admission_state"] == "ADMITTED_BACKING_AVAILABLE" for c in valid_checks)
+            if not required:
+                result["complete"] = result["complete"] and result["scope_status"] == "ESTABLISHED"
+            for field, expected in (("supporting_claim_ids", result["supporting_claim_ids"]),
+                                    ("scope_status", result["scope_status"]),
+                                    ("complete", result["complete"])):
+                if raw[field] != expected or (field == "complete" and type(raw[field]) is not bool):
+                    error("AGGREGATE_MISMATCH", "AGGREGATE", pid)
+        targets.extend(point_targets)
+        accepted.append({**deepcopy(raw), "supporting_claim_ids": list(result["supporting_claim_ids"]),
+                         "scope_status": result["scope_status"], "complete": result["complete"]})
+
+    missing = [p["answer_point_id"] for p in point_results if not p["complete"]]
+    if set(missing) != declared_missing:
+        error("MISSING_COMPLEMENT_MISMATCH", "AGGREGATE")
+    status = "PARTIAL" if local_invalid else "VALID"
+    return {"status": status, "mappings": mappings, "mapping_valid": True, "verdict": verdict,
+            "point_results": point_results, "missing_answer_point_ids": missing,
+            "revisionable_relationships": targets, "errors": errors,
+            "accepted_coverage": accepted if status == "VALID" else None,
+            "internal_error": False}
 
 
 def _normalise_claim_answer_points(
@@ -3025,41 +3264,37 @@ class QAAgent:
         verified_mappings: dict[str, list[str]] = {}
         coverage_review_error = None
         missing_points: list[str] = []
+        coverage_receipt: dict[str, Any] | None = None
         if shadow:
-            try:
-                if satisfaction:
-                    verified_mappings = _validate_coverage_satisfaction(
-                        review, reviewable_claims, runtime_answer_point_ids, known_requirement_ids,
-                        review_evidence_lookup, admitted_ids, canonical_points=runtime_points)
-                else:
+            if satisfaction:
+                coverage_receipt = _build_coverage_receipt(
+                    review, reviewable_claims, runtime_answer_point_ids, known_requirement_ids,
+                    review_evidence_lookup, admitted_ids, canonical_points=runtime_points)
+                verified_mappings = coverage_receipt["mappings"]
+                if coverage_receipt["status"] != "VALID":
+                    coverage_review_error = coverage_receipt["errors"][0]["reason_code"]
+                    errors.append(f"invalid answer-point coverage review: {coverage_review_error}")
+                review = {**coverage_receipt["verdict"]}
+                review["missing_answer_point_ids"] = list(coverage_receipt["missing_answer_point_ids"])
+            else:
+                try:
                     verified_mappings = _validate_answer_point_review(
                         review, reviewable_claims, runtime_answer_point_ids, known_requirement_ids)
-            except ValueError as exc:
-                coverage_review_error = str(exc)
-                errors.append(f"invalid answer-point coverage review: {exc}")
-                independent = None
-                if satisfaction and isinstance(review, dict):
-                    # Salvage only independently valid support/mapping judgments,
-                    # never manufacture a valid production relationship scope.
-                    candidate = {**review,
-                        "missing_answer_point_ids": [p["answer_point_id"] for p in runtime_points],
-                        "answer_point_coverage": [{"answer_point_id": p["answer_point_id"],
-                            "supporting_claim_ids": [], "complete": False} for p in runtime_points]}
-                    try:
-                        verified_mappings = _validate_answer_point_review(
-                            candidate, reviewable_claims, runtime_answer_point_ids, known_requirement_ids)
-                        if review["supported"] or review["unsupported_claim_ids"] or review["irrelevant_claim_ids"]:
-                            independent = candidate
-                    except ValueError:
-                        pass
-                review = independent or {"supported": False, "unsupported_claim_ids": [c["claim_id"] for c in reviewable_claims],
-                          "irrelevant_claim_ids": [], "missing_requirement_ids": [], "reason": str(exc),
-                          "missing_answer_point_ids": [p["answer_point_id"] for p in runtime_points]}
+                except ValueError as exc:
+                    coverage_review_error = str(exc)
+                    errors.append(f"invalid answer-point coverage review: {exc}")
+                    review = {"supported": False, "unsupported_claim_ids": [c["claim_id"] for c in reviewable_claims],
+                              "irrelevant_claim_ids": [], "missing_requirement_ids": [], "reason": str(exc),
+                              "missing_answer_point_ids": [p["answer_point_id"] for p in runtime_points]}
             missing_points = list(review["missing_answer_point_ids"])
             errors.extend(f"missing answer point {pid}" for pid in missing_points)
         _trace(state, f"V{review_round}_OUTPUT", review_round, lambda: {
-            "validation": {"status": "REJECTED" if coverage_review_error else ("ACCEPTED" if shadow else "NOT_APPLICABLE"),
-                           "error": coverage_review_error}}, update=True)
+            "validation": {"status": ({"VALID": "ACCEPTED", "PARTIAL": "PARTIAL", "REJECTED": "REJECTED"}[
+                coverage_receipt["status"]] if coverage_receipt else
+                ("REJECTED" if coverage_review_error else ("ACCEPTED" if shadow else "NOT_APPLICABLE"))),
+                "error": coverage_review_error,
+                **({"error_codes": [item["reason_code"] for item in coverage_receipt["errors"]]}
+                   if coverage_receipt else {})}}, update=True)
         unsupported = review.get("unsupported_claim_ids", [])
         irrelevant = review.get("irrelevant_claim_ids", [])
         missing_requirements = [str(value) for value in review.get("missing_requirement_ids", [])]
@@ -3123,9 +3358,12 @@ class QAAgent:
             and not unsupported
             and not irrelevant
             and not accepted_missing_requirements
-            and not missing_points
+            and (not missing_points or (coverage_receipt is not None
+                and coverage_receipt["status"] != "VALID"))
             and not stale_legacy_only
         )
+        if global_review_failure and satisfaction:
+            errors.append(review.get("reason") or "evidence review failed")
         supported_claims = [
             claim
             for claim in claims
@@ -3222,36 +3460,32 @@ class QAAgent:
                         trace["recovered_on_revision"] = False
                     coverage_update["e3_trace"] = trace
         if satisfaction:
-            relationships = []
+            assert coverage_receipt is not None
+            relationships = (coverage_receipt["revisionable_relationships"]
+                if coverage_receipt["status"] != "REJECTED" and not global_review_failure else [])
             repair_ids = []
-            evaluable = not coverage_review_error and not global_review_failure
-            if evaluable:
-                for point in review["answer_point_coverage"]:
-                    canonical = next(p for p in runtime_points if p["answer_point_id"] == point["answer_point_id"])
-                    if canonical["required_relations"]:
-                        relation_lookup = {r["relation_id"]: r for r in canonical["required_relations"]}
-                        for check in point["required_relation_checks"]:
-                            if check["admission_state"] == "ADMITTED_BACKING_AVAILABLE" and not check["satisfied"]:
-                                relationships.append({"answer_point_id": point["answer_point_id"],
-                                    "relation_id": check["relation_id"],
-                                    "relationship_text": relation_lookup[check["relation_id"]]["text"],
-                                    "basis": deepcopy(check["basis"])})
-                    elif point["scope_status"] == "ESTABLISHED":
-                        for check in point["relationship_checks"]:
-                            if check["admission_state"] == "ADMITTED_BACKING_AVAILABLE" and not check["satisfied"]:
-                                relationships.append({"answer_point_id": point["answer_point_id"],
-                                    "relationship_text": check["relationship_text"], "basis": deepcopy(check["basis"])})
+            evaluable = coverage_receipt["status"] == "VALID" and not global_review_failure
+            if coverage_receipt["mapping_valid"] and not global_review_failure:
                 repair_ids = [c["claim_id"] for c in reviewable_claims
                     if c["claim_id"] in unsupported and c["claim_id"] not in irrelevant
-                    and c.get("evidence_ids") and set(c["evidence_ids"]) <= admitted_ids][:8]
+                    and c.get("evidence_ids") and set(c["evidence_ids"]) <= admitted_ids
+                    and c["claim_id"] in verified_mappings][:8]
             coverage_update.update(revisionable_relationships=relationships,
                 revisionable_unsupported_claim_ids=repair_ids,
                 revisionable_unsupported_claim_mappings={cid: list(verified_mappings[cid]) for cid in repair_ids},
                 coverage_blocked=bool(missing_points) or not evaluable,
-                coverage_satisfaction_status="VALID" if evaluable else "INVALID")
+                coverage_satisfaction_status=("INVALID" if coverage_receipt["status"] == "REJECTED"
+                    or global_review_failure else coverage_receipt["status"]))
             coverage_update["answer_point_audit"].update(
                 coverage_satisfaction_schema_version=COVERAGE_SATISFACTION_SCHEMA_VERSION,
-                answer_point_coverage=deepcopy(review.get("answer_point_coverage", [])) if evaluable else None,
+                answer_point_coverage=deepcopy(coverage_receipt["accepted_coverage"]) if evaluable else None,
+                coverage_validation={"status": coverage_receipt["status"],
+                    "whole_review_rejected": coverage_receipt["status"] == "REJECTED",
+                    "point_results": [{"answer_point_id": p["answer_point_id"], "state": p["state"],
+                        "complete": p["complete"], "scope_status": p["scope_status"],
+                        "relations": [{"relation_id": r["relation_id"], "state": r["state"]}
+                            for r in p["relations"]]} for p in coverage_receipt["point_results"]],
+                    "errors": deepcopy(coverage_receipt["errors"])},
                 revisionable_relationships=relationships, revisionable_unsupported_claim_ids=repair_ids)
         return {
             **coverage_update,
