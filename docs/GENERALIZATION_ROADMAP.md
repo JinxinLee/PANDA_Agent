@@ -25,8 +25,8 @@ The roadmap is governed by the following core development principles:
 ## Current planning state
 
 ```text
-CURRENT_REPOSITORY_HEAD = G2 implementation commit (resolve from Git history; exact SHA reported on delivery).
-CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = G2 implementation commit (resolve from Git history; exact SHA reported on delivery).
+CURRENT_REPOSITORY_HEAD = G3 audit-design commit (resolve from Git history; exact SHA reported on delivery).
+CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = a0106bd5eff93646f34f5e50e161e8be8a49d680
 NORMAL_PRODUCT_MODE = production_answer_obligations_v1
 QUESTION_DECOMPOSITION_PROMPT_VERSION = 3.0.0
 QUESTION_DECOMPOSITION_SCHEMA_VERSION = e1.question_decomposition.v3
@@ -52,10 +52,11 @@ GENERALIZATION_RELEASE_EVIDENCE = NOT_ESTABLISHED
 C1_VERTEX_SCHEMA_COMPATIBILITY = COMPLETE / PASS / PROVIDER_SCHEMA_COMPATIBILITY_REPAIRED
 POST_A5_REPAIR_VALIDATION = COMPLETE / FAIL / REPLACEMENT_T2_VALIDATION
 
-PHASE_G = IN_PROGRESS / G2_IMPLEMENTED
+PHASE_G = IN_PROGRESS / G3_AUDIT_DESIGN_COMPLETE
 G1 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
 G2 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
-NEXT_TASK_RECOMMENDATION = G3 EVIDENCE ADMISSION / ANSWERABILITY GAP AUDIT DESIGN
+G3 = AUDIT DESIGN COMPLETE / SCOPED AUDIT READY / PRODUCT CHANGE NOT_AUTHORIZED
+NEXT_TASK_RECOMMENDATION = G3 EVIDENCE ADMISSION / ANSWERABILITY GAP SCOPED AUDIT
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 ```
 
@@ -1029,9 +1030,10 @@ At release, Generalization Gap means benchmark score minus novel score. Benchmar
 ## Phase G — Answer Semantics & Robustness
 
 ```text
-PHASE_G = IN_PROGRESS / G2_IMPLEMENTED
+PHASE_G = IN_PROGRESS / G3_AUDIT_DESIGN_COMPLETE
 G1 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
 G2 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
+G3 = AUDIT DESIGN COMPLETE / SCOPED AUDIT READY / PRODUCT CHANGE NOT_AUTHORIZED
 ```
 
 Phase G is a new ordinary product-development phase. Its goal is to improve how the QA system represents requested semantic relationships, validates partial structured reviews, and connects retrieved evidence to answer-authorized support, without optimizing directly for exposed benchmark cases. The guiding principles are relationship-aware semantics, local failure containment, evidence-to-answer continuity, false-refusal control, fresh development evidence, and lean validation.
@@ -1046,7 +1048,7 @@ Phase G is not an F6-A continuation, Attempt 6, T2-R1, benchmark repair cycle, o
 - **Boundary:** Derive obligations from the live question. Do not encode benchmark entities, expected answers, source locations, or case-specific triggers. Exposed observations may motivate the generic problem but cannot specify implementation rules.
 - **Implementation:** Nested `required_relations`, exact question support, locally assigned stable IDs, and one completeness path per point: existing ordinary C1 proof for relation-free points, or required-relation dispositions for relation-bearing points. A1 authorization is target-local after a valid review; V2 rechecks the full contract; one bounded revision remains. The existing production mode uses the new prompt/schema successors. Design: [G1 relationship-aware answer obligations](../evaluation/G1_RELATIONSHIP_AWARE_ANSWER_OBLIGATION_DESIGN.md).
 - **Verification:** Focused deterministic/fake-provider tests passed; scientific calls/tokens 0/0. Real provider behavior and empirical answer-quality effects remain unverified.
-- **Next recommended step:** G3 evidence admission / answerability gap audit design under separate task authorization.
+- **Next recommended step:** G3 evidence admission / answerability gap scoped audit under separate task authorization.
 
 ### G2 — Coverage Review Local-Failure Robustness
 
@@ -1058,11 +1060,11 @@ Phase G is not an F6-A continuation, Attempt 6, T2-R1, benchmark repair cycle, o
 
 ### G3 — Evidence Admission / Answerability Gap Audit
 
-- **Status:** PLANNED / AUDIT_FIRST
+- **Status:** AUDIT DESIGN COMPLETE / SCOPED AUDIT READY / PRODUCT CHANGE NOT_AUTHORIZED.
 - **Goal:** Measure where evidence is retrieved, visible, or selected but cannot become answer-authorized citable backing.
-- **Audit before implementation:** Establish frequency, classify evidence types, and identify generic repeated mechanisms. Distinguish evidence availability from citation authority.
+- **Selected methodology:** [G3 evidence admission / answerability gap audit design](../evaluation/G3_EVIDENCE_ADMISSION_ANSWERABILITY_GAP_AUDIT_DESIGN.md) uses an outcome-blind reviewed novel_dev cohort, selected-evidence admission denominators, an S0–S8 trace funnel, source-type and reason-code stratification, G1/G2 relation-aware linkage, and independently reviewed causal tiers. The separately authorized audit begins with artifact and trace qualification; a small observability-only prerequisite may be needed.
 - **Implementation gate:** Change admission policy only if the audit establishes a generic defect. Do not broaden citation eligibility merely to repair g013 or any other exposed case.
-- **Planned evidence:** A scoped audit under separate authorization; this task does not inspect protected data, collect cases, or run retrieval.
+- **Planned evidence:** A scoped audit under separate authorization; this design collected no cases, ran no retrieval or QA, and accessed no protected data. NO_CHANGE and INCONCLUSIVE remain valid audit outcomes.
 
 ### G4 — False-Insufficiency / Conservatism Regression
 
@@ -1092,7 +1094,7 @@ Only after generic deterministic/adversarial checks are satisfactory, fresh nove
 Only after material future product development and phase-level validation should the project consider a separately authorized Release Candidate Evaluation, which may eventually include protected novel_holdout under the release/T5 policy. It is not pre-named F6-A Attempt 6. No release evaluation or protected-data access is authorized now.
 
 ```text
-NEXT_TASK_RECOMMENDATION = G3 EVIDENCE ADMISSION / ANSWERABILITY GAP AUDIT DESIGN
+NEXT_TASK_RECOMMENDATION = G3 EVIDENCE ADMISSION / ANSWERABILITY GAP SCOPED AUDIT
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 ```
 
